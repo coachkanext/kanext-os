@@ -4,67 +4,165 @@
  * Per spec: Nexus answers "What does this mean?" - reasoning only, no state mutation.
  */
 
-import React from 'react';
-import { View, StyleSheet, TextInput, Pressable } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState, useCallback } from 'react';
+import { View, StyleSheet } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AvatarDrawer } from '@/components/avatar-drawer';
+import { NexusTopBar } from '@/components/nexus/nexus-top-bar';
+import { ModeSelector } from '@/components/nexus/mode-selector';
+import { ChatThread } from '@/components/nexus/chat-thread';
+import { InputBar } from '@/components/nexus/input-bar';
+import { ConversationsPanel } from '@/components/nexus/conversations-panel';
+import { ProgramContextDrawer } from '@/components/nexus/program-context-drawer';
+import { RosterOverlay } from '@/components/nexus/roster-overlay';
+import { RecruitingBoardOverlay } from '@/components/nexus/recruiting-board-overlay';
+import { NexusProvider, useNexusContext } from '@/context/nexus-context';
+import { useAppContext } from '@/context/app-context';
 
-export default function NexusScreen() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const insets = useSafeAreaInsets();
+function NexusScreenContent() {
+  const { state: appState, setMode } = useAppContext();
+  const {
+    state: nexusState,
+    openConversations,
+    openContextDrawer,
+    openRoster,
+    openRecruitingBoard,
+    closePanel,
+    selectConversation,
+    createNewConversation,
+    setInputText,
+    sendMessage,
+  } = useNexusContext();
+
+  // Local UI state
+  const [modeSelectorVisible, setModeSelectorVisible] = useState(false);
+  const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
+
+  const handleConversationsPress = useCallback(() => {
+    openConversations();
+  }, [openConversations]);
+
+  const handleModePress = useCallback(() => {
+    setModeSelectorVisible(true);
+  }, []);
+
+  const handleContextPress = useCallback(() => {
+    openContextDrawer();
+  }, [openContextDrawer]);
+
+  const handleBoardPress = useCallback(() => {
+    // Toggle between roster and recruiting, or open roster by default
+    if (nexusState.panelState === 'roster') {
+      openRecruitingBoard();
+    } else if (nexusState.panelState === 'recruiting') {
+      openRoster();
+    } else {
+      openRoster();
+    }
+  }, [nexusState.panelState, openRoster, openRecruitingBoard]);
+
+  const handleAddPersonPress = useCallback(() => {
+    // Placeholder - would open person picker in full implementation
+    console.log('Add person to chat');
+  }, []);
+
+  const handleAvatarPress = useCallback(() => {
+    // Close conversations panel first, then open avatar drawer
+    closePanel();
+    setAvatarDrawerVisible(true);
+  }, [closePanel]);
+
+  const handleMicPress = useCallback(() => {
+    // Placeholder - would start voice input in full implementation
+    console.log('Voice input');
+  }, []);
 
   return (
-    <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Canvas Area */}
+    <ThemedView style={styles.container}>
+      {/* Top Bar */}
+      <NexusTopBar
+        currentMode={appState.mode}
+        onConversationsPress={handleConversationsPress}
+        onModePress={handleModePress}
+        onContextPress={handleContextPress}
+        onBoardPress={handleBoardPress}
+        onAddPersonPress={handleAddPersonPress}
+      />
+
+      {/* Chat Thread / Canvas */}
       <View style={styles.canvas}>
-        {/* Watermark */}
-        <View style={styles.watermarkContainer}>
-          <ThemedText style={[styles.watermark, { color: colors.textTertiary }]}>
-            NEXUS
-          </ThemedText>
-        </View>
+        <ChatThread
+          messages={nexusState.messages}
+          isLoading={nexusState.isLoading}
+        />
       </View>
 
       {/* Input Bar */}
-      <View
-        style={[
-          styles.inputBar,
-          {
-            backgroundColor: colors.background,
-            borderTopColor: colors.border,
-            paddingBottom: insets.bottom + Spacing.sm,
-          },
-        ]}
-      >
-        <View
-          style={[
-            styles.inputContainer,
-            { backgroundColor: colors.backgroundSecondary },
-          ]}
-        >
-          <TextInput
-            style={[styles.input, { color: colors.text }]}
-            placeholder="Ask anything..."
-            placeholderTextColor={colors.textTertiary}
-            multiline
-          />
-          <Pressable
-            style={({ pressed }) => [
-              styles.sendButton,
-              { backgroundColor: Brand.nexus, opacity: pressed ? 0.8 : 1 },
-            ]}
-          >
-            <IconSymbol name="arrow.up" size={18} color="#FFFFFF" />
-          </Pressable>
-        </View>
-      </View>
+      <InputBar
+        value={nexusState.inputText}
+        onChangeText={setInputText}
+        onSend={sendMessage}
+        onMicPress={handleMicPress}
+        disabled={!nexusState.activeConversationId}
+        placeholder={
+          nexusState.activeConversationId
+            ? 'Ask anything...'
+            : 'Select a conversation to start'
+        }
+      />
+
+      {/* Mode Selector Modal */}
+      <ModeSelector
+        visible={modeSelectorVisible}
+        currentMode={appState.mode}
+        onSelect={setMode}
+        onClose={() => setModeSelectorVisible(false)}
+      />
+
+      {/* Left Panel: Conversations */}
+      <ConversationsPanel
+        visible={nexusState.panelState === 'conversations'}
+        onClose={closePanel}
+        conversations={nexusState.conversations}
+        activeConversationId={nexusState.activeConversationId}
+        onConversationSelect={selectConversation}
+        onNewChat={createNewConversation}
+        onAvatarPress={handleAvatarPress}
+      />
+
+      {/* Right Drawer: Program Context */}
+      <ProgramContextDrawer
+        visible={nexusState.panelState === 'context'}
+        onClose={closePanel}
+      />
+
+      {/* Right Overlay: Roster */}
+      <RosterOverlay
+        visible={nexusState.panelState === 'roster'}
+        onClose={closePanel}
+      />
+
+      {/* Right Overlay: Recruiting Board */}
+      <RecruitingBoardOverlay
+        visible={nexusState.panelState === 'recruiting'}
+        onClose={closePanel}
+      />
+
+      {/* Avatar Drawer (opens from conversations panel) */}
+      <AvatarDrawer
+        visible={avatarDrawerVisible}
+        onClose={() => setAvatarDrawerVisible(false)}
+      />
     </ThemedView>
+  );
+}
+
+export default function NexusScreen() {
+  return (
+    <NexusProvider>
+      <NexusScreenContent />
+    </NexusProvider>
   );
 }
 
@@ -74,43 +172,5 @@ const styles = StyleSheet.create({
   },
   canvas: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  watermarkContainer: {
-    alignItems: 'center',
-  },
-  watermark: {
-    fontSize: 48,
-    fontWeight: '700',
-    letterSpacing: 8,
-    opacity: 0.1,
-  },
-  inputBar: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.sm,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    borderRadius: BorderRadius.lg,
-    paddingLeft: Spacing.md,
-    paddingRight: Spacing.xs,
-    paddingVertical: Spacing.xs,
-    minHeight: 44,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    maxHeight: 120,
-    paddingVertical: Spacing.sm,
-  },
-  sendButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

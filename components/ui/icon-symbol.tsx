@@ -34,6 +34,14 @@ const MAPPING = {
   // User
   'person.fill': 'person',
   'person.circle.fill': 'account-circle',
+  'person.badge.plus': 'person-add',
+
+  // Nexus
+  'line.horizontal.3': 'menu',
+  'doc.on.clipboard': 'assignment',
+  'rectangle.stack': 'view-list',
+  'mic.fill': 'mic',
+  'plus': 'add',
 
   // Code / Dev
   'chevron.left.forwardslash.chevron.right': 'code',

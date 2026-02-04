@@ -132,3 +132,50 @@ export interface EducationOrganization extends Organization {
   institutionType: string;
   programFormats: string[];
 }
+
+// =============================================================================
+// NEXUS / CONVERSATIONS
+// =============================================================================
+
+export type MessageRole = 'user' | 'assistant' | 'system';
+
+export interface Message {
+  id: string;
+  conversationId: string;
+  role: MessageRole;
+  content: string;
+  timestamp: Date;
+  metadata?: {
+    isSimulation?: boolean;
+    simulationParams?: Record<string, unknown>;
+  };
+}
+
+export interface ConversationParticipant {
+  id: string;
+  name: string;
+  avatar?: string;
+  role: 'owner' | 'member';
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
+  participants: ConversationParticipant[];
+  lastMessage?: Message;
+  updatedAt: Date;
+  createdAt: Date;
+  isGroup: boolean;
+  unreadCount: number;
+}
+
+export type NexusPanelState = 'closed' | 'conversations' | 'context' | 'roster' | 'recruiting';
+
+export interface NexusState {
+  activeConversationId: string | null;
+  conversations: Conversation[];
+  messages: Message[];
+  panelState: NexusPanelState;
+  inputText: string;
+  isLoading: boolean;
+}
