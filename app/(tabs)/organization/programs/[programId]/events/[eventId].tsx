@@ -1,10 +1,9 @@
 /**
- * Event Detail Page
- * Game details including score, venue, and status.
- * Day 7 will add box scores and detailed stats.
+ * Event Detail Page (Game Center)
+ * Game details including score, venue, box score, and player stats.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -19,6 +18,8 @@ import {
   formatGameDate,
   INSTITUTION,
   type Game,
+  type PlayerGameStats,
+  type BoxScore,
 } from '@/data/mock-sports';
 
 // =============================================================================
@@ -44,6 +45,95 @@ function BackButton({ onPress, colors }: BackButtonProps) {
   );
 }
 
+interface TeamStatsRowProps {
+  label: string;
+  value: string | number;
+  colors: typeof Colors.light;
+}
+
+function TeamStatsRow({ label, value, colors }: TeamStatsRowProps) {
+  return (
+    <View style={styles.teamStatsRow}>
+      <ThemedText style={[styles.teamStatsLabel, { color: colors.textSecondary }]}>
+        {label}
+      </ThemedText>
+      <ThemedText style={styles.teamStatsValue}>{value}</ThemedText>
+    </View>
+  );
+}
+
+interface PlayerStatsTableProps {
+  playerStats: PlayerGameStats[];
+  colors: typeof Colors.light;
+  accentColor: string;
+}
+
+function PlayerStatsTable({ playerStats, colors, accentColor }: PlayerStatsTableProps) {
+  // Sort by points scored (descending)
+  const sortedStats = [...playerStats].sort((a, b) => b.points - a.points);
+
+  return (
+    <View style={styles.statsTable}>
+      {/* Header */}
+      <View style={[styles.statsTableHeader, { backgroundColor: colors.backgroundSecondary }]}>
+        <ThemedText style={[styles.statsHeaderCell, styles.playerCell, { color: colors.textSecondary }]}>
+          Player
+        </ThemedText>
+        <ThemedText style={[styles.statsHeaderCell, styles.statCell, { color: colors.textSecondary }]}>
+          MIN
+        </ThemedText>
+        <ThemedText style={[styles.statsHeaderCell, styles.statCell, { color: colors.textSecondary }]}>
+          PTS
+        </ThemedText>
+        <ThemedText style={[styles.statsHeaderCell, styles.statCell, { color: colors.textSecondary }]}>
+          REB
+        </ThemedText>
+        <ThemedText style={[styles.statsHeaderCell, styles.statCell, { color: colors.textSecondary }]}>
+          AST
+        </ThemedText>
+        <ThemedText style={[styles.statsHeaderCell, styles.statCell, { color: colors.textSecondary }]}>
+          FG
+        </ThemedText>
+      </View>
+
+      {/* Player Rows */}
+      {sortedStats.map((player, index) => (
+        <View
+          key={player.playerId}
+          style={[
+            styles.statsTableRow,
+            index % 2 === 1 && { backgroundColor: colors.backgroundSecondary + '50' },
+          ]}
+        >
+          <View style={[styles.playerCell, styles.playerInfoCell]}>
+            <ThemedText style={[styles.playerNumber, { color: accentColor }]}>
+              #{player.playerNumber}
+            </ThemedText>
+            <ThemedText style={styles.playerName} numberOfLines={1}>
+              {player.playerName.split(' ')[1] || player.playerName}
+            </ThemedText>
+          </View>
+          <ThemedText style={[styles.statCell, styles.statValue, { color: colors.textSecondary }]}>
+            {player.minutes}
+          </ThemedText>
+          <ThemedText style={[styles.statCell, styles.statValue, styles.highlightStat]}>
+            {player.points}
+          </ThemedText>
+          <ThemedText style={[styles.statCell, styles.statValue]}>
+            {player.rebounds}
+          </ThemedText>
+          <ThemedText style={[styles.statCell, styles.statValue]}>
+            {player.assists}
+          </ThemedText>
+          <ThemedText style={[styles.statCell, styles.statValue, { color: colors.textSecondary }]}>
+            {player.fgMade}-{player.fgAttempted}
+          </ThemedText>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 // =============================================================================
 // MAIN COMPONENT
 // =============================================================================
@@ -61,6 +151,8 @@ export default function EventDetailScreen() {
   const modeColors = ModeColors.sports;
   const program = getProgramById(programId);
   const game = program?.schedule.find((g) => g.id === eventId);
+
+  const [showDetailedStats, setShowDetailedStats] = useState(false);
 
   if (!game) {
     return (
@@ -194,6 +286,44 @@ export default function EventDetailScreen() {
           </View>
         </View>
 
+        {/* Box Score (for completed games with data) */}
+        {isCompleted && game.boxScore && (
+          <>
+            {/* Team Stats Summary */}
+            <View style={styles.sectionHeader}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                Team Stats
+              </ThemedText>
+            </View>
+            <View style={[styles.teamStatsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={styles.teamStatsGrid}>
+                <TeamStatsRow label="FG%" value={`${game.boxScore.teamStats.fgPct}%`} colors={colors} />
+                <TeamStatsRow label="3P%" value={`${game.boxScore.teamStats.threePct}%`} colors={colors} />
+                <TeamStatsRow label="FT%" value={`${game.boxScore.teamStats.ftPct}%`} colors={colors} />
+                <TeamStatsRow label="Rebounds" value={game.boxScore.teamStats.rebounds} colors={colors} />
+                <TeamStatsRow label="Assists" value={game.boxScore.teamStats.assists} colors={colors} />
+                <TeamStatsRow label="Steals" value={game.boxScore.teamStats.steals} colors={colors} />
+                <TeamStatsRow label="Blocks" value={game.boxScore.teamStats.blocks} colors={colors} />
+                <TeamStatsRow label="Turnovers" value={game.boxScore.teamStats.turnovers} colors={colors} />
+              </View>
+            </View>
+
+            {/* Player Stats */}
+            <View style={styles.sectionHeader}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                Player Stats
+              </ThemedText>
+            </View>
+            <View style={[styles.playerStatsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <PlayerStatsTable
+                playerStats={game.boxScore.playerStats}
+                colors={colors}
+                accentColor={modeColors.primary}
+              />
+            </View>
+          </>
+        )}
+
         {/* Game Info */}
         <View style={styles.sectionHeader}>
           <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
@@ -245,28 +375,6 @@ export default function EventDetailScreen() {
             </View>
           </View>
         </View>
-
-        {/* Box Score Placeholder (for Day 7) */}
-        {isCompleted && (
-          <>
-            <View style={styles.sectionHeader}>
-              <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-                Box Score
-              </ThemedText>
-            </View>
-            <View style={[styles.placeholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <IconSymbol
-                name="chart.bar"
-                size={32}
-                color={colors.textTertiary}
-                style={styles.placeholderIcon}
-              />
-              <ThemedText style={[styles.placeholderText, { color: colors.textTertiary }]}>
-                Detailed box score coming soon
-              </ThemedText>
-            </View>
-          </>
-        )}
 
         {/* Pre-Game Info (for upcoming games) */}
         {!isCompleted && (
@@ -433,6 +541,81 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 
+  // Team Stats Card
+  teamStatsCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.lg,
+  },
+  teamStatsGrid: {
+    gap: Spacing.xs,
+  },
+  teamStatsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  teamStatsLabel: {
+    fontSize: 14,
+  },
+  teamStatsValue: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
+  // Player Stats Card
+  playerStatsCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    overflow: 'hidden',
+    marginBottom: Spacing.lg,
+  },
+  statsTable: {},
+  statsTableHeader: {
+    flexDirection: 'row',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
+  },
+  statsTableRow: {
+    flexDirection: 'row',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
+  },
+  statsHeaderCell: {
+    fontSize: 10,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+  },
+  playerCell: {
+    flex: 2,
+  },
+  playerInfoCell: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  playerNumber: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginRight: 4,
+  },
+  playerName: {
+    fontSize: 13,
+    fontWeight: '500',
+    flex: 1,
+  },
+  statCell: {
+    flex: 1,
+    textAlign: 'center',
+  },
+  statValue: {
+    fontSize: 13,
+  },
+  highlightStat: {
+    fontWeight: '700',
+  },
+
   // Info Card
   infoCard: {
     borderRadius: BorderRadius.lg,
@@ -467,22 +650,6 @@ const styles = StyleSheet.create({
   infoDivider: {
     height: StyleSheet.hairlineWidth,
     marginLeft: Spacing.md + 36 + Spacing.sm,
-  },
-
-  // Placeholder Card
-  placeholderCard: {
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    padding: Spacing.xl,
-    alignItems: 'center',
-    marginBottom: Spacing.lg,
-  },
-  placeholderIcon: {
-    marginBottom: Spacing.sm,
-    opacity: 0.5,
-  },
-  placeholderText: {
-    fontSize: 14,
   },
 
   // Pre-Game Card

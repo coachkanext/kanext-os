@@ -25,6 +25,7 @@ export default function ProgramLayout() {
       <Stack.Screen name="staff/[staffId]" />
       <Stack.Screen name="schedule" />
       <Stack.Screen name="events/[eventId]" />
+      <Stack.Screen name="media" />
     </Stack>
   );
 }

@@ -65,6 +65,41 @@ export interface RosterEntry {
   nilAmount: number;
 }
 
+export interface PlayerGameStats {
+  playerId: string;
+  playerName: string;
+  playerNumber: string;
+  minutes: number;
+  points: number;
+  rebounds: number;
+  assists: number;
+  steals: number;
+  blocks: number;
+  turnovers: number;
+  fouls: number;
+  fgMade: number;
+  fgAttempted: number;
+  threeMade: number;
+  threeAttempted: number;
+  ftMade: number;
+  ftAttempted: number;
+}
+
+export interface BoxScore {
+  teamStats: {
+    points: number;
+    rebounds: number;
+    assists: number;
+    steals: number;
+    blocks: number;
+    turnovers: number;
+    fgPct: number;
+    threePct: number;
+    ftPct: number;
+  };
+  playerStats: PlayerGameStats[];
+}
+
 export interface Game {
   id: string;
   opponent: string;
@@ -78,7 +113,20 @@ export interface Game {
     awayScore: number;
     isWin: boolean;
   };
+  boxScore?: BoxScore;
   isConference: boolean;
+}
+
+export interface MediaItem {
+  id: string;
+  title: string;
+  description?: string;
+  type: 'video' | 'article' | 'photo_gallery' | 'audio';
+  source: string;
+  url: string;
+  thumbnail?: string;
+  date: Date;
+  duration?: string;
 }
 
 export interface SeasonRecord {
@@ -351,6 +399,29 @@ export const PROGRAMS: ProgramData[] = [
         venue: 'home',
         status: 'final',
         result: { homeScore: 82, awayScore: 71, isWin: true },
+        boxScore: {
+          teamStats: {
+            points: 82,
+            rebounds: 38,
+            assists: 18,
+            steals: 8,
+            blocks: 5,
+            turnovers: 12,
+            fgPct: 48.2,
+            threePct: 36.4,
+            ftPct: 78.5,
+          },
+          playerStats: [
+            { playerId: 'player-johnson', playerName: 'Marcus Johnson', playerNumber: '1', minutes: 36, points: 25, rebounds: 4, assists: 8, steals: 2, blocks: 0, turnovers: 3, fouls: 2, fgMade: 9, fgAttempted: 18, threeMade: 4, threeAttempted: 8, ftMade: 3, ftAttempted: 4 },
+            { playerId: 'player-williams', playerName: 'DeShawn Williams', playerNumber: '32', minutes: 32, points: 18, rebounds: 12, assists: 2, steals: 1, blocks: 3, turnovers: 2, fouls: 4, fgMade: 8, fgAttempted: 12, threeMade: 0, threeAttempted: 0, ftMade: 2, ftAttempted: 4 },
+            { playerId: 'player-harris', playerName: 'Kevin Harris', playerNumber: '23', minutes: 34, points: 16, rebounds: 9, assists: 3, steals: 1, blocks: 1, turnovers: 2, fouls: 3, fgMade: 6, fgAttempted: 11, threeMade: 2, threeAttempted: 5, ftMade: 2, ftAttempted: 2 },
+            { playerId: 'player-garcia', playerName: 'Anthony Garcia', playerNumber: '24', minutes: 30, points: 12, rebounds: 3, assists: 2, steals: 2, blocks: 0, turnovers: 1, fouls: 2, fgMade: 4, fgAttempted: 10, threeMade: 3, threeAttempted: 7, ftMade: 1, ftAttempted: 1 },
+            { playerId: 'player-thompson', playerName: 'Jaylen Thompson', playerNumber: '15', minutes: 22, points: 6, rebounds: 5, assists: 1, steals: 1, blocks: 1, turnovers: 2, fouls: 3, fgMade: 3, fgAttempted: 6, threeMade: 0, threeAttempted: 2, ftMade: 0, ftAttempted: 0 },
+            { playerId: 'player-davis', playerName: 'Terrance Davis', playerNumber: '11', minutes: 14, points: 3, rebounds: 1, assists: 2, steals: 1, blocks: 0, turnovers: 1, fouls: 1, fgMade: 1, fgAttempted: 3, threeMade: 1, threeAttempted: 2, ftMade: 0, ftAttempted: 0 },
+            { playerId: 'player-jackson', playerName: 'Chris Jackson', playerNumber: '21', minutes: 18, points: 2, rebounds: 3, assists: 0, steals: 0, blocks: 0, turnovers: 1, fouls: 2, fgMade: 1, fgAttempted: 4, threeMade: 0, threeAttempted: 1, ftMade: 0, ftAttempted: 0 },
+            { playerId: 'player-robinson', playerName: 'Marcus Robinson', playerNumber: '5', minutes: 14, points: 0, rebounds: 1, assists: 0, steals: 0, blocks: 0, turnovers: 0, fouls: 2, fgMade: 0, fgAttempted: 2, threeMade: 0, threeAttempted: 0, ftMade: 0, ftAttempted: 0 },
+          ],
+        },
         isConference: false,
       },
       {
@@ -362,6 +433,30 @@ export const PROGRAMS: ProgramData[] = [
         venue: 'home',
         status: 'final',
         result: { homeScore: 78, awayScore: 65, isWin: true },
+        boxScore: {
+          teamStats: {
+            points: 78,
+            rebounds: 35,
+            assists: 16,
+            steals: 10,
+            blocks: 4,
+            turnovers: 10,
+            fgPct: 45.8,
+            threePct: 33.3,
+            ftPct: 82.0,
+          },
+          playerStats: [
+            { playerId: 'player-johnson', playerName: 'Marcus Johnson', playerNumber: '1', minutes: 34, points: 18, rebounds: 3, assists: 7, steals: 3, blocks: 0, turnovers: 2, fouls: 1, fgMade: 7, fgAttempted: 15, threeMade: 2, threeAttempted: 6, ftMade: 2, ftAttempted: 2 },
+            { playerId: 'player-williams', playerName: 'DeShawn Williams', playerNumber: '32', minutes: 30, points: 14, rebounds: 10, assists: 1, steals: 0, blocks: 2, turnovers: 1, fouls: 3, fgMade: 6, fgAttempted: 10, threeMade: 0, threeAttempted: 0, ftMade: 2, ftAttempted: 3 },
+            { playerId: 'player-harris', playerName: 'Kevin Harris', playerNumber: '23', minutes: 32, points: 20, rebounds: 8, assists: 2, steals: 2, blocks: 1, turnovers: 2, fouls: 2, fgMade: 8, fgAttempted: 14, threeMade: 2, threeAttempted: 4, ftMade: 2, ftAttempted: 2 },
+            { playerId: 'player-garcia', playerName: 'Anthony Garcia', playerNumber: '24', minutes: 28, points: 14, rebounds: 4, assists: 3, steals: 2, blocks: 0, turnovers: 1, fouls: 2, fgMade: 5, fgAttempted: 12, threeMade: 2, threeAttempted: 6, ftMade: 2, ftAttempted: 2 },
+            { playerId: 'player-thompson', playerName: 'Jaylen Thompson', playerNumber: '15', minutes: 20, points: 8, rebounds: 4, assists: 1, steals: 1, blocks: 1, turnovers: 2, fouls: 4, fgMade: 4, fgAttempted: 7, threeMade: 0, threeAttempted: 1, ftMade: 0, ftAttempted: 0 },
+            { playerId: 'player-davis', playerName: 'Terrance Davis', playerNumber: '11', minutes: 16, points: 2, rebounds: 2, assists: 2, steals: 1, blocks: 0, turnovers: 1, fouls: 1, fgMade: 1, fgAttempted: 4, threeMade: 0, threeAttempted: 2, ftMade: 0, ftAttempted: 0 },
+            { playerId: 'player-jackson', playerName: 'Chris Jackson', playerNumber: '21', minutes: 22, points: 2, rebounds: 3, assists: 0, steals: 1, blocks: 0, turnovers: 1, fouls: 3, fgMade: 1, fgAttempted: 5, threeMade: 0, threeAttempted: 2, ftMade: 0, ftAttempted: 0 },
+            { playerId: 'player-moore', playerName: 'Brandon Moore', playerNumber: '3', minutes: 10, points: 0, rebounds: 1, assists: 0, steals: 0, blocks: 0, turnovers: 0, fouls: 1, fgMade: 0, fgAttempted: 2, threeMade: 0, threeAttempted: 1, ftMade: 0, ftAttempted: 0 },
+            { playerId: 'player-robinson', playerName: 'Marcus Robinson', playerNumber: '5', minutes: 8, points: 0, rebounds: 0, assists: 0, steals: 0, blocks: 0, turnovers: 0, fouls: 2, fgMade: 0, fgAttempted: 1, threeMade: 0, threeAttempted: 0, ftMade: 0, ftAttempted: 0 },
+          ],
+        },
         isConference: false,
       },
       // Upcoming games
@@ -778,11 +873,89 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
 };
 
 // =============================================================================
+// MEDIA
+// =============================================================================
+
+export const MEDIA_ITEMS: MediaItem[] = [
+  {
+    id: 'media-highlights-culver',
+    title: 'Game Highlights: Lincoln 82, Culver-Stockton 71',
+    description: 'Watch the top plays from the Blue Tigers victory over Culver-Stockton.',
+    type: 'video',
+    source: 'YouTube',
+    url: 'https://youtube.com/watch?v=example1',
+    date: new Date('2026-02-02'),
+    duration: '4:32',
+  },
+  {
+    id: 'media-johnson-25',
+    title: 'Marcus Johnson 25-Point Performance',
+    description: 'Senior point guard Marcus Johnson leads the way with a career-high 25 points.',
+    type: 'video',
+    source: 'YouTube',
+    url: 'https://youtube.com/watch?v=example2',
+    date: new Date('2026-02-02'),
+    duration: '3:15',
+  },
+  {
+    id: 'media-harris-stowe-recap',
+    title: 'Harris-Stowe Game Recap',
+    description: 'Blue Tigers extend winning streak with dominant home victory.',
+    type: 'article',
+    source: 'Lincoln Athletics',
+    url: 'https://lincolnblutigers.com/news/example',
+    date: new Date('2026-02-05'),
+  },
+  {
+    id: 'media-williams-interview',
+    title: 'DeShawn Williams Post-Game Interview',
+    description: 'Junior center discusses his double-double performance and team chemistry.',
+    type: 'video',
+    source: 'YouTube',
+    url: 'https://youtube.com/watch?v=example3',
+    date: new Date('2026-02-04'),
+    duration: '2:45',
+  },
+  {
+    id: 'media-practice-footage',
+    title: 'Practice Session: Preparing for Simpson',
+    description: 'Behind the scenes look at Blue Tigers practice ahead of Simpson matchup.',
+    type: 'video',
+    source: 'YouTube',
+    url: 'https://youtube.com/watch?v=example4',
+    date: new Date('2026-02-06'),
+    duration: '5:20',
+  },
+  {
+    id: 'media-season-preview',
+    title: '2025-26 Season Preview: Blue Tigers Basketball',
+    description: 'A comprehensive look at the roster, schedule, and expectations for the season.',
+    type: 'article',
+    source: 'MIAA Sports',
+    url: 'https://miaasports.com/news/example',
+    date: new Date('2025-10-15'),
+  },
+  {
+    id: 'media-photo-gallery',
+    title: 'Photo Gallery: vs Harris-Stowe',
+    description: 'Game day photos from the Blue Tigers home victory.',
+    type: 'photo_gallery',
+    source: 'Lincoln Athletics',
+    url: 'https://lincolnblutigers.com/gallery/example',
+    date: new Date('2026-02-04'),
+  },
+];
+
+// =============================================================================
 // HELPERS
 // =============================================================================
 
 export function getPlayerProfile(playerId: string): PlayerProfile | undefined {
   return PLAYER_PROFILES[playerId];
+}
+
+export function getMediaItems(): MediaItem[] {
+  return MEDIA_ITEMS.sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
 export function getProgramById(id: string): ProgramData | undefined {

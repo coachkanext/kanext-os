@@ -204,9 +204,9 @@ export default function ProgramHomeScreen() {
       case 'schedule':
         router.push(`/organization/programs/${programId}/schedule`);
         break;
-      default:
-        // Media section will be implemented later
-        console.log(`Navigate to ${section} for program ${programId}`);
+      case 'media':
+        router.push(`/organization/programs/${programId}/media`);
+        break;
     }
   };
 
