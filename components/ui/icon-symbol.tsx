@@ -80,6 +80,35 @@ const MAPPING = {
   'ticket.fill': 'confirmation-number',
   'calendar': 'event',
   'calendar.badge.exclamationmark': 'event-busy',
+
+  // Enterprise / Documents
+  'doc.fill': 'description',
+  'doc.text.fill': 'article',
+  'tablecells.fill': 'table-chart',
+  'rectangle.stack.fill': 'layers',
+  'link': 'link',
+  'square.grid.2x2.fill': 'grid-view',
+  'folder.fill': 'folder',
+  'lock.fill': 'lock',
+  'eye.fill': 'visibility',
+  'eye.slash.fill': 'visibility-off',
+
+  // Activity Icons
+  'sportscourt': 'sports-basketball',
+  'chart.bar': 'bar-chart',
+  'calendar.badge.clock': 'schedule',
+  'play.rectangle': 'play-arrow',
+  'person.3': 'groups',
+  'doc.badge.plus': 'note-add',
+  'doc.badge.arrow.up': 'publish',
+  'lightbulb': 'lightbulb',
+  'gearshape': 'settings',
+  'text.bubble': 'chat-bubble',
+  'hands.sparkles': 'volunteer-activism',
+  'heart': 'favorite-border',
+  'calendar.badge.checkmark': 'event-available',
+  'checkmark.seal': 'verified',
+  'bell': 'notifications-none',
 } as IconMapping;
 
 export type IconSymbolName = keyof typeof MAPPING;

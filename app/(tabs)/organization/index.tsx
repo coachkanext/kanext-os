@@ -25,6 +25,16 @@ import {
   type ProgramData,
   type Staff,
 } from '@/data/mock-sports';
+import {
+  KANEXT_ORGANIZATION,
+  BOARD_MEMBERS,
+  LEADERSHIP_TEAM,
+  DOMAINS,
+  COMPANY_METRICS,
+  formatCurrency,
+  getDomainStatusColor,
+} from '@/data/mock-enterprise';
+import type { BoardMember, Domain } from '@/types';
 
 // =============================================================================
 // SPORTS MODE COMPONENTS
@@ -310,6 +320,260 @@ function SportsOrganization() {
 }
 
 // =============================================================================
+// ENTERPRISE MODE COMPONENTS
+// =============================================================================
+
+interface MetricCardProps {
+  label: string;
+  value: string;
+  subValue?: string;
+  colors: typeof Colors.light;
+  accentColor: string;
+}
+
+function MetricCard({ label, value, subValue, colors, accentColor }: MetricCardProps) {
+  return (
+    <View style={[styles.metricCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.metricValue, { color: accentColor }]}>{value}</ThemedText>
+      {subValue && (
+        <ThemedText style={[styles.metricSubValue, { color: colors.textSecondary }]}>
+          {subValue}
+        </ThemedText>
+      )}
+      <ThemedText style={[styles.metricLabel, { color: colors.textTertiary }]}>{label}</ThemedText>
+    </View>
+  );
+}
+
+interface DomainCardProps {
+  domain: Domain;
+  colors: typeof Colors.light;
+  accentColor: string;
+}
+
+function DomainCard({ domain, colors, accentColor }: DomainCardProps) {
+  const statusColor = getDomainStatusColor(domain.status);
+
+  return (
+    <View style={[styles.domainCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View style={styles.domainHeader}>
+        <View style={[styles.domainIcon, { backgroundColor: accentColor + '15' }]}>
+          <IconSymbol name={domain.icon as any} size={20} color={accentColor} />
+        </View>
+        <View style={styles.domainInfo}>
+          <ThemedText style={styles.domainName}>{domain.name}</ThemedText>
+          <View style={styles.domainStatusRow}>
+            <View style={[styles.domainStatusDot, { backgroundColor: statusColor }]} />
+            <ThemedText style={[styles.domainStatus, { color: colors.textSecondary }]}>
+              {domain.status.charAt(0).toUpperCase() + domain.status.slice(1)}
+            </ThemedText>
+          </View>
+        </View>
+      </View>
+      <ThemedText style={[styles.domainDesc, { color: colors.textSecondary }]} numberOfLines={2}>
+        {domain.description}
+      </ThemedText>
+    </View>
+  );
+}
+
+interface EnterpriseMemberRowProps {
+  member: BoardMember;
+  colors: typeof Colors.light;
+}
+
+function EnterpriseMemberRow({ member, colors }: EnterpriseMemberRowProps) {
+  return (
+    <View style={styles.leadershipRow}>
+      <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+        <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
+      </View>
+      <View style={styles.leadershipInfo}>
+        <ThemedText style={styles.leadershipName}>{member.name}</ThemedText>
+        <ThemedText style={[styles.leadershipTitle, { color: colors.textSecondary }]}>
+          {member.role}
+          {member.company && member.company !== 'KaNeXT' ? ` • ${member.company}` : ''}
+        </ThemedText>
+      </View>
+    </View>
+  );
+}
+
+// =============================================================================
+// ENTERPRISE MODE CONTENT
+// =============================================================================
+
+function EnterpriseOrganization() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const router = useRouter();
+  const modeColors = ModeColors.enterprise;
+
+  const handleDocumentsPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/documents');
+  };
+
+  const handleGovernancePress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/governance');
+  };
+
+  const handleDomainsPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/domains');
+  };
+
+  return (
+    <>
+      {/* Company Header */}
+      <View style={styles.institutionHeader}>
+        <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
+          <ThemedText style={styles.institutionBadgeText}>K</ThemedText>
+        </View>
+        <View style={styles.institutionInfo}>
+          <ThemedText style={styles.institutionName}>{KANEXT_ORGANIZATION.name}</ThemedText>
+          <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
+            {KANEXT_ORGANIZATION.type}
+          </ThemedText>
+          <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
+            {KANEXT_ORGANIZATION.location} • {KANEXT_ORGANIZATION.legalStructure}
+          </ThemedText>
+        </View>
+      </View>
+
+      {/* Key Metrics */}
+      <View style={styles.metricsGrid}>
+        <MetricCard
+          label="MRR"
+          value={formatCurrency(COMPANY_METRICS.mrr)}
+          subValue={`+${COMPANY_METRICS.mrrGrowth}% MoM`}
+          colors={colors}
+          accentColor={modeColors.primary}
+        />
+        <MetricCard
+          label="Customers"
+          value={COMPANY_METRICS.customers.toString()}
+          subValue={`${COMPANY_METRICS.pilots} pilots`}
+          colors={colors}
+          accentColor={modeColors.primary}
+        />
+        <MetricCard
+          label="Runway"
+          value={`${COMPANY_METRICS.runway}mo`}
+          colors={colors}
+          accentColor={modeColors.primary}
+        />
+        <MetricCard
+          label="Team"
+          value={COMPANY_METRICS.teamSize.toString()}
+          colors={colors}
+          accentColor={modeColors.primary}
+        />
+      </View>
+
+      {/* Quick Links */}
+      <SectionHeader title="Data Room" colors={colors} />
+      <View style={styles.quickLinksGrid}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleDocumentsPress}
+        >
+          <IconSymbol name="doc.fill" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Documents</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Investor materials
+          </ThemedText>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleGovernancePress}
+        >
+          <IconSymbol name="person.3.fill" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Governance</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Board & advisors
+          </ThemedText>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleDomainsPress}
+        >
+          <IconSymbol name="square.grid.2x2.fill" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Domains</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Product verticals
+          </ThemedText>
+        </Pressable>
+      </View>
+
+      {/* Domains Preview */}
+      <SectionHeader title="Product Domains" colors={colors} />
+      <View style={styles.domainsGrid}>
+        {DOMAINS.slice(0, 2).map((domain) => (
+          <DomainCard
+            key={domain.id}
+            domain={domain}
+            colors={colors}
+            accentColor={modeColors.primary}
+          />
+        ))}
+      </View>
+
+      {/* Leadership */}
+      <SectionHeader title="Leadership" colors={colors} />
+      <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        {LEADERSHIP_TEAM.map((member, index) => (
+          <React.Fragment key={member.id}>
+            <EnterpriseMemberRow member={member} colors={colors} />
+            {index < LEADERSHIP_TEAM.length - 1 && (
+              <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
+            )}
+          </React.Fragment>
+        ))}
+      </View>
+
+      {/* About */}
+      <SectionHeader title="About" colors={colors} />
+      <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
+          {KANEXT_ORGANIZATION.description}
+        </ThemedText>
+        <View style={[styles.aboutDivider, { backgroundColor: colors.divider }]} />
+        <View style={styles.aboutMeta}>
+          <View style={styles.aboutMetaItem}>
+            <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
+              Status
+            </ThemedText>
+            <ThemedText style={styles.aboutMetaValue}>{KANEXT_ORGANIZATION.status}</ThemedText>
+          </View>
+          <View style={styles.aboutMetaItem}>
+            <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
+              Raised
+            </ThemedText>
+            <ThemedText style={styles.aboutMetaValue}>
+              {formatCurrency(COMPANY_METRICS.raised)}
+            </ThemedText>
+          </View>
+        </View>
+      </View>
+    </>
+  );
+}
+
+// =============================================================================
 // PLACEHOLDER CONTENT FOR OTHER MODES
 // =============================================================================
 
@@ -366,7 +630,7 @@ export default function OrganizationScreen() {
       case 'sports':
         return <SportsOrganization />;
       case 'enterprise':
-        return <PlaceholderContent modeName="Enterprise" />;
+        return <EnterpriseOrganization />;
       case 'church':
         return <PlaceholderContent modeName="Church" />;
       case 'education':
@@ -645,6 +909,125 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 14,
     lineHeight: 22,
+  },
+  aboutDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginVertical: Spacing.md,
+  },
+  aboutMeta: {
+    flexDirection: 'row',
+    gap: Spacing.xl,
+  },
+  aboutMetaItem: {},
+  aboutMetaLabel: {
+    fontSize: 11,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  aboutMetaValue: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+
+  // Enterprise Metrics
+  metricsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+    marginBottom: Spacing.lg,
+  },
+  metricCard: {
+    flex: 1,
+    minWidth: '45%',
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    alignItems: 'center',
+  },
+  metricValue: {
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  metricSubValue: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  metricLabel: {
+    fontSize: 11,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+    marginTop: Spacing.xs,
+  },
+
+  // Quick Links
+  quickLinksGrid: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+  },
+  quickLinkCard: {
+    flex: 1,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    alignItems: 'center',
+  },
+  quickLinkTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: Spacing.xs,
+  },
+  quickLinkSubtitle: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+
+  // Domains
+  domainsGrid: {
+    gap: Spacing.sm,
+  },
+  domainCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+  },
+  domainHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.xs,
+  },
+  domainIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Spacing.sm,
+  },
+  domainInfo: {
+    flex: 1,
+  },
+  domainName: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  domainStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+  },
+  domainStatusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: 4,
+  },
+  domainStatus: {
+    fontSize: 12,
+  },
+  domainDesc: {
+    fontSize: 13,
+    lineHeight: 18,
   },
 
   // Placeholder

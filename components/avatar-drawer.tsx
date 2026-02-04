@@ -269,6 +269,58 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
           )}
 
           {/* ============================================= */}
+          {/* ENTERPRISE ROLE SWITCHER (Enterprise mode) */}
+          {/* ============================================= */}
+          {state.mode === 'enterprise' && (
+            <>
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                  VIEWING AS
+                </Text>
+                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
+                  Select Role
+                </Text>
+                <View style={styles.optionsList}>
+                  {(['founder', 'investor', 'viewer'] as Role[]).map((role) => (
+                    <Pressable
+                      key={role}
+                      style={({ pressed }) => [
+                        styles.optionRow,
+                        {
+                          backgroundColor:
+                            state.operatingRole === role
+                              ? colors.backgroundSecondary
+                              : pressed
+                              ? colors.backgroundSecondary
+                              : 'transparent',
+                        },
+                      ]}
+                      onPress={() => handleRoleSelect(role)}
+                    >
+                      <View style={styles.radioOuter}>
+                        {state.operatingRole === role && (
+                          <View
+                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
+                          />
+                        )}
+                      </View>
+                      <View style={styles.roleOption}>
+                        <Text style={[styles.optionLabel, { color: colors.text }]}>
+                          {formatRole(role)}
+                        </Text>
+                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
+                          {getEnterpriseRoleDesc(role)}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+            </>
+          )}
+
+          {/* ============================================= */}
           {/* ACCOUNT & SYSTEM */}
           {/* ============================================= */}
           <View style={styles.section}>
@@ -377,6 +429,20 @@ function getDefaultOrgName(mode: Mode): string {
   }
 }
 
+// Get enterprise role description
+function getEnterpriseRoleDesc(role: Role): string {
+  switch (role) {
+    case 'founder':
+      return 'Full access to all documents and features';
+    case 'investor':
+      return 'Access to investor materials and updates';
+    case 'viewer':
+      return 'Public documents only';
+    default:
+      return '';
+  }
+}
+
 const styles = StyleSheet.create({
   scrim: {
     ...StyleSheet.absoluteFillObject,
@@ -472,6 +538,13 @@ const styles = StyleSheet.create({
   },
   optionLabel: {
     fontSize: 16,
+  },
+  roleOption: {
+    flex: 1,
+  },
+  roleDesc: {
+    fontSize: 12,
+    marginTop: 2,
   },
   menuItem: {
     flexDirection: 'row',

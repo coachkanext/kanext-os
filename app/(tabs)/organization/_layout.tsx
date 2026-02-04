@@ -43,6 +43,24 @@ export default function OrganizationLayout() {
           presentation: 'card',
         }}
       />
+      <Stack.Screen
+        name="documents"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="governance"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="domains"
+        options={{
+          presentation: 'card',
+        }}
+      />
     </Stack>
   );
 }

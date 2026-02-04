@@ -184,11 +184,56 @@ export interface ProgramContext {
 // ENTERPRISE MODE
 // =============================================================================
 
+export type DocumentCategory = 'investor_materials' | 'governance' | 'institutional_brief' | 'roadmap';
+export type DocumentVisibility = 'founder' | 'investor' | 'public';
+
+export interface Document {
+  id: string;
+  title: string;
+  description?: string;
+  category: DocumentCategory;
+  url?: string;
+  visibility: DocumentVisibility;
+  fileType?: 'pdf' | 'doc' | 'xls' | 'ppt' | 'link';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BoardMember {
+  id: string;
+  name: string;
+  role: string;
+  title?: string;
+  company?: string;
+  bio?: string;
+}
+
+export interface Domain {
+  id: string;
+  name: string;
+  mode: Mode;
+  description: string;
+  status: 'active' | 'development' | 'planned';
+  icon: string;
+}
+
+export interface EnterpriseScenario {
+  id: string;
+  title: string;
+  prompt: string;
+  output: string;
+  timestamp: Date;
+  isPinned: boolean;
+}
+
 export interface EnterpriseOrganization extends Organization {
   legalStructure: string;
   stateOfFormation: string;
   status: string;
   operationalScope: string[];
+  documents?: Document[];
+  board?: BoardMember[];
+  domains?: Domain[];
 }
 
 // =============================================================================
