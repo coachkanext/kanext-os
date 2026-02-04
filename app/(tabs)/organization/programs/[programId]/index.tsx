@@ -194,8 +194,14 @@ export default function ProgramHomeScreen() {
 
   const handleNavPress = (section: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // Navigation to sub-sections will be implemented in later days
-    console.log(`Navigate to ${section} for program ${programId}`);
+    switch (section) {
+      case 'roster':
+        router.push(`/organization/programs/${programId}/roster`);
+        break;
+      default:
+        // Other sections will be implemented in later days
+        console.log(`Navigate to ${section} for program ${programId}`);
+    }
   };
 
   return (

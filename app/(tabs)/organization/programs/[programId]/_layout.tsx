@@ -1,0 +1,26 @@
+/**
+ * Program Stack Layout
+ * Handles navigation within a specific program (roster, schedule, staff, etc.)
+ */
+
+import { Stack } from 'expo-router';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Colors } from '@/constants/theme';
+
+export default function ProgramLayout() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    >
+      <Stack.Screen name="index" />
+      <Stack.Screen name="roster" />
+      <Stack.Screen name="players/[playerId]" />
+    </Stack>
+  );
+}
