@@ -99,6 +99,88 @@ export interface SportsOrganization extends Organization {
 }
 
 // =============================================================================
+// PROGRAM CONTEXT (Nexus Configuration)
+// =============================================================================
+
+export type SystemPreset =
+  | 'motion_offense'
+  | 'pick_and_roll'
+  | 'princeton'
+  | 'dribble_drive'
+  | 'positionless'
+  | 'traditional';
+
+export type OffensiveStyle =
+  | 'motion'
+  | 'set_plays'
+  | 'transition'
+  | 'iso_heavy'
+  | 'post_oriented'
+  | 'perimeter_oriented';
+
+export type DefensiveStyle =
+  | 'man_to_man'
+  | 'zone_2_3'
+  | 'zone_3_2'
+  | 'matchup_zone'
+  | 'press'
+  | 'pack_line';
+
+export type ClusterType =
+  | 'shooting'
+  | 'finishing'
+  | 'playmaking'
+  | 'on_ball_defense'
+  | 'team_defense'
+  | 'rebounding'
+  | 'physical';
+
+export interface ClusterWeight {
+  cluster: ClusterType;
+  weight: number; // 0-100
+}
+
+export type Position = 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+
+export type ImportanceLevel = 'critical' | 'high' | 'medium' | 'low';
+
+export interface PositionImportance {
+  position: Position;
+  importance: ImportanceLevel;
+}
+
+export type BiasType =
+  | 'prefer_experience'
+  | 'prefer_youth'
+  | 'prefer_size'
+  | 'prefer_speed'
+  | 'prefer_shooting'
+  | 'prefer_defense'
+  | 'prefer_local'
+  | 'prefer_transfers';
+
+export interface ProgramBias {
+  type: BiasType;
+  strength: number; // 0-100
+  enabled: boolean;
+}
+
+export interface ProgramContext {
+  programId: string;
+  scholarships: number;
+  scholarshipsUsed: number;
+  nilBudget: number;
+  nilUsed: number;
+  systemPreset: SystemPreset;
+  offensiveStyle: OffensiveStyle;
+  defensiveStyle: DefensiveStyle;
+  tempo: number; // 0-100 (slow to fast)
+  clusterWeights: ClusterWeight[];
+  positionImportance: PositionImportance[];
+  biases: ProgramBias[];
+}
+
+// =============================================================================
 // ENTERPRISE MODE
 // =============================================================================
 
