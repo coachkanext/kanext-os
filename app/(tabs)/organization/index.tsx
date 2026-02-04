@@ -150,6 +150,16 @@ function SportsOrganization() {
     router.push('/organization/recruiting');
   };
 
+  const handleDonationsPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/donations');
+  };
+
+  const handleTicketsPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/tickets');
+  };
+
   return (
     <>
       {/* Institution Header */}
@@ -237,6 +247,43 @@ function SportsOrganization() {
         </View>
         <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
       </Pressable>
+
+      {/* Support & Tickets */}
+      <SectionHeader title="Support & Tickets" colors={colors} />
+      <View style={styles.supportGrid}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.supportCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleDonationsPress}
+        >
+          <View style={[styles.supportIcon, { backgroundColor: modeColors.primary + '15' }]}>
+            <IconSymbol name="heart.fill" size={22} color={modeColors.primary} />
+          </View>
+          <ThemedText style={styles.supportTitle}>Donate</ThemedText>
+          <ThemedText style={[styles.supportSubtitle, { color: colors.textSecondary }]}>
+            Support athletics
+          </ThemedText>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.supportCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleTicketsPress}
+        >
+          <View style={[styles.supportIcon, { backgroundColor: modeColors.primary + '15' }]}>
+            <IconSymbol name="ticket.fill" size={22} color={modeColors.primary} />
+          </View>
+          <ThemedText style={styles.supportTitle}>Tickets</ThemedText>
+          <ThemedText style={[styles.supportSubtitle, { color: colors.textSecondary }]}>
+            Get game tickets
+          </ThemedText>
+        </Pressable>
+      </View>
 
       {/* Leadership Section */}
       <SectionHeader title="Athletic Leadership" colors={colors} />
@@ -521,6 +568,36 @@ const styles = StyleSheet.create({
   },
   recruitingSubtitle: {
     fontSize: 13,
+    marginTop: 2,
+  },
+
+  // Support Grid
+  supportGrid: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+  },
+  supportCard: {
+    flex: 1,
+    padding: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  supportIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Spacing.xs,
+  },
+  supportTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginTop: Spacing.xs,
+  },
+  supportSubtitle: {
+    fontSize: 12,
     marginTop: 2,
   },
 

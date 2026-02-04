@@ -36,6 +36,7 @@ function NexusScreenContent() {
     sendMessage,
     closeSimulation,
     getSimulation,
+    saveSimulation,
   } = useNexusContext();
 
   // Local UI state
@@ -162,7 +163,7 @@ function NexusScreenContent() {
         }
         visible={nexusState.panelState === 'simulation'}
         onClose={closeSimulation}
-        onSave={(sim) => console.log('Save simulation:', sim.id)}
+        onSave={(sim) => saveSimulation(sim)}
         onRerun={(sim) => console.log('Rerun simulation:', sim.id)}
       />
 

@@ -1,7 +1,7 @@
 /**
  * Message Bubble Component
  * Renders a single message in the Nexus chat thread.
- * Supports simulation cards for simulation-type messages.
+ * Supports simulation cards and saved simulation snapshots.
  */
 
 import React from 'react';
@@ -9,28 +9,34 @@ import { View, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { SimulationCard } from './simulation-card';
+import { SimulationSnapshot } from './simulation-snapshot';
 import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-nexus';
-import type { Message, SimulationResult } from '@/types';
+import type { Message, SimulationResult, SavedSimulation } from '@/types';
 
 interface MessageBubbleProps {
   message: Message;
   simulation?: SimulationResult;
+  savedSimulation?: SavedSimulation;
   onViewSimulation?: (sim: SimulationResult) => void;
   onRerunSimulation?: (sim: SimulationResult) => void;
+  onViewSavedSimulation?: (sim: SavedSimulation) => void;
 }
 
 export function MessageBubble({
   message,
   simulation,
+  savedSimulation,
   onViewSimulation,
   onRerunSimulation,
+  onViewSavedSimulation,
 }: MessageBubbleProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const isUser = message.role === 'user';
   const hasSimulation = message.metadata?.isSimulation && simulation;
+  const hasSavedSimulation = message.metadata?.isSavedSimulation && savedSimulation;
 
   return (
     <View style={[styles.container, isUser ? styles.userContainer : styles.assistantContainer]}>
@@ -59,6 +65,16 @@ export function MessageBubble({
             simulation={simulation}
             onViewFull={onViewSimulation || (() => {})}
             onRerun={onRerunSimulation}
+          />
+        </View>
+      )}
+
+      {/* Saved Simulation Snapshot */}
+      {hasSavedSimulation && (
+        <View style={styles.simulationContainer}>
+          <SimulationSnapshot
+            simulation={savedSimulation}
+            onViewFull={onViewSavedSimulation || (() => {})}
           />
         </View>
       )}

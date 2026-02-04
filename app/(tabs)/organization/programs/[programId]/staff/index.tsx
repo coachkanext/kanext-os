@@ -153,13 +153,13 @@ export default function StaffListScreen() {
         {program.staff.length === 0 ? (
           <View style={styles.emptyState}>
             <IconSymbol
-              name="person.badge.shield.checkmark"
+              name="person.fill"
               size={48}
               color={colors.textTertiary}
               style={styles.emptyIcon}
             />
             <ThemedText style={[styles.emptyText, { color: colors.textSecondary }]}>
-              No staff listed
+              No staff listed yet
             </ThemedText>
           </View>
         ) : (

@@ -229,6 +229,7 @@ export interface Message {
   timestamp: Date;
   metadata?: {
     isSimulation?: boolean;
+    isSavedSimulation?: boolean;
     simulationId?: string;
     simulationParams?: Record<string, unknown>;
   };
@@ -263,6 +264,7 @@ export interface NexusState {
   isLoading: boolean;
   activeSimulationId: string | null;
   simulations: Record<string, SimulationResult>;
+  savedSimulations: Record<string, SavedSimulation>;
 }
 
 // =============================================================================

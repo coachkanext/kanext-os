@@ -6,7 +6,6 @@ import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
 type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
-type IconSymbolName = keyof typeof MAPPING;
 
 // Re-export the type for use in other components
 export type { SymbolViewProps };
@@ -23,18 +22,23 @@ const MAPPING = {
   'sparkles': 'auto-awesome',
   'bell.fill': 'notifications',
   'building.2.fill': 'business',
+  'building.2': 'business',
 
   // Actions
   'paperplane.fill': 'send',
   'arrow.up': 'arrow-upward',
+  'arrow.right': 'arrow-forward',
   'xmark': 'close',
   'chevron.right': 'chevron-right',
   'chevron.left': 'chevron-left',
+  'checkmark': 'check',
+  'checkmark.circle.fill': 'check-circle',
 
   // User
   'person.fill': 'person',
   'person.circle.fill': 'account-circle',
   'person.badge.plus': 'person-add',
+  'person.3.fill': 'groups',
 
   // Nexus
   'line.horizontal.3': 'menu',
@@ -50,7 +54,35 @@ const MAPPING = {
   'gear': 'settings',
   'questionmark.circle': 'help-outline',
   'info.circle': 'info-outline',
+  'info.circle.fill': 'info',
+  'bookmark.fill': 'bookmark',
+  'play.circle.fill': 'play-circle-filled',
+  'chart.bar.fill': 'bar-chart',
+  'arrow.up.arrow.down': 'swap-vert',
+  'exclamationmark.triangle.fill': 'warning',
+
+  // Stars / Ratings
+  'star': 'star-border',
+  'star.fill': 'star',
+  'star.circle.fill': 'stars',
+
+  // Donations & Support
+  'crown.fill': 'emoji-events',
+  'graduationcap.fill': 'school',
+  'heart.fill': 'favorite',
+  'envelope.fill': 'email',
+  'phone.fill': 'phone',
+
+  // Sports / Activities
+  'sportscourt.fill': 'sports-basketball',
+  'airplane': 'flight',
+  'ticket': 'confirmation-number',
+  'ticket.fill': 'confirmation-number',
+  'calendar': 'event',
+  'calendar.badge.exclamationmark': 'event-busy',
 } as IconMapping;
+
+export type IconSymbolName = keyof typeof MAPPING;
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.

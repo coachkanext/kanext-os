@@ -11,7 +11,7 @@ import { MessageBubble } from './message-bubble';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useNexusContext } from '@/context/nexus-context';
-import type { Message, SimulationResult } from '@/types';
+import type { Message, SimulationResult, SavedSimulation } from '@/types';
 
 interface ChatThreadProps {
   messages: Message[];
@@ -22,7 +22,7 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const flatListRef = useRef<FlatList>(null);
-  const { getSimulation, openSimulation, sendMessage } = useNexusContext();
+  const { getSimulation, getSavedSimulation, openSimulation, sendMessage } = useNexusContext();
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -48,22 +48,35 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
     []
   );
 
+  const handleViewSavedSimulation = useCallback(
+    (sim: SavedSimulation) => {
+      openSimulation(sim.id);
+    },
+    [openSimulation]
+  );
+
   const renderMessage = useCallback(
     ({ item }: { item: Message }) => {
       const simulation = item.metadata?.simulationId
         ? getSimulation(item.metadata.simulationId)
         : undefined;
 
+      const savedSimulation = item.metadata?.isSavedSimulation && item.metadata?.simulationId
+        ? getSavedSimulation(item.metadata.simulationId)
+        : undefined;
+
       return (
         <MessageBubble
           message={item}
           simulation={simulation}
+          savedSimulation={savedSimulation}
           onViewSimulation={handleViewSimulation}
           onRerunSimulation={handleRerunSimulation}
+          onViewSavedSimulation={handleViewSavedSimulation}
         />
       );
     },
-    [getSimulation, handleViewSimulation, handleRerunSimulation]
+    [getSimulation, getSavedSimulation, handleViewSimulation, handleRerunSimulation, handleViewSavedSimulation]
   );
 
   if (messages.length === 0 && !isLoading) {
@@ -71,6 +84,9 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
       <View style={styles.emptyContainer}>
         <ThemedText style={[styles.watermark, { color: colors.textTertiary }]}>
           NEXUS
+        </ThemedText>
+        <ThemedText style={[styles.emptyPrompt, { color: colors.textSecondary }]}>
+          Ask anything. Simulate matchups. Explore scenarios.
         </ThemedText>
       </View>
     );
@@ -106,6 +122,12 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 8,
     opacity: 0.1,
+  },
+  emptyPrompt: {
+    fontSize: 15,
+    marginTop: Spacing.md,
+    textAlign: 'center',
+    opacity: 0.6,
   },
   listContent: {
     paddingVertical: Spacing.md,

@@ -218,13 +218,13 @@ export default function MediaScreen() {
         {mediaItems.length === 0 ? (
           <View style={styles.emptyState}>
             <IconSymbol
-              name="play.rectangle.fill"
+              name="play.circle.fill"
               size={48}
               color={colors.textTertiary}
               style={styles.emptyIcon}
             />
             <ThemedText style={[styles.emptyText, { color: colors.textSecondary }]}>
-              No media available
+              No media available yet
             </ThemedText>
           </View>
         ) : (

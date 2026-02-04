@@ -196,13 +196,13 @@ export default function RosterScreen() {
         {program.roster.length === 0 ? (
           <View style={styles.emptyState}>
             <IconSymbol
-              name="person.3"
+              name="person.3.fill"
               size={48}
               color={colors.textTertiary}
               style={styles.emptyIcon}
             />
             <ThemedText style={[styles.emptyText, { color: colors.textSecondary }]}>
-              No players on roster
+              No players on roster yet
             </ThemedText>
           </View>
         ) : (

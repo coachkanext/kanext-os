@@ -160,16 +160,16 @@ export default function ActivityScreen() {
       ) : (
         <View style={styles.emptyState}>
           <IconSymbol
-            name="bell"
+            name="bell.fill"
             size={48}
             color={colors.textTertiary}
             style={styles.emptyIcon}
           />
           <ThemedText style={[styles.emptyText, { color: colors.textSecondary }]}>
-            Nothing new.
+            All caught up!
           </ThemedText>
           <ThemedText style={[styles.emptySubtext, { color: colors.textTertiary }]}>
-            Activity from your organization will appear here.
+            Updates from your organization will appear here.
           </ThemedText>
         </View>
       )}

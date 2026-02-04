@@ -4,7 +4,7 @@
  */
 
 import React, { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
-import type { NexusState, NexusPanelState, Conversation, Message, SimulationResult } from '@/types';
+import type { NexusState, NexusPanelState, Conversation, Message, SimulationResult, SavedSimulation } from '@/types';
 import { MOCK_CONVERSATIONS, getMessagesForConversation } from '@/data/mock-nexus';
 import { detectSimulationIntent, generateMockSimulation } from '@/data/mock-simulations';
 
@@ -21,6 +21,7 @@ const defaultState: NexusState = {
   isLoading: false,
   activeSimulationId: null,
   simulations: {},
+  savedSimulations: {},
 };
 
 // =============================================================================
@@ -40,7 +41,8 @@ type NexusAction =
   | { type: 'NEW_CONVERSATION'; payload: Conversation }
   | { type: 'ADD_SIMULATION'; payload: SimulationResult }
   | { type: 'SET_ACTIVE_SIMULATION'; payload: string | null }
-  | { type: 'OPEN_SIMULATION'; payload: string };
+  | { type: 'OPEN_SIMULATION'; payload: string }
+  | { type: 'SAVE_SIMULATION'; payload: SavedSimulation };
 
 function nexusReducer(state: NexusState, action: NexusAction): NexusState {
   switch (action.type) {
@@ -125,6 +127,15 @@ function nexusReducer(state: NexusState, action: NexusAction): NexusState {
         panelState: 'simulation',
       };
 
+    case 'SAVE_SIMULATION':
+      return {
+        ...state,
+        savedSimulations: {
+          ...state.savedSimulations,
+          [action.payload.id]: action.payload,
+        },
+      };
+
     default:
       return state;
   }
@@ -152,6 +163,8 @@ interface NexusContextValue {
   openSimulation: (id: string) => void;
   closeSimulation: () => void;
   getSimulation: (id: string) => SimulationResult | undefined;
+  getSavedSimulation: (id: string) => SavedSimulation | undefined;
+  saveSimulation: (simulation: SimulationResult, title?: string) => void;
 }
 
 const NexusContext = createContext<NexusContextValue | undefined>(undefined);
@@ -289,6 +302,47 @@ export function NexusProvider({ children }: NexusProviderProps) {
     [state.simulations]
   );
 
+  const getSavedSimulation = useCallback(
+    (id: string): SavedSimulation | undefined => {
+      return state.savedSimulations[id];
+    },
+    [state.savedSimulations]
+  );
+
+  const saveSimulation = useCallback(
+    (simulation: SimulationResult, title?: string) => {
+      if (!state.activeConversationId) return;
+
+      const savedSim: SavedSimulation = {
+        ...simulation,
+        threadId: state.activeConversationId,
+        savedAt: new Date(),
+        title: title || simulation.matchupText,
+      };
+
+      dispatch({ type: 'SAVE_SIMULATION', payload: savedSim });
+
+      // Add a message to the thread with the saved snapshot
+      const snapshotMessage: Message = {
+        id: `msg-${Date.now()}-snapshot`,
+        conversationId: state.activeConversationId,
+        role: 'assistant',
+        content: 'Simulation saved for reference.',
+        timestamp: new Date(),
+        metadata: {
+          isSavedSimulation: true,
+          simulationId: savedSim.id,
+        },
+      };
+      dispatch({ type: 'ADD_MESSAGE', payload: snapshotMessage });
+
+      // Close the simulation overlay
+      dispatch({ type: 'SET_ACTIVE_SIMULATION', payload: null });
+      dispatch({ type: 'SET_PANEL_STATE', payload: 'closed' });
+    },
+    [state.activeConversationId]
+  );
+
   const value: NexusContextValue = {
     state,
     openConversations,
@@ -303,6 +357,8 @@ export function NexusProvider({ children }: NexusProviderProps) {
     openSimulation,
     closeSimulation,
     getSimulation,
+    getSavedSimulation,
+    saveSimulation,
   };
 
   return <NexusContext.Provider value={value}>{children}</NexusContext.Provider>;
