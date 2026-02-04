@@ -301,9 +301,91 @@ export interface ChurchOrganization extends Organization {
 // EDUCATION MODE
 // =============================================================================
 
+export type TermType = 'fall' | 'spring' | 'summer' | 'winter' | 'full_year';
+export type TermStatus = 'upcoming' | 'current' | 'completed';
+
+export interface AcademicTerm {
+  id: string;
+  name: string;
+  type: TermType;
+  academicYear: string;
+  startDate: Date;
+  endDate: Date;
+  status: TermStatus;
+}
+
+export type CalendarEventType =
+  | 'semester_start'
+  | 'semester_end'
+  | 'add_drop'
+  | 'midterms'
+  | 'finals'
+  | 'break'
+  | 'holiday'
+  | 'commencement'
+  | 'registration'
+  | 'other';
+
+export interface AcademicCalendarEvent {
+  id: string;
+  title: string;
+  description?: string;
+  type: CalendarEventType;
+  date: Date;
+  endDate?: Date;
+  termId?: string;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+  shortName: string;
+  description?: string;
+  chairId?: string;
+  programCount: number;
+}
+
+export type FacultyRole = 'president' | 'provost' | 'dean' | 'chair' | 'professor' | 'instructor' | 'staff';
+
+export interface FacultyMember {
+  id: string;
+  name: string;
+  title: string;
+  role: FacultyRole;
+  departmentId?: string;
+  bio?: string;
+  email?: string;
+}
+
+export interface InstitutionalMetrics {
+  enrollment: {
+    total: number;
+    undergraduate: number;
+    graduate: number;
+    yearOverYearChange: number;
+  };
+  academics: {
+    programs: number;
+    facultyCount: number;
+    studentFacultyRatio: string;
+  };
+  outcomes: {
+    graduationRate: number;
+    retentionRate: number;
+    employmentRate: number;
+  };
+}
+
 export interface EducationOrganization extends Organization {
   institutionType: string;
   programFormats: string[];
+  accreditation?: string;
+  founded?: number;
+  departments?: Department[];
+  terms?: AcademicTerm[];
+  calendar?: AcademicCalendarEvent[];
+  leadership?: FacultyMember[];
+  metrics?: InstitutionalMetrics;
 }
 
 // =============================================================================

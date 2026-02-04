@@ -92,6 +92,31 @@ export default function OrganizationLayout() {
           presentation: 'card',
         }}
       />
+      {/* Education Routes */}
+      <Stack.Screen
+        name="schedule"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="results"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="metrics"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="leadership"
+        options={{
+          presentation: 'card',
+        }}
+      />
     </Stack>
   );
 }

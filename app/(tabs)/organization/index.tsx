@@ -41,7 +41,20 @@ import {
   CHURCH_LEADERSHIP,
   formatServiceTime,
 } from '@/data/mock-church';
-import type { BoardMember, Domain, Campus, Ministry, ServiceTime } from '@/types';
+import {
+  SDCC_ORGANIZATION,
+  ACADEMIC_TERMS,
+  ACADEMIC_CALENDAR,
+  DEPARTMENTS,
+  FACULTY_LEADERSHIP,
+  INSTITUTIONAL_METRICS,
+  getCurrentTerm,
+  getUpcomingEvents,
+  formatTermDates,
+  formatCalendarEventDate,
+  getCalendarEventTypeLabel,
+} from '@/data/mock-education';
+import type { BoardMember, Domain, Campus, Ministry, AcademicTerm, AcademicCalendarEvent, Department, FacultyMember } from '@/types';
 
 // =============================================================================
 // SPORTS MODE COMPONENTS
@@ -851,6 +864,340 @@ function ChurchOrganization() {
 }
 
 // =============================================================================
+// EDUCATION MODE COMPONENTS
+// =============================================================================
+
+interface TermCardProps {
+  term: AcademicTerm;
+  colors: typeof Colors.light;
+  accentColor: string;
+  isCurrent: boolean;
+}
+
+function TermCard({ term, colors, accentColor, isCurrent }: TermCardProps) {
+  return (
+    <View
+      style={[
+        styles.termCard,
+        {
+          backgroundColor: colors.card,
+          borderColor: isCurrent ? accentColor : colors.border,
+          borderWidth: isCurrent ? 2 : 1,
+        },
+      ]}
+    >
+      <View style={styles.termHeader}>
+        <ThemedText style={styles.termName}>{term.name}</ThemedText>
+        {isCurrent && (
+          <View style={[styles.currentBadge, { backgroundColor: accentColor }]}>
+            <ThemedText style={styles.currentBadgeText}>Current</ThemedText>
+          </View>
+        )}
+      </View>
+      <ThemedText style={[styles.termDates, { color: colors.textSecondary }]}>
+        {formatTermDates(term)}
+      </ThemedText>
+    </View>
+  );
+}
+
+interface CalendarEventRowProps {
+  event: AcademicCalendarEvent;
+  colors: typeof Colors.light;
+  accentColor: string;
+}
+
+function CalendarEventRow({ event, colors, accentColor }: CalendarEventRowProps) {
+  return (
+    <View style={styles.calendarRow}>
+      <View style={[styles.calendarDate, { backgroundColor: accentColor + '15' }]}>
+        <ThemedText style={[styles.calendarMonth, { color: accentColor }]}>
+          {event.date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase()}
+        </ThemedText>
+        <ThemedText style={[styles.calendarDay, { color: accentColor }]}>
+          {event.date.getDate()}
+        </ThemedText>
+      </View>
+      <View style={styles.calendarInfo}>
+        <ThemedText style={styles.calendarTitle}>{event.title}</ThemedText>
+        <ThemedText style={[styles.calendarType, { color: colors.textSecondary }]}>
+          {getCalendarEventTypeLabel(event.type)}
+        </ThemedText>
+      </View>
+    </View>
+  );
+}
+
+interface DepartmentCardProps {
+  department: Department;
+  colors: typeof Colors.light;
+  accentColor: string;
+}
+
+function DepartmentCard({ department, colors, accentColor }: DepartmentCardProps) {
+  return (
+    <View style={[styles.departmentCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={styles.departmentName}>{department.name}</ThemedText>
+      <ThemedText style={[styles.departmentPrograms, { color: accentColor }]}>
+        {department.programCount} programs
+      </ThemedText>
+    </View>
+  );
+}
+
+interface FacultyRowProps {
+  faculty: FacultyMember;
+  colors: typeof Colors.light;
+}
+
+function FacultyRow({ faculty, colors }: FacultyRowProps) {
+  return (
+    <View style={styles.leadershipRow}>
+      <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+        <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
+      </View>
+      <View style={styles.leadershipInfo}>
+        <ThemedText style={styles.leadershipName}>{faculty.name}</ThemedText>
+        <ThemedText style={[styles.leadershipTitle, { color: colors.textSecondary }]}>
+          {faculty.title}
+        </ThemedText>
+      </View>
+    </View>
+  );
+}
+
+// =============================================================================
+// EDUCATION MODE CONTENT
+// =============================================================================
+
+function EducationOrganization() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const router = useRouter();
+  const modeColors = ModeColors.education;
+
+  const currentTerm = getCurrentTerm();
+  const upcomingEvents = getUpcomingEvents(4);
+
+  const handleSchedulePress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/schedule');
+  };
+
+  const handleResultsPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/results');
+  };
+
+  const handleMetricsPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/metrics');
+  };
+
+  const handleLeadershipPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/leadership');
+  };
+
+  return (
+    <>
+      {/* Institution Header */}
+      <View style={styles.institutionHeader}>
+        <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
+          <IconSymbol name="graduationcap.fill" size={28} color="#FFFFFF" />
+        </View>
+        <View style={styles.institutionInfo}>
+          <ThemedText style={styles.institutionName}>{SDCC_ORGANIZATION.name}</ThemedText>
+          <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
+            {SDCC_ORGANIZATION.institutionType}
+          </ThemedText>
+          <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
+            {SDCC_ORGANIZATION.location} • Est. {SDCC_ORGANIZATION.founded}
+          </ThemedText>
+        </View>
+      </View>
+
+      {/* Key Metrics */}
+      <View style={styles.metricsGrid}>
+        <MetricCard
+          label="Enrollment"
+          value={INSTITUTIONAL_METRICS.enrollment.total.toString()}
+          subValue={`+${INSTITUTIONAL_METRICS.enrollment.yearOverYearChange}% YoY`}
+          colors={colors}
+          accentColor={modeColors.primary}
+        />
+        <MetricCard
+          label="Programs"
+          value={INSTITUTIONAL_METRICS.academics.programs.toString()}
+          colors={colors}
+          accentColor={modeColors.primary}
+        />
+        <MetricCard
+          label="Faculty"
+          value={INSTITUTIONAL_METRICS.academics.facultyCount.toString()}
+          subValue={INSTITUTIONAL_METRICS.academics.studentFacultyRatio}
+          colors={colors}
+          accentColor={modeColors.primary}
+        />
+        <MetricCard
+          label="Grad Rate"
+          value={`${INSTITUTIONAL_METRICS.outcomes.graduationRate}%`}
+          colors={colors}
+          accentColor={modeColors.primary}
+        />
+      </View>
+
+      {/* Quick Actions */}
+      <View style={styles.quickLinksGrid}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleSchedulePress}
+        >
+          <IconSymbol name="calendar" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Schedule</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Academic calendar
+          </ThemedText>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleResultsPress}
+        >
+          <IconSymbol name="checkmark.circle.fill" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Results</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Completed terms
+          </ThemedText>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleMetricsPress}
+        >
+          <IconSymbol name="chart.bar.fill" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Metrics</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Institutional data
+          </ThemedText>
+        </Pressable>
+      </View>
+
+      {/* Current Term */}
+      {currentTerm && (
+        <>
+          <SectionHeader title="Current Term" colors={colors} />
+          <TermCard
+            term={currentTerm}
+            colors={colors}
+            accentColor={modeColors.primary}
+            isCurrent={true}
+          />
+        </>
+      )}
+
+      {/* Upcoming Events */}
+      <SectionHeader title="Upcoming" colors={colors} />
+      <View style={[styles.calendarCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        {upcomingEvents.map((event, index) => (
+          <React.Fragment key={event.id}>
+            <CalendarEventRow event={event} colors={colors} accentColor={modeColors.primary} />
+            {index < upcomingEvents.length - 1 && (
+              <View style={[styles.calendarDivider, { backgroundColor: colors.divider }]} />
+            )}
+          </React.Fragment>
+        ))}
+        <Pressable
+          style={({ pressed }) => [
+            styles.viewAllRow,
+            pressed && { backgroundColor: colors.backgroundSecondary },
+          ]}
+          onPress={handleSchedulePress}
+        >
+          <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
+            View Full Calendar
+          </ThemedText>
+          <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
+        </Pressable>
+      </View>
+
+      {/* Departments */}
+      <SectionHeader title="Academic Departments" colors={colors} />
+      <View style={styles.departmentsGrid}>
+        {DEPARTMENTS.slice(0, 4).map((dept) => (
+          <DepartmentCard
+            key={dept.id}
+            department={dept}
+            colors={colors}
+            accentColor={modeColors.primary}
+          />
+        ))}
+      </View>
+
+      {/* Leadership */}
+      <SectionHeader title="Leadership" colors={colors} />
+      <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        {FACULTY_LEADERSHIP.slice(0, 4).map((faculty, index) => (
+          <React.Fragment key={faculty.id}>
+            <FacultyRow faculty={faculty} colors={colors} />
+            {index < Math.min(FACULTY_LEADERSHIP.length, 4) - 1 && (
+              <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
+            )}
+          </React.Fragment>
+        ))}
+        <Pressable
+          style={({ pressed }) => [
+            styles.viewAllRow,
+            pressed && { backgroundColor: colors.backgroundSecondary },
+          ]}
+          onPress={handleLeadershipPress}
+        >
+          <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
+            View All Leadership
+          </ThemedText>
+          <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
+        </Pressable>
+      </View>
+
+      {/* About */}
+      <SectionHeader title="About" colors={colors} />
+      <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
+          {SDCC_ORGANIZATION.description}
+        </ThemedText>
+        <View style={[styles.aboutDivider, { backgroundColor: colors.divider }]} />
+        <View style={styles.aboutMeta}>
+          <View style={styles.aboutMetaItem}>
+            <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
+              Accreditation
+            </ThemedText>
+            <ThemedText style={styles.aboutMetaValue}>{SDCC_ORGANIZATION.accreditation}</ThemedText>
+          </View>
+          <View style={styles.aboutMetaItem}>
+            <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
+              Formats
+            </ThemedText>
+            <ThemedText style={styles.aboutMetaValue}>
+              {SDCC_ORGANIZATION.programFormats?.join(', ')}
+            </ThemedText>
+          </View>
+        </View>
+      </View>
+    </>
+  );
+}
+
+// =============================================================================
 // PLACEHOLDER CONTENT FOR OTHER MODES
 // =============================================================================
 
@@ -911,7 +1258,7 @@ export default function OrganizationScreen() {
       case 'church':
         return <ChurchOrganization />;
       case 'education':
-        return <PlaceholderContent modeName="Education" />;
+        return <EducationOrganization />;
       default:
         return <PlaceholderContent modeName="Organization" />;
     }
@@ -1397,6 +1744,102 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     fontSize: 14,
+    fontWeight: '500',
+  },
+
+  // Education - Terms
+  termCard: {
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  termHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  termName: {
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  termDates: {
+    fontSize: 14,
+    marginTop: 4,
+  },
+  currentBadge: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.sm,
+  },
+  currentBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+
+  // Education - Calendar
+  calendarCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  calendarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: Spacing.md,
+  },
+  calendarDate: {
+    width: 48,
+    height: 48,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Spacing.sm,
+  },
+  calendarMonth: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  calendarDay: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  calendarInfo: {
+    flex: 1,
+  },
+  calendarTitle: {
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  calendarType: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  calendarDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Spacing.md + 48 + Spacing.sm,
+  },
+
+  // Education - Departments
+  departmentsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
+  departmentCard: {
+    flex: 1,
+    minWidth: '45%',
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+  },
+  departmentName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  departmentPrograms: {
+    fontSize: 12,
+    marginTop: 4,
     fontWeight: '500',
   },
 

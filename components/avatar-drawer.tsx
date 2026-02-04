@@ -25,8 +25,9 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
-import type { Mode, Role, Campus } from '@/types';
+import type { Mode, Role, Campus, AcademicTerm } from '@/types';
 import { CAMPUSES } from '@/data/mock-church';
+import { ACADEMIC_TERMS } from '@/data/mock-education';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DRAWER_WIDTH = Math.min(320, SCREEN_WIDTH * 0.85);
@@ -419,6 +420,106 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
           )}
 
           {/* ============================================= */}
+          {/* EDUCATION TERM & ROLE SWITCHER (Education mode) */}
+          {/* ============================================= */}
+          {state.mode === 'education' && (
+            <>
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                  ACADEMIC TERM
+                </Text>
+                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
+                  Current Term
+                </Text>
+                <View style={styles.optionsList}>
+                  {ACADEMIC_TERMS.filter((t) => t.status !== 'completed').map((term) => (
+                    <Pressable
+                      key={term.id}
+                      style={({ pressed }) => [
+                        styles.optionRow,
+                        {
+                          backgroundColor:
+                            term.status === 'current'
+                              ? colors.backgroundSecondary
+                              : pressed
+                              ? colors.backgroundSecondary
+                              : 'transparent',
+                        },
+                      ]}
+                      onPress={() => {
+                        // Term selection - could be persisted
+                      }}
+                    >
+                      <View style={styles.radioOuter}>
+                        {term.status === 'current' && (
+                          <View
+                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
+                          />
+                        )}
+                      </View>
+                      <View style={styles.roleOption}>
+                        <Text style={[styles.optionLabel, { color: colors.text }]}>
+                          {term.name}
+                        </Text>
+                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
+                          {term.academicYear}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+
+              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                  VIEWING AS
+                </Text>
+                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
+                  Select Role
+                </Text>
+                <View style={styles.optionsList}>
+                  {(['faculty', 'student', 'staff'] as Role[]).map((role) => (
+                    <Pressable
+                      key={role}
+                      style={({ pressed }) => [
+                        styles.optionRow,
+                        {
+                          backgroundColor:
+                            state.operatingRole === role
+                              ? colors.backgroundSecondary
+                              : pressed
+                              ? colors.backgroundSecondary
+                              : 'transparent',
+                        },
+                      ]}
+                      onPress={() => handleRoleSelect(role)}
+                    >
+                      <View style={styles.radioOuter}>
+                        {state.operatingRole === role && (
+                          <View
+                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
+                          />
+                        )}
+                      </View>
+                      <View style={styles.roleOption}>
+                        <Text style={[styles.optionLabel, { color: colors.text }]}>
+                          {formatRole(role)}
+                        </Text>
+                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
+                          {getEducationRoleDesc(role)}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+            </>
+          )}
+
+          {/* ============================================= */}
           {/* ACCOUNT & SYSTEM */}
           {/* ============================================= */}
           <View style={styles.section}>
@@ -550,6 +651,20 @@ function getChurchRoleDesc(role: Role): string {
       return 'Ministry staff with administrative access';
     case 'leadership':
       return 'Full access to all church features';
+    default:
+      return '';
+  }
+}
+
+// Get education role description
+function getEducationRoleDesc(role: Role): string {
+  switch (role) {
+    case 'faculty':
+      return 'Full academic access and administrative features';
+    case 'student':
+      return 'Student portal and course information';
+    case 'staff':
+      return 'Administrative staff access';
     default:
       return '';
   }
