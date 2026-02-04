@@ -872,19 +872,22 @@ interface TermCardProps {
   colors: typeof Colors.light;
   accentColor: string;
   isCurrent: boolean;
+  onPress?: () => void;
 }
 
-function TermCard({ term, colors, accentColor, isCurrent }: TermCardProps) {
+function TermCard({ term, colors, accentColor, isCurrent, onPress }: TermCardProps) {
   return (
-    <View
-      style={[
+    <Pressable
+      style={({ pressed }) => [
         styles.termCard,
         {
           backgroundColor: colors.card,
           borderColor: isCurrent ? accentColor : colors.border,
           borderWidth: isCurrent ? 2 : 1,
         },
+        pressed && { opacity: 0.8 },
       ]}
+      onPress={onPress}
     >
       <View style={styles.termHeader}>
         <ThemedText style={styles.termName}>{term.name}</ThemedText>
@@ -894,10 +897,13 @@ function TermCard({ term, colors, accentColor, isCurrent }: TermCardProps) {
           </View>
         )}
       </View>
-      <ThemedText style={[styles.termDates, { color: colors.textSecondary }]}>
-        {formatTermDates(term)}
-      </ThemedText>
-    </View>
+      <View style={styles.termFooter}>
+        <ThemedText style={[styles.termDates, { color: colors.textSecondary }]}>
+          {formatTermDates(term)}
+        </ThemedText>
+        {onPress && <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />}
+      </View>
+    </Pressable>
   );
 }
 
@@ -948,11 +954,18 @@ function DepartmentCard({ department, colors, accentColor }: DepartmentCardProps
 interface FacultyRowProps {
   faculty: FacultyMember;
   colors: typeof Colors.light;
+  onPress?: () => void;
 }
 
-function FacultyRow({ faculty, colors }: FacultyRowProps) {
+function FacultyRow({ faculty, colors, onPress }: FacultyRowProps) {
   return (
-    <View style={styles.leadershipRow}>
+    <Pressable
+      style={({ pressed }) => [
+        styles.leadershipRow,
+        pressed && { backgroundColor: colors.backgroundSecondary },
+      ]}
+      onPress={onPress}
+    >
       <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
         <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
       </View>
@@ -962,7 +975,8 @@ function FacultyRow({ faculty, colors }: FacultyRowProps) {
           {faculty.title}
         </ThemedText>
       </View>
-    </View>
+      {onPress && <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />}
+    </Pressable>
   );
 }
 
@@ -997,6 +1011,21 @@ function EducationOrganization() {
   const handleLeadershipPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.push('/organization/leadership');
+  };
+
+  const handleArchivePress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/archive');
+  };
+
+  const handleFacultyPress = (facultyId: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push(`/organization/members/${facultyId}`);
+  };
+
+  const handleTermPress = (termId: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push(`/organization/events/${termId}`);
   };
 
   return (
@@ -1091,6 +1120,20 @@ function EducationOrganization() {
             Institutional data
           </ThemedText>
         </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleArchivePress}
+        >
+          <IconSymbol name="archivebox.fill" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Archive</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Past years
+          </ThemedText>
+        </Pressable>
       </View>
 
       {/* Current Term */}
@@ -1102,6 +1145,7 @@ function EducationOrganization() {
             colors={colors}
             accentColor={modeColors.primary}
             isCurrent={true}
+            onPress={() => handleTermPress(currentTerm.id)}
           />
         </>
       )}
@@ -1149,7 +1193,11 @@ function EducationOrganization() {
       <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         {FACULTY_LEADERSHIP.slice(0, 4).map((faculty, index) => (
           <React.Fragment key={faculty.id}>
-            <FacultyRow faculty={faculty} colors={colors} />
+            <FacultyRow
+              faculty={faculty}
+              colors={colors}
+              onPress={() => handleFacultyPress(faculty.id)}
+            />
             {index < Math.min(FACULTY_LEADERSHIP.length, 4) - 1 && (
               <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
             )}
@@ -1764,6 +1812,11 @@ const styles = StyleSheet.create({
   },
   termDates: {
     fontSize: 14,
+  },
+  termFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: 4,
   },
   currentBadge: {

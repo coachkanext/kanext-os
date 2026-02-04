@@ -11,7 +11,24 @@ import { MessageBubble } from './message-bubble';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useNexusContext } from '@/context/nexus-context';
-import type { Message, SimulationResult, SavedSimulation } from '@/types';
+import { useMode } from '@/context/app-context';
+import type { Message, SimulationResult, SavedSimulation, Mode } from '@/types';
+
+// Mode-specific empty state prompts
+function getModePrompt(mode: Mode): string {
+  switch (mode) {
+    case 'sports':
+      return 'Ask anything. Simulate matchups. Explore scenarios.';
+    case 'enterprise':
+      return 'Ask about company data, metrics, and strategies.';
+    case 'church':
+      return 'Plan events, explore ministries, and coordinate activities.';
+    case 'education':
+      return 'Ask about academics, schedules, and institutional data.';
+    default:
+      return 'Ask anything. Explore scenarios.';
+  }
+}
 
 interface ChatThreadProps {
   messages: Message[];
@@ -23,6 +40,7 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
   const colors = Colors[colorScheme];
   const flatListRef = useRef<FlatList>(null);
   const { getSimulation, getSavedSimulation, openSimulation, sendMessage } = useNexusContext();
+  const mode = useMode();
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -86,7 +104,7 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
           NEXUS
         </ThemedText>
         <ThemedText style={[styles.emptyPrompt, { color: colors.textSecondary }]}>
-          Ask anything. Simulate matchups. Explore scenarios.
+          {getModePrompt(mode)}
         </ThemedText>
       </View>
     );

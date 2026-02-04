@@ -49,7 +49,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="index"
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
@@ -94,9 +94,9 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Hide the old screens */}
+      {/* Hide the old/unused screens */}
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           href: null,
         }}
