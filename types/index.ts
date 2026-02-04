@@ -229,6 +229,7 @@ export interface Message {
   timestamp: Date;
   metadata?: {
     isSimulation?: boolean;
+    simulationId?: string;
     simulationParams?: Record<string, unknown>;
   };
 }
@@ -251,7 +252,7 @@ export interface Conversation {
   unreadCount: number;
 }
 
-export type NexusPanelState = 'closed' | 'conversations' | 'context' | 'roster' | 'recruiting';
+export type NexusPanelState = 'closed' | 'conversations' | 'context' | 'roster' | 'recruiting' | 'simulation';
 
 export interface NexusState {
   activeConversationId: string | null;
@@ -260,6 +261,8 @@ export interface NexusState {
   panelState: NexusPanelState;
   inputText: string;
   isLoading: boolean;
+  activeSimulationId: string | null;
+  simulations: Record<string, SimulationResult>;
 }
 
 // =============================================================================
@@ -324,4 +327,67 @@ export interface ActivityItem {
   organizationId: string;
   mode: Mode;
   visibility: Role[];
+}
+
+// =============================================================================
+// SIMULATION
+// =============================================================================
+
+export type SimulationType = 'single_game' | 'tournament' | 'season';
+export type RosterType = 'official' | 'sandbox';
+export type ConfidenceLevel = 'high' | 'medium' | 'low';
+export type VolatilityLevel = 'low' | 'medium' | 'high';
+
+export interface PlayerImpact {
+  playerId: string;
+  playerName: string;
+  position: Position;
+  projectedPoints: number;
+  projectedRebounds: number;
+  projectedAssists: number;
+  impactRating: number; // -100 to +100
+  keyContribution: string;
+}
+
+export interface ProjectedBoxScore {
+  teamStats: {
+    points: number;
+    rebounds: number;
+    assists: number;
+    steals: number;
+    blocks: number;
+    turnovers: number;
+    fgPct: number;
+    threePct: number;
+    ftPct: number;
+  };
+  playerStats: PlayerImpact[];
+}
+
+export interface SimulationResult {
+  id: string;
+  type: SimulationType;
+  matchupText: string;
+  homeTeam: string;
+  awayTeam: string;
+  rosterUsed: RosterType;
+  timestamp: Date;
+  winProbability: number; // 0-100
+  projectedScore: {
+    home: number;
+    away: number;
+  };
+  projectedMargin: number;
+  projectedTotal: number;
+  confidence: ConfidenceLevel;
+  volatility: VolatilityLevel;
+  drivers: string[];
+  playerImpact: PlayerImpact[];
+  boxScoreProjection?: ProjectedBoxScore;
+}
+
+export interface SavedSimulation extends SimulationResult {
+  threadId: string;
+  savedAt: Date;
+  title?: string;
 }

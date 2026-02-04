@@ -3,14 +3,15 @@
  * Renders the list of messages in a Nexus conversation.
  */
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { MessageBubble } from './message-bubble';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import type { Message } from '@/types';
+import { useNexusContext } from '@/context/nexus-context';
+import type { Message, SimulationResult } from '@/types';
 
 interface ChatThreadProps {
   messages: Message[];
@@ -21,6 +22,7 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const flatListRef = useRef<FlatList>(null);
+  const { getSimulation, openSimulation, sendMessage } = useNexusContext();
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -30,6 +32,39 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
       }, 100);
     }
   }, [messages.length]);
+
+  const handleViewSimulation = useCallback(
+    (sim: SimulationResult) => {
+      openSimulation(sim.id);
+    },
+    [openSimulation]
+  );
+
+  const handleRerunSimulation = useCallback(
+    (sim: SimulationResult) => {
+      // In a real app, this would rerun with the same parameters
+      console.log('Rerun simulation:', sim.id);
+    },
+    []
+  );
+
+  const renderMessage = useCallback(
+    ({ item }: { item: Message }) => {
+      const simulation = item.metadata?.simulationId
+        ? getSimulation(item.metadata.simulationId)
+        : undefined;
+
+      return (
+        <MessageBubble
+          message={item}
+          simulation={simulation}
+          onViewSimulation={handleViewSimulation}
+          onRerunSimulation={handleRerunSimulation}
+        />
+      );
+    },
+    [getSimulation, handleViewSimulation, handleRerunSimulation]
+  );
 
   if (messages.length === 0 && !isLoading) {
     return (
@@ -46,7 +81,7 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
       ref={flatListRef}
       data={messages}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <MessageBubble message={item} />}
+      renderItem={renderMessage}
       contentContainerStyle={styles.listContent}
       showsVerticalScrollIndicator={false}
       ListFooterComponent={

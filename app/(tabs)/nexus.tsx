@@ -17,6 +17,7 @@ import { ConversationsPanel } from '@/components/nexus/conversations-panel';
 import { ProgramContextDrawer } from '@/components/nexus/program-context-drawer';
 import { RosterOverlay } from '@/components/nexus/roster-overlay';
 import { RecruitingOverlay } from '@/components/nexus/recruiting-overlay';
+import { SimulationOverlay } from '@/components/nexus/simulation-overlay';
 import { NexusProvider, useNexusContext } from '@/context/nexus-context';
 import { useAppContext } from '@/context/app-context';
 
@@ -33,6 +34,8 @@ function NexusScreenContent() {
     createNewConversation,
     setInputText,
     sendMessage,
+    closeSimulation,
+    getSimulation,
   } = useNexusContext();
 
   // Local UI state
@@ -148,6 +151,19 @@ function NexusScreenContent() {
         visible={nexusState.panelState === 'recruiting'}
         onClose={closePanel}
         onOpenRosterSandbox={openRoster}
+      />
+
+      {/* Simulation Overlay */}
+      <SimulationOverlay
+        simulation={
+          nexusState.activeSimulationId
+            ? getSimulation(nexusState.activeSimulationId) ?? null
+            : null
+        }
+        visible={nexusState.panelState === 'simulation'}
+        onClose={closeSimulation}
+        onSave={(sim) => console.log('Save simulation:', sim.id)}
+        onRerun={(sim) => console.log('Rerun simulation:', sim.id)}
       />
 
       {/* Avatar Drawer (opens from conversations panel) */}

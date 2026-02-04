@@ -4,8 +4,9 @@
  */
 
 import React, { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
-import type { NexusState, NexusPanelState, Conversation, Message } from '@/types';
+import type { NexusState, NexusPanelState, Conversation, Message, SimulationResult } from '@/types';
 import { MOCK_CONVERSATIONS, getMessagesForConversation } from '@/data/mock-nexus';
+import { detectSimulationIntent, generateMockSimulation } from '@/data/mock-simulations';
 
 // =============================================================================
 // DEFAULT STATE
@@ -18,6 +19,8 @@ const defaultState: NexusState = {
   panelState: 'closed',
   inputText: '',
   isLoading: false,
+  activeSimulationId: null,
+  simulations: {},
 };
 
 // =============================================================================
@@ -34,7 +37,10 @@ type NexusAction =
   | { type: 'SET_INPUT_TEXT'; payload: string }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SELECT_CONVERSATION'; payload: string }
-  | { type: 'NEW_CONVERSATION'; payload: Conversation };
+  | { type: 'NEW_CONVERSATION'; payload: Conversation }
+  | { type: 'ADD_SIMULATION'; payload: SimulationResult }
+  | { type: 'SET_ACTIVE_SIMULATION'; payload: string | null }
+  | { type: 'OPEN_SIMULATION'; payload: string };
 
 function nexusReducer(state: NexusState, action: NexusAction): NexusState {
   switch (action.type) {
@@ -97,6 +103,28 @@ function nexusReducer(state: NexusState, action: NexusAction): NexusState {
         panelState: 'closed',
       };
 
+    case 'ADD_SIMULATION':
+      return {
+        ...state,
+        simulations: {
+          ...state.simulations,
+          [action.payload.id]: action.payload,
+        },
+      };
+
+    case 'SET_ACTIVE_SIMULATION':
+      return {
+        ...state,
+        activeSimulationId: action.payload,
+      };
+
+    case 'OPEN_SIMULATION':
+      return {
+        ...state,
+        activeSimulationId: action.payload,
+        panelState: 'simulation',
+      };
+
     default:
       return state;
   }
@@ -120,6 +148,10 @@ interface NexusContextValue {
   // Message controls
   setInputText: (text: string) => void;
   sendMessage: () => void;
+  // Simulation controls
+  openSimulation: (id: string) => void;
+  closeSimulation: () => void;
+  getSimulation: (id: string) => SimulationResult | undefined;
 }
 
 const NexusContext = createContext<NexusContextValue | undefined>(undefined);
@@ -195,19 +227,67 @@ export function NexusProvider({ children }: NexusProviderProps) {
 
     dispatch({ type: 'ADD_MESSAGE', payload: userMessage });
     dispatch({ type: 'SET_INPUT_TEXT', payload: '' });
+    dispatch({ type: 'SET_LOADING', payload: true });
+
+    // Detect simulation intent
+    const simIntent = detectSimulationIntent(userMessage.content);
 
     // Simulate assistant response after a delay
     setTimeout(() => {
-      const assistantMessage: Message = {
-        id: `msg-${Date.now()}-assistant`,
-        conversationId: state.activeConversationId!,
-        role: 'assistant',
-        content: getSimulatedResponse(userMessage.content),
-        timestamp: new Date(),
-      };
-      dispatch({ type: 'ADD_MESSAGE', payload: assistantMessage });
-    }, 1000);
+      if (simIntent.isSimulation) {
+        // Generate simulation result
+        const simulation = generateMockSimulation(
+          'Lincoln University',
+          simIntent.opponent || 'Opponent'
+        );
+
+        // Store simulation
+        dispatch({ type: 'ADD_SIMULATION', payload: simulation });
+
+        // Create assistant message with simulation reference
+        const assistantMessage: Message = {
+          id: `msg-${Date.now()}-assistant`,
+          conversationId: state.activeConversationId!,
+          role: 'assistant',
+          content: `Here's my simulation analysis for the matchup against ${simIntent.opponent || 'the opponent'}:`,
+          timestamp: new Date(),
+          metadata: {
+            isSimulation: true,
+            simulationId: simulation.id,
+          },
+        };
+        dispatch({ type: 'ADD_MESSAGE', payload: assistantMessage });
+      } else {
+        // Regular response
+        const assistantMessage: Message = {
+          id: `msg-${Date.now()}-assistant`,
+          conversationId: state.activeConversationId!,
+          role: 'assistant',
+          content: getSimulatedResponse(userMessage.content),
+          timestamp: new Date(),
+        };
+        dispatch({ type: 'ADD_MESSAGE', payload: assistantMessage });
+      }
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }, 1500);
   }, [state.inputText, state.activeConversationId]);
+
+  // Simulation controls
+  const openSimulation = useCallback((id: string) => {
+    dispatch({ type: 'OPEN_SIMULATION', payload: id });
+  }, []);
+
+  const closeSimulation = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_SIMULATION', payload: null });
+    dispatch({ type: 'SET_PANEL_STATE', payload: 'closed' });
+  }, []);
+
+  const getSimulation = useCallback(
+    (id: string): SimulationResult | undefined => {
+      return state.simulations[id];
+    },
+    [state.simulations]
+  );
 
   const value: NexusContextValue = {
     state,
@@ -220,6 +300,9 @@ export function NexusProvider({ children }: NexusProviderProps) {
     createNewConversation,
     setInputText,
     sendMessage,
+    openSimulation,
+    closeSimulation,
+    getSimulation,
   };
 
   return <NexusContext.Provider value={value}>{children}</NexusContext.Provider>;
