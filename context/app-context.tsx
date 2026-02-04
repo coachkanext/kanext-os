@@ -1,10 +1,21 @@
 /**
  * KaNeXT OS Global App Context
  * Single source of truth for mode, organization, role, and cycle state.
+ * Includes AsyncStorage persistence for state across app restarts.
  */
 
-import React, { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, useEffect, ReactNode } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { AppContextState, Mode, Role, Organization, Cycle, Program } from '@/types';
+
+const STORAGE_KEY = '@kanext_app_state';
+
+// State shape for persistence (only save what's needed)
+interface PersistedState {
+  mode: Mode;
+  operatingRole: Role;
+  isFirstRun: boolean;
+}
 
 // =============================================================================
 // DEMO DATA
@@ -80,7 +91,7 @@ const DEMO_ROLES: Record<Mode, Role> = {
   sports: 'head_coach',
   enterprise: 'founder',
   church: 'member',
-  education: 'viewer',
+  education: 'faculty',
 };
 
 const DEMO_PROGRAM: Program = {
@@ -99,8 +110,8 @@ const defaultState: AppContextState = {
   operatingRole: DEMO_ROLES.sports,
   cycle: DEMO_CYCLES.sports,
   program: DEMO_PROGRAM,
-  isFirstRun: false, // Set to false for demo
-  isLoading: false,
+  isFirstRun: true, // Show onboarding on first launch
+  isLoading: true, // Start loading until persisted state is checked
 };
 
 // =============================================================================
@@ -109,18 +120,32 @@ const defaultState: AppContextState = {
 
 type AppAction =
   | { type: 'SET_MODE'; payload: Mode }
+  | { type: 'SWITCH_MODE'; payload: Mode } // Full mode switch with org/role/cycle update
   | { type: 'SET_ORGANIZATION'; payload: Organization | null }
   | { type: 'SET_ROLE'; payload: Role }
   | { type: 'SET_CYCLE'; payload: Cycle | null }
   | { type: 'SET_PROGRAM'; payload: Program | null }
   | { type: 'SET_FIRST_RUN'; payload: boolean }
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'INITIALIZE'; payload: Partial<AppContextState> };
+  | { type: 'INITIALIZE'; payload: Partial<AppContextState> }
+  | { type: 'RESTORE_STATE'; payload: PersistedState };
 
 function appReducer(state: AppContextState, action: AppAction): AppContextState {
   switch (action.type) {
     case 'SET_MODE':
       return { ...state, mode: action.payload };
+    case 'SWITCH_MODE': {
+      // Full mode switch - update organization, role, and cycle to match new mode
+      const newMode = action.payload;
+      return {
+        ...state,
+        mode: newMode,
+        organization: DEMO_ORGANIZATIONS[newMode],
+        operatingRole: DEMO_ROLES[newMode],
+        cycle: DEMO_CYCLES[newMode],
+        program: newMode === 'sports' ? DEMO_PROGRAM : null,
+      };
+    }
     case 'SET_ORGANIZATION':
       return { ...state, organization: action.payload };
     case 'SET_ROLE':
@@ -135,6 +160,20 @@ function appReducer(state: AppContextState, action: AppAction): AppContextState 
       return { ...state, isLoading: action.payload };
     case 'INITIALIZE':
       return { ...state, ...action.payload, isLoading: false };
+    case 'RESTORE_STATE': {
+      // Restore persisted state and fill in derived state
+      const { mode, operatingRole, isFirstRun } = action.payload;
+      return {
+        ...state,
+        mode,
+        organization: DEMO_ORGANIZATIONS[mode],
+        operatingRole,
+        cycle: DEMO_CYCLES[mode],
+        program: mode === 'sports' ? DEMO_PROGRAM : null,
+        isFirstRun,
+        isLoading: false,
+      };
+    }
     default:
       return state;
   }
@@ -147,12 +186,14 @@ function appReducer(state: AppContextState, action: AppAction): AppContextState 
 interface AppContextValue {
   state: AppContextState;
   setMode: (mode: Mode) => void;
+  switchMode: (mode: Mode) => void; // Full mode switch with org/role/cycle update
   setOrganization: (org: Organization | null) => void;
   setRole: (role: Role) => void;
   setCycle: (cycle: Cycle | null) => void;
   setProgram: (program: Program | null) => void;
   setFirstRun: (isFirstRun: boolean) => void;
   initialize: (initialState: Partial<AppContextState>) => void;
+  clearPersistedState: () => Promise<void>; // For testing/reset
 }
 
 const AppContext = createContext<AppContextValue | undefined>(undefined);
@@ -168,8 +209,50 @@ interface AppProviderProps {
 export function AppProvider({ children }: AppProviderProps) {
   const [state, dispatch] = useReducer(appReducer, defaultState);
 
+  // Load persisted state on mount
+  useEffect(() => {
+    const loadPersistedState = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const persisted: PersistedState = JSON.parse(stored);
+          dispatch({ type: 'RESTORE_STATE', payload: persisted });
+        } else {
+          // No stored state - first run, stop loading
+          dispatch({ type: 'SET_LOADING', payload: false });
+        }
+      } catch (error) {
+        console.error('Failed to load persisted state:', error);
+        dispatch({ type: 'SET_LOADING', payload: false });
+      }
+    };
+    loadPersistedState();
+  }, []);
+
+  // Persist state when relevant values change
+  useEffect(() => {
+    if (state.isLoading) return; // Don't save while loading
+    const persistState = async () => {
+      try {
+        const toPersist: PersistedState = {
+          mode: state.mode,
+          operatingRole: state.operatingRole,
+          isFirstRun: state.isFirstRun,
+        };
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toPersist));
+      } catch (error) {
+        console.error('Failed to persist state:', error);
+      }
+    };
+    persistState();
+  }, [state.mode, state.operatingRole, state.isFirstRun, state.isLoading]);
+
   const setMode = useCallback((mode: Mode) => {
     dispatch({ type: 'SET_MODE', payload: mode });
+  }, []);
+
+  const switchMode = useCallback((mode: Mode) => {
+    dispatch({ type: 'SWITCH_MODE', payload: mode });
   }, []);
 
   const setOrganization = useCallback((org: Organization | null) => {
@@ -196,15 +279,25 @@ export function AppProvider({ children }: AppProviderProps) {
     dispatch({ type: 'INITIALIZE', payload: initialState });
   }, []);
 
+  const clearPersistedState = useCallback(async () => {
+    try {
+      await AsyncStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to clear persisted state:', error);
+    }
+  }, []);
+
   const value: AppContextValue = {
     state,
     setMode,
+    switchMode,
     setOrganization,
     setRole,
     setCycle,
     setProgram,
     setFirstRun,
     initialize,
+    clearPersistedState,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

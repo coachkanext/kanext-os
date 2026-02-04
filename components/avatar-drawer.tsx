@@ -71,7 +71,7 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
-  const { state, setMode, setRole } = useAppContext();
+  const { state, switchMode, setRole } = useAppContext();
 
   const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -111,7 +111,7 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
   };
 
   const handleModeSelect = (mode: Mode) => {
-    setMode(mode);
+    switchMode(mode); // Full mode switch updates org, role, and cycle
   };
 
   const handleRoleSelect = (role: Role) => {
