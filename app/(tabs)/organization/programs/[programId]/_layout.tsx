@@ -21,6 +21,10 @@ export default function ProgramLayout() {
       <Stack.Screen name="index" />
       <Stack.Screen name="roster" />
       <Stack.Screen name="players/[playerId]" />
+      <Stack.Screen name="staff/index" />
+      <Stack.Screen name="staff/[staffId]" />
+      <Stack.Screen name="schedule" />
+      <Stack.Screen name="events/[eventId]" />
     </Stack>
   );
 }

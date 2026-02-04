@@ -198,8 +198,14 @@ export default function ProgramHomeScreen() {
       case 'roster':
         router.push(`/organization/programs/${programId}/roster`);
         break;
+      case 'staff':
+        router.push(`/organization/programs/${programId}/staff`);
+        break;
+      case 'schedule':
+        router.push(`/organization/programs/${programId}/schedule`);
+        break;
       default:
-        // Other sections will be implemented in later days
+        // Media section will be implemented later
         console.log(`Navigate to ${section} for program ${programId}`);
     }
   };
