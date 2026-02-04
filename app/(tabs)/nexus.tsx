@@ -16,7 +16,7 @@ import { InputBar } from '@/components/nexus/input-bar';
 import { ConversationsPanel } from '@/components/nexus/conversations-panel';
 import { ProgramContextDrawer } from '@/components/nexus/program-context-drawer';
 import { RosterOverlay } from '@/components/nexus/roster-overlay';
-import { RecruitingBoardOverlay } from '@/components/nexus/recruiting-board-overlay';
+import { RecruitingOverlay } from '@/components/nexus/recruiting-overlay';
 import { NexusProvider, useNexusContext } from '@/context/nexus-context';
 import { useAppContext } from '@/context/app-context';
 
@@ -144,9 +144,10 @@ function NexusScreenContent() {
       />
 
       {/* Right Overlay: Recruiting Board */}
-      <RecruitingBoardOverlay
+      <RecruitingOverlay
         visible={nexusState.panelState === 'recruiting'}
         onClose={closePanel}
+        onOpenRosterSandbox={openRoster}
       />
 
       {/* Avatar Drawer (opens from conversations panel) */}
