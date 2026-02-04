@@ -179,3 +179,67 @@ export interface NexusState {
   inputText: string;
   isLoading: boolean;
 }
+
+// =============================================================================
+// SEARCH
+// =============================================================================
+
+export type SearchResultCategory =
+  | 'organization'
+  | 'member'
+  | 'event'
+  | 'record'
+  | 'media'
+  | 'document'
+  | 'ministry'
+  | 'message';
+
+export interface SearchResult {
+  id: string;
+  title: string;
+  subtitle?: string;
+  category: SearchResultCategory;
+  mode: Mode;
+  route: string;
+  icon?: string;
+}
+
+// =============================================================================
+// ACTIVITY
+// =============================================================================
+
+export type ActivityType =
+  // Sports
+  | 'game_final'
+  | 'score_updated'
+  | 'schedule_updated'
+  | 'media_added'
+  | 'roster_published'
+  // Enterprise
+  | 'document_added'
+  | 'document_updated'
+  | 'scenario_saved'
+  | 'config_changed'
+  // Church
+  | 'message_posted'
+  | 'event_updated'
+  | 'ministry_updated'
+  | 'giving_updated'
+  // Education
+  | 'calendar_published'
+  | 'term_confirmed'
+  | 'leadership_updated';
+
+export interface ActivityItem {
+  id: string;
+  type: ActivityType;
+  title: string;
+  description: string;
+  timestamp: Date;
+  sourceType: 'organization' | 'event' | 'record' | 'media' | 'system';
+  sourceId: string;
+  route: string;
+  organizationId: string;
+  mode: Mode;
+  visibility: Role[];
+}
