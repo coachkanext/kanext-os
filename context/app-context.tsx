@@ -7,17 +7,100 @@ import React, { createContext, useContext, useReducer, useCallback, ReactNode } 
 import type { AppContextState, Mode, Role, Organization, Cycle, Program } from '@/types';
 
 // =============================================================================
+// DEMO DATA
+// =============================================================================
+
+const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
+  sports: {
+    id: 'lincoln-basketball',
+    name: 'Lincoln University',
+    mode: 'sports',
+    type: 'college_basketball',
+    location: 'Jefferson City, MO',
+    description: 'Lincoln University Blue Tigers Men\'s Basketball',
+  },
+  enterprise: {
+    id: 'kanext',
+    name: 'KaNeXT',
+    mode: 'enterprise',
+    type: 'llc',
+    location: 'Tennessee',
+    description: 'Institutional OS + Governed Intelligence Platform',
+  },
+  church: {
+    id: 'icc',
+    name: 'International Christian Center',
+    mode: 'church',
+    type: 'church',
+    location: 'Los Angeles, CA',
+    description: 'Inter-denominational, Pentecostal',
+  },
+  education: {
+    id: 'sdcc',
+    name: 'San Diego Christian College',
+    mode: 'education',
+    type: 'college',
+    location: 'San Diego County, CA',
+    description: 'Private Christian Liberal Arts College',
+  },
+};
+
+const DEMO_CYCLES: Record<Mode, Cycle> = {
+  sports: {
+    id: '2025-26',
+    name: '2025-26',
+    startDate: new Date('2025-10-01'),
+    endDate: new Date('2026-04-01'),
+    isCurrent: true,
+  },
+  enterprise: {
+    id: 'fy2025',
+    name: 'FY 2025',
+    startDate: new Date('2025-01-01'),
+    endDate: new Date('2025-12-31'),
+    isCurrent: true,
+  },
+  church: {
+    id: '2025',
+    name: '2025',
+    startDate: new Date('2025-01-01'),
+    endDate: new Date('2025-12-31'),
+    isCurrent: true,
+  },
+  education: {
+    id: '2025-26-academic',
+    name: '2025-2026 Academic Year',
+    startDate: new Date('2025-08-25'),
+    endDate: new Date('2026-05-15'),
+    isCurrent: true,
+  },
+};
+
+const DEMO_ROLES: Record<Mode, Role> = {
+  sports: 'head_coach',
+  enterprise: 'founder',
+  church: 'member',
+  education: 'viewer',
+};
+
+const DEMO_PROGRAM: Program = {
+  id: 'varsity',
+  name: 'Varsity',
+  level: 'varsity',
+};
+
+// =============================================================================
 // DEFAULT STATE
 // =============================================================================
 
 const defaultState: AppContextState = {
   mode: 'sports',
-  organization: null,
-  operatingRole: 'fan',
-  cycle: null,
-  program: null,
-  isFirstRun: true,
-  isLoading: true,
+  organization: DEMO_ORGANIZATIONS.sports,
+  operatingRole: DEMO_ROLES.sports,
+  cycle: DEMO_CYCLES.sports,
+  program: DEMO_PROGRAM,
+  isFirstRun: false, // Set to false for demo
+  isLoading: false,
 };
 
 // =============================================================================
