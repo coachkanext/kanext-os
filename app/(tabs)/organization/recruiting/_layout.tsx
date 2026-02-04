@@ -1,13 +1,13 @@
 /**
- * Organization Stack Layout
- * Handles navigation within the Organization tab.
+ * Recruiting Stack Layout
+ * Handles navigation within recruiting section (board, player pool, profiles).
  */
 
 import { Stack } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Colors } from '@/constants/theme';
 
-export default function OrganizationLayout() {
+export default function RecruitingLayout() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
 
@@ -19,18 +19,8 @@ export default function OrganizationLayout() {
       }}
     >
       <Stack.Screen name="index" />
-      <Stack.Screen
-        name="programs/[programId]"
-        options={{
-          presentation: 'card',
-        }}
-      />
-      <Stack.Screen
-        name="recruiting"
-        options={{
-          presentation: 'card',
-        }}
-      />
+      <Stack.Screen name="pool/index" />
+      <Stack.Screen name="pool/[playerId]" />
     </Stack>
   );
 }

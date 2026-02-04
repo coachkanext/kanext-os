@@ -145,6 +145,11 @@ function SportsOrganization() {
     router.push(`/organization/programs/${programId}`);
   };
 
+  const handleRecruitingPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/recruiting');
+  };
+
   return (
     <>
       {/* Institution Header */}
@@ -210,6 +215,28 @@ function SportsOrganization() {
           />
         ))}
       </View>
+
+      {/* Recruiting Section */}
+      <SectionHeader title="Recruiting" colors={colors} />
+      <Pressable
+        style={({ pressed }) => [
+          styles.recruitingCard,
+          { backgroundColor: colors.card, borderColor: colors.border },
+          pressed && { opacity: 0.8 },
+        ]}
+        onPress={handleRecruitingPress}
+      >
+        <View style={[styles.recruitingIcon, { backgroundColor: modeColors.primary + '15' }]}>
+          <IconSymbol name="person.badge.plus" size={24} color={modeColors.primary} />
+        </View>
+        <View style={styles.recruitingInfo}>
+          <ThemedText style={styles.recruitingTitle}>Recruiting Board</ThemedText>
+          <ThemedText style={[styles.recruitingSubtitle, { color: colors.textSecondary }]}>
+            Track prospects and manage pipeline
+          </ThemedText>
+        </View>
+        <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
+      </Pressable>
 
       {/* Leadership Section */}
       <SectionHeader title="Athletic Leadership" colors={colors} />
@@ -467,6 +494,34 @@ const styles = StyleSheet.create({
   programStatLabel: {
     fontSize: 11,
     marginTop: 1,
+  },
+
+  // Recruiting
+  recruitingCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+  },
+  recruitingIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Spacing.sm,
+  },
+  recruitingInfo: {
+    flex: 1,
+  },
+  recruitingTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  recruitingSubtitle: {
+    fontSize: 13,
+    marginTop: 2,
   },
 
   // Leadership

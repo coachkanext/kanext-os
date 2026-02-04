@@ -1058,3 +1058,387 @@ export function formatStatValue(value: number, decimals = 1): string {
 export function formatPercentage(value: number): string {
   return `${value.toFixed(1)}%`;
 }
+
+// =============================================================================
+// RECRUITING TYPES
+// =============================================================================
+
+export type Division = 'NCAA_D1' | 'NCAA_D2' | 'NCAA_D3' | 'NAIA' | 'NJCAA' | 'CCCAA';
+
+export interface NationalPlayer {
+  id: string;
+  name: string;
+  position: 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+  height: string;
+  weight: string;
+  classYear: 'FR' | 'SO' | 'JR' | 'SR' | 'GR';
+  currentTeam: string;
+  currentDivision: Division;
+  hometown: string;
+  stats: SeasonStats;
+  transferStatus?: 'available' | 'committed' | 'exploring';
+  graduatingYear?: number;
+}
+
+export type RecruitingStatus = 'watching' | 'priority' | 'contacted' | 'offered' | 'committed' | 'archived';
+export type RecruitingPriority = 'A' | 'B' | 'C';
+
+export interface RecruitingTarget {
+  id: string;
+  playerId: string;
+  player: NationalPlayer;
+  programId: string;
+  status: RecruitingStatus;
+  priority: RecruitingPriority;
+  fitPercent?: number;
+  notes?: string;
+  nextStep?: string;
+  nextStepDate?: Date;
+  assignedCoach?: string;
+  plannedScholarship?: number;
+  plannedNil?: number;
+  lastUpdated: Date;
+  addedDate: Date;
+}
+
+// =============================================================================
+// NATIONAL PLAYER POOL DATA
+// =============================================================================
+
+export const NATIONAL_PLAYERS: NationalPlayer[] = [
+  {
+    id: 'np-jaylen-brooks',
+    name: 'Jaylen Brooks',
+    position: 'PG',
+    height: '6\'1"',
+    weight: '175 lbs',
+    classYear: 'JR',
+    currentTeam: 'Central Methodist',
+    currentDivision: 'NAIA',
+    hometown: 'Kansas City, MO',
+    transferStatus: 'available',
+    stats: { gp: 28, gs: 28, mpg: 32.5, ppg: 18.4, rpg: 3.2, apg: 6.8, spg: 1.9, bpg: 0.1, fgPct: 44.2, threePct: 38.1, ftPct: 82.3 },
+  },
+  {
+    id: 'np-marcus-wells',
+    name: 'Marcus Wells',
+    position: 'SG',
+    height: '6\'4"',
+    weight: '195 lbs',
+    classYear: 'SR',
+    currentTeam: 'William Jewell',
+    currentDivision: 'NCAA_D2',
+    hometown: 'St. Louis, MO',
+    transferStatus: 'exploring',
+    stats: { gp: 30, gs: 30, mpg: 34.1, ppg: 16.2, rpg: 4.5, apg: 2.8, spg: 1.2, bpg: 0.3, fgPct: 46.8, threePct: 41.2, ftPct: 79.5 },
+  },
+  {
+    id: 'np-darius-coleman',
+    name: 'Darius Coleman',
+    position: 'SF',
+    height: '6\'6"',
+    weight: '210 lbs',
+    classYear: 'SO',
+    currentTeam: 'Drury',
+    currentDivision: 'NCAA_D2',
+    hometown: 'Springfield, MO',
+    transferStatus: 'available',
+    stats: { gp: 26, gs: 18, mpg: 25.3, ppg: 12.8, rpg: 5.9, apg: 1.4, spg: 0.8, bpg: 0.6, fgPct: 48.5, threePct: 35.6, ftPct: 71.2 },
+  },
+  {
+    id: 'np-tre-washington',
+    name: 'Tre Washington',
+    position: 'PF',
+    height: '6\'7"',
+    weight: '225 lbs',
+    classYear: 'JR',
+    currentTeam: 'Missouri S&T',
+    currentDivision: 'NCAA_D2',
+    hometown: 'Rolla, MO',
+    transferStatus: 'available',
+    stats: { gp: 29, gs: 29, mpg: 30.8, ppg: 14.6, rpg: 8.2, apg: 1.9, spg: 0.6, bpg: 1.4, fgPct: 52.1, threePct: 32.8, ftPct: 68.9 },
+  },
+  {
+    id: 'np-anthony-harris',
+    name: 'Anthony Harris',
+    position: 'C',
+    height: '6\'10"',
+    weight: '245 lbs',
+    classYear: 'SR',
+    currentTeam: 'Truman State',
+    currentDivision: 'NCAA_D2',
+    hometown: 'Columbia, MO',
+    transferStatus: 'exploring',
+    stats: { gp: 27, gs: 27, mpg: 28.4, ppg: 11.5, rpg: 9.1, apg: 1.1, spg: 0.4, bpg: 2.3, fgPct: 58.6, threePct: 0, ftPct: 65.4 },
+  },
+  {
+    id: 'np-kevin-jones',
+    name: 'Kevin Jones',
+    position: 'PG',
+    height: '5\'11"',
+    weight: '165 lbs',
+    classYear: 'FR',
+    currentTeam: 'State Fair CC',
+    currentDivision: 'NJCAA',
+    hometown: 'Sedalia, MO',
+    stats: { gp: 30, gs: 25, mpg: 28.2, ppg: 14.8, rpg: 2.8, apg: 5.4, spg: 2.1, bpg: 0.0, fgPct: 42.3, threePct: 36.5, ftPct: 78.9 },
+  },
+  {
+    id: 'np-chris-taylor',
+    name: 'Chris Taylor',
+    position: 'SG',
+    height: '6\'3"',
+    weight: '185 lbs',
+    classYear: 'SO',
+    currentTeam: 'Moberly Area CC',
+    currentDivision: 'NJCAA',
+    hometown: 'Moberly, MO',
+    stats: { gp: 32, gs: 32, mpg: 31.5, ppg: 19.2, rpg: 3.9, apg: 2.2, spg: 1.5, bpg: 0.2, fgPct: 45.8, threePct: 39.4, ftPct: 84.1 },
+  },
+  {
+    id: 'np-malik-brown',
+    name: 'Malik Brown',
+    position: 'SF',
+    height: '6\'5"',
+    weight: '200 lbs',
+    classYear: 'JR',
+    currentTeam: 'Northwest Missouri State',
+    currentDivision: 'NCAA_D2',
+    hometown: 'Maryville, MO',
+    transferStatus: 'available',
+    stats: { gp: 28, gs: 22, mpg: 26.7, ppg: 13.1, rpg: 4.8, apg: 2.1, spg: 1.1, bpg: 0.4, fgPct: 47.2, threePct: 37.8, ftPct: 76.3 },
+  },
+  {
+    id: 'np-devon-carter',
+    name: 'Devon Carter',
+    position: 'PF',
+    height: '6\'8"',
+    weight: '235 lbs',
+    classYear: 'GR',
+    currentTeam: 'UCM',
+    currentDivision: 'NCAA_D2',
+    hometown: 'Warrensburg, MO',
+    transferStatus: 'available',
+    stats: { gp: 31, gs: 31, mpg: 32.1, ppg: 15.8, rpg: 7.6, apg: 2.4, spg: 0.7, bpg: 1.1, fgPct: 51.4, threePct: 34.2, ftPct: 72.8 },
+  },
+  {
+    id: 'np-jermaine-scott',
+    name: 'Jermaine Scott',
+    position: 'C',
+    height: '6\'9"',
+    weight: '250 lbs',
+    classYear: 'SO',
+    currentTeam: 'Pittsburg State',
+    currentDivision: 'NCAA_D2',
+    hometown: 'Pittsburg, KS',
+    stats: { gp: 25, gs: 12, mpg: 18.6, ppg: 8.4, rpg: 6.2, apg: 0.8, spg: 0.3, bpg: 1.8, fgPct: 54.2, threePct: 0, ftPct: 62.1 },
+  },
+  {
+    id: 'np-isaiah-mitchell',
+    name: 'Isaiah Mitchell',
+    position: 'PG',
+    height: '6\'2"',
+    weight: '180 lbs',
+    classYear: 'JR',
+    currentTeam: 'Evangel',
+    currentDivision: 'NAIA',
+    hometown: 'Springfield, MO',
+    transferStatus: 'exploring',
+    stats: { gp: 29, gs: 29, mpg: 33.8, ppg: 16.9, rpg: 3.5, apg: 7.2, spg: 1.6, bpg: 0.1, fgPct: 43.5, threePct: 37.2, ftPct: 80.6 },
+  },
+  {
+    id: 'np-xavier-green',
+    name: 'Xavier Green',
+    position: 'SG',
+    height: '6\'5"',
+    weight: '205 lbs',
+    classYear: 'SR',
+    currentTeam: 'Missouri Western',
+    currentDivision: 'NCAA_D2',
+    hometown: 'St. Joseph, MO',
+    transferStatus: 'available',
+    stats: { gp: 30, gs: 28, mpg: 29.4, ppg: 14.7, rpg: 4.2, apg: 3.1, spg: 1.3, bpg: 0.5, fgPct: 45.9, threePct: 40.1, ftPct: 81.2 },
+  },
+];
+
+// =============================================================================
+// RECRUITING BOARD DATA
+// =============================================================================
+
+export const RECRUITING_TARGETS: RecruitingTarget[] = [
+  {
+    id: 'rt-jaylen-brooks',
+    playerId: 'np-jaylen-brooks',
+    player: NATIONAL_PLAYERS.find((p) => p.id === 'np-jaylen-brooks')!,
+    programId: 'mbb-varsity',
+    status: 'priority',
+    priority: 'A',
+    fitPercent: 92,
+    notes: 'Elite ball-handler with court vision. Would immediately compete for starting PG role.',
+    nextStep: 'Schedule campus visit',
+    nextStepDate: new Date('2026-02-15'),
+    assignedCoach: 'Coach Thompson',
+    plannedScholarship: 100,
+    plannedNil: 15000,
+    lastUpdated: new Date('2026-02-03'),
+    addedDate: new Date('2026-01-10'),
+  },
+  {
+    id: 'rt-marcus-wells',
+    playerId: 'np-marcus-wells',
+    player: NATIONAL_PLAYERS.find((p) => p.id === 'np-marcus-wells')!,
+    programId: 'mbb-varsity',
+    status: 'contacted',
+    priority: 'A',
+    fitPercent: 88,
+    notes: 'Proven scorer at D2 level. Great 3-point shooting would stretch the floor.',
+    nextStep: 'Follow up call',
+    nextStepDate: new Date('2026-02-10'),
+    assignedCoach: 'Coach Williams',
+    plannedScholarship: 75,
+    plannedNil: 12000,
+    lastUpdated: new Date('2026-02-01'),
+    addedDate: new Date('2026-01-15'),
+  },
+  {
+    id: 'rt-darius-coleman',
+    playerId: 'np-darius-coleman',
+    player: NATIONAL_PLAYERS.find((p) => p.id === 'np-darius-coleman')!,
+    programId: 'mbb-varsity',
+    status: 'watching',
+    priority: 'B',
+    fitPercent: 78,
+    notes: 'Versatile wing with length. Still developing but high ceiling.',
+    lastUpdated: new Date('2026-01-28'),
+    addedDate: new Date('2026-01-20'),
+  },
+  {
+    id: 'rt-tre-washington',
+    playerId: 'np-tre-washington',
+    player: NATIONAL_PLAYERS.find((p) => p.id === 'np-tre-washington')!,
+    programId: 'mbb-varsity',
+    status: 'offered',
+    priority: 'A',
+    fitPercent: 85,
+    notes: 'Physical presence inside. Double-double machine who can protect the rim.',
+    nextStep: 'Awaiting decision',
+    assignedCoach: 'Coach Thompson',
+    plannedScholarship: 100,
+    plannedNil: 18000,
+    lastUpdated: new Date('2026-02-04'),
+    addedDate: new Date('2025-12-01'),
+  },
+  {
+    id: 'rt-chris-taylor',
+    playerId: 'np-chris-taylor',
+    player: NATIONAL_PLAYERS.find((p) => p.id === 'np-chris-taylor')!,
+    programId: 'mbb-varsity',
+    status: 'priority',
+    priority: 'B',
+    fitPercent: 82,
+    notes: 'Pure scorer from JUCO. Needs to improve defense but offensive upside is significant.',
+    nextStep: 'In-home visit',
+    nextStepDate: new Date('2026-02-12'),
+    assignedCoach: 'Coach Williams',
+    plannedScholarship: 100,
+    plannedNil: 10000,
+    lastUpdated: new Date('2026-02-02'),
+    addedDate: new Date('2026-01-05'),
+  },
+  {
+    id: 'rt-malik-brown',
+    playerId: 'np-malik-brown',
+    player: NATIONAL_PLAYERS.find((p) => p.id === 'np-malik-brown')!,
+    programId: 'mbb-varsity',
+    status: 'watching',
+    priority: 'C',
+    fitPercent: 71,
+    notes: 'Solid all-around player. Good depth option if primary targets fall through.',
+    lastUpdated: new Date('2026-01-25'),
+    addedDate: new Date('2026-01-22'),
+  },
+  {
+    id: 'rt-devon-carter',
+    playerId: 'np-devon-carter',
+    player: NATIONAL_PLAYERS.find((p) => p.id === 'np-devon-carter')!,
+    programId: 'mbb-varsity',
+    status: 'contacted',
+    priority: 'B',
+    fitPercent: 80,
+    notes: 'Graduate transfer with one year of eligibility. Immediate impact player.',
+    nextStep: 'Send offer',
+    nextStepDate: new Date('2026-02-08'),
+    assignedCoach: 'Coach Thompson',
+    plannedScholarship: 50,
+    plannedNil: 8000,
+    lastUpdated: new Date('2026-02-01'),
+    addedDate: new Date('2026-01-18'),
+  },
+];
+
+// =============================================================================
+// RECRUITING HELPERS
+// =============================================================================
+
+export function getNationalPlayers(): NationalPlayer[] {
+  return NATIONAL_PLAYERS;
+}
+
+export function getNationalPlayerById(playerId: string): NationalPlayer | undefined {
+  return NATIONAL_PLAYERS.find((p) => p.id === playerId);
+}
+
+export function getRecruitingTargets(programId?: string): RecruitingTarget[] {
+  if (programId) {
+    return RECRUITING_TARGETS.filter((t) => t.programId === programId);
+  }
+  return RECRUITING_TARGETS;
+}
+
+export function getRecruitingTargetsByStatus(status: RecruitingStatus, programId?: string): RecruitingTarget[] {
+  return getRecruitingTargets(programId).filter((t) => t.status === status);
+}
+
+export function getRecruitingTargetsByPriority(priority: RecruitingPriority, programId?: string): RecruitingTarget[] {
+  return getRecruitingTargets(programId).filter((t) => t.priority === priority);
+}
+
+export function getRecruitingTargetForPlayer(playerId: string, programId?: string): RecruitingTarget | undefined {
+  return getRecruitingTargets(programId).find((t) => t.playerId === playerId);
+}
+
+export function getDivisionLabel(division: Division): string {
+  const labels: Record<Division, string> = {
+    NCAA_D1: 'NCAA D1',
+    NCAA_D2: 'NCAA D2',
+    NCAA_D3: 'NCAA D3',
+    NAIA: 'NAIA',
+    NJCAA: 'JUCO',
+    CCCAA: 'CCCAA',
+  };
+  return labels[division];
+}
+
+export function getRecruitingStatusLabel(status: RecruitingStatus): string {
+  const labels: Record<RecruitingStatus, string> = {
+    watching: 'Watching',
+    priority: 'Priority',
+    contacted: 'Contacted',
+    offered: 'Offered',
+    committed: 'Committed',
+    archived: 'Archived',
+  };
+  return labels[status];
+}
+
+export function getRecruitingStatusColor(status: RecruitingStatus): string {
+  const colors: Record<RecruitingStatus, string> = {
+    watching: '#6C757D',
+    priority: '#E07C24',
+    contacted: '#0D6EFD',
+    offered: '#6F42C1',
+    committed: '#198754',
+    archived: '#ADB5BD',
+  };
+  return colors[status];
+}
