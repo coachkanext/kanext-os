@@ -131,6 +131,18 @@ const MAPPING = {
   'camera.fill': 'camera-alt',
   'bubble.left.fill': 'chat',
   'arrow.up.right': 'open-in-new',
+
+  // Education / Archive Icons
+  'archivebox': 'inventory-2',
+  'archivebox.fill': 'inventory-2',
+  'person.fill.questionmark': 'help-outline',
+  'person.badge.shield.checkmark.fill': 'verified-user',
+  'person.fill.checkmark': 'how-to-reg',
+  'calendar.badge.plus': 'event',
+  'stop.fill': 'stop',
+  'checkmark.seal.fill': 'verified',
+  'sun.max.fill': 'wb-sunny',
+  'exclamationmark.triangle': 'warning-amber',
 } as IconMapping;
 
 export type IconSymbolName = keyof typeof MAPPING;

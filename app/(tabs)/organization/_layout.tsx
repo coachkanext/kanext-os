@@ -117,6 +117,24 @@ export default function OrganizationLayout() {
           presentation: 'card',
         }}
       />
+      <Stack.Screen
+        name="archive"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="events/[eventId]"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="members/[memberId]"
+        options={{
+          presentation: 'card',
+        }}
+      />
     </Stack>
   );
 }

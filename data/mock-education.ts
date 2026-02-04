@@ -36,6 +36,63 @@ export const SDCC_ORGANIZATION: EducationOrganization = {
 // =============================================================================
 
 export const ACADEMIC_TERMS: AcademicTerm[] = [
+  // 2023-2024 Academic Year (Archived)
+  {
+    id: 'term-fall-2023',
+    name: 'Fall 2023',
+    type: 'fall',
+    academicYear: '2023-2024',
+    startDate: new Date('2023-08-28'),
+    endDate: new Date('2023-12-15'),
+    status: 'completed',
+  },
+  {
+    id: 'term-spring-2024',
+    name: 'Spring 2024',
+    type: 'spring',
+    academicYear: '2023-2024',
+    startDate: new Date('2024-01-15'),
+    endDate: new Date('2024-05-10'),
+    status: 'completed',
+  },
+  {
+    id: 'term-summer-2024',
+    name: 'Summer 2024',
+    type: 'summer',
+    academicYear: '2023-2024',
+    startDate: new Date('2024-05-27'),
+    endDate: new Date('2024-08-16'),
+    status: 'completed',
+  },
+  // 2024-2025 Academic Year (Archived)
+  {
+    id: 'term-fall-2024',
+    name: 'Fall 2024',
+    type: 'fall',
+    academicYear: '2024-2025',
+    startDate: new Date('2024-08-26'),
+    endDate: new Date('2024-12-13'),
+    status: 'completed',
+  },
+  {
+    id: 'term-spring-2025',
+    name: 'Spring 2025',
+    type: 'spring',
+    academicYear: '2024-2025',
+    startDate: new Date('2025-01-13'),
+    endDate: new Date('2025-05-09'),
+    status: 'completed',
+  },
+  {
+    id: 'term-summer-2025',
+    name: 'Summer 2025',
+    type: 'summer',
+    academicYear: '2024-2025',
+    startDate: new Date('2025-05-26'),
+    endDate: new Date('2025-08-15'),
+    status: 'completed',
+  },
+  // 2025-2026 Academic Year (Current)
   {
     id: 'term-fall-2025',
     name: 'Fall 2025',
@@ -63,6 +120,7 @@ export const ACADEMIC_TERMS: AcademicTerm[] = [
     endDate: new Date('2026-08-14'),
     status: 'upcoming',
   },
+  // 2026-2027 Academic Year (Upcoming)
   {
     id: 'term-fall-2026',
     name: 'Fall 2026',
@@ -442,4 +500,65 @@ export function getFacultyRoleLabel(role: FacultyMember['role']): string {
     staff: 'Staff',
   };
   return labels[role] || role;
+}
+
+// =============================================================================
+// ACADEMIC YEAR ARCHIVE
+// =============================================================================
+
+export interface AcademicYearSummary {
+  year: string; // e.g., "2024-2025"
+  terms: AcademicTerm[];
+  enrollment: number;
+  graduationRate: number;
+  graduates: number;
+  highlights: string[];
+}
+
+export const ACADEMIC_YEAR_ARCHIVE: AcademicYearSummary[] = [
+  {
+    year: '2023-2024',
+    terms: ACADEMIC_TERMS.filter((t) => t.academicYear === '2023-2024'),
+    enrollment: 856,
+    graduationRate: 52,
+    graduates: 178,
+    highlights: [
+      'Launched new Master of Divinity program',
+      'Achieved WSCUC reaccreditation',
+      'Campus chapel renovation completed',
+    ],
+  },
+  {
+    year: '2024-2025',
+    terms: ACADEMIC_TERMS.filter((t) => t.academicYear === '2024-2025'),
+    enrollment: 872,
+    graduationRate: 53,
+    graduates: 184,
+    highlights: [
+      'Record enrollment growth of 1.9%',
+      'New online learning platform launched',
+      'Partnership with local churches expanded',
+    ],
+  },
+];
+
+export function getAcademicYears(): string[] {
+  const years = new Set(ACADEMIC_TERMS.map((t) => t.academicYear));
+  return Array.from(years).sort().reverse();
+}
+
+export function getTermsForYear(year: string): AcademicTerm[] {
+  return ACADEMIC_TERMS.filter((t) => t.academicYear === year);
+}
+
+export function getArchivedYears(): AcademicYearSummary[] {
+  return ACADEMIC_YEAR_ARCHIVE.sort((a, b) => b.year.localeCompare(a.year));
+}
+
+export function getAcademicYearSummary(year: string): AcademicYearSummary | undefined {
+  return ACADEMIC_YEAR_ARCHIVE.find((a) => a.year === year);
+}
+
+export function getFacultyById(id: string): FacultyMember | undefined {
+  return FACULTY_LEADERSHIP.find((f) => f.id === id);
 }

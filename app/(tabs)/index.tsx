@@ -521,6 +521,17 @@ function EducationHome() {
           router.push('/organization/metrics');
         }}
       />
+      <ActionCard
+        title="Archive"
+        subtitle="Past academic years"
+        icon="archivebox.fill"
+        color={modeColors.primary}
+        colors={colors}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/organization/archive');
+        }}
+      />
     </>
   );
 }
