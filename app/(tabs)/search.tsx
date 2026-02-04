@@ -106,9 +106,7 @@ export default function SearchScreen() {
 
   const handleResultPress = (result: SearchResult) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // For now, just log the route - navigation will work when routes exist
-    console.log('Navigate to:', result.route);
-    // router.push(result.route as any);
+    router.push(result.route as any);
   };
 
   const renderItem = ({ item }: { item: SearchResult }) => (

@@ -19,14 +19,14 @@ const SPORTS_RESULTS: SearchResult[] = [
     mode: 'sports',
     route: '/organization',
   },
-  // Members (Players)
+  // Members (Players) - route to program players
   {
     id: 'player-johnson',
     title: 'Marcus Johnson',
     subtitle: 'PG • #1 • Senior',
     category: 'member',
     mode: 'sports',
-    route: '/organization/players/player-johnson',
+    route: '/organization/programs/varsity/players/player-johnson',
   },
   {
     id: 'player-williams',
@@ -34,7 +34,7 @@ const SPORTS_RESULTS: SearchResult[] = [
     subtitle: 'C • #32 • Junior',
     category: 'member',
     mode: 'sports',
-    route: '/organization/players/player-williams',
+    route: '/organization/programs/varsity/players/player-williams',
   },
   {
     id: 'player-garcia',
@@ -42,7 +42,7 @@ const SPORTS_RESULTS: SearchResult[] = [
     subtitle: 'SG • #24 • Sophomore',
     category: 'member',
     mode: 'sports',
-    route: '/organization/players/player-garcia',
+    route: '/organization/programs/varsity/players/player-garcia',
   },
   {
     id: 'player-thompson',
@@ -50,16 +50,16 @@ const SPORTS_RESULTS: SearchResult[] = [
     subtitle: 'SF • #15 • Freshman',
     category: 'member',
     mode: 'sports',
-    route: '/organization/players/player-thompson',
+    route: '/organization/programs/varsity/players/player-thompson',
   },
-  // Members (Staff)
+  // Members (Staff) - route to program staff
   {
     id: 'coach-davis',
     title: 'Coach James Davis',
     subtitle: 'Head Coach',
     category: 'member',
     mode: 'sports',
-    route: '/organization/staff/coach-davis',
+    route: '/organization/programs/varsity/staff/coach-davis',
   },
   {
     id: 'coach-mitchell',
@@ -67,16 +67,16 @@ const SPORTS_RESULTS: SearchResult[] = [
     subtitle: 'Assistant Coach',
     category: 'member',
     mode: 'sports',
-    route: '/organization/staff/coach-mitchell',
+    route: '/organization/programs/varsity/staff/coach-mitchell',
   },
-  // Events
+  // Events - route to program events
   {
     id: 'game-simpson',
     title: 'vs Simpson College',
     subtitle: 'Feb 8, 2026 • Home',
     category: 'event',
     mode: 'sports',
-    route: '/organization/events/game-simpson',
+    route: '/organization/programs/varsity/events/game-simpson',
   },
   {
     id: 'game-central',
@@ -84,7 +84,7 @@ const SPORTS_RESULTS: SearchResult[] = [
     subtitle: 'Feb 15, 2026 • Away',
     category: 'event',
     mode: 'sports',
-    route: '/organization/events/game-central',
+    route: '/organization/programs/varsity/events/game-central',
   },
   {
     id: 'tournament-conf',
@@ -92,7 +92,7 @@ const SPORTS_RESULTS: SearchResult[] = [
     subtitle: 'Mar 4-7, 2026 • Neutral',
     category: 'event',
     mode: 'sports',
-    route: '/organization/events/tournament-conf',
+    route: '/organization/programs/varsity/events/tournament-conf',
   },
   // Records
   {
@@ -118,7 +118,7 @@ const SPORTS_RESULTS: SearchResult[] = [
     subtitle: 'Video • YouTube',
     category: 'media',
     mode: 'sports',
-    route: '/organization/media/media-highlights',
+    route: '/organization/programs/varsity/media',
   },
 ];
 
@@ -136,39 +136,57 @@ const ENTERPRISE_RESULTS: SearchResult[] = [
     mode: 'enterprise',
     route: '/organization',
   },
-  // Members
+  // Members - route to leadership
   {
-    id: 'member-founder',
-    title: 'Samuel Jenkins',
-    subtitle: 'Founder',
+    id: 'board-1',
+    title: 'Marcus Thompson',
+    subtitle: 'Founder & CEO',
     category: 'member',
     mode: 'enterprise',
-    route: '/organization/members/member-founder',
+    route: '/organization/leadership',
   },
-  // Documents
   {
-    id: 'doc-pitch',
-    title: 'Investor Deck',
+    id: 'board-2',
+    title: 'Dr. Sarah Chen',
+    subtitle: 'Board Member • Horizon Ventures',
+    category: 'member',
+    mode: 'enterprise',
+    route: '/organization/governance',
+  },
+  // Documents - route to documents screen
+  {
+    id: 'doc-1',
+    title: 'Series Seed Pitch Deck',
     subtitle: 'Investor Materials • Updated Jan 2026',
     category: 'document',
     mode: 'enterprise',
-    route: '/organization/documents/doc-pitch',
+    route: '/organization/documents',
   },
   {
-    id: 'doc-roadmap',
-    title: 'Product Roadmap',
-    subtitle: 'Roadmap • Updated Feb 2026',
+    id: 'doc-11',
+    title: '2026 Product Roadmap',
+    subtitle: 'Roadmap • Updated Jan 2026',
     category: 'document',
     mode: 'enterprise',
-    route: '/organization/documents/doc-roadmap',
+    route: '/organization/documents',
   },
+  // Domains
   {
-    id: 'doc-governance',
-    title: 'Operating Agreement',
-    subtitle: 'Governance • Tennessee LLC',
-    category: 'document',
+    id: 'domain-sports',
+    title: 'Sports Domain',
+    subtitle: 'Active • Athletic Programs',
+    category: 'record',
     mode: 'enterprise',
-    route: '/organization/documents/doc-governance',
+    route: '/organization/domains',
+  },
+  // Metrics
+  {
+    id: 'metrics-mrr',
+    title: 'Company Metrics',
+    subtitle: 'MRR, Growth, Runway',
+    category: 'record',
+    mode: 'enterprise',
+    route: '/organization/metrics',
   },
 ];
 
@@ -188,18 +206,43 @@ const CHURCH_RESULTS: SearchResult[] = [
   },
   // Members (Leadership)
   {
-    id: 'pastor-richards',
-    title: 'Pastor David Richards',
+    id: 'leader-1',
+    title: 'Pastor Michael Johnson',
     subtitle: 'Senior Pastor',
     category: 'member',
     mode: 'church',
-    route: '/organization/members/pastor-richards',
+    route: '/organization/leadership',
+  },
+  {
+    id: 'leader-2',
+    title: 'Pastor Sarah Chen',
+    subtitle: 'Associate Pastor',
+    category: 'member',
+    mode: 'church',
+    route: '/organization/leadership',
+  },
+  // Campuses
+  {
+    id: 'iccla',
+    title: 'ICC Los Angeles',
+    subtitle: '2361 W. 76th Street',
+    category: 'organization',
+    mode: 'church',
+    route: '/organization/campuses/iccla',
+  },
+  {
+    id: 'iccie',
+    title: 'ICC Inland Empire',
+    subtitle: '1234 Mission Blvd, Ontario',
+    category: 'organization',
+    mode: 'church',
+    route: '/organization/campuses/iccie',
   },
   // Ministries
   {
     id: 'ministry-youth',
-    title: 'Youth Ministry',
-    subtitle: 'Teens & Young Adults',
+    title: 'Teens/Youth',
+    subtitle: 'Youth Ministry',
     category: 'ministry',
     mode: 'church',
     route: '/organization/ministries/ministry-youth',
@@ -207,36 +250,45 @@ const CHURCH_RESULTS: SearchResult[] = [
   {
     id: 'ministry-children',
     title: 'Children\'s Church',
-    subtitle: 'Ages 0-12',
+    subtitle: 'Ages 2-12',
     category: 'ministry',
     mode: 'church',
     route: '/organization/ministries/ministry-children',
   },
   {
-    id: 'ministry-hotline',
+    id: 'ministry-prayer',
     title: 'Hotline to Heaven',
-    subtitle: 'Prayer Support',
+    subtitle: 'Prayer Ministry',
     category: 'ministry',
     mode: 'church',
-    route: '/organization/ministries/ministry-hotline',
+    route: '/organization/ministries/ministry-prayer',
   },
   // Messages
   {
-    id: 'message-recent',
+    id: 'msg-1',
     title: 'Walking in Faith',
     subtitle: 'Sunday Message • Feb 2, 2026',
     category: 'message',
     mode: 'church',
-    route: '/organization/messages/message-recent',
+    route: '/organization/messages',
   },
-  // Events
+  // Giving
   {
-    id: 'event-sunday',
-    title: 'Sunday Service',
-    subtitle: 'Every Sunday • 10:00 AM',
-    category: 'event',
+    id: 'giving',
+    title: 'Give Online',
+    subtitle: 'Tithes, Offerings, Missions',
+    category: 'record',
     mode: 'church',
-    route: '/organization/events/event-sunday',
+    route: '/organization/giving',
+  },
+  // Connect
+  {
+    id: 'connect',
+    title: 'Connect With Us',
+    subtitle: 'New Here? Start Here',
+    category: 'record',
+    mode: 'church',
+    route: '/organization/connect',
   },
 ];
 
@@ -254,39 +306,47 @@ const EDUCATION_RESULTS: SearchResult[] = [
     mode: 'education',
     route: '/organization',
   },
-  // Members
+  // Members (Faculty)
   {
-    id: 'member-president',
+    id: 'faculty-1',
     title: 'Dr. Elizabeth Hart',
     subtitle: 'President',
     category: 'member',
     mode: 'education',
-    route: '/organization/members/member-president',
+    route: '/organization/members/faculty-1',
   },
   {
-    id: 'member-dean',
+    id: 'faculty-2',
     title: 'Dr. Michael Chen',
-    subtitle: 'Dean of Academic Affairs',
+    subtitle: 'Provost & VP Academic Affairs',
     category: 'member',
     mode: 'education',
-    route: '/organization/members/member-dean',
-  },
-  // Events
-  {
-    id: 'event-spring-start',
-    title: 'Spring Semester Begins',
-    subtitle: 'Jan 13, 2026',
-    category: 'event',
-    mode: 'education',
-    route: '/organization/events/event-spring-start',
+    route: '/organization/members/faculty-2',
   },
   {
-    id: 'event-commencement',
-    title: 'Commencement 2026',
-    subtitle: 'May 15, 2026',
+    id: 'faculty-3',
+    title: 'Dr. Sarah Williams',
+    subtitle: 'Dean of Students',
+    category: 'member',
+    mode: 'education',
+    route: '/organization/members/faculty-3',
+  },
+  // Events - Terms
+  {
+    id: 'term-spring-2026',
+    title: 'Spring 2026',
+    subtitle: 'Jan 13 - May 12, 2026',
     category: 'event',
     mode: 'education',
-    route: '/organization/events/event-commencement',
+    route: '/organization/events/term-spring-2026',
+  },
+  {
+    id: 'term-fall-2025',
+    title: 'Fall 2025',
+    subtitle: 'Aug 26 - Dec 15, 2025',
+    category: 'event',
+    mode: 'education',
+    route: '/organization/events/term-fall-2025',
   },
   // Records
   {
@@ -296,6 +356,23 @@ const EDUCATION_RESULTS: SearchResult[] = [
     category: 'record',
     mode: 'education',
     route: '/organization/schedule',
+  },
+  {
+    id: 'archive',
+    title: 'Academic Archive',
+    subtitle: 'Past Years & History',
+    category: 'record',
+    mode: 'education',
+    route: '/organization/archive',
+  },
+  // Leadership
+  {
+    id: 'leadership',
+    title: 'Faculty & Leadership',
+    subtitle: 'Administration & Staff',
+    category: 'record',
+    mode: 'education',
+    route: '/organization/leadership',
   },
 ];
 
