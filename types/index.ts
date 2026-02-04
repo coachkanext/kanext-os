@@ -240,15 +240,61 @@ export interface EnterpriseOrganization extends Organization {
 // CHURCH MODE
 // =============================================================================
 
+export interface ServiceTime {
+  day: string;
+  time: string;
+  service: string;
+  campusId?: string;
+}
+
 export interface Campus {
   id: string;
   name: string;
+  shortName: string;
   location: string;
+  address?: string;
+  serviceTimes: ServiceTime[];
+  description?: string;
+}
+
+export type MinistryType = 'childrens' | 'youth' | 'singles' | 'prayer' | 'outreach' | 'worship' | 'missions';
+
+export interface Ministry {
+  id: string;
+  name: string;
+  description?: string;
+  type: MinistryType;
+  icon?: string;
+  accessMethods?: string[];
+}
+
+export interface ChurchMessage {
+  id: string;
+  title: string;
+  speaker: string;
+  date: Date;
+  mediaType: 'video' | 'audio';
+  externalUrl?: string;
+  seriesName?: string;
+  duration?: string;
+}
+
+export type GivingType = 'tithe' | 'offering' | 'donation' | 'fundraiser' | 'missions';
+
+export interface GivingOption {
+  id: string;
+  type: GivingType;
+  name: string;
+  description?: string;
+  externalUrl?: string;
 }
 
 export interface ChurchOrganization extends Organization {
   denomination: string;
   campuses: Campus[];
+  ministries?: Ministry[];
+  serviceTimes?: ServiceTime[];
+  givingOptions?: GivingOption[];
 }
 
 // =============================================================================

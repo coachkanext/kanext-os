@@ -34,7 +34,14 @@ import {
   formatCurrency,
   getDomainStatusColor,
 } from '@/data/mock-enterprise';
-import type { BoardMember, Domain } from '@/types';
+import {
+  ICC_ORGANIZATION,
+  CAMPUSES,
+  MINISTRIES,
+  CHURCH_LEADERSHIP,
+  formatServiceTime,
+} from '@/data/mock-church';
+import type { BoardMember, Domain, Campus, Ministry, ServiceTime } from '@/types';
 
 // =============================================================================
 // SPORTS MODE COMPONENTS
@@ -574,6 +581,276 @@ function EnterpriseOrganization() {
 }
 
 // =============================================================================
+// CHURCH MODE COMPONENTS
+// =============================================================================
+
+interface CampusCardProps {
+  campus: Campus;
+  colors: typeof Colors.light;
+  accentColor: string;
+  onPress: () => void;
+}
+
+function CampusCard({ campus, colors, accentColor, onPress }: CampusCardProps) {
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.campusCard,
+        { backgroundColor: colors.card, borderColor: colors.border },
+        pressed && { opacity: 0.8 },
+      ]}
+      onPress={onPress}
+    >
+      <View style={styles.campusHeader}>
+        <View style={[styles.campusBadge, { backgroundColor: accentColor }]}>
+          <ThemedText style={styles.campusBadgeText}>{campus.shortName}</ThemedText>
+        </View>
+        <View style={styles.campusInfo}>
+          <ThemedText style={styles.campusName}>{campus.name}</ThemedText>
+          <ThemedText style={[styles.campusLocation, { color: colors.textSecondary }]}>
+            {campus.location}
+          </ThemedText>
+        </View>
+        <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
+      </View>
+      {campus.serviceTimes.length > 0 && (
+        <View style={styles.campusServices}>
+          {campus.serviceTimes.slice(0, 2).map((service, index) => (
+            <ThemedText
+              key={index}
+              style={[styles.campusServiceText, { color: colors.textTertiary }]}
+            >
+              {formatServiceTime(service)}
+            </ThemedText>
+          ))}
+        </View>
+      )}
+    </Pressable>
+  );
+}
+
+interface MinistryRowProps {
+  ministry: Ministry;
+  colors: typeof Colors.light;
+  accentColor: string;
+  onPress: () => void;
+}
+
+function MinistryRow({ ministry, colors, accentColor, onPress }: MinistryRowProps) {
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.ministryRow,
+        pressed && { backgroundColor: colors.backgroundSecondary },
+      ]}
+      onPress={onPress}
+    >
+      <View style={[styles.ministryIcon, { backgroundColor: accentColor + '15' }]}>
+        <IconSymbol name={ministry.icon as any || 'heart.fill'} size={18} color={accentColor} />
+      </View>
+      <View style={styles.ministryInfo}>
+        <ThemedText style={styles.ministryName}>{ministry.name}</ThemedText>
+        {ministry.description && (
+          <ThemedText style={[styles.ministryDesc, { color: colors.textSecondary }]} numberOfLines={1}>
+            {ministry.description}
+          </ThemedText>
+        )}
+      </View>
+      <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+    </Pressable>
+  );
+}
+
+// =============================================================================
+// CHURCH MODE CONTENT
+// =============================================================================
+
+function ChurchOrganization() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const router = useRouter();
+  const modeColors = ModeColors.church;
+
+  const handleCampusPress = (campusId: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push(`/organization/campuses/${campusId}`);
+  };
+
+  const handleCampusesPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/campuses');
+  };
+
+  const handleMinistriesPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/ministries');
+  };
+
+  const handleMinistryPress = (ministryId: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push(`/organization/ministries/${ministryId}`);
+  };
+
+  const handleMessagesPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/messages');
+  };
+
+  const handleGivingPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/giving');
+  };
+
+  const handleConnectPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/organization/connect');
+  };
+
+  return (
+    <>
+      {/* Church Header */}
+      <View style={styles.institutionHeader}>
+        <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
+          <IconSymbol name="heart.fill" size={28} color="#FFFFFF" />
+        </View>
+        <View style={styles.institutionInfo}>
+          <ThemedText style={styles.institutionName}>{ICC_ORGANIZATION.name}</ThemedText>
+          <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
+            {ICC_ORGANIZATION.denomination}
+          </ThemedText>
+          <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
+            {CAMPUSES.length} Campuses • {ICC_ORGANIZATION.location}
+          </ThemedText>
+        </View>
+      </View>
+
+      {/* Quick Actions */}
+      <View style={styles.quickLinksGrid}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleMessagesPress}
+        >
+          <IconSymbol name="play.circle.fill" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Messages</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Watch sermons
+          </ThemedText>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleGivingPress}
+        >
+          <IconSymbol name="heart.fill" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Give</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Tithes & offerings
+          </ThemedText>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickLinkCard,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleConnectPress}
+        >
+          <IconSymbol name="person.badge.plus" size={24} color={modeColors.primary} />
+          <ThemedText style={styles.quickLinkTitle}>Connect</ThemedText>
+          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+            Get involved
+          </ThemedText>
+        </Pressable>
+      </View>
+
+      {/* Campuses */}
+      <SectionHeader title="Our Campuses" colors={colors} />
+      <View style={styles.campusesList}>
+        {CAMPUSES.map((campus) => (
+          <CampusCard
+            key={campus.id}
+            campus={campus}
+            colors={colors}
+            accentColor={modeColors.primary}
+            onPress={() => handleCampusPress(campus.id)}
+          />
+        ))}
+      </View>
+
+      {/* Ministries */}
+      <SectionHeader title="Ministries" colors={colors} />
+      <View style={[styles.ministriesCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        {MINISTRIES.slice(0, 5).map((ministry, index) => (
+          <React.Fragment key={ministry.id}>
+            <MinistryRow
+              ministry={ministry}
+              colors={colors}
+              accentColor={modeColors.primary}
+              onPress={() => handleMinistryPress(ministry.id)}
+            />
+            {index < Math.min(MINISTRIES.length, 5) - 1 && (
+              <View style={[styles.ministryDivider, { backgroundColor: colors.divider }]} />
+            )}
+          </React.Fragment>
+        ))}
+        {MINISTRIES.length > 5 && (
+          <Pressable
+            style={({ pressed }) => [
+              styles.viewAllRow,
+              pressed && { backgroundColor: colors.backgroundSecondary },
+            ]}
+            onPress={handleMinistriesPress}
+          >
+            <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
+              View All Ministries
+            </ThemedText>
+            <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
+          </Pressable>
+        )}
+      </View>
+
+      {/* Leadership */}
+      <SectionHeader title="Leadership" colors={colors} />
+      <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        {CHURCH_LEADERSHIP.slice(0, 3).map((leader, index) => (
+          <React.Fragment key={leader.id}>
+            <View style={styles.leadershipRow}>
+              <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+                <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
+              </View>
+              <View style={styles.leadershipInfo}>
+                <ThemedText style={styles.leadershipName}>{leader.name}</ThemedText>
+                <ThemedText style={[styles.leadershipTitle, { color: colors.textSecondary }]}>
+                  {leader.title}
+                </ThemedText>
+              </View>
+            </View>
+            {index < Math.min(CHURCH_LEADERSHIP.length, 3) - 1 && (
+              <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
+            )}
+          </React.Fragment>
+        ))}
+      </View>
+
+      {/* About */}
+      <SectionHeader title="About" colors={colors} />
+      <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
+          {ICC_ORGANIZATION.description}
+        </ThemedText>
+      </View>
+    </>
+  );
+}
+
+// =============================================================================
 // PLACEHOLDER CONTENT FOR OTHER MODES
 // =============================================================================
 
@@ -632,7 +909,7 @@ export default function OrganizationScreen() {
       case 'enterprise':
         return <EnterpriseOrganization />;
       case 'church':
-        return <PlaceholderContent modeName="Church" />;
+        return <ChurchOrganization />;
       case 'education':
         return <PlaceholderContent modeName="Education" />;
       default:
@@ -1028,6 +1305,99 @@ const styles = StyleSheet.create({
   domainDesc: {
     fontSize: 13,
     lineHeight: 18,
+  },
+
+  // Church - Campuses
+  campusesList: {
+    gap: Spacing.sm,
+  },
+  campusCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+  },
+  campusHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  campusBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Spacing.sm,
+  },
+  campusBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  campusInfo: {
+    flex: 1,
+  },
+  campusName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  campusLocation: {
+    fontSize: 13,
+    marginTop: 2,
+  },
+  campusServices: {
+    marginTop: Spacing.sm,
+    paddingTop: Spacing.sm,
+  },
+  campusServiceText: {
+    fontSize: 12,
+    marginBottom: 2,
+  },
+
+  // Church - Ministries
+  ministriesCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  ministryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+  },
+  ministryIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Spacing.sm,
+  },
+  ministryInfo: {
+    flex: 1,
+  },
+  ministryName: {
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  ministryDesc: {
+    fontSize: 12,
+    marginTop: 1,
+  },
+  ministryDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Spacing.md + 32 + Spacing.sm,
+  },
+  viewAllRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Spacing.sm,
+    gap: 4,
+  },
+  viewAllText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
 
   // Placeholder

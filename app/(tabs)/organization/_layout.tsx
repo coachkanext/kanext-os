@@ -61,6 +61,37 @@ export default function OrganizationLayout() {
           presentation: 'card',
         }}
       />
+      {/* Church Routes */}
+      <Stack.Screen
+        name="campuses"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="ministries"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="messages"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="giving"
+        options={{
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="connect"
+        options={{
+          presentation: 'card',
+        }}
+      />
     </Stack>
   );
 }

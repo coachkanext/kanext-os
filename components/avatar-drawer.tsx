@@ -25,7 +25,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
-import type { Mode, Role } from '@/types';
+import type { Mode, Role, Campus } from '@/types';
+import { CAMPUSES } from '@/data/mock-church';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DRAWER_WIDTH = Math.min(320, SCREEN_WIDTH * 0.85);
@@ -321,6 +322,103 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
           )}
 
           {/* ============================================= */}
+          {/* CHURCH CAMPUS & ROLE SWITCHER (Church mode) */}
+          {/* ============================================= */}
+          {state.mode === 'church' && (
+            <>
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                  MY CAMPUS
+                </Text>
+                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
+                  Select Campus
+                </Text>
+                <View style={styles.optionsList}>
+                  {CAMPUSES.map((campus) => (
+                    <Pressable
+                      key={campus.id}
+                      style={({ pressed }) => [
+                        styles.optionRow,
+                        {
+                          backgroundColor: pressed
+                            ? colors.backgroundSecondary
+                            : 'transparent',
+                        },
+                      ]}
+                      onPress={() => {
+                        // Campus selection - could be persisted
+                      }}
+                    >
+                      <View style={styles.radioOuter}>
+                        {campus.id === 'iccla' && (
+                          <View
+                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
+                          />
+                        )}
+                      </View>
+                      <View style={styles.roleOption}>
+                        <Text style={[styles.optionLabel, { color: colors.text }]}>
+                          {campus.shortName}
+                        </Text>
+                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
+                          {campus.location}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+
+              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                  VIEWING AS
+                </Text>
+                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
+                  Select Role
+                </Text>
+                <View style={styles.optionsList}>
+                  {(['member', 'staff', 'leadership'] as Role[]).map((role) => (
+                    <Pressable
+                      key={role}
+                      style={({ pressed }) => [
+                        styles.optionRow,
+                        {
+                          backgroundColor:
+                            state.operatingRole === role
+                              ? colors.backgroundSecondary
+                              : pressed
+                              ? colors.backgroundSecondary
+                              : 'transparent',
+                        },
+                      ]}
+                      onPress={() => handleRoleSelect(role)}
+                    >
+                      <View style={styles.radioOuter}>
+                        {state.operatingRole === role && (
+                          <View
+                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
+                          />
+                        )}
+                      </View>
+                      <View style={styles.roleOption}>
+                        <Text style={[styles.optionLabel, { color: colors.text }]}>
+                          {formatRole(role)}
+                        </Text>
+                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
+                          {getChurchRoleDesc(role)}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+            </>
+          )}
+
+          {/* ============================================= */}
           {/* ACCOUNT & SYSTEM */}
           {/* ============================================= */}
           <View style={styles.section}>
@@ -438,6 +536,20 @@ function getEnterpriseRoleDesc(role: Role): string {
       return 'Access to investor materials and updates';
     case 'viewer':
       return 'Public documents only';
+    default:
+      return '';
+  }
+}
+
+// Get church role description
+function getChurchRoleDesc(role: Role): string {
+  switch (role) {
+    case 'member':
+      return 'Church member access';
+    case 'staff':
+      return 'Ministry staff with administrative access';
+    case 'leadership':
+      return 'Full access to all church features';
     default:
       return '';
   }

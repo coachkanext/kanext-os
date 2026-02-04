@@ -246,6 +246,9 @@ export default function DocumentsScreen() {
           <ThemedText style={[styles.emptyText, { color: colors.textSecondary }]}>
             No documents in this category
           </ThemedText>
+          <ThemedText style={[styles.emptySubtext, { color: colors.textTertiary }]}>
+            Try selecting a different category or check back later.
+          </ThemedText>
         </View>
       ) : (
         <SectionList
@@ -409,6 +412,11 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 15,
     marginTop: Spacing.sm,
+  },
+  emptySubtext: {
+    fontSize: 13,
+    marginTop: Spacing.xs,
+    textAlign: 'center',
   },
 
   // Role Info
