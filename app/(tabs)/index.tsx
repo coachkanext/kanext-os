@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { View, ScrollView, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -13,7 +13,6 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
-import { Onboarding } from '@/components/onboarding';
 import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode } from '@/context/app-context';
@@ -547,20 +546,6 @@ export default function HomeScreen() {
   const { state } = useAppContext();
   const mode = useMode();
 
-  // Wait for persisted state to load
-  if (state.isLoading) {
-    return (
-      <ThemedView style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color={colors.tint} />
-      </ThemedView>
-    );
-  }
-
-  // Show onboarding on first run
-  if (state.isFirstRun) {
-    return <Onboarding onComplete={() => {}} />;
-  }
-
   const renderModeContent = () => {
     switch (mode) {
       case 'sports':
@@ -596,10 +581,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   scrollView: {
     flex: 1,
