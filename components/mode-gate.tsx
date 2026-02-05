@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
@@ -14,13 +14,17 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
 import type { Mode, Role } from '@/types';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const TILE_SIZE = (SCREEN_WIDTH - 80) / 2; // 2 columns with padding
+
 // Gold accent for tap feedback only
 const GOLD_ACCENT = '#C9A227';
 
 interface ModeOption {
   mode: Mode;
   label: string;
-  icon: IconSymbolName;
+  icon: IconSymbolName | null; // null = use text glyph
+  glyph?: string; // fallback text glyph
   defaultRole: Role;
 }
 
@@ -28,25 +32,27 @@ const MODE_OPTIONS: ModeOption[] = [
   {
     mode: 'sports',
     label: 'Sports',
-    icon: 'sportscourt.fill',
+    icon: 'sportscourt.fill', // basketball court icon
     defaultRole: 'head_coach',
   },
   {
     mode: 'enterprise',
     label: 'Enterprise',
-    icon: 'building.2.fill',
+    icon: 'building.2.fill', // briefcase style
     defaultRole: 'founder',
   },
   {
     mode: 'church',
     label: 'Church',
-    icon: 'building.columns.fill', // Orthodox cross style - using columns as closest
+    // TODO: Replace with custom Orthodox cross SVG asset
+    icon: null,
+    glyph: '☦',
     defaultRole: 'member',
   },
   {
     mode: 'education',
     label: 'Education',
-    icon: 'graduationcap.fill',
+    icon: 'graduationcap.fill', // diploma/grad cap
     defaultRole: 'faculty',
   },
 ];
@@ -60,37 +66,40 @@ export function ModeGate() {
   const backgroundColor = colorScheme === 'dark' ? '#000000' : '#FFFFFF';
   const textColor = colorScheme === 'dark' ? '#FFFFFF' : '#000000';
   const iconColor = colorScheme === 'dark' ? '#FFFFFF' : '#000000';
-  const borderColor = colorScheme === 'dark' ? '#333333' : '#E5E5E5';
 
   const handleModeSelect = (option: ModeOption) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     switchMode(option.mode);
     setFirstRun(false);
-    // Navigation happens automatically as isFirstRun becomes false
   };
 
   return (
     <View style={[styles.container, { backgroundColor }]}>
-      <View style={[styles.content, { paddingTop: insets.top + 60, paddingBottom: insets.bottom + 40 }]}>
-        {/* KaNeXT Logo */}
+      <View style={[styles.content, { paddingTop: insets.top + 80, paddingBottom: insets.bottom + 40 }]}>
+        {/* KaNeXT Wordmark */}
         <View style={styles.logoSection}>
           <Text style={[styles.logoText, { color: textColor }]}>KaNeXT</Text>
         </View>
 
-        {/* Mode Options */}
-        <View style={styles.optionsContainer}>
+        {/* 2x2 Grid of Mode Tiles */}
+        <View style={styles.grid}>
           {MODE_OPTIONS.map((option) => (
             <Pressable
               key={option.mode}
               style={({ pressed }) => [
-                styles.optionRow,
-                { borderBottomColor: borderColor },
-                pressed && { backgroundColor: GOLD_ACCENT + '15' },
+                styles.tile,
+                pressed && { backgroundColor: GOLD_ACCENT + '10' },
               ]}
               onPress={() => handleModeSelect(option)}
             >
-              <IconSymbol name={option.icon} size={24} color={iconColor} />
-              <Text style={[styles.optionLabel, { color: textColor }]}>
+              {option.icon ? (
+                <IconSymbol name={option.icon} size={36} color={iconColor} />
+              ) : (
+                <Text style={[styles.glyphIcon, { color: iconColor }]}>
+                  {option.glyph}
+                </Text>
+              )}
+              <Text style={[styles.tileLabel, { color: textColor }]}>
                 {option.label}
               </Text>
             </Pressable>
@@ -107,7 +116,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 32,
+    paddingHorizontal: 24,
   },
 
   // Logo
@@ -116,27 +125,33 @@ const styles = StyleSheet.create({
     marginBottom: 80,
   },
   logoText: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: '300',
-    letterSpacing: 4,
+    letterSpacing: 6,
   },
 
-  // Options
-  optionsContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  optionRow: {
+  // Grid
+  grid: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 20,
-    paddingHorizontal: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 32,
   },
-  optionLabel: {
-    fontSize: 18,
+  tile: {
+    width: TILE_SIZE,
+    height: TILE_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+  },
+  tileLabel: {
+    fontSize: 15,
     fontWeight: '400',
-    marginLeft: 16,
+    marginTop: 16,
     letterSpacing: 0.5,
+  },
+  glyphIcon: {
+    fontSize: 36,
+    fontWeight: '300',
   },
 });
