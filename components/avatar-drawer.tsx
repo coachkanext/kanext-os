@@ -3,13 +3,17 @@
  * Single authority surface for identity and context.
  * X/Twitter-style slide-in drawer from left.
  *
- * Per spec: Avatar Drawer is the only place where:
- * - Identity is shown (read-only)
- * - Context is switched (mode, role)
- * - Account settings are accessed
+ * Sports mode layout:
+ * - Identity header (read-only)
+ * - Program switcher
+ * - Season switcher
+ * - Account links (Settings, Help, Terms)
+ * - Logout
+ *
+ * Mode switching is ONLY in the global header dropdown.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -19,16 +23,16 @@ import {
   Dimensions,
   ScrollView,
   Modal,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
-import type { Mode, Role, Campus, AcademicTerm } from '@/types';
-import { CAMPUSES } from '@/data/mock-church';
-import { ACADEMIC_TERMS } from '@/data/mock-education';
+import type { Role, Program, Cycle } from '@/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DRAWER_WIDTH = Math.min(320, SCREEN_WIDTH * 0.85);
@@ -38,44 +42,46 @@ interface AvatarDrawerProps {
   onClose: () => void;
 }
 
-// Mode display configuration
-const MODE_CONFIG: Record<Mode, { label: string; icon: string }> = {
-  sports: { label: 'Sports', icon: 'sportscourt.fill' },
-  enterprise: { label: 'Enterprise', icon: 'building.2.fill' },
-  church: { label: 'Church', icon: 'building.columns.fill' },
-  education: { label: 'Education', icon: 'graduationcap.fill' },
-};
+// Programs available in Sports mode
+const SPORTS_PROGRAMS: Program[] = [
+  { id: 'varsity', name: 'Varsity', level: 'varsity' },
+  { id: 'dev-1', name: 'Development I', level: 'development_1' },
+  { id: 'dev-2', name: 'Development II', level: 'development_2' },
+  { id: 'postgrad', name: 'Postgrad', level: 'postgrad' },
+];
+
+// Seasons available
+const SEASONS: Cycle[] = [
+  { id: '2025-26', name: '2025-26', startDate: new Date('2025-10-01'), endDate: new Date('2026-04-01'), isCurrent: true },
+  { id: '2024-25', name: '2024-25', startDate: new Date('2024-10-01'), endDate: new Date('2025-04-01'), isCurrent: false },
+  { id: '2023-24', name: '2023-24', startDate: new Date('2023-10-01'), endDate: new Date('2024-04-01'), isCurrent: false },
+];
 
 // Role display names
 const ROLE_LABELS: Partial<Record<Role, string>> = {
-  founder: 'Founder & CEO',
-  investor: 'Investor',
-  viewer: 'Viewer',
-  admin: 'Admin',
   head_coach: 'Head Coach',
   assistant_coach: 'Assistant Coach',
   gm: 'General Manager',
-  student_athlete: 'Student-Athlete',
-  fan: 'Fan',
-  agent: 'Agent',
-  scout: 'Scout',
-  donor: 'Donor',
-  media: 'Media',
+  founder: 'Founder & CEO',
+  investor: 'Investor',
   member: 'Member',
-  staff: 'Staff',
-  leadership: 'Leadership',
   faculty: 'Faculty',
   student: 'Student',
+  staff: 'Staff',
 };
 
 export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
-  const { state, switchMode, setRole } = useAppContext();
+  const router = useRouter();
+  const { state, setProgram, setCycle, setFirstRun, clearPersistedState } = useAppContext();
 
   const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const [showProgramSheet, setShowProgramSheet] = useState(false);
+  const [showSeasonSheet, setShowSeasonSheet] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -111,12 +117,40 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
     return ROLE_LABELS[role] || role.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   };
 
-  const handleModeSelect = (mode: Mode) => {
-    switchMode(mode); // Full mode switch updates org, role, and cycle
+  const handleProgramSelect = (program: Program) => {
+    setProgram(program);
+    setShowProgramSheet(false);
   };
 
-  const handleRoleSelect = (role: Role) => {
-    setRole(role);
+  const handleSeasonSelect = (season: Cycle) => {
+    setCycle(season);
+    setShowSeasonSheet(false);
+  };
+
+  const handleNavigation = (route: string) => {
+    onClose();
+    setTimeout(() => {
+      router.push(route as any);
+    }, 300);
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Log out?',
+      "You'll need to sign in again to access your programs.",
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Log out',
+          style: 'destructive',
+          onPress: async () => {
+            onClose();
+            await clearPersistedState();
+            setFirstRun(true);
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -151,430 +185,184 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
-          {/* ============================================= */}
-          {/* IDENTITY HEADER (Read-Only) */}
-          {/* ============================================= */}
-          <View style={styles.section}>
-            {/* Avatar */}
-            <View
-              style={[
-                styles.avatarLarge,
-                { backgroundColor: colors.backgroundTertiary },
-              ]}
-            >
-              <IconSymbol name="person.fill" size={40} color={colors.icon} />
-            </View>
-
-            {/* Name */}
-            <Text style={[styles.userName, { color: colors.text }]}>
-              Sammy Kalejaiye
-            </Text>
-
-            {/* Primary Role */}
-            <Text style={[styles.userRole, { color: colors.textSecondary }]}>
-              {formatRole(state.operatingRole)}
-            </Text>
-
-            {/* Organization */}
-            {state.organization && (
-              <Text style={[styles.userOrg, { color: colors.textTertiary }]}>
-                {state.organization.name}
+            {/* ============================================= */}
+            {/* IDENTITY HEADER (Read-Only) */}
+            {/* ============================================= */}
+            <View style={styles.section}>
+              <View
+                style={[
+                  styles.avatarLarge,
+                  { backgroundColor: colors.backgroundTertiary },
+                ]}
+              >
+                <IconSymbol name="person.fill" size={40} color={colors.icon} />
+              </View>
+              <Text style={[styles.userName, { color: colors.text }]}>
+                Sammy Kalejaiye
               </Text>
-            )}
-          </View>
-
-          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-          {/* ============================================= */}
-          {/* ACTIVE CONTEXT */}
-          {/* ============================================= */}
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-              ACTIVE CONTEXT
-            </Text>
-
-            {/* Mode Selector */}
-            <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
-              Mode
-            </Text>
-            <View style={styles.optionsList}>
-              {(Object.keys(MODE_CONFIG) as Mode[]).map((mode) => (
-                <Pressable
-                  key={mode}
-                  style={({ pressed }) => [
-                    styles.optionRow,
-                    {
-                      backgroundColor:
-                        state.mode === mode
-                          ? colors.backgroundSecondary
-                          : pressed
-                          ? colors.backgroundSecondary
-                          : 'transparent',
-                    },
-                  ]}
-                  onPress={() => handleModeSelect(mode)}
-                >
-                  <View style={styles.radioOuter}>
-                    {state.mode === mode && (
-                      <View
-                        style={[styles.radioInner, { backgroundColor: colors.tint }]}
-                      />
-                    )}
-                  </View>
-                  <Text style={[styles.optionLabel, { color: colors.text }]}>
-                    {MODE_CONFIG[mode].label}
-                  </Text>
-                </Pressable>
-              ))}
+              <Text style={[styles.userRole, { color: colors.textSecondary }]}>
+                {formatRole(state.operatingRole)}
+              </Text>
             </View>
 
-            {/* Organization (Read-only display) */}
-            <Text style={[styles.fieldLabel, { color: colors.textTertiary, marginTop: Spacing.md }]}>
-              Organization
-            </Text>
-            <Text style={[styles.fieldValue, { color: colors.text }]}>
-              {state.organization?.name ?? getDefaultOrgName(state.mode)}
-            </Text>
+            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
 
-            {/* Role / Viewing As */}
-            <Text style={[styles.fieldLabel, { color: colors.textTertiary, marginTop: Spacing.md }]}>
-              Operating Role
-            </Text>
-            <Text style={[styles.fieldValue, { color: colors.text }]}>
-              {formatRole(state.operatingRole)}
-            </Text>
-
-            {/* Cycle (if applicable) */}
-            {state.cycle && (
+            {/* ============================================= */}
+            {/* SPORTS MODE: PROGRAM SWITCHER */}
+            {/* ============================================= */}
+            {state.mode === 'sports' && (
               <>
-                <Text style={[styles.fieldLabel, { color: colors.textTertiary, marginTop: Spacing.md }]}>
-                  {state.mode === 'sports' ? 'Season' : state.mode === 'education' ? 'Academic Year' : 'Cycle'}
-                </Text>
-                <Text style={[styles.fieldValue, { color: colors.text }]}>
-                  {state.cycle.name}
-                </Text>
+                <View style={styles.section}>
+                  <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                    CURRENT PROGRAM
+                  </Text>
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.contextRow,
+                      { backgroundColor: pressed ? colors.backgroundSecondary : 'transparent' },
+                    ]}
+                    onPress={() => setShowProgramSheet(true)}
+                  >
+                    <Text style={[styles.contextValue, { color: colors.text }]}>
+                      {state.program?.name ?? 'Varsity'}
+                    </Text>
+                    <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
+                  </Pressable>
+                </View>
+
+                <View style={[styles.divider, { backgroundColor: colors.divider }]} />
               </>
             )}
-          </View>
 
-          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-          {/* ============================================= */}
-          {/* PROGRAM (Sports mode only, display only) */}
-          {/* ============================================= */}
-          {state.mode === 'sports' && (
-            <>
-              <View style={styles.section}>
-                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
-                  Current Program
-                </Text>
-                <Text style={[styles.fieldValue, { color: colors.text }]}>
-                  {state.program?.name ?? 'Varsity'}
-                </Text>
-              </View>
-              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-            </>
-          )}
-
-          {/* ============================================= */}
-          {/* ENTERPRISE ROLE SWITCHER (Enterprise mode) */}
-          {/* ============================================= */}
-          {state.mode === 'enterprise' && (
-            <>
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-                  VIEWING AS
-                </Text>
-                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
-                  Select Role
-                </Text>
-                <View style={styles.optionsList}>
-                  {(['founder', 'investor', 'viewer'] as Role[]).map((role) => (
-                    <Pressable
-                      key={role}
-                      style={({ pressed }) => [
-                        styles.optionRow,
-                        {
-                          backgroundColor:
-                            state.operatingRole === role
-                              ? colors.backgroundSecondary
-                              : pressed
-                              ? colors.backgroundSecondary
-                              : 'transparent',
-                        },
-                      ]}
-                      onPress={() => handleRoleSelect(role)}
-                    >
-                      <View style={styles.radioOuter}>
-                        {state.operatingRole === role && (
-                          <View
-                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
-                          />
-                        )}
-                      </View>
-                      <View style={styles.roleOption}>
-                        <Text style={[styles.optionLabel, { color: colors.text }]}>
-                          {formatRole(role)}
-                        </Text>
-                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
-                          {getEnterpriseRoleDesc(role)}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  ))}
+            {/* ============================================= */}
+            {/* SPORTS MODE: SEASON SWITCHER */}
+            {/* ============================================= */}
+            {state.mode === 'sports' && (
+              <>
+                <View style={styles.section}>
+                  <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                    SEASON
+                  </Text>
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.contextRow,
+                      { backgroundColor: pressed ? colors.backgroundSecondary : 'transparent' },
+                    ]}
+                    onPress={() => setShowSeasonSheet(true)}
+                  >
+                    <Text style={[styles.contextValue, { color: colors.text }]}>
+                      {state.cycle?.name ?? '2025-26'}
+                    </Text>
+                    <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
+                  </Pressable>
                 </View>
-              </View>
-              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-            </>
-          )}
 
-          {/* ============================================= */}
-          {/* CHURCH CAMPUS & ROLE SWITCHER (Church mode) */}
-          {/* ============================================= */}
-          {state.mode === 'church' && (
-            <>
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-                  MY CAMPUS
-                </Text>
-                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
-                  Select Campus
-                </Text>
-                <View style={styles.optionsList}>
-                  {CAMPUSES.map((campus) => (
-                    <Pressable
-                      key={campus.id}
-                      style={({ pressed }) => [
-                        styles.optionRow,
-                        {
-                          backgroundColor: pressed
-                            ? colors.backgroundSecondary
-                            : 'transparent',
-                        },
-                      ]}
-                      onPress={() => {
-                        // Campus selection - could be persisted
-                      }}
-                    >
-                      <View style={styles.radioOuter}>
-                        {campus.id === 'iccla' && (
-                          <View
-                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
-                          />
-                        )}
-                      </View>
-                      <View style={styles.roleOption}>
-                        <Text style={[styles.optionLabel, { color: colors.text }]}>
-                          {campus.shortName}
-                        </Text>
-                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
-                          {campus.location}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
+                <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+              </>
+            )}
 
-              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+            {/* ============================================= */}
+            {/* ACCOUNT & SYSTEM LINKS */}
+            {/* ============================================= */}
+            <View style={styles.section}>
+              <MenuItem
+                icon="gear"
+                label="Account Settings"
+                colors={colors}
+                onPress={() => handleNavigation('/account/settings')}
+              />
+              <MenuItem
+                icon="questionmark.circle"
+                label="Help / Support"
+                colors={colors}
+                onPress={() => handleNavigation('/help')}
+              />
+              <MenuItem
+                icon="info.circle"
+                label="Terms & Policies"
+                colors={colors}
+                onPress={() => handleNavigation('/terms')}
+              />
+            </View>
 
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-                  VIEWING AS
-                </Text>
-                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
-                  Select Role
-                </Text>
-                <View style={styles.optionsList}>
-                  {(['member', 'staff', 'leadership'] as Role[]).map((role) => (
-                    <Pressable
-                      key={role}
-                      style={({ pressed }) => [
-                        styles.optionRow,
-                        {
-                          backgroundColor:
-                            state.operatingRole === role
-                              ? colors.backgroundSecondary
-                              : pressed
-                              ? colors.backgroundSecondary
-                              : 'transparent',
-                        },
-                      ]}
-                      onPress={() => handleRoleSelect(role)}
-                    >
-                      <View style={styles.radioOuter}>
-                        {state.operatingRole === role && (
-                          <View
-                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
-                          />
-                        )}
-                      </View>
-                      <View style={styles.roleOption}>
-                        <Text style={[styles.optionLabel, { color: colors.text }]}>
-                          {formatRole(role)}
-                        </Text>
-                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
-                          {getChurchRoleDesc(role)}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
-              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-            </>
-          )}
+            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
 
-          {/* ============================================= */}
-          {/* EDUCATION TERM & ROLE SWITCHER (Education mode) */}
-          {/* ============================================= */}
-          {state.mode === 'education' && (
-            <>
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-                  ACADEMIC TERM
-                </Text>
-                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
-                  Current Term
-                </Text>
-                <View style={styles.optionsList}>
-                  {ACADEMIC_TERMS.filter((t) => t.status !== 'completed').map((term) => (
-                    <Pressable
-                      key={term.id}
-                      style={({ pressed }) => [
-                        styles.optionRow,
-                        {
-                          backgroundColor:
-                            term.status === 'current'
-                              ? colors.backgroundSecondary
-                              : pressed
-                              ? colors.backgroundSecondary
-                              : 'transparent',
-                        },
-                      ]}
-                      onPress={() => {
-                        // Term selection - could be persisted
-                      }}
-                    >
-                      <View style={styles.radioOuter}>
-                        {term.status === 'current' && (
-                          <View
-                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
-                          />
-                        )}
-                      </View>
-                      <View style={styles.roleOption}>
-                        <Text style={[styles.optionLabel, { color: colors.text }]}>
-                          {term.name}
-                        </Text>
-                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
-                          {term.academicYear}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
-
-              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-                  VIEWING AS
-                </Text>
-                <Text style={[styles.fieldLabel, { color: colors.textTertiary }]}>
-                  Select Role
-                </Text>
-                <View style={styles.optionsList}>
-                  {(['faculty', 'student', 'staff'] as Role[]).map((role) => (
-                    <Pressable
-                      key={role}
-                      style={({ pressed }) => [
-                        styles.optionRow,
-                        {
-                          backgroundColor:
-                            state.operatingRole === role
-                              ? colors.backgroundSecondary
-                              : pressed
-                              ? colors.backgroundSecondary
-                              : 'transparent',
-                        },
-                      ]}
-                      onPress={() => handleRoleSelect(role)}
-                    >
-                      <View style={styles.radioOuter}>
-                        {state.operatingRole === role && (
-                          <View
-                            style={[styles.radioInner, { backgroundColor: colors.tint }]}
-                          />
-                        )}
-                      </View>
-                      <View style={styles.roleOption}>
-                        <Text style={[styles.optionLabel, { color: colors.text }]}>
-                          {formatRole(role)}
-                        </Text>
-                        <Text style={[styles.roleDesc, { color: colors.textTertiary }]}>
-                          {getEducationRoleDesc(role)}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
-              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-            </>
-          )}
-
-          {/* ============================================= */}
-          {/* ACCOUNT & SYSTEM */}
-          {/* ============================================= */}
-          <View style={styles.section}>
-            <MenuItem
-              icon="gear"
-              label="Account Settings"
-              colors={colors}
-              onPress={() => {
-                onClose();
-                // TODO: Navigate to account settings
-              }}
-            />
-            <MenuItem
-              icon="questionmark.circle"
-              label="Help / Support"
-              colors={colors}
-              onPress={() => {
-                onClose();
-                // TODO: Navigate to support
-              }}
-            />
-            <MenuItem
-              icon="info.circle"
-              label="Terms & Policies"
-              colors={colors}
-              onPress={() => {
-                onClose();
-                // TODO: Navigate to legal
-              }}
-            />
-          </View>
-
-          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-          {/* Log Out */}
-          <View style={styles.section}>
-            <MenuItem
-              icon="xmark"
-              label="Log Out"
-              colors={colors}
-              destructive
-              onPress={() => {
-                onClose();
-                // TODO: Handle log out
-              }}
-            />
-          </View>
-        </ScrollView>
+            {/* Log Out */}
+            <View style={styles.section}>
+              <MenuItem
+                icon="rectangle.portrait.and.arrow.right"
+                label="Log Out"
+                colors={colors}
+                destructive
+                onPress={handleLogout}
+              />
+            </View>
+          </ScrollView>
         </Animated.View>
+
+        {/* Program Picker Sheet */}
+        {showProgramSheet && (
+          <Pressable style={styles.sheetOverlay} onPress={() => setShowProgramSheet(false)}>
+            <View
+              style={[
+                styles.sheet,
+                { backgroundColor: colors.card, paddingBottom: insets.bottom + Spacing.md },
+              ]}
+            >
+              <Text style={[styles.sheetTitle, { color: colors.text }]}>Select Program</Text>
+              {SPORTS_PROGRAMS.map((program) => {
+                const isSelected = state.program?.id === program.id;
+                return (
+                  <Pressable
+                    key={program.id}
+                    style={[
+                      styles.sheetOption,
+                      isSelected && { backgroundColor: colors.backgroundSecondary },
+                    ]}
+                    onPress={() => handleProgramSelect(program)}
+                  >
+                    <Text style={[styles.sheetOptionText, { color: colors.text }]}>
+                      {program.name}
+                    </Text>
+                    {isSelected && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
+                  </Pressable>
+                );
+              })}
+            </View>
+          </Pressable>
+        )}
+
+        {/* Season Picker Sheet */}
+        {showSeasonSheet && (
+          <Pressable style={styles.sheetOverlay} onPress={() => setShowSeasonSheet(false)}>
+            <View
+              style={[
+                styles.sheet,
+                { backgroundColor: colors.card, paddingBottom: insets.bottom + Spacing.md },
+              ]}
+            >
+              <Text style={[styles.sheetTitle, { color: colors.text }]}>Select Season</Text>
+              {SEASONS.map((season) => {
+                const isSelected = state.cycle?.id === season.id;
+                return (
+                  <Pressable
+                    key={season.id}
+                    style={[
+                      styles.sheetOption,
+                      isSelected && { backgroundColor: colors.backgroundSecondary },
+                    ]}
+                    onPress={() => handleSeasonSelect(season)}
+                  >
+                    <Text style={[styles.sheetOptionText, { color: colors.text }]}>
+                      {season.name}
+                    </Text>
+                    {isSelected && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
+                  </Pressable>
+                );
+              })}
+            </View>
+          </Pressable>
+        )}
       </View>
     </Modal>
   );
@@ -588,7 +376,7 @@ function MenuItem({
   destructive,
   onPress,
 }: {
-  icon: 'gear' | 'questionmark.circle' | 'info.circle' | 'xmark';
+  icon: string;
   label: string;
   colors: typeof Colors.light;
   destructive?: boolean;
@@ -603,7 +391,7 @@ function MenuItem({
       onPress={onPress}
     >
       <IconSymbol
-        name={icon}
+        name={icon as any}
         size={20}
         color={destructive ? colors.error : colors.icon}
       />
@@ -615,66 +403,9 @@ function MenuItem({
       >
         {label}
       </Text>
+      <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
     </Pressable>
   );
-}
-
-// Get default organization name by mode
-function getDefaultOrgName(mode: Mode): string {
-  switch (mode) {
-    case 'sports':
-      return 'Lincoln University';
-    case 'enterprise':
-      return 'KaNeXT';
-    case 'church':
-      return 'International Christian Center';
-    case 'education':
-      return 'San Diego Christian College';
-    default:
-      return 'Organization';
-  }
-}
-
-// Get enterprise role description
-function getEnterpriseRoleDesc(role: Role): string {
-  switch (role) {
-    case 'founder':
-      return 'Full access to all documents and features';
-    case 'investor':
-      return 'Access to investor materials and updates';
-    case 'viewer':
-      return 'Public documents only';
-    default:
-      return '';
-  }
-}
-
-// Get church role description
-function getChurchRoleDesc(role: Role): string {
-  switch (role) {
-    case 'member':
-      return 'Church member access';
-    case 'staff':
-      return 'Ministry staff with administrative access';
-    case 'leadership':
-      return 'Full access to all church features';
-    default:
-      return '';
-  }
-}
-
-// Get education role description
-function getEducationRoleDesc(role: Role): string {
-  switch (role) {
-    case 'faculty':
-      return 'Full academic access and administrative features';
-    case 'student':
-      return 'Student portal and course information';
-    case 'staff':
-      return 'Administrative staff access';
-    default:
-      return '';
-  }
 }
 
 const styles = StyleSheet.create({
@@ -707,7 +438,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.5,
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.sm,
   },
   divider: {
     height: StyleSheet.hairlineWidth,
@@ -729,56 +460,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 2,
   },
-  userOrg: {
-    fontSize: 13,
-    marginTop: 2,
-  },
-  fieldLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
-    marginBottom: Spacing.xs,
-  },
-  fieldValue: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  optionsList: {
-    marginTop: Spacing.xs,
-  },
-  optionRow: {
+  contextRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.sm,
     borderRadius: BorderRadius.md,
-    marginVertical: 2,
+    marginTop: Spacing.xs,
   },
-  radioOuter: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#888',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: Spacing.sm,
-  },
-  radioInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  optionLabel: {
+  contextValue: {
     fontSize: 16,
-  },
-  roleOption: {
-    flex: 1,
-  },
-  roleDesc: {
-    fontSize: 12,
-    marginTop: 2,
+    fontWeight: '500',
   },
   menuItem: {
     flexDirection: 'row',
@@ -791,5 +484,34 @@ const styles = StyleSheet.create({
   menuLabel: {
     fontSize: 16,
     marginLeft: Spacing.md,
+    flex: 1,
+  },
+  sheetOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'flex-end',
+  },
+  sheet: {
+    borderTopLeftRadius: BorderRadius.xl,
+    borderTopRightRadius: BorderRadius.xl,
+    paddingTop: Spacing.lg,
+  },
+  sheetTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: Spacing.md,
+  },
+  sheetOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: Spacing.lg,
+    marginHorizontal: Spacing.md,
+    borderRadius: BorderRadius.md,
+  },
+  sheetOptionText: {
+    fontSize: 16,
   },
 });
