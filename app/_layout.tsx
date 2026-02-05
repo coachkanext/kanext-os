@@ -13,6 +13,7 @@ import 'react-native-reanimated';
 
 import { SplashScreen } from '@/components/splash-screen';
 import { ModeGate } from '@/components/mode-gate';
+import { GlobalHeader } from '@/components/global-header';
 import { AppProvider, useAppContext } from '@/context/app-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -44,15 +45,20 @@ function AppShell() {
     return <ModeGate />;
   }
 
-  // Normal navigation with tabs
+  // Normal navigation with tabs + global header
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen
-        name="modal"
-        options={{ presentation: 'modal', title: 'Modal' }}
-      />
-    </Stack>
+    <View style={styles.container}>
+      <GlobalHeader />
+      <View style={styles.stackContainer}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen
+            name="modal"
+            options={{ presentation: 'modal', title: 'Modal' }}
+          />
+        </Stack>
+      </View>
+    </View>
   );
 }
 
@@ -106,6 +112,9 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  stackContainer: {
     flex: 1,
   },
   loadingContainer: {
