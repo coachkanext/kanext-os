@@ -117,9 +117,7 @@ export default function ActivityScreen() {
 
   const handleActivityPress = (item: ActivityItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // For now, just log the route - navigation will work when routes exist
-    console.log('Navigate to:', item.route);
-    // router.push(item.route as any);
+    router.push(item.route as any);
   };
 
   const renderItem = ({ item }: { item: ActivityItem }) => (

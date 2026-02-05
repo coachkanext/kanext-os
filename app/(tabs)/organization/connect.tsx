@@ -169,7 +169,7 @@ export default function ConnectScreen() {
             Connect
           </ThemedText>
           <ThemedText style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
-            We'd love to meet you
+            We&apos;d love to meet you
           </ThemedText>
         </View>
       </View>

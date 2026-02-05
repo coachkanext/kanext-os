@@ -120,8 +120,8 @@ export default function GivingScreen() {
         <View style={[styles.scriptureCard, { backgroundColor: modeColors.primary }]}>
           <IconSymbol name="book.fill" size={24} color="#FFFFFF" />
           <ThemedText style={styles.scriptureText}>
-            "Each of you should give what you have decided in your heart to give, not reluctantly
-            or under compulsion, for God loves a cheerful giver."
+            &ldquo;Each of you should give what you have decided in your heart to give, not reluctantly
+            or under compulsion, for God loves a cheerful giver.&rdquo;
           </ThemedText>
           <ThemedText style={styles.scriptureReference}>2 Corinthians 9:7</ThemedText>
         </View>
