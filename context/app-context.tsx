@@ -13,6 +13,7 @@ const STORAGE_KEYS = {
   lastMode: 'kx:lastMode',
   hasCompletedModePick: 'kx:hasCompletedModePick',
   auth: 'kx:auth',
+  sportsOrganization: 'kx:sportsOrganization',
   sportsProgram: 'kx:sportsProgram',
   sportsSeason: 'kx:sportsSeason',
 };
@@ -127,6 +128,37 @@ const SPORTS_SEASONS: Record<string, Cycle> = {
   '2023-24': { id: '2023-24', name: '2023-24', startDate: new Date('2023-10-01'), endDate: new Date('2024-04-01'), isCurrent: false },
 };
 
+// Organizations for sports mode (static for now)
+const SPORTS_ORGANIZATIONS: Record<string, Organization> = {
+  'Lincoln University': {
+    id: 'lincoln-basketball',
+    name: 'Lincoln University',
+    mode: 'sports',
+    type: 'college_basketball',
+    location: 'Jefferson City, MO',
+    description: 'Lincoln University Blue Tigers Men\'s Basketball',
+  },
+  'Middlebrooks Academy': {
+    id: 'middlebrooks-academy',
+    name: 'Middlebrooks Academy',
+    mode: 'sports',
+    type: 'prep_school',
+    location: 'Atlanta, GA',
+    description: 'Elite Prep Basketball Program',
+  },
+  'Cathedral HS': {
+    id: 'cathedral-hs',
+    name: 'Cathedral HS',
+    mode: 'sports',
+    type: 'high_school',
+    location: 'Indianapolis, IN',
+    description: 'Cathedral High School Basketball',
+  },
+};
+
+// Export for use in avatar drawer
+export { SPORTS_ORGANIZATIONS, SPORTS_PROGRAMS, SPORTS_SEASONS };
+
 // =============================================================================
 // DEFAULT STATE
 // =============================================================================
@@ -159,7 +191,7 @@ type AppAction =
   | { type: 'SET_AUTH_STATE'; payload: AuthState }
   | { type: 'SET_PENDING_LANDING_TAB'; payload: LandingTab }
   | { type: 'INITIALIZE'; payload: Partial<ExtendedAppState> }
-  | { type: 'RESTORE_STATE'; payload: { mode: Mode; authState: AuthState; program?: string; season?: string } };
+  | { type: 'RESTORE_STATE'; payload: { mode: Mode; authState: AuthState; organization?: string; program?: string; season?: string } };
 
 function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppState {
   switch (action.type) {
@@ -195,13 +227,16 @@ function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppStat
     case 'INITIALIZE':
       return { ...state, ...action.payload, isLoading: false };
     case 'RESTORE_STATE': {
-      const { mode, authState, program, season } = action.payload;
+      const { mode, authState, organization, program, season } = action.payload;
+      const resolvedOrganization = mode === 'sports' && organization && SPORTS_ORGANIZATIONS[organization]
+        ? SPORTS_ORGANIZATIONS[organization]
+        : DEMO_ORGANIZATIONS[mode];
       const resolvedProgram = program && SPORTS_PROGRAMS[program] ? SPORTS_PROGRAMS[program] : DEMO_PROGRAM;
       const resolvedSeason = season && SPORTS_SEASONS[season] ? SPORTS_SEASONS[season] : DEMO_CYCLES[mode];
       return {
         ...state,
         mode,
-        organization: DEMO_ORGANIZATIONS[mode],
+        organization: resolvedOrganization,
         operatingRole: DEMO_ROLES[mode],
         cycle: mode === 'sports' ? resolvedSeason : DEMO_CYCLES[mode],
         program: mode === 'sports' ? resolvedProgram : null,
@@ -253,9 +288,10 @@ export function AppProvider({ children }: AppProviderProps) {
   useEffect(() => {
     const loadPersistedState = async () => {
       try {
-        const [lastMode, auth, program, season] = await Promise.all([
+        const [lastMode, auth, organization, program, season] = await Promise.all([
           AsyncStorage.getItem(STORAGE_KEYS.lastMode),
           AsyncStorage.getItem(STORAGE_KEYS.auth),
+          AsyncStorage.getItem(STORAGE_KEYS.sportsOrganization),
           AsyncStorage.getItem(STORAGE_KEYS.sportsProgram),
           AsyncStorage.getItem(STORAGE_KEYS.sportsSeason),
         ]);
@@ -267,6 +303,7 @@ export function AppProvider({ children }: AppProviderProps) {
             payload: {
               mode: lastMode as Mode,
               authState: (auth as AuthState) || 'viewer',
+              organization: organization || undefined,
               program: program || undefined,
               season: season || undefined,
             },
@@ -295,16 +332,19 @@ export function AppProvider({ children }: AppProviderProps) {
     AsyncStorage.setItem(STORAGE_KEYS.auth, state.authState).catch(console.error);
   }, [state.authState, state.isLoading]);
 
-  // Persist sports program/season when they change
+  // Persist sports organization/program/season when they change
   useEffect(() => {
     if (state.isLoading || state.mode !== 'sports') return;
+    if (state.organization?.name) {
+      AsyncStorage.setItem(STORAGE_KEYS.sportsOrganization, state.organization.name).catch(console.error);
+    }
     if (state.program?.name) {
       AsyncStorage.setItem(STORAGE_KEYS.sportsProgram, state.program.name).catch(console.error);
     }
     if (state.cycle?.name) {
       AsyncStorage.setItem(STORAGE_KEYS.sportsSeason, state.cycle.name).catch(console.error);
     }
-  }, [state.program, state.cycle, state.mode, state.isLoading]);
+  }, [state.organization, state.program, state.cycle, state.mode, state.isLoading]);
 
   const setMode = useCallback((mode: Mode) => {
     dispatch({ type: 'SET_MODE', payload: mode });
@@ -365,6 +405,7 @@ export function AppProvider({ children }: AppProviderProps) {
         STORAGE_KEYS.lastMode,
         STORAGE_KEYS.hasCompletedModePick,
         STORAGE_KEYS.auth,
+        STORAGE_KEYS.sportsOrganization,
         STORAGE_KEYS.sportsProgram,
         STORAGE_KEYS.sportsSeason,
       ]);
