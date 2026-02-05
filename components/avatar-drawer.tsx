@@ -1,16 +1,9 @@
 /**
  * KaNeXT OS Avatar Drawer
- * Single authority surface for identity and context.
- * X/Twitter-style slide-in drawer from left.
+ * Slide-in drawer from left with viewer vs owner layouts.
  *
- * Sports mode layout:
- * - Identity header (read-only)
- * - Program switcher
- * - Season switcher
- * - Account links (Settings, Help, Terms)
- * - Logout
- *
- * Mode switching is ONLY in the global header dropdown.
+ * Viewer: Generic identity, context rows, Log in action
+ * Owner: Full identity, context selectors, Account links, Log out
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -23,7 +16,6 @@ import {
   Dimensions,
   ScrollView,
   Modal,
-  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -75,13 +67,15 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { state, setProgram, setCycle, setFirstRun, clearPersistedState } = useAppContext();
+  const { state, setProgram, setCycle, setAuthState, logout } = useAppContext();
+
+  const isOwner = state.authState === 'owner';
 
   const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const [showProgramSheet, setShowProgramSheet] = useState(false);
-  const [showSeasonSheet, setShowSeasonSheet] = useState(false);
+  const [showProgramModal, setShowProgramModal] = useState(false);
+  const [showSeasonModal, setShowSeasonModal] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -119,12 +113,12 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
 
   const handleProgramSelect = (program: Program) => {
     setProgram(program);
-    setShowProgramSheet(false);
+    setShowProgramModal(false);
   };
 
   const handleSeasonSelect = (season: Cycle) => {
     setCycle(season);
-    setShowSeasonSheet(false);
+    setShowSeasonModal(false);
   };
 
   const handleNavigation = (route: string) => {
@@ -134,23 +128,14 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
     }, 300);
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Log out?',
-      "You'll need to sign in again to access your programs.",
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Log out',
-          style: 'destructive',
-          onPress: async () => {
-            onClose();
-            await clearPersistedState();
-            setFirstRun(true);
-          },
-        },
-      ]
-    );
+  const handleLogin = () => {
+    setAuthState('owner');
+    onClose();
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    onClose();
   };
 
   return (
@@ -162,7 +147,7 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
       statusBarTranslucent
     >
       <View style={StyleSheet.absoluteFill}>
-        {/* Scrim / Backdrop */}
+        {/* Scrim */}
         <Animated.View style={[styles.scrim, { opacity: fadeAnim }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         </Animated.View>
@@ -186,7 +171,7 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
             showsVerticalScrollIndicator={false}
           >
             {/* ============================================= */}
-            {/* IDENTITY HEADER (Read-Only) */}
+            {/* IDENTITY HEADER */}
             {/* ============================================= */}
             <View style={styles.section}>
               <View
@@ -197,31 +182,57 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
               >
                 <IconSymbol name="person.fill" size={40} color={colors.icon} />
               </View>
-              <Text style={[styles.userName, { color: colors.text }]}>
-                Sammy Kalejaiye
-              </Text>
-              <Text style={[styles.userRole, { color: colors.textSecondary }]}>
-                {formatRole(state.operatingRole)}
-              </Text>
+              {isOwner ? (
+                <>
+                  <Text style={[styles.userName, { color: colors.text }]}>
+                    Sammy Kalejaiye
+                  </Text>
+                  <Text style={[styles.userRole, { color: colors.textSecondary }]}>
+                    {formatRole(state.operatingRole)}
+                  </Text>
+                  <Text style={[styles.userOrg, { color: colors.textTertiary }]}>
+                    {state.organization?.name}
+                  </Text>
+                </>
+              ) : (
+                <Text style={[styles.userName, { color: colors.text }]}>
+                  Viewer
+                </Text>
+              )}
             </View>
 
             <View style={[styles.divider, { backgroundColor: colors.divider }]} />
 
             {/* ============================================= */}
-            {/* SPORTS MODE: PROGRAM SWITCHER */}
+            {/* SPORTS MODE CONTEXT */}
             {/* ============================================= */}
             {state.mode === 'sports' && (
               <>
+                {/* Organization (read-only for viewer) */}
+                {!isOwner && (
+                  <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                      ORGANIZATION
+                    </Text>
+                    <View style={styles.contextRowStatic}>
+                      <Text style={[styles.contextValue, { color: colors.text }]}>
+                        {state.organization?.name ?? 'Lincoln University'}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                {/* Program (tappable) */}
                 <View style={styles.section}>
                   <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-                    CURRENT PROGRAM
+                    PROGRAM
                   </Text>
                   <Pressable
                     style={({ pressed }) => [
                       styles.contextRow,
                       { backgroundColor: pressed ? colors.backgroundSecondary : 'transparent' },
                     ]}
-                    onPress={() => setShowProgramSheet(true)}
+                    onPress={() => setShowProgramModal(true)}
                   >
                     <Text style={[styles.contextValue, { color: colors.text }]}>
                       {state.program?.name ?? 'Varsity'}
@@ -230,15 +241,7 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
                   </Pressable>
                 </View>
 
-                <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-              </>
-            )}
-
-            {/* ============================================= */}
-            {/* SPORTS MODE: SEASON SWITCHER */}
-            {/* ============================================= */}
-            {state.mode === 'sports' && (
-              <>
+                {/* Season (tappable) */}
                 <View style={styles.section}>
                   <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
                     SEASON
@@ -248,7 +251,7 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
                       styles.contextRow,
                       { backgroundColor: pressed ? colors.backgroundSecondary : 'transparent' },
                     ]}
-                    onPress={() => setShowSeasonSheet(true)}
+                    onPress={() => setShowSeasonModal(true)}
                   >
                     <Text style={[styles.contextValue, { color: colors.text }]}>
                       {state.cycle?.name ?? '2025-26'}
@@ -262,113 +265,160 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
             )}
 
             {/* ============================================= */}
-            {/* ACCOUNT & SYSTEM LINKS */}
+            {/* ACTION ROWS */}
             {/* ============================================= */}
             <View style={styles.section}>
-              <MenuItem
-                icon="gear"
-                label="Account Settings"
-                colors={colors}
-                onPress={() => handleNavigation('/account/settings')}
-              />
-              <MenuItem
-                icon="questionmark.circle"
-                label="Help / Support"
-                colors={colors}
-                onPress={() => handleNavigation('/help')}
-              />
-              <MenuItem
-                icon="info.circle"
-                label="Terms & Policies"
-                colors={colors}
-                onPress={() => handleNavigation('/terms')}
-              />
+              {isOwner ? (
+                <>
+                  {/* Owner actions */}
+                  <MenuItem
+                    icon="gear"
+                    label="Account Settings"
+                    colors={colors}
+                    onPress={() => handleNavigation('/account/settings')}
+                  />
+                  <MenuItem
+                    icon="questionmark.circle"
+                    label="Help / Support"
+                    colors={colors}
+                    onPress={() => handleNavigation('/help')}
+                  />
+                  <MenuItem
+                    icon="info.circle"
+                    label="Terms & Policies"
+                    colors={colors}
+                    onPress={() => handleNavigation('/terms')}
+                  />
+                </>
+              ) : (
+                <>
+                  {/* Viewer actions */}
+                  <MenuItem
+                    icon="person.crop.circle.badge.plus"
+                    label="Log in"
+                    colors={colors}
+                    onPress={handleLogin}
+                  />
+                  <MenuItem
+                    icon="questionmark.circle"
+                    label="Help / Support"
+                    colors={colors}
+                    onPress={() => handleNavigation('/help')}
+                  />
+                  <MenuItem
+                    icon="info.circle"
+                    label="Terms & Policies"
+                    colors={colors}
+                    onPress={() => handleNavigation('/terms')}
+                  />
+                </>
+              )}
             </View>
 
-            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-            {/* Log Out */}
-            <View style={styles.section}>
-              <MenuItem
-                icon="rectangle.portrait.and.arrow.right"
-                label="Log Out"
-                colors={colors}
-                destructive
-                onPress={handleLogout}
-              />
-            </View>
+            {/* Log Out (owner only) */}
+            {isOwner && (
+              <>
+                <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                <View style={styles.section}>
+                  <MenuItem
+                    icon="rectangle.portrait.and.arrow.right"
+                    label="Log Out"
+                    colors={colors}
+                    destructive
+                    onPress={handleLogout}
+                  />
+                </View>
+              </>
+            )}
           </ScrollView>
         </Animated.View>
 
-        {/* Program Picker Sheet */}
-        {showProgramSheet && (
-          <Pressable style={styles.sheetOverlay} onPress={() => setShowProgramSheet(false)}>
-            <View
-              style={[
-                styles.sheet,
-                { backgroundColor: colors.card, paddingBottom: insets.bottom + Spacing.md },
-              ]}
-            >
-              <Text style={[styles.sheetTitle, { color: colors.text }]}>Select Program</Text>
-              {SPORTS_PROGRAMS.map((program) => {
-                const isSelected = state.program?.id === program.id;
-                return (
-                  <Pressable
-                    key={program.id}
-                    style={[
-                      styles.sheetOption,
-                      isSelected && { backgroundColor: colors.backgroundSecondary },
-                    ]}
-                    onPress={() => handleProgramSelect(program)}
-                  >
-                    <Text style={[styles.sheetOptionText, { color: colors.text }]}>
-                      {program.name}
-                    </Text>
-                    {isSelected && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
-                  </Pressable>
-                );
-              })}
-            </View>
-          </Pressable>
-        )}
+        {/* Program Selector Modal (centered card) */}
+        <SelectorModal
+          visible={showProgramModal}
+          title="Select Program"
+          options={SPORTS_PROGRAMS.map(p => p.name)}
+          selectedValue={state.program?.name ?? 'Varsity'}
+          onSelect={(name) => {
+            const program = SPORTS_PROGRAMS.find(p => p.name === name);
+            if (program) handleProgramSelect(program);
+          }}
+          onClose={() => setShowProgramModal(false)}
+          colors={colors}
+        />
 
-        {/* Season Picker Sheet */}
-        {showSeasonSheet && (
-          <Pressable style={styles.sheetOverlay} onPress={() => setShowSeasonSheet(false)}>
-            <View
-              style={[
-                styles.sheet,
-                { backgroundColor: colors.card, paddingBottom: insets.bottom + Spacing.md },
-              ]}
-            >
-              <Text style={[styles.sheetTitle, { color: colors.text }]}>Select Season</Text>
-              {SEASONS.map((season) => {
-                const isSelected = state.cycle?.id === season.id;
-                return (
-                  <Pressable
-                    key={season.id}
-                    style={[
-                      styles.sheetOption,
-                      isSelected && { backgroundColor: colors.backgroundSecondary },
-                    ]}
-                    onPress={() => handleSeasonSelect(season)}
-                  >
-                    <Text style={[styles.sheetOptionText, { color: colors.text }]}>
-                      {season.name}
-                    </Text>
-                    {isSelected && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
-                  </Pressable>
-                );
-              })}
-            </View>
-          </Pressable>
-        )}
+        {/* Season Selector Modal (centered card) */}
+        <SelectorModal
+          visible={showSeasonModal}
+          title="Select Season"
+          options={SEASONS.map(s => s.name)}
+          selectedValue={state.cycle?.name ?? '2025-26'}
+          onSelect={(name) => {
+            const season = SEASONS.find(s => s.name === name);
+            if (season) handleSeasonSelect(season);
+          }}
+          onClose={() => setShowSeasonModal(false)}
+          colors={colors}
+        />
       </View>
     </Modal>
   );
 }
 
-// Helper component for menu items
+// Centered card selector modal
+function SelectorModal({
+  visible,
+  title,
+  options,
+  selectedValue,
+  onSelect,
+  onClose,
+  colors,
+}: {
+  visible: boolean;
+  title: string;
+  options: string[];
+  selectedValue: string;
+  onSelect: (value: string) => void;
+  onClose: () => void;
+  colors: typeof Colors.light;
+}) {
+  if (!visible) return null;
+
+  return (
+    <Pressable style={styles.modalOverlay} onPress={onClose}>
+      <View style={[styles.modalCard, { backgroundColor: colors.card }]}>
+        <Text style={[styles.modalTitle, { color: colors.text }]}>{title}</Text>
+        {options.map((option) => {
+          const isSelected = option === selectedValue;
+          return (
+            <Pressable
+              key={option}
+              style={[
+                styles.modalOption,
+                isSelected && { backgroundColor: colors.backgroundSecondary },
+              ]}
+              onPress={() => onSelect(option)}
+            >
+              <Text
+                style={[
+                  styles.modalOptionText,
+                  { color: colors.text },
+                  isSelected && { fontWeight: '600' },
+                ]}
+              >
+                {option}
+              </Text>
+              {isSelected && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
+            </Pressable>
+          );
+        })}
+      </View>
+    </Pressable>
+  );
+}
+
+// Menu item helper
 function MenuItem({
   icon,
   label,
@@ -432,17 +482,18 @@ const styles = StyleSheet.create({
   },
   section: {
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.md,
+    paddingVertical: Spacing.sm,
   },
   sectionTitle: {
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.5,
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
   },
   divider: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: Spacing.md,
+    marginVertical: Spacing.xs,
   },
   avatarLarge: {
     width: 64,
@@ -460,6 +511,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 2,
   },
+  userOrg: {
+    fontSize: 13,
+    marginTop: 2,
+  },
   contextRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -467,7 +522,10 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.sm,
     borderRadius: BorderRadius.md,
-    marginTop: Spacing.xs,
+  },
+  contextRowStatic: {
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
   },
   contextValue: {
     fontSize: 16,
@@ -486,32 +544,38 @@ const styles = StyleSheet.create({
     marginLeft: Spacing.md,
     flex: 1,
   },
-  sheetOverlay: {
+  modalOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  sheet: {
-    borderTopLeftRadius: BorderRadius.xl,
-    borderTopRightRadius: BorderRadius.xl,
-    paddingTop: Spacing.lg,
+  modalCard: {
+    width: 280,
+    borderRadius: BorderRadius.lg,
+    paddingVertical: Spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  sheetTitle: {
+  modalTitle: {
     fontSize: 17,
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: Spacing.md,
   },
-  sheetOption: {
+  modalOption: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 14,
+    paddingVertical: 12,
     paddingHorizontal: Spacing.lg,
-    marginHorizontal: Spacing.md,
+    marginHorizontal: Spacing.sm,
     borderRadius: BorderRadius.md,
   },
-  sheetOptionText: {
+  modalOptionText: {
     fontSize: 16,
   },
 });

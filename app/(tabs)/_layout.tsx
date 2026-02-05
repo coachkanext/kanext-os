@@ -4,8 +4,8 @@
  * Same across all modes - icons are consistent, behavior is mode-contextual.
  */
 
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs, useRouter, useSegments } from 'expo-router';
+import React, { useEffect } from 'react';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -29,9 +29,21 @@ function TabIcon({
 export default function TabLayout() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const router = useRouter();
+  const segments = useSegments();
+
+  // Navigate to Nexus on first mount (if on index/Home)
+  useEffect(() => {
+    // Only redirect if we're on the root (index) tab
+    if (segments.length === 1 && segments[0] === '(tabs)') {
+      router.replace('/(tabs)/nexus');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Tabs
+      initialRouteName="nexus"
       screenOptions={{
         tabBarActiveTintColor: colors.tabIconSelected,
         tabBarInactiveTintColor: colors.tabIconDefault,

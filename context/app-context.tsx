@@ -1,6 +1,6 @@
 /**
  * KaNeXT OS Global App Context
- * Single source of truth for mode, organization, role, and cycle state.
+ * Single source of truth for mode, organization, role, cycle, and auth state.
  * Includes AsyncStorage persistence for state across app restarts.
  */
 
@@ -8,13 +8,20 @@ import React, { createContext, useContext, useReducer, useCallback, useEffect, R
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { AppContextState, Mode, Role, Organization, Cycle, Program } from '@/types';
 
-const STORAGE_KEY = '@kanext_app_state';
+// Storage keys
+const STORAGE_KEYS = {
+  lastMode: 'kx:lastMode',
+  auth: 'kx:auth',
+  sportsProgram: 'kx:sportsProgram',
+  sportsSeason: 'kx:sportsSeason',
+};
 
-// State shape for persistence (only save what's needed)
-interface PersistedState {
-  mode: Mode;
-  operatingRole: Role;
-  isFirstRun: boolean;
+// Auth state type
+type AuthState = 'viewer' | 'owner';
+
+// Extended state with auth
+interface ExtendedAppState extends AppContextState {
+  authState: AuthState;
 }
 
 // =============================================================================
@@ -100,18 +107,34 @@ const DEMO_PROGRAM: Program = {
   level: 'varsity',
 };
 
+// Programs for sports mode
+const SPORTS_PROGRAMS: Record<string, Program> = {
+  'Varsity': { id: 'varsity', name: 'Varsity', level: 'varsity' },
+  'Development I': { id: 'dev-1', name: 'Development I', level: 'development_1' },
+  'Development II': { id: 'dev-2', name: 'Development II', level: 'development_2' },
+  'Postgrad': { id: 'postgrad', name: 'Postgrad', level: 'postgrad' },
+};
+
+// Seasons for sports mode
+const SPORTS_SEASONS: Record<string, Cycle> = {
+  '2025-26': { id: '2025-26', name: '2025-26', startDate: new Date('2025-10-01'), endDate: new Date('2026-04-01'), isCurrent: true },
+  '2024-25': { id: '2024-25', name: '2024-25', startDate: new Date('2024-10-01'), endDate: new Date('2025-04-01'), isCurrent: false },
+  '2023-24': { id: '2023-24', name: '2023-24', startDate: new Date('2023-10-01'), endDate: new Date('2024-04-01'), isCurrent: false },
+};
+
 // =============================================================================
 // DEFAULT STATE
 // =============================================================================
 
-const defaultState: AppContextState = {
+const defaultState: ExtendedAppState = {
   mode: 'sports',
   organization: DEMO_ORGANIZATIONS.sports,
   operatingRole: DEMO_ROLES.sports,
   cycle: DEMO_CYCLES.sports,
   program: DEMO_PROGRAM,
-  isFirstRun: true, // Show onboarding on first launch
-  isLoading: true, // Start loading until persisted state is checked
+  isFirstRun: true,
+  isLoading: true,
+  authState: 'viewer',
 };
 
 // =============================================================================
@@ -120,22 +143,22 @@ const defaultState: AppContextState = {
 
 type AppAction =
   | { type: 'SET_MODE'; payload: Mode }
-  | { type: 'SWITCH_MODE'; payload: Mode } // Full mode switch with org/role/cycle update
+  | { type: 'SWITCH_MODE'; payload: Mode }
   | { type: 'SET_ORGANIZATION'; payload: Organization | null }
   | { type: 'SET_ROLE'; payload: Role }
   | { type: 'SET_CYCLE'; payload: Cycle | null }
   | { type: 'SET_PROGRAM'; payload: Program | null }
   | { type: 'SET_FIRST_RUN'; payload: boolean }
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'INITIALIZE'; payload: Partial<AppContextState> }
-  | { type: 'RESTORE_STATE'; payload: PersistedState };
+  | { type: 'SET_AUTH_STATE'; payload: AuthState }
+  | { type: 'INITIALIZE'; payload: Partial<ExtendedAppState> }
+  | { type: 'RESTORE_STATE'; payload: { mode: Mode; authState: AuthState; program?: string; season?: string } };
 
-function appReducer(state: AppContextState, action: AppAction): AppContextState {
+function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppState {
   switch (action.type) {
     case 'SET_MODE':
       return { ...state, mode: action.payload };
     case 'SWITCH_MODE': {
-      // Full mode switch - update organization, role, and cycle to match new mode
       const newMode = action.payload;
       return {
         ...state,
@@ -158,20 +181,24 @@ function appReducer(state: AppContextState, action: AppAction): AppContextState 
       return { ...state, isFirstRun: action.payload };
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload };
+    case 'SET_AUTH_STATE':
+      return { ...state, authState: action.payload };
     case 'INITIALIZE':
       return { ...state, ...action.payload, isLoading: false };
     case 'RESTORE_STATE': {
-      // Restore persisted state and fill in derived state
-      const { mode, operatingRole, isFirstRun } = action.payload;
+      const { mode, authState, program, season } = action.payload;
+      const resolvedProgram = program && SPORTS_PROGRAMS[program] ? SPORTS_PROGRAMS[program] : DEMO_PROGRAM;
+      const resolvedSeason = season && SPORTS_SEASONS[season] ? SPORTS_SEASONS[season] : DEMO_CYCLES[mode];
       return {
         ...state,
         mode,
         organization: DEMO_ORGANIZATIONS[mode],
-        operatingRole,
-        cycle: DEMO_CYCLES[mode],
-        program: mode === 'sports' ? DEMO_PROGRAM : null,
-        isFirstRun,
+        operatingRole: DEMO_ROLES[mode],
+        cycle: mode === 'sports' ? resolvedSeason : DEMO_CYCLES[mode],
+        program: mode === 'sports' ? resolvedProgram : null,
+        isFirstRun: false,
         isLoading: false,
+        authState,
       };
     }
     default:
@@ -184,16 +211,18 @@ function appReducer(state: AppContextState, action: AppAction): AppContextState 
 // =============================================================================
 
 interface AppContextValue {
-  state: AppContextState;
+  state: ExtendedAppState;
   setMode: (mode: Mode) => void;
-  switchMode: (mode: Mode) => void; // Full mode switch with org/role/cycle update
+  switchMode: (mode: Mode) => void;
   setOrganization: (org: Organization | null) => void;
   setRole: (role: Role) => void;
   setCycle: (cycle: Cycle | null) => void;
   setProgram: (program: Program | null) => void;
   setFirstRun: (isFirstRun: boolean) => void;
-  initialize: (initialState: Partial<AppContextState>) => void;
-  clearPersistedState: () => Promise<void>; // For testing/reset
+  setAuthState: (authState: AuthState) => void;
+  initialize: (initialState: Partial<ExtendedAppState>) => void;
+  clearPersistedState: () => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextValue | undefined>(undefined);
@@ -213,12 +242,26 @@ export function AppProvider({ children }: AppProviderProps) {
   useEffect(() => {
     const loadPersistedState = async () => {
       try {
-        const stored = await AsyncStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          const persisted: PersistedState = JSON.parse(stored);
-          dispatch({ type: 'RESTORE_STATE', payload: persisted });
+        const [lastMode, auth, program, season] = await Promise.all([
+          AsyncStorage.getItem(STORAGE_KEYS.lastMode),
+          AsyncStorage.getItem(STORAGE_KEYS.auth),
+          AsyncStorage.getItem(STORAGE_KEYS.sportsProgram),
+          AsyncStorage.getItem(STORAGE_KEYS.sportsSeason),
+        ]);
+
+        if (lastMode) {
+          // Mode exists - skip first run
+          dispatch({
+            type: 'RESTORE_STATE',
+            payload: {
+              mode: lastMode as Mode,
+              authState: (auth as AuthState) || 'viewer',
+              program: program || undefined,
+              season: season || undefined,
+            },
+          });
         } else {
-          // No stored state - first run, stop loading
+          // No saved mode - first run
           dispatch({ type: 'SET_LOADING', payload: false });
         }
       } catch (error) {
@@ -229,23 +272,28 @@ export function AppProvider({ children }: AppProviderProps) {
     loadPersistedState();
   }, []);
 
-  // Persist state when relevant values change
+  // Persist mode when it changes
   useEffect(() => {
-    if (state.isLoading) return; // Don't save while loading
-    const persistState = async () => {
-      try {
-        const toPersist: PersistedState = {
-          mode: state.mode,
-          operatingRole: state.operatingRole,
-          isFirstRun: state.isFirstRun,
-        };
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toPersist));
-      } catch (error) {
-        console.error('Failed to persist state:', error);
-      }
-    };
-    persistState();
-  }, [state.mode, state.operatingRole, state.isFirstRun, state.isLoading]);
+    if (state.isLoading || state.isFirstRun) return;
+    AsyncStorage.setItem(STORAGE_KEYS.lastMode, state.mode).catch(console.error);
+  }, [state.mode, state.isLoading, state.isFirstRun]);
+
+  // Persist auth state when it changes
+  useEffect(() => {
+    if (state.isLoading) return;
+    AsyncStorage.setItem(STORAGE_KEYS.auth, state.authState).catch(console.error);
+  }, [state.authState, state.isLoading]);
+
+  // Persist sports program/season when they change
+  useEffect(() => {
+    if (state.isLoading || state.mode !== 'sports') return;
+    if (state.program?.name) {
+      AsyncStorage.setItem(STORAGE_KEYS.sportsProgram, state.program.name).catch(console.error);
+    }
+    if (state.cycle?.name) {
+      AsyncStorage.setItem(STORAGE_KEYS.sportsSeason, state.cycle.name).catch(console.error);
+    }
+  }, [state.program, state.cycle, state.mode, state.isLoading]);
 
   const setMode = useCallback((mode: Mode) => {
     dispatch({ type: 'SET_MODE', payload: mode });
@@ -275,16 +323,31 @@ export function AppProvider({ children }: AppProviderProps) {
     dispatch({ type: 'SET_FIRST_RUN', payload: isFirstRun });
   }, []);
 
-  const initialize = useCallback((initialState: Partial<AppContextState>) => {
+  const setAuthState = useCallback((authState: AuthState) => {
+    dispatch({ type: 'SET_AUTH_STATE', payload: authState });
+  }, []);
+
+  const initialize = useCallback((initialState: Partial<ExtendedAppState>) => {
     dispatch({ type: 'INITIALIZE', payload: initialState });
   }, []);
 
   const clearPersistedState = useCallback(async () => {
     try {
-      await AsyncStorage.removeItem(STORAGE_KEY);
+      await AsyncStorage.multiRemove([
+        STORAGE_KEYS.lastMode,
+        STORAGE_KEYS.auth,
+        STORAGE_KEYS.sportsProgram,
+        STORAGE_KEYS.sportsSeason,
+      ]);
     } catch (error) {
       console.error('Failed to clear persisted state:', error);
     }
+  }, []);
+
+  const logout = useCallback(async () => {
+    // Only clear auth state, NOT mode
+    dispatch({ type: 'SET_AUTH_STATE', payload: 'viewer' });
+    await AsyncStorage.setItem(STORAGE_KEYS.auth, 'viewer');
   }, []);
 
   const value: AppContextValue = {
@@ -296,8 +359,10 @@ export function AppProvider({ children }: AppProviderProps) {
     setCycle,
     setProgram,
     setFirstRun,
+    setAuthState,
     initialize,
     clearPersistedState,
+    logout,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
@@ -315,7 +380,7 @@ export function useAppContext(): AppContextValue {
   return context;
 }
 
-// Convenience hooks for common access patterns
+// Convenience hooks
 export function useMode(): Mode {
   const { state } = useAppContext();
   return state.mode;
@@ -334,4 +399,9 @@ export function useOperatingRole(): Role {
 export function useProgram(): Program | null {
   const { state } = useAppContext();
   return state.program;
+}
+
+export function useAuthState(): AuthState {
+  const { state } = useAppContext();
+  return state.authState;
 }
