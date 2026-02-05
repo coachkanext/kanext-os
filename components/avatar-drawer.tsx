@@ -18,6 +18,7 @@ import {
   Animated,
   Dimensions,
   ScrollView,
+  Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -118,33 +119,38 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
     setRole(role);
   };
 
-  if (!visible) return null;
-
   return (
-    <View style={StyleSheet.absoluteFill}>
-      {/* Scrim / Backdrop */}
-      <Animated.View style={[styles.scrim, { opacity: fadeAnim }]}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-      </Animated.View>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="none"
+      onRequestClose={onClose}
+      statusBarTranslucent
+    >
+      <View style={StyleSheet.absoluteFill}>
+        {/* Scrim / Backdrop */}
+        <Animated.View style={[styles.scrim, { opacity: fadeAnim }]}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        </Animated.View>
 
-      {/* Drawer */}
-      <Animated.View
-        style={[
-          styles.drawer,
-          {
-            width: DRAWER_WIDTH,
-            backgroundColor: colors.background,
-            transform: [{ translateX: slideAnim }],
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom,
-          },
-        ]}
-      >
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
+        {/* Drawer */}
+        <Animated.View
+          style={[
+            styles.drawer,
+            {
+              width: DRAWER_WIDTH,
+              backgroundColor: colors.background,
+              transform: [{ translateX: slideAnim }],
+              paddingTop: insets.top,
+              paddingBottom: insets.bottom,
+            },
+          ]}
         >
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
           {/* ============================================= */}
           {/* IDENTITY HEADER (Read-Only) */}
           {/* ============================================= */}
@@ -568,8 +574,9 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
             />
           </View>
         </ScrollView>
-      </Animated.View>
-    </View>
+        </Animated.View>
+      </View>
+    </Modal>
   );
 }
 
