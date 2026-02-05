@@ -4,14 +4,15 @@
  * Same across all modes - icons are consistent, behavior is mode-contextual.
  */
 
-import { Tabs, useRouter, useSegments } from 'expo-router';
-import React, { useEffect } from 'react';
+import { Tabs, useRouter } from 'expo-router';
+import React, { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol, SymbolViewProps } from '@/components/ui/icon-symbol';
 import { Colors, Layout } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAppContext } from '@/context/app-context';
 
 // Tab icon component
 function TabIcon({
@@ -30,16 +31,24 @@ export default function TabLayout() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const router = useRouter();
-  const segments = useSegments();
+  const { state, setPendingLandingTab } = useAppContext();
+  const hasNavigated = useRef(false);
 
-  // Navigate to Nexus on first mount (if on index/Home)
+  // Handle landing navigation based on pendingLandingTab
+  // Rule A: After first mode pick → land on HOME
+  // Rule B: Normal app launch → land on NEXUS (default initialRouteName)
   useEffect(() => {
-    // Only redirect if we're on the root (index) tab
-    if (segments.length === 1 && segments[0] === '(tabs)') {
-      router.replace('/(tabs)/nexus');
+    if (hasNavigated.current) return;
+
+    if (state.pendingLandingTab === 'home') {
+      // First-time mode selection: navigate to Home
+      hasNavigated.current = true;
+      router.replace('/(tabs)' as any);
+      setPendingLandingTab(null);
     }
+    // If pendingLandingTab is null, keep default (nexus via initialRouteName)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [state.pendingLandingTab]);
 
   return (
     <Tabs

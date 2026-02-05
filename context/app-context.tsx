@@ -11,6 +11,7 @@ import type { AppContextState, Mode, Role, Organization, Cycle, Program } from '
 // Storage keys
 const STORAGE_KEYS = {
   lastMode: 'kx:lastMode',
+  hasCompletedModePick: 'kx:hasCompletedModePick',
   auth: 'kx:auth',
   sportsProgram: 'kx:sportsProgram',
   sportsSeason: 'kx:sportsSeason',
@@ -19,9 +20,13 @@ const STORAGE_KEYS = {
 // Auth state type
 type AuthState = 'viewer' | 'owner';
 
-// Extended state with auth
+// Landing tab for navigation control
+type LandingTab = 'home' | 'nexus' | null;
+
+// Extended state with auth and landing control
 interface ExtendedAppState extends AppContextState {
   authState: AuthState;
+  pendingLandingTab: LandingTab;
 }
 
 // =============================================================================
@@ -135,6 +140,7 @@ const defaultState: ExtendedAppState = {
   isFirstRun: true,
   isLoading: true,
   authState: 'viewer',
+  pendingLandingTab: null,
 };
 
 // =============================================================================
@@ -151,6 +157,7 @@ type AppAction =
   | { type: 'SET_FIRST_RUN'; payload: boolean }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_AUTH_STATE'; payload: AuthState }
+  | { type: 'SET_PENDING_LANDING_TAB'; payload: LandingTab }
   | { type: 'INITIALIZE'; payload: Partial<ExtendedAppState> }
   | { type: 'RESTORE_STATE'; payload: { mode: Mode; authState: AuthState; program?: string; season?: string } };
 
@@ -183,6 +190,8 @@ function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppStat
       return { ...state, isLoading: action.payload };
     case 'SET_AUTH_STATE':
       return { ...state, authState: action.payload };
+    case 'SET_PENDING_LANDING_TAB':
+      return { ...state, pendingLandingTab: action.payload };
     case 'INITIALIZE':
       return { ...state, ...action.payload, isLoading: false };
     case 'RESTORE_STATE': {
@@ -220,6 +229,8 @@ interface AppContextValue {
   setProgram: (program: Program | null) => void;
   setFirstRun: (isFirstRun: boolean) => void;
   setAuthState: (authState: AuthState) => void;
+  setPendingLandingTab: (tab: LandingTab) => void;
+  completeFirstModePick: (mode: Mode) => Promise<void>;
   initialize: (initialState: Partial<ExtendedAppState>) => void;
   clearPersistedState: () => Promise<void>;
   logout: () => Promise<void>;
@@ -327,6 +338,23 @@ export function AppProvider({ children }: AppProviderProps) {
     dispatch({ type: 'SET_AUTH_STATE', payload: authState });
   }, []);
 
+  const setPendingLandingTab = useCallback((tab: LandingTab) => {
+    dispatch({ type: 'SET_PENDING_LANDING_TAB', payload: tab });
+  }, []);
+
+  const completeFirstModePick = useCallback(async (mode: Mode) => {
+    // Rule A: First-time mode selection
+    // 1) Save lastMode
+    // 2) Save hasCompletedModePick = "true"
+    // 3) Set pending landing to HOME
+    dispatch({ type: 'SWITCH_MODE', payload: mode });
+    dispatch({ type: 'SET_PENDING_LANDING_TAB', payload: 'home' });
+    dispatch({ type: 'SET_FIRST_RUN', payload: false });
+
+    await AsyncStorage.setItem(STORAGE_KEYS.lastMode, mode);
+    await AsyncStorage.setItem(STORAGE_KEYS.hasCompletedModePick, 'true');
+  }, []);
+
   const initialize = useCallback((initialState: Partial<ExtendedAppState>) => {
     dispatch({ type: 'INITIALIZE', payload: initialState });
   }, []);
@@ -335,6 +363,7 @@ export function AppProvider({ children }: AppProviderProps) {
     try {
       await AsyncStorage.multiRemove([
         STORAGE_KEYS.lastMode,
+        STORAGE_KEYS.hasCompletedModePick,
         STORAGE_KEYS.auth,
         STORAGE_KEYS.sportsProgram,
         STORAGE_KEYS.sportsSeason,
@@ -360,6 +389,8 @@ export function AppProvider({ children }: AppProviderProps) {
     setProgram,
     setFirstRun,
     setAuthState,
+    setPendingLandingTab,
+    completeFirstModePick,
     initialize,
     clearPersistedState,
     logout,

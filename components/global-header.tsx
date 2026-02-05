@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { AvatarDrawer } from '@/components/avatar-drawer';
@@ -27,6 +28,7 @@ export function GlobalHeader() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const { state, switchMode } = useAppContext();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -35,8 +37,11 @@ export function GlobalHeader() {
   const modeColor = ModeColors[state.mode].primary;
 
   const handleModeSelect = (mode: Mode) => {
+    // Rule C: Mode switch → navigate to HOME tab of that mode
     switchMode(mode);
     setDropdownVisible(false);
+    // Navigate to Home tab after mode switch
+    router.replace('/(tabs)' as any);
   };
 
   return (

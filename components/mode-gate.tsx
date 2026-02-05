@@ -60,7 +60,7 @@ const MODE_OPTIONS: ModeOption[] = [
 export function ModeGate() {
   const colorScheme = useColorScheme() ?? 'light';
   const insets = useSafeAreaInsets();
-  const { switchMode, setFirstRun } = useAppContext();
+  const { completeFirstModePick } = useAppContext();
 
   // Black/white only
   const backgroundColor = colorScheme === 'dark' ? '#000000' : '#FFFFFF';
@@ -69,8 +69,8 @@ export function ModeGate() {
 
   const handleModeSelect = (option: ModeOption) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    switchMode(option.mode);
-    setFirstRun(false);
+    // Rule A: First-time mode selection → land on HOME
+    completeFirstModePick(option.mode);
   };
 
   return (
