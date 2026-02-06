@@ -83,109 +83,244 @@ function ActionCard({ title, subtitle, icon, color, colors, onPress }: ActionCar
 }
 
 // =============================================================================
-// SPORTS HOME
+// SPORTS HOME (v1.1 Spec - Team Hub Home / Coach HQ)
+// Mental model: Video-game hub for a coach.
+// NOT a SaaS dashboard. NOT a chatbot entry point.
+// Shows: state, identity, and motion — nothing else.
 // =============================================================================
+
+// Team Hub Tabs - ESPN-style header row (appears ONLY on Sports Home)
+const TEAM_HUB_TABS = [
+  { id: 'home', label: 'Home', route: null }, // Stay on home
+  { id: 'roster', label: 'Roster', route: '/coach/roster' },
+  { id: 'stats', label: 'Stats', route: '/coach/stats' },
+  { id: 'schedule', label: 'Schedule', route: '/coach/schedule' },
+  { id: 'depth-chart', label: 'Depth Chart', route: '/coach/depth-chart' },
+  { id: 'injuries', label: 'Injuries', route: '/coach/injuries' },
+  { id: 'program-context', label: 'Program Context', route: '/coach/program-context' },
+  { id: 'recruiting', label: 'Recruiting', route: '/coach/recruiting' },
+  { id: 'film', label: 'Film', route: '/coach/film' },
+];
+
+// Demo data for v1.1
+const DEMO_TEAM_STATE = {
+  rating: 84,
+  offensiveSystem: 'Spread PnR',
+  defensiveSystem: 'Pressure Man',
+  tempo: 'Fast',
+  record: '6–6',
+  confStanding: '4th',
+};
+
+// Program Context mirror data (read-only on Home)
+const DEMO_PROGRAM_CONTEXT = {
+  scholarships: { used: 11, total: 13 },
+  nilTier: 'Mid-Major',
+  offensiveSystem: 'Spread PnR',
+  defensiveSystem: 'Pressure Man',
+  pace: 'Fast',
+  evaluationEmphasis: ['Shooting ↑', 'OBD ↑', 'Physical ↑'],
+  rosterTargets: ['3&D Wing', 'Stretch 4', 'Lead Guard', 'Rim Protector'],
+};
+
+// Recent changes: evaluation, roster, or decision activity
+const DEMO_RECENT_CHANGES = [
+  { id: '1', text: 'KR ↑ +1 since last eval' },
+  { id: '2', text: 'Rotation shift: 2 players moved into core rotation' },
+  { id: '3', text: 'Recruit added to board' },
+  { id: '4', text: 'New film added: vs Missouri Western' },
+  { id: '5', text: 'Injury status updated' },
+];
+
+// Team Hub Tabs Component (ESPN-style header row)
+function TeamHubTabs({
+  colors,
+  onTabPress,
+}: {
+  colors: typeof Colors.light;
+  onTabPress: (route: string | null) => void;
+}) {
+  return (
+    <View style={[styles.hubTabsContainer, { borderBottomColor: colors.divider }]}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.hubTabsContent}
+      >
+        {TEAM_HUB_TABS.map((tab, index) => {
+          // Home tab is always "active" on this screen
+          const isActive = tab.id === 'home';
+          return (
+            <Pressable
+              key={tab.id}
+              style={[
+                styles.hubTab,
+                isActive && [styles.hubTabActive, { borderBottomColor: colors.text }],
+              ]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onTabPress(tab.route);
+              }}
+            >
+              <ThemedText
+                style={[
+                  styles.hubTabLabel,
+                  { color: isActive ? colors.text : colors.textTertiary },
+                  isActive && styles.hubTabLabelActive,
+                ]}
+              >
+                {tab.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+}
 
 function SportsHome() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const router = useRouter();
-  const modeColors = ModeColors.sports;
-  const { state } = useAppContext();
 
-  const varsity = PROGRAMS.find((p) => p.level === 'varsity');
-  const record = varsity?.record.overall;
+  const handleTabPress = (route: string | null) => {
+    if (route) {
+      router.push(route as any);
+    }
+    // If route is null (Home tab), stay on current screen
+  };
 
   return (
     <>
-      {/* Welcome */}
-      <View style={styles.welcomeSection}>
-        <ThemedText style={styles.welcomeGreeting}>Good afternoon,</ThemedText>
-        <ThemedText style={styles.welcomeName}>Coach</ThemedText>
+      {/* ===== ESPN-STYLE HEADER TABS (only on Sports Home) ===== */}
+      <TeamHubTabs colors={colors} onTabPress={handleTabPress} />
+
+      {/* ===== 1) TEAM RATING BLOCK (centered, open, not boxed) ===== */}
+      <View style={styles.teamStateSection}>
+        {/* Primary: Team KR — centered system headline */}
+        <ThemedText style={styles.ratingLine}>
+          Team KR {DEMO_TEAM_STATE.rating}
+        </ThemedText>
+
+        {/* Affiliation Line */}
+        <ThemedText style={[styles.recordLine, { color: colors.textTertiary }]}>
+          Independent · SWS · 25–26
+        </ThemedText>
+
+        {/* Record Line */}
+        <ThemedText style={[styles.recordLine, { color: colors.textTertiary }]}>
+          Overall 9–8 · Conf 7–0 · Place 1st
+        </ThemedText>
       </View>
 
-      {/* Quick Stats */}
-      <View style={styles.statsGrid}>
-        <QuickStat
-          label="Record"
-          value={record ? `${record.wins}-${record.losses}` : '0-0'}
-          icon="sportscourt.fill"
-          color={modeColors.primary}
-          colors={colors}
-        />
-        <QuickStat
-          label="Players"
-          value={varsity?.roster.length.toString() || '0'}
-          icon="person.3.fill"
-          color={modeColors.primary}
-          colors={colors}
-        />
-        <QuickStat
-          label="Programs"
-          value={PROGRAMS.length.toString()}
-          icon="rectangle.stack.fill"
-          color={modeColors.primary}
-          colors={colors}
-        />
+      {/* ===== 2) PROGRAM CONTEXT MIRROR (read-only) ===== */}
+      <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+        PROGRAM CONTEXT
+      </ThemedText>
+      <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
+        <View style={styles.contextRow}>
+          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
+            Scholarships
+          </ThemedText>
+          <ThemedText style={[styles.contextValue, { color: colors.text }]}>
+            {DEMO_PROGRAM_CONTEXT.scholarships.used} / {DEMO_PROGRAM_CONTEXT.scholarships.total}
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
+        <View style={styles.contextRow}>
+          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
+            NIL Budget
+          </ThemedText>
+          <ThemedText style={[styles.contextValue, { color: colors.text }]}>
+            {DEMO_PROGRAM_CONTEXT.nilTier}
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
+        <View style={styles.contextRow}>
+          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
+            Offensive System
+          </ThemedText>
+          <ThemedText style={[styles.contextValue, { color: colors.text }]}>
+            {DEMO_PROGRAM_CONTEXT.offensiveSystem}
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
+        <View style={styles.contextRow}>
+          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
+            Defensive System
+          </ThemedText>
+          <ThemedText style={[styles.contextValue, { color: colors.text }]}>
+            {DEMO_PROGRAM_CONTEXT.defensiveSystem}
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
+        <View style={styles.contextRow}>
+          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
+            Pace
+          </ThemedText>
+          <ThemedText style={[styles.contextValue, { color: colors.text }]}>
+            {DEMO_PROGRAM_CONTEXT.pace}
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
+        <View style={styles.contextRow}>
+          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
+            Evaluation Emphasis
+          </ThemedText>
+          <ThemedText style={[styles.contextValue, { color: colors.text }]}>
+            {DEMO_PROGRAM_CONTEXT.evaluationEmphasis.join(', ')}
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
+        <View style={styles.contextRow}>
+          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
+            Roster Targets
+          </ThemedText>
+          <ThemedText style={[styles.contextValue, { color: colors.text }]} numberOfLines={2}>
+            {DEMO_PROGRAM_CONTEXT.rosterTargets.join(', ')}
+          </ThemedText>
+        </View>
       </View>
 
-      {/* Quick Actions */}
-      <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-        QUICK ACTIONS
-      </ThemedText>
-      <ActionCard
-        title="View Roster"
-        subtitle="Varsity • 15 players"
-        icon="person.3.fill"
-        color={modeColors.primary}
-        colors={colors}
+      {/* Edit Program Context CTA */}
+      <Pressable
+        style={({ pressed }) => [
+          styles.editContextButton,
+          { backgroundColor: pressed ? colors.backgroundTertiary : colors.backgroundSecondary },
+        ]}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/organization/programs/varsity');
+          router.push('/coach/program-context' as any);
         }}
-      />
-      <ActionCard
-        title="Recruiting Board"
-        subtitle="Track prospects and pipeline"
-        icon="person.badge.plus"
-        color={modeColors.primary}
-        colors={colors}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/organization/recruiting');
-        }}
-      />
-      <ActionCard
-        title="Ask Nexus"
-        subtitle="Get AI-powered insights"
-        icon="sparkles"
-        color={Brand.nexus}
-        colors={colors}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/nexus');
-        }}
-      />
+      >
+        <ThemedText style={[styles.editContextText, { color: colors.tint }]}>
+          Edit Program Context
+        </ThemedText>
+        <IconSymbol name="chevron.right" size={14} color={colors.tint} />
+      </Pressable>
 
-      {/* Season Info */}
+      {/* ===== 3) RECENT CHANGE (alive system feed) ===== */}
       <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-        CURRENT SEASON
+        RECENT CHANGE
       </ThemedText>
-      <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={styles.infoRow}>
-          <ThemedText style={[styles.infoLabel, { color: colors.textSecondary }]}>Season</ThemedText>
-          <ThemedText style={styles.infoValue}>{state.cycle?.name || '2025-26'}</ThemedText>
-        </View>
-        <View style={[styles.infoDivider, { backgroundColor: colors.divider }]} />
-        <View style={styles.infoRow}>
-          <ThemedText style={[styles.infoLabel, { color: colors.textSecondary }]}>Conference</ThemedText>
-          <ThemedText style={styles.infoValue}>{INSTITUTION.conference}</ThemedText>
-        </View>
-        <View style={[styles.infoDivider, { backgroundColor: colors.divider }]} />
-        <View style={styles.infoRow}>
-          <ThemedText style={[styles.infoLabel, { color: colors.textSecondary }]}>Division</ThemedText>
-          <ThemedText style={styles.infoValue}>{INSTITUTION.division}</ThemedText>
-        </View>
+      <View style={[styles.changesCard, { backgroundColor: colors.backgroundSecondary }]}>
+        {DEMO_RECENT_CHANGES.map((change, index) => (
+          <View key={change.id}>
+            {index > 0 && (
+              <View style={[styles.changeDivider, { backgroundColor: colors.divider }]} />
+            )}
+            <View style={styles.changeRow}>
+              <ThemedText style={styles.changeText}>{change.text}</ThemedText>
+            </View>
+          </View>
+        ))}
       </View>
     </>
   );
@@ -641,6 +776,126 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     marginBottom: Spacing.sm,
     marginTop: Spacing.md,
+  },
+
+  // ===== SPORTS HOME STYLES (v1.1) =====
+
+  // Team Hub Tabs (ESPN-style header row)
+  hubTabsContainer: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginHorizontal: -Spacing.md,
+  },
+  hubTabsContent: {
+    paddingHorizontal: Spacing.md,
+    gap: Spacing.lg,
+  },
+  hubTab: {
+    paddingVertical: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  hubTabActive: {
+    borderBottomWidth: 2,
+  },
+  hubTabLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  hubTabLabelActive: {
+    fontWeight: '600',
+  },
+
+  // Team state: centered system readout, open, generous whitespace
+  teamStateSection: {
+    alignItems: 'center',
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.xl,
+    paddingHorizontal: Spacing.md,
+  },
+  ratingLine: {
+    fontSize: 28,
+    fontWeight: '700',
+    letterSpacing: -0.5,
+    lineHeight: 38,
+    textAlign: 'center',
+  },
+  identityLine: {
+    fontSize: 15,
+    fontWeight: '500',
+    marginTop: 8,
+    lineHeight: 22,
+    textAlign: 'center',
+  },
+  recordLine: {
+    fontSize: 13,
+    fontWeight: '400',
+    marginTop: 6,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+
+  // Program Context Card
+  contextCard: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  contextRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.md,
+    gap: 12,
+  },
+  contextLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    flexShrink: 0,
+  },
+  contextValue: {
+    fontSize: 14,
+    fontWeight: '400',
+    textAlign: 'right',
+    flex: 1,
+  },
+  contextDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Spacing.md,
+  },
+
+  // Edit Program Context CTA
+  editContextButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.md,
+    gap: 6,
+  },
+  editContextText: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+
+  // Changes Card
+  changesCard: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  changeRow: {
+    paddingVertical: 14,
+    paddingHorizontal: Spacing.md,
+  },
+  changeText: {
+    fontSize: 15,
+    fontWeight: '400',
+  },
+  changeDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Spacing.md,
   },
 
   // Action Card
