@@ -261,15 +261,22 @@ function SportsHome() {
       {/* ===== ESPN-STYLE HEADER TABS (only on Sports Home) ===== */}
       <TeamHubTabs colors={colors} onTabPress={handleTabPress} />
 
-      {/* ===== 1) TEAM RATING BLOCK (centered, open, not boxed) ===== */}
+      {/* ===== 1) TEAM IDENTITY BLOCK (centered) ===== */}
       <View style={styles.teamStateSection}>
-        {/* Primary: Team KR — centered system headline */}
+        {/* Team Logo Placeholder */}
+        <View style={[styles.teamLogo, { backgroundColor: colors.backgroundSecondary }]}>
+          <ThemedText style={[styles.teamLogoText, { color: colors.textSecondary }]}>
+            LU
+          </ThemedText>
+        </View>
+
+        {/* Big Rating */}
         <ThemedText style={styles.ratingLine}>
-          Team KR {DEMO_TEAM_STATE.rating}
+          {DEMO_TEAM_STATE.rating}KR
         </ThemedText>
 
-        {/* Affiliation Line */}
-        <ThemedText style={[styles.recordLine, { color: colors.textTertiary }]}>
+        {/* Meta Line */}
+        <ThemedText style={[styles.metaLine, { color: colors.textSecondary }]}>
           Independent · SWS · 25–26
         </ThemedText>
 
@@ -857,25 +864,38 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xl,
     paddingHorizontal: Spacing.md,
   },
-  ratingLine: {
-    fontSize: 28,
+  teamLogo: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Spacing.md,
+  },
+  teamLogoText: {
+    fontSize: 24,
     fontWeight: '700',
-    letterSpacing: -0.5,
-    lineHeight: 38,
+    letterSpacing: 1,
+  },
+  ratingLine: {
+    fontSize: 48,
+    fontWeight: '800',
+    letterSpacing: -1,
+    lineHeight: 56,
     textAlign: 'center',
   },
-  identityLine: {
-    fontSize: 15,
+  metaLine: {
+    fontSize: 14,
     fontWeight: '500',
     marginTop: 8,
-    lineHeight: 22,
+    lineHeight: 20,
     textAlign: 'center',
   },
   recordLine: {
     fontSize: 13,
     fontWeight: '400',
-    marginTop: 6,
-    lineHeight: 20,
+    marginTop: 4,
+    lineHeight: 18,
     textAlign: 'center',
   },
 

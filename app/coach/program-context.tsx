@@ -85,6 +85,17 @@ interface ProgramContextState {
   clusterWeights: Record<string, number>;
 }
 
+// Default cluster weights matching Spread Pick-and-Roll emphasis (sum=100)
+const DEFAULT_CLUSTER_WEIGHTS: Record<string, number> = {
+  shooting: 20,
+  finishing: 15,
+  playmaking: 20,
+  onBallDefense: 15,
+  teamDefense: 10,
+  rebounding: 10,
+  physical: 10,
+};
+
 const DEFAULT_STATE: ProgramContextState = {
   scholarships: 13,
   nilBudget: 150000,
@@ -92,15 +103,7 @@ const DEFAULT_STATE: ProgramContextState = {
   defensiveSystem: 'pressure-man',
   tempo: 'Fast',
   primaryEnginePosition: 'PG',
-  clusterWeights: {
-    shooting: 20,
-    finishing: 15,
-    playmaking: 15,
-    onBallDefense: 15,
-    teamDefense: 15,
-    rebounding: 10,
-    physical: 10,
-  },
+  clusterWeights: { ...DEFAULT_CLUSTER_WEIGHTS },
 };
 
 // =============================================================================
@@ -173,49 +176,55 @@ export default function CoachProgramContextScreen() {
     setShowDefensivePicker(false);
   };
 
-  // Handle cluster weight change with rebalancing
-  const handleClusterWeightChange = useCallback(
-    (clusterId: string, newValue: number) => {
-      setState((prev) => {
-        const currentValue = prev.clusterWeights[clusterId];
-        const delta = newValue - currentValue;
+  // Handle cluster weight change (no auto-rebalancing)
+  const handleClusterWeightChange = useCallback((clusterId: string, newValue: number) => {
+    setState((prev) => ({
+      ...prev,
+      clusterWeights: {
+        ...prev.clusterWeights,
+        [clusterId]: Math.round(newValue),
+      },
+    }));
+  }, []);
 
-        if (delta === 0) return prev;
+  // Calculate total weight
+  const totalWeight = Object.values(state.clusterWeights).reduce((a, b) => a + b, 0);
+  const isValidTotal = totalWeight === 100;
 
-        const newWeights = { ...prev.clusterWeights };
-        newWeights[clusterId] = newValue;
-
-        // Rebalance other clusters proportionally
-        const otherClusters = CLUSTERS.filter((c) => c.id !== clusterId);
-        const otherTotal = otherClusters.reduce((sum, c) => sum + newWeights[c.id], 0);
-
-        if (otherTotal > 0) {
-          const remaining = 100 - newValue;
-          const scale = remaining / otherTotal;
-
-          otherClusters.forEach((c) => {
-            newWeights[c.id] = Math.round(prev.clusterWeights[c.id] * scale);
-          });
-
-          // Fix rounding errors
-          const actualTotal = Object.values(newWeights).reduce((a, b) => a + b, 0);
-          if (actualTotal !== 100) {
-            const diff = 100 - actualTotal;
-            // Apply diff to first non-changed cluster with room
-            for (const c of otherClusters) {
-              if (newWeights[c.id] + diff >= 0 && newWeights[c.id] + diff <= 100) {
-                newWeights[c.id] += diff;
-                break;
-              }
-            }
-          }
-        }
-
+  // Normalize weights to sum to 100
+  const handleNormalize = useCallback(() => {
+    setState((prev) => {
+      const currentTotal = Object.values(prev.clusterWeights).reduce((a, b) => a + b, 0);
+      if (currentTotal === 0) {
+        // If all zeros, distribute evenly
+        const evenWeight = Math.floor(100 / CLUSTERS.length);
+        const remainder = 100 - evenWeight * CLUSTERS.length;
+        const newWeights: Record<string, number> = {};
+        CLUSTERS.forEach((c, i) => {
+          newWeights[c.id] = evenWeight + (i < remainder ? 1 : 0);
+        });
         return { ...prev, clusterWeights: newWeights };
+      }
+
+      const scale = 100 / currentTotal;
+      const newWeights: Record<string, number> = {};
+      let runningTotal = 0;
+
+      // Scale all weights proportionally
+      CLUSTERS.forEach((c, i) => {
+        if (i === CLUSTERS.length - 1) {
+          // Last cluster gets the remainder to ensure exact 100
+          newWeights[c.id] = 100 - runningTotal;
+        } else {
+          newWeights[c.id] = Math.round(prev.clusterWeights[c.id] * scale);
+          runningTotal += newWeights[c.id];
+        }
       });
-    },
-    []
-  );
+
+      return { ...prev, clusterWeights: newWeights };
+    });
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }, []);
 
   // Handle save
   const handleSave = async () => {
@@ -443,18 +452,36 @@ export default function CoachProgramContextScreen() {
               <Text
                 style={[
                   styles.totalValue,
-                  {
-                    color:
-                      Object.values(state.clusterWeights).reduce((a, b) => a + b, 0) === 100
-                        ? colors.success
-                        : colors.error,
-                  },
+                  { color: isValidTotal ? colors.success : colors.error },
                 ]}
               >
-                {Object.values(state.clusterWeights).reduce((a, b) => a + b, 0)}
+                {totalWeight} / 100
               </Text>
             </View>
           </View>
+
+          {/* Helper text when total != 100 */}
+          {!isValidTotal && (
+            <Text style={[styles.helperText, { color: colors.error }]}>
+              Total must equal 100 to save.
+            </Text>
+          )}
+
+          {/* Normalize button */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.normalizeButton,
+              {
+                backgroundColor: pressed ? colors.backgroundTertiary : colors.backgroundSecondary,
+                borderColor: colors.border,
+              },
+            ]}
+            onPress={handleNormalize}
+          >
+            <Text style={[styles.normalizeButtonText, { color: colors.text }]}>
+              Normalize to 100
+            </Text>
+          </Pressable>
 
           {/* Spacer for save button */}
           <View style={{ height: 100 }} />
@@ -475,11 +502,25 @@ export default function CoachProgramContextScreen() {
         <Pressable
           style={({ pressed }) => [
             styles.saveButton,
-            { backgroundColor: pressed ? '#4F46E5' : colors.tint },
+            {
+              backgroundColor: isValidTotal
+                ? pressed
+                  ? '#4F46E5'
+                  : colors.tint
+                : colors.border,
+            },
           ]}
           onPress={handleSave}
+          disabled={!isValidTotal}
         >
-          <Text style={styles.saveButtonText}>Save</Text>
+          <Text
+            style={[
+              styles.saveButtonText,
+              { color: isValidTotal ? '#FFFFFF' : colors.textTertiary },
+            ]}
+          >
+            Save
+          </Text>
         </Pressable>
       </View>
 
@@ -748,6 +789,29 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
+  // Helper Text
+  helperText: {
+    fontSize: 13,
+    textAlign: 'center',
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.xs,
+  },
+
+  // Normalize Button
+  normalizeButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    marginTop: Spacing.sm,
+  },
+  normalizeButtonText: {
+    fontSize: 15,
+    fontWeight: '500',
+  },
+
   // Save Button
   saveContainer: {
     position: 'absolute',
@@ -765,7 +829,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   saveButtonText: {
-    color: '#FFFFFF',
     fontSize: 17,
     fontWeight: '600',
   },
