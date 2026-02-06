@@ -11,24 +11,7 @@ import { MessageBubble } from './message-bubble';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useNexusContext } from '@/context/nexus-context';
-import { useMode } from '@/context/app-context';
-import type { Message, SimulationResult, SavedSimulation, Mode } from '@/types';
-
-// Mode-specific empty state prompts
-function getModePrompt(mode: Mode): string {
-  switch (mode) {
-    case 'sports':
-      return 'Ask anything. Simulate matchups. Explore scenarios.';
-    case 'enterprise':
-      return 'Ask about company data, metrics, and strategies.';
-    case 'church':
-      return 'Plan events, explore ministries, and coordinate activities.';
-    case 'education':
-      return 'Ask about academics, schedules, and institutional data.';
-    default:
-      return 'Ask anything. Explore scenarios.';
-  }
-}
+import type { Message, SimulationResult, SavedSimulation } from '@/types';
 
 interface ChatThreadProps {
   messages: Message[];
@@ -39,8 +22,7 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const flatListRef = useRef<FlatList>(null);
-  const { getSimulation, getSavedSimulation, openSimulation, sendMessage } = useNexusContext();
-  const mode = useMode();
+  const { getSimulation, getSavedSimulation, openSimulation } = useNexusContext();
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -100,11 +82,11 @@ export function ChatThread({ messages, isLoading = false }: ChatThreadProps) {
   if (messages.length === 0 && !isLoading) {
     return (
       <View style={styles.emptyContainer}>
-        <ThemedText style={[styles.watermark, { color: colors.textTertiary }]}>
-          NEXUS
+        <ThemedText style={[styles.quote, { color: colors.textSecondary }]}>
+          The magic you're looking for{'\n'}is in the work you're avoiding
         </ThemedText>
-        <ThemedText style={[styles.emptyPrompt, { color: colors.textSecondary }]}>
-          {getModePrompt(mode)}
+        <ThemedText style={[styles.attribution, { color: colors.textTertiary }]}>
+          — Chris Williamson
         </ThemedText>
       </View>
     );
@@ -134,18 +116,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: Spacing.xl,
   },
-  watermark: {
-    fontSize: 48,
-    fontWeight: '700',
-    letterSpacing: 8,
-    opacity: 0.1,
-  },
-  emptyPrompt: {
-    fontSize: 15,
-    marginTop: Spacing.md,
+  quote: {
+    fontSize: 22,
+    fontStyle: 'italic',
     textAlign: 'center',
-    opacity: 0.6,
+    lineHeight: 34,
+    opacity: 0.7,
+  },
+  attribution: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    marginTop: Spacing.md,
+    opacity: 0.5,
   },
   listContent: {
     paddingVertical: Spacing.md,

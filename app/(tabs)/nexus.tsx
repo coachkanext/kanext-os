@@ -5,12 +5,11 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Keyboard, Pressable } from 'react-native';
 
 import { ThemedView } from '@/components/themed-view';
 import { AvatarDrawer } from '@/components/avatar-drawer';
 import { NexusTopBar } from '@/components/nexus/nexus-top-bar';
-import { ModeSelector } from '@/components/nexus/mode-selector';
 import { ChatThread } from '@/components/nexus/chat-thread';
 import { InputBar } from '@/components/nexus/input-bar';
 import { ConversationsPanel } from '@/components/nexus/conversations-panel';
@@ -19,10 +18,8 @@ import { RosterOverlay } from '@/components/nexus/roster-overlay';
 import { RecruitingOverlay } from '@/components/nexus/recruiting-overlay';
 import { SimulationOverlay } from '@/components/nexus/simulation-overlay';
 import { NexusProvider, useNexusContext } from '@/context/nexus-context';
-import { useAppContext } from '@/context/app-context';
 
 function NexusScreenContent() {
-  const { state: appState, setMode } = useAppContext();
   const {
     state: nexusState,
     openConversations,
@@ -40,16 +37,11 @@ function NexusScreenContent() {
   } = useNexusContext();
 
   // Local UI state
-  const [modeSelectorVisible, setModeSelectorVisible] = useState(false);
   const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
 
   const handleConversationsPress = useCallback(() => {
     openConversations();
   }, [openConversations]);
-
-  const handleModePress = useCallback(() => {
-    setModeSelectorVisible(true);
-  }, []);
 
   const handleContextPress = useCallback(() => {
     openContextDrawer();
@@ -66,11 +58,6 @@ function NexusScreenContent() {
     }
   }, [nexusState.panelState, openRoster, openRecruitingBoard]);
 
-  const handleAddPersonPress = useCallback(() => {
-    // Placeholder - would open person picker in full implementation
-    console.log('Add person to chat');
-  }, []);
-
   const handleAvatarPress = useCallback(() => {
     // Close conversations panel first, then open avatar drawer
     closePanel();
@@ -86,21 +73,18 @@ function NexusScreenContent() {
     <ThemedView style={styles.container}>
       {/* Top Bar */}
       <NexusTopBar
-        currentMode={appState.mode}
         onConversationsPress={handleConversationsPress}
-        onModePress={handleModePress}
         onContextPress={handleContextPress}
         onBoardPress={handleBoardPress}
-        onAddPersonPress={handleAddPersonPress}
       />
 
-      {/* Chat Thread / Canvas */}
-      <View style={styles.canvas}>
+      {/* Chat Thread / Canvas - tap to dismiss keyboard */}
+      <Pressable style={styles.canvas} onPress={Keyboard.dismiss}>
         <ChatThread
           messages={nexusState.messages}
           isLoading={nexusState.isLoading}
         />
-      </View>
+      </Pressable>
 
       {/* Input Bar */}
       <InputBar
@@ -108,20 +92,13 @@ function NexusScreenContent() {
         onChangeText={setInputText}
         onSend={sendMessage}
         onMicPress={handleMicPress}
-        disabled={!nexusState.activeConversationId}
-        placeholder={
-          nexusState.activeConversationId
-            ? 'Ask anything...'
-            : 'Select a conversation to start'
-        }
-      />
-
-      {/* Mode Selector Modal */}
-      <ModeSelector
-        visible={modeSelectorVisible}
-        currentMode={appState.mode}
-        onSelect={setMode}
-        onClose={() => setModeSelectorVisible(false)}
+        onFocus={() => {
+          // Create a new conversation if none is active
+          if (!nexusState.activeConversationId) {
+            createNewConversation();
+          }
+        }}
+        placeholder="Ask Nexus"
       />
 
       {/* Left Panel: Conversations */}
