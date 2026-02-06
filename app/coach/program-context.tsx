@@ -1,14 +1,13 @@
 /**
  * Coach Program Context Screen
  * Canonical Program Context editor per KaNeXT spec.
- * No invented fields. Configuration only — no evaluation logic.
  *
- * LOCKED SPEC: System presets deterministically set their own emphasis block to 100;
- * offense and defense are separate, overlapping only in shared clusters (Rebounding, Physical),
- * and never interfere with each other.
+ * EVALUATION EMPHASIS: Unified 7-cluster profile computed from Offense + Defense presets.
+ * Uses locked Team KR weighting: OFF = 58%, DEF = 42%.
+ * Shared clusters (Rebounding, Physical) receive contributions from both.
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -31,29 +30,27 @@ import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // =============================================================================
-// TYPES & CONSTANTS
+// CONSTANTS
 // =============================================================================
 
 const STORAGE_KEY = 'kx:programContext';
 
-// Offense Emphasis clusters (5 sliders, must sum to 100)
-const OFFENSE_CLUSTERS = [
+// Team KR weighting split (locked)
+const OFF_WEIGHT = 58;
+const DEF_WEIGHT = 42;
+
+// Final 7 clusters for unified emphasis (order matters for display)
+const EMPHASIS_CLUSTERS = [
   { id: 'shooting', label: 'Shooting' },
   { id: 'finishing', label: 'Finishing' },
   { id: 'playmaking', label: 'Playmaking' },
-  { id: 'rebounding', label: 'Rebounding' },
-  { id: 'physical', label: 'Physical' },
-];
-
-// Defense Emphasis clusters (4 sliders, must sum to 100)
-const DEFENSE_CLUSTERS = [
   { id: 'onBallDefense', label: 'On-Ball Defense' },
   { id: 'teamDefense', label: 'Team Defense' },
   { id: 'rebounding', label: 'Rebounding' },
   { id: 'physical', label: 'Physical' },
 ];
 
-// Offensive System presets (each sums to 100 for offense emphasis)
+// Offensive System presets (5 clusters, each sums to 100)
 const OFFENSIVE_SYSTEMS = [
   { id: 'spread-pnr', label: 'Spread Pick-and-Roll', weights: { shooting: 30, finishing: 25, playmaking: 30, rebounding: 10, physical: 5 } },
   { id: '5-out', label: '5-Out Motion', weights: { shooting: 35, finishing: 20, playmaking: 30, rebounding: 10, physical: 5 } },
@@ -66,7 +63,7 @@ const OFFENSIVE_SYSTEMS = [
   { id: 'heliocentric', label: 'Heliocentric', weights: { shooting: 30, finishing: 25, playmaking: 35, rebounding: 5, physical: 5 } },
 ];
 
-// Defensive System presets (each sums to 100 for defense emphasis)
+// Defensive System presets (4 clusters, each sums to 100)
 const DEFENSIVE_SYSTEMS = [
   { id: 'containment', label: 'Containment Man', weights: { onBallDefense: 35, teamDefense: 30, rebounding: 20, physical: 15 } },
   { id: 'pack-line', label: 'Pack Line', weights: { onBallDefense: 25, teamDefense: 40, rebounding: 20, physical: 15 } },
@@ -81,16 +78,14 @@ const DEFENSIVE_SYSTEMS = [
 const TEMPO_OPTIONS = ['Slow', 'Medium', 'Fast'];
 const PRIMARY_ENGINE_POSITIONS = ['PG', 'CG', 'Wing', 'Forward', 'Big'];
 
-// Types for emphasis weights
-interface OffenseEmphasis {
+// =============================================================================
+// TYPES
+// =============================================================================
+
+interface EmphasisProfile {
   shooting: number;
   finishing: number;
   playmaking: number;
-  rebounding: number;
-  physical: number;
-}
-
-interface DefenseEmphasis {
   onBallDefense: number;
   teamDefense: number;
   rebounding: number;
@@ -104,38 +99,64 @@ interface ProgramContextState {
   defensiveSystem: string;
   tempo: string;
   primaryEnginePosition: string;
-  offenseEmphasis: OffenseEmphasis;
-  defenseEmphasis: DefenseEmphasis;
+  emphasis: EmphasisProfile;
+  isCustomized: boolean; // true if user has manually edited emphasis
 }
 
-// Get offense weights from a preset
-function getOffensePresetWeights(systemId: string): OffenseEmphasis {
-  const system = OFFENSIVE_SYSTEMS.find((s) => s.id === systemId);
-  if (system) {
-    return { ...system.weights };
-  }
-  return OFFENSIVE_SYSTEMS[0].weights; // Default to spread-pnr
+// =============================================================================
+// MERGE RULE: Compute unified emphasis from presets
+// =============================================================================
+
+function computeEmphasisFromPresets(offensiveSystemId: string, defensiveSystemId: string): EmphasisProfile {
+  const offPreset = OFFENSIVE_SYSTEMS.find((s) => s.id === offensiveSystemId)?.weights
+    ?? OFFENSIVE_SYSTEMS[0].weights;
+  const defPreset = DEFENSIVE_SYSTEMS.find((s) => s.id === defensiveSystemId)?.weights
+    ?? DEFENSIVE_SYSTEMS[0].weights;
+
+  // Apply merge rule: OFF_WEIGHT * (preset / 100) for offense-only clusters
+  // DEF_WEIGHT * (preset / 100) for defense-only clusters
+  // Sum of both for shared clusters (Rebounding, Physical)
+  const rawEmphasis = {
+    shooting: OFF_WEIGHT * (offPreset.shooting / 100),
+    finishing: OFF_WEIGHT * (offPreset.finishing / 100),
+    playmaking: OFF_WEIGHT * (offPreset.playmaking / 100),
+    onBallDefense: DEF_WEIGHT * (defPreset.onBallDefense / 100),
+    teamDefense: DEF_WEIGHT * (defPreset.teamDefense / 100),
+    rebounding: OFF_WEIGHT * (offPreset.rebounding / 100) + DEF_WEIGHT * (defPreset.rebounding / 100),
+    physical: OFF_WEIGHT * (offPreset.physical / 100) + DEF_WEIGHT * (defPreset.physical / 100),
+  };
+
+  // Round to 1 decimal place
+  const rounded: EmphasisProfile = {
+    shooting: Math.round(rawEmphasis.shooting * 10) / 10,
+    finishing: Math.round(rawEmphasis.finishing * 10) / 10,
+    playmaking: Math.round(rawEmphasis.playmaking * 10) / 10,
+    onBallDefense: Math.round(rawEmphasis.onBallDefense * 10) / 10,
+    teamDefense: Math.round(rawEmphasis.teamDefense * 10) / 10,
+    rebounding: Math.round(rawEmphasis.rebounding * 10) / 10,
+    physical: Math.round(rawEmphasis.physical * 10) / 10,
+  };
+
+  // Ensure sum is exactly 100 by adjusting Physical
+  const total = Object.values(rounded).reduce((a, b) => a + b, 0);
+  const diff = Math.round((100 - total) * 10) / 10;
+  rounded.physical = Math.round((rounded.physical + diff) * 10) / 10;
+
+  return rounded;
 }
 
-// Get defense weights from a preset
-function getDefensePresetWeights(systemId: string): DefenseEmphasis {
-  const system = DEFENSIVE_SYSTEMS.find((s) => s.id === systemId);
-  if (system) {
-    return { ...system.weights };
-  }
-  return DEFENSIVE_SYSTEMS[2].weights; // Default to pressure-man
+function getDefaultState(): ProgramContextState {
+  return {
+    scholarships: 13,
+    nilBudget: 150000,
+    offensiveSystem: 'spread-pnr',
+    defensiveSystem: 'pressure-man',
+    tempo: 'Fast',
+    primaryEnginePosition: 'PG',
+    emphasis: computeEmphasisFromPresets('spread-pnr', 'pressure-man'),
+    isCustomized: false,
+  };
 }
-
-const DEFAULT_STATE: ProgramContextState = {
-  scholarships: 13,
-  nilBudget: 150000,
-  offensiveSystem: 'spread-pnr',
-  defensiveSystem: 'pressure-man',
-  tempo: 'Fast',
-  primaryEnginePosition: 'PG',
-  offenseEmphasis: getOffensePresetWeights('spread-pnr'),
-  defenseEmphasis: getDefensePresetWeights('pressure-man'),
-};
 
 // =============================================================================
 // COMPONENT
@@ -147,7 +168,7 @@ export default function CoachProgramContextScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  const [state, setState] = useState<ProgramContextState>(DEFAULT_STATE);
+  const [state, setState] = useState<ProgramContextState>(getDefaultState);
   const [showOffensivePicker, setShowOffensivePicker] = useState(false);
   const [showDefensivePicker, setShowDefensivePicker] = useState(false);
   const [showTempoPicker, setShowTempoPicker] = useState(false);
@@ -160,17 +181,16 @@ export default function CoachProgramContextScreen() {
         const saved = await AsyncStorage.getItem(STORAGE_KEY);
         if (saved) {
           const parsed = JSON.parse(saved);
-          // Migrate from old format if needed
-          if (parsed.clusterWeights && !parsed.offenseEmphasis) {
-            // Old format - initialize from presets
-            setState({
-              ...DEFAULT_STATE,
-              ...parsed,
-              offenseEmphasis: getOffensePresetWeights(parsed.offensiveSystem || 'spread-pnr'),
-              defenseEmphasis: getDefensePresetWeights(parsed.defensiveSystem || 'pressure-man'),
-            });
+          // Migrate from old formats
+          if (!parsed.emphasis) {
+            // Compute from presets if emphasis not saved
+            const emphasis = computeEmphasisFromPresets(
+              parsed.offensiveSystem || 'spread-pnr',
+              parsed.defensiveSystem || 'pressure-man'
+            );
+            setState({ ...getDefaultState(), ...parsed, emphasis, isCustomized: false });
           } else {
-            setState({ ...DEFAULT_STATE, ...parsed });
+            setState({ ...getDefaultState(), ...parsed });
           }
         }
       } catch (e) {
@@ -190,108 +210,98 @@ export default function CoachProgramContextScreen() {
     }).format(value);
   };
 
-  // Calculate totals
-  const offenseTotal = Object.values(state.offenseEmphasis).reduce((a, b) => a + b, 0);
-  const defenseTotal = Object.values(state.defenseEmphasis).reduce((a, b) => a + b, 0);
-  const isOffenseValid = offenseTotal === 100;
-  const isDefenseValid = defenseTotal === 100;
-  const canSave = isOffenseValid && isDefenseValid;
+  // Calculate emphasis total
+  const emphasisTotal = useMemo(() => {
+    return Math.round(Object.values(state.emphasis).reduce((a, b) => a + b, 0) * 10) / 10;
+  }, [state.emphasis]);
 
-  // Handle offensive system selection - IMMEDIATELY sets offense emphasis to preset
+  const isValidTotal = Math.abs(emphasisTotal - 100) < 0.1;
+
+  // Handle offensive system selection - recompute emphasis if not customized
   const handleOffensiveSystemSelect = (systemId: string) => {
-    const weights = getOffensePresetWeights(systemId);
-    setState((prev) => ({
-      ...prev,
-      offensiveSystem: systemId,
-      offenseEmphasis: weights,
-    }));
+    setState((prev) => {
+      const newEmphasis = prev.isCustomized
+        ? prev.emphasis
+        : computeEmphasisFromPresets(systemId, prev.defensiveSystem);
+      return {
+        ...prev,
+        offensiveSystem: systemId,
+        emphasis: newEmphasis,
+      };
+    });
     setShowOffensivePicker(false);
   };
 
-  // Handle defensive system selection - IMMEDIATELY sets defense emphasis to preset
+  // Handle defensive system selection - recompute emphasis if not customized
   const handleDefensiveSystemSelect = (systemId: string) => {
-    const weights = getDefensePresetWeights(systemId);
-    setState((prev) => ({
-      ...prev,
-      defensiveSystem: systemId,
-      defenseEmphasis: weights,
-    }));
+    setState((prev) => {
+      const newEmphasis = prev.isCustomized
+        ? prev.emphasis
+        : computeEmphasisFromPresets(prev.offensiveSystem, systemId);
+      return {
+        ...prev,
+        defensiveSystem: systemId,
+        emphasis: newEmphasis,
+      };
+    });
     setShowDefensivePicker(false);
   };
 
-  // Handle offense emphasis slider change (no auto-rebalancing)
-  const handleOffenseWeightChange = useCallback((clusterId: string, newValue: number) => {
+  // Handle emphasis slider change (manual override)
+  const handleEmphasisChange = useCallback((clusterId: string, newValue: number) => {
     setState((prev) => ({
       ...prev,
-      offenseEmphasis: {
-        ...prev.offenseEmphasis,
-        [clusterId]: Math.round(newValue),
+      emphasis: {
+        ...prev.emphasis,
+        [clusterId]: Math.round(newValue * 10) / 10,
       },
+      isCustomized: true,
     }));
   }, []);
 
-  // Handle defense emphasis slider change (no auto-rebalancing)
-  const handleDefenseWeightChange = useCallback((clusterId: string, newValue: number) => {
-    setState((prev) => ({
-      ...prev,
-      defenseEmphasis: {
-        ...prev.defenseEmphasis,
-        [clusterId]: Math.round(newValue),
-      },
-    }));
-  }, []);
-
-  // Normalize offense weights to sum to 100
-  const handleNormalizeOffense = useCallback(() => {
+  // Normalize emphasis to sum to 100
+  const handleNormalize = useCallback(() => {
     setState((prev) => {
-      const currentTotal = Object.values(prev.offenseEmphasis).reduce((a, b) => a + b, 0);
+      const currentTotal = Object.values(prev.emphasis).reduce((a, b) => a + b, 0);
       if (currentTotal === 0) {
-        return { ...prev, offenseEmphasis: getOffensePresetWeights(prev.offensiveSystem) };
+        return { ...prev, emphasis: computeEmphasisFromPresets(prev.offensiveSystem, prev.defensiveSystem) };
       }
       const scale = 100 / currentTotal;
-      const newWeights: Record<string, number> = {};
+      const newEmphasis: Record<string, number> = {};
       let runningTotal = 0;
-      const keys = Object.keys(prev.offenseEmphasis);
+      const keys = Object.keys(prev.emphasis);
       keys.forEach((key, i) => {
         if (i === keys.length - 1) {
-          newWeights[key] = 100 - runningTotal;
+          newEmphasis[key] = Math.round((100 - runningTotal) * 10) / 10;
         } else {
-          newWeights[key] = Math.round((prev.offenseEmphasis as Record<string, number>)[key] * scale);
-          runningTotal += newWeights[key];
+          newEmphasis[key] = Math.round((prev.emphasis as Record<string, number>)[key] * scale * 10) / 10;
+          runningTotal += newEmphasis[key];
         }
       });
-      return { ...prev, offenseEmphasis: newWeights as unknown as OffenseEmphasis };
+      return { ...prev, emphasis: newEmphasis as EmphasisProfile };
     });
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
-  // Normalize defense weights to sum to 100
-  const handleNormalizeDefense = useCallback(() => {
-    setState((prev) => {
-      const currentTotal = Object.values(prev.defenseEmphasis).reduce((a, b) => a + b, 0);
-      if (currentTotal === 0) {
-        return { ...prev, defenseEmphasis: getDefensePresetWeights(prev.defensiveSystem) };
-      }
-      const scale = 100 / currentTotal;
-      const newWeights: Record<string, number> = {};
-      let runningTotal = 0;
-      const keys = Object.keys(prev.defenseEmphasis);
-      keys.forEach((key, i) => {
-        if (i === keys.length - 1) {
-          newWeights[key] = 100 - runningTotal;
-        } else {
-          newWeights[key] = Math.round((prev.defenseEmphasis as Record<string, number>)[key] * scale);
-          runningTotal += newWeights[key];
-        }
-      });
-      return { ...prev, defenseEmphasis: newWeights as unknown as DefenseEmphasis };
-    });
+  // Reset to computed presets
+  const handleResetToPresets = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      emphasis: computeEmphasisFromPresets(prev.offensiveSystem, prev.defensiveSystem),
+      isCustomized: false,
+    }));
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }, []);
+
+  // Toggle customization mode
+  const handleToggleCustomize = useCallback(() => {
+    setState((prev) => ({ ...prev, isCustomized: !prev.isCustomized }));
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
   // Handle save
   const handleSave = async () => {
-    if (!canSave) return;
+    if (!isValidTotal) return;
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -305,7 +315,6 @@ export default function CoachProgramContextScreen() {
     OFFENSIVE_SYSTEMS.find((s) => s.id === state.offensiveSystem)?.label || 'Select';
   const defensiveSystemLabel =
     DEFENSIVE_SYSTEMS.find((s) => s.id === state.defensiveSystem)?.label || 'Select';
-
   const isHeliocentric = state.offensiveSystem === 'heliocentric';
 
   return (
@@ -314,11 +323,7 @@ export default function CoachProgramContextScreen() {
       <View
         style={[
           styles.header,
-          {
-            paddingTop: insets.top,
-            backgroundColor: colors.background,
-            borderBottomColor: colors.divider,
-          },
+          { paddingTop: insets.top, backgroundColor: colors.background, borderBottomColor: colors.divider },
         ]}
       >
         <View style={styles.headerContent}>
@@ -339,20 +344,15 @@ export default function CoachProgramContextScreen() {
         </View>
       </View>
 
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* ===== SECTION A: PROGRAM RESOURCES ===== */}
-          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
-            PROGRAM RESOURCES
-          </Text>
+          {/* ===== PROGRAM RESOURCES ===== */}
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>PROGRAM RESOURCES</Text>
           <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
             <View style={styles.inputRow}>
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Scholarships</Text>
@@ -388,7 +388,7 @@ export default function CoachProgramContextScreen() {
             </View>
           </View>
 
-          {/* ===== SECTION B: SYSTEMS ===== */}
+          {/* ===== SYSTEMS ===== */}
           <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>SYSTEMS</Text>
           <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
             <Pressable
@@ -398,13 +398,9 @@ export default function CoachProgramContextScreen() {
                 setShowOffensivePicker(true);
               }}
             >
-              <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>
-                Offensive System
-              </Text>
+              <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Offensive System</Text>
               <View style={styles.selectorValue}>
-                <Text style={[styles.selectorText, { color: colors.text }]}>
-                  {offensiveSystemLabel}
-                </Text>
+                <Text style={[styles.selectorText, { color: colors.text }]}>{offensiveSystemLabel}</Text>
                 <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
               </View>
             </Pressable>
@@ -419,13 +415,9 @@ export default function CoachProgramContextScreen() {
                     setShowEnginePicker(true);
                   }}
                 >
-                  <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>
-                    Primary Engine Position
-                  </Text>
+                  <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Primary Engine Position</Text>
                   <View style={styles.selectorValue}>
-                    <Text style={[styles.selectorText, { color: colors.text }]}>
-                      {state.primaryEnginePosition}
-                    </Text>
+                    <Text style={[styles.selectorText, { color: colors.text }]}>{state.primaryEnginePosition}</Text>
                     <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
                   </View>
                 </Pressable>
@@ -440,13 +432,9 @@ export default function CoachProgramContextScreen() {
                 setShowDefensivePicker(true);
               }}
             >
-              <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>
-                Defensive System
-              </Text>
+              <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Defensive System</Text>
               <View style={styles.selectorValue}>
-                <Text style={[styles.selectorText, { color: colors.text }]}>
-                  {defensiveSystemLabel}
-                </Text>
+                <Text style={[styles.selectorText, { color: colors.text }]}>{defensiveSystemLabel}</Text>
                 <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
               </View>
             </Pressable>
@@ -467,129 +455,109 @@ export default function CoachProgramContextScreen() {
             </Pressable>
           </View>
 
-          {/* ===== SECTION C: OFFENSE EMPHASIS (5 sliders, sum to 100) ===== */}
-          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
-            OFFENSE EMPHASIS
-          </Text>
-          <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-            {OFFENSE_CLUSTERS.map((cluster, index) => (
-              <View key={cluster.id}>
-                {index > 0 && (
-                  <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                )}
-                <View style={styles.sliderRow}>
-                  <View style={styles.sliderHeader}>
-                    <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>
-                      {cluster.label}
-                    </Text>
-                    <Text style={[styles.sliderValue, { color: colors.text }]}>
-                      {(state.offenseEmphasis as Record<string, number>)[cluster.id]}
-                    </Text>
-                  </View>
-                  <Slider
-                    style={styles.slider}
-                    minimumValue={0}
-                    maximumValue={100}
-                    step={1}
-                    value={(state.offenseEmphasis as Record<string, number>)[cluster.id]}
-                    onValueChange={(value) => handleOffenseWeightChange(cluster.id, value)}
-                    minimumTrackTintColor={colors.tint}
-                    maximumTrackTintColor={colors.border}
-                    thumbTintColor={colors.tint}
-                  />
-                </View>
+          {/* ===== EVALUATION EMPHASIS (unified 7-cluster profile) ===== */}
+          <View style={styles.emphasisHeader}>
+            <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: 0 }]}>
+              EVALUATION EMPHASIS
+            </Text>
+            {state.isCustomized && (
+              <View style={[styles.customBadge, { backgroundColor: colors.tint + '20' }]}>
+                <Text style={[styles.customBadgeText, { color: colors.tint }]}>Custom</Text>
               </View>
-            ))}
-            <View style={[styles.totalRow, { borderTopColor: colors.divider }]}>
-              <Text style={[styles.totalLabel, { color: colors.textSecondary }]}>Offense Total</Text>
-              <Text
-                style={[styles.totalValue, { color: isOffenseValid ? colors.success : colors.error }]}
-              >
-                {offenseTotal} / 100
-              </Text>
-            </View>
+            )}
           </View>
-          {!isOffenseValid && (
-            <Text style={[styles.helperText, { color: colors.error }]}>
-              Offense total must equal 100 to save.
-            </Text>
-          )}
-          <Pressable
-            style={({ pressed }) => [
-              styles.normalizeButton,
-              {
-                backgroundColor: pressed ? colors.backgroundTertiary : colors.backgroundSecondary,
-                borderColor: colors.border,
-              },
-            ]}
-            onPress={handleNormalizeOffense}
-          >
-            <Text style={[styles.normalizeButtonText, { color: colors.text }]}>
-              Normalize to 100
-            </Text>
-          </Pressable>
+          <Text style={[styles.emphasisSubtitle, { color: colors.textTertiary }]}>
+            OFF {OFF_WEIGHT}% · DEF {DEF_WEIGHT}%
+          </Text>
 
-          {/* ===== SECTION D: DEFENSE EMPHASIS (4 sliders, sum to 100) ===== */}
-          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
-            DEFENSE EMPHASIS
-          </Text>
           <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-            {DEFENSE_CLUSTERS.map((cluster, index) => (
+            {EMPHASIS_CLUSTERS.map((cluster, index) => (
               <View key={cluster.id}>
-                {index > 0 && (
-                  <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                )}
+                {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
                 <View style={styles.sliderRow}>
                   <View style={styles.sliderHeader}>
-                    <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>
-                      {cluster.label}
-                    </Text>
+                    <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>{cluster.label}</Text>
                     <Text style={[styles.sliderValue, { color: colors.text }]}>
-                      {(state.defenseEmphasis as Record<string, number>)[cluster.id]}
+                      {(state.emphasis as Record<string, number>)[cluster.id].toFixed(1)}
                     </Text>
                   </View>
-                  <Slider
-                    style={styles.slider}
-                    minimumValue={0}
-                    maximumValue={100}
-                    step={1}
-                    value={(state.defenseEmphasis as Record<string, number>)[cluster.id]}
-                    onValueChange={(value) => handleDefenseWeightChange(cluster.id, value)}
-                    minimumTrackTintColor={colors.tint}
-                    maximumTrackTintColor={colors.border}
-                    thumbTintColor={colors.tint}
-                  />
+                  {state.isCustomized ? (
+                    <Slider
+                      style={styles.slider}
+                      minimumValue={0}
+                      maximumValue={100}
+                      step={0.1}
+                      value={(state.emphasis as Record<string, number>)[cluster.id]}
+                      onValueChange={(value) => handleEmphasisChange(cluster.id, value)}
+                      minimumTrackTintColor={colors.tint}
+                      maximumTrackTintColor={colors.border}
+                      thumbTintColor={colors.tint}
+                    />
+                  ) : (
+                    <View style={[styles.emphasisBar, { backgroundColor: colors.border }]}>
+                      <View
+                        style={[
+                          styles.emphasisBarFill,
+                          {
+                            backgroundColor: colors.tint,
+                            width: `${Math.min((state.emphasis as Record<string, number>)[cluster.id], 100)}%`,
+                          },
+                        ]}
+                      />
+                    </View>
+                  )}
                 </View>
               </View>
             ))}
             <View style={[styles.totalRow, { borderTopColor: colors.divider }]}>
-              <Text style={[styles.totalLabel, { color: colors.textSecondary }]}>Defense Total</Text>
-              <Text
-                style={[styles.totalValue, { color: isDefenseValid ? colors.success : colors.error }]}
-              >
-                {defenseTotal} / 100
+              <Text style={[styles.totalLabel, { color: colors.textSecondary }]}>Total</Text>
+              <Text style={[styles.totalValue, { color: isValidTotal ? colors.success : colors.error }]}>
+                {emphasisTotal.toFixed(1)} / 100
               </Text>
             </View>
           </View>
-          {!isDefenseValid && (
-            <Text style={[styles.helperText, { color: colors.error }]}>
-              Defense total must equal 100 to save.
-            </Text>
+
+          {/* Emphasis action buttons */}
+          <View style={styles.emphasisActions}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.actionButton,
+                { backgroundColor: pressed ? colors.backgroundTertiary : colors.backgroundSecondary, borderColor: colors.border },
+              ]}
+              onPress={handleToggleCustomize}
+            >
+              <Text style={[styles.actionButtonText, { color: colors.text }]}>
+                {state.isCustomized ? 'Lock Emphasis' : 'Customize Emphasis'}
+              </Text>
+            </Pressable>
+
+            {state.isCustomized && (
+              <>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.actionButton,
+                    { backgroundColor: pressed ? colors.backgroundTertiary : colors.backgroundSecondary, borderColor: colors.border },
+                  ]}
+                  onPress={handleNormalize}
+                >
+                  <Text style={[styles.actionButtonText, { color: colors.text }]}>Normalize to 100</Text>
+                </Pressable>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.actionButton,
+                    { backgroundColor: pressed ? colors.backgroundTertiary : colors.backgroundSecondary, borderColor: colors.border },
+                  ]}
+                  onPress={handleResetToPresets}
+                >
+                  <Text style={[styles.actionButtonText, { color: colors.tint }]}>Reset to Presets</Text>
+                </Pressable>
+              </>
+            )}
+          </View>
+
+          {!isValidTotal && state.isCustomized && (
+            <Text style={[styles.helperText, { color: colors.error }]}>Total must equal 100 to save.</Text>
           )}
-          <Pressable
-            style={({ pressed }) => [
-              styles.normalizeButton,
-              {
-                backgroundColor: pressed ? colors.backgroundTertiary : colors.backgroundSecondary,
-                borderColor: colors.border,
-              },
-            ]}
-            onPress={handleNormalizeDefense}
-          >
-            <Text style={[styles.normalizeButtonText, { color: colors.text }]}>
-              Normalize to 100
-            </Text>
-          </Pressable>
 
           {/* Spacer for save button */}
           <View style={{ height: 100 }} />
@@ -600,32 +568,18 @@ export default function CoachProgramContextScreen() {
       <View
         style={[
           styles.saveContainer,
-          {
-            backgroundColor: colors.background,
-            paddingBottom: insets.bottom + Spacing.md,
-            borderTopColor: colors.divider,
-          },
+          { backgroundColor: colors.background, paddingBottom: insets.bottom + Spacing.md, borderTopColor: colors.divider },
         ]}
       >
         <Pressable
           style={({ pressed }) => [
             styles.saveButton,
-            {
-              backgroundColor: canSave
-                ? pressed
-                  ? '#4F46E5'
-                  : colors.tint
-                : colors.border,
-            },
+            { backgroundColor: isValidTotal ? (pressed ? '#4F46E5' : colors.tint) : colors.border },
           ]}
           onPress={handleSave}
-          disabled={!canSave}
+          disabled={!isValidTotal}
         >
-          <Text
-            style={[styles.saveButtonText, { color: canSave ? '#FFFFFF' : colors.textTertiary }]}
-          >
-            Save
-          </Text>
+          <Text style={[styles.saveButtonText, { color: isValidTotal ? '#FFFFFF' : colors.textTertiary }]}>Save</Text>
         </Pressable>
       </View>
 
@@ -690,29 +644,14 @@ interface PickerModalProps {
   colors: typeof Colors.light;
 }
 
-function PickerModal({
-  visible,
-  title,
-  options,
-  selected,
-  onSelect,
-  onClose,
-  colors,
-}: PickerModalProps) {
+function PickerModal({ visible, title, options, selected, onSelect, onClose, colors }: PickerModalProps) {
   const insets = useSafeAreaInsets();
-
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.modalOverlay}>
         <Pressable style={styles.modalBackdrop} onPress={onClose} />
         <View
-          style={[
-            styles.modalContent,
-            {
-              backgroundColor: colors.background,
-              paddingBottom: insets.bottom + Spacing.md,
-            },
-          ]}
+          style={[styles.modalContent, { backgroundColor: colors.background, paddingBottom: insets.bottom + Spacing.md }]}
         >
           <View style={[styles.modalHeader, { borderBottomColor: colors.divider }]}>
             <Text style={[styles.modalTitle, { color: colors.text }]}>{title}</Text>
@@ -724,19 +663,14 @@ function PickerModal({
             {options.map((option) => (
               <Pressable
                 key={option.id}
-                style={[
-                  styles.modalOption,
-                  selected === option.id && { backgroundColor: colors.backgroundSecondary },
-                ]}
+                style={[styles.modalOption, selected === option.id && { backgroundColor: colors.backgroundSecondary }]}
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   onSelect(option.id);
                 }}
               >
                 <Text style={[styles.modalOptionText, { color: colors.text }]}>{option.label}</Text>
-                {selected === option.id && (
-                  <IconSymbol name="checkmark" size={18} color={colors.tint} />
-                )}
+                {selected === option.id && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
               </Pressable>
             ))}
           </ScrollView>
@@ -761,33 +695,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     height: 44,
   },
-  backButton: {
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: BorderRadius.md,
-  },
+  backButton: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center', borderRadius: BorderRadius.md },
   headerTitle: { fontSize: 17, fontWeight: '600' },
   headerSpacer: { width: 32 },
   scrollView: { flex: 1 },
   scrollContent: { padding: Spacing.md },
-  sectionLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-    marginBottom: 10,
-    marginLeft: 4,
-    marginTop: Spacing.md,
-  },
+  sectionLabel: { fontSize: 13, fontWeight: '600', letterSpacing: 0.5, marginBottom: 10, marginLeft: 4, marginTop: Spacing.md },
   card: { borderRadius: BorderRadius.lg, overflow: 'hidden' },
   divider: { height: StyleSheet.hairlineWidth, marginLeft: Spacing.md },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: Spacing.md,
-    gap: Spacing.sm,
-  },
+  inputRow: { flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: Spacing.sm },
   inputLabel: { fontSize: 15, flex: 1 },
   numericInput: {
     fontSize: 15,
@@ -800,44 +716,43 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   currencyPreview: { fontSize: 13, marginLeft: Spacing.xs },
-  selectorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: Spacing.md,
-  },
+  selectorRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: Spacing.md },
   selectorValue: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   selectorText: { fontSize: 15, fontWeight: '500' },
+
+  // Emphasis section
+  emphasisHeader: { flexDirection: 'row', alignItems: 'center', marginTop: Spacing.md, marginBottom: 4, gap: Spacing.sm },
+  emphasisSubtitle: { fontSize: 12, marginLeft: 4, marginBottom: 10 },
+  customBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  customBadgeText: { fontSize: 11, fontWeight: '600' },
+
   sliderRow: { padding: Spacing.md },
-  sliderHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
+  sliderHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   sliderLabel: { fontSize: 15 },
-  sliderValue: { fontSize: 15, fontWeight: '600', minWidth: 30, textAlign: 'right' },
+  sliderValue: { fontSize: 15, fontWeight: '600', minWidth: 40, textAlign: 'right' },
   slider: { width: '100%', height: 40 },
-  totalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: Spacing.md,
-    borderTopWidth: 1,
-  },
+
+  // Read-only emphasis bar
+  emphasisBar: { height: 8, borderRadius: 4, overflow: 'hidden' },
+  emphasisBarFill: { height: '100%', borderRadius: 4 },
+
+  totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: Spacing.md, borderTopWidth: 1 },
   totalLabel: { fontSize: 15, fontWeight: '600' },
   totalValue: { fontSize: 17, fontWeight: '700' },
-  helperText: { fontSize: 13, textAlign: 'center', marginTop: Spacing.sm, marginBottom: Spacing.xs },
-  normalizeButton: {
+
+  emphasisActions: { flexDirection: 'column', gap: Spacing.sm, marginTop: Spacing.sm },
+  actionButton: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
-    marginTop: Spacing.sm,
   },
-  normalizeButtonText: { fontSize: 15, fontWeight: '500' },
+  actionButtonText: { fontSize: 15, fontWeight: '500' },
+
+  helperText: { fontSize: 13, textAlign: 'center', marginTop: Spacing.sm },
+
   saveContainer: {
     position: 'absolute',
     bottom: 0,
@@ -847,13 +762,9 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.md,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
-  saveButton: {
-    height: 50,
-    borderRadius: BorderRadius.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  saveButton: { height: 50, borderRadius: BorderRadius.lg, alignItems: 'center', justifyContent: 'center' },
   saveButtonText: { fontSize: 17, fontWeight: '600' },
+
   modalOverlay: { flex: 1, justifyContent: 'flex-end' },
   modalBackdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
   modalContent: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, maxHeight: '70%' },
@@ -866,11 +777,6 @@ const styles = StyleSheet.create({
   },
   modalTitle: { fontSize: 17, fontWeight: '600' },
   modalScroll: { maxHeight: 400 },
-  modalOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: Spacing.md,
-  },
+  modalOption: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: Spacing.md },
   modalOptionText: { fontSize: 16 },
 });
