@@ -4,10 +4,15 @@
  * Per spec: Nexus answers "What does this mean?" - reasoning only, no state mutation.
  */
 
-import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, Keyboard, Pressable } from 'react-native';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { View, StyleSheet, Keyboard, Pressable, Animated, Dimensions } from 'react-native';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const PANEL_WIDTH = SCREEN_WIDTH * 0.7;
 
 import { ThemedView } from '@/components/themed-view';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AvatarDrawer } from '@/components/avatar-drawer';
 import { NexusTopBar } from '@/components/nexus/nexus-top-bar';
 import { ChatThread } from '@/components/nexus/chat-thread';
@@ -36,8 +41,23 @@ function NexusScreenContent() {
     saveSimulation,
   } = useNexusContext();
 
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
   // Local UI state
   const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
+
+  // Animation for content slide
+  const contentSlideAnim = useRef(new Animated.Value(0)).current;
+  const isPanelOpen = nexusState.panelState === 'conversations';
+
+  useEffect(() => {
+    Animated.timing(contentSlideAnim, {
+      toValue: isPanelOpen ? PANEL_WIDTH : 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [isPanelOpen, contentSlideAnim]);
 
   const handleConversationsPress = useCallback(() => {
     openConversations();
@@ -71,36 +91,6 @@ function NexusScreenContent() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* Top Bar */}
-      <NexusTopBar
-        onConversationsPress={handleConversationsPress}
-        onContextPress={handleContextPress}
-        onBoardPress={handleBoardPress}
-      />
-
-      {/* Chat Thread / Canvas - tap to dismiss keyboard */}
-      <Pressable style={styles.canvas} onPress={Keyboard.dismiss}>
-        <ChatThread
-          messages={nexusState.messages}
-          isLoading={nexusState.isLoading}
-        />
-      </Pressable>
-
-      {/* Input Bar */}
-      <InputBar
-        value={nexusState.inputText}
-        onChangeText={setInputText}
-        onSend={sendMessage}
-        onMicPress={handleMicPress}
-        onFocus={() => {
-          // Create a new conversation if none is active
-          if (!nexusState.activeConversationId) {
-            createNewConversation();
-          }
-        }}
-        placeholder="Ask Nexus"
-      />
-
       {/* Left Panel: Conversations */}
       <ConversationsPanel
         visible={nexusState.panelState === 'conversations'}
@@ -111,6 +101,55 @@ function NexusScreenContent() {
         onNewChat={createNewConversation}
         onAvatarPress={handleAvatarPress}
       />
+
+      {/* Main Content - slides when panel opens */}
+      <Animated.View
+        style={[
+          styles.mainContent,
+          {
+            backgroundColor: colors.background,
+            transform: [{ translateX: contentSlideAnim }],
+          },
+        ]}
+      >
+        {/* Top Bar */}
+        <NexusTopBar
+          onConversationsPress={handleConversationsPress}
+          onContextPress={handleContextPress}
+          onBoardPress={handleBoardPress}
+        />
+
+        {/* Chat Thread / Canvas - tap to dismiss keyboard and close panel */}
+        <Pressable
+          style={styles.canvas}
+          onPress={() => {
+            Keyboard.dismiss();
+            if (isPanelOpen) {
+              closePanel();
+            }
+          }}
+        >
+          <ChatThread
+            messages={nexusState.messages}
+            isLoading={nexusState.isLoading}
+          />
+        </Pressable>
+
+        {/* Input Bar */}
+        <InputBar
+          value={nexusState.inputText}
+          onChangeText={setInputText}
+          onSend={sendMessage}
+          onMicPress={handleMicPress}
+          onFocus={() => {
+            // Create a new conversation if none is active
+            if (!nexusState.activeConversationId) {
+              createNewConversation();
+            }
+          }}
+          placeholder="Ask Nexus"
+        />
+      </Animated.View>
 
       {/* Right Drawer: Program Context */}
       <ProgramContextDrawer
@@ -164,6 +203,9 @@ export default function NexusScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  mainContent: {
+    ...StyleSheet.absoluteFillObject,
   },
   canvas: {
     flex: 1,
