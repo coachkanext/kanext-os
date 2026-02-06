@@ -2,6 +2,10 @@
  * Coach Program Context Screen
  * Canonical Program Context editor per KaNeXT spec.
  * No invented fields. Configuration only — no evaluation logic.
+ *
+ * LOCKED SPEC: System presets deterministically set their own emphasis block to 100;
+ * offense and defense are separate, overlapping only in shared clusters (Rebounding, Physical),
+ * and never interfere with each other.
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -32,7 +36,24 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 const STORAGE_KEY = 'kx:programContext';
 
-// Offensive System presets with cluster weight distributions
+// Offense Emphasis clusters (5 sliders, must sum to 100)
+const OFFENSE_CLUSTERS = [
+  { id: 'shooting', label: 'Shooting' },
+  { id: 'finishing', label: 'Finishing' },
+  { id: 'playmaking', label: 'Playmaking' },
+  { id: 'rebounding', label: 'Rebounding' },
+  { id: 'physical', label: 'Physical' },
+];
+
+// Defense Emphasis clusters (4 sliders, must sum to 100)
+const DEFENSE_CLUSTERS = [
+  { id: 'onBallDefense', label: 'On-Ball Defense' },
+  { id: 'teamDefense', label: 'Team Defense' },
+  { id: 'rebounding', label: 'Rebounding' },
+  { id: 'physical', label: 'Physical' },
+];
+
+// Offensive System presets (each sums to 100 for offense emphasis)
 const OFFENSIVE_SYSTEMS = [
   { id: 'spread-pnr', label: 'Spread Pick-and-Roll', weights: { shooting: 30, finishing: 25, playmaking: 30, rebounding: 10, physical: 5 } },
   { id: '5-out', label: '5-Out Motion', weights: { shooting: 35, finishing: 20, playmaking: 30, rebounding: 10, physical: 5 } },
@@ -45,7 +66,7 @@ const OFFENSIVE_SYSTEMS = [
   { id: 'heliocentric', label: 'Heliocentric', weights: { shooting: 30, finishing: 25, playmaking: 35, rebounding: 5, physical: 5 } },
 ];
 
-// Defensive System presets with cluster weight distributions
+// Defensive System presets (each sums to 100 for defense emphasis)
 const DEFENSIVE_SYSTEMS = [
   { id: 'containment', label: 'Containment Man', weights: { onBallDefense: 35, teamDefense: 30, rebounding: 20, physical: 15 } },
   { id: 'pack-line', label: 'Pack Line', weights: { onBallDefense: 25, teamDefense: 40, rebounding: 20, physical: 15 } },
@@ -58,43 +79,52 @@ const DEFENSIVE_SYSTEMS = [
 ];
 
 const TEMPO_OPTIONS = ['Slow', 'Medium', 'Fast'];
-
 const PRIMARY_ENGINE_POSITIONS = ['PG', 'CG', 'Wing', 'Forward', 'Big'];
 
-// Cluster definitions for evaluation emphasis (exactly 7)
-const CLUSTERS = [
-  { id: 'shooting', label: 'Shooting' },
-  { id: 'finishing', label: 'Finishing' },
-  { id: 'playmaking', label: 'Playmaking' },
-  { id: 'onBallDefense', label: 'On-Ball Defense' },
-  { id: 'teamDefense', label: 'Team Defense' },
-  { id: 'rebounding', label: 'Rebounding' },
-  { id: 'physical', label: 'Physical' },
-];
+// Types for emphasis weights
+interface OffenseEmphasis {
+  shooting: number;
+  finishing: number;
+  playmaking: number;
+  rebounding: number;
+  physical: number;
+}
+
+interface DefenseEmphasis {
+  onBallDefense: number;
+  teamDefense: number;
+  rebounding: number;
+  physical: number;
+}
 
 interface ProgramContextState {
-  // Section A: Program Resources
   scholarships: number;
   nilBudget: number;
-  // Section B: Systems
   offensiveSystem: string;
   defensiveSystem: string;
   tempo: string;
   primaryEnginePosition: string;
-  // Section C: Evaluation Emphasis (cluster weights, sum to 100)
-  clusterWeights: Record<string, number>;
+  offenseEmphasis: OffenseEmphasis;
+  defenseEmphasis: DefenseEmphasis;
 }
 
-// Default cluster weights matching Spread Pick-and-Roll emphasis (sum=100)
-const DEFAULT_CLUSTER_WEIGHTS: Record<string, number> = {
-  shooting: 20,
-  finishing: 15,
-  playmaking: 20,
-  onBallDefense: 15,
-  teamDefense: 10,
-  rebounding: 10,
-  physical: 10,
-};
+// Get offense weights from a preset
+function getOffensePresetWeights(systemId: string): OffenseEmphasis {
+  const system = OFFENSIVE_SYSTEMS.find((s) => s.id === systemId);
+  if (system) {
+    return { ...system.weights };
+  }
+  return OFFENSIVE_SYSTEMS[0].weights; // Default to spread-pnr
+}
+
+// Get defense weights from a preset
+function getDefensePresetWeights(systemId: string): DefenseEmphasis {
+  const system = DEFENSIVE_SYSTEMS.find((s) => s.id === systemId);
+  if (system) {
+    return { ...system.weights };
+  }
+  return DEFENSIVE_SYSTEMS[2].weights; // Default to pressure-man
+}
 
 const DEFAULT_STATE: ProgramContextState = {
   scholarships: 13,
@@ -103,7 +133,8 @@ const DEFAULT_STATE: ProgramContextState = {
   defensiveSystem: 'pressure-man',
   tempo: 'Fast',
   primaryEnginePosition: 'PG',
-  clusterWeights: { ...DEFAULT_CLUSTER_WEIGHTS },
+  offenseEmphasis: getOffensePresetWeights('spread-pnr'),
+  defenseEmphasis: getDefensePresetWeights('pressure-man'),
 };
 
 // =============================================================================
@@ -128,7 +159,19 @@ export default function CoachProgramContextScreen() {
       try {
         const saved = await AsyncStorage.getItem(STORAGE_KEY);
         if (saved) {
-          setState(JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+          // Migrate from old format if needed
+          if (parsed.clusterWeights && !parsed.offenseEmphasis) {
+            // Old format - initialize from presets
+            setState({
+              ...DEFAULT_STATE,
+              ...parsed,
+              offenseEmphasis: getOffensePresetWeights(parsed.offensiveSystem || 'spread-pnr'),
+              defenseEmphasis: getDefensePresetWeights(parsed.defensiveSystem || 'pressure-man'),
+            });
+          } else {
+            setState({ ...DEFAULT_STATE, ...parsed });
+          }
         }
       } catch (e) {
         console.error('Failed to load program context:', e);
@@ -147,87 +190,108 @@ export default function CoachProgramContextScreen() {
     }).format(value);
   };
 
-  // Handle offensive system selection (applies preset weights)
-  const handleOffensiveSystemSelect = (systemId: string) => {
-    const system = OFFENSIVE_SYSTEMS.find((s) => s.id === systemId);
-    if (system) {
-      // Apply the offensive preset to relevant clusters
-      // Defense clusters stay as-is
-      const newWeights = { ...state.clusterWeights };
-      newWeights.shooting = system.weights.shooting;
-      newWeights.finishing = system.weights.finishing;
-      newWeights.playmaking = system.weights.playmaking;
-      // Rebounding and Physical from offense preset
-      newWeights.rebounding = system.weights.rebounding;
-      newWeights.physical = system.weights.physical;
+  // Calculate totals
+  const offenseTotal = Object.values(state.offenseEmphasis).reduce((a, b) => a + b, 0);
+  const defenseTotal = Object.values(state.defenseEmphasis).reduce((a, b) => a + b, 0);
+  const isOffenseValid = offenseTotal === 100;
+  const isDefenseValid = defenseTotal === 100;
+  const canSave = isOffenseValid && isDefenseValid;
 
-      setState((prev) => ({
-        ...prev,
-        offensiveSystem: systemId,
-        clusterWeights: newWeights,
-      }));
-    }
+  // Handle offensive system selection - IMMEDIATELY sets offense emphasis to preset
+  const handleOffensiveSystemSelect = (systemId: string) => {
+    const weights = getOffensePresetWeights(systemId);
+    setState((prev) => ({
+      ...prev,
+      offensiveSystem: systemId,
+      offenseEmphasis: weights,
+    }));
     setShowOffensivePicker(false);
   };
 
-  // Handle defensive system selection (for reference, weights shown but separate)
+  // Handle defensive system selection - IMMEDIATELY sets defense emphasis to preset
   const handleDefensiveSystemSelect = (systemId: string) => {
-    setState((prev) => ({ ...prev, defensiveSystem: systemId }));
+    const weights = getDefensePresetWeights(systemId);
+    setState((prev) => ({
+      ...prev,
+      defensiveSystem: systemId,
+      defenseEmphasis: weights,
+    }));
     setShowDefensivePicker(false);
   };
 
-  // Handle cluster weight change (no auto-rebalancing)
-  const handleClusterWeightChange = useCallback((clusterId: string, newValue: number) => {
+  // Handle offense emphasis slider change (no auto-rebalancing)
+  const handleOffenseWeightChange = useCallback((clusterId: string, newValue: number) => {
     setState((prev) => ({
       ...prev,
-      clusterWeights: {
-        ...prev.clusterWeights,
+      offenseEmphasis: {
+        ...prev.offenseEmphasis,
         [clusterId]: Math.round(newValue),
       },
     }));
   }, []);
 
-  // Calculate total weight
-  const totalWeight = Object.values(state.clusterWeights).reduce((a, b) => a + b, 0);
-  const isValidTotal = totalWeight === 100;
+  // Handle defense emphasis slider change (no auto-rebalancing)
+  const handleDefenseWeightChange = useCallback((clusterId: string, newValue: number) => {
+    setState((prev) => ({
+      ...prev,
+      defenseEmphasis: {
+        ...prev.defenseEmphasis,
+        [clusterId]: Math.round(newValue),
+      },
+    }));
+  }, []);
 
-  // Normalize weights to sum to 100
-  const handleNormalize = useCallback(() => {
+  // Normalize offense weights to sum to 100
+  const handleNormalizeOffense = useCallback(() => {
     setState((prev) => {
-      const currentTotal = Object.values(prev.clusterWeights).reduce((a, b) => a + b, 0);
+      const currentTotal = Object.values(prev.offenseEmphasis).reduce((a, b) => a + b, 0);
       if (currentTotal === 0) {
-        // If all zeros, distribute evenly
-        const evenWeight = Math.floor(100 / CLUSTERS.length);
-        const remainder = 100 - evenWeight * CLUSTERS.length;
-        const newWeights: Record<string, number> = {};
-        CLUSTERS.forEach((c, i) => {
-          newWeights[c.id] = evenWeight + (i < remainder ? 1 : 0);
-        });
-        return { ...prev, clusterWeights: newWeights };
+        return { ...prev, offenseEmphasis: getOffensePresetWeights(prev.offensiveSystem) };
       }
-
       const scale = 100 / currentTotal;
       const newWeights: Record<string, number> = {};
       let runningTotal = 0;
-
-      // Scale all weights proportionally
-      CLUSTERS.forEach((c, i) => {
-        if (i === CLUSTERS.length - 1) {
-          // Last cluster gets the remainder to ensure exact 100
-          newWeights[c.id] = 100 - runningTotal;
+      const keys = Object.keys(prev.offenseEmphasis);
+      keys.forEach((key, i) => {
+        if (i === keys.length - 1) {
+          newWeights[key] = 100 - runningTotal;
         } else {
-          newWeights[c.id] = Math.round(prev.clusterWeights[c.id] * scale);
-          runningTotal += newWeights[c.id];
+          newWeights[key] = Math.round((prev.offenseEmphasis as Record<string, number>)[key] * scale);
+          runningTotal += newWeights[key];
         }
       });
+      return { ...prev, offenseEmphasis: newWeights as unknown as OffenseEmphasis };
+    });
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }, []);
 
-      return { ...prev, clusterWeights: newWeights };
+  // Normalize defense weights to sum to 100
+  const handleNormalizeDefense = useCallback(() => {
+    setState((prev) => {
+      const currentTotal = Object.values(prev.defenseEmphasis).reduce((a, b) => a + b, 0);
+      if (currentTotal === 0) {
+        return { ...prev, defenseEmphasis: getDefensePresetWeights(prev.defensiveSystem) };
+      }
+      const scale = 100 / currentTotal;
+      const newWeights: Record<string, number> = {};
+      let runningTotal = 0;
+      const keys = Object.keys(prev.defenseEmphasis);
+      keys.forEach((key, i) => {
+        if (i === keys.length - 1) {
+          newWeights[key] = 100 - runningTotal;
+        } else {
+          newWeights[key] = Math.round((prev.defenseEmphasis as Record<string, number>)[key] * scale);
+          runningTotal += newWeights[key];
+        }
+      });
+      return { ...prev, defenseEmphasis: newWeights as unknown as DefenseEmphasis };
     });
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
   // Handle save
   const handleSave = async () => {
+    if (!canSave) return;
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -279,7 +343,6 @@ export default function CoachProgramContextScreen() {
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        {/* Content */}
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -291,7 +354,6 @@ export default function CoachProgramContextScreen() {
             PROGRAM RESOURCES
           </Text>
           <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-            {/* Scholarships */}
             <View style={styles.inputRow}>
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Scholarships</Text>
               <TextInput
@@ -306,10 +368,7 @@ export default function CoachProgramContextScreen() {
                 placeholderTextColor={colors.textTertiary}
               />
             </View>
-
             <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-            {/* NIL Budget */}
             <View style={styles.inputRow}>
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>NIL Budget</Text>
               <TextInput
@@ -332,7 +391,6 @@ export default function CoachProgramContextScreen() {
           {/* ===== SECTION B: SYSTEMS ===== */}
           <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>SYSTEMS</Text>
           <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-            {/* Offensive System */}
             <Pressable
               style={styles.selectorRow}
               onPress={() => {
@@ -351,7 +409,6 @@ export default function CoachProgramContextScreen() {
               </View>
             </Pressable>
 
-            {/* Primary Engine Position (only if Heliocentric) */}
             {isHeliocentric && (
               <>
                 <View style={[styles.divider, { backgroundColor: colors.divider }]} />
@@ -376,8 +433,6 @@ export default function CoachProgramContextScreen() {
             )}
 
             <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-            {/* Defensive System */}
             <Pressable
               style={styles.selectorRow}
               onPress={() => {
@@ -397,8 +452,6 @@ export default function CoachProgramContextScreen() {
             </Pressable>
 
             <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-            {/* Tempo */}
             <Pressable
               style={styles.selectorRow}
               onPress={() => {
@@ -414,12 +467,12 @@ export default function CoachProgramContextScreen() {
             </Pressable>
           </View>
 
-          {/* ===== SECTION C: EVALUATION EMPHASIS ===== */}
+          {/* ===== SECTION C: OFFENSE EMPHASIS (5 sliders, sum to 100) ===== */}
           <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
-            EVALUATION EMPHASIS
+            OFFENSE EMPHASIS
           </Text>
           <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-            {CLUSTERS.map((cluster, index) => (
+            {OFFENSE_CLUSTERS.map((cluster, index) => (
               <View key={cluster.id}>
                 {index > 0 && (
                   <View style={[styles.divider, { backgroundColor: colors.divider }]} />
@@ -430,7 +483,7 @@ export default function CoachProgramContextScreen() {
                       {cluster.label}
                     </Text>
                     <Text style={[styles.sliderValue, { color: colors.text }]}>
-                      {state.clusterWeights[cluster.id]}
+                      {(state.offenseEmphasis as Record<string, number>)[cluster.id]}
                     </Text>
                   </View>
                   <Slider
@@ -438,8 +491,8 @@ export default function CoachProgramContextScreen() {
                     minimumValue={0}
                     maximumValue={100}
                     step={1}
-                    value={state.clusterWeights[cluster.id]}
-                    onValueChange={(value) => handleClusterWeightChange(cluster.id, value)}
+                    value={(state.offenseEmphasis as Record<string, number>)[cluster.id]}
+                    onValueChange={(value) => handleOffenseWeightChange(cluster.id, value)}
                     minimumTrackTintColor={colors.tint}
                     maximumTrackTintColor={colors.border}
                     thumbTintColor={colors.tint}
@@ -448,26 +501,19 @@ export default function CoachProgramContextScreen() {
               </View>
             ))}
             <View style={[styles.totalRow, { borderTopColor: colors.divider }]}>
-              <Text style={[styles.totalLabel, { color: colors.textSecondary }]}>Total</Text>
+              <Text style={[styles.totalLabel, { color: colors.textSecondary }]}>Offense Total</Text>
               <Text
-                style={[
-                  styles.totalValue,
-                  { color: isValidTotal ? colors.success : colors.error },
-                ]}
+                style={[styles.totalValue, { color: isOffenseValid ? colors.success : colors.error }]}
               >
-                {totalWeight} / 100
+                {offenseTotal} / 100
               </Text>
             </View>
           </View>
-
-          {/* Helper text when total != 100 */}
-          {!isValidTotal && (
+          {!isOffenseValid && (
             <Text style={[styles.helperText, { color: colors.error }]}>
-              Total must equal 100 to save.
+              Offense total must equal 100 to save.
             </Text>
           )}
-
-          {/* Normalize button */}
           <Pressable
             style={({ pressed }) => [
               styles.normalizeButton,
@@ -476,7 +522,69 @@ export default function CoachProgramContextScreen() {
                 borderColor: colors.border,
               },
             ]}
-            onPress={handleNormalize}
+            onPress={handleNormalizeOffense}
+          >
+            <Text style={[styles.normalizeButtonText, { color: colors.text }]}>
+              Normalize to 100
+            </Text>
+          </Pressable>
+
+          {/* ===== SECTION D: DEFENSE EMPHASIS (4 sliders, sum to 100) ===== */}
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
+            DEFENSE EMPHASIS
+          </Text>
+          <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+            {DEFENSE_CLUSTERS.map((cluster, index) => (
+              <View key={cluster.id}>
+                {index > 0 && (
+                  <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                )}
+                <View style={styles.sliderRow}>
+                  <View style={styles.sliderHeader}>
+                    <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>
+                      {cluster.label}
+                    </Text>
+                    <Text style={[styles.sliderValue, { color: colors.text }]}>
+                      {(state.defenseEmphasis as Record<string, number>)[cluster.id]}
+                    </Text>
+                  </View>
+                  <Slider
+                    style={styles.slider}
+                    minimumValue={0}
+                    maximumValue={100}
+                    step={1}
+                    value={(state.defenseEmphasis as Record<string, number>)[cluster.id]}
+                    onValueChange={(value) => handleDefenseWeightChange(cluster.id, value)}
+                    minimumTrackTintColor={colors.tint}
+                    maximumTrackTintColor={colors.border}
+                    thumbTintColor={colors.tint}
+                  />
+                </View>
+              </View>
+            ))}
+            <View style={[styles.totalRow, { borderTopColor: colors.divider }]}>
+              <Text style={[styles.totalLabel, { color: colors.textSecondary }]}>Defense Total</Text>
+              <Text
+                style={[styles.totalValue, { color: isDefenseValid ? colors.success : colors.error }]}
+              >
+                {defenseTotal} / 100
+              </Text>
+            </View>
+          </View>
+          {!isDefenseValid && (
+            <Text style={[styles.helperText, { color: colors.error }]}>
+              Defense total must equal 100 to save.
+            </Text>
+          )}
+          <Pressable
+            style={({ pressed }) => [
+              styles.normalizeButton,
+              {
+                backgroundColor: pressed ? colors.backgroundTertiary : colors.backgroundSecondary,
+                borderColor: colors.border,
+              },
+            ]}
+            onPress={handleNormalizeDefense}
           >
             <Text style={[styles.normalizeButtonText, { color: colors.text }]}>
               Normalize to 100
@@ -503,7 +611,7 @@ export default function CoachProgramContextScreen() {
           style={({ pressed }) => [
             styles.saveButton,
             {
-              backgroundColor: isValidTotal
+              backgroundColor: canSave
                 ? pressed
                   ? '#4F46E5'
                   : colors.tint
@@ -511,20 +619,17 @@ export default function CoachProgramContextScreen() {
             },
           ]}
           onPress={handleSave}
-          disabled={!isValidTotal}
+          disabled={!canSave}
         >
           <Text
-            style={[
-              styles.saveButtonText,
-              { color: isValidTotal ? '#FFFFFF' : colors.textTertiary },
-            ]}
+            style={[styles.saveButtonText, { color: canSave ? '#FFFFFF' : colors.textTertiary }]}
           >
             Save
           </Text>
         </Pressable>
       </View>
 
-      {/* Offensive System Picker Modal */}
+      {/* Modals */}
       <PickerModal
         visible={showOffensivePicker}
         title="Offensive System"
@@ -534,19 +639,15 @@ export default function CoachProgramContextScreen() {
         onClose={() => setShowOffensivePicker(false)}
         colors={colors}
       />
-
-      {/* Defensive System Picker Modal */}
       <PickerModal
         visible={showDefensivePicker}
         title="Defensive System"
         options={DEFENSIVE_SYSTEMS.map((s) => ({ id: s.id, label: s.label }))}
         selected={state.defensiveSystem}
-        onSelect={(id) => handleDefensiveSystemSelect(id)}
+        onSelect={handleDefensiveSystemSelect}
         onClose={() => setShowDefensivePicker(false)}
         colors={colors}
       />
-
-      {/* Tempo Picker Modal */}
       <PickerModal
         visible={showTempoPicker}
         title="Tempo"
@@ -559,8 +660,6 @@ export default function CoachProgramContextScreen() {
         onClose={() => setShowTempoPicker(false)}
         colors={colors}
       />
-
-      {/* Primary Engine Position Picker Modal */}
       <PickerModal
         visible={showEnginePicker}
         title="Primary Engine Position"
@@ -578,7 +677,7 @@ export default function CoachProgramContextScreen() {
 }
 
 // =============================================================================
-// PICKER MODAL COMPONENT
+// PICKER MODAL
 // =============================================================================
 
 interface PickerModalProps {
@@ -652,15 +751,9 @@ function PickerModal({
 // =============================================================================
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  flex: {
-    flex: 1,
-  },
-  header: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
+  container: { flex: 1 },
+  flex: { flex: 1 },
+  header: { borderBottomWidth: StyleSheet.hairlineWidth },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -675,19 +768,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: BorderRadius.md,
   },
-  headerTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  headerSpacer: {
-    width: 32,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: Spacing.md,
-  },
+  headerTitle: { fontSize: 17, fontWeight: '600' },
+  headerSpacer: { width: 32 },
+  scrollView: { flex: 1 },
+  scrollContent: { padding: Spacing.md },
   sectionLabel: {
     fontSize: 13,
     fontWeight: '600',
@@ -696,26 +780,15 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     marginTop: Spacing.md,
   },
-  card: {
-    borderRadius: BorderRadius.lg,
-    overflow: 'hidden',
-  },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    marginLeft: Spacing.md,
-  },
-
-  // Input Row
+  card: { borderRadius: BorderRadius.lg, overflow: 'hidden' },
+  divider: { height: StyleSheet.hairlineWidth, marginLeft: Spacing.md },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: Spacing.md,
     gap: Spacing.sm,
   },
-  inputLabel: {
-    fontSize: 15,
-    flex: 1,
-  },
+  inputLabel: { fontSize: 15, flex: 1 },
   numericInput: {
     fontSize: 15,
     fontWeight: '500',
@@ -726,53 +799,25 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     borderWidth: 1,
   },
-  currencyPreview: {
-    fontSize: 13,
-    marginLeft: Spacing.xs,
-  },
-
-  // Selector Row
+  currencyPreview: { fontSize: 13, marginLeft: Spacing.xs },
   selectorRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: Spacing.md,
   },
-  selectorValue: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  selectorText: {
-    fontSize: 15,
-    fontWeight: '500',
-  },
-
-  // Slider Row
-  sliderRow: {
-    padding: Spacing.md,
-  },
+  selectorValue: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  selectorText: { fontSize: 15, fontWeight: '500' },
+  sliderRow: { padding: Spacing.md },
   sliderHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
   },
-  sliderLabel: {
-    fontSize: 15,
-  },
-  sliderValue: {
-    fontSize: 15,
-    fontWeight: '600',
-    minWidth: 30,
-    textAlign: 'right',
-  },
-  slider: {
-    width: '100%',
-    height: 40,
-  },
-
-  // Total Row
+  sliderLabel: { fontSize: 15 },
+  sliderValue: { fontSize: 15, fontWeight: '600', minWidth: 30, textAlign: 'right' },
+  slider: { width: '100%', height: 40 },
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -780,24 +825,9 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     borderTopWidth: 1,
   },
-  totalLabel: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  totalValue: {
-    fontSize: 17,
-    fontWeight: '700',
-  },
-
-  // Helper Text
-  helperText: {
-    fontSize: 13,
-    textAlign: 'center',
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.xs,
-  },
-
-  // Normalize Button
+  totalLabel: { fontSize: 15, fontWeight: '600' },
+  totalValue: { fontSize: 17, fontWeight: '700' },
+  helperText: { fontSize: 13, textAlign: 'center', marginTop: Spacing.sm, marginBottom: Spacing.xs },
   normalizeButton: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -807,12 +837,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: Spacing.sm,
   },
-  normalizeButtonText: {
-    fontSize: 15,
-    fontWeight: '500',
-  },
-
-  // Save Button
+  normalizeButtonText: { fontSize: 15, fontWeight: '500' },
   saveContainer: {
     position: 'absolute',
     bottom: 0,
@@ -828,25 +853,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  saveButtonText: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
-
-  // Modal
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  modalBackdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
-  modalContent: {
-    borderTopLeftRadius: BorderRadius.xl,
-    borderTopRightRadius: BorderRadius.xl,
-    maxHeight: '70%',
-  },
+  saveButtonText: { fontSize: 17, fontWeight: '600' },
+  modalOverlay: { flex: 1, justifyContent: 'flex-end' },
+  modalBackdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
+  modalContent: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, maxHeight: '70%' },
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -854,20 +864,13 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  modalTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  modalScroll: {
-    maxHeight: 400,
-  },
+  modalTitle: { fontSize: 17, fontWeight: '600' },
+  modalScroll: { maxHeight: 400 },
   modalOption: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: Spacing.md,
   },
-  modalOptionText: {
-    fontSize: 16,
-  },
+  modalOptionText: { fontSize: 16 },
 });
