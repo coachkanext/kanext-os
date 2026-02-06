@@ -4,10 +4,12 @@
  * Per spec: Home displays key stats and quick actions for the current mode.
  */
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
@@ -112,15 +114,41 @@ const DEMO_TEAM_STATE = {
   confStanding: '4th',
 };
 
-// Program Context mirror data (read-only on Home)
-const DEMO_PROGRAM_CONTEXT = {
-  scholarships: { used: 11, total: 13 },
-  nilTier: 'Mid-Major',
-  offensiveSystem: 'Spread PnR',
-  defensiveSystem: 'Pressure Man',
-  pace: 'Fast',
-  evaluationEmphasis: ['Shooting ↑', 'OBD ↑', 'Physical ↑'],
-  rosterTargets: ['3&D Wing', 'Stretch 4', 'Lead Guard', 'Rim Protector'],
+// Program Context storage key (shared with program-context.tsx)
+const PROGRAM_CONTEXT_KEY = 'kx:programContext';
+
+// Offensive system labels for display
+const OFFENSIVE_SYSTEM_LABELS: Record<string, string> = {
+  'spread-pnr': 'Spread Pick-and-Roll',
+  '5-out': '5-Out Motion',
+  'pace-space': 'Pace & Space',
+  'motion': 'Motion / Read & React',
+  'dribble-drive': 'Dribble Drive',
+  'princeton': 'Princeton',
+  'post-centric': 'Post-Centric / Inside-Out',
+  'moreyball': 'Moreyball',
+  'heliocentric': 'Heliocentric',
+};
+
+// Defensive system labels for display
+const DEFENSIVE_SYSTEM_LABELS: Record<string, string> = {
+  'containment': 'Containment Man',
+  'pack-line': 'Pack Line',
+  'pressure-man': 'Pressure Man / Denial',
+  'switch': 'Switch Everything',
+  'ice': 'ICE / No-Middle',
+  'zone': 'Zone (Structured)',
+  'matchup-zone': 'Matchup Zone / Hybrid',
+  'press': 'Press / Pressure Defense',
+};
+
+// Default program context (matches program-context.tsx defaults)
+const DEFAULT_PROGRAM_CONTEXT = {
+  scholarships: 13,
+  nilBudget: 150000,
+  offensiveSystem: 'spread-pnr',
+  defensiveSystem: 'pressure-man',
+  tempo: 'Fast',
 };
 
 // Recent changes: evaluation, roster, or decision activity
@@ -184,6 +212,43 @@ function SportsHome() {
   const colors = Colors[colorScheme];
   const router = useRouter();
 
+  // Program Context state (loaded from AsyncStorage)
+  const [programContext, setProgramContext] = useState(DEFAULT_PROGRAM_CONTEXT);
+
+  // Load program context on focus (so it updates after editing)
+  useFocusEffect(
+    useCallback(() => {
+      const loadContext = async () => {
+        try {
+          const saved = await AsyncStorage.getItem(PROGRAM_CONTEXT_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            setProgramContext({
+              scholarships: parsed.scholarships ?? DEFAULT_PROGRAM_CONTEXT.scholarships,
+              nilBudget: parsed.nilBudget ?? DEFAULT_PROGRAM_CONTEXT.nilBudget,
+              offensiveSystem: parsed.offensiveSystem ?? DEFAULT_PROGRAM_CONTEXT.offensiveSystem,
+              defensiveSystem: parsed.defensiveSystem ?? DEFAULT_PROGRAM_CONTEXT.defensiveSystem,
+              tempo: parsed.tempo ?? DEFAULT_PROGRAM_CONTEXT.tempo,
+            });
+          }
+        } catch (e) {
+          console.error('Failed to load program context:', e);
+        }
+      };
+      loadContext();
+    }, [])
+  );
+
+  // Format currency for display
+  const formatCurrencyValue = (value: number): string => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
   const handleTabPress = (route: string | null) => {
     if (route) {
       router.push(route as any);
@@ -224,7 +289,7 @@ function SportsHome() {
             Scholarships
           </ThemedText>
           <ThemedText style={[styles.contextValue, { color: colors.text }]}>
-            {DEMO_PROGRAM_CONTEXT.scholarships.used} / {DEMO_PROGRAM_CONTEXT.scholarships.total}
+            {programContext.scholarships}
           </ThemedText>
         </View>
         <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
@@ -234,7 +299,7 @@ function SportsHome() {
             NIL Budget
           </ThemedText>
           <ThemedText style={[styles.contextValue, { color: colors.text }]}>
-            {DEMO_PROGRAM_CONTEXT.nilTier}
+            {formatCurrencyValue(programContext.nilBudget)}
           </ThemedText>
         </View>
         <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
@@ -244,7 +309,7 @@ function SportsHome() {
             Offensive System
           </ThemedText>
           <ThemedText style={[styles.contextValue, { color: colors.text }]}>
-            {DEMO_PROGRAM_CONTEXT.offensiveSystem}
+            {OFFENSIVE_SYSTEM_LABELS[programContext.offensiveSystem] || programContext.offensiveSystem}
           </ThemedText>
         </View>
         <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
@@ -254,37 +319,17 @@ function SportsHome() {
             Defensive System
           </ThemedText>
           <ThemedText style={[styles.contextValue, { color: colors.text }]}>
-            {DEMO_PROGRAM_CONTEXT.defensiveSystem}
+            {DEFENSIVE_SYSTEM_LABELS[programContext.defensiveSystem] || programContext.defensiveSystem}
           </ThemedText>
         </View>
         <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
 
         <View style={styles.contextRow}>
           <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
-            Pace
+            Tempo
           </ThemedText>
           <ThemedText style={[styles.contextValue, { color: colors.text }]}>
-            {DEMO_PROGRAM_CONTEXT.pace}
-          </ThemedText>
-        </View>
-        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-
-        <View style={styles.contextRow}>
-          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
-            Evaluation Emphasis
-          </ThemedText>
-          <ThemedText style={[styles.contextValue, { color: colors.text }]}>
-            {DEMO_PROGRAM_CONTEXT.evaluationEmphasis.join(', ')}
-          </ThemedText>
-        </View>
-        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-
-        <View style={styles.contextRow}>
-          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
-            Roster Targets
-          </ThemedText>
-          <ThemedText style={[styles.contextValue, { color: colors.text }]} numberOfLines={2}>
-            {DEMO_PROGRAM_CONTEXT.rosterTargets.join(', ')}
+            {programContext.tempo}
           </ThemedText>
         </View>
       </View>
