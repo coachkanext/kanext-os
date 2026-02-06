@@ -2,17 +2,18 @@
  * Coach Program Context Screen
  * Canonical Program Context editor per KaNeXT spec.
  *
- * SYSTEM EMPHASIS (7 Clusters) - FINAL SPEC
- * - 7 sliders are NOT COUPLED while dragging (moving one does NOT auto-drop others)
- * - Total must equal 100.0
- * - "Normalize to 100" button proportionally scales all sliders
- * - Offensive preset changes ONLY: Shooting, Finishing, Playmaking
- * - Defensive preset changes ONLY: On-Ball Defense, Team Defense
- * - Rebounding/Physical never change from presets
- * - Save auto-normalizes if total != 100
+ * SYSTEM EMPHASIS (8 UI sliders, 7 backend clusters)
+ * - UI shows 8 sliders in 3 collapsible groups:
+ *   - Offense: Shooting, Finishing, Playmaking
+ *   - Defense: On-Ball Defense, Team Defense
+ *   - Physicality: Offensive Rebounding, Defensive Rebounding, Physical
+ * - Section totals are LOCKED by preset (read-only)
+ * - Sliders redistribute within their own section only
+ * - Backend stores 7 clusters: rebounding = offReb + defReb
+ * - Presets: Hard reset section totals + slider defaults
  */
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -41,45 +42,61 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 const STORAGE_KEY = 'kx:programContext';
 
 const MIN_VALUE = 0.0; // Allow zero
-const MAX_VALUE = 100.0; // Max for any single slider
 const TARGET_TOTAL = 100.0;
 
-// All 7 clusters (exact labels per spec)
-const CLUSTERS = [
-  { id: 'shooting', label: 'Shooting' },
-  { id: 'finishing', label: 'Finishing' },
-  { id: 'playmaking', label: 'Playmaking' },
-  { id: 'onBallDefense', label: 'On-Ball Defense' },
-  { id: 'teamDefense', label: 'Team Defense' },
-  { id: 'rebounding', label: 'Rebounding' },
-  { id: 'physical', label: 'Physical' },
-] as const;
+// UI Emphasis Groups (8 sliders in 3 groups)
+type EmphasisGroup = 'offense' | 'defense' | 'physicality';
 
-type ClusterId = typeof CLUSTERS[number]['id'];
+// UI sliders per group (8 total)
+const UI_SLIDERS = {
+  offense: [
+    { id: 'shooting', label: 'Shooting' },
+    { id: 'finishing', label: 'Finishing' },
+    { id: 'playmaking', label: 'Playmaking' },
+  ],
+  defense: [
+    { id: 'onBallDefense', label: 'On-Ball Defense' },
+    { id: 'teamDefense', label: 'Team Defense' },
+  ],
+  physicality: [
+    { id: 'offensiveRebounding', label: 'Offensive Rebounding' },
+    { id: 'defensiveRebounding', label: 'Defensive Rebounding' },
+    { id: 'physical', label: 'Physical' },
+  ],
+} as const;
 
-// Offensive System presets (raw weights for S/F/P only)
+type UIEmphasisId = 'shooting' | 'finishing' | 'playmaking' | 'onBallDefense' | 'teamDefense' | 'offensiveRebounding' | 'defensiveRebounding' | 'physical';
+
+// Default section totals (locked by preset)
+const DEFAULT_SECTION_TOTALS = {
+  offense: 43,    // S + F + P
+  defense: 29,    // OBD + TD
+  physicality: 28, // OReb + DReb + Physical
+};
+
+// Offensive System presets (sectionTotal + raw weights for S/F/P)
 const OFFENSIVE_SYSTEMS = [
-  { id: 'spread-pnr', label: 'Spread Pick-and-Roll', weights: { shooting: 30, finishing: 25, playmaking: 30 } },
-  { id: '5-out', label: '5-Out Motion', weights: { shooting: 35, finishing: 20, playmaking: 30 } },
-  { id: 'pace-space', label: 'Pace & Space', weights: { shooting: 40, finishing: 20, playmaking: 25 } },
-  { id: 'motion', label: 'Motion / Read & React', weights: { shooting: 25, finishing: 20, playmaking: 35 } },
-  { id: 'dribble-drive', label: 'Dribble Drive', weights: { shooting: 20, finishing: 35, playmaking: 25 } },
-  { id: 'princeton', label: 'Princeton', weights: { shooting: 20, finishing: 20, playmaking: 40 } },
-  { id: 'post-centric', label: 'Post-Centric / Inside-Out', weights: { shooting: 20, finishing: 35, playmaking: 20 } },
-  { id: 'moreyball', label: 'Moreyball', weights: { shooting: 45, finishing: 25, playmaking: 20 } },
-  { id: 'heliocentric', label: 'Heliocentric', weights: { shooting: 30, finishing: 25, playmaking: 35 } },
+  { id: 'spread-pnr', label: 'Spread Pick-and-Roll', sectionTotal: 43, weights: { shooting: 30, finishing: 25, playmaking: 30 } },
+  { id: '5-out', label: '5-Out Motion', sectionTotal: 45, weights: { shooting: 35, finishing: 20, playmaking: 30 } },
+  { id: 'pace-space', label: 'Pace & Space', sectionTotal: 45, weights: { shooting: 40, finishing: 20, playmaking: 25 } },
+  { id: 'motion', label: 'Motion / Read & React', sectionTotal: 42, weights: { shooting: 25, finishing: 20, playmaking: 35 } },
+  { id: 'dribble-drive', label: 'Dribble Drive', sectionTotal: 44, weights: { shooting: 20, finishing: 35, playmaking: 25 } },
+  { id: 'princeton', label: 'Princeton', sectionTotal: 40, weights: { shooting: 20, finishing: 20, playmaking: 40 } },
+  { id: 'post-centric', label: 'Post-Centric / Inside-Out', sectionTotal: 42, weights: { shooting: 20, finishing: 35, playmaking: 20 } },
+  { id: 'moreyball', label: 'Moreyball', sectionTotal: 48, weights: { shooting: 45, finishing: 25, playmaking: 20 } },
+  { id: 'heliocentric', label: 'Heliocentric', sectionTotal: 45, weights: { shooting: 30, finishing: 25, playmaking: 35 } },
 ];
 
-// Defensive System presets (raw weights for OBD/TD only - NOT rebounding/physical)
+// Defensive System presets (sectionTotal + raw weights for OBD/TD)
 const DEFENSIVE_SYSTEMS = [
-  { id: 'containment', label: 'Containment Man', weights: { onBallDefense: 35, teamDefense: 30 } },
-  { id: 'pack-line', label: 'Pack Line', weights: { onBallDefense: 25, teamDefense: 40 } },
-  { id: 'pressure-man', label: 'Pressure Man / Denial', weights: { onBallDefense: 45, teamDefense: 20 } },
-  { id: 'switch', label: 'Switch Everything', weights: { onBallDefense: 30, teamDefense: 30 } },
-  { id: 'ice', label: 'ICE / No-Middle', weights: { onBallDefense: 35, teamDefense: 35 } },
-  { id: 'zone', label: 'Zone (Structured)', weights: { onBallDefense: 15, teamDefense: 45 } },
-  { id: 'matchup-zone', label: 'Matchup Zone / Hybrid', weights: { onBallDefense: 20, teamDefense: 40 } },
-  { id: 'press', label: 'Press / Pressure Defense', weights: { onBallDefense: 40, teamDefense: 20 } },
+  { id: 'containment', label: 'Containment Man', sectionTotal: 29, weights: { onBallDefense: 35, teamDefense: 30 } },
+  { id: 'pack-line', label: 'Pack Line', sectionTotal: 30, weights: { onBallDefense: 25, teamDefense: 40 } },
+  { id: 'pressure-man', label: 'Pressure Man / Denial', sectionTotal: 32, weights: { onBallDefense: 45, teamDefense: 20 } },
+  { id: 'switch', label: 'Switch Everything', sectionTotal: 28, weights: { onBallDefense: 30, teamDefense: 30 } },
+  { id: 'ice', label: 'ICE / No-Middle', sectionTotal: 30, weights: { onBallDefense: 35, teamDefense: 35 } },
+  { id: 'zone', label: 'Zone (Structured)', sectionTotal: 28, weights: { onBallDefense: 15, teamDefense: 45 } },
+  { id: 'matchup-zone', label: 'Matchup Zone / Hybrid', sectionTotal: 28, weights: { onBallDefense: 20, teamDefense: 40 } },
+  { id: 'press', label: 'Press / Pressure Defense', sectionTotal: 30, weights: { onBallDefense: 40, teamDefense: 20 } },
 ];
 
 const TEMPO_OPTIONS = ['Slow', 'Medium', 'Fast'];
@@ -89,6 +106,7 @@ const PRIMARY_ENGINE_POSITIONS = ['PG', 'CG', 'Wing', 'Forward', 'Big'];
 // TYPES
 // =============================================================================
 
+// Backend storage format (7 clusters)
 interface EmphasisProfile {
   shooting: number;
   finishing: number;
@@ -99,6 +117,25 @@ interface EmphasisProfile {
   physical: number;
 }
 
+// UI display format (8 sliders)
+interface UIEmphasisProfile {
+  shooting: number;
+  finishing: number;
+  playmaking: number;
+  onBallDefense: number;
+  teamDefense: number;
+  offensiveRebounding: number;
+  defensiveRebounding: number;
+  physical: number;
+}
+
+// Section totals (locked by preset)
+interface SectionTotals {
+  offense: number;
+  defense: number;
+  physicality: number;
+}
+
 interface ProgramContextState {
   scholarships: number;
   nilBudget: number;
@@ -107,6 +144,10 @@ interface ProgramContextState {
   tempo: string;
   primaryEnginePosition: string;
   emphasis: EmphasisProfile;
+  // Store rebounding split ratio (0-1, where value = offReb portion)
+  reboundingSplit?: number;
+  // Section totals (locked by preset, only change when preset applied)
+  sectionTotals?: SectionTotals;
 }
 
 // =============================================================================
@@ -114,138 +155,241 @@ interface ProgramContextState {
 // =============================================================================
 
 /**
- * Normalize all 7 cluster weights to sum exactly to TARGET_TOTAL (100.0)
- * Remainder goes to Physical deterministically
+ * Apply offensive preset with hard reset.
+ * Sets offense section total + slider values from preset.
+ * Defense stays locked; Physicality = 100 - offense - defense.
  */
-function normalizeEmphasis(emphasis: EmphasisProfile): EmphasisProfile {
-  const keys: ClusterId[] = ['shooting', 'finishing', 'playmaking', 'onBallDefense', 'teamDefense', 'rebounding', 'physical'];
-  const currentSum = keys.reduce((sum, k) => sum + emphasis[k], 0);
+function applyOffensePreset(
+  systemId: string,
+  currentSectionTotals: SectionTotals,
+  currentUIEmphasis: UIEmphasisProfile
+): { sectionTotals: SectionTotals; uiEmphasis: UIEmphasisProfile; emphasis: EmphasisProfile } {
+  const system = OFFENSIVE_SYSTEMS.find((s) => s.id === systemId) ?? OFFENSIVE_SYSTEMS[0];
+  const { sectionTotal, weights } = system;
+  const rawSum = weights.shooting + weights.finishing + weights.playmaking;
 
-  if (currentSum === 0) {
-    // Edge case: all zeros, distribute evenly
-    const evenShare = Math.round((TARGET_TOTAL / 7) * 10) / 10;
-    const result: EmphasisProfile = {
-      shooting: evenShare,
-      finishing: evenShare,
-      playmaking: evenShare,
-      onBallDefense: evenShare,
-      teamDefense: evenShare,
-      rebounding: evenShare,
-      physical: evenShare,
-    };
-    // Apply remainder to physical
-    const sum = Object.values(result).reduce((s, v) => s + v, 0);
-    result.physical = Math.round((result.physical + (TARGET_TOTAL - sum)) * 10) / 10;
-    return result;
-  }
+  // Offense section total from preset
+  const offenseTotal = sectionTotal;
+  // Defense stays locked
+  const defenseTotal = currentSectionTotals.defense;
+  // Physicality is the remainder
+  const physicalityTotal = Math.round((TARGET_TOTAL - offenseTotal - defenseTotal) * 10) / 10;
 
-  const scale = TARGET_TOTAL / currentSum;
-  const result: EmphasisProfile = {
-    shooting: Math.round(emphasis.shooting * scale * 10) / 10,
-    finishing: Math.round(emphasis.finishing * scale * 10) / 10,
-    playmaking: Math.round(emphasis.playmaking * scale * 10) / 10,
-    onBallDefense: Math.round(emphasis.onBallDefense * scale * 10) / 10,
-    teamDefense: Math.round(emphasis.teamDefense * scale * 10) / 10,
-    rebounding: Math.round(emphasis.rebounding * scale * 10) / 10,
-    physical: Math.round(emphasis.physical * scale * 10) / 10,
+  // Scale weights to section total
+  const scale = offenseTotal / rawSum;
+  const shooting = Math.round(weights.shooting * scale * 10) / 10;
+  const finishing = Math.round(weights.finishing * scale * 10) / 10;
+  let playmaking = Math.round(weights.playmaking * scale * 10) / 10;
+
+  // Apply rounding remainder to playmaking
+  const offSum = shooting + finishing + playmaking;
+  const diff = Math.round((offenseTotal - offSum) * 10) / 10;
+  playmaking = Math.round((playmaking + diff) * 10) / 10;
+
+  const newSectionTotals: SectionTotals = {
+    offense: offenseTotal,
+    defense: defenseTotal,
+    physicality: physicalityTotal,
   };
 
-  // Apply rounding remainder to Physical (deterministic)
-  const newSum = Object.values(result).reduce((s, v) => s + v, 0);
-  const diff = Math.round((TARGET_TOTAL - newSum) * 10) / 10;
-  result.physical = Math.round((result.physical + diff) * 10) / 10;
+  // Redistribute physicality sliders to match new total
+  const currentPhysSum = currentUIEmphasis.offensiveRebounding + currentUIEmphasis.defensiveRebounding + currentUIEmphasis.physical;
+  const physScale = currentPhysSum > 0 ? physicalityTotal / currentPhysSum : 1;
+  const offReb = Math.round(currentUIEmphasis.offensiveRebounding * physScale * 10) / 10;
+  const defReb = Math.round(currentUIEmphasis.defensiveRebounding * physScale * 10) / 10;
+  let physical = Math.round(currentUIEmphasis.physical * physScale * 10) / 10;
+
+  // Apply rounding remainder to physical
+  const physSum = offReb + defReb + physical;
+  const physDiff = Math.round((physicalityTotal - physSum) * 10) / 10;
+  physical = Math.round((physical + physDiff) * 10) / 10;
+
+  const newUIEmphasis: UIEmphasisProfile = {
+    shooting,
+    finishing,
+    playmaking,
+    onBallDefense: currentUIEmphasis.onBallDefense,
+    teamDefense: currentUIEmphasis.teamDefense,
+    offensiveRebounding: offReb,
+    defensiveRebounding: defReb,
+    physical,
+  };
+
+  return {
+    sectionTotals: newSectionTotals,
+    uiEmphasis: newUIEmphasis,
+    emphasis: uiToBackend(newUIEmphasis),
+  };
+}
+
+/**
+ * Apply defensive preset with hard reset.
+ * Sets defense section total + slider values from preset.
+ * Offense stays locked; Physicality = 100 - offense - defense.
+ */
+function applyDefensePreset(
+  systemId: string,
+  currentSectionTotals: SectionTotals,
+  currentUIEmphasis: UIEmphasisProfile
+): { sectionTotals: SectionTotals; uiEmphasis: UIEmphasisProfile; emphasis: EmphasisProfile } {
+  const system = DEFENSIVE_SYSTEMS.find((s) => s.id === systemId) ?? DEFENSIVE_SYSTEMS[0];
+  const { sectionTotal, weights } = system;
+  const rawSum = weights.onBallDefense + weights.teamDefense;
+
+  // Defense section total from preset
+  const defenseTotal = sectionTotal;
+  // Offense stays locked
+  const offenseTotal = currentSectionTotals.offense;
+  // Physicality is the remainder
+  const physicalityTotal = Math.round((TARGET_TOTAL - offenseTotal - defenseTotal) * 10) / 10;
+
+  // Scale weights to section total
+  const scale = defenseTotal / rawSum;
+  const onBallDefense = Math.round(weights.onBallDefense * scale * 10) / 10;
+  let teamDefense = Math.round(weights.teamDefense * scale * 10) / 10;
+
+  // Apply rounding remainder to teamDefense
+  const defSum = onBallDefense + teamDefense;
+  const diff = Math.round((defenseTotal - defSum) * 10) / 10;
+  teamDefense = Math.round((teamDefense + diff) * 10) / 10;
+
+  const newSectionTotals: SectionTotals = {
+    offense: offenseTotal,
+    defense: defenseTotal,
+    physicality: physicalityTotal,
+  };
+
+  // Redistribute physicality sliders to match new total
+  const currentPhysSum = currentUIEmphasis.offensiveRebounding + currentUIEmphasis.defensiveRebounding + currentUIEmphasis.physical;
+  const physScale = currentPhysSum > 0 ? physicalityTotal / currentPhysSum : 1;
+  const offReb = Math.round(currentUIEmphasis.offensiveRebounding * physScale * 10) / 10;
+  const defReb = Math.round(currentUIEmphasis.defensiveRebounding * physScale * 10) / 10;
+  let physical = Math.round(currentUIEmphasis.physical * physScale * 10) / 10;
+
+  // Apply rounding remainder to physical
+  const physSum = offReb + defReb + physical;
+  const physDiff = Math.round((physicalityTotal - physSum) * 10) / 10;
+  physical = Math.round((physical + physDiff) * 10) / 10;
+
+  const newUIEmphasis: UIEmphasisProfile = {
+    shooting: currentUIEmphasis.shooting,
+    finishing: currentUIEmphasis.finishing,
+    playmaking: currentUIEmphasis.playmaking,
+    onBallDefense,
+    teamDefense,
+    offensiveRebounding: offReb,
+    defensiveRebounding: defReb,
+    physical,
+  };
+
+  return {
+    sectionTotals: newSectionTotals,
+    uiEmphasis: newUIEmphasis,
+    emphasis: uiToBackend(newUIEmphasis),
+  };
+}
+
+/**
+ * Redistribute slider values within a section to maintain section total.
+ * When one slider increases, others decrease proportionally.
+ */
+function redistributeWithinSection(
+  sliderId: UIEmphasisId,
+  newValue: number,
+  currentEmphasis: UIEmphasisProfile,
+  sectionTotals: SectionTotals
+): UIEmphasisProfile {
+  const result = { ...currentEmphasis };
+
+  // Determine which section this slider belongs to
+  const offenseSliders: UIEmphasisId[] = ['shooting', 'finishing', 'playmaking'];
+  const defenseSliders: UIEmphasisId[] = ['onBallDefense', 'teamDefense'];
+  const physicalitySliders: UIEmphasisId[] = ['offensiveRebounding', 'defensiveRebounding', 'physical'];
+
+  let sectionSliders: UIEmphasisId[];
+  let sectionTotal: number;
+
+  if (offenseSliders.includes(sliderId)) {
+    sectionSliders = offenseSliders;
+    sectionTotal = sectionTotals.offense;
+  } else if (defenseSliders.includes(sliderId)) {
+    sectionSliders = defenseSliders;
+    sectionTotal = sectionTotals.defense;
+  } else {
+    sectionSliders = physicalitySliders;
+    sectionTotal = sectionTotals.physicality;
+  }
+
+  // Clamp new value to valid range
+  const clampedValue = Math.max(MIN_VALUE, Math.min(sectionTotal, newValue));
+  result[sliderId] = Math.round(clampedValue * 10) / 10;
+
+  // Get other sliders in the section
+  const otherSliders = sectionSliders.filter((id) => id !== sliderId);
+
+  // Calculate how much we need to redistribute
+  const currentOtherSum = otherSliders.reduce((sum, id) => sum + currentEmphasis[id], 0);
+  const targetOtherSum = Math.round((sectionTotal - result[sliderId]) * 10) / 10;
+
+  if (currentOtherSum > 0 && otherSliders.length > 0) {
+    // Redistribute proportionally
+    const scale = targetOtherSum / currentOtherSum;
+    let redistributedSum = 0;
+
+    for (let i = 0; i < otherSliders.length - 1; i++) {
+      const id = otherSliders[i];
+      result[id] = Math.max(MIN_VALUE, Math.round(currentEmphasis[id] * scale * 10) / 10);
+      redistributedSum += result[id];
+    }
+
+    // Last slider gets the remainder to ensure exact sum
+    const lastId = otherSliders[otherSliders.length - 1];
+    result[lastId] = Math.max(MIN_VALUE, Math.round((targetOtherSum - redistributedSum) * 10) / 10);
+  } else if (otherSliders.length > 0) {
+    // If other sliders are all zero, distribute evenly
+    const evenShare = Math.round((targetOtherSum / otherSliders.length) * 10) / 10;
+    let distributedSum = 0;
+
+    for (let i = 0; i < otherSliders.length - 1; i++) {
+      result[otherSliders[i]] = evenShare;
+      distributedSum += evenShare;
+    }
+
+    result[otherSliders[otherSliders.length - 1]] = Math.round((targetOtherSum - distributedSum) * 10) / 10;
+  }
 
   return result;
 }
 
-/**
- * Apply offensive preset and finalize to exactly 100.
- * Only S/F/P are adjusted; OBD/TD/Reb/Physical remain unchanged.
- * The preset ratios are preserved, scaled so grand total = 100.
- */
-function applyOffensePresetTo100(systemId: string, currentEmphasis: EmphasisProfile): EmphasisProfile {
-  const system = OFFENSIVE_SYSTEMS.find((s) => s.id === systemId) ?? OFFENSIVE_SYSTEMS[0];
-  const rawWeights = system.weights;
-  const rawSum = rawWeights.shooting + rawWeights.finishing + rawWeights.playmaking;
-
-  // Sum of fixed (untouched) clusters
-  const fixedSum =
-    currentEmphasis.onBallDefense +
-    currentEmphasis.teamDefense +
-    currentEmphasis.rebounding +
-    currentEmphasis.physical;
-
-  // Target sum for offense clusters to achieve grand total of 100
-  const targetOffenseSum = TARGET_TOTAL - fixedSum;
-
-  // Scale preset ratios to target offense sum
-  const scale = targetOffenseSum / rawSum;
-
-  const shooting = Math.round(rawWeights.shooting * scale * 10) / 10;
-  const finishing = Math.round(rawWeights.finishing * scale * 10) / 10;
-  let playmaking = Math.round(rawWeights.playmaking * scale * 10) / 10;
-
-  // Apply rounding remainder to playmaking (deterministic)
-  const newTotal = shooting + finishing + playmaking + fixedSum;
-  const diff = Math.round((TARGET_TOTAL - newTotal) * 10) / 10;
-  playmaking = Math.round((playmaking + diff) * 10) / 10;
-
-  return {
-    ...currentEmphasis,
-    shooting,
-    finishing,
-    playmaking,
-  };
-}
-
-/**
- * Apply defensive preset and finalize to exactly 100.
- * Only OBD/TD are adjusted; S/F/P/Reb/Physical remain unchanged.
- * The preset ratios are preserved, scaled so grand total = 100.
- */
-function applyDefensePresetTo100(systemId: string, currentEmphasis: EmphasisProfile): EmphasisProfile {
-  const system = DEFENSIVE_SYSTEMS.find((s) => s.id === systemId) ?? DEFENSIVE_SYSTEMS[0];
-  const rawWeights = system.weights;
-  const rawSum = rawWeights.onBallDefense + rawWeights.teamDefense;
-
-  // Sum of fixed (untouched) clusters
-  const fixedSum =
-    currentEmphasis.shooting +
-    currentEmphasis.finishing +
-    currentEmphasis.playmaking +
-    currentEmphasis.rebounding +
-    currentEmphasis.physical;
-
-  // Target sum for defense clusters to achieve grand total of 100
-  const targetDefenseSum = TARGET_TOTAL - fixedSum;
-
-  // Scale preset ratios to target defense sum
-  const scale = targetDefenseSum / rawSum;
-
-  const onBallDefense = Math.round(rawWeights.onBallDefense * scale * 10) / 10;
-  let teamDefense = Math.round(rawWeights.teamDefense * scale * 10) / 10;
-
-  // Apply rounding remainder to teamDefense (deterministic)
-  const newTotal = fixedSum + onBallDefense + teamDefense;
-  const diff = Math.round((TARGET_TOTAL - newTotal) * 10) / 10;
-  teamDefense = Math.round((teamDefense + diff) * 10) / 10;
-
-  return {
-    ...currentEmphasis,
-    onBallDefense,
-    teamDefense,
-  };
+function getDefaultSectionTotals(): SectionTotals {
+  return { ...DEFAULT_SECTION_TOTALS };
 }
 
 function getDefaultEmphasis(): EmphasisProfile {
+  // Distribute evenly within each section based on default totals
+  const { offense, defense, physicality } = DEFAULT_SECTION_TOTALS;
   return {
-    shooting: 14.3,
-    finishing: 14.3,
-    playmaking: 14.3,
-    onBallDefense: 14.3,
-    teamDefense: 14.3,
-    rebounding: 14.3,
-    physical: 14.2,
+    shooting: Math.round((offense / 3) * 10) / 10,
+    finishing: Math.round((offense / 3) * 10) / 10,
+    playmaking: Math.round((offense / 3) * 10) / 10,
+    onBallDefense: Math.round((defense / 2) * 10) / 10,
+    teamDefense: Math.round((defense / 2) * 10) / 10,
+    rebounding: Math.round((physicality * 2 / 3) * 10) / 10, // OReb + DReb
+    physical: Math.round((physicality / 3) * 10) / 10,
+  };
+}
+
+function getDefaultUIEmphasis(): UIEmphasisProfile {
+  const { offense, defense, physicality } = DEFAULT_SECTION_TOTALS;
+  return {
+    shooting: Math.round((offense / 3) * 10) / 10,
+    finishing: Math.round((offense / 3) * 10) / 10,
+    playmaking: Math.round((offense / 3) * 10) / 10,
+    onBallDefense: Math.round((defense / 2) * 10) / 10,
+    teamDefense: Math.round((defense / 2) * 10) / 10,
+    offensiveRebounding: Math.round((physicality / 3) * 10) / 10,
+    defensiveRebounding: Math.round((physicality / 3) * 10) / 10,
+    physical: Math.round((physicality / 3) * 10) / 10,
   };
 }
 
@@ -258,6 +402,67 @@ function getDefaultState(): ProgramContextState {
     tempo: 'Fast',
     primaryEnginePosition: 'PG',
     emphasis: getDefaultEmphasis(),
+    reboundingSplit: 0.5, // Default 50/50 split
+    sectionTotals: getDefaultSectionTotals(),
+  };
+}
+
+// =============================================================================
+// UI <-> BACKEND CONVERSION
+// =============================================================================
+
+/**
+ * Convert backend 7-cluster format to UI 8-slider format
+ * Uses reboundingSplit to divide rebounding into offReb/defReb
+ */
+function backendToUI(emphasis: EmphasisProfile, reboundingSplit: number = 0.5): UIEmphasisProfile {
+  const offReb = Math.round(emphasis.rebounding * reboundingSplit * 10) / 10;
+  const defReb = Math.round((emphasis.rebounding - offReb) * 10) / 10;
+  return {
+    shooting: emphasis.shooting,
+    finishing: emphasis.finishing,
+    playmaking: emphasis.playmaking,
+    onBallDefense: emphasis.onBallDefense,
+    teamDefense: emphasis.teamDefense,
+    offensiveRebounding: offReb,
+    defensiveRebounding: defReb,
+    physical: emphasis.physical,
+  };
+}
+
+/**
+ * Convert UI 8-slider format to backend 7-cluster format
+ * Combines offReb + defReb into rebounding
+ */
+function uiToBackend(uiEmphasis: UIEmphasisProfile): EmphasisProfile {
+  return {
+    shooting: uiEmphasis.shooting,
+    finishing: uiEmphasis.finishing,
+    playmaking: uiEmphasis.playmaking,
+    onBallDefense: uiEmphasis.onBallDefense,
+    teamDefense: uiEmphasis.teamDefense,
+    rebounding: Math.round((uiEmphasis.offensiveRebounding + uiEmphasis.defensiveRebounding) * 10) / 10,
+    physical: uiEmphasis.physical,
+  };
+}
+
+/**
+ * Calculate rebounding split ratio from UI values
+ */
+function calculateReboundingSplit(offReb: number, defReb: number): number {
+  const total = offReb + defReb;
+  if (total === 0) return 0.5;
+  return offReb / total;
+}
+
+/**
+ * Calculate group totals from UI emphasis
+ */
+function getGroupTotals(uiEmphasis: UIEmphasisProfile): SectionTotals {
+  return {
+    offense: Math.round((uiEmphasis.shooting + uiEmphasis.finishing + uiEmphasis.playmaking) * 10) / 10,
+    defense: Math.round((uiEmphasis.onBallDefense + uiEmphasis.teamDefense) * 10) / 10,
+    physicality: Math.round((uiEmphasis.offensiveRebounding + uiEmphasis.defensiveRebounding + uiEmphasis.physical) * 10) / 10,
   };
 }
 
@@ -272,6 +477,10 @@ export default function CoachProgramContextScreen() {
   const router = useRouter();
 
   const [state, setState] = useState<ProgramContextState>(getDefaultState);
+  // UI emphasis state (8 sliders)
+  const [uiEmphasis, setUIEmphasis] = useState<UIEmphasisProfile>(getDefaultUIEmphasis);
+  // Section totals (locked by preset, only change when preset applied)
+  const [sectionTotals, setSectionTotals] = useState<SectionTotals>(getDefaultSectionTotals);
   // Inline accordion pickers for Offensive/Defensive systems (not modals)
   const [expandedSystemPicker, setExpandedSystemPicker] = useState<'offensive' | 'defensive' | null>(null);
   // Preview states for system pickers (null = list view, string = preview that system)
@@ -280,8 +489,7 @@ export default function CoachProgramContextScreen() {
   const [showTempoPicker, setShowTempoPicker] = useState(false);
   const [showEnginePicker, setShowEnginePicker] = useState(false);
   const [emphasisExpanded, setEmphasisExpanded] = useState(false); // Start collapsed by default
-  // Track whether user has manually edited sliders (only then show Normalize button)
-  const [hasManualEdit, setHasManualEdit] = useState(false);
+  const [expandedEmphasisGroup, setExpandedEmphasisGroup] = useState<EmphasisGroup | null>(null);
   // Toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -294,9 +502,22 @@ export default function CoachProgramContextScreen() {
           const parsed = JSON.parse(saved);
           // Migrate from old formats
           if (!parsed.emphasis || parsed.emphasis.shooting === undefined) {
-            setState({ ...getDefaultState(), ...parsed, emphasis: getDefaultEmphasis() });
+            const newState = { ...getDefaultState(), ...parsed, emphasis: getDefaultEmphasis() };
+            setState(newState);
+            setUIEmphasis(backendToUI(newState.emphasis, newState.reboundingSplit ?? 0.5));
+            setSectionTotals(newState.sectionTotals ?? getDefaultSectionTotals());
           } else {
-            setState({ ...getDefaultState(), ...parsed });
+            const loadedState = { ...getDefaultState(), ...parsed };
+            setState(loadedState);
+            setUIEmphasis(backendToUI(parsed.emphasis, parsed.reboundingSplit ?? 0.5));
+            // Load section totals or derive from UI emphasis
+            if (parsed.sectionTotals) {
+              setSectionTotals(parsed.sectionTotals);
+            } else {
+              // Derive from emphasis values for migration
+              const uiEmp = backendToUI(parsed.emphasis, parsed.reboundingSplit ?? 0.5);
+              setSectionTotals(getGroupTotals(uiEmp));
+            }
           }
         }
       } catch (e) {
@@ -305,14 +526,6 @@ export default function CoachProgramContextScreen() {
     };
     loadState();
   }, []);
-
-  // Calculate total
-  const total = useMemo(() => {
-    const { shooting, finishing, playmaking, onBallDefense, teamDefense, rebounding, physical } = state.emphasis;
-    return Math.round((shooting + finishing + playmaking + onBallDefense + teamDefense + rebounding + physical) * 10) / 10;
-  }, [state.emphasis]);
-
-  const isNormalized = Math.abs(total - TARGET_TOTAL) < 0.05;
 
   // Format currency for display
   const formatCurrency = (value: number): string => {
@@ -332,13 +545,15 @@ export default function CoachProgramContextScreen() {
 
   // Calculate preview values for offensive preset
   const calculateOffensePreview = useCallback((systemId: string) => {
-    return applyOffensePresetTo100(systemId, state.emphasis);
-  }, [state.emphasis]);
+    const result = applyOffensePreset(systemId, sectionTotals, uiEmphasis);
+    return result.emphasis;
+  }, [sectionTotals, uiEmphasis]);
 
   // Calculate preview values for defensive preset
   const calculateDefensePreview = useCallback((systemId: string) => {
-    return applyDefensePresetTo100(systemId, state.emphasis);
-  }, [state.emphasis]);
+    const result = applyDefensePreset(systemId, sectionTotals, uiEmphasis);
+    return result.emphasis;
+  }, [sectionTotals, uiEmphasis]);
 
   // Toggle inline accordion for system pickers (only one open at a time)
   // When opening, immediately show preview with current system (preview-first UX)
@@ -370,18 +585,18 @@ export default function CoachProgramContextScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
-  // Apply offensive system preset (from preview)
+  // Apply offensive system preset (from preview) - hard reset
   const handleOffensiveSystemApply = useCallback(() => {
     if (!previewOffenseSystem) return;
 
-    const newEmphasis = applyOffensePresetTo100(previewOffenseSystem, state.emphasis);
     const oldEmphasis = state.emphasis;
+    const result = applyOffensePreset(previewOffenseSystem, sectionTotals, uiEmphasis);
 
     // Calculate deltas for toast
     const deltas: string[] = [];
-    const shootingDelta = Math.round((newEmphasis.shooting - oldEmphasis.shooting) * 10) / 10;
-    const finishingDelta = Math.round((newEmphasis.finishing - oldEmphasis.finishing) * 10) / 10;
-    const playmakingDelta = Math.round((newEmphasis.playmaking - oldEmphasis.playmaking) * 10) / 10;
+    const shootingDelta = Math.round((result.emphasis.shooting - oldEmphasis.shooting) * 10) / 10;
+    const finishingDelta = Math.round((result.emphasis.finishing - oldEmphasis.finishing) * 10) / 10;
+    const playmakingDelta = Math.round((result.emphasis.playmaking - oldEmphasis.playmaking) * 10) / 10;
 
     if (Math.abs(shootingDelta) >= 0.1) {
       deltas.push(`Shooting ${shootingDelta >= 0 ? '+' : ''}${shootingDelta}`);
@@ -393,23 +608,26 @@ export default function CoachProgramContextScreen() {
       deltas.push(`Playmaking ${playmakingDelta >= 0 ? '+' : ''}${playmakingDelta}`);
     }
 
+    // Hard reset: apply new section totals + slider values
     setState((prev) => ({
       ...prev,
       offensiveSystem: previewOffenseSystem,
-      emphasis: newEmphasis,
+      emphasis: result.emphasis,
+      sectionTotals: result.sectionTotals,
     }));
-    setHasManualEdit(false);
+    setUIEmphasis(result.uiEmphasis);
+    setSectionTotals(result.sectionTotals);
     setPreviewOffenseSystem(null);
     setExpandedSystemPicker(null);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-    // Show toast with deltas
+    // Show toast with section total info
     if (deltas.length > 0) {
-      showToast(`Offensive preset applied: ${deltas.join(', ')}`);
+      showToast(`Offense ${result.sectionTotals.offense}% applied`);
     } else {
-      showToast('Offensive preset applied (no changes)');
+      showToast(`Offense ${result.sectionTotals.offense}% (no changes)`);
     }
-  }, [previewOffenseSystem, state.emphasis, showToast]);
+  }, [previewOffenseSystem, state.emphasis, sectionTotals, uiEmphasis, showToast]);
 
   // Cancel offensive preview (close accordion)
   const handleOffensiveSystemCancel = useCallback(() => {
@@ -424,17 +642,17 @@ export default function CoachProgramContextScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
-  // Apply defensive system preset (from preview)
+  // Apply defensive system preset (from preview) - hard reset
   const handleDefensiveSystemApply = useCallback(() => {
     if (!previewDefenseSystem) return;
 
-    const newEmphasis = applyDefensePresetTo100(previewDefenseSystem, state.emphasis);
     const oldEmphasis = state.emphasis;
+    const result = applyDefensePreset(previewDefenseSystem, sectionTotals, uiEmphasis);
 
     // Calculate deltas for toast
     const deltas: string[] = [];
-    const obdDelta = Math.round((newEmphasis.onBallDefense - oldEmphasis.onBallDefense) * 10) / 10;
-    const tdDelta = Math.round((newEmphasis.teamDefense - oldEmphasis.teamDefense) * 10) / 10;
+    const obdDelta = Math.round((result.emphasis.onBallDefense - oldEmphasis.onBallDefense) * 10) / 10;
+    const tdDelta = Math.round((result.emphasis.teamDefense - oldEmphasis.teamDefense) * 10) / 10;
 
     if (Math.abs(obdDelta) >= 0.1) {
       deltas.push(`OBD ${obdDelta >= 0 ? '+' : ''}${obdDelta}`);
@@ -443,23 +661,26 @@ export default function CoachProgramContextScreen() {
       deltas.push(`Team Defense ${tdDelta >= 0 ? '+' : ''}${tdDelta}`);
     }
 
+    // Hard reset: apply new section totals + slider values
     setState((prev) => ({
       ...prev,
       defensiveSystem: previewDefenseSystem,
-      emphasis: newEmphasis,
+      emphasis: result.emphasis,
+      sectionTotals: result.sectionTotals,
     }));
-    setHasManualEdit(false);
+    setUIEmphasis(result.uiEmphasis);
+    setSectionTotals(result.sectionTotals);
     setPreviewDefenseSystem(null);
     setExpandedSystemPicker(null);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-    // Show toast with deltas
+    // Show toast with section total info
     if (deltas.length > 0) {
-      showToast(`Defensive preset applied: ${deltas.join(', ')}`);
+      showToast(`Defense ${result.sectionTotals.defense}% applied`);
     } else {
-      showToast('Defensive preset applied (no changes)');
+      showToast(`Defense ${result.sectionTotals.defense}% (no changes)`);
     }
-  }, [previewDefenseSystem, state.emphasis, showToast]);
+  }, [previewDefenseSystem, state.emphasis, sectionTotals, uiEmphasis, showToast]);
 
   // Cancel defensive preview (close accordion)
   const handleDefensiveSystemCancel = useCallback(() => {
@@ -468,42 +689,33 @@ export default function CoachProgramContextScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
-  // Handle slider change - NO auto-rebalancing, marks as manual edit
-  const handleSliderChange = useCallback((clusterId: ClusterId, newValue: number) => {
-    const roundedValue = Math.round(newValue * 10) / 10;
-    setState((prev) => ({
-      ...prev,
-      emphasis: {
-        ...prev.emphasis,
-        [clusterId]: roundedValue,
-      },
-    }));
-    setHasManualEdit(true); // Manual slider edit
+  // Handle UI slider change - redistributes within section to maintain locked section total
+  const handleSliderChange = useCallback((sliderId: UIEmphasisId, newValue: number) => {
+    const newEmphasis = redistributeWithinSection(sliderId, newValue, uiEmphasis, sectionTotals);
+    setUIEmphasis(newEmphasis);
+  }, [uiEmphasis, sectionTotals]);
+
+  // Toggle emphasis group accordion
+  const toggleEmphasisGroup = useCallback((group: EmphasisGroup) => {
+    setExpandedEmphasisGroup((prev) => (prev === group ? null : group));
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
-  // Handle normalize button
-  const handleNormalize = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      emphasis: normalizeEmphasis(prev.emphasis),
-    }));
-    setHasManualEdit(false); // After normalize, clear manual edit flag
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  }, []);
-
-  // Handle save - auto-normalize if needed (only when manual edits deviated from 100)
+  // Handle save - convert UI to backend and persist
   const handleSave = async () => {
     try {
-      let emphasisToSave = state.emphasis;
+      // Convert UI to backend format
+      const backendEmphasis = uiToBackend(uiEmphasis);
+      const reboundingSplit = calculateReboundingSplit(uiEmphasis.offensiveRebounding, uiEmphasis.defensiveRebounding);
 
-      // Auto-normalize only if there are manual edits and total != 100
-      if (hasManualEdit && !isNormalized) {
-        emphasisToSave = normalizeEmphasis(state.emphasis);
-        setState((prev) => ({ ...prev, emphasis: emphasisToSave }));
-        setHasManualEdit(false);
-      }
+      const stateToSave = {
+        ...state,
+        emphasis: backendEmphasis,
+        reboundingSplit,
+        sectionTotals,
+      };
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, emphasis: emphasisToSave }));
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.back();
     } catch (e) {
@@ -760,7 +972,7 @@ export default function CoachProgramContextScreen() {
             )}
           </View>
 
-          {/* ===== SYSTEM EMPHASIS (7 Clusters) - Collapsible ===== */}
+          {/* ===== SYSTEM EMPHASIS - Nested Accordion ===== */}
           <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>SYSTEM EMPHASIS</Text>
 
           {/* Collapsible Header Card */}
@@ -769,73 +981,143 @@ export default function CoachProgramContextScreen() {
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               setEmphasisExpanded((prev) => !prev);
+              if (emphasisExpanded) {
+                setExpandedEmphasisGroup(null); // Collapse all groups when collapsing main
+              }
             }}
           >
             <View style={styles.emphasisHeaderRow}>
-              <Text style={[styles.emphasisHeaderTitle, { color: colors.text }]}>System Emphasis (7 Clusters)</Text>
-              <Text
-                style={[
-                  styles.emphasisTotalText,
-                  { color: isNormalized ? colors.textSecondary : colors.warning },
-                ]}
-              >
-                Total: {total.toFixed(1)}%
+              <Text style={[styles.emphasisHeaderTitle, { color: colors.text }]}>System Emphasis</Text>
+              <Text style={[styles.emphasisTotalText, { color: colors.textSecondary }]}>
+                100%
               </Text>
             </View>
           </Pressable>
 
-          {/* Expanded Content */}
+          {/* Expanded Content - 3 Group Accordions */}
           {emphasisExpanded && (
-            <>
-              {/* Total indicator row with conditional Normalize button */}
-              <View style={[styles.totalIndicator, { borderColor: isNormalized ? colors.border : colors.warning }]}>
-                <Text style={[styles.totalIndicatorLabel, { color: colors.textSecondary }]}>Total:</Text>
-                <Text
-                  style={[
-                    styles.totalIndicatorValue,
-                    { color: isNormalized ? colors.text : colors.warning },
-                  ]}
-                >
-                  {total.toFixed(1)}% / 100%
+            <View style={[styles.card, { backgroundColor: colors.backgroundSecondary, marginTop: Spacing.sm }]}>
+              {/* Offense Group (section total locked by preset) */}
+              <Pressable
+                style={styles.groupRow}
+                onPress={() => toggleEmphasisGroup('offense')}
+              >
+                <Text style={[styles.groupLabel, { color: colors.text }]}>Offense</Text>
+                <Text style={[styles.groupValue, { color: colors.textSecondary }]}>
+                  {Math.round(sectionTotals.offense)}%
                 </Text>
-                {hasManualEdit && !isNormalized && (
-                  <Pressable
-                    style={styles.normalizeButton}
-                    onPress={handleNormalize}
-                  >
-                    <Text style={styles.normalizeButtonText}>Normalize to 100</Text>
-                  </Pressable>
-                )}
-              </View>
-
-              {/* 7 CLUSTER SLIDERS */}
-              <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                {CLUSTERS.map((cluster, index) => (
-                  <View key={cluster.id}>
-                    {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
-                    <View style={styles.sliderRow}>
-                      <View style={styles.sliderHeader}>
-                        <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>{cluster.label}</Text>
-                        <Text style={[styles.sliderValue, { color: colors.text }]}>
-                          {Math.round(state.emphasis[cluster.id])}%
-                        </Text>
+              </Pressable>
+              {expandedEmphasisGroup === 'offense' && (
+                <View style={[styles.groupSliders, { borderTopColor: colors.divider }]}>
+                  {UI_SLIDERS.offense.map((slider, index) => (
+                    <View key={slider.id}>
+                      {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
+                      <View style={styles.sliderRow}>
+                        <View style={styles.sliderHeader}>
+                          <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>{slider.label}</Text>
+                          <Text style={[styles.sliderValue, { color: colors.text }]}>
+                            {Math.round(uiEmphasis[slider.id as UIEmphasisId])}%
+                          </Text>
+                        </View>
+                        <Slider
+                          style={styles.slider}
+                          minimumValue={MIN_VALUE}
+                          maximumValue={sectionTotals.offense}
+                          step={1}
+                          value={uiEmphasis[slider.id as UIEmphasisId]}
+                          onValueChange={(value) => handleSliderChange(slider.id as UIEmphasisId, value)}
+                          minimumTrackTintColor={colorScheme === 'dark' ? '#D4AF37' : '#1A1A1A'}
+                          maximumTrackTintColor={colors.border}
+                          thumbTintColor="#D4AF37"
+                        />
                       </View>
-                      <Slider
-                        style={styles.slider}
-                        minimumValue={MIN_VALUE}
-                        maximumValue={MAX_VALUE}
-                        step={1}
-                        value={state.emphasis[cluster.id]}
-                        onValueChange={(value) => handleSliderChange(cluster.id, value)}
-                        minimumTrackTintColor={colorScheme === 'dark' ? '#D4AF37' : '#1A1A1A'}
-                        maximumTrackTintColor={colors.border}
-                        thumbTintColor="#D4AF37"
-                      />
                     </View>
-                  </View>
-                ))}
-              </View>
-            </>
+                  ))}
+                </View>
+              )}
+
+              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+              {/* Defense Group (section total locked by preset) */}
+              <Pressable
+                style={styles.groupRow}
+                onPress={() => toggleEmphasisGroup('defense')}
+              >
+                <Text style={[styles.groupLabel, { color: colors.text }]}>Defense</Text>
+                <Text style={[styles.groupValue, { color: colors.textSecondary }]}>
+                  {Math.round(sectionTotals.defense)}%
+                </Text>
+              </Pressable>
+              {expandedEmphasisGroup === 'defense' && (
+                <View style={[styles.groupSliders, { borderTopColor: colors.divider }]}>
+                  {UI_SLIDERS.defense.map((slider, index) => (
+                    <View key={slider.id}>
+                      {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
+                      <View style={styles.sliderRow}>
+                        <View style={styles.sliderHeader}>
+                          <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>{slider.label}</Text>
+                          <Text style={[styles.sliderValue, { color: colors.text }]}>
+                            {Math.round(uiEmphasis[slider.id as UIEmphasisId])}%
+                          </Text>
+                        </View>
+                        <Slider
+                          style={styles.slider}
+                          minimumValue={MIN_VALUE}
+                          maximumValue={sectionTotals.defense}
+                          step={1}
+                          value={uiEmphasis[slider.id as UIEmphasisId]}
+                          onValueChange={(value) => handleSliderChange(slider.id as UIEmphasisId, value)}
+                          minimumTrackTintColor={colorScheme === 'dark' ? '#D4AF37' : '#1A1A1A'}
+                          maximumTrackTintColor={colors.border}
+                          thumbTintColor="#D4AF37"
+                        />
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+              {/* Physicality Group */}
+              <Pressable
+                style={styles.groupRow}
+                onPress={() => toggleEmphasisGroup('physicality')}
+              >
+                <Text style={[styles.groupLabel, { color: colors.text }]}>Physicality</Text>
+                <Text style={[styles.groupValue, { color: colors.textSecondary }]}>
+                  {Math.round(sectionTotals.physicality)}%
+                </Text>
+              </Pressable>
+              {expandedEmphasisGroup === 'physicality' && (
+                <View style={[styles.groupSliders, { borderTopColor: colors.divider }]}>
+                  {UI_SLIDERS.physicality.map((slider, index) => (
+                    <View key={slider.id}>
+                      {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
+                      <View style={styles.sliderRow}>
+                        <View style={styles.sliderHeader}>
+                          <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>{slider.label}</Text>
+                          <Text style={[styles.sliderValue, { color: colors.text }]}>
+                            {Math.round(uiEmphasis[slider.id as UIEmphasisId])}%
+                          </Text>
+                        </View>
+                        <Slider
+                          style={styles.slider}
+                          minimumValue={MIN_VALUE}
+                          maximumValue={sectionTotals.physicality}
+                          step={1}
+                          value={uiEmphasis[slider.id as UIEmphasisId]}
+                          onValueChange={(value) => handleSliderChange(slider.id as UIEmphasisId, value)}
+                          minimumTrackTintColor={colorScheme === 'dark' ? '#D4AF37' : '#1A1A1A'}
+                          maximumTrackTintColor={colors.border}
+                          thumbTintColor="#D4AF37"
+                        />
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
           )}
 
           {/* Spacer for save button */}
@@ -1200,6 +1482,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#D4AF37',
   },
   normalizeButtonText: { fontSize: 13, fontWeight: '600', color: '#1A1A1A' },
+
+  // Normalize row (inline within groups card)
+  normalizeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: Spacing.md,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  normalizeWarning: { fontSize: 14, fontWeight: '500' },
+
+  // Group rows (nested accordion)
+  groupRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: Spacing.md,
+  },
+  groupLabel: { fontSize: 15, fontWeight: '500' },
+  groupValue: { fontSize: 15, fontWeight: '500' },
+  groupSliders: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingLeft: Spacing.sm,
+  },
 
   sliderRow: { padding: Spacing.md },
   sliderHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
