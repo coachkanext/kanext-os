@@ -29,38 +29,33 @@ import { getCurrentTerm, getUpcomingEvents, INSTITUTIONAL_METRICS } from '@/data
 // SYSTEM EMPHASIS CONSTANTS & TYPES (from program-context.tsx)
 // =============================================================================
 
-const TARGET_TOTAL = 100.0;
+// Fixed section totals (locked at 58/42 split, always sum to 100)
+const OFFENSE_TOTAL = 58;
+const DEFENSE_TOTAL = 42;
 
-// Default section totals (locked by preset)
-const DEFAULT_SECTION_TOTALS = {
-  offense: 43,
-  defense: 29,
-  physicality: 28,
-};
-
-// Offensive System presets (sectionTotal + raw weights for S/F/P)
+// Offensive System presets (raw weights for S/F/P, will be normalized to sum to 58)
 const OFFENSIVE_SYSTEMS = [
-  { id: 'spread-pnr', label: 'Spread Pick-and-Roll', sectionTotal: 43, weights: { shooting: 30, finishing: 25, playmaking: 30 } },
-  { id: '5-out', label: '5-Out Motion', sectionTotal: 45, weights: { shooting: 35, finishing: 20, playmaking: 30 } },
-  { id: 'pace-space', label: 'Pace & Space', sectionTotal: 45, weights: { shooting: 40, finishing: 20, playmaking: 25 } },
-  { id: 'motion', label: 'Motion / Read & React', sectionTotal: 42, weights: { shooting: 25, finishing: 20, playmaking: 35 } },
-  { id: 'dribble-drive', label: 'Dribble Drive', sectionTotal: 44, weights: { shooting: 20, finishing: 35, playmaking: 25 } },
-  { id: 'princeton', label: 'Princeton', sectionTotal: 40, weights: { shooting: 20, finishing: 20, playmaking: 40 } },
-  { id: 'post-centric', label: 'Post-Centric / Inside-Out', sectionTotal: 42, weights: { shooting: 20, finishing: 35, playmaking: 20 } },
-  { id: 'moreyball', label: 'Moreyball', sectionTotal: 48, weights: { shooting: 45, finishing: 25, playmaking: 20 } },
-  { id: 'heliocentric', label: 'Heliocentric', sectionTotal: 45, weights: { shooting: 30, finishing: 25, playmaking: 35 } },
+  { id: 'spread-pnr', label: 'Spread Pick-and-Roll', weights: { shooting: 20, finishing: 18, playmaking: 20 } },
+  { id: '5-out', label: '5-Out Motion', weights: { shooting: 24, finishing: 14, playmaking: 20 } },
+  { id: 'pace-space', label: 'Pace & Space', weights: { shooting: 26, finishing: 14, playmaking: 18 } },
+  { id: 'motion', label: 'Motion / Read & React', weights: { shooting: 18, finishing: 16, playmaking: 24 } },
+  { id: 'dribble-drive', label: 'Dribble Drive', weights: { shooting: 16, finishing: 24, playmaking: 18 } },
+  { id: 'princeton', label: 'Princeton', weights: { shooting: 16, finishing: 16, playmaking: 26 } },
+  { id: 'post-centric', label: 'Post-Centric / Inside-Out', weights: { shooting: 16, finishing: 26, playmaking: 16 } },
+  { id: 'moreyball', label: 'Moreyball', weights: { shooting: 28, finishing: 18, playmaking: 12 } },
+  { id: 'heliocentric', label: 'Heliocentric', weights: { shooting: 20, finishing: 16, playmaking: 22 } },
 ];
 
-// Defensive System presets (sectionTotal + raw weights for OBD/TD)
+// Defensive System presets (raw weights for OBD/TD/Reb/Phys, will be normalized to sum to 42)
 const DEFENSIVE_SYSTEMS = [
-  { id: 'containment', label: 'Containment Man', sectionTotal: 29, weights: { onBallDefense: 35, teamDefense: 30 } },
-  { id: 'pack-line', label: 'Pack Line', sectionTotal: 30, weights: { onBallDefense: 25, teamDefense: 40 } },
-  { id: 'pressure-man', label: 'Pressure Man / Denial', sectionTotal: 32, weights: { onBallDefense: 45, teamDefense: 20 } },
-  { id: 'switch', label: 'Switch Everything', sectionTotal: 28, weights: { onBallDefense: 30, teamDefense: 30 } },
-  { id: 'ice', label: 'ICE / No-Middle', sectionTotal: 30, weights: { onBallDefense: 35, teamDefense: 35 } },
-  { id: 'zone', label: 'Zone (Structured)', sectionTotal: 28, weights: { onBallDefense: 15, teamDefense: 45 } },
-  { id: 'matchup-zone', label: 'Matchup Zone / Hybrid', sectionTotal: 28, weights: { onBallDefense: 20, teamDefense: 40 } },
-  { id: 'press', label: 'Press / Pressure Defense', sectionTotal: 30, weights: { onBallDefense: 40, teamDefense: 20 } },
+  { id: 'containment', label: 'Containment Man', weights: { onBallDefense: 12, teamDefense: 10, rebounding: 12, physical: 8 } },
+  { id: 'pack-line', label: 'Pack Line', weights: { onBallDefense: 8, teamDefense: 14, rebounding: 12, physical: 8 } },
+  { id: 'pressure-man', label: 'Pressure Man / Denial', weights: { onBallDefense: 16, teamDefense: 8, rebounding: 10, physical: 8 } },
+  { id: 'switch', label: 'Switch Everything', weights: { onBallDefense: 11, teamDefense: 11, rebounding: 10, physical: 10 } },
+  { id: 'ice', label: 'ICE / No-Middle', weights: { onBallDefense: 12, teamDefense: 12, rebounding: 10, physical: 8 } },
+  { id: 'zone', label: 'Zone (Structured)', weights: { onBallDefense: 6, teamDefense: 16, rebounding: 12, physical: 8 } },
+  { id: 'matchup-zone', label: 'Matchup Zone / Hybrid', weights: { onBallDefense: 8, teamDefense: 14, rebounding: 12, physical: 8 } },
+  { id: 'press', label: 'Press / Pressure Defense', weights: { onBallDefense: 14, teamDefense: 8, rebounding: 10, physical: 10 } },
 ];
 
 const TEMPO_OPTIONS = ['Slow', 'Medium', 'Fast'];
@@ -89,11 +84,10 @@ interface UIEmphasisProfile {
   physical: number;
 }
 
-// Section totals (locked by preset)
+// Section totals (locked at 58/42)
 interface SectionTotals {
-  offense: number;
-  defense: number;
-  physicality: number;
+  offense: number;  // Always 58
+  defense: number;  // Always 42
 }
 
 // =============================================================================
@@ -102,51 +96,40 @@ interface SectionTotals {
 
 function applyOffensePreset(
   systemId: string,
-  currentSectionTotals: SectionTotals,
+  _currentSectionTotals: SectionTotals,
   currentUIEmphasis: UIEmphasisProfile
 ): { sectionTotals: SectionTotals; uiEmphasis: UIEmphasisProfile; emphasis: EmphasisProfile } {
   const system = OFFENSIVE_SYSTEMS.find((s) => s.id === systemId) ?? OFFENSIVE_SYSTEMS[0];
-  const { sectionTotal, weights } = system;
+  const { weights } = system;
   const rawSum = weights.shooting + weights.finishing + weights.playmaking;
 
-  const offenseTotal = sectionTotal;
-  const defenseTotal = currentSectionTotals.defense;
-  const physicalityTotal = Math.round((TARGET_TOTAL - offenseTotal - defenseTotal) * 10) / 10;
-
-  const scale = offenseTotal / rawSum;
+  // Normalize weights to sum to exactly OFFENSE_TOTAL (58)
+  const scale = OFFENSE_TOTAL / rawSum;
   const shooting = Math.round(weights.shooting * scale * 10) / 10;
   const finishing = Math.round(weights.finishing * scale * 10) / 10;
   let playmaking = Math.round(weights.playmaking * scale * 10) / 10;
 
+  // Fix rounding errors - ensure sum is exactly 58
   const offSum = shooting + finishing + playmaking;
-  const diff = Math.round((offenseTotal - offSum) * 10) / 10;
+  const diff = Math.round((OFFENSE_TOTAL - offSum) * 10) / 10;
   playmaking = Math.round((playmaking + diff) * 10) / 10;
 
+  // Section totals are always fixed at 58/42
   const newSectionTotals: SectionTotals = {
-    offense: offenseTotal,
-    defense: defenseTotal,
-    physicality: physicalityTotal,
+    offense: OFFENSE_TOTAL,
+    defense: DEFENSE_TOTAL,
   };
 
-  const currentPhysSum = currentUIEmphasis.offensiveRebounding + currentUIEmphasis.defensiveRebounding + currentUIEmphasis.physical;
-  const physScale = currentPhysSum > 0 ? physicalityTotal / currentPhysSum : 1;
-  const offReb = Math.round(currentUIEmphasis.offensiveRebounding * physScale * 10) / 10;
-  const defReb = Math.round(currentUIEmphasis.defensiveRebounding * physScale * 10) / 10;
-  let physical = Math.round(currentUIEmphasis.physical * physScale * 10) / 10;
-
-  const physSum = offReb + defReb + physical;
-  const physDiff = Math.round((physicalityTotal - physSum) * 10) / 10;
-  physical = Math.round((physical + physDiff) * 10) / 10;
-
+  // Offense preset does NOT touch defense clusters - keep them unchanged
   const newUIEmphasis: UIEmphasisProfile = {
     shooting,
     finishing,
     playmaking,
     onBallDefense: currentUIEmphasis.onBallDefense,
     teamDefense: currentUIEmphasis.teamDefense,
-    offensiveRebounding: offReb,
-    defensiveRebounding: defReb,
-    physical,
+    offensiveRebounding: currentUIEmphasis.offensiveRebounding,
+    defensiveRebounding: currentUIEmphasis.defensiveRebounding,
+    physical: currentUIEmphasis.physical,
   };
 
   return {
@@ -158,41 +141,40 @@ function applyOffensePreset(
 
 function applyDefensePreset(
   systemId: string,
-  currentSectionTotals: SectionTotals,
+  _currentSectionTotals: SectionTotals,
   currentUIEmphasis: UIEmphasisProfile
 ): { sectionTotals: SectionTotals; uiEmphasis: UIEmphasisProfile; emphasis: EmphasisProfile } {
   const system = DEFENSIVE_SYSTEMS.find((s) => s.id === systemId) ?? DEFENSIVE_SYSTEMS[0];
-  const { sectionTotal, weights } = system;
-  const rawSum = weights.onBallDefense + weights.teamDefense;
+  const { weights } = system;
+  const rawSum = weights.onBallDefense + weights.teamDefense + weights.rebounding + weights.physical;
 
-  const defenseTotal = sectionTotal;
-  const offenseTotal = currentSectionTotals.offense;
-  const physicalityTotal = Math.round((TARGET_TOTAL - offenseTotal - defenseTotal) * 10) / 10;
-
-  const scale = defenseTotal / rawSum;
+  // Normalize weights to sum to exactly DEFENSE_TOTAL (42)
+  const scale = DEFENSE_TOTAL / rawSum;
   const onBallDefense = Math.round(weights.onBallDefense * scale * 10) / 10;
-  let teamDefense = Math.round(weights.teamDefense * scale * 10) / 10;
+  const teamDefense = Math.round(weights.teamDefense * scale * 10) / 10;
+  const rebounding = Math.round(weights.rebounding * scale * 10) / 10;
+  let physical = Math.round(weights.physical * scale * 10) / 10;
 
-  const defSum = onBallDefense + teamDefense;
-  const diff = Math.round((defenseTotal - defSum) * 10) / 10;
-  teamDefense = Math.round((teamDefense + diff) * 10) / 10;
+  // Fix rounding errors - ensure sum is exactly 42
+  const defSum = onBallDefense + teamDefense + rebounding + physical;
+  const diff = Math.round((DEFENSE_TOTAL - defSum) * 10) / 10;
+  physical = Math.round((physical + diff) * 10) / 10;
 
+  // Section totals are always fixed at 58/42
   const newSectionTotals: SectionTotals = {
-    offense: offenseTotal,
-    defense: defenseTotal,
-    physicality: physicalityTotal,
+    offense: OFFENSE_TOTAL,
+    defense: DEFENSE_TOTAL,
   };
 
-  const currentPhysSum = currentUIEmphasis.offensiveRebounding + currentUIEmphasis.defensiveRebounding + currentUIEmphasis.physical;
-  const physScale = currentPhysSum > 0 ? physicalityTotal / currentPhysSum : 1;
-  const offReb = Math.round(currentUIEmphasis.offensiveRebounding * physScale * 10) / 10;
-  const defReb = Math.round(currentUIEmphasis.defensiveRebounding * physScale * 10) / 10;
-  let physical = Math.round(currentUIEmphasis.physical * physScale * 10) / 10;
+  // Split rebounding into offensive/defensive (keep current ratio or 50/50)
+  const currentRebTotal = currentUIEmphasis.offensiveRebounding + currentUIEmphasis.defensiveRebounding;
+  const rebSplit = currentRebTotal > 0
+    ? currentUIEmphasis.offensiveRebounding / currentRebTotal
+    : 0.5;
+  const offReb = Math.round(rebounding * rebSplit * 10) / 10;
+  const defReb = Math.round((rebounding - offReb) * 10) / 10;
 
-  const physSum = offReb + defReb + physical;
-  const physDiff = Math.round((physicalityTotal - physSum) * 10) / 10;
-  physical = Math.round((physical + physDiff) * 10) / 10;
-
+  // Defense preset does NOT touch offense clusters - keep them unchanged
   const newUIEmphasis: UIEmphasisProfile = {
     shooting: currentUIEmphasis.shooting,
     finishing: currentUIEmphasis.finishing,
@@ -212,33 +194,35 @@ function applyDefensePreset(
 }
 
 function getDefaultSectionTotals(): SectionTotals {
-  return { ...DEFAULT_SECTION_TOTALS };
+  return { offense: OFFENSE_TOTAL, defense: DEFENSE_TOTAL };
 }
 
 function getDefaultEmphasis(): EmphasisProfile {
-  const { offense, defense, physicality } = DEFAULT_SECTION_TOTALS;
+  // Offense: 58 split evenly among 3 clusters (19.3 each)
+  // Defense: 42 split among 4 clusters (10.5 each)
   return {
-    shooting: Math.round((offense / 3) * 10) / 10,
-    finishing: Math.round((offense / 3) * 10) / 10,
-    playmaking: Math.round((offense / 3) * 10) / 10,
-    onBallDefense: Math.round((defense / 2) * 10) / 10,
-    teamDefense: Math.round((defense / 2) * 10) / 10,
-    rebounding: Math.round((physicality * 2 / 3) * 10) / 10,
-    physical: Math.round((physicality / 3) * 10) / 10,
+    shooting: 19.3,
+    finishing: 19.3,
+    playmaking: 19.4, // +0.1 to sum to 58
+    onBallDefense: 10.5,
+    teamDefense: 10.5,
+    rebounding: 10.5,
+    physical: 10.5,
   };
 }
 
 function getDefaultUIEmphasis(): UIEmphasisProfile {
-  const { offense, defense, physicality } = DEFAULT_SECTION_TOTALS;
+  // Offense: 58 split evenly among 3 clusters
+  // Defense: 42 split among 4 clusters (rebounding split 50/50)
   return {
-    shooting: Math.round((offense / 3) * 10) / 10,
-    finishing: Math.round((offense / 3) * 10) / 10,
-    playmaking: Math.round((offense / 3) * 10) / 10,
-    onBallDefense: Math.round((defense / 2) * 10) / 10,
-    teamDefense: Math.round((defense / 2) * 10) / 10,
-    offensiveRebounding: Math.round((physicality / 3) * 10) / 10,
-    defensiveRebounding: Math.round((physicality / 3) * 10) / 10,
-    physical: Math.round((physicality / 3) * 10) / 10,
+    shooting: 19.3,
+    finishing: 19.3,
+    playmaking: 19.4,
+    onBallDefense: 10.5,
+    teamDefense: 10.5,
+    offensiveRebounding: 5.3,
+    defensiveRebounding: 5.2,
+    physical: 10.5,
   };
 }
 
@@ -278,8 +262,7 @@ function calculateReboundingSplit(offReb: number, defReb: number): number {
 function getGroupTotals(uiEmphasis: UIEmphasisProfile): SectionTotals {
   return {
     offense: Math.round((uiEmphasis.shooting + uiEmphasis.finishing + uiEmphasis.playmaking) * 10) / 10,
-    defense: Math.round((uiEmphasis.onBallDefense + uiEmphasis.teamDefense) * 10) / 10,
-    physicality: Math.round((uiEmphasis.offensiveRebounding + uiEmphasis.defensiveRebounding + uiEmphasis.physical) * 10) / 10,
+    defense: Math.round((uiEmphasis.onBallDefense + uiEmphasis.teamDefense + uiEmphasis.offensiveRebounding + uiEmphasis.defensiveRebounding + uiEmphasis.physical) * 10) / 10,
   };
 }
 
@@ -370,27 +353,6 @@ const DEMO_TEAM_STATE = {
   tempo: 'Fast',
   record: '6–6',
   confStanding: '4th',
-};
-
-// Current Status demo data
-const CURRENT_STATUS = {
-  nextGame: {
-    opponent: 'Missouri Western',
-    date: 'Sat, Feb 8',
-    time: '2:00 PM',
-    location: 'Home',
-  },
-  lastGame: {
-    result: 'W',
-    score: '78–65',
-    opponent: 'Northwest Missouri',
-  },
-  today: 'Practice 3:30 PM • Film 6:00 PM',
-  availability: {
-    available: 12,
-    out: 2,
-    questionable: 1,
-  },
 };
 
 // Program Context preview data (defaults, will be overridden by persisted state)
@@ -819,9 +781,55 @@ function SportsHome() {
         </ThemedText>
       </View>
 
-      {/* ===== 2) PLAY STYLE (first block) ===== */}
+      {/* ===== 2) Current Status (no title) ===== */}
+      <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
+        {/* Next Game */}
+        <View style={styles.statusRow}>
+          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
+            Next Game
+          </ThemedText>
+          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
+            Missouri Western · Sat, Feb 8 2:00 PM · Home
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
+        {/* Last Game */}
+        <View style={styles.statusRow}>
+          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
+            Last Game
+          </ThemedText>
+          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
+            W 78–65 vs Northwest Missouri
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
+        {/* Today */}
+        <View style={styles.statusRow}>
+          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
+            Today
+          </ThemedText>
+          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
+            Practice 3:30 PM • Film 6:00 PM
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
+        {/* Availability */}
+        <View style={styles.statusRow}>
+          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
+            Availability
+          </ThemedText>
+          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
+            12 Available · 2 Out · 1 Questionable
+          </ThemedText>
+        </View>
+      </View>
+
+      {/* ===== 3) TEAM IDENTITY ===== */}
       <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-        PLAY STYLE
+        TEAM IDENTITY
       </ThemedText>
       <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
         {/* Offensive System - Inline Accordion */}
@@ -1001,55 +1009,6 @@ function SportsHome() {
             ))}
           </View>
         )}
-      </View>
-
-      {/* ===== 3) CURRENT STATUS ===== */}
-      <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-        CURRENT STATUS
-      </ThemedText>
-      <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
-        {/* Next Game */}
-        <View style={styles.statusRow}>
-          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-            Next Game
-          </ThemedText>
-          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-            {CURRENT_STATUS.nextGame.opponent} · {CURRENT_STATUS.nextGame.date} {CURRENT_STATUS.nextGame.time} · {CURRENT_STATUS.nextGame.location}
-          </ThemedText>
-        </View>
-        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-
-        {/* Last Game */}
-        <View style={styles.statusRow}>
-          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-            Last Game
-          </ThemedText>
-          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-            {CURRENT_STATUS.lastGame.result} {CURRENT_STATUS.lastGame.score} vs {CURRENT_STATUS.lastGame.opponent}
-          </ThemedText>
-        </View>
-        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-
-        {/* Today */}
-        <View style={styles.statusRow}>
-          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-            Today
-          </ThemedText>
-          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-            {CURRENT_STATUS.today}
-          </ThemedText>
-        </View>
-        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-
-        {/* Availability */}
-        <View style={styles.statusRow}>
-          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-            Availability
-          </ThemedText>
-          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-            {CURRENT_STATUS.availability.available} Available · {CURRENT_STATUS.availability.out} Out · {CURRENT_STATUS.availability.questionable} Questionable
-          </ThemedText>
-        </View>
       </View>
 
       {/* ===== 4) RECRUITMENT ===== */}
@@ -1267,6 +1226,8 @@ function PresetPreview({
       : [
           { id: 'onBallDefense' as const, label: 'On-Ball Defense' },
           { id: 'teamDefense' as const, label: 'Team Defense' },
+          { id: 'rebounding' as const, label: 'Rebounding' },
+          { id: 'physical' as const, label: 'Physical' },
         ];
 
   return (
