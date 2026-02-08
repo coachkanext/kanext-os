@@ -1,14 +1,14 @@
 /**
  * Input Bar Component
- * Bottom input area for Nexus chat with text input, mic, and send buttons.
+ * ChatGPT-style bottom input with pill shape, attachment, and send buttons.
  */
 
-import React from 'react';
-import { View, TextInput, Pressable, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useRef, useEffect } from 'react';
+import { View, TextInput, Pressable, StyleSheet, Platform, KeyboardAvoidingView, Animated } from 'react-native';
+import type { TextInput as TextInputType } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
+import { Brand, Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 interface InputBarProps {
@@ -16,8 +16,10 @@ interface InputBarProps {
   onChangeText: (text: string) => void;
   onSend: () => void;
   onMicPress?: () => void;
-  disabled?: boolean;
+  onAttachPress?: () => void;
+  onFocus?: () => void;
   placeholder?: string;
+  isListening?: boolean;
 }
 
 export function InputBar({
@@ -25,19 +27,55 @@ export function InputBar({
   onChangeText,
   onSend,
   onMicPress,
-  disabled = false,
-  placeholder = 'Ask anything...',
+  onAttachPress,
+  onFocus,
+  placeholder = 'Ask Nexus',
+  isListening = false,
 }: InputBarProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const insets = useSafeAreaInsets();
+  const isDark = colorScheme === 'dark';
+  const inputRef = useRef<TextInputType>(null);
+  const pulseAnim = useRef(new Animated.Value(1)).current;
 
   const hasText = value.trim().length > 0;
 
+  useEffect(() => {
+    if (isListening) {
+      const animation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.2,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      animation.start();
+      return () => animation.stop();
+    }
+    pulseAnim.setValue(1);
+  }, [isListening, pulseAnim]);
+
+  const showMic = onMicPress && (!hasText || isListening);
+
   const handleSend = () => {
-    if (hasText && !disabled) {
+    if (hasText) {
       onSend();
     }
+  };
+
+  const handleContainerPress = () => {
+    inputRef.current?.focus();
+  };
+
+  const handleFocus = () => {
+    onFocus?.();
   };
 
   return (
@@ -48,68 +86,115 @@ export function InputBar({
       <View
         style={[
           styles.container,
-          {
-            backgroundColor: colors.background,
-            borderTopColor: colors.border,
-            paddingBottom: insets.bottom + Spacing.sm,
-          },
+          { backgroundColor: colors.background },
         ]}
       >
-        <View
+        <Pressable
           style={[
             styles.inputContainer,
-            { backgroundColor: colors.backgroundSecondary },
+            {
+              backgroundColor: isDark ? '#2F2F2F' : '#F4F4F4',
+              borderColor: isDark ? '#3F3F3F' : '#E5E5E5',
+            },
           ]}
+          onPress={handleContainerPress}
         >
+          {/* Attach Button */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.attachButton,
+              { opacity: pressed ? 0.6 : 1 },
+            ]}
+            onPress={onAttachPress}
+            accessibilityLabel="Attach file"
+            accessibilityRole="button"
+          >
+            <IconSymbol name="plus" size={20} color={colors.textSecondary} />
+          </Pressable>
+
+          {/* Text Input */}
           <TextInput
+            ref={inputRef}
             style={[styles.input, { color: colors.text }]}
             placeholder={placeholder}
             placeholderTextColor={colors.textTertiary}
             value={value}
             onChangeText={onChangeText}
+            onFocus={handleFocus}
             multiline
-            maxLength={2000}
-            editable={!disabled}
-            onSubmitEditing={handleSend}
+            maxLength={4000}
+            returnKeyType="default"
             blurOnSubmit={false}
+            autoCapitalize="sentences"
+            autoCorrect
           />
 
-          {/* Mic Button */}
-          {onMicPress && !hasText && (
+          {/* Right Actions */}
+          <View style={styles.rightActions}>
+            {/* Mic / Stop Button */}
+            {showMic && (
+              isListening ? (
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.iconButton,
+                    { opacity: pressed ? 0.6 : 1 },
+                  ]}
+                  onPress={onMicPress}
+                  accessibilityLabel="Stop voice input"
+                  accessibilityRole="button"
+                >
+                  <Animated.View
+                    style={[
+                      styles.micActiveBackground,
+                      { transform: [{ scale: pulseAnim }] },
+                    ]}
+                  >
+                    <IconSymbol name="stop.fill" size={14} color="#FFFFFF" />
+                  </Animated.View>
+                </Pressable>
+              ) : (
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.iconButton,
+                    { opacity: pressed ? 0.6 : 1 },
+                  ]}
+                  onPress={onMicPress}
+                  accessibilityLabel="Voice input"
+                  accessibilityRole="button"
+                >
+                  <IconSymbol name="mic.fill" size={20} color={colors.textSecondary} />
+                </Pressable>
+              )
+            )}
+
+            {/* Send Button */}
             <Pressable
               style={({ pressed }) => [
-                styles.iconButton,
-                { opacity: pressed ? 0.7 : 1 },
+                styles.sendButton,
+                {
+                  backgroundColor: hasText
+                    ? (isDark ? '#FFFFFF' : '#000000')
+                    : (isDark ? '#4A4A4A' : '#D9D9D9'),
+                  opacity: pressed && hasText ? 0.8 : 1,
+                },
               ]}
-              onPress={onMicPress}
-              accessibilityLabel="Voice input"
+              onPress={handleSend}
+              disabled={!hasText}
+              accessibilityLabel="Send message"
               accessibilityRole="button"
             >
-              <IconSymbol name="mic.fill" size={20} color={colors.textTertiary} />
+              <IconSymbol
+                name="arrow.up"
+                size={16}
+                weight="semibold"
+                color={hasText
+                  ? (isDark ? '#000000' : '#FFFFFF')
+                  : (isDark ? '#7A7A7A' : '#A0A0A0')
+                }
+              />
             </Pressable>
-          )}
-
-          {/* Send Button */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.sendButton,
-              {
-                backgroundColor: hasText ? Brand.nexus : colors.backgroundTertiary,
-                opacity: pressed && hasText ? 0.8 : 1,
-              },
-            ]}
-            onPress={handleSend}
-            disabled={!hasText || disabled}
-            accessibilityLabel="Send message"
-            accessibilityRole="button"
-          >
-            <IconSymbol
-              name="arrow.up"
-              size={18}
-              color={hasText ? '#FFFFFF' : colors.textTertiary}
-            />
-          </Pressable>
-        </View>
+          </View>
+        </Pressable>
       </View>
     </KeyboardAvoidingView>
   );
@@ -117,37 +202,58 @@ export function InputBar({
 
 const styles = StyleSheet.create({
   container: {
-    borderTopWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.sm,
+    paddingVertical: Spacing.sm,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    borderRadius: BorderRadius.lg,
-    paddingLeft: Spacing.md,
-    paddingRight: Spacing.xs,
-    paddingVertical: Spacing.xs,
-    minHeight: 44,
+    borderRadius: 24,
+    borderWidth: 1,
+    paddingLeft: 4,
+    paddingRight: 4,
+    paddingVertical: 4,
+    minHeight: 48,
+  },
+  attachButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   input: {
     flex: 1,
     fontSize: 16,
-    maxHeight: 120,
-    paddingVertical: Spacing.sm,
-    paddingRight: Spacing.sm,
+    lineHeight: 22,
+    maxHeight: 150,
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+  },
+  rightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
   },
   iconButton: {
-    width: 32,
-    height: 32,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: Spacing.xs,
   },
   sendButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  micActiveBackground: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: Brand.error,
     alignItems: 'center',
     justifyContent: 'center',
   },

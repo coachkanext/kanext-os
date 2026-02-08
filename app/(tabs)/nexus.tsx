@@ -5,10 +5,7 @@
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { View, StyleSheet, Keyboard, Pressable, Animated, Dimensions } from 'react-native';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const PANEL_WIDTH = SCREEN_WIDTH * 0.7;
+import { StyleSheet, Keyboard, Pressable, Animated, Dimensions } from 'react-native';
 
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
@@ -23,6 +20,10 @@ import { RosterOverlay } from '@/components/nexus/roster-overlay';
 import { RecruitingOverlay } from '@/components/nexus/recruiting-overlay';
 import { SimulationOverlay } from '@/components/nexus/simulation-overlay';
 import { NexusProvider, useNexusContext } from '@/context/nexus-context';
+import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const PANEL_WIDTH = SCREEN_WIDTH * 0.7;
 
 function NexusScreenContent() {
   const {
@@ -34,11 +35,17 @@ function NexusScreenContent() {
     closePanel,
     selectConversation,
     createNewConversation,
+    createNewSim,
     setInputText,
     sendMessage,
     closeSimulation,
     getSimulation,
     saveSimulation,
+    pinConversation,
+    unpinConversation,
+    renameConversation,
+    archiveConversation,
+    deleteConversation,
   } = useNexusContext();
 
   const colorScheme = useColorScheme() ?? 'light';
@@ -84,10 +91,26 @@ function NexusScreenContent() {
     setAvatarDrawerVisible(true);
   }, [closePanel]);
 
+  // Track text that existed before speech recognition started
+  const preExistingTextRef = useRef('');
+
+  const { isListening, toggleListening } = useSpeechRecognition({
+    onTranscript: useCallback((text: string, isFinal: boolean) => {
+      const prefix = preExistingTextRef.current;
+      const separator = prefix.length > 0 && !prefix.endsWith(' ') ? ' ' : '';
+      setInputText(prefix + separator + text);
+    }, [setInputText]),
+  });
+
   const handleMicPress = useCallback(() => {
-    // Placeholder - would start voice input in full implementation
-    console.log('Voice input');
-  }, []);
+    if (!nexusState.activeConversationId) {
+      createNewConversation();
+    }
+    if (!isListening) {
+      preExistingTextRef.current = nexusState.inputText;
+    }
+    toggleListening();
+  }, [nexusState.activeConversationId, nexusState.inputText, isListening, createNewConversation, toggleListening]);
 
   return (
     <ThemedView style={styles.container}>
@@ -95,11 +118,17 @@ function NexusScreenContent() {
       <ConversationsPanel
         visible={nexusState.panelState === 'conversations'}
         onClose={closePanel}
+        onNewChat={createNewConversation}
+        onNewSim={createNewSim}
+        onAvatarPress={handleAvatarPress}
         conversations={nexusState.conversations}
         activeConversationId={nexusState.activeConversationId}
-        onConversationSelect={selectConversation}
-        onNewChat={createNewConversation}
-        onAvatarPress={handleAvatarPress}
+        onSelectConversation={selectConversation}
+        onPinConversation={pinConversation}
+        onUnpinConversation={unpinConversation}
+        onRenameConversation={renameConversation}
+        onArchiveConversation={archiveConversation}
+        onDeleteConversation={deleteConversation}
       />
 
       {/* Main Content - slides when panel opens */}
@@ -132,6 +161,7 @@ function NexusScreenContent() {
           <ChatThread
             messages={nexusState.messages}
             isLoading={nexusState.isLoading}
+            conversation={nexusState.conversations.find(c => c.id === nexusState.activeConversationId) ?? null}
           />
         </Pressable>
 
@@ -141,6 +171,7 @@ function NexusScreenContent() {
           onChangeText={setInputText}
           onSend={sendMessage}
           onMicPress={handleMicPress}
+          isListening={isListening}
           onFocus={() => {
             // Create a new conversation if none is active
             if (!nexusState.activeConversationId) {
