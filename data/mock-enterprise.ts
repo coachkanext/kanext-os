@@ -435,11 +435,11 @@ export function formatCurrency(amount: number): string {
 export function getDomainStatusColor(status: Domain['status']): string {
   switch (status) {
     case 'active':
-      return '#198754';
+      return '#f5f5f5';
     case 'development':
-      return '#FFC107';
+      return '#6e6e6e';
     case 'planned':
-      return '#6C757D';
+      return '#555555';
     default:
       return '#6C757D';
   }

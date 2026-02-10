@@ -7,11 +7,26 @@ import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
+import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
+import { ThreadTypePill } from './thread-type-pill';
+import { Colors, Spacing, BorderRadius, Brand, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatTimestamp } from '@/data/mock-nexus';
-import type { Conversation } from '@/types';
+import type { Conversation, ConversationType } from '@/types';
+
+const TYPE_ICONS: Record<ConversationType, IconSymbolName> = {
+  chat: 'sparkles',
+  eval: 'person.text.rectangle',
+  sim: 'chart.bar.fill',
+  'game-ops': 'basketball.fill',
+};
+
+const TYPE_COLORS: Record<ConversationType, string> = {
+  chat: '#f5f5f5',
+  eval: '#f5f5f5',
+  sim: '#f5f5f5',
+  'game-ops': '#6e6e6e',
+};
 
 interface ConversationRowProps {
   conversation: Conversation;
@@ -30,6 +45,10 @@ export function ConversationRow({
   const previewText = conversation.lastMessage?.content ?? 'No messages yet';
   const truncatedPreview =
     previewText.length > 50 ? previewText.slice(0, 50) + '...' : previewText;
+
+  const conversationType = conversation.type ?? 'chat';
+  const avatarIcon = TYPE_ICONS[conversationType];
+  const avatarColor = TYPE_COLORS[conversationType];
 
   return (
     <Pressable
@@ -68,14 +87,14 @@ export function ConversationRow({
             </View>
           </View>
         ) : (
-          // Single avatar - Nexus icon for assistant conversations
+          // Single avatar - icon based on conversation type
           <View
             style={[
               styles.avatar,
-              { backgroundColor: Brand.nexus },
+              { backgroundColor: avatarColor },
             ]}
           >
-            <IconSymbol name="sparkles" size={18} color="#FFFFFF" />
+            <IconSymbol name={avatarIcon} size={18} color="#FFFFFF" />
           </View>
         )}
       </View>
@@ -83,18 +102,28 @@ export function ConversationRow({
       {/* Content */}
       <View style={styles.content}>
         <View style={styles.topRow}>
-          <ThemedText
-            style={[
-              styles.title,
-              isActive && { fontWeight: '700' },
-            ]}
-            numberOfLines={1}
-          >
-            {conversation.title}
-          </ThemedText>
-          <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
-            {formatTimestamp(conversation.updatedAt)}
-          </ThemedText>
+          <View style={styles.titleRow}>
+            <ThemedText
+              style={[
+                styles.title,
+                isActive && { fontWeight: '700' },
+              ]}
+              numberOfLines={1}
+            >
+              {conversation.title}
+            </ThemedText>
+            {conversation.isPinned && (
+              <IconSymbol name="pin.fill" size={12} color={colors.textTertiary} />
+            )}
+          </View>
+          <View style={styles.metaRow}>
+            {conversationType !== 'chat' && (
+              <ThreadTypePill type={conversationType} size="small" />
+            )}
+            <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+              {formatTimestamp(conversation.updatedAt)}
+            </ThemedText>
+          </View>
         </View>
         <View style={styles.bottomRow}>
           <ThemedText
@@ -171,11 +200,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 2,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 4,
+    marginRight: Spacing.sm,
+  },
   title: {
     fontSize: 15,
     fontWeight: '600',
-    flex: 1,
-    marginRight: Spacing.sm,
+    flexShrink: 1,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   timestamp: {
     fontSize: 12,

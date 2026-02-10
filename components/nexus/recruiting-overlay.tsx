@@ -172,12 +172,12 @@ function ProspectRow({ target, onPress, colors, accentColor }: ProspectRowProps)
         <View style={styles.prospectNameRow}>
           <ThemedText style={styles.prospectName}>{player.name}</ThemedText>
           {target.priority === 'A' && (
-            <View style={[styles.priorityBadge, { backgroundColor: '#DC3545' }]}>
+            <View style={[styles.priorityBadge, { backgroundColor: '#f5f5f5' }]}>
               <ThemedText style={styles.priorityBadgeText}>A</ThemedText>
             </View>
           )}
           {target.priority === 'B' && (
-            <View style={[styles.priorityBadge, { backgroundColor: '#E07C24' }]}>
+            <View style={[styles.priorityBadge, { backgroundColor: '#6e6e6e' }]}>
               <ThemedText style={styles.priorityBadgeText}>B</ThemedText>
             </View>
           )}

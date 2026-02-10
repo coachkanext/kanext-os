@@ -1,21 +1,27 @@
 /**
- * Global Header Component
- * Persistent header visible on all tabs with Avatar Drawer trigger and Mode Selector.
+ * Global Header — Mode Selector Pill
+ * Fixed at top of every page. Tap to open mode dropdown.
+ * Same pill design on all screens including Nexus.
  */
 
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { usePathname } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { AvatarDrawer } from '@/components/avatar-drawer';
-import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
+import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
+import { Colors, Spacing, Layout, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
 import type { Mode } from '@/types';
 
-const HEADER_HEIGHT = 44;
+// ── Global left-action handler (Nexus hamburger) ──
+let _leftActionHandler: (() => void) | null = null;
+
+export function registerHeaderLeftAction(cb: (() => void) | null) {
+  _leftActionHandler = cb;
+}
 
 const MODE_LABELS: Record<Mode, string> = {
   sports: 'Sports',
@@ -24,55 +30,67 @@ const MODE_LABELS: Record<Mode, string> = {
   education: 'Education',
 };
 
-export function GlobalHeader() {
+const MODE_ICONS: Record<Mode, IconSymbolName> = {
+  sports: 'basketball.fill',
+  enterprise: 'briefcase.fill',
+  church: 'building.columns.fill',
+  education: 'graduationcap.fill',
+};
+
+interface GlobalHeaderProps {
+  /** Left icon slot — render a custom left button (e.g., hamburger, back) */
+  leftIcon?: React.ReactNode;
+  /** Right icon slot — render a custom right button */
+  rightIcon?: React.ReactNode;
+}
+
+export function GlobalHeader({ leftIcon, rightIcon }: GlobalHeaderProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
-  const router = useRouter();
+  const pathname = usePathname();
   const { state, switchMode } = useAppContext();
-
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const modeColor = ModeColors[state.mode].primary;
+  const isNexus = pathname === '/nexus';
 
   const handleModeSelect = (mode: Mode) => {
-    // Rule C: Mode switch → navigate to HOME tab of that mode
-    switchMode(mode);
+    if (mode !== state.mode) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      switchMode(mode);
+    }
     setDropdownVisible(false);
-    // Navigate to Home tab after mode switch
-    router.replace('/(tabs)' as any);
   };
 
   return (
     <>
-      {/* Header Bar */}
       <View
         style={[
-          styles.header,
+          styles.container,
           {
-            paddingTop: insets.top,
-            height: HEADER_HEIGHT + insets.top,
             backgroundColor: colors.background,
-            borderBottomColor: colors.divider,
+            paddingTop: insets.top,
           },
         ]}
       >
-        <View style={styles.headerContent}>
-          {/* Avatar Trigger (Left) */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.avatarButton,
-              { backgroundColor: pressed ? colors.backgroundSecondary : colors.backgroundTertiary },
-            ]}
-            onPress={() => setDrawerVisible(true)}
-            accessibilityLabel="Open profile drawer"
-            accessibilityRole="button"
-          >
-            <IconSymbol name="person.fill" size={18} color={colors.icon} />
-          </Pressable>
+        <View style={styles.content}>
+          {/* Left slot */}
+          {leftIcon ?? (isNexus ? (
+            <Pressable
+              style={({ pressed }) => [
+                styles.slotSpacer,
+                { opacity: pressed ? 0.7 : 1, alignItems: 'center' as const, justifyContent: 'center' as const },
+              ]}
+              onPress={() => _leftActionHandler?.()}
+              accessibilityLabel="Open conversations"
+              accessibilityRole="button"
+            >
+              <IconSymbol name="line.horizontal.3" size={24} color={colors.text} />
+            </Pressable>
+          ) : <View style={styles.slotSpacer} />)}
 
-          {/* Mode Pill (Center) */}
+          {/* Center: Mode Selector Pill */}
           <Pressable
             style={({ pressed }) => [
               styles.modePill,
@@ -84,23 +102,17 @@ export function GlobalHeader() {
             accessibilityLabel="Switch mode"
             accessibilityRole="button"
           >
-            <View style={[styles.modeIndicator, { backgroundColor: modeColor }]} />
+            <IconSymbol name={MODE_ICONS[state.mode]} size={14} color={modeColor} />
             <Text style={[styles.modeLabel, { color: colors.text }]}>
               {MODE_LABELS[state.mode]}
             </Text>
             <IconSymbol name="chevron.down" size={12} color={colors.textSecondary} />
           </Pressable>
 
-          {/* Empty spacer (Right) - for balance */}
-          <View style={styles.spacer} />
+          {/* Right slot */}
+          {rightIcon ?? <View style={styles.slotSpacer} />}
         </View>
       </View>
-
-      {/* Avatar Drawer */}
-      <AvatarDrawer
-        visible={drawerVisible}
-        onClose={() => setDrawerVisible(false)}
-      />
 
       {/* Mode Dropdown */}
       <Modal
@@ -118,7 +130,7 @@ export function GlobalHeader() {
               styles.dropdown,
               {
                 backgroundColor: colors.card,
-                top: insets.top + HEADER_HEIGHT + 4,
+                top: insets.top + Layout.topBarHeight + 4,
               },
             ]}
           >
@@ -141,7 +153,7 @@ export function GlobalHeader() {
                   ]}
                   onPress={() => handleModeSelect(mode)}
                 >
-                  <View style={[styles.dropdownIndicator, { backgroundColor: itemColor }]} />
+                  <IconSymbol name={MODE_ICONS[mode]} size={14} color={itemColor} />
                   <Text
                     style={[
                       styles.dropdownLabel,
@@ -162,22 +174,19 @@ export function GlobalHeader() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
+  container: {
+    // Fixed at top — no border
   },
-  headerContent: {
-    flex: 1,
+  content: {
+    height: Layout.topBarHeight,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: Spacing.md,
+    paddingHorizontal: Spacing.sm,
   },
-  avatarButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+  slotSpacer: {
+    width: 44,
+    height: 44,
   },
   modePill: {
     flexDirection: 'row',
@@ -187,17 +196,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     gap: 6,
   },
-  modeIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
   modeLabel: {
     fontSize: 14,
     fontWeight: '500',
-  },
-  spacer: {
-    width: 32,
   },
   dropdownOverlay: {
     flex: 1,
@@ -220,11 +221,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     gap: 8,
-  },
-  dropdownIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
   },
   dropdownLabel: {
     fontSize: 15,

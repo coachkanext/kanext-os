@@ -19,56 +19,7 @@ export const MOCK_PARTICIPANTS: ConversationParticipant[] = [
 // CONVERSATIONS
 // =============================================================================
 
-export const MOCK_CONVERSATIONS: Conversation[] = [
-  {
-    id: 'conv-1',
-    title: 'Recruiting Strategy',
-    participants: [MOCK_PARTICIPANTS[0], MOCK_PARTICIPANTS[1]],
-    lastMessage: {
-      id: 'msg-1-3',
-      conversationId: 'conv-1',
-      role: 'assistant',
-      content: 'Based on your roster needs, I recommend focusing on transfers from programs with similar offensive systems.',
-      timestamp: new Date('2026-02-04T10:30:00'),
-    },
-    updatedAt: new Date('2026-02-04T10:30:00'),
-    createdAt: new Date('2026-02-03T14:00:00'),
-    isGroup: false,
-    unreadCount: 0,
-  },
-  {
-    id: 'conv-2',
-    title: 'Coaching Staff Discussion',
-    participants: [MOCK_PARTICIPANTS[0], MOCK_PARTICIPANTS[1], MOCK_PARTICIPANTS[2]],
-    lastMessage: {
-      id: 'msg-2-4',
-      conversationId: 'conv-2',
-      role: 'user',
-      content: 'Let me know what you think about the lineup changes',
-      timestamp: new Date('2026-02-04T08:15:00'),
-    },
-    updatedAt: new Date('2026-02-04T08:15:00'),
-    createdAt: new Date('2026-01-28T09:00:00'),
-    isGroup: true,
-    unreadCount: 2,
-  },
-  {
-    id: 'conv-3',
-    title: 'Season Analysis',
-    participants: [MOCK_PARTICIPANTS[0], MOCK_PARTICIPANTS[1]],
-    lastMessage: {
-      id: 'msg-3-2',
-      conversationId: 'conv-3',
-      role: 'assistant',
-      content: 'Your team is currently trending above projections in conference play.',
-      timestamp: new Date('2026-02-02T16:45:00'),
-    },
-    updatedAt: new Date('2026-02-02T16:45:00'),
-    createdAt: new Date('2026-02-02T15:00:00'),
-    isGroup: false,
-    unreadCount: 0,
-  },
-];
+export const MOCK_CONVERSATIONS: Conversation[] = [];
 
 // =============================================================================
 // MESSAGES

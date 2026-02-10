@@ -5,8 +5,6 @@ import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
 import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
-
 // Re-export the type for use in other components
 export type { SymbolViewProps };
 
@@ -74,6 +72,7 @@ const MAPPING = {
   'phone.fill': 'phone',
 
   // Sports / Activities
+  'whistle.fill': 'sports',
   'sportscourt.fill': 'sports-basketball',
   'airplane': 'flight',
   'ticket': 'confirmation-number',
@@ -82,6 +81,7 @@ const MAPPING = {
   'calendar.badge.exclamationmark': 'event-busy',
 
   // Enterprise / Documents
+  'briefcase.fill': 'work',
   'doc.fill': 'description',
   'doc.text.fill': 'article',
   'tablecells.fill': 'table-chart',
@@ -143,9 +143,21 @@ const MAPPING = {
   'checkmark.seal.fill': 'verified',
   'sun.max.fill': 'wb-sunny',
   'exclamationmark.triangle': 'warning-amber',
-} as IconMapping;
 
-export type IconSymbolName = keyof typeof MAPPING;
+  // Sports / Game Actions
+  'basketball.fill': 'sports-basketball',
+  'square.and.arrow.up': 'share',
+  'plus.circle.fill': 'add-circle',
+  'tablecells': 'table-chart',
+
+  // Live Ops
+  'timer': 'timer',
+  'arrow.uturn.backward': 'undo',
+  'chevron.up': 'expand-less',
+  'chevron.down': 'expand-more',
+} as const;
+
+export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
@@ -164,10 +176,10 @@ export function IconSymbol({
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
-  const mappedName = MAPPING[name];
+  const mappedName = (MAPPING as Record<string, string>)[name];
   if (!mappedName) {
     console.warn(`IconSymbol: No mapping found for "${name}"`);
     return <MaterialIcons color={color} size={size} name="help-outline" style={style} />;
   }
-  return <MaterialIcons color={color} size={size} name={mappedName} style={style} />;
+  return <MaterialIcons color={color} size={size} name={mappedName as ComponentProps<typeof MaterialIcons>['name']} style={style} />;
 }

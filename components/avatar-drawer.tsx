@@ -1,8 +1,8 @@
 /**
  * KaNeXT OS Avatar Drawer
  *
- * Native iOS-style navigation drawer with strong identity hierarchy.
- * Inspired by X (Twitter) drawer proportions.
+ * Twitter/X-style navigation drawer with push animation.
+ * Main content slides right when drawer opens.
  *
  * Structure:
  * - Identity Header (large, dominant)
@@ -20,7 +20,6 @@ import {
   Animated,
   Dimensions,
   ScrollView,
-  Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -29,23 +28,29 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
+import { useAuth } from '@/context/auth-context';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DRAWER_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
 
+// Export for use in layout to animate content
+export const AVATAR_DRAWER_WIDTH = DRAWER_WIDTH;
+
 interface AvatarDrawerProps {
   visible: boolean;
   onClose: () => void;
+  contentSlideAnim?: Animated.Value;
 }
 
-export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
+export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawerProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
+  const { state: authState, signOut } = useAuth();
 
-  const isLoggedIn = state.authState === 'owner';
+  const isLoggedIn = authState.isAuthenticated;
 
   const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -53,32 +58,50 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
   useEffect(() => {
     if (visible) {
       Animated.parallel([
-        Animated.timing(slideAnim, {
+        Animated.spring(slideAnim, {
           toValue: 0,
-          duration: 220,
+          tension: 65,
+          friction: 11,
           useNativeDriver: true,
         }),
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 220,
+          duration: 200,
           useNativeDriver: true,
         }),
+        // Animate content to slide right
+        ...(contentSlideAnim ? [
+          Animated.spring(contentSlideAnim, {
+            toValue: DRAWER_WIDTH,
+            tension: 65,
+            friction: 11,
+            useNativeDriver: true,
+          }),
+        ] : []),
       ]).start();
     } else {
       Animated.parallel([
         Animated.timing(slideAnim, {
           toValue: -DRAWER_WIDTH,
-          duration: 180,
+          duration: 200,
           useNativeDriver: true,
         }),
         Animated.timing(fadeAnim, {
           toValue: 0,
-          duration: 180,
+          duration: 200,
           useNativeDriver: true,
         }),
+        // Animate content back
+        ...(contentSlideAnim ? [
+          Animated.timing(contentSlideAnim, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ] : []),
       ]).start();
     }
-  }, [visible, slideAnim, fadeAnim]);
+  }, [visible, slideAnim, fadeAnim, contentSlideAnim]);
 
   // Build context lines
   const modeLine = state.mode
@@ -98,119 +121,122 @@ export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
   };
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="none"
-      onRequestClose={onClose}
-      statusBarTranslucent
-    >
-      <View style={StyleSheet.absoluteFill}>
-        {/* Scrim */}
-        <Animated.View style={[styles.scrim, { opacity: fadeAnim }]}>
-          <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-        </Animated.View>
+    <View style={StyleSheet.absoluteFill} pointerEvents={visible ? 'auto' : 'none'}>
+      {/* Scrim */}
+      <Animated.View style={[styles.scrim, { opacity: fadeAnim }]} pointerEvents={visible ? 'auto' : 'none'}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+      </Animated.View>
 
-        {/* Drawer */}
-        <Animated.View
-          style={[
-            styles.drawer,
-            {
-              width: DRAWER_WIDTH,
-              backgroundColor: colors.background,
-              transform: [{ translateX: slideAnim }],
-              paddingTop: insets.top,
-              paddingBottom: insets.bottom,
-            },
-          ]}
+      {/* Drawer */}
+      <Animated.View
+        style={[
+          styles.drawer,
+          {
+            width: DRAWER_WIDTH,
+            backgroundColor: colors.background,
+            transform: [{ translateX: slideAnim }],
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+          },
+        ]}
+      >
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
         >
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
+          {/* ===== IDENTITY HEADER (Large, Dominant) ===== */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.identityHeader,
+              pressed && { opacity: 0.7 },
+            ]}
+            onPress={() => handleNavigation('/profile')}
           >
-            {/* ===== IDENTITY HEADER (Large, Dominant) ===== */}
-            <Pressable
-              style={({ pressed }) => [
-                styles.identityHeader,
-                pressed && { opacity: 0.7 },
-              ]}
-              onPress={() => handleNavigation('/profile')}
-            >
-              <View style={[styles.avatar, { backgroundColor: colors.backgroundTertiary }]}>
-                <IconSymbol name="person.fill" size={32} color={colors.icon} />
-              </View>
+            <View style={[styles.avatar, { backgroundColor: colors.backgroundTertiary }]}>
+              <IconSymbol name="person.fill" size={32} color={colors.icon} />
+            </View>
 
-              {/* Name - Headline sized */}
-              <Text style={[styles.identityName, { color: colors.text }]}>
-                {isLoggedIn ? 'Sammy Kalejaiye' : 'Viewer'}
+            {/* Name - Headline sized */}
+            <Text style={[styles.identityName, { color: colors.text }]}>
+              {isLoggedIn ? (authState.session?.displayName ?? 'User') : 'Viewer'}
+            </Text>
+
+            {/* Mode · Organization - Body text, clearly readable */}
+            {modeLine && (
+              <Text style={[styles.identityMode, { color: colors.textSecondary }]}>
+                {modeLine}
               </Text>
+            )}
 
-              {/* Mode · Organization - Body text, clearly readable */}
-              {modeLine && (
-                <Text style={[styles.identityMode, { color: colors.textSecondary }]}>
-                  {modeLine}
-                </Text>
-              )}
+            {/* Program · Season - Smaller but readable */}
+            {detailLine && (
+              <Text style={[styles.identityDetail, { color: colors.textTertiary }]}>
+                {detailLine}
+              </Text>
+            )}
+          </Pressable>
 
-              {/* Program · Season - Smaller but readable */}
-              {detailLine && (
-                <Text style={[styles.identityDetail, { color: colors.textTertiary }]}>
-                  {detailLine}
-                </Text>
-              )}
-            </Pressable>
+          {/* ===== PRIMARY NAVIGATION ===== */}
+          <View style={styles.primaryNav}>
+            <PrimaryNavItem
+              icon="person.circle"
+              label="Profile"
+              colors={colors}
+              onPress={() => handleNavigation('/profile')}
+            />
+            <PrimaryNavItem
+              icon="play.rectangle"
+              label="Video"
+              colors={colors}
+              onPress={() => handleNavigation('/video')}
+            />
+            <PrimaryNavItem
+              icon="sparkles"
+              label="Open Nexus"
+              colors={colors}
+              onPress={() => handleNavigation('/(tabs)/nexus')}
+            />
+          </View>
 
-            {/* ===== PRIMARY NAVIGATION ===== */}
-            <View style={styles.primaryNav}>
-              <PrimaryNavItem
-                icon="person.circle"
-                label="Profile"
-                colors={colors}
-                onPress={() => handleNavigation('/profile')}
-              />
-              <PrimaryNavItem
-                icon="play.rectangle"
-                label="Video"
-                colors={colors}
-                onPress={() => handleNavigation('/video')}
-              />
-              <PrimaryNavItem
-                icon="sparkles"
-                label="Open Nexus"
-                colors={colors}
-                onPress={() => handleNavigation('/(tabs)/nexus')}
-              />
-            </View>
+          {/* ===== SINGLE DIVIDER ===== */}
+          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
 
-            {/* ===== SINGLE DIVIDER ===== */}
-            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-            {/* ===== UTILITY NAVIGATION ===== */}
-            <View style={styles.utilityNav}>
+          {/* ===== UTILITY NAVIGATION ===== */}
+          <View style={styles.utilityNav}>
+            <UtilityNavItem
+              icon="gear"
+              label="Settings & Privacy"
+              colors={colors}
+              onPress={() => handleNavigation('/settings')}
+            />
+            <UtilityNavItem
+              icon="questionmark.circle"
+              label="Help / Support"
+              colors={colors}
+              onPress={() => handleNavigation('/help')}
+            />
+            <UtilityNavItem
+              icon="doc.text"
+              label="Terms & Policies"
+              colors={colors}
+              onPress={() => handleNavigation('/terms')}
+            />
+            {isLoggedIn && (
               <UtilityNavItem
-                icon="gear"
-                label="Settings & Privacy"
+                icon="rectangle.portrait.and.arrow.right"
+                label="Sign Out"
                 colors={colors}
-                onPress={() => handleNavigation('/settings')}
+                onPress={() => {
+                  onClose();
+                  signOut();
+                }}
               />
-              <UtilityNavItem
-                icon="questionmark.circle"
-                label="Help / Support"
-                colors={colors}
-                onPress={() => handleNavigation('/help')}
-              />
-              <UtilityNavItem
-                icon="doc.text"
-                label="Terms & Policies"
-                colors={colors}
-                onPress={() => handleNavigation('/terms')}
-              />
-            </View>
-          </ScrollView>
-        </Animated.View>
-      </View>
-    </Modal>
+            )}
+          </View>
+        </ScrollView>
+      </Animated.View>
+    </View>
   );
 }
 

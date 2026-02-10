@@ -1,7 +1,7 @@
 /**
  * Message Bubble Component
  * Renders a single message in the Nexus chat thread.
- * Supports simulation cards and saved simulation snapshots.
+ * Supports simulation cards, saved simulation snapshots, and eval cards.
  */
 
 import React from 'react';
@@ -10,33 +10,41 @@ import { View, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { SimulationCard } from './simulation-card';
 import { SimulationSnapshot } from './simulation-snapshot';
+import { EvalCard } from './eval-card';
 import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-nexus';
-import type { Message, SimulationResult, SavedSimulation } from '@/types';
+import type { Message, SimulationResult, SavedSimulation, EvalSnapshot } from '@/types';
 
 interface MessageBubbleProps {
   message: Message;
   simulation?: SimulationResult;
   savedSimulation?: SavedSimulation;
+  evalSnapshot?: EvalSnapshot;
   onViewSimulation?: (sim: SimulationResult) => void;
   onRerunSimulation?: (sim: SimulationResult) => void;
   onViewSavedSimulation?: (sim: SavedSimulation) => void;
+  onViewEval?: (eval_: EvalSnapshot) => void;
+  onSaveEval?: (eval_: EvalSnapshot) => void;
 }
 
 export function MessageBubble({
   message,
   simulation,
   savedSimulation,
+  evalSnapshot,
   onViewSimulation,
   onRerunSimulation,
   onViewSavedSimulation,
+  onViewEval,
+  onSaveEval,
 }: MessageBubbleProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const isUser = message.role === 'user';
   const hasSimulation = message.metadata?.isSimulation && simulation;
   const hasSavedSimulation = message.metadata?.isSavedSimulation && savedSimulation;
+  const hasEval = message.metadata?.isEval && evalSnapshot;
 
   return (
     <View style={[styles.container, isUser ? styles.userContainer : styles.assistantContainer]}>
@@ -44,7 +52,7 @@ export function MessageBubble({
         style={[
           styles.bubble,
           isUser
-            ? [styles.userBubble, { backgroundColor: Brand.nexus }]
+            ? [styles.userBubble, { backgroundColor: colors.backgroundTertiary }]
             : [styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }],
         ]}
       >
@@ -75,6 +83,17 @@ export function MessageBubble({
           <SimulationSnapshot
             simulation={savedSimulation}
             onViewFull={onViewSavedSimulation || (() => {})}
+          />
+        </View>
+      )}
+
+      {/* Eval Card */}
+      {hasEval && (
+        <View style={styles.simulationContainer}>
+          <EvalCard
+            evalSnapshot={evalSnapshot}
+            onViewFull={onViewEval}
+            onSave={onSaveEval}
           />
         </View>
       )}
@@ -116,7 +135,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   userText: {
-    color: '#FFFFFF',
+    color: '#f5f5f5',
   },
   timestamp: {
     fontSize: 11,

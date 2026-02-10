@@ -40,7 +40,7 @@ const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
     name: 'Lincoln University',
     mode: 'sports',
     type: 'college_basketball',
-    location: 'Jefferson City, MO',
+    location: 'Oakland, CA',
     description: 'Lincoln University Blue Tigers Men\'s Basketball',
   },
   enterprise: {
@@ -135,7 +135,7 @@ const SPORTS_ORGANIZATIONS: Record<string, Organization> = {
     name: 'Lincoln University',
     mode: 'sports',
     type: 'college_basketball',
-    location: 'Jefferson City, MO',
+    location: 'Oakland, CA',
     description: 'Lincoln University Blue Tigers Men\'s Basketball',
   },
   'Middlebrooks Academy': {

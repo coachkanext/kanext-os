@@ -12,7 +12,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.kanext-os",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSMicrophoneUsageDescription": "KaNeXT needs microphone access for voice input in Nexus.",
+        "NSSpeechRecognitionUsageDescription": "KaNeXT uses speech recognition to convert your voice to text in Nexus."
       }
     },
     "android": {
@@ -42,7 +44,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-speech-recognition"
     ],
     "experiments": {
       "typedRoutes": true,

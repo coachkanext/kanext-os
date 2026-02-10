@@ -4,8 +4,8 @@
  * Per spec: Home displays key stats and quick actions for the current mode.
  */
 
-import React, { useState, useCallback } from 'react';
-import { View, ScrollView, StyleSheet, Pressable, TextInput, Modal } from 'react-native';
+import React, { useState, useCallback, useRef } from 'react';
+import { View, ScrollView, StyleSheet, Pressable, TextInput, Modal, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -15,9 +15,12 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
+import { ProgramContextSection } from '@/components/program-context-section';
+import { RosterContent } from '@/components/roster-content';
 import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode } from '@/context/app-context';
+import type { Mode } from '@/types';
 
 // Mock data imports
 // Note: PROGRAMS and INSTITUTION imported for future use
@@ -29,37 +32,39 @@ import { getCurrentTerm, getUpcomingEvents, INSTITUTIONAL_METRICS } from '@/data
 // SYSTEM EMPHASIS CONSTANTS & TYPES (from program-context.tsx)
 // =============================================================================
 
-// Fixed section totals (locked at 58/42 split, always sum to 100)
-const OFFENSE_TOTAL = 58;
-const DEFENSE_TOTAL = 42;
+// Fixed section totals (locked at 53/47 split, always sum to 100)
+const OFFENSE_TOTAL = 53;
+const DEFENSE_TOTAL = 47;
 
-// Offensive System presets (raw weights for S/F/P, will be normalized to sum to 58)
+// Offensive System presets (sum = 53)
 const OFFENSIVE_SYSTEMS = [
-  { id: 'spread-pnr', label: 'Spread Pick-and-Roll', weights: { shooting: 20, finishing: 18, playmaking: 20 } },
-  { id: '5-out', label: '5-Out Motion', weights: { shooting: 24, finishing: 14, playmaking: 20 } },
-  { id: 'pace-space', label: 'Pace & Space', weights: { shooting: 26, finishing: 14, playmaking: 18 } },
-  { id: 'motion', label: 'Motion / Read & React', weights: { shooting: 18, finishing: 16, playmaking: 24 } },
-  { id: 'dribble-drive', label: 'Dribble Drive', weights: { shooting: 16, finishing: 24, playmaking: 18 } },
-  { id: 'princeton', label: 'Princeton', weights: { shooting: 16, finishing: 16, playmaking: 26 } },
-  { id: 'post-centric', label: 'Post-Centric / Inside-Out', weights: { shooting: 16, finishing: 26, playmaking: 16 } },
-  { id: 'moreyball', label: 'Moreyball', weights: { shooting: 28, finishing: 18, playmaking: 12 } },
-  { id: 'heliocentric', label: 'Heliocentric', weights: { shooting: 20, finishing: 16, playmaking: 22 } },
+  { id: 'spread-pnr', label: 'Spread Pick-and-Roll', weights: { shooting: 18, finishing: 16, playmaking: 19 } },
+  { id: '5-out', label: '5-Out Motion', weights: { shooting: 18, finishing: 17, playmaking: 18 } },
+  { id: 'motion', label: 'Motion / Read & React', weights: { shooting: 17, finishing: 16, playmaking: 20 } },
+  { id: 'pace-space', label: 'Pace & Space', weights: { shooting: 20, finishing: 17, playmaking: 16 } },
+  { id: 'dribble-drive', label: 'Dribble Drive', weights: { shooting: 15, finishing: 21, playmaking: 17 } },
+  { id: 'princeton', label: 'Princeton', weights: { shooting: 15, finishing: 18, playmaking: 20 } },
+  { id: 'flex', label: 'Flex', weights: { shooting: 16, finishing: 20, playmaking: 17 } },
+  { id: 'swing', label: 'Swing', weights: { shooting: 17, finishing: 18, playmaking: 18 } },
+  { id: 'post-centric', label: 'Post-Centric / Inside-Out', weights: { shooting: 13, finishing: 25, playmaking: 15 } },
+  { id: 'moreyball', label: 'Moreyball', weights: { shooting: 22, finishing: 21, playmaking: 10 } },
+  { id: 'heliocentric', label: 'Heliocentric', weights: { shooting: 16, finishing: 16, playmaking: 21 } },
 ];
 
-// Defensive System presets (raw weights for OBD/TD/Reb/Phys, will be normalized to sum to 42)
+// Defensive System presets (sum = 47)
 const DEFENSIVE_SYSTEMS = [
-  { id: 'containment', label: 'Containment Man', weights: { onBallDefense: 12, teamDefense: 10, rebounding: 12, physical: 8 } },
-  { id: 'pack-line', label: 'Pack Line', weights: { onBallDefense: 8, teamDefense: 14, rebounding: 12, physical: 8 } },
-  { id: 'pressure-man', label: 'Pressure Man / Denial', weights: { onBallDefense: 16, teamDefense: 8, rebounding: 10, physical: 8 } },
-  { id: 'switch', label: 'Switch Everything', weights: { onBallDefense: 11, teamDefense: 11, rebounding: 10, physical: 10 } },
-  { id: 'ice', label: 'ICE / No-Middle', weights: { onBallDefense: 12, teamDefense: 12, rebounding: 10, physical: 8 } },
-  { id: 'zone', label: 'Zone (Structured)', weights: { onBallDefense: 6, teamDefense: 16, rebounding: 12, physical: 8 } },
-  { id: 'matchup-zone', label: 'Matchup Zone / Hybrid', weights: { onBallDefense: 8, teamDefense: 14, rebounding: 12, physical: 8 } },
-  { id: 'press', label: 'Press / Pressure Defense', weights: { onBallDefense: 14, teamDefense: 8, rebounding: 10, physical: 10 } },
+  { id: 'containment', label: 'Containment Man', weights: { onBallDefense: 18, teamDefense: 15, rebounding: 8, frame: 6 } },
+  { id: 'pack-line', label: 'Pack Line', weights: { onBallDefense: 12, teamDefense: 18, rebounding: 10, frame: 7 } },
+  { id: 'pressure-man', label: 'Pressure Man (Denial)', weights: { onBallDefense: 20, teamDefense: 15, rebounding: 5, frame: 7 } },
+  { id: 'switch', label: 'Switch Everything', weights: { onBallDefense: 16, teamDefense: 15, rebounding: 7, frame: 9 } },
+  { id: 'ice', label: 'ICE / No-Middle', weights: { onBallDefense: 17, teamDefense: 16, rebounding: 7, frame: 7 } },
+  { id: 'zone', label: 'Zone (Structured)', weights: { onBallDefense: 10, teamDefense: 20, rebounding: 10, frame: 7 } },
+  { id: 'matchup-zone', label: 'Matchup Zone / Hybrid', weights: { onBallDefense: 13, teamDefense: 19, rebounding: 8, frame: 7 } },
+  { id: 'press', label: 'Press', weights: { onBallDefense: 19, teamDefense: 16, rebounding: 5, frame: 7 } },
+  { id: 'junk-special', label: 'Junk / Special', weights: { onBallDefense: 14, teamDefense: 18, rebounding: 8, frame: 7 } },
 ];
 
 const TEMPO_OPTIONS = ['Slow', 'Medium', 'Fast'];
-const PRIMARY_ENGINE_POSITIONS = ['PG', 'CG', 'Wing', 'Forward', 'Big'];
 
 // Backend storage format (7 clusters)
 interface EmphasisProfile {
@@ -69,25 +74,24 @@ interface EmphasisProfile {
   onBallDefense: number;
   teamDefense: number;
   rebounding: number;
-  physical: number;
+  frame: number;
 }
 
-// UI display format (8 sliders)
+// UI display format (same as backend - 7 clusters)
 interface UIEmphasisProfile {
   shooting: number;
   finishing: number;
   playmaking: number;
   onBallDefense: number;
   teamDefense: number;
-  offensiveRebounding: number;
-  defensiveRebounding: number;
-  physical: number;
+  rebounding: number;
+  frame: number;
 }
 
-// Section totals (locked at 58/42)
+// Section totals (locked at 53/47)
 interface SectionTotals {
-  offense: number;  // Always 58
-  defense: number;  // Always 42
+  offense: number;  // Always 53
+  defense: number;  // Always 47
 }
 
 // =============================================================================
@@ -101,20 +105,7 @@ function applyOffensePreset(
 ): { sectionTotals: SectionTotals; uiEmphasis: UIEmphasisProfile; emphasis: EmphasisProfile } {
   const system = OFFENSIVE_SYSTEMS.find((s) => s.id === systemId) ?? OFFENSIVE_SYSTEMS[0];
   const { weights } = system;
-  const rawSum = weights.shooting + weights.finishing + weights.playmaking;
 
-  // Normalize weights to sum to exactly OFFENSE_TOTAL (58)
-  const scale = OFFENSE_TOTAL / rawSum;
-  const shooting = Math.round(weights.shooting * scale * 10) / 10;
-  const finishing = Math.round(weights.finishing * scale * 10) / 10;
-  let playmaking = Math.round(weights.playmaking * scale * 10) / 10;
-
-  // Fix rounding errors - ensure sum is exactly 58
-  const offSum = shooting + finishing + playmaking;
-  const diff = Math.round((OFFENSE_TOTAL - offSum) * 10) / 10;
-  playmaking = Math.round((playmaking + diff) * 10) / 10;
-
-  // Section totals are always fixed at 58/42
   const newSectionTotals: SectionTotals = {
     offense: OFFENSE_TOTAL,
     defense: DEFENSE_TOTAL,
@@ -122,20 +113,19 @@ function applyOffensePreset(
 
   // Offense preset does NOT touch defense clusters - keep them unchanged
   const newUIEmphasis: UIEmphasisProfile = {
-    shooting,
-    finishing,
-    playmaking,
+    shooting: weights.shooting,
+    finishing: weights.finishing,
+    playmaking: weights.playmaking,
     onBallDefense: currentUIEmphasis.onBallDefense,
     teamDefense: currentUIEmphasis.teamDefense,
-    offensiveRebounding: currentUIEmphasis.offensiveRebounding,
-    defensiveRebounding: currentUIEmphasis.defensiveRebounding,
-    physical: currentUIEmphasis.physical,
+    rebounding: currentUIEmphasis.rebounding,
+    frame: currentUIEmphasis.frame,
   };
 
   return {
     sectionTotals: newSectionTotals,
     uiEmphasis: newUIEmphasis,
-    emphasis: uiToBackend(newUIEmphasis),
+    emphasis: newUIEmphasis,
   };
 }
 
@@ -146,50 +136,27 @@ function applyDefensePreset(
 ): { sectionTotals: SectionTotals; uiEmphasis: UIEmphasisProfile; emphasis: EmphasisProfile } {
   const system = DEFENSIVE_SYSTEMS.find((s) => s.id === systemId) ?? DEFENSIVE_SYSTEMS[0];
   const { weights } = system;
-  const rawSum = weights.onBallDefense + weights.teamDefense + weights.rebounding + weights.physical;
 
-  // Normalize weights to sum to exactly DEFENSE_TOTAL (42)
-  const scale = DEFENSE_TOTAL / rawSum;
-  const onBallDefense = Math.round(weights.onBallDefense * scale * 10) / 10;
-  const teamDefense = Math.round(weights.teamDefense * scale * 10) / 10;
-  const rebounding = Math.round(weights.rebounding * scale * 10) / 10;
-  let physical = Math.round(weights.physical * scale * 10) / 10;
-
-  // Fix rounding errors - ensure sum is exactly 42
-  const defSum = onBallDefense + teamDefense + rebounding + physical;
-  const diff = Math.round((DEFENSE_TOTAL - defSum) * 10) / 10;
-  physical = Math.round((physical + diff) * 10) / 10;
-
-  // Section totals are always fixed at 58/42
   const newSectionTotals: SectionTotals = {
     offense: OFFENSE_TOTAL,
     defense: DEFENSE_TOTAL,
   };
-
-  // Split rebounding into offensive/defensive (keep current ratio or 50/50)
-  const currentRebTotal = currentUIEmphasis.offensiveRebounding + currentUIEmphasis.defensiveRebounding;
-  const rebSplit = currentRebTotal > 0
-    ? currentUIEmphasis.offensiveRebounding / currentRebTotal
-    : 0.5;
-  const offReb = Math.round(rebounding * rebSplit * 10) / 10;
-  const defReb = Math.round((rebounding - offReb) * 10) / 10;
 
   // Defense preset does NOT touch offense clusters - keep them unchanged
   const newUIEmphasis: UIEmphasisProfile = {
     shooting: currentUIEmphasis.shooting,
     finishing: currentUIEmphasis.finishing,
     playmaking: currentUIEmphasis.playmaking,
-    onBallDefense,
-    teamDefense,
-    offensiveRebounding: offReb,
-    defensiveRebounding: defReb,
-    physical,
+    onBallDefense: weights.onBallDefense,
+    teamDefense: weights.teamDefense,
+    rebounding: weights.rebounding,
+    frame: weights.frame,
   };
 
   return {
     sectionTotals: newSectionTotals,
     uiEmphasis: newUIEmphasis,
-    emphasis: uiToBackend(newUIEmphasis),
+    emphasis: newUIEmphasis,
   };
 }
 
@@ -198,71 +165,36 @@ function getDefaultSectionTotals(): SectionTotals {
 }
 
 function getDefaultEmphasis(): EmphasisProfile {
-  // Offense: 58 split evenly among 3 clusters (19.3 each)
-  // Defense: 42 split among 4 clusters (10.5 each)
+  // Default: Motion / Read & React (offense) + Containment Man (defense) = 100
+  // Offense (53): 17 + 16 + 20 = 53
+  // Defense (47): 18 + 15 + 8 + 6 = 47
   return {
-    shooting: 19.3,
-    finishing: 19.3,
-    playmaking: 19.4, // +0.1 to sum to 58
-    onBallDefense: 10.5,
-    teamDefense: 10.5,
-    rebounding: 10.5,
-    physical: 10.5,
+    shooting: 17,
+    finishing: 16,
+    playmaking: 20,
+    onBallDefense: 18,
+    teamDefense: 15,
+    rebounding: 8,
+    frame: 6,
   };
 }
 
 function getDefaultUIEmphasis(): UIEmphasisProfile {
-  // Offense: 58 split evenly among 3 clusters
-  // Defense: 42 split among 4 clusters (rebounding split 50/50)
-  return {
-    shooting: 19.3,
-    finishing: 19.3,
-    playmaking: 19.4,
-    onBallDefense: 10.5,
-    teamDefense: 10.5,
-    offensiveRebounding: 5.3,
-    defensiveRebounding: 5.2,
-    physical: 10.5,
-  };
+  return getDefaultEmphasis();
 }
 
-function backendToUI(emphasis: EmphasisProfile, reboundingSplit: number = 0.5): UIEmphasisProfile {
-  const offReb = Math.round(emphasis.rebounding * reboundingSplit * 10) / 10;
-  const defReb = Math.round((emphasis.rebounding - offReb) * 10) / 10;
-  return {
-    shooting: emphasis.shooting,
-    finishing: emphasis.finishing,
-    playmaking: emphasis.playmaking,
-    onBallDefense: emphasis.onBallDefense,
-    teamDefense: emphasis.teamDefense,
-    offensiveRebounding: offReb,
-    defensiveRebounding: defReb,
-    physical: emphasis.physical,
-  };
+function backendToUI(emphasis: EmphasisProfile): UIEmphasisProfile {
+  return { ...emphasis };
 }
 
 function uiToBackend(uiEmphasis: UIEmphasisProfile): EmphasisProfile {
-  return {
-    shooting: uiEmphasis.shooting,
-    finishing: uiEmphasis.finishing,
-    playmaking: uiEmphasis.playmaking,
-    onBallDefense: uiEmphasis.onBallDefense,
-    teamDefense: uiEmphasis.teamDefense,
-    rebounding: Math.round((uiEmphasis.offensiveRebounding + uiEmphasis.defensiveRebounding) * 10) / 10,
-    physical: uiEmphasis.physical,
-  };
-}
-
-function calculateReboundingSplit(offReb: number, defReb: number): number {
-  const total = offReb + defReb;
-  if (total === 0) return 0.5;
-  return offReb / total;
+  return { ...uiEmphasis };
 }
 
 function getGroupTotals(uiEmphasis: UIEmphasisProfile): SectionTotals {
   return {
     offense: Math.round((uiEmphasis.shooting + uiEmphasis.finishing + uiEmphasis.playmaking) * 10) / 10,
-    defense: Math.round((uiEmphasis.onBallDefense + uiEmphasis.teamDefense + uiEmphasis.offensiveRebounding + uiEmphasis.defensiveRebounding + uiEmphasis.physical) * 10) / 10,
+    defense: Math.round((uiEmphasis.onBallDefense + uiEmphasis.teamDefense + uiEmphasis.rebounding + uiEmphasis.frame) * 10) / 10,
   };
 }
 
@@ -333,14 +265,14 @@ function ActionCard({ title, subtitle, icon, color, colors, onPress }: ActionCar
 // =============================================================================
 
 // Team Hub Tabs - ESPN-style header row (appears ONLY on Sports Home)
+// Tabs with inline: true render content within Sports Home (keeps tab bar visible)
+// Tabs with route navigate to separate screens (hides tab bar)
 const TEAM_HUB_TABS = [
-  { id: 'home', label: 'Home', route: null }, // Stay on home
-  { id: 'roster', label: 'Roster', route: '/coach/roster' },
-  { id: 'stats', label: 'Stats', route: '/coach/stats' },
-  { id: 'schedule', label: 'Schedule', route: '/coach/schedule' },
-  { id: 'depth-chart', label: 'Depth Chart', route: '/coach/depth-chart' },
+  { id: 'home', label: 'Home', inline: true },
+  { id: 'roster', label: 'Roster', inline: true },
+  { id: 'games', label: 'Games', route: '/coach/games' },
   { id: 'injuries', label: 'Injuries', route: '/coach/injuries' },
-  { id: 'program-context', label: 'Program Context', route: '/coach/program-context' },
+  { id: 'program-context', label: 'Team System', route: '/coach/program-context' },
   { id: 'recruiting', label: 'Recruiting', route: '/coach/recruiting' },
   { id: 'film', label: 'Film', route: '/coach/film' },
 ];
@@ -351,13 +283,28 @@ const DEMO_TEAM_STATE = {
   offensiveSystem: 'Spread PnR',
   defensiveSystem: 'Pressure Man',
   tempo: 'Fast',
-  record: '6–6',
+  record: '7–5',
   confStanding: '4th',
 };
+
+const SEASON_YEARS = [
+  { id: '2025-26', label: '2025-26' },
+  { id: '2024-25', label: '2024-25' },
+  { id: '2023-24', label: '2023-24' },
+];
 
 // Program Context preview data (defaults, will be overridden by persisted state)
 const DEFAULT_SCHOLARSHIPS = { used: 7.5, total: 11.0 };
 const DEFAULT_NIL_POOL = { total: 150000, committed: 50000 };
+
+// Roster Needs data
+const ROSTER_NEEDS = {
+  openSpots: { current: 9, max: 13 },
+  ballHandlers: { have: 4, target: 5 },
+  wings: { have: 2, target: 4 },
+  bigs: { have: 2, target: 4 },
+  priorityNeed: 'Wing',
+};
 
 // Program Context storage key (shared with program-context.tsx)
 const PROGRAM_CONTEXT_KEY = 'kx:programContext';
@@ -365,10 +312,12 @@ const PROGRAM_CONTEXT_KEY = 'kx:programContext';
 // Team Hub Tabs Component (ESPN-style header row)
 function TeamHubTabs({
   colors,
+  activeTab,
   onTabPress,
 }: {
   colors: typeof Colors.light;
-  onTabPress: (route: string | null) => void;
+  activeTab: string;
+  onTabPress: (tabId: string, route?: string) => void;
 }) {
   return (
     <View style={[styles.hubTabsContainer, { borderBottomColor: colors.divider }]}>
@@ -377,9 +326,8 @@ function TeamHubTabs({
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.hubTabsContent}
       >
-        {TEAM_HUB_TABS.map((tab, index) => {
-          // Home tab is always "active" on this screen
-          const isActive = tab.id === 'home';
+        {TEAM_HUB_TABS.map((tab) => {
+          const isActive = tab.id === activeTab;
           return (
             <Pressable
               key={tab.id}
@@ -389,7 +337,7 @@ function TeamHubTabs({
               ]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onTabPress(tab.route);
+                onTabPress(tab.id, tab.route);
               }}
             >
               <ThemedText
@@ -418,11 +366,18 @@ function SportsHome() {
   const colors = Colors[colorScheme];
   const router = useRouter();
 
+  // Active hub tab state
+  const [activeHubTab, setActiveHubTab] = useState('home');
+
   // Scholarships state (used/total with decimals)
   const [scholarships, setScholarships] = useState(DEFAULT_SCHOLARSHIPS);
   const [scholarshipsExpanded, setScholarshipsExpanded] = useState(false);
   const [editScholarshipsUsed, setEditScholarshipsUsed] = useState('');
   const [editScholarshipsTotal, setEditScholarshipsTotal] = useState('');
+
+  // Season year picker
+  const [selectedYear, setSelectedYear] = useState('2025-26');
+  const [yearPickerOpen, setYearPickerOpen] = useState(false);
 
   // NIL Pool state (total/committed)
   const [nilPool, setNilPool] = useState(DEFAULT_NIL_POOL);
@@ -430,20 +385,20 @@ function SportsHome() {
   const [editNilTotal, setEditNilTotal] = useState('');
   const [editNilCommitted, setEditNilCommitted] = useState('');
 
+  // Roster Needs expand state
+  const [rosterNeedsExpanded, setRosterNeedsExpanded] = useState(false);
+
   // ===== SYSTEMS STATE =====
   const [offensiveSystem, setOffensiveSystem] = useState('spread-pnr');
   const [defensiveSystem, setDefensiveSystem] = useState('pressure-man');
   const [tempo, setTempo] = useState('Fast');
-  const [primaryEnginePosition, setPrimaryEnginePosition] = useState('PG');
 
-  // UI emphasis state (8 sliders)
+  // UI emphasis state (7 sliders - same as backend)
   const [uiEmphasis, setUIEmphasis] = useState<UIEmphasisProfile>(getDefaultUIEmphasis);
   // Section totals (locked by preset)
   const [sectionTotals, setSectionTotals] = useState<SectionTotals>(getDefaultSectionTotals);
   // Backend emphasis (for persistence)
   const [emphasis, setEmphasis] = useState<EmphasisProfile>(getDefaultEmphasis);
-  // Rebounding split ratio
-  const [reboundingSplit, setReboundingSplit] = useState(0.5);
 
   // Inline accordion pickers for Offensive/Defensive systems
   const [expandedSystemPicker, setExpandedSystemPicker] = useState<'offensive' | 'defensive' | null>(null);
@@ -451,7 +406,6 @@ function SportsHome() {
   const [previewOffenseSystem, setPreviewOffenseSystem] = useState<string | null>(null);
   const [previewDefenseSystem, setPreviewDefenseSystem] = useState<string | null>(null);
   const [showTempoPicker, setShowTempoPicker] = useState(false);
-  const [showEnginePicker, setShowEnginePicker] = useState(false);
   // Toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -469,13 +423,11 @@ function SportsHome() {
             setOffensiveSystem(parsed.offensiveSystem ?? 'spread-pnr');
             setDefensiveSystem(parsed.defensiveSystem ?? 'pressure-man');
             setTempo(parsed.tempo ?? 'Fast');
-            setPrimaryEnginePosition(parsed.primaryEnginePosition ?? 'PG');
 
             // Load emphasis
             if (parsed.emphasis) {
               setEmphasis(parsed.emphasis);
-              setUIEmphasis(backendToUI(parsed.emphasis, parsed.reboundingSplit ?? 0.5));
-              setReboundingSplit(parsed.reboundingSplit ?? 0.5);
+              setUIEmphasis(backendToUI(parsed.emphasis));
             }
 
             // Load section totals
@@ -483,7 +435,7 @@ function SportsHome() {
               setSectionTotals(parsed.sectionTotals);
             } else if (parsed.emphasis) {
               // Derive from emphasis for migration
-              const uiEmp = backendToUI(parsed.emphasis, parsed.reboundingSplit ?? 0.5);
+              const uiEmp = backendToUI(parsed.emphasis);
               setSectionTotals(getGroupTotals(uiEmp));
             }
           }
@@ -593,9 +545,7 @@ function SportsHome() {
     offensiveSystem: string;
     defensiveSystem: string;
     tempo: string;
-    primaryEnginePosition: string;
     emphasis: EmphasisProfile;
-    reboundingSplit: number;
     sectionTotals: SectionTotals;
   }>) => {
     try {
@@ -658,13 +608,9 @@ function SportsHome() {
     setUIEmphasis(result.uiEmphasis);
     setSectionTotals(result.sectionTotals);
 
-    const newReboundingSplit = calculateReboundingSplit(result.uiEmphasis.offensiveRebounding, result.uiEmphasis.defensiveRebounding);
-    setReboundingSplit(newReboundingSplit);
-
     await saveSystemsState({
       offensiveSystem: previewOffenseSystem,
       emphasis: result.emphasis,
-      reboundingSplit: newReboundingSplit,
       sectionTotals: result.sectionTotals,
     });
 
@@ -698,13 +644,9 @@ function SportsHome() {
     setUIEmphasis(result.uiEmphasis);
     setSectionTotals(result.sectionTotals);
 
-    const newReboundingSplit = calculateReboundingSplit(result.uiEmphasis.offensiveRebounding, result.uiEmphasis.defensiveRebounding);
-    setReboundingSplit(newReboundingSplit);
-
     await saveSystemsState({
       defensiveSystem: previewDefenseSystem,
       emphasis: result.emphasis,
-      reboundingSplit: newReboundingSplit,
       sectionTotals: result.sectionTotals,
     });
 
@@ -731,35 +673,36 @@ function SportsHome() {
 
   const offensiveSystemLabel = OFFENSIVE_SYSTEMS.find((s) => s.id === offensiveSystem)?.label || 'Select';
   const defensiveSystemLabel = DEFENSIVE_SYSTEMS.find((s) => s.id === defensiveSystem)?.label || 'Select';
-  const isHeliocentric = offensiveSystem === 'heliocentric';
 
-  const handleTabPress = (route: string | null) => {
+  const scrollRef = useRef<ScrollView>(null);
+
+  const handleTabPress = (tabId: string, route?: string) => {
+    // If tab has a route, navigate to it (will hide tab bar)
     if (route) {
       router.push(route as any);
+    } else {
+      // Inline tab - switch and reset scroll to top
+      setActiveHubTab(tabId);
+      scrollRef.current?.scrollTo({ y: 0, animated: false });
     }
-    // If route is null (Home tab), stay on current screen
   };
 
-  return (
-    <View style={styles.sportsHomeContainer}>
-      {/* ===== STICKY TABS ===== */}
-      <TeamHubTabs colors={colors} onTabPress={handleTabPress} />
+  // Render content based on active hub tab
+  const renderHubContent = () => {
+    switch (activeHubTab) {
+      case 'roster':
+        return <RosterContent />;
+      case 'home':
+      default:
+        return renderHomeContent();
+    }
+  };
 
-      {/* ===== SCROLLABLE CONTENT ===== */}
-      <ScrollView
-        style={styles.sportsScrollView}
-        contentContainerStyle={styles.sportsScrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* ===== 1) TEAM IDENTITY BLOCK (centered) ===== */}
+  // Home tab content (original Sports Home content)
+  const renderHomeContent = () => (
+    <>
+      {/* ===== 1) TEAM IDENTITY BLOCK (centered) ===== */}
       <View style={styles.teamStateSection}>
-        {/* Team Logo Placeholder */}
-        <View style={[styles.teamLogo, { backgroundColor: colors.backgroundSecondary }]}>
-          <ThemedText style={[styles.teamLogoText, { color: colors.textSecondary }]}>
-            LU
-          </ThemedText>
-        </View>
-
         {/* Big Rating - 84 large + KR badge */}
         <View style={styles.ratingRow}>
           <ThemedText style={styles.ratingNumber}>
@@ -772,24 +715,80 @@ function SportsHome() {
 
         {/* Meta Line */}
         <ThemedText style={[styles.metaLine, { color: colors.textSecondary }]}>
-          Independent · SWS · 25–26
+          Lincoln University · Independent · SWS
         </ThemedText>
 
         {/* Record Line */}
         <ThemedText style={[styles.recordLine, { color: colors.textTertiary }]}>
-          Overall 9–8 · Conf 7–0 · 1st
+          Overall 7–5 · Independent · W7
         </ThemedText>
+
+        {/* Year Picker */}
+        <View style={styles.yearPickerWrapper}>
+          <Pressable
+            style={[styles.yearPickerButton, { backgroundColor: colors.backgroundSecondary }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setYearPickerOpen(!yearPickerOpen);
+            }}
+          >
+            <ThemedText style={[styles.yearPickerText, { color: colors.textSecondary }]}>
+              {selectedYear}
+            </ThemedText>
+            <IconSymbol
+              name={yearPickerOpen ? 'chevron.up' : 'chevron.down'}
+              size={10}
+              color={colors.textTertiary}
+            />
+          </Pressable>
+          {yearPickerOpen && (
+            <View style={[styles.yearPickerDropdown, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              {SEASON_YEARS.map((year) => (
+                <Pressable
+                  key={year.id}
+                  style={[
+                    styles.yearPickerOption,
+                    selectedYear === year.id && { backgroundColor: colors.backgroundSecondary },
+                  ]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setSelectedYear(year.id);
+                    setYearPickerOpen(false);
+                  }}
+                >
+                  <ThemedText style={[
+                    styles.yearPickerOptionText,
+                    { color: selectedYear === year.id ? colors.text : colors.textSecondary },
+                  ]}>
+                    {year.label}
+                  </ThemedText>
+                </Pressable>
+              ))}
+            </View>
+          )}
+        </View>
       </View>
 
       {/* ===== 2) Current Status (no title) ===== */}
       <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
+        {/* Today */}
+        <View style={styles.statusRow}>
+          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
+            Today
+          </ThemedText>
+          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
+            Off Day
+          </ThemedText>
+        </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+
         {/* Next Game */}
         <View style={styles.statusRow}>
           <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
             Next Game
           </ThemedText>
           <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-            Missouri Western · Sat, Feb 8 2:00 PM · Home
+            vs Cal State East Bay
           </ThemedText>
         </View>
         <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
@@ -800,18 +799,7 @@ function SportsHome() {
             Last Game
           </ThemedText>
           <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-            W 78–65 vs Northwest Missouri
-          </ThemedText>
-        </View>
-        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-
-        {/* Today */}
-        <View style={styles.statusRow}>
-          <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-            Today
-          </ThemedText>
-          <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-            Practice 3:30 PM • Film 6:00 PM
+            W 112–88 vs Bethesda
           </ThemedText>
         </View>
         <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
@@ -822,230 +810,79 @@ function SportsHome() {
             Availability
           </ThemedText>
           <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-            12 Available · 2 Out · 1 Questionable
+            5 Healthy · 2 Probable · 2 Out
           </ThemedText>
         </View>
       </View>
 
-      {/* ===== 3) TEAM IDENTITY ===== */}
+      {/* ===== 3) TEAM SYSTEMS ===== */}
       <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-        TEAM IDENTITY
+        TEAM SYSTEMS
+      </ThemedText>
+      <ProgramContextSection />
+
+      {/* ===== 4) RECRUITING RESOURCES ===== */}
+      <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+        RECRUITING RESOURCES
       </ThemedText>
       <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
-        {/* Offensive System - Inline Accordion */}
+        {/* Scholarships */}
         <Pressable
           style={styles.contextRowTappable}
-          onPress={() => toggleSystemPicker('offensive')}
-        >
-          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
-            Offensive System
-          </ThemedText>
-          <ThemedText style={[styles.contextValueText, { color: colors.text }]}>
-            {offensiveSystemLabel}
-          </ThemedText>
-        </Pressable>
-
-        {/* Inline Offensive System Options OR Preview */}
-        {expandedSystemPicker === 'offensive' && (
-          <View style={[styles.inlineOptionsList, { borderTopColor: colors.divider }]}>
-            {previewOffenseSystem === null ? (
-              OFFENSIVE_SYSTEMS.map((system) => (
-                <Pressable
-                  key={system.id}
-                  style={[
-                    styles.inlineOption,
-                    offensiveSystem === system.id && { backgroundColor: colors.background },
-                  ]}
-                  onPress={() => handleOffensiveSystemTap(system.id)}
-                >
-                  <ThemedText
-                    style={[
-                      styles.inlineOptionText,
-                      { color: offensiveSystem === system.id ? colors.tint : colors.text },
-                    ]}
-                  >
-                    {system.label}
-                  </ThemedText>
-                  {offensiveSystem === system.id && (
-                    <IconSymbol name="checkmark" size={16} color={colors.tint} />
-                  )}
-                </Pressable>
-              ))
-            ) : (
-              <PresetPreview
-                type="offensive"
-                systemId={previewOffenseSystem}
-                systemLabel={OFFENSIVE_SYSTEMS.find((s) => s.id === previewOffenseSystem)?.label || ''}
-                currentEmphasis={emphasis}
-                newEmphasis={calculateOffensePreview(previewOffenseSystem)}
-                onCancel={handleOffensiveSystemCancel}
-                onApply={handleOffensiveSystemApply}
-                onSelectDifferent={handleOffensiveSystemTap}
-                colors={colors}
-              />
-            )}
-          </View>
-        )}
-
-        {isHeliocentric && (
-          <>
-            <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-            <Pressable
-              style={styles.contextRowTappable}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setShowEnginePicker(true);
-              }}
-            >
-              <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
-                Primary Engine Position
-              </ThemedText>
-              <ThemedText style={[styles.contextValueText, { color: colors.text }]}>
-                {primaryEnginePosition}
-              </ThemedText>
-            </Pressable>
-          </>
-        )}
-
-        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-
-        {/* Defensive System - Inline Accordion */}
-        <Pressable
-          style={styles.contextRowTappable}
-          onPress={() => toggleSystemPicker('defensive')}
-        >
-          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
-            Defensive System
-          </ThemedText>
-          <ThemedText style={[styles.contextValueText, { color: colors.text }]}>
-            {defensiveSystemLabel}
-          </ThemedText>
-        </Pressable>
-
-        {/* Inline Defensive System Options OR Preview */}
-        {expandedSystemPicker === 'defensive' && (
-          <View style={[styles.inlineOptionsList, { borderTopColor: colors.divider }]}>
-            {previewDefenseSystem === null ? (
-              DEFENSIVE_SYSTEMS.map((system) => (
-                <Pressable
-                  key={system.id}
-                  style={[
-                    styles.inlineOption,
-                    defensiveSystem === system.id && { backgroundColor: colors.background },
-                  ]}
-                  onPress={() => handleDefensiveSystemTap(system.id)}
-                >
-                  <ThemedText
-                    style={[
-                      styles.inlineOptionText,
-                      { color: defensiveSystem === system.id ? colors.tint : colors.text },
-                    ]}
-                  >
-                    {system.label}
-                  </ThemedText>
-                  {defensiveSystem === system.id && (
-                    <IconSymbol name="checkmark" size={16} color={colors.tint} />
-                  )}
-                </Pressable>
-              ))
-            ) : (
-              <PresetPreview
-                type="defensive"
-                systemId={previewDefenseSystem}
-                systemLabel={DEFENSIVE_SYSTEMS.find((s) => s.id === previewDefenseSystem)?.label || ''}
-                currentEmphasis={emphasis}
-                newEmphasis={calculateDefensePreview(previewDefenseSystem)}
-                onCancel={handleDefensiveSystemCancel}
-                onApply={handleDefensiveSystemApply}
-                onSelectDifferent={handleDefensiveSystemTap}
-                colors={colors}
-              />
-            )}
-          </View>
-        )}
-
-        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-
-        {/* Tempo - Inline Accordion */}
-        <Pressable
-          style={styles.contextRowTappable}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setShowTempoPicker((prev) => !prev);
-          }}
-        >
-          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
-            Tempo
-          </ThemedText>
-          <ThemedText style={[styles.contextValueText, { color: colors.text }]}>
-            {tempo}
-          </ThemedText>
-        </Pressable>
-
-        {/* Inline Tempo Options */}
-        {showTempoPicker && (
-          <View style={[styles.inlineOptionsList, { borderTopColor: colors.divider }]}>
-            {TEMPO_OPTIONS.map((t) => (
-              <Pressable
-                key={t}
-                style={[
-                  styles.inlineOption,
-                  tempo === t && { backgroundColor: colors.background },
-                ]}
-                onPress={() => handleTempoChange(t)}
-              >
-                <ThemedText
-                  style={[
-                    styles.inlineOptionText,
-                    { color: tempo === t ? colors.tint : colors.text },
-                  ]}
-                >
-                  {t}
-                </ThemedText>
-                {tempo === t && (
-                  <IconSymbol name="checkmark" size={16} color={colors.tint} />
-                )}
-              </Pressable>
-            ))}
-          </View>
-        )}
-      </View>
-
-      {/* ===== 4) RECRUITMENT ===== */}
-      <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-        RECRUITMENT
-      </ThemedText>
-      <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
-        {/* Scholarships Row - Tappable to expand */}
-        <Pressable
-          style={({ pressed }) => [
-            styles.contextRowTappable,
-            pressed && !scholarshipsExpanded && { backgroundColor: colors.backgroundTertiary },
-          ]}
           onPress={toggleScholarshipsEdit}
         >
           <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
             Scholarships
           </ThemedText>
-          <ThemedText style={[styles.contextValueText, { color: colors.text }]}>
-            {formatDecimal(scholarships.used)} / {formatDecimal(scholarships.total)}
-          </ThemedText>
+          <View style={styles.contextValueRow}>
+            <ThemedText style={[styles.contextValueText, { color: colors.text }]}>
+              {formatDecimal(scholarships.used)} / {formatDecimal(scholarships.total)}
+            </ThemedText>
+            <IconSymbol
+              name={scholarshipsExpanded ? 'chevron.up' : 'chevron.down'}
+              size={12}
+              color={colors.textTertiary}
+            />
+          </View>
         </Pressable>
-
-        {/* Scholarships Inline Edit */}
         {scholarshipsExpanded && (
           <View style={[styles.inlineEditSection, { borderTopColor: colors.divider }]}>
+            {/* Scholarship bubbles */}
+            <View style={styles.scholarshipBubbles}>
+              {Array.from({ length: Math.ceil(scholarships.total) }).map((_, i) => {
+                const isFilled = i < Math.floor(scholarships.used);
+                const isPartial = !isFilled && i === Math.floor(scholarships.used) && scholarships.used % 1 > 0;
+                return (
+                  <View
+                    key={i}
+                    style={[
+                      styles.scholarshipBubble,
+                      {
+                        backgroundColor: isFilled
+                          ? '#ffffff'
+                          : isPartial
+                          ? '#ffffff60'
+                          : colors.backgroundTertiary ?? colors.divider,
+                      },
+                    ]}
+                  />
+                );
+              })}
+            </View>
+            <ThemedText style={[styles.scholarshipSummary, { color: colors.textSecondary }]}>
+              {formatDecimal(scholarships.used)} used · {formatDecimal(scholarships.total - scholarships.used)} remaining
+            </ThemedText>
+            {/* Editable fields */}
             <View style={styles.inlineEditField}>
               <ThemedText style={[styles.inlineEditLabel, { color: colors.textSecondary }]}>
                 Used
               </ThemedText>
               <TextInput
-                style={[styles.inlineEditInput, { backgroundColor: colors.background, color: colors.text, borderColor: colors.border }]}
+                style={[styles.inlineEditInput, { color: colors.text, borderColor: colors.border, backgroundColor: colors.background }]}
                 value={editScholarshipsUsed}
                 onChangeText={setEditScholarshipsUsed}
                 keyboardType="decimal-pad"
-                placeholder="7.5"
-                placeholderTextColor={colors.textTertiary}
+                returnKeyType="done"
               />
             </View>
             <View style={styles.inlineEditField}>
@@ -1053,129 +890,173 @@ function SportsHome() {
                 Total
               </ThemedText>
               <TextInput
-                style={[styles.inlineEditInput, { backgroundColor: colors.background, color: colors.text, borderColor: colors.border }]}
+                style={[styles.inlineEditInput, { color: colors.text, borderColor: colors.border, backgroundColor: colors.background }]}
                 value={editScholarshipsTotal}
                 onChangeText={setEditScholarshipsTotal}
                 keyboardType="decimal-pad"
-                placeholder="11.0"
-                placeholderTextColor={colors.textTertiary}
+                returnKeyType="done"
               />
             </View>
-            <View style={styles.inlineEditField}>
-              <ThemedText style={[styles.inlineEditLabel, { color: colors.textSecondary }]}>
-                Remaining
-              </ThemedText>
-              <ThemedText style={[styles.inlineEditReadonly, { color: colors.text }]}>
-                {formatDecimal(Math.max(0, (parseFloat(editScholarshipsTotal) || 0) - (parseFloat(editScholarshipsUsed) || 0)))}
-              </ThemedText>
-            </View>
             <Pressable
-              style={[styles.inlineSaveButton, { backgroundColor: colors.tint }]}
+              style={[styles.inlineSaveButton, { backgroundColor: '#ffffff' }]}
               onPress={saveScholarships}
             >
               <ThemedText style={styles.inlineSaveText}>Save</ThemedText>
             </Pressable>
           </View>
         )}
-
         <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
 
-        {/* NIL Pool Row - Tappable to expand */}
+        {/* NIL */}
         <Pressable
-          style={({ pressed }) => [
-            styles.contextRowTappable,
-            pressed && !nilPoolExpanded && { backgroundColor: colors.backgroundTertiary },
-          ]}
+          style={styles.contextRowTappable}
           onPress={toggleNilPoolEdit}
         >
           <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
-            NIL Pool
+            NIL
           </ThemedText>
-          <ThemedText style={[styles.contextValueText, { color: colors.text }]}>
-            {formatCurrencyValue(nilPool.total - nilPool.committed)} remaining
-          </ThemedText>
+          <View style={styles.contextValueRow}>
+            <ThemedText style={[styles.contextValueText, { color: colors.text }]}>
+              {formatCurrencyValue(nilPool.total)}
+            </ThemedText>
+            <IconSymbol
+              name={nilPoolExpanded ? 'chevron.up' : 'chevron.down'}
+              size={12}
+              color={colors.textTertiary}
+            />
+          </View>
         </Pressable>
-
-        {/* NIL Pool Inline Edit */}
         {nilPoolExpanded && (
           <View style={[styles.inlineEditSection, { borderTopColor: colors.divider }]}>
+            {/* NIL Summary */}
+            <View style={styles.nilSummaryRow}>
+              <View style={styles.nilSummaryItem}>
+                <ThemedText style={[styles.nilSummaryLabel, { color: colors.textSecondary }]}>Pool</ThemedText>
+                <ThemedText style={[styles.nilSummaryValue, { color: colors.text }]}>
+                  {formatCurrencyValue(nilPool.total)}
+                </ThemedText>
+              </View>
+              <View style={styles.nilSummaryItem}>
+                <ThemedText style={[styles.nilSummaryLabel, { color: colors.textSecondary }]}>Committed</ThemedText>
+                <ThemedText style={[styles.nilSummaryValue, { color: colors.text }]}>
+                  {formatCurrencyValue(nilPool.committed)}
+                </ThemedText>
+              </View>
+              <View style={styles.nilSummaryItem}>
+                <ThemedText style={[styles.nilSummaryLabel, { color: colors.textSecondary }]}>Remaining</ThemedText>
+                <ThemedText style={[styles.nilSummaryValue, { color: '#f5f5f5' }]}>
+                  {formatCurrencyValue(nilPool.total - nilPool.committed)}
+                </ThemedText>
+              </View>
+            </View>
+            {/* Editable fields */}
             <View style={styles.inlineEditField}>
               <ThemedText style={[styles.inlineEditLabel, { color: colors.textSecondary }]}>
-                Total ($)
+                Total Pool
               </ThemedText>
               <TextInput
-                style={[styles.inlineEditInput, { backgroundColor: colors.background, color: colors.text, borderColor: colors.border }]}
+                style={[styles.inlineEditInput, { color: colors.text, borderColor: colors.border, backgroundColor: colors.background }]}
                 value={editNilTotal}
                 onChangeText={setEditNilTotal}
                 keyboardType="number-pad"
-                placeholder="150000"
-                placeholderTextColor={colors.textTertiary}
+                returnKeyType="done"
               />
             </View>
             <View style={styles.inlineEditField}>
               <ThemedText style={[styles.inlineEditLabel, { color: colors.textSecondary }]}>
-                Committed ($)
+                Committed
               </ThemedText>
               <TextInput
-                style={[styles.inlineEditInput, { backgroundColor: colors.background, color: colors.text, borderColor: colors.border }]}
+                style={[styles.inlineEditInput, { color: colors.text, borderColor: colors.border, backgroundColor: colors.background }]}
                 value={editNilCommitted}
                 onChangeText={setEditNilCommitted}
                 keyboardType="number-pad"
-                placeholder="50000"
-                placeholderTextColor={colors.textTertiary}
+                returnKeyType="done"
               />
             </View>
-            <View style={styles.inlineEditField}>
-              <ThemedText style={[styles.inlineEditLabel, { color: colors.textSecondary }]}>
-                Remaining ($)
-              </ThemedText>
-              <ThemedText style={[styles.inlineEditReadonly, { color: colors.text }]}>
-                {formatCurrencyValue(Math.max(0, (parseFloat(editNilTotal.replace(/[^0-9.]/g, '')) || 0) - (parseFloat(editNilCommitted.replace(/[^0-9.]/g, '')) || 0)))}
-              </ThemedText>
-            </View>
             <Pressable
-              style={[styles.inlineSaveButton, { backgroundColor: colors.tint }]}
+              style={[styles.inlineSaveButton, { backgroundColor: '#ffffff' }]}
               onPress={saveNilPool}
             >
               <ThemedText style={styles.inlineSaveText}>Save</ThemedText>
             </Pressable>
           </View>
         )}
-      </View>
+        <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
 
-      {/* Modal for Primary Engine Position */}
-      <Modal visible={showEnginePicker} transparent animationType="slide" onRequestClose={() => setShowEnginePicker(false)}>
-        <View style={styles.modalOverlay}>
-          <Pressable style={styles.modalBackdrop} onPress={() => setShowEnginePicker(false)} />
-          <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
-            <View style={[styles.modalHeader, { borderBottomColor: colors.divider }]}>
-              <ThemedText style={[styles.modalTitle, { color: colors.text }]}>
-                Primary Engine Position
-              </ThemedText>
-              <Pressable onPress={() => setShowEnginePicker(false)}>
-                <IconSymbol name="xmark" size={20} color={colors.textSecondary} />
-              </Pressable>
-            </View>
-            <ScrollView style={styles.modalScroll}>
-              {PRIMARY_ENGINE_POSITIONS.map((pos) => (
-                <Pressable
-                  key={pos}
-                  style={[styles.modalOption, primaryEnginePosition === pos && { backgroundColor: colors.backgroundSecondary }]}
-                  onPress={async () => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    setPrimaryEnginePosition(pos);
-                    setShowEnginePicker(false);
-                    await saveSystemsState({ primaryEnginePosition: pos });
-                  }}
-                >
-                  <ThemedText style={[styles.modalOptionText, { color: colors.text }]}>{pos}</ThemedText>
-                  {primaryEnginePosition === pos && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
-                </Pressable>
-              ))}
-            </ScrollView>
+        {/* Roster Needs */}
+        <Pressable
+          style={styles.contextRowTappable}
+          onPress={() => {
+            setRosterNeedsExpanded(!rosterNeedsExpanded);
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          }}
+        >
+          <ThemedText style={[styles.contextLabel, { color: colors.textSecondary }]}>
+            Roster Needs
+          </ThemedText>
+          <View style={styles.contextValueRow}>
+            <ThemedText style={[styles.contextValueText, { color: colors.text }]}>
+              {ROSTER_NEEDS.openSpots.max - ROSTER_NEEDS.openSpots.current} open
+            </ThemedText>
+            <IconSymbol
+              name={rosterNeedsExpanded ? 'chevron.up' : 'chevron.down'}
+              size={12}
+              color={colors.textTertiary}
+            />
           </View>
-        </View>
-      </Modal>
+        </Pressable>
+        {rosterNeedsExpanded && (
+          <View style={[styles.rosterNeedsSection, { borderTopColor: colors.divider }]}>
+            <View style={styles.rosterNeedsRow}>
+              <ThemedText style={[styles.rosterNeedsLabel, { color: colors.textSecondary }]}>
+                Open Spots
+              </ThemedText>
+              <ThemedText style={[styles.rosterNeedsValue, { color: colors.text }]}>
+                {ROSTER_NEEDS.openSpots.current} / {ROSTER_NEEDS.openSpots.max}
+              </ThemedText>
+            </View>
+            <View style={[styles.rosterNeedsDivider, { backgroundColor: colors.divider }]} />
+            <View style={styles.rosterNeedsRow}>
+              <ThemedText style={[styles.rosterNeedsLabel, { color: colors.textSecondary }]}>
+                Ball Handlers
+              </ThemedText>
+              <ThemedText style={[styles.rosterNeedsValue, { color: colors.text }]}>
+                Have {ROSTER_NEEDS.ballHandlers.have} / Target {ROSTER_NEEDS.ballHandlers.target}
+              </ThemedText>
+            </View>
+            <View style={[styles.rosterNeedsDivider, { backgroundColor: colors.divider }]} />
+            <View style={styles.rosterNeedsRow}>
+              <ThemedText style={[styles.rosterNeedsLabel, { color: colors.textSecondary }]}>
+                Wings
+              </ThemedText>
+              <ThemedText style={[styles.rosterNeedsValue, { color: colors.text }]}>
+                Have {ROSTER_NEEDS.wings.have} / Target {ROSTER_NEEDS.wings.target}
+              </ThemedText>
+            </View>
+            <View style={[styles.rosterNeedsDivider, { backgroundColor: colors.divider }]} />
+            <View style={styles.rosterNeedsRow}>
+              <ThemedText style={[styles.rosterNeedsLabel, { color: colors.textSecondary }]}>
+                Bigs
+              </ThemedText>
+              <ThemedText style={[styles.rosterNeedsValue, { color: colors.text }]}>
+                Have {ROSTER_NEEDS.bigs.have} / Target {ROSTER_NEEDS.bigs.target}
+              </ThemedText>
+            </View>
+            <View style={[styles.rosterNeedsDivider, { backgroundColor: colors.divider }]} />
+            <View style={styles.rosterNeedsRow}>
+              <ThemedText style={[styles.rosterNeedsLabel, { color: colors.textSecondary }]}>
+                Priority Need
+              </ThemedText>
+              <View style={[styles.priorityNeedBadge, { backgroundColor: '#ffffff20' }]}>
+                <ThemedText style={[styles.priorityNeedText, { color: '#ffffff' }]}>
+                  {ROSTER_NEEDS.priorityNeed}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+        )}
+      </View>
 
       {/* Toast notification */}
       {toastMessage && (
@@ -1183,6 +1064,22 @@ function SportsHome() {
           <ThemedText style={[styles.toastText, { color: colors.text }]}>{toastMessage}</ThemedText>
         </View>
       )}
+    </>
+  );
+
+  return (
+    <View style={styles.sportsHomeContainer}>
+      {/* ===== STICKY TABS ===== */}
+      <TeamHubTabs colors={colors} activeTab={activeHubTab} onTabPress={handleTabPress} />
+
+      {/* ===== SCROLLABLE CONTENT ===== */}
+      <ScrollView
+        ref={scrollRef}
+        style={styles.sportsScrollView}
+        contentContainerStyle={activeHubTab === 'home' ? styles.sportsScrollContent : styles.rosterScrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {renderHubContent()}
       </ScrollView>
     </View>
   );
@@ -1224,10 +1121,10 @@ function PresetPreview({
           { id: 'playmaking' as const, label: 'Playmaking' },
         ]
       : [
-          { id: 'onBallDefense' as const, label: 'On-Ball Defense' },
-          { id: 'teamDefense' as const, label: 'Team Defense' },
+          { id: 'onBallDefense' as const, label: 'On-Ball' },
+          { id: 'teamDefense' as const, label: 'Team' },
           { id: 'rebounding' as const, label: 'Rebounding' },
-          { id: 'physical' as const, label: 'Physical' },
+          { id: 'frame' as const, label: 'Frame' },
         ];
 
   return (
@@ -1307,7 +1204,7 @@ function PresetPreview({
                   <ThemedText
                     style={[
                       styles.previewDelta,
-                      { color: delta >= 0 ? '#4CAF50' : '#F44336' },
+                      { color: delta >= 0 ? '#f5f5f5' : '#6e6e6e' },
                     ]}
                   >
                     {' '}({deltaSign}{delta.toFixed(1)})
@@ -1334,7 +1231,7 @@ function PresetPreview({
           <ThemedText style={[styles.previewButtonCancelText, { color: colors.text }]}>Cancel</ThemedText>
         </Pressable>
         <Pressable
-          style={[styles.previewButtonApply, { backgroundColor: '#D4AF37' }]}
+          style={[styles.previewButtonApply, { backgroundColor: '#ffffff' }]}
           onPress={onApply}
         >
           <ThemedText style={styles.previewButtonApplyText}>Apply Preset</ThemedText>
@@ -1689,6 +1586,88 @@ function EducationHome() {
 }
 
 // =============================================================================
+// MODE SELECTOR
+// =============================================================================
+
+const MODE_OPTIONS: { mode: Mode; label: string }[] = [
+  { mode: 'sports', label: 'Athletics' },
+  { mode: 'church', label: 'Church' },
+  { mode: 'enterprise', label: 'Enterprise' },
+  { mode: 'education', label: 'Education' },
+];
+
+function getModeLabel(mode: Mode): string {
+  return MODE_OPTIONS.find((o) => o.mode === mode)?.label ?? mode;
+}
+
+function ModeSelector() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const mode = useMode();
+  const { switchMode } = useAppContext();
+  const [open, setOpen] = useState(false);
+
+  const handleSelect = useCallback((selected: Mode) => {
+    if (selected !== mode) {
+      switchMode(selected);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    setOpen(false);
+  }, [mode, switchMode]);
+
+  return (
+    <View style={styles.modeSelectorWrapper}>
+      <Pressable
+        style={styles.modeSelectorRow}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          setOpen((v) => !v);
+        }}
+        accessibilityRole="button"
+        accessibilityLabel={`Current mode: ${getModeLabel(mode)}. Tap to change.`}
+      >
+        <ThemedText style={[styles.modeSelectorText, { color: colors.text }]}>
+          {getModeLabel(mode)}
+        </ThemedText>
+        <View style={styles.modeSelectorDot} />
+      </Pressable>
+
+      {open && (
+        <>
+          <Pressable style={styles.dropdownBackdrop} onPress={() => setOpen(false)} />
+          <View style={[styles.dropdownCard, { backgroundColor: colors.card }]}>
+            {MODE_OPTIONS.map((option) => {
+              const isActive = option.mode === mode;
+              return (
+                <Pressable
+                  key={option.mode}
+                  style={({ pressed }) => [
+                    styles.dropdownOption,
+                    pressed && { opacity: 0.6 },
+                  ]}
+                  onPress={() => handleSelect(option.mode)}
+                >
+                  <ThemedText
+                    style={[
+                      styles.dropdownOptionText,
+                      { color: colors.text },
+                      isActive && styles.dropdownOptionTextActive,
+                    ]}
+                  >
+                    {option.label}
+                  </ThemedText>
+                  {isActive && <View style={styles.dropdownActiveDot} />}
+                </Pressable>
+              );
+            })}
+          </View>
+        </>
+      )}
+    </View>
+  );
+}
+
+// =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
@@ -1702,7 +1681,7 @@ export default function HomeScreen() {
   // Sports mode handles its own scroll (sticky header)
   if (mode === 'sports') {
     return (
-      <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
+      <ThemedView style={styles.container}>
         <SportsHome />
       </ThemedView>
     );
@@ -1723,7 +1702,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
+    <ThemedView style={styles.container}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -1743,6 +1722,74 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+
+  // Mode Selector
+  modeSelectorWrapper: {
+    zIndex: 100,
+    alignItems: 'center',
+  },
+  modeSelectorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    gap: 8,
+  },
+  modeSelectorText: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  modeSelectorDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#f5f5f5',
+  },
+
+  // Mode Dropdown
+  dropdownBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    top: -500,
+    bottom: -5000,
+    left: -500,
+    right: -500,
+    zIndex: 99,
+  },
+  dropdownCard: {
+    position: 'absolute',
+    top: 42,
+    zIndex: 100,
+    borderRadius: BorderRadius.lg,
+    paddingVertical: Spacing.xs,
+    minWidth: 200,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  dropdownOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.lg,
+    gap: 8,
+  },
+  dropdownOptionText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  dropdownOptionTextActive: {
+    fontWeight: '700',
+  },
+  dropdownActiveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#f5f5f5',
+  },
+
   scrollView: {
     flex: 1,
   },
@@ -1761,6 +1808,9 @@ const styles = StyleSheet.create({
   sportsScrollContent: {
     paddingHorizontal: Spacing.md,
     paddingBottom: Spacing.xxl,
+  },
+  rosterScrollContent: {
+    flexGrow: 1,
   },
 
   // Welcome
@@ -1850,11 +1900,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
   },
   teamLogo: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 100,
+    height: 100,
     marginBottom: Spacing.md,
   },
   teamLogoText: {
@@ -1894,6 +1941,42 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginTop: 4,
     lineHeight: 18,
+    textAlign: 'center',
+  },
+
+  // Year Picker
+  yearPickerWrapper: {
+    alignItems: 'center',
+    marginTop: 6,
+    zIndex: 10,
+  },
+  yearPickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: BorderRadius.sm,
+  },
+  yearPickerText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  yearPickerDropdown: {
+    position: 'absolute',
+    top: 30,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    overflow: 'hidden',
+    minWidth: 120,
+  },
+  yearPickerOption: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+  },
+  yearPickerOptionText: {
+    fontSize: 13,
+    fontWeight: '500',
     textAlign: 'center',
   },
 
@@ -2379,6 +2462,80 @@ const styles = StyleSheet.create({
   },
   modalOptionText: {
     fontSize: 16,
+  },
+
+  // Scholarship Bubbles
+  scholarshipBubbles: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: Spacing.sm,
+  },
+  scholarshipBubble: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+  },
+  scholarshipSummary: {
+    fontSize: 13,
+    fontWeight: '400',
+    marginBottom: Spacing.sm,
+  },
+
+  // NIL Summary
+  nilSummaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.sm,
+  },
+  nilSummaryItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  nilSummaryLabel: {
+    fontSize: 11,
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+    marginBottom: 2,
+  },
+  nilSummaryValue: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+
+  // Roster Needs
+  rosterNeedsSection: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingVertical: 4,
+  },
+  rosterNeedsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: Spacing.md,
+  },
+  rosterNeedsLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  rosterNeedsValue: {
+    fontSize: 13,
+    fontWeight: '400',
+  },
+  rosterNeedsDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Spacing.md,
+  },
+  priorityNeedBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.sm,
+  },
+  priorityNeedText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
 
   // Toast

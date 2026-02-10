@@ -111,20 +111,30 @@ export type SystemPreset =
   | 'traditional';
 
 export type OffensiveStyle =
-  | 'motion'
-  | 'set_plays'
-  | 'transition'
-  | 'iso_heavy'
-  | 'post_oriented'
-  | 'perimeter_oriented';
+  | 'spread_pick_and_roll'
+  | 'five_out_motion'
+  | 'motion_read_react'
+  | 'pace_and_space'
+  | 'dribble_drive'
+  | 'princeton'
+  | 'flex'
+  | 'swing'
+  | 'post_centric'
+  | 'moreyball'
+  | 'heliocentric';
+
+export type HeliocentricPosition = 'PG' | 'CG' | 'W' | 'F' | 'B';
 
 export type DefensiveStyle =
-  | 'man_to_man'
-  | 'zone_2_3'
-  | 'zone_3_2'
+  | 'containment_man'
+  | 'pack_line'
+  | 'pressure_man'
+  | 'switch_everything'
+  | 'ice_no_middle'
+  | 'zone_structured'
   | 'matchup_zone'
   | 'press'
-  | 'pack_line';
+  | 'junk_special';
 
 export type ClusterType =
   | 'shooting'
@@ -133,7 +143,7 @@ export type ClusterType =
   | 'on_ball_defense'
   | 'team_defense'
   | 'rebounding'
-  | 'physical';
+  | 'frame';
 
 export interface ClusterWeight {
   cluster: ClusterType;
@@ -146,7 +156,7 @@ export type ImportanceLevel = 'critical' | 'high' | 'medium' | 'low';
 
 export interface PositionImportance {
   position: Position;
-  importance: ImportanceLevel;
+  weight: number;
 }
 
 export type BiasType =
@@ -173,6 +183,7 @@ export interface ProgramContext {
   nilUsed: number;
   systemPreset: SystemPreset;
   offensiveStyle: OffensiveStyle;
+  heliocentricPosition?: HeliocentricPosition; // Engine position for Heliocentric offense
   defensiveStyle: DefensiveStyle;
   tempo: number; // 0-100 (slow to fast)
   clusterWeights: ClusterWeight[];
@@ -389,10 +400,54 @@ export interface EducationOrganization extends Organization {
 }
 
 // =============================================================================
+// AUTH & ONBOARDING
+// =============================================================================
+
+export type AuthProvider = 'apple' | 'google' | 'email';
+
+export interface AuthSession {
+  userId: string;
+  displayName: string;
+  email: string;
+  provider: AuthProvider;
+  token: string;
+  createdAt: Date;
+}
+
+export type OnboardingStep = 'org_code' | 'create_org' | 'viewer' | 'complete';
+
+// =============================================================================
 // NEXUS / CONVERSATIONS
 // =============================================================================
 
 export type MessageRole = 'user' | 'assistant' | 'system';
+
+export type ConversationType = 'chat' | 'eval' | 'sim' | 'game-ops';
+
+export type PlayerEvalRole = 'starter' | 'rotation' | 'development';
+
+export interface PlayerEvalConfig {
+  playerId: string | null;
+  playerName?: string;
+  role: PlayerEvalRole | null;
+}
+
+export type SimulationScenario = 'pregame' | 'halftime' | 'endgame' | 'what-if';
+
+export interface SimulationThreadConfig {
+  scenario: SimulationScenario | null;
+  opponentName?: string;
+}
+
+export interface EvalSnapshot {
+  id: string;
+  generatedAt: Date;
+  playerName: string;
+  summary: string;
+  strengths: string[];
+  areasForGrowth: string[];
+  projectedImpact: number;
+}
 
 export interface Message {
   id: string;
@@ -405,6 +460,8 @@ export interface Message {
     isSavedSimulation?: boolean;
     simulationId?: string;
     simulationParams?: Record<string, unknown>;
+    isEval?: boolean;
+    evalSnapshotId?: string;
   };
 }
 
@@ -413,6 +470,17 @@ export interface ConversationParticipant {
   name: string;
   avatar?: string;
   role: 'owner' | 'member';
+}
+
+export interface GameOpsConfig {
+  gameId: string;
+  opponent: string;
+  step: 'gathering' | 'confirm' | 'started';
+  periodFormat: 'halves' | 'quarters';
+  periodLength: number;       // seconds
+  starters: string[];         // player IDs
+  league?: string;
+  timeouts?: number;
 }
 
 export interface Conversation {
@@ -424,9 +492,19 @@ export interface Conversation {
   createdAt: Date;
   isGroup: boolean;
   unreadCount: number;
+  type: ConversationType;
+  isPinned?: boolean;
+  evalConfig?: PlayerEvalConfig;
+  simConfig?: SimulationThreadConfig;
+  gameOpsConfig?: GameOpsConfig;
 }
 
 export type NexusPanelState = 'closed' | 'conversations' | 'context' | 'roster' | 'recruiting' | 'simulation';
+
+export interface TargetContext {
+  organizationId: string;
+  programId?: string;
+}
 
 export interface NexusState {
   activeConversationId: string | null;
@@ -438,6 +516,9 @@ export interface NexusState {
   activeSimulationId: string | null;
   simulations: Record<string, SimulationResult>;
   savedSimulations: Record<string, SavedSimulation>;
+  newConversationSheetOpen: boolean;
+  evalSnapshots: Record<string, EvalSnapshot>;
+  targetContext: TargetContext | 'all';
 }
 
 // =============================================================================
@@ -565,4 +646,71 @@ export interface SavedSimulation extends SimulationResult {
   threadId: string;
   savedAt: Date;
   title?: string;
+}
+
+// =============================================================================
+// PROGRAM RESOURCES (Tier 1 + Tier 2)
+// =============================================================================
+
+// Tier 1 - Always visible on Home
+export interface RosterSpots {
+  current: number;
+  max: number;
+}
+
+export interface ScholarshipAllocation {
+  used: number;
+  available: number;
+}
+
+export interface NILPool {
+  total: number;
+  committed: number;
+}
+
+// Tier 2 - More Program Resources page
+export interface Budget {
+  total: number;
+  spent: number;
+}
+
+export interface ProgramBudgets {
+  recruiting: Budget;
+  travel: Budget;
+  performance: Budget;
+}
+
+export interface StaffCoverage {
+  coaches: { current: number; max: number };
+  supportRoles: {
+    at: number;
+    snc: number;
+    video: number;
+    operations: number;
+  };
+}
+
+export interface FacilitiesAccess {
+  practice: {
+    dedicatedPracticeGym: boolean;
+    sharedPracticeGym: boolean;
+    twentyFourSevenAccess: boolean;
+    shootingMachines: boolean;
+    filmRoom: boolean;
+  };
+  recovery: {
+    weightRoomAccess: boolean;
+    dedicatedStrengthArea: boolean;
+    recoveryTools: boolean;
+    trainingRoom: boolean;
+  };
+}
+
+export interface ExtendedProgramResources {
+  rosterSpots: RosterSpots;
+  scholarships: ScholarshipAllocation;
+  nilPool: NILPool;
+  budgets: ProgramBudgets;
+  staff: StaffCoverage;
+  facilities: FacilitiesAccess;
 }

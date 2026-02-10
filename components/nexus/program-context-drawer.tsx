@@ -4,7 +4,7 @@
  * Configures AI reasoning parameters for player evaluation and simulation.
  */
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -14,11 +14,12 @@ import {
   ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
 import {
@@ -32,6 +33,7 @@ import {
   getImportanceColor,
   formatCurrency,
 } from '@/data/mock-program-context';
+import { saveProgramContextVersion } from '@/utils/program-context-versioning';
 import type {
   Program,
   ProgramContext,
@@ -287,10 +289,48 @@ export function ProgramContextDrawer({
     }));
   };
 
-  const handleSave = () => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    onClose();
-  };
+  // Auto-save indicator
+  const [savedIndicator, setSavedIndicator] = useState(false);
+  const savedFadeAnim = useRef(new Animated.Value(0)).current;
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialContextRef = useRef(JSON.stringify(context));
+
+  // Auto-save with 500ms debounce
+  useEffect(() => {
+    const currentJson = JSON.stringify(context);
+    if (currentJson === initialContextRef.current) return;
+
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+
+    saveTimerRef.current = setTimeout(async () => {
+      try {
+        await AsyncStorage.setItem('kx:programContext', currentJson);
+        await saveProgramContextVersion(context);
+
+        // Show saved indicator
+        setSavedIndicator(true);
+        Animated.sequence([
+          Animated.timing(savedFadeAnim, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.delay(1200),
+          Animated.timing(savedFadeAnim, {
+            toValue: 0,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]).start(() => setSavedIndicator(false));
+      } catch (error) {
+        console.error('Failed to auto-save program context:', error);
+      }
+    }, 500);
+
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [context, savedFadeAnim]);
 
   if (!visible) return null;
 
@@ -318,7 +358,7 @@ export function ProgramContextDrawer({
       >
         {/* Header */}
         <View style={[styles.header, { borderBottomColor: colors.border }]}>
-          <ThemedText style={styles.headerTitle}>Program Context</ThemedText>
+          <ThemedText style={styles.headerTitle}>Team System</ThemedText>
           <Pressable
             style={({ pressed }) => [
               styles.closeButton,
@@ -404,7 +444,7 @@ export function ProgramContextDrawer({
                     styles.resourceBarFill,
                     {
                       width: `${(context.nilUsed / context.nilBudget) * 100}%`,
-                      backgroundColor: '#198754',
+                      backgroundColor: '#f5f5f5',
                     },
                   ]}
                 />
@@ -615,21 +655,19 @@ export function ProgramContextDrawer({
           </View>
         </ScrollView>
 
-        {/* Footer Actions */}
+        {/* Footer with auto-save indicator */}
         <View style={[styles.footer, { borderTopColor: colors.border }]}>
+          {savedIndicator && (
+            <Animated.View style={[styles.savedIndicator, { opacity: savedFadeAnim }]}>
+              <IconSymbol name="checkmark.circle.fill" size={14} color={Brand.success} />
+              <ThemedText style={[styles.savedText, { color: Brand.success }]}>Saved</ThemedText>
+            </Animated.View>
+          )}
           <Pressable
             style={[styles.footerButton, { backgroundColor: colors.backgroundSecondary }]}
             onPress={onClose}
           >
-            <ThemedText style={styles.footerButtonText}>Cancel</ThemedText>
-          </Pressable>
-          <Pressable
-            style={[styles.footerButton, styles.primaryButton, { backgroundColor: modeColors.primary }]}
-            onPress={handleSave}
-          >
-            <ThemedText style={[styles.footerButtonText, { color: '#FFFFFF' }]}>
-              Save Context
-            </ThemedText>
+            <ThemedText style={styles.footerButtonText}>Close</ThemedText>
           </Pressable>
         </View>
       </Animated.View>
@@ -946,10 +984,20 @@ const styles = StyleSheet.create({
   // Footer
   footer: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: Spacing.sm,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
     borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  savedIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  savedText: {
+    fontSize: 13,
+    fontWeight: '500',
   },
   footerButton: {
     flex: 1,
@@ -957,7 +1005,6 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     alignItems: 'center',
   },
-  primaryButton: {},
   footerButtonText: {
     fontSize: 15,
     fontWeight: '600',

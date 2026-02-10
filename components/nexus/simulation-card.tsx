@@ -104,7 +104,7 @@ export function SimulationCard({ simulation, onViewFull, onRerun }: SimulationCa
               backgroundColor:
                 simulation.rosterUsed === 'official'
                   ? modeColors.primary + '20'
-                  : '#E07C24' + '20',
+                  : '#6e6e6e' + '20',
             },
           ]}
         >
@@ -113,7 +113,7 @@ export function SimulationCard({ simulation, onViewFull, onRerun }: SimulationCa
               styles.rosterBadgeText,
               {
                 color:
-                  simulation.rosterUsed === 'official' ? modeColors.primary : '#E07C24',
+                  simulation.rosterUsed === 'official' ? modeColors.primary : '#6e6e6e',
               },
             ]}
           >
@@ -141,7 +141,7 @@ export function SimulationCard({ simulation, onViewFull, onRerun }: SimulationCa
         <StatBox
           label="Margin"
           value={formatMargin(simulation.projectedMargin)}
-          valueColor={isWinning ? '#198754' : '#DC3545'}
+          valueColor={isWinning ? '#f5f5f5' : '#6e6e6e'}
           colors={colors}
         />
         <StatBox
@@ -190,7 +190,7 @@ export function SimulationCard({ simulation, onViewFull, onRerun }: SimulationCa
           ]}
           onPress={() => onViewFull(simulation)}
         >
-          <IconSymbol name="arrow.up.right.square" size={14} color="#FFFFFF" />
+          <IconSymbol name="arrow.up.right.square" size={14} color="#000000" />
           <ThemedText style={styles.primaryActionText}>View Full</ThemedText>
         </Pressable>
         {onRerun && (
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   },
   primaryAction: {},
   primaryActionText: {
-    color: '#FFFFFF',
+    color: '#000000',
     fontSize: 13,
     fontWeight: '600',
   },

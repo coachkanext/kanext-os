@@ -1,98 +1,106 @@
 /**
  * KaNeXT OS Boot Splash Screen
- * App launch sequence: black → KaNeXT logo with "Powered by Nexus" → hold → fade out
+ * Full-screen black with pulsating center watermark and bottom tag.
  *
- * Timing:
- * - Phase 1: Fade in logo (600ms)
- * - Phase 2: Fade in subtitle (400ms)
- * - Phase 3: Hold visible (1500ms) → total 2500ms visible
- * - Phase 4: Fade out entire screen (600ms)
- * - Then callback
+ * Only shows on cold start, not when resuming from background.
  *
  * IMPORTANT: This component should only ever be mounted ONCE per app session.
  * The parent layout (app/_layout.tsx) controls this via a module-level guard.
  */
 
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 
 /**
  * Module-level guard: prevents animation from running more than once per session.
- * This is a secondary defense in case the component is accidentally remounted.
  */
 let ANIMATION_STARTED = false;
 
 interface SplashScreenProps {
-  onAnimationComplete: () => void;
+  onReady: () => void;
+  isAppReady: boolean;
 }
 
-export function SplashScreen({ onAnimationComplete }: SplashScreenProps) {
-  const logoFadeAnim = useRef(new Animated.Value(0)).current;
-  const subtitleFadeAnim = useRef(new Animated.Value(0)).current;
+export function SplashScreen({ onReady, isAppReady }: SplashScreenProps) {
+  const contentFadeAnim = useRef(new Animated.Value(0)).current;
   const containerFadeAnim = useRef(new Animated.Value(1)).current;
+  const pulseAnim = useRef(new Animated.Value(0)).current;
   const hasStartedRef = useRef(false);
+  const hasFadedOutRef = useRef(false);
 
+  // Derived animated values for the pulse
+  const pulseScale = pulseAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0.95, 1.05, 0.95],
+  });
+  const pulseOpacity = pulseAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0.7, 1, 0.7],
+  });
+
+  // Fade in content + start pulse loop on mount
   useEffect(() => {
-    // Guard: only run animation once per app session
     if (ANIMATION_STARTED || hasStartedRef.current) {
-      // Already ran - immediately complete
-      onAnimationComplete();
+      onReady();
       return;
     }
 
     ANIMATION_STARTED = true;
     hasStartedRef.current = true;
 
-    // Phase 1: Fade in logo (600ms)
-    Animated.timing(logoFadeAnim, {
+    // Fade in content
+    Animated.timing(contentFadeAnim, {
       toValue: 1,
-      duration: 600,
+      duration: 400,
       useNativeDriver: true,
-    }).start(() => {
-      // Phase 2: Fade in subtitle (400ms)
-      Animated.timing(subtitleFadeAnim, {
+    }).start();
+
+    // Start heartbeat pulse loop
+    Animated.loop(
+      Animated.timing(pulseAnim, {
         toValue: 1,
-        duration: 400,
+        duration: 1100,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      })
+    ).start();
+  }, [contentFadeAnim, pulseAnim, onReady]);
+
+  // Fade out when app is ready
+  useEffect(() => {
+    if (isAppReady && hasStartedRef.current && !hasFadedOutRef.current) {
+      hasFadedOutRef.current = true;
+
+      Animated.timing(containerFadeAnim, {
+        toValue: 0,
+        duration: 500,
         useNativeDriver: true,
       }).start(() => {
-        // Phase 3: Hold visible for 1500ms (total visible time = 600 + 400 + 1500 = 2500ms)
-        setTimeout(() => {
-          // Phase 4: Fade out entire container (600ms)
-          Animated.timing(containerFadeAnim, {
-            toValue: 0,
-            duration: 600,
-            useNativeDriver: true,
-          }).start(() => {
-            onAnimationComplete();
-          });
-        }, 1500);
+        onReady();
       });
-    });
-  }, [logoFadeAnim, subtitleFadeAnim, containerFadeAnim, onAnimationComplete]);
+    }
+  }, [isAppReady, containerFadeAnim, onReady]);
 
   return (
     <Animated.View style={[styles.container, { opacity: containerFadeAnim }]}>
-      <View style={styles.content}>
-        {/* KaNeXT Logo */}
-        <Animated.Text
-          style={[
-            styles.logo,
-            { opacity: logoFadeAnim },
-          ]}
-        >
-          KaNeXT
-        </Animated.Text>
+      {/* Center watermark with pulse */}
+      <Animated.View
+        style={[
+          styles.centerMark,
+          {
+            opacity: Animated.multiply(contentFadeAnim, pulseOpacity),
+            transform: [{ scale: pulseScale }],
+          },
+        ]}
+      >
+        <Text style={styles.kx}>KX</Text>
+      </Animated.View>
 
-        {/* Powered by Nexus */}
-        <Animated.Text
-          style={[
-            styles.subtitle,
-            { opacity: subtitleFadeAnim },
-          ]}
-        >
-          Powered by Nexus
-        </Animated.Text>
-      </View>
+      {/* Bottom tag */}
+      <Animated.View style={[styles.bottomTag, { opacity: contentFadeAnim }]}>
+        <Text style={styles.poweredBy}>powered by </Text>
+        <Text style={styles.nexus}>Nexus</Text>
+      </Animated.View>
     </Animated.View>
   );
 }
@@ -100,24 +108,33 @@ export function SplashScreen({ onAnimationComplete }: SplashScreenProps) {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#000000',
+    backgroundColor: '#0f0f0f',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content: {
+  centerMark: {
     alignItems: 'center',
   },
-  logo: {
-    fontSize: 48,
-    fontWeight: '700',
+  kx: {
+    fontSize: 64,
+    fontWeight: '800',
     color: '#FFFFFF',
-    letterSpacing: -1,
+    letterSpacing: 2,
   },
-  subtitle: {
-    fontSize: 14,
+  bottomTag: {
+    position: 'absolute',
+    bottom: 60,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  poweredBy: {
+    fontSize: 13,
     fontWeight: '400',
-    color: 'rgba(255, 255, 255, 0.5)',
-    marginTop: 12,
-    letterSpacing: 0.5,
+    color: 'rgba(255, 255, 255, 0.4)',
+  },
+  nexus: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.7)',
   },
 });

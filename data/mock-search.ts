@@ -22,7 +22,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   // Members (Players) - route to program players
   {
     id: 'player-johnson',
-    title: 'Marcus Johnson',
+    title: 'Brandon Williams',
     subtitle: 'PG • #1 • Senior',
     category: 'member',
     mode: 'sports',
@@ -30,7 +30,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   },
   {
     id: 'player-williams',
-    title: 'DeShawn Williams',
+    title: 'Laolu Kalejaiye',
     subtitle: 'C • #32 • Junior',
     category: 'member',
     mode: 'sports',
@@ -38,7 +38,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   },
   {
     id: 'player-garcia',
-    title: 'Anthony Garcia',
+    title: 'Adrian Hernandez',
     subtitle: 'SG • #24 • Sophomore',
     category: 'member',
     mode: 'sports',
@@ -46,7 +46,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   },
   {
     id: 'player-thompson',
-    title: 'Jaylen Thompson',
+    title: 'Nathan Chtelan',
     subtitle: 'SF • #15 • Freshman',
     category: 'member',
     mode: 'sports',
@@ -72,7 +72,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   // Events - route to program events
   {
     id: 'game-simpson',
-    title: 'vs Simpson College',
+    title: 'vs Simpson University',
     subtitle: 'Feb 8, 2026 • Home',
     category: 'event',
     mode: 'sports',
@@ -80,7 +80,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   },
   {
     id: 'game-central',
-    title: 'at Central Methodist',
+    title: 'vs Cal Maritime',
     subtitle: 'Feb 15, 2026 • Away',
     category: 'event',
     mode: 'sports',

@@ -15,125 +15,107 @@ export default function OrganizationLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
+        animation: 'none',
         contentStyle: { backgroundColor: colors.background },
       }}
     >
       <Stack.Screen name="index" />
       <Stack.Screen
         name="programs/[programId]"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="recruiting"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="donations"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="tickets"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="documents"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="governance"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="domains"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       {/* Church Routes */}
       <Stack.Screen
         name="campuses"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="ministries"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="messages"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="giving"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="connect"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       {/* Education Routes */}
       <Stack.Screen
         name="schedule"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="results"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="metrics"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="leadership"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="archive"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="events/[eventId]"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
       <Stack.Screen
         name="members/[memberId]"
-        options={{
-          presentation: 'card',
-        }}
+        options={{}}
+
       />
     </Stack>
   );

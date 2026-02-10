@@ -1,282 +1,373 @@
 /**
- * Home Screen
- * Orientation only - displays current system context.
- * Per spec: Home = orientation only. No work performed here.
- * Single exception: Program switching is allowed on Home.
+ * Sports Home Screen (Front Page)
+ *
+ * Layout:
+ * 1) Header Block - Team name, KR rating, records
+ * 2) Current Status Card - Next/Last game, Today, Availability
+ * 3) Program Context Preview - Roster/Scholarships/NIL + View button
  */
 
-import React, { useState } from 'react';
-import { View, StyleSheet, Pressable, Modal } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { TopBar } from '@/components/top-bar';
 import { AvatarDrawer } from '@/components/avatar-drawer';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAppContext } from '@/context/app-context';
-import type { Program } from '@/types';
 
-// Available programs for Sports mode
-const PROGRAMS: Program[] = [
-  { id: 'varsity', name: 'Varsity', level: 'varsity' },
-  { id: 'dev1', name: 'Development I', level: 'development_1' },
-  { id: 'dev2', name: 'Development II', level: 'development_2' },
-  { id: 'postgrad', name: 'Postgrad', level: 'postgrad' },
-];
+// =============================================================================
+// DEMO DATA
+// =============================================================================
+
+const TEAM_DATA = {
+  name: 'Lincoln Blue Tigers',
+  season: '2025–26',
+  kr: 84,
+  record: {
+    overall: '9–8',
+    conference: '7–0',
+    standing: '1st Place',
+  },
+};
+
+const CURRENT_STATUS = {
+  nextGame: {
+    opponent: 'Cal Miramar',
+    date: 'Sat, Feb 8',
+    time: '2:00 PM',
+    location: 'Home',
+  },
+  lastGame: {
+    result: 'W',
+    score: '78–65',
+    opponent: 'Cal State East Bay',
+  },
+  today: 'Practice 3:30 PM • Film 6:00 PM',
+  availability: {
+    available: 12,
+    out: 2,
+    questionable: 1,
+  },
+};
+
+const PROGRAM_CONTEXT = {
+  rosterSpots: { current: 12, max: 15 },
+  scholarships: { used: 11, available: 13 },
+  nilPool: { total: 150000, committed: 50000 },
+};
+
+// =============================================================================
+// HELPERS
+// =============================================================================
+
+const formatCurrency = (value: number): string => {
+  if (value >= 1000000) {
+    return `$${(value / 1000000).toFixed(1)}M`;
+  }
+  if (value >= 1000) {
+    return `$${Math.round(value / 1000)}K`;
+  }
+  return `$${value}`;
+};
+
+// =============================================================================
+// COMPONENT
+// =============================================================================
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { state, setProgram } = useAppContext();
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [programPickerVisible, setProgramPickerVisible] = useState(false);
 
-  // Format mode name for display
-  const formatMode = (mode: string) => {
-    return mode.charAt(0).toUpperCase() + mode.slice(1);
-  };
+  const nilRemaining = PROGRAM_CONTEXT.nilPool.total - PROGRAM_CONTEXT.nilPool.committed;
 
-  // Format role name for display
-  const formatRole = (role: string) => {
-    const roleLabels: Record<string, string> = {
-      founder: 'Founder & CEO',
-      head_coach: 'Head Coach',
-      fan: 'Fan',
-      member: 'Member',
-      student: 'Student',
-      viewer: 'Viewer',
-    };
-    return roleLabels[role] || role.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  };
-
-  // Get default organization name by mode
-  const getOrgName = () => {
-    if (state.organization) return state.organization.name;
-    switch (state.mode) {
-      case 'sports': return 'Lincoln University';
-      case 'enterprise': return 'KaNeXT';
-      case 'church': return 'International Christian Center';
-      case 'education': return 'San Diego Christian College';
-      default: return 'Organization';
-    }
-  };
-
-  const handleProgramSelect = (program: Program) => {
-    setProgram(program);
-    setProgramPickerVisible(false);
-  };
-
-  const currentProgram = state.program ?? PROGRAMS[0];
+  const handleViewProgramContext = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/coach/more-resources' as never);
+  }, [router]);
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar onAvatarPress={() => setDrawerVisible(true)} />
 
-      <View style={styles.content}>
-        {/* Context Display */}
-        <View style={styles.contextSection}>
-          {/* Mode */}
-          <View style={styles.contextRow}>
-            <ThemedText style={[styles.contextLabel, { color: colors.textTertiary }]}>
-              Mode
-            </ThemedText>
-            <ThemedText style={styles.contextValue}>
-              {formatMode(state.mode)}
-            </ThemedText>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: insets.bottom + 32 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ===== 1) HEADER BLOCK ===== */}
+        <View style={styles.headerBlock}>
+          {/* Team Name + Season */}
+          <View style={styles.teamRow}>
+            <Text style={[styles.teamName, { color: colors.text }]}>
+              {TEAM_DATA.name}
+            </Text>
+            <Text style={[styles.season, { color: colors.textSecondary }]}>
+              {TEAM_DATA.season}
+            </Text>
           </View>
 
-          {/* Organization */}
-          <View style={styles.contextRow}>
-            <ThemedText style={[styles.contextLabel, { color: colors.textTertiary }]}>
-              Organization
-            </ThemedText>
-            <ThemedText style={styles.contextValue}>
-              {getOrgName()}
-            </ThemedText>
-          </View>
-
-          {/* Program (Sports mode only - interactive) */}
-          {state.mode === 'sports' && (
-            <View style={styles.contextRow}>
-              <ThemedText style={[styles.contextLabel, { color: colors.textTertiary }]}>
-                Program
-              </ThemedText>
-              <Pressable
-                style={({ pressed }) => [
-                  styles.programSelector,
-                  {
-                    backgroundColor: colors.backgroundSecondary,
-                    borderColor: colors.border,
-                    opacity: pressed ? 0.8 : 1,
-                  },
-                ]}
-                onPress={() => setProgramPickerVisible(true)}
-              >
-                <ThemedText style={styles.programText}>
-                  {currentProgram.name}
-                </ThemedText>
-                <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
-              </Pressable>
+          {/* KR Rating - Big number with small badge */}
+          <View style={styles.krRow}>
+            <Text style={[styles.krNumber, { color: colors.text }]}>
+              {TEAM_DATA.kr}
+            </Text>
+            <View style={[styles.krBadge, { backgroundColor: colors.backgroundSecondary }]}>
+              <Text style={[styles.krLabel, { color: colors.textSecondary }]}>KR</Text>
             </View>
-          )}
-
-          {/* Operating Role */}
-          <View style={styles.contextRow}>
-            <ThemedText style={[styles.contextLabel, { color: colors.textTertiary }]}>
-              Operating Role
-            </ThemedText>
-            <ThemedText style={styles.contextValue}>
-              {formatRole(state.operatingRole)}
-            </ThemedText>
           </View>
 
-          {/* Cycle (if set) */}
-          {state.cycle && (
-            <View style={styles.contextRow}>
-              <ThemedText style={[styles.contextLabel, { color: colors.textTertiary }]}>
-                {state.mode === 'sports' ? 'Season' : state.mode === 'education' ? 'Academic Year' : 'Cycle'}
-              </ThemedText>
-              <ThemedText style={styles.contextValue}>
-                {state.cycle.name}
-              </ThemedText>
-            </View>
-          )}
+          {/* Records */}
+          <Text style={[styles.recordsLine, { color: colors.textSecondary }]}>
+            Overall: {TEAM_DATA.record.overall} · Conf: {TEAM_DATA.record.conference} · {TEAM_DATA.record.standing}
+          </Text>
         </View>
-      </View>
+
+        {/* ===== 2) CURRENT STATUS CARD ===== */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
+            CURRENT STATUS
+          </Text>
+          <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+            {/* Next Game */}
+            <View style={styles.statusRow}>
+              <Text style={[styles.statusLabel, { color: colors.textSecondary }]}>
+                Next Game
+              </Text>
+              <Text style={[styles.statusValue, { color: colors.text }]}>
+                {CURRENT_STATUS.nextGame.opponent} · {CURRENT_STATUS.nextGame.date} {CURRENT_STATUS.nextGame.time} · {CURRENT_STATUS.nextGame.location}
+              </Text>
+            </View>
+            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+            {/* Last Game */}
+            <View style={styles.statusRow}>
+              <Text style={[styles.statusLabel, { color: colors.textSecondary }]}>
+                Last Game
+              </Text>
+              <Text style={[styles.statusValue, { color: colors.text }]}>
+                {CURRENT_STATUS.lastGame.result} {CURRENT_STATUS.lastGame.score} vs {CURRENT_STATUS.lastGame.opponent}
+              </Text>
+            </View>
+            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+            {/* Today */}
+            <View style={styles.statusRow}>
+              <Text style={[styles.statusLabel, { color: colors.textSecondary }]}>
+                Today
+              </Text>
+              <Text style={[styles.statusValue, { color: colors.text }]}>
+                {CURRENT_STATUS.today}
+              </Text>
+            </View>
+            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+            {/* Availability */}
+            <View style={styles.statusRow}>
+              <Text style={[styles.statusLabel, { color: colors.textSecondary }]}>
+                Availability
+              </Text>
+              <Text style={[styles.statusValue, { color: colors.text }]}>
+                {CURRENT_STATUS.availability.available} Available · {CURRENT_STATUS.availability.out} Out · {CURRENT_STATUS.availability.questionable} Questionable
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* ===== 3) PROGRAM CONTEXT PREVIEW ===== */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
+            TEAM SYSTEM
+          </Text>
+          <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+            {/* Roster Spots */}
+            <View style={styles.contextRow}>
+              <Text style={[styles.contextLabel, { color: colors.textSecondary }]}>
+                Roster Spots
+              </Text>
+              <Text style={[styles.contextValue, { color: colors.text }]}>
+                {PROGRAM_CONTEXT.rosterSpots.current} / {PROGRAM_CONTEXT.rosterSpots.max}
+              </Text>
+            </View>
+            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+            {/* Scholarships */}
+            <View style={styles.contextRow}>
+              <Text style={[styles.contextLabel, { color: colors.textSecondary }]}>
+                Scholarships
+              </Text>
+              <Text style={[styles.contextValue, { color: colors.text }]}>
+                {PROGRAM_CONTEXT.scholarships.used} / {PROGRAM_CONTEXT.scholarships.available}
+              </Text>
+            </View>
+            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+            {/* NIL Pool */}
+            <View style={styles.contextRow}>
+              <Text style={[styles.contextLabel, { color: colors.textSecondary }]}>
+                NIL Pool
+              </Text>
+              <Text style={[styles.contextValue, { color: colors.text }]}>
+                {formatCurrency(PROGRAM_CONTEXT.nilPool.total)} / {formatCurrency(PROGRAM_CONTEXT.nilPool.committed)} / {formatCurrency(nilRemaining)}
+              </Text>
+            </View>
+          </View>
+
+          {/* View Program Context Button */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.viewButton,
+              {
+                backgroundColor: pressed ? colors.backgroundTertiary : colors.backgroundSecondary,
+              },
+            ]}
+            onPress={handleViewProgramContext}
+          >
+            <Text style={[styles.viewButtonText, { color: colors.text }]}>
+              View Team System
+            </Text>
+            <IconSymbol name="chevron.right" size={14} color={colors.textSecondary} />
+          </Pressable>
+        </View>
+      </ScrollView>
 
       {/* Avatar Drawer */}
-      <AvatarDrawer
-        visible={drawerVisible}
-        onClose={() => setDrawerVisible(false)}
-      />
-
-      {/* Program Picker Modal (Sports mode only) */}
-      <Modal
-        visible={programPickerVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setProgramPickerVisible(false)}
-      >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setProgramPickerVisible(false)}
-        >
-          <View
-            style={[
-              styles.pickerContainer,
-              { backgroundColor: colors.card },
-            ]}
-          >
-            <ThemedText style={styles.pickerTitle}>Select Program</ThemedText>
-            {PROGRAMS.map((program) => (
-              <Pressable
-                key={program.id}
-                style={({ pressed }) => [
-                  styles.pickerOption,
-                  {
-                    backgroundColor:
-                      currentProgram.id === program.id
-                        ? colors.backgroundSecondary
-                        : pressed
-                        ? colors.backgroundSecondary
-                        : 'transparent',
-                  },
-                ]}
-                onPress={() => handleProgramSelect(program)}
-              >
-                <ThemedText
-                  style={[
-                    styles.pickerOptionText,
-                    currentProgram.id === program.id && { fontWeight: '600' },
-                  ]}
-                >
-                  {program.name}
-                </ThemedText>
-                {currentProgram.id === program.id && (
-                  <IconSymbol name="chevron.right" size={16} color={colors.tint} />
-                )}
-              </Pressable>
-            ))}
-          </View>
-        </Pressable>
-      </Modal>
-    </ThemedView>
+      <AvatarDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
+    </View>
   );
 }
+
+// =============================================================================
+// STYLES
+// =============================================================================
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
+  scrollView: {
     flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.xl,
+    paddingTop: Spacing.lg,
   },
-  contextSection: {
-    gap: Spacing.lg,
+
+  // ===== HEADER BLOCK =====
+  headerBlock: {
+    alignItems: 'center',
+    marginBottom: Spacing.xl,
   },
+  teamRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  teamName: {
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  season: {
+    fontSize: 14,
+    fontWeight: '400',
+  },
+  krRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  krNumber: {
+    fontSize: 56,
+    fontWeight: '700',
+    lineHeight: 64,
+  },
+  krBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.sm,
+  },
+  krLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  recordsLine: {
+    fontSize: 14,
+    fontWeight: '400',
+  },
+
+  // ===== SECTIONS =====
+  section: {
+    marginBottom: Spacing.xl,
+  },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginBottom: 10,
+    marginLeft: 4,
+  },
+  card: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Spacing.md,
+  },
+
+  // ===== CURRENT STATUS =====
+  statusRow: {
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.md,
+    gap: 4,
+  },
+  statusLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  statusValue: {
+    fontSize: 14,
+    fontWeight: '400',
+  },
+
+  // ===== PROGRAM CONTEXT =====
   contextRow: {
-    gap: Spacing.xs,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.md,
   },
   contextLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    fontSize: 14,
+    fontWeight: '500',
   },
   contextValue: {
-    fontSize: 17,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '400',
   },
-  programSelector: {
+  viewButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-  },
-  programText: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: Spacing.xl,
-  },
-  pickerContainer: {
-    width: '100%',
-    maxWidth: 320,
+    paddingVertical: 14,
+    marginTop: Spacing.sm,
     borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
+    gap: 6,
   },
-  pickerTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    marginBottom: Spacing.md,
-    textAlign: 'center',
-  },
-  pickerOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: Spacing.sm + 4,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.md,
-  },
-  pickerOptionText: {
-    fontSize: 16,
+  viewButtonText: {
+    fontSize: 15,
+    fontWeight: '500',
   },
 });

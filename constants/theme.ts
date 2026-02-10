@@ -12,13 +12,13 @@ import type { Mode } from '@/types';
 
 export const Brand = {
   // Primary brand color
-  primary: '#0A0A0A',
+  primary: '#000000',
   // Nexus accent
-  nexus: '#6366F1',
+  nexus: '#ffffff',
   // Success / positive
-  success: '#10B981',
+  success: '#f5f5f5',
   // Warning
-  warning: '#F59E0B',
+  warning: '#6e6e6e',
   // Error / destructive
   error: '#EF4444',
 };
@@ -29,20 +29,20 @@ export const Brand = {
 
 export const ModeColors: Record<Mode, { primary: string; secondary: string }> = {
   sports: {
-    primary: '#0A7EA4',
-    secondary: '#06B6D4',
+    primary: '#ffffff',
+    secondary: '#6e6e6e',
   },
   enterprise: {
-    primary: '#6366F1',
-    secondary: '#8B5CF6',
+    primary: '#ffffff',
+    secondary: '#6e6e6e',
   },
   church: {
-    primary: '#8B5CF6',
-    secondary: '#A78BFA',
+    primary: '#ffffff',
+    secondary: '#6e6e6e',
   },
   education: {
-    primary: '#059669',
-    secondary: '#10B981',
+    primary: '#ffffff',
+    secondary: '#6e6e6e',
   },
 };
 
@@ -52,78 +52,78 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string }> = 
 
 export const Colors = {
   light: {
-    // Core
-    text: '#11181C',
-    textSecondary: '#687076',
-    textTertiary: '#9BA1A6',
-    background: '#FFFFFF',
-    backgroundSecondary: '#F8F9FA',
-    backgroundTertiary: '#F1F3F5',
+    // Core — mirrors dark (forced dark mode)
+    text: '#f5f5f5',
+    textSecondary: '#6e6e6e',
+    textTertiary: '#555555',
+    background: '#0f0f0f',
+    backgroundSecondary: '#181818',
+    backgroundTertiary: '#1e1e1e',
 
     // Borders & Dividers
-    border: '#E9ECEF',
-    borderStrong: '#DEE2E6',
-    divider: '#E9ECEF',
+    border: '#2a2a2a',
+    borderStrong: '#2a2a2a',
+    divider: '#2a2a2a',
 
     // Interactive
-    tint: Brand.nexus,
-    icon: '#687076',
-    iconActive: '#11181C',
+    tint: '#ffffff',
+    icon: '#6e6e6e',
+    iconActive: '#f5f5f5',
 
     // Tab Bar
-    tabBar: '#FFFFFF',
-    tabIconDefault: '#687076',
-    tabIconSelected: Brand.nexus,
+    tabBar: '#0f0f0f',
+    tabIconDefault: '#6e6e6e',
+    tabIconSelected: '#ffffff',
 
     // Cards & Surfaces
-    card: '#FFFFFF',
-    cardElevated: '#FFFFFF',
-
-    // Overlays
-    overlay: 'rgba(0, 0, 0, 0.5)',
-    scrim: 'rgba(0, 0, 0, 0.3)',
-
-    // Status
-    success: Brand.success,
-    warning: Brand.warning,
-    error: Brand.error,
-  },
-  dark: {
-    // Core
-    text: '#ECEDEE',
-    textSecondary: '#9BA1A6',
-    textTertiary: '#687076',
-    background: '#0A0A0A',
-    backgroundSecondary: '#151718',
-    backgroundTertiary: '#1C1E1F',
-
-    // Borders & Dividers
-    border: '#2D2F30',
-    borderStrong: '#3D3F40',
-    divider: '#2D2F30',
-
-    // Interactive
-    tint: '#FFFFFF',
-    icon: '#9BA1A6',
-    iconActive: '#ECEDEE',
-
-    // Tab Bar
-    tabBar: '#0A0A0A',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: '#FFFFFF',
-
-    // Cards & Surfaces
-    card: '#151718',
-    cardElevated: '#1C1E1F',
+    card: '#181818',
+    cardElevated: '#181818',
 
     // Overlays
     overlay: 'rgba(0, 0, 0, 0.7)',
     scrim: 'rgba(0, 0, 0, 0.5)',
 
     // Status
-    success: Brand.success,
-    warning: Brand.warning,
-    error: Brand.error,
+    success: '#f5f5f5',
+    warning: '#6e6e6e',
+    error: '#EF4444',
+  },
+  dark: {
+    // Core
+    text: '#f5f5f5',
+    textSecondary: '#6e6e6e',
+    textTertiary: '#555555',
+    background: '#0f0f0f',
+    backgroundSecondary: '#181818',
+    backgroundTertiary: '#1e1e1e',
+
+    // Borders & Dividers
+    border: '#2a2a2a',
+    borderStrong: '#2a2a2a',
+    divider: '#2a2a2a',
+
+    // Interactive
+    tint: '#ffffff',
+    icon: '#6e6e6e',
+    iconActive: '#f5f5f5',
+
+    // Tab Bar
+    tabBar: '#0f0f0f',
+    tabIconDefault: '#6e6e6e',
+    tabIconSelected: '#ffffff',
+
+    // Cards & Surfaces
+    card: '#181818',
+    cardElevated: '#181818',
+
+    // Overlays
+    overlay: 'rgba(0, 0, 0, 0.7)',
+    scrim: 'rgba(0, 0, 0, 0.5)',
+
+    // Status
+    success: '#f5f5f5',
+    warning: '#6e6e6e',
+    error: '#EF4444',
   },
 };
 

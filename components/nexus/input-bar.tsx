@@ -1,10 +1,11 @@
 /**
  * Input Bar Component
  * ChatGPT-style bottom input with pill shape, attachment, and send buttons.
+ * Mic button is tap-to-activate: opens full-screen voice overlay.
  */
 
-import React, { useRef, useEffect } from 'react';
-import { View, TextInput, Pressable, StyleSheet, Platform, KeyboardAvoidingView, Animated } from 'react-native';
+import React, { useRef } from 'react';
+import { View, Text, TextInput, Pressable, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import type { TextInput as TextInputType } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -19,7 +20,8 @@ interface InputBarProps {
   onAttachPress?: () => void;
   onFocus?: () => void;
   placeholder?: string;
-  isListening?: boolean;
+  isVoiceActive?: boolean;
+  contextPill?: { icon: string; label: string } | null;
 }
 
 export function InputBar({
@@ -30,39 +32,17 @@ export function InputBar({
   onAttachPress,
   onFocus,
   placeholder = 'Ask Nexus',
-  isListening = false,
+  isVoiceActive = false,
+  contextPill = null,
 }: InputBarProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const isDark = colorScheme === 'dark';
   const inputRef = useRef<TextInputType>(null);
-  const pulseAnim = useRef(new Animated.Value(1)).current;
 
   const hasText = value.trim().length > 0;
 
-  useEffect(() => {
-    if (isListening) {
-      const animation = Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulseAnim, {
-            toValue: 1.2,
-            duration: 600,
-            useNativeDriver: true,
-          }),
-          Animated.timing(pulseAnim, {
-            toValue: 1,
-            duration: 600,
-            useNativeDriver: true,
-          }),
-        ]),
-      );
-      animation.start();
-      return () => animation.stop();
-    }
-    pulseAnim.setValue(1);
-  }, [isListening, pulseAnim]);
-
-  const showMic = onMicPress && (!hasText || isListening);
+  const showMic = !!onMicPress && !hasText && !isVoiceActive;
 
   const handleSend = () => {
     if (hasText) {
@@ -93,106 +73,108 @@ export function InputBar({
           style={[
             styles.inputContainer,
             {
-              backgroundColor: isDark ? '#2F2F2F' : '#F4F4F4',
-              borderColor: isDark ? '#3F3F3F' : '#E5E5E5',
+              backgroundColor: colors.backgroundTertiary,
+              borderColor: colors.border,
             },
           ]}
           onPress={handleContainerPress}
         >
-          {/* Attach Button */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.attachButton,
-              { opacity: pressed ? 0.6 : 1 },
-            ]}
-            onPress={onAttachPress}
-            accessibilityLabel="Attach file"
-            accessibilityRole="button"
-          >
-            <IconSymbol name="plus" size={20} color={colors.textSecondary} />
-          </Pressable>
+          {/* Context Pill (e.g. Game Ops) */}
+          {contextPill && (
+            <View style={styles.contextPillRow}>
+              <View style={[styles.contextPill, { backgroundColor: colors.backgroundSecondary }]}>
+                <IconSymbol name={contextPill.icon as any} size={14} color={colors.textSecondary} />
+                <Text style={[styles.contextPillText, { color: colors.textSecondary }]}>
+                  {contextPill.label}
+                </Text>
+              </View>
+            </View>
+          )}
 
-          {/* Text Input */}
-          <TextInput
-            ref={inputRef}
-            style={[styles.input, { color: colors.text }]}
-            placeholder={placeholder}
-            placeholderTextColor={colors.textTertiary}
-            value={value}
-            onChangeText={onChangeText}
-            onFocus={handleFocus}
-            multiline
-            maxLength={4000}
-            returnKeyType="default"
-            blurOnSubmit={false}
-            autoCapitalize="sentences"
-            autoCorrect
-          />
+          {/* Input Row */}
+          <View style={styles.inputRow}>
+            {/* Attach Button */}
+            <Pressable
+              style={({ pressed }) => [
+                styles.attachButton,
+                { opacity: pressed ? 0.6 : 1 },
+              ]}
+              onPress={onAttachPress}
+              accessibilityLabel="Attach file"
+              accessibilityRole="button"
+            >
+              <IconSymbol name="plus" size={20} color={colors.textSecondary} />
+            </Pressable>
 
-          {/* Right Actions */}
-          <View style={styles.rightActions}>
-            {/* Mic / Stop Button */}
-            {showMic && (
-              isListening ? (
+            {/* Text Input */}
+            <TextInput
+              ref={inputRef}
+              style={[styles.input, { color: colors.text }]}
+              placeholder={placeholder}
+              placeholderTextColor={colors.textTertiary}
+              value={value}
+              onChangeText={onChangeText}
+              onFocus={handleFocus}
+              multiline
+              maxLength={4000}
+              returnKeyType="default"
+              blurOnSubmit={false}
+              autoCapitalize="sentences"
+              autoCorrect
+            />
+
+            {/* Right Actions */}
+            <View style={styles.rightActions}>
+              {/* Mic Button — tap to activate voice mode */}
+              {showMic && (
                 <Pressable
-                  style={({ pressed }) => [
-                    styles.iconButton,
-                    { opacity: pressed ? 0.6 : 1 },
-                  ]}
                   onPress={onMicPress}
-                  accessibilityLabel="Stop voice input"
-                  accessibilityRole="button"
-                >
-                  <Animated.View
-                    style={[
-                      styles.micActiveBackground,
-                      { transform: [{ scale: pulseAnim }] },
-                    ]}
-                  >
-                    <IconSymbol name="stop.fill" size={14} color="#FFFFFF" />
-                  </Animated.View>
-                </Pressable>
-              ) : (
-                <Pressable
                   style={({ pressed }) => [
-                    styles.iconButton,
-                    { opacity: pressed ? 0.6 : 1 },
+                    styles.micButton,
+                    {
+                      backgroundColor: pressed
+                        ? colors.tint
+                        : colors.backgroundSecondary,
+                    },
                   ]}
-                  onPress={onMicPress}
                   accessibilityLabel="Voice input"
                   accessibilityRole="button"
                 >
-                  <IconSymbol name="mic.fill" size={20} color={colors.textSecondary} />
+                  <IconSymbol
+                    name="mic.fill"
+                    size={18}
+                    color={colors.text}
+                  />
                 </Pressable>
-              )
-            )}
+              )}
 
-            {/* Send Button */}
-            <Pressable
-              style={({ pressed }) => [
-                styles.sendButton,
-                {
-                  backgroundColor: hasText
-                    ? (isDark ? '#FFFFFF' : '#000000')
-                    : (isDark ? '#4A4A4A' : '#D9D9D9'),
-                  opacity: pressed && hasText ? 0.8 : 1,
-                },
-              ]}
-              onPress={handleSend}
-              disabled={!hasText}
-              accessibilityLabel="Send message"
-              accessibilityRole="button"
-            >
-              <IconSymbol
-                name="arrow.up"
-                size={16}
-                weight="semibold"
-                color={hasText
-                  ? (isDark ? '#000000' : '#FFFFFF')
-                  : (isDark ? '#7A7A7A' : '#A0A0A0')
-                }
-              />
-            </Pressable>
+              {/* Send Button */}
+              <Pressable
+                style={({ pressed }) => [
+                  styles.sendButton,
+                  {
+                    backgroundColor: hasText
+                      ? '#ffffff'
+                      : colors.backgroundSecondary,
+                    opacity: pressed && hasText ? 0.8 : 1,
+                  },
+                ]}
+                onPress={handleSend}
+                disabled={!hasText}
+                accessibilityLabel="Send message"
+                accessibilityRole="button"
+              >
+                <IconSymbol
+                  name="arrow.up"
+                  size={16}
+                  weight="semibold"
+                  color={hasText
+                    ? '#000000'
+                    : colors.textTertiary
+                  }
+                />
+              </Pressable>
+            </View>
           </View>
         </Pressable>
       </View>
@@ -206,14 +188,34 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
     borderRadius: 24,
     borderWidth: 1,
     paddingLeft: 4,
     paddingRight: 4,
     paddingVertical: 4,
     minHeight: 48,
+  },
+  contextPillRow: {
+    paddingLeft: 8,
+    paddingTop: 4,
+    paddingBottom: 2,
+    flexDirection: 'row',
+  },
+  contextPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 14,
+  },
+  contextPillText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
   },
   attachButton: {
     width: 36,
@@ -235,7 +237,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 2,
   },
-  iconButton: {
+  micButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
@@ -246,14 +248,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  micActiveBackground: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: Brand.error,
     alignItems: 'center',
     justifyContent: 'center',
   },

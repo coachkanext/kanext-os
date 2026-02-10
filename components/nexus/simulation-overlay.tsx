@@ -94,7 +94,7 @@ interface PlayerImpactRowProps {
 
 function PlayerImpactRow({ player, colors, accentColor }: PlayerImpactRowProps) {
   const impactColor =
-    player.impactRating >= 70 ? '#198754' : player.impactRating >= 50 ? '#0D6EFD' : '#E07C24';
+    player.impactRating >= 70 ? '#f5f5f5' : player.impactRating >= 50 ? '#d4d4d4' : '#6e6e6e';
 
   return (
     <View style={[styles.playerRow, { borderBottomColor: colors.border }]}>
@@ -300,7 +300,7 @@ export function SimulationOverlay({
                     backgroundColor:
                       simulation.rosterUsed === 'official'
                         ? modeColors.primary + '20'
-                        : '#E07C24' + '20',
+                        : '#6e6e6e' + '20',
                   },
                 ]}
               >
@@ -309,7 +309,7 @@ export function SimulationOverlay({
                     styles.rosterBadgeText,
                     {
                       color:
-                        simulation.rosterUsed === 'official' ? modeColors.primary : '#E07C24',
+                        simulation.rosterUsed === 'official' ? modeColors.primary : '#6e6e6e',
                     },
                   ]}
                 >

@@ -2,16 +2,21 @@
  * Nexus Screen
  * Universal reasoning surface - the primary intelligence interface.
  * Per spec: Nexus answers "What does this mean?" - reasoning only, no state mutation.
+ *
+ * States:
+ * - Locked: Not authenticated → dimmed background, no input
+ * - Onboarding: Authenticated + new user → onboarding conversation
+ * - Unlocked: Authenticated → full Nexus
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { StyleSheet, Keyboard, Pressable, Animated, Dimensions } from 'react-native';
+import { StyleSheet, Keyboard, Pressable, Animated, Dimensions, View, Text } from 'react-native';
 
 import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { registerHeaderLeftAction } from '@/components/global-header';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AvatarDrawer } from '@/components/avatar-drawer';
-import { NexusTopBar } from '@/components/nexus/nexus-top-bar';
 import { ChatThread } from '@/components/nexus/chat-thread';
 import { InputBar } from '@/components/nexus/input-bar';
 import { ConversationsPanel } from '@/components/nexus/conversations-panel';
@@ -19,11 +24,36 @@ import { ProgramContextDrawer } from '@/components/nexus/program-context-drawer'
 import { RosterOverlay } from '@/components/nexus/roster-overlay';
 import { RecruitingOverlay } from '@/components/nexus/recruiting-overlay';
 import { SimulationOverlay } from '@/components/nexus/simulation-overlay';
+import { VoiceOverlay } from '@/components/nexus/voice-overlay';
 import { NexusProvider, useNexusContext } from '@/context/nexus-context';
+import { useAuth } from '@/context/auth-context';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
-
+import { sendToGPT } from '@/utils/openai';
+import { useAppContext } from '@/context/app-context';
+import { useRouter } from 'expo-router';
+import { registerGameOpsHandler } from '@/utils/global-game-ops';
+import * as Haptics from 'expo-haptics';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const PANEL_WIDTH = SCREEN_WIDTH * 0.7;
+
+
+function NexusLockedState() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
+  return (
+    <ThemedView style={styles.container}>
+      <View style={styles.lockedOverlay}>
+        <View style={styles.lockedContent}>
+          <Text style={[styles.lockedLogo, { color: colors.textTertiary }]}>KX</Text>
+          <Text style={[styles.lockedText, { color: colors.textTertiary }]}>
+            Sign in to unlock Nexus
+          </Text>
+        </View>
+      </View>
+    </ThemedView>
+  );
+}
 
 function NexusScreenContent() {
   const {
@@ -46,13 +76,58 @@ function NexusScreenContent() {
     renameConversation,
     archiveConversation,
     deleteConversation,
+    addAssistantMessage,
+    createNewGameOps,
   } = useNexusContext();
 
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const { state: authState, completeOnboarding } = useAuth();
+  const { state: appState } = useAppContext();
 
   // Local UI state
   const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
+  const onboardingTriggeredRef = useRef(false);
+
+  // Onboarding: create a conversation and inject a GPT welcome message
+  useEffect(() => {
+    if (!authState.isNewUser || onboardingTriggeredRef.current) return;
+    onboardingTriggeredRef.current = true;
+
+    // Create a new conversation for onboarding
+    createNewConversation();
+  }, [authState.isNewUser, createNewConversation]);
+
+  // Once the onboarding conversation is active, fetch GPT welcome
+  useEffect(() => {
+    if (!authState.isNewUser || !nexusState.activeConversationId) return;
+    // Only fire once — check if we already have messages
+    if (nexusState.messages.length > 0) return;
+
+    const convId = nexusState.activeConversationId;
+
+    (async () => {
+      try {
+        const welcomeText = await sendToGPT({
+          messages: [],
+          context: {
+            mode: appState.mode,
+            organization: appState.organization,
+            operatingRole: appState.operatingRole,
+            program: appState.program,
+            cycleName: appState.cycle?.name ?? null,
+            isOnboarding: true,
+          },
+        });
+
+        addAssistantMessage(convId, welcomeText);
+        await completeOnboarding();
+      } catch {
+        addAssistantMessage(convId, 'Welcome to Nexus. How can I help you today?');
+        await completeOnboarding();
+      }
+    })();
+  }, [authState.isNewUser, nexusState.activeConversationId, nexusState.messages.length, appState, addAssistantMessage, completeOnboarding]);
 
   // Animation for content slide
   const contentSlideAnim = useRef(new Animated.Value(0)).current;
@@ -69,6 +144,12 @@ function NexusScreenContent() {
   const handleConversationsPress = useCallback(() => {
     openConversations();
   }, [openConversations]);
+
+  // Register hamburger handler for GlobalHeader left slot
+  useEffect(() => {
+    registerHeaderLeftAction(handleConversationsPress);
+    return () => registerHeaderLeftAction(null);
+  }, [handleConversationsPress]);
 
   const handleContextPress = useCallback(() => {
     openContextDrawer();
@@ -94,7 +175,7 @@ function NexusScreenContent() {
   // Track text that existed before speech recognition started
   const preExistingTextRef = useRef('');
 
-  const { isListening, toggleListening } = useSpeechRecognition({
+  const { voiceState, audioLevel, startListening, stopListening } = useSpeechRecognition({
     onTranscript: useCallback((text: string, isFinal: boolean) => {
       const prefix = preExistingTextRef.current;
       const separator = prefix.length > 0 && !prefix.endsWith(' ') ? ' ' : '';
@@ -106,11 +187,35 @@ function NexusScreenContent() {
     if (!nexusState.activeConversationId) {
       createNewConversation();
     }
-    if (!isListening) {
-      preExistingTextRef.current = nexusState.inputText;
-    }
-    toggleListening();
-  }, [nexusState.activeConversationId, nexusState.inputText, isListening, createNewConversation, toggleListening]);
+    preExistingTextRef.current = nexusState.inputText;
+    Keyboard.dismiss();
+    startListening();
+  }, [nexusState.activeConversationId, nexusState.inputText, createNewConversation, startListening]);
+
+  const handleVoiceStop = useCallback(() => {
+    stopListening();
+  }, [stopListening]);
+
+  // ── Game Ops ──
+  const router = useRouter();
+
+  // Register global handler for game-detail → Nexus navigation
+  useEffect(() => {
+    registerGameOpsHandler((gameId, opponent) => {
+      createNewGameOps(gameId, opponent);
+    });
+    return () => registerGameOpsHandler(null);
+  }, [createNewGameOps]);
+
+  // Detect active game-ops conversation
+  const activeConversation = nexusState.conversations.find(
+    (c) => c.id === nexusState.activeConversationId
+  );
+  const isGameOps = activeConversation?.type === 'game-ops';
+  const gameOpsConfig = activeConversation?.gameOpsConfig;
+
+
+  // Game Ops is now conversational — user types naturally, GPT parses and asks clarifying questions.
 
   return (
     <ThemedView style={styles.container}>
@@ -141,12 +246,15 @@ function NexusScreenContent() {
           },
         ]}
       >
-        {/* Top Bar */}
-        <NexusTopBar
-          onConversationsPress={handleConversationsPress}
-          onContextPress={handleContextPress}
-          onBoardPress={handleBoardPress}
-        />
+
+        {/* Game Ops Sub-header */}
+        {isGameOps && gameOpsConfig && (
+          <View style={[styles.gameOpsSubHeader, { borderBottomColor: colors.divider }]}>
+            <Text style={[styles.gameOpsSubHeaderText, { color: colors.textSecondary }]}>
+              Lincoln vs {gameOpsConfig.opponent}
+            </Text>
+          </View>
+        )}
 
         {/* Chat Thread / Canvas - tap to dismiss keyboard and close panel */}
         <Pressable
@@ -165,13 +273,15 @@ function NexusScreenContent() {
           />
         </Pressable>
 
+        {/* Game Ops: conversational flow — no chips, user types naturally */}
+
         {/* Input Bar */}
         <InputBar
           value={nexusState.inputText}
           onChangeText={setInputText}
           onSend={sendMessage}
           onMicPress={handleMicPress}
-          isListening={isListening}
+          isVoiceActive={voiceState !== 'idle'}
           onFocus={() => {
             // Create a new conversation if none is active
             if (!nexusState.activeConversationId) {
@@ -179,6 +289,7 @@ function NexusScreenContent() {
             }
           }}
           placeholder="Ask Nexus"
+          contextPill={isGameOps ? { icon: 'basketball.fill', label: 'Game Ops' } : null}
         />
       </Animated.View>
 
@@ -214,6 +325,14 @@ function NexusScreenContent() {
         onRerun={(sim) => console.log('Rerun simulation:', sim.id)}
       />
 
+      {/* Voice Mode Overlay */}
+      <VoiceOverlay
+        visible={voiceState !== 'idle'}
+        voiceState={voiceState}
+        audioLevel={audioLevel}
+        onStop={handleVoiceStop}
+      />
+
       {/* Avatar Drawer (opens from conversations panel) */}
       <AvatarDrawer
         visible={avatarDrawerVisible}
@@ -224,6 +343,13 @@ function NexusScreenContent() {
 }
 
 export default function NexusScreen() {
+  const { state: authState } = useAuth();
+
+  // Show locked state if not authenticated
+  if (!authState.isAuthenticated) {
+    return <NexusLockedState />;
+  }
+
   return (
     <NexusProvider>
       <NexusScreenContent />
@@ -240,5 +366,90 @@ const styles = StyleSheet.create({
   },
   canvas: {
     flex: 1,
+  },
+  lockedOverlay: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lockedContent: {
+    alignItems: 'center',
+    opacity: 0.4,
+  },
+  lockedLogo: {
+    fontSize: 48,
+    fontWeight: '800',
+    letterSpacing: 2,
+    marginBottom: 12,
+  },
+  lockedText: {
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  // Game Ops
+  gameOpsSubHeader: {
+    paddingVertical: 8,
+    paddingHorizontal: Spacing.md,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+  },
+  gameOpsSubHeaderText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  gameOpsChips: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  chip: {
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: BorderRadius.lg,
+  },
+  chipText: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  starterScroll: {
+    maxHeight: 200,
+  },
+  starterGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  playerChip: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    minWidth: '47%',
+    flexGrow: 1,
+  },
+  playerChipName: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  starterCount: {
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  confirmBtn: {
+    paddingVertical: 14,
+    borderRadius: BorderRadius.lg,
+    alignItems: 'center',
+  },
+  confirmBtnText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

@@ -17,7 +17,7 @@ import type {
 const VARSITY_PLAYERS: PlayerImpact[] = [
   {
     playerId: 'player-johnson',
-    playerName: 'Marcus Johnson',
+    playerName: 'Brandon Williams',
     position: 'PG',
     projectedPoints: 18.5,
     projectedRebounds: 3.2,
@@ -27,7 +27,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   },
   {
     playerId: 'player-williams',
-    playerName: 'DeShawn Williams',
+    playerName: 'Laolu Kalejaiye',
     position: 'C',
     projectedPoints: 14.0,
     projectedRebounds: 10.2,
@@ -37,7 +37,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   },
   {
     playerId: 'player-harris',
-    playerName: 'Kevin Harris',
+    playerName: 'Paul Diomande',
     position: 'PF',
     projectedPoints: 15.5,
     projectedRebounds: 8.0,
@@ -47,7 +47,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   },
   {
     playerId: 'player-garcia',
-    playerName: 'Anthony Garcia',
+    playerName: 'Adrian Hernandez',
     position: 'SG',
     projectedPoints: 13.2,
     projectedRebounds: 3.5,
@@ -57,7 +57,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   },
   {
     playerId: 'player-thompson',
-    playerName: 'Jaylen Thompson',
+    playerName: 'Nathan Chtelan',
     position: 'SF',
     projectedPoints: 8.0,
     projectedRebounds: 4.5,
@@ -75,9 +75,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-1',
     type: 'single_game',
-    matchupText: 'Lincoln vs Northwest Missouri',
+    matchupText: 'Lincoln vs Cal Miramar',
     homeTeam: 'Lincoln University',
-    awayTeam: 'Northwest Missouri',
+    awayTeam: 'Cal Miramar',
     rosterUsed: 'official',
     timestamp: new Date('2026-02-04T14:30:00'),
     winProbability: 64,
@@ -111,8 +111,8 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-2',
     type: 'single_game',
-    matchupText: 'Lincoln @ Missouri Western',
-    homeTeam: 'Missouri Western',
+    matchupText: 'Lincoln @ Cal State East Bay',
+    homeTeam: 'Cal State East Bay',
     awayTeam: 'Lincoln University',
     rosterUsed: 'official',
     timestamp: new Date('2026-02-04T15:00:00'),
@@ -124,7 +124,7 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     volatility: 'high',
     drivers: [
       'Road game disadvantage (-3.8 pts expected)',
-      'Missouri Western on 5-game home win streak',
+      'Cal State East Bay on 5-game home win streak',
       'Lincoln depth advantage could be factor in 2nd half',
       'Matchup concerns at the 4 position',
     ],
@@ -137,9 +137,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-3',
     type: 'single_game',
-    matchupText: 'Lincoln vs Pittsburg State',
+    matchupText: 'Lincoln vs Bethesda',
     homeTeam: 'Lincoln University',
-    awayTeam: 'Pittsburg State',
+    awayTeam: 'Bethesda',
     rosterUsed: 'sandbox',
     timestamp: new Date('2026-02-04T15:30:00'),
     winProbability: 71,
@@ -151,7 +151,7 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     drivers: [
       'Sandbox roster includes Jaylen Brooks (projected +5.2 pts)',
       'Enhanced perimeter defense with lineup change',
-      'Pittsburg State struggles on the road (4-6 away)',
+      'Bethesda struggles on the road (4-6 away)',
       'Lincoln motion offense matches well against zone',
     ],
     playerImpact: [
@@ -179,7 +179,7 @@ export const SAVED_SIMULATIONS: SavedSimulation[] = [
     ...SAMPLE_SIMULATIONS[0],
     threadId: 'thread-sim-1',
     savedAt: new Date('2026-02-03T18:45:00'),
-    title: 'Northwest Missouri Preview',
+    title: 'Cal Miramar Preview',
   },
 ];
 
@@ -215,27 +215,27 @@ export function getVolatilityLabel(volatility: string): string {
 
 export function getConfidenceColor(confidence: string): string {
   const colors: Record<string, string> = {
-    high: '#198754',
-    medium: '#E07C24',
-    low: '#DC3545',
+    high: '#f5f5f5',
+    medium: '#6e6e6e',
+    low: '#555555',
   };
-  return colors[confidence] || '#6C757D';
+  return colors[confidence] || '#6e6e6e';
 }
 
 export function getVolatilityColor(volatility: string): string {
   const colors: Record<string, string> = {
-    low: '#198754',
-    medium: '#E07C24',
-    high: '#DC3545',
+    low: '#f5f5f5',
+    medium: '#6e6e6e',
+    high: '#555555',
   };
-  return colors[volatility] || '#6C757D';
+  return colors[volatility] || '#6e6e6e';
 }
 
 export function getWinProbabilityColor(winProb: number): string {
-  if (winProb >= 65) return '#198754';
-  if (winProb >= 50) return '#0D6EFD';
-  if (winProb >= 40) return '#E07C24';
-  return '#DC3545';
+  if (winProb >= 65) return '#f5f5f5';
+  if (winProb >= 50) return '#d4d4d4';
+  if (winProb >= 40) return '#6e6e6e';
+  return '#555555';
 }
 
 export function formatMargin(margin: number): string {
@@ -326,11 +326,11 @@ export function detectSimulationIntent(message: string): { opponent: string; isS
 
   // Default opponents from schedule
   const knownOpponents = [
-    'Northwest Missouri',
-    'Missouri Western',
-    'Pittsburg State',
-    'Central Methodist',
-    'Simpson College',
+    'Cal Miramar',
+    'Cal State East Bay',
+    'Bethesda',
+    'Simpson University',
+    'Simpson University',
   ];
 
   for (const opp of knownOpponents) {

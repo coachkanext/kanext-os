@@ -2,7 +2,11 @@ import { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
 import { PlatformPressable } from '@react-navigation/elements';
 import * as Haptics from 'expo-haptics';
 
-export function HapticTab(props: BottomTabBarButtonProps) {
+interface HapticTabProps extends BottomTabBarButtonProps {
+  onLongPress?: () => void;
+}
+
+export function HapticTab({ onLongPress, ...props }: HapticTabProps) {
   return (
     <PlatformPressable
       {...props}
@@ -13,6 +17,13 @@ export function HapticTab(props: BottomTabBarButtonProps) {
         }
         props.onPressIn?.(ev);
       }}
+      onLongPress={() => {
+        if (onLongPress) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          onLongPress();
+        }
+      }}
+      delayLongPress={400}
     />
   );
 }
