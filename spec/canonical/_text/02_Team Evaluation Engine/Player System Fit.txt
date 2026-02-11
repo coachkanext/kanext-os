@@ -1,0 +1,3458 @@
+System Fit (Offensive)
+System Fit (Offensive)
+1. Purpose
+System Fit (Offensive) defines how player offensive impact expresses itself within a specific offensive system selected in Coach Program Setup.
+It answers one question:
+Given this offensive system, how effectively can each player’s offensive skill set translate and scale?
+This section produces contextual offensive truth.
+It does not redefine the player.
+2. Relationship to Player Truth
+System Fit (Offensive):
+consumes finalized Player Intelligence outputs
+does not change attributes
+does not change raw KRs
+does not change archetype assignment
+does not change confidence values
+Player Truth remains immutable.
+System Fit applies interpretive constraints and ceilings only.
+3. When This Section Executes
+System Fit (Offensive) executes:
+after Coach Program Setup
+after Coach & Program Context Layer
+before Team Evaluation
+If no offensive system is declared, this section does not run.
+4. What Offensive System Fit Does
+System Fit (Offensive) is authorized to:
+apply system-specific weighting emphasis
+apply offensive fit ceilings
+surface offensive leverage and friction
+flag offensive system risks
+It may:
+reduce effective offensive contribution
+cap offensive ceiling
+explain underutilization or inefficiency
+5. What Offensive System Fit Does Not Do
+System Fit (Offensive) does not:
+increase player skill values
+create new offensive abilities
+override KaNeXT badges or overrides
+compensate for missing skills
+guarantee usage or production
+System Fit explains compatibility, not capability creation.
+6. Determinism
+System Fit (Offensive) is:
+rule-based
+deterministic
+repeatable
+Given the same player truth and the same offensive system, the same offensive system-fit result is produced.
+
+7. Output
+This section produces:
+system-adjusted offensive contribution values
+offensive fit ceilings
+offensive system risk flags
+These outputs are consumed by:
+Team Evaluation
+Team Final Evaluation Output
+Roster Sandbox scenarios
+They do not exist independently.
+8. Governance Rule
+System Fit (Offensive):
+never alters Player Truth
+never persists outside the selected context
+is recalculated whenever offensive system selection changes
+Changing the offensive system creates a new contextual team truth.
+
+
+1. SPREAD PICK-AND-ROLL
+POINT GUARD 
+OFFENSE — 90%
+SHOOTING — 32.40%
+3PT Off-the-Dribble: 13.50%
+3PT Spot-Up (Catch-and-Shoot): 6.30%
+3PT Deep Range: 5.40%
+3PT Movement / Relocation: 2.70%
+Free Throw: 1.80%
+2PT Jumper Off-the-Dribble: 1.80%
+2PT Jumper Catch-and-Shoot: 0.90%
+FINISHING — 12.60%
+Layup Finishing: 4.50%
+Foul Draw Rate (Paint): 4.50%
+Floater / Runner: 1.80%
+Dunk Finishing: 0.90%
+Close Finishing: 0.90%
+PLAYMAKING — 42.30%
+Drive-and-Kick Passing: 10.80%
+Passing Vision: 9.00%
+Ball Security: 8.10%
+Passing Accuracy: 7.20%
+Transition Playmaking: 4.50%
+Screen Assist Creation: 1.80%
+Hockey Assist Creation: 0.90%
+OFFENSIVE REBOUNDING / OUTLET — 2.70%
+Rebound-to-Playmaking (Outlet Impact): 1.80%
+Offensive Rebounding: 0.90%
+TOOLS — 10%
+PHYSICAL attributes — 8.50%
+Speed (With Ball): 1.70%
+Acceleration (Burst): 1.70%
+Lateral Quickness: 1.50%
+Endurance: 1.30%
+Body Control: 1.10%
+Motor: 1.00%
+Strength (Functional): 0.20%
+REBOUNDING / POSSESSION TOOLS — 1.50%
+Rebound Conversion (Secure vs Tip): 0.90%
+Rebound Range & Tracking: 0.60%
+
+COMBO GUARD
+OFFENSE — 88%
+(Combo guards carry more offensive burden; tools slightly less than PG)
+SHOOTING — 39.60%
+3PT Off-the-Dribble: 12.32%
+3PT Spot-Up (Catch-and-Shoot): 10.56%
+3PT Movement / Relocation: 7.04%
+3PT Deep Range: 5.28%
+2PT Jumper Off-the-Dribble: 1.76%
+2PT Jumper Catch-and-Shoot: 1.76%
+Free Throw: 0.88%
+FINISHING — 16.72%
+Layup Finishing: 5.28%
+Foul Draw Rate (Paint): 4.40%
+Floater / Runner: 3.52%
+Dunk Finishing: 1.76%
+Close Finishing: 1.76%
+PLAYMAKING — 26.40%
+Drive-and-Kick Passing: 8.80%
+Passing Vision: 6.16%
+Passing Accuracy: 5.28%
+Ball Security: 3.52%
+Transition Playmaking: 1.76%
+Screen Assist Creation: 0.88%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 5.28%
+Rebound-to-Playmaking (Outlet Impact): 3.52%
+Offensive Rebounding: 1.76%
+TOOLS — 12%
+PHYSICAL attributes — 9.60%
+Speed (With Ball): 1.92%
+Acceleration (Burst): 1.92%
+Lateral Quickness: 1.44%
+Endurance: 1.44%
+Body Control: 1.44%
+Motor: 0.96%
+Speed (Without Ball): 0.48%
+Strength (Functional): 0.00%
+REBOUNDING / POSSESSION TOOLS — 2.40%
+Rebound Conversion (Secure vs Tip): 1.44%
+Rebound Range & Tracking: 0.96%
+WING 
+OFFENSE — 90%
+(Wings are spacing + secondary attack engines in Spread PnR)
+SHOOTING — 43.20%
+3PT Spot-Up (Catch-and-Shoot): 16.20%
+3PT Movement / Relocation: 10.80%
+3PT Off-the-Dribble: 7.20%
+3PT Deep Range: 5.40%
+2PT Jumper Catch-and-Shoot: 1.80%
+2PT Jumper Off-the-Dribble: 0.90%
+Free Throw: 0.90%
+FINISHING — 22.50%
+Layup Finishing: 9.00%
+Dunk Finishing: 5.40%
+Close Finishing: 3.60%
+Floater / Runner: 2.70%
+Foul Draw Rate (Paint): 1.80%
+PLAYMAKING — 16.20%
+Drive-and-Kick Passing: 5.40%
+Passing Accuracy: 4.50%
+Passing Vision: 3.60%
+Transition Playmaking: 1.80%
+Ball Security: 0.90%
+Screen Assist Creation: 0.00%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 8.10%
+Offensive Rebounding: 4.50%
+Rebound-to-Playmaking (Outlet Impact): 3.60%
+TOOLS — 10%
+PHYSICAL attributes — 7.50%
+Lateral Quickness: 1.60%
+Speed (Without Ball): 1.40%
+Acceleration (Burst): 1.00%
+Endurance: 1.00%
+Motor: 0.90%
+Body Control: 0.80%
+Speed (With Ball): 0.50%
+Strength (Functional): 0.30%
+REBOUNDING / POSSESSION TOOLS — 2.50%
+Rebound Conversion (Secure vs Tip): 1.50%
+Rebound Range & Tracking: 1.00%
+FORWARD
+OFFENSE — 88%
+(Forwards must space, finish on the move, and make connector reads in Spread PnR)
+SHOOTING — 36.96%
+3PT Spot-Up (Catch-and-Shoot): 15.84%
+3PT Movement / Relocation: 7.92%
+3PT Off-the-Dribble: 4.40%
+3PT Deep Range: 4.40%
+2PT Jumper Catch-and-Shoot: 1.76%
+2PT Jumper Off-the-Dribble: 0.88%
+Free Throw: 0.76%
+FINISHING — 30.80%
+Layup Finishing: 10.56%
+Dunk Finishing: 7.92%
+Close Finishing: 5.28%
+Floater / Runner: 3.52%
+Foul Draw Rate (Paint): 3.52%
+PLAYMAKING — 13.20%
+Drive-and-Kick Passing: 4.40%
+Passing Accuracy: 3.52%
+Passing Vision: 3.52%
+Transition Playmaking: 1.76%
+Ball Security: 0.00%
+Screen Assist Creation: 0.00%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 7.04%
+Offensive Rebounding: 4.22%
+Rebound-to-Playmaking (Outlet Impact): 2.82%
+TOOLS — 12%
+PHYSICAL attributes — 9.60%
+Strength (Functional): 1.92%
+Body Control: 1.68%
+Endurance: 1.44%
+Vertical Pop (Live-Play): 1.44%
+Lateral Quickness: 1.20%
+Speed (Without Ball): 0.96%
+Acceleration (Burst): 0.72%
+Speed (With Ball): 0.24%
+REBOUNDING / POSSESSION TOOLS — 2.40%
+Rebound Conversion (Secure vs Tip): 1.44%
+Rebound Range & Tracking: 0.96%
+BIG
+OFFENSE — 85%
+(Bigs must screen, pressure the rim, pass on the short roll, and provide optional stretch)
+SHOOTING — 17.00%
+3PT Spot-Up (Catch-and-Shoot): 8.16%
+3PT Movement: 2.72%
+3PT Off-the-Dribble: 1.36%
+3PT Deep Range: 2.72%
+2PT Jumper Catch-and-Shoot: 1.36%
+2PT Jumper Off-the-Dribble: 0.00%
+Free Throw: 0.68%
+FINISHING — 42.50%
+Dunk Finishing: 13.60%
+Layup Finishing: 11.90%
+Close Finishing: 8.50%
+Foul Draw Rate (Paint): 5.10%
+Floater / Runner: 3.40%
+PLAYMAKING — 15.30%
+Passing Accuracy: 5.10%
+Passing Vision: 4.59%
+Drive-and-Kick Passing: 3.06%
+Transition Playmaking: 1.53%
+Ball Security: 0.00%
+Screen Assist Creation: 0.00%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 10.20%
+Offensive Rebounding: 6.12%
+Rebound-to-Playmaking (Outlet Impact): 4.08%
+TOOLS — 15%
+PHYSICAL attributes — 12.75%
+Strength (Functional): 2.70%
+Body Control: 2.10%
+Vertical Pop (Live-Play): 2.25%
+Endurance: 1.80%
+Lateral Quickness: 1.50%
+Speed (Without Ball): 1.20%
+Acceleration (Burst): 0.75%
+Motor: 0.45%
+REBOUNDING / POSSESSION TOOLS — 2.25%
+Rebound Conversion (Secure vs Tip): 1.35%
+Rebound Range & Tracking: 0.90%
+
+2. 5-OUT MOTION
+POINT GUARD 
+OFFENSE — 90%
+SHOOTING — 30.60%
+3PT Movement / Relocation: 8.10%
+3PT Off-the-Dribble: 9.90%
+3PT Spot-Up (Catch-and-Shoot): 6.30%
+3PT Deep Range: 3.60%
+Free Throw: 1.80%
+2PT Jumper Off-the-Dribble: 0.90%
+2PT Jumper Catch-and-Shoot: 0.00%
+FINISHING — 11.70%
+Layup Finishing: 4.50%
+Foul Draw Rate (Paint): 3.60%
+Floater / Runner: 2.70%
+Close Finishing: 0.90%
+Dunk Finishing: 0.00%
+PLAYMAKING — 45.90%
+Passing Vision: 10.80%
+Drive-and-Kick Passing: 9.90%
+Ball Security: 9.00%
+Passing Accuracy: 7.20%
+Transition Playmaking: 4.50%
+Screen Assist Creation: 2.70%
+Hockey Assist Creation: 1.80%
+OFFENSIVE REBOUNDING / OUTLET — 1.80%
+Rebound-to-Playmaking (Outlet Impact): 1.20%
+Offensive Rebounding: 0.60%
+TOOLS — 10%
+PHYSICAL attributes — 8.70%
+Speed (With Ball): 1.80%
+Speed (Without Ball): 1.50%
+Endurance: 1.50%
+Lateral Quickness: 1.50%
+Acceleration (Burst): 1.20%
+Body Control: 0.90%
+Motor: 0.30%
+REBOUNDING / POSSESSION TOOLS — 1.30%
+Rebound Conversion (Secure vs Tip): 0.70%
+Rebound Range & Tracking: 0.60%
+COMBO GUARD
+OFFENSE — 88%
+SHOOTING — 38.72%
+3PT Movement / Relocation: 11.44%
+3PT Spot-Up (Catch-and-Shoot): 10.56%
+3PT Off-the-Dribble: 8.80%
+3PT Deep Range: 4.40%
+2PT Jumper Catch-and-Shoot: 1.76%
+Free Throw: 0.88%
+2PT Jumper Off-the-Dribble: 0.88%
+FINISHING — 14.08%
+Layup Finishing: 5.28%
+Foul Draw Rate (Paint): 3.52%
+Floater / Runner: 3.52%
+Close Finishing: 1.76%
+Dunk Finishing: 0.00%
+PLAYMAKING — 31.68%
+Drive-and-Kick Passing: 8.80%
+Passing Vision: 7.92%
+Passing Accuracy: 5.28%
+Ball Security: 4.40%
+Transition Playmaking: 2.64%
+Screen Assist Creation: 1.76%
+Hockey Assist Creation: 0.88%
+OFFENSIVE REBOUNDING / OUTLET — 3.52%
+Rebound-to-Playmaking (Outlet Impact): 2.64%
+Offensive Rebounding: 0.88%
+TOOLS — 12%
+PHYSICAL attributes — 9.96%
+Speed (Without Ball): 1.92%
+Speed (With Ball): 1.80%
+Endurance: 1.80%
+Lateral Quickness: 1.44%
+Acceleration (Burst): 1.20%
+Body Control: 1.20%
+Motor: 0.40%
+REBOUNDING / POSSESSION TOOLS — 2.04%
+Rebound Conversion (Secure vs Tip): 1.20%
+Rebound Range & Tracking: 0.84%
+
+WING
+OFFENSE — 90%
+SHOOTING — 46.80%
+3PT Movement / Relocation: 16.20%
+3PT Spot-Up (Catch-and-Shoot): 14.40%
+3PT Off-the-Dribble: 7.20%
+3PT Deep Range: 6.30%
+2PT Jumper Catch-and-Shoot: 1.80%
+Free Throw: 0.90%
+FINISHING — 18.90%
+Layup Finishing: 7.20%
+Close Finishing: 4.50%
+Dunk Finishing: 3.60%
+Floater / Runner: 2.70%
+Foul Draw Rate (Paint): 0.90%
+PLAYMAKING — 18.00%
+Passing Accuracy: 5.40%
+Passing Vision: 4.50%
+Drive-and-Kick Passing: 4.50%
+Transition Playmaking: 1.80%
+Ball Security: 1.80%
+OFFENSIVE REBOUNDING / OUTLET — 6.30%
+Offensive Rebounding: 3.60%
+Rebound-to-Playmaking (Outlet Impact): 2.70%
+TOOLS — 10%
+PHYSICAL attributes — 7.80%
+Speed (Without Ball): 1.80%
+Endurance: 1.50%
+Lateral Quickness: 1.50%
+Acceleration (Burst): 1.20%
+Motor: 0.90%
+Body Control: 0.90%
+REBOUNDING / POSSESSION TOOLS — 2.20%
+Rebound Conversion (Secure vs Tip): 1.30%
+Rebound Range & Tracking: 0.90%
+
+FORWARD
+OFFENSE — 88%
+SHOOTING — 41.36%
+3PT Spot-Up (Catch-and-Shoot): 17.60%
+3PT Movement / Relocation: 11.44%
+3PT Deep Range: 6.16%
+3PT Off-the-Dribble: 3.52%
+2PT Jumper Catch-and-Shoot: 1.76%
+Free Throw: 0.88%
+FINISHING — 24.64%
+Layup Finishing: 9.68%
+Close Finishing: 6.16%
+Dunk Finishing: 4.40%
+Floater / Runner: 2.64%
+Foul Draw Rate (Paint): 1.76%
+PLAYMAKING — 15.84%
+Passing Vision: 4.40%
+Passing Accuracy: 4.40%
+Drive-and-Kick Passing: 4.40%
+Transition Playmaking: 1.76%
+Ball Security: 0.88%
+OFFENSIVE REBOUNDING / OUTLET — 6.16%
+Offensive Rebounding: 3.52%
+Rebound-to-Playmaking (Outlet Impact): 2.64%
+TOOLS — 12%
+PHYSICAL attributes — 9.36%
+Endurance: 1.80%
+Speed (Without Ball): 1.44%
+Lateral Quickness: 1.44%
+Body Control: 1.44%
+Vertical Pop (Live-Play): 1.20%
+Acceleration (Burst): 1.04%
+REBOUNDING / POSSESSION TOOLS — 2.64%
+Rebound Conversion (Secure vs Tip): 1.58%
+Rebound Range & Tracking: 1.06%
+
+BIG
+OFFENSE — 85%
+SHOOTING — 23.80%
+3PT Spot-Up (Catch-and-Shoot): 11.05%
+3PT Movement / Relocation: 5.95%
+3PT Deep Range: 3.40%
+3PT Off-the-Dribble: 1.70%
+2PT Jumper Catch-and-Shoot: 1.70%
+Free Throw: 0.00%
+FINISHING — 34.00%
+Layup Finishing: 11.90%
+Close Finishing: 9.35%
+Dunk Finishing: 6.80%
+Floater / Runner: 3.40%
+Foul Draw Rate (Paint): 2.55%
+PLAYMAKING — 17.00%
+Passing Vision: 5.10%
+Passing Accuracy: 5.10%
+Drive-and-Kick Passing: 3.40%
+Transition Playmaking: 1.70%
+Ball Security: 1.70%
+OFFENSIVE REBOUNDING / OUTLET — 10.20%
+Offensive Rebounding: 6.12%
+Rebound-to-Playmaking (Outlet Impact): 4.08%
+TOOLS — 15%
+PHYSICAL attributes — 12.30%
+Endurance: 2.40%
+Lateral Quickness: 2.10%
+Body Control: 2.10%
+Strength (Functional): 1.95%
+Vertical Pop (Live-Play): 1.80%
+Speed (Without Ball): 1.50%
+Acceleration (Burst): 0.45%
+REBOUNDING / POSSESSION TOOLS — 2.70%
+Rebound Conversion (Secure vs Tip): 1.62%
+Rebound Range & Tracking: 1.08%
+
+
+3. PACE & SPACE 
+POINT GUARD
+OFFENSE — 90%
+SHOOTING — 33.30%
+3PT Spot-Up (Catch-and-Shoot): 10.80%
+3PT Off-the-Dribble: 9.00%
+3PT Deep Range: 6.30%
+3PT Movement / Relocation: 4.50%
+Free Throw: 1.80%
+2PT Jumper Off-the-Dribble: 0.90%
+2PT Jumper Catch-and-Shoot: 0.00%
+FINISHING — 15.30%
+Layup Finishing: 6.30%
+Foul Draw Rate (Paint): 4.50%
+Floater / Runner: 2.70%
+Close Finishing: 1.80%
+Dunk Finishing: 0.00%
+PLAYMAKING — 39.60%
+Transition Playmaking: 9.90%
+Drive-and-Kick Passing: 9.00%
+Passing Vision: 7.20%
+Passing Accuracy: 6.30%
+Ball Security: 5.40%
+Hockey Assist Creation: 1.80%
+Screen Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 1.80%
+Rebound-to-Playmaking (Outlet Impact): 1.20%
+Offensive Rebounding: 0.60%
+TOOLS — 10%
+PHYSICAL attributes — 8.70%
+Speed (With Ball): 1.80%
+Speed (Without Ball): 1.80%
+Endurance: 1.50%
+Acceleration (Burst): 1.50%
+Lateral Quickness: 1.20%
+Body Control: 0.90%
+REBOUNDING / POSSESSION TOOLS — 1.30%
+Rebound Conversion (Secure vs Tip): 0.70%
+Rebound Range & Tracking: 0.60%
+COMBO GUARD
+OFFENSE — 88%
+SHOOTING — 41.36%
+3PT Spot-Up (Catch-and-Shoot): 13.20%
+3PT Movement / Relocation: 10.56%
+3PT Off-the-Dribble: 8.80%
+3PT Deep Range: 6.16%
+Free Throw: 1.76%
+2PT Jumper Catch-and-Shoot: 0.88%
+FINISHING — 17.60%
+Layup Finishing: 7.04%
+Foul Draw Rate (Paint): 4.40%
+Floater / Runner: 3.52%
+Close Finishing: 1.76%
+Dunk Finishing: 0.88%
+PLAYMAKING — 25.52%
+Drive-and-Kick Passing: 7.92%
+Transition Playmaking: 6.16%
+Passing Accuracy: 4.40%
+Passing Vision: 4.40%
+Ball Security: 2.64%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 3.52%
+Rebound-to-Playmaking (Outlet Impact): 2.64%
+Offensive Rebounding: 0.88%
+TOOLS — 12%
+PHYSICAL attributes — 9.96%
+Speed (Without Ball): 2.16%
+Speed (With Ball): 1.92%
+Endurance: 1.92%
+Acceleration (Burst): 1.44%
+Lateral Quickness: 1.32%
+Body Control: 1.20%
+REBOUNDING / POSSESSION TOOLS — 2.04%
+Rebound Conversion (Secure vs Tip): 1.20%
+Rebound Range & Tracking: 0.84%
+
+WING 
+OFFENSE — 90%
+SHOOTING — 48.60%
+3PT Spot-Up (Catch-and-Shoot): 18.00%
+3PT Movement / Relocation: 13.50%
+3PT Off-the-Dribble: 7.20%
+3PT Deep Range: 7.20%
+Free Throw: 1.80%
+2PT Jumper Catch-and-Shoot: 0.90%
+FINISHING — 20.70%
+Layup Finishing: 8.10%
+Dunk Finishing: 5.40%
+Close Finishing: 3.60%
+Floater / Runner: 2.70%
+Foul Draw Rate (Paint): 0.90%
+PLAYMAKING — 14.40%
+Drive-and-Kick Passing: 4.50%
+Passing Accuracy: 3.60%
+Passing Vision: 3.60%
+Transition Playmaking: 1.80%
+Ball Security: 0.90%
+OFFENSIVE REBOUNDING / OUTLET — 6.30%
+Offensive Rebounding: 3.60%
+Rebound-to-Playmaking (Outlet Impact): 2.70%
+TOOLS — 10%
+PHYSICAL attributes — 7.80%
+Speed (Without Ball): 2.10%
+Endurance: 1.80%
+Lateral Quickness: 1.50%
+Acceleration (Burst): 1.20%
+Motor: 0.60%
+Body Control: 0.60%
+REBOUNDING / POSSESSION TOOLS — 2.20%
+Rebound Conversion (Secure vs Tip): 1.30%
+Rebound Range & Tracking: 0.90%
+
+FORWARD
+OFFENSE — 88%
+SHOOTING — 44.00%
+3PT Spot-Up (Catch-and-Shoot): 18.48%
+3PT Movement / Relocation: 11.44%
+3PT Deep Range: 7.04%
+3PT Off-the-Dribble: 4.40%
+Free Throw: 1.76%
+2PT Jumper Catch-and-Shoot: 0.88%
+FINISHING — 24.64%
+Layup Finishing: 9.68%
+Dunk Finishing: 6.16%
+Close Finishing: 5.28%
+Floater / Runner: 2.64%
+Foul Draw Rate (Paint): 0.88%
+PLAYMAKING — 12.32%
+Drive-and-Kick Passing: 3.52%
+Passing Accuracy: 3.52%
+Passing Vision: 3.52%
+Transition Playmaking: 1.76%
+OFFENSIVE REBOUNDING / OUTLET — 7.04%
+Offensive Rebounding: 4.22%
+Rebound-to-Playmaking (Outlet Impact): 2.82%
+TOOLS — 12%
+PHYSICAL attributes — 9.36%
+Endurance: 2.10%
+Speed (Without Ball): 1.80%
+Lateral Quickness: 1.50%
+Body Control: 1.44%
+Vertical Pop (Live-Play): 1.20%
+Acceleration (Burst): 1.32%
+REBOUNDING / POSSESSION TOOLS — 2.64%
+Rebound Conversion (Secure vs Tip): 1.58%
+Rebound Range & Tracking: 1.06%
+
+BIG
+OFFENSE — 85%
+SHOOTING — 26.35%
+3PT Spot-Up (Catch-and-Shoot): 12.24%
+3PT Movement / Relocation: 6.80%
+3PT Deep Range: 4.08%
+3PT Off-the-Dribble: 1.36%
+2PT Jumper Catch-and-Shoot: 1.87%
+Free Throw: 0.00%
+FINISHING — 31.45%
+Layup Finishing: 11.05%
+Close Finishing: 8.50%
+Dunk Finishing: 6.80%
+Floater / Runner: 3.40%
+Foul Draw Rate (Paint): 1.70%
+PLAYMAKING — 16.15%
+Passing Accuracy: 5.10%
+Passing Vision: 4.59%
+Drive-and-Kick Passing: 3.40%
+Transition Playmaking: 1.70%
+Ball Security: 1.36%
+OFFENSIVE REBOUNDING / OUTLET — 11.05%
+Offensive Rebounding: 6.63%
+Rebound-to-Playmaking (Outlet Impact): 4.42%
+TOOLS — 15%
+PHYSICAL attributes — 12.30%
+Endurance: 2.70%
+Speed (Without Ball): 1.80%
+Lateral Quickness: 1.80%
+Body Control: 2.10%
+Strength (Functional): 1.80%
+Vertical Pop (Live-Play): 1.50%
+Acceleration (Burst): 0.60%
+REBOUNDING / POSSESSION TOOLS — 2.70%
+Rebound Conversion (Secure vs Tip): 1.62%
+Rebound Range & Tracking: 1.08%
+
+4. MOTION / READ & REACT 
+POINT GUARD
+OFFENSE — 90%
+SHOOTING — 28.80%
+3PT Movement / Relocation: 8.10%
+3PT Spot-Up (Catch-and-Shoot): 7.20%
+3PT Off-the-Dribble: 6.30%
+3PT Deep Range: 3.60%
+Free Throw: 1.80%
+2PT Jumper Off-the-Dribble: 1.80%
+2PT Jumper Catch-and-Shoot: 0.00%
+FINISHING — 11.70%
+Layup Finishing: 4.50%
+Floater / Runner: 3.60%
+Foul Draw Rate (Paint): 2.70%
+Close Finishing: 0.90%
+Dunk Finishing: 0.00%
+PLAYMAKING — 47.70%
+Passing Vision: 11.70%
+Passing Accuracy: 9.00%
+Ball Security: 9.00%
+Drive-and-Kick Passing: 7.20%
+Hockey Assist Creation: 4.50%
+Screen Assist Creation: 3.60%
+Transition Playmaking: 2.70%
+OFFENSIVE REBOUNDING / OUTLET — 1.80%
+Rebound-to-Playmaking (Outlet Impact): 1.20%
+Offensive Rebounding: 0.60%
+TOOLS — 10%
+PHYSICAL attributes — 8.70%
+Endurance: 1.80%
+Speed (Without Ball): 1.50%
+Body Control: 1.50%
+Lateral Quickness: 1.50%
+Speed (With Ball): 1.20%
+Acceleration (Burst): 0.90%
+Motor: 0.30%
+REBOUNDING / POSSESSION TOOLS — 1.30%
+Rebound Conversion (Secure vs Tip): 0.70%
+Rebound Range & Tracking: 0.60%
+COMBO GUARD
+OFFENSE — 88%
+SHOOTING — 36.96%
+3PT Movement / Relocation: 11.44%
+3PT Spot-Up (Catch-and-Shoot): 10.56%
+3PT Off-the-Dribble: 7.04%
+3PT Deep Range: 4.40%
+2PT Jumper Catch-and-Shoot: 1.76%
+Free Throw: 0.88%
+2PT Jumper Off-the-Dribble: 0.88%
+FINISHING — 14.96%
+Layup Finishing: 5.28%
+Floater / Runner: 3.52%
+Foul Draw Rate (Paint): 3.52%
+Close Finishing: 1.76%
+Dunk Finishing: 0.88%
+PLAYMAKING — 32.56%
+Passing Vision: 7.92%
+Passing Accuracy: 6.16%
+Drive-and-Kick Passing: 6.16%
+Ball Security: 5.28%
+Hockey Assist Creation: 3.52%
+Screen Assist Creation: 1.76%
+Transition Playmaking: 1.76%
+OFFENSIVE REBOUNDING / OUTLET — 3.52%
+Rebound-to-Playmaking (Outlet Impact): 2.64%
+Offensive Rebounding: 0.88%
+TOOLS — 12%
+PHYSICAL attributes — 9.96%
+Endurance: 1.92%
+Speed (Without Ball): 1.92%
+Body Control: 1.44%
+Lateral Quickness: 1.44%
+Speed (With Ball): 1.44%
+Acceleration (Burst): 1.20%
+Motor: 0.60%
+REBOUNDING / POSSESSION TOOLS — 2.04%
+Rebound Conversion (Secure vs Tip): 1.20%
+Rebound Range & Tracking: 0.84%
+
+WING 
+OFFENSE — 90%
+SHOOTING — 46.80%
+3PT Movement / Relocation: 16.20%
+3PT Spot-Up (Catch-and-Shoot): 14.40%
+3PT Off-the-Dribble: 6.30%
+3PT Deep Range: 6.30%
+2PT Jumper Catch-and-Shoot: 1.80%
+Free Throw: 1.80%
+FINISHING — 18.00%
+Layup Finishing: 7.20%
+Close Finishing: 4.50%
+Dunk Finishing: 3.60%
+Floater / Runner: 1.80%
+Foul Draw Rate (Paint): 0.90%
+PLAYMAKING — 18.90%
+Passing Vision: 5.40%
+Passing Accuracy: 4.50%
+Drive-and-Kick Passing: 4.50%
+Ball Security: 2.70%
+Transition Playmaking: 1.80%
+OFFENSIVE REBOUNDING / OUTLET — 6.30%
+Offensive Rebounding: 3.60%
+Rebound-to-Playmaking (Outlet Impact): 2.70%
+TOOLS — 10%
+PHYSICAL attributes — 7.80%
+Endurance: 1.80%
+Speed (Without Ball): 1.80%
+Body Control: 1.50%
+Lateral Quickness: 1.20%
+Acceleration (Burst): 0.90%
+Motor: 0.60%
+REBOUNDING / POSSESSION TOOLS — 2.20%
+Rebound Conversion (Secure vs Tip): 1.30%
+Rebound Range & Tracking: 0.90%
+
+
+FORWARD
+OFFENSE — 88%
+SHOOTING — 42.24%
+3PT Spot-Up (Catch-and-Shoot): 17.60%
+3PT Movement / Relocation: 12.32%
+3PT Deep Range: 6.16%
+3PT Off-the-Dribble: 3.52%
+2PT Jumper Catch-and-Shoot: 1.76%
+Free Throw: 0.88%
+FINISHING — 23.76%
+Layup Finishing: 9.68%
+Close Finishing: 6.16%
+Dunk Finishing: 4.40%
+Floater / Runner: 2.64%
+Foul Draw Rate (Paint): 0.88%
+PLAYMAKING — 15.84%
+Passing Vision: 4.40%
+Passing Accuracy: 4.40%
+Drive-and-Kick Passing: 4.40%
+Ball Security: 1.76%
+Transition Playmaking: 0.88%
+OFFENSIVE REBOUNDING / OUTLET — 6.16%
+Offensive Rebounding: 3.52%
+Rebound-to-Playmaking (Outlet Impact): 2.64%
+TOOLS — 12%
+PHYSICAL attributes — 9.36%
+Endurance: 2.10%
+Body Control: 1.80%
+Speed (Without Ball): 1.44%
+Lateral Quickness: 1.44%
+Vertical Pop (Live-Play): 1.20%
+Acceleration (Burst): 1.38%
+REBOUNDING / POSSESSION TOOLS — 2.64%
+Rebound Conversion (Secure vs Tip): 1.58%
+Rebound Range & Tracking: 1.06%
+
+
+BIG
+OFFENSE — 85%
+SHOOTING — 22.10%
+3PT Spot-Up (Catch-and-Shoot): 10.20%
+3PT Movement / Relocation: 5.95%
+3PT Deep Range: 3.40%
+3PT Off-the-Dribble: 1.70%
+2PT Jumper Catch-and-Shoot: 0.85%
+Free Throw: 0.00%
+FINISHING — 33.15%
+Layup Finishing: 11.05%
+Close Finishing: 8.50%
+Dunk Finishing: 6.80%
+Floater / Runner: 3.40%
+Foul Draw Rate (Paint): 3.40%
+PLAYMAKING — 18.70%
+Passing Vision: 5.10%
+Passing Accuracy: 5.10%
+Drive-and-Kick Passing: 3.40%
+Ball Security: 3.40%
+Transition Playmaking: 1.70%
+OFFENSIVE REBOUNDING / OUTLET — 11.05%
+Offensive Rebounding: 6.63%
+Rebound-to-Playmaking (Outlet Impact): 4.42%
+TOOLS — 15%
+PHYSICAL attributes — 12.30%
+Endurance: 2.70%
+Body Control: 2.10%
+Lateral Quickness: 1.80%
+Strength (Functional): 1.80%
+Vertical Pop (Live-Play): 1.50%
+Speed (Without Ball): 1.20%
+Acceleration (Burst): 1.20%
+REBOUNDING / POSSESSION TOOLS — 2.70%
+Rebound Conversion (Secure vs Tip): 1.62%
+Rebound Range & Tracking: 1.08%
+
+
+5. DRIBBLE DRIVE
+POINT GUARD
+OFFENSE — 90%
+SHOOTING — 27.00%
+3PT Off-the-Dribble: 9.90%
+3PT Spot-Up (Catch-and-Shoot): 7.20%
+3PT Deep Range: 4.50%
+3PT Movement / Relocation: 2.70%
+Free Throw: 1.80%
+2PT Jumper Off-the-Dribble: 0.90%
+2PT Jumper Catch-and-Shoot: 0.00%
+FINISHING — 18.90%
+Layup Finishing: 7.20%
+Foul Draw Rate (Paint): 6.30%
+Floater / Runner: 3.60%
+Close Finishing: 1.80%
+Dunk Finishing: 0.00%
+PLAYMAKING — 41.40%
+Drive-and-Kick Passing: 14.40%
+Passing Vision: 8.10%
+Passing Accuracy: 7.20%
+Ball Security: 6.30%
+Transition Playmaking: 3.60%
+Screen Assist Creation: 1.80%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 2.70%
+Rebound-to-Playmaking (Outlet Impact): 1.80%
+Offensive Rebounding: 0.90%
+TOOLS — 10%
+PHYSICAL attributes — 8.70%
+Speed (With Ball): 2.40%
+Acceleration (Burst): 2.10%
+Lateral Quickness: 1.50%
+Body Control: 1.20%
+Endurance: 0.90%
+Motor: 0.60%
+REBOUNDING / POSSESSION TOOLS — 1.30%
+Rebound Conversion (Secure vs Tip): 0.70%
+Rebound Range & Tracking: 0.60%
+COMBO GUARD
+OFFENSE — 88%
+SHOOTING — 34.32%
+3PT Off-the-Dribble: 11.44%
+3PT Spot-Up (Catch-and-Shoot): 9.68%
+3PT Deep Range: 5.28%
+3PT Movement / Relocation: 4.40%
+Free Throw: 1.76%
+2PT Jumper Off-the-Dribble: 1.76%
+FINISHING — 19.36%
+Layup Finishing: 7.04%
+Foul Draw Rate (Paint): 6.16%
+Floater / Runner: 3.52%
+Close Finishing: 1.76%
+Dunk Finishing: 0.88%
+PLAYMAKING — 30.80%
+Drive-and-Kick Passing: 10.56%
+Passing Vision: 6.16%
+Passing Accuracy: 5.28%
+Ball Security: 4.40%
+Transition Playmaking: 3.52%
+Screen Assist Creation: 0.88%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 3.52%
+Rebound-to-Playmaking (Outlet Impact): 2.64%
+Offensive Rebounding: 0.88%
+TOOLS — 12%
+PHYSICAL attributes — 9.96%
+Speed (With Ball): 2.40%
+Acceleration (Burst): 2.16%
+Lateral Quickness: 1.44%
+Body Control: 1.32%
+Endurance: 1.20%
+Motor: 1.44%
+REBOUNDING / POSSESSION TOOLS — 2.04%
+Rebound Conversion (Secure vs Tip): 1.20%
+Rebound Range & Tracking: 0.84%
+
+
+WING
+OFFENSE — 90%
+SHOOTING — 38.70%
+3PT Spot-Up (Catch-and-Shoot): 14.40%
+3PT Off-the-Dribble: 9.00%
+3PT Movement / Relocation: 6.30%
+3PT Deep Range: 6.30%
+Free Throw: 1.80%
+2PT Jumper Catch-and-Shoot: 0.90%
+FINISHING — 27.00%
+Layup Finishing: 10.80%
+Dunk Finishing: 6.30%
+Foul Draw Rate (Paint): 5.40%
+Close Finishing: 2.70%
+Floater / Runner: 1.80%
+PLAYMAKING — 16.20%
+Drive-and-Kick Passing: 5.40%
+Passing Accuracy: 4.50%
+Passing Vision: 3.60%
+Transition Playmaking: 1.80%
+Ball Security: 0.90%
+OFFENSIVE REBOUNDING / OUTLET — 8.10%
+Offensive Rebounding: 4.50%
+Rebound-to-Playmaking (Outlet Impact): 3.60%
+TOOLS — 10%
+PHYSICAL attributes — 7.80%
+Speed (With Ball): 1.80%
+Acceleration (Burst): 1.50%
+Lateral Quickness: 1.20%
+Body Control: 1.20%
+Endurance: 1.20%
+Motor: 0.90%
+REBOUNDING / POSSESSION TOOLS — 2.20%
+Rebound Conversion (Secure vs Tip): 1.30%
+Rebound Range & Tracking: 0.90%
+
+
+FORWARD
+OFFENSE — 88%
+SHOOTING — 33.44%
+3PT Spot-Up (Catch-and-Shoot): 14.08%
+3PT Movement / Relocation: 8.80%
+3PT Deep Range: 6.16%
+3PT Off-the-Dribble: 3.52%
+Free Throw: 0.88%
+FINISHING — 33.44%
+Layup Finishing: 12.32%
+Dunk Finishing: 8.80%
+Foul Draw Rate (Paint): 6.16%
+Close Finishing: 3.52%
+Floater / Runner: 2.64%
+PLAYMAKING — 13.20%
+Drive-and-Kick Passing: 4.40%
+Passing Accuracy: 3.52%
+Passing Vision: 3.52%
+Transition Playmaking: 1.76%
+OFFENSIVE REBOUNDING / OUTLET — 7.92%
+Offensive Rebounding: 4.75%
+Rebound-to-Playmaking (Outlet Impact): 3.17%
+TOOLS — 12%
+PHYSICAL attributes — 9.36%
+Speed (With Ball): 1.92%
+Acceleration (Burst): 1.68%
+Strength (Functional): 1.44%
+Body Control: 1.44%
+Lateral Quickness: 1.32%
+Endurance: 1.20%
+Motor: 0.36%
+REBOUNDING / POSSESSION TOOLS — 2.64%
+Rebound Conversion (Secure vs Tip): 1.58%
+Rebound Range & Tracking: 1.06%
+
+
+BIG
+OFFENSE — 85%
+SHOOTING — 15.30%
+3PT Spot-Up (Catch-and-Shoot): 7.65%
+3PT Deep Range: 3.40%
+3PT Movement / Relocation: 2.55%
+2PT Jumper Catch-and-Shoot: 1.70%
+Free Throw: 0.00%
+FINISHING — 45.90%
+Layup Finishing: 15.30%
+Dunk Finishing: 13.60%
+Close Finishing: 8.50%
+Foul Draw Rate (Paint): 6.80%
+Floater / Runner: 1.70%
+PLAYMAKING — 13.60%
+Passing Accuracy: 4.25%
+Passing Vision: 4.25%
+Drive-and-Kick Passing: 3.40%
+Transition Playmaking: 1.70%
+OFFENSIVE REBOUNDING / OUTLET — 10.20%
+Offensive Rebounding: 6.12%
+Rebound-to-Playmaking (Outlet Impact): 4.08%
+TOOLS — 15%
+PHYSICAL attributes — 12.30%
+Strength (Functional): 2.70%
+Vertical Pop (Live-Play): 2.25%
+Body Control: 2.10%
+Acceleration (Burst): 1.80%
+Endurance: 1.50%
+Lateral Quickness: 1.50%
+Speed (Without Ball): 0.45%
+REBOUNDING / POSSESSION TOOLS — 2.70%
+Rebound Conversion (Secure vs Tip): 1.62%
+Rebound Range & Tracking: 1.08%
+
+
+6. PRINCETON
+POINT GUARD
+OFFENSE — 90%
+SHOOTING — 25.20%
+3PT Spot-Up (Catch-and-Shoot): 9.00%
+3PT Movement / Relocation: 7.20%
+3PT Off-the-Dribble: 4.50%
+3PT Deep Range: 2.70%
+Free Throw: 1.80%
+2PT Jumper Off-the-Dribble: 0.00%
+2PT Jumper Catch-and-Shoot: 0.00%
+FINISHING — 10.80%
+Layup Finishing: 4.50%
+Floater / Runner: 3.60%
+Close Finishing: 1.80%
+Foul Draw Rate (Paint): 0.90%
+Dunk Finishing: 0.00%
+PLAYMAKING — 52.20%
+Passing Vision: 13.50%
+Passing Accuracy: 10.80%
+Ball Security: 10.80%
+Drive-and-Kick Passing: 7.20%
+Hockey Assist Creation: 6.30%
+Screen Assist Creation: 2.70%
+Transition Playmaking: 0.90%
+OFFENSIVE REBOUNDING / OUTLET — 1.80%
+Rebound-to-Playmaking (Outlet Impact): 1.20%
+Offensive Rebounding: 0.60%
+TOOLS — 10%
+PHYSICAL attributes — 8.70%
+Endurance: 2.10%
+Body Control: 1.80%
+Speed (Without Ball): 1.50%
+Lateral Quickness: 1.20%
+Motor: 1.20%
+Speed (With Ball): 0.90%
+REBOUNDING / POSSESSION TOOLS — 1.30%
+Rebound Conversion (Secure vs Tip): 0.70%
+Rebound Range & Tracking: 0.60%
+COMBO GUARD
+OFFENSE — 88%
+SHOOTING — 31.68%
+3PT Spot-Up (Catch-and-Shoot): 11.44%
+3PT Movement / Relocation: 9.68%
+3PT Off-the-Dribble: 5.28%
+3PT Deep Range: 3.52%
+Free Throw: 1.76%
+2PT Jumper Catch-and-Shoot: 0.00%
+FINISHING — 13.20%
+Layup Finishing: 5.28%
+Floater / Runner: 3.52%
+Close Finishing: 2.64%
+Foul Draw Rate (Paint): 1.76%
+Dunk Finishing: 0.00%
+PLAYMAKING — 39.60%
+Passing Vision: 9.68%
+Passing Accuracy: 7.92%
+Ball Security: 7.04%
+Drive-and-Kick Passing: 6.16%
+Hockey Assist Creation: 5.28%
+Screen Assist Creation: 2.64%
+Transition Playmaking: 0.88%
+OFFENSIVE REBOUNDING / OUTLET — 3.52%
+Rebound-to-Playmaking (Outlet Impact): 2.64%
+Offensive Rebounding: 0.88%
+TOOLS — 12%
+PHYSICAL attributes — 9.96%
+Endurance: 2.16%
+Body Control: 1.80%
+Speed (Without Ball): 1.68%
+Lateral Quickness: 1.44%
+Motor: 1.44%
+Speed (With Ball): 1.44%
+REBOUNDING / POSSESSION TOOLS — 2.04%
+Rebound Conversion (Secure vs Tip): 1.20%
+Rebound Range & Tracking: 0.84%
+
+
+WING
+OFFENSE — 90%
+SHOOTING — 45.00%
+3PT Spot-Up (Catch-and-Shoot): 18.00%
+3PT Movement / Relocation: 13.50%
+3PT Off-the-Dribble: 6.30%
+3PT Deep Range: 6.30%
+Free Throw: 0.90%
+FINISHING — 18.00%
+Layup Finishing: 7.20%
+Close Finishing: 5.40%
+Dunk Finishing: 2.70%
+Floater / Runner: 1.80%
+Foul Draw Rate (Paint): 0.90%
+PLAYMAKING — 21.60%
+Passing Vision: 6.30%
+Passing Accuracy: 5.40%
+Drive-and-Kick Passing: 4.50%
+Ball Security: 3.60%
+Hockey Assist Creation: 1.80%
+OFFENSIVE REBOUNDING / OUTLET — 5.40%
+Offensive Rebounding: 3.00%
+Rebound-to-Playmaking (Outlet Impact): 2.40%
+TOOLS — 10%
+PHYSICAL attributes — 7.80%
+Endurance: 1.80%
+Body Control: 1.50%
+Speed (Without Ball): 1.50%
+Lateral Quickness: 1.20%
+Motor: 0.90%
+Acceleration (Burst): 0.90%
+REBOUNDING / POSSESSION TOOLS — 2.20%
+Rebound Conversion (Secure vs Tip): 1.30%
+Rebound Range & Tracking: 0.90%
+
+FORWARD
+OFFENSE — 88%
+SHOOTING — 39.60%
+3PT Spot-Up (Catch-and-Shoot): 16.72%
+3PT Movement / Relocation: 11.44%
+3PT Deep Range: 6.16%
+3PT Off-the-Dribble: 3.52%
+Free Throw: 1.76%
+FINISHING — 23.76%
+Layup Finishing: 9.68%
+Close Finishing: 6.16%
+Dunk Finishing: 4.40%
+Floater / Runner: 2.64%
+Foul Draw Rate (Paint): 0.88%
+PLAYMAKING — 19.36%
+Passing Vision: 5.28%
+Passing Accuracy: 4.40%
+Drive-and-Kick Passing: 4.40%
+Ball Security: 3.52%
+Hockey Assist Creation: 1.76%
+OFFENSIVE REBOUNDING / OUTLET — 5.28%
+Offensive Rebounding: 3.17%
+Rebound-to-Playmaking (Outlet Impact): 2.11%
+TOOLS — 12%
+PHYSICAL attributes — 9.36%
+Body Control: 2.10%
+Endurance: 1.80%
+Speed (Without Ball): 1.44%
+Lateral Quickness: 1.44%
+Vertical Pop (Live-Play): 1.20%
+Motor: 1.38%
+REBOUNDING / POSSESSION TOOLS — 2.64%
+Rebound Conversion (Secure vs Tip): 1.58%
+Rebound Range & Tracking: 1.06%
+
+
+BIG
+OFFENSE — 85%
+SHOOTING — 20.40%
+3PT Spot-Up (Catch-and-Shoot): 9.52%
+3PT Movement / Relocation: 5.10%
+3PT Deep Range: 3.40%
+2PT Jumper Catch-and-Shoot: 1.38%
+3PT Off-the-Dribble: 1.00%
+FINISHING — 31.45%
+Layup Finishing: 11.05%
+Close Finishing: 8.50%
+Dunk Finishing: 6.80%
+Floater / Runner: 3.40%
+Foul Draw Rate (Paint): 1.70%
+PLAYMAKING — 22.10%
+Passing Vision: 6.80%
+Passing Accuracy: 6.80%
+Drive-and-Kick Passing: 4.25%
+Ball Security: 3.40%
+Hockey Assist Creation: 0.85%
+OFFENSIVE REBOUNDING / OUTLET — 11.05%
+Offensive Rebounding: 6.63%
+Rebound-to-Playmaking (Outlet Impact): 4.42%
+TOOLS — 15%
+PHYSICAL attributes — 12.30%
+Body Control: 2.40%
+Endurance: 2.10%
+Strength (Functional): 1.95%
+Lateral Quickness: 1.80%
+Vertical Pop (Live-Play): 1.50%
+Speed (Without Ball): 1.20%
+Motor: 1.35%
+REBOUNDING / POSSESSION TOOLS — 2.70%
+Rebound Conversion (Secure vs Tip): 1.62%
+Rebound Range & Tracking: 1.08%
+
+
+7. FLEX
+POINT GUARD
+OFFENSE — 90%
+SHOOTING — 27.90%
+3PT Spot-Up (Catch-and-Shoot): 9.90%
+3PT Movement / Relocation: 7.20%
+3PT Off-the-Dribble: 4.50%
+3PT Deep Range: 3.60%
+Free Throw: 1.80%
+2PT Jumper Off-the-Dribble: 0.90%
+FINISHING — 13.50%
+Layup Finishing: 5.40%
+Floater / Runner: 3.60%
+Close Finishing: 2.70%
+Foul Draw Rate (Paint): 1.80%
+Dunk Finishing: 0.00%
+PLAYMAKING — 45.90%
+Passing Accuracy: 11.70%
+Passing Vision: 10.80%
+Ball Security: 9.00%
+Drive-and-Kick Passing: 6.30%
+Screen Assist Creation: 4.50%
+Hockey Assist Creation: 2.70%
+Transition Playmaking: 0.90%
+OFFENSIVE REBOUNDING / OUTLET — 2.70%
+Rebound-to-Playmaking (Outlet Impact): 1.80%
+Offensive Rebounding: 0.90%
+TOOLS — 10%
+PHYSICAL attributes — 8.70%
+Body Control: 1.80%
+Endurance: 1.80%
+Lateral Quickness: 1.50%
+Speed (Without Ball): 1.20%
+Speed (With Ball): 1.20%
+Motor: 1.20%
+REBOUNDING / POSSESSION TOOLS — 1.30%
+Rebound Conversion (Secure vs Tip): 0.70%
+Rebound Range & Tracking: 0.60%
+
+COMBO GUARD
+OFFENSE — 88%
+SHOOTING — 33.44%
+3PT Spot-Up (Catch-and-Shoot): 11.44%
+3PT Movement / Relocation: 9.68%
+3PT Off-the-Dribble: 5.28%
+3PT Deep Range: 4.40%
+Free Throw: 1.76%
+2PT Jumper Catch-and-Shoot: 0.88%
+FINISHING — 15.84%
+Layup Finishing: 6.16%
+Floater / Runner: 3.52%
+Close Finishing: 2.64%
+Foul Draw Rate (Paint): 2.64%
+Dunk Finishing: 0.88%
+PLAYMAKING — 35.20%
+Passing Accuracy: 8.80%
+Passing Vision: 7.92%
+Ball Security: 6.16%
+Drive-and-Kick Passing: 5.28%
+Screen Assist Creation: 4.40%
+Hockey Assist Creation: 2.64%
+OFFENSIVE REBOUNDING / OUTLET — 3.52%
+Rebound-to-Playmaking (Outlet Impact): 2.64%
+Offensive Rebounding: 0.88%
+TOOLS — 12%
+PHYSICAL attributes — 9.96%
+Body Control: 1.80%
+Endurance: 1.80%
+Lateral Quickness: 1.44%
+Speed (Without Ball): 1.44%
+Speed (With Ball): 1.32%
+Motor: 2.16%
+REBOUNDING / POSSESSION TOOLS — 2.04%
+Rebound Conversion (Secure vs Tip): 1.20%
+Rebound Range & Tracking: 0.84%
+
+WING
+OFFENSE — 90%
+SHOOTING — 43.20%
+3PT Spot-Up (Catch-and-Shoot): 18.00%
+3PT Movement / Relocation: 13.50%
+3PT Deep Range: 6.30%
+3PT Off-the-Dribble: 3.60%
+Free Throw: 1.80%
+FINISHING — 22.50%
+Layup Finishing: 9.00%
+Close Finishing: 5.40%
+Dunk Finishing: 4.50%
+Floater / Runner: 1.80%
+Foul Draw Rate (Paint): 1.80%
+PLAYMAKING — 16.20%
+Passing Accuracy: 4.50%
+Passing Vision: 4.50%
+Drive-and-Kick Passing: 3.60%
+Screen Assist Creation: 2.70%
+Ball Security: 0.90%
+OFFENSIVE REBOUNDING / OUTLET — 8.10%
+Offensive Rebounding: 4.50%
+Rebound-to-Playmaking (Outlet Impact): 3.60%
+TOOLS — 10%
+PHYSICAL attributes — 7.80%
+Body Control: 1.50%
+Endurance: 1.50%
+Strength (Functional): 1.20%
+Lateral Quickness: 1.20%
+Speed (Without Ball): 1.20%
+Motor: 1.20%
+REBOUNDING / POSSESSION TOOLS — 2.20%
+Rebound Conversion (Secure vs Tip): 1.30%
+Rebound Range & Tracking: 0.90%
+
+FORWARD
+OFFENSE — 88%
+SHOOTING — 35.20%
+3PT Spot-Up (Catch-and-Shoot): 15.84%
+3PT Movement / Relocation: 11.44%
+3PT Deep Range: 5.28%
+3PT Off-the-Dribble: 2.64%
+FINISHING — 31.68%
+Layup Finishing: 11.44%
+Close Finishing: 7.04%
+Dunk Finishing: 6.16%
+Floater / Runner: 3.52%
+Foul Draw Rate (Paint): 3.52%
+PLAYMAKING — 13.20%
+Passing Accuracy: 4.40%
+Passing Vision: 4.40%
+Drive-and-Kick Passing: 2.64%
+Screen Assist Creation: 1.76%
+OFFENSIVE REBOUNDING / OUTLET — 7.92%
+Offensive Rebounding: 4.75%
+Rebound-to-Playmaking (Outlet Impact): 3.17%
+TOOLS — 12%
+PHYSICAL attributes — 9.36%
+Strength (Functional): 2.10%
+Body Control: 1.80%
+Endurance: 1.80%
+Vertical Pop (Live-Play): 1.44%
+Lateral Quickness: 1.20%
+Motor: 1.02%
+REBOUNDING / POSSESSION TOOLS — 2.64%
+Rebound Conversion (Secure vs Tip): 1.58%
+Rebound Range & Tracking: 1.06%
+
+
+BIG
+OFFENSE — 85%
+SHOOTING — 18.70%
+3PT Spot-Up (Catch-and-Shoot): 8.50%
+3PT Movement / Relocation: 4.25%
+3PT Deep Range: 3.40%
+2PT Jumper Catch-and-Shoot: 1.55%
+3PT Off-the-Dribble: 1.00%
+FINISHING — 36.55%
+Layup Finishing: 12.75%
+Close Finishing: 9.35%
+Dunk Finishing: 7.65%
+Foul Draw Rate (Paint): 4.25%
+Floater / Runner: 2.55%
+PLAYMAKING — 15.30%
+Passing Accuracy: 5.10%
+Passing Vision: 5.10%
+Drive-and-Kick Passing: 3.40%
+Screen Assist Creation: 1.70%
+OFFENSIVE REBOUNDING / OUTLET — 14.45%
+Offensive Rebounding: 8.67%
+Rebound-to-Playmaking (Outlet Impact): 5.78%
+TOOLS — 15%
+PHYSICAL attributes — 12.75%
+Strength (Functional): 2.70%
+Body Control: 2.25%
+Endurance: 2.10%
+Vertical Pop (Live-Play): 1.80%
+Lateral Quickness: 1.65%
+Motor: 1.25%
+REBOUNDING / POSSESSION TOOLS — 2.25%
+Rebound Conversion (Secure vs Tip): 1.35%
+Rebound Range & Tracking: 0.90%
+
+8. SWING
+POINT GUARD
+OFFENSE — 90%
+SHOOTING — 30.60%
+3PT Spot-Up (Catch-and-Shoot): 11.70%
+3PT Movement / Relocation: 7.20%
+3PT Off-the-Dribble: 5.40%
+3PT Deep Range: 4.50%
+Free Throw: 1.80%
+2PT Jumper Off-the-Dribble: 0.00%
+FINISHING — 12.60%
+Layup Finishing: 4.50%
+Close Finishing: 3.60%
+Floater / Runner: 2.70%
+Foul Draw Rate (Paint): 1.80%
+Dunk Finishing: 0.00%
+PLAYMAKING — 44.10%
+Passing Accuracy: 10.80%
+Passing Vision: 9.90%
+Drive-and-Kick Passing: 7.20%
+Ball Security: 7.20%
+Screen Assist Creation: 5.40%
+Hockey Assist Creation: 2.70%
+Transition Playmaking: 0.90%
+OFFENSIVE REBOUNDING / OUTLET — 2.70%
+Rebound-to-Playmaking (Outlet Impact): 1.80%
+Offensive Rebounding: 0.90%
+TOOLS — 10%
+PHYSICAL attributes — 8.70%
+Endurance: 1.80%
+Body Control: 1.50%
+Speed (Without Ball): 1.50%
+Lateral Quickness: 1.20%
+Speed (With Ball): 1.20%
+Motor: 1.50%
+REBOUNDING / POSSESSION TOOLS — 1.30%
+Rebound Conversion (Secure vs Tip): 0.70%
+Rebound Range & Tracking: 0.60%
+
+COMBO GUARD
+OFFENSE — 88%
+SHOOTING — 35.20%
+3PT Spot-Up (Catch-and-Shoot): 13.20%
+3PT Movement / Relocation: 9.68%
+3PT Off-the-Dribble: 5.28%
+3PT Deep Range: 5.28%
+Free Throw: 1.76%
+FINISHING — 14.96%
+Layup Finishing: 5.28%
+Close Finishing: 3.52%
+Floater / Runner: 3.52%
+Foul Draw Rate (Paint): 2.64%
+PLAYMAKING — 33.44%
+Passing Accuracy: 8.80%
+Passing Vision: 7.92%
+Drive-and-Kick Passing: 6.16%
+Ball Security: 5.28%
+Screen Assist Creation: 3.52%
+Hockey Assist Creation: 1.76%
+OFFENSIVE REBOUNDING / OUTLET — 4.40%
+Rebound-to-Playmaking (Outlet Impact): 3.08%
+Offensive Rebounding: 1.32%
+TOOLS — 12%
+PHYSICAL attributes — 9.96%
+Endurance: 2.16%
+Body Control: 1.80%
+Speed (Without Ball): 1.68%
+Lateral Quickness: 1.44%
+Speed (With Ball): 1.32%
+Motor: 1.56%
+REBOUNDING / POSSESSION TOOLS — 2.04%
+Rebound Conversion (Secure vs Tip): 1.20%
+Rebound Range & Tracking: 0.84%
+
+
+WING
+OFFENSE — 90%
+SHOOTING — 45.00%
+3PT Spot-Up (Catch-and-Shoot): 18.90%
+3PT Movement / Relocation: 13.50%
+3PT Deep Range: 7.20%
+3PT Off-the-Dribble: 4.50%
+Free Throw: 0.90%
+FINISHING — 20.70%
+Layup Finishing: 7.20%
+Close Finishing: 5.40%
+Dunk Finishing: 4.50%
+Floater / Runner: 2.70%
+Foul Draw Rate (Paint): 0.90%
+PLAYMAKING — 16.20%
+Passing Accuracy: 5.40%
+Passing Vision: 4.50%
+Drive-and-Kick Passing: 3.60%
+Screen Assist Creation: 1.80%
+Ball Security: 0.90%
+OFFENSIVE REBOUNDING / OUTLET — 8.10%
+Offensive Rebounding: 4.50%
+Rebound-to-Playmaking (Outlet Impact): 3.60%
+TOOLS — 10%
+PHYSICAL attributes — 7.80%
+Endurance: 1.80%
+Body Control: 1.50%
+Speed (Without Ball): 1.50%
+Lateral Quickness: 1.20%
+Strength (Functional): 0.90%
+Motor: 0.90%
+REBOUNDING / POSSESSION TOOLS — 2.20%
+Rebound Conversion (Secure vs Tip): 1.30%
+Rebound Range & Tracking: 0.90%
+
+
+FORWARD
+OFFENSE — 88%
+SHOOTING — 37.84%
+3PT Spot-Up (Catch-and-Shoot): 16.72%
+3PT Movement / Relocation: 11.44%
+3PT Deep Range: 6.16%
+3PT Off-the-Dribble: 3.52%
+FINISHING — 29.92%
+Layup Finishing: 10.56%
+Close Finishing: 7.04%
+Dunk Finishing: 6.16%
+Floater / Runner: 3.52%
+Foul Draw Rate (Paint): 2.64%
+PLAYMAKING — 13.20%
+Passing Accuracy: 4.40%
+Passing Vision: 4.40%
+Drive-and-Kick Passing: 2.64%
+Screen Assist Creation: 1.76%
+OFFENSIVE REBOUNDING / OUTLET — 7.04%
+Offensive Rebounding: 4.22%
+Rebound-to-Playmaking (Outlet Impact): 2.82%
+TOOLS — 12%
+PHYSICAL attributes — 9.36%
+Strength (Functional): 2.10%
+Body Control: 1.80%
+Endurance: 1.80%
+Lateral Quickness: 1.44%
+Vertical Pop (Live-Play): 1.20%
+Motor: 1.02%
+REBOUNDING / POSSESSION TOOLS — 2.64%
+Rebound Conversion (Secure vs Tip): 1.58%
+Rebound Range & Tracking: 1.06%
+
+
+BIG
+OFFENSE — 85%
+SHOOTING — 19.55%
+3PT Spot-Up (Catch-and-Shoot): 8.84%
+3PT Movement / Relocation: 4.59%
+3PT Deep Range: 3.40%
+2PT Jumper Catch-and-Shoot: 1.72%
+3PT Off-the-Dribble: 1.00%
+FINISHING — 35.70%
+Layup Finishing: 12.75%
+Close Finishing: 9.35%
+Dunk Finishing: 7.65%
+Foul Draw Rate (Paint): 3.40%
+Floater / Runner: 2.55%
+PLAYMAKING — 15.30%
+Passing Accuracy: 5.10%
+Passing Vision: 5.10%
+Drive-and-Kick Passing: 3.40%
+Screen Assist Creation: 1.70%
+OFFENSIVE REBOUNDING / OUTLET — 14.45%
+Offensive Rebounding: 8.67%
+Rebound-to-Playmaking (Outlet Impact): 5.78%
+TOOLS — 15%
+PHYSICAL attributes — 12.75%
+Strength (Functional): 2.70%
+Body Control: 2.25%
+Endurance: 2.10%
+Vertical Pop (Live-Play): 1.80%
+Lateral Quickness: 1.65%
+Motor: 1.25%
+REBOUNDING / POSSESSION TOOLS — 2.25%
+Rebound Conversion (Secure vs Tip): 1.35%
+Rebound Range & Tracking: 0.90%
+
+9. POST-CENTRIC / INSIDE-OUT
+POINT GUARD
+OFFENSE — 88%
+SHOOTING — 27.28%
+3PT Spot-Up (Catch-and-Shoot): 11.44%
+3PT Deep Range: 5.28%
+3PT Movement / Relocation: 4.40%
+3PT Off-the-Dribble: 3.52%
+Free Throw: 1.76%
+2PT Jumper Catch-and-Shoot: 0.88%
+FINISHING — 14.08%
+Layup Finishing: 5.28%
+Foul Draw Rate (Paint): 3.52%
+Close Finishing: 2.64%
+Floater / Runner: 1.76%
+Dunk Finishing: 0.88%
+PLAYMAKING — 41.36%
+Entry Passing / Post Feeds: 10.56%
+Passing Accuracy: 9.68%
+Passing Vision: 8.80%
+Drive-and-Kick Passing: 6.16%
+Ball Security: 4.40%
+Hockey Assist Creation: 1.76%
+OFFENSIVE REBOUNDING / OUTLET — 5.28%
+Rebound-to-Playmaking (Outlet Impact): 3.52%
+Offensive Rebounding: 1.76%
+TOOLS — 12%
+PHYSICAL attributes — 9.60%
+Strength (Functional): 2.10%
+Body Control: 1.80%
+Endurance: 1.44%
+Lateral Quickness: 1.32%
+Speed (With Ball): 1.20%
+Motor: 1.74%
+REBOUNDING / POSSESSION TOOLS — 2.40%
+Rebound Conversion (Secure vs Tip): 1.44%
+Rebound Range & Tracking: 0.96%
+
+COMBO GUARD
+OFFENSE — 86%
+SHOOTING — 29.24%
+3PT Spot-Up (Catch-and-Shoot): 12.32%
+3PT Deep Range: 5.28%
+3PT Movement / Relocation: 4.40%
+3PT Off-the-Dribble: 4.40%
+Free Throw: 1.76%
+2PT Jumper Catch-and-Shoot: 1.08%
+FINISHING — 18.92%
+Layup Finishing: 7.04%
+Foul Draw Rate (Paint): 4.40%
+Close Finishing: 3.52%
+Floater / Runner: 2.64%
+Dunk Finishing: 1.32%
+PLAYMAKING — 32.56%
+Entry Passing / Post Feeds: 8.80%
+Passing Accuracy: 7.04%
+Passing Vision: 6.16%
+Drive-and-Kick Passing: 6.16%
+Ball Security: 3.52%
+Hockey Assist Creation: 0.88%
+OFFENSIVE REBOUNDING / OUTLET — 5.28%
+Rebound-to-Playmaking (Outlet Impact): 3.52%
+Offensive Rebounding: 1.76%
+TOOLS — 14%
+PHYSICAL attributes — 11.20%
+Strength (Functional): 2.52%
+Body Control: 2.10%
+Endurance: 1.68%
+Speed (With Ball): 1.68%
+Lateral Quickness: 1.40%
+Motor: 1.82%
+REBOUNDING / POSSESSION TOOLS — 2.80%
+Rebound Conversion (Secure vs Tip): 1.68%
+Rebound Range & Tracking: 1.12%
+
+
+WING
+OFFENSE — 88%
+SHOOTING — 33.44%
+3PT Spot-Up (Catch-and-Shoot): 15.84%
+3PT Deep Range: 6.16%
+3PT Movement / Relocation: 5.28%
+3PT Off-the-Dribble: 3.52%
+Free Throw: 2.64%
+FINISHING — 26.40%
+Layup Finishing: 9.68%
+Dunk Finishing: 6.16%
+Close Finishing: 4.40%
+Foul Draw Rate (Paint): 3.52%
+Floater / Runner: 2.64%
+PLAYMAKING — 19.36%
+Drive-and-Kick Passing: 6.16%
+Entry Passing / Post Feeds: 5.28%
+Passing Accuracy: 4.40%
+Passing Vision: 3.52%
+OFFENSIVE REBOUNDING / OUTLET — 8.80%
+Offensive Rebounding: 5.28%
+Rebound-to-Playmaking (Outlet Impact): 3.52%
+TOOLS — 12%
+PHYSICAL attributes — 9.36%
+Strength (Functional): 2.10%
+Body Control: 1.80%
+Endurance: 1.80%
+Vertical Pop (Live-Play): 1.44%
+Lateral Quickness: 1.20%
+Motor: 1.02%
+REBOUNDING / POSSESSION TOOLS — 2.64%
+Rebound Conversion (Secure vs Tip): 1.58%
+Rebound Range & Tracking: 1.06%
+
+
+FORWARD
+OFFENSE — 85%
+SHOOTING — 29.75%
+3PT Spot-Up (Catch-and-Shoot): 14.45%
+3PT Deep Range: 5.95%
+3PT Movement / Relocation: 4.25%
+3PT Off-the-Dribble: 2.55%
+Free Throw: 2.55%
+FINISHING — 34.00%
+Layup Finishing: 12.75%
+Dunk Finishing: 8.50%
+Close Finishing: 6.80%
+Foul Draw Rate (Paint): 3.40%
+Floater / Runner: 2.55%
+PLAYMAKING — 14.45%
+Entry Passing / Post Feeds: 5.10%
+Passing Accuracy: 4.25%
+Passing Vision: 3.40%
+Drive-and-Kick Passing: 1.70%
+OFFENSIVE REBOUNDING / OUTLET — 6.80%
+Offensive Rebounding: 4.25%
+Rebound-to-Playmaking (Outlet Impact): 2.55%
+TOOLS — 15%
+PHYSICAL attributes — 12.30%
+Strength (Functional): 2.70%
+Body Control: 2.25%
+Endurance: 2.10%
+Vertical Pop (Live-Play): 1.80%
+Lateral Quickness: 1.65%
+Motor: 1.80%
+REBOUNDING / POSSESSION TOOLS — 2.70%
+Rebound Conversion (Secure vs Tip): 1.62%
+Rebound Range & Tracking: 1.08%
+
+BIG
+OFFENSE — 80%
+SHOOTING — 16.00%
+3PT Spot-Up (Catch-and-Shoot): 7.20%
+3PT Deep Range: 3.20%
+2PT Jumper Catch-and-Shoot: 2.40%
+3PT Movement / Relocation: 1.60%
+Free Throw: 1.60%
+FINISHING — 46.40%
+Dunk Finishing: 16.00%
+Layup Finishing: 13.60%
+Close Finishing: 9.60%
+Foul Draw Rate (Paint): 4.80%
+Floater / Runner: 2.40%
+PLAYMAKING — 12.80%
+Passing Vision: 4.80%
+Passing Accuracy: 4.80%
+Kick-Out Passing (Post): 3.20%
+OFFENSIVE REBOUNDING / OUTLET — 4.80%
+Offensive Rebounding: 3.20%
+Rebound-to-Playmaking (Outlet Impact): 1.60%
+TOOLS — 20%
+PHYSICAL attributes — 16.00%
+Strength (Functional): 4.00%
+Body Control: 3.20%
+Vertical Pop (Live-Play): 3.20%
+Endurance: 2.40%
+Lateral Quickness: 1.60%
+Motor: 1.60%
+REBOUNDING / POSSESSION TOOLS — 4.00%
+Rebound Conversion (Secure vs Tip): 2.40%
+Rebound Range & Tracking: 1.60%
+
+10. MOREYBALL
+POINT GUARD
+OFFENSE — 90%
+SHOOTING — 34.20%
+3PT Off-the-Dribble: 12.60%
+3PT Spot-Up (Catch-and-Shoot): 9.00%
+3PT Deep Range: 7.20%
+3PT Movement / Relocation: 3.60%
+Free Throw: 1.80%
+2PT Jumper Off-the-Dribble: 0.00%
+2PT Jumper Catch-and-Shoot: 0.00%
+FINISHING — 19.80%
+Layup Finishing: 7.20%
+Foul Draw Rate (Paint): 9.00%
+Dunk Finishing: 2.70%
+Close Finishing: 0.90%
+Floater / Runner: 0.00%
+PLAYMAKING — 34.20%
+Drive-and-Kick Passing: 13.50%
+Passing Accuracy: 8.10%
+Passing Vision: 6.30%
+Ball Security: 4.50%
+Transition Playmaking: 1.80%
+Hockey Assist Creation: 0.00%
+Screen Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 1.80%
+Rebound-to-Playmaking (Outlet Impact): 1.20%
+Offensive Rebounding: 0.60%
+TOOLS — 10%
+PHYSICAL attributes — 8.70%
+Acceleration (Burst): 2.40%
+Speed (With Ball): 2.10%
+Strength (Functional): 1.50%
+Body Control: 1.20%
+Lateral Quickness: 0.90%
+Motor: 0.60%
+REBOUNDING / POSSESSION TOOLS — 1.30%
+Rebound Conversion (Secure vs Tip): 0.70%
+Rebound Range & Tracking: 0.60%
+COMBO GUARD
+OFFENSE — 88%
+SHOOTING — 41.36%
+3PT Off-the-Dribble: 11.44%
+3PT Spot-Up (Catch-and-Shoot): 12.32%
+3PT Deep Range: 8.80%
+3PT Movement / Relocation: 6.16%
+Free Throw: 2.64%
+2PT Jumper Off-the-Dribble: 0.00%
+FINISHING — 20.24%
+Layup Finishing: 7.92%
+Foul Draw Rate (Paint): 8.80%
+Dunk Finishing: 2.64%
+Close Finishing: 0.88%
+Floater / Runner: 0.00%
+PLAYMAKING — 24.64%
+Drive-and-Kick Passing: 9.68%
+Passing Accuracy: 5.28%
+Passing Vision: 4.40%
+Ball Security: 3.52%
+Transition Playmaking: 1.76%
+OFFENSIVE REBOUNDING / OUTLET — 1.76%
+Rebound-to-Playmaking (Outlet Impact): 1.32%
+Offensive Rebounding: 0.44%
+TOOLS — 12%
+PHYSICAL attributes — 9.96%
+Acceleration (Burst): 2.40%
+Speed (With Ball): 2.16%
+Strength (Functional): 1.68%
+Body Control: 1.44%
+Lateral Quickness: 1.20%
+Motor: 1.08%
+REBOUNDING / POSSESSION TOOLS — 2.04%
+Rebound Conversion (Secure vs Tip): 1.20%
+Rebound Range & Tracking: 0.84%
+
+
+WING
+OFFENSE — 90%
+SHOOTING — 48.60%
+3PT Spot-Up (Catch-and-Shoot): 18.00%
+3PT Deep Range: 13.50%
+3PT Movement / Relocation: 9.00%
+3PT Off-the-Dribble: 6.30%
+Free Throw: 1.80%
+FINISHING — 24.30%
+Layup Finishing: 9.90%
+Dunk Finishing: 6.30%
+Foul Draw Rate (Paint): 6.30%
+Close Finishing: 1.80%
+Floater / Runner: 0.00%
+PLAYMAKING — 11.70%
+Drive-and-Kick Passing: 4.50%
+Passing Accuracy: 3.60%
+Passing Vision: 2.70%
+Ball Security: 0.90%
+OFFENSIVE REBOUNDING / OUTLET — 5.40%
+Offensive Rebounding: 3.60%
+Rebound-to-Playmaking (Outlet Impact): 1.80%
+TOOLS — 10%
+PHYSICAL attributes — 7.80%
+Strength (Functional): 2.10%
+Acceleration (Burst): 1.80%
+Speed (Without Ball): 1.50%
+Body Control: 1.20%
+Motor: 1.20%
+REBOUNDING / POSSESSION TOOLS — 2.20%
+Rebound Conversion (Secure vs Tip): 1.30%
+Rebound Range & Tracking: 0.90%
+
+FORWARD
+OFFENSE — 88%
+SHOOTING — 41.36%
+3PT Spot-Up (Catch-and-Shoot): 18.48%
+3PT Deep Range: 10.56%
+3PT Movement / Relocation: 7.04%
+3PT Off-the-Dribble: 5.28%
+FINISHING — 28.16%
+Layup Finishing: 11.44%
+Dunk Finishing: 7.92%
+Foul Draw Rate (Paint): 6.16%
+Close Finishing: 2.64%
+Floater / Runner: 0.00%
+PLAYMAKING — 11.44%
+Drive-and-Kick Passing: 4.40%
+Passing Accuracy: 3.52%
+Passing Vision: 2.64%
+Ball Security: 0.88%
+OFFENSIVE REBOUNDING / OUTLET — 7.04%
+Offensive Rebounding: 4.22%
+Rebound-to-Playmaking (Outlet Impact): 2.82%
+TOOLS — 12%
+PHYSICAL attributes — 9.36%
+Strength (Functional): 2.40%
+Acceleration (Burst): 1.92%
+Body Control: 1.80%
+Endurance: 1.44%
+Lateral Quickness: 0.90%
+Motor: 0.90%
+REBOUNDING / POSSESSION TOOLS — 2.64%
+Rebound Conversion (Secure vs Tip): 1.58%
+Rebound Range & Tracking: 1.06%
+
+
+BIG
+OFFENSE — 78%
+SHOOTING — 19.50%
+3PT Spot-Up (Catch-and-Shoot): 9.36%
+3PT Deep Range: 6.24%
+2PT Jumper Catch-and-Shoot: 2.34%
+3PT Movement / Relocation: 1.56%
+Free Throw: 0.00%
+FINISHING — 45.24%
+Dunk Finishing: 17.16%
+Layup Finishing: 13.26%
+Close Finishing: 9.36%
+Foul Draw Rate (Paint): 5.46%
+Floater / Runner: 0.00%
+PLAYMAKING — 9.36%
+Kick-Out Passing (Post): 4.68%
+Passing Accuracy: 2.34%
+Passing Vision: 2.34%
+OFFENSIVE REBOUNDING / OUTLET — 3.90%
+Offensive Rebounding: 2.34%
+Rebound-to-Playmaking (Outlet Impact): 1.56%
+TOOLS — 22%
+PHYSICAL attributes — 17.60%
+Strength (Functional): 4.40%
+Vertical Pop (Live-Play): 4.40%
+Body Control: 3.30%
+Endurance: 2.20%
+Acceleration (Burst): 1.65%
+Motor: 1.65%
+REBOUNDING / POSSESSION TOOLS — 4.40%
+Rebound Conversion (Secure vs Tip): 2.64%
+Rebound Range & Tracking: 1.76%
+
+
+11. HELIOCENTRIC — SHORT DISCLAIMER 
+Heliocentric is position-anchored.
+Only the chosen engine position uses the Heliocentric weights below.
+All other positions stay at Base / Raw KR (not downgraded).
+Dominance is expressed through usage/possession share in simulation, not by rewriting teammates.
+POINT GUARD
+OFFENSE — 92%
+SHOOTING — 34.00%
+3PT Off-the-Dribble: 15.50%
+3PT Deep Range: 6.50%
+3PT Spot-Up (Catch-and-Shoot): 5.50%
+3PT Movement / Relocation: 2.80%
+Free Throw: 2.70%
+2PT Jumper Off-the-Dribble: 1.00%
+2PT Jumper Catch-and-Shoot: 0.00%
+FINISHING — 18.00%
+Layup Finishing: 6.50%
+Foul Draw Rate (Paint): 7.50%
+Floater / Runner: 2.80%
+Dunk Finishing: 0.40%
+Close Finishing: 0.80%
+PLAYMAKING — 38.00%
+Drive-and-Kick Passing: 13.00%
+Passing Vision: 9.00%
+Passing Accuracy: 8.00%
+Ball Security: 5.50%
+Transition Playmaking: 1.80%
+Screen Assist Creation: 0.70%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 2.00%
+Rebound-to-Playmaking (Outlet Impact): 1.40%
+Offensive Rebounding: 0.60%
+TOOLS — 8%
+PHYSICAL attributes — 6.80%
+Endurance: 1.50%
+Body Control: 1.20%
+Speed (With Ball): 1.20%
+Acceleration (Burst): 1.10%
+Lateral Quickness: 0.90%
+Speed (Without Ball): 0.50%
+Motor: 0.20%
+Strength (Functional): 0.20%
+REBOUNDING / POSSESSION TOOLS — 1.20%
+Rebound Conversion (Secure vs Tip): 0.70%
+Rebound Range & Tracking: 0.50%
+COMBO GUARD
+OFFENSE — 90%
+SHOOTING — 38.00%
+3PT Off-the-Dribble: 13.00%
+3PT Spot-Up (Catch-and-Shoot): 9.50%
+3PT Movement / Relocation: 6.50%
+3PT Deep Range: 6.50%
+2PT Jumper Off-the-Dribble: 1.50%
+2PT Jumper Catch-and-Shoot: 0.80%
+Free Throw: 0.20%
+FINISHING — 20.00%
+Layup Finishing: 7.00%
+Foul Draw Rate (Paint): 7.00%
+Floater / Runner: 3.50%
+Dunk Finishing: 1.50%
+Close Finishing: 1.00%
+PLAYMAKING — 30.00%
+Drive-and-Kick Passing: 10.00%
+Passing Vision: 6.50%
+Passing Accuracy: 6.00%
+Ball Security: 4.50%
+Transition Playmaking: 2.00%
+Screen Assist Creation: 1.00%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 2.00%
+Rebound-to-Playmaking (Outlet Impact): 1.20%
+Offensive Rebounding: 0.80%
+TOOLS — 10%
+PHYSICAL attributes — 8.20%
+Speed (With Ball): 1.70%
+Acceleration (Burst): 1.60%
+Lateral Quickness: 1.20%
+Endurance: 1.20%
+Body Control: 1.10%
+Motor: 0.70%
+Speed (Without Ball): 0.50%
+Strength (Functional): 0.20%
+REBOUNDING / POSSESSION TOOLS — 1.80%
+Rebound Conversion (Secure vs Tip): 1.10%
+Rebound Range & Tracking: 0.70%
+
+WING
+OFFENSE — 88%
+SHOOTING — 44.00%
+3PT Spot-Up (Catch-and-Shoot): 17.00%
+3PT Movement / Relocation: 10.00%
+3PT Deep Range: 7.00%
+3PT Off-the-Dribble: 6.00%
+2PT Jumper Catch-and-Shoot: 2.00%
+2PT Jumper Off-the-Dribble: 1.00%
+Free Throw: 1.00%
+FINISHING — 24.00%
+Layup Finishing: 9.00%
+Dunk Finishing: 6.00%
+Close Finishing: 4.00%
+Foul Draw Rate (Paint): 4.00%
+Floater / Runner: 1.00%
+PLAYMAKING — 16.00%
+Drive-and-Kick Passing: 5.00%
+Passing Accuracy: 4.00%
+Passing Vision: 3.00%
+Transition Playmaking: 2.00%
+Ball Security: 1.00%
+Screen Assist Creation: 1.00%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 4.00%
+Offensive Rebounding: 2.30%
+Rebound-to-Playmaking (Outlet Impact): 1.70%
+TOOLS — 12%
+PHYSICAL attributes — 9.00%
+Lateral Quickness: 1.60%
+Speed (Without Ball): 1.60%
+Acceleration (Burst): 1.20%
+Endurance: 1.20%
+Body Control: 1.10%
+Motor: 1.00%
+Speed (With Ball): 0.60%
+Strength (Functional): 0.70%
+REBOUNDING / POSSESSION TOOLS — 3.00%
+Rebound Conversion (Secure vs Tip): 1.80%
+Rebound Range & Tracking: 1.20%
+
+FORWARD
+OFFENSE — 86%
+SHOOTING — 34.00%
+3PT Spot-Up (Catch-and-Shoot): 14.00%
+3PT Movement / Relocation: 8.00%
+3PT Deep Range: 5.00%
+3PT Off-the-Dribble: 3.00%
+2PT Jumper Catch-and-Shoot: 2.00%
+2PT Jumper Off-the-Dribble: 1.00%
+Free Throw: 1.00%
+FINISHING — 30.00%
+Layup Finishing: 10.00%
+Dunk Finishing: 8.00%
+Close Finishing: 6.00%
+Foul Draw Rate (Paint): 4.00%
+Floater / Runner: 2.00%
+PLAYMAKING — 12.00%
+Passing Accuracy: 4.00%
+Passing Vision: 3.50%
+Drive-and-Kick Passing: 2.50%
+Transition Playmaking: 1.00%
+Screen Assist Creation: 1.00%
+Ball Security: 0.00%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 10.00%
+Offensive Rebounding: 6.00%
+Rebound-to-Playmaking (Outlet Impact): 4.00%
+TOOLS — 14%
+PHYSICAL attributes — 11.00%
+Strength (Functional): 2.40%
+Body Control: 2.20%
+Vertical Pop (Live-Play): 1.50%
+Endurance: 1.50%
+Lateral Quickness: 1.10%
+Speed (Without Ball): 0.90%
+Acceleration (Burst): 0.60%
+Motor: 0.60%
+Speed (With Ball): 0.20%
+REBOUNDING / POSSESSION TOOLS — 3.00%
+Rebound Conversion (Secure vs Tip): 1.80%
+Rebound Range & Tracking: 1.20%
+
+BIG
+OFFENSE — 82%
+SHOOTING — 18.00%
+3PT Spot-Up (Catch-and-Shoot): 8.00%
+3PT Deep Range: 4.00%
+3PT Movement / Relocation: 2.00%
+2PT Jumper Catch-and-Shoot: 3.00%
+3PT Off-the-Dribble: 1.00%
+Free Throw: 0.00%
+FINISHING — 42.00%
+Dunk Finishing: 16.00%
+Layup Finishing: 12.00%
+Close Finishing: 9.00%
+Foul Draw Rate (Paint): 4.00%
+Floater / Runner: 1.00%
+PLAYMAKING — 10.00%
+Passing Vision: 4.00%
+Passing Accuracy: 4.00%
+Kick-Out Passing (Post): 2.00%
+Drive-and-Kick Passing: 0.00%
+Ball Security: 0.00%
+Screen Assist Creation: 0.00%
+Hockey Assist Creation: 0.00%
+OFFENSIVE REBOUNDING / OUTLET — 12.00%
+Offensive Rebounding: 8.00%
+Rebound-to-Playmaking (Outlet Impact): 4.00%
+TOOLS — 18%
+PHYSICAL attributes — 13.50%
+Strength (Functional): 3.50%
+Body Control: 2.50%
+Vertical Pop (Live-Play): 2.50%
+Endurance: 1.80%
+Lateral Quickness: 1.30%
+Speed (Without Ball): 0.90%
+Acceleration (Burst): 0.50%
+Motor: 0.50%
+REBOUNDING / POSSESSION TOOLS — 4.50%
+Rebound Conversion (Secure vs Tip): 2.70%
+Rebound Range & Tracking: 1.80%
+
+System Fit (Defensive)
+System Fit (Defensive)
+1. Purpose
+System Fit (Defensive) defines how player defensive impact expresses itself within a specific defensive system selected in Coach Program Setup.
+It answers one question:
+Given this defensive system, how effectively can each player’s defensive skill set translate and hold up?
+This section produces contextual defensive truth.
+It does not redefine the player.
+2. Relationship to Player Truth
+System Fit (Defensive):
+consumes finalized Player Intelligence outputs
+does not change attributes
+does not change raw KRs
+does not change archetype assignment
+does not change confidence values
+Player Truth remains immutable.
+3. When This Section Executes
+System Fit (Defensive) executes:
+after Coach Program Setup
+after Coach & Program Context Layer
+before Team Evaluation
+If no defensive system is declared, this section does not run.
+
+4. What Defensive System Fit Does
+System Fit (Defensive) is authorized to:
+apply system-specific defensive emphasis
+apply defensive fit ceilings
+surface structural defensive risks
+identify scheme-dependent strengths and weaknesses
+It may:
+reduce effective defensive contribution
+cap defensive impact
+flag fragility in certain matchups
+5. What Defensive System Fit Does Not Do
+System Fit (Defensive) does not:
+inflate defensive ability
+mask defensive weaknesses
+override player risks
+compensate for physical or positional limitations
+System Fit reflects survivability and scalability, not optimism.
+6. Determinism
+System Fit (Defensive) is:
+rule-based
+deterministic
+repeatable
+Given the same player truth and the same defensive system, the same defensive system-fit result is produced.
+7. Output
+This section produces:
+system-adjusted defensive contribution values
+defensive fit ceilings
+defensive system risk flags
+These outputs feed directly into:
+Team Evaluation
+Team Final Evaluation Output
+Roster Sandbox modeling
+They are not standalone evaluations.
+8. Governance Rule
+System Fit (Defensive):
+never alters Player Truth
+never persists outside the selected context
+is recalculated whenever defensive system selection changes
+Changing the defensive system creates a new contextual team truth.
+
+1. CONTAINMENT MAN (COLLEGE)
+System principle: Stay in front, recover, contest without gambling. Balanced help. Low-risk, discipline-first.
+POINT GUARD (PG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 50.00%
+On-Ball Containment: 11.54%
+Ball Pressure: 7.69%
+Screen Navigation: 7.69%
+Perimeter Shot Contest: 6.15%
+Steal: 5.38%
+Off-Ball Denial: 4.62%
+Perimeter Disruption: 3.85%
+Perimeter Foul Discipline: 3.08%
+Interior Defense — 8.00%
+Block: 0.53%
+Rim Deterrence: 1.07%
+Vertical Contest Effectiveness: 1.07%
+Post Defense: 0.53%
+Help Defense (Interior): 2.13%
+Roll Man Defense: 1.07%
+Interior Disruption: 1.07%
+Interior Foul Discipline: 0.53%
+Interior Positioning: 0.00%
+Defensive Rebounding — 12.00%
+Defensive Rebounding: 8.40%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 6.00%
+Acceleration (Burst): 5.00%
+Change of Direction (Agility): 4.00%
+Deceleration (Stop Control): 3.00%
+Speed — Without Ball: 3.00%
+Speed — With Ball: 2.00%
+Endurance: 3.00%
+Motor: 2.00%
+Body Control: 1.50%
+Strength (Functional): 0.50%
+COMBO GUARD (CG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 46.00%
+On-Ball Containment: 9.20%
+Ball Pressure: 6.90%
+Screen Navigation: 6.90%
+Perimeter Shot Contest: 6.13%
+Steal: 6.13%
+Off-Ball Denial: 4.60%
+Perimeter Disruption: 3.83%
+Perimeter Foul Discipline: 2.30%
+Interior Defense — 10.00%
+Block: 1.33%
+Rim Deterrence: 1.33%
+Vertical Contest Effectiveness: 1.33%
+Post Defense: 0.67%
+Help Defense (Interior): 2.67%
+Roll Man Defense: 1.33%
+Interior Disruption: 0.67%
+Interior Foul Discipline: 0.67%
+Interior Positioning: 0.00%
+Defensive Rebounding — 14.00%
+Defensive Rebounding: 8.96%
+Box-Out Effectiveness: 5.04%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 5.00%
+Acceleration (Burst): 4.50%
+Change of Direction (Agility): 3.50%
+Deceleration (Stop Control): 2.50%
+Speed — Without Ball: 3.00%
+Speed — With Ball: 1.50%
+Strength (Functional): 3.00%
+Power Through Contact: 2.00%
+Endurance: 3.00%
+Motor: 1.50%
+Body Control: 0.50%
+
+WING
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 38.00%
+On-Ball Containment: 7.60%
+Ball Pressure: 4.56%
+Screen Navigation: 6.08%
+Perimeter Shot Contest: 7.60%
+Steal: 3.80%
+Off-Ball Denial: 5.32%
+Perimeter Disruption: 2.28%
+Perimeter Foul Discipline: 0.76%
+Interior Defense — 16.00%
+Block: 2.56%
+Rim Deterrence: 2.56%
+Vertical Contest Effectiveness: 2.56%
+Post Defense: 2.56%
+Help Defense (Interior): 3.20%
+Roll Man Defense: 1.28%
+Interior Disruption: 0.64%
+Interior Foul Discipline: 0.64%
+Interior Positioning: 0.00%
+Defensive Rebounding — 16.00%
+Defensive Rebounding: 10.24%
+Box-Out Effectiveness: 5.76%
+TOOLS / PHYSICAL — 30%
+Speed — Without Ball: 4.00%
+Lateral Quickness: 4.50%
+Acceleration (Burst): 3.50%
+Change of Direction (Agility): 3.00%
+Deceleration (Stop Control): 2.50%
+Strength (Functional): 3.50%
+Vertical Pop (Live-Play): 3.00%
+Body Control: 2.00%
+Power Through Contact: 2.00%
+Endurance: 1.50%
+Motor: 0.50%
+
+FORWARD
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 24.00%
+On-Ball Containment: 4.80%
+Ball Pressure: 2.74%
+Screen Navigation: 4.11%
+Perimeter Shot Contest: 4.80%
+Steal: 2.06%
+Off-Ball Denial: 3.43%
+Perimeter Disruption: 1.37%
+Perimeter Foul Discipline: 0.69%
+Interior Defense — 26.00%
+Block: 3.71%
+Rim Deterrence: 3.71%
+Vertical Contest Effectiveness: 3.71%
+Post Defense: 3.71%
+Help Defense (Interior): 5.20%
+Roll Man Defense: 1.49%
+Interior Disruption: 2.23%
+Interior Foul Discipline: 2.23%
+Interior Positioning: 0.00%
+Defensive Rebounding — 20.00%
+Defensive Rebounding: 13.33%
+Box-Out Effectiveness: 6.67%
+TOOLS / PHYSICAL — 30%
+Strength (Functional): 6.00%
+Power Through Contact: 4.00%
+Vertical Pop (Live-Play): 4.00%
+Body Control: 3.00%
+Lateral Quickness: 3.00%
+Speed — Without Ball: 2.50%
+Acceleration (Burst): 2.00%
+Change of Direction (Agility): 2.00%
+Deceleration (Stop Control): 1.50%
+Endurance: 1.50%
+Motor: 0.50%
+
+BIG
+DEFENSIVE SKILLS — 65% (tools heavier for bigs in containment)
+Perimeter Defense — 8.00%
+On-Ball Containment: 1.60%
+Ball Pressure: 0.53%
+Screen Navigation: 1.60%
+Perimeter Shot Contest: 2.13%
+Steal: 0.53%
+Off-Ball Denial: 0.53%
+Perimeter Disruption: 0.53%
+Perimeter Foul Discipline: 0.53%
+Interior Defense — 42.00%
+Block: 7.64%
+Rim Deterrence: 7.64%
+Vertical Contest Effectiveness: 6.11%
+Post Defense: 6.11%
+Help Defense (Interior): 7.64%
+Roll Man Defense: 3.06%
+Interior Disruption: 2.29%
+Interior Foul Discipline: 1.53%
+Interior Positioning: 0.00%
+Defensive Rebounding — 15.00%
+Defensive Rebounding: 10.00%
+Box-Out Effectiveness: 5.00%
+TOOLS / PHYSICAL — 35%
+Strength (Functional): 8.00%
+Vertical Pop (Live-Play): 7.00%
+Body Control: 5.00%
+Power Through Contact: 4.00%
+Lateral Quickness: 3.00%
+Acceleration (Burst): 2.00%
+Change of Direction (Agility): 2.00%
+Deceleration (Stop Control): 1.50%
+Speed — Without Ball: 1.50%
+Endurance: 0.50%
+Motor: 0.50%
+
+
+2. PACK LINE (COLLEGE)
+System Principle
+Paint-first, help-first man defense. Shrink the floor, show bodies early, force kick-outs and contested jump shots. Discipline over disruption.
+POINT GUARD (PG)
+DEFENSIVE SKILLS — 72%
+Perimeter Defense — 36.00%
+On-Ball Containment: 8.00%
+Screen Navigation: 7.00%
+Perimeter Shot Contest: 7.00%
+Ball Pressure: 5.00%
+Off-Ball Denial: 4.00%
+Perimeter Foul Discipline: 5.00%
+Interior Defense — 14.00%
+Help Defense (Interior): 6.00%
+Vertical Contest Effectiveness: 3.00%
+Roll Man Defense: 2.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 22.00%
+Defensive Rebounding: 14.00%
+Box-Out Effectiveness: 8.00%
+TOOLS / PHYSICAL — 28%
+Lateral Quickness: 6.00%
+Acceleration (Burst): 4.00%
+Deceleration (Stop Control): 4.00%
+Speed — Without Ball: 3.00%
+Strength (Functional): 3.00%
+Body Control: 3.00%
+Endurance: 3.00%
+Motor: 2.00%
+
+COMBO GUARD (CG)
+DEFENSIVE SKILLS — 72%
+Perimeter Defense — 34.00%
+On-Ball Containment: 7.00%
+Screen Navigation: 6.00%
+Perimeter Shot Contest: 7.00%
+Ball Pressure: 4.00%
+Off-Ball Denial: 5.00%
+Perimeter Foul Discipline: 5.00%
+Interior Defense — 16.00%
+Help Defense (Interior): 7.00%
+Vertical Contest Effectiveness: 3.00%
+Roll Man Defense: 2.00%
+Interior Disruption: 2.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 22.00%
+Defensive Rebounding: 14.00%
+Box-Out Effectiveness: 8.00%
+TOOLS / PHYSICAL — 28%
+Lateral Quickness: 5.00%
+Acceleration (Burst): 4.00%
+Deceleration (Stop Control): 4.00%
+Speed — Without Ball: 3.00%
+Strength (Functional): 4.00%
+Body Control: 3.00%
+Endurance: 3.00%
+Motor: 2.00%
+
+WING
+DEFENSIVE SKILLS — 72%
+Perimeter Defense — 26.00%
+On-Ball Containment: 5.00%
+Screen Navigation: 5.00%
+Perimeter Shot Contest: 7.00%
+Off-Ball Denial: 5.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 22.00%
+Help Defense (Interior): 8.00%
+Vertical Contest Effectiveness: 4.00%
+Post Defense: 4.00%
+Roll Man Defense: 2.00%
+Interior Disruption: 2.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 24.00%
+Defensive Rebounding: 15.00%
+Box-Out Effectiveness: 9.00%
+TOOLS / PHYSICAL — 28%
+Strength (Functional): 5.00%
+Lateral Quickness: 5.00%
+Body Control: 4.00%
+Vertical Pop (Live-Play): 4.00%
+Speed — Without Ball: 3.00%
+Acceleration (Burst): 3.00%
+Endurance: 2.00%
+Motor: 2.00%
+
+
+FORWARD
+DEFENSIVE SKILLS — 72%
+Perimeter Defense — 18.00%
+On-Ball Containment: 3.00%
+Screen Navigation: 4.00%
+Perimeter Shot Contest: 5.00%
+Off-Ball Denial: 4.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 30.00%
+Help Defense (Interior): 10.00%
+Vertical Contest Effectiveness: 6.00%
+Post Defense: 6.00%
+Roll Man Defense: 3.00%
+Interior Disruption: 3.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 24.00%
+Defensive Rebounding: 15.00%
+Box-Out Effectiveness: 9.00%
+TOOLS / PHYSICAL — 28%
+Strength (Functional): 6.00%
+Body Control: 4.00%
+Vertical Pop (Live-Play): 4.00%
+Lateral Quickness: 4.00%
+Speed — Without Ball: 3.00%
+Acceleration (Burst): 3.00%
+Endurance: 2.00%
+Motor: 2.00%
+
+BIG
+DEFENSIVE SKILLS — 65%
+Perimeter Defense — 6.00%
+On-Ball Containment: 1.00%
+Screen Navigation: 1.50%
+Perimeter Shot Contest: 2.00%
+Perimeter Foul Discipline: 1.50%
+Interior Defense — 38.00%
+Rim Deterrence: 8.00%
+Block: 8.00%
+Vertical Contest Effectiveness: 7.00%
+Post Defense: 7.00%
+Help Defense (Interior): 6.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 21.00%
+Defensive Rebounding: 14.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 35%
+Strength (Functional): 9.00%
+Vertical Pop (Live-Play): 7.00%
+Body Control: 5.00%
+Power Through Contact: 4.00%
+Lateral Quickness: 4.00%
+Acceleration (Burst): 3.00%
+Endurance: 2.00%
+Motor: 1.00%
+
+
+3. PRESSURE MAN (DENIAL MAN) (COLLEGE)
+System Principle
+Up-the-line, on-the-line denial with heavy ball pressure. Reduce gaps, disrupt timing, force lateral movement and turnovers. Help is late and selective; execution relies on individual containment and recovery.
+POINT GUARD (PG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 48.00%
+On-Ball Containment: 12.00%
+Ball Pressure: 10.00%
+Screen Navigation: 8.00%
+Perimeter Shot Contest: 6.00%
+Steal: 6.00%
+Off-Ball Denial: 4.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 6.00%
+Help Defense (Interior): 2.00%
+Roll Man Defense: 2.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 16.00%
+Defensive Rebounding: 10.00%
+Box-Out Effectiveness: 6.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 9.00%
+Acceleration (Burst): 6.00%
+Change of Direction (Agility): 5.00%
+Deceleration (Stop Control): 4.00%
+Speed — Without Ball: 3.00%
+Endurance: 2.00%
+Motor: 1.00%
+
+COMBO GUARD (CG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 46.00%
+On-Ball Containment: 10.00%
+Ball Pressure: 9.00%
+Screen Navigation: 7.00%
+Perimeter Shot Contest: 6.00%
+Steal: 7.00%
+Off-Ball Denial: 5.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 8.00%
+Help Defense (Interior): 3.00%
+Roll Man Defense: 3.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 16.00%
+Defensive Rebounding: 10.00%
+Box-Out Effectiveness: 6.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 8.00%
+Acceleration (Burst): 5.00%
+Change of Direction (Agility): 5.00%
+Deceleration (Stop Control): 4.00%
+Speed — Without Ball: 3.00%
+Strength (Functional): 3.00%
+Endurance: 2.00%
+
+WING
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 42.00%
+On-Ball Containment: 9.00%
+Ball Pressure: 7.00%
+Screen Navigation: 6.00%
+Perimeter Shot Contest: 7.00%
+Steal: 5.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 12.00%
+Help Defense (Interior): 5.00%
+Vertical Contest Effectiveness: 3.00%
+Roll Man Defense: 2.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 16.00%
+Defensive Rebounding: 10.00%
+Box-Out Effectiveness: 6.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 7.00%
+Acceleration (Burst): 5.00%
+Change of Direction (Agility): 4.00%
+Deceleration (Stop Control): 3.00%
+Strength (Functional): 4.00%
+Speed — Without Ball: 3.00%
+Vertical Pop (Live-Play): 2.00%
+Endurance: 2.00%
+
+FORWARD
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 30.00%
+On-Ball Containment: 6.00%
+Ball Pressure: 4.00%
+Screen Navigation: 5.00%
+Perimeter Shot Contest: 6.00%
+Steal: 4.00%
+Off-Ball Denial: 4.00%
+Perimeter Foul Discipline: 1.00%
+Interior Defense — 20.00%
+Help Defense (Interior): 7.00%
+Vertical Contest Effectiveness: 5.00%
+Post Defense: 4.00%
+Roll Man Defense: 2.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 20.00%
+Defensive Rebounding: 13.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Strength (Functional): 6.00%
+Lateral Quickness: 5.00%
+Acceleration (Burst): 4.00%
+Change of Direction (Agility): 4.00%
+Body Control: 3.00%
+Vertical Pop (Live-Play): 3.00%
+Speed — Without Ball: 3.00%
+Endurance: 2.00%
+
+BIG
+DEFENSIVE SKILLS — 65%
+Perimeter Defense — 14.00%
+On-Ball Containment: 3.00%
+Ball Pressure: 2.00%
+Screen Navigation: 3.00%
+Perimeter Shot Contest: 4.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 32.00%
+Rim Deterrence: 7.00%
+Block: 7.00%
+Vertical Contest Effectiveness: 6.00%
+Post Defense: 5.00%
+Help Defense (Interior): 5.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 19.00%
+Defensive Rebounding: 12.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 35%
+Strength (Functional): 8.00%
+Lateral Quickness: 5.00%
+Vertical Pop (Live-Play): 6.00%
+Change of Direction (Agility): 4.00%
+Acceleration (Burst): 3.00%
+Body Control: 3.00%
+Endurance: 2.00%
+Motor: 4.00%
+
+4. SWITCH EVERYTHING (COLLEGE)
+System Principle
+Neutralize advantages by switching on- and off-ball actions. Assignments are fluid; isolation defense, communication, and mismatch tolerance are core. Help is simplified; execution depends on versatility and physical tools.
+POINT GUARD (PG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 44.00%
+On-Ball Containment: 11.00%
+Screen Navigation: 6.00%
+Perimeter Shot Contest: 9.00%
+Ball Pressure: 7.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 5.00%
+Interior Defense — 8.00%
+Help Defense (Interior): 3.00%
+Post Defense: 2.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 18.00%
+Defensive Rebounding: 11.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 9.00%
+Change of Direction (Agility): 6.00%
+Acceleration (Burst): 5.00%
+Strength (Functional): 4.00%
+Speed — Without Ball: 3.00%
+Body Control: 2.00%
+Endurance: 1.00%
+
+COMBO GUARD (CG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 42.00%
+On-Ball Containment: 10.00%
+Screen Navigation: 6.00%
+Perimeter Shot Contest: 9.00%
+Ball Pressure: 6.00%
+Off-Ball Denial: 7.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 10.00%
+Help Defense (Interior): 4.00%
+Post Defense: 3.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 18.00%
+Defensive Rebounding: 11.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 8.00%
+Change of Direction (Agility): 6.00%
+Strength (Functional): 5.00%
+Acceleration (Burst): 4.00%
+Speed — Without Ball: 3.00%
+Body Control: 3.00%
+Endurance: 1.00%
+
+WING
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 38.00%
+On-Ball Containment: 9.00%
+Screen Navigation: 5.00%
+Perimeter Shot Contest: 9.00%
+Ball Pressure: 5.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 14.00%
+Post Defense: 5.00%
+Help Defense (Interior): 4.00%
+Vertical Contest Effectiveness: 3.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 18.00%
+Defensive Rebounding: 11.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Strength (Functional): 6.00%
+Lateral Quickness: 6.00%
+Change of Direction (Agility): 5.00%
+Acceleration (Burst): 4.00%
+Vertical Pop (Live-Play): 4.00%
+Body Control: 3.00%
+Speed — Without Ball: 2.00%
+
+FORWARD
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 30.00%
+On-Ball Containment: 6.00%
+Screen Navigation: 4.00%
+Perimeter Shot Contest: 7.00%
+Ball Pressure: 4.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 3.00%
+Interior Defense — 22.00%
+Post Defense: 7.00%
+Help Defense (Interior): 6.00%
+Vertical Contest Effectiveness: 5.00%
+Interior Foul Discipline: 4.00%
+Defensive Rebounding — 18.00%
+Defensive Rebounding: 11.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Strength (Functional): 7.00%
+Lateral Quickness: 6.00%
+Change of Direction (Agility): 5.00%
+Vertical Pop (Live-Play): 5.00%
+Body Control: 3.00%
+Acceleration (Burst): 3.00%
+Speed — Without Ball: 1.00%
+
+BIG
+DEFENSIVE SKILLS — 65%
+Perimeter Defense — 22.00%
+On-Ball Containment: 6.00%
+Screen Navigation: 5.00%
+Perimeter Shot Contest: 6.00%
+Ball Pressure: 3.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 25.00%
+Post Defense: 7.00%
+Vertical Contest Effectiveness: 7.00%
+Help Defense (Interior): 6.00%
+Interior Foul Discipline: 5.00%
+Defensive Rebounding — 18.00%
+Defensive Rebounding: 11.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 35%
+Strength (Functional): 9.00%
+Lateral Quickness: 6.00%
+Change of Direction (Agility): 5.00%
+Vertical Pop (Live-Play): 6.00%
+Body Control: 4.00%
+Acceleration (Burst): 3.00%
+Speed — Without Ball: 2.00%
+
+5. ICE / NO-MIDDLE (COLLEGE)
+System Principle
+Directional man defense that forces the ball away from the middle and down the sideline/baseline into predetermined help. Predictable help lanes, disciplined angles, low-middle penetration tolerance.
+POINT GUARD (PG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 46.00%
+On-Ball Containment: 13.00%
+Screen Navigation: 9.00%
+Perimeter Shot Contest: 8.00%
+Ball Pressure: 6.00%
+Off-Ball Denial: 5.00%
+Perimeter Foul Discipline: 5.00%
+Interior Defense — 8.00%
+Help Defense (Interior): 3.00%
+Roll Man Defense: 3.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 16.00%
+Defensive Rebounding: 10.00%
+Box-Out Effectiveness: 6.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 9.00%
+Deceleration (Stop Control): 6.00%
+Change of Direction (Agility): 5.00%
+Acceleration (Burst): 4.00%
+Speed — Without Ball: 3.00%
+Endurance: 2.00%
+Body Control: 1.00%
+
+COMBO GUARD (CG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 44.00%
+On-Ball Containment: 12.00%
+Screen Navigation: 8.00%
+Perimeter Shot Contest: 8.00%
+Ball Pressure: 6.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 10.00%
+Help Defense (Interior): 4.00%
+Roll Man Defense: 4.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 16.00%
+Defensive Rebounding: 10.00%
+Box-Out Effectiveness: 6.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 8.00%
+Deceleration (Stop Control): 5.00%
+Change of Direction (Agility): 5.00%
+Acceleration (Burst): 4.00%
+Strength (Functional): 4.00%
+Speed — Without Ball: 3.00%
+Endurance: 1.00%
+
+WING
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 40.00%
+On-Ball Containment: 10.00%
+Screen Navigation: 7.00%
+Perimeter Shot Contest: 8.00%
+Off-Ball Denial: 7.00%
+Ball Pressure: 5.00%
+Perimeter Foul Discipline: 3.00%
+Interior Defense — 14.00%
+Help Defense (Interior): 6.00%
+Vertical Contest Effectiveness: 4.00%
+Roll Man Defense: 2.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 16.00%
+Defensive Rebounding: 10.00%
+Box-Out Effectiveness: 6.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 7.00%
+Deceleration (Stop Control): 5.00%
+Change of Direction (Agility): 5.00%
+Strength (Functional): 4.00%
+Acceleration (Burst): 4.00%
+Speed — Without Ball: 3.00%
+Body Control: 2.00%
+
+FORWARD
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 26.00%
+On-Ball Containment: 6.00%
+Screen Navigation: 5.00%
+Perimeter Shot Contest: 6.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 3.00%
+Interior Defense — 24.00%
+Help Defense (Interior): 8.00%
+Vertical Contest Effectiveness: 6.00%
+Post Defense: 4.00%
+Roll Man Defense: 3.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 20.00%
+Defensive Rebounding: 13.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Strength (Functional): 6.00%
+Lateral Quickness: 5.00%
+Deceleration (Stop Control): 4.00%
+Change of Direction (Agility): 4.00%
+Vertical Pop (Live-Play): 4.00%
+Acceleration (Burst): 4.00%
+Speed — Without Ball: 2.00%
+Body Control: 1.00%
+
+BIG
+DEFENSIVE SKILLS — 65%
+Perimeter Defense — 12.00%
+On-Ball Containment: 3.00%
+Screen Navigation: 4.00%
+Perimeter Shot Contest: 3.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 34.00%
+Rim Deterrence: 8.00%
+Vertical Contest Effectiveness: 7.00%
+Post Defense: 6.00%
+Help Defense (Interior): 7.00%
+Roll Man Defense: 4.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 19.00%
+Defensive Rebounding: 12.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 35%
+Strength (Functional): 8.00%
+Lateral Quickness: 6.00%
+Deceleration (Stop Control): 5.00%
+Change of Direction (Agility): 5.00%
+Vertical Pop (Live-Play): 5.00%
+Body Control: 3.00%
+Acceleration (Burst): 2.00%
+Speed — Without Ball: 1.00%
+
+
+6. ZONE (STRUCTURED) (COLLEGE)
+System Principle
+Area-based responsibilities with defined rotations and closeouts. Protect the paint first, contest on the catch, rebound out of zones. Vision, positioning, and communication outweigh ball pressure.
+POINT GUARD (PG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 34.00%
+Perimeter Shot Contest: 10.00%
+On-Ball Containment: 8.00%
+Ball Pressure: 5.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 5.00%
+Interior Defense — 16.00%
+Help Defense (Interior): 7.00%
+Roll Man Defense: 4.00%
+Interior Foul Discipline: 3.00%
+Vertical Contest Effectiveness: 2.00%
+Defensive Rebounding — 20.00%
+Defensive Rebounding: 13.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 7.00%
+Deceleration (Stop Control): 5.00%
+Change of Direction (Agility): 5.00%
+Speed — Without Ball: 4.00%
+Acceleration (Burst): 3.00%
+Body Control: 3.00%
+Endurance: 2.00%
+Motor: 1.00%
+
+COMBO GUARD (CG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 32.00%
+Perimeter Shot Contest: 10.00%
+On-Ball Containment: 7.00%
+Ball Pressure: 4.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 5.00%
+Interior Defense — 18.00%
+Help Defense (Interior): 8.00%
+Roll Man Defense: 4.00%
+Vertical Contest Effectiveness: 3.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 20.00%
+Defensive Rebounding: 13.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 6.00%
+Deceleration (Stop Control): 5.00%
+Change of Direction (Agility): 5.00%
+Strength (Functional): 4.00%
+Speed — Without Ball: 4.00%
+Acceleration (Burst): 3.00%
+Body Control: 2.00%
+Endurance: 1.00%
+
+WING
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 28.00%
+Perimeter Shot Contest: 9.00%
+On-Ball Containment: 6.00%
+Off-Ball Denial: 7.00%
+Ball Pressure: 3.00%
+Perimeter Foul Discipline: 3.00%
+Interior Defense — 20.00%
+Help Defense (Interior): 9.00%
+Vertical Contest Effectiveness: 5.00%
+Roll Man Defense: 3.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 22.00%
+Defensive Rebounding: 14.00%
+Box-Out Effectiveness: 8.00%
+TOOLS / PHYSICAL — 30%
+Length / Size (via contests & deterrence): — (implicit through skills)
+Lateral Quickness: 6.00%
+Strength (Functional): 5.00%
+Vertical Pop (Live-Play): 5.00%
+Change of Direction (Agility): 4.00%
+Speed — Without Ball: 4.00%
+Body Control: 3.00%
+Endurance: 2.00%
+Motor: 1.00%
+
+FORWARD
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 20.00%
+Perimeter Shot Contest: 6.00%
+On-Ball Containment: 4.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 28.00%
+Help Defense (Interior): 10.00%
+Vertical Contest Effectiveness: 7.00%
+Post Defense: 5.00%
+Roll Man Defense: 3.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 22.00%
+Defensive Rebounding: 14.00%
+Box-Out Effectiveness: 8.00%
+TOOLS / PHYSICAL — 30%
+Strength (Functional): 6.00%
+Vertical Pop (Live-Play): 5.00%
+Body Control: 4.00%
+Lateral Quickness: 4.00%
+Change of Direction (Agility): 4.00%
+Acceleration (Burst): 3.00%
+Speed — Without Ball: 2.00%
+Endurance: 2.00%
+
+BIG
+DEFENSIVE SKILLS — 65%
+Perimeter Defense — 6.00%
+Perimeter Shot Contest: 3.00%
+On-Ball Containment: 1.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 38.00%
+Rim Deterrence: 9.00%
+Block: 8.00%
+Vertical Contest Effectiveness: 7.00%
+Post Defense: 6.00%
+Help Defense (Interior): 6.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 21.00%
+Defensive Rebounding: 14.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 35%
+Strength (Functional): 9.00%
+Vertical Pop (Live-Play): 7.00%
+Body Control: 5.00%
+Lateral Quickness: 4.00%
+Change of Direction (Agility): 4.00%
+Acceleration (Burst): 3.00%
+Speed — Without Ball: 2.00%
+Endurance: 1.00%
+
+
+7. MATCHUP ZONE / HYBRID (COLLEGE)
+System Principle
+Zone structure with man-like matching rules. Defenders pass off assignments, switch within the zone, and recover based on ball movement. Success depends on anticipation, communication, and versatile defenders who can guard multiple actions.
+POINT GUARD (PG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 38.00%
+On-Ball Containment: 9.00%
+Perimeter Shot Contest: 9.00%
+Ball Pressure: 5.00%
+Off-Ball Denial: 8.00%
+Perimeter Foul Discipline: 7.00%
+Interior Defense — 12.00%
+Help Defense (Interior): 6.00%
+Roll Man Defense: 4.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 20.00%
+Defensive Rebounding: 13.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 7.00%
+Change of Direction (Agility): 6.00%
+Deceleration (Stop Control): 5.00%
+Speed — Without Ball: 4.00%
+Acceleration (Burst): 3.00%
+Body Control: 3.00%
+Endurance: 2.00%
+
+COMBO GUARD (CG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 36.00%
+On-Ball Containment: 8.00%
+Perimeter Shot Contest: 9.00%
+Ball Pressure: 4.00%
+Off-Ball Denial: 8.00%
+Perimeter Foul Discipline: 7.00%
+Interior Defense — 14.00%
+Help Defense (Interior): 7.00%
+Roll Man Defense: 4.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 20.00%
+Defensive Rebounding: 13.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 6.00%
+Change of Direction (Agility): 6.00%
+Strength (Functional): 4.00%
+Deceleration (Stop Control): 4.00%
+Speed — Without Ball: 4.00%
+Acceleration (Burst): 3.00%
+Body Control: 2.00%
+Endurance: 1.00%
+
+WING
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 30.00%
+Perimeter Shot Contest: 9.00%
+On-Ball Containment: 6.00%
+Off-Ball Denial: 8.00%
+Ball Pressure: 3.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 18.00%
+Help Defense (Interior): 8.00%
+Vertical Contest Effectiveness: 5.00%
+Roll Man Defense: 3.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 22.00%
+Defensive Rebounding: 14.00%
+Box-Out Effectiveness: 8.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 6.00%
+Strength (Functional): 5.00%
+Change of Direction (Agility): 5.00%
+Vertical Pop (Live-Play): 5.00%
+Speed — Without Ball: 4.00%
+Body Control: 3.00%
+Acceleration (Burst): 1.00%
+Endurance: 1.00%
+
+FORWARD
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 22.00%
+Perimeter Shot Contest: 7.00%
+On-Ball Containment: 4.00%
+Off-Ball Denial: 7.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 26.00%
+Help Defense (Interior): 10.00%
+Vertical Contest Effectiveness: 7.00%
+Post Defense: 5.00%
+Roll Man Defense: 2.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 22.00%
+Defensive Rebounding: 14.00%
+Box-Out Effectiveness: 8.00%
+TOOLS / PHYSICAL — 30%
+Strength (Functional): 6.00%
+Vertical Pop (Live-Play): 5.00%
+Body Control: 4.00%
+Lateral Quickness: 4.00%
+Change of Direction (Agility): 4.00%
+Speed — Without Ball: 3.00%
+Acceleration (Burst): 2.00%
+Endurance: 2.00%
+
+BIG
+DEFENSIVE SKILLS — 65%
+Perimeter Defense — 8.00%
+Perimeter Shot Contest: 4.00%
+On-Ball Containment: 2.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 36.00%
+Rim Deterrence: 9.00%
+Block: 8.00%
+Vertical Contest Effectiveness: 7.00%
+Post Defense: 6.00%
+Help Defense (Interior): 4.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 21.00%
+Defensive Rebounding: 14.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 35%
+Strength (Functional): 9.00%
+Vertical Pop (Live-Play): 7.00%
+Body Control: 5.00%
+Lateral Quickness: 4.00%
+Change of Direction (Agility): 4.00%
+Acceleration (Burst): 3.00%
+Speed — Without Ball: 2.00%
+
+8. PRESS / PRESSURE DEFENSE (COLLEGE)
+System Principle
+Apply pressure before the offense initiates. Disrupt timing, force turnovers, speed decisions, and fatigue opponents. Success depends on containment in space, recovery speed, communication, and depth.
+POINT GUARD (PG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 52.00%
+On-Ball Containment: 14.00%
+Ball Pressure: 12.00%
+Screen Navigation: 7.00%
+Perimeter Shot Contest: 7.00%
+Steal: 7.00%
+Perimeter Foul Discipline: 5.00%
+Interior Defense — 6.00%
+Help Defense (Interior): 3.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 12.00%
+Defensive Rebounding: 7.00%
+Box-Out Effectiveness: 5.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 9.00%
+Speed — Without Ball: 6.00%
+Acceleration (Burst): 5.00%
+Change of Direction (Agility): 4.00%
+Endurance: 3.00%
+Motor: 2.00%
+Body Control: 1.00%
+
+COMBO GUARD (CG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 50.00%
+On-Ball Containment: 12.00%
+Ball Pressure: 11.00%
+Screen Navigation: 6.00%
+Perimeter Shot Contest: 7.00%
+Steal: 8.00%
+Perimeter Foul Discipline: 6.00%
+Interior Defense — 8.00%
+Help Defense (Interior): 4.00%
+Interior Foul Discipline: 4.00%
+Defensive Rebounding — 12.00%
+Defensive Rebounding: 7.00%
+Box-Out Effectiveness: 5.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 8.00%
+Speed — Without Ball: 6.00%
+Acceleration (Burst): 5.00%
+Change of Direction (Agility): 4.00%
+Strength (Functional): 3.00%
+Endurance: 2.00%
+Motor: 2.00%
+
+WING
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 46.00%
+On-Ball Containment: 10.00%
+Ball Pressure: 9.00%
+Screen Navigation: 6.00%
+Perimeter Shot Contest: 8.00%
+Steal: 7.00%
+Perimeter Foul Discipline: 6.00%
+Interior Defense — 10.00%
+Help Defense (Interior): 5.00%
+Interior Foul Discipline: 5.00%
+Defensive Rebounding — 14.00%
+Defensive Rebounding: 9.00%
+Box-Out Effectiveness: 5.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 7.00%
+Speed — Without Ball: 6.00%
+Acceleration (Burst): 4.00%
+Change of Direction (Agility): 4.00%
+Strength (Functional): 4.00%
+Vertical Pop (Live-Play): 3.00%
+Endurance: 1.00%
+Motor: 1.00%
+
+FORWARD
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 34.00%
+On-Ball Containment: 7.00%
+Ball Pressure: 6.00%
+Screen Navigation: 5.00%
+Perimeter Shot Contest: 7.00%
+Steal: 5.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 16.00%
+Help Defense (Interior): 7.00%
+Post Defense: 5.00%
+Interior Foul Discipline: 4.00%
+Defensive Rebounding — 20.00%
+Defensive Rebounding: 13.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Strength (Functional): 6.00%
+Lateral Quickness: 5.00%
+Speed — Without Ball: 5.00%
+Acceleration (Burst): 4.00%
+Change of Direction (Agility): 4.00%
+Vertical Pop (Live-Play): 3.00%
+Endurance: 2.00%
+Motor: 1.00%
+
+BIG
+DEFENSIVE SKILLS — 65%
+Perimeter Defense — 16.00%
+On-Ball Containment: 4.00%
+Ball Pressure: 3.00%
+Screen Navigation: 4.00%
+Perimeter Shot Contest: 3.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 30.00%
+Rim Deterrence: 7.00%
+Block: 6.00%
+Vertical Contest Effectiveness: 6.00%
+Post Defense: 5.00%
+Help Defense (Interior): 4.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 19.00%
+Defensive Rebounding: 12.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 35%
+Strength (Functional): 8.00%
+Lateral Quickness: 6.00%
+Speed — Without Ball: 5.00%
+Acceleration (Burst): 4.00%
+Change of Direction (Agility): 4.00%
+Vertical Pop (Live-Play): 4.00%
+Endurance: 2.00%
+Motor: 2.00%
+
+9. JUNK / SPECIAL (COLLEGE)
+System Principle
+Player-targeted or action-denial defenses designed to neutralize specific threats. Assignments are asymmetric, help rules are situational, and execution depends on discipline, communication, and role acceptance. This system sacrifices balance to remove a primary option.
+Includes: Box-and-One, Triangle-and-Two, Chaser, Shadow
+POINT GUARD (PG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 46.00%
+On-Ball Containment: 12.00%
+Ball Pressure: 10.00%
+Screen Navigation: 8.00%
+Perimeter Shot Contest: 6.00%
+Off-Ball Denial: 6.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 8.00%
+Help Defense (Interior): 4.00%
+Interior Foul Discipline: 4.00%
+Defensive Rebounding — 16.00%
+Defensive Rebounding: 10.00%
+Box-Out Effectiveness: 6.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 9.00%
+Acceleration (Burst): 6.00%
+Change of Direction (Agility): 5.00%
+Endurance: 4.00%
+Speed — Without Ball: 3.00%
+Body Control: 2.00%
+Motor: 1.00%
+
+COMBO GUARD (CG)
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 44.00%
+On-Ball Containment: 11.00%
+Ball Pressure: 9.00%
+Screen Navigation: 7.00%
+Perimeter Shot Contest: 6.00%
+Off-Ball Denial: 7.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 10.00%
+Help Defense (Interior): 5.00%
+Interior Foul Discipline: 5.00%
+Defensive Rebounding — 16.00%
+Defensive Rebounding: 10.00%
+Box-Out Effectiveness: 6.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 8.00%
+Acceleration (Burst): 5.00%
+Change of Direction (Agility): 5.00%
+Strength (Functional): 4.00%
+Speed — Without Ball: 3.00%
+Endurance: 3.00%
+Motor: 2.00%
+
+WING
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 40.00%
+On-Ball Containment: 9.00%
+Ball Pressure: 7.00%
+Screen Navigation: 6.00%
+Perimeter Shot Contest: 7.00%
+Off-Ball Denial: 7.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 12.00%
+Help Defense (Interior): 6.00%
+Vertical Contest Effectiveness: 4.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 18.00%
+Defensive Rebounding: 11.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Lateral Quickness: 7.00%
+Acceleration (Burst): 5.00%
+Change of Direction (Agility): 4.00%
+Strength (Functional): 4.00%
+Vertical Pop (Live-Play): 4.00%
+Speed — Without Ball: 3.00%
+Endurance: 2.00%
+Motor: 1.00%
+
+
+FORWARD
+DEFENSIVE SKILLS — 70%
+Perimeter Defense — 30.00%
+On-Ball Containment: 6.00%
+Ball Pressure: 4.00%
+Screen Navigation: 5.00%
+Perimeter Shot Contest: 6.00%
+Off-Ball Denial: 5.00%
+Perimeter Foul Discipline: 4.00%
+Interior Defense — 20.00%
+Help Defense (Interior): 8.00%
+Vertical Contest Effectiveness: 5.00%
+Post Defense: 4.00%
+Interior Foul Discipline: 3.00%
+Defensive Rebounding — 20.00%
+Defensive Rebounding: 13.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 30%
+Strength (Functional): 6.00%
+Lateral Quickness: 5.00%
+Change of Direction (Agility): 4.00%
+Vertical Pop (Live-Play): 4.00%
+Speed — Without Ball: 3.00%
+Acceleration (Burst): 3.00%
+Endurance: 3.00%
+Motor: 2.00%
+
+BIG
+DEFENSIVE SKILLS — 65%
+Perimeter Defense — 12.00%
+On-Ball Containment: 3.00%
+Screen Navigation: 3.00%
+Perimeter Shot Contest: 4.00%
+Perimeter Foul Discipline: 2.00%
+Interior Defense — 34.00%
+Rim Deterrence: 8.00%
+Block: 7.00%
+Vertical Contest Effectiveness: 6.00%
+Post Defense: 6.00%
+Help Defense (Interior): 5.00%
+Interior Foul Discipline: 2.00%
+Defensive Rebounding — 19.00%
+Defensive Rebounding: 12.00%
+Box-Out Effectiveness: 7.00%
+TOOLS / PHYSICAL — 35%
+Strength (Functional): 8.00%
+Vertical Pop (Live-Play): 7.00%
+Lateral Quickness: 5.00%
+Change of Direction (Agility): 4.00%
+Acceleration (Burst): 4.00%
+Body Control: 3.00%
+Speed — Without Ball: 2.00%
+Endurance: 1.00%
+Motor: 1.00%
+
+
+

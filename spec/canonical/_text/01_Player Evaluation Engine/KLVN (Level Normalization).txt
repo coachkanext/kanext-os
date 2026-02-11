@@ -1,0 +1,633 @@
+KLVN (Level Normalization)
+1. Purpose
+KLVN is the normalization layer within KaNeXT Player Intelligence.
+Its purpose is to ensure that:
+player performance is comparable across competitive environments
+differences in level, pace, and sample size do not distort evaluation
+downstream systems operate on standardized inputs
+KLVN performs normalization only.
+It does not evaluate players, assign value, or predict outcomes.
+2. Placement Within Player Intelligence
+KLVN operates after raw evaluation inputs are collected and before downstream interpretation and aggregation.
+The processing sequence is:
+Raw data
+→ KLVN
+→ Skill KRs and Production KRs (klvn)
+→ Archetypes, KaNeXT badges, Team IQ, Recruiting IQ, Predixt Simulations
+KLVN outputs are consumed, not modified, by downstream systems.
+3. Outputs
+KLVN produces two families of outputs:
+3.1 Skill KRs (0–100)
+Skill KRs represent normalized basketball skill strength.
+They are:
+derived from trait-level performance
+adjusted for efficiency, volume, sample size, and level
+directly comparable across environments
+Skill KRs are decision-ready inputs used by:
+Player Intelligence
+Team Intelligence
+Recruiting Intelligence
+Simulation and prediction layers
+3.2 Production KRs (klvn)
+klvn (KaNeXT Per Game) normalizes box-score production.
+It adjusts for:
+pace
+opportunity
+role exposure
+competitive level
+klvn expresses what production actually means, independent of environment.
+4. Definition of Normalization
+Within KaNeXT, normalization means:
+stabilizing small samples
+reconciling efficiency with volume
+adjusting for competitive difficulty
+Normalization does not mean:
+projecting future performance
+assigning player value
+redefining skills
+compensating for role or system
+5. Determinism
+KLVN is fully deterministic.
+Given identical inputs:
+Skill KRs are identical
+Production KRs (klvn) are identical
+Uncertainty outputs are identical
+No stochastic processes are used.
+6. Competitive Levels
+All normalization is performed relative to a declared competitive level.
+Competitive level affects:
+expected efficiency
+variance behavior
+shrinkage strength
+pace assumptions
+confidence thresholds
+Competitive level does not:
+redefine attributes
+change rules of the game
+alter evaluation order
+7. Separation From Evaluation and Interpretation
+KLVN does not:
+rank players
+assign archetypes
+apply position weighting
+create ratings
+determine roles
+make recommendations
+Those functions occur after normalization.
+8. Uncertainty and Confidence
+KLVN produces metric-specific uncertainty and confidence outputs.
+These outputs:
+quantify reliability
+reflect sample size and noise
+vary by trait, metric, and level
+Uncertainty does not modify normalized values.
+Downstream systems may use uncertainty for:
+gating
+variance modeling
+explanation
+They may not use it to redefine normalization.
+9. Authority and Change Control
+This section is authoritative for:
+the role of KLVN
+its placement in the system
+its output categories
+its operational boundaries
+Changes to:
+normalization logic
+parameter tables
+competitive level definitions
+require documentation, versioning, and approval.
+10. Technical Specification
+The detailed technical specification for KLVN — including:
+normalization formulas
+parameter definitions
+level tables
+uncertainty computation
+is defined in the KLVN Technical Specification that follows this section.
+
+1. KLVN Logic
+1.1 Deterministic Computation Requirements
+KLVN must be deterministic. Given identical inputs, outputs must be identical.
+Skill KR Inputs (per trait)
+
+p — observed efficiency
+
+v — observed volume rate (events per game)
+
+N — total events in sample
+
+L — competitive level
+
+Each trait–level pair requires parameter tables:
+
+μ[t,L] — baseline efficiency
+
+α[t,L] — shrinkage strength
+
+E[t,L](v) — expected efficiency as a function of volume
+
+σ[t,L](v) — expected variance as a function of volume
+Production KR Inputs (klvn)
+
+Raw per-game box statistics
+
+Possessions or pace estimate
+
+Role/opportunity context
+
+Competitive level
+1.2 Possessions Context
+Production normalization requires possession context because per-game output is pace-dependent.
+
+Policy (v1):
+If play-by-play possessions are available, use actual possessions.
+
+If unavailable, estimate possessions from box-score statistics.
+
+If neither is available, apply conservative level-based possession priors.
+
+Possession estimation affects Production KRs (klvn) only and does not alter Skill KRs.
+
+2. Competitive Levels and Normalization Domains
+KLVN normalizes performance by competitive level.
+Each player observation must be assigned one primary competitive level.
+Competitive levels define:
+expected difficulty
+
+pace environment
+
+defensive pressure
+
+statistical inflation/deflation risk
+
+These levels are used consistently across:
+
+Skill KR normalization
+
+Production KR normalization (klvn)
+
+Confidence thresholds
+2.1 Canonical Competitive Levels (v1)
+Pre-College
+HS / Prep / Postgraduate
+Two-Year College
+NJCAA Division I
+
+NJCAA Division II
+
+NJCAA Division III
+
+CCCAA (California Community Colleges)
+Four-Year College
+USCAA
+
+NCCAA
+
+NAIA
+
+NCAA Division III
+
+NCAA Division II
+
+NCAA Division I
+Professional
+Professional
+2.2 Level Assignment Rules
+Each season of data is evaluated within the level it was played.
+
+Players changing levels (e.g., JUCO → NAIA → NCAA D1) retain historical data, but normalization is applied per level.
+
+No cross-level averaging occurs before normalization.
+2.3 Level Aliases and Grouping (Implementation Detail)
+The following are treated as equivalent for v1 normalization unless explicitly separated later:
+HS / Prep / Postgraduate → Pre-College
+
+All Professional leagues → Professional
+
+Future versions may introduce sub-level strength bands, but v1 uses the canonical list above.
+2.4 What Competitive Levels Affect
+Competitive level influences:
+baseline efficiency (μ)
+
+expected efficiency vs volume curves (E(v))
+
+variance expectations (σ(v))
+
+shrinkage strength (α)
+
+possession expectations (for klvn only)
+
+
+Competitive level does not:
+
+redefine attributes
+
+redefine skills
+
+redefine rules of the game
+
+It only affects how outcomes are interpreted.
+
+3. Skill KR Normalization (KLVN-T)
+3.1 Purpose
+Skill KR Normalization converts raw trait-level performance into Skill KRs (0–100) that are directly comparable across competitive levels.
+Each Skill KR represents the normalized strength of a specific basketball skill (e.g., Spot-Up 3, Layup Finishing), adjusted for:
+efficiency
+
+volume
+
+sample size
+
+competitive level
+
+Skill KRs are final outputs used directly by:
+
+Player IQ
+
+Team IQ
+
+Recruiting IQ
+
+Predixt Simulations
+
+Badge eligibility and ceilings
+3.2 Inputs (Per Trait Instance)
+For a given trait t (e.g., Spot-Up 3):
+
+p — observed efficiency
+
+ (e.g., FG%, 3P%, eFG%, depending on trait)
+
+v — observed volume rate
+
+ (events per game, e.g., catch-and-shoot 3PA/G)
+
+N — total event attempts in sample
+
+ (preferred: actual attempts; fallback: v × games_played)
+
+L — competitive level
+
+ (from Section 2)
+3.3 Required Trait–Level Parameters
+Each trait t at each level L requires the following parameters:
+
+μ[t,L] — baseline efficiency
+
+α[t,L] — shrinkage strength (sample stabilization)
+
+E[t,L](v) — expected efficiency as a function of volume
+
+σ[t,L](v) — expected variance as a function of volume
+
+These parameters define the difficulty environment for the trait at that level.
+3.4 Step 1 — Sample Stabilization (Shrinkage)
+Observed efficiency is stabilized to prevent small samples from producing extreme Skill KRs.
+
+p_{adj}=\frac{N\cdot p + \alpha_{t,L}\cdot \mu_{t,L}}{N+\alpha_{t,L}}
+
+Behavior:
+Large N → p_adj approaches observed p
+
+Small N → p_adj pulled toward baseline μ[t,L]
+
+Higher α[t,L] increases stabilization (used for noisier levels)
+
+Shrinkage affects Skill KR calculation only, not confidence gating.
+3.5 Step 2 — Volume-Adjusted Expectation
+Expected efficiency is computed based on volume at the given level.
+\hat{p} = E_{t,L}(v)
+This expectation reflects:
+
+defensive attention
+
+repetition difficulty
+
+usage sustainability
+
+Performance is measured relative to expectation:
+\Delta = p_{adj} - \hat{p}
+3.6 Step 3 — Variance Normalization
+Deviation is normalized by expected variance:
+Z = \frac{\Delta}{\sigma_{t,L}(v)}
+
+Where:
+σ[t,L](v) decreases as volume increases
+
+higher volume implies greater confidence in signal
+
+variance curves are level-specific
+
+Z = 0 represents league-average performance at that volume and level.
+3.7 Step 4 — Mapping to Skill KR (0–100)
+Normalized deviation is mapped to a bounded Skill KR:
+KR_{raw} = 100 \cdot \frac{1}{1 + e^{-k(Z - z_0)}}
+
+Default v1 constants:
+z0 = 0
+
+k = 1.2
+
+Final Skill KR:
+SkillKR = \min(100,\max(0,KR_{raw}))
+3.8 Volume Definition by Trait
+Volume v must correspond exactly to the trait’s event definition:
+Spot-Up 3 → catch-and-shoot 3PA/G
+
+Movement 3 → movement 3PA/G
+
+Layup Finishing → layup attempts/G
+
+Floater Finishing → floater attempts/G
+
+No cross-trait volume substitution is permitted.
+3.9 Interpretation Rules (Locked)
+Skill KRs are continuous, not bucketed
+
+Bands (60 / 70 / 80 / 90) are interpretive anchors only
+
+Skill KRs are level-normalized, not raw percentages
+
+Skill KRs are not adjusted by role or system
+
+Contextual weighting occurs downstream (Team IQ, KR aggregation)
+3.10 Confidence Interaction (Non-Modifying)
+Confidence is computed separately and does not modify Skill KR values.
+Confidence affects:
+badge tier eligibility
+
+simulation variance
+
+projection caution flags
+
+
+4. Production KR Normalization (klvn — KaNeXT Per Game)
+4.1 Purpose
+klvn (KaNeXT Per Game) normalizes player production so output is accurate, comparable, and level-agnostic, regardless of pace, game length, or competition.
+klvn is a production normalization layer, not a skill evaluator and not a system-fit metric.
+klvn exists to answer one question:
+“What does this player’s production actually mean once opportunity and environment are normalized?”
+4.2 Canonical Representation (Locked)
+All klvn values are computed and stored internally as:
+Per 100 possessions
+This is the canonical unit used for:
+cross-level comparison
+
+aggregation
+
+projection
+
+simulation
+
+No other unit is used internally.
+4.3 Display Representation (Non-Canonical)
+Coaches and users do not interact with possession math.
+For presentation only, klvn values may be translated into level-native game equivalents:
+klvn_{display} = klvn_{100} \cdot \frac{K_{display}[L]}{100}
+Where K_display[L] represents a typical possession count for that environment.
+Examples:
+Pre-College: ~60 possessions
+
+College (JUCO / NAIA / NCAA): ~70–75 possessions
+
+FIBA-style Pro: ~72 possessions
+
+NBA-style Pro: ~100 possessions
+
+Display translation does not alter internal values and does not affect downstream logic.
+4.4 Supported Metric Classes
+klvn supports the following production metric classes.
+Class A — Count Metrics
+Examples:
+Points
+
+Assists
+
+Rebounds
+
+Steals
+
+Blocks
+
+Turnovers
+
+Fouls
+
+Class B — Rate Metrics
+
+Examples:
+TS%
+
+eFG%
+
+AST%
+
+TOV%
+
+ORB%
+
+DRB%
+
+FT Rate
+
+Class C — Pace-Adjusted Metrics
+Examples:
+Points per 100 possessions
+
+Assists per 100 possessions
+Class D — Composite / Advanced Metrics
+Examples:
+Player Rating–type metrics
+
+LEBRON-style metrics
+
+Plus-minus derivatives
+4.5 Inputs
+Required for all klvn calculations:
+
+L — competitive level
+
+G — games played
+
+Additional inputs by class:
+Class A (Counts)
+S_pg — raw per-game stat
+
+Poss_pg — team possessions per game (preferred)
+
+Class B (Rates)
+S_rate — rate value
+
+Class C (Pace-Adjusted)
+S_100 — per-100 possession value
+
+Class D (Advanced)
+S_adv — metric value
+
+adv_is_league_normalized — boolean flag
+
+4.6 Possession Resolution (Required)
+Team possessions per game are resolved using the following priority:
+Actual team possessions from play-by-play
+
+Estimated team possessions from box-score totals
+
+Level-based possession prior Poss_prior[L]
+
+Level priors are used only when team-specific possessions cannot be computed.
+4.7 Normalization Pipeline
+4.7.1 Class A — Count Metrics
+Step 1 — Convert to per-100 possessions
+S_{100} = S_{pg} \cdot \frac{100}{Poss_{pg}}
+Step 2 — Apply level translation
+Define λ[S,L] as the level translation multiplier for metric S at level L.
+S_{klvn} = S_{100} \cdot \lambda[S,L]
+4.7.2 Class B — Rate Metrics
+Rate metrics are already opportunity-normalized.
+If the metric is not league-normalized:
+S_{klvn} = S_{rate} \cdot \lambda[S,L]
+If the metric is already league-normalized:
+S_{klvn} = S_{rate}
+4.7.3 Class C — Pace-Adjusted Metrics
+Metrics already expressed per 100 possessions are translated by level only:
+S_{klvn} = S_{100} \cdot \lambda[S,L]
+
+4.7.4 Class D — Composite / Advanced Metrics
+If adv_is_league_normalized = true:
+No level translation is applied.
+S_{klvn} = S_{adv}
+If adv_is_league_normalized = false:
+S_{klvn} = S_{adv} \cdot \lambda[S,L]
+4.8 Output Definition
+klvn outputs are stored as normalized per-100 possession values.
+Examples:
+Points_klvn
+
+Assists_klvn
+
+Rebounds_klvn
+
+TS%_klvn
+
+LEBRON_klvn (if applicable)
+
+Display equivalents are derived, not stored.
+4.9 Confidence for klvn
+Confidence reflects production stability.
+conf_{klvn} = \min\left(1,\frac{G}{G_{target}[L]}\right)
+Default thresholds:
+Pre-College: G_target = 10
+
+College: G_target = 20
+
+Professional: G_target = 15
+
+Confidence affects uncertainty and explanation layers, not klvn values.
+
+4.10 Required v1 Parameter Tables
+To operate klvn v1, the system maintains:
+
+Poss_prior[L] — possession priors by level (fallback only)
+
+λ[S,L] — level translation multipliers by metric and level
+
+K_display[L] — display possession constants (presentation only)
+
+G_target[L] — confidence thresholds
+4.11 Interpretation Rules (Locked)
+klvn normalizes production, not skill.
+
+klvn is independent of role, system, or archetype.
+
+All internal logic uses per-100 possession values.
+
+Coaches interact with impact-equivalent outputs, not possession math.
+
+5. Uncertainty (KLVN-U — Normalization Uncertainty Output)
+5.1 Purpose
+KLVN-U outputs a metric-specific uncertainty signal that quantifies how reliable a normalized KR is, given:
+sample size
+
+event volume
+
+level noise characteristics
+
+KLVN-U does not change:
+Skill KR values
+
+klvn values
+
+KLVN-U produces uncertainty outputs that downstream layers may use for gating, variance, and explanation without redefining normalization.
+5.2 Outputs
+For each normalized metric m, KLVN outputs:
+KLVN_U[m] — uncertainty (continuous, higher = less reliable)
+
+KLVN_C[m] — confidence (continuous in [0,1], higher = more reliable)
+
+These are complementary:
+KLVN\_C[m] = 1 - \text{Normalize}(KLVN\_U[m])
+
+Canonical storage may keep either one or both.
+5.3 Skill KR Uncertainty (Trait-Level)
+For a trait t, with inputs:
+N_t = event attempts
+
+v = events per game
+
+L = level
+
+Define a trait target sample size:
+N_target[t]
+
+5.3.1 Base confidence
+C_{base}(t) = \min\left(1,\frac{N_t}{N_{target}[t]}\right)
+5.3.2 Level noise multiplier
+Define:
+η[L] = level noise factor (higher = noisier environment)
+5.3.3 Final uncertainty
+U_{skill}(t) = \eta[L]\cdot \left(\frac{1}{\sqrt{\max(N_t,1)}}\right)
+5.3.4 Final confidence
+C_{skill}(t) = C_{base}(t)\cdot \frac{1}{1+U_{skill}(t)}
+C_skill(t) is retained alongside each Skill KR.
+5.4 klvn Uncertainty (Production Metrics)
+For production metric S with inputs:
+G = games played
+
+Poss_pg availability
+
+L = level
+Define:
+G_target[L] = games needed for stable production estimates
+5.4.1 Base confidence
+C_{base}(S) = \min\left(1,\frac{G}{G_{target}[L]}\right)
+5.4.2 Possession quality penalty
+If possessions are resolved by:
+play-by-play: q = 1.0
+
+box estimate: q = q_{box} (e.g., 0.85)
+
+level prior: q = q_{prior} (e.g., 0.65)
+5.4.3 Final uncertainty
+U_{klvn}(S) = \eta[L]\cdot \left(\frac{1}{\sqrt{\max(G,1)}}\right)\cdot \left(\frac{1}{q}\right)
+
+5.4.4 Final confidence
+C_{klvn}(S) = C_{base}(S)\cdot \frac{1}{1+U_{klvn}(S)}
+C_klvn(S) is retained alongside each klvn metric.
+5.5 Required Parameter Tables (v1)
+KLVN-U requires:
+N_target[t] — target attempt counts per trait
+
+G_target[L] — target games per level for production stability
+
+η[L] — noise multipliers per level
+
+q_box, q_prior — possession-source quality constants
+5.6 Interpretation Rules (Locked)
+KLVN-U quantifies reliability; it does not change normalized values.
+
+Confidence is metric-specific (a player can be high-confidence in one trait and low-confidence in another).
+
+Downstream gating, variance, and explanation consume KLVN-U / KLVN-C without redefining normalization.
+
+
+

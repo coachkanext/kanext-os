@@ -1,0 +1,26 @@
+Full confidence table (locked ranges)
+
+Confidence Gate (Percentage) — Locked Doc
+Purpose
+Confidence% is a single number that communicates evidence completeness + stability for the evaluation.
+Output
+confidence_pct ∈ [0,100]
+Computed at the end of player evaluation.
+What it affects
+Confidence% does not change any KR math.
+Confidence% is used for transparency and (optionally) gating what the system is allowed to claim or trigger.
+Default confidence ranges (by data availability)
+Use the table above as the default confidence mapping for:
+Production-based KR
+Full Player KR
+
+
+--- TABLE 1 ---
+Data available | Production-based KR confidence % | Full Player KR confidence %
+Official college stats only (league/team box scores), multi-year | 80–85% | 35–55%
+Official college stats + HS stats (MaxPreps etc.) | 82–88% | 40–60%
+Multi-year across levels (NJCAA→NAIA/NCAA, etc.) | 85–90% | 45–65%
+1 year Synergy + official stats | 85–92% | 65–80%
+Multi-year Synergy + official stats | 90–95% | 75–88%
+1 year PlayVision + official stats (assume same PPP/play-type/shot-type fidelity as Synergy) | 85–92% | 65–80%
+Multi-year PlayVision + official stats (same assumption) | 90–95% | 75–88%

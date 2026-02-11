@@ -25,6 +25,7 @@ import { RosterOverlay } from '@/components/nexus/roster-overlay';
 import { RecruitingOverlay } from '@/components/nexus/recruiting-overlay';
 import { SimulationOverlay } from '@/components/nexus/simulation-overlay';
 import { VoiceOverlay } from '@/components/nexus/voice-overlay';
+import { NewConversationSheet, type EngineType } from '@/components/nexus/new-conversation-sheet';
 import { NexusProvider, useNexusContext } from '@/context/nexus-context';
 import { useAuth } from '@/context/auth-context';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
@@ -78,6 +79,8 @@ function NexusScreenContent() {
     deleteConversation,
     addAssistantMessage,
     createNewGameOps,
+    openNewConversationSheet,
+    closeNewConversationSheet,
   } = useNexusContext();
 
   const colorScheme = useColorScheme() ?? 'light';
@@ -215,6 +218,30 @@ function NexusScreenContent() {
   const gameOpsConfig = activeConversation?.gameOpsConfig;
 
 
+  // ── Engine Menu ──
+  const handlePlusLongPress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    openNewConversationSheet();
+  }, [openNewConversationSheet]);
+
+  const handleSelectEngine = useCallback((engine: EngineType) => {
+    closeNewConversationSheet();
+    switch (engine) {
+      case 'game-ops':
+        createNewGameOps('', 'Opponent');
+        break;
+      case 'simulation':
+        createNewSim();
+        break;
+      case 'player':
+      case 'team':
+      case 'recruiting':
+      case 'scouting':
+        createNewConversation();
+        break;
+    }
+  }, [closeNewConversationSheet, createNewGameOps, createNewSim, createNewConversation]);
+
   // Game Ops is now conversational — user types naturally, GPT parses and asks clarifying questions.
 
   return (
@@ -281,6 +308,7 @@ function NexusScreenContent() {
           onChangeText={setInputText}
           onSend={sendMessage}
           onMicPress={handleMicPress}
+          onPlusLongPress={handlePlusLongPress}
           isVoiceActive={voiceState !== 'idle'}
           onFocus={() => {
             // Create a new conversation if none is active
@@ -337,6 +365,13 @@ function NexusScreenContent() {
       <AvatarDrawer
         visible={avatarDrawerVisible}
         onClose={() => setAvatarDrawerVisible(false)}
+      />
+
+      {/* Engine Menu Sheet (plus button long-press) */}
+      <NewConversationSheet
+        visible={nexusState.newConversationSheetOpen}
+        onClose={closeNewConversationSheet}
+        onSelectEngine={handleSelectEngine}
       />
     </ThemedView>
   );

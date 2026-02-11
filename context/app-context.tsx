@@ -36,12 +36,12 @@ interface ExtendedAppState extends AppContextState {
 
 const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
   sports: {
-    id: 'lincoln-basketball',
-    name: 'Lincoln University',
+    id: 'fmu-basketball',
+    name: 'Florida Memorial University',
     mode: 'sports',
     type: 'college_basketball',
-    location: 'Oakland, CA',
-    description: 'Lincoln University Blue Tigers Men\'s Basketball',
+    location: 'Miami Gardens, FL',
+    description: 'Florida Memorial University Lions Men\'s Basketball',
   },
   enterprise: {
     id: 'kanext',
@@ -130,13 +130,13 @@ const SPORTS_SEASONS: Record<string, Cycle> = {
 
 // Organizations for sports mode (static for now)
 const SPORTS_ORGANIZATIONS: Record<string, Organization> = {
-  'Lincoln University': {
-    id: 'lincoln-basketball',
-    name: 'Lincoln University',
+  'Florida Memorial University': {
+    id: 'fmu-basketball',
+    name: 'Florida Memorial University',
     mode: 'sports',
     type: 'college_basketball',
-    location: 'Oakland, CA',
-    description: 'Lincoln University Blue Tigers Men\'s Basketball',
+    location: 'Miami Gardens, FL',
+    description: 'Florida Memorial University Lions Men\'s Basketball',
   },
   'Middlebrooks Academy': {
     id: 'middlebrooks-academy',

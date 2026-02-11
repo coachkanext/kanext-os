@@ -1,0 +1,104 @@
+Team KR — Eval Order (Updated, Locked + Fit % Outputs)
+0) Coach Context Setup → 
+CONTEXT LOCKED
+MUST PULL FROM: Coach Inputs (Updated Master List)
+Locks:
+Program / Team
+
+Governing body + division + level environment
+
+Offensive system + defensive system (must be valid from UI System Set)
+
+Scholarships / NIL / budgets / aid (constraints stored; not used in Team KR math)
+
+
+1) System Load + Validation
+MUST PULL FROM: UI System Set
+Validate offense/defense system names
+
+Load system definitions needed for downstream coverage + fit outputs
+
+
+2) Roster Player Outputs Loaded (players already evaluated)
+For each rostered player in this program:
+Final System Off KR
+
+Final System Def KR
+
+Player eval mode (production-based vs full)
+
+(Optional) Player confidence% if present
+
+No player evaluation happens here.
+
+3) Participation% (Rotation Weights) Built
+Input: minutes played (official or coach-entered)
+
+Convert to Participation% (on-court share)
+
+Include players with Participation% ≥ 5%
+
+Renormalize included players so Σ Participation% = 100%
+
+Display as % (ex: 22%), store internally as 0.22
+
+
+4) Team Offense KR (Aggregation)
+Team_Off_KR = Σ( Player_Final_System_Off_KRᵢ × Participation%ᵢ )
+
+5) Team Defense KR (Aggregation)
+Team_Def_KR = Σ( Player_Final_System_Def_KRᵢ × Participation%ᵢ )
+
+6) Overall Team KR (Locked 53/47)
+Overall_Team_KR = (Team_Off_KR × 0.53) + (Team_Def_KR × 0.47)
+
+7) System Coverage + Missing + Bench Fill + 
+Fit %
+ (Diagnostics Layer)
+MUST PULL FROM: System Demand Profiles (1) + Player Systems
+7.1 Load system demands
+Load offense demand profile for the selected offensive system
+
+Load defense demand profile for the selected defensive system
+
+7.2 Map coverage (by position + rotation)
+Use Player Systems to map demands → position groups (PG/CG/Wing/Forward/Big)
+
+Assign coverage to rotation players using Participation%
+
+7.3 Output diagnostic objects (does NOT change Team KR)
+Coverage Map (Demand → covered by players → covered Participation%)
+
+Missing Demands (uncovered / undercovered)
+
+Bench Fill (who would cover if minutes increase)
+
+Fragility flags (coverage concentrated / single-point failures)
+
+7.4 Output 
+Fit % (three outputs)
+Offensive System Fit % (0–100)
+
+Defensive System Fit % (0–100)
+
+Overall Team Fit % (0–100)
+
+Rule: Fit % is derived from demand coverage under weighted rotation.
+Rule: Fit % does not modify Team KR.
+
+8) Level Interpretation
+MUST PULL FROM: Team KR Legend
+Using locked level environment:
+Translate Overall_Team_KR → tier label
+
+Output: “At [Level], this Team KR = [Tier].”
+
+
+9) Team Confidence Gate (Final Stamp)
+MUST PULL FROM: Team Confidence Gate table (locked ranges)
+Outputs:
+team_kr_confidence_pct
+
+coverage_confidence_pct
+
+Rule: confidence does not change Team KR math.

@@ -8,7 +8,7 @@
  * - FINAL → Report
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -23,7 +23,19 @@ import { useIsAuthenticated } from '@/context/auth-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/core';
 import { MOCK_ROSTER } from '@/data/mock-roster';
-import { FIREBASE_LEADERS } from '@/data/firebase-lincoln';
+import {
+  FMU_GAMES_BY_ID,
+  FMU_SCOUTING_NOTES,
+  FMU_KEYS_TO_GAME,
+  FMU_GAME_STATS,
+  FMU_GAME_FLOW,
+  FMU_BOX_SCORES,
+  FMU_LEADERS,
+  FMU_RECORD,
+  placeholderRecord,
+  isConfGame,
+  type BoxScoreLine,
+} from '@/data/fmu';
 import { triggerGameOps } from '@/utils/global-game-ops';
 
 // ── Game Data ──
@@ -40,28 +52,15 @@ interface GameData {
   streamUrl?: string;
 }
 
-const ALL_GAMES: Record<string, GameData> = {
-  '-Odr30YnjKA38ZfBZ6qB': { opponent: 'UNLV', date: 'Game 1', location: 'Away', status: 'final', score: 'L 59-123' },
-  '-OgbmTnXpz994rOErPEo': { opponent: 'Loyola Marymount', date: 'Game 2', location: 'Away', status: 'final', score: 'L 54-137' },
-  '-OgbzyEnODgmhH7yyXSJ': { opponent: 'Pepperdine', date: 'Game 3', location: 'Away', status: 'final', score: 'L 76-113' },
-  '-OgcD9jAtLd0IFGX7lwI': { opponent: 'UC Irvine', date: 'Game 4', location: 'Away', status: 'final', score: 'L 63-130' },
-  '-Ogd2OxdplE_N1hzwR_W': { opponent: 'Cal Maritime', date: 'Game 5', location: 'Away', status: 'final', score: 'L 102-108' },
-  '-OgdZ7wZowES0FYO8FYE': { opponent: 'Ohlone', date: 'Game 6', location: 'Away', status: 'final', score: 'W 90-86' },
-  '-OgjOc5JGIhECeCvETY6': { opponent: 'Simpson University', date: 'Game 7', location: 'Home', status: 'final', score: 'W 86-79' },
-  '-Oi5tiQ8LDRW9FEUs_gf': { opponent: 'Cal Maritime', date: 'Game 8', location: 'Home', status: 'final', score: 'W 102-96' },
-  '-OjE19psxjUfBfqrHZnB': { opponent: 'Cal Miramar', date: 'Game 9', location: 'Home', status: 'final', score: 'W 114-86' },
-  '-OjOHCO32yY5URlwq6su': { opponent: 'Cal Miramar', date: 'Game 10', location: 'Home', status: 'final', score: 'W 93-73' },
-  '-Ojn37CBTNgN9KpQQ22V': { opponent: 'Cal Prestige Tigers', date: 'Game 11', location: 'Home', status: 'final', score: 'W 127-60' },
-  '-OkM7ZQIrwSjI9U37UGd': { opponent: 'Bethesda', date: 'Game 12', location: 'Home', status: 'final', score: 'W 112-88' },
-  '-OitEKyFF5d9L8N0TgJR': { opponent: 'Cal State East Bay', date: 'Game 13', location: 'Away', status: 'live', score: '34-28', clock: 'Q2 4:12', streamUrl: 'https://portal.stretchinternet.com/csueastbay' },
-};
+const ALL_GAMES: Record<string, GameData> = FMU_GAMES_BY_ID;
 
-type DetailTab = 'prep' | 'live' | 'report';
+type DetailTab = 'prep' | 'live' | 'report' | 'replay';
 
 const TABS: { key: DetailTab; label: string }[] = [
   { key: 'prep', label: 'Pregame' },
   { key: 'live', label: 'Live' },
   { key: 'report', label: 'Report' },
+  { key: 'replay', label: 'Watch Replay' },
 ];
 
 function defaultTab(status: GameStatus): DetailTab {
@@ -72,277 +71,42 @@ function defaultTab(status: GameStatus): DetailTab {
   }
 }
 
-// ── Scouting Notes: concise, surface-level bullets (3–5 max) ──
-// Focus on opponent's top players / top threats. One sentence each.
-const SCOUTING_NOTES: Record<string, string[]> = {
-  'UNLV': [
-    'Elite shooting team — 67% FG in last meeting.',
-    'Limited Lincoln to 29% shooting in their matchup.',
-    'Forced 18 turnovers with aggressive defense.',
-  ],
-  'Loyola Marymount': [
-    'Shot 68% from the field and 92% from the line.',
-    'Generated 28 assists as a team — elite ball movement.',
-    'Outrebounded Lincoln 33-13.',
-  ],
-  'Pepperdine': [
-    'Shot 61% from the field with 27 assists.',
-    'Dominated the boards 41-14.',
-    'Strong interior defense — limited second chances.',
-  ],
-  'UC Irvine': [
-    'High-powered offense — 130 points in their meeting.',
-    'Forced 18 Lincoln turnovers.',
-    'Strong rebounding — dominated the glass.',
-  ],
-  'Cal Maritime': [
-    'Physical team that plays at a fast tempo.',
-    'Competitive games — Lincoln split the season series 1-1.',
-    'Watch for their transition offense.',
-  ],
-  'Ohlone': [
-    'Kalejaiye scored 33 in the win against them.',
-    'Lincoln won the rebounding battle 30-22.',
-    'They struggle against strong perimeter defense.',
-  ],
-  'Simpson University': [
-    'Lincoln held them to 37 first-half points.',
-    'Free throw shooting was key — Lincoln went 27-32.',
-    'Their guards can shoot — close out hard.',
-  ],
-  'Cal Miramar': [
-    'Lincoln dominated both meetings (114-86, 93-73).',
-    'Strong Lincoln rebounding — 40+ boards both games.',
-    'Vulnerable to balanced scoring attacks.',
-  ],
-  'Cal Prestige Tigers': [
-    'Lincoln won 127-60 in their last meeting.',
-    'Lincoln shot 57.5% from the field.',
-    'Limited depth — fatigue is a factor.',
-  ],
-  'Bethesda': [
-    'Lincoln won 112-88 in their meeting.',
-    'Lincoln shot 46.6% and dominated the boards 43-23.',
-    'Their defense struggles against interior scoring.',
-  ],
-  'Cal State East Bay': [
-    'Upcoming game — scouting report in progress.',
-    'Check back for opponent analysis.',
-  ],
-};
+const SCOUTING_NOTES: Record<string, string[]> = FMU_SCOUTING_NOTES;
 
 const DEFAULT_SCOUTING_NOTES = [
   'Scouting notes will be available as game day approaches.',
   'Check back for opponent analysis and top threats.',
 ];
 
-// ── Keys to the Game: exactly 3, focused on OUR execution ──
-const KEYS_TO_GAME: Record<string, [string, string, string]> = {
-  'UNLV': ['Limit turnovers to under 12', 'Crash the offensive boards', 'Get to the free throw line'],
-  'Loyola Marymount': ['Control tempo and limit possessions', 'Contest every three-point attempt', 'Attack the paint on offense'],
-  'Pepperdine': ['Win the rebounding battle', 'Move the ball — 15+ assists', 'Limit fouls and stay disciplined'],
-  'UC Irvine': ['Protect the ball — under 12 turnovers', 'Get stops in transition', 'Hit open threes'],
-  'Cal Maritime': ['Play physical inside', 'Win the turnover battle', 'Execute in the half-court'],
-  'Ohlone': ['Attack early and set the tempo', 'Get Kalejaiye going from deep', 'Rebound as a team'],
-  'Simpson University': ['Get to the line and convert', 'Defend the three-point line', 'Control the boards'],
-  'Cal Miramar': ['Push the pace in transition', 'Balanced scoring — 4+ in double figures', 'Dominate the paint'],
-  'Cal Prestige Tigers': ['Share the ball and move without it', 'Lock in defensively from the start', 'Control the glass'],
-  'Bethesda': ['Execute the game plan from start to finish', 'Win the rebounding battle', 'Limit turnovers'],
-  'Cal State East Bay': ['Control the tempo', 'Execute the game plan', 'Play tough defense'],
-};
+const KEYS_TO_GAME: Record<string, [string, string, string]> = FMU_KEYS_TO_GAME;
 
 const DEFAULT_KEYS: [string, string, string] = ['Control the tempo', 'Execute the game plan', 'Play tough defense'];
 
-// Demo stat lines for final AND live games (rolling report)
-const GAME_STATS: Record<string, { teamFG: string; team3P: string; teamFT: string; teamReb: string; teamTO: string }> = {
-  '-Odr30YnjKA38ZfBZ6qB': { teamFG: '19-65 (29.2%)', team3P: '9-39 (23.1%)', teamFT: '12-18 (66.7%)', teamReb: '22', teamTO: '18' },
-  '-OgbmTnXpz994rOErPEo': { teamFG: '18-60 (30.0%)', team3P: '7-32 (21.9%)', teamFT: '11-14 (78.6%)', teamReb: '13', teamTO: '20' },
-  '-OgbzyEnODgmhH7yyXSJ': { teamFG: '28-57 (49.1%)', team3P: '14-29 (48.3%)', teamFT: '6-9 (66.7%)', teamReb: '14', teamTO: '11' },
-  '-OgcD9jAtLd0IFGX7lwI': { teamFG: '21-58 (36.2%)', team3P: '11-30 (36.7%)', teamFT: '10-15 (66.7%)', teamReb: '14', teamTO: '18' },
-  '-Ogd2OxdplE_N1hzwR_W': { teamFG: '32-76 (42.1%)', team3P: '15-41 (36.6%)', teamFT: '23-31 (74.2%)', teamReb: '28', teamTO: '21' },
-  '-OgdZ7wZowES0FYO8FYE': { teamFG: '28-63 (44.4%)', team3P: '10-29 (34.5%)', teamFT: '24-31 (77.4%)', teamReb: '30', teamTO: '15' },
-  '-OgjOc5JGIhECeCvETY6': { teamFG: '27-63 (42.9%)', team3P: '5-29 (17.2%)', teamFT: '27-32 (84.4%)', teamReb: '31', teamTO: '8' },
-  '-Oi5tiQ8LDRW9FEUs_gf': { teamFG: '31-69 (44.9%)', team3P: '9-35 (25.7%)', teamFT: '31-41 (75.6%)', teamReb: '33', teamTO: '7' },
-  '-OjE19psxjUfBfqrHZnB': { teamFG: '41-69 (59.4%)', team3P: '9-27 (33.3%)', teamFT: '23-36 (63.9%)', teamReb: '40', teamTO: '22' },
-  '-OjOHCO32yY5URlwq6su': { teamFG: '30-64 (46.9%)', team3P: '6-23 (26.1%)', teamFT: '27-33 (81.8%)', teamReb: '41', teamTO: '12' },
-  '-Ojn37CBTNgN9KpQQ22V': { teamFG: '50-87 (57.5%)', team3P: '14-35 (40.0%)', teamFT: '13-15 (86.7%)', teamReb: '56', teamTO: '18' },
-  '-OkM7ZQIrwSjI9U37UGd': { teamFG: '34-73 (46.6%)', team3P: '9-27 (33.3%)', teamFT: '35-46 (76.1%)', teamReb: '43', teamTO: '8' },
-};
+// Game stats from FMU bridge
+const GAME_STATS = FMU_GAME_STATS;
 
 // ── Game Flow (score at end of each period) ──
-interface ScoreSnapshot { label: string; lu: number; opp: number }
+interface ScoreSnapshot { label: string; fmu: number; opp: number }
 
-const GAME_FLOW: Record<string, ScoreSnapshot[]> = {
-  '-Odr30YnjKA38ZfBZ6qB': [{ label: '1Q', lu: 15, opp: 12 }, { label: '2Q', lu: 30, opp: 24 }, { label: '3Q', lu: 38, opp: 54 }, { label: '4Q', lu: 59, opp: 123 }],
-  '-OgbmTnXpz994rOErPEo': [{ label: '1Q', lu: 8, opp: 54 }, { label: '2Q', lu: 16, opp: 108 }, { label: '3Q', lu: 31, opp: 138 }, { label: '4Q', lu: 54, opp: 137 }],
-  '-OgbzyEnODgmhH7yyXSJ': [{ label: '1Q', lu: 16, opp: 58 }, { label: '2Q', lu: 32, opp: 116 }, { label: '3Q', lu: 54, opp: 149 }, { label: '4Q', lu: 76, opp: 113 }],
-  '-OgcD9jAtLd0IFGX7lwI': [{ label: '1Q', lu: 17, opp: 34 }, { label: '2Q', lu: 34, opp: 68 }, { label: '3Q', lu: 47, opp: 98 }, { label: '4Q', lu: 63, opp: 130 }],
-  '-Ogd2OxdplE_N1hzwR_W': [{ label: '1Q', lu: 24, opp: 28 }, { label: '2Q', lu: 48, opp: 56 }, { label: '3Q', lu: 73, opp: 78 }, { label: '4Q', lu: 102, opp: 108 }],
-  '-OgdZ7wZowES0FYO8FYE': [{ label: '1Q', lu: 22, opp: 24 }, { label: '2Q', lu: 44, opp: 48 }, { label: '3Q', lu: 64, opp: 65 }, { label: '4Q', lu: 90, opp: 86 }],
-  '-OgjOc5JGIhECeCvETY6': [{ label: '1Q', lu: 16, opp: 22 }, { label: '2Q', lu: 37, opp: 45 }, { label: '3Q', lu: 60, opp: 61 }, { label: '4Q', lu: 86, opp: 79 }],
-  '-Oi5tiQ8LDRW9FEUs_gf': [{ label: '1Q', lu: 20, opp: 28 }, { label: '2Q', lu: 44, opp: 52 }, { label: '3Q', lu: 72, opp: 74 }, { label: '4Q', lu: 102, opp: 96 }],
-  '-OjE19psxjUfBfqrHZnB': [{ label: '1Q', lu: 32, opp: 22 }, { label: '2Q', lu: 60, opp: 42 }, { label: '3Q', lu: 86, opp: 64 }, { label: '4Q', lu: 114, opp: 86 }],
-  '-OjOHCO32yY5URlwq6su': [{ label: '1Q', lu: 22, opp: 16 }, { label: '2Q', lu: 46, opp: 36 }, { label: '3Q', lu: 70, opp: 54 }, { label: '4Q', lu: 93, opp: 73 }],
-  '-Ojn37CBTNgN9KpQQ22V': [{ label: '1Q', lu: 30, opp: 14 }, { label: '2Q', lu: 64, opp: 28 }, { label: '3Q', lu: 94, opp: 44 }, { label: '4Q', lu: 127, opp: 60 }],
-  '-OkM7ZQIrwSjI9U37UGd': [{ label: '1Q', lu: 24, opp: 22 }, { label: '2Q', lu: 50, opp: 44 }, { label: '3Q', lu: 80, opp: 66 }, { label: '4Q', lu: 112, opp: 88 }],
-};
+const GAME_FLOW = FMU_GAME_FLOW;
 
 // ── Box Score (player stat lines) ──
-interface BoxScoreLine { name: string; min: string; pts: number; reb: number; ast: number; fg: string }
+const BOX_SCORE = FMU_BOX_SCORES;
 
-const BOX_SCORE: Record<string, BoxScoreLine[]> = {
-  '-Odr30YnjKA38ZfBZ6qB': [
-    { name: 'Kalejaiye', min: '—', pts: 16, reb: 4, ast: 3, fg: '5-21' },
-    { name: 'McKesey', min: '—', pts: 15, reb: 5, ast: 4, fg: '6-16' },
-    { name: 'Williams', min: '—', pts: 11, reb: 6, ast: 0, fg: '3-9' },
-    { name: 'Hernandez', min: '—', pts: 9, reb: 0, ast: 0, fg: '3-10' },
-    { name: 'Manzo', min: '—', pts: 3, reb: 1, ast: 1, fg: '1-4' },
-    { name: 'Diomande', min: '—', pts: 3, reb: 1, ast: 0, fg: '1-1' },
-    { name: 'Chtelan', min: '—', pts: 2, reb: 2, ast: 1, fg: '0-1' },
-    { name: 'Plantey', min: '—', pts: 0, reb: 0, ast: 1, fg: '0-2' },
-    { name: 'Wall', min: '—', pts: 0, reb: 2, ast: 0, fg: '0-1' },
-    { name: 'Bansraj', min: '—', pts: 0, reb: 1, ast: 0, fg: '0-0' },
-  ],
-  '-OgbmTnXpz994rOErPEo': [
-    { name: 'Williams', min: '—', pts: 21, reb: 4, ast: 4, fg: '6-10' },
-    { name: 'Kalejaiye', min: '—', pts: 12, reb: 1, ast: 2, fg: '4-25' },
-    { name: 'Chtelan', min: '—', pts: 10, reb: 1, ast: 0, fg: '4-5' },
-    { name: 'McKesey', min: '—', pts: 2, reb: 4, ast: 1, fg: '1-8' },
-    { name: 'Manzo', min: '—', pts: 3, reb: 0, ast: 0, fg: '1-2' },
-    { name: 'Wall', min: '—', pts: 3, reb: 0, ast: 0, fg: '1-3' },
-    { name: 'Diomande', min: '—', pts: 3, reb: 2, ast: 0, fg: '1-4' },
-    { name: 'Plantey', min: '—', pts: 0, reb: 1, ast: 2, fg: '0-0' },
-    { name: 'Hernandez', min: '—', pts: 0, reb: 0, ast: 0, fg: '0-3' },
-  ],
-  '-OgbzyEnODgmhH7yyXSJ': [
-    { name: 'Kalejaiye', min: '—', pts: 38, reb: 3, ast: 2, fg: '13-22' },
-    { name: 'Chtelan', min: '—', pts: 14, reb: 6, ast: 1, fg: '5-9' },
-    { name: 'McKesey', min: '—', pts: 9, reb: 3, ast: 5, fg: '4-8' },
-    { name: 'Williams', min: '—', pts: 9, reb: 1, ast: 4, fg: '4-6' },
-    { name: 'Plantey', min: '—', pts: 3, reb: 1, ast: 3, fg: '1-5' },
-    { name: 'Hernandez', min: '—', pts: 3, reb: 0, ast: 0, fg: '1-3' },
-    { name: 'Wall', min: '—', pts: 0, reb: 0, ast: 2, fg: '0-1' },
-    { name: 'Diomande', min: '—', pts: 0, reb: 0, ast: 1, fg: '0-3' },
-    { name: 'Bansraj', min: '—', pts: 0, reb: 0, ast: 0, fg: '0-0' },
-  ],
-  '-OgcD9jAtLd0IFGX7lwI': [
-    { name: 'Kalejaiye', min: '—', pts: 19, reb: 3, ast: 3, fg: '6-17' },
-    { name: 'Williams', min: '—', pts: 13, reb: 4, ast: 4, fg: '4-9' },
-    { name: 'McKesey', min: '—', pts: 11, reb: 3, ast: 4, fg: '4-9' },
-    { name: 'Hernandez', min: '—', pts: 6, reb: 1, ast: 0, fg: '2-5' },
-    { name: 'Chtelan', min: '—', pts: 5, reb: 2, ast: 0, fg: '2-3' },
-    { name: 'Plantey', min: '—', pts: 3, reb: 1, ast: 2, fg: '1-2' },
-    { name: 'Wall', min: '—', pts: 3, reb: 0, ast: 0, fg: '1-5' },
-    { name: 'Manzo', min: '—', pts: 3, reb: 0, ast: 1, fg: '1-5' },
-    { name: 'Diomande', min: '—', pts: 0, reb: 0, ast: 0, fg: '0-3' },
-  ],
-  '-Ogd2OxdplE_N1hzwR_W': [
-    { name: 'Kalejaiye', min: '—', pts: 32, reb: 5, ast: 3, fg: '10-24' },
-    { name: 'Williams', min: '—', pts: 22, reb: 6, ast: 5, fg: '6-14' },
-    { name: 'McKesey', min: '—', pts: 14, reb: 2, ast: 6, fg: '5-11' },
-    { name: 'Chtelan', min: '—', pts: 12, reb: 6, ast: 1, fg: '3-6' },
-    { name: 'Diomande', min: '—', pts: 8, reb: 4, ast: 2, fg: '3-6' },
-    { name: 'Plantey', min: '—', pts: 5, reb: 2, ast: 2, fg: '2-4' },
-    { name: 'Wall', min: '—', pts: 5, reb: 1, ast: 0, fg: '2-4' },
-    { name: 'Manzo', min: '—', pts: 4, reb: 1, ast: 2, fg: '1-4' },
-    { name: 'Hernandez', min: '—', pts: 0, reb: 1, ast: 0, fg: '0-3' },
-  ],
-  '-OgdZ7wZowES0FYO8FYE': [
-    { name: 'Kalejaiye', min: '—', pts: 33, reb: 5, ast: 3, fg: '10-23' },
-    { name: 'Williams', min: '—', pts: 18, reb: 5, ast: 3, fg: '5-10' },
-    { name: 'McKesey', min: '—', pts: 10, reb: 6, ast: 3, fg: '3-7' },
-    { name: 'Chtelan', min: '—', pts: 8, reb: 5, ast: 2, fg: '2-5' },
-    { name: 'Diomande', min: '—', pts: 7, reb: 2, ast: 1, fg: '2-4' },
-    { name: 'Plantey', min: '—', pts: 6, reb: 2, ast: 3, fg: '2-5' },
-    { name: 'Manzo', min: '—', pts: 5, reb: 3, ast: 1, fg: '2-4' },
-    { name: 'Wall', min: '—', pts: 3, reb: 1, ast: 1, fg: '1-3' },
-    { name: 'Bansraj', min: '—', pts: 0, reb: 1, ast: 0, fg: '0-2' },
-  ],
-  '-OgjOc5JGIhECeCvETY6': [
-    { name: 'Williams', min: '—', pts: 22, reb: 8, ast: 3, fg: '5-13' },
-    { name: 'Kalejaiye', min: '—', pts: 18, reb: 3, ast: 2, fg: '5-14' },
-    { name: 'McKesey', min: '—', pts: 15, reb: 5, ast: 5, fg: '5-10' },
-    { name: 'Chtelan', min: '—', pts: 12, reb: 7, ast: 1, fg: '4-8' },
-    { name: 'Diomande', min: '—', pts: 8, reb: 3, ast: 1, fg: '3-6' },
-    { name: 'Plantey', min: '—', pts: 5, reb: 2, ast: 2, fg: '2-5' },
-    { name: 'Manzo', min: '—', pts: 4, reb: 1, ast: 0, fg: '2-4' },
-    { name: 'Wall', min: '—', pts: 2, reb: 1, ast: 1, fg: '1-2' },
-    { name: 'Bansraj', min: '—', pts: 0, reb: 1, ast: 0, fg: '0-1' },
-  ],
-  '-Oi5tiQ8LDRW9FEUs_gf': [
-    { name: 'Kalejaiye', min: '—', pts: 25, reb: 6, ast: 3, fg: '8-18' },
-    { name: 'Williams', min: '—', pts: 20, reb: 7, ast: 4, fg: '5-12' },
-    { name: 'McKesey', min: '—', pts: 18, reb: 4, ast: 5, fg: '6-11' },
-    { name: 'Chtelan', min: '—', pts: 14, reb: 6, ast: 1, fg: '4-8' },
-    { name: 'Diomande', min: '—', pts: 10, reb: 5, ast: 1, fg: '3-6' },
-    { name: 'Plantey', min: '—', pts: 8, reb: 2, ast: 1, fg: '3-5' },
-    { name: 'Wall', min: '—', pts: 4, reb: 1, ast: 0, fg: '1-4' },
-    { name: 'Manzo', min: '—', pts: 3, reb: 1, ast: 1, fg: '1-3' },
-    { name: 'Hernandez', min: '—', pts: 0, reb: 1, ast: 0, fg: '0-2' },
-  ],
-  '-OjE19psxjUfBfqrHZnB': [
-    { name: 'Kalejaiye', min: '—', pts: 24, reb: 4, ast: 4, fg: '9-16' },
-    { name: 'Williams', min: '—', pts: 22, reb: 8, ast: 5, fg: '7-12' },
-    { name: 'Chtelan', min: '—', pts: 18, reb: 10, ast: 2, fg: '7-10' },
-    { name: 'McKesey', min: '—', pts: 16, reb: 5, ast: 6, fg: '6-9' },
-    { name: 'Diomande', min: '—', pts: 12, reb: 6, ast: 2, fg: '4-6' },
-    { name: 'Plantey', min: '—', pts: 8, reb: 2, ast: 3, fg: '3-5' },
-    { name: 'Wall', min: '—', pts: 6, reb: 2, ast: 1, fg: '2-4' },
-    { name: 'Manzo', min: '—', pts: 5, reb: 1, ast: 1, fg: '2-4' },
-    { name: 'Hernandez', min: '—', pts: 3, reb: 1, ast: 1, fg: '1-3' },
-    { name: 'Bansraj', min: '—', pts: 0, reb: 1, ast: 0, fg: '0-0' },
-  ],
-  '-OjOHCO32yY5URlwq6su': [
-    { name: 'Williams', min: '—', pts: 23, reb: 5, ast: 4, fg: '7-14' },
-    { name: 'McKesey', min: '—', pts: 18, reb: 7, ast: 5, fg: '6-10' },
-    { name: 'Kalejaiye', min: '—', pts: 14, reb: 4, ast: 2, fg: '4-12' },
-    { name: 'Chtelan', min: '—', pts: 12, reb: 8, ast: 2, fg: '4-7' },
-    { name: 'Diomande', min: '—', pts: 10, reb: 8, ast: 1, fg: '3-5' },
-    { name: 'Plantey', min: '—', pts: 6, reb: 3, ast: 2, fg: '2-5' },
-    { name: 'Wall', min: '—', pts: 5, reb: 3, ast: 1, fg: '2-4' },
-    { name: 'Manzo', min: '—', pts: 3, reb: 1, ast: 1, fg: '1-4' },
-    { name: 'Hernandez', min: '—', pts: 2, reb: 1, ast: 0, fg: '1-3' },
-    { name: 'Bansraj', min: '—', pts: 0, reb: 1, ast: 0, fg: '0-0' },
-  ],
-  '-Ojn37CBTNgN9KpQQ22V': [
-    { name: 'Kalejaiye', min: '—', pts: 28, reb: 3, ast: 5, fg: '11-18' },
-    { name: 'Chtelan', min: '—', pts: 24, reb: 10, ast: 3, fg: '9-14' },
-    { name: 'Williams', min: '—', pts: 18, reb: 9, ast: 6, fg: '6-10' },
-    { name: 'McKesey', min: '—', pts: 16, reb: 6, ast: 8, fg: '6-10' },
-    { name: 'Diomande', min: '—', pts: 14, reb: 10, ast: 2, fg: '5-8' },
-    { name: 'Plantey', min: '—', pts: 10, reb: 5, ast: 4, fg: '4-8' },
-    { name: 'Manzo', min: '—', pts: 8, reb: 4, ast: 2, fg: '3-6' },
-    { name: 'Hernandez', min: '—', pts: 5, reb: 3, ast: 1, fg: '2-5' },
-    { name: 'Wall', min: '—', pts: 4, reb: 4, ast: 1, fg: '2-4' },
-    { name: 'Bansraj', min: '—', pts: 0, reb: 2, ast: 0, fg: '0-4' },
-  ],
-  '-OkM7ZQIrwSjI9U37UGd': [
-    { name: 'Kalejaiye', min: '—', pts: 25, reb: 4, ast: 3, fg: '8-15' },
-    { name: 'Williams', min: '—', pts: 23, reb: 8, ast: 4, fg: '6-12' },
-    { name: 'Chtelan', min: '—', pts: 20, reb: 7, ast: 2, fg: '6-10' },
-    { name: 'McKesey', min: '—', pts: 16, reb: 6, ast: 3, fg: '5-10' },
-    { name: 'Diomande', min: '—', pts: 10, reb: 8, ast: 1, fg: '3-6' },
-    { name: 'Plantey', min: '—', pts: 8, reb: 3, ast: 2, fg: '3-6' },
-    { name: 'Manzo', min: '—', pts: 5, reb: 3, ast: 1, fg: '2-5' },
-    { name: 'Hernandez', min: '—', pts: 3, reb: 2, ast: 0, fg: '1-5' },
-    { name: 'Wall', min: '—', pts: 2, reb: 1, ast: 0, fg: '0-3' },
-    { name: 'Bansraj', min: '—', pts: 0, reb: 1, ast: 0, fg: '0-1' },
-  ],
-};
 
 // ── Play-by-Play data (most recent first) ──
 type PbpCategory = 'scoring' | 'foul' | 'sub' | 'timeout' | 'other';
 
 interface PlayByPlayEvent {
   id: string;
-  team: 'LU' | string;
+  team: 'FMU' | string;
   text: string;
   scoreAt: string; // running score at time of event
   category: PbpCategory;
 }
 
 const PLAY_BY_PLAY: Record<string, PlayByPlayEvent[]> = {
-  '-OitEKyFF5d9L8N0TgJR': [
+  '_demo-removed': [
     // Most recent first — Q2 in progress, 4:12 remaining
     { id: 'pbp-28', team: 'CSEB', text: 'CSEB — Made 2PT (Paint)', scoreAt: '34-28', category: 'scoring' },
     { id: 'pbp-27', team: 'LU', text: 'Kalejaiye Made 2PT (Midrange)', scoreAt: '34-26', category: 'scoring' },
@@ -451,7 +215,7 @@ function convertGameOpsToPlayByPlay(events: any[], opponentAbbr: string): PlayBy
     else oppScore += pts;
     pbp.push({
       id: evt.id,
-      team: evt.team === 'LU' ? 'LU' : opponentAbbr,
+      team: evt.team === 'LU' ? 'FMU' : opponentAbbr,
       text: gameOpsEventToText(evt),
       scoreAt: `${luScore}-${oppScore}`,
       category: gameOpsEventCategory(evt.type),
@@ -488,33 +252,178 @@ function computeGameOpsTeamStats(events: any[]) {
 }
 
 function computeGameOpsPlayerStats(events: any[]) {
-  const stats: Record<string, { pts: number; reb: number; ast: number; stl: number; blk: number; to: number; fgm: number; fga: number }> = {};
+  const stats: Record<string, { pts: number; reb: number; ast: number; stl: number; blk: number; to: number; pf: number; fgm: number; fga: number; tpm: number; tpa: number; ftm: number; fta: number }> = {};
   for (const evt of events) {
     if (evt.team !== 'LU' || !evt.playerId) continue;
     if (!stats[evt.playerId]) {
-      stats[evt.playerId] = { pts: 0, reb: 0, ast: 0, stl: 0, blk: 0, to: 0, fgm: 0, fga: 0 };
+      stats[evt.playerId] = { pts: 0, reb: 0, ast: 0, stl: 0, blk: 0, to: 0, pf: 0, fgm: 0, fga: 0, tpm: 0, tpa: 0, ftm: 0, fta: 0 };
     }
     const s = stats[evt.playerId];
     switch (evt.type) {
       case 'fg2_make': s.pts += 2; s.fgm++; s.fga++; break;
       case 'fg2_miss': s.fga++; break;
-      case 'fg3_make': s.pts += 3; s.fgm++; s.fga++; break;
-      case 'fg3_miss': s.fga++; break;
-      case 'ft_make': s.pts += 1; break;
+      case 'fg3_make': s.pts += 3; s.fgm++; s.fga++; s.tpm++; s.tpa++; break;
+      case 'fg3_miss': s.fga++; s.tpa++; break;
+      case 'ft_make': s.pts += 1; s.ftm++; s.fta++; break;
+      case 'ft_miss': s.fta++; break;
       case 'reb_off': case 'reb_def': s.reb++; break;
       case 'ast': s.ast++; break;
       case 'stl': s.stl++; break;
       case 'blk': s.blk++; break;
       case 'to': s.to++; break;
+      case 'foul_personal': s.pf++; break;
     }
   }
   return stats;
 }
 
-const SEASON_LEADERS = FIREBASE_LEADERS.slice(0, 3).map((l) => {
+const SEASON_LEADERS = [...FMU_LEADERS].sort((a, b) => b.ppg - a.ppg).slice(0, 3).map((l) => {
   const lastName = l.name.split(' ').pop() || l.name;
   return { name: lastName, line: `${l.ppg} ppg, ${l.rpg} rpg, ${l.apg} apg` };
 });
+
+// ── NBA-style Box Score column definitions ──
+const BOX_COLS: { key: string; label: string; width: number }[] = [
+  { key: 'name', label: 'PLAYER', width: 90 },
+  { key: 'min', label: 'MIN', width: 40 },
+  { key: 'fg', label: 'FG', width: 50 },
+  { key: 'threePt', label: '3PT', width: 50 },
+  { key: 'ft', label: 'FT', width: 50 },
+  { key: 'reb', label: 'REB', width: 38 },
+  { key: 'ast', label: 'AST', width: 38 },
+  { key: 'stl', label: 'STL', width: 38 },
+  { key: 'blk', label: 'BLK', width: 38 },
+  { key: 'to', label: 'TO', width: 34 },
+  { key: 'pf', label: 'PF', width: 34 },
+  { key: 'plusMinus', label: '+/-', width: 38 },
+  { key: 'pts', label: 'PTS', width: 38 },
+];
+
+function getBoxCellValue(player: BoxScoreLine, key: string): string {
+  switch (key) {
+    case 'name': return player.name;
+    case 'min': return player.min;
+    case 'fg': return player.fg;
+    case 'threePt': return player.threePt;
+    case 'ft': return player.ft;
+    case 'reb': return String(player.reb);
+    case 'ast': return String(player.ast);
+    case 'stl': return String(player.stl);
+    case 'blk': return String(player.blk);
+    case 'to': return String(player.to);
+    case 'pf': return String(player.pf);
+    case 'plusMinus': return '—';
+    case 'pts': return String(player.pts);
+    default: return '—';
+  }
+}
+
+function sumMadeAtt(lines: BoxScoreLine[], field: 'fg' | 'threePt' | 'ft'): string {
+  let m = 0, a = 0;
+  for (const l of lines) {
+    const parts = l[field].split('-');
+    m += parseInt(parts[0]) || 0;
+    a += parseInt(parts[1]) || 0;
+  }
+  return `${m}-${a}`;
+}
+
+// Generate mock opponent box score from opponent name + score (deterministic)
+function mockBoxScore(teamName: string, teamScore: number, names?: string[]): BoxScoreLine[] {
+  let h = 0;
+  for (let i = 0; i < teamName.length; i++) h = ((h << 5) - h + teamName.charCodeAt(i)) | 0;
+  const seed = (n: number) => { h = ((h << 5) - h + n) | 0; return Math.abs(h); };
+
+  const DEFAULT_NAMES = ['Johnson', 'Williams', 'Davis', 'Brown', 'Wilson', 'Anderson', 'Taylor', 'Thomas', 'Moore', 'Jackson'];
+  const MOCK_NAMES = names ?? DEFAULT_NAMES;
+  const count = 8 + (seed(1) % 3); // 8-10 players
+  const players: BoxScoreLine[] = [];
+  let ptsLeft = teamScore;
+
+  for (let i = 0; i < count; i++) {
+    const isStarter = i < 5;
+    const min = isStarter ? 25 + (seed(i + 10) % 13) : 8 + (seed(i + 20) % 15);
+    const sharePct = isStarter ? 0.15 + (seed(i + 30) % 10) / 100 : 0.04 + (seed(i + 40) % 6) / 100;
+    const pts = i < count - 1 ? Math.round(teamScore * sharePct) : Math.max(0, ptsLeft);
+    ptsLeft -= pts;
+    const fgm = Math.round(pts * 0.38);
+    const fga = fgm + 2 + (seed(i + 50) % 5);
+    const tpm = Math.round(pts * 0.12);
+    const tpa = tpm + (seed(i + 60) % 3);
+    const ftm = Math.max(0, pts - fgm * 2 - tpm);
+    const fta = ftm + (seed(i + 70) % 2);
+    const reb = isStarter ? 3 + (seed(i + 80) % 6) : 1 + (seed(i + 90) % 4);
+    const ast = isStarter ? 1 + (seed(i + 100) % 5) : seed(i + 110) % 3;
+    const stl = seed(i + 120) % 3;
+    const blk = seed(i + 130) % 2;
+    const to = seed(i + 140) % 4;
+    const pf = seed(i + 150) % 4;
+    players.push({
+      name: MOCK_NAMES[i % MOCK_NAMES.length],
+      min: String(min),
+      pts, reb, ast,
+      fg: `${fgm}-${fga}`, threePt: `${tpm}-${tpa}`, ft: `${ftm}-${fta}`,
+      stl, blk, to, pf,
+    });
+  }
+  return players.sort((a, b) => b.pts - a.pts);
+}
+
+interface PbpEntry { time: string; half: '1st' | '2nd'; team: 'fmu' | 'opp'; text: string; score: string; }
+function generateMockPbp(opponent: string, fmuScore: number, oppScore: number): PbpEntry[] {
+  let h = 0;
+  for (let i = 0; i < opponent.length; i++) h = ((h << 5) - h + opponent.charCodeAt(i)) | 0;
+  const seed = () => { h = ((h << 5) - h + 0x5bd1e995) | 0; return Math.abs(h) % 1000; };
+  const FMU_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas'];
+  const OPP_NAMES = ['Johnson', 'Williams', 'Davis', 'Brown', 'Wilson', 'Anderson', 'Taylor'];
+  const plays = [
+    (n: string) => `${n} makes a layup`, (n: string) => `${n} makes a 3-pointer`,
+    (n: string) => `${n} misses a jumper`, (n: string) => `${n} makes a free throw`,
+    (n: string) => `${n} misses a free throw`, (n: string) => `${n} with a dunk`,
+    (n: string) => `Turnover by ${n}`, (n: string) => `${n} steal`,
+    (n: string) => `${n} defensive rebound`, (n: string) => `${n} offensive rebound`,
+    (n: string) => `Foul on ${n}`, (n: string) => `${n} makes a mid-range jumper`,
+    (n: string) => `${n} blocked`, (n: string) => `${n} assist`,
+  ];
+  const entries: PbpEntry[] = [];
+  let fR = 0, oR = 0;
+  const total = 80 + (seed() % 30), mid = Math.floor(total / 2);
+  for (let i = 0; i < total; i++) {
+    const half: '1st' | '2nd' = i < mid ? '1st' : '2nd';
+    const minLeft = i < mid ? 20 - Math.floor((i / mid) * 20) : 20 - Math.floor(((i - mid) / (total - mid)) * 20);
+    const sec = seed() % 60;
+    const isFmu = seed() % 2 === 0;
+    const names = isFmu ? FMU_NAMES : OPP_NAMES;
+    const name = names[seed() % names.length];
+    const tpl = plays[seed() % plays.length];
+    const pIdx = seed() % plays.length;
+    if (pIdx === 0 || pIdx === 5 || pIdx === 11) { if (isFmu) fR += 2; else oR += 2; }
+    else if (pIdx === 1) { if (isFmu) fR += 3; else oR += 3; }
+    else if (pIdx === 3) { if (isFmu) fR += 1; else oR += 1; }
+    entries.push({ time: `${minLeft}:${String(sec).padStart(2, '0')}`, half, team: isFmu ? 'fmu' : 'opp', text: tpl(name), score: `${fR}-${oR}` });
+  }
+  if (entries.length > 0) entries[entries.length - 1].score = `${fmuScore}-${oppScore}`;
+  return entries;
+}
+
+function getBoxTotalsValue(lines: BoxScoreLine[], key: string): string {
+  switch (key) {
+    case 'name': return 'TOTAL';
+    case 'min': return '';
+    case 'fg': return sumMadeAtt(lines, 'fg');
+    case 'threePt': return sumMadeAtt(lines, 'threePt');
+    case 'ft': return sumMadeAtt(lines, 'ft');
+    case 'reb': return String(lines.reduce((s, l) => s + l.reb, 0));
+    case 'ast': return String(lines.reduce((s, l) => s + l.ast, 0));
+    case 'stl': return String(lines.reduce((s, l) => s + l.stl, 0));
+    case 'blk': return String(lines.reduce((s, l) => s + l.blk, 0));
+    case 'to': return String(lines.reduce((s, l) => s + l.to, 0));
+    case 'pf': return String(lines.reduce((s, l) => s + l.pf, 0));
+    case 'plusMinus': return '';
+    case 'pts': return String(lines.reduce((s, l) => s + l.pts, 0));
+    default: return '';
+  }
+}
 
 function computeGameOpsBoxScore(events: any[]): BoxScoreLine[] {
   const playerStats = computeGameOpsPlayerStats(events);
@@ -524,27 +433,31 @@ function computeGameOpsBoxScore(events: any[]): BoxScoreLine[] {
     .map((p) => {
       const s = playerStats[p.id];
       const lastName = p.name.split(' ').pop() || p.name;
-      return { name: lastName, min: '—', pts: s.pts, reb: s.reb, ast: s.ast, fg: `${s.fgm}-${s.fga}` };
+      return {
+        name: lastName, min: '—', pts: s.pts, reb: s.reb, ast: s.ast,
+        fg: `${s.fgm}-${s.fga}`, threePt: `${s.tpm}-${s.tpa}`, ft: `${s.ftm}-${s.fta}`,
+        stl: s.stl, blk: s.blk, to: s.to, pf: s.pf,
+      };
     });
 }
 
 function computeGameOpsGameFlow(events: any[], periodFormat: string): ScoreSnapshot[] {
-  const periodScores: Record<number, { lu: number; opp: number }> = {};
-  let luScore = 0;
+  const periodScores: Record<number, { fmu: number; opp: number }> = {};
+  let fmuScore = 0;
   let oppScore = 0;
   for (const evt of events) {
     const pts = LO_SCORING_PTS[evt.type] ?? 0;
-    if (evt.team === 'LU') luScore += pts;
+    if (evt.team === 'LU') fmuScore += pts;
     else oppScore += pts;
     if (pts > 0) {
-      periodScores[evt.period] = { lu: luScore, opp: oppScore };
+      periodScores[evt.period] = { fmu: fmuScore, opp: oppScore };
     }
   }
   return Object.entries(periodScores)
     .sort(([a], [b]) => Number(a) - Number(b))
     .map(([period, scores]) => ({
       label: gameOpsPeriodLabel(Number(period), periodFormat),
-      lu: scores.lu,
+      fmu: scores.fmu,
       opp: scores.opp,
     }));
 }
@@ -566,6 +479,19 @@ export default function GameDetailScreen() {
   const [pbpFilter, setPbpFilter] = useState<PbpCategory | 'all'>('all');
   const [filtersExpanded, setFiltersExpanded] = useState(false);
   const [showGameActions, setShowGameActions] = useState(false);
+  const [boxScoreTeam, setBoxScoreTeam] = useState<'fmu' | 'opp'>('fmu');
+  const [boxScoreExpanded, setBoxScoreExpanded] = useState(false);
+  const [espnTab, setEspnTab] = useState<'gamecast' | 'boxscore' | 'pbp' | 'teamstats'>('gamecast');
+  const [liveSubTab, setLiveSubTab] = useState<'plays' | 'box' | 'team' | 'leaders'>('plays');
+  const [liveBoxTeam, setLiveBoxTeam] = useState<'fmu' | 'opp'>('fmu');
+  // Shot chart filter state
+  const [shotPeriods, setShotPeriods] = useState<Set<string>>(new Set());
+  const [shotPlayTypes, setShotPlayTypes] = useState<Set<string>>(new Set());
+  const [shotPlayers, setShotPlayers] = useState<Set<string>>(new Set());
+  const [shotFilterSheet, setShotFilterSheet] = useState<'periods' | 'playTypes' | 'players' | null>(null);
+  const [shotPlayerTeam, setShotPlayerTeam] = useState<'fmu' | 'opp'>('fmu');
+  const scrollRef = useRef<ScrollView>(null);
+  const sectionRefs = useRef<Record<string, number>>({});
 
   const scoutingNotes = SCOUTING_NOTES[game.opponent] ?? DEFAULT_SCOUTING_NOTES;
   const keys = KEYS_TO_GAME[game.opponent] ?? DEFAULT_KEYS;
@@ -594,6 +520,7 @@ export default function GameDetailScreen() {
         }
       };
       loadGameOps();
+      setEspnTab('gamecast');
     }, [gameId])
   );
 
@@ -613,9 +540,28 @@ export default function GameDetailScreen() {
     ? gameOpsData.luScore < gameOpsData.oppScore
     : game.score?.startsWith('L');
 
-  const pbpEvents = hasGameOps
+  const pbpEvents: PlayByPlayEvent[] = hasGameOps
     ? convertGameOpsToPlayByPlay(gameOpsEvents, opponentAbbr)
-    : (PLAY_BY_PLAY[gameId ?? ''] ?? []);
+    : (PLAY_BY_PLAY[gameId ?? ''] ?? (() => {
+        // Generate mock PBP for live games with no stored data
+        if (game.status !== 'live' && game.status !== 'final') return [];
+        const fmuPts = parseInt(game.score?.replace(/[WL]\s?/, '').split('-')[0] ?? '0') || 0;
+        const oppPts = parseInt(game.score?.replace(/[WL]\s?/, '').split('-')[1] ?? '0') || 0;
+        const entries = generateMockPbp(game.opponent, fmuPts, oppPts);
+        // For live games, only show events through the current period (~60% of plays for 2H)
+        const liveEntries = game.status === 'live' ? entries.slice(0, Math.floor(entries.length * 0.65)) : entries;
+        return liveEntries.reverse().map((e, i): PlayByPlayEvent => ({
+          id: `mock-${i}`,
+          team: e.team === 'fmu' ? 'FMU' : opponentAbbr,
+          text: e.text,
+          scoreAt: e.score,
+          category: e.text.includes('makes') || e.text.includes('misses') || e.text.includes('dunk') || e.text.includes('free throw')
+            ? 'scoring'
+            : e.text.includes('Foul') ? 'foul'
+            : e.text.includes('Turnover') || e.text.includes('steal') || e.text.includes('rebound') || e.text.includes('blocked') || e.text.includes('assist') ? 'other'
+            : 'other',
+        }));
+      })());
   const filteredPbp = pbpFilter === 'all' ? pbpEvents : pbpEvents.filter((e) => e.category === pbpFilter);
 
   // Effective values for Live/Report display
@@ -631,8 +577,12 @@ export default function GameDetailScreen() {
         : `${gameOpsData.luScore}-${gameOpsData.oppScore}`)
     : game.score;
   const effectiveHasReport = hasGameOps || ((game.status === 'live' || game.status === 'final') && !!game.score);
-  const effectiveBoxScore = hasGameOps ? computeGameOpsBoxScore(gameOpsEvents) : (BOX_SCORE[gameId ?? ''] ?? []);
+  const realBoxScore = hasGameOps ? computeGameOpsBoxScore(gameOpsEvents) : (BOX_SCORE[gameId ?? ''] ?? []);
+  const FMU_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
+  const effectiveBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('Florida Memorial', parseInt(effectiveLuScore) || 0, FMU_MOCK_NAMES);
   const effectiveGameFlow = hasGameOps ? computeGameOpsGameFlow(gameOpsEvents, gameOpsData?.periodFormat ?? 'halves') : (GAME_FLOW[gameId ?? ''] ?? []);
+  const oppBoxScore = mockBoxScore(game.opponent, parseInt(effectiveOppScore) || 0);
+  const isFinalNoOps = game.status === 'final' && !hasGameOps;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -669,94 +619,219 @@ export default function GameDetailScreen() {
               <IconSymbol name="arrow.uturn.backward" size={18} color={colors.textSecondary} />
             </Pressable>
           )}
-          <Pressable
-            style={({ pressed }) => [
-              styles.appBarIcon,
-              { backgroundColor: pressed ? colors.backgroundSecondary : 'transparent' },
-            ]}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          >
-            <IconSymbol name="sparkles" size={18} color={colors.textSecondary} />
-          </Pressable>
         </View>
       </View>
 
+      {/* ── Fixed Scoreboard + Pills (completed games) ── */}
+      {(() => {
+        if (!isFinalNoOps) return null;
+        const oppRecord = placeholderRecord(game.opponent, isConfGame(game.opponent));
+        return (
+          <View style={[styles.scoreboardCard, { backgroundColor: colors.backgroundSecondary }]}>
+            <View style={styles.scoreboardRow}>
+              <View style={styles.scoreboardSide}>
+                <View>
+                  <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>{opponentAbbr}</Text>
+                  <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{oppRecord}</Text>
+                </View>
+                <View style={[styles.scoreboardIcon, { backgroundColor: colors.backgroundTertiary }]}>
+                  <Text style={[styles.scoreboardIconText, { color: colors.textSecondary }]}>{opponentAbbr.charAt(0)}</Text>
+                </View>
+                <Text style={[styles.scoreboardBigScore, { color: !isWin ? colors.text : colors.textTertiary }]}>{effectiveOppScore}</Text>
+              </View>
+              <View style={styles.scoreboardCenter}>
+                <Text style={[styles.scoreboardFinal, { color: colors.textTertiary }]}>Final</Text>
+                <Text style={[styles.scoreboardArrow, { color: colors.text }]}>{isWin ? '▸' : '◂'}</Text>
+              </View>
+              <View style={[styles.scoreboardSide, { flexDirection: 'row-reverse' }]}>
+                <View style={{ alignItems: 'flex-end' }}>
+                  <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>FMU</Text>
+                  <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{FMU_RECORD.overall}</Text>
+                </View>
+                <View style={[styles.scoreboardIcon, { backgroundColor: colors.text + '15' }]}>
+                  <Text style={[styles.scoreboardIconText, { color: colors.text }]}>F</Text>
+                </View>
+                <Text style={[styles.scoreboardBigScore, { color: isWin ? colors.text : colors.textTertiary }]}>{effectiveLuScore}</Text>
+              </View>
+            </View>
+
+            {/* ESPN-style pills */}
+            <View style={[styles.espnTabRow, { borderTopColor: colors.divider }]}>
+              {([
+                { key: 'gamecast', label: 'KaNeXTCast' },
+                { key: 'boxscore', label: 'Box Score' },
+                { key: 'pbp', label: 'Play-by-Play' },
+                { key: 'teamstats', label: 'Team Stats' },
+              ] as const).map((tab) => {
+                const isActive = espnTab === tab.key;
+                return (
+                  <Pressable
+                    key={tab.key}
+                    style={[styles.espnTab, isActive && styles.espnTabActive]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setEspnTab(tab.key);
+                      if (tab.key === 'boxscore') {
+                        router.navigate({ pathname: '/coach/box-score' as any, params: { gameId: gameId ?? '' } });
+                      } else if (tab.key === 'pbp') {
+                        router.navigate({ pathname: '/coach/play-by-play' as any, params: { gameId: gameId ?? '' } });
+                      } else if (tab.key === 'teamstats') {
+                        router.navigate({ pathname: '/coach/team-stats' as any, params: { gameId: gameId ?? '' } });
+                      } else {
+                        scrollRef.current?.scrollTo({ y: 0, animated: true });
+                      }
+                    }}
+                  >
+                    <Text style={[
+                      styles.espnTabText,
+                      { color: isActive ? colors.text : colors.textTertiary },
+                      isActive && styles.espnTabTextActive,
+                    ]}>
+                      {tab.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        );
+      })()}
+
       {/* ── Content ── */}
       <ScrollView
+        ref={scrollRef}
         style={styles.scrollView}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Primary Game Header (scrolls with page) ── */}
-        <View style={styles.gameHeader}>
-          <View style={styles.gameTitleRow}>
-            <Text style={[styles.gameTitle, { color: colors.text }]}>
-              vs {game.opponent}
-            </Text>
-            <Pressable
-              style={({ pressed }) => [
-                styles.appBarIcon,
-                { backgroundColor: pressed ? colors.backgroundSecondary : 'transparent' },
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                triggerGameOps(gameId ?? '', game.opponent);
-                router.navigate('/(tabs)/nexus' as any);
-              }}
-            >
-              <IconSymbol name="basketball.fill" size={20} color={colors.textSecondary} />
-            </Pressable>
-          </View>
-          <Text style={[styles.gameMeta, { color: colors.textSecondary }]}>
-            {game.date} · {game.location}
-          </Text>
-          {game.status === 'live' && (
-            <View style={styles.liveIndicator}>
-              <View style={styles.liveDot} />
-              <Text style={[styles.liveText, { color: '#EF4444' }]}>
-                LIVE · {game.clock}
-              </Text>
-            </View>
-          )}
-          {game.status === 'final' && game.score && (
-            <Text style={[styles.scoreResult, { color: isWin ? '#f5f5f5' : '#EF4444' }]}>
-              {game.score}
-            </Text>
-          )}
-        </View>
+        {(() => {
+          if (isFinalNoOps) return null; // scoreboard already rendered above
 
-        {/* ── Inner Game Tabs (Segmented Control) ── */}
-        <View style={[styles.tabRow, { backgroundColor: colors.background }]}>
-          {TABS.map((tab) => {
-            const isActive = activeTab === tab.key;
-            return (
-              <Pressable
-                key={tab.key}
-                style={[
-                  styles.tabPill,
-                  { backgroundColor: isActive ? colors.text : colors.backgroundSecondary },
-                ]}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setActiveTab(tab.key);
-                }}
-              >
-                <Text
-                  style={[
-                    styles.tabText,
-                    { color: isActive ? colors.background : colors.textSecondary },
-                  ]}
-                >
-                  {tab.label}
+          /* ── Standard header for non-final games ── */
+          return (
+            <>
+              <View style={styles.gameHeader}>
+                <Text style={[styles.gameTitle, { color: colors.text }]}>
+                  {game.location === 'Home' ? 'vs' : '@'} {game.opponent}
                 </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+                <Text style={[styles.gameMeta, { color: colors.textSecondary }]}>
+                  {game.date} · {game.location}
+                </Text>
+                {game.status === 'live' && (
+                  <View style={styles.liveIndicator}>
+                    <View style={styles.liveDot} />
+                    <Text style={[styles.liveText, { color: '#EF4444' }]}>
+                      LIVE · {game.clock}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* ── Inner Game Tabs (non-final only, hidden for live) ── */}
+              {game.status !== 'live' && (
+                <View style={[styles.tabRow, { backgroundColor: colors.background }]}>
+                  {TABS.filter((tab) => {
+                    if (tab.key === 'replay') return false;
+                    if (game.status === 'upcoming' && tab.key !== 'prep') return false;
+                    return true;
+                  }).map((tab) => {
+                    const isActive = activeTab === tab.key;
+                    return (
+                      <Pressable
+                        key={tab.key}
+                        style={[
+                          styles.tabPill,
+                          { backgroundColor: isActive ? colors.text : colors.backgroundSecondary },
+                        ]}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          setActiveTab(tab.key);
+                        }}
+                      >
+                        <Text
+                          style={[
+                            styles.tabText,
+                            { color: isActive ? colors.background : colors.textSecondary },
+                          ]}
+                        >
+                          {tab.label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              )}
+            </>
+          );
+        })()}
 
         {/* ══════════ PREP TAB ══════════ */}
         {activeTab === 'prep' && (
           <View>
+            {/* Video Countdown (upcoming games only) */}
+            {game.status === 'upcoming' && (() => {
+              // Parse game date for countdown
+              const MONTH_MAP: Record<string, number> = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+              const parts = game.date.split(' ');
+              let gameDate: Date | null = null;
+              if (parts.length >= 2) {
+                const m = MONTH_MAP[parts[0]];
+                const d = parseInt(parts[1]);
+                if (m !== undefined && !isNaN(d)) {
+                  const y = m >= 9 ? 2025 : 2026;
+                  gameDate = new Date(y, m, d, 19, 0); // 7 PM tip-off
+                }
+              }
+              const now = new Date();
+              const diff = gameDate ? gameDate.getTime() - now.getTime() : 0;
+              const totalHours = Math.max(0, Math.floor(diff / (1000 * 60 * 60)));
+              const days = Math.floor(totalHours / 24);
+              const hours = totalHours % 24;
+              const mins = Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+
+              return (
+                <View style={[styles.videoCountdownCard, { backgroundColor: colors.backgroundSecondary }]}>
+                  {/* Dark video placeholder */}
+                  <View style={styles.videoPlaceholder}>
+                    <View style={styles.videoPlayCircle}>
+                      <IconSymbol name="play.fill" size={28} color="#fff" />
+                    </View>
+                  </View>
+
+                  {/* Countdown */}
+                  <View style={styles.countdownRow}>
+                    {days > 0 && (
+                      <View style={styles.countdownUnit}>
+                        <Text style={[styles.countdownNum, { color: colors.text }]}>{days}</Text>
+                        <Text style={[styles.countdownLabel, { color: colors.textTertiary }]}>DAYS</Text>
+                      </View>
+                    )}
+                    {days > 0 && <Text style={[styles.countdownSep, { color: colors.textTertiary }]}>:</Text>}
+                    <View style={styles.countdownUnit}>
+                      <Text style={[styles.countdownNum, { color: colors.text }]}>{hours}</Text>
+                      <Text style={[styles.countdownLabel, { color: colors.textTertiary }]}>HRS</Text>
+                    </View>
+                    <Text style={[styles.countdownSep, { color: colors.textTertiary }]}>:</Text>
+                    <View style={styles.countdownUnit}>
+                      <Text style={[styles.countdownNum, { color: colors.text }]}>{String(mins).padStart(2, '0')}</Text>
+                      <Text style={[styles.countdownLabel, { color: colors.textTertiary }]}>MIN</Text>
+                    </View>
+                  </View>
+
+                  {/* KaNeXT Video button */}
+                  <Pressable
+                    style={({ pressed }) => [styles.kanextVideoBtn, pressed && { opacity: 0.8 }]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    }}
+                  >
+                    <IconSymbol name="play.fill" size={14} color="#fff" />
+                    <Text style={styles.kanextVideoBtnText}>KaNeXT Video</Text>
+                  </Pressable>
+                </View>
+              );
+            })()}
+
             {/* Game Info */}
             <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
               GAME INFO
@@ -803,13 +878,13 @@ export default function GameDetailScreen() {
         )}
 
         {/* ══════════ LIVE TAB (Viewer Mode) ══════════ */}
-        {activeTab === 'live' && (
+        {(activeTab === 'live' || game.status === 'live') && (
           <View>
             {/* ── Live Header: Score + Clock + Period ── */}
             <View style={[styles.liveHeader, { backgroundColor: colors.backgroundSecondary }]}>
               <View style={styles.liveScoreRow}>
                 <View style={styles.liveTeamCol}>
-                  <Text style={[styles.liveTeamName, { color: colors.text }]}>LU</Text>
+                  <Text style={[styles.liveTeamName, { color: colors.text }]}>FMU</Text>
                   <Text style={[styles.liveScoreNum, { color: colors.text }]}>
                     {effectiveLuScore}
                   </Text>
@@ -866,281 +941,822 @@ export default function GameDetailScreen() {
               )}
             </View>
 
-            {/* ── Filters (collapsed by default) ── */}
-            <Pressable
-              style={styles.filterToggle}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setFiltersExpanded((prev) => !prev);
-              }}
-            >
-              <Text style={[styles.filterToggleText, { color: colors.textTertiary }]}>
-                {filtersExpanded ? 'Hide Filters' : 'Filter'}
-                {pbpFilter !== 'all' ? ` · ${PBP_FILTER_OPTIONS.find((f) => f.key === pbpFilter)?.label}` : ''}
-              </Text>
-              <IconSymbol
-                name={filtersExpanded ? 'chevron.up' : 'chevron.down'}
-                size={12}
-                color={colors.textTertiary}
-              />
-            </Pressable>
+            {/* ── 4-Tab Switcher ── */}
+            <View style={[styles.liveTabRow, { backgroundColor: colors.backgroundSecondary }]}>
+              {(['plays', 'box', 'team', 'leaders'] as const).map((tab) => {
+                const label = tab === 'plays' ? 'Plays' : tab === 'box' ? 'Box' : tab === 'team' ? 'Team' : 'Leaders';
+                const active = liveSubTab === tab;
+                return (
+                  <Pressable
+                    key={tab}
+                    style={[styles.liveTab, active && styles.liveTabActive]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setLiveSubTab(tab);
+                    }}
+                  >
+                    <Text style={[styles.liveTabText, { color: active ? colors.text : colors.textTertiary }, active && styles.liveTabTextActive]}>
+                      {label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
 
-            {filtersExpanded && (
-              <View style={styles.filterRow}>
-                {PBP_FILTER_OPTIONS.map((opt) => {
-                  const isActive = pbpFilter === opt.key;
-                  return (
-                    <Pressable
-                      key={opt.key}
-                      style={[
-                        styles.filterChip,
-                        { backgroundColor: isActive ? colors.text : colors.backgroundSecondary },
-                      ]}
-                      onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        setPbpFilter(opt.key);
-                      }}
-                    >
-                      <Text style={[styles.filterChipText, { color: isActive ? colors.background : colors.textSecondary }]}>
-                        {opt.label}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            )}
-
-            {/* ── Play-by-Play Stream ── */}
-            {filteredPbp.length > 0 ? (
-              <View style={[styles.pbpCard, { backgroundColor: colors.backgroundSecondary }]}>
-                {filteredPbp.map((event, index) => {
-                  const isLU = event.team === 'LU';
-                  return (
-                    <View key={event.id}>
-                      {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
-                      <View style={styles.pbpRow}>
-                        <View style={[styles.pbpTeamBadge, { backgroundColor: isLU ? colors.text + '15' : colors.backgroundTertiary }]}>
-                          <Text style={[styles.pbpTeamText, { color: isLU ? colors.text : colors.textSecondary }]}>
-                            {event.team === 'LU' ? 'LU' : opponentAbbr}
-                          </Text>
+            {/* ═══ PLAYS TAB ═══ */}
+            {liveSubTab === 'plays' && (<>
+              {/* Filter inside Plays */}
+              <Pressable
+                style={styles.filterToggle}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setFiltersExpanded((prev) => !prev);
+                }}
+              >
+                <Text style={[styles.filterToggleText, { color: colors.textTertiary }]}>
+                  {filtersExpanded ? 'Hide Filters' : 'Filter'}
+                  {pbpFilter !== 'all' ? ` · ${PBP_FILTER_OPTIONS.find((f) => f.key === pbpFilter)?.label}` : ''}
+                </Text>
+                <IconSymbol
+                  name={filtersExpanded ? 'chevron.up' : 'chevron.down'}
+                  size={12}
+                  color={colors.textTertiary}
+                />
+              </Pressable>
+              {filtersExpanded && (
+                <View style={styles.filterRow}>
+                  {PBP_FILTER_OPTIONS.map((opt) => {
+                    const isActive = pbpFilter === opt.key;
+                    return (
+                      <Pressable
+                        key={opt.key}
+                        style={[styles.filterChip, { backgroundColor: isActive ? colors.text : colors.backgroundSecondary }]}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          setPbpFilter(opt.key);
+                        }}
+                      >
+                        <Text style={[styles.filterChipText, { color: isActive ? colors.background : colors.textSecondary }]}>{opt.label}</Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              )}
+              {filteredPbp.length > 0 ? (
+                <View style={[styles.pbpCard, { backgroundColor: colors.backgroundSecondary }]}>
+                  {filteredPbp.map((event, index) => {
+                    const isLU = event.team === 'FMU';
+                    return (
+                      <View key={event.id}>
+                        {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
+                        <View style={styles.pbpRow}>
+                          <View style={[styles.pbpTeamBadge, { backgroundColor: isLU ? colors.text + '15' : colors.backgroundTertiary }]}>
+                            <Text style={[styles.pbpTeamText, { color: isLU ? colors.text : colors.textSecondary }]}>
+                              {event.team === 'FMU' ? 'FMU' : opponentAbbr}
+                            </Text>
+                          </View>
+                          <Text style={[styles.pbpAction, { color: colors.text }]} numberOfLines={2}>{event.text}</Text>
+                          <Text style={[styles.pbpScore, { color: colors.textTertiary }]}>{event.scoreAt}</Text>
                         </View>
-                        <Text style={[styles.pbpAction, { color: colors.text }]} numberOfLines={2}>
-                          {event.text}
-                        </Text>
-                        <Text style={[styles.pbpScore, { color: colors.textTertiary }]}>
-                          {event.scoreAt}
-                        </Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              ) : (
+                <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                  <View style={styles.emptyState}>
+                    <Text style={[styles.emptyText, { color: colors.textTertiary }]}>
+                      No {pbpFilter !== 'all' ? pbpFilter : ''} events yet.
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </>)}
+
+            {/* ═══ BOX TAB ═══ */}
+            {liveSubTab === 'box' && (() => {
+              const boxLines = liveBoxTeam === 'fmu' ? effectiveBoxScore : oppBoxScore;
+              const teamLabel = liveBoxTeam === 'fmu' ? 'FMU' : opponentAbbr;
+              const BOX_COMPACT_COLS: { key: string; label: string; width: number }[] = [
+                { key: 'name', label: 'PLAYER', width: 80 },
+                { key: 'min', label: 'MIN', width: 36 },
+                { key: 'pts', label: 'PTS', width: 36 },
+                { key: 'reb', label: 'REB', width: 36 },
+                { key: 'ast', label: 'AST', width: 36 },
+                { key: 'to', label: 'TO', width: 32 },
+                { key: 'pf', label: 'PF', width: 32 },
+              ];
+              const getCellVal = (p: BoxScoreLine, key: string): string => {
+                switch (key) {
+                  case 'name': return p.name;
+                  case 'min': return p.min;
+                  case 'pts': return String(p.pts);
+                  case 'reb': return String(p.reb);
+                  case 'ast': return String(p.ast);
+                  case 'to': return String(p.to);
+                  case 'pf': return String(p.pf);
+                  default: return '—';
+                }
+              };
+              return (
+                <View>
+                  {/* Team toggle */}
+                  <View style={styles.liveBoxTeamRow}>
+                    {(['fmu', 'opp'] as const).map((t) => {
+                      const active = liveBoxTeam === t;
+                      return (
+                        <Pressable
+                          key={t}
+                          style={[styles.liveBoxTeamPill, { backgroundColor: active ? colors.text : colors.backgroundSecondary }]}
+                          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setLiveBoxTeam(t); }}
+                        >
+                          <Text style={[styles.liveBoxTeamText, { color: active ? colors.background : colors.textSecondary }]}>
+                            {t === 'fmu' ? 'FMU' : opponentAbbr}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <View style={[styles.liveBoxTable, { backgroundColor: colors.backgroundSecondary }]}>
+                      {/* Header */}
+                      <View style={[styles.liveBoxHeaderRow, { borderBottomColor: colors.divider }]}>
+                        {BOX_COMPACT_COLS.map((col) => (
+                          <Text key={col.key} style={[styles.liveBoxHeaderCell, { width: col.width, color: colors.textTertiary }, col.key === 'name' && { textAlign: 'left' }]}>
+                            {col.label}
+                          </Text>
+                        ))}
+                      </View>
+                      {/* Player rows */}
+                      {boxLines.map((player, idx) => (
+                        <View key={idx} style={[styles.liveBoxRow, idx < boxLines.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.divider }]}>
+                          {BOX_COMPACT_COLS.map((col) => (
+                            <Text key={col.key} style={[styles.liveBoxCell, { width: col.width, color: col.key === 'name' ? colors.text : colors.textSecondary }, col.key === 'name' && { textAlign: 'left', fontWeight: '600' }]}>
+                              {getCellVal(player, col.key)}
+                            </Text>
+                          ))}
+                        </View>
+                      ))}
+                      {/* Totals */}
+                      <View style={[styles.liveBoxRow, { borderTopWidth: 1, borderTopColor: colors.divider }]}>
+                        {BOX_COMPACT_COLS.map((col) => {
+                          let val = '';
+                          if (col.key === 'name') val = 'TOTAL';
+                          else if (col.key === 'min') val = '';
+                          else val = String(boxLines.reduce((s, p) => s + ((p as any)[col.key] ?? 0), 0));
+                          return (
+                            <Text key={col.key} style={[styles.liveBoxCell, { width: col.width, color: colors.text, fontWeight: '700' }, col.key === 'name' && { textAlign: 'left' }]}>
+                              {val}
+                            </Text>
+                          );
+                        })}
                       </View>
                     </View>
-                  );
-                })}
-              </View>
-            ) : effectiveIsLive ? (
-              <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                <View style={styles.emptyState}>
-                  <Text style={[styles.emptyText, { color: colors.textTertiary }]}>
-                    No {pbpFilter !== 'all' ? pbpFilter : ''} events yet.
-                  </Text>
+                  </ScrollView>
                 </View>
-              </View>
-            ) : (
-              <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                <View style={styles.emptyState}>
-                  <IconSymbol name="sportscourt.fill" size={32} color={colors.textTertiary} />
-                  <Text style={[styles.emptyText, { color: colors.textTertiary }]}>
-                    Play-by-play available when the game is live.
-                  </Text>
+              );
+            })()}
+
+            {/* ═══ TEAM TAB ═══ */}
+            {liveSubTab === 'team' && (() => {
+              const fmuPts = parseInt(effectiveLuScore) || 0;
+              const oppPts = parseInt(effectiveOppScore) || 0;
+              // Parse FMU stats
+              const parseStat = (s: string) => {
+                const m = s.match(/^(\d+)-(\d+)\s*\((\d+\.?\d*)%\)$/);
+                if (!m) return null;
+                return { made: parseInt(m[1]), att: parseInt(m[2]), pct: parseFloat(m[3]) };
+              };
+              const fmuFG = stats ? parseStat(stats.teamFG) : null;
+              const fmu3P = stats ? parseStat(stats.team3P) : null;
+              const fmuFT = stats ? parseStat(stats.teamFT) : null;
+              const fmuReb = stats ? parseInt(stats.teamReb) || 0 : 0;
+              const fmuTO = stats ? parseInt(stats.teamTO) || 0 : 0;
+              // Deterministic opponent stats
+              let h = 0;
+              for (let i = 0; i < game.opponent.length; i++) h = ((h << 5) - h + game.opponent.charCodeAt(i)) | 0;
+              const seed = (n: number) => { h = ((h << 5) - h + n) | 0; return Math.abs(h); };
+              const oppFGA = (fmuFG?.att ?? 60) + (seed(1) % 8) - 4;
+              const oppFGM = Math.round(oppFGA * (0.38 + (seed(2) % 15) / 100));
+              const opp3PA = (fmu3P?.att ?? 20) + (seed(3) % 6) - 3;
+              const opp3PM = Math.round(opp3PA * (0.25 + (seed(4) % 12) / 100));
+              const oppFTA = (fmuFT?.att ?? 15) + (seed(5) % 8) - 4;
+              const oppFTM = Math.round(oppFTA * (0.60 + (seed(6) % 20) / 100));
+              const oppReb = fmuReb + (seed(7) % 12) - 6;
+              const oppTO = fmuTO + (seed(8) % 6) - 3;
+              const oppAST = 8 + (seed(9) % 10);
+              const oppSTL = 3 + (seed(10) % 6);
+              const oppBLK = 1 + (seed(11) % 5);
+              const fmuAST = 6 + (seed(12) % 12);
+              const fmuSTL = 3 + (seed(13) % 6);
+              const fmuBLK = 2 + (seed(14) % 5);
+
+              type TSRow = { label: string; fmu: string; opp: string; fmuN: number; oppN: number };
+              const rows: TSRow[] = [
+                { label: 'FG', fmu: `${fmuFG?.made ?? 0}-${fmuFG?.att ?? 0}`, opp: `${oppFGM}-${oppFGA}`, fmuN: fmuFG?.pct ?? 0, oppN: oppFGA > 0 ? (oppFGM / oppFGA) * 100 : 0 },
+                { label: 'FG%', fmu: `${Math.round(fmuFG?.pct ?? 0)}%`, opp: `${oppFGA > 0 ? Math.round((oppFGM / oppFGA) * 100) : 0}%`, fmuN: fmuFG?.pct ?? 0, oppN: oppFGA > 0 ? (oppFGM / oppFGA) * 100 : 0 },
+                { label: '3PT', fmu: `${fmu3P?.made ?? 0}-${fmu3P?.att ?? 0}`, opp: `${opp3PM}-${opp3PA}`, fmuN: fmu3P?.made ?? 0, oppN: opp3PM },
+                { label: '3PT%', fmu: `${Math.round(fmu3P?.pct ?? 0)}%`, opp: `${opp3PA > 0 ? Math.round((opp3PM / opp3PA) * 100) : 0}%`, fmuN: fmu3P?.pct ?? 0, oppN: opp3PA > 0 ? (opp3PM / opp3PA) * 100 : 0 },
+                { label: 'FT', fmu: `${fmuFT?.made ?? 0}-${fmuFT?.att ?? 0}`, opp: `${oppFTM}-${oppFTA}`, fmuN: fmuFT?.made ?? 0, oppN: oppFTM },
+                { label: 'FT%', fmu: `${Math.round(fmuFT?.pct ?? 0)}%`, opp: `${oppFTA > 0 ? Math.round((oppFTM / oppFTA) * 100) : 0}%`, fmuN: fmuFT?.pct ?? 0, oppN: oppFTA > 0 ? (oppFTM / oppFTA) * 100 : 0 },
+                { label: 'REB', fmu: String(fmuReb), opp: String(oppReb), fmuN: fmuReb, oppN: oppReb },
+                { label: 'AST', fmu: String(fmuAST), opp: String(oppAST), fmuN: fmuAST, oppN: oppAST },
+                { label: 'TO', fmu: String(fmuTO), opp: String(oppTO), fmuN: fmuTO, oppN: oppTO },
+                { label: 'STL', fmu: String(fmuSTL), opp: String(oppSTL), fmuN: fmuSTL, oppN: oppSTL },
+                { label: 'BLK', fmu: String(fmuBLK), opp: String(oppBLK), fmuN: fmuBLK, oppN: oppBLK },
+              ];
+              return (
+                <View style={[styles.liveTeamCard, { backgroundColor: colors.backgroundSecondary }]}>
+                  {/* Team header */}
+                  <View style={styles.liveTeamHeader}>
+                    <Text style={[styles.liveTeamHeaderName, { color: colors.text }]}>FMU</Text>
+                    <Text style={[styles.liveTeamHeaderName, { color: colors.text }]}>{opponentAbbr}</Text>
+                  </View>
+                  {rows.map((row, i) => {
+                    const isPctRow = row.label.includes('%');
+                    const fmuWins = row.label === 'TO' ? row.fmuN < row.oppN : row.fmuN > row.oppN;
+                    const oppWins = row.label === 'TO' ? row.oppN < row.fmuN : row.oppN > row.fmuN;
+                    return (
+                      <View key={row.label}>
+                        {i > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
+                        <View style={styles.liveTeamStatRow}>
+                          <Text style={[styles.liveTeamStatVal, { color: fmuWins ? colors.text : colors.textTertiary }]}>{row.fmu}</Text>
+                          <Text style={[styles.liveTeamStatLabel, { color: isPctRow ? colors.textTertiary : colors.textSecondary }]}>{row.label}</Text>
+                          <Text style={[styles.liveTeamStatVal, { color: oppWins ? colors.text : colors.textTertiary, textAlign: 'right' }]}>{row.opp}</Text>
+                        </View>
+                      </View>
+                    );
+                  })}
                 </View>
-              </View>
-            )}
+              );
+            })()}
+
+            {/* ═══ LEADERS TAB ═══ */}
+            {liveSubTab === 'leaders' && (() => {
+              const fmuBox = effectiveBoxScore;
+              const oppBox = oppBoxScore;
+              const topN = (arr: BoxScoreLine[], key: 'pts' | 'reb' | 'ast', n = 3) =>
+                [...arr].sort((a, b) => b[key] - a[key]).slice(0, n);
+              const cats: { label: string; key: 'pts' | 'reb' | 'ast' }[] = [
+                { label: 'POINTS', key: 'pts' },
+                { label: 'REBOUNDS', key: 'reb' },
+                { label: 'ASSISTS', key: 'ast' },
+              ];
+              return (
+                <View>
+                  {cats.map((cat) => (
+                    <View key={cat.key} style={{ marginBottom: Spacing.md }}>
+                      <Text style={[styles.liveLeaderCatLabel, { color: colors.textTertiary }]}>{cat.label}</Text>
+                      <View style={styles.liveLeaderSplit}>
+                        {/* FMU side */}
+                        <View style={[styles.liveLeaderCol, { backgroundColor: colors.backgroundSecondary }]}>
+                          <Text style={[styles.liveLeaderTeamLabel, { color: colors.textTertiary }]}>FMU</Text>
+                          {topN(fmuBox, cat.key).map((p, i) => (
+                            <View key={i} style={styles.liveLeaderRow}>
+                              <Text style={[styles.liveLeaderName, { color: colors.text }]}>{p.name}</Text>
+                              <Text style={[styles.liveLeaderStat, { color: colors.text }]}>{p[cat.key]}</Text>
+                            </View>
+                          ))}
+                        </View>
+                        {/* OPP side */}
+                        <View style={[styles.liveLeaderCol, { backgroundColor: colors.backgroundSecondary }]}>
+                          <Text style={[styles.liveLeaderTeamLabel, { color: colors.textTertiary }]}>{opponentAbbr}</Text>
+                          {topN(oppBox, cat.key).map((p, i) => (
+                            <View key={i} style={styles.liveLeaderRow}>
+                              <Text style={[styles.liveLeaderName, { color: colors.text }]}>{p.name}</Text>
+                              <Text style={[styles.liveLeaderStat, { color: colors.text }]}>{p[cat.key]}</Text>
+                            </View>
+                          ))}
+                        </View>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              );
+            })()}
           </View>
         )}
 
-        {/* ══════════ REPORT TAB (Rolling Game Report — ONE UI) ══════════ */}
+        {/* ══════════ REPORT TAB (ESPN-style — shown for final & live) ══════════ */}
         {activeTab === 'report' && (
           <View>
             {effectiveHasReport ? (
               <>
-                {/* 1. Score Header */}
-                <View style={[styles.resultCard, { backgroundColor: colors.backgroundSecondary }]}>
-                  {effectiveIsLive ? (
+                {/* For live games that still show report, keep a compact score header */}
+                {effectiveIsLive && (
+                  <View style={[styles.resultCard, { backgroundColor: colors.backgroundSecondary }]}>
                     <View style={styles.reportStatusBadge}>
                       <View style={styles.liveDot} />
                       <Text style={styles.reportLiveText}>LIVE</Text>
                     </View>
-                  ) : (
-                    <Text style={[styles.resultOutcome, { color: isWin ? '#f5f5f5' : '#EF4444' }]}>
-                      {isWin ? 'Victory' : 'Defeat'}
+                    <Text style={[styles.resultScore, { color: colors.text }]}>
+                      {effectiveLuScore}-{effectiveOppScore}
                     </Text>
-                  )}
-                  <Text style={[styles.resultScore, { color: colors.text }]}>
-                    {effectiveScoreStr}
-                  </Text>
-                  <Text style={[styles.resultMeta, { color: colors.textSecondary }]}>
-                    vs {game.opponent} · {game.date} · {game.location}
-                    {effectiveIsLive && effectiveClock ? ` · ${effectiveClock}` : ''}
-                  </Text>
-                </View>
-
-                {/* 2. Team Stats */}
-                {stats && (
-                  <>
-                    <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: Spacing.lg }]}>
-                      TEAM STATS
+                    <Text style={[styles.resultMeta, { color: colors.textSecondary }]}>
+                      {game.location === 'Home' ? 'vs' : '@'} {game.opponent} · {effectiveClock}
                     </Text>
-                    <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                      <InfoRow label="FG" value={stats.teamFG} colors={colors} />
-                      <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                      <InfoRow label="3PT" value={stats.team3P} colors={colors} />
-                      <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                      <InfoRow label="FT" value={stats.teamFT} colors={colors} />
-                      <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                      <InfoRow label="Rebounds" value={stats.teamReb} colors={colors} />
-                      <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                      <InfoRow label="Turnovers" value={stats.teamTO} colors={colors} />
-                    </View>
-                  </>
+                  </View>
                 )}
 
-                {/* 3. Game Flow */}
+                {/* ═══ KANEXTCAST ═══ */}
+                <View onLayout={(e) => { sectionRefs.current['gamecast'] = e.nativeEvent.layout.y; }} />
+                {/* 1. Video / Replay Card */}
+                <Pressable
+                  style={({ pressed }) => [pressed && { opacity: 0.7 }]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    // Placeholder — no actual replay yet
+                  }}
+                >
+                  <View style={[styles.videoCard, { backgroundColor: colors.backgroundSecondary }]}>
+                    <View style={[styles.videoThumb, { backgroundColor: colors.backgroundTertiary }]}>
+                      <IconSymbol name="play.fill" size={36} color={colors.text + '90'} />
+                      <View style={styles.videoDuration}>
+                        <Text style={styles.videoDurationText}>0:22</Text>
+                      </View>
+                    </View>
+                    <View style={styles.videoInfo}>
+                      <Text style={[styles.videoTitle, { color: colors.text }]} numberOfLines={2}>
+                        FMU {isWin ? 'defeats' : 'falls to'} {game.opponent} {effectiveLuScore}-{effectiveOppScore}
+                      </Text>
+                      <Text style={[styles.videoSource, { color: colors.textTertiary }]}>
+                        Highlights · {game.date}
+                      </Text>
+                    </View>
+                  </View>
+                </Pressable>
+
+                {/* Watch Replay button */}
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.watchReplayBtn,
+                    { backgroundColor: colors.backgroundSecondary },
+                    pressed && { opacity: 0.7 },
+                  ]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    // Placeholder — no replay yet
+                  }}
+                >
+                  <IconSymbol name="play.fill" size={14} color={colors.text} />
+                  <Text style={[styles.watchReplayText, { color: colors.text }]}>KaNeXt Video Replay</Text>
+                </Pressable>
+
+                {/* 2. Box Score (score-by-half table) */}
+
                 {effectiveGameFlow.length > 0 && (
                   <>
-                    <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: Spacing.lg }]}>
-                      GAME FLOW
-                    </Text>
-                    <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                      <GameFlowChart
-                        snapshots={effectiveGameFlow}
-                        colors={colors}
-                      />
+                  <View style={[styles.card, { backgroundColor: colors.backgroundSecondary, marginTop: Spacing.lg }]}>
+                    {/* Column headers */}
+                    <View style={styles.halfTableRow}>
+                      <View style={styles.halfTableTeamCol} />
+                      {effectiveGameFlow.map((s) => (
+                        <Text key={s.label} style={[styles.halfTableHeader, { color: colors.textTertiary }]}>{s.label}</Text>
+                      ))}
+                      <Text style={[styles.halfTableHeader, { color: colors.textTertiary, fontWeight: '700' }]}>T</Text>
                     </View>
+                    <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                    {/* Opponent row */}
+                    <View style={styles.halfTableRow}>
+                      <View style={styles.halfTableTeamCol}>
+                        <View style={[styles.halfTableIcon, { backgroundColor: colors.backgroundTertiary }]}>
+                          <Text style={[styles.halfTableIconText, { color: colors.textSecondary }]}>{opponentAbbr.charAt(0)}</Text>
+                        </View>
+                        <Text style={[styles.halfTableTeamName, { color: colors.text }]}>{game.opponent}</Text>
+                      </View>
+                      {effectiveGameFlow.map((s, i) => {
+                        const prev = i > 0 ? effectiveGameFlow[i - 1].opp : 0;
+                        return <Text key={s.label} style={[styles.halfTableVal, { color: colors.textSecondary }]}>{s.opp - prev}</Text>;
+                      })}
+                      <Text style={[styles.halfTableVal, { color: colors.text, fontWeight: '700' }]}>{effectiveOppScore}</Text>
+                    </View>
+                    <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                    {/* FMU row */}
+                    <View style={styles.halfTableRow}>
+                      <View style={styles.halfTableTeamCol}>
+                        <View style={[styles.halfTableIcon, { backgroundColor: colors.text + '15' }]}>
+                          <Text style={[styles.halfTableIconText, { color: colors.text }]}>F</Text>
+                        </View>
+                        <Text style={[styles.halfTableTeamName, { color: colors.text }]}>Florida Memorial</Text>
+                      </View>
+                      {effectiveGameFlow.map((s, i) => {
+                        const prev = i > 0 ? effectiveGameFlow[i - 1].fmu : 0;
+                        return <Text key={s.label} style={[styles.halfTableVal, { color: colors.textSecondary }]}>{s.fmu - prev}</Text>;
+                      })}
+                      <Text style={[styles.halfTableVal, { color: colors.text, fontWeight: '700' }]}>{effectiveLuScore}</Text>
+                    </View>
+                  </View>
                   </>
                 )}
 
-                {/* 4. Leaders */}
-                {SEASON_LEADERS.length > 0 && (
-                  <>
-                    <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: Spacing.lg }]}>
-                      LEADERS
-                    </Text>
-                    <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                      {SEASON_LEADERS.map((leader, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={styles.leaderRow}>
-                            <Text style={[styles.leaderName, { color: colors.text }]}>{leader.name}</Text>
-                            <Text style={[styles.leaderLine, { color: colors.textSecondary }]}>{leader.line}</Text>
+                {/* 3. Game Leaders (ESPN side-by-side) */}
+                {effectiveBoxScore.length > 0 && (() => {
+                  const fmuPts = [...effectiveBoxScore].sort((a, b) => b.pts - a.pts)[0];
+                  const fmuReb = [...effectiveBoxScore].sort((a, b) => b.reb - a.reb)[0];
+                  const fmuAst = [...effectiveBoxScore].sort((a, b) => b.ast - a.ast)[0];
+                  const oppPts = [...oppBoxScore].sort((a, b) => b.pts - a.pts)[0];
+                  const oppReb = [...oppBoxScore].sort((a, b) => b.reb - a.reb)[0];
+                  const oppAst = [...oppBoxScore].sort((a, b) => b.ast - a.ast)[0];
+
+                  // Format FG as "made/att FG"
+                  const fgSub = (p: BoxScoreLine | undefined) => {
+                    if (!p) return '';
+                    return `${p.fg.replace('-', '/')} FG, ${p.ft.replace('-', '/')} FT`;
+                  };
+                  const rebSub = (p: BoxScoreLine | undefined) => {
+                    if (!p) return '';
+                    return `${p.min} MIN`;
+                  };
+                  const astSub = (p: BoxScoreLine | undefined) => {
+                    if (!p) return '';
+                    return `${p.to} TO, ${p.min} MIN`;
+                  };
+
+                  const categories = [
+                    { label: 'Points', opp: oppPts, fmu: fmuPts, oppVal: oppPts?.pts ?? 0, fmuVal: fmuPts?.pts ?? 0, oppSub: fgSub(oppPts), fmuSub: fgSub(fmuPts) },
+                    { label: 'Rebounds', opp: oppReb, fmu: fmuReb, oppVal: oppReb?.reb ?? 0, fmuVal: fmuReb?.reb ?? 0, oppSub: rebSub(oppReb), fmuSub: rebSub(fmuReb) },
+                    { label: 'Assists', opp: oppAst, fmu: fmuAst, oppVal: oppAst?.ast ?? 0, fmuVal: fmuAst?.ast ?? 0, oppSub: astSub(oppAst), fmuSub: astSub(fmuAst) },
+                  ];
+
+                  return (
+                    <>
+                      <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: Spacing.md }]}>
+                        GAME LEADERS
+                      </Text>
+                      <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                        {/* Team header row */}
+                        <View style={styles.glTeamHeader}>
+                          <View style={styles.glTeamLeft}>
+                            <View style={[styles.glTeamIcon, { backgroundColor: colors.backgroundTertiary }]}>
+                              <Text style={[styles.glTeamIconText, { color: colors.textSecondary }]}>{opponentAbbr.charAt(0)}</Text>
+                            </View>
+                            <Text style={[styles.glTeamName, { color: colors.text }]}>{opponentAbbr}</Text>
+                          </View>
+                          <View style={styles.glTeamRight}>
+                            <Text style={[styles.glTeamName, { color: colors.text }]}>FMU</Text>
+                            <View style={[styles.glTeamIcon, { backgroundColor: colors.text + '15' }]}>
+                              <Text style={[styles.glTeamIconText, { color: colors.text }]}>F</Text>
+                            </View>
                           </View>
                         </View>
-                      ))}
-                    </View>
-                  </>
-                )}
 
-                {/* 5. Box Score */}
-                {effectiveBoxScore.length > 0 && (
-                  <>
-                    <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: Spacing.lg }]}>
-                      BOX SCORE
-                    </Text>
-                    <View style={[styles.card, { backgroundColor: colors.backgroundSecondary, padding: 0 }]}>
-                      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        <View>
-                          {/* Header */}
-                          <View style={[styles.boxHeaderRow, { borderBottomColor: colors.divider }]}>
-                            <Text style={[styles.boxHeaderCell, styles.boxColName, { color: colors.textTertiary }]}>PLAYER</Text>
-                            <Text style={[styles.boxHeaderCell, styles.boxColStat, { color: colors.textTertiary }]}>MIN</Text>
-                            <Text style={[styles.boxHeaderCell, styles.boxColStat, { color: colors.textTertiary }]}>PTS</Text>
-                            <Text style={[styles.boxHeaderCell, styles.boxColStat, { color: colors.textTertiary }]}>REB</Text>
-                            <Text style={[styles.boxHeaderCell, styles.boxColStat, { color: colors.textTertiary }]}>AST</Text>
-                            <Text style={[styles.boxHeaderCell, styles.boxColFg, { color: colors.textTertiary }]}>FG</Text>
-                          </View>
-                          {/* Rows */}
-                          {effectiveBoxScore.map((player, idx) => (
-                            <View
-                              key={player.name}
-                              style={[
-                                styles.boxRow,
-                                idx % 2 === 1 && { backgroundColor: colors.backgroundTertiary + '40' },
-                              ]}
-                            >
-                              <Text style={[styles.boxCell, styles.boxColName, { color: colors.text, fontWeight: '500' }]}>
-                                {player.name}
-                              </Text>
-                              <Text style={[styles.boxCell, styles.boxColStat, { color: colors.textSecondary }]}>{player.min}</Text>
-                              <Text style={[styles.boxCell, styles.boxColStat, { color: colors.text, fontWeight: '600' }]}>{player.pts}</Text>
-                              <Text style={[styles.boxCell, styles.boxColStat, { color: colors.textSecondary }]}>{player.reb}</Text>
-                              <Text style={[styles.boxCell, styles.boxColStat, { color: colors.textSecondary }]}>{player.ast}</Text>
-                              <Text style={[styles.boxCell, styles.boxColFg, { color: colors.textSecondary }]}>{player.fg}</Text>
+                        {categories.map((cat) => (
+                          <View key={cat.label}>
+                            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                            <View style={styles.glCatBlock}>
+                              {/* Top row: [avatar] [stat]  label  [stat] [avatar] */}
+                              <View style={styles.glTopRow}>
+                                <View style={styles.glTopLeft}>
+                                  <View style={[styles.glAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+                                    <Text style={[styles.glAvatarText, { color: colors.textTertiary }]}>
+                                      {cat.opp?.name?.charAt(0) ?? '?'}
+                                    </Text>
+                                  </View>
+                                  <Text style={[styles.glStatNum, { color: colors.text }]}>{cat.oppVal}</Text>
+                                </View>
+                                <Text style={[styles.glCatLabel, { color: colors.textSecondary }]}>{cat.label}</Text>
+                                <View style={styles.glTopRight}>
+                                  <Text style={[styles.glStatNum, { color: colors.text }]}>{cat.fmuVal}</Text>
+                                  <View style={[styles.glAvatar, { backgroundColor: colors.text + '15' }]}>
+                                    <Text style={[styles.glAvatarText, { color: colors.text }]}>
+                                      {cat.fmu?.name?.charAt(0) ?? '?'}
+                                    </Text>
+                                  </View>
+                                </View>
+                              </View>
+                              {/* Bottom row: name + sub on each side */}
+                              <View style={styles.glBottomRow}>
+                                <View style={styles.glBottomLeft}>
+                                  <Text style={[styles.glPlayerName, { color: colors.text }]}>{cat.opp?.name ?? '—'}</Text>
+                                  <Text style={[styles.glSubline, { color: colors.textTertiary }]}>{cat.oppSub}</Text>
+                                </View>
+                                <View style={styles.glBottomRight}>
+                                  <Text style={[styles.glPlayerName, { color: colors.text }]}>{cat.fmu?.name ?? '—'}</Text>
+                                  <Text style={[styles.glSubline, { color: colors.textTertiary }]}>{cat.fmuSub}</Text>
+                                </View>
+                              </View>
                             </View>
+                          </View>
+                        ))}
+
+                        {/* Full Box Score link */}
+                        <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                        <Pressable
+                          style={({ pressed }) => [styles.glFullLink, pressed && { opacity: 0.7 }]}
+                          onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setBoxScoreExpanded(true);
+                          }}
+                        >
+                          <Text style={[styles.glFullLinkText, { color: colors.textSecondary }]}>Full Box Score</Text>
+                        </Pressable>
+                      </View>
+                    </>
+                  );
+                })()}
+
+                {/* 3b. Shot Chart */}
+                {effectiveBoxScore.length > 0 && (() => {
+                  // Generate deterministic mock shot data from box score — now per-player with shot type
+                  type Shot = { x: number; y: number; made: boolean; isThree: boolean; player: string; half: '1st Half' | '2nd Half' };
+                  const generateShots = (lines: BoxScoreLine[], teamSeed: number): Shot[] => {
+                    let h = teamSeed;
+                    const rng = () => { h = ((h << 5) - h + 0x5bd1e995) | 0; return (Math.abs(h) % 1000) / 1000; };
+                    const shots: Shot[] = [];
+                    for (const p of lines) {
+                      const fgParts = p.fg.split('-');
+                      const fgm = parseInt(fgParts[0]) || 0;
+                      const fga = parseInt(fgParts[1]) || 0;
+                      const tpParts = p.threePt.split('-');
+                      const tpm = parseInt(tpParts[0]) || 0;
+                      const tpa = parseInt(tpParts[1]) || 0;
+                      // three-point attempts first, rest are 2pt
+                      for (let s = 0; s < fga; s++) {
+                        const isThree = s < tpa;
+                        const made = isThree ? s < tpm : (s - tpa) < (fgm - tpm);
+                        const half: Shot['half'] = rng() < 0.5 ? '1st Half' : '2nd Half';
+                        let x: number, y: number;
+                        if (isThree) {
+                          const angle = rng();
+                          if (angle < 0.2) { x = 0.02 + rng() * 0.08; y = 0.02 + rng() * 0.12; }
+                          else if (angle < 0.4) { x = 0.02 + rng() * 0.08; y = 0.86 + rng() * 0.12; }
+                          else { x = 0.30 + rng() * 0.15; y = 0.08 + rng() * 0.84; }
+                        } else {
+                          const zone = rng();
+                          if (zone < 0.55) {
+                            x = 0.08 + rng() * 0.22; y = 0.25 + rng() * 0.50;
+                          } else {
+                            x = 0.15 + rng() * 0.25; y = 0.10 + rng() * 0.80;
+                          }
+                        }
+                        shots.push({ x, y, made, isThree, player: p.name, half });
+                      }
+                    }
+                    return shots;
+                  };
+
+                  let fmuSeed = 0;
+                  for (let i = 0; i < 'FMU'.length; i++) fmuSeed = ((fmuSeed << 5) - fmuSeed + 'FMU'.charCodeAt(i)) | 0;
+                  let oppSeed = 0;
+                  for (let i = 0; i < game.opponent.length; i++) oppSeed = ((oppSeed << 5) - oppSeed + game.opponent.charCodeAt(i)) | 0;
+
+                  const allFmuShots = generateShots(effectiveBoxScore, fmuSeed);
+                  const allOppShots = generateShots(oppBoxScore, oppSeed);
+
+                  // Apply filters
+                  const filterShots = (shots: Shot[]) => {
+                    let filtered = shots;
+                    if (shotPeriods.size > 0) filtered = filtered.filter(s => shotPeriods.has(s.half));
+                    if (shotPlayTypes.size > 0) {
+                      filtered = filtered.filter(s => {
+                        if (s.isThree && s.made && shotPlayTypes.has('3PT Made')) return true;
+                        if (s.isThree && !s.made && shotPlayTypes.has('3PT Missed')) return true;
+                        if (!s.isThree && s.made && shotPlayTypes.has('2PT FG Made')) return true;
+                        if (!s.isThree && !s.made && shotPlayTypes.has('2PT FG Missed')) return true;
+                        return false;
+                      });
+                    }
+                    if (shotPlayers.size > 0) filtered = filtered.filter(s => shotPlayers.has(s.player));
+                    return filtered;
+                  };
+                  const fmuShots = filterShots(allFmuShots);
+                  const oppShots = filterShots(allOppShots);
+
+                  const COURT_COLOR = '#D2B48C';
+                  const LINE_COLOR = '#B8976A';
+                  const FMU_COLOR = colors.text;
+                  const OPP_COLOR = '#6B8E6B';
+
+                  return (
+                    <>
+                      <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: Spacing.lg }]}>
+                        SHOT CHART
+                      </Text>
+                      <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                        {/* Filter pills */}
+                        <View style={styles.shotFilterRow}>
+                          {([
+                            { key: 'periods' as const, label: shotPeriods.size > 0 ? `${shotPeriods.size} Period${shotPeriods.size > 1 ? 's' : ''}` : 'All Periods' },
+                            { key: 'playTypes' as const, label: shotPlayTypes.size > 0 ? `${shotPlayTypes.size} Type${shotPlayTypes.size > 1 ? 's' : ''}` : 'All Play Types' },
+                            { key: 'players' as const, label: shotPlayers.size > 0 ? `${shotPlayers.size} Player${shotPlayers.size > 1 ? 's' : ''}` : 'All Players' },
+                          ]).map((pill) => {
+                            const active = pill.key === 'periods' ? shotPeriods.size > 0 : pill.key === 'playTypes' ? shotPlayTypes.size > 0 : shotPlayers.size > 0;
+                            return (
+                              <Pressable
+                                key={pill.key}
+                                style={[styles.shotChip, active && { backgroundColor: colors.text }]}
+                                onPress={() => {
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                  setShotFilterSheet(pill.key);
+                                }}
+                              >
+                                <Text style={[styles.shotChipText, { color: active ? colors.background : colors.text }]}>{pill.label}</Text>
+                                <IconSymbol name="chevron.down" size={10} color={active ? colors.background : colors.textTertiary} />
+                              </Pressable>
+                            );
+                          })}
+                        </View>
+
+                        {/* Court container */}
+                        <View style={[styles.shotCourtWrap, { backgroundColor: COURT_COLOR }]}>
+                          <View style={[styles.shotHalfLine, { backgroundColor: LINE_COLOR }]} />
+                          <View style={[styles.shotPaint, { left: 0, borderColor: LINE_COLOR }]} />
+                          <View style={[styles.shotPaint, { right: 0, borderColor: LINE_COLOR }]} />
+                          <View style={[styles.shotFTCircle, { left: '10%', borderColor: LINE_COLOR }]} />
+                          <View style={[styles.shotFTCircle, { right: '10%', borderColor: LINE_COLOR }]} />
+                          <View style={[styles.shotCenterCircle, { borderColor: LINE_COLOR }]} />
+                          <View style={[styles.shotThreeArc, { left: -20, borderColor: LINE_COLOR }]} />
+                          <View style={[styles.shotThreeArc, { right: -20, borderColor: LINE_COLOR }]} />
+
+                          <View style={styles.shotTeamLabels}>
+                            <View style={[styles.shotTeamBadge, { backgroundColor: OPP_COLOR + '30' }]}>
+                              <Text style={[styles.shotTeamBadgeText, { color: OPP_COLOR }]}>{opponentAbbr.charAt(0)}</Text>
+                            </View>
+                            <View style={[styles.shotTeamBadge, { backgroundColor: FMU_COLOR + '15' }]}>
+                              <Text style={[styles.shotTeamBadgeText, { color: FMU_COLOR }]}>F</Text>
+                            </View>
+                          </View>
+
+                          {oppShots.map((s, i) => (
+                            <View key={`o${i}`} style={[styles.shotDot, { left: `${s.x * 50}%`, top: `${s.y * 100}%`, backgroundColor: s.made ? OPP_COLOR : 'transparent', borderColor: OPP_COLOR }]} />
+                          ))}
+                          {fmuShots.map((s, i) => (
+                            <View key={`f${i}`} style={[styles.shotDot, { right: `${s.x * 50}%`, top: `${s.y * 100}%`, backgroundColor: s.made ? FMU_COLOR : 'transparent', borderColor: FMU_COLOR }]} />
                           ))}
                         </View>
-                      </ScrollView>
-                    </View>
-                  </>
-                )}
 
-                {/* 6. Play-by-Play */}
-                {pbpEvents.length > 0 && (
-                  <>
-                    <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: Spacing.lg }]}>
-                      PLAY-BY-PLAY
-                    </Text>
-                    <View style={[styles.pbpCard, { backgroundColor: colors.backgroundSecondary }]}>
-                      {pbpEvents.map((event, index) => {
-                        const isLU = event.team === 'LU';
-                        return (
-                          <View key={event.id}>
-                            {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
-                            <View style={styles.pbpRow}>
-                              <View style={[styles.pbpTeamBadge, { backgroundColor: isLU ? colors.text + '15' : colors.backgroundTertiary }]}>
-                                <Text style={[styles.pbpTeamText, { color: isLU ? colors.text : colors.textSecondary }]}>
-                                  {event.team === 'LU' ? 'LU' : opponentAbbr}
-                                </Text>
-                              </View>
-                              <Text style={[styles.pbpAction, { color: colors.text }]} numberOfLines={2}>
-                                {event.text}
-                              </Text>
-                              <Text style={[styles.pbpScore, { color: colors.textTertiary }]}>
-                                {event.scoreAt}
-                              </Text>
-                            </View>
+                        {/* Legend */}
+                        <View style={styles.shotLegend}>
+                          <View style={styles.shotLegendSide}>
+                            <Text style={[styles.shotLegendLabel, { color: colors.textSecondary }]}>Shot Made</Text>
+                            <View style={[styles.shotLegendDot, { backgroundColor: OPP_COLOR, borderColor: OPP_COLOR }]} />
+                            <Text style={[styles.shotLegendLabel, { color: colors.textSecondary, marginLeft: 8 }]}>Shot Missed</Text>
+                            <View style={[styles.shotLegendDot, { backgroundColor: 'transparent', borderColor: OPP_COLOR }]} />
                           </View>
-                        );
-                      })}
-                    </View>
-                  </>
-                )}
+                          <View style={[styles.shotLegendDivider, { backgroundColor: colors.divider }]} />
+                          <View style={styles.shotLegendSide}>
+                            <View style={[styles.shotLegendDot, { backgroundColor: FMU_COLOR, borderColor: FMU_COLOR }]} />
+                            <Text style={[styles.shotLegendLabel, { color: colors.textSecondary }]}>Shot Made</Text>
+                            <View style={[styles.shotLegendDot, { backgroundColor: 'transparent', borderColor: FMU_COLOR, marginLeft: 8 }]} />
+                            <Text style={[styles.shotLegendLabel, { color: colors.textSecondary }]}>Shot Missed</Text>
+                          </View>
+                        </View>
 
-                {/* 7. Nexus Analysis */}
-                <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: Spacing.lg }]}>
-                  NEXUS ANALYSIS
-                </Text>
-                <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                  <Text style={[styles.bodyText, { color: colors.textSecondary }]}>
-                    {!effectiveIsLive
-                      ? isWin
-                        ? `Strong performance from LU with a final score of ${effectiveLuScore}-${effectiveOppScore} against ${game.opponent}. ${stats ? `Team shot ${stats.teamFG} from the field with ${stats.teamTO} turnovers.` : ''} Film priority: late-game execution and free-throw routine.`
-                        : `${game.opponent} came out on top ${effectiveOppScore}-${effectiveLuScore}. ${stats ? `LU shot ${stats.teamFG} from the field with ${stats.teamTO} turnovers.` : ''} Film priority: ball security and defensive rotations.`
-                      : `${effectiveClock ? `Through ${effectiveClock}` : 'In progress'}, LU ${Number(effectiveLuScore) > Number(effectiveOppScore) ? 'leads' : Number(effectiveLuScore) < Number(effectiveOppScore) ? 'trails' : 'is tied'} ${effectiveLuScore}-${effectiveOppScore}. ${stats ? `Shooting ${stats.teamFG} from the field with ${stats.teamTO} turnovers.` : ''} Key to watch: maintaining execution against ${game.opponent}.`}
-                  </Text>
-                </View>
+                        {/* Full Play-By-Play link */}
+                        <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                        <Pressable
+                          style={({ pressed }) => [styles.glFullLink, pressed && { opacity: 0.7 }]}
+                          onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.navigate({ pathname: '/coach/play-by-play' as any, params: { gameId: gameId ?? '' } });
+                          }}
+                        >
+                          <Text style={[styles.glFullLinkText, { color: '#c8102e' }]}>Full Play-By-Play</Text>
+                        </Pressable>
+                      </View>
+                    </>
+                  );
+                })()}
 
-                {/* Ask Nexus CTA */}
+                {/* ═══ TEAM STATS (ESPN comparison) ═══ */}
+                <View onLayout={(e) => { sectionRefs.current['teamstats'] = e.nativeEvent.layout.y; }} />
+                {(<>
+                {stats && (() => {
+                  // Parse FMU stats
+                  const parseStat = (s: string) => {
+                    const m = s.match(/^(\d+)-(\d+)\s*\((\d+\.?\d*)%\)$/);
+                    if (!m) return null;
+                    return { made: parseInt(m[1]), att: parseInt(m[2]), pct: parseFloat(m[3]) };
+                  };
+                  const fmuFG = parseStat(stats.teamFG);
+                  const fmu3P = parseStat(stats.team3P);
+                  const fmuFT = parseStat(stats.teamFT);
+                  const fmuReb = parseInt(stats.teamReb) || 0;
+                  const fmuTO = parseInt(stats.teamTO) || 0;
+
+                  // Generate deterministic opponent stats
+                  let h = 0;
+                  for (let i = 0; i < game.opponent.length; i++) h = ((h << 5) - h + game.opponent.charCodeAt(i)) | 0;
+                  const seed = (n: number) => { h = ((h << 5) - h + n) | 0; return Math.abs(h); };
+                  const oppFGA = (fmuFG?.att ?? 60) + (seed(1) % 8) - 4;
+                  const oppFGM = Math.round(oppFGA * (0.38 + (seed(2) % 15) / 100));
+                  const opp3PA = (fmu3P?.att ?? 20) + (seed(3) % 6) - 3;
+                  const opp3PM = Math.round(opp3PA * (0.25 + (seed(4) % 12) / 100));
+                  const oppFTA = (fmuFT?.att ?? 15) + (seed(5) % 8) - 4;
+                  const oppFTM = Math.round(oppFTA * (0.60 + (seed(6) % 20) / 100));
+                  const oppReb = fmuReb + (seed(7) % 12) - 6;
+                  const oppTO = fmuTO + (seed(8) % 6) - 3;
+
+                  const oppFGPct = oppFGA > 0 ? Math.round((oppFGM / oppFGA) * 100) : 0;
+                  const opp3PPct = opp3PA > 0 ? Math.round((opp3PM / opp3PA) * 100) : 0;
+                  const oppFTPct = oppFTA > 0 ? Math.round((oppFTM / oppFTA) * 100) : 0;
+
+                  const fmuPts = parseInt(effectiveLuScore) || 0;
+                  const oppPts = parseInt(effectiveOppScore) || 0;
+                  const pctLedFmu = fmuPts > oppPts ? 93 : (fmuPts === oppPts ? 50 : 7 + (seed(9) % 15));
+                  const pctLedOpp = 100 - pctLedFmu;
+                  const largestLeadFmu = fmuPts > oppPts ? Math.max(3, Math.round((fmuPts - oppPts) * (1.2 + (seed(10) % 5) / 10))) : (seed(11) % 4);
+                  const largestLeadOpp = oppPts > fmuPts ? Math.max(3, Math.round((oppPts - fmuPts) * (1.2 + (seed(12) % 5) / 10))) : (seed(13) % 4);
+
+                  type CompRow = { label: string; leftVal: string; leftSub?: string; rightVal: string; rightSub?: string; leftNum: number; rightNum: number };
+                  const rows: CompRow[] = [
+                    { label: 'Field Goal %', leftVal: `${Math.round(fmuFG?.pct ?? 0)}%`, leftSub: `(${fmuFG?.made}-${fmuFG?.att})`, rightVal: `${oppFGPct}%`, rightSub: `(${oppFGM}-${oppFGA})`, leftNum: fmuFG?.pct ?? 0, rightNum: oppFGPct },
+                    { label: 'Three Point %', leftVal: `${Math.round(fmu3P?.pct ?? 0)}%`, leftSub: `(${fmu3P?.made}-${fmu3P?.att})`, rightVal: `${opp3PPct}%`, rightSub: `(${opp3PM}-${opp3PA})`, leftNum: fmu3P?.pct ?? 0, rightNum: opp3PPct },
+                    { label: 'Free Throw %', leftVal: `${Math.round(fmuFT?.pct ?? 0)}%`, leftSub: `(${fmuFT?.made}-${fmuFT?.att})`, rightVal: `${oppFTPct}%`, rightSub: `(${oppFTM}-${oppFTA})`, leftNum: fmuFT?.pct ?? 0, rightNum: oppFTPct },
+                    { label: 'Turnovers', leftVal: String(fmuTO), rightVal: String(oppTO), leftNum: fmuTO, rightNum: oppTO },
+                    { label: 'Rebounds', leftVal: String(fmuReb), rightVal: String(oppReb), leftNum: fmuReb, rightNum: oppReb },
+                    { label: 'Percent Led', leftVal: `${pctLedFmu}%`, rightVal: `${pctLedOpp}%`, leftNum: pctLedFmu, rightNum: pctLedOpp },
+                    { label: 'Largest Lead', leftVal: String(largestLeadFmu), rightVal: String(largestLeadOpp), leftNum: largestLeadFmu, rightNum: largestLeadOpp },
+                  ];
+
+                  return (
+                    <>
+                      <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: Spacing.lg }]}>
+                        TEAM STATS
+                      </Text>
+                      <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                        {/* Team header */}
+                        <View style={styles.compTeamRow}>
+                          <View style={styles.compTeamLeft}>
+                            <View style={[styles.compTeamIcon, { backgroundColor: colors.backgroundTertiary }]}>
+                              <Text style={[styles.compTeamIconText, { color: colors.textSecondary }]}>{opponentAbbr.charAt(0)}</Text>
+                            </View>
+                            <Text style={[styles.compTeamAbbr, { color: colors.text }]}>{opponentAbbr}</Text>
+                          </View>
+                          <View style={[styles.compTeamLeft, { flexDirection: 'row-reverse' }]}>
+                            <View style={[styles.compTeamIcon, { backgroundColor: colors.text + '15' }]}>
+                              <Text style={[styles.compTeamIconText, { color: colors.text }]}>F</Text>
+                            </View>
+                            <Text style={[styles.compTeamAbbr, { color: colors.text }]}>FMU</Text>
+                          </View>
+                        </View>
+
+                        {rows.map((row, i) => {
+                          const total = row.leftNum + row.rightNum;
+                          const leftPct = total > 0 ? (row.leftNum / total) * 100 : 50;
+                          const rightPct = total > 0 ? (row.rightNum / total) * 100 : 50;
+                          const leftWins = row.label === 'Turnovers' ? row.leftNum < row.rightNum : row.leftNum > row.rightNum;
+                          const rightWins = row.label === 'Turnovers' ? row.rightNum < row.leftNum : row.rightNum > row.leftNum;
+                          return (
+                            <View key={row.label}>
+                              {i > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
+                              <View style={styles.compStatBlock}>
+                                <View style={styles.compValRow}>
+                                  <View style={styles.compValLeft}>
+                                    <Text style={[styles.compBigVal, { color: leftWins ? colors.text : colors.textTertiary }]}>{row.leftVal}</Text>
+                                    {row.leftSub && <Text style={[styles.compSubVal, { color: colors.textTertiary }]}> {row.leftSub}</Text>}
+                                  </View>
+                                  <Text style={[styles.compLabel, { color: colors.textSecondary }]}>{row.label}</Text>
+                                  <View style={[styles.compValLeft, { flexDirection: 'row-reverse' }]}>
+                                    <Text style={[styles.compBigVal, { color: rightWins ? colors.text : colors.textTertiary }]}>{row.rightVal}</Text>
+                                    {row.rightSub && <Text style={[styles.compSubVal, { color: colors.textTertiary }]}> {row.rightSub}</Text>}
+                                  </View>
+                                </View>
+                                <View style={styles.compBarRow}>
+                                  <View style={[styles.compBarLeft, { flex: leftPct, backgroundColor: leftWins ? colors.textTertiary : colors.backgroundTertiary }]} />
+                                  <View style={{ width: 3 }} />
+                                  <View style={[styles.compBarRight, { flex: rightPct, backgroundColor: rightWins ? colors.text : colors.backgroundTertiary }]} />
+                                </View>
+                              </View>
+                            </View>
+                          );
+                        })}
+
+                        {/* Full Team Stats link */}
+                        <View style={[styles.divider, { backgroundColor: colors.divider, marginTop: Spacing.sm }]} />
+                        <Pressable
+                          style={styles.compFullLink}
+                          onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.navigate({ pathname: '/coach/team-stats' as any, params: { gameId: gameId ?? '' } });
+                          }}
+                        >
+                          <Text style={[styles.compFullLinkText, { color: '#c8102e' }]}>Full Team Stats</Text>
+                        </Pressable>
+                      </View>
+                    </>
+                  );
+                })()}
+
+                {/* Nexus Analysis CTA */}
                 <Pressable
                   style={({ pressed }) => [
                     styles.nexusCard,
                     { backgroundColor: colors.backgroundSecondary, marginTop: Spacing.lg },
                     pressed && { opacity: 0.7 },
                   ]}
-                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    router.navigate('/(tabs)/nexus' as any);
+                  }}
                 >
                   <IconSymbol name="sparkles" size={20} color={colors.text} />
                   <Text style={[styles.nexusText, { color: colors.text }]}>
-                    Ask Nexus about this game
+                    Analyze this game in Nexus
                   </Text>
                   <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
                 </Pressable>
+                </>)}
               </>
             ) : (
               <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
@@ -1244,6 +1860,137 @@ export default function GameDetailScreen() {
         </View>
       </Modal>
 
+      {/* Shot Chart Filter Sheet */}
+      <Modal visible={shotFilterSheet !== null} transparent animationType="slide">
+        <View style={styles.sheetOverlay}>
+          <Pressable style={styles.sheetBackdrop} onPress={() => setShotFilterSheet(null)} />
+          <View style={[styles.sheetContent, { backgroundColor: colors.background, paddingBottom: insets.bottom + Spacing.md }]}>
+            <View style={[styles.sheetHeader, { borderBottomColor: colors.divider }]}>
+              <Pressable onPress={() => {
+                if (shotFilterSheet === 'periods') setShotPeriods(new Set());
+                else if (shotFilterSheet === 'playTypes') setShotPlayTypes(new Set());
+                else if (shotFilterSheet === 'players') setShotPlayers(new Set());
+              }}>
+                <Text style={[styles.filterResetText, { color: colors.textTertiary }]}>Reset</Text>
+              </Pressable>
+              <Text style={[styles.sheetTitle, { color: colors.text }]}>
+                {shotFilterSheet === 'periods' ? 'Periods' : shotFilterSheet === 'playTypes' ? 'Play Types' : 'Players'}
+              </Text>
+              <Pressable onPress={() => setShotFilterSheet(null)}>
+                <Text style={[styles.filterDoneText, { color: colors.text }]}>Done</Text>
+              </Pressable>
+            </View>
+
+            {/* Periods */}
+            {shotFilterSheet === 'periods' && (
+              <View style={styles.filterList}>
+                {['1st Half', '2nd Half'].map((period) => {
+                  const on = shotPeriods.has(period);
+                  return (
+                    <Pressable
+                      key={period}
+                      style={[styles.filterOption, { borderBottomColor: colors.divider }]}
+                      onPress={() => { const n = new Set(shotPeriods); on ? n.delete(period) : n.add(period); setShotPeriods(n); }}
+                    >
+                      <Text style={[styles.filterOptionText, { color: colors.text }]}>{period}</Text>
+                      <View style={[styles.filterCheckbox, { borderColor: on ? colors.text : colors.textTertiary, backgroundColor: on ? colors.text : 'transparent' }]}>
+                        {on && <IconSymbol name="checkmark" size={12} color={colors.background} />}
+                      </View>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
+
+            {/* Play Types */}
+            {shotFilterSheet === 'playTypes' && (
+              <View style={styles.filterList}>
+                {[
+                  { key: '2PT FG Made', label: '2PT FG Made' },
+                  { key: '2PT FG Missed', label: '2PT FG Missed' },
+                  { key: '3PT Made', label: '3PT Made' },
+                  { key: '3PT Missed', label: '3PT Missed' },
+                ].map((item) => {
+                  const on = shotPlayTypes.has(item.key);
+                  return (
+                    <Pressable
+                      key={item.key}
+                      style={[styles.filterOption, { borderBottomColor: colors.divider }]}
+                      onPress={() => { const n = new Set(shotPlayTypes); on ? n.delete(item.key) : n.add(item.key); setShotPlayTypes(n); }}
+                    >
+                      <Text style={[styles.filterOptionText, { color: colors.text }]}>{item.label}</Text>
+                      <View style={[styles.filterCheckbox, { borderColor: on ? colors.text : colors.textTertiary, backgroundColor: on ? colors.text : 'transparent' }]}>
+                        {on && <IconSymbol name="checkmark" size={12} color={colors.background} />}
+                      </View>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
+
+            {/* Players */}
+            {shotFilterSheet === 'players' && (() => {
+              const playerNames = shotPlayerTeam === 'fmu'
+                ? effectiveBoxScore.map(p => p.name)
+                : oppBoxScore.map(p => p.name);
+              return (
+                <View style={styles.filterList}>
+                  <View style={styles.filterTeamToggle}>
+                    {(['fmu', 'opp'] as const).map((t) => {
+                      const active = shotPlayerTeam === t;
+                      return (
+                        <Pressable
+                          key={t}
+                          style={[styles.filterTeamPill, { backgroundColor: active ? colors.text + 'E0' : colors.backgroundTertiary }]}
+                          onPress={() => setShotPlayerTeam(t)}
+                        >
+                          <Text style={[styles.filterTeamPillText, { color: active ? colors.background : colors.textSecondary }]}>
+                            {t === 'fmu' ? 'FMU' : opponentAbbr}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                  <Pressable
+                    style={[styles.filterOption, { borderBottomColor: colors.divider }]}
+                    onPress={() => {
+                      const allSelected = playerNames.every(n => shotPlayers.has(n));
+                      const n = new Set(shotPlayers);
+                      if (allSelected) playerNames.forEach(name => n.delete(name));
+                      else playerNames.forEach(name => n.add(name));
+                      setShotPlayers(n);
+                    }}
+                  >
+                    <Text style={[styles.filterOptionText, { color: colors.text, fontWeight: '600' }]}>Select All</Text>
+                    <View style={[styles.filterCheckbox, {
+                      borderColor: playerNames.every(n => shotPlayers.has(n)) ? colors.text : colors.textTertiary,
+                      backgroundColor: playerNames.every(n => shotPlayers.has(n)) ? colors.text : 'transparent',
+                    }]}>
+                      {playerNames.every(n => shotPlayers.has(n)) && <IconSymbol name="checkmark" size={12} color={colors.background} />}
+                    </View>
+                  </Pressable>
+                  {playerNames.map((name) => {
+                    const on = shotPlayers.has(name);
+                    return (
+                      <Pressable
+                        key={name}
+                        style={[styles.filterOption, { borderBottomColor: colors.divider }]}
+                        onPress={() => { const nn = new Set(shotPlayers); on ? nn.delete(name) : nn.add(name); setShotPlayers(nn); }}
+                      >
+                        <Text style={[styles.filterOptionText, { color: colors.text }]}>{name}</Text>
+                        <View style={[styles.filterCheckbox, { borderColor: on ? colors.text : colors.textTertiary, backgroundColor: on ? colors.text : 'transparent' }]}>
+                          {on && <IconSymbol name="checkmark" size={12} color={colors.background} />}
+                        </View>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              );
+            })()}
+          </View>
+        </View>
+      </Modal>
+
       <TabFooter activeTab="Home" />
     </View>
   );
@@ -1263,7 +2010,7 @@ function InfoRow({ label, value, colors }: { label: string; value: string; color
 // ── Game Flow Chart (score margin over time) ──
 
 function GameFlowChart({ snapshots, colors }: { snapshots: ScoreSnapshot[]; colors: typeof Colors.light }) {
-  const maxScore = Math.max(...snapshots.flatMap((s) => [s.lu, s.opp]));
+  const maxScore = Math.max(...snapshots.flatMap((s) => [s.fmu, s.opp]));
   const barScale = maxScore > 0 ? 100 / maxScore : 1;
 
   return (
@@ -1272,7 +2019,7 @@ function GameFlowChart({ snapshots, colors }: { snapshots: ScoreSnapshot[]; colo
       <View style={styles.flowLegend}>
         <View style={styles.flowLegendItem}>
           <View style={[styles.flowLegendDot, { backgroundColor: colors.text }]} />
-          <Text style={[styles.flowLegendLabel, { color: colors.textSecondary }]}>LU</Text>
+          <Text style={[styles.flowLegendLabel, { color: colors.textSecondary }]}>FMU</Text>
         </View>
         <View style={styles.flowLegendItem}>
           <View style={[styles.flowLegendDot, { backgroundColor: colors.textTertiary }]} />
@@ -1282,20 +2029,20 @@ function GameFlowChart({ snapshots, colors }: { snapshots: ScoreSnapshot[]; colo
 
       {/* Period bars */}
       {snapshots.map((snap, i) => {
-        const margin = snap.lu - snap.opp;
+        const margin = snap.fmu - snap.opp;
         return (
           <View key={i} style={styles.flowPeriodRow}>
             <Text style={[styles.flowPeriodLabel, { color: colors.textTertiary }]}>{snap.label}</Text>
             <View style={styles.flowBarContainer}>
-              {/* LU bar */}
+              {/* FMU bar */}
               <View style={styles.flowBarRow}>
                 <View
                   style={[
                     styles.flowBar,
-                    { width: `${snap.lu * barScale}%`, backgroundColor: colors.text },
+                    { width: `${snap.fmu * barScale}%`, backgroundColor: colors.text },
                   ]}
                 />
-                <Text style={[styles.flowBarValue, { color: colors.text }]}>{snap.lu}</Text>
+                <Text style={[styles.flowBarValue, { color: colors.text }]}>{snap.fmu}</Text>
               </View>
               {/* OPP bar */}
               <View style={styles.flowBarRow}>
@@ -1690,6 +2437,486 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
 
+  // ESPN-style horizontal scoreboard (completed games)
+  scoreboardCard: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    paddingTop: Spacing.md,
+    paddingHorizontal: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  scoreboardRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  scoreboardSide: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flex: 1,
+  },
+  scoreboardIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scoreboardIconText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  scoreboardAbbr: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  scoreboardRecord: {
+    fontSize: 11,
+    marginTop: 1,
+  },
+  scoreboardBigScore: {
+    fontSize: 32,
+    fontWeight: '700',
+  },
+  scoreboardCenter: {
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  scoreboardFinal: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  scoreboardArrow: {
+    fontSize: 14,
+    marginTop: 2,
+  },
+  espnTabRow: {
+    flexDirection: 'row',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    marginTop: Spacing.md,
+  },
+  espnTab: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  espnTabActive: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#c8102e',
+  },
+  espnTabText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  espnTabTextActive: {
+    fontWeight: '700',
+  },
+
+  // Video card
+  videoCard: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  videoThumb: {
+    aspectRatio: 16 / 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  videoDuration: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  videoDurationText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  videoInfo: {
+    padding: Spacing.md,
+  },
+  videoTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    lineHeight: 20,
+  },
+  videoSource: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  watchReplayBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    borderRadius: BorderRadius.md,
+    paddingVertical: 10,
+    marginTop: Spacing.sm,
+  },
+  watchReplayText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
+  // Score-by-half table
+  halfTableRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  halfTableTeamCol: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  halfTableIcon: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  halfTableIconText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  halfTableTeamName: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  halfTableHeader: {
+    width: 44,
+    textAlign: 'center',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  halfTableVal: {
+    width: 44,
+    textAlign: 'center',
+    fontSize: 14,
+  },
+
+  // Game Leaders (ESPN side-by-side)
+  glTeamHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  glTeamLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  glTeamRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  glTeamIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  glTeamIconText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  glTeamName: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  glCatBlock: {
+    paddingVertical: 14,
+  },
+  glTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  glTopLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+  },
+  glTopRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  glAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  glAvatarText: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  glStatNum: {
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  glCatLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+    width: 80,
+  },
+  glBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 6,
+  },
+  glBottomLeft: {
+    flex: 1,
+  },
+  glBottomRight: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  glPlayerName: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  glSubline: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+  glFullLink: {
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  glFullLinkText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
+  // Shot Chart
+  shotCourtWrap: {
+    aspectRatio: 1.88,
+    borderRadius: BorderRadius.sm,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  shotHalfLine: {
+    position: 'absolute',
+    left: '50%',
+    top: 0,
+    bottom: 0,
+    width: 1,
+  },
+  shotPaint: {
+    position: 'absolute',
+    top: '28%',
+    width: '15%',
+    height: '44%',
+    borderWidth: 1,
+    backgroundColor: 'transparent',
+  },
+  shotFTCircle: {
+    position: 'absolute',
+    top: '35%',
+    width: '12%',
+    height: '30%',
+    borderWidth: 1,
+    borderRadius: 999,
+    backgroundColor: 'transparent',
+  },
+  shotCenterCircle: {
+    position: 'absolute',
+    left: '43%',
+    top: '35%',
+    width: '14%',
+    height: '30%',
+    borderWidth: 1,
+    borderRadius: 999,
+    backgroundColor: 'transparent',
+  },
+  shotThreeArc: {
+    position: 'absolute',
+    top: '5%',
+    width: '45%',
+    height: '90%',
+    borderWidth: 1,
+    borderRadius: 999,
+    backgroundColor: 'transparent',
+  },
+  shotTeamLabels: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  shotTeamBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shotTeamBadgeText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  shotDot: {
+    position: 'absolute',
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    borderWidth: 1.5,
+    marginLeft: -4,
+    marginTop: -4,
+  },
+  shotLegend: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    gap: 8,
+  },
+  shotLegendSide: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  shotLegendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    borderWidth: 1.5,
+  },
+  shotLegendDivider: {
+    width: 1,
+    height: 16,
+    marginHorizontal: 4,
+  },
+  shotLegendLabel: {
+    fontSize: 10,
+    fontWeight: '500',
+  },
+  shotFilterRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.sm,
+  },
+  shotChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: 'rgba(128,128,128,0.3)',
+  },
+  shotChipText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  filterResetText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  filterDoneText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  filterList: {
+    paddingHorizontal: Spacing.md,
+  },
+  filterOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  filterOptionText: {
+    fontSize: 15,
+  },
+  filterCheckbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 4,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  filterTeamToggle: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingVertical: Spacing.sm,
+  },
+  filterTeamPill: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+  },
+  filterTeamPillText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+
+  // Inline Play-by-Play (report tab)
+  pbpHalfHeader: {
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginTop: 8,
+  },
+  pbpHalfHeaderText: {
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  pbpTimeCol: {
+    width: 42,
+    fontSize: 12,
+    fontWeight: '500',
+    fontVariant: ['tabular-nums'],
+  },
+  pbpTeamDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  pbpPlayText: {
+    flex: 1,
+    fontSize: 14,
+  },
+  pbpScoreCol: {
+    fontSize: 13,
+    fontWeight: '600',
+    fontVariant: ['tabular-nums'],
+  },
+  pbpInlineRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 10,
+  },
+
   // Leaders (Report tab)
   leaderRow: {
     flexDirection: 'row',
@@ -1717,6 +2944,83 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     flex: 1,
+  },
+
+  // ESPN comparison team stats
+  compTeamRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+  compTeamLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  compTeamIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  compTeamIconText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  compTeamAbbr: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  compStatBlock: {
+    paddingVertical: 12,
+  },
+  compValRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  compValLeft: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    flex: 1,
+  },
+  compBigVal: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  compSubVal: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  compLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  compBarRow: {
+    flexDirection: 'row',
+    height: 6,
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  compBarLeft: {
+    height: 6,
+    borderRadius: 3,
+  },
+  compBarRight: {
+    height: 6,
+    borderRadius: 3,
+  },
+  compFullLink: {
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+  },
+  compFullLinkText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 
   // Game flow chart
@@ -1775,37 +3079,41 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 
-  // Box score table
+  // Box score team toggle
+  boxToggleRow: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  boxTogglePill: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 14,
+  },
+  boxToggleText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // Box score table (NBA-style, column widths set via BOX_COLS)
   boxHeaderRow: {
     flexDirection: 'row',
     borderBottomWidth: StyleSheet.hairlineWidth,
     paddingVertical: 8,
-    paddingHorizontal: Spacing.md,
+    paddingHorizontal: Spacing.sm,
   },
   boxHeaderCell: {
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.5,
   },
-  boxColName: {
-    width: 100,
-  },
-  boxColStat: {
-    width: 44,
-    textAlign: 'center',
-  },
-  boxColFg: {
-    width: 56,
-    textAlign: 'center',
-  },
   boxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: Spacing.md,
+    paddingVertical: 8,
+    paddingHorizontal: Spacing.sm,
   },
   boxCell: {
-    fontSize: 13,
+    fontSize: 12,
   },
 
   // Game Actions bottom sheet
@@ -1866,5 +3174,208 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 15,
     textAlign: 'center',
+  },
+
+  // Video Countdown (upcoming pregame)
+  videoCountdownCard: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    marginBottom: Spacing.lg,
+  },
+  videoPlaceholder: {
+    height: 200,
+    backgroundColor: '#111',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  videoPlayCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  countdownRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Spacing.md,
+    gap: 4,
+  },
+  countdownUnit: {
+    alignItems: 'center',
+    minWidth: 48,
+  },
+  countdownNum: {
+    fontSize: 32,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  countdownLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1,
+    marginTop: 2,
+  },
+  countdownSep: {
+    fontSize: 28,
+    fontWeight: '300',
+    marginBottom: 14,
+  },
+  kanextVideoBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#c8102e',
+    marginHorizontal: Spacing.md,
+    marginBottom: Spacing.md,
+    paddingVertical: 12,
+    borderRadius: BorderRadius.md,
+  },
+  kanextVideoBtnText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+
+  // ── Live 4-tab switcher ──
+  liveTabRow: {
+    flexDirection: 'row',
+    borderRadius: BorderRadius.lg,
+    marginBottom: Spacing.sm,
+    overflow: 'hidden',
+  },
+  liveTab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  liveTabActive: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#c8102e',
+  },
+  liveTabText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  liveTabTextActive: {
+    fontWeight: '700',
+  },
+
+  // ── Box tab (live) ──
+  liveBoxTeamRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: Spacing.sm,
+  },
+  liveBoxTeamPill: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 14,
+  },
+  liveBoxTeamText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  liveBoxTable: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    minWidth: '100%',
+  },
+  liveBoxHeaderRow: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: Spacing.sm,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  liveBoxHeaderCell: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textAlign: 'center',
+  },
+  liveBoxRow: {
+    flexDirection: 'row',
+    paddingVertical: 10,
+    paddingHorizontal: Spacing.sm,
+  },
+  liveBoxCell: {
+    fontSize: 13,
+    textAlign: 'center',
+    fontVariant: ['tabular-nums'],
+  },
+
+  // ── Team tab (live) ──
+  liveTeamCard: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    padding: Spacing.md,
+  },
+  liveTeamHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.sm,
+  },
+  liveTeamHeaderName: {
+    fontSize: 14,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  liveTeamStatRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  liveTeamStatVal: {
+    width: 60,
+    fontSize: 15,
+    fontWeight: '600',
+    fontVariant: ['tabular-nums'],
+  },
+  liveTeamStatLabel: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.3,
+  },
+
+  // ── Leaders tab (live) ──
+  liveLeaderCatLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    marginBottom: 6,
+  },
+  liveLeaderSplit: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  liveLeaderCol: {
+    flex: 1,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.sm,
+  },
+  liveLeaderTeamLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    marginBottom: 6,
+  },
+  liveLeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 4,
+  },
+  liveLeaderName: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  liveLeaderStat: {
+    fontSize: 14,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
   },
 });

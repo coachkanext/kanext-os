@@ -1,0 +1,1550 @@
+NCAA Division I (High Major Anchor)
+NCAA Division I (High Major Anchor)
+Interpretation anchor:
+Assumes a true High-Major ecosystem (Power 6 + Gonzaga-level elites):
+deep rosters, national recruiting, sustained play vs Top-100 opponents, NBA-caliber athletes at multiple positions.
+College KR reflects who you are on the floor, not recruiting hype.
+All ratings assume KLVN normalization (opponent strength, role, efficiency, portability).
+KR TIERS (DISPLAY / READ-ONLY)
+
+UI / GOVERNANCE NOTE 
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+
+98–100 — National Player of the Year Lock / Transcendent Superstar
+Definition:
+Program-orbiting force. Offense, defense, and outcomes bend around them.
+Elite usage and elite efficiency
+
+Drives wins against other elites
+
+Game-plan warps to stop them
+
+Consensus top-3 NBA lottery projection
+
+Would be the best player on almost any team in the country
+Advanced signal: BPR 11+
+
+95–97 — Franchise Anchor / Elite All-American
+Definition:
+Clear identity-setter. Team’s unquestioned alpha or co-alpha.
+Primary closer
+
+All-American / Conference POY contender
+
+Carries offensive or defensive load nightly
+
+Top-3 rotation staple on a Final Four–level team
+
+NBA first-round certainty
+Advanced signal: BPR 9–11
+
+92–94 — High-Impact Starter / Core Winner
+Definition:
+Wins games at the highest level without needing the offense to revolve fully around them.
+Heavy-minute leader
+
+All-Conference caliber
+
+Trusted late-game option
+
+Drives outcomes vs. elite competition
+
+NBA draftable / high-end pro prospect
+Advanced signal: BPR 7–9
+
+89–91 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Firmly positive starter value at HM level.
+25+ MPG
+
+Consistent two-way impact
+
+Can scale up or down depending on lineup
+
+All-Conference honorable mention range
+
+NBA fringe / high-end overseas projection
+Advanced signal: BPR 5–7
+
+86–88 — Trusted Rotation / Big-Minute Glue Guy
+Definition:
+Winning-role player who survives pressure.
+20+ MPG in meaningful games
+
+Clearly trusted by staff
+
+Specialist value (3&D, rim protection, secondary creator)
+
+Not an offense driver, but lineups win with them
+Advanced signal: BPR 4–5
+
+
+83–85 — Reliable Bench / Rotation Contributor
+Definition:
+True rotation depth on good teams.
+15–20 MPG
+
+Consistent energy or specialty
+
+No major drop-off when on floor
+
+Common profile on Sweet 16 / Final Four teams
+Advanced signal: BPR 3–4
+
+80–82 — Situational Specialist / Depth Piece
+Definition:
+Matchup- and context-dependent contributor.
+10–15 MPG
+
+Role-specific value (shooting, defense, pace)
+
+Can swing individual games, not seasons
+
+Easily replaced, but useful when aligned correctly
+Advanced signal: BPR 2–3
+
+
+77–79 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+
+Injury / foul trouble dependent
+
+Neutral to mildly negative impact
+
+Not trusted in high-leverage moments
+Advanced signal: BPR 1–2
+
+74–76 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout value
+
+Garbage-time minutes only
+
+Emergency depth
+
+Net neutral to negative on the floor
+Advanced signal: BPR 0–1
+
+
+71–73 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Physically or skill-wise incomplete
+
+Practice-focused
+
+Not currently viable in HM games
+
+May project upward with time or transfer
+Advanced signal: BPR ~0 or negative
+
+68–70 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure, not competition.
+Scout team body
+
+No rotation pathway
+
+Contribution is off-court
+
+Below 68 — Non–D1 Viable (HM) / Transfer Candidate
+Definition:
+Below HM competitive threshold.
+Negative on-court impact at HM pace/athleticism
+
+Better fit at Mid-Major, D2, NAIA, or JUCO
+
+Transfer is the correct developmental path
+
+NCAA Division I (Mid-Major Anchor)
+NCAA Division I (Mid-Major Anchor)
+Interpretation anchor:
+Assumes a true competitive mid-major environment (A-10, MVC, Mountain West, AAC, top C-USA/WCC teams):
+Regional/national recruiting mix
+Mostly mid-tier opponents with occasional high-major games
+Less depth and athletic redundancy than HM
+KR reflects on-court value in this ecosystem, not projection hype
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE 
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+95–100 — Mid-Major Player of the Year Lock / Transcendent Star
+Definition:
+A program-defining player who dominates the mid-major landscape nationally.
+Offense and/or defense fully orbits them
+Wins games single-handedly at this level
+Conference POY lock; national mid-major awards
+Scales up against high-majors without collapsing
+Rare NBA or top-tier pro upside
+Advanced signal: BPR +8–10+
+
+92–94 — Franchise Anchor / Elite Mid-Major All-American
+Definition:
+Clear #1 option and identity driver.
+Closes games
+Consistent efficiency at high usage
+All-Conference POY contender
+Can carry a team to conference titles / at-large consideration
+Would be a rotation piece at many high-majors
+Advanced signal: BPR +6–8
+
+88–91 — High-Impact Starter / Core Winner
+Definition:
+Primary reason teams win at the mid-major level.
+Heavy minutes leader
+All-Conference lock
+Game-changer vs peers
+Top-3 rotation piece
+Offense or defense reliably bends with them on the floor
+Advanced signal: BPR +4–6
+
+85–87 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Firmly positive starter value.
+25+ MPG
+Two-way reliability
+Can scale up or down depending on lineup
+All-Conference consideration
+Would survive as depth at many high-majors
+Advanced signal: BPR +3–4
+
+82–84 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player trusted in pressure moments.
+Top 6–8 rotation
+20+ MPG
+Clear specialist value (shooter, defender, connector)
+Holds up against elite mid-majors
+Does not drive offense
+Advanced signal: BPR +2–3
+
+79–81 — Reliable Bench / Rotation Piece
+Definition:
+Depth that keeps quality intact.
+15–20 MPG
+Consistent execution
+Neutral to slightly positive impact
+Common on conference-title teams
+Advanced signal: BPR +1–2
+
+76–78 — Situational Specialist / Depth
+Definition:
+Context-dependent contributor.
+10–15 MPG
+Matchup-specific usage
+Energy, shooting bursts, or defensive relief
+Cannot be relied on nightly
+Advanced signal: BPR 0 to +1
+
+73–75 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Injury/foul-trouble dependent
+Net neutral to slightly negative
+Not trusted in leverage moments
+Advanced signal: BPR ~0 / slight negative
+
+
+70–72 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout value
+Rare garbage-time minutes
+Emergency only
+Negative on-court impact in real games
+Advanced signal: BPR negative
+
+67–69 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Physically or skill-incomplete
+Practice-only
+May develop with time or transfer
+Not viable in strong mid-major play yet
+
+64–66 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 64 — Below Mid-Major Viability
+Definition:
+Below MM competitive threshold.
+Significant negative impact at MM pace/skill
+Better suited for Low-Major, D2, NAIA, or JUCO
+Transfer or level change is correct outcome
+NCAA Division I (Low-Major Anchor)
+NCAA Division I (Low-Major Anchor)
+Interpretation anchor:
+Assumes a competitive low-major environment (SWAC, MEAC, NEC, Southland, Big South lower tier, etc.):
+Regional/local recruiting
+Thin depth; sharp drop-offs after top 6–7
+Mostly lower-tier D1 and non-D1 opponents
+Teams often built around 1–2 primary creators
+College KR remains universal; this legend describes what the number means in a low-major ecosystem.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE 
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+
+92–100 — Low-Major Player of the Year Lock / Dominant Star
+Definition:
+Conference-level force who overwhelms the ecosystem.
+Entire program orbits them
+Extreme usage with sustainable efficiency
+National HBCU / low-major recognition
+Carries team to auto-bid contention
+Transfer-up or G-League caliber outlier
+Advanced signal: BPR +6–8+
+
+
+88–91 — Franchise Anchor / Elite Low-Major Standout
+Definition:
+Clear #1 option and identity driver.
+Closes games
+Leads conference in key categories
+Conference POY contender
+Wins games against peers through volume + control
+Could start or play heavy minutes at many low-majors nationwide
+Advanced signal: BPR +4–6
+
+84–87 — High-Impact Starter / Core Winner
+Definition:
+Primary reason teams consistently win in-conference.
+Heavy minutes leader
+All-Conference lock
+Game-changer vs peer competition
+Top-3 rotation piece
+Drives conference wins and tournament runs
+Advanced signal: BPR +2–4
+
+80–83 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at low-major level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference consideration
+Can scale up slightly without breaking efficiency
+Advanced signal: BPR +1–2
+
+
+77–79 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player in a thin ecosystem.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value (scoring, defense, physicality)
+Holds up vs top low-major opponents
+Not a primary advantage creator
+Advanced signal: BPR 0 to +1
+
+74–76 — Reliable Bench / Rotation Piece
+Definition:
+Depth that keeps teams functional.
+12–18 MPG
+Energy or specialty contribution
+Neutral impact
+Common on top low-major teams with limited depth
+Advanced signal: BPR ~0 / slight negative
+
+71–73 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific
+Can provide short bursts
+Not sustainable in larger role
+Advanced signal: BPR negative to 0
+
+
+
+68–70 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact in real minutes
+Advanced signal: BPR negative
+
+65–67 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Significant negative impact if extended
+
+62–64 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Not viable currently at competitive low-major level
+
+59–61 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 59 — Below Low-Major Viability
+Definition:
+Below D1 competitive threshold.
+Major negative impact
+Better suited for D2, NAIA, JUCO, or non-competitive
+Common transfer or roster-turnover candidates
+
+
+NCAA Division II (D2 Anchor)
+NCAA Division II (D2 Anchor)
+Interpretation anchor:
+Assumes a strong Division II ecosystem (top programs in MIAA, G-MAC, Sunshine State, PSAC, RMAC):
+Regional recruiting with some national reach
+Majority D2 competition; occasional D1 crossovers
+Top players post strong raw numbers with slightly lower efficiency ceilings
+Depth is solid but drops faster than D1 environments
+College KR remains universal; this legend describes what the number means inside D2.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE 
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+90–100 — D2 Player of the Year Lock / Dominant National Star
+Definition:
+A national-level force who overwhelms the D2 ecosystem.
+Conference and national centerpiece
+Elite raw production with sustainable efficiency
+Extreme usage handled cleanly
+Carries team to national title contention
+D1 transfer upside or high-level overseas pro projection
+
+86–89 — Franchise Anchor / Elite D2 Standout
+Definition:
+Clear #1 option and identity driver.
+Defines team success
+Closes games
+Conference POY contender
+Dominates peers via scoring, rebounding, or playmaking
+Can scale up to upper-rotation D1 or elite NAIA roles
+
+82–85 — High-Impact Starter / Core Winner
+Definition:
+Primary reason strong D2 teams consistently win.
+Heavy minutes leader
+All-Conference / All-Region lock
+Game-changer vs D2 elites
+Top-3 rotation piece
+Drives conference titles and tournament runs
+
+78–81 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at high D2 level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference consideration
+Trusted in high-leverage games
+
+75–77 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player in competitive D2 environments.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value (scoring, defense, rebounding)
+Holds up against strong D2 competition
+Does not drive offense independently
+
+
+72–74 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains quality.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on national-contender rosters
+
+69–71 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Can provide short bursts
+Not sustainable in expanded role
+
+66–68 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+
+63–65 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Significant negative impact in real minutes
+
+60–62 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Not viable currently at competitive D2 level
+
+57–59 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 57 — Below D2 Viability
+Definition:
+Below Division II competitive threshold.
+Major negative impact
+Better suited for D3, NAIA, JUCO, or non-competitive
+High roster-turnover risk
+
+
+NJCAA Division I (JUCO D1 Anchor)
+NJCAA Division I (JUCO D1 Anchor)
+Interpretation anchor:
+Assumes a competitive NJCAA Division I environment (top programs such as Snow, Midland, Vincennes, Region 5/8 powers):
+Full scholarship availability
+High athleticism and pace
+Majority JUCO competition with occasional 4-year crossovers
+Players often prioritize transfer value to NCAA D1/D2
+Depth varies widely; elite teams sustain 8–10 playable pieces, others drop sharply after 6–7
+College KR remains universal; this legend defines what the number means inside JUCO D1.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+88–100 — NJCAA D1 Player of the Year Lock / Elite National JUCO Star
+Definition:
+A national-level JUCO force who overwhelms the ecosystem.
+Conference or national centerpiece
+Explosive raw production with sustainable efficiency
+Handles extreme usage cleanly
+Carries team to nationals and title contention
+Strong transfer upside to NCAA D1 (HM/LM) or top D2; some pro pathways
+
+
+84–87 — Franchise Anchor / Top NJCAA Standout
+Definition:
+Clear #1 option and identity driver.
+Defines team success
+Closes games consistently
+Conference POY contender
+Dominates JUCO peers via scoring, rebounding, or playmaking
+Frequent NCAA D1/D2 transfer target
+
+80–83 — High-Impact Starter / Core Winner
+Definition:
+Primary reason elite JUCO teams win.
+Heavy minutes leader
+All-Conference / All-Region lock
+Game-changer vs top JUCO competition
+Top-3 rotation piece
+Drives conference titles and national tournament runs
+
+76–79 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at high JUCO level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference consideration
+Trusted in big games and neutral-site tournaments
+
+
+73–75 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player on strong JUCO rosters.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value (scoring, defense, rebounding)
+Holds up against strong JUCO competition
+Not a primary advantage creator
+
+70–72 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains quality.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on national-contender JUCO teams
+
+67–69 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Short bursts of value
+Not sustainable in expanded role
+
+64–66 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+61–63 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Significant negative impact in real minutes
+
+58–60 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Focused on development or transfer preparation
+Not currently viable at competitive JUCO D1 level
+
+55–57 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 55 — Below NJCAA D1 Viability
+Definition:
+Below JUCO D1 competitive threshold.
+Major negative impact
+Better suited for NJCAA D2/D3, NAIA, or non-competitive levels
+High turnover and transfer risk
+
+NAIA (Anchor)
+NAIA (Anchor)
+Interpretation anchor:
+Assumes a competitive NAIA environment (Cascade, Heart, SSAC, GPAC, Crossroads, etc.):
+Scholarship availability with academic–athletic balance
+Majority NAIA competition; occasional D2 crossovers
+Top players post strong raw production with lower efficiency ceilings vs higher levels
+Many players develop with intent to transfer upward
+Depth is solid at the top but drops quickly beyond 6–7 contributors
+College KR remains universal; this legend describes what the number means inside NAIA.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE (keep this line)
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+86–100 — NAIA Player of the Year Lock / Elite National Standout
+Definition:
+A national-level NAIA force who overwhelms the ecosystem.
+Conference or national centerpiece
+Explosive raw production with sustainable efficiency
+Handles extreme usage cleanly
+Carries team to national tournament contention
+Strong transfer upside to NCAA D2 or low-major D1; some pro pathways
+
+82–85 — Franchise Anchor / Top NAIA All-American
+Definition:
+Clear #1 option and identity driver.
+Defines team success
+Closes games consistently
+Conference POY contender
+Dominates NAIA peers via scoring, rebounding, or playmaking
+Frequent upward transfer target
+
+78–81 — High-Impact Starter / Core Winner
+Definition:
+Primary reason strong NAIA teams win.
+Heavy minutes leader
+All-Conference / All-American consideration
+Game-changer vs NAIA elites
+Top-3 rotation piece
+Drives conference titles and national runs
+
+74–77 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at NAIA level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference caliber
+Trusted in high-leverage games
+
+71–73 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player on competitive NAIA rosters.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value (scoring, defense, rebounding)
+Holds up against strong NAIA competition
+Not a primary advantage creator
+
+
+68–70 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains quality.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on national-contender NAIA teams
+
+65–67 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Short bursts of value
+Not sustainable in expanded role
+
+62–64 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+
+59–61 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Significant negative impact in real minutes
+
+56–58 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Development or transfer preparation focus
+Not currently viable at competitive NAIA level
+
+53–55 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 53 — Below NAIA Viability
+Definition:
+Below NAIA competitive threshold.
+Major negative impact
+Better suited for lower-tier NAIA, USCAA, NCCAA, or non-competitive levels
+High roster-turnover risk
+
+
+NJCAA Division II (JUCO D2 Anchor)
+NJCAA Division II (JUCO D2 Anchor)
+Interpretation anchor:
+Assumes a competitive NJCAA Division II environment (strong programs across Midwest/South regions, including national contenders):
+Partial scholarships (tuition/books/fees; limited supplies)
+Regional recruiting focus
+Majority JUCO competition with occasional crossovers
+Player development emphasized for transfer to NCAA D2 or NAIA
+Depth is decent at top programs but drops faster than NJCAA D1
+College KR remains universal; this legend defines what the number means inside JUCO D2.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+84–100 — NJCAA D2 Player of the Year Lock / Elite National Standout
+Definition:
+A national-level JUCO D2 force who overwhelms the ecosystem.
+Conference or national centerpiece
+High raw production with sustainable efficiency
+Handles extreme usage cleanly
+Carries team to national tournament contention
+Clear transfer upside to NCAA D2 or low-end D1
+
+80–83 — Franchise Anchor / Top NJCAA D2 All-American
+Definition:
+Clear #1 option and identity driver.
+Defines team success
+Closes games consistently
+Conference POY contender
+Dominates JUCO D2 peers via scoring, rebounding, or playmaking
+Reliable upward-transfer profile
+76–79 — High-Impact Starter / Core Winner
+Definition:
+Primary reason elite JUCO D2 teams win.
+Heavy minutes leader
+All-Conference / All-Region lock
+Game-changer vs top JUCO D2 competition
+Top-3 rotation piece
+Drives conference titles and national runs
+
+72–75 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at JUCO D2 level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference consideration
+Trusted in high-leverage games
+
+69–71 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player on strong JUCO D2 rosters.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value
+Holds up against strong JUCO D2 competition
+Not a primary advantage creator
+
+
+66–68 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains quality.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on national-contender JUCO D2 teams
+
+63–65 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Short bursts of value
+Not sustainable in expanded role
+
+60–62 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+
+57–59 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Negative impact if extended
+
+54–56 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Development or transfer preparation focus
+Not currently viable at competitive JUCO D2 level
+
+51–53 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 51 — Below NJCAA D2 Viability
+Definition:
+Below JUCO D2 competitive threshold.
+Major negative impact
+Better suited for NJCAA D3, CCCAA lower-tier, or non-competitive environments
+High roster-turnover risk
+
+
+
+CCCAA (3C2A Anchor)
+CCCAA (3C2A Anchor)
+Interpretation anchor:
+Assumes a competitive California JUCO environment (South Coast, Orange Empire, Western State, etc.):
+No athletic scholarships
+Strong local/regional recruiting from California HS talent
+Majority CCCAA competition; rare crossovers
+Top players post strong raw production with lower adjusted efficiency vs scholarship leagues
+Primary focus on transfer preparation (NAIA / NCAA D2 / selective D1)
+Depth varies; top teams sustain rotations, drop-offs are sharp below reliable pieces
+College KR remains universal; this legend defines what the number means inside CCCAA.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE (keep this line)
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+82–100 — CCCAA Player of the Year Lock / Elite State-National JUCO Standout
+Definition:
+A state- or national-level JUCO force who overwhelms the CCCAA ecosystem.
+Conference/state centerpiece
+Monster raw production with sustainable efficiency
+Handles extreme usage cleanly
+Carries team to state or national contention
+Strong transfer upside to NCAA D2 / NAIA, occasional low D1
+
+
+78–81 — Franchise Anchor / Top CCCAA All-State
+Definition:
+Clear #1 option and identity driver.
+Defines team success
+Closes games consistently
+Conference/state POY contender
+Dominates CCCAA peers via scoring, rebounding, or playmaking
+Frequent upward-transfer target
+
+74–77 — High-Impact Starter / Core Winner
+Definition:
+Primary reason strong CCCAA teams win.
+Heavy minutes leader
+All-Conference / All-State lock
+Game-changer vs CCCAA elites
+Top-3 rotation piece
+Drives conference titles and state runs
+
+70–73 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at CCCAA level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference consideration
+Trusted in high-leverage games
+
+
+67–69 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player on competitive CCCAA rosters.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value (scoring, defense, rebounding)
+Holds up against strong CCCAA competition
+Not a primary advantage creator
+
+64–66 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains quality.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on top CCCAA contenders
+
+61–63 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Short bursts of value
+Not sustainable in expanded role
+
+58–60 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+55–57 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Negative impact if extended
+
+52–54 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Development or transfer preparation focus
+Not currently viable at competitive CCCAA level
+
+49–51 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 49 — Below CCCAA Viability
+Definition:
+Below CCCAA competitive threshold.
+Major negative impact
+Better suited for lower-tier CCCAA, post-grad, or non-competitive environments
+High roster-turnover risk
+
+NCAA Division III (D3 Anchor)
+NCAA Division III (D3 Anchor)
+Interpretation anchor:
+Assumes a competitive NCAA Division III environment (NESCAC, ODAC, MIAC, CCC, etc.):
+No athletic scholarships
+Academics-first institutions with strong local/regional recruiting
+Majority D3 competition; rare crossovers
+Top players post strong raw production with lower adjusted efficiency vs scholarship divisions
+Emphasis on balance, development, and team execution
+Depth is solid at top programs (8–10 man rotations) but drops quickly after core contributors
+College KR remains universal; this legend defines what the number means inside D3.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE 
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+80–100 — D3 Player of the Year Lock / Elite National Standout
+Definition:
+A national-level D3 force who overwhelms the ecosystem.
+Conference or national centerpiece
+High raw production with sustainable efficiency
+Handles extreme usage cleanly
+Carries team to national title contention
+Potential overseas pro, post-grad, or grad-transfer upside
+
+
+76–79 — Franchise Anchor / Top D3 All-American
+Definition:
+Clear #1 option and identity driver.
+Defines team success
+Closes games consistently
+Conference POY contender
+Dominates D3 peers via scoring, rebounding, or playmaking
+Anchor of nationally ranked programs
+
+72–75 — High-Impact Starter / Core Winner
+Definition:
+Primary reason elite D3 teams win.
+Heavy minutes leader
+All-Conference / All-Region lock
+Game-changer vs D3 elites
+Top-3 rotation piece
+Drives conference titles and national runs
+
+68–71 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at D3 level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference consideration
+Trusted in high-leverage games
+
+
+65–67 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player on competitive D3 rosters.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value (scoring, defense, rebounding)
+Holds up against strong D3 competition
+Not a primary advantage creator
+
+62–64 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains quality.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on national-contender D3 teams
+
+59–61 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Short bursts of value
+Not sustainable in expanded role
+
+56–58 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+53–55 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Negative impact if extended
+
+50–52 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Development focus
+Not currently viable at competitive D3 level
+
+47–49 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 47 — Below D3 Viability
+Definition:
+Below NCAA D3 competitive threshold.
+Major negative impact
+Better suited for USCAA, NCCAA lower tiers, club/intramural, or non-competitive environments
+High roster-turnover risk
+
+NJCAA Division III (JUCO D3 Anchor)
+NJCAA Division III (JUCO D3 Anchor)
+Interpretation anchor:
+Assumes a competitive NJCAA Division III environment:
+No athletic scholarships
+Regional recruiting focus
+Majority competition vs other non-scholarship JUCOs; occasional crossovers
+Schedules are generally weaker than scholarship JUCO levels
+Top players post strong raw stats with lower adjusted efficiency
+Heavy emphasis on development and upward transfer (NCAA D3 / NAIA)
+Depth is highly variable; even strong teams drop sharply beyond 6–7 contributors
+College KR remains universal; this legend defines what the number means inside NJCAA D3.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE 
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+
+80–100 — NJCAA D3 Player of the Year Lock / Elite National JUCO Standout
+Definition:
+A national-level JUCO D3 force who overwhelms the ecosystem.
+Conference or national centerpiece
+Dominant raw production relative to schedule
+Handles extreme usage cleanly
+Carries team to national tournament contention
+Strong transfer upside to NCAA D3 or NAIA
+
+
+76–79 — Franchise Anchor / Top NJCAA D3 All-American
+Definition:
+Clear #1 option and identity driver.
+Defines team success
+Closes games consistently
+Conference POY contender
+Dominates JUCO D3 peers via scoring, rebounding, or playmaking
+Anchor of nationally ranked JUCO D3 programs
+
+72–75 — High-Impact Starter / Core Winner
+Definition:
+Primary reason elite JUCO D3 teams win.
+Heavy minutes leader
+All-Conference / All-Region lock
+Game-changer vs top JUCO D3 competition
+Top-3 rotation piece
+Drives conference titles and national runs
+
+68–71 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at JUCO D3 level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference consideration
+Trusted in high-leverage games
+
+
+65–67 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player on strong JUCO D3 rosters.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value
+Holds up against strong JUCO D3 competition
+Not a primary advantage creator
+
+62–64 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains quality.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on national-contender JUCO D3 teams
+
+59–61 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Short bursts of value
+Not sustainable in expanded role
+
+56–58 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+53–55 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Negative impact if extended
+
+50–52 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Development or transfer preparation focus
+Not currently viable at competitive JUCO D3 level
+
+47–49 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 47 — Below NJCAA D3 Viability
+Definition:
+Below JUCO D3 competitive threshold.
+Major negative impact
+Better suited for lower-tier non-scholarship JUCO, post-grad, or non-competitive environments
+High roster-turnover risk
+
+USCAA (Anchor)
+USCAA (Anchor)
+Interpretation anchor:
+Assumes a competitive USCAA environment:
+No or very limited athletic scholarships
+Small-school and independent program focus
+Majority competition vs USCAA peers; some NAIA / NCAA D3 crossovers
+Schedules are generally weaker than NCAA / NAIA / JUCO environments
+Top players post solid raw stats with very low adjusted efficiency
+Heavy emphasis on academics, development, and upward transfer
+Depth is limited; most teams operate 6–8 playable pieces max, with sharp drop-offs
+College KR remains universal; this legend defines what the number means inside USCAA.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE 
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+
+78–100 — USCAA Player of the Year Lock / Elite National Standout
+Definition:
+A national-level USCAA force who overwhelms the ecosystem.
+Conference or national centerpiece
+Dominant raw production relative to schedule
+Handles extreme usage cleanly
+Carries team to national tournament contention
+Potential transfer upside to NAIA or NCAA D3
+
+
+74–77 — Franchise Anchor / Top USCAA All-American
+Definition:
+Clear #1 option and identity driver.
+Defines team success
+Closes games consistently
+Conference POY contender
+Dominates USCAA peers via scoring, rebounding, or playmaking
+Anchor of nationally competitive USCAA programs
+
+70–73 — High-Impact Starter / Core Winner
+Definition:
+Primary reason elite USCAA teams win.
+Heavy minutes leader
+All-Conference / All-Region lock
+Game-changer vs top USCAA competition
+Top-3 rotation piece
+Drives conference titles and national runs
+
+66–69 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at USCAA level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference consideration
+Trusted in high-leverage games
+
+
+63–65 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player on competitive USCAA rosters.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value
+Holds up against strong USCAA competition
+Not a primary advantage creator
+
+60–62 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains functionality.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on national-contender USCAA teams
+
+57–59 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Short bursts of value
+Not sustainable in expanded role
+
+54–56 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+51–53 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Negative impact if extended
+
+48–50 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Development or transfer preparation focus
+Not currently viable at competitive USCAA level
+
+45–47 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 45 — Below USCAA Viability
+Definition:
+Below USCAA competitive threshold.
+Major negative impact
+Better suited for NCCAA lower tiers, club/intramural, or non-competitive environments
+High roster-turnover risk
+
+NCCAA DI (Anchor)
+NCCAA DI (Anchor)
+Interpretation anchor:
+Assumes a competitive NCCAA environment:
+Scholarship variability (NCCAA D1 may allow; D2 often does not)
+Faith-based institutional focus (character, academics, mission)
+Majority competition vs other NCCAA / small Christian / independent programs
+Occasional NAIA or NCAA crossover games
+Top players post solid raw production with low adjusted efficiency due to schedule strength
+Heavy emphasis on development, culture, and upward transfer
+Depth is limited; most teams operate 6–8 playable pieces, with very sharp drop-offs
+College KR remains universal; this legend defines what the number means inside NCCAA.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+UI / GOVERNANCE NOTE 
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.
+
+76–100 — NCCAA Player of the Year Lock / Elite National Standout
+Definition:
+A national-level NCCAA force who overwhelms the ecosystem.
+Conference or national centerpiece
+Dominant raw production relative to schedule
+Handles extreme usage cleanly
+Carries team to national tournament contention
+Potential upward pathway to NAIA or NCAA D3
+
+72–75 — Franchise Anchor / Top NCCAA All-American
+Definition:
+Clear #1 option and identity driver.
+Defines team success
+Closes games consistently
+Conference POY contender
+Dominates NCCAA peers in scoring, rebounding, or playmaking
+Anchor of nationally competitive NCCAA programs
+
+68–71 — High-Impact Starter / Core Winner
+Definition:
+Primary reason elite NCCAA teams win.
+Heavy minutes leader
+All-Conference / All-Region lock
+Game-changer vs top NCCAA competition
+Top-3 rotation piece
+Drives conference titles and national runs
+
+64–67 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at NCCAA level.
+25+ MPG
+Consistent two-way contribution
+Versatile role player
+All-Conference consideration
+Trusted in high-leverage games
+
+
+61–63 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning-role player on competitive NCCAA rosters.
+Top 6–8 rotation
+18–25 MPG
+Clear specialist value (scoring, defense, rebounding)
+Holds up against strong NCCAA competition
+Not a primary advantage creator
+
+58–60 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains functionality.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on national-contender NCCAA teams
+
+55–57 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Short bursts of value
+Not sustainable in expanded role
+
+52–54 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+49–51 — Fringe Roster / Non-Rotation
+Definition:
+On the roster, not in the plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency only
+Negative impact if extended
+
+46–48 — Developmental Redshirt / Project
+Definition:
+Future-oriented slot.
+Practice-only
+Physical or skill gap present
+Development or transfer preparation focus
+Not currently viable at competitive NCCAA level
+
+43–45 — Practice Squad / Walk-On
+Definition:
+Roster filler for structure.
+Scout team body
+No competitive pathway
+Off-court contribution only
+
+Below 43 — Below NCCAA Viability
+Definition:
+Below NCCAA competitive threshold.
+Major negative impact
+Better suited for club/intramural, post-grad, or non-competitive environments
+High roster-turnover risk
+
+
+NCCAA Division II (Anchor)
+NCCAA Division II (Anchor)
+Interpretation anchor:
+Assumes a competitive NCCAA Division II environment:
+No athletic scholarships or extremely limited aid
+Strong faith-based, academic, and mission-first institutions
+Majority competition vs NCCAA D2 peers, small Christian colleges, and independents
+Limited crossover games vs NCCAA D1, USCAA, and low-tier NAIA
+Top players often post strong raw production with limited depth and roster support
+Heavy emphasis on development, culture, and participation over specialization
+Depth is thin: most programs operate 5–7 playable pieces, with significant drop-offs
+College KR remains universal; this legend defines what a KR means inside NCCAA D2.
+All ratings assume BPR → KLVN normalization.
+KR TIERS (DISPLAY / READ-ONLY)
+72–100 — NCCAA D2 Player of the Year Lock / Elite Division Standout
+Definition:
+A dominant force within the NCCAA D2 ecosystem.
+Clear national or conference centerpiece
+Overwhelms D2 competition consistently
+Primary offensive and/or defensive engine
+Handles extreme usage relative to team quality
+Drives conference titles and national tournament success
+Capable of competing with lower-tier NCCAA D1 players
+Potential upward pathway to NCCAA D1, USCAA, or low-to-mid NAIA
+
+68–71 — Franchise Anchor / NCCAA D2 All-Region Leader
+Definition:
+The defining identity player on a top NCCAA D2 program.
+Clear #1 option
+Offensive or defensive focal point
+Reliable closer
+Conference POY contender
+Dominates NCCAA D2 peers in one or more primary domains
+Anchor of nationally competitive NCCAA D2 teams
+64–67 — High-Impact Starter / Core Winner
+Definition:
+Primary reason strong NCCAA D2 teams win.
+Heavy-minutes leader
+All-Conference / All-Region lock
+Game-changer vs top NCCAA D2 competition
+Top-2 or top-3 rotation piece
+Drives conference success and deep tournament runs
+
+60–63 — Solid Starter / Top-Five Rotation Lock
+Definition:
+Reliable starter value at NCCAA D2 level.
+25+ MPG
+Consistent two-way contribution
+Versatile role adaptability
+All-Conference consideration
+Trusted in high-leverage moments
+=
+56–59 — Trusted Rotation / Big-Minute Contributor
+Definition:
+Winning role player on competitive NCCAA D2 rosters.
+Top 6–7 rotation piece
+18–25 MPG
+Clear specialist value (shooting, defense, rebounding, ball security)
+Holds up against strong NCCAA D2 competition
+Not a primary advantage creator
+
+
+53–55 — Reliable Bench / Rotation Piece
+Definition:
+Depth that maintains functional stability.
+12–18 MPG
+Energy or specialty contribution
+Neutral to slightly positive impact
+Common on top NCCAA D2 teams
+
+50–52 — Situational Specialist / Depth
+Definition:
+Context-dependent bench contributor.
+8–12 MPG
+Matchup-specific usage
+Short bursts of value
+Not sustainable in expanded role
+
+47–49 — Limited Bench / Emergency Depth
+Definition:
+Playable only under constraint.
+5–10 MPG sporadically
+Blowouts or injury replacement
+Negative on-court impact if extended
+
+44–46 — Fringe Roster / Non-Rotation
+Definition:
+Rostered but not in the competitive plan.
+Practice and scout focus
+Rare garbage-time minutes
+Emergency-only usage
+Negative impact if extended
+
+41–43 — Developmental Redshirt / Project
+Definition:
+Future-oriented roster slot.
+Practice-only
+Physical, skill, or athletic gap present
+Development or transfer preparation focus
+Not currently viable at competitive NCCAA D2 level
+
+38–40 — Practice Squad / Walk-On
+Definition:
+Structural roster filler.
+Scout-team body
+No competitive pathway
+Off-court contribution only
+
+Below 38 — Below NCCAA D2 Viability
+Definition:
+Below NCCAA Division II competitive threshold.
+Major negative on-court impact
+Better suited for intramural, club, or non-competitive environments
+Very high roster-turnover risk
+
+UI / GOVERNANCE NOTE
+Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.

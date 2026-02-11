@@ -1,0 +1,144 @@
+KaNeXT — Pro Player KR Legend
+Global Professional Basketball
+Player-Level Output Interpretation
+Scope:
+This legend provides a universal KaNeXT Rating (KR) for professional basketball players worldwide on a 0–100 scale, aligned with college player and team legends.
+What KR Represents:
+KR reflects a player’s global basketball value, role viability, and portability across professional environments — not league prestige, fame, or market size.
+Context assumptions:
+Global pro ecosystem (NBA, EuroLeague, CBA, NBL, B.League, domestic leagues worldwide)
+Modern efficiency metrics adjusted for league strength and SOS (e.g., PER/BPM-style signals)
+Archetype-based evaluation (not strict roster-slot mapping)
+Broader bands to reflect global variance and churn
+Economic signals reflect market demand, not KR causality
+Economic reference ranges reflect 2025–2026 realities.
+
+PRO PLAYER KR TIERS (DISPLAY / READ-ONLY)
+98–100 — Global Apex / Transcendent Superstar
+Competitive Role Reality:
+League-defining icon who warps systems and wins titles
+One of the absolute best players in the world, anywhere
+League Reality:
+Primarily NBA elites; extremely rare global standouts who could dominate any league
+League Anchors (examples):
+NBA: Perennial MVP / All-NBA dominators
+Global: National team legends for top FIBA nations
+Economic Reality:
+~$45M–$65M+ (NBA max-level; endorsements can exceed)
+
+94–97 — Elite Franchise Anchor
+Competitive Role Reality:
+Primary star who carries teams in elite competition
+Decisive impact in high-stakes games worldwide
+League Reality:
+NBA All-Stars; top-tier overseas MVPs with NBA mobility
+League Anchors (examples):
+NBA: Consistent All-Stars / top-20 caliber players
+EuroLeague / CBA: Dominant imports or domestic franchise stars
+Economic Reality:
+~$20M–$50M (NBA)
+~$2M–$6M (top overseas contexts, often net-adjusted)
+
+90–93 — High-Impact Global Star
+Competitive Role Reality:
+Reliable star starter who closes games and elevates teams
+Franchise pillar in most pro environments
+League Reality:
+NBA playoff starters or closers
+MVP-caliber players in EuroLeague, NBL, CBA, B.League
+League Anchors (examples):
+NBA: Key starters on contenders
+EuroLeague / NBL / CBA: All-League selections or MVPs
+Economic Reality:
+~$10M–$30M (NBA)
+~$800k–$4M (premier overseas leagues)
+
+86–89 — Core Professional Contributor
+Competitive Role Reality:
+Trusted high-minute rotation player with system value
+Starter or high-impact bench piece in strong leagues
+League Reality:
+NBA rotation players
+Strong starters in EuroCup, ACB, Turkey, Germany, Italy
+League Anchors (examples):
+NBA: Solid playoff-rotation contributors
+EuroCup / ACB / BBL / Turkey: Reliable starters or closers
+Economic Reality:
+~$3M–$10M (NBA)
+~$300k–$1.5M (upper domestic tiers)
+
+82–85 — Stable Professional Role Player
+Competitive Role Reality:
+Dependable pro with recurring contracts
+Starter in mid-level leagues or rotation in elite ones
+League Reality:
+NBA fringe / G League standouts
+Core starters in BCL, B.League, NBL, strong domestic leagues
+League Anchors (examples):
+G League: High contributors
+BCL / B.League / NBL: Core starters
+Economic Reality:
+~$100k–$500k globally
+G League base ~$45k+
+
+78–81 — Rotation-Level Professional
+Competitive Role Reality:
+Established player who fits rotations reliably
+Starter or bench contributor in lower pro circuits
+League Reality:
+Lower Euro/domestic leagues
+G League rotation players
+League Anchors (examples):
+France LNB / Adriatic / Israel: Starters
+Domestic leagues worldwide: Key rotation
+Economic Reality:
+~$50k–$300k
+
+73–77 — Fringe Professional
+Competitive Role Reality:
+Edge-of-roster pro with variable job security
+Starter in weaker leagues or depth in stronger ones
+League Reality:
+Lower global domestics
+Injury-fill or churn roles
+League Anchors (examples):
+Southeast Asia / South America: Starters
+Minor globals: Rotation or short-term contracts
+Economic Reality:
+~$20k–$100k
+
+68–72 — Entry-Level / Replacement Professional
+Competitive Role Reality:
+Can land pro deals, but high churn and risk
+Replacement-level roles across most setups
+League Reality:
+Bottom-tier global leagues
+Semi-pro overlap zones
+League Anchors (examples):
+Low domestic tiers: Temporary starters or replacements
+Economic Reality:
+Expenses covered to ~$50k
+Note: KR 68–77 represents the global professional churn band.
+
+60–67 — Semi-Professional / Local Level
+Competitive Role Reality:
+Below full pro viability
+Competitive in semi-pro or local domestic minors
+League Anchors (examples):
+Semi-pro leagues worldwide
+High-amateur / lower domestic divisions
+Economic Reality:
+Stipends / expenses up to ~$20k
+Paid ≠ professional viability.
+
+Below 60 — Non-Professional
+Competitive Role Reality:
+Not sustainable at professional levels
+Used For:
+College or amateur players without pro pathways
+Global talent pyramid modeling
+Economic Reality:
+N/A (amateur / non-competitive)
+
+UI / GOVERNANCE NOTE (keep this line)
+Display legend only. Pro Player KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here.

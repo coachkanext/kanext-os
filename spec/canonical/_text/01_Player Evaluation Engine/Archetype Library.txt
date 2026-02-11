@@ -1,0 +1,422 @@
+Archetype Library
+1. Purpose
+The Archetype Library defines functional player categories used to describe how a player typically impacts the game.
+Archetypes translate evaluated attributes into clear basketball roles without assigning value, rank, or usage priority.
+Archetypes are descriptive.
+They are not evaluative.
+2. What an Archetype Is
+An archetype represents:
+a recognizable on-court role
+defined by required skill thresholds
+expressed through trait combinations
+Archetypes describe how a player tends to contribute, not how good the player is overall.
+A player may qualify for:
+one archetype
+multiple archetypes
+no archetype
+3. What an Archetype Is Not
+An archetype is not:
+a position
+a lineup instruction
+a coaching recommendation
+a usage mandate
+a projection of future success
+
+Archetypes do not:
+determine playing time
+dictate offensive or defensive systems
+replace coaching judgment
+4. Structure of the Archetype Library
+Each archetype definition includes:
+an identity description
+required “must-have” trait thresholds
+supporting trait thresholds
+explicit disqualifiers
+Thresholds are:
+fixed
+transparent
+applied consistently
+There are no hidden adjustments.
+5. Qualification Rules
+Archetype qualification is:
+rule-based
+deterministic
+repeatable
+If a player meets the defined criteria, the archetype applies.
+If the criteria are not met, the archetype does not apply.
+There is no partial credit.
+6. Multiple Archetypes
+A player may qualify for more than one archetype.
+When this occurs:
+all qualifying archetypes are recorded
+no prioritization is applied at this stage
+no conflict resolution occurs within the Archetype Library
+Tradeoffs are handled downstream.
+7. Independence from Context
+Archetypes do not change based on:
+team system
+opponent
+role assignment
+playing time
+wins or losses
+Archetypes reflect player capability, not usage.
+8. Downstream Use
+Archetypes may be used by:
+position-based weighting
+team construction analysis
+recruiting evaluation
+scouting preparation
+development explanation
+Archetypes may not be modified by downstream processes.
+9. Authority and Change Control
+The Archetype Library is authoritative for:
+archetype definitions
+qualification thresholds
+disqualifier rules
+Any change to:
+thresholds
+definitions
+disqualifiers
+requires documentation, versioning, and approval.
+
+1. Two-Way Wing
+Identity
+Scales on both ends. Can stay on the floor in most lineups.
+Must-Haves (ALL)
+Spot-Up 3PT ≥ 70
+On-Ball Containment ≥ 70
+Lateral Quickness ≥ 70
+Supports (2 of 4)
+Screen Navigation ≥ 65
+Team Defense / Gap IQ ≥ 65
+Off-Ball Movement Shooting ≥ 65
+Defensive Rebounding ≥ 60
+Auto-Disqualifiers (ANY)
+Range Gap (Major)
+Defensive Target (Major)
+Severe Undersize (≥4" deficit)
+2. 3-and-D Wing
+Identity
+Spacing + reliable defense. Low-creation, high trust.
+Must-Haves (ALL)
+Spot-Up 3PT ≥ 75
+Perimeter Shot Contest ≥ 70
+Team Defense / Positioning ≥ 70
+Supports (2 of 4)
+On-Ball Containment ≥ 65
+Screen Navigation ≥ 65
+Closeout Discipline ≥ 65
+Motor ≥ 65
+Auto-Disqualifiers (ANY)
+No Gravity (Major)
+Foul Machine (Major)
+Switch Liability (Major)
+3. POA Defender Guard
+Identity
+Defense-first guard who can take the toughest assignment.
+Must-Haves (ALL)
+On-Ball Containment ≥ 75
+Screen Navigation ≥ 70
+Lateral Quickness ≥ 75
+Supports (2 of 4)
+Ball Pressure ≥ 65
+Perimeter Disruption ≥ 65
+Motor ≥ 65
+Transition Defense ≥ 60
+Auto-Disqualifiers (ANY)
+Foul Machine (Major)
+Decision-Making Collapse
+Severe Undersize (guard baseline)
+4. Primary Ball-Handler (Offense-First)
+Identity
+Usage engine. Creates advantages; defense is secondary.
+Must-Haves (ALL)
+Playmaking (Vision) ≥ 75
+Ball Security ≥ 70
+Off-Dribble Shooting (2PT or 3PT) ≥ 70
+Supports (2 of 4)
+Pull-Up 3PT ≥ 65
+Drive-and-Kick Passing ≥ 65
+FT% ≥ 75
+Pace Control / Decision Speed ≥ 65
+Auto-Disqualifiers (ANY)
+Turnover Risk (Major)
+Severe Pull-Up Void
+Defensive Target (Major) AND No Gravity (Major)
+
+5. Switchable Defender Wing
+Identity
+Defense-first wing who can credibly switch across positions.
+Must-Haves (ALL)
+Lateral Quickness ≥ 75
+Screen Navigation ≥ 70
+On-Ball Containment ≥ 70
+Supports (2 of 4)
+Length / Wingspan ≥ positional avg
+Strength / Power Through Contact ≥ 65
+Team Defense / Gap IQ ≥ 65
+Motor ≥ 65
+Auto-Disqualifiers (ANY)
+Switch Liability (Major)
+Foul Machine (Major)
+Severe Undersize (≥4")
+6. Anchor Big
+Identity
+Paint controller; drop coverage backbone.
+Must-Haves (ALL)
+Rim Protection ≥ 75
+Paint Deterrence / Coverage ≥ 70
+Defensive Rebounding ≥ 70
+Supports (2 of 4)
+Post Defense ≥ 65
+Help Defense (Interior) ≥ 65
+Vertical Contest Discipline ≥ 65
+Foul Discipline ≥ 60
+Auto-Disqualifiers (ANY)
+Mobility Floor Violation
+Switch Liability (Major)
+Fragility (Major)
+
+7. Stretch Big
+Identity
+Spacing big; offense via gravity, defense via positioning.
+Must-Haves (ALL)
+Spot-Up 3PT ≥ 70
+FT% ≥ 75
+Team Defense / Positioning ≥ 65
+Supports (2 of 4)
+Pick-and-Pop Efficiency ≥ 65
+Screen Assist Creation ≥ 60
+Defensive Rebounding ≥ 60
+Closeout Discipline ≥ 60
+Auto-Disqualifiers (ANY)
+No Gravity (Major)
+Range Gap (Major)
+Defensive Target (Major)
+8. Connector Guard
+Identity
+Low-usage organizer; keeps offense and defense coherent.
+Must-Haves (ALL)
+Passing Accuracy ≥ 75
+Decision Speed ≥ 70
+Ball Security ≥ 70
+Supports (2 of 4)
+Team Defense / Gap IQ ≥ 65
+Hockey Assist Creation ≥ 60
+Screen Assist Creation ≥ 60
+Motor ≥ 65
+Auto-Disqualifiers (ANY)
+Decision-Making Collapse
+Turnover Risk (Major)
+Defensive Target (Major)
+
+9. Offensive Wing Scorer
+Identity
+Shot-creation wing; offense drives value, defense is managed.
+Must-Haves (ALL)
+Off-Dribble Shooting (2PT or 3PT) ≥ 75
+Shot Creation Volume ≥ 70
+FT% ≥ 75
+Supports (2 of 4)
+Pull-Up 3PT ≥ 65
+Finishing Through Contact ≥ 65
+Advantage Creation Rate ≥ 65
+Off-Ball Movement Shooting ≥ 60
+Auto-Disqualifiers (ANY)
+Severe Pull-Up Void
+Decision-Making Collapse
+Defensive Target (Major) AND No Gravity (Major)
+10. Gap / Team Defender Wing
+Identity
+IQ-driven defender; wins with positioning and communication.
+Must-Haves (ALL)
+Team Defense / Positioning ≥ 75
+Closeout Discipline ≥ 70
+Help Defense (Perimeter) ≥ 70
+Supports (2 of 4)
+Anticipation / Disruption ≥ 65
+Defensive Rebounding ≥ 60
+Motor ≥ 65
+Communication / Awareness proxy ≥ 65
+Auto-Disqualifiers (ANY)
+Low Motor (Major)
+Containment Slippage (Major)
+Decision Speed < 60
+
+11. Mobile Defensive Big
+Identity
+Big who survives space; P&R defender more than paint anchor.
+Must-Haves (ALL)
+P&R Defense (Roll + Switch) ≥ 70
+Lateral Mobility / Speed ≥ 65
+Help Defense (Interior) ≥ 70
+Supports (2 of 4)
+Rim Protection ≥ 65
+Vertical Contest Discipline ≥ 65
+Screen Navigation (Big) ≥ 60
+Defensive Rebounding ≥ 60
+Auto-Disqualifiers (ANY)
+Switch Liability (Major)
+Mobility Floor Violation
+Foul Machine (Major)
+12. Chaos Disruptor Wing
+Identity
+High-activity, high-variance defender; creates disorder.
+Must-Haves (ALL)
+Steal Rate / Disruption ≥ 75
+Motor ≥ 75
+Anticipation ≥ 70
+Supports (2 of 4)
+Ball Pressure ≥ 65
+Passing Lane Defense ≥ 65
+Transition Defense ≥ 60
+Recovery Speed ≥ 60
+Auto-Disqualifiers (ANY)
+Poor Discipline (Major)
+Decision-Making Collapse
+Foul Machine (Major)
+
+13. Point Forward
+Identity
+Size-based secondary creator; offense flows through them without full guard burden.
+Must-Haves (ALL)
+Playmaking Vision ≥ 70
+Ball Security ≥ 70
+Advantage Creation (non-guard) ≥ 65
+Supports (2 of 4)
+Handle Security vs Pressure ≥ 65
+Passing Accuracy ≥ 65
+Team Defense / Gap IQ ≥ 65
+Spot-Up 3PT ≥ 60
+Auto-Disqualifiers (ANY)
+Turnover Risk (Major)
+Decision-Making Collapse
+Severe Pull-Up Void
+14. Utility Forward
+Identity
+Lineup glue; fills gaps without being a focal point.
+Must-Haves (ALL)
+Team Defense / Positioning ≥ 70
+Motor ≥ 70
+Ball Security ≥ 65
+Supports (2 of 4)
+Screen Assist Creation ≥ 60
+Defensive Rebounding ≥ 60
+Spot-Up 3PT ≥ 60
+Passing Accuracy ≥ 60
+Auto-Disqualifiers (ANY)
+Low Motor (Major)
+Role Collapse (Major)
+Defensive Target (Major)
+
+15. Roll Man / Vertical Threat
+Identity
+Creates offensive gravity via rim pressure; finishes plays.
+Must-Haves (ALL)
+Dunk Finishing ≥ 75
+Roll Man Efficiency ≥ 70
+Screen Quality / Contact ≥ 65
+Supports (2 of 4)
+Offensive Rebounding ≥ 60
+Foul Draw Rate (Paint) ≥ 60
+Second Jump / Vertical Pop ≥ 65
+Short-Roll Passing ≥ 60
+Auto-Disqualifiers (ANY)
+Poor Hands (Major)
+Foul Machine (Major)
+Fragility (Major)
+16. Offensive Big (Defense Liability)
+Identity
+Offense-first interior scorer; requires protection.
+Must-Haves (ALL)
+Post Scoring Efficiency ≥ 75
+Touch / Close Finishing ≥ 70
+FT% ≥ 70
+Supports (2 of 4)
+Offensive Rebounding ≥ 60
+Passing Out of Post ≥ 60
+Screen Assist Creation ≥ 60
+Foul Draw Rate ≥ 65
+Auto-Disqualifiers (ANY)
+Defensive Target (Major)
+Switch Liability (Major)
+Mobility Floor Violation
+
+17. Situational Shooter (Specialist)
+Identity
+One-job player: spacing. Limited elsewhere.
+Must-Haves (ALL)
+Spot-Up 3PT ≥ 80
+Catch-and-Shoot Volume ≥ 70
+Shot Prep / Release Speed ≥ 65
+Supports (2 of 3)
+Movement 3PT ≥ 65
+FT% ≥ 80
+Off-Ball Relocation ≥ 60
+Auto-Disqualifiers (ANY)
+No Gravity (Major)
+Defensive Target (Major)
+Low Motor (Major)
+18. Defensive Specialist (Non-Scoring)
+Identity
+Defense-only contributor; offense minimized.
+Must-Haves (ALL)
+On-Ball Containment ≥ 75
+Screen Navigation ≥ 70
+Team Defense / Positioning ≥ 70
+Supports (2 of 3)
+Lateral Quickness ≥ 70
+Motor ≥ 70
+Disruption / Deflections ≥ 65
+Auto-Disqualifiers (ANY)
+Foul Machine (Major)
+Decision-Making Collapse
+Severe Undersize
+
+19. Energy Big
+Identity
+Bench impact via effort, rebounding, rim pressure.
+Must-Haves (ALL)
+Motor ≥ 75
+Offensive Rebounding ≥ 70
+Defensive Rebounding ≥ 65
+Supports (2 of 3)
+Vertical Pop ≥ 65
+Screen Quality ≥ 60
+Rim Protection ≥ 60
+Auto-Disqualifiers (ANY)
+Fragility (Major)
+Poor Hands (Major)
+Foul Machine (Major)
+20. Situational Ball-Handler (Bench Guard)
+Identity
+Secondary handler; stabilizes units without full creation load.
+Must-Haves (ALL)
+Ball Security ≥ 75
+Passing Accuracy ≥ 70
+Decision Speed ≥ 70
+Supports (2 of 3)
+Spot-Up 3PT ≥ 60
+Drive-and-Kick Passing ≥ 60
+Team Defense ≥ 60
+Auto-Disqualifiers (ANY)
+Turnover Risk (Major)
+Decision-Making Collapse
+Defensive Target (Major)
+
+21. Developmental Prospect
+Identity
+Tools > production; projection archetype.
+Must-Haves (ALL)
+Physical Tools Composite ≥ 70
+One Offensive Trait ≥ 70
+One Defensive Trait ≥ 70
+Supports (2 of 4)
+Motor ≥ 65
+Coachability / Consistency proxy ≥ 60
+Improvement trend ≥ baseline
+Role adaptability ≥ 60
+Auto-Disqualifiers (ANY)
+Fragility (Major)
+Severe IQ Collapse
+Multi-category System Risks (2+ Majors)

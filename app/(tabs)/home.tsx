@@ -18,45 +18,47 @@ import { AvatarDrawer } from '@/components/avatar-drawer';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID } from '@/data/fmu';
+import { rosterEntries } from '@/data/sun-conference/florida-memorial';
 
 // =============================================================================
-// DEMO DATA
+// FMU DATA
 // =============================================================================
+
+const rosterCount = rosterEntries.filter((r) => r.season === '2025-26').length;
 
 const TEAM_DATA = {
-  name: 'Lincoln Blue Tigers',
+  name: 'FMU Lions',
   season: '2025–26',
   kr: 84,
   record: {
-    overall: '9–8',
-    conference: '7–0',
-    standing: '1st Place',
+    overall: FMU_RECORD.overall,
+    conference: FMU_RECORD.conference,
+    standing: 'Sun Conference',
   },
 };
 
 const CURRENT_STATUS = {
   nextGame: {
-    opponent: 'Cal Miramar',
-    date: 'Sat, Feb 8',
-    time: '2:00 PM',
-    location: 'Home',
+    opponent: 'Season Complete',
+    date: '—',
+    time: '—',
+    location: '—',
   },
-  lastGame: {
-    result: 'W',
-    score: '78–65',
-    opponent: 'Cal State East Bay',
-  },
-  today: 'Practice 3:30 PM • Film 6:00 PM',
+  lastGame: FMU_LAST_GAME
+    ? { result: FMU_LAST_GAME.result, score: FMU_LAST_GAME.score, opponent: FMU_LAST_GAME.opponent }
+    : { result: '—', score: '—', opponent: '—' },
+  today: 'No events scheduled',
   availability: {
-    available: 12,
-    out: 2,
-    questionable: 1,
+    available: rosterCount,
+    out: 0,
+    questionable: 0,
   },
 };
 
 const PROGRAM_CONTEXT = {
-  rosterSpots: { current: 12, max: 15 },
-  scholarships: { used: 11, available: 13 },
+  rosterSpots: { current: rosterCount, max: 20 },
+  scholarships: { used: 11, available: 11 },
   nilPool: { total: 150000, committed: 50000 },
 };
 
@@ -131,6 +133,36 @@ export default function HomeScreen() {
             Overall: {TEAM_DATA.record.overall} · Conf: {TEAM_DATA.record.conference} · {TEAM_DATA.record.standing}
           </Text>
         </View>
+
+        {/* ===== GAME DAY BANNER ===== */}
+        <Pressable
+          style={({ pressed }) => [
+            styles.gameDayBanner,
+            { backgroundColor: colors.text, opacity: pressed ? 0.9 : 1 },
+          ]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            router.push({ pathname: '/coach/game-detail', params: { gameId: FMU_LAST_GAME_ID } } as never);
+          }}
+        >
+          <View style={styles.gameDayTop}>
+            <View style={styles.gameDayBadge}>
+              <Text style={styles.gameDayBadgeText}>GAME DAY</Text>
+            </View>
+            <Text style={[styles.gameDayTime, { color: colors.backgroundSecondary }]}>
+              {CURRENT_STATUS.nextGame.time}
+            </Text>
+          </View>
+          <Text style={[styles.gameDayOpponent, { color: colors.background }]}>
+            vs {CURRENT_STATUS.nextGame.opponent}
+          </Text>
+          <Text style={[styles.gameDayMeta, { color: colors.backgroundSecondary }]}>
+            {CURRENT_STATUS.nextGame.date} · {CURRENT_STATUS.nextGame.location}
+          </Text>
+          <View style={styles.gameDayArrow}>
+            <IconSymbol name="chevron.right" size={16} color={colors.backgroundSecondary} />
+          </View>
+        </Pressable>
 
         {/* ===== 2) CURRENT STATUS CARD ===== */}
         <View style={styles.section}>
@@ -304,6 +336,50 @@ const styles = StyleSheet.create({
   recordsLine: {
     fontSize: 14,
     fontWeight: '400',
+  },
+
+  // ===== GAME DAY BANNER =====
+  gameDayBanner: {
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.xl,
+    position: 'relative',
+  },
+  gameDayTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  gameDayBadge: {
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  gameDayBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: 1,
+  },
+  gameDayTime: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  gameDayOpponent: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  gameDayMeta: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  gameDayArrow: {
+    position: 'absolute',
+    right: Spacing.md,
+    bottom: Spacing.md,
   },
 
   // ===== SECTIONS =====

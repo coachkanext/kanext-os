@@ -1,0 +1,2560 @@
+Trait Library
+1. Purpose
+The Trait Library defines the atomic basketball skills used to evaluate individual players.
+attributes represent repeatable on-court abilities that can be measured, compared, and scored using consistent rules.
+Each trait:
+describes one specific skill
+is evaluated independently
+does not assume role, position, or system
+attributes are the building blocks of all player evaluation.
+2. What a Trait Is
+A trait is:
+a single basketball skill
+observed during live play
+measured using defined inputs
+scored using fixed calibration rules
+Examples include:
+types of shooting
+finishing ability
+passing actions
+defensive behaviors
+rebounding actions
+physical movement and capacity
+A trait is not:
+a role
+a position
+a lineup fit
+a coaching preference
+a projection
+
+3. Structure of the Trait Library
+The Trait Library is organized into skill groups, including:
+Shooting
+Finishing
+Playmaking
+Perimeter Defense
+Interior Defense
+Rebounding
+Physical
+Each group contains multiple attributes.
+Each trait definition includes:
+a clear description
+required data inputs
+event tagging rules
+calibration thresholds
+a scoring method
+4. Trait Evaluation Rules
+All trait evaluations are:
+deterministic
+rule-based
+repeatable
+Given the same inputs, the same trait score is produced.
+Trait scores:
+do not change based on team context
+do not change based on opponent
+do not change based on outcomes
+do not change based on role or usage
+5. Independence of attributes
+Each trait is evaluated independently.
+attributes do not:
+adjust for other attributes
+compensate for weaknesses elsewhere
+imply overall player value
+Tradeoffs are handled later in the evaluation process.
+6. Use of Volume and Efficiency
+Where applicable, trait scores may consider:
+efficiency
+volume
+or both
+The weighting of efficiency versus volume is:
+defined per trait
+fixed
+disclosed within the trait definition
+No hidden weighting is applied.
+7. Evidence vs Evaluation
+Some data collected during trait evaluation is used as:
+evidence, not scoring input
+Examples include:
+right/left splits
+situational tags
+secondary action tags
+This information supports:
+KaNeXT badges
+confidence handling
+misfit identification
+It does not change the trait score.
+8. What attributes Do Not Do
+Trait scores do not:
+rank players
+assign roles
+predict success
+recommend usage
+determine playing time
+attributes describe what a player can do, not what a player should do.
+9. Downstream Use
+Trait scores may be used by:
+archetype classification
+position weighting
+KR evaluation
+KaNeXT badges
+confidence and risk handling
+Trait scores may not be modified by downstream processes.
+10. Authority
+The Trait Library is authoritative for:
+defining skill units
+evaluating those skills
+producing trait-level scores
+Changes to trait definitions require:
+documentation
+versioning
+explicit approval
+
+College
+SHOOTING CLUSTER — TRAIT CALIBRATION
+Trait 1: 3PT — Spot-Up (Catch-and-Shoot)
+Definition:
+All stationary catch-and-shoot three-point attempts (no dribble).
+
+Inputs (Primary — locked):
+Catch-and-shoot 3P%
+
+Catch-and-shoot 3PA per game
+
+Event Tagging Fields (used to compute inputs):
+Dribble count = 0
+
+Defender distance at release
+
+Contest classification (open / guarded / contested)
+
+Shot location (corner / wing / slot)
+
+Shot clock at release
+
+Time from catch to release
+
+Shooter balance state (set / drifting / off-balance)
+
+Calibration (College KR–Anchored):
+Math:
+pct_band = Band(C&S 3P%)
+
+vol_band = Band(C&S 3PA/G)
+
+Score = round(0.70 * pct_band + 0.30 * vol_band)
+
+Trait 2: 3PT — Movement
+Definition:
+Threes taken while relocating or coming off movement (pin-downs, flares, drifts).
+
+Inputs (Primary — locked):
+Movement 3P%
+
+Movement 3PA per game
+Event Tagging Fields (used to compute inputs):
+Movement type (pin-down / flare / drift / relocation)
+
+Speed at catch
+
+Defender distance at release
+
+Contest classification
+
+Shot location
+
+Time from catch to release
+
+Shooter balance state
+
+Screen involvement (off-ball)
+
+Calibration:
+
+Math:
+pct_band = Band(Movement 3P%)
+
+vol_band = Band(Movement 3PA/G)
+
+Score = round(0.70 * pct_band + 0.30 * vol_band)
+
+
+Trait 3: 3PT — Off-the-Dribble
+Definition:
+Threes taken after one or more dribbles.
+
+Inputs (Primary — locked):
+Off-dribble 3P%
+
+Off-dribble 3PA per game
+Event Tagging Fields (used to compute inputs):
+Dribble count (≥1)
+
+Direction of creation (left / right / retreat)
+
+Defender distance at release
+
+Contest classification
+
+Shot clock at release
+
+Pull-up type (straight / lateral / step-in)
+
+Shooter balance state
+
+Calibration:
+Right/Left splits = evidence only (badge & misfit logic later).
+
+Math:
+pct_band = Band(OD 3P%)
+
+vol_band = Band(OD 3PA/G)
+
+Score = round(0.70 * pct_band + 0.30 * vol_band)
+
+
+Trait 4: 3PT — Deep Range
+Definition:
+Three-point attempts beyond standard range (college extended band).
+
+Inputs (Primary — locked):
+Deep 3P%
+
+Deep 3PA per game
+
+Event Tagging Fields (used to compute inputs):
+Shot distance (feet beyond arc)
+
+Defender distance at release
+
+Contest classification
+
+Shot clock at release
+
+Dribble status (off-catch / off-dribble)
+
+Shot location band (extended slot / logo-adjacent)
+
+Calibration:
+
+Math:
+pct_band = Band(Deep 3P%)
+
+vol_band = Band(Deep 3PA/G)
+
+Score = round(0.70 * pct_band + 0.30 * vol_band)
+
+
+
+Trait 5: 2PT Jumper — Catch-and-Shoot
+Definition:
+Mid-range jumpers taken off the catch.
+
+Inputs (Primary — locked):
+Catch-and-shoot midrange FG%
+
+Attempts per game
+
+Event Tagging Fields (used to compute inputs):
+Shot distance (midrange band)
+
+Dribble count = 0
+
+Defender distance at release
+
+Contest classification
+
+Shot clock at release
+
+Shooter balance state
+
+Calibration:
+
+Math:
+pct_band = Band(C&S midrange FG%)
+
+Score = pct_band
+ (Attempts/G is listed as an input — if you want it to matter, use round(0.80*pct_band + 0.20*vol_band) and add volume cutoffs. Otherwise keep it purely %.)
+
+
+Trait 6: 2PT Jumper — Off-the-Dribble
+Definition:
+Mid-range pull-ups created off the dribble.
+
+Inputs (Primary — locked):
+Off-dribble midrange FG%
+
+Attempts per game
+
+Event Tagging Fields (used to compute inputs):
+Dribble count
+
+Direction of creation
+
+Defender distance at release
+
+Contest classification
+
+Shot clock at release
+
+Shooter balance state
+
+Calibration:
+Step-backs / fades = badge evidence, not attributes.
+
+Math:
+pct_band = Band(OD midrange FG%)
+
+Score = pct_band
+Attempts/G is listed as an input — if you want it to matter, use round(0.80*pct_band + 0.20*vol_band) and add volume cutoffs. Otherwise keep it purely %.)
+
+
+Trait 7: Free Throw
+Definition:
+Free throw conversion.
+
+Inputs (Primary — locked):
+FT%
+
+Event Tagging Fields (used to compute inputs):
+Game state (live-ball / technical / end-game)
+
+Shot repetition consistency
+
+Fatigue state (optional)
+
+Calibration:
+
+Math:
+ft_band = Band(FT%)
+
+Score = ft_band
+
+
+FINISHING CLUSTER — TRAIT CALIBRATION
+Trait 1: Layup Finishing
+Definition: Non-dunk finishes at the rim using traditional layups (right/left hand).
+
+Inputs (Primary — locked):
+Layup FG%
+
+Layup attempts per game
+
+Event Tagging Fields (used to compute inputs):
+Finish type = layup (non-dunk)
+
+Hand used (R/L)
+
+Takeoff type (1-foot / 2-foot)
+
+Defender distance at release
+
+Contest classification (open / guarded / contested)
+
+Gather type (clean / disrupted)
+
+Angle of attack (straight / baseline / across body)
+
+Shot clock at release
+
+Balance state at release (set / drifting / off-balance)
+
+Calibration :
+Right/Left splits = evidence only (KaNeXT badges & misfit logic later).
+
+Math:
+pct_band = Band(Layup FG%)
+
+vol_band = Band(Layup Att/G)
+
+Score = round(0.65 * pct_band + 0.35 * vol_band)
+Trait 2: Floater / Runner Finishing
+Definition: Short-paint finishes taken before reaching the rim (floaters, runners).
+
+Inputs (Primary — locked):
+Floater/runner FG%
+
+Floater attempts per game
+
+Event Tagging Fields (used to compute inputs):
+Finish type = floater/runner
+
+Shot distance band (short paint)
+
+Defender distance at release
+
+Contest classification
+
+Momentum state (forward / lateral / retreat)
+
+Release height band
+
+Balance state
+
+Shot clock at release
+
+Calibration:
+
+Math:
+pct_band = Band(Floater FG%)
+
+vol_band = Band(Floater Att/G)
+
+Score = round(0.65 * pct_band + 0.35 * vol_
+
+
+Trait 3: Dunk Finishing
+Definition: Ability to convert dunk attempts consistently.
+
+Inputs (Primary — locked):
+Dunk conversion rate
+
+Dunk attempts per game
+
+Event Tagging Fields (used to compute inputs):
+Finish type = dunk
+
+Takeoff distance band
+
+Takeoff foot (1 / 2)
+
+Defender proximity
+
+Contest classification
+
+Traffic level (open / light / heavy)
+
+Dunk type (two-hand / one-hand)
+
+Shot clock at attempt
+
+Calibration:
+
+Math:
+pct_band = Band(Dunk%)
+
+vol_band = Band(Dunk Att/G)
+
+Score = round(0.60 * pct_band + 0.40 * vol_band)
+
+
+
+Trait 4: Close Finishing
+Definition: All non-dunk finishes inside ~6–8 feet not classified as layups or floaters. Includes hooks, short turnarounds, quick gathers, standing finishes.
+
+Inputs (Primary — locked):
+Close-range FG%
+
+Close attempts per game
+
+Event Tagging Fields (used to compute inputs):
+Finish type = close (non-layup, non-floater, non-dunk)
+
+Defender distance at release
+
+Contest classification
+
+Body contact level (none / light / heavy)
+
+Pivot usage (Y/N)
+
+Gather speed band
+
+Release angle band
+
+Balance state
+
+Calibration:
+Hooks are tagged evidence inside this trait.
+
+Math:
+pct_band = Band(Close FG%)
+
+vol_band = Band(Close Att/G)
+
+Score = round(0.65 * pct_band + 0.35 * vol_band)
+
+Trait 5: Foul Draw Rate (Paint)
+Definition: Ability to generate fouls while attempting paint finishes.
+
+Inputs (Primary — locked):
+FTA per paint attempt (FTA / PaintFGA)
+
+FT made per paint touch (FTM / PaintTouches)
+
+Event Tagging Fields (used to compute inputs):
+Contact timing (pre-gather / during gather / at release)
+
+Defender body position (vertical / hip / reach / undercut)
+
+Attack angle
+
+Finish subtype (layup / floater / close / dunk attempt)
+
+Shot clock context
+
+Help defender count at contact
+
+Calibration (numeric — locked):
+(Use both columns; if they disagree, keep the lower band unless sample is high and confidence gate allows reconciliation.)
+
+Math:
+Already locked: “use both; if disagree keep lower band unless confidence gate allows.”
+band_a = Band(FTA / PaintFGA)
+
+band_b = Band(FTM / PaintTouch)
+
+Score = min(band_a, band_b)
+
+(Optional, if your confidence gate is “high”): Score = min(90, min(band_a, band_b) + 10) (= up 1 band max)
+
+
+PLAYMAKING CLUSTER — TRAIT CALIBRATION
+Trait 1: Passing Accuracy
+Definition: Ability to deliver accurate passes to intended targets under live play.
+
+Inputs (Primary — locked):
+On-target pass % (accurate/processable passes ÷ pass attempts)
+
+Pass attempts per game
+
+Event Tagging Fields (used to compute inputs):
+Pass distance band (short / medium / long)
+
+Pass type (chest / bounce / overhead / wrap / hook / one-hand)
+
+Live-dribble vs stationary
+
+Window tightness (open / narrow / tight)
+
+Defender proximity to receiver
+
+Target location (slot / wing / corner / dunker / post / trail)
+
+Pass speed band
+
+Outcome error type (off-hand / late / behind / deflected)
+
+Calibration:
+
+Math:
+acc_band = Band(On-target %)
+
+vol_band = Band(Pass Att/G)
+
+Score = round(0.65 * acc_band + 0.35 * vol_band)
+
+
+Trait 2: Passing Vision
+Definition: Ability to identify and attempt high-value passes before/as windows open (sees reads early; finds weak-side).
+
+Inputs (Primary — locked):
+Potential Assists per game (passes leading to a teammate shot attempt within 3.0s)
+
+Advantage Pass Rate (advantage passes ÷ pass attempts)
+
+Where:
+Advantage pass = pass leading to (a) open 3 (closest defender ≥4.0 ft at catch) OR (b) rim attempt within 2.0s OR (c) paint touch within 2.0s.
+
+Event Tagging Fields (used to compute inputs):
+Help defender displacement created
+
+Weak-side identification (Y/N)
+
+Skip-pass attempt (Y/N)
+
+Manipulation tag (eyes/shoulders/dribble to shift help)
+
+Time-to-read band (early / on-time / late)
+
+Target type (shooter / rim / short-roll / cutter)
+
+Window tightness
+
+Shot clock at pass
+
+Calibration:
+
+Math:
+pot_band = Band(Potential AST/G)
+
+adv_band = Band(Advantage Pass Rate)
+
+Score = round(0.55 * pot_band + 0.45 * adv_band)
+
+Trait 3: Drive-and-Kick Passing
+Definition: Ability to create passing advantages after paint penetration.
+Inputs (Primary — locked):
+KicKRut Potential Assists per Drive (kicKRut potential assists ÷ drives)
+
+Drive-generated pass attempts per game
+
+Where:
+Drive = on-ball dribble penetration that reaches paint (paint touch).
+
+KicKRut = drive pass to perimeter (3pt line catch) within 1.5s of paint touch.
+
+Event Tagging Fields (used to compute inputs):
+Drive depth band (edge paint / deep paint / under rim)
+
+Help defender commitment (none / tag / full step / two)
+
+Kick direction (strong / weak)
+
+Target location (corner / wing / slot)
+
+Jump-pass tag (Y/N)
+
+Dribble count before pass
+
+Shot clock at pass
+
+Calibration:
+Drive-and-Kick Passing
+rate_band = Band(KicKRut PotAST/Drive)
+
+vol_band = Band(Drive Pass Att/G)
+
+Score = round(0.60 * rate_band + 0.40 * vol_band)
+
+Trait 4: Transition Playmaking
+Definition: Ability to create advantages via passing in transition / early offense.
+Inputs (Primary — locked):
+Transition Potential Assists per 100 Transition Possessions
+
+Transition pass attempts per game
+
+Where:
+Transition possession = possession beginning within 7.0s of change of possession and before defense is fully set (engine tag).
+
+Event Tagging Fields (used to compute inputs):
+Outlet distance band
+
+Hit-ahead identification (Y/N)
+
+Numbers advantage tag (2v1, 3v2, 4v3)
+
+Pass timing (early / on-time / late)
+
+Target lane (rim / wing / trail)
+
+Defender backpedal spacing band
+
+Turnover-risk tag (low/med/high)
+
+Calibration:
+
+Math:
+rate_band = Band(Trans PotAST/100 TransPoss)
+
+vol_band = Band(Trans Pass Att/G)
+
+Score = round(0.60 * rate_band + 0.40 * vol_band)
+
+
+
+Trait 5: Ball Security
+Definition: Ability to maintain possession and limit turnovers while handling and passing.
+
+Inputs (Primary — locked):
+Turnovers per 100 touches (TOV ÷ Touches × 100)
+
+Pass Turnover Rate (pass turnovers ÷ pass attempts)
+
+Event Tagging Fields (used to compute inputs):
+Pressure intensity faced (none / light / heavy / trapped)
+
+Dribble count before turnover
+
+Turnover type (bad pass / strip / charge / travel / OOB)
+
+Defender count at turnover
+
+Shot clock at turnover
+
+Pass risk classification (low / med / high)
+
+Calibration (note: lower is better):
+
+Math:
+tov_band = Band(TOV/100 Touches) (lower-is-better table)
+
+pass_band = Band(Pass TOV Rate) (lower-is-better table)
+
+Score = round(0.60 * tov_band + 0.40 * pass_band)
+
+
+Trait 6: Screen Assist Creation
+Definition:
+Ability to create advantages for teammates via on-ball or off-ball screens that directly lead to made FGs.
+
+Inputs (Primary — locked)
+Screen Assists per game (SA/G)
+
+Screen Assists per 100 possessions (SA/100)
+
+Where:
+Screen Assist = a screen that directly frees a teammate who then scores within X seconds (engine window; default ≤ 5.0s) without a full reset.
+
+Event Tagging Fields (used to compute inputs)
+Screen type (on-ball / off-ball)
+
+Screen action (ball screen / pin-down / flare / re-screen / slip)
+
+Screen angle (flat / angled / step-up)
+
+Contact quality tag (solid / partial / whiff)
+
+Slip tag (Y/N)
+
+Defender response (switch / trail / under / over / hedge / ICE / top-lock)
+
+Advantage outcome (open 3 / rim attempt / paint touch / force rotation)
+
+Time-to-shot (seconds)
+
+Shot quality tag (open / guarded / contested)
+Calibration:
+
+Math:
+lock: lower band if disagreement (unless high confidence → reconcile up 1 band max).
+g_band = Band(SA/G)
+
+p100_band = Band(SA/100)
+
+Score = min(g_band, p100_band)
+
+(High confidence): Score = min(90, min(g_band, p100_band) + 10)
+Trait 7: Hockey Assist Creation
+Definition:
+Ability to create advantages as the pass before the assist (early advantage flow / chain creation).
+
+Inputs (Primary — locked)
+Hockey Assists per game (HA/G)
+
+Hockey Assists per 100 possessions (HA/100)
+
+Where:
+Hockey Assist = Pass A → B, then within ≤ 3.0s B passes to C for a made FG OR B attacks immediately creating the assisted score (engine window).
+
+Chain must be same possession, no reset, no dead ball.
+
+Event Tagging Fields (used to compute inputs)
+Pass sequence position (1st advantage pass / 2nd swing / escape pass)
+
+Advantage created tag (forces closeout / shifts help / creates paint touch / creates rotation)
+
+Time between A→B and B→C (seconds)
+
+Defense state (set / scrambled / rotating)
+
+Target location (slot / wing / corner / dunker / post / trail)
+
+Window tightness (open / narrow / tight)
+
+Shot quality created (open / guarded / contested)
+
+Pace context (transition / early offense / halfcourt)
+
+Calibration (College KR–Anchored)
+Hockey Assist Creation
+Locked: lower band if disagreement (unless high confidence → reconcile up 1 band max).
+g_band = Band(HA/G)
+
+p100_band = Band(HA/100)
+
+Score = min(g_band, p100_band)
+
+(High confidence): Score = min(90, min(g_band, p100_band) + 10)
+PERIMETER DEFENSE CLUSTER — TRAIT CALIBRATION 
+Trait 1: On-Ball Containment
+Definition:
+Ability to keep the ball in front and prevent clean advantage (blow-bys, paint touches) when defending the ball-handler.
+
+Inputs (Primary — locked):
+Blow-By Rate = BlowBys ÷ On-Ball Drives Faced
+
+Paint Touch Rate Allowed = PaintTouches Allowed ÷ On-Ball Drives Faced
+
+Event Tagging Fields:
+Primary assignment tag
+
+Drive type (straight / angle / reject / re-attack)
+
+Blow-by flag (hip cleared)
+
+Help arrival timing
+
+Court zone
+
+Calibration (lower is better):
+ 
+Math:
+BB_band = Band(Blow-By Rate) (lower-is-better)
+
+Paint_band = Band(Paint Touch Rate Allowed) (lower-is-better)
+
+Score = round(0.55 * BB_band + 0.45 * Paint_band)
+
+
+
+Trait 2: Ball Pressure
+Definition:
+Ability to apply pressure that disrupts the ball-handler without conceding advantage.
+
+Inputs (Primary — locked):
+Forced Pick-Up Rate = Forced Pickups ÷ On-Ball Possessions
+
+On-Ball Deflection Rate = On-Ball Deflections ÷ On-Ball Possessions
+
+Event Tagging Fields:
+Pressure intensity
+
+Trap tag
+
+Court zone
+
+Defender proximity
+Calibration:
+ 
+Math:
+PU_band = Band(Forced Pick-Up Rate)
+
+DEF_band = Band(On-Ball Deflection Rate)
+
+Score = round(0.50 * PU_band + 0.50 * DEF_band)
+
+
+
+Trait 3: Screen Navigation
+Definition:
+Ability to defend ball screens without conceding separation or advantage.
+
+Inputs (Primary — locked):
+Separation Allowed @0.8s post-screen (ft)
+
+Screen Advantage Rate Allowed
+
+Event Tagging Fields:
+Coverage type
+
+Screen type
+
+Contact quality
+
+Reject tag
+
+Calibration (lower is better):
+
+Math:
+SEP_band = Band(Separation Allowed @0.8s) (lower-is-better)
+
+ADV_band = Band(Screen Advantage Rate Allowed) (lower-is-better)
+
+Score = round(0.55 * ADV_band + 0.45 * SEP_band)
+
+
+Trait 4: Perimeter Shot Contest 
+Definition:
+Ability to contest all perimeter jump shots (2PT pull-ups + 3PT attempts) without fouling or over-closing.
+
+Inputs (Primary — locked):
+Perimeter eFG% Allowed as Primary Defender
+
+ (includes all non-paint jump shots)
+
+Contested Jump Shot Rate = Contested Perimeter Jumpers ÷ Perimeter Jumpers Defended
+
+Event Tagging Fields:
+Defender distance at release
+
+Contest type (hand-up / body / late / high-hand)
+
+Shot type (pull-up 2 / C&S 3 / movement 3)
+
+Closeout type
+
+Calibration:
+
+Math:
+eFG_band = Band(Perimeter eFG% Allowed) (lower-is-better)
+
+Contest_band = Band(Contested Jump Shot Rate)
+
+Score = round(0.60 * eFG_band + 0.40 * Contest_band)
+
+
+Trait 5: Steal
+Definition:
+Ability to take the ball away via on-ball pressure or passing-lane anticipation.
+
+Inputs (Primary — locked):
+Steals per 100 Defensive Possessions
+
+Deflections per Defensive Possession
+
+Event Tagging Fields:
+Steal type
+
+Risk tag
+
+Location
+
+Primary vs helper
+
+Calibration:
+
+Math:
+STL_band = Band(Steals per 100 Def Poss)
+
+DEF_band = Band(Deflections per Def Poss)
+
+Score = round(0.60 * STL_band + 0.40 * DEF_band)
+
+
+Trait 6: Off-Ball Denial
+Definition:
+Ability to deny clean catches and stay attached to perimeter threats.
+
+Inputs (Primary — locked):
+Denied Catch Rate
+
+Separation at Catch (ft)
+
+Event Tagging Fields:
+Denial type
+
+Screen involvement
+
+Catch zone
+
+Calibration:
+
+Math:
+Deny_band = Band(Denied Catch Rate)
+
+Sep_band = Band(Separation at Catch) (lower-is-better)
+
+Score = round(0.55 * Deny_band + 0.45 * Sep_band)
+
+
+Trait 7: Perimeter Disruption
+Definition:
+Ability to force negative outcomes without steals (resets, late-clock shots).
+Inputs (Primary — locked):
+Forced Reset Rate
+
+Deflections per Defensive Possession
+
+Event Tagging Fields:
+Reset type
+
+Clock at reset
+
+Pressure tag
+
+Calibration:
+
+Math:
+Reset_band = Band(Forced Reset Rate)
+
+Defl_band = Band(Deflections per Def Poss)
+
+Score = round(0.50 * Reset_band + 0.50 * Defl_band)
+
+Trait 8: Perimeter Foul Discipline
+Definition:
+Ability to defend perimeter actions without fouling.
+
+Inputs (Primary — locked):
+Perimeter Fouls per 100 Defensive Possessions
+
+Shooting Foul Rate on Perimeter Contests
+
+Calibration (lower is better):
+
+Math:
+Foul_band = Band(Perimeter Fouls per 100) (lower-is-better)
+
+SF_band = Band(Shooting Foul Rate on Perimeter Contests) (lower-is-better)
+
+Score = round(0.60 * Foul_band + 0.40 * SF_band)
+
+
+INTERIOR DEFENSE CLUSTER — TRAIT CALIBRATION
+Trait 1: Block
+Definition
+Ability to legally block opponent shot attempts at the rim or in the paint.
+
+Inputs (Primary — locked):
+Blocks per 100 opponent paint FGA
+
+Block attempts per game
+
+Event Tagging Fields (used to compute inputs):
+Shot type (layup / dunk / close / floater)
+
+Defender role (primary / help)
+
+Timing (early / on-time / late)
+
+Contact outcome (clean / foul)
+Calibration:
+
+Math:
+rate_band = Band(BLK/100 PaintFGA)
+
+vol_band = Band(BLK Att/G)
+
+Score = round(0.70 * rate_band + 0.30 * vol_band)
+
+
+Trait 2: Rim Deterrence
+Definition
+Ability to discourage or prevent rim attempts by positioning, presence, and anticipation (shots not taken).
+
+Inputs (Primary — locked):
+Rim Attempts Prevented per 100 Defensive Possessions
+
+Opponent Rim Frequency vs On-Court Baseline
+
+Event Tagging Fields:
+Defender proximity to rim
+
+Drive abandonment events
+
+Pass-out-before-attempt events
+
+Help defender arrival timing
+
+Calibration:
+
+Math:
+prev_band = Band(Rim Attempts Prevented/100)
+
+delta_band = Band(Rim Freq Δ) (more negative = better per your table)
+
+Score = round(0.55 * prev_band + 0.45 * delta_band)
+
+
+
+
+
+Trait 3: Vertical Contest Effectiveness
+Definition
+Ability to contest interior shots vertically without fouling or blocking.
+
+Inputs (Primary — locked):
+Opponent FG% at rim when contested (non-block)
+
+Vertical contest attempts per game
+
+Event Tagging Fields:
+Contest angle
+
+Defender jump timing
+
+Verticality legality
+
+Shooter elevation displacement
+
+Calibration:
+
+Math:
+fg_band = Band(Opp FG% contested) (lower-is-better table)
+
+vol_band = Band(Contests/G)
+
+Score = round(0.65 * fg_band + 0.35 * vol_band)
+
+
+
+
+
+
+Trait 4: Post Defense
+Definition
+Ability to defend post-up possessions as the primary defender.
+
+Inputs (Primary — locked):
+Opponent Points per Post Possession
+
+Post Stops per game (forced miss, turnover, kick-out)
+
+Event Tagging Fields:
+Catch depth allowed
+
+Backdown displacement
+
+Counter containment
+
+Double-team response
+
+Calibration:
+
+Math:
+ppp_band = Band(Opp PPP allowed) (lower-is-better table)
+
+stop_band = Band(Post Stops/G)
+
+Score = round(0.70 * ppp_band + 0.30 * stop_band)
+
+
+
+
+
+
+
+
+Trait 5: Help Defense (Interior)
+Definition
+Ability to rotate, tag, and recover to protect the paint as a help defender.
+
+Inputs (Primary — locked):
+Successful Help Rotations per game
+
+Help Defense Stops per game
+
+Event Tagging Fields:
+Tag timing
+
+Recovery speed
+
+Correct assignment (Y/N)
+
+Communication indicator
+
+Calibration:
+
+Math:
+rot_band = Band(Help Rotations/G)
+
+stop_band = Band(Help Stops/G)
+
+Score = round(0.50 * rot_band + 0.50 * stop_band)
+
+
+
+
+Trait 6: Roll Man Defense
+Definition
+Ability to defend the rolling big as the primary interior defender in P&R.
+
+Inputs (Primary — locked):
+Opponent PPP Allowed as Roll Defender
+
+Roll Stops per game
+
+Event Tagging Fields:
+Coverage type (drop / show / switch)
+
+Roll depth allowed
+
+Lob denial
+
+Recovery angle
+
+Calibration:
+
+Math:
+ppp_band = Band(Opp PPP as roll defender) (lower-is-better table)
+
+stop_band = Band(Roll Stops/G)
+
+Score = round(0.70 * ppp_band + 0.30 * stop_band)
+
+
+
+
+
+
+
+Trait 7: Interior Disruption
+Definition
+Ability to disrupt interior offense without steals or blocks.
+
+Inputs (Primary — locked):
+Deflections per game (paint only)
+
+Forced Pickups / Lost Advantage events per game
+
+Event Tagging Fields:
+Hand activity
+
+Body displacement
+
+Passing lane disruption
+
+Loose-ball creation
+
+Calibration:
+
+Math:
+defl_band = Band(Paint Deflections/G)
+
+disr_band = Band(Forced Disruptions/G)
+
+Score = round(0.50 * defl_band + 0.50 * disr_band)
+
+
+
+Trait 8: Interior Foul Discipline
+Definition
+Ability to defend interior actions without fouling.
+
+Inputs (Primary — locked):
+Fouls per 100 Interior Defensive Actions
+
+And-1 Rate Allowed
+
+Event Tagging Fields:
+Contact timing
+
+Arm vs body fouls
+
+Verticality legality
+
+Late rotation fouls
+
+Calibration (lower is better):
+
+Math:
+foul_band = Band(Fouls/100 Interior Actions) (lower-is-better)
+
+a1_band = Band(And-1 Rate) (lower-is-better)
+
+Score = round(0.60 * foul_band + 0.40 * a1_band)
+
+
+
+Trait 9: Interior Positioning
+Definition
+Ability to maintain optimal interior positioning before the catch.
+
+Inputs (Primary — locked):
+Deep Seal Rate Allowed
+
+Charges Drawn per game
+
+Event Tagging Fields:
+Early body positioning
+
+Seal displacement
+
+Anticipation timing
+
+Restricted area occupancy
+
+Calibration:
+
+Math:
+seal_band = Band(Deep Seals Allowed) (lower-is-better)
+
+chg_band = Band(Charges/G)
+
+Score = round(0.65 * seal_band + 0.35 * chg_band)
+
+
+REBOUNDING CLUSTER — TRAIT CALIBRATION
+Trait 1: Defensive Rebounding
+Definition:
+Ability to secure opponent misses and finish defensive possessions.
+
+Inputs (Primary — locked)
+Defensive Rebound Rate (DREB%)
+
+Defensive rebounds per game (DREB/G)
+
+Where:
+DREB% = Defensive rebounds ÷ available defensive rebound chances
+
+Event Tagging Fields (used to compute inputs)
+Box-out contact (Y/N)
+
+Opponent count in rebounding zone
+
+Rebound type (clean / contested / tipped)
+
+Jump vs ground rebound
+
+Rebound distance from rim
+
+Miss type (rim / mid / 3)
+
+Shot location of miss
+
+Rebound timing (early / peak / late)
+
+Calibration (College KR–Anchored)
+Math:
+rate_band = Band(DREB%)
+
+vol_band = Band(DREB/G)
+
+Score = round(0.60 * rate_band + 0.40 * vol_band)
+
+
+Trait 2: Offensive Rebounding
+Definition:
+Ability to generate extra possessions by rebounding own-team misses.
+
+Inputs (Primary — locked)
+Offensive Rebound Rate (OREB%)
+
+Offensive rebounds per game (OREB/G)
+
+Where:
+OREB% = Offensive rebounds ÷ available offensive rebound chances
+
+Event Tagging Fields
+Crash decision (crash / retreat)
+
+Starting position (corner / dunker / slot / post)
+
+Defender box-out presence
+
+Second-jump attempt (Y/N)
+
+Tip vs secure rebound
+
+Traffic level
+
+Shot type missed
+
+Calibration
+
+Math:
+rate_band = Band(OREB%)
+
+vol_band = Band(OREB/G)
+
+Score = round(0.60 * rate_band + 0.40 * vol_band)
+
+Trait 3: Box-Out Effectiveness
+Definition:
+Ability to prevent opponents from rebounding via positioning and contact.
+
+Inputs (Primary — locked)
+Opponent OREB% when on floor
+
+Box-outs per game (credited contact box-outs)
+
+Where:
+Box-out = physical positioning that removes an opponent from rebound path (engine-defined)
+
+Event Tagging Fields
+Box-out target (primary rebounder / help)
+
+Contact quality (solid / partial)
+
+Duration of seal
+
+Rebound outcome (team / opponent)
+
+Defender displacement distance
+
+Calibration (lower Opp OREB% = better)
+
+Math:
+supp_band = Band(Opp OREB%) (lower-is-better)
+
+vol_band = Band(Box-outs/G)
+
+Score = round(0.65 * supp_band + 0.35 * vol_band)
+
+
+Trait 4: Rebound Conversion (Secure vs Tip)
+Definition:
+Ability to secure rebounds cleanly instead of tipping or losing them.
+
+Inputs (Primary — locked)
+Secure rebound rate (secured ÷ total rebound touches)
+
+Rebounds lost after touch per game
+
+Event Tagging Fields
+Hand count (1 / 2)
+
+Ball trajectory
+
+Traffic level
+
+Defender swipe attempts
+
+Landing balance
+
+Outlet decision timing
+
+Calibration
+
+Math:
+sec_band = Band(Secure %)
+
+loss_band = Band(Lost/G) (lower-is-better table via your cutoffs)
+
+Score = round(0.60 * sec_band + 0.40 * loss_band)
+
+
+Trait 5: Rebound Range & Tracking
+Definition:
+Ability to rebound outside immediate area by reading caroms and tracking ball flight.
+
+Inputs (Primary — locked)
+Out-of-area rebounds per game
+
+Average rebound distance from starting position (feet)
+
+Event Tagging Fields
+Initial position at shot
+
+Carom angle
+
+First step reaction time
+
+Defender interference
+
+Speed band to ball
+
+Jump vs scoop
+
+Calibration
+
+Math:
+ooa_band = Band(OoA Reb/G)
+
+dist_band = Band(Avg Dist ft)
+
+Score = round(0.50 * ooa_band + 0.50 * dist_band)
+
+
+Trait 6: Rebound-to-Playmaking (Outlet Impact)
+Definition:
+Ability to convert rebounds into immediate offensive advantage.
+
+Inputs (Primary — locked)
+Outlet assists per game
+
+Outlet passes leading to advantage per game
+
+Where:
+Advantage = transition opportunity or early offense shot within 5.0s
+
+Event Tagging Fields
+Outlet distance
+
+Outlet timing (early / delayed)
+
+Target lane
+
+Defender recovery state
+
+Turnover risk tag
+
+Calibration
+
+Math:
+ast_band = Band(Outlet AST/G)
+
+adv_band = Band(Adv Outlets/G)
+
+Score = round(0.45 * ast_band + 0.55 * adv_band)
+
+
+
+
+PHYSICAL CLUSTER — TRAIT CALIBRATION
+Trait 1: Speed — With Ball
+Definition
+Maximum functional speed while dribbling under live-play conditions.
+Inputs (Primary — locked)
+Peak dribble speed (mph)
+
+Sustained dribble speed (top 25% band, mph)
+
+Event Tagging Fields
+Court context (open floor / halfcourt)
+
+Defender proximity
+
+Dribble hand
+
+Change-of-direction events
+
+Transition vs halfcourt
+
+Calibration
+ 
+Math:
+peak_band = Band(Peak dribble mph)
+
+sus_band = Band(Sustained dribble mph)
+
+Score = round(0.55 * peak_band + 0.45 * sus_band)
+
+
+
+Trait 2: Speed — Without Ball
+Definition
+Maximum functional speed when relocating, recovering, or running lanes without possession.
+
+Inputs (Primary — locked)
+Peak off-ball speed (mph)
+
+Sustained off-ball speed (top 25% band, mph)
+
+Event Tagging Fields
+Transition lane
+
+Defensive recovery tag
+
+Closeout path
+
+Relocation type
+
+Distance covered
+
+Calibration
+
+Math:
+peak_band = Band(Peak off-ball mph)
+
+sus_band = Band(Sustained off-ball mph)
+
+Score = round(0.55 * peak_band + 0.45 * sus_band)
+
+
+Trait 3: Acceleration (Burst)
+Definition
+Ability to reach top speed quickly from a standstill or near-standstill.
+
+Inputs (Primary — locked)
+Time to reach 80% max speed (seconds)
+
+Burst distance covered in first 1.5s (feet)
+
+Event Tagging Fields
+Start type (static / rolling)
+
+Direction of burst
+
+Defender proximity
+
+Ball vs no-ball
+
+Calibration (lower time = better)
+
+Math:
+time_band = Band(Time to 80%) (lower-is-better)
+
+dist_band = Band(Burst distance)
+
+Score = round(0.60 * time_band + 0.40 * dist_band)
+
+
+Trait 4: Deceleration (Stop Control)
+Definition
+Ability to slow, stop, and re-center efficiently under control.
+
+Inputs (Primary — locked)
+Time to decelerate from sprint to stop (seconds)
+
+Balance loss rate after stop (%)
+
+Event Tagging Fields
+Stop type (hard / angled)
+
+Defender pressure
+
+Shot vs pass vs pivot outcome
+
+Calibration (lower = better)
+
+Math:
+time_band = Band(Stop time) (lower-is-better)
+
+bal_band = Band(Balance loss %) (lower-is-better)
+
+Score = round(0.55 * time_band + 0.45 * bal_band)
+
+
+Trait 5: Change of Direction (Agility)
+Definition
+Ability to redirect movement efficiently without losing speed or balance.
+
+Inputs (Primary — locked)
+Direction-change efficiency score
+
+Speed retention through cut (%)
+
+Event Tagging Fields
+Cut angle
+
+Defender proximity
+
+Ball vs no-ball
+
+Outcome (advantage / neutral / loss)
+
+Calibration
+
+Math:
+eff_band = Band(Efficiency) (your table uses labels; you’ll need engine mapping to 90/80/70/60/50)
+
+ret_band = Band(Retention %)
+
+Score = round(0.50 * eff_band + 0.50 * ret_band)
+
+
+Trait 6: Lateral Quickness
+Definition
+Ability to move laterally to stay aligned with an opponent.
+
+Inputs (Primary — locked)
+Lateral displacement speed (ft/s)
+
+Successful slide containment rate
+
+Event Tagging Fields
+Defensive stance
+
+Slide angle
+
+Recovery attempts
+
+Calibration
+
+Math:
+spd_band = Band(Lateral ft/s)
+
+con_band = Band(Containment %)
+
+Score = round(0.55 * con_band + 0.45 * spd_band) (containment slightly heavier)
+
+
+Trait 7: Vertical Pop (Live-Play)
+Definition
+Explosive vertical lift during live basketball actions.
+
+Inputs (Primary — locked)
+Max live vertical (inches)
+
+Second-jump time (seconds)
+
+Event Tagging Fields
+Jump type
+
+Takeoff foot
+
+Contact presence
+
+Calibration
+
+Math:
+vert_band = Band(Max live vert)
+
+t2_band = Band(Second-jump time) (lower-is-better)
+
+Score = round(0.60 * vert_band + 0.40 * t2_band)
+
+
+Trait 8: Strength (Functional)
+Definition
+Ability to absorb and apply force during live play.
+
+Inputs (Primary — locked)
+Displacement resistance rate
+
+Post/contact success rate
+
+Event Tagging Fields
+Contact type
+
+Opponent size delta
+
+Outcome
+
+Calibration
+
+Math:
+res_band = Band(Resistance %)
+
+suc_band = Band(Contact success %)
+
+Score = round(0.50 * res_band + 0.50 * suc_band)
+
+
+Trait 9: Power Through Contact
+Definition
+Ability to maintain effectiveness while absorbing contact.
+
+Inputs (Primary — locked)
+FG% through contact
+
+Contact survival rate
+
+Calibration
+
+Math:
+fg_band = Band(FG% through contact)
+
+surv_band = Band(Contact survival %)
+
+Score = round(0.60 * fg_band + 0.40 * surv_band)
+
+
+Trait 10: Endurance
+Definition
+Ability to sustain physical output over time.
+
+Inputs (Primary — locked)
+Performance drop-off from Q1 → Q4
+
+High-intensity actions per minute
+
+Calibration
+
+Math:
+drop_band = Band(Drop-off %) (lower-is-better)
+
+act_band = Band(Hi-intensity actions/min) (label bands needed if not numeric)
+
+Score = round(0.60 * drop_band + 0.40 * act_band)
+
+
+Trait 11: Motor
+Definition
+Consistency of effort independent of usage or game state.
+
+Inputs (Primary — locked)
+High-effort actions per minute
+
+Effort consistency index
+
+Calibration
+
+Math:
+act_band = Band(High-effort actions/min) (label→band mapping needed)
+
+con_band = Band(Effort consistency index) (label→band mapping needed)
+
+Score = round(0.50 * act_band + 0.50 * con_band)
+
+
+Trait 12: Body Control
+Definition
+Ability to maintain balance, orientation, and coordination during complex actions.
+
+Inputs (Primary — locked)
+Off-balance success rate
+
+Recovery success rate
+
+Event Tagging Fields
+Contact angle
+
+Landing stability
+
+Multi-action chains
+
+Calibration
+
+Math:
+ob_band = Band(Off-balance success %)
+
+rec_band = Band(Recovery success %)
+
+Score = round(0.50 * ob_band + 0.50 * rec_band)
+
+
+
+Pro
+POINT GUARD (PG)
+OPF — Overall Position Framework
+Offense (OKR): 60%
+Defense (DKR): 35%
+Tools (TKR): 5% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 38%
+3PT Spot-Up (C&S): 7%
+3PT Movement: 4%
+3PT Off-the-Dribble: 15%
+3PT Deep Range: 6%
+2PT Jumper Catch-and-Shoot: 1%
+2PT Jumper Off-Dribble: 3%
+Free Throw: 2%
+Finishing — 17%
+Layup Finishing: 6%
+Floater / Runner: 4%
+Dunk Finishing: 1%
+Close Finishing: 1%
+Foul Draw Rate (Paint): 5%
+Playmaking — 42%
+Passing Accuracy: 7%
+Passing Vision: 10%
+Drive-and-Kick Passing: 10%
+Transition Playmaking: 5%
+Ball Security: 8%
+Screen Assist Creation: 1%
+Hockey Assist Creation: 1%
+Offensive Rebounding / Outlet — 3%
+Offensive Rebounding: 1%
+Rebound-to-Playmaking (Outlet Impact): 2%
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 70%
+On-Ball Containment: 18%
+Ball Pressure: 10%
+Screen Navigation: 15%
+Perimeter Shot Contest: 8%
+Steal: 7%
+Off-Ball Denial: 5%
+Perimeter Disruption: 4%
+Perimeter Foul Discipline: 3%
+Interior Defense — 10%
+Block: 1%
+Rim Deterrence: 2%
+Vertical Contest Effectiveness: 2%
+Post Defense: 0%
+Help Defense (Interior): 3%
+Roll Man Defense: 1%
+Interior Disruption: 0%
+Interior Foul Discipline: 1%
+Interior Positioning: 0%
+Defensive Rebounding — 20%
+Defensive Rebounding: 12%
+Box-Out Effectiveness: 8%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 85%
+Speed (With Ball): 14%
+Acceleration (Burst): 14%
+Lateral Quickness: 16%
+Endurance: 14%
+Motor: 9%
+Body Control: 10%
+Speed (Without Ball): 5%
+Strength (Functional): 3%
+Rebounding / Possession Tools — 15%
+Rebound Conversion (Secure vs Tip): 10%
+Rebound Range & Tracking: 5%
+
+COMBO GUARD (CG) — PRO | FINAL
+OPF — Overall Position Framework
+Offense (OKR): 65%
+Defense (DKR): 30%
+Tools (TKR): 5% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 45%
+(primary value = scoring gravity)
+3PT Spot-Up (Catch-and-Shoot): 12%
+3PT Movement: 8%
+3PT Off-the-Dribble: 15%
+3PT Deep Range: 6%
+2PT Jumper Catch-and-Shoot: 1%
+2PT Jumper Off-the-Dribble: 2%
+Free Throw: 1%
+Finishing — 20%
+(paint pressure > volume finishing)
+Layup Finishing: 7%
+Floater / Runner: 5%
+Dunk Finishing: 2%
+Close Finishing: 1%
+Foul Draw Rate (Paint): 5%
+Playmaking — 30%
+(secondary creator, not engine)
+Passing Accuracy: 6%
+Passing Vision: 7%
+Drive-and-Kick Passing: 9%
+Transition Playmaking: 4%
+Ball Security: 4%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 5%
+Offensive Rebounding: 2%
+Rebound-to-Playmaking (Outlet Impact): 3%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 65%
+On-Ball Containment: 14%
+Ball Pressure: 9%
+Screen Navigation: 14%
+Perimeter Shot Contest: 9%
+Steal: 8%
+Off-Ball Denial: 6%
+Perimeter Disruption: 3%
+Perimeter Foul Discipline: 2%
+Interior Defense — 10%
+Block: 1%
+Rim Deterrence: 1%
+Vertical Contest Effectiveness: 2%
+Post Defense: 0%
+Help Defense (Interior): 4%
+Roll Man Defense: 1%
+Interior Disruption: 0%
+Interior Foul Discipline: 1%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 15%
+Box-Out Effectiveness: 10%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 80%
+Speed (With Ball): 12%
+Acceleration (Burst): 12%
+Lateral Quickness: 14%
+Speed (Without Ball): 8%
+Endurance: 12%
+Motor: 10%
+Body Control: 8%
+Strength (Functional): 4%
+Rebounding / Possession Tools — 20%
+Rebound Conversion (Secure vs Tip): 12%
+Rebound Range & Tracking: 8%
+
+WING 
+OPF — Overall Position Framework
+Offense (OKR): 55%
+Defense (DKR): 35%
+Tools (TKR): 10% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 48%
+(spacing + movement are gates in pro)
+3PT Spot-Up (Catch-and-Shoot): 18%
+3PT Movement: 12%
+3PT Off-the-Dribble: 8%
+3PT Deep Range: 6%
+2PT Jumper Catch-and-Shoot: 2%
+2PT Jumper Off-the-Dribble: 1%
+Free Throw: 1%
+Finishing — 25%
+(attack closeouts, transition, straight-line drives)
+Layup Finishing: 10%
+Floater / Runner: 3%
+Dunk Finishing: 6%
+Close Finishing: 3%
+Foul Draw Rate (Paint): 3%
+Playmaking — 17%
+(advantage maintenance, not initiation)
+Passing Accuracy: 5%
+Passing Vision: 4%
+Drive-and-Kick Passing: 5%
+Transition Playmaking: 2%
+Ball Security: 1%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 10%
+Offensive Rebounding: 5%
+Rebound-to-Playmaking (Outlet Impact): 5%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 55%
+On-Ball Containment: 10%
+Ball Pressure: 6%
+Screen Navigation: 10%
+Perimeter Shot Contest: 10%
+Steal: 6%
+Off-Ball Denial: 8%
+Perimeter Disruption: 3%
+Perimeter Foul Discipline: 2%
+Interior Defense — 20%
+(switchability, help, weak-side rim)
+Block: 3%
+Rim Deterrence: 3%
+Vertical Contest Effectiveness: 3%
+Post Defense: 3%
+Help Defense (Interior): 4%
+Roll Man Defense: 2%
+Interior Disruption: 1%
+Interior Foul Discipline: 1%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 15%
+Box-Out Effectiveness: 10%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 75%
+Speed (Without Ball): 14%
+Lateral Quickness: 16%
+Acceleration (Burst): 10%
+Endurance: 10%
+Motor: 9%
+Body Control: 8%
+Speed (With Ball): 5%
+Strength (Functional): 3%
+Rebounding / Possession Tools — 25%
+Rebound Conversion (Secure vs Tip): 15%
+Rebound Range & Tracking: 10%
+FORWARD — PRO | FINAL
+OPF — Overall Position Framework
+Offense (OKR): 45%
+Defense (DKR): 40%
+Tools (TKR): 15% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 40%
+(spacing gate; pop > self-creation)
+3PT Spot-Up (Catch-and-Shoot): 18%
+3PT Movement: 8%
+3PT Off-the-Dribble: 5%
+3PT Deep Range: 5%
+2PT Jumper Catch-and-Shoot: 2%
+2PT Jumper Off-the-Dribble: 1%
+Free Throw: 1%
+Finishing — 35%
+(short-roll, seals, transition)
+Layup Finishing: 12%
+Floater / Runner: 4%
+Dunk Finishing: 9%
+Close Finishing: 6%
+Foul Draw Rate (Paint): 4%
+Playmaking — 15%
+(connector value)
+Passing Accuracy: 5%
+Passing Vision: 4%
+Drive-and-Kick Passing: 4%
+Transition Playmaking: 2%
+Ball Security: 0%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 10%
+Offensive Rebounding: 6%
+Rebound-to-Playmaking (Outlet Impact): 4%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 35%
+On-Ball Containment: 7%
+Ball Pressure: 4%
+Screen Navigation: 6%
+Perimeter Shot Contest: 7%
+Steal: 3%
+Off-Ball Denial: 5%
+Perimeter Disruption: 2%
+Perimeter Foul Discipline: 1%
+Interior Defense — 40%
+(primary help + switch big)
+Block: 7%
+Rim Deterrence: 7%
+Vertical Contest Effectiveness: 6%
+Post Defense: 6%
+Help Defense (Interior): 7%
+Roll Man Defense: 3%
+Interior Disruption: 2%
+Interior Foul Discipline: 2%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 15%
+Box-Out Effectiveness: 10%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 80%
+Strength (Functional): 16%
+Body Control: 14%
+Endurance: 12%
+Vertical Pop (Live-Play): 12%
+Lateral Quickness: 10%
+Speed (Without Ball): 8%
+Acceleration (Burst): 6%
+Speed (With Ball): 2%
+Rebounding / Possession Tools — 20%
+Rebound Conversion (Secure vs Tip): 12%
+Rebound Range & Tracking: 8%
+BIG — PRO | FINAL
+OPF — Overall Position Framework
+Offense (OKR): 35%
+Defense (DKR): 40%
+Tools (TKR): 25% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 25%
+(spacing + pop are true separators at pro level)
+3PT Spot-Up (Catch-and-Shoot): 12%
+3PT Movement: 4%
+3PT Off-the-Dribble: 2%
+3PT Deep Range: 4%
+2PT Jumper Catch-and-Shoot: 2%
+2PT Jumper Off-the-Dribble: 0%
+Free Throw: 1%
+Finishing — 50%
+(core value: screen, seal, punish)
+Layup Finishing: 14%
+Floater / Runner: 4%
+Dunk Finishing: 16%
+Close Finishing: 10%
+Foul Draw Rate (Paint): 6%
+Playmaking — 10%
+(short-roll, hub reads)
+Passing Accuracy: 4%
+Passing Vision: 3%
+Drive-and-Kick Passing: 2%
+Transition Playmaking: 1%
+Ball Security: 0%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 15%
+Offensive Rebounding: 9%
+Rebound-to-Playmaking (Outlet Impact): 6%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 20%
+(switch survival, closeouts)
+On-Ball Containment: 4%
+Ball Pressure: 2%
+Screen Navigation: 4%
+Perimeter Shot Contest: 6%
+Steal: 1%
+Off-Ball Denial: 1%
+Perimeter Disruption: 1%
+Perimeter Foul Discipline: 1%
+Interior Defense — 55%
+Block: 10%
+Rim Deterrence: 10%
+Vertical Contest Effectiveness: 9%
+Post Defense: 8%
+Help Defense (Interior): 9%
+Roll Man Defense: 4%
+Interior Disruption: 3%
+Interior Foul Discipline: 2%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 16%
+Box-Out Effectiveness: 9%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 85%
+(size + mobility both required)
+Strength (Functional): 18%
+Body Control: 14%
+Vertical Pop (Live-Play): 15%
+Endurance: 12%
+Lateral Quickness: 10%
+Speed (Without Ball): 8%
+Acceleration (Burst): 5%
+Motor: 3%
+Rebounding / Possession Tools — 15%
+Rebound Conversion (Secure vs Tip): 9%
+Rebound Range & Tracking: 6%
+
+
+--- TABLE 1 ---
+Trait Score | Meaning (College) | C&S 3P% | C&S 3PA / G
+ |  |  | 
+90 | Elite weapon | 42%+ | 3.5+
+80 | High-level starter | 38–41% | 2.5–3.4
+70 | Respectable shooter | 35–37% | 1.8–2.4
+60 | Situational | 31–34% | 1.0–1.7
+<60 | Non-shooter | <31% | Low / inconsistent
+
+--- TABLE 2 ---
+Trait Score | Meaning (College) | 3P% | 3PA / G
+90 | Elite movement shooter | 40%+ | 2.5+
+80 | Strong system fit | 36–39% | 1.8–2.4
+70 | Functional | 33–35% | 1.2–1.7
+60 | Limited | 30–32% | 0.7–1.1
+<60 | Non-threat | <30% | Minimal
+
+--- TABLE 3 ---
+Trait Score | Meaning (College) | 3P% | 3PA / G
+90 | Elite creator | 38%+ | 3.0+
+80 | Strong pull-up threat | 34–37% | 2.0–2.9
+70 | Functional | 31–33% | 1.2–1.9
+60 | Low efficiency | 27–30% | 0.7–1.1
+<60 | Non-weapon | <27% | Low
+
+--- TABLE 4 ---
+Trait Score | Meaning (College) | 3P% | 3PA / G
+90 | Warps pickup point | 36%+ | 2.0+
+80 | Real gravity | 33–35% | 1.2–1.9
+70 | Capable | 30–32% | 0.8–1.1
+60 | Situational | 27–29% | 0.4–0.7
+<60 | No gravity | <27% | Minimal
+
+--- TABLE 5 ---
+Trait Score | Meaning | FG%
+90 | Elite | 50%+
+80 | Strong | 46–49%
+70 | Solid | 42–45%
+60 | Limited | 38–41%
+<60 | Inefficient | <38%
+
+--- TABLE 6 ---
+Trait Score | Meaning | FG%
+90 | Elite creator | 48%+
+80 | Strong | 44–47%
+70 | Functional | 40–43%
+60 | Low efficiency | 36–39%
+<60 | Non-weapon | <36%
+
+--- TABLE 7 ---
+Trait Score | Meaning | FT%
+90 | Elite | 88%+
+80 | Very good | 80–87%
+70 | Solid | 72–79%
+60 | Below avg | 65–71%
+<60 | Poor | <65%
+
+--- TABLE 8 ---
+Trait Score | Meaning (College) | Layup FG% | Att / G
+90 | Elite finisher | 65%+ | 4.0+
+80 | Strong | 58–64% | 2.8–3.9
+70 | Solid | 52–57% | 1.8–2.7
+60 | Limited | 46–51% | 1.0–1.7
+<60 | Inefficient | <46% | Low
+
+--- TABLE 9 ---
+Trait Score | Meaning (College) | FG% | Att / G
+90 | Elite touch | 55%+ | 2.0+
+80 | Strong | 48–54% | 1.3–1.9
+70 | Functional | 42–47% | 0.8–1.2
+60 | Limited | 36–41% | 0.4–0.7
+<60 | Ineffective | <36% | Minimal
+
+--- TABLE 10 ---
+Trait Score | Meaning (College) | Dunk % | Att / G
+90 | Elite vertical threat | 95%+ | 2.5+
+80 | Strong | 90–94% | 1.6–2.4
+70 | Functional | 85–89% | 0.9–1.5
+60 | Limited | 80–84% | 0.4–0.8
+<60 | Non-threat | <80% | Rare
+
+--- TABLE 11 ---
+Trait Score | Meaning (College) | FG% | Att / G
+90 | Elite interior finisher | 58%+ | 3.0+
+80 | Strong | 52–57% | 2.0–2.9
+70 | Functional | 46–51% | 1.3–1.9
+60 | Limited | 40–45% | 0.7–1.2
+<60 | Inefficient | <40% | Low
+
+--- TABLE 12 ---
+Trait Score | Meaning (College) | FTA / PaintFGA | FTM / PaintTouch
+90 | Elite foul generator | 0.40+ | 0.12+
+80 | Strong | 0.32–0.39 | 0.09–0.11
+70 | Average | 0.25–0.31 | 0.06–0.08
+60 | Low | 0.18–0.24 | 0.04–0.05
+<60 | Avoids contact | <0.18 | <0.04
+
+--- TABLE 13 ---
+Trait Score | Meaning (College) | On-Target % | Pass Att / G
+90 | Elite distributor | 92%+ | 55+
+80 | Strong | 88–91% | 40–54
+70 | Functional | 84–87% | 28–39
+60 | Limited | 79–83% | 18–27
+<60 | Liability | <79% | Low
+
+--- TABLE 14 ---
+Trait Score | Meaning (College) | Potential AST / G | Advantage Pass Rate
+90 | Elite vision engine | 8.0+ | 0.22+
+80 | Strong | 6.0–7.9 | 0.17–0.21
+70 | Functional | 4.0–5.9 | 0.12–0.16
+60 | Limited | 2.5–3.9 | 0.07–0.11
+<60 | Misses reads | <2.5 | <0.07
+
+--- TABLE 15 ---
+Trait Score | Meaning (College) | KicKRut PotAST / Drive | Drive Pass Att / G
+90 | Elite paint creator | 0.14+ | 8.0+
+80 | Strong | 0.10–0.13 | 6.0–7.9
+70 | Functional | 0.07–0.09 | 4.0–5.9
+60 | Limited | 0.04–0.06 | 2.0–3.9
+<60 | Non-creator | <0.04 | <2.0
+
+--- TABLE 16 ---
+Trait Score | Meaning (College) | Trans PotAST / 100 TransPoss | Trans Pass Att / G
+90 | Elite open-floor engine | 18+ | 10+
+80 | Strong | 13–17 | 7–9
+70 | Functional | 9–12 | 4–6
+60 | Limited | 5–8 | 2–3
+<60 | No impact | <5 | <2
+
+--- TABLE 17 ---
+Trait Score | Meaning (College) | TOV / 100 Touches | Pass TOV Rate
+90 | Elite decision security | ≤2.5 | ≤2.5%
+80 | Strong | 2.6–3.6 | 2.6–3.6%
+70 | Acceptable | 3.7–5.0 | 3.7–5.0%
+60 | Risky | 5.1–6.8 | 5.1–6.8%
+<60 | Liability | >6.8 | >6.8%
+
+--- TABLE 18 ---
+Trait Score | Meaning (College) | SA/G | SA/100
+90 | Elite advantage screener | 2.0+ | 7.0+
+80 | Strong creator | 1.3–1.9 | 4.5–6.9
+70 | Functional | 0.8–1.2 | 3.0–4.4
+60 | Limited | 0.4–0.7 | 1.5–2.9
+<60 | No creation | <0.4 | <1.5
+
+--- TABLE 19 ---
+Trait Score | Meaning (College) | HA/G | HA/100
+90 | Elite connector engine | 2.2+ | 8.0+
+80 | Strong connector | 1.4–2.1 | 5.0–7.9
+70 | Functional | 0.8–1.3 | 3.0–4.9
+60 | Limited | 0.4–0.7 | 1.5–2.9
+<60 | No chain impact | <0.4 | <1.5
+
+--- TABLE 20 ---
+Score | Meaning | Blow-By Rate | Paint Touch Rate
+90 | Elite stopper | ≤ 0.10 | ≤ 0.28
+80 | Strong | 0.11–0.15 | 0.29–0.34
+70 | Functional | 0.16–0.20 | 0.35–0.40
+60 | Limited | 0.21–0.26 | 0.41–0.47
+<60 | Liability | >0.26 | >0.47
+
+--- TABLE 21 ---
+Score | Meaning | Pick-Up Rate | Deflection Rate
+90 | Elite pressure | ≥ 0.14 | ≥ 0.22
+80 | Strong | 0.10–0.13 | 0.17–0.21
+70 | Functional | 0.07–0.09 | 0.12–0.16
+60 | Limited | 0.04–0.06 | 0.08–0.11
+<60 | Passive | <0.04 | <0.08
+
+--- TABLE 22 ---
+Score | Meaning | Sep @0.8s | Advantage Rate
+90 | Elite | ≤ 2.2 ft | ≤ 0.20
+80 | Strong | 2.3–2.7 | 0.21–0.27
+70 | Functional | 2.8–3.2 | 0.28–0.34
+60 | Limited | 3.3–3.8 | 0.35–0.42
+<60 | Target | >3.8 | >0.42
+
+--- TABLE 23 ---
+Score | Meaning | Perim eFG% Allowed | Contested Rate
+90 | Elite | ≤ 44% | ≥ 0.55
+80 | Strong | 45–48% | 0.47–0.54
+70 | Functional | 49–52% | 0.39–0.46
+60 | Limited | 53–56% | 0.31–0.38
+<60 | Liability | >56% | <0.31
+
+--- TABLE 24 ---
+Score | Meaning | STL / 100 | Defl / Poss
+90 | Elite | ≥ 3.5 | ≥ 0.25
+80 | Strong | 2.7–3.4 | 0.19–0.24
+70 | Functional | 2.0–2.6 | 0.14–0.18
+60 | Limited | 1.3–1.9 | 0.09–0.13
+<60 | Low event | <1.3 | <0.09
+
+--- TABLE 25 ---
+Score | Meaning | Deny Rate | Sep @Catch
+90 | Elite | ≥ 0.28 | ≤ 2.0
+80 | Strong | 0.21–0.27 | 2.1–2.4
+70 | Functional | 0.15–0.20 | 2.5–2.8
+60 | Limited | 0.09–0.14 | 2.9–3.3
+<60 | Loose | <0.09 | >3.3
+
+--- TABLE 26 ---
+Score | Meaning | Reset Rate | Defl / Poss
+90 | Elite | ≥ 0.18 | ≥ 0.25
+80 | Strong | 0.13–0.17 | 0.19–0.24
+70 | Functional | 0.09–0.12 | 0.14–0.18
+60 | Limited | 0.05–0.08 | 0.09–0.13
+<60 | Low impact | <0.05 | <0.09
+
+--- TABLE 27 ---
+Score | Meaning | Fouls / 100 | Shooting Foul %
+90 | Elite | ≤ 2.6 | ≤ 4%
+80 | Strong | 2.7–3.4 | 5–6%
+70 | Functional | 3.5–4.3 | 7–8%
+60 | Risky | 4.4–5.3 | 9–10%
+<60 | Foul-prone | >5.3 | >10%
+
+--- TABLE 28 ---
+Trait Score | Meaning (College) | BLK / 100 PaintFGA | BLK Att / G
+90 | Elite shot blocker | 12.0+ | 3.0+
+80 | Strong | 8.5–11.9 | 2.0–2.9
+70 | Functional | 5.5–8.4 | 1.2–1.9
+60 | Limited | 3.0–5.4 | 0.6–1.1
+<60 | Non-deterrent | <3.0 | Low
+
+--- TABLE 29 ---
+Trait Score | Meaning | Rim Attempts Prevented / 100 | Rim Freq Δ
+90 | Elite deterrent | 10.0+ | −18%
+80 | Strong | 7.0–9.9 | −12–17%
+70 | Functional | 4.0–6.9 | −7–11%
+60 | Limited | 1.5–3.9 | −3–6%
+<60 | No deterrence | <1.5 | <−3%
+
+--- TABLE 30 ---
+Trait Score | Meaning | Opp FG% (Contested) | Contests / G
+90 | Elite vertical defender | ≤45% | 6.0+
+80 | Strong | 46–50% | 4.5–5.9
+70 | Functional | 51–55% | 3.0–4.4
+60 | Limited | 56–60% | 1.8–2.9
+<60 | Ineffective | >60% | Low
+
+--- TABLE 31 ---
+Trait Score | Meaning | PPP Allowed | Post Stops / G
+90 | Elite post stopper | ≤0.70 | 3.0+
+80 | Strong | 0.71–0.80 | 2.0–2.9
+70 | Functional | 0.81–0.90 | 1.2–1.9
+60 | Limited | 0.91–1.00 | 0.6–1.1
+<60 | Liability | >1.00 | Low
+
+--- TABLE 32 ---
+Trait Score | Meaning | Help Rotations / G | Help Stops / G
+90 | Elite help anchor | 6.0+ | 3.5+
+80 | Strong | 4.5–5.9 | 2.5–3.4
+70 | Functional | 3.0–4.4 | 1.6–2.4
+60 | Limited | 1.8–2.9 | 0.8–1.5
+<60 | Late/Absent | <1.8 | Low
+
+--- TABLE 33 ---
+Trait Score | Meaning | PPP Allowed | Roll Stops / G
+90 | Elite roll defender | ≤0.75 | 3.0+
+80 | Strong | 0.76–0.85 | 2.0–2.9
+70 | Functional | 0.86–0.95 | 1.2–1.9
+60 | Limited | 0.96–1.05 | 0.6–1.1
+<60 | Exposed | >1.05 | Low
+
+--- TABLE 34 ---
+Trait Score | Meaning | Deflections / G | Forced Disruptions / G
+90 | Elite disruptor | 4.0+ | 3.0+
+80 | Strong | 3.0–3.9 | 2.0–2.9
+70 | Functional | 2.0–2.9 | 1.2–1.9
+60 | Limited | 1.0–1.9 | 0.6–1.1
+<60 | Passive | <1.0 | Low
+
+--- TABLE 35 ---
+Trait Score | Meaning | Fouls / 100 | And-1 Rate
+90 | Elite discipline | ≤2.0 | ≤6%
+80 | Strong | 2.1–3.0 | 7–9%
+70 | Acceptable | 3.1–4.2 | 10–13%
+60 | Risky | 4.3–5.5 | 14–18%
+<60 | Foul-prone | >5.5 | >18%
+
+--- TABLE 36 ---
+Trait Score | Meaning | Deep Seals Allowed | Charges / G
+90 | Elite positioning | ≤0.8 | 1.2+
+80 | Strong | 0.9–1.4 | 0.8–1.1
+70 | Functional | 1.5–2.1 | 0.4–0.7
+60 | Limited | 2.2–2.9 | 0.1–0.3
+<60 | Displaced | ≥3.0 | Low
+
+--- TABLE 37 ---
+Trait Score | Meaning (College) | DREB% | DREB/G
+90 | Elite finisher of possessions | 28%+ | 7.5+
+80 | Strong | 23–27% | 5.5–7.4
+70 | Functional | 18–22% | 3.8–5.4
+60 | Limited | 13–17% | 2.5–3.7
+<60 | Liability | <13% | <2.5
+
+--- TABLE 38 ---
+Trait Score | Meaning (College) | OREB% | OREB/G
+90 | Elite extra-possession creator | 14%+ | 3.2+
+80 | Strong | 10–13% | 2.2–3.1
+70 | Functional | 7–9% | 1.4–2.1
+60 | Limited | 4–6% | 0.7–1.3
+<60 | Non-factor | <4% | <0.7
+
+--- TABLE 39 ---
+Trait Score | Meaning (College) | Opp OREB% | Box-outs/G
+90 | Elite rebound suppressor | ≤18% | 6.0+
+80 | Strong | 19–22% | 4.0–5.9
+70 | Functional | 23–26% | 2.5–3.9
+60 | Limited | 27–30% | 1.2–2.4
+<60 | Liability | >30% | <1.2
+
+--- TABLE 40 ---
+Trait Score | Meaning (College) | Secure % | Lost/G
+90 | Elite hands | 85%+ | ≤0.2
+80 | Strong | 78–84% | 0.3–0.5
+70 | Functional | 70–77% | 0.6–0.9
+60 | Limited | 62–69% | 1.0–1.4
+<60 | Poor hands | <62% | >1.4
+
+--- TABLE 41 ---
+Trait Score | Meaning (College) | OoA Reb/G | Avg Dist (ft)
+90 | Elite range rebounder | 2.5+ | 10+
+80 | Strong | 1.6–2.4 | 7–9
+70 | Functional | 1.0–1.5 | 5–6
+60 | Limited | 0.5–0.9 | 3–4
+<60 | Area-locked | <0.5 | <3
+
+--- TABLE 42 ---
+Trait Score | Meaning (College) | Outlet AST/G | Adv Outlets/G
+90 | Elite transition igniter | 1.4+ | 3.5+
+80 | Strong | 0.9–1.3 | 2.3–3.4
+70 | Functional | 0.5–0.8 | 1.4–2.2
+60 | Limited | 0.2–0.4 | 0.6–1.3
+<60 | No impact | <0.2 | <0.6
+
+--- TABLE 43 ---
+Trait Score | Meaning | Peak (mph) | Sustained (mph)
+90 | Elite | 17.5+ | 15.5+
+80 | Strong | 16.5–17.4 | 14.5–15.4
+70 | Functional | 15.5–16.4 | 13.5–14.4
+60 | Limited | 14.5–15.4 | 12.5–13.4
+<60 | Slow | <14.5 | <12.5
+
+--- TABLE 44 ---
+Trait Score | Meaning | Peak | Sustained
+90 | Elite | 19.0+ | 16.5+
+80 | Strong | 18.0–18.9 | 15.5–16.4
+70 | Functional | 17.0–17.9 | 14.5–15.4
+60 | Limited | 16.0–16.9 | 13.5–14.4
+<60 | Slow | <16.0 | <13.5
+
+--- TABLE 45 ---
+Score | Meaning | Time | Distance
+90 | Elite | ≤1.25s | 18.0+
+80 | Strong | 1.26–1.40 | 16.0–17.9
+70 | Functional | 1.41–1.55 | 14.0–15.9
+60 | Limited | 1.56–1.70 | 12.0–13.9
+<60 | Poor | >1.70 | <12.0
+
+--- TABLE 46 ---
+Score | Meaning | Stop Time | Balance Loss
+90 | Elite | ≤0.45s | ≤6%
+80 | Strong | 0.46–0.55 | 7–9%
+70 | Functional | 0.56–0.65 | 10–13%
+60 | Limited | 0.66–0.75 | 14–18%
+<60 | Unstable | >0.75 | >18%
+
+--- TABLE 47 ---
+Score | Meaning | Efficiency | Retention
+90 | Elite | Top-tier | ≥88%
+80 | Strong | High | 80–87%
+70 | Functional | Avg+ | 72–79%
+60 | Limited | Avg | 64–71%
+<60 | Rigid | Low | <64%
+
+--- TABLE 48 ---
+Score | Meaning | Speed | Containment
+90 | Elite | ≥12.5 | ≥70%
+80 | Strong | 11.5–12.4 | 60–69%
+70 | Functional | 10.5–11.4 | 50–59%
+60 | Limited | 9.5–10.4 | 40–49%
+<60 | Slow | <9.5 | <40%
+
+--- TABLE 49 ---
+Score | Meaning | Vert | 2nd Jump
+90 | Elite | 36+ | ≤0.45
+80 | Strong | 32–35 | 0.46–0.55
+70 | Functional | 28–31 | 0.56–0.65
+60 | Limited | 24–27 | 0.66–0.75
+<60 | Grounded | <24 | >0.75
+
+--- TABLE 50 ---
+Score | Meaning | Resistance | Success
+90 | Elite | ≥72% | ≥70%
+80 | Strong | 62–71% | 60–69%
+70 | Functional | 52–61% | 50–59%
+60 | Limited | 42–51% | 40–49%
+<60 | Weak | <42% | <40%
+
+--- TABLE 51 ---
+Score | Meaning | FG% | Survival
+90 | Elite | ≥62% | ≥75%
+80 | Strong | 55–61% | 65–74%
+70 | Functional | 48–54% | 55–64%
+60 | Limited | 41–47% | 45–54%
+<60 | Soft | <41% | <45%
+
+--- TABLE 52 ---
+Score | Meaning | Drop-off | Actions
+90 | Elite | ≤6% | High
+80 | Strong | 7–10% | Above avg
+70 | Functional | 11–15% | Avg
+60 | Limited | 16–20% | Below
+<60 | Gasses | >20% | Low
+
+--- TABLE 53 ---
+Score | Meaning | Actions | Consistency
+90 | Relentless | Top-tier | Elite
+80 | Strong | High | High
+70 | Functional | Avg+ | Avg
+60 | Inconsistent | Avg | Low
+<60 | Low motor | Low | Poor
+
+--- TABLE 54 ---
+Score | Meaning | Off-Balance | Recovery
+90 | Elite | ≥68% | ≥75%
+80 | Strong | 58–67% | 65–74%
+70 | Functional | 48–57% | 55–64%
+60 | Limited | 38–47% | 45–54%
+<60 | Unstable | <38% | <45%

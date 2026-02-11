@@ -1,0 +1,26 @@
+Simulation Confidence Gate (Percentage) — Locked Table
+Full confidence table (locked ranges)
+
+Simulation Confidence Adjusters (apply within the chosen range)
+Rule (locked): Choose the row above first. Adjusters may only move the value within that row’s range. Adjusters may not push the final value below the row minimum or above the row maximum.
+Downshifts (bounded):
+OSIE/DSIE uncertainty (identity not locked / mixed systems) → −5 to −12 pts
+Rotation instability / injuries / unknown minutes → −5 to −10 pts
+Lineup/stint accuracy weak (who played with who unclear) → −5 to −10 pts
+Small sample opponent context (few quality games / limited matchup evidence) → −3 to −8 pts
+Upshift (bounded):
+High completeness + stable identity + strong samples → move toward top of range (no bonus above max)
+
+If you want one more tightening: we can add a single final line like
+Output: simulation_confidence_pct ∈ [0,100] (but the table already hard-locks behavior).
+
+
+--- TABLE 1 ---
+Data available (simulation inputs) | simulation_confidence_pct (default range)
+V1 Stats-only: box scores + roster minutes/participation + Player KR (production-based) + Team KR | 55–70%
+V1 Stats-only + stable system identity (coach-continuity or OSIE/DSIE locked w/ high stability) | 60–75%
+V1 Stats-only + in-season OSIE/DSIE confirmation (identity inferred from games, not assumed) | 65–80%
+V2 Granular (Synergy-level play types/shot profile/efficiency) + OSIE/DSIE | 75–88%
+V2 Granular + multi-game trend context (same opponent/system across sample) | 80–92%
+V3 Film-Verified (owned film processed + full tag log + lineup stint accuracy) | 85–95%
+V3 Film-Verified + high completeness (accurate stints + stable identity + deep matchup samples) | 90–97%

@@ -1,0 +1,118 @@
+Player Profile (Auto-Populated Record)
+A) Identity
+Full legal name
+
+Known aliases / alternate spellings
+
+Date of birth
+
+Age (derived)
+
+Height (current) + height history (if available)
+
+Weight (current) + weight history (if available)
+
+Declared position(s) (source-listed only)
+
+City/Town of origin
+
+State/Province
+
+Country
+
+High school / prep school
+
+Club / AAU program
+
+Current team affiliation (if applicable)
+
+B) Career Record (Season-by-Season)
+For each competitive season:
+Team name
+
+League / competition level (as reported)
+
+Season/year label
+
+Dates active (if available)
+
+C) Raw On-Court Production (Season-by-Season)
+For each season:
+Games played
+
+Games started (if available)
+
+Minutes played
+
+Points
+
+Rebounds
+
+Assists
+
+Steals
+
+Blocks
+
+Turnovers
+
+Fouls
+
+Shooting totals:
+
+FG made / attempted
+
+3PT made / attempted
+
+FT made / attempted
+
+D) Academic Record (Public / Declared Only)
+GPA (if available)
+
+Academic honors (if available)
+
+Publicly reported eligibility status (if available)
+
+E) Declared Medical Information (Public Only)
+Declared injuries (if available)
+
+Public injury reports (if available)
+
+Medical redshirt designations (if applicable)
+
+F) Off-Court Public Record (Observable Only)
+Public statements (if captured)
+
+Social media presence (handles only)
+
+Verifiable public incidents (if applicable)
+
+Awards and honors
+
+G) Contact and Identification Metadata (Legal / Voluntary Only)
+Phone number(s)
+
+Email address(es)
+
+Social media handles (also listed above, but stored here as contact metadata)
+
+H) Source Attribution + Trust Metadata (Per Field)
+Source for each element
+
+Verification status: verified / unverified
+
+Known coverage gaps (missing seasons, missing stats, etc.)
+
+Locked Exclusions (never in Player Profile)
+Evaluations/ratings/KRs
+
+Attributes, badges, archetypes
+
+Role inference or system fit
+
+Private medical or disciplinary records
+
+Household income / parental info
+
+Subjective recruiting opinions
+

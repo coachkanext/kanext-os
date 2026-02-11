@@ -1,0 +1,130 @@
+TEAM KR MATH + WEIGHTS (LOCKED, CONTEXTUAL)
+1. Inputs (Non-Negotiable)
+Team Evaluation consumes only:
+Player Final System KRs
+
+Final_System_Offense_KRᵢ
+
+Final_System_Defense_KRᵢ
+
+Rotation Participation (minutes-based)
+
+Coach enters minutes (or minutes share)
+
+System normalizes internally to a possession-weighted participation share wᵢ
+
+Program Context Key
+
+Governing Body / Division (and Major Class if NCAA D1)
+
+Offensive System + Defensive System
+
+ (This context is used upstream to generate Final System KRs and system-fit contributions; Team KR math does not re-evaluate traits/archetypes.)
+
+Explicit exclusions (locked):
+No archetype recomputation
+
+No badge/label recomputation
+
+No trait recomputation
+
+No system-fit inference inside this layer (already baked into Final System KR)
+
+
+2. Rotation Model (LOCKED)
+Rotation-only model. No starter/bench labels.
+2.1 Participation Threshold
+Define MIN_PARTICIPATION = 0.05 (5% default)
+
+Include player i in Team KR math iff wᵢ ≥ MIN_PARTICIPATION
+
+Exclude all players below the threshold from Team KR aggregation
+
+2.2 Weight Normalization
+For included players:
+wᵢ ∈ [MIN_PARTICIPATION, 1.00]
+
+Normalize so: Σ wᵢ = 1.00
+
+2.3 Participation Source
+Coach-entered minutes are normalized internally into wᵢ (possession-normalized)
+
+Evaluation window is the selected window (default: season-to-date)
+
+
+3. Team Offense KR (Contextual)
+Team\_Offense\_KR = \sum_i (Final\_System\_Offense\_KR_i \times w_i)
+Interpretation (locked):
+Reflects the offense you can run in your selected offensive system
+
+High-minute contributors drive the team number
+
+Bench value matters only if minutes clear the threshold
+
+
+4. Team Defense KR (Contextual)
+Team\_Defense\_KR = \sum_i (Final\_System\_Defense\_KR_i \times w_i)
+Interpretation (locked):
+Reflects the defense you can sustain in your selected defensive system
+
+Defensive specialists matter if they play
+
+Low-minute players do not materially affect Team Defense unless they clear threshold
+
+
+5. Overall Team KR (LOCKED WEIGHTING = 53/47)
+Team\_KR = (Team\_Offense\_KR \times 0.53) + (Team\_Defense\_KR \times 0.47)
+This ratio is locked.
+Offense weight = 53%
+
+Defense weight = 47%
+
+
+6. Depth Handling (Implicit, Not Separate)
+Depth is not a separate variable.
+Depth emerges deterministically because:
+Deeper teams distribute weight across more playable contributors
+
+Shallow teams concentrate weight into fewer players
+
+No artificial depth bonus/penalty exists.
+By design exclusions (locked):
+Injuries / fatigue / foul trouble are not modeled in Team KR math
+
+
+7. Output (Team Evaluation Truth)
+Team Evaluation returns:
+Team_Offense_KR
+
+Team_Defense_KR
+
+Team_KR (overall)
+
+All outputs are deterministic:
+Same inputs → same outputs
+
+Program Context + System Fit Clarification (LOCKED)
+Team KR does not use raw player KRs.
+Team KR uses contextual player outputs that are already computed upstream under the selected Program Context.
+What happens upstream (before Team KR)
+The coach selects Program Context:
+
+Governing Body / Division (and Major Class if NCAA D1)
+
+Offensive System + Defensive System
+
+The Player Engine produces, for each player:
+
+Base Offense KR and Base Defense KR (system-agnostic truth)
+
+Final System Offense KR and Final System Defense KR (system-conditioned, derived deterministically from the selected systems and the player’s truth profile)
+
+What Team KR does (and does not do)
+Team KR ONLY aggregates:
+Final_System_Offense_KRᵢ
+
+Final_System_Defense_KRᵢ
+
+ using rotation participation weights.
+
+

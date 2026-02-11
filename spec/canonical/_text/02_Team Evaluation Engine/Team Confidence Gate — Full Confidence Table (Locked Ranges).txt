@@ -1,0 +1,27 @@
+Team Confidence Gate — Full Confidence Table (Locked Ranges)
+
+Team Confidence Gate (Percentage) — Locked Doc
+Purpose
+Confidence% is a single number that communicates evidence completeness + stability for the team evaluation.
+Output
+team_kr_confidence_pct ∈ [0,100]
+coverage_confidence_pct ∈ [0,100]
+Computed at the end of team evaluation.
+What it affects
+Confidence% does not change any Team KR math.
+Confidence% is used for transparency and (optionally) gating what the system is allowed to claim or trigger.
+Default confidence ranges (by data availability)
+Use the table above as the default confidence mapping for:
+Team KR confidence %
+System Coverage confidence %
+
+
+--- TABLE 1 ---
+Data available | Team KR confidence % | System Coverage confidence %
+Official college stats only (league/team box scores) for players + official rotation minutes, multi-year | 80–88% | 55–70%
+Official college stats + HS stats (MaxPreps etc.) + official rotation minutes | 82–90% | 60–75%
+Multi-year across levels (NJCAA→NAIA/NCAA, etc.) + official rotation minutes | 85–92% | 65–80%
+1 year Synergy + official stats + official rotation minutes (starters mostly Full) | 88–94% | 75–88%
+Multi-year Synergy + official stats + official rotation minutes (rotation mostly Full) | 92–97% | 85–95%
+1 year PlayVision + official stats + official rotation minutes (assume same PPP/play-type/shot-type fidelity as Synergy) | 88–94% | 75–88%
+Multi-year PlayVision + official stats + official rotation minutes (same assumption) | 92–97% | 85–95%

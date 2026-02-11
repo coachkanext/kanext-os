@@ -1,0 +1,116 @@
+KR Impact Modifiers — System Logic (Authoritative, KLVN-Normalized)
+Scope and Authority
+This section defines Impact Modifiers as a mandatory classification layer within KaNeXT College Basketball Intelligence.
+Impact Modifiers are governed exclusvively by KLVN-normalized signals and are applied after KR calculation.
+No raw or level-dependent statistics may be used for modifier assignment.
+Foundational Invariant (Explicit — Non-Negotiable)
+All inputs used for Impact Modifier assignment are KLVN-normalized.
+This includes, but is not limited to:
+usage and creation load
+efficiency metrics
+lineup on/off impact
+defensive and rebounding rates
+Raw box-score values, raw percentages, or unadjusted rates may not be used.
+🔒 System Invariant:
+Impact Modifiers are evaluated in normalized competitive space, not absolute statistical space.
+As a result:
+An NAIA player and a High-Major player can qualify for the same Impact Modifier if and only if they generate equivalent normalized impact relative to their environment.
+No modifier thresholds are scaled, adjusted, or re-tuned by level.
+Purpose
+KaNeXT Rating (KR) measures the magnitude of a player’s on-court impact after KLVN normalization.
+Impact Modifiers classify the mode by which that normalized impact is produced.
+KR answers how much a player impacts winning.
+Impact Modifiers answer how that impact is generated.
+This separation is intentional and universal across all competitive levels.
+System Rules (Hard Constraints)
+Each player may be assigned at most one primary Impact Modifier.
+Impact Modifiers do not alter KR values, bands, or tiers.
+Impact Modifiers are assigned deterministically by Nexus using KLVN-normalized signals only.
+Impact Modifiers are not editable at the UI level and are not manually overridden.
+Impact Modifiers describe role, not hierarchy.
+At equivalent KR, no modifier is inherently superior.
+Normalized Input Signals (Required)
+All signals below are evaluated post-KLVN normalization, meaning they already account for:
+opponent strength
+pace and possession environment
+role expectations
+lineup context
+level-specific defensive pressure
+No raw inputs are permitted.
+Role & Load
+USG_K — normalized usage responsibility
+AST_K — normalized assist involvement
+TOV_K — normalized turnover burden
+Efficiency
+TS_K+ — normalized efficiency vs team + opponent baseline
+Creation Profile
+SelfCreate_K% — normalized share of self-generated offense
+Lineup Impact
+OnOff_ORtg_K — normalized offensive on/off impact
+OnOff_Net_K — normalized net impact
+Defense / Specialization
+BLK_K%, STL_K%, REB_K% — normalized defensive and rebounding leverage
+Minimum sample:
+MIN ≥ 200 normalized minutes
+Below threshold → modifier flagged Provisional
+Derived Normalized Scores
+Engine Load Score (ELS_K)
+Quantifies offensive responsibility in normalized space.
+ELS_K = 0.6 × USG_K + 0.4 × AST_K
+Weights are locked and may not be modified by level.
+Impact Modifier Assignment (Deterministic)
+Step 0 — Data Sufficiency
+If normalized minutes < 200 or required K-signals missing →
+Modifier = Unclassified (Insufficient Data)
+1. Primary Engine
+Definition
+A player whose normalized offensive impact is structurally required for team function.
+All K-normalized gates required:
+ELS_K ≥ 24
+SelfCreate_K% ≥ 45
+TS_K+ ≥ −1.0
+OnOff_ORtg_K ≥ +4 or OnOff_Net_K ≥ +5
+TOV_K ≤ 20
+Interpretation
+Offense must be organized around the player
+Impact remains stable as load increases
+Removal produces a measurable structural drop
+2. Secondary Engine
+Definition
+A player who creates advantages in normalized space but does not anchor the offense continuously.
+All K-normalized gates required:
+ELS_K ∈ [18, 23.9]
+SelfCreate_K% ≥ 35
+TS_K+ ≥ 0
+OnOff_Net_K ≥ +3
+TOV_K ≤ 22
+3. Force Multiplier
+Definition
+A player whose normalized impact is driven by efficiency, spacing, defense, and connective play.
+All K-normalized gates required:
+USG_K ≤ 22
+TS_K+ ≥ +2
+OnOff_Net_K ≥ +5
+Meets at least two normalized multiplier triggers:
+Multiplier Triggers (K-normalized):
+Shooting gravity (3PA_K volume + efficiency)
+Rim or foul pressure (RimA_K or FTA_K)
+Defensive playmaking (STL_K% or BLK_K%)
+Rebound leverage (REB_K% vs positional baseline)
+4. Specialist Anchor
+Definition
+A player whose normalized impact is elite in one narrow domain and matchup-dependent.
+All K-normalized gates required:
+USG_K ≤ 20
+Exactly one elite specialization signal met (highest value selected)
+Situational lineup impact, not universal
+Precedence Rules (Locked)
+If Primary Engine gates are met → assign Primary Engine
+Else if Secondary Engine gates met → assign Secondary Engine
+Else if Force Multiplier gates met → assign Force Multiplier
+Else if Specialist Anchor gates met → assign Specialist Anchor
+Else → Unclassified
+Final Lock Statement
+All Impact Modifier thresholds operate exclusively in KLVN-normalized space.
+No competitive level adjustments are permitted.
+Universality across NAIA, D2, and D1 is a system requirement, not a tuning choice.

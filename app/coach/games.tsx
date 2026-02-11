@@ -17,17 +17,18 @@ import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/core';
-import { FIREBASE_LEADERS } from '@/data/firebase-lincoln';
+import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS } from '@/data/fmu';
 
 // Same hub tabs as SportsHome — keeps navigation consistent across coach screens
 const HUB_TABS = [
   { id: 'home', label: 'Home', route: '/(tabs)' },
   { id: 'roster', label: 'Roster', route: '/(tabs)' },
-  { id: 'games', label: 'Games' },
-  { id: 'injuries', label: 'Injuries', route: '/coach/injuries' },
-  { id: 'program-context', label: 'Team System', route: '/coach/program-context' },
-  { id: 'recruiting', label: 'Recruiting', route: '/coach/recruiting' },
-  { id: 'film', label: 'Film', route: '/coach/film' },
+  { id: 'schedule', label: 'Schedule', route: '/(tabs)' },
+  { id: 'stats', label: 'Stats', route: '/(tabs)' },
+  { id: 'game-ops', label: 'Game Ops', route: '/(tabs)' },
+  { id: 'program', label: 'Program', route: '/(tabs)' },
+  { id: 'recruiting', label: 'Recruiting', route: '/(tabs)' },
+  { id: 'development', label: 'Development', route: '/(tabs)' },
 ];
 
 // ── Demo Data ──
@@ -44,43 +45,26 @@ interface Game {
   clock?: string;
 }
 
-const ALL_GAMES: Game[] = [
-  // Final (away losses)
-  { id: '-Odr30YnjKA38ZfBZ6qB', opponent: 'UNLV', date: 'Game 1', location: 'Away', status: 'final', score: 'L 59-123' },
-  { id: '-OgbmTnXpz994rOErPEo', opponent: 'Loyola Marymount', date: 'Game 2', location: 'Away', status: 'final', score: 'L 54-137' },
-  { id: '-OgbzyEnODgmhH7yyXSJ', opponent: 'Pepperdine', date: 'Game 3', location: 'Away', status: 'final', score: 'L 76-113' },
-  { id: '-OgcD9jAtLd0IFGX7lwI', opponent: 'UC Irvine', date: 'Game 4', location: 'Away', status: 'final', score: 'L 63-130' },
-  { id: '-Ogd2OxdplE_N1hzwR_W', opponent: 'Cal Maritime', date: 'Game 5', location: 'Away', status: 'final', score: 'L 102-108' },
-  // Final (wins)
-  { id: '-OgdZ7wZowES0FYO8FYE', opponent: 'Ohlone', date: 'Game 6', location: 'Away', status: 'final', score: 'W 90-86' },
-  { id: '-OgjOc5JGIhECeCvETY6', opponent: 'Simpson University', date: 'Game 7', location: 'Home', status: 'final', score: 'W 86-79' },
-  { id: '-Oi5tiQ8LDRW9FEUs_gf', opponent: 'Cal Maritime', date: 'Game 8', location: 'Home', status: 'final', score: 'W 102-96' },
-  { id: '-OjE19psxjUfBfqrHZnB', opponent: 'Cal Miramar', date: 'Game 9', location: 'Home', status: 'final', score: 'W 114-86' },
-  { id: '-OjOHCO32yY5URlwq6su', opponent: 'Cal Miramar', date: 'Game 10', location: 'Home', status: 'final', score: 'W 93-73' },
-  { id: '-Ojn37CBTNgN9KpQQ22V', opponent: 'Cal Prestige Tigers', date: 'Game 11', location: 'Home', status: 'final', score: 'W 127-60' },
-  { id: '-OkM7ZQIrwSjI9U37UGd', opponent: 'Bethesda', date: 'Game 12', location: 'Home', status: 'final', score: 'W 112-88' },
-  // Upcoming
-  { id: '-OitEKyFF5d9L8N0TgJR', opponent: 'Cal State East Bay', date: 'Game 13', location: 'Away', status: 'live', score: '34-28', clock: 'Q2 4:12' },
-];
+const ALL_GAMES: Game[] = FMU_GAMES;
 
 // Derive leaders from Firebase canonical data
 type LeaderEntry = { name: string; value: string };
 
-function topN(sorted: typeof FIREBASE_LEADERS, key: 'ppg' | 'rpg' | 'apg' | 'spg' | 'bpg' | 'fgPct' | 'threePct' | 'ftPct', isPct: boolean, n = 3): LeaderEntry[] {
+function topN(sorted: typeof FMU_LEADERS, key: 'ppg' | 'rpg' | 'apg' | 'spg' | 'bpg' | 'fgPct' | 'threePct' | 'ftPct', isPct: boolean, n = 3): LeaderEntry[] {
   return sorted.slice(0, n).map((p) => ({
     name: p.name,
     value: isPct ? `${p[key].toFixed(1)}%` : p[key].toFixed(1),
   }));
 }
 
-const fbByPpg = [...FIREBASE_LEADERS].sort((a, b) => b.ppg - a.ppg);
-const fbByRpg = [...FIREBASE_LEADERS].sort((a, b) => b.rpg - a.rpg);
-const fbByApg = [...FIREBASE_LEADERS].sort((a, b) => b.apg - a.apg);
-const fbBySpg = [...FIREBASE_LEADERS].sort((a, b) => b.spg - a.spg);
-const fbByBpg = [...FIREBASE_LEADERS].sort((a, b) => b.bpg - a.bpg);
-const fbByFg = [...FIREBASE_LEADERS].sort((a, b) => b.fgPct - a.fgPct);
-const fbBy3p = [...FIREBASE_LEADERS].filter((p) => p.gamesPlayed >= 4).sort((a, b) => b.threePct - a.threePct);
-const fbByFt = [...FIREBASE_LEADERS].filter((p) => p.gamesPlayed >= 4).sort((a, b) => b.ftPct - a.ftPct);
+const fbByPpg = [...FMU_LEADERS].sort((a, b) => b.ppg - a.ppg);
+const fbByRpg = [...FMU_LEADERS].sort((a, b) => b.rpg - a.rpg);
+const fbByApg = [...FMU_LEADERS].sort((a, b) => b.apg - a.apg);
+const fbBySpg = [...FMU_LEADERS].sort((a, b) => b.spg - a.spg);
+const fbByBpg = [...FMU_LEADERS].sort((a, b) => b.bpg - a.bpg);
+const fbByFg = [...FMU_LEADERS].sort((a, b) => b.fgPct - a.fgPct);
+const fbBy3p = [...FMU_LEADERS].filter((p) => p.gamesPlayed >= 4).sort((a, b) => b.threePct - a.threePct);
+const fbByFt = [...FMU_LEADERS].filter((p) => p.gamesPlayed >= 4).sort((a, b) => b.ftPct - a.ftPct);
 
 const LEADERS: { category: string; top3: LeaderEntry[] }[] = [
   { category: 'PPG', top3: topN(fbByPpg, 'ppg', false) },
@@ -93,12 +77,7 @@ const LEADERS: { category: string; top3: LeaderEntry[] }[] = [
   { category: 'FT%', top3: topN(fbByFt, 'ftPct', true) },
 ];
 
-const NEWS_ITEMS = [
-  { id: 'n1', headline: 'Lincoln Cruises Past Bethesda 112-88', date: 'Game 12', type: 'Recap' },
-  { id: 'n2', headline: 'Lincoln Dominates Cal Prestige Tigers 127-60', date: 'Game 11', type: 'Recap' },
-  { id: 'n3', headline: 'Lincoln Secures 93-73 Victory Over Cal Miramar', date: 'Game 10', type: 'Recap' },
-  { id: 'n4', headline: 'Kalejaiye Leads 114-86 Rout of Cal Miramar', date: 'Game 9', type: 'Recap' },
-];
+const NEWS_ITEMS = FMU_NEWS;
 
 // ── Types ──
 
@@ -113,9 +92,7 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 
 // Demo standings data
-const STANDINGS = [
-  { team: 'Lincoln', confW: 0, confL: 0, overallW: 7, overallL: 5, streak: 'W7' },
-];
+const STANDINGS = FMU_STANDINGS;
 
 const STATUS_COLORS: Record<GameStatus, string> = {
   upcoming: '#6e6e6e',
@@ -273,37 +250,25 @@ export default function GamesScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.hubTabsContent}
           >
-            {HUB_TABS.map((tab) => {
-              const isActive = tab.id === 'games';
-              return (
+            {HUB_TABS.map((tab) => (
                 <Pressable
                   key={tab.id}
-                  style={[
-                    styles.hubTab,
-                    isActive && [styles.hubTabActive, { borderBottomColor: colors.text }],
-                  ]}
+                  style={styles.hubTab}
                   onPress={() => {
-                    if (tab.id === 'games') return; // already here
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    if (tab.id === 'home' || tab.id === 'roster') {
-                      router.back();
-                    } else if (tab.route) {
-                      router.replace(tab.route as any);
-                    }
+                    router.back();
                   }}
                 >
                   <ThemedText
                     style={[
                       styles.hubTabLabel,
-                      { color: isActive ? colors.text : colors.textTertiary },
-                      isActive && styles.hubTabLabelActive,
+                      { color: colors.textTertiary },
                     ]}
                   >
                     {tab.label}
                   </ThemedText>
                 </Pressable>
-              );
-            })}
+            ))}
           </ScrollView>
         </View>
 
@@ -484,7 +449,7 @@ export default function GamesScreen() {
                 <Text style={[styles.standingsColHeader, { color: colors.textTertiary }]}>STK</Text>
               </View>
               {STANDINGS.map((row, index) => {
-                const isUs = row.team === 'Lincoln';
+                const isUs = row.team === 'Florida Memorial';
                 return (
                   <View key={row.team}>
                     {index > 0 && (

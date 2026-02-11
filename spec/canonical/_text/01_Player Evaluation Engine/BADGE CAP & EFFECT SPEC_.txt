@@ -1,0 +1,460 @@
+BADGE CAP & EFFECT SPEC — COLLEGE v1
+Purpose
+Define how much conditional skill expression (KaNeXT badges) is allowed to influence player ratings without overriding Base KR truth, Archetype identity, or System Fit.
+KaNeXT badges amplify certified skills; they do not create quality.
+KaNeXT badges only exist when a skill translates at the high-major level.
+1. Badge Eligibility Prerequisite (Hard Gate)
+Before any badge can exist, both of the following must be true:
+Relevant Trait(s) ≥ 90
+Corresponding Component KR ≥ 90
+Silver and Gold KaNeXT badges require thresholds of 94 and 97 respectively for both trait(s) and component KR.
+If this prerequisite is not met → the badge does not exist.
+KaNeXT badges are certifications, not projections.
+2. Badge Levels & Component Effects
+Component scale: 0–100
+Badge effects apply only to the relevant component(s).
+
+3. Global Badge Caps (Hard Limits)
+Caps exist as safety rails, not balance crutches.
+They are expected to bind rarely, only in extreme stacked cases.
+3.1 Badge Count Caps
+Max Gold KaNeXT badges: 1
+Max Silver KaNeXT badges: 3
+Bronze KaNeXT badges: remainder (no explicit count cap)
+This prevents multi-weapon inflation while still allowing narrow specialists.
+3.2 Per-Component Cap
+Maximum badge impact per single component: ≤ +12
+Examples:
+1 Gold (+10) + 1 Bronze (+3) → capped at +12
+2 Silvers (+6 + +6) → capped at +12
+No single skill domain may be rewritten by KaNeXT badges alone.
+3.3 Overall Impact Cap
+Total badge contribution to Final KR: ≤ +3.5
+This ensures:
+KaNeXT badges can matter
+KaNeXT badges can decide margins
+KaNeXT badges cannot manufacture tier jumps
+Base KR + System Fit remain the primary truth
+4. Stacking Rules (Linear, v1)
+Badge effects are additive and linear
+No diminishing returns in v1
+No probabilistic scaling
+When a cap is reached, excess effect is truncated (never redistributed)
+This guarantees behavior that is:
+Deterministic
+Transparent
+Auditable
+
+5. Guardrails (Non-Negotiable)
+KaNeXT badges DO NOT:
+❌ Change Base KR
+❌ Change Archetype or archetype confidence
+❌ Override archetype misfits
+❌ Bypass System Fit weighting
+❌ Exceed component or overall caps
+Overrides remain the only mechanism permitted to correct model misinterpretation.
+6. Design Intent (Why This Is Correct)
+Bronze = certified high-major competence
+Silver = real, reliable schematic advantage
+Gold = true college-level weapon
+A Gold badge will often move a player ~+1 to +2 Overall KR in favorable systems:
+Enough to matter
+Never enough to lie
+KaNeXT badges explain outperformance, they never replace evaluation.
+
+OFFENSIVE BADGE TAXONOMY 
+(Trait-Library–Bound · System-Agnostic · High-Major Certified)
+GLOBAL BADGE ELIGIBILITY GATES (APPLY TO ALL KaNeXT badges)
+Component KR Gate
+Trait Gate
+Both gates must be met.
+If either the component KR or any required trait is below the level → no badge.
+Meaning: A badge certifies that a skill translates at the high-major level.
+
+I. SHOOTING KaNeXT badges
+1. Catch-and-Shoot Specialist
+Component: Shooting
+Source Trait:
+3PT — Catch & Shoot (Spot-Up)
+2. Movement Shooter
+Component: Shooting
+Source attributes:
+3PT — Movement
+Shot Type Versatility
+3. Deep Range Shooter
+Component: Shooting
+Source Trait:
+3PT — Deep Range
+4. Pull-Up Shot Maker
+Component: Shooting
+Source Trait:
+Pull-Up Shooting (Mid / 3)
+5. Corner Specialist
+Component: Shooting
+Source Trait:
+3PT — Corner
+6. Shot Volume Shooter
+Component: Shooting
+Source Trait:
+Shot Volume Tolerance
+
+7. Tough Shot Maker
+Component: Shooting
+Source attributes:
+Contested Shot Making
+Shot Selection
+II. FINISHING / RIM PRESSURE KaNeXT badges
+8. Rim Finisher
+Component: Finishing
+Source Trait:
+Finishing at Rim
+9. Contact Finisher
+Component: Finishing
+Source attributes:
+Finishing at Rim
+Contact Balance
+10. Rim Pressure Attacker
+Component: Finishing
+Source Trait:
+Rim Pressure
+11. FT Generator
+Component: Finishing
+Source Trait:
+Free Throw Rate / Foul Draw
+12. Cutter
+Component: Finishing
+Source Trait:
+Cutting
+(timing captured via event tagging inside the trait)
+13. Lob Threat
+Component: Finishing
+Source Trait:
+Lob Finishing
+III. PLAYMAKING KaNeXT badges
+14. Drive-and-Kick Playmaker
+Component: Playmaking
+Source attributes:
+Drive-and-Kick Passing
+Passing Accuracy
+15. Primary Playmaker
+Component: Playmaking
+Source attributes:
+Passing Vision
+Passing Accuracy
+16. Short-Roll Playmaker
+Component: Playmaking
+Source attributes:
+Short-Roll Reads
+Passing Vision
+17. Transition Playmaker
+Component: Playmaking
+Source attributes:
+Open-Floor Vision
+Passing Accuracy
+18. Ball Security Anchor
+Component: Playmaking
+Source Trait:
+Ball Security / Turnover Avoidance
+
+IV. OFF-BALL / CONNECTOR KaNeXT badges
+19. Connector
+Component: Team Offense
+Source attributes:
+Passing Accuracy
+Shot Type Versatility
+20. Relocation Threat
+Component: Team Offense
+Source Trait:
+Relocation Shooting
+21. Screen-User
+Component: Team Offense
+Source attributes:
+Screen Navigation (Offense)
+Shot Type Versatility
+V. SCREENING / BIG SKILL KaNeXT badges
+22. Screen Setter
+Component: Team Offense
+Source attributes:
+Screen Impact
+Screen Angle Quality
+23. Roll Man
+Component: Finishing
+Source attributes:
+Roll Gravity
+Lob Finishing
+24. Pick-and-Pop Threat
+Component: Shooting
+Source Trait:
+Pick-and-Pop Shooting
+25. Post Finisher
+Component: Finishing
+Source Trait:
+Post Scoring
+26. Post Playmaker
+Component: Playmaking
+Source attributes:
+Post Passing
+Passing Vision
+VI. TRANSITION KaNeXT badges
+27. Transition Finisher
+Component: Finishing
+Source Trait:
+Transition Finishing
+28. Transition Weapon
+Component: Finishing
+Source attributes:
+Open-Floor Speed
+Transition Finishing
+29. Grab-and-Go
+Component: Playmaking
+Source attributes:
+Grab-and-Go Handling
+Open-Floor Speed
+
+VII. GRAVITY / SPACING KaNeXT badges
+30. Shooting Gravity
+Component: Team Offense
+Source attributes:
+3PT — Catch & Shoot
+Shot Volume Tolerance
+31. Rim Gravity
+Component: Team Offense
+Source attributes:
+Rim Pressure
+Lob Finishing
+FINAL LOCK STATEMENT
+All Offensive KaNeXT badges in KaNeXT College Mode require a minimum of 90 in both the relevant Component KR and all associated Trait scores to earn a Bronze badge. Silver and Gold KaNeXT badges require 94 and 97 respectively. KaNeXT badges certify skills that translate at the high-major level and are independent of overall player quality or archetype.
+
+
+DEFENSIVE BADGE TAXONOMY 
+GLOBAL BADGE GATES (APPLY TO ALL DEFENSIVE KaNeXT badges)
+Component KR (Defense)
+Bronze ≥ 90
+Silver ≥ 94
+Gold ≥ 97
+Trait Gate
+Bronze ≥ 90
+Silver ≥ 94
+Gold ≥ 97
+If any required trait is below the threshold → no badge.
+I. ON-BALL DEFENSE KaNeXT badges
+1. Point-of-Attack Defender
+Component: Defense
+Source attributes:
+On-Ball Defense
+Lateral Quickness
+Meaning:
+Stays in front of HM guards without help.
+2. Lockdown Perimeter Defender
+Component: Defense
+Source attributes:
+On-Ball Defense
+Containment Discipline
+Meaning:
+Eliminates primary actions, not just survives.
+3. Ball Pressure Specialist
+Component: Defense
+Source attributes:
+Ball Pressure
+Hand Activity
+Meaning:
+Disrupts initiation and timing at HM speed.
+II. TEAM / OFF-BALL DEFENSE KaNeXT badges
+4. Team Defender
+Component: Defense
+Source attributes:
+Team Defense Awareness
+Rotational Discipline
+Meaning:
+Never breaks scheme integrity.
+5. Help Defender
+Component: Defense
+Source attributes:
+Help Timing
+Rotational Discipline
+Meaning:
+Arrives on time without over-helping.
+6. Closeout Specialist
+Component: Defense
+Source attributes:
+Closeout Technique
+Recovery Speed
+Meaning:
+Runs shooters off the line without fouling.
+III. SWITCHING / VERSATILITY KaNeXT badges
+7. Switchable Defender
+Component: Defense
+Source attributes:
+Defensive Versatility
+Lateral Quickness
+Meaning:
+Can guard across positions without matchup hunting.
+8. Guard-Up Defender
+Component: Defense
+Source attributes:
+Perimeter Containment
+Lateral Quickness
+Meaning:
+Bigs who survive guards in space.
+9. Post-Resistant Defender
+Component: Defense
+Source attributes:
+Post Defense
+Strength / Anchor
+Meaning:
+Holds ground against HM post play.
+IV. RIM PROTECTION / INTERIOR DEFENSE
+10. Rim Protector
+Component: Defense
+Source attributes:
+Shot Blocking
+Verticality
+Meaning:
+Deters shots before they’re taken.
+11. Paint Anchor
+Component: Defense
+Source attributes:
+Interior Defense
+Verticality
+Meaning:
+Controls paint positioning and angles.
+12. Weak-Side Shot Blocker
+Component: Defense
+Source attributes:
+Help Timing
+Shot Blocking
+Meaning:
+Erases mistakes without fouling.
+V. DISRUPTION / TURNOVER CREATION
+13. Passing Lane Disruptor
+Component: Defense
+Source attributes:
+Anticipation
+Hand Activity
+Meaning:
+Creates turnovers without gambling.
+
+14. Ball Hawk
+Component: Defense
+Source attributes:
+Steal Timing
+Anticipation
+Meaning:
+High-leverage takeaways that survive scouting.
+VI. REBOUNDING / POSSESSION ENDERS
+15. Defensive Rebounder
+Component: Defense
+Source attributes:
+Defensive Rebounding
+Box-Out Discipline
+Meaning:
+Ends possessions cleanly.
+16. Physical Rebounder
+Component: Defense
+Source attributes:
+Strength
+Rebounding Physicality
+Meaning:
+Wins contested rebounds in traffic.
+FINAL DEFENSIVE BADGE RULE (USE VERBATIM)
+A Defensive badge is awarded only when the relevant defensive trait(s) and Defensive Component KR are both ≥ 90. Bronze, Silver, and Gold KaNeXT badges certify high-major-viable, high-major-impact, and elite outlier defensive skills respectively.
+
+
+
+BADGE CAP & EFFECT SPEC — PRO v1 
+(Cloned from College v1 · Thresholds Adjusted Only)
+Purpose
+Define how much conditional skill expression (KaNeXT badges) is allowed to influence professional-level player ratings without overriding Base KR truth, Archetype identity, or System Fit.
+KaNeXT badges amplify certified skills; they do not create quality.
+In Pro Mode, KaNeXT badges certify NBA / top-tier professional translation.
+1. Badge Eligibility Prerequisite (Hard Gate)
+Before any badge can exist, both must be true:
+Relevant Trait(s) ≥ Pro threshold
+Corresponding Component KR ≥ Pro threshold
+Pro Thresholds
+Bronze: ≥ 93
+Silver: ≥ 96
+Gold: ≥ 98–99 (elite outlier range)
+If this prerequisite is not met → the badge does not exist.
+Same logic as College; higher bar only.
+2. Badge Levels & Component Effects
+Component scale: 0–100
+Effects apply only to the relevant component(s).
+Application Order
+Base KR (system-agnostic)
+System Fit adjustment
+Badge effects applied
+Final KR aggregation
+KLVN normalization (representation only)
+3. Global Badge Caps (Hard Limits)
+Caps are safety rails, not tuning knobs.
+They are expected to bind very rarely.
+3.1 Badge Count Caps
+Max Gold KaNeXT badges: 1
+Max Silver KaNeXT badges: 3
+Bronze KaNeXT badges: remainder (no explicit count cap)
+(Identical to College v1)
+3.2 Per-Component Cap
+Max badge impact per single component: ≤ +8
+Examples:
+1 Gold (+7) + 1 Bronze (+2) → capped at +8
+2 Silvers (+4 + +4) → capped at +8
+No single pro skill domain may be rewritten by KaNeXT badges.
+3.3 Overall Impact Cap
+Total badge contribution to Final KR: ≤ +2.5
+Ensures:
+KaNeXT badges matter at the margins
+No tier manufacturing
+Base KR + System Fit remain primary truth
+4. Stacking Rules (Linear, v1)
+Badge effects are additive and linear
+No diminishing returns
+No probabilistic scaling
+When a cap is reached, excess effect is truncated (never redistributed)
+5. Guardrails (Non-Negotiable)
+KaNeXT badges DO NOT:
+❌ Change Base KR
+❌ Change Archetype or archetype confidence
+❌ Override archetype misfits
+❌ Bypass System Fit weighting
+❌ Exceed component or overall caps
+Overrides remain the only mechanism allowed to correct model misinterpretation.
+6. Design Intent (Why This Is Correct)
+Bronze = certified pro-viable competence
+Silver = real, reliable pro impact
+Gold = elite outlier skill that survives NBA/top-tier pro scouting
+A Gold badge typically moves a player ~+0.5 to +1.5 Overall KR in favorable systems:
+Enough to matter
+Never enough to lie
+KaNeXT badges explain outperformance; they never replace evaluation.
+LOCK STATEMENT
+This Badge Cap & Effect Spec (Pro v1) is final.
+Any future changes (higher caps, additional Golds, diminishing returns) require explicit versioning and empirical justification.
+
+
+
+
+
+--- TABLE 1 ---
+Badge Level | Component Effect | Meaning
+Bronze | +3 | High-major viable skill
+Silver | +6 | High-major impact skill
+Gold | +10 | Elite high-major outlier
+
+--- TABLE 2 ---
+Badge Level | Component KR
+Bronze | ≥ 90
+Silver | ≥ 94
+Gold | ≥ 97
+
+--- TABLE 3 ---
+Badge Level | Trait Score
+Bronze | ≥ 90
+Silver | ≥ 94
+Gold | ≥ 97
+
+--- TABLE 4 ---
+Badge Level | Component Effect | Meaning
+Bronze | +2 | Pro-viable skill
+Silver | +4 | Pro-impact skill
+Gold | +7 | Elite pro outlier

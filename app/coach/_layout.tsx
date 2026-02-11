@@ -31,6 +31,10 @@ export default function CoachLayout() {
       <Stack.Screen name="player-bio" />
       <Stack.Screen name="player-profile" />
       <Stack.Screen name="game-ops" />
+      <Stack.Screen name="box-score" />
+      <Stack.Screen name="play-by-play" />
+      <Stack.Screen name="key-plays" />
+      <Stack.Screen name="team-stats" />
     </Stack>
   );
 }

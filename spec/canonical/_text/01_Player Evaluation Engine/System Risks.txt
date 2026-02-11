@@ -1,0 +1,266 @@
+Severity Levels
+College System Risks have two severities only:
+Minor System Risk
+Indicates a real but manageable issue.
+Major System Risk
+Indicates a significant limitation that materially impacts trust, lineup stability, or system flexibility.
+There are no additional tiers.
+KR Impact
+When triggered, System Risks apply fixed penalties to Overall KR:
+Minor System Risk: –1.0
+Major System Risk: –2.0
+Penalties are:
+additive
+applied uniformly
+not scaled by position or archetype
+This ensures consistency and transparency.
+What System Risks Do (and Do Not Do)
+System Risks DO:
+reduce Overall KR
+reduce System Fit KR
+force separation between similar players
+expose problems that attributes alone under-punish
+System Risks DO NOT:
+change trait scores
+change cluster weights
+override badge logic
+directly assign or remove archetypes
+Any archetype restriction occurs naturally through trait requirements.
+How to Interpret System Risks
+System Risks should be read as:
+“This player has a specific issue that meaningfully limits their effectiveness unless actively managed.”
+A player with:
+0 risks → clean profile
+1 minor risk → normal college rotation issue
+1 major risk → notable limitation
+multiple risks → compounding concerns
+College vs Pro Context
+College System Risks are intentionally more forgiving than Pro.
+wider tolerance bands
+smaller penalties
+more survivable accumulation
+The same risk framework is used at both levels to preserve comparability.
+
+
+MAJOR SYSTEM RISKS (–2.0 KR)
+1. Range Gap
+Catch-and-Shoot 3P% < 28%
+AND C&S 3PA < 3.0 per 100 poss
+2. No Gravity
+Defensive Attention / Gravity metric bottom 20%
+AND total 3PA < 2.0 per 100 poss
+3. Severe Pull-Up Void
+Off-dribble shooting trait < 55
+AND pull-ups attempted < 1.0 per 100 poss
+4. Turnover Risk (Major)
+TOV% ≥ 20%
+OR turnovers ≥ 6.0 per 100 touches
+5. Decision-Making Collapse
+Decision Speed trait < 55
+AND advantage conversion bottom 25%
+6. Defensive Target
+Opponent PPP vs player (ISO + PNR) ≥ 1.15
+OR on-court defensive rating –6.0 vs team baseline
+7. Switch Liability
+Switch PPP allowed ≥ 1.05
+AND lateral quickness trait below positional average
+8. Foul Machine
+Fouls ≥ 6.0 per 100 possessions
+OR shooting foul rate ≥ 12%
+
+9. Fragility / Availability Risk
+Games played < 60%
+OR average minutes availability < 65%
+10. Severe Undersize
+Height OR wingspan ≥ 4 inches below positional average
+11. System Locked (Severe)
+Positive Net Rating in only 1 system type
+AND Net Rating swing ≤ –6.0 outside that system
+12. Role Collapse
+Usage change ±20% → efficiency drop ≥ 15%
+OR starter → bench Net Rating ≤ –8.0
+
+MINOR SYSTEM RISKS (–1.0 KR)
+13. Limited Range
+C&S 3P% 28–33%
+AND C&S 3PA 3.0–4.5 per 100 poss
+14. Low Shooting Volume
+Total 3PA < 4.0 per 100 poss
+OR wide-open 3s declined ≥ 25%
+15. Elevated Turnover Risk
+TOV% 17–19%
+OR turnovers 4.5–5.9 per 100 touches
+16. Slow Reads
+Decision Speed 55–60
+AND advantage pass rate bottom 40%
+17. Containment Slippage
+Blow-by rate ≥ 20%
+OR paint touch allowed per drive ≥ 45%
+18. Screen Navigation Weakness
+Separation post-screen ≥ 3.3 ft
+OR screen advantage allowed ≥ 35%
+19. Closeout Discipline Risk
+Late closeouts ≥ 30%
+OR fouls on closeouts ≥ 8%
+20. Moderate Undersize
+Height OR wingspan 2–3 inches below positional average
+
+21. Low Endurance
+Q1 → Q4 performance drop ≥ 15%
+AND high-intensity actions drop ≥ 20%
+22. Motor Volatility
+Effort consistency metric bottom 30%
+OR high-effort actions bottom 40%
+23. Partial System Lock
+Positive Net Rating in ≤ 2 system types
+AND Net Rating variance ≥ 6.0
+24. Role Fragility (Minor)
+Usage change ±15% → efficiency drop 10–14%
+OR defensive matchup upgrade → Opp PPP +0.10–0.19
+
+
+PRO SYSTEM RISK — SPEC EXPLANATION (v1)
+Purpose
+Pro System Risks exist to identify non-negotiable weaknesses that materially reduce a player’s viability at the professional level.
+At the Pro level, one exploitable flaw is enough.
+System Risks ensure the model reflects that reality.
+They are not projections.
+They are survival checks.
+Why Pro System Risks Are Different from College
+At the professional level:
+opponents scout relentlessly
+weaknesses are hunted possession after possession
+margin for error is extremely small
+attributes and KaNeXT badges still measure skill and upside, but they do not capture how quickly a single flaw collapses minutes, rotations, and trust.
+Pro System Risks exist to force the model to reflect that compression.
+When Pro System Risks Are Applied
+Pro System Risks are evaluated after:
+Trait scoring
+Badge bonuses
+Archetype assignment
+They are applied as a final corrective layer.
+This ensures:
+upside is fully credited first
+downside is never hidden by strengths
+Severity Levels
+Pro System Risks use only two severities:
+Minor System Risk
+Major System Risk
+At the Pro level, even “minor” issues matter.
+There are no additional tiers.
+KR Impact (Critical Difference)
+When triggered, Pro System Risks apply fixed penalties to Overall KR:
+Minor System Risk: –2.0
+Major System Risk: –4.0
+Penalties are:
+additive
+uncapped
+applied uniformly
+This reflects professional reality:
+one flaw can outweigh multiple strengths.
+What Pro System Risks Do
+Pro System Risks:
+materially reduce Overall KR
+materially reduce System Fit KR
+compress player separation aggressively
+determine rotation and roster viability
+They are the decisive layer of the model.
+What Pro System Risks Do NOT Do
+Pro System Risks do not:
+alter trait scores
+alter cluster weights
+override badge logic
+excuse weaknesses with upside
+KaNeXT badges and attributes cannot cancel a Pro System Risk.
+If the risk triggers, the penalty applies.
+
+How to Interpret Pro System Risks
+Pro System Risks should be read as:
+“This issue will be exploited immediately and repeatedly at the professional level.”
+General interpretation:
+0 risks → clean pro profile
+1 minor risk → playable with protection
+1 major risk → rotation concern
+2 majors → roster-level problem
+This is intentional and realistic.
+College vs Pro Continuity
+The same System Risk framework is used at both levels to preserve comparability.
+What changes at Pro:
+tighter thresholds
+larger penalties
+less tolerance
+This allows clear tracking of:
+college strengths → pro survivability
+
+MAJOR SYSTEM RISKS (–4.0 KR)
+1. Range Gap
+C&S 3P% < 32%
+AND C&S 3PA < 4.0 per 100 poss
+2. No Gravity
+Defensive attention bottom 30%
+AND total 3PA < 3.0 per 100 poss
+3. Severe Pull-Up Void
+Off-dribble shooting trait < 60
+AND pull-ups < 1.5 per 100 poss
+4. Turnover Risk (Major)
+TOV% ≥ 17%
+OR turnovers ≥ 5.0 per 100 touches
+5. Decision-Making Collapse
+Decision speed < 60
+AND advantage conversion bottom 30%
+6. Defensive Target
+Opponent PPP vs player ≥ 1.10
+OR targeted on ≥ 20% of halfcourt actions
+7. Switch Liability
+Switch PPP allowed ≥ 1.00
+AND lateral quickness below positional pro baseline
+8. Foul Machine
+Fouls ≥ 5.5 per 100 poss
+OR shooting foul rate ≥ 10%
+9. Fragility / Availability Risk
+Games played < 65%
+OR repeated injury absences
+
+10. Severe Undersize
+Height OR wingspan ≥ 3 inches below positional pro average
+11. System Locked (Severe)
+Positive Net Rating in only 1 system
+AND Net Rating swing ≤ –5.0 outside it
+12. Role Collapse
+Usage change ±15% → efficiency drop ≥ 12%
+OR rotation role change → Net Rating ≤ –6.0
+MINOR SYSTEM RISKS (–2.0 KR)
+13. Limited Range
+C&S 3P% 32–36%
+AND C&S 3PA 4.0–5.5 per 100 poss
+14. Low Shooting Volume
+Total 3PA < 5.0 per 100 poss
+15. Elevated Turnover Risk
+TOV% 14–16%
+OR turnovers 4.0–4.9 per 100 touches
+16. Slow Reads
+Decision speed 60–65
+AND advantage pass rate bottom 45%
+17. Containment Slippage
+Blow-by rate ≥ 18%
+OR paint touch allowed ≥ 40%
+18. Screen Navigation Weakness
+Separation post-screen ≥ 3.0 ft
+OR screen advantage allowed ≥ 32%
+
+19. Closeout Discipline Risk
+Late closeouts ≥ 25%
+OR closeout fouls ≥ 7%
+20. Moderate Undersize
+Height OR wingspan 2 inches below positional pro average
+21. Low Endurance
+Q1 → Q4 performance drop ≥ 12%
+22. Motor Volatility
+Effort consistency bottom 35%
+23. Partial System Lock
+Positive Net Rating in ≤ 2 systems
+AND Net Rating variance ≥ 5.0
+24. Role Fragility (Minor)
+Usage change ±10% → efficiency drop 8–11%
+
+

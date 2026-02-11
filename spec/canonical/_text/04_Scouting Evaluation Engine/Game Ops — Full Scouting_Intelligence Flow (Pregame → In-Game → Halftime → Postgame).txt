@@ -1,0 +1,403 @@
+Game Ops — Full Scouting/Intelligence Flow (Authoritative) — LOCKED
+Global Rules (apply to all 4 phases)
+Determinism
+Same inputs → same packet sections + ordering + outputs.
+
+No Truth Mutation
+Game Ops may reference Player/Team Truth outputs but may not recompute or change them.
+
+Time Anchors
+Pregame: generated T-24h to T-0h (refreshable).
+
+In-Game: live updates each possession/dead ball, with anti-spam rules.
+
+Halftime: generated once at halftime whistle (refreshable once if tag corrections).
+
+Postgame: generated once after final (refreshable if new film tags land).
+
+Universal Output Fields
+ Every packet/stream MUST include:
+game_id, teams, date_time, venue, home_away_neutral
+
+data_version (V1 stats-only / V2 granular / V3 film-verified)
+
+confidence_pct for that phase (scout_confidence_pct / postgame_confidence_pct)
+
+trace_notes (what inputs were missing / assumed)
+
+
+1) Pregame Scout Packet — LOCKED
+1.1 Inputs — MUST PULL (read-only)
+Opponent Player Truth (per rotation player ≥5%)
+Final System Off KR / Final System Def KR (whatever exists)
+
+archetype (MUST be from Archetype Library)
+
+badges (MUST be from Badge Spec output)
+
+overrides applied (MUST be from Overrides output)
+
+system risks (MUST be from System Risks)
+
+player confidence_pct
+
+Opponent Team Truth
+rotation table + participation% (≥5%)
+
+Team Off KR / Team Def KR / Overall Team KR
+
+system coverage/missing/fragility objects
+
+System Identity
+OSIE + DSIE outputs (locked/provisional + mixture + inference confidence)
+
+Granular (if available)
+Synergy / PlayVision outputs (PPP by play type, shot type, frequency)
+
+film-derived tags: actions, coverages, triggers, ATO/EOH, press/zone usage
+
+shot maps by player + by team, if available
+
+
+1.2 Outputs — MUST OUTPUT (ordered, fixed)
+A) Opponent Offensive Identity
+MUST OUTPUT:
+off_system_name (OSIE)
+
+pace_band (slow/avg/fast) + evidence notes
+
+primary_initiators[] (players + roles: PNR handler, iso creator, post hub, DHO hub)
+
+shot_diet_intent vs shot_diet_reality:
+
+rim share / mid share / 3 share / FT rate (or best available proxy)
+
+pressure_points (where offense breaks): TO stress points, weak-hand, non-shooters, late-clock tendencies
+
+B) Shot Profile (Team + Player)
+MUST OUTPUT:
+Team shot map summary (zones + priorities)
+
+Player shot cards (top 6–8 rotation players):
+
+preferred zones
+
+volume indicators (attempt rate bands)
+
+efficiency indicators (if granular; otherwise “unknown/box-score proxy”)
+
+“green / yellow / red” shot permissions by your defense (rule-based)
+
+C) Actions + Triggers (If–Then Counter Library)
+MUST OUTPUT:
+core_actions[] (ranked top 8–12): PNR types, DHO, stagger, floppy, horns, chin, zoom, Spain, Iverson, etc. (whatever is actually tagged)
+
+For each action:
+
+trigger (what starts it)
+
+primary option
+
+counter
+
+late-clock bailout
+
+our_counter (1–2 concise rules)
+
+risk (what we give up)
+
+D) Opponent Defensive Identity
+MUST OUTPUT:
+def_system_name (DSIE)
+
+pressure_level (none/light/medium/heavy)
+
+coverages used (PNR coverage, post coverage, closeout rules)
+
+help rules (nail/low man tags, stunt vs commit)
+
+rebounding behavior (gang vs leak, crash rules if known)
+
+foul profile tendencies (aggressive hands vs contain)
+
+E) Required Situations Package
+MUST OUTPUT (only if used):
+ATO offense menu (what they like)
+
+ATO defense tells (switch calls, denial, top-lock, etc.)
+
+EOH (end of half) tendencies
+
+Late-game tendencies (foul discipline, tempo, matchup hunting)
+
+Press O/D (if used): triggers, alignments, pressure points
+
+Zone O/D (if used): alignments, shot gives, rebounding gaps
+
+F) Leverage Plan (Attack / Deny / Stress / Fragility)
+MUST OUTPUT:
+Top 5 “Attack” points
+
+Top 5 “Deny” points
+
+Top 5 “Stress” points (turnovers, foul pressure, shot diet disruption)
+
+Fragility list: “If X sits / foul trouble → their Y collapses”
+
+Hard rules (“no-middle,” “no-corners,” etc.) if coach sets them
+
+G) Rotation Board (≥5% participation)
+MUST OUTPUT:
+rotation table sorted by participation%:
+
+player, position group, off KR, def KR, archetype, key threat, key rule
+
+minutes bands if available; else participation% only
+
+substitution patterns if tagged
+
+H) Player Cards (NBA-style, one per rotation player)
+Each card MUST OUTPUT:
+threat type (shooter/slasher/post/connector/stopper/etc.)
+
+directionality (“left-heavy,” “reject,” “spin back,” “no right”)
+
+shot map + “take away” priority
+
+coverage response (“vs drop: pull,” “vs switch: iso,” etc.)
+
+TO stress points (handle risk, passing windows)
+
+foul profile (draws fouls / commits fouls)
+
+guard rules (screen navigation notes, closeout rules, gap vs touch)
+
+I) scout_confidence_pct
+MUST OUTPUT:
+scout_confidence_pct (from Scout Confidence Gate mapping)
+
+“why not higher” (missing granular, missing tags, small sample, unstable rotation, etc.)
+
+
+2) In-Game Live Ops — LOCKED
+2.1 Roles (Owners)
+HC: glance + decide (consumes, does not tag)
+
+AC1: opponent actions/coverages tagging + alerts owner
+
+AC2: our offense pulse tagging + alerts owner
+
+AC3 (optional): fouls/bonus/subs/matchups + alerts owner
+
+2.2 Tagging Language (minimal, structured)
+MUST maintain a shared tag dictionary:
+OPP_ACTION: (Horns, Spain, Zoom, DHO, Stagger, etc.)
+
+OPP_COVERAGE: (drop/ice/switch/hedge/trap/zone/etc.)
+
+OUR_ACTION: (our set name)
+
+RESULT: (rim/mid/3/ft/to/foul/oreb)
+
+DAMAGE: (0/1/2/3) quick severity band
+
+REPEAT: (count in last X possessions)
+
+2.3 Panels (locked, always same order)
+Panel 1 — Situation Strip (HC primary)
+MUST show:
+score, time, possession, period
+
+team fouls + bonus status
+
+run tracker (last 5 possessions)
+
+timeout count
+
+“next critical situation” flags (2-for-1, final 1:00, etc.)
+
+Panel 2 — Live Lineups + Matchups
+MUST show:
+current 5 + positions + matchup assignments
+
+on-court Off/Def KR aggregate (optional)
+
+mismatch flags (size, foul risk, “target” defender)
+
+Panel 3 — Foul / Risk Monitor (AC3 owner)
+MUST show:
+foul counts + who is at risk
+
+bonus pressure + “attack/avoid” recommendations
+
+tech/injury notes if applicable
+
+Panel 4 — Shot + Turnover Pulse (AC2 owner)
+MUST show:
+our last 8 shots (type + quality band if available)
+
+our TOs and causes
+
+opponent shot diet trend vs our pregame plan
+
+Panel 5 — Opponent Action/Coverage Tag Feed (AC1 owner)
+MUST show:
+last 10 tagged opponent possessions
+
+repetition detection (“Horns x3 in last 7”)
+
+coverage effectiveness notes (if tagged)
+
+Panel 6 — HC Overlay (locked caps)
+MUST show:
+max 3 active alerts
+
+max 3 next-dead-ball bullets
+
+bullets are: one sentence + one action
+
+2.4 Anti-Spam Rules (locked)
+≤1 new alert / 90 seconds
+
+≤3 alerts / 5 minutes
+
+max 3 active
+
+each alert expires after 3 possessions unless re-triggered
+
+Alert Triggers (locked categories):
+repetition (same action/coverage repeatedly)
+
+damage (they are scoring from same thing)
+
+constraint (foul trouble, mismatch, injury)
+
+mismatch (targeting a weak link)
+
+Manual Promote Rule (locked):
+1 promoted item per 3 minutes
+
+format: “They’re doing X. Do Y.”
+
+
+3) Halftime Staff Packet — LOCKED
+3.1 Inputs — MUST PULL
+game state + tag log
+
+first-half lineup table + stints
+
+team totals (shot/TO/foul/rebound)
+
+pregame leverage plan
+
+player truths for context only (no KR recompute)
+
+3.2 Outputs (A–J, fixed order; no deviation)
+Top: Top-3 Decision Summary
+3 bullets, ranked, each bullet = “problem → adjustment”
+
+A) Game State Dashboard
+score, pace estimate, foul/bonus, turnovers, OREB, points per possession proxy
+
+B) Five Factors
+eFG proxy / TO% proxy / OREB% proxy / FT rate proxy / transition (best available)
+
+C) Plan Adherence vs Pregame
+“We said deny X → did we?”
+
+leverage plan checklist: hit/miss + consequence
+
+D) Opponent Offense (OSIE lens)
+what they’re running most
+
+where they’re hurting us
+
+what they avoided
+
+late-clock tendencies
+
+E) Opponent Defense (DSIE lens)
+their coverage plan vs us
+
+what they’re taking away
+
+where they’re vulnerable
+
+foul tendencies
+
+F) Our Offense
+shot diet reality vs intent
+
+who is creating / who is being neutralized
+
+what action is working and why
+
+G) Our Defense
+where we’re breaking (POA, help, closeouts, glass)
+
+mismatches they’re hunting
+
+what coverage is failing
+
+H) Lineups / Matchups / Plus-Minus
+top 3 lineups by performance
+
+worst 2 lineups (and why)
+
+matchup pain points (who can’t guard who)
+
+I) Constraints & Risk
+foul trouble, fatigue, matchup constraints
+
+“cannot do” list (because of personnel constraints)
+
+J) Adjustments Sandbox
+2–5 defensive options (benefit + risk)
+
+2–5 offensive options (benefit + risk)
+
+each option is one-liner: “Do X to get Y; risk Z”
+
+3.3 Single-Page Layout (locked)
+Header: Top-3 Decision Summary
+
+Row1: A + B
+
+Row2: C + (D + E)
+
+Row3: F + G
+
+Row4: H + I
+
+Footer: J
+
+
+4) Postgame Staff Packet — LOCKED
+4.1 Confidence
+MUST OUTPUT:
+postgame_confidence_pct (from Postgame Confidence Gate)
+
+4.2 Outputs — MUST OUTPUT (ordered)
+Final dashboard + five factors (final)
+
+Plan audit (what worked, what failed, why)
+
+Opponent O/D audits (OSIE/DSIE framing)
+
+Our O/D audits
+
+Lineup/matchup stint review (what combinations won/lost)
+
+Player postgame cards (what happened vs pregame expectation)
+
+Clip & teach list (priority clips, tags, teaching points)
+
+Next actions:
+
+next game priorities
+
+practice seeds (3–8 drills/points)
+
+development prescriptions (player-specific)
+
+rotation considerations (if any)

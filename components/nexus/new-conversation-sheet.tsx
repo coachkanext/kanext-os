@@ -1,6 +1,6 @@
 /**
- * New Conversation Sheet Component
- * Bottom sheet for creating new conversation types.
+ * Engine Menu Sheet
+ * Bottom sheet for selecting Nexus engine modes.
  */
 
 import React, { useRef, useEffect } from 'react';
@@ -15,57 +15,76 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, Brand, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-const SHEET_HEIGHT = 280;
+const SHEET_HEIGHT = 480;
 
-interface ConversationOption {
-  type: 'chat' | 'eval' | 'sim' | 'game-ops';
+export type EngineType = 'game-ops' | 'player' | 'team' | 'recruiting' | 'scouting' | 'simulation';
+
+interface EngineOption {
+  type: EngineType;
   label: string;
   description: string;
   icon: IconSymbolName;
   color: string;
 }
 
-const OPTIONS: ConversationOption[] = [
+const ENGINES: EngineOption[] = [
   {
-    type: 'chat',
-    label: 'New Chat',
-    description: 'Start a general conversation with Nexus',
-    icon: 'text.bubble',
-    color: Brand.nexus,
+    type: 'game-ops',
+    label: 'Game Ops',
+    description: 'Manage live games',
+    icon: 'basketball.fill',
+    color: '#FF6B35',
   },
   {
-    type: 'eval',
-    label: 'Player Eval',
-    description: 'Generate a detailed player evaluation report',
+    type: 'player',
+    label: 'Player Engine',
+    description: 'Evaluate and develop players',
     icon: 'person.text.rectangle',
-    color: '#ffffff',
+    color: '#4ECDC4',
   },
   {
-    type: 'sim',
-    label: 'Simulation',
-    description: 'Run game simulations and projections',
+    type: 'team',
+    label: 'Team Engine',
+    description: 'Analyze team performance',
+    icon: 'person.3.fill',
+    color: '#7B68EE',
+  },
+  {
+    type: 'recruiting',
+    label: 'Recruiting Engine',
+    description: 'Find and track prospects',
+    icon: 'magnifyingglass',
+    color: '#FFD93D',
+  },
+  {
+    type: 'scouting',
+    label: 'Scouting Engine',
+    description: 'Scout opponents',
+    icon: 'binoculars.fill',
+    color: '#6BCB77',
+  },
+  {
+    type: 'simulation',
+    label: 'Simulation Engine',
+    description: 'Run game simulations',
     icon: 'chart.bar.fill',
-    color: ModeColors.sports.primary,
+    color: '#FF6B6B',
   },
 ];
 
 interface NewConversationSheetProps {
   visible: boolean;
   onClose: () => void;
-  onNewChat: () => void;
-  onNewEval: () => void;
-  onNewSim: () => void;
+  onSelectEngine: (engine: EngineType) => void;
 }
 
 export function NewConversationSheet({
   visible,
   onClose,
-  onNewChat,
-  onNewEval,
-  onNewSim,
+  onSelectEngine,
 }: NewConversationSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
@@ -105,19 +124,9 @@ export function NewConversationSheet({
     }
   }, [visible, slideAnim, fadeAnim]);
 
-  const handleOptionPress = (type: 'chat' | 'eval' | 'sim' | 'game-ops') => {
+  const handleEnginePress = (type: EngineType) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    switch (type) {
-      case 'chat':
-        onNewChat();
-        break;
-      case 'eval':
-        onNewEval();
-        break;
-      case 'sim':
-        onNewSim();
-        break;
-    }
+    onSelectEngine(type);
   };
 
   if (!visible) return null;
@@ -146,27 +155,27 @@ export function NewConversationSheet({
         </View>
 
         {/* Title */}
-        <ThemedText style={styles.title}>New Conversation</ThemedText>
+        <ThemedText style={styles.title}>Nexus</ThemedText>
 
-        {/* Options */}
+        {/* Engine Options */}
         <View style={styles.options}>
-          {OPTIONS.map((option) => (
+          {ENGINES.map((engine) => (
             <Pressable
-              key={option.type}
+              key={engine.type}
               style={({ pressed }) => [
                 styles.option,
                 { backgroundColor: colors.backgroundSecondary },
                 pressed && { opacity: 0.7 },
               ]}
-              onPress={() => handleOptionPress(option.type)}
+              onPress={() => handleEnginePress(engine.type)}
             >
-              <View style={[styles.iconContainer, { backgroundColor: option.color + '20' }]}>
-                <IconSymbol name={option.icon} size={22} color={option.color} />
+              <View style={[styles.iconContainer, { backgroundColor: engine.color + '20' }]}>
+                <IconSymbol name={engine.icon} size={22} color={engine.color} />
               </View>
               <View style={styles.optionText}>
-                <ThemedText style={styles.optionLabel}>{option.label}</ThemedText>
+                <ThemedText style={styles.optionLabel}>{engine.label}</ThemedText>
                 <ThemedText style={[styles.optionDescription, { color: colors.textSecondary }]}>
-                  {option.description}
+                  {engine.description}
                 </ThemedText>
               </View>
               <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />

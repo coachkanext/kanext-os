@@ -1,0 +1,126 @@
+Global Player + Team Database (Worldwide) — 1–6 (with Global Master List + Transfer Portal)
+0) 
+Global Master List (Worldwide League + Team Registry)
+MUST PULL FROM: Global Master List
+Universe of:
+leagues / conferences / regions
+
+teams inside each league
+
+country / tier metadata
+
+“Independent / Unknown” buckets
+
+Everything below references this as the source-of-truth for what exists.
+
+1) Team Master Record (Program-Season)
+MUST PULL FROM: Global Master List
+One row per team-season:
+team/program identity
+
+league / conference / country
+
+competitive level (from locked level list)
+
+conference (optional if league already implies it)
+
+
+2) Staff / Coach Record (Program-Season)
+Season identity:
+head coach + staff identity marker (when known)
+
+continuity / coach-change flags
+
+
+3) System Identity Record (OSIE/DSIE)
+Team-season system identity (no roster required):
+offensive system label
+
+defensive system label
+
+status: PROVISIONAL / OBSERVED-UNLOCKED / OBSERVED-LOCKED / FROZEN
+
+inference source + sample size + last updated + style-shift flag
+
+
+4) Current Roster Stack (Nightly Build) + Transfer Portal Feed
+MUST PULL FROM: Global Master List
+Nightly refreshed team-season state:
+current roster + participation/minutes
+
+current season stats aggregates (V1 inputs where available)
+
+auto-run player evals → player KR outputs
+
+auto-run Team KR outputs (KR + coverage + Fit% + confidence%)
+
+4.1 Transfer Portal Registry (Live View)
+A live, continuously updated list of portal players:
+portal entry event (timestamp)
+
+current/previous team + level
+
+class year / eligibility metadata (when available)
+
+status: in-portal / withdrawn / committed
+
+destination team (when committed)
+
+source + verification
+
+Views powered by #4:
+Roster view
+
+Stats view
+
+KR view
+
+Transfer Portal view
+
+
+5) Season Snapshot Timeline (History Ledger)
+Saved checkpoints of #4 over time:
+weekly (or nightly) snapshots
+
+“as-of date” roster/stats/KRs/team KR/system identity/confidence
+
+includes portal state over time (entered/committed/withdrawn)
+
+trend + audit + “what we knew then”
+
+
+6) Game / Film Archive + Processor Layer (Upgrade Path)
+Game records + film links + processing status:
+schedule + game IDs
+
+film URLs (your replay layer)
+
+processor outputs (PlayVision, etc.)
+
+upgrades eval depth (V3) while surfaced publicly via confidence %
+
+
+Locked Competitive Levels (Global)
+Pre-College (3)
+HS / Prep
+
+Postgrad
+
+AAU / Summer Circuits
+
+College (US core + overlay)
+NJCAA DI / DII / DIII
+
+CCCAA
+
+NAIA
+
+USCAA
+
+NCCAA DI / NCCAA DII
+
+NCAA DIII / DII / DI
+
+Pro / Overseas
+Professional (Domestic/Overseas)
+

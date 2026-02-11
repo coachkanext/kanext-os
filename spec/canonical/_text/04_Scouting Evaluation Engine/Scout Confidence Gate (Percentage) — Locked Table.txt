@@ -1,0 +1,30 @@
+Scout Confidence Gate (Percentage) — Locked Table
+Scout Confidence Adjusters (apply after the row above)
+These don’t change the table; they nudge within the range:
+Sample size: fewer than 5 games of current-season evidence → use bottom of the range
+
+Recency: last 3 games show clear shift (injuries / lineup change / scheme shift) → downshift 5–10 pts
+
+Roster volatility: rotation not stable / unknown minutes → downshift 5–10 pts
+
+System ambiguity (OSIE/DSIE still provisional/unlocked) → downshift 5–10 pts
+
+High stability (locked systems + stable top-7 rotation) → upshift toward top of range
+
+Output (locked)
+scout_confidence_pct ∈ [0,100]
+
+Computed at the end of the pregame scout packet
+
+Does not change any scouting content — it qualifies reliability only
+
+
+
+--- TABLE 1 ---
+Data available (opponent) | Scout Confidence % (default range)
+Stats-only (V1): official/team/ESPN season stats + roster | 55–70%
+Stats-only (V1) + multi-year (returning core / stable identity) | 60–75%
+V2 Licensed Granular: Synergy/PlayVision-style play types + shot profile (1 year) + stats | 70–85%
+V2 Licensed Granular + multi-year | 78–90%
+V3 Film-Verified (processed games): your film + processor outputs (≥5 games) | 80–92%
+V3 Film-Verified + high coverage: ≥10 games processed + stable rotation | 88–96%

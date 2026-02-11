@@ -1,10 +1,9 @@
 /**
- * Coach Recruiting Screen
- * 4 sub-views: National Player Pool, Recruiting Board, Logs, Saved Evaluations
- * Default: Recruiting Board
+ * Coach Recruiting Screen — Global Player Pool
+ * Single-purpose scoutable database of all national prospects.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,7 +11,8 @@ import {
   Pressable,
   ScrollView,
   TextInput,
-  Modal,
+  Animated,
+  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -23,6 +23,18 @@ import { ThemedText } from '@/components/themed-text';
 import { TabFooter } from '@/components/tab-footer';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { PLAYER_POOL, type PoolLevel, type PoolPosition, type PoolPlayer } from '@/data/playerPool';
+import { getLatestSeason } from '@/data/playerSeasons';
+
+// ─── Constants ───
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SHEET_HEIGHT = Math.round(SCREEN_HEIGHT * 0.6);
+
+const BG = '#0F1115';
+const CARD_BG = '#1A1D23';
+const WHITE = '#FFFFFF';
+const GRAY = '#8A8F98';
+const DIVIDER = '#2A2D35';
 
 const HUB_TABS = [
   { id: 'home', label: 'Home' },
@@ -34,87 +46,575 @@ const HUB_TABS = [
   { id: 'film', label: 'Film', route: '/coach/film' },
 ];
 
-import { PLAYER_POOL, type PoolLevel, type PoolPosition } from '@/data/playerPool';
-import { RECRUITING_BOARD, type BoardEntry, type BoardStatus } from '@/data/recruitingBoard';
-import { RECRUITING_LOGS, type RecruitingLog, type ActionType } from '@/data/recruitingLogs';
-import { EVAL_SNAPSHOTS } from '@/data/evalSnapshots';
+const LEVELS: (PoolLevel | 'All')[] = ['All', 'HS', 'JUCO', 'NCAA D1', 'NCAA D2', 'NCAA D3', 'International', 'NAIA'];
+const SEASONS = ['2025-26', '2024-25', '2023-24'];
+const POSITIONS: PoolPosition[] = ['PG', 'SG', 'SF', 'PF', 'C'];
+const CLASS_YEARS = ['2025', '2026', '2027'];
+const MIN_MPG_OPTIONS = [0, 10, 20, 30];
 
-type TabKey = 'pool' | 'board' | 'logs' | 'evals';
+type ViewMode = 'list' | 'cards' | 'compare';
 
-const TABS: { key: TabKey; label: string }[] = [
-  { key: 'board', label: 'Board' },
-  { key: 'pool', label: 'Player Pool' },
-  { key: 'logs', label: 'Logs' },
-  { key: 'evals', label: 'Evaluations' },
+const VIEW_OPTIONS: { key: ViewMode; icon: string; label: string }[] = [
+  { key: 'list', icon: 'rectangle.stack', label: 'List' },
+  { key: 'cards', icon: 'square.grid.2x2.fill', label: 'Cards' },
+  { key: 'compare', icon: 'arrow.left.arrow.right', label: 'Compare' },
 ];
 
-const STATUS_COLORS: Record<BoardStatus, string> = {
-  Watching: '#6e6e6e',
-  Contacted: '#d4d4d4',
-  Offered: '#ffffff',
-  Committed: '#f5f5f5',
-  Archived: '#555555',
-};
+// Derive unique conferences from data
+const ALL_CONFERENCES = [...new Set(PLAYER_POOL.map((p) => p.conference))].sort();
+// Derive unique states from data
+const ALL_STATES = [...new Set(PLAYER_POOL.map((p) => p.state))].sort();
 
-const PRIORITY_COLORS: Record<string, string> = {
-  A: '#f5f5f5',
-  B: '#6e6e6e',
-  C: '#555555',
-};
-
-const BOARD_STATUS_TABS: BoardStatus[] = ['Watching', 'Contacted', 'Offered', 'Committed', 'Archived'];
-
-// ─── Tab Bar ───
-function TabBar({
-  tabs,
-  activeTab,
-  onTabChange,
-  colors,
+// ─── PoolHeader ───
+function PoolHeader({
+  search,
+  onSearchChange,
+  levelFilter,
+  onLevelChange,
+  seasonFilter,
+  onSeasonChange,
 }: {
-  tabs: typeof TABS;
-  activeTab: TabKey;
-  onTabChange: (key: TabKey) => void;
-  colors: (typeof Colors)['light'];
+  search: string;
+  onSearchChange: (v: string) => void;
+  levelFilter: PoolLevel | null;
+  onLevelChange: (v: PoolLevel | null) => void;
+  seasonFilter: string;
+  onSeasonChange: (v: string) => void;
 }) {
   return (
-    <View style={[styles.tabBar, { borderBottomColor: colors.divider }]}>
-      {tabs.map((tab) => {
-        const isActive = activeTab === tab.key;
-        return (
-          <Pressable
-            key={tab.key}
-            style={[styles.tab, isActive && styles.tabActive]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              onTabChange(tab.key);
-            }}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                { color: isActive ? colors.text : colors.textTertiary },
-              ]}
-            >
-              {tab.label}
-            </Text>
-            {isActive && <View style={[styles.tabIndicator, { backgroundColor: colors.text }]} />}
+    <View style={styles.poolHeader}>
+      {/* Title row */}
+      <View style={styles.titleRow}>
+        <Text style={styles.title}>Player Pool</Text>
+        <View style={styles.contextPill}>
+          <Text style={styles.contextPillText}>FMU Lions · 2025-26</Text>
+        </View>
+      </View>
+
+      {/* Search bar */}
+      <View style={styles.searchBar}>
+        <IconSymbol name="magnifyingglass" size={16} color={GRAY} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search name or school..."
+          placeholderTextColor={GRAY}
+          value={search}
+          onChangeText={onSearchChange}
+        />
+        {search.length > 0 && (
+          <Pressable onPress={() => onSearchChange('')}>
+            <IconSymbol name="xmark.circle.fill" size={16} color={GRAY} />
           </Pressable>
-        );
-      })}
+        )}
+      </View>
+
+      {/* Level + Season dropdowns */}
+      <View style={styles.dropdownRow}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }}>
+          {LEVELS.map((lv) => {
+            const isActive = lv === 'All' ? levelFilter === null : levelFilter === lv;
+            return (
+              <Pressable
+                key={lv}
+                style={[styles.dropdownChip, isActive && styles.dropdownChipActive]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onLevelChange(lv === 'All' ? null : (lv as PoolLevel));
+                }}
+              >
+                <Text style={[styles.dropdownChipText, isActive && styles.dropdownChipTextActive]}>
+                  {lv === 'All' ? 'All Levels' : lv}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+
+        <View style={styles.seasonRow}>
+          {SEASONS.map((s) => {
+            const isActive = seasonFilter === s;
+            return (
+              <Pressable
+                key={s}
+                style={[styles.seasonChip, isActive && styles.seasonChipActive]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onSeasonChange(s);
+                }}
+              >
+                <Text style={[styles.seasonChipText, isActive && styles.seasonChipTextActive]}>
+                  {s}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
     </View>
   );
 }
 
-// ─── National Player Pool ───
-function NationalPlayerPool({ colors }: { colors: (typeof Colors)['light'] }) {
+// ─── FilterRow (collapsible) ───
+function FilterRow({
+  expanded,
+  onToggle,
+  conferenceFilter,
+  onConferenceChange,
+  posFilter,
+  onPosChange,
+  classFilter,
+  onClassChange,
+  stateFilter,
+  onStateChange,
+  minMpg,
+  onMinMpgChange,
+  filmOnly,
+  onFilmOnlyChange,
+}: {
+  expanded: boolean;
+  onToggle: () => void;
+  conferenceFilter: string | null;
+  onConferenceChange: (v: string | null) => void;
+  posFilter: PoolPosition | null;
+  onPosChange: (v: PoolPosition | null) => void;
+  classFilter: string | null;
+  onClassChange: (v: string | null) => void;
+  stateFilter: string | null;
+  onStateChange: (v: string | null) => void;
+  minMpg: number;
+  onMinMpgChange: (v: number) => void;
+  filmOnly: boolean;
+  onFilmOnlyChange: (v: boolean) => void;
+}) {
+  const hasActiveFilters = conferenceFilter || posFilter || classFilter || stateFilter || minMpg > 0 || filmOnly;
+
+  return (
+    <View style={styles.filterSection}>
+      <Pressable
+        style={styles.filterToggle}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          onToggle();
+        }}
+      >
+        <Text style={[styles.filterToggleText, hasActiveFilters && { color: WHITE }]}>
+          Filters{hasActiveFilters ? ' (active)' : ''}
+        </Text>
+        <IconSymbol
+          name={expanded ? 'chevron.up' : 'chevron.down'}
+          size={12}
+          color={hasActiveFilters ? WHITE : GRAY}
+        />
+      </Pressable>
+
+      {expanded && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterChipsScroll}>
+          {/* Conference */}
+          {ALL_CONFERENCES.map((conf) => (
+            <Pressable
+              key={conf}
+              style={[styles.filterChip, conferenceFilter === conf && styles.filterChipActive]}
+              onPress={() => onConferenceChange(conferenceFilter === conf ? null : conf)}
+            >
+              <Text style={[styles.filterChipText, conferenceFilter === conf && styles.filterChipTextActive]}>
+                {conf}
+              </Text>
+            </Pressable>
+          ))}
+
+          <View style={styles.filterDividerV} />
+
+          {/* Position */}
+          {POSITIONS.map((pos) => (
+            <Pressable
+              key={pos}
+              style={[styles.filterChip, posFilter === pos && styles.filterChipActive]}
+              onPress={() => onPosChange(posFilter === pos ? null : pos)}
+            >
+              <Text style={[styles.filterChipText, posFilter === pos && styles.filterChipTextActive]}>
+                {pos}
+              </Text>
+            </Pressable>
+          ))}
+
+          <View style={styles.filterDividerV} />
+
+          {/* Class Year */}
+          {CLASS_YEARS.map((yr) => (
+            <Pressable
+              key={yr}
+              style={[styles.filterChip, classFilter === yr && styles.filterChipActive]}
+              onPress={() => onClassChange(classFilter === yr ? null : yr)}
+            >
+              <Text style={[styles.filterChipText, classFilter === yr && styles.filterChipTextActive]}>
+                {yr}
+              </Text>
+            </Pressable>
+          ))}
+
+          <View style={styles.filterDividerV} />
+
+          {/* State */}
+          {ALL_STATES.slice(0, 8).map((st) => (
+            <Pressable
+              key={st}
+              style={[styles.filterChip, stateFilter === st && styles.filterChipActive]}
+              onPress={() => onStateChange(stateFilter === st ? null : st)}
+            >
+              <Text style={[styles.filterChipText, stateFilter === st && styles.filterChipTextActive]}>
+                {st}
+              </Text>
+            </Pressable>
+          ))}
+
+          <View style={styles.filterDividerV} />
+
+          {/* Min MPG */}
+          {MIN_MPG_OPTIONS.map((mpg) => (
+            <Pressable
+              key={`mpg-${mpg}`}
+              style={[styles.filterChip, minMpg === mpg && mpg > 0 && styles.filterChipActive]}
+              onPress={() => onMinMpgChange(minMpg === mpg ? 0 : mpg)}
+            >
+              <Text style={[styles.filterChipText, minMpg === mpg && mpg > 0 && styles.filterChipTextActive]}>
+                {mpg === 0 ? 'Any MPG' : `${mpg}+ MPG`}
+              </Text>
+            </Pressable>
+          ))}
+
+          <View style={styles.filterDividerV} />
+
+          {/* Film toggle */}
+          <Pressable
+            style={[styles.filterChip, filmOnly && styles.filterChipActive]}
+            onPress={() => onFilmOnlyChange(!filmOnly)}
+          >
+            <Text style={[styles.filterChipText, filmOnly && styles.filterChipTextActive]}>
+              Has Film
+            </Text>
+          </Pressable>
+        </ScrollView>
+      )}
+    </View>
+  );
+}
+
+// ─── ViewToggle ───
+function ViewToggle({
+  activeView,
+  onViewChange,
+}: {
+  activeView: ViewMode;
+  onViewChange: (v: ViewMode) => void;
+}) {
+  return (
+    <View style={styles.viewToggleContainer}>
+      <View style={styles.viewToggle}>
+        {VIEW_OPTIONS.map((v) => {
+          const isActive = activeView === v.key;
+          return (
+            <Pressable
+              key={v.key}
+              style={[styles.viewToggleBtn, isActive && styles.viewToggleBtnActive]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onViewChange(v.key);
+              }}
+            >
+              <IconSymbol
+                name={v.icon as any}
+                size={16}
+                color={isActive ? WHITE : GRAY}
+              />
+            </Pressable>
+          );
+        })}
+      </View>
+      <Text style={styles.resultCount}>
+        {/* Filled by parent — we'll just show view label */}
+      </Text>
+    </View>
+  );
+}
+
+// ─── PoolListView ───
+function PoolListView({
+  players,
+  onPlayerPress,
+}: {
+  players: PoolPlayer[];
+  onPlayerPress: (p: PoolPlayer) => void;
+}) {
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <View>
+        {/* Header */}
+        <View style={styles.poolHeaderRow}>
+          <Text style={[styles.poolHeaderCell, styles.poolColName]}>PLAYER</Text>
+          <Text style={[styles.poolHeaderCell, styles.poolColPos]}>POS</Text>
+          <Text style={[styles.poolHeaderCell, styles.poolColHt]}>HT</Text>
+          <Text style={[styles.poolHeaderCell, styles.poolColClass]}>CLASS</Text>
+          <Text style={[styles.poolHeaderCell, styles.poolColSchool]}>SCHOOL</Text>
+          <Text style={[styles.poolHeaderCell, styles.poolColLevel]}>LEVEL</Text>
+          <Text style={[styles.poolHeaderCell, styles.poolColStats]}>KEY STATS</Text>
+          <Text style={[styles.poolHeaderCell, styles.poolColFilm]}>FILM</Text>
+        </View>
+        {/* Rows */}
+        {players.map((player, idx) => (
+          <Pressable
+            key={player.id}
+            style={[styles.poolRow, idx % 2 === 1 && { backgroundColor: CARD_BG }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onPlayerPress(player);
+            }}
+          >
+            <Text style={[styles.poolCellName, styles.poolColName]} numberOfLines={1}>
+              {player.firstName} {player.lastName}
+            </Text>
+            <Text style={[styles.poolCell, styles.poolColPos]}>{player.position}</Text>
+            <Text style={[styles.poolCell, styles.poolColHt]}>{player.height}</Text>
+            <Text style={[styles.poolCell, styles.poolColClass]}>{player.classYear}</Text>
+            <Text style={[styles.poolCell, styles.poolColSchool]} numberOfLines={1}>{player.currentSchool}</Text>
+            <Text style={[styles.poolCell, styles.poolColLevel]}>{player.level}</Text>
+            <Text style={[styles.poolCell, styles.poolColStats]} numberOfLines={1}>{player.keyStatLine}</Text>
+            <View style={styles.poolColFilm}>
+              {player.hasFilm && (
+                <IconSymbol name="film" size={14} color={GRAY} />
+              )}
+            </View>
+          </Pressable>
+        ))}
+        {players.length === 0 && (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyText}>No players match your filters</Text>
+          </View>
+        )}
+      </View>
+    </ScrollView>
+  );
+}
+
+// ─── PoolCardsView ───
+function PoolCardsView({
+  players,
+  onPlayerPress,
+}: {
+  players: PoolPlayer[];
+  onPlayerPress: (p: PoolPlayer) => void;
+}) {
+  return (
+    <View style={styles.cardsGrid}>
+      {players.map((player) => (
+        <Pressable
+          key={player.id}
+          style={styles.playerCard}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            onPlayerPress(player);
+          }}
+        >
+          {/* Position badge */}
+          <View style={styles.cardPosBadge}>
+            <Text style={styles.cardPosBadgeText}>{player.position}</Text>
+          </View>
+
+          <Text style={styles.cardName} numberOfLines={1}>
+            {player.firstName} {player.lastName}
+          </Text>
+          <Text style={styles.cardSchool} numberOfLines={1}>
+            {player.currentSchool}
+          </Text>
+          <Text style={styles.cardMeta}>
+            {player.classYear} · {player.level}
+          </Text>
+          <Text style={styles.cardStats} numberOfLines={1}>
+            {player.keyStatLine}
+          </Text>
+          {player.hasFilm && (
+            <View style={styles.cardFilmBadge}>
+              <IconSymbol name="film" size={10} color={GRAY} />
+              <Text style={styles.cardFilmText}>Film</Text>
+            </View>
+          )}
+        </Pressable>
+      ))}
+      {players.length === 0 && (
+        <View style={[styles.emptyState, { width: '100%' }]}>
+          <Text style={styles.emptyText}>No players match your filters</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ─── PlayerQuickPeek (bottom sheet) ───
+function PlayerQuickPeek({
+  player,
+  onClose,
+}: {
+  player: PoolPlayer;
+  onClose: () => void;
+}) {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const slideAnim = useRef(new Animated.Value(SHEET_HEIGHT)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const season = useMemo(() => getLatestSeason(player.id), [player.id]);
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        damping: 20,
+        stiffness: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [slideAnim, fadeAnim]);
+
+  const dismiss = () => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: SHEET_HEIGHT,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start(() => onClose());
+  };
+
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+      {/* Scrim */}
+      <Animated.View style={[styles.scrim, { opacity: fadeAnim }]}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={dismiss} />
+      </Animated.View>
+
+      {/* Sheet */}
+      <Animated.View
+        style={[
+          styles.sheet,
+          {
+            height: SHEET_HEIGHT,
+            paddingBottom: insets.bottom + Spacing.md,
+            transform: [{ translateY: slideAnim }],
+          },
+        ]}
+      >
+        {/* Handle */}
+        <View style={styles.handleContainer}>
+          <View style={styles.handle} />
+        </View>
+
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.sheetContent}>
+          {/* Player identity */}
+          <Text style={styles.peekName}>
+            {player.firstName} {player.lastName}
+          </Text>
+          <Text style={styles.peekMeta}>
+            {player.position} · Class {player.classYear} · {player.currentSchool}
+          </Text>
+          <Text style={styles.peekLevel}>
+            {player.level}{player.conference !== player.level ? ` · ${player.conference}` : ''} · {player.state}
+          </Text>
+
+          {/* Key stat line */}
+          <View style={styles.peekStatHero}>
+            <Text style={styles.peekStatHeroText}>{player.keyStatLine}</Text>
+          </View>
+
+          {/* Season stats if available */}
+          {season && (
+            <View style={styles.peekSeasonCard}>
+              <Text style={styles.peekSeasonTitle}>{season.season} Stats</Text>
+              <View style={styles.peekStatsRow}>
+                <View style={styles.peekStatItem}>
+                  <Text style={styles.peekStatValue}>{season.ppg}</Text>
+                  <Text style={styles.peekStatLabel}>PPG</Text>
+                </View>
+                <View style={styles.peekStatItem}>
+                  <Text style={styles.peekStatValue}>{season.rpg}</Text>
+                  <Text style={styles.peekStatLabel}>RPG</Text>
+                </View>
+                <View style={styles.peekStatItem}>
+                  <Text style={styles.peekStatValue}>{season.apg}</Text>
+                  <Text style={styles.peekStatLabel}>APG</Text>
+                </View>
+                <View style={styles.peekStatItem}>
+                  <Text style={styles.peekStatValue}>{season.fgPct}%</Text>
+                  <Text style={styles.peekStatLabel}>FG%</Text>
+                </View>
+                {season.threePct > 0 && (
+                  <View style={styles.peekStatItem}>
+                    <Text style={styles.peekStatValue}>{season.threePct}%</Text>
+                    <Text style={styles.peekStatLabel}>3P%</Text>
+                  </View>
+                )}
+              </View>
+              <Text style={styles.peekSeasonMeta}>
+                {season.gp} GP · {season.mpg} MPG · {season.school}
+              </Text>
+            </View>
+          )}
+
+          {/* Action buttons */}
+          <View style={styles.peekActions}>
+            <Pressable
+              style={styles.peekActionPrimary}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                dismiss();
+                router.push({ pathname: '/coach/player-profile', params: { id: player.id } });
+              }}
+            >
+              <Text style={styles.peekActionPrimaryText}>Full Profile</Text>
+            </Pressable>
+            <Pressable
+              style={styles.peekActionSecondary}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <Text style={styles.peekActionSecondaryText}>Ask Nexus</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </Animated.View>
+    </View>
+  );
+}
+
+// ─── Reusable Player Pool Content (embedded in Coach Hub PagerView) ───
+export function PlayerPoolContent() {
+  const insets = useSafeAreaInsets();
+
+  // State
   const [search, setSearch] = useState('');
   const [levelFilter, setLevelFilter] = useState<PoolLevel | null>(null);
+  const [seasonFilter, setSeasonFilter] = useState('2025-26');
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [conferenceFilter, setConferenceFilter] = useState<string | null>(null);
   const [posFilter, setPosFilter] = useState<PoolPosition | null>(null);
+  const [classFilter, setClassFilter] = useState<string | null>(null);
+  const [stateFilter, setStateFilter] = useState<string | null>(null);
+  const [minMpg, setMinMpg] = useState(0);
   const [filmOnly, setFilmOnly] = useState(false);
+  const [activeView, setActiveView] = useState<ViewMode>('list');
+  const [peekPlayer, setPeekPlayer] = useState<PoolPlayer | null>(null);
 
+  // Filtering logic
   const filtered = useMemo(() => {
     let list = PLAYER_POOL;
+
     if (search) {
       const q = search.toLowerCase();
       list = list.filter(
@@ -125,608 +625,105 @@ function NationalPlayerPool({ colors }: { colors: (typeof Colors)['light'] }) {
       );
     }
     if (levelFilter) list = list.filter((p) => p.level === levelFilter);
+    if (conferenceFilter) list = list.filter((p) => p.conference === conferenceFilter);
     if (posFilter) list = list.filter((p) => p.position === posFilter);
+    if (classFilter) list = list.filter((p) => p.classYear === classFilter);
+    if (stateFilter) list = list.filter((p) => p.state === stateFilter);
+    if (minMpg > 0) {
+      list = list.filter((p) => {
+        const season = getLatestSeason(p.id);
+        return season && season.mpg >= minMpg;
+      });
+    }
     if (filmOnly) list = list.filter((p) => p.hasFilm);
+
     return list;
-  }, [search, levelFilter, posFilter, filmOnly]);
-
-  const levels: PoolLevel[] = ['HS', 'JUCO', 'NCAA D1', 'NCAA D2', 'NCAA D3', 'International'];
-  const positions: PoolPosition[] = ['PG', 'SG', 'SF', 'PF', 'C'];
+  }, [search, levelFilter, conferenceFilter, posFilter, classFilter, stateFilter, minMpg, filmOnly]);
 
   return (
-    <View style={styles.subViewContainer}>
-      <Text style={[styles.subViewTitle, { color: colors.text }]}>National Player Pool</Text>
-
-      {/* Search */}
-      <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
-        <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-        <TextInput
-          style={[styles.searchInput, { color: colors.text }]}
-          placeholder="Search name or school..."
-          placeholderTextColor={colors.textTertiary}
-          value={search}
-          onChangeText={setSearch}
+    <View style={{ flex: 1 }}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 24 }]}
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled
+      >
+        <PoolHeader
+          search={search}
+          onSearchChange={setSearch}
+          levelFilter={levelFilter}
+          onLevelChange={setLevelFilter}
+          seasonFilter={seasonFilter}
+          onSeasonChange={setSeasonFilter}
         />
-      </View>
 
-      {/* Filter chips */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
-        {/* Level chips */}
-        {levels.map((lv) => (
-          <Pressable
-            key={lv}
-            style={[
-              styles.filterChip,
-              { backgroundColor: levelFilter === lv ? colors.text : colors.backgroundSecondary },
-            ]}
-            onPress={() => setLevelFilter(levelFilter === lv ? null : lv)}
-          >
-            <Text style={[styles.filterChipText, { color: levelFilter === lv ? colors.background : colors.textSecondary }]}>
-              {lv}
-            </Text>
-          </Pressable>
-        ))}
-        <View style={styles.filterDividerV} />
-        {/* Position chips */}
-        {positions.map((pos) => (
-          <Pressable
-            key={pos}
-            style={[
-              styles.filterChip,
-              { backgroundColor: posFilter === pos ? colors.text : colors.backgroundSecondary },
-            ]}
-            onPress={() => setPosFilter(posFilter === pos ? null : pos)}
-          >
-            <Text style={[styles.filterChipText, { color: posFilter === pos ? colors.background : colors.textSecondary }]}>
-              {pos}
-            </Text>
-          </Pressable>
-        ))}
-        <View style={styles.filterDividerV} />
-        {/* Film toggle */}
-        <Pressable
-          style={[
-            styles.filterChip,
-            { backgroundColor: filmOnly ? colors.text : colors.backgroundSecondary },
-          ]}
-          onPress={() => setFilmOnly(!filmOnly)}
-        >
-          <Text style={[styles.filterChipText, { color: filmOnly ? colors.background : colors.textSecondary }]}>
-            Has Film
-          </Text>
-        </Pressable>
-      </ScrollView>
+        <FilterRow
+          expanded={filtersExpanded}
+          onToggle={() => setFiltersExpanded(!filtersExpanded)}
+          conferenceFilter={conferenceFilter}
+          onConferenceChange={setConferenceFilter}
+          posFilter={posFilter}
+          onPosChange={setPosFilter}
+          classFilter={classFilter}
+          onClassChange={setClassFilter}
+          stateFilter={stateFilter}
+          onStateChange={setStateFilter}
+          minMpg={minMpg}
+          onMinMpgChange={setMinMpg}
+          filmOnly={filmOnly}
+          onFilmOnlyChange={setFilmOnly}
+        />
 
-      {/* Player table */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View>
-          {/* Header */}
-          <View style={[styles.poolHeaderRow, { borderBottomColor: colors.divider }]}>
-            <Text style={[styles.poolHeaderCell, styles.poolColName, { color: colors.textSecondary }]}>PLAYER</Text>
-            <Text style={[styles.poolHeaderCell, styles.poolColPos, { color: colors.textSecondary }]}>POS</Text>
-            <Text style={[styles.poolHeaderCell, styles.poolColHt, { color: colors.textSecondary }]}>HT</Text>
-            <Text style={[styles.poolHeaderCell, styles.poolColClass, { color: colors.textSecondary }]}>CLASS</Text>
-            <Text style={[styles.poolHeaderCell, styles.poolColSchool, { color: colors.textSecondary }]}>SCHOOL</Text>
-            <Text style={[styles.poolHeaderCell, styles.poolColLevel, { color: colors.textSecondary }]}>LEVEL</Text>
-            <Text style={[styles.poolHeaderCell, styles.poolColStats, { color: colors.textSecondary }]}>KEY STATS</Text>
-            <Text style={[styles.poolHeaderCell, styles.poolColActions, { color: colors.textSecondary }]}>ACTIONS</Text>
-          </View>
-          {/* Rows */}
-          {filtered.map((player, idx) => (
-            <View
-              key={player.id}
-              style={[styles.poolRow, idx % 2 === 1 && { backgroundColor: colors.backgroundSecondary + '40' }]}
-            >
-              <Pressable
-                style={styles.poolColName}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  router.push({ pathname: '/coach/player-profile', params: { id: player.id } });
-                }}
-              >
-                <Text style={[styles.poolCellName, { color: colors.text }]}>
-                  {player.firstName} {player.lastName}
-                </Text>
-              </Pressable>
-              <Text style={[styles.poolCell, styles.poolColPos, { color: colors.text }]}>{player.position}</Text>
-              <Text style={[styles.poolCell, styles.poolColHt, { color: colors.text }]}>{player.height}</Text>
-              <Text style={[styles.poolCell, styles.poolColClass, { color: colors.text }]}>{player.classYear}</Text>
-              <Text style={[styles.poolCell, styles.poolColSchool, { color: colors.text }]} numberOfLines={1}>{player.currentSchool}</Text>
-              <Text style={[styles.poolCell, styles.poolColLevel, { color: colors.textSecondary }]}>{player.level}</Text>
-              <Text style={[styles.poolCell, styles.poolColStats, { color: colors.textSecondary }]} numberOfLines={1}>{player.keyStatLine}</Text>
-              <View style={[styles.poolColActions, { flexDirection: 'row', gap: 6 }]}>
-                <Pressable
-                  style={[styles.poolActionBtn, { backgroundColor: colors.backgroundSecondary }]}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    router.push({ pathname: '/coach/player-profile', params: { id: player.id } });
-                  }}
-                >
-                  <Text style={[styles.poolActionText, { color: colors.text }]}>Profile</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.poolActionBtn, { backgroundColor: '#ffffff20' }]}
-                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-                >
-                  <Text style={[styles.poolActionText, { color: '#ffffff' }]}>Nexus</Text>
-                </Pressable>
-              </View>
-            </View>
-          ))}
-          {filtered.length === 0 && (
-            <View style={styles.emptyState}>
-              <Text style={[styles.emptyText, { color: colors.textTertiary }]}>No players match your filters</Text>
-            </View>
-          )}
+        <View style={styles.viewToggleRow}>
+          <Text style={styles.resultCountText}>{filtered.length} players</Text>
+          <ViewToggle activeView={activeView} onViewChange={setActiveView} />
         </View>
-      </ScrollView>
-    </View>
-  );
-}
 
-// ─── Recruiting Board ───
-function RecruitingBoardView({ colors }: { colors: (typeof Colors)['light'] }) {
-  const router = useRouter();
-  const [statusTab, setStatusTab] = useState<BoardStatus>('Watching');
-  const [board, setBoard] = useState<BoardEntry[]>([...RECRUITING_BOARD]);
-  const [selectedEntry, setSelectedEntry] = useState<BoardEntry | null>(null);
+        {activeView === 'list' && (
+          <PoolListView players={filtered} onPlayerPress={setPeekPlayer} />
+        )}
 
-  const filteredBoard = useMemo(
-    () => board.filter((e) => e.status === statusTab),
-    [board, statusTab]
-  );
+        {activeView === 'cards' && (
+          <PoolCardsView players={filtered} onPlayerPress={setPeekPlayer} />
+        )}
 
-  const playerName = (playerId: string) => {
-    const p = PLAYER_POOL.find((pp) => pp.id === playerId);
-    return p ? `${p.firstName} ${p.lastName}` : 'Unknown';
-  };
-
-  const counts = useMemo(() => {
-    const c: Record<BoardStatus, number> = { Watching: 0, Contacted: 0, Offered: 0, Committed: 0, Archived: 0 };
-    board.forEach((e) => c[e.status]++);
-    return c;
-  }, [board]);
-
-  return (
-    <View style={styles.subViewContainer}>
-      <Text style={[styles.subViewTitle, { color: colors.text }]}>Recruiting Board</Text>
-      <Text style={[styles.contextLine, { color: colors.textTertiary }]}>
-        Lincoln University Oakland · Men's Basketball · 2025-26
-      </Text>
-
-      {/* Status tabs */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.statusTabsScroll}>
-        {BOARD_STATUS_TABS.map((st) => {
-          const isActive = statusTab === st;
-          return (
-            <Pressable
-              key={st}
-              style={[
-                styles.statusTab,
-                { borderBottomColor: isActive ? STATUS_COLORS[st] : 'transparent' },
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setStatusTab(st);
-              }}
-            >
-              <Text style={[styles.statusTabText, { color: isActive ? colors.text : colors.textTertiary }]}>
-                {st}
-              </Text>
-              <View style={[styles.statusTabCount, { backgroundColor: isActive ? STATUS_COLORS[st] + '30' : colors.backgroundSecondary }]}>
-                <Text style={[styles.statusTabCountText, { color: isActive ? STATUS_COLORS[st] : colors.textTertiary }]}>
-                  {counts[st]}
-                </Text>
-              </View>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-
-      {/* Board table */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View>
-          <View style={[styles.boardHeaderRow, { borderBottomColor: colors.divider }]}>
-            <Text style={[styles.boardHeaderCell, styles.boardColPlayer, { color: colors.textSecondary }]}>PLAYER</Text>
-            <Text style={[styles.boardHeaderCell, styles.boardColPri, { color: colors.textSecondary }]}>PRI</Text>
-            <Text style={[styles.boardHeaderCell, styles.boardColPos, { color: colors.textSecondary }]}>POS</Text>
-            <Text style={[styles.boardHeaderCell, styles.boardColClass, { color: colors.textSecondary }]}>CLASS</Text>
-            <Text style={[styles.boardHeaderCell, styles.boardColNotes, { color: colors.textSecondary }]}>NOTES</Text>
-            <Text style={[styles.boardHeaderCell, styles.boardColNext, { color: colors.textSecondary }]}>NEXT STEP</Text>
-            <Text style={[styles.boardHeaderCell, styles.boardColDue, { color: colors.textSecondary }]}>DUE</Text>
-            <Text style={[styles.boardHeaderCell, styles.boardColCoach, { color: colors.textSecondary }]}>COACH</Text>
+        {activeView === 'compare' && (
+          <View style={styles.comingSoon}>
+            <IconSymbol name="arrow.left.arrow.right" size={32} color={GRAY} />
+            <Text style={styles.comingSoonText}>Compare View</Text>
+            <Text style={styles.comingSoonSub}>Coming Soon</Text>
           </View>
-          {filteredBoard.map((entry, idx) => (
-            <Pressable
-              key={entry.id}
-              style={[styles.boardRow, idx % 2 === 1 && { backgroundColor: colors.backgroundSecondary + '40' }]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setSelectedEntry(entry);
-              }}
-            >
-              <View style={styles.boardColPlayer}>
-                <Text style={[styles.boardCellName, { color: colors.text }]}>{playerName(entry.playerId)}</Text>
-              </View>
-              <View style={[styles.boardColPri, { alignItems: 'center' }]}>
-                <View style={[styles.priorityBadge, { backgroundColor: PRIORITY_COLORS[entry.priority] + '25' }]}>
-                  <Text style={[styles.priorityText, { color: PRIORITY_COLORS[entry.priority] }]}>{entry.priority}</Text>
-                </View>
-              </View>
-              <Text style={[styles.boardCell, styles.boardColPos, { color: colors.text }]}>{entry.position}</Text>
-              <Text style={[styles.boardCell, styles.boardColClass, { color: colors.text }]}>{entry.classYear}</Text>
-              <Text style={[styles.boardCell, styles.boardColNotes, { color: colors.textSecondary }]} numberOfLines={1}>{entry.shortNotes}</Text>
-              <Text style={[styles.boardCell, styles.boardColNext, { color: colors.text }]} numberOfLines={1}>{entry.nextStep}</Text>
-              <Text style={[styles.boardCell, styles.boardColDue, { color: colors.textSecondary }]}>{entry.dueDate ? new Date(entry.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}</Text>
-              <Text style={[styles.boardCell, styles.boardColCoach, { color: colors.textSecondary }]} numberOfLines={1}>{entry.assignedCoach}</Text>
-            </Pressable>
-          ))}
-          {filteredBoard.length === 0 && (
-            <View style={styles.emptyState}>
-              <Text style={[styles.emptyText, { color: colors.textTertiary }]}>No {statusTab.toLowerCase()} recruits</Text>
-            </View>
-          )}
-        </View>
+        )}
       </ScrollView>
 
-      {/* Detail Panel Modal */}
-      {selectedEntry && (
-        <Modal visible transparent animationType="slide" onRequestClose={() => setSelectedEntry(null)}>
-          <BoardDetailPanel
-            entry={selectedEntry}
-            colors={colors}
-            onClose={() => setSelectedEntry(null)}
-            onUpdate={(updated) => {
-              setBoard((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
-              setSelectedEntry(updated);
-            }}
-          />
-        </Modal>
+      {/* Quick Peek Sheet */}
+      {peekPlayer && (
+        <PlayerQuickPeek
+          player={peekPlayer}
+          onClose={() => setPeekPlayer(null)}
+        />
       )}
     </View>
   );
 }
 
-// ─── Board Detail Panel ───
-function BoardDetailPanel({
-  entry,
-  colors,
-  onClose,
-  onUpdate,
-}: {
-  entry: BoardEntry;
-  colors: (typeof Colors)['light'];
-  onClose: () => void;
-  onUpdate: (entry: BoardEntry) => void;
-}) {
-  const router = useRouter();
-  const player = PLAYER_POOL.find((p) => p.id === entry.playerId);
-  const name = player ? `${player.firstName} ${player.lastName}` : 'Unknown';
-
-  return (
-    <View style={[styles.detailOverlay, { backgroundColor: colors.background + 'F5' }]}>
-      <View style={[styles.detailPanel, { backgroundColor: colors.backgroundSecondary }]}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {/* Header */}
-          <View style={styles.detailHeader}>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.detailName, { color: colors.text }]}>{name}</Text>
-              <Text style={[styles.detailMeta, { color: colors.textSecondary }]}>
-                {entry.position} · Class {entry.classYear} · {player?.currentSchool}
-              </Text>
-            </View>
-            <Pressable onPress={onClose} style={styles.detailCloseBtn}>
-              <IconSymbol name="xmark" size={18} color={colors.textSecondary} />
-            </Pressable>
-          </View>
-
-          {/* Quick links */}
-          <View style={styles.detailActions}>
-            <Pressable
-              style={[styles.detailActionBtn, { backgroundColor: colors.backgroundTertiary }]}
-              onPress={() => {
-                onClose();
-                router.push({ pathname: '/coach/player-profile', params: { id: entry.playerId } });
-              }}
-            >
-              <Text style={[styles.detailActionText, { color: colors.text }]}>Profile</Text>
-            </Pressable>
-            <Pressable style={[styles.detailActionBtn, { backgroundColor: '#ffffff20' }]}>
-              <Text style={[styles.detailActionText, { color: '#ffffff' }]}>Open in Nexus</Text>
-            </Pressable>
-            <Pressable style={[styles.detailActionBtn, { backgroundColor: '#f5f5f520' }]}>
-              <Text style={[styles.detailActionText, { color: '#f5f5f5' }]}>Run Evaluation</Text>
-            </Pressable>
-          </View>
-
-          {/* Editable fields */}
-          <View style={styles.detailFieldGroup}>
-            <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>STATUS</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 12 }}>
-              {BOARD_STATUS_TABS.map((st) => (
-                <Pressable
-                  key={st}
-                  style={[
-                    styles.detailStatusChip,
-                    { backgroundColor: entry.status === st ? STATUS_COLORS[st] + '30' : colors.backgroundTertiary },
-                  ]}
-                  onPress={() => onUpdate({ ...entry, status: st })}
-                >
-                  <Text style={{ fontSize: 12, fontWeight: '600', color: entry.status === st ? STATUS_COLORS[st] : colors.textTertiary }}>
-                    {st}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-
-            <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>PRIORITY</Text>
-            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
-              {(['A', 'B', 'C'] as const).map((p) => (
-                <Pressable
-                  key={p}
-                  style={[
-                    styles.priorityChip,
-                    { backgroundColor: entry.priority === p ? PRIORITY_COLORS[p] + '30' : colors.backgroundTertiary },
-                  ]}
-                  onPress={() => onUpdate({ ...entry, priority: p })}
-                >
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: entry.priority === p ? PRIORITY_COLORS[p] : colors.textTertiary }}>{p}</Text>
-                </Pressable>
-              ))}
-            </View>
-
-            <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>TAGS</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
-              {entry.tags.map((tag) => (
-                <View key={tag} style={[styles.tagChip, { backgroundColor: colors.backgroundTertiary }]}>
-                  <Text style={{ fontSize: 11, color: colors.textSecondary }}>{tag}</Text>
-                </View>
-              ))}
-            </View>
-
-            <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>NOTES</Text>
-            <Text style={[styles.detailFieldValue, { color: colors.text }]}>{entry.shortNotes}</Text>
-            <Text style={[styles.detailFieldValueSub, { color: colors.textSecondary }]}>{entry.longNotes}</Text>
-
-            <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>NEXT STEP</Text>
-            <Text style={[styles.detailFieldValue, { color: colors.text }]}>{entry.nextStep || '—'}</Text>
-            {entry.dueDate ? (
-              <Text style={[styles.detailFieldValueSub, { color: colors.textTertiary }]}>
-                Due: {new Date(entry.dueDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-              </Text>
-            ) : null}
-
-            <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>ASSIGNED COACH</Text>
-            <Text style={[styles.detailFieldValue, { color: colors.text }]}>{entry.assignedCoach}</Text>
-
-            {entry.scholarshipPct !== undefined && (
-              <>
-                <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>PLANNED SCHOLARSHIP</Text>
-                <Text style={[styles.detailFieldValue, { color: colors.text }]}>{entry.scholarshipPct}%</Text>
-              </>
-            )}
-            {entry.nilAmount && (
-              <>
-                <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>PLANNED NIL</Text>
-                <Text style={[styles.detailFieldValue, { color: colors.text }]}>{entry.nilAmount}</Text>
-              </>
-            )}
-          </View>
-        </ScrollView>
-      </View>
-    </View>
-  );
-}
-
-// ─── Logs ───
-function LogsView({ colors }: { colors: (typeof Colors)['light'] }) {
-  const [logs] = useState<RecruitingLog[]>([...RECRUITING_LOGS]);
-  const [filterPlayer, setFilterPlayer] = useState('');
-  const [showAddModal, setShowAddModal] = useState(false);
-
-  const filtered = useMemo(() => {
-    if (!filterPlayer) return logs;
-    const q = filterPlayer.toLowerCase();
-    return logs.filter((l) => l.playerName.toLowerCase().includes(q));
-  }, [logs, filterPlayer]);
-
-  const actionTypeColor = (type: ActionType): string => {
-    switch (type) {
-      case 'Call': return '#f5f5f5';
-      case 'Text': return '#ffffff';
-      case 'DM': return '#ffffff';
-      case 'Visit': case 'Official': case 'Unofficial': return '#6e6e6e';
-      case 'Watched Film': return '#d4d4d4';
-      default: return '#6B7280';
-    }
-  };
-
-  return (
-    <View style={styles.subViewContainer}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={[styles.subViewTitle, { color: colors.text }]}>Recruiting Logs</Text>
-        <Pressable
-          style={[styles.addLogBtn, { backgroundColor: colors.text }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setShowAddModal(true);
-          }}
-        >
-          <Text style={[styles.addLogBtnText, { color: colors.background }]}>+ Log</Text>
-        </Pressable>
-      </View>
-
-      {/* Filter */}
-      <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
-        <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-        <TextInput
-          style={[styles.searchInput, { color: colors.text }]}
-          placeholder="Filter by player..."
-          placeholderTextColor={colors.textTertiary}
-          value={filterPlayer}
-          onChangeText={setFilterPlayer}
-        />
-      </View>
-
-      {/* Log rows */}
-      {filtered.sort((a, b) => b.date.localeCompare(a.date)).map((log, idx) => (
-        <View
-          key={log.id}
-          style={[
-            styles.logRow,
-            { backgroundColor: colors.backgroundSecondary },
-            idx > 0 && { marginTop: 8 },
-          ]}
-        >
-          <View style={styles.logRowHeader}>
-            <Text style={[styles.logDate, { color: colors.textTertiary }]}>
-              {new Date(log.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </Text>
-            <View style={[styles.logTypeBadge, { backgroundColor: actionTypeColor(log.actionType) + '20' }]}>
-              <Text style={[styles.logTypeText, { color: actionTypeColor(log.actionType) }]}>{log.actionType}</Text>
-            </View>
-            <Text style={[styles.logOwner, { color: colors.textTertiary }]}>{log.owner}</Text>
-          </View>
-          <Text style={[styles.logPlayer, { color: colors.text }]}>{log.playerName}</Text>
-          <Text style={[styles.logOutcome, { color: colors.textSecondary }]}>{log.outcome}</Text>
-          {log.nextAction ? (
-            <Text style={[styles.logNext, { color: colors.textTertiary }]}>
-              Next: {log.nextAction}
-              {log.nextActionDue ? ` (${new Date(log.nextActionDue).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})` : ''}
-            </Text>
-          ) : null}
-        </View>
-      ))}
-
-      {/* Add Log Modal (placeholder) */}
-      <Modal visible={showAddModal} transparent animationType="slide" onRequestClose={() => setShowAddModal(false)}>
-        <View style={[styles.detailOverlay, { backgroundColor: colors.background + 'F5' }]}>
-          <View style={[styles.addLogModal, { backgroundColor: colors.backgroundSecondary }]}>
-            <View style={styles.detailHeader}>
-              <Text style={[styles.detailName, { color: colors.text }]}>Add Log Entry</Text>
-              <Pressable onPress={() => setShowAddModal(false)} style={styles.detailCloseBtn}>
-                <IconSymbol name="xmark" size={18} color={colors.textSecondary} />
-              </Pressable>
-            </View>
-            <View style={{ paddingHorizontal: Spacing.md, paddingTop: Spacing.md }}>
-              <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>ACTION TYPE</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
-                {(['Call', 'Text', 'DM', 'Visit', 'Watched Film', 'Official', 'Unofficial'] as ActionType[]).map((t) => (
-                  <View key={t} style={[styles.filterChip, { backgroundColor: colors.backgroundTertiary, marginRight: 6 }]}>
-                    <Text style={{ fontSize: 12, color: colors.textSecondary }}>{t}</Text>
-                  </View>
-                ))}
-              </ScrollView>
-              <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>PLAYER</Text>
-              <View style={[styles.addLogField, { backgroundColor: colors.backgroundTertiary }]}>
-                <Text style={{ color: colors.textTertiary }}>Select player...</Text>
-              </View>
-              <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>NOTES / OUTCOME</Text>
-              <View style={[styles.addLogField, { backgroundColor: colors.backgroundTertiary, height: 80 }]}>
-                <Text style={{ color: colors.textTertiary }}>Enter notes...</Text>
-              </View>
-              <Text style={[styles.detailFieldLabel, { color: colors.textTertiary }]}>NEXT ACTION + DUE DATE</Text>
-              <View style={[styles.addLogField, { backgroundColor: colors.backgroundTertiary }]}>
-                <Text style={{ color: colors.textTertiary }}>Enter next action...</Text>
-              </View>
-              <Pressable style={[styles.addLogSubmit, { backgroundColor: colors.text }]}>
-                <Text style={{ color: colors.background, fontWeight: '600', fontSize: 15 }}>Save Log Entry</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
-}
-
-// ─── Saved Evaluations ───
-function SavedEvalsView({ colors }: { colors: (typeof Colors)['light'] }) {
-  const [filterPlayer, setFilterPlayer] = useState('');
-
-  const filtered = useMemo(() => {
-    if (!filterPlayer) return EVAL_SNAPSHOTS;
-    const q = filterPlayer.toLowerCase();
-    return EVAL_SNAPSHOTS.filter((e) => e.playerName.toLowerCase().includes(q));
-  }, [filterPlayer]);
-
-  return (
-    <View style={styles.subViewContainer}>
-      <Text style={[styles.subViewTitle, { color: colors.text }]}>Saved Evaluations</Text>
-
-      <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
-        <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-        <TextInput
-          style={[styles.searchInput, { color: colors.text }]}
-          placeholder="Filter by player..."
-          placeholderTextColor={colors.textTertiary}
-          value={filterPlayer}
-          onChangeText={setFilterPlayer}
-        />
-      </View>
-
-      {filtered.sort((a, b) => b.timestamp.localeCompare(a.timestamp)).map((snap, idx) => (
-        <View
-          key={snap.id}
-          style={[
-            styles.evalCard,
-            { backgroundColor: colors.backgroundSecondary },
-            idx > 0 && { marginTop: 8 },
-          ]}
-        >
-          <View style={styles.evalCardHeader}>
-            <Text style={[styles.evalPlayerName, { color: colors.text }]}>{snap.playerName}</Text>
-            <Text style={[styles.evalDate, { color: colors.textTertiary }]}>
-              {new Date(snap.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-            </Text>
-          </View>
-          <Text style={[styles.evalMeta, { color: colors.textTertiary }]}>
-            {snap.evaluator} · {snap.season}
-          </Text>
-          <Text style={[styles.evalSummary, { color: colors.textSecondary }]} numberOfLines={3}>
-            {snap.summary}
-          </Text>
-          <View style={styles.evalActions}>
-            {snap.nexusThreadId && (
-              <Pressable style={[styles.evalActionBtn, { backgroundColor: '#ffffff20' }]}>
-                <Text style={[styles.evalActionText, { color: '#ffffff' }]}>Open in Nexus</Text>
-              </Pressable>
-            )}
-            {snap.boardEntryId ? (
-              <View style={[styles.evalActionBtn, { backgroundColor: '#f5f5f520' }]}>
-                <Text style={[styles.evalActionText, { color: '#f5f5f5' }]}>Linked to Board</Text>
-              </View>
-            ) : (
-              <Pressable style={[styles.evalActionBtn, { backgroundColor: colors.backgroundTertiary }]}>
-                <Text style={[styles.evalActionText, { color: colors.textSecondary }]}>Attach to Board</Text>
-              </Pressable>
-            )}
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-}
-
-// ─── Main Screen ───
+// ─── Standalone Screen (navigated from coach hub tabs on other screens) ───
 export default function CoachRecruitingScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabKey>('board');
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: BG }]}>
       {/* Hub Tabs */}
-      <View style={[styles.hubTabsContainer, { borderBottomColor: colors.divider, backgroundColor: colors.background }]}>
+      <View style={[styles.hubTabsContainer, { borderBottomColor: DIVIDER }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hubTabsContent}>
           {HUB_TABS.map((tab) => {
             const isActive = tab.id === 'recruiting';
             return (
               <Pressable
                 key={tab.id}
-                style={[styles.hubTab, isActive && [styles.hubTabActive, { borderBottomColor: colors.text }]]}
+                style={[styles.hubTab, isActive && [styles.hubTabActive, { borderBottomColor: WHITE }]]}
                 onPress={() => {
                   if (tab.id === 'recruiting') return;
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -737,7 +734,7 @@ export default function CoachRecruitingScreen() {
                   }
                 }}
               >
-                <ThemedText style={[styles.hubTabLabel, { color: isActive ? colors.text : colors.textTertiary }, isActive && styles.hubTabLabelActive]}>
+                <ThemedText style={[styles.hubTabLabel, { color: isActive ? WHITE : GRAY }, isActive && styles.hubTabLabelActive]}>
                   {tab.label}
                 </ThemedText>
               </Pressable>
@@ -746,20 +743,7 @@ export default function CoachRecruitingScreen() {
         </ScrollView>
       </View>
 
-      {/* Tab bar */}
-      <TabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} colors={colors} />
-
-      {/* Content */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 24 }]}
-        showsVerticalScrollIndicator={false}
-      >
-        {activeTab === 'pool' && <NationalPlayerPool colors={colors} />}
-        {activeTab === 'board' && <RecruitingBoardView colors={colors} />}
-        {activeTab === 'logs' && <LogsView colors={colors} />}
-        {activeTab === 'evals' && <SavedEvalsView colors={colors} />}
-      </ScrollView>
+      <PlayerPoolContent />
 
       <TabFooter activeTab="Home" />
     </View>
@@ -769,40 +753,102 @@ export default function CoachRecruitingScreen() {
 // ─── Styles ───
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  hubTabsContainer: { borderBottomWidth: StyleSheet.hairlineWidth },
+
+  // Hub tabs
+  hubTabsContainer: { borderBottomWidth: StyleSheet.hairlineWidth, backgroundColor: BG },
   hubTabsContent: { paddingHorizontal: Spacing.lg, gap: Spacing.lg },
   hubTab: { paddingVertical: 12, borderBottomWidth: 2, borderBottomColor: 'transparent' },
   hubTabActive: { borderBottomWidth: 2 },
   hubTabLabel: { fontSize: 14, fontWeight: '500' },
   hubTabLabelActive: { fontWeight: '600' },
+
   scrollView: { flex: 1 },
   scrollContent: { paddingHorizontal: Spacing.md },
 
-  // Tab bar
-  tabBar: { flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth },
-  tab: { flex: 1, alignItems: 'center', paddingVertical: 12, position: 'relative' },
-  tabActive: {},
-  tabText: { fontSize: 13, fontWeight: '600' },
-  tabIndicator: { position: 'absolute', bottom: 0, left: 16, right: 16, height: 2, borderRadius: 1 },
+  // ── Pool Header ──
+  poolHeader: { marginTop: 8 },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 },
+  title: { fontSize: 22, fontWeight: '700', color: WHITE },
+  contextPill: { backgroundColor: CARD_BG, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
+  contextPillText: { fontSize: 12, fontWeight: '500', color: GRAY },
 
-  // Sub-views shared
-  subViewContainer: { flex: 1 },
-  subViewTitle: { fontSize: 22, fontWeight: '700', marginBottom: 4, marginTop: 8 },
-  contextLine: { fontSize: 13, marginBottom: 12 },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: CARD_BG,
+    borderRadius: BorderRadius.md,
+    paddingHorizontal: 12,
+    height: 40,
+    marginBottom: 10,
+    gap: 8,
+  },
+  searchInput: { flex: 1, fontSize: 14, color: WHITE, paddingVertical: 0 },
 
-  // Search
-  searchBar: { flexDirection: 'row', alignItems: 'center', borderRadius: BorderRadius.md, paddingHorizontal: 12, height: 40, marginBottom: 10 },
-  searchInput: { flex: 1, marginLeft: 8, fontSize: 14 },
+  dropdownRow: { gap: 8, marginBottom: 8 },
+  dropdownChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    marginRight: 6,
+    backgroundColor: CARD_BG,
+  },
+  dropdownChipActive: { backgroundColor: WHITE },
+  dropdownChipText: { fontSize: 12, fontWeight: '500', color: GRAY },
+  dropdownChipTextActive: { color: BG },
 
-  // Filters
-  filterRow: { marginBottom: 12, flexGrow: 0 },
-  filterChip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, marginRight: 6 },
-  filterChipText: { fontSize: 12, fontWeight: '500' },
-  filterDividerV: { width: 1, height: 20, backgroundColor: '#333', marginHorizontal: 4, alignSelf: 'center' },
+  seasonRow: { flexDirection: 'row', gap: 6, marginTop: 6 },
+  seasonChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+    backgroundColor: CARD_BG,
+  },
+  seasonChipActive: { backgroundColor: DIVIDER },
+  seasonChipText: { fontSize: 11, fontWeight: '500', color: GRAY },
+  seasonChipTextActive: { color: WHITE },
 
-  // Pool table
-  poolHeaderRow: { flexDirection: 'row', borderBottomWidth: 1, paddingBottom: 8, marginBottom: 4 },
-  poolHeaderCell: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5, paddingHorizontal: 4 },
+  // ── Filters ──
+  filterSection: { marginBottom: 8 },
+  filterToggle: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6 },
+  filterToggleText: { fontSize: 13, fontWeight: '600', color: GRAY },
+  filterChipsScroll: { marginTop: 6, flexGrow: 0 },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    marginRight: 6,
+    backgroundColor: CARD_BG,
+  },
+  filterChipActive: { backgroundColor: WHITE },
+  filterChipText: { fontSize: 12, fontWeight: '500', color: GRAY },
+  filterChipTextActive: { color: BG },
+  filterDividerV: { width: 1, height: 20, backgroundColor: DIVIDER, marginHorizontal: 4, alignSelf: 'center' },
+
+  // ── View Toggle ──
+  viewToggleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 },
+  resultCountText: { fontSize: 13, fontWeight: '500', color: GRAY },
+  viewToggleContainer: { flexDirection: 'row', alignItems: 'center' },
+  viewToggle: {
+    flexDirection: 'row',
+    backgroundColor: CARD_BG,
+    borderRadius: 8,
+    height: 32,
+    alignItems: 'center',
+    padding: 2,
+  },
+  viewToggleBtn: {
+    width: 30,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+  },
+  viewToggleBtnActive: { backgroundColor: DIVIDER },
+  resultCount: {},
+
+  // ── Pool List Table ──
+  poolHeaderRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: DIVIDER, paddingBottom: 8, marginBottom: 4 },
+  poolHeaderCell: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5, paddingHorizontal: 4, color: GRAY },
   poolColName: { width: 160 },
   poolColPos: { width: 44, textAlign: 'center' },
   poolColHt: { width: 52, textAlign: 'center' },
@@ -810,83 +856,107 @@ const styles = StyleSheet.create({
   poolColSchool: { width: 140 },
   poolColLevel: { width: 80, textAlign: 'center' },
   poolColStats: { width: 160 },
-  poolColActions: { width: 130 },
+  poolColFilm: { width: 40, alignItems: 'center', justifyContent: 'center' },
   poolRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },
-  poolCell: { fontSize: 13, paddingHorizontal: 4 },
-  poolCellName: { fontSize: 14, fontWeight: '500', paddingHorizontal: 4 },
-  poolActionBtn: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10 },
-  poolActionText: { fontSize: 11, fontWeight: '600' },
+  poolCell: { fontSize: 13, paddingHorizontal: 4, color: WHITE },
+  poolCellName: { fontSize: 14, fontWeight: '500', paddingHorizontal: 4, color: WHITE },
 
-  // Board
-  statusTabsScroll: { marginBottom: 12, flexGrow: 0 },
-  statusTab: { paddingHorizontal: 12, paddingVertical: 8, borderBottomWidth: 2, marginRight: 4, flexDirection: 'row', alignItems: 'center', gap: 6 },
-  statusTabText: { fontSize: 13, fontWeight: '600' },
-  statusTabCount: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, minWidth: 22, alignItems: 'center' },
-  statusTabCountText: { fontSize: 11, fontWeight: '700' },
-  boardHeaderRow: { flexDirection: 'row', borderBottomWidth: 1, paddingBottom: 8, marginBottom: 4 },
-  boardHeaderCell: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5, paddingHorizontal: 4 },
-  boardColPlayer: { width: 150 },
-  boardColPri: { width: 44 },
-  boardColPos: { width: 44, textAlign: 'center' },
-  boardColClass: { width: 52, textAlign: 'center' },
-  boardColNotes: { width: 180 },
-  boardColNext: { width: 160 },
-  boardColDue: { width: 64, textAlign: 'center' },
-  boardColCoach: { width: 110 },
-  boardRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },
-  boardCell: { fontSize: 13, paddingHorizontal: 4 },
-  boardCellName: { fontSize: 14, fontWeight: '500', paddingHorizontal: 4 },
-  priorityBadge: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
-  priorityText: { fontSize: 13, fontWeight: '700' },
+  // ── Cards Grid ──
+  cardsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  playerCard: {
+    width: '48%',
+    backgroundColor: CARD_BG,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    gap: 4,
+  },
+  cardPosBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: DIVIDER,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    marginBottom: 4,
+  },
+  cardPosBadgeText: { fontSize: 10, fontWeight: '700', color: WHITE },
+  cardName: { fontSize: 15, fontWeight: '600', color: WHITE },
+  cardSchool: { fontSize: 12, color: GRAY },
+  cardMeta: { fontSize: 11, color: GRAY },
+  cardStats: { fontSize: 12, fontWeight: '500', color: WHITE, marginTop: 4 },
+  cardFilmBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
+  cardFilmText: { fontSize: 10, color: GRAY },
 
-  // Detail panel
-  detailOverlay: { flex: 1, justifyContent: 'flex-end' },
-  detailPanel: { borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '85%', paddingBottom: 40 },
-  detailHeader: { flexDirection: 'row', alignItems: 'flex-start', padding: Spacing.md, paddingBottom: 8 },
-  detailName: { fontSize: 20, fontWeight: '700' },
-  detailMeta: { fontSize: 13, marginTop: 2 },
-  detailCloseBtn: { padding: 8 },
-  detailActions: { flexDirection: 'row', paddingHorizontal: Spacing.md, gap: 8, marginBottom: 16 },
-  detailActionBtn: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10 },
-  detailActionText: { fontSize: 13, fontWeight: '600' },
-  detailFieldGroup: { paddingHorizontal: Spacing.md },
-  detailFieldLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5, marginBottom: 4, marginTop: 12 },
-  detailFieldValue: { fontSize: 15, fontWeight: '500', marginBottom: 2 },
-  detailFieldValueSub: { fontSize: 13, marginBottom: 4, lineHeight: 19 },
-  detailStatusChip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, marginRight: 6 },
-  priorityChip: { width: 40, height: 36, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  tagChip: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
+  // ── Compare Coming Soon ──
+  comingSoon: { alignItems: 'center', paddingVertical: 60, gap: 8 },
+  comingSoonText: { fontSize: 18, fontWeight: '600', color: WHITE },
+  comingSoonSub: { fontSize: 14, color: GRAY },
 
-  // Logs
-  addLogBtn: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 14 },
-  addLogBtnText: { fontSize: 13, fontWeight: '600' },
-  logRow: { borderRadius: BorderRadius.lg, padding: Spacing.md },
-  logRowHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
-  logDate: { fontSize: 12, fontWeight: '500' },
-  logTypeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
-  logTypeText: { fontSize: 10, fontWeight: '700' },
-  logOwner: { fontSize: 12, marginLeft: 'auto' },
-  logPlayer: { fontSize: 15, fontWeight: '600', marginBottom: 4 },
-  logOutcome: { fontSize: 13, lineHeight: 19, marginBottom: 4 },
-  logNext: { fontSize: 12, fontStyle: 'italic' },
+  // ── Quick Peek Sheet ──
+  scrim: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+  sheet: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: CARD_BG,
+    borderTopLeftRadius: BorderRadius.xl,
+    borderTopRightRadius: BorderRadius.xl,
+    paddingHorizontal: Spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  handleContainer: { alignItems: 'center', paddingVertical: Spacing.sm },
+  handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: DIVIDER },
+  sheetContent: { flex: 1 },
 
-  // Add log modal
-  addLogModal: { borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '80%', paddingBottom: 40 },
-  addLogField: { borderRadius: BorderRadius.md, padding: 12, marginBottom: 12 },
-  addLogSubmit: { paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
+  peekName: { fontSize: 22, fontWeight: '700', color: WHITE, marginBottom: 2 },
+  peekMeta: { fontSize: 14, color: GRAY, marginBottom: 2 },
+  peekLevel: { fontSize: 13, color: GRAY, marginBottom: 12 },
+  peekStatHero: {
+    backgroundColor: BG,
+    borderRadius: BorderRadius.lg,
+    paddingVertical: 14,
+    paddingHorizontal: Spacing.md,
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+  peekStatHeroText: { fontSize: 20, fontWeight: '700', color: WHITE },
 
-  // Evaluations
-  evalCard: { borderRadius: BorderRadius.lg, padding: Spacing.md },
-  evalCardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
-  evalPlayerName: { fontSize: 16, fontWeight: '600' },
-  evalDate: { fontSize: 12 },
-  evalMeta: { fontSize: 12, marginBottom: 8 },
-  evalSummary: { fontSize: 13, lineHeight: 19, marginBottom: 10 },
-  evalActions: { flexDirection: 'row', gap: 8 },
-  evalActionBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10 },
-  evalActionText: { fontSize: 12, fontWeight: '600' },
+  peekSeasonCard: {
+    backgroundColor: BG,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: 16,
+  },
+  peekSeasonTitle: { fontSize: 12, fontWeight: '700', color: GRAY, letterSpacing: 0.5, marginBottom: 10 },
+  peekStatsRow: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 },
+  peekStatItem: { alignItems: 'center' },
+  peekStatValue: { fontSize: 18, fontWeight: '700', color: WHITE },
+  peekStatLabel: { fontSize: 10, fontWeight: '600', color: GRAY, marginTop: 2 },
+  peekSeasonMeta: { fontSize: 12, color: GRAY, textAlign: 'center' },
 
-  // Empty state
+  peekActions: { flexDirection: 'row', gap: 10, marginBottom: 16 },
+  peekActionPrimary: {
+    flex: 1,
+    backgroundColor: WHITE,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  peekActionPrimaryText: { fontSize: 15, fontWeight: '600', color: BG },
+  peekActionSecondary: {
+    flex: 1,
+    backgroundColor: DIVIDER,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  peekActionSecondaryText: { fontSize: 15, fontWeight: '600', color: WHITE },
+
+  // ── Empty State ──
   emptyState: { padding: 40, alignItems: 'center' },
-  emptyText: { fontSize: 14 },
+  emptyText: { fontSize: 14, color: GRAY },
 });

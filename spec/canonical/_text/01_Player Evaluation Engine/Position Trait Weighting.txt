@@ -1,0 +1,873 @@
+Position Trait Weighting (College)
+Position Trait Weighting (College)
+1. Purpose
+Position Trait Weighting defines how evaluated attributes are valued differently by position in men’s college basketball.
+This section translates raw trait scores into position-aware evaluation.
+It answers one question only:
+Given the same attributes, what matters more or less at this position?
+2. Role of Position Weighting
+Position weighting:
+does not change trait scores
+does not change archetype qualification
+does not evaluate overall player quality
+It applies relative importance to attributes after trait evaluation is complete.
+3. Position Framework
+Each position is defined by an Overall Position Framework (OPF).
+The OPF specifies the relative importance of:
+Offensive contribution
+Defensive contribution
+Physical and possession tools
+The OPF does not:
+assign roles
+imply usage
+dictate lineups
+4. Offensive, Defensive, and Tools Components
+For each position, attributes are grouped into:
+Offensive KR (OKR)
+Defensive KR (DKR)
+Tools KR (TKR)
+Rules:
+OKR and DKR are visible and explicit
+TKR exists but is intentionally hidden from surface outputs
+All weights are fixed and position-specific
+No dynamic adjustment occurs.
+5. Position-Specific Weighting
+Each position defines:
+which attributes are emphasized
+which attributes are de-emphasized
+how offensive and defensive value is balanced
+Examples:
+Guards emphasize creation, decision-making, and perimeter defense
+Wings emphasize shooting, containment, and team defense
+Forwards emphasize finishing, physicality, and interior defense
+Bigs emphasize rim protection, rebounding, and interior finishing
+These are structural truths, not coaching preferences.
+6. Determinism
+Position Trait Weighting is:
+deterministic
+rule-based
+repeatable
+Given the same trait scores and position assignment, the same weighted result is produced.
+
+7. Independence from Context
+Position weighting does not change based on:
+team system
+opponent
+role assignment
+playing time
+wins or losses
+Context is handled downstream.
+8. Downstream Use
+Position-weighted outputs may be used by:
+KR evaluation
+player comparison within position
+roster balance analysis
+recruiting evaluation
+Position weighting outputs may not be modified downstream.
+9. Authority and Change Control
+Position Trait Weighting is authoritative for:
+position definitions
+weighting structure
+relative importance of attributes by position
+Any change to:
+weights
+position definitions
+included attributes
+requires documentation, versioning, and approval.
+
+POINT GUARD (PG)
+OPF — Overall Position Framework
+Offense (OKR): 55%
+Defense (DKR): 40%
+Tools (TKR): 5% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 32%
+3PT Spot-Up (C&S): 8%
+3PT Movement: 3%
+3PT Off-the-Dribble: 12%
+3PT Deep Range: 4%
+2PT Jumper C&S: 1%
+2PT Jumper Off-Dribble: 2%
+Free Throw: 2%
+Finishing — 16%
+Layup Finishing: 6%
+Floater / Runner: 3%
+Dunk Finishing: 1%
+Close Finishing: 1%
+Foul Draw Rate (Paint): 5%
+Playmaking — 49%
+Passing Accuracy: 8%
+Passing Vision: 11%
+Drive-and-Kick Passing: 11%
+Transition Playmaking: 5%
+Ball Security: 10%
+Screen Assist Creation: 2%
+Hockey Assist Creation: 2%
+Offensive Rebounding / Outlet — 3%
+Offensive Rebounding: 1%
+Rebound-to-Playmaking (Outlet Impact): 2%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 65%
+On-Ball Containment: 15%
+Ball Pressure: 10%
+Screen Navigation: 10%
+Perimeter Shot Contest: 8%
+Steal: 7%
+Off-Ball Denial: 6%
+Perimeter Disruption: 5%
+Perimeter Foul Discipline: 4%
+Interior Defense — 15%
+Block: 1%
+Rim Deterrence: 2%
+Vertical Contest Effectiveness: 2%
+Post Defense: 1%
+Help Defense (Interior): 4%
+Roll Man Defense: 2%
+Interior Disruption: 2%
+Interior Foul Discipline: 1%
+Interior Positioning: 0%
+Defensive Rebounding — 20%
+Defensive Rebounding: 14%
+Box-Out Effectiveness: 6%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 85%
+Speed (With Ball): 15%
+Acceleration (Burst): 15%
+Lateral Quickness: 15%
+Endurance: 12%
+Motor: 12%
+Body Control: 10%
+Strength (Functional): 6%
+Rebounding / Possession Tools — 15%
+Rebound Conversion (Secure vs Tip): 10%
+Rebound Range & Tracking: 5%
+COMBO GUARD (CG)
+OPF — Overall Position Framework
+Offense (OKR): 60%
+Defense (DKR): 35%
+Tools (TKR): 5% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 40%
+(scoring-oriented, OD shooting is a separator, C&S still critical)
+3PT Spot-Up (C&S): 12%
+3PT Movement: 6%
+3PT Off-the-Dribble: 12%
+3PT Deep Range: 4%
+2PT Jumper C&S: 2%
+2PT Jumper Off-Dribble: 2%
+Free Throw: 2%
+Finishing — 22%
+(can score, but not a rim-pressure engine)
+Layup Finishing: 9%
+Floater / Runner: 4%
+Dunk Finishing: 2%
+Close Finishing: 2%
+Foul Draw Rate (Paint): 5%
+Playmaking — 35%
+(secondary creator, can shift on/off ball)
+Passing Accuracy: 6%
+Passing Vision: 7%
+Drive-and-Kick Passing: 8%
+Transition Playmaking: 5%
+Ball Security: 6%
+Screen Assist Creation: 2%
+Hockey Assist Creation: 1%
+Offensive Rebounding / Outlet — 3%
+Offensive Rebounding: 2%
+Rebound-to-Playmaking (Outlet Impact): 1%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 60%
+(guard your position, survive switches)
+On-Ball Containment: 12%
+Ball Pressure: 9%
+Screen Navigation: 9%
+Perimeter Shot Contest: 8%
+Steal: 8%
+Off-Ball Denial: 6%
+Perimeter Disruption: 5%
+Perimeter Foul Discipline: 3%
+Interior Defense — 15%
+(must survive vs bigger guards/wings)
+Block: 2%
+Rim Deterrence: 2%
+Vertical Contest Effectiveness: 2%
+Post Defense: 1%
+Help Defense (Interior): 4%
+Roll Man Defense: 2%
+Interior Disruption: 1%
+Interior Foul Discipline: 1%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 16%
+Box-Out Effectiveness: 9%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 80%
+(bigger, stronger, switchable)
+Speed (With Ball): 12%
+Acceleration (Burst): 12%
+Speed (Without Ball): 10%
+Lateral Quickness: 14%
+Endurance: 10%
+Motor: 10%
+Body Control: 8%
+Strength (Functional): 4%
+Rebounding / Possession Tools — 20%
+Rebound Conversion (Secure vs Tip): 12%
+Rebound Range & Tracking: 8%
+WING 
+OPF — Overall Position Framework
+Offense (OKR): 50%
+Defense (DKR): 40%
+Tools (TKR): 10% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 42%
+(3-and-D reality, catch-and-shoot first)
+3PT Spot-Up (Catch-and-Shoot): 18%
+3PT Movement: 10%
+3PT Off-the-Dribble: 6%
+3PT Deep Range: 4%
+2PT Jumper Catch-and-Shoot: 2%
+2PT Jumper Off-Dribble: 1%
+Free Throw: 1%
+Finishing — 30%
+(run floor, punish closeouts, finish in space)
+Layup Finishing: 12%
+Floater / Runner: 4%
+Dunk Finishing: 6%
+Close Finishing: 4%
+Foul Draw Rate (Paint): 4%
+Playmaking — 18%
+(minimal, functional only)
+Passing Accuracy: 5%
+Passing Vision: 4%
+Drive-and-Kick Passing: 5%
+Transition Playmaking: 2%
+Ball Security: 2%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 10%
+Offensive Rebounding: 6%
+Rebound-to-Playmaking (Outlet Impact): 4%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 50%
+On-Ball Containment: 10%
+Ball Pressure: 6%
+Screen Navigation: 8%
+Perimeter Shot Contest: 10%
+Steal: 5%
+Off-Ball Denial: 7%
+Perimeter Disruption: 3%
+Perimeter Foul Discipline: 1%
+Interior Defense — 25%
+(guard up, survive switches, post defense matters)
+Block: 4%
+Rim Deterrence: 4%
+Vertical Contest Effectiveness: 4%
+Post Defense: 4%
+Help Defense (Interior): 5%
+Roll Man Defense: 2%
+Interior Disruption: 1%
+Interior Foul Discipline: 1%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 16%
+Box-Out Effectiveness: 9%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 75%
+(guard up/down, run floor, survive contact)
+Speed (Without Ball): 14%
+Speed (With Ball): 8%
+Acceleration (Burst): 10%
+Lateral Quickness: 15%
+Endurance: 10%
+Motor: 8%
+Body Control: 6%
+Strength (Functional): 4%
+Rebounding / Possession Tools — 25%
+Rebound Conversion (Secure vs Tip): 15%
+Rebound Range & Tracking: 10%
+
+FORWARD — COLLEGE | FINAL
+OPF — Overall Position Framework
+Offense (OKR): 45%
+Defense (DKR): 40%
+Tools (TKR): 15% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 35%
+(spacing first, creation secondary)
+3PT Spot-Up (Catch-and-Shoot): 16%
+3PT Movement: 6%
+3PT Off-the-Dribble: 5%
+3PT Deep Range: 4%
+2PT Jumper Catch-and-Shoot: 2%
+2PT Jumper Off-Dribble: 1%
+Free Throw: 1%
+Finishing — 40%
+(run floor, finish through contact, punish mismatches)
+Layup Finishing: 14%
+Floater / Runner: 4%
+Dunk Finishing: 8%
+Close Finishing: 6%
+Foul Draw Rate (Paint): 8%
+Playmaking — 15%
+(connector, not initiator)
+Passing Accuracy: 5%
+Passing Vision: 4%
+Drive-and-Kick Passing: 4%
+Transition Playmaking: 2%
+Ball Security: 0%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 10%
+Offensive Rebounding: 7%
+Rebound-to-Playmaking (Outlet Impact): 3%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 35%
+(contain wings, survive switches)
+On-Ball Containment: 7%
+Ball Pressure: 4%
+Screen Navigation: 6%
+Perimeter Shot Contest: 7%
+Steal: 3%
+Off-Ball Denial: 5%
+Perimeter Disruption: 2%
+Perimeter Foul Discipline: 1%
+Interior Defense — 35%
+(help, post defense, rim protection by committee)
+Block: 5%
+Rim Deterrence: 5%
+Vertical Contest Effectiveness: 5%
+Post Defense: 5%
+Help Defense (Interior): 7%
+Roll Man Defense: 2%
+Interior Disruption: 3%
+Interior Foul Discipline: 3%
+Interior Positioning: 0%
+Defensive Rebounding — 30%
+Defensive Rebounding: 20%
+Box-Out Effectiveness: 10%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 80%
+(size, strength, survivability)
+Strength (Functional): 16%
+Body Control: 14%
+Endurance: 12%
+Motor: 10%
+Vertical Pop (Live-Play): 10%
+Lateral Quickness: 8%
+Speed (Without Ball): 6%
+Acceleration (Burst): 4%
+Rebounding / Possession Tools — 20%
+Rebound Conversion (Secure vs Tip): 12%
+Rebound Range & Tracking: 8%
+
+BIG 
+OPF — Overall Position Framework
+Offense (OKR): 35%
+Defense (DKR): 45%
+Tools (TKR): 20% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 15%
+(outlier multiplier, not a requirement)
+3PT Spot-Up (Catch-and-Shoot): 6%
+3PT Movement: 2%
+3PT Off-the-Dribble: 1%
+3PT Deep Range: 2%
+2PT Jumper Catch-and-Shoot: 2%
+2PT Jumper Off-the-Dribble: 1%
+Free Throw: 1%
+Finishing — 60%
+(core offensive value)
+Layup Finishing: 14%
+Floater / Runner: 6%
+Dunk Finishing: 18%
+Close Finishing: 12%
+Foul Draw Rate (Paint): 10%
+Playmaking — 10%
+(secondary connector only)
+Passing Accuracy: 4%
+Passing Vision: 3%
+Drive-and-Kick Passing: 2%
+Transition Playmaking: 1%
+Ball Security: 0%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 15%
+Offensive Rebounding: 10%
+Rebound-to-Playmaking (Outlet Impact): 5%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 15%
+(survive switches, contain space)
+On-Ball Containment: 3%
+Ball Pressure: 1%
+Screen Navigation: 3%
+Perimeter Shot Contest: 4%
+Steal: 1%
+Off-Ball Denial: 1%
+Perimeter Disruption: 1%
+Perimeter Foul Discipline: 1%
+Interior Defense — 55%
+(anchors the defense)
+Block: 10%
+Rim Deterrence: 10%
+Vertical Contest Effectiveness: 8%
+Post Defense: 8%
+Help Defense (Interior): 10%
+Roll Man Defense: 4%
+Interior Disruption: 3%
+Interior Foul Discipline: 2%
+Interior Positioning: 0%
+Defensive Rebounding — 30%
+Defensive Rebounding: 20%
+Box-Out Effectiveness: 10%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 85%
+(size, power, survivability)
+Strength (Functional): 20%
+Body Control: 15%
+Vertical Pop (Live-Play): 15%
+Endurance: 12%
+Motor: 10%
+Lateral Quickness: 6%
+Speed (Without Ball): 4%
+Acceleration (Burst): 3%
+Rebounding / Possession Tools — 15%
+Rebound Conversion (Secure vs Tip): 9%
+Rebound Range & Tracking: 6%
+
+
+Position Trait Weighting (Pro)
+Position Trait Weighting (Pro)
+1. Purpose
+This section defines professional-level position trait weighting used for cross-level comparison and translation.
+It exists to answer one question:
+If this player were evaluated against professional positional standards, how would trait importance differ?
+This section does not replace or override college evaluation.
+2. Role Within Player Intelligence
+Pro Position Trait Weighting is used to:
+translate college player outputs to professional context
+stress-test trait profiles against higher standards
+support cross-level comparison and normalization
+It is not used to:
+evaluate college players directly
+change college player scores
+redefine player truth at the college level
+College evaluation remains authoritative.
+3. Relationship to College Position Weighting
+College Position Trait Weighting:
+defines truth for men’s college basketball
+drives all college KR outputs
+Pro Position Trait Weighting:
+exists alongside college weighting
+applies only after college evaluation is complete
+is used strictly for reference and translation
+No blending or averaging occurs between college and pro weightings.
+4. Structure
+The Pro Position Trait Weighting framework:
+uses the same underlying trait definitions
+applies different relative importance by position
+reflects professional-level role expectations
+Trait inclusion and weighting are:
+explicit
+fixed
+position-specific
+No dynamic adjustment is permitted.
+5. Determinism
+Pro Position Trait Weighting is:
+deterministic
+rule-based
+repeatable
+Given the same trait scores, the same pro-weighted result is produced.
+6. Independence from Context
+Pro Position Trait Weighting does not change based on:
+team system
+league style
+role assignment
+usage
+outcomes
+It reflects positional demand, not opportunity.
+7. Downstream Use
+Pro Position Trait Weighting may be used by:
+pro KR rating (reference)
+KLVN normalization
+long-term projection and translation analysis
+
+It may not be used by:
+college team evaluation
+recruiting decisions
+playing time decisions
+scouting outputs for college competition
+8. Authority and Change Control
+This section is authoritative for:
+pro positional weighting structure
+relative importance of attributes at the pro level
+Any change to:
+weights
+position definitions
+trait inclusion
+requires documentation, versioning, and approval.
+
+
+POINT GUARD (PG)
+OPF — Overall Position Framework
+Offense (OKR): 60%
+Defense (DKR): 35%
+Tools (TKR): 5% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 38%
+3PT Spot-Up (C&S): 7%
+3PT Movement: 4%
+3PT Off-the-Dribble: 15%
+3PT Deep Range: 6%
+2PT Jumper Catch-and-Shoot: 1%
+2PT Jumper Off-Dribble: 3%
+Free Throw: 2%
+Finishing — 17%
+Layup Finishing: 6%
+Floater / Runner: 4%
+Dunk Finishing: 1%
+Close Finishing: 1%
+Foul Draw Rate (Paint): 5%
+Playmaking — 42%
+Passing Accuracy: 7%
+Passing Vision: 10%
+Drive-and-Kick Passing: 10%
+Transition Playmaking: 5%
+Ball Security: 8%
+Screen Assist Creation: 1%
+Hockey Assist Creation: 1%
+Offensive Rebounding / Outlet — 3%
+Offensive Rebounding: 1%
+Rebound-to-Playmaking (Outlet Impact): 2%
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 70%
+On-Ball Containment: 18%
+Ball Pressure: 10%
+Screen Navigation: 15%
+Perimeter Shot Contest: 8%
+Steal: 7%
+Off-Ball Denial: 5%
+Perimeter Disruption: 4%
+Perimeter Foul Discipline: 3%
+Interior Defense — 10%
+Block: 1%
+Rim Deterrence: 2%
+Vertical Contest Effectiveness: 2%
+Post Defense: 0%
+Help Defense (Interior): 3%
+Roll Man Defense: 1%
+Interior Disruption: 0%
+Interior Foul Discipline: 1%
+Interior Positioning: 0%
+Defensive Rebounding — 20%
+Defensive Rebounding: 12%
+Box-Out Effectiveness: 8%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 85%
+Speed (With Ball): 14%
+Acceleration (Burst): 14%
+Lateral Quickness: 16%
+Endurance: 14%
+Motor: 9%
+Body Control: 10%
+Speed (Without Ball): 5%
+Strength (Functional): 3%
+Rebounding / Possession Tools — 15%
+Rebound Conversion (Secure vs Tip): 10%
+Rebound Range & Tracking: 5%
+
+COMBO GUARD (CG) — PRO | FINAL
+OPF — Overall Position Framework
+Offense (OKR): 65%
+Defense (DKR): 30%
+Tools (TKR): 5% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 45%
+(primary value = scoring gravity)
+3PT Spot-Up (Catch-and-Shoot): 12%
+3PT Movement: 8%
+3PT Off-the-Dribble: 15%
+3PT Deep Range: 6%
+2PT Jumper Catch-and-Shoot: 1%
+2PT Jumper Off-the-Dribble: 2%
+Free Throw: 1%
+Finishing — 20%
+(paint pressure > volume finishing)
+Layup Finishing: 7%
+Floater / Runner: 5%
+Dunk Finishing: 2%
+Close Finishing: 1%
+Foul Draw Rate (Paint): 5%
+Playmaking — 30%
+(secondary creator, not engine)
+Passing Accuracy: 6%
+Passing Vision: 7%
+Drive-and-Kick Passing: 9%
+Transition Playmaking: 4%
+Ball Security: 4%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 5%
+Offensive Rebounding: 2%
+Rebound-to-Playmaking (Outlet Impact): 3%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 65%
+On-Ball Containment: 14%
+Ball Pressure: 9%
+Screen Navigation: 14%
+Perimeter Shot Contest: 9%
+Steal: 8%
+Off-Ball Denial: 6%
+Perimeter Disruption: 3%
+Perimeter Foul Discipline: 2%
+Interior Defense — 10%
+Block: 1%
+Rim Deterrence: 1%
+Vertical Contest Effectiveness: 2%
+Post Defense: 0%
+Help Defense (Interior): 4%
+Roll Man Defense: 1%
+Interior Disruption: 0%
+Interior Foul Discipline: 1%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 15%
+Box-Out Effectiveness: 10%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 80%
+Speed (With Ball): 12%
+Acceleration (Burst): 12%
+Lateral Quickness: 14%
+Speed (Without Ball): 8%
+Endurance: 12%
+Motor: 10%
+Body Control: 8%
+Strength (Functional): 4%
+Rebounding / Possession Tools — 20%
+Rebound Conversion (Secure vs Tip): 12%
+Rebound Range & Tracking: 8%
+
+
+WING 
+OPF — Overall Position Framework
+Offense (OKR): 55%
+Defense (DKR): 35%
+Tools (TKR): 10% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 48%
+(spacing + movement are gates in pro)
+3PT Spot-Up (Catch-and-Shoot): 18%
+3PT Movement: 12%
+3PT Off-the-Dribble: 8%
+3PT Deep Range: 6%
+2PT Jumper Catch-and-Shoot: 2%
+2PT Jumper Off-the-Dribble: 1%
+Free Throw: 1%
+Finishing — 25%
+(attack closeouts, transition, straight-line drives)
+Layup Finishing: 10%
+Floater / Runner: 3%
+Dunk Finishing: 6%
+Close Finishing: 3%
+Foul Draw Rate (Paint): 3%
+Playmaking — 17%
+(advantage maintenance, not initiation)
+Passing Accuracy: 5%
+Passing Vision: 4%
+Drive-and-Kick Passing: 5%
+Transition Playmaking: 2%
+Ball Security: 1%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 10%
+Offensive Rebounding: 5%
+Rebound-to-Playmaking (Outlet Impact): 5%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 55%
+On-Ball Containment: 10%
+Ball Pressure: 6%
+Screen Navigation: 10%
+Perimeter Shot Contest: 10%
+Steal: 6%
+Off-Ball Denial: 8%
+Perimeter Disruption: 3%
+Perimeter Foul Discipline: 2%
+Interior Defense — 20%
+(switchability, help, weak-side rim)
+Block: 3%
+Rim Deterrence: 3%
+Vertical Contest Effectiveness: 3%
+Post Defense: 3%
+Help Defense (Interior): 4%
+Roll Man Defense: 2%
+Interior Disruption: 1%
+Interior Foul Discipline: 1%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 15%
+Box-Out Effectiveness: 10%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 75%
+Speed (Without Ball): 14%
+Lateral Quickness: 16%
+Acceleration (Burst): 10%
+Endurance: 10%
+Motor: 9%
+Body Control: 8%
+Speed (With Ball): 5%
+Strength (Functional): 3%
+Rebounding / Possession Tools — 25%
+Rebound Conversion (Secure vs Tip): 15%
+Rebound Range & Tracking: 10%
+FORWARD — PRO | FINAL
+OPF — Overall Position Framework
+Offense (OKR): 45%
+Defense (DKR): 40%
+Tools (TKR): 15% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 40%
+(spacing gate; pop > self-creation)
+3PT Spot-Up (Catch-and-Shoot): 18%
+3PT Movement: 8%
+3PT Off-the-Dribble: 5%
+3PT Deep Range: 5%
+2PT Jumper Catch-and-Shoot: 2%
+2PT Jumper Off-the-Dribble: 1%
+Free Throw: 1%
+Finishing — 35%
+(short-roll, seals, transition)
+Layup Finishing: 12%
+Floater / Runner: 4%
+Dunk Finishing: 9%
+Close Finishing: 6%
+Foul Draw Rate (Paint): 4%
+Playmaking — 15%
+(connector value)
+Passing Accuracy: 5%
+Passing Vision: 4%
+Drive-and-Kick Passing: 4%
+Transition Playmaking: 2%
+Ball Security: 0%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 10%
+Offensive Rebounding: 6%
+Rebound-to-Playmaking (Outlet Impact): 4%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 35%
+On-Ball Containment: 7%
+Ball Pressure: 4%
+Screen Navigation: 6%
+Perimeter Shot Contest: 7%
+Steal: 3%
+Off-Ball Denial: 5%
+Perimeter Disruption: 2%
+Perimeter Foul Discipline: 1%
+Interior Defense — 40%
+(primary help + switch big)
+Block: 7%
+Rim Deterrence: 7%
+Vertical Contest Effectiveness: 6%
+Post Defense: 6%
+Help Defense (Interior): 7%
+Roll Man Defense: 3%
+Interior Disruption: 2%
+Interior Foul Discipline: 2%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 15%
+Box-Out Effectiveness: 10%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 80%
+Strength (Functional): 16%
+Body Control: 14%
+Endurance: 12%
+Vertical Pop (Live-Play): 12%
+Lateral Quickness: 10%
+Speed (Without Ball): 8%
+Acceleration (Burst): 6%
+Speed (With Ball): 2%
+Rebounding / Possession Tools — 20%
+Rebound Conversion (Secure vs Tip): 12%
+Rebound Range & Tracking: 8%
+BIG — PRO | FINAL
+OPF — Overall Position Framework
+Offense (OKR): 35%
+Defense (DKR): 40%
+Tools (TKR): 25% (hidden)
+OKR — OFFENSE KR (100%)
+Shooting — 25%
+(spacing + pop are true separators at pro level)
+3PT Spot-Up (Catch-and-Shoot): 12%
+3PT Movement: 4%
+3PT Off-the-Dribble: 2%
+3PT Deep Range: 4%
+2PT Jumper Catch-and-Shoot: 2%
+2PT Jumper Off-the-Dribble: 0%
+Free Throw: 1%
+Finishing — 50%
+(core value: screen, seal, punish)
+Layup Finishing: 14%
+Floater / Runner: 4%
+Dunk Finishing: 16%
+Close Finishing: 10%
+Foul Draw Rate (Paint): 6%
+Playmaking — 10%
+(short-roll, hub reads)
+Passing Accuracy: 4%
+Passing Vision: 3%
+Drive-and-Kick Passing: 2%
+Transition Playmaking: 1%
+Ball Security: 0%
+Screen Assist Creation: 0%
+Hockey Assist Creation: 0%
+Offensive Rebounding / Outlet — 15%
+Offensive Rebounding: 9%
+Rebound-to-Playmaking (Outlet Impact): 6%
+
+DKR — DEFENSE KR (100%)
+Perimeter Defense — 20%
+(switch survival, closeouts)
+On-Ball Containment: 4%
+Ball Pressure: 2%
+Screen Navigation: 4%
+Perimeter Shot Contest: 6%
+Steal: 1%
+Off-Ball Denial: 1%
+Perimeter Disruption: 1%
+Perimeter Foul Discipline: 1%
+Interior Defense — 55%
+Block: 10%
+Rim Deterrence: 10%
+Vertical Contest Effectiveness: 9%
+Post Defense: 8%
+Help Defense (Interior): 9%
+Roll Man Defense: 4%
+Interior Disruption: 3%
+Interior Foul Discipline: 2%
+Interior Positioning: 0%
+Defensive Rebounding — 25%
+Defensive Rebounding: 16%
+Box-Out Effectiveness: 9%
+TOOLS KR — TKR (HIDDEN, 100%)
+Physical attributes — 85%
+(size + mobility both required)
+Strength (Functional): 18%
+Body Control: 14%
+Vertical Pop (Live-Play): 15%
+Endurance: 12%
+Lateral Quickness: 10%
+Speed (Without Ball): 8%
+Acceleration (Burst): 5%
+Motor: 3%
+Rebounding / Possession Tools — 15%
+Rebound Conversion (Secure vs Tip): 9%
+Rebound Range & Tracking: 6%

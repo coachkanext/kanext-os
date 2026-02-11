@@ -1,0 +1,150 @@
+Matchup Interaction Governance (Simulation Engine) — Authoritative (copy/paste)
+Purpose (LOCKED)
+Matchup Interaction Governance defines how identity clashes create directional probability pressure inside the Simulation Engine.
+ It exists to explain why likelihoods shift, not to decide outcomes.
+This layer:
+does not simulate possessions
+
+does not evaluate talent
+
+does not resolve outcomes
+ It produces governed modifier intents that are consumed downstream.
+
+Clarification (LOCKED): This layer produces directional pressure, not numerical predictions.
+
+Canonical Role Within Simulation Engine (LOCKED)
+Matchup Interaction Governance sits between identity inference and possession resolution.
+Canonical flow (LOCKED)
+System Inference (OSIE/DSIE)
+
+System × System Interaction
+
+Archetype × System Interaction
+
+Matchup Interaction Governance (THIS SECTION)
+
+Modifier Framework
+
+Possession Engine
+
+Calibration, Aggregation, and Output Layers
+
+Lock rule: This section governs interaction structure, precedence, and redundancy rules — not possession outcomes.
+
+Interaction Classes (LOCKED ORDER)
+Matchup Interaction Governance is composed of three interaction classes applied in a non-negotiable order:
+Class 1 — System vs System (Global Environment)
+Offensive system × Defensive system
+
+Applies to every possession
+
+Establishes the macro environment:
+
+pace tendencies (system layer only)
+
+shot-diet baselines
+
+pressure level
+
+foul environment
+
+Answers: “What kind of game does this matchup tend to produce?”
+Class 2 — Archetype vs Coverage (Tactical Interaction)
+Offensive archetype × Defensive coverage
+
+Applies conditionally when a coverage appears
+
+Coverage frequency is supplied by defensive inference outputs (DSIE)
+
+Answers: “When the defense does this, who benefits or suffers?”
+Rule: This is the primary player-level interaction layer.
+Class 3 — Archetype vs Archetype (Direct Matchup)
+Offensive archetype × Defensive archetype
+
+Applies rarely and narrowly
+
+Used only when effects are not already explained by:
+
+system interaction, or
+
+coverage interaction
+
+Answers: “Even within the same coverage, does this specific matchup matter?”
+Lock rule: Later classes may refine earlier pressure, but may not override or negate them.
+
+Authority and Non-Authority (LOCKED)
+Authorized to:
+produce directional modifier intents (pressure direction + target variable)
+
+condition modifier intents on identity clashes (system/archetype/coverage)
+
+govern precedence and redundancy rules (prevent double-counting)
+
+Not authorized to:
+simulate possessions
+
+force outcomes
+
+change player/team ratings (KR), archetypes, badges, overrides
+
+change usage or minutes
+
+override possession resolution logic
+
+create events
+
+All final outcomes are resolved exclusively by the Possession Engine.
+
+Allowed Modifier Targets (LOCKED)
+This layer may target only:
+shot-type distribution
+
+shot efficiency (by shot type)
+
+turnover probability
+
+foul-draw probability
+
+offensive rebound probability
+
+pace (system layer only)
+
+
+Governance Rules (LOCKED)
+All modifier intents must be:
+bounded downstream (bounds enforced in Modifier Framework)
+
+composed (never arbitrarily stacked)
+
+directionally consistent (no sign-flips downstream)
+
+consistent across systems/archetypes
+
+Conflict resolution (LOCKED):
+Coverage modifier intents take precedence over archetype-to-archetype intents
+
+Redundant intents are ignored (no double-counting)
+
+Archetype×Archetype is last-resort only
+
+
+Determinism (LOCKED)
+Matchup Interaction Governance is fully deterministic.
+ Given the same:
+system identities
+
+coverage frequencies
+
+archetype labels
+ …the same governed modifier-intent bundle is produced every time.
+
+No learning, tuning, or adaptation occurs here.
+
+Downstream Use (LOCKED)
+Outputs from this section:
+are consumed by the Modifier Framework (for composition + bounding)
+
+then passed to the Possession Engine (for application during resolution)
+
+They may never be surfaced as standalone conclusions or coaching advice.
+ This layer explains pressure, not performance.

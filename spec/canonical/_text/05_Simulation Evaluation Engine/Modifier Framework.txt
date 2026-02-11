@@ -1,0 +1,203 @@
+Modifier Framework (Simulation Engine) — Authoritative
+Purpose
+The Modifier Framework governs how contextual pressure and interaction effects are applied inside the Simulation Engine.
+Modifiers exist to:
+bend likelihoods
+
+shape distributions
+
+express structural lean
+
+Modifiers do not create events.
+ They do not force outcomes.
+Canonical Definition (LOCKED)
+A modifier is a bounded adjustment applied to a probability distribution or rate inside the Possession Engine, prior to possession resolution.
+Modifiers:
+do not create actions
+
+do not assign decisions
+
+do not change ratings
+
+do not override resolution logic
+ They only adjust how likely outcomes are.
+
+Canonical Role Within Simulation Engine (LOCKED)
+The Modifier Framework is the last place contextual pressure may be introduced after governance and before possession resolution.
+Canonical flow (LOCKED)
+System Inference (OSIE/DSIE)
+
+System × System Interaction
+
+Archetype × System Interaction
+
+Matchup Interaction Governance (decides what is allowed / prevents double count)
+
+Modifier Framework (THIS SECTION) (composes + bounds + outputs bundle)
+
+Possession Engine
+
+Calibration, Aggregation, and Output Layers
+
+Lock rule: The Modifier Framework does not decide what applies — it only composes and applies what governance permits.
+Authority and Non-Authority (LOCKED)
+Authorized to:
+adjust probability distributions (shot-type mix)
+
+adjust efficiency rates (by shot type)
+
+adjust turnover likelihood
+
+adjust foul likelihood
+
+adjust offensive rebound probability
+
+adjust pace (system layer only)
+
+Not authorized to:
+force states
+
+force actions
+
+change initiators
+
+override possession resolution
+
+alter Player / Team / Development Intelligence outputs
+
+Modifiers bend outcomes; they never decide them.
+Valid Modifier Targets (LOCKED)
+Only the following targets may be modified:
+A) Shot-Type Distribution (must renormalize to 100%)
+rim attempt probability
+
+midrange attempt probability
+
+three-point attempt probability
+
+B) Shot Efficiency (conditional by shot type)
+rim FG%
+
+midrange FG%
+
+three-point FG%
+
+C) Turnover Probability
+live-ball turnover likelihood
+
+dead-ball turnover likelihood (optional V1, allowed)
+
+D) Foul-Draw Probability
+shooting foul probability
+
+non-shooting foul probability
+
+E) Offensive Rebound Probability
+probability a missed shot results in an offensive rebound
+
+Clarification (LOCKED): An offensive rebound ends the possession and initiates a new possession (scramble carryover rules defined in Possession Engine).
+F) Pace Modifier (System-Level Only)
+possessions-per-game multiplier
+ Applied only in System × System interactions.
+
+🚫 No other targets are permitted.
+Modifier Types (LOCKED)
+Type 1 — Additive (Δ)
+Adds/subtracts a fixed delta to a probability.
+ Examples:
++0.03 to three-point attempt probability
+
+−0.02 to turnover probability
+
+Use when:
+shifting distribution mix
+
+nudging rates (not scaling performance)
+
+Type 2 — Multiplicative (×)
+Scales a base probability or efficiency.
+ Examples:
+three-point efficiency × 1.08
+
+turnover probability × 1.12
+
+Use when:
+modifying conversion quality
+
+reflecting efficiency punishments/boosts
+
+Global Bounds (Hard Guardrails) — LOCKED
+A) Shot-Type Distribution Bounds
+max shift per layer: ±6 percentage points
+
+max total shift across all layers: ±10 percentage points
+
+B) Efficiency Bounds
+max multiplicative shift per layer: ±12%
+
+max total efficiency shift (all layers combined): ±18%
+
+C) Turnover & Foul Bounds
+max per-layer shift: ±15%
+
+max combined shift: ±22%
+
+D) Pace Bounds (System Layer Only)
+max pace multiplier: ×1.08
+
+min pace multiplier: ×0.92
+
+These bounds are non-negotiable and enforced before possession resolution.
+Composition Rules (How Modifiers Stack) — LOCKED
+Modifiers are applied in fixed order and composed, not overwritten.
+Order of Application (LOCKED)
+System × System modifiers
+
+Archetype × System modifiers
+
+Matchup-approved residuals (only if governance permits; no double-count)
+
+Composition Logic (LOCKED)
+additive modifiers are summed → then bounded
+
+multiplicative modifiers are multiplied → then bounded
+
+additive adjustments occur before multiplicative scaling
+
+Conflict & Precedence Rules (LOCKED)
+To prevent double-counting:
+Coverage / matchup governance overrides archetype: if a variable is explained at a higher-authority layer, lower-authority modifier for that variable is ignored.
+
+Residual application only: the last layer applies only what hasn’t already been accounted for.
+
+No direction flips: later layers may attenuate earlier effects, but may not reverse sign.
+
+State Awareness (Hard Constraint) — LOCKED
+Modifiers may be state-conditional, but never state-creating.
+Allowed:
+“In Scramble state, rim efficiency × 1.05”
+
+“In Advantage state, turnover probability −8%”
+
+Forbidden:
+forcing a state change
+
+skipping state transitions
+
+State creation belongs exclusively to the Possession Engine.
+Data Source Discipline (LOCKED)
+Modifiers:
+may reference inferred labels (system, archetype, matchup tags)
+
+may reference film-derived attributes (contest level, help presence) if provided upstream
+
+may not compute those attributes
+
+All inputs are assumed to be supplied upstream.
+Outputs (LOCKED)
+The Modifier Framework outputs a single modifier_bundle consumed only by:
+Possession Engine
+
+Calibration & Guardrails
+
+Modifiers may not be surfaced as standalone insights or interpreted as coaching advice.

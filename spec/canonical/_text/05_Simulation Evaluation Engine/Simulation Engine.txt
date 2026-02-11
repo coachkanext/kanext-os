@@ -1,0 +1,244 @@
+Simulation Engine — Output Contract (Authoritative) — MUST PULL
+A) Required Inputs (simulation cannot run without these)
+Simulation MUST PULL, per team:
+From Team Evaluation (Team KR pack):
+Team identity record (team + season)
+
+Team KR object: team_off_kr, team_def_kr, team_overall_kr
+
+Rotation participation % vector (players ≥5% only; stored as %)
+
+Per-rotation player outputs:
+
+player_final_system_off_kr
+
+player_final_system_def_kr
+
+(plus player confidence % if available)
+
+From System Identity (inference layer):
+Offensive system identity (OSIE output)
+
+Defensive system identity (DSIE output)
+
+If provisional/uncertain, include:
+
+system mixture weights
+
+inference confidence metadata
+
+From Interaction Libraries (must exist to apply matchup pressure):
+SYSTEM × SYSTEM INTERACTION
+
+Offensive Archetype × Defensive Systems
+
+Defensive Archetype × Offensive System
+
+Any governed “interaction lookup” constraints (allowed fields only)
+
+From Modifier Framework (governed application layer):
+Allowed targets (pace, shot diet, efficiency buckets, TO pressure, foul pressure, ORB pressure, etc.)
+
+Bounds / caps / composition order
+
+Deterministic resolution rules
+
+From Calibration + Simulation Confidence Gate:
+Calibration coefficients by level/environment (if enabled)
+
+sim_confidence_pct mapping table + adjusters
+
+
+B) Simulation Run Types — LOCKED (6)
+1) Single Game Simulation
+Returns: expected result + drivers for Team A vs Team B
+2) Series / Multi-Game Set Simulation
+Returns: aggregate expectation across N games + sensitivity/volatility
+3) Season Simulation (Schedule)
+Returns: expected record band + swing games + stretch risks
+4) Tournament Simulation (Bracket)
+Returns: advancement expectation by round + matchup vulnerabilities
+5) Box Score Projection Mode (Team + Player Statlines)
+Returns: projected team totals + player statlines (minutes, shot diet, counting stats)
+6) Line Translation Mode (Spread/Total Mirror)
+Returns: implied win%, spread/total equivalents + sensitivity (“what moves the line”)
+
+C) Universal Output Rules (applies to every run type)
+Every simulation output MUST include:
+C1) Version + Confidence
+sim_version: V1 (stats-only) | V2 (granular) | V3 (film-verified)
+
+sim_confidence_pct: [0–100] (from Simulation Confidence Gate)
+
+Confidence does not change math; it qualifies reliability.
+
+C2) Determinism
+Given the same inputs:
+the same output object is produced
+
+the same interaction trace is produced
+
+C3) No Truth Mutation
+Simulation:
+does not modify Player KR, Team KR, archetypes, badges, overrides, or system identities
+
+reads governed truth and produces downstream projections only
+
+C4) Interaction Trace Requirement (no black box)
+Simulation MUST output an “applied interaction trace” that records:
+which System×System interaction rows were used
+
+which Archetype×System interaction rows were used
+
+which modifier targets were affected (and by how much, within bounds)
+
+composition order
+
+
+D) Standard Simulation Output Object (field contract)
+Every run type returns this top-level object:
+D1) Header
+run_type (one of the 6)
+
+teams (Team A id, Team B id if applicable)
+
+environment (level/ruleset, season, neutral/home/away if known)
+
+sim_version
+
+sim_confidence_pct
+
+D2) Inputs Snapshot (read-only echo)
+Team KRs (off/def/overall)
+
+Rotation participation % (players ≥5%)
+
+OSIE/DSIE identities (locked/provisional + confidence)
+
+Any required constraints (injury flags if supplied; otherwise none)
+
+D3) Matchup Interaction Trace (required)
+system_system_applied[]
+
+off_archetype_vs_def_system_applied[]
+
+def_archetype_vs_off_system_applied[]
+
+ Each item must include:
+
+source_doc (which library)
+
+key (the exact matchup key)
+
+targets_modified (pace/shot diet/efficiency/TO/foul/OREB/etc.)
+
+raw_delta
+
+bounded_delta
+
+composition_step_order
+
+D4) Outputs (run-type specific)
+Single Game: result + margin band + projected pace + five-factor projection
+
+Series: aggregated result distribution + sensitivity summary
+
+Season: expected W–L band + swing games list
+
+Tournament: advancement by round + “avoid list”
+
+Box Score Mode: team totals + player statlines (minutes + usage + shot diet)
+
+Line Mirror: implied win% + spread/total equivalents + “what moves line”
+
+D5) Driver Summary (required)
+Top 3 outcome drivers (must reference trace objects)
+
+Top 3 vulnerabilities/risks (turnovers, foul/bonus, rebounding, shot diet collapse)
+
+“If we change X” sensitivity bullets (optional, but recommended)
+
+
+Example Output (Mock) — Single Game Simulation (V1)
+Run Context
+Team A: Lincoln (Home)
+
+Team B: Opponent State (Away)
+
+Systems (from OSIE/DSIE):
+
+Team A Off: Moreyball
+
+Team A Def: Pressure Man
+
+Team B Off: Pace & Space
+
+Team B Def: Containment Man
+
+sim_version: V1 (stats-only)
+
+sim_confidence_pct: 68%
+
+Interaction Trace (excerpt, simplified)
+system_system_applied
+
+key: (Moreyball vs Containment Man)
+
+targets_modified: { shot_diet_3pa:+, rim_attempts:+, ft_rate:+ }
+
+bounded_delta: { 3PA_share:+0.03, rim_share:+0.02, FT_rate:+0.02 }
+
+system_system_applied
+
+key: (Pace & Space vs Pressure Man)
+
+targets_modified: { turnovers:+, pace:+ }
+
+bounded_delta: { TO_rate:+0.02, pace:+1.5 possessions }
+
+off_archetype_vs_def_system_applied
+
+key: (A: “Spacing Big” vs Containment Man)
+
+targets_modified: { corner_3_quality:+ }
+
+bounded_delta: { corner_3_eFG:+0.015 }
+
+Output (Single Game)
+projected_possessions: 71
+
+projected_score:
+
+Team A: 78
+
+Team B: 74
+
+expected_margin_band: Team A +1 to +7
+
+five factors (projected):
+
+eFG: A slight edge
+
+TO rate: B worse (pressure)
+
+OREB: neutral
+
+FT rate: A edge (Moreyball pressure points)
+
+transition: B attempts higher pace but punished by TOs
+
+Driver Summary
+Top drivers:
+Pressure Man → +TO pressure on Pace & Space ballhandlers (trace #2)
+
+Moreyball vs Containment → A increases rim/FT volume (trace #1)
+
+A spacing big archetype creates corner-3 quality (trace #3)
+
+Risks:
+If A’s primary creator foul trouble → FT edge collapses
+
+If B breaks pressure early → pace swings against A
+
+
+If you want, next I’ll write the Box Score Projection Mode output example (minutes + shot diet + statlines), because that’s the one tied to your “9 threes not 5” concept.

@@ -1,0 +1,196 @@
+Offensive System Demand Profiles (11)
+1) Spread Pick-and-Roll
+Critical archetypes (A): Pick-and-Roll Operator; Vertical Spacer (Rim Runner); Stretch Big (Pick-and-Pop); Spot-Up Specialist
+High (B): 3-and-D Wing; Two-Way Wing; Connector Guard / Wing
+Optional (C): Secondary Creator Wing; Short-Roll Playmaker Big
+Ideal modifiers:
+Primary Engine (on the Pick-and-Roll Operator)
+
+Force Multiplier (on at least 1 shooter wing)
+
+Specialist Anchor (often on rim protector / glass guy if present)
+
+ Critical-missing risk: no Primary Engine handler, or no roll/pop gravity big → offense collapses into low-quality pull-ups.
+
+
+2) 5-Out Motion
+A: Connector Guard / Wing; Off-Ball Shooter (Movement); Stretch Big (Pick-and-Pop) or Small-Ball Big (Switch 5); Slasher / Rim Pressure Wing
+B: Two-Way Wing; Spot-Up Specialist
+C: Secondary Creator Wing; DHO / Handoff Hub
+Ideal modifiers:
+Force Multiplier (2+ guys)
+
+Secondary Engine (1 guy max—closeout punisher)
+
+ Critical-missing risk: no connector + no movement shooter → motion becomes empty passing with no bend.
+
+
+3) Motion / Read & React
+A: Connector Guard / Wing; Off-Ball Shooter (Movement); Slasher / Rim Pressure Wing; DHO / Handoff Hub
+B: Two-Way Wing; Secondary Creator Wing; Short-Roll Playmaker Big
+C: Spot-Up Specialist; Stretch Big
+Ideal modifiers:
+Force Multiplier (connectors/shooters)
+
+Secondary Engine (1 creator)
+
+ Critical-missing risk: lack of decision-speed connector(s) → turnovers, stalled flow, no advantage chain.
+
+
+4) Pace & Space
+A: Primary Ball-Handler (Offense-First) or Pick-and-Roll Operator; Vertical Spacer; Spot-Up Specialist
+B: Slasher / Rim Pressure Wing; 3-and-D Wing; Connector Guard / Wing
+C: Stretch Big; Secondary Creator Wing
+Ideal modifiers:
+Primary Engine (lead handler)
+
+Force Multiplier (spacing wings)
+
+ Critical-missing risk: no rim pressure (slasher or rim runner) → you get “air spacing” with no paint collapse.
+
+
+5) Dribble Drive
+A: Slasher / Rim Pressure Wing; Primary Ball-Handler (Offense-First); Spot-Up Specialist (2+)
+B: Secondary Creator Wing; Vertical Spacer; Two-Way Wing
+C: Stretch Big; Connector Guard / Wing
+Ideal modifiers:
+Primary Engine (ball pressure breaker)
+
+Force Multiplier (elite spacer / gravity)
+
+ Critical-missing risk: no high-end slasher + no spacing → drive lanes die, turnovers spike.
+
+
+6) Princeton
+A: Post Hub / Facilitator Big; Connector Guard / Wing; Off-Ball Shooter (Movement)
+B: Two-Way Wing; Slasher / Rim Pressure Wing
+C: Spot-Up Specialist; Secondary Creator Wing
+Ideal modifiers:
+Force Multiplier (post hub passer + cutters/shooters)
+
+Secondary Engine optional (late-clock bailout)
+
+ Critical-missing risk: no true post hub → you’re just “passing around the perimeter” with no trigger.
+
+
+7) Flex
+A: Post Scorer (Back-to-Basket) or Post Hub / Facilitator Big; Off-Ball Shooter (Movement); Spot-Up Specialist
+B: Two-Way Wing; Connector Guard / Wing
+C: Slasher / Rim Pressure Wing
+Ideal modifiers:
+Specialist Anchor (elite post scorer) or Force Multiplier (post hub)
+
+ Critical-missing risk: if the post isn’t a real threat or hub, flex actions don’t punish and become predictable.
+
+
+8) Swing
+A: Connector Guard / Wing; Spot-Up Specialist (2+); Secondary Creator Wing
+B: Two-Way Wing; Stretch Big
+C: Slasher / Rim Pressure Wing; DHO / Handoff Hub
+Ideal modifiers:
+Force Multiplier (spacing + low-usage efficiency)
+
+Secondary Engine (one shot-maker)
+
+ Critical-missing risk: no secondary creator → you reverse forever but can’t break set defenses.
+
+
+9) Post-Centric / Inside-Out
+A: Post Scorer (Back-to-Basket) or Post Hub / Facilitator Big; Spot-Up Specialist (2+); 3-and-D Wing
+B: Slasher / Rim Pressure Wing; Rebounding / Interior Enforcer
+C: Stretch Big; Secondary Creator Wing
+Ideal modifiers:
+Specialist Anchor (post scorer) or Force Multiplier (post hub)
+
+Force Multiplier (elite shooters)
+
+ Critical-missing risk: no shooting around post → doubles win, post touches become turnovers.
+
+
+10) Moreyball
+A: Pick-and-Roll Operator; Vertical Spacer; Spot-Up Specialist (2+); 3-and-D Wing
+B: Stretch Big; Slasher / Rim Pressure Wing
+C: Secondary Creator Wing
+Ideal modifiers:
+Primary Engine (PnR)
+
+Force Multiplier (shooting gravity)
+
+ Critical-missing risk: if you can’t generate rim/3 volume (via engine + spacing) the math advantage disappears.
+
+
+11) Heliocentric
+A: Primary Ball-Handler (Offense-First); Spot-Up Specialist (2+); 3-and-D Wing
+B: Vertical Spacer or Stretch Big; Secondary Creator Wing (optional)
+C: Connector Guard / Wing
+Ideal modifiers:
+Primary Engine (heliocentric star — non-negotiable)
+
+Force Multiplier (2+ spacers/defenders)
+
+ Critical-missing risk: no true Primary Engine = system can’t exist; also if spacers aren’t real, the star gets swarmed.
+
+
+Defensive System Demand Profiles (9)
+1) Containment Man
+A: POA Defender Guard; Rim Protector Anchor; Switchable Defender Wing
+B: Two-Way Wing; Rebounding / Interior Enforcer
+C: Small-Ball Big (Switch 5)
+Ideal modifiers: Specialist Anchor (rim protector or POA stopper), Force Multiplier (disruptor/cleaner)
+Critical-missing risk: no rim protector anchor → blow-bys become layup lines.
+
+2) Pack Line
+A: Rim Protector Anchor; Rebounding / Interior Enforcer; Two-Way Wing
+B: POA Defender Guard; 3-and-D Wing
+C: Switchable Defender Wing
+Ideal modifiers: Specialist Anchor (paint anchor), Force Multiplier (rebound + low-foul defenders)
+Critical-missing risk: if your anchor can’t protect without fouling → pack line collapses.
+
+3) Pressure Man (Denial)
+A: POA Defender Guard; Switchable Defender Wing; Energy Bench Spark
+B: Two-Way Wing; Rim Protector Anchor
+C: Small-Ball Big (Switch 5)
+Ideal modifiers: Force Multiplier (pressure/chaos), Specialist Anchor (matchup stopper)
+Critical-missing risk: pressure with no backline eraser = free rim.
+
+4) Switch Everything
+A: Switchable Defender Wing (multiple); Small-Ball Big (Switch 5); POA Defender Guard
+B: Two-Way Wing
+C: Rim Protector Anchor (optional depending on personnel)
+Ideal modifiers: Force Multiplier (switchable stoppers), Specialist Anchor (elite 1–4 stopper)
+Critical-missing risk: if your 4/5 can’t survive switches, the whole identity breaks.
+
+5) ICE / No-Middle
+A: POA Defender Guard; Rim Protector Anchor; Two-Way Wing
+B: 3-and-D Wing; Rebounding / Interior Enforcer
+C: Switchable Defender Wing
+Ideal modifiers: Specialist Anchor (rim protector), Force Multiplier (clean rotations + contest)
+Critical-missing risk: if POA can’t angle + contain, the scheme gets split repeatedly.
+
+6) Zone (Structured)
+A: Rim Protector Anchor; Rebounding / Interior Enforcer; Two-Way Wing
+B: 3-and-D Wing; POA Defender Guard (for top pressure)
+C: Energy Bench Spark
+Ideal modifiers: Specialist Anchor (rim + glass), Force Multiplier (rebound leverage / deflections)
+Critical-missing risk: zone without rebounding dominance = you lose by extra possessions.
+
+7) Matchup Zone / Hybrid
+A: Switchable Defender Wing; Two-Way Wing; Rim Protector Anchor
+B: POA Defender Guard; Energy Bench Spark
+C: Small-Ball Big (Switch 5)
+Ideal modifiers: Force Multiplier (versatility), Specialist Anchor (stopper role)
+Critical-missing risk: if wings can’t guard in space, hybrid turns into scramble.
+
+8) Press / Pressure Defense
+A: Energy Bench Spark; POA Defender Guard; Switchable Defender Wing
+B: Rim Protector Anchor; Two-Way Wing
+C: Rebounding / Interior Enforcer
+Ideal modifiers: Force Multiplier (defensive playmaking), Specialist Anchor (backline eraser)
+Critical-missing risk: no rim protection behind press → it’s a layup drill.
+
+9) Junk / Special
+A: Specialist archetype matching the junk (usually POA Defender Guard / Switchable Defender Wing) + Rim Protector Anchor
+B: Two-Way Wing; 3-and-D Wing
+C: Energy Bench Spark
+Ideal modifiers: Specialist Anchor (narrow elite job), Force Multiplier (support glue)
+Critical-missing risk: if you don’t have a true matchup stopper, junk doesn’t “steal possessions.”

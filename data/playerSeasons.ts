@@ -47,3 +47,26 @@ export const PLAYER_SEASONS: PlayerSeason[] = [
   // Xavier Patel (pp-16) — JUCO
   { playerId: 'pp-16', season: '2024-25', school: 'Hutchinson CC', level: 'JUCO', gp: 28, mpg: 26.1, ppg: 10.5, rpg: 8.7, apg: 0.8, spg: 0.5, bpg: 2.8, fgPct: 55.4, threePct: 0, ftPct: 64.2 },
 ];
+
+/** Returns the most recent season for a player, or null if none exist. */
+export function getLatestSeason(playerId: string): PlayerSeason | null {
+  const seasons = PLAYER_SEASONS.filter((s) => s.playerId === playerId);
+  if (seasons.length === 0) return null;
+  return seasons.reduce((latest, s) => (s.season > latest.season ? s : latest));
+}
+
+/** Returns aggregated career averages across all seasons for a player. */
+export function getSeasonTotals(playerId: string): { gp: number; ppg: number; rpg: number; apg: number } | null {
+  const seasons = PLAYER_SEASONS.filter((s) => s.playerId === playerId);
+  if (seasons.length === 0) return null;
+  const totalGp = seasons.reduce((sum, s) => sum + s.gp, 0);
+  const weightedPpg = seasons.reduce((sum, s) => sum + s.ppg * s.gp, 0) / totalGp;
+  const weightedRpg = seasons.reduce((sum, s) => sum + s.rpg * s.gp, 0) / totalGp;
+  const weightedApg = seasons.reduce((sum, s) => sum + s.apg * s.gp, 0) / totalGp;
+  return {
+    gp: totalGp,
+    ppg: Math.round(weightedPpg * 10) / 10,
+    rpg: Math.round(weightedRpg * 10) / 10,
+    apg: Math.round(weightedApg * 10) / 10,
+  };
+}

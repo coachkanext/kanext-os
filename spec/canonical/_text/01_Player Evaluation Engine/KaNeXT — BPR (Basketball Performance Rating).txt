@@ -1,0 +1,192 @@
+KaNeXT — BPR (Basketball Performance Rating)
+
+Perfect. Below is the completed, clean, internal-only BPR document, written to be saved as-is.
+No UI language, no dev scope, no marketing tone. This is a governance + intelligence reference.
+You can copy-paste this directly into Google Docs.
+
+KaNeXT — BPR (Basketball Performance Rating)
+Interpretation & Governance Document (Internal)
+Status: Internal / Confidential
+Audience: Founder, Nexus intelligence layer, future system auditors
+Not for: UI, builders, coaches, recruiting staff, or external distribution
+
+1. Purpose of BPR
+BPR (Basketball Performance Rating) exists to measure actual on-court impact relative to competition level.
+It answers one question only:
+When this player was on the floor, how much better or worse was the team because of them, relative to the expected average at that level?
+BPR is an impact anchor, not an evaluation verdict.
+
+2. Core Principles
+2.1 Zero-Centered Meaning
+BPR = 0 → average impact for the player’s competitive level
+
+BPR > 0 → positive impact
+
+BPR < 0 → negative impact
+
+BPR is level-relative, not universal.
+A +4 BPR at D1 High Major ≠ a +4 BPR at NAIA.
+
+2.2 Determinism
+Given the same:
+player
+
+role
+
+minutes
+
+opponents
+
+outcomes
+
+BPR must produce the same result every time.
+No coach preference, system choice, or sandbox setting alters BPR.
+
+3. What BPR Is (and Is Not)
+BPR 
+IS
+a net impact signal
+
+outcome-aware
+
+opponent-aware
+
+role-aware
+
+possession-aware
+
+offense + defense combined
+
+BPR 
+IS NOT
+a box score stat
+
+a skill rating
+
+a projection
+
+a recruiting ranking
+
+a talent ceiling
+
+a stylistic judgment
+
+BPR reflects what happened, not what could happen.
+
+4. Mental Model (Canonical)
+BPR ≈ Box Plus-Minus, adjusted for:
+competition strength
+
+role expectation
+
+efficiency vs. volume
+
+lineup context
+
+repeatability across games
+
+If traditional BPM asks:
+“What did you do statistically?”
+BPR asks:
+“What happened when you played, given the environment?”
+
+5. Internal Interpretation Bands (Non-UI)
+These bands are internal anchors only.
+They are used to sanity-check KR alignment.
++10 and above
+
+ → Game-warping impact. Outcomes consistently swing with presence.
+
++6 to +9
+
+ → Clear winning driver. Strong positive across matchups and lineups.
+
++3 to +5
+
+ → Reliable positive contributor. Helps teams win more than lose.
+
+0 to +2
+
+ → Neutral to slightly positive. Performing at expected level.
+
+−1 to −3
+
+ → Mild liability. Playable in constrained roles.
+
+−4 and below
+
+ → Consistent negative impact. Lineups lose effectiveness.
+
+
+6. Relationship Between BPR and KR
+KR = Player Identity
+BPR = On-Court Reality
+They are related but not redundant.
+BPR checks KR.
+KR does not derive from BPR.
+
+7. Governance Rules
+BPR is never edited manually
+
+BPR is never coach-adjustable
+
+BPR is never sandbox-editable
+
+BPR is never surfaced raw in UI
+
+BPR references in UI (if any) are indirect only (e.g., KR tier alignment language)
+
+Any change to:
+BPR methodology
+
+inputs
+
+scaling
+
+normalization
+
+requires:
+documentation
+
+versioning
+
+explicit approval
+
+
+8. Why BPR Is Referenced but Not Exposed
+BPR exists to:
+keep KR honest
+
+prevent stat padding
+
+anchor evaluations to outcomes
+
+It is intentionally not a user-facing metric to avoid:
+misinterpretation
+
+misuse
+
+metric chasing
+
+The system’s job is truth, not comfort.
+
+9. Canonical Summary (Lock)
+BPR measures impact, not identity.
+Zero is average.
+Positive helps you win.
+Negative hurts you win.
+KR tells the story; BPR keeps it honest.
+
+If you want next, we can:
+cross-reference this against your KR tiers to ensure no internal contradictions, or
+
+write a one-paragraph “BPR explainer” that you can use verbally without exposing the metric itself.
+
+
+
+--- TABLE 1 ---
+Scenario | Interpretation
+High KR + High BPR | True high-level player
+High KR + Low BPR | Skill present, impact not translating
+Low KR + High BPR | Role player outperforming profile
+Low KR + Low BPR | Replacement-level or developmental

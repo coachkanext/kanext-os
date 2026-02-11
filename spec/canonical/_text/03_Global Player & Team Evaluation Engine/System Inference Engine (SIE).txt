@@ -1,0 +1,383 @@
+Offensive System Inference Engine (OSIE)
+Offensive System Inference Engine (OSIE)
+(Governed, Runnable, PrediXt-Compatible)
+1. Purpose (Locked)
+The Offensive System Inference Engine (OSIE) identifies what offensive system a team actually runs, how fast they play, and how confidently that system can be inferred.
+OSIE is descriptive only.
+OSIE does not:
+modify player ratings
+alter archetypes
+affect system fit
+influence valuation
+change any KR
+OSIE outputs are labels + confidence, consumed downstream by:
+Predixt Simulations simulation
+Matchup interaction layers
+Calibration & variance logic (DOC 6)
+2. Outputs (Locked)
+OSIE always outputs the following:
+2.1 Primary Offensive System
+One of the locked offensive system set (Section 3).
+2.2 System Confidence %
+A numeric confidence score (0–100%) representing certainty that the Primary System is correct.
+This value:
+feeds PrediXt variance inflation
+governs mixture simulation
+does NOT change means
+2.3 System Mix (Conditional)
+Returned only if dominance criteria are not met.
+Includes:
+Top 2 (or Top 3, max) systems
+Mix Shares (%) that sum to 100%
+2.4 Offensive Pace Profile
+Outputs:
+PACE100 (numeric)
+Pace Band: Fast / Neutral / Slow
+Used by:
+possession estimation
+live simulation conditioning (DOC 8)
+2.5 Heliocentric Anchor Position (Conditional)
+Returned only if Primary System = Heliocentric.
+Anchor position ∈:
+PG / CG / Wing / Forward / Big
+3. Offensive System Set (Locked, IDs Must Match PrediXt)
+Spread Pick-and-Roll
+5-Out Motion
+Motion / Read & React
+Pace & Space
+Dribble Drive
+Princeton
+Flex
+Swing
+Post-Centric / Inside-Out
+Moreyball
+Heliocentric
+Governance Rule
+Each system ID must exactly match:
+System × System interaction docs
+Archetype × System interaction docs
+No aliases allowed.
+4. Data Sources
+4.1 Synergy (Required)
+All rates measured as % of half-court possessions (HC%), unless noted.
+PnR Ball Handler %
+PnR Roll Man %
+Isolation %
+Spot-Up %
+DHO %
+Off-Screen %
+Cut %
+Post-Up %
+Putbacks %
+3PA/FGA
+Rim Attempts/FGA
+Midrange Attempts/FGA
+FTA/FGA
+Transition %
+Assist Rate (AST/FGM)
+PACE100
+4.2 PlayVision (Preferred, Structure Signals)
+FIVEOUT %
+Ball Screen Rate
+Re-screen Rate
+Reversal Rate
+Continuity Rate
+Post Hub Rate
+Split Rate
+Backdoor Rate
+UCLA Cut Rate
+Flex Action Rate
+Early Offense Action Time
+Primary Initiator Identification
+5. Minimum Sample & Fallback Rules
+OSIE may classify from a single game
+If < 40 half-court possessions:
+Primary System still returned
+System Mix is mandatory
+Confidence % capped at 65%
+Missing Data Handling
+If PlayVision missing → structure confidence reduced
+If Synergy missing → force System Mix + low confidence
+If both partial → Primary + Mix, Confidence ≤ 50%
+6. Pace Classification (Locked)
+Using PACE100:
+Fast ≥ 74.0
+Neutral 68.0 – 73.9
+Slow ≤ 67.9
+PACE100 (numeric) is always returned, even if band confidence is low.
+7. Classification Order (Locked)
+To prevent false positives:
+Heliocentric
+Moreyball
+Post-Centric / Inside-Out
+Dribble Drive
+Spread Pick-and-Roll
+5-Out Motion
+Motion / Read & React
+Princeton
+Flex
+Swing
+Pace & Space
+8. System Scoring (Locked)
+For each system:
+System Score =
+(Primary Triggers Met × 1.0) +
+(Support Triggers Met × 0.5)
+9. Dominance Rule (Locked)
+A system is Primary if:
+Primary Triggers met AND
+One of:
+Score lead ≥ 0.10, OR
+Key proxy margin ≥ 8.0 HC%
+If not met → System Mix required.
+10. System Mix Share Computation (NEW, Locked)
+When System Mix is returned:
+Take top N system scores (N = 2 or 3)
+Normalize scores into percentage shares:
+Mix Share = System Score / Σ(System Scores)
+
+Shares must sum to 100%
+Primary system = highest share
+11. System Confidence % Computation (NEW, Locked)
+Confidence is derived from:
+Dominance margin
+Sample size
+Data completeness
+Governed mapping:
+Clear dominance + full data → 85–95%
+Moderate dominance → 70–84%
+Mix required → 50–69%
+Sparse / missing data → ≤ 50%
+Confidence never alters system selection, only downstream variance.
+12. Governance Rules (Non-Negotiable)
+OSIE may NOT:
+modify KR
+affect usage
+infer player value
+override archetypes
+introduce simulation logic
+OSIE outputs labels + confidence only.
+
+
+Defensive System Inference Engine
+Defensive System Inference Engine
+Purpose
+The Defensive System Inference Engine (DSIE) identifies what defensive system a team actually runs, how pressure is applied, and how confidently that structure can be inferred.
+DSIE is descriptive only.
+It labels defensive structure.
+It does not evaluate defensive quality.
+Role Within Projection
+DSIE operates upstream of simulation and downstream of evaluation.
+Its outputs are used to:
+parameterize defensive behavior in simulation
+condition system × system interactions
+govern archetype × system interactions
+calibrate variance and pressure effects
+DSIE outputs are inputs, not conclusions.
+Authority and Non-Authority (Locked)
+DSIE is authorized to:
+classify defensive system identity
+return system mixtures when dominance is unclear
+classify defensive court depth
+compute and report confidence
+DSIE is not authorized to:
+modify player KRs
+modify team KRs
+alter archetypes
+affect system fit or valuation
+influence usage or rotation
+change simulation logic
+All DSIE outputs are labels + confidence only.
+Determinism
+DSIE is fully deterministic.
+Given the same inputs:
+the same system label is returned
+the same mix shares are returned
+the same confidence values are returned
+the same court depth classification is returned
+There is no learning, tuning, or adaptation.
+System Identity Governance
+Defensive system identities:
+are drawn from a locked system set
+use fixed system IDs
+must exactly match IDs used in:
+System × System interaction
+Archetype × System interaction
+Possession Engine logic
+No aliases are permitted.
+Confidence and Mixture Handling
+Confidence:
+reflects certainty of inference
+does not alter system identity
+does not alter means
+governs variance inflation downstream
+System Mix:
+is returned only when dominance criteria are not met
+includes a maximum of two systems
+always sums to 100%
+Primary system remains the highest share.
+Defensive Court Depth
+Defensive court depth:
+is classified independently of system identity
+describes pressure location, not scheme
+is consumed by possession pressure and pace logic
+Court depth never overrides system identity.
+Downstream Use
+DSIE outputs may be consumed by:
+System × System interaction
+Archetype × System interaction
+Possession Engine
+Calibration and variance logic
+Live simulation conditioning
+DSIE outputs may not be:
+interpreted as coaching intent
+interpreted as effectiveness
+used as evaluation signals
+
+Defensive System Inference Engine (DSIE)
+1. Purpose
+The Defensive System Inference Engine (DSIE) identifies what defensive system a team actually runs, how aggressively and where it is applied, and how confident the engine is in that identification.
+DSIE is descriptive only.
+DSIE does not:
+modify player ratings or KRs
+alter archetypes
+affect system fit or valuation
+influence usage or rotation
+change any simulation logic
+DSIE outputs labels + confidence, consumed downstream by:
+Predixt Simulations simulation
+System × System interaction matrices
+Archetype × System interaction matrices
+Calibration & variance logic 
+2. Outputs
+DSIE always outputs the following:
+2.1 Primary Defensive System
+One of the locked defensive system set 
+2.2 System Confidence %
+A numeric confidence score (0–100%) representing certainty that the Primary Defensive System is correct.
+This value:
+feeds PrediXt variance inflation
+governs mixture simulation
+does not change means or ratings
+2.3 System Mix (Conditional)
+Returned only if dominance criteria are not met.
+Includes:
+Top 2 systems (max)
+Mix Shares (%) that sum to 100%
+2.4 Defensive Court Depth
+One of:
+Full-Court
+Three-Quarter
+Half-Court
+Used by:
+possession pressure modeling
+turnover pressure calibration
+pace interaction logic
+3. Defensive System Set
+Containment Man
+Pack Line
+Pressure Man (Denial)
+Switch Everything
+ICE / No-Middle
+Zone (Structured)
+Matchup Zone / Hybrid
+Press / Pressure Defense
+Junk / Special
+Governance Rule
+System IDs must exactly match:
+System × System interaction docs
+Archetype × System interaction docs
+No aliases permitted.
+4. Data Sources (Locked)
+4.1 Synergy (Required)
+All rates measured as % of defensive possessions unless noted.
+Opponent ISO_FACED %
+Opponent SU_FACED %
+Opponent POST_FACED %
+Team TOV_FORCED %
+Team FOULR
+Opponent shot profile allowed:
+3PAR_AG
+RIMR_AG
+MIDR_AG
+4.2 PlayVision (Preferred, Structure Signals)
+Computed as rates:
+FULLCOURT_START %
+ZONE_SHELL %
+ZONE_HANDOFF %
+SWITCH_ON_BSCRN %
+SWITCH_OFFSCRN %
+ICE_FORCE %
+PAINT_OCC (avg defenders inside arc)
+DENY_1PASS %
+PICKUP_DEPTH (relative to half court)
+5. Minimum Sample & Fallback Rules (Locked)
+DSIE may classify from a single game
+If < 40 half-court defensive possessions:
+Primary System still returned
+System Mix is mandatory
+Confidence % capped at 65%
+Missing Data Handling
+If PlayVision missing → structure confidence reduced
+If Synergy missing → force System Mix + low confidence
+If both partial → Primary + Mix, Confidence ≤ 50%
+6. Classification Order (Locked)
+To prevent false positives and overlap:
+Junk / Special
+Press / Pressure Defense
+Zone (Structured)
+Matchup Zone / Hybrid
+Switch Everything
+ICE / No-Middle
+Pack Line
+Pressure Man (Denial)
+Containment Man (Default)
+7. System Scoring (Locked)
+For each system:
+System Score =
+(Primary Triggers Met × 1.0) +
+(Support Triggers Met × 0.5)
+
+8. Dominance Rule (Locked)
+A system is Primary if:
+Primary Triggers are met AND
+One of:
+Score lead ≥ 0.10, OR
+Key proxy margin ≥ 8.0%
+If not met → System Mix required.
+
+9. System Mix Share Computation
+When System Mix is returned:
+Take top 2 system scores
+Normalize into percentage shares:
+Mix Share = System Score / Σ(System Scores)
+
+Shares must sum to 100%
+Primary system = highest share
+10. System Confidence % Computation
+Confidence derives from:
+dominance margin
+sample size
+data completeness
+Governed bands:
+Clear dominance + full data → 85–95%
+Moderate dominance → 70–84%
+Mix required → 50–69%
+Sparse / missing data → ≤ 50%
+Confidence never alters system selection — it only affects downstream variance.
+11. Defensive Court Depth Classification (Locked)
+Derived from FULLCOURT_START % and PICKUP_DEPTH:
+Full-Court: FULLCOURT_START ≥ 20%
+Three-Quarter: 10–19%
+Half-Court: < 10%
+Court depth does not override system identity; it is an orthogonal descriptor.
+12. Governance Rules (Non-Negotiable)
+DSIE may NOT:
+modify KRs or ratings
+affect usage or minutes
+override archetypes
+introduce simulation logic
+change interaction math
+DSIE outputs labels + confidence only.
+
+

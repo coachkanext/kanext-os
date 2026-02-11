@@ -1,0 +1,53 @@
+1) Preseason — OSIE/DSIE (Locked)
+Same head coach + turnover < 70% → use last season systems
+
+ Status: PROVISIONAL (Coach-Continuity)
+
+Same head coach + turnover ≥ 70–75% → use last season systems
+
+ Status: PROVISIONAL (High-Turnover)
+
+ Preseason sims run System Sweep (no preseason lock)
+
+New head coach → use coach’s most recent 1–3 seasons identity
+
+ Status: PROVISIONAL (New-Coach Prior)
+
+No usable history → UNKNOWN/BALANCED defaults
+
+ Offense: Pace & Space
+
+ Defense: Containment Man
+
+ Positional importance default: 20/20/20/20/20
+
+ Status: PROVISIONAL (Unknown/Balanced)
+
+
+2) In-Season — OSIE/DSIE (Observed + Lock)
+After 5 games → run OSIE + DSIE and compute Fit % → set:
+
+OBSERVED (UNLOCKED) if not decisive
+
+OBSERVED (LOCKED) if decisive
+
+If OBSERVED (UNLOCKED) → re-run OSIE + DSIE every game until it locks
+
+If OBSERVED (LOCKED) → re-check on a rolling 10-game window to detect drift
+
+If Style Shift Detected (fit drops hard or another system overtakes clearly) → REOPEN and start a new 5-game window
+
+
+3) Postseason — Freeze + Save Identity
+At conference tournament start (or end of regular season) → FROZEN
+
+ (no reclassification from small-sample variance)
+
+Save season record as the official identity going into next year:
+
+Offense: Observed (Locked)
+
+Defense: Observed (Locked)
+
+Final Off Fit % / Def Fit % / Overall Fit %
+

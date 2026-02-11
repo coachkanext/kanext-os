@@ -1,0 +1,2618 @@
+Offensive Archetype × Defensive Systems
+Offensive Archetype 1: Shot-Creator Guard
+(Primary on-ball scorer; self-generated offense; pull-up + change-of-pace advantage)
+Baseline reference (no defensive modifier):
+Usage already governed upstream
+Neutral shot mix
+Neutral efficiency
+Neutral turnover & foul rates
+All deltas below are relative to that baseline and applied inside Simulation.
+1. Containment Man
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1 PP
+Midrange FG%: −1 PP
+3PT FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Staying in front forces pull-ups without selling out. Shot creation still exists, but advantage quality declines slightly.
+
+
+2. Pack Line
+Shot Mix
+Rim attempts: −4 PP
+Midrange attempts: +3 PP
+3PT attempts: +1 PP
+Efficiency
+Rim FG%: −2 PP
+Midrange FG%: −2 PP
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: −0.5 PP
+Foul-draw rate: −1 PP
+Rationale
+Crowded gaps suppress downhill creation. Fewer risky passes reduce turnovers, but overall scoring efficiency drops.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +2 PP
+3PT attempts: +1 PP
+Efficiency
+Rim FG%: −2 PP
+Midrange FG%: −2 PP
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: +1 PP
+Rationale
+Ball pressure disrupts timing and handle. Shot creators still attack, but at higher cost and volatility.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: +1 PP
+3PT attempts: −2 PP
+Efficiency
+Rim FG%: +1 PP
+Midrange FG%: 0 PP
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +1 PP
+Rationale
+Mismatch hunting increases isolation success at the rim, but raises turnover risk against disciplined switch units.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +2 PP
+3PT attempts: +1 PP
+Efficiency
+Rim FG%: −2 PP
+Midrange FG%: −1 PP
+3PT FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −1 PP
+Rationale
+Forcing baseline cuts off preferred driving lanes. Shot creation shifts to tougher angles and pull-ups.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −5 PP
+Midrange attempts: −1 PP
+3PT attempts: +6 PP
+Efficiency
+Rim FG%: −2 PP
+Midrange FG%: −1 PP
+3PT FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: −0.5 PP
+Foul-draw rate: −1.5 PP
+Rationale
+Isolation lanes disappear. Shot creators take more pull-up and above-the-break threes with reduced efficiency.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +1 PP
+3PT attempts: +2 PP
+Efficiency
+Rim FG%: −1 PP
+Midrange FG%: −1 PP
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Changing reads increase cognitive load. Shot creators remain involved but face higher decision-error risk.
+
+8. Press 
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: +1 PP
+3PT attempts: +1 PP
+Efficiency
+Rim FG%: −3 PP
+Midrange FG%: −2 PP
+3PT FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +3 PP
+Foul-draw rate: +1.5 PP
+Rationale
+Extended pressure degrades handle quality and stamina. Early, low-quality attempts rise; volatility spikes.
+9. Junk / Special
+Shot Mix
+Rim attempts: −6 PP
+Midrange attempts: +3 PP
+3PT attempts: +3 PP
+Efficiency
+Rim FG%: −3 PP
+Midrange FG%: −3 PP
+3PT FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: −2 PP
+Rationale
+Box-and-one / face-guarding removes the archetype from flow. Forced late-clock shots dominate outcomes.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 2: Off-Ball Shooter
+(Primary value via spacing, movement shooting, catch-and-shoot gravity; limited self-creation)
+Baseline reference (no defensive modifier):
+Usage: secondary
+Shot mix: 3PT-heavy, low rim self-creation
+Efficiency: depends on shot quality, not volume
+Turnovers: low
+Fouls drawn: low
+All deltas are relative to baseline, Simulation, and usage-scaled.
+1. Containment Man
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: −1 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Containment prioritizes ball control, not shooter denial. Off-ball shooters maintain normal spacing value.
+
+2. Pack Line
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: −2 PP
+3PT attempts: +2 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Pack Line concedes kick-out threes but closes short. Volume rises slightly, efficiency dips marginally.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: −2 PP
+3PT attempts: +2 PP
+Efficiency
+3PT FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Passing lanes and handoff timing are disrupted. Shooters still get attempts but under more contest pressure.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: −1 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Switches reduce clean separation on relocations. Occasional closeout attacks increase rim leakage slightly.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: −1 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Drive containment forces kick-outs. Shooters benefit from volume but see slightly rushed attempts.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: −3 PP
+3PT attempts: +4 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: −0.5 PP
+Foul-draw rate: −1 PP
+Rationale
+Zones intentionally concede perimeter attempts. Off-ball shooters gain volume with modest efficiency decline.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: −2 PP
+3PT attempts: +2 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Changing assignments disrupt relocation timing, reducing clean looks slightly.
+
+8. Press 
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: −2 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Broken floor moments create transition threes and scramble kick-outs, but with lower shot quality.
+9. Junk / Special
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: −3 PP
+3PT attempts: +3 PP
+Efficiency
+3PT FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1 PP
+Rationale
+Face-guarding and chase assignments remove shooters from rhythm and force contested attempts.
+
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 3: Rim-Pressure Guard
+(Downhill attacker; paint touches, collapse creation, foul pressure; limited pull-up reliance)
+Baseline reference (no defensive modifier):
+Usage: on-ball secondary/primary
+Shot mix: rim-heavy, low midrange, selective kick-out 3s
+Efficiency: high at rim, foul-dependent
+Turnovers: moderate (drive traffic)
+Fouls drawn: high
+All deltas are relative to baseline, Simulation, and usage-scaled.
+1. Containment Man
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −1 PP
+Rationale
+Staying in front limits clean blow-bys. Drives still occur, but with fewer free throws.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −5 PP
+Midrange attempts: +3 PP
+3PT attempts: +2 PP
+Efficiency
+Rim FG%: −3 PP
+Midrange FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: −0.5 PP
+Foul-draw rate: −2 PP
+Rationale
+Crowded gaps neutralize downhill pressure. Kick-outs rise, but rim dominance is heavily suppressed.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: +1 PP
+3PT attempts: +1 PP
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: +1 PP
+Rationale
+Aggressive pressure creates steals but also fouls. Rim pressure is inconsistent and volatile.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: 0 PP
+3PT attempts: −2 PP
+Efficiency
+Rim FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +2 PP
+Rationale
+Mismatches and slower feet favor downhill attacks. Fouls rise, but risk increases on crowded drives.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +2 PP
+3PT attempts: +1 PP
+Efficiency
+Rim FG%: −2 PP
+Midrange FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −1 PP
+Rationale
+Baseline forcing removes preferred lanes. Drives turn into tough finishes or pull-ups.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −6 PP
+Midrange attempts: −1 PP
+3PT attempts: +7 PP
+Efficiency
+Rim FG%: −3 PP
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: −1 PP
+Foul-draw rate: −2 PP
+Rationale
+Help layers erase downhill angles. Rim pressure collapses; kick-out creation spikes.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −4 PP
+Midrange attempts: +1 PP
+3PT attempts: +3 PP
+Efficiency
+Rim FG%: −2 PP
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1 PP
+Rationale
+Changing gaps disrupt timing. Drives still happen but end in less efficient outcomes.
+
+8. Press 
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +3 PP
+Foul-draw rate: +1.5 PP
+Rationale
+Energy drain and ball pressure increase mistakes. Fouls rise, but efficiency drops sharply.
+9. Junk / Special
+Shot Mix
+Rim attempts: −6 PP
+Midrange attempts: +3 PP
+3PT attempts: +3 PP
+Efficiency
+Rim FG%: −4 PP
+Midrange FG%: −2 PP
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: −2 PP
+Rationale
+Paint denial and targeted help remove the archetype’s primary value. Outcomes skew inefficient and forced.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 4: Connector Guard
+(Low-usage organizer; advantage extender; high AST/low TOV; scoring is secondary)
+Baseline reference (no defensive modifier):
+Usage: low–moderate
+Shot mix: spot-up 3s + opportunistic rim finishes
+Efficiency: dependent on advantage quality
+Turnovers: low
+Fouls drawn: low
+All deltas are relative to baseline, Simulation, and usage-scaled.
+1. Containment Man
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: 0 PP
+3PT FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Containment does not materially affect advantage extension or read quality for connectors.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: −1 PP
+3PT attempts: +2 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: −0.5 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Pack Line yields kick-outs that connectors can deliver, but shooting efficiency dips slightly.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Passing lanes are stressed. Connector role remains intact but error rate rises modestly.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: −1 PP
+Efficiency
+Rim FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Closeout attacks become available. Connectors exploit gaps selectively.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Ball handlers are steered away from middle creation, but connectors maintain structure.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: −2 PP
+3PT attempts: +4 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: −1 PP
+Foul-draw rate: −1 PP
+Rationale
+Zones reward ball movement. Connectors gain value as pass hubs; turnovers drop.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: −1 PP
+3PT attempts: +2 PP
+Efficiency
+3PT FG%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Changing looks increase read complexity slightly but do not suppress connector value.
+
+8. Press 
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: −1 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Ball security role is stressed under pressure; mistakes rise without usage spikes.
+9. Junk / Special
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: −2 PP
+3PT attempts: +4 PP
+Efficiency
+3PT FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Disruption reduces advantage creation. Connectors remain involved but in lower-quality contexts.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 5: Stretch Big
+(Floor-spacing big; pick-and-pop threat; trail 3s; limited self-creation at rim)
+Baseline reference (no defensive modifier):
+Usage: low–moderate
+Shot mix: 3PT + pick-and-pop midrange; selective rim finishes
+Efficiency: spacing-driven
+Turnovers: low
+Fouls drawn: low–moderate (closeouts)
+All deltas are relative to baseline, Simulation, and usage-scaled.
+1. Containment Man
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: +1 PP
+3PT attempts: −1 PP
+Efficiency
+3PT FG%: 0 PP
+Midrange FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Containment keeps bigs in drop/help positions; spacing value remains neutral.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: −1 PP
+3PT attempts: +3 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: −0.5 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Help-heavy gaps concede kick-out and trail threes; efficiency dips on rushed contests.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: −1 PP
+3PT attempts: +2 PP
+Efficiency
+3PT FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Passing windows tighten; pop attempts come under heavier close pressure.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: 0 PP
+3PT attempts: −2 PP
+Efficiency
+Rim FG%: +2 PP
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +1 PP
+Rationale
+Mismatches create slips and seals. Post attacks rise; perimeter spacing decreases slightly.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Ball handlers are steered baseline; pops and slots remain available but contested.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: −2 PP
+3PT attempts: +5 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: −1 PP
+Foul-draw rate: −1 PP
+Rationale
+Zones invite perimeter spacing from bigs; volume increases with modest efficiency loss.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: −1 PP
+3PT attempts: +3 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Assignments change late; spacing remains valuable but timing suffers.
+
+8. Press 
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: −1 PP
+3PT attempts: 0 PP
+Efficiency
+3PT FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Broken floors create early seals; perimeter looks are rushed and less efficient.
+9. Junk / Special
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: −2 PP
+3PT attempts: +4 PP
+Efficiency
+3PT FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1 PP
+Rationale
+Special coverages disrupt spacing timing; shots come later and under heavier contest.
+
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 6: Roll Big
+(Vertical spacer; screen-and-dive threat; rim finishes, lobs, dunker-spot scoring)
+Baseline reference (no defensive modifier):
+Usage: moderate (dependent on PnR frequency)
+Shot mix: rim-heavy (rolls, dumps, lobs); minimal perimeter shots
+Efficiency: high at rim
+Turnovers: low–moderate (crowds/traffic)
+Fouls drawn: high (roll contact, seals)
+All deltas are relative to baseline, Simulation, and usage-scaled.
+1. Containment Man
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: −1 PP
+Efficiency
+Rim FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +1 PP
+Rationale
+Containment keeps bigs deeper; rolls arrive cleanly with vertical space preserved.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: 0 PP
+3PT attempts: +2 PP (redirected kick-outs, not own attempts)
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: −0.5 PP
+Foul-draw rate: −1 PP
+Rationale
+Extra bodies clog roll lanes. Finishes are more contested; fewer fouls drawn.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Ball pressure delays entry passes; rolls occur later with reduced advantage.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +3 PP
+Midrange attempts: 0 PP
+3PT attempts: −3 PP
+Efficiency
+Rim FG%: +3 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +2 PP
+Rationale
+Size mismatches create seals and duck-ins. High payoff, slightly higher risk.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: 0 PP
+3PT attempts: +2 PP (diverted outcomes)
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −1 PP
+Rationale
+Baseline forcing disrupts roll timing; contact shifts away from the middle.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −4 PP
+Midrange attempts: 0 PP
+3PT attempts: +4 PP (others benefit)
+Efficiency
+Rim FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: −1 PP
+Foul-draw rate: −2 PP
+Rationale
+Zones wall off dives and lobs. Roll impact drops sharply.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: 0 PP
+3PT attempts: +3 PP
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −1 PP
+Rationale
+Help arrives unpredictably; rolls lose timing and clarity.
+
+8. Press 
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: −1 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +1 PP
+Rationale
+Broken-floor advantages create early dives, but finishes are less controlled.
+9. Junk / Special
+Shot Mix
+Rim attempts: −4 PP
+Midrange attempts: 0 PP
+3PT attempts: +4 PP
+Efficiency
+Rim FG%: −4 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −2 PP
+Rationale
+Tagged rollers and special coverages remove lob windows and seals.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 7: Stretch Big
+(Pick-and-pop spacer; trail 3s; floor-spreading big who pulls rim protection away)
+Baseline reference (no defensive modifier):
+Usage: moderate
+Shot mix: high 3PT rate (pop/trail), secondary rim attempts
+Efficiency: above-avg 3PT, average rim
+Turnovers: low
+Fouls drawn: low–moderate
+All deltas are explicit PP deltas, Simulation, and usage-scaled.
+1. Containment Man
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Drop coverage concedes pop spacing and clean trail threes.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: 0 PP
+3PT attempts: +2 PP
+Efficiency
+3PT FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Paint crowding forces kick-outs; stretch bigs punish from distance.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Entry pressure disrupts timing but doesn’t remove pop value.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: −1 PP
+Efficiency
+Rim FG%: +1 PP
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +1 PP
+Rationale
+Switches invite slips and seals; perimeter contests arrive faster.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+3PT attempts: +1 PP
+Efficiency
+3PT FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Baseline force widens pop windows above the break.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: 0 PP
+3PT attempts: +3 PP
+Efficiency
+3PT FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: −0.5 PP
+Foul-draw rate: −1 PP
+Rationale
+Zones concede trail/pick-and-pop threes while protecting the rim.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: 0 PP
+3PT attempts: +2 PP
+Efficiency
+3PT FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Delayed close-outs favor stretch shooting, not interior finishes.
+
+8. Press 
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Early chaos disrupts spacing quality; shots come faster, less set.
+9. Junk / Special
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: 0 PP
+3PT attempts: +3 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1 PP
+Rationale
+Face-guarding or tagging removes clean pops despite volume increase.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 8: Rim-Running Big
+(Vertical spacer; screen–dive finisher; lob threat; offensive rebound pressure)
+Baseline reference (no defensive modifier):
+Usage: moderate
+Shot mix: very high rim attempts, minimal jumpers
+Efficiency: high rim FG%
+Turnovers: low–moderate (traffic dependent)
+Fouls drawn: high
+All deltas are explicit PP deltas, Simulation, and usage-scaled.
+1. Containment Man
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: 0 PP
+3PT attempts: −2 PP
+Efficiency
+Rim FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +1 PP
+Rationale
+Drop coverage invites dives, lobs, and rim pressure.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: 0 PP
+3PT attempts: +2 PP (via kick-outs, not attempts by the big)
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −1 PP
+Rationale
+Paint congestion neutralizes vertical spacing and reduces foul volume.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: −1 PP
+Efficiency
+Rim FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Ball pressure increases dump-off chances but disrupts timing.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: 0 PP
+3PT attempts: −2 PP
+Efficiency
+Rim FG%: +3 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +2 PP
+Rationale
+Small-on-big mismatches massively favor rolls, seals, and fouls.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+3PT attempts: +1 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Baseline force limits clean rolls and lob angles.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: 0 PP
+3PT attempts: +3 PP
+Efficiency
+Rim FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −2 PP
+Rationale
+Zone shells protect the rim and eliminate vertical spacing.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: 0 PP
+3PT attempts: +2 PP
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −1 PP
+Rationale
+Rotational tagging reduces roll impact without full zone collapse.
+
+8. Press 
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Early chaos disrupts timing and lob precision.
+9. Junk / Special
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: 0 PP
+3PT attempts: +3 PP
+Efficiency
+Rim FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −2 PP
+Rationale
+Tagging, fronts, and help traps neutralize interior dominance.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 9: Stretch Big
+(Pick-and-pop threat; trail shooter; floor-spacer at the 5; secondary passer)
+Baseline reference (no defensive modifier):
+Usage: moderate
+Shot mix: high 3PT volume (above-the-break + trail), low rim
+Efficiency: spacing-driven, pop efficiency sensitive to coverage
+Turnovers: low
+Fouls drawn: low–moderate
+All deltas are explicit PP deltas, Simulation, and usage-scaled.
+1. Containment Man
+Shot Mix
+3PT attempts: +2 PP
+Rim attempts: −1 PP
+Midrange attempts: −1 PP
+Efficiency
+3PT FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Drop coverage concedes pick-and-pop threes and trail spacing.
+
+2. Pack Line
+Shot Mix
+3PT attempts: +3 PP
+Rim attempts: −2 PP
+Midrange attempts: −1 PP
+Efficiency
+3PT FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Paint collapse forces kick-outs and maximizes spacing value.
+3. Pressure Man (Denial)
+Shot Mix
+3PT attempts: +1 PP
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+Efficiency
+3PT FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Ball pressure disrupts timing but doesn’t erase pop gravity.
+4. Switch Everything
+Shot Mix
+3PT attempts: −2 PP
+Rim attempts: +1 PP
+Midrange attempts: +1 PP
+Efficiency
+3PT FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +1 PP
+Rationale
+Switches remove pop advantage and force drives or mismatches.
+5. ICE / No-Middle
+Shot Mix
+3PT attempts: +1 PP
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+Efficiency
+3PT FG%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Baseline force preserves pop reads but limits slips.
+6. Zone (Structured)
+Shot Mix
+3PT attempts: +4 PP
+Rim attempts: −3 PP
+Midrange attempts: −1 PP
+Efficiency
+3PT FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −1 PP
+Rationale
+Zone prioritizes rim protection; stretch big becomes a release valve.
+7. Matchup Zone / Hybrid
+Shot Mix
+3PT attempts: +2 PP
+Rim attempts: −2 PP
+Midrange attempts: 0 PP
+Efficiency
+3PT FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Late close-outs reduce clean looks but still concede spacing.
+8. Press 
+Shot Mix
+3PT attempts: 0 PP
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Disrupted entries reduce rhythm pop attempts.
+
+9. Junk / Special
+Shot Mix
+3PT attempts: −3 PP
+Rim attempts: +1 PP
+Midrange attempts: +2 PP
+Efficiency
+3PT FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Top-locking, face-guarding, and stunts neutralize spacing value.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 10: Rim-Running Big
+(Vertical spacer; dive man; lob threat; offensive rebounder; limited shooting range)
+Baseline reference (no defensive modifier):
+Usage: moderate–high (screen + dive dependent)
+Shot mix: very high rim, negligible 3PT
+Efficiency: high at rim, low self-creation
+Turnovers: low
+Fouls drawn: high
+All deltas are explicit PP deltas, Simulation, and usage-scaled.
+1. Containment Man
+Shot Mix
+Rim attempts: +3 PP
+Midrange attempts: −1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +2 PP
+Rationale
+Drop coverage invites rolls, lobs, and deep paint catches.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −2 PP
+Rationale
+Crowded paint removes vertical advantage and forces tough finishes.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +1 PP
+Rationale
+Ball pressure disrupts timing but can still be punished on slips.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: −1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +2 PP
+Rationale
+Smaller defenders create mismatch seals and foul pressure.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Baseline force limits dive angles and pocket passes.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −4 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −3 PP
+Rationale
+Multiple bodies in the paint neutralize lob and roll value.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −2 PP
+Rationale
+Late switches + help stunt roll lanes.
+
+8. Press 
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: +1 PP
+Rationale
+Early advantage opportunities exist, but ball security risk rises.
+9. Junk / Special
+Shot Mix
+Rim attempts: −4 PP
+Midrange attempts: +3 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −3 PP
+Rationale
+Tagging, fronting, and peel-switch rules specifically remove dive threats.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 11: Stretch Big
+(Pick-and-pop big; floor spacer; trail shooter; low rim pressure; defensive puller)
+Baseline reference (no defensive modifier):
+Usage: moderate
+Shot mix: high 3PT, moderate midrange, low rim
+Efficiency: spacing-driven, pop efficiency > self-creation
+Turnovers: low
+Fouls drawn: low–moderate
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+3PT attempts: +2 PP
+Midrange attempts: 0 PP
+Rim attempts: −1 PP
+Efficiency
+3PT FG%: +1.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Drop coverage concedes pick-and-pop and trail threes.
+
+2. Pack Line
+Shot Mix
+3PT attempts: +3 PP
+Midrange attempts: −1 PP
+Rim attempts: −2 PP
+Efficiency
+3PT FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −1 PP
+Rationale
+Paint packing aggressively concedes clean perimeter looks to bigs.
+3. Pressure Man (Denial)
+Shot Mix
+3PT attempts: −1 PP
+Midrange attempts: +1 PP
+Rim attempts: 0 PP
+Efficiency
+3PT FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Denial disrupts pop timing and forces secondary actions.
+
+4. Switch Everything
+Shot Mix
+3PT attempts: +1 PP
+Midrange attempts: +1 PP
+Rim attempts: −1 PP
+Efficiency
+3PT FG%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Mismatch spacing improves shot quality, but ball exposure increases.
+5. ICE / No-Middle
+Shot Mix
+3PT attempts: +2 PP
+Midrange attempts: 0 PP
+Rim attempts: −1 PP
+Efficiency
+3PT FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Baseline force leaves pop big uncovered above the break.
+
+6. Zone (Structured)
+Shot Mix
+3PT attempts: +3 PP
+Midrange attempts: −2 PP
+Rim attempts: −2 PP
+Efficiency
+3PT FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −1.5 PP
+Rationale
+Zone prioritizes paint coverage and concedes stretch shooting.
+7. Matchup Zone / Hybrid
+Shot Mix
+3PT attempts: +2 PP
+Midrange attempts: −1 PP
+Rim attempts: −1 PP
+Efficiency
+3PT FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −1 PP
+Rationale
+Late close-outs reduce efficiency but volume remains.
+
+8. Press 
+Shot Mix
+3PT attempts: +1 PP
+Midrange attempts: 0 PP
+Rim attempts: −1 PP
+Efficiency
+3PT FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Early offense spacing opportunities exist; entry risk increases.
+9. Junk / Special
+Shot Mix
+3PT attempts: −2 PP
+Midrange attempts: +2 PP
+Rim attempts: 0 PP
+Efficiency
+3PT FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1 PP
+Rationale
+Face-guarding and stunt rules remove pop rhythm.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype 12: Roll Man Big
+(Vertical spacer; screen-setter; rim runner; lob threat; foul pressure engine)
+Baseline reference (no defensive modifier):
+Usage: moderate
+Shot mix: high rim, low midrange, minimal 3PT
+Efficiency: high at rim, dependent on advantage creation
+Turnovers: low–moderate (catch traffic)
+Fouls drawn: high
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+Rim attempts: +3 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +2 PP
+Rationale
+Drop coverage creates clean roll lanes and vertical advantage.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −2 PP
+Rationale
+Crowded paint neutralizes vertical spacing.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Ball pressure disrupts timing but still allows downhill finishes.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: −1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +1.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +1.5 PP
+Rationale
+Mismatches favor roll bigs against smaller defenders.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −1 PP
+Rationale
+Baseline containment limits pocket pass angles.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −4 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: −3 PP
+Rationale
+Zone bodies clog rolls and remove lob windows.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −2 PP
+Rationale
+Delayed switches disrupt roll timing without full paint congestion.
+
+8. Press 
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Early offense allows rim runs before shell formation.
+9. Junk / Special
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −2.5 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: −2.5 PP
+Rationale
+Fronting, tagging, and stunt rules neutralize vertical threats.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype: Primary Ball Handler (On-Ball Creator)
+(High-usage initiator; advantage creator; PnR engine; shot-creation hub)
+Baseline reference (no defensive modifier):
+Usage: very high
+Shot mix: rim + pull-up 3, secondary midrange
+Efficiency: skill-dependent, advantage-driven
+Turnovers: moderate–high (creation load)
+Fouls drawn: high
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+Rim attempts: +2 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+Rim FG%: +1 PP
+Pull-up 3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +2 PP
+Rationale
+Drop coverage invites downhill pressure and pull-ups.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −3 PP
+Pull-up 3 attempts: +2 PP
+Midrange attempts: +1 PP
+Efficiency
+Rim FG%: −2 PP
+Pull-up 3P%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1.5 PP
+Rationale
+Paint crowding forces perimeter creation and tougher finishes.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: +1 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+Rim FG%: 0 PP
+Pull-up 3P%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: +1 PP
+Rationale
+Ball pressure increases volatility and mistakes.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +2 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: −1 PP
+Efficiency
+Rim FG%: +1.5 PP
+Pull-up 3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +1.5 PP
+Rationale
+Isolation hunting and mismatch exploitation.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −2 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: +1 PP
+Efficiency
+Rim FG%: −1.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −1 PP
+Rationale
+Forces baseline drives and tougher angles.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −4 PP
+Pull-up 3 attempts: +2 PP
+Midrange attempts: +2 PP
+Efficiency
+Rim FG%: −3 PP
+Pull-up 3P%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: −2 PP
+Rationale
+Paint protection limits rim pressure; jumpers rise.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −2 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: +1 PP
+Efficiency
+Rim FG%: −1.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1.5 PP
+Rationale
+Delayed switches disrupt rhythm without full paint collapse.
+
+8. Press 
+Shot Mix
+Rim attempts: +2 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+Rim FG%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: +1 PP
+Rationale
+Early offense chances offset turnover risk.
+9. Junk / Special
+Shot Mix
+Rim attempts: −3 PP
+Pull-up 3 attempts: +2 PP
+Midrange attempts: +1 PP
+Efficiency
+Rim FG%: −2.5 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: −2 PP
+Rationale
+Traps and shadows force contested pull-ups.
+Offensive Archetype × Defensive Systems
+Offensive Archetype: Movement Shooter (Off-Ball Marksman)
+(Relocation shooter; off-screen scorer; gravity engine; low-usage, high-efficiency)
+Baseline reference (no defensive modifier):
+Usage: low–moderate
+Shot mix: high 3PT (C&S + movement), minimal rim, low midrange
+Efficiency: high when clean, fragile under disruption
+Turnovers: low
+Fouls drawn: low
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+3PT attempts: +2 PP
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: +1.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Drop coverage prioritizes paint; shooters gain clean perimeter looks.
+
+2. Pack Line
+Shot Mix
+3PT attempts: +3 PP
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Help-heavy paint defense concedes kick-outs and relocations.
+3. Pressure Man (Denial)
+Shot Mix
+3PT attempts: −2 PP
+Midrange attempts: +1 PP
+Rim attempts: 0 PP
+Efficiency
+3P%: −2 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Face-guarding and denial suppress rhythm threes.
+
+4. Switch Everything
+Shot Mix
+3PT attempts: −1 PP
+Midrange attempts: +1 PP
+Rim attempts: 0 PP
+Efficiency
+3P%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Switches remove screen advantage and limit separation.
+5. ICE / No-Middle
+Shot Mix
+3PT attempts: +1 PP
+Midrange attempts: 0 PP
+Rim attempts: 0 PP
+Efficiency
+3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Ball containment shifts help toward handlers, freeing weak-side shooters.
+
+6. Zone (Structured)
+Shot Mix
+3PT attempts: +4 PP
+Midrange attempts: −1 PP
+Rim attempts: −1 PP
+Efficiency
+3P%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Zones concede volume threes but contest more aggressively.
+7. Matchup Zone / Hybrid
+Shot Mix
+3PT attempts: +2 PP
+Midrange attempts: 0 PP
+Rim attempts: −1 PP
+Efficiency
+3P%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Hybrid coverage limits clean movement windows.
+
+8. Press 
+Shot Mix
+3PT attempts: +1 PP
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: 0 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Early offense produces transition spot-ups.
+9. Junk / Special
+Shot Mix
+3PT attempts: −3 PP
+Midrange attempts: +1 PP
+Rim attempts: 0 PP
+Efficiency
+3P%: −3 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Chasers and top-locks directly neutralize movement shooters.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype: Slasher Wing (Rim Pressure Finisher)
+(Downhill attacker; closeout killer; secondary creator; foul-draw engine)
+Baseline reference (no defensive modifier):
+Usage: moderate
+Shot mix: high rim, low 3PT, limited midrange
+Efficiency: high at rim, contact-dependent
+Turnovers: moderate (drives into traffic)
+Fouls drawn: high
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+Rim attempts: +3 PP
+Midrange attempts: 0 PP
+3PT attempts: −1 PP
+Efficiency
+Rim FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +2 PP
+Rationale
+Drop-style containment allows straight-line drives.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −4 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −3 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: −3 PP
+Rationale
+Loaded paint removes driving lanes.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: +1 PP
+Rationale
+Aggression creates both blow-bys and mistakes.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: −1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +1.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +1.5 PP
+Rationale
+Mismatches favor athletic downhill wings.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −1.5 PP
+Rationale
+Baseline forcing limits power drives.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −5 PP
+Midrange attempts: +3 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −4 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: −4 PP
+Rationale
+Zones erase straight-line penetration.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −2.5 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: −3 PP
+Rationale
+Delayed help still loads the paint.
+
+8. Press 
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: 0 PP
+3PT attempts: −1 PP
+Efficiency
+Rim FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: +1 PP
+Rationale
+Open-floor attacks offset ball pressure.
+9. Junk / Special
+Shot Mix
+Rim attempts: −4 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −3.5 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: −3.5 PP
+Rationale
+Gap rules, walls, and stunts neutralize slashers.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype: Stretch Big (Pick-and-Pop / Floor-Spacing Big)
+(Spacing anchor; pick-and-pop threat; drag-out rim protector; low-usage efficiency piece)
+Baseline reference (no defensive modifier):
+Usage: low–moderate
+Shot mix: high 3PT, moderate midrange, low rim
+Efficiency: high on C&S 3s, moderate on pops
+Turnovers: low
+Fouls drawn: low–moderate (closeouts)
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+3PT attempts: +3 PP
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: +1.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +1 PP
+Rationale
+Drop coverage concedes pick-and-pop spacing.
+
+2. Pack Line
+Shot Mix
+3PT attempts: +4 PP
+Rim attempts: −2 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Paint loading forces kick-outs to spacing bigs.
+3. Pressure Man (Denial)
+Shot Mix
+3PT attempts: +1 PP
+Midrange attempts: 0 PP
+Rim attempts: 0 PP
+Efficiency
+3P%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Ball pressure affects timing more than spacing.
+
+4. Switch Everything
+Shot Mix
+3PT attempts: +2 PP
+Rim attempts: +1 PP
+Midrange attempts: −1 PP
+Efficiency
+3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +1 PP
+Rationale
+Short rolls and size mismatches create pop space.
+5. ICE / No-Middle
+Shot Mix
+3PT attempts: +2 PP
+Midrange attempts: 0 PP
+Rim attempts: −1 PP
+Efficiency
+3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Baseline forcing opens weak-side pop windows.
+
+6. Zone (Structured)
+Shot Mix
+3PT attempts: +5 PP
+Midrange attempts: −1 PP
+Rim attempts: −2 PP
+Efficiency
+3P%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Zones concede high-volume above-the-break threes.
+7. Matchup Zone / Hybrid
+Shot Mix
+3PT attempts: +3 PP
+Midrange attempts: 0 PP
+Rim attempts: −1 PP
+Efficiency
+3P%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Hybrid closeouts reduce shot quality but not volume.
+
+8. Press 
+Shot Mix
+3PT attempts: +2 PP
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: 0 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Early offense yields trailing-big pop threes.
+9. Junk / Special
+Shot Mix
+3PT attempts: −2 PP
+Midrange attempts: +1 PP
+Rim attempts: −1 PP
+Efficiency
+3P%: −2 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1 PP
+Rationale
+Face-ups and stunts disrupt shooting rhythm.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype: Post Scorer Big (Back-to-Basket Anchor)
+(Low-block scorer; seal finisher; double-team magnet; foul-drawing hub)
+Baseline reference (no defensive modifier):
+Usage: moderate
+Shot mix: very high rim, moderate midrange (hooks/turnarounds), minimal 3PT
+Efficiency: high on seals, variable vs doubles
+Turnovers: moderate (traffic, digs)
+Fouls drawn: very high
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+Rim attempts: +3 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +3 PP
+Rationale
+Single-coverage post defense rewards strength and seals.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: −1.5 PP
+Rationale
+Crowded paint invites digs and early doubles.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: +1 PP
+Rationale
+Aggressive entry denial increases volatility once ball is caught.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +4 PP
+Midrange attempts: −1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +3 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +3 PP
+Rationale
+Small-on-big mismatches strongly favor post scorers.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Baseline forcing alters post entry angles.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −5 PP
+Midrange attempts: +3 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −4 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: −4 PP
+Rationale
+Zone collapses neutralize post seals and reduce fouls.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −3 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −2.5 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: −3 PP
+Rationale
+Late doubles and stunts disrupt rhythm.
+
+8. Press 
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: +1 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +1.5 PP
+Rationale
+Early seals before defense sets increase scoring chances.
+9. Junk / Special
+Shot Mix
+Rim attempts: −4 PP
+Midrange attempts: +2 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −3.5 PP
+Ball Security / Fouls
+Turnover rate: +2 PP
+Foul-draw rate: −3 PP
+Rationale
+Fronts, traps, and scrams explicitly target post hubs.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype: Connector Wing (Secondary Playmaker / Glue Piece)
+(Ball-mover; decision accelerator; advantage extender; low-usage efficiency stabilizer)
+Baseline reference (no defensive modifier):
+Usage: low–moderate
+Shot mix: balanced (spot-up 3s, cuts, opportunistic rim)
+Efficiency: high via decision quality
+Turnovers: low
+Fouls drawn: low–moderate (cuts, closeouts)
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+3PT attempts: +1 PP
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+Overall FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: −0.5 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Reads are clean; connectors thrive when help is predictable.
+
+2. Pack Line
+Shot Mix
+3PT attempts: +2 PP
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Kick-out decisions increase connector value.
+3. Pressure Man (Denial)
+Shot Mix
+3PT attempts: −1 PP
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+Overall FG%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Passing lanes tighten; processing speed is tested.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +1 PP
+3PT attempts: 0 PP
+Midrange attempts: 0 PP
+Efficiency
+Overall FG%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Exploits mismatches through cuts and quick decisions.
+5. ICE / No-Middle
+Shot Mix
+3PT attempts: +1 PP
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Weak-side spacing opens simple reads.
+
+6. Zone (Structured)
+Shot Mix
+3PT attempts: +2 PP
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+Efficiency
+Overall FG%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Zone slows ball movement but still rewards quick decisions.
+7. Matchup Zone / Hybrid
+Shot Mix
+3PT attempts: +1 PP
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+Efficiency
+Overall FG%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Delayed rotations reduce clean advantage chains.
+
+8. Press 
+Shot Mix
+Rim attempts: +1 PP
+3PT attempts: 0 PP
+Midrange attempts: 0 PP
+Efficiency
+Overall FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Transition decisions matter more than half-court reads.
+9. Junk / Special
+Shot Mix
+3PT attempts: −1 PP
+Rim attempts: −1 PP
+Midrange attempts: +1 PP
+Efficiency
+Overall FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Irregular coverage disrupts flow players.
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype: 3-and-D Wing (Low-Usage Floor Spacer)
+(Spot-up shooter; secondary cutter; low-mistake finisher; spacing + defense value)
+Baseline reference (no defensive modifier):
+Usage: low
+Shot mix: high catch-and-shoot 3s, opportunistic rim cuts
+Efficiency: high on open looks, low self-creation
+Turnovers: very low
+Fouls drawn: low
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+3PT attempts: +2 PP
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Help stays in drop; kick-outs and drift cuts are available.
+
+2. Pack Line
+Shot Mix
+3PT attempts: +3 PP
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Paint loading prioritizes perimeter closeouts.
+3. Pressure Man (Denial)
+Shot Mix
+3PT attempts: −2 PP
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: −1.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Hard closeouts reduce clean catch-and-shoot volume.
+
+4. Switch Everything
+Shot Mix
+3PT attempts: −1 PP
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Switches erase shooting windows but allow cuts vs mismatches.
+5. ICE / No-Middle
+Shot Mix
+3PT attempts: +1 PP
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Weak-side spacing remains intact
+
+6. Zone (Structured)
+Shot Mix
+3PT attempts: +4 PP
+Rim attempts: −1 PP
+Midrange attempts: −1 PP
+Efficiency
+3P%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Zones concede volume threes but contest more aggressively.
+7. Matchup Zone / Hybrid
+Shot Mix
+3PT attempts: +2 PP
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Late switches disrupt rhythm without fully denying shots.
+
+8. Press 
+Shot Mix
+3PT attempts: +1 PP
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+Efficiency
+3P%: 0 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: 0 PP
+Rationale
+Transition spot-ups offset pressure risk.
+9. Junk / Special
+Shot Mix
+3PT attempts: −3 PP
+Rim attempts: 0 PP
+Midrange attempts: +1 PP
+Efficiency
+3P%: −3 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: 0 PP
+Rationale
+Chasers and top-locks directly target shooters.
+
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype: Secondary Ball Handler (Combo Guard)
+(Off-ball creator; secondary PnR operator; advantage recycler; scoring + playmaking blend)
+Baseline reference (no defensive modifier):
+Usage: moderate
+Shot mix: pull-up 3s, rim attacks, selective midrange
+Efficiency: depends on matchup leverage
+Turnovers: moderate
+Fouls drawn: moderate
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+Rim attempts: +2 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+Rim FG%: +1 PP
+Pull-up 3P%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +1.5 PP
+Rationale
+Secondary attackers punish drop coverage when the primary draws help.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −2 PP
+Pull-up 3 attempts: +2 PP
+Midrange attempts: +1 PP
+Efficiency
+Rim FG%: −1.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1 PP
+Rationale
+Paint help forces perimeter creation.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: +1 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+Pull-up 3P%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Ball pressure increases volatility for secondary handlers.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +2 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: −1 PP
+Efficiency
+Rim FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +1 PP
+Rationale
+Mismatch hunting favors skilled combo guards.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: −1 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: +1 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −0.5 PP
+Rationale
+Baseline forcing limits downhill angles.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: −3 PP
+Pull-up 3 attempts: +2 PP
+Midrange attempts: +2 PP
+Efficiency
+Pull-up 3P%: −1 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1.5 PP
+Rationale
+Zone slows penetration and invites jumpers.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: −2 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: +1 PP
+Efficiency
+Overall FG%: −0.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: −1 PP
+Rationale
+Late switches disrupt secondary creation.
+
+8. Press 
+Shot Mix
+Rim attempts: +2 PP
+Pull-up 3 attempts: +1 PP
+Midrange attempts: 0 PP
+Efficiency
+Rim FG%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: +1 PP
+Rationale
+Early offense favors attacking combo guards.
+9. Junk / Special
+Shot Mix
+Rim attempts: −3 PP
+Pull-up 3 attempts: +2 PP
+Midrange attempts: +1 PP
+Efficiency
+Rim FG%: −2 PP
+Ball Security / Fouls
+Turnover rate: +1.5 PP
+Foul-draw rate: −1.5 PP
+Rationale
+Shadowing and traps target secondary initiators.
+
+
+Offensive Archetype × Defensive Systems
+Offensive Archetype: Offensive Rebounder / Energy Big
+(Putback scorer; extra-possession generator; screen + crash specialist; low-usage impact)
+Baseline reference (no defensive modifier):
+Usage: very low
+Shot mix: rim (putbacks, dumps), virtually no jumpers
+Efficiency: very high on limited attempts
+Turnovers: very low
+Fouls drawn: moderate–high (scramble finishes)
+All deltas are explicit PP deltas, Simulation, usage-scaled, and do not alter PlayerIQ.
+1. Containment Man
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +1.5 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +1.5 PP
+Rationale
+Drop coverage yields soft box-outs and rebound lanes.
+
+2. Pack Line
+Shot Mix
+Rim attempts: −1 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: −1 PP
+Rationale
+Multiple bodies in the paint suppress second chances.
+3. Pressure Man (Denial)
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Chaotic possessions create crash opportunities.
+
+4. Switch Everything
+Shot Mix
+Rim attempts: +3 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +2 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +2 PP
+Rationale
+Small defenders struggle with box-outs.
+5. ICE / No-Middle
+Shot Mix
+Rim attempts: 0 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: 0 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: 0 PP
+Rationale
+Scheme affects ball containment more than rebounding lanes.
+
+6. Zone (Structured)
+Shot Mix
+Rim attempts: +3 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +1.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: +1.5 PP
+Rationale
+Zone rebounding assignments create crash seams.
+7. Matchup Zone / Hybrid
+Shot Mix
+Rim attempts: +2 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +1 PP
+Ball Security / Fouls
+Turnover rate: 0 PP
+Foul-draw rate: +1 PP
+Rationale
+Delayed box-outs favor high-motor rebounders.
+
+8. Press 
+Shot Mix
+Rim attempts: +1 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: +0.5 PP
+Ball Security / Fouls
+Turnover rate: +1 PP
+Foul-draw rate: +0.5 PP
+Rationale
+Broken possessions increase rebound chaos.
+9. Junk / Special
+Shot Mix
+Rim attempts: −2 PP
+Midrange attempts: 0 PP
+3PT attempts: 0 PP
+Efficiency
+Rim FG%: −1.5 PP
+Ball Security / Fouls
+Turnover rate: +0.5 PP
+Foul-draw rate: −1.5 PP
+Rationale
+Pre-rotations and hit-first rules neutralize crashers.
+

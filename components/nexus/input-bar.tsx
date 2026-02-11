@@ -18,6 +18,7 @@ interface InputBarProps {
   onSend: () => void;
   onMicPress?: () => void;
   onAttachPress?: () => void;
+  onPlusLongPress?: () => void;
   onFocus?: () => void;
   placeholder?: string;
   isVoiceActive?: boolean;
@@ -30,6 +31,7 @@ export function InputBar({
   onSend,
   onMicPress,
   onAttachPress,
+  onPlusLongPress,
   onFocus,
   placeholder = 'Ask Nexus',
   isVoiceActive = false,
@@ -100,6 +102,7 @@ export function InputBar({
                 { opacity: pressed ? 0.6 : 1 },
               ]}
               onPress={onAttachPress}
+              onLongPress={onPlusLongPress}
               accessibilityLabel="Attach file"
               accessibilityRole="button"
             >

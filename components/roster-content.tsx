@@ -1,10 +1,10 @@
 /**
  * Roster Content Component
- * NBA.com-style roster view for Lincoln University Oakland
+ * NBA.com-style roster view for Florida Memorial University Lions
  * Full-bleed hero-image layout — each player is an immersive section.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import {
   Dimensions,
   ScrollView,
   Modal,
-  ImageSourcePropType,
+  TextInput,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -22,30 +22,41 @@ import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { FIREBASE_GAMES } from '@/data/firebase-lincoln';
+import { ARCHETYPE_LABELS, type Archetype } from '@/data/system-demand-profiles';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Player headshot images
-const HEADSHOTS: Record<string, ImageSourcePropType> = {
-  '1': require('@/assets/images/headshots/1-williams.png'),
-  '2': require('@/assets/images/headshots/2-plantey.png'),
-  '3': require('@/assets/images/headshots/3-mckesey.png'),
-  '6': require('@/assets/images/headshots/6-wall.png'),
-  '10': require('@/assets/images/headshots/10-hernandez.png'),
-  '11': require('@/assets/images/headshots/11-kalejaiye.png'),
-  '15': require('@/assets/images/headshots/15-chatelain.png'),
-  '20': require('@/assets/images/headshots/20-bansraj.png'),
-  '21': require('@/assets/images/headshots/21-diomande.png'),
+// FMU seal used as fallback when no headshot available
+const FMU_SEAL = require('@/assets/images/fmu-seal.png');
+
+// Player headshots (keyed by jersey number)
+const HEADSHOTS: Record<string, any> = {
+  '0':  require('@/assets/images/headshots/thomas.png'),
+  '1':  require('@/assets/images/headshots/asceric.png'),
+  '2':  require('@/assets/images/headshots/lewis.png'),
+  '3':  require('@/assets/images/headshots/thompson.png'),
+  '4':  require('@/assets/images/headshots/carter.png'),
+  '5':  require('@/assets/images/headshots/selden.png'),
+  '7':  require('@/assets/images/headshots/moratinos.png'),
+  '9':  require('@/assets/images/headshots/benbo.png'),
+  '10': require('@/assets/images/headshots/morris.png'),
+  '11': require('@/assets/images/headshots/mentor.png'),
+  '12': require('@/assets/images/headshots/turner.png'),
+  '13': require('@/assets/images/headshots/noel.png'),
+  '15': require('@/assets/images/headshots/morgan.png'),
+  '20': require('@/assets/images/headshots/dues.png'),
+  '22': require('@/assets/images/headshots/laird.png'),
+  '41': require('@/assets/images/headshots/brewer.png'),
+  '55': require('@/assets/images/headshots/munir-jones.png'),
 };
 
-// Lincoln University Oakland colors
+// Florida Memorial University Lions colors
 const TEAM_COLORS = {
-  primary: '#f5f5f5',
-  secondary: '#1e1e1e',
+  primary: '#003DA5',    // FMU Royal Blue
+  secondary: '#FFD100',  // FMU Gold
   accent: '#ffffff',
-  background: '#0f0f0f',
-  cardBg: '#181818',
+  background: '#000000',
+  cardBg: '#0a0a0a',
   white: '#f5f5f5',
   gray: '#6e6e6e',
 };
@@ -53,78 +64,90 @@ const TEAM_COLORS = {
 // ── Season Constants ──
 const SEASONS = ['2024-25', '2025-26', '2026-27'] as const;
 type Season = typeof SEASONS[number];
-const CURRENT_SEASON: Season = '2025-26';
+export const CURRENT_SEASON: Season = '2025-26';
 
-// Derive last 3 games from Firebase (most recent first)
-const FB_LAST_3 = FIREBASE_GAMES
-  .filter((g) => g.status === 'final' && g.boxScore)
-  .slice(-3)
-  .reverse();
-
+// FMU placeholder last-3-games (no Firebase dependency)
 const LAST_3_GAMES: Record<string, { opponent: string; pts: number; reb: number; ast: number }[]> = {};
-for (const num of ['1', '2', '3', '5', '6', '10', '11', '15', '20', '21']) {
-  LAST_3_GAMES[num] = FB_LAST_3.map((g) => {
-    const ps = g.boxScore!.playerStats.find((p) => p.playerNumber === num);
-    return ps
-      ? { opponent: g.opponent, pts: ps.points, reb: ps.rebounds, ast: ps.assists }
-      : { opponent: g.opponent, pts: 0, reb: 0, ast: 0 };
-  });
-}
 
-// Lincoln University Oaklanders roster
+type PlayerRole = 'starter' | 'rotation' | 'bench' | 'redshirt' | 'injured' | 'out';
+
+// Florida Memorial University Lions — 2025-26 Roster
 const ROSTER = [
-  { id: '1', number: '1', firstName: 'Brandon', lastName: 'Williams', position: 'Point Guard', listPos: 'PG', height: '6\'4"', weight: 195, classYear: 'Sophomore', scholarship: 100, nil: '$8K', notes: 'Team captain, floor general' },
-  { id: '2', number: '2', firstName: 'Chris', lastName: 'Plantey', position: 'Point Guard', listPos: 'PG', height: '5\'9"', weight: 165, classYear: 'Freshman', scholarship: 0, nil: '—', notes: 'High motor, developing shooter' },
-  { id: '3', number: '3', firstName: 'Claude', lastName: 'McKesey', position: 'Wing', listPos: 'W', height: '5\'10"', weight: 170, classYear: 'Sophomore', scholarship: 73, nil: '$3K', notes: 'Elite defender, quick hands' },
-  { id: '10', number: '5', firstName: 'Samuel', lastName: 'Manzo', position: 'Guard', listPos: 'G', height: '\u2014', weight: 0, classYear: 'Freshman', scholarship: 0, nil: '\u2014', notes: '' },
-  { id: '4', number: '6', firstName: 'Samuel', lastName: 'Wall', position: 'Combo Guard', listPos: 'CG', height: '6\'1"', weight: 185, classYear: 'Senior', scholarship: 100, nil: '$12K', notes: 'Veteran leader, mid-range specialist' },
-  { id: '5', number: '10', firstName: 'Adrian', lastName: 'Hernandez', position: 'Combo Guard', listPos: 'CG', height: '6\'1"', weight: 180, classYear: 'Freshman', scholarship: 0, nil: '—', notes: 'Sharpshooter, catch-and-shoot threat' },
-  { id: '6', number: '11', firstName: 'Laolu', lastName: 'Kalejaiye', position: 'Combo Guard', listPos: 'CG', height: '6\'0"', weight: 175, classYear: 'Junior', scholarship: 50, nil: '$6K', notes: 'Combo guard, playmaking upside' },
-  { id: '7', number: '15', firstName: 'Nathan', lastName: 'Chtelan', position: 'Forward', listPos: 'F', height: '6\'7"', weight: 215, classYear: 'Freshman', scholarship: 75, nil: '$4K', notes: 'Stretch four, developing post game' },
-  { id: '8', number: '20', firstName: 'Nicholas', lastName: 'Bansraj', position: 'Wing', listPos: 'W', height: '5\'7"', weight: 155, classYear: 'Freshman', scholarship: 0, nil: '—', notes: 'Energy spark off bench' },
-  { id: '9', number: '21', firstName: 'Paul', lastName: 'Diomande', position: 'Big', listPos: 'B', height: '6\'5"', weight: 220, classYear: 'Junior', scholarship: 85, nil: '$10K', notes: 'Rim protector, transition finisher' },
+  { id: '1',  number: '0',  firstName: 'Tristan',   lastName: 'Thomas',        position: 'Wing', listPos: 'W', height: '6\'4"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: '', ppg: 3.4, rpg: 3.1, apg: 0, kr: 66, usage: 12.5, minutes: 16, role: 'rotation' as PlayerRole },
+  { id: '2',  number: '1',  firstName: 'Petar',      lastName: 'Asceric',       position: 'Big',           listPos: 'B',  height: '6\'10"', weight: 230, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 6.1, rpg: 2.4, apg: 0, kr: 68, usage: 14.8, minutes: 16, role: 'rotation' as PlayerRole },
+  { id: '3',  number: '2',  firstName: 'Braxton',    lastName: 'Lewis',         position: 'Wing', listPos: 'W', height: '6\'3"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 54, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '4',  number: '3',  firstName: 'Rico',        lastName: 'Thompson',     position: 'Combo Guard', listPos: 'CG', height: '6\'1"', weight: 180, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 55, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '5',  number: '4',  firstName: 'Devin',      lastName: 'Carter',        position: 'Wing', listPos: 'W', height: '6\'0"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Jackson, MS', ppg: 18.3, rpg: 6.1, apg: 3.4, kr: 82, usage: 28.4, minutes: 32, role: 'starter' as PlayerRole },
+  { id: '6',  number: '5',  firstName: 'Jeffrey',    lastName: 'Selden',        position: 'Big',           listPos: 'B',  height: '6\'6"',  weight: 210, classYear: 'Senior',    scholarship: 0, nil: '—', notes: '', ppg: 11.2, rpg: 5.9, apg: 3.0, kr: 80, usage: 22.1, minutes: 28, role: 'starter' as PlayerRole },
+  { id: '7',  number: '7',  firstName: 'Maximo',     lastName: 'Moratinos',     position: 'Forward', listPos: 'F', height: '6\'8"',  weight: 205, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 6.6, rpg: 2.6, apg: 0, kr: 70, usage: 15.2, minutes: 18, role: 'rotation' as PlayerRole },
+  { id: '8',  number: '9',  firstName: "Ka'Mar",     lastName: 'Benbo',         position: 'Point Guard',   listPos: 'PG', height: '6\'0"',  weight: 170, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 58, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '9',  number: '10', firstName: 'Jason',      lastName: 'Morris',        position: 'Forward', listPos: 'F', height: '6\'4"',  weight: 200, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 56, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '10', number: '11', firstName: 'Sehmaj',     lastName: 'Mentor',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Orlando, FL', ppg: 9.2, rpg: 3.5, apg: 2.4, kr: 78, usage: 20.3, minutes: 30, role: 'starter' as PlayerRole },
+  { id: '11', number: '12', firstName: 'Gavin',      lastName: 'Turner',        position: 'Wing', listPos: 'W', height: '6\'5"',  weight: 195, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
+  { id: '12', number: '13', firstName: 'Cameron',    lastName: 'Noel',          position: 'Combo Guard', listPos: 'CG', height: '6\'2"', weight: 180, classYear: 'Junior',    scholarship: 0, nil: '—', notes: '', ppg: 11.0, rpg: 2.8, apg: 1.6, kr: 79, usage: 21.6, minutes: 28, role: 'starter' as PlayerRole },
+  { id: '13', number: '15', firstName: 'Micah',      lastName: 'Morgan',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Houston, TX', ppg: 2.9, rpg: 2.7, apg: 0, kr: 65, usage: 10.1, minutes: 14, role: 'rotation' as PlayerRole },
+  { id: '14', number: '20', firstName: "D'Andre",    lastName: 'Dues',          position: 'Forward', listPos: 'F', height: '6\'7"',  weight: 188, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 50, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
+  { id: '15', number: '22', firstName: 'Elijah',     lastName: 'Laird',         position: 'Combo Guard', listPos: 'CG', height: '6\'3"', weight: 185, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Deltona, FL', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
+  { id: '16', number: '41', firstName: 'Morgan',     lastName: 'Brewer',        position: 'Forward', listPos: 'F', height: '6\'5"',  weight: 200, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 9.0, rpg: 3.6, apg: 0, kr: 76, usage: 18.7, minutes: 26, role: 'starter' as PlayerRole },
+  { id: '17', number: '55', firstName: "Aa'Reyon",   lastName: 'Munir-Jones',   position: 'Combo Guard', listPos: 'CG', height: '6\'4"', weight: 185, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 7.2, rpg: 4.2, apg: 1.4, kr: 72, usage: 16.9, minutes: 20, role: 'rotation' as PlayerRole },
 ];
 
-
-
-// Depth chart data (moved from app/coach/depth-chart.tsx)
+// FMU Depth Chart — 5 position groups
 const DEPTH_CHART = [
   {
     position: 'Point Guard',
     players: [
-      { name: 'Brandon Williams', number: '1', kr: 86, minutes: 32, role: 'Floor General', roleDefinition: 'Primary ball-handler who initiates offense and controls tempo.', systemAmplifier: 'Spread PnR initiator — his pace unlocks early-clock advantages.', coachNote: 'Let him cook in transition; trust his reads.' },
-      { name: 'Chris Plantey', number: '2', kr: 68, minutes: 8, role: 'Press Breaker', roleDefinition: 'Secondary handler who relieves pressure and pushes the ball.', coachNote: 'Developing shooter — keep reps coming in practice.' },
+      { name: 'Sehmaj Mentor', number: '11', kr: 78, minutes: 30, archetypes: ['pick_and_roll_operator', 'connector_guard_wing'] as Archetype[], roleDefinition: 'Primary ball-handler who initiates offense and controls tempo.', coachNote: 'Veteran leader, strong mid-range game.' },
+      { name: 'Micah Morgan', number: '15', kr: 65, minutes: 14, archetypes: ['connector_guard_wing'] as Archetype[], roleDefinition: 'Secondary handler who relieves pressure and pushes pace.', coachNote: 'Developing — needs more reps.' },
+      { name: "Ka'Mar Benbo", number: '9', kr: 58, minutes: 4, archetypes: [] as Archetype[], roleDefinition: 'Third-string guard getting development minutes.' as string, coachNote: 'Young — learning the system.' },
     ],
   },
   {
     position: 'Combo Guard',
     players: [
-      { name: 'Laolu Kalejaiye', number: '11', kr: 82, minutes: 28, role: 'Playmaking Scorer', roleDefinition: 'Versatile guard who creates for himself and others off the dribble.', systemAmplifier: 'PnR secondary — collapses defenses and finds cutters.', coachNote: 'Best mid-range pull-up on the team.' },
-      { name: 'Adrian Hernandez', number: '10', kr: 71, minutes: 12, role: 'Spacer', roleDefinition: 'Catch-and-shoot threat who stretches the floor.', coachNote: 'Keep him in the corners — gravity matters.' },
-      { number: '5', name: 'Manzo', role: 'bench' as const },
+      { name: 'Cameron Noel', number: '13', kr: 79, minutes: 28, archetypes: ['spot_up_specialist', 'three_and_d_wing'] as Archetype[], roleDefinition: 'Primary perimeter scorer who creates off the dribble.', coachNote: 'Consistent shooter, can get hot.' },
+      { name: "Aa'Reyon Munir-Jones", number: '55', kr: 72, minutes: 20, archetypes: ['two_way_wing', 'slasher_rim_pressure_wing'] as Archetype[], roleDefinition: 'Versatile guard who contributes on both ends.', coachNote: 'Athletic, strong rebounder for his position.' },
+      { name: 'Rico Thompson', number: '3', kr: 55, minutes: 4, archetypes: [] as Archetype[], roleDefinition: 'Developmental guard working into the rotation.' as string, coachNote: 'Needs confidence.' },
     ],
   },
   {
     position: 'Wing',
     players: [
-      { name: 'Claude McKesey', number: '3', kr: 79, minutes: 26, role: 'Lockdown Defender', roleDefinition: 'Primary perimeter defender who guards the opponent\'s best player.', systemAmplifier: 'Pressure man anchor — his on-ball D sets the defensive tone.', coachNote: 'Elite hands, quick feet. Offensive game still developing.' },
-      { name: 'Nicholas Bansraj', number: '20', kr: 64, minutes: 14, role: 'Energy Spark', roleDefinition: 'High-motor wing who provides intensity off the bench.', coachNote: 'Undersized but relentless. Use in short bursts.' },
+      { name: 'Devin Carter', number: '4', kr: 82, minutes: 32, archetypes: ['primary_ball_handler', 'slasher_rim_pressure_wing', 'secondary_creator_wing'] as Archetype[], roleDefinition: 'Primary scoring option — creates in isolation and transition.', systemAmplifier: 'Transition finisher — his speed in the open court generates easy looks.', coachNote: 'Go-to guy. Feed him early.' },
+      { name: 'Tristan Thomas', number: '0', kr: 66, minutes: 16, archetypes: ['switchable_defender_wing'] as Archetype[], roleDefinition: 'Versatile wing who provides length and rebounding.', coachNote: 'Good defender, offense still developing.' },
+      { name: 'Braxton Lewis', number: '2', kr: 54, minutes: 4, archetypes: [] as Archetype[], roleDefinition: 'Depth wing available for spot minutes.' as string, coachNote: 'Physical, needs polish.' },
     ],
   },
   {
     position: 'Forward',
     players: [
-      { name: 'Nathan Chtelan', number: '15', kr: 84, minutes: 30, role: 'Stretch Four', roleDefinition: 'Floor-spacing big who can shoot from the perimeter and operate in the post.', systemAmplifier: 'His shooting pulls opposing bigs to the arc, opening driving lanes.', coachNote: 'Post game developing — feed him in the mid-post vs smaller defenders.' },
+      { name: 'Morgan Brewer', number: '41', kr: 76, minutes: 26, archetypes: ['stretch_big', 'spot_up_specialist'] as Archetype[], roleDefinition: 'Floor-spacing big who operates from mid-range and the post.', coachNote: 'Reliable scorer, good positional rebounder.' },
+      { name: 'Maximo Moratinos', number: '7', kr: 70, minutes: 18, archetypes: ['rim_protector_anchor', 'rebounding_interior_enforcer'] as Archetype[], roleDefinition: 'Physical big who protects the paint and finishes inside.', coachNote: 'Long, athletic. Good rim protection.' },
+      { name: 'Jason Morris', number: '10', kr: 56, minutes: 4, archetypes: [] as Archetype[], roleDefinition: 'Developmental forward getting spot minutes.' as string, coachNote: 'Working on his frame.' },
     ],
   },
   {
     position: 'Big',
     players: [
-      { name: 'Paul Diomande', number: '21', kr: 81, minutes: 24, role: 'Rim Protector', roleDefinition: 'Anchor big who protects the paint and finishes inside.', systemAmplifier: 'Drop coverage lynchpin — funnels drivers into his contest zone.', coachNote: 'Best finisher in transition. Foul trouble is the risk.' },
-      { name: 'Samuel Wall', number: '6', kr: 77, minutes: 16, role: 'Veteran Glue Guy', roleDefinition: 'Positionally versatile veteran who fills gaps and makes smart plays.', coachNote: 'Steadiest presence on the roster. Trust him in crunch time.' },
+      { name: 'Jeffrey Selden', number: '5', kr: 80, minutes: 28, archetypes: ['post_hub_facilitator_big', 'rim_protector_anchor'] as Archetype[], roleDefinition: 'Primary post presence — rim protection, rebounding, inside scoring.', systemAmplifier: 'Drop coverage anchor — funnels drivers into his contest zone.', coachNote: 'Most versatile big. Can pass out of the post.' },
+      { name: 'Petar Asceric', number: '1', kr: 68, minutes: 16, archetypes: ['rim_protector_anchor'] as Archetype[], roleDefinition: 'Size and length off the bench for interior presence.', coachNote: 'Tallest player on roster. Needs to stay out of foul trouble.' },
     ],
   },
 ];
+
+// FMU Team Info (for thin header)
+const FMU_TEAM = {
+  name: 'FMU Lions',
+  fullName: 'Florida Memorial University',
+  conference: 'Sun Conference',
+  division: 'NAIA',
+  season: '2025–26',
+  record: '17-8',
+  confRecord: '9-4',
+  teamKR: 74,
+  offRating: 77,
+  defRating: 71,
+};
 
 // ── Season-keyed data ──
 type RosterPlayer = typeof ROSTER[number];
@@ -168,7 +191,7 @@ const ROSTER_BY_SEASON: Record<Season, RosterPlayer[]> = {
   '2026-27': ROSTER_2026,
 };
 
-const DEPTH_CHART_BY_SEASON: Record<Season, DepthChartPosition[]> = {
+export const DEPTH_CHART_BY_SEASON: Record<Season, DepthChartPosition[]> = {
   '2024-25': DEPTH_CHART,
   '2025-26': advanceDepthChart(DEPTH_CHART, SENIORS_2024),
   '2026-27': advanceDepthChart(DEPTH_CHART, new Set([...SENIORS_2024, ...SENIORS_2025])),
@@ -180,27 +203,38 @@ const LAST_3_GAMES_BY_SEASON: Record<Season, Record<string, GameLog[]>> = {
   '2026-27': {},
 };
 
-type ViewType = 'cards' | 'list' | 'depth-chart';
+type ViewType = 'cards' | 'list';
 
+// ── Filter / Sort types ──
+type FilterOption = 'all' | 'starter' | 'rotation' | 'bench' | 'redshirt' | 'injured' | 'out';
+type SortOption = 'kr' | 'number' | 'usage' | 'minutes' | 'ppg' | 'rpg' | 'apg' | 'position' | 'class' | 'az';
+
+const SORT_OPTIONS: { key: SortOption; label: string }[] = [
+  { key: 'kr', label: 'KR' },
+  { key: 'number', label: '#' },
+  { key: 'usage', label: 'Usage' },
+  { key: 'minutes', label: 'Minutes' },
+  { key: 'ppg', label: 'PPG' },
+  { key: 'rpg', label: 'RPG' },
+  { key: 'apg', label: 'APG' },
+  { key: 'position', label: 'Position' },
+  { key: 'class', label: 'Class' },
+  { key: 'az', label: 'A–Z' },
+];
+
+// ── Full-bleed Player Section (NBA.com style) ──
 function PlayerSection({
   player,
-  statsOpen,
-  onToggleStats,
   onBioPress,
-  last3Games,
 }: {
   player: RosterPlayer;
-  statsOpen: boolean;
-  onToggleStats: () => void;
   onBioPress: () => void;
-  last3Games: Record<string, GameLog[]>;
 }) {
-  const headshot = HEADSHOTS[player.number];
-  const games = last3Games[player.number] ?? [];
+  const hasHeadshot = !!HEADSHOTS[player.number];
 
   return (
     <View style={styles.playerSection}>
-      {/* ── Player Identity (number | name + position) ── */}
+      {/* ── Player Identity (number + name + KR + position + last 3) ── */}
       <View style={styles.identityBlock}>
         <View style={styles.numberNameRow}>
           <Text style={styles.playerNumber}>{player.number}</Text>
@@ -210,165 +244,149 @@ function PlayerSection({
             <Text style={styles.lastName}>{player.lastName}</Text>
           </View>
         </View>
-        <Text style={styles.position}>{player.height} · {player.position} · {player.classYear}</Text>
+        <Text style={styles.position}>{player.kr} KR · {player.position}</Text>
+        {(player.ppg > 0 || player.rpg > 0 || player.apg > 0) && (
+          <Text style={styles.last3Stats}>
+            Last 3: {player.ppg} PTS · {player.rpg} REB · {player.apg} AST
+          </Text>
+        )}
       </View>
 
-      {/* ── Hero Photo ── */}
-      <View style={styles.photoArea}>
-        {headshot ? (
-          <View style={styles.photoWrapper}>
+      {/* ── Hero Photo (headshot or FMU Seal fallback) — tappable → bio ── */}
+      <Pressable
+        style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          onBioPress();
+        }}
+      >
+        <View style={styles.photoArea}>
+          <View style={hasHeadshot ? styles.headshotWrapper : styles.photoWrapper}>
             <Image
-              source={headshot}
-              style={styles.headshot}
+              source={HEADSHOTS[player.number] ?? FMU_SEAL}
+              style={hasHeadshot ? styles.headshot : styles.sealImage}
               resizeMode="contain"
             />
+            {hasHeadshot && (
+              <>
+                <LinearGradient
+                  colors={[TEAM_COLORS.cardBg, 'transparent']}
+                  locations={[0, 0.4]}
+                  style={styles.photoGradientTop}
+                />
+                <LinearGradient
+                  colors={[TEAM_COLORS.cardBg, 'transparent']}
+                  start={{ x: 0, y: 0.5 }}
+                  end={{ x: 0.3, y: 0.5 }}
+                  style={styles.photoGradientLeft}
+                />
+                <LinearGradient
+                  colors={['transparent', TEAM_COLORS.cardBg]}
+                  start={{ x: 0.7, y: 0.5 }}
+                  end={{ x: 1, y: 0.5 }}
+                  style={styles.photoGradientRight}
+                />
+              </>
+            )}
             <LinearGradient
               colors={['transparent', TEAM_COLORS.cardBg]}
               style={styles.photoGradientBottom}
             />
-            <LinearGradient
-              colors={[TEAM_COLORS.cardBg, 'transparent']}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 0.15, y: 0.5 }}
-              style={styles.photoGradientLeft}
-            />
-            <LinearGradient
-              colors={['transparent', TEAM_COLORS.cardBg]}
-              start={{ x: 0.85, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={styles.photoGradientRight}
-            />
           </View>
-        ) : (
-          <View style={styles.placeholderPhoto}>
-            <Text style={styles.placeholderNumber}>{player.number}</Text>
-          </View>
-        )}
-      </View>
-
-      {/* ── Actions ── */}
-      <View style={styles.actionsContainer}>
-        {/* BIO pill */}
-        <Pressable
-          style={({ pressed }) => [
-            styles.pillButton,
-            pressed && styles.pillButtonPressed,
-          ]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onBioPress();
-          }}
-        >
-          <Text style={styles.pillButtonText}>
-            {player.firstName.toUpperCase()} {player.lastName.toUpperCase()} BIO
-          </Text>
-        </Pressable>
-
-        {/* Basketball icon toggle */}
-        <Pressable
-          style={({ pressed }) => [
-            styles.basketballToggle,
-            statsOpen && styles.basketballToggleActive,
-            pressed && { opacity: 0.7 },
-          ]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onToggleStats();
-          }}
-        >
-          <IconSymbol
-            name="basketball.fill"
-            size={26}
-            color={statsOpen ? TEAM_COLORS.background : TEAM_COLORS.accent}
-          />
-        </Pressable>
-      </View>
-
-      {/* ── Inline Stats Dropdown (last 3 games) ── */}
-      {statsOpen && games.length > 0 && (
-        <View style={styles.statsDropdown}>
-          <Text style={styles.statsHeader}>LAST 3 GAMES</Text>
-          {/* Column labels */}
-          <View style={styles.statsLabelRow}>
-            <Text style={[styles.statsLabel, styles.statsOpponentCol]}>OPP</Text>
-            <Text style={[styles.statsLabel, styles.statsStatCol]}>PTS</Text>
-            <Text style={[styles.statsLabel, styles.statsStatCol]}>REB</Text>
-            <Text style={[styles.statsLabel, styles.statsStatCol]}>AST</Text>
-          </View>
-          {games.map((game, idx) => (
-            <View
-              key={idx}
-              style={[
-                styles.statsRow,
-                idx < games.length - 1 && styles.statsRowBorder,
-              ]}
-            >
-              <Text
-                style={[styles.statsOpponent, styles.statsOpponentCol]}
-                numberOfLines={1}
-              >
-                {game.opponent}
-              </Text>
-              <Text style={[styles.statValue, styles.statsStatCol]}>{game.pts}</Text>
-              <Text style={[styles.statValue, styles.statsStatCol]}>{game.reb}</Text>
-              <Text style={[styles.statValue, styles.statsStatCol]}>{game.ast}</Text>
-            </View>
-          ))}
         </View>
-      )}
+      </Pressable>
     </View>
   );
 }
 
-/* ── Roster Controls: Season dropdown + View segmented control in one row ── */
+/* ── Roster Controls: Season + Filter + Sort + Search + View toggle ── */
 const VIEW_OPTIONS: { key: ViewType; icon: string }[] = [
   { key: 'cards', icon: 'square.grid.2x2.fill' },
   { key: 'list', icon: 'rectangle.stack' },
-  { key: 'depth-chart', icon: 'person.3.fill' },
 ];
 
 function RosterControls({
-  activeSeason,
-  onSeasonChange,
   activeView,
   onViewChange,
+  selectedSeason,
+  onSeasonChange,
+  searchQuery,
+  onSearchChange,
 }: {
-  activeSeason: Season;
-  onSeasonChange: (season: Season) => void;
   activeView: ViewType;
   onViewChange: (view: ViewType) => void;
+  selectedSeason: Season;
+  onSeasonChange: (season: Season) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }) {
   const [seasonOpen, setSeasonOpen] = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
   const [pillY, setPillY] = useState(0);
   const [pillH, setPillH] = useState(0);
-  const pillRef = React.useRef<View>(null);
-  const seasonLabel = activeSeason.replace('-', '\u2013');
+  const [activePillX, setActivePillX] = useState(0);
+  const seasonRef = React.useRef<View>(null);
 
-  const handlePillPress = () => {
-    pillRef.current?.measureInWindow((_x, y, _w, h) => {
+  const openDropdown = (
+    ref: React.RefObject<View | null>,
+    setter: (v: boolean) => void,
+  ) => {
+    (ref.current as any)?.measureInWindow((x: number, y: number, _w: number, h: number) => {
+      setActivePillX(x);
       setPillY(y);
       setPillH(h);
-      setSeasonOpen(true);
+      setter(true);
     });
   };
+
+  const seasonLabel = selectedSeason.replace('-', '\u2013');
 
   return (
     <>
       <View style={styles.controlsRow}>
-        {/* Season dropdown pill */}
-        <Pressable
-          ref={pillRef as any}
-          style={({ pressed }) => [
-            styles.seasonPill,
-            { opacity: pressed ? 0.8 : 1 },
-          ]}
-          onPress={handlePillPress}
-        >
-          <Text style={styles.seasonPillText}>{seasonLabel}</Text>
-          <IconSymbol name="chevron.down" size={10} color={TEAM_COLORS.gray} />
-        </Pressable>
+        {/* Pills row */}
+        <View style={styles.pillsRow}>
+          {/* Season pill */}
+          <Pressable
+            ref={seasonRef as any}
+            style={({ pressed }) => [
+              styles.controlPill,
+              { opacity: pressed ? 0.8 : 1 },
+            ]}
+            onPress={() => openDropdown(seasonRef, setSeasonOpen)}
+          >
+            <Text style={styles.controlPillText}>
+              {seasonLabel}
+            </Text>
+            <IconSymbol name="chevron.down" size={10} color={TEAM_COLORS.gray} />
+          </Pressable>
 
-        {/* View toggle icons */}
+          {/* Search icon */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.controlPill,
+              searchActive && styles.controlPillActive,
+              { opacity: pressed ? 0.8 : 1, paddingHorizontal: 8 },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              if (searchActive) {
+                setSearchActive(false);
+                onSearchChange('');
+              } else {
+                setSearchActive(true);
+              }
+            }}
+          >
+            <IconSymbol
+              name="magnifyingglass"
+              size={14}
+              color={searchActive ? TEAM_COLORS.white : TEAM_COLORS.gray}
+            />
+          </Pressable>
+        </View>
+
+        {/* View toggle */}
         <View style={styles.viewToggle}>
           {VIEW_OPTIONS.map((v) => {
             const isActive = activeView === v.key;
@@ -392,32 +410,45 @@ function RosterControls({
         </View>
       </View>
 
-      {/* Season dropdown — anchored below pill */}
+      {/* Search input bar (expanded when active) */}
+      {searchActive && (
+        <View style={styles.searchBar}>
+          <IconSymbol name="magnifyingglass" size={14} color={TEAM_COLORS.gray} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search players..."
+            placeholderTextColor={TEAM_COLORS.gray}
+            value={searchQuery}
+            onChangeText={onSearchChange}
+            autoFocus
+            returnKeyType="done"
+          />
+          {searchQuery.length > 0 && (
+            <Pressable onPress={() => onSearchChange('')}>
+              <IconSymbol name="xmark.circle.fill" size={16} color={TEAM_COLORS.gray} />
+            </Pressable>
+          )}
+        </View>
+      )}
+
+      {/* Season dropdown */}
       {seasonOpen && (
         <Modal visible transparent animationType="none" onRequestClose={() => setSeasonOpen(false)}>
-          <Pressable style={styles.seasonDropdownOverlay} onPress={() => setSeasonOpen(false)}>
-            <View style={[styles.seasonDropdown, { top: pillY + pillH + 4 }]}>
+          <Pressable style={styles.dropdownOverlay} onPress={() => setSeasonOpen(false)}>
+            <View style={[styles.dropdown, { top: pillY + pillH + 4, left: activePillX }]}>
               {SEASONS.map((s) => {
-                const isSelected = s === activeSeason;
+                const isSelected = s === selectedSeason;
                 return (
                   <Pressable
                     key={s}
-                    style={[
-                      styles.seasonDropdownItem,
-                      isSelected && { backgroundColor: TEAM_COLORS.accent },
-                    ]}
+                    style={[styles.dropdownItem, isSelected && { backgroundColor: TEAM_COLORS.accent }]}
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                       onSeasonChange(s);
                       setSeasonOpen(false);
                     }}
                   >
-                    <Text
-                      style={[
-                        styles.seasonDropdownText,
-                        isSelected && { color: TEAM_COLORS.background, fontWeight: '700' },
-                      ]}
-                    >
+                    <Text style={[styles.dropdownText, isSelected && { color: TEAM_COLORS.background, fontWeight: '700' }]}>
                       {s.replace('-', '\u2013')}
                     </Text>
                   </Pressable>
@@ -427,6 +458,7 @@ function RosterControls({
           </Pressable>
         </Modal>
       )}
+
     </>
   );
 }
@@ -439,14 +471,27 @@ const TABLE_COLUMNS: { key: string; label: string; width: number; align?: 'left'
   { key: 'ht', label: 'HT', width: 56, align: 'center' },
   { key: 'wt', label: 'WT', width: 50, align: 'center' },
   { key: 'class', label: 'CLASS', width: 80, align: 'center' },
-  { key: 'schol', label: 'SCHOLARSHIP (%)', width: 120, align: 'center' },
-  { key: 'nil', label: 'NIL', width: 56, align: 'center' },
-  { key: 'notes', label: 'NOTES', width: 200 },
+  { key: 'status', label: 'STATUS', width: 86, align: 'center' },
+  { key: 'birthplace', label: 'BIRTHPLACE', width: 120 },
+  { key: 'prep', label: 'HS / PREP', width: 140 },
 ];
 
-type SortKey = typeof TABLE_COLUMNS[number]['key'];
+type ListSortKey = typeof TABLE_COLUMNS[number]['key'];
 
-function getSortValue(player: RosterPlayer, key: SortKey): string | number {
+const STATUS_DISPLAY: Record<PlayerRole, string> = {
+  starter: 'Available',
+  rotation: 'Available',
+  bench: 'Available',
+  redshirt: 'Redshirt',
+  injured: 'Injured',
+  out: 'Out',
+};
+
+const CLASS_ABBREV: Record<string, string> = {
+  Freshman: 'Fr', Sophomore: 'So', Junior: 'Jr', Senior: 'Sr',
+};
+
+function getListSortValue(player: RosterPlayer, key: ListSortKey): string | number {
   switch (key) {
     case '#': return parseInt(player.number, 10);
     case 'name': return `${player.lastName} ${player.firstName}`.toLowerCase();
@@ -457,33 +502,34 @@ function getSortValue(player: RosterPlayer, key: SortKey): string | number {
       const order: Record<string, number> = { Freshman: 1, Sophomore: 2, Junior: 3, Senior: 4 };
       return order[player.classYear] ?? 0;
     }
-    case 'schol': return player.scholarship;
-    case 'nil': {
-      const raw = player.nil.replace(/[$K,]/g, '');
-      return raw === '—' ? -1 : parseFloat(raw);
+    case 'status': {
+      const statusOrder: Record<string, number> = { injured: 0, out: 1, redshirt: 2, bench: 3, rotation: 4, starter: 5 };
+      return statusOrder[player.role] ?? 3;
     }
-    case 'notes': return (player.notes ?? '').toLowerCase();
+    case 'birthplace': return (player.notes ?? '').toLowerCase();
+    case 'prep': return '';
     default: return '';
   }
 }
 
 function ListView({ roster }: { roster: RosterPlayer[] }) {
   const router = useRouter();
-  const [sortKey, setSortKey] = useState<SortKey>('#');
+  const [sortKey, setSortKey] = useState<ListSortKey>('#');
   const [sortAsc, setSortAsc] = useState(true);
 
-  const handleHeaderPress = (key: SortKey) => {
+  const handleHeaderPress = (key: ListSortKey) => {
     if (key === sortKey) {
       setSortAsc((prev) => !prev);
     } else {
       setSortKey(key);
-      setSortAsc(true);
+      // Default descending for status
+      setSortAsc(!['status'].includes(key));
     }
   };
 
   const sorted = [...roster].sort((a, b) => {
-    const aVal = getSortValue(a, sortKey);
-    const bVal = getSortValue(b, sortKey);
+    const aVal = getListSortValue(a, sortKey);
+    const bVal = getListSortValue(b, sortKey);
     const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
     return sortAsc ? cmp : -cmp;
   });
@@ -505,10 +551,7 @@ function ListView({ roster }: { roster: RosterPlayer[] }) {
                 }}
               >
                 <Text
-                  style={[
-                    styles.tableHeaderCell,
-                    isActive && styles.tableHeaderCellActive,
-                  ]}
+                  style={[styles.tableHeaderCell, isActive && styles.tableHeaderCellActive]}
                   numberOfLines={1}
                 >
                   {col.label}
@@ -532,8 +575,8 @@ function ListView({ roster }: { roster: RosterPlayer[] }) {
             </Text>
             <Pressable
               style={{ width: TABLE_COLUMNS[1].width }}
-              onLongPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 router.push({ pathname: '/coach/player-bio', params: { number: player.number } });
               }}
             >
@@ -544,11 +587,15 @@ function ListView({ roster }: { roster: RosterPlayer[] }) {
             <Text style={[styles.tableCell, { width: TABLE_COLUMNS[2].width, textAlign: 'center' }]}>{player.listPos}</Text>
             <Text style={[styles.tableCell, { width: TABLE_COLUMNS[3].width, textAlign: 'center' }]}>{player.height}</Text>
             <Text style={[styles.tableCell, { width: TABLE_COLUMNS[4].width, textAlign: 'center' }]}>{player.weight}</Text>
-            <Text style={[styles.tableCell, { width: TABLE_COLUMNS[5].width, textAlign: 'center' }]}>{player.classYear}</Text>
-            <Text style={[styles.tableCell, { width: TABLE_COLUMNS[6].width, textAlign: 'center' }]}>{player.scholarship}%</Text>
-            <Text style={[styles.tableCell, styles.tableCellNumber, { width: TABLE_COLUMNS[7].width, textAlign: 'center' }]}>{player.nil}</Text>
-            <Text style={[styles.tableCell, styles.tableCellNotes, { width: TABLE_COLUMNS[8].width }]} numberOfLines={2}>
-              {player.notes}
+            <Text style={[styles.tableCell, { width: TABLE_COLUMNS[5].width, textAlign: 'center' }]}>{CLASS_ABBREV[player.classYear] ?? player.classYear}</Text>
+            <Text style={[styles.tableCell, styles.tableCellStatus, { width: TABLE_COLUMNS[6].width, textAlign: 'center' }]}>
+              {STATUS_DISPLAY[player.role]}
+            </Text>
+            <Text style={[styles.tableCell, styles.tableCellNotes, { width: TABLE_COLUMNS[7].width }]} numberOfLines={1}>
+              {player.notes || '—'}
+            </Text>
+            <Text style={[styles.tableCell, styles.tableCellNotes, { width: TABLE_COLUMNS[8].width }]} numberOfLines={1}>
+              —
             </Text>
           </View>
         ))}
@@ -559,7 +606,7 @@ function ListView({ roster }: { roster: RosterPlayer[] }) {
 
 
 /* ── Depth Chart View ── */
-function DepthChartView({ depthChart }: { depthChart: DepthChartPosition[] }) {
+export function DepthChartView({ depthChart }: { depthChart: DepthChartPosition[] }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
@@ -570,28 +617,31 @@ function DepthChartView({ depthChart }: { depthChart: DepthChartPosition[] }) {
           <View style={styles.groupedCard}>
             {pos.players.map((player, index) => {
               const isExpanded = expandedId === player.number;
+              const isStarter = index === 0;
               return (
                 <View key={player.number}>
                   {index > 0 && <View style={styles.groupedDivider} />}
                   <Pressable
-                    style={styles.groupedRowInner}
+                    style={[styles.groupedRowInner, isStarter && styles.groupedRowStarter]}
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                       setExpandedId(isExpanded ? null : player.number);
                     }}
                   >
-                    <View style={styles.groupedDepthCircle}>
-                      <Text style={styles.groupedDepthNumber}>{index + 1}</Text>
-                    </View>
                     <View style={styles.groupedPlayerInfo}>
-                      <Text style={styles.groupedPlayerName}>{player.name}</Text>
-                      <Text style={styles.groupedPlayerNote}>
-                        {player.minutes ? `${player.minutes} MPG` : '— MPG'} · {player.role}
+                      <Text style={[styles.groupedPlayerName, isStarter && styles.groupedPlayerNameStarter]}>{player.name}</Text>
+                      <Text style={styles.groupedPlayerNote} numberOfLines={1}>
+                        {player.minutes ? `${player.minutes} MPG` : '— MPG'}
+                        {player.archetypes.length > 0 && ` · ${ARCHETYPE_LABELS[player.archetypes[0]]}`}
+                        {player.archetypes.length === 2 && ` · ${ARCHETYPE_LABELS[player.archetypes[1]]}`}
+                        {player.archetypes.length > 2 && ` · ${ARCHETYPE_LABELS[player.archetypes[1]]} +${player.archetypes.length - 2}`}
                       </Text>
                     </View>
-                    <View style={styles.krBadge}>
-                      <Text style={styles.krValue}>{player.kr}</Text>
-                    </View>
+                    {player.kr != null && (
+                      <View style={styles.krBadge}>
+                        <Text style={styles.krValue}>{player.kr}</Text>
+                      </View>
+                    )}
                   </Pressable>
                   {isExpanded && (
                     <View style={styles.dcExpandedContainer}>
@@ -599,7 +649,7 @@ function DepthChartView({ depthChart }: { depthChart: DepthChartPosition[] }) {
                         <Text style={styles.dcExpandedLabel}>Role</Text>
                         <Text style={styles.dcExpandedValue}>{player.roleDefinition}</Text>
                       </View>
-                      {player.systemAmplifier ? (
+                      {'systemAmplifier' in player && player.systemAmplifier ? (
                         <View style={styles.dcExpandedRow}>
                           <Text style={styles.dcExpandedLabel}>System Amp</Text>
                           <Text style={styles.dcExpandedValue}>{player.systemAmplifier}</Text>
@@ -621,38 +671,93 @@ function DepthChartView({ depthChart }: { depthChart: DepthChartPosition[] }) {
   );
 }
 
-/* ── Cards View (original full-bleed hero sections) ── */
-function CardsView({ roster, last3Games }: { roster: RosterPlayer[]; last3Games: Record<string, GameLog[]> }) {
-  const [openStatsId, setOpenStatsId] = useState<string | null>(null);
+/* ── Cards View (full-bleed hero sections) ── */
+function CardsView({ roster }: { roster: RosterPlayer[] }) {
   const router = useRouter();
-
-  const handleToggleStats = (playerId: string) => {
-    setOpenStatsId((prev) => (prev === playerId ? null : playerId));
-  };
 
   return (
     <>
-      {roster.map((player) => (
-        <PlayerSection
-          key={player.id}
-          player={player}
-          statsOpen={openStatsId === player.id}
-          onToggleStats={() => handleToggleStats(player.id)}
-          onBioPress={() => router.push({ pathname: '/coach/player-bio', params: { number: player.number } })}
-          last3Games={last3Games}
-        />
+      {roster.map((player, idx) => (
+        <React.Fragment key={player.id}>
+          <PlayerSection
+            player={player}
+            onBioPress={() => router.push({ pathname: '/coach/player-bio', params: { number: player.number } })}
+          />
+        </React.Fragment>
       ))}
     </>
   );
 }
 
+// ── Helper: apply filter, sort, search to roster ──
+function useFilteredRoster(
+  roster: RosterPlayer[],
+  filter: FilterOption,
+  sort: SortOption,
+  searchQuery: string,
+): RosterPlayer[] {
+  return useMemo(() => {
+    let result = [...roster];
+
+    // Filter
+    if (filter !== 'all') {
+      if (filter === 'rotation') {
+        result = result.filter((p) => p.role === 'starter' || p.role === 'rotation');
+      } else {
+        result = result.filter((p) => p.role === filter);
+      }
+    }
+
+    // Search
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      result = result.filter((p) =>
+        `${p.firstName} ${p.lastName}`.toLowerCase().includes(q),
+      );
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      switch (sort) {
+        case 'kr':
+          return b.kr - a.kr;
+        case 'number':
+          return parseInt(a.number, 10) - parseInt(b.number, 10);
+        case 'usage':
+          return b.usage - a.usage;
+        case 'minutes':
+          return b.minutes - a.minutes;
+        case 'ppg':
+          return b.ppg - a.ppg;
+        case 'rpg':
+          return b.rpg - a.rpg;
+        case 'apg':
+          return b.apg - a.apg;
+        case 'az':
+          return `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`);
+        case 'position': {
+          const posOrder: Record<string, number> = { PG: 1, CG: 2, W: 3, F: 4, B: 5 };
+          return (posOrder[a.listPos] ?? 9) - (posOrder[b.listPos] ?? 9);
+        }
+        case 'class': {
+          const classOrder: Record<string, number> = { Freshman: 1, Sophomore: 2, Junior: 3, Senior: 4 };
+          return (classOrder[a.classYear] ?? 0) - (classOrder[b.classYear] ?? 0);
+        }
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [roster, filter, sort, searchQuery]);
+}
+
 export function RosterContent({ onViewChange }: { onViewChange?: () => void } = {}) {
   const [activeView, setActiveView] = useState<ViewType>('cards');
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
-
+  const [searchQuery, setSearchQuery] = useState('');
   const roster = ROSTER_BY_SEASON[selectedSeason];
-  const depthChart = DEPTH_CHART_BY_SEASON[selectedSeason];
-  const last3Games = LAST_3_GAMES_BY_SEASON[selectedSeason];
+  const filteredRoster = useFilteredRoster(roster, 'all', 'kr', searchQuery);
 
   const handleViewChange = (view: ViewType) => {
     setActiveView(view);
@@ -666,33 +771,36 @@ export function RosterContent({ onViewChange }: { onViewChange?: () => void } = 
 
   return (
     <View style={styles.container}>
-      {/* Hero Banner */}
-      <View style={styles.heroBanner}>
-        <View style={styles.heroOverlay}>
-          <Text style={styles.heroTitle}>Oaklanders Squad</Text>
-          <Text style={styles.heroSubtitle}>
-            Get to know your Lincoln University team.
-          </Text>
+      {/* Thin Team Header */}
+      <View style={styles.teamHeader}>
+        <View style={styles.teamNameRow}>
+          <Image source={FMU_SEAL} style={styles.headerLogo} resizeMode="contain" />
+          <Text style={styles.teamName}>{FMU_TEAM.name}</Text>
         </View>
+        <Text style={styles.teamContext}>
+          {FMU_TEAM.record} ({FMU_TEAM.confRecord}) · {FMU_TEAM.division} · {FMU_TEAM.conference}
+        </Text>
+        <Text style={styles.teamTruth}>
+          KR {FMU_TEAM.teamKR} · Off {FMU_TEAM.offRating} · Def {FMU_TEAM.defRating}
+        </Text>
       </View>
 
-      {/* Controls: Season + View in one row */}
+      {/* Controls: Season + Sort + Search + View */}
       <RosterControls
-        activeSeason={selectedSeason}
-        onSeasonChange={handleSeasonChange}
         activeView={activeView}
         onViewChange={handleViewChange}
+        selectedSeason={selectedSeason}
+        onSeasonChange={handleSeasonChange}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
 
       {/* Conditional Content */}
-      {activeView === 'cards' && <CardsView roster={roster} last3Games={last3Games} />}
-      {activeView === 'list' && <ListView roster={roster} />}
-      {activeView === 'depth-chart' && <DepthChartView depthChart={depthChart} />}
+      {activeView === 'cards' && <CardsView roster={filteredRoster} />}
+      {activeView === 'list' && <ListView roster={filteredRoster} />}
     </View>
   );
 }
-
-const PHOTO_HEIGHT = SCREEN_WIDTH * 1.1;
 
 const styles = StyleSheet.create({
   container: {
@@ -700,57 +808,180 @@ const styles = StyleSheet.create({
     backgroundColor: TEAM_COLORS.cardBg,
   },
 
-  // ── Hero Banner ──
-  heroBanner: {
+  // ── Thin Team Header ──
+  teamHeader: {
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.sm,
     backgroundColor: TEAM_COLORS.cardBg,
   },
-  heroOverlay: {
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.lg,
-    paddingBottom: Spacing.md,
+  teamNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  heroTitle: {
-    fontSize: 36,
-    fontWeight: '900',
+  headerLogo: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+  },
+  teamName: {
+    fontSize: 28,
+    fontWeight: '800',
     color: TEAM_COLORS.white,
-    letterSpacing: -0.5,
+    letterSpacing: -0.3,
   },
-  heroSubtitle: {
-    fontSize: 16,
+  teamContextRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+  },
+  teamContext: {
+    fontSize: 13,
     color: TEAM_COLORS.gray,
-    marginTop: 4,
+    marginTop: 6,
   },
+  seasonDropdownBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  seasonDropdownText: {
+    fontSize: 13,
+    color: TEAM_COLORS.gray,
+    fontWeight: '600',
+  },
+  teamTruth: {
+    fontSize: 12,
+    color: TEAM_COLORS.gray,
+    marginTop: 2,
+  },
+
+  // ── Controls Row ──
+  controlsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: 4,
+    marginTop: 12,
+    backgroundColor: TEAM_COLORS.cardBg,
+  },
+  pillsRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  controlPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    height: 32,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: '#2a2a2a',
+  },
+  controlPillActive: {
+    backgroundColor: TEAM_COLORS.primary,
+  },
+  controlPillText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: TEAM_COLORS.gray,
+  },
+  controlPillTextActive: {
+    color: TEAM_COLORS.white,
+  },
+  viewToggle: {
+    flexDirection: 'row',
+    backgroundColor: '#2a2a2a',
+    borderRadius: 8,
+    height: 32,
+    alignItems: 'center',
+    padding: 2,
+    marginLeft: 6,
+  },
+  viewToggleBtn: {
+    width: 30,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+  },
+  viewToggleBtnActive: {
+    backgroundColor: '#444',
+  },
+
+  // ── Search Bar ──
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: Spacing.lg,
+    marginTop: 4,
+    marginBottom: 4,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 8,
+    height: 32,
+    paddingHorizontal: 10,
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: TEAM_COLORS.white,
+    paddingVertical: 0,
+  },
+
+  // ── Dropdowns ──
+  dropdownOverlay: {
+    flex: 1,
+  },
+  dropdown: {
+    position: 'absolute',
+    backgroundColor: '#2a2a2a',
+    borderRadius: 10,
+    paddingVertical: 2,
+    minWidth: 100,
+  },
+  dropdownItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+  },
+  dropdownText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: TEAM_COLORS.gray,
+  },
+
 
   // ── Player Section (one per player, full-bleed) ──
   playerSection: {
     backgroundColor: TEAM_COLORS.cardBg,
-    paddingTop: 40,
-    paddingBottom: 32,
+    paddingBottom: 48,
   },
 
-  // ── Identity Block (number | name + position) ──
+  // ── Identity Block (number + name + position) ──
   identityBlock: {
     paddingHorizontal: Spacing.lg,
-    marginBottom: -10,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.sm,
     zIndex: 2,
   },
   numberNameRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   playerNumber: {
     fontSize: 52,
     fontWeight: '300',
     color: TEAM_COLORS.gray,
     lineHeight: 58,
-    marginRight: 14,
+    marginRight: 12,
   },
   verticalDivider: {
     width: 2,
     height: 50,
     backgroundColor: TEAM_COLORS.gray,
     marginRight: 14,
-    marginTop: 6,
   },
   firstName: {
     fontSize: 22,
@@ -766,68 +997,74 @@ const styles = StyleSheet.create({
   },
   position: {
     fontSize: 14,
-    fontWeight: '600',
-    color: TEAM_COLORS.primary,
+    fontWeight: '500',
+    color: TEAM_COLORS.secondary,
     marginTop: 4,
-    letterSpacing: 0.3,
+  },
+  last3Stats: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: TEAM_COLORS.gray,
+    marginTop: 2,
   },
 
   // ── Photo Area ──
   photoArea: {
     width: SCREEN_WIDTH,
-    height: PHOTO_HEIGHT,
+    height: SCREEN_WIDTH * 0.95,
     alignItems: 'center',
     justifyContent: 'flex-end',
     overflow: 'hidden',
+    marginTop: -30,
   },
   photoWrapper: {
-    width: SCREEN_WIDTH * 0.75,
-    height: PHOTO_HEIGHT,
+    width: SCREEN_WIDTH * 0.55,
+    height: SCREEN_WIDTH * 0.55,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headshotWrapper: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_WIDTH * 0.95,
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-  headshot: {
+  sealImage: {
     width: '100%',
     height: '100%',
+    opacity: 0.2,
+  },
+  headshot: {
+    width: '85%',
+    height: '85%',
+  },
+  photoGradientTop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 120,
   },
   photoGradientBottom: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 100,
+    height: 120,
   },
   photoGradientLeft: {
     position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
-    width: 60,
+    width: 80,
   },
   photoGradientRight: {
     position: 'absolute',
     top: 0,
     right: 0,
     bottom: 0,
-    width: 60,
-  },
-
-  // ── Placeholder (fallback when no headshot) ──
-  placeholderPhoto: {
-    width: 180,
-    height: 220,
-    backgroundColor: '#2a2a2a',
-    borderTopLeftRadius: 70,
-    borderTopRightRadius: 70,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  placeholderNumber: {
-    fontSize: 56,
-    fontWeight: '700',
-    color: '#444',
+    width: 80,
   },
 
   // ── Actions (BIO pill + basketball icon) ──
@@ -926,68 +1163,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // ── Controls Row (season + view toggle) ──
-  controlsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: 4,
-    backgroundColor: TEAM_COLORS.cardBg,
-  },
-  seasonPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    height: 36,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    backgroundColor: '#2a2a2a',
-  },
-  seasonPillText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: TEAM_COLORS.text,
-  },
-  viewToggle: {
-    flexDirection: 'row',
-    backgroundColor: '#2a2a2a',
-    borderRadius: 10,
-    height: 36,
-    alignItems: 'center',
-    padding: 3,
-  },
-  viewToggleBtn: {
-    width: 34,
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-  },
-  viewToggleBtnActive: {
-    backgroundColor: '#444',
-  },
-  seasonDropdownOverlay: {
-    flex: 1,
-  },
-  seasonDropdown: {
-    position: 'absolute',
-    top: 0,
-    left: Spacing.lg,
-    backgroundColor: '#2a2a2a',
-    borderRadius: 10,
-    paddingVertical: 2,
-  },
-  seasonDropdownItem: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-  },
-  seasonDropdownText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: TEAM_COLORS.gray,
-  },
-
   // ── List View (Table) ──
   tableScroll: {
     marginTop: Spacing.sm,
@@ -1039,13 +1214,17 @@ const styles = StyleSheet.create({
   tableCellName: {
     fontWeight: '600',
   },
+  tableCellStatus: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: TEAM_COLORS.gray,
+  },
   tableCellNotes: {
     fontSize: 12,
     color: TEAM_COLORS.gray,
   },
 
-  // ── Grouped List (Rotation + Position) ──
-  // Grouped list layout (Depth Chart / Rotation / Position)
+  // ── Grouped List (Depth Chart) ──
   groupedContainer: {
     padding: Spacing.md,
   },
@@ -1074,6 +1253,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: Spacing.md,
+  },
+  groupedRowStarter: {
+    backgroundColor: 'rgba(255,255,255,0.03)',
+  },
+  groupedPlayerNameStarter: {
+    fontWeight: '700',
   },
   groupedDepthCircle: {
     width: 24,

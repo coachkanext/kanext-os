@@ -1,0 +1,31 @@
+Offensive Systems List
+Offensive Systems (sum = 53)
+
+Defensive Systems (sum = 47)
+
+
+--- TABLE 1 ---
+Offensive System | Shooting | Finishing | Playmaking
+Spread Pick-and-Roll | 18 | 16 | 19
+5-Out Motion | 18 | 17 | 18
+Motion / Read & React | 17 | 16 | 20
+Pace & Space | 20 | 17 | 16
+Dribble Drive | 15 | 21 | 17
+Princeton | 15 | 18 | 20
+Flex | 16 | 20 | 17
+Swing | 17 | 18 | 18
+Post-Centric / Inside-Out | 13 | 25 | 15
+Moreyball | 22 | 21 | 10
+Heliocentric | 16 | 16 | 21
+
+--- TABLE 2 ---
+Defensive System | On-Ball | Team | Rebounding | Frame
+Containment Man | 18 | 15 | 8 | 6
+Pack Line | 12 | 18 | 10 | 7
+Pressure Man (Denial) | 20 | 15 | 5 | 7
+Switch Everything | 16 | 15 | 7 | 9
+ICE / No-Middle | 17 | 16 | 7 | 7
+Zone (Structured) | 10 | 20 | 10 | 7
+Matchup Zone / Hybrid | 13 | 19 | 8 | 7
+Press / Pressure Defense | 19 | 16 | 5 | 7
+Junk / Special | 14 | 18 | 8 | 7

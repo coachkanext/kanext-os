@@ -1,0 +1,20 @@
+Postgame Confidence Gate (Percentage) — Locked Table
+Postgame Confidence Adjusters (apply within the chosen range)
+Tag completeness low (missing large chunks of actions/coverages) → downshift 5–10 pts
+
+Lineup/stint accuracy weak → downshift 5–10 pts
+
+Opponent identity ambiguity (OSIE/DSIE not locked) → downshift 5–10 pts
+
+Stable rotation + clear identity + high film coverage → upshift toward top of range
+
+
+
+--- TABLE 1 ---
+Data available (postgame) | Postgame Confidence % (default range)
+V1 Stats-only: final box + team totals + basic splits (no film, no play tags) | 55–70%
+V1 Stats-only + manual staff tags (timeouts/key actions logged) | 60–75%
+V2 Granular (Synergy-level): play types + shot profile + efficiencies (no owned film clips) | 70–85%
+V2 Granular + multi-game trend context (same opponent/system) | 75–88%
+V3 Film-Verified: owned film processed + full tag log + clip list | 82–92%
+V3 Film-Verified + high completeness: accurate stints/lineups + ≥10 “teaching clips” tied to tags | 88–96%

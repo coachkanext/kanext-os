@@ -1,0 +1,99 @@
+Development / Pathway Page — MUST PULL + Outputs (Deterministic)
+What this page does
+Given an evaluated player, Nexus can show:
+where they fit right now (college + pro levels/teams/systems)
+
+best-fit targets (schools/leagues/teams)
+
+what to improve to reach a higher target band (optional but deterministic)
+
+This page does not change Player KR. It consumes it.
+
+MUST PULL (Inputs)
+1) Player Identity + Record
+MUST PULL FROM: Player Profile (Auto-Populated Record)
+identity, history, seasons, level(s)
+
+2) Player KR Outputs (Truth)
+MUST PULL FROM:
+College Player KR outputs (if player is pre-college/college)
+
+Pro Player KR outputs (if player is being evaluated for pro placement)
+
+confidence_pct (player confidence gate)
+
+3) Target Level Definitions (Interpretation)
+MUST PULL FROM:
+College Player KR Legend (college level tier bands)
+
+Pro Player KR Legend (pro tier bands)
+
+4) Team / League Universe
+MUST PULL FROM: Global Master List (Worldwide League + Team Registry)
+all leagues, conferences, teams, and their level tags
+
+5) Team System Identity (Fit targeting)
+MUST PULL FROM: System Identity Record (OSIE/DSIE)
+offense/defense system labels + status (college + pro teams)
+
+6) System Fit Computation (if used)
+MUST PULL FROM: System Fit + System Demand Profiles + Player Systems
+used to score “fit %” against a team’s system identity when selecting best targets
+
+
+Core Outputs (What Nexus Displays)
+A) “What is this player at each level?”
+College KR interpretation (tier label at selected college level)
+
+Pro KR interpretation (tier label at selected pro tier)
+
+confidence_pct shown with both
+
+B) Best-Fit Targets (Placement List)
+Two lists (can be toggles):
+Best-fit Colleges / Programs
+
+Best-fit Pro Leagues / Teams
+
+Each target row includes:
+target team/program name (from Global Master List)
+
+target level (NCAA/NAIA/NJCAA/Pro tier, etc.)
+
+offense system + defense system (from OSIE/DSIE)
+
+fit % (if System Fit is applied)
+
+“why” tags (top 2–3 demand matches + any mismatch)
+
+C) Development Lift (Optional, deterministic)
+Given a selected target tier/team:
+“To reach [target KR band] at [target level], highest leverage lifts are:”
+
+Trait A +Δ
+
+Trait B +Δ
+
+Trait C +Δ
+
+ (Uses the KR engine’s trait structure; does not invent traits.)
+
+
+Hard Rules (Locked)
+This page is downstream of Player KR and never modifies Player KR.
+
+Targeting must be derived only from:
+
+KR outputs + legends
+
+Global Master List
+
+OSIE/DSIE system identity
+
+System Fit definitions (if used)
+
+All outputs must be explainable (show fit % / confidence % and the “why” signals).
+
+
+One-line summary
+Development/Pathway = Player KR truth + Global team universe + OSIE/DSIE systems → deterministic best school / best league / best team fit outputs (plus optional “what to improve” deltas).

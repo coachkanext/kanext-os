@@ -1,0 +1,290 @@
+Possession Engine (Simulation Engine) — Authoritative
+Purpose
+The Possession Engine defines how a single basketball possession is simulated and resolved.
+ It is the atomic execution engine of the Simulation Engine.
+ All higher-order simulations (single games, stretches, seasons, tournaments) are composed exclusively of repeated executions of this engine plus aggregation logic handled elsewhere.
+Canonical Role Within Simulation Engine
+The Possession Engine is the only component authorized to resolve possession outcomes.
+Canonical flow (LOCKED)
+System Inference (OSIE/DSIE)
+
+System × System Interaction
+
+Archetype × System Interaction
+
+Matchup Interaction Governance
+
+Modifier Framework
+
+Possession Engine (THIS SECTION)
+
+Calibration, Aggregation, and Output Layers
+
+Lock rule: No layer below this resolves basketball events.
+
+Core Execution Principles (LOCKED)
+The Possession Engine enforces the following non-negotiable rules:
+Possession is the atomic unit
+
+All outcomes resolve possession-by-possession.
+
+No minutes, plays, or lineups are simulated directly.
+
+State-based, not play-based
+
+The engine simulates advantage states, not named plays.
+
+Basketball behavior emerges from probabilistic state transitions.
+
+Probabilistic resolution
+
+No outcome is deterministic.
+
+All results are drawn from governed probability distributions.
+
+Defense shifts probabilities only
+
+Defensive systems and personnel do not force outcomes.
+
+They alter likelihoods only (shot type, efficiency, turnovers, fouls, rebounds).
+
+No rating mutation
+
+Player KRs, archetypes, badges, overrides, and valuation are read-only.
+
+The engine never re-rates players.
+
+These principles are binding.
+
+Authority and Non-Authority (LOCKED)
+Authorized to:
+resolve a possession into exactly one terminal outcome
+
+transition through governed possession states
+
+apply upstream probability modifier bundles
+
+attribute events to players probabilistically (shooter/assist/TO/foul/rebound)
+
+Not authorized to:
+evaluate player quality or change player outputs
+
+modify Player Intelligence or Team Intelligence outputs
+
+aggregate results or produce box scores/projections
+
+optimize decisions or strategies
+
+Resolution only — nothing else.
+
+State Governance (LOCKED)
+The Possession Engine operates through a fixed possession lifecycle:
+Initiation
+
+Advantage
+
+Resolution
+
+State transitions are:
+probabilistic
+
+bounded
+
+conditioned by upstream interaction layers
+
+Lock rules:
+No state may be skipped.
+
+No terminal outcome may be bypassed.
+
+
+Possession Lifecycle
+1) Initiation State
+Determines who initiates advantage on the possession.
+Initiator selection is probabilistic.
+
+Probabilities are derived from:
+
+Rotation/usage translation layer (if available)
+
+Offensive system identity
+
+Player archetype tendencies
+
+Definition lock: Initiation ≠ shot attempt.
+ The initiator is the player who first creates advantage, not necessarily the shooter.
+
+2) Advantage State
+Defines the tactical state of the possession after initiation.
+Allowed states (LOCKED):
+Neutral
+
+Advantage
+
+Scramble
+
+State transitions are influenced by:
+offensive system
+
+defensive system
+
+initiator archetype
+
+upstream modifier bundles (via governance + framework)
+
+The advantage state conditions all downstream probabilities.
+
+3) Resolution State
+The possession resolves into exactly one terminal outcome.
+Terminal outcome set (LOCKED)
+A possession must end as one of the following:
+Turnover
+
+Shot Attempt
+
+Rim
+
+Midrange
+
+Three
+
+Foul
+
+Shooting foul → free throws
+
+Non-shooting foul → continuation handling
+
+Offensive Rebound → New Possession
+
+Offensive Rebound Rule (LOCKED)
+An offensive rebound ends the current possession.
+
+A new possession begins immediately.
+
+Context Carryover Rules (LOCKED)
+When a possession is spawned from an offensive rebound:
+Advantage state initializes as Scramble
+
+shot clock baseline is reduced (implementation-defined constant)
+
+defensive alignment modifiers persist
+
+transition probability is suppressed
+
+This preserves realism while maintaining clean possession accounting.
+
+Shot Resolution Model (Governed)
+Shot resolution is contextual, not binary.
+Shot context inputs (consumed here; defined upstream)
+shot type (rim / mid / 3)
+
+shooter identity
+
+defender identity
+
+contest percentage
+
+shot quality score
+
+help defender presence
+
+time-to-shot
+
+advantage state
+
+(film/PlayVision-derived features if available)
+
+Resolution outputs
+make / miss
+
+foul drawn (if applicable)
+
+shot location classification
+
+contest-adjusted efficiency outcome
+
+
+Defensive Influence (LOCKED)
+Defense influences possession outcomes by shifting probabilities in:
+shot type distribution
+
+shot efficiency
+
+turnover likelihood
+
+foul likelihood
+
+offensive rebound probability
+
+Defense never:
+forces a specific outcome
+
+changes player ratings
+
+overrides offensive intent
+
+All defensive effects are applied as probability modifiers only.
+
+Event Attribution (LOCKED)
+For every resolved possession, the engine assigns:
+shooter (if shot)
+
+assister (probabilistic, if applicable)
+
+turnover committer (if turnover)
+
+fouled player (if foul)
+
+rebounder (if rebound)
+
+Attribution respects:
+player archetypes
+
+role tendencies
+
+advantage state context
+
+
+Engine Outputs (Raw Events Only)
+The Possession Engine outputs raw possession events only:
+possession_id
+
+initiator_id
+
+advantage_state
+
+terminal_outcome_type
+
+shooter_id (if applicable)
+
+shot_type + location
+
+contest_level
+
+result (make/miss)
+
+foul_drawn (yes/no) + foul type (if applicable)
+
+turnover_type + turnover_committer_id (if applicable)
+
+rebounder_id (if applicable)
+
+points_scored
+
+No aggregation, KRs, summaries, spreads, totals, or projections occur here.
+
+Explicit Non-Responsibilities (LOCKED)
+The Possession Engine does not:
+aggregate statistics
+
+produce box scores
+
+calculate spreads/totals
+
+evaluate player value
+
+modify PlayerIQ outputs
+
+modify TeamIQ outputs
+
+Those functions are handled by higher layers.

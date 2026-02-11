@@ -1,0 +1,200 @@
+Overrides
+Overrides
+1. Purpose
+Overrides exist to capture rare, real-world basketball realities that are not fully expressed by attributes, archetypes, KaNeXT badges, or system risks.
+They exist to:
+correct known model blind spots
+acknowledge extreme scarcity or translation effects
+prevent under- or over-valuation in edge cases
+Overrides are exceptions, not features.
+2. Authority and Limits
+Overrides:
+modify Final KR only
+do not change attributes
+do not change archetypes
+do not change confidence
+do not change system fit logic
+Overrides are applied after:
+Base KR
+System Fit
+KaNeXT badges
+They are applied before:
+Final KR lock
+Downstream interpretation
+3. Rarity and Discipline
+Overrides are intentionally:
+few in number
+tightly defined
+difficult to trigger
+They are not tuning knobs.
+They exist only where:
+basketball reality consistently violates model expectations
+the violation is structural, not anecdotal
+4. College vs Pro Application
+College Overrides
+Positive only
+Designed to reflect:
+lineup distortion
+scarcity at the college level
+structural advantages not fully priced by attributes
+Some overrides are college-only and explicitly expire before pro translation
+Pro Overrides
+Negative overrides always apply
+Negative overrides supersede positives
+Reflect:
+translation failure
+structural disqualification
+professional viability constraints
+At the pro reference level, realism is prioritized over upside.
+5. Non-Stacking Rule
+Overrides do not stack.
+Rules:
+Maximum one positive override
+At pro reference:
+negative overrides always apply
+negative overrides override positives
+This prevents narrative construction or KR manipulation.
+6. Determinism
+Override application is:
+rule-based
+deterministic
+auditable
+If conditions are met, the override applies.
+If conditions are not met, it does not.
+There is no discretion inside the engine.
+7. Relationship to KaNeXT badges and System Risks
+KaNeXT badges explain outperformance within the model
+Overrides correct where the model structurally cannot
+System Risks constrain interpretation after all correction
+Overrides are the only mechanism allowed to directly adjust Final KR outside the base pipeline.
+8. Authority and Change Control
+This section is authoritative for:
+override existence
+trigger definitions
+magnitude bounds
+stacking rules
+Any change requires:
+explicit versioning
+documented justification
+empirical evidence
+
+
+COLLEGE OVERRIDES (POSITIVE ONLY — 8 TOTAL)
+COLLEGE OVERRIDES (POSITIVE ONLY — 8 TOTAL)
+College overrides acknowledge lineup distortion, scarcity, and lower-level viability.
+No negative overrides at College.
+1. True 7-Footer (+2.0 to +5.0 KR)
+Trigger
+Height ≥ 7’0
+≥ 50% minutes played
+DREB% ≥ 18
+≥ 5 rim contests / 100
+Scaling (only scaling override)
+7’0–7’0.75 → +2.0
+7’1–7’1.75 → +3.0
+7’2–7’2.75 → +4.0
+7’3+ → +5.0
+2. Jumbo Initiator (+1.0 KR)
+Trigger
+Height ≥ 6’6
+Usage ≥ 20%
+AST% ≥ 20
+≥ 50% possessions as primary initiator
+Blocked by
+Major Turnover Risk
+Decision-Making Collapse
+3. Stretch 5 (College) (+1.0 KR)
+Trigger
+Height ≥ 6’9
+≥ 50% minutes at C
+3PA ≥ 7.0 / 100
+3P% ≥ 33%
+Blocked by
+Major No Gravity
+4. Vertical Rim Threat (+1.0 KR)
+Trigger
+≥ 20% of FGA are dunks/lobs
+Rim FG% ≥ 65%
+≥ 3.0 lob/dunk attempts / 100
+5. Connector Wing (+1.0 KR)
+Trigger
+Height 6’4–6’8
+Usage ≤ 16%
+AST% ≥ 12
+DREB% ≥ 10
+On/Off Net Rating Swing ≥ +5
+
+6. Micro-5 (College-Only) (+1.0 KR)
+Trigger
+Height < 6’8
+≥ 70% minutes at C
+DREB% ≥ 15
+≥ 5 rim contests / 100
+Team defensive rating improves on floor
+Blocked by
+Major Interior Foul Risk
+Rim Protection below level baseline
+(Expires automatically before Pro.)
+7. Small Bucket Getter (College-Only) (+0.75 KR)
+Trigger
+Height ≤ 6’1
+Points ≥ 25 / 100
+Usage ≥ 22%
+TS% ≥ league average
+No Pull-Up Void
+Blocked by
+Major Turnover Risk
+Major No Gravity
+8. Undersized Defensive Guard (College-Only) (+0.75 KR)
+Trigger
+Height ≤ 6’1
+On-ball containment ≥ 75
+Screen navigation ≥ baseline
+≥ 4 rim contests / 100
+Opp FG% at rim ≤ −5% vs baseline
+Blocked by
+Major Switch Liability
+Major Foul Risk
+
+PRO OVERRIDES — POSITIVE (4 TOTAL)
+PRO OVERRIDES — POSITIVE (4 TOTAL)
+Max +1.0 KR.
+Strict translation-only rewards.
+1. Jumbo Initiator (Pro) (+1.0)
+Height ≥ 6’6
+AST ≥ 8.0 / 100
+Usage ≥ 20%
+≥ 50% minutes as primary initiator
+2. Stretch 5 (Pro) (+1.0)
+Height ≥ 6’9
+≥ 50% minutes at C
+3PA ≥ 12.0 / 100
+3P% ≥ 36%
+3. Switch Big (+1.0)
+Height ≥ 6’8
+Lateral Quickness ≥ 75
+Switch volume ≥ 8 / 100
+Switch PPP ≤ 0.95
+4. High-Movement Shooter (+1.0)
+Off-screen 3PA ≥ 8 / 100
+3P% ≥ 37%
+≥ 50% minutes at SG/SF
+
+PRO OVERRIDES — NEGATIVE (4 TOTAL, ALWAYS APPLY)
+Negative overrides cannot be overridden.
+1. No Gravity (−1.0 KR)
+Consistent defensive sag
+Below-baseline attention / tracking gravity
+2. Rim Pressure Limitation (−1.0 KR)
+Rim attempts materially below positional baseline
+No foul draw or collapse effect
+3. Switch Liability (−1.0 KR)
+Switch PPP ≥ 1.05
+Required switch volume met
+4. Tweener (No Positional Home) (−1.5 KR)
+Examples:
+Guard skills in wing body
+Undersized big with no switch value
+Wing who can’t defend wings or space
+
+

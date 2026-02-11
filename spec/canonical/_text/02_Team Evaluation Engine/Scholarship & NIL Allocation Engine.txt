@@ -1,0 +1,98 @@
+Scholarship & NIL Allocation Engine
+(Downstream of Player KR + Team KR — recommendation-only)
+1) What it is
+A deterministic recommendation engine that allocates:
+athletic scholarship % (equivalency-based)
+
+NIL $ (budget-based)
+
+to players based on:
+player truth (KRs + confidence)
+
+team needs (coverage/missing demands)
+
+coach constraints (scholarship cap + NIL pool)
+
+Rule: This engine recommends only. Coach confirms.
+
+MUST PULL (Inputs)
+A) Coach Constraints
+MUST PULL FROM: Coach Inputs (Updated Master List)
+governing body / division (scholarship rules context)
+
+available scholarship equivalents (default cap + coach override)
+
+NIL pool amount (annual/cycle)
+
+(optional) coach priority weights (win-now vs development, etc. if you add later)
+
+B) Player Truth
+MUST PULL FROM: Player Eval outputs
+Final System Off KR
+
+Final System Def KR
+
+Final Overall Player KR (if you output one)
+
+confidence_pct
+
+archetype (must be from Archetype Library) if used downstream
+
+impact modifiers (must be from KR Impact Modifiers) if applicable
+
+C) Team Needs
+MUST PULL FROM: Team KR Step 7 outputs
+Missing Demands
+
+Fragility Flags
+
+Bench Fill options
+
+Off Fit % / Def Fit % / Overall Fit %
+
+
+Outputs (What Nexus Displays)
+1) Scholarship Recommendations
+per player: recommended_scholarship_pct
+
+totals: total_equivalents_used ≤ available_equivalents
+
+priority tier: Core / Rotation / Depth / Development (labels optional)
+
+justification: KR + need coverage + confidence
+
+2) NIL Recommendations
+per player: recommended_nil_amount
+
+totals: total_nil_used ≤ NIL_pool
+
+justification: KR + need scarcity + confidence + market signal inputs (if you add later)
+
+3) Constraints / Warnings (required)
+if constraints prevent meeting critical needs:
+
+“Unfunded critical demand: [X]”
+
+if low-confidence players are being allocated meaningful resources:
+
+“Allocation risk: confidence < threshold”
+
+
+Hard Rules (Locked)
+Recommendations are deterministic given the same inputs.
+
+This engine does not modify any Player KR or Team KR.
+
+Scholarship and NIL recommendations must respect caps.
+
+If confidence is low, recommendations can still be produced, but must be flagged.
+
+
+Where it lives in the system logic
+Place it after Team KR, because it consumes:
+team needs outputs (coverage/missing)
+
+player truth outputs
+
+coach budget constraints
+

@@ -1,0 +1,83 @@
+How Nexus Runs (0–9) — MUST-PULL Canonical
+0) Coach Context Setup → CONTEXT LOCKED (Required, first)
+MUST PULL FROM: Coach Inputs (Updated Master List)
+Coach completes the full context, including (as defined in that doc):
+Program / Team identity (binds all outputs)
+Governing Body
+Division (if applicable)
+Level Environment (used for KR-Legend interpretation at the end)
+Conference (optional)
+Offensive System + Defensive System (MUST be valid selections from UI System Set)
+Scholarships / NIL / budgets / aid / constraints (loaded for downstream constraints; not player KR math)
+System state after completion: Coach Context Locked
+
+1) Mode Auto-Detect (No questions)
+MUST PULL FROM: Confidence Gate (mode selection rules by data availability)
+Nexus auto-detects:
+Box-score sources only → Production-Based Mode
+Granular sources present → Full Player KR Mode
+No user choice, no asking.
+
+2) Player Profile Build (Truth Record, no eval)
+MUST PULL FROM: Player Profile (Auto-Populated Record)
+Nexus builds the factual record (identity, seasons, raw production, awards/honors, source metadata).
+No traits. No KRs. No archetypes.
+
+3) RUN EVAL Trigger (single prompt)
+Nexus shows Step 0–2 summary then prompts:
+“Ready to RUN EVAL?”
+(If user says run eval → proceed.)
+
+4) Trait Scoring
+MUST PULL FROM: College & Pro Trait Library
+Rules:
+Only traits defined in the library may exist
+If a trait requires missing data → trait = UNSCORED (never guessed)
+Deterministic scoring only
+
+5) Overrides (Pre-Base)
+MUST PULL FROM: Overrides
+Rules:
+Only override types defined in Overrides may exist
+Applied before Base KR compute
+Deterministic + logged
+
+6) Position Weighting + Base KR Compute (Badges inside Base)
+MUST PULL FROM: College & Pro Position Trait Weighting (position weighting)
+MUST PULL FROM: BADGE CAP & EFFECT SPEC (badge qualification/caps/effects)
+Rules:
+Apply position weighting deterministically
+Compute Base Off KR, Base Def KR, Base Player KR using locked 53/47
+Badges are applied inside Base per badge spec only (no invented badges)
+
+7) Base Truth Lock
+MUST PULL FROM: (this is the lock rule of the engine; no external doc needed beyond your system logic)
+Lock snapshot:
+Trait scores (including UNSCORED flags)
+Overrides applied
+Position weighting applied
+Badges applied
+Base KRs
+After lock, Base cannot change.
+
+8) System Fit Application (contextual layer)
+MUST PULL FROM: System Fit (mechanism/ceilings)
+MUST PULL FROM: System Demand Profiles (system emphasis/demands)
+MUST PULL FROM: System Risks (risk flags)
+Rules:
+System Fit does not rescore traits, rerun overrides, or change badges
+Outputs:
+System Off KR
+System Def KR
+Final System Player KR
+
+9) Finalization Stamp + Level Interpretation
+MUST PULL FROM: KLVN (Level Normalization) (if applicable)
+MUST PULL FROM: Archetype Library (archetype assignment — exact names only)
+MUST PULL FROM: KR Impact Modifiers — System Logic (Authoritative) (modifiers — exact names only)
+MUST PULL FROM: Confidence Gate (confidence_pct 0–100, computed at end)
+MUST PULL FROM: College Player KR Legend or Pro Player KR Legend (depending on eval level)
+Because Coach Context Locked includes level environment, Nexus appends:
+“At [Level Environment], this KR = [Legend Tier Label].”
+
+If you want, I’ll also write the one-line Nexus UI copy for each step (exact prompt text), but this is the locked 0–9 with the “must pull” chain end-to-end.

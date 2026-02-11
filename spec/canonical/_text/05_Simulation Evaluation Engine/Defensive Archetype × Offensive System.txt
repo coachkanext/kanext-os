@@ -1,0 +1,853 @@
+Defensive Archetype × Offensive System
+Purpose
+This section governs how defensive player archetypes interact with opposing offensive systems at the possession level.
+It answers:
+How does this type of defender express pressure, disruption, or vulnerability inside a given offensive structure?
+It does not evaluate players.
+It does not evaluate systems.
+Scope
+This section operates at the defender–system interaction level.
+It governs:
+shot profile pressure
+efficiency suppression or leakage
+turnover pressure
+foul and free-throw impact
+pace and flow modifiers (where applicable)
+It does not:
+modify Player KRs
+modify archetype classification
+change usage or role
+imply defensive value or ranking
+provide coaching advice
+All outputs are interaction deltas only.
+
+Role Within Projection
+Canonical order:
+System × System Interaction
+Offensive Archetype × Defensive System
+Defensive Archetype × Offensive System (THIS SECTION)
+Modifier Framework
+Possession Engine
+This section conditions how defensive roles express impact within offensive structure, prior to possession resolution.
+Authority and Non-Authority (Locked)
+Authorized to:
+apply defensive-archetype-specific deltas
+express pressure asymmetries by offensive system
+model volatility where governed
+scale effects by usage when specified
+Not authorized to:
+alter Player Intelligence outputs
+alter Team Intelligence outputs
+recommend defensive tactics
+imply effectiveness or success
+override Modifier Framework bounds
+All effects remain bounded, symmetric, and non-persistent.
+Determinism
+This layer is fully deterministic.
+Given:
+a defensive archetype
+an offensive system
+The same possession-level deltas are applied every time.
+There is no learning, tuning, or adaptation in this layer.
+Delta Governance
+All deltas:
+are expressed as explicit percentage-point shifts
+are bounded by the Modifier Framework
+preserve shot-diet balance (net zero across distributions)
+apply only inside Projection
+never write back upstream
+Volatility may increase, but mean values remain governed.
+Interpretation Constraints
+These deltas represent:
+structural pressure
+defensive friction
+disruption tendencies
+They do not represent:
+player skill ratings
+defensive “fit”
+lineup recommendations
+coaching intent
+guaranteed impact
+Any interpretation outside these bounds is invalid.
+Downstream Use
+Outputs from this section may be consumed by:
+Modifier Framework
+Possession Engine
+Calibration and guardrails
+Live / In-game simulation
+They may not be surfaced directly as standalone evaluation insights.
+
+Defensive Archetypes × Offensive Systems
+What this layer answers
+“How does this type of defender express value or vulnerability inside each offensive system?”
+This is not:
+system fit
+rating changes
+coaching advice
+This is:
+possession-level interaction deltas
+applied only inside  Simulations
+explicit PP shifts, same standard you approved
+Structure
+For each Defensive Archetype, we will run it against all 11 Offensive Systems:
+Offensive Systems (locked, from OSIE):
+Spread Pick-and-Roll
+5-Out Motion
+Motion / Read & React
+Pace & Space
+Dribble Drive
+Princeton
+Flex
+Swing
+Post-Centric / Inside-Out
+Moreyball
+Heliocentric
+For each matchup, we output:
+Shot profile shifts (rim / mid / 3)
+Efficiency shifts
+Turnover pressure shifts
+Foul impact shifts
+Pace / flow modifiers (if applicable)
+All deltas are:
+explicit PP values
+bounded
+symmetric with what we already did
+never touching PlayerIQ
+
+Defensive Archetype × Offensive Systems
+Point-of-Attack Stopper (POA Stopper) — vs all 11 Offensive Systems
+Output format (locked): explicit PP deltas applied inside  possession translation.
+Key (what “PP” means here): percentage-point shifts to possession outcome rates / shot diet shares.
+ΔTOV% = turnover rate change (pp of possessions)
+ΔFT% = FT possession rate change (pp of possessions)
+Δ3AR / ΔRimAR / ΔMidAR = shot-attempt share shifts (pp of FGA distribution)
+ΔPace = possessions per 100 shift (pp100)
+POA Stopper identity assumption (governed): elite containment at the point, screen navigation, reduces paint touches and clean pull-ups; increases “late-clock” possessions.
+1) Spread Pick-and-Roll (Off) vs POA Stopper
+ΔTOV%: +1.5pp
+ΔFT%: -0.6pp
+Δ3AR: -1.5pp (specifically pull-up 3 quality suppressed)
+ΔRimAR: -2.0pp
+ΔMidAR: +3.5pp (more late-clock/floaters/mid pull-ups)
+ΔPace: -0.8 pp100
+Why: POA kills initial advantage → fewer downhill rim attempts, more stalled midrange.
+2) 5-Out Motion (Off) vs POA Stopper
+ΔTOV%: +0.8pp
+ΔFT%: -0.4pp
+Δ3AR: -0.8pp
+ΔRimAR: -1.0pp
+ΔMidAR: +1.8pp
+ΔPace: -0.4 pp100
+Why: 5-out can re-flow, but POA reduces clean blow-bys that power drive-kick.
+
+3) Motion / Read & React (Off) vs POA Stopper
+ΔTOV%: +0.6pp
+ΔFT%: -0.3pp
+Δ3AR: -0.6pp
+ΔRimAR: -0.8pp
+ΔMidAR: +1.4pp
+ΔPace: -0.3 pp100
+Why: more distributed creation softens POA impact, but advantage creation still drops.
+4) Pace & Space (Off) vs POA Stopper
+ΔTOV%: +1.0pp
+ΔFT%: -0.4pp
+Δ3AR: -0.3pp (volume stays, quality dips—handled elsewhere)
+ΔRimAR: -1.2pp
+ΔMidAR: +1.5pp
+ΔPace: -1.2 pp100
+Why: POA slows early advantage in semi-transition → fewer rim collisions, fewer FTs.
+5) Dribble Drive (Off) vs POA Stopper
+ΔTOV%: +1.2pp
+ΔFT%: -0.8pp
+Δ3AR: -1.0pp
+ΔRimAR: -2.5pp
+ΔMidAR: +3.5pp
+ΔPace: -0.6 pp100
+Why: Dribble Drive depends on penetration; POA directly attacks the engine.
+6) Princeton (Off) vs POA Stopper
+ΔTOV%: +0.5pp
+ΔFT%: -0.2pp
+Δ3AR: -0.4pp
+ΔRimAR: -0.5pp
+ΔMidAR: +0.9pp
+ΔPace: -0.2 pp100
+Why: Princeton’s value is reads/cuts/post-hub—POA matters less than off-ball/team D.
+7) Flex (Off) vs POA Stopper
+ΔTOV%: +0.4pp
+ΔFT%: -0.2pp
+Δ3AR: -0.3pp
+ΔRimAR: -0.6pp
+ΔMidAR: +0.9pp
+ΔPace: -0.2 pp100
+Why: structured actions reduce on-ball burden; POA still disrupts entries/initiation timing.
+8) Swing (Off) vs POA Stopper
+ΔTOV%: +0.7pp
+ΔFT%: -0.3pp
+Δ3AR: -0.6pp
+ΔRimAR: -0.8pp
+ΔMidAR: +1.4pp
+ΔPace: -0.3 pp100
+Why: swing creates advantages via reversal + re-screen; POA removes first-step separation.
+9) Post-Centric / Inside-Out (Off) vs POA Stopper
+ΔTOV%: +0.3pp
+ΔFT%: -0.1pp
+Δ3AR: +0.4pp (more “bailout” kick-out 3s)
+ΔRimAR: -0.4pp
+ΔMidAR: 0.0pp
+ΔPace: -0.1 pp100
+Why: offense runs through post touches; POA mainly affects entry pressure and closeouts quality (handled elsewhere).
+10) Moreyball (Off) vs POA Stopper
+ΔTOV%: +0.9pp
+ΔFT%: -0.6pp
+Δ3AR: -0.4pp
+ΔRimAR: -1.6pp
+ΔMidAR: +2.0pp (forced midrange leak—system “break”)
+ΔPace: -0.5 pp100
+Why: POA reduces rim pressure + foul pressure; Moreyball degrades into more mid attempts.
+11) Heliocentric (Off) vs POA Stopper
+ΔTOV%: +1.8pp
+ΔFT%: -0.7pp
+Δ3AR: -1.2pp
+ΔRimAR: -2.2pp
+ΔMidAR: +3.4pp
+ΔPace: -0.6 pp100
+Why: heliocentric systems are vulnerable if the engine gets bottled—more late-clock mids, more forced plays.
+Guardrails (locked for this archetype)
+Max |ΔTOV%| ≤ 2.0pp, Max |ΔFT%| ≤ 1.0pp
+Shot diet shifts must net to ~0 across 3AR + RimAR + MidAR (we kept them balanced each row).
+These are interaction deltas only (do not change player KR, team identity, or valuation).
+
+Defensive Archetype 2 — Switchable Defender Wing × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +1pp
+FTAR: -0.5pp
+2) 5-Out Motion
+Shot Profile: Δ3PA -2pp | ΔRim -1pp | ΔMid +3pp
+Efficiency: -2.5%
+Turnovers: +1pp
+FTAR: -0.5pp
+3) Motion / Read & React
+Shot Profile: Δ3PA -2pp | ΔRim -1pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +1pp
+FTAR: -0.5pp
+4) Pace & Space
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.5%
+Turnovers: +1pp
+FTAR: -0.5pp
+5) Dribble Drive
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +2pp
+FTAR: -1.0pp
+
+6) Princeton
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.5%
+Turnovers: +1pp
+FTAR: -0.5pp
+7) Flex
+Shot Profile: Δ3PA -2pp | ΔRim -1pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +1pp
+FTAR: -0.5pp
+8) Swing
+Shot Profile: Δ3PA -2pp | ΔRim -1pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +1pp
+FTAR: -0.5pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.0%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+10) Moreyball
+Shot Profile: Δ3PA -2pp | ΔRim -2pp | ΔMid +4pp
+Efficiency: -2.5%
+Turnovers: +1pp
+FTAR: -1.0pp
+11) Heliocentric
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +2pp
+FTAR: -1.0pp
+
+Defensive Archetype 3 — Screen Navigator Guard × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA -2pp | ΔRim -1pp | ΔMid +3pp
+Efficiency: -2.5%
+Turnovers: +1pp
+FTAR: -0.5pp
+2) 5-Out Motion
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.5%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+3) Motion / Read & React
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.5%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+4) Pace & Space
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.0%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+5) Dribble Drive
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +1pp
+FTAR: -0.5pp
+
+6) Princeton
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.0%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+7) Flex
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.5%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+8) Swing
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.5%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA 0pp | ΔRim -1pp | ΔMid +1pp
+Efficiency: -0.5%
+Turnovers: 0pp
+FTAR: 0pp
+10) Moreyball
+Shot Profile: Δ3PA -2pp | ΔRim -1pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +1pp
+FTAR: -0.5pp
+11) Heliocentric
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +1.5pp
+FTAR: -0.5pp
+
+Defensive Archetype 4 — Help-Rim Protector × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA +3pp | ΔRim -4pp | ΔMid +1pp
+Efficiency: -3.0%
+Turnovers: +0.5pp
+FTAR: -1.0pp
+2) 5-Out Motion
+Shot Profile: Δ3PA +2pp | ΔRim -3pp | ΔMid +1pp
+Efficiency: -2.0%
+Turnovers: 0pp
+FTAR: -0.5pp
+3) Motion / Read & React
+Shot Profile: Δ3PA +2pp | ΔRim -3pp | ΔMid +1pp
+Efficiency: -2.0%
+Turnovers: 0pp
+FTAR: -0.5pp
+4) Pace & Space
+Shot Profile: Δ3PA +2pp | ΔRim -3pp | ΔMid +1pp
+Efficiency: -1.5%
+Turnovers: 0pp
+FTAR: -0.5pp
+5) Dribble Drive
+Shot Profile: Δ3PA +2pp | ΔRim -4pp | ΔMid +2pp
+Efficiency: -3.0%
+Turnovers: +0.5pp
+FTAR: -1.0pp
+
+6) Princeton
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: 0pp
+FTAR: -0.5pp
+7) Flex
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: 0pp
+FTAR: -0.5pp
+8) Swing
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: 0pp
+FTAR: -0.5pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA +1pp | ΔRim -4pp | ΔMid +3pp
+Efficiency: -3.5%
+Turnovers: +0.5pp
+FTAR: -1.0pp
+10) Moreyball
+Shot Profile: Δ3PA +3pp | ΔRim -4pp | ΔMid +1pp
+Efficiency: -2.5%
+Turnovers: +0.5pp
+FTAR: -1.0pp
+11) Heliocentric
+Shot Profile: Δ3PA +2pp | ΔRim -4pp | ΔMid +2pp
+Efficiency: -3.0%
+Turnovers: +1.0pp
+FTAR: -1.0pp
+
+
+Defensive Archetype 5 — Versatile Switch Defender × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +1.0pp
+FTAR: -0.5pp
+2) 5-Out Motion
+Shot Profile: Δ3PA -1pp | ΔRim 0pp | ΔMid +1pp
+Efficiency: -1.5%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+3) Motion / Read & React
+Shot Profile: Δ3PA -1pp | ΔRim 0pp | ΔMid +1pp
+Efficiency: -1.5%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+4) Pace & Space
+Shot Profile: Δ3PA -1pp | ΔRim 0pp | ΔMid +1pp
+Efficiency: -1.0%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+5) Dribble Drive
+Shot Profile: Δ3PA -2pp | ΔRim -1pp | ΔMid +3pp
+Efficiency: -2.5%
+Turnovers: +1.0pp
+FTAR: -0.5pp
+
+6) Princeton
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+7) Flex
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+8) Swing
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -3.0%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+10) Moreyball
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.5pp
+FTAR: -0.5pp
+11) Heliocentric
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -2.5%
+Turnovers: +1.0pp
+FTAR: -0.5pp
+
+Defensive Archetype 6 — Rim Protector × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA +2pp | ΔRim -3pp | ΔMid +1pp
+Efficiency: -3.0%
+Turnovers: +0.5pp
+FTAR: -1.0pp
+2) 5-Out Motion
+Shot Profile: Δ3PA +1pp | ΔRim -2pp | ΔMid +1pp
+Efficiency: -2.0%
+Turnovers: +0.3pp
+FTAR: -0.8pp
+3) Motion / Read & React
+Shot Profile: Δ3PA +1pp | ΔRim -2pp | ΔMid +1pp
+Efficiency: -2.0%
+Turnovers: +0.3pp
+FTAR: -0.8pp
+4) Pace & Space
+Shot Profile: Δ3PA +2pp | ΔRim -2pp | ΔMid 0pp
+Efficiency: -1.5%
+Turnovers: +0.2pp
+FTAR: -0.7pp
+5) Dribble Drive
+Shot Profile: Δ3PA +2pp | ΔRim -4pp | ΔMid +2pp
+Efficiency: -3.5%
+Turnovers: +0.8pp
+FTAR: -1.2pp
+
+6) Princeton
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -3.0%
+Turnovers: +0.5pp
+FTAR: -1.0pp
+7) Flex
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -3.0%
+Turnovers: +0.5pp
+FTAR: -1.0pp
+8) Swing
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -3.0%
+Turnovers: +0.4pp
+FTAR: -1.0pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA +1pp | ΔRim -5pp | ΔMid +4pp
+Efficiency: -4.0%
+Turnovers: +0.6pp
+FTAR: -1.5pp
+10) Moreyball
+Shot Profile: Δ3PA +2pp | ΔRim -3pp | ΔMid +1pp
+Efficiency: -3.0%
+Turnovers: +0.4pp
+FTAR: -1.0pp
+11) Heliocentric
+Shot Profile: Δ3PA +1pp | ΔRim -4pp | ΔMid +3pp
+Efficiency: -3.5%
+Turnovers: +0.8pp
+FTAR: -1.2pp
+
+
+Defensive Archetype 7 — Gap Defender × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA +1pp | ΔRim -2pp | ΔMid +1pp
+Efficiency: -1.5%
+Turnovers: +0.2pp
+FTAR: -0.6pp
+2) 5-Out Motion
+Shot Profile: Δ3PA 0pp | ΔRim -1pp | ΔMid +1pp
+Efficiency: -1.0%
+Turnovers: +0.1pp
+FTAR: -0.4pp
+3) Motion / Read & React
+Shot Profile: Δ3PA 0pp | ΔRim -1pp | ΔMid +1pp
+Efficiency: -1.0%
+Turnovers: +0.1pp
+FTAR: -0.4pp
+4) Pace & Space
+Shot Profile: Δ3PA +1pp | ΔRim -1pp | ΔMid 0pp
+Efficiency: -0.8%
+Turnovers: +0.1pp
+FTAR: -0.3pp
+5) Dribble Drive
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.4pp
+FTAR: -0.8pp
+
+6) Princeton
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -1.8%
+Turnovers: +0.3pp
+FTAR: -0.7pp
+7) Flex
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -1.8%
+Turnovers: +0.3pp
+FTAR: -0.7pp
+8) Swing
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -1.8%
+Turnovers: +0.3pp
+FTAR: -0.7pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA 0pp | ΔRim -3pp | ΔMid +3pp
+Efficiency: -2.5%
+Turnovers: +0.2pp
+FTAR: -1.0pp
+10) Moreyball
+Shot Profile: Δ3PA +1pp | ΔRim -2pp | ΔMid +1pp
+Efficiency: -1.6%
+Turnovers: +0.2pp
+FTAR: -0.6pp
+11) Heliocentric
+Shot Profile: Δ3PA 0pp | ΔRim -3pp | ΔMid +3pp
+Efficiency: -2.2%
+Turnovers: +0.5pp
+FTAR: -0.9pp
+
+Defensive Archetype 8 — Switch-Heavy Defender × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.2%
+Turnovers: +0.3pp
+FTAR: -0.4pp
+2) 5-Out Motion
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.0%
+Turnovers: +0.2pp
+FTAR: -0.3pp
+3) Motion / Read & React
+Shot Profile: Δ3PA -1pp | ΔRim -1pp | ΔMid +2pp
+Efficiency: -1.0%
+Turnovers: +0.2pp
+FTAR: -0.3pp
+4) Pace & Space
+Shot Profile: Δ3PA -1pp | ΔRim 0pp | ΔMid +1pp
+Efficiency: -0.8%
+Turnovers: +0.2pp
+FTAR: -0.2pp
+5) Dribble Drive
+Shot Profile: Δ3PA -2pp | ΔRim -1pp | ΔMid +3pp
+Efficiency: -1.8%
+Turnovers: +0.5pp
+FTAR: -0.6pp
+
+6) Princeton
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +0.4pp
+FTAR: -0.6pp
+7) Flex
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +0.4pp
+FTAR: -0.6pp
+8) Swing
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -2.0%
+Turnovers: +0.4pp
+FTAR: -0.6pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA -2pp | ΔRim -2pp | ΔMid +4pp
+Efficiency: -2.8%
+Turnovers: +0.3pp
+FTAR: -0.9pp
+10) Moreyball
+Shot Profile: Δ3PA -2pp | ΔRim -1pp | ΔMid +3pp
+Efficiency: -2.2%
+Turnovers: +0.3pp
+FTAR: -0.6pp
+11) Heliocentric
+Shot Profile: Δ3PA -1pp | ΔRim -2pp | ΔMid +3pp
+Efficiency: -2.5%
+Turnovers: +0.6pp
+FTAR: -0.8pp
+
+Defensive Archetype 9 — Rim Protector × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA +2pp | ΔRim -4pp | ΔMid +2pp
+Efficiency: -2.8%
+Turnovers: +0.1pp
+FTAR: -1.2pp
+2) 5-Out Motion
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.1pp
+FTAR: -0.8pp
+3) Motion / Read & React
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.1pp
+FTAR: -0.8pp
+4) Pace & Space
+Shot Profile: Δ3PA +2pp | ΔRim -3pp | ΔMid +1pp
+Efficiency: -1.8%
+Turnovers: +0.0pp
+FTAR: -0.6pp
+5) Dribble Drive
+Shot Profile: Δ3PA +1pp | ΔRim -5pp | ΔMid +4pp
+Efficiency: -3.5%
+Turnovers: +0.2pp
+FTAR: -1.5pp
+
+6) Princeton
+Shot Profile: Δ3PA +1pp | ΔRim -4pp | ΔMid +3pp
+Efficiency: -3.2%
+Turnovers: +0.2pp
+FTAR: -1.3pp
+7) Flex
+Shot Profile: Δ3PA +1pp | ΔRim -4pp | ΔMid +3pp
+Efficiency: -3.2%
+Turnovers: +0.2pp
+FTAR: -1.3pp
+8) Swing
+Shot Profile: Δ3PA +1pp | ΔRim -4pp | ΔMid +3pp
+Efficiency: -3.2%
+Turnovers: +0.2pp
+FTAR: -1.3pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA +1pp | ΔRim -6pp | ΔMid +5pp
+Efficiency: -4.0%
+Turnovers: +0.1pp
+FTAR: -2.0pp
+10) Moreyball
+Shot Profile: Δ3PA +2pp | ΔRim -4pp | ΔMid +2pp
+Efficiency: -2.6%
+Turnovers: +0.1pp
+FTAR: -1.0pp
+11) Heliocentric
+Shot Profile: Δ3PA +1pp | ΔRim -5pp | ΔMid +4pp
+Efficiency: -3.6%
+Turnovers: +0.3pp
+FTAR: -1.6pp
+
+
+Defensive Archetype 10 — Help-Side Rotator × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA +1pp | ΔRim -2pp | ΔMid +1pp
+Efficiency: -1.6%
+Turnovers: +0.4pp
+FTAR: -0.6pp
+2) 5-Out Motion
+Shot Profile: Δ3PA 0pp | ΔRim -1pp | ΔMid +1pp
+Efficiency: -1.2%
+Turnovers: +0.3pp
+FTAR: -0.4pp
+3) Motion / Read & React
+Shot Profile: Δ3PA 0pp | ΔRim -1pp | ΔMid +1pp
+Efficiency: -1.2%
+Turnovers: +0.3pp
+FTAR: -0.4pp
+4) Pace & Space
+Shot Profile: Δ3PA +1pp | ΔRim -1pp | ΔMid 0pp
+Efficiency: -1.0%
+Turnovers: +0.2pp
+FTAR: -0.3pp
+5) Dribble Drive
+Shot Profile: Δ3PA +1pp | ΔRim -3pp | ΔMid +2pp
+Efficiency: -2.4%
+Turnovers: +0.6pp
+FTAR: -0.9pp
+
+6) Princeton
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.5pp
+FTAR: -0.7pp
+7) Flex
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.5pp
+FTAR: -0.7pp
+8) Swing
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -2.0%
+Turnovers: +0.5pp
+FTAR: -0.7pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA 0pp | ΔRim -4pp | ΔMid +4pp
+Efficiency: -3.0%
+Turnovers: +0.4pp
+FTAR: -1.3pp
+10) Moreyball
+Shot Profile: Δ3PA +1pp | ΔRim -2pp | ΔMid +1pp
+Efficiency: -1.8%
+Turnovers: +0.3pp
+FTAR: -0.6pp
+11) Heliocentric
+Shot Profile: Δ3PA 0pp | ΔRim -3pp | ΔMid +3pp
+Efficiency: -2.6%
+Turnovers: +0.7pp
+FTAR: -1.0pp
+
+Defensive Archetype 11 — Chaos / Disruptor Defender × Offensive Systems (11)
+Modifier outputs (this layer only):
+Shot Profile Shift (pp): Δ3PA%, ΔRim%, ΔMid% (must sum to 0pp)
+Efficiency Shift (%): ΔeFG% (bounded per Modifier Framework)
+Turnover Shift (pp): ΔTOV%
+Foul / FT Shift (pp): ΔFTAR%
+Archetype intent reminder: Chaos defenders trade structure for disruption. Expect volatility ↑, turnovers ↑, foul risk ↑, efficiency ↓.
+1) Spread Pick-and-Roll
+Shot Profile: Δ3PA +1pp | ΔRim -1pp | ΔMid 0pp
+Efficiency: -1.8%
+Turnovers: +0.8pp
+FTAR: +0.3pp
+2) 5-Out Motion
+Shot Profile: Δ3PA 0pp | ΔRim -1pp | ΔMid +1pp
+Efficiency: -1.4%
+Turnovers: +0.7pp
+FTAR: +0.2pp
+3) Motion / Read & React
+Shot Profile: Δ3PA 0pp | ΔRim -1pp | ΔMid +1pp
+Efficiency: -1.4%
+Turnovers: +0.7pp
+FTAR: +0.2pp
+4) Pace & Space
+Shot Profile: Δ3PA +1pp | ΔRim 0pp | ΔMid -1pp
+Efficiency: -1.2%
+Turnovers: +0.6pp
+FTAR: +0.1pp
+5) Dribble Drive
+Shot Profile: Δ3PA +1pp | ΔRim -2pp | ΔMid +1pp
+Efficiency: -2.4%
+Turnovers: +1.1pp
+FTAR: +0.5pp
+
+6) Princeton
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -2.2%
+Turnovers: +0.9pp
+FTAR: +0.4pp
+7) Flex
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -2.2%
+Turnovers: +0.9pp
+FTAR: +0.4pp
+8) Swing
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -2.2%
+Turnovers: +0.9pp
+FTAR: +0.4pp
+9) Post-Centric / Inside-Out
+Shot Profile: Δ3PA 0pp | ΔRim -3pp | ΔMid +3pp
+Efficiency: -3.0%
+Turnovers: +0.8pp
+FTAR: +0.6pp
+10) Moreyball
+Shot Profile: Δ3PA +1pp | ΔRim -1pp | ΔMid 0pp
+Efficiency: -1.9%
+Turnovers: +0.8pp
+FTAR: +0.3pp
+11) Heliocentric
+Shot Profile: Δ3PA 0pp | ΔRim -2pp | ΔMid +2pp
+Efficiency: -2.8%
+Turnovers: +1.3pp
+FTAR: +0.6pp
+

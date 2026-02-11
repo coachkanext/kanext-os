@@ -1,0 +1,818 @@
+SYSTEM × SYSTEM INTERACTION
+Offensive System 1: Spread Pick-and-Roll
+Scope:
+How a Spread Pick-and-Roll offense interacts with each defensive system at the team environment level (pace, shot diet, pressure, fouls).
+This does not touch individual players yet.
+Spread Pick-and-Roll vs Containment Man
+Pace: Neutral
+Shot Profile:
+Rim attempts: +2 pp
+Pull-up midrange: +2 pp
+Spot-up 3s: −1 pp
+Turnover Pressure: Neutral
+Foul Rate: +1 pp
+Explanation: Standard PnR reads remain intact; defense concedes controlled advantages without overcommitting.
+Spread Pick-and-Roll vs Pack Line
+Pace: −2%
+Shot Profile:
+Rim attempts: −4 pp
+Kick-out 3s: +4 pp
+Midrange pull-ups: +1 pp
+Turnover Pressure: Neutral
+Foul Rate: −1 pp
+Explanation: Paint congestion suppresses rim pressure; offense shifts toward kick-out shooting.
+Spread Pick-and-Roll vs Pressure Man (Denial)
+Pace: +2%
+Shot Profile:
+Early rim attempts: +2 pp
+Pull-up jumpers: +1 pp
+Turnover Pressure: +3 pp
+Foul Rate: +2 pp
+Explanation: Ball pressure disrupts entry timing but increases foul risk once the screen is used.
+
+Spread Pick-and-Roll vs Switch Everything
+Pace: −1%
+Shot Profile:
+Isolation pull-ups: +3 pp
+Roll-man rim attempts: −3 pp
+Turnover Pressure: +1 pp
+Foul Rate: +1 pp
+Explanation: Switches flatten roll advantages and redirect offense toward matchup hunting.
+Spread Pick-and-Roll vs ICE / No-Middle
+Pace: −2%
+Shot Profile:
+Baseline drives: +2 pp
+Short-roll floaters / midrange: +3 pp
+Middle rim attempts: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: Forcing the ball sideline suppresses middle penetration and increases short-area scoring.
+Spread Pick-and-Roll vs Zone (Structured)
+Pace: −3%
+Shot Profile:
+Pull-up 3s: +3 pp
+Slot / wing spot-ups: +3 pp
+Rim attempts: −4 pp
+Turnover Pressure: −1 pp
+Foul Rate: −2 pp
+Explanation: Zone absorbs drives, encourages perimeter creation, and lowers foul generation.
+Spread Pick-and-Roll vs Matchup Zone / Hybrid
+Pace: −2%
+Shot Profile:
+Late-clock pull-ups: +2 pp
+Roll-man touches: −2 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid coverage disrupts timing and increases indecision without fully conceding space.
+
+Spread Pick-and-Roll vs Press 
+Pace: +4%
+Shot Profile:
+Early offense rim attempts: +3 pp
+Transition 3s: +2 pp
+Turnover Pressure: +4 pp
+Foul Rate: +1 pp
+Explanation: Pressure increases game speed, creating both early advantages and mistakes.
+Spread Pick-and-Roll vs Junk / Special
+Pace: −4%
+Shot Profile:
+Late-clock contested shots: +4 pp
+Assisted shot rate: −5 pp
+Turnover Pressure: +5 pp
+Foul Rate: Neutral
+Explanation: Non-standard alignments break continuity and force improvisation.
+
+SYSTEM × SYSTEM INTERACTION
+Offensive System 2: 5-Out Motion
+Scope:
+How a 5-Out Motion offense interacts with each defensive system at the team environment level (pace, shot diet, pressure, fouls).
+No player-level logic yet.
+5-Out Motion vs Containment Man
+Pace: Neutral
+Shot Profile:
+Rim attempts: +2 pp
+Catch-and-shoot 3s: +2 pp
+Midrange: −2 pp
+Turnover Pressure: Neutral
+Foul Rate: +1 pp
+Explanation: Spacing stretches containment without forcing rotations; offense flows into balanced rim-and-kick reads.
+5-Out Motion vs Pack Line
+Pace: −3%
+Shot Profile:
+Rim attempts: −5 pp
+Catch-and-shoot 3s: +5 pp
+Turnover Pressure: −1 pp
+Foul Rate: −2 pp
+Explanation: Heavy paint help neutralizes cuts and drives, pushing offense heavily toward perimeter shooting.
+5-Out Motion vs Pressure Man (Denial)
+Pace: +2%
+Shot Profile:
+Backdoor cuts / rim attempts: +3 pp
+Spot-up 3s: +1 pp
+Turnover Pressure: +3 pp
+Foul Rate: +2 pp
+Explanation: Denial creates backdoor opportunities but raises ball security risk during reversals.
+5-Out Motion vs Switch Everything
+Pace: −2%
+Shot Profile:
+Isolation drives: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +1 pp
+Foul Rate: +1 pp
+Explanation: Switching disrupts motion continuity and shifts offense toward individual creation.
+5-Out Motion vs ICE / No-Middle
+Pace: −2%
+Shot Profile:
+Baseline drives: +2 pp
+Corner 3s: +2 pp
+Middle drives: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: No-middle principles redirect penetration toward baseline spacing actions.
+5-Out Motion vs Zone (Structured)
+Pace: −4%
+Shot Profile:
+Above-the-break 3s: +4 pp
+Rim attempts: −4 pp
+Turnover Pressure: −2 pp
+Foul Rate: −3 pp
+Explanation: Zone absorbs motion actions, forcing perimeter ball movement and lowering foul pressure.
+5-Out Motion vs Matchup Zone / Hybrid
+Pace: −3%
+Shot Profile:
+Late-clock pull-ups: +2 pp
+Assisted shots: −2 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid coverages break rhythm and timing without fully conceding space.
+5-Out Motion vs Press 
+Pace: +4%
+Shot Profile:
+Transition rim attempts: +3 pp
+Transition 3s: +2 pp
+Turnover Pressure: +4 pp
+Foul Rate: +1 pp
+Explanation: Pressure accelerates tempo and creates early-advantage opportunities alongside mistakes.
+5-Out Motion vs Junk / Special
+Pace: −5%
+Shot Profile:
+Contested perimeter shots: +4 pp
+Assisted shot rate: −6 pp
+Turnover Pressure: +5 pp
+Foul Rate: Neutral
+Explanation: Irregular alignments disrupt spacing reads and continuity actions.
+
+SYSTEM × SYSTEM INTERACTION
+Offensive System 3: Motion / Read & React
+Scope:
+How a Motion / Read & React offense interacts with each defensive system at the team environment level (pace, shot diet, pressure, fouls).
+Continuity-driven, decision-heavy offense.
+Motion / Read & React vs Containment Man
+Pace: Neutral
+Shot Profile:
+Rim attempts: +1 pp
+Assisted catch-and-shoot 3s: +2 pp
+Midrange: −2 pp
+Turnover Pressure: Neutral
+Foul Rate: +1 pp
+Explanation: Containment allows reads to unfold; offense produces steady assisted looks without forcing.
+Motion / Read & React vs Pack Line
+Pace: −4%
+Shot Profile:
+Rim attempts: −5 pp
+Assisted 3s: +5 pp
+Turnover Pressure: −1 pp
+Foul Rate: −2 pp
+Explanation: Paint congestion neutralizes cutting lanes and drives, pushing the offense toward perimeter ball movement.
+Motion / Read & React vs Pressure Man (Denial)
+Pace: +2%
+Shot Profile:
+Backdoor rim attempts: +3 pp
+Late-clock jumpers: +1 pp
+Turnover Pressure: +3 pp
+Foul Rate: +2 pp
+Explanation: Denial creates read-based counters but increases risk during reversals and handoffs.
+
+Motion / Read & React vs Switch Everything
+Pace: −3%
+Shot Profile:
+Isolation drives: +3 pp
+Assisted shots: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: +1 pp
+Explanation: Switching breaks continuity and converts the offense into matchup-based creation.
+Motion / Read & React vs ICE / No-Middle
+Pace: −3%
+Shot Profile:
+Baseline drives: +2 pp
+Short midrange attempts: +2 pp
+Middle penetration: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: Forced sideline flow reduces central reads and shifts offense toward baseline counters.
+Motion / Read & React vs Zone (Structured)
+Pace: −5%
+Shot Profile:
+Ball-reversal 3s: +4 pp
+Rim attempts: −4 pp
+Turnover Pressure: −2 pp
+Foul Rate: −3 pp
+Explanation: Zone absorbs read-based actions and slows the offense into perimeter probing.
+Motion / Read & React vs Matchup Zone / Hybrid
+Pace: −4%
+Shot Profile:
+Late-clock pull-ups: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid defenses disrupt timing and continuity reads, increasing indecision late in possessions.
+
+Motion / Read & React vs Press 
+Pace: +3%
+Shot Profile:
+Early offense rim attempts: +2 pp
+Transition 3s: +2 pp
+Turnover Pressure: +4 pp
+Foul Rate: +1 pp
+Explanation: Pressure speeds the game up, compressing read time and increasing volatility.
+Motion / Read & React vs Junk / Special
+Pace: −5%
+Shot Profile:
+Contested jumpers: +4 pp
+Assisted rate: −6 pp
+Turnover Pressure: +5 pp
+Foul Rate: Neutral
+Explanation: Irregular alignments destroy read structure and force improvisation.
+
+SYSTEM × SYSTEM INTERACTION
+Offensive System 4: Dribble Drive
+Scope:
+How a Dribble Drive offense interacts with each defensive system at the team environment level (pace, shot diet, pressure, fouls).
+Paint-touch–first offense built on penetration, kick-outs, and collapse reads.
+Dribble Drive vs Containment Man
+Pace: Neutral
+Shot Profile:
+Rim attempts: +3 pp
+Kick-out 3s: +2 pp
+Pull-up midrange: −2 pp
+Turnover Pressure: Neutral
+Foul Rate: +2 pp
+Explanation: Containment allows penetration angles without hard help, enabling consistent rim pressure and drive-and-kick flow.
+Dribble Drive vs Pack Line
+Pace: −4%
+Shot Profile:
+Rim attempts: −6 pp
+Kick-out 3s: +6 pp
+Turnover Pressure: +1 pp
+Foul Rate: −2 pp
+Explanation: Heavy paint congestion suppresses rim finishes and forces extreme reliance on kick-out shooting.
+Dribble Drive vs Pressure Man (Denial)
+Pace: +2%
+Shot Profile:
+Early rim attempts: +2 pp
+Pull-up jumpers: +1 pp
+Turnover Pressure: +4 pp
+Foul Rate: +3 pp
+Explanation: Ball pressure disrupts initiation but increases foul exposure once penetration is achieved.
+
+Dribble Drive vs Switch Everything
+Pace: −2%
+Shot Profile:
+Isolation drives: +4 pp
+Assisted shots: −4 pp
+Turnover Pressure: +2 pp
+Foul Rate: +1 pp
+Explanation: Switching eliminates help advantages and turns the offense into individual downhill attacks.
+Dribble Drive vs ICE / No-Middle
+Pace: −3%
+Shot Profile:
+Baseline drives: +3 pp
+Short midrange attempts: +2 pp
+Middle penetration: −5 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: No-middle rules redirect penetration toward baseline, reducing primary advantage zones.
+Dribble Drive vs Zone (Structured)
+Pace: −5%
+Shot Profile:
+Kick-out 3s: +5 pp
+Rim attempts: −5 pp
+Turnover Pressure: −1 pp
+Foul Rate: −3 pp
+Explanation: Zone walls off drives, forcing perimeter probing and lowering foul pressure.
+Dribble Drive vs Matchup Zone / Hybrid
+Pace: −4%
+Shot Profile:
+Late-clock pull-ups: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid coverages disrupt driving lanes and timing without fully conceding space.
+
+Dribble Drive vs Press 
+Pace: +4%
+Shot Profile:
+Transition rim attempts: +4 pp
+Transition 3s: +2 pp
+Turnover Pressure: +5 pp
+Foul Rate: +1 pp
+Explanation: Pressure accelerates tempo, increasing both downhill opportunities and ball-security risk.
+Dribble Drive vs Junk / Special
+Pace: −5%
+Shot Profile:
+Contested drives / jumpers: +4 pp
+Assisted shot rate: −6 pp
+Turnover Pressure: +5 pp
+Foul Rate: Neutral
+Explanation: Non-standard alignments collapse driving reads and force improvisational scoring.
+
+SYSTEM × SYSTEM INTERACTION
+Offensive System 5: Pace & Space
+Scope:
+How a Pace & Space offense interacts with each defensive system at the team environment level (pace, shot diet, pressure, fouls).
+This offense emphasizes early offense, floor spacing, and shot-value optimization.
+Pace & Space vs Containment Man
+Pace: +3%
+Shot Profile:
+Transition rim attempts: +3 pp
+Above-the-break 3s: +3 pp
+Midrange: −3 pp
+Turnover Pressure: Neutral
+Foul Rate: +1 pp
+Explanation: Containment concedes early advantages; spacing maximizes rim-and-3 efficiency without heavy resistance.
+Pace & Space vs Pack Line
+Pace: +1%
+Shot Profile:
+Rim attempts: −4 pp
+Above-the-break 3s: +6 pp
+Turnover Pressure: +1 pp
+Foul Rate: −2 pp
+Explanation: Paint crowding suppresses rim pressure, pushing offense further toward volume perimeter shooting.
+Pace & Space vs Pressure Man (Denial)
+Pace: +4%
+Shot Profile:
+Early rim attempts: +2 pp
+Pull-up 3s: +2 pp
+Turnover Pressure: +4 pp
+Foul Rate: +2 pp
+Explanation: Denial increases volatility—forcing faster decisions, more pull-ups, and higher turnover risk.
+
+Pace & Space vs Switch Everything
+Pace: −1%
+Shot Profile:
+Isolation pull-up 3s: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +2 pp
+Foul Rate: +1 pp
+Explanation: Switching neutralizes spacing advantages and shifts offense toward individual shot-making.
+Pace & Space vs ICE / No-Middle
+Pace: −2%
+Shot Profile:
+Baseline drives: +2 pp
+Corner 3s: +2 pp
+Middle penetration: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: Sideline forcing limits central drive-kick flow, redirecting offense to baseline spacing reads.
+Pace & Space vs Zone (Structured)
+Pace: −3%
+Shot Profile:
+Above-the-break 3s: +5 pp
+Rim attempts: −5 pp
+Turnover Pressure: −1 pp
+Foul Rate: −3 pp
+Explanation: Zone compresses the paint and slows tempo, increasing reliance on perimeter shot volume.
+Pace & Space vs Matchup Zone / Hybrid
+Pace: −2%
+Shot Profile:
+Late-clock pull-up 3s: +3 pp
+Assisted shots: −2 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid coverages disrupt early flow and force more late-clock perimeter creation.
+
+Pace & Space vs Press 
+Pace: +6%
+Shot Profile:
+Transition rim attempts: +4 pp
+Transition 3s: +3 pp
+Turnover Pressure: +5 pp
+Foul Rate: +1 pp
+Explanation: Pressure accelerates Pace & Space to its extreme—high tempo, high volatility, high reward.
+Pace & Space vs Junk / Special
+Pace: −4%
+Shot Profile:
+Contested perimeter shots: +4 pp
+Assisted rate: −5 pp
+Turnover Pressure: +5 pp
+Foul Rate: Neutral
+Explanation: Irregular defenses disrupt early flow and spacing discipline, forcing improvisation.
+
+SYSTEM × SYSTEM INTERACTION
+Offensive System 6: Princeton
+Scope:
+How a Princeton offense interacts with each defensive system at the team environment level (pace, shot diet, pressure, fouls).
+Low-pace, read-heavy offense built on backdoor cuts, post hubs, and split action.
+Princeton vs Containment Man
+Pace: −4%
+Shot Profile:
+Backdoor rim attempts: +3 pp
+Assisted midrange: +2 pp
+Above-the-break 3s: −3 pp
+Turnover Pressure: Neutral
+Foul Rate: +1 pp
+Explanation: Containment allows the offense to operate patiently, enabling reads and backdoor timing without heavy disruption.
+Princeton vs Pack Line
+Pace: −6%
+Shot Profile:
+Backdoor rim attempts: −4 pp
+Midrange jumpers: +3 pp
+Kick-out 3s: +1 pp
+Turnover Pressure: +1 pp
+Foul Rate: −2 pp
+Explanation: Paint congestion removes cutting lanes and forces Princeton into secondary scoring options.
+Princeton vs Pressure Man (Denial)
+Pace: −2%
+Shot Profile:
+Backdoor cuts: +4 pp
+Late-clock jumpers: +1 pp
+Turnover Pressure: +3 pp
+Foul Rate: +2 pp
+Explanation: Denial increases risk but also enhances Princeton’s signature counters if reads are executed cleanly.
+Princeton vs Switch Everything
+Pace: −3%
+Shot Profile:
+Isolation post-ups: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +1 pp
+Foul Rate: +1 pp
+Explanation: Switching disrupts continuity actions and converts offense into matchup-based execution.
+Princeton vs ICE / No-Middle
+Pace: −4%
+Shot Profile:
+Baseline cuts: +3 pp
+Middle actions: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: No-middle principles redirect actions toward baseline counters, partially aligning with Princeton structure.
+Princeton vs Zone (Structured)
+Pace: −7%
+Shot Profile:
+High-post touches: +3 pp
+Short midrange attempts: +3 pp
+Rim attempts: −4 pp
+Turnover Pressure: −1 pp
+Foul Rate: −3 pp
+Explanation: Zone absorbs backdoor actions and slows tempo, forcing Princeton to operate from the high post.
+Princeton vs Matchup Zone / Hybrid
+Pace: −6%
+Shot Profile:
+Late-clock jumpers: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid defenses disrupt read timing and continuity patterns.
+Princeton vs Press 
+Pace: +2%
+Shot Profile:
+Early rim attempts: +2 pp
+Transition miscues: +2 pp
+Turnover Pressure: +4 pp
+Foul Rate: +1 pp
+Explanation: Pressure speeds the game slightly but increases turnover risk for a precision-based offense.
+Princeton vs Junk / Special
+Pace: −6%
+Shot Profile:
+Contested late-clock shots: +4 pp
+Assisted rate: −6 pp
+Turnover Pressure: +5 pp
+Foul Rate: Neutral
+Explanation: Irregular defenses break the offense’s read hierarchy and force improvisation.
+
+SYSTEM × SYSTEM INTERACTION
+Offensive System 7: Flex
+Scope:
+How a Flex offense interacts with each defensive system at the team environment level (pace, shot diet, pressure, fouls).
+Pattern-based continuity built on down-screens, baseline cuts, and post entries.
+Flex vs Containment Man
+Pace: −3%
+Shot Profile:
+Baseline cut rim attempts: +3 pp
+Assisted midrange jumpers: +2 pp
+Above-the-break 3s: −3 pp
+Turnover Pressure: Neutral
+Foul Rate: +1 pp
+Explanation: Containment allows Flex continuity to operate cleanly, generating baseline cuts and structured looks.
+Flex vs Pack Line
+Pace: −5%
+Shot Profile:
+Rim attempts: −4 pp
+Midrange attempts: +3 pp
+Kick-out 3s: +1 pp
+Turnover Pressure: +1 pp
+Foul Rate: −2 pp
+Explanation: Packed paint removes baseline cut leverage, forcing Flex into secondary midrange actions.
+Flex vs Pressure Man (Denial)
+Pace: −1%
+Shot Profile:
+Backdoor cuts: +3 pp
+Late-clock jumpers: +1 pp
+Turnover Pressure: +3 pp
+Foul Rate: +2 pp
+Explanation: Denial stresses timing but opens counter cuts if spacing discipline holds.
+
+Flex vs Switch Everything
+Pace: −3%
+Shot Profile:
+Post-ups after switches: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +1 pp
+Foul Rate: +1 pp
+Explanation: Switching breaks the screening advantage and redirects offense toward matchup exploitation.
+Flex vs ICE / No-Middle
+Pace: −4%
+Shot Profile:
+Baseline actions: +3 pp
+Middle penetration: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: No-middle principles funnel the ball into Flex’s baseline-oriented counters.
+Flex vs Zone (Structured)
+Pace: −6%
+Shot Profile:
+High-post touches: +3 pp
+Short midrange attempts: +3 pp
+Rim attempts: −4 pp
+Turnover Pressure: −1 pp
+Foul Rate: −3 pp
+Explanation: Zone absorbs baseline screening actions and slows continuity into probing offense.
+Flex vs Matchup Zone / Hybrid
+Pace: −5%
+Shot Profile:
+Late-clock jumpers: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid defenses disrupt pattern timing and recognition.
+
+Flex vs Press 
+Pace: +2%
+Shot Profile:
+Early rim attempts: +2 pp
+Transition miscues: +2 pp
+Turnover Pressure: +4 pp
+Foul Rate: +1 pp
+Explanation: Pressure speeds entry into sets and increases ball-security stress.
+Flex vs Junk / Special
+Pace: −6%
+Shot Profile:
+Contested structured shots: +4 pp
+Assisted rate: −6 pp
+Turnover Pressure: +5 pp
+Foul Rate: Neutral
+Explanation: Non-standard alignments break pattern recognition and force improvisation.
+
+SYSTEM × SYSTEM INTERACTION
+Offensive System 8: Swing
+Scope:
+How a Swing offense interacts with each defensive system at the team environment level (pace, shot diet, pressure, fouls).
+Reversal-heavy offense built on ball movement, re-screens, and attacking closeouts.
+Swing vs Containment Man
+Pace: −1%
+Shot Profile:
+Assisted catch-and-shoot 3s: +3 pp
+Rim attempts: +1 pp
+Midrange: −2 pp
+Turnover Pressure: Neutral
+Foul Rate: +1 pp
+Explanation: Containment allows the ball to swing side-to-side, creating rhythm perimeter looks and controlled drives.
+Swing vs Pack Line
+Pace: −4%
+Shot Profile:
+Rim attempts: −4 pp
+Kick-out 3s: +5 pp
+Turnover Pressure: +1 pp
+Foul Rate: −2 pp
+Explanation: Paint help suppresses drive lanes, increasing reliance on perimeter ball reversal.
+Swing vs Pressure Man (Denial)
+Pace: +1%
+Shot Profile:
+Backdoor drives: +2 pp
+Late-clock jumpers: +1 pp
+Turnover Pressure: +3 pp
+Foul Rate: +2 pp
+Explanation: Denial stresses reversals but creates backdoor counters when overplayed.
+
+Swing vs Switch Everything
+Pace: −3%
+Shot Profile:
+Isolation pull-ups: +3 pp
+Assisted shots: −4 pp
+Turnover Pressure: +2 pp
+Foul Rate: +1 pp
+Explanation: Switching negates screening advantages and shifts offense toward individual creation.
+Swing vs ICE / No-Middle
+Pace: −3%
+Shot Profile:
+Baseline drives: +2 pp
+Corner 3s: +2 pp
+Middle penetration: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: Sideline forcing aligns with Swing’s spacing but limits middle penetration.
+Swing vs Zone (Structured)
+Pace: −5%
+Shot Profile:
+Ball-reversal 3s: +4 pp
+Rim attempts: −4 pp
+Turnover Pressure: −1 pp
+Foul Rate: −3 pp
+Explanation: Zone slows reversals and compresses the paint, pushing volume perimeter shooting.
+Swing vs Matchup Zone / Hybrid
+Pace: −4%
+Shot Profile:
+Late-clock pull-ups: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid coverages disrupt reversal timing and continuity.
+
+Swing vs Press 
+Pace: +3%
+Shot Profile:
+Transition rim attempts: +3 pp
+Transition 3s: +2 pp
+Turnover Pressure: +4 pp
+Foul Rate: +1 pp
+Explanation: Pressure accelerates tempo and increases volatility in ball movement.
+Swing vs Junk / Special
+Pace: −5%
+Shot Profile:
+Contested perimeter shots: +4 pp
+Assisted rate: −6 pp
+Turnover Pressure: +5 pp
+Foul Rate: Neutral
+Explanation: Irregular alignments disrupt reversal patterns and spacing discipline.
+
+SYSTEM × SYSTEM INTERACTION
+Offensive System 9: Post-Centric / Inside-Out
+Scope:
+How a Post-Centric / Inside-Out offense interacts with each defensive system at the team environment level (pace, shot diet, pressure, fouls).
+Built around post entries, inside scoring gravity, and kick-out creation.
+Post-Centric / Inside-Out vs Containment Man
+Pace: −2%
+Shot Profile:
+Post rim attempts: +3 pp
+Kick-out 3s: +2 pp
+Pull-up jumpers: −2 pp
+Turnover Pressure: Neutral
+Foul Rate: +3 pp
+Explanation: Containment allows clean post feeds and controlled double timing, increasing foul pressure.
+Post-Centric / Inside-Out vs Pack Line
+Pace: −5%
+Shot Profile:
+Post rim attempts: −4 pp
+Kick-out 3s: +4 pp
+Midrange: +1 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Paint crowding suppresses post finishes and forces perimeter conversion.
+Post-Centric / Inside-Out vs Pressure Man (Denial)
+Pace: −1%
+Shot Profile:
+Quick post seals: +2 pp
+Late-clock jumpers: +1 pp
+Turnover Pressure: +4 pp
+Foul Rate: +2 pp
+Explanation: Denial stresses entry passes but increases foul risk once the ball enters the post.
+
+Post-Centric / Inside-Out vs Switch Everything
+Pace: −3%
+Shot Profile:
+Mismatch post-ups: +4 pp
+Assisted shots: −3 pp
+Turnover Pressure: +2 pp
+Foul Rate: +1 pp
+Explanation: Switching creates post mismatches while reducing off-ball advantage.
+Post-Centric / Inside-Out vs ICE / No-Middle
+Pace: −3%
+Shot Profile:
+Baseline post drives: +2 pp
+Middle finishes: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: No-middle principles redirect post attacks to baseline counters.
+Post-Centric / Inside-Out vs Zone (Structured)
+Pace: −6%
+Shot Profile:
+High-post touches: +3 pp
+Short midrange attempts: +3 pp
+Rim attempts: −4 pp
+Turnover Pressure: −1 pp
+Foul Rate: −3 pp
+Explanation: Zone absorbs post gravity and forces inside-out play from the high post.
+Post-Centric / Inside-Out vs Matchup Zone / Hybrid
+Pace: −5%
+Shot Profile:
+Late-clock jumpers: +3 pp
+Assisted shots: −3 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid coverages delay post reads and increase indecision.
+
+Post-Centric / Inside-Out vs Press 
+Pace: +2%
+Shot Profile:
+Early post seals: +2 pp
+Transition miscues: +2 pp
+Turnover Pressure: +4 pp
+Foul Rate: +1 pp
+Explanation: Pressure speeds entry and increases ball-security stress before post establishment.
+Post-Centric / Inside-Out vs Junk / Special
+Pace: −6%
+Shot Profile:
+Contested post touches: +4 pp
+Assisted rate: −5 pp
+Turnover Pressure: +5 pp
+Foul Rate: Neutral
+Explanation: Non-standard alignments distort post spacing and passing lanes.
+
+SYSTEM × SYSTEM INTERACTION
+Offensive System 10: Moreyball
+Scope:
+How a Moreyball offense (rim + 3s, suppressed midrange, high FTA emphasis) interacts with each defensive system at the team environment level.
+Moreyball vs Containment Man
+Pace: +1%
+Shot Profile:
+Rim attempts: +3 pp
+Pull-up 3s: +2 pp
+Midrange: −3 pp
+Turnover Pressure: Neutral
+Foul Rate: +3 pp
+Explanation: Conservative containment concedes drives and pull-up 3s, aligning with Moreyball priorities.
+Moreyball vs Pack Line
+Pace: −3%
+Shot Profile:
+Rim attempts: −5 pp
+Kick-out 3s: +5 pp
+Turnover Pressure: +1 pp
+Foul Rate: −2 pp
+Explanation: Paint loading suppresses rim pressure and forces volume perimeter shooting.
+Moreyball vs Pressure Man (Denial)
+Pace: +2%
+Shot Profile:
+Drive frequency: +2 pp
+Assisted 3s: +1 pp
+Turnover Pressure: +4 pp
+Foul Rate: +2 pp
+Explanation: Denial increases volatility higher foul draw but elevated turnover risk.
+
+Moreyball vs Switch Everything
+Pace: Neutral
+Shot Profile:
+Isolation 3s: +3 pp
+Rim attempts (mismatch drives): +2 pp
+Turnover Pressure: +2 pp
+Foul Rate: +1 pp
+Explanation: Switching invites iso hunting and mismatch exploitation without midrange reliance.
+Moreyball vs ICE / No-Middle
+Pace: −2%
+Shot Profile:
+Corner 3s: +3 pp
+Middle drives: −4 pp
+Turnover Pressure: +1 pp
+Foul Rate: Neutral
+Explanation: No-middle forces sideline drives and corner kick-outs—acceptable outcomes for Moreyball.
+Moreyball vs Zone (Structured)
+Pace: −5%
+Shot Profile:
+Above-the-break 3s: +4 pp
+Rim attempts: −6 pp
+Turnover Pressure: −1 pp
+Foul Rate: −3 pp
+Explanation: Zone reduces foul pressure and rim access, pushing heavy 3-point dependency.
+Moreyball vs Matchup Zone / Hybrid
+Pace: −4%
+Shot Profile:
+Late-clock 3s: +4 pp
+Assisted rate: −3 pp
+Turnover Pressure: +2 pp
+Foul Rate: −1 pp
+Explanation: Hybrid rotations delay reads and reduce clean rim attacks.
+Moreyball vs Press 
+Pace: +4%
+Shot Profile:
+Early rim attacks: +2 pp
+Transition 3s: +2 pp
+Turnover Pressure: +5 pp
+Foul Rate: +1 pp
+Explanation: Pressure accelerates possessions, increasing both rim chances and turnover variance.
+Moreyball vs Junk / Special
+Pace: −6%
+Shot Profile:
+Forced off-script 3s: +3 pp
+Rim attempts: −4 pp
+Turnover Pressure: +5 pp
+Foul Rate: −1 pp
+Explanation: Non-standard coverages disrupt drive lanes and spacing geometry.
+

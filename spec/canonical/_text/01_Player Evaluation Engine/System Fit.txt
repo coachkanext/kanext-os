@@ -1,0 +1,24 @@
+Tab 1
+Program Context + System Fit Clarification (LOCKED)
+Team KR does not use raw player KRs.
+Team KR uses contextual player outputs that are already computed upstream under the selected Program Context.
+What happens upstream (before Team KR)
+The coach selects Program Context:
+Governing Body / Division (and Major Class if NCAA D1)
+Offensive System + Defensive System
+The Player Engine produces, for each player:
+Base Offense KR and Base Defense KR (system-agnostic truth)
+Final System Offense KR and Final System Defense KR (system-conditioned, derived deterministically from the selected systems and the player’s truth profile)
+What Team KR does (and does not do)
+Team KR ONLY aggregates:
+Final_System_Offense_KRᵢ
+Final_System_Defense_KRᵢ
+using rotation participation weights.
+Team KR NEVER:
+re-evaluates traits
+recomputes archetypes/badges/labels
+re-applies system-fit logic
+modifies player truth outputs
+changes any player KR values
+Therefore (single-line lock)
+Team KR is the rotation-weighted aggregation of players’ Final System KRs under the selected Program Context.

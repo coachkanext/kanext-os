@@ -106,7 +106,6 @@ export function GlobalHeader({ leftIcon, rightIcon }: GlobalHeaderProps) {
             <Text style={[styles.modeLabel, { color: colors.text }]}>
               {MODE_LABELS[state.mode]}
             </Text>
-            <IconSymbol name="chevron.down" size={12} color={colors.textSecondary} />
           </Pressable>
 
           {/* Right slot */}

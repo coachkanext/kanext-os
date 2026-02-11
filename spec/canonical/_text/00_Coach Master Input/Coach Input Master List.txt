@@ -1,0 +1,32 @@
+Coach Inputs (Updated Master List)
+Required
+Program Name (Team Name)
+
+Governing Body: NCAA / NAIA / NJCAA / CCCAA (3C2A) / USCAA / NCCAA
+
+Division (if applicable):
+
+NCAA: D1 / D2 / D3
+
+NJCAA: D1 / D2 / D3
+
+NCCAA: D1 / D2
+
+NCAA D1 Major Class (only if NCAA D1): High-Major / Mid-Major / Low-Major
+
+System Selection (College): Offensive System + Defensive System
+
+Optional (Metadata)
+Conference
+
+Optional (Resources + Constraints — downstream only)
+Scholarships Available (can reduce from preloaded max; cannot exceed)
+
+NIL Pool (defaults to $0)
+Add these:
+9) Institutional / Merit Aid Capacity (avg package $ or band)
+10) Need-Based Aid Availability (band)
+11) Operating Budget (annual $)
+12) Recruiting Budget (annual $)
+13) Roster Size Target (e.g., 13–18)
+14) Staffing Capacity Band (Lean / Standard / Elite)
