@@ -558,18 +558,6 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
               </Pressable>
             ))}
 
-            {/* Search */}
-            <View style={[shStyles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
-              <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-              <TextInput
-                style={[shStyles.searchInput, { color: colors.text }]}
-                placeholder="Search games..."
-                placeholderTextColor={colors.textTertiary}
-                value={search}
-                onChangeText={setSearch}
-              />
-            </View>
-
             {/* Upcoming Games */}
             {(() => {
               const upcoming = sortedGames.filter((g) => g.status === 'upcoming').slice(0, 2);
@@ -617,6 +605,18 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                 </>
               );
             })()}
+
+            {/* Search between upcoming and completed */}
+            <View style={[shStyles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
+              <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
+              <TextInput
+                style={[shStyles.searchInput, { color: colors.text }]}
+                placeholder="Search games..."
+                placeholderTextColor={colors.textTertiary}
+                value={search}
+                onChangeText={setSearch}
+              />
+            </View>
 
             {/* Completed Games (Recent block style) */}
             {(() => {
