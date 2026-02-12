@@ -105,6 +105,11 @@ function AppShell() {
         <View style={styles.stackContainer}>
           <Stack screenOptions={{ headerShown: false, animation: 'none' }}>
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="coach" />
+            <Stack.Screen name="login" />
+            <Stack.Screen name="video" />
+            <Stack.Screen name="settings" />
+            <Stack.Screen name="profile" />
             <Stack.Screen
               name="modal"
               options={{ presentation: 'modal', title: 'Modal' }}

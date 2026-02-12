@@ -44,7 +44,7 @@ export default function PlayerProfileScreen() {
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={[styles.header, { paddingTop: insets.top, backgroundColor: colors.background, borderBottomColor: colors.divider }]}>
           <View style={styles.headerContent}>
-            <Pressable style={styles.backButton} onPress={() => router.back()}>
+            <Pressable style={styles.backButton} onPress={() => router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any)}>
               <IconSymbol name="chevron.left" size={20} color={colors.text} />
             </Pressable>
             <Text style={[styles.headerTitle, { color: colors.text }]}>Player Profile</Text>
@@ -67,7 +67,7 @@ export default function PlayerProfileScreen() {
             style={({ pressed }) => [styles.backButton, { backgroundColor: pressed ? colors.backgroundSecondary : 'transparent' }]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.back();
+              router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
             }}
           >
             <IconSymbol name="chevron.left" size={20} color={colors.text} />

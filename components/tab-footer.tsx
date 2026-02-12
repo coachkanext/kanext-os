@@ -13,9 +13,10 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol, type SymbolViewProps } from '@/components/ui/icon-symbol';
 import { Colors, Layout } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { requestHomeReset } from '@/utils/global-home';
 
 const FOOTER_TABS: { name: string; icon: SymbolViewProps['name']; route: string }[] = [
-  { name: 'Home', icon: 'house.fill', route: '/(tabs)' },
+  { name: 'Home', icon: 'house.fill', route: '/(tabs)/index' },
   { name: 'Media', icon: 'play.rectangle.fill', route: '/(tabs)/media' },
   { name: 'Nexus', icon: 'sparkles', route: '/(tabs)/nexus' },
   { name: 'Activity', icon: 'bell.fill', route: '/(tabs)/activity' },
@@ -38,7 +39,7 @@ export function TabFooter({ activeTab = 'Home' }: TabFooterProps) {
         styles.container,
         {
           backgroundColor: colors.tabBar,
-          borderTopColor: colors.border,
+          borderTopColor: 'rgba(255,255,255,0.08)',
           paddingBottom: insets.bottom,
           height: Platform.OS === 'ios' ? Layout.tabBarHeight : 60,
         },
@@ -52,12 +53,16 @@ export function TabFooter({ activeTab = 'Home' }: TabFooterProps) {
             style={styles.tab}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.replace(tab.route as any);
+              if (tab.name === 'Home') {
+                console.log('[TabFooter] Home pressed, setting requestHomeReset flag');
+                requestHomeReset();
+              }
+              router.navigate(tab.route as any);
             }}
           >
             <IconSymbol
               name={tab.icon}
-              size={24}
+              size={26}
               color={isActive ? colors.tabIconSelected : colors.tabIconDefault}
             />
           </Pressable>
@@ -71,8 +76,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     borderTopWidth: StyleSheet.hairlineWidth,
-    alignItems: 'flex-start',
-    paddingTop: 10,
+    alignItems: 'center',
   },
   tab: {
     flex: 1,

@@ -3,7 +3,7 @@
  * ~25 placeholder players across levels.
  */
 
-export type PoolLevel = 'NAIA' | 'NCAA D1' | 'NCAA D2' | 'NCAA D3' | 'JUCO' | 'International' | 'HS';
+export type PoolLevel = 'NAIA' | 'NCAA' | 'NCAA D1' | 'NCAA D2' | 'NCAA D3' | 'JUCO' | 'JUCO D1' | 'JUCO D2' | 'JUCO D3' | 'USCAA' | 'NCCAA' | 'NCCAA D1' | 'NCCAA D2' | '3C2A' | 'International' | 'HS';
 export type PoolPosition = 'PG' | 'SG' | 'SF' | 'PF' | 'C';
 
 export interface PoolPlayer {

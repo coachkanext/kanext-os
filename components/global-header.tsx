@@ -86,7 +86,7 @@ export function GlobalHeader({ leftIcon, rightIcon }: GlobalHeaderProps) {
               accessibilityLabel="Open conversations"
               accessibilityRole="button"
             >
-              <IconSymbol name="line.horizontal.3" size={24} color={colors.text} />
+              <IconSymbol name="line.horizontal.3" size={30} color={colors.text} />
             </Pressable>
           ) : <View style={styles.slotSpacer} />)}
 

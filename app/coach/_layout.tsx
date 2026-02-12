@@ -35,6 +35,9 @@ export default function CoachLayout() {
       <Stack.Screen name="play-by-play" />
       <Stack.Screen name="key-plays" />
       <Stack.Screen name="team-stats" />
+      <Stack.Screen name="program-context" />
+      <Stack.Screen name="program-resources" />
+      <Stack.Screen name="player-detail" />
     </Stack>
   );
 }

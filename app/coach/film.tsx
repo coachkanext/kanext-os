@@ -101,7 +101,7 @@ export default function CoachFilmScreen() {
                   if (tab.id === 'film') return;
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   if (tab.id === 'home' || tab.id === 'roster') {
-                    router.back();
+                    router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
                   } else if (tab.route) {
                     router.replace(tab.route as any);
                   }

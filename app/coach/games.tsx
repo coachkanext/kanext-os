@@ -17,7 +17,7 @@ import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/core';
-import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS } from '@/data/fmu';
+import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_GAME_BPR, getBPRColor, type PlayerBPR } from '@/data/fmu';
 
 // Same hub tabs as SportsHome — keeps navigation consistent across coach screens
 const HUB_TABS = [
@@ -43,6 +43,11 @@ interface Game {
   status: GameStatus;
   score?: string;
   clock?: string;
+  gameType?: string;
+  opponentKR?: number;
+  opponentRecord?: string;
+  gameTime?: string;
+  venue?: string;
 }
 
 const ALL_GAMES: Game[] = FMU_GAMES;
@@ -119,49 +124,120 @@ function StatusPill({ status }: { status: GameStatus }) {
   );
 }
 
-// ── Game Row (shared between Games + Schedule) ──
+// ── Game Row (expandable dropdown) ──
 
 function GameRow({
   game,
   colors,
-  onPress,
+  expanded,
+  onToggle,
+  onNavigate,
 }: {
   game: Game;
   colors: typeof Colors['light'];
-  onPress: () => void;
+  expanded: boolean;
+  onToggle: () => void;
+  onNavigate: () => void;
 }) {
   return (
-    <Pressable
-      style={({ pressed }) => [styles.gameRow, pressed && { opacity: 0.7 }]}
-      onPress={onPress}
-    >
-      <View style={styles.gameRowLeft}>
-        <Text style={[styles.opponentText, { color: colors.text }]}>{game.opponent}</Text>
-        <Text style={[styles.metaText, { color: colors.textSecondary }]}>
-          {game.date} · {game.location}
-        </Text>
-      </View>
-      <View style={styles.gameRowRight}>
-        <StatusPill status={game.status} />
-        {game.score && (
-          <Text
-            style={[
-              styles.scoreText,
-              {
-                color: game.status === 'final'
-                  ? game.score.startsWith('W') ? '#f5f5f5' : game.score.startsWith('L') ? '#EF4444' : colors.text
-                  : colors.text,
-              },
-            ]}
-          >
-            {game.score}
+    <View>
+      <Pressable
+        style={({ pressed }) => [styles.gameRow, pressed && { opacity: 0.7 }]}
+        onPress={onToggle}
+      >
+        <View style={styles.gameRowLeft}>
+          <View style={styles.opponentRow}>
+            <Text style={[styles.opponentText, { color: colors.text }]}>{game.opponent}</Text>
+            {game.opponentKR != null && game.opponentKR > 0 && (
+              <Text style={[styles.krText, { color: colors.textTertiary }]}>#{game.opponentKR} KR</Text>
+            )}
+          </View>
+          <Text style={[styles.metaText, { color: colors.textSecondary }]}>
+            {game.date} · {game.venue ?? game.location}
           </Text>
-        )}
-        {game.status === 'live' && game.clock && (
-          <Text style={[styles.clockText, { color: colors.textTertiary }]}>{game.clock}</Text>
-        )}
-      </View>
-    </Pressable>
+        </View>
+        <View style={styles.gameRowRight}>
+          <StatusPill status={game.status} />
+          {game.score && (
+            <Text
+              style={[
+                styles.scoreText,
+                {
+                  color: game.status === 'final'
+                    ? game.score.startsWith('W') ? '#f5f5f5' : game.score.startsWith('L') ? '#EF4444' : colors.text
+                    : colors.text,
+                },
+              ]}
+            >
+              {game.score}
+            </Text>
+          )}
+          {game.status === 'live' && game.clock && (
+            <Text style={[styles.clockText, { color: colors.textTertiary }]}>{game.clock}</Text>
+          )}
+        </View>
+        <IconSymbol
+          name={expanded ? 'chevron.up' : 'chevron.down'}
+          size={14}
+          color={colors.textTertiary}
+          style={{ marginLeft: 8 }}
+        />
+      </Pressable>
+
+      {expanded && (
+        <View style={[styles.gameDropdown, { backgroundColor: colors.backgroundTertiary }]}>
+          {game.status === 'final' && FMU_GAME_BPR[game.id] ? (
+            <>
+              {FMU_GAME_BPR[game.id].slice(0, 8).map((p, i) => (
+                <View key={i} style={styles.bprRow}>
+                  <View style={styles.bprLeft}>
+                    <Text style={[styles.bprName, { color: colors.text }]}>
+                      {p.name} <Text style={{ color: colors.textTertiary, fontWeight: '400' }}>{'\u2014'} {p.archetype}</Text>
+                    </Text>
+                    <Text style={[styles.bprValue, { color: getBPRColor(p.bpr) }]}>
+                      BPR {p.bpr > 0 ? '+' : ''}{p.bpr} <Text style={styles.bprLabel}>({p.bprLabel})</Text>
+                    </Text>
+                  </View>
+                  <Text style={[styles.bprKr, { color: colors.textTertiary }]}>KR {p.kr}</Text>
+                </View>
+              ))}
+            </>
+          ) : (
+            <View style={styles.gameDropdownMeta}>
+              {game.gameType && (
+                <View style={[styles.gameDropdownTag, { backgroundColor: colors.backgroundSecondary }]}>
+                  <Text style={[styles.gameDropdownTagText, { color: colors.textSecondary }]}>{game.gameType}</Text>
+                </View>
+              )}
+              {game.gameTime && (
+                <View style={[styles.gameDropdownTag, { backgroundColor: colors.backgroundSecondary }]}>
+                  <Text style={[styles.gameDropdownTagText, { color: colors.textSecondary }]}>{game.gameTime}</Text>
+                </View>
+              )}
+              {game.opponentRecord && (
+                <Text style={[styles.gameDropdownDetail, { color: colors.textSecondary }]}>
+                  Opp Record: {game.opponentRecord}
+                </Text>
+              )}
+              {game.opponentKR != null && game.opponentKR > 0 && (
+                <Text style={[styles.gameDropdownDetail, { color: colors.textSecondary }]}>
+                  KenPom: #{game.opponentKR}
+                </Text>
+              )}
+            </View>
+          )}
+          <Pressable
+            style={({ pressed }) => [styles.gameDropdownButton, { backgroundColor: colors.text }, pressed && { opacity: 0.8 }]}
+            onPress={onNavigate}
+          >
+            <Text style={[styles.gameDropdownButtonText, { color: colors.background }]}>
+              {game.status === 'live' ? 'View Live' : game.status === 'final' ? 'View Report' : 'Game Preview'}
+            </Text>
+            <IconSymbol name="chevron.right" size={14} color={colors.background} />
+          </Pressable>
+        </View>
+      )}
+    </View>
   );
 }
 
@@ -176,6 +252,7 @@ export default function GamesScreen() {
   const [search, setSearch] = useState('');
   const [gameOpsMap, setGameOpsMap] = useState<Record<string, any>>({});
   const [expandedLeader, setExpandedLeader] = useState<string | null>(null);
+  const [expandedGame, setExpandedGame] = useState<string | null>(null);
 
   // Load Game Ops data for all games on focus
   useFocusEffect(
@@ -256,7 +333,7 @@ export default function GamesScreen() {
                   style={styles.hubTab}
                   onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    router.back();
+                    router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
                   }}
                 >
                   <ThemedText
@@ -322,24 +399,115 @@ export default function GamesScreen() {
               />
             </View>
 
-            <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-              {filteredGames.length === 0 ? (
-                <View style={styles.emptyState}>
-                  <Text style={[styles.emptyText, { color: colors.textTertiary }]}>
-                    No games found.
-                  </Text>
-                </View>
-              ) : (
-                filteredGames.map((game, index) => (
-                  <View key={game.id}>
-                    {index > 0 && (
-                      <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                    )}
-                    <GameRow game={game} colors={colors} onPress={() => navigateToGame(game.id)} />
+            {/* Upcoming games — GameRow with expandable dropdown */}
+            {(() => {
+              const upcoming = filteredGames.filter((g) => g.status === 'upcoming' || g.status === 'live');
+              if (upcoming.length === 0) return null;
+              return (
+                <>
+                  <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>UPCOMING</Text>
+                  <View style={[styles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
+                    {upcoming.map((game, index) => (
+                      <View key={game.id}>
+                        {index > 0 && (
+                          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                        )}
+                        <GameRow
+                          game={game}
+                          colors={colors}
+                          expanded={expandedGame === game.id}
+                          onToggle={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setExpandedGame(expandedGame === game.id ? null : game.id);
+                          }}
+                          onNavigate={() => navigateToGame(game.id)}
+                        />
+                      </View>
+                    ))}
                   </View>
-                ))
-              )}
-            </View>
+                </>
+              );
+            })()}
+
+            {/* Completed games — Recent style with inline BPR panel */}
+            {(() => {
+              const completed = filteredGames.filter((g) => g.status === 'final');
+              if (completed.length === 0) return null;
+              return (
+                <>
+                  <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>COMPLETED</Text>
+                  <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                    {completed.map((game, index) => {
+                      const isWin = game.score?.startsWith('W');
+                      const isLoss = game.score?.startsWith('L');
+                      const scoreDisplay = game.score?.replace('-', '–') ?? '';
+                      return (
+                        <View key={game.id}>
+                          {index > 0 && (
+                            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                          )}
+                          <View>
+                            <View style={styles.recentRow}>
+                              <Pressable
+                                style={({ pressed }) => [{ flex: 1 }, pressed && { opacity: 0.7 }]}
+                                onPress={() => {
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                  setExpandedGame(expandedGame === game.id ? null : game.id);
+                                }}
+                              >
+                                <Text style={[styles.recentOpponent, { color: colors.text }]}>
+                                  {game.location === 'Home' ? 'vs' : '@'} {game.opponent}{game.opponentKR ? ` (${game.opponentKR} KR)` : ''}
+                                </Text>
+                                {game.opponentRecord && (
+                                  <Text style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                                    {game.opponentRecord}
+                                  </Text>
+                                )}
+                                <Text style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                                  {game.date} · {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
+                                </Text>
+                              </Pressable>
+                              <Pressable
+                                style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
+                                onPress={() => navigateToGame(game.id)}
+                              >
+                                <View style={[styles.recentPill, { backgroundColor: '#f5f5f518' }]}>
+                                  <Text style={[styles.recentPillText, { color: '#f5f5f5' }]}>
+                                    FINAL
+                                  </Text>
+                                </View>
+                                <Text style={[styles.recentScore, { color: isWin ? '#f5f5f5' : isLoss ? '#EF4444' : colors.text }]}>
+                                  {scoreDisplay}
+                                </Text>
+                              </Pressable>
+                            </View>
+
+                            {/* Inline BPR Panel */}
+                            {expandedGame === game.id && FMU_GAME_BPR[game.id] && (
+                              <View style={[styles.bprPanel, { backgroundColor: colors.backgroundTertiary }]}>
+                                {FMU_GAME_BPR[game.id].map((p, i) => (
+                                  <View key={i} style={styles.bprPanelRow}>
+                                    <View style={{ flex: 1 }}>
+                                      <Text style={[styles.bprPanelName, { color: colors.text }]}>
+                                        {p.name} <Text style={{ color: colors.textTertiary, fontWeight: '400', fontSize: 11 }}>{'\u2014'} {p.archetype}</Text>
+                                      </Text>
+                                      <Text style={[styles.bprPanelValue, { color: getBPRColor(p.bpr) }]}>
+                                        BPR {p.bpr > 0 ? '+' : ''}{p.bpr} <Text style={styles.bprPanelLabel}>({p.bprLabel})</Text>
+                                      </Text>
+                                    </View>
+                                    <Text style={[styles.bprPanelKr, { color: colors.textTertiary }]}>{p.kr} KR</Text>
+                                  </View>
+                                ))}
+                              </View>
+                            )}
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </>
+              );
+            })()}
           </View>
         )}
 
@@ -367,7 +535,7 @@ export default function GamesScreen() {
                         {game.date}
                       </Text>
                       <Text style={[styles.scheduleLocationText, { color: colors.textTertiary }]}>
-                        {game.location}
+                        {game.venue ?? game.location}
                       </Text>
                     </View>
                     <Text style={[styles.scheduleOpponent, { color: colors.text }]}>
@@ -598,9 +766,18 @@ const styles = StyleSheet.create({
   gameRowLeft: {
     flex: 1,
   },
+  opponentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   opponentText: {
     fontSize: 15,
     fontWeight: '600',
+  },
+  krText: {
+    fontSize: 12,
+    fontWeight: '500',
   },
   metaText: {
     fontSize: 13,
@@ -616,6 +793,74 @@ const styles = StyleSheet.create({
   },
   clockText: {
     fontSize: 12,
+  },
+
+  // Game dropdown
+  gameDropdown: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: 4,
+    paddingBottom: Spacing.md,
+  },
+  gameDropdownMeta: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  gameDropdownTag: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  gameDropdownTagText: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  gameDropdownDetail: {
+    fontSize: 13,
+  },
+  gameDropdownButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: BorderRadius.md,
+    gap: 6,
+    marginTop: 12,
+  },
+  gameDropdownButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
+  // BPR player rows (completed games)
+  bprRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  bprLeft: {
+    flex: 1,
+  },
+  bprName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  bprValue: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  bprLabel: {
+    fontWeight: '400',
+    fontSize: 12,
+  },
+  bprKr: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginLeft: 12,
   },
 
   // Status pill
@@ -637,6 +882,71 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     backgroundColor: '#EF4444',
+  },
+
+  // Recent-style completed game rows
+  recentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: Spacing.md,
+  },
+  recentOpponent: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  recentMeta: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  recentRight: {
+    alignItems: 'flex-end',
+    gap: 4,
+    marginLeft: 12,
+  },
+  recentPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+  },
+  recentPillText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  recentScore: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+
+  // BPR inline panel
+  bprPanel: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: 4,
+    paddingBottom: Spacing.md,
+  },
+  bprPanelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 7,
+  },
+  bprPanelName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  bprPanelValue: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  bprPanelLabel: {
+    fontWeight: '400',
+    fontSize: 12,
+  },
+  bprPanelKr: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginLeft: 12,
   },
 
   // Schedule row

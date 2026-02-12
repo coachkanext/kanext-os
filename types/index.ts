@@ -140,8 +140,8 @@ export type ClusterType =
   | 'shooting'
   | 'finishing'
   | 'playmaking'
-  | 'on_ball_defense'
-  | 'team_defense'
+  | 'perimeter_defense'
+  | 'interior_defense'
   | 'rebounding'
   | 'frame';
 

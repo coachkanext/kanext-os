@@ -115,7 +115,7 @@ export default function PlayerBioScreen() {
           style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.6 }]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            router.back();
+            router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
           }}
         >
           <IconSymbol name="chevron.left" size={18} color={TEAL} />

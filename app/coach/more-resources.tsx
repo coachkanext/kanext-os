@@ -636,7 +636,7 @@ export default function CoachProgramContextScreen() {
 
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      router.back();
+      router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
     } catch (e) {
       console.error('Failed to save program context:', e);
     }
@@ -664,7 +664,7 @@ export default function CoachProgramContextScreen() {
             ]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.back();
+              router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
             }}
           >
             <IconSymbol name="chevron.left" size={20} color={colors.text} />

@@ -56,14 +56,14 @@ export const Colors = {
     text: '#f5f5f5',
     textSecondary: '#6e6e6e',
     textTertiary: '#555555',
-    background: '#0f0f0f',
-    backgroundSecondary: '#181818',
-    backgroundTertiary: '#1e1e1e',
+    background: '#000000',
+    backgroundSecondary: '#111111',
+    backgroundTertiary: '#191919',
 
     // Borders & Dividers
-    border: '#2a2a2a',
+    border: '#1a1a1a',
     borderStrong: '#2a2a2a',
-    divider: '#2a2a2a',
+    divider: '#1a1a1a',
 
     // Interactive
     tint: '#ffffff',
@@ -71,13 +71,13 @@ export const Colors = {
     iconActive: '#f5f5f5',
 
     // Tab Bar
-    tabBar: '#0f0f0f',
+    tabBar: '#000000',
     tabIconDefault: '#6e6e6e',
     tabIconSelected: '#ffffff',
 
     // Cards & Surfaces
-    card: '#181818',
-    cardElevated: '#181818',
+    card: '#111111',
+    cardElevated: '#111111',
 
     // Overlays
     overlay: 'rgba(0, 0, 0, 0.7)',
@@ -93,14 +93,14 @@ export const Colors = {
     text: '#f5f5f5',
     textSecondary: '#6e6e6e',
     textTertiary: '#555555',
-    background: '#0f0f0f',
-    backgroundSecondary: '#181818',
-    backgroundTertiary: '#1e1e1e',
+    background: '#000000',
+    backgroundSecondary: '#111111',
+    backgroundTertiary: '#191919',
 
     // Borders & Dividers
-    border: '#2a2a2a',
+    border: '#1a1a1a',
     borderStrong: '#2a2a2a',
-    divider: '#2a2a2a',
+    divider: '#1a1a1a',
 
     // Interactive
     tint: '#ffffff',
@@ -108,13 +108,13 @@ export const Colors = {
     iconActive: '#f5f5f5',
 
     // Tab Bar
-    tabBar: '#0f0f0f',
+    tabBar: '#000000',
     tabIconDefault: '#6e6e6e',
     tabIconSelected: '#ffffff',
 
     // Cards & Surfaces
-    card: '#181818',
-    cardElevated: '#181818',
+    card: '#111111',
+    cardElevated: '#111111',
 
     // Overlays
     overlay: 'rgba(0, 0, 0, 0.7)',
@@ -185,7 +185,7 @@ export const Layout = {
   // Top bar height
   topBarHeight: 56,
   // Tab bar height
-  tabBarHeight: 80,
+  tabBarHeight: 96,
   // Avatar size in top bar
   avatarSize: 32,
   // Max content width (for tablets/web)

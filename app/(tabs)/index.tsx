@@ -30,8 +30,7 @@ import { CAMPUSES, MESSAGES } from '@/data/mock-church';
 import { getCurrentTerm, getUpcomingEvents, INSTITUTIONAL_METRICS } from '@/data/mock-education';
 
 // FMU data
-import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor } from '@/data/fmu';
-import { ARCHETYPE_LABELS, type Archetype } from '@/data/system-demand-profiles';
+import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getPGISColor, getTGISColor, FMU_PREGAME } from '@/data/fmu';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 // =============================================================================
@@ -269,64 +268,41 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
   const [krScope, setKrScope] = useState<'national' | 'conference'>('national');
   const [search, setSearch] = useState('');
   const [expandedLeader, setExpandedLeader] = useState<string | null>(null);
-  const [oppKRSheet, setOppKRSheet] = useState<{ opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string } | null>(null);
+  const [oppKRSheet, setOppKRSheet] = useState<{ opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string; score?: string } | null>(null);
 
   // Sheet animation
-  const SHEET_HEIGHT = Dimensions.get('window').height * 0.55;
+  const SHEET_HEIGHT = Dimensions.get('window').height * 0.5;
   const sheetAnim = useRef(new Animated.Value(SHEET_HEIGHT)).current;
   const backdropAnim = useRef(new Animated.Value(0)).current;
-  const sheetDragY = useRef(new Animated.Value(0)).current;
+  const sheetOpen = useRef(false);
 
-  const openSheet = useCallback((data: { opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string }) => {
+  const openSheet = useCallback((data: { opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string; score?: string }) => {
+    sheetAnim.stopAnimation();
+    backdropAnim.stopAnimation();
+    sheetOpen.current = true;
     setOppKRSheet(data);
     sheetAnim.setValue(SHEET_HEIGHT);
-    sheetDragY.setValue(0);
     Animated.parallel([
       Animated.spring(sheetAnim, { toValue: 0, useNativeDriver: true, damping: 25, stiffness: 300 }),
       Animated.timing(backdropAnim, { toValue: 1, duration: 250, useNativeDriver: true }),
     ]).start();
-  }, [SHEET_HEIGHT, sheetAnim, backdropAnim, sheetDragY]);
+  }, [SHEET_HEIGHT, sheetAnim, backdropAnim]);
 
   const closeSheet = useCallback(() => {
+    sheetOpen.current = false;
+    sheetAnim.stopAnimation();
+    backdropAnim.stopAnimation();
     Animated.parallel([
-      Animated.spring(sheetAnim, { toValue: SHEET_HEIGHT, useNativeDriver: true, damping: 22, stiffness: 200 }),
-      Animated.timing(backdropAnim, { toValue: 0, duration: 300, useNativeDriver: true }),
+      Animated.spring(sheetAnim, { toValue: SHEET_HEIGHT, useNativeDriver: true, damping: 28, stiffness: 180 }),
+      Animated.timing(backdropAnim, { toValue: 0, duration: 350, useNativeDriver: true }),
     ]).start(() => {
-      setOppKRSheet(null);
-      sheetDragY.setValue(0);
+      if (!sheetOpen.current) setOppKRSheet(null);
     });
-  }, [SHEET_HEIGHT, sheetAnim, backdropAnim, sheetDragY]);
+  }, [SHEET_HEIGHT, sheetAnim, backdropAnim]);
 
-  const closeSheetFromDrag = useCallback((currentDragY: number) => {
-    // Flatten drag into sheetAnim so animation continues from current position
-    sheetAnim.setValue(currentDragY);
-    sheetDragY.setValue(0);
-    const remaining = SHEET_HEIGHT - currentDragY;
-    const duration = Math.max(150, Math.min(300, (remaining / SHEET_HEIGHT) * 300));
-    Animated.parallel([
-      Animated.timing(sheetAnim, { toValue: SHEET_HEIGHT, duration, useNativeDriver: true }),
-      Animated.timing(backdropAnim, { toValue: 0, duration, useNativeDriver: true }),
-    ]).start(() => {
-      setOppKRSheet(null);
-    });
-  }, [SHEET_HEIGHT, sheetAnim, backdropAnim, sheetDragY]);
-
-  const sheetPanResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: (_, gs) => gs.dy > 8,
-      onPanResponderMove: (_, gs) => {
-        if (gs.dy > 0) sheetDragY.setValue(gs.dy);
-      },
-      onPanResponderRelease: (_, gs) => {
-        if (gs.dy > 80 || gs.vy > 0.5) {
-          closeSheetFromDrag(gs.dy);
-        } else {
-          Animated.spring(sheetDragY, { toValue: 0, useNativeDriver: true, damping: 25, stiffness: 300 }).start();
-        }
-      },
-    })
-  ).current;
+  // Simple swipe-down tracking
+  const touchStartY = useRef(0);
+  const sheetScrollOffset = useRef(0);
 
   const q = search.trim().toLowerCase();
   const filtered = q
@@ -423,7 +399,7 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
 
             {/* Upcoming Games */}
             {(() => {
-              const upcoming = sortedGames.filter((g) => g.status === 'upcoming');
+              const upcoming = sortedGames.filter((g) => g.status === 'upcoming').slice(0, 2);
               if (upcoming.length === 0) return null;
               return (
                 <>
@@ -432,23 +408,36 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                     {upcoming.map((game, index) => (
                       <View key={game.id}>
                         {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                        <Pressable
-                          style={({ pressed }) => [shStyles.gameRow, pressed && { opacity: 0.7 }]}
-                          onPress={() => navigateToGame(game.id)}
-                        >
-                          <View style={shStyles.gameRowLeft}>
-                            <ThemedText style={[shStyles.opponentText, { color: colors.text }]}>{game.location === 'Home' ? 'vs' : '@'} {game.opponent}</ThemedText>
-                            {(game.opponentKR || game.opponentRecord) && (
-                              <ThemedText style={[shStyles.krRecordText, { color: colors.textTertiary }]}>
-                                {game.opponentKR ? `${game.opponentKR} KR` : ''}{game.opponentKR && game.opponentRecord ? ' · ' : ''}{game.opponentRecord ?? ''}
+                        <View style={styles.recentRow}>
+                          <Pressable
+                            style={({ pressed }) => [{ flex: 1 }, pressed && { opacity: 0.7 }]}
+                            onPress={() => {
+                              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                              openSheet({ opponent: game.opponent, kr: game.opponentKR ?? 0, record: game.opponentRecord ?? '', gameId: game.id, gameStatus: game.status });
+                            }}
+                          >
+                            <ThemedText style={[shStyles.opponentText, { color: colors.text }]}>{game.location === 'Home' ? 'vs' : '@'} {game.opponent}{game.opponentKR ? ` (${game.opponentKR} KR)` : ''}</ThemedText>
+                            {game.opponentRecord && (
+                              <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                                {game.opponentRecord}
                               </ThemedText>
                             )}
-                          </View>
-                          <ThemedText style={[shStyles.upcomingDate, { color: colors.text }]}>
-                            {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
-                          </ThemedText>
-                          <IconSymbol name="chevron.right" size={13} color={colors.textTertiary + '80'} style={{ marginLeft: 8 }} />
-                        </Pressable>
+                            <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                              {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
+                            </ThemedText>
+                          </Pressable>
+                          <Pressable
+                            style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
+                            onPress={() => {
+                              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                              router.push(`/coach/game-detail?gameId=${game.id}` as any);
+                            }}
+                          >
+                            <ThemedText style={[styles.upcomingDateTime, { color: colors.textTertiary }]}>
+                              {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
+                            </ThemedText>
+                          </Pressable>
+                        </View>
                       </View>
                     ))}
                   </View>
@@ -456,56 +445,77 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
               );
             })()}
 
-            {/* Completed Games */}
+            {/* Completed Games (Recent block style) */}
             {(() => {
-              const completed = sortedGames.filter((g) => g.status === 'final');
+              const completed = sortedGames.filter((g) => g.status === 'final' && g.score);
               if (completed.length === 0) return null;
+
+              // Streak badge: show only if last 3 are all W or all L
+              const last3 = completed.slice(0, 3).map((g) => g.score?.charAt(0));
+              const allWin = last3.length === 3 && last3.every((r) => r === 'W');
+              const allLoss = last3.length === 3 && last3.every((r) => r === 'L');
+              const streakBadge = allWin ? '3W' : allLoss ? '3L' : null;
+
               return (
                 <>
-                  <ThemedText style={[shStyles.sectionLabel, { color: colors.textSecondary }]}>COMPLETED</ThemedText>
-                  <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                    {completed.map((game, index) => (
-                      <View key={game.id}>
-                        {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                        <Pressable
-                          style={({ pressed }) => [shStyles.gameRow, pressed && { opacity: 0.7 }]}
-                          onPress={() => navigateToGame(game.id)}
-                        >
-                          <View style={shStyles.gameRowLeft}>
-                            <ThemedText style={[shStyles.opponentText, { color: colors.text }]}>{game.location === 'Home' ? 'vs' : '@'} {game.opponent}</ThemedText>
-                            <ThemedText style={[shStyles.metaText, { color: colors.textSecondary }]}>
-                              {game.date} · {game.gameType ?? 'NON-CONF'}
-                            </ThemedText>
-                            {(game.opponentKR || game.opponentRecord) && (
-                              <Pressable
-                                onPress={(e) => {
-                                  e.stopPropagation?.();
-                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                                  openSheet({ opponent: game.opponent, kr: game.opponentKR ?? 0, record: game.opponentRecord ?? '', gameId: game.id, gameStatus: game.status });
-                                }}
-                                hitSlop={4}
-                              >
-                                <ThemedText style={[shStyles.krRecordText, { color: colors.textTertiary, textDecorationLine: 'underline' }]}>
-                                  {game.opponentKR ? `${game.opponentKR} KR` : ''}{game.opponentKR && game.opponentRecord ? ' · ' : ''}{game.opponentRecord ?? ''}
-                                </ThemedText>
-                              </Pressable>
-                            )}
-                          </View>
-                          <View style={shStyles.gameRowRight}>
-                            <View style={[shStyles.statusPill, { backgroundColor: colors.textTertiary + '18' }]}>
-                              <ThemedText style={[shStyles.statusText, { color: colors.textSecondary }]}>FINAL</ThemedText>
-                            </View>
-                            {game.score && (
-                              <ThemedText style={[shStyles.scoreText, {
-                                color: game.score.startsWith('W') ? '#f5f5f5' : game.score.startsWith('L') ? '#EF4444' : colors.text,
-                              }]}>
-                                {game.score}
-                              </ThemedText>
-                            )}
-                          </View>
-                        </Pressable>
+                  <View style={styles.recentHeader}>
+                    <ThemedText style={[shStyles.sectionLabel, { color: colors.textSecondary, marginBottom: 0 }]}>COMPLETED</ThemedText>
+                    {streakBadge && (
+                      <View style={[styles.miniStreakBadge, { backgroundColor: allWin ? '#4CAF5018' : '#EF444418' }]}>
+                        <ThemedText style={[styles.miniStreakText, { color: allWin ? '#4CAF50' : '#EF4444' }]}>
+                          {streakBadge}
+                        </ThemedText>
                       </View>
-                    ))}
+                    )}
+                  </View>
+                  <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                    {completed.map((game, index) => {
+                      const isWin = game.score?.startsWith('W');
+                      const isLoss = game.score?.startsWith('L');
+                      const scoreDisplay = game.score?.replace('-', '–') ?? '';
+                      return (
+                        <View key={game.id}>
+                          {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={styles.recentRow}>
+                            <Pressable
+                              style={({ pressed }) => [{ flex: 1 }, pressed && { opacity: 0.7 }]}
+                              onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                openSheet({ opponent: game.opponent, kr: game.opponentKR ?? 0, record: game.opponentRecord ?? '', gameId: game.id, gameStatus: game.status, score: game.score ?? '' });
+                              }}
+                            >
+                              <ThemedText style={[styles.recentOpponent, { color: colors.text }]}>
+                                {game.location === 'Home' ? 'vs' : '@'} {game.opponent}{game.opponentKR ? ` (${game.opponentKR} KR)` : ''}
+                              </ThemedText>
+                              {game.opponentRecord && (
+                                <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                                  {game.opponentRecord}
+                                </ThemedText>
+                              )}
+                              <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                                {game.date} · {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
+                              </ThemedText>
+                            </Pressable>
+                            <Pressable
+                              style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
+                              onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                router.push(`/coach/game-detail?gameId=${game.id}` as any);
+                              }}
+                            >
+                              <View style={[styles.recentPill, { backgroundColor: '#f5f5f518' }]}>
+                                <ThemedText style={[styles.recentPillText, { color: '#f5f5f5' }]}>
+                                  FINAL
+                                </ThemedText>
+                              </View>
+                              <ThemedText style={[styles.recentScore, { color: isWin ? '#f5f5f5' : isLoss ? '#EF4444' : colors.text }]}>
+                                {scoreDisplay}
+                              </ThemedText>
+                            </Pressable>
+                          </View>
+                        </View>
+                      );
+                    })}
                   </View>
                 </>
               );
@@ -688,39 +698,14 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
       {/* Opponent KR Bottom Sheet */}
       {oppKRSheet && (() => {
         const opp = oppKRSheet.opponent;
-        let h = 0;
-        for (let i = 0; i < opp.length; i++) h = ((h << 5) - h + opp.charCodeAt(i)) | 0;
-        const offKR = Math.round(oppKRSheet.kr * (0.48 + (Math.abs(h >> 2) % 10) / 100));
-        const defKR = oppKRSheet.kr - offKR + Math.round(oppKRSheet.kr * 0.02);
-        const FIRST_NAMES = ['Marcus', 'Jaylen', 'DeShawn', 'Tyler', 'Chris', 'Andre', 'Isaiah', 'Malik'];
-        const LAST_NAMES = ['Williams', 'Johnson', 'Brown', 'Davis', 'Jackson', 'Thomas', 'Harris', 'Robinson'];
-        const archetypeKeys = Object.keys(ARCHETYPE_LABELS) as Archetype[];
-        const KR_REASONS = [
-          'Rim Pressure', 'Offensive Rebounds', 'Transition Scoring', 'Pick-and-Roll',
-          'Three-Point Shooting', 'Ball Handling', 'Court Vision', 'Post Defense',
-          'Perimeter D', 'Help Defense', 'Fast Break', 'Mid-Range',
-          'Free Throw Rate', 'Turnover Creation', 'Screen Setting', 'Off-Ball Movement',
-        ];
-        const drivers = [0, 1, 2].map((i) => {
-          const fIdx = Math.abs((h >> (i * 3)) % FIRST_NAMES.length);
-          const lIdx = Math.abs((h >> (i * 3 + 1)) % LAST_NAMES.length);
-          const kr = oppKRSheet.kr + 5 - i * 3 - (Math.abs(h >> (i + 4)) % 4);
-          const archIdx = Math.abs((h >> (i * 5 + 2))) % archetypeKeys.length;
-          const r1 = Math.abs((h >> (i * 4 + 1))) % KR_REASONS.length;
-          const r2 = Math.abs((h >> (i * 4 + 3))) % KR_REASONS.length;
-          const reasons = [KR_REASONS[r1], KR_REASONS[r2 === r1 ? (r2 + 1) % KR_REASONS.length : r2]];
-          return {
-            name: `${FIRST_NAMES[(fIdx + i) % FIRST_NAMES.length]} ${LAST_NAMES[(lIdx + i) % LAST_NAMES.length]}`,
-            kr,
-            archetype: ARCHETYPE_LABELS[archetypeKeys[archIdx]],
-            reasons,
-          };
-        });
+        const sheetGameId = oppKRSheet.gameId ?? '';
+        const impact = oppKRSheet.gameStatus === 'final' && sheetGameId ? FMU_GAME_IMPACT[sheetGameId] : null;
+        const pregame = oppKRSheet.gameStatus === 'upcoming' && sheetGameId ? FMU_PREGAME[sheetGameId] : null;
 
         return (
           <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
             {/* Backdrop */}
-            <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)', opacity: backdropAnim }]}>
+            <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.25)', opacity: backdropAnim }]}>
               <Pressable style={StyleSheet.absoluteFill} onPress={closeSheet} />
             </Animated.View>
 
@@ -735,94 +720,238 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                   right: 0,
                   bottom: 0,
                   height: SHEET_HEIGHT,
-                  transform: [{ translateY: Animated.add(sheetAnim, sheetDragY) }],
+                  transform: [{ translateY: sheetAnim }],
                 },
               ]}
             >
-              {/* Handle — drag to dismiss */}
-              <View {...sheetPanResponder.panHandlers} style={{ alignItems: 'center', paddingVertical: 10 }}>
+              {/* Handle pill — tap or swipe down to close */}
+              <Pressable
+                onPress={closeSheet}
+                onTouchStart={(e) => { touchStartY.current = e.nativeEvent.pageY; }}
+                onTouchEnd={(e) => {
+                  const dy = e.nativeEvent.pageY - touchStartY.current;
+                  if (dy > 30) closeSheet();
+                }}
+                style={{ alignItems: 'center', paddingVertical: 20, paddingHorizontal: 40 }}
+                hitSlop={20}
+              >
                 <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: colors.border }} />
-              </View>
+              </Pressable>
 
-              {/* Scrollable sheet body */}
+              {/* Sheet body */}
               <ScrollView
                 style={{ flex: 1 }}
                 contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
                 showsVerticalScrollIndicator={false}
                 bounces
+                scrollEventThrottle={16}
+                onScroll={(e) => { sheetScrollOffset.current = e.nativeEvent.contentOffset.y; }}
+                onScrollEndDrag={(e) => {
+                  if (sheetScrollOffset.current <= 0 && e.nativeEvent.contentOffset.y < -40) {
+                    closeSheet();
+                  }
+                }}
               >
                 {/* Header */}
                 <View style={{ alignItems: 'center', marginBottom: Spacing.md }}>
-                  <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>{opp}</ThemedText>
+                  <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>{opp}{oppKRSheet.kr ? ` (${oppKRSheet.kr} KR)` : ''}</ThemedText>
                   <ThemedText style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>{oppKRSheet.record}</ThemedText>
-                </View>
-
-                {/* KR + Off/Def */}
-                <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 12, marginBottom: Spacing.md }}>
-                  <View style={[shStyles.oppKRPill, { backgroundColor: colors.backgroundSecondary }]}>
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.textTertiary }}>KR</ThemedText>
-                    <ThemedText style={{ fontSize: 20, fontWeight: '800', color: colors.text }}>{oppKRSheet.kr}</ThemedText>
-                  </View>
-                  <View style={[shStyles.oppKRPill, { backgroundColor: colors.backgroundSecondary }]}>
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.textTertiary }}>OFF</ThemedText>
-                    <ThemedText style={{ fontSize: 20, fontWeight: '800', color: colors.text }}>{offKR}</ThemedText>
-                  </View>
-                  <View style={[shStyles.oppKRPill, { backgroundColor: colors.backgroundSecondary }]}>
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.textTertiary }}>DEF</ThemedText>
-                    <ThemedText style={{ fontSize: 20, fontWeight: '800', color: colors.text }}>{defKR}</ThemedText>
-                  </View>
-                </View>
-
-                {/* BPR for completed games, KR Drivers for upcoming */}
-                {oppKRSheet.gameStatus === 'final' && oppKRSheet.gameId && FMU_GAME_BPR[oppKRSheet.gameId] ? (
-                  <>
-                    <ThemedText style={{ fontSize: 12, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 8 }}>
-                      PLAYER IMPACT
+                  {oppKRSheet.score ? (
+                    <ThemedText style={{ fontSize: 15, fontWeight: '700', color: oppKRSheet.score.startsWith('W') ? '#4ADE80' : oppKRSheet.score.startsWith('L') ? '#EF4444' : colors.text, marginTop: 4 }}>
+                      {oppKRSheet.score.replace('-', '–')}
                     </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                      {FMU_GAME_BPR[oppKRSheet.gameId].slice(0, 3).map((p, i) => (
+                  ) : null}
+                </View>
+
+                {/* TGIS + PGIS for completed games, KR Drivers for upcoming */}
+                {impact ? (
+                    <>
+                      {/* TGIS */}
+                      <View style={{ paddingHorizontal: Spacing.md, marginBottom: Spacing.md }}>
+                        <ThemedText style={{ fontSize: 18, fontWeight: '700', color: getTGISColor(impact.tgis) }}>
+                          TGIS: {impact.tgis > 0 ? '+' : ''}{impact.tgis} <ThemedText style={{ fontSize: 14, fontWeight: '500', color: colors.textSecondary }}>({impact.tgisLabel})</ThemedText>
+                        </ThemedText>
+                        {impact.drivers.map((d, i) => (
+                          <ThemedText key={i} style={{ fontSize: 12, color: colors.textTertiary, marginTop: i === 0 ? 6 : 2 }}>
+                            {'\u2022'} {d}
+                          </ThemedText>
+                        ))}
+                      </View>
+
+                      {/* Starters */}
+                      {impact.starters.length > 0 && (
+                        <>
+                          <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                            STARTERS
+                          </ThemedText>
+                          <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
+                            {impact.starters.map((p, i) => (
+                              <View key={i}>
+                                {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                                <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
+                                  <View style={{ flex: 1 }}>
+                                    <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
+                                      {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
+                                    </ThemedText>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, gap: 8 }}>
+                                      <ThemedText style={{ fontSize: 13, fontWeight: '600', color: getPGISColor(p.pgis) }}>
+                                        PGIS {p.pgis > 0 ? '+' : ''}{p.pgis} <ThemedText style={{ fontWeight: '400', fontSize: 11 }}>({p.pgisLabel})</ThemedText>
+                                      </ThemedText>
+                                    </View>
+                                    <ThemedText style={{ fontSize: 11, color: colors.textTertiary, marginTop: 2, fontStyle: 'italic' }}>{p.impactReason}</ThemedText>
+                                  </View>
+                                  <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
+                                </View>
+                              </View>
+                            ))}
+                          </View>
+                        </>
+                      )}
+
+                      {/* Bench */}
+                      {impact.bench.length > 0 && (
+                        <>
+                          <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                            BENCH
+                          </ThemedText>
+                          <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                            {impact.bench.map((p, i) => (
+                              <View key={i}>
+                                {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                                <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
+                                  <View style={{ flex: 1 }}>
+                                    <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
+                                      {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
+                                    </ThemedText>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, gap: 8 }}>
+                                      <ThemedText style={{ fontSize: 13, fontWeight: '600', color: getPGISColor(p.pgis) }}>
+                                        PGIS {p.pgis > 0 ? '+' : ''}{p.pgis} <ThemedText style={{ fontWeight: '400', fontSize: 11 }}>({p.pgisLabel})</ThemedText>
+                                      </ThemedText>
+                                    </View>
+                                    <ThemedText style={{ fontSize: 11, color: colors.textTertiary, marginTop: 2, fontStyle: 'italic' }}>{p.impactReason}</ThemedText>
+                                  </View>
+                                  <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
+                                </View>
+                              </View>
+                            ))}
+                          </View>
+                        </>
+                      )}
+                    </>
+                ) : pregame ? (
+                  <>
+                    {/* Win Outlook + KR Gap */}
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md, marginBottom: Spacing.md, gap: 10 }}>
+                      <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, backgroundColor: pregame.outlook === 'Favored' ? '#4ADE8020' : pregame.outlook === 'Underdog' ? '#EF444420' : '#F59E0B20' }}>
+                        <ThemedText style={{ fontSize: 13, fontWeight: '700', color: pregame.outlook === 'Favored' ? '#4ADE80' : pregame.outlook === 'Underdog' ? '#EF4444' : '#F59E0B' }}>
+                          {pregame.outlook}
+                        </ThemedText>
+                      </View>
+                      <ThemedText style={{ fontSize: 13, color: colors.textSecondary }}>
+                        KR Gap: {pregame.krGap > 0 ? '+' : ''}{pregame.krGap} ({pregame.fmuKR} vs {pregame.oppKR})
+                      </ThemedText>
+                    </View>
+
+                    {/* Keys to Win */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      KEYS TO WIN
+                    </ThemedText>
+                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
+                      {pregame.keysToWin.map((key, i) => (
+                        <View key={i}>
+                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
+                            <ThemedText style={{ fontSize: 16 }}>{i === 0 ? '\uD83C\uDFAF' : i === 1 ? '\uD83D\uDEE1\uFE0F' : '\uD83D\uDD11'}</ThemedText>
+                            <ThemedText style={{ fontSize: 13, fontWeight: '500', color: colors.text, flex: 1 }}>{key}</ThemedText>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/* Opponent Strengths */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      OPP STRENGTHS
+                    </ThemedText>
+                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
+                      {pregame.oppStrengths.map((s, i) => (
+                        <View key={i}>
+                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
+                            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' }} />
+                            <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{s}</ThemedText>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/* Opponent Vulnerabilities */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      OPP VULNERABILITIES
+                    </ThemedText>
+                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
+                      {pregame.oppVulnerabilities.map((v, i) => (
+                        <View key={i}>
+                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
+                            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#4ADE80' }} />
+                            <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{v}</ThemedText>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/* Our Swing Players */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      SWING PLAYERS
+                    </ThemedText>
+                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
+                      {pregame.swingPlayers.map((p, i) => (
                         <View key={i}>
                           {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
                           <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
                             <View style={{ flex: 1 }}>
                               <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                                {p.name} <ThemedText style={{ fontSize: 13, color: colors.textTertiary, fontWeight: '400' }}>{'\u2014'} {p.archetype}</ThemedText>
+                                {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
                               </ThemedText>
-                              <ThemedText style={{ fontSize: 13, fontWeight: '600', color: getBPRColor(p.bpr), marginTop: 2 }}>
-                                BPR {p.bpr > 0 ? '+' : ''}{p.bpr} <ThemedText style={{ fontWeight: '400', fontSize: 12 }}>({p.bprLabel})</ThemedText>
-                              </ThemedText>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3, gap: 6 }}>
+                                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, backgroundColor: colors.backgroundSecondary, borderWidth: 1, borderColor: colors.border }}>
+                                  <ThemedText style={{ fontSize: 10, fontWeight: '600', color: colors.textSecondary }}>{p.swingTag}</ThemedText>
+                                </View>
+                                <ThemedText style={{ fontSize: 11, color: colors.textTertiary, fontStyle: 'italic' }}>{p.roleTarget}</ThemedText>
+                              </View>
                             </View>
-                            <ThemedText style={{ fontSize: 12, fontWeight: '500', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
+                            <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
                           </View>
                         </View>
                       ))}
                     </View>
-                  </>
-                ) : (
-                  <>
-                    <ThemedText style={{ fontSize: 12, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 8 }}>
-                      TOP KR DRIVERS
+
+                    {/* Their Threats */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      THEIR THREATS
                     </ThemedText>
                     <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                      {drivers.map((d, i) => (
+                      {pregame.oppThreats.map((t, i) => (
                         <View key={i}>
                           {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ padding: Spacing.md }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                              <ThemedText style={{ flex: 1, fontSize: 14, fontWeight: '500', color: colors.text }}>
-                                {d.name} <ThemedText style={{ fontSize: 13, color: colors.textTertiary, fontWeight: '400' }}>— {d.archetype}</ThemedText>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
+                            <View style={{ flex: 1 }}>
+                              <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
+                                {t.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{t.archetype}</ThemedText>
                               </ThemedText>
-                              <ThemedText style={{ fontSize: 14, fontWeight: '700', color: colors.text, marginLeft: 8 }}>{d.kr} KR</ThemedText>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
+                                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, backgroundColor: '#EF444415' }}>
+                                  <ThemedText style={{ fontSize: 10, fontWeight: '600', color: '#EF4444' }}>{t.threatTag}</ThemedText>
+                                </View>
+                              </View>
                             </View>
-                            <ThemedText style={{ fontSize: 12, color: colors.textTertiary, marginTop: 3 }}>
-                              {d.reasons.join(' \u2022 ')}
-                            </ThemedText>
+                            <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {t.kr}</ThemedText>
                           </View>
                         </View>
                       ))}
                     </View>
                   </>
-                )}
+                ) : null}
               </ScrollView>
             </Animated.View>
           </View>
@@ -882,7 +1011,7 @@ const shStyles = StyleSheet.create({
   newsHeadline: { fontSize: 15, fontWeight: '500', lineHeight: 20 },
   newsDate: { fontSize: 12, marginTop: 4 },
   upcomingDate: { fontSize: 13, fontWeight: '700' },
-  oppSheet: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, paddingHorizontal: Spacing.md, paddingBottom: 40 },
+  oppSheet: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, paddingHorizontal: Spacing.md, paddingBottom: 40, shadowColor: '#000', shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.3, shadowRadius: 12, elevation: 20 },
   oppKRPill: { alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, borderRadius: BorderRadius.lg, gap: 2 },
   liveCard: { flexDirection: 'row', alignItems: 'center', borderRadius: BorderRadius.lg, padding: Spacing.md, marginBottom: Spacing.md, borderLeftWidth: 3, borderLeftColor: '#EF4444', gap: 10 },
   liveCardDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' },
@@ -914,6 +1043,7 @@ function SportsHome() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ hubTab?: string }>();
 
   // Active hub tab index (synced with PagerView)
@@ -957,6 +1087,39 @@ function SportsHome() {
 
   // KR details sheet
   const [krSheetVisible, setKrSheetVisible] = useState(false);
+
+  // Recent BPR bottom sheet — always mounted, visibility toggled via animation
+  const [recentSheet, setRecentSheet] = useState<{ opponent: string; kr: number; record: string; gameId: string; gameStatus: string; score?: string } | null>(null);
+  const RECENT_SHEET_HEIGHT = Dimensions.get('window').height * 0.5;
+  const recentSheetScrollOffset = useRef(0);
+  const recentSheetAnim = useRef(new Animated.Value(RECENT_SHEET_HEIGHT)).current;
+  const recentBackdropAnim = useRef(new Animated.Value(0)).current;
+  const recentTouchStartY = useRef(0);
+  const recentSheetOpen = useRef(false);
+
+  const openRecentSheet = useCallback((data: { opponent: string; kr: number; record: string; gameId: string; gameStatus: string; score?: string }) => {
+    recentSheetAnim.stopAnimation();
+    recentBackdropAnim.stopAnimation();
+    recentSheetOpen.current = true;
+    setRecentSheet(data);
+    recentSheetAnim.setValue(RECENT_SHEET_HEIGHT);
+    Animated.parallel([
+      Animated.spring(recentSheetAnim, { toValue: 0, useNativeDriver: true, damping: 25, stiffness: 300 }),
+      Animated.timing(recentBackdropAnim, { toValue: 1, duration: 250, useNativeDriver: true }),
+    ]).start();
+  }, [RECENT_SHEET_HEIGHT, recentSheetAnim, recentBackdropAnim]);
+
+  const closeRecentSheet = useCallback(() => {
+    recentSheetOpen.current = false;
+    recentSheetAnim.stopAnimation();
+    recentBackdropAnim.stopAnimation();
+    Animated.parallel([
+      Animated.spring(recentSheetAnim, { toValue: RECENT_SHEET_HEIGHT, useNativeDriver: true, damping: 28, stiffness: 180 }),
+      Animated.timing(recentBackdropAnim, { toValue: 0, duration: 350, useNativeDriver: true }),
+    ]).start(() => {
+      if (!recentSheetOpen.current) setRecentSheet(null);
+    });
+  }, [RECENT_SHEET_HEIGHT, recentSheetAnim, recentBackdropAnim]);
 
   // Season year picker
   const [selectedYear, setSelectedYear] = useState('2025-26');
@@ -1065,82 +1228,132 @@ function SportsHome() {
           </View>
         </View>
 
-        {/* ===== PREGAME SCOUTING REPORT (button) ===== */}
-        {DEMO_TODAY.nextGame && (
-          <Pressable
-            style={({ pressed }) => [
-              styles.pregamePacketButton,
-              { backgroundColor: colors.backgroundSecondary },
-              pressed && { opacity: 0.7 },
-            ]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.push(`/coach/game-detail?gameId=${FMU_NEXT_GAME_ID}` as any);
-            }}
-          >
-            <ThemedText style={[styles.pregamePacketText, { color: colors.text }]}>
-              Pregame Scouting Report
-            </ThemedText>
-          </Pressable>
-        )}
-
-        {/* ===== 2) NEXT + LAST GAME ===== */}
-        <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
-          {/* Next Game → Game Detail (pregame) */}
-          {DEMO_TODAY.nextGame ? (
+        {/* ===== 2) UPCOMING (Next 3) ===== */}
+        {(() => {
+          const upcomingGames = FMU_GAMES.filter((g) => g.status === 'upcoming').slice(0, 2);
+          if (upcomingGames.length === 0) return null;
+          return (
             <>
-              <Pressable
-                style={({ pressed }) => [styles.statusRowTappable, pressed && { opacity: 0.7 }]}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  router.push(`/coach/game-detail?gameId=${FMU_NEXT_GAME_ID}` as any);
-                }}
-              >
-                <View style={styles.statusRowContent}>
-                  <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-                    Next Game
-                  </ThemedText>
-                  <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-                    {DEMO_TODAY.nextGame.date} {DEMO_TODAY.nextGame.location === 'Home' ? 'vs' : '@'} {DEMO_TODAY.nextGame.opponent}
-                  </ThemedText>
-                </View>
-              </Pressable>
-              <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
-            </>
-          ) : (
-            <>
-              <View style={styles.statusRow}>
-                <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-                  Next Game
-                </ThemedText>
-                <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-                  No upcoming games
-                </ThemedText>
+              <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary, marginTop: Spacing.md, marginBottom: 0 }]}>
+                UPCOMING
+              </ThemedText>
+              <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
+                {upcomingGames.map((game, index) => (
+                  <View key={game.id}>
+                    {index > 0 && <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />}
+                    <View style={styles.recentRow}>
+                      <Pressable
+                        style={({ pressed }) => [{ flex: 1 }, pressed && { opacity: 0.7 }]}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          openRecentSheet({ opponent: game.opponent, kr: game.opponentKR ?? 0, record: game.opponentRecord ?? '', gameId: game.id, gameStatus: game.status });
+                        }}
+                      >
+                        <ThemedText style={[styles.recentOpponent, { color: colors.text }]}>
+                          {game.location === 'Home' ? 'vs' : '@'} {game.opponent}{game.opponentKR ? ` (${game.opponentKR} KR)` : ''}
+                        </ThemedText>
+                        {game.opponentRecord && (
+                          <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                            {game.opponentRecord}
+                          </ThemedText>
+                        )}
+                        <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                          {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
+                        </ThemedText>
+                      </Pressable>
+                      <Pressable
+                        style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          router.push(`/coach/game-detail?gameId=${game.id}` as any);
+                        }}
+                      >
+                        <ThemedText style={[styles.upcomingDateTime, { color: colors.textTertiary }]}>
+                          {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
+                        </ThemedText>
+                      </Pressable>
+                    </View>
+                  </View>
+                ))}
               </View>
-              <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
             </>
-          )}
+          );
+        })()}
 
-          {/* Last Game → Game Detail (postgame) */}
-          <Pressable
-            style={({ pressed }) => [styles.statusRowTappable, pressed && { opacity: 0.7 }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.push(`/coach/game-detail?gameId=${LAST_GAME_ID}` as any);
-            }}
-          >
-            <View style={styles.statusRowContent}>
-              <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-                Last Game
-              </ThemedText>
-              <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-                {DEMO_TODAY.lastGame.result} {DEMO_TODAY.lastGame.score} {DEMO_TODAY.lastGame.location === 'Home' ? 'vs' : '@'} {DEMO_TODAY.lastGame.opponent}
-              </ThemedText>
-            </View>
-          </Pressable>
-        </View>
+        {/* ===== 3) RECENT (Last 3) ===== */}
+        {(() => {
+          const recentGames = FMU_GAMES.filter((g) => g.status === 'final' && g.score).slice(-3).reverse();
+          if (recentGames.length === 0) return null;
 
-        {/* ===== 3) CONFERENCE PULSE ===== */}
+          // Streak badge: show only if all 3 are W or all 3 are L
+          const results = recentGames.map((g) => g.score?.charAt(0));
+          const allWin = results.length === 3 && results.every((r) => r === 'W');
+          const allLoss = results.length === 3 && results.every((r) => r === 'L');
+          const streakBadge = allWin ? '3W' : allLoss ? '3L' : null;
+
+          return (
+            <>
+              <View style={styles.recentHeader}>
+                <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary, marginTop: Spacing.md, marginBottom: 0 }]}>
+                  RECENT
+                </ThemedText>
+                {streakBadge && (
+                  <View style={[styles.miniStreakBadge, { backgroundColor: allWin ? '#4CAF5018' : '#EF444418' }]}>
+                    <ThemedText style={[styles.miniStreakText, { color: allWin ? '#4CAF50' : '#EF4444' }]}>
+                      {streakBadge}
+                    </ThemedText>
+                  </View>
+                )}
+              </View>
+              <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
+                {recentGames.map((game, index) => {
+                  const isWin = game.score?.startsWith('W');
+                  const isLoss = game.score?.startsWith('L');
+                  // Format score: "W 74-96" → "W 74–96"
+                  const scoreDisplay = game.score?.replace('-', '–') ?? '';
+                  return (
+                    <View key={game.id}>
+                    {index > 0 && <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />}
+                    <Pressable
+                      style={({ pressed }) => [styles.recentRow, pressed && { opacity: 0.7 }]}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        openRecentSheet({ opponent: game.opponent, kr: game.opponentKR ?? 0, record: game.opponentRecord ?? '', gameId: game.id, gameStatus: game.status, score: game.score ?? '' });
+                      }}
+                    >
+                      <View style={{ flex: 1 }}>
+                        <ThemedText style={[styles.recentOpponent, { color: colors.text }]}>
+                          {game.location === 'Home' ? 'vs' : '@'} {game.opponent}{game.opponentKR ? ` (${game.opponentKR} KR)` : ''}
+                        </ThemedText>
+                        {game.opponentRecord && (
+                          <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                            {game.opponentRecord}
+                          </ThemedText>
+                        )}
+                        <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
+                          {game.date} · {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
+                        </ThemedText>
+                      </View>
+                      <View style={styles.recentRight}>
+                        <View style={[styles.recentPill, { backgroundColor: '#f5f5f518' }]}>
+                          <ThemedText style={[styles.recentPillText, { color: '#f5f5f5' }]}>
+                            FINAL
+                          </ThemedText>
+                        </View>
+                        <ThemedText style={[styles.recentScore, { color: isWin ? '#f5f5f5' : isLoss ? '#EF4444' : colors.text }]}>
+                          {scoreDisplay}
+                        </ThemedText>
+                      </View>
+                    </Pressable>
+                    </View>
+                  );
+                })}
+              </View>
+            </>
+          );
+        })()}
+
+        {/* ===== 4) CONFERENCE PULSE ===== */}
         <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
           CONFERENCE PULSE
         </ThemedText>
@@ -1295,7 +1508,7 @@ function SportsHome() {
           <ProgramContextSection />
         </ScrollView>
 
-        {/* Page 6: Recruiting (Player Pool) */}
+        {/* Page 6: Recruiting (National Pool) */}
         <View key="recruiting" style={{ flex: 1 }}>
           <PlayerPoolContent />
         </View>
@@ -1315,6 +1528,272 @@ function SportsHome() {
         visible={krSheetVisible}
         onClose={() => setKrSheetVisible(false)}
       />
+
+      {/* Recent BPR Bottom Sheet */}
+      {recentSheet && (() => {
+        const opp = recentSheet.opponent;
+        const recentImpact = recentSheet.gameStatus === 'final' && recentSheet.gameId ? FMU_GAME_IMPACT[recentSheet.gameId] : null;
+        const recentPregame = recentSheet.gameStatus === 'upcoming' && recentSheet.gameId ? FMU_PREGAME[recentSheet.gameId] : null;
+        return (
+          <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+            {/* Backdrop */}
+            <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.25)', opacity: recentBackdropAnim }]}>
+              <Pressable style={StyleSheet.absoluteFill} onPress={closeRecentSheet} />
+            </Animated.View>
+
+            {/* Sheet */}
+            <Animated.View
+              style={[
+                shStyles.oppSheet,
+                {
+                  backgroundColor: colors.background,
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: RECENT_SHEET_HEIGHT,
+                  transform: [{ translateY: recentSheetAnim }],
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: -4 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 12,
+                  elevation: 20,
+                },
+              ]}
+            >
+              {/* Handle pill — tap or swipe down to close */}
+              <Pressable
+                onPress={closeRecentSheet}
+                onTouchStart={(e) => { recentTouchStartY.current = e.nativeEvent.pageY; }}
+                onTouchEnd={(e) => {
+                  const dy = e.nativeEvent.pageY - recentTouchStartY.current;
+                  if (dy > 30) closeRecentSheet();
+                }}
+                style={{ alignItems: 'center', paddingVertical: 20, paddingHorizontal: 40 }}
+                hitSlop={20}
+              >
+                <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: colors.border }} />
+              </Pressable>
+
+              {/* Sheet body */}
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
+                showsVerticalScrollIndicator={false}
+                bounces
+                scrollEventThrottle={16}
+                onScroll={(e) => { recentSheetScrollOffset.current = e.nativeEvent.contentOffset.y; }}
+                onScrollEndDrag={(e) => {
+                  if (recentSheetScrollOffset.current <= 0 && e.nativeEvent.contentOffset.y < -40) {
+                    closeRecentSheet();
+                  }
+                }}
+              >
+                {/* Header */}
+                <View style={{ alignItems: 'center', marginBottom: Spacing.md }}>
+                  <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>{opp}{recentSheet.kr ? ` (${recentSheet.kr} KR)` : ''}</ThemedText>
+                  <ThemedText style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>{recentSheet.record}</ThemedText>
+                  {recentSheet.score ? (
+                    <ThemedText style={{ fontSize: 15, fontWeight: '700', color: recentSheet.score.startsWith('W') ? '#4ADE80' : recentSheet.score.startsWith('L') ? '#EF4444' : colors.text, marginTop: 4 }}>
+                      {recentSheet.score.replace('-', '–')}
+                    </ThemedText>
+                  ) : null}
+                </View>
+
+                {/* TGIS + PGIS for completed games */}
+                {recentImpact ? (
+                    <>
+                      {/* TGIS */}
+                      <View style={{ paddingHorizontal: Spacing.md, marginBottom: Spacing.md }}>
+                        <ThemedText style={{ fontSize: 18, fontWeight: '700', color: getTGISColor(recentImpact.tgis) }}>
+                          TGIS: {recentImpact.tgis > 0 ? '+' : ''}{recentImpact.tgis} <ThemedText style={{ fontSize: 14, fontWeight: '500', color: colors.textSecondary }}>({recentImpact.tgisLabel})</ThemedText>
+                        </ThemedText>
+                        {recentImpact.drivers.map((d, i) => (
+                          <ThemedText key={i} style={{ fontSize: 12, color: colors.textTertiary, marginTop: i === 0 ? 6 : 2 }}>
+                            {'\u2022'} {d}
+                          </ThemedText>
+                        ))}
+                      </View>
+
+                      {/* Starters */}
+                      {recentImpact.starters.length > 0 && (
+                        <>
+                          <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                            STARTERS
+                          </ThemedText>
+                          <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
+                            {recentImpact.starters.map((p, i) => (
+                              <View key={i}>
+                                {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                                <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
+                                  <View style={{ flex: 1 }}>
+                                    <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
+                                      {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
+                                    </ThemedText>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, gap: 8 }}>
+                                      <ThemedText style={{ fontSize: 13, fontWeight: '600', color: getPGISColor(p.pgis) }}>
+                                        PGIS {p.pgis > 0 ? '+' : ''}{p.pgis} <ThemedText style={{ fontWeight: '400', fontSize: 11 }}>({p.pgisLabel})</ThemedText>
+                                      </ThemedText>
+                                    </View>
+                                    <ThemedText style={{ fontSize: 11, color: colors.textTertiary, marginTop: 2, fontStyle: 'italic' }}>{p.impactReason}</ThemedText>
+                                  </View>
+                                  <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
+                                </View>
+                              </View>
+                            ))}
+                          </View>
+                        </>
+                      )}
+
+                      {/* Bench */}
+                      {recentImpact.bench.length > 0 && (
+                        <>
+                          <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                            BENCH
+                          </ThemedText>
+                          <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                            {recentImpact.bench.map((p, i) => (
+                              <View key={i}>
+                                {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                                <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
+                                  <View style={{ flex: 1 }}>
+                                    <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
+                                      {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
+                                    </ThemedText>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, gap: 8 }}>
+                                      <ThemedText style={{ fontSize: 13, fontWeight: '600', color: getPGISColor(p.pgis) }}>
+                                        PGIS {p.pgis > 0 ? '+' : ''}{p.pgis} <ThemedText style={{ fontWeight: '400', fontSize: 11 }}>({p.pgisLabel})</ThemedText>
+                                      </ThemedText>
+                                    </View>
+                                    <ThemedText style={{ fontSize: 11, color: colors.textTertiary, marginTop: 2, fontStyle: 'italic' }}>{p.impactReason}</ThemedText>
+                                  </View>
+                                  <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
+                                </View>
+                              </View>
+                            ))}
+                          </View>
+                        </>
+                      )}
+                    </>
+                ) : recentPregame ? (
+                  <>
+                    {/* Win Outlook + KR Gap */}
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md, marginBottom: Spacing.md, gap: 10 }}>
+                      <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, backgroundColor: recentPregame.outlook === 'Favored' ? '#4ADE8020' : recentPregame.outlook === 'Underdog' ? '#EF444420' : '#F59E0B20' }}>
+                        <ThemedText style={{ fontSize: 13, fontWeight: '700', color: recentPregame.outlook === 'Favored' ? '#4ADE80' : recentPregame.outlook === 'Underdog' ? '#EF4444' : '#F59E0B' }}>
+                          {recentPregame.outlook}
+                        </ThemedText>
+                      </View>
+                      <ThemedText style={{ fontSize: 13, color: colors.textSecondary }}>
+                        KR Gap: {recentPregame.krGap > 0 ? '+' : ''}{recentPregame.krGap} ({recentPregame.fmuKR} vs {recentPregame.oppKR})
+                      </ThemedText>
+                    </View>
+
+                    {/* Keys to Win */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      KEYS TO WIN
+                    </ThemedText>
+                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
+                      {recentPregame.keysToWin.map((key, i) => (
+                        <View key={i}>
+                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
+                            <ThemedText style={{ fontSize: 16 }}>{i === 0 ? '\uD83C\uDFAF' : i === 1 ? '\uD83D\uDEE1\uFE0F' : '\uD83D\uDD11'}</ThemedText>
+                            <ThemedText style={{ fontSize: 13, fontWeight: '500', color: colors.text, flex: 1 }}>{key}</ThemedText>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/* Opponent Strengths */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      OPP STRENGTHS
+                    </ThemedText>
+                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
+                      {recentPregame.oppStrengths.map((s, i) => (
+                        <View key={i}>
+                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
+                            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' }} />
+                            <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{s}</ThemedText>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/* Opponent Vulnerabilities */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      OPP VULNERABILITIES
+                    </ThemedText>
+                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
+                      {recentPregame.oppVulnerabilities.map((v, i) => (
+                        <View key={i}>
+                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
+                            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#4ADE80' }} />
+                            <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{v}</ThemedText>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/* Our Swing Players */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      SWING PLAYERS
+                    </ThemedText>
+                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
+                      {recentPregame.swingPlayers.map((p, i) => (
+                        <View key={i}>
+                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
+                            <View style={{ flex: 1 }}>
+                              <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
+                                {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
+                              </ThemedText>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3, gap: 6 }}>
+                                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, backgroundColor: colors.backgroundSecondary, borderWidth: 1, borderColor: colors.border }}>
+                                  <ThemedText style={{ fontSize: 10, fontWeight: '600', color: colors.textSecondary }}>{p.swingTag}</ThemedText>
+                                </View>
+                                <ThemedText style={{ fontSize: 11, color: colors.textTertiary, fontStyle: 'italic' }}>{p.roleTarget}</ThemedText>
+                              </View>
+                            </View>
+                            <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/* Their Threats */}
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
+                      THEIR THREATS
+                    </ThemedText>
+                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                      {recentPregame.oppThreats.map((t, i) => (
+                        <View key={i}>
+                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
+                            <View style={{ flex: 1 }}>
+                              <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
+                                {t.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{t.archetype}</ThemedText>
+                              </ThemedText>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
+                                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, backgroundColor: '#EF444415' }}>
+                                  <ThemedText style={{ fontSize: 10, fontWeight: '600', color: '#EF4444' }}>{t.threatTag}</ThemedText>
+                                </View>
+                              </View>
+                            </View>
+                            <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {t.kr}</ThemedText>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+                  </>
+                ) : null}
+              </ScrollView>
+            </Animated.View>
+          </View>
+        );
+      })()}
     </View>
   );
 }
@@ -2239,6 +2718,139 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: '600',
+  },
+
+  // Next Game Card (Home)
+  nextGameCardHome: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  nextLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  nextOpponent: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  nextMeta: {
+    fontSize: 13,
+    marginTop: 2,
+  },
+
+  // Recent (Last 3) Section
+  recentHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: Spacing.sm,
+  },
+  miniStreakBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    marginTop: Spacing.md,
+  },
+  miniStreakText: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  recentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: Spacing.md,
+  },
+  recentOpponent: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  recentMeta: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  recentRight: {
+    alignItems: 'flex-end',
+    gap: 4,
+    marginLeft: 12,
+  },
+  recentPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+  },
+  recentPillText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  recentScore: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  upcomingDateTime: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+
+  // BPR inline panel (recent games)
+  bprPanel: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: 4,
+    paddingBottom: Spacing.md,
+  },
+  bprPanelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 7,
+  },
+  bprPanelName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  bprPanelValue: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  bprPanelLabel: {
+    fontWeight: '400',
+    fontSize: 12,
+  },
+  bprPanelKr: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginLeft: 12,
+  },
+
+  // Schedule Row (upcoming games — matches games.tsx)
+  scheduleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: Spacing.md,
+    gap: 8,
+  },
+  scheduleDateCol: {
+    width: 70,
+  },
+  scheduleDateText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  scheduleLocationText: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  scheduleOpponent: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '500',
   },
 
   // Action Card

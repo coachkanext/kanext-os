@@ -610,7 +610,7 @@ export default function CoachProgramContextScreen() {
 
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      router.back();
+      router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
     } catch (e) {
       console.error('Failed to save program context:', e);
     }
@@ -637,7 +637,7 @@ export default function CoachProgramContextScreen() {
                   if (tab.id === 'program-context') return;
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   if (tab.id === 'home' || tab.id === 'roster') {
-                    router.back();
+                    router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
                   } else if (tab.route) {
                     router.replace(tab.route as any);
                   }

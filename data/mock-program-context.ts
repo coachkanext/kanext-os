@@ -99,24 +99,24 @@ export const OFFENSIVE_STYLE_CLUSTERS: Record<OffensiveStyle, { shooting: number
 
 // Cluster weight mappings for defensive styles
 // Defensive clusters (sum = 47 for each system)
-export const DEFENSIVE_STYLE_CLUSTERS: Record<DefensiveStyle, { on_ball_defense: number; team_defense: number; rebounding: number; frame: number }> = {
-  containment_man: { on_ball_defense: 18, team_defense: 15, rebounding: 8, frame: 6 },
-  pack_line: { on_ball_defense: 12, team_defense: 18, rebounding: 10, frame: 7 },
-  pressure_man: { on_ball_defense: 20, team_defense: 15, rebounding: 5, frame: 7 },
-  switch_everything: { on_ball_defense: 16, team_defense: 15, rebounding: 7, frame: 9 },
-  ice_no_middle: { on_ball_defense: 17, team_defense: 16, rebounding: 7, frame: 7 },
-  zone_structured: { on_ball_defense: 10, team_defense: 20, rebounding: 10, frame: 7 },
-  matchup_zone: { on_ball_defense: 13, team_defense: 19, rebounding: 8, frame: 7 },
-  press: { on_ball_defense: 19, team_defense: 16, rebounding: 5, frame: 7 },
-  junk_special: { on_ball_defense: 14, team_defense: 18, rebounding: 8, frame: 7 },
+export const DEFENSIVE_STYLE_CLUSTERS: Record<DefensiveStyle, { perimeter_defense: number; interior_defense: number; rebounding: number; frame: number }> = {
+  containment_man: { perimeter_defense: 18, interior_defense: 15, rebounding: 8, frame: 6 },
+  pack_line: { perimeter_defense: 12, interior_defense: 18, rebounding: 10, frame: 7 },
+  pressure_man: { perimeter_defense: 20, interior_defense: 15, rebounding: 5, frame: 7 },
+  switch_everything: { perimeter_defense: 16, interior_defense: 15, rebounding: 7, frame: 9 },
+  ice_no_middle: { perimeter_defense: 17, interior_defense: 16, rebounding: 7, frame: 7 },
+  zone_structured: { perimeter_defense: 10, interior_defense: 20, rebounding: 10, frame: 7 },
+  matchup_zone: { perimeter_defense: 13, interior_defense: 19, rebounding: 8, frame: 7 },
+  press: { perimeter_defense: 19, interior_defense: 16, rebounding: 5, frame: 7 },
+  junk_special: { perimeter_defense: 14, interior_defense: 18, rebounding: 8, frame: 7 },
 };
 
 export const CLUSTER_LABELS: Record<ClusterType, { label: string; description: string }> = {
   shooting: { label: 'Shooting', description: '3PT, mid-range, catch & shoot' },
   finishing: { label: 'Finishing', description: 'At-rim scoring, floaters, layups' },
   playmaking: { label: 'Playmaking', description: 'Passing, vision, ball handling' },
-  on_ball_defense: { label: 'On-Ball', description: 'Perimeter containment, steals' },
-  team_defense: { label: 'Team', description: 'Help defense, rotations, IQ' },
+  perimeter_defense: { label: 'Perimeter', description: 'Perimeter containment, steals' },
+  interior_defense: { label: 'Interior', description: 'Help defense, rim protection, rotations' },
   rebounding: { label: 'Rebounding', description: 'Offensive & defensive boards' },
   frame: { label: 'Frame', description: 'Size, length, strength, versatility' },
 };
@@ -151,8 +151,8 @@ export const DEFAULT_CLUSTER_WEIGHTS: ClusterWeight[] = [
   { cluster: 'finishing', weight: 16 },
   { cluster: 'playmaking', weight: 20 },
   // Defense (47)
-  { cluster: 'on_ball_defense', weight: 18 },
-  { cluster: 'team_defense', weight: 15 },
+  { cluster: 'perimeter_defense', weight: 18 },
+  { cluster: 'interior_defense', weight: 15 },
   { cluster: 'rebounding', weight: 8 },
   { cluster: 'frame', weight: 6 },
 ];

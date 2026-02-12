@@ -26,7 +26,7 @@ const rosterMap2526 = new Map(
 
 // ── 1) Games list (from team game logs, 2025-26 season) ──
 
-type GameStatus = 'upcoming' | 'live' | 'final';
+export type GameStatus = 'upcoming' | 'live' | 'final';
 
 export type GameType = 'CONF' | 'NON-CONF' | 'TOURN';
 
@@ -39,7 +39,17 @@ export interface FMUGame {
   score?: string;
   clock?: string;
   gameType?: GameType;
+  opponentKR?: number;
   opponentRecord?: string;
+  gameTime?: string;
+  venue?: string;
+}
+
+// Raw boxscore JSON for venue lookup
+import boxscoresJson from './sun-conference/fmu-mens-basketball-2025-26.json';
+const venueByDate = new Map<string, string>();
+for (const g of boxscoresJson as any[]) {
+  if (g.date && g.location) venueByDate.set(g.date, g.location);
 }
 
 const tgl2526 = teamGameLogs.filter((g) => g.season === '2025-26');
@@ -83,22 +93,74 @@ export function placeholderRecord(opp: string, isConf: boolean): string {
   for (let i = 0; i < opp.length; i++) h = ((h << 5) - h + opp.charCodeAt(i)) | 0;
   const ovrW = 8 + (Math.abs(h) % 17);        // 8–24
   const ovrL = 4 + (Math.abs(h >> 8) % 15);   // 4–18
-  return `${ovrW}-${ovrL}`;
+  const confW = Math.min(ovrW, 2 + (Math.abs(h >> 4) % 8));
+  const confL = Math.min(ovrL, 1 + (Math.abs(h >> 12) % 6));
+  return `${ovrW}-${ovrL} (${confW}-${confL})`;
+}
+
+/** Placeholder opponent KR rating (65–95, hash-stable per name) */
+export function getOpponentKR(opp: string): number {
+  let h = 0;
+  for (let i = 0; i < opp.length; i++) h = ((h << 5) - h + opp.charCodeAt(i)) | 0;
+  return 65 + (Math.abs(h) % 31);
 }
 
 const TODAY_END = new Date(TODAY_START.getTime() + 86400000); // midnight tonight
 
+// Opponent → away venue name fallback (for games without boxscore venue data)
+const OPPONENT_VENUES: Record<string, string> = {
+  'Ave Maria': 'Tom Golisano FH',
+  'Coastal Georgia': 'Howard Coffin Gym',
+  'Keiser': 'Keiser Student Center',
+  'Southeastern': 'The Furnace',
+  'St. Thomas': 'Bobcat Arena',
+  'Warner': 'Turner Athletic Center',
+  'Webber International': 'Grace & Roger Babson Arena',
+  'New College of Florida': 'Caples Fine Arts Complex',
+  'Indiana Wesleyan': 'Luckey Arena',
+  'Pikeville': 'Platt Arena',
+  'Spartanburg Methodist': 'Platt Arena',
+  'Hope International': 'Darling Pavilion',
+  'Florida National': 'FNU Gym',
+  'Tougaloo': 'Kroger Gymnasium',
+  'Baker': 'Baker Gymnasium',
+  'Faulkner': 'Tine Davis Gymnasium',
+  'Fort Lauderdale': 'FTL Athletic Center',
+  'Florida College': 'Badcock Gymnasium',
+  'Brewton-Parker': 'Fountain-Herndon Gym',
+  'LSU Shreveport': 'The Dock',
+  'Loyola': 'The Den',
+  'William Carey': 'Tatum Court',
+  'Rust': 'Dillard Gymnasium',
+  'Friends': 'Garvey Center',
+  'Nelson': 'Nelson Arena',
+  'The Master\'s': 'Bross Court',
+};
+
+function getVenueName(opp: string | null, homeAway: string | null, dateVenue: string | undefined): string {
+  if (homeAway === 'H') return 'FMU Wellness Center';
+  if (dateVenue && dateVenue !== 'Miami Gardens, Fla.') return dateVenue;
+  if (!opp) return 'Away';
+  // Match against OPPONENT_VENUES using partial match
+  for (const [key, venue] of Object.entries(OPPONENT_VENUES)) {
+    if (opp.includes(key)) return venue;
+  }
+  return 'Away';
+}
+
 export const FMU_GAMES: FMUGame[] = tgl2526.map((g, i) => {
   const d = parseGameDate(g.game_date);
-  const isFuture = d != null && d >= TODAY_START && g.result == null;
+  const hasResult = g.result != null;
+  const isFuture = d != null && d >= TODAY_START && !hasResult;
   const isToday = d != null && d >= TODAY_START && d < TODAY_END;
-  const isLive = isToday && g.result == null;
+  const isLive = isToday && !hasResult;
+  const dateVenue = d ? venueByDate.get(`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`) ?? undefined : undefined;
   return {
     id: `fmu-2526-${String(i).padStart(2, '0')}`,
     opponent: g.opponent ?? 'Unknown',
     date: g.game_date ?? '',
     location: g.home_away === 'H' ? 'Home' : 'Away',
-    status: (isLive ? 'live' : isFuture ? 'upcoming' : 'final') as GameStatus,
+    status: (isLive ? 'live' : !hasResult ? 'upcoming' : 'final') as GameStatus,
     score:
       isLive ? '38-32'
       : g.result && g.fmu_score != null && g.opp_score != null
@@ -106,7 +168,16 @@ export const FMU_GAMES: FMUGame[] = tgl2526.map((g, i) => {
         : undefined,
     clock: isLive ? '2H 14:22' : undefined,
     gameType: isConfGame(g.opponent) ? 'CONF' : 'NON-CONF',
-    opponentRecord: isFuture || isLive ? placeholderRecord(g.opponent ?? '', isConfGame(g.opponent)) : undefined,
+    opponentKR: getOpponentKR(g.opponent ?? ''),
+    opponentRecord: placeholderRecord(g.opponent ?? '', isConfGame(g.opponent)),
+    gameTime: isFuture ? (() => {
+      const times = ['2PM', '4PM', '5PM', '6PM', '7PM', '7:30PM', '8PM'];
+      let h = 0;
+      const n = g.opponent ?? '';
+      for (let c = 0; c < n.length; c++) h = ((h << 5) - h + n.charCodeAt(c)) | 0;
+      return times[Math.abs(h) % times.length];
+    })() : undefined,
+    venue: getVenueName(g.opponent, g.home_away, dateVenue),
   };
 });
 
@@ -186,13 +257,36 @@ export interface BoxScoreLine {
 const gameIdToFmuId = new Map<string, string>();
 const individualGameIds = [...new Set(gameLogs.map((gl) => gl.game_id))];
 
-// Match individual game_ids to team game logs by date+opponent
+// Normalize opponent names for fuzzy matching (e.g. "Tougaloo (MS)" ↔ "Tougaloo (Miss.)")
+function oppBase(name: string | null): string {
+  if (!name) return '';
+  return name.split(/[\s(]/)[0].toLowerCase();
+}
+
+// Normalize dates: individual logs use "10/31/2025", team logs use "Oct 31"
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function normDate(d: string | null): string {
+  if (!d) return '';
+  // Format: "10/31/2025" → "10-31"
+  const slashParts = d.split('/');
+  if (slashParts.length >= 2) return `${parseInt(slashParts[0])}-${parseInt(slashParts[1])}`;
+  // Format: "Oct 31" → "10-31"
+  const spaceParts = d.split(' ');
+  if (spaceParts.length >= 2) {
+    const mi = MONTH_NAMES.indexOf(spaceParts[0]);
+    if (mi >= 0) return `${mi + 1}-${parseInt(spaceParts[1])}`;
+  }
+  return d;
+}
+
+// Match individual game_ids to team game logs by normalized date + opponent base
 for (const rawId of individualGameIds) {
   const sample = gameLogs.find((gl) => gl.game_id === rawId);
   if (!sample) continue;
-  // Find matching team game log by date and opponent
+  const sDate = normDate(sample.game_date);
+  const sOpp = oppBase(sample.opponent);
   const tglIdx = tgl2526.findIndex(
-    (t) => t.game_date === sample.game_date && t.opponent === sample.opponent,
+    (t) => normDate(t.game_date) === sDate && oppBase(t.opponent) === sOpp,
   );
   if (tglIdx >= 0) {
     gameIdToFmuId.set(rawId, `fmu-2526-${String(tglIdx).padStart(2, '0')}`);
@@ -230,6 +324,551 @@ for (const [, lines] of boxScoresByGame) {
 }
 
 export const FMU_BOX_SCORES: Record<string, BoxScoreLine[]> = Object.fromEntries(boxScoresByGame);
+
+// ── 3b) BPR (Basketball Performance Rating) per player per game ──
+
+// Player archetype mapping: player_id → primary archetype label
+const PLAYER_ARCHETYPES: Record<string, string> = {
+  // Point Guards
+  '11': 'Primary Creator',       // Sehmaj Mentor
+  '15': 'Connector Guard',       // Micah Morgan
+  '9':  'Developmental Guard',   // Ka'Mar Benbo
+  // Combo Guards
+  '13': 'Scoring Guard',         // Cameron Noel
+  '55': 'Two-Way Guard',         // Aa'Reyon Munir-Jones
+  '3':  'Developmental Guard',   // Rico Thompson
+  // Wings
+  '4':  'Primary Scorer',        // Devin Carter
+  '0':  'Defensive Wing',        // Tristan Thomas
+  '2':  'Developmental Wing',    // Braxton Lewis
+  // Forwards
+  '41': 'Stretch Forward',       // Morgan Brewer
+  '7':  'Interior Enforcer',     // Maximo Moratinos
+  '10': 'Developmental Forward', // Jason Morris
+  // Bigs
+  '5':  'Post Facilitator',      // Jeffrey Selden
+  '1':  'Rim Protector',         // Petar Asceric
+};
+
+// Strip leading zeros from jersey for lookup (roster has "04", map uses "4")
+function normJersey(j: string | null): string {
+  if (!j) return '0';
+  const n = parseInt(j, 10);
+  return isNaN(n) ? j : String(n);
+}
+
+// Jersey → archetype (mapped through roster entries)
+const jerseyArchetypeMap = new Map<string, string>();
+for (const r of rosterEntries.filter((r) => r.season === '2025-26')) {
+  const arch = PLAYER_ARCHETYPES[normJersey(r.jersey_number)];
+  if (arch) jerseyArchetypeMap.set(normJersey(r.jersey_number), arch);
+}
+
+// Also build player_id → archetype
+const playerIdArchetypeMap = new Map<string, string>();
+for (const r of rosterEntries.filter((r) => r.season === '2025-26')) {
+  const arch = PLAYER_ARCHETYPES[normJersey(r.jersey_number)];
+  if (arch) playerIdArchetypeMap.set(r.player_id, arch);
+}
+
+/** BPR translation bands */
+export function getBPRLabel(bpr: number): string {
+  if (bpr >= 10) return 'Game-Changing Performance';
+  if (bpr >= 6)  return 'Strong Positive Impact';
+  if (bpr >= 3)  return 'Positive Impact';
+  if (bpr >= -2) return 'Neutral Impact';
+  if (bpr >= -5) return 'Negative Impact';
+  if (bpr >= -9) return 'Strong Negative Impact';
+  return 'Severe Negative Impact';
+}
+
+/** BPR sign color */
+export function getBPRColor(bpr: number): string {
+  if (bpr >= 6)  return '#22C55E'; // green
+  if (bpr >= 3)  return '#4ADE80'; // light green
+  if (bpr >= -2) return '#A3A3A3'; // neutral gray
+  if (bpr >= -5) return '#F97316'; // orange
+  return '#EF4444';                // red
+}
+
+export interface PlayerBPR {
+  name: string;
+  archetype: string;
+  bpr: number;
+  bprLabel: string;
+  kr: number;
+}
+
+/**
+ * Calculate BPR from individual game log stats.
+ * Simplified BPM-style: raw production per minute, scaled to per-36, centered around 0.
+ */
+function calcBPR(gl: { points: number | null; total_rebounds: number | null; assists: number | null; steals: number | null; blocks: number | null; turnovers: number | null; fg: number | null; fga: number | null; ft: number | null; fta: number | null; minutes: number | null }): number {
+  const min = gl.minutes ?? 0;
+  if (min < 4) return 0; // too few minutes to rate
+  const pts = gl.points ?? 0;
+  const reb = gl.total_rebounds ?? 0;
+  const ast = gl.assists ?? 0;
+  const stl = gl.steals ?? 0;
+  const blk = gl.blocks ?? 0;
+  const to = gl.turnovers ?? 0;
+  const fgMissed = (gl.fga ?? 0) - (gl.fg ?? 0);
+  const ftMissed = (gl.fta ?? 0) - (gl.ft ?? 0);
+  // Raw impact score
+  const raw = pts + 0.4 * reb + 0.7 * ast + stl + 0.7 * blk - 0.7 * fgMissed - 0.4 * ftMissed - 0.8 * to;
+  // Per-36 rate, centered around expected average, compressed to fit -10/+10 bands
+  const per36 = (raw / min) * 36;
+  const bpr = (per36 - 12) * 0.4;
+  return Math.round(bpr);
+}
+
+// Jersey → KR mapping (inline, avoids circular dep with roster-content)
+const ROSTER_KR: Record<string, number> = {
+  '0': 66, '1': 68, '2': 54, '3': 55, '4': 82, '5': 80,
+  '7': 70, '9': 58, '10': 56, '11': 78, '12': 52, '13': 79,
+  '15': 65, '20': 50, '22': 52, '41': 76, '55': 72,
+};
+
+// Build BPR data per game
+const bprByGame = new Map<string, PlayerBPR[]>();
+for (const gl of gameLogs) {
+  if (gl.season !== '2025-26') continue;
+  const fmuId = gameIdToFmuId.get(gl.game_id);
+  if (!fmuId) continue;
+  const player = playerMap.get(gl.player_id);
+  const fullName = player?.full_name ?? 'Unknown';
+  const archetype = playerIdArchetypeMap.get(gl.player_id) ?? 'Role Player';
+  const roster = rosterMap2526.get(gl.player_id);
+  const jersey = normJersey(roster?.jersey_number ?? '0');
+  const bpr = calcBPR(gl);
+  const entry: PlayerBPR = {
+    name: fullName,
+    archetype,
+    bpr,
+    bprLabel: getBPRLabel(bpr),
+    kr: ROSTER_KR[jersey] ?? 60,
+  };
+  if (!bprByGame.has(fmuId)) bprByGame.set(fmuId, []);
+  bprByGame.get(fmuId)!.push(entry);
+}
+
+// Sort each game's BPR by bpr desc
+for (const [, entries] of bprByGame) {
+  entries.sort((a, b) => b.bpr - a.bpr);
+}
+
+export const FMU_GAME_BPR: Record<string, PlayerBPR[]> = Object.fromEntries(bprByGame);
+
+// ── 3b) TGIS (Team Game Impact Score) + PGIS (Player Game Impact Score) ──
+
+/** PGIS band labels (surfaced in UI instead of BPR) */
+export function getPGISLabel(pgis: number): string {
+  if (pgis >= 8)  return 'Game-Changing';
+  if (pgis >= 4)  return 'Strong Positive';
+  if (pgis >= 1)  return 'Positive';
+  if (pgis >= -1) return 'Neutral';
+  if (pgis >= -4) return 'Negative';
+  return 'Strong Negative';
+}
+
+/** PGIS color */
+export function getPGISColor(pgis: number): string {
+  if (pgis >= 8)  return '#22C55E';
+  if (pgis >= 4)  return '#4ADE80';
+  if (pgis >= 1)  return '#A3E635';
+  if (pgis >= -1) return '#A3A3A3';
+  if (pgis >= -4) return '#F97316';
+  return '#EF4444';
+}
+
+/** TGIS band labels */
+export function getTGISLabel(tgis: number): string {
+  if (tgis >= 8)  return 'Dominant win';
+  if (tgis >= 4)  return 'Clear win';
+  if (tgis >= 1)  return 'Narrow win';
+  if (tgis >= -1) return 'Toss-up';
+  if (tgis >= -4) return 'Clear loss';
+  return 'Breakdown loss';
+}
+
+/** TGIS color */
+export function getTGISColor(tgis: number): string {
+  if (tgis >= 8)  return '#22C55E';
+  if (tgis >= 4)  return '#4ADE80';
+  if (tgis >= 1)  return '#A3E635';
+  if (tgis >= -1) return '#A3A3A3';
+  if (tgis >= -4) return '#F97316';
+  return '#EF4444';
+}
+
+/** Short impact reason phrases per archetype + performance */
+const IMPACT_REASONS: Record<string, string[]> = {
+  'Floor General': ['Court vision', 'Tempo control', 'Ball security', 'Assist creation'],
+  'Scoring Guard': ['Shotmaking burst', 'Shot creation', 'Scoring punch', 'Pull-up threat'],
+  'Wing Scorer': ['Perimeter scoring', 'Transition attack', 'Catch-and-shoot', 'Shot versatility'],
+  'Two-Way Wing': ['POA containment', 'Both-end impact', 'Defensive anchor', 'Switchability'],
+  'Stretch Forward': ['Floor spacing', 'Three-point threat', 'Pick-and-pop', 'Stretch scoring'],
+  'Paint Anchor': ['Paint pressure', 'Glass control', 'Rim protection', 'Interior force'],
+  'Energy Big': ['Glass control', 'Hustle plays', 'Offensive boards', 'Physical presence'],
+  'Role Player': ['Steady minutes', 'Role execution', 'Team glue', 'Defensive effort'],
+  'Combo Guard': ['Pace pushing', 'Ball handling', 'Playmaking burst', 'Dual-threat scoring'],
+  'Versatile Forward': ['Position flex', 'Mismatch creator', 'Defensive switching', 'Multi-tool impact'],
+};
+
+function getImpactReason(archetype: string, pgis: number): string {
+  const pool = IMPACT_REASONS[archetype] ?? IMPACT_REASONS['Role Player'];
+  // Positive → first reasons (offensive impact), Negative → last reasons (defensive/effort)
+  if (pgis >= 4) return pool[0];
+  if (pgis >= 1) return pool[1];
+  if (pgis >= -1) return pool[2];
+  return pool[3];
+}
+
+// Determine likely starters: players with most games_started in 2025-26 season
+const starterPlayerIds = new Set<string>(
+  individualSeasonStats
+    .filter((s) => s.season === '2025-26' && (s.games_started ?? 0) > 0)
+    .sort((a, b) => (b.games_started ?? 0) - (a.games_started ?? 0))
+    .slice(0, 5)
+    .map((s) => s.player_id),
+);
+
+export interface PlayerPGIS {
+  name: string;
+  archetype: string;
+  pgis: number;
+  pgisLabel: string;
+  kr: number;
+  impactReason: string;
+  isStarter: boolean;
+}
+
+export interface TeamGameImpact {
+  tgis: number;
+  tgisLabel: string;
+  drivers: string[];
+  starters: PlayerPGIS[];
+  bench: PlayerPGIS[];
+}
+
+/**
+ * Compute TGIS from team game log stats.
+ * Factors: scoring margin, efficiency (eFG%), turnover margin, rebounding margin.
+ * Scaled to roughly -10 to +10.
+ */
+function calcTGIS(teamStats: { fg: number; fga: number; three_pt: number; ft: number; fta: number; total_rebounds: number; offensive_rebounds: number; turnovers: number; fmu_score: number; opp_score: number }): number {
+  const margin = teamStats.fmu_score - teamStats.opp_score;
+  // eFG% (effective field goal percentage) — shooting quality
+  const efg = teamStats.fga > 0 ? (teamStats.fg + 0.5 * teamStats.three_pt) / teamStats.fga : 0.45;
+  // Baseline eFG for NAIA ~0.47
+  const efgDelta = (efg - 0.47) * 40;
+  // FT rate (FTA/FGA) — aggressiveness
+  const ftRate = teamStats.fga > 0 ? teamStats.fta / teamStats.fga : 0.25;
+  const ftRateDelta = (ftRate - 0.28) * 10;
+  // Score margin component (compressed)
+  const marginComp = margin * 0.25;
+  // OREB factor
+  const orebFactor = (teamStats.offensive_rebounds - 10) * 0.2;
+  // Turnover penalty (lower is better, baseline ~14)
+  const toFactor = (14 - teamStats.turnovers) * 0.3;
+
+  const raw = marginComp + efgDelta + ftRateDelta + orebFactor + toFactor;
+  return Math.round(Math.max(-10, Math.min(10, raw)) * 10) / 10;
+}
+
+/** Pick 2–3 team-level "why" drivers based on game stats */
+function getTeamDrivers(ts: { fg: number; fga: number; three_pt: number; three_pa: number; ft: number; fta: number; total_rebounds: number; offensive_rebounds: number; turnovers: number; assists: number; fmu_score: number; opp_score: number }): string[] {
+  const drivers: { text: string; weight: number }[] = [];
+  // Efficiency
+  const efg = ts.fga > 0 ? (ts.fg + 0.5 * ts.three_pt) / ts.fga : 0.45;
+  if (efg >= 0.52) drivers.push({ text: `${(efg * 100).toFixed(1)}% eFG — elite shooting efficiency`, weight: efg });
+  else if (efg <= 0.40) drivers.push({ text: `${(efg * 100).toFixed(1)}% eFG — poor shooting night`, weight: 1 - efg });
+  else drivers.push({ text: `${(efg * 100).toFixed(1)}% eFG`, weight: Math.abs(efg - 0.47) });
+
+  // Turnovers
+  if (ts.turnovers <= 10) drivers.push({ text: `${ts.turnovers} TO — clean ball security`, weight: 0.6 });
+  else if (ts.turnovers >= 18) drivers.push({ text: `${ts.turnovers} TO — careless possessions`, weight: 0.5 });
+  else drivers.push({ text: `${ts.turnovers} TO`, weight: 0.2 });
+
+  // Offensive rebounds
+  if (ts.offensive_rebounds >= 14) drivers.push({ text: `${ts.offensive_rebounds} OREB — dominated the glass`, weight: 0.55 });
+  else if (ts.offensive_rebounds >= 10) drivers.push({ text: `${ts.offensive_rebounds} OREB — solid second chances`, weight: 0.35 });
+
+  // Assists
+  if (ts.assists >= 18) drivers.push({ text: `${ts.assists} AST — excellent ball movement`, weight: 0.5 });
+
+  // FT rate
+  const ftRate = ts.fga > 0 ? ts.fta / ts.fga : 0;
+  if (ftRate >= 0.35) drivers.push({ text: `${ts.fta} FTA — attacked the basket`, weight: 0.4 });
+
+  // Sort by weight desc, take top 2-3
+  drivers.sort((a, b) => b.weight - a.weight);
+  return drivers.slice(0, 3).map((d) => d.text);
+}
+
+// Build TGIS + PGIS per game
+const gameImpactMap = new Map<string, TeamGameImpact>();
+
+for (let i = 0; i < tgl2526.length; i++) {
+  const tg = tgl2526[i];
+  const fmuId = `fmu-2526-${String(i).padStart(2, '0')}`;
+  const bprPlayers = bprByGame.get(fmuId);
+
+  const ts = {
+    fg: tg.fg ?? 0, fga: tg.fga ?? 0,
+    three_pt: tg.three_pt ?? 0, three_pa: tg.three_pa ?? 0,
+    ft: tg.ft ?? 0, fta: tg.fta ?? 0,
+    total_rebounds: tg.total_rebounds ?? 0,
+    offensive_rebounds: tg.offensive_rebounds ?? 0,
+    turnovers: tg.turnovers ?? 0,
+    assists: tg.assists ?? 0,
+    fmu_score: tg.fmu_score ?? 0,
+    opp_score: tg.opp_score ?? 0,
+  };
+
+  const tgis = calcTGIS(ts);
+  const drivers = getTeamDrivers(ts);
+
+  let starters: PlayerPGIS[] = [];
+  let bench: PlayerPGIS[] = [];
+
+  if (bprPlayers) {
+    // Build PGIS from BPR data (PGIS = BPR value, just renamed for UI)
+    // Also attach starter status and impact reason
+    // Find matching game log entries to get player_ids for starter lookup
+    const rawGameId = [...gameIdToFmuId.entries()].find(([, v]) => v === fmuId)?.[0];
+    const gameLogEntries = rawGameId ? gameLogs.filter((gl) => gl.game_id === rawGameId && gl.season === '2025-26') : [];
+    const playerIdByName = new Map(gameLogEntries.map((gl) => {
+      const p = playerMap.get(gl.player_id);
+      return [p?.full_name ?? '', gl.player_id] as const;
+    }));
+
+    const allPgis: PlayerPGIS[] = bprPlayers.map((p) => {
+      const playerId = playerIdByName.get(p.name) ?? '';
+      const isStarter = starterPlayerIds.has(playerId);
+      const pgis = p.bpr;
+      return {
+        name: p.name,
+        archetype: p.archetype,
+        pgis,
+        pgisLabel: getPGISLabel(pgis),
+        kr: p.kr,
+        impactReason: getImpactReason(p.archetype, pgis),
+        isStarter,
+      };
+    });
+
+    // Split and sort: top 3 starters, top 2 bench
+    starters = allPgis.filter((p) => p.isStarter).sort((a, b) => b.pgis - a.pgis).slice(0, 3);
+    bench = allPgis.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis).slice(0, 2);
+  } else if (tg.fmu_score != null) {
+    // Completed game without individual box scores — synthesize PGIS from season averages
+    // Use TGIS as a scaling factor: positive TGIS means players performed above average
+    const seasonPlayers = individualSeasonStats
+      .filter((s) => s.season === '2025-26' && (s.games_played ?? 0) >= 3)
+      .sort((a, b) => (b.points_avg ?? 0) - (a.points_avg ?? 0));
+
+    const allSynthetic: PlayerPGIS[] = seasonPlayers.slice(0, 10).map((s) => {
+      const player = playerMap.get(s.player_id);
+      const name = player?.full_name ?? 'Unknown';
+      const archetype = playerIdArchetypeMap.get(s.player_id) ?? 'Role Player';
+      const roster = rosterMap2526.get(s.player_id);
+      const jersey = normJersey(roster?.jersey_number ?? '0');
+      const kr = ROSTER_KR[jersey] ?? 60;
+      const isStarter = starterPlayerIds.has(s.player_id);
+      // Derive PGIS from season PPG, scaled by game TGIS direction
+      const basePgis = Math.round(((s.points_avg ?? 8) - 10) * 0.5);
+      const pgis = Math.round(basePgis + tgis * 0.3);
+      return {
+        name, archetype, pgis, pgisLabel: getPGISLabel(pgis), kr,
+        impactReason: getImpactReason(archetype, pgis), isStarter,
+      };
+    });
+
+    starters = allSynthetic.filter((p) => p.isStarter).sort((a, b) => b.pgis - a.pgis).slice(0, 3);
+    bench = allSynthetic.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis).slice(0, 2);
+  }
+
+  gameImpactMap.set(fmuId, { tgis, tgisLabel: getTGISLabel(tgis), drivers, starters, bench });
+}
+
+export const FMU_GAME_IMPACT: Record<string, TeamGameImpact> = Object.fromEntries(gameImpactMap);
+
+// ── 3c) Pregame Snapshot (for upcoming games) ──
+
+const FMU_KR_PREGAME = 74; // approximate; real FMU_KR computed later from win%
+
+export interface PregameSwingPlayer {
+  name: string;
+  archetype: string;
+  swingTag: string;
+  kr: number;
+  roleTarget: string;
+}
+
+export interface PregameSnapshot {
+  outlook: 'Favored' | 'Toss-Up' | 'Underdog';
+  krGap: number; // FMU_KR - oppKR (negative = underdog)
+  fmuKR: number;
+  oppKR: number;
+  keysToWin: string[];
+  oppStrengths: string[];
+  oppVulnerabilities: string[];
+  swingPlayers: PregameSwingPlayer[];
+  oppThreats: { name: string; archetype: string; threatTag: string; kr: number }[];
+}
+
+// Hash helper for deterministic pseudo-random values
+function stableHash(s: string, seed: number = 0): number {
+  let h = seed;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+// Auto-generated keys-to-win based on KR gap and opponent profile
+const KEYS_POOL = {
+  shot: [
+    'Win the 3pt attempt battle',
+    'Shoot 45%+ from the field',
+    'Attack mid-range mismatches',
+    'Generate open catch-and-shoot looks',
+    'Push pace in transition',
+  ],
+  turnover: [
+    'Keep turnovers ≤ 12',
+    'Win the TO margin by +3',
+    'Protect the ball in half-court sets',
+    'Force 15+ opponent turnovers',
+    'Attack passing lanes aggressively',
+  ],
+  glass: [
+    'Win the offensive glass (10+ OREB)',
+    'Limit second-chance points',
+    'Box out their bigs on every shot',
+    'Control the defensive boards',
+    'Crash hard on makes and misses',
+  ],
+  ft: [
+    'Get to the line 20+ times',
+    'Attack the paint to draw fouls',
+    'Convert 75%+ from the stripe',
+    'Exploit foul-prone matchups',
+    'Be aggressive in the bonus',
+  ],
+};
+
+const OPP_STRENGTHS_POOL = [
+  'Rim pressure + OREB',
+  'Low turnover rate',
+  'Elite perimeter shooting',
+  'Physical interior play',
+  'Fast-break scoring',
+  'Balanced scoring attack',
+  'Strong defensive rebounding',
+  'Half-court execution',
+  'Depth off the bench',
+  'Free throw rate',
+];
+
+const OPP_VULNS_POOL = [
+  'Weak closeouts / gives up 3s',
+  'Foul-prone bigs',
+  'Turnover-prone under pressure',
+  'Poor free throw shooting',
+  'Slow in transition defense',
+  'Limited bench depth',
+  'Vulnerable on the offensive glass',
+  'Struggles against zone',
+  'Poor ball security',
+  'Inconsistent shot selection',
+];
+
+const SWING_TAGS = ['Shotmaking', 'POA Defense', 'Rebounding', 'Playmaking', 'Rim Protection', 'Floor Spacing', 'Transition', 'Ball Security'];
+
+const THREAT_TAGS = ['Scoring punch', 'Paint bully', 'Floor general', 'Stretch threat', 'Defensive anchor', 'Energy spark', 'Transition scorer', 'Shot creator'];
+
+const OPP_FIRST_NAMES = ['Marcus', 'Jaylen', 'DeShawn', 'Tyler', 'Chris', 'Andre', 'Isaiah', 'Malik', 'Darius', 'Khalil'];
+const OPP_LAST_NAMES = ['Williams', 'Johnson', 'Brown', 'Davis', 'Jackson', 'Thomas', 'Harris', 'Robinson', 'Carter', 'Mitchell'];
+
+const ROLE_TARGETS_POOL = [
+  'Spacing wing', 'Point-of-attack stopper', 'Rim runner', 'Floor general',
+  'Catch-and-shoot specialist', 'Help-side anchor', 'Ball-screen navigator',
+  'Transition pusher', 'Post-up mismatch', 'Defensive switchman',
+];
+
+// Build pregame snapshots for upcoming games
+const pregameMap = new Map<string, PregameSnapshot>();
+
+for (const game of FMU_GAMES) {
+  if (game.status !== 'upcoming') continue;
+  const opp = game.opponent;
+  const oppKR = game.opponentKR ?? getOpponentKR(opp);
+  const krGap = FMU_KR_PREGAME - oppKR;
+  const outlook: PregameSnapshot['outlook'] = krGap >= 5 ? 'Favored' : krGap <= -5 ? 'Underdog' : 'Toss-Up';
+
+  const h = stableHash(opp);
+
+  // 3 keys to win (one from each category)
+  const keysToWin = [
+    KEYS_POOL.shot[h % KEYS_POOL.shot.length],
+    KEYS_POOL.turnover[(h >> 3) % KEYS_POOL.turnover.length],
+    (h % 2 === 0 ? KEYS_POOL.glass : KEYS_POOL.ft)[(h >> 6) % KEYS_POOL.glass.length],
+  ];
+
+  // 2 opponent strengths, 2 vulnerabilities
+  const s1 = h % OPP_STRENGTHS_POOL.length;
+  const s2 = (h >> 4) % OPP_STRENGTHS_POOL.length;
+  const oppStrengths = [OPP_STRENGTHS_POOL[s1], OPP_STRENGTHS_POOL[s2 === s1 ? (s2 + 1) % OPP_STRENGTHS_POOL.length : s2]];
+
+  const v1 = (h >> 2) % OPP_VULNS_POOL.length;
+  const v2 = (h >> 5) % OPP_VULNS_POOL.length;
+  const oppVulnerabilities = [OPP_VULNS_POOL[v1], OPP_VULNS_POOL[v2 === v1 ? (v2 + 1) % OPP_VULNS_POOL.length : v2]];
+
+  // Our swing players: top 3 starters by season stats
+  const topStarters = individualSeasonStats
+    .filter((s) => s.season === '2025-26' && starterPlayerIds.has(s.player_id))
+    .sort((a, b) => (b.points_avg ?? 0) - (a.points_avg ?? 0))
+    .slice(0, 3);
+
+  const swingPlayers: PregameSwingPlayer[] = topStarters.map((s, idx) => {
+    const player = playerMap.get(s.player_id);
+    const name = player?.full_name ?? 'Unknown';
+    const archetype = playerIdArchetypeMap.get(s.player_id) ?? 'Role Player';
+    const roster = rosterMap2526.get(s.player_id);
+    const jersey = normJersey(roster?.jersey_number ?? '0');
+    const kr = ROSTER_KR[jersey] ?? 60;
+    const tagIdx = stableHash(name + opp, idx) % SWING_TAGS.length;
+    const roleIdx = stableHash(name + opp, idx + 10) % ROLE_TARGETS_POOL.length;
+    return {
+      name,
+      archetype,
+      swingTag: SWING_TAGS[tagIdx],
+      kr,
+      roleTarget: ROLE_TARGETS_POOL[roleIdx],
+    };
+  });
+
+  // Their threats (placeholder opponent players)
+  const oppThreats = [0, 1, 2].map((idx) => {
+    const fIdx = stableHash(opp, idx * 3) % OPP_FIRST_NAMES.length;
+    const lIdx = stableHash(opp, idx * 3 + 1) % OPP_LAST_NAMES.length;
+    const name = `${OPP_FIRST_NAMES[(fIdx + idx) % OPP_FIRST_NAMES.length]} ${OPP_LAST_NAMES[(lIdx + idx) % OPP_LAST_NAMES.length]}`;
+    const kr = oppKR + 5 - idx * 3 - (stableHash(opp, idx + 7) % 4);
+    const OPP_ARCHETYPES = ['Guard', 'Wing', 'Forward', 'Big', 'Combo Guard', 'Stretch 4', 'Point Forward', 'Center'];
+    const archIdx = stableHash(opp, idx * 5 + 2) % OPP_ARCHETYPES.length;
+    const tagIdx = stableHash(opp, idx * 4 + 3) % THREAT_TAGS.length;
+    return {
+      name,
+      archetype: OPP_ARCHETYPES[archIdx],
+      threatTag: THREAT_TAGS[tagIdx],
+      kr,
+    };
+  });
+
+  pregameMap.set(game.id, { outlook, krGap, fmuKR: FMU_KR_PREGAME, oppKR, keysToWin, oppStrengths, oppVulnerabilities, swingPlayers, oppThreats });
+}
+
+export const FMU_PREGAME: Record<string, PregameSnapshot> = Object.fromEntries(pregameMap);
 
 // ── 4) Team game stats (from team game logs) ──
 
@@ -404,6 +1043,21 @@ export const FMU_RECORD = {
   overall: `${overallW}–${overallL}`,
   conference: `${confW}–${confL}`,
 };
+
+// FMU's own KR rating (derived from win%)
+const totalGamesPlayed = overallW + overallL;
+const fmuWinPct = totalGamesPlayed > 0 ? overallW / totalGamesPlayed : 0.5;
+export const FMU_KR = Math.round(60 + fmuWinPct * 35);
+
+/** Simulated KR impact for a completed game result */
+export function getKRImpact(fmuKR: number, oppKR: number, won: boolean): number {
+  const diff = oppKR - fmuKR;
+  if (won) {
+    return Math.max(1, Math.round(diff / 4 + 3));
+  } else {
+    return -Math.max(1, Math.round(-diff / 4 + 3));
+  }
+}
 
 // ── 8) Scouting notes (basic, derived from game results) ──
 

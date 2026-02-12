@@ -595,7 +595,11 @@ export default function GameDetailScreen() {
           ]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            router.back();
+            if (router.canGoBack()) {
+              router.back();
+            } else {
+              router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
+            }
           }}
         >
           <IconSymbol name="chevron.left" size={20} color={colors.text} />

@@ -147,7 +147,7 @@ export default function ProgramResourcesScreen() {
     try {
       await AsyncStorage.setItem(PROGRAM_RESOURCES_KEY, JSON.stringify(resources));
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      router.back();
+      router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
     } catch (e) {
       console.error('Failed to save program resources:', e);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -186,7 +186,7 @@ export default function ProgramResourcesScreen() {
           style={({ pressed }) => [styles.backButton, { opacity: pressed ? 0.7 : 1 }]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            router.back();
+            router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
           }}
         >
           <IconSymbol name="chevron.left" size={24} color={colors.tint} />

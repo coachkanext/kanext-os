@@ -658,7 +658,7 @@ export default function GameOpsScreen() {
         dispatch({ type: 'START_GAME' });
       } else {
         // No saved game and no params — go back
-        router.back();
+        router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
       }
 
       setLoaded(true);
@@ -769,7 +769,7 @@ export default function GameOpsScreen() {
             ]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.back();
+              router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
             }}
           >
             <IconSymbol name="chevron.left" size={20} color={colors.text} />
@@ -876,7 +876,7 @@ export default function GameOpsScreen() {
             style={({ pressed }) => [styles.primaryBtn, { backgroundColor: colors.text, opacity: pressed ? 0.8 : 1 }]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.back();
+              router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
             }}
           >
             <Text style={[styles.primaryBtnText, { color: colors.background }]}>Return to Game Detail</Text>
@@ -902,7 +902,7 @@ export default function GameOpsScreen() {
             ]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.back();
+              router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
             }}
           >
             <IconSymbol name="chevron.left" size={20} color={colors.text} />
