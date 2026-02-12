@@ -15,6 +15,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { openAvatarDrawer } from '@/utils/global-drawer';
 import { startGlobalVoice } from '@/utils/global-voice';
 import { triggerKXTransition } from '@/utils/global-transition';
+import { requestHomeReset } from '@/utils/global-home';
 
 // Tab icon component
 function TabIcon({
@@ -57,6 +58,7 @@ export default function TabLayout() {
         onLongPress={openAvatarDrawer}
         onPress={(e: any) => {
           triggerKXTransition();
+          requestHomeReset();
           props.onPress?.(e);
         }}
       />
@@ -101,8 +103,11 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: colors.tabBar,
-          borderTopColor: colors.border,
+          borderTopColor: 'rgba(255,255,255,0.08)',
           height: Platform.OS === 'ios' ? Layout.tabBarHeight : 60,
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingTop: 8,
         },
         headerShown: false,
         tabBarButton: TransitionTab,
