@@ -361,7 +361,7 @@ function normJersey(j: string | null): string {
 }
 
 // Jersey → archetype (mapped through roster entries)
-const jerseyArchetypeMap = new Map<string, string>();
+export const jerseyArchetypeMap = new Map<string, string>();
 for (const r of rosterEntries.filter((r) => r.season === '2025-26')) {
   const arch = PLAYER_ARCHETYPES[normJersey(r.jersey_number)];
   if (arch) jerseyArchetypeMap.set(normJersey(r.jersey_number), arch);
@@ -426,7 +426,7 @@ function calcBPR(gl: { points: number | null; total_rebounds: number | null; ass
 }
 
 // Jersey → KR mapping (inline, avoids circular dep with roster-content)
-const ROSTER_KR: Record<string, number> = {
+export const ROSTER_KR: Record<string, number> = {
   '0': 66, '1': 68, '2': 54, '3': 55, '4': 82, '5': 80,
   '7': 70, '9': 58, '10': 56, '11': 78, '12': 52, '13': 79,
   '15': 65, '20': 50, '22': 52, '41': 76, '55': 72,
@@ -484,47 +484,88 @@ export function getPGISColor(pgis: number): string {
   return '#EF4444';
 }
 
-/** TGIS band labels */
-export function getTGISLabel(tgis: number): string {
-  if (tgis >= 8)  return 'Dominant win';
-  if (tgis >= 4)  return 'Clear win';
-  if (tgis >= 1)  return 'Narrow win';
-  if (tgis >= -1) return 'Toss-up';
-  if (tgis >= -4) return 'Clear loss';
-  return 'Breakdown loss';
+/** Convert TGIS (-10 to +10) to canonical 0–10 display scale */
+export function tgisToDisplay(tgis: number): number {
+  return Math.round(((tgis + 10) / 2) * 10) / 10;
 }
 
-/** TGIS color */
+/** TGIS band labels (canonical 0–10 scale from TGIS spec) */
+export function getTGISLabel(tgis: number): string {
+  const score = tgisToDisplay(tgis);
+  if (score >= 9.0) return 'Dominant';
+  if (score >= 8.0) return 'Elite';
+  if (score >= 7.0) return 'Strong';
+  if (score >= 6.0) return 'Solid';
+  if (score >= 5.0) return 'Neutral';
+  if (score >= 4.0) return 'Below Standard';
+  return 'Poor';
+}
+
+/** TGIS color (canonical 0–10 scale) */
 export function getTGISColor(tgis: number): string {
-  if (tgis >= 8)  return '#22C55E';
-  if (tgis >= 4)  return '#4ADE80';
-  if (tgis >= 1)  return '#A3E635';
-  if (tgis >= -1) return '#A3A3A3';
-  if (tgis >= -4) return '#F97316';
+  const score = tgisToDisplay(tgis);
+  if (score >= 9.0) return '#22C55E';
+  if (score >= 8.0) return '#4ADE80';
+  if (score >= 7.0) return '#A3E635';
+  if (score >= 6.0) return '#FACC15';
+  if (score >= 5.0) return '#A3A3A3';
+  if (score >= 4.0) return '#F97316';
   return '#EF4444';
 }
 
-/** Short impact reason phrases per archetype + performance */
-const IMPACT_REASONS: Record<string, string[]> = {
-  'Floor General': ['Court vision', 'Tempo control', 'Ball security', 'Assist creation'],
-  'Scoring Guard': ['Shotmaking burst', 'Shot creation', 'Scoring punch', 'Pull-up threat'],
-  'Wing Scorer': ['Perimeter scoring', 'Transition attack', 'Catch-and-shoot', 'Shot versatility'],
-  'Two-Way Wing': ['POA containment', 'Both-end impact', 'Defensive anchor', 'Switchability'],
-  'Stretch Forward': ['Floor spacing', 'Three-point threat', 'Pick-and-pop', 'Stretch scoring'],
-  'Paint Anchor': ['Paint pressure', 'Glass control', 'Rim protection', 'Interior force'],
-  'Energy Big': ['Glass control', 'Hustle plays', 'Offensive boards', 'Physical presence'],
-  'Role Player': ['Steady minutes', 'Role execution', 'Team glue', 'Defensive effort'],
-  'Combo Guard': ['Pace pushing', 'Ball handling', 'Playmaking burst', 'Dual-threat scoring'],
-  'Versatile Forward': ['Position flex', 'Mismatch creator', 'Defensive switching', 'Multi-tool impact'],
+/** Positive impact reason phrases per archetype */
+export const POSITIVE_IMPACT: Record<string, string[]> = {
+  'Floor General': ['Controlled tempo and pace', 'Elite assist creation', 'Kept turnovers low', 'Directed half-court offense'],
+  'Scoring Guard': ['Efficient shot creation', 'Scored in bunches', 'Pull-up game was on', 'Got to the line at will'],
+  'Wing Scorer': ['Knocked down perimeter shots', 'Attacked in transition', 'Catch-and-shoot was automatic', 'Shot versatility on display'],
+  'Two-Way Wing': ['Locked up primary assignment', 'Both-end impact all game', 'Defensive anchor on switches', 'Forced multiple turnovers'],
+  'Stretch Forward': ['Stretched the floor with threes', 'Pick-and-pop was effective', 'Gravity opened driving lanes', 'Efficient from mid-range'],
+  'Paint Anchor': ['Dominated the paint', 'Controlled the glass', 'Altered shots at the rim', 'Physical presence inside'],
+  'Energy Big': ['Crashed the offensive glass', 'Hustle plays changed possessions', 'Provided energy off the bench', 'Physical presence wore them down'],
+  'Role Player': ['Executed role perfectly', 'Provided steady minutes', 'Defensive effort was relentless', 'Filled gaps when needed'],
+  'Combo Guard': ['Pushed pace effectively', 'Created for others and self', 'Dual-threat kept defense guessing', 'Ball handling broke pressure'],
+  'Versatile Forward': ['Mismatch creator all night', 'Switched 1-5 defensively', 'Position versatility was key', 'Multi-tool performance'],
 };
 
+/** Negative impact reason phrases per archetype */
+export const NEGATIVE_IMPACT: Record<string, string[]> = {
+  'Floor General': ['Turned the ball over too much', 'Struggled with decision-making', 'Could not control pace', 'Poor shot selection late'],
+  'Scoring Guard': ['Inefficient shooting night', 'Forced tough shots', 'Could not get to the rim', 'Cold from three-point range'],
+  'Wing Scorer': ['Missed open looks', 'Passive in transition', 'Struggled to create own shot', 'Turnovers in half-court'],
+  'Two-Way Wing': ['Lost primary assignment', 'Fouled too aggressively', 'Gambled on steals', 'Late on defensive rotations'],
+  'Stretch Forward': ['Spacing was inconsistent', 'Missed open threes', 'Struggled defending the post', 'Low activity on the glass'],
+  'Paint Anchor': ['Foul trouble limited minutes', 'Outworked on the glass', 'Soft around the rim', 'Slow on pick-and-roll coverage'],
+  'Energy Big': ['Low energy and motor', 'Missed box-outs', 'Fouled unnecessarily', 'No second-chance points'],
+  'Role Player': ['Defensive lapses hurt', 'Did not execute assignments', 'Invisible on offense', 'Negative plus-minus stretch'],
+  'Combo Guard': ['Sped up too much', 'Careless with the ball', 'Could not run the offense', 'Defensive liability in PnR'],
+  'Versatile Forward': ['Could not find a mismatch', 'Struggled switching onto guards', 'Passive on offense', 'Low rebound activity'],
+};
+
+function getImpactReasons(archetype: string, pgis: number, nameHash: number): { positives: string[]; negatives: string[] } {
+  const posPool = POSITIVE_IMPACT[archetype] ?? POSITIVE_IMPACT['Role Player'];
+  const negPool = NEGATIVE_IMPACT[archetype] ?? NEGATIVE_IMPACT['Role Player'];
+  if (pgis >= 4) {
+    // Great game: 3 positives
+    return { positives: [posPool[0], posPool[1], posPool[2], posPool[nameHash % 2 === 0 ? 3 : 2]], negatives: [] };
+  } else if (pgis >= 1) {
+    // Good game: 3 positives, 1 negative
+    return { positives: [posPool[0], posPool[1], posPool[nameHash % 2 === 0 ? 2 : 3]], negatives: [negPool[nameHash % negPool.length]] };
+  } else if (pgis >= -1) {
+    // Neutral: 2 positives, 2 negatives
+    return { positives: [posPool[0], posPool[nameHash % 2 === 0 ? 1 : 2]], negatives: [negPool[0], negPool[nameHash % 2 === 0 ? 1 : 2]] };
+  } else {
+    // Bad game: 0 positives, 4 negatives
+    return { positives: [], negatives: [negPool[0], negPool[1], negPool[2], negPool[nameHash % 2 === 0 ? 3 : 2]] };
+  }
+}
+
 function getImpactReason(archetype: string, pgis: number): string {
-  const pool = IMPACT_REASONS[archetype] ?? IMPACT_REASONS['Role Player'];
-  // Positive → first reasons (offensive impact), Negative → last reasons (defensive/effort)
-  if (pgis >= 4) return pool[0];
-  if (pgis >= 1) return pool[1];
-  if (pgis >= -1) return pool[2];
-  return pool[3];
+  const posPool = POSITIVE_IMPACT[archetype] ?? POSITIVE_IMPACT['Role Player'];
+  const negPool = NEGATIVE_IMPACT[archetype] ?? NEGATIVE_IMPACT['Role Player'];
+  if (pgis >= 4) return posPool[0];
+  if (pgis >= 1) return posPool[1];
+  if (pgis >= -1) return negPool[0];
+  return negPool[1];
 }
 
 // Determine likely starters: players with most games_started in 2025-26 season
@@ -543,6 +584,8 @@ export interface PlayerPGIS {
   pgisLabel: string;
   kr: number;
   impactReason: string;
+  positives: string[];
+  negatives: string[];
   isStarter: boolean;
 }
 
@@ -650,6 +693,9 @@ for (let i = 0; i < tgl2526.length; i++) {
       const playerId = playerIdByName.get(p.name) ?? '';
       const isStarter = starterPlayerIds.has(playerId);
       const pgis = p.bpr;
+      let nh = 0; for (let ci = 0; ci < p.name.length; ci++) nh = ((nh << 5) - nh + p.name.charCodeAt(ci)) | 0;
+      nh = Math.abs(nh);
+      const reasons = getImpactReasons(p.archetype, pgis, nh);
       return {
         name: p.name,
         archetype: p.archetype,
@@ -657,13 +703,15 @@ for (let i = 0; i < tgl2526.length; i++) {
         pgisLabel: getPGISLabel(pgis),
         kr: p.kr,
         impactReason: getImpactReason(p.archetype, pgis),
+        positives: reasons.positives,
+        negatives: reasons.negatives,
         isStarter,
       };
     });
 
-    // Split and sort: top 3 starters, top 2 bench
-    starters = allPgis.filter((p) => p.isStarter).sort((a, b) => b.pgis - a.pgis).slice(0, 3);
-    bench = allPgis.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis).slice(0, 2);
+    // Split and sort: all starters, all bench
+    starters = allPgis.filter((p) => p.isStarter).sort((a, b) => b.pgis - a.pgis);
+    bench = allPgis.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis);
   } else if (tg.fmu_score != null) {
     // Completed game without individual box scores — synthesize PGIS from season averages
     // Use TGIS as a scaling factor: positive TGIS means players performed above average
@@ -682,14 +730,18 @@ for (let i = 0; i < tgl2526.length; i++) {
       // Derive PGIS from season PPG, scaled by game TGIS direction
       const basePgis = Math.round(((s.points_avg ?? 8) - 10) * 0.5);
       const pgis = Math.round(basePgis + tgis * 0.3);
+      let nh2 = 0; for (let ci = 0; ci < name.length; ci++) nh2 = ((nh2 << 5) - nh2 + name.charCodeAt(ci)) | 0;
+      nh2 = Math.abs(nh2);
+      const reasons2 = getImpactReasons(archetype, pgis, nh2);
       return {
         name, archetype, pgis, pgisLabel: getPGISLabel(pgis), kr,
-        impactReason: getImpactReason(archetype, pgis), isStarter,
+        impactReason: getImpactReason(archetype, pgis),
+        positives: reasons2.positives, negatives: reasons2.negatives, isStarter,
       };
     });
 
-    starters = allSynthetic.filter((p) => p.isStarter).sort((a, b) => b.pgis - a.pgis).slice(0, 3);
-    bench = allSynthetic.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis).slice(0, 2);
+    starters = allSynthetic.filter((p) => p.isStarter).sort((a, b) => b.pgis - a.pgis);
+    bench = allSynthetic.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis);
   }
 
   gameImpactMap.set(fmuId, { tgis, tgisLabel: getTGISLabel(tgis), drivers, starters, bench });
@@ -722,6 +774,8 @@ export interface PregameOppThreat {
   archetype: string;
   kr: number;
   rule: string;
+  strengths: string[];
+  weaknesses: string[];
 }
 
 export interface PregameAssignment {
@@ -730,16 +784,56 @@ export interface PregameAssignment {
   constraint: string;
 }
 
+export interface SubclusterRating {
+  name: string;
+  rating: number; // 0–100
+}
+
+export interface ClusterRating {
+  cluster: string;
+  rating: number; // 0–100
+  subclusters: SubclusterRating[];
+}
+
 export interface PregameSnapshot {
   expectation: 'FAVORED' | "PICK'EM" | 'UNDERDOG';
   krGap: number;
-  leveragePlan: LeverageBullet[];
+  oppKR: number;
+  clusterRatings: ClusterRating[];
   theirDNA: string[];
   ourEdge: string[];
   swingPlayers: PregameSwingPlayer[];
   oppThreats: PregameOppThreat[];
   assignments: PregameAssignment[];
   modelNotes: { upsetPath: string; risk: string };
+}
+
+// ── Canonical 7 Clusters + Subclusters (from Team KR spec) ──
+const CANONICAL_CLUSTERS: { cluster: string; subclusters: string[] }[] = [
+  { cluster: 'Shooting', subclusters: ['Spot-Up', 'Off-Screen', 'Pull-Up', 'Catch & Shoot', 'Free Throw'] },
+  { cluster: 'Finishing', subclusters: ['Rim Finishing', 'Floater', 'Mid-Range', 'Post-Up'] },
+  { cluster: 'Playmaking', subclusters: ['Ball Handling', 'Passing', 'PnR Creation', 'Transition'] },
+  { cluster: 'On-Ball Defense', subclusters: ['Perimeter Containment', 'On-Ball Pressure', 'Isolation D'] },
+  { cluster: 'Team Defense', subclusters: ['Help & Rotate', 'Rim Protection', 'Closeout'] },
+  { cluster: 'Rebounding', subclusters: ['Offensive Glass', 'Defensive Glass', 'Box Out'] },
+  { cluster: 'Physical', subclusters: ['Frame', 'Athleticism', 'Endurance'] },
+];
+
+function generateClusterRatings(opp: string, baseKR: number): ClusterRating[] {
+  return CANONICAL_CLUSTERS.map((c, ci) => {
+    // Cluster-level rating: baseKR ± seeded variation
+    const clusterSeed = stableHash(opp, ci * 11 + 200);
+    const variation = (clusterSeed % 25) - 12; // -12 to +12
+    const rating = Math.max(20, Math.min(95, baseKR + variation));
+
+    const subclusters: SubclusterRating[] = c.subclusters.map((sc, si) => {
+      const scSeed = stableHash(opp + sc, ci * 7 + si * 3 + 300);
+      const scVar = (scSeed % 20) - 10; // -10 to +10
+      return { name: sc, rating: Math.max(15, Math.min(98, rating + scVar)) };
+    });
+
+    return { cluster: c.cluster, rating, subclusters };
+  });
 }
 
 // Hash helper for deterministic pseudo-random values
@@ -767,7 +861,7 @@ const LEVERAGE_POOL: { action: string; why: string; target: string }[] = [
 
 // ── Their DNA pools ──
 // 11 canonical offensive systems (from OffensiveStyle type)
-const DNA_OFFENSE_POOL = [
+export const DNA_OFFENSE_POOL = [
   'Spread Pick & Roll',
   'Five-Out Motion',
   'Motion Read & React',
@@ -781,7 +875,7 @@ const DNA_OFFENSE_POOL = [
   'Heliocentric',
 ];
 // 9 canonical defensive systems (from DefensiveStyle type)
-const DNA_DEFENSE_POOL = [
+export const DNA_DEFENSE_POOL = [
   'Containment Man',
   'Pack Line',
   'Pressure Man',
@@ -793,25 +887,29 @@ const DNA_DEFENSE_POOL = [
   'Junk / Special',
 ];
 // Tempo descriptors
-const DNA_TEMPO_POOL = [
-  'Uptempo — pushes pace aggressively',
-  'Fast — above-average tempo',
-  'Moderate-Fast — opportunistic transition',
-  'Moderate — balanced pace',
-  'Deliberate — patient half-court focus',
-  'Slow — walks it up, burns clock',
+export const DNA_TEMPO_POOL = [
+  'Ultra Fast',
+  'Fast',
+  'Moderate-Fast',
+  'Moderate',
+  'Deliberate',
+  'Slow',
 ];
 
-// ── Our Edge pools ──
-const EDGE_POOL = [
-  'We can win the possession battle (pressure + glass).',
-  'Their bigs struggle in space — attack with 5-out.',
-  'We have the matchup edge in the backcourt.',
-  'Our depth wears them down in the second half.',
-  'We shoot better from deep — space the floor.',
-  'Our interior defense neutralizes their best action.',
-  'We win the FT battle if we attack the paint.',
-  'Our transition game exploits their slow rotations.',
+// ── Structural Weaknesses — pointed, exploitable flaws ──
+const MATCHUP_PRIORITY_POOL = [
+  'Closeouts are late. Kick-outs produce wide-open threes.',
+  'No shot-blocker. Every drive reaches the rim uncontested.',
+  'Bigs can\'t guard in space. Five-out pulls them apart.',
+  'Transition D is broken. They give up 1.3 PPP in fastbreak.',
+  'Ball handlers turn it over under pressure. Trap and rotate.',
+  'Bench is thin. Pace and physicality exhaust starters by the 2H.',
+  'Help-side rotates a full beat late. Cutters eat.',
+  'PnR coverage is soft. Ball handler turns the corner at will.',
+  'Foul-prone frontcourt. Attack early — they play passive when in trouble.',
+  'Can\'t shoot from deep. Pack the lane and force contested jumpers.',
+  'Offensive rebounding is nonexistent. One shot and done — run.',
+  'Guards collapse on drives. Shooters are open on every penetration.',
 ];
 
 // ── Swing Player condition pools ──
@@ -876,7 +974,7 @@ const RISK_POOL = [
 
 const OPP_FIRST_NAMES = ['Marcus', 'Jaylen', 'DeShawn', 'Tyler', 'Chris', 'Andre', 'Isaiah', 'Malik', 'Darius', 'Khalil'];
 const OPP_LAST_NAMES = ['Williams', 'Johnson', 'Brown', 'Davis', 'Jackson', 'Thomas', 'Harris', 'Robinson', 'Carter', 'Mitchell'];
-const OPP_ARCHETYPES = ['Guard', 'Wing', 'Forward', 'Big', 'Combo Guard', 'Stretch 4', 'Point Forward', 'Center'];
+const OPP_ARCHETYPES = ['Shot Creator', 'Floor General', 'Scoring Wing', 'Stretch Big', 'Rim Runner', 'Two-Way Wing', '3&D Guard', 'Post Anchor', 'Slasher', 'Playmaking Guard'];
 
 const ROLE_TAG_POOL = [
   'Primary Creator', 'Scoring Guard', 'Spacing Wing', 'Interior Enforcer',
@@ -887,13 +985,16 @@ const ROLE_TAG_POOL = [
 const pregameMap = new Map<string, PregameSnapshot>();
 
 for (const game of FMU_GAMES) {
-  if (game.status !== 'upcoming') continue;
+  if (game.status === 'live') continue;
   const opp = game.opponent;
   const oppKR = game.opponentKR ?? getOpponentKR(opp);
   const krGap = FMU_KR_PREGAME - oppKR;
   const expectation: PregameSnapshot['expectation'] = krGap >= 5 ? 'FAVORED' : krGap <= -5 ? 'UNDERDOG' : "PICK'EM";
 
   const h = stableHash(opp);
+
+  // Cluster Ratings — 7 canonical clusters with subclusters
+  const clusterRatings = generateClusterRatings(opp, oppKR);
 
   // A) Leverage Plan — 3 bullets
   const lev: LeverageBullet[] = [];
@@ -912,10 +1013,15 @@ for (const game of FMU_GAMES) {
     `Tempo: ${DNA_TEMPO_POOL[(h >> 6) % DNA_TEMPO_POOL.length]}`,
   ];
 
-  // C) Our Edge — 2 bullets
-  const e1 = (h >> 2) % EDGE_POOL.length;
-  const e2Idx = (h >> 5) % EDGE_POOL.length;
-  const ourEdge = [EDGE_POOL[e1], EDGE_POOL[e2Idx === e1 ? (e2Idx + 1) % EDGE_POOL.length : e2Idx]];
+  // C) Matchup Priorities — 3 structural weaknesses
+  const ourEdge: string[] = [];
+  const usedEdge = new Set<number>();
+  for (let i = 0; i < 3; i++) {
+    let idx = stableHash(opp, i * 5 + 50) % MATCHUP_PRIORITY_POOL.length;
+    while (usedEdge.has(idx)) idx = (idx + 1) % MATCHUP_PRIORITY_POOL.length;
+    usedEdge.add(idx);
+    ourEdge.push(MATCHUP_PRIORITY_POOL[idx]);
+  }
 
   // D) Our Swing Players — top 3 starters
   const topStarters = individualSeasonStats
@@ -941,18 +1047,66 @@ for (const game of FMU_GAMES) {
     };
   });
 
-  // E) Their Threats — 3 opponent players
+  // E) Their Threats — 3 opponent players with strengths + weaknesses
+  const OPP_STRENGTH_POOL = [
+    'Elite scorer in isolation',
+    'Knockdown three-point shooter',
+    'Gets to the rim at will',
+    'Controls the glass on both ends',
+    'High-IQ passer, creates for others',
+    'Lockdown perimeter defender',
+    'Dominant in the post',
+    'Finishes through contact',
+    'Quick first step, draws fouls',
+    'Strong in transition',
+    'Mid-range is automatic',
+    'Physicality disrupts opponents',
+  ];
+  const OPP_WEAKNESS_POOL = [
+    'Turnover-prone under pressure',
+    'Disappears in second halves',
+    'Poor free-throw shooter',
+    'Limited left hand',
+    'Foul trouble — plays passive when in',
+    'Slow lateral movement on D',
+    'Can\'t finish through contact',
+    'Settles for contested jumpers',
+    'Doesn\'t rebound his position',
+    'Low motor, takes plays off',
+    'Struggles against length',
+    'No perimeter shot — sag off him',
+  ];
   const oppThreats: PregameOppThreat[] = [0, 1, 2].map((idx) => {
     const fIdx = stableHash(opp, idx * 3) % OPP_FIRST_NAMES.length;
     const lIdx = stableHash(opp, idx * 3 + 1) % OPP_LAST_NAMES.length;
     const name = `${OPP_FIRST_NAMES[(fIdx + idx) % OPP_FIRST_NAMES.length]} ${OPP_LAST_NAMES[(lIdx + idx) % OPP_LAST_NAMES.length]}`;
     const kr = oppKR + 5 - idx * 3 - (stableHash(opp, idx + 7) % 4);
     const ruleIdx = stableHash(opp, idx * 4 + 3) % THREAT_RULE_POOL.length;
+    // 2 strengths
+    const strengths: string[] = [];
+    const usedStr = new Set<number>();
+    for (let s = 0; s < 2; s++) {
+      let si = stableHash(opp + name, s * 6 + 400) % OPP_STRENGTH_POOL.length;
+      while (usedStr.has(si)) si = (si + 1) % OPP_STRENGTH_POOL.length;
+      usedStr.add(si);
+      strengths.push(OPP_STRENGTH_POOL[si]);
+    }
+    // 2 weaknesses
+    const weaknesses: string[] = [];
+    const usedWk = new Set<number>();
+    for (let w = 0; w < 2; w++) {
+      let wi = stableHash(opp + name, w * 6 + 500) % OPP_WEAKNESS_POOL.length;
+      while (usedWk.has(wi)) wi = (wi + 1) % OPP_WEAKNESS_POOL.length;
+      usedWk.add(wi);
+      weaknesses.push(OPP_WEAKNESS_POOL[wi]);
+    }
     return {
       name,
       archetype: OPP_ARCHETYPES[stableHash(opp, idx * 5 + 2) % OPP_ARCHETYPES.length],
       kr,
       rule: THREAT_RULE_POOL[ruleIdx],
+      strengths,
+      weaknesses,
     };
   });
 
@@ -984,7 +1138,7 @@ for (const game of FMU_GAMES) {
     risk: RISK_POOL[stableHash(opp, 100) % RISK_POOL.length],
   };
 
-  pregameMap.set(game.id, { expectation, krGap, leveragePlan: lev, theirDNA, ourEdge, swingPlayers, oppThreats, assignments, modelNotes });
+  pregameMap.set(game.id, { expectation, krGap, oppKR, clusterRatings, theirDNA, ourEdge, swingPlayers, oppThreats, assignments, modelNotes });
 }
 
 export const FMU_PREGAME: Record<string, PregameSnapshot> = Object.fromEntries(pregameMap);

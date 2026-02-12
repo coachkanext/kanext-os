@@ -11,6 +11,7 @@ import { TopBar } from '@/components/top-bar';
 import { AvatarDrawer } from '@/components/avatar-drawer';
 import { RosterContent } from '@/components/roster-content';
 import { TabFooter } from '@/components/tab-footer';
+import { openTeamSheet } from '@/utils/global-team-sheet';
 
 export default function CoachRosterScreen() {
   const insets = useSafeAreaInsets();
@@ -29,6 +30,7 @@ export default function CoachRosterScreen() {
       >
         <RosterContent
           onViewChange={() => scrollRef.current?.scrollTo({ y: 0, animated: false })}
+          onLogoPress={openTeamSheet}
         />
       </ScrollView>
 

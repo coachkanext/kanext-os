@@ -21,6 +21,7 @@ import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
+import { FMU_RECORD, FMU_STANDINGS } from '@/data/fmu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ARCHETYPE_LABELS, type Archetype } from '@/data/system-demand-profiles';
 
@@ -137,16 +138,13 @@ const DEPTH_CHART = [
 
 // FMU Team Info (for thin header)
 const FMU_TEAM = {
-  name: 'FMU Lions',
-  fullName: 'Florida Memorial University',
+  name: 'Florida Memorial',
   conference: 'Sun Conference',
   division: 'NAIA',
-  season: '2025–26',
-  record: '17-8',
-  confRecord: '9-4',
-  teamKR: 74,
-  offRating: 77,
-  defRating: 71,
+  record: FMU_RECORD.overall,
+  confRecord: FMU_RECORD.conference,
+  streak: FMU_STANDINGS.find((r) => r.team === 'Florida Memorial')?.streak ?? '—',
+  tier: 'Regional Power',
 };
 
 // ── Season-keyed data ──
@@ -752,7 +750,7 @@ function useFilteredRoster(
   }, [roster, filter, sort, searchQuery]);
 }
 
-export function RosterContent({ onViewChange }: { onViewChange?: () => void } = {}) {
+export function RosterContent({ onViewChange, teamKR, onLogoPress }: { onViewChange?: () => void; teamKR?: number; onLogoPress?: () => void } = {}) {
   const [activeView, setActiveView] = useState<ViewType>('cards');
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
   const [searchQuery, setSearchQuery] = useState('');
@@ -771,18 +769,46 @@ export function RosterContent({ onViewChange }: { onViewChange?: () => void } = 
 
   return (
     <View style={styles.container}>
-      {/* Thin Team Header */}
+      {/* Team Identity Header */}
       <View style={styles.teamHeader}>
+        {/* Row 1: Logo + Identity */}
         <View style={styles.teamNameRow}>
-          <Image source={FMU_SEAL} style={styles.headerLogo} resizeMode="contain" />
-          <Text style={styles.teamName}>{FMU_TEAM.name}</Text>
+          <Pressable onPress={() => { if (onLogoPress) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onLogoPress(); } }}>
+            <Image source={FMU_SEAL} style={styles.headerLogo} resizeMode="contain" />
+          </Pressable>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.teamName}>{FMU_TEAM.name} ({teamKR ?? 74})</Text>
+            <Text style={{ fontSize: 13, color: TEAM_COLORS.gray, marginTop: 2 }}>
+              {FMU_TEAM.division} {'\u00B7'} {FMU_TEAM.conference} {'\u00B7'} {FMU_TEAM.tier}
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4, gap: 8 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: TEAM_COLORS.white }}>
+                {FMU_TEAM.record} ({FMU_TEAM.confRecord})
+              </Text>
+              <View style={{ backgroundColor: FMU_TEAM.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: FMU_TEAM.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
+                  {FMU_TEAM.streak}
+                </Text>
+              </View>
+            </View>
+          </View>
         </View>
-        <Text style={styles.teamContext}>
-          {FMU_TEAM.record} ({FMU_TEAM.confRecord}) · {FMU_TEAM.division} · {FMU_TEAM.conference}
-        </Text>
-        <Text style={styles.teamTruth}>
-          KR {FMU_TEAM.teamKR} · Off {FMU_TEAM.offRating} · Def {FMU_TEAM.defRating}
-        </Text>
+
+        {/* Row 2: Season dropdown */}
+        <View style={{ marginTop: 8 }}>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              handleSeasonChange(selectedSeason === '2025-26' ? '2024-25' : '2025-26');
+            }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+          >
+            <Text style={{ fontSize: 13, fontWeight: '600', color: TEAM_COLORS.gray }}>
+              {selectedSeason.replace('-', '\u2013')}
+            </Text>
+            <IconSymbol name="chevron.down" size={10} color={TEAM_COLORS.gray} />
+          </Pressable>
+        </View>
       </View>
 
       {/* Controls: Season + Sort + Search + View */}
@@ -820,12 +846,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerLogo: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
+    width: 52,
+    height: 52,
+    marginRight: 12,
   },
   teamName: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: '800',
     color: TEAM_COLORS.white,
     letterSpacing: -0.3,
