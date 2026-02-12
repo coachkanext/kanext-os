@@ -155,18 +155,21 @@ export const FMU_GAMES: FMUGame[] = tgl2526.map((g, i) => {
   const isToday = d != null && d >= TODAY_START && d < TODAY_END;
   const isLive = isToday && !hasResult;
   const dateVenue = d ? venueByDate.get(`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`) ?? undefined : undefined;
+  // Placeholder live game for demo
+  const isTuskegeeLive = g.opponent === 'Tuskegee';
+  const effectiveLive = isLive || isTuskegeeLive;
   return {
     id: `fmu-2526-${String(i).padStart(2, '0')}`,
     opponent: g.opponent ?? 'Unknown',
     date: g.game_date ?? '',
     location: g.home_away === 'H' ? 'Home' : 'Away',
-    status: (isLive ? 'live' : !hasResult ? 'upcoming' : 'final') as GameStatus,
+    status: (effectiveLive ? 'live' : !hasResult ? 'upcoming' : 'final') as GameStatus,
     score:
-      isLive ? '38-32'
+      effectiveLive ? '38-32'
       : g.result && g.fmu_score != null && g.opp_score != null
         ? `${g.result} ${g.fmu_score}-${g.opp_score}`
         : undefined,
-    clock: isLive ? '2H 14:22' : undefined,
+    clock: effectiveLive ? '2H 14:22' : undefined,
     gameType: isConfGame(g.opponent) ? 'CONF' : 'NON-CONF',
     opponentKR: getOpponentKR(g.opponent ?? ''),
     opponentRecord: placeholderRecord(g.opponent ?? '', isConfGame(g.opponent)),
@@ -698,24 +701,45 @@ export const FMU_GAME_IMPACT: Record<string, TeamGameImpact> = Object.fromEntrie
 
 const FMU_KR_PREGAME = 74; // approximate; real FMU_KR computed later from win%
 
+// ── Pregame Snapshot v2 ──
+
+export interface LeverageBullet {
+  action: string;
+  why: string;
+  target: string;
+}
+
 export interface PregameSwingPlayer {
   name: string;
   archetype: string;
-  swingTag: string;
+  roleTag: string;
   kr: number;
-  roleTarget: string;
+  ifHeHits: string;
+}
+
+export interface PregameOppThreat {
+  name: string;
+  archetype: string;
+  kr: number;
+  rule: string;
+}
+
+export interface PregameAssignment {
+  player: string; // last name
+  title: string;
+  constraint: string;
 }
 
 export interface PregameSnapshot {
-  outlook: 'Favored' | 'Toss-Up' | 'Underdog';
-  krGap: number; // FMU_KR - oppKR (negative = underdog)
-  fmuKR: number;
-  oppKR: number;
-  keysToWin: string[];
-  oppStrengths: string[];
-  oppVulnerabilities: string[];
+  expectation: 'FAVORED' | "PICK'EM" | 'UNDERDOG';
+  krGap: number;
+  leveragePlan: LeverageBullet[];
+  theirDNA: string[];
+  ourEdge: string[];
   swingPlayers: PregameSwingPlayer[];
-  oppThreats: { name: string; archetype: string; threatTag: string; kr: number }[];
+  oppThreats: PregameOppThreat[];
+  assignments: PregameAssignment[];
+  modelNotes: { upsetPath: string; risk: string };
 }
 
 // Hash helper for deterministic pseudo-random values
@@ -725,75 +749,138 @@ function stableHash(s: string, seed: number = 0): number {
   return Math.abs(h);
 }
 
-// Auto-generated keys-to-win based on KR gap and opponent profile
-const KEYS_POOL = {
-  shot: [
-    'Win the 3pt attempt battle',
-    'Shoot 45%+ from the field',
-    'Attack mid-range mismatches',
-    'Generate open catch-and-shoot looks',
-    'Push pace in transition',
-  ],
-  turnover: [
-    'Keep turnovers ≤ 12',
-    'Win the TO margin by +3',
-    'Protect the ball in half-court sets',
-    'Force 15+ opponent turnovers',
-    'Attack passing lanes aggressively',
-  ],
-  glass: [
-    'Win the offensive glass (10+ OREB)',
-    'Limit second-chance points',
-    'Box out their bigs on every shot',
-    'Control the defensive boards',
-    'Crash hard on makes and misses',
-  ],
-  ft: [
-    'Get to the line 20+ times',
-    'Attack the paint to draw fouls',
-    'Convert 75%+ from the stripe',
-    'Exploit foul-prone matchups',
-    'Be aggressive in the bonus',
-  ],
-};
-
-const OPP_STRENGTHS_POOL = [
-  'Rim pressure + OREB',
-  'Low turnover rate',
-  'Elite perimeter shooting',
-  'Physical interior play',
-  'Fast-break scoring',
-  'Balanced scoring attack',
-  'Strong defensive rebounding',
-  'Half-court execution',
-  'Depth off the bench',
-  'Free throw rate',
+// ── Leverage Plan pools ──
+const LEVERAGE_POOL: { action: string; why: string; target: string }[] = [
+  { action: 'Pressure ball-handlers', why: 'turnover-prone vs heat', target: '+4 TO margin' },
+  { action: 'Zone in segments', why: 'struggles vs zone', target: '6+ late-clock shots' },
+  { action: 'Attack foul matchups', why: 'thin frontcourt', target: 'bonus by 10:00' },
+  { action: 'Push pace early', why: 'slow in transition defense', target: '8+ fast-break pts' },
+  { action: 'Feed the post', why: 'undersized bigs', target: '14+ paint pts' },
+  { action: 'Win the 3PA battle', why: 'weak closeouts', target: '+6 3PA margin' },
+  { action: 'Crash the offensive glass', why: 'poor box-out discipline', target: '10+ OREB' },
+  { action: 'Limit second chances', why: 'offensive-rebounding team', target: '< 8 opp OREB' },
+  { action: 'Control tempo', why: 'wants to run', target: '< 68 possessions' },
+  { action: 'Attack in pick & roll', why: 'drop coverage', target: '12+ P&R pts' },
+  { action: 'Force contested 3s', why: 'perimeter-heavy offense', target: '< 30% opp 3PT' },
+  { action: 'Get to the line', why: 'foul-prone bigs', target: '20+ FTA' },
 ];
 
-const OPP_VULNS_POOL = [
-  'Weak closeouts / gives up 3s',
-  'Foul-prone bigs',
-  'Turnover-prone under pressure',
-  'Poor free throw shooting',
-  'Slow in transition defense',
-  'Limited bench depth',
-  'Vulnerable on the offensive glass',
-  'Struggles against zone',
-  'Poor ball security',
-  'Inconsistent shot selection',
+// ── Their DNA pools ──
+// 11 canonical offensive systems (from OffensiveStyle type)
+const DNA_OFFENSE_POOL = [
+  'Spread Pick & Roll',
+  'Five-Out Motion',
+  'Motion Read & React',
+  'Pace & Space',
+  'Dribble Drive',
+  'Princeton',
+  'Flex',
+  'Swing',
+  'Post-Centric',
+  'Moreyball',
+  'Heliocentric',
+];
+// 9 canonical defensive systems (from DefensiveStyle type)
+const DNA_DEFENSE_POOL = [
+  'Containment Man',
+  'Pack Line',
+  'Pressure Man',
+  'Switch Everything',
+  'Ice / No Middle',
+  'Zone (Structured)',
+  'Matchup Zone',
+  'Press',
+  'Junk / Special',
+];
+// Tempo descriptors
+const DNA_TEMPO_POOL = [
+  'Uptempo — pushes pace aggressively',
+  'Fast — above-average tempo',
+  'Moderate-Fast — opportunistic transition',
+  'Moderate — balanced pace',
+  'Deliberate — patient half-court focus',
+  'Slow — walks it up, burns clock',
 ];
 
-const SWING_TAGS = ['Shotmaking', 'POA Defense', 'Rebounding', 'Playmaking', 'Rim Protection', 'Floor Spacing', 'Transition', 'Ball Security'];
+// ── Our Edge pools ──
+const EDGE_POOL = [
+  'We can win the possession battle (pressure + glass).',
+  'Their bigs struggle in space — attack with 5-out.',
+  'We have the matchup edge in the backcourt.',
+  'Our depth wears them down in the second half.',
+  'We shoot better from deep — space the floor.',
+  'Our interior defense neutralizes their best action.',
+  'We win the FT battle if we attack the paint.',
+  'Our transition game exploits their slow rotations.',
+];
 
-const THREAT_TAGS = ['Scoring punch', 'Paint bully', 'Floor general', 'Stretch threat', 'Defensive anchor', 'Energy spark', 'Transition scorer', 'Shot creator'];
+// ── Swing Player condition pools ──
+const IF_HE_HITS_POOL = [
+  '6+ paint touches / 8+ FTA created',
+  '3+ made threes / 45%+ from deep',
+  '5+ assists / 0-1 turnovers',
+  '8+ rebounds / controls the glass',
+  '20+ points / efficient shot selection',
+  '3+ steals / disrupts passing lanes',
+  '4+ blocks-altered / rim protection anchor',
+  'Runs the break / 4+ transition pts',
+  'Draws fouls early / puts them in penalty',
+  '15+ min of lockdown POA defense',
+];
+
+// ── Threat Rule pools ──
+const THREAT_RULE_POOL = [
+  'no pop threes; top-lock into switch',
+  'force left, no middle drives',
+  'deny catch in mid-post; front aggressively',
+  'go under screens; contest late',
+  'shade baseline; help-side tag on drives',
+  'switch all ball-screens; no split',
+  'force tough twos; live with mid-range',
+  'zone out his minutes; no rhythm 3s',
+];
+
+// ── Assignment pools ──
+const ASSIGNMENT_TITLE_POOL = [
+  'POA stopper', 'nail presence', 'spacing wing', 'rim protector',
+  'ball-screen navigator', 'help-side anchor', 'transition stopper', 'post defender',
+];
+const ASSIGNMENT_CONSTRAINT_POOL = [
+  'force left, no splits',
+  'tag roller, recover hard',
+  'lift on drives, punish help',
+  'wall up, no fouls',
+  'deny catch, contest everything',
+  'weak-side blocks, crash glass',
+  'sprint back, no leak-outs',
+  'front the post, dig on drives',
+];
+
+// ── Model Notes pools ──
+const UPSET_PATH_POOL = [
+  'win TO battle +8 OR win 3PA by +10',
+  'hold them under 60 pts + win the glass',
+  'get to the line 25+ times + convert 78%',
+  'force 18+ turnovers + limit second chances',
+  'outscore them in transition by +12',
+  'hold their top scorer under 12 pts',
+];
+const RISK_POOL = [
+  'if we lose defensive glass, win chance collapses',
+  'foul trouble in the frontcourt = no interior D',
+  'if their guards get hot from 3, hard to recover',
+  'turnovers in half-court will let them run',
+  'if pace gets above 75 possessions, favors them',
+  'late-game FT misses in close game = loss',
+];
 
 const OPP_FIRST_NAMES = ['Marcus', 'Jaylen', 'DeShawn', 'Tyler', 'Chris', 'Andre', 'Isaiah', 'Malik', 'Darius', 'Khalil'];
 const OPP_LAST_NAMES = ['Williams', 'Johnson', 'Brown', 'Davis', 'Jackson', 'Thomas', 'Harris', 'Robinson', 'Carter', 'Mitchell'];
+const OPP_ARCHETYPES = ['Guard', 'Wing', 'Forward', 'Big', 'Combo Guard', 'Stretch 4', 'Point Forward', 'Center'];
 
-const ROLE_TARGETS_POOL = [
-  'Spacing wing', 'Point-of-attack stopper', 'Rim runner', 'Floor general',
-  'Catch-and-shoot specialist', 'Help-side anchor', 'Ball-screen navigator',
-  'Transition pusher', 'Post-up mismatch', 'Defensive switchman',
+const ROLE_TAG_POOL = [
+  'Primary Creator', 'Scoring Guard', 'Spacing Wing', 'Interior Enforcer',
+  'Floor General', 'Defensive Anchor', 'Transition Pusher', 'Stretch Forward',
 ];
 
 // Build pregame snapshots for upcoming games
@@ -804,27 +891,33 @@ for (const game of FMU_GAMES) {
   const opp = game.opponent;
   const oppKR = game.opponentKR ?? getOpponentKR(opp);
   const krGap = FMU_KR_PREGAME - oppKR;
-  const outlook: PregameSnapshot['outlook'] = krGap >= 5 ? 'Favored' : krGap <= -5 ? 'Underdog' : 'Toss-Up';
+  const expectation: PregameSnapshot['expectation'] = krGap >= 5 ? 'FAVORED' : krGap <= -5 ? 'UNDERDOG' : "PICK'EM";
 
   const h = stableHash(opp);
 
-  // 3 keys to win (one from each category)
-  const keysToWin = [
-    KEYS_POOL.shot[h % KEYS_POOL.shot.length],
-    KEYS_POOL.turnover[(h >> 3) % KEYS_POOL.turnover.length],
-    (h % 2 === 0 ? KEYS_POOL.glass : KEYS_POOL.ft)[(h >> 6) % KEYS_POOL.glass.length],
+  // A) Leverage Plan — 3 bullets
+  const lev: LeverageBullet[] = [];
+  const usedLev = new Set<number>();
+  for (let i = 0; i < 3; i++) {
+    let idx = stableHash(opp, i * 7 + 1) % LEVERAGE_POOL.length;
+    while (usedLev.has(idx)) idx = (idx + 1) % LEVERAGE_POOL.length;
+    usedLev.add(idx);
+    lev.push(LEVERAGE_POOL[idx]);
+  }
+
+  // B) Their DNA — 3 bullets: Offense, Defense, Tempo
+  const theirDNA = [
+    `Offense: ${DNA_OFFENSE_POOL[h % DNA_OFFENSE_POOL.length]}`,
+    `Defense: ${DNA_DEFENSE_POOL[(h >> 3) % DNA_DEFENSE_POOL.length]}`,
+    `Tempo: ${DNA_TEMPO_POOL[(h >> 6) % DNA_TEMPO_POOL.length]}`,
   ];
 
-  // 2 opponent strengths, 2 vulnerabilities
-  const s1 = h % OPP_STRENGTHS_POOL.length;
-  const s2 = (h >> 4) % OPP_STRENGTHS_POOL.length;
-  const oppStrengths = [OPP_STRENGTHS_POOL[s1], OPP_STRENGTHS_POOL[s2 === s1 ? (s2 + 1) % OPP_STRENGTHS_POOL.length : s2]];
+  // C) Our Edge — 2 bullets
+  const e1 = (h >> 2) % EDGE_POOL.length;
+  const e2Idx = (h >> 5) % EDGE_POOL.length;
+  const ourEdge = [EDGE_POOL[e1], EDGE_POOL[e2Idx === e1 ? (e2Idx + 1) % EDGE_POOL.length : e2Idx]];
 
-  const v1 = (h >> 2) % OPP_VULNS_POOL.length;
-  const v2 = (h >> 5) % OPP_VULNS_POOL.length;
-  const oppVulnerabilities = [OPP_VULNS_POOL[v1], OPP_VULNS_POOL[v2 === v1 ? (v2 + 1) % OPP_VULNS_POOL.length : v2]];
-
-  // Our swing players: top 3 starters by season stats
+  // D) Our Swing Players — top 3 starters
   const topStarters = individualSeasonStats
     .filter((s) => s.season === '2025-26' && starterPlayerIds.has(s.player_id))
     .sort((a, b) => (b.points_avg ?? 0) - (a.points_avg ?? 0))
@@ -837,35 +930,61 @@ for (const game of FMU_GAMES) {
     const roster = rosterMap2526.get(s.player_id);
     const jersey = normJersey(roster?.jersey_number ?? '0');
     const kr = ROSTER_KR[jersey] ?? 60;
-    const tagIdx = stableHash(name + opp, idx) % SWING_TAGS.length;
-    const roleIdx = stableHash(name + opp, idx + 10) % ROLE_TARGETS_POOL.length;
+    const roleIdx = stableHash(name + opp, idx + 10) % ROLE_TAG_POOL.length;
+    const hitIdx = stableHash(name + opp, idx + 20) % IF_HE_HITS_POOL.length;
     return {
       name,
       archetype,
-      swingTag: SWING_TAGS[tagIdx],
+      roleTag: ROLE_TAG_POOL[roleIdx],
       kr,
-      roleTarget: ROLE_TARGETS_POOL[roleIdx],
+      ifHeHits: IF_HE_HITS_POOL[hitIdx],
     };
   });
 
-  // Their threats (placeholder opponent players)
-  const oppThreats = [0, 1, 2].map((idx) => {
+  // E) Their Threats — 3 opponent players
+  const oppThreats: PregameOppThreat[] = [0, 1, 2].map((idx) => {
     const fIdx = stableHash(opp, idx * 3) % OPP_FIRST_NAMES.length;
     const lIdx = stableHash(opp, idx * 3 + 1) % OPP_LAST_NAMES.length;
     const name = `${OPP_FIRST_NAMES[(fIdx + idx) % OPP_FIRST_NAMES.length]} ${OPP_LAST_NAMES[(lIdx + idx) % OPP_LAST_NAMES.length]}`;
     const kr = oppKR + 5 - idx * 3 - (stableHash(opp, idx + 7) % 4);
-    const OPP_ARCHETYPES = ['Guard', 'Wing', 'Forward', 'Big', 'Combo Guard', 'Stretch 4', 'Point Forward', 'Center'];
-    const archIdx = stableHash(opp, idx * 5 + 2) % OPP_ARCHETYPES.length;
-    const tagIdx = stableHash(opp, idx * 4 + 3) % THREAT_TAGS.length;
+    const ruleIdx = stableHash(opp, idx * 4 + 3) % THREAT_RULE_POOL.length;
     return {
       name,
-      archetype: OPP_ARCHETYPES[archIdx],
-      threatTag: THREAT_TAGS[tagIdx],
+      archetype: OPP_ARCHETYPES[stableHash(opp, idx * 5 + 2) % OPP_ARCHETYPES.length],
       kr,
+      rule: THREAT_RULE_POOL[ruleIdx],
     };
   });
 
-  pregameMap.set(game.id, { outlook, krGap, fmuKR: FMU_KR_PREGAME, oppKR, keysToWin, oppStrengths, oppVulnerabilities, swingPlayers, oppThreats });
+  // F) Assignments — from swing players + 2 more
+  const allAssignmentPlayers = [
+    ...topStarters.map((s) => {
+      const p = playerMap.get(s.player_id);
+      return p?.full_name?.split(' ').pop() ?? 'Unknown';
+    }),
+    ...individualSeasonStats
+      .filter((s) => s.season === '2025-26' && !starterPlayerIds.has(s.player_id) && (s.games_played ?? 0) >= 5)
+      .sort((a, b) => (b.points_avg ?? 0) - (a.points_avg ?? 0))
+      .slice(0, 2)
+      .map((s) => {
+        const p = playerMap.get(s.player_id);
+        return p?.full_name?.split(' ').pop() ?? 'Unknown';
+      }),
+  ];
+
+  const assignments: PregameAssignment[] = allAssignmentPlayers.slice(0, 5).map((lastName, idx) => {
+    const tIdx = stableHash(opp + lastName, idx) % ASSIGNMENT_TITLE_POOL.length;
+    const cIdx = stableHash(opp + lastName, idx + 5) % ASSIGNMENT_CONSTRAINT_POOL.length;
+    return { player: lastName, title: ASSIGNMENT_TITLE_POOL[tIdx], constraint: ASSIGNMENT_CONSTRAINT_POOL[cIdx] };
+  });
+
+  // G) Model Notes
+  const modelNotes = {
+    upsetPath: UPSET_PATH_POOL[stableHash(opp, 99) % UPSET_PATH_POOL.length],
+    risk: RISK_POOL[stableHash(opp, 100) % RISK_POOL.length],
+  };
+
+  pregameMap.set(game.id, { expectation, krGap, leveragePlan: lev, theirDNA, ourEdge, swingPlayers, oppThreats, assignments, modelNotes });
 }
 
 export const FMU_PREGAME: Record<string, PregameSnapshot> = Object.fromEntries(pregameMap);

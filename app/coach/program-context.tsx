@@ -35,11 +35,11 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 const HUB_TABS = [
   { id: 'home', label: 'Home' },
+  { id: 'recruiting', label: 'Recruiting', route: '/coach/recruiting' },
   { id: 'roster', label: 'Roster' },
   { id: 'games', label: 'Games', route: '/coach/games' },
   { id: 'injuries', label: 'Injuries', route: '/coach/injuries' },
   { id: 'program-context', label: 'Team System' },
-  { id: 'recruiting', label: 'Recruiting', route: '/coach/recruiting' },
   { id: 'film', label: 'Film', route: '/coach/film' },
 ];
 

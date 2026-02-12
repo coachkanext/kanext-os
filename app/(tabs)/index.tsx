@@ -30,7 +30,7 @@ import { CAMPUSES, MESSAGES } from '@/data/mock-church';
 import { getCurrentTerm, getUpcomingEvents, INSTITUTIONAL_METRICS } from '@/data/mock-education';
 
 // FMU data
-import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getPGISColor, getTGISColor, FMU_PREGAME } from '@/data/fmu';
+import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getPGISColor, getTGISColor, FMU_PREGAME, type PregameSnapshot } from '@/data/fmu';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 // =============================================================================
@@ -261,6 +261,175 @@ const SCHEDULE_TABS: { key: ScheduleTab; label: string }[] = [
 ];
 
 
+// ── Collapsible Block Header (tap to expand) ──
+function CollapsibleHeader({ label, expanded, onToggle, colors }: { label: string; expanded: boolean; onToggle: () => void; colors: typeof Colors.light }) {
+  return (
+    <Pressable
+      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onToggle(); }}
+      style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.md, marginBottom: expanded ? 6 : Spacing.md }}
+    >
+      <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary }}>{label}</ThemedText>
+      <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={10} color={colors.textTertiary} />
+    </Pressable>
+  );
+}
+
+// ── Pregame Snapshot Sheet Content (shared by both sheets) ──
+function PregameSheetContent({ pregame, colors, expanded, onToggle }: {
+  pregame: PregameSnapshot;
+  colors: typeof Colors.light;
+  expanded: Record<string, boolean>;
+  onToggle: (key: string) => void;
+}) {
+  const expectColor = pregame.expectation === 'FAVORED' ? '#4ADE80' : pregame.expectation === 'UNDERDOG' ? '#EF4444' : '#F59E0B';
+  const expectBg = pregame.expectation === 'FAVORED' ? '#4ADE8020' : pregame.expectation === 'UNDERDOG' ? '#EF444420' : '#F59E0B20';
+  const cardStyle = [shStyles.card, { backgroundColor: colors.backgroundSecondary }] as any;
+  const divStyle = [shStyles.divider, { backgroundColor: colors.divider }] as any;
+  const sLabel = { fontSize: 11 as number, fontWeight: '600' as const, letterSpacing: 0.5, color: colors.textTertiary };
+
+  return (
+    <>
+      {/* 2) Expectation Row */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.md, marginBottom: Spacing.md }}>
+        <View style={{ paddingHorizontal: 12, paddingVertical: 5, borderRadius: 12, backgroundColor: expectBg }}>
+          <ThemedText style={{ fontSize: 13, fontWeight: '800', letterSpacing: 0.5, color: expectColor }}>
+            {pregame.expectation}
+          </ThemedText>
+        </View>
+        <ThemedText style={{ fontSize: 13, color: colors.textSecondary }}>
+          KR Gap: {pregame.krGap > 0 ? '+' : ''}{pregame.krGap}
+        </ThemedText>
+      </View>
+
+      {/* A) Their DNA — always visible */}
+      <ThemedText style={[sLabel, { marginBottom: 6, paddingHorizontal: Spacing.md }]}>
+        OPPONENT DNA
+      </ThemedText>
+      <View style={[cardStyle, { marginBottom: Spacing.md }]}>
+        {pregame.theirDNA.map((bullet, i) => (
+          <View key={i}>
+            {i > 0 && <View style={divStyle} />}
+            <View style={{ padding: Spacing.md }}>
+              <ThemedText style={{ fontSize: 13, color: colors.text }}>{bullet}</ThemedText>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* B) Leverage Plan — collapsed by default */}
+      <CollapsibleHeader label="LEVERAGE PLAN" expanded={!!expanded.leverage} onToggle={() => onToggle('leverage')} colors={colors} />
+      {expanded.leverage && (
+        <View style={[cardStyle, { marginBottom: Spacing.md }]}>
+          {pregame.leveragePlan.map((lev, i) => (
+            <View key={i}>
+              {i > 0 && <View style={divStyle} />}
+              <View style={{ padding: Spacing.md }}>
+                <ThemedText style={{ fontSize: 13, fontWeight: '600', color: colors.text }}>{lev.action}</ThemedText>
+                <ThemedText style={{ fontSize: 12, color: colors.textTertiary, marginTop: 2 }}>
+                  {lev.why} — target: <ThemedText style={{ fontWeight: '600', color: colors.textSecondary }}>{lev.target}</ThemedText>
+                </ThemedText>
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* C) Our Edge — collapsed by default */}
+      <CollapsibleHeader label="OUR EDGE" expanded={!!expanded.edge} onToggle={() => onToggle('edge')} colors={colors} />
+      {expanded.edge && (
+        <View style={[cardStyle, { marginBottom: Spacing.md }]}>
+          {pregame.ourEdge.map((bullet, i) => (
+            <View key={i}>
+              {i > 0 && <View style={divStyle} />}
+              <View style={{ padding: Spacing.md }}>
+                <ThemedText style={{ fontSize: 13, color: colors.text }}>{bullet}</ThemedText>
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* D) Our Swing Players — collapsed by default */}
+      <CollapsibleHeader label="OUR SWING PLAYERS" expanded={!!expanded.swing} onToggle={() => onToggle('swing')} colors={colors} />
+      {expanded.swing && (
+        <View style={[cardStyle, { marginBottom: Spacing.md }]}>
+          {pregame.swingPlayers.map((p, i) => (
+            <View key={i}>
+              {i > 0 && <View style={divStyle} />}
+              <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
+                <View style={{ flex: 1 }}>
+                  <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
+                    {p.name} — <ThemedText style={{ fontWeight: '400', fontStyle: 'italic', color: colors.textTertiary }}>{p.roleTag}</ThemedText>
+                  </ThemedText>
+                  <ThemedText style={{ fontSize: 11, color: colors.textTertiary, marginTop: 3 }}>
+                    If he hits: {p.ifHeHits}
+                  </ThemedText>
+                </View>
+                <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* E) Their Threats — collapsed by default */}
+      <CollapsibleHeader label="THEIR THREATS" expanded={!!expanded.threats} onToggle={() => onToggle('threats')} colors={colors} />
+      {expanded.threats && (
+        <View style={[cardStyle, { marginBottom: Spacing.md }]}>
+          {pregame.oppThreats.map((t, i) => (
+            <View key={i}>
+              {i > 0 && <View style={divStyle} />}
+              <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
+                <View style={{ flex: 1 }}>
+                  <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
+                    {t.name} — <ThemedText style={{ fontWeight: '400', fontStyle: 'italic', color: colors.textTertiary }}>{t.archetype}</ThemedText>
+                  </ThemedText>
+                  <ThemedText style={{ fontSize: 11, color: colors.textTertiary, marginTop: 3 }}>
+                    Rule: {t.rule}
+                  </ThemedText>
+                </View>
+                <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {t.kr}</ThemedText>
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* F) Assignments — collapsed by default */}
+      <CollapsibleHeader label="ASSIGNMENTS" expanded={!!expanded.assign} onToggle={() => onToggle('assign')} colors={colors} />
+      {expanded.assign && (
+        <View style={[cardStyle, { marginBottom: Spacing.md }]}>
+          {pregame.assignments.map((a, i) => (
+            <View key={i}>
+              {i > 0 && <View style={divStyle} />}
+              <View style={{ padding: Spacing.md }}>
+                <ThemedText style={{ fontSize: 13, color: colors.text }}>
+                  <ThemedText style={{ fontWeight: '600' }}>{a.player}</ThemedText>: {a.title} — {a.constraint}
+                </ThemedText>
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* G) Model Notes — collapsed by default */}
+      <CollapsibleHeader label="MODEL NOTES" expanded={!!expanded.model} onToggle={() => onToggle('model')} colors={colors} />
+      {expanded.model && (
+        <View style={[cardStyle, { marginBottom: Spacing.md }]}>
+          <View style={{ padding: Spacing.md }}>
+            <ThemedText style={{ fontSize: 13, color: colors.text, marginBottom: 4 }}>
+              Upset path: {pregame.modelNotes.upsetPath}
+            </ThemedText>
+            <ThemedText style={{ fontSize: 13, color: colors.text }}>
+              Risk: {pregame.modelNotes.risk}
+            </ThemedText>
+          </View>
+        </View>
+      )}
+    </>
+  );
+}
+
 function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: any }) {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<ScheduleTab>('feed');
@@ -269,9 +438,13 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
   const [search, setSearch] = useState('');
   const [expandedLeader, setExpandedLeader] = useState<string | null>(null);
   const [oppKRSheet, setOppKRSheet] = useState<{ opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string; score?: string } | null>(null);
+  const [pregameExpanded, setPregameExpanded] = useState<Record<string, boolean>>({});
+  const togglePregameBlock = useCallback((key: string) => {
+    setPregameExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+  }, []);
 
   // Sheet animation
-  const SHEET_HEIGHT = Dimensions.get('window').height * 0.5;
+  const SHEET_HEIGHT = Dimensions.get('window').height * 0.58;
   const sheetAnim = useRef(new Animated.Value(SHEET_HEIGHT)).current;
   const backdropAnim = useRef(new Animated.Value(0)).current;
   const sheetOpen = useRef(false);
@@ -753,17 +926,29 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                 }}
               >
                 {/* Header */}
-                <View style={{ alignItems: 'center', marginBottom: Spacing.md }}>
-                  <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>{opp}{oppKRSheet.kr ? ` (${oppKRSheet.kr} KR)` : ''}</ThemedText>
-                  <ThemedText style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>{oppKRSheet.record}</ThemedText>
-                  {oppKRSheet.score ? (
-                    <ThemedText style={{ fontSize: 15, fontWeight: '700', color: oppKRSheet.score.startsWith('W') ? '#4ADE80' : oppKRSheet.score.startsWith('L') ? '#EF4444' : colors.text, marginTop: 4 }}>
-                      {oppKRSheet.score.replace('-', '–')}
-                    </ThemedText>
-                  ) : null}
-                </View>
+                {(() => {
+                  const sheetGame = sheetGameId ? FMU_GAMES.find((g) => g.id === sheetGameId) : null;
+                  return (
+                    <View style={{ alignItems: 'center', marginBottom: Spacing.md }}>
+                      <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>
+                        {sheetGame ? `${sheetGame.location === 'Home' ? 'vs' : '@'} ` : ''}{opp}{oppKRSheet.kr ? ` (${oppKRSheet.kr} KR)` : ''}
+                      </ThemedText>
+                      <ThemedText style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>{oppKRSheet.record}</ThemedText>
+                      {sheetGame && (
+                        <ThemedText style={{ fontSize: 12, color: colors.textTertiary, marginTop: 4 }}>
+                          {sheetGame.date}{sheetGame.gameTime ? ` · ${sheetGame.gameTime}` : ''} · {sheetGame.gameType ?? 'NON-CONF'} · {sheetGame.venue ?? sheetGame.location}
+                        </ThemedText>
+                      )}
+                      {oppKRSheet.score ? (
+                        <ThemedText style={{ fontSize: 15, fontWeight: '700', color: oppKRSheet.score.startsWith('W') ? '#4ADE80' : oppKRSheet.score.startsWith('L') ? '#EF4444' : colors.text, marginTop: 4 }}>
+                          {oppKRSheet.score.replace('-', '–')}
+                        </ThemedText>
+                      ) : null}
+                    </View>
+                  );
+                })()}
 
-                {/* TGIS + PGIS for completed games, KR Drivers for upcoming */}
+                {/* TGIS + PGIS for completed games, Pregame Snapshot for upcoming */}
                 {impact ? (
                     <>
                       {/* TGIS */}
@@ -839,118 +1024,7 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                       )}
                     </>
                 ) : pregame ? (
-                  <>
-                    {/* Win Outlook + KR Gap */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md, marginBottom: Spacing.md, gap: 10 }}>
-                      <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, backgroundColor: pregame.outlook === 'Favored' ? '#4ADE8020' : pregame.outlook === 'Underdog' ? '#EF444420' : '#F59E0B20' }}>
-                        <ThemedText style={{ fontSize: 13, fontWeight: '700', color: pregame.outlook === 'Favored' ? '#4ADE80' : pregame.outlook === 'Underdog' ? '#EF4444' : '#F59E0B' }}>
-                          {pregame.outlook}
-                        </ThemedText>
-                      </View>
-                      <ThemedText style={{ fontSize: 13, color: colors.textSecondary }}>
-                        KR Gap: {pregame.krGap > 0 ? '+' : ''}{pregame.krGap} ({pregame.fmuKR} vs {pregame.oppKR})
-                      </ThemedText>
-                    </View>
-
-                    {/* Keys to Win */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      KEYS TO WIN
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                      {pregame.keysToWin.map((key, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
-                            <ThemedText style={{ fontSize: 16 }}>{i === 0 ? '\uD83C\uDFAF' : i === 1 ? '\uD83D\uDEE1\uFE0F' : '\uD83D\uDD11'}</ThemedText>
-                            <ThemedText style={{ fontSize: 13, fontWeight: '500', color: colors.text, flex: 1 }}>{key}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-
-                    {/* Opponent Strengths */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      OPP STRENGTHS
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
-                      {pregame.oppStrengths.map((s, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
-                            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' }} />
-                            <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{s}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-
-                    {/* Opponent Vulnerabilities */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      OPP VULNERABILITIES
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                      {pregame.oppVulnerabilities.map((v, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
-                            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#4ADE80' }} />
-                            <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{v}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-
-                    {/* Our Swing Players */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      SWING PLAYERS
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
-                      {pregame.swingPlayers.map((p, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
-                            <View style={{ flex: 1 }}>
-                              <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                                {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
-                              </ThemedText>
-                              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3, gap: 6 }}>
-                                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, backgroundColor: colors.backgroundSecondary, borderWidth: 1, borderColor: colors.border }}>
-                                  <ThemedText style={{ fontSize: 10, fontWeight: '600', color: colors.textSecondary }}>{p.swingTag}</ThemedText>
-                                </View>
-                                <ThemedText style={{ fontSize: 11, color: colors.textTertiary, fontStyle: 'italic' }}>{p.roleTarget}</ThemedText>
-                              </View>
-                            </View>
-                            <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-
-                    {/* Their Threats */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      THEIR THREATS
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                      {pregame.oppThreats.map((t, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
-                            <View style={{ flex: 1 }}>
-                              <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                                {t.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{t.archetype}</ThemedText>
-                              </ThemedText>
-                              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
-                                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, backgroundColor: '#EF444415' }}>
-                                  <ThemedText style={{ fontSize: 10, fontWeight: '600', color: '#EF4444' }}>{t.threatTag}</ThemedText>
-                                </View>
-                              </View>
-                            </View>
-                            <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {t.kr}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-                  </>
+                  <PregameSheetContent pregame={pregame} colors={colors} expanded={pregameExpanded} onToggle={togglePregameBlock} />
                 ) : null}
               </ScrollView>
             </Animated.View>
@@ -1090,7 +1164,11 @@ function SportsHome() {
 
   // Recent BPR bottom sheet — always mounted, visibility toggled via animation
   const [recentSheet, setRecentSheet] = useState<{ opponent: string; kr: number; record: string; gameId: string; gameStatus: string; score?: string } | null>(null);
-  const RECENT_SHEET_HEIGHT = Dimensions.get('window').height * 0.5;
+  const [recentPregameExpanded, setRecentPregameExpanded] = useState<Record<string, boolean>>({});
+  const toggleRecentPregameBlock = useCallback((key: string) => {
+    setRecentPregameExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+  }, []);
+  const RECENT_SHEET_HEIGHT = Dimensions.get('window').height * 0.58;
   const recentSheetScrollOffset = useRef(0);
   const recentSheetAnim = useRef(new Animated.Value(RECENT_SHEET_HEIGHT)).current;
   const recentBackdropAnim = useRef(new Animated.Value(0)).current;
@@ -1314,14 +1392,14 @@ function SportsHome() {
                   return (
                     <View key={game.id}>
                     {index > 0 && <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />}
-                    <Pressable
-                      style={({ pressed }) => [styles.recentRow, pressed && { opacity: 0.7 }]}
-                      onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        openRecentSheet({ opponent: game.opponent, kr: game.opponentKR ?? 0, record: game.opponentRecord ?? '', gameId: game.id, gameStatus: game.status, score: game.score ?? '' });
-                      }}
-                    >
-                      <View style={{ flex: 1 }}>
+                    <View style={styles.recentRow}>
+                      <Pressable
+                        style={({ pressed }) => [{ flex: 1 }, pressed && { opacity: 0.7 }]}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          openRecentSheet({ opponent: game.opponent, kr: game.opponentKR ?? 0, record: game.opponentRecord ?? '', gameId: game.id, gameStatus: game.status, score: game.score ?? '' });
+                        }}
+                      >
                         <ThemedText style={[styles.recentOpponent, { color: colors.text }]}>
                           {game.location === 'Home' ? 'vs' : '@'} {game.opponent}{game.opponentKR ? ` (${game.opponentKR} KR)` : ''}
                         </ThemedText>
@@ -1333,8 +1411,14 @@ function SportsHome() {
                         <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
                           {game.date} · {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
                         </ThemedText>
-                      </View>
-                      <View style={styles.recentRight}>
+                      </Pressable>
+                      <Pressable
+                        style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          router.push(`/coach/game-detail?gameId=${game.id}` as any);
+                        }}
+                      >
                         <View style={[styles.recentPill, { backgroundColor: '#f5f5f518' }]}>
                           <ThemedText style={[styles.recentPillText, { color: '#f5f5f5' }]}>
                             FINAL
@@ -1343,8 +1427,8 @@ function SportsHome() {
                         <ThemedText style={[styles.recentScore, { color: isWin ? '#f5f5f5' : isLoss ? '#EF4444' : colors.text }]}>
                           {scoreDisplay}
                         </ThemedText>
-                      </View>
-                    </Pressable>
+                      </Pressable>
+                    </View>
                     </View>
                   );
                 })}
@@ -1590,17 +1674,29 @@ function SportsHome() {
                 }}
               >
                 {/* Header */}
-                <View style={{ alignItems: 'center', marginBottom: Spacing.md }}>
-                  <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>{opp}{recentSheet.kr ? ` (${recentSheet.kr} KR)` : ''}</ThemedText>
-                  <ThemedText style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>{recentSheet.record}</ThemedText>
-                  {recentSheet.score ? (
-                    <ThemedText style={{ fontSize: 15, fontWeight: '700', color: recentSheet.score.startsWith('W') ? '#4ADE80' : recentSheet.score.startsWith('L') ? '#EF4444' : colors.text, marginTop: 4 }}>
-                      {recentSheet.score.replace('-', '–')}
-                    </ThemedText>
-                  ) : null}
-                </View>
+                {(() => {
+                  const recentGame = recentSheet.gameId ? FMU_GAMES.find((g) => g.id === recentSheet.gameId) : null;
+                  return (
+                    <View style={{ alignItems: 'center', marginBottom: Spacing.md }}>
+                      <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>
+                        {recentGame ? `${recentGame.location === 'Home' ? 'vs' : '@'} ` : ''}{opp}{recentSheet.kr ? ` (${recentSheet.kr} KR)` : ''}
+                      </ThemedText>
+                      <ThemedText style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>{recentSheet.record}</ThemedText>
+                      {recentGame && (
+                        <ThemedText style={{ fontSize: 12, color: colors.textTertiary, marginTop: 4 }}>
+                          {recentGame.date}{recentGame.gameTime ? ` · ${recentGame.gameTime}` : ''} · {recentGame.gameType ?? 'NON-CONF'} · {recentGame.venue ?? recentGame.location}
+                        </ThemedText>
+                      )}
+                      {recentSheet.score ? (
+                        <ThemedText style={{ fontSize: 15, fontWeight: '700', color: recentSheet.score.startsWith('W') ? '#4ADE80' : recentSheet.score.startsWith('L') ? '#EF4444' : colors.text, marginTop: 4 }}>
+                          {recentSheet.score.replace('-', '–')}
+                        </ThemedText>
+                      ) : null}
+                    </View>
+                  );
+                })()}
 
-                {/* TGIS + PGIS for completed games */}
+                {/* TGIS + PGIS for completed games, Pregame Snapshot for upcoming */}
                 {recentImpact ? (
                     <>
                       {/* TGIS */}
@@ -1676,118 +1772,7 @@ function SportsHome() {
                       )}
                     </>
                 ) : recentPregame ? (
-                  <>
-                    {/* Win Outlook + KR Gap */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md, marginBottom: Spacing.md, gap: 10 }}>
-                      <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, backgroundColor: recentPregame.outlook === 'Favored' ? '#4ADE8020' : recentPregame.outlook === 'Underdog' ? '#EF444420' : '#F59E0B20' }}>
-                        <ThemedText style={{ fontSize: 13, fontWeight: '700', color: recentPregame.outlook === 'Favored' ? '#4ADE80' : recentPregame.outlook === 'Underdog' ? '#EF4444' : '#F59E0B' }}>
-                          {recentPregame.outlook}
-                        </ThemedText>
-                      </View>
-                      <ThemedText style={{ fontSize: 13, color: colors.textSecondary }}>
-                        KR Gap: {recentPregame.krGap > 0 ? '+' : ''}{recentPregame.krGap} ({recentPregame.fmuKR} vs {recentPregame.oppKR})
-                      </ThemedText>
-                    </View>
-
-                    {/* Keys to Win */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      KEYS TO WIN
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                      {recentPregame.keysToWin.map((key, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
-                            <ThemedText style={{ fontSize: 16 }}>{i === 0 ? '\uD83C\uDFAF' : i === 1 ? '\uD83D\uDEE1\uFE0F' : '\uD83D\uDD11'}</ThemedText>
-                            <ThemedText style={{ fontSize: 13, fontWeight: '500', color: colors.text, flex: 1 }}>{key}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-
-                    {/* Opponent Strengths */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      OPP STRENGTHS
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
-                      {recentPregame.oppStrengths.map((s, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
-                            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' }} />
-                            <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{s}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-
-                    {/* Opponent Vulnerabilities */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      OPP VULNERABILITIES
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                      {recentPregame.oppVulnerabilities.map((v, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md, gap: 8 }}>
-                            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#4ADE80' }} />
-                            <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{v}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-
-                    {/* Our Swing Players */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      SWING PLAYERS
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.sm }]}>
-                      {recentPregame.swingPlayers.map((p, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
-                            <View style={{ flex: 1 }}>
-                              <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                                {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
-                              </ThemedText>
-                              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3, gap: 6 }}>
-                                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, backgroundColor: colors.backgroundSecondary, borderWidth: 1, borderColor: colors.border }}>
-                                  <ThemedText style={{ fontSize: 10, fontWeight: '600', color: colors.textSecondary }}>{p.swingTag}</ThemedText>
-                                </View>
-                                <ThemedText style={{ fontSize: 11, color: colors.textTertiary, fontStyle: 'italic' }}>{p.roleTarget}</ThemedText>
-                              </View>
-                            </View>
-                            <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {p.kr}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-
-                    {/* Their Threats */}
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                      THEIR THREATS
-                    </ThemedText>
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                      {recentPregame.oppThreats.map((t, i) => (
-                        <View key={i}>
-                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
-                            <View style={{ flex: 1 }}>
-                              <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                                {t.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{t.archetype}</ThemedText>
-                              </ThemedText>
-                              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
-                                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, backgroundColor: '#EF444415' }}>
-                                  <ThemedText style={{ fontSize: 10, fontWeight: '600', color: '#EF4444' }}>{t.threatTag}</ThemedText>
-                                </View>
-                              </View>
-                            </View>
-                            <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary, marginLeft: 12 }}>KR {t.kr}</ThemedText>
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-                  </>
+                  <PregameSheetContent pregame={recentPregame} colors={colors} expanded={recentPregameExpanded} onToggle={toggleRecentPregameBlock} />
                 ) : null}
               </ScrollView>
             </Animated.View>

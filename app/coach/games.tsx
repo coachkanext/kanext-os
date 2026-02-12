@@ -22,12 +22,12 @@ import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_GAME_BPR, getBPRCo
 // Same hub tabs as SportsHome — keeps navigation consistent across coach screens
 const HUB_TABS = [
   { id: 'home', label: 'Home', route: '/(tabs)' },
+  { id: 'recruiting', label: 'Recruiting', route: '/(tabs)' },
   { id: 'roster', label: 'Roster', route: '/(tabs)' },
   { id: 'schedule', label: 'Schedule', route: '/(tabs)' },
   { id: 'stats', label: 'Stats', route: '/(tabs)' },
   { id: 'game-ops', label: 'Game Ops', route: '/(tabs)' },
   { id: 'program', label: 'Program', route: '/(tabs)' },
-  { id: 'recruiting', label: 'Recruiting', route: '/(tabs)' },
   { id: 'development', label: 'Development', route: '/(tabs)' },
 ];
 
@@ -387,18 +387,6 @@ export default function GamesScreen() {
         {/* ── Games Tab ── */}
         {activeTab === 'games' && (
           <View>
-            {/* Search */}
-            <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
-              <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-              <TextInput
-                style={[styles.searchInput, { color: colors.text }]}
-                placeholder="Search games..."
-                placeholderTextColor={colors.textTertiary}
-                value={search}
-                onChangeText={setSearch}
-              />
-            </View>
-
             {/* Upcoming games — GameRow with expandable dropdown */}
             {(() => {
               const upcoming = filteredGames.filter((g) => g.status === 'upcoming' || g.status === 'live');
@@ -428,6 +416,18 @@ export default function GamesScreen() {
                 </>
               );
             })()}
+
+            {/* Search between upcoming and completed */}
+            <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
+              <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
+              <TextInput
+                style={[styles.searchInput, { color: colors.text }]}
+                placeholder="Search games..."
+                placeholderTextColor={colors.textTertiary}
+                value={search}
+                onChangeText={setSearch}
+              />
+            </View>
 
             {/* Completed games — Recent style with inline BPR panel */}
             {(() => {
@@ -513,40 +513,97 @@ export default function GamesScreen() {
 
         {/* ── Schedule Tab ── */}
         {activeTab === 'schedule' && (
-          <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-            {upcomingGames.length === 0 ? (
-              <View style={styles.emptyState}>
-                <Text style={[styles.emptyText, { color: colors.textTertiary }]}>
-                  No upcoming games.
-                </Text>
-              </View>
-            ) : (
-              upcomingGames.map((game, index) => (
-                <View key={game.id}>
-                  {index > 0 && (
-                    <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                  )}
-                  <Pressable
-                    style={({ pressed }) => [styles.scheduleRow, pressed && { opacity: 0.7 }]}
-                    onPress={() => navigateToGame(game.id)}
-                  >
-                    <View style={styles.scheduleDateCol}>
-                      <Text style={[styles.scheduleDateText, { color: colors.text }]}>
-                        {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
-                      </Text>
-                      <Text style={[styles.scheduleLocationText, { color: colors.textTertiary }]}>
-                        {game.venue ?? game.location}
-                      </Text>
+          <View>
+            {/* Upcoming / Live */}
+            {upcomingGames.length > 0 && (
+              <>
+                <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>UPCOMING</Text>
+                <View style={[styles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
+                  {upcomingGames.map((game, index) => (
+                    <View key={game.id}>
+                      {index > 0 && (
+                        <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                      )}
+                      <Pressable
+                        style={({ pressed }) => [styles.scheduleRow, pressed && { opacity: 0.7 }]}
+                        onPress={() => navigateToGame(game.id)}
+                      >
+                        <View style={styles.scheduleDateCol}>
+                          <Text style={[styles.scheduleDateText, { color: colors.text }]}>
+                            {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
+                          </Text>
+                          <Text style={[styles.scheduleLocationText, { color: colors.textTertiary }]}>
+                            {game.venue ?? game.location}
+                          </Text>
+                        </View>
+                        <Text style={[styles.scheduleOpponent, { color: colors.text }]}>
+                          {game.opponent}
+                        </Text>
+                        {game.status === 'live' && <StatusPill status="live" />}
+                        <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
+                      </Pressable>
                     </View>
-                    <Text style={[styles.scheduleOpponent, { color: colors.text }]}>
-                      {game.opponent}
-                    </Text>
-                    {game.status === 'live' && <StatusPill status="live" />}
-                    <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
-                  </Pressable>
+                  ))}
                 </View>
-              ))
+              </>
             )}
+
+            {/* Search bar between sections */}
+            <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
+              <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
+              <TextInput
+                style={[styles.searchInput, { color: colors.text }]}
+                placeholder="Search completed games..."
+                placeholderTextColor={colors.textTertiary}
+                value={search}
+                onChangeText={setSearch}
+              />
+            </View>
+
+            {/* Completed */}
+            {(() => {
+              const completed = effectiveGames.filter((g) => g.status === 'final');
+              const filtered = search.trim()
+                ? completed.filter((g) => g.opponent.toLowerCase().includes(search.toLowerCase()))
+                : completed;
+              if (completed.length === 0) return null;
+              return (
+                <>
+                  <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>COMPLETED</Text>
+                  <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                    {filtered.map((game, index) => (
+                      <View key={game.id}>
+                        {index > 0 && (
+                          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                        )}
+                        <Pressable
+                          style={({ pressed }) => [styles.scheduleRow, pressed && { opacity: 0.7 }]}
+                          onPress={() => navigateToGame(game.id)}
+                        >
+                          <View style={styles.scheduleDateCol}>
+                            <Text style={[styles.scheduleDateText, { color: colors.text }]}>
+                              {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
+                            </Text>
+                            <Text style={[styles.scheduleLocationText, { color: colors.textTertiary }]}>
+                              {game.venue ?? game.location}
+                            </Text>
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <Text style={[styles.scheduleOpponent, { color: colors.text }]}>
+                              {game.opponent}
+                            </Text>
+                          </View>
+                          <Text style={[styles.recentScore, { color: game.score?.startsWith('W') ? '#f5f5f5' : game.score?.startsWith('L') ? '#EF4444' : colors.text }]}>
+                            {game.score?.replace('-', '–') ?? ''}
+                          </Text>
+                          <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} style={{ marginLeft: 8 }} />
+                        </Pressable>
+                      </View>
+                    ))}
+                  </View>
+                </>
+              );
+            })()}
           </View>
         )}
 

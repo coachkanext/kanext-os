@@ -31,7 +31,7 @@ const DIVIDER = '#2A2D35';
 // ─── Filter State ───
 
 export interface NationalPoolFilters {
-  division: PoolLevel | null;
+  division: PoolLevel[];
   conference: string | null;
   teams: string[];
   positions: HeliocentricPosition[];
@@ -41,7 +41,7 @@ export interface NationalPoolFilters {
 }
 
 export const DEFAULT_FILTERS: NationalPoolFilters = {
-  division: null,
+  division: [],
   conference: null,
   teams: [],
   positions: [],

@@ -52,11 +52,11 @@ const DIVIDER = '#2A2D35';
 
 const HUB_TABS = [
   { id: 'home', label: 'Home' },
+  { id: 'recruiting', label: 'Recruiting' },
   { id: 'roster', label: 'Roster' },
   { id: 'games', label: 'Games', route: '/coach/games' },
   { id: 'injuries', label: 'Injuries', route: '/coach/injuries' },
   { id: 'program-context', label: 'Team System', route: '/coach/program-context' },
-  { id: 'recruiting', label: 'Recruiting' },
   { id: 'film', label: 'Film', route: '/coach/film' },
 ];
 
@@ -117,10 +117,14 @@ export function PlayerPoolContent() {
   const [expandedConferences, setExpandedConferences] = useState<Set<string>>(new Set());
   const [expandedClusters, setExpandedClusters] = useState<Set<string>>(new Set());
 
+  // Division multi-select: single-tap selects (temporary), double-tap "sticks" it
+  const [stuckDivisions, setStuckDivisions] = useState<Set<string>>(new Set());
+  const lastDivTapRef = useRef<{ time: number; item: string }>({ time: 0, item: '' });
+
   // Check if any filters active
   const hasActiveFilters = useMemo(() => {
     return (
-      filters.division !== null ||
+      filters.division.length > 0 ||
       filters.conference !== null ||
       filters.teams.length > 0 ||
       filters.positions.length > 0 ||
@@ -142,8 +146,8 @@ export function PlayerPoolContent() {
       );
     }
 
-    if (filters.division) {
-      list = list.filter((p) => matchesDivision(p.level, filters.division!));
+    if (filters.division.length > 0) {
+      list = list.filter((p) => filters.division.some((d) => matchesDivision(p.level, d)));
     }
 
     if (filters.conference) {
@@ -186,8 +190,8 @@ export function PlayerPoolContent() {
   // Derive conferences + teams for the filter panel (based on draft.division)
   const draftConferences = useMemo(() => {
     let pool = PLAYER_POOL;
-    if (draft.division) {
-      pool = pool.filter((p) => matchesDivision(p.level, draft.division!));
+    if (draft.division.length > 0) {
+      pool = pool.filter((p) => draft.division.some((d) => matchesDivision(p.level, d)));
     }
     const confMap = new Map<string, string[]>();
     pool.forEach((p) => {
@@ -208,6 +212,8 @@ export function PlayerPoolContent() {
     setExpandedDivisionGroups(new Set());
     setExpandedConferences(new Set());
     setExpandedClusters(new Set());
+    setStuckDivisions(new Set(filters.division));
+    lastDivTapRef.current = { time: 0, item: '' };
     setFilterPanelOpen(true);
   }, [filters]);
 
@@ -370,20 +376,22 @@ export function PlayerPoolContent() {
           label="Division"
           expanded={!!expandedSections.division}
           onToggle={() => toggleSection('division')}
-          summary={draft.division ?? 'All'}
+          summary={draft.division.length === 0 ? 'All' : draft.division.join(', ')}
         />
         {expandedSections.division && (
           <View>
             <View style={styles.pillGrid}>
               {/* All pill */}
               <Pressable
-                style={[styles.divPill, draft.division === null && styles.divPillSelected]}
+                style={[styles.divPill, draft.division.length === 0 && styles.divPillSelected]}
                 onPress={() => {
-                  setDraft((prev) => ({ ...prev, division: null, conference: null, teams: [] }));
+                  setDraft((prev) => ({ ...prev, division: [], conference: null, teams: [] }));
                   setExpandedDivisionGroups(new Set());
+                  setStuckDivisions(new Set());
+                  lastDivTapRef.current = { time: 0, item: '' };
                 }}
               >
-                <Text style={[styles.divPillText, draft.division === null && styles.divPillTextSelected]}>All</Text>
+                <Text style={[styles.divPillText, draft.division.length === 0 && styles.divPillTextSelected]}>All</Text>
               </Pressable>
 
               {DIVISION_HIERARCHY.map((item) =>
@@ -392,33 +400,86 @@ export function PlayerPoolContent() {
                     key={item.label}
                     style={[
                       styles.divPill,
-                      (draft.division === item.value || item.children.some((c) => c.value === draft.division)) && styles.divPillSelected,
-                      expandedDivisionGroups.has(item.label) && draft.division !== item.value && !item.children.some((c) => c.value === draft.division) && styles.divPillOpen,
+                      (draft.division.includes(item.value!) || item.children.some((c) => draft.division.includes(c.value))) && styles.divPillSelected,
                     ]}
                     onPress={() => {
-                      // Select parent division directly; expand sub-options for optional narrowing
-                      setDraft((prev) => ({ ...prev, division: item.value!, conference: null, teams: [] }));
-                      setExpandedDivisionGroups(new Set([item.label]));
+                      const itemVal = item.value!;
+                      const relatedValues: PoolLevel[] = [itemVal, ...item.children!.map((c) => c.value)];
+                      const now = Date.now();
+                      const last = lastDivTapRef.current;
+                      const isDoubleTap = now - last.time < 400 && last.item === itemVal;
+                      lastDivTapRef.current = { time: now, item: itemVal };
+
+                      if (isDoubleTap) {
+                        // Double-tap: toggle stuck state
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        const isStuck = [...stuckDivisions].some((d) => relatedValues.includes(d));
+                        if (isStuck) {
+                          // Unstick and remove
+                          setStuckDivisions((prev) => { const n = new Set(prev); relatedValues.forEach((v) => n.delete(v)); return n; });
+                          setDraft((prev) => ({ ...prev, division: prev.division.filter((d) => !relatedValues.includes(d)), conference: null, teams: [] }));
+                          setExpandedDivisionGroups((prev) => { const n = new Set(prev); n.delete(item.label); return n; });
+                        } else {
+                          // Stick it (already in division from first tap)
+                          setStuckDivisions((prev) => new Set([...prev, itemVal]));
+                        }
+                        lastDivTapRef.current = { time: 0, item: '' };
+                      } else {
+                        // Single tap: select temporarily (keep stuck items, replace temp)
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        const stuck = draft.division.filter((d) => stuckDivisions.has(d));
+                        const newDiv = stuck.some((d) => relatedValues.includes(d)) ? stuck : [...stuck, itemVal];
+                        setDraft((prev) => ({ ...prev, division: newDiv, conference: null, teams: [] }));
+                        setExpandedDivisionGroups(new Set([item.label]));
+                      }
                     }}
                   >
                     <Text style={[
                       styles.divPillText,
-                      (draft.division === item.value || item.children.some((c) => c.value === draft.division) || expandedDivisionGroups.has(item.label)) && styles.divPillTextSelected,
+                      (draft.division.includes(item.value!) || item.children.some((c) => draft.division.includes(c.value))) && styles.divPillTextSelected,
                     ]}>
-                      {item.children.find((c) => c.value === draft.division)?.value ?? item.label}
+                      {item.children.find((c) => draft.division.includes(c.value))?.value ?? item.label}
                     </Text>
                   </Pressable>
                 ) : (
                   <Pressable
                     key={item.value}
-                    style={[styles.divPill, draft.division === item.value && styles.divPillSelected]}
-                    onPress={() => setDraft((prev) => ({ ...prev, division: item.value!, conference: null, teams: [] }))}
+                    style={[styles.divPill, draft.division.includes(item.value!) && styles.divPillSelected]}
+                    onPress={() => {
+                      const itemVal = item.value!;
+                      const now = Date.now();
+                      const last = lastDivTapRef.current;
+                      const isDoubleTap = now - last.time < 400 && last.item === itemVal;
+                      lastDivTapRef.current = { time: now, item: itemVal };
+
+                      if (isDoubleTap) {
+                        // Double-tap: toggle stuck state
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        if (stuckDivisions.has(itemVal)) {
+                          // Unstick and remove
+                          setStuckDivisions((prev) => { const n = new Set(prev); n.delete(itemVal); return n; });
+                          setDraft((prev) => ({ ...prev, division: prev.division.filter((d) => d !== itemVal), conference: null, teams: [] }));
+                        } else {
+                          // Stick it (already in division from first tap)
+                          setStuckDivisions((prev) => new Set([...prev, itemVal]));
+                        }
+                        lastDivTapRef.current = { time: 0, item: '' };
+                      } else {
+                        // Single tap: select temporarily (keep stuck items, replace temp)
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        const stuck = draft.division.filter((d) => stuckDivisions.has(d));
+                        const newDiv = stuckDivisions.has(itemVal) ? stuck : [...stuck, itemVal];
+                        setDraft((prev) => ({ ...prev, division: newDiv, conference: null, teams: [] }));
+                      }
+                    }}
                   >
-                    <Text style={[styles.divPillText, draft.division === item.value && styles.divPillTextSelected]}>{item.label}</Text>
+                    <Text style={[styles.divPillText, draft.division.includes(item.value!) && styles.divPillTextSelected]}>{item.label}</Text>
                   </Pressable>
                 )
               )}
             </View>
+
+            <Text style={styles.sheetHelper}>Double-tap to lock selection</Text>
 
             {/* Inline sub-options for expanded group */}
             {DIVISION_HIERARCHY.map((item) =>
@@ -426,24 +487,43 @@ export function PlayerPoolContent() {
                 <View key={`${item.label}-sub`} style={styles.pillSubGrid}>
                   {/* "All" sub-pill to select the parent division */}
                   <Pressable
-                    style={[styles.divSubPill, draft.division === item.value && styles.divSubPillSelected]}
+                    style={[styles.divSubPill, draft.division.includes(item.value!) && styles.divSubPillSelected]}
                     onPress={() => {
-                      setDraft((prev) => ({ ...prev, division: item.value!, conference: null, teams: [] }));
+                      // Replace any children with the parent value
+                      const childValues = item.children!.map((c) => c.value);
+                      setDraft((prev) => ({
+                        ...prev,
+                        division: [...prev.division.filter((d) => !childValues.includes(d) && d !== item.value!), item.value!],
+                        conference: null,
+                        teams: [],
+                      }));
                     }}
                   >
-                    <Text style={[styles.divSubPillText, draft.division === item.value && styles.divSubPillTextSelected]}>
+                    <Text style={[styles.divSubPillText, draft.division.includes(item.value!) && styles.divSubPillTextSelected]}>
                       All
                     </Text>
                   </Pressable>
                   {item.children.map((child) => (
                     <Pressable
                       key={child.value}
-                      style={[styles.divSubPill, draft.division === child.value && styles.divSubPillSelected]}
+                      style={[styles.divSubPill, draft.division.includes(child.value) && styles.divSubPillSelected]}
                       onPress={() => {
-                        setDraft((prev) => ({ ...prev, division: child.value, conference: null, teams: [] }));
+                        setDraft((prev) => {
+                          const parentVal = item.value!;
+                          if (prev.division.includes(child.value)) {
+                            // Deselect child, revert to parent
+                            return { ...prev, division: prev.division.map((d) => d === child.value ? parentVal : d), conference: null, teams: [] };
+                          }
+                          // Replace parent with this specific child
+                          if (prev.division.includes(parentVal)) {
+                            return { ...prev, division: prev.division.map((d) => d === parentVal ? child.value : d), conference: null, teams: [] };
+                          }
+                          // Add child directly
+                          return { ...prev, division: [...prev.division, child.value], conference: null, teams: [] };
+                        });
                       }}
                     >
-                      <Text style={[styles.divSubPillText, draft.division === child.value && styles.divSubPillTextSelected]}>
+                      <Text style={[styles.divSubPillText, draft.division.includes(child.value) && styles.divSubPillTextSelected]}>
                         {child.label}
                       </Text>
                     </Pressable>
@@ -489,6 +569,17 @@ export function PlayerPoolContent() {
         />
         {expandedSections.position && (
           <View>
+            <View style={styles.pillGrid}>
+              <Pressable
+                style={[styles.divPill, draft.positions.length === 0 && styles.divPillSelected]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setDraft((prev) => ({ ...prev, positions: [] }));
+                }}
+              >
+                <Text style={[styles.divPillText, draft.positions.length === 0 && styles.divPillTextSelected]}>All</Text>
+              </Pressable>
+            </View>
             {HELIO_POSITIONS.map((pos) => (
               <CheckboxRow
                 key={pos}
@@ -506,9 +597,6 @@ export function PlayerPoolContent() {
                 }}
               />
             ))}
-            <Text style={[styles.sheetHelper, { marginTop: 6, paddingLeft: 16 }]}>
-              None selected = all positions
-            </Text>
           </View>
         )}
 
@@ -520,12 +608,17 @@ export function PlayerPoolContent() {
         />
         {expandedSections.sort && (
           <View>
-            <RadioRow
-              label="Overall (KR)"
-              selected={draft.sortCluster === null}
-              onPress={() => setDraft((prev) => ({ ...prev, sortCluster: null, sortSubTrait: null }))}
-              indent
-            />
+            <View style={styles.pillGrid}>
+              <Pressable
+                style={[styles.divPill, draft.sortCluster === null && styles.divPillSelected]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setDraft((prev) => ({ ...prev, sortCluster: null, sortSubTrait: null }));
+                }}
+              >
+                <Text style={[styles.divPillText, draft.sortCluster === null && styles.divPillTextSelected]}>KaNeXT Sort</Text>
+              </Pressable>
+            </View>
             {CLUSTER_ORDER.map((cluster) => (
               <View key={cluster}>
                 <RadioRow
