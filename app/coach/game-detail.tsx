@@ -719,7 +719,7 @@ export default function GameDetailScreen() {
                   {game.location === 'Home' ? 'vs' : '@'} {game.opponent}
                 </Text>
                 <Text style={[styles.gameMeta, { color: colors.textSecondary }]}>
-                  {game.date} · {game.location}
+                  {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''} · {game.location}
                 </Text>
                 {game.status === 'live' && (
                   <View style={styles.liveIndicator}>
@@ -843,7 +843,7 @@ export default function GameDetailScreen() {
             <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
               <InfoRow label="Opponent" value={game.opponent} colors={colors} />
               <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-              <InfoRow label="Date" value={game.date} colors={colors} />
+              <InfoRow label="Date" value={game.gameTime ? `${game.date} · ${game.gameTime}` : game.date} colors={colors} />
               <View style={[styles.divider, { backgroundColor: colors.divider }]} />
               <InfoRow label="Venue" value={game.location} colors={colors} />
             </View>

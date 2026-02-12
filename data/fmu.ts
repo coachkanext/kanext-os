@@ -170,13 +170,13 @@ export const FMU_GAMES: FMUGame[] = tgl2526.map((g, i) => {
     gameType: isConfGame(g.opponent) ? 'CONF' : 'NON-CONF',
     opponentKR: getOpponentKR(g.opponent ?? ''),
     opponentRecord: placeholderRecord(g.opponent ?? '', isConfGame(g.opponent)),
-    gameTime: isFuture ? (() => {
+    gameTime: (() => {
       const times = ['2PM', '4PM', '5PM', '6PM', '7PM', '7:30PM', '8PM'];
       let h = 0;
       const n = g.opponent ?? '';
       for (let c = 0; c < n.length; c++) h = ((h << 5) - h + n.charCodeAt(c)) | 0;
       return times[Math.abs(h) % times.length];
-    })() : undefined,
+    })(),
     venue: getVenueName(g.opponent, g.home_away, dateVenue),
   };
 });

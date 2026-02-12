@@ -141,7 +141,7 @@ const DEMO_CONFERENCE_PULSE = {
     : FMU_GAMES
         .filter((g) => g.status === 'upcoming' || g.status === 'live')
         .slice(0, 3)
-        .map((g) => `${g.date} ${g.location === 'Home' ? 'vs' : '@'} ${g.opponent}`),
+        .map((g) => `${g.date}${g.gameTime ? ` ${g.gameTime}` : ''} ${g.location === 'Home' ? 'vs' : '@'} ${g.opponent}`),
 };
 
 // Game IDs for routing
@@ -433,7 +433,7 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                               router.push(`/coach/game-detail?gameId=${game.id}` as any);
                             }}
                           >
-                            <ThemedText style={[styles.upcomingDateTime, { color: colors.textTertiary }]}>
+                            <ThemedText style={[styles.upcomingDateTime, { color: '#FFFFFF' }]}>
                               {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
                             </ThemedText>
                           </Pressable>
@@ -1268,7 +1268,7 @@ function SportsHome() {
                           router.push(`/coach/game-detail?gameId=${game.id}` as any);
                         }}
                       >
-                        <ThemedText style={[styles.upcomingDateTime, { color: colors.textTertiary }]}>
+                        <ThemedText style={[styles.upcomingDateTime, { color: '#FFFFFF' }]}>
                           {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
                         </ThemedText>
                       </Pressable>
@@ -2795,8 +2795,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   upcomingDateTime: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: '800',
   },
 
   // BPR inline panel (recent games)

@@ -153,7 +153,7 @@ function GameRow({
             )}
           </View>
           <Text style={[styles.metaText, { color: colors.textSecondary }]}>
-            {game.date} · {game.venue ?? game.location}
+            {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''} · {game.venue ?? game.location}
           </Text>
         </View>
         <View style={styles.gameRowRight}>
@@ -464,7 +464,7 @@ export default function GamesScreen() {
                                   </Text>
                                 )}
                                 <Text style={[styles.recentMeta, { color: colors.textTertiary }]}>
-                                  {game.date} · {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
+                                  {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''} · {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
                                 </Text>
                               </Pressable>
                               <Pressable
@@ -532,7 +532,7 @@ export default function GamesScreen() {
                   >
                     <View style={styles.scheduleDateCol}>
                       <Text style={[styles.scheduleDateText, { color: colors.text }]}>
-                        {game.date}
+                        {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
                       </Text>
                       <Text style={[styles.scheduleLocationText, { color: colors.textTertiary }]}>
                         {game.venue ?? game.location}
