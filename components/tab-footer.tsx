@@ -16,7 +16,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { requestHomeReset } from '@/utils/global-home';
 
 const FOOTER_TABS: { name: string; icon: SymbolViewProps['name']; route: string }[] = [
-  { name: 'Home', icon: 'house.fill', route: '/(tabs)/index' },
+  { name: 'Home', icon: 'house.fill', route: '/(tabs)' },
   { name: 'Media', icon: 'play.rectangle.fill', route: '/(tabs)/media' },
   { name: 'Nexus', icon: 'sparkles', route: '/(tabs)/nexus' },
   { name: 'Activity', icon: 'bell.fill', route: '/(tabs)/activity' },
@@ -57,7 +57,11 @@ export function TabFooter({ activeTab = 'Home' }: TabFooterProps) {
                 console.log('[TabFooter] Home pressed, setting requestHomeReset flag');
                 requestHomeReset();
               }
-              router.navigate(tab.route as any);
+              // Dismiss coach stack back to tabs, then navigate to target tab
+              if (router.canDismiss()) {
+                router.dismissAll();
+              }
+              setTimeout(() => router.navigate(tab.route as any), 50);
             }}
           >
             <IconSymbol

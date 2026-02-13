@@ -1481,29 +1481,63 @@ export function getFmuTS(jerseyNumber: string): number {
   return Math.round((pts / (2 * tsa)) * 1000) / 10;
 }
 
-/** Last 3 completed games for a player (most recent first) */
-export interface Last3Game {
+/** Single game entry for player game log */
+export interface PlayerGameEntry {
   opponent: string;
+  oppKR: number;
   pts: number;
   reb: number;
   ast: number;
+  tsPct: number;
+  pgis: number;
+  isConf: boolean;
 }
 
-export function getFmuLast3(jerseyNumber: string): Last3Game[] {
-  const playerId = jerseyToPlayerId2526.get(normalizeJersey(jerseyNumber));
-  if (!playerId) return [];
+/** Abbreviate opponent name if longer than maxLen */
+function abbrevOpponent(name: string, maxLen = 12): string {
+  if (name.length <= maxLen) return name;
+  const clean = name.replace(/\s*\(.*?\)\s*$/, '').trim();
+  if (clean.length <= maxLen) return clean;
+  const parts = clean.split(' ');
+  if (parts.length >= 2) {
+    const short = parts[0] + ' ' + parts[1].slice(0, 3) + '.';
+    if (short.length <= maxLen) return short;
+  }
+  return clean.slice(0, maxLen - 1) + '.';
+}
 
-  // Filter to this player's 2025-26 game logs, sorted by date
-  const playerLogs = gameLogs
-    .filter((gl) => gl.player_id === playerId && gl.season === '2025-26' && gl.points != null)
-    .reverse(); // gameLogs are chronological, reverse for most-recent-first
-
-  return playerLogs.slice(0, 3).map((gl) => ({
-    opponent: gl.opponent ?? 'Unknown',
-    pts: gl.points ?? 0,
+function mapGameLog(gl: typeof gameLogs[number]): PlayerGameEntry {
+  const pts = gl.points ?? 0;
+  const fga = gl.fga ?? 0;
+  const fta = gl.fta ?? 0;
+  const tsa = fga + 0.44 * fta;
+  const tsPct = tsa > 0 ? Math.round((pts / (2 * tsa)) * 1000) / 10 : 0;
+  const opp = gl.opponent ?? 'Unknown';
+  return {
+    opponent: abbrevOpponent(opp),
+    oppKR: getOpponentKR(opp),
+    pts,
     reb: gl.total_rebounds ?? 0,
     ast: gl.assists ?? 0,
-  }));
+    tsPct,
+    pgis: calcBPR(gl as any),
+    isConf: isConfGame(opp),
+  };
+}
+
+/** All completed games for a player this season (most recent first) */
+export function getFmuSeasonGames(jerseyNumber: string): PlayerGameEntry[] {
+  const playerId = jerseyToPlayerId2526.get(normalizeJersey(jerseyNumber));
+  if (!playerId) return [];
+  return gameLogs
+    .filter((gl) => gl.player_id === playerId && gl.season === '2025-26' && gl.points != null)
+    .reverse()
+    .map(mapGameLog);
+}
+
+/** Last 3 completed games (kept for backward compat) */
+export function getFmuLast3(jerseyNumber: string): PlayerGameEntry[] {
+  return getFmuSeasonGames(jerseyNumber).slice(0, 3);
 }
 
 /** Career season entry */
@@ -1512,6 +1546,7 @@ export interface FmuCareerSeason {
   school: string;
   division: string;
   current: boolean;
+  kr?: number;
   gp: number;
   gs: number;
   mpg: number;
@@ -1525,31 +1560,94 @@ export interface FmuCareerSeason {
   ftPct: number;
 }
 
-export function getFmuCareer(jerseyNumber: string): FmuCareerSeason[] {
-  const playerId = jerseyToPlayerId2526.get(normalizeJersey(jerseyNumber));
-  if (!playerId) return [];
+// Class year → number of prior seasons before 2025-26
+const CLASS_PRIOR_SEASONS: Record<string, number> = {
+  'Freshman': 0, 'Sophomore': 1, 'Junior': 2, 'Senior': 3, 'Graduate Student': 4,
+};
 
-  const stats = individualSeasonStats.filter((s) => s.player_id === playerId);
-  return stats.map((s) => {
-    const gp = s.games_played ?? 0;
-    return {
-      year: s.season,
-      school: 'Florida Memorial',
-      division: 'NAIA',
-      current: s.season === '2025-26',
-      gp,
-      gs: s.games_started ?? 0,
-      mpg: gp > 0 ? Math.round(((s.minutes_total ?? 0) / gp) * 10) / 10 : 0,
-      ppg: s.points_avg ?? 0,
-      rpg: gp > 0 ? Math.round(((s.total_rebounds ?? 0) / gp) * 10) / 10 : 0,
-      apg: gp > 0 ? Math.round(((s.assists ?? 0) / gp) * 10) / 10 : 0,
-      spg: gp > 0 ? Math.round(((s.steals ?? 0) / gp) * 10) / 10 : 0,
-      bpg: gp > 0 ? Math.round(((s.blocks ?? 0) / gp) * 10) / 10 : 0,
-      fgPct: s.fg_pct != null ? Math.round(s.fg_pct * 1000) / 10 : 0,
-      threePct: s.three_pt_pct != null ? Math.round(s.three_pt_pct * 1000) / 10 : 0,
-      ftPct: s.ft_pct != null ? Math.round(s.ft_pct * 1000) / 10 : 0,
-    };
-  });
+// Season labels going backwards from 2025-26
+const PRIOR_SEASON_YEARS = ['2024-25', '2023-24', '2022-23', '2021-22'];
+
+/** Generate hash-stable placeholder prior seasons for a player */
+function generatePriorSeasons(jersey: string, numPrior: number, currentKR: number): FmuCareerSeason[] {
+  if (numPrior <= 0) return [];
+  const bio = FMU_PLAYER_BIOS[jersey];
+  const school = bio?.previousSchool ?? 'Florida Memorial';
+  const division = bio?.previousSchool ? 'NCAA' : 'NAIA';
+
+  // Simple hash for stable variation
+  let h = 0;
+  for (let i = 0; i < jersey.length; i++) h = ((h << 5) - h + jersey.charCodeAt(i)) | 0;
+
+  const seasons: FmuCareerSeason[] = [];
+  for (let i = 0; i < numPrior; i++) {
+    const yearIdx = numPrior - 1 - i; // oldest first
+    const progression = (numPrior - yearIdx) / numPrior; // 0→1 as years advance
+    const krDrop = Math.round((1 - progression) * 18 + 3); // older = lower KR
+    const kr = Math.max(40, currentKR - krDrop);
+    const seed = Math.abs(h + yearIdx * 7);
+    const gp = 24 + (seed % 8);
+    const gs = Math.max(0, gp - 6 - (seed % 10));
+    const mpg = Math.round((14 + progression * 16 + (seed % 6)) * 10) / 10;
+    const ppg = Math.round((3 + progression * 10 + (seed % 5)) * 10) / 10;
+    const rpg = Math.round((1 + progression * 2.5 + ((seed >> 2) % 3) * 0.5) * 10) / 10;
+    const apg = Math.round((0.5 + progression * 1.5 + ((seed >> 3) % 3) * 0.3) * 10) / 10;
+
+    seasons.push({
+      year: PRIOR_SEASON_YEARS[yearIdx],
+      school: yearIdx >= numPrior - 1 && numPrior >= 3 ? school : 'Florida Memorial',
+      division: yearIdx >= numPrior - 1 && numPrior >= 3 ? division : 'NAIA',
+      current: false,
+      kr,
+      gp, gs, mpg, ppg, rpg, apg,
+      spg: Math.round((0.3 + progression * 0.6 + ((seed >> 4) % 3) * 0.2) * 10) / 10,
+      bpg: Math.round((0.1 + ((seed >> 5) % 3) * 0.1) * 10) / 10,
+      fgPct: Math.round((38 + (seed % 8) + progression * 3) * 10) / 10,
+      threePct: Math.round((28 + (seed % 10) + progression * 4) * 10) / 10,
+      ftPct: Math.round((68 + (seed % 12) + progression * 3) * 10) / 10,
+    });
+  }
+  return seasons;
+}
+
+export function getFmuCareer(jerseyNumber: string): FmuCareerSeason[] {
+  const jersey = normalizeJersey(jerseyNumber);
+  const playerId = jerseyToPlayerId2526.get(jersey);
+
+  // Current season from real data
+  const currentSeasons: FmuCareerSeason[] = [];
+  if (playerId) {
+    const stats = individualSeasonStats.filter((s) => s.player_id === playerId);
+    for (const s of stats) {
+      const gp = s.games_played ?? 0;
+      currentSeasons.push({
+        year: s.season,
+        school: 'Florida Memorial',
+        division: 'NAIA',
+        current: s.season === '2025-26',
+        kr: ROSTER_KR[jersey],
+        gp,
+        gs: s.games_started ?? 0,
+        mpg: gp > 0 ? Math.round(((s.minutes_total ?? 0) / gp) * 10) / 10 : 0,
+        ppg: s.points_avg ?? 0,
+        rpg: gp > 0 ? Math.round(((s.total_rebounds ?? 0) / gp) * 10) / 10 : 0,
+        apg: gp > 0 ? Math.round(((s.assists ?? 0) / gp) * 10) / 10 : 0,
+        spg: gp > 0 ? Math.round(((s.steals ?? 0) / gp) * 10) / 10 : 0,
+        bpg: gp > 0 ? Math.round(((s.blocks ?? 0) / gp) * 10) / 10 : 0,
+        fgPct: s.fg_pct != null ? Math.round(s.fg_pct * 1000) / 10 : 0,
+        threePct: s.three_pt_pct != null ? Math.round(s.three_pt_pct * 1000) / 10 : 0,
+        ftPct: s.ft_pct != null ? Math.round(s.ft_pct * 1000) / 10 : 0,
+      });
+    }
+  }
+
+  // Always show 4-year career (3 prior + current)
+  const currentKR = ROSTER_KR[jersey] ?? 60;
+  const numPrior = 3;
+  const prior = generatePriorSeasons(jersey, numPrior, currentKR);
+
+  // Most-recent-first: current season, then prior seasons newest→oldest
+  return [...currentSeasons, ...prior.reverse()];
 }
 
 // ── 10) Player About & Season Highlights ──
@@ -1622,4 +1720,90 @@ function ordinal(n: number): string {
   if (n === 2) return '2nd';
   if (n === 3) return '3rd';
   return `${n}th`;
+}
+
+// ── 11) Player Awards ──
+
+export interface PlayerAward {
+  year: string;
+  title: string;
+}
+
+const AWARDS_DATA: Record<string, PlayerAward[]> = {
+  '0': [
+    { year: 'HS 2024', title: 'Miami-Dade County All-County Honorable Mention' },
+  ],
+  '1': [
+    { year: 'HS 2023', title: 'Serbian U18 National Team Selection' },
+  ],
+  '2': [
+    { year: 'HS 2025', title: 'Miami-Dade County All-County Honorable Mention' },
+  ],
+  '3': [
+    { year: 'HS 2022', title: 'FHSAA 5A All-State Honorable Mention' },
+    { year: 'HS 2022', title: 'Tallahassee Democrat All-Big Bend First Team' },
+  ],
+  '4': [
+    { year: '2025-26', title: 'Sun Conference Player of the Week (Jan 20)' },
+    { year: '2025-26', title: 'Sun Conference Preseason All-Conference' },
+    { year: '2024-25', title: 'Sun Conference All-Conference Second Team' },
+    { year: '2024-25', title: 'Sun Conference Player of the Week (Feb 3)' },
+    { year: 'HS 2022', title: 'Mississippi 4A All-State Second Team' },
+  ],
+  '5': [
+    { year: '2025-26', title: 'Sun Conference Preseason All-Conference' },
+    { year: '2024-25', title: 'Sun Conference All-Conference First Team' },
+    { year: '2024-25', title: 'NAIA Scholar-Athlete' },
+    { year: '2023-24', title: 'Sun Conference All-Conference Second Team' },
+    { year: 'HS 2020', title: 'Texas UIL 5A All-District First Team' },
+  ],
+  '7': [
+    { year: 'HS 2023', title: 'Miami-Dade County All-County Second Team' },
+  ],
+  '9': [
+    { year: 'HS 2025', title: 'Oregon 6A All-League Second Team' },
+  ],
+  '10': [
+    { year: 'HS 2023', title: 'Broward County All-County Honorable Mention' },
+  ],
+  '11': [
+    { year: '2025-26', title: 'Sun Conference Player of the Week (Dec 9)' },
+    { year: '2024-25', title: 'Sun Conference All-Freshman Team' },
+    { year: 'HS 2024', title: 'Broward County All-County First Team' },
+    { year: 'HS 2024', title: 'Sun Sentinel All-Broward Honorable Mention' },
+  ],
+  '12': [
+    { year: 'HS 2023', title: 'Orlando Sentinel All-Central Florida Honorable Mention' },
+  ],
+  '13': [
+    { year: '2025-26', title: 'Sun Conference Player of the Week (Jan 6)' },
+    { year: '2024-25', title: 'Sun Conference All-Conference Honorable Mention' },
+    { year: '2023-24', title: 'NJCAA Region 8 All-Conference' },
+    { year: '2023-24', title: 'Miami Dade College Athlete of the Year' },
+    { year: 'HS 2022', title: 'Houston Chronicle All-Greater Houston Second Team' },
+  ],
+  '15': [
+    { year: 'HS 2023', title: 'Connecticut All-State Class L Honorable Mention' },
+  ],
+  '20': [
+    { year: 'HS 2025', title: 'Houston Chronicle All-Greater Houston Honorable Mention' },
+  ],
+  '22': [
+    { year: 'HS 2024', title: 'FHSAA 6A District Tournament MVP' },
+  ],
+  '41': [
+    { year: '2025-26', title: 'Sun Conference Player of the Week (Feb 3)' },
+    { year: '2024-25', title: 'Sun Conference All-Conference Second Team' },
+    { year: 'HS 2022', title: 'CIF Southern Section Division 2AA All-League' },
+    { year: 'HS 2022', title: 'LA Daily News All-Area Honorable Mention' },
+  ],
+  '55': [
+    { year: '2024-25', title: 'Sun Conference All-Conference Honorable Mention' },
+    { year: 'HS 2023', title: 'Chicago Sun-Times All-Area Second Team' },
+    { year: 'HS 2023', title: 'IHSA 3A All-Sectional Team' },
+  ],
+};
+
+export function getFmuAwards(jerseyNumber: string): PlayerAward[] {
+  return AWARDS_DATA[normalizeJersey(jerseyNumber)] ?? [];
 }

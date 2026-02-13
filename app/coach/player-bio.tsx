@@ -18,11 +18,23 @@ import {
   FMU_LEADERS,
   FMU_PLAYER_BIOS,
   FMU_PLAYER_ABOUT,
-  getFmuLast3,
+  getFmuSeasonGames,
   getFmuCareer,
   getFmuHighlights,
+  getFmuAwards,
   getFmuTS,
+  getPGISColor,
+  ROSTER_KR,
 } from '@/data/fmu';
+import { PLAYER_CLUSTERS, getPlayerSubclusters } from '@/data/roster-data';
+import type { ClusterRatings } from '@/data/roster-data';
+import { CLUSTER_LABELS } from '@/data/mock-program-context';
+import type { ClusterType } from '@/types';
+
+const CLUSTER_KEYS: (keyof ClusterRatings)[] = [
+  'shooting', 'finishing', 'playmaking',
+  'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
+];
 
 // ─── Design tokens ───────────────────────────────────────────────────────────
 
@@ -77,6 +89,9 @@ export default function PlayerBioScreen() {
   const router = useRouter();
   const { number } = useLocalSearchParams<{ number: string }>();
   const [expandedYear, setExpandedYear] = useState<string | null>(null);
+  const [gameLogFilter, setGameLogFilter] = useState<'recent' | 'season' | 'conference' | null>(null);
+  const [careerTab, setCareerTab] = useState<'stats' | 'clusters'>('stats');
+  const [expandedClusters, setExpandedClusters] = useState<Set<string>>(new Set());
 
   const jersey = normalizeJersey(number ?? '');
   const bio = FMU_PLAYER_BIOS[jersey];
@@ -91,9 +106,10 @@ export default function PlayerBioScreen() {
   }
 
   const headshot = HEADSHOTS[jersey] ?? FMU_SEAL;
-  const last3 = getFmuLast3(jersey);
+  const allGames = getFmuSeasonGames(jersey);
   const career = getFmuCareer(jersey);
   const highlights = getFmuHighlights(jersey);
+  const awards = getFmuAwards(jersey);
   const about = FMU_PLAYER_ABOUT[jersey];
 
   // Current season stats
@@ -105,6 +121,8 @@ export default function PlayerBioScreen() {
   const toggleYear = (year: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setExpandedYear((prev) => (prev === year ? null : year));
+    setCareerTab('stats');
+    setExpandedClusters(new Set());
   };
 
   return (
@@ -115,10 +133,10 @@ export default function PlayerBioScreen() {
           style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.6 }]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
+            router.back();
           }}
         >
-          <IconSymbol name="chevron.left" size={18} color={TEAL} />
+          <IconSymbol name="chevron.left" size={14} color="#f5f5f5" />
           <Text style={styles.backLabel}>Roster</Text>
         </Pressable>
       </View>
@@ -175,11 +193,17 @@ export default function PlayerBioScreen() {
           </View>
         </View>
 
-        {/* ── 3. Current Season ── */}
+        {/* ── 3. Current Season (tap to reveal game log) ── */}
         {leader && (
           <>
             <Text style={styles.sectionLabel}>CURRENT SEASON</Text>
-            <View style={styles.card}>
+            <Pressable
+              style={({ pressed }) => [styles.card, pressed && { opacity: 0.7 }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setGameLogFilter((v) => (v ? null : 'recent'));
+              }}
+            >
               <View style={styles.fourCol}>
                 <View style={styles.statCol}>
                   <Text style={styles.statValue}>{ppg.toFixed(1)}</Text>
@@ -200,31 +224,84 @@ export default function PlayerBioScreen() {
                   <Text style={styles.statLabel}>TS%</Text>
                 </View>
               </View>
-            </View>
+            </Pressable>
           </>
         )}
 
-        {/* ── 4. Last 3 Games ── */}
-        {last3.length > 0 && (
-          <>
-            <Text style={styles.sectionLabel}>LAST 3 GAMES</Text>
-            <View style={styles.card}>
+        {/* ── 4. Game Log (revealed by tapping Current Season) ── */}
+        {gameLogFilter && allGames.length > 0 && (() => {
+          const filtered =
+            gameLogFilter === 'conference' ? allGames.filter((g) => g.isConf) :
+            gameLogFilter === 'recent' ? allGames.slice(0, 3) :
+            allGames;
+          return (
+            <View style={[styles.card, { marginTop: -8 }]}>
+              {/* Filter pills */}
+              <View style={styles.filterPillRow}>
+                {(['season', 'conference', 'recent'] as const).map((key) => {
+                  const active = gameLogFilter === key;
+                  const label = key === 'season' ? 'Season' : key === 'conference' ? 'Conference' : 'Recent';
+                  return (
+                    <Pressable
+                      key={key}
+                      style={[styles.filterPill, active && styles.filterPillActive]}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        setGameLogFilter(key);
+                      }}
+                    >
+                      <Text style={[styles.filterPillText, active && styles.filterPillTextActive]}>
+                        {label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+              {/* Header */}
               <View style={styles.last3Header}>
                 <Text style={[styles.last3HeaderCell, { flex: 1 }]}>OPP</Text>
-                <Text style={styles.last3HeaderCell}>PTS</Text>
-                <Text style={styles.last3HeaderCell}>REB</Text>
-                <Text style={styles.last3HeaderCell}>AST</Text>
+                <Text style={styles.last3HeaderCellNarrow}>PTS</Text>
+                <Text style={styles.last3HeaderCellNarrow}>REB</Text>
+                <Text style={styles.last3HeaderCellNarrow}>AST</Text>
+                <Text style={styles.last3HeaderCellNarrow}>TS%</Text>
+                <Text style={styles.last3HeaderCellNarrow}>PGIS</Text>
               </View>
-              {last3.map((g, idx) => (
+              {/* Rows */}
+              {filtered.map((g, idx) => (
                 <View key={idx}>
                   <View style={[styles.rowDivider, { backgroundColor: DIVIDER }]} />
                   <View style={styles.last3Row}>
                     <Text style={[styles.last3Opp, { flex: 1 }]} numberOfLines={1}>
-                      {g.opponent}
+                      {g.opponent} ({g.oppKR})
                     </Text>
-                    <Text style={styles.last3Stat}>{g.pts}</Text>
-                    <Text style={styles.last3Stat}>{g.reb}</Text>
-                    <Text style={styles.last3Stat}>{g.ast}</Text>
+                    <Text style={styles.last3StatNarrow}>{g.pts}</Text>
+                    <Text style={styles.last3StatNarrow}>{g.reb}</Text>
+                    <Text style={styles.last3StatNarrow}>{g.ast}</Text>
+                    <Text style={styles.last3StatNarrow}>{g.tsPct.toFixed(0)}%</Text>
+                    <Text style={[styles.last3StatNarrow, { color: getPGISColor(g.pgis) }]}>
+                      {g.pgis > 0 ? '+' : ''}{g.pgis}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+              {filtered.length === 0 && (
+                <Text style={styles.emptyText}>No games</Text>
+              )}
+            </View>
+          );
+        })()}
+
+        {/* ── 5. Season Highlights ── */}
+        {highlights.length > 0 && (
+          <>
+            <Text style={styles.sectionLabel}>SEASON HIGHLIGHTS</Text>
+            <View style={styles.card}>
+              {highlights.map((item, idx) => (
+                <View key={idx}>
+                  {idx > 0 && <View style={[styles.bgDivider, { backgroundColor: DIVIDER }]} />}
+                  <View style={styles.highlightRow}>
+                    <Text style={styles.highlightBullet}>{'\u2022'}</Text>
+                    <Text style={styles.highlightText}>{item}</Text>
                   </View>
                 </View>
               ))}
@@ -232,20 +309,41 @@ export default function PlayerBioScreen() {
           </>
         )}
 
-        {/* ── 5. Career Timeline ── */}
+        {/* ── 6. Awards ── */}
+        {awards.length > 0 && (
+          <>
+            <Text style={styles.sectionLabel}>AWARDS</Text>
+            <View style={styles.card}>
+              {awards.map((award, idx) => (
+                <View key={idx}>
+                  {idx > 0 && <View style={[styles.rowDivider, { backgroundColor: DIVIDER }]} />}
+                  <View style={styles.awardRow}>
+                    <View style={styles.awardIcon}>
+                      <Text style={styles.awardIconText}>{'\uD83C\uDFC6'}</Text>
+                    </View>
+                    <View style={styles.awardInfo}>
+                      <Text style={styles.awardTitle}>{award.title}</Text>
+                      <Text style={styles.awardYear}>{award.year}</Text>
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+
+        {/* ── 7. Career Timeline ── */}
         {career.length > 0 && (
           <>
             <Text style={styles.sectionLabel}>CAREER TIMELINE</Text>
             <View style={styles.card}>
               {career.map((season, idx) => {
                 const isExpanded = expandedYear === season.year;
-
                 return (
                   <View key={season.year}>
                     {idx > 0 && (
                       <View style={[styles.rowDivider, { backgroundColor: DIVIDER }]} />
                     )}
-
                     <Pressable
                       style={({ pressed }) => [
                         styles.yearRow,
@@ -260,11 +358,6 @@ export default function PlayerBioScreen() {
                           >
                             {season.year}
                           </Text>
-                          {season.current && career.length > 1 && (
-                            <View style={styles.currentBadge}>
-                              <Text style={styles.currentBadgeText}>Current</Text>
-                            </View>
-                          )}
                         </View>
                         <Text style={styles.yearSchool} numberOfLines={1}>
                           {season.school} · {season.division}
@@ -272,60 +365,154 @@ export default function PlayerBioScreen() {
                       </View>
                       <View style={styles.yearRight}>
                         <View style={styles.yearPpgBlock}>
-                          <Text style={styles.yearPpgValue}>{season.ppg.toFixed(1)}</Text>
-                          <Text style={styles.yearPpgLabel}>PPG</Text>
+                          <Text style={styles.yearPpgValue}>{season.kr ?? '—'}</Text>
+                          <Text style={styles.yearPpgLabel}>KR</Text>
                         </View>
-                        <IconSymbol
-                          name={isExpanded ? 'chevron.up' : 'chevron.down'}
-                          size={14}
-                          color={GRAY}
-                        />
                       </View>
                     </Pressable>
 
                     {isExpanded && (
                       <View style={styles.expandedDetail}>
-                        <View style={styles.detailGrid}>
-                          <StatCell label="GP" value={String(season.gp)} />
-                          <StatCell label="GS" value={String(season.gs)} />
-                          <StatCell label="MPG" value={season.mpg.toFixed(1)} />
-                          <StatCell label="PPG" value={season.ppg.toFixed(1)} accent />
-                          <StatCell label="RPG" value={season.rpg.toFixed(1)} accent />
-                          <StatCell label="APG" value={season.apg.toFixed(1)} accent />
-                          <StatCell label="SPG" value={season.spg.toFixed(1)} />
+                        {/* Inline Stats / Clusters pills */}
+                        <View style={styles.inlinePillRow}>
+                          {(['stats', 'clusters'] as const).map((tab) => {
+                            const active = careerTab === tab;
+                            return (
+                              <Pressable
+                                key={tab}
+                                style={[styles.filterPill, active && styles.filterPillActive]}
+                                onPress={() => {
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                  setCareerTab(tab);
+                                  setExpandedClusters(new Set());
+                                }}
+                              >
+                                <Text style={[styles.filterPillText, active && styles.filterPillTextActive]}>
+                                  {tab === 'stats' ? 'Stats' : 'Clusters'}
+                                </Text>
+                              </Pressable>
+                            );
+                          })}
                         </View>
-                        <View style={styles.detailGrid}>
-                          <StatCell label="BPG" value={season.bpg.toFixed(1)} />
-                        </View>
-                        <View style={[styles.expandedDivider, { backgroundColor: DIVIDER }]} />
-                        <View style={styles.detailGrid}>
-                          <StatCell label="FG%" value={`${season.fgPct.toFixed(1)}%`} />
-                          <StatCell label="3P%" value={`${season.threePct.toFixed(1)}%`} />
-                          <StatCell label="FT%" value={`${season.ftPct.toFixed(1)}%`} />
-                        </View>
+
+                        {careerTab === 'stats' ? (
+                          <>
+                            {/* Hero row — PPG / RPG / APG */}
+                            <View style={styles.heroStatRow}>
+                              <View style={styles.heroStatItem}>
+                                <Text style={styles.heroStatValue}>{season.ppg.toFixed(1)}</Text>
+                                <Text style={styles.heroStatLabel}>PPG</Text>
+                              </View>
+                              <View style={[styles.heroStatDivider, { backgroundColor: DIVIDER }]} />
+                              <View style={styles.heroStatItem}>
+                                <Text style={styles.heroStatValue}>{season.rpg.toFixed(1)}</Text>
+                                <Text style={styles.heroStatLabel}>RPG</Text>
+                              </View>
+                              <View style={[styles.heroStatDivider, { backgroundColor: DIVIDER }]} />
+                              <View style={styles.heroStatItem}>
+                                <Text style={styles.heroStatValue}>{season.apg.toFixed(1)}</Text>
+                                <Text style={styles.heroStatLabel}>APG</Text>
+                              </View>
+                            </View>
+                            {/* Secondary stats — two-column rows */}
+                            <View style={styles.statRowsWrap}>
+                              <View style={styles.statRow2Col}>
+                                <View style={styles.statRow2Item}>
+                                  <Text style={styles.statRow2Label}>GP</Text>
+                                  <Text style={styles.statRow2Value}>{season.gp}</Text>
+                                </View>
+                                <View style={styles.statRow2Item}>
+                                  <Text style={styles.statRow2Label}>GS</Text>
+                                  <Text style={styles.statRow2Value}>{season.gs}</Text>
+                                </View>
+                              </View>
+                              <View style={styles.statRow2Col}>
+                                <View style={styles.statRow2Item}>
+                                  <Text style={styles.statRow2Label}>MPG</Text>
+                                  <Text style={styles.statRow2Value}>{season.mpg.toFixed(1)}</Text>
+                                </View>
+                                <View style={styles.statRow2Item}>
+                                  <Text style={styles.statRow2Label}>SPG</Text>
+                                  <Text style={styles.statRow2Value}>{season.spg.toFixed(1)}</Text>
+                                </View>
+                              </View>
+                              <View style={styles.statRow2Col}>
+                                <View style={styles.statRow2Item}>
+                                  <Text style={styles.statRow2Label}>BPG</Text>
+                                  <Text style={styles.statRow2Value}>{season.bpg.toFixed(1)}</Text>
+                                </View>
+                                <View style={styles.statRow2Item}>
+                                  <Text style={styles.statRow2Label}>FG%</Text>
+                                  <Text style={styles.statRow2Value}>{season.fgPct.toFixed(1)}%</Text>
+                                </View>
+                              </View>
+                              <View style={styles.statRow2Col}>
+                                <View style={styles.statRow2Item}>
+                                  <Text style={styles.statRow2Label}>3P%</Text>
+                                  <Text style={styles.statRow2Value}>{season.threePct.toFixed(1)}%</Text>
+                                </View>
+                                <View style={styles.statRow2Item}>
+                                  <Text style={styles.statRow2Label}>FT%</Text>
+                                  <Text style={styles.statRow2Value}>{season.ftPct.toFixed(1)}%</Text>
+                                </View>
+                              </View>
+                            </View>
+                          </>
+                        ) : (
+                          <View style={styles.clusterContent}>
+                            {CLUSTER_KEYS.map((key) => {
+                              const clusters = PLAYER_CLUSTERS[jersey];
+                              const value = clusters?.[key] ?? 0;
+                              const label = CLUSTER_LABELS[key as ClusterType]?.label ?? key;
+                              const barColor = value >= 70 ? '#4CAF50' : value >= 55 ? '#FF9800' : '#EF4444';
+                              const pct = Math.min(value, 100);
+                              const clusterExpanded = expandedClusters.has(key);
+                              const subclusters = clusterExpanded ? getPlayerSubclusters(jersey, key as keyof ClusterRatings) : [];
+
+                              return (
+                                <View key={key}>
+                                  <Pressable
+                                    style={styles.clusterRow}
+                                    onPress={() => {
+                                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                      setExpandedClusters((prev) => {
+                                        const next = new Set(prev);
+                                        if (next.has(key)) next.delete(key);
+                                        else next.add(key);
+                                        return next;
+                                      });
+                                    }}
+                                  >
+                                    <Text style={styles.clusterLabel}>{label}</Text>
+                                    <View style={styles.clusterBarTrack}>
+                                      <View style={[styles.clusterBarFill, { width: `${pct}%`, backgroundColor: barColor }]} />
+                                    </View>
+                                    <Text style={[styles.clusterValue, { color: barColor }]}>{value}</Text>
+                                    <Text style={styles.clusterChevron}>{clusterExpanded ? '▾' : '›'}</Text>
+                                  </Pressable>
+                                  {clusterExpanded && subclusters.map((sc) => {
+                                    const scColor = sc.rating >= 70 ? '#4CAF50' : sc.rating >= 55 ? '#FF9800' : '#EF4444';
+                                    const scPct = Math.min(sc.rating, 100);
+                                    return (
+                                      <View key={sc.name} style={styles.subclusterRow}>
+                                        <Text style={styles.subclusterLabel}>{sc.name}</Text>
+                                        <View style={styles.subclusterBarTrack}>
+                                          <View style={[styles.clusterBarFill, { width: `${scPct}%`, backgroundColor: scColor }]} />
+                                        </View>
+                                        <Text style={[styles.subclusterValue, { color: scColor }]}>{sc.rating}</Text>
+                                      </View>
+                                    );
+                                  })}
+                                </View>
+                              );
+                            })}
+                          </View>
+                        )}
                       </View>
                     )}
                   </View>
                 );
               })}
-            </View>
-          </>
-        )}
-
-        {/* ── 6. Season Highlights ── */}
-        {highlights.length > 0 && (
-          <>
-            <Text style={styles.sectionLabel}>SEASON HIGHLIGHTS</Text>
-            <View style={styles.card}>
-              {highlights.map((item, idx) => (
-                <View key={idx}>
-                  {idx > 0 && <View style={[styles.bgDivider, { backgroundColor: DIVIDER }]} />}
-                  <View style={styles.highlightRow}>
-                    <Text style={styles.highlightBullet}>{'\u2022'}</Text>
-                    <Text style={styles.highlightText}>{item}</Text>
-                  </View>
-                </View>
-              ))}
             </View>
           </>
         )}
@@ -415,19 +602,23 @@ const styles = StyleSheet.create({
   // Back row
   backRow: {
     backgroundColor: BG,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: DIVIDER,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 8,
   },
   backButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    height: 44,
-    gap: 4,
+    alignSelf: 'flex-start',
+    backgroundColor: '#1A1D23',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    gap: 6,
   },
   backLabel: {
-    fontSize: 17,
-    color: TEAL,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#f5f5f5',
   },
 
   scrollView: {
@@ -555,7 +746,39 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  // Last 3 Games
+  // Game log filter pills
+  filterPillRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: Spacing.md,
+    paddingTop: 12,
+    paddingBottom: 4,
+  },
+  filterPill: {
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    backgroundColor: '#252830',
+  },
+  filterPillActive: {
+    backgroundColor: WHITE,
+  },
+  filterPillText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: GRAY,
+  },
+  filterPillTextActive: {
+    color: '#0F1115',
+  },
+  emptyText: {
+    fontSize: 13,
+    color: GRAY,
+    textAlign: 'center',
+    paddingVertical: 16,
+  },
+
+  // Game log table
   last3Header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -568,6 +791,14 @@ const styles = StyleSheet.create({
     color: GRAY,
     letterSpacing: 0.5,
     width: 48,
+    textAlign: 'center',
+  },
+  last3HeaderCellNarrow: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: GRAY,
+    letterSpacing: 0.3,
+    width: 36,
     textAlign: 'center',
   },
   last3Row: {
@@ -586,6 +817,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: WHITE,
     width: 48,
+    textAlign: 'center',
+  },
+  last3StatNarrow: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: WHITE,
+    width: 36,
     textAlign: 'center',
   },
 
@@ -658,30 +896,59 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingBottom: Spacing.md,
   },
-  detailGrid: {
+  heroStatRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginBottom: 8,
-  },
-  detailCell: {
-    width: 56,
     alignItems: 'center',
-    paddingVertical: 4,
+    backgroundColor: '#252830',
+    borderRadius: 12,
+    paddingVertical: 14,
+    marginBottom: 12,
   },
-  detailValue: {
-    fontSize: 14,
-    fontWeight: '600',
+  heroStatItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  heroStatValue: {
+    fontSize: 22,
+    fontWeight: '700',
     color: WHITE,
   },
-  detailLabel: {
-    fontSize: 10,
+  heroStatLabel: {
+    fontSize: 11,
+    fontWeight: '600',
     color: GRAY,
     marginTop: 2,
   },
-  expandedDivider: {
-    height: StyleSheet.hairlineWidth,
-    marginVertical: 8,
+  heroStatDivider: {
+    width: 1,
+    height: 28,
+  },
+  statRowsWrap: {
+    gap: 2,
+  },
+  statRow2Col: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  statRow2Item: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#1E2127',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  statRow2Label: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: GRAY,
+  },
+  statRow2Value: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: WHITE,
   },
 
   // Background
@@ -761,5 +1028,115 @@ const styles = StyleSheet.create({
   socialHandle: {
     fontSize: 13,
     color: GRAY,
+  },
+
+  // Awards
+  awardRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.md,
+    gap: 12,
+  },
+  awardIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#252830',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  awardIconText: {
+    fontSize: 16,
+  },
+  awardInfo: {
+    flex: 1,
+  },
+  awardTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: WHITE,
+    lineHeight: 18,
+  },
+  awardYear: {
+    fontSize: 12,
+    color: GRAY,
+    marginTop: 2,
+  },
+
+  // Inline pill row (inside expanded blocks)
+  inlinePillRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+
+  // Cluster view
+  clusterContent: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: 12,
+    paddingBottom: Spacing.md,
+  },
+  clusterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    paddingVertical: 2,
+  },
+  clusterLabel: {
+    width: 72,
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#f5f5f5',
+  },
+  clusterBarTrack: {
+    flex: 1,
+    height: 8,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginHorizontal: 8,
+  },
+  clusterBarFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  clusterValue: {
+    fontSize: 13,
+    fontWeight: '700',
+    width: 28,
+    textAlign: 'right',
+  },
+  clusterChevron: {
+    fontSize: 11,
+    color: '#6e6e6e',
+    width: 16,
+    textAlign: 'center',
+    marginLeft: 2,
+  },
+  subclusterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 20,
+    marginBottom: 6,
+  },
+  subclusterLabel: {
+    fontSize: 10,
+    color: '#999',
+    width: 100,
+  },
+  subclusterBarTrack: {
+    flex: 1,
+    height: 5,
+    backgroundColor: '#222',
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginHorizontal: 6,
+  },
+  subclusterValue: {
+    fontSize: 11,
+    fontWeight: '600',
+    width: 24,
+    textAlign: 'right',
   },
 });

@@ -30,7 +30,8 @@ import { CAMPUSES, MESSAGES } from '@/data/mock-church';
 import { getCurrentTerm, getUpcomingEvents, INSTITUTIONAL_METRICS } from '@/data/mock-education';
 
 // FMU data
-import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getPGISColor, getTGISColor, tgisToDisplay, FMU_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
+import { FMU_GAMES, FMU_GAMES_BY_ID, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getPGISColor, getTGISColor, tgisToDisplay, FMU_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
+import { LiveGamePanel } from '@/components/live-game-panel';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 import { registerTeamSheetHandlers } from '@/utils/global-team-sheet';
 
@@ -469,6 +470,7 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
   const [pregameExpanded, setPregameExpanded] = useState<Record<string, boolean>>({});
   const [activePGIS, setActivePGIS] = useState(0);
   const [fullPGISOpen, setFullPGISOpen] = useState(false);
+  const [expandedLive, setExpandedLive] = useState(false);
   const togglePregameBlock = useCallback((key: string) => {
     setPregameExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
   }, []);
@@ -558,34 +560,40 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
         {/* ── Feed Tab ── */}
         {activeTab === 'feed' && (
           <View>
-            {/* Pinned Live Game */}
+            {/* Pinned Live Game — Media Card with Screen */}
             {sortedGames.filter((g) => g.status === 'live').map((game) => (
-              <Pressable
-                key={game.id}
-                style={({ pressed }) => [shStyles.liveCard, { backgroundColor: colors.backgroundSecondary }, pressed && { opacity: 0.7 }]}
-                onPress={() => navigateToGame(game.id)}
-              >
-                <View style={shStyles.liveCardDot} />
-                <View style={{ flex: 1 }}>
-                  <ThemedText style={[shStyles.liveCardLabel, { color: '#EF4444' }]}>LIVE</ThemedText>
-                  <ThemedText style={[shStyles.opponentText, { color: colors.text }]}>
-                    {game.location === 'Home' ? 'vs' : '@'} {game.opponent}
-                  </ThemedText>
-                  {(game.opponentKR || game.opponentRecord) && (
-                    <ThemedText style={[shStyles.krRecordText, { color: colors.textTertiary }]}>
-                      {game.opponentKR ? `${game.opponentKR} KR` : ''}{game.opponentKR && game.opponentRecord ? ' · ' : ''}{game.opponentRecord ?? ''}
-                    </ThemedText>
-                  )}
-                </View>
-                <View style={{ alignItems: 'flex-end' }}>
-                  {game.score && (
-                    <ThemedText style={[shStyles.liveScore, { color: colors.text }]}>{game.score}</ThemedText>
-                  )}
-                  {game.clock && (
-                    <ThemedText style={{ fontSize: 12, color: colors.textTertiary }}>{game.clock}</ThemedText>
-                  )}
-                </View>
-              </Pressable>
+              <View key={game.id} style={{ marginBottom: Spacing.md }}>
+                <Pressable
+                  style={({ pressed }) => [{ backgroundColor: '#000', borderRadius: BorderRadius.lg, overflow: 'hidden' as const }, pressed && { opacity: 0.85 }]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setExpandedLive((prev) => !prev);
+                  }}
+                >
+                  <View style={{ height: 180, backgroundColor: '#111', justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center' }}>
+                      <IconSymbol name="play.fill" size={24} color="#fff" />
+                    </View>
+                  </View>
+                  <View style={{ paddingHorizontal: 12, paddingVertical: 10 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+                      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444', marginRight: 6 }} />
+                      <Text style={{ fontSize: 11, fontWeight: '800', letterSpacing: 0.5, color: '#EF4444' }}>LIVE</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff', flex: 1 }} numberOfLines={1}>
+                        {game.location === 'Home' ? 'vs' : '@'} {game.opponent}{game.opponentKR ? ` (${game.opponentKR})` : ''}
+                      </Text>
+                      {game.score ? <Text style={{ fontSize: 20, fontWeight: '800', color: '#fff' }}>{game.score}</Text> : null}
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
+                      <Text style={{ fontSize: 13, color: '#999', flex: 1 }}>{game.opponentRecord ?? ''}</Text>
+                      {game.clock ? <Text style={{ fontSize: 12, color: '#999' }}>{game.clock}</Text> : null}
+                    </View>
+                  </View>
+                </Pressable>
+                {expandedLive && <LiveGamePanel gameId={game.id} game={FMU_GAMES_BY_ID[game.id]} colors={colors} />}
+              </View>
             ))}
 
             {/* Upcoming Games */}

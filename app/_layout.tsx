@@ -17,6 +17,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, StyleSheet, Animated, Keyboard } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 import { SplashScreen } from '@/components/splash-screen';
@@ -190,7 +191,7 @@ export default function RootLayout() {
     <AuthProvider>
       <AppProvider>
         <ThemeProvider value={DarkTheme}>
-          <View style={styles.container}>
+          <GestureHandlerRootView style={styles.container}>
             <AppShell />
 
             {/* Boot splash overlay - fades out when app is ready */}
@@ -200,7 +201,7 @@ export default function RootLayout() {
                 isAppReady={isAppReady}
               />
             )}
-          </View>
+          </GestureHandlerRootView>
           <StatusBar style="light" />
         </ThemeProvider>
       </AppProvider>

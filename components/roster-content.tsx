@@ -24,6 +24,7 @@ import { Spacing, BorderRadius } from '@/constants/theme';
 import { FMU_RECORD, FMU_STANDINGS } from '@/data/fmu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ARCHETYPE_LABELS, type Archetype } from '@/data/system-demand-profiles';
+import { UnitsView } from '@/components/depth-chart/depth-chart-units';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -51,16 +52,9 @@ const HEADSHOTS: Record<string, any> = {
   '55': require('@/assets/images/headshots/munir-jones.png'),
 };
 
-// Florida Memorial University Lions colors
-const TEAM_COLORS = {
-  primary: '#003DA5',    // FMU Royal Blue
-  secondary: '#FFD100',  // FMU Gold
-  accent: '#ffffff',
-  background: '#000000',
-  cardBg: '#0a0a0a',
-  white: '#f5f5f5',
-  gray: '#6e6e6e',
-};
+// Shared data from @/data/roster-data (avoids circular deps with depth-chart components)
+import { TEAM_COLORS, PLAYER_CLUSTERS, computeOffKR, computeDefKR } from '@/data/roster-data';
+import type { ClusterRatings } from '@/data/roster-data';
 
 // ── Season Constants ──
 const SEASONS = ['2024-25', '2025-26', '2026-27'] as const;
@@ -70,27 +64,53 @@ export const CURRENT_SEASON: Season = '2025-26';
 // FMU placeholder last-3-games (no Firebase dependency)
 const LAST_3_GAMES: Record<string, { opponent: string; pts: number; reb: number; ast: number }[]> = {};
 
+// PLAYER_CLUSTERS, ClusterRatings, computeOffKR, computeDefKR now live in @/data/roster-data
+
+// KR sort options
+type KrSortKey = 'kr' | 'offKR' | 'defKR' | 'shooting' | 'finishing' | 'playmaking' | 'perimeter_defense' | 'interior_defense' | 'rebounding' | 'frame';
+const KR_SORT_OPTIONS: { key: KrSortKey; label: string }[] = [
+  { key: 'kr', label: 'KR' },
+  { key: 'offKR', label: 'O KR' },
+  { key: 'defKR', label: 'D KR' },
+  { key: 'shooting', label: 'SHT' },
+  { key: 'finishing', label: 'FIN' },
+  { key: 'playmaking', label: 'PLY' },
+  { key: 'perimeter_defense', label: 'OBD' },
+  { key: 'interior_defense', label: 'TMD' },
+  { key: 'rebounding', label: 'REB' },
+  { key: 'frame', label: 'PHY' },
+];
+
+function getPlayerKrSortValue(player: { number: string; kr: number }, key: KrSortKey): number {
+  if (key === 'kr') return player.kr;
+  const c = PLAYER_CLUSTERS[player.number];
+  if (!c) return 0;
+  if (key === 'offKR') return computeOffKR(c);
+  if (key === 'defKR') return computeDefKR(c);
+  return c[key as keyof ClusterRatings] ?? 0;
+}
+
 type PlayerRole = 'starter' | 'rotation' | 'bench' | 'redshirt' | 'injured' | 'out';
 
 // Florida Memorial University Lions — 2025-26 Roster
-const ROSTER = [
-  { id: '1',  number: '0',  firstName: 'Tristan',   lastName: 'Thomas',        position: 'Wing', listPos: 'W', height: '6\'4"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: '', ppg: 3.4, rpg: 3.1, apg: 0, kr: 66, usage: 12.5, minutes: 16, role: 'rotation' as PlayerRole },
-  { id: '2',  number: '1',  firstName: 'Petar',      lastName: 'Asceric',       position: 'Big',           listPos: 'B',  height: '6\'10"', weight: 230, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 6.1, rpg: 2.4, apg: 0, kr: 68, usage: 14.8, minutes: 16, role: 'rotation' as PlayerRole },
-  { id: '3',  number: '2',  firstName: 'Braxton',    lastName: 'Lewis',         position: 'Wing', listPos: 'W', height: '6\'3"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 54, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
-  { id: '4',  number: '3',  firstName: 'Rico',        lastName: 'Thompson',     position: 'Combo Guard', listPos: 'CG', height: '6\'1"', weight: 180, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 55, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
-  { id: '5',  number: '4',  firstName: 'Devin',      lastName: 'Carter',        position: 'Wing', listPos: 'W', height: '6\'0"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Jackson, MS', ppg: 18.3, rpg: 6.1, apg: 3.4, kr: 82, usage: 28.4, minutes: 32, role: 'starter' as PlayerRole },
-  { id: '6',  number: '5',  firstName: 'Jeffrey',    lastName: 'Selden',        position: 'Big',           listPos: 'B',  height: '6\'6"',  weight: 210, classYear: 'Senior',    scholarship: 0, nil: '—', notes: '', ppg: 11.2, rpg: 5.9, apg: 3.0, kr: 80, usage: 22.1, minutes: 28, role: 'starter' as PlayerRole },
-  { id: '7',  number: '7',  firstName: 'Maximo',     lastName: 'Moratinos',     position: 'Forward', listPos: 'F', height: '6\'8"',  weight: 205, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 6.6, rpg: 2.6, apg: 0, kr: 70, usage: 15.2, minutes: 18, role: 'rotation' as PlayerRole },
-  { id: '8',  number: '9',  firstName: "Ka'Mar",     lastName: 'Benbo',         position: 'Point Guard',   listPos: 'PG', height: '6\'0"',  weight: 170, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 58, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
-  { id: '9',  number: '10', firstName: 'Jason',      lastName: 'Morris',        position: 'Forward', listPos: 'F', height: '6\'4"',  weight: 200, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 56, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
-  { id: '10', number: '11', firstName: 'Sehmaj',     lastName: 'Mentor',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Orlando, FL', ppg: 9.2, rpg: 3.5, apg: 2.4, kr: 78, usage: 20.3, minutes: 30, role: 'starter' as PlayerRole },
-  { id: '11', number: '12', firstName: 'Gavin',      lastName: 'Turner',        position: 'Wing', listPos: 'W', height: '6\'5"',  weight: 195, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
-  { id: '12', number: '13', firstName: 'Cameron',    lastName: 'Noel',          position: 'Combo Guard', listPos: 'CG', height: '6\'2"', weight: 180, classYear: 'Junior',    scholarship: 0, nil: '—', notes: '', ppg: 11.0, rpg: 2.8, apg: 1.6, kr: 79, usage: 21.6, minutes: 28, role: 'starter' as PlayerRole },
-  { id: '13', number: '15', firstName: 'Micah',      lastName: 'Morgan',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Houston, TX', ppg: 2.9, rpg: 2.7, apg: 0, kr: 65, usage: 10.1, minutes: 14, role: 'rotation' as PlayerRole },
-  { id: '14', number: '20', firstName: "D'Andre",    lastName: 'Dues',          position: 'Forward', listPos: 'F', height: '6\'7"',  weight: 188, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: '', ppg: 0, rpg: 0, apg: 0, kr: 50, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
-  { id: '15', number: '22', firstName: 'Elijah',     lastName: 'Laird',         position: 'Combo Guard', listPos: 'CG', height: '6\'3"', weight: 185, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Deltona, FL', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
-  { id: '16', number: '41', firstName: 'Morgan',     lastName: 'Brewer',        position: 'Forward', listPos: 'F', height: '6\'5"',  weight: 200, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 9.0, rpg: 3.6, apg: 0, kr: 76, usage: 18.7, minutes: 26, role: 'starter' as PlayerRole },
-  { id: '17', number: '55', firstName: "Aa'Reyon",   lastName: 'Munir-Jones',   position: 'Combo Guard', listPos: 'CG', height: '6\'4"', weight: 185, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: '', ppg: 7.2, rpg: 4.2, apg: 1.4, kr: 72, usage: 16.9, minutes: 20, role: 'rotation' as PlayerRole },
+export const ROSTER = [
+  { id: '1',  number: '0',  firstName: 'Tristan',   lastName: 'Thomas',        position: 'Wing', listPos: 'W', height: '6\'4"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Tampa, FL', formerSchool: 'Hillsborough CC', ppg: 3.4, rpg: 3.1, apg: 0, kr: 66, usage: 12.5, minutes: 16, role: 'rotation' as PlayerRole },
+  { id: '2',  number: '1',  firstName: 'Petar',      lastName: 'Asceric',       position: 'Big',           listPos: 'B',  height: '6\'10"', weight: 230, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Belgrade, Serbia', formerSchool: 'KK Zemun (Serbia)', ppg: 6.1, rpg: 2.4, apg: 0, kr: 68, usage: 14.8, minutes: 16, role: 'rotation' as PlayerRole },
+  { id: '3',  number: '2',  firstName: 'Braxton',    lastName: 'Lewis',         position: 'Wing', listPos: 'W', height: '6\'3"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'West Palm Beach, FL', formerSchool: 'Palm Beach State', ppg: 0, rpg: 0, apg: 0, kr: 54, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '4',  number: '3',  firstName: 'Rico',        lastName: 'Thompson',     position: 'Combo Guard', listPos: 'CG', height: '6\'1"', weight: 180, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Fort Lauderdale, FL', formerSchool: 'Stranahan HS', ppg: 0, rpg: 0, apg: 0, kr: 55, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '5',  number: '4',  firstName: 'Devin',      lastName: 'Carter',        position: 'Wing', listPos: 'W', height: '6\'0"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Jackson, MS', formerSchool: 'Hinds CC', ppg: 18.3, rpg: 6.1, apg: 3.4, kr: 82, usage: 28.4, minutes: 32, role: 'starter' as PlayerRole },
+  { id: '6',  number: '5',  firstName: 'Jeffrey',    lastName: 'Selden',        position: 'Big',           listPos: 'B',  height: '6\'6"',  weight: 210, classYear: 'Senior',    scholarship: 0, nil: '—', notes: 'Pembroke Pines, FL', formerSchool: 'Broward College', ppg: 11.2, rpg: 5.9, apg: 3.0, kr: 80, usage: 22.1, minutes: 28, role: 'starter' as PlayerRole },
+  { id: '7',  number: '7',  firstName: 'Maximo',     lastName: 'Moratinos',     position: 'Forward', listPos: 'F', height: '6\'8"',  weight: 205, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Marbella, Spain', formerSchool: 'CB Marbella (Spain)', ppg: 6.6, rpg: 2.6, apg: 0, kr: 70, usage: 15.2, minutes: 18, role: 'rotation' as PlayerRole },
+  { id: '8',  number: '9',  firstName: "Ka'Mar",     lastName: 'Benbo',         position: 'Point Guard',   listPos: 'PG', height: '6\'0"',  weight: 170, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Miami Gardens, FL', formerSchool: 'Carol City HS', ppg: 0, rpg: 0, apg: 0, kr: 58, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '9',  number: '10', firstName: 'Jason',      lastName: 'Morris',        position: 'Forward', listPos: 'F', height: '6\'4"',  weight: 200, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Miami, FL', formerSchool: 'Northwestern HS', ppg: 0, rpg: 0, apg: 0, kr: 56, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '10', number: '11', firstName: 'Sehmaj',     lastName: 'Mentor',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Orlando, FL', formerSchool: 'Indian River State', ppg: 9.2, rpg: 3.5, apg: 2.4, kr: 78, usage: 20.3, minutes: 30, role: 'starter' as PlayerRole },
+  { id: '11', number: '12', firstName: 'Gavin',      lastName: 'Turner',        position: 'Wing', listPos: 'W', height: '6\'5"',  weight: 195, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Fort Lauderdale, FL', formerSchool: 'Dillard HS', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
+  { id: '12', number: '13', firstName: 'Cameron',    lastName: 'Noel',          position: 'Combo Guard', listPos: 'CG', height: '6\'2"', weight: 180, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Opa-locka, FL', formerSchool: 'Miami Dade College', ppg: 11.0, rpg: 2.8, apg: 1.6, kr: 79, usage: 21.6, minutes: 28, role: 'starter' as PlayerRole },
+  { id: '13', number: '15', firstName: 'Micah',      lastName: 'Morgan',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Houston, TX', formerSchool: 'Blinn College', ppg: 2.9, rpg: 2.7, apg: 0, kr: 65, usage: 10.1, minutes: 14, role: 'rotation' as PlayerRole },
+  { id: '14', number: '20', firstName: "D'Andre",    lastName: 'Dues',          position: 'Forward', listPos: 'F', height: '6\'7"',  weight: 188, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Lauderdale Lakes, FL', formerSchool: 'Boyd Anderson HS', ppg: 0, rpg: 0, apg: 0, kr: 50, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
+  { id: '15', number: '22', firstName: 'Elijah',     lastName: 'Laird',         position: 'Combo Guard', listPos: 'CG', height: '6\'3"', weight: 185, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Deltona, FL', formerSchool: 'Deltona HS', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
+  { id: '16', number: '41', firstName: 'Morgan',     lastName: 'Brewer',        position: 'Forward', listPos: 'F', height: '6\'5"',  weight: 200, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Sunrise, FL', formerSchool: 'Piper HS', ppg: 9.0, rpg: 3.6, apg: 0, kr: 76, usage: 18.7, minutes: 26, role: 'starter' as PlayerRole },
+  { id: '17', number: '55', firstName: "Aa'Reyon",   lastName: 'Munir-Jones',   position: 'Combo Guard', listPos: 'CG', height: '6\'4"', weight: 185, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Miramar, FL', formerSchool: 'Miramar HS', ppg: 7.2, rpg: 4.2, apg: 1.4, kr: 72, usage: 16.9, minutes: 20, role: 'rotation' as PlayerRole },
 ];
 
 // FMU Depth Chart — 5 position groups
@@ -201,7 +221,7 @@ const LAST_3_GAMES_BY_SEASON: Record<Season, Record<string, GameLog[]>> = {
   '2026-27': {},
 };
 
-type ViewType = 'cards' | 'list';
+type ViewType = 'cards' | 'list' | 'depth';
 
 // ── Filter / Sort types ──
 type FilterOption = 'all' | 'starter' | 'rotation' | 'bench' | 'redshirt' | 'injured' | 'out';
@@ -245,7 +265,7 @@ function PlayerSection({
         <Text style={styles.position}>{player.kr} KR · {player.position}</Text>
         {(player.ppg > 0 || player.rpg > 0 || player.apg > 0) && (
           <Text style={styles.last3Stats}>
-            Last 3: {player.ppg} PTS · {player.rpg} REB · {player.apg} AST
+            {player.ppg} PPG · {player.rpg} RPG · {player.apg} APG
           </Text>
         )}
       </View>
@@ -301,6 +321,7 @@ function PlayerSection({
 const VIEW_OPTIONS: { key: ViewType; icon: string }[] = [
   { key: 'cards', icon: 'square.grid.2x2.fill' },
   { key: 'list', icon: 'rectangle.stack' },
+  { key: 'depth', icon: 'list.bullet.indent' },
 ];
 
 function RosterControls({
@@ -310,6 +331,8 @@ function RosterControls({
   onSeasonChange,
   searchQuery,
   onSearchChange,
+  krSortKey,
+  onKrSortChange,
 }: {
   activeView: ViewType;
   onViewChange: (view: ViewType) => void;
@@ -317,13 +340,17 @@ function RosterControls({
   onSeasonChange: (season: Season) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  krSortKey: KrSortKey | null;
+  onKrSortChange: (key: KrSortKey | null) => void;
 }) {
   const [seasonOpen, setSeasonOpen] = useState(false);
+  const [krDropdownOpen, setKrDropdownOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [pillY, setPillY] = useState(0);
   const [pillH, setPillH] = useState(0);
   const [activePillX, setActivePillX] = useState(0);
   const seasonRef = React.useRef<View>(null);
+  const krRef = React.useRef<View>(null);
 
   const openDropdown = (
     ref: React.RefObject<View | null>,
@@ -338,6 +365,7 @@ function RosterControls({
   };
 
   const seasonLabel = selectedSeason.replace('-', '\u2013');
+  const krLabel = krSortKey ? (KR_SORT_OPTIONS.find((o) => o.key === krSortKey)?.label ?? 'KR') : 'KR';
 
   return (
     <>
@@ -357,6 +385,22 @@ function RosterControls({
               {seasonLabel}
             </Text>
             <IconSymbol name="chevron.down" size={10} color={TEAM_COLORS.gray} />
+          </Pressable>
+
+          {/* KR sort dropdown pill */}
+          <Pressable
+            ref={krRef as any}
+            style={({ pressed }) => [
+              styles.controlPill,
+              krSortKey != null && styles.controlPillActive,
+              { opacity: pressed ? 0.8 : 1 },
+            ]}
+            onPress={() => openDropdown(krRef, setKrDropdownOpen)}
+          >
+            <Text style={[styles.controlPillText, krSortKey != null && { color: TEAM_COLORS.white }]}>
+              {krLabel}
+            </Text>
+            <IconSymbol name="chevron.down" size={10} color={krSortKey != null ? TEAM_COLORS.white : TEAM_COLORS.gray} />
           </Pressable>
 
           {/* Search icon */}
@@ -457,6 +501,47 @@ function RosterControls({
         </Modal>
       )}
 
+      {/* KR sort dropdown */}
+      {krDropdownOpen && (
+        <Modal visible transparent animationType="none" onRequestClose={() => setKrDropdownOpen(false)}>
+          <Pressable style={styles.dropdownOverlay} onPress={() => setKrDropdownOpen(false)}>
+            <View style={[styles.dropdown, { top: pillY + pillH + 4, left: activePillX, minWidth: 130 }]}>
+              {/* Reset option */}
+              {krSortKey != null && (
+                <Pressable
+                  style={styles.dropdownItem}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    onKrSortChange(null);
+                    setKrDropdownOpen(false);
+                  }}
+                >
+                  <Text style={[styles.dropdownText, { color: '#EF4444' }]}>Clear Sort</Text>
+                </Pressable>
+              )}
+              {KR_SORT_OPTIONS.map((opt) => {
+                const isSelected = opt.key === krSortKey;
+                return (
+                  <Pressable
+                    key={opt.key}
+                    style={[styles.dropdownItem, isSelected && { backgroundColor: TEAM_COLORS.accent }]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      onKrSortChange(opt.key);
+                      setKrDropdownOpen(false);
+                    }}
+                  >
+                    <Text style={[styles.dropdownText, isSelected && { color: TEAM_COLORS.background, fontWeight: '700' }]}>
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </Pressable>
+        </Modal>
+      )}
+
     </>
   );
 }
@@ -469,9 +554,18 @@ const TABLE_COLUMNS: { key: string; label: string; width: number; align?: 'left'
   { key: 'ht', label: 'HT', width: 56, align: 'center' },
   { key: 'wt', label: 'WT', width: 50, align: 'center' },
   { key: 'class', label: 'CLASS', width: 80, align: 'center' },
-  { key: 'status', label: 'STATUS', width: 86, align: 'center' },
-  { key: 'birthplace', label: 'BIRTHPLACE', width: 120 },
-  { key: 'prep', label: 'HS / PREP', width: 140 },
+  { key: 'birthplace', label: 'HOMETOWN', width: 120 },
+  { key: 'prep', label: 'PREV', width: 140 },
+  { key: 'kr', label: 'KR', width: 46, align: 'center' },
+  { key: 'offKR', label: 'O KR', width: 50, align: 'center' },
+  { key: 'defKR', label: 'D KR', width: 50, align: 'center' },
+  { key: 'shooting', label: 'SHT', width: 46, align: 'center' },
+  { key: 'finishing', label: 'FIN', width: 46, align: 'center' },
+  { key: 'playmaking', label: 'PLY', width: 46, align: 'center' },
+  { key: 'perimeter_defense', label: 'OBD', width: 46, align: 'center' },
+  { key: 'interior_defense', label: 'TMD', width: 46, align: 'center' },
+  { key: 'rebounding', label: 'REB', width: 46, align: 'center' },
+  { key: 'frame', label: 'PHY', width: 46, align: 'center' },
 ];
 
 type ListSortKey = typeof TABLE_COLUMNS[number]['key'];
@@ -505,7 +599,17 @@ function getListSortValue(player: RosterPlayer, key: ListSortKey): string | numb
       return statusOrder[player.role] ?? 3;
     }
     case 'birthplace': return (player.notes ?? '').toLowerCase();
-    case 'prep': return '';
+    case 'prep': return (player.formerSchool ?? '').toLowerCase();
+    case 'kr': return player.kr;
+    case 'offKR': { const c = PLAYER_CLUSTERS[player.number]; return c ? computeOffKR(c) : 0; }
+    case 'defKR': { const c = PLAYER_CLUSTERS[player.number]; return c ? computeDefKR(c) : 0; }
+    case 'shooting':
+    case 'finishing':
+    case 'playmaking':
+    case 'perimeter_defense':
+    case 'interior_defense':
+    case 'rebounding':
+    case 'frame': { const c = PLAYER_CLUSTERS[player.number]; return c ? c[key as keyof ClusterRatings] : 0; }
     default: return '';
   }
 }
@@ -520,8 +624,9 @@ function ListView({ roster }: { roster: RosterPlayer[] }) {
       setSortAsc((prev) => !prev);
     } else {
       setSortKey(key);
-      // Default descending for status
-      setSortAsc(!['status'].includes(key));
+      // Default descending for KR columns
+      const descKeys = ['kr', 'offKR', 'defKR', 'shooting', 'finishing', 'playmaking', 'perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
+      setSortAsc(!descKeys.includes(key));
     }
   };
 
@@ -586,15 +691,32 @@ function ListView({ roster }: { roster: RosterPlayer[] }) {
             <Text style={[styles.tableCell, { width: TABLE_COLUMNS[3].width, textAlign: 'center' }]}>{player.height}</Text>
             <Text style={[styles.tableCell, { width: TABLE_COLUMNS[4].width, textAlign: 'center' }]}>{player.weight}</Text>
             <Text style={[styles.tableCell, { width: TABLE_COLUMNS[5].width, textAlign: 'center' }]}>{CLASS_ABBREV[player.classYear] ?? player.classYear}</Text>
-            <Text style={[styles.tableCell, styles.tableCellStatus, { width: TABLE_COLUMNS[6].width, textAlign: 'center' }]}>
-              {STATUS_DISPLAY[player.role]}
-            </Text>
-            <Text style={[styles.tableCell, styles.tableCellNotes, { width: TABLE_COLUMNS[7].width }]} numberOfLines={1}>
+            <Text style={[styles.tableCell, styles.tableCellNotes, { width: TABLE_COLUMNS[6].width }]} numberOfLines={1}>
               {player.notes || '—'}
             </Text>
-            <Text style={[styles.tableCell, styles.tableCellNotes, { width: TABLE_COLUMNS[8].width }]} numberOfLines={1}>
-              —
+            <Text style={[styles.tableCell, styles.tableCellNotes, { width: TABLE_COLUMNS[7].width }]} numberOfLines={1}>
+              {player.formerSchool || '—'}
             </Text>
+            {/* KR columns */}
+            {(() => {
+              const c = PLAYER_CLUSTERS[player.number];
+              const offKR = c ? computeOffKR(c) : 0;
+              const defKR = c ? computeDefKR(c) : 0;
+              return (
+                <>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[8].width, textAlign: 'center', fontWeight: '600' }]}>{player.kr}</Text>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[9].width, textAlign: 'center' }]}>{offKR}</Text>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[10].width, textAlign: 'center' }]}>{defKR}</Text>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[11].width, textAlign: 'center' }]}>{c?.shooting ?? '—'}</Text>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[12].width, textAlign: 'center' }]}>{c?.finishing ?? '—'}</Text>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[13].width, textAlign: 'center' }]}>{c?.playmaking ?? '—'}</Text>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[14].width, textAlign: 'center' }]}>{c?.perimeter_defense ?? '—'}</Text>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[15].width, textAlign: 'center' }]}>{c?.interior_defense ?? '—'}</Text>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[16].width, textAlign: 'center' }]}>{c?.rebounding ?? '—'}</Text>
+                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[17].width, textAlign: 'center' }]}>{c?.frame ?? '—'}</Text>
+                </>
+              );
+            })()}
           </View>
         ))}
       </View>
@@ -754,8 +876,21 @@ export function RosterContent({ onViewChange, teamKR, onLogoPress }: { onViewCha
   const [activeView, setActiveView] = useState<ViewType>('cards');
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
   const [searchQuery, setSearchQuery] = useState('');
+  const [krSortKey, setKrSortKey] = useState<KrSortKey | null>(null);
   const roster = ROSTER_BY_SEASON[selectedSeason];
-  const filteredRoster = useFilteredRoster(roster, 'all', 'kr', searchQuery);
+  const filteredRoster = useMemo(() => {
+    let result = [...roster];
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      result = result.filter((p) => `${p.firstName} ${p.lastName}`.toLowerCase().includes(q));
+    }
+    if (krSortKey) {
+      result.sort((a, b) => getPlayerKrSortValue(b, krSortKey) - getPlayerKrSortValue(a, krSortKey));
+    } else {
+      result.sort((a, b) => parseInt(a.number, 10) - parseInt(b.number, 10));
+    }
+    return result;
+  }, [roster, searchQuery, krSortKey]);
 
   const handleViewChange = (view: ViewType) => {
     setActiveView(view);
@@ -794,21 +929,6 @@ export function RosterContent({ onViewChange, teamKR, onLogoPress }: { onViewCha
           </View>
         </View>
 
-        {/* Row 2: Season dropdown */}
-        <View style={{ marginTop: 8 }}>
-          <Pressable
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              handleSeasonChange(selectedSeason === '2025-26' ? '2024-25' : '2025-26');
-            }}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
-          >
-            <Text style={{ fontSize: 13, fontWeight: '600', color: TEAM_COLORS.gray }}>
-              {selectedSeason.replace('-', '\u2013')}
-            </Text>
-            <IconSymbol name="chevron.down" size={10} color={TEAM_COLORS.gray} />
-          </Pressable>
-        </View>
       </View>
 
       {/* Controls: Season + Sort + Search + View */}
@@ -819,11 +939,14 @@ export function RosterContent({ onViewChange, teamKR, onLogoPress }: { onViewCha
         onSeasonChange={handleSeasonChange}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        krSortKey={krSortKey}
+        onKrSortChange={setKrSortKey}
       />
 
       {/* Conditional Content */}
       {activeView === 'cards' && <CardsView roster={filteredRoster} />}
       {activeView === 'list' && <ListView roster={filteredRoster} />}
+      {activeView === 'depth' && <UnitsView depthChart={DEPTH_CHART_BY_SEASON[selectedSeason]} />}
     </View>
   );
 }

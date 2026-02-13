@@ -316,7 +316,7 @@ export default function GamesScreen() {
     ? sortedGames.filter((g) => g.opponent.toLowerCase().includes(search.toLowerCase()))
     : sortedGames;
 
-  const upcomingGames = effectiveGames.filter((g) => g.status === 'upcoming' || g.status === 'live');
+  const upcomingGames = effectiveGames.filter((g) => g.status === 'upcoming');
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -387,9 +387,51 @@ export default function GamesScreen() {
         {/* ── Games Tab ── */}
         {activeTab === 'games' && (
           <View>
+            {/* Pinned Live Game with Screen — same as home page media card */}
+            {(() => {
+              const liveGame = ALL_GAMES.find((g) => g.status === 'live');
+              if (!liveGame) return null;
+              return (
+                <Pressable
+                  style={({ pressed }) => [styles.liveMediaCard, { backgroundColor: '#000' }, pressed && { opacity: 0.85 }]}
+                  onPress={() => navigateToGame(liveGame.id)}
+                >
+                  <View style={styles.liveScreen}>
+                    <View style={styles.livePlayBtn}>
+                      <IconSymbol name="play.fill" size={24} color="#fff" />
+                    </View>
+                  </View>
+                  <View style={styles.liveInfoRow}>
+                    <View style={styles.liveBadgeRow}>
+                      <View style={styles.liveCardDot} />
+                      <Text style={styles.liveCardLabel}>LIVE</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={[styles.liveOpponentText, { color: '#fff' }]}>
+                          {liveGame.location === 'Home' ? 'vs' : '@'} {liveGame.opponent}{liveGame.opponentKR ? ` (${liveGame.opponentKR})` : ''}
+                        </Text>
+                        {liveGame.opponentRecord && (
+                          <Text style={{ fontSize: 13, color: '#999', marginTop: 2 }}>{liveGame.opponentRecord}</Text>
+                        )}
+                      </View>
+                      <View style={{ alignItems: 'flex-end', marginLeft: 10 }}>
+                        {liveGame.score && (
+                          <Text style={[styles.liveScoreText, { color: '#fff' }]}>{liveGame.score}</Text>
+                        )}
+                        {liveGame.clock && (
+                          <Text style={{ fontSize: 12, color: '#999', marginTop: 2 }}>{liveGame.clock}</Text>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                </Pressable>
+              );
+            })()}
+
             {/* Upcoming games — GameRow with expandable dropdown */}
             {(() => {
-              const upcoming = filteredGames.filter((g) => g.status === 'upcoming' || g.status === 'live');
+              const upcoming = filteredGames.filter((g) => g.status === 'upcoming');
               if (upcoming.length === 0) return null;
               return (
                 <>
@@ -514,7 +556,49 @@ export default function GamesScreen() {
         {/* ── Schedule Tab ── */}
         {activeTab === 'schedule' && (
           <View>
-            {/* Upcoming / Live */}
+            {/* Pinned Live Game with Screen — same as home page media card */}
+            {(() => {
+              const liveGame = ALL_GAMES.find((g) => g.status === 'live');
+              if (!liveGame) return null;
+              return (
+                <Pressable
+                  style={({ pressed }) => [styles.liveMediaCard, { backgroundColor: '#000' }, pressed && { opacity: 0.85 }]}
+                  onPress={() => navigateToGame(liveGame.id)}
+                >
+                  <View style={styles.liveScreen}>
+                    <View style={styles.livePlayBtn}>
+                      <IconSymbol name="play.fill" size={24} color="#fff" />
+                    </View>
+                  </View>
+                  <View style={styles.liveInfoRow}>
+                    <View style={styles.liveBadgeRow}>
+                      <View style={styles.liveCardDot} />
+                      <Text style={styles.liveCardLabel}>LIVE</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={[styles.liveOpponentText, { color: '#fff' }]}>
+                          {liveGame.location === 'Home' ? 'vs' : '@'} {liveGame.opponent}{liveGame.opponentKR ? ` (${liveGame.opponentKR})` : ''}
+                        </Text>
+                        {liveGame.opponentRecord && (
+                          <Text style={{ fontSize: 13, color: '#999', marginTop: 2 }}>{liveGame.opponentRecord}</Text>
+                        )}
+                      </View>
+                      <View style={{ alignItems: 'flex-end', marginLeft: 10 }}>
+                        {liveGame.score && (
+                          <Text style={[styles.liveScoreText, { color: '#fff' }]}>{liveGame.score}</Text>
+                        )}
+                        {liveGame.clock && (
+                          <Text style={{ fontSize: 12, color: '#999', marginTop: 2 }}>{liveGame.clock}</Text>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                </Pressable>
+              );
+            })()}
+
+            {/* Upcoming */}
             {upcomingGames.length > 0 && (
               <>
                 <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>UPCOMING</Text>
@@ -762,6 +846,17 @@ const styles = StyleSheet.create({
   hubTabLabelActive: {
     fontWeight: '600',
   },
+
+  // Live game media card
+  liveMediaCard: { borderRadius: BorderRadius.lg, overflow: 'hidden', marginBottom: Spacing.md },
+  liveScreen: { height: 180, backgroundColor: '#111', justifyContent: 'center', alignItems: 'center' },
+  livePlayBtn: { width: 56, height: 56, borderRadius: 28, backgroundColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center' },
+  liveInfoRow: { flexDirection: 'row', alignItems: 'center', padding: 12 },
+  liveBadgeRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
+  liveCardDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' },
+  liveCardLabel: { fontSize: 11, fontWeight: '800', letterSpacing: 0.5, color: '#EF4444' },
+  liveOpponentText: { fontSize: 16, fontWeight: '700' },
+  liveScoreText: { fontSize: 18, fontWeight: '700' },
 
   // Tab bar
   tabRow: {
