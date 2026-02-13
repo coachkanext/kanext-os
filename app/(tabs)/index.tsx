@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Pressable, TextInput, Animated, PanResponder, Dimensions, InteractionManager, Image, Text } from 'react-native';
+import { View, ScrollView, StyleSheet, Pressable, TextInput, InteractionManager, Image, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/core';
@@ -19,6 +19,7 @@ import { ProgramContextSection } from '@/components/program-context-section';
 import { RosterContent, DepthChartView, DEPTH_CHART_BY_SEASON, CURRENT_SEASON } from '@/components/roster-content';
 import { KRDetailsSheet } from '@/components/kr-details-sheet';
 import { PlayerPoolContent } from '@/app/coach/recruiting';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode } from '@/context/app-context';
@@ -459,11 +460,12 @@ function PregameSheetContent({ pregame, colors, expanded, onToggle }: {
   );
 }
 
-function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: any }) {
+function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Colors.light; router: any; openLiveTrigger?: number }) {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<ScheduleTab>('feed');
   const [standingsView, setStandingsView] = useState<'official' | 'kr'>('official');
-  const [krScope, setKrScope] = useState<'national' | 'conference'>('national');
+  const [krScope, setKrScope] = useState<'conference' | 'national' | 'all'>('conference');
+  const [traditionalScope, setTraditionalScope] = useState<'conference' | 'polls'>('conference');
   const [search, setSearch] = useState('');
   const [expandedLeader, setExpandedLeader] = useState<string | null>(null);
   const [oppKRSheet, setOppKRSheet] = useState<{ opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string; score?: string } | null>(null);
@@ -471,43 +473,26 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
   const [activePGIS, setActivePGIS] = useState(0);
   const [fullPGISOpen, setFullPGISOpen] = useState(false);
   const [expandedLive, setExpandedLive] = useState(false);
+
+  // When parent triggers live open, switch to feed tab and expand
+  useEffect(() => {
+    if (openLiveTrigger && openLiveTrigger > 0) {
+      setActiveTab('feed');
+      setExpandedLive(true);
+    }
+  }, [openLiveTrigger]);
+
   const togglePregameBlock = useCallback((key: string) => {
     setPregameExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
   }, []);
 
-  // Sheet animation
-  const SHEET_HEIGHT = Dimensions.get('window').height * 0.58;
-  const sheetAnim = useRef(new Animated.Value(SHEET_HEIGHT)).current;
-  const backdropAnim = useRef(new Animated.Value(0)).current;
-  const sheetOpen = useRef(false);
-
   const openSheet = useCallback((data: { opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string; score?: string }) => {
-    sheetAnim.stopAnimation();
-    backdropAnim.stopAnimation();
-    sheetOpen.current = true;
     setOppKRSheet(data);
-    sheetAnim.setValue(SHEET_HEIGHT);
-    Animated.parallel([
-      Animated.spring(sheetAnim, { toValue: 0, useNativeDriver: true, damping: 25, stiffness: 300 }),
-      Animated.timing(backdropAnim, { toValue: 1, duration: 250, useNativeDriver: true }),
-    ]).start();
-  }, [SHEET_HEIGHT, sheetAnim, backdropAnim]);
+  }, []);
 
   const closeSheet = useCallback(() => {
-    sheetOpen.current = false;
-    sheetAnim.stopAnimation();
-    backdropAnim.stopAnimation();
-    Animated.parallel([
-      Animated.spring(sheetAnim, { toValue: SHEET_HEIGHT, useNativeDriver: true, damping: 28, stiffness: 180 }),
-      Animated.timing(backdropAnim, { toValue: 0, duration: 350, useNativeDriver: true }),
-    ]).start(() => {
-      if (!sheetOpen.current) setOppKRSheet(null);
-    });
-  }, [SHEET_HEIGHT, sheetAnim, backdropAnim]);
-
-  // Simple swipe-down tracking
-  const touchStartY = useRef(0);
-  const sheetScrollOffset = useRef(0);
+    setOppKRSheet(null);
+  }, []);
 
   const q = search.trim().toLowerCase();
   const filtered = q
@@ -575,20 +560,22 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                       <IconSymbol name="play.fill" size={24} color="#fff" />
                     </View>
                   </View>
-                  <View style={{ paddingHorizontal: 12, paddingVertical: 10 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+                  <View style={{ padding: 12 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
                       <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444', marginRight: 6 }} />
                       <Text style={{ fontSize: 11, fontWeight: '800', letterSpacing: 0.5, color: '#EF4444' }}>LIVE</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff', flex: 1 }} numberOfLines={1}>
-                        {game.location === 'Home' ? 'vs' : '@'} {game.opponent}{game.opponentKR ? ` (${game.opponentKR})` : ''}
-                      </Text>
-                      {game.score ? <Text style={{ fontSize: 20, fontWeight: '800', color: '#fff' }}>{game.score}</Text> : null}
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
-                      <Text style={{ fontSize: 13, color: '#999', flex: 1 }}>{game.opponentRecord ?? ''}</Text>
-                      {game.clock ? <Text style={{ fontSize: 12, color: '#999' }}>{game.clock}</Text> : null}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <View style={{ flex: 1, flexShrink: 1, marginRight: 12 }}>
+                        <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff' }} numberOfLines={1}>
+                          {game.location === 'Home' ? 'vs' : '@'} {game.opponent}{game.opponentKR ? ` (${game.opponentKR})` : ''}
+                        </Text>
+                        {game.opponentRecord ? <Text style={{ fontSize: 13, color: '#999', marginTop: 2 }}>{game.opponentRecord}</Text> : null}
+                      </View>
+                      <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
+                        {game.score ? <Text style={{ fontSize: 18, fontWeight: '700', color: '#fff' }}>{game.score}</Text> : null}
+                        {game.clock ? <Text style={{ fontSize: 12, color: '#999', marginTop: 4 }}>{game.clock}</Text> : null}
+                      </View>
                     </View>
                   </View>
                 </Pressable>
@@ -748,7 +735,7 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                     onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setStandingsView(v); }}
                   >
                     <ThemedText style={[shStyles.standingsToggleText, { color: active ? colors.background : colors.textSecondary }]}>
-                      {v === 'official' ? 'Conference' : 'KR Rankings'}
+                      {v === 'official' ? 'Traditional' : 'KR Rankings'}
                     </ThemedText>
                   </Pressable>
                 );
@@ -758,32 +745,101 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
             {/* ═══ OFFICIAL ═══ */}
             {standingsView === 'official' && (
               <View>
-                <ThemedText style={[shStyles.sectionLabel, { color: colors.textSecondary }]}>SUN CONFERENCE</ThemedText>
-                <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                  <View style={[shStyles.standingsHeaderRow, { borderBottomColor: colors.divider }]}>
-                    <ThemedText style={[shStyles.standingsTeamHeader, { color: colors.textTertiary }]}>TEAM</ThemedText>
-                    <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>CONF</ThemedText>
-                    <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>OVR</ThemedText>
-                    <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>STK</ThemedText>
-                  </View>
-                  {FMU_STANDINGS.map((row, index) => {
-                    const isFmu = row.team === 'Florida Memorial';
+                {/* Scope pills */}
+                <View style={shStyles.krScopeRow}>
+                  {(['conference', 'polls'] as const).map((s) => {
+                    const active = traditionalScope === s;
                     return (
-                      <View key={row.team}>
-                        {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                        <View style={[shStyles.standingsRow, isFmu && { backgroundColor: colors.text + '08' }]}>
-                          <View style={shStyles.standingsTeamCol}>
-                            <ThemedText style={[shStyles.standingsRank, { color: colors.textTertiary }]}>{index + 1}</ThemedText>
-                            <ThemedText style={[shStyles.standingsTeamName, { color: colors.text, fontWeight: isFmu ? '700' : '500' }]}>{row.team}</ThemedText>
-                          </View>
-                          <ThemedText style={[shStyles.standingsRecord, { color: colors.text }]}>{row.confW}-{row.confL}</ThemedText>
-                          <ThemedText style={[shStyles.standingsRecord, { color: colors.textSecondary }]}>{row.overallW}-{row.overallL}</ThemedText>
-                          <ThemedText style={[shStyles.standingsStreak, { color: row.streak.startsWith('W') ? '#66BB6A' : '#EF4444' }]}>{row.streak}</ThemedText>
-                        </View>
-                      </View>
+                      <Pressable
+                        key={s}
+                        style={[shStyles.krScopePill, { backgroundColor: active ? colors.text : colors.backgroundSecondary }]}
+                        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setTraditionalScope(s); }}
+                      >
+                        <ThemedText style={[shStyles.krScopePillText, { color: active ? colors.background : colors.textSecondary }]}>
+                          {s === 'conference' ? 'Conference' : 'National'}
+                        </ThemedText>
+                      </Pressable>
                     );
                   })}
                 </View>
+
+                <ThemedText style={[shStyles.sectionLabel, { color: colors.textSecondary }]}>{traditionalScope === 'conference' ? 'SUN CONFERENCE' : 'NAIA TOP 25'}</ThemedText>
+
+                {traditionalScope === 'conference' ? (
+                  <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                    <View style={[shStyles.standingsHeaderRow, { borderBottomColor: colors.divider }]}>
+                      <ThemedText style={[shStyles.standingsTeamHeader, { color: colors.textTertiary }]}>TEAM</ThemedText>
+                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>CONF</ThemedText>
+                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>OVR</ThemedText>
+                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>STK</ThemedText>
+                    </View>
+                    {FMU_STANDINGS.map((row, index) => {
+                      const isFmu = row.team === 'Florida Memorial';
+                      return (
+                        <View key={row.team}>
+                          {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                          <View style={[shStyles.standingsRow, isFmu && { backgroundColor: colors.text + '08' }]}>
+                            <View style={shStyles.standingsTeamCol}>
+                              <ThemedText style={[shStyles.standingsRank, { color: colors.textTertiary }]}>{index + 1}</ThemedText>
+                              <ThemedText style={[shStyles.standingsTeamName, { color: colors.text, fontWeight: isFmu ? '700' : '500' }]}>{row.team}</ThemedText>
+                            </View>
+                            <ThemedText style={[shStyles.standingsRecord, { color: colors.text }]}>{row.confW}-{row.confL}</ThemedText>
+                            <ThemedText style={[shStyles.standingsRecord, { color: colors.textSecondary }]}>{row.overallW}-{row.overallL}</ThemedText>
+                            <ThemedText style={[shStyles.standingsStreak, { color: row.streak.startsWith('W') ? '#66BB6A' : '#EF4444' }]}>{row.streak}</ThemedText>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                ) : (
+                  <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                    <View style={[shStyles.standingsHeaderRow, { borderBottomColor: colors.divider }]}>
+                      <ThemedText style={[shStyles.krHeaderRank, { color: colors.textTertiary }]}>#</ThemedText>
+                      <ThemedText style={[shStyles.standingsTeamHeader, { color: colors.textTertiary }]}>TEAM</ThemedText>
+                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>REC</ThemedText>
+                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>PV</ThemedText>
+                    </View>
+                    {[
+                      { rank: 1, team: 'Loyola (LA)', record: '22-2', prev: 1 },
+                      { rank: 2, team: 'Indiana Wesleyan', record: '21-3', prev: 2 },
+                      { rank: 3, team: 'Oklahoma City', record: '20-3', prev: 4 },
+                      { rank: 4, team: 'Life Pacific', record: '20-4', prev: 3 },
+                      { rank: 5, team: 'Benedictine (KS)', record: '19-4', prev: 8 },
+                      { rank: 6, team: 'Freed-Hardeman', record: '19-4', prev: 6 },
+                      { rank: 7, team: 'Georgetown (KY)', record: '18-5', prev: 5 },
+                      { rank: 8, team: 'William Penn', record: '18-5', prev: 9 },
+                      { rank: 9, team: 'Southeastern', record: '18-5', prev: 7 },
+                      { rank: 10, team: 'Carroll (MT)', record: '19-4', prev: 10 },
+                      { rank: 11, team: 'Olivet Nazarene', record: '18-5', prev: 12 },
+                      { rank: 12, team: 'Concordia (NE)', record: '18-5', prev: 11 },
+                      { rank: 13, team: 'Bethel (IN)', record: '17-6', prev: 14 },
+                      { rank: 14, team: 'Jamestown', record: '17-5', prev: 16 },
+                      { rank: 15, team: 'MidAmerica Nazarene', record: '17-6', prev: 13 },
+                      { rank: 16, team: 'Science & Arts (OK)', record: '17-6', prev: 15 },
+                      { rank: 17, team: 'Campbellsville', record: '16-6', prev: 18 },
+                      { rank: 18, team: 'Marian (IN)', record: '16-7', prev: 17 },
+                      { rank: 19, team: 'Wayland Baptist', record: '16-6', prev: 20 },
+                      { rank: 20, team: 'IU South Bend', record: '16-7', prev: 22 },
+                      { rank: 21, team: 'Thomas More', record: '16-7', prev: 19 },
+                      { rank: 22, team: 'Vanguard', record: '15-7', prev: 21 },
+                      { rank: 23, team: 'Cornerstone', record: '15-7', prev: 24 },
+                      { rank: 24, team: 'Grace (IN)', record: '15-7', prev: 23 },
+                      { rank: 25, team: 'Lindsey Wilson', record: '15-8', prev: 25 },
+                    ].map((row, index) => (
+                      <View key={row.team}>
+                        {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                        <View style={shStyles.standingsRow}>
+                          <View style={shStyles.standingsTeamCol}>
+                            <ThemedText style={[shStyles.standingsRank, { color: colors.textTertiary }]}>{row.rank}</ThemedText>
+                            <ThemedText style={[shStyles.standingsTeamName, { color: colors.text }]}>{row.team}</ThemedText>
+                          </View>
+                          <ThemedText style={[shStyles.standingsRecord, { color: colors.text }]}>{row.record}</ThemedText>
+                          <ThemedText style={[shStyles.standingsRecord, { color: colors.textTertiary }]}>{row.prev}</ThemedText>
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                )}
               </View>
             )}
 
@@ -800,7 +856,22 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                 { rank: 8, team: 'William Penn', kr: 84, trend: 1 },
                 { rank: 9, team: 'Lindsey Wilson', kr: 83, trend: 0 },
                 { rank: 10, team: 'Westmont', kr: 82, trend: 4 },
-                { rank: 24, team: 'Florida Memorial', kr: 74, trend: 3 },
+                { rank: 11, team: 'Carroll (MT)', kr: 82, trend: -1 },
+                { rank: 12, team: 'Olivet Nazarene', kr: 81, trend: 2 },
+                { rank: 13, team: 'Concordia (NE)', kr: 81, trend: 0 },
+                { rank: 14, team: 'Bethel (IN)', kr: 80, trend: 3 },
+                { rank: 15, team: 'Jamestown', kr: 80, trend: 1 },
+                { rank: 16, team: 'MidAmerica Nazarene', kr: 79, trend: -2 },
+                { rank: 17, team: 'Science & Arts (OK)', kr: 79, trend: 0 },
+                { rank: 18, team: 'Campbellsville', kr: 78, trend: 1 },
+                { rank: 19, team: 'Marian (IN)', kr: 78, trend: -1 },
+                { rank: 20, team: 'Wayland Baptist', kr: 77, trend: 2 },
+                { rank: 21, team: 'IU South Bend', kr: 77, trend: 0 },
+                { rank: 22, team: 'Thomas More', kr: 76, trend: -3 },
+                { rank: 23, team: 'Vanguard', kr: 76, trend: 1 },
+                { rank: 24, team: 'Cornerstone', kr: 75, trend: 0 },
+                { rank: 25, team: 'Grace (IN)', kr: 75, trend: -1 },
+                { rank: 38, team: 'Florida Memorial', kr: 74, trend: 3 },
               ];
               const KR_CONF = FMU_STANDINGS.map((row) => {
                 let h = 0;
@@ -810,7 +881,36 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                 return { rank: 0, team: row.team, kr, trend };
               }).sort((a, b) => b.kr - a.kr).map((r, i) => ({ ...r, rank: i + 1 }));
 
-              const krData = krScope === 'national' ? KR_NATIONAL : KR_CONF;
+              const KR_ALL = [
+                { rank: 1, team: 'Duke', kr: 96, trend: 1 },
+                { rank: 2, team: 'Auburn', kr: 95, trend: -1 },
+                { rank: 3, team: 'Houston', kr: 94, trend: 2 },
+                { rank: 4, team: 'Florida', kr: 93, trend: 0 },
+                { rank: 5, team: 'Tennessee', kr: 93, trend: 3 },
+                { rank: 6, team: 'Alabama', kr: 92, trend: -1 },
+                { rank: 7, team: 'Iowa State', kr: 92, trend: 0 },
+                { rank: 8, team: 'Marquette', kr: 91, trend: 2 },
+                { rank: 9, team: 'Loyola (LA)', kr: 91, trend: 1 },
+                { rank: 10, team: 'St. Johns', kr: 90, trend: -2 },
+                { rank: 11, team: 'Texas Tech', kr: 90, trend: 4 },
+                { rank: 12, team: 'Michigan State', kr: 89, trend: 0 },
+                { rank: 13, team: 'Indiana Wesleyan', kr: 89, trend: 1 },
+                { rank: 14, team: 'Purdue', kr: 88, trend: -3 },
+                { rank: 15, team: 'Oklahoma City', kr: 88, trend: 2 },
+                { rank: 16, team: 'Gonzaga', kr: 87, trend: 0 },
+                { rank: 17, team: 'Life Pacific', kr: 87, trend: -1 },
+                { rank: 18, team: 'Wisconsin', kr: 86, trend: 3 },
+                { rank: 19, team: 'Benedictine (KS)', kr: 86, trend: 1 },
+                { rank: 20, team: 'Kansas', kr: 85, trend: -2 },
+                { rank: 21, team: 'UCLA', kr: 85, trend: 0 },
+                { rank: 22, team: 'Freed-Hardeman', kr: 85, trend: 1 },
+                { rank: 23, team: 'Clemson', kr: 84, trend: 2 },
+                { rank: 24, team: 'Georgetown (KY)', kr: 84, trend: -1 },
+                { rank: 25, team: 'Oregon', kr: 83, trend: 0 },
+                { rank: 142, team: 'Florida Memorial', kr: 74, trend: 3 },
+              ];
+
+              const krData = krScope === 'conference' ? KR_CONF : krScope === 'national' ? KR_NATIONAL : KR_ALL;
 
               const trendDisplay = (t: number) => {
                 if (t > 0) return { text: `▲ ${t}`, color: '#66BB6A' };
@@ -822,7 +922,7 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                 <View>
                   {/* Scope pills */}
                   <View style={shStyles.krScopeRow}>
-                    {(['national', 'conference'] as const).map((s) => {
+                    {(['conference', 'national', 'all'] as const).map((s) => {
                       const active = krScope === s;
                       return (
                         <Pressable
@@ -831,7 +931,7 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setKrScope(s); }}
                         >
                           <ThemedText style={[shStyles.krScopePillText, { color: active ? colors.background : colors.textSecondary }]}>
-                            {s === 'national' ? 'National' : 'Conference'}
+                            {s === 'conference' ? 'Conference' : s === 'national' ? 'Division' : 'National'}
                           </ThemedText>
                         </Pressable>
                       );
@@ -839,7 +939,7 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                   </View>
 
                   <ThemedText style={[shStyles.sectionLabel, { color: colors.textSecondary }]}>
-                    {krScope === 'national' ? 'NATIONAL' : 'SUN CONFERENCE'}
+                    {krScope === 'conference' ? 'SUN CONFERENCE' : krScope === 'national' ? 'NAIA' : 'ALL DIVISIONS'}
                   </ThemedText>
                   <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
                     {/* Sticky-feel header */}
@@ -851,7 +951,7 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                     </View>
                     {krData.map((row, index) => {
                       const isFmu = row.team === 'Florida Memorial';
-                      const showGap = krScope === 'national' && index === krData.length - 1 && row.rank > 10;
+                      const showGap = (krScope === 'national' || krScope === 'all') && index === krData.length - 1 && row.rank > 10;
                       const td = trendDisplay(row.trend);
                       return (
                         <View key={row.team}>
@@ -889,80 +989,42 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
 
         {/* ── News Tab ── */}
         {activeTab === 'news' && (
-          <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-            {FMU_NEWS.map((item, index) => (
-              <View key={item.id}>
-                {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                <View style={shStyles.newsRow}>
-                  <View style={{ flex: 1 }}>
-                    <ThemedText style={[shStyles.newsType, { color: colors.textTertiary }]}>{item.type}</ThemedText>
-                    <ThemedText style={[shStyles.newsHeadline, { color: colors.text }]}>{item.headline}</ThemedText>
-                    <ThemedText style={[shStyles.newsDate, { color: colors.textTertiary }]}>{item.date}</ThemedText>
+          <View style={{ gap: Spacing.md }}>
+            {FMU_NEWS.map((item) => (
+              <Pressable
+                key={item.id}
+                style={({ pressed }) => [{ backgroundColor: colors.backgroundSecondary, borderRadius: BorderRadius.lg, overflow: 'hidden' as const }, pressed && { opacity: 0.85 }]}
+              >
+                {/* Video preview thumbnail */}
+                <View style={{ height: 160, backgroundColor: '#111', justifyContent: 'center', alignItems: 'center' }}>
+                  <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center' }}>
+                    <IconSymbol name="play.fill" size={20} color="#fff" />
+                  </View>
+                  <View style={{ position: 'absolute', top: 8, left: 8, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: '#fff', letterSpacing: 0.3 }}>RECAP</Text>
                   </View>
                 </View>
-              </View>
+                {/* Info */}
+                <View style={{ padding: 12 }}>
+                  <ThemedText style={{ fontSize: 15, fontWeight: '700', color: colors.text }} numberOfLines={2}>{item.headline}</ThemedText>
+                  <ThemedText style={{ fontSize: 12, color: colors.textTertiary, marginTop: 4 }}>{item.date}</ThemedText>
+                </View>
+              </Pressable>
             ))}
           </View>
         )}
       </ScrollView>
 
       {/* Opponent KR Bottom Sheet */}
-      {oppKRSheet && (() => {
-        const opp = oppKRSheet.opponent;
-        const sheetGameId = oppKRSheet.gameId ?? '';
-        const impact = oppKRSheet.gameStatus === 'final' && sheetGameId ? FMU_GAME_IMPACT[sheetGameId] : null;
-        const pregame = oppKRSheet.gameStatus === 'upcoming' && sheetGameId ? FMU_PREGAME[sheetGameId] : null;
+      <BottomSheet visible={!!oppKRSheet} onClose={closeSheet} >
+        {oppKRSheet && (() => {
+          const opp = oppKRSheet.opponent;
+          const sheetGameId = oppKRSheet.gameId ?? '';
+          const impact = oppKRSheet.gameStatus === 'final' && sheetGameId ? FMU_GAME_IMPACT[sheetGameId] : null;
+          const pregame = oppKRSheet.gameStatus === 'upcoming' && sheetGameId ? FMU_PREGAME[sheetGameId] : null;
 
-        return (
-          <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-            {/* Backdrop */}
-            <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.25)', opacity: backdropAnim }]}>
-              <Pressable style={StyleSheet.absoluteFill} onPress={closeSheet} />
-            </Animated.View>
-
-            {/* Sheet */}
-            <Animated.View
-              style={[
-                shStyles.oppSheet,
-                {
-                  backgroundColor: colors.background,
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  height: SHEET_HEIGHT,
-                  transform: [{ translateY: sheetAnim }],
-                },
-              ]}
-            >
-              {/* Handle pill — tap or swipe down to close */}
-              <Pressable
-                onPress={closeSheet}
-                onTouchStart={(e) => { touchStartY.current = e.nativeEvent.pageY; }}
-                onTouchEnd={(e) => {
-                  const dy = e.nativeEvent.pageY - touchStartY.current;
-                  if (dy > 30) closeSheet();
-                }}
-                style={{ alignItems: 'center', paddingVertical: 20, paddingHorizontal: 40 }}
-                hitSlop={20}
-              >
-                <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: colors.border }} />
-              </Pressable>
-
-              {/* Sheet body */}
-              <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
-                showsVerticalScrollIndicator={false}
-                bounces
-                scrollEventThrottle={16}
-                onScroll={(e) => { sheetScrollOffset.current = e.nativeEvent.contentOffset.y; }}
-                onScrollEndDrag={(e) => {
-                  if (sheetScrollOffset.current <= 0 && e.nativeEvent.contentOffset.y < -40) {
-                    closeSheet();
-                  }
-                }}
-              >
+          return (
+            <>
                 {/* Header */}
                 {(() => {
                   const sheetGame = sheetGameId ? FMU_GAMES.find((g) => g.id === sheetGameId) : null;
@@ -1162,11 +1224,10 @@ function ScheduleHub({ colors, router }: { colors: typeof Colors.light; router: 
                 ) : pregame ? (
                   <PregameSheetContent pregame={pregame} colors={colors} expanded={pregameExpanded} onToggle={togglePregameBlock} />
                 ) : null}
-              </ScrollView>
-            </Animated.View>
-          </View>
-        );
-      })()}
+            </>
+          );
+        })()}
+      </BottomSheet>
     </View>
   );
 }
@@ -1221,7 +1282,6 @@ const shStyles = StyleSheet.create({
   newsHeadline: { fontSize: 15, fontWeight: '500', lineHeight: 20 },
   newsDate: { fontSize: 12, marginTop: 4 },
   upcomingDate: { fontSize: 13, fontWeight: '700' },
-  oppSheet: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, paddingHorizontal: Spacing.md, paddingBottom: 40, shadowColor: '#000', shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.3, shadowRadius: 12, elevation: 20 },
   oppKRPill: { alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, borderRadius: BorderRadius.lg, gap: 2 },
   liveCard: { flexDirection: 'row', alignItems: 'center', borderRadius: BorderRadius.lg, padding: Spacing.md, marginBottom: Spacing.md, borderLeftWidth: 3, borderLeftColor: '#EF4444', gap: 10 },
   liveCardDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' },
@@ -1260,6 +1320,7 @@ function SportsHome() {
   const initialTab = params.hubTab ? parseInt(params.hubTab, 10) : 0;
   const [activeHubIndex, setActiveHubIndex] = useState(initialTab);
   const pagerRef = useRef<PagerView>(null);
+  const [openLiveTrigger, setOpenLiveTrigger] = useState(0);
 
   // Reset PagerView to page 0 (the main Home hub)
   const resetToHome = useCallback(() => {
@@ -1306,69 +1367,23 @@ function SportsHome() {
   const toggleRecentPregameBlock = useCallback((key: string) => {
     setRecentPregameExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
   }, []);
-  const RECENT_SHEET_HEIGHT = Dimensions.get('window').height * 0.58;
-  const recentSheetScrollOffset = useRef(0);
-  const recentSheetAnim = useRef(new Animated.Value(RECENT_SHEET_HEIGHT)).current;
-  const recentBackdropAnim = useRef(new Animated.Value(0)).current;
-  const recentTouchStartY = useRef(0);
-  const recentSheetOpen = useRef(false);
-
   const openRecentSheet = useCallback((data: { opponent: string; kr: number; record: string; gameId: string; gameStatus: string; score?: string }) => {
-    recentSheetAnim.stopAnimation();
-    recentBackdropAnim.stopAnimation();
-    recentSheetOpen.current = true;
     setRecentSheet(data);
-    recentSheetAnim.setValue(RECENT_SHEET_HEIGHT);
-    Animated.parallel([
-      Animated.spring(recentSheetAnim, { toValue: 0, useNativeDriver: true, damping: 25, stiffness: 300 }),
-      Animated.timing(recentBackdropAnim, { toValue: 1, duration: 250, useNativeDriver: true }),
-    ]).start();
-  }, [RECENT_SHEET_HEIGHT, recentSheetAnim, recentBackdropAnim]);
+  }, []);
 
   const closeRecentSheet = useCallback(() => {
-    recentSheetOpen.current = false;
-    recentSheetAnim.stopAnimation();
-    recentBackdropAnim.stopAnimation();
-    Animated.parallel([
-      Animated.spring(recentSheetAnim, { toValue: RECENT_SHEET_HEIGHT, useNativeDriver: true, damping: 28, stiffness: 180 }),
-      Animated.timing(recentBackdropAnim, { toValue: 0, duration: 350, useNativeDriver: true }),
-    ]).start(() => {
-      if (!recentSheetOpen.current) setRecentSheet(null);
-    });
-  }, [RECENT_SHEET_HEIGHT, recentSheetAnim, recentBackdropAnim]);
+    setRecentSheet(null);
+  }, []);
 
   // Team profile bottom sheet
   const [teamSheetOpen, setTeamSheetOpen] = useState(false);
-  const TEAM_SHEET_HEIGHT = Dimensions.get('window').height * 0.55;
-  const teamSheetAnim = useRef(new Animated.Value(Dimensions.get('window').height * 0.55)).current;
-  const teamBackdropAnim = useRef(new Animated.Value(0)).current;
-  const teamSheetOpenRef = useRef(false);
-  const teamTouchStartY = useRef(0);
-  const teamSheetScrollOffset = useRef(0);
-
   const openTeamSheet = useCallback(() => {
-    teamSheetAnim.stopAnimation();
-    teamBackdropAnim.stopAnimation();
-    teamSheetOpenRef.current = true;
     setTeamSheetOpen(true);
-    teamSheetAnim.setValue(TEAM_SHEET_HEIGHT);
-    Animated.parallel([
-      Animated.spring(teamSheetAnim, { toValue: 0, useNativeDriver: true, damping: 25, stiffness: 300 }),
-      Animated.timing(teamBackdropAnim, { toValue: 1, duration: 250, useNativeDriver: true }),
-    ]).start();
-  }, [TEAM_SHEET_HEIGHT, teamSheetAnim, teamBackdropAnim]);
+  }, []);
 
   const closeTeamSheet = useCallback(() => {
-    teamSheetOpenRef.current = false;
-    teamSheetAnim.stopAnimation();
-    teamBackdropAnim.stopAnimation();
-    Animated.parallel([
-      Animated.spring(teamSheetAnim, { toValue: TEAM_SHEET_HEIGHT, useNativeDriver: true, damping: 28, stiffness: 180 }),
-      Animated.timing(teamBackdropAnim, { toValue: 0, duration: 350, useNativeDriver: true }),
-    ]).start(() => {
-      if (!teamSheetOpenRef.current) setTeamSheetOpen(false);
-    });
-  }, [TEAM_SHEET_HEIGHT, teamSheetAnim, teamBackdropAnim]);
+    setTeamSheetOpen(false);
+  }, []);
 
   // Register global team sheet handlers so any page can open it
   useEffect(() => {
@@ -1462,7 +1477,9 @@ function SportsHome() {
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 if (isLive) {
-                  router.push(`/coach/game-detail?gameId=${liveGame.id}` as any);
+                  setActiveHubIndex(2);
+                  pagerRef.current?.setPage(2);
+                  setOpenLiveTrigger((prev) => prev + 1);
                 }
               }}
             >
@@ -1481,19 +1498,21 @@ function SportsHome() {
                       <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' }} />
                       <ThemedText style={{ fontSize: 11, fontWeight: '800', letterSpacing: 0.5, color: '#EF4444' }}>LIVE</ThemedText>
                     </View>
-                    <ThemedText style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>
-                      {liveGame.location === 'Home' ? 'vs' : '@'} {liveGame.opponent}{liveGame.opponentKR ? ` (${liveGame.opponentKR})` : ''}
-                    </ThemedText>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
-                      <ThemedText style={{ fontSize: 13, color: '#999' }}>
-                        {liveGame.opponentRecord ?? ''}
-                      </ThemedText>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <View style={{ flex: 1, flexShrink: 1, marginRight: 12 }}>
+                        <ThemedText style={{ fontSize: 16, fontWeight: '700', color: '#fff' }} numberOfLines={1}>
+                          {liveGame.location === 'Home' ? 'vs' : '@'} {liveGame.opponent}{liveGame.opponentKR ? ` (${liveGame.opponentKR})` : ''}
+                        </ThemedText>
+                        <ThemedText style={{ fontSize: 13, color: '#999', marginTop: 2 }}>
+                          {liveGame.opponentRecord ?? ''}
+                        </ThemedText>
+                      </View>
+                      <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
                         {liveGame.score && (
                           <ThemedText style={{ fontSize: 18, fontWeight: '700', color: '#fff' }}>{liveGame.score}</ThemedText>
                         )}
                         {liveGame.clock && (
-                          <ThemedText style={{ fontSize: 12, color: '#999' }}>{liveGame.clock}</ThemedText>
+                          <ThemedText style={{ fontSize: 12, color: '#999', marginTop: 4 }}>{liveGame.clock}</ThemedText>
                         )}
                       </View>
                     </View>
@@ -1729,10 +1748,15 @@ function SportsHome() {
 
         {/* Page 2: Schedule (full Games Hub) */}
         <View key="schedule" style={{ flex: 1 }}>
-          <ScheduleHub colors={colors} router={router} />
+          <ScheduleHub colors={colors} router={router} openLiveTrigger={openLiveTrigger} />
         </View>
 
-        {/* Page 3: Stats */}
+        {/* Page 3: Recruiting (National Pool) */}
+        <View key="recruiting" style={{ flex: 1 }}>
+          <PlayerPoolContent />
+        </View>
+
+        {/* Page 4: Stats */}
         <ScrollView
           key="stats"
           style={styles.sportsScrollView}
@@ -1778,7 +1802,7 @@ function SportsHome() {
           ))}
         </ScrollView>
 
-        {/* Page 4: Game Ops (Depth Chart) */}
+        {/* Page 5: Game Ops (Depth Chart) */}
         <ScrollView
           key="game-ops"
           style={styles.sportsScrollView}
@@ -1789,7 +1813,7 @@ function SportsHome() {
           <DepthChartView depthChart={DEPTH_CHART_BY_SEASON[CURRENT_SEASON]} />
         </ScrollView>
 
-        {/* Page 5: Program */}
+        {/* Page 6: Program */}
         <ScrollView
           key="program"
           style={styles.sportsScrollView}
@@ -1799,11 +1823,6 @@ function SportsHome() {
         >
           <ProgramContextSection />
         </ScrollView>
-
-        {/* Page 6: Recruiting (National Pool) */}
-        <View key="recruiting" style={{ flex: 1 }}>
-          <PlayerPoolContent />
-        </View>
 
         {/* Page 7: Development */}
         <ScrollView
@@ -1822,65 +1841,13 @@ function SportsHome() {
       />
 
       {/* Recent BPR Bottom Sheet */}
-      {recentSheet && (() => {
-        const opp = recentSheet.opponent;
-        const recentImpact = recentSheet.gameStatus === 'final' && recentSheet.gameId ? FMU_GAME_IMPACT[recentSheet.gameId] : null;
-        const recentPregame = recentSheet.gameStatus === 'upcoming' && recentSheet.gameId ? FMU_PREGAME[recentSheet.gameId] : null;
-        return (
-          <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-            {/* Backdrop */}
-            <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.25)', opacity: recentBackdropAnim }]}>
-              <Pressable style={StyleSheet.absoluteFill} onPress={closeRecentSheet} />
-            </Animated.View>
-
-            {/* Sheet */}
-            <Animated.View
-              style={[
-                shStyles.oppSheet,
-                {
-                  backgroundColor: colors.background,
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  height: RECENT_SHEET_HEIGHT,
-                  transform: [{ translateY: recentSheetAnim }],
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: -4 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 12,
-                  elevation: 20,
-                },
-              ]}
-            >
-              {/* Handle pill — tap or swipe down to close */}
-              <Pressable
-                onPress={closeRecentSheet}
-                onTouchStart={(e) => { recentTouchStartY.current = e.nativeEvent.pageY; }}
-                onTouchEnd={(e) => {
-                  const dy = e.nativeEvent.pageY - recentTouchStartY.current;
-                  if (dy > 30) closeRecentSheet();
-                }}
-                style={{ alignItems: 'center', paddingVertical: 20, paddingHorizontal: 40 }}
-                hitSlop={20}
-              >
-                <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: colors.border }} />
-              </Pressable>
-
-              {/* Sheet body */}
-              <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
-                showsVerticalScrollIndicator={false}
-                bounces
-                scrollEventThrottle={16}
-                onScroll={(e) => { recentSheetScrollOffset.current = e.nativeEvent.contentOffset.y; }}
-                onScrollEndDrag={(e) => {
-                  if (recentSheetScrollOffset.current <= 0 && e.nativeEvent.contentOffset.y < -40) {
-                    closeRecentSheet();
-                  }
-                }}
-              >
+      <BottomSheet visible={!!recentSheet} onClose={closeRecentSheet} >
+        {recentSheet && (() => {
+          const opp = recentSheet.opponent;
+          const recentImpact = recentSheet.gameStatus === 'final' && recentSheet.gameId ? FMU_GAME_IMPACT[recentSheet.gameId] : null;
+          const recentPregame = recentSheet.gameStatus === 'upcoming' && recentSheet.gameId ? FMU_PREGAME[recentSheet.gameId] : null;
+          return (
+            <>
                 {/* Header */}
                 {(() => {
                   const recentGame = recentSheet.gameId ? FMU_GAMES.find((g) => g.id === recentSheet.gameId) : null;
@@ -2079,68 +2046,25 @@ function SportsHome() {
                 ) : recentPregame ? (
                   <PregameSheetContent pregame={recentPregame} colors={colors} expanded={recentPregameExpanded} onToggle={toggleRecentPregameBlock} />
                 ) : null}
-              </ScrollView>
-            </Animated.View>
-          </View>
-        );
-      })()}
+            </>
+          );
+        })()}
+      </BottomSheet>
 
       {/* ===== TEAM PROFILE BOTTOM SHEET ===== */}
-      {teamSheetOpen && (() => {
-        // Top 3 players by KR, adjusted by system
-        const offMod = liveOffKR - baseOffKRHome;
-        const defMod = liveDefKR - baseDefKRHome;
-        const avgMod = Math.round((offMod + defMod) / 2);
-        const leadersWithKR = FMU_LEADERS
-          .map((l) => ({ ...l, kr: Math.max(40, Math.min(95, (ROSTER_KR[l.number] ?? 60) + avgMod)) }))
-          .sort((a, b) => b.kr - a.kr)
-          .slice(0, 3);
+      <BottomSheet visible={teamSheetOpen} onClose={closeTeamSheet} >
+        {teamSheetOpen && (() => {
+          // Top 3 players by KR, adjusted by system
+          const offMod = liveOffKR - baseOffKRHome;
+          const defMod = liveDefKR - baseDefKRHome;
+          const avgMod = Math.round((offMod + defMod) / 2);
+          const leadersWithKR = FMU_LEADERS
+            .map((l) => ({ ...l, kr: Math.max(40, Math.min(95, (ROSTER_KR[l.number] ?? 60) + avgMod)) }))
+            .sort((a, b) => b.kr - a.kr)
+            .slice(0, 3);
 
-        return (
-          <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-            <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.25)', opacity: teamBackdropAnim }]}>
-              <Pressable style={StyleSheet.absoluteFill} onPress={closeTeamSheet} />
-            </Animated.View>
-            <Animated.View
-              style={[
-                shStyles.oppSheet,
-                {
-                  backgroundColor: colors.background,
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  height: TEAM_SHEET_HEIGHT,
-                  transform: [{ translateY: teamSheetAnim }],
-                },
-              ]}
-            >
-              <Pressable
-                onPress={closeTeamSheet}
-                onTouchStart={(e) => { teamTouchStartY.current = e.nativeEvent.pageY; }}
-                onTouchEnd={(e) => {
-                  const dy = e.nativeEvent.pageY - teamTouchStartY.current;
-                  if (dy > 30) closeTeamSheet();
-                }}
-                style={{ alignItems: 'center', paddingVertical: 20, paddingHorizontal: 40 }}
-                hitSlop={20}
-              >
-                <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: colors.border }} />
-              </Pressable>
-
-              <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 20 }}
-                showsVerticalScrollIndicator={false}
-                bounces
-                scrollEventThrottle={16}
-                onScroll={(e) => { teamSheetScrollOffset.current = e.nativeEvent.contentOffset.y; }}
-                onScrollEndDrag={(e) => {
-                  if (teamSheetScrollOffset.current <= 0 && e.nativeEvent.contentOffset.y < -40) {
-                    closeTeamSheet();
-                  }
-                }}
-              >
+          return (
+            <>
                 {/* Team Name + KR */}
                 <View style={{ alignItems: 'center', marginBottom: 16 }}>
                   <Image source={FMU_SEAL} style={{ width: 64, height: 64, marginBottom: 8 }} resizeMode="contain" />
@@ -2287,11 +2211,10 @@ function SportsHome() {
                   );
                 })()}
 
-              </ScrollView>
-            </Animated.View>
-          </View>
-        );
-      })()}
+            </>
+          );
+        })()}
+      </BottomSheet>
     </View>
   );
 }

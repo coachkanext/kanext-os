@@ -5,7 +5,7 @@
  * Uses draft-based filtering — changes commit only on "Apply Filters".
  */
 
-import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -13,8 +13,6 @@ import {
   Pressable,
   ScrollView,
   TextInput,
-  Animated,
-  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -23,11 +21,11 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemedText } from '@/components/themed-text';
 import { TabFooter } from '@/components/tab-footer';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { PLAYER_POOL, type PoolLevel, type PoolPlayer } from '@/data/playerPool';
-import { getLatestSeason } from '@/data/playerSeasons';
 import { getPlayerRatings } from '@/data/playerRatings';
-import { HELIO_TO_TRADITIONAL, HELIO_POSITIONS, HELIO_POSITION_LABELS } from '@/data/position-mapping';
+import { HELIO_TO_TRADITIONAL, TRADITIONAL_TO_HELIO, HELIO_POSITIONS, HELIO_POSITION_LABELS } from '@/data/position-mapping';
 import { SORT_CLUSTER_LABELS, CLUSTER_ORDER, TRAIT_LIBRARY } from '@/data/trait-library';
 import {
   FilterSheet,
@@ -39,11 +37,9 @@ import {
   type NationalPoolFilters,
 } from '@/components/recruiting/filter-sort-panel';
 import type { ClusterType } from '@/types';
+import { RecruitingPlayerSheet } from '@/components/recruiting/player-sheet';
 
 // ─── Constants ───
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-const PEEK_SHEET_HEIGHT = Math.round(SCREEN_HEIGHT * 0.6);
-
 const BG = '#0F1115';
 const CARD_BG = '#1A1D23';
 const WHITE = '#FFFFFF';
@@ -110,6 +106,13 @@ export function PlayerPoolContent() {
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [draft, setDraft] = useState<NationalPoolFilters>({ ...DEFAULT_FILTERS });
   const [peekPlayer, setPeekPlayer] = useState<PoolPlayer | null>(null);
+  const [fitNotes, setFitNotes] = useState<Record<string, string>>({});
+  const [coachNotes, setCoachNotes] = useState<Record<string, string>>({});
+  const [sheetOffStyle, setSheetOffStyle] = useState<import('@/types').OffensiveStyle>('motion_read_react');
+  const [sheetDefStyle, setSheetDefStyle] = useState<import('@/types').DefensiveStyle>('pack_line');
+  const [listMode, setListMode] = useState<'player' | 'team'>('player');
+  const [divSheetOpen, setDivSheetOpen] = useState(false);
+  const [divExpandedGroups, setDivExpandedGroups] = useState<Set<string>>(new Set());
 
   // Accordion state
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
@@ -267,6 +270,27 @@ export function PlayerPoolContent() {
 
   const resultCount = filteredPlayers.length;
 
+  // Derive team rankings from player pool
+  const teamRankings = useMemo(() => {
+    const teamMap = new Map<string, { name: string; conference: string; level: string; totalKR: number; count: number }>();
+    const pool = filters.division.length > 0
+      ? PLAYER_POOL.filter((p) => filters.division.some((d) => matchesDivision(p.level, d)))
+      : PLAYER_POOL;
+    pool.forEach((p) => {
+      const ratings = getPlayerRatings(p.id);
+      const kr = ratings ? ratings.overall : 0;
+      if (!teamMap.has(p.currentSchool)) {
+        teamMap.set(p.currentSchool, { name: p.currentSchool, conference: p.conference, level: p.level, totalKR: 0, count: 0 });
+      }
+      const t = teamMap.get(p.currentSchool)!;
+      t.totalKR += kr;
+      t.count += 1;
+    });
+    return [...teamMap.values()]
+      .map((t) => ({ ...t, kr: t.count > 0 ? Math.round(t.totalKR / t.count) : 0 }))
+      .sort((a, b) => b.kr - a.kr);
+  }, [filters.division]);
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -313,10 +337,25 @@ export function PlayerPoolContent() {
           </Pressable>
         </View>
 
+        {/* Quick filter pills */}
+        <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginBottom: 8, gap: 8 }}>
+          <Pressable
+            style={{ paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, borderWidth: 1, borderColor: WHITE, backgroundColor: filters.division.length === 0 ? WHITE : 'transparent' }}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setDivSheetOpen(true);
+            }}
+          >
+            <Text style={{ fontSize: 12, fontWeight: '700', color: filters.division.length === 0 ? BG : WHITE }}>
+              {filters.division.length === 0 ? 'ALL' : filters.division.join(', ')}
+            </Text>
+          </Pressable>
+        </View>
+
         {/* Meta row below hero */}
         <View style={styles.metaRow}>
           <Text style={styles.resultCountText}>
-            {resultCount} players
+            {listMode === 'player' ? `${resultCount} players` : `${teamRankings.length} teams`}
           </Text>
           {hasActiveFilters && (
             <Pressable onPress={handleResetAll}>
@@ -326,34 +365,180 @@ export function PlayerPoolContent() {
           <View style={{ flex: 1 }} />
         </View>
 
-        {/* Player list */}
+        {/* Player / Team toggle */}
         <View style={styles.ratingCardList}>
-          <Text style={styles.ratingListHeader}>PLAYER</Text>
-          {filteredPlayers.map((player) => (
-            <PlayerRatingCard
-              key={player.id}
-              player={player}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setPeekPlayer(player);
-              }}
-            />
-          ))}
-          {filteredPlayers.length === 0 && (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyText}>No players match your filters</Text>
-            </View>
+          <View style={{ flexDirection: 'row', marginBottom: 12 }}>
+            {(['player', 'team'] as const).map((mode) => {
+              const active = listMode === mode;
+              return (
+                <Pressable
+                  key={mode}
+                  style={{ flex: 1, paddingVertical: 10, alignItems: 'center', borderBottomWidth: 2, borderBottomColor: active ? WHITE : 'transparent' }}
+                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setListMode(mode); }}
+                >
+                  <Text style={{ fontSize: 13, fontWeight: '700', letterSpacing: 0.5, color: active ? WHITE : GRAY }}>{mode.toUpperCase()}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {listMode === 'player' ? (
+            <>
+              {filteredPlayers.map((player) => (
+                <PlayerRatingCard
+                  key={player.id}
+                  player={player}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setPeekPlayer(player);
+                  }}
+                />
+              ))}
+              {filteredPlayers.length === 0 && (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyText}>No players match your filters</Text>
+                </View>
+              )}
+            </>
+          ) : (
+            <>
+              {teamRankings.map((team, index) => (
+                <View key={team.name}>
+                  {index > 0 && <View style={{ height: 1, backgroundColor: DIVIDER }} />}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 8 }}>
+                    <Text style={{ width: 28, fontSize: 13, color: GRAY, fontWeight: '600' }}>{index + 1}</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: WHITE }}>{team.name}</Text>
+                      <Text style={{ fontSize: 12, color: GRAY, marginTop: 2 }}>{team.conference} · {team.level}</Text>
+                    </View>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: WHITE, marginRight: 8 }}>{team.kr}</Text>
+                  </View>
+                </View>
+              ))}
+            </>
           )}
         </View>
       </ScrollView>
 
-      {/* Quick Peek Sheet */}
-      {peekPlayer && (
-        <PlayerQuickPeek
-          player={peekPlayer}
-          onClose={() => setPeekPlayer(null)}
-        />
-      )}
+      {/* Division Picker Sheet */}
+      <BottomSheet visible={divSheetOpen} onClose={() => setDivSheetOpen(false)} title="Select Division">
+        {/* All option */}
+        <Pressable
+          style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: DIVIDER }}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFilters((prev) => ({ ...prev, division: [] })); setDivSheetOpen(false); }}
+        >
+          <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: filters.division.length === 0 ? WHITE : GRAY }}>All Divisions</Text>
+          {filters.division.length === 0 && <IconSymbol name="checkmark" size={16} color={WHITE} />}
+        </Pressable>
+        {/* Division options with expandable sub-divisions */}
+        {([
+          { label: 'NCAA', value: 'NCAA' as PoolLevel, children: [
+            { label: 'D1', value: 'NCAA D1' as PoolLevel },
+            { label: 'D2', value: 'NCAA D2' as PoolLevel },
+            { label: 'D3', value: 'NCAA D3' as PoolLevel },
+          ]},
+          { label: 'NAIA', value: 'NAIA' as PoolLevel },
+          { label: 'JUCO', value: 'JUCO' as PoolLevel, children: [
+            { label: 'D1', value: 'JUCO D1' as PoolLevel },
+            { label: 'D2', value: 'JUCO D2' as PoolLevel },
+            { label: 'D3', value: 'JUCO D3' as PoolLevel },
+          ]},
+          { label: 'USCAA', value: 'USCAA' as PoolLevel },
+          { label: 'NCCAA', value: 'NCCAA' as PoolLevel, children: [
+            { label: 'D1', value: 'NCCAA D1' as PoolLevel },
+            { label: 'D2', value: 'NCCAA D2' as PoolLevel },
+          ]},
+          { label: '3C2A', value: '3C2A' as PoolLevel },
+          { label: 'High School', value: 'HS' as PoolLevel },
+          { label: 'International', value: 'International' as PoolLevel },
+        ] as { label: string; value: PoolLevel; children?: { label: string; value: PoolLevel }[] }[]).map((div) => {
+          const parentSelected = filters.division.includes(div.value);
+          const hasChildren = div.children && div.children.length > 0;
+          const expanded = divExpandedGroups.has(div.label);
+          const anyChildSelected = hasChildren && div.children!.some((c) => filters.division.includes(c.value));
+          return (
+            <View key={div.value}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: DIVIDER }}>
+                <Pressable
+                  style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingVertical: 14 }}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setFilters((prev) => {
+                      const current = prev.division;
+                      if (parentSelected) {
+                        const childValues = div.children?.map((c) => c.value) ?? [];
+                        return { ...prev, division: current.filter((d) => d !== div.value && !childValues.includes(d)) };
+                      }
+                      const childValues = div.children?.map((c) => c.value) ?? [];
+                      return { ...prev, division: [...current.filter((d) => !childValues.includes(d)), div.value] };
+                    });
+                  }}
+                >
+                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: parentSelected || anyChildSelected ? WHITE : GRAY }}>{div.label}</Text>
+                  {parentSelected && <IconSymbol name="checkmark" size={16} color={WHITE} />}
+                </Pressable>
+                {hasChildren && (
+                  <Pressable
+                    style={{ paddingHorizontal: 12, paddingVertical: 14 }}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setDivExpandedGroups((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(div.label)) next.delete(div.label); else next.add(div.label);
+                        return next;
+                      });
+                    }}
+                  >
+                    <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={14} color={GRAY} />
+                  </Pressable>
+                )}
+              </View>
+              {hasChildren && expanded && div.children!.map((child) => {
+                const childSelected = filters.division.includes(child.value);
+                return (
+                  <Pressable
+                    key={child.value}
+                    style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingLeft: 24, borderBottomWidth: 1, borderBottomColor: DIVIDER }}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setFilters((prev) => {
+                        const current = prev.division;
+                        const withoutParent = current.filter((d) => d !== div.value);
+                        if (childSelected) {
+                          return { ...prev, division: withoutParent.filter((d) => d !== child.value) };
+                        }
+                        return { ...prev, division: [...withoutParent, child.value] };
+                      });
+                    }}
+                  >
+                    <Text style={{ flex: 1, fontSize: 14, fontWeight: '500', color: childSelected || parentSelected ? WHITE : GRAY }}>{child.label}</Text>
+                    {(childSelected || parentSelected) && <IconSymbol name="checkmark" size={14} color={WHITE} />}
+                  </Pressable>
+                );
+              })}
+            </View>
+          );
+        })}
+      </BottomSheet>
+
+      {/* Recruiting Player Sheet */}
+      <RecruitingPlayerSheet
+        visible={!!peekPlayer}
+        onClose={() => setPeekPlayer(null)}
+        player={peekPlayer}
+        offStyle={sheetOffStyle}
+        defStyle={sheetDefStyle}
+        onOffStyleChange={setSheetOffStyle}
+        onDefStyleChange={setSheetDefStyle}
+        fitNote={peekPlayer ? (fitNotes[peekPlayer.id] ?? '') : ''}
+        onFitNoteChange={(text) => {
+          if (peekPlayer) setFitNotes((prev) => ({ ...prev, [peekPlayer.id]: text }));
+        }}
+        coachNote={peekPlayer ? (coachNotes[peekPlayer.id] ?? '') : ''}
+        onCoachNoteChange={(text) => {
+          if (peekPlayer) setCoachNotes((prev) => ({ ...prev, [peekPlayer.id]: text }));
+        }}
+      />
 
       {/* ─── Filter Panel ─── */}
       <FilterSheet
@@ -706,8 +891,8 @@ const CLUSTER_ABBREVS: { key: string; abbrev: string; full: string }[] = [
   { key: 'shooting', abbrev: 'SHT', full: 'Shooting' },
   { key: 'finishing', abbrev: 'FIN', full: 'Finishing' },
   { key: 'playmaking', abbrev: 'PLY', full: 'Playmaking' },
-  { key: 'perimeter_defense', abbrev: 'PER', full: 'Perimeter Defense' },
-  { key: 'interior_defense', abbrev: 'INT', full: 'Interior Defense' },
+  { key: 'perimeter_defense', abbrev: 'OBD', full: 'On-Ball Defense' },
+  { key: 'interior_defense', abbrev: 'TMD', full: 'Team Defense' },
   { key: 'rebounding', abbrev: 'REB', full: 'Rebounding' },
   { key: 'frame', abbrev: 'PHY', full: 'Physical' },
 ];
@@ -744,7 +929,7 @@ function PlayerRatingCard({
             <Text style={styles.ratingLevelText}>{player.level}</Text>
           </View>
           <View style={styles.ratingPosBadge}>
-            <Text style={styles.ratingPosText}>{player.position}</Text>
+            <Text style={styles.ratingPosText}>{TRADITIONAL_TO_HELIO[player.position] ?? player.position}</Text>
           </View>
         </View>
       </View>
@@ -758,17 +943,43 @@ function PlayerRatingCard({
 
       {/* Rating boxes row */}
       <View style={styles.ratingBoxRow}>
-        {/* OVR box (highlighted) */}
+        {/* KR box (highlighted) */}
         <Pressable
           style={styles.ratingBoxOvr}
-          onLongPress={() => showTooltip('Overall KR')}
+          onLongPress={() => showTooltip('KaNeXT Rating')}
           onPress={() => {}}
         >
-          <Text style={styles.ratingBoxLabel}>OVR</Text>
+          <Text style={styles.ratingBoxLabel}>KR</Text>
           <Text style={styles.ratingBoxValueOvr}>
             {ratings ? ratings.overall : '—'}
           </Text>
         </Pressable>
+        {/* O/D KR split card */}
+        {(() => {
+          const oKR = ratings ? Math.round((ratings.clusters.shooting + ratings.clusters.finishing + ratings.clusters.playmaking) / 3) : null;
+          const dKR = ratings ? Math.round((ratings.clusters.perimeter_defense + ratings.clusters.interior_defense + ratings.clusters.rebounding + ratings.clusters.frame) / 4) : null;
+          return (
+            <View style={styles.ratingBoxSplit}>
+              <Pressable
+                style={styles.ratingBoxSplitHalf}
+                onLongPress={() => showTooltip('Offensive KR')}
+                onPress={() => {}}
+              >
+                <Text style={styles.ratingBoxLabel}>O</Text>
+                <Text style={styles.ratingBoxSplitValue}>{oKR ?? '—'}</Text>
+              </Pressable>
+              <View style={styles.ratingBoxSplitDivider} />
+              <Pressable
+                style={styles.ratingBoxSplitHalf}
+                onLongPress={() => showTooltip('Defensive KR')}
+                onPress={() => {}}
+              >
+                <Text style={styles.ratingBoxLabel}>D</Text>
+                <Text style={styles.ratingBoxSplitValue}>{dKR ?? '—'}</Text>
+              </Pressable>
+            </View>
+          );
+        })()}
         {/* 7 cluster boxes */}
         {CLUSTER_ABBREVS.map((c) => {
           const val = ratings ? ratings.clusters[c.key as ClusterType] : null;
@@ -789,116 +1000,6 @@ function PlayerRatingCard({
   );
 }
 
-// ─── Player Quick Peek ───
-function PlayerQuickPeek({
-  player,
-  onClose,
-}: {
-  player: PoolPlayer;
-  onClose: () => void;
-}) {
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const slideAnim = useRef(new Animated.Value(PEEK_SHEET_HEIGHT)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const season = useMemo(() => getLatestSeason(player.id), [player.id]);
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.spring(slideAnim, { toValue: 0, damping: 20, stiffness: 200, useNativeDriver: true }),
-      Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
-    ]).start();
-  }, [slideAnim, fadeAnim]);
-
-  const dismiss = () => {
-    Animated.parallel([
-      Animated.timing(slideAnim, { toValue: PEEK_SHEET_HEIGHT, duration: 200, useNativeDriver: true }),
-      Animated.timing(fadeAnim, { toValue: 0, duration: 150, useNativeDriver: true }),
-    ]).start(() => onClose());
-  };
-
-  return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      <Animated.View style={[styles.scrim, { opacity: fadeAnim }]}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={dismiss} />
-      </Animated.View>
-
-      <Animated.View
-        style={[
-          styles.peekSheet,
-          { height: PEEK_SHEET_HEIGHT, paddingBottom: insets.bottom + Spacing.md, transform: [{ translateY: slideAnim }] },
-        ]}
-      >
-        <View style={styles.handleContainer}>
-          <View style={styles.handle} />
-        </View>
-
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.peekContent}>
-          <Text style={styles.peekName}>{player.firstName} {player.lastName}</Text>
-          <Text style={styles.peekMeta}>{player.position} · Class {player.classYear} · {player.currentSchool}</Text>
-          <Text style={styles.peekLevel}>
-            {player.level}{player.conference !== player.level ? ` · ${player.conference}` : ''} · {player.state}
-          </Text>
-
-          <View style={styles.peekStatHero}>
-            <Text style={styles.peekStatHeroText}>{player.keyStatLine}</Text>
-          </View>
-
-          {season && (
-            <View style={styles.peekSeasonCard}>
-              <Text style={styles.peekSeasonTitle}>{season.season} Stats</Text>
-              <View style={styles.peekStatsRow}>
-                <View style={styles.peekStatItem}>
-                  <Text style={styles.peekStatValue}>{season.ppg}</Text>
-                  <Text style={styles.peekStatLabel}>PPG</Text>
-                </View>
-                <View style={styles.peekStatItem}>
-                  <Text style={styles.peekStatValue}>{season.rpg}</Text>
-                  <Text style={styles.peekStatLabel}>RPG</Text>
-                </View>
-                <View style={styles.peekStatItem}>
-                  <Text style={styles.peekStatValue}>{season.apg}</Text>
-                  <Text style={styles.peekStatLabel}>APG</Text>
-                </View>
-                <View style={styles.peekStatItem}>
-                  <Text style={styles.peekStatValue}>{season.fgPct}%</Text>
-                  <Text style={styles.peekStatLabel}>FG%</Text>
-                </View>
-                {season.threePct > 0 && (
-                  <View style={styles.peekStatItem}>
-                    <Text style={styles.peekStatValue}>{season.threePct}%</Text>
-                    <Text style={styles.peekStatLabel}>3P%</Text>
-                  </View>
-                )}
-              </View>
-              <Text style={styles.peekSeasonMeta}>{season.gp} GP · {season.mpg} MPG · {season.school}</Text>
-            </View>
-          )}
-
-          <View style={styles.peekActions}>
-            <Pressable
-              style={styles.peekActionPrimary}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                dismiss();
-                router.push({ pathname: '/coach/player-detail', params: { id: player.id } });
-              }}
-            >
-              <Text style={styles.peekActionPrimaryText}>Full Profile</Text>
-            </Pressable>
-            <Pressable
-              style={styles.peekActionSecondary}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            >
-              <Text style={styles.peekActionSecondaryText}>Ask Nexus</Text>
-            </Pressable>
-          </View>
-        </ScrollView>
-      </Animated.View>
-    </View>
-  );
-}
 
 // ─── Styles ───
 const styles = StyleSheet.create({
@@ -1106,6 +1207,32 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#6B7080',
   },
+  ratingBoxSplit: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2A2D35',
+    borderRadius: 8,
+    minWidth: 72,
+    borderWidth: 1,
+    borderColor: '#4A4D55',
+  },
+  ratingBoxSplitHalf: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 4,
+  },
+  ratingBoxSplitDivider: {
+    width: StyleSheet.hairlineWidth,
+    height: '60%',
+    backgroundColor: '#4A4D55',
+  },
+  ratingBoxSplitValue: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: WHITE,
+  },
   tooltipBubble: {
     position: 'absolute',
     top: 42,
@@ -1147,30 +1274,6 @@ const styles = StyleSheet.create({
   footerResetText: { fontSize: 14, fontWeight: '600' as const, color: GRAY },
   footerApplyBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: WHITE, alignItems: 'center' as const },
   footerApplyText: { fontSize: 14, fontWeight: '600' as const, color: BG },
-
-  // Quick Peek
-  scrim: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.5)' },
-  peekSheet: { position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: CARD_BG, borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, paddingHorizontal: Spacing.md, shadowColor: '#000', shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.15, shadowRadius: 10, elevation: 10 },
-  handleContainer: { alignItems: 'center', paddingVertical: Spacing.sm },
-  handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: DIVIDER },
-  peekContent: { flex: 1 },
-  peekName: { fontSize: 22, fontWeight: '700', color: WHITE, marginBottom: 2 },
-  peekMeta: { fontSize: 14, color: GRAY, marginBottom: 2 },
-  peekLevel: { fontSize: 13, color: GRAY, marginBottom: 12 },
-  peekStatHero: { backgroundColor: BG, borderRadius: BorderRadius.lg, paddingVertical: 14, paddingHorizontal: Spacing.md, alignItems: 'center', marginBottom: 14 },
-  peekStatHeroText: { fontSize: 20, fontWeight: '700', color: WHITE },
-  peekSeasonCard: { backgroundColor: BG, borderRadius: BorderRadius.lg, padding: Spacing.md, marginBottom: 16 },
-  peekSeasonTitle: { fontSize: 12, fontWeight: '700', color: GRAY, letterSpacing: 0.5, marginBottom: 10 },
-  peekStatsRow: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 },
-  peekStatItem: { alignItems: 'center' },
-  peekStatValue: { fontSize: 18, fontWeight: '700', color: WHITE },
-  peekStatLabel: { fontSize: 10, fontWeight: '600', color: GRAY, marginTop: 2 },
-  peekSeasonMeta: { fontSize: 12, color: GRAY, textAlign: 'center' },
-  peekActions: { flexDirection: 'row', gap: 10, marginBottom: 16 },
-  peekActionPrimary: { flex: 1, backgroundColor: WHITE, paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
-  peekActionPrimaryText: { fontSize: 15, fontWeight: '600', color: BG },
-  peekActionSecondary: { flex: 1, backgroundColor: DIVIDER, paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
-  peekActionSecondaryText: { fontSize: 15, fontWeight: '600', color: WHITE },
 
   emptyState: { padding: 40, alignItems: 'center' },
   emptyText: { fontSize: 14, color: GRAY },

@@ -30,6 +30,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { TabFooter } from '@/components/tab-footer';
@@ -1644,38 +1645,22 @@ interface PickerModalProps {
 }
 
 function PickerModal({ visible, title, options, selected, onSelect, onClose, colors }: PickerModalProps) {
-  const insets = useSafeAreaInsets();
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={styles.modalOverlay}>
-        <Pressable style={styles.modalBackdrop} onPress={onClose} />
-        <View
-          style={[styles.modalContent, { backgroundColor: colors.background, paddingBottom: insets.bottom + Spacing.md }]}
+    <BottomSheet useModal visible={visible} onClose={onClose} title={title}>
+      {options.map((option) => (
+        <Pressable
+          key={option.id}
+          style={[styles.modalOption, selected === option.id && { backgroundColor: colors.backgroundSecondary }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            onSelect(option.id);
+          }}
         >
-          <View style={[styles.modalHeader, { borderBottomColor: colors.divider }]}>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>{title}</Text>
-            <Pressable onPress={onClose}>
-              <IconSymbol name="xmark" size={20} color={colors.textSecondary} />
-            </Pressable>
-          </View>
-          <ScrollView style={styles.modalScroll}>
-            {options.map((option) => (
-              <Pressable
-                key={option.id}
-                style={[styles.modalOption, selected === option.id && { backgroundColor: colors.backgroundSecondary }]}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  onSelect(option.id);
-                }}
-              >
-                <Text style={[styles.modalOptionText, { color: colors.text }]}>{option.label}</Text>
-                {selected === option.id && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
+          <Text style={[styles.modalOptionText, { color: colors.text }]}>{option.label}</Text>
+          {selected === option.id && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
+        </Pressable>
+      ))}
+    </BottomSheet>
   );
 }
 
@@ -1807,9 +1792,19 @@ const styles = StyleSheet.create({
   saveButton: { height: 50, borderRadius: BorderRadius.lg, alignItems: 'center', justifyContent: 'center' },
   saveButtonText: { fontSize: 17, fontWeight: '600', color: '#FFFFFF' },
 
+  swipeHandle: {
+    alignItems: 'center' as const,
+    paddingVertical: 10,
+  },
+  swipeHandleBar: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#444',
+  },
   modalOverlay: { flex: 1, justifyContent: 'flex-end' },
   modalBackdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
-  modalContent: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, maxHeight: '70%' },
+  modalContent: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, maxHeight: '90%' },
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',

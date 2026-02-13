@@ -3,22 +3,19 @@
  * Bottom sheet for selecting Nexus engine modes.
  */
 
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   StyleSheet,
   Pressable,
-  Animated,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
-const SHEET_HEIGHT = 480;
 
 export type EngineType = 'game-ops' | 'player' | 'team' | 'recruiting' | 'scouting' | 'simulation';
 
@@ -88,139 +85,44 @@ export function NewConversationSheet({
 }: NewConversationSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const insets = useSafeAreaInsets();
-
-  const slideAnim = useRef(new Animated.Value(SHEET_HEIGHT)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (visible) {
-      Animated.parallel([
-        Animated.spring(slideAnim, {
-          toValue: 0,
-          damping: 20,
-          stiffness: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: SHEET_HEIGHT,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [visible, slideAnim, fadeAnim]);
 
   const handleEnginePress = (type: EngineType) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onSelectEngine(type);
   };
 
-  if (!visible) return null;
-
   return (
-    <View style={StyleSheet.absoluteFill}>
-      {/* Scrim */}
-      <Animated.View style={[styles.scrim, { opacity: fadeAnim }]}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-      </Animated.View>
-
-      {/* Sheet */}
-      <Animated.View
-        style={[
-          styles.sheet,
-          {
-            backgroundColor: colors.background,
-            paddingBottom: insets.bottom + Spacing.md,
-            transform: [{ translateY: slideAnim }],
-          },
-        ]}
-      >
-        {/* Handle */}
-        <View style={styles.handleContainer}>
-          <View style={[styles.handle, { backgroundColor: colors.border }]} />
-        </View>
-
-        {/* Title */}
-        <ThemedText style={styles.title}>Nexus</ThemedText>
-
-        {/* Engine Options */}
-        <View style={styles.options}>
-          {ENGINES.map((engine) => (
-            <Pressable
-              key={engine.type}
-              style={({ pressed }) => [
-                styles.option,
-                { backgroundColor: colors.backgroundSecondary },
-                pressed && { opacity: 0.7 },
-              ]}
-              onPress={() => handleEnginePress(engine.type)}
-            >
-              <View style={[styles.iconContainer, { backgroundColor: engine.color + '20' }]}>
-                <IconSymbol name={engine.icon} size={22} color={engine.color} />
-              </View>
-              <View style={styles.optionText}>
-                <ThemedText style={styles.optionLabel}>{engine.label}</ThemedText>
-                <ThemedText style={[styles.optionDescription, { color: colors.textSecondary }]}>
-                  {engine.description}
-                </ThemedText>
-              </View>
-              <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
-            </Pressable>
-          ))}
-        </View>
-      </Animated.View>
-    </View>
+    <BottomSheet visible={visible} onClose={onClose} title="Nexus">
+      {/* Engine Options */}
+      <View style={styles.options}>
+        {ENGINES.map((engine) => (
+          <Pressable
+            key={engine.type}
+            style={({ pressed }) => [
+              styles.option,
+              { backgroundColor: colors.backgroundSecondary },
+              pressed && { opacity: 0.7 },
+            ]}
+            onPress={() => handleEnginePress(engine.type)}
+          >
+            <View style={[styles.iconContainer, { backgroundColor: engine.color + '20' }]}>
+              <IconSymbol name={engine.icon} size={22} color={engine.color} />
+            </View>
+            <View style={styles.optionText}>
+              <ThemedText style={styles.optionLabel}>{engine.label}</ThemedText>
+              <ThemedText style={[styles.optionDescription, { color: colors.textSecondary }]}>
+                {engine.description}
+              </ThemedText>
+            </View>
+            <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
+          </Pressable>
+        ))}
+      </View>
+    </BottomSheet>
   );
 }
 
 const styles = StyleSheet.create({
-  scrim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  sheet: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderTopLeftRadius: BorderRadius.xl,
-    borderTopRightRadius: BorderRadius.xl,
-    paddingHorizontal: Spacing.md,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  handleContainer: {
-    alignItems: 'center',
-    paddingVertical: Spacing.sm,
-  },
-  handle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: Spacing.md,
-  },
   options: {
     gap: Spacing.sm,
   },

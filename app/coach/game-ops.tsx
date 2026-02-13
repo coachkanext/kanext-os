@@ -22,6 +22,7 @@ import * as Haptics from 'expo-haptics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { MOCK_ROSTER, type RosterPlayer } from '@/data/mock-roster';
@@ -1084,55 +1085,45 @@ export default function GameOpsScreen() {
       </View>
 
       {/* ── Substitution Modal ── */}
-      <Modal visible={showSubModal} transparent animationType="slide" onRequestClose={() => setShowSubModal(false)}>
-        <View style={styles.modalOverlay}>
-          <Pressable style={styles.modalBackdrop} onPress={() => setShowSubModal(false)} />
-          <View style={[styles.modalContent, { backgroundColor: colors.background, paddingBottom: insets.bottom + Spacing.md }]}>
-            <View style={[styles.modalHeader, { borderBottomColor: colors.divider }]}>
-              <Text style={[styles.modalTitle, { color: colors.text }]}>
-                {!subOutId ? 'Who goes out?' : 'Who comes in?'}
-              </Text>
-              <Pressable onPress={() => setShowSubModal(false)}>
-                <IconSymbol name="xmark" size={18} color={colors.textSecondary} />
+      <BottomSheet
+        useModal
+        visible={showSubModal}
+        onClose={() => setShowSubModal(false)}
+        title={!subOutId ? 'Who goes out?' : 'Who comes in?'}
+      >
+        {!subOutId ? (
+          state.onCourt.map((playerId) => {
+            const player = MOCK_ROSTER.find((p) => p.id === playerId);
+            if (!player) return null;
+            return (
+              <Pressable
+                key={playerId}
+                style={[styles.modalRow, { borderBottomColor: colors.divider }]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setSubOutId(playerId);
+                }}
+              >
+                <Text style={[styles.modalRowName, { color: colors.text }]}>#{player.number} {player.name}</Text>
               </Pressable>
-            </View>
-            <ScrollView style={styles.modalScroll}>
-              {!subOutId ? (
-                state.onCourt.map((playerId) => {
-                  const player = MOCK_ROSTER.find((p) => p.id === playerId);
-                  if (!player) return null;
-                  return (
-                    <Pressable
-                      key={playerId}
-                      style={[styles.modalRow, { borderBottomColor: colors.divider }]}
-                      onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        setSubOutId(playerId);
-                      }}
-                    >
-                      <Text style={[styles.modalRowName, { color: colors.text }]}>#{player.number} {player.name}</Text>
-                    </Pressable>
-                  );
-                })
-              ) : (
-                benchPlayers.map((player) => (
-                  <Pressable
-                    key={player.id}
-                    style={[styles.modalRow, { borderBottomColor: colors.divider }]}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                      dispatch({ type: 'SUB', payload: { outId: subOutId, inId: player.id } });
-                      setShowSubModal(false);
-                    }}
-                  >
-                    <Text style={[styles.modalRowName, { color: colors.text }]}>#{player.number} {player.name}</Text>
-                  </Pressable>
-                ))
-              )}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
+            );
+          })
+        ) : (
+          benchPlayers.map((player) => (
+            <Pressable
+              key={player.id}
+              style={[styles.modalRow, { borderBottomColor: colors.divider }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                dispatch({ type: 'SUB', payload: { outId: subOutId, inId: player.id } });
+                setShowSubModal(false);
+              }}
+            >
+              <Text style={[styles.modalRowName, { color: colors.text }]}>#{player.number} {player.name}</Text>
+            </Pressable>
+          ))
+        )}
+      </BottomSheet>
 
       {/* ── Timeout Picker (Us / Opp) ── */}
       <Modal visible={showTimeoutPicker} transparent animationType="fade" onRequestClose={() => setShowTimeoutPicker(false)}>
@@ -1505,10 +1496,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
+  // Swipe handle
+  swipeHandle: {
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  swipeHandleBar: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#444',
+  },
+
   // Modal shared
   modalOverlay: { flex: 1, justifyContent: 'flex-end' },
   modalBackdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
-  modalContent: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, maxHeight: '60%' },
+  modalContent: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, maxHeight: '90%' },
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',

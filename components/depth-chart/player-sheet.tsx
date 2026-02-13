@@ -3,34 +3,29 @@
  * Shows Base KR vs Fit KR, fit reasons, and 7-cluster horizontal bars.
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   Pressable,
   StyleSheet,
-  Animated,
-  Dimensions,
-  ScrollView,
-  Modal,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { TEAM_COLORS, PLAYER_CLUSTERS, getPlayerSubclusters } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
 import { ARCHETYPE_LABELS } from '@/data/system-demand-profiles';
 import type { Archetype } from '@/data/system-demand-profiles';
 import { CLUSTER_LABELS } from '@/data/mock-program-context';
 import type { OffensiveStyle, DefensiveStyle, ClusterType } from '@/types';
-import { computeFitKR, getFitReasons } from '@/utils/fit-kr';
+import { computeFitKR, getFitReasons, type FitReason } from '@/utils/fit-kr';
 
-const { height: WINDOW_H, width: WINDOW_W } = Dimensions.get('window');
-const SHEET_H = WINDOW_H * 0.60;
 
 type SheetTab = 'fit' | 'clusters';
 
-interface DepthSlot {
+export interface DepthSlot {
   positionGroup: string;
   playerNumber: string;
   playerName: string;
@@ -52,7 +47,6 @@ const ALL_CLUSTER_KEYS: (keyof ClusterRatings)[] = [
 function ClusterBar({
   clusterKey,
   value,
-  systemWeight,
   playerNumber,
   expanded,
   onToggle,
@@ -174,6 +168,8 @@ export function PlayerSheet({
   fitKR,
   offStyle,
   defStyle,
+  clusterOverride,
+  topContent,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -181,13 +177,11 @@ export function PlayerSheet({
   fitKR: number;
   offStyle: OffensiveStyle;
   defStyle: DefensiveStyle;
+  clusterOverride?: ClusterRatings;
+  topContent?: React.ReactNode;
 }) {
-  const sheetAnim = useRef(new Animated.Value(SHEET_H)).current;
-  const backdropAnim = useRef(new Animated.Value(0)).current;
-  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<SheetTab>('fit');
   const [expandedClusters, setExpandedClusters] = useState<Set<string>>(new Set());
-  const touchStartY = useRef(0);
 
   const toggleCluster = (key: string) => {
     setExpandedClusters((prev) => {
@@ -200,24 +194,14 @@ export function PlayerSheet({
 
   useEffect(() => {
     if (visible && slot) {
-      setMounted(true);
       setActiveTab('fit');
       setExpandedClusters(new Set());
-      Animated.parallel([
-        Animated.spring(sheetAnim, { toValue: 0, useNativeDriver: true, damping: 25, stiffness: 300 }),
-        Animated.timing(backdropAnim, { toValue: 1, duration: 250, useNativeDriver: true }),
-      ]).start();
-    } else if (!visible && mounted) {
-      Animated.parallel([
-        Animated.spring(sheetAnim, { toValue: SHEET_H, useNativeDriver: true, damping: 28, stiffness: 180 }),
-        Animated.timing(backdropAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
-      ]).start(() => setMounted(false));
     }
   }, [visible, slot]);
 
-  if (!mounted || !slot) return null;
+  if (!slot) return null;
 
-  const clusters = PLAYER_CLUSTERS[slot.playerNumber];
+  const clusters = clusterOverride ?? PLAYER_CLUSTERS[slot.playerNumber];
   const delta = fitKR - slot.baseKR;
   const deltaColor = delta > 0 ? '#4CAF50' : delta < 0 ? '#EF4444' : '#6e6e6e';
   const deltaText = delta > 0 ? `+${delta}` : `${delta}`;
@@ -227,181 +211,130 @@ export function PlayerSheet({
     : [];
 
   return (
-    <Modal visible transparent animationType="none" onRequestClose={onClose}>
-      {/* Backdrop */}
-      <Animated.View
-        style={[
-          styles.backdrop,
-          { opacity: backdropAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 0.5] }) },
-        ]}
-      >
-        <Pressable style={{ flex: 1 }} onPress={onClose} />
-      </Animated.View>
-
-      {/* Sheet */}
-      <Animated.View
-        style={[
-          styles.sheet,
-          { height: SHEET_H, transform: [{ translateY: sheetAnim }] },
-        ]}
-      >
-        {/* Handle */}
-        <View
-          style={styles.handleArea}
-          onTouchStart={(e) => { touchStartY.current = e.nativeEvent.pageY; }}
-          onTouchEnd={(e) => {
-            if (e.nativeEvent.pageY - touchStartY.current > 30) onClose();
-          }}
-        >
-          <View style={styles.handle} />
+    <BottomSheet useModal visible={visible} onClose={onClose}>
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <Text style={styles.headerName}>{slot.playerNumber ? `#${slot.playerNumber} ` : ''}{slot.playerName}</Text>
+          <Text style={styles.headerPos}>{slot.positionGroup}</Text>
         </View>
-
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.headerName}>#{slot.playerNumber} {slot.playerName}</Text>
-            <Text style={styles.headerPos}>{slot.positionGroup}</Text>
+        <View style={styles.headerRight}>
+          <View style={styles.krBlock}>
+            <Text style={styles.krLabel}>Base</Text>
+            <Text style={styles.krNum}>{slot.baseKR}</Text>
           </View>
-          <View style={styles.headerRight}>
-            <View style={styles.krBlock}>
-              <Text style={styles.krLabel}>Base</Text>
-              <Text style={styles.krNum}>{slot.baseKR}</Text>
-            </View>
-            <View style={styles.krBlock}>
-              <Text style={styles.krLabel}>Fit</Text>
-              <Text style={[styles.krNum, { color: deltaColor }]}>{fitKR}</Text>
-            </View>
-            <View style={[styles.deltaBadge, { backgroundColor: `${deltaColor}20` }]}>
-              <Text style={[styles.deltaText, { color: deltaColor }]}>{deltaText}</Text>
-            </View>
+          <View style={styles.krBlock}>
+            <Text style={styles.krLabel}>Fit</Text>
+            <Text style={[styles.krNum, { color: deltaColor }]}>{fitKR}</Text>
+          </View>
+          <View style={[styles.deltaBadge, { backgroundColor: `${deltaColor}20` }]}>
+            <Text style={[styles.deltaText, { color: deltaColor }]}>{deltaText}</Text>
           </View>
         </View>
+      </View>
 
-        {/* Tab pills */}
-        <View style={styles.tabRow}>
-          {(['fit', 'clusters'] as SheetTab[]).map((tab) => {
-            const isActive = activeTab === tab;
-            return (
-              <Pressable
-                key={tab}
-                style={[styles.tabPill, isActive && styles.tabPillActive]}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setActiveTab(tab);
-                }}
-              >
-                <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
-                  {tab === 'fit' ? 'Fit' : 'Clusters'}
+      {/* Optional top content (e.g. recruiting info block) */}
+      {topContent}
+
+      {/* Tab pills */}
+      <View style={styles.tabRow}>
+        {(['fit', 'clusters'] as SheetTab[]).map((tab) => {
+          const isActive = activeTab === tab;
+          return (
+            <Pressable
+              key={tab}
+              style={[styles.tabPill, isActive && styles.tabPillActive]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActiveTab(tab);
+              }}
+            >
+              <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
+                {tab === 'fit' ? 'Fit' : 'Clusters'}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {/* Tab content */}
+      {activeTab === 'fit' && (
+        <View style={styles.fitContent}>
+          {/* Fit reasons */}
+          {reasons.length > 0 ? (
+            reasons.map((r, i) => (
+              <View key={i} style={styles.reasonRow}>
+                <Text style={styles.reasonBullet}>{'\u2022'}</Text>
+                <Text style={styles.reasonText}>
+                  <Text style={{ fontWeight: '700', color: r.delta >= 0 ? '#4CAF50' : '#EF4444' }}>
+                    {r.driver}
+                  </Text>
+                  {' '}({r.cluster}, {r.delta >= 0 ? '+' : ''}{r.delta}) {'\u2014'} {r.reason}
                 </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        {/* Tab content */}
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {activeTab === 'fit' && (
-            <View style={styles.fitContent}>
-              {/* Fit reasons */}
-              {reasons.length > 0 ? (
-                reasons.map((r, i) => (
-                  <View key={i} style={styles.reasonRow}>
-                    <Text style={styles.reasonBullet}>{'\u2022'}</Text>
-                    <Text style={styles.reasonText}>{r}</Text>
-                  </View>
-                ))
-              ) : (
-                <Text style={styles.reasonText}>No cluster data available for this player.</Text>
-              )}
-
-              {/* System amplifier */}
-              {slot.systemAmplifier && (
-                <View style={styles.ampBox}>
-                  <Text style={styles.ampLabel}>SYSTEM AMPLIFIER</Text>
-                  <Text style={styles.ampText}>{slot.systemAmplifier}</Text>
-                </View>
-              )}
-
-              {/* Role definition */}
-              <View style={styles.roleBox}>
-                <Text style={styles.roleLabel}>ROLE</Text>
-                <Text style={styles.roleText}>{slot.roleDefinition}</Text>
               </View>
+            ))
+          ) : (
+            <Text style={styles.reasonText}>No cluster data available for this player.</Text>
+          )}
 
-              {/* Coach note */}
-              {slot.coachNote && (
-                <View style={styles.roleBox}>
-                  <Text style={styles.roleLabel}>COACH NOTE</Text>
-                  <Text style={styles.roleText}>{slot.coachNote}</Text>
-                </View>
-              )}
-
-              {/* Archetypes */}
-              {slot.archetypes.length > 0 && (
-                <View style={styles.archRow}>
-                  {slot.archetypes.map((a) => (
-                    <View key={a} style={styles.archPill}>
-                      <Text style={styles.archText}>{ARCHETYPE_LABELS[a] ?? a}</Text>
-                    </View>
-                  ))}
-                </View>
-              )}
+          {/* System amplifier */}
+          {slot.systemAmplifier && (
+            <View style={styles.ampBox}>
+              <Text style={styles.ampLabel}>SYSTEM AMPLIFIER</Text>
+              <Text style={styles.ampText}>{slot.systemAmplifier}</Text>
             </View>
           )}
 
-          {activeTab === 'clusters' && clusters && (
-            <View style={styles.clusterContent}>
-              {ALL_CLUSTER_KEYS.map((key) => (
-                <ClusterBar
-                  key={key}
-                  clusterKey={key}
-                  value={clusters[key]}
-                  playerNumber={slot.playerNumber}
-                  expanded={expandedClusters.has(key)}
-                  onToggle={() => toggleCluster(key)}
-                />
+          {/* Role definition */}
+          <View style={styles.roleBox}>
+            <Text style={styles.roleLabel}>ROLE</Text>
+            <Text style={styles.roleText}>{slot.roleDefinition}</Text>
+          </View>
+
+          {/* Coach note */}
+          {slot.coachNote && (
+            <View style={styles.roleBox}>
+              <Text style={styles.roleLabel}>COACH NOTE</Text>
+              <Text style={styles.roleText}>{slot.coachNote}</Text>
+            </View>
+          )}
+
+          {/* Archetypes */}
+          {slot.archetypes.length > 0 && (
+            <View style={styles.archRow}>
+              {slot.archetypes.map((a) => (
+                <View key={a} style={styles.archPill}>
+                  <Text style={styles.archText}>{ARCHETYPE_LABELS[a] ?? a}</Text>
+                </View>
               ))}
             </View>
           )}
+        </View>
+      )}
 
-          {activeTab === 'clusters' && !clusters && (
-            <Text style={styles.reasonText}>No cluster data available for this player.</Text>
-          )}
-        </ScrollView>
-      </Animated.View>
-    </Modal>
+      {activeTab === 'clusters' && clusters && (
+        <View style={styles.clusterContent}>
+          {ALL_CLUSTER_KEYS.map((key) => (
+            <ClusterBar
+              key={key}
+              clusterKey={key}
+              value={clusters[key]}
+              playerNumber={slot.playerNumber}
+              expanded={expandedClusters.has(key)}
+              onToggle={() => toggleCluster(key)}
+            />
+          ))}
+        </View>
+      )}
+
+      {activeTab === 'clusters' && !clusters && (
+        <Text style={styles.reasonText}>No cluster data available for this player.</Text>
+      )}
+    </BottomSheet>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#000',
-    zIndex: 90,
-  },
-  sheet: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#111',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    zIndex: 91,
-  },
-
-  // Handle
-  handleArea: {
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  handle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#444',
-  },
-
   // Header
   header: {
     flexDirection: 'row',

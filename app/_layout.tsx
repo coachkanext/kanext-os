@@ -18,6 +18,7 @@ import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, StyleSheet, Animated, Keyboard } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
 
 import { SplashScreen } from '@/components/splash-screen';
@@ -192,15 +193,17 @@ export default function RootLayout() {
       <AppProvider>
         <ThemeProvider value={DarkTheme}>
           <GestureHandlerRootView style={styles.container}>
-            <AppShell />
+            <BottomSheetModalProvider>
+              <AppShell />
 
-            {/* Boot splash overlay - fades out when app is ready */}
-            {bootSplashVisible && !BOOT_SPLASH_COMPLETED && (
-              <SplashScreen
-                onReady={handleSplashComplete}
-                isAppReady={isAppReady}
-              />
-            )}
+              {/* Boot splash overlay - fades out when app is ready */}
+              {bootSplashVisible && !BOOT_SPLASH_COMPLETED && (
+                <SplashScreen
+                  onReady={handleSplashComplete}
+                  isAppReady={isAppReady}
+                />
+              )}
+            </BottomSheetModalProvider>
           </GestureHandlerRootView>
           <StatusBar style="light" />
         </ThemeProvider>

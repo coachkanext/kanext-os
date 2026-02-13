@@ -67,3 +67,33 @@ In `app.json`:
 - `typedRoutes: true` - Type-safe route navigation
 - `reactCompiler: true` - React Compiler optimizations
 - `newArchEnabled: true` - React Native New Architecture
+
+## Bottom Sheet System
+
+All bottom sheets use `@gorhom/bottom-sheet` via the wrapper at `/components/ui/bottom-sheet.tsx`.
+
+### Core Rules
+
+- **Two snap points only:** 50% (medium) and 100% (full). No third detent without spec approval.
+- **All sheets open at 50% first.** User drags up to 100% or down to dismiss. No exceptions.
+- **Drag-to-dismiss from anywhere** inside the sheet, not just the header. `enablePanDownToClose = true`.
+- **Backdrop tap dismisses.** Background dimmed at 40% opacity. Underlying screen interaction disabled.
+- **Scroll coordination:** Content scrolls when mid-scroll; downward drag from scroll-top controls the sheet. No dead zones.
+- **Spring animation** — no linear easing, no abrupt jumps. Must feel native (iOS Maps / Apple Music).
+
+### Implementation
+
+- Library: `@gorhom/bottom-sheet` v5
+- Provider: `BottomSheetModalProvider` wraps the app in `app/_layout.tsx`
+- Wrapper: `components/ui/bottom-sheet.tsx` — preserves `visible`/`onClose` boolean API
+- `useModal` prop → uses `BottomSheetModal` (portal-based) for deeply nested components
+- `snapPoints = ['50%', '100%']` for all sheets
+- `BottomSheetScrollView` for all scrollable content inside sheets
+
+### Prohibited Patterns
+
+- Fixed-height modals without drag interaction
+- Close-button-only dismissal (close button is supplementary, drag is primary)
+- Center modals for primary flows
+- More than two snap points without explicit spec approval
+- Custom `Animated.View` / `PanResponder` bottom sheet implementations

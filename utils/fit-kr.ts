@@ -126,48 +126,116 @@ export function getClusterDrivers(
 }
 
 /**
- * Generate 2-3 bullet reasons explaining why a player fits (or doesn't) in the current system.
+ * Compute a player's offensive and defensive KR (base and fit-adjusted).
+ * Base = simple average of cluster groups.
+ * Fit = system-weighted contribution normalized to the group total.
+ */
+export function computeOffDefKR(
+  clusters: ClusterRatings,
+  offStyle: OffensiveStyle,
+  defStyle: DefensiveStyle,
+): { baseOff: number; baseDef: number; fitOff: number; fitDef: number } {
+  const ow = OFFENSIVE_STYLE_CLUSTERS[offStyle];
+  const dw = DEFENSIVE_STYLE_CLUSTERS[defStyle];
+
+  const baseOff = Math.round((clusters.shooting + clusters.finishing + clusters.playmaking) / 3);
+  const baseDef = Math.round((clusters.perimeter_defense + clusters.interior_defense + clusters.rebounding + clusters.frame) / 4);
+
+  const fitOff = Math.round(
+    (clusters.shooting * ow.shooting + clusters.finishing * ow.finishing + clusters.playmaking * ow.playmaking) / 53,
+  );
+  const fitDef = Math.round(
+    (clusters.perimeter_defense * dw.perimeter_defense +
+      clusters.interior_defense * dw.interior_defense +
+      clusters.rebounding * dw.rebounding +
+      clusters.frame * dw.frame) / 47,
+  );
+
+  return { baseOff, baseDef, fitOff, fitDef };
+}
+
+// Cluster key → readable label for fit reason driver text
+const CLUSTER_DRIVER_LABELS: Record<keyof ClusterRatings, string> = {
+  shooting: 'Shooting',
+  finishing: 'Finishing',
+  playmaking: 'Playmaking',
+  perimeter_defense: 'Perimeter D',
+  interior_defense: 'Interior D',
+  rebounding: 'Rebounding',
+  frame: 'Frame',
+};
+
+// System-specific reason templates keyed by cluster + positive/negative
+const REASON_TEMPLATES: Record<string, { pos: string; neg: string }> = {
+  shooting: { pos: 'spacing fuels system shot creation', neg: 'limited spacing pressures offensive flow' },
+  finishing: { pos: 'rim pressure complements system design', neg: 'lack of rim finishing limits paint scoring' },
+  playmaking: { pos: 'vision and passing accelerate ball movement', neg: 'playmaking gap slows offensive reads' },
+  perimeter_defense: { pos: 'perimeter containment anchors scheme', neg: 'perimeter liability exposes defensive gaps' },
+  interior_defense: { pos: 'rim protection supports defensive structure', neg: 'interior softness weakens paint defense' },
+  rebounding: { pos: 'boards fuel transition and second chances', neg: 'rebounding deficit costs extra possessions' },
+  frame: { pos: 'size and strength fit positional demands', neg: 'physical profile limits defensive versatility' },
+};
+
+export interface FitReason {
+  driver: string;
+  cluster: string;
+  delta: number;
+  reason: string;
+}
+
+/**
+ * Generate 3-4 structured fit reasons with driver/cluster/delta/reason.
+ * Each: "{Driver} ({Cluster}, +Δ) — {system-tied reason}"
  */
 export function getFitReasons(
   clusters: ClusterRatings,
   archetypes: Archetype[],
   offStyle: OffensiveStyle,
   defStyle: DefensiveStyle,
-): string[] {
+): FitReason[] {
   const ow = OFFENSIVE_STYLE_CLUSTERS[offStyle];
   const dw = DEFENSIVE_STYLE_CLUSTERS[defStyle];
-  const reasons: string[] = [];
 
-  // Find the highest-weighted offensive cluster for this system
-  const topOffCluster = OFF_CLUSTERS.reduce((best, key) =>
-    (ow as any)[key] > (ow as any)[best] ? key : best, OFF_CLUSTERS[0]);
-  const topDefCluster = DEF_CLUSTERS.reduce((best, key) =>
-    (dw as any)[key] > (dw as any)[best] ? key : best, DEF_CLUSTERS[0]);
+  // Compute per-cluster delta: fit contribution vs base contribution
+  const deltas: { key: keyof ClusterRatings; label: string; delta: number }[] = [];
 
-  const topOffLabel = CLUSTER_LABELS[topOffCluster as ClusterType]?.label ?? topOffCluster;
-  const topDefLabel = CLUSTER_LABELS[topDefCluster as ClusterType]?.label ?? topDefCluster;
-
-  // Offense fit reason
-  const offVal = clusters[topOffCluster];
-  if (offVal >= 75) {
-    reasons.push(`Strong ${topOffLabel} (${offVal}) — aligns with system emphasis`);
-  } else if (offVal < 55) {
-    reasons.push(`${topOffLabel} (${offVal}) below system demand — limits offensive fit`);
+  // Offense clusters: base contribution = clusterVal * (53/3) / 53 = clusterVal / 3
+  // Fit contribution = clusterVal * systemWeight / 53
+  for (const key of OFF_CLUSTERS) {
+    const baseContrib = clusters[key] / 3;
+    const fitContrib = (clusters[key] * (ow as any)[key]) / 53;
+    deltas.push({
+      key,
+      label: CLUSTER_LABELS[key as ClusterType]?.label ?? key,
+      delta: Math.round(fitContrib - baseContrib),
+    });
   }
 
-  // Defense fit reason
-  const defVal = clusters[topDefCluster];
-  if (defVal >= 75) {
-    reasons.push(`Elite ${topDefLabel} (${defVal}) — anchors defensive scheme`);
-  } else if (defVal < 55) {
-    reasons.push(`${topDefLabel} (${defVal}) is a gap in this defensive scheme`);
+  // Defense clusters: base contribution = clusterVal * (47/4) / 47 = clusterVal / 4
+  // Fit contribution = clusterVal * systemWeight / 47
+  for (const key of DEF_CLUSTERS) {
+    const baseContrib = clusters[key] / 4;
+    const fitContrib = (clusters[key] * (dw as any)[key]) / 47;
+    deltas.push({
+      key,
+      label: CLUSTER_LABELS[key as ClusterType]?.label ?? key,
+      delta: Math.round(fitContrib - baseContrib),
+    });
   }
 
-  // Archetype reason
-  if (archetypes.length > 0) {
-    const primaryLabel = ARCHETYPE_LABELS[archetypes[0]] ?? archetypes[0];
-    reasons.push(`Primary archetype: ${primaryLabel}`);
-  }
+  // Sort by |delta| descending, take top 3-4
+  deltas.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+  const top = deltas.slice(0, 4);
 
-  return reasons.slice(0, 3);
+  return top.map((d) => {
+    const isPositive = d.delta >= 0;
+    const template = REASON_TEMPLATES[d.key] ?? { pos: 'aligns with system', neg: 'misaligns with system' };
+    const driverLabel = CLUSTER_DRIVER_LABELS[d.key] ?? d.key;
+    return {
+      driver: isPositive ? 'Boost' : 'Gap',
+      cluster: d.label,
+      delta: d.delta,
+      reason: isPositive ? template.pos : template.neg,
+    };
+  });
 }

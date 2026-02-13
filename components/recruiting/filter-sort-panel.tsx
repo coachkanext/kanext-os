@@ -3,24 +3,18 @@
  * Used by recruiting page for the Global Player Graph filter panel (v1.1).
  */
 
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   StyleSheet,
   Pressable,
-  Animated,
-  Dimensions,
-  ScrollView,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Spacing } from '@/constants/theme';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import type { HeliocentricPosition, ClusterType } from '@/types';
 import type { PoolLevel } from '@/data/playerPool';
-
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const BG = '#0F1115';
 const CARD_BG = '#1A1D23';
@@ -57,94 +51,14 @@ interface FilterSheetProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  height?: number;
   footer?: React.ReactNode;
 }
 
-export function FilterSheet({ visible, onClose, title, children, height, footer }: FilterSheetProps) {
-  const insets = useSafeAreaInsets();
-  const sheetHeight = height ?? Math.round(SCREEN_HEIGHT * 0.60);
-  const slideAnim = useRef(new Animated.Value(sheetHeight)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (visible) {
-      slideAnim.setValue(sheetHeight);
-      fadeAnim.setValue(0);
-      Animated.parallel([
-        Animated.spring(slideAnim, {
-          toValue: 0,
-          damping: 22,
-          stiffness: 220,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: sheetHeight,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [visible, slideAnim, fadeAnim, sheetHeight]);
-
-  if (!visible) return null;
-
+export function FilterSheet({ visible, onClose, title, children, footer }: FilterSheetProps) {
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      <Animated.View style={[styles.scrim, { opacity: fadeAnim }]}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-      </Animated.View>
-
-      <Animated.View
-        style={[
-          styles.sheet,
-          {
-            height: sheetHeight,
-            paddingBottom: insets.bottom,
-            transform: [{ translateY: slideAnim }],
-          },
-        ]}
-      >
-        <View style={styles.handleContainer}>
-          <View style={styles.handle} />
-        </View>
-
-        <View style={styles.header}>
-          <View style={styles.headerBtn} />
-          <ThemedText style={styles.headerTitle}>{title}</ThemedText>
-          <Pressable style={styles.headerBtn} onPress={onClose}>
-            <IconSymbol name="xmark" size={16} color={GRAY} />
-          </Pressable>
-        </View>
-
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          {children}
-        </ScrollView>
-
-        {footer && (
-          <View style={[styles.footer, { paddingBottom: insets.bottom + 8 }]}>
-            {footer}
-          </View>
-        )}
-      </Animated.View>
-    </View>
+    <BottomSheet visible={visible} onClose={onClose} title={title} footer={footer}>
+      {children}
+    </BottomSheet>
   );
 }
 
@@ -262,74 +176,6 @@ export function ConferenceRow({
 // ─── Styles ───
 
 const styles = StyleSheet.create({
-  scrim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  sheet: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: CARD_BG,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 10,
-  },
-  handleContainer: {
-    alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 4,
-  },
-  handle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: DIVIDER,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: DIVIDER,
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: WHITE,
-    flex: 1,
-    textAlign: 'center',
-  },
-  headerBtn: {
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    paddingBottom: 20,
-  },
-  footer: {
-    flexDirection: 'row',
-    gap: 10,
-    paddingHorizontal: Spacing.md,
-    paddingTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: DIVIDER,
-  },
-
   // Section header (accordion)
   sectionHeader: {
     flexDirection: 'row',

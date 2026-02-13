@@ -401,28 +401,24 @@ export default function GamesScreen() {
                       <IconSymbol name="play.fill" size={24} color="#fff" />
                     </View>
                   </View>
-                  <View style={styles.liveInfoRow}>
+                  <View style={[styles.liveInfoRow, { flexDirection: 'column', alignItems: 'stretch', position: 'relative' }]}>
                     <View style={styles.liveBadgeRow}>
                       <View style={styles.liveCardDot} />
                       <Text style={styles.liveCardLabel}>LIVE</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={[styles.liveOpponentText, { color: '#fff' }]}>
-                          {liveGame.location === 'Home' ? 'vs' : '@'} {liveGame.opponent}{liveGame.opponentKR ? ` (${liveGame.opponentKR})` : ''}
-                        </Text>
-                        {liveGame.opponentRecord && (
-                          <Text style={{ fontSize: 13, color: '#999', marginTop: 2 }}>{liveGame.opponentRecord}</Text>
-                        )}
-                      </View>
-                      <View style={{ alignItems: 'flex-end', marginLeft: 10 }}>
-                        {liveGame.score && (
-                          <Text style={[styles.liveScoreText, { color: '#fff' }]}>{liveGame.score}</Text>
-                        )}
-                        {liveGame.clock && (
-                          <Text style={{ fontSize: 12, color: '#999', marginTop: 2 }}>{liveGame.clock}</Text>
-                        )}
-                      </View>
+                    <Text style={[styles.liveOpponentText, { color: '#fff', paddingRight: 100 }]}>
+                      {liveGame.location === 'Home' ? 'vs' : '@'} {liveGame.opponent}{liveGame.opponentKR ? ` (${liveGame.opponentKR})` : ''}
+                    </Text>
+                    {liveGame.opponentRecord && (
+                      <Text style={{ fontSize: 13, color: '#999', marginTop: 2 }}>{liveGame.opponentRecord}</Text>
+                    )}
+                    <View style={{ position: 'absolute', right: 12, top: 12, alignItems: 'flex-end' }}>
+                      {liveGame.score && (
+                        <Text style={[styles.liveScoreText, { color: '#fff' }]}>{liveGame.score}</Text>
+                      )}
+                      {liveGame.clock && (
+                        <Text style={{ fontSize: 12, color: '#999', marginTop: 4 }}>{liveGame.clock}</Text>
+                      )}
                     </View>
                   </View>
                 </Pressable>
@@ -570,28 +566,24 @@ export default function GamesScreen() {
                       <IconSymbol name="play.fill" size={24} color="#fff" />
                     </View>
                   </View>
-                  <View style={styles.liveInfoRow}>
+                  <View style={[styles.liveInfoRow, { flexDirection: 'column', alignItems: 'stretch', position: 'relative' }]}>
                     <View style={styles.liveBadgeRow}>
                       <View style={styles.liveCardDot} />
                       <Text style={styles.liveCardLabel}>LIVE</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={[styles.liveOpponentText, { color: '#fff' }]}>
-                          {liveGame.location === 'Home' ? 'vs' : '@'} {liveGame.opponent}{liveGame.opponentKR ? ` (${liveGame.opponentKR})` : ''}
-                        </Text>
-                        {liveGame.opponentRecord && (
-                          <Text style={{ fontSize: 13, color: '#999', marginTop: 2 }}>{liveGame.opponentRecord}</Text>
-                        )}
-                      </View>
-                      <View style={{ alignItems: 'flex-end', marginLeft: 10 }}>
-                        {liveGame.score && (
-                          <Text style={[styles.liveScoreText, { color: '#fff' }]}>{liveGame.score}</Text>
-                        )}
-                        {liveGame.clock && (
-                          <Text style={{ fontSize: 12, color: '#999', marginTop: 2 }}>{liveGame.clock}</Text>
-                        )}
-                      </View>
+                    <Text style={[styles.liveOpponentText, { color: '#fff', paddingRight: 100 }]}>
+                      {liveGame.location === 'Home' ? 'vs' : '@'} {liveGame.opponent}{liveGame.opponentKR ? ` (${liveGame.opponentKR})` : ''}
+                    </Text>
+                    {liveGame.opponentRecord && (
+                      <Text style={{ fontSize: 13, color: '#999', marginTop: 2 }}>{liveGame.opponentRecord}</Text>
+                    )}
+                    <View style={{ position: 'absolute', right: 12, top: 12, alignItems: 'flex-end' }}>
+                      {liveGame.score && (
+                        <Text style={[styles.liveScoreText, { color: '#fff' }]}>{liveGame.score}</Text>
+                      )}
+                      {liveGame.clock && (
+                        <Text style={{ fontSize: 12, color: '#999', marginTop: 4 }}>{liveGame.clock}</Text>
+                      )}
                     </View>
                   </View>
                 </Pressable>
