@@ -4,9 +4,12 @@
  * iOS Detented Bottom Sheet: two snap points (50% and 100%).
  * All sheets open at 50% first. User drags up to 100% or down to dismiss.
  * Preserves the visible/onClose prop API for all consumers.
+ *
+ * Non-modal sheets are only mounted while visible (+ close animation),
+ * so idle sheets don't steal gestures from underlying views.
  */
 
-import React, { useRef, useCallback, useEffect, useMemo } from 'react';
+import React, { useRef, useCallback, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import GorhomBottomSheet, {
   BottomSheetModal,
@@ -52,46 +55,95 @@ export function BottomSheet({
 
   const sheetRef = useRef<GorhomBottomSheet>(null);
   const modalRef = useRef<BottomSheetModal>(null);
-  const isPresented = useRef(false);
 
-  // Bridge visible boolean → ref-based API
+  // mounted = sheet DOM is in the tree (for non-modal)
+  const [mounted, setMounted] = useState(false);
+  // opening = we've asked to open but haven't reached index >= 0 yet
+  // This prevents the initial onChange(-1) from immediately closing the sheet
+  const openingRef = useRef(false);
+  // closing = user-initiated close in progress, ignore further onChange
+  const closingRef = useRef(false);
+  // hasOpened = sheet reached index >= 0 at least once since mount
+  const hasOpenedRef = useRef(false);
+
+  // ── Open flow ──
   useEffect(() => {
-    if (visible && !isPresented.current) {
-      isPresented.current = true;
+    if (visible) {
+      closingRef.current = false;
+      hasOpenedRef.current = false;
       if (useModal) {
-        modalRef.current?.present();
+        openingRef.current = true;
+        // Modal is always mounted, just present it
+        requestAnimationFrame(() => {
+          modalRef.current?.present();
+        });
       } else {
-        sheetRef.current?.snapToIndex(0);
-      }
-    } else if (!visible && isPresented.current) {
-      isPresented.current = false;
-      if (useModal) {
-        modalRef.current?.dismiss();
-      } else {
-        sheetRef.current?.close();
+        // Mount the sheet first, then snap on next effect
+        openingRef.current = true;
+        setMounted(true);
       }
     }
   }, [visible, useModal]);
 
+  // ── After mount, snap to first detent ──
+  useEffect(() => {
+    if (mounted && visible && !useModal && openingRef.current) {
+      // Use setTimeout to ensure the GorhomBottomSheet ref is ready
+      const timer = setTimeout(() => {
+        sheetRef.current?.snapToIndex(0);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [mounted, visible, useModal]);
+
+  // ── Close flow (parent sets visible=false) ──
+  useEffect(() => {
+    if (!visible && mounted && !useModal) {
+      closingRef.current = true;
+      sheetRef.current?.close();
+    }
+    if (!visible && useModal) {
+      closingRef.current = true;
+      modalRef.current?.dismiss();
+    }
+  }, [visible, mounted, useModal]);
+
   // Sync dismiss back to parent state
   const handleSheetChange = useCallback(
     (index: number) => {
-      if (index === -1 && isPresented.current) {
-        isPresented.current = false;
-        onClose();
+      if (index >= 0) {
+        // Sheet reached a valid snap point — it's fully open
+        openingRef.current = false;
+        hasOpenedRef.current = true;
+      }
+      if (index === -1) {
+        // Ignore the initial -1 during opening (sheet mounts at -1)
+        if (openingRef.current) return;
+        // Ignore if we never actually opened
+        if (!hasOpenedRef.current && !closingRef.current) return;
+
+        // Sheet is fully closed — unmount and notify parent
+        setMounted(false);
+        openingRef.current = false;
+        hasOpenedRef.current = false;
+        closingRef.current = false;
+        if (visible) {
+          onClose();
+        }
       }
     },
-    [onClose],
+    [onClose, visible],
   );
 
   const handleModalDismiss = useCallback(() => {
-    if (isPresented.current) {
-      isPresented.current = false;
+    openingRef.current = false;
+    if (visible) {
       onClose();
     }
-  }, [onClose]);
+  }, [onClose, visible]);
 
   const handleClose = useCallback(() => {
+    closingRef.current = true;
     if (useModal) {
       modalRef.current?.dismiss();
     } else {
@@ -172,6 +224,10 @@ export function BottomSheet({
       </BottomSheetModal>
     );
   }
+
+  // Don't mount the sheet at all when not needed — prevents idle gesture handlers
+  // from stealing touches on underlying views (PagerView, ScrollView, etc.)
+  if (!mounted) return null;
 
   return (
     <GorhomBottomSheet

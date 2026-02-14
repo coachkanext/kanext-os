@@ -6,7 +6,7 @@
 
 import { Tabs, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useCallback } from 'react';
-import { Platform } from 'react-native';
+import { Platform, Text, StyleSheet } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol, SymbolViewProps } from '@/components/ui/icon-symbol';
@@ -14,6 +14,7 @@ import { Colors, Layout } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { openAvatarDrawer } from '@/utils/global-drawer';
 import { startGlobalVoice } from '@/utils/global-voice';
+import { openAskNexus } from '@/utils/global-ask-nexus';
 import { triggerKXTransition } from '@/utils/global-transition';
 import { requestHomeReset } from '@/utils/global-home';
 
@@ -66,13 +67,22 @@ export default function TabLayout() {
     []
   );
 
-  // Nexus tab button with long-press to trigger global voice overlay + transition
+  // Nexus tab button: long-press → voice, double-tap → Ask Nexus
+  const lastNexusTapRef = useRef(0);
   const NexusTabButton = useCallback(
     (props: any) => (
       <HapticTab
         {...props}
         onLongPress={startGlobalVoice}
         onPress={(e: any) => {
+          const now = Date.now();
+          if (now - lastNexusTapRef.current < 350) {
+            // Double-tap detected → open Ask Nexus
+            lastNexusTapRef.current = 0;
+            openAskNexus({ screen: '/nexus', mode: 'sports' });
+            return;
+          }
+          lastNexusTapRef.current = now;
           triggerKXTransition();
           props.onPress?.(e);
         }}
@@ -143,7 +153,7 @@ export default function TabLayout() {
         options={{
           title: 'Nexus',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name="sparkles" color={color} focused={focused} />
+            <TabIcon name="figure.mind.and.body" color={color} focused={focused} />
           ),
           tabBarButton: NexusTabButton,
         }}
@@ -151,9 +161,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="activity"
         options={{
-          title: 'Activity',
+          title: 'Messages',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name="bell.fill" color={color} focused={focused} />
+            <TabIcon name="bubble.left.and.bubble.right.fill" color={color} focused={focused} />
           ),
         }}
       />
@@ -183,3 +193,12 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const tabStyles = StyleSheet.create({
+  nexusN: {
+    fontSize: 22,
+    fontWeight: '900',
+    fontStyle: 'italic',
+    letterSpacing: -1,
+  },
+});

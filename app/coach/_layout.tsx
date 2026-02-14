@@ -38,6 +38,11 @@ export default function CoachLayout() {
       <Stack.Screen name="program-context" />
       <Stack.Screen name="program-resources" />
       <Stack.Screen name="player-detail" />
+      <Stack.Screen name="team-detail" />
+      <Stack.Screen name="stats" />
+      <Stack.Screen name="video-game" />
+      <Stack.Screen name="team-channel" />
+      <Stack.Screen name="reel-viewer" />
     </Stack>
   );
 }

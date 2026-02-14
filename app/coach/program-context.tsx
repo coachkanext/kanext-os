@@ -71,7 +71,7 @@ const UI_SLIDERS = {
     { id: 'onBallDefense', label: 'On-Ball' },
     { id: 'teamDefense', label: 'Team' },
     { id: 'rebounding', label: 'Rebounding' },
-    { id: 'frame', label: 'Frame' },
+    { id: 'frame', label: 'Physical' },
   ],
 } as const;
 
@@ -1068,7 +1068,7 @@ function PresetPreview({
           { id: 'onBallDefense' as const, label: 'On-Ball' },
           { id: 'teamDefense' as const, label: 'Team' },
           { id: 'rebounding' as const, label: 'Rebounding' },
-          { id: 'frame' as const, label: 'Frame' },
+          { id: 'frame' as const, label: 'Physical' },
         ];
 
   // Calculate totals (always 100 for both)

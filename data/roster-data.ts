@@ -45,6 +45,27 @@ export const PLAYER_CLUSTERS: Record<string, ClusterRatings> = {
   '55': { shooting: 66, finishing: 72, playmaking: 64, perimeter_defense: 70, interior_defense: 66, rebounding: 74, frame: 72 },   // Munir-Jones
 };
 
+// Per-player height + weight (keyed by jersey number, 2025-26 roster)
+export const PLAYER_PHYSICALS: Record<string, { height: string; weight: number }> = {
+  '0':  { height: '6-4', weight: 190 },   // Thomas (jersey 00 → normalized 0)
+  '1':  { height: '6-10', weight: 215 },  // Asceric (jersey 01)
+  '2':  { height: '6-4', weight: 180 },   // Lewis
+  '3':  { height: '6-5', weight: 200 },   // Thompson
+  '4':  { height: '6-0', weight: 175 },   // Carter
+  '5':  { height: '6-6', weight: 200 },   // Selden
+  '7':  { height: '6-8', weight: 205 },   // Moratinos
+  '9':  { height: '6-0', weight: 175 },   // Benbo
+  '10': { height: '6-4', weight: 185 },   // Morris
+  '11': { height: '6-2', weight: 165 },   // Mentor
+  '12': { height: '6-5', weight: 200 },   // Turner
+  '13': { height: '6-2', weight: 185 },   // Noel
+  '15': { height: '6-2', weight: 185 },   // Morgan
+  '20': { height: '6-9', weight: 205 },   // Dues
+  '22': { height: '6-3', weight: 185 },   // Laird
+  '41': { height: '6-5', weight: 200 },   // Brewer
+  '55': { height: '6-4', weight: 190 },   // Munir-Jones
+};
+
 // Compute off/def KR from clusters
 export function computeOffKR(c: ClusterRatings): number {
   return Math.round((c.shooting + c.finishing + c.playmaking) / 3);
@@ -68,7 +89,7 @@ export const CLUSTER_SUBCLUSTERS: Record<keyof ClusterRatings, string[]> = {
   perimeter_defense: ['Perimeter Containment', 'On-Ball Pressure', 'Isolation D'],
   interior_defense: ['Help & Rotate', 'Rim Protection', 'Closeout'],
   rebounding: ['Offensive Glass', 'Defensive Glass', 'Box Out'],
-  frame: ['Frame', 'Athleticism', 'Endurance'],
+  frame: ['Physical', 'Athleticism', 'Endurance'],
 };
 
 // Deterministic hash for stable subcluster generation

@@ -33,6 +33,9 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
 import { registerDrawerHandlers } from '@/utils/global-drawer';
 import { registerVoiceHandlers } from '@/utils/global-voice';
+import { registerAskNexusHandlers } from '@/utils/global-ask-nexus';
+import { AskNexusSheet } from '@/components/ask-nexus-sheet';
+import type { AskNexusContext } from '@/data/mock-ask-nexus';
 
 // Prevent the native splash screen from auto-hiding
 SplashScreenModule.preventAutoHideAsync();
@@ -54,6 +57,8 @@ export const unstable_settings = {
 function AppShell() {
   const colorScheme = useColorScheme();
   const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
+  const [askNexusVisible, setAskNexusVisible] = useState(false);
+  const [askNexusContext, setAskNexusContext] = useState<AskNexusContext | undefined>();
   const { state: authState } = useAuth();
 
   // Animation value for content slide (Twitter/X style push)
@@ -64,6 +69,17 @@ function AppShell() {
     registerDrawerHandlers(
       () => setAvatarDrawerVisible(true),
       () => setAvatarDrawerVisible(false)
+    );
+  }, []);
+
+  // Register global Ask Nexus handlers
+  useEffect(() => {
+    registerAskNexusHandlers(
+      (ctx) => {
+        setAskNexusContext(ctx);
+        setAskNexusVisible(true);
+      },
+      () => setAskNexusVisible(false)
     );
   }, []);
 
@@ -125,6 +141,13 @@ function AppShell() {
         visible={avatarDrawerVisible}
         onClose={() => setAvatarDrawerVisible(false)}
         contentSlideAnim={contentSlideAnim}
+      />
+
+      {/* Global Ask Nexus Sheet */}
+      <AskNexusSheet
+        visible={askNexusVisible}
+        onClose={() => setAskNexusVisible(false)}
+        context={askNexusContext}
       />
 
       {/* Global Voice Overlay — triggered from Nexus tab long-press */}

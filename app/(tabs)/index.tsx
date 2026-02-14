@@ -17,13 +17,16 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { ProgramContextSection } from '@/components/program-context-section';
 import { RosterContent, DepthChartView, DEPTH_CHART_BY_SEASON, CURRENT_SEASON } from '@/components/roster-content';
+import { UnitsView } from '@/components/depth-chart/depth-chart-units';
 import { KRDetailsSheet } from '@/components/kr-details-sheet';
 import { PlayerPoolContent } from '@/app/coach/recruiting';
+import { StatsContent } from '@/app/coach/stats';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import type { Archetype } from '@/data/system-demand-profiles';
 import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode } from '@/context/app-context';
-import type { Mode } from '@/types';
+import type { Mode, OffensiveStyle, DefensiveStyle } from '@/types';
 
 // Mock data imports (other modes)
 import { COMPANY_METRICS, formatCurrency } from '@/data/mock-enterprise';
@@ -32,9 +35,11 @@ import { getCurrentTerm, getUpcomingEvents, INSTITUTIONAL_METRICS } from '@/data
 
 // FMU data
 import { FMU_GAMES, FMU_GAMES_BY_ID, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getPGISColor, getTGISColor, tgisToDisplay, FMU_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
+import { TeamQuickSheet } from '@/components/team-quick-sheet';
 import { LiveGamePanel } from '@/components/live-game-panel';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 import { registerTeamSheetHandlers } from '@/utils/global-team-sheet';
+import { GOVERNING_BODIES } from '@/data/governing-bodies';
 
 // =============================================================================
 // SHARED COMPONENTS
@@ -104,8 +109,8 @@ function ActionCard({ title, subtitle, icon, color, colors, onPress }: ActionCar
 // Team Hub Tabs - swipeable top tabs (all inline, bottom tab bar stays visible)
 const TEAM_HUB_TABS = [
   { id: 'home', label: 'Home' },
-  { id: 'roster', label: 'Roster' },
   { id: 'schedule', label: 'Schedule' },
+  { id: 'roster', label: 'Roster' },
   { id: 'recruiting', label: 'Recruiting' },
   { id: 'stats', label: 'Statistics' },
   { id: 'game-ops', label: 'Game Ops' },
@@ -138,16 +143,20 @@ const DEMO_TODAY = {
     : null,
 };
 
-const DEMO_CONFERENCE_PULSE = {
-  standing: '5th in Sun Conference',
-  top3: ['Ave Maria', 'Keiser', 'Southeastern'],
-  nextConfGames: FMU_SEASON_COMPLETE
-    ? [] as string[]
-    : FMU_GAMES
-        .filter((g) => g.status === 'upcoming' || g.status === 'live')
-        .slice(0, 3)
-        .map((g) => `${g.date}${g.gameTime ? ` ${g.gameTime}` : ''} ${g.location === 'Home' ? 'vs' : '@'} ${g.opponent}`),
-};
+// Conference Pulse — derived data
+const confHash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0; return Math.abs(h); };
+
+const FMU_CONF_POSITION = FMU_STANDINGS.findIndex(r => r.team === 'Florida Memorial') + 1;
+
+const CONF_TOP3_TRADITIONAL = FMU_STANDINGS.slice(0, 3).map(r => {
+  const h = confHash(r.team);
+  const kr = r.team === 'Florida Memorial' ? 74 : 58 + (h % 28);
+  return { team: r.team, kr };
+});
+
+const NEXT_CONF_GAMES = FMU_SEASON_COMPLETE
+  ? []
+  : FMU_GAMES.filter(g => (g.status === 'upcoming' || g.status === 'live') && g.gameType === 'CONF').slice(0, 3);
 
 // Game IDs for routing
 const LAST_GAME_ID = FMU_LAST_GAME_ID;
@@ -280,196 +289,170 @@ function CollapsibleHeader({ label, expanded, onToggle, colors }: { label: strin
 }
 
 // ── Pregame Snapshot Sheet Content (shared by both sheets) ──
-function PregameSheetContent({ pregame, colors, expanded, onToggle }: {
-  pregame: PregameSnapshot;
-  colors: typeof Colors.light;
-  expanded: Record<string, boolean>;
-  onToggle: (key: string) => void;
-}) {
-  const [activeDriver, setActiveDriver] = useState(0);
-  const expectColor = pregame.expectation === 'FAVORED' ? '#4ADE80' : pregame.expectation === 'UNDERDOG' ? '#EF4444' : '#F59E0B';
-  const expectBg = pregame.expectation === 'FAVORED' ? '#4ADE8020' : pregame.expectation === 'UNDERDOG' ? '#EF444420' : '#F59E0B20';
-  const cardStyle = [shStyles.card, { backgroundColor: colors.backgroundSecondary }] as any;
-  const divStyle = [shStyles.divider, { backgroundColor: colors.divider }] as any;
-  const sLabel = { fontSize: 11 as number, fontWeight: '600' as const, letterSpacing: 0.5, color: colors.textTertiary };
-  const clusters = pregame.clusterRatings ?? [];
-  const offClusters = clusters.filter(c => ['Shooting', 'Finishing', 'Playmaking'].includes(c.cluster));
-  const defClusters = clusters.filter(c => ['On-Ball Defense', 'Team Defense', 'Rebounding', 'Physical'].includes(c.cluster));
-  const offKR = offClusters.length > 0 ? Math.round(offClusters.reduce((s, c) => s + c.rating, 0) / offClusters.length) : null;
-  const defKR = defClusters.length > 0 ? Math.round(defClusters.reduce((s, c) => s + c.rating, 0) / defClusters.length) : null;
+// Map display archetype labels → typed Archetype keys for the universal PlayerSheet
+const OPP_ARCHETYPE_MAP: Record<string, Archetype> = {
+  'Shot Creator': 'pick_and_roll_operator',
+  'Floor General': 'primary_ball_handler',
+  'Scoring Wing': 'secondary_creator_wing',
+  'Stretch Big': 'stretch_big',
+  'Rim Runner': 'vertical_spacer',
+  'Two-Way Wing': 'two_way_wing',
+  '3&D Guard': 'three_and_d_wing',
+  'Post Anchor': 'rim_protector_anchor',
+  'Slasher': 'slasher_rim_pressure_wing',
+  'Playmaking Guard': 'connector_guard_wing',
+};
 
-  return (
-    <>
-      {/* Expectation badge + spread */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
-        <View style={{ paddingHorizontal: 14, paddingVertical: 5, borderRadius: 12, backgroundColor: expectBg }}>
-          <ThemedText style={{ fontSize: 13, fontWeight: '800', letterSpacing: 0.5, color: expectColor }}>{pregame.expectation}</ThemedText>
-        </View>
-        <ThemedText style={{ fontSize: 14, fontWeight: '700', color: colors.text }}>
-          {pregame.krGap > 0 ? '+' : ''}{Math.round(pregame.krGap * 0.4)}
-        </ThemedText>
-      </View>
-      {/* Off KR / Def KR pills */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, marginBottom: 10 }}>
-        {offKR != null && (
-          <View style={{ backgroundColor: colors.backgroundSecondary, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, borderWidth: 1, borderColor: colors.border }}>
-            <ThemedText style={{ fontSize: 12, fontWeight: '700', color: colors.text }}>OFF {offKR}</ThemedText>
-          </View>
-        )}
-        {defKR != null && (
-          <View style={{ backgroundColor: colors.backgroundSecondary, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, borderWidth: 1, borderColor: colors.border }}>
-            <ThemedText style={{ fontSize: 12, fontWeight: '700', color: colors.text }}>DEF {defKR}</ThemedText>
-          </View>
-        )}
-      </View>
+// Map DNA display labels → typed system values
+const DNA_OFF_MAP: Record<string, OffensiveStyle> = {
+  'Spread Pick & Roll': 'spread_pick_and_roll',
+  'Five-Out Motion': 'five_out_motion',
+  'Motion Read & React': 'motion_read_react',
+  'Pace & Space': 'pace_and_space',
+  'Dribble Drive': 'dribble_drive',
+  'Princeton': 'princeton',
+  'Flex': 'flex',
+  'Swing': 'swing',
+  'Post-Centric': 'post_centric',
+  'Moreyball': 'moreyball',
+  'Heliocentric': 'heliocentric',
+};
 
-      {/* Overall KR pill — tap to expand clusters */}
-      <Pressable
-        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.md, paddingVertical: 10, marginBottom: expanded.overallKR ? 0 : Spacing.md }}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          onToggle('overallKR');
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, flex: 1 }}>
-          {pregame.theirDNA.map((bullet, i) => {
-            const val = bullet.includes(': ') ? bullet.split(': ')[1] : bullet;
-            return (
-              <View key={i} style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, backgroundColor: colors.backgroundSecondary }}>
-                <ThemedText style={{ fontSize: 11, fontWeight: '700', color: colors.text }}>{val}</ThemedText>
-              </View>
-            );
-          })}
-        </View>
-      </Pressable>
+const DNA_DEF_MAP: Record<string, DefensiveStyle> = {
+  'Containment Man': 'containment_man',
+  'Pack Line': 'pack_line',
+  'Pressure Man': 'pressure_man',
+  'Switch Everything': 'switch_everything',
+  'Ice / No Middle': 'ice_no_middle',
+  'Zone (Structured)': 'zone_structured',
+  'Matchup Zone': 'matchup_zone',
+  'Press': 'press',
+  'Junk / Special': 'junk_special',
+};
 
-      {expanded.overallKR && (
-        <View style={{ marginBottom: Spacing.md }}>
-          {/* 7 Cluster Ratings */}
-          <View style={[cardStyle]}>
-            {pregame.clusterRatings.map((cr, i) => {
-              const isExpanded = !!expanded[`cl_${i}`];
-              const ratingColor = cr.rating >= 75 ? '#4CAF50' : cr.rating >= 55 ? '#FF9800' : '#EF4444';
-              return (
-                <View key={i}>
-                  {i > 0 && <View style={divStyle} />}
-                  <Pressable
-                    style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      onToggle(`cl_${i}`);
-                    }}
-                  >
-                    <ThemedText style={{ flex: 1, fontSize: 14, fontWeight: '600', color: colors.text }}>{cr.cluster}</ThemedText>
-                    <ThemedText style={{ fontSize: 15, fontWeight: '700', color: ratingColor, marginRight: 8 }}>{cr.rating}</ThemedText>
-                    <IconSymbol name={isExpanded ? 'chevron.up' : 'chevron.down'} size={12} color={colors.textTertiary} />
-                  </Pressable>
-                  {isExpanded && (
-                    <View style={{ backgroundColor: colors.backgroundTertiary, paddingBottom: 6 }}>
-                      {cr.subclusters.map((sc, si) => {
-                        const scColor = sc.rating >= 75 ? '#4CAF50' : sc.rating >= 55 ? '#FF9800' : '#EF4444';
-                        return (
-                          <View key={si} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md + 8, paddingVertical: 5 }}>
-                            <ThemedText style={{ flex: 1, fontSize: 12, color: colors.textSecondary }}>{sc.name}</ThemedText>
-                            <ThemedText style={{ fontSize: 13, fontWeight: '600', color: scColor }}>{sc.rating}</ThemedText>
-                          </View>
-                        );
-                      })}
-                    </View>
-                  )}
-                </View>
-              );
-            })}
-          </View>
-        </View>
-      )}
+// ── Build opponent depth chart from pregame data ──
 
-      {/* C) System Drivers — swipeable top 3 */}
-      <View style={{ alignItems: 'center', marginBottom: 10 }}>
-        <View style={{ backgroundColor: colors.backgroundSecondary, paddingHorizontal: 14, paddingVertical: 5, borderRadius: 12 }}>
-          <ThemedText style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, letterSpacing: 0.5 }}>SYSTEM DRIVERS</ThemedText>
-        </View>
-      </View>
-      {/* 3 face avatars — tap to select */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: Spacing.md, marginBottom: 10 }}>
-        {pregame.oppThreats.slice(0, 3).map((t, i) => {
-          const isActive = activeDriver === i;
-          return (
-            <Pressable
-              key={i}
-              style={{ alignItems: 'center', flex: 1, opacity: isActive ? 1 : 0.45 }}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setActiveDriver(i);
-              }}
-            >
-              <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.backgroundSecondary, alignItems: 'center', justifyContent: 'center', marginBottom: 4, borderWidth: isActive ? 2 : 0, borderColor: '#FFFFFF' }}>
-                <IconSymbol name="person.fill" size={24} color={isActive ? '#FFFFFF' : colors.textTertiary} />
-              </View>
-              <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.text, textAlign: 'center' }}>{t.name}</ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
-      {/* Active player detail */}
-      {(() => {
-        const t = pregame.oppThreats[activeDriver];
-        if (!t) return null;
-        return (
-          <View style={[cardStyle, { marginBottom: Spacing.md }]}>
-            <View style={{ padding: Spacing.md }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                <ThemedText style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}>
-                  {t.name} <ThemedText style={{ fontWeight: '400', color: colors.textTertiary }}>{'\u2014'} {t.archetype}</ThemedText>
-                </ThemedText>
-                <ThemedText style={{ fontSize: 13, fontWeight: '700', color: colors.textSecondary }}>{t.kr} KR</ThemedText>
-              </View>
-              {t.strengths.map((s, si) => (
-                <View key={`s${si}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
-                  <ThemedText style={{ fontSize: 12, color: '#4CAF50', marginRight: 6, fontWeight: '700' }}>+</ThemedText>
-                  <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{s}</ThemedText>
-                </View>
-              ))}
-              {t.weaknesses.map((w, wi) => (
-                <View key={`w${wi}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
-                  <ThemedText style={{ fontSize: 12, color: '#EF4444', marginRight: 6, fontWeight: '700' }}>{'\u2013'}</ThemedText>
-                  <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{w}</ThemedText>
-                </View>
-              ))}
-            </View>
-          </View>
-        );
-      })()}
+const OPP_POSITIONS = ['Point Guard', 'Combo Guard', 'Wing', 'Forward', 'Big'] as const;
+const OPP_EXTRA_NAMES = ['J. Williams', 'D. Harris', 'M. Johnson', 'T. Davis', 'K. Robinson', 'C. Taylor', 'R. Clark', 'A. Moore'];
+const OPP_CLUSTER_MAP: Record<string, keyof import('@/data/roster-data').ClusterRatings> = {
+  'Shooting': 'shooting',
+  'Finishing': 'finishing',
+  'Playmaking': 'playmaking',
+  'OB Defense': 'perimeter_defense',
+  'Team Defense': 'interior_defense',
+  'Rebounding': 'rebounding',
+  'Physical': 'frame',
+};
 
-      {/* Keys to the Game — always visible */}
-      <View style={[cardStyle, { marginBottom: Spacing.md, borderWidth: 1, borderColor: colors.divider }]}>
-        <View style={{ paddingHorizontal: Spacing.md, paddingTop: Spacing.md, paddingBottom: 6 }}>
-          <ThemedText style={{ fontSize: 13, fontWeight: '800', letterSpacing: 0.5, color: colors.text, marginBottom: 8 }}>KEYS TO THE GAME</ThemedText>
-        </View>
-        {pregame.ourEdge.map((key, i) => (
-          <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: Spacing.md, paddingBottom: 10 }}>
-            <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: colors.backgroundTertiary, alignItems: 'center', justifyContent: 'center', marginRight: 10, marginTop: 1 }}>
-              <ThemedText style={{ fontSize: 11, fontWeight: '800', color: colors.text }}>{i + 1}</ThemedText>
-            </View>
-            <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1, lineHeight: 18 }}>{key}</ThemedText>
-          </View>
-        ))}
-      </View>
+function buildOpponentDepthChart(pregame: PregameSnapshot) {
+  type CR = import('@/data/roster-data').ClusterRatings;
 
-    </>
-  );
+  // Team-level cluster ratings → base cluster object
+  const teamClusters: CR = {
+    shooting: 60, finishing: 60, playmaking: 60,
+    perimeter_defense: 60, interior_defense: 60, rebounding: 60, frame: 60,
+  };
+  for (const cr of pregame.clusterRatings) {
+    const key = OPP_CLUSTER_MAP[cr.cluster];
+    if (key) teamClusters[key] = cr.rating;
+  }
+
+  // Build 5 starters (3 from threats + 2 generated) + bench
+  const threats = pregame.oppThreats.slice(0, 3);
+  const playerClusters: Record<string, CR> = {};
+  const playerPhysicals: Record<string, { height: string; weight: number }> = {};
+  const depthChart: { position: string; players: any[] }[] = [];
+
+  // Position-based height/weight baselines
+  const POS_HT_BASE = [74, 75, 78, 80, 82]; // inches: PG, CG, W, F, B
+  const POS_WT_BASE = [180, 190, 205, 220, 240];
+
+  for (let posIdx = 0; posIdx < 5; posIdx++) {
+    const pos = OPP_POSITIONS[posIdx];
+    const threat = threats[posIdx]; // undefined for idx 3,4
+    const starterNum = `${posIdx + 1}`;
+    const benchNum = `${posIdx + 6}`;
+
+    // Starter
+    const starterName = threat?.name ?? OPP_EXTRA_NAMES[posIdx % OPP_EXTRA_NAMES.length];
+    const starterKR = threat?.kr ?? pregame.oppKR - (posIdx * 2);
+    const starterArch = threat ? (OPP_ARCHETYPE_MAP[threat.archetype] ?? 'two_way_wing') : 'two_way_wing';
+
+    // Vary clusters per player around team baseline
+    const variation = (posIdx * 7 + 3) % 11 - 5;
+    const starterCl: CR = {
+      shooting: Math.max(20, Math.min(98, teamClusters.shooting + variation)),
+      finishing: Math.max(20, Math.min(98, teamClusters.finishing - variation + 2)),
+      playmaking: Math.max(20, Math.min(98, teamClusters.playmaking + (posIdx < 2 ? 8 : -4))),
+      perimeter_defense: Math.max(20, Math.min(98, teamClusters.perimeter_defense + variation - 1)),
+      interior_defense: Math.max(20, Math.min(98, teamClusters.interior_defense + (posIdx >= 3 ? 6 : -3))),
+      rebounding: Math.max(20, Math.min(98, teamClusters.rebounding + (posIdx >= 3 ? 5 : -2))),
+      frame: Math.max(20, Math.min(98, teamClusters.frame + (posIdx >= 3 ? 7 : -3))),
+    };
+    playerClusters[starterNum] = starterCl;
+
+    // Bench player — slightly lower
+    const benchName = OPP_EXTRA_NAMES[(posIdx + 3) % OPP_EXTRA_NAMES.length];
+    const benchCl: CR = {
+      shooting: Math.max(20, starterCl.shooting - 8),
+      finishing: Math.max(20, starterCl.finishing - 6),
+      playmaking: Math.max(20, starterCl.playmaking - 7),
+      perimeter_defense: Math.max(20, starterCl.perimeter_defense - 5),
+      interior_defense: Math.max(20, starterCl.interior_defense - 6),
+      rebounding: Math.max(20, starterCl.rebounding - 5),
+      frame: Math.max(20, starterCl.frame - 4),
+    };
+    playerClusters[benchNum] = benchCl;
+
+    // Generate height/weight per position
+    const htInches = POS_HT_BASE[posIdx] + ((posIdx * 3 + 1) % 5) - 2;
+    const htFeet = Math.floor(htInches / 12);
+    const htRem = htInches % 12;
+    playerPhysicals[starterNum] = { height: `${htFeet}-${htRem}`, weight: POS_WT_BASE[posIdx] + ((posIdx * 7) % 15) - 5 };
+    playerPhysicals[benchNum] = { height: `${htFeet}-${Math.max(0, htRem - 1)}`, weight: POS_WT_BASE[posIdx] - 10 + ((posIdx * 5) % 10) };
+
+    depthChart.push({
+      position: pos,
+      players: [
+        { name: starterName, number: starterNum, kr: starterKR, minutes: 28 - posIdx, archetypes: [starterArch], roleDefinition: '', coachNote: '' },
+        { name: benchName, number: benchNum, kr: Math.max(40, starterKR - 10), minutes: 12 + posIdx, archetypes: ['two_way_wing'], roleDefinition: '', coachNote: '' },
+      ],
+    });
+  }
+
+  return { depthChart, playerClusters, playerPhysicals };
 }
 
-function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Colors.light; router: any; openLiveTrigger?: number }) {
+function parseDNASystems(dna: string[]): { off: OffensiveStyle; def: DefensiveStyle; tempo: string } {
+  let off: OffensiveStyle = 'motion_read_react';
+  let def: DefensiveStyle = 'containment_man';
+  let tempo = 'Moderate';
+  for (const line of dna) {
+    if (line.startsWith('Offense: ')) {
+      const label = line.replace('Offense: ', '');
+      off = DNA_OFF_MAP[label] ?? off;
+    } else if (line.startsWith('Defense: ')) {
+      const label = line.replace('Defense: ', '');
+      def = DNA_DEF_MAP[label] ?? def;
+    } else if (line.startsWith('Tempo: ')) {
+      tempo = line.replace('Tempo: ', '');
+    }
+  }
+  return { off, def, tempo };
+}
+
+
+function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }: { colors: typeof Colors.light; router: any; openLiveTrigger?: number; jumpToStandings?: number }) {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<ScheduleTab>('feed');
-  const [standingsView, setStandingsView] = useState<'official' | 'kr'>('official');
-  const [krScope, setKrScope] = useState<'conference' | 'national' | 'all'>('conference');
-  const [traditionalScope, setTraditionalScope] = useState<'conference' | 'polls'>('conference');
+  const [standingsMode, setStandingsMode] = useState<'traditional' | 'kr'>('traditional');
+  const [standingsScope, setStandingsScope] = useState<'college' | 'global'>('college');
+  const [standingsView, setStandingsView] = useState<'conference' | 'division' | 'national'>('conference');
+  const [selectedDivisions, setSelectedDivisions] = useState<string[]>([]);
+  const [expandedKRTeam, setExpandedKRTeam] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [expandedLeader, setExpandedLeader] = useState<string | null>(null);
   const [oppKRSheet, setOppKRSheet] = useState<{ opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string; score?: string } | null>(null);
-  const [pregameExpanded, setPregameExpanded] = useState<Record<string, boolean>>({});
   const [activePGIS, setActivePGIS] = useState(0);
   const [fullPGISOpen, setFullPGISOpen] = useState(false);
   const [expandedLive, setExpandedLive] = useState(false);
@@ -482,9 +465,14 @@ function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Color
     }
   }, [openLiveTrigger]);
 
-  const togglePregameBlock = useCallback((key: string) => {
-    setPregameExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
-  }, []);
+  // When parent triggers jump-to-standings, switch to standings tab with conference view
+  useEffect(() => {
+    if (jumpToStandings && jumpToStandings > 0) {
+      setActiveTab('standings');
+      setStandingsScope('college');
+      setStandingsView('conference');
+    }
+  }, [jumpToStandings]);
 
   const openSheet = useCallback((data: { opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string; score?: string }) => {
     setOppKRSheet(data);
@@ -611,6 +599,9 @@ function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Color
                             <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
                               {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
                             </ThemedText>
+                            {(() => { const sw = 50 + (confHash(game.opponent ?? '') % 30); return (
+                              <Text style={{ fontSize: 11, fontWeight: '600', color: sw >= 50 ? '#4CAF50' : '#EF4444', marginTop: 2 }}>Sim {sw}%</Text>
+                            ); })()}
                           </Pressable>
                           <Pressable
                             style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
@@ -693,6 +684,9 @@ function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Color
                               <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
                                 {game.date} · {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
                               </ThemedText>
+                              {(() => { const sw = 50 + (confHash(game.opponent ?? '') % 30); return (
+                                <Text style={{ fontSize: 11, fontWeight: '600', color: sw >= 50 ? '#4CAF50' : '#EF4444', marginTop: 2 }}>Sim {sw}%</Text>
+                              ); })()}
                             </Pressable>
                             <Pressable
                               style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
@@ -722,270 +716,370 @@ function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Color
         )}
 
         {/* ── Standings Tab ── */}
-        {activeTab === 'standings' && (
-          <View>
-            {/* ── Toggle: Official / KR Rankings ── */}
-            <View style={shStyles.standingsToggleRow}>
-              {(['official', 'kr'] as const).map((v) => {
-                const active = standingsView === v;
+        {activeTab === 'standings' && (() => {
+          // ── Mock data generators ──
+          const hashStr = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0; return Math.abs(h); };
+
+          const MOCK_TEAM_NAMES = [
+            'Northfield', 'Crestview', 'Ridgemont', 'Lakewood', 'Harborside',
+            'Westbridge', 'Irondale', 'Clearwater', 'Stonehill', 'Ashford',
+            'Riverside', 'Summit Valley', 'Pinehurst', 'Oakdale', 'Brookfield',
+          ];
+
+          const generateDivisionStandings = (divisionId: string) => {
+            return MOCK_TEAM_NAMES.map((team, i) => {
+              const h = hashStr(divisionId + team);
+              const overallW = 10 + (h % 16);
+              const overallL = 4 + ((h >> 4) % 14);
+              const confW = Math.min(overallW, 3 + ((h >> 2) % 10));
+              const confL = Math.min(overallL, 1 + ((h >> 6) % 7));
+              const streaks = ['W1','W2','W3','W4','L1','L2','L3'];
+              const streak = streaks[(h >> 8) % streaks.length];
+              const kr = 55 + ((h >> 3) % 35);
+              const trend = (h % 5 === 0) ? (1 + ((h >> 4) % 4)) : (h % 3 === 0) ? -(1 + ((h >> 4) % 3)) : 0;
+              return { rank: 0, team, confW, confL, overallW, overallL, streak, kr, trend };
+            }).sort((a, b) => b.overallW - a.overallW || a.overallL - b.overallL)
+              .map((r, i) => ({ ...r, rank: i + 1 }));
+          };
+
+          // ── NAIA Top 25 poll data ──
+          const NAIA_POLL = [
+            { rank: 1, team: 'Loyola (LA)', record: '22-2', prev: 1 },
+            { rank: 2, team: 'Indiana Wesleyan', record: '21-3', prev: 2 },
+            { rank: 3, team: 'Oklahoma City', record: '20-3', prev: 4 },
+            { rank: 4, team: 'Life Pacific', record: '20-4', prev: 3 },
+            { rank: 5, team: 'Benedictine (KS)', record: '19-4', prev: 8 },
+            { rank: 6, team: 'Freed-Hardeman', record: '19-4', prev: 6 },
+            { rank: 7, team: 'Georgetown (KY)', record: '18-5', prev: 5 },
+            { rank: 8, team: 'William Penn', record: '18-5', prev: 9 },
+            { rank: 9, team: 'Southeastern', record: '18-5', prev: 7 },
+            { rank: 10, team: 'Carroll (MT)', record: '19-4', prev: 10 },
+            { rank: 11, team: 'Olivet Nazarene', record: '18-5', prev: 12 },
+            { rank: 12, team: 'Concordia (NE)', record: '18-5', prev: 11 },
+            { rank: 13, team: 'Bethel (IN)', record: '17-6', prev: 14 },
+            { rank: 14, team: 'Jamestown', record: '17-5', prev: 16 },
+            { rank: 15, team: 'MidAmerica Nazarene', record: '17-6', prev: 13 },
+            { rank: 16, team: 'Science & Arts (OK)', record: '17-6', prev: 15 },
+            { rank: 17, team: 'Campbellsville', record: '16-6', prev: 18 },
+            { rank: 18, team: 'Marian (IN)', record: '16-7', prev: 17 },
+            { rank: 19, team: 'Wayland Baptist', record: '16-6', prev: 20 },
+            { rank: 20, team: 'IU South Bend', record: '16-7', prev: 22 },
+            { rank: 21, team: 'Thomas More', record: '16-7', prev: 19 },
+            { rank: 22, team: 'Vanguard', record: '15-7', prev: 21 },
+            { rank: 23, team: 'Cornerstone', record: '15-7', prev: 24 },
+            { rank: 24, team: 'Grace (IN)', record: '15-7', prev: 23 },
+            { rank: 25, team: 'Lindsey Wilson', record: '15-8', prev: 25 },
+          ];
+
+          // ── KR data ──
+          const KR_NATIONAL = [
+            { rank: 1, team: 'Loyola (LA)', kr: 91, trend: 2 },
+            { rank: 2, team: 'Indiana Wesleyan', kr: 89, trend: 0 },
+            { rank: 3, team: 'Oklahoma City', kr: 88, trend: 1 },
+            { rank: 4, team: 'Life Pacific', kr: 87, trend: -1 },
+            { rank: 5, team: 'Benedictine (KS)', kr: 86, trend: 3 },
+            { rank: 6, team: 'Freed-Hardeman', kr: 85, trend: 0 },
+            { rank: 7, team: 'Georgetown (KY)', kr: 84, trend: -2 },
+            { rank: 8, team: 'William Penn', kr: 84, trend: 1 },
+            { rank: 9, team: 'Lindsey Wilson', kr: 83, trend: 0 },
+            { rank: 10, team: 'Westmont', kr: 82, trend: 4 },
+            { rank: 11, team: 'Carroll (MT)', kr: 82, trend: -1 },
+            { rank: 12, team: 'Olivet Nazarene', kr: 81, trend: 2 },
+            { rank: 13, team: 'Concordia (NE)', kr: 81, trend: 0 },
+            { rank: 14, team: 'Bethel (IN)', kr: 80, trend: 3 },
+            { rank: 15, team: 'Jamestown', kr: 80, trend: 1 },
+            { rank: 16, team: 'MidAmerica Nazarene', kr: 79, trend: -2 },
+            { rank: 17, team: 'Science & Arts (OK)', kr: 79, trend: 0 },
+            { rank: 18, team: 'Campbellsville', kr: 78, trend: 1 },
+            { rank: 19, team: 'Marian (IN)', kr: 78, trend: -1 },
+            { rank: 20, team: 'Wayland Baptist', kr: 77, trend: 2 },
+            { rank: 21, team: 'IU South Bend', kr: 77, trend: 0 },
+            { rank: 22, team: 'Thomas More', kr: 76, trend: -3 },
+            { rank: 23, team: 'Vanguard', kr: 76, trend: 1 },
+            { rank: 24, team: 'Cornerstone', kr: 75, trend: 0 },
+            { rank: 25, team: 'Grace (IN)', kr: 75, trend: -1 },
+            { rank: 38, team: 'Florida Memorial', kr: 74, trend: 3 },
+          ];
+
+          const KR_CONF = FMU_STANDINGS.map((row) => {
+            const h = hashStr(row.team);
+            const kr = row.team === 'Florida Memorial' ? 74 : 58 + (h % 28);
+            const trend = row.team === 'Florida Memorial' ? 3 : h % 5 === 0 ? (1 + ((h >> 4) % 4)) : h % 3 === 0 ? -(1 + ((h >> 4) % 3)) : 0;
+            return { rank: 0, team: row.team, kr, trend };
+          }).sort((a, b) => b.kr - a.kr).map((r, i) => ({ ...r, rank: i + 1 }));
+
+          const trendDisplay = (t: number) => {
+            if (t > 0) return { text: `▲ ${t}`, color: '#66BB6A' };
+            if (t < 0) return { text: `▼ ${Math.abs(t)}`, color: '#EF4444' };
+            return { text: '—', color: colors.textTertiary };
+          };
+
+          // ── Division chips from GOVERNING_BODIES ──
+          const divisionChips: { id: string; label: string }[] = [];
+          for (const body of GOVERNING_BODIES) {
+            if (body.divisions) {
+              for (const div of body.divisions) {
+                divisionChips.push({ id: div.id, label: `${body.label} ${div.label}` });
+              }
+            } else {
+              divisionChips.push({ id: body.id, label: body.label });
+            }
+          }
+
+          // ── Section label ──
+          const sectionLabel = standingsView === 'conference'
+            ? 'SUN CONFERENCE'
+            : standingsView === 'national'
+              ? 'NAIA'
+              : selectedDivisions.length > 0
+                ? selectedDivisions.map(id => (divisionChips.find((c) => c.id === id)?.label ?? '').toUpperCase()).join('  /  ')
+                : '';
+
+          // ── Build table data based on current view ──
+          const divStandings = standingsView === 'division' && selectedDivisions.length > 0
+            ? selectedDivisions.flatMap(id => generateDivisionStandings(id).map(r => ({ ...r, divId: id })))
+            : [];
+
+          // ── KR Row with expand/collapse ──
+          const renderKRTable = (krData: { rank: number; team: string; kr: number; trend: number }[], showFmuGap: boolean) => (
+            <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
+              <View style={[shStyles.krHeaderRow, { borderBottomColor: colors.divider, backgroundColor: colors.backgroundSecondary }]}>
+                <ThemedText style={[shStyles.krHeaderRank, { color: colors.textTertiary }]}>#</ThemedText>
+                <ThemedText style={[shStyles.standingsTeamHeader, { color: colors.textTertiary }]}>TEAM</ThemedText>
+                <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>KR</ThemedText>
+                <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>TREND</ThemedText>
+              </View>
+              {krData.map((row, index) => {
+                const isFmu = row.team === 'Florida Memorial';
+                const showGap = showFmuGap && index === krData.length - 1 && row.rank > 10;
+                const td = trendDisplay(row.trend);
+                const isExpanded = expandedKRTeam === row.team;
+                // Off/Def KR derivation
+                const h = hashStr(row.team);
+                const offKR = Math.min(100, Math.max(0, Math.round(row.kr * 0.53 + h % 5)));
+                const defKR = Math.min(100, Math.max(0, Math.round(row.kr * 0.47 + h % 4)));
                 return (
-                  <Pressable
-                    key={v}
-                    style={[shStyles.standingsTogglePill, { backgroundColor: active ? colors.text + 'E0' : colors.backgroundSecondary }]}
-                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setStandingsView(v); }}
-                  >
-                    <ThemedText style={[shStyles.standingsToggleText, { color: active ? colors.background : colors.textSecondary }]}>
-                      {v === 'official' ? 'Traditional' : 'KR Rankings'}
-                    </ThemedText>
-                  </Pressable>
+                  <View key={row.team}>
+                    {isFmu && <View style={[shStyles.krFmuDivider, { backgroundColor: colors.text + '20' }]} />}
+                    {!isFmu && index > 0 && !showGap && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                    {showGap && (
+                      <View style={[shStyles.krGapRow, { borderColor: colors.divider }]}>
+                        <ThemedText style={[shStyles.krGapText, { color: colors.textTertiary }]}>···</ThemedText>
+                      </View>
+                    )}
+                    <Pressable
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        setExpandedKRTeam(isExpanded ? null : row.team);
+                      }}
+                      style={[shStyles.krRow, isFmu && { backgroundColor: colors.text + '0A' }]}
+                    >
+                      <ThemedText style={[shStyles.krRankNum, { color: isFmu ? colors.text : colors.textTertiary }]}>{row.rank}</ThemedText>
+                      <View style={{ flex: 1 }}>
+                        <ThemedText style={[shStyles.krTeamName, { color: colors.text, fontWeight: isFmu ? '700' : '500' }]}>{row.team}</ThemedText>
+                      </View>
+                      <ThemedText style={[shStyles.krScore, { color: isFmu ? colors.text : colors.textSecondary }]}>{row.kr}</ThemedText>
+                      <ThemedText style={[shStyles.krTrend, { color: td.color }]}>{td.text}</ThemedText>
+                    </Pressable>
+                    {isExpanded && (
+                      <View style={{ flexDirection: 'row', paddingHorizontal: Spacing.md, paddingVertical: 6, paddingLeft: Spacing.md + 38, gap: 20, backgroundColor: colors.backgroundSecondary }}>
+                        <ThemedText style={{ fontSize: 12, color: colors.textSecondary }}>Off KR: <ThemedText style={{ fontWeight: '700', color: colors.text }}>{offKR}</ThemedText></ThemedText>
+                        <ThemedText style={{ fontSize: 12, color: colors.textSecondary }}>Def KR: <ThemedText style={{ fontWeight: '700', color: colors.text }}>{defKR}</ThemedText></ThemedText>
+                      </View>
+                    )}
+                    {isFmu && index < krData.length - 1 && <View style={[shStyles.krFmuDivider, { backgroundColor: colors.text + '20' }]} />}
+                  </View>
                 );
               })}
             </View>
+          );
 
-            {/* ═══ OFFICIAL ═══ */}
-            {standingsView === 'official' && (
-              <View>
-                {/* Scope pills */}
-                <View style={shStyles.krScopeRow}>
-                  {(['conference', 'polls'] as const).map((s) => {
-                    const active = traditionalScope === s;
-                    return (
-                      <Pressable
-                        key={s}
-                        style={[shStyles.krScopePill, { backgroundColor: active ? colors.text : colors.backgroundSecondary }]}
-                        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setTraditionalScope(s); }}
-                      >
-                        <ThemedText style={[shStyles.krScopePillText, { color: active ? colors.background : colors.textSecondary }]}>
-                          {s === 'conference' ? 'Conference' : 'National'}
-                        </ThemedText>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-
-                <ThemedText style={[shStyles.sectionLabel, { color: colors.textSecondary }]}>{traditionalScope === 'conference' ? 'SUN CONFERENCE' : 'NAIA TOP 25'}</ThemedText>
-
-                {traditionalScope === 'conference' ? (
-                  <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                    <View style={[shStyles.standingsHeaderRow, { borderBottomColor: colors.divider }]}>
-                      <ThemedText style={[shStyles.standingsTeamHeader, { color: colors.textTertiary }]}>TEAM</ThemedText>
-                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>CONF</ThemedText>
-                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>OVR</ThemedText>
-                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>STK</ThemedText>
-                    </View>
-                    {FMU_STANDINGS.map((row, index) => {
-                      const isFmu = row.team === 'Florida Memorial';
-                      return (
-                        <View key={row.team}>
-                          {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          <View style={[shStyles.standingsRow, isFmu && { backgroundColor: colors.text + '08' }]}>
-                            <View style={shStyles.standingsTeamCol}>
-                              <ThemedText style={[shStyles.standingsRank, { color: colors.textTertiary }]}>{index + 1}</ThemedText>
-                              <ThemedText style={[shStyles.standingsTeamName, { color: colors.text, fontWeight: isFmu ? '700' : '500' }]}>{row.team}</ThemedText>
-                            </View>
-                            <ThemedText style={[shStyles.standingsRecord, { color: colors.text }]}>{row.confW}-{row.confL}</ThemedText>
-                            <ThemedText style={[shStyles.standingsRecord, { color: colors.textSecondary }]}>{row.overallW}-{row.overallL}</ThemedText>
-                            <ThemedText style={[shStyles.standingsStreak, { color: row.streak.startsWith('W') ? '#66BB6A' : '#EF4444' }]}>{row.streak}</ThemedText>
-                          </View>
-                        </View>
-                      );
-                    })}
-                  </View>
-                ) : (
-                  <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                    <View style={[shStyles.standingsHeaderRow, { borderBottomColor: colors.divider }]}>
-                      <ThemedText style={[shStyles.krHeaderRank, { color: colors.textTertiary }]}>#</ThemedText>
-                      <ThemedText style={[shStyles.standingsTeamHeader, { color: colors.textTertiary }]}>TEAM</ThemedText>
-                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>REC</ThemedText>
-                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>PV</ThemedText>
-                    </View>
-                    {[
-                      { rank: 1, team: 'Loyola (LA)', record: '22-2', prev: 1 },
-                      { rank: 2, team: 'Indiana Wesleyan', record: '21-3', prev: 2 },
-                      { rank: 3, team: 'Oklahoma City', record: '20-3', prev: 4 },
-                      { rank: 4, team: 'Life Pacific', record: '20-4', prev: 3 },
-                      { rank: 5, team: 'Benedictine (KS)', record: '19-4', prev: 8 },
-                      { rank: 6, team: 'Freed-Hardeman', record: '19-4', prev: 6 },
-                      { rank: 7, team: 'Georgetown (KY)', record: '18-5', prev: 5 },
-                      { rank: 8, team: 'William Penn', record: '18-5', prev: 9 },
-                      { rank: 9, team: 'Southeastern', record: '18-5', prev: 7 },
-                      { rank: 10, team: 'Carroll (MT)', record: '19-4', prev: 10 },
-                      { rank: 11, team: 'Olivet Nazarene', record: '18-5', prev: 12 },
-                      { rank: 12, team: 'Concordia (NE)', record: '18-5', prev: 11 },
-                      { rank: 13, team: 'Bethel (IN)', record: '17-6', prev: 14 },
-                      { rank: 14, team: 'Jamestown', record: '17-5', prev: 16 },
-                      { rank: 15, team: 'MidAmerica Nazarene', record: '17-6', prev: 13 },
-                      { rank: 16, team: 'Science & Arts (OK)', record: '17-6', prev: 15 },
-                      { rank: 17, team: 'Campbellsville', record: '16-6', prev: 18 },
-                      { rank: 18, team: 'Marian (IN)', record: '16-7', prev: 17 },
-                      { rank: 19, team: 'Wayland Baptist', record: '16-6', prev: 20 },
-                      { rank: 20, team: 'IU South Bend', record: '16-7', prev: 22 },
-                      { rank: 21, team: 'Thomas More', record: '16-7', prev: 19 },
-                      { rank: 22, team: 'Vanguard', record: '15-7', prev: 21 },
-                      { rank: 23, team: 'Cornerstone', record: '15-7', prev: 24 },
-                      { rank: 24, team: 'Grace (IN)', record: '15-7', prev: 23 },
-                      { rank: 25, team: 'Lindsey Wilson', record: '15-8', prev: 25 },
-                    ].map((row, index) => (
-                      <View key={row.team}>
-                        {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                        <View style={shStyles.standingsRow}>
-                          <View style={shStyles.standingsTeamCol}>
-                            <ThemedText style={[shStyles.standingsRank, { color: colors.textTertiary }]}>{row.rank}</ThemedText>
-                            <ThemedText style={[shStyles.standingsTeamName, { color: colors.text }]}>{row.team}</ThemedText>
-                          </View>
-                          <ThemedText style={[shStyles.standingsRecord, { color: colors.text }]}>{row.record}</ThemedText>
-                          <ThemedText style={[shStyles.standingsRecord, { color: colors.textTertiary }]}>{row.prev}</ThemedText>
-                        </View>
-                      </View>
-                    ))}
-                  </View>
-                )}
+          // ── Traditional table renderer ──
+          const renderTraditionalConfTable = (rows: { team: string; confW: number; confL: number; overallW: number; overallL: number; streak: string }[]) => (
+            <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
+              <View style={[shStyles.standingsHeaderRow, { borderBottomColor: colors.divider }]}>
+                <ThemedText style={[shStyles.standingsTeamHeader, { color: colors.textTertiary }]}>TEAM</ThemedText>
+                <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>CONF</ThemedText>
+                <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>OVR</ThemedText>
+                <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>STK</ThemedText>
               </View>
-            )}
+              {rows.map((row, index) => {
+                const isFmu = row.team === 'Florida Memorial';
+                return (
+                  <View key={`${index}-${row.team}`}>
+                    {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                    <View style={[shStyles.standingsRow, isFmu && { backgroundColor: colors.text + '08' }]}>
+                      <View style={shStyles.standingsTeamCol}>
+                        <ThemedText style={[shStyles.standingsRank, { color: colors.textTertiary }]}>{index + 1}</ThemedText>
+                        <ThemedText style={[shStyles.standingsTeamName, { color: colors.text, fontWeight: isFmu ? '700' : '500' }]}>{row.team}</ThemedText>
+                      </View>
+                      <ThemedText style={[shStyles.standingsRecord, { color: colors.text }]}>{row.confW}-{row.confL}</ThemedText>
+                      <ThemedText style={[shStyles.standingsRecord, { color: colors.textSecondary }]}>{row.overallW}-{row.overallL}</ThemedText>
+                      <ThemedText style={[shStyles.standingsStreak, { color: row.streak.startsWith('W') ? '#66BB6A' : '#EF4444' }]}>{row.streak}</ThemedText>
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+          );
 
-            {/* ═══ KR RANKINGS ═══ */}
-            {standingsView === 'kr' && (() => {
-              const KR_NATIONAL = [
-                { rank: 1, team: 'Loyola (LA)', kr: 91, trend: 2 },
-                { rank: 2, team: 'Indiana Wesleyan', kr: 89, trend: 0 },
-                { rank: 3, team: 'Oklahoma City', kr: 88, trend: 1 },
-                { rank: 4, team: 'Life Pacific', kr: 87, trend: -1 },
-                { rank: 5, team: 'Benedictine (KS)', kr: 86, trend: 3 },
-                { rank: 6, team: 'Freed-Hardeman', kr: 85, trend: 0 },
-                { rank: 7, team: 'Georgetown (KY)', kr: 84, trend: -2 },
-                { rank: 8, team: 'William Penn', kr: 84, trend: 1 },
-                { rank: 9, team: 'Lindsey Wilson', kr: 83, trend: 0 },
-                { rank: 10, team: 'Westmont', kr: 82, trend: 4 },
-                { rank: 11, team: 'Carroll (MT)', kr: 82, trend: -1 },
-                { rank: 12, team: 'Olivet Nazarene', kr: 81, trend: 2 },
-                { rank: 13, team: 'Concordia (NE)', kr: 81, trend: 0 },
-                { rank: 14, team: 'Bethel (IN)', kr: 80, trend: 3 },
-                { rank: 15, team: 'Jamestown', kr: 80, trend: 1 },
-                { rank: 16, team: 'MidAmerica Nazarene', kr: 79, trend: -2 },
-                { rank: 17, team: 'Science & Arts (OK)', kr: 79, trend: 0 },
-                { rank: 18, team: 'Campbellsville', kr: 78, trend: 1 },
-                { rank: 19, team: 'Marian (IN)', kr: 78, trend: -1 },
-                { rank: 20, team: 'Wayland Baptist', kr: 77, trend: 2 },
-                { rank: 21, team: 'IU South Bend', kr: 77, trend: 0 },
-                { rank: 22, team: 'Thomas More', kr: 76, trend: -3 },
-                { rank: 23, team: 'Vanguard', kr: 76, trend: 1 },
-                { rank: 24, team: 'Cornerstone', kr: 75, trend: 0 },
-                { rank: 25, team: 'Grace (IN)', kr: 75, trend: -1 },
-                { rank: 38, team: 'Florida Memorial', kr: 74, trend: 3 },
-              ];
-              const KR_CONF = FMU_STANDINGS.map((row) => {
-                let h = 0;
-                for (let c = 0; c < row.team.length; c++) h = ((h << 5) - h + row.team.charCodeAt(c)) | 0;
-                const kr = row.team === 'Florida Memorial' ? 74 : 58 + (Math.abs(h) % 28);
-                const trend = row.team === 'Florida Memorial' ? 3 : Math.abs(h) % 5 === 0 ? (1 + (Math.abs(h >> 4) % 4)) : Math.abs(h) % 3 === 0 ? -(1 + (Math.abs(h >> 4) % 3)) : 0;
-                return { rank: 0, team: row.team, kr, trend };
-              }).sort((a, b) => b.kr - a.kr).map((r, i) => ({ ...r, rank: i + 1 }));
+          const renderPollTable = (rows: { rank: number; team: string; record: string; prev: number }[]) => (
+            <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
+              <View style={[shStyles.standingsHeaderRow, { borderBottomColor: colors.divider }]}>
+                <ThemedText style={[shStyles.krHeaderRank, { color: colors.textTertiary }]}>#</ThemedText>
+                <ThemedText style={[shStyles.standingsTeamHeader, { color: colors.textTertiary }]}>TEAM</ThemedText>
+                <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>REC</ThemedText>
+                <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>PV</ThemedText>
+              </View>
+              {rows.map((row, index) => (
+                <View key={row.team}>
+                  {index > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
+                  <View style={shStyles.standingsRow}>
+                    <View style={shStyles.standingsTeamCol}>
+                      <ThemedText style={[shStyles.standingsRank, { color: colors.textTertiary }]}>{row.rank}</ThemedText>
+                      <ThemedText style={[shStyles.standingsTeamName, { color: colors.text }]}>{row.team}</ThemedText>
+                    </View>
+                    <ThemedText style={[shStyles.standingsRecord, { color: colors.text }]}>{row.record}</ThemedText>
+                    <ThemedText style={[shStyles.standingsRecord, { color: colors.textTertiary }]}>{row.prev}</ThemedText>
+                  </View>
+                </View>
+              ))}
+            </View>
+          );
 
-              const KR_ALL = [
-                { rank: 1, team: 'Duke', kr: 96, trend: 1 },
-                { rank: 2, team: 'Auburn', kr: 95, trend: -1 },
-                { rank: 3, team: 'Houston', kr: 94, trend: 2 },
-                { rank: 4, team: 'Florida', kr: 93, trend: 0 },
-                { rank: 5, team: 'Tennessee', kr: 93, trend: 3 },
-                { rank: 6, team: 'Alabama', kr: 92, trend: -1 },
-                { rank: 7, team: 'Iowa State', kr: 92, trend: 0 },
-                { rank: 8, team: 'Marquette', kr: 91, trend: 2 },
-                { rank: 9, team: 'Loyola (LA)', kr: 91, trend: 1 },
-                { rank: 10, team: 'St. Johns', kr: 90, trend: -2 },
-                { rank: 11, team: 'Texas Tech', kr: 90, trend: 4 },
-                { rank: 12, team: 'Michigan State', kr: 89, trend: 0 },
-                { rank: 13, team: 'Indiana Wesleyan', kr: 89, trend: 1 },
-                { rank: 14, team: 'Purdue', kr: 88, trend: -3 },
-                { rank: 15, team: 'Oklahoma City', kr: 88, trend: 2 },
-                { rank: 16, team: 'Gonzaga', kr: 87, trend: 0 },
-                { rank: 17, team: 'Life Pacific', kr: 87, trend: -1 },
-                { rank: 18, team: 'Wisconsin', kr: 86, trend: 3 },
-                { rank: 19, team: 'Benedictine (KS)', kr: 86, trend: 1 },
-                { rank: 20, team: 'Kansas', kr: 85, trend: -2 },
-                { rank: 21, team: 'UCLA', kr: 85, trend: 0 },
-                { rank: 22, team: 'Freed-Hardeman', kr: 85, trend: 1 },
-                { rank: 23, team: 'Clemson', kr: 84, trend: 2 },
-                { rank: 24, team: 'Georgetown (KY)', kr: 84, trend: -1 },
-                { rank: 25, team: 'Oregon', kr: 83, trend: 0 },
-                { rank: 142, team: 'Florida Memorial', kr: 74, trend: 3 },
-              ];
+          return (
+            <View>
+              {/* ── 3a. Mode Toggle ── */}
+              <View style={shStyles.standingsToggleRow}>
+                {(['traditional', 'kr'] as const).map((m) => {
+                  const active = standingsMode === m;
+                  return (
+                    <Pressable
+                      key={m}
+                      style={[shStyles.standingsTogglePill, { backgroundColor: active ? colors.text + 'E0' : colors.backgroundSecondary }]}
+                      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setStandingsMode(m); setExpandedKRTeam(null); }}
+                    >
+                      <ThemedText style={[shStyles.standingsToggleText, { color: active ? colors.background : colors.textSecondary }]}>
+                        {m === 'traditional' ? 'Traditional' : 'KaNeXT (KR)'}
+                      </ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </View>
 
-              const krData = krScope === 'conference' ? KR_CONF : krScope === 'national' ? KR_NATIONAL : KR_ALL;
+              {/* ── 3b. Scope Chips ── */}
+              <View style={shStyles.krScopeRow}>
+                {(['college', 'global'] as const).map((s) => {
+                  const active = standingsScope === s;
+                  return (
+                    <Pressable
+                      key={s}
+                      style={[shStyles.krScopePill, { backgroundColor: active ? colors.text : colors.backgroundSecondary }]}
+                      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setStandingsScope(s); }}
+                    >
+                      <ThemedText style={[shStyles.krScopePillText, { color: active ? colors.background : colors.textSecondary }]}>
+                        {s === 'college' ? 'College' : 'Global'}
+                      </ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </View>
 
-              const trendDisplay = (t: number) => {
-                if (t > 0) return { text: `▲ ${t}`, color: '#66BB6A' };
-                if (t < 0) return { text: `▼ ${Math.abs(t)}`, color: '#EF4444' };
-                return { text: '—', color: colors.textTertiary };
-              };
+              {/* ── Global placeholder ── */}
+              {standingsScope === 'global' && (
+                <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+                  <ThemedText style={{ fontSize: 15, color: colors.textTertiary }}>Coming soon</ThemedText>
+                </View>
+              )}
 
-              return (
+              {/* ── College content ── */}
+              {standingsScope === 'college' && (
                 <View>
-                  {/* Scope pills */}
+                  {/* ── 3c. View Chips ── */}
                   <View style={shStyles.krScopeRow}>
-                    {(['conference', 'national', 'all'] as const).map((s) => {
-                      const active = krScope === s;
+                    {(['conference', 'division', 'national'] as const).map((v) => {
+                      const active = standingsView === v;
                       return (
                         <Pressable
-                          key={s}
+                          key={v}
                           style={[shStyles.krScopePill, { backgroundColor: active ? colors.text : colors.backgroundSecondary }]}
-                          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setKrScope(s); }}
+                          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setStandingsView(v); setExpandedKRTeam(null); }}
                         >
                           <ThemedText style={[shStyles.krScopePillText, { color: active ? colors.background : colors.textSecondary }]}>
-                            {s === 'conference' ? 'Conference' : s === 'national' ? 'Division' : 'National'}
+                            {v === 'conference' ? 'Conference' : v === 'division' ? 'Division' : 'National'}
                           </ThemedText>
                         </Pressable>
                       );
                     })}
                   </View>
 
-                  <ThemedText style={[shStyles.sectionLabel, { color: colors.textSecondary }]}>
-                    {krScope === 'conference' ? 'SUN CONFERENCE' : krScope === 'national' ? 'NAIA' : 'ALL DIVISIONS'}
-                  </ThemedText>
-                  <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                    {/* Sticky-feel header */}
-                    <View style={[shStyles.krHeaderRow, { borderBottomColor: colors.divider, backgroundColor: colors.backgroundSecondary }]}>
-                      <ThemedText style={[shStyles.krHeaderRank, { color: colors.textTertiary }]}>#</ThemedText>
-                      <ThemedText style={[shStyles.standingsTeamHeader, { color: colors.textTertiary }]}>TEAM</ThemedText>
-                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>KR</ThemedText>
-                      <ThemedText style={[shStyles.standingsColHeader, { color: colors.textTertiary }]}>TREND</ThemedText>
+                  {/* ── 3d. Division Picker ── */}
+                  {standingsView === 'division' && (
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: Spacing.sm }}>
+                      {divisionChips.map((chip) => {
+                        const active = selectedDivisions.includes(chip.id);
+                        return (
+                          <Pressable
+                            key={chip.id}
+                            style={[shStyles.krScopePill, { backgroundColor: active ? Brand.primary : colors.backgroundSecondary }]}
+                            onPress={() => {
+                              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                              setSelectedDivisions(prev => active ? prev.filter(id => id !== chip.id) : [...prev, chip.id]);
+                              setExpandedKRTeam(null);
+                            }}
+                          >
+                            <ThemedText style={[shStyles.krScopePillText, { color: active ? '#fff' : colors.textSecondary }]}>
+                              {chip.label}
+                            </ThemedText>
+                          </Pressable>
+                        );
+                      })}
                     </View>
-                    {krData.map((row, index) => {
-                      const isFmu = row.team === 'Florida Memorial';
-                      const showGap = (krScope === 'national' || krScope === 'all') && index === krData.length - 1 && row.rank > 10;
-                      const td = trendDisplay(row.trend);
-                      return (
-                        <View key={row.team}>
-                          {/* Thick divider above FMU */}
-                          {isFmu && <View style={[shStyles.krFmuDivider, { backgroundColor: colors.text + '20' }]} />}
-                          {/* Normal divider or gap */}
-                          {!isFmu && index > 0 && !showGap && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                          {showGap && (
-                            <View style={[shStyles.krGapRow, { borderColor: colors.divider }]}>
-                              <ThemedText style={[shStyles.krGapText, { color: colors.textTertiary }]}>···</ThemedText>
-                            </View>
-                          )}
-                          <View style={[
-                            shStyles.krRow,
-                            isFmu && { backgroundColor: colors.text + '0A' },
-                          ]}>
-                            <ThemedText style={[shStyles.krRankNum, { color: isFmu ? colors.text : colors.textTertiary }]}>{row.rank}</ThemedText>
-                            <View style={{ flex: 1 }}>
-                              <ThemedText style={[shStyles.krTeamName, { color: colors.text, fontWeight: isFmu ? '700' : '500' }]}>{row.team}</ThemedText>
-                            </View>
-                            <ThemedText style={[shStyles.krScore, { color: isFmu ? colors.text : colors.textSecondary }]}>{row.kr}</ThemedText>
-                            <ThemedText style={[shStyles.krTrend, { color: td.color }]}>{td.text}</ThemedText>
-                          </View>
-                          {/* Thick divider below FMU */}
-                          {isFmu && index < krData.length - 1 && <View style={[shStyles.krFmuDivider, { backgroundColor: colors.text + '20' }]} />}
-                        </View>
-                      );
-                    })}
-                  </View>
+                  )}
+
+                  {/* ── 3e. Section Label ── */}
+                  {standingsView === 'division' && selectedDivisions.length === 0 ? (
+                    <View style={{ paddingVertical: 24, alignItems: 'center' }}>
+                      <ThemedText style={{ fontSize: 14, color: colors.textTertiary }}>Select a division</ThemedText>
+                    </View>
+                  ) : (
+                    <>
+                      {sectionLabel !== '' && (
+                        <ThemedText style={[shStyles.sectionLabel, { color: colors.textSecondary }]}>{sectionLabel}</ThemedText>
+                      )}
+
+                      {/* ── 3f. Traditional Mode Tables ── */}
+                      {standingsMode === 'traditional' && (
+                        <>
+                          {standingsView === 'conference' && renderTraditionalConfTable(FMU_STANDINGS)}
+                          {standingsView === 'division' && selectedDivisions.length > 0 && renderTraditionalConfTable(divStandings)}
+                          {standingsView === 'national' && renderPollTable(NAIA_POLL)}
+                        </>
+                      )}
+
+                      {/* ── 3g. KR Mode Tables ── */}
+                      {standingsMode === 'kr' && (
+                        <>
+                          {standingsView === 'conference' && renderKRTable(KR_CONF, false)}
+                          {standingsView === 'division' && selectedDivisions.length > 0 && (() => {
+                            const divKR = divStandings.map((r) => ({
+                              rank: r.rank,
+                              team: r.team,
+                              kr: r.kr,
+                              trend: r.trend,
+                            })).sort((a, b) => b.kr - a.kr).map((r, i) => ({ ...r, rank: i + 1 }));
+                            return renderKRTable(divKR, false);
+                          })()}
+                          {standingsView === 'national' && renderKRTable(KR_NATIONAL, true)}
+                        </>
+                      )}
+                    </>
+                  )}
                 </View>
-              );
-            })()}
-          </View>
-        )}
+              )}
+            </View>
+          );
+        })()}
 
         {/* ── News Tab ── */}
         {activeTab === 'news' && (
@@ -1000,8 +1094,8 @@ function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Color
                   <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center' }}>
                     <IconSymbol name="play.fill" size={20} color="#fff" />
                   </View>
-                  <View style={{ position: 'absolute', top: 8, left: 8, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 }}>
-                    <Text style={{ fontSize: 10, fontWeight: '700', color: '#fff', letterSpacing: 0.3 }}>RECAP</Text>
+                  <View style={{ position: 'absolute', top: 8, left: 8, backgroundColor: item.type === 'Highlights' ? 'rgba(255,180,0,0.85)' : 'rgba(0,0,0,0.6)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: item.type === 'Highlights' ? '#000' : '#fff', letterSpacing: 0.3 }}>{item.type.toUpperCase()}</Text>
                   </View>
                 </View>
                 {/* Info */}
@@ -1016,7 +1110,7 @@ function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Color
       </ScrollView>
 
       {/* Opponent KR Bottom Sheet */}
-      <BottomSheet visible={!!oppKRSheet} onClose={closeSheet} >
+      <BottomSheet visible={!!oppKRSheet} onClose={closeSheet} useModal>
         {oppKRSheet && (() => {
           const opp = oppKRSheet.opponent;
           const sheetGameId = oppKRSheet.gameId ?? '';
@@ -1039,38 +1133,6 @@ function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Color
                           {sheetGame.date}{sheetGame.gameTime ? ` · ${sheetGame.gameTime}` : ''} · {sheetGame.gameType ?? 'NON-CONF'} · {sheetGame.venue ?? sheetGame.location}
                         </ThemedText>
                       )}
-                      {oppKRSheet.score ? (() => {
-                        const isWin = oppKRSheet.score.startsWith('W');
-                        const isLoss = oppKRSheet.score.startsWith('L');
-                        const resultColor = isWin ? '#4ADE80' : isLoss ? '#EF4444' : colors.text;
-                        // ATS: compare actual margin to pregame spread
-                        // Score format: "W fmu-opp" or "L fmu-opp" — first number always FMU
-                        const pregameData = sheetGameId ? FMU_PREGAME[sheetGameId] : null;
-                        const scoreMatch = oppKRSheet.score.match(/(\d+)-(\d+)/);
-                        let atsText = '';
-                        if (pregameData && scoreMatch) {
-                          const spread = Math.round(pregameData.krGap * 0.4);
-                          const fmuScore = parseInt(scoreMatch[1]);
-                          const oppScore = parseInt(scoreMatch[2]);
-                          const actualMargin = fmuScore - oppScore;
-                          const ats = actualMargin - spread;
-                          atsText = ats >= 0 ? `+${ats}` : `${ats}`;
-                        }
-                        return (
-                          <>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8 }}>
-                              <View style={{ paddingHorizontal: 14, paddingVertical: 5, borderRadius: 12, backgroundColor: isWin ? '#4ADE8020' : isLoss ? '#EF444420' : colors.backgroundSecondary }}>
-                                <ThemedText style={{ fontSize: 13, fontWeight: '800', letterSpacing: 0.5, color: resultColor }}>
-                                  {isWin ? 'WIN' : isLoss ? 'LOSS' : 'FINAL'}
-                                </ThemedText>
-                              </View>
-                            </View>
-                            <ThemedText style={{ fontSize: 15, fontWeight: '700', color: resultColor, marginTop: 4 }}>
-                              {oppKRSheet.score.replace('-', '–')}{atsText ? ` (${atsText})` : ''}
-                            </ThemedText>
-                          </>
-                        );
-                      })() : null}
                     </View>
                   );
                 })()}
@@ -1078,152 +1140,155 @@ function ScheduleHub({ colors, router, openLiveTrigger }: { colors: typeof Color
                 {/* TGIS + PGIS for completed games, Pregame Snapshot for upcoming */}
                 {impact ? (
                     <>
-                      {/* TGIS Block */}
-                      <View style={{ backgroundColor: colors.backgroundSecondary, borderRadius: BorderRadius.lg, padding: Spacing.md, marginHorizontal: Spacing.md, marginBottom: Spacing.md }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                          <ThemedText style={{ fontSize: 13, fontWeight: '800', letterSpacing: 0.5, color: colors.text }}>GAME SCORE</ThemedText>
-                          <View style={{ backgroundColor: getTGISColor(impact.tgis) + '20', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                            <ThemedText style={{ fontSize: 12, fontWeight: '700', color: getTGISColor(impact.tgis) }}>
-                              {impact.tgisLabel}
-                            </ThemedText>
-                            <ThemedText style={{ fontSize: 11, fontWeight: '600', color: getTGISColor(impact.tgis), opacity: 0.7 }}>
-                              {tgisToDisplay(impact.tgis).toFixed(1)}
-                            </ThemedText>
-                          </View>
-                        </View>
-                        {impact.drivers.map((d, i) => (
-                          <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: i === 0 ? 0 : 6 }}>
-                            <ThemedText style={{ fontSize: 13, color: colors.textTertiary, marginRight: 8 }}>{'\u2022'}</ThemedText>
-                            <ThemedText style={{ fontSize: 13, color: colors.textSecondary, flex: 1 }}>{d}</ThemedText>
-                          </View>
-                        ))}
-                      </View>
-
-                      {/* Player Impact Score — top 3 */}
+                      {/* Postgame Gambling Block */}
                       {(() => {
-                        const top3 = [...impact.starters, ...impact.bench].sort((a, b) => b.pgis - a.pgis).slice(0, 3);
-                        if (top3.length === 0) return null;
-                        const activeP = top3[activePGIS] ?? top3[0];
+                        const pg = sheetGameId ? FMU_PREGAME[sheetGameId] : null;
+                        const sm = oppKRSheet.score?.match(/(\d+)-(\d+)/);
+                        const fmuS = sm ? parseInt(sm[1]) : 0;
+                        const oppS = sm ? parseInt(sm[2]) : 0;
+                        const isW = fmuS > oppS;
+                        const actualMargin = fmuS - oppS;
+                        const actualTotal = fmuS + oppS;
+                        const spread = pg ? Math.round(pg.krGap * 0.4) : 0;
+                        const spreadStr = spread > 0 ? `FMU -${Math.abs(spread)}.5` : spread < 0 ? `FMU +${Math.abs(spread)}.5` : 'PK';
+                        const preWinPct = pg ? Math.min(92, Math.max(28, Math.round(50 + pg.krGap * 0.8))) : 50;
+                        const ourKR = pg ? pg.oppKR + pg.krGap : 74;
+                        const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
+                        const oppProj = pg ? Math.round(72 + (pg.oppKR - 60) * 0.3) : 72;
+                        const preTotal = fmuProj + oppProj;
+                        const simConf = pg ? Math.min(95, Math.max(55, Math.round(70 + Math.abs(pg.krGap) * 0.6))) : 70;
+                        const projMargin = fmuProj - oppProj;
+                        const miss = actualMargin - projMargin;
+                        // ATS: did FMU cover the spread?
+                        const atsMargin = actualMargin + (spread > 0 ? -spread - 0.5 : -spread + 0.5);
+                        const atsCover = spread > 0 ? actualMargin > spread + 0.5 : actualMargin > spread - 0.5;
+                        const atsStr = `${atsMargin > 0 ? '+' : ''}${atsMargin.toFixed(1)}`;
+                        // O/U
+                        const ouDiff = actualTotal - (preTotal + 0.5);
+                        const ouStr = `${actualTotal > preTotal + 0.5 ? 'Over' : 'Under'} (${ouDiff > 0 ? '+' : ''}${ouDiff.toFixed(1)})`;
                         return (
-                          <>
-                            {/* Centered pill */}
-                            <View style={{ alignItems: 'center', marginBottom: 10 }}>
-                              <View style={{ backgroundColor: colors.backgroundSecondary, paddingHorizontal: 14, paddingVertical: 5, borderRadius: 12 }}>
-                                <ThemedText style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, letterSpacing: 0.5 }}>PLAYER IMPACT SCORE</ThemedText>
+                          <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#1a1a1a', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
+                            {/* Pre-game metrics */}
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>LINE</Text>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>{spreadStr}</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>WIN%</Text>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>{preWinPct}%</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>TOTAL</Text>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>{preTotal}.5</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>CONF</Text>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>Sim {simConf}%</Text>
                               </View>
                             </View>
-                            {/* 3 face avatars — tap to select */}
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: Spacing.md, marginBottom: 10 }}>
-                              {top3.map((p, i) => {
-                                const isActive = activePGIS === i;
-                                return (
-                                  <Pressable
-                                    key={i}
-                                    style={{ alignItems: 'center', flex: 1, opacity: isActive ? 1 : 0.45 }}
-                                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActivePGIS(i); }}
-                                  >
-                                    <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.backgroundSecondary, alignItems: 'center', justifyContent: 'center', marginBottom: 4, borderWidth: isActive ? 2 : 0, borderColor: getPGISColor(p.pgis) }}>
-                                      <IconSymbol name="person.fill" size={24} color={isActive ? getPGISColor(p.pgis) : colors.textTertiary} />
-                                    </View>
-                                    <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.text, textAlign: 'center' }}>{p.name.split(' ').pop()}</ThemedText>
-                                  </Pressable>
-                                );
-                              })}
-                            </View>
-                            {/* Active player detail */}
-                            <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                              <View style={{ padding: Spacing.md }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                                  <ThemedText style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}>
-                                    {activeP.name} <ThemedText style={{ fontWeight: '400', color: colors.textTertiary }}>{'\u2014'} {activeP.archetype}</ThemedText>
-                                  </ThemedText>
-                                  <ThemedText style={{ fontSize: 13, fontWeight: '700', color: colors.textSecondary }}>{activeP.kr} KR</ThemedText>
-                                </View>
-                                {activeP.positives.map((s, si) => (
-                                  <View key={`p${si}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
-                                    <ThemedText style={{ fontSize: 12, color: '#4CAF50', marginRight: 6, fontWeight: '700' }}>+</ThemedText>
-                                    <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{s}</ThemedText>
-                                  </View>
-                                ))}
-                                {activeP.negatives.map((w, wi) => (
-                                  <View key={`n${wi}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
-                                    <ThemedText style={{ fontSize: 12, color: '#EF4444', marginRight: 6, fontWeight: '700' }}>{'\u2013'}</ThemedText>
-                                    <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{w}</ThemedText>
-                                  </View>
-                                ))}
+                            {/* Outcome row */}
+                            <View style={{ backgroundColor: '#2a2a2a', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10 }}>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Text style={{ fontSize: 12, fontWeight: '700', color: atsCover ? '#4ade80' : '#f87171' }}>ATS: {atsStr}</Text>
+                                <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? '#fbbf24' : '#60a5fa' }}>O/U: {ouStr}</Text>
                               </View>
                             </View>
-
-                            {/* Full PGIS button */}
-                            <Pressable
-                              style={({ pressed }) => [{ alignItems: 'center' as const, paddingVertical: 10, marginBottom: Spacing.md, backgroundColor: colors.backgroundSecondary, borderRadius: BorderRadius.lg }, pressed && { opacity: 0.7 }]}
-                              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFullPGISOpen(!fullPGISOpen); }}
-                            >
-                              <ThemedText style={{ fontSize: 13, fontWeight: '700', color: colors.text }}>Full PGIS</ThemedText>
-                            </Pressable>
-
-                            {fullPGISOpen && (
-                              <>
-                                {/* Starters */}
-                                <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                                  STARTERS
-                                </ThemedText>
-                                <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                                  {impact.starters.map((p, i) => (
-                                    <View key={i}>
-                                      {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                                      <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
-                                        <View style={{ flex: 1 }}>
-                                          <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                                            {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
-                                          </ThemedText>
-                                        </View>
-                                        <View style={{ backgroundColor: getPGISColor(p.pgis) + '20', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10 }}>
-                                          <ThemedText style={{ fontSize: 12, fontWeight: '700', color: getPGISColor(p.pgis) }}>
-                                            {p.pgis > 0 ? '+' : ''}{p.pgis}
-                                          </ThemedText>
-                                        </View>
-                                      </View>
-                                    </View>
-                                  ))}
-                                </View>
-
-                                {/* Bench */}
-                                {impact.bench.length > 0 && (
-                                  <>
-                                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                                      BENCH
-                                    </ThemedText>
-                                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                                      {impact.bench.map((p, i) => (
-                                        <View key={i}>
-                                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
-                                            <View style={{ flex: 1 }}>
-                                              <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                                                {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
-                                              </ThemedText>
-                                            </View>
-                                            <View style={{ backgroundColor: getPGISColor(p.pgis) + '20', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10 }}>
-                                              <ThemedText style={{ fontSize: 12, fontWeight: '700', color: getPGISColor(p.pgis) }}>
-                                                {p.pgis > 0 ? '+' : ''}{p.pgis}
-                                              </ThemedText>
-                                            </View>
-                                          </View>
-                                        </View>
-                                      ))}
-                                    </View>
-                                  </>
-                                )}
-                              </>
-                            )}
-                          </>
+                            {/* Projection strip */}
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
+                              <Text style={{ fontSize: 11, color: '#888' }}>Pre Proj: <Text style={{ fontWeight: '700', color: '#ccc' }}>{fmuProj}–{oppProj} ({projMargin > 0 ? '+' : ''}{projMargin})</Text></Text>
+                              <Text style={{ fontSize: 11, color: '#888' }}>Actual: <Text style={{ fontWeight: '700', color: isW ? '#4ade80' : '#f87171' }}>{fmuS}–{oppS} ({actualMargin > 0 ? '+' : ''}{actualMargin})</Text></Text>
+                            </View>
+                            <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#4ade80' : Math.abs(miss) <= 7 ? '#fbbf24' : '#f87171' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
+                            {/* Verdict */}
+                            <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
+                              {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'FMU' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
+                            </Text>
+                          </View>
                         );
                       })()}
+
+                      {/* Our Depth Chart with PGIS */}
+                      <UnitsView
+                        depthChart={DEPTH_CHART_BY_SEASON[CURRENT_SEASON]}
+                        gameImpact={impact ?? undefined}
+                        hideSystems
+                        statLeaders={[...impact.starters, ...impact.bench]
+                          .sort((a, b) => b.pgis - a.pgis)
+                          .slice(0, 3)
+                          .map((p) => ({ label: 'PGIS', name: p.name.split(' ').slice(1).join(' ') || p.name, value: `${p.pgis > 0 ? '+' : ''}${p.pgis}` }))}
+                      />
                     </>
-                ) : pregame ? (
-                  <PregameSheetContent pregame={pregame} colors={colors} expanded={pregameExpanded} onToggle={togglePregameBlock} />
-                ) : null}
+                ) : pregame ? (() => {
+                  const opp = buildOpponentDepthChart(pregame);
+                  const oppSys = parseDNASystems(pregame.theirDNA);
+                  const threats = pregame.oppThreats ?? [];
+                  const oppStatLeaders = [
+                    { label: 'PPG', name: threats[0]?.name.split(' ').slice(1).join(' ') ?? '—', value: ((threats[0]?.kr ?? 60) * 0.28 + 3.5).toFixed(1) },
+                    { label: 'RPG', name: threats[2]?.name.split(' ').slice(1).join(' ') ?? threats[1]?.name.split(' ').slice(1).join(' ') ?? '—', value: ((threats[2]?.kr ?? threats[1]?.kr ?? 60) * 0.09 + 2.0).toFixed(1) },
+                    { label: 'APG', name: threats[1]?.name.split(' ').slice(1).join(' ') ?? '—', value: ((threats[1]?.kr ?? 60) * 0.06 + 1.5).toFixed(1) },
+                  ];
+                  return (
+                    <>
+                      {(() => {
+                        const ourKR = pregame.oppKR + pregame.krGap;
+                        const spread = Math.round(pregame.krGap * 0.4);
+                        const spreadStr = spread > 0 ? `FMU -${Math.abs(spread)}.5` : spread < 0 ? `FMU +${Math.abs(spread)}.5` : 'PK';
+                        const winPct = Math.min(92, Math.max(28, Math.round(50 + pregame.krGap * 0.8)));
+                        const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
+                        const oppProj = Math.round(72 + (pregame.oppKR - 60) * 0.3);
+                        const simConf = Math.min(95, Math.max(55, Math.round(70 + Math.abs(pregame.krGap) * 0.6)));
+                        const keys = (pregame.ourEdge ?? []).slice(0, 3);
+                        return (
+                          <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#1a1a1a', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
+                            {/* Gambling-level metrics row */}
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>LINE</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: '#f5f5f5' }}>{spreadStr}</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>WIN%</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#4ade80' : winPct <= 40 ? '#f87171' : '#fbbf24' }}>{winPct}%</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>TOTAL</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: '#f5f5f5' }}>{fmuProj + oppProj}.5</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>CONF</Text>
+                                <View style={{ backgroundColor: '#2563eb20', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
+                                  <Text style={{ fontSize: 13, fontWeight: '800', color: '#60a5fa' }}>Sim {simConf}%</Text>
+                                </View>
+                              </View>
+                            </View>
+                            {/* Projection strip */}
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#2a2a2a', borderRadius: 8, paddingVertical: 6, marginBottom: 10 }}>
+                              <Text style={{ fontSize: 15, fontWeight: '800', color: fmuProj >= oppProj ? '#4ade80' : '#f87171' }}>{fmuProj >= oppProj ? 'W' : 'L'} {fmuProj}–{oppProj}</Text>
+                            </View>
+                            {/* Keys (mini) */}
+                            {keys.length > 0 && keys.map((key: string, i: number) => (
+                              <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: i < keys.length - 1 ? 6 : 0 }}>
+                                <Text style={{ fontSize: 12, fontWeight: '800', color: '#888', width: 18 }}>{i + 1})</Text>
+                                <Text style={{ fontSize: 12, color: '#ccc', flex: 1, lineHeight: 17 }}>{key}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        );
+                      })()}
+                      <UnitsView
+                        depthChart={opp.depthChart}
+                        playerClusters={opp.playerClusters}
+                        playerPhysicals={opp.playerPhysicals}
+                        initialOffStyle={oppSys.off}
+                        initialDefStyle={oppSys.def}
+                        initialTempo={oppSys.tempo}
+                        hideSystems
+                        statLeaders={oppStatLeaders}
+                      />
+                    </>
+                  );
+                })() : null}
             </>
           );
         })()}
@@ -1321,6 +1386,7 @@ function SportsHome() {
   const [activeHubIndex, setActiveHubIndex] = useState(initialTab);
   const pagerRef = useRef<PagerView>(null);
   const [openLiveTrigger, setOpenLiveTrigger] = useState(0);
+  const [jumpToStandings, setJumpToStandings] = useState(0);
 
   // Reset PagerView to page 0 (the main Home hub)
   const resetToHome = useCallback(() => {
@@ -1361,12 +1427,8 @@ function SportsHome() {
 
   // Recent BPR bottom sheet — always mounted, visibility toggled via animation
   const [recentSheet, setRecentSheet] = useState<{ opponent: string; kr: number; record: string; gameId: string; gameStatus: string; score?: string } | null>(null);
-  const [recentPregameExpanded, setRecentPregameExpanded] = useState<Record<string, boolean>>({});
   const [activeRecentPGIS, setActiveRecentPGIS] = useState(0);
   const [fullRecentPGISOpen, setFullRecentPGISOpen] = useState(false);
-  const toggleRecentPregameBlock = useCallback((key: string) => {
-    setRecentPregameExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
-  }, []);
   const openRecentSheet = useCallback((data: { opponent: string; kr: number; record: string; gameId: string; gameStatus: string; score?: string }) => {
     setRecentSheet(data);
   }, []);
@@ -1390,16 +1452,10 @@ function SportsHome() {
     registerTeamSheetHandlers(openTeamSheet, closeTeamSheet);
   }, [openTeamSheet, closeTeamSheet]);
 
-  // System drivers active player
-  const [activeDriver, setActiveDriver] = useState(0);
-
   // Team system selection state
   const [selectedOffSystem, setSelectedOffSystem] = useState('Motion Read & React');
   const [selectedDefSystem, setSelectedDefSystem] = useState('Pack Line');
   const [selectedTempo, setSelectedTempo] = useState('Moderate');
-  const [offDropdownOpen, setOffDropdownOpen] = useState(false);
-  const [defDropdownOpen, setDefDropdownOpen] = useState(false);
-  const [tempoDropdownOpen, setTempoDropdownOpen] = useState(false);
 
   // System-adjusted KR: each system has a modifier seeded from its name
   const systemKRModifier = useCallback((system: string, base: number) => {
@@ -1433,33 +1489,48 @@ function SportsHome() {
       <>
         {/* ===== 1) TEAM IDENTITY HEADER ===== */}
         <View style={styles.teamStateSection}>
-          {/* Row 1: Logo + Identity */}
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', alignSelf: 'stretch' }}>
-            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openTeamSheet(); }}>
-              <Image source={FMU_SEAL} style={{ width: 72, height: 72, marginRight: 12 }} resizeMode="contain" />
+          <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'stretch' }}>
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openTeamSheet(); }}
+              onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); openTeamSheet(); }}
+              delayLongPress={300}
+            >
+              <Image source={FMU_SEAL} style={{ width: 64, height: 64, marginRight: 14 }} resizeMode="contain" />
             </Pressable>
             <View style={{ flex: 1 }}>
-              <ThemedText style={{ fontSize: 20, fontWeight: '800', color: colors.text, letterSpacing: -0.3 }}>
-                {DEMO_TEAM_STATE.name} ({liveTeamKR})
+              <ThemedText style={{ fontSize: 24, fontWeight: '800', color: colors.text, letterSpacing: -0.5 }}>
+                {DEMO_TEAM_STATE.name}
               </ThemedText>
-              <ThemedText style={{ fontSize: 13, color: colors.textTertiary, marginTop: 2 }}>
-                {DEMO_TEAM_STATE.level} {'\u00B7'} {DEMO_TEAM_STATE.conference} {'\u00B7'} {DEMO_TEAM_STATE.tier}
+              <ThemedText style={{ fontSize: 13, fontWeight: '500', color: colors.textTertiary, marginTop: 2 }}>
+                {DEMO_TEAM_STATE.level} {'\u00B7'} {DEMO_TEAM_STATE.conference}
               </ThemedText>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4, gap: 8 }}>
-                <ThemedText style={{ fontSize: 14, fontWeight: '700', color: colors.text }}>
-                  {DEMO_TEAM_STATE.record} ({DEMO_TEAM_STATE.confRecord})
-                </ThemedText>
-                <View style={{ backgroundColor: DEMO_TEAM_STATE.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
-                  <ThemedText style={{ fontSize: 11, fontWeight: '700', color: DEMO_TEAM_STATE.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
-                    {DEMO_TEAM_STATE.streak}
-                  </ThemedText>
-                </View>
-              </View>
+            </View>
+            <View style={{ alignItems: 'center', backgroundColor: colors.text + '0F', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 12 }}>
+              <ThemedText style={{ fontSize: 26, fontWeight: '800', color: colors.text, lineHeight: 30 }}>
+                {liveTeamKR}
+              </ThemedText>
+              <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.textTertiary, marginTop: 2 }}>
+                O {liveOffKR} · D {liveDefKR}
+              </ThemedText>
             </View>
           </View>
-
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'stretch' }}>
+            <ThemedText style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
+              {DEMO_TEAM_STATE.record}
+            </ThemedText>
+            <ThemedText style={{ fontSize: 14, fontWeight: '500', color: colors.textTertiary }}>
+              ({DEMO_TEAM_STATE.confRecord} conf)
+            </ThemedText>
+            <View style={{ backgroundColor: DEMO_TEAM_STATE.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+              <ThemedText style={{ fontSize: 12, fontWeight: '700', color: DEMO_TEAM_STATE.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
+                {DEMO_TEAM_STATE.streak}
+              </ThemedText>
+            </View>
+            <View style={{ backgroundColor: colors.text + '10', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+              <ThemedText style={{ fontSize: 12, fontWeight: '600', color: colors.textTertiary }}>{DEMO_TEAM_STATE.tier}</ThemedText>
+            </View>
+          </View>
         </View>
-        <View style={{ height: 10 }} />
 
         {/* ===== MEDIA CARD: Live Feed or Highlight Reel ===== */}
         {(() => {
@@ -1477,8 +1548,8 @@ function SportsHome() {
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 if (isLive) {
-                  setActiveHubIndex(2);
-                  pagerRef.current?.setPage(2);
+                  setActiveHubIndex(1);
+                  pagerRef.current?.setPage(1);
                   setOpenLiveTrigger((prev) => prev + 1);
                 }
               }}
@@ -1519,7 +1590,6 @@ function SportsHome() {
                   </>
                 ) : (
                   <>
-                    <ThemedText style={{ fontSize: 11, fontWeight: '800', letterSpacing: 0.5, color: '#F59E0B', marginBottom: 4 }}>HIGHLIGHT REEL</ThemedText>
                     <ThemedText style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>
                       FMU Lions 2025-26 Season Highlights
                     </ThemedText>
@@ -1565,6 +1635,9 @@ function SportsHome() {
                         <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
                           {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
                         </ThemedText>
+                        {(() => { const sw = 50 + (confHash(game.opponent ?? '') % 30); return (
+                          <Text style={{ fontSize: 11, fontWeight: '600', color: sw >= 50 ? '#4CAF50' : '#EF4444', marginTop: 2 }}>Sim {sw}%</Text>
+                        ); })()}
                       </Pressable>
                       <Pressable
                         style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
@@ -1638,6 +1711,9 @@ function SportsHome() {
                         <ThemedText style={[styles.recentMeta, { color: colors.textTertiary }]}>
                           {game.date} · {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
                         </ThemedText>
+                        {(() => { const sw = 50 + (confHash(game.opponent ?? '') % 30); return (
+                          <Text style={{ fontSize: 11, fontWeight: '600', color: sw >= 50 ? '#4CAF50' : '#EF4444', marginTop: 2 }}>Sim {sw}%</Text>
+                        ); })()}
                       </Pressable>
                       <Pressable
                         style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
@@ -1669,43 +1745,77 @@ function SportsHome() {
           CONFERENCE PULSE
         </ThemedText>
         <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
-          {/* Standing */}
+          {/* Row 1 — Standing */}
           <View style={styles.statusRow}>
-            <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-              Standing
-            </ThemedText>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>Standing</ThemedText>
+              <View style={[styles.pulseConfChip, { backgroundColor: colors.tint + '20' }]}>
+                <Text style={[styles.pulseConfChipText, { color: colors.tint }]}>Conf: {FMU_RECORD.conference}</Text>
+              </View>
+            </View>
             <ThemedText style={[styles.statusValue, { color: colors.text }]}>
-              {DEMO_CONFERENCE_PULSE.standing ?? DEMO_TEAM_STATE.conference}
+              {FMU_CONF_POSITION > 0 ? `${FMU_CONF_POSITION}${FMU_CONF_POSITION === 1 ? 'st' : FMU_CONF_POSITION === 2 ? 'nd' : FMU_CONF_POSITION === 3 ? 'rd' : 'th'} in Sun Conference` : 'Sun Conference'}
             </ThemedText>
           </View>
           <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
 
-          {/* Top 3 */}
+          {/* Row 2 — Top 3 */}
           <View style={styles.statusRow}>
-            <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
-              Top 3
-            </ThemedText>
-            <ThemedText style={[styles.statusValue, { color: colors.textTertiary }]}>
-              {DEMO_CONFERENCE_PULSE.top3.length > 0
-                ? DEMO_CONFERENCE_PULSE.top3.join(', ')
-                : 'No conference standings'}
-            </ThemedText>
+            <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>Top 3</ThemedText>
+            <View style={styles.pulseChipRow}>
+              {CONF_TOP3_TRADITIONAL.map((entry, i) => (
+                <View key={i} style={[styles.pulseChip, { backgroundColor: colors.tint + '15' }]}>
+                  <Text style={[styles.pulseChipText, { color: colors.text }]}>{entry.team} ({entry.kr})</Text>
+                </View>
+              ))}
+            </View>
           </View>
           <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
 
-          {/* Next Conference Games / Season Record */}
+          {/* Row 3 — Next Conf. Games / Final Record */}
           <View style={styles.statusRow}>
             <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>
               {FMU_SEASON_COMPLETE ? 'Final Record' : 'Next Conf. Games'}
             </ThemedText>
-            <ThemedText style={[styles.statusValue, { color: colors.textTertiary }]}>
-              {FMU_SEASON_COMPLETE
-                ? `${FMU_RECORD.overall} overall · ${FMU_RECORD.conference} conference`
-                : DEMO_CONFERENCE_PULSE.nextConfGames.length > 0
-                  ? DEMO_CONFERENCE_PULSE.nextConfGames.join(', ')
-                  : 'No conference games scheduled'}
-            </ThemedText>
+            {FMU_SEASON_COMPLETE ? (
+              <ThemedText style={[styles.statusValue, { color: colors.text }]}>
+                {FMU_RECORD.overall} overall {'\u00B7'} {FMU_RECORD.conference} conference
+              </ThemedText>
+            ) : NEXT_CONF_GAMES.length > 0 ? (
+              NEXT_CONF_GAMES.map((g, i) => {
+                const loc = g.location === 'Home' ? 'vs' : '@';
+                const simWin = 50 + (confHash(g.opponent ?? '') % 30);
+                return (
+                  <View key={i} style={styles.pulseGameRow}>
+                    <Text style={[styles.pulseGameText, { color: colors.textTertiary }]}>
+                      {g.date} {'\u00B7'} {loc} {g.opponent}{g.gameTime ? ` \u00B7 ${g.gameTime}` : ''}
+                    </Text>
+                    <View style={[styles.pulseSimChip, { backgroundColor: simWin >= 50 ? '#4CAF5020' : '#EF444420' }]}>
+                      <Text style={[styles.pulseSimText, { color: simWin >= 50 ? '#4CAF50' : '#EF4444' }]}>Sim {simWin}%</Text>
+                    </View>
+                  </View>
+                );
+              })
+            ) : (
+              <ThemedText style={[styles.statusValue, { color: colors.textTertiary }]}>
+                No conference games scheduled
+              </ThemedText>
+            )}
           </View>
+
+          {/* Footer — View full standings */}
+          <View style={[styles.contextDivider, { backgroundColor: colors.divider }]} />
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setActiveHubIndex(1);
+              pagerRef.current?.setPage(1);
+              setJumpToStandings(prev => prev + 1);
+            }}
+            style={styles.pulseFooter}
+          >
+            <Text style={[styles.pulseFooterText, { color: colors.tint }]}>View full standings →</Text>
+          </Pressable>
         </View>
 
       </>
@@ -1735,7 +1845,12 @@ function SportsHome() {
           {renderHomeContent()}
         </ScrollView>
 
-        {/* Page 1: Roster */}
+        {/* Page 1: Schedule (full Games Hub) */}
+        <View key="schedule" style={{ flex: 1 }}>
+          <ScheduleHub colors={colors} router={router} openLiveTrigger={openLiveTrigger} jumpToStandings={jumpToStandings} />
+        </View>
+
+        {/* Page 2: Roster */}
         <ScrollView
           key="roster"
           style={styles.sportsScrollView}
@@ -1743,64 +1858,18 @@ function SportsHome() {
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled
         >
-          <RosterContent teamKR={liveTeamKR} onLogoPress={openTeamSheet} />
+          <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoPress={openTeamSheet} onLogoLongPress={openTeamSheet} />
         </ScrollView>
-
-        {/* Page 2: Schedule (full Games Hub) */}
-        <View key="schedule" style={{ flex: 1 }}>
-          <ScheduleHub colors={colors} router={router} openLiveTrigger={openLiveTrigger} />
-        </View>
 
         {/* Page 3: Recruiting (National Pool) */}
         <View key="recruiting" style={{ flex: 1 }}>
           <PlayerPoolContent />
         </View>
 
-        {/* Page 4: Stats */}
-        <ScrollView
-          key="stats"
-          style={styles.sportsScrollView}
-          contentContainerStyle={styles.sportsScrollContent}
-          showsVerticalScrollIndicator={false}
-          nestedScrollEnabled
-        >
-          <ThemedText style={[styles.sectionHeader, { color: colors.textTertiary }]}>
-            SEASON LEADERS
-          </ThemedText>
-          {[...FMU_LEADERS].sort((a, b) => b.ppg - a.ppg).slice(0, 10).map((leader) => (
-            <View
-              key={leader.firebaseId}
-              style={[styles.leaderStatRow, { backgroundColor: colors.card, borderColor: colors.border }]}
-            >
-              <View style={styles.leaderStatLeft}>
-                <ThemedText style={[styles.leaderStatName, { color: colors.text }]}>
-                  {leader.name}
-                </ThemedText>
-                <ThemedText style={[styles.leaderStatSub, { color: colors.textTertiary }]}>
-                  #{leader.number} · {leader.gamesPlayed} GP
-                </ThemedText>
-              </View>
-              <View style={styles.leaderStatRight}>
-                <ThemedText style={[styles.leaderStatVal, { color: colors.text }]}>
-                  {leader.ppg.toFixed(1)}
-                </ThemedText>
-                <ThemedText style={[styles.leaderStatLabel, { color: colors.textTertiary }]}>PPG</ThemedText>
-              </View>
-              <View style={styles.leaderStatRight}>
-                <ThemedText style={[styles.leaderStatVal, { color: colors.text }]}>
-                  {leader.rpg.toFixed(1)}
-                </ThemedText>
-                <ThemedText style={[styles.leaderStatLabel, { color: colors.textTertiary }]}>RPG</ThemedText>
-              </View>
-              <View style={styles.leaderStatRight}>
-                <ThemedText style={[styles.leaderStatVal, { color: colors.text }]}>
-                  {leader.apg.toFixed(1)}
-                </ThemedText>
-                <ThemedText style={[styles.leaderStatLabel, { color: colors.textTertiary }]}>APG</ThemedText>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
+        {/* Page 4: Stats (inline) */}
+        <View key="stats" style={{ flex: 1 }}>
+          <StatsContent />
+        </View>
 
         {/* Page 5: Game Ops (Depth Chart) */}
         <ScrollView
@@ -1862,37 +1931,6 @@ function SportsHome() {
                           {recentGame.date}{recentGame.gameTime ? ` · ${recentGame.gameTime}` : ''} · {recentGame.gameType ?? 'NON-CONF'} · {recentGame.venue ?? recentGame.location}
                         </ThemedText>
                       )}
-                      {recentSheet.score ? (() => {
-                        const isWin = recentSheet.score!.startsWith('W');
-                        const isLoss = recentSheet.score!.startsWith('L');
-                        const resultColor = isWin ? '#4ADE80' : isLoss ? '#EF4444' : colors.text;
-                        // Score format: "W fmu-opp" or "L fmu-opp" — first number always FMU
-                        const pregameData = recentSheet.gameId ? FMU_PREGAME[recentSheet.gameId] : null;
-                        const scoreMatch = recentSheet.score!.match(/(\d+)-(\d+)/);
-                        let atsText = '';
-                        if (pregameData && scoreMatch) {
-                          const spread = Math.round(pregameData.krGap * 0.4);
-                          const fmuScore = parseInt(scoreMatch[1]);
-                          const oppScore = parseInt(scoreMatch[2]);
-                          const actualMargin = fmuScore - oppScore;
-                          const ats = actualMargin - spread;
-                          atsText = ats >= 0 ? `+${ats}` : `${ats}`;
-                        }
-                        return (
-                          <>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8 }}>
-                              <View style={{ paddingHorizontal: 14, paddingVertical: 5, borderRadius: 12, backgroundColor: isWin ? '#4ADE8020' : isLoss ? '#EF444420' : colors.backgroundSecondary }}>
-                                <ThemedText style={{ fontSize: 13, fontWeight: '800', letterSpacing: 0.5, color: resultColor }}>
-                                  {isWin ? 'WIN' : isLoss ? 'LOSS' : 'FINAL'}
-                                </ThemedText>
-                              </View>
-                            </View>
-                            <ThemedText style={{ fontSize: 15, fontWeight: '700', color: resultColor, marginTop: 4 }}>
-                              {recentSheet.score!.replace('-', '–')}{atsText ? ` (${atsText})` : ''}
-                            </ThemedText>
-                          </>
-                        );
-                      })() : null}
                     </View>
                   );
                 })()}
@@ -1900,321 +1938,164 @@ function SportsHome() {
                 {/* TGIS + PGIS for completed games, Pregame Snapshot for upcoming */}
                 {recentImpact ? (
                     <>
-                      {/* TGIS Block */}
-                      <View style={{ backgroundColor: colors.backgroundSecondary, borderRadius: BorderRadius.lg, padding: Spacing.md, marginHorizontal: Spacing.md, marginBottom: Spacing.md }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                          <ThemedText style={{ fontSize: 13, fontWeight: '800', letterSpacing: 0.5, color: colors.text }}>GAME SCORE</ThemedText>
-                          <View style={{ backgroundColor: getTGISColor(recentImpact.tgis) + '20', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                            <ThemedText style={{ fontSize: 12, fontWeight: '700', color: getTGISColor(recentImpact.tgis) }}>
-                              {recentImpact.tgisLabel}
-                            </ThemedText>
-                            <ThemedText style={{ fontSize: 11, fontWeight: '600', color: getTGISColor(recentImpact.tgis), opacity: 0.7 }}>
-                              {tgisToDisplay(recentImpact.tgis).toFixed(1)}
-                            </ThemedText>
-                          </View>
-                        </View>
-                        {recentImpact.drivers.map((d, i) => (
-                          <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: i === 0 ? 0 : 6 }}>
-                            <ThemedText style={{ fontSize: 13, color: colors.textTertiary, marginRight: 8 }}>{'\u2022'}</ThemedText>
-                            <ThemedText style={{ fontSize: 13, color: colors.textSecondary, flex: 1 }}>{d}</ThemedText>
-                          </View>
-                        ))}
-                      </View>
-
-                      {/* Player Impact Score — top 3 */}
+                      {/* Postgame Gambling Block */}
                       {(() => {
-                        const top3 = [...recentImpact.starters, ...recentImpact.bench].sort((a, b) => b.pgis - a.pgis).slice(0, 3);
-                        if (top3.length === 0) return null;
-                        const activeP = top3[activeRecentPGIS] ?? top3[0];
+                        const pg = recentSheet.gameId ? FMU_PREGAME[recentSheet.gameId] : null;
+                        const sm = recentSheet.score?.match(/(\d+)-(\d+)/);
+                        const fmuS = sm ? parseInt(sm[1]) : 0;
+                        const oppS = sm ? parseInt(sm[2]) : 0;
+                        const isW = fmuS > oppS;
+                        const actualMargin = fmuS - oppS;
+                        const actualTotal = fmuS + oppS;
+                        const spread = pg ? Math.round(pg.krGap * 0.4) : 0;
+                        const spreadStr = spread > 0 ? `FMU -${Math.abs(spread)}.5` : spread < 0 ? `FMU +${Math.abs(spread)}.5` : 'PK';
+                        const preWinPct = pg ? Math.min(92, Math.max(28, Math.round(50 + pg.krGap * 0.8))) : 50;
+                        const ourKR = pg ? pg.oppKR + pg.krGap : 74;
+                        const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
+                        const oppProj = pg ? Math.round(72 + (pg.oppKR - 60) * 0.3) : 72;
+                        const preTotal = fmuProj + oppProj;
+                        const simConf = pg ? Math.min(95, Math.max(55, Math.round(70 + Math.abs(pg.krGap) * 0.6))) : 70;
+                        const projMargin = fmuProj - oppProj;
+                        const miss = actualMargin - projMargin;
+                        const atsMargin = actualMargin + (spread > 0 ? -spread - 0.5 : -spread + 0.5);
+                        const atsCover = spread > 0 ? actualMargin > spread + 0.5 : actualMargin > spread - 0.5;
+                        const atsStr = `${atsMargin > 0 ? '+' : ''}${atsMargin.toFixed(1)}`;
+                        const ouDiff = actualTotal - (preTotal + 0.5);
+                        const ouStr = `${actualTotal > preTotal + 0.5 ? 'Over' : 'Under'} (${ouDiff > 0 ? '+' : ''}${ouDiff.toFixed(1)})`;
                         return (
-                          <>
-                            {/* Centered pill */}
-                            <View style={{ alignItems: 'center', marginBottom: 10 }}>
-                              <View style={{ backgroundColor: colors.backgroundSecondary, paddingHorizontal: 14, paddingVertical: 5, borderRadius: 12 }}>
-                                <ThemedText style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, letterSpacing: 0.5 }}>PLAYER IMPACT SCORE</ThemedText>
+                          <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#1a1a1a', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>LINE</Text>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>{spreadStr}</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>WIN%</Text>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>{preWinPct}%</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>TOTAL</Text>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>{preTotal}.5</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>CONF</Text>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>Sim {simConf}%</Text>
                               </View>
                             </View>
-                            {/* 3 face avatars — tap to select */}
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: Spacing.md, marginBottom: 10 }}>
-                              {top3.map((p, i) => {
-                                const isActive = activeRecentPGIS === i;
-                                return (
-                                  <Pressable
-                                    key={i}
-                                    style={{ alignItems: 'center', flex: 1, opacity: isActive ? 1 : 0.45 }}
-                                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveRecentPGIS(i); }}
-                                  >
-                                    <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.backgroundSecondary, alignItems: 'center', justifyContent: 'center', marginBottom: 4, borderWidth: isActive ? 2 : 0, borderColor: getPGISColor(p.pgis) }}>
-                                      <IconSymbol name="person.fill" size={24} color={isActive ? getPGISColor(p.pgis) : colors.textTertiary} />
-                                    </View>
-                                    <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.text, textAlign: 'center' }}>{p.name.split(' ').pop()}</ThemedText>
-                                  </Pressable>
-                                );
-                              })}
-                            </View>
-                            {/* Active player detail */}
-                            <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                              <View style={{ padding: Spacing.md }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                                  <ThemedText style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}>
-                                    {activeP.name} <ThemedText style={{ fontWeight: '400', color: colors.textTertiary }}>{'\u2014'} {activeP.archetype}</ThemedText>
-                                  </ThemedText>
-                                  <ThemedText style={{ fontSize: 13, fontWeight: '700', color: colors.textSecondary }}>{activeP.kr} KR</ThemedText>
-                                </View>
-                                {activeP.positives.map((s, si) => (
-                                  <View key={`p${si}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
-                                    <ThemedText style={{ fontSize: 12, color: '#4CAF50', marginRight: 6, fontWeight: '700' }}>+</ThemedText>
-                                    <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{s}</ThemedText>
-                                  </View>
-                                ))}
-                                {activeP.negatives.map((w, wi) => (
-                                  <View key={`n${wi}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
-                                    <ThemedText style={{ fontSize: 12, color: '#EF4444', marginRight: 6, fontWeight: '700' }}>{'\u2013'}</ThemedText>
-                                    <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{w}</ThemedText>
-                                  </View>
-                                ))}
+                            <View style={{ backgroundColor: '#2a2a2a', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10 }}>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Text style={{ fontSize: 12, fontWeight: '700', color: atsCover ? '#4ade80' : '#f87171' }}>ATS: {atsStr}</Text>
+                                <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? '#fbbf24' : '#60a5fa' }}>O/U: {ouStr}</Text>
                               </View>
                             </View>
-
-                            {/* Full PGIS button */}
-                            <Pressable
-                              style={({ pressed }) => [{ alignItems: 'center' as const, paddingVertical: 10, marginBottom: Spacing.md, backgroundColor: colors.backgroundSecondary, borderRadius: BorderRadius.lg }, pressed && { opacity: 0.7 }]}
-                              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFullRecentPGISOpen(!fullRecentPGISOpen); }}
-                            >
-                              <ThemedText style={{ fontSize: 13, fontWeight: '700', color: colors.text }}>Full PGIS</ThemedText>
-                            </Pressable>
-
-                            {fullRecentPGISOpen && (
-                              <>
-                                {/* Starters */}
-                                <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                                  STARTERS
-                                </ThemedText>
-                                <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                                  {recentImpact.starters.map((p, i) => (
-                                    <View key={i}>
-                                      {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                                      <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
-                                        <View style={{ flex: 1 }}>
-                                          <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                                            {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
-                                          </ThemedText>
-                                        </View>
-                                        <View style={{ backgroundColor: getPGISColor(p.pgis) + '20', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10 }}>
-                                          <ThemedText style={{ fontSize: 12, fontWeight: '700', color: getPGISColor(p.pgis) }}>
-                                            {p.pgis > 0 ? '+' : ''}{p.pgis}
-                                          </ThemedText>
-                                        </View>
-                                      </View>
-                                    </View>
-                                  ))}
-                                </View>
-
-                                {/* Bench */}
-                                {recentImpact.bench.length > 0 && (
-                                  <>
-                                    <ThemedText style={{ fontSize: 11, fontWeight: '600', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 6, paddingHorizontal: Spacing.md }}>
-                                      BENCH
-                                    </ThemedText>
-                                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, marginBottom: Spacing.md }]}>
-                                      {recentImpact.bench.map((p, i) => (
-                                        <View key={i}>
-                                          {i > 0 && <View style={[shStyles.divider, { backgroundColor: colors.divider }]} />}
-                                          <View style={{ flexDirection: 'row', alignItems: 'center', padding: Spacing.md }}>
-                                            <View style={{ flex: 1 }}>
-                                              <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                                                {p.name} <ThemedText style={{ fontSize: 12, color: colors.textTertiary, fontWeight: '400' }}>{p.archetype}</ThemedText>
-                                              </ThemedText>
-                                            </View>
-                                            <View style={{ backgroundColor: getPGISColor(p.pgis) + '20', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10 }}>
-                                              <ThemedText style={{ fontSize: 12, fontWeight: '700', color: getPGISColor(p.pgis) }}>
-                                                {p.pgis > 0 ? '+' : ''}{p.pgis}
-                                              </ThemedText>
-                                            </View>
-                                          </View>
-                                        </View>
-                                      ))}
-                                    </View>
-                                  </>
-                                )}
-                              </>
-                            )}
-                          </>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
+                              <Text style={{ fontSize: 11, color: '#888' }}>Pre Proj: <Text style={{ fontWeight: '700', color: '#ccc' }}>{fmuProj}–{oppProj} ({projMargin > 0 ? '+' : ''}{projMargin})</Text></Text>
+                              <Text style={{ fontSize: 11, color: '#888' }}>Actual: <Text style={{ fontWeight: '700', color: isW ? '#4ade80' : '#f87171' }}>{fmuS}–{oppS} ({actualMargin > 0 ? '+' : ''}{actualMargin})</Text></Text>
+                            </View>
+                            <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#4ade80' : Math.abs(miss) <= 7 ? '#fbbf24' : '#f87171' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
+                            <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
+                              {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'FMU' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
+                            </Text>
+                          </View>
                         );
                       })()}
+
+                      {/* Our Depth Chart with PGIS */}
+                      <UnitsView
+                        depthChart={DEPTH_CHART_BY_SEASON[CURRENT_SEASON]}
+                        gameImpact={recentImpact ?? undefined}
+                        hideSystems
+                        statLeaders={[...recentImpact.starters, ...recentImpact.bench]
+                          .sort((a, b) => b.pgis - a.pgis)
+                          .slice(0, 3)
+                          .map((p) => ({ label: 'PGIS', name: p.name.split(' ').slice(1).join(' ') || p.name, value: `${p.pgis > 0 ? '+' : ''}${p.pgis}` }))}
+                      />
                     </>
-                ) : recentPregame ? (
-                  <PregameSheetContent pregame={recentPregame} colors={colors} expanded={recentPregameExpanded} onToggle={toggleRecentPregameBlock} />
-                ) : null}
-            </>
-          );
-        })()}
-      </BottomSheet>
-
-      {/* ===== TEAM PROFILE BOTTOM SHEET ===== */}
-      <BottomSheet visible={teamSheetOpen} onClose={closeTeamSheet} >
-        {teamSheetOpen && (() => {
-          // Top 3 players by KR, adjusted by system
-          const offMod = liveOffKR - baseOffKRHome;
-          const defMod = liveDefKR - baseDefKRHome;
-          const avgMod = Math.round((offMod + defMod) / 2);
-          const leadersWithKR = FMU_LEADERS
-            .map((l) => ({ ...l, kr: Math.max(40, Math.min(95, (ROSTER_KR[l.number] ?? 60) + avgMod)) }))
-            .sort((a, b) => b.kr - a.kr)
-            .slice(0, 3);
-
-          return (
-            <>
-                {/* Team Name + KR */}
-                <View style={{ alignItems: 'center', marginBottom: 16 }}>
-                  <Image source={FMU_SEAL} style={{ width: 64, height: 64, marginBottom: 8 }} resizeMode="contain" />
-                  <ThemedText style={{ fontSize: 20, fontWeight: '800', color: colors.text }}>
-                    Florida Memorial ({liveTeamKR})
-                  </ThemedText>
-                  <ThemedText style={{ fontSize: 13, color: colors.textTertiary, marginTop: 2 }}>
-                    NAIA · Sun Conference · Regional Power
-                  </ThemedText>
-                </View>
-
-                {/* KaNeXT Ratings — tappable with system dropdowns */}
-                <ThemedText style={{ fontSize: 11, fontWeight: '700', letterSpacing: 0.5, color: colors.textTertiary, marginBottom: 8 }}>KaNeXT RATINGS</ThemedText>
-                <View style={{ flexDirection: 'row', gap: 8, marginBottom: 4 }}>
-                  <Pressable
-                    style={{ flex: 1, paddingTop: 10, paddingBottom: 12, alignItems: 'center', backgroundColor: offDropdownOpen ? '#3a3a5e' : '#2a2a3e', borderRadius: 10 }}
-                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setOffDropdownOpen(!offDropdownOpen); setDefDropdownOpen(false); setTempoDropdownOpen(false); }}
-                  >
-                    <Text style={{ fontSize: 10, fontWeight: '600', color: '#aaa', marginBottom: 4 }}>OFFENSE</Text>
-                    <Text style={{ fontSize: 28, fontWeight: '900', color: '#FFFFFF', lineHeight: 32 }}>{liveOffKR}</Text>
-                    <Text style={{ fontSize: 10, fontWeight: '600', color: '#7B8794', marginTop: 4 }}>{selectedOffSystem}</Text>
-                  </Pressable>
-                  <Pressable
-                    style={{ flex: 1, paddingTop: 10, paddingBottom: 12, alignItems: 'center', backgroundColor: defDropdownOpen ? '#3a3a5e' : '#2a2a3e', borderRadius: 10 }}
-                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDefDropdownOpen(!defDropdownOpen); setOffDropdownOpen(false); setTempoDropdownOpen(false); }}
-                  >
-                    <Text style={{ fontSize: 10, fontWeight: '600', color: '#aaa', marginBottom: 4 }}>DEFENSE</Text>
-                    <Text style={{ fontSize: 28, fontWeight: '900', color: '#FFFFFF', lineHeight: 32 }}>{liveDefKR}</Text>
-                    <Text style={{ fontSize: 10, fontWeight: '600', color: '#7B8794', marginTop: 4 }}>{selectedDefSystem}</Text>
-                  </Pressable>
-                </View>
-
-                {/* Offense system dropdown */}
-                {offDropdownOpen && (
-                  <View style={{ backgroundColor: '#2a2a3e', borderRadius: 12, marginBottom: 4, overflow: 'hidden' }}>
-                    {DNA_OFFENSE_POOL.map((sys) => (
-                      <Pressable
-                        key={sys}
-                        style={({ pressed }) => [{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 14, backgroundColor: selectedOffSystem === sys ? '#3a3a5e' : 'transparent' }, pressed && { opacity: 0.7 }]}
-                        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedOffSystem(sys); setOffDropdownOpen(false); }}
-                      >
-                        <Text style={{ fontSize: 14, fontWeight: selectedOffSystem === sys ? '700' : '500', color: selectedOffSystem === sys ? '#FFFFFF' : '#999' }}>{sys}</Text>
-                        <Text style={{ fontSize: 13, fontWeight: '700', color: '#FFFFFF' }}>{systemKRModifier(sys, baseOffKRHome)}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
-
-                {/* Defense system dropdown */}
-                {defDropdownOpen && (
-                  <View style={{ backgroundColor: '#2a2a3e', borderRadius: 12, marginBottom: 4, overflow: 'hidden' }}>
-                    {DNA_DEFENSE_POOL.map((sys) => (
-                      <Pressable
-                        key={sys}
-                        style={({ pressed }) => [{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 14, backgroundColor: selectedDefSystem === sys ? '#3a3a5e' : 'transparent' }, pressed && { opacity: 0.7 }]}
-                        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedDefSystem(sys); setDefDropdownOpen(false); }}
-                      >
-                        <Text style={{ fontSize: 14, fontWeight: selectedDefSystem === sys ? '700' : '500', color: selectedDefSystem === sys ? '#FFFFFF' : '#999' }}>{sys}</Text>
-                        <Text style={{ fontSize: 13, fontWeight: '700', color: '#FFFFFF' }}>{systemKRModifier(sys, baseDefKRHome)}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
-
-                {/* Tempo card */}
-                <Pressable
-                  style={{ alignItems: 'center', paddingVertical: 8, backgroundColor: tempoDropdownOpen ? '#3a3a5e' : '#2a2a3e', borderRadius: 10, marginBottom: 4 }}
-                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setTempoDropdownOpen(!tempoDropdownOpen); setOffDropdownOpen(false); setDefDropdownOpen(false); }}
-                >
-                  <Text style={{ fontSize: 10, fontWeight: '600', color: '#aaa', marginBottom: 2 }}>TEMPO</Text>
-                  <Text style={{ fontSize: 15, fontWeight: '800', color: '#FFFFFF' }}>{selectedTempo}</Text>
-                </Pressable>
-
-                {/* Tempo dropdown */}
-                {tempoDropdownOpen && (
-                  <View style={{ backgroundColor: '#2a2a3e', borderRadius: 12, marginBottom: 4, overflow: 'hidden' }}>
-                    {DNA_TEMPO_POOL.map((tempo) => (
-                      <Pressable
-                        key={tempo}
-                        style={({ pressed }) => [{ paddingVertical: 10, paddingHorizontal: 14, backgroundColor: selectedTempo === tempo ? '#3a3a5e' : 'transparent' }, pressed && { opacity: 0.7 }]}
-                        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedTempo(tempo); setTempoDropdownOpen(false); }}
-                      >
-                        <Text style={{ fontSize: 14, fontWeight: selectedTempo === tempo ? '700' : '500', color: selectedTempo === tempo ? '#FFFFFF' : '#999' }}>{tempo}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
-
-                <View style={{ height: 12 }} />
-
-                {/* System Drivers */}
-                <View style={{ alignItems: 'center', marginBottom: 10 }}>
-                  <View style={{ backgroundColor: colors.backgroundSecondary, paddingHorizontal: 14, paddingVertical: 5, borderRadius: 12 }}>
-                    <ThemedText style={{ fontSize: 11, fontWeight: '700', letterSpacing: 0.5, color: colors.textTertiary }}>SYSTEM DRIVERS</ThemedText>
-                  </View>
-                </View>
-
-                {/* Tappable avatars */}
-                <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 24, marginBottom: 12 }}>
-                  {leadersWithKR.map((player, i) => {
-                    const isActive = activeDriver === i;
-                    return (
-                      <Pressable key={player.firebaseId} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveDriver(i); }} style={{ alignItems: 'center' }}>
-                        <View style={{ width: 52, height: 52, borderRadius: 26, borderWidth: 2, borderColor: isActive ? '#fff' : colors.border, backgroundColor: colors.backgroundSecondary, justifyContent: 'center', alignItems: 'center', marginBottom: 6 }}>
-                          <IconSymbol name="person.fill" size={22} color={isActive ? '#fff' : colors.textTertiary} />
-                        </View>
-                        <ThemedText style={{ fontSize: 12, fontWeight: isActive ? '700' : '500', color: isActive ? '#fff' : colors.textTertiary }}>{player.name.split(' ')[0]} {player.name.split(' ').slice(1).join(' ')}</ThemedText>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-
-                {/* Active driver detail card */}
-                {(() => {
-                  const p = leadersWithKR[activeDriver];
-                  if (!p) return null;
-                  const arch = jerseyArchetypeMap.get(p.number) ?? 'Role Player';
-                  const posPool = POSITIVE_IMPACT[arch] ?? POSITIVE_IMPACT['Role Player'];
-                  const negPool = NEGATIVE_IMPACT[arch] ?? NEGATIVE_IMPACT['Role Player'];
-                  // Top players get more positives
-                  const positives = [posPool[0], posPool[1]];
-                  const negatives = [negPool[0], negPool[1]];
+                ) : recentPregame ? (() => {
+                  const opp = buildOpponentDepthChart(recentPregame);
+                  const oppSys = parseDNASystems(recentPregame.theirDNA);
+                  const threats2 = recentPregame.oppThreats ?? [];
+                  const oppStatLeaders2 = [
+                    { label: 'PPG', name: threats2[0]?.name.split(' ').slice(1).join(' ') ?? '—', value: ((threats2[0]?.kr ?? 60) * 0.28 + 3.5).toFixed(1) },
+                    { label: 'RPG', name: threats2[2]?.name.split(' ').slice(1).join(' ') ?? threats2[1]?.name.split(' ').slice(1).join(' ') ?? '—', value: ((threats2[2]?.kr ?? threats2[1]?.kr ?? 60) * 0.09 + 2.0).toFixed(1) },
+                    { label: 'APG', name: threats2[1]?.name.split(' ').slice(1).join(' ') ?? '—', value: ((threats2[1]?.kr ?? 60) * 0.06 + 1.5).toFixed(1) },
+                  ];
                   return (
-                    <View style={[shStyles.card, { backgroundColor: colors.backgroundSecondary, padding: 14 }]}>
-                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                        <ThemedText style={{ fontSize: 15, fontWeight: '700', color: colors.text }}>
-                          {p.name} <ThemedText style={{ fontWeight: '400', color: colors.textTertiary }}>— {arch}</ThemedText>
-                        </ThemedText>
-                        <ThemedText style={{ fontSize: 14, fontWeight: '700', color: colors.text }}>{p.kr} KR</ThemedText>
-                      </View>
-                      {positives.map((reason, ri) => (
-                        <View key={`pos-${ri}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 6 }}>
-                          <Text style={{ fontSize: 14, fontWeight: '700', color: '#4ADE80', marginRight: 8, width: 14 }}>+</Text>
-                          <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{reason}</ThemedText>
-                        </View>
-                      ))}
-                      {negatives.map((reason, ri) => (
-                        <View key={`neg-${ri}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: ri < negatives.length - 1 ? 6 : 0 }}>
-                          <Text style={{ fontSize: 14, fontWeight: '700', color: '#EF4444', marginRight: 8, width: 14 }}>–</Text>
-                          <ThemedText style={{ fontSize: 13, color: colors.text, flex: 1 }}>{reason}</ThemedText>
-                        </View>
-                      ))}
-                    </View>
+                    <>
+                      {(() => {
+                        const ourKR = recentPregame.oppKR + recentPregame.krGap;
+                        const spread = Math.round(recentPregame.krGap * 0.4);
+                        const spreadStr = spread > 0 ? `FMU -${Math.abs(spread)}.5` : spread < 0 ? `FMU +${Math.abs(spread)}.5` : 'PK';
+                        const winPct = Math.min(92, Math.max(28, Math.round(50 + recentPregame.krGap * 0.8)));
+                        const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
+                        const oppProj = Math.round(72 + (recentPregame.oppKR - 60) * 0.3);
+                        const simConf = Math.min(95, Math.max(55, Math.round(70 + Math.abs(recentPregame.krGap) * 0.6)));
+                        const keys = (recentPregame.ourEdge ?? []).slice(0, 3);
+                        return (
+                          <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#1a1a1a', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
+                            {/* Gambling-level metrics row */}
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>LINE</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: '#f5f5f5' }}>{spreadStr}</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>WIN%</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#4ade80' : winPct <= 40 ? '#f87171' : '#fbbf24' }}>{winPct}%</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>TOTAL</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: '#f5f5f5' }}>{fmuProj + oppProj}.5</Text>
+                              </View>
+                              <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>CONF</Text>
+                                <View style={{ backgroundColor: '#2563eb20', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
+                                  <Text style={{ fontSize: 13, fontWeight: '800', color: '#60a5fa' }}>Sim {simConf}%</Text>
+                                </View>
+                              </View>
+                            </View>
+                            {/* Projection strip */}
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#2a2a2a', borderRadius: 8, paddingVertical: 6, marginBottom: 10 }}>
+                              <Text style={{ fontSize: 15, fontWeight: '800', color: fmuProj >= oppProj ? '#4ade80' : '#f87171' }}>{fmuProj >= oppProj ? 'W' : 'L'} {fmuProj}–{oppProj}</Text>
+                            </View>
+                            {/* Keys (mini) */}
+                            {keys.length > 0 && keys.map((key: string, i: number) => (
+                              <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: i < keys.length - 1 ? 6 : 0 }}>
+                                <Text style={{ fontSize: 12, fontWeight: '800', color: '#888', width: 18 }}>{i + 1})</Text>
+                                <Text style={{ fontSize: 12, color: '#ccc', flex: 1, lineHeight: 17 }}>{key}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        );
+                      })()}
+                      <UnitsView
+                        depthChart={opp.depthChart}
+                        playerClusters={opp.playerClusters}
+                        playerPhysicals={opp.playerPhysicals}
+                        initialOffStyle={oppSys.off}
+                        initialDefStyle={oppSys.def}
+                        initialTempo={oppSys.tempo}
+                        hideSystems
+                        statLeaders={oppStatLeaders2}
+                      />
+                    </>
                   );
-                })()}
-
+                })() : null}
             </>
           );
         })()}
       </BottomSheet>
+
+      {/* ===== TEAM QUICK SHEET ===== */}
+      <TeamQuickSheet
+        visible={teamSheetOpen}
+        onClose={closeTeamSheet}
+        teamKR={liveTeamKR}
+        offKR={liveOffKR}
+        defKR={liveDefKR}
+        offSystemName={selectedOffSystem}
+        defSystemName={selectedDefSystem}
+      />
     </View>
   );
 }
@@ -2928,19 +2809,19 @@ const styles = StyleSheet.create({
 
   // Section Title
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    letterSpacing: 0.5,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 1.2,
     marginBottom: Spacing.sm,
-    marginTop: Spacing.md,
+    marginTop: Spacing.lg,
   },
 
-  // ===== SPORTS HOME STYLES (v1.1) =====
+  // ===== SPORTS HOME STYLES (v2) =====
 
   // Team Hub Tabs (ESPN-style header row)
   hubTabsContainer: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingTop: 6,
+    paddingTop: 4,
   },
   hubTabsContent: {
     paddingHorizontal: Spacing.lg,
@@ -2952,22 +2833,23 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   hubTabActive: {
-    borderBottomWidth: 2,
+    borderBottomWidth: 2.5,
   },
   hubTabLabel: {
     fontSize: 14,
     fontWeight: '500',
+    letterSpacing: 0.2,
   },
   hubTabLabelActive: {
-    fontWeight: '600',
+    fontWeight: '700',
   },
 
   // Team Truth Header
   teamStateSection: {
-    alignItems: 'flex-start',
     paddingTop: Spacing.xl,
-    paddingBottom: 0,
+    paddingBottom: Spacing.md,
     paddingHorizontal: Spacing.md,
+    gap: 14,
   },
   ratingRow: {
     flexDirection: 'row',
@@ -3094,8 +2976,10 @@ const styles = StyleSheet.create({
 
   // Program Context Card
   contextCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.04)',
   },
   contextDivider: {
     height: StyleSheet.hairlineWidth,
@@ -3104,14 +2988,14 @@ const styles = StyleSheet.create({
 
   // Status Row (for Current Status card)
   statusRow: {
-    paddingVertical: 12,
+    paddingVertical: 13,
     paddingHorizontal: Spacing.md,
     gap: 4,
   },
   statusRowTappable: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 13,
     paddingHorizontal: Spacing.md,
   },
   statusRowContent: {
@@ -3119,13 +3003,27 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   statusLabel: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.3,
   },
   statusValue: {
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: '500',
   },
+
+  // Conference Pulse
+  pulseChip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  pulseChipText: { fontSize: 12, fontWeight: '600' },
+  pulseChipRow: { flexDirection: 'row', gap: 8, flexWrap: 'wrap', marginTop: 6 },
+  pulseGameRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
+  pulseGameText: { fontSize: 13, fontWeight: '500' },
+  pulseConfChip: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10 },
+  pulseConfChipText: { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
+  pulseFooter: { paddingVertical: 14, paddingHorizontal: Spacing.md, alignItems: 'center' },
+  pulseFooterText: { fontSize: 13, fontWeight: '600' },
+  pulseSimChip: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, marginLeft: 10 },
+  pulseSimText: { fontSize: 10, fontWeight: '800', letterSpacing: 0.3 },
 
   // Pregame Packet Button
   pregamePacketButton: {
@@ -3133,37 +3031,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     marginBottom: Spacing.md,
-    gap: 10,
+    gap: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
   },
   pregamePacketText: {
     flex: 1,
     fontSize: 15,
     fontWeight: '600',
+    letterSpacing: -0.2,
   },
 
   // Next Game Card (Home)
   nextGameCardHome: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     padding: Spacing.md,
     marginBottom: Spacing.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.04)',
   },
   nextLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-    marginBottom: 4,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1,
+    marginBottom: 5,
   },
   nextOpponent: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '700',
+    letterSpacing: -0.3,
   },
   nextMeta: {
     fontSize: 13,
-    marginTop: 2,
+    fontWeight: '500',
+    marginTop: 3,
   },
 
   // Recent (Last 3) Section
@@ -3174,9 +3079,9 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   miniStreakBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 10,
     marginTop: Spacing.md,
   },
   miniStreakText: {
@@ -3187,35 +3092,37 @@ const styles = StyleSheet.create({
   recentRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: Spacing.md,
   },
   recentOpponent: {
     fontSize: 15,
     fontWeight: '600',
+    letterSpacing: -0.2,
   },
   recentMeta: {
     fontSize: 12,
+    fontWeight: '500',
     marginTop: 2,
   },
   recentRight: {
     alignItems: 'flex-end',
-    gap: 4,
+    gap: 5,
     marginLeft: 12,
   },
   recentPill: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 10,
   },
   recentPillText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '800',
     letterSpacing: 0.5,
   },
   recentScore: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
   },
   upcomingDateTime: {
     fontSize: 14,
@@ -3225,17 +3132,18 @@ const styles = StyleSheet.create({
   // BPR inline panel (recent games)
   bprPanel: {
     paddingHorizontal: Spacing.md,
-    paddingTop: 4,
+    paddingTop: 6,
     paddingBottom: Spacing.md,
   },
   bprPanelRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 7,
+    paddingVertical: 8,
   },
   bprPanelName: {
     fontSize: 14,
     fontWeight: '600',
+    letterSpacing: -0.2,
   },
   bprPanelValue: {
     fontSize: 13,
@@ -3247,8 +3155,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   bprPanelKr: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
     marginLeft: 12,
   },
 
@@ -3257,23 +3165,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: Spacing.md,
-    gap: 8,
+    gap: 10,
   },
   scheduleDateCol: {
     width: 70,
   },
   scheduleDateText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: -0.2,
   },
   scheduleLocationText: {
     fontSize: 12,
+    fontWeight: '500',
     marginTop: 2,
   },
   scheduleOpponent: {
     flex: 1,
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: '600',
+    letterSpacing: -0.2,
   },
 
   // Action Card
@@ -3281,14 +3192,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: Spacing.md,
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: 1,
     marginBottom: Spacing.sm,
   },
   actionIcon: {
     width: 44,
     height: 44,
-    borderRadius: BorderRadius.md,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: Spacing.sm,
@@ -3299,15 +3210,17 @@ const styles = StyleSheet.create({
   actionTitle: {
     fontSize: 15,
     fontWeight: '600',
+    letterSpacing: -0.2,
   },
   actionSubtitle: {
     fontSize: 13,
+    fontWeight: '400',
     marginTop: 2,
   },
 
   // Info Card
   infoCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: 1,
     overflow: 'hidden',
   },
@@ -3319,10 +3232,11 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 14,
+    fontWeight: '500',
   },
   infoValue: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   infoDivider: {
     height: StyleSheet.hairlineWidth,
@@ -3334,7 +3248,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: Spacing.md,
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     marginBottom: Spacing.lg,
   },
   highlightContent: {
@@ -3343,12 +3257,14 @@ const styles = StyleSheet.create({
   highlightTitle: {
     color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: -0.3,
   },
   highlightSubtitle: {
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 13,
-    marginTop: 2,
+    fontWeight: '500',
+    marginTop: 3,
   },
 
   // Event Row
@@ -3356,35 +3272,38 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: Spacing.md,
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: 1,
     marginBottom: Spacing.sm,
   },
   eventDate: {
     width: 48,
     height: 48,
-    borderRadius: BorderRadius.md,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: Spacing.sm,
   },
   eventMonth: {
     fontSize: 10,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   eventDay: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   eventInfo: {
     flex: 1,
   },
   eventTitle: {
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: '600',
+    letterSpacing: -0.2,
   },
   eventDesc: {
     fontSize: 13,
+    fontWeight: '400',
     marginTop: 2,
   },
 

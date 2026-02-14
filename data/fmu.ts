@@ -155,9 +155,9 @@ export const FMU_GAMES: FMUGame[] = tgl2526.map((g, i) => {
   const isToday = d != null && d >= TODAY_START && d < TODAY_END;
   const isLive = isToday && !hasResult;
   const dateVenue = d ? venueByDate.get(`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`) ?? undefined : undefined;
-  // Placeholder live game for demo
-  const isTuskegeeLive = g.opponent === 'Tuskegee';
-  const effectiveLive = isLive || isTuskegeeLive;
+  // Placeholder live game for demo — toggle to false for non-game-day view
+  const isTuskegeeLive = false; // g.opponent === 'Tuskegee';
+  const effectiveLive = isTuskegeeLive;
   return {
     id: `fmu-2526-${String(i).padStart(2, '0')}`,
     opponent: g.opponent ?? 'Unknown',
@@ -813,7 +813,7 @@ const CANONICAL_CLUSTERS: { cluster: string; subclusters: string[] }[] = [
   { cluster: 'Shooting', subclusters: ['Spot-Up', 'Off-Screen', 'Pull-Up', 'Catch & Shoot', 'Free Throw'] },
   { cluster: 'Finishing', subclusters: ['Rim Finishing', 'Floater', 'Mid-Range', 'Post-Up'] },
   { cluster: 'Playmaking', subclusters: ['Ball Handling', 'Passing', 'PnR Creation', 'Transition'] },
-  { cluster: 'On-Ball Defense', subclusters: ['Perimeter Containment', 'On-Ball Pressure', 'Isolation D'] },
+  { cluster: 'OB Defense', subclusters: ['Perimeter Containment', 'On-Ball Pressure', 'Isolation D'] },
   { cluster: 'Team Defense', subclusters: ['Help & Rotate', 'Rim Protection', 'Closeout'] },
   { cluster: 'Rebounding', subclusters: ['Offensive Glass', 'Defensive Glass', 'Box Out'] },
   { cluster: 'Physical', subclusters: ['Frame', 'Athleticism', 'Endurance'] },
@@ -1240,30 +1240,42 @@ export const FMU_GAME_FLOW: Record<string, ScoreSnapshot[]> = Object.fromEntries
   }),
 );
 
-// ── 6) News (auto-generated from game results) ──
+// ── 6) News (auto-generated from game results + curated highlights) ──
 
 export interface NewsItem {
   id: string;
   headline: string;
   date: string;
-  type: string;
+  type: 'Recap' | 'Highlights';
 }
 
-export const FMU_NEWS: NewsItem[] = tgl2526
+// Curated highlights keyed by opponent name → inserted after the matching recap
+const HIGHLIGHTS: Record<string, { headline: string }> = {
+  'Tougaloo (MS)': { headline: 'Devin Carter Drops Career-High 38 Points in Season-Opening Blowout' },
+  'Ave Maria': { headline: 'Jeffery Selden Records First Triple-Double in FMU History' },
+  'Webber International (FL)': { headline: 'Cameron Noel\'s Buzzer-Beating Three Caps 15-0 Run to Stun Webber' },
+  'Coastal Georgia': { headline: 'FMU Defense Holds Coastal Georgia to Season-Low 48 Points' },
+  'Southeastern': { headline: 'Devin Carter & Cameron Noel Combine for 52 in Road Win at Southeastern' },
+};
+
+const recaps: NewsItem[] = tgl2526
   .filter((g) => g.result && g.opponent)
-  .map((g, i) => {
+  .flatMap((g, i) => {
     const isWin = g.result === 'W';
     const headline = isWin
       ? `FMU Defeats ${g.opponent} ${g.fmu_score}-${g.opp_score}`
       : `FMU Falls to ${g.opponent} ${g.fmu_score}-${g.opp_score}`;
-    return {
-      id: `news-${i}`,
-      headline,
-      date: g.game_date ?? '',
-      type: 'Recap',
-    };
-  })
-  .reverse(); // Most recent first
+    const items: NewsItem[] = [
+      { id: `news-${i}`, headline, date: g.game_date ?? '', type: 'Recap' },
+    ];
+    const hl = HIGHLIGHTS[g.opponent ?? ''];
+    if (hl && isWin) {
+      items.push({ id: `hl-${i}`, headline: hl.headline, date: g.game_date ?? '', type: 'Highlights' });
+    }
+    return items;
+  });
+
+export const FMU_NEWS: NewsItem[] = recaps.reverse(); // Most recent first
 
 // ── 7) Standings (Sun Conference — FMU record) ──
 

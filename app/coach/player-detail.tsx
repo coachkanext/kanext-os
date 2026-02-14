@@ -1,6 +1,7 @@
 /**
  * Player Detail Page — Full player profile from National Pool.
- * Displays hero card, identity, ratings accordion, season stats, and team context.
+ * Displays hero card with real KR, identity, ratings accordion with subclusters,
+ * all season stats, similar players, and team context with navigation.
  */
 
 import React, { useState, useMemo } from 'react';
@@ -18,9 +19,10 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { PLAYER_POOL } from '@/data/playerPool';
-import { getLatestSeason } from '@/data/playerSeasons';
+import { getPlayerSeasons } from '@/data/playerSeasons';
+import { getPlayerRatings, getPoolPlayerSubclusters } from '@/data/playerRatings';
 import { TRADITIONAL_TO_HELIO, HELIO_POSITION_LABELS } from '@/data/position-mapping';
-import { TRAIT_LIBRARY, SORT_CLUSTER_LABELS, CLUSTER_ORDER } from '@/data/trait-library';
+import { SORT_CLUSTER_LABELS, CLUSTER_ORDER } from '@/data/trait-library';
 import type { ClusterType } from '@/types';
 
 const BG = '#0F1115';
@@ -35,7 +37,8 @@ export default function PlayerDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const player = useMemo(() => PLAYER_POOL.find((p) => p.id === id), [id]);
-  const season = useMemo(() => (player ? getLatestSeason(player.id) : null), [player]);
+  const ratings = useMemo(() => (player ? getPlayerRatings(player.id) : null), [player]);
+  const seasons = useMemo(() => (player ? getPlayerSeasons(player.id) : []), [player]);
 
   // Weekly update tabs
   const [weeklyTab, setWeeklyTab] = useState('this_week');
@@ -48,6 +51,19 @@ export default function PlayerDetailScreen() {
 
   // Ratings accordion
   const [expandedCluster, setExpandedCluster] = useState<ClusterType | null>(null);
+
+  // Similar players: 3 closest-KR players at same position
+  const similarPlayers = useMemo(() => {
+    if (!player || !ratings) return [];
+    return PLAYER_POOL
+      .filter((p) => p.id !== player.id && p.position === player.position)
+      .map((p) => {
+        const r = getPlayerRatings(p.id);
+        return { player: p, kr: r?.overall ?? 0, diff: Math.abs((r?.overall ?? 0) - ratings.overall) };
+      })
+      .sort((a, b) => a.diff - b.diff)
+      .slice(0, 3);
+  }, [player, ratings]);
 
   if (!player) {
     return (
@@ -64,6 +80,9 @@ export default function PlayerDetailScreen() {
 
   const helioPos = TRADITIONAL_TO_HELIO[player.position];
   const helioLabel = helioPos ? HELIO_POSITION_LABELS[helioPos] : player.position;
+  const overallKR = ratings?.overall ?? 0;
+  const offKR = ratings ? Math.round((ratings.clusters.shooting + ratings.clusters.finishing + ratings.clusters.playmaking) / 3) : 0;
+  const defKR = ratings ? Math.round((ratings.clusters.perimeter_defense + ratings.clusters.interior_defense + ratings.clusters.rebounding + ratings.clusters.frame) / 4) : 0;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -94,14 +113,22 @@ export default function PlayerDetailScreen() {
           <View style={styles.heroRow}>
             <View style={styles.krBadge}>
               <ThemedText style={styles.krLabel}>KR</ThemedText>
-              <ThemedText style={styles.krValue}>&mdash;</ThemedText>
+              <ThemedText style={styles.krValue}>{overallKR || '\u2014'}</ThemedText>
+            </View>
+            <View style={styles.krBadgeSmall}>
+              <ThemedText style={styles.krLabelSmall}>OFF</ThemedText>
+              <ThemedText style={styles.krValueSmall}>{offKR || '\u2014'}</ThemedText>
+            </View>
+            <View style={styles.krBadgeSmall}>
+              <ThemedText style={styles.krLabelSmall}>DEF</ThemedText>
+              <ThemedText style={styles.krValueSmall}>{defKR || '\u2014'}</ThemedText>
             </View>
             <View style={styles.heroPill}>
               <ThemedText style={styles.heroPillText}>{helioPos ?? player.position}</ThemedText>
             </View>
           </View>
           <ThemedText style={styles.heroSchool}>
-            {player.currentSchool} · {player.conference} · {player.level}
+            {player.currentSchool} {'\u00B7'} {player.conference} {'\u00B7'} {player.level}
           </ThemedText>
         </View>
 
@@ -147,12 +174,18 @@ export default function PlayerDetailScreen() {
           </View>
         </View>
 
-        {/* 4. Ratings Block (Accordion) */}
+        {/* 4. Ratings Block (Accordion with real data) */}
         <View style={styles.sectionCard}>
           <ThemedText style={styles.sectionTitle}>RATINGS</ThemedText>
           {CLUSTER_ORDER.map((cluster) => {
             const isExpanded = expandedCluster === cluster;
-            const subTraits = TRAIT_LIBRARY[cluster];
+            const clusterVal = ratings?.clusters[cluster];
+            const valColor = clusterVal != null
+              ? (clusterVal >= 70 ? '#4CAF50' : clusterVal >= 55 ? '#FF9800' : '#EF4444')
+              : GRAY;
+            const subclusters = isExpanded && ratings
+              ? getPoolPlayerSubclusters(player.id, cluster, clusterVal!)
+              : [];
             return (
               <View key={cluster}>
                 <Pressable
@@ -166,7 +199,9 @@ export default function PlayerDetailScreen() {
                     {SORT_CLUSTER_LABELS[cluster]}
                   </ThemedText>
                   <View style={styles.clusterRight}>
-                    <ThemedText style={styles.clusterValue}>&mdash;</ThemedText>
+                    <ThemedText style={[styles.clusterValue, { color: valColor }]}>
+                      {clusterVal ?? '\u2014'}
+                    </ThemedText>
                     <IconSymbol
                       name={isExpanded ? 'chevron.up' : 'chevron.down'}
                       size={12}
@@ -176,12 +211,15 @@ export default function PlayerDetailScreen() {
                 </Pressable>
                 {isExpanded && (
                   <View style={styles.subTraitList}>
-                    {subTraits.map((st) => (
-                      <View key={st.id} style={styles.subTraitRow}>
-                        <ThemedText style={styles.subTraitLabel}>{st.label}</ThemedText>
-                        <ThemedText style={styles.subTraitValue}>&mdash;</ThemedText>
-                      </View>
-                    ))}
+                    {subclusters.map((sc) => {
+                      const scColor = sc.rating >= 70 ? '#4CAF50' : sc.rating >= 55 ? '#FF9800' : '#EF4444';
+                      return (
+                        <View key={sc.name} style={styles.subTraitRow}>
+                          <ThemedText style={styles.subTraitLabel}>{sc.name}</ThemedText>
+                          <ThemedText style={[styles.subTraitValue, { color: scColor }]}>{sc.rating}</ThemedText>
+                        </View>
+                      );
+                    })}
                   </View>
                 )}
               </View>
@@ -189,23 +227,25 @@ export default function PlayerDetailScreen() {
           })}
         </View>
 
-        {/* 5. Performance Block */}
+        {/* 5. All Season Stats */}
         <View style={styles.sectionCard}>
           <ThemedText style={styles.sectionTitle}>SEASON STATS</ThemedText>
-          {season ? (
-            <>
-              <ThemedText style={styles.seasonLabel}>{season.season} · {season.school}</ThemedText>
-              <View style={styles.statsGrid}>
-                <StatBox label="GP" value={String(season.gp)} />
-                <StatBox label="MPG" value={season.mpg.toFixed(1)} />
-                <StatBox label="PPG" value={season.ppg.toFixed(1)} />
-                <StatBox label="RPG" value={season.rpg.toFixed(1)} />
-                <StatBox label="APG" value={season.apg.toFixed(1)} />
-                <StatBox label="FG%" value={`${season.fgPct}%`} />
-                <StatBox label="3P%" value={season.threePct > 0 ? `${season.threePct}%` : '\u2014'} />
-                <StatBox label="FT%" value={`${season.ftPct}%`} />
+          {seasons.length > 0 ? (
+            seasons.map((season) => (
+              <View key={season.season} style={styles.seasonBlock}>
+                <ThemedText style={styles.seasonLabel}>{season.season} {'\u00B7'} {season.school}</ThemedText>
+                <View style={styles.statsGrid}>
+                  <StatBox label="GP" value={String(season.gp)} />
+                  <StatBox label="MPG" value={season.mpg.toFixed(1)} />
+                  <StatBox label="PPG" value={season.ppg.toFixed(1)} />
+                  <StatBox label="RPG" value={season.rpg.toFixed(1)} />
+                  <StatBox label="APG" value={season.apg.toFixed(1)} />
+                  <StatBox label="FG%" value={`${season.fgPct}%`} />
+                  <StatBox label="3P%" value={season.threePct > 0 ? `${season.threePct}%` : '\u2014'} />
+                  <StatBox label="FT%" value={`${season.ftPct}%`} />
+                </View>
               </View>
-            </>
+            ))
           ) : (
             <ThemedText style={styles.emptyText}>No season data available</ThemedText>
           )}
@@ -214,24 +254,44 @@ export default function PlayerDetailScreen() {
         {/* 6. Similar Players */}
         <View style={styles.sectionCard}>
           <ThemedText style={styles.sectionTitle}>SIMILAR PLAYERS</ThemedText>
-          <ThemedText style={styles.emptyText}>
-            Similar players available when rating data exists.
-          </ThemedText>
+          {similarPlayers.length > 0 ? (
+            similarPlayers.map(({ player: sp, kr }) => (
+              <Pressable
+                key={sp.id}
+                style={styles.similarRow}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push({ pathname: '/coach/player-detail', params: { id: sp.id } } as any);
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <ThemedText style={styles.similarName}>{sp.firstName} {sp.lastName}</ThemedText>
+                  <ThemedText style={styles.similarMeta}>{sp.position} {'\u00B7'} {sp.currentSchool} {'\u00B7'} {sp.level}</ThemedText>
+                </View>
+                <View style={styles.similarKR}>
+                  <ThemedText style={styles.similarKRLabel}>KR</ThemedText>
+                  <ThemedText style={styles.similarKRValue}>{kr}</ThemedText>
+                </View>
+              </Pressable>
+            ))
+          ) : (
+            <ThemedText style={styles.emptyText}>
+              No similar players found at this position.
+            </ThemedText>
+          )}
         </View>
 
         {/* 7. Team Context */}
         <View style={styles.sectionCard}>
           <ThemedText style={styles.sectionTitle}>TEAM CONTEXT</ThemedText>
           <ThemedText style={styles.teamContextText}>
-            {player.currentSchool} · {player.conference} · {player.level}
+            {player.currentSchool} {'\u00B7'} {player.conference} {'\u00B7'} {player.level}
           </ThemedText>
           <Pressable
             style={styles.viewTeamBtn}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.back();
-              // Navigate back and set team filter — handled by parent via params
-              router.setParams({ filterTeam: player.currentSchool });
+              router.push({ pathname: '/coach/team-detail', params: { team: player.currentSchool } } as any);
             }}
           >
             <ThemedText style={styles.viewTeamBtnText}>View Team</ThemedText>
@@ -339,6 +399,26 @@ const styles = StyleSheet.create({
   },
   krValue: {
     fontSize: 16,
+    fontWeight: '700',
+    color: WHITE,
+  },
+  krBadgeSmall: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: DIVIDER,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  krLabelSmall: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: GRAY,
+    letterSpacing: 0.3,
+  },
+  krValueSmall: {
+    fontSize: 13,
     fontWeight: '700',
     color: WHITE,
   },
@@ -473,6 +553,9 @@ const styles = StyleSheet.create({
   },
 
   // Season stats
+  seasonBlock: {
+    marginBottom: 12,
+  },
   seasonLabel: {
     fontSize: 12,
     color: GRAY,
@@ -500,6 +583,44 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: GRAY,
     marginTop: 2,
+  },
+
+  // Similar players
+  similarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: DIVIDER,
+  },
+  similarName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: WHITE,
+  },
+  similarMeta: {
+    fontSize: 12,
+    color: GRAY,
+    marginTop: 2,
+  },
+  similarKR: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: DIVIDER,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  similarKRLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: GRAY,
+  },
+  similarKRValue: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: WHITE,
   },
 
   // Empty text

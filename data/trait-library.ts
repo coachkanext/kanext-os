@@ -87,8 +87,8 @@ export const SORT_CLUSTER_LABELS: Record<ClusterType, string> = {
   shooting: 'Shooting',
   finishing: 'Finishing',
   playmaking: 'Playmaking',
-  perimeter_defense: 'Perimeter Defense',
-  interior_defense: 'Interior Defense',
+  perimeter_defense: 'OB Defense',
+  interior_defense: 'Team Defense',
   rebounding: 'Rebounding',
   frame: 'Physical',
 };

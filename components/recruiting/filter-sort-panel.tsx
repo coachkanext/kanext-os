@@ -15,6 +15,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import type { HeliocentricPosition, ClusterType } from '@/types';
 import type { PoolLevel } from '@/data/playerPool';
+import type { Archetype } from '@/data/system-demand-profiles';
 
 const BG = '#0F1115';
 const CARD_BG = '#1A1D23';
@@ -31,6 +32,9 @@ export interface NationalPoolFilters {
   positions: HeliocentricPosition[];
   sortCluster: ClusterType | null;
   sortSubTrait: string | null;
+  sortDirection: 'desc' | 'asc';
+  archetypes: Archetype[];
+  weeklyUpdate: string[];
   search: string;
 }
 
@@ -41,6 +45,9 @@ export const DEFAULT_FILTERS: NationalPoolFilters = {
   positions: [],
   sortCluster: null,
   sortSubTrait: null,
+  sortDirection: 'desc',
+  archetypes: [],
+  weeklyUpdate: [],
   search: '',
 };
 

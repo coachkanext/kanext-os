@@ -30,6 +30,54 @@ const ALL_CLUSTERS: (keyof ClusterRatings)[] = [
   'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
 ];
 
+// ── Position Trait Weighting (College Level) ──
+// Each position values clusters differently. Weights sum to 100 per position.
+// Derived from spec: OKR/DKR/TKR splits × sub-cluster percentages, normalized.
+
+const POSITION_WEIGHTS: Record<string, Record<keyof ClusterRatings, number>> = {
+  PG: { shooting: 18, finishing: 9,  playmaking: 27, perimeter_defense: 26, interior_defense: 6,  rebounding: 8,  frame: 6  },
+  CG: { shooting: 21, finishing: 12, playmaking: 21, perimeter_defense: 20, interior_defense: 8,  rebounding: 9,  frame: 9  },
+  W:  { shooting: 16, finishing: 13, playmaking: 11, perimeter_defense: 18, interior_defense: 10, rebounding: 12, frame: 20 },
+  F:  { shooting: 11, finishing: 16, playmaking: 9,  perimeter_defense: 12, interior_defense: 16, rebounding: 14, frame: 22 },
+  B:  { shooting: 5,  finishing: 21, playmaking: 4,  perimeter_defense: 7,  interior_defense: 25, rebounding: 14, frame: 24 },
+};
+
+// ── Position-Based Archetype Derivation ──
+// Ranked candidates per position. First match (all thresholds met) wins.
+
+const POSITION_ARCHETYPES: Record<string, { archetype: Archetype; requires: Partial<Record<keyof ClusterRatings, number>> }[]> = {
+  PG: [
+    { archetype: 'pick_and_roll_operator', requires: { playmaking: 72, shooting: 65 } },
+    { archetype: 'primary_ball_handler', requires: { playmaking: 75 } },
+    { archetype: 'dho_handoff_hub', requires: { playmaking: 68, shooting: 60 } },
+    { archetype: 'connector_guard_wing', requires: { playmaking: 60 } },
+  ],
+  CG: [
+    { archetype: 'spot_up_specialist', requires: { shooting: 75 } },
+    { archetype: 'secondary_creator_wing', requires: { playmaking: 65, shooting: 60 } },
+    { archetype: 'off_ball_shooter', requires: { shooting: 70 } },
+    { archetype: 'three_and_d_wing', requires: { shooting: 68, perimeter_defense: 65 } },
+  ],
+  W: [
+    { archetype: 'two_way_wing', requires: { shooting: 65, perimeter_defense: 65 } },
+    { archetype: 'slasher_rim_pressure_wing', requires: { finishing: 70 } },
+    { archetype: 'three_and_d_wing', requires: { shooting: 70, perimeter_defense: 60 } },
+    { archetype: 'switchable_defender_wing', requires: { perimeter_defense: 70, frame: 60 } },
+  ],
+  F: [
+    { archetype: 'stretch_big', requires: { shooting: 65, frame: 60 } },
+    { archetype: 'small_ball_big', requires: { perimeter_defense: 60, frame: 65 } },
+    { archetype: 'connector_guard_wing', requires: { playmaking: 60, shooting: 55 } },
+    { archetype: 'rebounding_interior_enforcer', requires: { rebounding: 70, frame: 65 } },
+  ],
+  B: [
+    { archetype: 'rim_protector_anchor', requires: { interior_defense: 70, frame: 65 } },
+    { archetype: 'post_hub_facilitator_big', requires: { finishing: 65, playmaking: 55 } },
+    { archetype: 'vertical_spacer', requires: { finishing: 70, frame: 60 } },
+    { archetype: 'rebounding_interior_enforcer', requires: { rebounding: 70, interior_defense: 60 } },
+  ],
+};
+
 const OFF_CLUSTERS: (keyof ClusterRatings)[] = ['shooting', 'finishing', 'playmaking'];
 const DEF_CLUSTERS: (keyof ClusterRatings)[] = ['perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
 
@@ -57,6 +105,60 @@ export function computeFitKR(
     clusters.frame * dw.frame;
 
   return Math.round((offScore + defScore) / 100);
+}
+
+/**
+ * Compute a player's KR through a position lens.
+ * Uses position-specific cluster weights instead of system weights.
+ * Falls back to system-based KR if position is unknown.
+ */
+export function computePositionKR(
+  clusters: ClusterRatings,
+  position: string,
+): number {
+  const weights = POSITION_WEIGHTS[position];
+  if (!weights) return computeFitKR(clusters, 'motion_read_react', 'pack_line');
+  let sum = 0;
+  for (const key of ALL_CLUSTERS) {
+    sum += clusters[key] * weights[key];
+  }
+  return Math.round(sum / 100);
+}
+
+/**
+ * Check whether a player's cluster profile qualifies for at least one archetype
+ * at the given position. Used by the Lineup Lens to determine which slots a
+ * player can feasibly fill — derived from the canonical archetype thresholds.
+ */
+export function canPlayPosition(
+  clusters: ClusterRatings,
+  targetPosition: string, // abbreviation: PG, CG, W, F, B
+): boolean {
+  const candidates = POSITION_ARCHETYPES[targetPosition] ?? [];
+  return candidates.some(({ requires }) =>
+    Object.entries(requires).every(
+      ([key, threshold]) => clusters[key as keyof ClusterRatings] >= (threshold as number),
+    ),
+  );
+}
+
+/**
+ * Derive a player's archetype based on their cluster ratings and current position.
+ * Iterates through position-specific archetype candidates in priority order;
+ * first candidate where all cluster thresholds are met wins.
+ */
+export function deriveArchetype(
+  clusters: ClusterRatings,
+  position: string,
+): Archetype {
+  const candidates = POSITION_ARCHETYPES[position] ?? [];
+  for (const { archetype, requires } of candidates) {
+    const qualified = Object.entries(requires).every(
+      ([key, threshold]) => clusters[key as keyof ClusterRatings] >= threshold,
+    );
+    if (qualified) return archetype;
+  }
+  return candidates.length > 0 ? candidates[candidates.length - 1].archetype : 'two_way_wing';
 }
 
 /**
@@ -120,9 +222,7 @@ export function getClusterDrivers(
       cluster: key,
       label: CLUSTER_LABELS[key as ClusterType]?.label ?? key,
       value: avgClusters[key],
-    }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 3);
+    }));
 }
 
 /**
@@ -159,10 +259,10 @@ const CLUSTER_DRIVER_LABELS: Record<keyof ClusterRatings, string> = {
   shooting: 'Shooting',
   finishing: 'Finishing',
   playmaking: 'Playmaking',
-  perimeter_defense: 'Perimeter D',
-  interior_defense: 'Interior D',
+  perimeter_defense: 'OB Defense',
+  interior_defense: 'Team Defense',
   rebounding: 'Rebounding',
-  frame: 'Frame',
+  frame: 'Physical',
 };
 
 // System-specific reason templates keyed by cluster + positive/negative

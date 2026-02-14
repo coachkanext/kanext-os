@@ -115,10 +115,10 @@ export const CLUSTER_LABELS: Record<ClusterType, { label: string; description: s
   shooting: { label: 'Shooting', description: '3PT, mid-range, catch & shoot' },
   finishing: { label: 'Finishing', description: 'At-rim scoring, floaters, layups' },
   playmaking: { label: 'Playmaking', description: 'Passing, vision, ball handling' },
-  perimeter_defense: { label: 'Perimeter', description: 'Perimeter containment, steals' },
-  interior_defense: { label: 'Interior', description: 'Help defense, rim protection, rotations' },
+  perimeter_defense: { label: 'OB Defense', description: 'Perimeter containment, steals' },
+  interior_defense: { label: 'Team Defense', description: 'Help defense, rim protection, rotations' },
   rebounding: { label: 'Rebounding', description: 'Offensive & defensive boards' },
-  frame: { label: 'Frame', description: 'Size, length, strength, versatility' },
+  frame: { label: 'Physical', description: 'Size, length, strength, versatility' },
 };
 
 export const POSITION_LABELS: Record<Position, string> = {

@@ -5,6 +5,7 @@
  */
 
 import type { ClusterType } from '@/types';
+import { CLUSTER_SUBCLUSTERS, type ClusterRatings } from '@/data/roster-data';
 
 export interface PlayerRatings {
   playerId: string;
@@ -53,3 +54,89 @@ export const PLAYER_RATINGS: PlayerRatings[] = [
 export function getPlayerRatings(playerId: string): PlayerRatings | null {
   return PLAYER_RATINGS.find((r) => r.playerId === playerId) ?? null;
 }
+
+// ─── Shared Helpers ───
+
+// Deterministic hash for stable subcluster generation
+function simpleHash(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+/** Generate subclusters for a pool player's cluster */
+export function getPoolPlayerSubclusters(
+  playerId: string,
+  clusterKey: keyof ClusterRatings,
+  baseRating: number,
+): { name: string; rating: number }[] {
+  const subs = CLUSTER_SUBCLUSTERS[clusterKey];
+  return subs.map((name, i) => {
+    const seed = simpleHash(`${playerId}-${clusterKey}-${i}`);
+    const variation = (seed % 17) - 8;
+    const rating = Math.max(15, Math.min(98, baseRating + variation));
+    return { name, rating };
+  });
+}
+
+/** Compute team-level cluster averages from a set of player IDs */
+export function getTeamClusterAverages(playerIds: string[]): {
+  clusters: Record<ClusterType, number>;
+  overall: number;
+  offKR: number;
+  defKR: number;
+} {
+  const allClusters: ClusterType[] = [
+    'shooting', 'finishing', 'playmaking',
+    'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
+  ];
+  const sums: Record<string, number> = {};
+  allClusters.forEach((c) => { sums[c] = 0; });
+  let totalOverall = 0;
+  let count = 0;
+
+  playerIds.forEach((id) => {
+    const r = getPlayerRatings(id);
+    if (!r) return;
+    count++;
+    totalOverall += r.overall;
+    allClusters.forEach((c) => { sums[c] += r.clusters[c]; });
+  });
+
+  if (count === 0) {
+    const zeros = {} as Record<ClusterType, number>;
+    allClusters.forEach((c) => { zeros[c] = 0; });
+    return { clusters: zeros, overall: 0, offKR: 0, defKR: 0 };
+  }
+
+  const clusters = {} as Record<ClusterType, number>;
+  allClusters.forEach((c) => { clusters[c] = Math.round(sums[c] / count); });
+  const overall = Math.round(totalOverall / count);
+  const offKR = Math.round((clusters.shooting + clusters.finishing + clusters.playmaking) / 3);
+  const defKR = Math.round((clusters.perimeter_defense + clusters.interior_defense + clusters.rebounding + clusters.frame) / 4);
+
+  return { clusters, overall, offKR, defKR };
+}
+
+/** Weekly update period options */
+export const WEEKLY_UPDATE_OPTIONS = [
+  { value: 'preseason', label: 'Preseason' },
+  { value: 'week_1', label: 'Week 1' },
+  { value: 'week_2', label: 'Week 2' },
+  { value: 'week_3', label: 'Week 3' },
+  { value: 'week_4', label: 'Week 4' },
+  { value: 'week_5', label: 'Week 5' },
+  { value: 'week_6', label: 'Week 6' },
+  { value: 'week_7', label: 'Week 7' },
+  { value: 'week_8', label: 'Week 8' },
+  { value: 'week_9', label: 'Week 9' },
+  { value: 'week_10', label: 'Week 10' },
+  { value: 'week_11', label: 'Week 11' },
+  { value: 'week_12', label: 'Week 12' },
+  { value: 'week_13', label: 'Week 13' },
+  { value: 'week_14', label: 'Week 14' },
+  { value: 'conf_tourney', label: 'Conf Tourney' },
+  { value: 'national_tourney', label: 'National Tournament' },
+];

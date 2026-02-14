@@ -155,6 +155,13 @@ const MAPPING = {
   'arrow.uturn.backward': 'undo',
   'chevron.up': 'expand-less',
   'chevron.down': 'expand-more',
+
+  // Video / Media
+  'plus.app.fill': 'add-box',
+  'books.vertical.fill': 'library-books',
+  'film': 'movie',
+  'video.fill': 'videocam',
+  'bubble.left.and.bubble.right.fill': 'forum',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];

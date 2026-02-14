@@ -17,14 +17,17 @@ import {
   TextInput,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
-import { FMU_RECORD, FMU_STANDINGS } from '@/data/fmu';
+import { FMU_RECORD, FMU_STANDINGS, ROSTER_KR } from '@/data/fmu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ARCHETYPE_LABELS, type Archetype } from '@/data/system-demand-profiles';
 import { UnitsView } from '@/components/depth-chart/depth-chart-units';
+import { PlayerSheet } from '@/components/player-sheet';
+import type { OffensiveStyle, DefensiveStyle } from '@/types';
+import { HELIO_TO_TRADITIONAL } from '@/data/position-mapping';
+import type { PoolPlayer, PoolPosition } from '@/data/playerPool';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -53,7 +56,7 @@ const HEADSHOTS: Record<string, any> = {
 };
 
 // Shared data from @/data/roster-data (avoids circular deps with depth-chart components)
-import { TEAM_COLORS, PLAYER_CLUSTERS, computeOffKR, computeDefKR } from '@/data/roster-data';
+import { TEAM_COLORS, PLAYER_CLUSTERS, PLAYER_PHYSICALS, computeOffKR, computeDefKR } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
 
 // ── Season Constants ──
@@ -243,9 +246,11 @@ const SORT_OPTIONS: { key: SortOption; label: string }[] = [
 // ── Full-bleed Player Section (NBA.com style) ──
 function PlayerSection({
   player,
+  krSortKey,
   onBioPress,
 }: {
   player: RosterPlayer;
+  krSortKey: KrSortKey | null;
   onBioPress: () => void;
 }) {
   const hasHeadshot = !!HEADSHOTS[player.number];
@@ -257,12 +262,23 @@ function PlayerSection({
         <View style={styles.numberNameRow}>
           <Text style={styles.playerNumber}>{player.number}</Text>
           <View style={styles.verticalDivider} />
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.firstName}>{player.firstName}</Text>
             <Text style={styles.lastName}>{player.lastName}</Text>
           </View>
+          <View style={styles.cardBadgesCol}>
+            <View style={styles.cardBadges}>
+              <View style={styles.cardLevelBadge}>
+                <Text style={styles.cardLevelText}>{player.classYear === 'Freshman' ? 'Fr' : player.classYear === 'Sophomore' ? 'So' : player.classYear === 'Junior' ? 'Jr' : 'Sr'}</Text>
+              </View>
+              <View style={styles.cardPosBadge}>
+                <Text style={styles.cardPosText}>{player.listPos}</Text>
+              </View>
+            </View>
+            <Text style={styles.cardKrText}>{player.kr}</Text>
+          </View>
         </View>
-        <Text style={styles.position}>{player.kr} KR · {player.position}</Text>
+        <Text style={styles.position}>{player.height} · {player.weight} lbs</Text>
         {(player.ppg > 0 || player.rpg > 0 || player.apg > 0) && (
           <Text style={styles.last3Stats}>
             {player.ppg} PPG · {player.rpg} RPG · {player.apg} APG
@@ -319,9 +335,9 @@ function PlayerSection({
 
 /* ── Roster Controls: Season + Filter + Sort + Search + View toggle ── */
 const VIEW_OPTIONS: { key: ViewType; icon: string }[] = [
+  { key: 'depth', icon: 'list.bullet.indent' },
   { key: 'cards', icon: 'square.grid.2x2.fill' },
   { key: 'list', icon: 'rectangle.stack' },
-  { key: 'depth', icon: 'list.bullet.indent' },
 ];
 
 function RosterControls({
@@ -387,7 +403,8 @@ function RosterControls({
             <IconSymbol name="chevron.down" size={10} color={TEAM_COLORS.gray} />
           </Pressable>
 
-          {/* KR sort dropdown pill */}
+          {/* KR sort dropdown pill (hidden in depth view — lens lives inside UnitsView) */}
+          {activeView !== 'depth' && (
           <Pressable
             ref={krRef as any}
             style={({ pressed }) => [
@@ -402,6 +419,7 @@ function RosterControls({
             </Text>
             <IconSymbol name="chevron.down" size={10} color={krSortKey != null ? TEAM_COLORS.white : TEAM_COLORS.gray} />
           </Pressable>
+          )}
 
           {/* Search icon */}
           <Pressable
@@ -614,8 +632,7 @@ function getListSortValue(player: RosterPlayer, key: ListSortKey): string | numb
   }
 }
 
-function ListView({ roster }: { roster: RosterPlayer[] }) {
-  const router = useRouter();
+function ListView({ roster, onPlayerTap }: { roster: RosterPlayer[]; onPlayerTap: (jersey: string) => void }) {
   const [sortKey, setSortKey] = useState<ListSortKey>('#');
   const [sortAsc, setSortAsc] = useState(true);
 
@@ -680,7 +697,7 @@ function ListView({ roster }: { roster: RosterPlayer[] }) {
               style={{ width: TABLE_COLUMNS[1].width }}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                router.push({ pathname: '/coach/player-bio', params: { number: player.number } });
+                onPlayerTap(player.number);
               }}
             >
               <Text style={[styles.tableCell, styles.tableCellName]} numberOfLines={1}>
@@ -792,16 +809,15 @@ export function DepthChartView({ depthChart }: { depthChart: DepthChartPosition[
 }
 
 /* ── Cards View (full-bleed hero sections) ── */
-function CardsView({ roster }: { roster: RosterPlayer[] }) {
-  const router = useRouter();
-
+function CardsView({ roster, krSortKey, onPlayerTap }: { roster: RosterPlayer[]; krSortKey: KrSortKey | null; onPlayerTap: (jersey: string) => void }) {
   return (
     <>
-      {roster.map((player, idx) => (
+      {roster.map((player) => (
         <React.Fragment key={player.id}>
           <PlayerSection
             player={player}
-            onBioPress={() => router.push({ pathname: '/coach/player-bio', params: { number: player.number } })}
+            krSortKey={krSortKey}
+            onBioPress={() => onPlayerTap(player.number)}
           />
         </React.Fragment>
       ))}
@@ -872,11 +888,24 @@ function useFilteredRoster(
   }, [roster, filter, sort, searchQuery]);
 }
 
-export function RosterContent({ onViewChange, teamKR, onLogoPress }: { onViewChange?: () => void; teamKR?: number; onLogoPress?: () => void } = {}) {
-  const [activeView, setActiveView] = useState<ViewType>('cards');
+// Helio abbreviation → traditional position mapping for PoolPlayer construction
+const POS_ABBREV_TO_TRAD: Record<string, PoolPosition> = {
+  PG: 'PG', CG: 'SG', W: 'SF', F: 'PF', B: 'C',
+};
+
+export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoPress, onLogoLongPress }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoPress?: () => void; onLogoLongPress?: () => void } = {}) {
+  const [activeView, setActiveView] = useState<ViewType>('depth');
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
   const [searchQuery, setSearchQuery] = useState('');
   const [krSortKey, setKrSortKey] = useState<KrSortKey | null>(null);
+
+  // Player sheet state (for cards/list views)
+  const [sheetJersey, setSheetJersey] = useState<string | null>(null);
+  const [sheetFitNote, setSheetFitNote] = useState('');
+  const [sheetCoachNote, setSheetCoachNote] = useState('');
+  const [offStyle, setOffStyle] = useState<OffensiveStyle>('motion_read_react');
+  const [defStyle, setDefStyle] = useState<DefensiveStyle>('containment_man');
+
   const roster = ROSTER_BY_SEASON[selectedSeason];
   const filteredRoster = useMemo(() => {
     let result = [...roster];
@@ -902,33 +931,70 @@ export function RosterContent({ onViewChange, teamKR, onLogoPress }: { onViewCha
     onViewChange?.(); // scroll to top
   };
 
+  const handlePlayerTap = (jersey: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSheetJersey(jersey);
+  };
+
+  // Build PoolPlayer from roster data for the sheet
+  const sheetPoolPlayer: PoolPlayer | null = useMemo(() => {
+    if (!sheetJersey) return null;
+    const p = roster.find((r) => r.number === sheetJersey);
+    if (!p) return null;
+    const tradPos = POS_ABBREV_TO_TRAD[p.listPos] ?? 'SF';
+    return {
+      id: `roster-${p.number}`,
+      firstName: p.firstName,
+      lastName: p.lastName,
+      position: tradPos,
+      height: p.height,
+      classYear: p.classYear,
+      currentSchool: 'Florida Memorial',
+      level: 'NAIA' as const,
+      conference: '',
+      state: 'FL',
+      keyStatLine: '',
+      hasFilm: false,
+      lastUpdated: '',
+      archetype: 'two_way_wing' as any,
+    };
+  }, [sheetJersey, roster]);
+
   return (
     <View style={styles.container}>
       {/* Team Identity Header */}
       <View style={styles.teamHeader}>
-        {/* Row 1: Logo + Identity */}
         <View style={styles.teamNameRow}>
-          <Pressable onPress={() => { if (onLogoPress) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onLogoPress(); } }}>
+          <Pressable
+            onPress={() => { if (onLogoPress) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onLogoPress(); } }}
+            onLongPress={() => { if (onLogoLongPress) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onLogoLongPress(); } }}
+            delayLongPress={300}
+          >
             <Image source={FMU_SEAL} style={styles.headerLogo} resizeMode="contain" />
           </Pressable>
           <View style={{ flex: 1 }}>
-            <Text style={styles.teamName}>{FMU_TEAM.name} ({teamKR ?? 74})</Text>
-            <Text style={{ fontSize: 13, color: TEAM_COLORS.gray, marginTop: 2 }}>
-              {FMU_TEAM.division} {'\u00B7'} {FMU_TEAM.conference} {'\u00B7'} {FMU_TEAM.tier}
+            <Text style={styles.teamName}>{FMU_TEAM.name}</Text>
+            <Text style={styles.teamSubline}>
+              {FMU_TEAM.division} {'\u00B7'} {FMU_TEAM.conference}
             </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4, gap: 8 }}>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: TEAM_COLORS.white }}>
-                {FMU_TEAM.record} ({FMU_TEAM.confRecord})
-              </Text>
-              <View style={{ backgroundColor: FMU_TEAM.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: FMU_TEAM.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
-                  {FMU_TEAM.streak}
-                </Text>
-              </View>
-            </View>
+          </View>
+          <View style={styles.teamKRBadge}>
+            <Text style={styles.teamKRValue}>{teamKR ?? 74}</Text>
+            <Text style={styles.teamKRSplit}>O {offKR ?? 74} · D {defKR ?? 73}</Text>
           </View>
         </View>
-
+        <View style={styles.teamStatsRow}>
+          <Text style={styles.teamRecord}>{FMU_TEAM.record}</Text>
+          <Text style={styles.teamConfRecord}>({FMU_TEAM.confRecord} conf)</Text>
+          <View style={{ backgroundColor: FMU_TEAM.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+            <Text style={{ fontSize: 12, fontWeight: '700', color: FMU_TEAM.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
+              {FMU_TEAM.streak}
+            </Text>
+          </View>
+          <View style={{ backgroundColor: TEAM_COLORS.white + '10', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: TEAM_COLORS.secondary }}>{FMU_TEAM.tier}</Text>
+          </View>
+        </View>
       </View>
 
       {/* Controls: Season + Sort + Search + View */}
@@ -944,9 +1010,30 @@ export function RosterContent({ onViewChange, teamKR, onLogoPress }: { onViewCha
       />
 
       {/* Conditional Content */}
-      {activeView === 'cards' && <CardsView roster={filteredRoster} />}
-      {activeView === 'list' && <ListView roster={filteredRoster} />}
+      {activeView === 'cards' && <CardsView roster={filteredRoster} krSortKey={krSortKey} onPlayerTap={handlePlayerTap} />}
+      {activeView === 'list' && <ListView roster={filteredRoster} onPlayerTap={handlePlayerTap} />}
       {activeView === 'depth' && <UnitsView depthChart={DEPTH_CHART_BY_SEASON[selectedSeason]} />}
+
+      {/* Player Sheet for cards/list views (depth view has its own inside UnitsView) */}
+      {activeView !== 'depth' && (
+        <PlayerSheet
+          visible={!!sheetJersey}
+          onClose={() => { setSheetJersey(null); setSheetFitNote(''); setSheetCoachNote(''); }}
+          player={sheetPoolPlayer}
+          jerseyNumber={sheetJersey ?? undefined}
+          offStyle={offStyle}
+          defStyle={defStyle}
+          onOffStyleChange={setOffStyle}
+          onDefStyleChange={setDefStyle}
+          fitNote={sheetFitNote}
+          onFitNoteChange={setSheetFitNote}
+          coachNote={sheetCoachNote}
+          onCoachNoteChange={setSheetCoachNote}
+          clusterOverride={sheetJersey ? PLAYER_CLUSTERS[sheetJersey] : undefined}
+          baseKROverride={sheetJersey ? ROSTER_KR[sheetJersey] : undefined}
+          physicals={sheetJersey ? PLAYER_PHYSICALS[sheetJersey] : undefined}
+        />
+      )}
     </View>
   );
 }
@@ -957,27 +1044,68 @@ const styles = StyleSheet.create({
     backgroundColor: TEAM_COLORS.cardBg,
   },
 
-  // ── Thin Team Header ──
+  // ── Team Identity Header ──
   teamHeader: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing.sm,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.md,
     backgroundColor: TEAM_COLORS.cardBg,
+    gap: 12,
   },
   teamNameRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   headerLogo: {
-    width: 52,
-    height: 52,
-    marginRight: 12,
+    width: 64,
+    height: 64,
+    marginRight: 14,
   },
   teamName: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '800',
     color: TEAM_COLORS.white,
-    letterSpacing: -0.3,
+    letterSpacing: -0.5,
+  },
+  teamSubline: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: TEAM_COLORS.gray,
+    marginTop: 2,
+  },
+  teamKRBadge: {
+    alignItems: 'center',
+    backgroundColor: TEAM_COLORS.white + '0F',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  teamKRValue: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: TEAM_COLORS.white,
+    lineHeight: 30,
+  },
+  teamKRSplit: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: TEAM_COLORS.gray,
+    marginTop: 2,
+  },
+  teamStatsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  teamRecord: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: TEAM_COLORS.white,
+  },
+  teamConfRecord: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: TEAM_COLORS.gray,
   },
   teamContextRow: {
     flexDirection: 'row',
@@ -1125,6 +1253,8 @@ const styles = StyleSheet.create({
     color: TEAM_COLORS.gray,
     lineHeight: 58,
     marginRight: 12,
+    minWidth: 60,
+    textAlign: 'center',
   },
   verticalDivider: {
     width: 2,
@@ -1474,5 +1604,45 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: TEAM_COLORS.white,
+  },
+
+  // ── Card Badges (class + position + KR) ──
+  cardBadgesCol: {
+    alignItems: 'flex-end',
+    marginLeft: 12,
+    gap: 4,
+  },
+  cardBadges: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  cardLevelBadge: {
+    backgroundColor: '#2A2D35',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  cardLevelText: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#6e6e6e',
+    letterSpacing: 0.3,
+  },
+  cardPosBadge: {
+    backgroundColor: '#3A3D45',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  cardPosText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#f5f5f5',
+  },
+  cardKrText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: TEAM_COLORS.gray,
   },
 });
