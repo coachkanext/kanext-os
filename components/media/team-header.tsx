@@ -1,10 +1,11 @@
 /**
- * Team Header — team logo + name + quick actions (Share, Invite).
+ * Team Header — full team identity card with KR badge, record strip, and channel actions.
  * Used in My Team tab of Video Home.
  */
 
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, Image, StyleSheet } from 'react-native';
+import type { ImageSourcePropType } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
@@ -14,13 +15,36 @@ import { Spacing } from '@/constants/theme';
 
 interface TeamHeaderProps {
   teamName: string;
-  teamInitials: string;
-  teamColor: string;
+  teamLogo: ImageSourcePropType;
+  level: string;
+  conference: string;
+  teamKR: number;
+  offKR: number;
+  defKR: number;
+  record: string;
+  confRecord: string;
+  streak: string;
+  tier: string;
   onShare?: () => void;
 }
 
-export function TeamHeader({ teamName, teamInitials, teamColor, onShare }: TeamHeaderProps) {
+export function TeamHeader({
+  teamName,
+  teamLogo,
+  level,
+  conference,
+  teamKR,
+  offKR,
+  defKR,
+  record,
+  confRecord,
+  streak,
+  tier,
+  onShare,
+}: TeamHeaderProps) {
   const router = useRouter();
+
+  const isWinStreak = streak.startsWith('W');
 
   return (
     <Pressable
@@ -30,33 +54,71 @@ export function TeamHeader({ teamName, teamInitials, teamColor, onShare }: TeamH
         router.push('/coach/team-channel' as any);
       }}
     >
-      <View style={[styles.logo, { backgroundColor: teamColor }]}>
-        <ThemedText style={styles.logoText}>{teamInitials}</ThemedText>
+      {/* Row 1: Identity + KR badge */}
+      <View style={styles.identityRow}>
+        <Image source={teamLogo} style={styles.logo} resizeMode="contain" />
+        <View style={styles.nameBlock}>
+          <ThemedText style={styles.name}>{teamName}</ThemedText>
+          <ThemedText style={styles.subtitle}>
+            {level} {'\u00B7'} {conference}
+          </ThemedText>
+        </View>
+        <View style={styles.krBadge}>
+          <ThemedText style={styles.krNumber}>{teamKR}</ThemedText>
+          <ThemedText style={styles.krSplit}>
+            O {offKR} · D {defKR}
+          </ThemedText>
+        </View>
       </View>
-      <View style={styles.info}>
-        <ThemedText style={styles.name}>{teamName}</ThemedText>
-        <ThemedText style={styles.sub}>Team Channel</ThemedText>
+
+      {/* Row 2: Record strip */}
+      <View style={styles.recordRow}>
+        <ThemedText style={styles.record}>{record}</ThemedText>
+        <ThemedText style={styles.confRecord}>({confRecord} conf)</ThemedText>
+        <View
+          style={[
+            styles.streakChip,
+            { backgroundColor: isWinStreak ? '#4CAF5020' : '#EF444420' },
+          ]}
+        >
+          <ThemedText
+            style={[
+              styles.streakText,
+              { color: isWinStreak ? '#4CAF50' : '#EF4444' },
+            ]}
+          >
+            {streak}
+          </ThemedText>
+        </View>
+        <View style={styles.tierChip}>
+          <ThemedText style={styles.tierText}>{tier}</ThemedText>
+        </View>
       </View>
-      <View style={styles.actions}>
-        <Pressable
-          style={styles.actionBtn}
-          onPress={(e) => {
-            e.stopPropagation();
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onShare?.();
-          }}
-        >
-          <IconSymbol name="square.and.arrow.up" size={16} color="#6e6e6e" />
-        </Pressable>
-        <Pressable
-          style={styles.actionBtn}
-          onPress={(e) => {
-            e.stopPropagation();
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          }}
-        >
-          <IconSymbol name="person.badge.plus" size={16} color="#6e6e6e" />
-        </Pressable>
+
+      {/* Row 3: Channel label + actions */}
+      <View style={styles.channelRow}>
+        <ThemedText style={styles.channelLabel}>Team Channel</ThemedText>
+        <View style={styles.actions}>
+          <Pressable
+            style={styles.actionBtn}
+            onPress={(e) => {
+              e.stopPropagation();
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onShare?.();
+            }}
+          >
+            <IconSymbol name="square.and.arrow.up" size={16} color="#6e6e6e" />
+          </Pressable>
+          <Pressable
+            style={styles.actionBtn}
+            onPress={(e) => {
+              e.stopPropagation();
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }}
+          >
+            <IconSymbol name="person.badge.plus" size={16} color="#6e6e6e" />
+          </Pressable>
+        </View>
       </View>
     </Pressable>
   );
@@ -64,39 +126,109 @@ export function TeamHeader({ teamName, teamInitials, teamColor, onShare }: TeamH
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
     backgroundColor: '#111',
     marginHorizontal: Spacing.md,
     marginBottom: Spacing.sm,
     borderRadius: 12,
+    gap: 12,
+  },
+
+  // Row 1 — identity
+  identityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   logo: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: Spacing.sm + 4,
+    width: 64,
+    height: 64,
+    marginRight: 14,
   },
-  logoText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#fff',
-  },
-  info: {
+  nameBlock: {
     flex: 1,
   },
   name: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#f5f5f5',
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#555',
+    marginTop: 2,
+  },
+  krBadge: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(245,245,245,0.06)',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  krNumber: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#f5f5f5',
+    lineHeight: 30,
+  },
+  krSplit: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#555',
+    marginTop: 2,
+  },
+
+  // Row 2 — record strip
+  recordRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  record: {
     fontSize: 16,
     fontWeight: '700',
     color: '#f5f5f5',
-    marginBottom: 2,
   },
-  sub: {
+  confRecord: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#555',
+  },
+  streakChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  streakText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  tierChip: {
+    backgroundColor: 'rgba(245,245,245,0.06)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  tierText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#555',
+  },
+
+  // Row 3 — channel + actions
+  channelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#1a1a1a',
+    paddingTop: 10,
+  },
+  channelLabel: {
+    flex: 1,
     fontSize: 13,
+    fontWeight: '600',
     color: '#6e6e6e',
   },
   actions: {

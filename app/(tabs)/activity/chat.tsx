@@ -1,5 +1,5 @@
 /**
- * Chat Screen — Messages/Groups toggle, swipeable thread rows, thread detail sheet.
+ * Messages Screen — Primary/Requests/Groups toggle, swipeable thread rows, thread detail sheet.
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -8,7 +8,9 @@ import {
   StyleSheet,
   Pressable,
   FlatList,
+  SectionList,
   TextInput,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -19,6 +21,8 @@ import { SwipeableThreadRow } from '@/components/messages/swipeable-thread-row';
 import { ChatToggle } from '@/components/messages/chat-toggle';
 import { NewThreadSheet } from '@/components/messages/new-thread-sheet';
 import { ChatComposer } from '@/components/messages/chat-composer';
+import { RequestRow } from '@/components/messages/request-row';
+import { RequestDetail } from '@/components/messages/request-detail';
 import { Spacing, BorderRadius } from '@/constants/theme';
 import {
   MOCK_CHAT_THREADS,
@@ -26,24 +30,38 @@ import {
   formatMessageTime,
 } from '@/data/mock-messages';
 import type { ChatThread, ChatSubTab } from '@/data/mock-messages';
+import {
+  MOCK_PENDING_REQUESTS,
+  MOCK_APPROVED_REQUESTS,
+} from '@/data/mock-requests';
+import type { RequestItem } from '@/data/mock-requests';
 
 export default function ChatScreen() {
   const insets = useSafeAreaInsets();
-  const [subTab, setSubTab] = useState<ChatSubTab>('messages');
+  const [subTab, setSubTab] = useState<ChatSubTab>('primary');
   const [search, setSearch] = useState('');
   const [selectedThread, setSelectedThread] = useState<ChatThread | null>(null);
   const [newThreadVisible, setNewThreadVisible] = useState(false);
   const [inputText, setInputText] = useState('');
 
-  const threads = subTab === 'messages' ? MOCK_CHAT_THREADS : MOCK_GROUP_THREADS;
+  // Requests state
+  const [pending, setPending] = useState(MOCK_PENDING_REQUESTS);
+  const [approved, setApproved] = useState(MOCK_APPROVED_REQUESTS);
+  const [selectedRequest, setSelectedRequest] = useState<RequestItem | null>(null);
+
+  const threads = subTab === 'primary'
+    ? MOCK_CHAT_THREADS.filter((t) => !t.isGroup)
+    : MOCK_GROUP_THREADS;
 
   const filteredThreads = useMemo(() => {
-    if (!search.trim()) return threads;
+    if (subTab === 'requests') return [];
+    const list = subTab === 'primary' ? MOCK_CHAT_THREADS : MOCK_GROUP_THREADS;
+    if (!search.trim()) return list;
     const q = search.toLowerCase();
-    return threads.filter(
+    return list.filter(
       (t) => t.title.toLowerCase().includes(q) || t.lastMessage.toLowerCase().includes(q),
     );
-  }, [search, threads]);
+  }, [search, subTab]);
 
   const renderThread = useCallback(
     ({ item }: { item: ChatThread }) => (
@@ -51,6 +69,57 @@ export default function ChatScreen() {
         thread={item}
         onPress={() => setSelectedThread(item)}
       />
+    ),
+    [],
+  );
+
+  // Requests handlers
+  const requestSections = useMemo(() => {
+    return [
+      { title: 'Pending', data: pending },
+      { title: 'Approved', data: approved },
+    ].filter((s) => s.data.length > 0);
+  }, [pending, approved]);
+
+  const handleApprove = useCallback((item: RequestItem) => {
+    setPending((prev) => prev.filter((r) => r.id !== item.id));
+    setApproved((prev) => [{ ...item, status: 'approved' as const }, ...prev]);
+    setSelectedRequest(null);
+  }, []);
+
+  const handleIgnore = useCallback((item: RequestItem) => {
+    setPending((prev) => prev.filter((r) => r.id !== item.id));
+    setSelectedRequest(null);
+  }, []);
+
+  const handleBlock = useCallback((item: RequestItem) => {
+    Alert.alert('Block', `${item.name} has been blocked.`);
+    setPending((prev) => prev.filter((r) => r.id !== item.id));
+    setSelectedRequest(null);
+  }, []);
+
+  const handleReport = useCallback((item: RequestItem) => {
+    Alert.alert('Report', `${item.name} has been reported.`);
+    setSelectedRequest(null);
+  }, []);
+
+  const renderRequestItem = useCallback(
+    ({ item }: { item: RequestItem }) => (
+      <RequestRow
+        request={item}
+        onPress={() => setSelectedRequest(item)}
+        onApprove={() => handleApprove(item)}
+        onIgnore={() => handleIgnore(item)}
+      />
+    ),
+    [handleApprove, handleIgnore],
+  );
+
+  const renderSectionHeader = useCallback(
+    ({ section }: { section: { title: string } }) => (
+      <View style={styles.sectionHeader}>
+        <ThemedText style={styles.sectionTitle}>{section.title}</ThemedText>
+      </View>
     ),
     [],
   );
@@ -74,13 +143,13 @@ export default function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Search + New Message */}
-      <View style={styles.searchRow}>
+      {/* Search + New Message + Toggle */}
+      <View style={styles.topRow}>
         <View style={styles.searchBar}>
           <IconSymbol name="magnifyingglass" size={16} color="#555" />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search threads..."
+            placeholder="Search..."
             placeholderTextColor="#555"
             value={search}
             onChangeText={setSearch}
@@ -95,19 +164,35 @@ export default function ChatScreen() {
         >
           <IconSymbol name="square.and.pencil" size={20} color="#f5f5f5" />
         </Pressable>
+        <ChatToggle activeTab={subTab} onTabChange={setSubTab} />
       </View>
 
-      {/* Messages / Groups Toggle */}
-      <ChatToggle activeTab={subTab} onTabChange={setSubTab} />
-
-      {/* Thread List */}
-      <FlatList
-        data={filteredThreads}
-        keyExtractor={(item) => item.id}
-        renderItem={renderThread}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
+      {/* Content based on sub-tab */}
+      {subTab === 'requests' ? (
+        pending.length === 0 && approved.length === 0 ? (
+          <View style={styles.emptyState}>
+            <ThemedText style={styles.emptyText}>No pending requests</ThemedText>
+          </View>
+        ) : (
+          <SectionList
+            sections={requestSections}
+            keyExtractor={(item) => item.id}
+            renderItem={renderRequestItem}
+            renderSectionHeader={renderSectionHeader}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+            stickySectionHeadersEnabled={false}
+          />
+        )
+      ) : (
+        <FlatList
+          data={filteredThreads}
+          keyExtractor={(item) => item.id}
+          renderItem={renderThread}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
 
       {/* FAB */}
       <Pressable
@@ -206,6 +291,24 @@ export default function ChatScreen() {
         )}
       </BottomSheet>
 
+      {/* Request Detail Sheet */}
+      <BottomSheet
+        visible={selectedRequest !== null}
+        onClose={() => setSelectedRequest(null)}
+        title="Request Detail"
+        useModal
+      >
+        {selectedRequest && (
+          <RequestDetail
+            request={selectedRequest}
+            onApprove={() => handleApprove(selectedRequest)}
+            onIgnore={() => handleIgnore(selectedRequest)}
+            onBlock={() => handleBlock(selectedRequest)}
+            onReport={() => handleReport(selectedRequest)}
+          />
+        )}
+      </BottomSheet>
+
       {/* New Thread Sheet */}
       <BottomSheet
         visible={newThreadVisible}
@@ -224,15 +327,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  searchRow: {
+  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Spacing.md,
-    gap: 10,
+    gap: 8,
     marginBottom: Spacing.sm,
   },
   searchBar: {
     flex: 1,
+    minWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#111',
@@ -273,6 +377,29 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
 
+  // Requests section
+  sectionHeader: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.xs,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#6e6e6e',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  emptyState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#555',
+  },
+
   // Thread detail
   threadDetail: {
     flex: 1,
@@ -281,7 +408,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#191919',
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: BorderRadius.full,
+    borderRadius: 999,
     alignSelf: 'flex-start',
     marginBottom: Spacing.sm,
   },

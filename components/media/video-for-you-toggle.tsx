@@ -1,5 +1,5 @@
 /**
- * Chat Toggle — Primary / Requests / Groups capsule toggle.
+ * VideoForYouToggle — For You / Following capsule toggle for Video Home.
  */
 
 import React from 'react';
@@ -8,25 +8,25 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
-import type { ChatSubTab } from '@/data/mock-messages';
 
-interface ChatToggleProps {
-  activeTab: ChatSubTab;
-  onTabChange: (tab: ChatSubTab) => void;
+export type VideoFeedMode = 'for_you' | 'following';
+
+interface VideoForYouToggleProps {
+  activeMode: VideoFeedMode;
+  onModeChange: (mode: VideoFeedMode) => void;
 }
 
-const TABS: { key: ChatSubTab; label: string }[] = [
-  { key: 'primary', label: 'Primary' },
-  { key: 'requests', label: 'Requests' },
-  { key: 'groups', label: 'Groups' },
+const TABS: { key: VideoFeedMode; label: string }[] = [
+  { key: 'for_you', label: 'For You' },
+  { key: 'following', label: 'Following' },
 ];
 
-export function ChatToggle({ activeTab, onTabChange }: ChatToggleProps) {
+export function VideoForYouToggle({ activeMode, onModeChange }: VideoForYouToggleProps) {
   return (
     <View style={styles.container}>
       <View style={styles.capsule}>
         {TABS.map((tab) => {
-          const isActive = activeTab === tab.key;
+          const isActive = activeMode === tab.key;
           return (
             <Pressable
               key={tab.key}
@@ -36,7 +36,7 @@ export function ChatToggle({ activeTab, onTabChange }: ChatToggleProps) {
               ]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onTabChange(tab.key);
+                onModeChange(tab.key);
               }}
             >
               <ThemedText
@@ -54,21 +54,23 @@ export function ChatToggle({ activeTab, onTabChange }: ChatToggleProps) {
 
 const styles = StyleSheet.create({
   container: {
+    paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.sm,
   },
   capsule: {
     flexDirection: 'row',
     backgroundColor: '#111',
-    borderRadius: 16,
-    padding: 2,
+    borderRadius: 20,
+    padding: 3,
   },
   tab: {
-    paddingVertical: 5,
-    paddingHorizontal: 8,
-    borderRadius: 14,
+    flex: 1,
+    paddingVertical: 7,
+    borderRadius: 18,
     alignItems: 'center',
   },
   tabText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
   },
 });

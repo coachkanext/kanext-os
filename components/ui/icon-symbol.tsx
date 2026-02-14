@@ -157,11 +157,15 @@ const MAPPING = {
   'chevron.down': 'expand-more',
 
   // Video / Media
+  'music.note.house': 'home',
+  'film.stack': 'video-library',
   'plus.app.fill': 'add-box',
   'books.vertical.fill': 'library-books',
   'film': 'movie',
   'video.fill': 'videocam',
   'bubble.left.and.bubble.right.fill': 'forum',
+  'list.bullet': 'format-list-bulleted',
+  'figure.mind.and.body': 'self-improvement',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];

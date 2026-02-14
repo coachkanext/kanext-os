@@ -35,6 +35,7 @@ import { registerDrawerHandlers } from '@/utils/global-drawer';
 import { registerVoiceHandlers } from '@/utils/global-voice';
 import { registerAskNexusHandlers } from '@/utils/global-ask-nexus';
 import { AskNexusSheet } from '@/components/ask-nexus-sheet';
+import { UniversalFinder } from '@/components/universal-finder';
 import type { AskNexusContext } from '@/data/mock-ask-nexus';
 
 // Prevent the native splash screen from auto-hiding
@@ -149,6 +150,9 @@ function AppShell() {
         onClose={() => setAskNexusVisible(false)}
         context={askNexusContext}
       />
+
+      {/* Universal Finder — triggered from Nexus tab double-tap */}
+      <UniversalFinder />
 
       {/* Global Voice Overlay — triggered from Nexus tab long-press */}
       <VoiceOverlay

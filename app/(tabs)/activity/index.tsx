@@ -1,5 +1,5 @@
 /**
- * Feed Screen — X-style feed with scope switch, sort/filter, FeedCard list, FAB compose.
+ * Feed Screen — Broadcast timeline with scope chips, sort, FeedCard list, FAB compose.
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Pressable,
   FlatList,
-  ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -21,13 +20,11 @@ import { ComposeSheetV2 } from '@/components/messages/compose-sheet-v2';
 import { Spacing, BorderRadius } from '@/constants/theme';
 import {
   MOCK_FEED,
-  FEED_FILTERS,
   FEED_SORTS,
   sortFeed,
 } from '@/data/mock-messages';
 import type {
   FeedPost,
-  FeedFilter,
   FeedSort,
   FeedScope,
 } from '@/data/mock-messages';
@@ -35,22 +32,31 @@ import type {
 export default function FeedScreen() {
   const insets = useSafeAreaInsets();
   const [scope, setScope] = useState<FeedScope>('my_team');
-  const [filter, setFilter] = useState<FeedFilter>('all');
   const [sort, setSort] = useState<FeedSort>('recent');
   const [composeVisible, setComposeVisible] = useState(false);
+
+  // Cycle through sort options on button press
+  const cycleSort = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const keys = FEED_SORTS.map((s) => s.key);
+    const idx = keys.indexOf(sort);
+    setSort(keys[(idx + 1) % keys.length]);
+  }, [sort]);
+
+  const sortLabel = FEED_SORTS.find((s) => s.key === sort)?.label ?? 'Recent';
 
   const filtered = useMemo(() => {
     let base = MOCK_FEED;
 
-    // Apply scope filter
     if (scope !== 'all') {
-      const scopeToFilter: Partial<Record<FeedScope, FeedFilter[]>> = {
+      const scopeToFilter: Partial<Record<FeedScope, string[]>> = {
         my_team: ['team'],
         staff: ['staff'],
         players: ['players'],
         parents: ['parents'],
         recruiting: ['recruiting'],
         league: ['team', 'system'],
+        game_ops: ['team'],
       };
       const allowed = scopeToFilter[scope];
       if (allowed) {
@@ -58,13 +64,8 @@ export default function FeedScreen() {
       }
     }
 
-    // Apply content filter
-    if (filter !== 'all') {
-      base = base.filter((p) => p.filter === filter);
-    }
-
     return sortFeed(base, sort);
-  }, [scope, filter, sort]);
+  }, [scope, sort]);
 
   const renderPost = useCallback(
     ({ item }: { item: FeedPost }) => <FeedCard post={item} />,
@@ -73,70 +74,19 @@ export default function FeedScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Scope Row */}
-      <FeedScopeRow activeScope={scope} onScopeChange={setScope} />
-
-      {/* Sort Picker */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.chipRow}
-        style={styles.sortScroll}
-      >
-        {FEED_SORTS.map((s) => {
-          const isActive = sort === s.key;
-          return (
-            <Pressable
-              key={s.key}
-              style={[
-                styles.sortChip,
-                { backgroundColor: isActive ? '#2a2a2a' : 'transparent', borderColor: isActive ? '#2a2a2a' : '#1a1a1a' },
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setSort(s.key);
-              }}
-            >
-              <ThemedText
-                style={[styles.sortChipText, { color: isActive ? '#f5f5f5' : '#555' }]}
-              >
-                {s.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-
-      {/* Filter Chips */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.chipRow}
-        style={styles.filterScroll}
-      >
-        {FEED_FILTERS.map((f) => {
-          const isActive = filter === f.key;
-          return (
-            <Pressable
-              key={f.key}
-              style={[
-                styles.filterChip,
-                { backgroundColor: isActive ? '#f5f5f5' : '#111' },
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setFilter(f.key);
-              }}
-            >
-              <ThemedText
-                style={[styles.filterChipText, { color: isActive ? '#000' : '#6e6e6e' }]}
-              >
-                {f.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+      {/* Scope Row + Sort Button */}
+      <View style={styles.controlRow}>
+        <View style={styles.scopeWrap}>
+          <FeedScopeRow activeScope={scope} onScopeChange={setScope} />
+        </View>
+        <Pressable
+          style={({ pressed }) => [styles.sortBtn, { opacity: pressed ? 0.7 : 1 }]}
+          onPress={cycleSort}
+        >
+          <IconSymbol name="arrow.up.arrow.down" size={14} color="#6e6e6e" />
+          <ThemedText style={styles.sortBtnText}>{sortLabel}</ThemedText>
+        </Pressable>
+      </View>
 
       {/* Feed List */}
       <FlatList
@@ -179,36 +129,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  sortScroll: {
-    flexGrow: 0,
-    marginBottom: 4,
-  },
-  filterScroll: {
-    flexGrow: 0,
+  controlRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: Spacing.sm,
+    marginTop: Spacing.sm,
   },
-  chipRow: {
-    paddingHorizontal: Spacing.md,
-    gap: 8,
+  scopeWrap: {
+    flex: 1,
   },
-  sortChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: BorderRadius.full,
-    borderWidth: 1,
-  },
-  sortChipText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  filterChip: {
-    paddingHorizontal: 14,
+  sortBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#111',
+    paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: BorderRadius.full,
+    marginRight: Spacing.md,
   },
-  filterChipText: {
-    fontSize: 13,
-    fontWeight: '500',
+  sortBtnText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6e6e6e',
   },
   listContent: {
     paddingBottom: 100,

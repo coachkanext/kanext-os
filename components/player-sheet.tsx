@@ -11,8 +11,8 @@ import {
   Pressable,
   TextInput,
   StyleSheet,
-  Alert,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
@@ -26,7 +26,7 @@ import type { OffensiveStyle, DefensiveStyle, ClusterType } from '@/types';
 import { TRADITIONAL_TO_HELIO, HELIO_POSITION_LABELS } from '@/data/position-mapping';
 import { getPlayerRatings, getPoolPlayerSubclusters } from '@/data/playerRatings';
 import { getPlayerSeasons } from '@/data/playerSeasons';
-import { computeFitKR, getFitReasons } from '@/utils/fit-kr';
+import { computeFitKR, computeOffDefKR, getFitReasons } from '@/utils/fit-kr';
 import { OFFENSIVE_STYLES, DEFENSIVE_STYLES } from '@/data/mock-program-context';
 import type { PoolPlayer } from '@/data/playerPool';
 import {
@@ -213,9 +213,10 @@ export function PlayerSheet({
   physicals,
   jerseyNumber,
 }: PlayerSheetProps) {
+  const router = useRouter();
   const isRoster = !!jerseyNumber;
   const tabs: SheetTab[] = isRoster
-    ? ['bio', 'fit', 'kanext', 'timeline', 'comms']
+    ? ['bio', 'kanext', 'fit', 'timeline', 'comms']
     : ['fit', 'kanext', 'comms'];
   const defaultTab: SheetTab = isRoster ? 'bio' : 'fit';
 
@@ -225,6 +226,7 @@ export function PlayerSheet({
   const [bioExpanded, setBioExpanded] = useState(false);
   const [showAllAwards, setShowAllAwards] = useState(false);
   const [showFitSelector, setShowFitSelector] = useState(false);
+  const [showFullBreakdown, setShowFullBreakdown] = useState(false);
 
   const toggleCluster = (key: string) => {
     setExpandedClusters((prev) => {
@@ -252,6 +254,7 @@ export function PlayerSheet({
       setBioExpanded(false);
       setShowAllAwards(false);
       setShowFitSelector(false);
+      setShowFullBreakdown(false);
     }
   }, [visible, player]);
 
@@ -267,6 +270,11 @@ export function PlayerSheet({
     if (!clusters) return [];
     return getFitReasons(clusters, player ? [player.archetype] : [], offStyle, defStyle);
   }, [clusters, player?.archetype, offStyle, defStyle]);
+
+  const offDef = useMemo(() => {
+    if (!clusters) return { baseOff: 0, baseDef: 0, fitOff: 0, fitDef: 0 };
+    return computeOffDefKR(clusters, offStyle, defStyle);
+  }, [clusters, offStyle, defStyle]);
 
   const seasons = useMemo(() => player ? getPlayerSeasons(player.id) : [], [player?.id]);
 
@@ -325,9 +333,14 @@ export function PlayerSheet({
   const displayWeight = bio ? bio.weight : physicals?.weight ? `${physicals.weight}` : null;
   const classYearShort = bio ? (CLASS_SHORT[bio.classYear] ?? bio.classYear) : null;
 
-  // Boosts / gaps for FIT tab
-  const boosts = fitReasons.filter((r) => r.delta >= 0).slice(0, 2);
-  const gaps = fitReasons.filter((r) => r.delta < 0).slice(0, 2);
+  // Drivers / risks for FIT tab
+  const drivers = fitReasons.filter((r) => r.delta > 0).slice(0, 3);
+  const risks = fitReasons.filter((r) => r.delta < 0).slice(0, 2);
+  const allDeltas = [...fitReasons].sort((a, b) => b.delta - a.delta);
+
+  // System labels
+  const offStyleLabel = OFFENSIVE_STYLES.find(s => s.value === offStyle)?.label ?? offStyle;
+  const defStyleLabel = DEFENSIVE_STYLES.find(s => s.value === defStyle)?.label ?? defStyle;
 
   return (
     <>
@@ -344,10 +357,6 @@ export function PlayerSheet({
               {displayHeight}{displayWeight ? ` \u00B7 ${displayWeight} lbs` : ''}
             </Text>
           )}
-          <Text style={styles.headerLine2}>
-            {posLabel} {'\u00B7'} {archetypeLabel}
-            {bio ? ` \u00B7 ${bio.classYear}` : player.classYear ? ` \u00B7 Class ${player.classYear}` : ''}
-          </Text>
         </View>
         <View style={styles.headerBadges}>
           <View style={styles.headerBadge}>
@@ -527,66 +536,58 @@ export function PlayerSheet({
       {/* ═══════════ FIT TAB ═══════════ */}
       {activeTab === 'fit' && (
         <View style={[styles.tabContent, styles.tabContentSpaced]}>
-          {/* Current Fit — compact display */}
-          <View style={styles.currentFitRow}>
-            <View style={styles.currentFitChips}>
-              <View style={styles.systemPillActive}>
-                <Text style={styles.systemPillTextActive}>
-                  {OFFENSIVE_STYLES.find(s => s.value === offStyle)?.label ?? offStyle}
+          {/* §1 Delta Card */}
+          <View style={styles.deltaCard}>
+            {/* Main row: Base → Fit (Δ) */}
+            <View style={styles.deltaMainRow}>
+              <Text style={styles.deltaBaseNum}>{baseKR}</Text>
+              <Text style={styles.deltaArrowText}>{'\u2192'}</Text>
+              <Text style={styles.deltaFitNum}>{fitKR}</Text>
+              <View style={[styles.deltaBadgeInline, { backgroundColor: `${deltaColor}20` }]}>
+                <Text style={[styles.deltaBadgeInlineText, { color: deltaColor }]}>{deltaText}</Text>
+              </View>
+            </View>
+
+            {/* System context + Change button */}
+            <View style={styles.deltaSystemRow}>
+              <Text style={styles.deltaSystemText} numberOfLines={1}>
+                {offStyleLabel} {'\u00B7'} {defStyleLabel}
+              </Text>
+              <Pressable
+                style={styles.changeFitBtn}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setShowFitSelector(true);
+                }}
+              >
+                <Text style={styles.changeFitText}>Change</Text>
+              </Pressable>
+            </View>
+
+            {/* Off / Def split */}
+            <View style={styles.deltaOffDefRow}>
+              <View style={styles.deltaOffDefItem}>
+                <Text style={styles.deltaOffDefLabel}>OFF</Text>
+                <Text style={styles.deltaOffDefNums}>
+                  {offDef.baseOff} {'\u2192'} {offDef.fitOff}{' '}
+                  <Text style={{ color: offDef.fitOff - offDef.baseOff >= 0 ? '#4CAF50' : '#EF4444' }}>
+                    ({offDef.fitOff - offDef.baseOff >= 0 ? '+' : ''}{offDef.fitOff - offDef.baseOff})
+                  </Text>
                 </Text>
               </View>
-              <View style={styles.systemPillActive}>
-                <Text style={styles.systemPillTextActive}>
-                  {DEFENSIVE_STYLES.find(s => s.value === defStyle)?.label ?? defStyle}
+              <View style={styles.deltaOffDefItem}>
+                <Text style={styles.deltaOffDefLabel}>DEF</Text>
+                <Text style={styles.deltaOffDefNums}>
+                  {offDef.baseDef} {'\u2192'} {offDef.fitDef}{' '}
+                  <Text style={{ color: offDef.fitDef - offDef.baseDef >= 0 ? '#4CAF50' : '#EF4444' }}>
+                    ({offDef.fitDef - offDef.baseDef >= 0 ? '+' : ''}{offDef.fitDef - offDef.baseDef})
+                  </Text>
                 </Text>
               </View>
             </View>
-            <Pressable
-              style={styles.changeFitBtn}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setShowFitSelector(true);
-              }}
-            >
-              <Text style={styles.changeFitText}>Change</Text>
-            </Pressable>
           </View>
 
-          {/* Boosts */}
-          {boosts.length > 0 && (
-            <View style={styles.fitBlock}>
-              <Text style={styles.fitBlockLabel}>BOOSTS</Text>
-              {boosts.map((r, i) => (
-                <Text key={i} style={styles.fitReasonLine}>
-                  <Text style={{ fontWeight: '700', color: '#4CAF50' }}>
-                    +{Math.abs(r.delta)} {r.cluster}
-                  </Text>
-                  {' \u2014 '}{r.reason}
-                </Text>
-              ))}
-            </View>
-          )}
-
-          {/* Gaps */}
-          {gaps.length > 0 && (
-            <View style={styles.fitBlock}>
-              <Text style={styles.fitBlockLabel}>GAPS</Text>
-              {gaps.map((r, i) => (
-                <Text key={i} style={styles.fitReasonLine}>
-                  <Text style={{ fontWeight: '700', color: '#EF4444' }}>
-                    {r.delta} {r.cluster}
-                  </Text>
-                  {' \u2014 '}{r.reason}
-                </Text>
-              ))}
-            </View>
-          )}
-
-          {fitReasons.length === 0 && (
-            <Text style={styles.emptyText}>No cluster data available.</Text>
-          )}
-
-          {/* Role card (compressed) */}
+          {/* §2 Role Card */}
           <View style={styles.roleBox}>
             <Text style={styles.roleValue}>Primary Role: {archetypeLabel}</Text>
             <Text style={styles.roleDetail}>
@@ -599,7 +600,93 @@ export function PlayerSheet({
             </Text>
           </View>
 
-          {/* FIT NOTE */}
+          {/* §3 Fit Drivers (top 3 positive) */}
+          {drivers.length > 0 && (
+            <View style={styles.fitBlock}>
+              <Text style={styles.fitBlockLabel}>FIT DRIVERS</Text>
+              {drivers.map((r, i) => (
+                <Text key={i} style={styles.fitReasonLine}>
+                  <Text style={{ fontWeight: '700', color: '#4CAF50' }}>
+                    +{Math.abs(r.delta)}  {r.cluster}
+                  </Text>
+                  {' \u2014 '}{r.reason}
+                </Text>
+              ))}
+            </View>
+          )}
+
+          {/* §4 Fit Risks (top 2 negative) */}
+          {risks.length > 0 && (
+            <View style={styles.fitBlock}>
+              <Text style={styles.fitBlockLabel}>FIT RISKS</Text>
+              {risks.map((r, i) => (
+                <Text key={i} style={styles.fitReasonLine}>
+                  <Text style={{ fontWeight: '700', color: '#EF4444' }}>
+                    {r.delta}  {r.cluster}
+                  </Text>
+                  {' \u2014 '}{r.reason}
+                </Text>
+              ))}
+            </View>
+          )}
+
+          {fitReasons.length === 0 && (
+            <Text style={styles.emptyText}>No cluster data available.</Text>
+          )}
+
+          {/* §5 Full Breakdown (collapsible waterfall) */}
+          {allDeltas.length > 0 && (
+            <View>
+              <Pressable
+                style={styles.breakdownToggle}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setShowFullBreakdown((prev) => !prev);
+                }}
+              >
+                <Text style={styles.breakdownToggleText}>
+                  {showFullBreakdown ? '\u25BE' : '\u25B8'} {showFullBreakdown ? 'Hide' : 'View'} full breakdown
+                </Text>
+              </Pressable>
+
+              {showFullBreakdown && (
+                <View style={styles.breakdownList}>
+                  {/* Base KR row */}
+                  <View style={styles.breakdownRow}>
+                    <Text style={styles.breakdownLabel}>Base KR</Text>
+                    <Text style={styles.breakdownValue}>{baseKR}</Text>
+                  </View>
+
+                  {/* Individual cluster deltas */}
+                  {allDeltas.map((r, i) => {
+                    const sign = r.delta >= 0 ? '+' : '';
+                    const color = r.delta > 0 ? '#4CAF50' : r.delta < 0 ? '#EF4444' : '#6e6e6e';
+                    return (
+                      <View key={i} style={styles.breakdownRow}>
+                        <Text style={styles.breakdownLabel}>
+                          {r.delta >= 0 ? '+' : '\u2212'} {r.cluster}
+                        </Text>
+                        <Text style={[styles.breakdownValue, { color }]}>
+                          {sign}{r.delta}
+                        </Text>
+                      </View>
+                    );
+                  })}
+
+                  {/* Divider */}
+                  <View style={styles.breakdownDivider} />
+
+                  {/* Total row */}
+                  <View style={styles.breakdownRow}>
+                    <Text style={styles.breakdownTotal}>= System Fit KR</Text>
+                    <Text style={styles.breakdownTotal}>{fitKR}</Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* §6 Notes */}
           <View style={styles.noteBox}>
             <Text style={styles.noteLabel}>FIT NOTE</Text>
             <TextInput
@@ -612,7 +699,6 @@ export function PlayerSheet({
             />
           </View>
 
-          {/* COACH NOTE */}
           <View style={styles.noteBox}>
             <Text style={styles.noteLabel}>COACH NOTE</Text>
             <TextInput
@@ -625,7 +711,7 @@ export function PlayerSheet({
             />
           </View>
 
-          {/* Season stats (recruiting players) */}
+          {/* §7 Season stats (recruiting players) */}
           {seasons.map((season) => (
             <View key={season.season} style={styles.seasonCard}>
               <Text style={styles.seasonLabel}>{season.season} Stats</Text>
@@ -688,7 +774,7 @@ export function PlayerSheet({
       {/* ═══════════ COMMS TAB ═══════════ */}
       {activeTab === 'comms' && (
         <View style={[styles.tabContent, styles.tabContentSpaced]}>
-          {/* Open Thread button */}
+          {/* Open Messages button */}
           <Pressable
             style={({ pressed }) => [
               styles.openThreadRow,
@@ -696,12 +782,16 @@ export function PlayerSheet({
             ]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              const dest = isRoster ? 'Team Ops' : 'Recruit Thread';
-              Alert.alert('Navigate', `Open ${dest} for ${player.firstName} ${player.lastName}`);
+              onClose();
+              if (isRoster) {
+                router.push('/(tabs)/activity' as any);
+              } else {
+                router.push('/(tabs)/activity' as any);
+              }
             }}
           >
             <IconSymbol name="bubble.left.and.bubble.right.fill" size={16} color="#3B82F6" />
-            <Text style={styles.openThreadText}>Open Thread</Text>
+            <Text style={styles.openThreadText}>Open Messages</Text>
             <IconSymbol name="chevron.right" size={14} color="#6e6e6e" />
           </Pressable>
 
@@ -718,10 +808,11 @@ export function PlayerSheet({
                   ]}
                   onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    Alert.alert(
-                      'Navigate',
-                      `${entry.sourceChip ?? entry.type} → ${entry.deepLinkRoute ?? '/coach'}`,
-                    );
+                    onClose();
+                    const route = entry.deepLinkRoute;
+                    if (route) {
+                      router.push(route as any);
+                    }
                   }}
                 >
                   <View style={[styles.commsIcon, { backgroundColor: meta.color + '33' }]}>
@@ -1021,6 +1112,7 @@ const styles = StyleSheet.create({
   // Tabs
   tabRow: {
     flexDirection: 'row',
+    justifyContent: 'center',
     gap: 8,
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.sm,
@@ -1218,19 +1310,115 @@ const styles = StyleSheet.create({
 
   // ── FIT tab ──
 
-  // Current fit compact display
-  currentFitRow: {
+  // Delta card
+  deltaCard: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: BorderRadius.lg,
+    padding: 14,
+    marginBottom: 14,
+  },
+  deltaMainRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 8,
+  },
+  deltaBaseNum: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#f5f5f5',
+  },
+  deltaArrowText: {
+    fontSize: 20,
+    color: '#6e6e6e',
+  },
+  deltaFitNum: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#f5f5f5',
+  },
+  deltaBadgeInline: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginLeft: 4,
+  },
+  deltaBadgeInlineText: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  deltaSystemRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: 10,
+    marginBottom: 10,
   },
-  currentFitChips: {
-    flexDirection: 'row',
-    gap: 8,
+  deltaSystemText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#999',
     flex: 1,
-    flexWrap: 'wrap',
+    marginRight: 8,
+  },
+  deltaOffDefRow: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  deltaOffDefItem: {
+    flex: 1,
+  },
+  deltaOffDefLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#6e6e6e',
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  deltaOffDefNums: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#ccc',
+  },
+
+  // Breakdown waterfall
+  breakdownToggle: {
+    paddingVertical: 8,
+  },
+  breakdownToggleText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6e6e6e',
+  },
+  breakdownList: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: BorderRadius.md,
+    padding: 12,
+    marginBottom: 12,
+  },
+  breakdownRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  breakdownLabel: {
+    fontSize: 13,
+    color: '#ccc',
+  },
+  breakdownValue: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#f5f5f5',
+  },
+  breakdownDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#3a3a3a',
+    marginVertical: 6,
+  },
+  breakdownTotal: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#f5f5f5',
   },
   changeFitBtn: {
     paddingHorizontal: 12,

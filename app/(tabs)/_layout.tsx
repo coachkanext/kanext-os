@@ -14,7 +14,7 @@ import { Colors, Layout } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { openAvatarDrawer } from '@/utils/global-drawer';
 import { startGlobalVoice } from '@/utils/global-voice';
-import { openAskNexus } from '@/utils/global-ask-nexus';
+import { openFinder } from '@/utils/global-finder';
 import { triggerKXTransition } from '@/utils/global-transition';
 import { requestHomeReset } from '@/utils/global-home';
 
@@ -77,9 +77,9 @@ export default function TabLayout() {
         onPress={(e: any) => {
           const now = Date.now();
           if (now - lastNexusTapRef.current < 350) {
-            // Double-tap detected → open Ask Nexus
+            // Double-tap detected → open Universal Finder
             lastNexusTapRef.current = 0;
-            openAskNexus({ screen: '/nexus', mode: 'sports' });
+            openFinder();
             return;
           }
           lastNexusTapRef.current = now;
@@ -161,7 +161,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="activity"
         options={{
-          title: 'Messages',
+          title: 'Comms',
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name="bubble.left.and.bubble.right.fill" color={color} focused={focused} />
           ),

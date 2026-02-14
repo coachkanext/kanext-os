@@ -1,286 +1,194 @@
 /**
- * Video Home — main landing screen for the Media tab.
- * Film/Recruiting toggle + 3 content tabs.
- * Film: My Team / League / Explore
- * Recruiting: My Targets / Opponents (Auto) / Recruit Discovery
+ * Video Home — Instagram-style feed with story circles at top and posts below.
  */
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
   FlatList,
   ScrollView,
-  TextInput,
   Pressable,
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ContentTabRow, type ContentTab, type VideoMode } from '@/components/media/content-tab-row';
-import { FilmRecruitingToggle } from '@/components/media/film-recruiting-toggle';
-import { TeamHeader } from '@/components/media/team-header';
-import { GameCard } from '@/components/media/game-card';
-import { ClipCard } from '@/components/media/clip-card';
-import { ReelCard } from '@/components/media/reel-card';
-import { ContinueWatchingRow } from '@/components/media/continue-watching-row';
-import { RecruitClipCard } from '@/components/media/recruit-clip-card';
-import { OpponentScoutRow } from '@/components/media/opponent-scout-row';
-import { ShareSheet } from '@/components/media/share-sheet';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 import {
-  MOCK_VIDEO_GAMES,
-  MOCK_VIDEO_CLIPS,
-  MOCK_REELS,
-  MOCK_WATCH_HISTORY,
-  MOCK_RECRUIT_CLIPS,
-  MOCK_SCOUT_PACKS,
-} from '@/data/mock-video';
-import type { VideoGame, VideoClip, Reel, RecruitClip } from '@/data/mock-video';
+  STORY_CIRCLES,
+  VIDEO_FEED_POSTS,
+} from '@/data/mock-video-feed';
+import type { StoryCircle, VideoFeedPost } from '@/data/mock-video-feed';
 
 // =============================================================================
-// MY TEAM TAB (Film Mode)
+// STORY CIRCLES
 // =============================================================================
 
-function MyTeamContent({ onShare }: { onShare: (title: string) => void }) {
-  const router = useRouter();
-
+function StoryAvatar({ story }: { story: StoryCircle }) {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-      <TeamHeader
-        teamName="FMU Lions"
-        teamInitials="FMU"
-        teamColor="#1a472a"
-        onShare={() => onShare('FMU Lions Team Channel')}
-      />
+    <Pressable
+      style={styles.storyItem}
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+    >
+      <View style={[styles.storyRing, story.hasNew && styles.storyRingActive]}>
+        <View style={styles.storyAvatar}>
+          <ThemedText style={styles.storyInitials}>{story.initials}</ThemedText>
+        </View>
+      </View>
+      {story.isYou && (
+        <View style={styles.addBadge}>
+          <IconSymbol name="plus" size={10} color="#fff" />
+        </View>
+      )}
+      <ThemedText style={styles.storyName} numberOfLines={1}>
+        {story.isYou ? 'Your Story' : story.name.split(' ').pop()}
+      </ThemedText>
+    </Pressable>
+  );
+}
 
-      {/* Recent Games */}
-      <ThemedText style={styles.sectionTitle}>Recent Games</ThemedText>
+function StoriesRow() {
+  return (
+    <View style={styles.storiesContainer}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.hScroll}
-        style={styles.hScrollWrap}
+        contentContainerStyle={styles.storiesScroll}
       >
-        {MOCK_VIDEO_GAMES.slice(0, 5).map((game) => (
-          <View key={game.id} style={styles.gameCardWrap}>
-            <GameCard
-              game={game}
-              onPress={() => router.push(`/coach/video-game?id=${game.id}` as any)}
+        {STORY_CIRCLES.map((story) => (
+          <StoryAvatar key={story.id} story={story} />
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
+// =============================================================================
+// FEED POST
+// =============================================================================
+
+function FeedPost({ post }: { post: VideoFeedPost }) {
+  const [liked, setLiked] = useState(post.liked ?? false);
+  const [saved, setSaved] = useState(post.saved ?? false);
+
+  const handleLike = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setLiked(!liked);
+  };
+
+  const handleSave = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSaved(!saved);
+  };
+
+  const timeAgo = formatTimeAgo(post.timestamp);
+
+  return (
+    <View style={styles.postContainer}>
+      {/* Post Header */}
+      <View style={styles.postHeader}>
+        <View style={styles.postAvatar}>
+          <ThemedText style={styles.postAvatarText}>{post.authorInitials}</ThemedText>
+        </View>
+        <View style={styles.postAuthorInfo}>
+          <ThemedText style={styles.postAuthorName}>{post.authorName}</ThemedText>
+          <ThemedText style={styles.postAuthorRole}>{post.authorRole}</ThemedText>
+        </View>
+        <Pressable style={styles.postMoreBtn} hitSlop={8}>
+          <IconSymbol name="ellipsis" size={16} color="#6e6e6e" />
+        </Pressable>
+      </View>
+
+      {/* Media Placeholder */}
+      {post.media && (
+        <Pressable
+          style={styles.mediaPlaceholder}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <View style={styles.mediaPlayBtn}>
+            <IconSymbol name="play.fill" size={28} color="#fff" />
+          </View>
+          <ThemedText style={styles.mediaTitle}>{post.media.title}</ThemedText>
+          <View style={styles.mediaTypeBadge}>
+            <ThemedText style={styles.mediaTypeText}>
+              {post.media.type === 'clip' ? 'CLIP' : post.media.type === 'reel' ? 'REEL' : 'PHOTO'}
+            </ThemedText>
+          </View>
+        </Pressable>
+      )}
+
+      {/* Action Row */}
+      <View style={styles.actionRow}>
+        <View style={styles.actionLeft}>
+          <Pressable onPress={handleLike} style={styles.actionBtn} hitSlop={6}>
+            <IconSymbol
+              name={liked ? 'heart.fill' : 'heart'}
+              size={22}
+              color={liked ? '#EF4444' : '#f5f5f5'}
             />
-            <Pressable
-              style={styles.shareOverlay}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onShare(`vs ${game.opponent} — ${game.score}`);
-              }}
-            >
-              <IconSymbol name="square.and.arrow.up" size={14} color="#fff" />
-            </Pressable>
-          </View>
-        ))}
-      </ScrollView>
-
-      {/* Reels */}
-      <ThemedText style={styles.sectionTitle}>Reels</ThemedText>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.hScroll}
-        style={styles.hScrollWrap}
-      >
-        {MOCK_REELS.slice(0, 6).map((reel) => (
-          <ReelCard
-            key={reel.id}
-            reel={reel}
-            onPress={() => router.push(`/coach/reel-viewer?reelId=${reel.id}` as any)}
-          />
-        ))}
-      </ScrollView>
-
-      {/* Continue Watching */}
-      <ContinueWatchingRow items={MOCK_WATCH_HISTORY} />
-    </ScrollView>
-  );
-}
-
-// =============================================================================
-// LEAGUE TAB (Film Mode)
-// =============================================================================
-
-function LeagueContent() {
-  const leagueClips = useMemo(
-    () => MOCK_VIDEO_CLIPS.filter((c) => c.type === 'highlight' || c.type === 'breakdown'),
-    [],
-  );
-
-  return (
-    <FlatList
-      data={leagueClips}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <ClipCard clip={item} />}
-      contentContainerStyle={styles.listContent}
-      showsVerticalScrollIndicator={false}
-    />
-  );
-}
-
-// =============================================================================
-// EXPLORE TAB (Film Mode)
-// =============================================================================
-
-function ExploreContent() {
-  const [search, setSearch] = useState('');
-
-  const clips = useMemo(() => {
-    if (!search.trim()) return MOCK_VIDEO_CLIPS;
-    const q = search.toLowerCase();
-    return MOCK_VIDEO_CLIPS.filter(
-      (c) => c.title.toLowerCase().includes(q) || c.tags.some((t) => t.toLowerCase().includes(q)),
-    );
-  }, [search]);
-
-  const rows = useMemo(() => {
-    const result: VideoClip[][] = [];
-    for (let i = 0; i < clips.length; i += 2) {
-      result.push(clips.slice(i, i + 2));
-    }
-    return result;
-  }, [clips]);
-
-  return (
-    <View style={styles.flex}>
-      <View style={styles.searchBar}>
-        <IconSymbol name="magnifyingglass" size={16} color="#555" />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search clips..."
-          placeholderTextColor="#555"
-          value={search}
-          onChangeText={setSearch}
-        />
-      </View>
-      <FlatList
-        data={rows}
-        keyExtractor={(_, i) => `row-${i}`}
-        renderItem={({ item: row }) => (
-          <View style={styles.gridRow}>
-            {row.map((clip) => (
-              <ClipCard key={clip.id} clip={clip} variant="grid" />
-            ))}
-            {row.length === 1 && <View style={styles.gridSpacer} />}
-          </View>
-        )}
-        contentContainerStyle={styles.gridContent}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
-  );
-}
-
-// =============================================================================
-// MY TARGETS TAB (Recruiting Mode)
-// =============================================================================
-
-function MyTargetsContent() {
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-      <ThemedText style={styles.sectionTitle}>Saved Recruits</ThemedText>
-      {MOCK_RECRUIT_CLIPS.slice(0, 4).map((clip) => (
-        <RecruitClipCard key={clip.id} clip={clip} />
-      ))}
-      <Pressable
-        style={styles.addCta}
-        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-      >
-        <IconSymbol name="plus.circle.fill" size={18} color="#f5f5f5" />
-        <ThemedText style={styles.addCtaText}>Add Recruit</ThemedText>
-      </Pressable>
-    </ScrollView>
-  );
-}
-
-// =============================================================================
-// OPPONENTS TAB (Recruiting Mode)
-// =============================================================================
-
-function OpponentsContent() {
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-      <ThemedText style={styles.sectionTitle}>Upcoming Opponents</ThemedText>
-      {MOCK_SCOUT_PACKS.map((pack) => (
-        <OpponentScoutRow
-          key={pack.id}
-          opponent={pack.opponent}
-          date={pack.date}
-          color={pack.coverColor}
-        />
-      ))}
-    </ScrollView>
-  );
-}
-
-// =============================================================================
-// RECRUIT DISCOVERY TAB (Recruiting Mode)
-// =============================================================================
-
-function RecruitDiscoveryContent() {
-  const [search, setSearch] = useState('');
-
-  const clips = useMemo(() => {
-    if (!search.trim()) return MOCK_RECRUIT_CLIPS;
-    const q = search.toLowerCase();
-    return MOCK_RECRUIT_CLIPS.filter(
-      (c) =>
-        c.recruitName.toLowerCase().includes(q) ||
-        c.school.toLowerCase().includes(q) ||
-        c.position.toLowerCase().includes(q),
-    );
-  }, [search]);
-
-  return (
-    <View style={styles.flex}>
-      <View style={styles.searchBar}>
-        <IconSymbol name="magnifyingglass" size={16} color="#555" />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search recruits..."
-          placeholderTextColor="#555"
-          value={search}
-          onChangeText={setSearch}
-        />
-      </View>
-      {/* Filter pills */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filterRow}
-        style={styles.filterScroll}
-      >
-        {['Level', 'Region', 'Archetype', 'KR Band', 'Class', 'Source'].map((f) => (
-          <Pressable
-            key={f}
-            style={styles.filterChip}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          >
-            <ThemedText style={styles.filterChipText}>{f}</ThemedText>
-            <IconSymbol name="chevron.down" size={10} color="#6e6e6e" />
           </Pressable>
-        ))}
-      </ScrollView>
-      <FlatList
-        data={clips}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <RecruitClipCard clip={item} />}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
+          <Pressable style={styles.actionBtn} hitSlop={6}>
+            <IconSymbol name="bubble.right" size={22} color="#f5f5f5" />
+          </Pressable>
+          <Pressable style={styles.actionBtn} hitSlop={6}>
+            <IconSymbol name="paperplane" size={22} color="#f5f5f5" />
+          </Pressable>
+        </View>
+        <Pressable onPress={handleSave} hitSlop={6}>
+          <IconSymbol
+            name={saved ? 'bookmark.fill' : 'bookmark'}
+            size={22}
+            color="#f5f5f5"
+          />
+        </Pressable>
+      </View>
+
+      {/* Likes */}
+      <ThemedText style={styles.likesText}>
+        {liked ? post.likes + 1 : post.likes} likes
+      </ThemedText>
+
+      {/* Caption */}
+      <View style={styles.captionRow}>
+        <ThemedText style={styles.captionText}>
+          <ThemedText style={styles.captionAuthor}>{post.authorName}</ThemedText>
+          {'  '}{post.caption}
+        </ThemedText>
+      </View>
+
+      {/* Comments link */}
+      {post.comments > 0 && (
+        <Pressable>
+          <ThemedText style={styles.commentsLink}>
+            View all {post.comments} comments
+          </ThemedText>
+        </Pressable>
+      )}
+
+      {/* Timestamp */}
+      <ThemedText style={styles.timestampText}>{timeAgo}</ThemedText>
     </View>
   );
+}
+
+// =============================================================================
+// HELPERS
+// =============================================================================
+
+function formatTimeAgo(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHr = Math.floor(diffMs / 3600000);
+  const diffDay = Math.floor(diffMs / 86400000);
+
+  if (diffMin < 1) return 'Just now';
+  if (diffMin < 60) return `${diffMin} minutes ago`;
+  if (diffHr < 24) return `${diffHr} hour${diffHr > 1 ? 's' : ''} ago`;
+  if (diffDay === 1) return '1 day ago';
+  return `${diffDay} days ago`;
 }
 
 // =============================================================================
@@ -289,44 +197,23 @@ function RecruitDiscoveryContent() {
 
 export default function VideoHomeScreen() {
   const insets = useSafeAreaInsets();
-  const [mode, setMode] = useState<VideoMode>('film');
-  const [tab, setTab] = useState<ContentTab>('tab1');
-  const [shareVisible, setShareVisible] = useState(false);
-  const [shareTitle, setShareTitle] = useState('');
 
-  const handleShare = useCallback((title: string) => {
-    setShareTitle(title);
-    setShareVisible(true);
-  }, []);
+  const renderPost = useCallback(
+    ({ item }: { item: VideoFeedPost }) => <FeedPost post={item} />,
+    [],
+  );
 
   return (
-    <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <ThemedText style={styles.headerTitle}>KaNeXT Video</ThemedText>
-        <FilmRecruitingToggle mode={mode} onModeChange={setMode} />
-      </View>
-
-      {/* Content Tabs */}
-      <ContentTabRow activeTab={tab} onTabChange={setTab} mode={mode} />
-
-      {/* Tab Content */}
-      <View style={styles.flex}>
-        {mode === 'film' && tab === 'tab1' && <MyTeamContent onShare={handleShare} />}
-        {mode === 'film' && tab === 'tab2' && <LeagueContent />}
-        {mode === 'film' && tab === 'tab3' && <ExploreContent />}
-        {mode === 'recruiting' && tab === 'tab1' && <MyTargetsContent />}
-        {mode === 'recruiting' && tab === 'tab2' && <OpponentsContent />}
-        {mode === 'recruiting' && tab === 'tab3' && <RecruitDiscoveryContent />}
-      </View>
-
-      <ShareSheet
-        visible={shareVisible}
-        onClose={() => setShareVisible(false)}
-        title={shareTitle}
-        showVisibility={mode === 'film' && tab === 'tab1'}
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <FlatList
+        data={VIDEO_FEED_POSTS}
+        keyExtractor={(item) => item.id}
+        renderItem={renderPost}
+        ListHeaderComponent={<StoriesRow />}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
       />
-    </ThemedView>
+    </View>
   );
 }
 
@@ -339,142 +226,197 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  flex: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.sm,
-    paddingBottom: Spacing.sm,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#f5f5f5',
-  },
-
-  // Sections
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#f5f5f5',
-    paddingHorizontal: Spacing.md,
-    marginTop: Spacing.md,
-    marginBottom: Spacing.sm,
-  },
-
-  // Scroll helpers
-  scrollContent: {
-    paddingBottom: 120,
-  },
-  hScrollWrap: {
-    flexGrow: 0,
-    marginBottom: Spacing.sm,
-  },
-  hScroll: {
-    paddingHorizontal: Spacing.md,
-  },
-  gameCardWrap: {
-    width: 280,
-    marginRight: 10,
-    position: 'relative',
-  },
-  shareOverlay: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  // Lists
   listContent: {
-    paddingBottom: 120,
-    paddingTop: Spacing.xs,
+    paddingBottom: 100,
   },
 
-  // Search
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#111',
-    borderRadius: BorderRadius.lg,
-    marginHorizontal: Spacing.md,
-    marginBottom: Spacing.sm,
-    paddingHorizontal: Spacing.sm + 4,
-    paddingVertical: 8,
-    gap: 8,
+  // Stories
+  storiesContainer: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
+    paddingBottom: 10,
   },
-  searchInput: {
-    flex: 1,
-    fontSize: 15,
+  storiesScroll: {
+    paddingHorizontal: Spacing.md,
+    gap: 14,
+    paddingTop: 8,
+  },
+  storyItem: {
+    alignItems: 'center',
+    width: 64,
+  },
+  storyRing: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    borderWidth: 2,
+    borderColor: '#333',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  storyRingActive: {
+    borderColor: '#E1306C',
+  },
+  storyAvatar: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: '#1a1a1a',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  storyInitials: {
+    fontSize: 18,
+    fontWeight: '700',
     color: '#f5f5f5',
   },
+  addBadge: {
+    position: 'absolute',
+    bottom: 18,
+    right: 2,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#2196F3',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#000',
+  },
+  storyName: {
+    fontSize: 11,
+    color: '#999',
+    marginTop: 4,
+    textAlign: 'center',
+  },
 
-  // Grid
-  gridContent: {
-    paddingHorizontal: Spacing.md - 4,
-    paddingBottom: 120,
+  // Post
+  postContainer: {
+    paddingBottom: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
+    marginBottom: 4,
   },
-  gridRow: {
-    flexDirection: 'row',
-  },
-  gridSpacer: {
-    flex: 1,
-    margin: 4,
-  },
-
-  // Filter chips
-  filterScroll: {
-    flexGrow: 0,
-    marginBottom: Spacing.sm,
-  },
-  filterRow: {
-    paddingHorizontal: Spacing.md,
-    gap: 8,
-  },
-  filterChip: {
+  postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: '#111',
-    borderWidth: 1,
-    borderColor: '#1a1a1a',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 10,
   },
-  filterChipText: {
+  postAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#1a1a1a',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  postAvatarText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#f5f5f5',
+  },
+  postAuthorInfo: {
+    flex: 1,
+  },
+  postAuthorName: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '700',
+    color: '#f5f5f5',
+  },
+  postAuthorRole: {
+    fontSize: 11,
     color: '#6e6e6e',
   },
-
-  // CTA
-  addCta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    marginHorizontal: Spacing.md,
-    marginTop: Spacing.md,
-    paddingVertical: 14,
-    backgroundColor: '#111',
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    borderColor: '#1a1a1a',
-    borderStyle: 'dashed',
+  postMoreBtn: {
+    padding: 4,
   },
-  addCtaText: {
-    fontSize: 14,
+
+  // Media
+  mediaPlaceholder: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    backgroundColor: '#111',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mediaPlayBtn: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  mediaTitle: {
+    fontSize: 13,
     fontWeight: '600',
+    color: '#ccc',
+  },
+  mediaTypeBadge: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  mediaTypeText: {
+    fontSize: 10,
+    fontWeight: '700',
     color: '#f5f5f5',
+    letterSpacing: 0.5,
+  },
+
+  // Actions
+  actionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingTop: 10,
+    paddingBottom: 6,
+  },
+  actionLeft: {
+    flexDirection: 'row',
+    gap: 14,
+  },
+  actionBtn: {
+    padding: 2,
+  },
+  likesText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#f5f5f5',
+    paddingHorizontal: Spacing.md,
+    marginBottom: 4,
+  },
+  captionRow: {
+    paddingHorizontal: Spacing.md,
+    marginBottom: 4,
+  },
+  captionText: {
+    fontSize: 13,
+    color: '#ccc',
+    lineHeight: 18,
+  },
+  captionAuthor: {
+    fontWeight: '700',
+    color: '#f5f5f5',
+  },
+  commentsLink: {
+    fontSize: 13,
+    color: '#6e6e6e',
+    paddingHorizontal: Spacing.md,
+    marginBottom: 2,
+  },
+  timestampText: {
+    fontSize: 11,
+    color: '#555',
+    paddingHorizontal: Spacing.md,
+    marginTop: 2,
   },
 });

@@ -323,11 +323,10 @@ export function getFitReasons(
     });
   }
 
-  // Sort by |delta| descending, take top 3-4
+  // Sort by |delta| descending — return all 7 clusters
   deltas.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
-  const top = deltas.slice(0, 4);
 
-  return top.map((d) => {
+  return deltas.map((d) => {
     const isPositive = d.delta >= 0;
     const template = REASON_TEMPLATES[d.key] ?? { pos: 'aligns with system', neg: 'misaligns with system' };
     const driverLabel = CLUSTER_DRIVER_LABELS[d.key] ?? d.key;

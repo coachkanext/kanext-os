@@ -4,11 +4,12 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { View, FlatList, StyleSheet, Dimensions, Platform } from 'react-native';
+import { View, FlatList, Pressable, StyleSheet, Dimensions, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ReelItem } from '@/components/media/reel-item';
 import { ShareSheet } from '@/components/media/share-sheet';
 import { Layout } from '@/constants/theme';
@@ -51,6 +52,14 @@ export default function ReelsScreen() {
       {/* Header overlay */}
       <View style={[styles.headerOverlay, { top: insets.top }]}>
         <ThemedText style={styles.headerTitle}>Reels</ThemedText>
+        <View style={styles.headerIcons}>
+          <Pressable style={styles.headerIconBtn}>
+            <IconSymbol name="magnifyingglass" size={16} color="#fff" />
+          </Pressable>
+          <Pressable style={styles.headerIconBtn}>
+            <IconSymbol name="bell.fill" size={16} color="#fff" />
+          </Pressable>
+        </View>
       </View>
 
       <FlatList
@@ -85,7 +94,11 @@ const styles = StyleSheet.create({
   headerOverlay: {
     position: 'absolute',
     left: 16,
+    right: 16,
     zIndex: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   headerTitle: {
     fontSize: 20,
@@ -94,5 +107,13 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0,0,0,0.5)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  headerIconBtn: {
+    padding: 4,
   },
 });

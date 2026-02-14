@@ -16,7 +16,7 @@ import {
 import * as Haptics from 'expo-haptics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Spacing, BorderRadius } from '@/constants/theme';
-import { TEAM_COLORS, PLAYER_CLUSTERS, PLAYER_PHYSICALS, computeOffKR, computeDefKR } from '@/data/roster-data';
+import { TEAM_COLORS, PLAYER_CLUSTERS, PLAYER_PHYSICALS, computeOffKR, computeDefKR, getPlayerSubclusters } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
 import { ARCHETYPE_LABELS } from '@/data/system-demand-profiles';
 import type { Archetype } from '@/data/system-demand-profiles';
@@ -32,7 +32,7 @@ import { computeFitKR, computePositionKR, computeLineupRating, getClusterDrivers
 import { PlayerSheet } from '@/components/player-sheet';
 import type { PoolPlayer, PoolPosition } from '@/data/playerPool';
 import type { TeamGameImpact } from '@/data/fmu';
-import { getPGISColor } from '@/data/fmu';
+import { getPGISColor, getPlayerSeasonPGIS } from '@/data/fmu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 
@@ -59,10 +59,13 @@ const CLUSTER_ABBREVS: Record<string, string> = {
   frame: 'PHY',
 };
 
+// Season-average PGIS per jersey (computed once at module level)
+const SEASON_PGIS = getPlayerSeasonPGIS();
+
 // ── Lineup Lens Types & Constants ──
 
 type LensKey = 'overall' | 'offense' | 'defense' | 'shooting' | 'finishing' | 'playmaking'
-             | 'perimeter_defense' | 'interior_defense' | 'rebounding' | 'frame';
+             | 'perimeter_defense' | 'interior_defense' | 'rebounding' | 'frame' | 'pgis';
 
 const LENS_ITEMS: { key: LensKey; label: string; section: string }[] = [
   { key: 'overall',           label: 'Overall (KR)',     section: 'Core' },
@@ -75,6 +78,7 @@ const LENS_ITEMS: { key: LensKey; label: string; section: string }[] = [
   { key: 'interior_defense',  label: 'Team Defense',     section: 'Clusters' },
   { key: 'rebounding',        label: 'Rebounding',       section: 'Clusters' },
   { key: 'frame',             label: 'Physical (Frame)', section: 'Clusters' },
+  { key: 'pgis',              label: 'PGIS (Impact)',    section: 'Impact' },
 ];
 
 const WHY_TAG_CONFIG: Record<LensKey, { positive: string[]; negative: { tag: string; cluster: keyof ClusterRatings }[] }> = {
@@ -88,6 +92,7 @@ const WHY_TAG_CONFIG: Record<LensKey, { positive: string[]; negative: { tag: str
   interior_defense:   { positive: ['+Rotations', '+IQ'],        negative: [{ tag: '-Creation', cluster: 'playmaking' }] },
   rebounding:         { positive: ['+Boards', '+2ndCh'],        negative: [{ tag: '-Speed', cluster: 'perimeter_defense' }] },
   frame:              { positive: ['+Strength', '+Size'],       negative: [{ tag: '-Spacing', cluster: 'shooting' }] },
+  pgis:               { positive: ['+Impact', '+Production'],   negative: [{ tag: '-Consistency', cluster: 'shooting' }] },
 };
 
 // ── Types ──
@@ -152,11 +157,13 @@ function scoreLens(
   lens: LensKey,
   offStyle: OffensiveStyle,
   defStyle: DefensiveStyle,
+  playerNumber?: string,
 ): number {
   switch (lens) {
     case 'overall': return computeFitKR(cl, offStyle, defStyle);
     case 'offense': return computeOffKR(cl);
     case 'defense': return computeDefKR(cl);
+    case 'pgis': return playerNumber ? (SEASON_PGIS[playerNumber] ?? 0) : 0;
     default: return cl[lens as keyof ClusterRatings] ?? 0;
   }
 }
@@ -214,6 +221,7 @@ function computeBestLineup(
   lens: LensKey,
   offStyle: OffensiveStyle,
   defStyle: DefensiveStyle,
+  customScores?: Record<string, number>,
 ): { starters: DepthSlot[]; rotationBench: DepthSlot[]; bench: DepthSlot[]; whyTags: string[] } {
   type ScoredSlot = DepthSlot & { score: number };
   const allPlayers: ScoredSlot[] = [];
@@ -221,7 +229,7 @@ function computeBestLineup(
   for (const pos of depthChart) {
     for (const p of pos.players) {
       const cl = clusterMap[p.number];
-      const score = cl ? scoreLens(cl, lens, offStyle, defStyle) : p.kr;
+      const score = customScores?.[p.number] ?? (cl ? scoreLens(cl, lens, offStyle, defStyle, p.number) : (lens === 'pgis' ? (SEASON_PGIS[p.number] ?? 0) : p.kr));
       allPlayers.push({
         positionGroup: pos.position,
         playerNumber: p.number,
@@ -497,6 +505,8 @@ export function UnitsView({
   gameImpact,
   hideSystems,
   statLeaders,
+  lensOverride,
+  subclusterOverride,
 }: {
   depthChart: DepthChartPosition[];
   playerClusters?: Record<string, ClusterRatings>;
@@ -508,6 +518,8 @@ export function UnitsView({
   gameImpact?: TeamGameImpact;
   hideSystems?: boolean;
   statLeaders?: { label: string; name: string; value: string }[];
+  lensOverride?: LensKey;
+  subclusterOverride?: { cluster: keyof ClusterRatings; index: number };
 }) {
   const clusterMap = externalClusters ?? PLAYER_CLUSTERS;
   const physMap = externalPhysicals ?? PLAYER_PHYSICALS;
@@ -597,16 +609,41 @@ export function UnitsView({
   const [rotationBench, setRotationBench] = useState<DepthSlot[]>([]);
   const [whyTags, setWhyTags] = useState<string[]>(['+Best 5 KR', '+Balance']);
 
-  // Recompute lineup when lens, mode, or system changes
+  // Sync lens from external cluster picker (reset to overall when cleared)
+  const prevLensOverride = useRef(lensOverride);
+  useEffect(() => {
+    if (lensOverride) {
+      setLens(lensOverride);
+    } else if (prevLensOverride.current && !lensOverride) {
+      // Override was active and now cleared — reset to overall
+      setLens('overall');
+    }
+    prevLensOverride.current = lensOverride;
+  }, [lensOverride]);
+
+  // Build custom scores when a subcluster is selected
+  const subclusterScores = useMemo<Record<string, number> | undefined>(() => {
+    if (!subclusterOverride) return undefined;
+    const scores: Record<string, number> = {};
+    for (const pos of depthChart) {
+      for (const p of pos.players) {
+        const subs = getPlayerSubclusters(p.number, subclusterOverride.cluster);
+        scores[p.number] = subs[subclusterOverride.index]?.rating ?? 0;
+      }
+    }
+    return scores;
+  }, [subclusterOverride, depthChart]);
+
+  // Recompute lineup when lens, mode, system, or subcluster changes
   useEffect(() => {
     if (gameImpact || hideSystems) return;
-    const computed = computeBestLineup(depthChart, clusterMap, lens, offStyle, defStyle);
+    const computed = computeBestLineup(depthChart, clusterMap, lens, offStyle, defStyle, subclusterScores);
     setStarters(computed.starters);
     setRotationBench(computed.rotationBench);
     setBench(computed.bench);
     setWhyTags(computed.whyTags);
     setManualOverride(false);
-  }, [lens, offStyle, defStyle, depthChart, clusterMap]);
+  }, [lens, offStyle, defStyle, depthChart, clusterMap, subclusterScores]);
 
   // Compute Fit KRs for all players (40% position lens + 60% system fit)
   const fitKRs = useMemo(() => {
@@ -781,6 +818,51 @@ export function UnitsView({
 
   return (
     <View style={styles.container}>
+      {/* Lineup Lens Pill — above systems (hidden when external picker is driving) */}
+      {!hideSystems && !gameImpact && !lensOverride && (
+        <View style={styles.lensRow}>
+          <Pressable
+            ref={lensPillRef as any}
+            style={styles.lensPill}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              (lensPillRef.current as any)?.measureInWindow((x: number, y: number, _w: number, h: number) => {
+                setLensPillX(x);
+                setLensPillY(y);
+                setLensPillH(h);
+                setLensMenuOpen(true);
+              });
+            }}
+          >
+            <IconSymbol name="line.3.horizontal.decrease" size={12} color="#aaa" />
+            <Text style={styles.lensPillText}>
+              {LENS_ITEMS.find(l => l.key === lens)?.label ?? 'Overall (KR)'}
+            </Text>
+            <IconSymbol name="chevron.down" size={10} color="#888" />
+          </Pressable>
+          {manualOverride && (
+            <>
+              <View style={styles.manualBadge}>
+                <Text style={styles.manualBadgeText}>Manual</Text>
+              </View>
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  const computed = computeBestLineup(depthChart, clusterMap, lens, offStyle, defStyle);
+                  setStarters(computed.starters);
+                  setRotationBench(computed.rotationBench);
+                  setBench(computed.bench);
+                  setWhyTags(computed.whyTags);
+                  setManualOverride(false);
+                }}
+              >
+                <Text style={styles.resetLensText}>Reset to Lens</Text>
+              </Pressable>
+            </>
+          )}
+        </View>
+      )}
+
       {/* System Controls */}
       {hideSystems ? null : gameImpact ? (
         /* Completed game: locked systems on one line */
@@ -914,51 +996,6 @@ export function UnitsView({
                 );
               })}
             </View>
-          )}
-        </View>
-      )}
-
-      {/* Lineup Lens Pill */}
-      {!hideSystems && !gameImpact && (
-        <View style={styles.lensRow}>
-          <Pressable
-            ref={lensPillRef as any}
-            style={styles.lensPill}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              (lensPillRef.current as any)?.measureInWindow((x: number, y: number, _w: number, h: number) => {
-                setLensPillX(x);
-                setLensPillY(y);
-                setLensPillH(h);
-                setLensMenuOpen(true);
-              });
-            }}
-          >
-            <IconSymbol name="line.3.horizontal.decrease" size={12} color="#aaa" />
-            <Text style={styles.lensPillText}>
-              {LENS_ITEMS.find(l => l.key === lens)?.label ?? 'Overall (KR)'}
-            </Text>
-            <IconSymbol name="chevron.down" size={10} color="#888" />
-          </Pressable>
-          {manualOverride && (
-            <>
-              <View style={styles.manualBadge}>
-                <Text style={styles.manualBadgeText}>Manual</Text>
-              </View>
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  const computed = computeBestLineup(depthChart, clusterMap, lens, offStyle, defStyle);
-                  setStarters(computed.starters);
-                  setRotationBench(computed.rotationBench);
-                  setBench(computed.bench);
-                  setWhyTags(computed.whyTags);
-                  setManualOverride(false);
-                }}
-              >
-                <Text style={styles.resetLensText}>Reset to Lens</Text>
-              </Pressable>
-            </>
           )}
         </View>
       )}
@@ -1106,7 +1143,7 @@ export function UnitsView({
           <Pressable style={styles.lensOverlay} onPress={() => setLensMenuOpen(false)}>
             <View style={[styles.lensDropdown, { top: lensPillY + lensPillH + 4, left: lensPillX }]}>
               {/* Lens items by section */}
-              {['Core', 'Clusters'].map((section) => (
+              {['Core', 'Clusters', 'Impact'].map((section) => (
                 <View key={section}>
                   <Text style={styles.lensSectionLabel}>{section.toUpperCase()}</Text>
                   {LENS_ITEMS.filter(l => l.section === section).map((item) => {

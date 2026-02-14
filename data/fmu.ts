@@ -749,6 +749,32 @@ for (let i = 0; i < tgl2526.length; i++) {
 
 export const FMU_GAME_IMPACT: Record<string, TeamGameImpact> = Object.fromEntries(gameImpactMap);
 
+// ── 3b-ii) Season-average PGIS per player (jersey → avg PGIS) ──
+
+/** Average each player's per-game PGIS across all completed games. Returns Record<jersey, avgPgis>. */
+export function getPlayerSeasonPGIS(): Record<string, number> {
+  const totals = new Map<string, { sum: number; count: number }>();
+  for (const impact of Object.values(FMU_GAME_IMPACT)) {
+    for (const p of [...impact.starters, ...impact.bench]) {
+      // Map full name → player_id → jersey
+      const pid = [...playerMap.entries()].find(([, v]) => v.full_name === p.name)?.[0];
+      if (!pid) continue;
+      const roster = rosterMap2526.get(pid);
+      if (!roster) continue;
+      const jersey = normJersey(roster.jersey_number);
+      const cur = totals.get(jersey) ?? { sum: 0, count: 0 };
+      cur.sum += p.pgis;
+      cur.count += 1;
+      totals.set(jersey, cur);
+    }
+  }
+  const result: Record<string, number> = {};
+  for (const [jersey, { sum, count }] of totals) {
+    result[jersey] = Math.round((sum / count) * 10) / 10;
+  }
+  return result;
+}
+
 // ── 3c) Pregame Snapshot (for upcoming games) ──
 
 const FMU_KR_PREGAME = 74; // approximate; real FMU_KR computed later from win%

@@ -309,18 +309,18 @@ export function getRecruitComms(playerId: string): CommsEntry[] {
 export function getSourceChip(entry: CommsEntry): { label: SourceChipLabel; route: string } {
   switch (entry.type) {
     case 'message':
-      return { label: 'Thread', route: '/coach/team-channel' };
+      return { label: 'Thread', route: '/(tabs)/activity' };
     case 'note':
-      return { label: 'Note', route: '/coach/player-detail' };
+      return { label: 'Note', route: '/(tabs)/activity' };
     case 'mention':
-      return { label: 'Thread', route: '/coach/team-channel' };
+      return { label: 'Thread', route: '/(tabs)/activity' };
     case 'film_share':
-      return { label: 'Clip', route: '/coach/reel-viewer' };
+      return { label: 'Clip', route: '/(tabs)/media' };
     case 'meeting':
-      return { label: 'Meeting', route: '/coach/team-channel' };
+      return { label: 'Meeting', route: '/(tabs)/activity' };
     case 'touch':
-      if (entry.touchMethod === 'Call') return { label: 'Call', route: '/coach/recruiting' };
-      if (entry.touchMethod === 'Text') return { label: 'Text', route: '/coach/recruiting' };
+      if (entry.touchMethod === 'Call') return { label: 'Call', route: '/(tabs)/activity' };
+      if (entry.touchMethod === 'Text') return { label: 'Text', route: '/(tabs)/activity' };
       if (entry.touchMethod === 'Visit') return { label: 'Visit', route: '/coach/recruiting' };
       return { label: 'Scout', route: '/coach/recruiting' };
     case 'status_change':
@@ -329,6 +329,6 @@ export function getSourceChip(entry: CommsEntry): { label: SourceChipLabel; rout
       if (entry.dateLabel?.includes('Visit')) return { label: 'Visit', route: '/coach/recruiting' };
       return { label: 'Decision', route: '/coach/recruiting' };
     default:
-      return { label: 'Note', route: '/coach/player-detail' };
+      return { label: 'Note', route: '/(tabs)/activity' };
   }
 }

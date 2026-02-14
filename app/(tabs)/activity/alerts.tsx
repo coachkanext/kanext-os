@@ -1,44 +1,44 @@
 /**
- * Alerts Screen — filter pills, source tag color coding, deep link actions.
+ * Activity Screen — Notifications only (category tabs + alerts list + detail sheet).
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
   StyleSheet,
-  Pressable,
   FlatList,
-  ScrollView,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { ThemedText } from '@/components/themed-text';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { AlertRow } from '@/components/messages/alert-row';
 import { AlertDetail } from '@/components/messages/alert-detail';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { NotificationCategoryTabs } from '@/components/messages/notification-category-tabs';
+import { Spacing } from '@/constants/theme';
 import { MOCK_ALERTS } from '@/data/mock-messages';
-import type { AlertItem, AlertSeverity } from '@/data/mock-messages';
-
-type AlertFilter = 'all' | AlertSeverity | 'resolved';
-
-const ALERT_FILTERS: { key: AlertFilter; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'high', label: 'High' },
-  { key: 'medium', label: 'Medium' },
-  { key: 'low', label: 'Low' },
-  { key: 'resolved', label: 'Resolved' },
-];
+import type { AlertItem, NotificationCategory } from '@/data/mock-messages';
 
 export default function AlertsScreen() {
   const [alerts, setAlerts] = useState(MOCK_ALERTS);
-  const [filter, setFilter] = useState<AlertFilter>('all');
+  const [category, setCategory] = useState<NotificationCategory>('all');
   const [selectedAlert, setSelectedAlert] = useState<AlertItem | null>(null);
 
   const filteredAlerts = useMemo(() => {
-    if (filter === 'all') return alerts;
-    if (filter === 'resolved') return alerts.filter((a) => a.resolved);
-    return alerts.filter((a) => a.severity === filter && !a.resolved);
-  }, [alerts, filter]);
+    if (category === 'all') return alerts;
+    switch (category) {
+      case 'mentions':
+        return alerts.filter((a) => a.sourceTag === 'Mention');
+      case 'tasks':
+        return alerts.filter((a) => a.cta === 'Resolve');
+      case 'recruiting':
+        return alerts.filter((a) => a.sourceTag === 'Recruiting');
+      case 'game_ops':
+        return alerts.filter((a) => a.sourceTag === 'Game Ops' || a.sourceTag === 'Film');
+      case 'system':
+        return alerts.filter((a) => a.sourceTag === 'System');
+      default:
+        return alerts;
+    }
+  }, [alerts, category]);
 
   const handleCta = useCallback((alert: AlertItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -119,36 +119,11 @@ export default function AlertsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Filter Pills */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filterRow}
-        style={styles.filterScroll}
-      >
-        {ALERT_FILTERS.map((f) => {
-          const isActive = filter === f.key;
-          return (
-            <Pressable
-              key={f.key}
-              style={[
-                styles.filterChip,
-                { backgroundColor: isActive ? '#f5f5f5' : '#111' },
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setFilter(f.key);
-              }}
-            >
-              <ThemedText
-                style={[styles.filterChipText, { color: isActive ? '#000' : '#6e6e6e' }]}
-              >
-                {f.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+      {/* Category Tabs */}
+      <NotificationCategoryTabs
+        activeCategory={category}
+        onCategoryChange={setCategory}
+      />
 
       <FlatList
         data={filteredAlerts}
@@ -183,23 +158,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
-  },
-  filterScroll: {
-    flexGrow: 0,
-    marginBottom: Spacing.sm,
-  },
-  filterRow: {
-    paddingHorizontal: Spacing.md,
-    gap: 8,
-  },
-  filterChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: BorderRadius.full,
-  },
-  filterChipText: {
-    fontSize: 13,
-    fontWeight: '500',
   },
   listContent: {
     paddingBottom: 100,

@@ -83,13 +83,106 @@ export interface SubclusterRating {
 }
 
 export const CLUSTER_SUBCLUSTERS: Record<keyof ClusterRatings, string[]> = {
-  shooting: ['Spot-Up', 'Off-Screen', 'Pull-Up', 'Catch & Shoot', 'Free Throw'],
-  finishing: ['Rim Finishing', 'Floater', 'Mid-Range', 'Post-Up'],
-  playmaking: ['Ball Handling', 'Passing', 'PnR Creation', 'Transition'],
-  perimeter_defense: ['Perimeter Containment', 'On-Ball Pressure', 'Isolation D'],
-  interior_defense: ['Help & Rotate', 'Rim Protection', 'Closeout'],
-  rebounding: ['Offensive Glass', 'Defensive Glass', 'Box Out'],
-  frame: ['Physical', 'Athleticism', 'Endurance'],
+  shooting: [
+    '3PT — Spot-Up (Catch-and-Shoot)',
+    '3PT — Movement',
+    '3PT — Off-the-Dribble',
+    '3PT — Deep Range',
+    '2PT Jumper — Catch-and-Shoot',
+    '2PT Jumper — Off-the-Dribble',
+    'Free Throw',
+  ],
+  finishing: [
+    'Layup Finishing',
+    'Floater / Runner Finishing',
+    'Dunk Finishing',
+    'Close Finishing',
+    'Foul Draw Rate (Paint)',
+  ],
+  playmaking: [
+    'Passing Accuracy',
+    'Passing Vision',
+    'Drive-and-Kick Passing',
+    'Transition Playmaking',
+    'Ball Security',
+    'Screen Assist Creation',
+    'Hockey Assist Creation',
+  ],
+  perimeter_defense: [
+    'On-Ball Containment',
+    'Ball Pressure',
+    'Screen Navigation',
+    'Perimeter Shot Contest',
+    'Steal',
+    'Off-Ball Denial',
+    'Perimeter Disruption',
+    'Perimeter Foul Discipline',
+  ],
+  interior_defense: [
+    'Block',
+    'Rim Deterrence',
+    'Vertical Contest Effectiveness',
+    'Post Defense',
+    'Help Defense (Interior)',
+    'Roll Man Defense',
+    'Interior Disruption',
+    'Interior Foul Discipline',
+    'Interior Positioning',
+  ],
+  rebounding: [
+    'Defensive Rebounding',
+    'Offensive Rebounding',
+    'Box-Out Effectiveness',
+    'Rebound Conversion (Secure vs Tip)',
+    'Rebound Range & Tracking',
+    'Rebound-to-Playmaking (Outlet Impact)',
+  ],
+  frame: [
+    'Speed — With Ball',
+    'Speed — Without Ball',
+    'Acceleration (Burst)',
+    'Deceleration (Stop Control)',
+    'Change of Direction (Agility)',
+    'Lateral Quickness',
+    'Vertical Pop (Live-Play)',
+    'Strength (Functional)',
+    'Power Through Contact',
+    'Endurance',
+    'Motor',
+    'Body Control',
+  ],
+};
+
+// ── Per-player roster management metadata ──
+
+export type PlayerStatus = 'available' | 'injured' | 'out' | 'redshirt';
+
+export interface RosterMeta {
+  status: PlayerStatus;
+  statusNote?: string;
+  aidPct: number;
+  nilActive: boolean;
+  rosterNotes: string;
+}
+
+export const ROSTER_META: Record<string, RosterMeta> = {
+  '4':  { status: 'available', aidPct: 100, nilActive: true,  rosterNotes: 'Go-to guy. Feed him early.' },
+  '5':  { status: 'available', aidPct: 100, nilActive: true,  rosterNotes: 'Most versatile big. Can pass out of the post.' },
+  '11': { status: 'available', aidPct: 75,  nilActive: true,  rosterNotes: 'Veteran leader, strong mid-range game.' },
+  '13': { status: 'available', aidPct: 75,  nilActive: false, rosterNotes: 'Consistent shooter, can get hot.' },
+  '41': { status: 'available', aidPct: 50,  nilActive: false, rosterNotes: 'Reliable scorer, good positional rebounder.' },
+  '55': { status: 'available', aidPct: 50,  nilActive: true,  rosterNotes: 'Athletic, strong rebounder for his position.' },
+  '0':  { status: 'available', aidPct: 25,  nilActive: false, rosterNotes: 'Good defender, offense still developing.' },
+  '7':  { status: 'available', aidPct: 50,  nilActive: false, rosterNotes: 'Long, athletic. Good rim protection.' },
+  '1':  { status: 'available', aidPct: 40,  nilActive: false, rosterNotes: 'Tallest player on roster. Stay out of foul trouble.' },
+  '15': { status: 'available', aidPct: 25,  nilActive: false, rosterNotes: 'Developing — needs more reps.' },
+  '9':  { status: 'available', aidPct: 0,   nilActive: false, rosterNotes: 'Young — learning the system.' },
+  '3':  { status: 'available', aidPct: 0,   nilActive: false, rosterNotes: 'Needs confidence.' },
+  '10': { status: 'injured',   aidPct: 25,  nilActive: false, rosterNotes: 'Working on his frame.', statusNote: 'Ankle sprain — day-to-day' },
+  '12': { status: 'redshirt',  aidPct: 0,   nilActive: false, rosterNotes: 'Physical, needs polish. RS year.' },
+  '20': { status: 'out',       aidPct: 0,   nilActive: false, rosterNotes: 'Personal leave.', statusNote: 'Excused absence' },
+  '2':  { status: 'available', aidPct: 0,   nilActive: false, rosterNotes: 'Physical, needs polish.' },
+  '22': { status: 'available', aidPct: 0,   nilActive: false, rosterNotes: '' },
 };
 
 // Deterministic hash for stable subcluster generation

@@ -7,6 +7,10 @@
 // TYPES
 // =============================================================================
 
+export type FeedMode = 'for_you' | 'following';
+export type ExploreScope = 'all' | 'posts' | 'people' | 'clips' | 'games' | 'recruits' | 'docs';
+export type NotificationCategory = 'all' | 'mentions' | 'tasks' | 'recruiting' | 'game_ops' | 'system';
+
 export type FeedPostType =
   | 'update'
   | 'clip'
@@ -108,9 +112,9 @@ export interface InboxThread {
 }
 
 // V2 Types
-export type FeedScope = 'all' | 'my_team' | 'staff' | 'players' | 'parents' | 'recruiting' | 'league';
+export type FeedScope = 'all' | 'my_team' | 'staff' | 'players' | 'parents' | 'recruiting' | 'league' | 'game_ops';
 export type ComposePostType = 'update' | 'clip_link' | 'poll' | 'recruit_update' | 'staff_note';
-export type ChatSubTab = 'messages' | 'groups';
+export type ChatSubTab = 'primary' | 'requests' | 'groups';
 export type ChatMessageType = 'text' | 'clip_link' | 'poll' | 'system';
 
 export type ThreadTemplate =
@@ -555,7 +559,55 @@ export const FEED_SCOPES: { key: FeedScope; label: string }[] = [
   { key: 'parents', label: 'Parents' },
   { key: 'recruiting', label: 'Recruiting' },
   { key: 'league', label: 'League' },
+  { key: 'game_ops', label: 'Game Ops' },
 ];
+
+export const EXPLORE_SCOPES: { key: ExploreScope; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'posts', label: 'Posts' },
+  { key: 'people', label: 'People' },
+  { key: 'clips', label: 'Clips' },
+  { key: 'games', label: 'Games' },
+  { key: 'recruits', label: 'Recruits' },
+  { key: 'docs', label: 'Docs' },
+];
+
+export const NOTIFICATION_CATEGORIES: { key: NotificationCategory; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'mentions', label: 'Mentions' },
+  { key: 'tasks', label: 'Tasks' },
+  { key: 'recruiting', label: 'Recruiting' },
+  { key: 'game_ops', label: 'Game Ops' },
+  { key: 'system', label: 'System' },
+];
+
+export interface CommsListChannel {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+  filterScope?: FeedScope;
+  filterType?: FeedFilter;
+}
+
+export const COMMS_LIST_CHANNELS: CommsListChannel[] = [
+  { id: 'ch-1', icon: 'person.3.fill', title: 'My Team', description: 'Full team feed', filterScope: 'my_team' },
+  { id: 'ch-2', icon: 'briefcase.fill', title: 'Staff Room', description: 'Staff-only updates', filterScope: 'staff' },
+  { id: 'ch-3', icon: 'basketball.fill', title: 'Players', description: 'Player-facing content', filterScope: 'players' },
+  { id: 'ch-4', icon: 'house.fill', title: 'Parents', description: 'Parent communications', filterScope: 'parents' },
+  { id: 'ch-5', icon: 'person.badge.plus', title: 'Recruiting Board', description: 'Recruit updates and pipeline', filterScope: 'recruiting' },
+  { id: 'ch-6', icon: 'sportscourt.fill', title: 'Game Ops', description: 'Game day operations and film', filterType: 'team' },
+  { id: 'ch-7', icon: 'heart.fill', title: 'Medical / Performance', description: 'Player health and development', filterType: 'player_dev' },
+  { id: 'ch-8', icon: 'globe', title: 'League Watch', description: 'Conference and national updates', filterScope: 'league' },
+];
+
+export function getTrendingPosts(posts: FeedPost[], limit: number): FeedPost[] {
+  return [...posts].sort((a, b) => (b.commentCount ?? 0) - (a.commentCount ?? 0)).slice(0, limit);
+}
+
+export function getDeadlinePosts(posts: FeedPost[]): FeedPost[] {
+  return posts.filter((p) => p.type === 'compliance' && p.complianceUrgent);
+}
 
 export interface ThreadTemplateOption {
   key: ThreadTemplate;
@@ -644,6 +696,10 @@ export function getSourceTagColor(sourceTag: string): { bg: string; text: string
       return { bg: '#FFA50020', text: '#FFA500' };
     case 'Recruiting':
       return { bg: '#4CAF5020', text: '#4CAF50' };
+    case 'Mention':
+      return { bg: '#2196F320', text: '#64B5F6' };
+    case 'System':
+      return { bg: '#6e6e6e20', text: '#9e9e9e' };
     default:
       return { bg: '#2196F320', text: '#64B5F6' };
   }
@@ -721,6 +777,45 @@ export const MOCK_ALERTS: AlertItem[] = [
     description: 'Andre Harris (#23) has missed two consecutive team meals and was late to one practice this week. Culture protocol requires a check-in conversation.',
     history: [
       { action: 'Created by system', timestamp: ago(2880) },
+    ],
+  },
+  {
+    id: 'al-6',
+    severity: 'low',
+    title: 'Coach Miller mentioned you in Staff Room',
+    sourceTag: 'Mention',
+    timestamp: ago(60),
+    cta: 'View',
+    resolved: false,
+    description: 'Coach Miller tagged you in a message about the Campbell scouting report.',
+    history: [
+      { action: 'Created by system', timestamp: ago(60) },
+    ],
+  },
+  {
+    id: 'al-7',
+    severity: 'low',
+    title: 'System backup completed',
+    sourceTag: 'System',
+    timestamp: ago(360),
+    cta: 'View',
+    resolved: false,
+    description: 'Nightly data backup completed successfully. All program data synced to cloud storage.',
+    history: [
+      { action: 'Created by system', timestamp: ago(360) },
+    ],
+  },
+  {
+    id: 'al-8',
+    severity: 'medium',
+    title: 'Marcus Johnson mentioned you in Team Thread',
+    sourceTag: 'Mention',
+    timestamp: ago(90),
+    cta: 'View',
+    resolved: false,
+    description: 'Marcus Johnson tagged you asking about Saturday\'s game plan adjustments.',
+    history: [
+      { action: 'Created by system', timestamp: ago(90) },
     ],
   },
 ];

@@ -5,11 +5,11 @@
 
 import React, { useState } from 'react';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { VideoHeader } from '@/components/media/video-header';
 import { ContentTabRow, type ContentTab, type VideoMode } from '@/components/media/content-tab-row';
 import { LibraryBucket } from '@/components/media/library-bucket';
 import { ClipCard } from '@/components/media/clip-card';
@@ -162,14 +162,13 @@ function CoachLibrary({ onSaveLink }: { onSaveLink: () => void }) {
 // =============================================================================
 
 export default function LibraryScreen() {
-  const insets = useSafeAreaInsets();
   const [tab, setTab] = useState<ContentTab>('tab1');
   const [saveLinkVisible, setSaveLinkVisible] = useState(false);
   const mode: VideoMode = 'film'; // Library always uses film-mode labels
 
   return (
-    <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
-      <ThemedText style={styles.headerTitle}>Library</ThemedText>
+    <ThemedView style={styles.container}>
+      <VideoHeader title="Library" />
       <ContentTabRow activeTab={tab} onTabChange={setTab} mode={mode} />
 
       <View style={styles.flex}>
@@ -194,14 +193,6 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#f5f5f5',
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.sm,
-    paddingBottom: Spacing.sm,
   },
   scrollContent: {
     paddingBottom: 120,

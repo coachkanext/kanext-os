@@ -4,7 +4,7 @@
  * Full-bleed hero-image layout — each player is an immersive section.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -20,7 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
-import { FMU_RECORD, FMU_STANDINGS, ROSTER_KR } from '@/data/fmu';
+import { FMU_RECORD, FMU_STANDINGS, ROSTER_KR, getPlayerSeasonPGIS, getPGISColor } from '@/data/fmu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ARCHETYPE_LABELS, type Archetype } from '@/data/system-demand-profiles';
 import { UnitsView } from '@/components/depth-chart/depth-chart-units';
@@ -55,9 +55,12 @@ const HEADSHOTS: Record<string, any> = {
   '55': require('@/assets/images/headshots/munir-jones.png'),
 };
 
+// Season-average PGIS per jersey (computed once at module level)
+const SEASON_PGIS = getPlayerSeasonPGIS();
+
 // Shared data from @/data/roster-data (avoids circular deps with depth-chart components)
-import { TEAM_COLORS, PLAYER_CLUSTERS, PLAYER_PHYSICALS, computeOffKR, computeDefKR } from '@/data/roster-data';
-import type { ClusterRatings } from '@/data/roster-data';
+import { TEAM_COLORS, PLAYER_CLUSTERS, PLAYER_PHYSICALS, computeOffKR, computeDefKR, CLUSTER_SUBCLUSTERS, getPlayerSubclusters, ROSTER_META } from '@/data/roster-data';
+import type { ClusterRatings, PlayerStatus } from '@/data/roster-data';
 
 // ── Season Constants ──
 const SEASONS = ['2024-25', '2025-26', '2026-27'] as const;
@@ -70,9 +73,9 @@ const LAST_3_GAMES: Record<string, { opponent: string; pts: number; reb: number;
 // PLAYER_CLUSTERS, ClusterRatings, computeOffKR, computeDefKR now live in @/data/roster-data
 
 // KR sort options
-type KrSortKey = 'kr' | 'offKR' | 'defKR' | 'shooting' | 'finishing' | 'playmaking' | 'perimeter_defense' | 'interior_defense' | 'rebounding' | 'frame';
+type KrSortKey = 'kr' | 'offKR' | 'defKR' | 'shooting' | 'finishing' | 'playmaking' | 'perimeter_defense' | 'interior_defense' | 'rebounding' | 'frame' | 'pgis';
 const KR_SORT_OPTIONS: { key: KrSortKey; label: string }[] = [
-  { key: 'kr', label: 'KR' },
+  { key: 'kr', label: 'KaNeXT' },
   { key: 'offKR', label: 'O KR' },
   { key: 'defKR', label: 'D KR' },
   { key: 'shooting', label: 'SHT' },
@@ -84,8 +87,24 @@ const KR_SORT_OPTIONS: { key: KrSortKey; label: string }[] = [
   { key: 'frame', label: 'PHY' },
 ];
 
+// Cluster segments for the segmented picker
+const CLUSTER_SEGMENTS: { key: keyof ClusterRatings | 'offKR' | 'defKR' | 'pgis'; label: string; sortKey: KrSortKey }[] = [
+  { key: 'offKR', label: 'O KR', sortKey: 'offKR' },
+  { key: 'defKR', label: 'D KR', sortKey: 'defKR' },
+  { key: 'shooting', label: 'SHT', sortKey: 'shooting' },
+  { key: 'finishing', label: 'FIN', sortKey: 'finishing' },
+  { key: 'playmaking', label: 'PLY', sortKey: 'playmaking' },
+  { key: 'perimeter_defense', label: 'OBD', sortKey: 'perimeter_defense' },
+  { key: 'interior_defense', label: 'TMD', sortKey: 'interior_defense' },
+  { key: 'rebounding', label: 'REB', sortKey: 'rebounding' },
+  { key: 'frame', label: 'PHY', sortKey: 'frame' },
+  { key: 'pgis', label: 'PGIS', sortKey: 'pgis' },
+];
+
+
 function getPlayerKrSortValue(player: { number: string; kr: number }, key: KrSortKey): number {
   if (key === 'kr') return player.kr;
+  if (key === 'pgis') return SEASON_PGIS[player.number] ?? 0;
   const c = PLAYER_CLUSTERS[player.number];
   if (!c) return 0;
   if (key === 'offKR') return computeOffKR(c);
@@ -224,24 +243,8 @@ const LAST_3_GAMES_BY_SEASON: Record<Season, Record<string, GameLog[]>> = {
   '2026-27': {},
 };
 
-type ViewType = 'cards' | 'list' | 'depth';
+type ViewType = 'cards' | 'depth' | 'list';
 
-// ── Filter / Sort types ──
-type FilterOption = 'all' | 'starter' | 'rotation' | 'bench' | 'redshirt' | 'injured' | 'out';
-type SortOption = 'kr' | 'number' | 'usage' | 'minutes' | 'ppg' | 'rpg' | 'apg' | 'position' | 'class' | 'az';
-
-const SORT_OPTIONS: { key: SortOption; label: string }[] = [
-  { key: 'kr', label: 'KR' },
-  { key: 'number', label: '#' },
-  { key: 'usage', label: 'Usage' },
-  { key: 'minutes', label: 'Minutes' },
-  { key: 'ppg', label: 'PPG' },
-  { key: 'rpg', label: 'RPG' },
-  { key: 'apg', label: 'APG' },
-  { key: 'position', label: 'Position' },
-  { key: 'class', label: 'Class' },
-  { key: 'az', label: 'A–Z' },
-];
 
 // ── Full-bleed Player Section (NBA.com style) ──
 function PlayerSection({
@@ -257,7 +260,7 @@ function PlayerSection({
 
   return (
     <View style={styles.playerSection}>
-      {/* ── Player Identity (number + name + KR + position + last 3) ── */}
+      {/* ── Player Identity (number + name) ── */}
       <View style={styles.identityBlock}>
         <View style={styles.numberNameRow}>
           <Text style={styles.playerNumber}>{player.number}</Text>
@@ -266,24 +269,8 @@ function PlayerSection({
             <Text style={styles.firstName}>{player.firstName}</Text>
             <Text style={styles.lastName}>{player.lastName}</Text>
           </View>
-          <View style={styles.cardBadgesCol}>
-            <View style={styles.cardBadges}>
-              <View style={styles.cardLevelBadge}>
-                <Text style={styles.cardLevelText}>{player.classYear === 'Freshman' ? 'Fr' : player.classYear === 'Sophomore' ? 'So' : player.classYear === 'Junior' ? 'Jr' : 'Sr'}</Text>
-              </View>
-              <View style={styles.cardPosBadge}>
-                <Text style={styles.cardPosText}>{player.listPos}</Text>
-              </View>
-            </View>
-            <Text style={styles.cardKrText}>{player.kr}</Text>
-          </View>
+          <Text style={styles.cardKrOverall}>{player.kr}</Text>
         </View>
-        <Text style={styles.position}>{player.height} · {player.weight} lbs</Text>
-        {(player.ppg > 0 || player.rpg > 0 || player.apg > 0) && (
-          <Text style={styles.last3Stats}>
-            {player.ppg} PPG · {player.rpg} RPG · {player.apg} APG
-          </Text>
-        )}
       </View>
 
       {/* ── Hero Photo (headshot or FMU Seal fallback) — tappable → bio ── */}
@@ -334,10 +321,10 @@ function PlayerSection({
 }
 
 /* ── Roster Controls: Season + Filter + Sort + Search + View toggle ── */
-const VIEW_OPTIONS: { key: ViewType; icon: string }[] = [
-  { key: 'depth', icon: 'list.bullet.indent' },
+const VIEW_OPTIONS: { key: ViewType; label?: string; icon?: string }[] = [
   { key: 'cards', icon: 'square.grid.2x2.fill' },
-  { key: 'list', icon: 'rectangle.stack' },
+  { key: 'depth', label: 'Depth' },
+  { key: 'list', icon: 'list.bullet' },
 ];
 
 function RosterControls({
@@ -349,6 +336,8 @@ function RosterControls({
   onSearchChange,
   krSortKey,
   onKrSortChange,
+  dismissSubclusters,
+  onSubclusterChange,
 }: {
   activeView: ViewType;
   onViewChange: (view: ViewType) => void;
@@ -358,15 +347,30 @@ function RosterControls({
   onSearchChange: (query: string) => void;
   krSortKey: KrSortKey | null;
   onKrSortChange: (key: KrSortKey | null) => void;
+  dismissSubclusters: number;
+  onSubclusterChange?: (sub: string | null) => void;
 }) {
   const [seasonOpen, setSeasonOpen] = useState(false);
-  const [krDropdownOpen, setKrDropdownOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
+  const [expandedCluster, setExpandedCluster] = useState<keyof ClusterRatings | null>(null);
+  const [selectedSubcluster, setSelectedSubcluster] = useState<string | null>(null);
+
+  // Close subclusters when parent signals dismiss
+  useEffect(() => {
+    if (dismissSubclusters > 0) {
+      setExpandedCluster(null);
+      setSelectedSubcluster(null);
+    }
+  }, [dismissSubclusters]);
+
+  // Propagate subcluster selection to parent
+  useEffect(() => {
+    onSubclusterChange?.(selectedSubcluster);
+  }, [selectedSubcluster]);
   const [pillY, setPillY] = useState(0);
   const [pillH, setPillH] = useState(0);
   const [activePillX, setActivePillX] = useState(0);
   const seasonRef = React.useRef<View>(null);
-  const krRef = React.useRef<View>(null);
 
   const openDropdown = (
     ref: React.RefObject<View | null>,
@@ -381,7 +385,6 @@ function RosterControls({
   };
 
   const seasonLabel = selectedSeason.replace('-', '\u2013');
-  const krLabel = krSortKey ? (KR_SORT_OPTIONS.find((o) => o.key === krSortKey)?.label ?? 'KR') : 'KR';
 
   return (
     <>
@@ -402,24 +405,6 @@ function RosterControls({
             </Text>
             <IconSymbol name="chevron.down" size={10} color={TEAM_COLORS.gray} />
           </Pressable>
-
-          {/* KR sort dropdown pill (hidden in depth view — lens lives inside UnitsView) */}
-          {activeView !== 'depth' && (
-          <Pressable
-            ref={krRef as any}
-            style={({ pressed }) => [
-              styles.controlPill,
-              krSortKey != null && styles.controlPillActive,
-              { opacity: pressed ? 0.8 : 1 },
-            ]}
-            onPress={() => openDropdown(krRef, setKrDropdownOpen)}
-          >
-            <Text style={[styles.controlPillText, krSortKey != null && { color: TEAM_COLORS.white }]}>
-              {krLabel}
-            </Text>
-            <IconSymbol name="chevron.down" size={10} color={krSortKey != null ? TEAM_COLORS.white : TEAM_COLORS.gray} />
-          </Pressable>
-          )}
 
           {/* Search icon */}
           <Pressable
@@ -453,22 +438,111 @@ function RosterControls({
             return (
               <Pressable
                 key={v.key}
-                style={[styles.viewToggleBtn, isActive && styles.viewToggleBtnActive]}
+                style={[styles.viewToggleBtn, isActive && styles.viewToggleBtnActive, v.label ? { paddingHorizontal: 10 } : {}]}
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   onViewChange(v.key);
                 }}
               >
-                <IconSymbol
-                  name={v.icon as any}
-                  size={16}
-                  color={isActive ? TEAM_COLORS.white : TEAM_COLORS.gray}
-                />
+                {v.icon ? (
+                  <IconSymbol
+                    name={v.icon as any}
+                    size={16}
+                    color={isActive ? TEAM_COLORS.white : TEAM_COLORS.gray}
+                  />
+                ) : (
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: isActive ? TEAM_COLORS.white : TEAM_COLORS.gray }}>
+                    {v.label}
+                  </Text>
+                )}
               </Pressable>
             );
           })}
         </View>
       </View>
+
+      {/* Depth: KaNeXT Cluster Picker (with subclusters) */}
+      {activeView === 'depth' && (
+        <View>
+          <View style={styles.clusterPickerRow}>
+            <Text style={styles.clusterPickerLabel}>KaNeXT</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.clusterSegments}>
+              {CLUSTER_SEGMENTS.map((seg) => {
+                const isActive = krSortKey === seg.sortKey;
+                const isExpanded = expandedCluster === seg.key;
+                return (
+                  <Pressable
+                    key={seg.key}
+                    style={[styles.clusterSegment, isActive && styles.clusterSegmentActive]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      const hasSubclusters = seg.key !== 'offKR' && seg.key !== 'defKR' && seg.key !== 'pgis';
+                      if (isActive) {
+                        if (hasSubclusters) {
+                          setExpandedCluster(isExpanded ? null : seg.key as keyof ClusterRatings);
+                        }
+                      } else {
+                        onKrSortChange(seg.sortKey);
+                        setExpandedCluster(null);
+                        setSelectedSubcluster(null);
+                      }
+                    }}
+                  >
+                    <Text style={[styles.clusterSegmentText, isActive && styles.clusterSegmentTextActive]}>
+                      {seg.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+              {krSortKey != null && (
+                <Pressable
+                  style={styles.clusterSegmentClear}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    onKrSortChange(null);
+                    setExpandedCluster(null);
+                    setSelectedSubcluster(null);
+                  }}
+                >
+                  <IconSymbol name="xmark" size={10} color="#EF4444" />
+                </Pressable>
+              )}
+            </ScrollView>
+          </View>
+
+          {/* Subcluster accordion panel */}
+          {expandedCluster && (
+            <View style={styles.subclusterAccordion}>
+              <Text style={styles.subclusterAccordionTitle}>
+                {CLUSTER_SEGMENTS.find((s) => s.key === expandedCluster)?.label ?? ''} SUBCLUSTERS
+              </Text>
+              {CLUSTER_SUBCLUSTERS[expandedCluster].map((subName, idx) => {
+                const isSubActive = selectedSubcluster === `${expandedCluster}:${idx}`;
+                return (
+                  <Pressable
+                    key={subName}
+                    style={[styles.subclusterAccordionRow, isSubActive && styles.subclusterAccordionRowActive]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      const subId = `${expandedCluster}:${idx}`;
+                      if (isSubActive) {
+                        setSelectedSubcluster(null);
+                        setExpandedCluster(null);
+                      } else {
+                        setSelectedSubcluster(subId);
+                      }
+                    }}
+                  >
+                    <Text style={[styles.subclusterAccordionName, isSubActive && styles.subclusterAccordionNameActive]}>{subName}</Text>
+                    {isSubActive && <IconSymbol name="checkmark" size={12} color="#f5f5f5" />}
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+        </View>
+      )}
+
 
       {/* Search input bar (expanded when active) */}
       {searchActive && (
@@ -519,34 +593,196 @@ function RosterControls({
         </Modal>
       )}
 
-      {/* KR sort dropdown */}
-      {krDropdownOpen && (
-        <Modal visible transparent animationType="none" onRequestClose={() => setKrDropdownOpen(false)}>
-          <Pressable style={styles.dropdownOverlay} onPress={() => setKrDropdownOpen(false)}>
-            <View style={[styles.dropdown, { top: pillY + pillH + 4, left: activePillX, minWidth: 130 }]}>
-              {/* Reset option */}
-              {krSortKey != null && (
-                <Pressable
-                  style={styles.dropdownItem}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    onKrSortChange(null);
-                    setKrDropdownOpen(false);
-                  }}
-                >
-                  <Text style={[styles.dropdownText, { color: '#EF4444' }]}>Clear Sort</Text>
-                </Pressable>
-              )}
-              {KR_SORT_OPTIONS.map((opt) => {
-                const isSelected = opt.key === krSortKey;
+    </>
+  );
+}
+
+/* ── List View (Roster Management Table) ── */
+
+type ListFilter = 'all' | 'available' | 'injured' | 'out' | 'redshirt';
+const LIST_FILTERS: { key: ListFilter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'available', label: 'Available' },
+  { key: 'injured', label: 'Injured' },
+  { key: 'out', label: 'Out' },
+  { key: 'redshirt', label: 'Redshirt' },
+];
+
+type ListSortOption = 'number' | 'az' | 'position' | 'class' | 'height' | 'weight' | 'status' | 'aid';
+const LIST_SORT_OPTIONS: { key: ListSortOption; label: string }[] = [
+  { key: 'number', label: '#' },
+  { key: 'az', label: 'Name A\u2013Z' },
+  { key: 'position', label: 'Position' },
+  { key: 'class', label: 'Class' },
+  { key: 'height', label: 'Height' },
+  { key: 'weight', label: 'Weight' },
+  { key: 'status', label: 'Status' },
+  { key: 'aid', label: 'Aid' },
+];
+
+const LIST_TABLE_COLUMNS: { key: string; label: string; width: number; align?: 'left' | 'center' | 'right' }[] = [
+  { key: '#',      label: '#',      width: 40,  align: 'center' },
+  { key: 'name',   label: 'NAME',   width: 150 },
+  { key: 'pos',    label: 'POS',    width: 50,  align: 'center' },
+  { key: 'ht',     label: 'HT',     width: 50,  align: 'center' },
+  { key: 'wt',     label: 'WT',     width: 46,  align: 'center' },
+  { key: 'class',  label: 'CLASS',  width: 56,  align: 'center' },
+  { key: 'status', label: 'STATUS', width: 80,  align: 'center' },
+  { key: 'aid',    label: 'AID',    width: 50,  align: 'center' },
+  { key: 'nil',    label: 'NIL',    width: 46,  align: 'center' },
+  { key: 'notes',  label: 'NOTES',  width: 180 },
+];
+
+const CLASS_ABBREV: Record<string, string> = {
+  Freshman: 'Fr', Sophomore: 'So', Junior: 'Jr', Senior: 'Sr',
+};
+
+const STATUS_COLORS: Record<PlayerStatus, { bg: string; text: string }> = {
+  available: { bg: '#33333380', text: '#999' },
+  injured:   { bg: '#EF444430', text: '#EF4444' },
+  out:       { bg: '#EF444430', text: '#EF4444' },
+  redshirt:  { bg: '#F59E0B30', text: '#F59E0B' },
+};
+
+const STATUS_LABEL: Record<PlayerStatus, string> = {
+  available: 'Available',
+  injured: 'Injured',
+  out: 'Out',
+  redshirt: 'Redshirt',
+};
+
+function getPlayerStatus(jersey: string): PlayerStatus {
+  return ROSTER_META[jersey]?.status ?? 'available';
+}
+
+function getListSortValue(player: RosterPlayer, key: ListSortOption): string | number {
+  switch (key) {
+    case 'number': return parseInt(player.number, 10);
+    case 'az': return `${player.lastName} ${player.firstName}`.toLowerCase();
+    case 'position': {
+      const posOrder: Record<string, number> = { PG: 1, CG: 2, W: 3, F: 4, B: 5 };
+      return posOrder[player.listPos] ?? 9;
+    }
+    case 'class': {
+      const order: Record<string, number> = { Freshman: 1, Sophomore: 2, Junior: 3, Senior: 4 };
+      return order[player.classYear] ?? 0;
+    }
+    case 'height': return parseInt(player.height.replace(/['"]/g, ''), 10);
+    case 'weight': return player.weight;
+    case 'status': {
+      const statusOrder: Record<PlayerStatus, number> = { injured: 0, out: 1, redshirt: 2, available: 3 };
+      return statusOrder[getPlayerStatus(player.number)];
+    }
+    case 'aid': return ROSTER_META[player.number]?.aidPct ?? 0;
+    default: return 0;
+  }
+}
+
+function RosterListView({
+  roster,
+  listFilter,
+  onFilterChange,
+  listSort,
+  onSortChange,
+  onPlayerTap,
+}: {
+  roster: RosterPlayer[];
+  listFilter: ListFilter;
+  onFilterChange: (f: ListFilter) => void;
+  listSort: ListSortOption;
+  onSortChange: (s: ListSortOption) => void;
+  onPlayerTap: (jersey: string) => void;
+}) {
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const sortRef = React.useRef<View>(null);
+  const [sortPillY, setSortPillY] = useState(0);
+  const [sortPillH, setSortPillH] = useState(0);
+  const [sortPillX, setSortPillX] = useState(0);
+
+  // Filter + sort roster
+  const filtered = useMemo(() => {
+    let result = [...roster];
+    if (listFilter !== 'all') {
+      result = result.filter((p) => getPlayerStatus(p.number) === listFilter);
+    }
+    const descKeys: ListSortOption[] = ['aid', 'weight', 'height'];
+    const asc = !descKeys.includes(listSort);
+    result.sort((a, b) => {
+      const aVal = getListSortValue(a, listSort);
+      const bVal = getListSortValue(b, listSort);
+      const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+      return asc ? cmp : -cmp;
+    });
+    return result;
+  }, [roster, listFilter, listSort]);
+
+  const sortLabel = LIST_SORT_OPTIONS.find((o) => o.key === listSort)?.label ?? '#';
+
+  return (
+    <View>
+      {/* Filter chip row */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={listStyles.filterRow}>
+        {LIST_FILTERS.map((f) => {
+          const isActive = listFilter === f.key;
+          return (
+            <Pressable
+              key={f.key}
+              style={[listStyles.filterChip, isActive && listStyles.filterChipActive]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onFilterChange(f.key);
+              }}
+            >
+              <Text style={[listStyles.filterChipText, isActive && listStyles.filterChipTextActive]}>
+                {f.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {/* Sort row + Statistics bridge */}
+      <View style={listStyles.sortRow}>
+        <Pressable
+          ref={sortRef as any}
+          style={({ pressed }) => [listStyles.sortPill, { opacity: pressed ? 0.8 : 1 }]}
+          onPress={() => {
+            (sortRef.current as any)?.measureInWindow((x: number, y: number, _w: number, h: number) => {
+              setSortPillX(x);
+              setSortPillY(y);
+              setSortPillH(h);
+              setSortDropdownOpen(true);
+            });
+          }}
+        >
+          <Text style={listStyles.sortPillLabel}>Sort: </Text>
+          <Text style={listStyles.sortPillValue}>{sortLabel}</Text>
+          <Text style={listStyles.sortPillArrow}> \u25BE</Text>
+        </Pressable>
+
+        <Pressable
+          style={({ pressed }) => [listStyles.statsBridge, { opacity: pressed ? 0.7 : 1 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <Text style={listStyles.statsBridgeText}>Open Statistics \u2192</Text>
+        </Pressable>
+      </View>
+
+      {/* Sort dropdown modal */}
+      {sortDropdownOpen && (
+        <Modal visible transparent animationType="none" onRequestClose={() => setSortDropdownOpen(false)}>
+          <Pressable style={styles.dropdownOverlay} onPress={() => setSortDropdownOpen(false)}>
+            <View style={[styles.dropdown, { top: sortPillY + sortPillH + 4, left: sortPillX }]}>
+              {LIST_SORT_OPTIONS.map((opt) => {
+                const isSelected = opt.key === listSort;
                 return (
                   <Pressable
                     key={opt.key}
                     style={[styles.dropdownItem, isSelected && { backgroundColor: TEAM_COLORS.accent }]}
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      onKrSortChange(opt.key);
-                      setKrDropdownOpen(false);
+                      onSortChange(opt.key);
+                      setSortDropdownOpen(false);
                     }}
                   >
                     <Text style={[styles.dropdownText, isSelected && { color: TEAM_COLORS.background, fontWeight: '700' }]}>
@@ -560,186 +796,193 @@ function RosterControls({
         </Modal>
       )}
 
-    </>
-  );
-}
-
-/* ── List View (horizontal-scrollable table) ── */
-const TABLE_COLUMNS: { key: string; label: string; width: number; align?: 'left' | 'center' | 'right' }[] = [
-  { key: '#', label: '#', width: 40, align: 'center' },
-  { key: 'name', label: 'NAME', width: 150 },
-  { key: 'pos', label: 'POS', width: 56, align: 'center' },
-  { key: 'ht', label: 'HT', width: 56, align: 'center' },
-  { key: 'wt', label: 'WT', width: 50, align: 'center' },
-  { key: 'class', label: 'CLASS', width: 80, align: 'center' },
-  { key: 'birthplace', label: 'HOMETOWN', width: 120 },
-  { key: 'prep', label: 'PREV', width: 140 },
-  { key: 'kr', label: 'KR', width: 46, align: 'center' },
-  { key: 'offKR', label: 'O KR', width: 50, align: 'center' },
-  { key: 'defKR', label: 'D KR', width: 50, align: 'center' },
-  { key: 'shooting', label: 'SHT', width: 46, align: 'center' },
-  { key: 'finishing', label: 'FIN', width: 46, align: 'center' },
-  { key: 'playmaking', label: 'PLY', width: 46, align: 'center' },
-  { key: 'perimeter_defense', label: 'OBD', width: 46, align: 'center' },
-  { key: 'interior_defense', label: 'TMD', width: 46, align: 'center' },
-  { key: 'rebounding', label: 'REB', width: 46, align: 'center' },
-  { key: 'frame', label: 'PHY', width: 46, align: 'center' },
-];
-
-type ListSortKey = typeof TABLE_COLUMNS[number]['key'];
-
-const STATUS_DISPLAY: Record<PlayerRole, string> = {
-  starter: 'Available',
-  rotation: 'Available',
-  bench: 'Available',
-  redshirt: 'Redshirt',
-  injured: 'Injured',
-  out: 'Out',
-};
-
-const CLASS_ABBREV: Record<string, string> = {
-  Freshman: 'Fr', Sophomore: 'So', Junior: 'Jr', Senior: 'Sr',
-};
-
-function getListSortValue(player: RosterPlayer, key: ListSortKey): string | number {
-  switch (key) {
-    case '#': return parseInt(player.number, 10);
-    case 'name': return `${player.lastName} ${player.firstName}`.toLowerCase();
-    case 'pos': return player.listPos;
-    case 'ht': return parseInt(player.height.replace(/['"]/g, ''), 10);
-    case 'wt': return player.weight;
-    case 'class': {
-      const order: Record<string, number> = { Freshman: 1, Sophomore: 2, Junior: 3, Senior: 4 };
-      return order[player.classYear] ?? 0;
-    }
-    case 'status': {
-      const statusOrder: Record<string, number> = { injured: 0, out: 1, redshirt: 2, bench: 3, rotation: 4, starter: 5 };
-      return statusOrder[player.role] ?? 3;
-    }
-    case 'birthplace': return (player.notes ?? '').toLowerCase();
-    case 'prep': return (player.formerSchool ?? '').toLowerCase();
-    case 'kr': return player.kr;
-    case 'offKR': { const c = PLAYER_CLUSTERS[player.number]; return c ? computeOffKR(c) : 0; }
-    case 'defKR': { const c = PLAYER_CLUSTERS[player.number]; return c ? computeDefKR(c) : 0; }
-    case 'shooting':
-    case 'finishing':
-    case 'playmaking':
-    case 'perimeter_defense':
-    case 'interior_defense':
-    case 'rebounding':
-    case 'frame': { const c = PLAYER_CLUSTERS[player.number]; return c ? c[key as keyof ClusterRatings] : 0; }
-    default: return '';
-  }
-}
-
-function ListView({ roster, onPlayerTap }: { roster: RosterPlayer[]; onPlayerTap: (jersey: string) => void }) {
-  const [sortKey, setSortKey] = useState<ListSortKey>('#');
-  const [sortAsc, setSortAsc] = useState(true);
-
-  const handleHeaderPress = (key: ListSortKey) => {
-    if (key === sortKey) {
-      setSortAsc((prev) => !prev);
-    } else {
-      setSortKey(key);
-      // Default descending for KR columns
-      const descKeys = ['kr', 'offKR', 'defKR', 'shooting', 'finishing', 'playmaking', 'perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
-      setSortAsc(!descKeys.includes(key));
-    }
-  };
-
-  const sorted = [...roster].sort((a, b) => {
-    const aVal = getListSortValue(a, sortKey);
-    const bVal = getListSortValue(b, sortKey);
-    const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-    return sortAsc ? cmp : -cmp;
-  });
-
-  return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tableScroll}>
-      <View style={styles.tableContainer}>
-        {/* Header row */}
-        <View style={styles.tableHeaderRow}>
-          {TABLE_COLUMNS.map((col) => {
-            const isActive = sortKey === col.key;
-            return (
-              <Pressable
+      {/* Table */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} nestedScrollEnabled style={styles.tableScroll}>
+        <View style={styles.tableContainer}>
+          {/* Header row */}
+          <View style={styles.tableHeaderRow}>
+            {LIST_TABLE_COLUMNS.map((col) => (
+              <View
                 key={col.key}
-                style={{ width: col.width, flexDirection: 'row', alignItems: col.align === 'center' ? 'center' : 'flex-start', justifyContent: col.align === 'center' ? 'center' : 'flex-start' }}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  handleHeaderPress(col.key);
-                }}
+                style={{ width: col.width, alignItems: col.align === 'center' ? 'center' : 'flex-start', justifyContent: 'center' }}
               >
-                <Text
-                  style={[styles.tableHeaderCell, isActive && styles.tableHeaderCellActive]}
-                  numberOfLines={1}
-                >
+                <Text style={styles.tableHeaderCell} numberOfLines={1}>
                   {col.label}
                 </Text>
-                {isActive && (
-                  <Text style={styles.tableHeaderArrow}>{sortAsc ? ' ▲' : ' ▼'}</Text>
-                )}
+              </View>
+            ))}
+          </View>
+
+          {/* Data rows */}
+          {filtered.map((player, idx) => {
+            const meta = ROSTER_META[player.number];
+            const status = meta?.status ?? 'available';
+            const statusColor = STATUS_COLORS[status];
+            const aidPct = meta?.aidPct ?? 0;
+
+            return (
+              <Pressable
+                key={player.id}
+                style={[styles.tableRow, idx % 2 === 1 && styles.tableRowAlt]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onPlayerTap(player.number);
+                }}
+              >
+                {/* # */}
+                <Text style={[styles.tableCell, styles.tableCellNumber, { width: 40, textAlign: 'center' }]}>
+                  {player.number}
+                </Text>
+                {/* Name */}
+                <Text style={[styles.tableCell, styles.tableCellName, { width: 150 }]} numberOfLines={1}>
+                  {player.firstName} {player.lastName}
+                </Text>
+                {/* Pos */}
+                <View style={{ width: 50, alignItems: 'center', justifyContent: 'center' }}>
+                  <View style={listStyles.posPill}>
+                    <Text style={listStyles.posPillText}>{player.listPos}</Text>
+                  </View>
+                </View>
+                {/* Ht */}
+                <Text style={[styles.tableCell, { width: 50, textAlign: 'center' }]}>
+                  {player.height}
+                </Text>
+                {/* Wt */}
+                <Text style={[styles.tableCell, { width: 46, textAlign: 'center' }]}>
+                  {player.weight}
+                </Text>
+                {/* Class */}
+                <Text style={[styles.tableCell, { width: 56, textAlign: 'center' }]}>
+                  {CLASS_ABBREV[player.classYear] ?? player.classYear}
+                </Text>
+                {/* Status */}
+                <View style={{ width: 80, alignItems: 'center', justifyContent: 'center' }}>
+                  <View style={[listStyles.statusChip, { backgroundColor: statusColor.bg }]}>
+                    <Text style={[listStyles.statusChipText, { color: statusColor.text }]}>
+                      {STATUS_LABEL[status]}
+                    </Text>
+                  </View>
+                </View>
+                {/* Aid */}
+                <Text style={[styles.tableCell, { width: 50, textAlign: 'center' }]}>
+                  {aidPct > 0 ? `${aidPct}%` : '\u2014'}
+                </Text>
+                {/* NIL */}
+                <View style={{ width: 46, alignItems: 'center', justifyContent: 'center' }}>
+                  {meta?.nilActive ? (
+                    <Text style={listStyles.nilYes}>Yes</Text>
+                  ) : (
+                    <Text style={[styles.tableCell, { textAlign: 'center' }]}>{'\u2014'}</Text>
+                  )}
+                </View>
+                {/* Notes */}
+                <Text style={[styles.tableCell, styles.tableCellNotes, { width: 180 }]} numberOfLines={1}>
+                  {meta?.rosterNotes || '\u2014'}
+                </Text>
               </Pressable>
             );
           })}
         </View>
-
-        {/* Data rows */}
-        {sorted.map((player, idx) => (
-          <View
-            key={player.id}
-            style={[styles.tableRow, idx % 2 === 1 && styles.tableRowAlt]}
-          >
-            <Text style={[styles.tableCell, styles.tableCellNumber, { width: TABLE_COLUMNS[0].width, textAlign: 'center' }]}>
-              {player.number}
-            </Text>
-            <Pressable
-              style={{ width: TABLE_COLUMNS[1].width }}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onPlayerTap(player.number);
-              }}
-            >
-              <Text style={[styles.tableCell, styles.tableCellName]} numberOfLines={1}>
-                {player.firstName} {player.lastName}
-              </Text>
-            </Pressable>
-            <Text style={[styles.tableCell, { width: TABLE_COLUMNS[2].width, textAlign: 'center' }]}>{player.listPos}</Text>
-            <Text style={[styles.tableCell, { width: TABLE_COLUMNS[3].width, textAlign: 'center' }]}>{player.height}</Text>
-            <Text style={[styles.tableCell, { width: TABLE_COLUMNS[4].width, textAlign: 'center' }]}>{player.weight}</Text>
-            <Text style={[styles.tableCell, { width: TABLE_COLUMNS[5].width, textAlign: 'center' }]}>{CLASS_ABBREV[player.classYear] ?? player.classYear}</Text>
-            <Text style={[styles.tableCell, styles.tableCellNotes, { width: TABLE_COLUMNS[6].width }]} numberOfLines={1}>
-              {player.notes || '—'}
-            </Text>
-            <Text style={[styles.tableCell, styles.tableCellNotes, { width: TABLE_COLUMNS[7].width }]} numberOfLines={1}>
-              {player.formerSchool || '—'}
-            </Text>
-            {/* KR columns */}
-            {(() => {
-              const c = PLAYER_CLUSTERS[player.number];
-              const offKR = c ? computeOffKR(c) : 0;
-              const defKR = c ? computeDefKR(c) : 0;
-              return (
-                <>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[8].width, textAlign: 'center', fontWeight: '600' }]}>{player.kr}</Text>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[9].width, textAlign: 'center' }]}>{offKR}</Text>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[10].width, textAlign: 'center' }]}>{defKR}</Text>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[11].width, textAlign: 'center' }]}>{c?.shooting ?? '—'}</Text>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[12].width, textAlign: 'center' }]}>{c?.finishing ?? '—'}</Text>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[13].width, textAlign: 'center' }]}>{c?.playmaking ?? '—'}</Text>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[14].width, textAlign: 'center' }]}>{c?.perimeter_defense ?? '—'}</Text>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[15].width, textAlign: 'center' }]}>{c?.interior_defense ?? '—'}</Text>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[16].width, textAlign: 'center' }]}>{c?.rebounding ?? '—'}</Text>
-                  <Text style={[styles.tableCell, { width: TABLE_COLUMNS[17].width, textAlign: 'center' }]}>{c?.frame ?? '—'}</Text>
-                </>
-              );
-            })()}
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
+
+const listStyles = StyleSheet.create({
+  filterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: 8,
+  },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: '#1e1e1e',
+    borderWidth: 1,
+    borderColor: '#ffffff08',
+  },
+  filterChipActive: {
+    backgroundColor: '#f5f5f5',
+    borderColor: '#f5f5f5',
+  },
+  filterChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#666',
+  },
+  filterChipTextActive: {
+    color: '#111',
+    fontWeight: '700',
+  },
+  sortRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: 8,
+  },
+  sortPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 30,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: '#2a2a2a',
+  },
+  sortPillLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: TEAM_COLORS.gray,
+  },
+  sortPillValue: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: TEAM_COLORS.white,
+  },
+  sortPillArrow: {
+    fontSize: 12,
+    color: TEAM_COLORS.gray,
+  },
+  statsBridge: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  statsBridgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: TEAM_COLORS.primary,
+  },
+  posPill: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#2a2a2a',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  posPillText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: TEAM_COLORS.white,
+  },
+  statusChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  statusChipText: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  nilYes: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#4CAF50',
+  },
+});
 
 
 /* ── Depth Chart View ── */
@@ -825,68 +1068,6 @@ function CardsView({ roster, krSortKey, onPlayerTap }: { roster: RosterPlayer[];
   );
 }
 
-// ── Helper: apply filter, sort, search to roster ──
-function useFilteredRoster(
-  roster: RosterPlayer[],
-  filter: FilterOption,
-  sort: SortOption,
-  searchQuery: string,
-): RosterPlayer[] {
-  return useMemo(() => {
-    let result = [...roster];
-
-    // Filter
-    if (filter !== 'all') {
-      if (filter === 'rotation') {
-        result = result.filter((p) => p.role === 'starter' || p.role === 'rotation');
-      } else {
-        result = result.filter((p) => p.role === filter);
-      }
-    }
-
-    // Search
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      result = result.filter((p) =>
-        `${p.firstName} ${p.lastName}`.toLowerCase().includes(q),
-      );
-    }
-
-    // Sort
-    result.sort((a, b) => {
-      switch (sort) {
-        case 'kr':
-          return b.kr - a.kr;
-        case 'number':
-          return parseInt(a.number, 10) - parseInt(b.number, 10);
-        case 'usage':
-          return b.usage - a.usage;
-        case 'minutes':
-          return b.minutes - a.minutes;
-        case 'ppg':
-          return b.ppg - a.ppg;
-        case 'rpg':
-          return b.rpg - a.rpg;
-        case 'apg':
-          return b.apg - a.apg;
-        case 'az':
-          return `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`);
-        case 'position': {
-          const posOrder: Record<string, number> = { PG: 1, CG: 2, W: 3, F: 4, B: 5 };
-          return (posOrder[a.listPos] ?? 9) - (posOrder[b.listPos] ?? 9);
-        }
-        case 'class': {
-          const classOrder: Record<string, number> = { Freshman: 1, Sophomore: 2, Junior: 3, Senior: 4 };
-          return (classOrder[a.classYear] ?? 0) - (classOrder[b.classYear] ?? 0);
-        }
-        default:
-          return 0;
-      }
-    });
-
-    return result;
-  }, [roster, filter, sort, searchQuery]);
-}
 
 // Helio abbreviation → traditional position mapping for PoolPlayer construction
 const POS_ABBREV_TO_TRAD: Record<string, PoolPosition> = {
@@ -894,10 +1075,14 @@ const POS_ABBREV_TO_TRAD: Record<string, PoolPosition> = {
 };
 
 export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoPress, onLogoLongPress }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoPress?: () => void; onLogoLongPress?: () => void } = {}) {
-  const [activeView, setActiveView] = useState<ViewType>('depth');
+  const [activeView, setActiveView] = useState<ViewType>('cards');
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
   const [searchQuery, setSearchQuery] = useState('');
   const [krSortKey, setKrSortKey] = useState<KrSortKey | null>(null);
+  const [dismissCount, setDismissCount] = useState(0);
+  const [selectedSubcluster, setSelectedSubcluster] = useState<string | null>(null);
+  const [listFilter, setListFilter] = useState<ListFilter>('all');
+  const [listSort, setListSort] = useState<ListSortOption>('number');
 
   // Player sheet state (for cards/list views)
   const [sheetJersey, setSheetJersey] = useState<string | null>(null);
@@ -1007,12 +1192,36 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoPress,
         onSearchChange={setSearchQuery}
         krSortKey={krSortKey}
         onKrSortChange={setKrSortKey}
+        dismissSubclusters={dismissCount}
+        onSubclusterChange={setSelectedSubcluster}
       />
 
-      {/* Conditional Content */}
-      {activeView === 'cards' && <CardsView roster={filteredRoster} krSortKey={krSortKey} onPlayerTap={handlePlayerTap} />}
-      {activeView === 'list' && <ListView roster={filteredRoster} onPlayerTap={handlePlayerTap} />}
-      {activeView === 'depth' && <UnitsView depthChart={DEPTH_CHART_BY_SEASON[selectedSeason]} />}
+      {/* Cards — tap dismisses open subcluster accordion */}
+      {activeView === 'cards' && (
+        <Pressable onPress={() => setDismissCount((c) => c + 1)} style={{ flex: 1 }}>
+          <CardsView roster={filteredRoster} krSortKey={krSortKey} onPlayerTap={handlePlayerTap} />
+        </Pressable>
+      )}
+      {activeView === 'depth' && (
+        <UnitsView
+          depthChart={DEPTH_CHART_BY_SEASON[selectedSeason]}
+          lensOverride={krSortKey && krSortKey !== 'kr' ? (krSortKey === 'offKR' ? 'offense' : krSortKey === 'defKR' ? 'defense' : krSortKey === 'pgis' ? 'pgis' : krSortKey) as any : undefined}
+          subclusterOverride={selectedSubcluster ? (() => {
+            const [cluster, idxStr] = selectedSubcluster.split(':');
+            return { cluster: cluster as keyof ClusterRatings, index: parseInt(idxStr, 10) };
+          })() : undefined}
+        />
+      )}
+      {activeView === 'list' && (
+        <RosterListView
+          roster={filteredRoster}
+          listFilter={listFilter}
+          onFilterChange={setListFilter}
+          listSort={listSort}
+          onSortChange={setListSort}
+          onPlayerTap={handlePlayerTap}
+        />
+      )}
 
       {/* Player Sheet for cards/list views (depth view has its own inside UnitsView) */}
       {activeView !== 'depth' && (
@@ -1178,7 +1387,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   viewToggleBtn: {
-    width: 30,
+    minWidth: 30,
     height: 28,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1186,6 +1395,98 @@ const styles = StyleSheet.create({
   },
   viewToggleBtnActive: {
     backgroundColor: '#444',
+  },
+
+  // ── KaNeXT Cluster Segmented Picker ──
+  clusterPickerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: Spacing.lg,
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  clusterPickerLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#f5f5f5',
+    letterSpacing: 0.8,
+    marginRight: 8,
+  },
+  clusterSegments: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingRight: Spacing.lg,
+  },
+  clusterSegment: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: '#1e1e1e',
+    borderWidth: 1,
+    borderColor: '#ffffff08',
+  },
+  clusterSegmentActive: {
+    backgroundColor: '#f5f5f5',
+    borderColor: '#f5f5f5',
+  },
+  clusterSegmentText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#666',
+  },
+  clusterSegmentTextActive: {
+    color: '#111',
+    fontWeight: '700',
+  },
+  clusterSegmentClear: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#2a1515',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 2,
+  },
+  subclusterAccordion: {
+    marginHorizontal: Spacing.lg,
+    marginTop: 4,
+    marginBottom: 4,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: '#ffffff08',
+  },
+  subclusterAccordionTitle: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#555',
+    letterSpacing: 1.5,
+    marginBottom: 6,
+  },
+  subclusterAccordionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#ffffff08',
+    borderRadius: 6,
+  },
+  subclusterAccordionRowActive: {
+    backgroundColor: '#ffffff0C',
+  },
+  subclusterAccordionName: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#aaa',
+  },
+  subclusterAccordionNameActive: {
+    color: '#f5f5f5',
+    fontWeight: '700',
   },
 
   // ── Search Bar ──
@@ -1445,7 +1746,6 @@ const styles = StyleSheet.create({
   // ── List View (Table) ──
   tableScroll: {
     marginTop: Spacing.sm,
-    flexGrow: 0,
   },
   tableContainer: {
     paddingHorizontal: Spacing.lg,
@@ -1644,5 +1944,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     color: TEAM_COLORS.gray,
+  },
+  cardKrOverall: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#f5f5f5',
+    marginLeft: 12,
   },
 });
