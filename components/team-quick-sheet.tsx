@@ -22,13 +22,34 @@ const FMU_SEAL = require('@/assets/images/fmu-seal.png');
 
 // ── Staff data ──
 const fmuStaff = coachingStaff.find((s) => s.program_id === 'florida-memorial');
-const headCoach = fmuStaff?.head_coach_name ?? 'TBD';
-const assistants = fmuStaff?.assistant_coaches
-  .map((a) => {
-    const parts = a.name.split(' ');
-    return `${parts[0][0]}. ${parts.slice(1).join(' ')}`;
-  })
-  .join(', ') ?? '';
+
+interface CoachProfile {
+  name: string;
+  initials: string;
+  role: string;
+  hue: number;
+}
+
+function nameToHue(name: string): number {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = ((h << 5) - h + name.charCodeAt(i)) | 0;
+  return Math.abs(h) % 360;
+}
+
+const FMU_COACHES: CoachProfile[] = [
+  {
+    name: fmuStaff?.head_coach_name ?? 'TBD',
+    initials: (fmuStaff?.head_coach_name ?? 'TB').split(' ').map((w) => w[0]).join(''),
+    role: 'Head Coach',
+    hue: nameToHue(fmuStaff?.head_coach_name ?? 'TBD'),
+  },
+  ...(fmuStaff?.assistant_coaches ?? []).map((a) => ({
+    name: a.name,
+    initials: a.name.split(' ').map((w) => w[0]).join(''),
+    role: a.role ?? 'Assistant Coach',
+    hue: nameToHue(a.name),
+  })),
+];
 
 // ── Season stats (2025-26) ──
 const stats2526 = teamStats.find((s) => s.season === '2025-26');
@@ -157,6 +178,7 @@ export function TeamQuickSheet({
 }: TeamQuickSheetProps) {
   const [activeView, setActiveView] = useState<'traditional' | 'kanext'>('traditional');
   const [expandedCluster, setExpandedCluster] = useState<keyof ClusterRatings | null>(null);
+  const [selectedCoach, setSelectedCoach] = useState<CoachProfile | null>(null);
 
   return (
     <BottomSheet visible={visible} onClose={onClose}>
@@ -179,12 +201,74 @@ export function TeamQuickSheet({
             </View>
           </View>
 
-          {/* ===== SECTION 2: STAFF SNAPSHOT ===== */}
+          {/* ===== SECTION 2: STAFF (tab-style) ===== */}
           <Text style={s.sectionLabel}>STAFF</Text>
-          <View style={s.card}>
-            <Text style={s.staffHead}>Head Coach: {headCoach}</Text>
-            <Text style={s.staffAssistants}>Assistants: {assistants}</Text>
+          <View style={s.staffRow}>
+            {FMU_COACHES.map((coach) => {
+              const isActive = selectedCoach?.name === coach.name;
+              return (
+                <Pressable
+                  key={coach.name}
+                  style={s.staffCard}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setSelectedCoach(isActive ? null : coach);
+                  }}
+                >
+                  <View style={[s.coachAvatar, { backgroundColor: `hsl(${coach.hue}, 45%, 35%)` }, isActive && s.coachAvatarActive]}>
+                    <Text style={s.coachAvatarText}>{coach.initials}</Text>
+                  </View>
+                  <Text style={[s.coachName, isActive && s.coachNameActive]} numberOfLines={1}>{coach.name.split(' ').pop()}</Text>
+                  <Text style={s.coachRole} numberOfLines={1}>
+                    {coach.role === 'Head Coach' ? 'HC' : coach.role.includes('Associate') ? 'Assoc HC' : 'Asst'}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
+
+          {/* Coach detail inline (shows when a coach tab is selected) */}
+          {selectedCoach && (
+            <View style={s.card}>
+              <View style={s.coachDetailRow}>
+                <Text style={s.coachDetailLabel}>Full Name</Text>
+                <Text style={s.coachDetailValue}>{selectedCoach.name}</Text>
+              </View>
+              <View style={s.coachDetailRow}>
+                <Text style={s.coachDetailLabel}>Role</Text>
+                <Text style={s.coachDetailValue}>{selectedCoach.role}</Text>
+              </View>
+              <View style={s.coachDetailRow}>
+                <Text style={s.coachDetailLabel}>Program</Text>
+                <Text style={s.coachDetailValue}>Florida Memorial</Text>
+              </View>
+              <View style={s.coachDetailRow}>
+                <Text style={s.coachDetailLabel}>Offense</Text>
+                <Text style={s.coachDetailValue}>{offSystemName}</Text>
+              </View>
+              <View style={s.coachDetailRow}>
+                <Text style={s.coachDetailLabel}>Defense</Text>
+                <Text style={s.coachDetailValue}>{defSystemName}</Text>
+              </View>
+              {(() => {
+                const h2 = selectedCoach.hue;
+                const focuses = ['Athletic wings', 'Versatile bigs', 'Shooting guards', 'Floor generals', 'Defensive stoppers'];
+                const pipelines = ['JUCO transfers', 'HS prep schools', 'International prospects', 'D2 transfers', 'Local talent'];
+                return (
+                  <>
+                    <View style={s.coachDetailRow}>
+                      <Text style={s.coachDetailLabel}>Recruiting Focus</Text>
+                      <Text style={s.coachDetailValue}>{focuses[h2 % focuses.length]}</Text>
+                    </View>
+                    <View style={s.coachDetailRow}>
+                      <Text style={s.coachDetailLabel}>Pipeline</Text>
+                      <Text style={s.coachDetailValue}>{pipelines[(h2 >> 3) % pipelines.length]}</Text>
+                    </View>
+                  </>
+                );
+              })()}
+            </View>
+          )}
 
           {/* ===== SECTION 3: SEASON SNAPSHOT ===== */}
           <Text style={s.sectionLabel}>SEASON</Text>
@@ -447,16 +531,63 @@ const s = StyleSheet.create({
   },
 
   // Staff
-  staffHead: {
-    fontSize: 14,
-    fontWeight: '600',
+  staffRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  staffCard: {
+    alignItems: 'center',
+    gap: 4,
+  },
+  coachAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  coachAvatarActive: {
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  coachAvatarText: {
+    fontSize: 16,
+    fontWeight: '800',
     color: '#fff',
   },
-  staffAssistants: {
-    fontSize: 13,
-    fontWeight: '400',
+  coachName: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#fff',
+    maxWidth: 70,
+    textAlign: 'center',
+  },
+  coachNameActive: {
+    color: '#4ade80',
+  },
+  coachRole: {
+    fontSize: 10,
+    fontWeight: '500',
     color: '#888',
-    marginTop: 4,
+  },
+  coachDetailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    paddingVertical: 6,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
+  },
+  coachDetailLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#888',
+  },
+  coachDetailValue: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#fff',
   },
 
   // Season snapshot

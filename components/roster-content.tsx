@@ -608,7 +608,7 @@ const LIST_FILTERS: { key: ListFilter; label: string }[] = [
   { key: 'redshirt', label: 'Redshirt' },
 ];
 
-type ListSortOption = 'number' | 'az' | 'position' | 'class' | 'height' | 'weight' | 'status' | 'aid';
+type ListSortOption = 'number' | 'az' | 'position' | 'class' | 'height' | 'weight' | 'status' | 'aid' | 'gpa';
 const LIST_SORT_OPTIONS: { key: ListSortOption; label: string }[] = [
   { key: 'number', label: '#' },
   { key: 'az', label: 'Name A\u2013Z' },
@@ -617,6 +617,7 @@ const LIST_SORT_OPTIONS: { key: ListSortOption; label: string }[] = [
   { key: 'height', label: 'Height' },
   { key: 'weight', label: 'Weight' },
   { key: 'status', label: 'Status' },
+  { key: 'gpa', label: 'GPA' },
   { key: 'aid', label: 'Aid' },
 ];
 
@@ -628,9 +629,9 @@ const LIST_TABLE_COLUMNS: { key: string; label: string; width: number; align?: '
   { key: 'wt',     label: 'WT',     width: 46,  align: 'center' },
   { key: 'class',  label: 'CLASS',  width: 56,  align: 'center' },
   { key: 'status', label: 'STATUS', width: 80,  align: 'center' },
+  { key: 'gpa',    label: 'GPA',    width: 46,  align: 'center' },
   { key: 'aid',    label: 'AID',    width: 50,  align: 'center' },
-  { key: 'nil',    label: 'NIL',    width: 46,  align: 'center' },
-  { key: 'notes',  label: 'NOTES',  width: 180 },
+  { key: 'nil',    label: 'NIL',    width: 56,  align: 'center' },
 ];
 
 const CLASS_ABBREV: Record<string, string> = {
@@ -674,6 +675,7 @@ function getListSortValue(player: RosterPlayer, key: ListSortOption): string | n
       return statusOrder[getPlayerStatus(player.number)];
     }
     case 'aid': return ROSTER_META[player.number]?.aidPct ?? 0;
+    case 'gpa': return ROSTER_META[player.number]?.gpa ?? 0;
     default: return 0;
   }
 }
@@ -685,6 +687,7 @@ function RosterListView({
   listSort,
   onSortChange,
   onPlayerTap,
+  onOpenStatistics,
 }: {
   roster: RosterPlayer[];
   listFilter: ListFilter;
@@ -692,6 +695,7 @@ function RosterListView({
   listSort: ListSortOption;
   onSortChange: (s: ListSortOption) => void;
   onPlayerTap: (jersey: string) => void;
+  onOpenStatistics?: () => void;
 }) {
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const sortRef = React.useRef<View>(null);
@@ -705,7 +709,7 @@ function RosterListView({
     if (listFilter !== 'all') {
       result = result.filter((p) => getPlayerStatus(p.number) === listFilter);
     }
-    const descKeys: ListSortOption[] = ['aid', 'weight', 'height'];
+    const descKeys: ListSortOption[] = ['gpa', 'aid', 'weight', 'height'];
     const asc = !descKeys.includes(listSort);
     result.sort((a, b) => {
       const aVal = getListSortValue(a, listSort);
@@ -755,16 +759,15 @@ function RosterListView({
             });
           }}
         >
-          <Text style={listStyles.sortPillLabel}>Sort: </Text>
           <Text style={listStyles.sortPillValue}>{sortLabel}</Text>
-          <Text style={listStyles.sortPillArrow}> \u25BE</Text>
+          <Text style={listStyles.sortPillArrow}> ▾</Text>
         </Pressable>
 
         <Pressable
           style={({ pressed }) => [listStyles.statsBridge, { opacity: pressed ? 0.7 : 1 }]}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onOpenStatistics?.(); }}
         >
-          <Text style={listStyles.statsBridgeText}>Open Statistics \u2192</Text>
+          <Text style={listStyles.statsBridgeText}>Open Statistics →</Text>
         </Pressable>
       </View>
 
@@ -863,22 +866,22 @@ function RosterListView({
                     </Text>
                   </View>
                 </View>
+                {/* GPA */}
+                <Text style={[styles.tableCell, { width: 46, textAlign: 'center' }]}>
+                  {meta?.gpa ? meta.gpa.toFixed(1) : '\u2014'}
+                </Text>
                 {/* Aid */}
                 <Text style={[styles.tableCell, { width: 50, textAlign: 'center' }]}>
                   {aidPct > 0 ? `${aidPct}%` : '\u2014'}
                 </Text>
                 {/* NIL */}
-                <View style={{ width: 46, alignItems: 'center', justifyContent: 'center' }}>
-                  {meta?.nilActive ? (
-                    <Text style={listStyles.nilYes}>Yes</Text>
+                <View style={{ width: 56, alignItems: 'center', justifyContent: 'center' }}>
+                  {meta && meta.nilAmount > 0 ? (
+                    <Text style={listStyles.nilYes}>${meta.nilAmount.toLocaleString()}</Text>
                   ) : (
                     <Text style={[styles.tableCell, { textAlign: 'center' }]}>{'\u2014'}</Text>
                   )}
                 </View>
-                {/* Notes */}
-                <Text style={[styles.tableCell, styles.tableCellNotes, { width: 180 }]} numberOfLines={1}>
-                  {meta?.rosterNotes || '\u2014'}
-                </Text>
               </Pressable>
             );
           })}
@@ -1074,7 +1077,7 @@ const POS_ABBREV_TO_TRAD: Record<string, PoolPosition> = {
   PG: 'PG', CG: 'SG', W: 'SF', F: 'PF', B: 'C',
 };
 
-export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoPress, onLogoLongPress }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoPress?: () => void; onLogoLongPress?: () => void } = {}) {
+export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoPress, onLogoLongPress, onOpenStatistics }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoPress?: () => void; onLogoLongPress?: () => void; onOpenStatistics?: () => void } = {}) {
   const [activeView, setActiveView] = useState<ViewType>('cards');
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
   const [searchQuery, setSearchQuery] = useState('');
@@ -1220,6 +1223,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoPress,
           listSort={listSort}
           onSortChange={setListSort}
           onPlayerTap={handlePlayerTap}
+          onOpenStatistics={onOpenStatistics}
         />
       )}
 
@@ -1798,11 +1802,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: TEAM_COLORS.gray,
   },
-  tableCellNotes: {
-    fontSize: 12,
-    color: TEAM_COLORS.gray,
-  },
-
   // ── Grouped List (Depth Chart) ──
   groupedContainer: {
     padding: Spacing.md,

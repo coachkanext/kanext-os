@@ -343,12 +343,12 @@ function ProspectPanel({ target, visible, onClose, onAddToSandbox, colors, accen
               </ThemedText>
             </View>
           )}
-          {target.assignedCoach && (
+          {target.recruiter && (
             <View style={styles.panelRow}>
               <ThemedText style={[styles.panelLabel, { color: colors.textSecondary }]}>
-                Assigned Coach
+                Recruiter
               </ThemedText>
-              <ThemedText style={styles.panelValue}>{target.assignedCoach}</ThemedText>
+              <ThemedText style={styles.panelValue}>{target.recruiter}</ThemedText>
             </View>
           )}
           {target.nextStep && (

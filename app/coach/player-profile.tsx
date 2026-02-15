@@ -227,8 +227,8 @@ export default function PlayerProfileScreen() {
               </View>
               <View style={[styles.divider, { backgroundColor: colors.divider }]} />
               <View style={styles.recruitingRow}>
-                <Text style={[styles.recruitingLabel, { color: colors.textTertiary }]}>Coach</Text>
-                <Text style={[styles.recruitingValue, { color: colors.text }]}>{boardEntry.assignedCoach}</Text>
+                <Text style={[styles.recruitingLabel, { color: colors.textTertiary }]}>Recruiter</Text>
+                <Text style={[styles.recruitingValue, { color: colors.text }]}>{boardEntry.recruiter}</Text>
               </View>
               <View style={[styles.divider, { backgroundColor: colors.divider }]} />
               <View style={styles.recruitingRow}>

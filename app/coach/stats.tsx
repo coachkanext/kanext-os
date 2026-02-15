@@ -43,6 +43,7 @@ import {
   OFFENSE_SHOT_PROFILE,
   DEFENSE_SHOT_PROFILE,
   TEMPO_BREAKDOWN,
+  DEFENSE_TEMPO_BREAKDOWN,
   BALL_SCREEN_COVERAGE,
   POST_COVERAGE,
   RIM_PROTECTION,
@@ -501,16 +502,16 @@ function TeamOverview({
 
       {/* B) Projection Row */}
       <View style={st.card}>
-        <Text style={st.sectionLabel}>PROJECTIONS</Text>
+        <Text style={st.sectionLabel}>KaNeXT PROJECTIONS</Text>
         <View style={st.statFourCol}>
-          <StatCell label="Line" value={`${SEASON_PROJECTION.line}`} />
+          <StatCell label="Proj W" value={`${SEASON_PROJECTION.line}`} />
           <StatCell label="Win%" value={`${shi(SEASON_PROJECTION.winPct, sp, 1)}%`} />
-          <StatCell label="Total" value={SEASON_PROJECTION.projectedTotal} />
-          <StatCell label="Sim Conf" value={`${shi(SEASON_PROJECTION.simConfidence, sp, 0)}%`} />
+          <StatCell label="Record" value={SEASON_PROJECTION.projectedTotal} />
+          <StatCell label="Confidence" value={`${shi(SEASON_PROJECTION.simConfidence, sp, 0)}%`} />
         </View>
         <View style={st.projSubRow}>
           <Text style={st.projSub}>{SEASON_PROJECTION.projectedSeed}</Text>
-          <Text style={st.projSub}>Playoff: {shi(SEASON_PROJECTION.playoffProbability, sp, 0)}%</Text>
+          <Text style={st.projSub}>NAIA Tournament: {shi(SEASON_PROJECTION.playoffProbability, sp, 0)}%</Text>
         </View>
       </View>
 
@@ -538,6 +539,18 @@ function TeamOverview({
       <View style={st.card}>
         <Text style={st.sectionLabel}>SYNERGY DEFENSE</Text>
         <SynergyPlayTypeTable rows={adjPT(DEFENSE_PLAY_TYPES.slice(0, 6), sp, true)} isDefense />
+
+        <View style={st.divider} />
+        <Text style={st.sectionLabel}>SHOT PROFILE ALLOWED</Text>
+        <ShotProfileBars zones={adjShot(DEFENSE_SHOT_PROFILE.filter((z) => z.zone !== 'FT'), sp, true)} />
+
+        <View style={st.divider} />
+        <Text style={st.sectionLabel}>TEMPO BREAKDOWN</Text>
+        <View style={st.statThreeCol}>
+          <StatCell label="Transition" value={slo(DEFENSE_TEMPO_BREAKDOWN.transition.ppp, sp).toFixed(2)} sub={`${DEFENSE_TEMPO_BREAKDOWN.transition.freq}%`} />
+          <StatCell label="Early" value={slo(DEFENSE_TEMPO_BREAKDOWN.earlyOffense.ppp, sp).toFixed(2)} sub={`${DEFENSE_TEMPO_BREAKDOWN.earlyOffense.freq}%`} />
+          <StatCell label="Halfcourt" value={slo(DEFENSE_TEMPO_BREAKDOWN.halfcourt.ppp, sp).toFixed(2)} sub={`${DEFENSE_TEMPO_BREAKDOWN.halfcourt.freq}%`} />
+        </View>
 
         <View style={st.divider} />
         <View style={st.statThreeCol}>
@@ -1348,10 +1361,10 @@ function SynergyPlayTypeTable({ rows, isDefense }: { rows: PlayTypeRow[]; isDefe
   return (
     <>
       <View style={st.ptHeaderRow}>
-        <Text style={[st.ptHeaderText, { flex: 1 }]}>Play Type</Text>
+        <Text style={[st.ptHeaderText, { flex: 1, textAlign: 'left' }]}>Play Type</Text>
         <Text style={st.ptHeaderText}>Poss%</Text>
         <Text style={st.ptHeaderText}>{isDefense ? 'PPP Alw' : 'PPP'}</Text>
-        <Text style={st.ptHeaderText}>%ile</Text>
+        <Text style={st.ptHeaderText}>%</Text>
         <Text style={st.ptHeaderText}>TO%</Text>
       </View>
       {rows.map((row) => (
@@ -1779,13 +1792,13 @@ const st = StyleSheet.create({
     fontWeight: '700',
     color: '#6e6e6e',
     letterSpacing: 0.5,
-    width: 44,
+    width: 54,
     textAlign: 'right',
   },
   ptRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 7,
   },
   ptName: {
     fontSize: 12,
@@ -1796,7 +1809,7 @@ const st = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#fff',
-    width: 44,
+    width: 54,
     textAlign: 'right',
   },
 

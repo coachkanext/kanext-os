@@ -48,6 +48,18 @@ export const PLAYER_RATINGS: PlayerRatings[] = [
 
   // ── HS (additional) ──
   { playerId: 'pp-25', overall: 78, clusters: { shooting: 74, finishing: 76, playmaking: 70, perimeter_defense: 78, interior_defense: 72, rebounding: 74, frame: 80 } },
+
+  // ── Teammates ──
+  { playerId: 'pp-26', overall: 79, clusters: { shooting: 76, finishing: 72, playmaking: 85, perimeter_defense: 80, interior_defense: 66, rebounding: 62, frame: 74 } },
+  { playerId: 'pp-27', overall: 75, clusters: { shooting: 72, finishing: 78, playmaking: 68, perimeter_defense: 76, interior_defense: 70, rebounding: 74, frame: 78 } },
+  { playerId: 'pp-28', overall: 72, clusters: { shooting: 58, finishing: 74, playmaking: 60, perimeter_defense: 70, interior_defense: 76, rebounding: 82, frame: 80 } },
+  { playerId: 'pp-29', overall: 78, clusters: { shooting: 84, finishing: 74, playmaking: 72, perimeter_defense: 70, interior_defense: 62, rebounding: 64, frame: 76 } },
+  { playerId: 'pp-30', overall: 77, clusters: { shooting: 68, finishing: 78, playmaking: 62, perimeter_defense: 72, interior_defense: 80, rebounding: 84, frame: 82 } },
+  { playerId: 'pp-31', overall: 76, clusters: { shooting: 74, finishing: 70, playmaking: 82, perimeter_defense: 78, interior_defense: 64, rebounding: 60, frame: 73 } },
+  { playerId: 'pp-32', overall: 74, clusters: { shooting: 50, finishing: 76, playmaking: 54, perimeter_defense: 66, interior_defense: 84, rebounding: 86, frame: 85 } },
+  { playerId: 'pp-33', overall: 77, clusters: { shooting: 80, finishing: 74, playmaking: 68, perimeter_defense: 82, interior_defense: 70, rebounding: 66, frame: 78 } },
+  { playerId: 'pp-34', overall: 80, clusters: { shooting: 86, finishing: 76, playmaking: 74, perimeter_defense: 74, interior_defense: 66, rebounding: 62, frame: 78 } },
+  { playerId: 'pp-35', overall: 75, clusters: { shooting: 66, finishing: 76, playmaking: 64, perimeter_defense: 74, interior_defense: 78, rebounding: 80, frame: 82 } },
 ];
 
 /** Get ratings for a specific player, or null if not found */

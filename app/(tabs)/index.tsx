@@ -1858,7 +1858,7 @@ function SportsHome() {
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled
         >
-          <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoPress={openTeamSheet} onLogoLongPress={openTeamSheet} />
+          <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoPress={openTeamSheet} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { pagerRef.current?.setPage(4); }} />
         </ScrollView>
 
         {/* Page 3: Recruiting (National Pool) */}

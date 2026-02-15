@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   RECRUITING_BOARD,
   STATUS_MIGRATION,
+  DUE_DILIGENCE_LABELS,
   type BoardEntry,
   type BoardStatus,
   type Priority,
@@ -22,18 +23,42 @@ interface BoardState {
   lastModified: string;
 }
 
-/** Migrate old pipeline status values to new ones (idempotent). */
+/** Migrate old pipeline status values + backfill new CRM fields (idempotent). */
 function migrateEntries(entries: BoardEntry[]): { entries: BoardEntry[]; changed: boolean } {
   let changed = false;
   const migrated = entries.map((e) => {
+    let entry = e;
     const newStatus = STATUS_MIGRATION[e.status as string];
     if (newStatus) {
       changed = true;
-      return { ...e, status: newStatus };
+      entry = { ...entry, status: newStatus };
     }
-    return e;
+    // Backfill CRM fields for entries from older schema
+    if (!entry.temperature) {
+      changed = true;
+      entry = {
+        ...entry,
+        temperature: 'Ice',
+        riskLevel: entry.riskLevel ?? 'Low',
+        riskFlags: entry.riskFlags ?? [],
+        dueDiligence: entry.dueDiligence ?? DUE_DILIGENCE_LABELS.map((label) => ({ label, completed: false })),
+        log: entry.log ?? [],
+      };
+    }
+    return entry;
   });
   return { entries: migrated, changed };
+}
+
+/** Revive Date objects in log entries after JSON parse. */
+function reviveDates(entries: BoardEntry[]): BoardEntry[] {
+  return entries.map((e) => ({
+    ...e,
+    log: (e.log ?? []).map((l) => ({
+      ...l,
+      timestamp: typeof l.timestamp === 'string' ? new Date(l.timestamp) : l.timestamp,
+    })),
+  }));
 }
 
 /** Load board from AsyncStorage, fallback to mock data. Runs migration for old status values. */
@@ -43,7 +68,7 @@ export async function loadBoard(): Promise<BoardEntry[]> {
     if (raw) {
       const parsed: BoardState = JSON.parse(raw);
       if (parsed.entries && parsed.entries.length > 0) {
-        const { entries, changed } = migrateEntries(parsed.entries);
+        const { entries, changed } = migrateEntries(reviveDates(parsed.entries));
         if (changed) await saveBoard(entries);
         return entries;
       }
@@ -178,8 +203,13 @@ export function addEntry(
     longNotes: '',
     nextStep: '',
     dueDate: '',
-    assignedCoach: '',
+    recruiter: '',
     updated: new Date().toISOString().slice(0, 10),
+    temperature: 'Ice',
+    riskLevel: 'Low',
+    riskFlags: [],
+    dueDiligence: DUE_DILIGENCE_LABELS.map((label) => ({ label, completed: false })),
+    log: [],
   };
 
   return [...entries, newEntry];

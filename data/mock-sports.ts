@@ -772,7 +772,7 @@ export interface RecruitingTarget {
   notes?: string;
   nextStep?: string;
   nextStepDate?: Date;
-  assignedCoach?: string;
+  recruiter?: string;
   plannedScholarship?: number;
   plannedNil?: number;
   lastUpdated: Date;
@@ -955,7 +955,7 @@ export const RECRUITING_TARGETS: RecruitingTarget[] = [
     notes: 'Elite ball-handler with court vision. Would immediately compete for starting PG role.',
     nextStep: 'Schedule campus visit',
     nextStepDate: new Date('2026-02-15'),
-    assignedCoach: 'Coach Thompson',
+    recruiter: 'Coach Thompson',
     plannedScholarship: 100,
     plannedNil: 15000,
     lastUpdated: new Date('2026-02-03'),
@@ -972,7 +972,7 @@ export const RECRUITING_TARGETS: RecruitingTarget[] = [
     notes: 'Proven scorer at D2 level. Great 3-point shooting would stretch the floor.',
     nextStep: 'Follow up call',
     nextStepDate: new Date('2026-02-10'),
-    assignedCoach: 'Coach Williams',
+    recruiter: 'Coach Williams',
     plannedScholarship: 75,
     plannedNil: 12000,
     lastUpdated: new Date('2026-02-01'),
@@ -1000,7 +1000,7 @@ export const RECRUITING_TARGETS: RecruitingTarget[] = [
     fitPercent: 85,
     notes: 'Physical presence inside. Double-double machine who can protect the rim.',
     nextStep: 'Awaiting decision',
-    assignedCoach: 'Coach Thompson',
+    recruiter: 'Coach Thompson',
     plannedScholarship: 100,
     plannedNil: 18000,
     lastUpdated: new Date('2026-02-04'),
@@ -1017,7 +1017,7 @@ export const RECRUITING_TARGETS: RecruitingTarget[] = [
     notes: 'Pure scorer from JUCO. Needs to improve defense but offensive upside is significant.',
     nextStep: 'In-home visit',
     nextStepDate: new Date('2026-02-12'),
-    assignedCoach: 'Coach Williams',
+    recruiter: 'Coach Williams',
     plannedScholarship: 100,
     plannedNil: 10000,
     lastUpdated: new Date('2026-02-02'),
@@ -1046,7 +1046,7 @@ export const RECRUITING_TARGETS: RecruitingTarget[] = [
     notes: 'Graduate transfer with one year of eligibility. Immediate impact player.',
     nextStep: 'Send offer',
     nextStepDate: new Date('2026-02-08'),
-    assignedCoach: 'Coach Thompson',
+    recruiter: 'Coach Thompson',
     plannedScholarship: 50,
     plannedNil: 8000,
     lastUpdated: new Date('2026-02-01'),

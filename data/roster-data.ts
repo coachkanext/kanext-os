@@ -30,18 +30,18 @@ export const PLAYER_CLUSTERS: Record<string, ClusterRatings> = {
   '1':  { shooting: 48, finishing: 65, playmaking: 42, perimeter_defense: 60, interior_defense: 78, rebounding: 80, frame: 76 },   // Asceric
   '2':  { shooting: 50, finishing: 52, playmaking: 44, perimeter_defense: 58, interior_defense: 52, rebounding: 56, frame: 62 },   // Lewis
   '3':  { shooting: 52, finishing: 48, playmaking: 54, perimeter_defense: 56, interior_defense: 50, rebounding: 48, frame: 60 },   // Thompson
-  '4':  { shooting: 78, finishing: 85, playmaking: 80, perimeter_defense: 74, interior_defense: 68, rebounding: 76, frame: 82 },   // Carter
-  '5':  { shooting: 62, finishing: 78, playmaking: 76, perimeter_defense: 72, interior_defense: 84, rebounding: 82, frame: 80 },   // Selden
+  '4':  { shooting: 82, finishing: 90, playmaking: 84, perimeter_defense: 78, interior_defense: 72, rebounding: 76, frame: 86 },   // Carter
+  '5':  { shooting: 66, finishing: 80, playmaking: 78, perimeter_defense: 76, interior_defense: 88, rebounding: 86, frame: 84 },   // Selden
   '7':  { shooting: 56, finishing: 72, playmaking: 50, perimeter_defense: 66, interior_defense: 76, rebounding: 74, frame: 78 },   // Moratinos
   '9':  { shooting: 54, finishing: 50, playmaking: 62, perimeter_defense: 58, interior_defense: 48, rebounding: 52, frame: 56 },   // Benbo
   '10': { shooting: 48, finishing: 56, playmaking: 46, perimeter_defense: 54, interior_defense: 58, rebounding: 60, frame: 64 },   // Morris
-  '11': { shooting: 70, finishing: 68, playmaking: 82, perimeter_defense: 76, interior_defense: 66, rebounding: 72, frame: 74 },   // Mentor
+  '11': { shooting: 74, finishing: 70, playmaking: 86, perimeter_defense: 78, interior_defense: 68, rebounding: 72, frame: 76 },   // Mentor
   '12': { shooting: 46, finishing: 50, playmaking: 42, perimeter_defense: 54, interior_defense: 50, rebounding: 52, frame: 60 },   // Turner
-  '13': { shooting: 82, finishing: 74, playmaking: 72, perimeter_defense: 70, interior_defense: 62, rebounding: 66, frame: 68 },   // Noel
+  '13': { shooting: 86, finishing: 76, playmaking: 74, perimeter_defense: 72, interior_defense: 64, rebounding: 68, frame: 70 },   // Noel
   '15': { shooting: 60, finishing: 58, playmaking: 68, perimeter_defense: 64, interior_defense: 56, rebounding: 62, frame: 66 },   // Morgan
   '20': { shooting: 42, finishing: 52, playmaking: 40, perimeter_defense: 48, interior_defense: 54, rebounding: 56, frame: 58 },   // Dues
   '22': { shooting: 50, finishing: 46, playmaking: 52, perimeter_defense: 54, interior_defense: 48, rebounding: 50, frame: 56 },   // Laird
-  '41': { shooting: 74, finishing: 76, playmaking: 62, perimeter_defense: 68, interior_defense: 72, rebounding: 78, frame: 76 },   // Brewer
+  '41': { shooting: 78, finishing: 80, playmaking: 66, perimeter_defense: 72, interior_defense: 76, rebounding: 82, frame: 80 },   // Brewer
   '55': { shooting: 66, finishing: 72, playmaking: 64, perimeter_defense: 70, interior_defense: 66, rebounding: 74, frame: 72 },   // Munir-Jones
 };
 
@@ -161,28 +161,29 @@ export interface RosterMeta {
   status: PlayerStatus;
   statusNote?: string;
   aidPct: number;
-  nilActive: boolean;
+  nilAmount: number;
+  gpa: number;
   rosterNotes: string;
 }
 
 export const ROSTER_META: Record<string, RosterMeta> = {
-  '4':  { status: 'available', aidPct: 100, nilActive: true,  rosterNotes: 'Go-to guy. Feed him early.' },
-  '5':  { status: 'available', aidPct: 100, nilActive: true,  rosterNotes: 'Most versatile big. Can pass out of the post.' },
-  '11': { status: 'available', aidPct: 75,  nilActive: true,  rosterNotes: 'Veteran leader, strong mid-range game.' },
-  '13': { status: 'available', aidPct: 75,  nilActive: false, rosterNotes: 'Consistent shooter, can get hot.' },
-  '41': { status: 'available', aidPct: 50,  nilActive: false, rosterNotes: 'Reliable scorer, good positional rebounder.' },
-  '55': { status: 'available', aidPct: 50,  nilActive: true,  rosterNotes: 'Athletic, strong rebounder for his position.' },
-  '0':  { status: 'available', aidPct: 25,  nilActive: false, rosterNotes: 'Good defender, offense still developing.' },
-  '7':  { status: 'available', aidPct: 50,  nilActive: false, rosterNotes: 'Long, athletic. Good rim protection.' },
-  '1':  { status: 'available', aidPct: 40,  nilActive: false, rosterNotes: 'Tallest player on roster. Stay out of foul trouble.' },
-  '15': { status: 'available', aidPct: 25,  nilActive: false, rosterNotes: 'Developing — needs more reps.' },
-  '9':  { status: 'available', aidPct: 0,   nilActive: false, rosterNotes: 'Young — learning the system.' },
-  '3':  { status: 'available', aidPct: 0,   nilActive: false, rosterNotes: 'Needs confidence.' },
-  '10': { status: 'injured',   aidPct: 25,  nilActive: false, rosterNotes: 'Working on his frame.', statusNote: 'Ankle sprain — day-to-day' },
-  '12': { status: 'redshirt',  aidPct: 0,   nilActive: false, rosterNotes: 'Physical, needs polish. RS year.' },
-  '20': { status: 'out',       aidPct: 0,   nilActive: false, rosterNotes: 'Personal leave.', statusNote: 'Excused absence' },
-  '2':  { status: 'available', aidPct: 0,   nilActive: false, rosterNotes: 'Physical, needs polish.' },
-  '22': { status: 'available', aidPct: 0,   nilActive: false, rosterNotes: '' },
+  '4':  { status: 'available', aidPct: 100, nilAmount: 8500,  gpa: 3.4, rosterNotes: 'Go-to guy. Feed him early.' },
+  '5':  { status: 'available', aidPct: 100, nilAmount: 6000,  gpa: 3.1, rosterNotes: 'Most versatile big. Can pass out of the post.' },
+  '11': { status: 'available', aidPct: 75,  nilAmount: 5000,  gpa: 2.8, rosterNotes: 'Veteran leader, strong mid-range game.' },
+  '13': { status: 'available', aidPct: 75,  nilAmount: 0,     gpa: 3.2, rosterNotes: 'Consistent shooter, can get hot.' },
+  '41': { status: 'available', aidPct: 50,  nilAmount: 0,     gpa: 2.6, rosterNotes: 'Reliable scorer, good positional rebounder.' },
+  '55': { status: 'available', aidPct: 50,  nilAmount: 3500,  gpa: 2.9, rosterNotes: 'Athletic, strong rebounder for his position.' },
+  '0':  { status: 'available', aidPct: 25,  nilAmount: 0,     gpa: 3.0, rosterNotes: 'Good defender, offense still developing.' },
+  '7':  { status: 'available', aidPct: 50,  nilAmount: 0,     gpa: 2.5, rosterNotes: 'Long, athletic. Good rim protection.' },
+  '1':  { status: 'available', aidPct: 40,  nilAmount: 0,     gpa: 2.7, rosterNotes: 'Tallest player on roster. Stay out of foul trouble.' },
+  '15': { status: 'available', aidPct: 25,  nilAmount: 0,     gpa: 2.4, rosterNotes: 'Developing — needs more reps.' },
+  '9':  { status: 'available', aidPct: 0,   nilAmount: 0,     gpa: 3.5, rosterNotes: 'Young — learning the system.' },
+  '3':  { status: 'available', aidPct: 0,   nilAmount: 0,     gpa: 2.3, rosterNotes: 'Needs confidence.' },
+  '10': { status: 'injured',   aidPct: 25,  nilAmount: 0,     gpa: 2.1, rosterNotes: 'Working on his frame.', statusNote: 'Ankle sprain — day-to-day' },
+  '12': { status: 'redshirt',  aidPct: 0,   nilAmount: 0,     gpa: 3.6, rosterNotes: 'Physical, needs polish. RS year.' },
+  '20': { status: 'out',       aidPct: 0,   nilAmount: 0,     gpa: 2.0, rosterNotes: 'Personal leave.', statusNote: 'Excused absence' },
+  '2':  { status: 'available', aidPct: 0,   nilAmount: 0,     gpa: 2.8, rosterNotes: 'Physical, needs polish.' },
+  '22': { status: 'available', aidPct: 0,   nilAmount: 0,     gpa: 3.3, rosterNotes: '' },
 };
 
 // Deterministic hash for stable subcluster generation

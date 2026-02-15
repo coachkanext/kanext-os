@@ -10,6 +10,7 @@ import {
   Text,
   Pressable,
   TextInput,
+  ScrollView,
   StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -17,6 +18,7 @@ import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { type ClusterRatings, getPlayerSubclusters } from '@/data/roster-data';
 import { ARCHETYPE_LABELS } from '@/data/system-demand-profiles';
@@ -28,7 +30,7 @@ import { getPlayerRatings, getPoolPlayerSubclusters } from '@/data/playerRatings
 import { getPlayerSeasons } from '@/data/playerSeasons';
 import { computeFitKR, computeOffDefKR, getFitReasons } from '@/utils/fit-kr';
 import { OFFENSIVE_STYLES, DEFENSIVE_STYLES } from '@/data/mock-program-context';
-import type { PoolPlayer } from '@/data/playerPool';
+import { type PoolPlayer, PLAYER_POOL, POOL_PLAYER_AWARDS } from '@/data/playerPool';
 import {
   FMU_PLAYER_BIOS,
   FMU_PLAYER_ABOUT,
@@ -43,16 +45,22 @@ import {
   getRecruitComms,
   COMMS_TYPE_META,
   type CommsEntry,
+  type TouchMethod,
 } from '@/data/mock-comms';
+import type { BoardEntry, BoardStatus } from '@/data/recruitingBoard';
+import { computePlayerBadges, BADGE_LEVEL_COLORS, type PlayerBadge } from '@/utils/player-badges';
+import { BOARD_COLUMNS, BOARD_COLUMN_COLORS } from '@/data/recruitingBoard';
+import type { PositionNeed } from '@/data/team-needs';
 
 // ─── Constants ───
 const GRAY = '#8A8F98';
 
-type SheetTab = 'fit' | 'kanext' | 'timeline' | 'bio' | 'comms';
+type SheetTab = 'fit' | 'kanext' | 'recruiting' | 'timeline' | 'bio' | 'comms';
 
 const TAB_LABELS: Record<SheetTab, string> = {
   fit: 'FIT',
   kanext: 'KaNeXT',
+  recruiting: 'Recruiting',
   timeline: 'Timeline',
   bio: 'Bio',
   comms: 'Comms',
@@ -194,6 +202,15 @@ export interface PlayerSheetProps {
   physicals?: { height: string; weight: number };
   /** FMU jersey number — enables Timeline, Bio tabs (4-tab roster mode) */
   jerseyNumber?: string;
+  /** Board entry for this player (enables Recruiting tab) */
+  boardEntry?: BoardEntry | null;
+  /** Team needs (for recruiting snapshot) */
+  teamNeeds?: PositionNeed[];
+  /** Board action callbacks */
+  onMoveOnBoard?: (entryId: string, status: BoardStatus) => void;
+  onRemoveFromBoard?: (entryId: string) => void;
+  /** Default tab override (e.g. 'recruiting' when opened from board) */
+  defaultTabOverride?: SheetTab;
 }
 
 export function PlayerSheet({
@@ -212,13 +229,22 @@ export function PlayerSheet({
   baseKROverride,
   physicals,
   jerseyNumber,
+  boardEntry,
+  teamNeeds,
+  onMoveOnBoard,
+  onRemoveFromBoard,
+  defaultTabOverride,
 }: PlayerSheetProps) {
   const router = useRouter();
   const isRoster = !!jerseyNumber;
-  const tabs: SheetTab[] = isRoster
-    ? ['bio', 'kanext', 'fit', 'timeline', 'comms']
-    : ['fit', 'kanext', 'comms'];
-  const defaultTab: SheetTab = isRoster ? 'bio' : 'fit';
+  const tabs: SheetTab[] = [
+    'bio',
+    'fit',
+    'kanext',
+    'timeline',
+    'comms',
+  ];
+  const defaultTab: SheetTab = defaultTabOverride ?? 'bio';
 
   const [activeTab, setActiveTab] = useState<SheetTab>(defaultTab);
   const [expandedClusters, setExpandedClusters] = useState<Set<string>>(new Set());
@@ -282,9 +308,14 @@ export function PlayerSheet({
   const bio = jerseyNumber ? FMU_PLAYER_BIOS[jerseyNumber] ?? null : null;
   const about = jerseyNumber ? FMU_PLAYER_ABOUT[jerseyNumber] ?? null : null;
   const awards = useMemo(() => {
-    const raw = jerseyNumber ? getFmuAwards(jerseyNumber) : [];
-    return [...raw].sort((a, b) => b.year.localeCompare(a.year));
-  }, [jerseyNumber]);
+    if (jerseyNumber) {
+      const raw = getFmuAwards(jerseyNumber);
+      return [...raw].sort((a, b) => b.year.localeCompare(a.year));
+    }
+    // Pool player awards
+    const poolAwards = player ? (POOL_PLAYER_AWARDS[player.id] ?? []) : [];
+    return poolAwards.map((title) => ({ title, year: '' }));
+  }, [jerseyNumber, player?.id]);
   const career = useMemo(() => jerseyNumber ? getFmuCareer(jerseyNumber) : [], [jerseyNumber]);
   const highlights = useMemo(() => jerseyNumber ? getFmuHighlights(jerseyNumber).slice(0, 3) : [], [jerseyNumber]);
   const tsPct = useMemo(() => jerseyNumber ? getFmuTS(jerseyNumber) : 0, [jerseyNumber]);
@@ -303,11 +334,57 @@ export function PlayerSheet({
   // Current season career entry (for GP/MPG/GS)
   const currentSeason = useMemo(() => career.find((s) => s.current) ?? null, [career]);
 
+  // Player badges
+  const playerBadges = useMemo(() => {
+    if (!clusters) return [];
+    const getSubs = (key: keyof typeof clusters) =>
+      jerseyNumber
+        ? getPlayerSubclusters(jerseyNumber, key)
+        : player ? getPoolPlayerSubclusters(player.id, key, clusters[key]) : [];
+    return computePlayerBadges(clusters, getSubs);
+  }, [clusters, jerseyNumber, player?.id]);
+
   // Comms timeline
   const commsEntries = useMemo(() => {
     if (!player) return [];
     return jerseyNumber ? getPlayerComms(jerseyNumber) : getRecruitComms(player.id);
   }, [player?.id, jerseyNumber]);
+
+  // Similar players — same position or archetype, sorted by KR proximity
+  const similarPlayers = useMemo(() => {
+    if (!player) return [];
+    const myKR = baseKROverride ?? ratings?.overall ?? 0;
+    return PLAYER_POOL
+      .filter((p) => p.id !== player.id)
+      .map((p) => {
+        const r = getPlayerRatings(p.id);
+        const kr = r?.overall ?? 0;
+        const posMatch = p.position === player.position;
+        const archMatch = p.archetype === player.archetype;
+        if (!posMatch && !archMatch) return null;
+        return { player: p, kr, posMatch, archMatch, dist: Math.abs(kr - myKR) };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a!.dist - b!.dist)
+      .slice(0, 5) as { player: PoolPlayer; kr: number; posMatch: boolean; archMatch: boolean; dist: number }[];
+  }, [player?.id, player?.position, player?.archetype, baseKROverride, ratings?.overall]);
+
+  // Team targets — teammates from recruit's school ranked by system fit
+  const teamTargets = useMemo(() => {
+    if (!player) return [];
+    return PLAYER_POOL
+      .filter((p) => p.id !== player.id && p.currentSchool === player.currentSchool)
+      .map((p) => {
+        const r = getPlayerRatings(p.id);
+        const clusters = r?.clusters ?? null;
+        const baseKr = r?.overall ?? 0;
+        const fitKr = clusters ? computeFitKR(clusters, offStyle, defStyle) : baseKr;
+        const delta = fitKr - baseKr;
+        return { player: p, baseKr, fitKr, delta };
+      })
+      .sort((a, b) => b.fitKr - a.fitKr)
+      .slice(0, 5);
+  }, [player?.id, player?.currentSchool, offStyle, defStyle]);
 
   if (!player) return null;
 
@@ -358,12 +435,25 @@ export function PlayerSheet({
             </Text>
           )}
         </View>
-        <View style={styles.headerBadges}>
-          <View style={styles.headerBadge}>
-            <Text style={styles.headerBadgeText}>{levelLabel}</Text>
+        <View style={styles.headerRight}>
+          <View style={styles.headerBadges}>
+            <View style={styles.headerBadge}>
+              <Text style={styles.headerBadgeText}>{levelLabel}</Text>
+            </View>
+            <View style={styles.headerBadge}>
+              <Text style={styles.headerBadgeText}>{helioPos}</Text>
+            </View>
           </View>
-          <View style={styles.headerBadge}>
-            <Text style={styles.headerBadgeText}>{helioPos}</Text>
+          <View style={styles.headerGlyphs}>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}>
+              <FontAwesome6 name="x-twitter" size={14} color="#888" iconStyle="brand" />
+            </Pressable>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}>
+              <FontAwesome6 name="instagram" size={15} color="#888" iconStyle="brand" />
+            </Pressable>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}>
+              <IconSymbol name="play.circle.fill" size={16} color="#888" />
+            </Pressable>
           </View>
         </View>
       </View>
@@ -384,7 +474,7 @@ export function PlayerSheet({
       </View>
 
       {/* §3 Tab pills */}
-      <View style={styles.tabRow}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabScroll} contentContainerStyle={styles.tabRow}>
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
           return (
@@ -402,13 +492,13 @@ export function PlayerSheet({
             </Pressable>
           );
         })}
-      </View>
+      </ScrollView>
 
       {/* ═══════════ BIO TAB ═══════════ */}
-      {activeTab === 'bio' && jerseyNumber && (
+      {activeTab === 'bio' && (
         <View style={[styles.tabContent, styles.tabContentSpaced]}>
           {/* 1) Quick Facts row */}
-          {bio && (
+          {bio ? (
             <View style={styles.quickFactsRow}>
               <View style={styles.quickFact}>
                 <Text style={styles.quickFactLabel}>HS</Text>
@@ -423,10 +513,25 @@ export function PlayerSheet({
                 <Text style={styles.quickFactValue}>{classYearShort ?? bio.classYear}</Text>
               </View>
             </View>
+          ) : player && (
+            <View style={styles.quickFactsRow}>
+              <View style={styles.quickFact}>
+                <Text style={styles.quickFactLabel}>School</Text>
+                <Text style={styles.quickFactValue} numberOfLines={1}>{player.currentSchool}</Text>
+              </View>
+              <View style={styles.quickFact}>
+                <Text style={styles.quickFactLabel}>Level</Text>
+                <Text style={styles.quickFactValue} numberOfLines={1}>{player.level}</Text>
+              </View>
+              <View style={styles.quickFact}>
+                <Text style={styles.quickFactLabel}>Class</Text>
+                <Text style={styles.quickFactValue}>{player.classYear}</Text>
+              </View>
+            </View>
           )}
 
           {/* 2) Current Season card */}
-          {leaderStats && leaderStats.gamesPlayed > 0 && (
+          {leaderStats && leaderStats.gamesPlayed > 0 ? (
             <View style={styles.statCard}>
               <Text style={styles.statCardTitle}>CURRENT SEASON</Text>
               <View style={styles.statRow}>
@@ -434,7 +539,9 @@ export function PlayerSheet({
                   { v: leaderStats.ppg.toFixed(1), l: 'PPG' },
                   { v: leaderStats.rpg.toFixed(1), l: 'RPG' },
                   { v: leaderStats.apg.toFixed(1), l: 'APG' },
-                  { v: tsPct > 0 ? `${tsPct}%` : `${leaderStats.fgPct.toFixed(1)}%`, l: tsPct > 0 ? 'TS%' : 'FG%' },
+                  { v: `${leaderStats.fgPct.toFixed(1)}%`, l: 'FG%' },
+                  { v: `${leaderStats.threePct.toFixed(1)}%`, l: '3P%' },
+                  { v: tsPct > 0 ? `${tsPct}%` : '\u2014', l: 'TS%' },
                 ].map((s) => (
                   <View key={s.l} style={styles.statItem}>
                     <Text style={styles.statValue}>{s.v}</Text>
@@ -450,7 +557,34 @@ export function PlayerSheet({
                 </Text>
               )}
             </View>
-          )}
+          ) : seasons.length > 0 ? (
+            <View style={styles.statCard}>
+              <Text style={styles.statCardTitle}>CURRENT SEASON</Text>
+              <View style={styles.statRow}>
+                {[
+                  { v: seasons[0].ppg.toFixed(1), l: 'PPG' },
+                  { v: seasons[0].rpg.toFixed(1), l: 'RPG' },
+                  { v: seasons[0].apg.toFixed(1), l: 'APG' },
+                  { v: `${seasons[0].fgPct}%`, l: 'FG%' },
+                  { v: `${seasons[0].threePct}%`, l: '3P%' },
+                  { v: '\u2014', l: 'TS%' },
+                ].map((s) => (
+                  <View key={s.l} style={styles.statItem}>
+                    <Text style={styles.statValue}>{s.v}</Text>
+                    <Text style={styles.statLabel}>{s.l}</Text>
+                  </View>
+                ))}
+              </View>
+              <Text style={styles.statMeta}>
+                {seasons[0].gp} GP {'\u00B7'} {seasons[0].mpg} MPG {'\u00B7'} {seasons[0].school}
+              </Text>
+            </View>
+          ) : player.keyStatLine ? (
+            <View style={styles.statCard}>
+              <Text style={styles.statCardTitle}>KEY STATS</Text>
+              <Text style={styles.keyStatLine}>{player.keyStatLine}</Text>
+            </View>
+          ) : null}
 
           {/* 3) Season Highlights */}
           {highlights.length > 0 && (
@@ -494,7 +628,23 @@ export function PlayerSheet({
             <Text style={styles.identityValue}>{lineupSlot}</Text>
           </View>
 
-          {/* 6) About → Bio */}
+          {/* 6) Badges */}
+          {playerBadges.length > 0 && (
+            <View style={styles.sectionBlock}>
+              <Text style={styles.sectionTitle}>BADGES</Text>
+              <View style={styles.badgeRow}>
+                {playerBadges.map((b, i) => (
+                  <View key={i} style={[styles.badgePill, { borderColor: BADGE_LEVEL_COLORS[b.level] + '60' }]}>
+                    <View style={[styles.badgeDot, { backgroundColor: BADGE_LEVEL_COLORS[b.level] }]} />
+                    <Text style={[styles.badgeName, { color: BADGE_LEVEL_COLORS[b.level] }]}>{b.name}</Text>
+                    <Text style={[styles.badgeLevel, { color: BADGE_LEVEL_COLORS[b.level] + 'AA' }]}>{b.level}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* 7) About → Bio */}
           {about && (
             <View style={styles.sectionBlock}>
               <Text style={styles.sectionTitle}>BIO</Text>
@@ -515,17 +665,78 @@ export function PlayerSheet({
             </View>
           )}
 
-          {/* 7) Links (socials) */}
-          <View style={styles.sectionBlock}>
-            <Text style={styles.sectionTitle}>LINKS</Text>
-            <View style={styles.socialsRow}>
-              {['Team', 'Instagram', 'Athletics'].map((s) => (
-                <Pressable key={s} style={styles.socialPill} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-                  <Text style={styles.socialText}>{s}</Text>
-                </Pressable>
-              ))}
+          {/* 7) Similar Players */}
+          {similarPlayers.length > 0 && (
+            <View style={styles.sectionBlock}>
+              <Text style={styles.sectionTitle}>SIMILAR PLAYERS</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.simRow}>
+                {similarPlayers.map((sp) => {
+                  const krColor = sp.kr >= 75 ? '#4CAF50' : sp.kr >= 60 ? '#FF9800' : '#8A8F98';
+                  const tag = sp.posMatch && sp.archMatch ? 'Pos + Archetype' : sp.posMatch ? 'Position' : 'Archetype';
+                  const spAwards = POOL_PLAYER_AWARDS[sp.player.id] ?? [];
+                  return (
+                    <View key={sp.player.id} style={styles.simCard}>
+                      <View style={styles.simCardTop}>
+                        <Text style={styles.simName} numberOfLines={1}>
+                          {sp.player.firstName.charAt(0)}. {sp.player.lastName}
+                        </Text>
+                        <Text style={[styles.simKR, { color: krColor }]}>{sp.kr}</Text>
+                      </View>
+                      <Text style={styles.simMeta} numberOfLines={1}>
+                        {sp.player.position} {'\u00B7'} {sp.player.height} {'\u00B7'} {sp.player.classYear}
+                      </Text>
+                      <Text style={styles.simSchool} numberOfLines={1}>{sp.player.currentSchool}</Text>
+                      {spAwards.length > 0 && (
+                        <Text style={styles.simAward} numberOfLines={1}>
+                          {'\u2605'} {spAwards[0]}
+                        </Text>
+                      )}
+                      <View style={styles.simTagRow}>
+                        <Text style={styles.simTag}>{tag}</Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </ScrollView>
             </View>
-          </View>
+          )}
+
+          {/* 8) Team Targets — teammates ranked by system fit */}
+          {teamTargets.length > 0 && (
+            <View style={styles.sectionBlock}>
+              <Text style={styles.sectionTitle}>TEAM TARGETS — {player.currentSchool.toUpperCase()}</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.simRow}>
+                {teamTargets.map((tt) => {
+                  const fitColor = tt.fitKr >= 75 ? '#4CAF50' : tt.fitKr >= 60 ? '#FF9800' : '#8A8F98';
+                  const deltaColor2 = tt.delta > 0 ? '#4CAF50' : tt.delta < 0 ? '#EF4444' : '#6e6e6e';
+                  const deltaText2 = tt.delta > 0 ? `+${tt.delta}` : `${tt.delta}`;
+                  const ttAwards = POOL_PLAYER_AWARDS[tt.player.id] ?? [];
+                  return (
+                    <View key={tt.player.id} style={styles.simCard}>
+                      <View style={styles.simCardTop}>
+                        <Text style={styles.simName} numberOfLines={1}>
+                          {tt.player.firstName.charAt(0)}. {tt.player.lastName}
+                        </Text>
+                        <Text style={[styles.simKR, { color: fitColor }]}>{tt.fitKr}</Text>
+                      </View>
+                      <View style={styles.simCardTop}>
+                        <Text style={styles.simMeta}>
+                          {tt.player.position} {'\u00B7'} {tt.player.height}
+                        </Text>
+                        <Text style={[styles.ttDelta, { color: deltaColor2 }]}>{deltaText2} fit</Text>
+                      </View>
+                      <Text style={styles.simSchool} numberOfLines={1}>{tt.player.keyStatLine}</Text>
+                      {ttAwards.length > 0 && (
+                        <Text style={styles.simAward} numberOfLines={1}>
+                          {'\u2605'} {ttAwards[0]}
+                        </Text>
+                      )}
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          )}
 
           {!about && !bio && awards.length === 0 && (
             <Text style={styles.emptyText}>No bio data available.</Text>
@@ -600,90 +811,35 @@ export function PlayerSheet({
             </Text>
           </View>
 
-          {/* §3 Fit Drivers (top 3 positive) */}
-          {drivers.length > 0 && (
-            <View style={styles.fitBlock}>
-              <Text style={styles.fitBlockLabel}>FIT DRIVERS</Text>
-              {drivers.map((r, i) => (
-                <Text key={i} style={styles.fitReasonLine}>
-                  <Text style={{ fontWeight: '700', color: '#4CAF50' }}>
-                    +{Math.abs(r.delta)}  {r.cluster}
-                  </Text>
-                  {' \u2014 '}{r.reason}
-                </Text>
-              ))}
+          {/* §3 Full Breakdown (waterfall) */}
+          {allDeltas.length > 0 ? (
+            <View style={styles.breakdownList}>
+              <View style={styles.breakdownRow}>
+                <Text style={styles.breakdownLabel}>Base KR</Text>
+                <Text style={styles.breakdownValue}>{baseKR}</Text>
+              </View>
+              {allDeltas.map((r, i) => {
+                const sign = r.delta >= 0 ? '+' : '';
+                const color = r.delta > 0 ? '#4CAF50' : r.delta < 0 ? '#EF4444' : '#6e6e6e';
+                return (
+                  <View key={i} style={styles.breakdownRow}>
+                    <Text style={styles.breakdownLabel}>
+                      {r.delta >= 0 ? '+' : '\u2212'} {r.cluster}
+                    </Text>
+                    <Text style={[styles.breakdownValue, { color }]}>
+                      {sign}{r.delta}
+                    </Text>
+                  </View>
+                );
+              })}
+              <View style={styles.breakdownDivider} />
+              <View style={styles.breakdownRow}>
+                <Text style={styles.breakdownTotal}>= System Fit KR</Text>
+                <Text style={styles.breakdownTotal}>{fitKR}</Text>
+              </View>
             </View>
-          )}
-
-          {/* §4 Fit Risks (top 2 negative) */}
-          {risks.length > 0 && (
-            <View style={styles.fitBlock}>
-              <Text style={styles.fitBlockLabel}>FIT RISKS</Text>
-              {risks.map((r, i) => (
-                <Text key={i} style={styles.fitReasonLine}>
-                  <Text style={{ fontWeight: '700', color: '#EF4444' }}>
-                    {r.delta}  {r.cluster}
-                  </Text>
-                  {' \u2014 '}{r.reason}
-                </Text>
-              ))}
-            </View>
-          )}
-
-          {fitReasons.length === 0 && (
+          ) : (
             <Text style={styles.emptyText}>No cluster data available.</Text>
-          )}
-
-          {/* §5 Full Breakdown (collapsible waterfall) */}
-          {allDeltas.length > 0 && (
-            <View>
-              <Pressable
-                style={styles.breakdownToggle}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setShowFullBreakdown((prev) => !prev);
-                }}
-              >
-                <Text style={styles.breakdownToggleText}>
-                  {showFullBreakdown ? '\u25BE' : '\u25B8'} {showFullBreakdown ? 'Hide' : 'View'} full breakdown
-                </Text>
-              </Pressable>
-
-              {showFullBreakdown && (
-                <View style={styles.breakdownList}>
-                  {/* Base KR row */}
-                  <View style={styles.breakdownRow}>
-                    <Text style={styles.breakdownLabel}>Base KR</Text>
-                    <Text style={styles.breakdownValue}>{baseKR}</Text>
-                  </View>
-
-                  {/* Individual cluster deltas */}
-                  {allDeltas.map((r, i) => {
-                    const sign = r.delta >= 0 ? '+' : '';
-                    const color = r.delta > 0 ? '#4CAF50' : r.delta < 0 ? '#EF4444' : '#6e6e6e';
-                    return (
-                      <View key={i} style={styles.breakdownRow}>
-                        <Text style={styles.breakdownLabel}>
-                          {r.delta >= 0 ? '+' : '\u2212'} {r.cluster}
-                        </Text>
-                        <Text style={[styles.breakdownValue, { color }]}>
-                          {sign}{r.delta}
-                        </Text>
-                      </View>
-                    );
-                  })}
-
-                  {/* Divider */}
-                  <View style={styles.breakdownDivider} />
-
-                  {/* Total row */}
-                  <View style={styles.breakdownRow}>
-                    <Text style={styles.breakdownTotal}>= System Fit KR</Text>
-                    <Text style={styles.breakdownTotal}>{fitKR}</Text>
-                  </View>
-                </View>
-              )}
-            </View>
           )}
 
           {/* §6 Notes */}
@@ -711,27 +867,6 @@ export function PlayerSheet({
             />
           </View>
 
-          {/* §7 Season stats (recruiting players) */}
-          {seasons.map((season) => (
-            <View key={season.season} style={styles.seasonCard}>
-              <Text style={styles.seasonLabel}>{season.season} Stats</Text>
-              <View style={styles.seasonStatRow}>
-                {[
-                  { v: season.ppg, l: 'PPG' },
-                  { v: season.rpg, l: 'RPG' },
-                  { v: season.apg, l: 'APG' },
-                  { v: `${season.fgPct}%`, l: 'FG%' },
-                  ...(season.threePct > 0 ? [{ v: `${season.threePct}%`, l: '3P%' }] : []),
-                ].map((s) => (
-                  <View key={s.l} style={{ alignItems: 'center' }}>
-                    <Text style={styles.seasonValue}>{s.v}</Text>
-                    <Text style={styles.seasonSublabel}>{s.l}</Text>
-                  </View>
-                ))}
-              </View>
-              <Text style={styles.seasonMeta}>{season.gp} GP {'\u00B7'} {season.mpg} MPG {'\u00B7'} {season.school}</Text>
-            </View>
-          ))}
         </View>
       )}
 
@@ -870,7 +1005,137 @@ export function PlayerSheet({
         </View>
       )}
 
-      {activeTab === 'timeline' && jerseyNumber && (
+      {/* ═══════════ RECRUITING TAB ═══════════ */}
+      {activeTab === 'recruiting' && !isRoster && (
+        <View style={[styles.tabContent, styles.tabContentSpaced]}>
+          {/* §1 Recruiting Snapshot card */}
+          <View style={rcStyles.snapshotCard}>
+            <View style={rcStyles.snapshotRow}>
+              <Text style={rcStyles.snapshotLabel}>RECRUITING SNAPSHOT</Text>
+            </View>
+            {boardEntry ? (
+              <View style={[rcStyles.boardPill, { backgroundColor: (BOARD_COLUMN_COLORS[boardEntry.status] ?? '#2A2D35') + '30' }]}>
+                <View style={[rcStyles.boardPillDot, { backgroundColor: BOARD_COLUMN_COLORS[boardEntry.status] ?? '#8A8F98' }]} />
+                <Text style={[rcStyles.boardPillText, { color: BOARD_COLUMN_COLORS[boardEntry.status] ?? '#f5f5f5' }]}>
+                  {boardEntry.status}
+                </Text>
+              </View>
+            ) : (
+              <View style={[rcStyles.boardPill, { backgroundColor: '#2A2D3540' }]}>
+                <Text style={[rcStyles.boardPillText, { color: '#6e6e6e' }]}>Not on Board</Text>
+              </View>
+            )}
+            {teamNeeds && (() => {
+              const posNeeds = teamNeeds.filter((n) => n.need > 0);
+              if (posNeeds.length === 0) return <Text style={rcStyles.needsText}>All positions filled</Text>;
+              return (
+                <Text style={rcStyles.needsText}>
+                  Need: {posNeeds.map((n) => `${n.pos} (${n.need})`).join(' / ')}
+                </Text>
+              );
+            })()}
+            {(() => {
+              const lastTouch = commsEntries.find((e) => e.type === 'touch');
+              if (!lastTouch) return <Text style={rcStyles.lastTouchText}>No contact yet</Text>;
+              return (
+                <Text style={rcStyles.lastTouchText}>
+                  Last Touch: {lastTouch.touchMethod ?? 'Contact'} {'\u00B7'} {getRelativeTime(lastTouch.timestamp)}
+                </Text>
+              );
+            })()}
+          </View>
+
+          {/* §2 Actions row */}
+          <View style={rcStyles.actionsRow}>
+            {[
+              { icon: 'doc.text.fill' as const, label: 'Offer', color: '#4CAF50' },
+              { icon: 'dollarsign.circle.fill' as const, label: 'NIL', color: '#FF9800' },
+              { icon: 'mappin.and.ellipse' as const, label: 'Visit', color: '#3B82F6' },
+              { icon: 'note.text' as const, label: 'Log', color: '#A855F7' },
+            ].map((action) => (
+              <Pressable
+                key={action.label}
+                style={rcStyles.actionBtn}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              >
+                <View style={[rcStyles.actionIconWrap, { backgroundColor: action.color + '20' }]}>
+                  <IconSymbol name={action.icon} size={18} color={action.color} />
+                </View>
+                <Text style={rcStyles.actionLabel}>{action.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+
+          {/* §3 Recruiting Log */}
+          <View style={rcStyles.logSection}>
+            <Text style={rcStyles.logTitle}>RECRUITING LOG</Text>
+            {(() => {
+              const recruitingEntries = commsEntries.filter((e) =>
+                e.type === 'touch' || e.type === 'status_change' || e.type === 'key_date' || e.type === 'note'
+              );
+              if (recruitingEntries.length === 0) {
+                return <Text style={styles.emptyText}>No recruiting activity yet.</Text>;
+              }
+              return recruitingEntries.map((entry) => {
+                const meta = COMMS_TYPE_META[entry.type];
+                const tag = entry.type === 'touch' ? (entry.touchMethod ?? 'Contact')
+                  : entry.type === 'status_change' ? 'Status'
+                  : entry.type === 'key_date' ? (entry.dateLabel ?? 'Date')
+                  : 'Note';
+                const tagColor = meta.color;
+                return (
+                  <View key={entry.id} style={rcStyles.logRow}>
+                    <View style={[rcStyles.logIcon, { backgroundColor: meta.color + '25' }]}>
+                      <Text style={[rcStyles.logIconText, { color: meta.color }]}>{meta.icon}</Text>
+                    </View>
+                    <View style={rcStyles.logContent}>
+                      <Text style={rcStyles.logBody} numberOfLines={2}>{entry.body}</Text>
+                      <Text style={rcStyles.logTime}>{getRelativeTime(entry.timestamp)}</Text>
+                    </View>
+                    <View style={[rcStyles.logTag, { backgroundColor: tagColor + '20' }]}>
+                      <Text style={[rcStyles.logTagText, { color: tagColor }]}>{tag}</Text>
+                    </View>
+                  </View>
+                );
+              });
+            })()}
+          </View>
+
+          {/* §4 Board Controls */}
+          {boardEntry && (
+            <View style={rcStyles.boardControls}>
+              <Text style={rcStyles.boardControlsTitle}>BOARD CONTROLS</Text>
+              <View style={rcStyles.boardMoveRow}>
+                {BOARD_COLUMNS.filter((col) => col !== boardEntry.status).map((col) => (
+                  <Pressable
+                    key={col}
+                    style={[rcStyles.movePill, { borderColor: BOARD_COLUMN_COLORS[col] + '60' }]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      onMoveOnBoard?.(boardEntry.id, col);
+                    }}
+                  >
+                    <View style={[rcStyles.movePillDot, { backgroundColor: BOARD_COLUMN_COLORS[col] }]} />
+                    <Text style={rcStyles.movePillText}>{col}</Text>
+                  </Pressable>
+                ))}
+              </View>
+              <Pressable
+                style={rcStyles.removeBtn}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  onRemoveFromBoard?.(boardEntry.id);
+                  onClose();
+                }}
+              >
+                <Text style={rcStyles.removeBtnText}>Remove from Board</Text>
+              </Pressable>
+            </View>
+          )}
+        </View>
+      )}
+
+      {activeTab === 'timeline' && (
         <View style={styles.tabContent}>
           {career.length > 0 ? (
             career.map((s) => {
@@ -904,7 +1169,6 @@ export function PlayerSheet({
 
                   {isExpanded && (
                     <View style={styles.careerExpanded}>
-                      {/* Stats mini grid */}
                       <View style={styles.careerStatsGrid}>
                         {[
                           { v: s.ppg.toFixed(1), l: 'PPG' },
@@ -920,8 +1184,79 @@ export function PlayerSheet({
                           </View>
                         ))}
                       </View>
+                      {clusters && (
+                        <View style={styles.careerClusters}>
+                          <Text style={styles.careerClusterTitle}>KaNeXT</Text>
+                          {ALL_CLUSTER_KEYS.map((key) => {
+                            const val = clusters[key];
+                            const color = val >= 70 ? '#4CAF50' : val >= 55 ? '#FF9800' : '#EF4444';
+                            return (
+                              <View key={key} style={styles.careerClusterRow}>
+                                <Text style={styles.careerClusterLabel}>
+                                  {CLUSTER_LABELS[key as ClusterType]?.label ?? key}
+                                </Text>
+                                <View style={styles.careerClusterBarTrack}>
+                                  <View style={[barStyles.barFill, { width: `${Math.min(val, 100)}%`, backgroundColor: color }]} />
+                                </View>
+                                <Text style={[styles.careerClusterValue, { color }]}>{val}</Text>
+                              </View>
+                            );
+                          })}
+                        </View>
+                      )}
+                    </View>
+                  )}
+                </View>
+              );
+            })
+          ) : seasons.length > 0 ? (
+            seasons.map((s) => {
+              const isExpanded = expandedCareer.has(s.season);
+              const sKrColor = (s.kr ?? 0) >= 75 ? '#4CAF50' : (s.kr ?? 0) >= 60 ? '#FF9800' : '#8A8F98';
+              return (
+                <View key={s.season}>
+                  <Pressable
+                    style={styles.careerRow}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      toggleCareer(s.season);
+                    }}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.careerYear}>
+                        {s.season} {'\u00B7'} {s.school} {'\u00B7'} {s.level}
+                      </Text>
+                      <Text style={styles.careerMeta}>
+                        {s.gp} GP {'\u00B7'} {s.mpg} MPG
+                      </Text>
+                    </View>
+                    {s.kr != null && (
+                      <View style={[styles.careerKRBadge, { backgroundColor: sKrColor + '20' }]}>
+                        <Text style={[styles.careerKRText, { color: sKrColor }]}>{s.kr}</Text>
+                      </View>
+                    )}
+                    <Text style={styles.careerChevron}>{isExpanded ? '\u25BE' : '\u203A'}</Text>
+                  </Pressable>
 
-                      {/* KaNeXT cluster snapshot */}
+                  {isExpanded && (
+                    <View style={styles.careerExpanded}>
+                      <View style={styles.careerStatsGrid}>
+                        {[
+                          { v: s.ppg.toFixed(1), l: 'PPG' },
+                          { v: s.rpg.toFixed(1), l: 'RPG' },
+                          { v: s.apg.toFixed(1), l: 'APG' },
+                          { v: s.spg.toFixed(1), l: 'SPG' },
+                          { v: s.bpg.toFixed(1), l: 'BPG' },
+                          { v: `${s.fgPct}%`, l: 'FG%' },
+                          ...(s.threePct > 0 ? [{ v: `${s.threePct}%`, l: '3P%' }] : []),
+                          { v: `${s.ftPct}%`, l: 'FT%' },
+                        ].map((stat) => (
+                          <View key={stat.l} style={styles.careerStatItem}>
+                            <Text style={styles.careerStatValue}>{stat.v}</Text>
+                            <Text style={styles.careerStatLabel}>{stat.l}</Text>
+                          </View>
+                        ))}
+                      </View>
                       {clusters && (
                         <View style={styles.careerClusters}>
                           <Text style={styles.careerClusterTitle}>KaNeXT</Text>
@@ -1058,11 +1393,20 @@ const styles = StyleSheet.create({
     color: '#f5f5f5',
     marginTop: 3,
   },
+  headerRight: {
+    alignItems: 'flex-end',
+  },
   headerBadges: {
     flexDirection: 'row',
     gap: 6,
     alignItems: 'center',
     marginTop: 2,
+  },
+  headerGlyphs: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'center',
+    marginTop: 8,
   },
   headerBadge: {
     backgroundColor: '#2A2D35',
@@ -1110,17 +1454,18 @@ const styles = StyleSheet.create({
   },
 
   // Tabs
+  tabScroll: {
+    marginTop: 12,
+    paddingBottom: Spacing.sm,
+  },
   tabRow: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
+    gap: 6,
     paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing.sm,
-    marginTop: 12,
   },
   tabPill: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
+    paddingVertical: 5,
+    paddingHorizontal: 12,
     borderRadius: BorderRadius.lg,
     backgroundColor: '#2a2a2a',
   },
@@ -1209,6 +1554,13 @@ const styles = StyleSheet.create({
     color: GRAY,
     textAlign: 'center',
   },
+  keyStatLine: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#f5f5f5',
+    textAlign: 'center',
+    paddingVertical: 4,
+  },
 
   // Section blocks
   sectionBlock: {
@@ -1277,11 +1629,102 @@ const styles = StyleSheet.create({
     color: GRAY,
   },
 
+  // Badges
+  badgeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  badgePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#1E2028',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+  },
+  badgeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  badgeName: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  badgeLevel: {
+    fontSize: 9,
+    fontWeight: '600',
+  },
+
   // About
   aboutText: {
     fontSize: 14,
     color: '#ccc',
     lineHeight: 20,
+  },
+
+  // Similar Players
+  simRow: {
+    marginBottom: 4,
+  },
+  simCard: {
+    backgroundColor: '#1E2028',
+    borderRadius: 10,
+    padding: 10,
+    marginRight: 8,
+    width: 130,
+  },
+  simCardTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 3,
+  },
+  simName: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#f5f5f5',
+    flex: 1,
+    marginRight: 6,
+  },
+  simKR: {
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  simMeta: {
+    fontSize: 10,
+    color: GRAY,
+    marginBottom: 2,
+  },
+  simSchool: {
+    fontSize: 10,
+    color: '#999',
+    marginBottom: 3,
+  },
+  simAward: {
+    fontSize: 9,
+    color: '#D4A843',
+    marginBottom: 3,
+  },
+  ttDelta: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  simTagRow: {
+    flexDirection: 'row',
+  },
+  simTag: {
+    fontSize: 9,
+    fontWeight: '600',
+    color: '#888',
+    backgroundColor: '#2A2D35',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    overflow: 'hidden',
   },
 
   // Socials / Links
@@ -1763,5 +2206,174 @@ const styles = StyleSheet.create({
   sourceChipChevron: {
     fontSize: 10,
     fontWeight: '700',
+  },
+});
+
+// ── Recruiting tab styles ──
+const rcStyles = StyleSheet.create({
+  snapshotCard: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: BorderRadius.lg,
+    padding: 14,
+    marginBottom: 14,
+    gap: 8,
+  },
+  snapshotRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  snapshotLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#6e6e6e',
+    letterSpacing: 0.5,
+  },
+  boardPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+  },
+  boardPillDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
+  boardPillText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  needsText: {
+    fontSize: 12,
+    color: '#FF9800',
+    fontWeight: '500',
+  },
+  lastTouchText: {
+    fontSize: 12,
+    color: GRAY,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 18,
+  },
+  actionBtn: {
+    alignItems: 'center',
+    gap: 6,
+  },
+  actionIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#f5f5f5',
+  },
+  logSection: {
+    marginBottom: 18,
+  },
+  logTitle: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#6e6e6e',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  logRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#2A2D35',
+    gap: 10,
+  },
+  logIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logIconText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  logContent: {
+    flex: 1,
+  },
+  logBody: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#f5f5f5',
+    lineHeight: 18,
+  },
+  logTime: {
+    fontSize: 11,
+    color: '#6e6e6e',
+    marginTop: 1,
+  },
+  logTag: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  logTagText: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  boardControls: {
+    marginBottom: 20,
+  },
+  boardControlsTitle: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#6e6e6e',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  boardMoveRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
+  movePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 12,
+    borderWidth: 1,
+    backgroundColor: '#1a1a1a',
+  },
+  movePillDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  movePillText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#f5f5f5',
+  },
+  removeBtn: {
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: '#EF444415',
+  },
+  removeBtnText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#EF4444',
   },
 });

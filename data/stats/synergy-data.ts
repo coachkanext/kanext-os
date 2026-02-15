@@ -89,6 +89,14 @@ export const TEMPO_BREAKDOWN = {
   halfcourt: { ppp: 0.89, freq: 63.6 },
 };
 
+// ── Defense tempo breakdown (PPP allowed) ──
+
+export const DEFENSE_TEMPO_BREAKDOWN = {
+  transition: { ppp: 1.18, freq: 16.1 },
+  earlyOffense: { ppp: 0.94, freq: 20.8 },
+  halfcourt: { ppp: 0.82, freq: 63.1 },
+};
+
 // ── Defense coverage breakdown ──
 
 export const BALL_SCREEN_COVERAGE: CoverageRow[] = [

@@ -50,35 +50,65 @@ export type AvailabilityOption = typeof AVAILABILITY_OPTIONS[number];
 
 // ── Risk Score ──
 
-export function computeRisk(player: PoolPlayer): number {
-  let risk = 50; // baseline
+/**
+ * Player Confidence Gate — canonical spec implementation.
+ * Confidence% ∈ [0,100] measures evidence completeness + stability.
+ * Does NOT change KR math — transparency signal only.
+ *
+ * Maps data availability tiers to Full Player KR confidence ranges:
+ *   Official college stats only (multi-year)           → 35–55%
+ *   Official college stats + HS stats                  → 40–60%
+ *   Multi-year across levels (JUCO→NCAA, etc.)         → 45–65%
+ *   1 year tracking (Synergy/PlayVision) + stats       → 65–80%
+ *   Multi-year tracking + stats                        → 75–88%
+ */
+export function computeConfidence(player: PoolPlayer): number {
+  const hasFilm = player.hasFilm;
+  const level = player.level;
+  const isPortal = !level.startsWith('HS') && level !== 'International' && level !== 'HS';
+  const isMultiLevel = isPortal && level.startsWith('JUCO'); // JUCO→4yr = multi-level path
+  const isMultiYear = player.classYear <= '2025'; // seniors/grads have multi-year data
 
-  // Level risk adjustments
-  if (player.level === 'International') risk += 15;
-  else if (player.level === 'HS') risk += 10;
-  else if (player.level.startsWith('JUCO')) risk -= 5;
-  else risk -= 10; // NCAA portal = lower risk
-
-  // Projection uncertainty: younger players are harder to project
-  if (player.classYear === '2027') risk += 12;
-  else if (player.classYear === '2026') risk += 5;
-  else if (player.classYear === '2025') risk -= 5;
-
-  // Rating variance — large spread between cluster scores = less predictable
-  const ratings = getPlayerRatings(player.id);
-  if (ratings) {
-    const clusters = Object.values(ratings.clusters);
-    const mean = clusters.reduce((a, b) => a + b, 0) / clusters.length;
-    const variance = clusters.reduce((s, v) => s + (v - mean) ** 2, 0) / clusters.length;
-    const stddev = Math.sqrt(variance);
-    // Higher stddev = higher risk (uneven profile)
-    risk += Math.round(stddev * 0.3);
+  // Tier 1: Multi-year tracking data + official stats → 75–88%
+  if (hasFilm && isMultiYear) {
+    return randomInRange(player.id, 75, 88);
   }
 
-  // No film = more uncertainty
-  if (!player.hasFilm) risk += 8;
+  // Tier 2: 1 year tracking data + official stats → 65–80%
+  if (hasFilm && !isMultiYear) {
+    return randomInRange(player.id, 65, 80);
+  }
 
-  return Math.max(0, Math.min(100, Math.round(risk)));
+  // Tier 3: Multi-year across levels, no tracking → 45–65%
+  if (!hasFilm && isMultiLevel) {
+    return randomInRange(player.id, 45, 65);
+  }
+
+  // Tier 4: College stats + HS stats (portal/NCAA players) → 40–60%
+  if (!hasFilm && isPortal) {
+    return randomInRange(player.id, 40, 60);
+  }
+
+  // Tier 5: HS only or International with no film → 35–55%
+  if (!hasFilm) {
+    return randomInRange(player.id, 35, 55);
+  }
+
+  // HS/International with film but single year → 65–80%
+  if (hasFilm) {
+    return randomInRange(player.id, 65, 80);
+  }
+
+  return 50;
+}
+
+/** Deterministic pseudo-random value in range seeded by player ID. */
+function randomInRange(playerId: string, min: number, max: number): number {
+  let hash = 0;
+  for (let i = 0; i < playerId.length; i++) {
+    hash = (hash * 31 + playerId.charCodeAt(i)) & 0xffff;
+  }
+  return min + (hash % (max - min + 1));
 }
 
 // ── Momentum ──
@@ -135,20 +165,68 @@ export function parseHeightToInches(heightStr: string): number {
 // ── Height/Weight Range Filters ──
 
 export const HEIGHT_RANGES = [
-  { label: '<6\'0"', min: 0, max: 71 },
-  { label: '6\'0"-6\'3"', min: 72, max: 75 },
-  { label: '6\'4"-6\'7"', min: 76, max: 79 },
-  { label: '6\'8"+', min: 80, max: 999 },
+  { label: '<5\'10"', min: 0, max: 69 },
+  { label: '5\'10"-6\'0"', min: 70, max: 72 },
+  { label: '6\'1"-6\'3"', min: 73, max: 75 },
+  { label: '6\'4"-6\'6"', min: 76, max: 78 },
+  { label: '6\'7"-6\'9"', min: 79, max: 81 },
+  { label: '6\'10"+', min: 82, max: 999 },
 ] as const;
 
 export const WEIGHT_RANGES = [
-  { label: '<180', min: 0, max: 179 },
-  { label: '180-210', min: 180, max: 210 },
-  { label: '211-240', min: 211, max: 240 },
-  { label: '240+', min: 240, max: 999 },
+  { label: '<170', min: 0, max: 169 },
+  { label: '170-189', min: 170, max: 189 },
+  { label: '190-209', min: 190, max: 209 },
+  { label: '210-229', min: 210, max: 229 },
+  { label: '230-249', min: 230, max: 249 },
+  { label: '250+', min: 250, max: 999 },
+] as const;
+
+export const WINGSPAN_RANGES = [
+  { label: '<6\'4"', min: 0, max: 75 },
+  { label: '6\'4"-6\'7"', min: 76, max: 79 },
+  { label: '6\'8"-6\'11"', min: 80, max: 83 },
+  { label: '7\'0"-7\'3"', min: 84, max: 87 },
+  { label: '7\'4"+', min: 88, max: 999 },
+] as const;
+
+export const VERTICAL_RANGES = [
+  { label: '<30"', min: 0, max: 29 },
+  { label: '30"-33"', min: 30, max: 33 },
+  { label: '34"-37"', min: 34, max: 37 },
+  { label: '38"-41"', min: 38, max: 41 },
+  { label: '42"+', min: 42, max: 999 },
 ] as const;
 
 export const REGION_OPTIONS = ['Southeast', 'Northeast', 'Midwest', 'Southwest', 'West', 'International'] as const;
+
+// ── Computed Measurables ──
+
+/** Deterministic wingspan (inches) from player height, position, and ID. */
+export function computeWingspan(playerId: string, heightInches: number, position: string): number {
+  const h = hashStr(playerId + 'ws');
+  // Bigs tend to have longer wingspans relative to height
+  const bonus = position === 'C' || position === 'PF' ? 5 : position === 'SF' ? 4 : 3;
+  const variation = (h % 7) - 2; // -2 to +4
+  return heightInches + bonus + variation;
+}
+
+/** Deterministic standing vertical leap (inches) from player ID and position. */
+export function computeVertical(playerId: string, position: string): number {
+  const h = hashStr(playerId + 'vert');
+  // Guards tend to jump higher
+  const base = position === 'PG' || position === 'SG' ? 34 : position === 'SF' ? 33 : 31;
+  const variation = (h % 11) - 3; // -3 to +7
+  return base + variation;
+}
+
+function hashStr(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = (h * 31 + s.charCodeAt(i)) & 0xffff;
+  }
+  return h;
+}
 
 // ── Last Touch Helper ──
 

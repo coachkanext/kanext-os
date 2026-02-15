@@ -186,10 +186,10 @@ function RecruitingStatusCard({ target, colors }: RecruitingStatusCardProps) {
       )}
 
       <View style={[styles.recruitingFooter, { borderTopColor: colors.divider }]}>
-        {target.assignedCoach && (
+        {target.recruiter && (
           <View style={styles.footerItem}>
-            <ThemedText style={[styles.footerLabel, { color: colors.textTertiary }]}>Coach</ThemedText>
-            <ThemedText style={styles.footerValue}>{target.assignedCoach}</ThemedText>
+            <ThemedText style={[styles.footerLabel, { color: colors.textTertiary }]}>Recruiter</ThemedText>
+            <ThemedText style={styles.footerValue}>{target.recruiter}</ThemedText>
           </View>
         )}
         {target.plannedScholarship !== undefined && (
