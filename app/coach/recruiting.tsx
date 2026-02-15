@@ -24,11 +24,26 @@ import { TabFooter } from '@/components/tab-footer';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { PLAYER_POOL, type PoolLevel, type PoolPlayer } from '@/data/playerPool';
-import { getPlayerRatings, getPoolPlayerSubclusters, getTeamClusterAverages, WEEKLY_UPDATE_OPTIONS } from '@/data/playerRatings';
+import { getPlayerRatings, getPoolPlayerSubclusters, WEEKLY_UPDATE_OPTIONS } from '@/data/playerRatings';
 import { HELIO_TO_TRADITIONAL, TRADITIONAL_TO_HELIO, HELIO_POSITIONS, HELIO_POSITION_LABELS } from '@/data/position-mapping';
 import { SORT_CLUSTER_LABELS, CLUSTER_ORDER, TRAIT_LIBRARY } from '@/data/trait-library';
 import { ARCHETYPE_OPTIONS } from '@/data/archetype-options';
-import { ARCHETYPE_LABELS } from '@/data/system-demand-profiles';
+import { getPlayerStats, STAT_META, type StatKey } from '@/data/player-stats';
+import { POSITION_TARGETS, TOTAL_SCHOLARSHIPS, NIL_BUDGET, type PositionNeed } from '@/data/team-needs';
+import { ROSTER_META } from '@/data/roster-data';
+import { ROSTER } from '@/components/roster-content';
+import { getRecruitComms } from '@/data/mock-comms';
+import { computeFitKR } from '@/utils/fit-kr';
+import {
+  getPlayerAvailability,
+  getPlayerRegion,
+  computeRisk,
+  computeMomentum,
+  getMomentumLabel,
+  getMomentumColor,
+  getLastTouch,
+  parseHeightToInches,
+} from '@/utils/recruiting-helpers';
 import {
   FilterSheet,
   SectionHeader,
@@ -47,9 +62,7 @@ import {
   BOARD_COLUMN_COLORS,
   type BoardEntry,
   type BoardStatus,
-  type Priority as BoardPriority,
 } from '@/data/recruitingBoard';
-import { BoardColumn } from '@/components/recruiting/board-column';
 import {
   BoardFilters,
   DEFAULT_BOARD_FILTERS,
@@ -61,7 +74,6 @@ import {
   moveEntry,
   removeEntry,
   addEntry,
-  updateEntry,
 } from '@/utils/recruiting-board-store';
 
 // ─── Constants ───
@@ -151,7 +163,6 @@ export function PlayerPoolContent() {
   const [coachNotes, setCoachNotes] = useState<Record<string, string>>({});
   const [sheetOffStyle, setSheetOffStyle] = useState<import('@/types').OffensiveStyle>('motion_read_react');
   const [sheetDefStyle, setSheetDefStyle] = useState<import('@/types').DefensiveStyle>('pack_line');
-  const [listMode, setListMode] = useState<'board' | 'player' | 'team'>('board');
   const [divSheetOpen, setDivSheetOpen] = useState(false);
   const [divExpandedGroups, setDivExpandedGroups] = useState<Set<string>>(new Set());
 
@@ -159,12 +170,10 @@ export function PlayerPoolContent() {
   const [boardEntries, setBoardEntries] = useState<BoardEntry[]>([]);
   const [boardLoaded, setBoardLoaded] = useState(false);
   const [boardFilters, setBoardFilters] = useState<BoardFilterState>({ ...DEFAULT_BOARD_FILTERS });
-  const [boardViewMode, setBoardViewMode] = useState<'kanban' | 'list'>('kanban');
+  const [boardViewMode, setBoardViewMode] = useState<'list' | 'players' | 'teams'>('list');
   const [boardSearch, setBoardSearch] = useState('');
-  const [boardSortKey, setBoardSortKey] = useState<'rank' | 'kr' | 'fit' | 'position' | 'updated' | 'priority'>('rank');
   const [quickActionsEntry, setQuickActionsEntry] = useState<BoardEntry | null>(null);
   const [addSheetOpen, setAddSheetOpen] = useState(false);
-  const [addSelectionMode, setAddSelectionMode] = useState(false);
 
   // Load board from AsyncStorage
   useEffect(() => {
@@ -193,82 +202,147 @@ export function PlayerPoolContent() {
         );
       });
     }
-    if (boardFilters.year) list = list.filter((e) => e.classYear === boardFilters.year);
-    if (boardFilters.division) {
-      const div = boardFilters.division;
+    if (boardFilters.year.length > 0) list = list.filter((e) => boardFilters.year.includes(e.classYear));
+    if (boardFilters.division.length > 0) {
       list = list.filter((e) => {
         const p = PLAYER_POOL.find((pp) => pp.id === e.playerId);
         if (!p) return false;
-        // Exact match or parent-level match (e.g. 'NCAA' matches 'NCAA', 'NCAA D1', 'NCAA D2')
-        return p.level === div || p.level.startsWith(div + ' ');
+        return boardFilters.division.some((div) => matchesDivision(p.level, div as PoolLevel));
       });
     }
-    if (boardFilters.status) list = list.filter((e) => e.status === boardFilters.status);
-    if (boardFilters.position) list = list.filter((e) => e.position === boardFilters.position);
+    if (boardFilters.status.length > 0) list = list.filter((e) => boardFilters.status.includes(e.status));
+    if (boardFilters.position.length > 0) {
+      const tradPositions = boardFilters.position
+        .map((pos) => HELIO_TO_TRADITIONAL[pos as import('@/types').HeliocentricPosition])
+        .filter(Boolean) as string[];
+      if (tradPositions.length > 0) list = list.filter((e) => tradPositions.includes(e.position));
+    }
+    if (boardFilters.archetype) {
+      const arch = boardFilters.archetype;
+      list = list.filter((e) => {
+        const p = PLAYER_POOL.find((pp) => pp.id === e.playerId);
+        return p?.archetype === arch;
+      });
+    }
+    if (boardFilters.availability.length > 0) {
+      list = list.filter((e) => {
+        const p = PLAYER_POOL.find((pp) => pp.id === e.playerId);
+        return p ? boardFilters.availability.includes(getPlayerAvailability(p)) : false;
+      });
+    }
+    if (boardFilters.region.length > 0) {
+      list = list.filter((e) => {
+        const p = PLAYER_POOL.find((pp) => pp.id === e.playerId);
+        return p ? boardFilters.region.includes(getPlayerRegion(p.state)) : false;
+      });
+    }
+    if (boardFilters.heightRange) {
+      const [minH, maxH] = boardFilters.heightRange;
+      list = list.filter((e) => {
+        const p = PLAYER_POOL.find((pp) => pp.id === e.playerId);
+        if (!p) return false;
+        const inches = parseHeightToInches(p.height);
+        return inches >= minH && inches <= maxH;
+      });
+    }
+    if (boardFilters.weightRange) {
+      const [minW, maxW] = boardFilters.weightRange;
+      list = list.filter((e) => {
+        const p = PLAYER_POOL.find((pp) => pp.id === e.playerId);
+        if (!p?.weight) return false;
+        return p.weight >= minW && p.weight <= maxW;
+      });
+    }
 
     // Sort by cluster/subcluster when selected
     if (boardFilters.cluster) {
       const clusterKey = boardFilters.cluster;
-      const isCluster = CLUSTER_ORDER.includes(clusterKey as ClusterType);
+      const OFF_CLUSTERS: ClusterType[] = ['shooting', 'finishing', 'playmaking'];
+      const DEF_CLUSTERS: ClusterType[] = ['perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
+
+      if (clusterKey === 'offense' || clusterKey === 'defense') {
+        // KR group — average of constituent clusters
+        const group = clusterKey === 'offense' ? OFF_CLUSTERS : DEF_CLUSTERS;
+        list = [...list].sort((a, b) => {
+          const aR = getPlayerRatings(a.playerId);
+          const bR = getPlayerRatings(b.playerId);
+          const aAvg = aR ? group.reduce((s, k) => s + (aR.clusters[k] ?? 0), 0) / group.length : 0;
+          const bAvg = bR ? group.reduce((s, k) => s + (bR.clusters[k] ?? 0), 0) / group.length : 0;
+          return bAvg - aAvg;
+        });
+      } else {
+        const isCluster = CLUSTER_ORDER.includes(clusterKey as ClusterType);
+        list = [...list].sort((a, b) => {
+          const aR = getPlayerRatings(a.playerId);
+          const bR = getPlayerRatings(b.playerId);
+          if (isCluster) {
+            return (bR?.clusters[clusterKey as ClusterType] ?? 0) - (aR?.clusters[clusterKey as ClusterType] ?? 0);
+          }
+          const aVal = getSubclusterRating(a.playerId, clusterKey);
+          const bVal = getSubclusterRating(b.playerId, clusterKey);
+          return bVal - aVal;
+        });
+      }
+    }
+
+    // Sort by traditional stat when selected (descending, except TO/PF ascending)
+    if (boardFilters.stat) {
+      const sk = boardFilters.stat as StatKey;
+      const lowerIsBetter = sk === 'to' || sk === 'pf';
       list = [...list].sort((a, b) => {
-        const aR = getPlayerRatings(a.playerId);
-        const bR = getPlayerRatings(b.playerId);
-        if (isCluster) {
-          return (bR?.clusters[clusterKey as ClusterType] ?? 0) - (aR?.clusters[clusterKey as ClusterType] ?? 0);
-        }
-        // Subcluster — find which cluster it belongs to and get subcluster rating
-        const aVal = getSubclusterRating(a.playerId, clusterKey);
-        const bVal = getSubclusterRating(b.playerId, clusterKey);
-        return bVal - aVal;
+        const aS = getPlayerStats(a.playerId);
+        const bS = getPlayerStats(b.playerId);
+        const aVal = aS?.[sk] ?? 0;
+        const bVal = bS?.[sk] ?? 0;
+        return lowerIsBetter ? aVal - bVal : bVal - aVal;
       });
     }
 
     return list;
   }, [boardEntries, boardSearch, boardFilters]);
 
-  // Board summary stats
-  const boardSummary = useMemo(() => {
-    const total = boardEntries.length;
-    const priorityA = boardEntries.filter((e) => e.priority === 'A').length;
-    const avgKR = (() => {
-      const krs = boardEntries
-        .map((e) => getPlayerRatings(e.playerId)?.overall)
-        .filter((v): v is number => v !== undefined && v !== null);
-      return krs.length > 0 ? Math.round(krs.reduce((a, b) => a + b, 0) / krs.length) : 0;
-    })();
-    return { total, priorityA, avgKR };
+  // Team needs — positional roster projection
+  const teamNeeds = useMemo(() => {
+    const positions: import('@/types').HeliocentricPosition[] = ['PG', 'CG', 'W', 'F', 'B'];
+    return positions.map((pos) => {
+      const rosterAtPos = ROSTER.filter((p) => p.listPos === pos);
+      const returning = rosterAtPos.filter((p) => p.classYear !== 'Senior').length;
+      const leaving = rosterAtPos.filter((p) => p.classYear === 'Senior').length;
+      const committed = boardEntries.filter((e) => {
+        if (e.status !== 'Commit' && e.status !== 'Signed') return false;
+        const p = PLAYER_POOL.find((pp) => pp.id === e.playerId);
+        if (!p) return false;
+        const helio = TRADITIONAL_TO_HELIO[p.position as import('@/data/playerPool').PoolPosition];
+        return helio === pos;
+      }).length;
+      const target = POSITION_TARGETS[pos];
+      const need = Math.max(target - returning - committed + leaving, 0);
+      return { pos, returning, leaving, committed, target, need };
+    });
   }, [boardEntries]);
 
-  // Board list view sorted entries
-  const sortedBoardList = useMemo(() => {
-    const list = [...filteredBoardEntries];
-    switch (boardSortKey) {
-      case 'kr':
-        return list.sort((a, b) => (getPlayerRatings(b.playerId)?.overall ?? 0) - (getPlayerRatings(a.playerId)?.overall ?? 0));
-      case 'priority':
-        return list.sort((a, b) => a.priority.localeCompare(b.priority));
-      case 'position':
-        return list.sort((a, b) => a.position.localeCompare(b.position));
-      case 'updated':
-        return list.sort((a, b) => b.updated.localeCompare(a.updated));
-      default: // rank — group by status, sort by rank
-        return list.sort((a, b) => {
-          const statusOrder = BOARD_COLUMNS.indexOf(a.status) - BOARD_COLUMNS.indexOf(b.status);
-          return statusOrder !== 0 ? statusOrder : a.rank - b.rank;
-        });
-    }
-  }, [filteredBoardEntries, boardSortKey]);
+  const totalNeed = useMemo(() => teamNeeds.reduce((s, n) => s + n.need, 0), [teamNeeds]);
+  const openSlots = useMemo(() => {
+    const currentRosterReturning = ROSTER.filter((p) => p.classYear !== 'Senior').length;
+    const committedCount = boardEntries.filter((e) => e.status === 'Commit' || e.status === 'Signed').length;
+    return Math.max(TOTAL_SCHOLARSHIPS - currentRosterReturning - committedCount, 0);
+  }, [boardEntries]);
+  const nilAvailable = useMemo(() => {
+    const allocated = Object.values(ROSTER_META).reduce((s, m) => s + m.nilAmount, 0);
+    return Math.max(NIL_BUDGET - allocated, 0);
+  }, []);
+  const hasAnyNeed = totalNeed > 0;
+  const [needsExpanded, setNeedsExpanded] = useState(false);
+
+  // Board list sorted by last updated
+  const sortedBoardList = useMemo(() =>
+    [...filteredBoardEntries].sort((a, b) => b.updated.localeCompare(a.updated)),
+  [filteredBoardEntries]);
 
   // Quick action handlers
   const handleMoveEntry = useCallback((entryId: string, newStatus: BoardStatus) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setBoardEntries((prev) => moveEntry(prev, entryId, newStatus));
-    setQuickActionsEntry(null);
-  }, []);
-
-  const handleSetPriority = useCallback((entryId: string, priority: BoardPriority) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setBoardEntries((prev) => updateEntry(prev, entryId, { priority }));
     setQuickActionsEntry(null);
   }, []);
 
@@ -449,35 +523,6 @@ export function PlayerPoolContent() {
 
   const resultCount = filteredPlayers.length;
 
-  // Derive team rankings from player pool
-  const teamRankings = useMemo(() => {
-    const teamMap = new Map<string, { name: string; conference: string; level: string; playerIds: string[] }>();
-    const pool = filters.division.length > 0
-      ? PLAYER_POOL.filter((p) => filters.division.some((d) => matchesDivision(p.level, d)))
-      : PLAYER_POOL;
-    pool.forEach((p) => {
-      if (!teamMap.has(p.currentSchool)) {
-        teamMap.set(p.currentSchool, { name: p.currentSchool, conference: p.conference, level: p.level, playerIds: [] });
-      }
-      teamMap.get(p.currentSchool)!.playerIds.push(p.id);
-    });
-    return [...teamMap.values()]
-      .map((t) => {
-        const avg = getTeamClusterAverages(t.playerIds);
-        // Top 3 players sorted by overall KR
-        const topPlayers = t.playerIds
-          .map((id) => {
-            const r = getPlayerRatings(id);
-            const p = PLAYER_POOL.find((pp) => pp.id === id)!;
-            return { id, name: `${p.firstName} ${p.lastName}`, position: p.position, kr: r?.overall ?? 0 };
-          })
-          .sort((a, b) => b.kr - a.kr)
-          .slice(0, 3);
-        return { ...t, kr: avg.overall, offKR: avg.offKR, defKR: avg.defKR, clusters: avg.clusters, topPlayers };
-      })
-      .sort((a, b) => b.kr - a.kr);
-  }, [filters.division]);
-
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -486,160 +531,51 @@ export function PlayerPoolContent() {
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
       >
-        {/* ─── Hero Card ─── */}
-        <View style={styles.heroCard}>
-          <Text style={styles.heroTitle}>NATIONAL POOL</Text>
-          <Text style={styles.heroSubtitle}>
-            Explore every player in the KaNeXT National Player Pool.
-          </Text>
-
-          {/* Search bar (pill) */}
-          <View style={styles.heroSearchBar}>
-            <TextInput
-              style={styles.heroSearchInput}
-              placeholder="Search Player"
-              placeholderTextColor="#6B7080"
-              value={filters.search}
-              onChangeText={(text) => setFilters((prev) => ({ ...prev, search: text }))}
-            />
-            {filters.search.length > 0 ? (
-              <Pressable onPress={() => setFilters((prev) => ({ ...prev, search: '' }))}>
-                <IconSymbol name="xmark.circle.fill" size={18} color="#6B7080" />
-              </Pressable>
-            ) : (
-              <IconSymbol name="magnifyingglass" size={18} color="#6B7080" />
-            )}
-          </View>
-
-          {/* Filter pill */}
-          <Pressable
-            style={[styles.heroFilterPill, hasActiveFilters && styles.heroFilterPillActive]}
-            onPress={openPanel}
-          >
-            <Text style={[styles.heroFilterText, hasActiveFilters && styles.heroFilterTextActive]}>
-              FILTER
-            </Text>
-            <IconSymbol name="line.3.horizontal.decrease" size={14} color={hasActiveFilters ? BG : WHITE} />
-            {hasActiveFilters && <View style={styles.filterDot} />}
-          </Pressable>
-        </View>
-
-        {/* Meta row below hero */}
-        <View style={styles.metaRow}>
-          <Text style={styles.resultCountText}>
-            {listMode === 'team' ? `${teamRankings.length} teams` : `${resultCount} players`}
-          </Text>
-          {hasActiveFilters && (
-            <Pressable onPress={handleResetAll}>
-              <Text style={styles.resetLink}>Reset all</Text>
-            </Pressable>
-          )}
-          <View style={{ flex: 1 }} />
-        </View>
-
-        {/* Board / Player / Team toggle */}
+        <View style={{ height: 16 }} />
         <View style={styles.ratingCardList}>
-          <View style={{ flexDirection: 'row', marginBottom: 12 }}>
-            {(['board', 'player', 'team'] as const).map((mode) => {
-              const active = listMode === mode;
-              return (
-                <Pressable
-                  key={mode}
-                  style={{ flex: 1, paddingVertical: 10, alignItems: 'center', borderBottomWidth: 2, borderBottomColor: active ? WHITE : 'transparent' }}
-                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setListMode(mode); }}
-                >
-                  <Text style={{ fontSize: 13, fontWeight: '700', letterSpacing: 0.5, color: active ? WHITE : GRAY }}>{mode.toUpperCase()}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          {listMode === 'board' ? (
-            <RecruitingBoardWorkspace
-              entries={filteredBoardEntries}
-              allEntries={boardEntries}
-              loaded={boardLoaded}
-              boardSearch={boardSearch}
-              onBoardSearchChange={setBoardSearch}
-              boardFilters={boardFilters}
-              onBoardFiltersChange={setBoardFilters}
-              viewMode={boardViewMode}
-              onViewModeChange={setBoardViewMode}
-              sortKey={boardSortKey}
-              onSortKeyChange={setBoardSortKey}
-              sortedList={sortedBoardList}
-              summary={boardSummary}
-              onCardPress={(entry) => {
-                const player = PLAYER_POOL.find((p) => p.id === entry.playerId);
-                if (player) {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setPeekPlayer(player);
-                }
-              }}
-              onCardLongPress={(entry) => {
-                setQuickActionsEntry(entry);
-              }}
-              onAddPress={() => setAddSheetOpen(true)}
-            />
-          ) : listMode === 'player' ? (
-            <>
-              {addSelectionMode && (
-                <Pressable
-                  style={styles.addSelectionBanner}
-                  onPress={() => { setAddSelectionMode(false); setListMode('board'); }}
-                >
-                  <Text style={styles.addSelectionText}>Tap + to add players to your board</Text>
-                  <Text style={styles.addSelectionDone}>Done</Text>
-                </Pressable>
-              )}
-              {filteredPlayers.map((player) => {
-                const alreadyOnBoard = boardEntries.some((e) => e.playerId === player.id);
-                return (
-                  <View key={player.id} style={{ position: 'relative' }}>
-                    <PlayerRatingCard
-                      player={player}
-                      onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        setPeekPlayer(player);
-                      }}
-                    />
-                    {addSelectionMode && !alreadyOnBoard && (
-                      <Pressable
-                        style={styles.addToBoardBtn}
-                        onPress={() => handleAddToBoard(player.id)}
-                      >
-                        <IconSymbol name="plus.circle.fill" size={24} color="#4CAF50" />
-                      </Pressable>
-                    )}
-                    {addSelectionMode && alreadyOnBoard && (
-                      <View style={styles.addToBoardBtn}>
-                        <IconSymbol name="checkmark.circle.fill" size={24} color={GRAY} />
-                      </View>
-                    )}
-                  </View>
-                );
-              })}
-              {filteredPlayers.length === 0 && (
-                <View style={styles.emptyState}>
-                  <Text style={styles.emptyText}>No players match your filters</Text>
-                </View>
-              )}
-            </>
-          ) : (
-            <>
-              {teamRankings.map((team, index) => (
-                <TeamRatingCard
-                  key={team.name}
-                  team={team}
-                  rank={index + 1}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    router.push({ pathname: '/coach/team-detail', params: { team: team.name } } as any);
-                  }}
-                />
-              ))}
-            </>
-          )}
+          <RecruitingBoardWorkspace
+            entries={filteredBoardEntries}
+            allEntries={boardEntries}
+            loaded={boardLoaded}
+            boardSearch={boardSearch}
+            onBoardSearchChange={setBoardSearch}
+            boardFilters={boardFilters}
+            onBoardFiltersChange={setBoardFilters}
+            viewMode={boardViewMode}
+            onViewModeChange={setBoardViewMode}
+            sortedList={sortedBoardList}
+            teamNeeds={teamNeeds}
+            totalNeed={totalNeed}
+            openSlots={openSlots}
+            hasAnyNeed={hasAnyNeed}
+            nilAvailable={nilAvailable}
+            needsExpanded={needsExpanded}
+            onToggleNeeds={() => setNeedsExpanded((v) => !v)}
+            filteredPlayers={filteredPlayers}
+            boardEntries={boardEntries}
+            offStyle={sheetOffStyle}
+            defStyle={sheetDefStyle}
+            onPlayerPress={(player) => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setPeekPlayer(player);
+            }}
+            onAddToBoard={handleAddToBoard}
+            onRemoveFromBoard={(entryId) => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              setBoardEntries((prev) => removeEntry(prev, entryId));
+            }}
+            onCardPress={(entry) => {
+              const player = PLAYER_POOL.find((p) => p.id === entry.playerId);
+              if (player) {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setPeekPlayer(player);
+              }
+            }}
+            onCardLongPress={(entry) => {
+              setQuickActionsEntry(entry);
+            }}
+            onAddPress={() => setAddSheetOpen(true)}
+          />
         </View>
       </ScrollView>
 
@@ -761,6 +697,14 @@ export function PlayerPoolContent() {
         onCoachNoteChange={(text) => {
           if (peekPlayer) setCoachNotes((prev) => ({ ...prev, [peekPlayer.id]: text }));
         }}
+        boardEntry={peekPlayer ? boardEntries.find((e) => e.playerId === peekPlayer.id) ?? null : null}
+        teamNeeds={teamNeeds}
+        onMoveOnBoard={handleMoveEntry}
+        onRemoveFromBoard={(entryId) => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          setBoardEntries((prev) => removeEntry(prev, entryId));
+        }}
+        defaultTabOverride={peekPlayer && boardEntries.some((e) => e.playerId === peekPlayer.id) ? 'recruiting' : undefined}
       />
 
       {/* Quick Actions Sheet */}
@@ -775,37 +719,86 @@ export function PlayerPoolContent() {
       >
         {quickActionsEntry && (
           <View style={{ gap: 2 }}>
-            {/* Move to... */}
-            <Text style={styles.qaSection}>MOVE TO</Text>
-            {BOARD_COLUMNS.filter((s) => s !== quickActionsEntry.status).map((status) => (
-              <Pressable
-                key={status}
-                style={styles.qaRow}
-                onPress={() => handleMoveEntry(quickActionsEntry.id, status)}
-              >
-                <View style={[styles.qaDot, { backgroundColor: BOARD_COLUMN_COLORS[status] }]} />
-                <Text style={styles.qaRowText}>{status}</Text>
-              </Pressable>
-            ))}
-
-            {/* Set Priority */}
-            <Text style={[styles.qaSection, { marginTop: 12 }]}>SET PRIORITY</Text>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              {(['A', 'B', 'C'] as BoardPriority[]).map((p) => {
-                const active = quickActionsEntry.priority === p;
+            {/* A — Pipeline */}
+            <Text style={styles.qaSection}>PIPELINE</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+              {BOARD_COLUMNS.map((status) => {
+                const isCurrent = status === quickActionsEntry.status;
                 return (
                   <Pressable
-                    key={p}
-                    style={[styles.qaPriorityPill, active && styles.qaPriorityPillActive]}
-                    onPress={() => handleSetPriority(quickActionsEntry.id, p)}
+                    key={status}
+                    style={[styles.qaPipelinePill, isCurrent && { backgroundColor: `${BOARD_COLUMN_COLORS[status]}30`, borderColor: BOARD_COLUMN_COLORS[status] }]}
+                    onPress={() => { if (!isCurrent) handleMoveEntry(quickActionsEntry.id, status); }}
                   >
-                    <Text style={[styles.qaPriorityText, active && styles.qaPriorityTextActive]}>{p}</Text>
+                    <View style={[styles.qaDot, { backgroundColor: BOARD_COLUMN_COLORS[status] }]} />
+                    <Text style={[styles.qaPipelinePillText, isCurrent && { color: BOARD_COLUMN_COLORS[status] }]}>{status}</Text>
                   </Pressable>
                 );
               })}
             </View>
 
-            {/* Open in National Pool */}
+            {/* B — Contact */}
+            <Text style={[styles.qaSection, { marginTop: 8 }]}>CONTACT</Text>
+            {([
+              { icon: 'message.fill', label: 'Text', method: 'Text' as const },
+              { icon: 'phone.fill', label: 'Call', method: 'Call' as const },
+              { icon: 'envelope.fill', label: 'Email', method: 'Email' as const },
+              { icon: 'note.text', label: 'Log Note', method: 'Note' as const },
+            ]).map((action) => (
+              <Pressable
+                key={action.label}
+                style={styles.qaRow}
+                onPress={() => {
+                  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                  setQuickActionsEntry(null);
+                }}
+              >
+                <IconSymbol name={action.icon as any} size={14} color={GRAY} />
+                <Text style={styles.qaRowText}>{action.label}</Text>
+              </Pressable>
+            ))}
+
+            {/* C — Recruiting */}
+            <Text style={[styles.qaSection, { marginTop: 8 }]}>RECRUITING</Text>
+            {([
+              { icon: 'dollarsign.circle', label: 'Offer Aid %' },
+              { icon: 'banknote', label: 'Offer NIL' },
+              { icon: 'calendar.badge.plus', label: 'Schedule Visit' },
+              { icon: 'checklist', label: 'Set Task' },
+            ]).map((action) => (
+              <Pressable
+                key={action.label}
+                style={styles.qaRow}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  setQuickActionsEntry(null);
+                }}
+              >
+                <IconSymbol name={action.icon as any} size={14} color={GRAY} />
+                <Text style={styles.qaRowText}>{action.label}</Text>
+              </Pressable>
+            ))}
+
+            {/* D — Share */}
+            <Text style={[styles.qaSection, { marginTop: 8 }]}>SHARE</Text>
+            {([
+              { icon: 'person.2.fill', label: 'Share to Staff Room' },
+              { icon: 'pin.fill', label: 'Pin to Staff' },
+            ]).map((action) => (
+              <Pressable
+                key={action.label}
+                style={styles.qaRow}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setQuickActionsEntry(null);
+                }}
+              >
+                <IconSymbol name={action.icon as any} size={14} color={GRAY} />
+                <Text style={styles.qaRowText}>{action.label}</Text>
+              </Pressable>
+            ))}
+
+            {/* View Full Profile */}
             <Pressable
               style={[styles.qaRow, { marginTop: 12 }]}
               onPress={() => {
@@ -842,8 +835,6 @@ export function PlayerPoolContent() {
           style={styles.qaRow}
           onPress={() => {
             setAddSheetOpen(false);
-            setAddSelectionMode(true);
-            setListMode('player');
           }}
         >
           <IconSymbol name="magnifyingglass" size={14} color={WHITE} />
@@ -1158,15 +1149,14 @@ export function PlayerPoolContent() {
           </View>
         )}
 
-        {/* Archetype (Players mode only) */}
-        {listMode === 'player' && (
-          <>
-            <SectionHeader
-              label="Archetype"
-              expanded={!!expandedSections.archetype}
-              onToggle={() => toggleSection('archetype')}
-              summary={draft.archetypes.length === 0 ? 'All' : `${draft.archetypes.length} selected`}
-            />
+        {/* Archetype */}
+        <>
+          <SectionHeader
+            label="Archetype"
+            expanded={!!expandedSections.archetype}
+            onToggle={() => toggleSection('archetype')}
+            summary={draft.archetypes.length === 0 ? 'All' : `${draft.archetypes.length} selected`}
+          />
             {expandedSections.archetype && (
               <View>
                 {ARCHETYPE_OPTIONS.map((opt) => (
@@ -1189,7 +1179,6 @@ export function PlayerPoolContent() {
               </View>
             )}
           </>
-        )}
 
         {/* Weekly Updates */}
         <SectionHeader
@@ -1220,47 +1209,43 @@ export function PlayerPoolContent() {
           </View>
         )}
 
-        {/* Team (Players mode only) */}
-        {listMode === 'player' && (
-          <>
-            <SectionHeader
-              label="Team"
-              expanded={!!expandedSections.team}
-              onToggle={() => toggleSection('team')}
-              summary={draft.teams.length === 0 ? 'All' : `${draft.teams.length} selected`}
-            />
-            {expandedSections.team && (
-              <View>
-                {draftConferences.map(({ conference, teams }) => (
-                  <View key={conference}>
-                    <ConferenceRow
-                      label={conference}
-                      teamCount={teams.length}
-                      expanded={expandedConferences.has(conference)}
-                      onToggle={() => toggleConference(conference)}
-                    />
-                    {expandedConferences.has(conference) && teams.map((teamName) => (
-                      <CheckboxRow
-                        key={teamName}
-                        label={teamName}
-                        checked={draft.teams.includes(teamName)}
-                        indent
-                        onPress={() => {
-                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                          setDraft((prev) => {
-                            const next = prev.teams.includes(teamName)
-                              ? prev.teams.filter((t) => t !== teamName)
-                              : [...prev.teams, teamName];
-                            return { ...prev, teams: next };
-                          });
-                        }}
-                      />
-                    ))}
-                  </View>
+        {/* Team */}
+        <SectionHeader
+          label="Team"
+          expanded={!!expandedSections.team}
+          onToggle={() => toggleSection('team')}
+          summary={draft.teams.length === 0 ? 'All' : `${draft.teams.length} selected`}
+        />
+        {expandedSections.team && (
+          <View>
+            {draftConferences.map(({ conference, teams }) => (
+              <View key={conference}>
+                <ConferenceRow
+                  label={conference}
+                  teamCount={teams.length}
+                  expanded={expandedConferences.has(conference)}
+                  onToggle={() => toggleConference(conference)}
+                />
+                {expandedConferences.has(conference) && teams.map((teamName) => (
+                  <CheckboxRow
+                    key={teamName}
+                    label={teamName}
+                    checked={draft.teams.includes(teamName)}
+                    indent
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setDraft((prev) => {
+                        const next = prev.teams.includes(teamName)
+                          ? prev.teams.filter((t) => t !== teamName)
+                          : [...prev.teams, teamName];
+                        return { ...prev, teams: next };
+                      });
+                    }}
+                  />
                 ))}
               </View>
-            )}
-          </>
+            ))}
+          </View>
         )}
 
         {/* Inline footer buttons */}
@@ -1319,13 +1304,6 @@ export default function CoachRecruitingScreen() {
 }
 
 // ─── Recruiting Board Workspace ───
-const SORT_OPTIONS: { key: string; label: string }[] = [
-  { key: 'rank', label: 'Board Rank' },
-  { key: 'kr', label: 'KR Overall' },
-  { key: 'priority', label: 'Priority' },
-  { key: 'position', label: 'Position' },
-  { key: 'updated', label: 'Updated' },
-];
 
 function RecruitingBoardWorkspace({
   entries,
@@ -1337,10 +1315,21 @@ function RecruitingBoardWorkspace({
   onBoardFiltersChange,
   viewMode,
   onViewModeChange,
-  sortKey,
-  onSortKeyChange,
   sortedList,
-  summary,
+  teamNeeds,
+  totalNeed,
+  openSlots,
+  hasAnyNeed,
+  nilAvailable,
+  needsExpanded,
+  onToggleNeeds,
+  filteredPlayers,
+  boardEntries,
+  offStyle,
+  defStyle,
+  onPlayerPress,
+  onAddToBoard,
+  onRemoveFromBoard,
   onCardPress,
   onCardLongPress,
   onAddPress,
@@ -1352,12 +1341,23 @@ function RecruitingBoardWorkspace({
   onBoardSearchChange: (text: string) => void;
   boardFilters: BoardFilterState;
   onBoardFiltersChange: (f: BoardFilterState) => void;
-  viewMode: 'kanban' | 'list';
-  onViewModeChange: (m: 'kanban' | 'list') => void;
-  sortKey: string;
-  onSortKeyChange: (k: any) => void;
+  viewMode: 'list' | 'players' | 'teams';
+  onViewModeChange: (m: 'list' | 'players' | 'teams') => void;
   sortedList: BoardEntry[];
-  summary: { total: number; priorityA: number; avgKR: number };
+  teamNeeds: PositionNeed[];
+  totalNeed: number;
+  openSlots: number;
+  hasAnyNeed: boolean;
+  nilAvailable: number;
+  needsExpanded: boolean;
+  onToggleNeeds: () => void;
+  filteredPlayers: PoolPlayer[];
+  boardEntries: BoardEntry[];
+  offStyle: import('@/types').OffensiveStyle;
+  defStyle: import('@/types').DefensiveStyle;
+  onPlayerPress: (player: PoolPlayer) => void;
+  onAddToBoard: (playerId: string) => void;
+  onRemoveFromBoard: (entryId: string) => void;
   onCardPress: (entry: BoardEntry) => void;
   onCardLongPress: (entry: BoardEntry) => void;
   onAddPress: () => void;
@@ -1370,53 +1370,124 @@ function RecruitingBoardWorkspace({
     );
   }
 
+  const [searchVisible, setSearchVisible] = useState(false);
+  const searchRef = useRef<TextInput>(null);
+  const [teamSheetData, setTeamSheetData] = useState<{ name: string; conference: string; level: string; playerCount: number } | null>(null);
+  const [selectedCoach, setSelectedCoach] = useState<{ name: string; initials: string; role: string; record: string; experience: string; alma: string; hue: number } | null>(null);
+
   return (
     <View>
-      {/* Board Header */}
-      <View style={styles.boardHeader}>
+      {/* Board Header — tap to toggle search */}
+      <Pressable
+        style={styles.boardHeader}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          setSearchVisible((prev) => {
+            if (!prev) {
+              setTimeout(() => searchRef.current?.focus(), 100);
+            } else {
+              onBoardSearchChange('');
+            }
+            return !prev;
+          });
+        }}
+      >
         <View style={{ flex: 1 }}>
           <Text style={styles.boardTitle}>RECRUITING BOARD</Text>
-          <Text style={styles.boardSubtitle}>Shortlist, rank, and track targets.</Text>
         </View>
-        <Pressable style={styles.addBtn} onPress={onAddPress}>
-          <IconSymbol name="plus" size={14} color={WHITE} />
-          <Text style={styles.addBtnText}>Add</Text>
-        </Pressable>
-      </View>
+        <IconSymbol name="magnifyingglass" size={16} color={GRAY} />
+      </Pressable>
 
-      {/* Board Search */}
-      <View style={styles.boardSearchBar}>
-        <IconSymbol name="magnifyingglass" size={14} color="#6B7080" />
-        <TextInput
-          style={styles.boardSearchInput}
-          placeholder="Search player, team, archetype..."
-          placeholderTextColor="#6B7080"
-          value={boardSearch}
-          onChangeText={onBoardSearchChange}
-        />
-        {boardSearch.length > 0 && (
-          <Pressable onPress={() => onBoardSearchChange('')}>
-            <IconSymbol name="xmark.circle.fill" size={16} color="#6B7080" />
-          </Pressable>
-        )}
-      </View>
+      {/* Board Search — hidden until tapped */}
+      {searchVisible && (
+        <View style={styles.boardSearchBar}>
+          <IconSymbol name="magnifyingglass" size={14} color="#6B7080" />
+          <TextInput
+            ref={searchRef}
+            style={styles.boardSearchInput}
+            placeholder="Search player, team, archetype..."
+            placeholderTextColor="#6B7080"
+            value={boardSearch}
+            onChangeText={onBoardSearchChange}
+            autoFocus
+          />
+          {boardSearch.length > 0 && (
+            <Pressable hitSlop={16} onPress={() => onBoardSearchChange('')} style={{ padding: 8 }}>
+              <IconSymbol name="xmark.circle.fill" size={18} color="#6B7080" />
+            </Pressable>
+          )}
+        </View>
+      )}
 
       {/* Filters */}
       <BoardFilters filters={boardFilters} onFiltersChange={onBoardFiltersChange} />
 
-      {/* Summary strip */}
-      <View style={styles.summaryStrip}>
-        <Text style={styles.summaryText}>Targets: {summary.total}</Text>
-        <Text style={styles.summaryDot}>{'\u00B7'}</Text>
-        <Text style={styles.summaryText}>Priority A: {summary.priorityA}</Text>
-        <Text style={styles.summaryDot}>{'\u00B7'}</Text>
-        <Text style={styles.summaryText}>Avg KR: {summary.avgKR}</Text>
-      </View>
+      {/* Team Needs strip */}
+      <Pressable style={styles.needsRow} onPress={onToggleNeeds}>
+        {hasAnyNeed && <View style={styles.needsDot} />}
+        <Text style={styles.needsLabel}>Needs (2026-27)</Text>
+        <Text style={styles.needsSep}>{'\u00B7'}</Text>
+        {teamNeeds.filter((n) => n.need > 0).slice(0, 3).map((n) => (
+          <View key={n.pos} style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={styles.needsPosText}>{n.pos}</Text>
+            <Text style={styles.needsCount}>{n.need}</Text>
+            <Text style={styles.needsSep}>{'\u00B7'}</Text>
+          </View>
+        ))}
+        <Text style={styles.needsTotalText}>Total {totalNeed}</Text>
+        <Text style={styles.needsSep}>{'\u00B7'}</Text>
+        <Text style={styles.needsSlotText}>Open Slots: {openSlots}</Text>
+        <IconSymbol
+          name={needsExpanded ? 'chevron.up' : 'chevron.down'}
+          size={10}
+          color={GRAY}
+          style={{ marginLeft: 4 }}
+        />
+      </Pressable>
 
-      {/* Board / List toggle */}
+      {/* Team Needs expanded panel */}
+      {needsExpanded && (
+        <View style={styles.needsPanel}>
+          <View style={styles.needsTableHeader}>
+            <Text style={[styles.needsCell, styles.needsCellPos]}>Pos</Text>
+            <Text style={[styles.needsCell, styles.needsCellNum]}>Ret</Text>
+            <Text style={[styles.needsCell, styles.needsCellNum]}>Lv</Text>
+            <Text style={[styles.needsCell, styles.needsCellNum]}>Cmt</Text>
+            <Text style={[styles.needsCell, styles.needsCellNum]}>Tgt</Text>
+            <Text style={[styles.needsCell, styles.needsCellNeed]}>Need</Text>
+          </View>
+          {teamNeeds.map((n) => (
+            <View key={n.pos} style={styles.needsTableRow}>
+              <Text style={[styles.needsCellVal, styles.needsCellPos]}>{n.pos}</Text>
+              <Text style={[styles.needsCellVal, styles.needsCellNum]}>{n.returning}</Text>
+              <Text style={[styles.needsCellVal, styles.needsCellNum]}>{n.leaving}</Text>
+              <Text style={[styles.needsCellVal, styles.needsCellNum]}>{n.committed}</Text>
+              <Text style={[styles.needsCellVal, styles.needsCellNum]}>{n.target}</Text>
+              <Text style={[styles.needsCellVal, styles.needsCellNeed, n.need > 0 && { color: '#FF9800' }]}>
+                {n.need}
+              </Text>
+            </View>
+          ))}
+          <View style={styles.needsFooter}>
+            <Text style={styles.needsFooterText}>Open scholarships: {openSlots}</Text>
+            <Text style={styles.needsFooterText}>NIL available: ${nilAvailable.toLocaleString()}</Text>
+            {(() => {
+              const covered = teamNeeds.filter((n) => n.need === 0).length;
+              const missing = teamNeeds.filter((n) => n.need > 0);
+              const coverageNote = missing.length > 0
+                ? `${covered}/${teamNeeds.length} needs covered (${missing.map((n) => `${n.pos} needs ${n.need}`).join(', ')})`
+                : `${covered}/${teamNeeds.length} needs covered`;
+              return <Text style={styles.needsFooterText}>Board coverage: {coverageNote}</Text>;
+            })()}
+          </View>
+        </View>
+      )}
+
+      {/* Board / List / Recruits / Teams toggle */}
       <View style={styles.viewToggleRow}>
-        {(['kanban', 'list'] as const).map((mode) => {
+        {(['list', 'players', 'teams'] as const).map((mode) => {
           const active = viewMode === mode;
+          const label = mode === 'list' ? 'Board' : mode === 'players' ? 'Recruits' : 'Teams';
           return (
             <Pressable
               key={mode}
@@ -1427,63 +1498,16 @@ function RecruitingBoardWorkspace({
               }}
             >
               <Text style={[styles.viewToggleText, active && styles.viewToggleTextActive]}>
-                {mode === 'kanban' ? 'Board' : 'List'}
+                {label}
               </Text>
             </Pressable>
           );
         })}
       </View>
 
-      {/* Kanban or List */}
-      {viewMode === 'kanban' ? (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.kanbanScroll}
-          nestedScrollEnabled
-        >
-          {BOARD_COLUMNS.map((status) => {
-            const colEntries = entries.filter((e) => e.status === status).sort((a, b) => a.rank - b.rank);
-            return (
-              <BoardColumn key={status} status={status} count={colEntries.length}>
-                {colEntries.map((entry) => {
-                  const p = PLAYER_POOL.find((pp) => pp.id === entry.playerId);
-                  if (!p) return null;
-                  return (
-                    <PlayerRatingCard
-                      key={entry.id}
-                      player={p}
-                      boardEntry={entry}
-                      onPress={() => onCardPress(entry)}
-                      onLongPress={() => onCardLongPress(entry)}
-                    />
-                  );
-                })}
-              </BoardColumn>
-            );
-          })}
-        </ScrollView>
-      ) : (
+      {/* List / Recruits / Teams */}
+      {viewMode === 'list' && (
         <View>
-          {/* Sort row */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, marginBottom: 10 }}>
-            {SORT_OPTIONS.map((opt) => {
-              const active = sortKey === opt.key;
-              return (
-                <Pressable
-                  key={opt.key}
-                  style={[styles.sortPill, active && styles.sortPillActive]}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    onSortKeyChange(opt.key);
-                  }}
-                >
-                  <Text style={[styles.sortPillText, active && styles.sortPillTextActive]}>{opt.label}</Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-
           {/* Flat list */}
           {sortedList.map((entry) => {
             const p = PLAYER_POOL.find((pp) => pp.id === entry.playerId);
@@ -1493,6 +1517,8 @@ function RecruitingBoardWorkspace({
                 key={entry.id}
                 player={p}
                 boardEntry={entry}
+                offStyle={offStyle}
+                defStyle={defStyle}
                 onPress={() => onCardPress(entry)}
                 onLongPress={() => onCardLongPress(entry)}
               />
@@ -1505,6 +1531,195 @@ function RecruitingBoardWorkspace({
           )}
         </View>
       )}
+      {viewMode === 'players' && (() => {
+        let list = filteredPlayers;
+        // Apply board search
+        const q = boardSearch.toLowerCase();
+        if (q.length > 0) {
+          list = list.filter((p) =>
+            `${p.firstName} ${p.lastName}`.toLowerCase().includes(q) ||
+            p.currentSchool.toLowerCase().includes(q) ||
+            p.position.toLowerCase().includes(q));
+        }
+        // Apply board filters
+        if (boardFilters.year.length > 0) list = list.filter((p) => boardFilters.year.includes(p.classYear));
+        if (boardFilters.division.length > 0) {
+          list = list.filter((p) => boardFilters.division.some((div) => matchesDivision(p.level, div as PoolLevel)));
+        }
+        if (boardFilters.position.length > 0) {
+          const tradPositions = boardFilters.position
+            .map((pos) => HELIO_TO_TRADITIONAL[pos as import('@/types').HeliocentricPosition])
+            .filter(Boolean) as string[];
+          if (tradPositions.length > 0) list = list.filter((p) => tradPositions.includes(p.position));
+        }
+        if (boardFilters.archetype) {
+          list = list.filter((p) => p.archetype === boardFilters.archetype);
+        }
+        if (boardFilters.availability.length > 0) {
+          list = list.filter((p) => boardFilters.availability.includes(getPlayerAvailability(p)));
+        }
+        if (boardFilters.region.length > 0) {
+          list = list.filter((p) => boardFilters.region.includes(getPlayerRegion(p.state)));
+        }
+        if (boardFilters.heightRange) {
+          const [minH, maxH] = boardFilters.heightRange;
+          list = list.filter((p) => {
+            const inches = parseHeightToInches(p.height);
+            return inches >= minH && inches <= maxH;
+          });
+        }
+        if (boardFilters.weightRange) {
+          const [minW, maxW] = boardFilters.weightRange;
+          list = list.filter((p) => p.weight !== undefined && p.weight >= minW && p.weight <= maxW);
+        }
+        if (boardFilters.cluster) {
+          const clusterKey = boardFilters.cluster;
+          const OFF_CL: ClusterType[] = ['shooting', 'finishing', 'playmaking'];
+          const DEF_CL: ClusterType[] = ['perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
+
+          if (clusterKey === 'offense' || clusterKey === 'defense') {
+            const group = clusterKey === 'offense' ? OFF_CL : DEF_CL;
+            list = [...list].sort((a, b) => {
+              const aR = getPlayerRatings(a.id);
+              const bR = getPlayerRatings(b.id);
+              const aAvg = aR ? group.reduce((s, k) => s + (aR.clusters[k] ?? 0), 0) / group.length : 0;
+              const bAvg = bR ? group.reduce((s, k) => s + (bR.clusters[k] ?? 0), 0) / group.length : 0;
+              return bAvg - aAvg;
+            });
+          } else {
+            const isCluster = CLUSTER_ORDER.includes(clusterKey as ClusterType);
+            list = [...list].sort((a, b) => {
+              const aR = getPlayerRatings(a.id);
+              const bR = getPlayerRatings(b.id);
+              if (isCluster) {
+                return (bR?.clusters[clusterKey as ClusterType] ?? 0) - (aR?.clusters[clusterKey as ClusterType] ?? 0);
+              }
+              return getSubclusterRating(b.id, clusterKey) - getSubclusterRating(a.id, clusterKey);
+            });
+          }
+        }
+        if (boardFilters.stat) {
+          const sk = boardFilters.stat as StatKey;
+          const lowerIsBetter = sk === 'to' || sk === 'pf';
+          list = [...list].sort((a, b) => {
+            const aS = getPlayerStats(a.id);
+            const bS = getPlayerStats(b.id);
+            const aVal = aS?.[sk] ?? 0;
+            const bVal = bS?.[sk] ?? 0;
+            return lowerIsBetter ? aVal - bVal : bVal - aVal;
+          });
+        }
+        const visiblePlayers = list;
+        return (
+          <View>
+            {visiblePlayers.map((player) => {
+              const alreadyOnBoard = boardEntries.some((e) => e.playerId === player.id);
+              return (
+                <View key={player.id} style={{ position: 'relative' }}>
+                  <PlayerRatingCard
+                    player={player}
+                    offStyle={offStyle}
+                    defStyle={defStyle}
+                    onPress={() => onPlayerPress(player)}
+                  />
+                  {!alreadyOnBoard ? (
+                    <Pressable
+                      style={styles.addToBoardBtn}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        onAddToBoard(player.id);
+                      }}
+                    >
+                      <IconSymbol name="plus.circle.fill" size={24} color="#4CAF50" />
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      style={styles.addToBoardBtn}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        const entry = boardEntries.find((e) => e.playerId === player.id);
+                        if (entry) onRemoveFromBoard(entry.id);
+                      }}
+                    >
+                      <IconSymbol name="checkmark.circle.fill" size={24} color={GRAY} />
+                    </Pressable>
+                  )}
+                </View>
+              );
+            })}
+            {visiblePlayers.length === 0 && (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyText}>No players match your filters</Text>
+              </View>
+            )}
+          </View>
+        );
+      })()}
+
+      {viewMode === 'teams' && (() => {
+        const q = boardSearch.toLowerCase();
+        const teamMap = new Map<string, { name: string; conference: string; level: string; playerCount: number }>();
+        filteredPlayers.forEach((p) => {
+          if (!teamMap.has(p.currentSchool)) {
+            teamMap.set(p.currentSchool, { name: p.currentSchool, conference: p.conference, level: p.level, playerCount: 0 });
+          }
+          teamMap.get(p.currentSchool)!.playerCount++;
+        });
+        let teamList = [...teamMap.values()];
+        if (q.length > 0) {
+          teamList = teamList.filter((t) =>
+            t.name.toLowerCase().includes(q) ||
+            t.conference.toLowerCase().includes(q) ||
+            t.level.toLowerCase().includes(q));
+        }
+        if (boardFilters.division.length > 0) {
+          teamList = teamList.filter((t) => boardFilters.division.some((div) => t.level === div || t.level.startsWith(div + ' ')));
+        }
+        teamList.sort((a, b) => b.playerCount - a.playerCount);
+        return (
+          <View>
+            {teamList.map((team) => {
+              const initials = team.name.split(/\s+/).map((w) => w[0]).join('').slice(0, 3).toUpperCase();
+              // Deterministic hue from team name
+              let hue = 0;
+              for (let i = 0; i < team.name.length; i++) hue = (hue * 31 + team.name.charCodeAt(i)) & 0xffff;
+              const bgColor = `hsl(${hue % 360}, 50%, 35%)`;
+              return (
+                <Pressable
+                  key={team.name}
+                  style={styles.teamRow}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}
+                >
+                  <Pressable
+                    onLongPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      setTeamSheetData(team);
+                    }}
+                    delayLongPress={300}
+                    style={[styles.teamLogo, { backgroundColor: bgColor }]}
+                  >
+                    <Text style={styles.teamLogoText}>{initials}</Text>
+                  </Pressable>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.teamName}>{team.name}</Text>
+                    <Text style={styles.teamMeta}>{team.conference} {'\u00B7'} {team.level}</Text>
+                  </View>
+                  <View style={styles.teamBadge}>
+                    <Text style={styles.teamBadgeText}>{team.playerCount}</Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+            {teamList.length === 0 && (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyText}>No teams match your filters</Text>
+              </View>
+            )}
+          </View>
+        );
+      })()}
 
       {allEntries.length === 0 && (
         <View style={styles.emptyBoardCta}>
@@ -1512,48 +1727,331 @@ function RecruitingBoardWorkspace({
           <Text style={styles.emptyBoardSub}>Tap "+ Add" to add recruits from the National Pool.</Text>
         </View>
       )}
+
+      {/* Team Sheet — universal format matching FMU TeamQuickSheet */}
+      <BottomSheet
+        visible={!!teamSheetData}
+        onClose={() => setTeamSheetData(null)}
+        useModal
+      >
+        {teamSheetData && (() => {
+          const teamPlayers = PLAYER_POOL.filter((p) => p.currentSchool === teamSheetData.name);
+          const initials = teamSheetData.name.split(/\s+/).map((w) => w[0]).join('').slice(0, 3).toUpperCase();
+          let hue = 0;
+          for (let i = 0; i < teamSheetData.name.length; i++) hue = (hue * 31 + teamSheetData.name.charCodeAt(i)) & 0xffff;
+          const bgColor = `hsl(${hue % 360}, 50%, 35%)`;
+
+          // Derive KR averages from pool player ratings
+          const playerRatingsList = teamPlayers.map((p) => getPlayerRatings(p.id)).filter(Boolean);
+          const avgKR = playerRatingsList.length > 0 ? Math.round(playerRatingsList.reduce((s, r) => s + (r?.overall ?? 0), 0) / playerRatingsList.length) : 0;
+          const clusterKeys = ['shooting', 'finishing', 'playmaking', 'perimeter_defense', 'interior_defense', 'rebounding', 'frame'] as const;
+          const clusterLabels: Record<string, string> = {
+            shooting: 'Shooting', finishing: 'Finishing', playmaking: 'Playmaking',
+            perimeter_defense: 'On-Ball Defense', interior_defense: 'Team Defense',
+            rebounding: 'Rebounding', frame: 'Physical',
+          };
+          const teamClusterAvg: Record<string, number> = {};
+          for (const key of clusterKeys) {
+            const sum = playerRatingsList.reduce((acc, r) => acc + (r?.clusters[key as ClusterType] ?? 0), 0);
+            teamClusterAvg[key] = playerRatingsList.length > 0 ? Math.round(sum / playerRatingsList.length) : 0;
+          }
+          const offKR = Math.round(((teamClusterAvg.shooting ?? 0) + (teamClusterAvg.finishing ?? 0) + (teamClusterAvg.playmaking ?? 0)) / 3);
+          const defKR = Math.round(((teamClusterAvg.perimeter_defense ?? 0) + (teamClusterAvg.interior_defense ?? 0) + (teamClusterAvg.rebounding ?? 0) + (teamClusterAvg.frame ?? 0)) / 4);
+
+          // Derive subcluster averages per cluster
+          const teamSubclusters: Record<string, { name: string; rating: number }[]> = {};
+          for (const key of clusterKeys) {
+            const allSubs = teamPlayers.map((p) => {
+              const r = getPlayerRatings(p.id);
+              if (!r) return null;
+              return getPoolPlayerSubclusters(p.id, key as ClusterType, r.clusters[key as ClusterType]);
+            }).filter(Boolean) as { name: string; rating: number }[][];
+            if (allSubs.length > 0) {
+              teamSubclusters[key] = allSubs[0].map((sub, idx) => ({
+                name: sub.name,
+                rating: Math.round(allSubs.reduce((s, subs) => s + (subs[idx]?.rating ?? 0), 0) / allSubs.length),
+              }));
+            } else {
+              teamSubclusters[key] = [];
+            }
+          }
+
+          // Mock season stats from name hash
+          const h = hue;
+          const mockWins = 8 + (h % 18);
+          const mockLosses = 4 + ((h >> 3) % 14);
+          const confW = Math.min(mockWins, 6 + (h % 8));
+          const confL = Math.min(mockLosses, 2 + ((h >> 5) % 6));
+          const streakW = (h % 3) > 0;
+          const streakLen = 1 + (h % 5);
+          const streak = `${streakW ? 'W' : 'L'}${streakLen}`;
+          const confRank = 1 + ((h >> 2) % 10);
+
+          // Mock traditional stats
+          const ppg = (62 + (h % 22)).toFixed(1);
+          const efg = (42 + (h % 14)).toFixed(1);
+          const tpPct = (28 + ((h >> 2) % 12)).toFixed(1);
+          const toPct = (14 + ((h >> 4) % 10)).toFixed(1);
+          const apg = (8 + ((h >> 3) % 10)).toFixed(1);
+          const oppPpg = (60 + ((h >> 1) % 20)).toFixed(1);
+          const oppEfg = (40 + ((h >> 5) % 14)).toFixed(1);
+          const oppTpPct = (28 + ((h >> 6) % 10)).toFixed(1);
+          const forceToPct = (16 + ((h >> 7) % 10)).toFixed(1);
+          const bpg = (1 + ((h >> 4) % 5)).toFixed(1);
+          const rpg = (28 + ((h >> 2) % 12)).toFixed(1);
+          const spg = (4 + ((h >> 5) % 6)).toFixed(1);
+          const ftPct = (62 + ((h >> 3) % 18)).toFixed(1);
+
+          // Mock staff with full coach profiles
+          const coachSurnames = ['Williams', 'Johnson', 'Davis', 'Brown', 'Anderson', 'Thomas', 'Jackson', 'Robinson'];
+          const coachFirst = ['Marcus', 'James', 'David', 'Robert', 'Michael', 'Antonio', 'Kevin', 'Chris'];
+          const hcIdx = h % coachSurnames.length;
+          type CoachProfile = { name: string; initials: string; role: string; record: string; experience: string; alma: string; hue: number };
+          const staffProfiles: CoachProfile[] = [
+            {
+              name: `${coachFirst[hcIdx]} ${coachSurnames[hcIdx]}`,
+              initials: `${coachFirst[hcIdx][0]}${coachSurnames[hcIdx][0]}`,
+              role: 'Head Coach',
+              record: `${mockWins + 40 + (h % 60)}-${mockLosses + 20 + ((h >> 2) % 40)}`,
+              experience: `${6 + (h % 12)} years`,
+              alma: ['Duke', 'Kansas', 'Florida', 'Villanova', 'Gonzaga', 'UConn', 'Michigan', 'Kentucky'][hcIdx],
+              hue: (h * 7) % 360,
+            },
+            {
+              name: `${coachFirst[(hcIdx + 1) % 8]} ${coachSurnames[(hcIdx + 2) % 8]}`,
+              initials: `${coachFirst[(hcIdx + 1) % 8][0]}${coachSurnames[(hcIdx + 2) % 8][0]}`,
+              role: 'Associate Head Coach',
+              record: '',
+              experience: `${3 + ((h >> 1) % 8)} years`,
+              alma: ['Syracuse', 'Georgetown', 'Memphis', 'Creighton', 'St. John\'s', 'Marquette', 'Xavier', 'Seton Hall'][(hcIdx + 1) % 8],
+              hue: (h * 13 + 120) % 360,
+            },
+            {
+              name: `${coachFirst[(hcIdx + 3) % 8]} ${coachSurnames[(hcIdx + 4) % 8]}`,
+              initials: `${coachFirst[(hcIdx + 3) % 8][0]}${coachSurnames[(hcIdx + 4) % 8][0]}`,
+              role: 'Assistant Coach',
+              record: '',
+              experience: `${1 + ((h >> 3) % 5)} years`,
+              alma: ['Arizona State', 'Colorado', 'Oregon', 'USC', 'UCLA', 'Stanford', 'Washington', 'Cal'][(hcIdx + 3) % 8],
+              hue: (h * 19 + 240) % 360,
+            },
+          ];
+
+          // Bar color helper
+          const barCol = (v: number) => v >= 75 ? '#4ade80' : v >= 60 ? '#facc15' : '#f87171';
+
+          return (
+            <>
+              {/* ===== IDENTITY HEADER ===== */}
+              <View style={ts.identityRow}>
+                <View style={[styles.teamSheetLogo, { backgroundColor: bgColor }]}>
+                  <Text style={styles.teamSheetLogoText}>{initials}</Text>
+                </View>
+                <View style={ts.identityText}>
+                  <Text style={ts.teamName}>{teamSheetData.name}</Text>
+                  <Text style={ts.teamSubline}>{teamSheetData.level} {'\u00B7'} {teamSheetData.conference}</Text>
+                </View>
+                <View style={ts.krBadge}>
+                  <Text style={ts.krValue}>{avgKR}</Text>
+                  <View style={ts.krSubRow}>
+                    <Text style={ts.krSubLabel}>O {offKR}</Text>
+                    <Text style={ts.krSubSep}>{'\u00B7'}</Text>
+                    <Text style={ts.krSubLabel}>D {defKR}</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* ===== STAFF (tab-style) ===== */}
+              <Text style={ts.sectionLabel}>STAFF</Text>
+              <View style={ts.staffRow}>
+                {staffProfiles.map((coach) => {
+                  const isActive = selectedCoach?.name === coach.name;
+                  return (
+                    <Pressable
+                      key={coach.name}
+                      style={ts.staffCard}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        setSelectedCoach(isActive ? null : coach);
+                      }}
+                    >
+                      <View style={[ts.coachAvatar, { backgroundColor: `hsl(${coach.hue}, 45%, 35%)` }, isActive && ts.coachAvatarActive]}>
+                        <Text style={ts.coachAvatarText}>{coach.initials}</Text>
+                      </View>
+                      <Text style={[ts.coachName, isActive && ts.coachNameActive]} numberOfLines={1}>{coach.name.split(' ')[1]}</Text>
+                      <Text style={ts.coachRole} numberOfLines={1}>{coach.role === 'Head Coach' ? 'HC' : coach.role === 'Associate Head Coach' ? 'Assoc HC' : 'Asst'}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              {/* Coach detail inline */}
+              {selectedCoach && (
+                <View style={ts.card}>
+                  <View style={ts.coachDetailRow}>
+                    <Text style={ts.coachDetailLabel}>Full Name</Text>
+                    <Text style={ts.coachDetailValue}>{selectedCoach.name}</Text>
+                  </View>
+                  <View style={ts.coachDetailRow}>
+                    <Text style={ts.coachDetailLabel}>Role</Text>
+                    <Text style={ts.coachDetailValue}>{selectedCoach.role}</Text>
+                  </View>
+                  <View style={ts.coachDetailRow}>
+                    <Text style={ts.coachDetailLabel}>Experience</Text>
+                    <Text style={ts.coachDetailValue}>{selectedCoach.experience}</Text>
+                  </View>
+                  <View style={ts.coachDetailRow}>
+                    <Text style={ts.coachDetailLabel}>Alma Mater</Text>
+                    <Text style={ts.coachDetailValue}>{selectedCoach.alma}</Text>
+                  </View>
+                  {selectedCoach.record !== '' && (
+                    <View style={ts.coachDetailRow}>
+                      <Text style={ts.coachDetailLabel}>Career Record</Text>
+                      <Text style={ts.coachDetailValue}>{selectedCoach.record}</Text>
+                    </View>
+                  )}
+                  {(() => {
+                    const h2 = selectedCoach.hue;
+                    const offStyles = ['Motion', 'Pick-and-Roll Heavy', 'Positionless', 'Pace-and-Space', 'Princeton', 'Dribble-Drive'];
+                    const defStyles = ['Man-to-Man', 'Pack Line', '2-3 Zone', '1-3-1 Zone', 'Switching', 'Full-Court Press'];
+                    const focuses = ['Athletic wings', 'Versatile bigs', 'Shooting guards', 'Floor generals', 'Defensive stoppers'];
+                    const pipelines = ['JUCO transfers', 'HS prep schools', 'International prospects', 'D2 transfers', 'Local talent'];
+                    return (
+                      <>
+                        <View style={ts.coachDetailRow}>
+                          <Text style={ts.coachDetailLabel}>Offense</Text>
+                          <Text style={ts.coachDetailValue}>{offStyles[h2 % offStyles.length]}</Text>
+                        </View>
+                        <View style={ts.coachDetailRow}>
+                          <Text style={ts.coachDetailLabel}>Defense</Text>
+                          <Text style={ts.coachDetailValue}>{defStyles[(h2 >> 2) % defStyles.length]}</Text>
+                        </View>
+                        <View style={ts.coachDetailRow}>
+                          <Text style={ts.coachDetailLabel}>Recruiting Focus</Text>
+                          <Text style={ts.coachDetailValue}>{focuses[h2 % focuses.length]}</Text>
+                        </View>
+                        <View style={ts.coachDetailRow}>
+                          <Text style={ts.coachDetailLabel}>Pipeline</Text>
+                          <Text style={ts.coachDetailValue}>{pipelines[(h2 >> 3) % pipelines.length]}</Text>
+                        </View>
+                      </>
+                    );
+                  })()}
+                </View>
+              )}
+
+              {/* ===== SEASON ===== */}
+              <Text style={ts.sectionLabel}>SEASON</Text>
+              <View style={ts.seasonRow}>
+                <View style={ts.snapItem}>
+                  <Text style={ts.snapValue}>{mockWins}-{mockLosses}</Text>
+                  <Text style={ts.snapLabel}>Overall</Text>
+                </View>
+                <View style={ts.snapItem}>
+                  <Text style={ts.snapValue}>{confW}-{confL}</Text>
+                  <Text style={ts.snapLabel}>Conference</Text>
+                </View>
+                <View style={ts.snapItem}>
+                  <Text style={[ts.snapValue, { color: streakW ? '#4ade80' : '#f87171' }]}>{streak}</Text>
+                  <Text style={ts.snapLabel}>Streak</Text>
+                </View>
+                <View style={ts.snapItem}>
+                  <Text style={ts.snapValue}>#{confRank}</Text>
+                  <Text style={ts.snapLabel}>Conf Rank</Text>
+                </View>
+              </View>
+
+              {/* ===== TEAM STATS TOGGLE ===== */}
+              <TeamSheetStatsToggle
+                clusterKeys={clusterKeys as string[]}
+                clusterLabels={clusterLabels}
+                teamClusterAvg={teamClusterAvg}
+                teamSubclusters={teamSubclusters}
+                barCol={barCol}
+                ppg={ppg} efg={efg} tpPct={tpPct} toPct={toPct} apg={apg}
+                oppPpg={oppPpg} oppEfg={oppEfg} oppTpPct={oppTpPct} forceToPct={forceToPct} bpg={bpg}
+                rpg={rpg} spg={spg} ftPct={ftPct}
+              />
+
+              {/* ===== ROSTER ===== */}
+              <Text style={ts.sectionLabel}>ROSTER ({teamPlayers.length})</Text>
+              <View style={ts.card}>
+                {teamPlayers.map((player) => {
+                  const ratings = getPlayerRatings(player.id);
+                  const onBoard = boardEntries.some((e) => e.playerId === player.id);
+                  return (
+                    <Pressable
+                      key={player.id}
+                      style={styles.teamSheetPlayerRow}
+                      onPress={() => {
+                        setTeamSheetData(null);
+                        setTimeout(() => onPlayerPress(player), 200);
+                      }}
+                    >
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: 14, fontWeight: '600', color: WHITE }}>
+                          {player.firstName} {player.lastName}
+                        </Text>
+                        <Text style={{ fontSize: 11, color: GRAY, marginTop: 1 }}>
+                          {player.position} {'\u00B7'} {player.classYear} {'\u00B7'} {player.height}
+                        </Text>
+                      </View>
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: WHITE, marginRight: 8 }}>
+                        {ratings?.overall ?? '\u2014'}
+                      </Text>
+                      {onBoard && <IconSymbol name="checkmark.circle.fill" size={16} color="#4CAF50" />}
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </>
+          );
+        })()}
+      </BottomSheet>
+
     </View>
   );
 }
 
-// ─── Cluster abbreviations for rating boxes ───
-const CLUSTER_ABBREVS: { key: string; abbrev: string; full: string }[] = [
-  { key: 'shooting', abbrev: 'SHT', full: 'Shooting' },
-  { key: 'finishing', abbrev: 'FIN', full: 'Finishing' },
-  { key: 'playmaking', abbrev: 'PLY', full: 'Playmaking' },
-  { key: 'perimeter_defense', abbrev: 'OBD', full: 'OB Defense' },
-  { key: 'interior_defense', abbrev: 'TMD', full: 'Team Defense' },
-  { key: 'rebounding', abbrev: 'REB', full: 'Rebounding' },
-  { key: 'frame', abbrev: 'PHY', full: 'Physical' },
-];
-
-// ─── Priority badge colors ───
-const PRIORITY_COLORS: Record<string, string> = { A: '#4CAF50', B: '#FF9800', C: '#8A8F98' };
-
-// ─── EA-Style Player Rating Card ───
+// ─── CRM Player Card v2 ───
 function PlayerRatingCard({
   player,
   onPress,
   onLongPress,
   boardEntry,
+  offStyle,
+  defStyle,
 }: {
   player: PoolPlayer;
   onPress: () => void;
   onLongPress?: () => void;
   boardEntry?: BoardEntry;
+  offStyle?: import('@/types').OffensiveStyle;
+  defStyle?: import('@/types').DefensiveStyle;
 }) {
   const ratings = useMemo(() => getPlayerRatings(player.id), [player.id]);
-  const [tooltip, setTooltip] = useState<string | null>(null);
-  const [expandedCluster, setExpandedCluster] = useState<string | null>(null);
-
-  const showTooltip = useCallback((full: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setTooltip(full);
-    setTimeout(() => setTooltip(null), 1500);
-  }, []);
-
   const helioPos = TRADITIONAL_TO_HELIO[player.position] ?? player.position;
-  const archetypeLabel = ARCHETYPE_LABELS[player.archetype] ?? player.archetype;
+  const region = getPlayerRegion(player.state);
+
+  // 3 metrics: KR, Fit, Risk
+  const kr = ratings?.overall ?? 0;
+  const fit = useMemo(() => {
+    if (!ratings) return 0;
+    return computeFitKR(
+      ratings.clusters,
+      offStyle ?? 'motion_read_react',
+      defStyle ?? 'pack_line',
+    );
+  }, [ratings, offStyle, defStyle]);
+  const risk = useMemo(() => computeRisk(player), [player]);
+
+  // CRM fields (only for board entries)
+  const comms = useMemo(() => boardEntry ? getRecruitComms(boardEntry.playerId) : [], [boardEntry]);
+  const momentum = useMemo(() => boardEntry ? computeMomentum(boardEntry, comms) : null, [boardEntry, comms]);
+  const lastTouch = useMemo(() => boardEntry ? getLastTouch(comms) : '', [boardEntry, comms]);
+
+  const metricColor = (val: number) => val >= 75 ? '#4CAF50' : val >= 60 ? '#FF9800' : val >= 45 ? '#8A8F98' : '#EF4444';
+  const riskColor = (val: number) => val <= 35 ? '#4CAF50' : val <= 55 ? '#FF9800' : '#EF4444';
 
   return (
     <Pressable
@@ -1562,31 +2060,7 @@ function PlayerRatingCard({
       onLongPress={onLongPress ? () => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onLongPress(); } : undefined}
       delayLongPress={400}
     >
-      {/* Board info strip (only when rendered on board) */}
-      {boardEntry && (
-        <View style={styles.boardInfoStrip}>
-          <View style={[styles.boardPriorityBadge, { backgroundColor: `${PRIORITY_COLORS[boardEntry.priority]}20` }]}>
-            <Text style={[styles.boardPriorityText, { color: PRIORITY_COLORS[boardEntry.priority] }]}>
-              {boardEntry.priority}
-            </Text>
-          </View>
-          <View style={[styles.boardStatusBadge, { backgroundColor: `${BOARD_COLUMN_COLORS[boardEntry.status]}20` }]}>
-            <Text style={[styles.boardStatusText, { color: BOARD_COLUMN_COLORS[boardEntry.status] }]}>
-              {boardEntry.status}
-            </Text>
-          </View>
-          {boardEntry.tags.slice(0, 2).map((t) => (
-            <View key={t} style={styles.boardTagChip}>
-              <Text style={styles.boardTagText}>{t}</Text>
-            </View>
-          ))}
-          {boardEntry.tags.length > 2 && (
-            <Text style={styles.boardTagMore}>+{boardEntry.tags.length - 2}</Text>
-          )}
-        </View>
-      )}
-
-      {/* Top row: avatar, name, badges */}
+      {/* Row 1: Avatar + Name + tag badges */}
       <View style={styles.ratingCardTop}>
         <View style={styles.ratingAvatar}>
           <IconSymbol name="person.fill" size={22} color={GRAY} />
@@ -1595,197 +2069,255 @@ function PlayerRatingCard({
           <Text style={styles.ratingName} numberOfLines={1}>
             {player.firstName} {player.lastName}
           </Text>
-          <Text style={styles.ratingIdentity} numberOfLines={1}>
-            {player.classYear} {'\u00B7'} {player.currentSchool} {'\u00B7'} {player.height}{player.weight ? ` ${player.weight}` : ''}
-          </Text>
         </View>
         <View style={styles.ratingBadges}>
           <View style={styles.ratingLevelBadge}>
-            <Text style={styles.ratingLevelText}>{player.level}</Text>
+            <Text style={styles.ratingLevelText}>{getPlayerAvailability(player)}</Text>
           </View>
           <View style={styles.ratingPosBadge}>
             <Text style={styles.ratingPosText}>{helioPos}</Text>
           </View>
+          <View style={styles.ratingLevelBadge}>
+            <Text style={styles.ratingLevelText}>{player.classYear}</Text>
+          </View>
         </View>
       </View>
 
-      {/* Tooltip */}
-      {tooltip && (
-        <View style={styles.tooltipBubble}>
-          <Text style={styles.tooltipText}>{tooltip}</Text>
+      {/* Row 2: Meta line — School · Ht/Wt · Region */}
+      <Text style={styles.ratingIdentity} numberOfLines={1}>
+        {player.currentSchool} {'\u00B7'} {player.height}{player.weight ? `/${player.weight}` : ''} {'\u00B7'} {region}
+      </Text>
+
+      {/* Row 3: 3-metric bar — KR | Fit | Risk */}
+      <View style={styles.metricBar}>
+        <View style={styles.metricBox}>
+          <Text style={styles.metricLabel}>KR</Text>
+          <Text style={[styles.metricValue, { color: metricColor(kr) }]}>{ratings ? kr : '\u2014'}</Text>
+        </View>
+        <View style={styles.metricDivider} />
+        <View style={styles.metricBox}>
+          <Text style={styles.metricLabel}>FIT</Text>
+          <Text style={[styles.metricValue, { color: metricColor(fit) }]}>{ratings ? fit : '\u2014'}</Text>
+        </View>
+        <View style={styles.metricDivider} />
+        <View style={styles.metricBox}>
+          <Text style={styles.metricLabel}>RISK</Text>
+          <Text style={[styles.metricValue, { color: riskColor(risk) }]}>{risk}</Text>
+        </View>
+      </View>
+
+      {/* Row 4: Pipeline pill + Momentum indicator (board entries only) */}
+      {boardEntry && (
+        <View style={styles.pipelineMomentumRow}>
+          <View style={[styles.pipelinePill, { backgroundColor: `${BOARD_COLUMN_COLORS[boardEntry.status]}20` }]}>
+            <View style={[styles.qaDot, { backgroundColor: BOARD_COLUMN_COLORS[boardEntry.status] }]} />
+            <Text style={[styles.pipelinePillText, { color: BOARD_COLUMN_COLORS[boardEntry.status] }]}>
+              {boardEntry.status}
+            </Text>
+          </View>
+          {momentum && (
+            <Text style={[styles.momentumText, { color: getMomentumColor(momentum) }]}>
+              {getMomentumLabel(momentum)}
+            </Text>
+          )}
         </View>
       )}
 
-      {/* Rating boxes row */}
-      <View style={styles.ratingBoxRow}>
-        {/* KR box (highlighted) */}
-        <Pressable
-          style={styles.ratingBoxOvr}
-          onLongPress={() => showTooltip('KaNeXT Rating')}
-          onPress={() => {}}
-        >
-          <Text style={styles.ratingBoxLabel}>KR</Text>
-          <Text style={styles.ratingBoxValueOvr}>
-            {ratings ? ratings.overall : '\u2014'}
-          </Text>
-        </Pressable>
-        {/* O/D KR split card */}
-        {(() => {
-          const oKR = ratings ? Math.round((ratings.clusters.shooting + ratings.clusters.finishing + ratings.clusters.playmaking) / 3) : null;
-          const dKR = ratings ? Math.round((ratings.clusters.perimeter_defense + ratings.clusters.interior_defense + ratings.clusters.rebounding + ratings.clusters.frame) / 4) : null;
-          return (
-            <View style={styles.ratingBoxSplit}>
-              <Pressable
-                style={styles.ratingBoxSplitHalf}
-                onLongPress={() => showTooltip('Offensive KR')}
-                onPress={() => {}}
-              >
-                <Text style={styles.ratingBoxLabel}>O</Text>
-                <Text style={styles.ratingBoxSplitValue}>{oKR ?? '\u2014'}</Text>
-              </Pressable>
-              <View style={styles.ratingBoxSplitDivider} />
-              <Pressable
-                style={styles.ratingBoxSplitHalf}
-                onLongPress={() => showTooltip('Defensive KR')}
-                onPress={() => {}}
-              >
-                <Text style={styles.ratingBoxLabel}>D</Text>
-                <Text style={styles.ratingBoxSplitValue}>{dKR ?? '\u2014'}</Text>
-              </Pressable>
-            </View>
-          );
-        })()}
-        {/* 7 cluster boxes — tappable */}
-        {CLUSTER_ABBREVS.map((c) => {
-          const val = ratings ? ratings.clusters[c.key as ClusterType] : null;
-          const isExpanded = expandedCluster === c.key;
-          return (
-            <Pressable
-              key={c.key}
-              style={[styles.ratingBox, isExpanded && styles.ratingBoxExpanded]}
-              onLongPress={() => showTooltip(c.full)}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setExpandedCluster(isExpanded ? null : c.key);
-              }}
-            >
-              <Text style={styles.ratingBoxLabel}>{c.abbrev}</Text>
-              <Text style={[styles.ratingBoxValue, isExpanded && { color: WHITE }]}>{val ?? '\u2014'}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {/* Expanded subclusters */}
-      {expandedCluster && ratings && (
-        <View style={styles.subclusterStrip}>
-          <Text style={styles.subclusterTitle}>
-            {CLUSTER_ABBREVS.find((c) => c.key === expandedCluster)?.full ?? expandedCluster}
-          </Text>
-          {getPoolPlayerSubclusters(player.id, expandedCluster as keyof typeof ratings.clusters, ratings.clusters[expandedCluster as ClusterType]).map((sc) => (
-            <View key={sc.name} style={styles.subclusterRow}>
-              <Text style={styles.subclusterName}>{sc.name}</Text>
-              <Text style={[styles.subclusterVal, { color: sc.rating >= 70 ? '#4CAF50' : sc.rating >= 55 ? '#FF9800' : '#EF4444' }]}>{sc.rating}</Text>
-            </View>
-          ))}
+      {/* Row 5: Last Touch + Next Step (board entries only) */}
+      {boardEntry && (
+        <View style={styles.crmRow}>
+          <View style={styles.crmField}>
+            <Text style={styles.crmFieldLabel}>Last Touch</Text>
+            <Text style={styles.crmFieldValue} numberOfLines={1}>{lastTouch}</Text>
+          </View>
+          <View style={styles.crmField}>
+            <Text style={styles.crmFieldLabel}>Next Step</Text>
+            <Text style={styles.crmFieldValue} numberOfLines={1}>{boardEntry.nextStep || 'Not set'}</Text>
+          </View>
         </View>
       )}
     </Pressable>
   );
 }
 
-// ─── Team Rating Card ───
-function TeamRatingCard({
-  team,
-  rank,
-  onPress,
+// ─── Team Sheet Stats Toggle (Traditional / KaNeXT) ───
+function TeamSheetStatsToggle({
+  clusterKeys, clusterLabels, teamClusterAvg, teamSubclusters, barCol,
+  ppg, efg, tpPct, toPct, apg,
+  oppPpg, oppEfg, oppTpPct, forceToPct, bpg,
+  rpg, spg, ftPct,
 }: {
-  team: {
-    name: string;
-    conference: string;
-    level: string;
-    kr: number;
-    offKR: number;
-    defKR: number;
-    clusters: Record<ClusterType, number>;
-    topPlayers: { id: string; name: string; position: string; kr: number }[];
-  };
-  rank: number;
-  onPress: () => void;
+  clusterKeys: string[];
+  clusterLabels: Record<string, string>;
+  teamClusterAvg: Record<string, number>;
+  teamSubclusters: Record<string, { name: string; rating: number }[]>;
+  barCol: (v: number) => string;
+  ppg: string; efg: string; tpPct: string; toPct: string; apg: string;
+  oppPpg: string; oppEfg: string; oppTpPct: string; forceToPct: string; bpg: string;
+  rpg: string; spg: string; ftPct: string;
 }) {
+  const [activeView, setActiveView] = useState<'traditional' | 'kanext'>('traditional');
   const [expandedCluster, setExpandedCluster] = useState<string | null>(null);
 
   return (
-    <Pressable style={styles.ratingCard} onPress={onPress}>
-      {/* Team header */}
-      <View style={styles.ratingCardTop}>
-        <Text style={{ width: 28, fontSize: 15, fontWeight: '700', color: GRAY }}>{rank}</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.ratingName}>{team.name}</Text>
-          <Text style={styles.ratingIdentity}>{team.conference} {'\u00B7'} {team.level}</Text>
-        </View>
-        <View style={styles.ratingBadges}>
-          <View style={styles.ratingBoxOvr}>
-            <Text style={styles.ratingBoxLabel}>KR</Text>
-            <Text style={styles.ratingBoxValueOvr}>{team.kr}</Text>
-          </View>
-          <View style={styles.ratingBoxSplit}>
-            <View style={styles.ratingBoxSplitHalf}>
-              <Text style={styles.ratingBoxLabel}>O</Text>
-              <Text style={styles.ratingBoxSplitValue}>{team.offKR}</Text>
-            </View>
-            <View style={styles.ratingBoxSplitDivider} />
-            <View style={styles.ratingBoxSplitHalf}>
-              <Text style={styles.ratingBoxLabel}>D</Text>
-              <Text style={styles.ratingBoxSplitValue}>{team.defKR}</Text>
-            </View>
-          </View>
+    <>
+      <View style={ts.toggleRow}>
+        <Text style={ts.sectionLabel}>TEAM STATS</Text>
+        <View style={ts.togglePills}>
+          <Pressable
+            style={[ts.pill, activeView === 'traditional' && ts.pillActive]}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveView('traditional'); }}
+          >
+            <Text style={[ts.pillText, activeView === 'traditional' && ts.pillTextActive]}>Traditional</Text>
+          </Pressable>
+          <Pressable
+            style={[ts.pill, activeView === 'kanext' && ts.pillActive]}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveView('kanext'); }}
+          >
+            <Text style={[ts.pillText, activeView === 'kanext' && ts.pillTextActive]}>KaNeXT</Text>
+          </Pressable>
         </View>
       </View>
 
-      {/* 7 cluster boxes */}
-      <View style={styles.ratingBoxRow}>
-        {CLUSTER_ABBREVS.map((c) => {
-          const val = team.clusters[c.key as ClusterType];
-          const isExpanded = expandedCluster === c.key;
-          return (
-            <Pressable
-              key={c.key}
-              style={[styles.ratingBox, { flex: 1 }, isExpanded && styles.ratingBoxExpanded]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setExpandedCluster(isExpanded ? null : c.key);
-              }}
-            >
-              <Text style={styles.ratingBoxLabel}>{c.abbrev}</Text>
-              <Text style={[styles.ratingBoxValue, isExpanded && { color: WHITE }]}>{val}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {/* Expanded: top contributors for this cluster */}
-      {expandedCluster && (
-        <View style={styles.subclusterStrip}>
-          <Text style={styles.subclusterTitle}>
-            Top Contributors — {CLUSTER_ABBREVS.find((c) => c.key === expandedCluster)?.full}
-          </Text>
-          {team.topPlayers.map((p) => {
-            const r = getPlayerRatings(p.id);
-            const clusterVal = r ? r.clusters[expandedCluster as ClusterType] : 0;
+      {activeView === 'traditional' ? (
+        <View style={ts.card}>
+          <View style={ts.statColumns}>
+            <View style={ts.statCol}>
+              <Text style={ts.statColHeader}>OFFENSE</Text>
+              <TSStatRow label="PPG" value={ppg} />
+              <TSStatRow label="eFG%" value={`${efg}%`} />
+              <TSStatRow label="3PT%" value={`${tpPct}%`} />
+              <TSStatRow label="TO%" value={`${toPct}%`} />
+              <TSStatRow label="APG" value={apg} />
+            </View>
+            <View style={ts.statCol}>
+              <Text style={ts.statColHeader}>DEFENSE</Text>
+              <TSStatRow label="Opp PPG" value={oppPpg} />
+              <TSStatRow label="Opp eFG%" value={`${oppEfg}%`} />
+              <TSStatRow label="Opp 3PT%" value={`${oppTpPct}%`} />
+              <TSStatRow label="Force TO%" value={`${forceToPct}%`} />
+              <TSStatRow label="BPG" value={bpg} />
+            </View>
+          </View>
+          <View style={ts.rebRow}>
+            <Text style={ts.statColHeader}>REBOUNDING</Text>
+            <View style={ts.rebStats}>
+              <TSStatRow label="RPG" value={rpg} />
+              <TSStatRow label="SPG" value={spg} />
+              <TSStatRow label="FT%" value={`${ftPct}%`} />
+            </View>
+          </View>
+        </View>
+      ) : (
+        <View style={ts.card}>
+          {clusterKeys.map((key) => {
+            const avg = teamClusterAvg[key] ?? 0;
+            const isExpanded = expandedCluster === key;
+            const subs = teamSubclusters[key] ?? [];
             return (
-              <View key={p.id} style={styles.subclusterRow}>
-                <Text style={styles.subclusterName}>{p.name} ({p.position})</Text>
-                <Text style={[styles.subclusterVal, { color: clusterVal >= 70 ? '#4CAF50' : clusterVal >= 55 ? '#FF9800' : '#EF4444' }]}>{clusterVal}</Text>
+              <View key={key}>
+                <Pressable
+                  style={ts.clusterRow}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setExpandedCluster(isExpanded ? null : key);
+                  }}
+                >
+                  <View style={ts.clusterLabelRow}>
+                    <IconSymbol name={isExpanded ? 'chevron.down' : 'chevron.right'} size={10} color="#555" />
+                    <Text style={ts.clusterLabel}>{clusterLabels[key] ?? key}</Text>
+                  </View>
+                  <View style={ts.clusterBarBg}>
+                    <View style={[ts.clusterBarFill, { width: `${avg}%`, backgroundColor: barCol(avg) }]} />
+                  </View>
+                  <Text style={[ts.clusterValue, { color: barCol(avg) }]}>{avg}</Text>
+                </Pressable>
+                {isExpanded && (
+                  <View style={ts.subclusterContainer}>
+                    {subs.map((sub) => (
+                      <View key={sub.name} style={ts.subclusterRow}>
+                        <Text style={ts.subclusterLabel}>{sub.name}</Text>
+                        <View style={ts.subclusterBarBg}>
+                          <View style={[ts.subclusterBarFill, { width: `${sub.rating}%`, backgroundColor: barCol(sub.rating) }]} />
+                        </View>
+                        <Text style={[ts.subclusterValue, { color: barCol(sub.rating) }]}>{sub.rating}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
               </View>
             );
           })}
         </View>
       )}
-    </Pressable>
+    </>
   );
 }
 
+function TSStatRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={ts.statRow}>
+      <Text style={ts.statLabel}>{label}</Text>
+      <Text style={ts.statValue}>{value}</Text>
+    </View>
+  );
+}
+
+// ─── Team Sheet Styles (matches TeamQuickSheet) ───
+const ts = StyleSheet.create({
+  identityRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
+  identityText: { flex: 1, marginLeft: 12 },
+  teamName: { fontSize: 20, fontWeight: '800', color: '#fff' },
+  teamSubline: { fontSize: 12, color: '#888', marginTop: 2 },
+  krBadge: { alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.06)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
+  krValue: { fontSize: 22, fontWeight: '800', color: '#fff', lineHeight: 26 },
+  krSubRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  krSubLabel: { fontSize: 12, fontWeight: '600', color: '#888' },
+  krSubSep: { fontSize: 12, color: '#555' },
+  sectionLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 1.0, color: '#6e6e6e', marginBottom: 8, marginTop: 4 },
+  card: { backgroundColor: '#1a1a1a', borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.06)', padding: 14, marginBottom: 16 },
+  staffRow: { flexDirection: 'row', gap: 12, marginBottom: 16 },
+  staffCard: { alignItems: 'center', gap: 4 },
+  coachAvatar: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
+  coachAvatarActive: { borderWidth: 2, borderColor: '#fff' },
+  coachAvatarText: { fontSize: 16, fontWeight: '800', color: '#fff' },
+  coachName: { fontSize: 12, fontWeight: '600', color: '#fff', maxWidth: 70, textAlign: 'center' },
+  coachNameActive: { color: '#4ade80' },
+  coachRole: { fontSize: 10, fontWeight: '500', color: '#888' },
+  coachDetailRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.06)' },
+  coachDetailLabel: { fontSize: 12, fontWeight: '500', color: '#888' },
+  coachDetailValue: { fontSize: 13, fontWeight: '700', color: '#fff' },
+  seasonRow: { flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#1a1a1a', borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.06)', padding: 14, marginBottom: 16 },
+  snapItem: { alignItems: 'center', flex: 1 },
+  snapValue: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  snapLabel: { fontSize: 11, fontWeight: '500', color: '#888', marginTop: 4 },
+  toggleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, marginTop: 4 },
+  togglePills: { flexDirection: 'row', backgroundColor: '#1a1a1a', borderRadius: 8, padding: 2 },
+  pill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 6 },
+  pillActive: { backgroundColor: '#333' },
+  pillText: { fontSize: 12, fontWeight: '600', color: '#666' },
+  pillTextActive: { color: '#fff' },
+  statColumns: { flexDirection: 'row', gap: 16 },
+  statCol: { flex: 1 },
+  statColHeader: { fontSize: 10, fontWeight: '700', letterSpacing: 1.0, color: '#6e6e6e', marginBottom: 8 },
+  statRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 },
+  statLabel: { fontSize: 11, fontWeight: '500', color: '#888' },
+  statValue: { fontSize: 13, fontWeight: '700', color: '#fff', textAlign: 'right', minWidth: 44 },
+  rebRow: { marginTop: 12, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.06)', paddingTop: 12 },
+  rebStats: { flexDirection: 'row', gap: 24, marginTop: 8 },
+  clusterRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6 },
+  clusterLabelRow: { flexDirection: 'row', alignItems: 'center', width: 108, gap: 4 },
+  clusterLabel: { fontSize: 12, fontWeight: '600', color: '#ccc' },
+  clusterBarBg: { flex: 1, height: 8, backgroundColor: '#2a2a2a', borderRadius: 4, marginHorizontal: 8, overflow: 'hidden' },
+  clusterBarFill: { height: 8, borderRadius: 4 },
+  clusterValue: { fontSize: 13, fontWeight: '700', width: 28, textAlign: 'right' },
+  subclusterContainer: { marginLeft: 18, paddingLeft: 10, borderLeftWidth: 1, borderLeftColor: 'rgba(255,255,255,0.06)', marginBottom: 6 },
+  subclusterRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 4 },
+  subclusterLabel: { fontSize: 11, fontWeight: '500', color: '#888', width: 110 },
+  subclusterBarBg: { flex: 1, height: 5, backgroundColor: '#222', borderRadius: 3, marginHorizontal: 8, overflow: 'hidden' },
+  subclusterBarFill: { height: 5, borderRadius: 3 },
+  subclusterValue: { fontSize: 11, fontWeight: '600', width: 24, textAlign: 'right' },
+});
 
 // ─── Styles ───
 const styles = StyleSheet.create({
@@ -1931,6 +2463,31 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: GRAY,
     marginTop: 2,
+  },
+  statRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 6,
+    paddingHorizontal: 4,
+    marginTop: 6,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: DIVIDER,
+  },
+  statCell: {
+    alignItems: 'center',
+    minWidth: 32,
+  },
+  statCellLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: GRAY,
+    letterSpacing: 0.3,
+  },
+  statCellValue: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: WHITE,
+    marginTop: 1,
   },
   ratingBadges: {
     flexDirection: 'row',
@@ -2116,9 +2673,24 @@ const styles = StyleSheet.create({
   addBtnText: { fontSize: 13, fontWeight: '700', color: WHITE },
   boardSearchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1A1D23', borderRadius: 20, paddingHorizontal: 14, height: 38, borderWidth: 1, borderColor: '#2A2D35', gap: 8, marginBottom: 4 },
   boardSearchInput: { flex: 1, fontSize: 14, color: WHITE, paddingVertical: 0 },
-  summaryStrip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6 },
-  summaryText: { fontSize: 12, fontWeight: '500', color: GRAY },
-  summaryDot: { fontSize: 12, color: '#4A4D55' },
+  needsRow: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, flexWrap: 'wrap' },
+  needsDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#FF9800', marginRight: 2 },
+  needsLabel: { fontSize: 12, fontWeight: '600', color: WHITE },
+  needsSep: { fontSize: 12, color: '#4A4D55', marginHorizontal: 2 },
+  needsPosText: { fontSize: 12, fontWeight: '700', color: WHITE },
+  needsCount: { fontSize: 12, fontWeight: '600', color: '#FF9800', marginLeft: 2 },
+  needsTotalText: { fontSize: 12, fontWeight: '600', color: GRAY },
+  needsSlotText: { fontSize: 12, fontWeight: '500', color: GRAY },
+  needsPanel: { backgroundColor: '#1A1D23', borderRadius: 10, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: DIVIDER },
+  needsTableHeader: { flexDirection: 'row', alignItems: 'center', paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: DIVIDER, marginBottom: 4 },
+  needsTableRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 5 },
+  needsCell: { fontSize: 10, fontWeight: '700', color: GRAY, textTransform: 'uppercase', letterSpacing: 0.5 },
+  needsCellVal: { fontSize: 13, fontWeight: '500', color: WHITE },
+  needsCellPos: { width: 40 },
+  needsCellNum: { flex: 1, textAlign: 'center' },
+  needsCellNeed: { width: 44, textAlign: 'right' },
+  needsFooter: { borderTopWidth: 1, borderTopColor: DIVIDER, marginTop: 6, paddingTop: 8, gap: 4 },
+  needsFooterText: { fontSize: 11, color: GRAY },
   viewToggleRow: { flexDirection: 'row', gap: 6, marginBottom: 12 },
   viewTogglePill: { paddingHorizontal: 16, paddingVertical: 7, borderRadius: 16, backgroundColor: '#2A2D35' },
   viewTogglePillActive: { backgroundColor: WHITE },
@@ -2129,6 +2701,19 @@ const styles = StyleSheet.create({
   sortPillActive: { backgroundColor: WHITE },
   sortPillText: { fontSize: 11, fontWeight: '600', color: GRAY },
   sortPillTextActive: { color: BG },
+  teamRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: CARD_BG, borderRadius: 12, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: DIVIDER },
+  teamLogo: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  teamLogoText: { fontSize: 13, fontWeight: '800', color: WHITE, letterSpacing: 0.5 },
+  teamName: { fontSize: 15, fontWeight: '700', color: WHITE },
+  teamMeta: { fontSize: 12, color: GRAY, marginTop: 2 },
+  teamBadge: { backgroundColor: '#2A2D35', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
+  teamBadgeText: { fontSize: 13, fontWeight: '700', color: WHITE },
+  teamSheetLogo: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
+  teamSheetLogoText: { fontSize: 18, fontWeight: '800', color: WHITE, letterSpacing: 0.5 },
+  teamSheetStat: { flex: 1, backgroundColor: '#1A1D23', borderRadius: 10, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: DIVIDER },
+  teamSheetStatValue: { fontSize: 20, fontWeight: '800', color: WHITE },
+  teamSheetStatLabel: { fontSize: 10, fontWeight: '600', color: GRAY, letterSpacing: 0.3, marginTop: 2 },
+  teamSheetPlayerRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: DIVIDER },
   emptyBoardCta: { alignItems: 'center', paddingVertical: 40 },
   emptyBoardTitle: { fontSize: 16, fontWeight: '700', color: WHITE, marginBottom: 6 },
   emptyBoardSub: { fontSize: 13, color: GRAY, textAlign: 'center' },
@@ -2138,6 +2723,8 @@ const styles = StyleSheet.create({
   qaRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: DIVIDER },
   qaRowText: { fontSize: 15, fontWeight: '500', color: WHITE },
   qaDot: { width: 8, height: 8, borderRadius: 4 },
+  qaPipelinePill: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: '#2A2D35', borderWidth: 1, borderColor: 'transparent' },
+  qaPipelinePillText: { fontSize: 12, fontWeight: '600', color: GRAY },
   qaPriorityPill: { paddingHorizontal: 20, paddingVertical: 8, borderRadius: 12, backgroundColor: '#2A2D35' },
   qaPriorityPillActive: { backgroundColor: WHITE },
   qaPriorityText: { fontSize: 14, fontWeight: '700', color: GRAY },
@@ -2149,7 +2736,87 @@ const styles = StyleSheet.create({
   addSelectionDone: { fontSize: 13, fontWeight: '700', color: WHITE },
   addToBoardBtn: { position: 'absolute', top: 14, right: 14, zIndex: 10 },
 
-  // Board info strip on PlayerRatingCard
+  // Card v2: 3-metric bar
+  metricBar: {
+    flexDirection: 'row',
+    backgroundColor: '#2A2D35',
+    borderRadius: 10,
+    marginTop: 10,
+    overflow: 'hidden',
+  },
+  metricBox: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  metricLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: GRAY,
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  metricValue: {
+    fontSize: 20,
+    fontWeight: '800',
+  },
+  metricDivider: {
+    width: StyleSheet.hairlineWidth,
+    backgroundColor: '#4A4D55',
+    marginVertical: 8,
+  },
+
+  // Card v2: Pipeline + Momentum row
+  pipelineMomentumRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 10,
+  },
+  pipelinePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  pipelinePillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  momentumText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // Card v2: CRM fields row
+  crmRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: DIVIDER,
+  },
+  crmField: {
+    flex: 1,
+  },
+  crmFieldLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: GRAY,
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  crmFieldValue: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: WHITE,
+  },
+
+  // Board info strip on PlayerRatingCard (kept for backwards compat)
   boardInfoStrip: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 5, marginBottom: 8 },
   boardPriorityBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 },
   boardPriorityText: { fontSize: 11, fontWeight: '800', letterSpacing: 0.3 },

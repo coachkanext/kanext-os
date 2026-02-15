@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   RECRUITING_BOARD,
+  STATUS_MIGRATION,
   type BoardEntry,
   type BoardStatus,
   type Priority,
@@ -21,13 +22,31 @@ interface BoardState {
   lastModified: string;
 }
 
-/** Load board from AsyncStorage, fallback to mock data. */
+/** Migrate old pipeline status values to new ones (idempotent). */
+function migrateEntries(entries: BoardEntry[]): { entries: BoardEntry[]; changed: boolean } {
+  let changed = false;
+  const migrated = entries.map((e) => {
+    const newStatus = STATUS_MIGRATION[e.status as string];
+    if (newStatus) {
+      changed = true;
+      return { ...e, status: newStatus };
+    }
+    return e;
+  });
+  return { entries: migrated, changed };
+}
+
+/** Load board from AsyncStorage, fallback to mock data. Runs migration for old status values. */
 export async function loadBoard(): Promise<BoardEntry[]> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed: BoardState = JSON.parse(raw);
-      if (parsed.entries && parsed.entries.length > 0) return parsed.entries;
+      if (parsed.entries && parsed.entries.length > 0) {
+        const { entries, changed } = migrateEntries(parsed.entries);
+        if (changed) await saveBoard(entries);
+        return entries;
+      }
     }
   } catch {}
   return [...RECRUITING_BOARD];

@@ -1,8 +1,12 @@
 /**
  * BoardFilters — expandable filter chip row for the recruiting board.
- * Tap a chip to expand it inline, showing selectable sub-pills beneath.
- * Division has two levels: tap a governing body with children (NCAA, JUCO, NCCAA)
- * to reveal its sub-divisions (D1, D2, D3).
+ *
+ * Multi-select filters (Class, Level, Position, Status):
+ *   Tap sub-pill → toggle on/off (panel stays open).
+ *   Tap "All" → clear selection, close panel.
+ *
+ * Single-select sorts (KaNeXT, Stats):
+ *   Tap sub-pill → select, close panel.
  */
 
 import React, { useState } from 'react';
@@ -12,35 +16,57 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BOARD_COLUMNS, type BoardStatus } from '@/data/recruitingBoard';
 import { CLUSTER_ORDER, SORT_CLUSTER_LABELS, TRAIT_LIBRARY } from '@/data/trait-library';
-import type { ClusterType } from '@/types';
+import { HELIO_POSITIONS, HELIO_POSITION_LABELS } from '@/data/position-mapping';
+import { ARCHETYPE_OPTIONS } from '@/data/archetype-options';
+import { STAT_GROUPS, STAT_META, type StatKey } from '@/data/player-stats';
+import {
+  AVAILABILITY_OPTIONS,
+  HEIGHT_RANGES,
+  WEIGHT_RANGES,
+  REGION_OPTIONS,
+} from '@/utils/recruiting-helpers';
+import type { ClusterType, HeliocentricPosition } from '@/types';
 
 const WHITE = '#FFFFFF';
 const GRAY = '#8A8F98';
 const DIVIDER = '#2A2D35';
 const BG = '#0F1115';
 
+// ── Filter state ──
+// Multi-select fields use string[]; single-select sort fields use string | null.
+
 export interface BoardFilterState {
-  year: string | null;
-  division: string | null;
-  status: BoardStatus | null;
-  position: string | null;
-  cluster: string | null;
+  year: string[];
+  division: string[];
+  status: string[];
+  position: string[];             // Helio positions (PG, CG, W, F, B)
+  archetype: string | null;       // Single-select (sub-level of position)
+  cluster: string | null;         // Single-select sort
+  stat: StatKey | null;           // Single-select sort
+  availability: string[];         // Portal, HS, JUCO, International
+  region: string[];               // Southeast, Northeast, Midwest, etc.
+  heightRange: [number, number] | null; // [minInches, maxInches]
+  weightRange: [number, number] | null; // [minLbs, maxLbs]
 }
 
 export const DEFAULT_BOARD_FILTERS: BoardFilterState = {
-  year: null,
-  division: null,
-  status: null,
-  position: null,
+  year: [],
+  division: [],
+  status: [],
+  position: [],
+  archetype: null,
   cluster: null,
+  stat: null,
+  availability: [],
+  region: [],
+  heightRange: null,
+  weightRange: null,
 };
 
 // ─── Division hierarchy (canonical) ───
 interface DivisionGroup {
   label: string;
-  /** If children exist, tapping the parent expands to show them. */
   children?: { label: string; value: string }[];
-  /** Direct filter value when no children (e.g. NAIA → 'NAIA') */
   value?: string;
 }
 
@@ -79,37 +105,38 @@ const CLUSTER_HIERARCHY: ClusterGroup[] = CLUSTER_ORDER.map((key) => ({
   children: TRAIT_LIBRARY[key].map((sub) => ({ label: sub.label, value: sub.id })),
 }));
 
-// Display label for the cluster chip when a value is selected
+// ─── KR group hierarchy (Off / Def → clusters) ───
+type KRGroupKey = 'offense' | 'defense';
+
+interface KRGroup {
+  key: KRGroupKey;
+  label: string;
+  clusters: ClusterType[];
+}
+
+const KR_GROUPS: KRGroup[] = [
+  { key: 'offense', label: 'Offensive KR', clusters: ['shooting', 'finishing', 'playmaking'] },
+  { key: 'defense', label: 'Defensive KR', clusters: ['perimeter_defense', 'interior_defense', 'rebounding', 'frame'] },
+];
+
+// ─── Display helpers ───
+
 function clusterDisplayLabel(val: string): string {
-  // Check if it's a cluster key
-  if (CLUSTER_ORDER.includes(val as ClusterType)) {
-    return SORT_CLUSTER_LABELS[val as ClusterType];
-  }
-  // Check subclusters
+  if (CLUSTER_ORDER.includes(val as ClusterType)) return SORT_CLUSTER_LABELS[val as ClusterType];
   for (const group of CLUSTER_HIERARCHY) {
     const sub = group.children.find((c) => c.value === val);
     if (sub) return sub.label;
   }
+  const krg = KR_GROUPS.find((g) => g.key === val);
+  if (krg) return krg.label;
   return val;
 }
 
-// ─── Other filter options ───
-const YEAR_OPTIONS = ['2026', '2027', '2028'];
-const POSITION_OPTIONS = ['PG', 'SG', 'SF', 'PF', 'C'];
-
-interface FilterChipDef {
-  key: keyof BoardFilterState;
-  label: string;
-  options: string[];
+function statDisplayLabel(val: string): string {
+  const meta = STAT_META.find((m) => m.key === val);
+  return meta ? meta.short : val;
 }
 
-const SIMPLE_CHIPS: FilterChipDef[] = [
-  { key: 'year', label: 'Year', options: YEAR_OPTIONS },
-  { key: 'status', label: 'Status', options: BOARD_COLUMNS as unknown as string[] },
-  { key: 'position', label: 'Position', options: POSITION_OPTIONS },
-];
-
-// Display label for the division chip when a value is selected
 function divisionDisplayLabel(val: string): string {
   for (const group of DIVISION_HIERARCHY) {
     if (group.value === val) return group.label;
@@ -121,63 +148,123 @@ function divisionDisplayLabel(val: string): string {
   return val;
 }
 
+function archetypeDisplayLabel(val: string): string {
+  const opt = ARCHETYPE_OPTIONS.find((a) => a.value === val);
+  return opt ? opt.label : val;
+}
+
+// Multi-select chip label: "Label", "value", or "Label (N)"
+function multiLabel(base: string, arr: string[], displayFn?: (v: string) => string): string {
+  if (arr.length === 0) return base;
+  if (arr.length === 1) return displayFn ? displayFn(arr[0]) : arr[0];
+  return `${base} (${arr.length})`;
+}
+
+// ─── Other filter options ───
+const YEAR_OPTIONS = ['2026', '2027', '2028'];
+
+// ─── Component ───
+
 export interface BoardFiltersProps {
   filters: BoardFilterState;
   onFiltersChange: (filters: BoardFilterState) => void;
 }
 
-export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
-  const [expandedKey, setExpandedKey] = useState<keyof BoardFilterState | null>(null);
-  // For division: which parent group is expanded to show children
-  const [expandedDivGroup, setExpandedDivGroup] = useState<string | null>(null);
-  // For cluster: which cluster is expanded to show subclusters
-  const [expandedClusterGroup, setExpandedClusterGroup] = useState<string | null>(null);
-  const hasAnyFilter = Object.values(filters).some((v) => v !== null);
+type ExpandableKey = keyof BoardFilterState | 'physical';
 
-  const toggleExpand = (key: keyof BoardFilterState) => {
+export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
+  const [expandedKey, setExpandedKey] = useState<ExpandableKey | null>(null);
+  const [expandedDivGroup, setExpandedDivGroup] = useState<string | null>(null);
+  const [expandedKRGroup, setExpandedKRGroup] = useState<KRGroupKey | null>(null);
+  const [expandedClusterGroup, setExpandedClusterGroup] = useState<string | null>(null);
+  const [expandedPosGroup, setExpandedPosGroup] = useState<string | null>(null);
+  const [expandedStatGroup, setExpandedStatGroup] = useState<string | null>(null);
+
+  const hasAnyFilter =
+    filters.year.length > 0 ||
+    filters.division.length > 0 ||
+    filters.status.length > 0 ||
+    filters.position.length > 0 ||
+    filters.archetype !== null ||
+    filters.cluster !== null ||
+    filters.stat !== null ||
+    filters.availability.length > 0 ||
+    filters.region.length > 0 ||
+    filters.heightRange !== null ||
+    filters.weightRange !== null;
+
+  const collapseAll = () => {
+    setExpandedDivGroup(null);
+    setExpandedKRGroup(null);
+    setExpandedClusterGroup(null);
+    setExpandedPosGroup(null);
+    setExpandedStatGroup(null);
+  };
+
+  const toggleExpand = (key: ExpandableKey) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setExpandedKey((prev) => {
       if (prev === key) return null;
-      setExpandedDivGroup(null);
-      setExpandedClusterGroup(null);
+      collapseAll();
       return key;
     });
   };
 
-  const selectOption = (key: keyof BoardFilterState, val: string | null) => {
+  // ── Multi-select: toggle value in array, panel stays open ──
+  const toggleMulti = (key: 'year' | 'division' | 'status' | 'position' | 'availability' | 'region', val: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    onFiltersChange({ ...filters, [key]: val });
+    const current = filters[key];
+    const next = current.includes(val)
+      ? current.filter((v) => v !== val)
+      : [...current, val];
+    onFiltersChange({ ...filters, [key]: next });
+  };
+
+  // ── Multi-select: clear array, close panel ──
+  const clearMulti = (key: 'year' | 'division' | 'status' | 'position' | 'availability' | 'region') => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onFiltersChange({ ...filters, [key]: [] });
     setExpandedKey(null);
-    setExpandedDivGroup(null);
-    setExpandedClusterGroup(null);
+    collapseAll();
+  };
+
+  // ── Single-select: pick value, close panel ──
+  // Cluster and stat are mutually exclusive sort chips — selecting one clears the other.
+  const selectOption = (key: 'cluster' | 'stat' | 'archetype', val: string | null) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const updates: Partial<BoardFilterState> = { [key]: val };
+    if (key === 'cluster' && val !== null) updates.stat = null;
+    if (key === 'stat' && val !== null) updates.cluster = null;
+    onFiltersChange({ ...filters, ...updates });
+    setExpandedKey(null);
+    collapseAll();
   };
 
   const resetAll = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onFiltersChange({ ...DEFAULT_BOARD_FILTERS });
     setExpandedKey(null);
-    setExpandedDivGroup(null);
-    setExpandedClusterGroup(null);
+    collapseAll();
   };
-
-  const divVal = filters.division;
 
   return (
     <View style={styles.wrapper}>
-      {/* Top row: filter chips */}
+      {/* Top row: filter chips — order: Class, Level, KaNeXT, Stats, Position, Status */}
       <View style={styles.chipRow}>
-        {/* Division chip (special — hierarchical) */}
+
+        {/* Class chip (multi-select) */}
         {(() => {
-          const active = divVal !== null;
-          const expanded = expandedKey === 'division';
+          const arr = filters.year;
+          const active = arr.length > 0;
+          const expanded = expandedKey === 'year';
           return (
             <Pressable
-              key="division"
+              key="year"
               style={[styles.chip, active && styles.chipActive, expanded && styles.chipExpanded]}
-              onPress={() => toggleExpand('division')}
+              onPress={() => toggleExpand('year')}
             >
               <Text style={[styles.chipText, active && styles.chipTextActive]} numberOfLines={1}>
-                {active ? divisionDisplayLabel(divVal!) : 'Division'}
+                {multiLabel('Class', arr)}
               </Text>
               <IconSymbol
                 name={expanded ? 'chevron.up' : 'chevron.down'}
@@ -188,7 +275,30 @@ export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
           );
         })()}
 
-        {/* Cluster chip (special — hierarchical) */}
+        {/* Level chip (multi-select, hierarchical) */}
+        {(() => {
+          const arr = filters.division;
+          const active = arr.length > 0;
+          const expanded = expandedKey === 'division';
+          return (
+            <Pressable
+              key="division"
+              style={[styles.chip, active && styles.chipActive, expanded && styles.chipExpanded]}
+              onPress={() => toggleExpand('division')}
+            >
+              <Text style={[styles.chipText, active && styles.chipTextActive]} numberOfLines={1}>
+                {multiLabel('Level', arr, divisionDisplayLabel)}
+              </Text>
+              <IconSymbol
+                name={expanded ? 'chevron.up' : 'chevron.down'}
+                size={10}
+                color={active ? BG : GRAY}
+              />
+            </Pressable>
+          );
+        })()}
+
+        {/* KaNeXT chip (single-select sort) */}
         {(() => {
           const clusterVal = filters.cluster;
           const active = clusterVal !== null;
@@ -200,7 +310,7 @@ export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
               onPress={() => toggleExpand('cluster')}
             >
               <Text style={[styles.chipText, active && styles.chipTextActive]} numberOfLines={1}>
-                {active ? clusterDisplayLabel(clusterVal!) : 'Cluster'}
+                {active ? clusterDisplayLabel(clusterVal!) : 'KaNeXT'}
               </Text>
               <IconSymbol
                 name={expanded ? 'chevron.up' : 'chevron.down'}
@@ -211,19 +321,19 @@ export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
           );
         })()}
 
-        {/* Simple chips */}
-        {SIMPLE_CHIPS.map((chip) => {
-          const val = filters[chip.key];
-          const active = val !== null;
-          const expanded = expandedKey === chip.key;
+        {/* Production chip (single-select sort, was "Stats") */}
+        {(() => {
+          const statVal = filters.stat;
+          const active = statVal !== null;
+          const expanded = expandedKey === 'stat';
           return (
             <Pressable
-              key={chip.key}
+              key="stat"
               style={[styles.chip, active && styles.chipActive, expanded && styles.chipExpanded]}
-              onPress={() => toggleExpand(chip.key)}
+              onPress={() => toggleExpand('stat')}
             >
               <Text style={[styles.chipText, active && styles.chipTextActive]} numberOfLines={1}>
-                {active ? val : chip.label}
+                {active ? statDisplayLabel(statVal!) : 'Production'}
               </Text>
               <IconSymbol
                 name={expanded ? 'chevron.up' : 'chevron.down'}
@@ -232,7 +342,113 @@ export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
               />
             </Pressable>
           );
-        })}
+        })()}
+
+        {/* Position chip (multi-select, hierarchical) */}
+        {(() => {
+          const arr = filters.position;
+          const archVal = filters.archetype;
+          const active = arr.length > 0 || archVal !== null;
+          const expanded = expandedKey === 'position';
+          let label = 'Position';
+          if (archVal) label = archetypeDisplayLabel(archVal);
+          else if (arr.length === 1) label = arr[0];
+          else if (arr.length > 1) label = `Position (${arr.length})`;
+          return (
+            <Pressable
+              key="position"
+              style={[styles.chip, active && styles.chipActive, expanded && styles.chipExpanded]}
+              onPress={() => toggleExpand('position')}
+            >
+              <Text style={[styles.chipText, active && styles.chipTextActive]} numberOfLines={1}>
+                {label}
+              </Text>
+              <IconSymbol
+                name={expanded ? 'chevron.up' : 'chevron.down'}
+                size={10}
+                color={active ? BG : GRAY}
+              />
+            </Pressable>
+          );
+        })()}
+
+        {/* Pipeline chip (multi-select, was "Status") */}
+        {(() => {
+          const arr = filters.status;
+          const active = arr.length > 0;
+          const expanded = expandedKey === 'status';
+          return (
+            <Pressable
+              key="status"
+              style={[styles.chip, active && styles.chipActive, expanded && styles.chipExpanded]}
+              onPress={() => toggleExpand('status')}
+            >
+              <Text style={[styles.chipText, active && styles.chipTextActive]} numberOfLines={1}>
+                {multiLabel('Pipeline', arr)}
+              </Text>
+              <IconSymbol
+                name={expanded ? 'chevron.up' : 'chevron.down'}
+                size={10}
+                color={active ? BG : GRAY}
+              />
+            </Pressable>
+          );
+        })()}
+
+        {/* Availability chip (multi-select) */}
+        {(() => {
+          const arr = filters.availability;
+          const active = arr.length > 0;
+          const expanded = expandedKey === 'availability';
+          return (
+            <Pressable
+              key="availability"
+              style={[styles.chip, active && styles.chipActive, expanded && styles.chipExpanded]}
+              onPress={() => toggleExpand('availability')}
+            >
+              <Text style={[styles.chipText, active && styles.chipTextActive]} numberOfLines={1}>
+                {multiLabel('Availability', arr)}
+              </Text>
+              <IconSymbol
+                name={expanded ? 'chevron.up' : 'chevron.down'}
+                size={10}
+                color={active ? BG : GRAY}
+              />
+            </Pressable>
+          );
+        })()}
+
+        {/* Physical chip (height/weight ranges) */}
+        {(() => {
+          const active = filters.heightRange !== null || filters.weightRange !== null;
+          const expanded = expandedKey === 'physical';
+          let label = 'Physical';
+          if (filters.heightRange && !filters.weightRange) {
+            const hr = HEIGHT_RANGES.find((r) => r.min === filters.heightRange![0] && r.max === filters.heightRange![1]);
+            label = hr ? `Ht ${hr.label}` : 'Physical';
+          } else if (filters.weightRange && !filters.heightRange) {
+            const wr = WEIGHT_RANGES.find((r) => r.min === filters.weightRange![0] && r.max === filters.weightRange![1]);
+            label = wr ? `Wt ${wr.label}` : 'Physical';
+          } else if (filters.heightRange && filters.weightRange) {
+            label = 'Physical (2)';
+          }
+          return (
+            <Pressable
+              key="physical"
+              style={[styles.chip, active && styles.chipActive, expanded && styles.chipExpanded]}
+              onPress={() => toggleExpand('physical')}
+            >
+              <Text style={[styles.chipText, active && styles.chipTextActive]} numberOfLines={1}>
+                {label}
+              </Text>
+              <IconSymbol
+                name={expanded ? 'chevron.up' : 'chevron.down'}
+                size={10}
+                color={active ? BG : GRAY}
+              />
+            </Pressable>
+          );
+        })()}
 
         {hasAnyFilter && (
           <Pressable style={styles.resetChip} onPress={resetAll}>
@@ -241,23 +457,69 @@ export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
         )}
       </View>
 
-      {/* ── Division expanded: two-level hierarchy ── */}
+      {/* ── Class expanded (multi-select) ── */}
+      {expandedKey === 'year' && (
+        <View style={styles.subRow}>
+          <Pressable
+            style={[styles.subPill, filters.year.length === 0 && styles.subPillActive]}
+            onPress={() => clearMulti('year')}
+          >
+            <Text style={[styles.subPillText, filters.year.length === 0 && styles.subPillTextActive]}>All</Text>
+          </Pressable>
+          {YEAR_OPTIONS.map((opt) => {
+            const selected = filters.year.includes(opt);
+            return (
+              <Pressable
+                key={opt}
+                style={[styles.subPill, selected && styles.subPillActive]}
+                onPress={() => toggleMulti('year', opt)}
+              >
+                <Text style={[styles.subPillText, selected && styles.subPillTextActive]}>{opt}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
+
+      {/* ── Status expanded (multi-select) ── */}
+      {expandedKey === 'status' && (
+        <View style={styles.subRow}>
+          <Pressable
+            style={[styles.subPill, filters.status.length === 0 && styles.subPillActive]}
+            onPress={() => clearMulti('status')}
+          >
+            <Text style={[styles.subPillText, filters.status.length === 0 && styles.subPillTextActive]}>All</Text>
+          </Pressable>
+          {(BOARD_COLUMNS as readonly string[]).map((opt) => {
+            const selected = filters.status.includes(opt);
+            return (
+              <Pressable
+                key={opt}
+                style={[styles.subPill, selected && styles.subPillActive]}
+                onPress={() => toggleMulti('status', opt)}
+              >
+                <Text style={[styles.subPillText, selected && styles.subPillTextActive]}>{opt}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
+
+      {/* ── Division expanded: multi-select, two-level hierarchy ── */}
       {expandedKey === 'division' && (
         <View>
-          {/* Level 1: governing body pills */}
           <View style={styles.subRow}>
             <Pressable
-              style={[styles.subPill, divVal === null && styles.subPillActive]}
-              onPress={() => selectOption('division', null)}
+              style={[styles.subPill, filters.division.length === 0 && styles.subPillActive]}
+              onPress={() => clearMulti('division')}
             >
-              <Text style={[styles.subPillText, divVal === null && styles.subPillTextActive]}>All</Text>
+              <Text style={[styles.subPillText, filters.division.length === 0 && styles.subPillTextActive]}>All</Text>
             </Pressable>
             {DIVISION_HIERARCHY.map((group) => {
               const hasChildren = !!group.children;
-              // Active if this group, its "all" value, or one of its children is selected
               const isGroupActive = hasChildren
-                ? divVal === group.label || group.children!.some((c) => c.value === divVal)
-                : group.value === divVal;
+                ? filters.division.includes(group.label) || group.children!.some((c) => filters.division.includes(c.value))
+                : filters.division.includes(group.value!);
               const isExpanded = expandedDivGroup === group.label;
 
               return (
@@ -267,11 +529,9 @@ export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
                   onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     if (hasChildren) {
-                      // Toggle sub-level expansion
                       setExpandedDivGroup((prev) => (prev === group.label ? null : group.label));
                     } else {
-                      // Direct select
-                      selectOption('division', isGroupActive ? null : group.value!);
+                      toggleMulti('division', group.value!);
                     }
                   }}
                 >
@@ -290,28 +550,28 @@ export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
             })}
           </View>
 
-          {/* Level 2: sub-division pills (e.g. All / D1 / D2 / D3) */}
+          {/* Level 2: sub-division pills */}
           {expandedDivGroup && (() => {
             const group = DIVISION_HIERARCHY.find((g) => g.label === expandedDivGroup);
             if (!group?.children) return null;
-            const allValue = group.label; // e.g. 'NCAA' matches all NCAA sub-levels
-            const isAllSelected = divVal === allValue;
+            const allValue = group.label;
+            const isAllSelected = filters.division.includes(allValue);
             return (
               <View style={styles.subSubRow}>
                 <Text style={styles.subSubLabel}>{group.label}</Text>
                 <Pressable
                   style={[styles.subPill, isAllSelected && styles.subPillActive]}
-                  onPress={() => selectOption('division', isAllSelected ? null : allValue)}
+                  onPress={() => toggleMulti('division', allValue)}
                 >
                   <Text style={[styles.subPillText, isAllSelected && styles.subPillTextActive]}>All</Text>
                 </Pressable>
                 {group.children.map((child) => {
-                  const selected = divVal === child.value;
+                  const selected = filters.division.includes(child.value);
                   return (
                     <Pressable
                       key={child.value}
                       style={[styles.subPill, selected && styles.subPillActive]}
-                      onPress={() => selectOption('division', selected ? null : child.value)}
+                      onPress={() => toggleMulti('division', child.value)}
                     >
                       <Text style={[styles.subPillText, selected && styles.subPillTextActive]}>
                         {child.label}
@@ -325,53 +585,83 @@ export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
         </View>
       )}
 
-      {/* ── Cluster expanded: two-level hierarchy ── */}
+      {/* ── Cluster expanded: single-select, three-level hierarchy ── */}
       {expandedKey === 'cluster' && (() => {
         const clusterVal = filters.cluster;
         return (
           <View>
-            {/* Level 1: cluster pills */}
             <View style={styles.subRow}>
               <Pressable
-                style={[styles.subPill, clusterVal === null && styles.subPillActive]}
+                style={[styles.subPill, clusterVal === null && !expandedKRGroup && styles.subPillActive]}
                 onPress={() => selectOption('cluster', null)}
               >
-                <Text style={[styles.subPillText, clusterVal === null && styles.subPillTextActive]}>All</Text>
+                <Text style={[styles.subPillText, clusterVal === null && !expandedKRGroup && styles.subPillTextActive]}>All</Text>
               </Pressable>
-              {CLUSTER_HIERARCHY.map((group) => {
-                const isGroupActive = clusterVal === group.key || group.children.some((c) => c.value === clusterVal);
-                const isExpanded = expandedClusterGroup === group.key;
-
+              {KR_GROUPS.map((krg) => {
+                const isKRActive = krg.clusters.includes(clusterVal as ClusterType) ||
+                  CLUSTER_HIERARCHY.filter((g) => krg.clusters.includes(g.key)).some((g) => g.children.some((c) => c.value === clusterVal));
+                const isExpanded = expandedKRGroup === krg.key;
                 return (
                   <Pressable
-                    key={group.key}
-                    style={[styles.subPill, isGroupActive && styles.subPillActive, isExpanded && styles.subPillExpanded]}
+                    key={krg.key}
+                    style={[styles.subPill, isKRActive && styles.subPillActive, isExpanded && styles.subPillExpanded]}
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      if (isExpanded) {
-                        // Collapse and select the cluster itself
-                        setExpandedClusterGroup(null);
-                        selectOption('cluster', isGroupActive ? null : group.key);
-                      } else {
-                        // Expand to show subclusters
-                        setExpandedClusterGroup(group.key);
-                      }
+                      setExpandedClusterGroup(null);
+                      setExpandedKRGroup((prev) => (prev === krg.key ? null : krg.key));
                     }}
                   >
-                    <Text style={[styles.subPillText, isGroupActive && styles.subPillTextActive]}>
-                      {group.label}
+                    <Text style={[styles.subPillText, isKRActive && styles.subPillTextActive]}>
+                      {krg.label}
                     </Text>
                     <IconSymbol
                       name={isExpanded ? 'chevron.up' : 'chevron.down'}
                       size={9}
-                      color={isGroupActive ? BG : GRAY}
+                      color={isKRActive ? BG : GRAY}
                     />
                   </Pressable>
                 );
               })}
             </View>
 
-            {/* Level 2: subcluster pills */}
+            {expandedKRGroup && (() => {
+              const krGroup = KR_GROUPS.find((g) => g.key === expandedKRGroup)!;
+              const groupClusters = CLUSTER_HIERARCHY.filter((g) => krGroup.clusters.includes(g.key));
+              return (
+                <View style={styles.subSubRow}>
+                  <Text style={styles.subSubLabel}>{krGroup.label}</Text>
+                  {groupClusters.map((group) => {
+                    const isGroupActive = clusterVal === group.key || group.children.some((c) => c.value === clusterVal);
+                    const isExpanded = expandedClusterGroup === group.key;
+                    return (
+                      <Pressable
+                        key={group.key}
+                        style={[styles.subPill, isGroupActive && styles.subPillActive, isExpanded && styles.subPillExpanded]}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          if (isExpanded) {
+                            setExpandedClusterGroup(null);
+                            selectOption('cluster', isGroupActive ? null : group.key);
+                          } else {
+                            setExpandedClusterGroup(group.key);
+                          }
+                        }}
+                      >
+                        <Text style={[styles.subPillText, isGroupActive && styles.subPillTextActive]}>
+                          {group.label}
+                        </Text>
+                        <IconSymbol
+                          name={isExpanded ? 'chevron.up' : 'chevron.down'}
+                          size={9}
+                          color={isGroupActive ? BG : GRAY}
+                        />
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              );
+            })()}
+
             {expandedClusterGroup && (() => {
               const group = CLUSTER_HIERARCHY.find((g) => g.key === expandedClusterGroup);
               if (!group) return null;
@@ -406,31 +696,241 @@ export function BoardFilters({ filters, onFiltersChange }: BoardFiltersProps) {
         );
       })()}
 
-      {/* ── Simple chip expanded sub-pills ── */}
-      {expandedKey && expandedKey !== 'division' && expandedKey !== 'cluster' && (() => {
-        const chip = SIMPLE_CHIPS.find((c) => c.key === expandedKey)!;
-        if (!chip) return null;
-        const currentVal = filters[expandedKey];
+      {/* ── Stats expanded: single-select, two-level hierarchy ── */}
+      {expandedKey === 'stat' && (() => {
+        const statVal = filters.stat;
         return (
+          <View>
+            <View style={styles.subRow}>
+              <Pressable
+                style={[styles.subPill, statVal === null && !expandedStatGroup && styles.subPillActive]}
+                onPress={() => selectOption('stat', null)}
+              >
+                <Text style={[styles.subPillText, statVal === null && !expandedStatGroup && styles.subPillTextActive]}>All</Text>
+              </Pressable>
+              {STAT_GROUPS.map((sg) => {
+                const isGroupActive = sg.stats.includes(statVal as StatKey);
+                const isExpanded = expandedStatGroup === sg.key;
+                return (
+                  <Pressable
+                    key={sg.key}
+                    style={[styles.subPill, isGroupActive && styles.subPillActive, isExpanded && styles.subPillExpanded]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setExpandedStatGroup((prev) => (prev === sg.key ? null : sg.key));
+                    }}
+                  >
+                    <Text style={[styles.subPillText, isGroupActive && styles.subPillTextActive]}>
+                      {sg.label}
+                    </Text>
+                    <IconSymbol
+                      name={isExpanded ? 'chevron.up' : 'chevron.down'}
+                      size={9}
+                      color={isGroupActive ? BG : GRAY}
+                    />
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {expandedStatGroup && (() => {
+              const sg = STAT_GROUPS.find((g) => g.key === expandedStatGroup);
+              if (!sg) return null;
+              return (
+                <View style={styles.subSubRow}>
+                  <Text style={styles.subSubLabel}>{sg.label}</Text>
+                  {sg.stats.map((sk) => {
+                    const meta = STAT_META.find((m) => m.key === sk);
+                    if (!meta) return null;
+                    const selected = statVal === sk;
+                    return (
+                      <Pressable
+                        key={sk}
+                        style={[styles.subPill, selected && styles.subPillActive]}
+                        onPress={() => selectOption('stat', selected ? null : sk)}
+                      >
+                        <Text style={[styles.subPillText, selected && styles.subPillTextActive]}>
+                          {meta.short}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              );
+            })()}
+          </View>
+        );
+      })()}
+
+      {/* ── Availability expanded (multi-select) ── */}
+      {expandedKey === 'availability' && (
+        <View style={styles.subRow}>
+          <Pressable
+            style={[styles.subPill, filters.availability.length === 0 && styles.subPillActive]}
+            onPress={() => clearMulti('availability')}
+          >
+            <Text style={[styles.subPillText, filters.availability.length === 0 && styles.subPillTextActive]}>All</Text>
+          </Pressable>
+          {AVAILABILITY_OPTIONS.map((opt) => {
+            const selected = filters.availability.includes(opt);
+            return (
+              <Pressable
+                key={opt}
+                style={[styles.subPill, selected && styles.subPillActive]}
+                onPress={() => toggleMulti('availability', opt)}
+              >
+                <Text style={[styles.subPillText, selected && styles.subPillTextActive]}>{opt}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
+
+      {/* ── Physical expanded (height + weight pill ranges) ── */}
+      {expandedKey === 'physical' && (
+        <View>
           <View style={styles.subRow}>
+            <Text style={styles.subSubLabel}>Height</Text>
             <Pressable
-              style={[styles.subPill, currentVal === null && styles.subPillActive]}
-              onPress={() => selectOption(expandedKey, null)}
+              style={[styles.subPill, filters.heightRange === null && styles.subPillActive]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onFiltersChange({ ...filters, heightRange: null });
+              }}
             >
-              <Text style={[styles.subPillText, currentVal === null && styles.subPillTextActive]}>All</Text>
+              <Text style={[styles.subPillText, filters.heightRange === null && styles.subPillTextActive]}>All</Text>
             </Pressable>
-            {chip.options.map((opt) => {
-              const selected = currentVal === opt;
+            {HEIGHT_RANGES.map((r) => {
+              const selected = filters.heightRange !== null && filters.heightRange[0] === r.min && filters.heightRange[1] === r.max;
               return (
                 <Pressable
-                  key={opt}
+                  key={r.label}
                   style={[styles.subPill, selected && styles.subPillActive]}
-                  onPress={() => selectOption(expandedKey, selected ? null : opt)}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    onFiltersChange({ ...filters, heightRange: selected ? null : [r.min, r.max] });
+                  }}
                 >
-                  <Text style={[styles.subPillText, selected && styles.subPillTextActive]}>{opt}</Text>
+                  <Text style={[styles.subPillText, selected && styles.subPillTextActive]}>{r.label}</Text>
                 </Pressable>
               );
             })}
+          </View>
+          <View style={styles.subRow}>
+            <Text style={styles.subSubLabel}>Weight</Text>
+            <Pressable
+              style={[styles.subPill, filters.weightRange === null && styles.subPillActive]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onFiltersChange({ ...filters, weightRange: null });
+              }}
+            >
+              <Text style={[styles.subPillText, filters.weightRange === null && styles.subPillTextActive]}>All</Text>
+            </Pressable>
+            {WEIGHT_RANGES.map((r) => {
+              const selected = filters.weightRange !== null && filters.weightRange[0] === r.min && filters.weightRange[1] === r.max;
+              return (
+                <Pressable
+                  key={r.label}
+                  style={[styles.subPill, selected && styles.subPillActive]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    onFiltersChange({ ...filters, weightRange: selected ? null : [r.min, r.max] });
+                  }}
+                >
+                  <Text style={[styles.subPillText, selected && styles.subPillTextActive]}>{r.label}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      )}
+
+      {/* ── Position expanded: multi-select, with archetype sub-level ── */}
+      {expandedKey === 'position' && (() => {
+        const posArr = filters.position;
+        const archVal = filters.archetype;
+        return (
+          <View>
+            <View style={styles.subRow}>
+              <Pressable
+                style={[styles.subPill, posArr.length === 0 && archVal === null && styles.subPillActive]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onFiltersChange({ ...filters, position: [], archetype: null });
+                  setExpandedKey(null);
+                  setExpandedPosGroup(null);
+                }}
+              >
+                <Text style={[styles.subPillText, posArr.length === 0 && archVal === null && styles.subPillTextActive]}>All</Text>
+              </Pressable>
+              {HELIO_POSITIONS.map((pos) => {
+                const isActive = posArr.includes(pos);
+                const isExpanded = expandedPosGroup === pos;
+                return (
+                  <Pressable
+                    key={pos}
+                    style={[styles.subPill, isActive && styles.subPillActive, isExpanded && styles.subPillExpanded]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      if (isExpanded) {
+                        // Collapse archetype sub-level, toggle position
+                        setExpandedPosGroup(null);
+                        toggleMulti('position', pos);
+                      } else {
+                        // Expand to show archetypes for this position
+                        setExpandedPosGroup(pos);
+                        // Ensure this position is selected
+                        if (!posArr.includes(pos)) {
+                          onFiltersChange({ ...filters, position: [...posArr, pos], archetype: null });
+                        }
+                      }
+                    }}
+                  >
+                    <Text style={[styles.subPillText, isActive && styles.subPillTextActive]}>
+                      {pos}
+                    </Text>
+                    <IconSymbol
+                      name={isExpanded ? 'chevron.up' : 'chevron.down'}
+                      size={9}
+                      color={isActive ? BG : GRAY}
+                    />
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {expandedPosGroup && (
+              <View style={styles.subSubRow}>
+                <Text style={styles.subSubLabel}>{HELIO_POSITION_LABELS[expandedPosGroup as HeliocentricPosition]}</Text>
+                <Pressable
+                  style={[styles.subPill, archVal === null && styles.subPillActive]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    onFiltersChange({ ...filters, archetype: null });
+                  }}
+                >
+                  <Text style={[styles.subPillText, archVal === null && styles.subPillTextActive]}>All</Text>
+                </Pressable>
+                {ARCHETYPE_OPTIONS.map((arch) => {
+                  const selected = archVal === arch.value;
+                  return (
+                    <Pressable
+                      key={arch.value}
+                      style={[styles.subPill, selected && styles.subPillActive]}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        onFiltersChange({ ...filters, archetype: selected ? null : arch.value });
+                      }}
+                    >
+                      <Text style={[styles.subPillText, selected && styles.subPillTextActive]} numberOfLines={1}>
+                        {arch.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
           </View>
         );
       })()}
