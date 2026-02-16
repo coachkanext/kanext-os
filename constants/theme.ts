@@ -72,7 +72,7 @@ const palette = {
   text: '#DDDDDD',               // Heading color
   textSecondary: '#8F8F8F',      // Body color
   textTertiary: '#424242',       // Muted / tertiary
-  background: '#050608',         // Page background (near-black)
+  background: '#000000',         // Page background (jet black)
   backgroundSecondary: '#0E0C0C', // Panel BG
   backgroundTertiary: '#181616',  // Elevated surface
 
@@ -87,7 +87,7 @@ const palette = {
   iconActive: '#DDDDDD',
 
   // Tab Bar
-  tabBar: '#050608',
+  tabBar: '#000000',
   tabIconDefault: '#424242',
   tabIconSelected: '#FFFFFF',    // White
 
@@ -117,7 +117,7 @@ export const Colors = {
 
 export const BusinessPalette = {
   // Core surfaces
-  obsidian: '#0B0D10',        // Primary background
+  obsidian: '#000000',        // Primary background (jet black)
   carbon: '#181616',          // Cards / sheets
   graphite: 'rgba(255,255,255,0.08)', // Hairline borders
   smoke: '#DDDDDD',           // Primary text (heading)

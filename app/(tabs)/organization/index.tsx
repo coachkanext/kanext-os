@@ -8,7 +8,6 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import PagerView from 'react-native-pager-view';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
@@ -25,7 +24,6 @@ import { OrgPeopleTab } from '@/components/organization/org-people-tab';
 import { OrgOperationsTab } from '@/components/organization/org-operations-tab';
 import { OrgFinanceTab } from '@/components/organization/org-finance-tab';
 import { OrgSwitcherSheet } from '@/components/organization/org-switcher-sheet';
-import { getOrgsForMode } from '@/data/mock-org-switcher';
 import {
   INSTITUTION,
   INSTITUTION_LEADERSHIP,
@@ -513,7 +511,6 @@ function EnterpriseOrganization() {
 
   return (
     <EnterpriseProvider>
-      <CompanySwitcher />
       <PagedTabBar tabs={ORG_TABS.enterprise} activeIndex={activeIndex} onTabPress={handleTabPress} />
       <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.enterprise.length} onAdvance={handleTabPress}>
         <PagerView
@@ -1432,34 +1429,9 @@ function CommunityOrganization() {
 // =============================================================================
 
 export default function OrganizationScreen() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const insets = useSafeAreaInsets();
   const { state, setOrganization } = useAppContext();
   const mode = useMode();
   const [switcherVisible, setSwitcherVisible] = useState(false);
-
-  const orgsForMode = useMemo(() => getOrgsForMode(mode), [mode]);
-
-  const getOrganizationTitle = () => {
-    if (state.organization) {
-      return state.organization.name;
-    }
-    switch (state.mode) {
-      case 'sports':
-        return 'Lincoln University';
-      case 'enterprise':
-        return 'KaNeXT';
-      case 'church':
-        return 'International Christian Center';
-      case 'education':
-        return 'Florida Memorial University';
-      case 'community':
-        return 'K-1 Competition';
-      default:
-        return 'Organization';
-    }
-  };
 
   const renderModeContent = () => {
     switch (mode) {
@@ -1480,32 +1452,8 @@ export default function OrganizationScreen() {
 
   // All modes now use PagerView — no ScrollView wrapper needed
   return (
-    <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerRow}>
-          <View style={{ flex: 1 }}>
-            <ThemedText type="title" style={styles.headerTitle}>
-              {getOrganizationTitle()}
-            </ThemedText>
-            {state.cycle && (
-              <ThemedText style={[styles.cycleLabel, { color: colors.textSecondary }]}>
-                {state.cycle.name}
-              </ThemedText>
-            )}
-          </View>
-          {orgsForMode.length > 1 && (
-            <Pressable
-              onPress={() => setSwitcherVisible(true)}
-              style={({ pressed }) => [styles.switcherButton, pressed && { opacity: 0.6 }]}
-            >
-              <IconSymbol name="arrow.left.arrow.right" size={20} color={colors.textSecondary} />
-            </Pressable>
-          )}
-        </View>
-      </View>
-
-      {/* Mode Content (each mode owns its PagerView) */}
+    <ThemedView style={styles.container}>
+      {/* Mode Content (each mode owns its PagerView + PagedTabBar) */}
       {renderModeContent()}
 
       {/* Org Switcher Sheet */}
@@ -1535,27 +1483,6 @@ export default function OrganizationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.md,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-  },
-  switcherButton: {
-    padding: Spacing.xs,
-    marginTop: 4,
-  },
-  cycleLabel: {
-    fontSize: 15,
-    marginTop: Spacing.xs,
   },
   scrollContent: {
     paddingHorizontal: Spacing.md,

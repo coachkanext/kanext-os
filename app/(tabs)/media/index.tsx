@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#050608',
+    borderColor: '#000000',
   },
   storyName: {
     fontSize: 11,

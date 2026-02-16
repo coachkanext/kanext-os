@@ -14,6 +14,7 @@ import {
   Dimensions,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
@@ -31,6 +32,7 @@ export interface PagedTabBarProps {
 export function PagedTabBar({ tabs, activeIndex, onTabPress }: PagedTabBarProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
 
   // Auto-scroll to the page containing the active tab
@@ -44,7 +46,7 @@ export function PagedTabBar({ tabs, activeIndex, onTabPress }: PagedTabBarProps)
   }, [activeIndex, scrollToPage]);
 
   return (
-    <View style={[styles.container, { borderBottomColor: colors.divider }]}>
+    <View style={[styles.container, { borderBottomColor: colors.divider, paddingTop: insets.top }]}>
       <ScrollView
         ref={scrollRef}
         horizontal
@@ -88,7 +90,6 @@ export function PagedTabBar({ tabs, activeIndex, onTabPress }: PagedTabBarProps)
 const styles = StyleSheet.create({
   container: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingTop: 4,
   },
   tab: {
     width: TAB_WIDTH,
