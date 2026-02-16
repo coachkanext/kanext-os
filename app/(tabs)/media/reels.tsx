@@ -1,11 +1,13 @@
 /**
  * Reels — TikTok-style vertical feed of short-form video content.
  * FlatList with pagingEnabled, tap pause/play, side actions, bottom overlay.
+ * Premium design with "Following | For You" toggle.
  */
 
 import React, { useState, useCallback } from 'react';
 import { View, FlatList, Pressable, StyleSheet, Dimensions, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -21,10 +23,13 @@ const MAIN_TAB_BAR_H = Platform.OS === 'ios' ? Layout.tabBarHeight : 60;
 const SUB_FOOTER_H = 52;
 const ITEM_HEIGHT = SCREEN_HEIGHT - MAIN_TAB_BAR_H - SUB_FOOTER_H;
 
+type ReelFeed = 'following' | 'for_you';
+
 export default function ReelsScreen() {
   const insets = useSafeAreaInsets();
   const [shareVisible, setShareVisible] = useState(false);
   const [shareTitle, setShareTitle] = useState('');
+  const [activeFeed, setActiveFeed] = useState<ReelFeed>('for_you');
 
   // Sort by most recent
   const reels = [...MOCK_REELS].sort(
@@ -51,15 +56,49 @@ export default function ReelsScreen() {
     <ThemedView style={styles.container}>
       {/* Header overlay */}
       <View style={[styles.headerOverlay, { top: insets.top }]}>
-        <ThemedText style={styles.headerTitle}>Reels</ThemedText>
-        <View style={styles.headerIcons}>
-          <Pressable style={styles.headerIconBtn}>
-            <IconSymbol name="magnifyingglass" size={16} color="#fff" />
+        <Pressable style={styles.headerIconBtn}>
+          <IconSymbol name="tv" size={18} color="#fff" />
+        </Pressable>
+
+        {/* Following / For You toggle */}
+        <View style={styles.feedToggle}>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setActiveFeed('following');
+            }}
+          >
+            <ThemedText
+              style={[
+                styles.feedToggleText,
+                activeFeed === 'following' && styles.feedToggleActive,
+              ]}
+            >
+              Following
+            </ThemedText>
+            {activeFeed === 'following' && <View style={styles.feedToggleIndicator} />}
           </Pressable>
-          <Pressable style={styles.headerIconBtn}>
-            <IconSymbol name="bell.fill" size={16} color="#fff" />
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setActiveFeed('for_you');
+            }}
+          >
+            <ThemedText
+              style={[
+                styles.feedToggleText,
+                activeFeed === 'for_you' && styles.feedToggleActive,
+              ]}
+            >
+              For You
+            </ThemedText>
+            {activeFeed === 'for_you' && <View style={styles.feedToggleIndicator} />}
           </Pressable>
         </View>
+
+        <Pressable style={styles.headerIconBtn}>
+          <IconSymbol name="magnifyingglass" size={18} color="#fff" />
+        </Pressable>
       </View>
 
       <FlatList
@@ -93,27 +132,49 @@ const styles = StyleSheet.create({
   },
   headerOverlay: {
     position: 'absolute',
-    left: 16,
-    right: 16,
+    left: 0,
+    right: 0,
     zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#fff',
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   headerIconBtn: {
-    padding: 4,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Feed toggle
+  feedToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 24,
+  },
+  feedToggleText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.5)',
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+    textAlign: 'center',
+  },
+  feedToggleActive: {
+    color: '#fff',
+    fontWeight: '700',
+  },
+  feedToggleIndicator: {
+    width: 24,
+    height: 2.5,
+    borderRadius: 1.5,
+    backgroundColor: '#fff',
+    alignSelf: 'center',
+    marginTop: 4,
   },
 });

@@ -14,9 +14,10 @@ import type { Mode } from '@/types';
 
 const MODES: { id: Mode; label: string }[] = [
   { id: 'sports', label: 'Sports' },
-  { id: 'enterprise', label: 'Enterprise' },
+  { id: 'enterprise', label: 'Business' },
   { id: 'church', label: 'Church' },
   { id: 'education', label: 'Education' },
+  { id: 'community', label: 'Competition' },
 ];
 
 interface ModeSelectorProps {

@@ -15,9 +15,10 @@ import type { Mode } from '@/types';
 
 const MODE_LABELS: Record<Mode, string> = {
   sports: 'Sports',
-  enterprise: 'Enterprise',
+  enterprise: 'Business',
   church: 'Church',
   education: 'Education',
+  community: 'Competition',
 };
 
 const MODE_ICONS: Record<Mode, import('@/components/ui/icon-symbol').IconSymbolName> = {
@@ -25,6 +26,7 @@ const MODE_ICONS: Record<Mode, import('@/components/ui/icon-symbol').IconSymbolN
   enterprise: 'briefcase.fill',
   church: 'building.columns.fill',
   education: 'graduationcap.fill',
+  community: 'flag.checkered',
 };
 
 interface NexusTopBarProps {

@@ -1,0 +1,194 @@
+/**
+ * Mock Community (K-1 LeagueOS) Data
+ * Teams, drivers, events, standings for K-1 Speed motorsport league.
+ */
+
+// =============================================================================
+// TYPES
+// =============================================================================
+
+export interface K1Team {
+  id: string;
+  name: string;
+  abbreviation: string;
+  primaryColor: string;
+  owner: string;
+  homeTrack: string;
+  driverCount: number;
+  wins: number;
+  points: number;
+}
+
+export interface K1Driver {
+  id: string;
+  name: string;
+  initials: string;
+  number: string;
+  teamId: string;
+  teamName: string;
+  teamColor: string;
+  nationality: string;
+  age: number;
+  wins: number;
+  podiums: number;
+  points: number;
+  avgFinish: number;
+  fastestLaps: number;
+}
+
+export interface K1Event {
+  id: string;
+  name: string;
+  track: string;
+  location: string;
+  date: string;
+  status: 'upcoming' | 'live' | 'completed';
+  laps: number;
+  winner?: string;
+  winnerTeam?: string;
+  weather?: string;
+}
+
+export interface K1StandingEntry {
+  position: number;
+  driverId: string;
+  driverName: string;
+  driverNumber: string;
+  teamName: string;
+  teamColor: string;
+  points: number;
+  wins: number;
+  podiums: number;
+  gap: string;
+}
+
+export interface K1Rule {
+  id: string;
+  title: string;
+  category: 'race' | 'technical' | 'safety' | 'sporting';
+  summary: string;
+}
+
+export type CommunityHubTab =
+  | 'home'
+  | 'weekend'
+  | 'standings'
+  | 'grid'
+  | 'teams'
+  | 'race-ops'
+  | 'rules'
+  | 'wildcard'
+  | 'commercial'
+  | 'sim'
+  | 'development';
+
+// =============================================================================
+// MOCK TEAMS
+// =============================================================================
+
+export const K1_TEAMS: K1Team[] = [
+  { id: 't-1', name: 'Apex Racing', abbreviation: 'APX', primaryColor: '#EF4444', owner: 'Marcus Kane', homeTrack: 'Circuit of the Americas', driverCount: 2, wins: 4, points: 312 },
+  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#3B82F6', owner: 'Sarah Chen', homeTrack: 'Laguna Seca', driverCount: 2, wins: 3, points: 287 },
+  { id: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#F59E0B', owner: 'David Okafor', homeTrack: 'Road Atlanta', driverCount: 2, wins: 2, points: 256 },
+  { id: 't-4', name: 'Zenith Racing', abbreviation: 'ZEN', primaryColor: '#22C55E', owner: 'Anna Petrov', homeTrack: 'Watkins Glen', driverCount: 2, wins: 2, points: 241 },
+  { id: 't-5', name: 'Shadow GP', abbreviation: 'SHD', primaryColor: '#7C3AED', owner: 'James Wright', homeTrack: 'Barber Motorsports', driverCount: 2, wins: 1, points: 198 },
+  { id: 't-6', name: 'Titan Racing', abbreviation: 'TTN', primaryColor: '#EC4899', owner: 'Lisa Rodriguez', homeTrack: 'Mid-Ohio', driverCount: 2, wins: 0, points: 167 },
+  { id: 't-7', name: 'Nova Speed', abbreviation: 'NVA', primaryColor: '#06B6D4', owner: 'Kai Tanaka', homeTrack: 'Sebring', driverCount: 2, wins: 0, points: 145 },
+  { id: 't-8', name: 'Iron Circuit', abbreviation: 'IRC', primaryColor: '#FFFFFF', owner: 'Mike Thompson', homeTrack: 'VIR', driverCount: 2, wins: 0, points: 132 },
+];
+
+// =============================================================================
+// MOCK DRIVERS
+// =============================================================================
+
+export const K1_DRIVERS: K1Driver[] = [
+  { id: 'd-1', name: 'Leo Vasquez', initials: 'LV', number: '7', teamId: 't-1', teamName: 'Apex Racing', teamColor: '#EF4444', nationality: 'USA', age: 24, wins: 3, podiums: 7, points: 178, avgFinish: 2.8, fastestLaps: 4 },
+  { id: 'd-2', name: 'Nadia Patel', initials: 'NP', number: '22', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#3B82F6', nationality: 'GBR', age: 26, wins: 2, podiums: 6, points: 156, avgFinish: 3.2, fastestLaps: 3 },
+  { id: 'd-3', name: 'Jake Morrison', initials: 'JM', number: '11', teamId: 't-1', teamName: 'Apex Racing', teamColor: '#EF4444', nationality: 'AUS', age: 22, wins: 1, podiums: 4, points: 134, avgFinish: 4.1, fastestLaps: 2 },
+  { id: 'd-4', name: 'Yuki Tanaka', initials: 'YT', number: '33', teamId: 't-3', teamName: 'Phoenix Motorsport', teamColor: '#F59E0B', nationality: 'JPN', age: 23, wins: 2, podiums: 5, points: 148, avgFinish: 3.5, fastestLaps: 3 },
+  { id: 'd-5', name: 'Marcus Bell', initials: 'MB', number: '5', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#3B82F6', nationality: 'USA', age: 28, wins: 1, podiums: 5, points: 131, avgFinish: 3.8, fastestLaps: 1 },
+  { id: 'd-6', name: 'Sofia Torres', initials: 'ST', number: '44', teamId: 't-4', teamName: 'Zenith Racing', teamColor: '#22C55E', nationality: 'ESP', age: 25, wins: 2, podiums: 4, points: 142, avgFinish: 3.6, fastestLaps: 2 },
+  { id: 'd-7', name: 'Andre Williams', initials: 'AW', number: '8', teamId: 't-3', teamName: 'Phoenix Motorsport', teamColor: '#F59E0B', nationality: 'USA', age: 21, wins: 0, podiums: 3, points: 108, avgFinish: 5.2, fastestLaps: 1 },
+  { id: 'd-8', name: 'Emma Lindqvist', initials: 'EL', number: '16', teamId: 't-4', teamName: 'Zenith Racing', teamColor: '#22C55E', nationality: 'SWE', age: 27, wins: 0, podiums: 2, points: 99, avgFinish: 5.8, fastestLaps: 0 },
+  { id: 'd-9', name: 'Carlos Mendez', initials: 'CM', number: '99', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#7C3AED', nationality: 'MEX', age: 24, wins: 1, podiums: 3, points: 112, avgFinish: 4.5, fastestLaps: 2 },
+  { id: 'd-10', name: 'Grace Kim', initials: 'GK', number: '18', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#7C3AED', nationality: 'KOR', age: 23, wins: 0, podiums: 1, points: 86, avgFinish: 6.1, fastestLaps: 0 },
+  { id: 'd-11', name: 'Ryan Fletcher', initials: 'RF', number: '3', teamId: 't-6', teamName: 'Titan Racing', teamColor: '#EC4899', nationality: 'CAN', age: 26, wins: 0, podiums: 2, points: 94, avgFinish: 5.4, fastestLaps: 1 },
+  { id: 'd-12', name: 'Mia Santos', initials: 'MS', number: '27', teamId: 't-6', teamName: 'Titan Racing', teamColor: '#EC4899', nationality: 'BRA', age: 22, wins: 0, podiums: 1, points: 73, avgFinish: 6.8, fastestLaps: 0 },
+  { id: 'd-13', name: 'Zach Cooper', initials: 'ZC', number: '41', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#06B6D4', nationality: 'USA', age: 25, wins: 0, podiums: 1, points: 81, avgFinish: 6.3, fastestLaps: 1 },
+  { id: 'd-14', name: 'Priya Sharma', initials: 'PS', number: '14', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#06B6D4', nationality: 'IND', age: 24, wins: 0, podiums: 0, points: 64, avgFinish: 7.2, fastestLaps: 0 },
+  { id: 'd-15', name: 'Tyler Brooks', initials: 'TB', number: '21', teamId: 't-8', teamName: 'Iron Circuit', teamColor: '#FFFFFF', nationality: 'USA', age: 29, wins: 0, podiums: 1, points: 72, avgFinish: 6.5, fastestLaps: 0 },
+  { id: 'd-16', name: 'Olivia Dunn', initials: 'OD', number: '36', teamId: 't-8', teamName: 'Iron Circuit', teamColor: '#FFFFFF', nationality: 'IRL', age: 23, wins: 0, podiums: 0, points: 60, avgFinish: 7.8, fastestLaps: 0 },
+];
+
+// =============================================================================
+// MOCK EVENTS (Race Calendar)
+// =============================================================================
+
+export const K1_EVENTS: K1Event[] = [
+  { id: 'e-1', name: 'K-1 Opener', track: 'COTA', location: 'Austin, TX', date: 'Mar 8, 2026', status: 'completed', laps: 45, winner: 'Leo Vasquez', winnerTeam: 'Apex Racing' },
+  { id: 'e-2', name: 'Pacific Grand Prix', track: 'Laguna Seca', location: 'Monterey, CA', date: 'Mar 22, 2026', status: 'completed', laps: 42, winner: 'Nadia Patel', winnerTeam: 'Velocity Works' },
+  { id: 'e-3', name: 'Peach State Classic', track: 'Road Atlanta', location: 'Braselton, GA', date: 'Apr 5, 2026', status: 'completed', laps: 48, winner: 'Yuki Tanaka', winnerTeam: 'Phoenix Motorsport' },
+  { id: 'e-4', name: 'Empire State Grand Prix', track: 'Watkins Glen', location: 'Watkins Glen, NY', date: 'Apr 19, 2026', status: 'completed', laps: 44, winner: 'Sofia Torres', winnerTeam: 'Zenith Racing' },
+  { id: 'e-5', name: 'Heartland 300', track: 'Mid-Ohio', location: 'Lexington, OH', date: 'May 3, 2026', status: 'completed', laps: 50, winner: 'Leo Vasquez', winnerTeam: 'Apex Racing' },
+  { id: 'e-6', name: 'Barber Invitational', track: 'Barber Motorsports', location: 'Birmingham, AL', date: 'May 17, 2026', status: 'completed', laps: 46, winner: 'Carlos Mendez', winnerTeam: 'Shadow GP' },
+  { id: 'e-7', name: 'Sebring Sprint', track: 'Sebring', location: 'Sebring, FL', date: 'May 31, 2026', status: 'completed', laps: 52, winner: 'Nadia Patel', winnerTeam: 'Velocity Works' },
+  { id: 'e-8', name: 'Virginia Classic', track: 'VIR', location: 'Alton, VA', date: 'Jun 14, 2026', status: 'completed', laps: 44, winner: 'Leo Vasquez', winnerTeam: 'Apex Racing' },
+  { id: 'e-9', name: 'Summer Showdown', track: 'Road America', location: 'Elkhart Lake, WI', date: 'Jun 28, 2026', status: 'completed', laps: 48, winner: 'Yuki Tanaka', winnerTeam: 'Phoenix Motorsport' },
+  { id: 'e-10', name: 'Independence GP', track: 'Indianapolis', location: 'Indianapolis, IN', date: 'Jul 4, 2026', status: 'completed', laps: 55, winner: 'Jake Morrison', winnerTeam: 'Apex Racing' },
+  { id: 'e-11', name: 'Mountain Circuit', track: 'Sonoma', location: 'Sonoma, CA', date: 'Jul 18, 2026', status: 'completed', laps: 43, winner: 'Sofia Torres', winnerTeam: 'Zenith Racing' },
+  { id: 'e-12', name: 'Thunder Classic', track: 'Portland', location: 'Portland, OR', date: 'Aug 1, 2026', status: 'upcoming', laps: 46, weather: 'Partly Cloudy · 72°F' },
+  { id: 'e-13', name: 'Lonestar Grand Prix', track: 'COTA', location: 'Austin, TX', date: 'Aug 15, 2026', status: 'upcoming', laps: 45 },
+  { id: 'e-14', name: 'Season Finale', track: 'Laguna Seca', location: 'Monterey, CA', date: 'Sep 5, 2026', status: 'upcoming', laps: 50 },
+];
+
+// =============================================================================
+// STANDINGS (Driver Championship)
+// =============================================================================
+
+export const K1_STANDINGS: K1StandingEntry[] = K1_DRIVERS
+  .sort((a, b) => b.points - a.points)
+  .map((d, i) => ({
+    position: i + 1,
+    driverId: d.id,
+    driverName: d.name,
+    driverNumber: d.number,
+    teamName: d.teamName,
+    teamColor: d.teamColor,
+    points: d.points,
+    wins: d.wins,
+    podiums: d.podiums,
+    gap: i === 0 ? 'Leader' : `−${K1_DRIVERS.sort((a, b) => b.points - a.points)[0].points - d.points}`,
+  }));
+
+// =============================================================================
+// RULES
+// =============================================================================
+
+export const K1_RULES: K1Rule[] = [
+  { id: 'r-1', title: 'Race Start Procedure', category: 'race', summary: 'Rolling start with 2 formation laps. Green flag at race control discretion. Jump start penalty: drive-through.' },
+  { id: 'r-2', title: 'Points System', category: 'sporting', summary: '25-18-15-12-10-8-6-4-2-1 for top 10. +1 for fastest lap (if finishing in top 10). +3 for pole position.' },
+  { id: 'r-3', title: 'Minimum Weight', category: 'technical', summary: 'Car + driver minimum 1,650 lbs at all times. Random post-race weight checks. Underweight = disqualification.' },
+  { id: 'r-4', title: 'Safety Car Protocol', category: 'safety', summary: 'Full course yellow with safety car. No overtaking until green flag zone. Lapped cars may unlap under safety car.' },
+  { id: 'r-5', title: 'Contact Penalties', category: 'sporting', summary: 'Avoidable contact: 5-second penalty. Causing a spin: 10-second penalty. Deliberate contact: black flag + hearing.' },
+  { id: 'r-6', title: 'Tire Regulations', category: 'technical', summary: 'Single compound spec tire. Maximum 3 sets per race weekend. No tire warmers. Minimum pressure: 22 PSI.' },
+  { id: 'r-7', title: 'Track Limits', category: 'race', summary: 'All four wheels must remain within white lines. 3 strikes = lap time deleted. 5+ strikes = 5-second time penalty.' },
+  { id: 'r-8', title: 'Driver Safety Gear', category: 'safety', summary: 'FIA-approved helmet, HANS device, fire suit, gloves, and boots required. Annual medical clearance mandatory.' },
+];
+
+// =============================================================================
+// HUB TABS
+// =============================================================================
+
+export const COMMUNITY_HUB_TABS: { id: CommunityHubTab; label: string }[] = [
+  { id: 'home', label: 'Home' },
+  { id: 'weekend', label: 'Weekend' },
+  { id: 'standings', label: 'Standings' },
+  { id: 'grid', label: 'Grid' },
+  { id: 'teams', label: 'Teams' },
+  { id: 'race-ops', label: 'Race Ops' },
+  { id: 'rules', label: 'Rules' },
+  { id: 'wildcard', label: 'Wildcard' },
+  { id: 'commercial', label: 'Commercial' },
+  { id: 'sim', label: 'Sim' },
+  { id: 'development', label: 'Development' },
+];

@@ -469,19 +469,25 @@ export default function GameDetailScreen() {
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { gameId } = useLocalSearchParams<{ gameId: string }>();
+  const { gameId, tab, espnTab: initialEspnTab } = useLocalSearchParams<{ gameId: string; tab?: string; espnTab?: string }>();
 
   const isAuthenticated = useIsAuthenticated();
 
   const game = ALL_GAMES[gameId ?? ''] ?? { opponent: 'Unknown', date: '—', location: '—', status: 'upcoming' as GameStatus };
-  const [activeTab, setActiveTab] = useState<DetailTab>(() => defaultTab(game.status));
+  const [activeTab, setActiveTab] = useState<DetailTab>(() => {
+    if (tab && ['prep', 'live', 'report', 'replay'].includes(tab)) return tab as DetailTab;
+    return defaultTab(game.status);
+  });
 
   const [pbpFilter, setPbpFilter] = useState<PbpCategory | 'all'>('all');
   const [filtersExpanded, setFiltersExpanded] = useState(false);
   const [showGameActions, setShowGameActions] = useState(false);
   const [boxScoreTeam, setBoxScoreTeam] = useState<'fmu' | 'opp'>('fmu');
   const [boxScoreExpanded, setBoxScoreExpanded] = useState(false);
-  const [espnTab, setEspnTab] = useState<'gamecast' | 'boxscore' | 'pbp' | 'teamstats'>('gamecast');
+  const [espnTab, setEspnTab] = useState<'gamecast' | 'boxscore' | 'pbp' | 'teamstats'>(() => {
+    if (initialEspnTab && ['gamecast', 'boxscore', 'pbp', 'teamstats'].includes(initialEspnTab)) return initialEspnTab as any;
+    return 'gamecast';
+  });
   const [liveSubTab, setLiveSubTab] = useState<'plays' | 'box' | 'team' | 'leaders'>('plays');
   const [liveBoxTeam, setLiveBoxTeam] = useState<'fmu' | 'opp'>('fmu');
   // Shot chart filter state

@@ -1,372 +1,628 @@
 /**
  * Feed Card — unified card rendering all 10 feed post types.
- * Types: update, clip, game, practice, recruiting, player_dev, culture, compliance, system, poll
+ * Premium X/Twitter-level design with Luxury Control Room palette.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-messages';
 import type { FeedPost } from '@/data/mock-messages';
+
+const ACCENT_GOLD = '#FFFFFF';
 
 interface FeedCardProps {
   post: FeedPost;
 }
 
 export function FeedCard({ post }: FeedCardProps) {
-  const handlePress = () => {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(post.saved ?? false);
+
+  const handlePress = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  const handleLike = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setLiked(!liked);
+  };
+  const handleSave = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSaved(!saved);
   };
 
+  const isSystem = post.author.role === 'System';
+  const timeAgo = formatMessageTime(post.timestamp);
+
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.card,
-        { backgroundColor: pressed ? '#191919' : '#111' },
-      ]}
-      onPress={handlePress}
-    >
+    <View style={[styles.card, { borderBottomColor: colors.border }]}>
       {/* Pinned Banner */}
       {post.pinned && (
         <View style={styles.pinnedBanner}>
-          <IconSymbol name="pin.fill" size={11} color="#6e6e6e" />
-          <ThemedText style={styles.pinnedText}>Pinned</ThemedText>
+          <IconSymbol name="pin.fill" size={11} color={colors.textTertiary} />
+          <ThemedText style={[styles.pinnedText, { color: colors.textTertiary }]}>
+            Pinned
+          </ThemedText>
         </View>
       )}
 
-      {/* Header Row */}
-      <View style={styles.header}>
-        <View style={[styles.avatar, { backgroundColor: post.author.roleBadgeColor }]}>
-          <ThemedText style={styles.avatarText}>{post.author.initials}</ThemedText>
-        </View>
-        <View style={styles.headerInfo}>
-          <View style={styles.nameRow}>
-            <ThemedText style={styles.authorName}>{post.author.name}</ThemedText>
-            <View style={[styles.roleBadge, { backgroundColor: '#191919' }]}>
-              <ThemedText style={styles.roleText}>{post.author.role}</ThemedText>
-            </View>
-          </View>
-        </View>
-        <ThemedText style={styles.timestamp}>{formatMessageTime(post.timestamp)}</ThemedText>
-      </View>
-
-      {/* Body — conditional by type */}
-      <View style={styles.body}>
-        {post.type === 'update' && post.body && (
-          <ThemedText style={styles.bodyText} numberOfLines={3}>
-            {post.body}
+      <View style={styles.mainRow}>
+        {/* Avatar */}
+        <View
+          style={[
+            styles.avatar,
+            { backgroundColor: isSystem ? ACCENT_GOLD + '18' : colors.backgroundTertiary },
+            isSystem && { borderWidth: 1.5, borderColor: ACCENT_GOLD + '50' },
+          ]}
+        >
+          <ThemedText
+            style={[
+              styles.avatarText,
+              { color: isSystem ? ACCENT_GOLD : colors.text },
+            ]}
+          >
+            {post.author.initials}
           </ThemedText>
-        )}
+        </View>
 
-        {post.type === 'clip' && (
-          <View>
-            <View style={styles.clipContainer}>
-              <IconSymbol name="play.rectangle.fill" size={20} color="#6e6e6e" />
-              <ThemedText style={styles.clipTitle} numberOfLines={2}>
-                {post.clipTitle}
+        {/* Content Column */}
+        <View style={styles.content}>
+          {/* Author Row */}
+          <View style={styles.authorRow}>
+            <View style={styles.nameGroup}>
+              <ThemedText style={[styles.authorName, { color: colors.text }]}>
+                {post.author.name}
+              </ThemedText>
+              {isSystem && (
+                <View style={[styles.verifiedBadge, { backgroundColor: ACCENT_GOLD }]}>
+                  <IconSymbol name="checkmark" size={7} color="#000" />
+                </View>
+              )}
+              <ThemedText style={[styles.roleMeta, { color: colors.textTertiary }]}>
+                · {post.author.role} · {timeAgo}
               </ThemedText>
             </View>
-            {post.clipSource && (
-              <View style={styles.sourceBadge}>
-                <ThemedText style={styles.sourceText}>{post.clipSource}</ThemedText>
+            <Pressable hitSlop={8} onPress={handlePress}>
+              <IconSymbol name="ellipsis" size={14} color={colors.textTertiary} />
+            </Pressable>
+          </View>
+
+          {/* === Body (type-specific) === */}
+
+          {/* Update */}
+          {post.type === 'update' && post.body && (
+            <ThemedText
+              style={[styles.bodyText, { color: colors.textSecondary }]}
+              numberOfLines={4}
+            >
+              {post.body}
+            </ThemedText>
+          )}
+
+          {/* Clip — Rich media preview card */}
+          {post.type === 'clip' && (
+            <Pressable
+              style={[styles.clipCard, { backgroundColor: '#1B2838' }]}
+              onPress={handlePress}
+            >
+              <LinearGradient
+                colors={['transparent', 'rgba(0,0,0,0.7)']}
+                style={styles.clipGradient}
+              />
+              <View style={styles.clipPlayBtn}>
+                <IconSymbol name="play.fill" size={18} color="#fff" />
               </View>
-            )}
-          </View>
-        )}
-
-        {post.type === 'game' && (
-          <View>
-            <ThemedText style={styles.gameTitle}>{post.gameTitle}</ThemedText>
-            {post.gameMetrics && (
-              <View style={styles.metricsRow}>
-                {post.gameMetrics.map((metric, i) => (
-                  <ThemedText key={i} style={styles.metricText}>
-                    {metric}
-                  </ThemedText>
-                ))}
+              <View style={styles.clipTypeBadge}>
+                <ThemedText style={styles.clipTypeText}>CLIP</ThemedText>
               </View>
-            )}
-          </View>
-        )}
+              <View style={styles.clipBottom}>
+                <ThemedText style={styles.clipTitle} numberOfLines={1}>
+                  {post.clipTitle}
+                </ThemedText>
+                {post.clipSource && (
+                  <View style={styles.clipSourcePill}>
+                    <ThemedText style={styles.clipSourceText}>
+                      {post.clipSource}
+                    </ThemedText>
+                  </View>
+                )}
+              </View>
+            </Pressable>
+          )}
 
-        {post.type === 'practice' && (
-          <View>
-            <ThemedText style={styles.practiceTitle}>{post.practiceTitle}</ThemedText>
-            {post.practiceSub && (
-              <ThemedText style={styles.practiceSub}>{post.practiceSub}</ThemedText>
-            )}
-          </View>
-        )}
+          {/* Game — Score card */}
+          {post.type === 'game' && (
+            <View
+              style={[
+                styles.gameCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
+            >
+              <ThemedText style={[styles.gameTitle, { color: colors.text }]}>
+                {post.gameTitle}
+              </ThemedText>
+              {post.gameMetrics && (
+                <View style={styles.metricsRow}>
+                  {post.gameMetrics.map((metric, i) => (
+                    <View
+                      key={i}
+                      style={[
+                        styles.metricPill,
+                        { backgroundColor: colors.backgroundTertiary },
+                      ]}
+                    >
+                      <ThemedText
+                        style={[styles.metricText, { color: colors.textSecondary }]}
+                      >
+                        {metric}
+                      </ThemedText>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          )}
 
-        {post.type === 'recruiting' && (
-          <View style={styles.recruitRow}>
-            <ThemedText style={styles.recruitName}>{post.recruitName}</ThemedText>
-            {post.recruitStatus && (
-              <View style={[styles.recruitChip, { backgroundColor: `${post.recruitStatusColor}20` }]}>
-                <ThemedText style={[styles.recruitChipText, { color: post.recruitStatusColor }]}>
-                  {post.recruitStatus}
+          {/* Practice */}
+          {post.type === 'practice' && (
+            <View
+              style={[
+                styles.practiceCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
+            >
+              <View style={styles.practiceIconRow}>
+                <IconSymbol name="figure.run" size={14} color={colors.textTertiary} />
+                <ThemedText style={[styles.practiceTitle, { color: colors.text }]}>
+                  {post.practiceTitle}
                 </ThemedText>
               </View>
-            )}
-          </View>
-        )}
+              {post.practiceSub && (
+                <ThemedText
+                  style={[styles.practiceSub, { color: colors.textTertiary }]}
+                >
+                  {post.practiceSub}
+                </ThemedText>
+              )}
+            </View>
+          )}
 
-        {post.type === 'player_dev' && (
-          <View>
-            <View style={styles.playerDevHeader}>
-              <IconSymbol name="chart.line.uptrend.xyaxis" size={16} color="#6e6e6e" />
-              <ThemedText style={styles.playerDevMetric}>{post.playerDevMetric}</ThemedText>
-              {post.playerDevDelta && (
-                <View style={[styles.deltaBadge, { backgroundColor: `${post.playerDevDeltaColor}20` }]}>
-                  <ThemedText style={[styles.deltaText, { color: post.playerDevDeltaColor }]}>
-                    {post.playerDevDelta}
+          {/* Recruiting */}
+          {post.type === 'recruiting' && (
+            <View style={styles.recruitRow}>
+              <ThemedText style={[styles.recruitName, { color: colors.text }]}>
+                {post.recruitName}
+              </ThemedText>
+              {post.recruitStatus && (
+                <View
+                  style={[
+                    styles.recruitChip,
+                    { backgroundColor: `${post.recruitStatusColor}18` },
+                  ]}
+                >
+                  <ThemedText
+                    style={[
+                      styles.recruitChipText,
+                      { color: post.recruitStatusColor },
+                    ]}
+                  >
+                    {post.recruitStatus}
                   </ThemedText>
                 </View>
               )}
             </View>
-            {post.body && (
-              <ThemedText style={styles.bodyText} numberOfLines={3}>
-                {post.body}
-              </ThemedText>
-            )}
-          </View>
-        )}
+          )}
 
-        {post.type === 'culture' && (
-          <View>
-            <View style={styles.cultureHeader}>
-              <IconSymbol name="heart.fill" size={14} color="#6e6e6e" />
-              <ThemedText style={styles.cultureTitle}>{post.cultureTitle}</ThemedText>
-            </View>
-            {post.cultureBody && (
-              <ThemedText style={styles.bodyText} numberOfLines={4}>
-                {post.cultureBody}
-              </ThemedText>
-            )}
-          </View>
-        )}
-
-        {post.type === 'compliance' && (
-          <View>
-            <ThemedText style={styles.complianceTitle}>{post.complianceTitle}</ThemedText>
-            <View style={styles.complianceRow}>
-              <ThemedText style={styles.complianceDue}>Due: {post.complianceDue}</ThemedText>
-              {post.complianceUrgent && (
-                <View style={styles.urgentBadge}>
-                  <ThemedText style={styles.urgentText}>Urgent</ThemedText>
-                </View>
+          {/* Player Dev */}
+          {post.type === 'player_dev' && (
+            <View>
+              <View style={styles.playerDevHeader}>
+                <IconSymbol
+                  name="chart.line.uptrend.xyaxis"
+                  size={14}
+                  color={ACCENT_GOLD}
+                />
+                <ThemedText style={[styles.playerDevMetric, { color: colors.text }]}>
+                  {post.playerDevMetric}
+                </ThemedText>
+                {post.playerDevDelta && (
+                  <View
+                    style={[
+                      styles.deltaBadge,
+                      { backgroundColor: `${post.playerDevDeltaColor}18` },
+                    ]}
+                  >
+                    <ThemedText
+                      style={[styles.deltaText, { color: post.playerDevDeltaColor }]}
+                    >
+                      {post.playerDevDelta}
+                    </ThemedText>
+                  </View>
+                )}
+              </View>
+              {post.body && (
+                <ThemedText
+                  style={[styles.bodyText, { color: colors.textSecondary }]}
+                  numberOfLines={3}
+                >
+                  {post.body}
+                </ThemedText>
               )}
             </View>
-          </View>
-        )}
+          )}
 
-        {post.type === 'system' && (
-          <View>
-            <View style={styles.systemHeader}>
-              <IconSymbol name="cpu" size={14} color="#6e6e6e" />
-              <ThemedText style={styles.systemTitle}>{post.systemTitle}</ThemedText>
-            </View>
-            {post.systemBody && (
-              <ThemedText style={styles.bodyText} numberOfLines={4}>
-                {post.systemBody}
-              </ThemedText>
-            )}
-          </View>
-        )}
-
-        {post.type === 'poll' && (
-          <View>
-            <ThemedText style={styles.pollQuestion}>{post.pollQuestion}</ThemedText>
-            {post.pollOptions?.map((opt, i) => (
-              <View key={i} style={styles.pollOptionRow}>
-                <View style={styles.pollBarBg}>
-                  <View style={[styles.pollBarFill, { width: `${opt.pct}%` }]} />
-                </View>
-                <View style={styles.pollLabelRow}>
-                  <ThemedText style={styles.pollLabel}>{opt.label}</ThemedText>
-                  <ThemedText style={styles.pollPct}>{opt.pct}%</ThemedText>
-                </View>
+          {/* Culture */}
+          {post.type === 'culture' && (
+            <View>
+              <View style={styles.cultureHeader}>
+                <IconSymbol name="heart.fill" size={13} color="#E1306C" />
+                <ThemedText style={[styles.cultureTitle, { color: colors.text }]}>
+                  {post.cultureTitle}
+                </ThemedText>
               </View>
-            ))}
-            {post.pollVoted && (
-              <ThemedText style={styles.pollVoted}>You voted</ThemedText>
-            )}
-          </View>
-        )}
-      </View>
+              {post.cultureBody && (
+                <ThemedText
+                  style={[styles.bodyText, { color: colors.textSecondary }]}
+                  numberOfLines={4}
+                >
+                  {post.cultureBody}
+                </ThemedText>
+              )}
+            </View>
+          )}
 
-      {/* V2 Footer — Reply / Repost / Save / Share / More */}
-      <View style={styles.footer}>
-        <View style={styles.footerActions}>
-          {/* Reply */}
-          <Pressable style={styles.footerBtn} onPress={handlePress}>
-            <IconSymbol name="bubble.left" size={14} color="#6e6e6e" />
-            {(post.commentCount ?? 0) > 0 && (
-              <ThemedText style={styles.footerBtnText}>{post.commentCount}</ThemedText>
-            )}
-          </Pressable>
-          {/* Repost (staff+) */}
-          <Pressable style={styles.footerBtn} onPress={handlePress}>
-            <IconSymbol name="arrow.2.squarepath" size={14} color="#6e6e6e" />
-          </Pressable>
-          {/* Save */}
-          <Pressable style={styles.footerBtn} onPress={handlePress}>
-            <IconSymbol name="bookmark" size={14} color={post.saved ? '#f5f5f5' : '#6e6e6e'} />
-          </Pressable>
-          {/* Share */}
-          <Pressable style={styles.footerBtn} onPress={handlePress}>
-            <IconSymbol name="square.and.arrow.up" size={14} color="#6e6e6e" />
-          </Pressable>
-          {/* More */}
-          <Pressable style={styles.footerBtn} onPress={handlePress}>
-            <IconSymbol name="ellipsis" size={14} color="#6e6e6e" />
-          </Pressable>
+          {/* Compliance */}
+          {post.type === 'compliance' && (
+            <View
+              style={[
+                styles.complianceCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
+            >
+              <View style={styles.complianceHeaderRow}>
+                <IconSymbol
+                  name="exclamationmark.shield.fill"
+                  size={14}
+                  color={post.complianceUrgent ? '#EF4444' : colors.textTertiary}
+                />
+                <ThemedText style={[styles.complianceTitle, { color: colors.text }]}>
+                  {post.complianceTitle}
+                </ThemedText>
+              </View>
+              <View style={styles.complianceRow}>
+                <ThemedText
+                  style={[styles.complianceDue, { color: colors.textTertiary }]}
+                >
+                  Due: {post.complianceDue}
+                </ThemedText>
+                {post.complianceUrgent && (
+                  <View style={styles.urgentBadge}>
+                    <ThemedText style={styles.urgentText}>Urgent</ThemedText>
+                  </View>
+                )}
+              </View>
+            </View>
+          )}
+
+          {/* System — Gold-tinted card */}
+          {post.type === 'system' && (
+            <View
+              style={[
+                styles.systemCard,
+                {
+                  backgroundColor: ACCENT_GOLD + '08',
+                  borderColor: ACCENT_GOLD + '20',
+                },
+              ]}
+            >
+              <View style={styles.systemHeader}>
+                <IconSymbol name="cpu" size={13} color={ACCENT_GOLD} />
+                <ThemedText style={[styles.systemTitle, { color: ACCENT_GOLD }]}>
+                  {post.systemTitle}
+                </ThemedText>
+              </View>
+              {post.systemBody && (
+                <ThemedText
+                  style={[styles.bodyText, { color: colors.textSecondary }]}
+                  numberOfLines={4}
+                >
+                  {post.systemBody}
+                </ThemedText>
+              )}
+            </View>
+          )}
+
+          {/* Poll — Gold accent bars */}
+          {post.type === 'poll' && (
+            <View>
+              <ThemedText style={[styles.pollQuestion, { color: colors.text }]}>
+                {post.pollQuestion}
+              </ThemedText>
+              {post.pollOptions?.map((opt, i) => (
+                <Pressable key={i} style={styles.pollOptionRow} onPress={handlePress}>
+                  <View
+                    style={[
+                      styles.pollBarBg,
+                      { backgroundColor: colors.backgroundTertiary },
+                    ]}
+                  >
+                    <View
+                      style={[
+                        styles.pollBarFill,
+                        {
+                          width: `${opt.pct}%`,
+                          backgroundColor: ACCENT_GOLD + '25',
+                        },
+                      ]}
+                    />
+                  </View>
+                  <View style={styles.pollLabelRow}>
+                    <ThemedText style={[styles.pollLabel, { color: colors.text }]}>
+                      {opt.label}
+                    </ThemedText>
+                    <ThemedText
+                      style={[styles.pollPct, { color: colors.textTertiary }]}
+                    >
+                      {opt.pct}%
+                    </ThemedText>
+                  </View>
+                </Pressable>
+              ))}
+              {post.pollVoted && (
+                <ThemedText style={[styles.pollVoted, { color: ACCENT_GOLD }]}>
+                  You voted
+                </ThemedText>
+              )}
+            </View>
+          )}
+
+          {/* === Engagement Row === */}
+          <View style={styles.engagementRow}>
+            <Pressable style={styles.engageBtn} hitSlop={6} onPress={handlePress}>
+              <IconSymbol name="bubble.left" size={15} color={colors.textTertiary} />
+              {(post.commentCount ?? 0) > 0 && (
+                <ThemedText
+                  style={[styles.engageCount, { color: colors.textTertiary }]}
+                >
+                  {post.commentCount}
+                </ThemedText>
+              )}
+            </Pressable>
+            <Pressable style={styles.engageBtn} hitSlop={6} onPress={handlePress}>
+              <IconSymbol
+                name="arrow.2.squarepath"
+                size={15}
+                color={colors.textTertiary}
+              />
+            </Pressable>
+            <Pressable style={styles.engageBtn} hitSlop={6} onPress={handleLike}>
+              <IconSymbol
+                name={liked ? 'heart.fill' : 'heart'}
+                size={15}
+                color={liked ? '#EF4444' : colors.textTertiary}
+              />
+            </Pressable>
+            <Pressable style={styles.engageBtn} hitSlop={6} onPress={handleSave}>
+              <IconSymbol
+                name={saved ? 'bookmark.fill' : 'bookmark'}
+                size={15}
+                color={saved ? ACCENT_GOLD : colors.textTertiary}
+              />
+            </Pressable>
+            <Pressable style={styles.engageBtn} hitSlop={6} onPress={handlePress}>
+              <IconSymbol
+                name="square.and.arrow.up"
+                size={15}
+                color={colors.textTertiary}
+              />
+            </Pressable>
+          </View>
         </View>
-        {(post.type === 'game' || post.type === 'practice' || post.type === 'recruiting') && (
-          <Pressable
-            style={({ pressed }) => [
-              styles.ctaPill,
-              { opacity: pressed ? 0.7 : 1 },
-            ]}
-            onPress={handlePress}
-          >
-            <ThemedText style={styles.ctaText}>View ▸</ThemedText>
-          </Pressable>
-        )}
       </View>
-    </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-    marginHorizontal: Spacing.md,
-    marginBottom: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingTop: 12,
+    paddingBottom: 4,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   pinnedBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    marginBottom: 6,
-    marginLeft: 44,
+    marginBottom: 4,
+    marginLeft: 52,
   },
   pinnedText: {
-    fontSize: 11,
-    color: '#6e6e6e',
-    fontWeight: '500',
+    fontSize: 12,
+    fontWeight: '600',
   },
-  header: {
+  mainRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: Spacing.sm,
+    alignItems: 'flex-start',
   },
   avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: Spacing.sm,
+    marginRight: 12,
   },
   avatarText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '700',
-    color: '#000',
   },
-  headerInfo: {
+  content: {
     flex: 1,
   },
-  nameRow: {
+  authorRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  nameGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 8,
   },
   authorName: {
     fontSize: 15,
-    fontWeight: '600',
-    color: '#f5f5f5',
+    fontWeight: '700',
   },
-  roleBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.sm,
+  verifiedBadge: {
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 4,
   },
-  roleText: {
-    fontSize: 11,
-    color: '#6e6e6e',
-    fontWeight: '500',
+  roleMeta: {
+    fontSize: 13,
+    fontWeight: '400',
+    marginLeft: 4,
+    flexShrink: 1,
   },
-  timestamp: {
-    fontSize: 12,
-    color: '#6e6e6e',
-  },
-  body: {
-    marginLeft: 44,
-  },
+
+  // Body text
   bodyText: {
     fontSize: 15,
     lineHeight: 21,
-    color: '#f5f5f5',
+    marginBottom: 8,
   },
 
-  // Clip
-  clipContainer: {
-    flexDirection: 'row',
+  // Clip — media preview card
+  clipCard: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    borderRadius: BorderRadius.lg,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  clipGradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '55%',
+  },
+  clipPlayBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  clipTypeBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 4,
+  },
+  clipTypeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: 0.5,
+  },
+  clipBottom: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 10,
+    paddingBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
   },
   clipTitle: {
-    fontSize: 14,
-    color: '#f5f5f5',
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#fff',
     flex: 1,
+    marginRight: 8,
   },
-  sourceBadge: {
-    backgroundColor: '#191919',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: BorderRadius.sm,
-    alignSelf: 'flex-start',
-    marginTop: 6,
+  clipSourcePill: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
   },
-  sourceText: {
-    fontSize: 11,
-    color: '#6e6e6e',
-    fontWeight: '500',
+  clipSourceText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.8)',
   },
 
-  // Game
+  // Game — bordered card
+  gameCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: 12,
+    marginBottom: 8,
+  },
   gameTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#f5f5f5',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   metricsRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 6,
     flexWrap: 'wrap',
   },
+  metricPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
   metricText: {
-    fontSize: 13,
-    color: '#6e6e6e',
+    fontSize: 12,
+    fontWeight: '600',
   },
 
-  // Practice
-  practiceTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#f5f5f5',
+  // Practice — bordered card
+  practiceCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: 12,
+    marginBottom: 8,
+  },
+  practiceIconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
     marginBottom: 4,
+  },
+  practiceTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    flex: 1,
   },
   practiceSub: {
     fontSize: 13,
-    color: '#6e6e6e',
     lineHeight: 18,
   },
 
@@ -376,15 +632,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     flexWrap: 'wrap',
+    marginBottom: 8,
   },
   recruitName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#f5f5f5',
   },
   recruitChip: {
     paddingHorizontal: 8,
-    paddingVertical: 3,
+    paddingVertical: 4,
     borderRadius: BorderRadius.full,
   },
   recruitChipText: {
@@ -402,12 +658,11 @@ const styles = StyleSheet.create({
   playerDevMetric: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
   },
   deltaBadge: {
     paddingHorizontal: 6,
     paddingVertical: 2,
-    borderRadius: BorderRadius.sm,
+    borderRadius: 4,
   },
   deltaText: {
     fontSize: 12,
@@ -424,15 +679,25 @@ const styles = StyleSheet.create({
   cultureTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
   },
 
-  // Compliance
-  complianceTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#f5f5f5',
+  // Compliance — bordered card
+  complianceCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: 12,
+    marginBottom: 8,
+  },
+  complianceHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
     marginBottom: 6,
+  },
+  complianceTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    flex: 1,
   },
   complianceRow: {
     flexDirection: 'row',
@@ -441,13 +706,12 @@ const styles = StyleSheet.create({
   },
   complianceDue: {
     fontSize: 13,
-    color: '#6e6e6e',
   },
   urgentBadge: {
     backgroundColor: '#EF444420',
     paddingHorizontal: 6,
     paddingVertical: 2,
-    borderRadius: BorderRadius.sm,
+    borderRadius: 4,
   },
   urgentText: {
     fontSize: 11,
@@ -455,7 +719,13 @@ const styles = StyleSheet.create({
     color: '#EF4444',
   },
 
-  // System
+  // System — gold-tinted card
+  systemCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: 12,
+    marginBottom: 8,
+  },
   systemHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -465,85 +735,64 @@ const styles = StyleSheet.create({
   systemTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
   },
 
-  // Poll
+  // Poll — gold accent bars
   pollQuestion: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#f5f5f5',
     marginBottom: 10,
   },
   pollOptionRow: {
-    marginBottom: 8,
+    marginBottom: 6,
   },
   pollBarBg: {
-    height: 28,
-    backgroundColor: '#191919',
-    borderRadius: BorderRadius.sm,
+    height: 32,
+    borderRadius: 6,
     overflow: 'hidden',
   },
   pollBarFill: {
     height: '100%',
-    backgroundColor: '#2a2a2a',
-    borderRadius: BorderRadius.sm,
+    borderRadius: 6,
   },
   pollLabelRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     position: 'absolute',
-    left: 8,
-    right: 8,
-    top: 6,
+    left: 10,
+    right: 10,
+    top: 7,
   },
   pollLabel: {
     fontSize: 13,
-    color: '#f5f5f5',
+    fontWeight: '500',
   },
   pollPct: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6e6e6e',
   },
   pollVoted: {
     fontSize: 12,
-    color: '#4CAF50',
-    fontWeight: '500',
+    fontWeight: '600',
     marginTop: 4,
+    marginBottom: 8,
   },
 
-  // Footer
-  footer: {
-    marginLeft: 44,
-    marginTop: Spacing.sm,
+  // Engagement Row
+  engagementRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingRight: 24,
   },
-  footerActions: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  footerBtn: {
+  engageBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 5,
   },
-  footerBtnText: {
-    fontSize: 12,
-    color: '#6e6e6e',
-  },
-  ctaPill: {
-    backgroundColor: '#191919',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: BorderRadius.full,
-    alignSelf: 'flex-start',
-  },
-  ctaText: {
+  engageCount: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#f5f5f5',
+    fontWeight: '500',
   },
 });

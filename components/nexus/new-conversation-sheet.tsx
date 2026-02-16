@@ -1,6 +1,7 @@
 /**
- * Engine Menu Sheet
- * Bottom sheet for selecting Nexus engine modes.
+ * Insert Sheet
+ * Bottom sheet for inserting objects, links, or files into a Nexus conversation.
+ * Replaces the old Engine launcher.
  */
 
 import React from 'react';
@@ -17,101 +18,75 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export type EngineType = 'game-ops' | 'player' | 'team' | 'recruiting' | 'scouting' | 'simulation';
+export type InsertAction = 'object' | 'link' | 'file';
 
-interface EngineOption {
-  type: EngineType;
+interface InsertOption {
+  type: InsertAction;
   label: string;
   description: string;
   icon: IconSymbolName;
-  color: string;
 }
 
-const ENGINES: EngineOption[] = [
+const INSERT_OPTIONS: InsertOption[] = [
   {
-    type: 'game-ops',
-    label: 'Game Ops',
-    description: 'Manage live games',
-    icon: 'basketball.fill',
-    color: '#FF6B35',
+    type: 'object',
+    label: 'Insert Object',
+    description: 'Add a player, team, or entity',
+    icon: 'cube.fill',
   },
   {
-    type: 'player',
-    label: 'Player Engine',
-    description: 'Evaluate and develop players',
-    icon: 'person.text.rectangle',
-    color: '#4ECDC4',
+    type: 'link',
+    label: 'Insert Link',
+    description: 'Paste a URL or deep link',
+    icon: 'link',
   },
   {
-    type: 'team',
-    label: 'Team Engine',
-    description: 'Analyze team performance',
-    icon: 'person.3.fill',
-    color: '#7B68EE',
-  },
-  {
-    type: 'recruiting',
-    label: 'Recruiting Engine',
-    description: 'Find and track prospects',
-    icon: 'magnifyingglass',
-    color: '#FFD93D',
-  },
-  {
-    type: 'scouting',
-    label: 'Scouting Engine',
-    description: 'Scout opponents',
-    icon: 'binoculars.fill',
-    color: '#6BCB77',
-  },
-  {
-    type: 'simulation',
-    label: 'Simulation Engine',
-    description: 'Run game simulations',
-    icon: 'chart.bar.fill',
-    color: '#FF6B6B',
+    type: 'file',
+    label: 'Attach File',
+    description: 'Upload a document or image',
+    icon: 'paperclip',
   },
 ];
 
-interface NewConversationSheetProps {
+interface InsertSheetProps {
   visible: boolean;
   onClose: () => void;
-  onSelectEngine: (engine: EngineType) => void;
+  onSelectAction: (action: InsertAction) => void;
 }
 
-export function NewConversationSheet({
+export function InsertSheet({
   visible,
   onClose,
-  onSelectEngine,
-}: NewConversationSheetProps) {
+  onSelectAction,
+}: InsertSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
 
-  const handleEnginePress = (type: EngineType) => {
+  const handlePress = (type: InsertAction) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    onSelectEngine(type);
+    onSelectAction(type);
   };
 
   return (
-    <BottomSheet visible={visible} onClose={onClose} title="Nexus">
-      {/* Engine Options */}
+    <BottomSheet visible={visible} onClose={onClose} title="Insert">
       <View style={styles.options}>
-        {ENGINES.map((engine) => (
+        {INSERT_OPTIONS.map((option) => (
           <Pressable
-            key={engine.type}
+            key={option.type}
             style={({ pressed }) => [
               styles.option,
               { backgroundColor: colors.backgroundSecondary },
               pressed && { opacity: 0.7 },
             ]}
-            onPress={() => handleEnginePress(engine.type)}
+            onPress={() => handlePress(option.type)}
           >
-            <View style={[styles.iconContainer, { backgroundColor: engine.color + '20' }]}>
-              <IconSymbol name={engine.icon} size={22} color={engine.color} />
+            <View style={[styles.iconContainer, { backgroundColor: colors.backgroundTertiary }]}>
+              <IconSymbol name={option.icon} size={22} color={colors.text} />
             </View>
             <View style={styles.optionText}>
-              <ThemedText style={styles.optionLabel}>{engine.label}</ThemedText>
+              <ThemedText style={styles.optionLabel}>{option.label}</ThemedText>
               <ThemedText style={[styles.optionDescription, { color: colors.textSecondary }]}>
-                {engine.description}
+                {option.description}
               </ThemedText>
             </View>
             <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />

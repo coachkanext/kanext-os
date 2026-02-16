@@ -1,22 +1,35 @@
 /**
- * KaNeXT OS Tab Layout
- * Bottom navigation: Home | Search | Nexus | Activity | Organization
- * Same across all modes - icons are consistent, behavior is mode-contextual.
+ * KaNeXT OS — Universal Bottom Navigation (Global Footer) — LOCKED
+ *
+ * Tabs (left → right, glyphs only):
+ *   Home | Media | Nexus | Messages | Organization
+ *
+ * Rules:
+ * - UNIVERSAL across ALL MODES (no exceptions in v1)
+ * - Glyph icons only (no text labels)
+ * - Order is fixed and must never change per mode
+ * - Nexus is the center anchor (primary) and always present
+ * - Each tab routes to its mode-aware root surface
+ * - Long-press Organization → Mode Switcher
  */
 
 import { Tabs, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useCallback } from 'react';
-import { Platform, Text, StyleSheet } from 'react-native';
+import { Platform, Text, Image, StyleSheet } from 'react-native';
 
+import * as Haptics from 'expo-haptics';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol, SymbolViewProps } from '@/components/ui/icon-symbol';
-import { Colors, Layout } from '@/constants/theme';
+import { Colors, Layout, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useMode } from '@/context/app-context';
 import { openAvatarDrawer } from '@/utils/global-drawer';
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openFinder } from '@/utils/global-finder';
 import { triggerKXTransition } from '@/utils/global-transition';
 import { requestHomeReset } from '@/utils/global-home';
+import { openModeSwitcher } from '@/utils/global-mode-switcher';
+import { openGlobalMore } from '@/utils/global-more';
 
 // Tab icon component
 function TabIcon({
@@ -31,9 +44,14 @@ function TabIcon({
   return <IconSymbol size={24} name={name} color={color} />;
 }
 
+const NEXUS_ICON = require('@/assets/images/nexus-logo.png');
+
 export default function TabLayout() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const mode = useMode();
+  const nexusColor = ModeColors[mode].nexusGlyph;
+  const nexusColorDim = ModeColors[mode].nexusGlyphDim;
   const router = useRouter();
   const hasNavigated = useRef(false);
 
@@ -91,14 +109,41 @@ export default function TabLayout() {
     []
   );
 
-  // Always open to Nexus on app launch
+  // Ops tab button: long-press → mode switcher, double-tap → More menu
+  const lastOrgTapRef = useRef(0);
+  const OpsTabButton = useCallback(
+    (props: any) => (
+      <HapticTab
+        {...props}
+        onLongPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          openModeSwitcher();
+        }}
+        onPress={(e: any) => {
+          const now = Date.now();
+          if (now - lastOrgTapRef.current < 300) {
+            // Double-tap detected → open More overflow menu
+            lastOrgTapRef.current = 0;
+            openGlobalMore();
+            return;
+          }
+          lastOrgTapRef.current = now;
+          triggerKXTransition();
+          props.onPress?.(e);
+        }}
+      />
+    ),
+    []
+  );
+
+  // Post-auth default: route to Home (Business Mode Home in enterprise default)
   useEffect(() => {
     if (hasNavigated.current) return;
     hasNavigated.current = true;
 
     // Small delay to ensure tabs are mounted before navigating
     const timer = setTimeout(() => {
-      router.replace('/(tabs)/nexus' as any);
+      router.replace('/(tabs)/' as any);
     }, 50);
 
     return () => clearTimeout(timer);
@@ -106,7 +151,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      initialRouteName="nexus"
+      initialRouteName="index"
       screenOptions={{
         tabBarActiveTintColor: colors.tabIconSelected,
         tabBarInactiveTintColor: colors.tabIconDefault,
@@ -136,7 +181,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="media"
         options={{
-          title: 'Media',
+          title: 'Video',
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name="play.rectangle.fill" color={color} focused={focused} />
           ),
@@ -152,8 +197,12 @@ export default function TabLayout() {
         name="nexus"
         options={{
           title: 'Nexus',
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon name="figure.mind.and.body" color={color} focused={focused} />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={NEXUS_ICON}
+              style={[tabStyles.nexusIcon, { opacity: focused ? 1 : 0.45 }]}
+              resizeMode="contain"
+            />
           ),
           tabBarButton: NexusTabButton,
         }}
@@ -161,7 +210,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="activity"
         options={{
-          title: 'Comms',
+          title: 'Messages',
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name="bubble.left.and.bubble.right.fill" color={color} focused={focused} />
           ),
@@ -174,6 +223,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name="building.2.fill" color={color} focused={focused} />
           ),
+          tabBarButton: OpsTabButton,
         }}
       />
 
@@ -195,10 +245,8 @@ export default function TabLayout() {
 }
 
 const tabStyles = StyleSheet.create({
-  nexusN: {
-    fontSize: 22,
-    fontWeight: '900',
-    fontStyle: 'italic',
-    letterSpacing: -1,
+  nexusIcon: {
+    width: 36,
+    height: 36,
   },
 });

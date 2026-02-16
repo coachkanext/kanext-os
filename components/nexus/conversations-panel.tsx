@@ -21,25 +21,22 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { ConversationContextMenu } from './conversation-context-menu';
-import { Colors, Spacing, BorderRadius, Brand, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatTimestamp } from '@/data/mock-nexus';
 import type { Conversation } from '@/types';
 
-interface ConversationOption {
-  type: 'sim';
+interface DrawerItem {
+  id: 'new-chat' | 'search' | 'pinned' | 'recents';
   label: string;
   icon: IconSymbolName;
-  color: string;
 }
 
-const CONVERSATION_OPTIONS: ConversationOption[] = [
-  {
-    type: 'sim',
-    label: 'Game Simulation',
-    icon: 'chart.bar.fill',
-    color: ModeColors.sports.primary,
-  },
+const DRAWER_ITEMS: DrawerItem[] = [
+  { id: 'new-chat', label: 'New Chat', icon: 'plus.message.fill' },
+  { id: 'search', label: 'Search', icon: 'magnifyingglass' },
+  { id: 'pinned', label: 'Pinned', icon: 'pin.fill' },
+  { id: 'recents', label: 'Recents', icon: 'clock.fill' },
 ];
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -49,7 +46,7 @@ interface ConversationsPanelProps {
   visible: boolean;
   onClose: () => void;
   onNewChat: () => void;
-  onNewSim: () => void;
+  onNewSim?: () => void;
   onAvatarPress: () => void;
   conversations: Conversation[];
   activeConversationId: string | null;
@@ -65,7 +62,6 @@ export function ConversationsPanel({
   visible,
   onClose,
   onNewChat,
-  onNewSim,
   onAvatarPress,
   conversations,
   activeConversationId,
@@ -95,14 +91,26 @@ export function ConversationsPanel({
     }).start();
   }, [visible, slideAnim]);
 
-  const handleSimPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    onNewSim();
-  };
+  // Active drawer section
+  const [activeSection, setActiveSection] = useState<'pinned' | 'recents' | 'search'>('recents');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleNewChatPress = () => {
+  const handleDrawerItemPress = (id: DrawerItem['id']) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    onNewChat();
+    switch (id) {
+      case 'new-chat':
+        onNewChat();
+        break;
+      case 'search':
+        setActiveSection('search');
+        break;
+      case 'pinned':
+        setActiveSection('pinned');
+        break;
+      case 'recents':
+        setActiveSection('recents');
+        break;
+    }
   };
 
   const handleConversationPress = (id: string) => {
@@ -146,59 +154,106 @@ export function ConversationsPanel({
         },
       ]}
     >
-      {/* Search Bar */}
-      <View style={styles.header}>
-        <View
-          style={[
-            styles.searchContainer,
-            { backgroundColor: colors.backgroundSecondary },
-          ]}
-        >
-          <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-          <TextInput
-            style={[styles.searchInput, { color: colors.text }]}
-            placeholder="Search conversations"
-            placeholderTextColor={colors.textTertiary}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-        </View>
-      </View>
-
-      {/* Main Scrollable Content */}
-      <ScrollView
-        style={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* New Conversation Options */}
-        <View style={styles.optionsContainer}>
-          {CONVERSATION_OPTIONS.map((option) => (
+      {/* Drawer Items */}
+      <View style={styles.drawerItems}>
+        {DRAWER_ITEMS.map((item) => {
+          const isActive =
+            (item.id === 'pinned' && activeSection === 'pinned') ||
+            (item.id === 'recents' && activeSection === 'recents') ||
+            (item.id === 'search' && activeSection === 'search');
+          return (
             <Pressable
-              key={option.type}
+              key={item.id}
               style={({ pressed }) => [
-                styles.optionRow,
+                styles.drawerItemRow,
                 {
-                  backgroundColor: pressed
+                  backgroundColor: isActive
+                    ? colors.backgroundSecondary
+                    : pressed
                     ? colors.backgroundSecondary
                     : 'transparent',
                 },
               ]}
-              onPress={handleSimPress}
+              onPress={() => handleDrawerItemPress(item.id)}
             >
-              <View style={[styles.optionAvatar, { backgroundColor: option.color }]}>
-                <IconSymbol name={option.icon} size={18} color="#FFFFFF" />
-              </View>
-              <ThemedText style={styles.optionLabel}>{option.label}</ThemedText>
+              <IconSymbol
+                name={item.icon}
+                size={20}
+                color={isActive ? colors.text : colors.textSecondary}
+                style={styles.drawerItemIcon}
+              />
+              <ThemedText
+                style={[
+                  styles.drawerItemLabel,
+                  isActive && { fontWeight: '600' },
+                ]}
+              >
+                {item.label}
+              </ThemedText>
             </Pressable>
-          ))}
-        </View>
+          );
+        })}
+      </View>
 
-        {/* Recent Conversations - always show section, only list convos with messages */}
+      {/* Search bar (shown when search section is active) */}
+      {activeSection === 'search' && (
+        <View style={styles.header}>
+          <View
+            style={[
+              styles.searchContainer,
+              { backgroundColor: colors.backgroundSecondary },
+            ]}
+          >
+            <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
+            <TextInput
+              style={[styles.searchInput, { color: colors.text }]}
+              placeholder="Search conversations"
+              placeholderTextColor={colors.textTertiary}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoFocus
+            />
+          </View>
+        </View>
+      )}
+
+      {/* Conversation List */}
+      <ScrollView
+        style={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.recentSection}>
-          <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
-            Recent
-          </ThemedText>
-          {conversations.filter((c) => c.lastMessage).map((conversation) => {
+          {activeSection === 'pinned' && (
+            <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
+              Pinned
+            </ThemedText>
+          )}
+          {activeSection === 'recents' && (
+            <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
+              Recent
+            </ThemedText>
+          )}
+          {activeSection === 'search' && searchQuery.length > 0 && (
+            <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
+              Results
+            </ThemedText>
+          )}
+          {conversations
+            .filter((c) => {
+              if (activeSection === 'pinned') return c.isPinned;
+              if (activeSection === 'search') {
+                if (!searchQuery) return false;
+                const q = searchQuery.toLowerCase();
+                return (
+                  c.title.toLowerCase().includes(q) ||
+                  c.lastMessage?.content.toLowerCase().includes(q)
+                );
+              }
+              return !!c.lastMessage; // recents
+            })
+            .map((conversation) => {
               const isActive = conversation.id === activeConversationId;
               return (
                 <Pressable
@@ -248,7 +303,7 @@ export function ConversationsPanel({
         </View>
       </ScrollView>
 
-      {/* Footer - Avatar, Name, and New Chat */}
+      {/* Footer - Avatar, Name */}
       <View style={[styles.footer, { marginBottom: Spacing.sm }]}>
         <Pressable
           style={({ pressed }) => [
@@ -268,18 +323,6 @@ export function ConversationsPanel({
             <IconSymbol name="person.fill" size={18} color={colors.icon} />
           </View>
           <ThemedText style={styles.userName}>Sammy Kalejaiye</ThemedText>
-        </Pressable>
-
-        <Pressable
-          style={({ pressed }) => [
-            styles.newChatButton,
-            { backgroundColor: Brand.nexus, opacity: pressed ? 0.8 : 1 },
-          ]}
-          onPress={handleNewChatPress}
-          accessibilityLabel="Start new conversation"
-          accessibilityRole="button"
-        >
-          <IconSymbol name="plus" size={20} color="#000000" />
         </Pressable>
       </View>
 
@@ -331,10 +374,11 @@ const styles = StyleSheet.create({
   scrollContent: {
     flex: 1,
   },
-  optionsContainer: {
-    paddingTop: Spacing.xs,
+  drawerItems: {
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.xs,
   },
-  optionRow: {
+  drawerItemRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: Spacing.sm + 2,
@@ -343,17 +387,13 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.xs,
     marginVertical: 1,
   },
-  optionAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+  drawerItemIcon: {
     marginRight: Spacing.sm,
+    width: 24,
   },
-  optionLabel: {
+  drawerItemLabel: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   recentSection: {
     marginTop: Spacing.md,
@@ -417,12 +457,5 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 15,
     fontWeight: '500',
-  },
-  newChatButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

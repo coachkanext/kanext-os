@@ -385,6 +385,7 @@ const ALL_RESULTS: Record<Mode, SearchResult[]> = {
   enterprise: ENTERPRISE_RESULTS,
   church: CHURCH_RESULTS,
   education: EDUCATION_RESULTS,
+  community: [],
 };
 
 // =============================================================================

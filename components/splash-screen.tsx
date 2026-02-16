@@ -9,7 +9,9 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import { View, Text, Image, StyleSheet, Animated, Easing } from 'react-native';
+
+const KX_LOGO = require('@/assets/images/k1-logo.png');
 
 /**
  * Module-level guard: prevents animation from running more than once per session.
@@ -93,7 +95,7 @@ export function SplashScreen({ onReady, isAppReady }: SplashScreenProps) {
           },
         ]}
       >
-        <Text style={styles.kx}>KX</Text>
+        <Image source={KX_LOGO} style={styles.logo} resizeMode="contain" />
       </Animated.View>
 
       {/* Bottom tag */}
@@ -115,11 +117,9 @@ const styles = StyleSheet.create({
   centerMark: {
     alignItems: 'center',
   },
-  kx: {
-    fontSize: 64,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: 2,
+  logo: {
+    width: 120,
+    height: 120,
   },
   bottomTag: {
     position: 'absolute',

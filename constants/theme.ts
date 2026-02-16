@@ -1,6 +1,7 @@
 /**
  * KaNeXT OS Theme System
- * Defines colors, fonts, and mode-specific theming for light and dark modes.
+ * UI PALETTE — Luxury Control Room (Power-First) — LOCKED
+ * Gold as primary accent. Dark-first only. Hairlines everywhere.
  */
 
 import { Platform } from 'react-native';
@@ -11,15 +12,17 @@ import type { Mode } from '@/types';
 // =============================================================================
 
 export const Brand = {
-  // Primary brand color
-  primary: '#000000',
-  // Nexus accent
-  nexus: '#ffffff',
-  // Success / positive
-  success: '#f5f5f5',
-  // Warning
-  warning: '#6e6e6e',
-  // Error / destructive
+  // Primary accent (White — monochrome authority)
+  primary: '#FFFFFF',
+  // Precision accent (Ice Blue)
+  precision: '#6AA9FF',
+  // Nexus accent (alias for precision — used by Nexus UI components)
+  nexus: '#6AA9FF',
+  // Success / positive (Emerald)
+  success: '#22C55E',
+  // Warning (Amber)
+  warning: '#F59E0B',
+  // Error / destructive (Red)
   error: '#EF4444',
 };
 
@@ -27,104 +30,111 @@ export const Brand = {
 // MODE ACCENT COLORS
 // =============================================================================
 
-export const ModeColors: Record<Mode, { primary: string; secondary: string }> = {
+export const ModeColors: Record<Mode, { primary: string; secondary: string; nexusGlyph: string; nexusGlyphDim: string }> = {
   sports: {
-    primary: '#ffffff',
-    secondary: '#6e6e6e',
+    primary: '#FFFFFF',
+    secondary: '#8F8F8F',
+    nexusGlyph: '#FFFFFF',
+    nexusGlyphDim: '#8F8F8F',
   },
   enterprise: {
-    primary: '#ffffff',
-    secondary: '#6e6e6e',
+    primary: '#FFFFFF',
+    secondary: '#8F8F8F',
+    nexusGlyph: '#FFFFFF',
+    nexusGlyphDim: '#8F8F8F',
   },
   church: {
-    primary: '#ffffff',
-    secondary: '#6e6e6e',
+    primary: '#FFFFFF',
+    secondary: '#8F8F8F',
+    nexusGlyph: '#FFFFFF',
+    nexusGlyphDim: '#8F8F8F',
   },
   education: {
-    primary: '#ffffff',
-    secondary: '#6e6e6e',
+    primary: '#FFFFFF',
+    secondary: '#8F8F8F',
+    nexusGlyph: '#FFFFFF',
+    nexusGlyphDim: '#8F8F8F',
+  },
+  community: {
+    primary: '#FFFFFF',
+    secondary: '#8F8F8F',
+    nexusGlyph: '#FFFFFF',
+    nexusGlyphDim: '#8F8F8F',
   },
 };
 
 // =============================================================================
-// BASE COLORS
+// BASE COLORS — Luxury Control Room
 // =============================================================================
 
+const palette = {
+  // Core Surfaces — Monochrome Silver
+  text: '#DDDDDD',               // Heading color
+  textSecondary: '#8F8F8F',      // Body color
+  textTertiary: '#424242',       // Muted / tertiary
+  background: '#050608',         // Page background (near-black)
+  backgroundSecondary: '#0E0C0C', // Panel BG
+  backgroundTertiary: '#181616',  // Elevated surface
+
+  // Borders & Dividers — hairlines
+  border: 'rgba(255,255,255,0.06)',
+  borderStrong: 'rgba(255,255,255,0.10)',
+  divider: 'rgba(255,255,255,0.06)',
+
+  // Interactive
+  tint: '#FFFFFF',               // Primary accent (white)
+  icon: '#8F8F8F',               // Icon Default
+  iconActive: '#DDDDDD',
+
+  // Tab Bar
+  tabBar: '#050608',
+  tabIconDefault: '#424242',
+  tabIconSelected: '#FFFFFF',    // White
+
+  // Cards & Surfaces
+  card: '#181616',               // Card BG
+  cardElevated: '#1E1C1C',      // Elevated Card
+
+  // Overlays
+  overlay: 'rgba(0, 0, 0, 0.7)',
+  scrim: 'rgba(0, 0, 0, 0.5)',
+
+  // Status
+  success: '#22C55E',
+  warning: '#F59E0B',
+  error: '#EF4444',
+};
+
 export const Colors = {
-  light: {
-    // Core — mirrors dark (forced dark mode)
-    text: '#f5f5f5',
-    textSecondary: '#6e6e6e',
-    textTertiary: '#555555',
-    background: '#000000',
-    backgroundSecondary: '#111111',
-    backgroundTertiary: '#191919',
+  light: { ...palette },
+  dark: { ...palette },
+};
 
-    // Borders & Dividers
-    border: '#1a1a1a',
-    borderStrong: '#2a2a2a',
-    divider: '#1a1a1a',
+// =============================================================================
+// BUSINESS MODE — Luxury Control Room Palette (Power-First)
+// Confidence, authority, restraint, inevitability.
+// =============================================================================
 
-    // Interactive
-    tint: '#ffffff',
-    icon: '#6e6e6e',
-    iconActive: '#f5f5f5',
+export const BusinessPalette = {
+  // Core surfaces
+  obsidian: '#0B0D10',        // Primary background
+  carbon: '#181616',          // Cards / sheets
+  graphite: 'rgba(255,255,255,0.08)', // Hairline borders
+  smoke: '#DDDDDD',           // Primary text (heading)
+  ash: '#8F8F8F',             // Secondary text (body)
 
-    // Tab Bar
-    tabBar: '#000000',
-    tabIconDefault: '#6e6e6e',
-    tabIconSelected: '#ffffff',
+  // Monochrome accents
+  champagneGold: '#FFFFFF',   // Primary accent: highlights, key stats, selected
+  platinum: '#8F8F8F',        // Secondary accent: icons, dividers, badges
 
-    // Cards & Surfaces
-    card: '#111111',
-    cardElevated: '#111111',
+  // Signal colors
+  emerald: '#2FE38C',         // Success / green light
+  amber: '#FFB020',           // Warning / watch
+  red: '#FF4D4D',             // Critical
 
-    // Overlays
-    overlay: 'rgba(0, 0, 0, 0.7)',
-    scrim: 'rgba(0, 0, 0, 0.5)',
-
-    // Status
-    success: '#f5f5f5',
-    warning: '#6e6e6e',
-    error: '#EF4444',
-  },
-  dark: {
-    // Core
-    text: '#f5f5f5',
-    textSecondary: '#6e6e6e',
-    textTertiary: '#555555',
-    background: '#000000',
-    backgroundSecondary: '#111111',
-    backgroundTertiary: '#191919',
-
-    // Borders & Dividers
-    border: '#1a1a1a',
-    borderStrong: '#2a2a2a',
-    divider: '#1a1a1a',
-
-    // Interactive
-    tint: '#ffffff',
-    icon: '#6e6e6e',
-    iconActive: '#f5f5f5',
-
-    // Tab Bar
-    tabBar: '#000000',
-    tabIconDefault: '#6e6e6e',
-    tabIconSelected: '#ffffff',
-
-    // Cards & Surfaces
-    card: '#111111',
-    cardElevated: '#111111',
-
-    // Overlays
-    overlay: 'rgba(0, 0, 0, 0.7)',
-    scrim: 'rgba(0, 0, 0, 0.5)',
-
-    // Status
-    success: '#f5f5f5',
-    warning: '#6e6e6e',
-    error: '#EF4444',
-  },
+  // Interaction surfaces
+  glass: 'rgba(255,255,255,0.04)',  // Hover / pressed
+  sheetBackdrop: 'rgba(0,0,0,0.55)', // Modal dim
 };
 
 // =============================================================================

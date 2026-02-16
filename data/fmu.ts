@@ -61,7 +61,7 @@ const MONTH_MAP: Record<string, number> = {
   Jan: 0, Feb: 1, Mar: 2, Apr: 3, Oct: 9, Nov: 10, Dec: 11,
 };
 
-function parseGameDate(dateStr: string | null): Date | null {
+export function parseGameDate(dateStr: string | null): Date | null {
   if (!dateStr) return null;
   const parts = dateStr.split(' ');
   if (parts.length < 2) return null;

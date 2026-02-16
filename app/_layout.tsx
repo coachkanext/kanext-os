@@ -2,12 +2,13 @@
  * KaNeXT OS Root Layout
  * Entry point with launch sequence, global providers, and navigation structure.
  *
- * Boot Sequence:
- * 1. Cold launch → Show X/Twitter style splash (KaNeXT + Powered by Nexus)
- * 2. Splash fades when app is ready → Silent session check
- * 3. If authenticated → Nexus unlocked
- * 4. If not authenticated → Auth modal overlay
+ * Boot Sequence (v1 Locked):
+ * 1. Cold launch → Splash screen (Nexus logo + "powered by Nexus")
+ * 2. Splash fades → Silent session check
+ * 3. If session valid → Resolve access tier → Route to Business Mode Home
+ * 4. If no session → Auth modal → Sign in → Resolve tier → Route to Business Mode Home
  *
+ * Post-auth default route: Business / Enterprise Mode Home (not Sports).
  * Only shows splash on cold start, not when resuming from background.
  */
 
@@ -26,6 +27,7 @@ import { GlobalHeader } from '@/components/global-header';
 import { AvatarDrawer } from '@/components/avatar-drawer';
 import { AuthModal } from '@/components/auth/auth-modal';
 import { VoiceOverlay } from '@/components/nexus/voice-overlay';
+import { ModeSwitcherOverlay } from '@/components/mode-switcher-overlay';
 import { KXTransition } from '@/components/kx-transition';
 import { AppProvider } from '@/context/app-context';
 import { AuthProvider, useAuth } from '@/context/auth-context';
@@ -161,6 +163,9 @@ function AppShell() {
         audioLevel={audioLevel}
         onStop={stopListening}
       />
+
+      {/* Mode Switcher — triggered from Ops tab long-press */}
+      <ModeSwitcherOverlay />
 
       {/* KX Micro-Transition — brief branded flash on tab switches */}
       <KXTransition />

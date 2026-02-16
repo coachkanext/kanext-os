@@ -435,12 +435,36 @@ export function formatCurrency(amount: number): string {
 export function getDomainStatusColor(status: Domain['status']): string {
   switch (status) {
     case 'active':
-      return '#f5f5f5';
+      return '#F2F4F8';
     case 'development':
-      return '#6e6e6e';
+      return '#A7AFBD';
     case 'planned':
-      return '#555555';
+      return '#6E7687';
     default:
-      return '#6C757D';
+      return '#6E7687';
   }
 }
+
+// =============================================================================
+// V2 RE-EXPORTS
+// =============================================================================
+
+export {
+  COMPANIES,
+  PROOF_EVENTS,
+  ENGINES,
+  DOCUMENTS_V2,
+  REVENUE_STREAMS,
+  COMPETITIVE_ADVANTAGES,
+  FUNDRAISING,
+  ARCHITECTURE_LAYERS,
+  RECENT_UPDATES,
+  getCompanyById,
+  getProofEventsByCompany,
+  getDocsByCompany,
+  getDocsByCategory,
+  getCategoryLabelV2,
+  getStageColor,
+  getMilestoneStatusColor,
+  getRiskSeverityColor,
+} from './mock-enterprise-v2';

@@ -18,7 +18,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const TILE_SIZE = (SCREEN_WIDTH - 80) / 2; // 2 columns with padding
 
 // Gold accent for tap feedback only
-const GOLD_ACCENT = '#C9A227';
+const GOLD_ACCENT = '#FFFFFF';
 
 interface ModeOption {
   mode: Mode;
@@ -37,7 +37,7 @@ const MODE_OPTIONS: ModeOption[] = [
   },
   {
     mode: 'enterprise',
-    label: 'Enterprise',
+    label: 'Business',
     icon: 'building.2.fill', // briefcase style
     defaultRole: 'founder',
   },
@@ -54,6 +54,12 @@ const MODE_OPTIONS: ModeOption[] = [
     label: 'Education',
     icon: 'graduationcap.fill', // diploma/grad cap
     defaultRole: 'faculty',
+  },
+  {
+    mode: 'community',
+    label: 'Competition',
+    icon: 'flag.checkered',
+    defaultRole: 'league_admin',
   },
 ];
 

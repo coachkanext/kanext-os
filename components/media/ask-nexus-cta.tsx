@@ -9,21 +9,25 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Spacing } from '@/constants/theme';
+import { Spacing, ModeColors } from '@/constants/theme';
+import { useMode } from '@/context/app-context';
 import { openAskNexus } from '@/utils/global-ask-nexus';
 
 export function AskNexusCta() {
+  const mode = useMode();
+  const glyphColor = ModeColors[mode].nexusGlyph;
+
   return (
     <Pressable
       style={({ pressed }) => [styles.container, pressed && { opacity: 0.8 }]}
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        openAskNexus({ screen: '/nexus', mode: 'sports' });
+        openAskNexus({ screen: '/nexus', mode });
       }}
     >
-      <IconSymbol name="figure.mind.and.body" size={18} color="#f5f5f5" />
+      <IconSymbol name="figure.mind.and.body" size={18} color={glyphColor} />
       <ThemedText style={styles.label}>Ask Nexus about this</ThemedText>
-      <IconSymbol name="chevron.right" size={14} color="#6e6e6e" />
+      <IconSymbol name="chevron.right" size={14} color={glyphColor + '80'} />
     </Pressable>
   );
 }

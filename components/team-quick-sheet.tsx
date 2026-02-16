@@ -1,8 +1,7 @@
 /**
- * Team Quick Sheet
- * Comprehensive "whole team in 5 seconds" bottom sheet.
- * Opens on logo tap/long-press from Home and Roster headers.
- * Traditional / KaNeXT toggle switches the stats section.
+ * Universal Team Bio Sheet — 4-tab team profile bottom sheet
+ * Opened by HOLD on any team logo. Tap = no-op.
+ * Tabs: Team | Coaches | System | History
  */
 
 import React, { useState } from 'react';
@@ -13,8 +12,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { FMU_GAMES, FMU_RECORD, FMU_STANDINGS } from '@/data/fmu';
 import { coachingStaff } from '@/data/sun-conference/coaching-staff';
-import { teamStats } from '@/data/sun-conference/florida-memorial/team-stats';
-import { PLAYER_CLUSTERS, CLUSTER_SUBCLUSTERS, getPlayerSubclusters } from '@/data/roster-data';
+import { PLAYER_CLUSTERS } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
 
 // FMU seal
@@ -23,87 +21,65 @@ const FMU_SEAL = require('@/assets/images/fmu-seal.png');
 // ── Staff data ──
 const fmuStaff = coachingStaff.find((s) => s.program_id === 'florida-memorial');
 
-interface CoachProfile {
-  name: string;
-  initials: string;
-  role: string;
-  hue: number;
-}
-
 function nameToHue(name: string): number {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = ((h << 5) - h + name.charCodeAt(i)) | 0;
   return Math.abs(h) % 360;
 }
 
+interface CoachProfile {
+  name: string;
+  initials: string;
+  role: string;
+  hue: number;
+  isHC: boolean;
+  yearsWithProgram: number;
+  bio: string;
+  priorStops: string[];
+  highlights: string[];
+}
+
+// Build coach profiles with placeholder data for bios/stops
 const FMU_COACHES: CoachProfile[] = [
   {
     name: fmuStaff?.head_coach_name ?? 'TBD',
     initials: (fmuStaff?.head_coach_name ?? 'TB').split(' ').map((w) => w[0]).join(''),
     role: 'Head Coach',
     hue: nameToHue(fmuStaff?.head_coach_name ?? 'TBD'),
+    isHC: true,
+    yearsWithProgram: 4,
+    bio: 'Veteran head coach who has rebuilt the FMU program into a competitive Sun Conference contender. Known for developing JUCO transfers into impact players and running a high-tempo, guard-driven system.',
+    priorStops: ['Miami Dade College (Asst)', 'Broward College (Asst)', 'Stranahan HS (HC)'],
+    highlights: [
+      'Led FMU to first winning conference record in 5 years',
+      '2x Sun Conference Coach of the Month',
+      'Developed 3 All-Conference selections',
+    ],
   },
-  ...(fmuStaff?.assistant_coaches ?? []).map((a) => ({
+  ...(fmuStaff?.assistant_coaches ?? []).map((a, idx) => ({
     name: a.name,
     initials: a.name.split(' ').map((w) => w[0]).join(''),
     role: a.role ?? 'Assistant Coach',
     hue: nameToHue(a.name),
+    isHC: false,
+    yearsWithProgram: 3 - idx,
+    bio: `Assistant coach contributing to player development and ${idx === 0 ? 'offensive game planning' : 'defensive scouting and recruiting'}.`,
+    priorStops: idx === 0
+      ? ['Indian River State (Asst)', 'Palm Beach State (GA)']
+      : ['Dillard HS (Asst)', 'Boyd Anderson HS (HC)'],
+    highlights: [
+      idx === 0 ? 'Coached 2 NJCAA All-Americans' : 'Recruited 4 current starters',
+      'Former collegiate player',
+    ],
   })),
 ];
 
-// ── Season stats (2025-26) ──
-const stats2526 = teamStats.find((s) => s.season === '2025-26');
-const G = stats2526?.games ?? 1;
-const PTS = stats2526?.points ?? 0;
-const FG = stats2526?.fg ?? 0;
-const FGA = stats2526?.fga ?? 1;
-const TPT = stats2526?.three_pt ?? 0;
-const TPA = stats2526?.three_pa ?? 1;
-const FT = stats2526?.ft ?? 0;
-const FTA = stats2526?.fta ?? 1;
-const OREB = stats2526?.offensive_rebounds ?? 0;
-const DREB = stats2526?.defensive_rebounds ?? 0;
-const AST = stats2526?.assists ?? 0;
-const TO = stats2526?.turnovers ?? 0;
-const STL = stats2526?.steals ?? 0;
-const BLK = stats2526?.blocks ?? 0;
-
-// Derived stats
-const PPG = (PTS / G).toFixed(1);
-const eFGPct = (((FG + 0.5 * TPT) / FGA) * 100).toFixed(1);
-const possessions = FGA - OREB + TO + 0.475 * FTA;
-const TOPct = ((TO / possessions) * 100).toFixed(1);
-const threePtPct = ((TPT / TPA) * 100).toFixed(1);
-const FTPct = ((FT / FTA) * 100).toFixed(1);
-const APG = (AST / G).toFixed(1);
-const RPG = ((OREB + DREB) / G).toFixed(1);
-const SPG = (STL / G).toFixed(1);
-const BPG = (BLK / G).toFixed(1);
-
-// Mock defensive stats (seeded from conf hash)
-const confHash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0; return Math.abs(h); };
-const dh = confHash('Florida Memorial Def');
-const OPP_PPG = (68 + (dh % 12)).toFixed(1);
-const OPP_eFG = (42 + (dh % 10)).toFixed(1);
-const ForceTOPct = (18 + ((dh >> 4) % 8)).toFixed(1);
-const OPP_3Pct = (30 + ((dh >> 8) % 8)).toFixed(1);
-
-// ── Conference position ──
+// ── Conference position / streak ──
 const FMU_CONF_POSITION = FMU_STANDINGS.findIndex((r) => r.team === 'Florida Memorial') + 1;
 const fmuStreak = FMU_STANDINGS.find((r) => r.team === 'Florida Memorial')?.streak ?? '—';
 
-// ── Team cluster averages ──
+// ── Team cluster averages for DNA ──
 const clusterKeys: (keyof ClusterRatings)[] = ['shooting', 'finishing', 'playmaking', 'perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
-const clusterLabels: Record<keyof ClusterRatings, string> = {
-  shooting: 'Shooting',
-  finishing: 'Finishing',
-  playmaking: 'Playmaking',
-  perimeter_defense: 'On-Ball Defense',
-  interior_defense: 'Team Defense',
-  rebounding: 'Rebounding',
-  frame: 'Physical',
-};
-
 const playerEntries = Object.values(PLAYER_CLUSTERS);
 const teamClusterAvg: Record<keyof ClusterRatings, number> = {} as any;
 for (const key of clusterKeys) {
@@ -111,50 +87,62 @@ for (const key of clusterKeys) {
   teamClusterAvg[key] = Math.round(sum / playerEntries.length);
 }
 
-// Derive "Keys" from strongest/weakest clusters
-function deriveKeys(): string[] {
-  const sorted = clusterKeys.map((k) => ({ key: k, avg: teamClusterAvg[k] })).sort((a, b) => b.avg - a.avg);
-  const keys: string[] = [];
-  keys.push(`${clusterLabels[sorted[0].key]} is the team's strongest area (${sorted[0].avg})`);
-  keys.push(`${clusterLabels[sorted[sorted.length - 1].key]} needs the most development (${sorted[sorted.length - 1].avg})`);
+// Derive Team DNA chips from cluster data
+function deriveTeamDNA(): { label: string; value: string }[] {
   const offAvg = Math.round((teamClusterAvg.shooting + teamClusterAvg.finishing + teamClusterAvg.playmaking) / 3);
   const defAvg = Math.round((teamClusterAvg.perimeter_defense + teamClusterAvg.interior_defense + teamClusterAvg.rebounding + teamClusterAvg.frame) / 4);
-  keys.push(offAvg > defAvg ? 'Offense-first identity — defense is the growth edge' : 'Defense-first identity — offense is the growth edge');
-  return keys;
-}
-const CLUSTER_KEYS = deriveKeys();
 
-// ── Team subcluster averages (avg each player's subcluster rating per cluster) ──
-const playerNumbers = Object.keys(PLAYER_CLUSTERS);
-const teamSubclusterAvg: Record<keyof ClusterRatings, { name: string; rating: number }[]> = {} as any;
-for (const clusterKey of clusterKeys) {
-  const subNames = CLUSTER_SUBCLUSTERS[clusterKey];
-  teamSubclusterAvg[clusterKey] = subNames.map((subName, subIdx) => {
-    const sum = playerNumbers.reduce((acc, pn) => {
-      const subs = getPlayerSubclusters(pn, clusterKey);
-      return acc + (subs[subIdx]?.rating ?? 0);
-    }, 0);
-    return { name: subName, rating: Math.round(sum / playerNumbers.length) };
-  });
+  const dna: { label: string; value: string }[] = [];
+  dna.push({ label: 'Pace', value: offAvg >= 70 ? 'Fast' : offAvg >= 60 ? 'Moderate' : 'Slow' });
+  dna.push({ label: 'Shot Profile', value: teamClusterAvg.shooting >= 70 ? '3-Heavy' : 'Balanced' });
+  dna.push({ label: 'Rebound', value: teamClusterAvg.rebounding >= 70 ? 'Elite' : teamClusterAvg.rebounding >= 60 ? 'Avg' : 'Below Avg' });
+  dna.push({ label: 'Defense', value: defAvg >= 70 ? 'Elite' : defAvg >= 60 ? 'Solid' : 'Developing' });
+  dna.push({ label: 'Identity', value: offAvg > defAvg ? 'Offense-first' : 'Defense-first' });
+  return dna;
 }
 
-// ── Games helpers ──
-const upcomingGames = FMU_GAMES.filter((g) => g.status === 'upcoming').slice(0, 2);
-const recentGames = [...FMU_GAMES].filter((g) => g.status === 'final').reverse().slice(0, 2);
+const TEAM_DNA = deriveTeamDNA();
 
-// ── Sim win % (logistic from KR gap) ──
-function simWinPct(teamKR: number, oppKR: number): number {
-  const gap = teamKR - oppKR;
-  const pct = 1 / (1 + Math.exp(-0.08 * gap));
-  return Math.round(pct * 100);
-}
+// ── Signature Wins ──
+const signatureWins = FMU_GAMES
+  .filter((g) => g.status === 'final' && g.score?.startsWith('W') && (g.opponentKR ?? 0) >= 70)
+  .slice(0, 3)
+  .map((g) => `W vs ${g.opponent} (${g.score?.replace(/^W\s*/, '')})`);
 
-// ── Bar color ──
-function barColor(v: number): string {
-  if (v >= 75) return '#4ade80';
-  if (v >= 60) return '#facc15';
-  return '#f87171';
-}
+// ── System History (placeholder data) ──
+const SYSTEM_HISTORY = [
+  { season: '2025–26', offense: 'Motion / Read & React', defense: 'Containment Man' },
+  { season: '2024–25', offense: 'Spread Pick & Roll', defense: 'Pack Line' },
+  { season: '2023–24', offense: 'Dribble Drive', defense: 'Pressure Man' },
+];
+
+// ── System Tendencies (placeholder) ──
+const TENDENCIES = [
+  { label: 'ATO Frequency', value: 'High' },
+  { label: 'Press Rate', value: 'Moderate' },
+  { label: 'Zone Usage', value: 'Low' },
+  { label: 'Pace Rank', value: '#4 in Conf' },
+];
+
+// ── Program History (placeholder) ──
+const PROGRAM_HISTORY = [
+  { season: '2024–25', record: '16–8', finish: 'Conf Semis' },
+  { season: '2023–24', record: '12–14', finish: '7th in Conference' },
+  { season: '2022–23', record: '9–17', finish: '9th in Conference' },
+  { season: '2021–22', record: '14–12', finish: 'Conf Quarterfinals' },
+];
+
+const RIVALS = ['Ave Maria', 'Keiser', 'Webber International'];
+
+// ── Tab types ──
+type BioTab = 'team' | 'coaches' | 'system' | 'history';
+
+const BIO_TABS: { key: BioTab; label: string }[] = [
+  { key: 'team', label: 'Team' },
+  { key: 'coaches', label: 'Coaches' },
+  { key: 'system', label: 'System' },
+  { key: 'history', label: 'History' },
+];
 
 // ── Props ──
 export interface TeamQuickSheetProps {
@@ -176,296 +164,297 @@ export function TeamQuickSheet({
   offSystemName,
   defSystemName,
 }: TeamQuickSheetProps) {
-  const [activeView, setActiveView] = useState<'traditional' | 'kanext'>('traditional');
-  const [expandedCluster, setExpandedCluster] = useState<keyof ClusterRatings | null>(null);
-  const [selectedCoach, setSelectedCoach] = useState<CoachProfile | null>(null);
+  const [activeTab, setActiveTab] = useState<BioTab>('team');
+  const [expandedCoach, setExpandedCoach] = useState<string | null>(null);
+
+  // Reset state when sheet reopens
+  React.useEffect(() => {
+    if (visible) {
+      setActiveTab('team');
+      setExpandedCoach(null);
+    }
+  }, [visible]);
 
   return (
     <BottomSheet visible={visible} onClose={onClose}>
       {visible && (
         <>
-          {/* ===== SECTION 1: IDENTITY HEADER ===== */}
+          {/* ===== HEADER — always visible ===== */}
+
+          {/* 2.1 Identity row */}
           <View style={s.identityRow}>
             <Image source={FMU_SEAL} style={s.logo} resizeMode="contain" />
             <View style={s.identityText}>
               <Text style={s.teamName}>Florida Memorial</Text>
-              <Text style={s.teamSubline}>NAIA {'\u00B7'} Sun Conference {'\u00B7'} Miami Gardens, FL</Text>
+              <Text style={s.teamSubline}>NAIA {'\u00B7'} Sun Conference</Text>
             </View>
             <View style={s.krBadge}>
               <Text style={s.krValue}>{teamKR}</Text>
-              <View style={s.krSubRow}>
-                <Text style={s.krSubLabel}>O {offKR}</Text>
-                <Text style={s.krSubSep}>{'\u00B7'}</Text>
-                <Text style={s.krSubLabel}>D {defKR}</Text>
-              </View>
+              <Text style={s.krSub}>O {offKR} {'\u00B7'} D {defKR}</Text>
             </View>
           </View>
 
-          {/* ===== SECTION 2: STAFF (tab-style) ===== */}
-          <Text style={s.sectionLabel}>STAFF</Text>
-          <View style={s.staffRow}>
-            {FMU_COACHES.map((coach) => {
-              const isActive = selectedCoach?.name === coach.name;
+          {/* 2.3 Season snapshot pills */}
+          <View style={s.pillsRow}>
+            <View style={s.recordPill}>
+              <Text style={s.recordPillText}>{FMU_RECORD.overall}</Text>
+            </View>
+            <View style={s.recordPill}>
+              <Text style={s.recordPillTextMuted}>{FMU_RECORD.conference} conf</Text>
+            </View>
+            <View style={[s.recordPill, { backgroundColor: fmuStreak.startsWith('W') ? '#4CAF5020' : '#EF444420' }]}>
+              <Text style={[s.recordPillText, { color: fmuStreak.startsWith('W') ? '#4ade80' : '#f87171' }]}>{fmuStreak}</Text>
+            </View>
+            <View style={s.recordPill}>
+              <Text style={s.recordPillTextMuted}>#{FMU_CONF_POSITION}</Text>
+            </View>
+            <View style={[s.recordPill, { backgroundColor: 'rgba(255,209,0,0.12)' }]}>
+              <Text style={[s.recordPillText, { color: '#FFD100', fontSize: 11 }]}>Regional Power</Text>
+            </View>
+          </View>
+
+          {/* ===== TAB PILLS ===== */}
+          <View style={s.tabRow}>
+            {BIO_TABS.map((tab) => {
+              const isActive = activeTab === tab.key;
               return (
                 <Pressable
-                  key={coach.name}
-                  style={s.staffCard}
+                  key={tab.key}
+                  style={[s.tabPill, isActive && s.tabPillActive]}
                   onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    setSelectedCoach(isActive ? null : coach);
+                    setActiveTab(tab.key);
                   }}
                 >
-                  <View style={[s.coachAvatar, { backgroundColor: `hsl(${coach.hue}, 45%, 35%)` }, isActive && s.coachAvatarActive]}>
-                    <Text style={s.coachAvatarText}>{coach.initials}</Text>
-                  </View>
-                  <Text style={[s.coachName, isActive && s.coachNameActive]} numberOfLines={1}>{coach.name.split(' ').pop()}</Text>
-                  <Text style={s.coachRole} numberOfLines={1}>
-                    {coach.role === 'Head Coach' ? 'HC' : coach.role.includes('Associate') ? 'Assoc HC' : 'Asst'}
-                  </Text>
+                  <Text style={[s.tabPillText, isActive && s.tabPillTextActive]}>{tab.label}</Text>
                 </Pressable>
               );
             })}
           </View>
 
-          {/* Coach detail inline (shows when a coach tab is selected) */}
-          {selectedCoach && (
-            <View style={s.card}>
-              <View style={s.coachDetailRow}>
-                <Text style={s.coachDetailLabel}>Full Name</Text>
-                <Text style={s.coachDetailValue}>{selectedCoach.name}</Text>
+          {/* ===== TAB CONTENT ===== */}
+
+          {/* ── TEAM TAB ── */}
+          {activeTab === 'team' && (
+            <View style={s.tabContent}>
+              {/* Team DNA chips */}
+              <Text style={s.sectionLabel}>TEAM DNA</Text>
+              <View style={s.dnaChipRow}>
+                {TEAM_DNA.map((d) => (
+                  <View key={d.label} style={s.dnaChip}>
+                    <Text style={s.dnaChipLabel}>{d.label}:</Text>
+                    <Text style={s.dnaChipValue}>{d.value}</Text>
+                  </View>
+                ))}
               </View>
-              <View style={s.coachDetailRow}>
-                <Text style={s.coachDetailLabel}>Role</Text>
-                <Text style={s.coachDetailValue}>{selectedCoach.role}</Text>
+
+              {/* Roster / Size summary */}
+              <Text style={s.sectionLabel}>ROSTER</Text>
+              <View style={s.card}>
+                <Text style={s.summaryLine}>
+                  Avg Ht: 6{'\u2019'}4{'\u201D'} {'\u00B7'} Avg Wt: 191 {'\u00B7'} Returning Min: 72%
+                </Text>
               </View>
-              <View style={s.coachDetailRow}>
-                <Text style={s.coachDetailLabel}>Program</Text>
-                <Text style={s.coachDetailValue}>Florida Memorial</Text>
-              </View>
-              <View style={s.coachDetailRow}>
-                <Text style={s.coachDetailLabel}>Offense</Text>
-                <Text style={s.coachDetailValue}>{offSystemName}</Text>
-              </View>
-              <View style={s.coachDetailRow}>
-                <Text style={s.coachDetailLabel}>Defense</Text>
-                <Text style={s.coachDetailValue}>{defSystemName}</Text>
-              </View>
-              {(() => {
-                const h2 = selectedCoach.hue;
-                const focuses = ['Athletic wings', 'Versatile bigs', 'Shooting guards', 'Floor generals', 'Defensive stoppers'];
-                const pipelines = ['JUCO transfers', 'HS prep schools', 'International prospects', 'D2 transfers', 'Local talent'];
-                return (
-                  <>
-                    <View style={s.coachDetailRow}>
-                      <Text style={s.coachDetailLabel}>Recruiting Focus</Text>
-                      <Text style={s.coachDetailValue}>{focuses[h2 % focuses.length]}</Text>
-                    </View>
-                    <View style={s.coachDetailRow}>
-                      <Text style={s.coachDetailLabel}>Pipeline</Text>
-                      <Text style={s.coachDetailValue}>{pipelines[(h2 >> 3) % pipelines.length]}</Text>
-                    </View>
-                  </>
-                );
-              })()}
+
+              {/* Signature Wins */}
+              {signatureWins.length > 0 && (
+                <>
+                  <Text style={s.sectionLabel}>SIGNATURE WINS</Text>
+                  <View style={s.card}>
+                    {signatureWins.map((w, i) => (
+                      <View key={i} style={s.listItemRow}>
+                        <Text style={s.winBullet}>{'\u2022'}</Text>
+                        <Text style={s.listItemText}>{w}</Text>
+                      </View>
+                    ))}
+                    {signatureWins.length === 0 && (
+                      <Text style={s.placeholderText}>No signature wins yet this season</Text>
+                    )}
+                  </View>
+                </>
+              )}
             </View>
           )}
 
-          {/* ===== SECTION 3: SEASON SNAPSHOT ===== */}
-          <Text style={s.sectionLabel}>SEASON</Text>
-          <View style={s.seasonRow}>
-            <SnapshotItem value={FMU_RECORD.overall} label="Overall" />
-            <SnapshotItem value={FMU_RECORD.conference} label="Conference" />
-            <SnapshotItem value={fmuStreak} label="Streak" isStreak />
-            <SnapshotItem value={`#${FMU_CONF_POSITION}`} label="Conf Rank" />
-          </View>
-
-          {/* ===== TOGGLE: Traditional / KaNeXT ===== */}
-          <View style={s.toggleRow}>
-            <Text style={s.sectionLabel}>TEAM STATS</Text>
-            <View style={s.togglePills}>
-              <Pressable
-                style={[s.pill, activeView === 'traditional' && s.pillActive]}
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveView('traditional'); }}
-              >
-                <Text style={[s.pillText, activeView === 'traditional' && s.pillTextActive]}>Traditional</Text>
-              </Pressable>
-              <Pressable
-                style={[s.pill, activeView === 'kanext' && s.pillActive]}
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveView('kanext'); }}
-              >
-                <Text style={[s.pillText, activeView === 'kanext' && s.pillTextActive]}>KaNeXT</Text>
-              </Pressable>
-            </View>
-          </View>
-
-          {/* ===== SECTION 4: STATS ===== */}
-          {activeView === 'traditional' ? (
-            <View style={s.card}>
-              <View style={s.statColumns}>
-                {/* Offense column */}
-                <View style={s.statCol}>
-                  <Text style={s.statColHeader}>OFFENSE</Text>
-                  <StatRow label="PPG" value={PPG} />
-                  <StatRow label="eFG%" value={`${eFGPct}%`} />
-                  <StatRow label="3PT%" value={`${threePtPct}%`} />
-                  <StatRow label="TO%" value={`${TOPct}%`} />
-                  <StatRow label="APG" value={APG} />
-                </View>
-                {/* Defense column */}
-                <View style={s.statCol}>
-                  <Text style={s.statColHeader}>DEFENSE</Text>
-                  <StatRow label="Opp PPG" value={OPP_PPG} />
-                  <StatRow label="Opp eFG%" value={`${OPP_eFG}%`} />
-                  <StatRow label="Opp 3PT%" value={`${OPP_3Pct}%`} />
-                  <StatRow label="Force TO%" value={`${ForceTOPct}%`} />
-                  <StatRow label="BPG" value={BPG} />
-                </View>
-              </View>
-              {/* Rebounding row */}
-              <View style={s.rebRow}>
-                <Text style={s.statColHeader}>REBOUNDING</Text>
-                <View style={s.rebStats}>
-                  <StatRow label="RPG" value={RPG} />
-                  <StatRow label="SPG" value={SPG} />
-                  <StatRow label="FT%" value={`${FTPct}%`} />
-                </View>
-              </View>
-            </View>
-          ) : (
-            <View style={s.card}>
-              {clusterKeys.map((key) => {
-                const avg = teamClusterAvg[key];
-                const isExpanded = expandedCluster === key;
-                const subs = teamSubclusterAvg[key];
+          {/* ── COACHES TAB ── */}
+          {activeTab === 'coaches' && (
+            <View style={s.tabContent}>
+              <Text style={s.sectionLabel}>STAFF</Text>
+              {FMU_COACHES.map((coach) => {
+                const isExpanded = expandedCoach === coach.name;
                 return (
-                  <View key={key}>
+                  <View key={coach.name}>
                     <Pressable
-                      style={s.clusterRow}
+                      style={s.coachRow}
                       onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        setExpandedCluster(isExpanded ? null : key);
+                        setExpandedCoach(isExpanded ? null : coach.name);
                       }}
                     >
-                      <View style={s.clusterLabelRow}>
-                        <IconSymbol name={isExpanded ? 'chevron.down' : 'chevron.right'} size={10} color="#555" />
-                        <Text style={s.clusterLabel}>{clusterLabels[key]}</Text>
+                      <View style={[s.coachAvatar, { backgroundColor: `hsl(${coach.hue}, 45%, 35%)` }]}>
+                        <Text style={s.coachAvatarText}>{coach.initials}</Text>
                       </View>
-                      <View style={s.clusterBarBg}>
-                        <View style={[s.clusterBarFill, { width: `${avg}%`, backgroundColor: barColor(avg) }]} />
-                      </View>
-                      <Text style={[s.clusterValue, { color: barColor(avg) }]}>{avg}</Text>
-                    </Pressable>
-                    {isExpanded && (
-                      <View style={s.subclusterContainer}>
-                        {subs.map((sub) => (
-                          <View key={sub.name} style={s.subclusterRow}>
-                            <Text style={s.subclusterLabel}>{sub.name}</Text>
-                            <View style={s.subclusterBarBg}>
-                              <View style={[s.subclusterBarFill, { width: `${sub.rating}%`, backgroundColor: barColor(sub.rating) }]} />
+                      <View style={s.coachInfo}>
+                        <View style={s.coachNameRow}>
+                          <Text style={s.coachName}>{coach.name}</Text>
+                          {coach.isHC && (
+                            <View style={s.hcBadge}>
+                              <Text style={s.hcBadgeText}>Head Coach</Text>
                             </View>
-                            <Text style={[s.subclusterValue, { color: barColor(sub.rating) }]}>{sub.rating}</Text>
-                          </View>
-                        ))}
+                          )}
+                        </View>
+                        <Text style={s.coachRole}>{coach.role}</Text>
+                        <Text style={s.coachTenure}>{coach.yearsWithProgram} yr{coach.yearsWithProgram !== 1 ? 's' : ''} with program</Text>
+                      </View>
+                      <IconSymbol name={isExpanded ? 'chevron.down' : 'chevron.right'} size={12} color="#555" />
+                    </Pressable>
+
+                    {isExpanded && (
+                      <View style={s.coachDetail}>
+                        <Text style={s.coachBio}>{coach.bio}</Text>
+
+                        {coach.priorStops.length > 0 && (
+                          <>
+                            <Text style={s.detailSubhead}>COACHING TREE</Text>
+                            {coach.priorStops.map((stop, i) => (
+                              <Text key={i} style={s.stopText}>{'\u2022'} {stop}</Text>
+                            ))}
+                          </>
+                        )}
+
+                        {coach.highlights.length > 0 && (
+                          <>
+                            <Text style={s.detailSubhead}>HIGHLIGHTS</Text>
+                            {coach.highlights.map((h, i) => (
+                              <Text key={i} style={s.stopText}>{'\u2022'} {h}</Text>
+                            ))}
+                          </>
+                        )}
                       </View>
                     )}
                   </View>
                 );
               })}
-              {/* Keys */}
-              <View style={s.keysSection}>
-                <Text style={s.keysTitle}>KEYS</Text>
-                {CLUSTER_KEYS.map((k, i) => (
-                  <View key={i} style={s.keyRow}>
-                    <Text style={s.keyBullet}>{i + 1}.</Text>
-                    <Text style={s.keyText}>{k}</Text>
+            </View>
+          )}
+
+          {/* ── SYSTEM TAB ── */}
+          {activeTab === 'system' && (
+            <View style={s.tabContent}>
+              {/* Current System */}
+              <Text style={s.sectionLabel}>CURRENT SYSTEM</Text>
+              <View style={s.card}>
+                <View style={s.systemRow}>
+                  <Text style={s.systemLabel}>Offense</Text>
+                  <Text style={s.systemValue}>{offSystemName}</Text>
+                </View>
+                <View style={s.systemRow}>
+                  <Text style={s.systemLabel}>Defense</Text>
+                  <Text style={s.systemValue}>{defSystemName}</Text>
+                </View>
+              </View>
+
+              {/* System History */}
+              <Text style={s.sectionLabel}>SYSTEM HISTORY</Text>
+              <View style={s.card}>
+                {SYSTEM_HISTORY.map((entry) => (
+                  <View key={entry.season} style={s.historyRow}>
+                    <Text style={s.historySeasonText}>{entry.season}</Text>
+                    <View style={s.historySystemCol}>
+                      <Text style={s.historySystemText}>Off: {entry.offense}</Text>
+                      <Text style={s.historySystemText}>Def: {entry.defense}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+
+              {/* Tendencies */}
+              <Text style={s.sectionLabel}>TENDENCIES</Text>
+              <View style={s.tendencyGrid}>
+                {TENDENCIES.map((t) => (
+                  <View key={t.label} style={s.tendencyCard}>
+                    <Text style={s.tendencyValue}>{t.value}</Text>
+                    <Text style={s.tendencyLabel}>{t.label}</Text>
                   </View>
                 ))}
               </View>
             </View>
           )}
 
-          {/* ===== SECTION 5: UPCOMING / RECENT ===== */}
-          {upcomingGames.length > 0 && (
-            <>
-              <Text style={s.sectionLabel}>UPCOMING</Text>
+          {/* ── HISTORY TAB ── */}
+          {activeTab === 'history' && (
+            <View style={s.tabContent}>
+              {/* Program Identity */}
+              <Text style={s.sectionLabel}>PROGRAM</Text>
               <View style={s.card}>
-                {upcomingGames.map((g) => {
-                  const sim = simWinPct(teamKR, g.opponentKR ?? 70);
-                  return (
-                    <View key={g.id} style={s.gameRow}>
-                      <Text style={s.gameDate}>{g.date}</Text>
-                      <Text style={s.gameSep}>{'\u00B7'}</Text>
-                      <Text style={s.gameOpp}>{g.location === 'Away' ? '@ ' : 'vs '}{g.opponent}</Text>
-                      <Text style={[s.simPct, { color: sim >= 50 ? '#4ade80' : '#f87171' }]}>{sim}%</Text>
-                      <Text style={s.gameTime}>{g.gameTime}</Text>
-                    </View>
-                  );
-                })}
+                <View style={s.progRow}>
+                  <Text style={s.progLabel}>Founded</Text>
+                  <Text style={s.progValue}>1879</Text>
+                </View>
+                <View style={s.progRow}>
+                  <Text style={s.progLabel}>Location</Text>
+                  <Text style={s.progValue}>Miami Gardens, FL</Text>
+                </View>
+                <View style={s.progRow}>
+                  <Text style={s.progLabel}>Nickname</Text>
+                  <Text style={s.progValue}>Lions</Text>
+                </View>
+                <View style={s.progRow}>
+                  <Text style={s.progLabel}>Venue</Text>
+                  <Text style={s.progValue}>FMU Wellness Center</Text>
+                </View>
+                <View style={[s.progRow, { borderBottomWidth: 0 }]}>
+                  <Text style={s.progLabel}>Colors</Text>
+                  <View style={s.colorsRow}>
+                    <View style={[s.colorDot, { backgroundColor: '#003DA5' }]} />
+                    <View style={[s.colorDot, { backgroundColor: '#FFD100' }]} />
+                    <Text style={s.progValue}>Royal Blue {'\u0026'} Gold</Text>
+                  </View>
+                </View>
               </View>
-            </>
-          )}
-          {recentGames.length > 0 && (
-            <>
-              <Text style={s.sectionLabel}>RECENT</Text>
-              <View style={s.card}>
-                {recentGames.map((g) => {
-                  const isWin = g.score?.startsWith('W');
-                  const sim = simWinPct(teamKR, g.opponentKR ?? 70);
-                  return (
-                    <View key={g.id} style={s.gameRow}>
-                      <Text style={[s.gameResult, { color: isWin ? '#4ade80' : '#f87171' }]}>{g.score}</Text>
-                      <Text style={s.gameSep}>{'\u00B7'}</Text>
-                      <Text style={s.gameOpp}>{g.location === 'Away' ? '@ ' : 'vs '}{g.opponent}</Text>
-                      <Text style={[s.simPct, { color: sim >= 50 ? '#4ade80' : '#f87171' }]}>{sim}%</Text>
-                      <Text style={s.gameDateSmall}>{g.date}</Text>
-                    </View>
-                  );
-                })}
-              </View>
-            </>
-          )}
 
+              {/* Season Progression */}
+              <Text style={s.sectionLabel}>SEASON HISTORY</Text>
+              <View style={s.card}>
+                {PROGRAM_HISTORY.map((entry) => (
+                  <View key={entry.season} style={s.seasonHistRow}>
+                    <Text style={s.seasonHistYear}>{entry.season}</Text>
+                    <Text style={s.seasonHistRecord}>{entry.record}</Text>
+                    <Text style={s.seasonHistFinish}>{entry.finish}</Text>
+                  </View>
+                ))}
+              </View>
+
+              {/* Rivalries */}
+              <Text style={s.sectionLabel}>CONFERENCE RIVALS</Text>
+              <View style={s.card}>
+                {RIVALS.map((r) => (
+                  <View key={r} style={s.listItemRow}>
+                    <Text style={s.winBullet}>{'\u2022'}</Text>
+                    <Text style={s.listItemText}>{r}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </>
       )}
     </BottomSheet>
   );
 }
 
-// ── Subcomponents ──
-
-function SnapshotItem({ value, label, isStreak }: { value: string; label: string; isStreak?: boolean }) {
-  const streakColor = isStreak
-    ? value.startsWith('W') ? '#4ade80' : value.startsWith('L') ? '#f87171' : '#fff'
-    : '#fff';
-  return (
-    <View style={s.snapItem}>
-      <Text style={[s.snapValue, isStreak && { color: streakColor }]}>{value}</Text>
-      <Text style={s.snapLabel}>{label}</Text>
-    </View>
-  );
-}
-
-function StatRow({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={s.statRow}>
-      <Text style={s.statLabel}>{label}</Text>
-      <Text style={s.statValue}>{value}</Text>
-    </View>
-  );
-}
-
 // ── Styles ──
 
 const s = StyleSheet.create({
-  // Identity
+  // Header — Identity
   identityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   logo: {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
     marginRight: 12,
   },
   identityText: {
@@ -494,20 +483,67 @@ const s = StyleSheet.create({
     color: '#fff',
     lineHeight: 26,
   },
-  krSubRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
+  krSub: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#888',
     marginTop: 2,
   },
-  krSubLabel: {
+
+  // Season pills row
+  pillsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 16,
+  },
+  recordPill: {
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  recordPillText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  recordPillTextMuted: {
     fontSize: 12,
     fontWeight: '600',
     color: '#888',
   },
-  krSubSep: {
-    fontSize: 12,
-    color: '#555',
+
+  // Tab pills
+  tabRow: {
+    flexDirection: 'row',
+    gap: 4,
+    marginBottom: 16,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 10,
+    padding: 3,
+  },
+  tabPill: {
+    flex: 1,
+    paddingVertical: 7,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  tabPillActive: {
+    backgroundColor: '#333',
+  },
+  tabPillText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#666',
+  },
+  tabPillTextActive: {
+    color: '#fff',
+  },
+
+  // Tab content
+  tabContent: {
+    gap: 0,
   },
 
   // Section labels
@@ -523,324 +559,300 @@ const s = StyleSheet.create({
   // Card
   card: {
     backgroundColor: '#1a1a1a',
-    borderRadius: 16,
+    borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.06)',
     padding: 14,
-    marginBottom: 16,
+    marginBottom: 14,
   },
 
-  // Staff
-  staffRow: {
+  // ── TEAM TAB ──
+
+  // DNA chips
+  dnaChipRow: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 14,
   },
-  staffCard: {
+  dnaChip: {
+    flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    backgroundColor: '#1a1a1a',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  dnaChipLabel: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: '#888',
+  },
+  dnaChipValue: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#fff',
+  },
+
+  // Summary line
+  summaryLine: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#ccc',
+    lineHeight: 18,
+  },
+
+  // List items
+  listItemRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+    paddingVertical: 3,
+  },
+  winBullet: {
+    fontSize: 13,
+    color: '#4ade80',
+    lineHeight: 18,
+  },
+  listItemText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#ccc',
+    flex: 1,
+    lineHeight: 18,
+  },
+  placeholderText: {
+    fontSize: 13,
+    color: '#555',
+    fontStyle: 'italic',
+  },
+
+  // ── COACHES TAB ──
+
+  coachRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1a1a1a',
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+    padding: 12,
+    marginBottom: 2,
+    gap: 12,
   },
   coachAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  coachAvatarActive: {
-    borderWidth: 2,
-    borderColor: '#fff',
-  },
   coachAvatarText: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#fff',
+  },
+  coachInfo: {
+    flex: 1,
+  },
+  coachNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  coachName: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  hcBadge: {
+    backgroundColor: 'rgba(255,209,0,0.15)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  hcBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#FFD100',
+  },
+  coachRole: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#888',
+    marginTop: 2,
+  },
+  coachTenure: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: '#666',
+    marginTop: 1,
+  },
+  coachDetail: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+    padding: 14,
+    marginBottom: 10,
+    marginTop: 2,
+  },
+  coachBio: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#ccc',
+    lineHeight: 19,
+    marginBottom: 12,
+  },
+  detailSubhead: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+    color: '#6e6e6e',
+    marginBottom: 6,
+    marginTop: 8,
+  },
+  stopText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#aaa',
+    lineHeight: 18,
+    paddingLeft: 4,
+  },
+
+  // ── SYSTEM TAB ──
+
+  systemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    paddingVertical: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
+  },
+  systemLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#888',
+  },
+  systemValue: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#fff',
+  },
+
+  // System History
+  historyRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingVertical: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
+    gap: 12,
+  },
+  historySeasonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#fff',
+    width: 64,
+  },
+  historySystemCol: {
+    flex: 1,
+    gap: 2,
+  },
+  historySystemText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#aaa',
+  },
+
+  // Tendencies
+  tendencyGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 14,
+  },
+  tendencyCard: {
+    width: '47%' as any,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+    padding: 12,
+    alignItems: 'center',
+  },
+  tendencyValue: {
     fontSize: 16,
     fontWeight: '800',
     color: '#fff',
   },
-  coachName: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#fff',
-    maxWidth: 70,
-    textAlign: 'center',
-  },
-  coachNameActive: {
-    color: '#4ade80',
-  },
-  coachRole: {
-    fontSize: 10,
+  tendencyLabel: {
+    fontSize: 11,
     fontWeight: '500',
     color: '#888',
+    marginTop: 4,
   },
-  coachDetailRow: {
+
+  // ── HISTORY TAB ──
+
+  progRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'baseline',
-    paddingVertical: 6,
+    alignItems: 'center',
+    paddingVertical: 7,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(255,255,255,0.06)',
   },
-  coachDetailLabel: {
+  progLabel: {
     fontSize: 12,
     fontWeight: '500',
     color: '#888',
   },
-  coachDetailValue: {
+  progValue: {
     fontSize: 13,
     fontWeight: '700',
     color: '#fff',
   },
-
-  // Season snapshot
-  seasonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#1a1a1a',
-    borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
-    padding: 14,
-    marginBottom: 16,
-  },
-  snapItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  snapValue: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#fff',
-  },
-  snapLabel: {
-    fontSize: 11,
-    fontWeight: '500',
-    color: '#888',
-    marginTop: 4,
-  },
-
-  // Toggle
-  toggleRow: {
+  colorsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-    marginTop: 4,
-  },
-  togglePills: {
-    flexDirection: 'row',
-    backgroundColor: '#1a1a1a',
-    borderRadius: 8,
-    padding: 2,
-  },
-  pill: {
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 6,
-  },
-  pillActive: {
-    backgroundColor: '#333',
-  },
-  pillText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#666',
-  },
-  pillTextActive: {
-    color: '#fff',
-  },
-
-  // Traditional stats
-  statColumns: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  statCol: {
-    flex: 1,
-  },
-  statColHeader: {
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 1.0,
-    color: '#6e6e6e',
-    marginBottom: 8,
-  },
-  statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    marginBottom: 6,
-  },
-  statLabel: {
-    fontSize: 11,
-    fontWeight: '500',
-    color: '#888',
-  },
-  statValue: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#fff',
-    textAlign: 'right',
-    minWidth: 44,
-  },
-  rebRow: {
-    marginTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
-    paddingTop: 12,
-  },
-  rebStats: {
-    flexDirection: 'row',
-    gap: 24,
-    marginTop: 8,
-  },
-
-  // KaNeXT clusters
-  clusterRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-  },
-  clusterLabelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 108,
-    gap: 4,
-  },
-  clusterLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#ccc',
-  },
-  clusterBarBg: {
-    flex: 1,
-    height: 8,
-    backgroundColor: '#2a2a2a',
-    borderRadius: 4,
-    marginHorizontal: 8,
-    overflow: 'hidden',
-  },
-  clusterBarFill: {
-    height: 8,
-    borderRadius: 4,
-  },
-  clusterValue: {
-    fontSize: 13,
-    fontWeight: '700',
-    width: 28,
-    textAlign: 'right',
-  },
-
-  // Subclusters
-  subclusterContainer: {
-    marginLeft: 18,
-    paddingLeft: 10,
-    borderLeftWidth: 1,
-    borderLeftColor: 'rgba(255,255,255,0.06)',
-    marginBottom: 6,
-  },
-  subclusterRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 4,
-  },
-  subclusterLabel: {
-    fontSize: 11,
-    fontWeight: '500',
-    color: '#888',
-    width: 110,
-  },
-  subclusterBarBg: {
-    flex: 1,
-    height: 5,
-    backgroundColor: '#222',
-    borderRadius: 3,
-    marginHorizontal: 8,
-    overflow: 'hidden',
-  },
-  subclusterBarFill: {
-    height: 5,
-    borderRadius: 3,
-  },
-  subclusterValue: {
-    fontSize: 11,
-    fontWeight: '600',
-    width: 24,
-    textAlign: 'right',
-  },
-
-  // Keys
-  keysSection: {
-    marginTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
-    paddingTop: 10,
-  },
-  keysTitle: {
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 1.0,
-    color: '#6e6e6e',
-    marginBottom: 8,
-  },
-  keyRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 4,
-  },
-  keyBullet: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#888',
-    width: 18,
-  },
-  keyText: {
-    fontSize: 12,
-    color: '#ccc',
-    flex: 1,
-    lineHeight: 17,
-  },
-
-  // Games
-  gameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
     gap: 6,
   },
-  gameDate: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#888',
-    width: 50,
+  colorDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
-  gameSep: {
-    fontSize: 12,
-    color: '#444',
+
+  // Season History
+  seasonHistRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    paddingVertical: 7,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
+    gap: 8,
   },
-  gameOpp: {
+  seasonHistYear: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#fff',
-    flex: 1,
+    width: 64,
   },
-  gameTime: {
+  seasonHistRecord: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#ccc',
+    width: 44,
+  },
+  seasonHistFinish: {
     fontSize: 12,
     fontWeight: '500',
     color: '#888',
+    flex: 1,
   },
-  gameResult: {
-    fontSize: 13,
-    fontWeight: '700',
-    width: 66,
-  },
-  simPct: {
-    fontSize: 12,
-    fontWeight: '700',
-    minWidth: 32,
-    textAlign: 'right',
-  },
-  gameDateSmall: {
-    fontSize: 11,
-    color: '#666',
-  },
-
 });

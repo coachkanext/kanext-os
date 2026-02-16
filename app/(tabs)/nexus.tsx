@@ -13,7 +13,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { StyleSheet, Keyboard, Pressable, Animated, Dimensions, View, Text } from 'react-native';
 
 import { ThemedView } from '@/components/themed-view';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { registerHeaderLeftAction } from '@/components/global-header';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AvatarDrawer } from '@/components/avatar-drawer';
@@ -25,12 +25,12 @@ import { RosterOverlay } from '@/components/nexus/roster-overlay';
 import { RecruitingOverlay } from '@/components/nexus/recruiting-overlay';
 import { SimulationOverlay } from '@/components/nexus/simulation-overlay';
 import { VoiceOverlay } from '@/components/nexus/voice-overlay';
-import { NewConversationSheet, type EngineType } from '@/components/nexus/new-conversation-sheet';
+import { InsertSheet, type InsertAction } from '@/components/nexus/new-conversation-sheet';
 import { NexusProvider, useNexusContext } from '@/context/nexus-context';
 import { useAuth } from '@/context/auth-context';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
 import { sendToGPT } from '@/utils/openai';
-import { useAppContext } from '@/context/app-context';
+import { useAppContext, useMode } from '@/context/app-context';
 import { useRouter } from 'expo-router';
 import { registerGameOpsHandler } from '@/utils/global-game-ops';
 import * as Haptics from 'expo-haptics';
@@ -41,12 +41,14 @@ const PANEL_WIDTH = SCREEN_WIDTH * 0.7;
 function NexusLockedState() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const mode = useMode();
+  const glyphColor = ModeColors[mode].nexusGlyphDim;
 
   return (
     <ThemedView style={styles.container}>
       <View style={styles.lockedOverlay}>
         <View style={styles.lockedContent}>
-          <Text style={[styles.lockedLogo, { color: colors.textTertiary }]}>KX</Text>
+          <Text style={[styles.lockedLogo, { color: glyphColor }]}>KX</Text>
           <Text style={[styles.lockedText, { color: colors.textTertiary }]}>
             Sign in to unlock Nexus
           </Text>
@@ -218,29 +220,17 @@ function NexusScreenContent() {
   const gameOpsConfig = activeConversation?.gameOpsConfig;
 
 
-  // ── Engine Menu ──
-  const handlePlusLongPress = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  // ── Insert Menu ("+") ──
+  const handlePlusPress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     openNewConversationSheet();
   }, [openNewConversationSheet]);
 
-  const handleSelectEngine = useCallback((engine: EngineType) => {
+  const handleInsertAction = useCallback((action: InsertAction) => {
     closeNewConversationSheet();
-    switch (engine) {
-      case 'game-ops':
-        createNewGameOps('', 'Opponent');
-        break;
-      case 'simulation':
-        createNewSim();
-        break;
-      case 'player':
-      case 'team':
-      case 'recruiting':
-      case 'scouting':
-        createNewConversation();
-        break;
-    }
-  }, [closeNewConversationSheet, createNewGameOps, createNewSim, createNewConversation]);
+    // Placeholder — each action will be wired to real functionality later
+    console.log('Insert action:', action);
+  }, [closeNewConversationSheet]);
 
   // Game Ops is now conversational — user types naturally, GPT parses and asks clarifying questions.
 
@@ -308,7 +298,7 @@ function NexusScreenContent() {
           onChangeText={setInputText}
           onSend={sendMessage}
           onMicPress={handleMicPress}
-          onPlusLongPress={handlePlusLongPress}
+          onAttachPress={handlePlusPress}
           isVoiceActive={voiceState !== 'idle'}
           onFocus={() => {
             // Create a new conversation if none is active
@@ -367,11 +357,11 @@ function NexusScreenContent() {
         onClose={() => setAvatarDrawerVisible(false)}
       />
 
-      {/* Engine Menu Sheet (plus button long-press) */}
-      <NewConversationSheet
+      {/* Insert Sheet (plus button tap) */}
+      <InsertSheet
         visible={nexusState.newConversationSheetOpen}
         onClose={closeNewConversationSheet}
-        onSelectEngine={handleSelectEngine}
+        onSelectAction={handleInsertAction}
       />
     </ThemedView>
   );

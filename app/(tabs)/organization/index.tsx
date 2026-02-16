@@ -2,20 +2,25 @@
  * Organization Screen - Institution Overview
  * Universal operational surface - mode-specific truth view.
  * Per spec: Organization reflects "what is" - it never reasons, simulates, or decides.
+ * All 5 modes get 4 swipeable PagerView tabs + More overflow.
  */
 
-import React from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
+import PagerView from 'react-native-pager-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/core';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode } from '@/context/app-context';
+import { registerMoreHandlers, unregisterMoreHandlers } from '@/utils/global-more';
 import {
   INSTITUTION,
   INSTITUTION_LEADERSHIP,
@@ -25,15 +30,7 @@ import {
   type ProgramData,
   type Staff,
 } from '@/data/mock-sports';
-import {
-  KANEXT_ORGANIZATION,
-  BOARD_MEMBERS,
-  LEADERSHIP_TEAM,
-  DOMAINS,
-  COMPANY_METRICS,
-  formatCurrency,
-  getDomainStatusColor,
-} from '@/data/mock-enterprise';
+
 import {
   ICC_ORGANIZATION,
   CAMPUSES,
@@ -54,7 +51,245 @@ import {
   formatCalendarEventDate,
   getCalendarEventTypeLabel,
 } from '@/data/mock-education';
-import type { BoardMember, Domain, Campus, Ministry, AcademicTerm, AcademicCalendarEvent, Department, FacultyMember } from '@/types';
+import type { Campus, Ministry, AcademicTerm, AcademicCalendarEvent, Department, FacultyMember } from '@/types';
+import { EnterpriseProvider } from '@/context/enterprise-context';
+import { CompanySwitcher } from '@/components/enterprise/company-switcher';
+import { EnterpriseHomeContent } from '@/components/enterprise/enterprise-home';
+import { ProofEventsContent } from '@/components/enterprise/proof-events-content';
+import { DataRoomContent } from '@/components/enterprise/data-room-content';
+import { GovernanceContent } from '@/components/enterprise/governance-content';
+import { RailsSection } from '@/components/rails/rails-section';
+import type { Mode } from '@/types';
+
+// =============================================================================
+// ORG TAB & MORE DEFINITIONS (per mode)
+// =============================================================================
+
+const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
+  sports: [
+    { id: 'programs', label: 'Programs' },
+    { id: 'people', label: 'People' },
+    { id: 'operations', label: 'Operations' },
+    { id: 'finance', label: 'Finance' },
+  ],
+  enterprise: [
+    { id: 'entities', label: 'Entities' },
+    { id: 'people', label: 'People' },
+    { id: 'operations', label: 'Operations' },
+    { id: 'finance', label: 'Finance' },
+  ],
+  education: [
+    { id: 'schools', label: 'Schools' },
+    { id: 'people', label: 'People' },
+    { id: 'operations', label: 'Operations' },
+    { id: 'finance', label: 'Finance' },
+  ],
+  community: [
+    { id: 'series', label: 'Series' },
+    { id: 'teams', label: 'Teams' },
+    { id: 'operations', label: 'Operations' },
+    { id: 'finance', label: 'Finance' },
+  ],
+  church: [
+    { id: 'ministries', label: 'Ministries' },
+    { id: 'people', label: 'People' },
+    { id: 'operations', label: 'Operations' },
+    { id: 'giving', label: 'Giving' },
+  ],
+};
+
+const ORG_MORE_ITEMS: Record<Mode, { id: string; label: string; icon: string }[]> = {
+  sports: [
+    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
+    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
+    { id: 'facilities', label: 'Facilities', icon: 'building.fill' },
+    { id: 'resources', label: 'Resources', icon: 'folder.fill' },
+    { id: 'brand', label: 'Brand / Media Kit', icon: 'paintbrush.fill' },
+  ],
+  enterprise: [
+    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
+    { id: 'legal', label: 'Legal', icon: 'doc.text.fill' },
+    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
+    { id: 'assets', label: 'Assets', icon: 'cube.fill' },
+    { id: 'reports', label: 'Reports', icon: 'chart.bar.fill' },
+  ],
+  education: [
+    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
+    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
+    { id: 'facilities', label: 'Facilities', icon: 'building.fill' },
+    { id: 'resources', label: 'Resources', icon: 'folder.fill' },
+    { id: 'policies', label: 'Policies', icon: 'doc.plaintext.fill' },
+  ],
+  community: [
+    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
+    { id: 'rules', label: 'Rules', icon: 'list.clipboard.fill' },
+    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
+    { id: 'venues', label: 'Venues', icon: 'mappin.circle.fill' },
+    { id: 'sponsors', label: 'Sponsors', icon: 'star.fill' },
+  ],
+  church: [
+    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
+    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
+    { id: 'facilities', label: 'Facilities', icon: 'building.fill' },
+    { id: 'resources', label: 'Resources', icon: 'folder.fill' },
+    { id: 'policies', label: 'Policies', icon: 'doc.plaintext.fill' },
+  ],
+};
+
+// =============================================================================
+// SHARED: ORG HUB TABS (4 tabs + More trigger)
+// =============================================================================
+
+function OrgHubTabs({
+  tabs,
+  activeIndex,
+  onTabPress,
+  onMorePress,
+}: {
+  tabs: { id: string; label: string }[];
+  activeIndex: number;
+  onTabPress: (index: number) => void;
+  onMorePress: () => void;
+}) {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const tabScrollRef = useRef<ScrollView>(null);
+  const tabLayoutsRef = useRef<{ x: number; width: number }[]>([]);
+
+  const scrollToTab = useCallback((index: number) => {
+    const layout = tabLayoutsRef.current[index];
+    if (layout && tabScrollRef.current) {
+      tabScrollRef.current.scrollTo({
+        x: Math.max(0, layout.x - 40),
+        animated: true,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    scrollToTab(activeIndex);
+  }, [activeIndex, scrollToTab]);
+
+  return (
+    <View style={[styles.hubTabsContainer, { borderBottomColor: colors.divider }]}>
+      <ScrollView
+        ref={tabScrollRef}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.hubTabsContent}
+      >
+        {tabs.map((tab, index) => {
+          const isActive = index === activeIndex;
+          return (
+            <Pressable
+              key={tab.id}
+              onLayout={(e) => {
+                tabLayoutsRef.current[index] = {
+                  x: e.nativeEvent.layout.x,
+                  width: e.nativeEvent.layout.width,
+                };
+              }}
+              style={[
+                styles.hubTab,
+                isActive && [styles.hubTabActive, { borderBottomColor: colors.text }],
+              ]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onTabPress(index);
+              }}
+            >
+              <ThemedText
+                style={[
+                  styles.hubTabLabel,
+                  { color: isActive ? colors.text : colors.textTertiary },
+                  isActive && styles.hubTabLabelActive,
+                ]}
+              >
+                {tab.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+        {/* More trigger */}
+        <Pressable
+          style={styles.hubTab}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            onMorePress();
+          }}
+        >
+          <ThemedText style={[styles.hubTabLabel, { color: colors.textTertiary }]}>
+            More
+          </ThemedText>
+        </Pressable>
+      </ScrollView>
+    </View>
+  );
+}
+
+// =============================================================================
+// SHARED: TAB PLACEHOLDER
+// =============================================================================
+
+function TabPlaceholder({ label, icon }: { label: string; icon: string }) {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
+  return (
+    <View style={styles.tabPlaceholderContainer}>
+      <View style={[styles.tabPlaceholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <IconSymbol name={icon as any} size={32} color={colors.textTertiary} />
+        <ThemedText style={[styles.tabPlaceholderTitle, { color: colors.text }]}>{label}</ThemedText>
+        <ThemedText style={[styles.tabPlaceholderText, { color: colors.textTertiary }]}>
+          Coming soon
+        </ThemedText>
+      </View>
+    </View>
+  );
+}
+
+// =============================================================================
+// SHARED: MORE MENU SHEET CONTENT
+// =============================================================================
+
+function MoreMenuContent({
+  items,
+  onItemPress,
+}: {
+  items: { id: string; label: string; icon: string }[];
+  onItemPress: (id: string) => void;
+}) {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
+  return (
+    <View style={styles.moreMenuContent}>
+      {items.map((item, index) => (
+        <React.Fragment key={item.id}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.moreMenuItem,
+              pressed && { backgroundColor: colors.backgroundSecondary },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onItemPress(item.id);
+            }}
+          >
+            <View style={[styles.moreMenuIcon, { backgroundColor: colors.backgroundTertiary }]}>
+              <IconSymbol name={item.icon as any} size={18} color={colors.textSecondary} />
+            </View>
+            <ThemedText style={[styles.moreMenuLabel, { color: colors.text }]}>{item.label}</ThemedText>
+            <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+          </Pressable>
+          {index < items.length - 1 && (
+            <View style={[styles.moreMenuDivider, { backgroundColor: colors.divider }]} />
+          )}
+        </React.Fragment>
+      ))}
+    </View>
+  );
+}
 
 // =============================================================================
 // SPORTS MODE COMPONENTS
@@ -161,7 +396,7 @@ function SectionHeader({ title, colors }: SectionHeaderProps) {
 }
 
 // =============================================================================
-// SPORTS MODE CONTENT
+// SPORTS MODE CONTENT (with PagerView)
 // =============================================================================
 
 function SportsOrganization() {
@@ -169,6 +404,23 @@ function SportsOrganization() {
   const colors = Colors[colorScheme];
   const router = useRouter();
   const modeColors = ModeColors.sports;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [moreVisible, setMoreVisible] = useState(false);
+  const pagerRef = useRef<PagerView>(null);
+
+  const handleTabPress = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      registerMoreHandlers(
+        () => setMoreVisible(true),
+        () => setMoreVisible(false),
+      );
+      return () => unregisterMoreHandlers();
+    }, []),
+  );
 
   const handleProgramPress = (programId: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -192,155 +444,196 @@ function SportsOrganization() {
 
   return (
     <>
-      {/* Institution Header */}
-      <View style={styles.institutionHeader}>
-        <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
-          <ThemedText style={styles.institutionBadgeText}>
-            {INSTITUTION.nickname.charAt(0)}
-          </ThemedText>
-        </View>
-        <View style={styles.institutionInfo}>
-          <ThemedText style={styles.institutionName}>{INSTITUTION.name}</ThemedText>
-          <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
-            {INSTITUTION.nickname} • {INSTITUTION.division}
-          </ThemedText>
-          <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
-            {INSTITUTION.location}
-          </ThemedText>
-        </View>
-      </View>
-
-      {/* Institutional Snapshot */}
-      <View style={[styles.snapshotCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={styles.snapshotRow}>
-          <View style={styles.snapshotItem}>
-            <ThemedText style={[styles.snapshotValue, { color: modeColors.primary }]}>
-              {INSTITUTION.conference}
-            </ThemedText>
-            <ThemedText style={[styles.snapshotLabel, { color: colors.textTertiary }]}>
-              Conference
-            </ThemedText>
-          </View>
-          <View style={[styles.snapshotDivider, { backgroundColor: colors.divider }]} />
-          <View style={styles.snapshotItem}>
-            <ThemedText style={[styles.snapshotValue, { color: modeColors.primary }]}>
-              {PROGRAMS.length}
-            </ThemedText>
-            <ThemedText style={[styles.snapshotLabel, { color: colors.textTertiary }]}>
-              Programs
-            </ThemedText>
-          </View>
-          <View style={[styles.snapshotDivider, { backgroundColor: colors.divider }]} />
-          <View style={styles.snapshotItem}>
-            <ThemedText style={[styles.snapshotValue, { color: modeColors.primary }]}>
-              {INSTITUTION.founded}
-            </ThemedText>
-            <ThemedText style={[styles.snapshotLabel, { color: colors.textTertiary }]}>
-              Founded
-            </ThemedText>
-          </View>
-        </View>
-      </View>
-
-      {/* Programs Section */}
-      <SectionHeader title="Programs" colors={colors} />
-      <View style={styles.programsGrid}>
-        {PROGRAMS.map((program) => (
-          <ProgramCard
-            key={program.id}
-            program={program}
-            onPress={() => handleProgramPress(program.id)}
-            colors={colors}
-            accentColor={modeColors.primary}
-          />
-        ))}
-      </View>
-
-      {/* Recruiting Section */}
-      <SectionHeader title="Recruiting" colors={colors} />
-      <Pressable
-        style={({ pressed }) => [
-          styles.recruitingCard,
-          { backgroundColor: colors.card, borderColor: colors.border },
-          pressed && { opacity: 0.8 },
-        ]}
-        onPress={handleRecruitingPress}
+      <OrgHubTabs
+        tabs={ORG_TABS.sports}
+        activeIndex={activeIndex}
+        onTabPress={handleTabPress}
+        onMorePress={() => setMoreVisible(true)}
+      />
+      <PagerView
+        ref={pagerRef}
+        style={{ flex: 1 }}
+        initialPage={0}
+        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
       >
-        <View style={[styles.recruitingIcon, { backgroundColor: modeColors.primary + '15' }]}>
-          <IconSymbol name="person.badge.plus" size={24} color={modeColors.primary} />
-        </View>
-        <View style={styles.recruitingInfo}>
-          <ThemedText style={styles.recruitingTitle}>Recruiting Board</ThemedText>
-          <ThemedText style={[styles.recruitingSubtitle, { color: colors.textSecondary }]}>
-            Track prospects and manage pipeline
-          </ThemedText>
-        </View>
-        <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
-      </Pressable>
-
-      {/* Support & Tickets */}
-      <SectionHeader title="Support & Tickets" colors={colors} />
-      <View style={styles.supportGrid}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.supportCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleDonationsPress}
-        >
-          <View style={[styles.supportIcon, { backgroundColor: modeColors.primary + '15' }]}>
-            <IconSymbol name="heart.fill" size={22} color={modeColors.primary} />
+        {/* Page 0: Programs (existing content) */}
+        <ScrollView key="programs" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          {/* Institution Header */}
+          <View style={styles.institutionHeader}>
+            <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
+              <ThemedText style={styles.institutionBadgeText}>
+                {INSTITUTION.nickname.charAt(0)}
+              </ThemedText>
+            </View>
+            <View style={styles.institutionInfo}>
+              <ThemedText style={styles.institutionName}>{INSTITUTION.name}</ThemedText>
+              <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
+                {INSTITUTION.nickname} • {INSTITUTION.division}
+              </ThemedText>
+              <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
+                {INSTITUTION.location}
+              </ThemedText>
+            </View>
           </View>
-          <ThemedText style={styles.supportTitle}>Donate</ThemedText>
-          <ThemedText style={[styles.supportSubtitle, { color: colors.textSecondary }]}>
-            Support athletics
-          </ThemedText>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.supportCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleTicketsPress}
-        >
-          <View style={[styles.supportIcon, { backgroundColor: modeColors.primary + '15' }]}>
-            <IconSymbol name="ticket.fill" size={22} color={modeColors.primary} />
+
+          {/* Institutional Snapshot */}
+          <View style={[styles.snapshotCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={styles.snapshotRow}>
+              <View style={styles.snapshotItem}>
+                <ThemedText style={[styles.snapshotValue, { color: modeColors.primary }]}>
+                  {INSTITUTION.conference}
+                </ThemedText>
+                <ThemedText style={[styles.snapshotLabel, { color: colors.textTertiary }]}>
+                  Conference
+                </ThemedText>
+              </View>
+              <View style={[styles.snapshotDivider, { backgroundColor: colors.divider }]} />
+              <View style={styles.snapshotItem}>
+                <ThemedText style={[styles.snapshotValue, { color: modeColors.primary }]}>
+                  {PROGRAMS.length}
+                </ThemedText>
+                <ThemedText style={[styles.snapshotLabel, { color: colors.textTertiary }]}>
+                  Programs
+                </ThemedText>
+              </View>
+              <View style={[styles.snapshotDivider, { backgroundColor: colors.divider }]} />
+              <View style={styles.snapshotItem}>
+                <ThemedText style={[styles.snapshotValue, { color: modeColors.primary }]}>
+                  {INSTITUTION.founded}
+                </ThemedText>
+                <ThemedText style={[styles.snapshotLabel, { color: colors.textTertiary }]}>
+                  Founded
+                </ThemedText>
+              </View>
+            </View>
           </View>
-          <ThemedText style={styles.supportTitle}>Tickets</ThemedText>
-          <ThemedText style={[styles.supportSubtitle, { color: colors.textSecondary }]}>
-            Get game tickets
-          </ThemedText>
-        </Pressable>
-      </View>
 
-      {/* Leadership Section */}
-      <SectionHeader title="Athletic Leadership" colors={colors} />
-      <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {INSTITUTION_LEADERSHIP.map((staff, index) => (
-          <React.Fragment key={staff.id}>
-            <LeadershipRow staff={staff} colors={colors} />
-            {index < INSTITUTION_LEADERSHIP.length - 1 && (
-              <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
-            )}
-          </React.Fragment>
-        ))}
-      </View>
+          {/* Programs Section */}
+          <SectionHeader title="Programs" colors={colors} />
+          <View style={styles.programsGrid}>
+            {PROGRAMS.map((program) => (
+              <ProgramCard
+                key={program.id}
+                program={program}
+                onPress={() => handleProgramPress(program.id)}
+                colors={colors}
+                accentColor={modeColors.primary}
+              />
+            ))}
+          </View>
 
-      {/* About Section */}
-      <SectionHeader title="About" colors={colors} />
-      <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
-          {INSTITUTION.description}
-        </ThemedText>
-      </View>
+          {/* Recruiting Section */}
+          <SectionHeader title="Recruiting" colors={colors} />
+          <Pressable
+            style={({ pressed }) => [
+              styles.recruitingCard,
+              { backgroundColor: colors.card, borderColor: colors.border },
+              pressed && { opacity: 0.8 },
+            ]}
+            onPress={handleRecruitingPress}
+          >
+            <View style={[styles.recruitingIcon, { backgroundColor: modeColors.primary + '15' }]}>
+              <IconSymbol name="person.badge.plus" size={24} color={modeColors.primary} />
+            </View>
+            <View style={styles.recruitingInfo}>
+              <ThemedText style={styles.recruitingTitle}>Recruiting Board</ThemedText>
+              <ThemedText style={[styles.recruitingSubtitle, { color: colors.textSecondary }]}>
+                Track prospects and manage pipeline
+              </ThemedText>
+            </View>
+            <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
+          </Pressable>
+
+          {/* Support & Tickets */}
+          <SectionHeader title="Support & Tickets" colors={colors} />
+          <View style={styles.supportGrid}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.supportCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleDonationsPress}
+            >
+              <View style={[styles.supportIcon, { backgroundColor: modeColors.primary + '15' }]}>
+                <IconSymbol name="heart.fill" size={22} color={modeColors.primary} />
+              </View>
+              <ThemedText style={styles.supportTitle}>Donate</ThemedText>
+              <ThemedText style={[styles.supportSubtitle, { color: colors.textSecondary }]}>
+                Support athletics
+              </ThemedText>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.supportCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleTicketsPress}
+            >
+              <View style={[styles.supportIcon, { backgroundColor: modeColors.primary + '15' }]}>
+                <IconSymbol name="ticket.fill" size={22} color={modeColors.primary} />
+              </View>
+              <ThemedText style={styles.supportTitle}>Tickets</ThemedText>
+              <ThemedText style={[styles.supportSubtitle, { color: colors.textSecondary }]}>
+                Get game tickets
+              </ThemedText>
+            </Pressable>
+          </View>
+
+          {/* Leadership Section */}
+          <SectionHeader title="Athletic Leadership" colors={colors} />
+          <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {INSTITUTION_LEADERSHIP.map((staff, index) => (
+              <React.Fragment key={staff.id}>
+                <LeadershipRow staff={staff} colors={colors} />
+                {index < INSTITUTION_LEADERSHIP.length - 1 && (
+                  <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
+                )}
+              </React.Fragment>
+            ))}
+          </View>
+
+          {/* About Section */}
+          <SectionHeader title="About" colors={colors} />
+          <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
+              {INSTITUTION.description}
+            </ThemedText>
+          </View>
+        </ScrollView>
+
+        {/* Page 1: People */}
+        <View key="people" style={{ flex: 1 }}>
+          <TabPlaceholder label="People" icon="person.2.fill" />
+        </View>
+
+        {/* Page 2: Operations */}
+        <View key="operations" style={{ flex: 1 }}>
+          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
+        </View>
+
+        {/* Page 3: Finance */}
+        <View key="finance" style={{ flex: 1 }}>
+          <TabPlaceholder label="Finance" icon="dollarsign.circle.fill" />
+        </View>
+      </PagerView>
+
+      {/* More Sheet */}
+      <BottomSheet
+        visible={moreVisible}
+        onClose={() => setMoreVisible(false)}
+        title="More"
+        useModal
+      >
+        <MoreMenuContent items={ORG_MORE_ITEMS.sports} onItemPress={() => setMoreVisible(false)} />
+      </BottomSheet>
     </>
   );
 }
 
 // =============================================================================
-// ENTERPRISE MODE COMPONENTS
+// SHARED COMPONENTS
 // =============================================================================
 
 interface MetricCardProps {
@@ -365,231 +658,77 @@ function MetricCard({ label, value, subValue, colors, accentColor }: MetricCardP
   );
 }
 
-interface DomainCardProps {
-  domain: Domain;
-  colors: typeof Colors.light;
-  accentColor: string;
-}
-
-function DomainCard({ domain, colors, accentColor }: DomainCardProps) {
-  const statusColor = getDomainStatusColor(domain.status);
-
-  return (
-    <View style={[styles.domainCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-      <View style={styles.domainHeader}>
-        <View style={[styles.domainIcon, { backgroundColor: accentColor + '15' }]}>
-          <IconSymbol name={domain.icon as any} size={20} color={accentColor} />
-        </View>
-        <View style={styles.domainInfo}>
-          <ThemedText style={styles.domainName}>{domain.name}</ThemedText>
-          <View style={styles.domainStatusRow}>
-            <View style={[styles.domainStatusDot, { backgroundColor: statusColor }]} />
-            <ThemedText style={[styles.domainStatus, { color: colors.textSecondary }]}>
-              {domain.status.charAt(0).toUpperCase() + domain.status.slice(1)}
-            </ThemedText>
-          </View>
-        </View>
-      </View>
-      <ThemedText style={[styles.domainDesc, { color: colors.textSecondary }]} numberOfLines={2}>
-        {domain.description}
-      </ThemedText>
-    </View>
-  );
-}
-
-interface EnterpriseMemberRowProps {
-  member: BoardMember;
-  colors: typeof Colors.light;
-}
-
-function EnterpriseMemberRow({ member, colors }: EnterpriseMemberRowProps) {
-  return (
-    <View style={styles.leadershipRow}>
-      <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
-        <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
-      </View>
-      <View style={styles.leadershipInfo}>
-        <ThemedText style={styles.leadershipName}>{member.name}</ThemedText>
-        <ThemedText style={[styles.leadershipTitle, { color: colors.textSecondary }]}>
-          {member.role}
-          {member.company && member.company !== 'KaNeXT' ? ` • ${member.company}` : ''}
-        </ThemedText>
-      </View>
-    </View>
-  );
-}
-
 // =============================================================================
-// ENTERPRISE MODE CONTENT
+// ENTERPRISE MODE CONTENT (with PagerView — uses new ORG_TABS labels)
 // =============================================================================
 
 function EnterpriseOrganization() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const router = useRouter();
-  const modeColors = ModeColors.enterprise;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [moreVisible, setMoreVisible] = useState(false);
+  const pagerRef = useRef<PagerView>(null);
 
-  const handleDocumentsPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/documents');
-  };
+  const handleTabPress = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
 
-  const handleGovernancePress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/governance');
-  };
-
-  const handleDomainsPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/domains');
-  };
+  useFocusEffect(
+    useCallback(() => {
+      registerMoreHandlers(
+        () => setMoreVisible(true),
+        () => setMoreVisible(false),
+      );
+      return () => unregisterMoreHandlers();
+    }, []),
+  );
 
   return (
-    <>
-      {/* Company Header */}
-      <View style={styles.institutionHeader}>
-        <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
-          <ThemedText style={styles.institutionBadgeText}>K</ThemedText>
+    <EnterpriseProvider>
+      <CompanySwitcher />
+      <OrgHubTabs
+        tabs={ORG_TABS.enterprise}
+        activeIndex={activeIndex}
+        onTabPress={handleTabPress}
+        onMorePress={() => setMoreVisible(true)}
+      />
+      <PagerView
+        ref={pagerRef}
+        style={{ flex: 1 }}
+        initialPage={0}
+        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+      >
+        {/* Page 0: Entities (existing enterprise home) */}
+        <ScrollView key="entities" nestedScrollEnabled showsVerticalScrollIndicator={false}>
+          <EnterpriseHomeContent onSwitchTab={handleTabPress} />
+        </ScrollView>
+
+        {/* Page 1: People */}
+        <View key="people" style={{ flex: 1 }}>
+          <TabPlaceholder label="People" icon="person.2.fill" />
         </View>
-        <View style={styles.institutionInfo}>
-          <ThemedText style={styles.institutionName}>{KANEXT_ORGANIZATION.name}</ThemedText>
-          <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
-            {KANEXT_ORGANIZATION.type}
-          </ThemedText>
-          <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
-            {KANEXT_ORGANIZATION.location} • {KANEXT_ORGANIZATION.legalStructure}
-          </ThemedText>
+
+        {/* Page 2: Operations */}
+        <View key="operations" style={{ flex: 1 }}>
+          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
         </View>
-      </View>
 
-      {/* Key Metrics */}
-      <View style={styles.metricsGrid}>
-        <MetricCard
-          label="MRR"
-          value={formatCurrency(COMPANY_METRICS.mrr)}
-          subValue={`+${COMPANY_METRICS.mrrGrowth}% MoM`}
-          colors={colors}
-          accentColor={modeColors.primary}
-        />
-        <MetricCard
-          label="Customers"
-          value={COMPANY_METRICS.customers.toString()}
-          subValue={`${COMPANY_METRICS.pilots} pilots`}
-          colors={colors}
-          accentColor={modeColors.primary}
-        />
-        <MetricCard
-          label="Runway"
-          value={`${COMPANY_METRICS.runway}mo`}
-          colors={colors}
-          accentColor={modeColors.primary}
-        />
-        <MetricCard
-          label="Team"
-          value={COMPANY_METRICS.teamSize.toString()}
-          colors={colors}
-          accentColor={modeColors.primary}
-        />
-      </View>
-
-      {/* Quick Links */}
-      <SectionHeader title="Data Room" colors={colors} />
-      <View style={styles.quickLinksGrid}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleDocumentsPress}
-        >
-          <IconSymbol name="doc.fill" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Documents</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Investor materials
-          </ThemedText>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleGovernancePress}
-        >
-          <IconSymbol name="person.3.fill" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Governance</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Board & advisors
-          </ThemedText>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleDomainsPress}
-        >
-          <IconSymbol name="square.grid.2x2.fill" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Domains</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Product verticals
-          </ThemedText>
-        </Pressable>
-      </View>
-
-      {/* Domains Preview */}
-      <SectionHeader title="Product Domains" colors={colors} />
-      <View style={styles.domainsGrid}>
-        {DOMAINS.slice(0, 2).map((domain) => (
-          <DomainCard
-            key={domain.id}
-            domain={domain}
-            colors={colors}
-            accentColor={modeColors.primary}
-          />
-        ))}
-      </View>
-
-      {/* Leadership */}
-      <SectionHeader title="Leadership" colors={colors} />
-      <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {LEADERSHIP_TEAM.map((member, index) => (
-          <React.Fragment key={member.id}>
-            <EnterpriseMemberRow member={member} colors={colors} />
-            {index < LEADERSHIP_TEAM.length - 1 && (
-              <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
-            )}
-          </React.Fragment>
-        ))}
-      </View>
-
-      {/* About */}
-      <SectionHeader title="About" colors={colors} />
-      <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
-          {KANEXT_ORGANIZATION.description}
-        </ThemedText>
-        <View style={[styles.aboutDivider, { backgroundColor: colors.divider }]} />
-        <View style={styles.aboutMeta}>
-          <View style={styles.aboutMetaItem}>
-            <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
-              Status
-            </ThemedText>
-            <ThemedText style={styles.aboutMetaValue}>{KANEXT_ORGANIZATION.status}</ThemedText>
-          </View>
-          <View style={styles.aboutMetaItem}>
-            <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
-              Raised
-            </ThemedText>
-            <ThemedText style={styles.aboutMetaValue}>
-              {formatCurrency(COMPANY_METRICS.raised)}
-            </ThemedText>
-          </View>
+        {/* Page 3: Finance */}
+        <View key="finance" style={{ flex: 1 }}>
+          <TabPlaceholder label="Finance" icon="dollarsign.circle.fill" />
         </View>
-      </View>
-    </>
+      </PagerView>
+
+      {/* More Sheet */}
+      <BottomSheet
+        visible={moreVisible}
+        onClose={() => setMoreVisible(false)}
+        title="More"
+        useModal
+      >
+        <MoreMenuContent items={ORG_MORE_ITEMS.enterprise} onItemPress={() => setMoreVisible(false)} />
+      </BottomSheet>
+    </EnterpriseProvider>
   );
 }
 
@@ -675,7 +814,7 @@ function MinistryRow({ ministry, colors, accentColor, onPress }: MinistryRowProp
 }
 
 // =============================================================================
-// CHURCH MODE CONTENT
+// CHURCH MODE CONTENT (with PagerView)
 // =============================================================================
 
 function ChurchOrganization() {
@@ -683,15 +822,27 @@ function ChurchOrganization() {
   const colors = Colors[colorScheme];
   const router = useRouter();
   const modeColors = ModeColors.church;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [moreVisible, setMoreVisible] = useState(false);
+  const pagerRef = useRef<PagerView>(null);
+
+  const handleTabPress = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      registerMoreHandlers(
+        () => setMoreVisible(true),
+        () => setMoreVisible(false),
+      );
+      return () => unregisterMoreHandlers();
+    }, []),
+  );
 
   const handleCampusPress = (campusId: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.push(`/organization/campuses/${campusId}`);
-  };
-
-  const handleCampusesPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/campuses');
   };
 
   const handleMinistriesPress = () => {
@@ -721,144 +872,185 @@ function ChurchOrganization() {
 
   return (
     <>
-      {/* Church Header */}
-      <View style={styles.institutionHeader}>
-        <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
-          <IconSymbol name="heart.fill" size={28} color="#FFFFFF" />
-        </View>
-        <View style={styles.institutionInfo}>
-          <ThemedText style={styles.institutionName}>{ICC_ORGANIZATION.name}</ThemedText>
-          <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
-            {ICC_ORGANIZATION.denomination}
-          </ThemedText>
-          <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
-            {CAMPUSES.length} Campuses • {ICC_ORGANIZATION.location}
-          </ThemedText>
-        </View>
-      </View>
-
-      {/* Quick Actions */}
-      <View style={styles.quickLinksGrid}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleMessagesPress}
-        >
-          <IconSymbol name="play.circle.fill" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Messages</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Watch sermons
-          </ThemedText>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleGivingPress}
-        >
-          <IconSymbol name="heart.fill" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Give</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Tithes & offerings
-          </ThemedText>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleConnectPress}
-        >
-          <IconSymbol name="person.badge.plus" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Connect</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Get involved
-          </ThemedText>
-        </Pressable>
-      </View>
-
-      {/* Campuses */}
-      <SectionHeader title="Our Campuses" colors={colors} />
-      <View style={styles.campusesList}>
-        {CAMPUSES.map((campus) => (
-          <CampusCard
-            key={campus.id}
-            campus={campus}
-            colors={colors}
-            accentColor={modeColors.primary}
-            onPress={() => handleCampusPress(campus.id)}
-          />
-        ))}
-      </View>
-
-      {/* Ministries */}
-      <SectionHeader title="Ministries" colors={colors} />
-      <View style={[styles.ministriesCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {MINISTRIES.slice(0, 5).map((ministry, index) => (
-          <React.Fragment key={ministry.id}>
-            <MinistryRow
-              ministry={ministry}
-              colors={colors}
-              accentColor={modeColors.primary}
-              onPress={() => handleMinistryPress(ministry.id)}
-            />
-            {index < Math.min(MINISTRIES.length, 5) - 1 && (
-              <View style={[styles.ministryDivider, { backgroundColor: colors.divider }]} />
-            )}
-          </React.Fragment>
-        ))}
-        {MINISTRIES.length > 5 && (
-          <Pressable
-            style={({ pressed }) => [
-              styles.viewAllRow,
-              pressed && { backgroundColor: colors.backgroundSecondary },
-            ]}
-            onPress={handleMinistriesPress}
-          >
-            <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
-              View All Ministries
-            </ThemedText>
-            <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
-          </Pressable>
-        )}
-      </View>
-
-      {/* Leadership */}
-      <SectionHeader title="Leadership" colors={colors} />
-      <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {CHURCH_LEADERSHIP.slice(0, 3).map((leader, index) => (
-          <React.Fragment key={leader.id}>
-            <View style={styles.leadershipRow}>
-              <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
-                <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
-              </View>
-              <View style={styles.leadershipInfo}>
-                <ThemedText style={styles.leadershipName}>{leader.name}</ThemedText>
-                <ThemedText style={[styles.leadershipTitle, { color: colors.textSecondary }]}>
-                  {leader.title}
-                </ThemedText>
-              </View>
+      <OrgHubTabs
+        tabs={ORG_TABS.church}
+        activeIndex={activeIndex}
+        onTabPress={handleTabPress}
+        onMorePress={() => setMoreVisible(true)}
+      />
+      <PagerView
+        ref={pagerRef}
+        style={{ flex: 1 }}
+        initialPage={0}
+        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+      >
+        {/* Page 0: Ministries (existing content) */}
+        <ScrollView key="ministries" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          {/* Church Header */}
+          <View style={styles.institutionHeader}>
+            <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
+              <IconSymbol name="heart.fill" size={28} color="#FFFFFF" />
             </View>
-            {index < Math.min(CHURCH_LEADERSHIP.length, 3) - 1 && (
-              <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
-            )}
-          </React.Fragment>
-        ))}
-      </View>
+            <View style={styles.institutionInfo}>
+              <ThemedText style={styles.institutionName}>{ICC_ORGANIZATION.name}</ThemedText>
+              <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
+                {ICC_ORGANIZATION.denomination}
+              </ThemedText>
+              <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
+                {CAMPUSES.length} Campuses • {ICC_ORGANIZATION.location}
+              </ThemedText>
+            </View>
+          </View>
 
-      {/* About */}
-      <SectionHeader title="About" colors={colors} />
-      <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
-          {ICC_ORGANIZATION.description}
-        </ThemedText>
-      </View>
+          {/* Quick Actions */}
+          <View style={styles.quickLinksGrid}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.quickLinkCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleMessagesPress}
+            >
+              <IconSymbol name="play.circle.fill" size={24} color={modeColors.primary} />
+              <ThemedText style={styles.quickLinkTitle}>Messages</ThemedText>
+              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+                Watch sermons
+              </ThemedText>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.quickLinkCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleGivingPress}
+            >
+              <IconSymbol name="heart.fill" size={24} color={modeColors.primary} />
+              <ThemedText style={styles.quickLinkTitle}>Give</ThemedText>
+              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+                Tithes & offerings
+              </ThemedText>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.quickLinkCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleConnectPress}
+            >
+              <IconSymbol name="person.badge.plus" size={24} color={modeColors.primary} />
+              <ThemedText style={styles.quickLinkTitle}>Connect</ThemedText>
+              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+                Get involved
+              </ThemedText>
+            </Pressable>
+          </View>
+
+          {/* Campuses */}
+          <SectionHeader title="Our Campuses" colors={colors} />
+          <View style={styles.campusesList}>
+            {CAMPUSES.map((campus) => (
+              <CampusCard
+                key={campus.id}
+                campus={campus}
+                colors={colors}
+                accentColor={modeColors.primary}
+                onPress={() => handleCampusPress(campus.id)}
+              />
+            ))}
+          </View>
+
+          {/* Ministries */}
+          <SectionHeader title="Ministries" colors={colors} />
+          <View style={[styles.ministriesCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {MINISTRIES.slice(0, 5).map((ministry, index) => (
+              <React.Fragment key={ministry.id}>
+                <MinistryRow
+                  ministry={ministry}
+                  colors={colors}
+                  accentColor={modeColors.primary}
+                  onPress={() => handleMinistryPress(ministry.id)}
+                />
+                {index < Math.min(MINISTRIES.length, 5) - 1 && (
+                  <View style={[styles.ministryDivider, { backgroundColor: colors.divider }]} />
+                )}
+              </React.Fragment>
+            ))}
+            {MINISTRIES.length > 5 && (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.viewAllRow,
+                  pressed && { backgroundColor: colors.backgroundSecondary },
+                ]}
+                onPress={handleMinistriesPress}
+              >
+                <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
+                  View All Ministries
+                </ThemedText>
+                <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
+              </Pressable>
+            )}
+          </View>
+
+          {/* Leadership */}
+          <SectionHeader title="Leadership" colors={colors} />
+          <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {CHURCH_LEADERSHIP.slice(0, 3).map((leader, index) => (
+              <React.Fragment key={leader.id}>
+                <View style={styles.leadershipRow}>
+                  <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+                    <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
+                  </View>
+                  <View style={styles.leadershipInfo}>
+                    <ThemedText style={styles.leadershipName}>{leader.name}</ThemedText>
+                    <ThemedText style={[styles.leadershipTitle, { color: colors.textSecondary }]}>
+                      {leader.title}
+                    </ThemedText>
+                  </View>
+                </View>
+                {index < Math.min(CHURCH_LEADERSHIP.length, 3) - 1 && (
+                  <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
+                )}
+              </React.Fragment>
+            ))}
+          </View>
+
+          {/* About */}
+          <SectionHeader title="About" colors={colors} />
+          <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
+              {ICC_ORGANIZATION.description}
+            </ThemedText>
+          </View>
+        </ScrollView>
+
+        {/* Page 1: People */}
+        <View key="people" style={{ flex: 1 }}>
+          <TabPlaceholder label="People" icon="person.2.fill" />
+        </View>
+
+        {/* Page 2: Operations */}
+        <View key="operations" style={{ flex: 1 }}>
+          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
+        </View>
+
+        {/* Page 3: Giving */}
+        <View key="giving" style={{ flex: 1 }}>
+          <TabPlaceholder label="Giving" icon="heart.circle.fill" />
+        </View>
+      </PagerView>
+
+      {/* More Sheet */}
+      <BottomSheet
+        visible={moreVisible}
+        onClose={() => setMoreVisible(false)}
+        title="More"
+        useModal
+      >
+        <MoreMenuContent items={ORG_MORE_ITEMS.church} onItemPress={() => setMoreVisible(false)} />
+      </BottomSheet>
     </>
   );
 }
@@ -981,7 +1173,7 @@ function FacultyRow({ faculty, colors, onPress }: FacultyRowProps) {
 }
 
 // =============================================================================
-// EDUCATION MODE CONTENT
+// EDUCATION MODE CONTENT (with PagerView)
 // =============================================================================
 
 function EducationOrganization() {
@@ -989,9 +1181,26 @@ function EducationOrganization() {
   const colors = Colors[colorScheme];
   const router = useRouter();
   const modeColors = ModeColors.education;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [moreVisible, setMoreVisible] = useState(false);
+  const pagerRef = useRef<PagerView>(null);
 
   const currentTerm = getCurrentTerm();
   const upcomingEvents = getUpcomingEvents(4);
+
+  const handleTabPress = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      registerMoreHandlers(
+        () => setMoreVisible(true),
+        () => setMoreVisible(false),
+      );
+      return () => unregisterMoreHandlers();
+    }, []),
+  );
 
   const handleSchedulePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -1030,241 +1239,348 @@ function EducationOrganization() {
 
   return (
     <>
-      {/* Institution Header */}
-      <View style={styles.institutionHeader}>
-        <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
-          <IconSymbol name="graduationcap.fill" size={28} color="#FFFFFF" />
-        </View>
-        <View style={styles.institutionInfo}>
-          <ThemedText style={styles.institutionName}>{SDCC_ORGANIZATION.name}</ThemedText>
-          <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
-            {SDCC_ORGANIZATION.institutionType}
-          </ThemedText>
-          <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
-            {SDCC_ORGANIZATION.location} • Est. {SDCC_ORGANIZATION.founded}
-          </ThemedText>
-        </View>
-      </View>
+      <OrgHubTabs
+        tabs={ORG_TABS.education}
+        activeIndex={activeIndex}
+        onTabPress={handleTabPress}
+        onMorePress={() => setMoreVisible(true)}
+      />
+      <PagerView
+        ref={pagerRef}
+        style={{ flex: 1 }}
+        initialPage={0}
+        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+      >
+        {/* Page 0: Schools (existing content) */}
+        <ScrollView key="schools" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          {/* Institution Header */}
+          <View style={styles.institutionHeader}>
+            <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
+              <IconSymbol name="graduationcap.fill" size={28} color="#FFFFFF" />
+            </View>
+            <View style={styles.institutionInfo}>
+              <ThemedText style={styles.institutionName}>{SDCC_ORGANIZATION.name}</ThemedText>
+              <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
+                {SDCC_ORGANIZATION.institutionType}
+              </ThemedText>
+              <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
+                {SDCC_ORGANIZATION.location} • Est. {SDCC_ORGANIZATION.founded}
+              </ThemedText>
+            </View>
+          </View>
 
-      {/* Key Metrics */}
-      <View style={styles.metricsGrid}>
-        <MetricCard
-          label="Enrollment"
-          value={INSTITUTIONAL_METRICS.enrollment.total.toString()}
-          subValue={`+${INSTITUTIONAL_METRICS.enrollment.yearOverYearChange}% YoY`}
-          colors={colors}
-          accentColor={modeColors.primary}
-        />
-        <MetricCard
-          label="Programs"
-          value={INSTITUTIONAL_METRICS.academics.programs.toString()}
-          colors={colors}
-          accentColor={modeColors.primary}
-        />
-        <MetricCard
-          label="Faculty"
-          value={INSTITUTIONAL_METRICS.academics.facultyCount.toString()}
-          subValue={INSTITUTIONAL_METRICS.academics.studentFacultyRatio}
-          colors={colors}
-          accentColor={modeColors.primary}
-        />
-        <MetricCard
-          label="Grad Rate"
-          value={`${INSTITUTIONAL_METRICS.outcomes.graduationRate}%`}
-          colors={colors}
-          accentColor={modeColors.primary}
-        />
-      </View>
-
-      {/* Quick Actions */}
-      <View style={styles.quickLinksGrid}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleSchedulePress}
-        >
-          <IconSymbol name="calendar" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Schedule</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Academic calendar
-          </ThemedText>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleResultsPress}
-        >
-          <IconSymbol name="checkmark.circle.fill" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Results</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Completed terms
-          </ThemedText>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleMetricsPress}
-        >
-          <IconSymbol name="chart.bar.fill" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Metrics</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Institutional data
-          </ThemedText>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.quickLinkCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleArchivePress}
-        >
-          <IconSymbol name="archivebox.fill" size={24} color={modeColors.primary} />
-          <ThemedText style={styles.quickLinkTitle}>Archive</ThemedText>
-          <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-            Past years
-          </ThemedText>
-        </Pressable>
-      </View>
-
-      {/* Current Term */}
-      {currentTerm && (
-        <>
-          <SectionHeader title="Current Term" colors={colors} />
-          <TermCard
-            term={currentTerm}
-            colors={colors}
-            accentColor={modeColors.primary}
-            isCurrent={true}
-            onPress={() => handleTermPress(currentTerm.id)}
-          />
-        </>
-      )}
-
-      {/* Upcoming Events */}
-      <SectionHeader title="Upcoming" colors={colors} />
-      <View style={[styles.calendarCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {upcomingEvents.map((event, index) => (
-          <React.Fragment key={event.id}>
-            <CalendarEventRow event={event} colors={colors} accentColor={modeColors.primary} />
-            {index < upcomingEvents.length - 1 && (
-              <View style={[styles.calendarDivider, { backgroundColor: colors.divider }]} />
-            )}
-          </React.Fragment>
-        ))}
-        <Pressable
-          style={({ pressed }) => [
-            styles.viewAllRow,
-            pressed && { backgroundColor: colors.backgroundSecondary },
-          ]}
-          onPress={handleSchedulePress}
-        >
-          <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
-            View Full Calendar
-          </ThemedText>
-          <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
-        </Pressable>
-      </View>
-
-      {/* Departments */}
-      <SectionHeader title="Academic Departments" colors={colors} />
-      <View style={styles.departmentsGrid}>
-        {DEPARTMENTS.slice(0, 4).map((dept) => (
-          <DepartmentCard
-            key={dept.id}
-            department={dept}
-            colors={colors}
-            accentColor={modeColors.primary}
-          />
-        ))}
-      </View>
-
-      {/* Leadership */}
-      <SectionHeader title="Leadership" colors={colors} />
-      <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {FACULTY_LEADERSHIP.slice(0, 4).map((faculty, index) => (
-          <React.Fragment key={faculty.id}>
-            <FacultyRow
-              faculty={faculty}
+          {/* Key Metrics */}
+          <View style={styles.metricsGrid}>
+            <MetricCard
+              label="Enrollment"
+              value={INSTITUTIONAL_METRICS.enrollment.total.toString()}
+              subValue={`+${INSTITUTIONAL_METRICS.enrollment.yearOverYearChange}% YoY`}
               colors={colors}
-              onPress={() => handleFacultyPress(faculty.id)}
+              accentColor={modeColors.primary}
             />
-            {index < Math.min(FACULTY_LEADERSHIP.length, 4) - 1 && (
-              <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
-            )}
-          </React.Fragment>
-        ))}
-        <Pressable
-          style={({ pressed }) => [
-            styles.viewAllRow,
-            pressed && { backgroundColor: colors.backgroundSecondary },
-          ]}
-          onPress={handleLeadershipPress}
-        >
-          <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
-            View All Leadership
-          </ThemedText>
-          <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
-        </Pressable>
-      </View>
+            <MetricCard
+              label="Programs"
+              value={INSTITUTIONAL_METRICS.academics.programs.toString()}
+              colors={colors}
+              accentColor={modeColors.primary}
+            />
+            <MetricCard
+              label="Faculty"
+              value={INSTITUTIONAL_METRICS.academics.facultyCount.toString()}
+              subValue={INSTITUTIONAL_METRICS.academics.studentFacultyRatio}
+              colors={colors}
+              accentColor={modeColors.primary}
+            />
+            <MetricCard
+              label="Grad Rate"
+              value={`${INSTITUTIONAL_METRICS.outcomes.graduationRate}%`}
+              colors={colors}
+              accentColor={modeColors.primary}
+            />
+          </View>
 
-      {/* About */}
-      <SectionHeader title="About" colors={colors} />
-      <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
-          {SDCC_ORGANIZATION.description}
-        </ThemedText>
-        <View style={[styles.aboutDivider, { backgroundColor: colors.divider }]} />
-        <View style={styles.aboutMeta}>
-          <View style={styles.aboutMetaItem}>
-            <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
-              Accreditation
-            </ThemedText>
-            <ThemedText style={styles.aboutMetaValue}>{SDCC_ORGANIZATION.accreditation}</ThemedText>
+          {/* Quick Actions */}
+          <View style={styles.quickLinksGrid}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.quickLinkCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleSchedulePress}
+            >
+              <IconSymbol name="calendar" size={24} color={modeColors.primary} />
+              <ThemedText style={styles.quickLinkTitle}>Schedule</ThemedText>
+              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+                Academic calendar
+              </ThemedText>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.quickLinkCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleResultsPress}
+            >
+              <IconSymbol name="checkmark.circle.fill" size={24} color={modeColors.primary} />
+              <ThemedText style={styles.quickLinkTitle}>Results</ThemedText>
+              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+                Completed terms
+              </ThemedText>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.quickLinkCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleMetricsPress}
+            >
+              <IconSymbol name="chart.bar.fill" size={24} color={modeColors.primary} />
+              <ThemedText style={styles.quickLinkTitle}>Metrics</ThemedText>
+              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+                Institutional data
+              </ThemedText>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.quickLinkCard,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleArchivePress}
+            >
+              <IconSymbol name="archivebox.fill" size={24} color={modeColors.primary} />
+              <ThemedText style={styles.quickLinkTitle}>Archive</ThemedText>
+              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
+                Past years
+              </ThemedText>
+            </Pressable>
           </View>
-          <View style={styles.aboutMetaItem}>
-            <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
-              Formats
-            </ThemedText>
-            <ThemedText style={styles.aboutMetaValue}>
-              {SDCC_ORGANIZATION.programFormats?.join(', ')}
-            </ThemedText>
+
+          {/* Current Term */}
+          {currentTerm && (
+            <>
+              <SectionHeader title="Current Term" colors={colors} />
+              <TermCard
+                term={currentTerm}
+                colors={colors}
+                accentColor={modeColors.primary}
+                isCurrent={true}
+                onPress={() => handleTermPress(currentTerm.id)}
+              />
+            </>
+          )}
+
+          {/* Upcoming Events */}
+          <SectionHeader title="Upcoming" colors={colors} />
+          <View style={[styles.calendarCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {upcomingEvents.map((event, index) => (
+              <React.Fragment key={event.id}>
+                <CalendarEventRow event={event} colors={colors} accentColor={modeColors.primary} />
+                {index < upcomingEvents.length - 1 && (
+                  <View style={[styles.calendarDivider, { backgroundColor: colors.divider }]} />
+                )}
+              </React.Fragment>
+            ))}
+            <Pressable
+              style={({ pressed }) => [
+                styles.viewAllRow,
+                pressed && { backgroundColor: colors.backgroundSecondary },
+              ]}
+              onPress={handleSchedulePress}
+            >
+              <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
+                View Full Calendar
+              </ThemedText>
+              <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
+            </Pressable>
           </View>
+
+          {/* Departments */}
+          <SectionHeader title="Academic Departments" colors={colors} />
+          <View style={styles.departmentsGrid}>
+            {DEPARTMENTS.slice(0, 4).map((dept) => (
+              <DepartmentCard
+                key={dept.id}
+                department={dept}
+                colors={colors}
+                accentColor={modeColors.primary}
+              />
+            ))}
+          </View>
+
+          {/* Leadership */}
+          <SectionHeader title="Leadership" colors={colors} />
+          <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {FACULTY_LEADERSHIP.slice(0, 4).map((faculty, index) => (
+              <React.Fragment key={faculty.id}>
+                <FacultyRow
+                  faculty={faculty}
+                  colors={colors}
+                  onPress={() => handleFacultyPress(faculty.id)}
+                />
+                {index < Math.min(FACULTY_LEADERSHIP.length, 4) - 1 && (
+                  <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
+                )}
+              </React.Fragment>
+            ))}
+            <Pressable
+              style={({ pressed }) => [
+                styles.viewAllRow,
+                pressed && { backgroundColor: colors.backgroundSecondary },
+              ]}
+              onPress={handleLeadershipPress}
+            >
+              <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
+                View All Leadership
+              </ThemedText>
+              <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
+            </Pressable>
+          </View>
+
+          {/* About */}
+          <SectionHeader title="About" colors={colors} />
+          <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
+              {SDCC_ORGANIZATION.description}
+            </ThemedText>
+            <View style={[styles.aboutDivider, { backgroundColor: colors.divider }]} />
+            <View style={styles.aboutMeta}>
+              <View style={styles.aboutMetaItem}>
+                <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
+                  Accreditation
+                </ThemedText>
+                <ThemedText style={styles.aboutMetaValue}>{SDCC_ORGANIZATION.accreditation}</ThemedText>
+              </View>
+              <View style={styles.aboutMetaItem}>
+                <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
+                  Formats
+                </ThemedText>
+                <ThemedText style={styles.aboutMetaValue}>
+                  {SDCC_ORGANIZATION.programFormats?.join(', ')}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Page 1: People */}
+        <View key="people" style={{ flex: 1 }}>
+          <TabPlaceholder label="People" icon="person.2.fill" />
         </View>
-      </View>
+
+        {/* Page 2: Operations */}
+        <View key="operations" style={{ flex: 1 }}>
+          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
+        </View>
+
+        {/* Page 3: Finance */}
+        <View key="finance" style={{ flex: 1 }}>
+          <TabPlaceholder label="Finance" icon="dollarsign.circle.fill" />
+        </View>
+      </PagerView>
+
+      {/* More Sheet */}
+      <BottomSheet
+        visible={moreVisible}
+        onClose={() => setMoreVisible(false)}
+        title="More"
+        useModal
+      >
+        <MoreMenuContent items={ORG_MORE_ITEMS.education} onItemPress={() => setMoreVisible(false)} />
+      </BottomSheet>
     </>
   );
 }
 
 // =============================================================================
-// PLACEHOLDER CONTENT FOR OTHER MODES
+// COMMUNITY MODE CONTENT (with PagerView)
 // =============================================================================
 
-function PlaceholderContent({ modeName }: { modeName: string }) {
+function CommunityOrganization() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [moreVisible, setMoreVisible] = useState(false);
+  const pagerRef = useRef<PagerView>(null);
+
+  const handleTabPress = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      registerMoreHandlers(
+        () => setMoreVisible(true),
+        () => setMoreVisible(false),
+      );
+      return () => unregisterMoreHandlers();
+    }, []),
+  );
 
   return (
-    <View style={styles.placeholder}>
-      <IconSymbol
-        name="building.2"
-        size={48}
-        color={colors.textTertiary}
-        style={styles.placeholderIcon}
+    <>
+      <OrgHubTabs
+        tabs={ORG_TABS.community}
+        activeIndex={activeIndex}
+        onTabPress={handleTabPress}
+        onMorePress={() => setMoreVisible(true)}
       />
-      <ThemedText style={[styles.placeholderText, { color: colors.textTertiary }]}>
-        {modeName} organization content coming soon.
-      </ThemedText>
-    </View>
+      <PagerView
+        ref={pagerRef}
+        style={{ flex: 1 }}
+        initialPage={0}
+        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+      >
+        {/* Page 0: Series (existing content) */}
+        <ScrollView key="series" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          <View style={styles.institutionHeader}>
+            <View style={[styles.institutionBadge, { backgroundColor: '#EF4444' }]}>
+              <IconSymbol name="flag.checkered" size={28} color="#FFFFFF" />
+            </View>
+            <View style={styles.institutionInfo}>
+              <ThemedText style={styles.institutionName}>K-1 Competition</ThemedText>
+              <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
+                Racing League
+              </ThemedText>
+              <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
+                Season 1 · 2026
+              </ThemedText>
+            </View>
+          </View>
+
+          {/* Payment Rails */}
+          <RailsSection />
+        </ScrollView>
+
+        {/* Page 1: Teams */}
+        <View key="teams" style={{ flex: 1 }}>
+          <TabPlaceholder label="Teams" icon="person.3.fill" />
+        </View>
+
+        {/* Page 2: Operations */}
+        <View key="operations" style={{ flex: 1 }}>
+          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
+        </View>
+
+        {/* Page 3: Finance */}
+        <View key="finance" style={{ flex: 1 }}>
+          <TabPlaceholder label="Finance" icon="dollarsign.circle.fill" />
+        </View>
+      </PagerView>
+
+      {/* More Sheet */}
+      <BottomSheet
+        visible={moreVisible}
+        onClose={() => setMoreVisible(false)}
+        title="More"
+        useModal
+      >
+        <MoreMenuContent items={ORG_MORE_ITEMS.community} onItemPress={() => setMoreVisible(false)} />
+      </BottomSheet>
+    </>
   );
 }
 
@@ -1291,7 +1607,9 @@ export default function OrganizationScreen() {
       case 'church':
         return 'International Christian Center';
       case 'education':
-        return 'San Diego Christian College';
+        return 'Florida Memorial University';
+      case 'community':
+        return 'K-1 Competition';
       default:
         return 'Organization';
     }
@@ -1307,11 +1625,14 @@ export default function OrganizationScreen() {
         return <ChurchOrganization />;
       case 'education':
         return <EducationOrganization />;
+      case 'community':
+        return <CommunityOrganization />;
       default:
-        return <PlaceholderContent modeName="Organization" />;
+        return <TabPlaceholder label="Organization" icon="building.2" />;
     }
   };
 
+  // All modes now use PagerView — no ScrollView wrapper needed
   return (
     <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
@@ -1326,14 +1647,8 @@ export default function OrganizationScreen() {
         )}
       </View>
 
-      {/* Content */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {renderModeContent()}
-      </ScrollView>
+      {/* Mode Content (each mode owns its PagerView) */}
+      {renderModeContent()}
     </ThemedView>
   );
 }
@@ -1358,12 +1673,86 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: Spacing.xs,
   },
-  scrollView: {
-    flex: 1,
-  },
   scrollContent: {
     paddingHorizontal: Spacing.md,
     paddingBottom: Spacing.xxl,
+  },
+
+  // Hub Tab Bar (matches Media/Home pattern)
+  hubTabsContainer: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingTop: 4,
+  },
+  hubTabsContent: {
+    paddingHorizontal: Spacing.lg,
+    gap: Spacing.lg,
+  },
+  hubTab: {
+    paddingVertical: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  hubTabActive: {
+    borderBottomWidth: 2.5,
+  },
+  hubTabLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    letterSpacing: 0.2,
+  },
+  hubTabLabelActive: {
+    fontWeight: '700',
+  },
+
+  // Tab Placeholder
+  tabPlaceholderContainer: {
+    flex: 1,
+    padding: Spacing.md,
+    paddingTop: Spacing.xl,
+  },
+  tabPlaceholderCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.xl,
+    alignItems: 'center',
+    gap: 12,
+  },
+  tabPlaceholderTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  tabPlaceholderText: {
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+
+  // More Menu
+  moreMenuContent: {
+    paddingBottom: Spacing.lg,
+  },
+  moreMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+  },
+  moreMenuIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Spacing.sm,
+  },
+  moreMenuLabel: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  moreMenuDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Spacing.md + 36 + Spacing.sm,
   },
 
   // Institution Header
@@ -1631,8 +2020,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     marginTop: Spacing.xs,
   },
-
-  // Quick Links
   quickLinksGrid: {
     flexDirection: 'row',
     gap: Spacing.sm,
@@ -1652,54 +2039,6 @@ const styles = StyleSheet.create({
   quickLinkSubtitle: {
     fontSize: 11,
     marginTop: 2,
-  },
-
-  // Domains
-  domainsGrid: {
-    gap: Spacing.sm,
-  },
-  domainCard: {
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    padding: Spacing.md,
-  },
-  domainHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: Spacing.xs,
-  },
-  domainIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: BorderRadius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: Spacing.sm,
-  },
-  domainInfo: {
-    flex: 1,
-  },
-  domainName: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  domainStatusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 2,
-  },
-  domainStatusDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    marginRight: 4,
-  },
-  domainStatus: {
-    fontSize: 12,
-  },
-  domainDesc: {
-    fontSize: 13,
-    lineHeight: 18,
   },
 
   // Church - Campuses
@@ -1894,19 +2233,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
     fontWeight: '500',
-  },
-
-  // Placeholder
-  placeholder: {
-    paddingVertical: Spacing.xxl,
-    alignItems: 'center',
-  },
-  placeholderIcon: {
-    marginBottom: Spacing.md,
-    opacity: 0.5,
-  },
-  placeholderText: {
-    fontSize: 15,
-    textAlign: 'center',
   },
 });

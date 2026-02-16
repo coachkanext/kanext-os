@@ -67,6 +67,14 @@ const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
     location: 'San Diego County, CA',
     description: 'Private Christian Liberal Arts College',
   },
+  community: {
+    id: 'k1-league',
+    name: 'K-1 Competition',
+    mode: 'community',
+    type: 'motorsport_league',
+    location: 'Global',
+    description: 'K-1 Speed Motorsport League Management',
+  },
 };
 
 const DEMO_CYCLES: Record<Mode, Cycle> = {
@@ -98,6 +106,13 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
     endDate: new Date('2026-05-15'),
     isCurrent: true,
   },
+  community: {
+    id: 'k1-s1-2026',
+    name: 'Season 1 · 2026',
+    startDate: new Date('2026-03-01'),
+    endDate: new Date('2026-11-30'),
+    isCurrent: true,
+  },
 };
 
 const DEMO_ROLES: Record<Mode, Role> = {
@@ -105,6 +120,7 @@ const DEMO_ROLES: Record<Mode, Role> = {
   enterprise: 'founder',
   church: 'member',
   education: 'faculty',
+  community: 'league_admin',
 };
 
 const DEMO_PROGRAM: Program = {
@@ -164,11 +180,11 @@ export { SPORTS_ORGANIZATIONS, SPORTS_PROGRAMS, SPORTS_SEASONS };
 // =============================================================================
 
 const defaultState: ExtendedAppState = {
-  mode: 'sports',
-  organization: DEMO_ORGANIZATIONS.sports,
-  operatingRole: DEMO_ROLES.sports,
-  cycle: DEMO_CYCLES.sports,
-  program: DEMO_PROGRAM,
+  mode: 'enterprise',
+  organization: DEMO_ORGANIZATIONS.enterprise,
+  operatingRole: DEMO_ROLES.enterprise,
+  cycle: DEMO_CYCLES.enterprise,
+  program: null,
   isFirstRun: true,
   isLoading: true,
   authState: 'viewer',

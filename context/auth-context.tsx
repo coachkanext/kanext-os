@@ -1,15 +1,28 @@
 /**
- * KaNeXT OS Auth Context
- * Manages authentication state with AsyncStorage persistence.
- * Mock auth providers (Apple, Google, Email) — no real backend.
+ * KaNeXT OS Auth Context — v1 Locked
+ *
+ * Auth + Access Tier + Default Routing:
+ *   1. Launch → Splash → silent session check
+ *   2. If session valid → resolve tier → route to Business Mode Home
+ *   3. If no session → auth modal → sign in → resolve tier → route to Business Mode Home
+ *
+ * Tier Resolver (strict priority):
+ *   1. Email in founderAllowlist → FOUNDER
+ *   2. Email in cofounderAllowlist → COFOUNDER
+ *   3. Valid invite code → INVESTOR
+ *   4. Else → PUBLIC
  */
 
 import React, { createContext, useContext, useReducer, useCallback, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { AuthSession, AuthProvider as AuthProviderType } from '@/types';
+import type { AuthSession, AuthProvider as AuthProviderType, AccessTier } from '@/types';
+import { resolveTier } from '@/config/access';
+import { INVITE_CODES } from '@/config/invites';
 
 const SESSION_KEY = 'kx:session';
 const ONBOARDING_KEY = 'kx:onboardingComplete';
+const INVITE_CODE_KEY = 'kx:pendingInviteCode';
+const TIER_KEY = 'kx:accessTier';
 
 // =============================================================================
 // STATE
@@ -134,17 +147,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const signIn = useCallback(async (provider: AuthProviderType) => {
-    // Mock session creation
+    const email = 'sammy@kanext.com';
+
+    // Resolve access tier (strict priority: founder → investor → public)
+    const pendingInviteCode = await AsyncStorage.getItem(INVITE_CODE_KEY);
+    const tier = resolveTier(email, pendingInviteCode, INVITE_CODES);
+
+    // Clear pending invite code after resolution
+    if (pendingInviteCode) {
+      await AsyncStorage.removeItem(INVITE_CODE_KEY);
+    }
+
     const session: AuthSession = {
       userId: `user-${Date.now()}`,
       displayName: provider === 'apple' ? 'Sammy K.' : provider === 'google' ? 'Sammy Kalejaiye' : 'Sammy',
-      email: 'sammy@kanext.com',
+      email,
       provider,
       token: `mock-token-${Date.now()}`,
       createdAt: new Date(),
+      tier,
     };
 
     await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    await AsyncStorage.setItem(TIER_KEY, tier);
     dispatch({ type: 'SIGN_IN', payload: session });
   }, []);
 

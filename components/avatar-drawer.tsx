@@ -4,11 +4,11 @@
  * Twitter/X-style navigation drawer with push animation.
  * Main content slides right when drawer opens.
  *
- * Structure:
- * - Identity Header (large, dominant)
- * - Primary Nav: Profile, Video, Open Nexus
+ * Structure (v1 Locked):
+ * - Identity Header (avatar, name, mode · org, season/fiscal)
+ * - Primary Nav: Profile, Nexus
  * - Divider
- * - Utility Nav: Settings & Privacy, Help / Support, Terms & Policies
+ * - Utility Nav: Settings & Privacy, Help / Support, Terms & Policies, Sign Out
  */
 
 import React, { useEffect, useRef } from 'react';
@@ -186,14 +186,8 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
               onPress={() => handleNavigation('/profile')}
             />
             <PrimaryNavItem
-              icon="play.rectangle"
-              label="Video"
-              colors={colors}
-              onPress={() => handleNavigation('/video')}
-            />
-            <PrimaryNavItem
               icon="sparkles"
-              label="Open Nexus"
+              label="Nexus"
               colors={colors}
               onPress={() => handleNavigation('/(tabs)/nexus')}
             />

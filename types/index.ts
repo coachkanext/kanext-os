@@ -7,7 +7,7 @@
 // MODES & ROLES
 // =============================================================================
 
-export type Mode = 'sports' | 'enterprise' | 'church' | 'education';
+export type Mode = 'sports' | 'enterprise' | 'church' | 'education' | 'community';
 
 export type Role =
   // Enterprise
@@ -31,7 +31,11 @@ export type Role =
   | 'leadership'
   // Education
   | 'faculty'
-  | 'student';
+  | 'student'
+  // Community
+  | 'league_admin'
+  | 'team_owner'
+  | 'driver';
 
 // =============================================================================
 // CORE ENTITIES
@@ -195,7 +199,17 @@ export interface ProgramContext {
 // ENTERPRISE MODE
 // =============================================================================
 
-export type DocumentCategory = 'investor_materials' | 'governance' | 'institutional_brief' | 'roadmap';
+export type DocumentCategory =
+  | 'investor_materials'
+  | 'governance'
+  | 'institutional_brief'
+  | 'roadmap'
+  | 'proof'
+  | 'ip'
+  | 'financial'
+  | 'legal'
+  | 'product'
+  | 'engines';
 export type DocumentVisibility = 'founder' | 'investor' | 'public';
 
 export interface Document {
@@ -245,6 +259,120 @@ export interface EnterpriseOrganization extends Organization {
   documents?: Document[];
   board?: BoardMember[];
   domains?: Domain[];
+}
+
+// Enterprise v2 ----------------------------------------------------------------
+
+export interface Company {
+  id: string;
+  displayName: string;
+  legalName: string;
+  dbaName?: string;
+  jurisdiction: string;
+  entityType: string;
+  addressBlock: string[];
+  primaryContact: { name: string; email: string; role: string };
+  initials: string;
+  status: string;
+  lastUpdated: Date;
+  visibility: DocumentVisibility;
+}
+
+export type ProofEventStage = 'planning' | 'active' | 'completed' | 'paused';
+
+export interface ProofEventKPI {
+  id: string;
+  label: string;
+  value: string;
+  target?: string;
+  trend?: 'up' | 'down' | 'flat';
+}
+
+export interface ProofEventMilestone {
+  id: string;
+  title: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'blocked';
+  targetDate?: string;
+  completedDate?: string;
+}
+
+export interface ProofEventRisk {
+  id: string;
+  title: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  mitigation?: string;
+}
+
+export interface ProofEvent {
+  id: string;
+  companyId: string;
+  name: string;
+  stage: ProofEventStage;
+  overview: string;
+  kpis: ProofEventKPI[];
+  milestones: ProofEventMilestone[];
+  risks: ProofEventRisk[];
+  opsActions: string[];
+  constraints: string[];
+  lastUpdated: Date;
+  visibility: DocumentVisibility;
+}
+
+export interface Engine {
+  id: string;
+  name: string;
+  purpose: string;
+  inputs: string[];
+  outputs: string[];
+  whyItMatters: string[];
+}
+
+export interface DocumentV2 extends Document {
+  tags: string[];
+  engineId?: string;
+  proofEventId?: string;
+  body?: string;
+  summary?: string;
+  attachments: string[];
+}
+
+export interface RevenueStream {
+  id: string;
+  name: string;
+  description: string;
+  pricing?: string;
+  status: 'active' | 'planned' | 'beta';
+}
+
+export interface CompetitiveAdvantage {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface FundraisingRound {
+  id: string;
+  name: string;
+  status: 'planning' | 'active' | 'closed';
+  targetAmount?: number;
+  raisedAmount?: number;
+  closingDate?: string;
+  summary?: string;
+}
+
+export interface ArchitectureLayer {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+}
+
+export interface RecentUpdate {
+  id: string;
+  title: string;
+  description: string;
+  timestamp: Date;
+  type: 'milestone' | 'document' | 'metric' | 'system';
 }
 
 // =============================================================================
@@ -405,6 +533,8 @@ export interface EducationOrganization extends Organization {
 
 export type AuthProvider = 'apple' | 'google' | 'email';
 
+export type AccessTier = 'founder' | 'cofounder' | 'investor' | 'public';
+
 export interface AuthSession {
   userId: string;
   displayName: string;
@@ -412,6 +542,7 @@ export interface AuthSession {
   provider: AuthProvider;
   token: string;
   createdAt: Date;
+  tier: AccessTier;
 }
 
 export type OnboardingStep = 'org_code' | 'create_org' | 'viewer' | 'complete';
@@ -713,4 +844,29 @@ export interface ExtendedProgramResources {
   budgets: ProgramBudgets;
   staff: StaffCoverage;
   facilities: FacilitiesAccess;
+}
+
+// =============================================================================
+// PROGRAM CALENDAR
+// =============================================================================
+
+export type ProgramCalendarEventType =
+  | 'game' | 'practice' | 'lift' | 'travel'
+  | 'meeting' | 'recruiting' | 'academic' | 'admin_deadline';
+
+export type CalendarVisibilityScope = 'all_program' | 'team_staff' | 'player';
+
+export interface ProgramCalendarEvent {
+  id: string;
+  type: ProgramCalendarEventType;
+  title: string;
+  startDatetime: Date;
+  endDatetime: Date;
+  location?: string;
+  description?: string;
+  visibilityScope: CalendarVisibilityScope;
+  routeTarget?: string;
+  isReadOnly?: boolean;
+  gameScore?: string;
+  gameStatus?: 'upcoming' | 'live' | 'final';
 }

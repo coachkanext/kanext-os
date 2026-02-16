@@ -1,6 +1,6 @@
 /**
  * Mock Education Data
- * San Diego Christian College (SDCC) information for Education mode.
+ * Florida Memorial University (FMU) information for Education mode.
  */
 
 import type {
@@ -17,19 +17,22 @@ import type {
 // ORGANIZATION
 // =============================================================================
 
-export const SDCC_ORGANIZATION: EducationOrganization = {
-  id: 'sdcc-001',
-  name: 'San Diego Christian College',
+export const FMU_ORGANIZATION: EducationOrganization = {
+  id: 'fmu-001',
+  name: 'Florida Memorial University',
   mode: 'education',
-  type: 'Private Christian Liberal Arts College',
-  location: 'Santee, CA',
+  type: 'Private HBCU',
+  location: 'Miami Gardens, FL',
   description:
-    'San Diego Christian College is a private Christian liberal arts college located in Santee, California. Founded in 1970, SDCC offers undergraduate and graduate programs grounded in biblical principles, preparing students for lives of purpose, service, and leadership.',
-  institutionType: 'Liberal Arts College',
+    'Florida Memorial University is a private historically Black university located in Miami Gardens, Florida. Founded in 1879, FMU offers undergraduate and graduate programs rooted in academic excellence, leadership development, and community service.',
+  institutionType: 'HBCU',
   programFormats: ['On-Campus', 'Online', 'Hybrid'],
-  accreditation: 'WSCUC (Western Senior College and University Commission)',
-  founded: 1970,
+  accreditation: 'SACSCOC (Southern Association of Colleges and Schools Commission on Colleges)',
+  founded: 1879,
 };
+
+/** @deprecated Use FMU_ORGANIZATION instead */
+export const SDCC_ORGANIZATION = FMU_ORGANIZATION;
 
 // =============================================================================
 // ACADEMIC TERMS
@@ -223,43 +226,43 @@ export const DEPARTMENTS: Department[] = [
     id: 'dept-business',
     name: 'School of Business',
     shortName: 'Business',
-    description: 'Preparing ethical business leaders grounded in Christian principles.',
+    description: 'Developing the next generation of ethical business leaders and entrepreneurs.',
     programCount: 6,
   },
   {
     id: 'dept-education',
     name: 'School of Education',
     shortName: 'Education',
-    description: 'Training the next generation of Christian educators.',
+    description: 'Preparing transformative educators for diverse communities.',
     programCount: 4,
-  },
-  {
-    id: 'dept-psychology',
-    name: 'Department of Psychology',
-    shortName: 'Psychology',
-    description: 'Integrating faith and psychological science.',
-    programCount: 3,
-  },
-  {
-    id: 'dept-theology',
-    name: 'School of Christian Ministry',
-    shortName: 'Ministry',
-    description: 'Equipping students for ministry and service.',
-    programCount: 5,
   },
   {
     id: 'dept-arts',
-    name: 'Department of Arts & Humanities',
-    shortName: 'Arts',
-    description: 'Fostering creativity and critical thinking.',
-    programCount: 4,
+    name: 'School of Arts & Sciences',
+    shortName: 'Arts & Sciences',
+    description: 'Liberal arts foundation with emphasis on critical thinking and innovation.',
+    programCount: 8,
   },
   {
-    id: 'dept-science',
-    name: 'Department of Natural Sciences',
-    shortName: 'Sciences',
-    description: 'Exploring God\'s creation through scientific inquiry.',
+    id: 'dept-aviation',
+    name: 'School of Aviation',
+    shortName: 'Aviation',
+    description: 'One of the few HBCU aviation programs in the nation.',
     programCount: 3,
+  },
+  {
+    id: 'dept-social-sciences',
+    name: 'Department of Social Sciences',
+    shortName: 'Social Sciences',
+    description: 'Psychology, criminal justice, and social work programs.',
+    programCount: 5,
+  },
+  {
+    id: 'dept-stem',
+    name: 'Department of STEM',
+    shortName: 'STEM',
+    description: 'Biology, mathematics, computer science, and technology programs.',
+    programCount: 4,
   },
 ];
 
@@ -270,62 +273,62 @@ export const DEPARTMENTS: Department[] = [
 export const FACULTY_LEADERSHIP: FacultyMember[] = [
   {
     id: 'faculty-president',
-    name: 'Dr. Elizabeth Hart',
+    name: 'Dr. Jaffus Hardrick',
     title: 'President',
     role: 'president',
-    bio: 'Dr. Hart has served as President of SDCC since 2019, bringing over 25 years of experience in Christian higher education leadership.',
+    bio: 'Dr. Hardrick serves as President of Florida Memorial University, driving the institution\'s mission of academic excellence and community impact.',
   },
   {
     id: 'faculty-provost',
-    name: 'Dr. Michael Chen',
-    title: 'Provost & Chief Academic Officer',
+    name: 'Dr. Angela Nixon',
+    title: 'Provost & VP of Academic Affairs',
     role: 'provost',
-    bio: 'Dr. Chen oversees all academic programs and faculty development at SDCC.',
+    bio: 'Dr. Nixon oversees all academic programs, faculty development, and institutional effectiveness at FMU.',
   },
   {
     id: 'faculty-dean-business',
-    name: 'Dr. Sarah Thompson',
+    name: 'Dr. Marcus Thompson',
     title: 'Dean, School of Business',
     role: 'dean',
     departmentId: 'dept-business',
-    bio: 'Dr. Thompson leads the School of Business with a focus on ethical leadership.',
+    bio: 'Dr. Thompson leads the School of Business with a focus on entrepreneurship and innovation.',
   },
   {
     id: 'faculty-dean-education',
-    name: 'Dr. James Wilson',
+    name: 'Dr. Patricia Williams',
     title: 'Dean, School of Education',
     role: 'dean',
     departmentId: 'dept-education',
-    bio: 'Dr. Wilson brings 20 years of K-12 and higher education experience.',
+    bio: 'Dr. Williams brings extensive K-12 and higher education leadership experience.',
   },
   {
-    id: 'faculty-dean-ministry',
-    name: 'Dr. David Martinez',
-    title: 'Dean, School of Christian Ministry',
+    id: 'faculty-dean-aviation',
+    name: 'Prof. David Carter',
+    title: 'Director, School of Aviation',
     role: 'dean',
-    departmentId: 'dept-theology',
-    bio: 'Dr. Martinez is an ordained minister with extensive pastoral experience.',
-  },
-  {
-    id: 'faculty-chair-psych',
-    name: 'Dr. Rebecca Johnson',
-    title: 'Chair, Department of Psychology',
-    role: 'chair',
-    departmentId: 'dept-psychology',
+    departmentId: 'dept-aviation',
+    bio: 'Prof. Carter leads one of the nation\'s premier HBCU aviation programs.',
   },
   {
     id: 'faculty-chair-arts',
-    name: 'Prof. Andrew Kim',
-    title: 'Chair, Department of Arts & Humanities',
+    name: 'Dr. Keisha Robinson',
+    title: 'Chair, School of Arts & Sciences',
     role: 'chair',
     departmentId: 'dept-arts',
   },
   {
-    id: 'faculty-chair-science',
-    name: 'Dr. Patricia Lee',
-    title: 'Chair, Department of Natural Sciences',
+    id: 'faculty-chair-social',
+    name: 'Dr. James Mitchell',
+    title: 'Chair, Department of Social Sciences',
     role: 'chair',
-    departmentId: 'dept-science',
+    departmentId: 'dept-social-sciences',
+  },
+  {
+    id: 'faculty-chair-stem',
+    name: 'Dr. Sandra Lee',
+    title: 'Chair, Department of STEM',
+    role: 'chair',
+    departmentId: 'dept-stem',
   },
 ];
 
@@ -366,7 +369,7 @@ export const EDUCATION_ACTIVITY: ActivityItem[] = [
     sourceType: 'record',
     sourceId: 'cal-finals',
     route: '/organization/schedule',
-    organizationId: 'sdcc-001',
+    organizationId: 'fmu-001',
     mode: 'education',
     visibility: ['faculty', 'student', 'staff'],
   },
@@ -379,7 +382,7 @@ export const EDUCATION_ACTIVITY: ActivityItem[] = [
     sourceType: 'event',
     sourceId: 'cal-add-drop',
     route: '/organization/schedule',
-    organizationId: 'sdcc-001',
+    organizationId: 'fmu-001',
     mode: 'education',
     visibility: ['faculty', 'student', 'staff'],
   },
@@ -392,7 +395,7 @@ export const EDUCATION_ACTIVITY: ActivityItem[] = [
     sourceType: 'organization',
     sourceId: 'faculty-dean-education',
     route: '/organization/leadership',
-    organizationId: 'sdcc-001',
+    organizationId: 'fmu-001',
     mode: 'education',
     visibility: ['faculty', 'student', 'staff'],
   },
@@ -405,7 +408,7 @@ export const EDUCATION_ACTIVITY: ActivityItem[] = [
     sourceType: 'record',
     sourceId: 'term-fall-2025',
     route: '/organization/results',
-    organizationId: 'sdcc-001',
+    organizationId: 'fmu-001',
     mode: 'education',
     visibility: ['faculty', 'staff'],
   },
@@ -523,9 +526,9 @@ export const ACADEMIC_YEAR_ARCHIVE: AcademicYearSummary[] = [
     graduationRate: 52,
     graduates: 178,
     highlights: [
-      'Launched new Master of Divinity program',
-      'Achieved WSCUC reaccreditation',
-      'Campus chapel renovation completed',
+      'Launched new Aviation Science minor',
+      'Achieved SACSCOC reaccreditation',
+      'Student center renovation completed',
     ],
   },
   {
@@ -537,7 +540,7 @@ export const ACADEMIC_YEAR_ARCHIVE: AcademicYearSummary[] = [
     highlights: [
       'Record enrollment growth of 1.9%',
       'New online learning platform launched',
-      'Partnership with local churches expanded',
+      'Partnership with Miami-Dade County schools expanded',
     ],
   },
 ];

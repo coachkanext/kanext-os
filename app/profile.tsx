@@ -1,24 +1,19 @@
 /**
- * Profile Screen — Viewer Experience
+ * Profile Screen — Read-Only Context Mirror (v1 Locked)
  *
- * Identity + Active Context for viewers.
- * Viewers see a single organization per mode with limited/single options.
+ * No edit buttons in v1. This screen is a mirror only:
+ * identity + context + access tier.
  *
- * Structure:
- * - Identity Header (Avatar, Name, Subtext, Context Summary)
- * - Active Context (4 rows, mode-specific)
+ * Route: Drawer → Profile
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Pressable,
   ScrollView,
-  Platform,
-  ActionSheetIOS,
-  Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -27,117 +22,40 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
-import type { Mode } from '@/types';
+import { useAuth } from '@/context/auth-context';
 
-// =============================================
-// VIEWER CONTEXT DATA (Single options per mode)
-// =============================================
-
-const VIEWER_CONTEXT: Record<Mode, {
-  organization: { label: string; value: string; options: string[] };
-  row3: { label: string; value: string; options: string[] };
-  row4: { label: string; value: string; options: string[] };
-}> = {
-  sports: {
-    organization: { label: 'Organization', value: 'Lincoln University', options: ['Lincoln University'] },
-    row3: { label: 'Program', value: 'Varsity', options: ['Varsity'] },
-    row4: { label: 'Season', value: '2025–26', options: ['2025–26'] },
-  },
-  church: {
-    organization: { label: 'Organization', value: 'ICCLA', options: ['ICCLA'] },
-    row3: { label: 'Ministry', value: 'General', options: ['General'] },
-    row4: { label: 'Year', value: '2025', options: ['2025'] },
-  },
-  enterprise: {
-    organization: { label: 'Organization', value: 'KaNeXT', options: ['KaNeXT'] },
-    row3: { label: 'Workspace', value: 'Default', options: ['Default'] },
-    row4: { label: 'Role', value: 'Viewer', options: ['Viewer'] },
-  },
-  education: {
-    organization: { label: 'Institution', value: 'Florida Memorial University', options: ['Florida Memorial University'] },
-    row3: { label: 'Program', value: 'General Studies', options: ['General Studies'] },
-    row4: { label: 'Term', value: 'Spring 2025', options: ['Spring 2025'] },
-  },
+// Access tier display labels
+const TIER_LABELS: Record<string, string> = {
+  founder: 'Founder',
+  cofounder: 'CoFounder',
+  investor: 'Investor',
+  public: 'Public',
 };
-
-const MODE_OPTIONS: { value: Mode; label: string }[] = [
-  { value: 'sports', label: 'Sports' },
-  { value: 'church', label: 'Church' },
-  { value: 'enterprise', label: 'Enterprise' },
-  { value: 'education', label: 'Education' },
-];
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { state, switchMode } = useAppContext();
+  const { state } = useAppContext();
+  const { state: authState } = useAuth();
 
-  const isLoggedIn = state.authState === 'owner';
-  const currentMode = state.mode || 'sports';
-  const viewerContext = VIEWER_CONTEXT[currentMode];
+  const isLoggedIn = authState.isAuthenticated;
+  const displayName = isLoggedIn ? (authState.session?.displayName ?? 'User') : 'Viewer';
+  const tier = authState.session?.tier ?? 'public';
+  const tierLabel = TIER_LABELS[tier] ?? 'Public';
 
-  // Selector state for Android/Web
-  const [activeSelector, setActiveSelector] = useState<string | null>(null);
+  // Mode display
+  const modeName = state.mode.charAt(0).toUpperCase() + state.mode.slice(1);
+  const orgName = state.organization?.name ?? '—';
+  const roleName = state.operatingRole
+    ? state.operatingRole.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+    : '—';
 
-  // Build context summary line
-  const modeName = currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
-  const contextSummary = `${modeName} · ${viewerContext.organization.value} · ${viewerContext.row3.value} · ${viewerContext.row4.value}`;
-
-  // Show selector (iOS ActionSheet or fallback modal)
-  const showSelector = (
-    title: string,
-    options: string[],
-    currentValue: string,
-    onSelect: (value: string) => void,
-    selectorKey: string
-  ) => {
-    if (Platform.OS === 'ios') {
-      const displayOptions = options.map(opt =>
-        opt === currentValue ? `✓ ${opt}` : `   ${opt}`
-      );
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          title,
-          options: [...displayOptions, 'Cancel'],
-          cancelButtonIndex: displayOptions.length,
-        },
-        (buttonIndex) => {
-          if (buttonIndex < options.length) {
-            onSelect(options[buttonIndex]);
-          }
-        }
-      );
-    } else {
-      setActiveSelector(selectorKey);
-    }
-  };
-
-  // Handle mode selection
-  const handleModePress = () => {
-    showSelector(
-      'Select Mode',
-      MODE_OPTIONS.map(m => m.label),
-      modeName,
-      (label) => {
-        const selected = MODE_OPTIONS.find(m => m.label === label);
-        if (selected) switchMode(selected.value);
-      },
-      'mode'
-    );
-  };
-
-  // Handle other context rows (viewer has single options, but selector still opens)
-  const handleContextRowPress = (label: string, options: string[], currentValue: string) => {
-    showSelector(
-      `Select ${label}`,
-      options,
-      currentValue,
-      () => {}, // No-op for viewer (single option)
-      label.toLowerCase()
-    );
-  };
+  // Workspace / program
+  const workspace = state.mode === 'sports' && state.program?.name
+    ? state.program.name
+    : 'Default';
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -154,208 +72,58 @@ export default function ProfileScreen() {
         style={styles.scrollView}
         contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
       >
-        {/* ===== IDENTITY HEADER ===== */}
+        {/* ===== IDENTITY BLOCK (read-only) ===== */}
         <View style={styles.identitySection}>
           <View style={[styles.avatarLarge, { backgroundColor: colors.backgroundTertiary }]}>
             <IconSymbol name="person.fill" size={40} color={colors.icon} />
           </View>
           <Text style={[styles.identityName, { color: colors.text }]}>
-            {isLoggedIn ? 'Sammy Kalejaiye' : 'Viewer'}
+            {displayName}
           </Text>
-          <Text style={[styles.identitySubtext, { color: colors.textSecondary }]}>
-            {isLoggedIn ? 'Owner' : 'Viewer'}
-          </Text>
-          <Text style={[styles.contextSummary, { color: colors.textTertiary }]}>
-            {contextSummary}
+          <Text style={[styles.identityRole, { color: colors.textSecondary }]}>
+            {roleName}
           </Text>
         </View>
 
-        {/* ===== ACTIVE CONTEXT ===== */}
+        {/* ===== ACTIVE CONTEXT CARD (read-only table) ===== */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
             ACTIVE CONTEXT
           </Text>
           <View style={[styles.contextCard, { backgroundColor: colors.backgroundSecondary }]}>
-            {/* Row 1: Mode */}
-            <ContextRow
-              label="Mode"
-              value={modeName}
-              colors={colors}
-              onPress={handleModePress}
-            />
+            <ContextRow label="Mode" value={modeName} colors={colors} />
             <View style={[styles.rowDivider, { backgroundColor: colors.divider }]} />
-
-            {/* Row 2: Organization/Institution */}
-            <ContextRow
-              label={viewerContext.organization.label}
-              value={viewerContext.organization.value}
-              colors={colors}
-              onPress={() => handleContextRowPress(
-                viewerContext.organization.label,
-                viewerContext.organization.options,
-                viewerContext.organization.value
-              )}
-            />
+            <ContextRow label="Organization" value={orgName} colors={colors} />
             <View style={[styles.rowDivider, { backgroundColor: colors.divider }]} />
-
-            {/* Row 3: Program/Ministry/Workspace */}
-            <ContextRow
-              label={viewerContext.row3.label}
-              value={viewerContext.row3.value}
-              colors={colors}
-              onPress={() => handleContextRowPress(
-                viewerContext.row3.label,
-                viewerContext.row3.options,
-                viewerContext.row3.value
-              )}
-            />
+            <ContextRow label="Workspace" value={workspace} colors={colors} />
             <View style={[styles.rowDivider, { backgroundColor: colors.divider }]} />
-
-            {/* Row 4: Season/Year/Term/Role */}
-            <ContextRow
-              label={viewerContext.row4.label}
-              value={viewerContext.row4.value}
-              colors={colors}
-              onPress={() => handleContextRowPress(
-                viewerContext.row4.label,
-                viewerContext.row4.options,
-                viewerContext.row4.value
-              )}
-            />
+            <ContextRow label="Role" value={roleName} colors={colors} />
+            <View style={[styles.rowDivider, { backgroundColor: colors.divider }]} />
+            <ContextRow label="Access" value={tierLabel} colors={colors} />
           </View>
         </View>
       </ScrollView>
-
-      {/* Android/Web Fallback Selector Modal */}
-      {Platform.OS !== 'ios' && activeSelector && (
-        <SelectorModal
-          visible={true}
-          title={`Select ${activeSelector.charAt(0).toUpperCase() + activeSelector.slice(1)}`}
-          options={
-            activeSelector === 'mode'
-              ? MODE_OPTIONS.map(m => m.label)
-              : activeSelector === viewerContext.organization.label.toLowerCase()
-              ? viewerContext.organization.options
-              : activeSelector === viewerContext.row3.label.toLowerCase()
-              ? viewerContext.row3.options
-              : viewerContext.row4.options
-          }
-          selectedValue={
-            activeSelector === 'mode'
-              ? modeName
-              : activeSelector === viewerContext.organization.label.toLowerCase()
-              ? viewerContext.organization.value
-              : activeSelector === viewerContext.row3.label.toLowerCase()
-              ? viewerContext.row3.value
-              : viewerContext.row4.value
-          }
-          onSelect={(value) => {
-            if (activeSelector === 'mode') {
-              const selected = MODE_OPTIONS.find(m => m.label === value);
-              if (selected) switchMode(selected.value);
-            }
-            setActiveSelector(null);
-          }}
-          onClose={() => setActiveSelector(null)}
-          colors={colors}
-        />
-      )}
     </View>
   );
 }
 
 // =============================================
-// CONTEXT ROW (Tappable, no arrows)
+// CONTEXT ROW (Read-only, no tap action)
 // =============================================
 function ContextRow({
   label,
   value,
   colors,
-  onPress,
 }: {
   label: string;
   value: string;
   colors: typeof Colors.light;
-  onPress: () => void;
 }) {
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.contextRow,
-        pressed && { backgroundColor: colors.backgroundTertiary },
-      ]}
-      onPress={onPress}
-    >
+    <View style={styles.contextRow}>
       <Text style={[styles.contextLabel, { color: colors.textSecondary }]}>{label}</Text>
       <Text style={[styles.contextValue, { color: colors.text }]}>{value}</Text>
-    </Pressable>
-  );
-}
-
-// =============================================
-// SELECTOR MODAL (Android/Web fallback)
-// =============================================
-function SelectorModal({
-  visible,
-  title,
-  options,
-  selectedValue,
-  onSelect,
-  onClose,
-  colors,
-}: {
-  visible: boolean;
-  title: string;
-  options: string[];
-  selectedValue: string;
-  onSelect: (value: string) => void;
-  onClose: () => void;
-  colors: typeof Colors.light;
-}) {
-  if (!visible) return null;
-
-  return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={styles.modalOverlay} onPress={onClose}>
-        <Pressable
-          style={[styles.modalCard, { backgroundColor: colors.card }]}
-          onPress={(e) => e.stopPropagation()}
-        >
-          <Text style={[styles.modalTitle, { color: colors.text }]}>{title}</Text>
-          {options.map((option) => {
-            const isSelected = option === selectedValue;
-            return (
-              <Pressable
-                key={option}
-                style={({ pressed }) => [
-                  styles.modalOption,
-                  isSelected && { backgroundColor: colors.backgroundSecondary },
-                  pressed && !isSelected && { backgroundColor: colors.backgroundTertiary },
-                ]}
-                onPress={() => onSelect(option)}
-              >
-                <Text
-                  style={[
-                    styles.modalOptionText,
-                    { color: colors.text },
-                    isSelected && { fontWeight: '600' },
-                  ]}
-                >
-                  {option}
-                </Text>
-                {isSelected && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
-              </Pressable>
-            );
-          })}
-          <Pressable
-            style={[styles.modalCancel, { borderTopColor: colors.divider }]}
-            onPress={onClose}
-          >
-            <Text style={[styles.modalCancelText, { color: colors.tint }]}>Cancel</Text>
-          </Pressable>
-        </Pressable>
-      </Pressable>
-    </Modal>
+    </View>
   );
 }
 
@@ -403,13 +171,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 4,
   },
-  identitySubtext: {
+  identityRole: {
     fontSize: 15,
-    marginBottom: 8,
-  },
-  contextSummary: {
-    fontSize: 13,
-    textAlign: 'center',
   },
 
   // Section
@@ -447,51 +210,5 @@ const styles = StyleSheet.create({
   rowDivider: {
     height: StyleSheet.hairlineWidth,
     marginLeft: Spacing.md,
-  },
-
-  // Modal
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalCard: {
-    width: 280,
-    borderRadius: BorderRadius.lg,
-    paddingTop: Spacing.md,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  modalTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: Spacing.sm,
-  },
-  modalOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: Spacing.lg,
-    marginHorizontal: Spacing.sm,
-    borderRadius: BorderRadius.md,
-  },
-  modalOptionText: {
-    fontSize: 16,
-  },
-  modalCancel: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    marginTop: Spacing.sm,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  modalCancelText: {
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

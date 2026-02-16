@@ -1077,7 +1077,7 @@ const POS_ABBREV_TO_TRAD: Record<string, PoolPosition> = {
   PG: 'PG', CG: 'SG', W: 'SF', F: 'PF', B: 'C',
 };
 
-export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoPress, onLogoLongPress, onOpenStatistics }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoPress?: () => void; onLogoLongPress?: () => void; onOpenStatistics?: () => void } = {}) {
+export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPress, onOpenStatistics }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoLongPress?: () => void; onOpenStatistics?: () => void } = {}) {
   const [activeView, setActiveView] = useState<ViewType>('cards');
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
   const [searchQuery, setSearchQuery] = useState('');
@@ -1154,7 +1154,6 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoPress,
       <View style={styles.teamHeader}>
         <View style={styles.teamNameRow}>
           <Pressable
-            onPress={() => { if (onLogoPress) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onLogoPress(); } }}
             onLongPress={() => { if (onLogoLongPress) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onLogoLongPress(); } }}
             delayLongPress={300}
           >
@@ -1184,6 +1183,9 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoPress,
           </View>
         </View>
       </View>
+
+      {/* Divider — separates identity block from controls */}
+      <View style={styles.headerDivider} />
 
       {/* Controls: Season + Sort + Search + View */}
       <RosterControls
@@ -1344,6 +1346,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: TEAM_COLORS.gray,
     marginTop: 2,
+  },
+
+  headerDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: TEAM_COLORS.white + '18',
+    marginHorizontal: Spacing.lg,
   },
 
   // ── Controls Row ──

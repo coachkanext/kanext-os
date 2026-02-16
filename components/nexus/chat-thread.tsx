@@ -3,8 +3,9 @@
  * Renders the list of messages in a Nexus conversation.
  */
 
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { ThemedText } from '@/components/themed-text';
 import { MessageBubble } from './message-bubble';
@@ -21,11 +22,59 @@ interface ChatThreadProps {
   conversation?: Conversation | null;
 }
 
+const NEXUS_QUOTES = [
+  { text: "The magic you're looking for\nis in the work you're avoiding.", attribution: '— Chris Williamson' },
+  { text: 'Future looks bright.', attribution: '— Patrick Bet-David' },
+  { text: 'In all toil there is profit,\nbut mere talk tends only to poverty.', attribution: '— Prov 14:23' },
+];
+
+const QUOTE_STORAGE_KEY = 'kx:nexusLastQuoteIndex';
+const QUOTE_ROTATE_MS = 10_000;
+
 export function ChatThread({ messages, isLoading = false, conversation }: ChatThreadProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const flatListRef = useRef<FlatList>(null);
   const { getSimulation, getSavedSimulation, openSimulation, getEvalSnapshot, updateConversationConfig, generatePlayerEval } = useNexusContext();
+
+  // ── Quote rotation ──
+  const [quoteIndex, setQuoteIndex] = useState(0);
+  const lastPersistedRef = useRef<number | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const isEmptyState = messages.length === 0 && !isLoading && conversation?.type !== 'game-ops';
+
+  // Pick a random starting quote that differs from the last one shown
+  useEffect(() => {
+    if (!isEmptyState) return;
+    (async () => {
+      const stored = await AsyncStorage.getItem(QUOTE_STORAGE_KEY);
+      const lastIndex = stored != null ? parseInt(stored, 10) : -1;
+      let next: number;
+      do {
+        next = Math.floor(Math.random() * NEXUS_QUOTES.length);
+      } while (next === lastIndex && NEXUS_QUOTES.length > 1);
+      setQuoteIndex(next);
+      lastPersistedRef.current = next;
+      await AsyncStorage.setItem(QUOTE_STORAGE_KEY, String(next));
+    })();
+  }, [isEmptyState]);
+
+  // Auto-rotate every 10s while on empty state
+  useEffect(() => {
+    if (!isEmptyState) {
+      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+      return;
+    }
+    timerRef.current = setInterval(() => {
+      setQuoteIndex((prev) => {
+        const next = (prev + 1) % NEXUS_QUOTES.length;
+        AsyncStorage.setItem(QUOTE_STORAGE_KEY, String(next));
+        return next;
+      });
+    }, QUOTE_ROTATE_MS);
+    return () => { if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; } };
+  }, [isEmptyState]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -141,13 +190,14 @@ export function ChatThread({ messages, isLoading = false, conversation }: ChatTh
       );
     }
 
+    const q = NEXUS_QUOTES[quoteIndex] ?? NEXUS_QUOTES[0];
     return (
       <View style={styles.emptyContainer}>
         <ThemedText style={[styles.quote, { color: colors.textSecondary }]}>
-          The magic you&apos;re looking for{'\n'}is in the work you&apos;re avoiding
+          {q.text}
         </ThemedText>
         <ThemedText style={[styles.attribution, { color: colors.textTertiary }]}>
-          — Chris Williamson
+          {q.attribution}
         </ThemedText>
       </View>
     );
@@ -242,17 +292,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xl,
   },
   quote: {
-    fontSize: 22,
+    fontSize: 28,
     fontStyle: 'italic',
     textAlign: 'center',
-    lineHeight: 34,
-    opacity: 0.7,
+    lineHeight: 40,
+    opacity: 0.8,
   },
   attribution: {
-    fontSize: 14,
+    fontSize: 16,
     fontStyle: 'italic',
     marginTop: Spacing.md,
-    opacity: 0.5,
+    opacity: 0.6,
   },
   gameOpsMatchup: {
     alignItems: 'center',

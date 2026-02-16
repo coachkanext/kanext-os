@@ -289,6 +289,7 @@ const ALL_ACTIVITY: Record<Mode, ActivityItem[]> = {
   enterprise: ENTERPRISE_ACTIVITY,
   church: CHURCH_ACTIVITY,
   education: EDUCATION_ACTIVITY,
+  community: [],
 };
 
 // =============================================================================

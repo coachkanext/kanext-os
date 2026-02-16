@@ -30,7 +30,7 @@ export default function CoachRosterScreen() {
       >
         <RosterContent
           onViewChange={() => scrollRef.current?.scrollTo({ y: 0, animated: false })}
-          onLogoPress={openTeamSheet}
+          onLogoLongPress={openTeamSheet}
         />
       </ScrollView>
 

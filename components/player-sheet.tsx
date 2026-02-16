@@ -1706,7 +1706,7 @@ const styles = StyleSheet.create({
   },
   simAward: {
     fontSize: 9,
-    color: '#D4A843',
+    color: '#FFFFFF',
     marginBottom: 3,
   },
   ttDelta: {

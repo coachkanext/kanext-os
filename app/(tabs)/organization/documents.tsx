@@ -87,7 +87,7 @@ function formatDate(date: Date): string {
 // FILTER TABS
 // =============================================================================
 
-type FilterTab = 'all' | DocumentCategory;
+type FilterTab = 'all' | 'investor_materials' | 'governance' | 'institutional_brief' | 'roadmap';
 
 interface FilterTabsProps {
   active: FilterTab;
@@ -170,7 +170,9 @@ export default function DocumentsScreen() {
     };
 
     visibleDocuments.forEach((doc) => {
-      result[doc.category]++;
+      if (doc.category in result) {
+        (result as Record<string, number>)[doc.category]++;
+      }
     });
 
     return result;

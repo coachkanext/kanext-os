@@ -19,7 +19,7 @@ export interface PlayerBadge {
 export const BADGE_LEVEL_COLORS: Record<BadgeLevel, string> = {
   Bronze: '#CD7F32',
   Silver: '#A8A9AD',
-  Gold: '#D4A843',
+  Gold: '#FFFFFF',
 };
 
 const BADGE_THRESHOLDS: { level: BadgeLevel; min: number }[] = [
