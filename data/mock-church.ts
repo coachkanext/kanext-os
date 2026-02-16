@@ -131,7 +131,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-1',
     title: 'Walking in Faith',
-    speaker: 'Pastor Michael Johnson',
+    speaker: 'Pastor Dipo Kalejaiye',
     date: new Date('2026-02-02'),
     mediaType: 'video',
     seriesName: 'Faith Forward',
@@ -140,7 +140,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-2',
     title: 'The Power of Prayer',
-    speaker: 'Pastor Michael Johnson',
+    speaker: 'Pastor Dipo Kalejaiye',
     date: new Date('2026-01-26'),
     mediaType: 'video',
     seriesName: 'Faith Forward',
@@ -158,7 +158,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-4',
     title: 'Fresh Start',
-    speaker: 'Pastor Michael Johnson',
+    speaker: 'Pastor Dipo Kalejaiye',
     date: new Date('2026-01-12'),
     mediaType: 'video',
     seriesName: 'New Year, New You',
@@ -167,7 +167,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-5',
     title: 'Year in Review',
-    speaker: 'Pastor Michael Johnson',
+    speaker: 'Pastor Dipo Kalejaiye',
     date: new Date('2025-12-29'),
     mediaType: 'video',
     duration: '38:45',
@@ -225,7 +225,7 @@ export interface ChurchLeader {
 export const CHURCH_LEADERSHIP: ChurchLeader[] = [
   {
     id: 'leader-1',
-    name: 'Pastor Michael Johnson',
+    name: 'Pastor Dipo Kalejaiye',
     title: 'Senior Pastor',
     role: 'senior_pastor',
     bio: 'Pastor Michael has led ICC since 1995 with a heart for the nations.',

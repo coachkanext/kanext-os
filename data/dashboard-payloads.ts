@@ -125,7 +125,7 @@ export function buildChurchDashboard(): DashboardTruthPayload {
   return {
     heroVideo: {
       title: 'Sunday Worship Service',
-      subtitle: 'Watch the latest message from Pastor Johnson',
+      subtitle: 'Watch the latest message from Pastor Dipo Kalejaiye',
     },
     contextSnapshot: [
       { id: 'campuses', label: 'Campuses', value: CAMPUSES.length },

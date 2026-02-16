@@ -99,7 +99,7 @@ const MODE_POSTS: Record<Mode, VideoFeedPost[]> = {
     { id: 'bv-3', authorName: 'KaNeXT Press', authorInitials: 'KP', authorRole: 'Media', timestamp: new Date('2026-02-06'), caption: 'MLK Truth Classic announcement — 16-team tournament, $3M+ Year 1.', media: { type: 'clip', title: 'MLK Classic Reveal', duration: '2:18', thumbnailColor: '#22C55E' }, likes: 103, comments: 28 },
   ],
   church: [
-    { id: 'cv-1', authorName: 'Pastor Johnson', authorInitials: 'PJ', authorRole: 'Senior Pastor', timestamp: new Date('2026-02-12'), caption: '"Walking in Faith" — this week\'s message from the Faith Forward series.', media: { type: 'clip', title: 'Walking in Faith', duration: '45:32', thumbnailColor: '#1B4F8A' }, likes: 89, comments: 14 },
+    { id: 'cv-1', authorName: 'Pastor Dipo Kalejaiye', authorInitials: 'DK', authorRole: 'Senior Pastor', timestamp: new Date('2026-02-12'), caption: '"Walking in Faith" — this week\'s message from the Faith Forward series.', media: { type: 'clip', title: 'Walking in Faith', duration: '45:32', thumbnailColor: '#1B4F8A' }, likes: 89, comments: 14 },
     { id: 'cv-2', authorName: 'Worship Team', authorInitials: 'WT', authorRole: 'Ministry', timestamp: new Date('2026-02-09'), caption: 'Sunday worship highlights — "Great Is Thy Faithfulness"', media: { type: 'reel', title: 'Worship Highlights', duration: '3:12', thumbnailColor: '#7C3AED' }, likes: 156, comments: 23 },
     { id: 'cv-3', authorName: 'ICCLA Youth', authorInitials: 'YT', authorRole: 'Youth Ministry', timestamp: new Date('2026-02-05'), caption: 'Youth retreat recap — 3 days of fellowship and growth.', media: { type: 'clip', title: 'Youth Retreat 2026', duration: '5:44', thumbnailColor: '#22C55E' }, likes: 201, comments: 45 },
   ],

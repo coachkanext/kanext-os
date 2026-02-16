@@ -108,7 +108,7 @@ const CHURCH_OPS: OrgOperationsData = {
     { id: 'cw-3', name: 'Building Expansion Phase 2', lead: 'Deacon Harris', status: 'blocked', items: 8, progress: 65 },
   ],
   meetings: [
-    { id: 'cm-1', title: 'Elder Board Meeting', date: 'Feb 22, 2026 · 6:30 PM', attendees: ['Pastor Johnson', 'Elder Davis', 'Elder Brown'], status: 'scheduled' },
+    { id: 'cm-1', title: 'Elder Board Meeting', date: 'Feb 22, 2026 · 6:30 PM', attendees: ['Pastor Dipo Kalejaiye', 'Elder Davis', 'Elder Brown'], status: 'scheduled' },
     { id: 'cm-2', title: 'Worship Team Rehearsal', date: 'Feb 19, 2026 · 7:00 PM', attendees: ['Min. Lee', 'Worship Team'], status: 'scheduled' },
     { id: 'cm-3', title: 'Deacon Board Review', date: 'Feb 10, 2026 · 6:00 PM', attendees: ['Deacons'], status: 'completed' },
   ],
