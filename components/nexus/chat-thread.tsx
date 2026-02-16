@@ -4,7 +4,7 @@
  */
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
-import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { ThemedText } from '@/components/themed-text';
@@ -23,13 +23,18 @@ interface ChatThreadProps {
 }
 
 const NEXUS_QUOTES = [
-  { text: "The magic you're looking for\nis in the work you're avoiding.", attribution: '— Chris Williamson' },
-  { text: 'Future looks bright.', attribution: '— Patrick Bet-David' },
-  { text: 'In all toil there is profit,\nbut mere talk tends only to poverty.', attribution: '— Prov 14:23' },
+  { text: 'The hand of the diligent will rule,\nbut the slothful will be put to forced labor.', attribution: '— Prov 12:24' },
+  { text: 'Whatever your hand finds to do,\ndo it with your might.', attribution: '— Eccl 9:10' },
+  { text: 'In all hard work there is profit,\nbut mere talk leads only to poverty.', attribution: '— Prov 14:23' },
+  { text: 'If anyone is unwilling to work,\nhe shall not eat.', attribution: '— 2 Thess 3:10' },
+  { text: 'A slack hand causes poverty,\nbut the hand of the diligent makes rich.', attribution: '— Prov 10:4' },
+  { text: 'By wisdom a house is built,\nand by understanding it is established.', attribution: '— Prov 24:3' },
+  { text: 'The wise store up knowledge,\nbut the mouth of a fool brings ruin near.', attribution: '— Prov 10:14' },
+  { text: 'It is better to live in a desert land\nthan with a quarrelsome and fretful wife.', attribution: '— Prov 21:19' },
 ];
 
 const QUOTE_STORAGE_KEY = 'kx:nexusLastQuoteIndex';
-const QUOTE_ROTATE_MS = 10_000;
+const QUOTE_ROTATE_MS = 6_000;
 
 export function ChatThread({ messages, isLoading = false, conversation }: ChatThreadProps) {
   const colorScheme = useColorScheme() ?? 'light';
@@ -192,14 +197,30 @@ export function ChatThread({ messages, isLoading = false, conversation }: ChatTh
 
     const q = NEXUS_QUOTES[quoteIndex] ?? NEXUS_QUOTES[0];
     return (
-      <View style={styles.emptyContainer}>
+      <Pressable
+        style={styles.emptyContainer}
+        onPress={() => {
+          const next = (quoteIndex + 1) % NEXUS_QUOTES.length;
+          setQuoteIndex(next);
+          AsyncStorage.setItem(QUOTE_STORAGE_KEY, String(next));
+          // Reset rotation timer on tap
+          if (timerRef.current) clearInterval(timerRef.current);
+          timerRef.current = setInterval(() => {
+            setQuoteIndex((prev) => {
+              const n = (prev + 1) % NEXUS_QUOTES.length;
+              AsyncStorage.setItem(QUOTE_STORAGE_KEY, String(n));
+              return n;
+            });
+          }, QUOTE_ROTATE_MS);
+        }}
+      >
         <ThemedText style={[styles.quote, { color: colors.textSecondary }]}>
           {q.text}
         </ThemedText>
         <ThemedText style={[styles.attribution, { color: colors.textTertiary }]}>
           {q.attribution}
         </ThemedText>
-      </View>
+      </Pressable>
     );
   };
 

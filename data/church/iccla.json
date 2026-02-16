@@ -1,0 +1,271 @@
+{
+  "church_profile": {
+    "name": "International Christian Center | Los Angeles",
+    "shortName": "ICCLA",
+    "denomination": "Inter-denominational Pentecostal",
+    "description": "A Multicultural Christian Haven for Worshipping Jesus Christ",
+    "vision": "To make disciples of all nations by teaching, preaching, instructing in the undiluted word of God and through community stewardship",
+    "theme2026": "Year of Divine Manifestation",
+    "website": "https://iccla.com",
+    "serviceTime": "Sundays at 7:00 PM",
+    "social": {
+      "instagram": "https://www.instagram.com/icclosangeles/",
+      "facebook": "https://www.facebook.com/ICCLosAngeles/",
+      "youtube": "https://www.youtube.com/channel/UCht4zJbLE7V8Tra6gA-xcnQ",
+      "twitter": "https://twitter.com/icclosangeles",
+      "tiktok": "https://www.tiktok.com/@icclosangeles"
+    }
+  },
+  "leadership": [
+    {
+      "id": "pastor-dipo",
+      "name": "Pastor Dipo Kalejaiye",
+      "title": "Senior Pastor / Founder",
+      "role": "senior_pastor",
+      "bio": "Dr. Oladipo Kalejaiye is the founding Senior Pastor of International Christian Center, Los Angeles. He holds a PhD in Law and has over 25 years of litigation experience. He anchors the Hotline to Heaven global prayer ministry daily at 8:00 AM.",
+      "credentials": "PhD (Law)"
+    },
+    {
+      "id": "pastor-nony",
+      "name": "Pastor Nony Kalejaiye",
+      "title": "First Lady / Co-Pastor",
+      "role": "co_pastor",
+      "bio": "Dr. Nonyelum Kalejaiye is the co-founding pastor and First Lady of ICCLA. She holds a Doctor of Dental Surgery (DDS) degree. She leads the 40 Days of Waiting Upon the Lord prayer initiative for 2026.",
+      "credentials": "DDS"
+    }
+  ],
+  "ministries": [
+    {
+      "id": "men-wondered-at",
+      "name": "Men Wondered At",
+      "type": "mens",
+      "description": "The Men's Ministry at ICCLA.",
+      "status": "coming_soon"
+    },
+    {
+      "id": "virtuous-women",
+      "name": "Virtuous Women's Fellowship",
+      "type": "womens",
+      "description": "The Women's Ministry at ICCLA.",
+      "status": "coming_soon"
+    },
+    {
+      "id": "torch-nation",
+      "name": "T.O.R.C.H. Nation",
+      "type": "young_adults",
+      "description": "Young Adults Ministry. T.O.R.C.H. stands for 'when you are Transformed and Open, Real Change Happens.' Trendy, contemporary worship and praise, relatable life transformation groups, and regular, refreshing events.",
+      "contact": "David Eze: +1 (310) 738-8298",
+      "status": "active"
+    },
+    {
+      "id": "sheepfold",
+      "name": "Sheepfold Ministry",
+      "type": "childrens",
+      "description": "Children's Church with well-trained, professional Christian teachers and exquisite facilities. Parents may stay with their child in the sanctuary or release them to the Children's Church. Nursery available for little ones.",
+      "status": "active"
+    },
+    {
+      "id": "fresh-fire",
+      "name": "Fresh Fire Youth Ministry",
+      "type": "youth",
+      "description": "Teens Church providing an assortment of youth activities for teens all year round.",
+      "status": "active"
+    },
+    {
+      "id": "rooted",
+      "name": "Rooted",
+      "type": "discipleship",
+      "description": "Life transformation groups. The Rooted experience redefines how people live life and view their relationship with God and others, giving context to what it means to be part of something bigger. Experience life marked by community, authenticity, and generosity.",
+      "status": "active"
+    },
+    {
+      "id": "icc-connect-groups",
+      "name": "ICC Connect Groups",
+      "type": "small_groups",
+      "description": "A cozy haven for Christian fellowship where members engage in interactive discussions, meet new people, and celebrate milestones. Open to both members and non-members of the church.",
+      "status": "active"
+    },
+    {
+      "id": "vineyard-voices",
+      "name": "Vineyard Voices",
+      "type": "worship",
+      "description": "Music Ministry led by Dr. Kunle Pinmiloye (Ksticks). Key activities include Congregational Worship sessions, Special Ministrations, Praise & Worship services (Altar of Praise), and Special Musical Concerts including the ICCLA Sound of Christmas.",
+      "leader": "Dr. Kunle Pinmiloye (Ksticks)",
+      "status": "active"
+    },
+    {
+      "id": "single-saved-serving",
+      "name": "Single Saved and Serving Ministry",
+      "type": "singles",
+      "description": "Connects, encourages, and supports seasoned singles as they live a life of faith and trust in God, guiding Christian single adults as they grow in their spiritual, social, and personal lives.",
+      "status": "active"
+    },
+    {
+      "id": "the-harvesters",
+      "name": "The Harvesters",
+      "type": "outreach",
+      "description": "Outreach and evangelism ministry of ICCLA.",
+      "status": "active"
+    }
+  ],
+  "giving": {
+    "philosophy": "ICCLA strives to be a church characterized by generosity — not just in financial contributions but in every act of kindness and service. Tithing and offerings reflect trust in Jesus as the ultimate provider.",
+    "categories": ["Tithes", "Offerings", "Donations"],
+    "methods": [
+      {
+        "type": "text_to_give",
+        "label": "Text to Give",
+        "instructions": "Text ICCLA to (562) 837-2667"
+      },
+      {
+        "type": "zelle",
+        "label": "Zelle",
+        "instructions": "Send to give@iccla.com"
+      },
+      {
+        "type": "online",
+        "label": "Online",
+        "instructions": "Secure online giving at iccla.com/givee",
+        "url": "https://iccla.com/givee"
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "evt-40-days-2026",
+      "title": "40 Days Fasting & Prayer",
+      "date": "2026-01-05",
+      "description": "40 Days of Waiting Upon the Lord in prayer, led by Pastor Nony Kalejaiye. Part of the 2026 Year of Divine Manifestation theme.",
+      "type": "prayer"
+    },
+    {
+      "id": "evt-peniel-2026",
+      "title": "PENIEL",
+      "date": "2026-02-15",
+      "description": "PENIEL worship and prayer event.",
+      "type": "worship"
+    },
+    {
+      "id": "evt-rhythms-2026",
+      "title": "Rhythms From the Roots",
+      "date": "2026-02-22",
+      "description": "Cultural worship experience.",
+      "type": "cultural"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-01",
+      "title": "The Word in Season",
+      "date": "2026-02-09",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=5s8Cl8Nvnss"
+    },
+    {
+      "id": "msg-02",
+      "title": "The God of Suddenly",
+      "date": "2026-02-02",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=eRUhGYfLuQo"
+    },
+    {
+      "id": "msg-03",
+      "title": "Prophetic Encounter Night with Pastor Nony Kalejaiye",
+      "date": "2026-01-26",
+      "speaker": "Pastor Nony Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=2qMwJOlVy4s"
+    },
+    {
+      "id": "msg-04",
+      "title": "How to Wage a Good Warfare",
+      "date": "2026-01-19",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=s7xJ5wGkxJo"
+    },
+    {
+      "id": "msg-05",
+      "title": "Securing the Foundations of the Year",
+      "date": "2026-01-12",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=EcqFPBq0d0g"
+    },
+    {
+      "id": "msg-06",
+      "title": "Your Year of Divine Manifestation",
+      "date": "2026-01-05",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=xU5oS41F01U"
+    },
+    {
+      "id": "msg-07",
+      "title": "The Siege is Lifted",
+      "date": "2025-12-28",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=kS03fBCuF6k"
+    },
+    {
+      "id": "msg-08",
+      "title": "When God's Word Makes No Sense",
+      "date": "2025-12-25",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=LZPQ8oLKPJ0"
+    },
+    {
+      "id": "msg-09",
+      "title": "The Believer's Victory Over the Spirit of Herod",
+      "date": "2025-12-21",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=YWBlC4kGEBI"
+    },
+    {
+      "id": "msg-10",
+      "title": "KERESIMESI: The Sound of Christmas 2025",
+      "date": "2025-12-14",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=CL4cmOQfuZY"
+    },
+    {
+      "id": "msg-11",
+      "title": "The Spirit of Christ is Always Reconciliatory",
+      "date": "2025-12-07",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=yFeDLKIJ7Lo"
+    },
+    {
+      "id": "msg-12",
+      "title": "The 5 Gates of Life You Must Control to Thrive in Babylon",
+      "date": "2025-11-30",
+      "speaker": "Pastor Dipo Kalejaiye",
+      "youtubeUrl": "https://www.youtube.com/watch?v=GK02NhqSDBE"
+    }
+  ],
+  "programs": {
+    "hotlineToHeaven": {
+      "name": "Hotline to Heaven",
+      "type": "radio_prayer",
+      "description": "Global, non-denominational prayer ministry anchored by Dr. Dipo Kalejaiye. A three-in-one fiery arsenal: The Word, Prayer & Prophecy, to combat the forces of darkness.",
+      "schedule": "Daily at 8:00 AM; Sunday sermon re-broadcast daily at 12:00 PM PST",
+      "access": "Download the ICCLA Church Mobile App from Apple or Google Store and click the Hotline to Heaven logo"
+    }
+  },
+  "metadata": {
+    "scraped_at": "2026-02-16",
+    "source_pages": [
+      "https://iccla.com/",
+      "https://iccla.com/about-2/",
+      "https://iccla.com/pastor/",
+      "https://iccla.com/foundation/",
+      "https://iccla.com/messages/",
+      "https://iccla.com/givee/",
+      "https://iccla.com/connect-with-us/"
+    ],
+    "robots_txt_compliant": true,
+    "counts": {
+      "leadership": 2,
+      "ministries": 10,
+      "events": 3,
+      "messages": 12,
+      "giving_methods": 3
+    }
+  }
+}

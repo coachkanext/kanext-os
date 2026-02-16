@@ -12,8 +12,12 @@ import {
   type BoardEntry,
   type BoardStatus,
   type Priority,
+  type NeedsTier,
+  type PositionSlot,
+  type InterestLevel,
 } from '@/data/recruitingBoard';
 import { PLAYER_POOL } from '@/data/playerPool';
+import { TRADITIONAL_TO_HELIO } from '@/data/position-mapping';
 
 const STORAGE_KEY = 'kx:recruitingBoard';
 const DEBOUNCE_MS = 500;
@@ -43,6 +47,22 @@ function migrateEntries(entries: BoardEntry[]): { entries: BoardEntry[]; changed
         riskFlags: entry.riskFlags ?? [],
         dueDiligence: entry.dueDiligence ?? DUE_DILIGENCE_LABELS.map((label) => ({ label, completed: false })),
         log: entry.log ?? [],
+      };
+    }
+    // Backfill workspace fields (tier/slot/interest) for 4-view refactor
+    if (!entry.tier) {
+      changed = true;
+      const tierFromPriority: Record<string, NeedsTier> = { A: 'Primary', B: 'Secondary', C: 'Watch' };
+      const player = PLAYER_POOL.find((p) => p.id === entry.playerId);
+      const helioSlot = player
+        ? (TRADITIONAL_TO_HELIO as Record<string, string>)[player.position] as PositionSlot | undefined
+        : undefined;
+      const interestFromTemp: Record<string, InterestLevel> = { Ice: 'Low', Warm: 'Med', Hot: 'High', Close: 'High' };
+      entry = {
+        ...entry,
+        tier: tierFromPriority[entry.priority] ?? 'Watch',
+        slot: helioSlot ?? 'W',
+        interest: interestFromTemp[entry.temperature] ?? 'Low',
       };
     }
     return entry;
@@ -182,6 +202,8 @@ export function addEntry(
   playerId: string,
   status: BoardStatus = 'Watchlist',
   priority: Priority = 'C',
+  slot?: PositionSlot,
+  tier?: NeedsTier,
 ): BoardEntry[] {
   // Don't add duplicates
   if (entries.some((e) => e.playerId === playerId)) return entries;
@@ -189,6 +211,7 @@ export function addEntry(
   const player = PLAYER_POOL.find((p) => p.id === playerId);
   if (!player) return entries;
 
+  const helioSlot = slot ?? ((TRADITIONAL_TO_HELIO as Record<string, string>)[player.position] as PositionSlot | undefined) ?? 'W';
   const colEntries = entries.filter((e) => e.status === status);
   const newEntry: BoardEntry = {
     id: `be-${Date.now()}`,
@@ -210,6 +233,9 @@ export function addEntry(
     riskFlags: [],
     dueDiligence: DUE_DILIGENCE_LABELS.map((label) => ({ label, completed: false })),
     log: [],
+    tier: tier ?? 'Watch',
+    slot: helioSlot,
+    interest: 'Low',
   };
 
   return [...entries, newEntry];

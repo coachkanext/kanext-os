@@ -26,9 +26,15 @@ import { Spacing, BorderRadius } from '@/constants/theme';
 import { PLAYER_POOL, type PoolLevel, type PoolPlayer } from '@/data/playerPool';
 import { getPlayerRatings, getPoolPlayerSubclusters, WEEKLY_UPDATE_OPTIONS } from '@/data/playerRatings';
 import { HELIO_TO_TRADITIONAL, TRADITIONAL_TO_HELIO, HELIO_POSITIONS, HELIO_POSITION_LABELS } from '@/data/position-mapping';
+import { RecruitingHeader, type RecruitingViewMode } from '@/components/recruiting/recruiting-header';
+import { NeedsBoard } from '@/components/recruiting/needs-board';
+import { BigBoard } from '@/components/recruiting/big-board';
+import { CRMTable } from '@/components/recruiting/crm-table';
+import { KaNeXTDatabase } from '@/components/recruiting/kanext-database';
+import { type NeedsTier, type PositionSlot } from '@/data/recruitingBoard';
 import { SORT_CLUSTER_LABELS, CLUSTER_ORDER, TRAIT_LIBRARY } from '@/data/trait-library';
 import { ARCHETYPE_OPTIONS } from '@/data/archetype-options';
-import { getPlayerStats, STAT_META, type StatKey } from '@/data/player-stats';
+import { getPlayerStats, type StatKey } from '@/data/player-stats';
 import {
   TARGET_DEPTH,
   ROSTER_MAX,
@@ -40,19 +46,11 @@ import {
   COV_TEMPS,
   type PositionNeed,
 } from '@/data/team-needs';
-import { ROSTER_META, PLAYER_CLUSTERS, PLAYER_PHYSICALS } from '@/data/roster-data';
+import { PLAYER_CLUSTERS, PLAYER_PHYSICALS } from '@/data/roster-data';
 import { ROSTER } from '@/components/roster-content';
-import { getRecruitComms, COMMS_TYPE_META } from '@/data/mock-comms';
-import { computeFitKR } from '@/utils/fit-kr';
-import { computePlayerBadges, type PlayerBadge } from '@/utils/player-badges';
+import { computePlayerBadges } from '@/utils/player-badges';
 import {
-  getPlayerAvailability,
   getPlayerRegion,
-  computeConfidence,
-  computeMomentum,
-  getMomentumLabel,
-  getMomentumColor,
-  getLastTouch,
   parseHeightToInches,
   computeWingspan,
   computeVertical,
@@ -87,7 +85,6 @@ import {
   type RecruitingLogEntry,
 } from '@/data/recruitingBoard';
 import {
-  BoardFilters,
   DEFAULT_BOARD_FILTERS,
   KR_TIERS,
   getDivisionAnchor,
@@ -241,7 +238,7 @@ export function PlayerPoolContent() {
   const [boardEntries, setBoardEntries] = useState<BoardEntry[]>([]);
   const [boardLoaded, setBoardLoaded] = useState(false);
   const [boardFilters, setBoardFilters] = useState<BoardFilterState>({ ...DEFAULT_BOARD_FILTERS });
-  const [boardViewMode, setBoardViewMode] = useState<'list' | 'players' | 'teams'>('list');
+  const [boardViewMode, setBoardViewMode] = useState<RecruitingViewMode>('needs');
   const [boardSearch, setBoardSearch] = useState('');
   const [quickActionsEntry, setQuickActionsEntry] = useState<BoardEntry | null>(null);
   const [qaMode, setQaMode] = useState<'actions' | 'log'>('actions');
@@ -442,43 +439,7 @@ export function PlayerPoolContent() {
     });
   }, [boardEntries, getEntryHelio]);
 
-  const totalNeed = useMemo(() => teamNeeds.reduce((s, n) => s + n.need, 0), [teamNeeds]);
-  const primaryNeed = useMemo(() => {
-    if (totalNeed === 0) return null;
-    const maxNeed = Math.max(...teamNeeds.map((n) => n.need));
-    const ties = teamNeeds.filter((n) => n.need === maxNeed);
-    if (ties.length === 1) return ties[0];
-    return NEED_PRIORITY_ORDER.reduce<PositionNeed | null>((best, pos) => {
-      if (best) return best;
-      return ties.find((n) => n.pos === pos) ?? null;
-    }, null) ?? ties[0];
-  }, [teamNeeds, totalNeed]);
-
-  const rosterSpotsOpen = useMemo(() => {
-    const projectedTotal = teamNeeds.reduce((s, n) => s + n.projected, 0);
-    return Math.max(ROSTER_MAX - projectedTotal, 0);
-  }, [teamNeeds]);
-
-  const scholarshipCapOpen = useMemo(() => {
-    const usedAid = Object.values(ROSTER_META).reduce((s, m) => s + m.aidPct, 0) / 100;
-    const incomingAid = boardEntries
-      .filter((e) => e.status === 'Committed' || e.status === 'Signed')
-      .reduce((s, e) => s + (e.offer?.scholarshipPct ?? 0) / 100, 0);
-    return Math.max(TOTAL_SCHOLARSHIPS - Math.ceil(usedAid) - Math.ceil(incomingAid), 0);
-  }, [boardEntries]);
-
-  const nilAvailable = useMemo(() => {
-    const allocated = Object.values(ROSTER_META).reduce((s, m) => s + m.nilAmount, 0);
-    return Math.max(NIL_BUDGET - allocated, 0);
-  }, []);
-
-  const hasAnyNeed = totalNeed > 0;
-  const [needsExpanded, setNeedsExpanded] = useState(false);
-
-  // Board list sorted by last updated
-  const sortedBoardList = useMemo(() =>
-    [...filteredBoardEntries].sort((a, b) => b.updated.localeCompare(a.updated)),
-  [filteredBoardEntries]);
+  // (Team needs / roster spots / scholarships / NIL — derived values kept for potential future use but not passed to workspace)
 
   // Quick action handlers
   const handleMoveEntry = useCallback((entryId: string, newStatus: BoardStatus) => {
@@ -493,9 +454,9 @@ export function PlayerPoolContent() {
     setQuickActionsEntry(null);
   }, []);
 
-  const handleAddToBoard = useCallback((playerId: string) => {
+  const handleAddToBoard = useCallback((playerId: string, slot?: PositionSlot, tier?: NeedsTier, status?: import('@/data/recruitingBoard').BoardStatus) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setBoardEntries((prev) => addEntry(prev, playerId));
+    setBoardEntries((prev) => addEntry(prev, playerId, status ?? 'Watchlist', 'C', slot, tier));
   }, []);
 
   // Accordion state
@@ -680,20 +641,9 @@ export function PlayerPoolContent() {
             loaded={boardLoaded}
             boardSearch={boardSearch}
             onBoardSearchChange={setBoardSearch}
-            boardFilters={boardFilters}
-            onBoardFiltersChange={setBoardFilters}
             viewMode={boardViewMode}
             onViewModeChange={setBoardViewMode}
-            sortedList={sortedBoardList}
             teamNeeds={teamNeeds}
-            totalNeed={totalNeed}
-            primaryNeed={primaryNeed}
-            rosterSpotsOpen={rosterSpotsOpen}
-            scholarshipCapOpen={scholarshipCapOpen}
-            hasAnyNeed={hasAnyNeed}
-            nilAvailable={nilAvailable}
-            needsExpanded={needsExpanded}
-            onToggleNeeds={() => setNeedsExpanded((v) => !v)}
             filteredPlayers={filteredPlayers}
             boardEntries={boardEntries}
             offStyle={sheetOffStyle}
@@ -721,29 +671,6 @@ export function PlayerPoolContent() {
               setQuickActionsEntry(entry);
             }}
             onAddPress={() => setAddSheetOpen(true)}
-            onPipelinePlayerPress={(jerseyNumber) => {
-              const rosterPlayer = ROSTER.find((r) => r.number === jerseyNumber);
-              if (!rosterPlayer) return;
-              const poolPlayer: PoolPlayer = {
-                id: `roster-${jerseyNumber}`,
-                firstName: rosterPlayer.firstName,
-                lastName: rosterPlayer.lastName,
-                position: rosterPlayer.listPos as any,
-                height: rosterPlayer.height,
-                weight: rosterPlayer.weight,
-                classYear: rosterPlayer.classYear,
-                level: 'NCAA' as any,
-                currentSchool: 'Florida Memorial',
-                conference: 'SIAC',
-                state: 'FL',
-                keyStatLine: `${rosterPlayer.ppg} PPG / ${rosterPlayer.rpg} RPG`,
-                hasFilm: true,
-                lastUpdated: '2026-02-14',
-                archetype: 'two_way_wing' as any,
-              };
-              setPeekPlayer(poolPlayer);
-              setPeekJerseyNumber(jerseyNumber);
-            }}
           />
         </View>
       </ScrollView>
@@ -1831,20 +1758,9 @@ function RecruitingBoardWorkspace({
   loaded,
   boardSearch,
   onBoardSearchChange,
-  boardFilters,
-  onBoardFiltersChange,
   viewMode,
   onViewModeChange,
-  sortedList,
   teamNeeds,
-  totalNeed,
-  primaryNeed,
-  rosterSpotsOpen,
-  scholarshipCapOpen,
-  hasAnyNeed,
-  nilAvailable,
-  needsExpanded,
-  onToggleNeeds,
   filteredPlayers,
   boardEntries,
   offStyle,
@@ -1855,38 +1771,25 @@ function RecruitingBoardWorkspace({
   onCardPress,
   onCardLongPress,
   onAddPress,
-  onPipelinePlayerPress,
 }: {
   entries: BoardEntry[];
   allEntries: BoardEntry[];
   loaded: boolean;
   boardSearch: string;
   onBoardSearchChange: (text: string) => void;
-  boardFilters: BoardFilterState;
-  onBoardFiltersChange: (f: BoardFilterState) => void;
-  viewMode: 'list' | 'players' | 'teams';
-  onViewModeChange: (m: 'list' | 'players' | 'teams') => void;
-  sortedList: BoardEntry[];
+  viewMode: RecruitingViewMode;
+  onViewModeChange: (m: RecruitingViewMode) => void;
   teamNeeds: PositionNeed[];
-  totalNeed: number;
-  primaryNeed: PositionNeed | null;
-  rosterSpotsOpen: number;
-  scholarshipCapOpen: number;
-  hasAnyNeed: boolean;
-  nilAvailable: number;
-  needsExpanded: boolean;
-  onToggleNeeds: () => void;
   filteredPlayers: PoolPlayer[];
   boardEntries: BoardEntry[];
   offStyle: import('@/types').OffensiveStyle;
   defStyle: import('@/types').DefensiveStyle;
   onPlayerPress: (player: PoolPlayer) => void;
-  onAddToBoard: (playerId: string) => void;
+  onAddToBoard: (playerId: string, slot?: PositionSlot, tier?: NeedsTier, status?: BoardStatus) => void;
   onRemoveFromBoard: (entryId: string) => void;
   onCardPress: (entry: BoardEntry) => void;
   onCardLongPress: (entry: BoardEntry) => void;
   onAddPress: () => void;
-  onPipelinePlayerPress: (jerseyNumber: string) => void;
 }) {
   if (!loaded) {
     return (
@@ -1896,1005 +1799,68 @@ function RecruitingBoardWorkspace({
     );
   }
 
-  const [searchVisible, setSearchVisible] = useState(false);
-  const searchRef = useRef<TextInput>(null);
-  const [teamSheetData, setTeamSheetData] = useState<{ name: string; conference: string; level: string; playerCount: number } | null>(null);
-  const [selectedCoach, setSelectedCoach] = useState<{ name: string; initials: string; role: string; record: string; experience: string; alma: string; hue: number } | null>(null);
-
   return (
     <View>
-      {/* Board Header — tap to toggle search */}
-      <Pressable
-        style={styles.boardHeader}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setSearchVisible((prev) => {
-            if (!prev) {
-              setTimeout(() => searchRef.current?.focus(), 100);
-            } else {
-              onBoardSearchChange('');
-            }
-            return !prev;
-          });
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <Text style={styles.boardTitle}>RECRUITING BOARD</Text>
-        </View>
-        <IconSymbol name="magnifyingglass" size={16} color={GRAY} />
-      </Pressable>
+      {/* Persistent header: season, search, add, 4-mode switcher */}
+      <RecruitingHeader
+        viewMode={viewMode}
+        onViewModeChange={onViewModeChange}
+        search={boardSearch}
+        onSearchChange={onBoardSearchChange}
+        onAddPress={onAddPress}
+      />
 
-      {/* Board Search — hidden until tapped */}
-      {searchVisible && (
-        <View style={styles.boardSearchBar}>
-          <IconSymbol name="magnifyingglass" size={14} color="#6B7080" />
-          <TextInput
-            ref={searchRef}
-            style={styles.boardSearchInput}
-            placeholder="Search player, team, archetype..."
-            placeholderTextColor="#6B7080"
-            value={boardSearch}
-            onChangeText={onBoardSearchChange}
-            autoFocus
-          />
-          {boardSearch.length > 0 && (
-            <Pressable hitSlop={16} onPress={() => onBoardSearchChange('')} style={{ padding: 8 }}>
-              <IconSymbol name="xmark.circle.fill" size={18} color="#6B7080" />
-            </Pressable>
-          )}
-        </View>
-      )}
-
-      {/* Filters */}
-      <BoardFilters filters={boardFilters} onFiltersChange={onBoardFiltersChange} onPipelinePlayerPress={onPipelinePlayerPress} />
-
-      {/* ─── Team Needs Header ─── */}
-      <Pressable style={styles.needsRow} onPress={onToggleNeeds}>
-        {hasAnyNeed && <View style={styles.needsDot} />}
-        <Text style={styles.needsLabel}>Needs (2025–26)</Text>
-        {primaryNeed && (
-          <>
-            <Text style={styles.needsSep}>{'\u00B7'}</Text>
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onBoardFiltersChange({
-                  ...boardFilters,
-                  position: [primaryNeed.pos],
-                  status: ['Priority', 'Visit Planned', 'Visited', 'Offer Out', 'Committed', 'Signed'],
-                });
-              }}
-            >
-              <Text style={styles.needsPrimaryText}>Primary Need: {primaryNeed.pos} {'\u00D7'}{primaryNeed.need}</Text>
-            </Pressable>
-          </>
-        )}
-        <Text style={styles.needsSep}>{'\u00B7'}</Text>
-        <Text style={styles.needsTotalText}>Total Need: {totalNeed}</Text>
-        <IconSymbol
-          name={needsExpanded ? 'chevron.up' : 'chevron.down'}
-          size={10}
-          color={GRAY}
-          style={{ marginLeft: 4 }}
+      {/* 4-view router */}
+      {viewMode === 'needs' && (
+        <NeedsBoard
+          entries={entries}
+          teamNeeds={teamNeeds}
+          onEntryPress={onCardPress}
+          onEntryLongPress={onCardLongPress}
         />
-      </Pressable>
-
-      {/* ─── Team Needs Expanded Panel ─── */}
-      {needsExpanded && (
-        <View style={styles.needsPanel}>
-          {/* Secondary header metrics */}
-          <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
-            <Text style={styles.needsMetric}>Roster Spots Open: <Text style={{ color: WHITE, fontWeight: '700' }}>{rosterSpotsOpen}</Text></Text>
-            <Text style={styles.needsMetric}>{AID_LABEL}: <Text style={{ color: WHITE, fontWeight: '700' }}>{scholarshipCapOpen}</Text></Text>
-            <Text style={styles.needsMetric}>NIL: <Text style={{ color: WHITE, fontWeight: '700' }}>${nilAvailable.toLocaleString()}</Text></Text>
-          </View>
-
-          {/* 8-column table */}
-          <View style={styles.needsTableHeader}>
-            <Text style={[styles.needsCell, styles.needsCellPos]}>POS</Text>
-            <Text style={[styles.needsCell, styles.needsCellNum]}>RET</Text>
-            <Text style={[styles.needsCell, styles.needsCellNum]}>LV</Text>
-            <Text style={[styles.needsCell, styles.needsCellNum]}>CMT</Text>
-            <Text style={[styles.needsCell, styles.needsCellNum]}>SGN</Text>
-            <Text style={[styles.needsCell, styles.needsCellNum]}>TGT</Text>
-            <Text style={[styles.needsCell, styles.needsCellNeed]}>NEED</Text>
-            <Text style={[styles.needsCell, styles.needsCellCov]}>COV</Text>
-          </View>
-          {teamNeeds.map((n) => (
-            <Pressable
-              key={n.pos}
-              style={styles.needsTableRow}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onBoardFiltersChange({ ...boardFilters, position: [n.pos] });
-              }}
-            >
-              <Text style={[styles.needsCellVal, styles.needsCellPos, { fontWeight: '700' }]}>{n.pos}</Text>
-              <Text style={[styles.needsCellVal, styles.needsCellNum]}>{n.ret}</Text>
-              <Text style={[styles.needsCellVal, styles.needsCellNum]}>{n.lv}</Text>
-              <Text style={[styles.needsCellVal, styles.needsCellNum, n.cmt > 0 && { color: '#9C27B0' }]}>{n.cmt}</Text>
-              <Text style={[styles.needsCellVal, styles.needsCellNum, n.sgn > 0 && { color: '#00BCD4' }]}>{n.sgn}</Text>
-              <Text style={[styles.needsCellVal, styles.needsCellNum]}>{n.tgt}</Text>
-              <Text style={[styles.needsCellVal, styles.needsCellNeed, n.need > 0 && { color: '#FF9800', fontWeight: '700' }]}>
-                {n.need}
-              </Text>
-              <Text style={[styles.needsCellVal, styles.needsCellCov]}>
-                {n.need > 0 ? `${n.cov}/${n.need}` : '\u2014'}
-              </Text>
-            </Pressable>
-          ))}
-
-          {/* Bottom summary */}
-          <View style={styles.needsFooter}>
-            <Text style={styles.needsFooterText}>
-              Roster Spots Open: {rosterSpotsOpen} | {AID_LABEL}: {scholarshipCapOpen}
-            </Text>
-            <Text style={styles.needsFooterText}>
-              NIL Available: ${nilAvailable.toLocaleString()}
-            </Text>
-            <Text style={styles.needsFooterText}>
-              Need Coverage: {teamNeeds.map((n) =>
-                `${n.pos} ${n.need > 0 ? `${n.cov}/${n.need}` : '\u2014'}`
-              ).join(' \u00B7 ')}
-            </Text>
-          </View>
-        </View>
       )}
 
-      {/* Board / List / Recruits / Teams toggle */}
-      <View style={styles.viewToggleRow}>
-        {(['list', 'players', 'teams'] as const).map((mode) => {
-          const active = viewMode === mode;
-          const label = mode === 'list' ? 'Board' : mode === 'players' ? 'Recruits' : 'Teams';
-          return (
-            <Pressable
-              key={mode}
-              style={[styles.viewTogglePill, active && styles.viewTogglePillActive]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onViewModeChange(mode);
-              }}
-            >
-              <Text style={[styles.viewToggleText, active && styles.viewToggleTextActive]}>
-                {label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {/* List / Recruits / Teams */}
-      {viewMode === 'list' && (
-        <View>
-          {/* Flat list */}
-          {sortedList.map((entry) => {
-            const p = PLAYER_POOL.find((pp) => pp.id === entry.playerId);
-            if (!p) return null;
-            return (
-              <PlayerRatingCard
-                key={entry.id}
-                player={p}
-                boardEntry={entry}
-                offStyle={offStyle}
-                defStyle={defStyle}
-                onPress={() => onCardPress(entry)}
-                onLongPress={() => onCardLongPress(entry)}
-              />
-            );
-          })}
-          {sortedList.length === 0 && (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyText}>No recruits match your filters</Text>
-            </View>
-          )}
-        </View>
+      {viewMode === 'bigboard' && (
+        <BigBoard
+          entries={entries}
+          offStyle={offStyle}
+          defStyle={defStyle}
+          onEntryPress={onCardPress}
+          onEntryLongPress={onCardLongPress}
+        />
       )}
-      {viewMode === 'players' && (() => {
-        let list = filteredPlayers;
-        // Apply board search
-        const q = boardSearch.toLowerCase();
-        if (q.length > 0) {
-          list = list.filter((p) =>
-            `${p.firstName} ${p.lastName}`.toLowerCase().includes(q) ||
-            p.currentSchool.toLowerCase().includes(q) ||
-            p.position.toLowerCase().includes(q));
-        }
-        // Apply board filters
-        if (boardFilters.year.length > 0) list = list.filter((p) => boardFilters.year.includes(p.classYear));
-        if (boardFilters.division.length > 0) {
-          list = list.filter((p) => boardFilters.division.some((div) => matchesDivision(p.level, div as PoolLevel)));
-        }
-        if (boardFilters.position.length > 0) {
-          const tradPositions = boardFilters.position
-            .map((pos) => HELIO_TO_TRADITIONAL[pos as import('@/types').HeliocentricPosition])
-            .filter(Boolean) as string[];
-          if (tradPositions.length > 0) list = list.filter((p) => tradPositions.includes(p.position));
-        }
-        if (boardFilters.archetype) {
-          list = list.filter((p) => p.archetype === boardFilters.archetype);
-        }
-        if (boardFilters.region.length > 0) {
-          list = list.filter((p) => boardFilters.region.includes(getPlayerRegion(p.state)));
-        }
-        if (boardFilters.heightRange) {
-          const [minH, maxH] = boardFilters.heightRange;
-          list = list.filter((p) => {
-            const inches = parseHeightToInches(p.height);
-            return inches >= minH && inches <= maxH;
-          });
-        }
-        if (boardFilters.weightRange) {
-          const [minW, maxW] = boardFilters.weightRange;
-          list = list.filter((p) => p.weight !== undefined && p.weight >= minW && p.weight <= maxW);
-        }
-        if (boardFilters.wingspanRange) {
-          const [minWs, maxWs] = boardFilters.wingspanRange;
-          list = list.filter((p) => {
-            const ws = computeWingspan(p.id, parseHeightToInches(p.height), p.position);
-            return ws >= minWs && ws <= maxWs;
-          });
-        }
-        if (boardFilters.verticalRange) {
-          const [minV, maxV] = boardFilters.verticalRange;
-          list = list.filter((p) => {
-            const vert = computeVertical(p.id, p.position);
-            return vert >= minV && vert <= maxV;
-          });
-        }
-        if (boardFilters.tier.length > 0) {
-          const selectedTiers = KR_TIERS.filter((t) => boardFilters.tier.includes(t.short));
-          list = list.filter((p) => {
-            const ratings = getPlayerRatings(p.id);
-            if (!ratings) return false;
-            return selectedTiers.some((t) => ratings.overall >= t.min && ratings.overall <= t.max);
-          });
-        }
-        if (boardFilters.cluster) {
-          const clusterKey = boardFilters.cluster;
-          const OFF_CL: ClusterType[] = ['shooting', 'finishing', 'playmaking'];
-          const DEF_CL: ClusterType[] = ['perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
 
-          if (clusterKey === 'offense' || clusterKey === 'defense') {
-            const group = clusterKey === 'offense' ? OFF_CL : DEF_CL;
-            list = [...list].sort((a, b) => {
-              const aR = getPlayerRatings(a.id);
-              const bR = getPlayerRatings(b.id);
-              const aAvg = aR ? group.reduce((s, k) => s + (aR.clusters[k] ?? 0), 0) / group.length : 0;
-              const bAvg = bR ? group.reduce((s, k) => s + (bR.clusters[k] ?? 0), 0) / group.length : 0;
-              return bAvg - aAvg;
-            });
-          } else {
-            const isCluster = CLUSTER_ORDER.includes(clusterKey as ClusterType);
-            list = [...list].sort((a, b) => {
-              const aR = getPlayerRatings(a.id);
-              const bR = getPlayerRatings(b.id);
-              if (isCluster) {
-                return (bR?.clusters[clusterKey as ClusterType] ?? 0) - (aR?.clusters[clusterKey as ClusterType] ?? 0);
-              }
-              return getSubclusterRating(b.id, clusterKey) - getSubclusterRating(a.id, clusterKey);
-            });
-          }
-        }
-        if (boardFilters.stat) {
-          const sk = boardFilters.stat as StatKey;
-          const lowerIsBetter = sk === 'to' || sk === 'pf';
-          list = [...list].sort((a, b) => {
-            const aS = getPlayerStats(a.id);
-            const bS = getPlayerStats(b.id);
-            const aVal = aS?.[sk] ?? 0;
-            const bVal = bS?.[sk] ?? 0;
-            return lowerIsBetter ? aVal - bVal : bVal - aVal;
-          });
-        }
-        const visiblePlayers = list;
-        return (
-          <View>
-            {visiblePlayers.map((player) => {
-              const alreadyOnBoard = boardEntries.some((e) => e.playerId === player.id);
-              return (
-                <View key={player.id} style={{ position: 'relative' }}>
-                  <PlayerRatingCard
-                    player={player}
-                    offStyle={offStyle}
-                    defStyle={defStyle}
-                    onPress={() => onPlayerPress(player)}
-                  />
-                  {!alreadyOnBoard ? (
-                    <Pressable
-                      style={styles.addToBoardBtn}
-                      onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        onAddToBoard(player.id);
-                      }}
-                    >
-                      <IconSymbol name="plus.circle.fill" size={24} color="#4CAF50" />
-                    </Pressable>
-                  ) : (
-                    <Pressable
-                      style={styles.addToBoardBtn}
-                      onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        const entry = boardEntries.find((e) => e.playerId === player.id);
-                        if (entry) onRemoveFromBoard(entry.id);
-                      }}
-                    >
-                      <IconSymbol name="checkmark.circle.fill" size={24} color={GRAY} />
-                    </Pressable>
-                  )}
-                </View>
-              );
-            })}
-            {visiblePlayers.length === 0 && (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyText}>No players match your filters</Text>
-              </View>
-            )}
-          </View>
-        );
-      })()}
+      {viewMode === 'crm' && (
+        <CRMTable
+          entries={entries}
+          teamNeeds={teamNeeds}
+          onEntryPress={onCardPress}
+          onEntryLongPress={onCardLongPress}
+        />
+      )}
 
-      {viewMode === 'teams' && (() => {
-        const q = boardSearch.toLowerCase();
-        const teamMap = new Map<string, { name: string; conference: string; level: string; playerCount: number }>();
-        filteredPlayers.forEach((p) => {
-          if (!teamMap.has(p.currentSchool)) {
-            teamMap.set(p.currentSchool, { name: p.currentSchool, conference: p.conference, level: p.level, playerCount: 0 });
-          }
-          teamMap.get(p.currentSchool)!.playerCount++;
-        });
-        let teamList = [...teamMap.values()];
-        if (q.length > 0) {
-          teamList = teamList.filter((t) =>
-            t.name.toLowerCase().includes(q) ||
-            t.conference.toLowerCase().includes(q) ||
-            t.level.toLowerCase().includes(q));
-        }
-        if (boardFilters.division.length > 0) {
-          teamList = teamList.filter((t) => boardFilters.division.some((div) => t.level === div || t.level.startsWith(div + ' ')));
-        }
-        teamList.sort((a, b) => b.playerCount - a.playerCount);
-        return (
-          <View>
-            {teamList.map((team) => {
-              const initials = team.name.split(/\s+/).map((w) => w[0]).join('').slice(0, 3).toUpperCase();
-              // Deterministic hue from team name
-              let hue = 0;
-              for (let i = 0; i < team.name.length; i++) hue = (hue * 31 + team.name.charCodeAt(i)) & 0xffff;
-              const bgColor = `hsl(${hue % 360}, 50%, 35%)`;
-              return (
-                <Pressable
-                  key={team.name}
-                  style={styles.teamRow}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }}
-                >
-                  <Pressable
-                    onLongPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                      setTeamSheetData(team);
-                    }}
-                    delayLongPress={300}
-                    style={[styles.teamLogo, { backgroundColor: bgColor }]}
-                  >
-                    <Text style={styles.teamLogoText}>{initials}</Text>
-                  </Pressable>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.teamName}>{team.name}</Text>
-                    <Text style={styles.teamMeta}>{team.conference} {'\u00B7'} {team.level}</Text>
-                  </View>
-                  <View style={styles.teamBadge}>
-                    <Text style={styles.teamBadgeText}>{team.playerCount}</Text>
-                  </View>
-                </Pressable>
-              );
-            })}
-            {teamList.length === 0 && (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyText}>No teams match your filters</Text>
-              </View>
-            )}
-          </View>
-        );
-      })()}
+      {viewMode === 'database' && (
+        <KaNeXTDatabase
+          filteredPlayers={filteredPlayers}
+          boardEntries={boardEntries}
+          boardSearch={boardSearch}
+          offStyle={offStyle}
+          defStyle={defStyle}
+          onPlayerPress={onPlayerPress}
+          onAddToBoard={onAddToBoard}
+          onRemoveFromBoard={onRemoveFromBoard}
+        />
+      )}
 
-      {allEntries.length === 0 && (
+      {allEntries.length === 0 && viewMode !== 'database' && (
         <View style={styles.emptyBoardCta}>
           <Text style={styles.emptyBoardTitle}>Your board is empty</Text>
-          <Text style={styles.emptyBoardSub}>Tap "+ Add" to add recruits from the National Pool.</Text>
+          <Text style={styles.emptyBoardSub}>Tap "+" to add recruits from the Database.</Text>
         </View>
       )}
-
-      {/* Team Sheet — universal format matching FMU TeamQuickSheet */}
-      <BottomSheet
-        visible={!!teamSheetData}
-        onClose={() => setTeamSheetData(null)}
-        useModal
-      >
-        {teamSheetData && (() => {
-          const teamPlayers = PLAYER_POOL.filter((p) => p.currentSchool === teamSheetData.name);
-          const initials = teamSheetData.name.split(/\s+/).map((w) => w[0]).join('').slice(0, 3).toUpperCase();
-          let hue = 0;
-          for (let i = 0; i < teamSheetData.name.length; i++) hue = (hue * 31 + teamSheetData.name.charCodeAt(i)) & 0xffff;
-          const bgColor = `hsl(${hue % 360}, 50%, 35%)`;
-
-          // Derive KR averages from pool player ratings
-          const playerRatingsList = teamPlayers.map((p) => getPlayerRatings(p.id)).filter(Boolean);
-          const avgKR = playerRatingsList.length > 0 ? Math.round(playerRatingsList.reduce((s, r) => s + (r?.overall ?? 0), 0) / playerRatingsList.length) : 0;
-          const clusterKeys = ['shooting', 'finishing', 'playmaking', 'perimeter_defense', 'interior_defense', 'rebounding', 'frame'] as const;
-          const clusterLabels: Record<string, string> = {
-            shooting: 'Shooting', finishing: 'Finishing', playmaking: 'Playmaking',
-            perimeter_defense: 'On-Ball Defense', interior_defense: 'Team Defense',
-            rebounding: 'Rebounding', frame: 'Physical',
-          };
-          const teamClusterAvg: Record<string, number> = {};
-          for (const key of clusterKeys) {
-            const sum = playerRatingsList.reduce((acc, r) => acc + (r?.clusters[key as ClusterType] ?? 0), 0);
-            teamClusterAvg[key] = playerRatingsList.length > 0 ? Math.round(sum / playerRatingsList.length) : 0;
-          }
-          const offKR = Math.round(((teamClusterAvg.shooting ?? 0) + (teamClusterAvg.finishing ?? 0) + (teamClusterAvg.playmaking ?? 0)) / 3);
-          const defKR = Math.round(((teamClusterAvg.perimeter_defense ?? 0) + (teamClusterAvg.interior_defense ?? 0) + (teamClusterAvg.rebounding ?? 0) + (teamClusterAvg.frame ?? 0)) / 4);
-
-          // Derive subcluster averages per cluster
-          const teamSubclusters: Record<string, { name: string; rating: number }[]> = {};
-          for (const key of clusterKeys) {
-            const allSubs = teamPlayers.map((p) => {
-              const r = getPlayerRatings(p.id);
-              if (!r) return null;
-              return getPoolPlayerSubclusters(p.id, key as ClusterType, r.clusters[key as ClusterType]);
-            }).filter(Boolean) as { name: string; rating: number }[][];
-            if (allSubs.length > 0) {
-              teamSubclusters[key] = allSubs[0].map((sub, idx) => ({
-                name: sub.name,
-                rating: Math.round(allSubs.reduce((s, subs) => s + (subs[idx]?.rating ?? 0), 0) / allSubs.length),
-              }));
-            } else {
-              teamSubclusters[key] = [];
-            }
-          }
-
-          // Mock season stats from name hash
-          const h = hue;
-          const mockWins = 8 + (h % 18);
-          const mockLosses = 4 + ((h >> 3) % 14);
-          const confW = Math.min(mockWins, 6 + (h % 8));
-          const confL = Math.min(mockLosses, 2 + ((h >> 5) % 6));
-          const streakW = (h % 3) > 0;
-          const streakLen = 1 + (h % 5);
-          const streak = `${streakW ? 'W' : 'L'}${streakLen}`;
-          const confRank = 1 + ((h >> 2) % 10);
-
-          // Mock traditional stats
-          const ppg = (62 + (h % 22)).toFixed(1);
-          const efg = (42 + (h % 14)).toFixed(1);
-          const tpPct = (28 + ((h >> 2) % 12)).toFixed(1);
-          const toPct = (14 + ((h >> 4) % 10)).toFixed(1);
-          const apg = (8 + ((h >> 3) % 10)).toFixed(1);
-          const oppPpg = (60 + ((h >> 1) % 20)).toFixed(1);
-          const oppEfg = (40 + ((h >> 5) % 14)).toFixed(1);
-          const oppTpPct = (28 + ((h >> 6) % 10)).toFixed(1);
-          const forceToPct = (16 + ((h >> 7) % 10)).toFixed(1);
-          const bpg = (1 + ((h >> 4) % 5)).toFixed(1);
-          const rpg = (28 + ((h >> 2) % 12)).toFixed(1);
-          const spg = (4 + ((h >> 5) % 6)).toFixed(1);
-          const ftPct = (62 + ((h >> 3) % 18)).toFixed(1);
-
-          // Mock staff with full coach profiles
-          const coachSurnames = ['Williams', 'Johnson', 'Davis', 'Brown', 'Anderson', 'Thomas', 'Jackson', 'Robinson'];
-          const coachFirst = ['Marcus', 'James', 'David', 'Robert', 'Michael', 'Antonio', 'Kevin', 'Chris'];
-          const hcIdx = h % coachSurnames.length;
-          type CoachProfile = { name: string; initials: string; role: string; record: string; experience: string; alma: string; hue: number };
-          const staffProfiles: CoachProfile[] = [
-            {
-              name: `${coachFirst[hcIdx]} ${coachSurnames[hcIdx]}`,
-              initials: `${coachFirst[hcIdx][0]}${coachSurnames[hcIdx][0]}`,
-              role: 'Head Coach',
-              record: `${mockWins + 40 + (h % 60)}-${mockLosses + 20 + ((h >> 2) % 40)}`,
-              experience: `${6 + (h % 12)} years`,
-              alma: ['Duke', 'Kansas', 'Florida', 'Villanova', 'Gonzaga', 'UConn', 'Michigan', 'Kentucky'][hcIdx],
-              hue: (h * 7) % 360,
-            },
-            {
-              name: `${coachFirst[(hcIdx + 1) % 8]} ${coachSurnames[(hcIdx + 2) % 8]}`,
-              initials: `${coachFirst[(hcIdx + 1) % 8][0]}${coachSurnames[(hcIdx + 2) % 8][0]}`,
-              role: 'Associate Head Coach',
-              record: '',
-              experience: `${3 + ((h >> 1) % 8)} years`,
-              alma: ['Syracuse', 'Georgetown', 'Memphis', 'Creighton', 'St. John\'s', 'Marquette', 'Xavier', 'Seton Hall'][(hcIdx + 1) % 8],
-              hue: (h * 13 + 120) % 360,
-            },
-            {
-              name: `${coachFirst[(hcIdx + 3) % 8]} ${coachSurnames[(hcIdx + 4) % 8]}`,
-              initials: `${coachFirst[(hcIdx + 3) % 8][0]}${coachSurnames[(hcIdx + 4) % 8][0]}`,
-              role: 'Assistant Coach',
-              record: '',
-              experience: `${1 + ((h >> 3) % 5)} years`,
-              alma: ['Arizona State', 'Colorado', 'Oregon', 'USC', 'UCLA', 'Stanford', 'Washington', 'Cal'][(hcIdx + 3) % 8],
-              hue: (h * 19 + 240) % 360,
-            },
-          ];
-
-          // Bar color helper
-          const barCol = (v: number) => v >= 75 ? '#4ade80' : v >= 60 ? '#facc15' : '#f87171';
-
-          return (
-            <>
-              {/* ===== IDENTITY HEADER ===== */}
-              <View style={ts.identityRow}>
-                <View style={[styles.teamSheetLogo, { backgroundColor: bgColor }]}>
-                  <Text style={styles.teamSheetLogoText}>{initials}</Text>
-                </View>
-                <View style={ts.identityText}>
-                  <Text style={ts.teamName}>{teamSheetData.name}</Text>
-                  <Text style={ts.teamSubline}>{teamSheetData.level} {'\u00B7'} {teamSheetData.conference}</Text>
-                </View>
-                <View style={ts.krBadge}>
-                  <Text style={ts.krValue}>{avgKR}</Text>
-                  <View style={ts.krSubRow}>
-                    <Text style={ts.krSubLabel}>O {offKR}</Text>
-                    <Text style={ts.krSubSep}>{'\u00B7'}</Text>
-                    <Text style={ts.krSubLabel}>D {defKR}</Text>
-                  </View>
-                </View>
-              </View>
-
-              {/* ===== STAFF (tab-style) ===== */}
-              <Text style={ts.sectionLabel}>STAFF</Text>
-              <View style={ts.staffRow}>
-                {staffProfiles.map((coach) => {
-                  const isActive = selectedCoach?.name === coach.name;
-                  return (
-                    <Pressable
-                      key={coach.name}
-                      style={ts.staffCard}
-                      onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        setSelectedCoach(isActive ? null : coach);
-                      }}
-                    >
-                      <View style={[ts.coachAvatar, { backgroundColor: `hsl(${coach.hue}, 45%, 35%)` }, isActive && ts.coachAvatarActive]}>
-                        <Text style={ts.coachAvatarText}>{coach.initials}</Text>
-                      </View>
-                      <Text style={[ts.coachName, isActive && ts.coachNameActive]} numberOfLines={1}>{coach.name.split(' ')[1]}</Text>
-                      <Text style={ts.coachRole} numberOfLines={1}>{coach.role === 'Head Coach' ? 'HC' : coach.role === 'Associate Head Coach' ? 'Assoc HC' : 'Asst'}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-
-              {/* Coach detail inline */}
-              {selectedCoach && (
-                <View style={ts.card}>
-                  <View style={ts.coachDetailRow}>
-                    <Text style={ts.coachDetailLabel}>Full Name</Text>
-                    <Text style={ts.coachDetailValue}>{selectedCoach.name}</Text>
-                  </View>
-                  <View style={ts.coachDetailRow}>
-                    <Text style={ts.coachDetailLabel}>Role</Text>
-                    <Text style={ts.coachDetailValue}>{selectedCoach.role}</Text>
-                  </View>
-                  <View style={ts.coachDetailRow}>
-                    <Text style={ts.coachDetailLabel}>Experience</Text>
-                    <Text style={ts.coachDetailValue}>{selectedCoach.experience}</Text>
-                  </View>
-                  <View style={ts.coachDetailRow}>
-                    <Text style={ts.coachDetailLabel}>Alma Mater</Text>
-                    <Text style={ts.coachDetailValue}>{selectedCoach.alma}</Text>
-                  </View>
-                  {selectedCoach.record !== '' && (
-                    <View style={ts.coachDetailRow}>
-                      <Text style={ts.coachDetailLabel}>Career Record</Text>
-                      <Text style={ts.coachDetailValue}>{selectedCoach.record}</Text>
-                    </View>
-                  )}
-                  {(() => {
-                    const h2 = selectedCoach.hue;
-                    const offStyles = ['Motion', 'Pick-and-Roll Heavy', 'Positionless', 'Pace-and-Space', 'Princeton', 'Dribble-Drive'];
-                    const defStyles = ['Man-to-Man', 'Pack Line', '2-3 Zone', '1-3-1 Zone', 'Switching', 'Full-Court Press'];
-                    const focuses = ['Athletic wings', 'Versatile bigs', 'Shooting guards', 'Floor generals', 'Defensive stoppers'];
-                    const pipelines = ['JUCO transfers', 'HS prep schools', 'International prospects', 'D2 transfers', 'Local talent'];
-                    return (
-                      <>
-                        <View style={ts.coachDetailRow}>
-                          <Text style={ts.coachDetailLabel}>Offense</Text>
-                          <Text style={ts.coachDetailValue}>{offStyles[h2 % offStyles.length]}</Text>
-                        </View>
-                        <View style={ts.coachDetailRow}>
-                          <Text style={ts.coachDetailLabel}>Defense</Text>
-                          <Text style={ts.coachDetailValue}>{defStyles[(h2 >> 2) % defStyles.length]}</Text>
-                        </View>
-                        <View style={ts.coachDetailRow}>
-                          <Text style={ts.coachDetailLabel}>Recruiting Focus</Text>
-                          <Text style={ts.coachDetailValue}>{focuses[h2 % focuses.length]}</Text>
-                        </View>
-                        <View style={ts.coachDetailRow}>
-                          <Text style={ts.coachDetailLabel}>Pipeline</Text>
-                          <Text style={ts.coachDetailValue}>{pipelines[(h2 >> 3) % pipelines.length]}</Text>
-                        </View>
-                      </>
-                    );
-                  })()}
-                </View>
-              )}
-
-              {/* ===== SEASON ===== */}
-              <Text style={ts.sectionLabel}>SEASON</Text>
-              <View style={ts.seasonRow}>
-                <View style={ts.snapItem}>
-                  <Text style={ts.snapValue}>{mockWins}-{mockLosses}</Text>
-                  <Text style={ts.snapLabel}>Overall</Text>
-                </View>
-                <View style={ts.snapItem}>
-                  <Text style={ts.snapValue}>{confW}-{confL}</Text>
-                  <Text style={ts.snapLabel}>Conference</Text>
-                </View>
-                <View style={ts.snapItem}>
-                  <Text style={[ts.snapValue, { color: streakW ? '#4ade80' : '#f87171' }]}>{streak}</Text>
-                  <Text style={ts.snapLabel}>Streak</Text>
-                </View>
-                <View style={ts.snapItem}>
-                  <Text style={ts.snapValue}>#{confRank}</Text>
-                  <Text style={ts.snapLabel}>Conf Rank</Text>
-                </View>
-              </View>
-
-              {/* ===== TEAM STATS TOGGLE ===== */}
-              <TeamSheetStatsToggle
-                clusterKeys={clusterKeys as string[]}
-                clusterLabels={clusterLabels}
-                teamClusterAvg={teamClusterAvg}
-                teamSubclusters={teamSubclusters}
-                barCol={barCol}
-                ppg={ppg} efg={efg} tpPct={tpPct} toPct={toPct} apg={apg}
-                oppPpg={oppPpg} oppEfg={oppEfg} oppTpPct={oppTpPct} forceToPct={forceToPct} bpg={bpg}
-                rpg={rpg} spg={spg} ftPct={ftPct}
-              />
-
-              {/* ===== ROSTER ===== */}
-              <Text style={ts.sectionLabel}>ROSTER ({teamPlayers.length})</Text>
-              <View style={ts.card}>
-                {teamPlayers.map((player) => {
-                  const ratings = getPlayerRatings(player.id);
-                  const onBoard = boardEntries.some((e) => e.playerId === player.id);
-                  return (
-                    <Pressable
-                      key={player.id}
-                      style={styles.teamSheetPlayerRow}
-                      onPress={() => {
-                        setTeamSheetData(null);
-                        setTimeout(() => onPlayerPress(player), 200);
-                      }}
-                    >
-                      <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: 14, fontWeight: '600', color: WHITE }}>
-                          {player.firstName} {player.lastName}
-                        </Text>
-                        <Text style={{ fontSize: 11, color: GRAY, marginTop: 1 }}>
-                          {player.position} {'\u00B7'} {player.classYear} {'\u00B7'} {player.height}
-                        </Text>
-                      </View>
-                      <Text style={{ fontSize: 14, fontWeight: '700', color: WHITE, marginRight: 8 }}>
-                        {ratings?.overall ?? '\u2014'}
-                      </Text>
-                      {onBoard && <IconSymbol name="checkmark.circle.fill" size={16} color="#4CAF50" />}
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </>
-          );
-        })()}
-      </BottomSheet>
-
     </View>
   );
 }
-
-// ─── CRM Player Card v2 ───
-function PlayerRatingCard({
-  player,
-  onPress,
-  onLongPress,
-  boardEntry,
-  offStyle,
-  defStyle,
-}: {
-  player: PoolPlayer;
-  onPress: () => void;
-  onLongPress?: () => void;
-  boardEntry?: BoardEntry;
-  offStyle?: import('@/types').OffensiveStyle;
-  defStyle?: import('@/types').DefensiveStyle;
-}) {
-  const ratings = useMemo(() => getPlayerRatings(player.id), [player.id]);
-  const helioPos = TRADITIONAL_TO_HELIO[player.position] ?? player.position;
-  const region = getPlayerRegion(player.state);
-
-  // 3 metrics: KR, Fit, Risk
-  const kr = ratings?.overall ?? 0;
-  const fit = useMemo(() => {
-    if (!ratings) return 0;
-    return computeFitKR(
-      ratings.clusters,
-      offStyle ?? 'motion_read_react',
-      defStyle ?? 'pack_line',
-    );
-  }, [ratings, offStyle, defStyle]);
-  const confidence = useMemo(() => computeConfidence(player), [player]);
-
-  // CRM fields (only for board entries)
-  const comms = useMemo(() => boardEntry ? getRecruitComms(boardEntry.playerId) : [], [boardEntry]);
-  const momentum = useMemo(() => boardEntry ? computeMomentum(boardEntry, comms) : null, [boardEntry, comms]);
-  const lastTouch = useMemo(() => boardEntry ? getLastTouch(comms) : '', [boardEntry, comms]);
-
-  const metricColor = (val: number) => val >= 75 ? '#4CAF50' : val >= 60 ? '#FF9800' : val >= 45 ? '#8A8F98' : '#EF4444';
-  const confColor = (val: number) => val >= 75 ? '#4CAF50' : val >= 55 ? '#FF9800' : '#EF4444';
-
-  return (
-    <Pressable
-      style={styles.ratingCard}
-      onPress={onPress}
-      onLongPress={onLongPress ? () => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onLongPress(); } : undefined}
-      delayLongPress={400}
-    >
-      {/* Row 1: Avatar + Name + tag badges */}
-      <View style={styles.ratingCardTop}>
-        <View style={styles.ratingAvatar}>
-          <IconSymbol name="person.fill" size={22} color={GRAY} />
-        </View>
-        <View style={{ flex: 1, marginRight: 8 }}>
-          <Text style={styles.ratingName} numberOfLines={1}>
-            {player.firstName} {player.lastName}
-          </Text>
-        </View>
-        <View style={styles.ratingBadges}>
-          <View style={styles.ratingLevelBadge}>
-            <Text style={styles.ratingLevelText}>{getPlayerAvailability(player)}</Text>
-          </View>
-          <View style={styles.ratingPosBadge}>
-            <Text style={styles.ratingPosText}>{helioPos}</Text>
-          </View>
-          <View style={styles.ratingLevelBadge}>
-            <Text style={styles.ratingLevelText}>{player.classYear}</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Row 2: Meta line — School · Ht/Wt · Region */}
-      <Text style={styles.ratingIdentity} numberOfLines={1}>
-        {player.currentSchool} {'\u00B7'} {player.height}{player.weight ? `/${player.weight}` : ''} {'\u00B7'} {region}
-      </Text>
-
-      {/* Row 3: 3-metric bar — KR | Fit | Risk */}
-      <View style={styles.metricBar}>
-        <View style={styles.metricBox}>
-          <Text style={styles.metricLabel}>KR</Text>
-          <Text style={[styles.metricValue, { color: metricColor(kr) }]}>{ratings ? kr : '\u2014'}</Text>
-        </View>
-        <View style={styles.metricDivider} />
-        <View style={styles.metricBox}>
-          <Text style={styles.metricLabel}>FIT</Text>
-          <Text style={[styles.metricValue, { color: metricColor(fit) }]}>{ratings ? fit : '\u2014'}</Text>
-        </View>
-        <View style={styles.metricDivider} />
-        <View style={styles.metricBox}>
-          <Text style={styles.metricLabel}>CONF</Text>
-          <Text style={[styles.metricValue, { color: confColor(confidence) }]}>{confidence}</Text>
-        </View>
-      </View>
-
-      {/* Row 4: Pipeline pill + Momentum indicator (board entries only) */}
-      {boardEntry && (
-        <View style={styles.pipelineMomentumRow}>
-          <View style={[styles.pipelinePill, { backgroundColor: `${BOARD_COLUMN_COLORS[boardEntry.status]}20` }]}>
-            <View style={[styles.qaDot, { backgroundColor: BOARD_COLUMN_COLORS[boardEntry.status] }]} />
-            <Text style={[styles.pipelinePillText, { color: BOARD_COLUMN_COLORS[boardEntry.status] }]}>
-              {boardEntry.status}
-            </Text>
-          </View>
-          {momentum && (
-            <Text style={[styles.momentumText, { color: getMomentumColor(momentum) }]}>
-              {getMomentumLabel(momentum)}
-            </Text>
-          )}
-        </View>
-      )}
-
-      {/* Row 5: Last Touch + Next Step (board entries only) */}
-      {boardEntry && (
-        <View style={styles.crmRow}>
-          <View style={styles.crmField}>
-            <Text style={styles.crmFieldLabel}>Last Touch</Text>
-            <Text style={styles.crmFieldValue} numberOfLines={1}>{lastTouch}</Text>
-          </View>
-          <View style={styles.crmField}>
-            <Text style={styles.crmFieldLabel}>Next Step</Text>
-            <Text style={styles.crmFieldValue} numberOfLines={1}>{boardEntry.nextStep || 'Not set'}</Text>
-          </View>
-        </View>
-      )}
-    </Pressable>
-  );
-}
-
-// ─── Team Sheet Stats Toggle (Traditional / KaNeXT) ───
-function TeamSheetStatsToggle({
-  clusterKeys, clusterLabels, teamClusterAvg, teamSubclusters, barCol,
-  ppg, efg, tpPct, toPct, apg,
-  oppPpg, oppEfg, oppTpPct, forceToPct, bpg,
-  rpg, spg, ftPct,
-}: {
-  clusterKeys: string[];
-  clusterLabels: Record<string, string>;
-  teamClusterAvg: Record<string, number>;
-  teamSubclusters: Record<string, { name: string; rating: number }[]>;
-  barCol: (v: number) => string;
-  ppg: string; efg: string; tpPct: string; toPct: string; apg: string;
-  oppPpg: string; oppEfg: string; oppTpPct: string; forceToPct: string; bpg: string;
-  rpg: string; spg: string; ftPct: string;
-}) {
-  const [activeView, setActiveView] = useState<'traditional' | 'kanext'>('traditional');
-  const [expandedCluster, setExpandedCluster] = useState<string | null>(null);
-
-  return (
-    <>
-      <View style={ts.toggleRow}>
-        <Text style={ts.sectionLabel}>TEAM STATS</Text>
-        <View style={ts.togglePills}>
-          <Pressable
-            style={[ts.pill, activeView === 'traditional' && ts.pillActive]}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveView('traditional'); }}
-          >
-            <Text style={[ts.pillText, activeView === 'traditional' && ts.pillTextActive]}>Traditional</Text>
-          </Pressable>
-          <Pressable
-            style={[ts.pill, activeView === 'kanext' && ts.pillActive]}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveView('kanext'); }}
-          >
-            <Text style={[ts.pillText, activeView === 'kanext' && ts.pillTextActive]}>KaNeXT</Text>
-          </Pressable>
-        </View>
-      </View>
-
-      {activeView === 'traditional' ? (
-        <View style={ts.card}>
-          <View style={ts.statColumns}>
-            <View style={ts.statCol}>
-              <Text style={ts.statColHeader}>OFFENSE</Text>
-              <TSStatRow label="PPG" value={ppg} />
-              <TSStatRow label="eFG%" value={`${efg}%`} />
-              <TSStatRow label="3PT%" value={`${tpPct}%`} />
-              <TSStatRow label="TO%" value={`${toPct}%`} />
-              <TSStatRow label="APG" value={apg} />
-            </View>
-            <View style={ts.statCol}>
-              <Text style={ts.statColHeader}>DEFENSE</Text>
-              <TSStatRow label="Opp PPG" value={oppPpg} />
-              <TSStatRow label="Opp eFG%" value={`${oppEfg}%`} />
-              <TSStatRow label="Opp 3PT%" value={`${oppTpPct}%`} />
-              <TSStatRow label="Force TO%" value={`${forceToPct}%`} />
-              <TSStatRow label="BPG" value={bpg} />
-            </View>
-          </View>
-          <View style={ts.rebRow}>
-            <Text style={ts.statColHeader}>REBOUNDING</Text>
-            <View style={ts.rebStats}>
-              <TSStatRow label="RPG" value={rpg} />
-              <TSStatRow label="SPG" value={spg} />
-              <TSStatRow label="FT%" value={`${ftPct}%`} />
-            </View>
-          </View>
-        </View>
-      ) : (
-        <View style={ts.card}>
-          {clusterKeys.map((key) => {
-            const avg = teamClusterAvg[key] ?? 0;
-            const isExpanded = expandedCluster === key;
-            const subs = teamSubclusters[key] ?? [];
-            return (
-              <View key={key}>
-                <Pressable
-                  style={ts.clusterRow}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    setExpandedCluster(isExpanded ? null : key);
-                  }}
-                >
-                  <View style={ts.clusterLabelRow}>
-                    <IconSymbol name={isExpanded ? 'chevron.down' : 'chevron.right'} size={10} color="#555" />
-                    <Text style={ts.clusterLabel}>{clusterLabels[key] ?? key}</Text>
-                  </View>
-                  <View style={ts.clusterBarBg}>
-                    <View style={[ts.clusterBarFill, { width: `${avg}%`, backgroundColor: barCol(avg) }]} />
-                  </View>
-                  <Text style={[ts.clusterValue, { color: barCol(avg) }]}>{avg}</Text>
-                </Pressable>
-                {isExpanded && (
-                  <View style={ts.subclusterContainer}>
-                    {subs.map((sub) => (
-                      <View key={sub.name} style={ts.subclusterRow}>
-                        <Text style={ts.subclusterLabel}>{sub.name}</Text>
-                        <View style={ts.subclusterBarBg}>
-                          <View style={[ts.subclusterBarFill, { width: `${sub.rating}%`, backgroundColor: barCol(sub.rating) }]} />
-                        </View>
-                        <Text style={[ts.subclusterValue, { color: barCol(sub.rating) }]}>{sub.rating}</Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-              </View>
-            );
-          })}
-        </View>
-      )}
-    </>
-  );
-}
-
-function TSStatRow({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={ts.statRow}>
-      <Text style={ts.statLabel}>{label}</Text>
-      <Text style={ts.statValue}>{value}</Text>
-    </View>
-  );
-}
-
-// ─── Team Sheet Styles (matches TeamQuickSheet) ───
-const ts = StyleSheet.create({
-  identityRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
-  identityText: { flex: 1, marginLeft: 12 },
-  teamName: { fontSize: 20, fontWeight: '800', color: '#fff' },
-  teamSubline: { fontSize: 12, color: '#888', marginTop: 2 },
-  krBadge: { alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.06)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
-  krValue: { fontSize: 22, fontWeight: '800', color: '#fff', lineHeight: 26 },
-  krSubRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
-  krSubLabel: { fontSize: 12, fontWeight: '600', color: '#888' },
-  krSubSep: { fontSize: 12, color: '#555' },
-  sectionLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 1.0, color: '#6e6e6e', marginBottom: 8, marginTop: 4 },
-  card: { backgroundColor: '#1a1a1a', borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.06)', padding: 14, marginBottom: 16 },
-  staffRow: { flexDirection: 'row', gap: 12, marginBottom: 16 },
-  staffCard: { alignItems: 'center', gap: 4 },
-  coachAvatar: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
-  coachAvatarActive: { borderWidth: 2, borderColor: '#fff' },
-  coachAvatarText: { fontSize: 16, fontWeight: '800', color: '#fff' },
-  coachName: { fontSize: 12, fontWeight: '600', color: '#fff', maxWidth: 70, textAlign: 'center' },
-  coachNameActive: { color: '#4ade80' },
-  coachRole: { fontSize: 10, fontWeight: '500', color: '#888' },
-  coachDetailRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.06)' },
-  coachDetailLabel: { fontSize: 12, fontWeight: '500', color: '#888' },
-  coachDetailValue: { fontSize: 13, fontWeight: '700', color: '#fff' },
-  seasonRow: { flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#1a1a1a', borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.06)', padding: 14, marginBottom: 16 },
-  snapItem: { alignItems: 'center', flex: 1 },
-  snapValue: { fontSize: 16, fontWeight: '700', color: '#fff' },
-  snapLabel: { fontSize: 11, fontWeight: '500', color: '#888', marginTop: 4 },
-  toggleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, marginTop: 4 },
-  togglePills: { flexDirection: 'row', backgroundColor: '#1a1a1a', borderRadius: 8, padding: 2 },
-  pill: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 6 },
-  pillActive: { backgroundColor: '#333' },
-  pillText: { fontSize: 12, fontWeight: '600', color: '#666' },
-  pillTextActive: { color: '#fff' },
-  statColumns: { flexDirection: 'row', gap: 16 },
-  statCol: { flex: 1 },
-  statColHeader: { fontSize: 10, fontWeight: '700', letterSpacing: 1.0, color: '#6e6e6e', marginBottom: 8 },
-  statRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 },
-  statLabel: { fontSize: 11, fontWeight: '500', color: '#888' },
-  statValue: { fontSize: 13, fontWeight: '700', color: '#fff', textAlign: 'right', minWidth: 44 },
-  rebRow: { marginTop: 12, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.06)', paddingTop: 12 },
-  rebStats: { flexDirection: 'row', gap: 24, marginTop: 8 },
-  clusterRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6 },
-  clusterLabelRow: { flexDirection: 'row', alignItems: 'center', width: 108, gap: 4 },
-  clusterLabel: { fontSize: 12, fontWeight: '600', color: '#ccc' },
-  clusterBarBg: { flex: 1, height: 8, backgroundColor: '#2a2a2a', borderRadius: 4, marginHorizontal: 8, overflow: 'hidden' },
-  clusterBarFill: { height: 8, borderRadius: 4 },
-  clusterValue: { fontSize: 13, fontWeight: '700', width: 28, textAlign: 'right' },
-  subclusterContainer: { marginLeft: 18, paddingLeft: 10, borderLeftWidth: 1, borderLeftColor: 'rgba(255,255,255,0.06)', marginBottom: 6 },
-  subclusterRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 4 },
-  subclusterLabel: { fontSize: 11, fontWeight: '500', color: '#888', width: 110 },
-  subclusterBarBg: { flex: 1, height: 5, backgroundColor: '#222', borderRadius: 3, marginHorizontal: 8, overflow: 'hidden' },
-  subclusterBarFill: { height: 5, borderRadius: 3 },
-  subclusterValue: { fontSize: 11, fontWeight: '600', width: 24, textAlign: 'right' },
-});
 
 // ─── Styles ───
 const styles = StyleSheet.create({

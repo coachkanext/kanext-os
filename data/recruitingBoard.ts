@@ -44,6 +44,37 @@ export const STATUS_MIGRATION: Record<string, BoardStatus> = {
 
 export type Priority = 'A' | 'B' | 'C';
 
+// ─── Needs Board tiers ───
+export type NeedsTier = 'Must Get' | 'Primary' | 'Secondary' | 'Watch';
+export const NEEDS_TIERS: NeedsTier[] = ['Must Get', 'Primary', 'Secondary', 'Watch'];
+export const NEEDS_TIER_COLORS: Record<NeedsTier, string> = {
+  'Must Get': '#EF4444',
+  Primary: '#FF9800',
+  Secondary: '#3B82F6',
+  Watch: '#8A8F98',
+};
+
+// ─── Position slots (Helio) ───
+export type PositionSlot = 'PG' | 'CG' | 'W' | 'F' | 'B';
+export const POSITION_SLOTS: PositionSlot[] = ['PG', 'CG', 'W', 'F', 'B'];
+
+// ─── Interest level ───
+export type InterestLevel = 'Low' | 'Med' | 'High';
+export const INTEREST_LEVELS: InterestLevel[] = ['Low', 'Med', 'High'];
+export const INTEREST_COLORS: Record<InterestLevel, string> = {
+  Low: '#8A8F98',
+  Med: '#FF9800',
+  High: '#4CAF50',
+};
+
+// ─── Big Board sections ───
+export const BIG_BOARD_SECTIONS = [
+  { label: 'Top 10', min: 1, max: 10 },
+  { label: '11–25', min: 11, max: 25 },
+  { label: '26–50', min: 26, max: 50 },
+  { label: '51–100', min: 51, max: 100 },
+] as const;
+
 export const BOARD_TAGS = [
   'Portal', 'Needs Visit', 'Shooter', 'Rim Protector', 'Playmaker',
   'Immediate Impact', 'Project', 'High Motor', 'Versatile', 'Athletic',
@@ -196,6 +227,11 @@ export interface BoardEntry {
   visit?: VisitDetails;
   relationships?: RelationshipTracking;
   log: RecruitingLogEntry[];
+  // Workspace fields (added for 4-view refactor)
+  tier?: NeedsTier;
+  slot?: PositionSlot;
+  bigBoardRank?: number;
+  interest?: InterestLevel;
 }
 
 // ─── Helper to create mock log entries ───
@@ -218,6 +254,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   // Watchlist
   {
     id: 'be-05', playerId: 'pp-01', status: 'Watchlist', priority: 'B', rank: 0, position: 'PG', classYear: '2026',
+    tier: 'Watch', slot: 'PG', interest: 'Med',
     tags: ['Playmaker'], shortNotes: 'Class of 2026 PG, long-term target',
     longNotes: 'Saw at Nike EYBL. Very smooth. Playing up vs older competition.',
     nextStep: 'Attend spring AAU tournament', dueDate: '2026-04-01', recruiter: 'Coach Davis', updated: '2026-02-06',
@@ -230,6 +267,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   },
   {
     id: 'be-09', playerId: 'pp-13', status: 'Watchlist', priority: 'C', rank: 1, position: 'SF', classYear: '2025',
+    tier: 'Watch', slot: 'W', interest: 'Low',
     tags: ['Versatile'], shortNotes: 'European wing, high skill level',
     longNotes: 'Watching tape. Visa/eligibility questions to research.',
     nextStep: 'Contact agent', dueDate: '2026-03-01', recruiter: 'Coach Williams', updated: '2026-01-20',
@@ -243,6 +281,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   // Evaluating
   {
     id: 'be-06', playerId: 'pp-07', status: 'Evaluating', priority: 'B', rank: 0, position: 'C', classYear: '2026',
+    tier: 'Secondary', slot: 'B', bigBoardRank: 42, interest: 'Med',
     tags: ['Rim Protector', 'Project'], shortNotes: 'Rim protector with upside',
     longNotes: 'Still developing offensively. Elite shot blocker. Could be a project recruit.',
     nextStep: 'Request game film from coach', dueDate: '2026-02-18', recruiter: 'Coach Williams', updated: '2026-02-03',
@@ -255,6 +294,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   },
   {
     id: 'be-07', playerId: 'pp-21', status: 'Evaluating', priority: 'A', rank: 1, position: 'SG', classYear: '2025',
+    tier: 'Primary', slot: 'CG', bigBoardRank: 8, interest: 'High',
     tags: ['Shooter', 'Athletic'], shortNotes: 'Dynamic scorer, explosive athlete',
     longNotes: 'Just became available after decommitment. Need to act fast.',
     nextStep: 'Pull film + background check', dueDate: '2026-02-09', recruiter: 'Coach Davis', updated: '2026-02-08',
@@ -269,6 +309,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   // Contacted
   {
     id: 'be-04', playerId: 'pp-08', status: 'Contacted', priority: 'B', rank: 0, position: 'SG', classYear: '2025',
+    tier: 'Secondary', slot: 'CG', bigBoardRank: 28, interest: 'Med',
     tags: ['Shooter'], shortNotes: 'Knockdown shooter, needs to see defense',
     longNotes: 'DM\'d on Instagram. Responded positively. Watching more film this week.',
     nextStep: 'Watch Feb 14 game vs Olney Central', dueDate: '2026-02-14', recruiter: 'Coach Williams', updated: '2026-02-01',
@@ -289,6 +330,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   },
   {
     id: 'be-08', playerId: 'pp-18', status: 'Contacted', priority: 'B', rank: 1, position: 'SF', classYear: '2025',
+    tier: 'Secondary', slot: 'W', bigBoardRank: 35, interest: 'Med',
     tags: ['Versatile'], shortNotes: 'Versatile wing, can guard 1-3',
     longNotes: 'Good conversation. Interested in our program style. Wants to know about playing time.',
     nextStep: 'Virtual campus tour', dueDate: '2026-02-16', recruiter: 'Coach Davis', updated: '2026-01-27',
@@ -308,6 +350,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   // Priority
   {
     id: 'be-03', playerId: 'pp-14', status: 'Priority', priority: 'A', rank: 0, position: 'PG', classYear: '2025',
+    tier: 'Primary', slot: 'PG', bigBoardRank: 5, interest: 'High',
     tags: ['Playmaker', 'High Motor'], shortNotes: 'Two-way PG, high IQ',
     longNotes: 'Initial call went well. Sending film package. Wants to visit in March.',
     nextStep: 'Send recruitment packet', dueDate: '2026-02-12', recruiter: 'Coach Davis', updated: '2026-02-04',
@@ -333,6 +376,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   // Visited
   {
     id: 'be-01', playerId: 'pp-02', status: 'Visited', priority: 'A', rank: 0, position: 'SG', classYear: '2025',
+    tier: 'Must Get', slot: 'CG', bigBoardRank: 2, interest: 'High',
     tags: ['Immediate Impact', 'Shooter'], shortNotes: 'Elite scorer, ready to contribute day 1',
     longNotes: 'Visited campus Jan 15. Very interested. Family supportive. Needs answer on scholarship by Feb 28.',
     nextStep: 'Follow-up call with family', dueDate: '2026-02-15', recruiter: 'Coach Davis', updated: '2026-02-08',
@@ -361,6 +405,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   // Offer Out
   {
     id: 'be-02', playerId: 'pp-06', status: 'Offer Out', priority: 'A', rank: 0, position: 'PF', classYear: '2025',
+    tier: 'Must Get', slot: 'F', bigBoardRank: 3, interest: 'High',
     tags: ['Athletic', 'High Motor'], shortNotes: 'Physical 4-man, great motor',
     longNotes: 'Watched 3 games in person. Dominant on the glass. Also hearing from two D1 programs.',
     nextStep: 'Official visit scheduling', dueDate: '2026-02-20', recruiter: 'Coach Williams', updated: '2026-02-05',
@@ -389,6 +434,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   // Committed
   {
     id: 'be-10', playerId: 'pp-10', status: 'Committed', priority: 'A', rank: 0, position: 'PG', classYear: '2025',
+    tier: 'Must Get', slot: 'PG', bigBoardRank: 1, interest: 'High',
     tags: ['Portal', 'Immediate Impact'], shortNotes: 'Committed! Arriving summer 2025',
     longNotes: 'Signed LOI on Jan 30. Will enroll for summer session. Housing arranged.',
     nextStep: 'Summer orientation prep', dueDate: '2026-06-01', recruiter: 'Coach Davis', updated: '2026-01-30',
