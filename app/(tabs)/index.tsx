@@ -363,7 +363,7 @@ function SportsHome() {
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled
           >
-            <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { router.push('/coach/stats' as any); }} />
+            <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { router.push('/coach/stats' as any); }} onKRPress={() => setKrSheetVisible(true)} />
           </ScrollView>
 
           {/* Page 3: Recruiting (National Pool) */}

@@ -818,9 +818,13 @@ export function UnitsView({
 
   return (
     <View style={styles.container}>
+      {/* Divider below Controls Row */}
+      <View style={styles.controlsDivider} />
+
       {/* Lineup Lens Pill — above systems (hidden when external picker is driving) */}
       {!hideSystems && !gameImpact && !lensOverride && (
         <View style={styles.lensRow}>
+          <Text style={styles.kanextLabel}>KaNeXT</Text>
           <Pressable
             ref={lensPillRef as any}
             style={styles.lensPill}
@@ -1198,7 +1202,13 @@ export function UnitsView({
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Spacing.sm,
+    paddingTop: 12,
+  },
+  controlsDivider: {
+    height: 1,
+    backgroundColor: '#ffffff0C',
+    marginHorizontal: Spacing.lg,
+    marginBottom: 2,
   },
 
   // System scroll pickers
@@ -1270,11 +1280,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     gap: 6,
   },
   systemsHalfActive: {
-    backgroundColor: '#ffffff08',
+    backgroundColor: '#ffffff12',
   },
   systemsLabel: {
     fontSize: 10,
@@ -1450,7 +1460,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: Spacing.lg,
-    marginTop: 16,
+    marginTop: 24,
+    marginBottom: 12,
     backgroundColor: '#151515',
     borderRadius: 16,
     paddingVertical: 18,
@@ -1662,8 +1673,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
-    marginTop: 12,
+    marginTop: 10,
+    marginBottom: 4,
     gap: 8,
+  },
+  kanextLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#555',
+    letterSpacing: 1.2,
   },
   lensPill: {
     flexDirection: 'row',

@@ -1076,7 +1076,7 @@ const POS_ABBREV_TO_TRAD: Record<string, PoolPosition> = {
   PG: 'PG', CG: 'SG', W: 'SF', F: 'PF', B: 'C',
 };
 
-export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPress, onOpenStatistics }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoLongPress?: () => void; onOpenStatistics?: () => void } = {}) {
+export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPress, onOpenStatistics, onKRPress }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoLongPress?: () => void; onOpenStatistics?: () => void; onKRPress?: () => void } = {}) {
   const [activeView, setActiveView] = useState<ViewType>('cards');
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
   const [searchQuery, setSearchQuery] = useState('');
@@ -1163,26 +1163,25 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
             <Text style={styles.teamSubline}>
               {FMU_TEAM.division} {'\u00B7'} {FMU_TEAM.conference}
             </Text>
+            <View style={styles.teamRecordRow}>
+              <Text style={styles.teamRecord}>{FMU_TEAM.record}</Text>
+              <Text style={styles.teamConfRecord}>({FMU_TEAM.confRecord})</Text>
+              <View style={{ backgroundColor: FMU_TEAM.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: FMU_TEAM.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
+                  {FMU_TEAM.streak}
+                </Text>
+              </View>
+            </View>
           </View>
-          <View style={styles.teamKRBadge}>
-            <Text style={styles.teamKRLabel}>KR</Text>
+          <Pressable
+            style={styles.teamKRBadge}
+            onPress={() => { if (onKRPress) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onKRPress(); } }}
+          >
             <Text style={styles.teamKRValue}>{teamKR ?? 74}</Text>
             <Text style={styles.teamKRSplit}>O {offKR ?? 74} · D {defKR ?? 73}</Text>
-          </View>
-        </View>
-        <View style={styles.teamStatsRow}>
-          <Text style={styles.teamRecord}>{FMU_TEAM.record}</Text>
-          <Text style={styles.teamConfRecord}>({FMU_TEAM.confRecord} conf)</Text>
-          <View style={{ backgroundColor: FMU_TEAM.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-            <Text style={{ fontSize: 12, fontWeight: '700', color: FMU_TEAM.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
-              {FMU_TEAM.streak}
-            </Text>
-          </View>
+          </Pressable>
         </View>
       </View>
-
-      {/* Divider — separates identity block from controls */}
-      <View style={styles.headerDivider} />
 
       {/* Controls: Season + Sort + Search + View */}
       <RosterControls
@@ -1197,6 +1196,8 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
         dismissSubclusters={dismissCount}
         onSubclusterChange={setSelectedSubcluster}
       />
+
+      <View style={{ height: 10 }} />
 
       {/* Cards — tap dismisses open subcluster accordion */}
       {activeView === 'cards' && (
@@ -1259,31 +1260,36 @@ const styles = StyleSheet.create({
   // ── Team Identity Header ──
   teamHeader: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.lg,
-    paddingBottom: Spacing.md,
+    paddingTop: Spacing.md,
+    paddingBottom: 10,
     backgroundColor: TEAM_COLORS.cardBg,
-    gap: 12,
   },
   teamNameRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   headerLogo: {
-    width: 64,
-    height: 64,
-    marginRight: 14,
+    width: 56,
+    height: 56,
+    marginRight: 12,
   },
   teamName: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '800',
     color: TEAM_COLORS.white,
-    letterSpacing: -0.5,
+    letterSpacing: -0.3,
   },
   teamSubline: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '500',
     color: TEAM_COLORS.gray,
-    marginTop: 2,
+    marginTop: 1,
+  },
+  teamRecordRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 4,
   },
   teamKRBadge: {
     alignItems: 'center',
@@ -1310,18 +1316,13 @@ const styles = StyleSheet.create({
     color: TEAM_COLORS.gray,
     marginTop: 2,
   },
-  teamStatsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
   teamRecord: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: TEAM_COLORS.white,
   },
   teamConfRecord: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
     color: TEAM_COLORS.gray,
   },
@@ -1329,11 +1330,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 2,
-  },
-  teamContext: {
-    fontSize: 13,
-    color: TEAM_COLORS.gray,
-    marginTop: 6,
   },
   seasonDropdownBtn: {
     flexDirection: 'row',
@@ -1352,8 +1348,8 @@ const styles = StyleSheet.create({
   },
 
   headerDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: TEAM_COLORS.white + '18',
+    height: 1,
+    backgroundColor: TEAM_COLORS.white + '12',
     marginHorizontal: Spacing.lg,
   },
 
