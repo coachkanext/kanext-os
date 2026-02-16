@@ -3,6 +3,8 @@
  * Types, mock data, and helpers for Feed, Inbox, and Alerts tabs.
  */
 
+import type { Mode } from '@/types';
+
 // =============================================================================
 // TYPES
 // =============================================================================
@@ -133,11 +135,26 @@ export interface ThreadContext {
   subtitle?: string;
 }
 
+export type RoomType = 'staff' | 'recruiting' | 'travel' | 'film' |
+  'leadership' | 'product' | 'investors' | 'legal' |
+  'pastoral' | 'prayer' | 'worship' |
+  'admissions' | 'housing' | 'campus_life' |
+  'raceweek_ops' | 'rules' | 'compliance' | 'safety';
+
+export interface RoomChannel {
+  id: string;
+  name: string;
+  icon?: string;
+  isPinned?: boolean;
+}
+
 export interface ChatThread extends InboxThread {
   context?: ThreadContext;
   template?: ThreadTemplate;
   isGroup: boolean;
   archived?: boolean;
+  roomType?: RoomType;
+  channels?: RoomChannel[];
 }
 
 export interface AlertDeepLink {
@@ -680,6 +697,87 @@ export const MOCK_CHAT_THREADS: ChatThread[] = [
 ];
 
 export const MOCK_GROUP_THREADS: ChatThread[] = MOCK_CHAT_THREADS.filter((t) => t.isGroup);
+
+// =============================================================================
+// MODE-SPECIFIC ROOMS (Slack-style channels per mode)
+// =============================================================================
+
+const DEFAULT_CHANNELS: RoomChannel[] = [
+  { id: 'ch-ann', name: '#announcements', icon: 'megaphone.fill', isPinned: true },
+  { id: 'ch-gen', name: '#general', icon: 'bubble.left.and.bubble.right.fill' },
+  { id: 'ch-ops', name: '#ops', icon: 'gearshape.fill' },
+  { id: 'ch-files', name: '#files-links', icon: 'paperclip' },
+];
+
+function makeRoom(
+  id: string,
+  title: string,
+  icon: string,
+  roomType: RoomType,
+  lastMessage: string,
+  minutesAgo: number,
+  unread: number,
+  memberCount: number,
+): ChatThread {
+  return {
+    id,
+    title,
+    icon,
+    participants: [`${memberCount} members`],
+    lastMessage,
+    timestamp: new Date(Date.now() - minutesAgo * 60000),
+    unread,
+    messages: [],
+    isGroup: true,
+    roomType,
+    channels: DEFAULT_CHANNELS,
+    context: { type: 'group', subtitle: `Room · ${memberCount} members` },
+  };
+}
+
+const SPORTS_ROOMS: ChatThread[] = [
+  makeRoom('rm-sp-1', 'Staff', 'briefcase.fill', 'staff', 'Film session moved to 3:30 PM.', 12, 2, 8),
+  makeRoom('rm-sp-2', 'Recruiting', 'person.badge.plus', 'recruiting', 'Jaylen Carter OV confirmed for Feb 21.', 45, 1, 5),
+  makeRoom('rm-sp-3', 'Travel', 'airplane', 'travel', 'Bus departs 10 AM Saturday — Campbell.', 180, 0, 12),
+  makeRoom('rm-sp-4', 'Film', 'play.rectangle.fill', 'film', 'Transition defense clips uploaded.', 90, 3, 6),
+];
+
+const BUSINESS_ROOMS: ChatThread[] = [
+  makeRoom('rm-bz-1', 'Leadership', 'star.fill', 'leadership', 'Q1 board deck draft is in #files-links.', 30, 1, 4),
+  makeRoom('rm-bz-2', 'Product', 'hammer.fill', 'product', 'V2 sprint review at 2 PM today.', 60, 2, 7),
+  makeRoom('rm-bz-3', 'Investors', 'chart.line.uptrend.xyaxis', 'investors', 'Series A data room updated.', 300, 0, 3),
+  makeRoom('rm-bz-4', 'Legal', 'doc.text.fill', 'legal', 'NDA redlines from counsel — review by EOD.', 120, 1, 3),
+];
+
+const CHURCH_ROOMS: ChatThread[] = [
+  makeRoom('rm-ch-1', 'Pastoral', 'heart.fill', 'pastoral', 'Wednesday night service plan finalized.', 20, 1, 6),
+  makeRoom('rm-ch-2', 'Prayer', 'hands.sparkles.fill', 'prayer', 'New prayer requests added — 3 urgent.', 90, 2, 15),
+  makeRoom('rm-ch-3', 'Worship', 'music.note', 'worship', 'Setlist for Sunday locked in #announcements.', 150, 0, 8),
+];
+
+const EDUCATION_ROOMS: ChatThread[] = [
+  makeRoom('rm-ed-1', 'Admissions', 'person.crop.rectangle.fill', 'admissions', 'Spring 2026 yield report attached.', 45, 1, 5),
+  makeRoom('rm-ed-2', 'Housing', 'building.2.fill', 'housing', 'Room assignments go live March 1.', 200, 0, 4),
+  makeRoom('rm-ed-3', 'Campus Life', 'graduationcap.fill', 'campus_life', 'Spring fest planning meeting at 4 PM.', 100, 2, 9),
+];
+
+const COMPETITION_ROOMS: ChatThread[] = [
+  makeRoom('rm-co-1', 'Raceweek Ops', 'flag.checkered', 'raceweek_ops', 'Laguna Seca setup checklist posted.', 15, 3, 10),
+  makeRoom('rm-co-2', 'Rules', 'book.fill', 'rules', 'Updated tire compound regs for Round 7.', 60, 1, 6),
+  makeRoom('rm-co-3', 'Compliance', 'checkmark.shield.fill', 'compliance', 'Weight inspection window: 8–9 AM Saturday.', 120, 0, 4),
+  makeRoom('rm-co-4', 'Safety', 'exclamationmark.triangle.fill', 'safety', 'Roll cage re-cert due before qualifying.', 240, 2, 5),
+];
+
+export function getModeRooms(mode: Mode): ChatThread[] {
+  switch (mode) {
+    case 'sports': return SPORTS_ROOMS;
+    case 'enterprise': return BUSINESS_ROOMS;
+    case 'church': return CHURCH_ROOMS;
+    case 'education': return EDUCATION_ROOMS;
+    case 'community': return COMPETITION_ROOMS;
+    default: return SPORTS_ROOMS;
+  }
+}
 
 // =============================================================================
 // ALERT SOURCE COLORS

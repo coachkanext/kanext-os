@@ -1,7 +1,7 @@
 /**
  * Messages Layout
- * Top tabs handled by PagerView inside index.tsx (Inbox | Groups | Requests).
- * Sub-footer hidden — all navigation is via swipeable top tabs.
+ * Top tabs handled by PagerView inside index.tsx (Inbox | Rooms | Requests | Pinned).
+ * 4-tab swipeable hub — sub-footer hidden.
  */
 
 import { Tabs } from 'expo-router';

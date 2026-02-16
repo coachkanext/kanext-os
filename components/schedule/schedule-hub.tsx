@@ -5,9 +5,10 @@
  * Game cards use 3-zone tap model: FMU logo | card body | opponent logo.
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, ScrollView, StyleSheet, Pressable, TextInput, Image, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
@@ -37,8 +38,8 @@ import {
 
 type ScheduleTab = 'feed' | 'calendar' | 'standings' | 'news';
 const SCHEDULE_TABS: { key: ScheduleTab; label: string }[] = [
-  { key: 'feed', label: 'Games' },
-  { key: 'calendar', label: 'Calendar' },
+  { key: 'calendar', label: 'Agenda' },
+  { key: 'feed', label: 'Schedule' },
   { key: 'standings', label: 'Standings' },
   { key: 'news', label: 'News' },
 ];
@@ -192,12 +193,46 @@ interface ScheduleHubProps {
 
 export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }: ScheduleHubProps) {
   const insets = useSafeAreaInsets();
-  const [activeTab, setActiveTab] = useState<ScheduleTab>('feed');
+  const [activeTab, setActiveTab] = useState<ScheduleTab>('calendar');
+  // Standings V2 state
   const [standingsMode, setStandingsMode] = useState<'traditional' | 'kr'>('traditional');
   const [standingsScope, setStandingsScope] = useState<'college' | 'global'>('college');
   const [standingsView, setStandingsView] = useState<'conference' | 'division' | 'national'>('conference');
+  const [globalView, setGlobalView] = useState<'country' | 'league' | 'world'>('country');
   const [selectedDivisions, setSelectedDivisions] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedLeague, setSelectedLeague] = useState<string | null>(null);
   const [expandedKRTeam, setExpandedKRTeam] = useState<string | null>(null);
+  const standingsLoaded = useRef(false);
+
+  // Persist standings selections
+  const STANDINGS_STORAGE_KEY = 'kx:standings_prefs';
+  useEffect(() => {
+    if (!standingsLoaded.current) return;
+    AsyncStorage.setItem(STANDINGS_STORAGE_KEY, JSON.stringify({
+      mode: standingsMode, scope: standingsScope, view: standingsView,
+      globalView, selectedDivisions, selectedCountry, selectedLeague,
+    })).catch(() => {});
+  }, [standingsMode, standingsScope, standingsView, globalView, selectedDivisions, selectedCountry, selectedLeague]);
+
+  useEffect(() => {
+    AsyncStorage.getItem(STANDINGS_STORAGE_KEY).then((raw) => {
+      if (raw) {
+        try {
+          const p = JSON.parse(raw);
+          if (p.mode) setStandingsMode(p.mode);
+          if (p.scope) setStandingsScope(p.scope);
+          if (p.view) setStandingsView(p.view);
+          if (p.globalView) setGlobalView(p.globalView);
+          if (p.selectedDivisions) setSelectedDivisions(p.selectedDivisions);
+          if (p.selectedCountry) setSelectedCountry(p.selectedCountry);
+          if (p.selectedLeague) setSelectedLeague(p.selectedLeague);
+        } catch {}
+      }
+      standingsLoaded.current = true;
+    }).catch(() => { standingsLoaded.current = true; });
+  }, []);
+
   const [search, setSearch] = useState('');
   const [expandedLeader, setExpandedLeader] = useState<string | null>(null);
   const [expandedLive, setExpandedLive] = useState(false);
@@ -480,6 +515,8 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
           {activeTab === 'standings' && (() => {
             const hashStr = (str: string) => { let h = 0; for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0; return Math.abs(h); };
 
+            // ── Mock data ──
+
             const MOCK_TEAM_NAMES = [
               'Northfield', 'Crestview', 'Ridgemont', 'Lakewood', 'Harborside',
               'Westbridge', 'Irondale', 'Clearwater', 'Stonehill', 'Ashford',
@@ -487,7 +524,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
             ];
 
             const generateDivisionStandings = (divisionId: string) => {
-              return MOCK_TEAM_NAMES.map((team, i) => {
+              return MOCK_TEAM_NAMES.map((team) => {
                 const h = hashStr(divisionId + team);
                 const overallW = 10 + (h % 16);
                 const overallL = 4 + ((h >> 4) % 14);
@@ -566,6 +603,96 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
               return { rank: 0, team: row.team, kr, trend };
             }).sort((a, b) => b.kr - a.kr).map((r, i) => ({ ...r, rank: i + 1 }));
 
+            // ── Global mock data ──
+
+            const GLOBAL_COUNTRIES = [
+              { code: 'ES', name: 'Spain' }, { code: 'FR', name: 'France' },
+              { code: 'AU', name: 'Australia' }, { code: 'PH', name: 'Philippines' },
+              { code: 'CA', name: 'Canada' }, { code: 'RS', name: 'Serbia' },
+              { code: 'LT', name: 'Lithuania' }, { code: 'DE', name: 'Germany' },
+              { code: 'IT', name: 'Italy' }, { code: 'GR', name: 'Greece' },
+              { code: 'TR', name: 'Turkey' }, { code: 'BR', name: 'Brazil' },
+              { code: 'AR', name: 'Argentina' }, { code: 'NG', name: 'Nigeria' },
+              { code: 'SN', name: 'Senegal' },
+            ];
+
+            const GLOBAL_LEAGUES: { id: string; name: string; country: string }[] = [
+              { id: 'acb', name: 'Liga ACB', country: 'ES' },
+              { id: 'lnb', name: 'LNB Pro A', country: 'FR' },
+              { id: 'nbl', name: 'NBL', country: 'AU' },
+              { id: 'pba', name: 'PBA', country: 'PH' },
+              { id: 'cebl', name: 'CEBL', country: 'CA' },
+              { id: 'aba', name: 'ABA Liga', country: 'RS' },
+              { id: 'lkl', name: 'LKL', country: 'LT' },
+              { id: 'bbl', name: 'BBL', country: 'DE' },
+              { id: 'lba', name: 'Lega Basket Serie A', country: 'IT' },
+              { id: 'gbl', name: 'GBL A1', country: 'GR' },
+              { id: 'bsl', name: 'BSL', country: 'TR' },
+              { id: 'nbb', name: 'NBB', country: 'BR' },
+              { id: 'lnb_ar', name: 'LNB Argentina', country: 'AR' },
+              { id: 'nbl_ng', name: 'NBL Nigeria', country: 'NG' },
+              { id: 'nbl_sn', name: 'NBL Senegal', country: 'SN' },
+            ];
+
+            const generateLeagueStandings = (leagueId: string) => {
+              const leagueTeamNames = [
+                'Olimpia', 'Dynamo', 'Real', 'Partizan', 'Fenerbahce',
+                'Maccabi', 'Panathinaikos', 'CSKA', 'Virtus', 'Barcelona',
+                'Zalgiris', 'Monaco', 'Bayern', 'Anadolu', 'Estrella',
+              ];
+              return leagueTeamNames.map((team) => {
+                const h = hashStr(leagueId + team);
+                const overallW = 8 + (h % 18);
+                const overallL = 3 + ((h >> 4) % 15);
+                const confW = Math.min(overallW, 2 + ((h >> 2) % 12));
+                const confL = Math.min(overallL, 1 + ((h >> 6) % 8));
+                const streaks = ['W1','W2','W3','W4','L1','L2','L3'];
+                const streak = streaks[(h >> 8) % streaks.length];
+                const kr = 50 + ((h >> 3) % 40);
+                const trend = (h % 5 === 0) ? (1 + ((h >> 4) % 4)) : (h % 3 === 0) ? -(1 + ((h >> 4) % 3)) : 0;
+                return { rank: 0, team, confW, confL, overallW, overallL, streak, kr, trend };
+              }).sort((a, b) => b.overallW - a.overallW || a.overallL - b.overallL)
+                .map((r, i) => ({ ...r, rank: i + 1 }));
+            };
+
+            const generateCountryKR = (countryCode: string) => {
+              const names = [
+                'United FC', 'Metro Stars', 'Capital BC', 'Northern Tigers', 'Coastal Eagles',
+                'Southern Hawks', 'Valley Kings', 'Highlands', 'Central Blazers', 'Eastern Force',
+              ];
+              return names.map((team) => {
+                const h = hashStr(countryCode + team);
+                const kr = 45 + ((h >> 3) % 45);
+                const trend = (h % 5 === 0) ? (1 + ((h >> 4) % 4)) : (h % 3 === 0) ? -(1 + ((h >> 4) % 3)) : 0;
+                return { rank: 0, team, kr, trend };
+              }).sort((a, b) => b.kr - a.kr).map((r, i) => ({ ...r, rank: i + 1 }));
+            };
+
+            const KR_WORLD = [
+              { rank: 1, team: 'Real Madrid', kr: 95, trend: 0 },
+              { rank: 2, team: 'Barcelona', kr: 94, trend: 1 },
+              { rank: 3, team: 'Fenerbahce', kr: 92, trend: -1 },
+              { rank: 4, team: 'Olympiacos', kr: 91, trend: 2 },
+              { rank: 5, team: 'Partizan', kr: 90, trend: 0 },
+              { rank: 6, team: 'Anadolu Efes', kr: 89, trend: -2 },
+              { rank: 7, team: 'Maccabi Tel Aviv', kr: 88, trend: 1 },
+              { rank: 8, team: 'Virtus Bologna', kr: 87, trend: 3 },
+              { rank: 9, team: 'Monaco', kr: 87, trend: 0 },
+              { rank: 10, team: 'Bayern Munich', kr: 86, trend: -1 },
+              { rank: 11, team: 'Zalgiris', kr: 85, trend: 2 },
+              { rank: 12, team: 'Panathinaikos', kr: 85, trend: 0 },
+              { rank: 13, team: 'CSKA Moscow', kr: 84, trend: -3 },
+              { rank: 14, team: 'Baskonia', kr: 83, trend: 1 },
+              { rank: 15, team: 'Alba Berlin', kr: 82, trend: 0 },
+              { rank: 16, team: 'Joventut', kr: 81, trend: 2 },
+              { rank: 17, team: 'Valencia', kr: 81, trend: -1 },
+              { rank: 18, team: 'ASVEL', kr: 80, trend: 0 },
+              { rank: 19, team: 'Melbourne United', kr: 79, trend: 1 },
+              { rank: 20, team: 'San Miguel Beermen', kr: 78, trend: 0 },
+            ];
+
+            // ── Helpers ──
+
             const trendDisplay = (t: number) => {
               if (t > 0) return { text: `\u25B2 ${t}`, color: '#66BB6A' };
               if (t < 0) return { text: `\u25BC ${Math.abs(t)}`, color: '#EF4444' };
@@ -595,6 +722,12 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
               ? selectedDivisions.flatMap(id => generateDivisionStandings(id).map(r => ({ ...r, divId: id })))
               : [];
 
+            const filteredLeagues = selectedCountry
+              ? GLOBAL_LEAGUES.filter((l) => l.country === selectedCountry)
+              : GLOBAL_LEAGUES;
+
+            // ── Renderers ──
+
             const renderKRTable = (krData: { rank: number; team: string; kr: number; trend: number }[], showFmuGap: boolean) => (
               <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
                 <View style={[s.krHeaderRow, { borderBottomColor: colors.divider, backgroundColor: colors.backgroundSecondary }]}>
@@ -612,7 +745,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                   const offKR = Math.min(100, Math.max(0, Math.round(row.kr * 0.53 + h % 5)));
                   const defKR = Math.min(100, Math.max(0, Math.round(row.kr * 0.47 + h % 4)));
                   return (
-                    <View key={row.team}>
+                    <View key={`${index}-${row.team}`}>
                       {isFmu && <View style={[s.krFmuDivider, { backgroundColor: colors.text + '20' }]} />}
                       {!isFmu && index > 0 && !showGap && <View style={[s.divider, { backgroundColor: colors.divider }]} />}
                       {showGap && (
@@ -699,8 +832,29 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
               </View>
             );
 
+            const renderEmptyState = (title: string, subtitle: string, cta?: string, onCta?: () => void) => (
+              <View style={[s.card, { backgroundColor: colors.backgroundSecondary, padding: 32, alignItems: 'center', gap: 8 }]}>
+                <IconSymbol name="chart.bar.xaxis" size={28} color={colors.textTertiary} />
+                <ThemedText style={{ fontSize: 16, fontWeight: '700', color: colors.text, textAlign: 'center' }}>{title}</ThemedText>
+                <ThemedText style={{ fontSize: 13, color: colors.textTertiary, textAlign: 'center' }}>{subtitle}</ThemedText>
+                {cta && onCta && (
+                  <Pressable
+                    style={{ marginTop: 8, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 14, backgroundColor: Brand.primary }}
+                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onCta(); }}
+                  >
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#fff' }}>{cta}</Text>
+                  </Pressable>
+                )}
+              </View>
+            );
+
+            // ── Row C labels ──
+            const collegeScopes = ['conference', 'division', 'national'] as const;
+            const globalScopes = ['country', 'league', 'world'] as const;
+
             return (
               <View>
+                {/* Row A — Type */}
                 <View style={s.standingsToggleRow}>
                   {(['traditional', 'kr'] as const).map((m) => {
                     const active = standingsMode === m;
@@ -718,6 +872,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                   })}
                 </View>
 
+                {/* Row B — Universe */}
                 <View style={s.krScopeRow}>
                   {(['college', 'global'] as const).map((sc) => {
                     const active = standingsScope === sc;
@@ -725,7 +880,14 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                       <Pressable
                         key={sc}
                         style={[s.krScopePill, { backgroundColor: active ? colors.text : colors.backgroundSecondary }]}
-                        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setStandingsScope(sc); }}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          setStandingsScope(sc);
+                          setExpandedKRTeam(null);
+                          // Reset Row C to default for new universe
+                          if (sc === 'college') setStandingsView('conference');
+                          if (sc === 'global') setGlobalView('country');
+                        }}
                       >
                         <ThemedText style={[s.krScopePillText, { color: active ? colors.background : colors.textSecondary }]}>
                           {sc === 'college' ? 'College' : 'Global'}
@@ -735,16 +897,12 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                   })}
                 </View>
 
-                {standingsScope === 'global' && (
-                  <View style={{ paddingVertical: 40, alignItems: 'center' }}>
-                    <ThemedText style={{ fontSize: 15, color: colors.textTertiary }}>Coming soon</ThemedText>
-                  </View>
-                )}
-
+                {/* ═══ COLLEGE UNIVERSE ═══ */}
                 {standingsScope === 'college' && (
                   <View>
+                    {/* Row C — College context */}
                     <View style={s.krScopeRow}>
-                      {(['conference', 'division', 'national'] as const).map((v) => {
+                      {collegeScopes.map((v) => {
                         const active = standingsView === v;
                         return (
                           <Pressable
@@ -760,6 +918,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                       })}
                     </View>
 
+                    {/* Division selector chips */}
                     {standingsView === 'division' && (
                       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: Spacing.sm }}>
                         {divisionChips.map((chip) => {
@@ -783,6 +942,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                       </View>
                     )}
 
+                    {/* College content */}
                     {standingsView === 'division' && selectedDivisions.length === 0 ? (
                       <View style={{ paddingVertical: 24, alignItems: 'center' }}>
                         <ThemedText style={{ fontSize: 14, color: colors.textTertiary }}>Select a division</ThemedText>
@@ -817,32 +977,237 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                     )}
                   </View>
                 )}
+
+                {/* ═══ GLOBAL UNIVERSE ═══ */}
+                {standingsScope === 'global' && (
+                  <View>
+                    {/* Row C — Global context */}
+                    <View style={s.krScopeRow}>
+                      {globalScopes.map((v) => {
+                        const active = globalView === v;
+                        return (
+                          <Pressable
+                            key={v}
+                            style={[s.krScopePill, { backgroundColor: active ? colors.text : colors.backgroundSecondary }]}
+                            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setGlobalView(v); setExpandedKRTeam(null); }}
+                          >
+                            <ThemedText style={[s.krScopePillText, { color: active ? colors.background : colors.textSecondary }]}>
+                              {v === 'country' ? 'Country' : v === 'league' ? 'League' : 'World'}
+                            </ThemedText>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+
+                    {/* ── Global → Country ── */}
+                    {globalView === 'country' && (
+                      <View>
+                        {/* Country picker */}
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: Spacing.sm }}>
+                          {GLOBAL_COUNTRIES.map((c) => {
+                            const active = selectedCountry === c.code;
+                            return (
+                              <Pressable
+                                key={c.code}
+                                style={[s.krScopePill, { backgroundColor: active ? Brand.primary : colors.backgroundSecondary }]}
+                                onPress={() => {
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                  setSelectedCountry(active ? null : c.code);
+                                  setSelectedLeague(null);
+                                  setExpandedKRTeam(null);
+                                }}
+                              >
+                                <ThemedText style={[s.krScopePillText, { color: active ? '#fff' : colors.textSecondary }]}>
+                                  {c.name}
+                                </ThemedText>
+                              </Pressable>
+                            );
+                          })}
+                        </View>
+
+                        {!selectedCountry ? (
+                          <View style={{ paddingVertical: 24, alignItems: 'center' }}>
+                            <ThemedText style={{ fontSize: 14, color: colors.textTertiary }}>Select a country</ThemedText>
+                          </View>
+                        ) : standingsMode === 'kr' ? (
+                          <>
+                            <ThemedText style={[s.sectionLabel, { color: colors.textSecondary }]}>
+                              {GLOBAL_COUNTRIES.find((c) => c.code === selectedCountry)?.name.toUpperCase() ?? ''} BY KR
+                            </ThemedText>
+                            {renderKRTable(generateCountryKR(selectedCountry), false)}
+                          </>
+                        ) : (
+                          /* Traditional + Country: need a league */
+                          (() => {
+                            const countryLeagues = GLOBAL_LEAGUES.filter((l) => l.country === selectedCountry);
+                            if (selectedLeague) {
+                              const league = countryLeagues.find((l) => l.id === selectedLeague);
+                              return (
+                                <>
+                                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                                    <ThemedText style={[s.sectionLabel, { color: colors.textSecondary, marginBottom: 0 }]}>
+                                      {league?.name.toUpperCase() ?? ''}
+                                    </ThemedText>
+                                    <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedLeague(null); }}>
+                                      <ThemedText style={{ fontSize: 12, fontWeight: '600', color: Brand.primary }}>Change</ThemedText>
+                                    </Pressable>
+                                  </View>
+                                  {renderTraditionalConfTable(generateLeagueStandings(selectedLeague))}
+                                </>
+                              );
+                            }
+                            return (
+                              <View>
+                                <ThemedText style={[s.sectionLabel, { color: colors.textSecondary }]}>CHOOSE A LEAGUE</ThemedText>
+                                {countryLeagues.length > 0 ? countryLeagues.map((l) => (
+                                  <Pressable
+                                    key={l.id}
+                                    style={[s.krScopePill, { backgroundColor: colors.backgroundSecondary, marginBottom: 6, alignSelf: 'flex-start' }]}
+                                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedLeague(l.id); }}
+                                  >
+                                    <ThemedText style={[s.krScopePillText, { color: colors.text }]}>{l.name}</ThemedText>
+                                  </Pressable>
+                                )) : (
+                                  renderEmptyState('No leagues available', 'No league data for this country yet.')
+                                )}
+                              </View>
+                            );
+                          })()
+                        )}
+                      </View>
+                    )}
+
+                    {/* ── Global → League ── */}
+                    {globalView === 'league' && (
+                      <View>
+                        {/* League picker */}
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: Spacing.sm }}>
+                          {filteredLeagues.map((l) => {
+                            const active = selectedLeague === l.id;
+                            return (
+                              <Pressable
+                                key={l.id}
+                                style={[s.krScopePill, { backgroundColor: active ? Brand.primary : colors.backgroundSecondary }]}
+                                onPress={() => {
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                  setSelectedLeague(active ? null : l.id);
+                                  setExpandedKRTeam(null);
+                                }}
+                              >
+                                <ThemedText style={[s.krScopePillText, { color: active ? '#fff' : colors.textSecondary }]}>
+                                  {l.name}
+                                </ThemedText>
+                              </Pressable>
+                            );
+                          })}
+                        </View>
+
+                        {!selectedLeague ? (
+                          <View style={{ paddingVertical: 24, alignItems: 'center' }}>
+                            <ThemedText style={{ fontSize: 14, color: colors.textTertiary }}>Select a league</ThemedText>
+                          </View>
+                        ) : (() => {
+                          const league = GLOBAL_LEAGUES.find((l) => l.id === selectedLeague);
+                          const leagueStandings = generateLeagueStandings(selectedLeague);
+                          return (
+                            <>
+                              <ThemedText style={[s.sectionLabel, { color: colors.textSecondary }]}>
+                                {league?.name.toUpperCase() ?? ''}
+                              </ThemedText>
+                              {standingsMode === 'traditional'
+                                ? renderTraditionalConfTable(leagueStandings)
+                                : renderKRTable(
+                                    leagueStandings.map((r) => ({ rank: r.rank, team: r.team, kr: r.kr, trend: r.trend }))
+                                      .sort((a, b) => b.kr - a.kr).map((r, i) => ({ ...r, rank: i + 1 })),
+                                    false,
+                                  )
+                              }
+                            </>
+                          );
+                        })()}
+                      </View>
+                    )}
+
+                    {/* ── Global → World ── */}
+                    {globalView === 'world' && (
+                      <View>
+                        {standingsMode === 'traditional' ? (
+                          renderEmptyState(
+                            'World standings require a league table.',
+                            'Select a league to view traditional standings.',
+                            'Select League',
+                            () => { setGlobalView('league'); },
+                          )
+                        ) : (
+                          <>
+                            <ThemedText style={[s.sectionLabel, { color: colors.textSecondary }]}>TOP WORLDWIDE BY KR</ThemedText>
+                            {renderKRTable(KR_WORLD, false)}
+                          </>
+                        )}
+                      </View>
+                    )}
+                  </View>
+                )}
               </View>
             );
           })()}
 
           {/* ── News Tab ── */}
           {activeTab === 'news' && (
-            <View style={{ gap: Spacing.md }}>
-              {FMU_NEWS.map((item) => (
-                <Pressable
-                  key={item.id}
-                  style={({ pressed }) => [{ backgroundColor: colors.backgroundSecondary, borderRadius: BorderRadius.lg, overflow: 'hidden' as const }, pressed && { opacity: 0.85 }]}
-                >
-                  <View style={{ height: 160, backgroundColor: '#111', justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center' }}>
-                      <IconSymbol name="play.fill" size={20} color="#fff" />
+            <View style={s.newsFeed}>
+              {FMU_NEWS.length > 0 ? (
+                FMU_NEWS.map((item) => {
+                  const isHighlights = item.type === 'Highlights';
+                  return (
+                    <View
+                      key={item.id}
+                      style={[s.newsCard, { backgroundColor: colors.backgroundSecondary }]}
+                    >
+                      {/* Video Hero */}
+                      <View style={s.newsHero}>
+                        <View style={s.newsPlayCircle}>
+                          <IconSymbol name="play.fill" size={22} color="#fff" />
+                        </View>
+                        {/* Type Badge */}
+                        <View style={[
+                          s.newsTypeBadge,
+                          { backgroundColor: isHighlights ? 'rgba(255,180,0,0.9)' : 'rgba(0,0,0,0.65)' },
+                        ]}>
+                          <Text style={[
+                            s.newsTypeBadgeText,
+                            { color: isHighlights ? '#000' : '#fff' },
+                          ]}>
+                            {item.type.toUpperCase()}
+                          </Text>
+                        </View>
+                      </View>
+                      {/* Headline + Date */}
+                      <View style={s.newsBody}>
+                        <ThemedText
+                          style={[s.newsHeadline, { color: colors.text }]}
+                          numberOfLines={2}
+                        >
+                          {item.headline}
+                        </ThemedText>
+                        <ThemedText style={[s.newsDate, { color: colors.textTertiary }]}>
+                          {item.date}
+                        </ThemedText>
+                      </View>
                     </View>
-                    <View style={{ position: 'absolute', top: 8, left: 8, backgroundColor: item.type === 'Highlights' ? 'rgba(255,180,0,0.85)' : 'rgba(0,0,0,0.6)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 }}>
-                      <Text style={{ fontSize: 10, fontWeight: '700', color: item.type === 'Highlights' ? '#000' : '#fff', letterSpacing: 0.3 }}>{item.type.toUpperCase()}</Text>
-                    </View>
-                  </View>
-                  <View style={{ padding: 12 }}>
-                    <ThemedText style={{ fontSize: 15, fontWeight: '700', color: colors.text }} numberOfLines={2}>{item.headline}</ThemedText>
-                    <ThemedText style={{ fontSize: 12, color: colors.textTertiary, marginTop: 4 }}>{item.date}</ThemedText>
-                  </View>
-                </Pressable>
-              ))}
+                  );
+                })
+              ) : (
+                /* Empty State */
+                <View style={[s.newsEmptyCard, { backgroundColor: colors.backgroundSecondary }]}>
+                  <IconSymbol name="newspaper.fill" size={32} color={colors.textTertiary} />
+                  <ThemedText style={[s.newsEmptyTitle, { color: colors.text }]}>
+                    No news yet
+                  </ThemedText>
+                  <ThemedText style={[s.newsEmptySubtitle, { color: colors.textTertiary }]}>
+                    Upload your first recap or highlights
+                  </ThemedText>
+                </View>
+              )}
             </View>
           )}
         </ScrollView>
@@ -1104,4 +1469,18 @@ const s = StyleSheet.create({
   krFmuDivider: { height: 2 },
   krGapRow: { alignItems: 'center', paddingVertical: 4, borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth },
   krGapText: { fontSize: 14, letterSpacing: 4 },
+
+  // News
+  newsFeed: { gap: Spacing.md },
+  newsCard: { borderRadius: BorderRadius.lg, overflow: 'hidden' as const },
+  newsHero: { height: 180, backgroundColor: '#111', justifyContent: 'center', alignItems: 'center' },
+  newsPlayCircle: { width: 52, height: 52, borderRadius: 26, backgroundColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center' },
+  newsTypeBadge: { position: 'absolute', top: 10, left: 10, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 },
+  newsTypeBadgeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  newsBody: { padding: 12 },
+  newsHeadline: { fontSize: 16, fontWeight: '700', lineHeight: 22 },
+  newsDate: { fontSize: 12, fontWeight: '500', marginTop: 4 },
+  newsEmptyCard: { borderRadius: BorderRadius.lg, padding: 40, alignItems: 'center', gap: 8 },
+  newsEmptyTitle: { fontSize: 16, fontWeight: '700' },
+  newsEmptySubtitle: { fontSize: 13, fontWeight: '500' },
 });

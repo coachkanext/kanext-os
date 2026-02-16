@@ -1,7 +1,7 @@
 /**
  * Universal Player Sheet — shared bottom sheet for roster and recruiting players.
- * 4-tab layout for roster players (Bio, FIT, KaNeXT, Timeline)
- * 2-tab layout for recruiting players (FIT, KaNeXT)
+ * 5-tab layout for roster players (Bio, Fit, KaNeXT, Growth, Messages)
+ * 6-tab layout for recruits (Bio, Fit, KaNeXT, Growth, Messages, Recruiting)
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -49,22 +49,34 @@ import {
 } from '@/data/mock-comms';
 import type { BoardEntry, BoardStatus } from '@/data/recruitingBoard';
 import { computePlayerBadges, BADGE_LEVEL_COLORS, type PlayerBadge } from '@/utils/player-badges';
-import { BOARD_COLUMNS, BOARD_COLUMN_COLORS } from '@/data/recruitingBoard';
+import {
+  BOARD_COLUMNS,
+  BOARD_COLUMN_COLORS,
+  TEMPERATURE_COLORS,
+  RISK_LEVEL_COLORS,
+  LOG_TYPE_META,
+  type Temperature,
+  type RiskLevel,
+} from '@/data/recruitingBoard';
 import type { PositionNeed } from '@/data/team-needs';
 
 // ─── Constants ───
 const GRAY = '#8A8F98';
 
-type SheetTab = 'fit' | 'kanext' | 'recruiting' | 'timeline' | 'bio' | 'comms';
+type SheetTab = 'bio' | 'fit' | 'kanext' | 'growth' | 'messages' | 'recruiting';
 
-const TAB_LABELS: Record<SheetTab, string> = {
-  fit: 'FIT',
-  kanext: 'KaNeXT',
-  recruiting: 'Recruiting',
-  timeline: 'Timeline',
-  bio: 'Bio',
-  comms: 'Comms',
-};
+const ROSTER_TABS: { key: SheetTab; label: string }[] = [
+  { key: 'bio', label: 'Bio' },
+  { key: 'fit', label: 'Fit' },
+  { key: 'kanext', label: 'KaNeXT' },
+  { key: 'growth', label: 'Growth' },
+  { key: 'messages', label: 'Messages' },
+];
+
+const RECRUIT_TABS: { key: SheetTab; label: string }[] = [
+  ...ROSTER_TABS,
+  { key: 'recruiting', label: 'Recruiting' },
+];
 
 const ALL_CLUSTER_KEYS: (keyof ClusterRatings)[] = [
   'shooting', 'finishing', 'playmaking',
@@ -110,6 +122,38 @@ const CLASS_SHORT: Record<string, string> = {
   'R-Junior': 'R-Jr', 'R-Senior': 'R-Sr',
 };
 
+// Badge description mapping for Calling Cards
+const BADGE_DESCRIPTIONS: Record<string, string> = {
+  'Catch-and-Shoot': 'Elite perimeter shooting in catch-and-shoot situations',
+  'Movement Shooter': 'Deadly off screens and in motion',
+  'Deep Range': 'Extends the floor beyond the arc with deep range',
+  'Pull-Up Shot Maker': 'Creates own shot off the dribble with elite pull-up game',
+  'Rim Finisher': 'Dominant finishing at the rim on drives and cuts',
+  'Contact Finisher': 'Finishes through contact with explosive power',
+  'Rim Pressure': 'Constant pressure at the basket creates scoring opportunities',
+  'FT Generator': 'Gets to the line at an elite rate through crafty play',
+  'Cutter': 'Elite off-ball movement and cutting ability',
+  'Primary Playmaker': 'Orchestrates the offense with elite vision and passing',
+  'Drive-and-Kick': 'Attacks and creates open looks for teammates',
+  'Ball Security': 'Protects the ball with elite handles and decision-making',
+  'Transition Playmaker': 'Pushes the pace and creates in transition',
+  'Point-of-Attack': 'Locks down the primary ball-handler',
+  'Ball Pressure': 'Relentless on-ball pressure forces turnovers',
+  'Lockdown Perimeter': 'Elite perimeter defender who takes away the best option',
+  'Rim Protector': 'Anchors the defense with elite shot-blocking',
+  'Paint Anchor': 'Commands the paint with physical post defense',
+  'Help Defender': 'Elite help-side instincts and positioning',
+  'Passing Lane Disruptor': 'Active hands create deflections and steals',
+  'Defensive Rebounder': 'Controls the glass on the defensive end',
+  'Physical Rebounder': 'Crashes the offensive boards with relentless effort',
+};
+
+// Recruiting pipeline stages for Stage Pipeline
+const PIPELINE_STAGES: string[] = [
+  'Watchlist', 'Evaluating', 'Contacted', 'Priority',
+  'Visit Planned', 'Visited', 'Offer Out', 'Committed', 'Signed',
+];
+
 // ── Cluster Bar ──
 
 function ClusterBar({
@@ -119,6 +163,7 @@ function ClusterBar({
   jerseyNumber,
   expanded,
   onToggle,
+  showEvidence,
 }: {
   clusterKey: keyof ClusterRatings;
   value: number;
@@ -126,6 +171,7 @@ function ClusterBar({
   jerseyNumber?: string;
   expanded: boolean;
   onToggle: () => void;
+  showEvidence?: boolean;
 }) {
   const label = CLUSTER_LABELS[clusterKey as ClusterType]?.label ?? clusterKey;
   const barColor = value >= 70 ? '#4CAF50' : value >= 55 ? '#FF9800' : '#EF4444';
@@ -153,12 +199,22 @@ function ClusterBar({
         const scColor = sc.rating >= 70 ? '#4CAF50' : sc.rating >= 55 ? '#FF9800' : '#EF4444';
         const scPct = Math.min(sc.rating, 100);
         return (
-          <View key={sc.name} style={barStyles.subRow}>
-            <Text style={barStyles.subLabel}>{sc.name}</Text>
-            <View style={barStyles.subBarTrack}>
-              <View style={[barStyles.barFill, { width: `${scPct}%`, backgroundColor: scColor }]} />
+          <View key={sc.name}>
+            <View style={barStyles.subRow}>
+              <Text style={barStyles.subLabel}>{sc.name}</Text>
+              <View style={barStyles.subBarTrack}>
+                <View style={[barStyles.barFill, { width: `${scPct}%`, backgroundColor: scColor }]} />
+              </View>
+              <Text style={[barStyles.subValue, { color: scColor }]}>{sc.rating}</Text>
             </View>
-            <Text style={[barStyles.subValue, { color: scColor }]}>{sc.rating}</Text>
+            {showEvidence && (
+              <View style={barStyles.evidenceRow}>
+                <Text style={barStyles.evidenceLabel}>Evidence</Text>
+                <Text style={barStyles.evidenceItem}>
+                  {sc.rating >= 80 ? 'Film clip available' : 'Stat-based projection'}
+                </Text>
+              </View>
+            )}
           </View>
         );
       })}
@@ -178,6 +234,9 @@ const barStyles = StyleSheet.create({
   subLabel: { fontSize: 10, color: '#999', width: 100 },
   subBarTrack: { flex: 1, height: 5, backgroundColor: '#222', borderRadius: 3, overflow: 'hidden', marginHorizontal: 6 },
   subValue: { fontSize: 11, fontWeight: '600', width: 24, textAlign: 'right' },
+  evidenceRow: { paddingLeft: 32, marginBottom: 6 },
+  evidenceLabel: { fontSize: 10, color: '#555', letterSpacing: 0.3, marginBottom: 2 },
+  evidenceItem: { fontSize: 10, color: '#666', fontStyle: 'italic' },
 });
 
 // ── Main Sheet ──
@@ -200,7 +259,7 @@ export interface PlayerSheetProps {
   baseKROverride?: number;
   /** Player height + weight */
   physicals?: { height: string; weight: number };
-  /** FMU jersey number — enables Timeline, Bio tabs (4-tab roster mode) */
+  /** FMU jersey number — enables roster mode (5-tab) */
   jerseyNumber?: string;
   /** Board entry for this player (enables Recruiting tab) */
   boardEntry?: BoardEntry | null;
@@ -237,14 +296,8 @@ export function PlayerSheet({
 }: PlayerSheetProps) {
   const router = useRouter();
   const isRoster = !!jerseyNumber;
-  const tabs: SheetTab[] = [
-    'bio',
-    'fit',
-    'kanext',
-    'timeline',
-    'comms',
-  ];
-  const defaultTab: SheetTab = defaultTabOverride ?? 'bio';
+  const tabs = isRoster ? ROSTER_TABS : RECRUIT_TABS;
+  const defaultTab: SheetTab = defaultTabOverride ?? (isRoster ? 'bio' : 'recruiting');
 
   const [activeTab, setActiveTab] = useState<SheetTab>(defaultTab);
   const [expandedClusters, setExpandedClusters] = useState<Set<string>>(new Set());
@@ -253,6 +306,7 @@ export function PlayerSheet({
   const [showAllAwards, setShowAllAwards] = useState(false);
   const [showFitSelector, setShowFitSelector] = useState(false);
   const [showFullBreakdown, setShowFullBreakdown] = useState(false);
+  const [expandedReceipts, setExpandedReceipts] = useState<Set<string>>(new Set());
 
   const toggleCluster = (key: string) => {
     setExpandedClusters((prev) => {
@@ -272,6 +326,15 @@ export function PlayerSheet({
     });
   };
 
+  const toggleReceipt = (lane: string) => {
+    setExpandedReceipts((prev) => {
+      const next = new Set(prev);
+      if (next.has(lane)) next.delete(lane);
+      else next.add(lane);
+      return next;
+    });
+  };
+
   useEffect(() => {
     if (visible && player) {
       setActiveTab(defaultTab);
@@ -281,6 +344,7 @@ export function PlayerSheet({
       setShowAllAwards(false);
       setShowFitSelector(false);
       setShowFullBreakdown(false);
+      setExpandedReceipts(new Set());
     }
   }, [visible, player]);
 
@@ -350,10 +414,11 @@ export function PlayerSheet({
     return jerseyNumber ? getPlayerComms(jerseyNumber) : getRecruitComms(player.id);
   }, [player?.id, jerseyNumber]);
 
-  // Similar players — same position or archetype, sorted by KR proximity
+  // Similar players — same position or archetype, with shared badge overlap
   const similarPlayers = useMemo(() => {
     if (!player) return [];
     const myKR = baseKROverride ?? ratings?.overall ?? 0;
+    const myBadgeNames = new Set(playerBadges.map((b) => b.name));
     return PLAYER_POOL
       .filter((p) => p.id !== player.id)
       .map((p) => {
@@ -362,12 +427,20 @@ export function PlayerSheet({
         const posMatch = p.position === player.position;
         const archMatch = p.archetype === player.archetype;
         if (!posMatch && !archMatch) return null;
-        return { player: p, kr, posMatch, archMatch, dist: Math.abs(kr - myKR) };
+        // Compute shared badges
+        let sharedBadge: string | null = null;
+        if (r?.clusters) {
+          const pSubs = (key: keyof ClusterRatings) => getPoolPlayerSubclusters(p.id, key, r.clusters[key]);
+          const pBadges = computePlayerBadges(r.clusters, pSubs);
+          const shared = pBadges.find((b) => myBadgeNames.has(b.name));
+          if (shared) sharedBadge = shared.name;
+        }
+        return { player: p, kr, posMatch, archMatch, dist: Math.abs(kr - myKR), sharedBadge };
       })
       .filter(Boolean)
       .sort((a, b) => a!.dist - b!.dist)
-      .slice(0, 5) as { player: PoolPlayer; kr: number; posMatch: boolean; archMatch: boolean; dist: number }[];
-  }, [player?.id, player?.position, player?.archetype, baseKROverride, ratings?.overall]);
+      .slice(0, 3) as { player: PoolPlayer; kr: number; posMatch: boolean; archMatch: boolean; dist: number; sharedBadge: string | null }[];
+  }, [player?.id, player?.position, player?.archetype, baseKROverride, ratings?.overall, playerBadges]);
 
   // Team targets — teammates from recruit's school ranked by system fit
   const teamTargets = useMemo(() => {
@@ -385,6 +458,39 @@ export function PlayerSheet({
       .sort((a, b) => b.fitKr - a.fitKr)
       .slice(0, 5);
   }, [player?.id, player?.currentSchool, offStyle, defStyle]);
+
+  // Growth tab: trend summary (must be before early return to satisfy Rules of Hooks)
+  const growthTrend = useMemo(() => {
+    if (seasons.length >= 2 && seasons[0].kr != null && seasons[1].kr != null) {
+      const diff = seasons[0].kr - seasons[1].kr;
+      if (diff >= 5) return { label: 'Trending Up', color: '#4CAF50', delta: `+${diff}` };
+      if (diff <= -5) return { label: 'Declining', color: '#EF4444', delta: `${diff}` };
+      return { label: 'Steady', color: '#FF9800', delta: diff > 0 ? `+${diff}` : `${diff}` };
+    }
+    if (career.length >= 2) {
+      const currentKR = career.find((s) => s.current)?.kr;
+      const prevKR = career.find((s) => !s.current)?.kr;
+      if (currentKR != null && prevKR != null) {
+        const diff = currentKR - prevKR;
+        if (diff >= 5) return { label: 'Trending Up', color: '#4CAF50', delta: `+${diff}` };
+        if (diff <= -5) return { label: 'Declining', color: '#EF4444', delta: `${diff}` };
+        return { label: 'Steady', color: '#FF9800', delta: diff > 0 ? `+${diff}` : `${diff}` };
+      }
+    }
+    return { label: 'Developing', color: '#6e6e6e', delta: null };
+  }, [seasons, career]);
+
+  // Receipts: receipt strength (recruits only, must be before early return)
+  const receiptStrength = useMemo(() => {
+    if (isRoster || !player) return null;
+    let filled = 0;
+    if (seasons.length > 0) filled++;
+    if (player.currentSchool && player.level) filled++;
+    if (filled === 0) return null;
+    if (filled === 1) return { label: 'Low', color: GRAY };
+    if (filled === 2) return { label: 'Medium', color: '#FF9800' };
+    return { label: 'High', color: '#4CAF50' };
+  }, [isRoster, seasons.length, player?.currentSchool, player?.level, player]);
 
   if (!player) return null;
 
@@ -406,8 +512,8 @@ export function PlayerSheet({
   const pairingLabels = pairings.map((a) => ARCHETYPE_LABELS[a] ?? a);
 
   // Header vitals
-  const displayHeight = bio?.height ?? physicals?.height;
-  const displayWeight = bio ? bio.weight : physicals?.weight ? `${physicals.weight}` : null;
+  const displayHeight = bio?.height ?? physicals?.height ?? player.height;
+  const displayWeight = bio ? bio.weight : physicals?.weight ? `${physicals.weight}` : player.weight ? `${player.weight}` : null;
   const classYearShort = bio ? (CLASS_SHORT[bio.classYear] ?? bio.classYear) : null;
 
   // Drivers / risks for FIT tab
@@ -418,6 +524,10 @@ export function PlayerSheet({
   // System labels
   const offStyleLabel = OFFENSIVE_STYLES.find(s => s.value === offStyle)?.label ?? offStyle;
   const defStyleLabel = DEFENSIVE_STYLES.find(s => s.value === defStyle)?.label ?? defStyle;
+
+  // Badge strip: first 3 + overflow
+  const headerBadges = playerBadges.slice(0, 3);
+  const overflowBadgeCount = Math.max(0, playerBadges.length - 3);
 
   return (
     <>
@@ -473,21 +583,43 @@ export function PlayerSheet({
         </View>
       </View>
 
+      {/* §2.5 Badge Strip — below rating, above tabs */}
+      {headerBadges.length > 0 && (
+        <View style={styles.badgeStrip}>
+          {headerBadges.map((b, i) => (
+            <View key={i} style={[styles.badgeStripPill, { borderLeftColor: BADGE_LEVEL_COLORS[b.level] }]}>
+              <Text style={styles.badgeStripName}>{b.name}</Text>
+            </View>
+          ))}
+          {overflowBadgeCount > 0 && (
+            <Pressable
+              style={styles.badgeStripOverflow}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActiveTab('kanext');
+              }}
+            >
+              <Text style={styles.badgeStripOverflowText}>+{overflowBadgeCount}</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
+
       {/* §3 Tab pills */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabScroll} contentContainerStyle={styles.tabRow}>
         {tabs.map((tab) => {
-          const isActive = activeTab === tab;
+          const isActive = activeTab === tab.key;
           return (
             <Pressable
-              key={tab}
+              key={tab.key}
               style={[styles.tabPill, isActive && styles.tabPillActive]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setActiveTab(tab);
+                setActiveTab(tab.key);
               }}
             >
               <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
-                {TAB_LABELS[tab]}
+                {tab.label}
               </Text>
             </Pressable>
           );
@@ -497,86 +629,99 @@ export function PlayerSheet({
       {/* ═══════════ BIO TAB ═══════════ */}
       {activeTab === 'bio' && (
         <View style={[styles.tabContent, styles.tabContentSpaced]}>
-          {/* 1) Quick Facts row */}
-          {bio ? (
-            <View style={styles.quickFactsRow}>
-              <View style={styles.quickFact}>
-                <Text style={styles.quickFactLabel}>HS</Text>
-                <Text style={styles.quickFactValue} numberOfLines={1}>{bio.highSchool || '\u2014'}</Text>
-              </View>
-              <View style={styles.quickFact}>
-                <Text style={styles.quickFactLabel}>Home</Text>
-                <Text style={styles.quickFactValue} numberOfLines={1}>{bio.hometown || '\u2014'}</Text>
-              </View>
-              <View style={styles.quickFact}>
-                <Text style={styles.quickFactLabel}>Class</Text>
-                <Text style={styles.quickFactValue}>{classYearShort ?? bio.classYear}</Text>
-              </View>
+          {/* 1) Identity Chips — horizontal scroll of attribute pills */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.idChipScroll} contentContainerStyle={styles.idChipRow}>
+            <View style={styles.idChip}><Text style={styles.idChipText}>{helioPos}</Text></View>
+            <View style={styles.idChip}><Text style={styles.idChipText}>{classYearShort ?? player.classYear}</Text></View>
+            {displayHeight ? <View style={styles.idChip}><Text style={styles.idChipText}>{displayHeight}</Text></View> : null}
+            {displayWeight ? <View style={styles.idChip}><Text style={styles.idChipText}>{displayWeight} lbs</Text></View> : null}
+            <View style={styles.idChip}>
+              <Text style={styles.idChipText} numberOfLines={1}>
+                {bio?.hometown ?? player.state}
+              </Text>
             </View>
-          ) : player && (
-            <View style={styles.quickFactsRow}>
-              <View style={styles.quickFact}>
-                <Text style={styles.quickFactLabel}>School</Text>
-                <Text style={styles.quickFactValue} numberOfLines={1}>{player.currentSchool}</Text>
-              </View>
-              <View style={styles.quickFact}>
-                <Text style={styles.quickFactLabel}>Level</Text>
-                <Text style={styles.quickFactValue} numberOfLines={1}>{player.level}</Text>
-              </View>
-              <View style={styles.quickFact}>
-                <Text style={styles.quickFactLabel}>Class</Text>
-                <Text style={styles.quickFactValue}>{player.classYear}</Text>
-              </View>
+            <View style={styles.idChip}>
+              <Text style={styles.idChipText} numberOfLines={1}>
+                {bio?.highSchool ?? player.currentSchool}
+              </Text>
             </View>
-          )}
+            {!isRoster && player.level && (
+              <View style={styles.idChip}><Text style={styles.idChipText}>{levelLabel}</Text></View>
+            )}
+          </ScrollView>
 
-          {/* 2) Current Season card */}
+          {/* 2) Role + Archetype */}
+          <View style={styles.roleArchRow}>
+            <View style={styles.roleArchCol}>
+              <Text style={styles.roleArchLabel}>Role</Text>
+              <Text style={styles.roleArchValue}>{lineupSlot}</Text>
+            </View>
+            <View style={styles.roleArchCol}>
+              <Text style={styles.roleArchLabel}>Archetype</Text>
+              <Text style={styles.roleArchValue}>{archetypeLabel}</Text>
+            </View>
+          </View>
+
+          {/* 3) Calling Cards — top 3 badges as expanded cards */}
+          <View style={styles.sectionBlock}>
+            <Text style={styles.sectionTitle}>CALLING CARDS</Text>
+            {playerBadges.length > 0 ? (
+              playerBadges.slice(0, 3).map((b, i) => (
+                <View key={i} style={[styles.callingCard, { borderLeftColor: BADGE_LEVEL_COLORS[b.level] }]}>
+                  <View style={styles.callingCardHeader}>
+                    <Text style={[styles.callingCardName, { color: BADGE_LEVEL_COLORS[b.level] }]}>{b.name}</Text>
+                    <Text style={[styles.callingCardLevel, { color: BADGE_LEVEL_COLORS[b.level] + 'AA' }]}>{b.level}</Text>
+                  </View>
+                  <Text style={styles.callingCardDesc}>
+                    {BADGE_DESCRIPTIONS[b.name] ?? 'Elite ability in this area of the game'}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <Text style={styles.emptyText}>No calling cards yet</Text>
+            )}
+          </View>
+
+          {/* 4) Snapshot Stats — 2x3 grid */}
           {leaderStats && leaderStats.gamesPlayed > 0 ? (
             <View style={styles.statCard}>
-              <Text style={styles.statCardTitle}>CURRENT SEASON</Text>
-              <View style={styles.statRow}>
+              <Text style={styles.statCardTitle}>SNAPSHOT</Text>
+              <View style={styles.statGrid}>
                 {[
                   { v: leaderStats.ppg.toFixed(1), l: 'PPG' },
                   { v: leaderStats.rpg.toFixed(1), l: 'RPG' },
                   { v: leaderStats.apg.toFixed(1), l: 'APG' },
                   { v: `${leaderStats.fgPct.toFixed(1)}%`, l: 'FG%' },
                   { v: `${leaderStats.threePct.toFixed(1)}%`, l: '3P%' },
-                  { v: tsPct > 0 ? `${tsPct}%` : '\u2014', l: 'TS%' },
+                  { v: currentSeason ? `${currentSeason.mpg}` : '\u2014', l: 'MPG' },
                 ].map((s) => (
-                  <View key={s.l} style={styles.statItem}>
+                  <View key={s.l} style={styles.statGridItem}>
                     <Text style={styles.statValue}>{s.v}</Text>
                     <Text style={styles.statLabel}>{s.l}</Text>
                   </View>
                 ))}
               </View>
-              {currentSeason && (
-                <Text style={styles.statMeta}>
-                  GP {currentSeason.gp}
-                  {currentSeason.mpg > 0 ? ` \u00B7 MPG ${currentSeason.mpg}` : ''}
-                  {currentSeason.gs > 0 ? ` \u00B7 GS ${currentSeason.gs}` : ''}
-                </Text>
-              )}
             </View>
           ) : seasons.length > 0 ? (
             <View style={styles.statCard}>
-              <Text style={styles.statCardTitle}>CURRENT SEASON</Text>
-              <View style={styles.statRow}>
+              <Text style={styles.statCardTitle}>SNAPSHOT</Text>
+              <View style={styles.statGrid}>
                 {[
                   { v: seasons[0].ppg.toFixed(1), l: 'PPG' },
                   { v: seasons[0].rpg.toFixed(1), l: 'RPG' },
                   { v: seasons[0].apg.toFixed(1), l: 'APG' },
                   { v: `${seasons[0].fgPct}%`, l: 'FG%' },
-                  { v: `${seasons[0].threePct}%`, l: '3P%' },
-                  { v: '\u2014', l: 'TS%' },
+                  { v: seasons[0].threePct > 0 ? `${seasons[0].threePct}%` : '\u2014', l: '3P%' },
+                  { v: `${seasons[0].mpg}`, l: 'MPG' },
                 ].map((s) => (
-                  <View key={s.l} style={styles.statItem}>
+                  <View key={s.l} style={styles.statGridItem}>
                     <Text style={styles.statValue}>{s.v}</Text>
                     <Text style={styles.statLabel}>{s.l}</Text>
                   </View>
                 ))}
               </View>
               <Text style={styles.statMeta}>
-                {seasons[0].gp} GP {'\u00B7'} {seasons[0].mpg} MPG {'\u00B7'} {seasons[0].school}
+                {seasons[0].gp} GP {'\u00B7'} {seasons[0].school}
               </Text>
             </View>
           ) : player.keyStatLine ? (
@@ -586,114 +731,33 @@ export function PlayerSheet({
             </View>
           ) : null}
 
-          {/* 3) Season Highlights */}
-          {highlights.length > 0 && (
-            <View style={styles.sectionBlock}>
-              <Text style={styles.sectionTitle}>SEASON HIGHLIGHTS</Text>
-              {highlights.map((h, i) => (
-                <Text key={i} style={styles.highlightBullet} numberOfLines={1}>
-                  {'\u2022'} {h}
-                </Text>
-              ))}
-            </View>
-          )}
-
-          {/* 4) Awards */}
-          {awards.length > 0 && (
-            <View style={styles.sectionBlock}>
-              <Text style={styles.sectionTitle}>AWARDS</Text>
-              {(showAllAwards ? awards : awards.slice(0, 3)).map((a, i) => (
-                <View key={i} style={styles.awardRow}>
-                  <Text style={styles.awardTitle} numberOfLines={1}>{a.title}</Text>
-                  <Text style={styles.awardYear}>{a.year}</Text>
-                </View>
-              ))}
-              {awards.length > 3 && !showAllAwards && (
-                <Pressable onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setShowAllAwards(true);
-                }}>
-                  <Text style={styles.viewAllLink}>View all awards</Text>
-                </Pressable>
-              )}
-            </View>
-          )}
-
-          {/* 5) Recruiting / Identity mini row */}
-          <View style={styles.identityRow}>
-            <Text style={styles.identityLabel}>Archetype: </Text>
-            <Text style={styles.identityValue}>{archetypeLabel}</Text>
-            <Text style={styles.identityDivider}> {'\u00B7'} </Text>
-            <Text style={styles.identityLabel}>Role: </Text>
-            <Text style={styles.identityValue}>{lineupSlot}</Text>
-          </View>
-
-          {/* 6) Badges */}
-          {playerBadges.length > 0 && (
-            <View style={styles.sectionBlock}>
-              <Text style={styles.sectionTitle}>BADGES</Text>
-              <View style={styles.badgeRow}>
-                {playerBadges.map((b, i) => (
-                  <View key={i} style={[styles.badgePill, { borderColor: BADGE_LEVEL_COLORS[b.level] + '60' }]}>
-                    <View style={[styles.badgeDot, { backgroundColor: BADGE_LEVEL_COLORS[b.level] }]} />
-                    <Text style={[styles.badgeName, { color: BADGE_LEVEL_COLORS[b.level] }]}>{b.name}</Text>
-                    <Text style={[styles.badgeLevel, { color: BADGE_LEVEL_COLORS[b.level] + 'AA' }]}>{b.level}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
-
-          {/* 7) About → Bio */}
-          {about && (
-            <View style={styles.sectionBlock}>
-              <Text style={styles.sectionTitle}>BIO</Text>
-              <Text
-                style={styles.aboutText}
-                numberOfLines={bioExpanded ? undefined : 4}
-              >
-                {about}
-              </Text>
-              {!bioExpanded && about.length > 200 && (
-                <Pressable onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setBioExpanded(true);
-                }}>
-                  <Text style={styles.viewAllLink}>Read more</Text>
-                </Pressable>
-              )}
-            </View>
-          )}
-
-          {/* 7) Similar Players */}
+          {/* 5) Similar Players — mini cards with shared badge */}
           {similarPlayers.length > 0 && (
             <View style={styles.sectionBlock}>
               <Text style={styles.sectionTitle}>SIMILAR PLAYERS</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.simRow}>
                 {similarPlayers.map((sp) => {
                   const krColor = sp.kr >= 75 ? '#4CAF50' : sp.kr >= 60 ? '#FF9800' : '#8A8F98';
-                  const tag = sp.posMatch && sp.archMatch ? 'Pos + Archetype' : sp.posMatch ? 'Position' : 'Archetype';
-                  const spAwards = POOL_PLAYER_AWARDS[sp.player.id] ?? [];
                   return (
                     <View key={sp.player.id} style={styles.simCard}>
                       <View style={styles.simCardTop}>
-                        <Text style={styles.simName} numberOfLines={1}>
-                          {sp.player.firstName.charAt(0)}. {sp.player.lastName}
-                        </Text>
-                        <Text style={[styles.simKR, { color: krColor }]}>{sp.kr}</Text>
+                        <View style={styles.simAvatar}>
+                          <Text style={styles.simAvatarText}>
+                            {sp.player.firstName.charAt(0)}{sp.player.lastName.charAt(0)}
+                          </Text>
+                        </View>
+                        <View style={{ flex: 1, marginLeft: 8 }}>
+                          <Text style={styles.simName} numberOfLines={1}>
+                            {sp.player.firstName.charAt(0)}. {sp.player.lastName}
+                          </Text>
+                          <Text style={[styles.simKR, { color: krColor }]}>{sp.kr}</Text>
+                        </View>
                       </View>
-                      <Text style={styles.simMeta} numberOfLines={1}>
-                        {sp.player.position} {'\u00B7'} {sp.player.height} {'\u00B7'} {sp.player.classYear}
-                      </Text>
-                      <Text style={styles.simSchool} numberOfLines={1}>{sp.player.currentSchool}</Text>
-                      {spAwards.length > 0 && (
-                        <Text style={styles.simAward} numberOfLines={1}>
-                          {'\u2605'} {spAwards[0]}
-                        </Text>
+                      {sp.sharedBadge && (
+                        <View style={styles.simBadgePill}>
+                          <Text style={styles.simBadgePillText}>{sp.sharedBadge}</Text>
+                        </View>
                       )}
-                      <View style={styles.simTagRow}>
-                        <Text style={styles.simTag}>{tag}</Text>
-                      </View>
                     </View>
                   );
                 })}
@@ -701,44 +765,86 @@ export function PlayerSheet({
             </View>
           )}
 
-          {/* 8) Team Targets — teammates ranked by system fit */}
-          {teamTargets.length > 0 && (
+          {/* 6) Receipts — recruits only */}
+          {!isRoster && receiptStrength && (
             <View style={styles.sectionBlock}>
-              <Text style={styles.sectionTitle}>TEAM TARGETS — {player.currentSchool.toUpperCase()}</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.simRow}>
-                {teamTargets.map((tt) => {
-                  const fitColor = tt.fitKr >= 75 ? '#4CAF50' : tt.fitKr >= 60 ? '#FF9800' : '#8A8F98';
-                  const deltaColor2 = tt.delta > 0 ? '#4CAF50' : tt.delta < 0 ? '#EF4444' : '#6e6e6e';
-                  const deltaText2 = tt.delta > 0 ? `+${tt.delta}` : `${tt.delta}`;
-                  const ttAwards = POOL_PLAYER_AWARDS[tt.player.id] ?? [];
-                  return (
-                    <View key={tt.player.id} style={styles.simCard}>
-                      <View style={styles.simCardTop}>
-                        <Text style={styles.simName} numberOfLines={1}>
-                          {tt.player.firstName.charAt(0)}. {tt.player.lastName}
-                        </Text>
-                        <Text style={[styles.simKR, { color: fitColor }]}>{tt.fitKr}</Text>
-                      </View>
-                      <View style={styles.simCardTop}>
-                        <Text style={styles.simMeta}>
-                          {tt.player.position} {'\u00B7'} {tt.player.height}
-                        </Text>
-                        <Text style={[styles.ttDelta, { color: deltaColor2 }]}>{deltaText2} fit</Text>
-                      </View>
-                      <Text style={styles.simSchool} numberOfLines={1}>{tt.player.keyStatLine}</Text>
-                      {ttAwards.length > 0 && (
-                        <Text style={styles.simAward} numberOfLines={1}>
-                          {'\u2605'} {ttAwards[0]}
-                        </Text>
-                      )}
+              <View style={styles.receiptHeader}>
+                <Text style={styles.sectionTitle}>RECEIPTS</Text>
+                <View style={[styles.receiptStrengthPill, { backgroundColor: receiptStrength.color + '20' }]}>
+                  <Text style={[styles.receiptStrengthText, { color: receiptStrength.color }]}>
+                    {receiptStrength.label}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Performance lane */}
+              <Pressable
+                style={styles.receiptLane}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  toggleReceipt('performance');
+                }}
+              >
+                <Text style={styles.receiptLaneTitle}>Verified Performance</Text>
+                <Text style={styles.receiptLaneChevron}>{expandedReceipts.has('performance') ? '\u25BE' : '\u203A'}</Text>
+              </Pressable>
+              {expandedReceipts.has('performance') && (
+                <View style={styles.receiptLaneContent}>
+                  {seasons.length > 0 ? (
+                    <View>
+                      <Text style={styles.receiptStatLine}>
+                        {seasons[0].ppg} PPG {'\u00B7'} {seasons[0].rpg} RPG {'\u00B7'} {seasons[0].apg} APG
+                      </Text>
+                      <Text style={styles.receiptStatLine}>
+                        {seasons[0].fgPct}% FG {'\u00B7'} {seasons[0].threePct > 0 ? `${seasons[0].threePct}% 3P` : ''} {'\u00B7'} {seasons[0].gp} GP
+                      </Text>
                     </View>
-                  );
-                })}
-              </ScrollView>
+                  ) : (
+                    <Text style={styles.receiptEmpty}>No verified stats available</Text>
+                  )}
+                </View>
+              )}
+
+              {/* Film lane */}
+              <Pressable
+                style={styles.receiptLane}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  toggleReceipt('film');
+                }}
+              >
+                <Text style={styles.receiptLaneTitle}>Verified Film Evidence</Text>
+                <Text style={styles.receiptLaneChevron}>{expandedReceipts.has('film') ? '\u25BE' : '\u203A'}</Text>
+              </Pressable>
+              {expandedReceipts.has('film') && (
+                <View style={styles.receiptLaneContent}>
+                  <Text style={styles.receiptEmpty}>No verified film yet</Text>
+                </View>
+              )}
+
+              {/* Context lane */}
+              <Pressable
+                style={styles.receiptLane}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  toggleReceipt('context');
+                }}
+              >
+                <Text style={styles.receiptLaneTitle}>Verified Context</Text>
+                <Text style={styles.receiptLaneChevron}>{expandedReceipts.has('context') ? '\u25BE' : '\u203A'}</Text>
+              </Pressable>
+              {expandedReceipts.has('context') && (
+                <View style={styles.receiptLaneContent}>
+                  <Text style={styles.receiptStatLine}>Level: {player.level}</Text>
+                  <Text style={styles.receiptStatLine}>School: {player.currentSchool}</Text>
+                  <Text style={styles.receiptStatLine}>Position: {posLabel}</Text>
+                  <Text style={styles.receiptStatLine}>Conference: {player.conference}</Text>
+                </View>
+              )}
             </View>
           )}
 
-          {!about && !bio && awards.length === 0 && (
+          {!about && !bio && awards.length === 0 && playerBadges.length === 0 && (
             <Text style={styles.emptyText}>No bio data available.</Text>
           )}
         </View>
@@ -883,8 +989,25 @@ export function PlayerSheet({
               jerseyNumber={jerseyNumber}
               expanded={expandedClusters.has(key)}
               onToggle={() => toggleCluster(key)}
+              showEvidence
             />
           ))}
+
+          {/* Badges */}
+          {playerBadges.length > 0 && (
+            <View style={[styles.sectionBlock, { marginTop: 16 }]}>
+              <Text style={styles.sectionTitle}>BADGES</Text>
+              <View style={styles.badgeRow}>
+                {playerBadges.map((b, i) => (
+                  <View key={i} style={[styles.badgePill, { borderColor: BADGE_LEVEL_COLORS[b.level] + '60' }]}>
+                    <View style={[styles.badgeDot, { backgroundColor: BADGE_LEVEL_COLORS[b.level] }]} />
+                    <Text style={[styles.badgeName, { color: BADGE_LEVEL_COLORS[b.level] }]}>{b.name}</Text>
+                    <Text style={[styles.badgeLevel, { color: BADGE_LEVEL_COLORS[b.level] + 'AA' }]}>{b.level}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
 
           {/* Coach note */}
           <View style={[styles.noteBox, { marginTop: 16 }]}>
@@ -905,9 +1028,179 @@ export function PlayerSheet({
         <Text style={styles.emptyText}>No cluster data available.</Text>
       )}
 
-      {/* ═══════════ TIMELINE TAB ═══════════ */}
-      {/* ═══════════ COMMS TAB ═══════════ */}
-      {activeTab === 'comms' && (
+      {/* ═══════════ GROWTH TAB ═══════════ */}
+      {activeTab === 'growth' && (
+        <View style={[styles.tabContent, styles.tabContentSpaced]}>
+          {/* §1 Trend Summary */}
+          <View style={[styles.trendCard, { borderLeftColor: growthTrend.color }]}>
+            <Text style={[styles.trendLabel, { color: growthTrend.color }]}>{growthTrend.label}</Text>
+            {growthTrend.delta && (
+              <Text style={[styles.trendDelta, { color: growthTrend.color }]}>
+                KR {growthTrend.delta}
+              </Text>
+            )}
+          </View>
+
+          {/* §2 Year-by-Year Progression */}
+          {career.length > 0 ? (
+            career.map((s, idx) => {
+              const isExpanded = expandedCareer.has(s.year);
+              const krColor = (s.kr ?? 0) >= 75 ? '#4CAF50' : (s.kr ?? 0) >= 60 ? '#FF9800' : '#8A8F98';
+              const isLast = idx === career.length - 1;
+              return (
+                <View key={s.year}>
+                  <View style={styles.growthTimelineRow}>
+                    <View style={styles.growthDotCol}>
+                      <View style={[styles.growthDot, { backgroundColor: krColor }]} />
+                      {!isLast && <View style={styles.growthLine} />}
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Pressable
+                        style={styles.careerRow}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          toggleCareer(s.year);
+                        }}
+                      >
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.careerYear}>
+                            {s.year} {'\u00B7'} {s.school} {'\u00B7'} {s.division}
+                          </Text>
+                          <Text style={styles.careerMeta}>
+                            {s.gp} GP {'\u00B7'} {s.mpg} MPG
+                            {s.current ? '  (Current)' : ''}
+                          </Text>
+                        </View>
+                        {s.kr != null && (
+                          <View style={[styles.careerKRBadge, { backgroundColor: krColor + '20' }]}>
+                            <Text style={[styles.careerKRText, { color: krColor }]}>{s.kr}</Text>
+                          </View>
+                        )}
+                        <Text style={styles.careerChevron}>{isExpanded ? '\u25BE' : '\u203A'}</Text>
+                      </Pressable>
+
+                      {isExpanded && (
+                        <View style={styles.careerExpanded}>
+                          <View style={styles.careerStatsGrid}>
+                            {[
+                              { v: s.ppg.toFixed(1), l: 'PPG' },
+                              { v: s.rpg.toFixed(1), l: 'RPG' },
+                              { v: s.apg.toFixed(1), l: 'APG' },
+                              { v: `${s.fgPct}%`, l: 'FG%' },
+                              ...(s.threePct > 0 ? [{ v: `${s.threePct}%`, l: '3P%' }] : []),
+                              { v: `${s.ftPct}%`, l: 'FT%' },
+                            ].map((stat) => (
+                              <View key={stat.l} style={styles.careerStatItem}>
+                                <Text style={styles.careerStatValue}>{stat.v}</Text>
+                                <Text style={styles.careerStatLabel}>{stat.l}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        </View>
+                      )}
+                    </View>
+                  </View>
+                </View>
+              );
+            })
+          ) : seasons.length > 0 ? (
+            seasons.map((s, idx) => {
+              const isExpanded = expandedCareer.has(s.season);
+              const sKrColor = (s.kr ?? 0) >= 75 ? '#4CAF50' : (s.kr ?? 0) >= 60 ? '#FF9800' : '#8A8F98';
+              const isLast = idx === seasons.length - 1;
+              return (
+                <View key={s.season}>
+                  <View style={styles.growthTimelineRow}>
+                    <View style={styles.growthDotCol}>
+                      <View style={[styles.growthDot, { backgroundColor: sKrColor }]} />
+                      {!isLast && <View style={styles.growthLine} />}
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Pressable
+                        style={styles.careerRow}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          toggleCareer(s.season);
+                        }}
+                      >
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.careerYear}>
+                            {s.season} {'\u00B7'} {s.school} {'\u00B7'} {s.level}
+                          </Text>
+                          <Text style={styles.careerMeta}>
+                            {s.gp} GP {'\u00B7'} {s.mpg} MPG
+                          </Text>
+                        </View>
+                        {s.kr != null && (
+                          <View style={[styles.careerKRBadge, { backgroundColor: sKrColor + '20' }]}>
+                            <Text style={[styles.careerKRText, { color: sKrColor }]}>{s.kr}</Text>
+                          </View>
+                        )}
+                        <Text style={styles.careerChevron}>{isExpanded ? '\u25BE' : '\u203A'}</Text>
+                      </Pressable>
+
+                      {isExpanded && (
+                        <View style={styles.careerExpanded}>
+                          <View style={styles.careerStatsGrid}>
+                            {[
+                              { v: s.ppg.toFixed(1), l: 'PPG' },
+                              { v: s.rpg.toFixed(1), l: 'RPG' },
+                              { v: s.apg.toFixed(1), l: 'APG' },
+                              { v: s.spg.toFixed(1), l: 'SPG' },
+                              { v: s.bpg.toFixed(1), l: 'BPG' },
+                              { v: `${s.fgPct}%`, l: 'FG%' },
+                              ...(s.threePct > 0 ? [{ v: `${s.threePct}%`, l: '3P%' }] : []),
+                              { v: `${s.ftPct}%`, l: 'FT%' },
+                            ].map((stat) => (
+                              <View key={stat.l} style={styles.careerStatItem}>
+                                <Text style={styles.careerStatValue}>{stat.v}</Text>
+                                <Text style={styles.careerStatLabel}>{stat.l}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        </View>
+                      )}
+                    </View>
+                  </View>
+                </View>
+              );
+            })
+          ) : (
+            <View style={styles.growthEmpty}>
+              <Text style={styles.careerYear}>Current Stats</Text>
+              {player.keyStatLine ? (
+                <Text style={styles.careerMeta}>{player.keyStatLine}</Text>
+              ) : null}
+              <Text style={styles.emptyText}>First tracked season</Text>
+            </View>
+          )}
+
+          {/* §3 Badge Evolution */}
+          {playerBadges.length > 0 && (
+            <View style={[styles.sectionBlock, { marginTop: 16 }]}>
+              <Text style={styles.sectionTitle}>BADGE EVOLUTION</Text>
+              {playerBadges.map((b, i) => (
+                <View key={i} style={styles.badgeEvoRow}>
+                  <View style={[styles.badgeDot, { backgroundColor: BADGE_LEVEL_COLORS[b.level] }]} />
+                  <Text style={[styles.badgeEvoName, { color: BADGE_LEVEL_COLORS[b.level] }]}>{b.name}</Text>
+                  <View style={styles.badgeEvoTag}>
+                    <Text style={styles.badgeEvoTagText}>Current</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* §4 Development Notes placeholder */}
+          <View style={[styles.sectionBlock, { marginTop: 16 }]}>
+            <Text style={styles.sectionTitle}>DEVELOPMENT NOTES</Text>
+            <Text style={styles.emptyText}>Development notes will appear here</Text>
+          </View>
+        </View>
+      )}
+
+      {/* ═══════════ MESSAGES TAB ═══════════ */}
+      {activeTab === 'messages' && (
         <View style={[styles.tabContent, styles.tabContentSpaced]}>
           {/* Open Messages button */}
           <Pressable
@@ -918,11 +1211,7 @@ export function PlayerSheet({
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               onClose();
-              if (isRoster) {
-                router.push('/(tabs)/activity' as any);
-              } else {
-                router.push('/(tabs)/activity' as any);
-              }
+              router.push('/(tabs)/activity' as any);
             }}
           >
             <IconSymbol name="bubble.left.and.bubble.right.fill" size={16} color="#3B82F6" />
@@ -1008,100 +1297,154 @@ export function PlayerSheet({
       {/* ═══════════ RECRUITING TAB ═══════════ */}
       {activeTab === 'recruiting' && !isRoster && (
         <View style={[styles.tabContent, styles.tabContentSpaced]}>
-          {/* §1 Recruiting Snapshot card */}
-          <View style={rcStyles.snapshotCard}>
-            <View style={rcStyles.snapshotRow}>
-              <Text style={rcStyles.snapshotLabel}>RECRUITING SNAPSHOT</Text>
-            </View>
-            {boardEntry ? (
-              <View style={[rcStyles.boardPill, { backgroundColor: (BOARD_COLUMN_COLORS[boardEntry.status] ?? '#2A2D35') + '30' }]}>
-                <View style={[rcStyles.boardPillDot, { backgroundColor: BOARD_COLUMN_COLORS[boardEntry.status] ?? '#8A8F98' }]} />
-                <Text style={[rcStyles.boardPillText, { color: BOARD_COLUMN_COLORS[boardEntry.status] ?? '#f5f5f5' }]}>
-                  {boardEntry.status}
-                </Text>
+          {/* §1 Stage Pipeline */}
+          <View style={rcStyles.pipelineContainer}>
+            <Text style={rcStyles.pipelineTitle}>PIPELINE</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={rcStyles.pipelineRow}>
+                {PIPELINE_STAGES.map((stage, idx) => {
+                  const currentIdx = boardEntry ? PIPELINE_STAGES.indexOf(boardEntry.status) : -1;
+                  const isCurrent = boardEntry?.status === stage;
+                  const isCompleted = currentIdx >= 0 && idx < currentIdx;
+                  const stageColor = BOARD_COLUMN_COLORS[stage as BoardStatus] ?? '#6e6e6e';
+                  return (
+                    <View key={stage} style={styles.pipelineItem}>
+                      <View style={[
+                        rcStyles.pipelineDot,
+                        isCompleted && { backgroundColor: stageColor },
+                        isCurrent && { backgroundColor: stageColor, borderWidth: 2, borderColor: '#fff' },
+                        !isCompleted && !isCurrent && { backgroundColor: '#2a2a2a' },
+                      ]} />
+                      <Text style={[
+                        rcStyles.pipelineLabel,
+                        isCurrent && { color: stageColor, fontWeight: '700' },
+                        isCompleted && { color: '#999' },
+                      ]} numberOfLines={1}>{stage}</Text>
+                      {idx < PIPELINE_STAGES.length - 1 && (
+                        <View style={[
+                          rcStyles.pipelineConnector,
+                          isCompleted ? { backgroundColor: stageColor + '80' } : { backgroundColor: '#2a2a2a' },
+                        ]} />
+                      )}
+                    </View>
+                  );
+                })}
               </View>
+            </ScrollView>
+          </View>
+
+          {/* §2 Enhanced Snapshot */}
+          <View style={rcStyles.snapshotCard}>
+            <Text style={rcStyles.snapshotLabel}>RECRUITING SNAPSHOT</Text>
+            {boardEntry ? (
+              <>
+                <View style={rcStyles.snapshotRow}>
+                  <View style={[rcStyles.boardPill, { backgroundColor: (BOARD_COLUMN_COLORS[boardEntry.status] ?? '#2A2D35') + '30' }]}>
+                    <View style={[rcStyles.boardPillDot, { backgroundColor: BOARD_COLUMN_COLORS[boardEntry.status] ?? '#8A8F98' }]} />
+                    <Text style={[rcStyles.boardPillText, { color: BOARD_COLUMN_COLORS[boardEntry.status] ?? '#f5f5f5' }]}>
+                      {boardEntry.status}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Temperature + Risk */}
+                <View style={rcStyles.snapshotMetaRow}>
+                  <View style={[rcStyles.tempPill, { backgroundColor: (TEMPERATURE_COLORS[boardEntry.temperature] ?? '#6e6e6e') + '20' }]}>
+                    <Text style={[rcStyles.tempText, { color: TEMPERATURE_COLORS[boardEntry.temperature] ?? '#6e6e6e' }]}>
+                      {boardEntry.temperature}
+                    </Text>
+                  </View>
+                  <View style={[rcStyles.riskPill, { backgroundColor: (RISK_LEVEL_COLORS[boardEntry.riskLevel] ?? '#6e6e6e') + '20' }]}>
+                    <Text style={[rcStyles.riskText, { color: RISK_LEVEL_COLORS[boardEntry.riskLevel] ?? '#6e6e6e' }]}>
+                      Risk: {boardEntry.riskLevel}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Offer status */}
+                {boardEntry.offer && (
+                  <Text style={rcStyles.snapshotDetail}>
+                    Offer: {boardEntry.offer.scholarshipPct}% ({boardEntry.offer.offerType})
+                  </Text>
+                )}
+
+                {/* NIL range */}
+                {boardEntry.nil && (
+                  <Text style={rcStyles.snapshotDetail}>
+                    NIL: {boardEntry.nil.amount} {'\u00B7'} {boardEntry.nil.status}
+                  </Text>
+                )}
+
+                {/* Visit status */}
+                {boardEntry.visit && (
+                  <Text style={rcStyles.snapshotDetail}>
+                    Visit: {boardEntry.visit.visitType}
+                    {boardEntry.visit.confirmedDate ? ` \u00B7 ${boardEntry.visit.confirmedDate}` : boardEntry.visit.proposedDate ? ` \u00B7 Proposed ${boardEntry.visit.proposedDate}` : ''}
+                  </Text>
+                )}
+
+                {/* Relationships */}
+                {boardEntry.relationships && (
+                  <View style={{ marginTop: 6 }}>
+                    <Text style={rcStyles.snapshotDetail}>
+                      Decision: {boardEntry.relationships.primaryDecisionMaker.role} ({boardEntry.relationships.primaryDecisionMaker.name})
+                    </Text>
+                    {boardEntry.relationships.influencers.length > 0 && (
+                      <Text style={rcStyles.snapshotDetail}>
+                        Influencers: {boardEntry.relationships.influencers.map((i) => `${i.role}`).join(', ')}
+                      </Text>
+                    )}
+                  </View>
+                )}
+              </>
             ) : (
               <View style={[rcStyles.boardPill, { backgroundColor: '#2A2D3540' }]}>
                 <Text style={[rcStyles.boardPillText, { color: '#6e6e6e' }]}>Not on Board</Text>
               </View>
             )}
-            {teamNeeds && (() => {
-              const posNeeds = teamNeeds.filter((n) => n.need > 0);
-              if (posNeeds.length === 0) return <Text style={rcStyles.needsText}>All positions filled</Text>;
-              return (
-                <Text style={rcStyles.needsText}>
-                  Need: {posNeeds.map((n) => `${n.pos} (${n.need})`).join(' / ')}
-                </Text>
-              );
-            })()}
-            {(() => {
-              const lastTouch = commsEntries.find((e) => e.type === 'touch');
-              if (!lastTouch) return <Text style={rcStyles.lastTouchText}>No contact yet</Text>;
-              return (
-                <Text style={rcStyles.lastTouchText}>
-                  Last Touch: {lastTouch.touchMethod ?? 'Contact'} {'\u00B7'} {getRelativeTime(lastTouch.timestamp)}
-                </Text>
-              );
-            })()}
           </View>
 
-          {/* §2 Actions row */}
-          <View style={rcStyles.actionsRow}>
-            {[
-              { icon: 'doc.text.fill' as const, label: 'Offer', color: '#4CAF50' },
-              { icon: 'dollarsign.circle.fill' as const, label: 'NIL', color: '#FF9800' },
-              { icon: 'mappin.and.ellipse' as const, label: 'Visit', color: '#3B82F6' },
-              { icon: 'note.text' as const, label: 'Log', color: '#A855F7' },
-            ].map((action) => (
-              <Pressable
-                key={action.label}
-                style={rcStyles.actionBtn}
-                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-              >
-                <View style={[rcStyles.actionIconWrap, { backgroundColor: action.color + '20' }]}>
-                  <IconSymbol name={action.icon} size={18} color={action.color} />
-                </View>
-                <Text style={rcStyles.actionLabel}>{action.label}</Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {/* §3 Recruiting Log */}
+          {/* §3 Staff Outreach Log */}
           <View style={rcStyles.logSection}>
-            <Text style={rcStyles.logTitle}>RECRUITING LOG</Text>
-            {(() => {
-              const recruitingEntries = commsEntries.filter((e) =>
-                e.type === 'touch' || e.type === 'status_change' || e.type === 'key_date' || e.type === 'note'
-              );
-              if (recruitingEntries.length === 0) {
-                return <Text style={styles.emptyText}>No recruiting activity yet.</Text>;
-              }
-              return recruitingEntries.map((entry) => {
-                const meta = COMMS_TYPE_META[entry.type];
-                const tag = entry.type === 'touch' ? (entry.touchMethod ?? 'Contact')
-                  : entry.type === 'status_change' ? 'Status'
-                  : entry.type === 'key_date' ? (entry.dateLabel ?? 'Date')
-                  : 'Note';
-                const tagColor = meta.color;
-                return (
-                  <View key={entry.id} style={rcStyles.logRow}>
-                    <View style={[rcStyles.logIcon, { backgroundColor: meta.color + '25' }]}>
-                      <Text style={[rcStyles.logIconText, { color: meta.color }]}>{meta.icon}</Text>
+            <Text style={rcStyles.logTitle}>STAFF OUTREACH LOG</Text>
+            {boardEntry && boardEntry.log.length > 0 ? (
+              [...boardEntry.log]
+                .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+                .map((entry) => {
+                  const meta = LOG_TYPE_META[entry.type];
+                  return (
+                    <View key={entry.id} style={rcStyles.logRow}>
+                      <View style={[rcStyles.logIcon, { backgroundColor: meta.color + '25' }]}>
+                        <Text style={[rcStyles.logIconText, { color: meta.color }]}>{meta.icon}</Text>
+                      </View>
+                      <View style={rcStyles.logContent}>
+                        <Text style={rcStyles.logBody} numberOfLines={2}>{entry.summary}</Text>
+                        <Text style={rcStyles.logTime}>
+                          {entry.author} {'\u00B7'} {getRelativeTime(entry.timestamp)}
+                        </Text>
+                      </View>
+                      <View style={[rcStyles.logTag, { backgroundColor: meta.color + '20' }]}>
+                        <Text style={[rcStyles.logTagText, { color: meta.color }]}>{entry.type}</Text>
+                      </View>
                     </View>
-                    <View style={rcStyles.logContent}>
-                      <Text style={rcStyles.logBody} numberOfLines={2}>{entry.body}</Text>
-                      <Text style={rcStyles.logTime}>{getRelativeTime(entry.timestamp)}</Text>
-                    </View>
-                    <View style={[rcStyles.logTag, { backgroundColor: tagColor + '20' }]}>
-                      <Text style={[rcStyles.logTagText, { color: tagColor }]}>{tag}</Text>
-                    </View>
-                  </View>
-                );
-              });
-            })()}
+                  );
+                })
+            ) : (
+              <Text style={styles.emptyText}>No recruiting activity yet.</Text>
+            )}
           </View>
 
-          {/* §4 Board Controls */}
+          {/* §4 Notes placeholder */}
+          <View style={rcStyles.notesSection}>
+            <Text style={rcStyles.logTitle}>COACH NOTES</Text>
+            {boardEntry?.longNotes ? (
+              <Text style={rcStyles.notesText}>{boardEntry.longNotes}</Text>
+            ) : (
+              <Text style={styles.emptyText}>No coach notes yet.</Text>
+            )}
+          </View>
+
+          {/* §5 Board Controls */}
           {boardEntry && (
             <View style={rcStyles.boardControls}>
               <Text style={rcStyles.boardControlsTitle}>BOARD CONTROLS</Text>
@@ -1131,159 +1474,6 @@ export function PlayerSheet({
                 <Text style={rcStyles.removeBtnText}>Remove from Board</Text>
               </Pressable>
             </View>
-          )}
-        </View>
-      )}
-
-      {activeTab === 'timeline' && (
-        <View style={styles.tabContent}>
-          {career.length > 0 ? (
-            career.map((s) => {
-              const isExpanded = expandedCareer.has(s.year);
-              const krColor = (s.kr ?? 0) >= 75 ? '#4CAF50' : (s.kr ?? 0) >= 60 ? '#FF9800' : '#8A8F98';
-              return (
-                <View key={s.year}>
-                  <Pressable
-                    style={styles.careerRow}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      toggleCareer(s.year);
-                    }}
-                  >
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.careerYear}>
-                        {s.year} {'\u00B7'} {s.school} {'\u00B7'} {s.division}
-                      </Text>
-                      <Text style={styles.careerMeta}>
-                        {s.gp} GP {'\u00B7'} {s.mpg} MPG
-                        {s.current ? '  (Current)' : ''}
-                      </Text>
-                    </View>
-                    {s.kr != null && (
-                      <View style={[styles.careerKRBadge, { backgroundColor: krColor + '20' }]}>
-                        <Text style={[styles.careerKRText, { color: krColor }]}>{s.kr}</Text>
-                      </View>
-                    )}
-                    <Text style={styles.careerChevron}>{isExpanded ? '\u25BE' : '\u203A'}</Text>
-                  </Pressable>
-
-                  {isExpanded && (
-                    <View style={styles.careerExpanded}>
-                      <View style={styles.careerStatsGrid}>
-                        {[
-                          { v: s.ppg.toFixed(1), l: 'PPG' },
-                          { v: s.rpg.toFixed(1), l: 'RPG' },
-                          { v: s.apg.toFixed(1), l: 'APG' },
-                          { v: `${s.fgPct}%`, l: 'FG%' },
-                          ...(s.threePct > 0 ? [{ v: `${s.threePct}%`, l: '3P%' }] : []),
-                          { v: `${s.ftPct}%`, l: 'FT%' },
-                        ].map((stat) => (
-                          <View key={stat.l} style={styles.careerStatItem}>
-                            <Text style={styles.careerStatValue}>{stat.v}</Text>
-                            <Text style={styles.careerStatLabel}>{stat.l}</Text>
-                          </View>
-                        ))}
-                      </View>
-                      {clusters && (
-                        <View style={styles.careerClusters}>
-                          <Text style={styles.careerClusterTitle}>KaNeXT</Text>
-                          {ALL_CLUSTER_KEYS.map((key) => {
-                            const val = clusters[key];
-                            const color = val >= 70 ? '#4CAF50' : val >= 55 ? '#FF9800' : '#EF4444';
-                            return (
-                              <View key={key} style={styles.careerClusterRow}>
-                                <Text style={styles.careerClusterLabel}>
-                                  {CLUSTER_LABELS[key as ClusterType]?.label ?? key}
-                                </Text>
-                                <View style={styles.careerClusterBarTrack}>
-                                  <View style={[barStyles.barFill, { width: `${Math.min(val, 100)}%`, backgroundColor: color }]} />
-                                </View>
-                                <Text style={[styles.careerClusterValue, { color }]}>{val}</Text>
-                              </View>
-                            );
-                          })}
-                        </View>
-                      )}
-                    </View>
-                  )}
-                </View>
-              );
-            })
-          ) : seasons.length > 0 ? (
-            seasons.map((s) => {
-              const isExpanded = expandedCareer.has(s.season);
-              const sKrColor = (s.kr ?? 0) >= 75 ? '#4CAF50' : (s.kr ?? 0) >= 60 ? '#FF9800' : '#8A8F98';
-              return (
-                <View key={s.season}>
-                  <Pressable
-                    style={styles.careerRow}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      toggleCareer(s.season);
-                    }}
-                  >
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.careerYear}>
-                        {s.season} {'\u00B7'} {s.school} {'\u00B7'} {s.level}
-                      </Text>
-                      <Text style={styles.careerMeta}>
-                        {s.gp} GP {'\u00B7'} {s.mpg} MPG
-                      </Text>
-                    </View>
-                    {s.kr != null && (
-                      <View style={[styles.careerKRBadge, { backgroundColor: sKrColor + '20' }]}>
-                        <Text style={[styles.careerKRText, { color: sKrColor }]}>{s.kr}</Text>
-                      </View>
-                    )}
-                    <Text style={styles.careerChevron}>{isExpanded ? '\u25BE' : '\u203A'}</Text>
-                  </Pressable>
-
-                  {isExpanded && (
-                    <View style={styles.careerExpanded}>
-                      <View style={styles.careerStatsGrid}>
-                        {[
-                          { v: s.ppg.toFixed(1), l: 'PPG' },
-                          { v: s.rpg.toFixed(1), l: 'RPG' },
-                          { v: s.apg.toFixed(1), l: 'APG' },
-                          { v: s.spg.toFixed(1), l: 'SPG' },
-                          { v: s.bpg.toFixed(1), l: 'BPG' },
-                          { v: `${s.fgPct}%`, l: 'FG%' },
-                          ...(s.threePct > 0 ? [{ v: `${s.threePct}%`, l: '3P%' }] : []),
-                          { v: `${s.ftPct}%`, l: 'FT%' },
-                        ].map((stat) => (
-                          <View key={stat.l} style={styles.careerStatItem}>
-                            <Text style={styles.careerStatValue}>{stat.v}</Text>
-                            <Text style={styles.careerStatLabel}>{stat.l}</Text>
-                          </View>
-                        ))}
-                      </View>
-                      {clusters && (
-                        <View style={styles.careerClusters}>
-                          <Text style={styles.careerClusterTitle}>KaNeXT</Text>
-                          {ALL_CLUSTER_KEYS.map((key) => {
-                            const val = clusters[key];
-                            const color = val >= 70 ? '#4CAF50' : val >= 55 ? '#FF9800' : '#EF4444';
-                            return (
-                              <View key={key} style={styles.careerClusterRow}>
-                                <Text style={styles.careerClusterLabel}>
-                                  {CLUSTER_LABELS[key as ClusterType]?.label ?? key}
-                                </Text>
-                                <View style={styles.careerClusterBarTrack}>
-                                  <View style={[barStyles.barFill, { width: `${Math.min(val, 100)}%`, backgroundColor: color }]} />
-                                </View>
-                                <Text style={[styles.careerClusterValue, { color }]}>{val}</Text>
-                              </View>
-                            );
-                          })}
-                        </View>
-                      )}
-                    </View>
-                  )}
-                </View>
-              );
-            })
-          ) : (
-            <Text style={styles.emptyText}>No career data available.</Text>
           )}
         </View>
       )}
@@ -1421,6 +1611,39 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
+  // Badge strip (below rating, above tabs)
+  badgeStrip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: 4,
+    marginTop: 2,
+  },
+  badgeStripPill: {
+    borderLeftWidth: 4,
+    backgroundColor: '#1E2028',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  badgeStripName: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#f5f5f5',
+  },
+  badgeStripOverflow: {
+    backgroundColor: '#2A2D35',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  badgeStripOverflowText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#6e6e6e',
+  },
+
   // Rating row
   ratingRow: {
     flexDirection: 'row',
@@ -1491,6 +1714,79 @@ const styles = StyleSheet.create({
 
   // ── Bio tab ──
 
+  // Identity chips
+  idChipScroll: {
+    marginBottom: 12,
+  },
+  idChipRow: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  idChip: {
+    backgroundColor: '#1E2028',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  idChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#ccc',
+  },
+
+  // Role + Archetype row
+  roleArchRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 14,
+  },
+  roleArchCol: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+    borderRadius: BorderRadius.md,
+    padding: 10,
+  },
+  roleArchLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#6e6e6e',
+    letterSpacing: 0.3,
+    marginBottom: 2,
+  },
+  roleArchValue: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#f5f5f5',
+  },
+
+  // Calling cards
+  callingCard: {
+    backgroundColor: '#1E2028',
+    borderLeftWidth: 4,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 8,
+  },
+  callingCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  callingCardName: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  callingCardLevel: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  callingCardDesc: {
+    fontSize: 12,
+    color: '#999',
+    lineHeight: 16,
+  },
+
   // Quick Facts row
   quickFactsRow: {
     flexDirection: 'row',
@@ -1516,7 +1812,7 @@ const styles = StyleSheet.create({
     color: '#f5f5f5',
   },
 
-  // Current Season stat card
+  // Stat card (snapshot)
   statCard: {
     backgroundColor: '#1a1a1a',
     borderRadius: BorderRadius.lg,
@@ -1529,6 +1825,17 @@ const styles = StyleSheet.create({
     color: '#6e6e6e',
     letterSpacing: 0.5,
     marginBottom: 10,
+  },
+  statGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginBottom: 8,
+  },
+  statGridItem: {
+    alignItems: 'center',
+    width: '33%',
+    marginBottom: 8,
   },
   statRow: {
     flexDirection: 'row',
@@ -1679,16 +1986,26 @@ const styles = StyleSheet.create({
   },
   simCardTop: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 3,
+    marginBottom: 6,
+  },
+  simAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#2A2D35',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  simAvatarText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#888',
   },
   simName: {
     fontSize: 13,
     fontWeight: '700',
     color: '#f5f5f5',
-    flex: 1,
-    marginRight: 6,
   },
   simKR: {
     fontSize: 14,
@@ -1713,6 +2030,18 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
   },
+  simBadgePill: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#2A2D35',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  simBadgePillText: {
+    fontSize: 9,
+    fontWeight: '600',
+    color: '#888',
+  },
   simTagRow: {
     flexDirection: 'row',
   },
@@ -1725,6 +2054,56 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 4,
     overflow: 'hidden',
+  },
+
+  // Receipts
+  receiptHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  receiptStrengthPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  receiptStrengthText: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  receiptLane: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#2A2D35',
+  },
+  receiptLaneTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#f5f5f5',
+  },
+  receiptLaneChevron: {
+    fontSize: 14,
+    color: '#6e6e6e',
+    width: 20,
+    textAlign: 'center',
+  },
+  receiptLaneContent: {
+    paddingVertical: 8,
+    paddingLeft: 12,
+  },
+  receiptStatLine: {
+    fontSize: 12,
+    color: '#ccc',
+    lineHeight: 18,
+  },
+  receiptEmpty: {
+    fontSize: 12,
+    color: '#6e6e6e',
+    fontStyle: 'italic',
   },
 
   // Socials / Links
@@ -2019,7 +2398,74 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 
-  // ── Timeline tab ──
+  // ── Growth tab ──
+  trendCard: {
+    borderLeftWidth: 4,
+    backgroundColor: '#1a1a1a',
+    borderRadius: BorderRadius.md,
+    padding: 12,
+    marginBottom: 14,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  trendLabel: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  trendDelta: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  growthTimelineRow: {
+    flexDirection: 'row',
+  },
+  growthDotCol: {
+    alignItems: 'center',
+    width: 20,
+    marginRight: 8,
+  },
+  growthDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginTop: 14,
+  },
+  growthLine: {
+    width: 2,
+    flex: 1,
+    backgroundColor: '#2A2D35',
+    marginTop: 4,
+  },
+  growthEmpty: {
+    padding: 12,
+  },
+  badgeEvoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 6,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#2A2D35',
+  },
+  badgeEvoName: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
+  },
+  badgeEvoTag: {
+    backgroundColor: '#2A2D35',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  badgeEvoTagText: {
+    fontSize: 9,
+    fontWeight: '600',
+    color: '#888',
+  },
+
+  // ── Career rows (shared Growth + old Timeline) ──
   careerRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -2116,7 +2562,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 
-  // ── Comms tab ──
+  // ── Messages tab ──
   openThreadRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -2207,10 +2653,53 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
   },
+
+  // Pipeline item (used inside Recruiting tab)
+  pipelineItem: {
+    alignItems: 'center',
+    position: 'relative',
+  },
 });
 
 // ── Recruiting tab styles ──
 const rcStyles = StyleSheet.create({
+  // Pipeline
+  pipelineContainer: {
+    marginBottom: 14,
+  },
+  pipelineTitle: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#6e6e6e',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  pipelineRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  pipelineDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginBottom: 4,
+  },
+  pipelineLabel: {
+    fontSize: 8,
+    color: '#6e6e6e',
+    textAlign: 'center',
+    width: 56,
+  },
+  pipelineConnector: {
+    position: 'absolute',
+    right: -4,
+    top: 5,
+    width: 8,
+    height: 2,
+  },
+
+  // Snapshot
   snapshotCard: {
     backgroundColor: '#1a1a1a',
     borderRadius: BorderRadius.lg,
@@ -2228,6 +2717,33 @@ const rcStyles = StyleSheet.create({
     fontWeight: '700',
     color: '#6e6e6e',
     letterSpacing: 0.5,
+  },
+  snapshotMetaRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  snapshotDetail: {
+    fontSize: 12,
+    color: '#ccc',
+    lineHeight: 18,
+  },
+  tempPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  tempText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  riskPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  riskText: {
+    fontSize: 11,
+    fontWeight: '700',
   },
   boardPill: {
     flexDirection: 'row',
@@ -2328,6 +2844,14 @@ const rcStyles = StyleSheet.create({
   logTagText: {
     fontSize: 10,
     fontWeight: '700',
+  },
+  notesSection: {
+    marginBottom: 18,
+  },
+  notesText: {
+    fontSize: 13,
+    color: '#ccc',
+    lineHeight: 18,
   },
   boardControls: {
     marginBottom: 20,

@@ -1,11 +1,10 @@
 /**
  * Education Home — SDCC Dashboard
- * 4 swipeable hub tabs + More overflow (v1 LOCKED)
- * Dashboard | Academics | People | Campus + More
+ * 10 swipeable hub tabs with paged tab bar + edge-hold advance
+ * Dashboard | Calendar | Academics | Campus | People | Admissions | Athletics | Financial | Housing | Policies
  */
 
 import React, { useState, useRef, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/core';
 import {
   View,
   ScrollView,
@@ -19,11 +18,12 @@ import { useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
+import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { registerMoreHandlers, unregisterMoreHandlers } from '@/utils/global-more';
+import { CalendarHub } from '@/components/schedule/calendar-hub';
 import { RailsSection } from '@/components/rails/rails-section';
 import { DashboardRenderer } from '@/components/dashboard/dashboard-renderer';
 import { buildEducationDashboard } from '@/data/dashboard-payloads';
@@ -47,12 +47,10 @@ const ACCENT_GOLD = '#FFFFFF';
 
 const EDU_HUB_TABS = [
   { id: 'dashboard', label: 'Dashboard' },
+  { id: 'calendar', label: 'Calendar' },
   { id: 'academics', label: 'Academics' },
-  { id: 'people', label: 'People' },
   { id: 'campus', label: 'Campus' },
-];
-
-const EDU_MORE_ITEMS = [
+  { id: 'people', label: 'People' },
   { id: 'admissions', label: 'Admissions' },
   { id: 'athletics', label: 'Athletics' },
   { id: 'financial', label: 'Financial' },
@@ -266,6 +264,86 @@ function ArchiveTab({ colors }: { colors: typeof Colors.light }) {
 }
 
 // =============================================================================
+// CALENDAR SUB-PILLS
+// =============================================================================
+
+type EduCalendarPill = 'agenda' | 'schedule' | 'deadlines' | 'events';
+const EDU_CAL_PILLS: { key: EduCalendarPill; label: string }[] = [
+  { key: 'agenda', label: 'Agenda' },
+  { key: 'schedule', label: 'Schedule' },
+  { key: 'deadlines', label: 'Deadlines' },
+  { key: 'events', label: 'Events' },
+];
+
+function EduCalendarPage({ colors, router }: { colors: typeof Colors.light; router: any }) {
+  const [activePill, setActivePill] = useState<EduCalendarPill>('agenda');
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={styles.calPillRow}>
+        {EDU_CAL_PILLS.map((pill) => {
+          const isActive = activePill === pill.key;
+          return (
+            <Pressable
+              key={pill.key}
+              style={[styles.calPill, { backgroundColor: isActive ? colors.text + 'E0' : colors.backgroundSecondary }]}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActivePill(pill.key); }}
+            >
+              <ThemedText style={[styles.calPillText, { color: isActive ? colors.background : colors.textSecondary }]}>
+                {pill.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {activePill === 'agenda' ? (
+        <CalendarHub colors={colors} router={router} />
+      ) : (
+        <ScrollView contentContainerStyle={styles.calScrollContent} showsVerticalScrollIndicator={false}>
+          {activePill === 'schedule' && (
+            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Week at a Glance</ThemedText>
+              <ThemedText style={[styles.listSubtitle, { color: colors.textTertiary }]}>
+                Class schedules and weekly academic programming will appear here.
+              </ThemedText>
+            </View>
+          )}
+          {activePill === 'deadlines' && (
+            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Academic Deadlines</ThemedText>
+              {ACADEMIC_CALENDAR.map((evt) => (
+                <View key={evt.id} style={[styles.listRow, { borderBottomColor: colors.border }]}>
+                  <View style={[styles.dateBadge, { backgroundColor: ACCENT_GOLD + '15' }]}>
+                    <ThemedText style={[styles.dateBadgeText, { color: ACCENT_GOLD }]}>
+                      {formatCalendarEventDate(evt)}
+                    </ThemedText>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <ThemedText style={[styles.listTitle, { color: colors.text }]}>{evt.title}</ThemedText>
+                    <ThemedText style={[styles.listSubtitle, { color: colors.textTertiary }]}>
+                      {getCalendarEventTypeLabel(evt.type)}
+                    </ThemedText>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+          {activePill === 'events' && (
+            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Events</ThemedText>
+              <ThemedText style={[styles.listSubtitle, { color: colors.textTertiary }]}>
+                Campus events, commencement, and special programs will appear here.
+              </ThemedText>
+            </View>
+          )}
+        </ScrollView>
+      )}
+    </View>
+  );
+}
+
+// =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
@@ -275,21 +353,8 @@ export function EducationHome() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [moreMenuVisible, setMoreMenuVisible] = useState(false);
-
-  // Register global More handlers so Org double-tap can open this menu
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreMenuVisible(true),
-        () => setMoreMenuVisible(false)
-      );
-      return () => unregisterMoreHandlers();
-    }, [])
-  );
 
   const pagerRef = useRef<PagerView>(null);
-  const tabScrollRef = useRef<ScrollView>(null);
 
   const handleTabPress = useCallback((index: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -298,97 +363,49 @@ export function EducationHome() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* ===== HUB TAB BAR (top, like Sports) ===== */}
-      <View style={[styles.tabBarContainer, { borderBottomColor: colors.divider }]}>
-        <ScrollView
-          ref={tabScrollRef}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabBarContent}
-        >
-          {EDU_HUB_TABS.map((tab, index) => {
-            const isActive = index === activeIndex;
-            return (
-              <Pressable
-                key={tab.id}
-                style={[
-                  styles.hubTab,
-                  isActive && [styles.hubTabActive, { borderBottomColor: colors.text }],
-                ]}
-                onPress={() => handleTabPress(index)}
-              >
-                <ThemedText
-                  style={[
-                    styles.hubTabLabel,
-                    { color: isActive ? colors.text : colors.textTertiary },
-                    isActive && styles.hubTabLabelActive,
-                  ]}
-                >
-                  {tab.label}
-                </ThemedText>
-              </Pressable>
-            );
-          })}
-          {/* More — overflow trigger */}
-          <Pressable
-            style={[styles.hubTab]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setMoreMenuVisible(true);
-            }}
-          >
-            <ThemedText style={[styles.hubTabLabel, { color: colors.textTertiary }]}>
-              More
-            </ThemedText>
-          </Pressable>
-        </ScrollView>
-      </View>
+      {/* ===== HUB TAB BAR (paged, scrollable) ===== */}
+      <PagedTabBar tabs={EDU_HUB_TABS} activeIndex={activeIndex} onTabPress={handleTabPress} />
 
       {/* ===== TAB CONTENT (PagerView — swipeable) ===== */}
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        <View key="dashboard" style={{ flex: 1 }}>
-          <HomeTab colors={colors} />
-        </View>
-        <View key="academics" style={{ flex: 1 }}>
-          <CalendarTab colors={colors} />
-        </View>
-        <View key="people" style={{ flex: 1 }}>
-          <FacultyTab colors={colors} />
-        </View>
-        <View key="campus" style={{ flex: 1 }}>
-          <MetricsTab colors={colors} />
-        </View>
-      </PagerView>
-
-      {/* ===== MORE OVERFLOW MENU ===== */}
-      <BottomSheet visible={moreMenuVisible} onClose={() => setMoreMenuVisible(false)}>
-        <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 32 }}>
-          <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text, marginBottom: 16 }}>More</ThemedText>
-          {EDU_MORE_ITEMS.map((item) => (
-            <Pressable
-              key={item.id}
-              style={({ pressed }) => [{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingVertical: 14,
-                paddingHorizontal: 4,
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderBottomColor: colors.border,
-              }, pressed && { opacity: 0.6 }]}
-              onPress={() => setMoreMenuVisible(false)}
-            >
-              <ThemedText style={{ fontSize: 16, fontWeight: '500', color: colors.text }}>{item.label}</ThemedText>
-              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-            </Pressable>
-          ))}
-        </View>
-      </BottomSheet>
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={EDU_HUB_TABS.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          <View key="dashboard" style={{ flex: 1 }}>
+            <HomeTab colors={colors} />
+          </View>
+          <View key="calendar" style={{ flex: 1 }}>
+            <EduCalendarPage colors={colors} router={router} />
+          </View>
+          <View key="academics" style={{ flex: 1 }}>
+            <CalendarTab colors={colors} />
+          </View>
+          <View key="campus" style={{ flex: 1 }}>
+            <MetricsTab colors={colors} />
+          </View>
+          <View key="people" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="People" />
+          </View>
+          <View key="admissions" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Admissions" />
+          </View>
+          <View key="athletics" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Athletics" />
+          </View>
+          <View key="financial" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Financial" />
+          </View>
+          <View key="housing" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Housing" />
+          </View>
+          <View key="policies" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Policies" />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </ThemedView>
   );
 }
@@ -400,32 +417,6 @@ export function EducationHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-
-  // Tab Bar
-  tabBarContainer: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingTop: 4,
-  },
-  tabBarContent: {
-    paddingHorizontal: Spacing.lg,
-    gap: Spacing.lg,
-  },
-  hubTab: {
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  hubTabActive: {
-    borderBottomWidth: 2.5,
-  },
-  hubTabLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    letterSpacing: 0.2,
-  },
-  hubTabLabelActive: {
-    fontWeight: '700',
   },
 
   // Tab Content
@@ -542,4 +533,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginTop: 2,
   },
+
+  // Calendar sub-pills
+  calPillRow: { flexDirection: 'row', paddingHorizontal: Spacing.md, paddingVertical: 16, gap: 6 },
+  calPill: { flex: 1, paddingVertical: 6, borderRadius: 18, alignItems: 'center' },
+  calPillText: { fontSize: 13, fontWeight: '600' },
+  calScrollContent: { paddingHorizontal: Spacing.md, paddingTop: 0, paddingBottom: 40 },
 });

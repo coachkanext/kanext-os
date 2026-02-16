@@ -29,7 +29,6 @@ import { openFinder } from '@/utils/global-finder';
 import { triggerKXTransition } from '@/utils/global-transition';
 import { requestHomeReset } from '@/utils/global-home';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
-import { openGlobalMore } from '@/utils/global-more';
 
 // Tab icon component
 function TabIcon({
@@ -109,8 +108,7 @@ export default function TabLayout() {
     []
   );
 
-  // Ops tab button: long-press → mode switcher, double-tap → More menu
-  const lastOrgTapRef = useRef(0);
+  // Ops tab button: long-press → mode switcher
   const OpsTabButton = useCallback(
     (props: any) => (
       <HapticTab
@@ -120,14 +118,6 @@ export default function TabLayout() {
           openModeSwitcher();
         }}
         onPress={(e: any) => {
-          const now = Date.now();
-          if (now - lastOrgTapRef.current < 300) {
-            // Double-tap detected → open More overflow menu
-            lastOrgTapRef.current = 0;
-            openGlobalMore();
-            return;
-          }
-          lastOrgTapRef.current = now;
           triggerKXTransition();
           props.onPress?.(e);
         }}

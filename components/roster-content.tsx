@@ -186,7 +186,6 @@ const FMU_TEAM = {
   record: FMU_RECORD.overall,
   confRecord: FMU_RECORD.conference,
   streak: FMU_STANDINGS.find((r) => r.team === 'Florida Memorial')?.streak ?? '—',
-  tier: 'Regional Power',
 };
 
 // ── Season-keyed data ──
@@ -1166,6 +1165,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
             </Text>
           </View>
           <View style={styles.teamKRBadge}>
+            <Text style={styles.teamKRLabel}>KR</Text>
             <Text style={styles.teamKRValue}>{teamKR ?? 74}</Text>
             <Text style={styles.teamKRSplit}>O {offKR ?? 74} · D {defKR ?? 73}</Text>
           </View>
@@ -1177,9 +1177,6 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
             <Text style={{ fontSize: 12, fontWeight: '700', color: FMU_TEAM.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
               {FMU_TEAM.streak}
             </Text>
-          </View>
-          <View style={{ backgroundColor: TEAM_COLORS.white + '10', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-            <Text style={{ fontSize: 12, fontWeight: '600', color: TEAM_COLORS.secondary }}>{FMU_TEAM.tier}</Text>
           </View>
         </View>
       </View>
@@ -1294,6 +1291,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 12,
+  },
+  teamKRLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: TEAM_COLORS.gray,
+    letterSpacing: 0.5,
   },
   teamKRValue: {
     fontSize: 26,

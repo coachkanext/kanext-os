@@ -1,11 +1,10 @@
 /**
  * Competition Home — K-1 main dashboard.
- * 4 swipeable hub tabs + More overflow (v1 LOCKED)
- * Dashboard | Race Calendar | Standings | Teams + More
+ * 7 swipeable hub tabs with paged tab bar + edge-hold advance
+ * Dashboard | Calendar | Standings | Teams | Raceweek Ops | Rules | Tech & Compliance
  */
 
 import React, { useState, useRef, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/core';
 import {
   View,
   StyleSheet,
@@ -19,11 +18,12 @@ import { useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { registerMoreHandlers, unregisterMoreHandlers } from '@/utils/global-more';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
+import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
+import { CalendarHub } from '@/components/schedule/calendar-hub';
 import { RailsSection } from '@/components/rails/rails-section';
 import { DashboardRenderer } from '@/components/dashboard/dashboard-renderer';
 import { buildCompetitionDashboard } from '@/data/dashboard-payloads';
@@ -39,21 +39,14 @@ import type { K1Team, K1Driver, K1StandingEntry, K1Event, K1Rule } from '@/data/
 
 const ACCENT_GOLD = '#FFFFFF';
 
-// Competition Hub Tabs (v1 LOCKED)
-// 4 swipeable pages + "More" overflow trigger
 const K1_HUB_TABS = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'race-calendar', label: 'Calendar' },
   { id: 'standings', label: 'Standings' },
   { id: 'teams', label: 'Teams' },
-];
-
-const K1_MORE_ITEMS = [
   { id: 'raceweek-ops', label: 'Raceweek Ops' },
   { id: 'rules', label: 'Rules' },
   { id: 'tech-compliance', label: 'Tech & Compliance' },
-  { id: 'safety', label: 'Safety' },
-  { id: 'sponsors', label: 'Sponsors' },
 ];
 
 // =============================================================================
@@ -263,6 +256,86 @@ function PlaceholderTab({ title, colors }: { title: string; colors: typeof Color
 }
 
 // =============================================================================
+// CALENDAR SUB-PILLS
+// =============================================================================
+
+type K1CalendarPill = 'agenda' | 'sessions' | 'events' | 'ops';
+const K1_CAL_PILLS: { key: K1CalendarPill; label: string }[] = [
+  { key: 'agenda', label: 'Agenda' },
+  { key: 'sessions', label: 'Sessions' },
+  { key: 'events', label: 'Events' },
+  { key: 'ops', label: 'Ops' },
+];
+
+function K1CalendarPage({ colors, router }: { colors: typeof Colors.light; router: any }) {
+  const [activePill, setActivePill] = useState<K1CalendarPill>('agenda');
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={styles.calPillRow}>
+        {K1_CAL_PILLS.map((pill) => {
+          const isActive = activePill === pill.key;
+          return (
+            <Pressable
+              key={pill.key}
+              style={[styles.calPill, { backgroundColor: isActive ? colors.text + 'E0' : colors.backgroundSecondary }]}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActivePill(pill.key); }}
+            >
+              <ThemedText style={[styles.calPillText, { color: isActive ? colors.background : colors.textSecondary }]}>
+                {pill.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {activePill === 'agenda' ? (
+        <CalendarHub colors={colors} router={router} />
+      ) : (
+        <ScrollView contentContainerStyle={styles.calScrollContent} showsVerticalScrollIndicator={false}>
+          {activePill === 'sessions' && (
+            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Race Sessions</ThemedText>
+              {K1_EVENTS.map((event) => (
+                <View key={event.id} style={[styles.eventRow, { borderBottomColor: colors.border }]}>
+                  <View style={styles.eventDateCol}>
+                    <ThemedText style={[styles.eventDateText, { color: event.status === 'upcoming' ? ACCENT_GOLD : colors.textTertiary }]}>
+                      {event.date}
+                    </ThemedText>
+                  </View>
+                  <View style={styles.eventInfoCol}>
+                    <ThemedText style={[styles.eventRowName, { color: colors.text }]}>{event.name}</ThemedText>
+                    <ThemedText style={[styles.eventRowTrack, { color: colors.textTertiary }]}>
+                      {event.track} · {event.location} · {event.laps} laps
+                    </ThemedText>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+          {activePill === 'events' && (
+            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Events</ThemedText>
+              <ThemedText style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                Fan events, media days, and promotional events will appear here.
+              </ThemedText>
+            </View>
+          )}
+          {activePill === 'ops' && (
+            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Operations</ThemedText>
+              <ThemedText style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                Raceweek ops schedule, logistics, and crew assignments will appear here.
+              </ThemedText>
+            </View>
+          )}
+        </ScrollView>
+      )}
+    </View>
+  );
+}
+
+// =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
@@ -272,21 +345,8 @@ export function CommunityHome() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [moreMenuVisible, setMoreMenuVisible] = useState(false);
-
-  // Register global More handlers so Org double-tap can open this menu
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreMenuVisible(true),
-        () => setMoreMenuVisible(false)
-      );
-      return () => unregisterMoreHandlers();
-    }, [])
-  );
 
   const pagerRef = useRef<PagerView>(null);
-  const tabScrollRef = useRef<ScrollView>(null);
 
   const handleTabPress = useCallback((index: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -295,94 +355,40 @@ export function CommunityHome() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* Hub Tab Bar (top, like Sports) */}
-      <ScrollView
-        ref={tabScrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.tabBar}
-        style={[styles.tabBarScroll, { borderBottomColor: colors.border }]}
-      >
-        {K1_HUB_TABS.map((tab, index) => {
-          const isActive = index === activeIndex;
-          return (
-            <Pressable
-              key={tab.id}
-              style={[styles.tabItem, isActive && styles.tabItemActive]}
-              onPress={() => handleTabPress(index)}
-            >
-              <ThemedText
-                style={[
-                  styles.tabLabel,
-                  { color: isActive ? colors.text : colors.textTertiary },
-                  isActive && { fontWeight: '700' },
-                ]}
-              >
-                {tab.label}
-              </ThemedText>
-              {isActive && <View style={[styles.tabIndicator, { backgroundColor: ACCENT_GOLD }]} />}
-            </Pressable>
-          );
-        })}
-        {/* More — overflow trigger */}
-        <Pressable
-          style={styles.tabItem}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setMoreMenuVisible(true);
-          }}
-        >
-          <ThemedText style={[styles.tabLabel, { color: colors.textTertiary }]}>
-            More
-          </ThemedText>
-        </Pressable>
-      </ScrollView>
+      {/* Hub Tab Bar */}
+      <PagedTabBar tabs={K1_HUB_TABS} activeIndex={activeIndex} onTabPress={handleTabPress} />
 
       {/* Tab Content (PagerView — swipeable) */}
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        <View key="dashboard" style={{ flex: 1 }}>
-          <HomeTab colors={colors} />
-        </View>
-        <View key="race-calendar" style={{ flex: 1 }}>
-          <WeekendTab colors={colors} />
-        </View>
-        <View key="standings" style={{ flex: 1 }}>
-          <StandingsTab colors={colors} />
-        </View>
-        <View key="teams" style={{ flex: 1 }}>
-          <TeamsTab colors={colors} />
-        </View>
-      </PagerView>
-
-      {/* ===== MORE OVERFLOW MENU ===== */}
-      <BottomSheet visible={moreMenuVisible} onClose={() => setMoreMenuVisible(false)}>
-        <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 32 }}>
-          <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text, marginBottom: 16 }}>More</ThemedText>
-          {K1_MORE_ITEMS.map((item) => (
-            <Pressable
-              key={item.id}
-              style={({ pressed }) => [{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingVertical: 14,
-                paddingHorizontal: 4,
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderBottomColor: colors.border,
-              }, pressed && { opacity: 0.6 }]}
-              onPress={() => setMoreMenuVisible(false)}
-            >
-              <ThemedText style={{ fontSize: 16, fontWeight: '500', color: colors.text }}>{item.label}</ThemedText>
-              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-            </Pressable>
-          ))}
-        </View>
-      </BottomSheet>
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={K1_HUB_TABS.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          <View key="dashboard" style={{ flex: 1 }}>
+            <HomeTab colors={colors} />
+          </View>
+          <View key="race-calendar" style={{ flex: 1 }}>
+            <K1CalendarPage colors={colors} router={router} />
+          </View>
+          <View key="standings" style={{ flex: 1 }}>
+            <StandingsTab colors={colors} />
+          </View>
+          <View key="teams" style={{ flex: 1 }}>
+            <TeamsTab colors={colors} />
+          </View>
+          <View key="raceweek-ops" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Raceweek Ops" />
+          </View>
+          <View key="rules" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Rules" />
+          </View>
+          <View key="tech-compliance" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Tech & Compliance" />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </ThemedView>
   );
 }
@@ -395,34 +401,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  // Tab Bar
-  tabBarScroll: {
-    flexGrow: 0,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  tabBar: {
-    paddingHorizontal: Spacing.md,
-    gap: 4,
-  },
-  tabItem: {
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    position: 'relative',
-  },
-  tabItemActive: {},
-  tabLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  tabIndicator: {
-    position: 'absolute',
-    bottom: 0,
-    left: 12,
-    right: 12,
-    height: 2.5,
-    borderRadius: 1.5,
-  },
-
   // Content
   contentArea: {
     flex: 1,
@@ -691,4 +669,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
+
+  // Calendar sub-pills
+  calPillRow: { flexDirection: 'row', paddingHorizontal: Spacing.md, paddingVertical: 16, gap: 6 },
+  calPill: { flex: 1, paddingVertical: 6, borderRadius: 18, alignItems: 'center' },
+  calPillText: { fontSize: 13, fontWeight: '600' },
+  calScrollContent: { paddingHorizontal: Spacing.md, paddingTop: 0, paddingBottom: 40 },
 });

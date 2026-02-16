@@ -876,7 +876,7 @@ export function PlayerPoolContent() {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           setBoardEntries((prev) => removeEntry(prev, entryId));
         }}
-        defaultTabOverride="bio"
+        defaultTabOverride="recruiting"
       />
 
       {/* ═══ AVATAR SHEET — Recruiting CRM Surface ═══ */}

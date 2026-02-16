@@ -12,6 +12,8 @@ import {
   ScrollView,
   Pressable,
 } from 'react-native';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import PagerView from 'react-native-pager-view';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -402,83 +404,6 @@ function LibraryPage({ colors }: { colors: typeof Colors.light }) {
 }
 
 // =============================================================================
-// MEDIA HUB TAB BAR (matches Home hub tab pattern)
-// =============================================================================
-
-function MediaHubTabs({
-  tabs,
-  colors,
-  activeIndex,
-  onTabPress,
-}: {
-  tabs: { id: string; label: string }[];
-  colors: typeof Colors.light;
-  activeIndex: number;
-  onTabPress: (index: number) => void;
-}) {
-  const tabScrollRef = useRef<ScrollView>(null);
-  const tabLayoutsRef = useRef<{ x: number; width: number }[]>([]);
-
-  const scrollToTab = useCallback((index: number) => {
-    const layout = tabLayoutsRef.current[index];
-    if (layout && tabScrollRef.current) {
-      tabScrollRef.current.scrollTo({
-        x: Math.max(0, layout.x - 40),
-        animated: true,
-      });
-    }
-  }, []);
-
-  React.useEffect(() => {
-    scrollToTab(activeIndex);
-  }, [activeIndex, scrollToTab]);
-
-  return (
-    <View style={[styles.hubTabsContainer, { borderBottomColor: colors.divider }]}>
-      <ScrollView
-        ref={tabScrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.hubTabsContent}
-      >
-        {tabs.map((tab, index) => {
-          const isActive = index === activeIndex;
-          return (
-            <Pressable
-              key={tab.id}
-              onLayout={(e) => {
-                tabLayoutsRef.current[index] = {
-                  x: e.nativeEvent.layout.x,
-                  width: e.nativeEvent.layout.width,
-                };
-              }}
-              style={[
-                styles.hubTab,
-                isActive && [styles.hubTabActive, { borderBottomColor: colors.text }],
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onTabPress(index);
-              }}
-            >
-              <ThemedText
-                style={[
-                  styles.hubTabLabel,
-                  { color: isActive ? colors.text : colors.textTertiary },
-                  isActive && styles.hubTabLabelActive,
-                ]}
-              >
-                {tab.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-    </View>
-  );
-}
-
-// =============================================================================
 // MAIN SCREEN
 // =============================================================================
 
@@ -498,34 +423,31 @@ export default function VideoHomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* ===== MEDIA HUB TAB BAR (same pattern as Home) ===== */}
-      <MediaHubTabs
-        tabs={tabs}
-        colors={colors}
-        activeIndex={activeIndex}
-        onTabPress={handleTabPress}
-      />
+      {/* ===== MEDIA HUB TAB BAR ===== */}
+      <PagedTabBar tabs={tabs} activeIndex={activeIndex} onTabPress={handleTabPress} />
 
       {/* ===== SWIPEABLE CONTENT ===== */}
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        <View key="feed" style={{ flex: 1 }}>
-          <FeedPage colors={colors} mode={mode} />
-        </View>
-        <View key="explore" style={{ flex: 1 }}>
-          <ExplorePage colors={colors} />
-        </View>
-        <View key="room" style={{ flex: 1 }}>
-          <RoomPage colors={colors} label={roomLabel} />
-        </View>
-        <View key="library" style={{ flex: 1 }}>
-          <LibraryPage colors={colors} />
-        </View>
-      </PagerView>
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={tabs.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          <View key="feed" style={{ flex: 1 }}>
+            <FeedPage colors={colors} mode={mode} />
+          </View>
+          <View key="explore" style={{ flex: 1 }}>
+            <ExplorePage colors={colors} />
+          </View>
+          <View key="room" style={{ flex: 1 }}>
+            <RoomPage colors={colors} label={roomLabel} />
+          </View>
+          <View key="library" style={{ flex: 1 }}>
+            <LibraryPage colors={colors} />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </ThemedView>
   );
 }
@@ -540,32 +462,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 100,
-  },
-
-  // Hub Tab Bar (matches Home pattern)
-  hubTabsContainer: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingTop: 4,
-  },
-  hubTabsContent: {
-    paddingHorizontal: Spacing.lg,
-    gap: Spacing.lg,
-  },
-  hubTab: {
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  hubTabActive: {
-    borderBottomWidth: 2.5,
-  },
-  hubTabLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    letterSpacing: 0.2,
-  },
-  hubTabLabelActive: {
-    fontWeight: '700',
   },
 
   // Placeholder pages

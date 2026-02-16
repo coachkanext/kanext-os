@@ -1,11 +1,10 @@
 /**
  * Church Home — ICCLA Dashboard
- * 4 swipeable hub tabs + More overflow (v1 LOCKED)
- * Dashboard | Worship | Community | Serve + More
+ * 10 swipeable hub tabs with paged tab bar + edge-hold advance
+ * Dashboard | Calendar | Worship | Community | Serve | Give | Events | Prayer | Messages | Discipleship
  */
 
 import React, { useState, useRef, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/core';
 import {
   View,
   ScrollView,
@@ -20,10 +19,12 @@ import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
+import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { registerMoreHandlers, unregisterMoreHandlers } from '@/utils/global-more';
+import { CalendarHub } from '@/components/schedule/calendar-hub';
 import { RailsSection } from '@/components/rails/rails-section';
 import { DashboardRenderer } from '@/components/dashboard/dashboard-renderer';
 import { buildChurchDashboard } from '@/data/dashboard-payloads';
@@ -45,12 +46,10 @@ const ACCENT_GOLD = '#FFFFFF';
 
 const CHURCH_HUB_TABS = [
   { id: 'dashboard', label: 'Dashboard' },
+  { id: 'calendar', label: 'Calendar' },
   { id: 'worship', label: 'Worship' },
   { id: 'community', label: 'Community' },
   { id: 'serve', label: 'Serve' },
-];
-
-const CHURCH_MORE_ITEMS = [
   { id: 'give', label: 'Give' },
   { id: 'events', label: 'Events' },
   { id: 'prayer', label: 'Prayer' },
@@ -199,6 +198,69 @@ function LeadershipTab({ colors }: { colors: typeof Colors.light }) {
 }
 
 // =============================================================================
+// CALENDAR SUB-PILLS
+// =============================================================================
+
+type ChurchCalendarPill = 'agenda' | 'schedule' | 'serve' | 'events';
+const CHURCH_CAL_PILLS: { key: ChurchCalendarPill; label: string }[] = [
+  { key: 'agenda', label: 'Agenda' },
+  { key: 'schedule', label: 'Schedule' },
+  { key: 'serve', label: 'Serve' },
+  { key: 'events', label: 'Events' },
+];
+
+function ChurchCalendarPage({ colors, router }: { colors: typeof Colors.light; router: any }) {
+  const [activePill, setActivePill] = useState<ChurchCalendarPill>('agenda');
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={styles.calPillRow}>
+        {CHURCH_CAL_PILLS.map((pill) => {
+          const isActive = activePill === pill.key;
+          return (
+            <Pressable
+              key={pill.key}
+              style={[styles.calPill, { backgroundColor: isActive ? colors.text + 'E0' : colors.backgroundSecondary }]}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActivePill(pill.key); }}
+            >
+              <ThemedText style={[styles.calPillText, { color: isActive ? colors.background : colors.textSecondary }]}>
+                {pill.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {activePill === 'agenda' ? (
+        <CalendarHub colors={colors} router={router} />
+      ) : (
+        <ScrollView contentContainerStyle={styles.calScrollContent} showsVerticalScrollIndicator={false}>
+          {activePill === 'schedule' && (
+            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Week at a Glance</ThemedText>
+              <ThemedText style={[styles.listSubtitle, { color: colors.textTertiary }]}>
+                Service schedules and weekly programming will appear here.
+              </ThemedText>
+            </View>
+          )}
+          {activePill === 'serve' && (
+            <MinistriesTab colors={colors} />
+          )}
+          {activePill === 'events' && (
+            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Events</ThemedText>
+              <ThemedText style={[styles.listSubtitle, { color: colors.textTertiary }]}>
+                Upcoming church events, retreats, and special services will appear here.
+              </ThemedText>
+            </View>
+          )}
+        </ScrollView>
+      )}
+    </View>
+  );
+}
+
+// =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
@@ -208,21 +270,8 @@ export function ChurchHome() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [moreMenuVisible, setMoreMenuVisible] = useState(false);
-
-  // Register global More handlers so Org double-tap can open this menu
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreMenuVisible(true),
-        () => setMoreMenuVisible(false)
-      );
-      return () => unregisterMoreHandlers();
-    }, [])
-  );
 
   const pagerRef = useRef<PagerView>(null);
-  const tabScrollRef = useRef<ScrollView>(null);
 
   const handleTabPress = useCallback((index: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -231,97 +280,49 @@ export function ChurchHome() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* ===== HUB TAB BAR (top, like Sports) ===== */}
-      <View style={[styles.tabBarContainer, { borderBottomColor: colors.divider }]}>
-        <ScrollView
-          ref={tabScrollRef}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabBarContent}
-        >
-          {CHURCH_HUB_TABS.map((tab, index) => {
-            const isActive = index === activeIndex;
-            return (
-              <Pressable
-                key={tab.id}
-                style={[
-                  styles.hubTab,
-                  isActive && [styles.hubTabActive, { borderBottomColor: colors.text }],
-                ]}
-                onPress={() => handleTabPress(index)}
-              >
-                <ThemedText
-                  style={[
-                    styles.hubTabLabel,
-                    { color: isActive ? colors.text : colors.textTertiary },
-                    isActive && styles.hubTabLabelActive,
-                  ]}
-                >
-                  {tab.label}
-                </ThemedText>
-              </Pressable>
-            );
-          })}
-          {/* More — overflow trigger, NOT a swipeable page */}
-          <Pressable
-            style={styles.hubTab}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setMoreMenuVisible(true);
-            }}
-          >
-            <ThemedText style={[styles.hubTabLabel, { color: colors.textTertiary }]}>
-              More
-            </ThemedText>
-          </Pressable>
-        </ScrollView>
-      </View>
+      {/* ===== HUB TAB BAR (paged, scrollable) ===== */}
+      <PagedTabBar tabs={CHURCH_HUB_TABS} activeIndex={activeIndex} onTabPress={handleTabPress} />
 
       {/* ===== TAB CONTENT (PagerView — swipeable) ===== */}
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        <View key="dashboard" style={{ flex: 1 }}>
-          <HomeTab colors={colors} />
-        </View>
-        <View key="worship" style={{ flex: 1 }}>
-          <MessagesTab colors={colors} />
-        </View>
-        <View key="community" style={{ flex: 1 }}>
-          <CampusesTab colors={colors} />
-        </View>
-        <View key="serve" style={{ flex: 1 }}>
-          <MinistriesTab colors={colors} />
-        </View>
-      </PagerView>
-
-      {/* ===== MORE OVERFLOW MENU ===== */}
-      <BottomSheet visible={moreMenuVisible} onClose={() => setMoreMenuVisible(false)}>
-        <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 32 }}>
-          <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text, marginBottom: 16 }}>More</ThemedText>
-          {CHURCH_MORE_ITEMS.map((item) => (
-            <Pressable
-              key={item.id}
-              style={({ pressed }) => [{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingVertical: 14,
-                paddingHorizontal: 4,
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderBottomColor: colors.border,
-              }, pressed && { opacity: 0.6 }]}
-              onPress={() => setMoreMenuVisible(false)}
-            >
-              <ThemedText style={{ fontSize: 16, fontWeight: '500', color: colors.text }}>{item.label}</ThemedText>
-              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-            </Pressable>
-          ))}
-        </View>
-      </BottomSheet>
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={CHURCH_HUB_TABS.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          <View key="dashboard" style={{ flex: 1 }}>
+            <HomeTab colors={colors} />
+          </View>
+          <View key="calendar" style={{ flex: 1 }}>
+            <ChurchCalendarPage colors={colors} router={router} />
+          </View>
+          <View key="worship" style={{ flex: 1 }}>
+            <MessagesTab colors={colors} />
+          </View>
+          <View key="community" style={{ flex: 1 }}>
+            <CampusesTab colors={colors} />
+          </View>
+          <View key="serve" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Serve" />
+          </View>
+          <View key="give" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Give" />
+          </View>
+          <View key="events" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Events" />
+          </View>
+          <View key="prayer" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Prayer" />
+          </View>
+          <View key="messages" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Messages" />
+          </View>
+          <View key="discipleship" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Discipleship" />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </ThemedView>
   );
 }
@@ -333,32 +334,6 @@ export function ChurchHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-
-  // Tab Bar
-  tabBarContainer: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingTop: 4,
-  },
-  tabBarContent: {
-    paddingHorizontal: Spacing.lg,
-    gap: Spacing.lg,
-  },
-  hubTab: {
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  hubTabActive: {
-    borderBottomWidth: 2.5,
-  },
-  hubTabLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    letterSpacing: 0.2,
-  },
-  hubTabLabelActive: {
-    fontWeight: '700',
   },
 
   // Tab Content
@@ -464,4 +439,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+
+  // Calendar sub-pills
+  calPillRow: { flexDirection: 'row', paddingHorizontal: Spacing.md, paddingVertical: 16, gap: 6 },
+  calPill: { flex: 1, paddingVertical: 6, borderRadius: 18, alignItems: 'center' },
+  calPillText: { fontSize: 13, fontWeight: '600' },
+  calScrollContent: { paddingHorizontal: Spacing.md, paddingTop: 0, paddingBottom: 40 },
 });

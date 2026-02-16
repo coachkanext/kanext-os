@@ -15,6 +15,8 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import PagerView from 'react-native-pager-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -32,8 +34,8 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import {
   MOCK_CHAT_THREADS,
-  MOCK_GROUP_THREADS,
   formatMessageTime,
+  getModeRooms,
 } from '@/data/mock-messages';
 import type { ChatThread } from '@/data/mock-messages';
 import {
@@ -48,86 +50,10 @@ import type { RequestItem } from '@/data/mock-requests';
 
 const MESSAGES_TABS = [
   { id: 'inbox', label: 'Inbox' },
-  { id: 'groups', label: 'Groups' },
+  { id: 'rooms', label: 'Rooms' },
   { id: 'requests', label: 'Requests' },
+  { id: 'pinned', label: 'Pinned' },
 ];
-
-// =============================================================================
-// MESSAGES HUB TAB BAR (matches Media/Home pattern)
-// =============================================================================
-
-function MessagesHubTabs({
-  tabs,
-  colors,
-  activeIndex,
-  onTabPress,
-}: {
-  tabs: { id: string; label: string }[];
-  colors: typeof Colors.light;
-  activeIndex: number;
-  onTabPress: (index: number) => void;
-}) {
-  const tabScrollRef = useRef<ScrollView>(null);
-  const tabLayoutsRef = useRef<{ x: number; width: number }[]>([]);
-
-  const scrollToTab = useCallback((index: number) => {
-    const layout = tabLayoutsRef.current[index];
-    if (layout && tabScrollRef.current) {
-      tabScrollRef.current.scrollTo({
-        x: Math.max(0, layout.x - 40),
-        animated: true,
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    scrollToTab(activeIndex);
-  }, [activeIndex, scrollToTab]);
-
-  return (
-    <View style={[styles.hubTabsContainer, { borderBottomColor: colors.divider }]}>
-      <ScrollView
-        ref={tabScrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.hubTabsContent}
-      >
-        {tabs.map((tab, index) => {
-          const isActive = index === activeIndex;
-          return (
-            <Pressable
-              key={tab.id}
-              onLayout={(e) => {
-                tabLayoutsRef.current[index] = {
-                  x: e.nativeEvent.layout.x,
-                  width: e.nativeEvent.layout.width,
-                };
-              }}
-              style={[
-                styles.hubTab,
-                isActive && [styles.hubTabActive, { borderBottomColor: colors.text }],
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onTabPress(index);
-              }}
-            >
-              <ThemedText
-                style={[
-                  styles.hubTabLabel,
-                  { color: isActive ? colors.text : colors.textTertiary },
-                  isActive && styles.hubTabLabelActive,
-                ]}
-              >
-                {tab.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-    </View>
-  );
-}
 
 // =============================================================================
 // INBOX PAGE
@@ -170,26 +96,28 @@ function InboxPage({
 }
 
 // =============================================================================
-// GROUPS PAGE
+// ROOMS PAGE (mode-specific Slack-style rooms)
 // =============================================================================
 
-function GroupsPage({
+function RoomsPage({
   colors,
   search,
+  mode,
   onSelectThread,
 }: {
   colors: typeof Colors.light;
   search: string;
+  mode: import('@/types').Mode;
   onSelectThread: (t: ChatThread) => void;
 }) {
   const threads = useMemo(() => {
-    const list = MOCK_GROUP_THREADS;
+    const list = getModeRooms(mode);
     if (!search.trim()) return list;
     const q = search.toLowerCase();
     return list.filter(
       (t) => t.title.toLowerCase().includes(q) || t.lastMessage.toLowerCase().includes(q),
     );
-  }, [search]);
+  }, [search, mode]);
 
   const renderThread = useCallback(
     ({ item }: { item: ChatThread }) => (
@@ -206,6 +134,24 @@ function GroupsPage({
       contentContainerStyle={styles.listContent}
       showsVerticalScrollIndicator={false}
     />
+  );
+}
+
+// =============================================================================
+// PINNED PAGE (placeholder)
+// =============================================================================
+
+function PinnedPage({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <ScrollView contentContainerStyle={styles.placeholderContent} showsVerticalScrollIndicator={false}>
+      <View style={[styles.placeholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <IconSymbol name="pin.fill" size={32} color={colors.textTertiary} />
+        <ThemedText style={[styles.placeholderTitle, { color: colors.text }]}>Pinned</ThemedText>
+        <ThemedText style={[styles.placeholderText, { color: colors.textTertiary }]}>
+          Pin important threads and messages for quick access. Long-press any conversation to pin it here.
+        </ThemedText>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -353,12 +299,7 @@ export default function MessagesScreen() {
   return (
     <ThemedView style={styles.container}>
       {/* ===== MESSAGES HUB TAB BAR ===== */}
-      <MessagesHubTabs
-        tabs={MESSAGES_TABS}
-        colors={colors}
-        activeIndex={activeIndex}
-        onTabPress={handleTabPress}
-      />
+      <PagedTabBar tabs={MESSAGES_TABS} activeIndex={activeIndex} onTabPress={handleTabPress} />
 
       {/* ===== SEARCH BAR + NEW MESSAGE ===== */}
       <View style={styles.topRow}>
@@ -387,37 +328,43 @@ export default function MessagesScreen() {
       </View>
 
       {/* ===== SWIPEABLE CONTENT ===== */}
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        <View key="inbox" style={{ flex: 1 }}>
-          <InboxPage
-            colors={colors}
-            search={search}
-            onSelectThread={setSelectedThread}
-          />
-        </View>
-        <View key="groups" style={{ flex: 1 }}>
-          <GroupsPage
-            colors={colors}
-            search={search}
-            onSelectThread={setSelectedThread}
-          />
-        </View>
-        <View key="requests" style={{ flex: 1 }}>
-          <RequestsPage
-            colors={colors}
-            pending={pending}
-            approved={approved}
-            onSelectRequest={setSelectedRequest}
-            onApprove={handleApprove}
-            onIgnore={handleIgnore}
-          />
-        </View>
-      </PagerView>
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={MESSAGES_TABS.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          <View key="inbox" style={{ flex: 1 }}>
+            <InboxPage
+              colors={colors}
+              search={search}
+              onSelectThread={setSelectedThread}
+            />
+          </View>
+          <View key="rooms" style={{ flex: 1 }}>
+            <RoomsPage
+              colors={colors}
+              search={search}
+              mode={mode}
+              onSelectThread={setSelectedThread}
+            />
+          </View>
+          <View key="requests" style={{ flex: 1 }}>
+            <RequestsPage
+              colors={colors}
+              pending={pending}
+              approved={approved}
+              onSelectRequest={setSelectedRequest}
+              onApprove={handleApprove}
+              onIgnore={handleIgnore}
+            />
+          </View>
+          <View key="pinned" style={{ flex: 1 }}>
+            <PinnedPage colors={colors} />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
 
       {/* FAB */}
       <Pressable
@@ -564,32 +511,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  // Hub Tab Bar (matches Media/Home pattern)
-  hubTabsContainer: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingTop: 4,
-  },
-  hubTabsContent: {
-    paddingHorizontal: Spacing.lg,
-    gap: Spacing.lg,
-  },
-  hubTab: {
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  hubTabActive: {
-    borderBottomWidth: 2.5,
-  },
-  hubTabLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    letterSpacing: 0.2,
-  },
-  hubTabLabelActive: {
-    fontWeight: '700',
-  },
-
   // Top controls
   topRow: {
     flexDirection: 'row',
@@ -659,9 +580,35 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: Spacing.xl,
   },
   emptyText: {
     fontSize: 16,
+  },
+
+  // Placeholder pages
+  placeholderContent: {
+    flex: 1,
+    padding: Spacing.md,
+    paddingTop: Spacing.xl,
+  },
+  placeholderCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.xl,
+    alignItems: 'center',
+    gap: 12,
+    marginHorizontal: Spacing.md,
+    marginTop: Spacing.xl,
+  },
+  placeholderTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  placeholderText: {
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
   },
 
   // Thread detail

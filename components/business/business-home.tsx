@@ -1,11 +1,10 @@
 /**
  * Business Home — KaNeXT Founder OS Control Room
- * 4 swipeable hub tabs + More overflow (v1 LOCKED)
- * Dashboard | Operations | Projects | Finance + More
+ * 10 swipeable hub tabs with PagedTabBar + EdgeHoldAdvance
+ * Dashboard | Calendar | Operations | Finance | Projects | People | Sales | Legal | Assets | Reports
  */
 
 import React, { useState, useRef, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/core';
 import { View, ScrollView, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,12 +13,15 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
+import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
 
 import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { registerMoreHandlers, unregisterMoreHandlers } from '@/utils/global-more';
+import { useRouter } from 'expo-router';
 import { useEnterprise } from '@/context/enterprise-context';
+import { CalendarHub } from '@/components/schedule/calendar-hub';
 import { AskNexusCTA } from '@/components/ui/ask-nexus-cta';
 import { VideoHeroCard } from '@/components/ui/video-hero-card';
 import { DashboardRenderer } from '@/components/dashboard/dashboard-renderer';
@@ -58,114 +60,18 @@ import {
 
 const BP = BusinessPalette;
 
-// Business Hub Tabs (v1 LOCKED)
-// 4 swipeable pages + "More" overflow trigger
 const BIZ_HUB_TABS = [
   { id: 'dashboard', label: 'Dashboard' },
+  { id: 'calendar', label: 'Calendar' },
   { id: 'operations', label: 'Operations' },
-  { id: 'projects', label: 'Projects' },
   { id: 'finance', label: 'Finance' },
-];
-
-const BIZ_MORE_ITEMS = [
+  { id: 'projects', label: 'Projects' },
   { id: 'people', label: 'People' },
   { id: 'sales', label: 'Sales' },
   { id: 'legal', label: 'Legal' },
   { id: 'assets', label: 'Assets' },
   { id: 'reports', label: 'Reports' },
 ];
-
-// =============================================================================
-// HUB TAB BAR
-// =============================================================================
-
-function BusinessHubTabs({
-  activeTab,
-  onTabPress,
-  onMorePress,
-}: {
-  activeTab: number;
-  onTabPress: (index: number) => void;
-  onMorePress: () => void;
-}) {
-  const tabScrollRef = useRef<ScrollView>(null);
-
-  return (
-    <View style={hubStyles.tabBarContainer}>
-      <ScrollView
-        ref={tabScrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={hubStyles.tabBarContent}
-      >
-        {BIZ_HUB_TABS.map((tab, index) => {
-          const isActive = index === activeTab;
-          return (
-            <Pressable
-              key={tab.id}
-              style={hubStyles.tab}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onTabPress(index);
-              }}
-            >
-              <ThemedText
-                style={[
-                  hubStyles.tabText,
-                  { color: isActive ? BP.champagneGold : BP.ash },
-                  isActive && hubStyles.tabTextActive,
-                ]}
-              >
-                {tab.label}
-              </ThemedText>
-              {isActive && <View style={[hubStyles.tabIndicator, { backgroundColor: BP.champagneGold }]} />}
-            </Pressable>
-          );
-        })}
-        {/* More — overflow trigger */}
-        <Pressable
-          style={hubStyles.tab}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onMorePress();
-          }}
-        >
-          <ThemedText style={[hubStyles.tabText, { color: BP.ash }]}>
-            More
-          </ThemedText>
-        </Pressable>
-      </ScrollView>
-    </View>
-  );
-}
-
-const hubStyles = StyleSheet.create({
-  tabBarContainer: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: BP.graphite,
-  },
-  tabBarContent: {
-    paddingHorizontal: Spacing.md,
-    gap: Spacing.lg,
-  },
-  tab: {
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  tabTextActive: {
-    fontWeight: '700',
-  },
-  tabIndicator: {
-    height: 2.5,
-    borderRadius: 1.5,
-    width: '100%',
-    marginTop: 4,
-  },
-});
 
 // =============================================================================
 // VIEW AS TOGGLE (RBAC)
@@ -1066,21 +972,12 @@ function OpsTab({ role }: { role: RoleView }) {
 
 export function BusinessHome() {
   const [activeTab, setActiveTab] = useState(0);
-  const [moreMenuVisible, setMoreMenuVisible] = useState(false);
-
-  // Register global More handlers so Org double-tap can open this menu
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreMenuVisible(true),
-        () => setMoreMenuVisible(false)
-      );
-      return () => unregisterMoreHandlers();
-    }, [])
-  );
 
   const pagerRef = useRef<PagerView>(null);
   const insets = useSafeAreaInsets();
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const router = useRouter();
   const { viewAsRole, isPBDView } = useEnterprise();
 
   const handleTabPress = useCallback((index: number) => {
@@ -1089,51 +986,46 @@ export function BusinessHome() {
 
   return (
     <ThemedView style={mainStyles.container}>
-      <BusinessHubTabs activeTab={activeTab} onTabPress={handleTabPress} onMorePress={() => setMoreMenuVisible(true)} />
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveTab(e.nativeEvent.position)}
-      >
-        <View key="dashboard" style={{ flex: 1 }}>
-          <DashboardTab role={viewAsRole} isPBD={isPBDView} />
-        </View>
-        <View key="operations" style={{ flex: 1 }}>
-          <OpsTab role={viewAsRole} />
-        </View>
-        <View key="projects" style={{ flex: 1 }}>
-          <RoadmapTab />
-        </View>
-        <View key="finance" style={{ flex: 1 }}>
-          <CapitalTab role={viewAsRole} isPBD={isPBDView} />
-        </View>
-      </PagerView>
-
-      {/* ===== MORE OVERFLOW MENU ===== */}
-      <BottomSheet visible={moreMenuVisible} onClose={() => setMoreMenuVisible(false)}>
-        <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 32 }}>
-          <ThemedText style={{ fontSize: 17, fontWeight: '700', color: '#FFFFFF', marginBottom: 16 }}>More</ThemedText>
-          {BIZ_MORE_ITEMS.map((item) => (
-            <Pressable
-              key={item.id}
-              style={({ pressed }) => [{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingVertical: 14,
-                paddingHorizontal: 4,
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderBottomColor: BP.graphite,
-              }, pressed && { opacity: 0.6 }]}
-              onPress={() => setMoreMenuVisible(false)}
-            >
-              <ThemedText style={{ fontSize: 16, fontWeight: '500', color: BP.smoke }}>{item.label}</ThemedText>
-              <IconSymbol name="chevron.right" size={14} color={BP.ash} />
-            </Pressable>
-          ))}
-        </View>
-      </BottomSheet>
+      <PagedTabBar tabs={BIZ_HUB_TABS} activeIndex={activeTab} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeTab} tabCount={BIZ_HUB_TABS.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveTab(e.nativeEvent.position)}
+        >
+          <View key="dashboard" style={{ flex: 1 }}>
+            <DashboardTab role={viewAsRole} isPBD={isPBDView} />
+          </View>
+          <View key="calendar" style={{ flex: 1 }}>
+            <CalendarHub colors={colors} router={router} />
+          </View>
+          <View key="operations" style={{ flex: 1 }}>
+            <OpsTab role={viewAsRole} />
+          </View>
+          <View key="finance" style={{ flex: 1 }}>
+            <CapitalTab role={viewAsRole} isPBD={isPBDView} />
+          </View>
+          <View key="projects" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Projects" />
+          </View>
+          <View key="people" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="People" />
+          </View>
+          <View key="sales" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Sales" />
+          </View>
+          <View key="legal" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Legal" />
+          </View>
+          <View key="assets" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Assets" />
+          </View>
+          <View key="reports" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Reports" />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </ThemedView>
   );
 }

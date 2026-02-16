@@ -27,7 +27,9 @@ import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/th
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode } from '@/context/app-context';
 import type { Mode, OffensiveStyle, DefensiveStyle } from '@/types';
-import { registerMoreHandlers, unregisterMoreHandlers } from '@/utils/global-more';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
+import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
 
 // Mock data imports (other modes)
 
@@ -59,22 +61,20 @@ import { EnterpriseProvider } from '@/context/enterprise-context';
 // Shows: state, identity, and motion — nothing else.
 // =============================================================================
 
-// Sports Home Top Tabs (v1 LOCKED)
-// 4 swipeable pages + "More" overflow trigger (not a page)
+// Sports Home Top Tabs — all items in scrollable paged row
 const TEAM_HUB_TABS = [
+  // Page 1
   { id: 'dashboard', label: 'Dashboard' },
-  { id: 'schedule', label: 'Schedule' },
+  { id: 'schedule', label: 'Calendar' },
   { id: 'roster', label: 'Roster' },
   { id: 'recruiting', label: 'Recruiting' },
-];
-
-// More menu items (overflow, not swipeable pages)
-const MORE_MENU_ITEMS = [
-  { id: 'stats', label: 'Statistics', route: '/coach/stats' },
-  { id: 'game-plan', label: 'Game Plan', route: '/coach/game-ops' },
-  { id: 'simulation', label: 'Simulation', route: '/coach/game-ops' },
-  { id: 'development', label: 'Development', route: '/coach/more-resources' },
-  { id: 'program', label: 'Program', route: '/coach/program-context' },
+  // Page 2
+  { id: 'stats', label: 'Statistics' },
+  { id: 'game-plan', label: 'Game Plan' },
+  { id: 'simulation', label: 'Simulation' },
+  { id: 'development', label: 'Development' },
+  // Page 3
+  { id: 'program', label: 'Program' },
 ];
 
 // FMU seal logo
@@ -89,7 +89,6 @@ const DEMO_TEAM_STATE = {
   record: FMU_RECORD.overall,
   confRecord: FMU_RECORD.conference,
   streak: fmuStreak,
-  tier: 'Regional Power',
 };
 
 const DEMO_TODAY = {
@@ -126,116 +125,6 @@ const SEASON_YEARS = [
   { id: '2023-24', label: '2023-24' },
 ];
 
-// Team Hub Tabs Component (scrollable header row synced with PagerView)
-// 4 swipeable tabs + "More" overflow trigger (v1 LOCKED)
-function TeamHubTabs({
-  colors,
-  activeIndex,
-  onTabPress,
-  onMorePress,
-}: {
-  colors: typeof Colors.light;
-  activeIndex: number;
-  onTabPress: (index: number) => void;
-  onMorePress: () => void;
-}) {
-  const tabScrollRef = useRef<ScrollView>(null);
-  const tabLayoutsRef = useRef<{ x: number; width: number }[]>([]);
-
-  const scrollToTab = useCallback((index: number) => {
-    const layout = tabLayoutsRef.current[index];
-    if (layout && tabScrollRef.current) {
-      tabScrollRef.current.scrollTo({
-        x: Math.max(0, layout.x - 40),
-        animated: true,
-      });
-    }
-  }, []);
-
-  // Auto-scroll when active tab changes
-  React.useEffect(() => {
-    scrollToTab(activeIndex);
-  }, [activeIndex, scrollToTab]);
-
-  return (
-    <View style={[styles.hubTabsContainer, { borderBottomColor: colors.divider }]}>
-      <ScrollView
-        ref={tabScrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.hubTabsContent}
-      >
-        {TEAM_HUB_TABS.map((tab, index) => {
-          const isActive = index === activeIndex;
-          return (
-            <Pressable
-              key={tab.id}
-              onLayout={(e) => {
-                tabLayoutsRef.current[index] = {
-                  x: e.nativeEvent.layout.x,
-                  width: e.nativeEvent.layout.width,
-                };
-              }}
-              style={[
-                styles.hubTab,
-                isActive && [styles.hubTabActive, { borderBottomColor: colors.text }],
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onTabPress(index);
-              }}
-            >
-              <ThemedText
-                style={[
-                  styles.hubTabLabel,
-                  { color: isActive ? colors.text : colors.textTertiary },
-                  isActive && styles.hubTabLabelActive,
-                ]}
-              >
-                {tab.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-        {/* More — overflow trigger, NOT a swipeable page */}
-        <Pressable
-          style={styles.hubTab}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onMorePress();
-          }}
-        >
-          <ThemedText style={[styles.hubTabLabel, { color: colors.textTertiary }]}>
-            More
-          </ThemedText>
-        </Pressable>
-      </ScrollView>
-    </View>
-  );
-}
-
-// Placeholder for tabs not yet built
-function TabPlaceholder({
-  icon,
-  label,
-  colors,
-}: {
-  icon: IconSymbolName;
-  label: string;
-  colors: typeof Colors.light;
-}) {
-  return (
-    <View style={styles.placeholderContainer}>
-      <IconSymbol name={icon} size={40} color={colors.textTertiary} />
-      <ThemedText style={[styles.placeholderLabel, { color: colors.text }]}>
-        {label}
-      </ThemedText>
-      <ThemedText style={[styles.placeholderSubtext, { color: colors.textTertiary }]}>
-        Coming soon
-      </ThemedText>
-    </View>
-  );
-}
 
 // =============================================================================
 // SCHEDULE HUB — extracted to components/schedule/schedule-hub.tsx
@@ -414,20 +303,6 @@ function SportsHome() {
   const [selectedYear, setSelectedYear] = useState('2025-26');
   const [yearPickerOpen, setYearPickerOpen] = useState(false);
 
-  // More menu state
-  const [moreMenuVisible, setMoreMenuVisible] = useState(false);
-
-  // Register global More handlers so Org double-tap can open this menu
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreMenuVisible(true),
-        () => setMoreMenuVisible(false)
-      );
-      return () => unregisterMoreHandlers();
-    }, [])
-  );
-
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
@@ -453,71 +328,81 @@ function SportsHome() {
 
   return (
     <View style={styles.sportsHomeContainer}>
-      {/* ===== STICKY TABS (v1 LOCKED: Dashboard | Schedule | Roster | Recruiting | More) ===== */}
-      <TeamHubTabs colors={colors} activeIndex={activeHubIndex} onTabPress={handleTabPress} onMorePress={() => setMoreMenuVisible(true)} />
+      {/* ===== STICKY TABS (scrollable paged row) ===== */}
+      <PagedTabBar tabs={TEAM_HUB_TABS} activeIndex={activeHubIndex} onTabPress={handleTabPress} />
 
       {/* ===== SWIPEABLE CONTENT ===== */}
-      <PagerView
-        ref={pagerRef}
-        style={styles.pagerView}
-        initialPage={0}
-        onPageSelected={(e) => setActiveHubIndex(e.nativeEvent.position)}
-      >
-        {/* Page 0: Dashboard */}
-        <ScrollView
-          key="dashboard"
-          style={styles.sportsScrollView}
-          contentContainerStyle={styles.sportsScrollContent}
-          showsVerticalScrollIndicator={false}
-          nestedScrollEnabled
+      <EdgeHoldAdvance activeIndex={activeHubIndex} tabCount={TEAM_HUB_TABS.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={styles.pagerView}
+          initialPage={0}
+          onPageSelected={(e) => setActiveHubIndex(e.nativeEvent.position)}
         >
-          {renderHomeContent()}
-        </ScrollView>
+          {/* Page 0: Dashboard */}
+          <ScrollView
+            key="dashboard"
+            style={styles.sportsScrollView}
+            contentContainerStyle={styles.sportsScrollContent}
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled
+          >
+            {renderHomeContent()}
+          </ScrollView>
 
-        {/* Page 1: Schedule (full Games Hub) */}
-        <View key="schedule" style={{ flex: 1 }}>
-          <ScheduleHub colors={colors} router={router} openLiveTrigger={openLiveTrigger} jumpToStandings={jumpToStandings} />
-        </View>
+          {/* Page 1: Schedule (full Games Hub) */}
+          <View key="schedule" style={{ flex: 1 }}>
+            <ScheduleHub colors={colors} router={router} openLiveTrigger={openLiveTrigger} jumpToStandings={jumpToStandings} />
+          </View>
 
-        {/* Page 2: Roster */}
-        <ScrollView
-          key="roster"
-          style={styles.sportsScrollView}
-          contentContainerStyle={styles.rosterScrollContent}
-          showsVerticalScrollIndicator={false}
-          nestedScrollEnabled
-        >
-          <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { router.push('/coach/stats' as any); }} />
-        </ScrollView>
+          {/* Page 2: Roster */}
+          <ScrollView
+            key="roster"
+            style={styles.sportsScrollView}
+            contentContainerStyle={styles.rosterScrollContent}
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled
+          >
+            <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { router.push('/coach/stats' as any); }} />
+          </ScrollView>
 
-        {/* Page 3: Recruiting (National Pool) */}
-        <View key="recruiting" style={{ flex: 1 }}>
-          <PlayerPoolContent />
-        </View>
-      </PagerView>
+          {/* Page 3: Recruiting (National Pool) */}
+          <View key="recruiting" style={{ flex: 1 }}>
+            <PlayerPoolContent />
+          </View>
 
-      {/* ===== MORE OVERFLOW MENU ===== */}
-      <BottomSheet visible={moreMenuVisible} onClose={() => setMoreMenuVisible(false)}>
-        <View style={styles.moreMenuContainer}>
-          <ThemedText style={[styles.moreMenuTitle, { color: colors.text }]}>More</ThemedText>
-          {MORE_MENU_ITEMS.map((item) => (
-            <Pressable
-              key={item.id}
-              style={({ pressed }) => [
-                styles.moreMenuItem,
-                pressed && { backgroundColor: colors.backgroundSecondary },
-              ]}
-              onPress={() => {
-                setMoreMenuVisible(false);
-                router.push(item.route as any);
-              }}
-            >
-              <ThemedText style={[styles.moreMenuLabel, { color: colors.text }]}>{item.label}</ThemedText>
-              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-            </Pressable>
-          ))}
-        </View>
-      </BottomSheet>
+          {/* Page 4: Statistics */}
+          <View key="stats" style={{ flex: 1 }}>
+            <StatsContent />
+          </View>
+
+          {/* Page 5: Game Plan */}
+          <View key="game-plan" style={{ flex: 1 }}>
+            <GamePlanContent />
+          </View>
+
+          {/* Page 6: Simulation */}
+          <View key="simulation" style={{ flex: 1 }}>
+            <SimulationContent />
+          </View>
+
+          {/* Page 7: Development */}
+          <View key="development" style={{ flex: 1 }}>
+            <DevelopmentContent />
+          </View>
+
+          {/* Page 8: Program */}
+          <ScrollView
+            key="program"
+            style={styles.sportsScrollView}
+            contentContainerStyle={styles.sportsScrollContent}
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled
+          >
+            <ProgramContextSection />
+          </ScrollView>
+        </PagerView>
+      </EdgeHoldAdvance>
 
       {/* KR Details Bottom Sheet */}
       <KRDetailsSheet
@@ -964,48 +849,6 @@ const styles = StyleSheet.create({
   pagerView: {
     flex: 1,
   },
-  placeholderPage: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 120,
-  },
-  placeholderContainer: {
-    alignItems: 'center',
-    gap: 12,
-  },
-  placeholderLabel: {
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  placeholderSubtext: {
-    fontSize: 14,
-    fontWeight: '400',
-  },
-
-  // More overflow menu
-  moreMenuContainer: {
-    paddingHorizontal: Spacing.md,
-    paddingBottom: Spacing.lg,
-  },
-  moreMenuTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 12,
-  },
-  moreMenuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 14,
-    paddingHorizontal: 4,
-    borderRadius: BorderRadius.md,
-  },
-  moreMenuLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-
   // Schedule tab
   sectionHeader: {
     fontSize: 13,
@@ -1127,34 +970,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     marginBottom: Spacing.sm,
     marginTop: Spacing.lg,
-  },
-
-  // ===== SPORTS HOME STYLES (v2) =====
-
-  // Team Hub Tabs (ESPN-style header row)
-  hubTabsContainer: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingTop: 4,
-  },
-  hubTabsContent: {
-    paddingHorizontal: Spacing.lg,
-    gap: Spacing.lg,
-  },
-  hubTab: {
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  hubTabActive: {
-    borderBottomWidth: 2.5,
-  },
-  hubTabLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    letterSpacing: 0.2,
-  },
-  hubTabLabelActive: {
-    fontWeight: '700',
   },
 
   // Team Truth Header

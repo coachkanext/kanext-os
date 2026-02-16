@@ -5,22 +5,27 @@
  * All 5 modes get 4 swipeable PagerView tabs + More overflow.
  */
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useFocusEffect } from '@react-navigation/core';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode } from '@/context/app-context';
-import { registerMoreHandlers, unregisterMoreHandlers } from '@/utils/global-more';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
+import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
+import { OrgPeopleTab } from '@/components/organization/org-people-tab';
+import { OrgOperationsTab } from '@/components/organization/org-operations-tab';
+import { OrgFinanceTab } from '@/components/organization/org-finance-tab';
+import { OrgSwitcherSheet } from '@/components/organization/org-switcher-sheet';
+import { getOrgsForMode } from '@/data/mock-org-switcher';
 import {
   INSTITUTION,
   INSTITUTION_LEADERSHIP,
@@ -71,225 +76,58 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
     { id: 'people', label: 'People' },
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
+    { id: 'payment-rails', label: 'Payment Rails' },
+    { id: 'compliance', label: 'Compliance' },
+    { id: 'facilities', label: 'Facilities' },
+    { id: 'resources', label: 'Resources' },
+    { id: 'brand', label: 'Brand' },
   ],
   enterprise: [
     { id: 'entities', label: 'Entities' },
     { id: 'people', label: 'People' },
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
+    { id: 'payment-rails', label: 'Payment Rails' },
+    { id: 'legal', label: 'Legal' },
+    { id: 'compliance', label: 'Compliance' },
+    { id: 'assets', label: 'Assets' },
+    { id: 'reports', label: 'Reports' },
   ],
   education: [
     { id: 'schools', label: 'Schools' },
     { id: 'people', label: 'People' },
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
+    { id: 'payment-rails', label: 'Payment Rails' },
+    { id: 'compliance', label: 'Compliance' },
+    { id: 'facilities', label: 'Facilities' },
+    { id: 'resources', label: 'Resources' },
+    { id: 'policies', label: 'Policies' },
   ],
   community: [
     { id: 'series', label: 'Series' },
-    { id: 'teams', label: 'Teams' },
+    { id: 'people', label: 'People' },
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
+    { id: 'payment-rails', label: 'Payment Rails' },
+    { id: 'rules', label: 'Rules' },
+    { id: 'compliance', label: 'Compliance' },
+    { id: 'venues', label: 'Venues' },
+    { id: 'sponsors', label: 'Sponsors' },
   ],
   church: [
     { id: 'ministries', label: 'Ministries' },
     { id: 'people', label: 'People' },
     { id: 'operations', label: 'Operations' },
-    { id: 'giving', label: 'Giving' },
+    { id: 'finance', label: 'Finance' },
+    { id: 'payment-rails', label: 'Payment Rails' },
+    { id: 'compliance', label: 'Compliance' },
+    { id: 'facilities', label: 'Facilities' },
+    { id: 'resources', label: 'Resources' },
+    { id: 'policies', label: 'Policies' },
   ],
 };
 
-const ORG_MORE_ITEMS: Record<Mode, { id: string; label: string; icon: string }[]> = {
-  sports: [
-    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
-    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
-    { id: 'facilities', label: 'Facilities', icon: 'building.fill' },
-    { id: 'resources', label: 'Resources', icon: 'folder.fill' },
-    { id: 'brand', label: 'Brand / Media Kit', icon: 'paintbrush.fill' },
-  ],
-  enterprise: [
-    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
-    { id: 'legal', label: 'Legal', icon: 'doc.text.fill' },
-    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
-    { id: 'assets', label: 'Assets', icon: 'cube.fill' },
-    { id: 'reports', label: 'Reports', icon: 'chart.bar.fill' },
-  ],
-  education: [
-    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
-    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
-    { id: 'facilities', label: 'Facilities', icon: 'building.fill' },
-    { id: 'resources', label: 'Resources', icon: 'folder.fill' },
-    { id: 'policies', label: 'Policies', icon: 'doc.plaintext.fill' },
-  ],
-  community: [
-    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
-    { id: 'rules', label: 'Rules', icon: 'list.clipboard.fill' },
-    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
-    { id: 'venues', label: 'Venues', icon: 'mappin.circle.fill' },
-    { id: 'sponsors', label: 'Sponsors', icon: 'star.fill' },
-  ],
-  church: [
-    { id: 'payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
-    { id: 'compliance', label: 'Compliance', icon: 'checkmark.shield.fill' },
-    { id: 'facilities', label: 'Facilities', icon: 'building.fill' },
-    { id: 'resources', label: 'Resources', icon: 'folder.fill' },
-    { id: 'policies', label: 'Policies', icon: 'doc.plaintext.fill' },
-  ],
-};
-
-// =============================================================================
-// SHARED: ORG HUB TABS (4 tabs + More trigger)
-// =============================================================================
-
-function OrgHubTabs({
-  tabs,
-  activeIndex,
-  onTabPress,
-  onMorePress,
-}: {
-  tabs: { id: string; label: string }[];
-  activeIndex: number;
-  onTabPress: (index: number) => void;
-  onMorePress: () => void;
-}) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const tabScrollRef = useRef<ScrollView>(null);
-  const tabLayoutsRef = useRef<{ x: number; width: number }[]>([]);
-
-  const scrollToTab = useCallback((index: number) => {
-    const layout = tabLayoutsRef.current[index];
-    if (layout && tabScrollRef.current) {
-      tabScrollRef.current.scrollTo({
-        x: Math.max(0, layout.x - 40),
-        animated: true,
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    scrollToTab(activeIndex);
-  }, [activeIndex, scrollToTab]);
-
-  return (
-    <View style={[styles.hubTabsContainer, { borderBottomColor: colors.divider }]}>
-      <ScrollView
-        ref={tabScrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.hubTabsContent}
-      >
-        {tabs.map((tab, index) => {
-          const isActive = index === activeIndex;
-          return (
-            <Pressable
-              key={tab.id}
-              onLayout={(e) => {
-                tabLayoutsRef.current[index] = {
-                  x: e.nativeEvent.layout.x,
-                  width: e.nativeEvent.layout.width,
-                };
-              }}
-              style={[
-                styles.hubTab,
-                isActive && [styles.hubTabActive, { borderBottomColor: colors.text }],
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onTabPress(index);
-              }}
-            >
-              <ThemedText
-                style={[
-                  styles.hubTabLabel,
-                  { color: isActive ? colors.text : colors.textTertiary },
-                  isActive && styles.hubTabLabelActive,
-                ]}
-              >
-                {tab.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-        {/* More trigger */}
-        <Pressable
-          style={styles.hubTab}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onMorePress();
-          }}
-        >
-          <ThemedText style={[styles.hubTabLabel, { color: colors.textTertiary }]}>
-            More
-          </ThemedText>
-        </Pressable>
-      </ScrollView>
-    </View>
-  );
-}
-
-// =============================================================================
-// SHARED: TAB PLACEHOLDER
-// =============================================================================
-
-function TabPlaceholder({ label, icon }: { label: string; icon: string }) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-
-  return (
-    <View style={styles.tabPlaceholderContainer}>
-      <View style={[styles.tabPlaceholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <IconSymbol name={icon as any} size={32} color={colors.textTertiary} />
-        <ThemedText style={[styles.tabPlaceholderTitle, { color: colors.text }]}>{label}</ThemedText>
-        <ThemedText style={[styles.tabPlaceholderText, { color: colors.textTertiary }]}>
-          Coming soon
-        </ThemedText>
-      </View>
-    </View>
-  );
-}
-
-// =============================================================================
-// SHARED: MORE MENU SHEET CONTENT
-// =============================================================================
-
-function MoreMenuContent({
-  items,
-  onItemPress,
-}: {
-  items: { id: string; label: string; icon: string }[];
-  onItemPress: (id: string) => void;
-}) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-
-  return (
-    <View style={styles.moreMenuContent}>
-      {items.map((item, index) => (
-        <React.Fragment key={item.id}>
-          <Pressable
-            style={({ pressed }) => [
-              styles.moreMenuItem,
-              pressed && { backgroundColor: colors.backgroundSecondary },
-            ]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              onItemPress(item.id);
-            }}
-          >
-            <View style={[styles.moreMenuIcon, { backgroundColor: colors.backgroundTertiary }]}>
-              <IconSymbol name={item.icon as any} size={18} color={colors.textSecondary} />
-            </View>
-            <ThemedText style={[styles.moreMenuLabel, { color: colors.text }]}>{item.label}</ThemedText>
-            <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-          </Pressable>
-          {index < items.length - 1 && (
-            <View style={[styles.moreMenuDivider, { backgroundColor: colors.divider }]} />
-          )}
-        </React.Fragment>
-      ))}
-    </View>
-  );
-}
 
 // =============================================================================
 // SPORTS MODE COMPONENTS
@@ -405,22 +243,11 @@ function SportsOrganization() {
   const router = useRouter();
   const modeColors = ModeColors.sports;
   const [activeIndex, setActiveIndex] = useState(0);
-  const [moreVisible, setMoreVisible] = useState(false);
   const pagerRef = useRef<PagerView>(null);
 
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreVisible(true),
-        () => setMoreVisible(false),
-      );
-      return () => unregisterMoreHandlers();
-    }, []),
-  );
 
   const handleProgramPress = (programId: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -444,21 +271,17 @@ function SportsOrganization() {
 
   return (
     <>
-      <OrgHubTabs
-        tabs={ORG_TABS.sports}
-        activeIndex={activeIndex}
-        onTabPress={handleTabPress}
-        onMorePress={() => setMoreVisible(true)}
-      />
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        {/* Page 0: Programs (existing content) */}
-        <ScrollView key="programs" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-          {/* Institution Header */}
+      <PagedTabBar tabs={ORG_TABS.sports} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.sports.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          {/* Page 0: Programs (existing content) */}
+          <ScrollView key="programs" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+            {/* Institution Header */}
           <View style={styles.institutionHeader}>
             <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
               <ThemedText style={styles.institutionBadgeText}>
@@ -605,29 +428,45 @@ function SportsOrganization() {
 
         {/* Page 1: People */}
         <View key="people" style={{ flex: 1 }}>
-          <TabPlaceholder label="People" icon="person.2.fill" />
+          <OrgPeopleTab mode="sports" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 2: Operations */}
         <View key="operations" style={{ flex: 1 }}>
-          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
+          <OrgOperationsTab mode="sports" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 3: Finance */}
         <View key="finance" style={{ flex: 1 }}>
-          <TabPlaceholder label="Finance" icon="dollarsign.circle.fill" />
+          <OrgFinanceTab mode="sports" colors={colors} accentColor={modeColors.primary} />
         </View>
-      </PagerView>
 
-      {/* More Sheet */}
-      <BottomSheet
-        visible={moreVisible}
-        onClose={() => setMoreVisible(false)}
-        title="More"
-        useModal
-      >
-        <MoreMenuContent items={ORG_MORE_ITEMS.sports} onItemPress={() => setMoreVisible(false)} />
-      </BottomSheet>
+        {/* Page 4: Payment Rails */}
+        <View key="payment-rails" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Payment Rails" />
+        </View>
+
+        {/* Page 5: Compliance */}
+        <View key="compliance" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Compliance" />
+        </View>
+
+        {/* Page 6: Facilities */}
+        <View key="facilities" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Facilities" />
+        </View>
+
+        {/* Page 7: Resources */}
+        <View key="resources" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Resources" />
+        </View>
+
+        {/* Page 8: Brand */}
+        <View key="brand" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Brand" />
+        </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </>
   );
 }
@@ -666,68 +505,69 @@ function EnterpriseOrganization() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const [activeIndex, setActiveIndex] = useState(0);
-  const [moreVisible, setMoreVisible] = useState(false);
   const pagerRef = useRef<PagerView>(null);
 
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreVisible(true),
-        () => setMoreVisible(false),
-      );
-      return () => unregisterMoreHandlers();
-    }, []),
-  );
-
   return (
     <EnterpriseProvider>
       <CompanySwitcher />
-      <OrgHubTabs
-        tabs={ORG_TABS.enterprise}
-        activeIndex={activeIndex}
-        onTabPress={handleTabPress}
-        onMorePress={() => setMoreVisible(true)}
-      />
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        {/* Page 0: Entities (existing enterprise home) */}
-        <ScrollView key="entities" nestedScrollEnabled showsVerticalScrollIndicator={false}>
-          <EnterpriseHomeContent onSwitchTab={handleTabPress} />
-        </ScrollView>
+      <PagedTabBar tabs={ORG_TABS.enterprise} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.enterprise.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          {/* Page 0: Entities (existing enterprise home) */}
+          <ScrollView key="entities" nestedScrollEnabled showsVerticalScrollIndicator={false}>
+            <EnterpriseHomeContent onSwitchTab={handleTabPress} />
+          </ScrollView>
 
-        {/* Page 1: People */}
-        <View key="people" style={{ flex: 1 }}>
-          <TabPlaceholder label="People" icon="person.2.fill" />
-        </View>
+          {/* Page 1: People */}
+          <View key="people" style={{ flex: 1 }}>
+            <OrgPeopleTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
+          </View>
 
-        {/* Page 2: Operations */}
-        <View key="operations" style={{ flex: 1 }}>
-          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
-        </View>
+          {/* Page 2: Operations */}
+          <View key="operations" style={{ flex: 1 }}>
+            <OrgOperationsTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
+          </View>
 
-        {/* Page 3: Finance */}
-        <View key="finance" style={{ flex: 1 }}>
-          <TabPlaceholder label="Finance" icon="dollarsign.circle.fill" />
-        </View>
-      </PagerView>
+          {/* Page 3: Finance */}
+          <View key="finance" style={{ flex: 1 }}>
+            <OrgFinanceTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
+          </View>
 
-      {/* More Sheet */}
-      <BottomSheet
-        visible={moreVisible}
-        onClose={() => setMoreVisible(false)}
-        title="More"
-        useModal
-      >
-        <MoreMenuContent items={ORG_MORE_ITEMS.enterprise} onItemPress={() => setMoreVisible(false)} />
-      </BottomSheet>
+          {/* Page 4: Payment Rails */}
+          <View key="payment-rails" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Payment Rails" />
+          </View>
+
+          {/* Page 5: Legal */}
+          <View key="legal" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Legal" />
+          </View>
+
+          {/* Page 6: Compliance */}
+          <View key="compliance" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Compliance" />
+          </View>
+
+          {/* Page 7: Assets */}
+          <View key="assets" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Assets" />
+          </View>
+
+          {/* Page 8: Reports */}
+          <View key="reports" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Reports" />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </EnterpriseProvider>
   );
 }
@@ -823,22 +663,11 @@ function ChurchOrganization() {
   const router = useRouter();
   const modeColors = ModeColors.church;
   const [activeIndex, setActiveIndex] = useState(0);
-  const [moreVisible, setMoreVisible] = useState(false);
   const pagerRef = useRef<PagerView>(null);
 
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreVisible(true),
-        () => setMoreVisible(false),
-      );
-      return () => unregisterMoreHandlers();
-    }, []),
-  );
 
   const handleCampusPress = (campusId: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -872,21 +701,17 @@ function ChurchOrganization() {
 
   return (
     <>
-      <OrgHubTabs
-        tabs={ORG_TABS.church}
-        activeIndex={activeIndex}
-        onTabPress={handleTabPress}
-        onMorePress={() => setMoreVisible(true)}
-      />
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        {/* Page 0: Ministries (existing content) */}
-        <ScrollView key="ministries" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-          {/* Church Header */}
+      <PagedTabBar tabs={ORG_TABS.church} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.church.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          {/* Page 0: Ministries (existing content) */}
+          <ScrollView key="ministries" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+            {/* Church Header */}
           <View style={styles.institutionHeader}>
             <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
               <IconSymbol name="heart.fill" size={28} color="#FFFFFF" />
@@ -1028,29 +853,45 @@ function ChurchOrganization() {
 
         {/* Page 1: People */}
         <View key="people" style={{ flex: 1 }}>
-          <TabPlaceholder label="People" icon="person.2.fill" />
+          <OrgPeopleTab mode="church" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 2: Operations */}
         <View key="operations" style={{ flex: 1 }}>
-          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
+          <OrgOperationsTab mode="church" colors={colors} accentColor={modeColors.primary} />
         </View>
 
-        {/* Page 3: Giving */}
-        <View key="giving" style={{ flex: 1 }}>
-          <TabPlaceholder label="Giving" icon="heart.circle.fill" />
+        {/* Page 3: Finance */}
+        <View key="finance" style={{ flex: 1 }}>
+          <OrgFinanceTab mode="church" colors={colors} accentColor={modeColors.primary} />
         </View>
-      </PagerView>
 
-      {/* More Sheet */}
-      <BottomSheet
-        visible={moreVisible}
-        onClose={() => setMoreVisible(false)}
-        title="More"
-        useModal
-      >
-        <MoreMenuContent items={ORG_MORE_ITEMS.church} onItemPress={() => setMoreVisible(false)} />
-      </BottomSheet>
+        {/* Page 4: Payment Rails */}
+        <View key="payment-rails" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Payment Rails" />
+        </View>
+
+        {/* Page 5: Compliance */}
+        <View key="compliance" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Compliance" />
+        </View>
+
+        {/* Page 6: Facilities */}
+        <View key="facilities" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Facilities" />
+        </View>
+
+        {/* Page 7: Resources */}
+        <View key="resources" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Resources" />
+        </View>
+
+        {/* Page 8: Policies */}
+        <View key="policies" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Policies" />
+        </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </>
   );
 }
@@ -1182,7 +1023,6 @@ function EducationOrganization() {
   const router = useRouter();
   const modeColors = ModeColors.education;
   const [activeIndex, setActiveIndex] = useState(0);
-  const [moreVisible, setMoreVisible] = useState(false);
   const pagerRef = useRef<PagerView>(null);
 
   const currentTerm = getCurrentTerm();
@@ -1191,16 +1031,6 @@ function EducationOrganization() {
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreVisible(true),
-        () => setMoreVisible(false),
-      );
-      return () => unregisterMoreHandlers();
-    }, []),
-  );
 
   const handleSchedulePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -1239,21 +1069,17 @@ function EducationOrganization() {
 
   return (
     <>
-      <OrgHubTabs
-        tabs={ORG_TABS.education}
-        activeIndex={activeIndex}
-        onTabPress={handleTabPress}
-        onMorePress={() => setMoreVisible(true)}
-      />
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        {/* Page 0: Schools (existing content) */}
-        <ScrollView key="schools" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-          {/* Institution Header */}
+      <PagedTabBar tabs={ORG_TABS.education} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.education.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          {/* Page 0: Schools (existing content) */}
+          <ScrollView key="schools" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+            {/* Institution Header */}
           <View style={styles.institutionHeader}>
             <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
               <IconSymbol name="graduationcap.fill" size={28} color="#FFFFFF" />
@@ -1468,29 +1294,45 @@ function EducationOrganization() {
 
         {/* Page 1: People */}
         <View key="people" style={{ flex: 1 }}>
-          <TabPlaceholder label="People" icon="person.2.fill" />
+          <OrgPeopleTab mode="education" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 2: Operations */}
         <View key="operations" style={{ flex: 1 }}>
-          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
+          <OrgOperationsTab mode="education" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 3: Finance */}
         <View key="finance" style={{ flex: 1 }}>
-          <TabPlaceholder label="Finance" icon="dollarsign.circle.fill" />
+          <OrgFinanceTab mode="education" colors={colors} accentColor={modeColors.primary} />
         </View>
-      </PagerView>
 
-      {/* More Sheet */}
-      <BottomSheet
-        visible={moreVisible}
-        onClose={() => setMoreVisible(false)}
-        title="More"
-        useModal
-      >
-        <MoreMenuContent items={ORG_MORE_ITEMS.education} onItemPress={() => setMoreVisible(false)} />
-      </BottomSheet>
+        {/* Page 4: Payment Rails */}
+        <View key="payment-rails" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Payment Rails" />
+        </View>
+
+        {/* Page 5: Compliance */}
+        <View key="compliance" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Compliance" />
+        </View>
+
+        {/* Page 6: Facilities */}
+        <View key="facilities" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Facilities" />
+        </View>
+
+        {/* Page 7: Resources */}
+        <View key="resources" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Resources" />
+        </View>
+
+        {/* Page 8: Policies */}
+        <View key="policies" style={{ flex: 1 }}>
+          <TabPlaceholderPage title="Policies" />
+        </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </>
   );
 }
@@ -1503,83 +1345,84 @@ function CommunityOrganization() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const [activeIndex, setActiveIndex] = useState(0);
-  const [moreVisible, setMoreVisible] = useState(false);
   const pagerRef = useRef<PagerView>(null);
 
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      registerMoreHandlers(
-        () => setMoreVisible(true),
-        () => setMoreVisible(false),
-      );
-      return () => unregisterMoreHandlers();
-    }, []),
-  );
-
   return (
     <>
-      <OrgHubTabs
-        tabs={ORG_TABS.community}
-        activeIndex={activeIndex}
-        onTabPress={handleTabPress}
-        onMorePress={() => setMoreVisible(true)}
-      />
-      <PagerView
-        ref={pagerRef}
-        style={{ flex: 1 }}
-        initialPage={0}
-        onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-      >
-        {/* Page 0: Series (existing content) */}
-        <ScrollView key="series" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-          <View style={styles.institutionHeader}>
-            <View style={[styles.institutionBadge, { backgroundColor: '#EF4444' }]}>
-              <IconSymbol name="flag.checkered" size={28} color="#FFFFFF" />
+      <PagedTabBar tabs={ORG_TABS.community} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.community.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          {/* Page 0: Series (existing content) */}
+          <ScrollView key="series" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+            <View style={styles.institutionHeader}>
+              <View style={[styles.institutionBadge, { backgroundColor: '#EF4444' }]}>
+                <IconSymbol name="flag.checkered" size={28} color="#FFFFFF" />
+              </View>
+              <View style={styles.institutionInfo}>
+                <ThemedText style={styles.institutionName}>K-1 Competition</ThemedText>
+                <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
+                  Racing League
+                </ThemedText>
+                <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
+                  Season 1 · 2026
+                </ThemedText>
+              </View>
             </View>
-            <View style={styles.institutionInfo}>
-              <ThemedText style={styles.institutionName}>K-1 Competition</ThemedText>
-              <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
-                Racing League
-              </ThemedText>
-              <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
-                Season 1 · 2026
-              </ThemedText>
-            </View>
+
+            {/* Payment Rails */}
+            <RailsSection />
+          </ScrollView>
+
+          {/* Page 1: People */}
+          <View key="people" style={{ flex: 1 }}>
+            <OrgPeopleTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
           </View>
 
-          {/* Payment Rails */}
-          <RailsSection />
-        </ScrollView>
+          {/* Page 2: Operations */}
+          <View key="operations" style={{ flex: 1 }}>
+            <OrgOperationsTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
+          </View>
 
-        {/* Page 1: Teams */}
-        <View key="teams" style={{ flex: 1 }}>
-          <TabPlaceholder label="Teams" icon="person.3.fill" />
-        </View>
+          {/* Page 3: Finance */}
+          <View key="finance" style={{ flex: 1 }}>
+            <OrgFinanceTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
+          </View>
 
-        {/* Page 2: Operations */}
-        <View key="operations" style={{ flex: 1 }}>
-          <TabPlaceholder label="Operations" icon="gearshape.2.fill" />
-        </View>
+          {/* Page 4: Payment Rails */}
+          <View key="payment-rails" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Payment Rails" />
+          </View>
 
-        {/* Page 3: Finance */}
-        <View key="finance" style={{ flex: 1 }}>
-          <TabPlaceholder label="Finance" icon="dollarsign.circle.fill" />
-        </View>
-      </PagerView>
+          {/* Page 5: Rules */}
+          <View key="rules" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Rules" />
+          </View>
 
-      {/* More Sheet */}
-      <BottomSheet
-        visible={moreVisible}
-        onClose={() => setMoreVisible(false)}
-        title="More"
-        useModal
-      >
-        <MoreMenuContent items={ORG_MORE_ITEMS.community} onItemPress={() => setMoreVisible(false)} />
-      </BottomSheet>
+          {/* Page 6: Compliance */}
+          <View key="compliance" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Compliance" />
+          </View>
+
+          {/* Page 7: Venues */}
+          <View key="venues" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Venues" />
+          </View>
+
+          {/* Page 8: Sponsors */}
+          <View key="sponsors" style={{ flex: 1 }}>
+            <TabPlaceholderPage title="Sponsors" />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </>
   );
 }
@@ -1592,8 +1435,11 @@ export default function OrganizationScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
-  const { state } = useAppContext();
+  const { state, setOrganization } = useAppContext();
   const mode = useMode();
+  const [switcherVisible, setSwitcherVisible] = useState(false);
+
+  const orgsForMode = useMemo(() => getOrgsForMode(mode), [mode]);
 
   const getOrganizationTitle = () => {
     if (state.organization) {
@@ -1628,7 +1474,7 @@ export default function OrganizationScreen() {
       case 'community':
         return <CommunityOrganization />;
       default:
-        return <TabPlaceholder label="Organization" icon="building.2" />;
+        return null;
     }
   };
 
@@ -1637,18 +1483,47 @@ export default function OrganizationScreen() {
     <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <ThemedText type="title" style={styles.headerTitle}>
-          {getOrganizationTitle()}
-        </ThemedText>
-        {state.cycle && (
-          <ThemedText style={[styles.cycleLabel, { color: colors.textSecondary }]}>
-            {state.cycle.name}
-          </ThemedText>
-        )}
+        <View style={styles.headerRow}>
+          <View style={{ flex: 1 }}>
+            <ThemedText type="title" style={styles.headerTitle}>
+              {getOrganizationTitle()}
+            </ThemedText>
+            {state.cycle && (
+              <ThemedText style={[styles.cycleLabel, { color: colors.textSecondary }]}>
+                {state.cycle.name}
+              </ThemedText>
+            )}
+          </View>
+          {orgsForMode.length > 1 && (
+            <Pressable
+              onPress={() => setSwitcherVisible(true)}
+              style={({ pressed }) => [styles.switcherButton, pressed && { opacity: 0.6 }]}
+            >
+              <IconSymbol name="arrow.left.arrow.right" size={20} color={colors.textSecondary} />
+            </Pressable>
+          )}
+        </View>
       </View>
 
       {/* Mode Content (each mode owns its PagerView) */}
       {renderModeContent()}
+
+      {/* Org Switcher Sheet */}
+      <OrgSwitcherSheet
+        visible={switcherVisible}
+        onClose={() => setSwitcherVisible(false)}
+        mode={mode}
+        currentOrgId={state.organization?.id ?? ''}
+        onSelectOrg={(org) => {
+          setOrganization({
+            id: org.id,
+            name: org.name,
+            mode,
+            type: '',
+            location: org.subtitle,
+          });
+        }}
+      />
     </ThemedView>
   );
 }
@@ -1665,9 +1540,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   headerTitle: {
     fontSize: 28,
     fontWeight: '700',
+  },
+  switcherButton: {
+    padding: Spacing.xs,
+    marginTop: 4,
   },
   cycleLabel: {
     fontSize: 15,
@@ -1676,83 +1560,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: Spacing.md,
     paddingBottom: Spacing.xxl,
-  },
-
-  // Hub Tab Bar (matches Media/Home pattern)
-  hubTabsContainer: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingTop: 4,
-  },
-  hubTabsContent: {
-    paddingHorizontal: Spacing.lg,
-    gap: Spacing.lg,
-  },
-  hubTab: {
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  hubTabActive: {
-    borderBottomWidth: 2.5,
-  },
-  hubTabLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    letterSpacing: 0.2,
-  },
-  hubTabLabelActive: {
-    fontWeight: '700',
-  },
-
-  // Tab Placeholder
-  tabPlaceholderContainer: {
-    flex: 1,
-    padding: Spacing.md,
-    paddingTop: Spacing.xl,
-  },
-  tabPlaceholderCard: {
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    padding: Spacing.xl,
-    alignItems: 'center',
-    gap: 12,
-  },
-  tabPlaceholderTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  tabPlaceholderText: {
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: 'center',
-  },
-
-  // More Menu
-  moreMenuContent: {
-    paddingBottom: Spacing.lg,
-  },
-  moreMenuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.md,
-  },
-  moreMenuIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: BorderRadius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: Spacing.sm,
-  },
-  moreMenuLabel: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  moreMenuDivider: {
-    height: StyleSheet.hairlineWidth,
-    marginLeft: Spacing.md + 36 + Spacing.sm,
   },
 
   // Institution Header
