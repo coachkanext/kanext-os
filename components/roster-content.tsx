@@ -1078,7 +1078,7 @@ const POS_ABBREV_TO_TRAD: Record<string, PoolPosition> = {
   PG: 'PG', CG: 'SG', W: 'SF', F: 'PF', B: 'C',
 };
 
-export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPress, onOpenStatistics, onKRPress }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoLongPress?: () => void; onOpenStatistics?: () => void; onKRPress?: () => void } = {}) {
+export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPress, onOpenStatistics, onKRPress }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoLongPress?: () => void; onOpenStatistics?: (context?: { season: string }) => void; onKRPress?: () => void } = {}) {
   const [activeView, setActiveView] = useState<ViewType>('cards');
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
   const [searchQuery, setSearchQuery] = useState('');
@@ -1226,7 +1226,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
           listSort={listSort}
           onSortChange={setListSort}
           onPlayerTap={handlePlayerTap}
-          onOpenStatistics={onOpenStatistics}
+          onOpenStatistics={() => onOpenStatistics?.({ season: selectedSeason })}
         />
       )}
 
