@@ -1,0 +1,185 @@
+KaNeXT OS — Hub Tab System Specification
+=========================================
+Version: 1.0 (Locked)
+Date: 2026-02-16
+Supersedes: All prior "More" overflow menu behavior
+
+
+1. OVERVIEW
+-----------
+Every primary surface (Home, Media, Messages, Organization) uses a shared
+PagedTabBar component for sub-navigation. Tabs are horizontally scrollable
+in pages of 4. There is NO "More" overflow menu anywhere in the system.
+
+All tabs that were previously hidden behind "More" menus are now promoted
+to real, visible tabs in the scrollable tab row.
+
+
+2. PAGED TAB BAR (Universal Component)
+---------------------------------------
+File: components/ui/paged-tab-bar.tsx
+
+Behavior:
+- Renders tabs in a horizontal ScrollView with page snapping
+- Each tab is fixed width = screenWidth / 4 (exactly 4 per page)
+- Active tab has a 2.5px bottom indicator line
+- When active tab changes, the tab row auto-scrolls to the page
+  containing that tab
+- Includes safe area top padding (insets.top) so it sits below
+  the status bar on all screens uniformly
+
+Visual Spec:
+- Font: 14px, weight 500 (inactive), weight 700 (active)
+- Letter spacing: 0.2
+- Active color: colors.text (white in dark mode)
+- Inactive color: colors.textTertiary (#424242)
+- Bottom border: StyleSheet.hairlineWidth, colors.divider
+- Tab vertical padding: 12px
+
+Position Rule (LOCKED):
+- PagedTabBar is ALWAYS the first rendered element on every screen
+- It sits at the exact same Y-level on every screen (Home, Media,
+  Messages, Organization) regardless of mode
+- Nothing renders above it except the system status bar
+- It is OUTSIDE the scrollable content area (fixed/sticky)
+
+
+3. EDGE-HOLD AUTO-ADVANCE
+--------------------------
+File: components/ui/edge-hold-advance.tsx
+
+Power-user gesture: hold the left or right screen edge to step through
+tabs automatically.
+
+Behavior:
+- 28px invisible touch zones on left and right screen edges
+- Hold for 300ms to begin auto-advancing
+- Initial interval: 550ms per step
+- Accelerates to 450ms after 3 steps
+- Each step triggers haptic feedback (Light impact)
+- Bounds: clamps to [0, tabCount-1], no wrap-around
+- Releasing the edge stops advancing immediately
+
+Implementation:
+- Uses absolutely-positioned Pressable zones (NOT Gesture.Manual,
+  which conflicts with PagerView in Expo Go)
+- onPressIn starts hold timer, onPressOut clears all timers
+
+
+4. TAB PLACEHOLDER PAGE
+------------------------
+File: components/ui/tab-placeholder-page.tsx
+
+Tabs without real content render a centered placeholder card:
+- Title: tab name
+- Subtitle: "This section is not built yet."
+- Themed background and text colors
+
+
+5. TAB LISTS PER SCREEN
+-------------------------
+
+HOME — Sports Mode (9 tabs):
+  Page 1: Dashboard | Calendar | Roster | Recruiting
+  Page 2: Statistics | Game Plan | Simulation | Development
+  Page 3: Program
+
+HOME — Enterprise Mode (10 tabs):
+  Page 1: Dashboard | Calendar | Operations | Finance
+  Page 2: Projects | People | Sales | Legal
+  Page 3: Assets | Reports
+
+HOME — Church Mode (10 tabs):
+  Page 1: Dashboard | Calendar | Worship | Community
+  Page 2: Serve | Give | Events | Prayer
+  Page 3: Messages | Discipleship
+
+HOME — Education Mode (10 tabs):
+  Page 1: Dashboard | Calendar | Academics | Campus
+  Page 2: People | Admissions | Athletics | Financial
+  Page 3: Housing | Policies
+
+HOME — Community Mode (7 tabs):
+  Page 1: Dashboard | Calendar | Standings | Teams
+  Page 2: Raceweek Ops | Rules | Tech & Compliance
+
+MEDIA (4 tabs, all modes):
+  Page 1: Feed | Explore | Film Room | Library
+
+MESSAGES (4 tabs, all modes):
+  Page 1: Inbox | Rooms | Requests | Pinned
+
+ORGANIZATION — Sports Mode (9 tabs):
+  Page 1: Programs | People | Operations | Finance
+  Page 2: Payment Rails | Compliance | Facilities | Resources
+  Page 3: Brand
+
+ORGANIZATION — Enterprise Mode (9 tabs):
+  Page 1: Entities | People | Operations | Finance
+  Page 2: Payment Rails | Legal | Compliance | Assets
+  Page 3: Reports
+
+ORGANIZATION — Church Mode (9 tabs):
+  Page 1: Ministries | People | Operations | Finance
+  Page 2: Payment Rails | Compliance | Facilities | Resources
+  Page 3: Policies
+
+ORGANIZATION — Education Mode (9 tabs):
+  Page 1: Schools | People | Operations | Finance
+  Page 2: Payment Rails | Compliance | Facilities | Resources
+  Page 3: Policies
+
+ORGANIZATION — Community Mode (9 tabs):
+  Page 1: Series | People | Operations | Finance
+  Page 2: Payment Rails | Rules | Compliance | Venues
+  Page 3: Sponsors
+
+
+6. ORGANIZATION SCREEN LAYOUT
+------------------------------
+The Organization screen renders NO header (no title, no cycle label,
+no org-switcher button). The PagedTabBar is the first element, matching
+every other screen. Organization switching is handled via the
+OrgSwitcherSheet (triggered by mode sub-components as needed).
+
+
+7. COLOR SYSTEM
+----------------
+All backgrounds are jet black (#000000):
+- Base palette: background, tabBar
+- BusinessPalette: obsidian
+
+Card surfaces remain elevated:
+- card: #181616
+- cardElevated: #1E1C1C
+- backgroundSecondary: #0E0C0C
+- backgroundTertiary: #181616
+
+
+8. REMOVED SYSTEMS
+-------------------
+The following are permanently removed:
+
+- utils/global-more.ts — Global "More" menu controller (deleted)
+- "More" overflow menu on all screens (removed)
+- Double-tap Organization tab to open More (removed)
+- registerMoreHandlers / unregisterMoreHandlers pattern (removed)
+- Organization screen title header (removed)
+- CompanySwitcher above Enterprise org tabs (removed)
+- Roster tier badge ("Regional Power") (removed)
+
+The Organization tab bottom-bar button retains:
+- Single tap: navigate to Organization screen
+- Long-press: open Mode Switcher
+
+
+9. ROSTER IDENTITY HEADER
+---------------------------
+File: components/roster-content.tsx
+
+Layout:
+- Row 1: Team logo (64x64) + Name/Subline + KR Badge
+- Row 2: Record + Conference Record + Streak Badge
+- KR Badge shows "KR" label above the numeric rating
+- Tier badge is removed (no "Regional Power" etc.)
+- 1px divider below header
