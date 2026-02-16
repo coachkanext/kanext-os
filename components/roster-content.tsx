@@ -607,7 +607,7 @@ const LIST_FILTERS: { key: ListFilter; label: string }[] = [
   { key: 'redshirt', label: 'Redshirt' },
 ];
 
-type ListSortOption = 'number' | 'az' | 'position' | 'class' | 'height' | 'weight' | 'status' | 'aid' | 'gpa';
+type ListSortOption = 'number' | 'az' | 'position' | 'class' | 'height' | 'weight' | 'status' | 'aid';
 const LIST_SORT_OPTIONS: { key: ListSortOption; label: string }[] = [
   { key: 'number', label: '#' },
   { key: 'az', label: 'Name A\u2013Z' },
@@ -616,7 +616,6 @@ const LIST_SORT_OPTIONS: { key: ListSortOption; label: string }[] = [
   { key: 'height', label: 'Height' },
   { key: 'weight', label: 'Weight' },
   { key: 'status', label: 'Status' },
-  { key: 'gpa', label: 'GPA' },
   { key: 'aid', label: 'Aid' },
 ];
 
@@ -628,9 +627,9 @@ const LIST_TABLE_COLUMNS: { key: string; label: string; width: number; align?: '
   { key: 'wt',     label: 'WT',     width: 46,  align: 'center' },
   { key: 'class',  label: 'CLASS',  width: 56,  align: 'center' },
   { key: 'status', label: 'STATUS', width: 80,  align: 'center' },
-  { key: 'gpa',    label: 'GPA',    width: 46,  align: 'center' },
   { key: 'aid',    label: 'AID',    width: 50,  align: 'center' },
   { key: 'nil',    label: 'NIL',    width: 56,  align: 'center' },
+  { key: 'notes',  label: 'NOTES',  width: 44,  align: 'center' },
 ];
 
 const CLASS_ABBREV: Record<string, string> = {
@@ -674,7 +673,6 @@ function getListSortValue(player: RosterPlayer, key: ListSortOption): string | n
       return statusOrder[getPlayerStatus(player.number)];
     }
     case 'aid': return ROSTER_META[player.number]?.aidPct ?? 0;
-    case 'gpa': return ROSTER_META[player.number]?.gpa ?? 0;
     default: return 0;
   }
 }
@@ -708,7 +706,7 @@ function RosterListView({
     if (listFilter !== 'all') {
       result = result.filter((p) => getPlayerStatus(p.number) === listFilter);
     }
-    const descKeys: ListSortOption[] = ['gpa', 'aid', 'weight', 'height'];
+    const descKeys: ListSortOption[] = ['aid', 'weight', 'height'];
     const asc = !descKeys.includes(listSort);
     result.sort((a, b) => {
       const aVal = getListSortValue(a, listSort);
@@ -865,10 +863,6 @@ function RosterListView({
                     </Text>
                   </View>
                 </View>
-                {/* GPA */}
-                <Text style={[styles.tableCell, { width: 46, textAlign: 'center' }]}>
-                  {meta?.gpa ? meta.gpa.toFixed(1) : '\u2014'}
-                </Text>
                 {/* Aid */}
                 <Text style={[styles.tableCell, { width: 50, textAlign: 'center' }]}>
                   {aidPct > 0 ? `${aidPct}%` : '\u2014'}
@@ -877,6 +871,14 @@ function RosterListView({
                 <View style={{ width: 56, alignItems: 'center', justifyContent: 'center' }}>
                   {meta && meta.nilAmount > 0 ? (
                     <Text style={listStyles.nilYes}>${meta.nilAmount.toLocaleString()}</Text>
+                  ) : (
+                    <Text style={[styles.tableCell, { textAlign: 'center' }]}>{'\u2014'}</Text>
+                  )}
+                </View>
+                {/* Notes */}
+                <View style={{ width: 44, alignItems: 'center', justifyContent: 'center' }}>
+                  {player.notes ? (
+                    <IconSymbol name="doc.text" size={14} color={TEAM_COLORS.gray} />
                   ) : (
                     <Text style={[styles.tableCell, { textAlign: 'center' }]}>{'\u2014'}</Text>
                   )}
@@ -1197,7 +1199,8 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
         onSubclusterChange={setSelectedSubcluster}
       />
 
-      <View style={{ height: 10 }} />
+      {/* Subtle divider under controls */}
+      <View style={styles.controlsDivider} />
 
       {/* Cards — tap dismisses open subcluster accordion */}
       {activeView === 'cards' && (
@@ -1351,6 +1354,13 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: TEAM_COLORS.white + '12',
     marginHorizontal: Spacing.lg,
+  },
+  controlsDivider: {
+    height: 1,
+    backgroundColor: TEAM_COLORS.white + '0C',
+    marginHorizontal: Spacing.lg,
+    marginTop: 8,
+    marginBottom: 2,
   },
 
   // ── Controls Row ──
