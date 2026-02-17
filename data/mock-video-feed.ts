@@ -1,6 +1,9 @@
 /**
  * Mock Video Feed Data — Instagram-style stories + posts for Video Home.
+ * Mode-keyed exports for all 5 modes.
  */
+
+import type { Mode } from '@/types';
 
 export interface StoryCircle {
   id: string;
@@ -35,6 +38,10 @@ export interface VideoFeedPost {
 
 const now = new Date();
 const ago = (minutes: number) => new Date(now.getTime() - minutes * 60000);
+
+// =============================================================================
+// SPORTS — Story Circles + Feed Posts
+// =============================================================================
 
 export const STORY_CIRCLES: StoryCircle[] = [
   { id: 'st-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
@@ -129,3 +136,416 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
     saved: true,
   },
 ];
+
+// =============================================================================
+// CHURCH — Story Circles + Feed Posts
+// =============================================================================
+
+const CHURCH_STORY_CIRCLES: StoryCircle[] = [
+  { id: 'cs-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
+  { id: 'cs-1', name: 'Pastor Dipo', initials: 'DK', hasNew: true, ringColor: '#7C3AED' },
+  { id: 'cs-2', name: 'Worship Team', initials: 'WT', hasNew: true, ringColor: '#E1306C' },
+  { id: 'cs-3', name: 'Youth Dir.', initials: 'YD', hasNew: true, ringColor: '#22C55E' },
+  { id: 'cs-4', name: 'Deacon Board', initials: 'DB', hasNew: false },
+  { id: 'cs-5', name: 'Outreach', initials: 'OR', hasNew: true, ringColor: '#F59E0B' },
+  { id: 'cs-6', name: 'Women Min.', initials: 'WM', hasNew: true, ringColor: '#EC4899' },
+  { id: 'cs-7', name: 'Media Team', initials: 'MT', hasNew: false },
+  { id: 'cs-8', name: 'ICCLA Live', initials: 'IC', hasNew: true, ringColor: '#6AA9FF' },
+];
+
+const CHURCH_FEED_POSTS: VideoFeedPost[] = [
+  {
+    id: 'cfp-1',
+    authorName: 'Pastor Dipo Kalejaiye',
+    authorInitials: 'DK',
+    authorRole: 'Senior Pastor',
+    timestamp: ago(30),
+    caption: '"Walking in Faith" — this week\'s message from the Faith Forward series. If you missed Sunday, catch the full sermon here.',
+    media: { type: 'clip', title: 'Walking in Faith — Faith Forward Pt. 4', thumbnailColor: '#1B2044', duration: '42:18', views: 1840 },
+    likes: 89,
+    comments: 14,
+  },
+  {
+    id: 'cfp-2',
+    authorName: 'Worship Team',
+    authorInitials: 'WT',
+    authorRole: 'Music Ministry',
+    timestamp: ago(90),
+    caption: 'Sunday worship highlights — "Great Is Thy Faithfulness" brought the house down. Praise was in the building.',
+    media: { type: 'reel', title: 'Worship Highlights — Feb 15', thumbnailColor: '#2D1044', duration: '3:12', views: 2450 },
+    likes: 156,
+    comments: 23,
+    liked: true,
+  },
+  {
+    id: 'cfp-3',
+    authorName: 'ICCLA Youth',
+    authorInitials: 'YD',
+    authorRole: 'Youth Ministry',
+    timestamp: ago(240),
+    caption: 'Youth retreat recap — 3 days of fellowship, worship, and growth. These kids showed up and showed out for God.',
+    media: { type: 'clip', title: 'Youth Retreat 2026 — Full Recap', thumbnailColor: '#0A2A1A', duration: '5:44', views: 987 },
+    likes: 201,
+    comments: 45,
+  },
+  {
+    id: 'cfp-4',
+    authorName: 'KaNeXT',
+    authorInitials: 'KX',
+    authorRole: 'System',
+    timestamp: ago(360),
+    caption: 'Baptism Sunday recap — 7 new believers publicly declared their faith. Watch the celebration.',
+    media: { type: 'clip', title: 'Baptism Sunday — February 2026', thumbnailColor: '#0A1A2A', duration: '12:35', views: 3120 },
+    likes: 287,
+    comments: 52,
+  },
+  {
+    id: 'cfp-5',
+    authorName: 'Deacon Williams',
+    authorInitials: 'DW',
+    authorRole: 'Deacon Board',
+    timestamp: ago(480),
+    caption: 'Community outreach highlights from Saturday. We served 200+ families with groceries and prayer. God is good.',
+    media: { type: 'photo', title: 'Outreach Saturday — Feb 14', thumbnailColor: '#1A2A1A' },
+    likes: 134,
+    comments: 18,
+  },
+  {
+    id: 'cfp-6',
+    authorName: 'Sister Adeyemi',
+    authorInitials: 'SA',
+    authorRole: 'Bible Study Lead',
+    timestamp: ago(600),
+    caption: 'Wednesday Bible Study recap — "The Armor of God" series continues. Ephesians 6:10-18 broke open for us.',
+    media: { type: 'clip', title: 'Bible Study — Armor of God Pt. 3', thumbnailColor: '#2A1A0A', duration: '38:22', views: 645 },
+    likes: 67,
+    comments: 11,
+    saved: true,
+  },
+  {
+    id: 'cfp-7',
+    authorName: 'Media Team',
+    authorInitials: 'MT',
+    authorRole: 'Production',
+    timestamp: ago(720),
+    caption: 'Behind the scenes of our live stream upgrade. New cameras, new angles, same Spirit.',
+    media: { type: 'reel', title: 'BTS — Stream Setup', thumbnailColor: '#1A1A2A', duration: '1:15', views: 478 },
+    likes: 45,
+    comments: 8,
+  },
+];
+
+// =============================================================================
+// EDUCATION — Story Circles + Feed Posts
+// =============================================================================
+
+const EDUCATION_STORY_CIRCLES: StoryCircle[] = [
+  { id: 'es-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
+  { id: 'es-1', name: 'Dean Morris', initials: 'DM', hasNew: true, ringColor: '#3B82F6' },
+  { id: 'es-2', name: 'Prof. Adebayo', initials: 'PA', hasNew: true, ringColor: '#22C55E' },
+  { id: 'es-3', name: 'Student Gov', initials: 'SG', hasNew: true, ringColor: '#F59E0B' },
+  { id: 'es-4', name: 'FMU Athletics', initials: 'FA', hasNew: true, ringColor: '#EF4444' },
+  { id: 'es-5', name: 'Campus Life', initials: 'CL', hasNew: false },
+  { id: 'es-6', name: 'Library', initials: 'LB', hasNew: false },
+  { id: 'es-7', name: 'Aviation Dept', initials: 'AV', hasNew: true, ringColor: '#06B6D4' },
+  { id: 'es-8', name: 'Alumni Assoc', initials: 'AA', hasNew: false },
+];
+
+const EDUCATION_FEED_POSTS: VideoFeedPost[] = [
+  {
+    id: 'efp-1',
+    authorName: 'FMU Athletics',
+    authorInitials: 'FA',
+    authorRole: 'Athletics Department',
+    timestamp: ago(20),
+    caption: 'Lions basketball season highlights — 16-8, Sun Conference contenders. This team is built different.',
+    media: { type: 'clip', title: 'Lions 2025-26 Season Highlights', thumbnailColor: '#1A1A2A', duration: '6:15', views: 4120 },
+    likes: 312,
+    comments: 47,
+  },
+  {
+    id: 'efp-2',
+    authorName: 'FMU Campus',
+    authorInitials: 'FC',
+    authorRole: 'University',
+    timestamp: ago(150),
+    caption: 'Spring 2026 campus tour — explore our Miami Gardens campus. New science building looking amazing.',
+    media: { type: 'clip', title: 'FMU Campus Tour — Spring 2026', thumbnailColor: '#0A2A2A', duration: '3:48', views: 2890 },
+    likes: 145,
+    comments: 18,
+  },
+  {
+    id: 'efp-3',
+    authorName: 'Aviation Program',
+    authorInitials: 'AP',
+    authorRole: 'Academics',
+    timestamp: ago(300),
+    caption: 'HBCU aviation excellence — first solo flights of the semester. Congratulations to our new pilots!',
+    media: { type: 'reel', title: 'Solo Flight Day — Spring 2026', thumbnailColor: '#1A2A3A', duration: '2:22', views: 5670 },
+    likes: 487,
+    comments: 62,
+    liked: true,
+  },
+  {
+    id: 'efp-4',
+    authorName: 'Prof. Adebayo',
+    authorInitials: 'PA',
+    authorRole: 'Computer Science',
+    timestamp: ago(420),
+    caption: 'Lecture recording now available — "Introduction to Machine Learning" guest lecture. Great Q&A at the end.',
+    media: { type: 'clip', title: 'CS 401 — Intro to Machine Learning', thumbnailColor: '#2A1A2A', duration: '52:10', views: 890 },
+    likes: 78,
+    comments: 15,
+  },
+  {
+    id: 'efp-5',
+    authorName: 'Student Government',
+    authorInitials: 'SG',
+    authorRole: 'Student Council',
+    timestamp: ago(540),
+    caption: 'Homecoming 2026 highlight reel is HERE. What a week. FMU, we showed out.',
+    media: { type: 'reel', title: 'Homecoming 2026 — Best Moments', thumbnailColor: '#2A2A0A', duration: '4:45', views: 8340 },
+    likes: 623,
+    comments: 91,
+    liked: true,
+  },
+  {
+    id: 'efp-6',
+    authorName: 'KaNeXT',
+    authorInitials: 'KX',
+    authorRole: 'System',
+    timestamp: ago(660),
+    caption: 'Dean\'s List ceremony — Spring 2026. 142 students recognized for academic excellence.',
+    media: { type: 'clip', title: 'Dean\'s List Ceremony — Spring 2026', thumbnailColor: '#0A1A2A', duration: '18:30', views: 1560 },
+    likes: 198,
+    comments: 34,
+  },
+  {
+    id: 'efp-7',
+    authorName: 'Research Office',
+    authorInitials: 'RO',
+    authorRole: 'Graduate Studies',
+    timestamp: ago(780),
+    caption: 'Student research presentations from the annual symposium. Outstanding work across all departments.',
+    media: { type: 'clip', title: 'Research Symposium 2026 — Highlights', thumbnailColor: '#1A0A2A', duration: '8:12', views: 670 },
+    likes: 56,
+    comments: 9,
+    saved: true,
+  },
+];
+
+// =============================================================================
+// ENTERPRISE — Story Circles + Feed Posts
+// =============================================================================
+
+const ENTERPRISE_STORY_CIRCLES: StoryCircle[] = [
+  { id: 'bs-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
+  { id: 'bs-1', name: 'Sammy K.', initials: 'SK', hasNew: true, ringColor: '#6AA9FF' },
+  { id: 'bs-2', name: 'Product', initials: 'PR', hasNew: true, ringColor: '#22C55E' },
+  { id: 'bs-3', name: 'Demo Day', initials: 'DD', hasNew: true, ringColor: '#F59E0B' },
+  { id: 'bs-4', name: 'Engineering', initials: 'EN', hasNew: true, ringColor: '#7C3AED' },
+  { id: 'bs-5', name: 'Marketing', initials: 'MK', hasNew: false },
+  { id: 'bs-6', name: 'Investors', initials: 'IV', hasNew: false },
+  { id: 'bs-7', name: 'Press', initials: 'PS', hasNew: true, ringColor: '#EC4899' },
+  { id: 'bs-8', name: 'Culture', initials: 'CU', hasNew: false },
+];
+
+const ENTERPRISE_FEED_POSTS: VideoFeedPost[] = [
+  {
+    id: 'bfp-1',
+    authorName: 'KaNeXT Team',
+    authorInitials: 'KX',
+    authorRole: 'Product',
+    timestamp: ago(25),
+    caption: 'Product demo walkthrough — V2 feature preview for investor partners. Mode switching, film room, and the new simulation engine.',
+    media: { type: 'clip', title: 'KaNeXT V2 — Full Demo', thumbnailColor: '#1A1A2A', duration: '14:32', views: 1240 },
+    likes: 67,
+    comments: 12,
+  },
+  {
+    id: 'bfp-2',
+    authorName: 'Sammy Kalejaiye',
+    authorInitials: 'SK',
+    authorRole: 'Founder & CEO',
+    timestamp: ago(180),
+    caption: 'Behind the scenes: building the sports OS that runs itself. Founder diary #12 — on focus and iteration.',
+    media: { type: 'reel', title: 'Founder Diary #12', thumbnailColor: '#0A1A3A', duration: '1:45', views: 3420 },
+    likes: 134,
+    comments: 28,
+    liked: true,
+  },
+  {
+    id: 'bfp-3',
+    authorName: 'KaNeXT Press',
+    authorInitials: 'KP',
+    authorRole: 'Communications',
+    timestamp: ago(360),
+    caption: 'MLK Truth Classic announcement — 16-team tournament, $3M+ Year 1. Building something that matters.',
+    media: { type: 'clip', title: 'MLK Truth Classic — Official Reveal', thumbnailColor: '#2A1A0A', duration: '2:18', views: 5680 },
+    likes: 203,
+    comments: 41,
+  },
+  {
+    id: 'bfp-4',
+    authorName: 'Engineering',
+    authorInitials: 'EN',
+    authorRole: 'Team Update',
+    timestamp: ago(480),
+    caption: 'Sprint 14 demo — new bottom sheet system, pager view navigation, and the recruiting 4-view workspace. Ship it.',
+    media: { type: 'clip', title: 'Sprint 14 Demo — Engineering', thumbnailColor: '#1A2A1A', duration: '22:05', views: 890 },
+    likes: 45,
+    comments: 8,
+  },
+  {
+    id: 'bfp-5',
+    authorName: 'Customer Success',
+    authorInitials: 'CS',
+    authorRole: 'Partnerships',
+    timestamp: ago(600),
+    caption: 'Florida Memorial testimonial — hear how Coach K uses KaNeXT OS to manage recruiting, film, and game planning.',
+    media: { type: 'clip', title: 'Customer Story — FMU Lions', thumbnailColor: '#2A0A1A', duration: '4:48', views: 2340 },
+    likes: 112,
+    comments: 19,
+    saved: true,
+  },
+  {
+    id: 'bfp-6',
+    authorName: 'Marketing',
+    authorInitials: 'MK',
+    authorRole: 'Growth',
+    timestamp: ago(720),
+    caption: 'Conference highlight reel from HBCU Tech Summit. KaNeXT was the talk of the floor.',
+    media: { type: 'reel', title: 'HBCU Tech Summit — KaNeXT Booth', thumbnailColor: '#1A1A1A', duration: '0:58', views: 4560 },
+    likes: 189,
+    comments: 33,
+  },
+  {
+    id: 'bfp-7',
+    authorName: 'KaNeXT',
+    authorInitials: 'KX',
+    authorRole: 'System',
+    timestamp: ago(900),
+    caption: 'All-hands meeting recording now available. Q1 recap, Q2 roadmap, and team shoutouts inside.',
+    media: { type: 'clip', title: 'All-Hands — February 2026', thumbnailColor: '#0A0A2A', duration: '45:12', views: 780 },
+    likes: 34,
+    comments: 6,
+  },
+];
+
+// =============================================================================
+// COMMUNITY — Story Circles + Feed Posts
+// =============================================================================
+
+const COMMUNITY_STORY_CIRCLES: StoryCircle[] = [
+  { id: 'ks-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
+  { id: 'ks-1', name: 'Race Dir.', initials: 'RD', hasNew: true, ringColor: '#EF4444' },
+  { id: 'ks-2', name: 'M. Kane', initials: 'MK', hasNew: true, ringColor: '#F59E0B' },
+  { id: 'ks-3', name: 'Apex Racing', initials: 'AR', hasNew: true, ringColor: '#22C55E' },
+  { id: 'ks-4', name: 'Onboards', initials: 'OB', hasNew: true, ringColor: '#6AA9FF' },
+  { id: 'ks-5', name: 'Stewards', initials: 'ST', hasNew: false },
+  { id: 'ks-6', name: 'Grid Girls', initials: 'GG', hasNew: false },
+  { id: 'ks-7', name: 'K-1 Live', initials: 'K1', hasNew: true, ringColor: '#7C3AED' },
+  { id: 'ks-8', name: 'Fan Zone', initials: 'FZ', hasNew: false },
+];
+
+const COMMUNITY_FEED_POSTS: VideoFeedPost[] = [
+  {
+    id: 'kfp-1',
+    authorName: 'K-1 Official',
+    authorInitials: 'K1',
+    authorRole: 'League',
+    timestamp: ago(35),
+    caption: 'Race 6 recap — Apex Racing dominates at Laguna Seca. Kane takes the checkered flag with a 2.4s gap. Championship lead extends to 18 points.',
+    media: { type: 'clip', title: 'Race 6 Highlights — Laguna Seca', thumbnailColor: '#2A0A0A', duration: '8:12', views: 12400 },
+    likes: 543,
+    comments: 89,
+  },
+  {
+    id: 'kfp-2',
+    authorName: 'Apex Racing',
+    authorInitials: 'AR',
+    authorRole: 'Team',
+    timestamp: ago(120),
+    caption: 'Car setup deep-dive — how we tuned for Laguna\'s corkscrew. Aero balance, suspension geometry, and tire strategy all played a role.',
+    media: { type: 'clip', title: 'Setup Breakdown — Laguna Seca', thumbnailColor: '#0A2A0A', duration: '4:56', views: 3450 },
+    likes: 234,
+    comments: 41,
+  },
+  {
+    id: 'kfp-3',
+    authorName: 'K-1 Grid',
+    authorInitials: 'KG',
+    authorRole: 'Media',
+    timestamp: ago(300),
+    caption: 'Driver spotlight: Marcus Kane leads championship after 6 rounds. Onboard footage from his pole position qualifying lap.',
+    media: { type: 'reel', title: 'Kane — Qualifying Onboard', thumbnailColor: '#1A1A0A', duration: '1:38', views: 8900 },
+    likes: 378,
+    comments: 56,
+    liked: true,
+  },
+  {
+    id: 'kfp-4',
+    authorName: 'Pit Lane',
+    authorInitials: 'PL',
+    authorRole: 'Broadcast',
+    timestamp: ago(420),
+    caption: 'Pit stop of the race — Apex Racing crew completes a 2.8s tire change under pressure. Watch the choreography.',
+    media: { type: 'reel', title: 'Pit Stop Perfection — Race 6', thumbnailColor: '#2A2A0A', duration: '0:45', views: 6780 },
+    likes: 412,
+    comments: 67,
+  },
+  {
+    id: 'kfp-5',
+    authorName: 'KaNeXT',
+    authorInitials: 'KX',
+    authorRole: 'System',
+    timestamp: ago(540),
+    caption: 'Podium ceremony — P1 Kane, P2 Reeves, P3 Tanaka. Full post-race interviews and champagne celebrations.',
+    media: { type: 'clip', title: 'Podium Ceremony — Laguna Seca', thumbnailColor: '#0A0A2A', duration: '6:30', views: 4560 },
+    likes: 267,
+    comments: 38,
+  },
+  {
+    id: 'kfp-6',
+    authorName: 'Track Walks',
+    authorInitials: 'TW',
+    authorRole: 'Content',
+    timestamp: ago(660),
+    caption: 'Pre-race track walk — Laguna Seca circuit breakdown. Turn-by-turn analysis with driver commentary.',
+    media: { type: 'clip', title: 'Track Walk — Laguna Seca', thumbnailColor: '#1A2A2A', duration: '12:18', views: 2340 },
+    likes: 156,
+    comments: 22,
+    saved: true,
+  },
+  {
+    id: 'kfp-7',
+    authorName: 'Fan Zone',
+    authorInitials: 'FZ',
+    authorRole: 'Community',
+    timestamp: ago(780),
+    caption: 'Fan cam highlights from the grandstands. The energy at Turn 8 was absolutely electric.',
+    media: { type: 'reel', title: 'Fan Cam — Race 6', thumbnailColor: '#2A1A2A', duration: '2:05', views: 5120 },
+    likes: 298,
+    comments: 44,
+  },
+];
+
+// =============================================================================
+// MODE-KEYED EXPORTS
+// =============================================================================
+
+export const STORY_CIRCLES_BY_MODE: Record<Mode, StoryCircle[]> = {
+  sports: STORY_CIRCLES,
+  church: CHURCH_STORY_CIRCLES,
+  education: EDUCATION_STORY_CIRCLES,
+  enterprise: ENTERPRISE_STORY_CIRCLES,
+  community: COMMUNITY_STORY_CIRCLES,
+};
+
+export const FEED_POSTS_BY_MODE: Record<Mode, VideoFeedPost[]> = {
+  sports: VIDEO_FEED_POSTS,
+  church: CHURCH_FEED_POSTS,
+  education: EDUCATION_FEED_POSTS,
+  enterprise: ENTERPRISE_FEED_POSTS,
+  community: COMMUNITY_FEED_POSTS,
+};

@@ -29,11 +29,13 @@ import { ChatComposer } from '@/components/messages/chat-composer';
 import { NewThreadSheet } from '@/components/messages/new-thread-sheet';
 import { RequestRow } from '@/components/messages/request-row';
 import { RequestDetail } from '@/components/messages/request-detail';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { RoomsHub } from '@/components/rooms/rooms-hub';
+import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import {
   MOCK_CHAT_THREADS,
+  INBOX_THREADS_BY_MODE,
   formatMessageTime,
   getModeRooms,
 } from '@/data/mock-messages';
@@ -62,20 +64,22 @@ const MESSAGES_TABS = [
 function InboxPage({
   colors,
   search,
+  mode,
   onSelectThread,
 }: {
   colors: typeof Colors.light;
   search: string;
+  mode: import('@/types').Mode;
   onSelectThread: (t: ChatThread) => void;
 }) {
   const threads = useMemo(() => {
-    const list = MOCK_CHAT_THREADS.filter((t) => !t.isGroup);
+    const list = INBOX_THREADS_BY_MODE[mode] ?? MOCK_CHAT_THREADS.filter((t) => !t.isGroup);
     if (!search.trim()) return list;
     const q = search.toLowerCase();
     return list.filter(
       (t) => t.title.toLowerCase().includes(q) || t.lastMessage.toLowerCase().includes(q),
     );
-  }, [search]);
+  }, [search, mode]);
 
   const renderThread = useCallback(
     ({ item }: { item: ChatThread }) => (
@@ -339,15 +343,15 @@ export default function MessagesScreen() {
             <InboxPage
               colors={colors}
               search={search}
+              mode={mode}
               onSelectThread={setSelectedThread}
             />
           </View>
           <View key="rooms" style={{ flex: 1 }}>
-            <RoomsPage
-              colors={colors}
-              search={search}
+            <RoomsHub
               mode={mode}
-              onSelectThread={setSelectedThread}
+              colors={colors}
+              accentColor={ModeColors[mode].primary}
             />
           </View>
           <View key="requests" style={{ flex: 1 }}>

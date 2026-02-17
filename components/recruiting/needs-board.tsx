@@ -22,7 +22,7 @@ import {
 import { HELIO_POSITION_LABELS } from '@/data/position-mapping';
 import { getLastTouch, computeMomentum, getMomentumLabel, getMomentumColor } from '@/utils/recruiting-helpers';
 import { getRecruitComms } from '@/data/mock-comms';
-import type { PositionNeed } from '@/data/team-needs';
+import { TARGET_DEPTH, type PositionNeed } from '@/data/team-needs';
 
 const BG = '#0F1115';
 const CARD_BG = '#1A1D23';
@@ -41,7 +41,7 @@ export function NeedsBoard({
   onEntryPress: (entry: BoardEntry) => void;
   onEntryLongPress: (entry: BoardEntry) => void;
 }) {
-  const [expandedSlots, setExpandedSlots] = useState<Set<PositionSlot>>(new Set(POSITION_SLOTS));
+  const [expandedSlots, setExpandedSlots] = useState<Set<PositionSlot>>(new Set());
 
   const grouped = useMemo(() => {
     const map: Record<PositionSlot, Record<NeedsTier, BoardEntry[]>> = {} as any;
@@ -73,7 +73,8 @@ export function NeedsBoard({
       <View style={styles.slotStrip}>
         {POSITION_SLOTS.map((slot) => {
           const need = teamNeeds.find((n) => n.pos === slot);
-          const count = entries.filter((e) => e.slot === slot).length;
+          const have = need?.projected ?? 0;
+          const target = TARGET_DEPTH[slot] ?? 0;
           return (
             <Pressable
               key={slot}
@@ -84,7 +85,7 @@ export function NeedsBoard({
                 {slot}
               </Text>
               <Text style={[styles.slotPillCount, expandedSlots.has(slot) && { color: BG }]}>
-                {count}{need && need.need > 0 ? ` / ${need.need}` : ''}
+                {have}/{target}
               </Text>
             </Pressable>
           );
@@ -107,12 +108,18 @@ export function NeedsBoard({
                 color={GRAY}
               />
               <Text style={styles.slotTitle}>{slot} — {HELIO_POSITION_LABELS[slot]}</Text>
-              {need && need.need > 0 && (
-                <View style={styles.needBadge}>
-                  <Text style={styles.needBadgeText}>Need {need.need}</Text>
-                </View>
-              )}
-              <Text style={styles.slotCount}>{slotEntries.length}</Text>
+              {(() => {
+                const have = need?.projected ?? 0;
+                const target = TARGET_DEPTH[slot] ?? 0;
+                const satisfied = have >= target;
+                return (
+                  <View style={[styles.needBadge, satisfied && styles.needBadgeSatisfied]}>
+                    <Text style={[styles.needBadgeText, satisfied && styles.needBadgeTextSatisfied]}>
+                      {have}/{target}
+                    </Text>
+                  </View>
+                );
+              })()}
             </Pressable>
 
             {isExpanded && NEEDS_TIERS.map((tier) => {
@@ -271,15 +278,16 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 6,
   },
+  needBadgeSatisfied: {
+    backgroundColor: '#4CAF5020',
+  },
   needBadgeText: {
     fontSize: 10,
     fontWeight: '700',
     color: '#FF9800',
   },
-  slotCount: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: GRAY,
+  needBadgeTextSatisfied: {
+    color: '#4CAF50',
   },
   tierSection: {
     marginLeft: 12,

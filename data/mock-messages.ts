@@ -558,6 +558,110 @@ export const MOCK_THREADS: InboxThread[] = [
       { id: 'tm-23', sender: 'Coach Davis', initials: 'CD', isMe: true, content: 'We\'ll have the visit itinerary to you by Friday.', timestamp: ago(300) },
     ],
   },
+  {
+    id: 'th-7',
+    title: 'Coach Miller',
+    icon: 'person.fill',
+    participants: ['Coach Davis', 'Coach Miller'],
+    lastMessage: 'Zone press breaker is ready. Sending the playbook page now.',
+    timestamp: ago(25),
+    unread: 2,
+    pinned: true,
+    messages: [
+      { id: 'tm-24', sender: 'Coach Davis', initials: 'CD', isMe: true, content: 'Did you finish the zone press breaker?', timestamp: ago(40) },
+      { id: 'tm-25', sender: 'Coach Miller', initials: 'CM', isMe: false, content: 'Zone press breaker is ready. Sending the playbook page now.', timestamp: ago(25) },
+    ],
+  },
+  {
+    id: 'th-8',
+    title: 'Darius Thompson',
+    icon: 'person.fill',
+    participants: ['Coach Davis', 'Darius Thompson'],
+    lastMessage: 'Ankle feels great. Trainer said I\'m good for Saturday.',
+    timestamp: ago(90),
+    unread: 1,
+    messages: [
+      { id: 'tm-26', sender: 'Coach Davis', initials: 'CD', isMe: true, content: 'How\'s the ankle feeling? Need you ready for Saturday.', timestamp: ago(120) },
+      { id: 'tm-27', sender: 'Darius Thompson', initials: 'DT', isMe: false, content: 'Ankle feels great. Trainer said I\'m good for Saturday.', timestamp: ago(90) },
+    ],
+  },
+  {
+    id: 'th-9',
+    title: 'Athletic Trainer',
+    icon: 'person.fill',
+    participants: ['Coach Davis', 'Ray Nguyen'],
+    lastMessage: 'Marcus cleared for full contact. Updated status sheet.',
+    timestamp: ago(15),
+    unread: 1,
+    pinned: true,
+    messages: [
+      { id: 'tm-28', sender: 'Ray Nguyen', initials: 'RN', isMe: false, content: 'Marcus cleared for full contact. Updated status sheet.', timestamp: ago(15) },
+    ],
+  },
+  {
+    id: 'th-10',
+    title: 'Devon Williams (Recruit)',
+    icon: 'person.badge.plus',
+    participants: ['Coach Davis', 'Devon Williams'],
+    lastMessage: 'My family has some questions about the scholarship offer.',
+    timestamp: ago(180),
+    unread: 1,
+    messages: [
+      { id: 'tm-29', sender: 'Devon Williams', initials: 'DW', isMe: false, content: 'Hey Coach, wanted to follow up on the offer.', timestamp: ago(200) },
+      { id: 'tm-30', sender: 'Devon Williams', initials: 'DW', isMe: false, content: 'My family has some questions about the scholarship offer.', timestamp: ago(180) },
+    ],
+  },
+  {
+    id: 'th-11',
+    title: 'AD Office',
+    icon: 'person.fill',
+    participants: ['Coach Davis', 'Dr. James Carter'],
+    lastMessage: 'Travel budget for the away tournament is approved.',
+    timestamp: ago(420),
+    unread: 0,
+    messages: [
+      { id: 'tm-31', sender: 'Coach Davis', initials: 'CD', isMe: true, content: 'Dr. Carter, any update on the away tournament travel budget?', timestamp: ago(480) },
+      { id: 'tm-32', sender: 'Dr. James Carter', initials: 'JC', isMe: false, content: 'Travel budget for the away tournament is approved.', timestamp: ago(420) },
+    ],
+  },
+  {
+    id: 'th-12',
+    title: 'Compliance Office',
+    icon: 'person.fill',
+    participants: ['Coach Davis', 'Compliance'],
+    lastMessage: 'Three players flagged for academic eligibility — need GPA verification by Thursday.',
+    timestamp: ago(45),
+    unread: 1,
+    messages: [
+      { id: 'tm-33', sender: 'Compliance', initials: 'CO', isMe: false, content: 'Three players flagged for academic eligibility — need GPA verification by Thursday.', timestamp: ago(45) },
+    ],
+  },
+  {
+    id: 'th-13',
+    title: 'Andre Mitchell',
+    icon: 'person.fill',
+    participants: ['Coach Davis', 'Andre Mitchell'],
+    lastMessage: 'Put in extra work on my left hand today. Video in the film room.',
+    timestamp: ago(30),
+    unread: 1,
+    messages: [
+      { id: 'tm-34', sender: 'Andre Mitchell', initials: 'AM', isMe: false, content: 'Coach, I put in extra work on my left hand today. Video in the film room.', timestamp: ago(35) },
+      { id: 'tm-35', sender: 'Coach Davis', initials: 'CD', isMe: true, content: 'Love the initiative Andre. I\'ll check the film tonight.', timestamp: ago(30) },
+    ],
+  },
+  {
+    id: 'th-14',
+    title: 'Scout Williams',
+    icon: 'person.fill',
+    participants: ['Coach Davis', 'Scout Williams'],
+    lastMessage: 'Got three strong prospects from the Tampa showcase. Sending evals now.',
+    timestamp: ago(60),
+    unread: 2,
+    messages: [
+      { id: 'tm-36', sender: 'Scout Williams', initials: 'SW', isMe: false, content: 'Just wrapped up the Tampa showcase. Some real talent there.', timestamp: ago(75) },
+      { id: 'tm-37', sender: 'Scout Williams', initials: 'SW', isMe: false, content: 'Got three strong prospects from the Tampa showcase. Sending evals now.', timestamp: ago(60) },
+    ],
+  },
 ];
 
 // =============================================================================
@@ -694,9 +798,612 @@ export const MOCK_CHAT_THREADS: ChatThread[] = [
     template: 'recruit_thread',
     isGroup: false,
   },
+  {
+    ...MOCK_THREADS[6],
+    context: { type: 'staff', subtitle: 'Associate HC' },
+    template: 'dm',
+    isGroup: false,
+  },
+  {
+    ...MOCK_THREADS[7],
+    context: { type: 'player', subtitle: 'Player · #3 · SG' },
+    template: 'dm',
+    isGroup: false,
+  },
+  {
+    ...MOCK_THREADS[8],
+    context: { type: 'staff', subtitle: 'Athletic Trainer' },
+    template: 'dm',
+    isGroup: false,
+  },
+  {
+    ...MOCK_THREADS[9],
+    context: { type: 'recruit', subtitle: 'Recruit · 2026 · PF' },
+    template: 'recruit_thread',
+    isGroup: false,
+  },
+  {
+    ...MOCK_THREADS[10],
+    context: { type: 'staff', subtitle: 'Athletic Director' },
+    template: 'dm',
+    isGroup: false,
+  },
+  {
+    ...MOCK_THREADS[11],
+    context: { type: 'staff', subtitle: 'Compliance' },
+    template: 'dm',
+    isGroup: false,
+  },
+  {
+    ...MOCK_THREADS[12],
+    context: { type: 'player', subtitle: 'Player · #5 · SF' },
+    template: 'dm',
+    isGroup: false,
+  },
+  {
+    ...MOCK_THREADS[13],
+    context: { type: 'staff', subtitle: 'Regional Scout' },
+    template: 'dm',
+    isGroup: false,
+  },
 ];
 
 export const MOCK_GROUP_THREADS: ChatThread[] = MOCK_CHAT_THREADS.filter((t) => t.isGroup);
+
+// =============================================================================
+// CHURCH MODE DM THREADS
+// =============================================================================
+
+const CHURCH_THREADS: InboxThread[] = [
+  {
+    id: 'ch-th-1',
+    title: 'Pastor Sarah Okonkwo',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'Pastor Sarah'],
+    lastMessage: 'Lenten series outline is attached — review by Wednesday.',
+    timestamp: ago(20),
+    unread: 2,
+    pinned: true,
+    messages: [
+      { id: 'ch-m1', sender: 'Pastor Sarah', initials: 'SO', isMe: false, content: 'Lenten series outline is attached — review by Wednesday.', timestamp: ago(20) },
+    ],
+  },
+  {
+    id: 'ch-th-2',
+    title: 'Elder James Wright',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'Elder James'],
+    lastMessage: 'Men\'s fellowship breakfast confirmed for Saturday 8am.',
+    timestamp: ago(60),
+    unread: 1,
+    messages: [
+      { id: 'ch-m2', sender: 'Elder James Wright', initials: 'JW', isMe: false, content: 'Men\'s fellowship breakfast confirmed for Saturday 8am.', timestamp: ago(60) },
+    ],
+  },
+  {
+    id: 'ch-th-3',
+    title: 'Deacon Ruth Adeyemi',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'Deacon Ruth'],
+    lastMessage: 'Prayer chain activated for the Williams family.',
+    timestamp: ago(45),
+    unread: 1,
+    messages: [
+      { id: 'ch-m3', sender: 'Deacon Ruth', initials: 'RA', isMe: false, content: 'Prayer chain activated for the Williams family.', timestamp: ago(45) },
+    ],
+  },
+  {
+    id: 'ch-th-4',
+    title: 'David Eze (Worship)',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'David Eze'],
+    lastMessage: 'Sunday setlist is finalized. Rehearsal Thursday 7pm.',
+    timestamp: ago(180),
+    unread: 0,
+    messages: [
+      { id: 'ch-m4', sender: 'David Eze', initials: 'DE', isMe: false, content: 'Sunday setlist is finalized. Rehearsal Thursday 7pm.', timestamp: ago(180) },
+    ],
+  },
+  {
+    id: 'ch-th-5',
+    title: 'Minister Tunde Balogun',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'Minister Tunde'],
+    lastMessage: 'Youth retreat registration closes Friday — 32 signed up so far.',
+    timestamp: ago(100),
+    unread: 2,
+    messages: [
+      { id: 'ch-m5', sender: 'Minister Tunde', initials: 'TB', isMe: false, content: 'Youth retreat registration closes Friday — 32 signed up so far.', timestamp: ago(100) },
+    ],
+  },
+  {
+    id: 'ch-th-6',
+    title: 'Deaconess Folake Ade',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'Deaconess Folake'],
+    lastMessage: 'New members class — 8 people confirmed for Sunday orientation.',
+    timestamp: ago(240),
+    unread: 0,
+    messages: [
+      { id: 'ch-m6', sender: 'Deaconess Folake', initials: 'FA', isMe: false, content: 'New members class — 8 people confirmed for Sunday orientation.', timestamp: ago(240) },
+    ],
+  },
+  {
+    id: 'ch-th-7',
+    title: 'Sister Grace Nwosu',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'Sister Grace'],
+    lastMessage: 'Hospital visit to Brother Taiwo scheduled for tomorrow at 2pm.',
+    timestamp: ago(300),
+    unread: 0,
+    messages: [
+      { id: 'ch-m7', sender: 'Sister Grace', initials: 'GN', isMe: false, content: 'Hospital visit to Brother Taiwo scheduled for tomorrow at 2pm.', timestamp: ago(300) },
+    ],
+  },
+  {
+    id: 'ch-th-8',
+    title: 'Deacon Michael Ibe',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'Deacon Michael'],
+    lastMessage: 'Building maintenance request submitted for the fellowship hall AC.',
+    timestamp: ago(500),
+    unread: 0,
+    messages: [
+      { id: 'ch-m8', sender: 'Deacon Michael', initials: 'MI', isMe: false, content: 'Building maintenance request submitted for the fellowship hall AC.', timestamp: ago(500) },
+    ],
+  },
+  {
+    id: 'ch-th-9',
+    title: 'New Member — Ade Okafor',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'Ade Okafor'],
+    lastMessage: 'Thank you for the warm welcome Sunday, Pastor. Looking forward to serving.',
+    timestamp: ago(1440),
+    unread: 1,
+    messages: [
+      { id: 'ch-m9', sender: 'Ade Okafor', initials: 'AO', isMe: false, content: 'Thank you for the warm welcome Sunday, Pastor. Looking forward to serving.', timestamp: ago(1440) },
+    ],
+  },
+  {
+    id: 'ch-th-10',
+    title: 'Media Team Lead',
+    icon: 'person.fill',
+    participants: ['Pastor Dipo', 'Brother Emeka'],
+    lastMessage: 'Live stream equipment upgrade quote attached. Under budget.',
+    timestamp: ago(360),
+    unread: 1,
+    pinned: true,
+    messages: [
+      { id: 'ch-m10', sender: 'Brother Emeka', initials: 'EU', isMe: false, content: 'Live stream equipment upgrade quote attached. Under budget.', timestamp: ago(360) },
+    ],
+  },
+];
+
+const CHURCH_CHAT_THREADS: ChatThread[] = CHURCH_THREADS.map((t) => ({
+  ...t,
+  context: { type: 'staff' as const, subtitle: 'Church Staff' },
+  template: 'dm' as ThreadTemplate,
+  isGroup: false,
+}));
+
+// =============================================================================
+// EDUCATION MODE DM THREADS
+// =============================================================================
+
+const EDUCATION_THREADS: InboxThread[] = [
+  {
+    id: 'ed-th-1',
+    title: 'Dr. James Chen',
+    icon: 'person.fill',
+    participants: ['Dr. Wells', 'Dr. Chen'],
+    lastMessage: 'Accreditation visit confirmed for March 10-12. Prep docs ready.',
+    timestamp: ago(15),
+    unread: 3,
+    pinned: true,
+    messages: [
+      { id: 'ed-m1', sender: 'Dr. Chen', initials: 'JC', isMe: false, content: 'Accreditation visit confirmed for March 10-12. Prep docs ready.', timestamp: ago(15) },
+    ],
+  },
+  {
+    id: 'ed-th-2',
+    title: 'Karen Mitchell (Registrar)',
+    icon: 'person.fill',
+    participants: ['Dr. Wells', 'Karen Mitchell'],
+    lastMessage: 'Spring add/drop deadline extended to Feb 21.',
+    timestamp: ago(30),
+    unread: 1,
+    messages: [
+      { id: 'ed-m2', sender: 'Karen Mitchell', initials: 'KM', isMe: false, content: 'Spring add/drop deadline extended to Feb 21.', timestamp: ago(30) },
+    ],
+  },
+  {
+    id: 'ed-th-3',
+    title: 'Rachel Kim (Admissions)',
+    icon: 'person.fill',
+    participants: ['Dr. Wells', 'Rachel Kim'],
+    lastMessage: 'Fall 2026 applications up 12% over last year. Pipeline looking strong.',
+    timestamp: ago(120),
+    unread: 0,
+    messages: [
+      { id: 'ed-m3', sender: 'Rachel Kim', initials: 'RK', isMe: false, content: 'Fall 2026 applications up 12% over last year. Pipeline looking strong.', timestamp: ago(120) },
+    ],
+  },
+  {
+    id: 'ed-th-4',
+    title: 'Dr. Alan Foster (CS Chair)',
+    icon: 'person.fill',
+    participants: ['Dr. Wells', 'Dr. Foster'],
+    lastMessage: 'Adjunct hiring approved for CSCI-301 section B. Starting Monday.',
+    timestamp: ago(240),
+    unread: 0,
+    messages: [
+      { id: 'ed-m4', sender: 'Dr. Foster', initials: 'AF', isMe: false, content: 'Adjunct hiring approved for CSCI-301 section B. Starting Monday.', timestamp: ago(240) },
+    ],
+  },
+  {
+    id: 'ed-th-5',
+    title: 'Dr. Maria Santos',
+    icon: 'person.fill',
+    participants: ['Dr. Wells', 'Dr. Santos'],
+    lastMessage: 'Midterm grading due by Friday 5pm. All sections on track.',
+    timestamp: ago(60),
+    unread: 1,
+    messages: [
+      { id: 'ed-m5', sender: 'Dr. Santos', initials: 'MS', isMe: false, content: 'Midterm grading due by Friday 5pm. All sections on track.', timestamp: ago(60) },
+    ],
+  },
+  {
+    id: 'ed-th-6',
+    title: 'Lisa Morales (VP Finance)',
+    icon: 'person.fill',
+    participants: ['Dr. Wells', 'Lisa Morales'],
+    lastMessage: 'Q3 budget variance report attached. We\'re under by 4%.',
+    timestamp: ago(180),
+    unread: 1,
+    pinned: true,
+    messages: [
+      { id: 'ed-m6', sender: 'Lisa Morales', initials: 'LM', isMe: false, content: 'Q3 budget variance report attached. We\'re under by 4%.', timestamp: ago(180) },
+    ],
+  },
+  {
+    id: 'ed-th-7',
+    title: 'Student Government',
+    icon: 'person.fill',
+    participants: ['Dr. Wells', 'SGA President'],
+    lastMessage: 'Student body wants to discuss parking policy changes. Can we meet Thursday?',
+    timestamp: ago(300),
+    unread: 1,
+    messages: [
+      { id: 'ed-m7', sender: 'SGA President', initials: 'SP', isMe: false, content: 'Student body wants to discuss parking policy changes. Can we meet Thursday?', timestamp: ago(300) },
+    ],
+  },
+  {
+    id: 'ed-th-8',
+    title: 'Jake Torres (TA)',
+    icon: 'person.fill',
+    participants: ['Dr. Santos', 'Jake Torres'],
+    lastMessage: 'Lab 5 graded — average was 82%. A few students need tutoring referrals.',
+    timestamp: ago(90),
+    unread: 0,
+    messages: [
+      { id: 'ed-m8', sender: 'Jake Torres', initials: 'JT', isMe: false, content: 'Lab 5 graded — average was 82%. A few students need tutoring referrals.', timestamp: ago(90) },
+    ],
+  },
+  {
+    id: 'ed-th-9',
+    title: 'Facilities Manager',
+    icon: 'person.fill',
+    participants: ['Dr. Wells', 'Tom Harrison'],
+    lastMessage: 'Science building HVAC repair scheduled for this weekend.',
+    timestamp: ago(480),
+    unread: 0,
+    messages: [
+      { id: 'ed-m9', sender: 'Tom Harrison', initials: 'TH', isMe: false, content: 'Science building HVAC repair scheduled for this weekend.', timestamp: ago(480) },
+    ],
+  },
+  {
+    id: 'ed-th-10',
+    title: 'Alumni Relations',
+    icon: 'person.fill',
+    participants: ['Dr. Wells', 'Dana Brooks'],
+    lastMessage: 'Homecoming planning kickoff meeting next Wednesday. Agenda attached.',
+    timestamp: ago(1440),
+    unread: 0,
+    messages: [
+      { id: 'ed-m10', sender: 'Dana Brooks', initials: 'DB', isMe: false, content: 'Homecoming planning kickoff meeting next Wednesday. Agenda attached.', timestamp: ago(1440) },
+    ],
+  },
+];
+
+const EDUCATION_CHAT_THREADS: ChatThread[] = EDUCATION_THREADS.map((t) => ({
+  ...t,
+  context: { type: 'staff' as const, subtitle: 'Faculty / Staff' },
+  template: 'dm' as ThreadTemplate,
+  isGroup: false,
+}));
+
+// =============================================================================
+// ENTERPRISE MODE DM THREADS
+// =============================================================================
+
+const ENTERPRISE_THREADS: InboxThread[] = [
+  {
+    id: 'bz-th-1',
+    title: 'Priya Patel (CTO)',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'Priya Patel'],
+    lastMessage: 'Deploy freeze lifted — shipping when ready.',
+    timestamp: ago(10),
+    unread: 2,
+    pinned: true,
+    messages: [
+      { id: 'bz-m1', sender: 'Priya Patel', initials: 'PP', isMe: false, content: 'Deploy freeze lifted — shipping when ready.', timestamp: ago(10) },
+    ],
+  },
+  {
+    id: 'bz-th-2',
+    title: 'Jordan Lee (COO)',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'Jordan Lee'],
+    lastMessage: 'Vendor contract renewal — need sign-off by EOW.',
+    timestamp: ago(60),
+    unread: 1,
+    messages: [
+      { id: 'bz-m2', sender: 'Jordan Lee', initials: 'JL', isMe: false, content: 'Vendor contract renewal — need sign-off by EOW.', timestamp: ago(60) },
+    ],
+  },
+  {
+    id: 'bz-th-3',
+    title: 'Sam Okafor (Eng Manager)',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'Sam Okafor'],
+    lastMessage: 'Migration script passed staging. Ready for prod deploy.',
+    timestamp: ago(120),
+    unread: 1,
+    messages: [
+      { id: 'bz-m3', sender: 'Sam Okafor', initials: 'SO', isMe: false, content: 'Migration script passed staging. Ready for prod deploy.', timestamp: ago(120) },
+    ],
+  },
+  {
+    id: 'bz-th-4',
+    title: 'Jamie Torres (AE)',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'Jamie Torres'],
+    lastMessage: 'Acme Corp deal — legal review on MSA complete, ready for signature.',
+    timestamp: ago(240),
+    unread: 0,
+    messages: [
+      { id: 'bz-m4', sender: 'Jamie Torres', initials: 'JT', isMe: false, content: 'Acme Corp deal — legal review on MSA complete, ready for signature.', timestamp: ago(240) },
+    ],
+  },
+  {
+    id: 'bz-th-5',
+    title: 'Morgan Chen (Ops)',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'Morgan Chen'],
+    lastMessage: 'Office lease renewal terms arrived. Looks favorable.',
+    timestamp: ago(180),
+    unread: 1,
+    messages: [
+      { id: 'bz-m5', sender: 'Morgan Chen', initials: 'MC', isMe: false, content: 'Office lease renewal terms arrived. Looks favorable.', timestamp: ago(180) },
+    ],
+  },
+  {
+    id: 'bz-th-6',
+    title: 'Casey Rodriguez (Staff Eng)',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'Casey Rodriguez'],
+    lastMessage: 'Architecture diagram for Phoenix project is updated in Figma.',
+    timestamp: ago(300),
+    unread: 0,
+    messages: [
+      { id: 'bz-m6', sender: 'Casey Rodriguez', initials: 'CR', isMe: false, content: 'Architecture diagram for Phoenix project is updated in Figma.', timestamp: ago(300) },
+    ],
+  },
+  {
+    id: 'bz-th-7',
+    title: 'Drew Singh (CSM)',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'Drew Singh'],
+    lastMessage: 'GlobalTech integration issue resolved. Ticket #4521 closed.',
+    timestamp: ago(480),
+    unread: 0,
+    messages: [
+      { id: 'bz-m7', sender: 'Drew Singh', initials: 'DS', isMe: false, content: 'GlobalTech integration issue resolved. Ticket #4521 closed.', timestamp: ago(480) },
+    ],
+  },
+  {
+    id: 'bz-th-8',
+    title: 'Board Member — Robert Kim',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'Robert Kim'],
+    lastMessage: 'Board deck looks great. One comment on the revenue slide.',
+    timestamp: ago(90),
+    unread: 2,
+    pinned: true,
+    messages: [
+      { id: 'bz-m8', sender: 'Robert Kim', initials: 'RK', isMe: false, content: 'Board deck looks great. One comment on the revenue slide.', timestamp: ago(90) },
+    ],
+  },
+  {
+    id: 'bz-th-9',
+    title: 'Riley Brown (Solutions Eng)',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'Riley Brown'],
+    lastMessage: 'Demo environment spun up for the Acme PoC. Link in Slack.',
+    timestamp: ago(150),
+    unread: 0,
+    messages: [
+      { id: 'bz-m9', sender: 'Riley Brown', initials: 'RB', isMe: false, content: 'Demo environment spun up for the Acme PoC. Link in Slack.', timestamp: ago(150) },
+    ],
+  },
+  {
+    id: 'bz-th-10',
+    title: 'HR — New Hire Onboard',
+    icon: 'person.fill',
+    participants: ['Alex Rivera', 'HR Team'],
+    lastMessage: 'Wei Zhang starts Monday. Equipment and access requests submitted.',
+    timestamp: ago(360),
+    unread: 1,
+    messages: [
+      { id: 'bz-m10', sender: 'HR Team', initials: 'HR', isMe: false, content: 'Wei Zhang starts Monday. Equipment and access requests submitted.', timestamp: ago(360) },
+    ],
+  },
+];
+
+const ENTERPRISE_CHAT_THREADS: ChatThread[] = ENTERPRISE_THREADS.map((t) => ({
+  ...t,
+  context: { type: 'staff' as const, subtitle: 'Team' },
+  template: 'dm' as ThreadTemplate,
+  isGroup: false,
+}));
+
+// =============================================================================
+// COMMUNITY MODE DM THREADS
+// =============================================================================
+
+const COMMUNITY_THREADS: InboxThread[] = [
+  {
+    id: 'cx-th-1',
+    title: 'Sarah Nakamura (Ops Lead)',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Sarah Nakamura'],
+    lastMessage: 'Track inspection complete — all clear for qualifying.',
+    timestamp: ago(8),
+    unread: 2,
+    pinned: true,
+    messages: [
+      { id: 'cx-m1', sender: 'Sarah Nakamura', initials: 'SN', isMe: false, content: 'Track inspection complete — all clear for qualifying.', timestamp: ago(8) },
+    ],
+  },
+  {
+    id: 'cx-th-2',
+    title: 'Diego Fuentes (Safety)',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Diego Fuentes'],
+    lastMessage: 'Medical team staged at turns 3, 7, and pit lane. All green.',
+    timestamp: ago(30),
+    unread: 1,
+    messages: [
+      { id: 'cx-m2', sender: 'Diego Fuentes', initials: 'DF', isMe: false, content: 'Medical team staged at turns 3, 7, and pit lane. All green.', timestamp: ago(30) },
+    ],
+  },
+  {
+    id: 'cx-th-3',
+    title: 'Tom Bradley (Apex Racing)',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Tom Bradley'],
+    lastMessage: 'Our driver needs a pit allocation change for Round 3. Possible?',
+    timestamp: ago(60),
+    unread: 1,
+    messages: [
+      { id: 'cx-m3', sender: 'Tom Bradley', initials: 'TB', isMe: false, content: 'Our driver needs a pit allocation change for Round 3. Possible?', timestamp: ago(60) },
+    ],
+  },
+  {
+    id: 'cx-th-4',
+    title: 'Chief Steward Roberts',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Chief Steward Roberts'],
+    lastMessage: 'Incident report from Lap 12 reviewed. Penalty issued to car #17.',
+    timestamp: ago(180),
+    unread: 0,
+    messages: [
+      { id: 'cx-m4', sender: 'Chief Roberts', initials: 'SR', isMe: false, content: 'Incident report from Lap 12 reviewed. Penalty issued to car #17.', timestamp: ago(180) },
+    ],
+  },
+  {
+    id: 'cx-th-5',
+    title: 'Chris Donovan (Broadcast)',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Chris Donovan'],
+    lastMessage: 'Camera positions locked in — test stream at 2pm confirmed.',
+    timestamp: ago(300),
+    unread: 0,
+    messages: [
+      { id: 'cx-m5', sender: 'Chris Donovan', initials: 'CD', isMe: false, content: 'Camera positions locked in — test stream at 2pm confirmed.', timestamp: ago(300) },
+    ],
+  },
+  {
+    id: 'cx-th-6',
+    title: 'Dana Wells (Partnerships)',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Dana Wells'],
+    lastMessage: 'TechFlow confirmed as title sponsor for Round 4. Contract signed.',
+    timestamp: ago(480),
+    unread: 0,
+    messages: [
+      { id: 'cx-m6', sender: 'Dana Wells', initials: 'DW', isMe: false, content: 'TechFlow confirmed as title sponsor for Round 4. Contract signed.', timestamp: ago(480) },
+    ],
+  },
+  {
+    id: 'cx-th-7',
+    title: 'Lisa Park (Logistics)',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Lisa Park'],
+    lastMessage: 'Vendor load-in Friday 6am — gate codes sent. Catering confirmed.',
+    timestamp: ago(90),
+    unread: 2,
+    messages: [
+      { id: 'cx-m7', sender: 'Lisa Park', initials: 'LP', isMe: false, content: 'Vendor load-in Friday 6am — gate codes sent. Catering confirmed.', timestamp: ago(90) },
+    ],
+  },
+  {
+    id: 'cx-th-8',
+    title: 'Kenji Tanaka (Velocity)',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Kenji Tanaka'],
+    lastMessage: 'Requesting additional garage time for Saturday morning setup.',
+    timestamp: ago(150),
+    unread: 1,
+    messages: [
+      { id: 'cx-m8', sender: 'Kenji Tanaka', initials: 'KT', isMe: false, content: 'Requesting additional garage time for Saturday morning setup.', timestamp: ago(150) },
+    ],
+  },
+  {
+    id: 'cx-th-9',
+    title: 'Mike Johnson (Venue)',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Mike Johnson'],
+    lastMessage: 'Parking lot overflow plan approved. Shuttle bus schedule attached.',
+    timestamp: ago(720),
+    unread: 0,
+    messages: [
+      { id: 'cx-m9', sender: 'Mike Johnson', initials: 'MJ', isMe: false, content: 'Parking lot overflow plan approved. Shuttle bus schedule attached.', timestamp: ago(720) },
+    ],
+  },
+  {
+    id: 'cx-th-10',
+    title: 'New Team — Blaze Racing',
+    icon: 'person.fill',
+    participants: ['Marcus Hall', 'Blaze Racing'],
+    lastMessage: 'Registration complete. Looking forward to our first season.',
+    timestamp: ago(1440),
+    unread: 1,
+    messages: [
+      { id: 'cx-m10', sender: 'Blaze Racing', initials: 'BR', isMe: false, content: 'Registration complete. Looking forward to our first season.', timestamp: ago(1440) },
+    ],
+  },
+];
+
+const COMMUNITY_CHAT_THREADS: ChatThread[] = COMMUNITY_THREADS.map((t) => ({
+  ...t,
+  context: { type: 'staff' as const, subtitle: 'Competition Staff' },
+  template: 'dm' as ThreadTemplate,
+  isGroup: false,
+}));
+
+// =============================================================================
+// MODE-KEYED INBOX THREADS
+// =============================================================================
+
+export const INBOX_THREADS_BY_MODE: Record<Mode, ChatThread[]> = {
+  sports: MOCK_CHAT_THREADS.filter((t) => !t.isGroup),
+  church: CHURCH_CHAT_THREADS,
+  education: EDUCATION_CHAT_THREADS,
+  enterprise: ENTERPRISE_CHAT_THREADS,
+  community: COMMUNITY_CHAT_THREADS,
+};
 
 // =============================================================================
 // MODE-SPECIFIC ROOMS (Slack-style channels per mode)

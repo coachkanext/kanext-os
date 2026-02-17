@@ -21,9 +21,18 @@ import { PagedTabBar } from '@/components/ui/paged-tab-bar';
 import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
 import { OrgPeopleTab } from '@/components/organization/org-people-tab';
-import { OrgOperationsTab } from '@/components/organization/org-operations-tab';
-import { OrgFinanceTab } from '@/components/organization/org-finance-tab';
+import { OrgOperationsTab } from '@/components/organization/org-operations-tab-v2';
+import { OrgFinanceTab } from '@/components/organization/org-finance-tab-v2';
 import { OrgSwitcherSheet } from '@/components/organization/org-switcher-sheet';
+import { OrgProgramTab } from '@/components/organization/org-program-tab';
+import { OrgMinistriesTab } from '@/components/organization/org-ministries-tab';
+import { OrgInstitutionsTab } from '@/components/organization/org-institutions-tab';
+import { OrgSeriesTab } from '@/components/organization/org-series-tab';
+import { OrgPaymentRailsTab } from '@/components/organization/org-payment-rails-tab';
+import { OrgComplianceTab } from '@/components/organization/org-compliance-tab';
+import { OrgResourcesTab } from '@/components/organization/org-resources-tab';
+import { OrgSponsorsTab } from '@/components/organization/org-sponsors-tab';
+import { RoomsHub } from '@/components/rooms/rooms-hub';
 import {
   INSTITUTION,
   INSTITUTION_LEADERSHIP,
@@ -62,6 +71,7 @@ import { ProofEventsContent } from '@/components/enterprise/proof-events-content
 import { DataRoomContent } from '@/components/enterprise/data-room-content';
 import { GovernanceContent } from '@/components/enterprise/governance-content';
 import { RailsSection } from '@/components/rails/rails-section';
+import { OrgEntitiesTab } from '@/components/organization/org-entities-tab';
 import type { Mode } from '@/types';
 
 // =============================================================================
@@ -70,19 +80,21 @@ import type { Mode } from '@/types';
 
 const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
   sports: [
-    { id: 'programs', label: 'Programs' },
+    { id: 'program', label: 'Program' },
     { id: 'people', label: 'People' },
+    { id: 'rooms', label: 'Rooms' },
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
     { id: 'payment-rails', label: 'Payment Rails' },
     { id: 'compliance', label: 'Compliance' },
     { id: 'facilities', label: 'Facilities' },
     { id: 'resources', label: 'Resources' },
-    { id: 'brand', label: 'Brand' },
+    { id: 'sponsors', label: 'Sponsors' },
   ],
   enterprise: [
     { id: 'entities', label: 'Entities' },
     { id: 'people', label: 'People' },
+    { id: 'rooms', label: 'Rooms' },
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
     { id: 'payment-rails', label: 'Payment Rails' },
@@ -92,8 +104,9 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
     { id: 'reports', label: 'Reports' },
   ],
   education: [
-    { id: 'schools', label: 'Schools' },
+    { id: 'institutions', label: 'Institutions' },
     { id: 'people', label: 'People' },
+    { id: 'rooms', label: 'Rooms' },
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
     { id: 'payment-rails', label: 'Payment Rails' },
@@ -105,6 +118,7 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
   community: [
     { id: 'series', label: 'Series' },
     { id: 'people', label: 'People' },
+    { id: 'rooms', label: 'Rooms' },
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
     { id: 'payment-rails', label: 'Payment Rails' },
@@ -116,6 +130,7 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
   church: [
     { id: 'ministries', label: 'Ministries' },
     { id: 'people', label: 'People' },
+    { id: 'rooms', label: 'Rooms' },
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
     { id: 'payment-rails', label: 'Payment Rails' },
@@ -130,91 +145,6 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
 // =============================================================================
 // SPORTS MODE COMPONENTS
 // =============================================================================
-
-interface ProgramCardProps {
-  program: ProgramData;
-  onPress: () => void;
-  colors: typeof Colors.light;
-  accentColor: string;
-}
-
-function ProgramCard({ program, onPress, colors, accentColor }: ProgramCardProps) {
-  const isVarsity = program.level === 'varsity';
-
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.programCard,
-        {
-          backgroundColor: colors.card,
-          borderColor: isVarsity ? accentColor : colors.border,
-          borderWidth: isVarsity ? 2 : 1,
-        },
-        pressed && { opacity: 0.8 },
-      ]}
-      onPress={onPress}
-    >
-      <View style={styles.programCardHeader}>
-        <ThemedText style={styles.programName}>{program.name}</ThemedText>
-        <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
-      </View>
-      <ThemedText style={[styles.programSport, { color: colors.textSecondary }]}>
-        {program.sport}
-      </ThemedText>
-      <View style={styles.programStats}>
-        <View style={styles.programStat}>
-          <ThemedText style={[styles.programStatValue, { color: accentColor }]}>
-            {formatRecord(program.record.overall)}
-          </ThemedText>
-          <ThemedText style={[styles.programStatLabel, { color: colors.textTertiary }]}>
-            Record
-          </ThemedText>
-        </View>
-        {program.roster.length > 0 && (
-          <View style={styles.programStat}>
-            <ThemedText style={[styles.programStatValue, { color: accentColor }]}>
-              {program.roster.length}
-            </ThemedText>
-            <ThemedText style={[styles.programStatLabel, { color: colors.textTertiary }]}>
-              Players
-            </ThemedText>
-          </View>
-        )}
-        {program.staff.length > 0 && (
-          <View style={styles.programStat}>
-            <ThemedText style={[styles.programStatValue, { color: accentColor }]}>
-              {program.staff.length}
-            </ThemedText>
-            <ThemedText style={[styles.programStatLabel, { color: colors.textTertiary }]}>
-              Staff
-            </ThemedText>
-          </View>
-        )}
-      </View>
-    </Pressable>
-  );
-}
-
-interface LeadershipRowProps {
-  staff: Staff;
-  colors: typeof Colors.light;
-}
-
-function LeadershipRow({ staff, colors }: LeadershipRowProps) {
-  return (
-    <View style={styles.leadershipRow}>
-      <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
-        <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
-      </View>
-      <View style={styles.leadershipInfo}>
-        <ThemedText style={styles.leadershipName}>{staff.name}</ThemedText>
-        <ThemedText style={[styles.leadershipTitle, { color: colors.textSecondary }]}>
-          {staff.title}
-        </ThemedText>
-      </View>
-    </View>
-  );
-}
 
 interface SectionHeaderProps {
   title: string;
@@ -247,25 +177,6 @@ function SportsOrganization() {
     pagerRef.current?.setPage(index);
   }, []);
 
-  const handleProgramPress = (programId: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push(`/organization/programs/${programId}`);
-  };
-
-  const handleRecruitingPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/recruiting');
-  };
-
-  const handleDonationsPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/donations');
-  };
-
-  const handleTicketsPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/tickets');
-  };
 
   return (
     <>
@@ -277,176 +188,39 @@ function SportsOrganization() {
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Programs (existing content) */}
-          <ScrollView key="programs" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-            {/* Institution Header */}
-          <View style={styles.institutionHeader}>
-            <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
-              <ThemedText style={styles.institutionBadgeText}>
-                {INSTITUTION.nickname.charAt(0)}
-              </ThemedText>
-            </View>
-            <View style={styles.institutionInfo}>
-              <ThemedText style={styles.institutionName}>{INSTITUTION.name}</ThemedText>
-              <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
-                {INSTITUTION.nickname} • {INSTITUTION.division}
-              </ThemedText>
-              <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
-                {INSTITUTION.location}
-              </ThemedText>
-            </View>
-          </View>
-
-          {/* Institutional Snapshot */}
-          <View style={[styles.snapshotCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={styles.snapshotRow}>
-              <View style={styles.snapshotItem}>
-                <ThemedText style={[styles.snapshotValue, { color: modeColors.primary }]}>
-                  {INSTITUTION.conference}
-                </ThemedText>
-                <ThemedText style={[styles.snapshotLabel, { color: colors.textTertiary }]}>
-                  Conference
-                </ThemedText>
-              </View>
-              <View style={[styles.snapshotDivider, { backgroundColor: colors.divider }]} />
-              <View style={styles.snapshotItem}>
-                <ThemedText style={[styles.snapshotValue, { color: modeColors.primary }]}>
-                  {PROGRAMS.length}
-                </ThemedText>
-                <ThemedText style={[styles.snapshotLabel, { color: colors.textTertiary }]}>
-                  Programs
-                </ThemedText>
-              </View>
-              <View style={[styles.snapshotDivider, { backgroundColor: colors.divider }]} />
-              <View style={styles.snapshotItem}>
-                <ThemedText style={[styles.snapshotValue, { color: modeColors.primary }]}>
-                  {INSTITUTION.founded}
-                </ThemedText>
-                <ThemedText style={[styles.snapshotLabel, { color: colors.textTertiary }]}>
-                  Founded
-                </ThemedText>
-              </View>
-            </View>
-          </View>
-
-          {/* Programs Section */}
-          <SectionHeader title="Programs" colors={colors} />
-          <View style={styles.programsGrid}>
-            {PROGRAMS.map((program) => (
-              <ProgramCard
-                key={program.id}
-                program={program}
-                onPress={() => handleProgramPress(program.id)}
-                colors={colors}
-                accentColor={modeColors.primary}
-              />
-            ))}
-          </View>
-
-          {/* Recruiting Section */}
-          <SectionHeader title="Recruiting" colors={colors} />
-          <Pressable
-            style={({ pressed }) => [
-              styles.recruitingCard,
-              { backgroundColor: colors.card, borderColor: colors.border },
-              pressed && { opacity: 0.8 },
-            ]}
-            onPress={handleRecruitingPress}
-          >
-            <View style={[styles.recruitingIcon, { backgroundColor: modeColors.primary + '15' }]}>
-              <IconSymbol name="person.badge.plus" size={24} color={modeColors.primary} />
-            </View>
-            <View style={styles.recruitingInfo}>
-              <ThemedText style={styles.recruitingTitle}>Recruiting Board</ThemedText>
-              <ThemedText style={[styles.recruitingSubtitle, { color: colors.textSecondary }]}>
-                Track prospects and manage pipeline
-              </ThemedText>
-            </View>
-            <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
-          </Pressable>
-
-          {/* Support & Tickets */}
-          <SectionHeader title="Support & Tickets" colors={colors} />
-          <View style={styles.supportGrid}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.supportCard,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                pressed && { opacity: 0.8 },
-              ]}
-              onPress={handleDonationsPress}
-            >
-              <View style={[styles.supportIcon, { backgroundColor: modeColors.primary + '15' }]}>
-                <IconSymbol name="heart.fill" size={22} color={modeColors.primary} />
-              </View>
-              <ThemedText style={styles.supportTitle}>Donate</ThemedText>
-              <ThemedText style={[styles.supportSubtitle, { color: colors.textSecondary }]}>
-                Support athletics
-              </ThemedText>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.supportCard,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                pressed && { opacity: 0.8 },
-              ]}
-              onPress={handleTicketsPress}
-            >
-              <View style={[styles.supportIcon, { backgroundColor: modeColors.primary + '15' }]}>
-                <IconSymbol name="ticket.fill" size={22} color={modeColors.primary} />
-              </View>
-              <ThemedText style={styles.supportTitle}>Tickets</ThemedText>
-              <ThemedText style={[styles.supportSubtitle, { color: colors.textSecondary }]}>
-                Get game tickets
-              </ThemedText>
-            </Pressable>
-          </View>
-
-          {/* Leadership Section */}
-          <SectionHeader title="Athletic Leadership" colors={colors} />
-          <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            {INSTITUTION_LEADERSHIP.map((staff, index) => (
-              <React.Fragment key={staff.id}>
-                <LeadershipRow staff={staff} colors={colors} />
-                {index < INSTITUTION_LEADERSHIP.length - 1 && (
-                  <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
-                )}
-              </React.Fragment>
-            ))}
-          </View>
-
-          {/* About Section */}
-          <SectionHeader title="About" colors={colors} />
-          <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
-              {INSTITUTION.description}
-            </ThemedText>
-          </View>
-        </ScrollView>
+          {/* Page 0: Program */}
+        <View key="program" style={{ flex: 1 }}>
+          <OrgProgramTab colors={colors} accentColor={modeColors.primary} />
+        </View>
 
         {/* Page 1: People */}
         <View key="people" style={{ flex: 1 }}>
           <OrgPeopleTab mode="sports" colors={colors} accentColor={modeColors.primary} />
         </View>
 
-        {/* Page 2: Operations */}
+        {/* Page 2: Rooms */}
+        <View key="rooms" style={{ flex: 1 }}>
+          <RoomsHub mode="sports" colors={colors} accentColor={modeColors.primary} />
+        </View>
+
+        {/* Page 3: Operations */}
         <View key="operations" style={{ flex: 1 }}>
           <OrgOperationsTab mode="sports" colors={colors} accentColor={modeColors.primary} />
         </View>
 
-        {/* Page 3: Finance */}
+        {/* Page 4: Finance */}
         <View key="finance" style={{ flex: 1 }}>
           <OrgFinanceTab mode="sports" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 4: Payment Rails */}
         <View key="payment-rails" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Payment Rails" />
+          <OrgPaymentRailsTab mode="sports" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 5: Compliance */}
         <View key="compliance" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Compliance" />
+          <OrgComplianceTab mode="sports" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 6: Facilities */}
@@ -456,12 +230,12 @@ function SportsOrganization() {
 
         {/* Page 7: Resources */}
         <View key="resources" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Resources" />
+          <OrgResourcesTab colors={colors} accentColor={modeColors.primary} />
         </View>
 
-        {/* Page 8: Brand */}
-        <View key="brand" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Brand" />
+        {/* Page 8: Sponsors */}
+        <View key="sponsors" style={{ flex: 1 }}>
+          <OrgSponsorsTab colors={colors} accentColor={modeColors.primary} />
         </View>
         </PagerView>
       </EdgeHoldAdvance>
@@ -519,29 +293,34 @@ function EnterpriseOrganization() {
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Entities (existing enterprise home) */}
-          <ScrollView key="entities" nestedScrollEnabled showsVerticalScrollIndicator={false}>
-            <EnterpriseHomeContent onSwitchTab={handleTabPress} />
-          </ScrollView>
+          {/* Page 0: Entities */}
+          <View key="entities" style={{ flex: 1 }}>
+            <OrgEntitiesTab colors={colors} accentColor={ModeColors.enterprise.primary} />
+          </View>
 
           {/* Page 1: People */}
           <View key="people" style={{ flex: 1 }}>
             <OrgPeopleTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
           </View>
 
-          {/* Page 2: Operations */}
+          {/* Page 2: Rooms */}
+          <View key="rooms" style={{ flex: 1 }}>
+            <RoomsHub mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
+          </View>
+
+          {/* Page 3: Operations */}
           <View key="operations" style={{ flex: 1 }}>
             <OrgOperationsTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
           </View>
 
-          {/* Page 3: Finance */}
+          {/* Page 4: Finance */}
           <View key="finance" style={{ flex: 1 }}>
             <OrgFinanceTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
           </View>
 
           {/* Page 4: Payment Rails */}
           <View key="payment-rails" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Payment Rails" />
+            <OrgPaymentRailsTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
           </View>
 
           {/* Page 5: Legal */}
@@ -551,7 +330,7 @@ function EnterpriseOrganization() {
 
           {/* Page 6: Compliance */}
           <View key="compliance" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Compliance" />
+            <OrgComplianceTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
           </View>
 
           {/* Page 7: Assets */}
@@ -706,171 +485,39 @@ function ChurchOrganization() {
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Ministries (existing content) */}
-          <ScrollView key="ministries" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-            {/* Church Header */}
-          <View style={styles.institutionHeader}>
-            <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
-              <IconSymbol name="heart.fill" size={28} color="#FFFFFF" />
-            </View>
-            <View style={styles.institutionInfo}>
-              <ThemedText style={styles.institutionName}>{ICC_ORGANIZATION.name}</ThemedText>
-              <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
-                {ICC_ORGANIZATION.denomination}
-              </ThemedText>
-              <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
-                {CAMPUSES.length} Campuses • {ICC_ORGANIZATION.location}
-              </ThemedText>
-            </View>
+          {/* Page 0: Ministries */}
+          <View key="ministries" style={{ flex: 1 }}>
+            <OrgMinistriesTab colors={colors} accentColor={modeColors.primary} />
           </View>
-
-          {/* Quick Actions */}
-          <View style={styles.quickLinksGrid}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.quickLinkCard,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                pressed && { opacity: 0.8 },
-              ]}
-              onPress={handleMessagesPress}
-            >
-              <IconSymbol name="play.circle.fill" size={24} color={modeColors.primary} />
-              <ThemedText style={styles.quickLinkTitle}>Messages</ThemedText>
-              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-                Watch sermons
-              </ThemedText>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.quickLinkCard,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                pressed && { opacity: 0.8 },
-              ]}
-              onPress={handleGivingPress}
-            >
-              <IconSymbol name="heart.fill" size={24} color={modeColors.primary} />
-              <ThemedText style={styles.quickLinkTitle}>Give</ThemedText>
-              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-                Tithes & offerings
-              </ThemedText>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.quickLinkCard,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                pressed && { opacity: 0.8 },
-              ]}
-              onPress={handleConnectPress}
-            >
-              <IconSymbol name="person.badge.plus" size={24} color={modeColors.primary} />
-              <ThemedText style={styles.quickLinkTitle}>Connect</ThemedText>
-              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-                Get involved
-              </ThemedText>
-            </Pressable>
-          </View>
-
-          {/* Campuses */}
-          <SectionHeader title="Our Campuses" colors={colors} />
-          <View style={styles.campusesList}>
-            {CAMPUSES.map((campus) => (
-              <CampusCard
-                key={campus.id}
-                campus={campus}
-                colors={colors}
-                accentColor={modeColors.primary}
-                onPress={() => handleCampusPress(campus.id)}
-              />
-            ))}
-          </View>
-
-          {/* Ministries */}
-          <SectionHeader title="Ministries" colors={colors} />
-          <View style={[styles.ministriesCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            {MINISTRIES.slice(0, 5).map((ministry, index) => (
-              <React.Fragment key={ministry.id}>
-                <MinistryRow
-                  ministry={ministry}
-                  colors={colors}
-                  accentColor={modeColors.primary}
-                  onPress={() => handleMinistryPress(ministry.id)}
-                />
-                {index < Math.min(MINISTRIES.length, 5) - 1 && (
-                  <View style={[styles.ministryDivider, { backgroundColor: colors.divider }]} />
-                )}
-              </React.Fragment>
-            ))}
-            {MINISTRIES.length > 5 && (
-              <Pressable
-                style={({ pressed }) => [
-                  styles.viewAllRow,
-                  pressed && { backgroundColor: colors.backgroundSecondary },
-                ]}
-                onPress={handleMinistriesPress}
-              >
-                <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
-                  View All Ministries
-                </ThemedText>
-                <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
-              </Pressable>
-            )}
-          </View>
-
-          {/* Leadership */}
-          <SectionHeader title="Leadership" colors={colors} />
-          <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            {CHURCH_LEADERSHIP.slice(0, 3).map((leader, index) => (
-              <React.Fragment key={leader.id}>
-                <View style={styles.leadershipRow}>
-                  <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
-                    <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
-                  </View>
-                  <View style={styles.leadershipInfo}>
-                    <ThemedText style={styles.leadershipName}>{leader.name}</ThemedText>
-                    <ThemedText style={[styles.leadershipTitle, { color: colors.textSecondary }]}>
-                      {leader.title}
-                    </ThemedText>
-                  </View>
-                </View>
-                {index < Math.min(CHURCH_LEADERSHIP.length, 3) - 1 && (
-                  <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
-                )}
-              </React.Fragment>
-            ))}
-          </View>
-
-          {/* About */}
-          <SectionHeader title="About" colors={colors} />
-          <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
-              {ICC_ORGANIZATION.description}
-            </ThemedText>
-          </View>
-        </ScrollView>
 
         {/* Page 1: People */}
         <View key="people" style={{ flex: 1 }}>
           <OrgPeopleTab mode="church" colors={colors} accentColor={modeColors.primary} />
         </View>
 
-        {/* Page 2: Operations */}
+        {/* Page 2: Rooms */}
+        <View key="rooms" style={{ flex: 1 }}>
+          <RoomsHub mode="church" colors={colors} accentColor={modeColors.primary} />
+        </View>
+
+        {/* Page 3: Operations */}
         <View key="operations" style={{ flex: 1 }}>
           <OrgOperationsTab mode="church" colors={colors} accentColor={modeColors.primary} />
         </View>
 
-        {/* Page 3: Finance */}
+        {/* Page 4: Finance */}
         <View key="finance" style={{ flex: 1 }}>
           <OrgFinanceTab mode="church" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 4: Payment Rails */}
         <View key="payment-rails" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Payment Rails" />
+          <OrgPaymentRailsTab mode="church" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 5: Compliance */}
         <View key="compliance" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Compliance" />
+          <OrgComplianceTab mode="church" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 6: Facilities */}
@@ -1074,244 +721,39 @@ function EducationOrganization() {
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Schools (existing content) */}
-          <ScrollView key="schools" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-            {/* Institution Header */}
-          <View style={styles.institutionHeader}>
-            <View style={[styles.institutionBadge, { backgroundColor: modeColors.primary }]}>
-              <IconSymbol name="graduationcap.fill" size={28} color="#FFFFFF" />
-            </View>
-            <View style={styles.institutionInfo}>
-              <ThemedText style={styles.institutionName}>{SDCC_ORGANIZATION.name}</ThemedText>
-              <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
-                {SDCC_ORGANIZATION.institutionType}
-              </ThemedText>
-              <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
-                {SDCC_ORGANIZATION.location} • Est. {SDCC_ORGANIZATION.founded}
-              </ThemedText>
-            </View>
+          {/* Page 0: Institutions */}
+          <View key="institutions" style={{ flex: 1 }}>
+            <OrgInstitutionsTab colors={colors} accentColor={modeColors.primary} />
           </View>
-
-          {/* Key Metrics */}
-          <View style={styles.metricsGrid}>
-            <MetricCard
-              label="Enrollment"
-              value={INSTITUTIONAL_METRICS.enrollment.total.toString()}
-              subValue={`+${INSTITUTIONAL_METRICS.enrollment.yearOverYearChange}% YoY`}
-              colors={colors}
-              accentColor={modeColors.primary}
-            />
-            <MetricCard
-              label="Programs"
-              value={INSTITUTIONAL_METRICS.academics.programs.toString()}
-              colors={colors}
-              accentColor={modeColors.primary}
-            />
-            <MetricCard
-              label="Faculty"
-              value={INSTITUTIONAL_METRICS.academics.facultyCount.toString()}
-              subValue={INSTITUTIONAL_METRICS.academics.studentFacultyRatio}
-              colors={colors}
-              accentColor={modeColors.primary}
-            />
-            <MetricCard
-              label="Grad Rate"
-              value={`${INSTITUTIONAL_METRICS.outcomes.graduationRate}%`}
-              colors={colors}
-              accentColor={modeColors.primary}
-            />
-          </View>
-
-          {/* Quick Actions */}
-          <View style={styles.quickLinksGrid}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.quickLinkCard,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                pressed && { opacity: 0.8 },
-              ]}
-              onPress={handleSchedulePress}
-            >
-              <IconSymbol name="calendar" size={24} color={modeColors.primary} />
-              <ThemedText style={styles.quickLinkTitle}>Schedule</ThemedText>
-              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-                Academic calendar
-              </ThemedText>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.quickLinkCard,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                pressed && { opacity: 0.8 },
-              ]}
-              onPress={handleResultsPress}
-            >
-              <IconSymbol name="checkmark.circle.fill" size={24} color={modeColors.primary} />
-              <ThemedText style={styles.quickLinkTitle}>Results</ThemedText>
-              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-                Completed terms
-              </ThemedText>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.quickLinkCard,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                pressed && { opacity: 0.8 },
-              ]}
-              onPress={handleMetricsPress}
-            >
-              <IconSymbol name="chart.bar.fill" size={24} color={modeColors.primary} />
-              <ThemedText style={styles.quickLinkTitle}>Metrics</ThemedText>
-              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-                Institutional data
-              </ThemedText>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.quickLinkCard,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                pressed && { opacity: 0.8 },
-              ]}
-              onPress={handleArchivePress}
-            >
-              <IconSymbol name="archivebox.fill" size={24} color={modeColors.primary} />
-              <ThemedText style={styles.quickLinkTitle}>Archive</ThemedText>
-              <ThemedText style={[styles.quickLinkSubtitle, { color: colors.textSecondary }]}>
-                Past years
-              </ThemedText>
-            </Pressable>
-          </View>
-
-          {/* Current Term */}
-          {currentTerm && (
-            <>
-              <SectionHeader title="Current Term" colors={colors} />
-              <TermCard
-                term={currentTerm}
-                colors={colors}
-                accentColor={modeColors.primary}
-                isCurrent={true}
-                onPress={() => handleTermPress(currentTerm.id)}
-              />
-            </>
-          )}
-
-          {/* Upcoming Events */}
-          <SectionHeader title="Upcoming" colors={colors} />
-          <View style={[styles.calendarCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            {upcomingEvents.map((event, index) => (
-              <React.Fragment key={event.id}>
-                <CalendarEventRow event={event} colors={colors} accentColor={modeColors.primary} />
-                {index < upcomingEvents.length - 1 && (
-                  <View style={[styles.calendarDivider, { backgroundColor: colors.divider }]} />
-                )}
-              </React.Fragment>
-            ))}
-            <Pressable
-              style={({ pressed }) => [
-                styles.viewAllRow,
-                pressed && { backgroundColor: colors.backgroundSecondary },
-              ]}
-              onPress={handleSchedulePress}
-            >
-              <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
-                View Full Calendar
-              </ThemedText>
-              <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
-            </Pressable>
-          </View>
-
-          {/* Departments */}
-          <SectionHeader title="Academic Departments" colors={colors} />
-          <View style={styles.departmentsGrid}>
-            {DEPARTMENTS.slice(0, 4).map((dept) => (
-              <DepartmentCard
-                key={dept.id}
-                department={dept}
-                colors={colors}
-                accentColor={modeColors.primary}
-              />
-            ))}
-          </View>
-
-          {/* Leadership */}
-          <SectionHeader title="Leadership" colors={colors} />
-          <View style={[styles.leadershipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            {FACULTY_LEADERSHIP.slice(0, 4).map((faculty, index) => (
-              <React.Fragment key={faculty.id}>
-                <FacultyRow
-                  faculty={faculty}
-                  colors={colors}
-                  onPress={() => handleFacultyPress(faculty.id)}
-                />
-                {index < Math.min(FACULTY_LEADERSHIP.length, 4) - 1 && (
-                  <View style={[styles.leadershipDivider, { backgroundColor: colors.divider }]} />
-                )}
-              </React.Fragment>
-            ))}
-            <Pressable
-              style={({ pressed }) => [
-                styles.viewAllRow,
-                pressed && { backgroundColor: colors.backgroundSecondary },
-              ]}
-              onPress={handleLeadershipPress}
-            >
-              <ThemedText style={[styles.viewAllText, { color: modeColors.primary }]}>
-                View All Leadership
-              </ThemedText>
-              <IconSymbol name="chevron.right" size={14} color={modeColors.primary} />
-            </Pressable>
-          </View>
-
-          {/* About */}
-          <SectionHeader title="About" colors={colors} />
-          <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[styles.aboutText, { color: colors.textSecondary }]}>
-              {SDCC_ORGANIZATION.description}
-            </ThemedText>
-            <View style={[styles.aboutDivider, { backgroundColor: colors.divider }]} />
-            <View style={styles.aboutMeta}>
-              <View style={styles.aboutMetaItem}>
-                <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
-                  Accreditation
-                </ThemedText>
-                <ThemedText style={styles.aboutMetaValue}>{SDCC_ORGANIZATION.accreditation}</ThemedText>
-              </View>
-              <View style={styles.aboutMetaItem}>
-                <ThemedText style={[styles.aboutMetaLabel, { color: colors.textTertiary }]}>
-                  Formats
-                </ThemedText>
-                <ThemedText style={styles.aboutMetaValue}>
-                  {SDCC_ORGANIZATION.programFormats?.join(', ')}
-                </ThemedText>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
 
         {/* Page 1: People */}
         <View key="people" style={{ flex: 1 }}>
           <OrgPeopleTab mode="education" colors={colors} accentColor={modeColors.primary} />
         </View>
 
-        {/* Page 2: Operations */}
+        {/* Page 2: Rooms */}
+        <View key="rooms" style={{ flex: 1 }}>
+          <RoomsHub mode="education" colors={colors} accentColor={modeColors.primary} />
+        </View>
+
+        {/* Page 3: Operations */}
         <View key="operations" style={{ flex: 1 }}>
           <OrgOperationsTab mode="education" colors={colors} accentColor={modeColors.primary} />
         </View>
 
-        {/* Page 3: Finance */}
+        {/* Page 4: Finance */}
         <View key="finance" style={{ flex: 1 }}>
           <OrgFinanceTab mode="education" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 4: Payment Rails */}
         <View key="payment-rails" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Payment Rails" />
+          <OrgPaymentRailsTab mode="education" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 5: Compliance */}
         <View key="compliance" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Compliance" />
+          <OrgComplianceTab mode="education" colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 6: Facilities */}
@@ -1358,45 +800,34 @@ function CommunityOrganization() {
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Series (existing content) */}
-          <ScrollView key="series" nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-            <View style={styles.institutionHeader}>
-              <View style={[styles.institutionBadge, { backgroundColor: '#EF4444' }]}>
-                <IconSymbol name="flag.checkered" size={28} color="#FFFFFF" />
-              </View>
-              <View style={styles.institutionInfo}>
-                <ThemedText style={styles.institutionName}>K-1 Competition</ThemedText>
-                <ThemedText style={[styles.institutionDetails, { color: colors.textSecondary }]}>
-                  Racing League
-                </ThemedText>
-                <ThemedText style={[styles.institutionLocation, { color: colors.textTertiary }]}>
-                  Season 1 · 2026
-                </ThemedText>
-              </View>
-            </View>
-
-            {/* Payment Rails */}
-            <RailsSection />
-          </ScrollView>
+          {/* Page 0: Series */}
+          <View key="series" style={{ flex: 1 }}>
+            <OrgSeriesTab colors={colors} accentColor={ModeColors.community.primary} />
+          </View>
 
           {/* Page 1: People */}
           <View key="people" style={{ flex: 1 }}>
             <OrgPeopleTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
           </View>
 
-          {/* Page 2: Operations */}
+          {/* Page 2: Rooms */}
+          <View key="rooms" style={{ flex: 1 }}>
+            <RoomsHub mode="community" colors={colors} accentColor={ModeColors.community.primary} />
+          </View>
+
+          {/* Page 3: Operations */}
           <View key="operations" style={{ flex: 1 }}>
             <OrgOperationsTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
           </View>
 
-          {/* Page 3: Finance */}
+          {/* Page 4: Finance */}
           <View key="finance" style={{ flex: 1 }}>
             <OrgFinanceTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
           </View>
 
           {/* Page 4: Payment Rails */}
           <View key="payment-rails" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Payment Rails" />
+            <OrgPaymentRailsTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
           </View>
 
           {/* Page 5: Rules */}
@@ -1406,7 +837,7 @@ function CommunityOrganization() {
 
           {/* Page 6: Compliance */}
           <View key="compliance" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Compliance" />
+            <OrgComplianceTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
           </View>
 
           {/* Page 7: Venues */}

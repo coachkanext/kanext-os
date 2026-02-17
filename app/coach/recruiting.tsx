@@ -454,9 +454,9 @@ export function PlayerPoolContent() {
     setQuickActionsEntry(null);
   }, []);
 
-  const handleAddToBoard = useCallback((playerId: string, slot?: PositionSlot, tier?: NeedsTier, status?: import('@/data/recruitingBoard').BoardStatus) => {
+  const handleAddToBoard = useCallback((playerId: string, slot?: PositionSlot, tier?: NeedsTier, status?: import('@/data/recruitingBoard').BoardStatus, bigBoardRank?: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setBoardEntries((prev) => addEntry(prev, playerId, status ?? 'Watchlist', 'C', slot, tier));
+    setBoardEntries((prev) => addEntry(prev, playerId, status ?? 'Watchlist', 'C', slot, tier, bigBoardRank));
   }, []);
 
   // Accordion state
@@ -1785,7 +1785,7 @@ function RecruitingBoardWorkspace({
   offStyle: import('@/types').OffensiveStyle;
   defStyle: import('@/types').DefensiveStyle;
   onPlayerPress: (player: PoolPlayer) => void;
-  onAddToBoard: (playerId: string, slot?: PositionSlot, tier?: NeedsTier, status?: BoardStatus) => void;
+  onAddToBoard: (playerId: string, slot?: PositionSlot, tier?: NeedsTier, status?: BoardStatus, bigBoardRank?: number) => void;
   onRemoveFromBoard: (entryId: string) => void;
   onCardPress: (entry: BoardEntry) => void;
   onCardLongPress: (entry: BoardEntry) => void;

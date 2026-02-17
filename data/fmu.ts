@@ -863,7 +863,7 @@ function generateClusterRatings(opp: string, baseKR: number): ClusterRating[] {
 }
 
 // Hash helper for deterministic pseudo-random values
-function stableHash(s: string, seed: number = 0): number {
+export function stableHash(s: string, seed: number = 0): number {
   let h = seed;
   for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
   return Math.abs(h);

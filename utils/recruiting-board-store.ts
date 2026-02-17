@@ -204,6 +204,7 @@ export function addEntry(
   priority: Priority = 'C',
   slot?: PositionSlot,
   tier?: NeedsTier,
+  bigBoardRank?: number,
 ): BoardEntry[] {
   // Don't add duplicates
   if (entries.some((e) => e.playerId === playerId)) return entries;
@@ -236,6 +237,7 @@ export function addEntry(
     tier: tier ?? 'Watch',
     slot: helioSlot,
     interest: 'Low',
+    ...(bigBoardRank !== undefined ? { bigBoardRank } : {}),
   };
 
   return [...entries, newEntry];

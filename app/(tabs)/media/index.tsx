@@ -27,9 +27,22 @@ import { useMode } from '@/context/app-context';
 import {
   STORY_CIRCLES,
   VIDEO_FEED_POSTS,
+  STORY_CIRCLES_BY_MODE,
+  FEED_POSTS_BY_MODE,
 } from '@/data/mock-video-feed';
 import type { StoryCircle, VideoFeedPost } from '@/data/mock-video-feed';
 import type { Mode } from '@/types';
+import { SportsExplorePage } from '@/components/sports-explore/sports-explore-page';
+import { EducationExplorePage } from '@/components/education-explore/education-explore-page';
+import { ChurchExplorePage } from '@/components/church-explore/church-explore-page';
+import { BusinessExplorePage } from '@/components/business-explore/business-explore-page';
+import { CompetitionExplorePage } from '@/components/competition-explore/competition-explore-page';
+import { SportsFilmRoom } from '@/components/film-room/sports-film-room';
+import { ChurchFilmRoom } from '@/components/film-room/church-film-room';
+import { EducationFilmRoom } from '@/components/film-room/education-film-room';
+import { BusinessFilmRoom } from '@/components/film-room/business-film-room';
+import { CommunityFilmRoom } from '@/components/film-room/community-film-room';
+import { LibraryHub } from '@/components/library/library-hub';
 
 const ACCENT_GOLD = '#FFFFFF';
 
@@ -59,61 +72,8 @@ function getMediaTabs(mode: Mode) {
 // MODE-SPECIFIC VIDEO DATA
 // =============================================================================
 
-const MODE_STORIES: Record<Mode, StoryCircle[]> = {
-  sports: STORY_CIRCLES,
-  enterprise: [
-    { id: 'bs-1', name: 'KaNeXT', initials: 'KX', hasNew: true, isYou: true },
-    { id: 'bs-2', name: 'Demo Day', initials: 'DD', hasNew: true },
-    { id: 'bs-3', name: 'Product', initials: 'PR', hasNew: true },
-    { id: 'bs-4', name: 'Investors', initials: 'IV', hasNew: false },
-    { id: 'bs-5', name: 'Press', initials: 'PS', hasNew: false },
-  ],
-  church: [
-    { id: 'cs-1', name: 'ICCLA', initials: 'IC', hasNew: true, isYou: true },
-    { id: 'cs-2', name: 'Worship', initials: 'WO', hasNew: true },
-    { id: 'cs-3', name: 'Sermons', initials: 'SR', hasNew: true },
-    { id: 'cs-4', name: 'Youth', initials: 'YT', hasNew: false },
-    { id: 'cs-5', name: 'Outreach', initials: 'OR', hasNew: false },
-  ],
-  education: [
-    { id: 'es-1', name: 'FMU', initials: 'FM', hasNew: true, isYou: true },
-    { id: 'es-2', name: 'Campus', initials: 'CM', hasNew: true },
-    { id: 'es-3', name: 'Lectures', initials: 'LC', hasNew: true },
-    { id: 'es-4', name: 'Athletics', initials: 'AT', hasNew: false },
-    { id: 'es-5', name: 'Alumni', initials: 'AL', hasNew: false },
-  ],
-  community: [
-    { id: 'ks-1', name: 'K-1', initials: 'K1', hasNew: true, isYou: true },
-    { id: 'ks-2', name: 'Race Day', initials: 'RD', hasNew: true },
-    { id: 'ks-3', name: 'Onboards', initials: 'OB', hasNew: true },
-    { id: 'ks-4', name: 'Highlights', initials: 'HL', hasNew: false },
-    { id: 'ks-5', name: 'Teams', initials: 'TM', hasNew: false },
-  ],
-};
-
-const MODE_POSTS: Record<Mode, VideoFeedPost[]> = {
-  sports: VIDEO_FEED_POSTS,
-  enterprise: [
-    { id: 'bv-1', authorName: 'KaNeXT Team', authorInitials: 'KX', authorRole: 'Company', timestamp: new Date('2026-02-14'), caption: 'Product demo walkthrough — V2 feature preview for investor partners.', media: { type: 'clip', title: 'KaNeXT V2 Demo', duration: '4:32', thumbnailColor: '#FFFFFF' }, likes: 24, comments: 5 },
-    { id: 'bv-2', authorName: 'Sammy Kalejaiye', authorInitials: 'SK', authorRole: 'Founder', timestamp: new Date('2026-02-10'), caption: 'Behind the scenes: building the sports OS that runs itself.', media: { type: 'reel', title: 'Founder Diary #12', duration: '1:45', thumbnailColor: '#6AA9FF' }, likes: 67, comments: 12 },
-    { id: 'bv-3', authorName: 'KaNeXT Press', authorInitials: 'KP', authorRole: 'Media', timestamp: new Date('2026-02-06'), caption: 'MLK Truth Classic announcement — 16-team tournament, $3M+ Year 1.', media: { type: 'clip', title: 'MLK Classic Reveal', duration: '2:18', thumbnailColor: '#22C55E' }, likes: 103, comments: 28 },
-  ],
-  church: [
-    { id: 'cv-1', authorName: 'Pastor Dipo Kalejaiye', authorInitials: 'DK', authorRole: 'Senior Pastor', timestamp: new Date('2026-02-12'), caption: '"Walking in Faith" — this week\'s message from the Faith Forward series.', media: { type: 'clip', title: 'Walking in Faith', duration: '45:32', thumbnailColor: '#1B4F8A' }, likes: 89, comments: 14 },
-    { id: 'cv-2', authorName: 'Worship Team', authorInitials: 'WT', authorRole: 'Ministry', timestamp: new Date('2026-02-09'), caption: 'Sunday worship highlights — "Great Is Thy Faithfulness"', media: { type: 'reel', title: 'Worship Highlights', duration: '3:12', thumbnailColor: '#7C3AED' }, likes: 156, comments: 23 },
-    { id: 'cv-3', authorName: 'ICCLA Youth', authorInitials: 'YT', authorRole: 'Youth Ministry', timestamp: new Date('2026-02-05'), caption: 'Youth retreat recap — 3 days of fellowship and growth.', media: { type: 'clip', title: 'Youth Retreat 2026', duration: '5:44', thumbnailColor: '#22C55E' }, likes: 201, comments: 45 },
-  ],
-  education: [
-    { id: 'ev-1', authorName: 'FMU Athletics', authorInitials: 'FA', authorRole: 'Athletics', timestamp: new Date('2026-02-13'), caption: 'Lions basketball season highlights — 16-8, Sun Conference contenders.', media: { type: 'clip', title: 'Lions 2025-26 Season', duration: '6:15', thumbnailColor: '#FFFFFF' }, likes: 312, comments: 47 },
-    { id: 'ev-2', authorName: 'FMU Campus', authorInitials: 'FC', authorRole: 'University', timestamp: new Date('2026-02-08'), caption: 'Spring 2026 campus tour — explore our Miami Gardens campus.', media: { type: 'clip', title: 'Campus Tour', duration: '3:48', thumbnailColor: '#3B82F6' }, likes: 145, comments: 18 },
-    { id: 'ev-3', authorName: 'Aviation Program', authorInitials: 'AP', authorRole: 'Academics', timestamp: new Date('2026-02-03'), caption: 'HBCU aviation excellence — first solo flights of the semester.', media: { type: 'reel', title: 'Solo Flight Day', duration: '2:22', thumbnailColor: '#06B6D4' }, likes: 487, comments: 62 },
-  ],
-  community: [
-    { id: 'kv-1', authorName: 'K-1 Official', authorInitials: 'K1', authorRole: 'League', timestamp: new Date('2026-02-14'), caption: 'Race 6 recap — Apex Racing dominates at Laguna Seca.', media: { type: 'clip', title: 'Laguna Seca Highlights', duration: '8:12', thumbnailColor: '#EF4444' }, likes: 543, comments: 89 },
-    { id: 'kv-2', authorName: 'Apex Racing', authorInitials: 'AR', authorRole: 'Team', timestamp: new Date('2026-02-11'), caption: 'Car setup deep-dive — how we tuned for Laguna\'s corkscrew.', media: { type: 'clip', title: 'Setup Breakdown', duration: '4:56', thumbnailColor: '#EF4444' }, likes: 234, comments: 41 },
-    { id: 'kv-3', authorName: 'K-1 Grid', authorInitials: 'KG', authorRole: 'League', timestamp: new Date('2026-02-07'), caption: 'Driver spotlight: Marcus Kane leads championship after 5 rounds.', media: { type: 'reel', title: 'Kane Spotlight', duration: '1:38', thumbnailColor: '#FFFFFF' }, likes: 378, comments: 56 },
-  ],
-};
+const MODE_STORIES: Record<Mode, StoryCircle[]> = STORY_CIRCLES_BY_MODE;
+const MODE_POSTS: Record<Mode, VideoFeedPost[]> = FEED_POSTS_BY_MODE;
 
 // =============================================================================
 // FORMAT HELPERS
@@ -361,7 +321,13 @@ function FeedPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode })
   );
 }
 
-function ExplorePage({ colors }: { colors: typeof Colors.light }) {
+function ExplorePage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
+  if (mode === 'sports') return <SportsExplorePage />;
+  if (mode === 'education') return <EducationExplorePage />;
+  if (mode === 'church') return <ChurchExplorePage />;
+  if (mode === 'enterprise') return <BusinessExplorePage />;
+  if (mode === 'community') return <CompetitionExplorePage />;
+
   return (
     <ScrollView contentContainerStyle={styles.placeholderContent} showsVerticalScrollIndicator={false}>
       <View style={[styles.placeholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -375,7 +341,13 @@ function ExplorePage({ colors }: { colors: typeof Colors.light }) {
   );
 }
 
-function RoomPage({ colors, label }: { colors: typeof Colors.light; label: string }) {
+function RoomPage({ colors, label, mode }: { colors: typeof Colors.light; label: string; mode: Mode }) {
+  if (mode === 'sports') return <SportsFilmRoom />;
+  if (mode === 'church') return <ChurchFilmRoom />;
+  if (mode === 'education') return <EducationFilmRoom />;
+  if (mode === 'enterprise') return <BusinessFilmRoom />;
+  if (mode === 'community') return <CommunityFilmRoom />;
+
   return (
     <ScrollView contentContainerStyle={styles.placeholderContent} showsVerticalScrollIndicator={false}>
       <View style={[styles.placeholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -389,18 +361,8 @@ function RoomPage({ colors, label }: { colors: typeof Colors.light; label: strin
   );
 }
 
-function LibraryPage({ colors }: { colors: typeof Colors.light }) {
-  return (
-    <ScrollView contentContainerStyle={styles.placeholderContent} showsVerticalScrollIndicator={false}>
-      <View style={[styles.placeholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <IconSymbol name="square.stack.fill" size={32} color={colors.textTertiary} />
-        <ThemedText style={[styles.placeholderTitle, { color: colors.text }]}>Library</ThemedText>
-        <ThemedText style={[styles.placeholderText, { color: colors.textTertiary }]}>
-          Your saved videos, watch history, and playlists — all in one place.
-        </ThemedText>
-      </View>
-    </ScrollView>
-  );
+function LibraryPage() {
+  return <LibraryHub />;
 }
 
 // =============================================================================
@@ -438,13 +400,13 @@ export default function VideoHomeScreen() {
             <FeedPage colors={colors} mode={mode} />
           </View>
           <View key="explore" style={{ flex: 1 }}>
-            <ExplorePage colors={colors} />
+            <ExplorePage colors={colors} mode={mode} />
           </View>
           <View key="room" style={{ flex: 1 }}>
-            <RoomPage colors={colors} label={roomLabel} />
+            <RoomPage colors={colors} label={roomLabel} mode={mode} />
           </View>
           <View key="library" style={{ flex: 1 }}>
-            <LibraryPage colors={colors} />
+            <LibraryPage />
           </View>
         </PagerView>
       </EdgeHoldAdvance>

@@ -166,6 +166,18 @@ const MAPPING = {
   'bubble.left.and.bubble.right.fill': 'forum',
   'list.bullet': 'format-list-bulleted',
   'figure.mind.and.body': 'self-improvement',
+
+  // Program v2
+  'wand.and.stars': 'auto-fix-high',
+  'gearshape.fill': 'settings',
+  'lock.shield.fill': 'admin-panel-settings',
+  'slider.horizontal.3': 'tune',
+  'mappin.and.ellipse': 'place',
+  'circle.fill': 'circle',
+  'shield.checkmark.fill': 'verified-user',
+  'list.clipboard': 'assignment',
+  'clock.fill': 'schedule',
+  'flag.fill': 'flag',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];

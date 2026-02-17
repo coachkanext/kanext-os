@@ -16,6 +16,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { ProgramContextSection } from '@/components/program-context-section';
+import { ProgramContent } from '@/components/program/program-content';
 import { RosterContent, DepthChartView, DEPTH_CHART_BY_SEASON, CURRENT_SEASON } from '@/components/roster-content';
 import { UnitsView } from '@/components/depth-chart/depth-chart-units';
 import { KRDetailsSheet } from '@/components/kr-details-sheet';
@@ -392,15 +393,9 @@ function SportsHome() {
           </View>
 
           {/* Page 8: Program */}
-          <ScrollView
-            key="program"
-            style={styles.sportsScrollView}
-            contentContainerStyle={styles.sportsScrollContent}
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled
-          >
-            <ProgramContextSection />
-          </ScrollView>
+          <View key="program" style={{ flex: 1 }}>
+            <ProgramContent />
+          </View>
         </PagerView>
       </EdgeHoldAdvance>
 

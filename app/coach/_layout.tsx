@@ -43,6 +43,7 @@ export default function CoachLayout() {
       <Stack.Screen name="video-game" />
       <Stack.Screen name="team-channel" />
       <Stack.Screen name="reel-viewer" />
+      <Stack.Screen name="player-plan" />
     </Stack>
   );
 }

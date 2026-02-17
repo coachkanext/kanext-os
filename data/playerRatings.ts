@@ -60,6 +60,220 @@ export const PLAYER_RATINGS: PlayerRatings[] = [
   { playerId: 'pp-33', overall: 77, clusters: { shooting: 80, finishing: 74, playmaking: 68, perimeter_defense: 82, interior_defense: 70, rebounding: 66, frame: 78 } },
   { playerId: 'pp-34', overall: 80, clusters: { shooting: 86, finishing: 76, playmaking: 74, perimeter_defense: 74, interior_defense: 66, rebounding: 62, frame: 78 } },
   { playerId: 'pp-35', overall: 75, clusters: { shooting: 66, finishing: 76, playmaking: 64, perimeter_defense: 74, interior_defense: 78, rebounding: 80, frame: 82 } },
+
+  // ── pp-36 through pp-200: Extended National Pool ──
+
+  // NCAA D1 (pp-36 to pp-48) — Overall 78–92
+  { playerId: 'pp-36', overall: 88, clusters: { shooting: 90, finishing: 82, playmaking: 86, perimeter_defense: 84, interior_defense: 74, rebounding: 72, frame: 83 } },
+  { playerId: 'pp-37', overall: 85, clusters: { shooting: 72, finishing: 86, playmaking: 70, perimeter_defense: 80, interior_defense: 88, rebounding: 90, frame: 92 } },
+  { playerId: 'pp-38', overall: 90, clusters: { shooting: 92, finishing: 84, playmaking: 88, perimeter_defense: 86, interior_defense: 78, rebounding: 74, frame: 82 } },
+  { playerId: 'pp-39', overall: 82, clusters: { shooting: 80, finishing: 78, playmaking: 84, perimeter_defense: 82, interior_defense: 76, rebounding: 74, frame: 80 } },
+  { playerId: 'pp-40', overall: 86, clusters: { shooting: 68, finishing: 88, playmaking: 72, perimeter_defense: 82, interior_defense: 90, rebounding: 92, frame: 94 } },
+  { playerId: 'pp-41', overall: 89, clusters: { shooting: 94, finishing: 80, playmaking: 86, perimeter_defense: 82, interior_defense: 76, rebounding: 70, frame: 78 } },
+  { playerId: 'pp-42', overall: 84, clusters: { shooting: 82, finishing: 86, playmaking: 78, perimeter_defense: 84, interior_defense: 80, rebounding: 82, frame: 84 } },
+  { playerId: 'pp-43', overall: 87, clusters: { shooting: 88, finishing: 82, playmaking: 90, perimeter_defense: 80, interior_defense: 72, rebounding: 68, frame: 80 } },
+  { playerId: 'pp-44', overall: 80, clusters: { shooting: 76, finishing: 82, playmaking: 74, perimeter_defense: 78, interior_defense: 84, rebounding: 80, frame: 86 } },
+  { playerId: 'pp-45', overall: 92, clusters: { shooting: 70, finishing: 90, playmaking: 78, perimeter_defense: 86, interior_defense: 94, rebounding: 96, frame: 97 } },
+  { playerId: 'pp-46', overall: 83, clusters: { shooting: 86, finishing: 78, playmaking: 80, perimeter_defense: 76, interior_defense: 74, rebounding: 72, frame: 79 } },
+  { playerId: 'pp-47', overall: 79, clusters: { shooting: 82, finishing: 74, playmaking: 76, perimeter_defense: 78, interior_defense: 70, rebounding: 68, frame: 76 } },
+  { playerId: 'pp-48', overall: 91, clusters: { shooting: 88, finishing: 92, playmaking: 84, perimeter_defense: 86, interior_defense: 82, rebounding: 80, frame: 88 } },
+
+  // NCAA D2 (pp-49 to pp-58) — Overall 70–82
+  { playerId: 'pp-49', overall: 78, clusters: { shooting: 82, finishing: 72, playmaking: 80, perimeter_defense: 76, interior_defense: 66, rebounding: 64, frame: 74 } },
+  { playerId: 'pp-50', overall: 74, clusters: { shooting: 60, finishing: 76, playmaking: 62, perimeter_defense: 70, interior_defense: 80, rebounding: 84, frame: 82 } },
+  { playerId: 'pp-51', overall: 80, clusters: { shooting: 84, finishing: 76, playmaking: 78, perimeter_defense: 74, interior_defense: 68, rebounding: 66, frame: 76 } },
+  { playerId: 'pp-52', overall: 72, clusters: { shooting: 68, finishing: 74, playmaking: 66, perimeter_defense: 72, interior_defense: 76, rebounding: 78, frame: 74 } },
+  { playerId: 'pp-53', overall: 76, clusters: { shooting: 74, finishing: 72, playmaking: 82, perimeter_defense: 78, interior_defense: 64, rebounding: 60, frame: 72 } },
+  { playerId: 'pp-54', overall: 81, clusters: { shooting: 78, finishing: 84, playmaking: 76, perimeter_defense: 80, interior_defense: 78, rebounding: 82, frame: 84 } },
+  { playerId: 'pp-55', overall: 75, clusters: { shooting: 62, finishing: 78, playmaking: 64, perimeter_defense: 72, interior_defense: 82, rebounding: 86, frame: 80 } },
+  { playerId: 'pp-56', overall: 77, clusters: { shooting: 80, finishing: 70, playmaking: 84, perimeter_defense: 74, interior_defense: 66, rebounding: 62, frame: 73 } },
+  { playerId: 'pp-57', overall: 73, clusters: { shooting: 76, finishing: 68, playmaking: 70, perimeter_defense: 74, interior_defense: 72, rebounding: 70, frame: 72 } },
+  { playerId: 'pp-58', overall: 79, clusters: { shooting: 82, finishing: 76, playmaking: 74, perimeter_defense: 78, interior_defense: 70, rebounding: 68, frame: 78 } },
+
+  // NCAA D3 (pp-59 to pp-68) — Overall 62–76
+  { playerId: 'pp-59', overall: 72, clusters: { shooting: 76, finishing: 66, playmaking: 74, perimeter_defense: 70, interior_defense: 60, rebounding: 58, frame: 68 } },
+  { playerId: 'pp-60', overall: 68, clusters: { shooting: 54, finishing: 72, playmaking: 56, perimeter_defense: 64, interior_defense: 74, rebounding: 78, frame: 76 } },
+  { playerId: 'pp-61', overall: 74, clusters: { shooting: 78, finishing: 70, playmaking: 72, perimeter_defense: 74, interior_defense: 66, rebounding: 64, frame: 70 } },
+  { playerId: 'pp-62', overall: 66, clusters: { shooting: 60, finishing: 68, playmaking: 62, perimeter_defense: 66, interior_defense: 72, rebounding: 74, frame: 70 } },
+  { playerId: 'pp-63', overall: 70, clusters: { shooting: 72, finishing: 64, playmaking: 78, perimeter_defense: 68, interior_defense: 58, rebounding: 56, frame: 66 } },
+  { playerId: 'pp-64', overall: 76, clusters: { shooting: 74, finishing: 78, playmaking: 72, perimeter_defense: 76, interior_defense: 74, rebounding: 76, frame: 78 } },
+  { playerId: 'pp-65', overall: 64, clusters: { shooting: 52, finishing: 66, playmaking: 54, perimeter_defense: 62, interior_defense: 72, rebounding: 76, frame: 74 } },
+  { playerId: 'pp-66', overall: 71, clusters: { shooting: 68, finishing: 72, playmaking: 74, perimeter_defense: 72, interior_defense: 64, rebounding: 60, frame: 68 } },
+  { playerId: 'pp-67', overall: 69, clusters: { shooting: 74, finishing: 64, playmaking: 66, perimeter_defense: 68, interior_defense: 62, rebounding: 64, frame: 70 } },
+  { playerId: 'pp-68', overall: 73, clusters: { shooting: 70, finishing: 76, playmaking: 68, perimeter_defense: 74, interior_defense: 70, rebounding: 72, frame: 76 } },
+
+  // NAIA (pp-69 to pp-80) — Overall 68–80
+  { playerId: 'pp-69', overall: 76, clusters: { shooting: 80, finishing: 70, playmaking: 78, perimeter_defense: 74, interior_defense: 64, rebounding: 62, frame: 72 } },
+  { playerId: 'pp-70', overall: 72, clusters: { shooting: 58, finishing: 74, playmaking: 60, perimeter_defense: 68, interior_defense: 78, rebounding: 82, frame: 80 } },
+  { playerId: 'pp-71', overall: 78, clusters: { shooting: 82, finishing: 74, playmaking: 76, perimeter_defense: 72, interior_defense: 66, rebounding: 64, frame: 74 } },
+  { playerId: 'pp-72', overall: 70, clusters: { shooting: 66, finishing: 72, playmaking: 64, perimeter_defense: 70, interior_defense: 74, rebounding: 76, frame: 72 } },
+  { playerId: 'pp-73', overall: 74, clusters: { shooting: 76, finishing: 68, playmaking: 80, perimeter_defense: 72, interior_defense: 62, rebounding: 60, frame: 70 } },
+  { playerId: 'pp-74', overall: 80, clusters: { shooting: 74, finishing: 82, playmaking: 72, perimeter_defense: 78, interior_defense: 80, rebounding: 84, frame: 86 } },
+  { playerId: 'pp-75', overall: 69, clusters: { shooting: 72, finishing: 64, playmaking: 66, perimeter_defense: 70, interior_defense: 68, rebounding: 66, frame: 68 } },
+  { playerId: 'pp-76', overall: 77, clusters: { shooting: 80, finishing: 72, playmaking: 74, perimeter_defense: 76, interior_defense: 70, rebounding: 68, frame: 76 } },
+  { playerId: 'pp-77', overall: 73, clusters: { shooting: 70, finishing: 76, playmaking: 68, perimeter_defense: 72, interior_defense: 72, rebounding: 74, frame: 74 } },
+  { playerId: 'pp-78', overall: 75, clusters: { shooting: 62, finishing: 78, playmaking: 64, perimeter_defense: 74, interior_defense: 82, rebounding: 80, frame: 82 } },
+  { playerId: 'pp-79', overall: 71, clusters: { shooting: 74, finishing: 66, playmaking: 72, perimeter_defense: 68, interior_defense: 60, rebounding: 58, frame: 68 } },
+  { playerId: 'pp-80', overall: 68, clusters: { shooting: 64, finishing: 70, playmaking: 62, perimeter_defense: 66, interior_defense: 72, rebounding: 74, frame: 70 } },
+
+  // USCAA (pp-81 to pp-90) — Overall 58–72
+  { playerId: 'pp-81', overall: 68, clusters: { shooting: 72, finishing: 62, playmaking: 70, perimeter_defense: 66, interior_defense: 56, rebounding: 54, frame: 64 } },
+  { playerId: 'pp-82', overall: 64, clusters: { shooting: 50, finishing: 66, playmaking: 52, perimeter_defense: 60, interior_defense: 70, rebounding: 74, frame: 72 } },
+  { playerId: 'pp-83', overall: 70, clusters: { shooting: 74, finishing: 66, playmaking: 68, perimeter_defense: 68, interior_defense: 62, rebounding: 60, frame: 66 } },
+  { playerId: 'pp-84', overall: 62, clusters: { shooting: 58, finishing: 64, playmaking: 56, perimeter_defense: 62, interior_defense: 68, rebounding: 70, frame: 66 } },
+  { playerId: 'pp-85', overall: 66, clusters: { shooting: 68, finishing: 60, playmaking: 72, perimeter_defense: 64, interior_defense: 54, rebounding: 52, frame: 62 } },
+  { playerId: 'pp-86', overall: 72, clusters: { shooting: 66, finishing: 74, playmaking: 64, perimeter_defense: 70, interior_defense: 76, rebounding: 78, frame: 78 } },
+  { playerId: 'pp-87', overall: 60, clusters: { shooting: 56, finishing: 62, playmaking: 54, perimeter_defense: 58, interior_defense: 64, rebounding: 68, frame: 66 } },
+  { playerId: 'pp-88', overall: 65, clusters: { shooting: 70, finishing: 60, playmaking: 64, perimeter_defense: 62, interior_defense: 56, rebounding: 54, frame: 62 } },
+  { playerId: 'pp-89', overall: 58, clusters: { shooting: 52, finishing: 60, playmaking: 50, perimeter_defense: 56, interior_defense: 64, rebounding: 66, frame: 62 } },
+  { playerId: 'pp-90', overall: 71, clusters: { shooting: 74, finishing: 68, playmaking: 66, perimeter_defense: 70, interior_defense: 64, rebounding: 62, frame: 70 } },
+
+  // NCCAA D1 (pp-91 to pp-100) — Overall 64–76
+  { playerId: 'pp-91', overall: 74, clusters: { shooting: 78, finishing: 68, playmaking: 76, perimeter_defense: 72, interior_defense: 62, rebounding: 60, frame: 70 } },
+  { playerId: 'pp-92', overall: 70, clusters: { shooting: 56, finishing: 72, playmaking: 58, perimeter_defense: 66, interior_defense: 76, rebounding: 80, frame: 78 } },
+  { playerId: 'pp-93', overall: 76, clusters: { shooting: 80, finishing: 72, playmaking: 74, perimeter_defense: 74, interior_defense: 66, rebounding: 64, frame: 72 } },
+  { playerId: 'pp-94', overall: 68, clusters: { shooting: 64, finishing: 70, playmaking: 62, perimeter_defense: 66, interior_defense: 72, rebounding: 74, frame: 70 } },
+  { playerId: 'pp-95', overall: 72, clusters: { shooting: 74, finishing: 66, playmaking: 78, perimeter_defense: 70, interior_defense: 60, rebounding: 58, frame: 68 } },
+  { playerId: 'pp-96', overall: 66, clusters: { shooting: 60, finishing: 68, playmaking: 58, perimeter_defense: 64, interior_defense: 74, rebounding: 76, frame: 72 } },
+  { playerId: 'pp-97', overall: 75, clusters: { shooting: 78, finishing: 72, playmaking: 70, perimeter_defense: 76, interior_defense: 68, rebounding: 66, frame: 74 } },
+  { playerId: 'pp-98', overall: 64, clusters: { shooting: 62, finishing: 66, playmaking: 60, perimeter_defense: 64, interior_defense: 70, rebounding: 72, frame: 68 } },
+  { playerId: 'pp-99', overall: 71, clusters: { shooting: 68, finishing: 74, playmaking: 66, perimeter_defense: 72, interior_defense: 66, rebounding: 68, frame: 72 } },
+  { playerId: 'pp-100', overall: 73, clusters: { shooting: 76, finishing: 70, playmaking: 74, perimeter_defense: 70, interior_defense: 64, rebounding: 62, frame: 70 } },
+
+  // NCCAA D2 (pp-101 to pp-110) — Overall 58–70
+  { playerId: 'pp-101', overall: 66, clusters: { shooting: 70, finishing: 60, playmaking: 68, perimeter_defense: 64, interior_defense: 54, rebounding: 52, frame: 62 } },
+  { playerId: 'pp-102', overall: 62, clusters: { shooting: 48, finishing: 64, playmaking: 50, perimeter_defense: 58, interior_defense: 68, rebounding: 72, frame: 70 } },
+  { playerId: 'pp-103', overall: 68, clusters: { shooting: 72, finishing: 64, playmaking: 66, perimeter_defense: 66, interior_defense: 60, rebounding: 58, frame: 64 } },
+  { playerId: 'pp-104', overall: 60, clusters: { shooting: 56, finishing: 62, playmaking: 54, perimeter_defense: 58, interior_defense: 66, rebounding: 68, frame: 64 } },
+  { playerId: 'pp-105', overall: 64, clusters: { shooting: 66, finishing: 58, playmaking: 70, perimeter_defense: 62, interior_defense: 52, rebounding: 50, frame: 60 } },
+  { playerId: 'pp-106', overall: 70, clusters: { shooting: 64, finishing: 72, playmaking: 62, perimeter_defense: 68, interior_defense: 74, rebounding: 76, frame: 76 } },
+  { playerId: 'pp-107', overall: 58, clusters: { shooting: 54, finishing: 60, playmaking: 52, perimeter_defense: 56, interior_defense: 62, rebounding: 66, frame: 64 } },
+  { playerId: 'pp-108', overall: 67, clusters: { shooting: 70, finishing: 62, playmaking: 64, perimeter_defense: 66, interior_defense: 60, rebounding: 58, frame: 66 } },
+  { playerId: 'pp-109', overall: 63, clusters: { shooting: 60, finishing: 66, playmaking: 58, perimeter_defense: 62, interior_defense: 68, rebounding: 70, frame: 66 } },
+  { playerId: 'pp-110', overall: 69, clusters: { shooting: 72, finishing: 66, playmaking: 68, perimeter_defense: 68, interior_defense: 62, rebounding: 60, frame: 66 } },
+
+  // JUCO D1 (pp-111 to pp-122) — Overall 75–88
+  { playerId: 'pp-111', overall: 84, clusters: { shooting: 88, finishing: 78, playmaking: 82, perimeter_defense: 80, interior_defense: 72, rebounding: 68, frame: 78 } },
+  { playerId: 'pp-112', overall: 80, clusters: { shooting: 66, finishing: 82, playmaking: 64, perimeter_defense: 74, interior_defense: 84, rebounding: 88, frame: 86 } },
+  { playerId: 'pp-113', overall: 86, clusters: { shooting: 90, finishing: 82, playmaking: 84, perimeter_defense: 78, interior_defense: 74, rebounding: 70, frame: 80 } },
+  { playerId: 'pp-114', overall: 78, clusters: { shooting: 74, finishing: 80, playmaking: 72, perimeter_defense: 76, interior_defense: 78, rebounding: 80, frame: 80 } },
+  { playerId: 'pp-115', overall: 82, clusters: { shooting: 84, finishing: 76, playmaking: 86, perimeter_defense: 80, interior_defense: 70, rebounding: 66, frame: 78 } },
+  { playerId: 'pp-116', overall: 88, clusters: { shooting: 72, finishing: 90, playmaking: 74, perimeter_defense: 82, interior_defense: 92, rebounding: 94, frame: 96 } },
+  { playerId: 'pp-117', overall: 76, clusters: { shooting: 78, finishing: 72, playmaking: 74, perimeter_defense: 76, interior_defense: 68, rebounding: 66, frame: 74 } },
+  { playerId: 'pp-118', overall: 85, clusters: { shooting: 88, finishing: 80, playmaking: 82, perimeter_defense: 82, interior_defense: 76, rebounding: 72, frame: 80 } },
+  { playerId: 'pp-119', overall: 79, clusters: { shooting: 76, finishing: 82, playmaking: 74, perimeter_defense: 78, interior_defense: 74, rebounding: 76, frame: 78 } },
+  { playerId: 'pp-120', overall: 75, clusters: { shooting: 60, finishing: 78, playmaking: 62, perimeter_defense: 72, interior_defense: 82, rebounding: 84, frame: 82 } },
+  { playerId: 'pp-121', overall: 83, clusters: { shooting: 86, finishing: 78, playmaking: 80, perimeter_defense: 78, interior_defense: 74, rebounding: 70, frame: 80 } },
+  { playerId: 'pp-122', overall: 77, clusters: { shooting: 74, finishing: 80, playmaking: 70, perimeter_defense: 76, interior_defense: 72, rebounding: 74, frame: 78 } },
+
+  // JUCO D2 (pp-123 to pp-132) — Overall 68–80
+  { playerId: 'pp-123', overall: 76, clusters: { shooting: 80, finishing: 70, playmaking: 78, perimeter_defense: 74, interior_defense: 64, rebounding: 62, frame: 72 } },
+  { playerId: 'pp-124', overall: 72, clusters: { shooting: 58, finishing: 74, playmaking: 60, perimeter_defense: 68, interior_defense: 78, rebounding: 82, frame: 80 } },
+  { playerId: 'pp-125', overall: 78, clusters: { shooting: 82, finishing: 74, playmaking: 76, perimeter_defense: 76, interior_defense: 68, rebounding: 66, frame: 74 } },
+  { playerId: 'pp-126', overall: 70, clusters: { shooting: 66, finishing: 72, playmaking: 64, perimeter_defense: 68, interior_defense: 74, rebounding: 76, frame: 72 } },
+  { playerId: 'pp-127', overall: 74, clusters: { shooting: 76, finishing: 68, playmaking: 80, perimeter_defense: 72, interior_defense: 62, rebounding: 60, frame: 70 } },
+  { playerId: 'pp-128', overall: 80, clusters: { shooting: 74, finishing: 82, playmaking: 72, perimeter_defense: 78, interior_defense: 84, rebounding: 86, frame: 86 } },
+  { playerId: 'pp-129', overall: 69, clusters: { shooting: 72, finishing: 64, playmaking: 66, perimeter_defense: 68, interior_defense: 66, rebounding: 64, frame: 68 } },
+  { playerId: 'pp-130', overall: 77, clusters: { shooting: 80, finishing: 72, playmaking: 76, perimeter_defense: 74, interior_defense: 70, rebounding: 68, frame: 76 } },
+  { playerId: 'pp-131', overall: 73, clusters: { shooting: 70, finishing: 76, playmaking: 68, perimeter_defense: 72, interior_defense: 72, rebounding: 74, frame: 74 } },
+  { playerId: 'pp-132', overall: 68, clusters: { shooting: 64, finishing: 70, playmaking: 62, perimeter_defense: 66, interior_defense: 72, rebounding: 74, frame: 70 } },
+
+  // JUCO D3 (pp-133 to pp-140) — Overall 62–74
+  { playerId: 'pp-133', overall: 70, clusters: { shooting: 74, finishing: 64, playmaking: 72, perimeter_defense: 68, interior_defense: 58, rebounding: 56, frame: 66 } },
+  { playerId: 'pp-134', overall: 66, clusters: { shooting: 52, finishing: 68, playmaking: 54, perimeter_defense: 62, interior_defense: 72, rebounding: 76, frame: 74 } },
+  { playerId: 'pp-135', overall: 72, clusters: { shooting: 76, finishing: 68, playmaking: 70, perimeter_defense: 70, interior_defense: 64, rebounding: 62, frame: 68 } },
+  { playerId: 'pp-136', overall: 64, clusters: { shooting: 60, finishing: 66, playmaking: 58, perimeter_defense: 62, interior_defense: 70, rebounding: 72, frame: 68 } },
+  { playerId: 'pp-137', overall: 68, clusters: { shooting: 70, finishing: 62, playmaking: 74, perimeter_defense: 66, interior_defense: 56, rebounding: 54, frame: 64 } },
+  { playerId: 'pp-138', overall: 74, clusters: { shooting: 68, finishing: 76, playmaking: 66, perimeter_defense: 72, interior_defense: 78, rebounding: 80, frame: 80 } },
+  { playerId: 'pp-139', overall: 63, clusters: { shooting: 66, finishing: 58, playmaking: 60, perimeter_defense: 62, interior_defense: 66, rebounding: 68, frame: 64 } },
+  { playerId: 'pp-140', overall: 71, clusters: { shooting: 74, finishing: 68, playmaking: 68, perimeter_defense: 70, interior_defense: 64, rebounding: 62, frame: 70 } },
+
+  // 3C2A (pp-141 to pp-148) — Overall 70–82
+  { playerId: 'pp-141', overall: 78, clusters: { shooting: 82, finishing: 72, playmaking: 80, perimeter_defense: 76, interior_defense: 66, rebounding: 64, frame: 74 } },
+  { playerId: 'pp-142', overall: 74, clusters: { shooting: 60, finishing: 76, playmaking: 62, perimeter_defense: 70, interior_defense: 80, rebounding: 84, frame: 82 } },
+  { playerId: 'pp-143', overall: 80, clusters: { shooting: 84, finishing: 76, playmaking: 78, perimeter_defense: 78, interior_defense: 70, rebounding: 68, frame: 76 } },
+  { playerId: 'pp-144', overall: 72, clusters: { shooting: 68, finishing: 74, playmaking: 66, perimeter_defense: 70, interior_defense: 76, rebounding: 78, frame: 74 } },
+  { playerId: 'pp-145', overall: 76, clusters: { shooting: 78, finishing: 70, playmaking: 82, perimeter_defense: 74, interior_defense: 64, rebounding: 62, frame: 72 } },
+  { playerId: 'pp-146', overall: 82, clusters: { shooting: 76, finishing: 84, playmaking: 74, perimeter_defense: 80, interior_defense: 82, rebounding: 86, frame: 88 } },
+  { playerId: 'pp-147', overall: 71, clusters: { shooting: 74, finishing: 66, playmaking: 68, perimeter_defense: 70, interior_defense: 68, rebounding: 66, frame: 70 } },
+  { playerId: 'pp-148', overall: 79, clusters: { shooting: 82, finishing: 74, playmaking: 76, perimeter_defense: 78, interior_defense: 72, rebounding: 70, frame: 78 } },
+
+  // High School (pp-149 to pp-165) — Overall 72–92
+  { playerId: 'pp-149', overall: 86, clusters: { shooting: 90, finishing: 80, playmaking: 88, perimeter_defense: 82, interior_defense: 72, rebounding: 68, frame: 80 } },
+  { playerId: 'pp-150', overall: 80, clusters: { shooting: 66, finishing: 82, playmaking: 68, perimeter_defense: 76, interior_defense: 86, rebounding: 88, frame: 90 } },
+  { playerId: 'pp-151', overall: 88, clusters: { shooting: 92, finishing: 84, playmaking: 86, perimeter_defense: 84, interior_defense: 76, rebounding: 72, frame: 82 } },
+  { playerId: 'pp-152', overall: 76, clusters: { shooting: 72, finishing: 78, playmaking: 70, perimeter_defense: 76, interior_defense: 74, rebounding: 76, frame: 78 } },
+  { playerId: 'pp-153', overall: 82, clusters: { shooting: 84, finishing: 76, playmaking: 86, perimeter_defense: 78, interior_defense: 68, rebounding: 64, frame: 76 } },
+  { playerId: 'pp-154', overall: 90, clusters: { shooting: 74, finishing: 92, playmaking: 76, perimeter_defense: 84, interior_defense: 94, rebounding: 92, frame: 96 } },
+  { playerId: 'pp-155', overall: 74, clusters: { shooting: 78, finishing: 68, playmaking: 72, perimeter_defense: 72, interior_defense: 66, rebounding: 64, frame: 72 } },
+  { playerId: 'pp-156', overall: 84, clusters: { shooting: 88, finishing: 78, playmaking: 82, perimeter_defense: 80, interior_defense: 74, rebounding: 70, frame: 80 } },
+  { playerId: 'pp-157', overall: 78, clusters: { shooting: 80, finishing: 74, playmaking: 76, perimeter_defense: 76, interior_defense: 70, rebounding: 68, frame: 76 } },
+  { playerId: 'pp-158', overall: 92, clusters: { shooting: 94, finishing: 88, playmaking: 90, perimeter_defense: 86, interior_defense: 82, rebounding: 78, frame: 86 } },
+  { playerId: 'pp-159', overall: 73, clusters: { shooting: 58, finishing: 76, playmaking: 60, perimeter_defense: 70, interior_defense: 80, rebounding: 82, frame: 80 } },
+  { playerId: 'pp-160', overall: 85, clusters: { shooting: 88, finishing: 80, playmaking: 84, perimeter_defense: 82, interior_defense: 76, rebounding: 72, frame: 80 } },
+  { playerId: 'pp-161', overall: 79, clusters: { shooting: 76, finishing: 82, playmaking: 74, perimeter_defense: 78, interior_defense: 74, rebounding: 76, frame: 80 } },
+  { playerId: 'pp-162', overall: 87, clusters: { shooting: 72, finishing: 88, playmaking: 74, perimeter_defense: 82, interior_defense: 90, rebounding: 92, frame: 94 } },
+  { playerId: 'pp-163', overall: 75, clusters: { shooting: 80, finishing: 70, playmaking: 74, perimeter_defense: 72, interior_defense: 64, rebounding: 62, frame: 72 } },
+  { playerId: 'pp-164', overall: 81, clusters: { shooting: 78, finishing: 84, playmaking: 76, perimeter_defense: 80, interior_defense: 78, rebounding: 80, frame: 82 } },
+  { playerId: 'pp-165', overall: 72, clusters: { shooting: 68, finishing: 74, playmaking: 66, perimeter_defense: 72, interior_defense: 70, rebounding: 72, frame: 74 } },
+
+  // International (pp-166 to pp-180) — Overall 74–88
+  { playerId: 'pp-166', overall: 82, clusters: { shooting: 86, finishing: 76, playmaking: 80, perimeter_defense: 78, interior_defense: 72, rebounding: 68, frame: 78 } },
+  { playerId: 'pp-167', overall: 78, clusters: { shooting: 64, finishing: 80, playmaking: 66, perimeter_defense: 74, interior_defense: 84, rebounding: 86, frame: 86 } },
+  { playerId: 'pp-168', overall: 85, clusters: { shooting: 88, finishing: 82, playmaking: 84, perimeter_defense: 80, interior_defense: 74, rebounding: 70, frame: 80 } },
+  { playerId: 'pp-169', overall: 76, clusters: { shooting: 72, finishing: 78, playmaking: 70, perimeter_defense: 76, interior_defense: 74, rebounding: 76, frame: 78 } },
+  { playerId: 'pp-170', overall: 80, clusters: { shooting: 82, finishing: 74, playmaking: 84, perimeter_defense: 78, interior_defense: 68, rebounding: 66, frame: 76 } },
+  { playerId: 'pp-171', overall: 88, clusters: { shooting: 74, finishing: 90, playmaking: 76, perimeter_defense: 82, interior_defense: 92, rebounding: 94, frame: 96 } },
+  { playerId: 'pp-172', overall: 74, clusters: { shooting: 76, finishing: 70, playmaking: 72, perimeter_defense: 72, interior_defense: 68, rebounding: 66, frame: 72 } },
+  { playerId: 'pp-173', overall: 84, clusters: { shooting: 86, finishing: 80, playmaking: 82, perimeter_defense: 82, interior_defense: 76, rebounding: 74, frame: 80 } },
+  { playerId: 'pp-174', overall: 77, clusters: { shooting: 74, finishing: 80, playmaking: 72, perimeter_defense: 76, interior_defense: 74, rebounding: 76, frame: 78 } },
+  { playerId: 'pp-175', overall: 86, clusters: { shooting: 70, finishing: 88, playmaking: 72, perimeter_defense: 80, interior_defense: 90, rebounding: 92, frame: 94 } },
+  { playerId: 'pp-176', overall: 75, clusters: { shooting: 78, finishing: 70, playmaking: 74, perimeter_defense: 74, interior_defense: 66, rebounding: 64, frame: 72 } },
+  { playerId: 'pp-177', overall: 83, clusters: { shooting: 86, finishing: 78, playmaking: 80, perimeter_defense: 80, interior_defense: 76, rebounding: 72, frame: 80 } },
+  { playerId: 'pp-178', overall: 79, clusters: { shooting: 76, finishing: 82, playmaking: 74, perimeter_defense: 78, interior_defense: 74, rebounding: 76, frame: 80 } },
+  { playerId: 'pp-179', overall: 87, clusters: { shooting: 90, finishing: 84, playmaking: 86, perimeter_defense: 82, interior_defense: 78, rebounding: 74, frame: 82 } },
+  { playerId: 'pp-180', overall: 81, clusters: { shooting: 78, finishing: 84, playmaking: 76, perimeter_defense: 80, interior_defense: 78, rebounding: 80, frame: 82 } },
+
+  // Mixed levels — remaining pool (pp-181 to pp-200)
+  // NCAA D1 guards
+  { playerId: 'pp-181', overall: 86, clusters: { shooting: 90, finishing: 80, playmaking: 88, perimeter_defense: 82, interior_defense: 72, rebounding: 68, frame: 78 } },
+  { playerId: 'pp-182', overall: 83, clusters: { shooting: 86, finishing: 78, playmaking: 84, perimeter_defense: 80, interior_defense: 70, rebounding: 66, frame: 76 } },
+  // NCAA D2 wing
+  { playerId: 'pp-183', overall: 76, clusters: { shooting: 74, finishing: 78, playmaking: 72, perimeter_defense: 76, interior_defense: 72, rebounding: 74, frame: 78 } },
+  // NAIA big
+  { playerId: 'pp-184', overall: 74, clusters: { shooting: 60, finishing: 76, playmaking: 62, perimeter_defense: 70, interior_defense: 82, rebounding: 84, frame: 82 } },
+  // JUCO D1 guard
+  { playerId: 'pp-185', overall: 82, clusters: { shooting: 86, finishing: 76, playmaking: 84, perimeter_defense: 78, interior_defense: 68, rebounding: 64, frame: 76 } },
+  // HS wing
+  { playerId: 'pp-186', overall: 84, clusters: { shooting: 82, finishing: 86, playmaking: 78, perimeter_defense: 82, interior_defense: 78, rebounding: 80, frame: 84 } },
+  // International guard
+  { playerId: 'pp-187', overall: 80, clusters: { shooting: 84, finishing: 74, playmaking: 82, perimeter_defense: 76, interior_defense: 66, rebounding: 64, frame: 74 } },
+  // NCAA D3 big
+  { playerId: 'pp-188', overall: 70, clusters: { shooting: 56, finishing: 72, playmaking: 58, perimeter_defense: 66, interior_defense: 78, rebounding: 82, frame: 80 } },
+  // USCAA guard
+  { playerId: 'pp-189', overall: 66, clusters: { shooting: 72, finishing: 60, playmaking: 68, perimeter_defense: 64, interior_defense: 54, rebounding: 52, frame: 62 } },
+  // NCCAA D1 wing
+  { playerId: 'pp-190', overall: 72, clusters: { shooting: 70, finishing: 74, playmaking: 68, perimeter_defense: 72, interior_defense: 68, rebounding: 70, frame: 72 } },
+  // 3C2A guard
+  { playerId: 'pp-191', overall: 76, clusters: { shooting: 80, finishing: 70, playmaking: 78, perimeter_defense: 74, interior_defense: 64, rebounding: 60, frame: 72 } },
+  // JUCO D2 big
+  { playerId: 'pp-192', overall: 74, clusters: { shooting: 60, finishing: 76, playmaking: 58, perimeter_defense: 70, interior_defense: 82, rebounding: 84, frame: 84 } },
+  // HS guard
+  { playerId: 'pp-193', overall: 80, clusters: { shooting: 84, finishing: 74, playmaking: 82, perimeter_defense: 78, interior_defense: 66, rebounding: 62, frame: 74 } },
+  // NAIA wing
+  { playerId: 'pp-194', overall: 72, clusters: { shooting: 70, finishing: 74, playmaking: 68, perimeter_defense: 72, interior_defense: 68, rebounding: 70, frame: 74 } },
+  // NCAA D1 big
+  { playerId: 'pp-195', overall: 84, clusters: { shooting: 70, finishing: 86, playmaking: 72, perimeter_defense: 80, interior_defense: 90, rebounding: 92, frame: 94 } },
+  // International wing
+  { playerId: 'pp-196', overall: 80, clusters: { shooting: 78, finishing: 82, playmaking: 76, perimeter_defense: 80, interior_defense: 76, rebounding: 78, frame: 80 } },
+  // JUCO D3 guard
+  { playerId: 'pp-197', overall: 68, clusters: { shooting: 72, finishing: 62, playmaking: 70, perimeter_defense: 66, interior_defense: 56, rebounding: 54, frame: 64 } },
+  // NCCAA D2 big
+  { playerId: 'pp-198', overall: 64, clusters: { shooting: 50, finishing: 66, playmaking: 52, perimeter_defense: 60, interior_defense: 72, rebounding: 76, frame: 74 } },
+  // NCAA D2 guard
+  { playerId: 'pp-199', overall: 78, clusters: { shooting: 82, finishing: 72, playmaking: 80, perimeter_defense: 76, interior_defense: 66, rebounding: 62, frame: 74 } },
+  // HS big
+  { playerId: 'pp-200', overall: 86, clusters: { shooting: 72, finishing: 88, playmaking: 70, perimeter_defense: 80, interior_defense: 90, rebounding: 92, frame: 94 } },
 ];
 
 /** Get ratings for a specific player, or null if not found */

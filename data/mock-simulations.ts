@@ -1,6 +1,7 @@
 /**
- * Mock data for simulation results.
- * Provides sample game simulations for the Nexus reasoning surface.
+ * Mock data for simulation results — v2.
+ * Expanded to cover 9 sim types with FMU data.
+ * All original exports preserved for backward compatibility.
  */
 
 import type {
@@ -9,14 +10,15 @@ import type {
   PlayerImpact,
   Position,
 } from '@/types';
+import type { SimType, SimTypeCard, SimRun, ConfidenceGate } from '@/components/simulation/simulation-types';
 
 // =============================================================================
-// PLAYER IMPACT DATA
+// PLAYER IMPACT DATA (FMU roster)
 // =============================================================================
 
 const VARSITY_PLAYERS: PlayerImpact[] = [
   {
-    playerId: 'player-johnson',
+    playerId: 'player-williams',
     playerName: 'Brandon Williams',
     position: 'PG',
     projectedPoints: 18.5,
@@ -26,7 +28,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
     keyContribution: 'Floor general, controls tempo',
   },
   {
-    playerId: 'player-williams',
+    playerId: 'player-kalejaiye',
     playerName: 'Laolu Kalejaiye',
     position: 'C',
     projectedPoints: 14.0,
@@ -36,7 +38,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
     keyContribution: 'Rim protection, rebounding',
   },
   {
-    playerId: 'player-harris',
+    playerId: 'player-diomande',
     playerName: 'Paul Diomande',
     position: 'PF',
     projectedPoints: 15.5,
@@ -46,7 +48,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
     keyContribution: 'Stretch scoring, double-double threat',
   },
   {
-    playerId: 'player-garcia',
+    playerId: 'player-hernandez',
     playerName: 'Adrian Hernandez',
     position: 'SG',
     projectedPoints: 13.2,
@@ -56,7 +58,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
     keyContribution: 'Perimeter shooting, floor spacing',
   },
   {
-    playerId: 'player-thompson',
+    playerId: 'player-chtelan',
     playerName: 'Nathan Chtelan',
     position: 'SF',
     projectedPoints: 8.0,
@@ -68,18 +70,18 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
 ];
 
 // =============================================================================
-// SAMPLE SIMULATIONS
+// SAMPLE SIMULATIONS (FMU data)
 // =============================================================================
 
 export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-1',
     type: 'single_game',
-    matchupText: 'Lincoln vs Cal Miramar',
-    homeTeam: 'Lincoln University',
-    awayTeam: 'Cal Miramar',
+    matchupText: 'FMU vs Webber International',
+    homeTeam: 'Florida Memorial',
+    awayTeam: 'Webber International',
     rosterUsed: 'official',
-    timestamp: new Date('2026-02-04T14:30:00'),
+    timestamp: new Date('2026-02-19T14:30:00'),
     winProbability: 64,
     projectedScore: { home: 78, away: 72 },
     projectedMargin: 6,
@@ -88,9 +90,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     volatility: 'medium',
     drivers: [
       'Home court advantage (+3.2 pts expected)',
-      'Lincoln superior in perimeter shooting (41% vs 35%)',
-      'Northwest strength in paint scoring could narrow gap',
-      'Lincoln 8-2 in last 10 home games',
+      'FMU superior in perimeter shooting (41% vs 35%)',
+      'Webber strength in paint scoring could narrow gap',
+      'FMU 8-2 in last 10 home games',
     ],
     playerImpact: VARSITY_PLAYERS,
     boxScoreProjection: {
@@ -111,11 +113,11 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-2',
     type: 'single_game',
-    matchupText: 'Lincoln @ Cal State East Bay',
-    homeTeam: 'Cal State East Bay',
-    awayTeam: 'Lincoln University',
+    matchupText: 'FMU @ Southeastern',
+    homeTeam: 'Southeastern University',
+    awayTeam: 'Florida Memorial',
     rosterUsed: 'official',
-    timestamp: new Date('2026-02-04T15:00:00'),
+    timestamp: new Date('2026-02-19T15:00:00'),
     winProbability: 48,
     projectedScore: { home: 74, away: 71 },
     projectedMargin: -3,
@@ -124,8 +126,8 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     volatility: 'high',
     drivers: [
       'Road game disadvantage (-3.8 pts expected)',
-      'Cal State East Bay on 5-game home win streak',
-      'Lincoln depth advantage could be factor in 2nd half',
+      'Southeastern on 5-game home win streak',
+      'FMU depth advantage could be factor in 2nd half',
       'Matchup concerns at the 4 position',
     ],
     playerImpact: VARSITY_PLAYERS.map((p) => ({
@@ -137,11 +139,11 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-3',
     type: 'single_game',
-    matchupText: 'Lincoln vs Bethesda',
-    homeTeam: 'Lincoln University',
-    awayTeam: 'Bethesda',
+    matchupText: 'FMU vs Warner',
+    homeTeam: 'Florida Memorial',
+    awayTeam: 'Warner University',
     rosterUsed: 'sandbox',
-    timestamp: new Date('2026-02-04T15:30:00'),
+    timestamp: new Date('2026-02-19T15:30:00'),
     winProbability: 71,
     projectedScore: { home: 82, away: 74 },
     projectedMargin: 8,
@@ -151,8 +153,8 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     drivers: [
       'Sandbox roster includes Jaylen Brooks (projected +5.2 pts)',
       'Enhanced perimeter defense with lineup change',
-      'Bethesda struggles on the road (4-6 away)',
-      'Lincoln motion offense matches well against zone',
+      'Warner struggles on the road (4-6 away)',
+      'FMU motion offense matches well against zone',
     ],
     playerImpact: [
       {
@@ -178,13 +180,176 @@ export const SAVED_SIMULATIONS: SavedSimulation[] = [
   {
     ...SAMPLE_SIMULATIONS[0],
     threadId: 'thread-sim-1',
-    savedAt: new Date('2026-02-03T18:45:00'),
-    title: 'Cal Miramar Preview',
+    savedAt: new Date('2026-02-18T18:45:00'),
+    title: 'Webber Preview — Base',
+  },
+  {
+    ...SAMPLE_SIMULATIONS[2],
+    threadId: 'thread-sim-3',
+    savedAt: new Date('2026-02-18T19:00:00'),
+    title: 'Warner Preview — Sandbox',
   },
 ];
 
 // =============================================================================
-// SIMULATION HELPERS
+// 9 SIM TYPE CARDS
+// =============================================================================
+
+export const SIM_TYPE_CARDS: SimTypeCard[] = [
+  { id: 'game', name: 'Game Sim', icon: 'sportscourt.fill', description: 'Full game simulation vs opponent', color: '#6AA9FF' },
+  { id: 'segment', name: 'Segment Sim', icon: 'clock.fill', description: 'Simulate specific game windows', color: '#7A5CFF' },
+  { id: 'end-game', name: 'End-Game', icon: 'timer', description: 'Late-game decision tree', color: '#EF4444' },
+  { id: 'system-sweep', name: 'System Sweep', icon: 'gearshape.2.fill', description: 'Test OSIE/DSIE combos', color: '#F59E0B' },
+  { id: 'lineup-sandbox', name: 'Lineup Sandbox', icon: 'person.3.fill', description: 'Compare lineup combinations', color: '#22C55E' },
+  { id: 'season', name: 'Season Sim', icon: 'calendar', description: 'Project remaining schedule', color: '#FFFFFF' },
+  { id: 'conference-postseason', name: 'Conf / Postseason', icon: 'trophy.fill', description: 'Bracket paths & championship odds', color: '#06B6D4' },
+  { id: 'counterfactual-roster', name: 'Counterfactual', icon: 'person.badge.plus', description: 'What-if roster changes', color: '#C2185B' },
+  { id: 'practice-transfer', name: 'Practice Transfer', icon: 'arrow.triangle.swap', description: 'Execution constraints impact', color: '#8B5CF6' },
+];
+
+// =============================================================================
+// SAMPLE SIM RUNS (for home dashboard + comparison)
+// =============================================================================
+
+export const RECENT_SIM_RUNS: SimRun[] = [
+  {
+    id: 'run-1',
+    simType: 'game',
+    title: 'FMU vs Webber — Base',
+    timestamp: new Date('2026-02-18T18:45:00'),
+    winProbability: 64,
+    projectedScore: { home: 78, away: 72 },
+    projectedMargin: 6,
+    confidence: 82,
+    confidenceGate: {
+      percentage: 82,
+      label: 'High',
+      factors: [
+        { name: 'Sample size', impact: 'positive', weight: 0.3 },
+        { name: 'Home court data', impact: 'positive', weight: 0.25 },
+        { name: 'Injury uncertainty', impact: 'neutral', weight: 0.15 },
+        { name: 'Opponent form', impact: 'positive', weight: 0.3 },
+      ],
+    },
+    drivers: ['Home court +3.2 pts', 'Perimeter shooting edge', 'Rebounding advantage'],
+    isSaved: true,
+  },
+  {
+    id: 'run-2',
+    simType: 'game',
+    title: 'FMU @ Southeastern',
+    timestamp: new Date('2026-02-18T19:10:00'),
+    winProbability: 48,
+    projectedScore: { home: 74, away: 71 },
+    projectedMargin: -3,
+    confidence: 68,
+    confidenceGate: {
+      percentage: 68,
+      label: 'Medium',
+      factors: [
+        { name: 'Sample size', impact: 'positive', weight: 0.3 },
+        { name: 'Road game variance', impact: 'negative', weight: 0.25 },
+        { name: 'SEU hot streak', impact: 'negative', weight: 0.2 },
+        { name: 'Depth factor', impact: 'positive', weight: 0.25 },
+      ],
+    },
+    drivers: ['Road disadvantage -3.8', 'SEU home streak', 'FMU depth 2nd half'],
+    isSaved: true,
+  },
+  {
+    id: 'run-3',
+    simType: 'season',
+    title: 'Season Projection — Current Roster',
+    timestamp: new Date('2026-02-17T10:00:00'),
+    winProbability: 72,
+    projectedScore: { home: 0, away: 0 },
+    projectedMargin: 0,
+    confidence: 75,
+    confidenceGate: {
+      percentage: 75,
+      label: 'High',
+      factors: [
+        { name: 'Games remaining sample', impact: 'neutral', weight: 0.3 },
+        { name: 'Strength of schedule', impact: 'positive', weight: 0.3 },
+        { name: 'Roster stability', impact: 'positive', weight: 0.2 },
+        { name: 'Injury risk', impact: 'neutral', weight: 0.2 },
+      ],
+    },
+    drivers: ['Projected 20-8 finish', '72% conf tournament probability', '3rd seed likely'],
+    isSaved: false,
+  },
+  {
+    id: 'run-4',
+    simType: 'lineup-sandbox',
+    title: 'Small Ball vs Traditional',
+    timestamp: new Date('2026-02-16T14:30:00'),
+    winProbability: 58,
+    projectedScore: { home: 80, away: 75 },
+    projectedMargin: 5,
+    confidence: 62,
+    confidenceGate: {
+      percentage: 62,
+      label: 'Medium',
+      factors: [
+        { name: 'Lineup sample size', impact: 'negative', weight: 0.35 },
+        { name: 'Matchup data', impact: 'neutral', weight: 0.25 },
+        { name: 'Small ball history', impact: 'positive', weight: 0.2 },
+        { name: 'Opponent adaptability', impact: 'neutral', weight: 0.2 },
+      ],
+    },
+    drivers: ['Small ball +2.3 pace advantage', 'Spacing benefits outweigh rebounding loss', '4Q leverage'],
+    isSaved: true,
+  },
+];
+
+// =============================================================================
+// SUN CONFERENCE OPPONENTS (for scenario builder)
+// =============================================================================
+
+export const SUN_CONFERENCE_OPPONENTS = [
+  'Webber International', 'Southeastern', 'Keiser', 'Warner',
+  'Ave Maria', 'St. Thomas', 'Thomas University', 'Johnson University',
+  'Coastal Georgia', 'Point University',
+];
+
+// =============================================================================
+// SEASON SIM DATA
+// =============================================================================
+
+export const SEASON_SIM = {
+  expectedWins: 20,
+  expectedLosses: 8,
+  currentRecord: '18-8',
+  gamesRemaining: 2,
+  playoffProbability: 88,
+  confTournamentSeed: 3,
+  mustWinGames: ['vs Webber International'],
+  finishDistribution: [
+    { wins: 18, probability: 8 },
+    { wins: 19, probability: 22 },
+    { wins: 20, probability: 42 },
+    { wins: 21, probability: 20 },
+    { wins: 22, probability: 8 },
+  ],
+};
+
+// =============================================================================
+// CONFERENCE / POSTSEASON
+// =============================================================================
+
+export const CONFERENCE_POSTSEASON = {
+  championshipOdds: 18,
+  semiFinalOdds: 42,
+  quarterFinalOdds: 88,
+  bracketPaths: [
+    { round: 'Quarterfinal', opponent: 'Thomas University', winProb: 78, seed: '3 vs 6' },
+    { round: 'Semifinal', opponent: 'Keiser / Warner', winProb: 55, seed: '3 vs 2/7' },
+    { round: 'Championship', opponent: 'Southeastern', winProb: 42, seed: '3 vs 1' },
+  ],
+};
+
+// =============================================================================
+// SIMULATION HELPERS (all original exports preserved)
 // =============================================================================
 
 export function getSimulationById(id: string): SimulationResult | undefined {
@@ -248,8 +413,8 @@ export function generateMockSimulation(
   awayTeam: string,
   rosterType: 'official' | 'sandbox' = 'official'
 ): SimulationResult {
-  const winProb = Math.floor(Math.random() * 40) + 35; // 35-75%
-  const homeScore = Math.floor(Math.random() * 20) + 68; // 68-88
+  const winProb = Math.floor(Math.random() * 40) + 35;
+  const homeScore = Math.floor(Math.random() * 20) + 68;
   const margin = Math.floor((winProb - 50) / 3);
   const awayScore = homeScore - margin;
 
@@ -281,26 +446,14 @@ export function generateMockSimulation(
   };
 }
 
-/**
- * Detects if a user message is requesting a simulation.
- * Returns the parsed opponent if detected, null otherwise.
- */
 export function detectSimulationIntent(message: string): { opponent: string; isSimulation: boolean } {
   const lowerMessage = message.toLowerCase();
 
-  // Simulation trigger keywords
   const triggers = [
-    'simulate',
-    'simulation',
-    'predict',
-    'project',
-    'what if we play',
-    'how would we do against',
-    'chances against',
-    'odds against',
-    'matchup against',
-    'run a sim',
-    'game against',
+    'simulate', 'simulation', 'predict', 'project',
+    'what if we play', 'how would we do against',
+    'chances against', 'odds against', 'matchup against',
+    'run a sim', 'game against',
   ];
 
   const hasSimTrigger = triggers.some((t) => lowerMessage.includes(t));
@@ -309,7 +462,6 @@ export function detectSimulationIntent(message: string): { opponent: string; isS
     return { opponent: '', isSimulation: false };
   }
 
-  // Try to extract opponent name
   const opponentPatterns = [
     /against\s+([A-Za-z\s]+?)(?:\?|$|\.)/i,
     /vs\.?\s+([A-Za-z\s]+?)(?:\?|$|\.)/i,
@@ -324,16 +476,7 @@ export function detectSimulationIntent(message: string): { opponent: string; isS
     }
   }
 
-  // Default opponents from schedule
-  const knownOpponents = [
-    'Cal Miramar',
-    'Cal State East Bay',
-    'Bethesda',
-    'Simpson University',
-    'Simpson University',
-  ];
-
-  for (const opp of knownOpponents) {
+  for (const opp of SUN_CONFERENCE_OPPONENTS) {
     if (lowerMessage.includes(opp.toLowerCase())) {
       return { opponent: opp, isSimulation: true };
     }
