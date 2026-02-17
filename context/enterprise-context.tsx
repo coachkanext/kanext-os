@@ -1,44 +1,38 @@
 /**
  * Enterprise Context — Business Mode state
- * Company switcher, RBAC view-as role, PBD co-founder variant.
+ * Company switcher + 4-level RBAC via BusinessRoleLens.
  */
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import * as Haptics from 'expo-haptics';
 import { COMPANIES } from '@/data/mock-enterprise-v2';
-import type { Company, DocumentVisibility } from '@/types';
+import type { Company } from '@/types';
+import type { BusinessRoleLens } from '@/utils/business-rbac';
 
 interface EnterpriseContextValue {
   companies: Company[];
   activeCompanyId: string;
   activeCompany: Company;
   setActiveCompany: (id: string) => void;
-  viewAsRole: DocumentVisibility;
-  setViewAsRole: (role: DocumentVisibility) => void;
-  isPBDView: boolean;
-  setIsPBDView: (v: boolean) => void;
+  /** 4-level RBAC: B1 (Founder) | B2b (Board) | B2a (Retail) | B3 (Public) */
+  viewAsRole: BusinessRoleLens;
+  setViewAsRole: (role: BusinessRoleLens) => void;
 }
 
 const EnterpriseContext = createContext<EnterpriseContextValue | null>(null);
 
 export function EnterpriseProvider({ children }: { children: React.ReactNode }) {
   const [activeCompanyId, setActiveCompanyId] = useState('co-kanext');
-  const [viewAsRole, setViewAsRoleState] = useState<DocumentVisibility>('founder');
-  const [isPBDView, setIsPBDViewState] = useState(false);
+  const [viewAsRole, setViewAsRoleState] = useState<BusinessRoleLens>('B1');
 
   const handleSetActive = useCallback((id: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setActiveCompanyId(id);
   }, []);
 
-  const handleSetViewAs = useCallback((role: DocumentVisibility) => {
+  const handleSetViewAs = useCallback((role: BusinessRoleLens) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setViewAsRoleState(role);
-  }, []);
-
-  const handleSetPBD = useCallback((v: boolean) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setIsPBDViewState(v);
   }, []);
 
   const activeCompany = COMPANIES.find((c) => c.id === activeCompanyId) || COMPANIES[1];
@@ -52,8 +46,6 @@ export function EnterpriseProvider({ children }: { children: React.ReactNode }) 
         setActiveCompany: handleSetActive,
         viewAsRole,
         setViewAsRole: handleSetViewAs,
-        isPBDView,
-        setIsPBDView: handleSetPBD,
       }}
     >
       {children}

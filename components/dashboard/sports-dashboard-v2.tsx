@@ -12,6 +12,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { HomeHeroVideoCard } from '@/components/dashboard/home-hero-video-card';
 
 import {
   VIDEO_STRIP_CARDS,
@@ -46,6 +47,9 @@ export function SportsDashboardV2({ onTabJump }: Props) {
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
+      {/* 0. HERO VIDEO */}
+      <HomeHeroVideoCard role="R1" />
+
       {/* 1. VIDEO STRIP */}
       <VideoStrip colors={colors} />
 

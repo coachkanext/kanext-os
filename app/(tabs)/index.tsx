@@ -711,7 +711,7 @@ export default function HomeScreen() {
   }
 
   // Business mode handles its own scroll (9-tab pager + RBAC)
-  if (mode === 'enterprise') {
+  if (mode === 'enterprise' || mode === 'business') {
     return (
       <EnterpriseProvider>
         <BusinessHome />

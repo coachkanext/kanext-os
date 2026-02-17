@@ -43,10 +43,10 @@ export function DataRoomContent() {
   const allDocs = getDocsByCompany(activeCompanyId);
 
   const filteredDocs = useMemo(() => {
-    // RBAC: filter by viewAsRole visibility
-    const visibleByRole = viewAsRole === 'founder'
+    // RBAC: filter by viewAsRole visibility (B1=founder, B2a/B2b=investor, B3=public)
+    const visibleByRole = viewAsRole === 'B1'
       ? allDocs
-      : viewAsRole === 'investor'
+      : viewAsRole === 'B2a' || viewAsRole === 'B2b'
       ? allDocs.filter((d) => d.visibility === 'investor' || d.visibility === 'public')
       : allDocs.filter((d) => d.visibility === 'public');
     let docs = visibleByRole;

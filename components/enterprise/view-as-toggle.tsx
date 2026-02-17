@@ -11,14 +11,14 @@ import { ThemedText } from '@/components/themed-text';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useEnterprise } from '@/context/enterprise-context';
-import type { DocumentVisibility } from '@/types';
+import type { BusinessRoleLens } from '@/utils/business-rbac';
 
 const ACCENT_GOLD = '#FFFFFF';
 
-const ROLES: { id: DocumentVisibility; label: string }[] = [
-  { id: 'founder', label: 'Founder' },
-  { id: 'investor', label: 'Investor' },
-  { id: 'public', label: 'Public' },
+const ROLES: { id: BusinessRoleLens; label: string }[] = [
+  { id: 'B1', label: 'Founder' },
+  { id: 'B2a', label: 'Investor' },
+  { id: 'B3', label: 'Public' },
 ];
 
 export function ViewAsToggle() {

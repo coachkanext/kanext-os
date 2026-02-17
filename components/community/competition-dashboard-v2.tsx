@@ -47,6 +47,9 @@ import type {
   SponsorDeliverable,
 } from '@/data/mock-competition-v2';
 
+// Broadcast hero
+import { CompetitionHeroVideoCard } from '@/components/dashboard/competition-hero-video-card';
+
 // CEO competition data
 import {
   CEO_NOW,
@@ -885,6 +888,9 @@ export default function CompetitionDashboardV2({ colors }: Props) {
       contentContainerStyle={s.contentContainer}
       showsVerticalScrollIndicator={false}
     >
+      {/* Module 0 — Broadcast Hero */}
+      <CompetitionHeroVideoCard roleLens={roleLens} />
+
       {/* Module 1 — Competition Header */}
       {canSeeModule('header', roleLens) && (
         <CompetitionHeader colors={colors} />
