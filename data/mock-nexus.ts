@@ -4,6 +4,7 @@
  */
 
 import type { Conversation, Message, ConversationParticipant } from '@/types';
+import { DEMO_V2_CONVERSATION, DEMO_V2_MESSAGES } from './mock-nexus-v2';
 
 // =============================================================================
 // PARTICIPANTS
@@ -19,13 +20,14 @@ export const MOCK_PARTICIPANTS: ConversationParticipant[] = [
 // CONVERSATIONS
 // =============================================================================
 
-export const MOCK_CONVERSATIONS: Conversation[] = [];
+export const MOCK_CONVERSATIONS: Conversation[] = [DEMO_V2_CONVERSATION];
 
 // =============================================================================
 // MESSAGES
 // =============================================================================
 
-const MOCK_MESSAGES: Record<string, Message[]> = {
+const MOCK_MESSAGES: Record<string, (Message | any)[]> = {
+  'demo-conv-v2': DEMO_V2_MESSAGES as any[],
   'conv-1': [
     {
       id: 'msg-1-1',

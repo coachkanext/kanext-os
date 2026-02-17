@@ -21,10 +21,13 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { ConversationContextMenu } from './conversation-context-menu';
+import { WorkspaceCard } from './workspace-card';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatTimestamp } from '@/data/mock-nexus';
+import { MOCK_NEXUS_WORKSPACES } from '@/data/mock-nexus-v2';
 import type { Conversation } from '@/types';
+import type { NexusWorkspace } from '@/types/nexus-v2';
 
 interface DrawerItem {
   id: 'new-chat' | 'search' | 'pinned' | 'recents';
@@ -224,6 +227,27 @@ export function ConversationsPanel({
         style={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {/* Workspaces Section */}
+        {activeSection === 'recents' && MOCK_NEXUS_WORKSPACES.length > 0 && (
+          <View style={styles.workspacesSection}>
+            <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
+              Workspaces
+            </ThemedText>
+            {MOCK_NEXUS_WORKSPACES.map((ws) => (
+              <WorkspaceCard
+                key={ws.id}
+                workspace={ws}
+                onPress={(w: NexusWorkspace) => {
+                  // Select the first thread in the workspace, or create a new one
+                  if (w.thread_ids.length > 0) {
+                    onSelectConversation(w.thread_ids[0]);
+                  }
+                }}
+              />
+            ))}
+          </View>
+        )}
+
         <View style={styles.recentSection}>
           {activeSection === 'pinned' && (
             <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
@@ -394,6 +418,10 @@ const styles = StyleSheet.create({
   drawerItemLabel: {
     fontSize: 15,
     fontWeight: '500',
+  },
+  workspacesSection: {
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.sm,
   },
   recentSection: {
     marginTop: Spacing.md,

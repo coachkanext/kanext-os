@@ -15,6 +15,7 @@ import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useNexusContext } from '@/context/nexus-context';
 import type { Message, SimulationResult, SavedSimulation, Conversation, PlayerEvalConfig, SimulationThreadConfig } from '@/types';
+import type { MessageV2, LinkChip } from '@/types/nexus-v2';
 
 interface ChatThreadProps {
   messages: Message[];
@@ -40,7 +41,13 @@ export function ChatThread({ messages, isLoading = false, conversation }: ChatTh
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const flatListRef = useRef<FlatList>(null);
-  const { getSimulation, getSavedSimulation, openSimulation, getEvalSnapshot, updateConversationConfig, generatePlayerEval } = useNexusContext();
+  const {
+    getSimulation, getSavedSimulation, openSimulation, getEvalSnapshot,
+    updateConversationConfig, generatePlayerEval,
+    confirmAction: ctxConfirmAction,
+    cancelAction: ctxCancelAction,
+    handleEscalationChoice: ctxHandleEscalation,
+  } = useNexusContext();
 
   // ── Quote rotation ──
   const [quoteIndex, setQuoteIndex] = useState(0);
@@ -148,18 +155,35 @@ export function ChatThread({ messages, isLoading = false, conversation }: ChatTh
     // In a real app this would be more sophisticated
   }, []);
 
+  const handleChipPress = useCallback((chip: LinkChip) => {
+    // TODO: Navigate to linked object
+    console.log('Link chip pressed:', chip.objectType, chip.objectId);
+  }, []);
+
+  const handleConfirmAction = useCallback((messageId: string) => {
+    ctxConfirmAction(messageId);
+  }, [ctxConfirmAction]);
+
+  const handleCancelAction = useCallback((messageId: string) => {
+    ctxCancelAction(messageId);
+  }, [ctxCancelAction]);
+
+  const handleEscalationChoice = useCallback((messageId: string, action: string) => {
+    ctxHandleEscalation(messageId, action);
+  }, [ctxHandleEscalation]);
+
   const renderMessage = useCallback(
-    ({ item }: { item: Message }) => {
+    ({ item }: { item: Message | MessageV2 }) => {
       const simulation = item.metadata?.simulationId
-        ? getSimulation(item.metadata.simulationId)
+        ? getSimulation(item.metadata.simulationId as string)
         : undefined;
 
       const savedSimulation = item.metadata?.isSavedSimulation && item.metadata?.simulationId
-        ? getSavedSimulation(item.metadata.simulationId)
+        ? getSavedSimulation(item.metadata.simulationId as string)
         : undefined;
 
       const evalSnapshot = item.metadata?.evalSnapshotId
-        ? getEvalSnapshot(item.metadata.evalSnapshotId)
+        ? getEvalSnapshot(item.metadata.evalSnapshotId as string)
         : undefined;
 
       return (
@@ -171,10 +195,14 @@ export function ChatThread({ messages, isLoading = false, conversation }: ChatTh
           onViewSimulation={handleViewSimulation}
           onRerunSimulation={handleRerunSimulation}
           onViewSavedSimulation={handleViewSavedSimulation}
+          onChipPress={handleChipPress}
+          onConfirmAction={handleConfirmAction}
+          onCancelAction={handleCancelAction}
+          onEscalationChoice={handleEscalationChoice}
         />
       );
     },
-    [getSimulation, getSavedSimulation, getEvalSnapshot, handleViewSimulation, handleRerunSimulation, handleViewSavedSimulation]
+    [getSimulation, getSavedSimulation, getEvalSnapshot, handleViewSimulation, handleRerunSimulation, handleViewSavedSimulation, handleChipPress, handleConfirmAction, handleCancelAction, handleEscalationChoice]
   );
 
   // Render empty state with header if needed

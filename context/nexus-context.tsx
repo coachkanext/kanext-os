@@ -20,9 +20,14 @@ import type {
   EvalSnapshot,
   GameOpsConfig,
 } from '@/types';
+import type { ActionIntent, MessageV2, NexusContext as NexusContextScope } from '@/types/nexus-v2';
 import { MOCK_CONVERSATIONS, getMessagesForConversation } from '@/data/mock-nexus';
 import { detectSimulationIntent, generateMockSimulation } from '@/data/mock-simulations';
 import { sendToGPT, type ChatMessage } from '@/utils/openai';
+import { classifyIntent } from '@/utils/nexus-actions';
+import { processAction, executeConfirmedAction } from '@/utils/nexus-action-engine';
+import { mapRoleToRBAC } from '@/utils/nexus-rbac';
+import { parseGPTResponse } from '@/utils/nexus-response-parser';
 import { useMode, useAppContext } from './app-context';
 
 const MAX_PINNED_CONVERSATIONS = 3;
@@ -44,6 +49,8 @@ const defaultState: NexusState = {
   newConversationSheetOpen: false,
   evalSnapshots: {},
   targetContext: { organizationId: 'lincoln-basketball' },
+  pendingAction: undefined,
+  pendingActionConversationId: undefined,
 };
 
 // =============================================================================
@@ -74,7 +81,11 @@ type NexusAction =
   | { type: 'RENAME_CONVERSATION'; payload: { id: string; title: string } }
   | { type: 'ARCHIVE_CONVERSATION'; payload: string }
   | { type: 'DELETE_CONVERSATION'; payload: string }
-  | { type: 'SET_TARGET_CONTEXT'; payload: TargetContext | 'all' };
+  | { type: 'SET_TARGET_CONTEXT'; payload: TargetContext | 'all' }
+  | { type: 'ADD_V2_MESSAGES'; payload: (Message | MessageV2)[] }
+  | { type: 'SET_PENDING_ACTION'; payload: { intent: ActionIntent; conversationId: string } }
+  | { type: 'CLEAR_PENDING_ACTION' }
+  | { type: 'UPDATE_CONFIRMATION_STATE'; payload: { messageId: string; state: 'confirmed' | 'cancelled' } };
 
 function nexusReducer(state: NexusState, action: NexusAction): NexusState {
   switch (action.type) {
@@ -252,6 +263,52 @@ function nexusReducer(state: NexusState, action: NexusAction): NexusState {
     case 'SET_TARGET_CONTEXT':
       return { ...state, targetContext: action.payload };
 
+    case 'ADD_V2_MESSAGES': {
+      const newMsgs = action.payload;
+      // Update conversations' lastMessage for each message
+      let convs = [...state.conversations];
+      for (const msg of newMsgs) {
+        convs = convs.map((conv) =>
+          conv.id === msg.conversationId
+            ? { ...conv, lastMessage: msg as Message, updatedAt: msg.timestamp }
+            : conv
+        );
+      }
+      return {
+        ...state,
+        messages: [...state.messages, ...(newMsgs as Message[])],
+        conversations: convs,
+      };
+    }
+
+    case 'SET_PENDING_ACTION':
+      return {
+        ...state,
+        pendingAction: action.payload.intent,
+        pendingActionConversationId: action.payload.conversationId,
+      };
+
+    case 'CLEAR_PENDING_ACTION':
+      return {
+        ...state,
+        pendingAction: undefined,
+        pendingActionConversationId: undefined,
+      };
+
+    case 'UPDATE_CONFIRMATION_STATE': {
+      const { messageId, state: confirmState } = action.payload;
+      return {
+        ...state,
+        messages: state.messages.map((msg) => {
+          const v2 = msg as any;
+          if (v2.id === messageId && v2.confirmation) {
+            return { ...v2, confirmation: { ...v2.confirmation, state: confirmState } };
+          }
+          return msg;
+        }),
+      };
+    }
+
     default:
       return state;
   }
@@ -306,6 +363,10 @@ interface NexusContextValue {
   createNewGameOps: (gameId: string, opponent: string) => void;
   updateGameOpsStep: (conversationId: string, updates: Partial<GameOpsConfig>) => void;
   addUserMessage: (conversationId: string, content: string) => void;
+  // Governed actions (v2)
+  confirmAction: (messageId: string) => void;
+  cancelAction: (messageId: string) => void;
+  handleEscalationChoice: (messageId: string, action: string) => void;
 }
 
 const NexusContext = createContext<NexusContextValue | undefined>(undefined);
@@ -578,6 +639,18 @@ export function NexusProvider({ children }: NexusProviderProps) {
   // Track conversation history for GPT context
   const conversationHistoryRef = useRef<Map<string, ChatMessage[]>>(new Map());
 
+  // Build NexusContext scope from app state
+  const buildNexusScope = useCallback((): NexusContextScope => ({
+    mode,
+    org_id: appState.organization?.id || 'org-default',
+    org_name: appState.organization?.name || 'Organization',
+    scope_type: appState.program ? 'program' : 'org',
+    scope_id: appState.program?.id,
+    scope_name: appState.program?.name,
+    season_id: appState.cycle?.id,
+    season_label: appState.cycle?.name,
+  }), [mode, appState]);
+
   const sendMessage = useCallback(async () => {
     if (!state.inputText.trim() || !state.activeConversationId) return;
 
@@ -594,7 +667,6 @@ export function NexusProvider({ children }: NexusProviderProps) {
 
     dispatch({ type: 'ADD_MESSAGE', payload: userMessage });
     dispatch({ type: 'SET_INPUT_TEXT', payload: '' });
-    dispatch({ type: 'SET_LOADING', payload: true });
 
     // Auto-name conversation based on first message
     const conversation = state.conversations.find((c) => c.id === conversationId);
@@ -603,11 +675,32 @@ export function NexusProvider({ children }: NexusProviderProps) {
       dispatch({ type: 'RENAME_CONVERSATION', payload: { id: conversationId, title: autoTitle } });
     }
 
+    // ── Governed Action Intercept (v2) ──
+    // Classify intent locally before GPT. If it's a governed action, handle instantly.
+    const intent = classifyIntent(inputText);
+    if (intent.type !== 'none') {
+      const rbacLevel = mapRoleToRBAC(appState.operatingRole || 'head_coach', mode);
+      const nexusScope = buildNexusScope();
+      const result = processAction(intent, nexusScope, rbacLevel, conversationId);
+
+      if (result.handled) {
+        dispatch({ type: 'ADD_V2_MESSAGES', payload: result.messages });
+        if (result.needsConfirmation && result.pendingAction) {
+          dispatch({
+            type: 'SET_PENDING_ACTION',
+            payload: { intent: result.pendingAction, conversationId },
+          });
+        }
+        return; // Don't send to GPT — action handled locally
+      }
+    }
+
+    dispatch({ type: 'SET_LOADING', payload: true });
+
     // Check for simulation intent (sports mode, still uses mock sim engine)
     const simIntent = mode === 'sports' ? detectSimulationIntent(userMessage.content) : { isSimulation: false, opponent: '' };
 
     if (simIntent.isSimulation) {
-      // Simulation still uses the mock engine for structured data
       const simulation = generateMockSimulation(
         'Lincoln University',
         simIntent.opponent || 'Opponent'
@@ -657,14 +750,30 @@ export function NexusProvider({ children }: NexusProviderProps) {
       trimmedHistory.push({ role: 'assistant', content: responseText });
       conversationHistoryRef.current.set(conversationId, trimmedHistory);
 
-      const assistantMessage: Message = {
-        id: `msg-${Date.now()}-assistant`,
-        conversationId,
-        role: 'assistant',
-        content: responseText,
-        timestamp: new Date(),
-      };
-      dispatch({ type: 'ADD_MESSAGE', payload: assistantMessage });
+      // Parse for link chips ([LINK:type:id:label] tokens)
+      const parsed = parseGPTResponse(responseText);
+      if (parsed.linkChips.length > 0) {
+        // Create a v2 message with link chips
+        const v2Message: MessageV2 = {
+          id: `msg-${Date.now()}-assistant`,
+          conversationId,
+          role: 'assistant',
+          content: parsed.cleanText,
+          timestamp: new Date(),
+          messageType: 'text',
+          linkChips: parsed.linkChips,
+        };
+        dispatch({ type: 'ADD_V2_MESSAGES', payload: [v2Message] });
+      } else {
+        const assistantMessage: Message = {
+          id: `msg-${Date.now()}-assistant`,
+          conversationId,
+          role: 'assistant',
+          content: responseText,
+          timestamp: new Date(),
+        };
+        dispatch({ type: 'ADD_MESSAGE', payload: assistantMessage });
+      }
     } catch (error) {
       console.error('Failed to get GPT response:', error);
       const errorMessage: Message = {
@@ -678,7 +787,7 @@ export function NexusProvider({ children }: NexusProviderProps) {
     }
 
     dispatch({ type: 'SET_LOADING', payload: false });
-  }, [state.inputText, state.activeConversationId, state.conversations, mode, appState]);
+  }, [state.inputText, state.activeConversationId, state.conversations, mode, appState, buildNexusScope]);
 
   // Simulation controls
   const openSimulation = useCallback((id: string) => {
@@ -738,6 +847,62 @@ export function NexusProvider({ children }: NexusProviderProps) {
     [state.activeConversationId]
   );
 
+  // ── Governed Action Confirm / Cancel (v2) ──
+  const confirmAction = useCallback((messageId: string) => {
+    const pending = state.pendingAction;
+    const pendingConvId = state.pendingActionConversationId;
+    if (!pending || !pendingConvId) return;
+
+    // Update confirmation bubble to 'confirmed'
+    dispatch({ type: 'UPDATE_CONFIRMATION_STATE', payload: { messageId, state: 'confirmed' } });
+
+    // Execute the action and inject receipt
+    const nexusScope = buildNexusScope();
+    const receiptMsg = executeConfirmedAction(pending, nexusScope, pendingConvId);
+    dispatch({ type: 'ADD_V2_MESSAGES', payload: [receiptMsg] });
+    dispatch({ type: 'CLEAR_PENDING_ACTION' });
+  }, [state.pendingAction, state.pendingActionConversationId, buildNexusScope]);
+
+  const cancelAction = useCallback((messageId: string) => {
+    // Update confirmation bubble to 'cancelled'
+    dispatch({ type: 'UPDATE_CONFIRMATION_STATE', payload: { messageId, state: 'cancelled' } });
+    dispatch({ type: 'CLEAR_PENDING_ACTION' });
+  }, []);
+
+  const handleEscalationChoice = useCallback((messageId: string, action: string) => {
+    const conversationId = state.activeConversationId;
+    if (!conversationId) return;
+
+    if (action === 'create_request') {
+      // Mock: inject a receipt for the created request
+      const receiptMsg: MessageV2 = {
+        id: `receipt-esc-${Date.now()}`,
+        conversationId,
+        role: 'assistant',
+        content: '',
+        timestamp: new Date(),
+        messageType: 'receipt',
+        receipt: {
+          status: 'created',
+          action_type: 'create_request',
+          summary: 'Request created and routed to the appropriate owner.',
+          objects: [],
+        },
+      };
+      dispatch({ type: 'ADD_V2_MESSAGES', payload: [receiptMsg] });
+    } else if (action === 'save_question') {
+      const ackMsg: MessageV2 = {
+        id: `ack-esc-${Date.now()}`,
+        conversationId,
+        role: 'assistant',
+        content: 'Saved as an open question. You can revisit this anytime.',
+        timestamp: new Date(),
+        messageType: 'text',
+      };
+      dispatch({ type: 'ADD_V2_MESSAGES', payload: [ackMsg] });
+    }
+  }, [state.activeConversationId]);
+
   const value: NexusContextValue = {
     state,
     openConversations,
@@ -771,6 +936,9 @@ export function NexusProvider({ children }: NexusProviderProps) {
     createNewGameOps,
     updateGameOpsStep,
     addUserMessage,
+    confirmAction,
+    cancelAction,
+    handleEscalationChoice,
   };
 
   return <NexusContext.Provider value={value}>{children}</NexusContext.Provider>;

@@ -650,6 +650,10 @@ export interface NexusState {
   newConversationSheetOpen: boolean;
   evalSnapshots: Record<string, EvalSnapshot>;
   targetContext: TargetContext | 'all';
+  /** Pending governed action awaiting confirmation (v2) */
+  pendingAction?: import('./nexus-v2').ActionIntent;
+  /** Conversation the pending action belongs to */
+  pendingActionConversationId?: string;
 }
 
 // =============================================================================
