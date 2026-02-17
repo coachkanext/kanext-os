@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
+import { SportsLibrary } from '@/components/library/sports-library';
 import {
   LIBRARY_ITEMS,
   LIBRARY_COLLECTIONS,
@@ -29,6 +30,9 @@ export function LibraryHub() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const mode = useMode();
+
+  // Sports mode uses the RBAC-gated library
+  if (mode === 'sports') return <SportsLibrary />;
 
   const [activeTab, setActiveTab] = useState<LibraryTab>('all');
 

@@ -1,0 +1,1086 @@
+/**
+ * RaceweekOpsV2 — CEO/Commissioner Race Weekend Control Room
+ * 5-panel pill nav: Timeline | Readiness | Incidents | Approvals | Bulletins
+ * Fixed top bar + CEO Top 5 strip above scrollable pill content.
+ */
+
+import React, { useState } from 'react';
+import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { ThemedText } from '@/components/themed-text';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import {
+  CEO_TOP_5, BULLETINS, CEO_APPROVALS,
+  BULLETIN_TYPE_COLOR, BULLETIN_STATUS_COLOR,
+  SEVERITY_COLOR as CEO_SEVERITY_COLOR,
+  APPROVAL_CATEGORY_COLOR,
+} from '@/data/mock-ceo-competition';
+import type { CEOTop5Item, Bulletin, ApprovalItem } from '@/data/mock-ceo-competition';
+import {
+  RACE_WEEK_SESSIONS, TEAM_READINESS, RACE_INCIDENTS,
+} from '@/data/mock-competition-v2';
+import type {
+  RaceWeekSession, TeamReadiness, RaceIncident,
+} from '@/data/mock-competition-v2';
+
+// =============================================================================
+// CONSTANTS
+// =============================================================================
+
+type OpsPill = 'timeline' | 'readiness' | 'incidents' | 'approvals' | 'bulletins';
+
+const OPS_PILLS: { key: OpsPill; label: string }[] = [
+  { key: 'timeline', label: 'Timeline' },
+  { key: 'readiness', label: 'Readiness' },
+  { key: 'incidents', label: 'Incidents' },
+  { key: 'approvals', label: 'Approvals' },
+  { key: 'bulletins', label: 'Bulletins' },
+];
+
+const SESSION_STATUS_COLOR: Record<RaceWeekSession['status'], string> = {
+  completed: '#22C55E',
+  live: '#F59E0B',
+  upcoming: '#9CA3AF',
+  delayed: '#EF4444',
+};
+
+const SESSION_TYPE_LABEL: Record<RaceWeekSession['type'], string> = {
+  practice: 'Practice',
+  qualifying: 'Qualifying',
+  race: 'Race',
+  setup: 'Setup',
+  inspection: 'Inspection',
+};
+
+const SEVERITY_COLOR: Record<RaceIncident['severity'], string> = {
+  minor: '#3B82F6',
+  moderate: '#F59E0B',
+  major: '#EF4444',
+};
+
+const INCIDENT_STATUS_COLOR: Record<RaceIncident['status'], string> = {
+  under_review: '#F59E0B',
+  decided: '#22C55E',
+  no_action: '#9CA3AF',
+};
+
+const INCIDENT_STATUS_LABEL: Record<RaceIncident['status'], string> = {
+  under_review: 'Under Review',
+  decided: 'Decided',
+  no_action: 'No Action',
+};
+
+const CHECK_STATUS_ICON: Record<'pass' | 'fail' | 'pending', { name: 'checkmark.circle.fill' | 'xmark.circle.fill' | 'clock.fill'; color: string }> = {
+  pass: { name: 'checkmark.circle.fill', color: '#22C55E' },
+  fail: { name: 'xmark.circle.fill', color: '#EF4444' },
+  pending: { name: 'clock.fill', color: '#F59E0B' },
+};
+
+const URGENCY_COLOR: Record<string, string> = {
+  critical: '#EF4444',
+  high: '#F59E0B',
+  normal: '#3B82F6',
+};
+
+const RANK_COLOR: Record<number, string> = {
+  1: '#F59E0B',
+  2: '#F59E0B',
+  3: '#F59E0B',
+  4: '#9CA3AF',
+  5: '#9CA3AF',
+};
+
+// =============================================================================
+// TOP BAR
+// =============================================================================
+
+function TopBar({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <View style={[styles.topBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View style={styles.topBarRow}>
+        <View style={{ flex: 1 }}>
+          <ThemedText style={[styles.topBarEvent, { color: colors.text }]}>
+            Thunder Classic
+          </ThemedText>
+        </View>
+        <View style={[styles.modeBadge, { backgroundColor: colors.text + '15' }]}>
+          <ThemedText style={[styles.modeBadgeText, { color: colors.text }]}>
+            RACEWEEK OPS
+          </ThemedText>
+        </View>
+      </View>
+      <ThemedText style={[styles.topBarCountdown, { color: colors.textSecondary }]}>
+        Race: Sun 2:00 PM
+      </ThemedText>
+    </View>
+  );
+}
+
+// =============================================================================
+// CEO TOP 5 STRIP
+// =============================================================================
+
+function CEOTop5Strip({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <View style={styles.top5Container}>
+      {CEO_TOP_5.map((item) => {
+        const sevColor = CEO_SEVERITY_COLOR[item.severity] ?? '#9CA3AF';
+        const rankColor = RANK_COLOR[item.rank] ?? '#9CA3AF';
+
+        return (
+          <View
+            key={item.id}
+            style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            <View style={styles.top5Row}>
+              {/* Rank */}
+              <ThemedText style={[styles.top5Rank, { color: rankColor }]}>
+                {item.rank}
+              </ThemedText>
+
+              {/* Title + Owner + Unblock */}
+              <View style={styles.top5Info}>
+                <ThemedText style={[styles.top5Title, { color: colors.text }]}>
+                  {item.title}
+                </ThemedText>
+                <ThemedText style={[styles.top5Owner, { color: colors.textSecondary }]}>
+                  {item.owner}
+                </ThemedText>
+                {item.unblockAction && (
+                  <ThemedText style={[styles.top5Unblock, { color: colors.textTertiary }]}>
+                    {item.unblockAction}
+                  </ThemedText>
+                )}
+              </View>
+
+              {/* Severity Badge */}
+              <View style={[styles.badge, { backgroundColor: sevColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: sevColor }]}>
+                  {item.severity.toUpperCase()}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+// =============================================================================
+// SECTION: TIMELINE
+// =============================================================================
+
+function TimelineSection({ colors }: { colors: typeof Colors.light }) {
+  const sessions = [...RACE_WEEK_SESSIONS].sort((a, b) => {
+    const dayOrder: Record<string, number> = { Thu: 0, Fri: 1, Sat: 2, Sun: 3 };
+    const dayA = a.startTime.split(' ')[0];
+    const dayB = b.startTime.split(' ')[0];
+    return (dayOrder[dayA] ?? 99) - (dayOrder[dayB] ?? 99);
+  });
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      {sessions.map((session, index) => {
+        const statusColor = SESSION_STATUS_COLOR[session.status];
+        const isLast = index === sessions.length - 1;
+        const isLive = session.status === 'live';
+
+        return (
+          <View key={session.id} style={styles.timelineNode}>
+            {/* Left: Time range */}
+            <View style={styles.timelineTimeCol}>
+              <ThemedText style={[styles.timelineTime, { color: isLive ? statusColor : colors.textSecondary }]}>
+                {session.startTime}
+              </ThemedText>
+              <ThemedText style={[styles.timelineTimeEnd, { color: colors.textTertiary }]}>
+                {session.endTime}
+              </ThemedText>
+            </View>
+
+            {/* Center: Line + Dot */}
+            <View style={styles.timelineCenterCol}>
+              <View
+                style={[
+                  styles.timelineDot,
+                  {
+                    backgroundColor: statusColor,
+                    borderColor: isLive ? statusColor + '40' : 'transparent',
+                    borderWidth: isLive ? 3 : 0,
+                  },
+                ]}
+              />
+              {!isLast && (
+                <View style={[styles.timelineLine, { backgroundColor: colors.border }]} />
+              )}
+            </View>
+
+            {/* Right: Session info */}
+            <View style={styles.timelineInfoCol}>
+              <ThemedText style={[styles.timelineSessionName, { color: colors.text }]}>
+                {session.name}
+              </ThemedText>
+              <View style={styles.timelineBadgeRow}>
+                <View style={[styles.badge, { backgroundColor: statusColor + '20' }]}>
+                  <ThemedText style={[styles.badgeText, { color: statusColor }]}>
+                    {SESSION_TYPE_LABEL[session.type]}
+                  </ThemedText>
+                </View>
+                {isLive && (
+                  <View style={[styles.badge, { backgroundColor: statusColor + '20' }]}>
+                    <ThemedText style={[styles.badgeText, { color: statusColor }]}>
+                      LIVE
+                    </ThemedText>
+                  </View>
+                )}
+              </View>
+              {session.weather && (
+                <ThemedText style={[styles.timelineWeather, { color: colors.textTertiary }]}>
+                  {session.weather}
+                </ThemedText>
+              )}
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+// =============================================================================
+// SECTION: READINESS (League Readiness Board)
+// =============================================================================
+
+function ReadinessSection({ colors }: { colors: typeof Colors.light }) {
+  const readyCount = TEAM_READINESS.filter((t) => t.overallReady).length;
+  const notReadyCount = TEAM_READINESS.filter((t) => !t.overallReady).length;
+
+  return (
+    <>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+          League Readiness Board
+        </ThemedText>
+        <View style={styles.statsRow}>
+          <View style={styles.statItem}>
+            <ThemedText style={[styles.statValue, { color: '#22C55E' }]}>
+              {readyCount}
+            </ThemedText>
+            <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
+              Ready
+            </ThemedText>
+          </View>
+          <View style={styles.statItem}>
+            <ThemedText style={[styles.statValue, { color: '#EF4444' }]}>
+              {notReadyCount}
+            </ThemedText>
+            <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
+              Not Ready
+            </ThemedText>
+          </View>
+        </View>
+      </View>
+
+      {TEAM_READINESS.map((team) => {
+        const checks: { label: string; status: 'pass' | 'fail' | 'pending' }[] = [
+          { label: 'Tech Inspection', status: team.techInspection },
+          { label: 'Safety Check', status: team.safetyCheck },
+          { label: 'Credentialing', status: team.credentialing },
+        ];
+
+        return (
+          <View
+            key={team.teamId}
+            style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            <View style={styles.readinessTeamHeader}>
+              <View style={[styles.teamBadge, { backgroundColor: team.teamColor + '20' }]}>
+                <ThemedText style={[styles.teamBadgeText, { color: team.teamColor }]}>
+                  {team.abbreviation}
+                </ThemedText>
+              </View>
+              <View style={styles.readinessTeamInfo}>
+                <ThemedText style={[styles.readinessTeamName, { color: colors.text }]}>
+                  {team.teamName}
+                </ThemedText>
+              </View>
+              <View
+                style={[
+                  styles.readyBadge,
+                  {
+                    backgroundColor: team.overallReady ? '#22C55E20' : '#EF444420',
+                  },
+                ]}
+              >
+                <ThemedText
+                  style={[
+                    styles.readyBadgeText,
+                    { color: team.overallReady ? '#22C55E' : '#EF4444' },
+                  ]}
+                >
+                  {team.overallReady ? 'READY' : 'NOT READY'}
+                </ThemedText>
+              </View>
+            </View>
+
+            <View style={styles.readinessChecks}>
+              {checks.map((check) => {
+                const icon = CHECK_STATUS_ICON[check.status];
+                return (
+                  <View key={check.label} style={styles.readinessCheckRow}>
+                    <IconSymbol name={icon.name} size={18} color={icon.color} />
+                    <ThemedText style={[styles.readinessCheckLabel, { color: colors.textSecondary }]}>
+                      {check.label}
+                    </ThemedText>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+        );
+      })}
+    </>
+  );
+}
+
+// =============================================================================
+// SECTION: INCIDENTS & STEWARDING
+// =============================================================================
+
+function IncidentsSection({ colors }: { colors: typeof Colors.light }) {
+  const majorCount = RACE_INCIDENTS.filter((i) => i.severity === 'major').length;
+  const moderateCount = RACE_INCIDENTS.filter((i) => i.severity === 'moderate').length;
+  const minorCount = RACE_INCIDENTS.filter((i) => i.severity === 'minor').length;
+
+  return (
+    <>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+          Incidents & Stewarding
+        </ThemedText>
+        <View style={styles.statsRow}>
+          <View style={styles.statItem}>
+            <ThemedText style={[styles.statValue, { color: '#EF4444' }]}>
+              {majorCount}
+            </ThemedText>
+            <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
+              Major
+            </ThemedText>
+          </View>
+          <View style={styles.statItem}>
+            <ThemedText style={[styles.statValue, { color: '#F59E0B' }]}>
+              {moderateCount}
+            </ThemedText>
+            <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
+              Moderate
+            </ThemedText>
+          </View>
+          <View style={styles.statItem}>
+            <ThemedText style={[styles.statValue, { color: '#3B82F6' }]}>
+              {minorCount}
+            </ThemedText>
+            <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
+              Minor
+            </ThemedText>
+          </View>
+        </View>
+      </View>
+
+      {RACE_INCIDENTS.map((incident) => {
+        const sevColor = SEVERITY_COLOR[incident.severity];
+        const statusColor = INCIDENT_STATUS_COLOR[incident.status];
+
+        return (
+          <View
+            key={incident.id}
+            style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            {/* Top row: severity + status badges */}
+            <View style={styles.incidentTopRow}>
+              <View style={[styles.badge, { backgroundColor: sevColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: sevColor }]}>
+                  {incident.severity.toUpperCase()}
+                </ThemedText>
+              </View>
+              <View style={[styles.badge, { backgroundColor: statusColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: statusColor }]}>
+                  {INCIDENT_STATUS_LABEL[incident.status]}
+                </ThemedText>
+              </View>
+            </View>
+
+            {/* Lap + Time */}
+            <ThemedText style={[styles.incidentLapTime, { color: colors.text }]}>
+              Lap {incident.lap} — {incident.time}
+            </ThemedText>
+
+            {/* Description */}
+            <ThemedText style={[styles.incidentDescription, { color: colors.textSecondary }]}>
+              {incident.description}
+            </ThemedText>
+
+            {/* Drivers involved */}
+            <View style={styles.incidentDriversRow}>
+              {incident.driversInvolved.map((driver) => (
+                <View
+                  key={driver}
+                  style={[styles.driverTag, { backgroundColor: colors.backgroundSecondary }]}
+                >
+                  <ThemedText style={[styles.driverTagText, { color: colors.text }]}>
+                    {driver}
+                  </ThemedText>
+                </View>
+              ))}
+            </View>
+
+            {/* Decision */}
+            <ThemedText style={[styles.incidentDecision, { color: colors.textTertiary }]}>
+              {incident.decision}
+            </ThemedText>
+          </View>
+        );
+      })}
+    </>
+  );
+}
+
+// =============================================================================
+// SECTION: CEO APPROVALS
+// =============================================================================
+
+function ApprovalsSection({ colors }: { colors: typeof Colors.light }) {
+  const handleApprove = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  };
+
+  const handleDeny = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  };
+
+  return (
+    <>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+          CEO Approvals
+        </ThemedText>
+        <ThemedText style={[styles.metaText, { color: colors.textTertiary }]}>
+          {CEO_APPROVALS.filter((a) => a.status === 'pending').length} pending
+        </ThemedText>
+      </View>
+
+      {CEO_APPROVALS.map((approval) => {
+        const catColor = APPROVAL_CATEGORY_COLOR[approval.category] ?? '#9CA3AF';
+        const urgColor = URGENCY_COLOR[approval.urgency] ?? '#9CA3AF';
+        const isPending = approval.status === 'pending';
+
+        return (
+          <View
+            key={approval.id}
+            style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            {/* Title */}
+            <ThemedText style={[styles.approvalTitle, { color: colors.text }]}>
+              {approval.title}
+            </ThemedText>
+
+            {/* Badges row */}
+            <View style={styles.approvalBadgeRow}>
+              <View style={[styles.badge, { backgroundColor: catColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: catColor }]}>
+                  {approval.category.toUpperCase()}
+                </ThemedText>
+              </View>
+              <View style={[styles.badge, { backgroundColor: urgColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: urgColor }]}>
+                  {approval.urgency.toUpperCase()}
+                </ThemedText>
+              </View>
+              {!isPending && (
+                <View
+                  style={[
+                    styles.badge,
+                    {
+                      backgroundColor:
+                        approval.status === 'approved' ? '#22C55E20' : '#EF444420',
+                    },
+                  ]}
+                >
+                  <ThemedText
+                    style={[
+                      styles.badgeText,
+                      {
+                        color: approval.status === 'approved' ? '#22C55E' : '#EF4444',
+                      },
+                    ]}
+                  >
+                    {approval.status.toUpperCase()}
+                  </ThemedText>
+                </View>
+              )}
+            </View>
+
+            {/* Meta */}
+            <ThemedText style={[styles.approvalMeta, { color: colors.textTertiary }]}>
+              {approval.requestedBy} · {approval.requestDate}
+            </ThemedText>
+
+            {/* Amount */}
+            {approval.amount && (
+              <ThemedText style={[styles.approvalAmount, { color: colors.text }]}>
+                {approval.amount}
+              </ThemedText>
+            )}
+
+            {/* Action buttons (pending only) */}
+            {isPending && (
+              <View style={styles.approvalActions}>
+                <Pressable
+                  style={[styles.approveButton, { backgroundColor: '#22C55E20' }]}
+                  onPress={handleApprove}
+                >
+                  <ThemedText style={[styles.actionButtonText, { color: '#22C55E' }]}>
+                    Approve
+                  </ThemedText>
+                </Pressable>
+                <Pressable
+                  style={[styles.denyButton, { backgroundColor: '#EF444420' }]}
+                  onPress={handleDeny}
+                >
+                  <ThemedText style={[styles.actionButtonText, { color: '#EF4444' }]}>
+                    Deny
+                  </ThemedText>
+                </Pressable>
+              </View>
+            )}
+          </View>
+        );
+      })}
+    </>
+  );
+}
+
+// =============================================================================
+// SECTION: COMMUNICATIONS / BULLETINS
+// =============================================================================
+
+function BulletinsSection({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+          Communications & Bulletins
+        </ThemedText>
+        <ThemedText style={[styles.metaText, { color: colors.textTertiary }]}>
+          {BULLETINS.length} bulletins
+        </ThemedText>
+      </View>
+
+      {BULLETINS.map((bulletin) => {
+        const typeColor = BULLETIN_TYPE_COLOR[bulletin.type] ?? '#9CA3AF';
+        const statusColor = BULLETIN_STATUS_COLOR[bulletin.status] ?? '#9CA3AF';
+        const isDraft = bulletin.status === 'draft';
+        const isPublished = bulletin.status === 'published';
+
+        return (
+          <View
+            key={bulletin.id}
+            style={[
+              styles.bulletinCard,
+              {
+                backgroundColor: colors.card,
+                borderColor: isDraft ? colors.border : colors.border,
+                borderLeftColor: isPublished ? '#22C55E' : colors.border,
+                borderLeftWidth: isPublished ? 3 : 1,
+              },
+            ]}
+          >
+            {/* Title */}
+            <ThemedText style={[styles.bulletinTitle, { color: colors.text }]}>
+              {bulletin.title}
+            </ThemedText>
+
+            {/* Badges */}
+            <View style={styles.bulletinBadgeRow}>
+              <View style={[styles.badge, { backgroundColor: typeColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: typeColor }]}>
+                  {bulletin.type.toUpperCase()}
+                </ThemedText>
+              </View>
+              <View style={[styles.badge, { backgroundColor: statusColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: statusColor }]}>
+                  {bulletin.status.toUpperCase()}
+                </ThemedText>
+              </View>
+            </View>
+
+            {/* Author + Date */}
+            <ThemedText style={[styles.bulletinMeta, { color: colors.textTertiary }]}>
+              {bulletin.author} · {bulletin.date}
+            </ThemedText>
+
+            {/* Summary */}
+            <ThemedText style={[styles.bulletinSummary, { color: colors.textSecondary }]}>
+              {bulletin.summary}
+            </ThemedText>
+
+            {/* Audience */}
+            <ThemedText style={[styles.bulletinAudience, { color: colors.textTertiary }]}>
+              Audience: {bulletin.audience}
+            </ThemedText>
+          </View>
+        );
+      })}
+    </>
+  );
+}
+
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
+
+export function RaceweekOpsV2({ colors }: { colors: typeof Colors.light }) {
+  const [activePill, setActivePill] = useState<OpsPill>('timeline');
+
+  const handlePillPress = (pill: OpsPill) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setActivePill(pill);
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Fixed Top Bar */}
+      <TopBar colors={colors} />
+
+      {/* CEO Top 5 Strip */}
+      <CEOTop5Strip colors={colors} />
+
+      {/* Pill Nav */}
+      <View style={styles.pillRow}>
+        {OPS_PILLS.map((pill) => {
+          const isActive = activePill === pill.key;
+          return (
+            <Pressable
+              key={pill.key}
+              style={[
+                styles.pill,
+                {
+                  backgroundColor: isActive
+                    ? colors.text + 'E0'
+                    : colors.backgroundSecondary,
+                },
+              ]}
+              onPress={() => handlePillPress(pill.key)}
+            >
+              <ThemedText
+                style={[
+                  styles.pillText,
+                  {
+                    color: isActive ? colors.background : colors.textSecondary,
+                  },
+                ]}
+              >
+                {pill.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {/* Scrollable Panel Content */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {activePill === 'timeline' && <TimelineSection colors={colors} />}
+        {activePill === 'readiness' && <ReadinessSection colors={colors} />}
+        {activePill === 'incidents' && <IncidentsSection colors={colors} />}
+        {activePill === 'approvals' && <ApprovalsSection colors={colors} />}
+        {activePill === 'bulletins' && <BulletinsSection colors={colors} />}
+      </ScrollView>
+    </View>
+  );
+}
+
+// =============================================================================
+// STYLES
+// =============================================================================
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Top Bar
+  // ---------------------------------------------------------------------------
+  topBar: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 12,
+    marginHorizontal: Spacing.md,
+    marginTop: Spacing.sm,
+  },
+  topBarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  topBarEvent: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  modeBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+  },
+  modeBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  topBarCountdown: {
+    fontSize: 13,
+    marginTop: 4,
+  },
+
+  // ---------------------------------------------------------------------------
+  // CEO Top 5
+  // ---------------------------------------------------------------------------
+  top5Container: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.sm,
+    gap: 8,
+  },
+  top5Row: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  top5Rank: {
+    fontSize: 24,
+    fontWeight: '800',
+    width: 28,
+    textAlign: 'center',
+  },
+  top5Info: {
+    flex: 1,
+  },
+  top5Title: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  top5Owner: {
+    fontSize: 12,
+    marginBottom: 2,
+  },
+  top5Unblock: {
+    fontSize: 12,
+    fontStyle: 'italic',
+  },
+
+  // ---------------------------------------------------------------------------
+  // Pill Nav
+  // ---------------------------------------------------------------------------
+  pillRow: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
+    gap: 6,
+  },
+  pill: {
+    flex: 1,
+    paddingVertical: 6,
+    borderRadius: 18,
+    alignItems: 'center',
+  },
+  pillText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // ---------------------------------------------------------------------------
+  // ScrollView
+  // ---------------------------------------------------------------------------
+  scrollContent: {
+    paddingHorizontal: Spacing.md,
+    paddingBottom: 120,
+    gap: 12,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Cards
+  // ---------------------------------------------------------------------------
+  card: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 12,
+  },
+  metaText: {
+    fontSize: 13,
+    lineHeight: 18,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Shared Badge
+  // ---------------------------------------------------------------------------
+  badge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 999,
+  },
+  badgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Shared Stats Row
+  // ---------------------------------------------------------------------------
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 4,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: '800',
+  },
+  statLabel: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Timeline
+  // ---------------------------------------------------------------------------
+  timelineNode: {
+    flexDirection: 'row',
+    minHeight: 72,
+  },
+  timelineTimeCol: {
+    width: 90,
+    paddingTop: 2,
+    paddingRight: 8,
+  },
+  timelineTime: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  timelineTimeEnd: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+  timelineCenterCol: {
+    width: 24,
+    alignItems: 'center',
+  },
+  timelineDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginTop: 4,
+  },
+  timelineLine: {
+    width: 2,
+    flex: 1,
+    marginTop: 4,
+  },
+  timelineInfoCol: {
+    flex: 1,
+    paddingLeft: 10,
+    paddingBottom: 16,
+  },
+  timelineSessionName: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  timelineBadgeRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 4,
+  },
+  timelineWeather: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Readiness
+  // ---------------------------------------------------------------------------
+  readinessTeamHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 12,
+  },
+  teamBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  teamBadgeText: {
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  readinessTeamInfo: {
+    flex: 1,
+  },
+  readinessTeamName: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  readyBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  readyBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  readinessChecks: {
+    gap: 8,
+  },
+  readinessCheckRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  readinessCheckLabel: {
+    fontSize: 13,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Incidents
+  // ---------------------------------------------------------------------------
+  incidentTopRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 8,
+  },
+  incidentLapTime: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  incidentDescription: {
+    fontSize: 13,
+    lineHeight: 19,
+    marginBottom: 8,
+  },
+  incidentDriversRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 8,
+  },
+  driverTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  driverTagText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  incidentDecision: {
+    fontSize: 12,
+    lineHeight: 18,
+    fontStyle: 'italic',
+  },
+
+  // ---------------------------------------------------------------------------
+  // Approvals
+  // ---------------------------------------------------------------------------
+  approvalTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  approvalBadgeRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 8,
+    flexWrap: 'wrap',
+  },
+  approvalMeta: {
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  approvalAmount: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  approvalActions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 12,
+  },
+  approveButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  denyButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  actionButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+
+  // ---------------------------------------------------------------------------
+  // Bulletins
+  // ---------------------------------------------------------------------------
+  bulletinCard: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 16,
+  },
+  bulletinTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  bulletinBadgeRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 8,
+  },
+  bulletinMeta: {
+    fontSize: 12,
+    marginBottom: 6,
+  },
+  bulletinSummary: {
+    fontSize: 13,
+    lineHeight: 19,
+    marginBottom: 8,
+  },
+  bulletinAudience: {
+    fontSize: 12,
+    fontStyle: 'italic',
+  },
+});

@@ -25,18 +25,20 @@ export function registerHeaderLeftAction(cb: (() => void) | null) {
 
 const MODE_LABELS: Record<Mode, string> = {
   sports: 'Sports',
-  enterprise: 'Business',
+  enterprise: 'Enterprise',
+  business: 'Business',
   church: 'Church',
   education: 'Education',
-  community: 'Competition',
+  competition: 'Competition',
 };
 
 const MODE_ICONS: Record<Mode, IconSymbolName> = {
   sports: 'basketball.fill',
-  enterprise: 'briefcase.fill',
+  enterprise: 'building.2.fill',
+  business: 'briefcase.fill',
   church: 'building.columns.fill',
   education: 'graduationcap.fill',
-  community: 'flag.checkered',
+  competition: 'flag.checkered',
 };
 
 interface GlobalHeaderProps {

@@ -539,7 +539,8 @@ export const STORY_CIRCLES_BY_MODE: Record<Mode, StoryCircle[]> = {
   church: CHURCH_STORY_CIRCLES,
   education: EDUCATION_STORY_CIRCLES,
   enterprise: ENTERPRISE_STORY_CIRCLES,
-  community: COMMUNITY_STORY_CIRCLES,
+  business: ENTERPRISE_STORY_CIRCLES,
+  competition: COMMUNITY_STORY_CIRCLES,
 };
 
 export const FEED_POSTS_BY_MODE: Record<Mode, VideoFeedPost[]> = {
@@ -547,5 +548,6 @@ export const FEED_POSTS_BY_MODE: Record<Mode, VideoFeedPost[]> = {
   church: CHURCH_FEED_POSTS,
   education: EDUCATION_FEED_POSTS,
   enterprise: ENTERPRISE_FEED_POSTS,
-  community: COMMUNITY_FEED_POSTS,
+  business: ENTERPRISE_FEED_POSTS,
+  competition: COMMUNITY_FEED_POSTS,
 };

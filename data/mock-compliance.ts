@@ -259,7 +259,8 @@ export const COMPLIANCE_POLICIES: Record<Mode, CompliancePolicy[]> = {
   church: churchPolicies,
   education: educationPolicies,
   enterprise: enterprisePolicies,
-  community: communityPolicies,
+  competition: communityPolicies,
+  business: enterprisePolicies,
 };
 
 export const COMPLIANCE_AUDITS: Record<Mode, ComplianceAudit[]> = {
@@ -267,7 +268,8 @@ export const COMPLIANCE_AUDITS: Record<Mode, ComplianceAudit[]> = {
   church: churchAudits,
   education: educationAudits,
   enterprise: enterpriseAudits,
-  community: communityAudits,
+  competition: communityAudits,
+  business: enterpriseAudits,
 };
 
 export const COMPLIANCE_INCIDENTS: Record<Mode, ComplianceIncident[]> = {
@@ -275,7 +277,8 @@ export const COMPLIANCE_INCIDENTS: Record<Mode, ComplianceIncident[]> = {
   church: churchIncidents,
   education: educationIncidents,
   enterprise: enterpriseIncidents,
-  community: communityIncidents,
+  competition: communityIncidents,
+  business: enterpriseIncidents,
 };
 
 export const COMPLIANCE_TRAINING: Record<Mode, ComplianceTraining[]> = {
@@ -283,7 +286,8 @@ export const COMPLIANCE_TRAINING: Record<Mode, ComplianceTraining[]> = {
   church: churchTraining,
   education: educationTraining,
   enterprise: enterpriseTraining,
-  community: communityTraining,
+  competition: communityTraining,
+  business: enterpriseTraining,
 };
 
 export const COMPLIANCE_SNAPSHOTS: Record<Mode, ComplianceSnapshot> = {
@@ -291,5 +295,6 @@ export const COMPLIANCE_SNAPSHOTS: Record<Mode, ComplianceSnapshot> = {
   church: churchSnapshot,
   education: educationSnapshot,
   enterprise: enterpriseSnapshot,
-  community: communitySnapshot,
+  competition: communitySnapshot,
+  business: enterpriseSnapshot,
 };

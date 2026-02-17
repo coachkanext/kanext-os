@@ -259,10 +259,15 @@ export const PAYRAILS_SCOPE_CHIPS: Record<Mode, PayRailsScopeChip[]> = {
     { key: 'entity', label: 'Entity' },
     { key: 'department', label: 'Department' },
   ],
-  community: [
+  competition: [
     { key: 'organization', label: 'Organization' },
     { key: 'series', label: 'Series' },
     { key: 'event-weekend', label: 'Event Weekend' },
+  ],
+  business: [
+    { key: 'organization', label: 'Organization' },
+    { key: 'entity', label: 'Entity' },
+    { key: 'department', label: 'Department' },
   ],
 };
 
@@ -874,7 +879,7 @@ export function getPayRailsData(mode: Mode): PayRailsModeData {
         audit: ENTERPRISE_AUDIT,
         settings: ENTERPRISE_SETTINGS,
       };
-    case 'community':
+    case 'competition':
       return {
         overview: COMMUNITY_OVERVIEW,
         accounts: COMMUNITY_ACCOUNTS,
@@ -890,6 +895,23 @@ export function getPayRailsData(mode: Mode): PayRailsModeData {
         controls: COMMUNITY_CONTROLS,
         audit: COMMUNITY_AUDIT,
         settings: COMMUNITY_SETTINGS,
+      };
+    case 'business':
+      return {
+        overview: ENTERPRISE_OVERVIEW,
+        accounts: ENTERPRISE_ACCOUNTS,
+        charges: ENTERPRISE_CHARGES,
+        payouts: ENTERPRISE_PAYOUTS,
+        transfers: ENTERPRISE_TRANSFERS,
+        settlements: ENTERPRISE_SETTLEMENTS,
+        refunds: ENTERPRISE_REFUNDS,
+        reconciliations: ENTERPRISE_RECONCILIATIONS,
+        disputes: ENTERPRISE_DISPUTES,
+        taxForms: ENTERPRISE_TAX_FORMS,
+        exports: ENTERPRISE_EXPORTS,
+        controls: ENTERPRISE_CONTROLS,
+        audit: ENTERPRISE_AUDIT,
+        settings: ENTERPRISE_SETTINGS,
       };
   }
 }

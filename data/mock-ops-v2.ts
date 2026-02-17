@@ -236,7 +236,12 @@ export const OPS_SCOPE_CHIPS: Record<Mode, OpsScopeChip[]> = {
     { key: 'entity', label: 'Entity' },
     { key: 'department', label: 'Department' },
   ],
-  community: [
+  business: [
+    { key: 'organization', label: 'Organization' },
+    { key: 'entity', label: 'Entity' },
+    { key: 'department', label: 'Department' },
+  ],
+  competition: [
     { key: 'organization', label: 'Organization' },
     { key: 'series', label: 'Series' },
     { key: 'event-weekend', label: 'Event Weekend' },
@@ -844,7 +849,21 @@ const OPS_DATA: Record<Mode, {
     dashboard: ENTERPRISE_DASHBOARD,
     audit: ENTERPRISE_AUDIT,
   },
-  community: {
+  business: {
+    tasks: ENTERPRISE_TASKS,
+    workOrders: ENTERPRISE_WORK_ORDERS,
+    issues: ENTERPRISE_ISSUES,
+    assets: ENTERPRISE_ASSETS,
+    vendors: ENTERPRISE_VENDORS,
+    facilities: ENTERPRISE_FACILITIES,
+    travel: ENTERPRISE_TRAVEL,
+    sops: ENTERPRISE_SOPS,
+    reports: ENTERPRISE_REPORTS,
+    cadence: ENTERPRISE_CADENCE,
+    dashboard: ENTERPRISE_DASHBOARD,
+    audit: ENTERPRISE_AUDIT,
+  },
+  competition: {
     tasks: COMMUNITY_TASKS,
     workOrders: COMMUNITY_WORK_ORDERS,
     issues: COMMUNITY_ISSUES,

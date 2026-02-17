@@ -352,7 +352,8 @@ export const QUICK_SHARE_TARGETS_BY_MODE: Record<Mode, QuickShareTarget[]> = {
   church: CHURCH_QUICK_SHARE_TARGETS,
   education: EDUCATION_QUICK_SHARE_TARGETS,
   enterprise: ENTERPRISE_QUICK_SHARE_TARGETS,
-  community: COMMUNITY_QUICK_SHARE_TARGETS,
+  business: ENTERPRISE_QUICK_SHARE_TARGETS,
+  competition: COMMUNITY_QUICK_SHARE_TARGETS,
 };
 
 export const INBOX_THREADS_BY_MODE: Record<Mode, VideoInboxThread[]> = {
@@ -360,5 +361,6 @@ export const INBOX_THREADS_BY_MODE: Record<Mode, VideoInboxThread[]> = {
   church: CHURCH_INBOX_THREADS,
   education: EDUCATION_INBOX_THREADS,
   enterprise: ENTERPRISE_INBOX_THREADS,
-  community: COMMUNITY_INBOX_THREADS,
+  business: ENTERPRISE_INBOX_THREADS,
+  competition: COMMUNITY_INBOX_THREADS,
 };

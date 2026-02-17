@@ -96,7 +96,8 @@ export function getOrgPeople(mode: Mode): OrgPerson[] {
     case 'church': return churchAdapter();
     case 'education': return educationAdapter();
     case 'enterprise': return enterpriseAdapter();
-    case 'community': return communityAdapter();
+    case 'competition': return communityAdapter();
+    case 'business': return enterpriseAdapter();
     default: return [];
   }
 }

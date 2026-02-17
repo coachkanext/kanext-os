@@ -315,7 +315,8 @@ export const OPERATIONS_EVENTS: Record<Mode, CalendarEvent[]> = {
   church: CHURCH_EVENTS,
   education: EDUCATION_EVENTS,
   enterprise: ENTERPRISE_EVENTS,
-  community: COMMUNITY_EVENTS,
+  competition: COMMUNITY_EVENTS,
+  business: ENTERPRISE_EVENTS,
 };
 
 export const OPERATIONS_TASKS: Record<Mode, Task[]> = {
@@ -323,7 +324,8 @@ export const OPERATIONS_TASKS: Record<Mode, Task[]> = {
   church: CHURCH_TASKS,
   education: EDUCATION_TASKS,
   enterprise: ENTERPRISE_TASKS,
-  community: COMMUNITY_TASKS,
+  competition: COMMUNITY_TASKS,
+  business: ENTERPRISE_TASKS,
 };
 
 export const OPERATIONS_FACILITIES: Record<Mode, Facility[]> = {
@@ -331,7 +333,8 @@ export const OPERATIONS_FACILITIES: Record<Mode, Facility[]> = {
   church: CHURCH_FACILITIES,
   education: EDUCATION_FACILITIES,
   enterprise: ENTERPRISE_FACILITIES,
-  community: COMMUNITY_FACILITIES,
+  competition: COMMUNITY_FACILITIES,
+  business: ENTERPRISE_FACILITIES,
 };
 
 export const OPERATIONS_EQUIPMENT: Record<Mode, Equipment[]> = {
@@ -339,7 +342,8 @@ export const OPERATIONS_EQUIPMENT: Record<Mode, Equipment[]> = {
   church: CHURCH_EQUIPMENT,
   education: EDUCATION_EQUIPMENT,
   enterprise: ENTERPRISE_EQUIPMENT,
-  community: COMMUNITY_EQUIPMENT,
+  competition: COMMUNITY_EQUIPMENT,
+  business: ENTERPRISE_EQUIPMENT,
 };
 
 export const OPERATIONS_TRAVEL: Record<Mode, TravelPlan[]> = {
@@ -347,7 +351,8 @@ export const OPERATIONS_TRAVEL: Record<Mode, TravelPlan[]> = {
   church: CHURCH_TRAVEL,
   education: EDUCATION_TRAVEL,
   enterprise: ENTERPRISE_TRAVEL,
-  community: COMMUNITY_TRAVEL,
+  competition: COMMUNITY_TRAVEL,
+  business: ENTERPRISE_TRAVEL,
 };
 
 export const OPERATIONS_SNAPSHOTS: Record<Mode, OperationsSnapshot> = {
@@ -355,5 +360,6 @@ export const OPERATIONS_SNAPSHOTS: Record<Mode, OperationsSnapshot> = {
   church: CHURCH_SNAPSHOT,
   education: EDUCATION_SNAPSHOT,
   enterprise: ENTERPRISE_SNAPSHOT,
-  community: COMMUNITY_SNAPSHOT,
+  competition: COMMUNITY_SNAPSHOT,
+  business: ENTERPRISE_SNAPSHOT,
 };

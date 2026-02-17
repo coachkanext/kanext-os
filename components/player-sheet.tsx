@@ -1,7 +1,8 @@
 /**
- * Universal Player Sheet — shared bottom sheet for roster and recruiting players.
- * 5-tab layout for roster players (Bio, Fit, KaNeXT, Growth, Messages)
- * 6-tab layout for recruits (Bio, Fit, KaNeXT, Growth, Messages, Recruiting)
+ * Universal Player Sheet V2 — 9 canonical tabs + RBAC gating
+ *
+ * "One sheet, many lenses" — tabs hide/show based on the active sports role lens.
+ * Same export name (PlayerSheet) and backwards-compatible props.
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -13,14 +14,16 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius, Colors } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { type ClusterRatings, getPlayerSubclusters } from '@/data/roster-data';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAppContext } from '@/context/app-context';
+
+import { type ClusterRatings, getPlayerSubclusters, ROSTER_META, PLAYER_CLUSTERS, computeOffKR, computeDefKR } from '@/data/roster-data';
 import { ARCHETYPE_LABELS } from '@/data/system-demand-profiles';
 import type { Archetype } from '@/data/system-demand-profiles';
 import { CLUSTER_LABELS } from '@/data/mock-program-context';
@@ -32,58 +35,34 @@ import { computeFitKR, computeOffDefKR, getFitReasons } from '@/utils/fit-kr';
 import { OFFENSIVE_STYLES, DEFENSIVE_STYLES } from '@/data/mock-program-context';
 import { type PoolPlayer, PLAYER_POOL, POOL_PLAYER_AWARDS } from '@/data/playerPool';
 import {
-  FMU_PLAYER_BIOS,
-  FMU_PLAYER_ABOUT,
-  FMU_LEADERS,
-  getFmuCareer,
-  getFmuAwards,
-  getFmuHighlights,
-  getFmuTS,
+  FMU_PLAYER_BIOS, FMU_PLAYER_ABOUT, FMU_LEADERS,
+  getFmuCareer, getFmuAwards, getFmuHighlights, getFmuTS, getFmuSeasonGames,
 } from '@/data/fmu';
-import {
-  getPlayerComms,
-  getRecruitComms,
-  COMMS_TYPE_META,
-  type CommsEntry,
-  type TouchMethod,
-} from '@/data/mock-comms';
+import { getPlayerComms, getRecruitComms, COMMS_TYPE_META, type CommsEntry } from '@/data/mock-comms';
 import type { BoardEntry, BoardStatus } from '@/data/recruitingBoard';
-import { computePlayerBadges, BADGE_LEVEL_COLORS, type PlayerBadge } from '@/utils/player-badges';
+import { computePlayerBadges, BADGE_LEVEL_COLORS } from '@/utils/player-badges';
 import {
-  BOARD_COLUMNS,
-  BOARD_COLUMN_COLORS,
-  TEMPERATURE_COLORS,
-  RISK_LEVEL_COLORS,
-  LOG_TYPE_META,
-  type Temperature,
-  type RiskLevel,
+  BOARD_COLUMNS, BOARD_COLUMN_COLORS, TEMPERATURE_COLORS,
+  RISK_LEVEL_COLORS, LOG_TYPE_META, type Temperature, type RiskLevel,
 } from '@/data/recruitingBoard';
 import type { PositionNeed } from '@/data/team-needs';
+import { getPlayerDevelopment } from '@/data/mock-player-development';
+import { getPlayerHealth } from '@/data/mock-player-health';
+import { getPlayerAdmin } from '@/data/mock-player-admin';
+import {
+  getSportsRole, getPlayerSheetTabs, getKRVisibility, formatKR,
+  canSeeSensitive, canSeeCoachActions, canSeeAdminActions, type PlayerTab,
+} from '@/utils/sports-rbac';
 
-// ─── Constants ───
-const GRAY = '#8A8F98';
-
-type SheetTab = 'bio' | 'fit' | 'kanext' | 'growth' | 'messages' | 'recruiting';
-
-const ROSTER_TABS: { key: SheetTab; label: string }[] = [
-  { key: 'bio', label: 'Bio' },
-  { key: 'fit', label: 'Fit' },
-  { key: 'kanext', label: 'KaNeXT' },
-  { key: 'growth', label: 'Growth' },
-  { key: 'messages', label: 'Messages' },
-];
-
-const RECRUIT_TABS: { key: SheetTab; label: string }[] = [
-  ...ROSTER_TABS,
-  { key: 'recruiting', label: 'Recruiting' },
-];
+// =============================================================================
+// CONSTANTS
+// =============================================================================
 
 const ALL_CLUSTER_KEYS: (keyof ClusterRatings)[] = [
   'shooting', 'finishing', 'playmaking',
   'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
 ];
 
-// ─── Archetype → usage/touches mapping ───
 const HIGH_USAGE_ARCHETYPES = new Set<Archetype>([
   'pick_and_roll_operator', 'primary_ball_handler', 'dho_handoff_hub',
   'secondary_creator_wing', 'connector_guard_wing',
@@ -93,7 +72,7 @@ const MED_USAGE_ARCHETYPES = new Set<Archetype>([
   'switchable_defender_wing', 'off_ball_shooter',
 ]);
 
-function getUsageTouches(archetype: Archetype): { usage: string; touches: string } {
+function getUsageTouches(archetype: Archetype) {
   if (HIGH_USAGE_ARCHETYPES.has(archetype)) return { usage: 'High', touches: 'High' };
   if (MED_USAGE_ARCHETYPES.has(archetype)) return { usage: 'Med', touches: 'Med' };
   return { usage: 'Low', touches: 'Low' };
@@ -106,7 +85,6 @@ function getLineupSlot(fitKR: number): string {
   return 'Depth';
 }
 
-// Complementary archetype pairings by position category
 const PAIRING_MAP: Record<string, Archetype[]> = {
   PG: ['spot_up_specialist', 'vertical_spacer'],
   SG: ['pick_and_roll_operator', 'two_way_wing'],
@@ -115,106 +93,92 @@ const PAIRING_MAP: Record<string, Archetype[]> = {
   C: ['pick_and_roll_operator', 'three_and_d_wing'],
 };
 
-// Short class year labels
 const CLASS_SHORT: Record<string, string> = {
   Freshman: 'Fr', Sophomore: 'So', Junior: 'Jr', Senior: 'Sr',
   'Grad Student': 'Gr', 'R-Freshman': 'R-Fr', 'R-Sophomore': 'R-So',
   'R-Junior': 'R-Jr', 'R-Senior': 'R-Sr',
 };
 
-// Badge description mapping for Calling Cards
 const BADGE_DESCRIPTIONS: Record<string, string> = {
   'Catch-and-Shoot': 'Elite perimeter shooting in catch-and-shoot situations',
   'Movement Shooter': 'Deadly off screens and in motion',
   'Deep Range': 'Extends the floor beyond the arc with deep range',
-  'Pull-Up Shot Maker': 'Creates own shot off the dribble with elite pull-up game',
-  'Rim Finisher': 'Dominant finishing at the rim on drives and cuts',
-  'Contact Finisher': 'Finishes through contact with explosive power',
-  'Rim Pressure': 'Constant pressure at the basket creates scoring opportunities',
-  'FT Generator': 'Gets to the line at an elite rate through crafty play',
+  'Pull-Up Shot Maker': 'Creates own shot off the dribble',
+  'Rim Finisher': 'Dominant finishing at the rim',
+  'Contact Finisher': 'Finishes through contact with power',
+  'Rim Pressure': 'Constant pressure at the basket',
+  'FT Generator': 'Gets to the line at an elite rate',
   'Cutter': 'Elite off-ball movement and cutting ability',
-  'Primary Playmaker': 'Orchestrates the offense with elite vision and passing',
+  'Primary Playmaker': 'Orchestrates the offense with elite vision',
   'Drive-and-Kick': 'Attacks and creates open looks for teammates',
-  'Ball Security': 'Protects the ball with elite handles and decision-making',
+  'Ball Security': 'Protects the ball with elite handles',
   'Transition Playmaker': 'Pushes the pace and creates in transition',
   'Point-of-Attack': 'Locks down the primary ball-handler',
   'Ball Pressure': 'Relentless on-ball pressure forces turnovers',
-  'Lockdown Perimeter': 'Elite perimeter defender who takes away the best option',
+  'Lockdown Perimeter': 'Elite perimeter defender',
   'Rim Protector': 'Anchors the defense with elite shot-blocking',
   'Paint Anchor': 'Commands the paint with physical post defense',
   'Help Defender': 'Elite help-side instincts and positioning',
   'Passing Lane Disruptor': 'Active hands create deflections and steals',
   'Defensive Rebounder': 'Controls the glass on the defensive end',
-  'Physical Rebounder': 'Crashes the offensive boards with relentless effort',
+  'Physical Rebounder': 'Crashes the boards with relentless effort',
 };
 
-// Recruiting pipeline stages for Stage Pipeline
 const PIPELINE_STAGES: string[] = [
   'Watchlist', 'Evaluating', 'Contacted', 'Priority',
   'Visit Planned', 'Visited', 'Offer Out', 'Committed', 'Signed',
 ];
 
-// ── Cluster Bar ──
+function getStatusColor(status: string): string {
+  switch (status) {
+    case 'available': return '#22C55E';
+    case 'questionable': case 'day_to_day': return '#F59E0B';
+    case 'injured': case 'out': case 'doubtful': return '#EF4444';
+    case 'redshirt': return '#6AA9FF';
+    default: return '#8F8F8F';
+  }
+}
 
-function ClusterBar({
-  clusterKey,
-  value,
-  playerId,
-  jerseyNumber,
-  expanded,
-  onToggle,
-  showEvidence,
-}: {
-  clusterKey: keyof ClusterRatings;
-  value: number;
-  playerId: string;
-  jerseyNumber?: string;
-  expanded: boolean;
-  onToggle: () => void;
-  showEvidence?: boolean;
+function getEligibilityColor(s: string): string {
+  switch (s) { case 'clear': return '#22C55E'; case 'pending': return '#F59E0B'; case 'hold': case 'expired': return '#EF4444'; default: return '#8F8F8F'; }
+}
+
+function getGoalIcon(s: string): string {
+  switch (s) { case 'complete': return '✓'; case 'in_progress': return '◉'; default: return '○'; }
+}
+function getGoalColor(s: string): string {
+  switch (s) { case 'complete': return '#22C55E'; case 'in_progress': return '#F59E0B'; default: return '#8F8F8F'; }
+}
+
+// =============================================================================
+// CLUSTER BAR
+// =============================================================================
+
+function ClusterBar({ clusterKey, value, playerId, jerseyNumber, expanded, onToggle }: {
+  clusterKey: keyof ClusterRatings; value: number; playerId: string;
+  jerseyNumber?: string; expanded: boolean; onToggle: () => void;
 }) {
   const label = CLUSTER_LABELS[clusterKey as ClusterType]?.label ?? clusterKey;
   const barColor = value >= 70 ? '#4CAF50' : value >= 55 ? '#FF9800' : '#EF4444';
   const pct = Math.min(value, 100);
   const subclusters = expanded
-    ? jerseyNumber
-      ? getPlayerSubclusters(jerseyNumber, clusterKey)
-      : getPoolPlayerSubclusters(playerId, clusterKey, value)
+    ? jerseyNumber ? getPlayerSubclusters(jerseyNumber, clusterKey) : getPoolPlayerSubclusters(playerId, clusterKey, value)
     : [];
-
   return (
     <View>
       <Pressable style={barStyles.row} onPress={onToggle}>
-        <View style={barStyles.labelCol}>
-          <Text style={barStyles.label}>{label}</Text>
-        </View>
-        <View style={barStyles.barTrack}>
-          <View style={[barStyles.barFill, { width: `${pct}%`, backgroundColor: barColor }]} />
-        </View>
+        <View style={barStyles.labelCol}><Text style={barStyles.label}>{label}</Text></View>
+        <View style={barStyles.barTrack}><View style={[barStyles.barFill, { width: `${pct}%`, backgroundColor: barColor }]} /></View>
         <Text style={[barStyles.value, { color: barColor }]}>{value}</Text>
         <Text style={barStyles.chevron}>{expanded ? '\u25BE' : '\u203A'}</Text>
       </Pressable>
-
       {expanded && subclusters.map((sc) => {
         const scColor = sc.rating >= 70 ? '#4CAF50' : sc.rating >= 55 ? '#FF9800' : '#EF4444';
-        const scPct = Math.min(sc.rating, 100);
         return (
-          <View key={sc.name}>
-            <View style={barStyles.subRow}>
-              <Text style={barStyles.subLabel}>{sc.name}</Text>
-              <View style={barStyles.subBarTrack}>
-                <View style={[barStyles.barFill, { width: `${scPct}%`, backgroundColor: scColor }]} />
-              </View>
-              <Text style={[barStyles.subValue, { color: scColor }]}>{sc.rating}</Text>
-            </View>
-            {showEvidence && (
-              <View style={barStyles.evidenceRow}>
-                <Text style={barStyles.evidenceLabel}>Evidence</Text>
-                <Text style={barStyles.evidenceItem}>
-                  {sc.rating >= 80 ? 'Film clip available' : 'Stat-based projection'}
-                </Text>
-              </View>
-            )}
+          <View key={sc.name} style={barStyles.subRow}>
+            <Text style={barStyles.subLabel}>{sc.name}</Text>
+            <View style={barStyles.subBarTrack}><View style={[barStyles.barFill, { width: `${Math.min(sc.rating, 100)}%`, backgroundColor: scColor }]} /></View>
+            <Text style={[barStyles.subValue, { color: scColor }]}>{sc.rating}</Text>
           </View>
         );
       })}
@@ -234,12 +198,11 @@ const barStyles = StyleSheet.create({
   subLabel: { fontSize: 10, color: '#999', width: 100 },
   subBarTrack: { flex: 1, height: 5, backgroundColor: '#222', borderRadius: 3, overflow: 'hidden', marginHorizontal: 6 },
   subValue: { fontSize: 11, fontWeight: '600', width: 24, textAlign: 'right' },
-  evidenceRow: { paddingLeft: 32, marginBottom: 6 },
-  evidenceLabel: { fontSize: 10, color: '#555', letterSpacing: 0.3, marginBottom: 2 },
-  evidenceItem: { fontSize: 10, color: '#666', fontStyle: 'italic' },
 });
 
-// ── Main Sheet ──
+// =============================================================================
+// PROPS
+// =============================================================================
 
 export interface PlayerSheetProps {
   visible: boolean;
@@ -253,244 +216,105 @@ export interface PlayerSheetProps {
   onFitNoteChange: (text: string) => void;
   coachNote: string;
   onCoachNoteChange: (text: string) => void;
-  /** Override cluster ratings (e.g. from roster data instead of pool ratings) */
   clusterOverride?: ClusterRatings;
-  /** Override base KR (e.g. from roster data) */
   baseKROverride?: number;
-  /** Player height + weight */
   physicals?: { height: string; weight: number };
-  /** FMU jersey number — enables roster mode (5-tab) */
   jerseyNumber?: string;
-  /** Board entry for this player (enables Recruiting tab) */
   boardEntry?: BoardEntry | null;
-  /** Team needs (for recruiting snapshot) */
   teamNeeds?: PositionNeed[];
-  /** Board action callbacks */
   onMoveOnBoard?: (entryId: string, status: BoardStatus) => void;
   onRemoveFromBoard?: (entryId: string) => void;
-  /** Default tab override (e.g. 'recruiting' when opened from board) */
-  defaultTabOverride?: SheetTab;
+  defaultTabOverride?: PlayerTab;
+  membershipId?: string;
 }
 
-export function PlayerSheet({
-  visible,
-  onClose,
-  player,
-  offStyle,
-  defStyle,
-  onOffStyleChange,
-  onDefStyleChange,
-  fitNote,
-  onFitNoteChange,
-  coachNote,
-  onCoachNoteChange,
-  clusterOverride,
-  baseKROverride,
-  physicals,
-  jerseyNumber,
-  boardEntry,
-  teamNeeds,
-  onMoveOnBoard,
-  onRemoveFromBoard,
-  defaultTabOverride,
-}: PlayerSheetProps) {
-  const router = useRouter();
-  const isRoster = !!jerseyNumber;
-  const tabs = isRoster ? ROSTER_TABS : RECRUIT_TABS;
-  const defaultTab: SheetTab = defaultTabOverride ?? (isRoster ? 'bio' : 'recruiting');
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
 
-  const [activeTab, setActiveTab] = useState<SheetTab>(defaultTab);
+export function PlayerSheet({
+  visible, onClose, player, offStyle, defStyle,
+  onOffStyleChange, onDefStyleChange, fitNote, onFitNoteChange,
+  coachNote, onCoachNoteChange, clusterOverride, baseKROverride,
+  physicals, jerseyNumber, boardEntry, teamNeeds,
+  onMoveOnBoard, onRemoveFromBoard, defaultTabOverride, membershipId,
+}: PlayerSheetProps) {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const { state } = useAppContext();
+  const isRoster = !!jerseyNumber;
+
+  // RBAC
+  const effectiveMembership = membershipId ?? state.activeContext.membership_id;
+  const role = useMemo(() => getSportsRole(effectiveMembership), [effectiveMembership]);
+  const krVisibility = useMemo(() => getKRVisibility(role), [role]);
+  const sensitive = useMemo(() => canSeeSensitive(role), [role]);
+  const coachActions = useMemo(() => canSeeCoachActions(role), [role]);
+  const adminActions = useMemo(() => canSeeAdminActions(role), [role]);
+  const tabs = useMemo(() => getPlayerSheetTabs(role), [role]);
+  const defaultTab: PlayerTab = defaultTabOverride ?? (tabs[0]?.key ?? 'overview');
+
+  const [activeTab, setActiveTab] = useState<PlayerTab>(defaultTab);
   const [expandedClusters, setExpandedClusters] = useState<Set<string>>(new Set());
-  const [expandedCareer, setExpandedCareer] = useState<Set<string>>(new Set());
-  const [bioExpanded, setBioExpanded] = useState(false);
   const [showAllAwards, setShowAllAwards] = useState(false);
-  const [showFitSelector, setShowFitSelector] = useState(false);
-  const [showFullBreakdown, setShowFullBreakdown] = useState(false);
-  const [expandedReceipts, setExpandedReceipts] = useState<Set<string>>(new Set());
 
   const toggleCluster = (key: string) => {
-    setExpandedClusters((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
-
-  const toggleCareer = (year: string) => {
-    setExpandedCareer((prev) => {
-      const next = new Set(prev);
-      if (next.has(year)) next.delete(year);
-      else next.add(year);
-      return next;
-    });
-  };
-
-  const toggleReceipt = (lane: string) => {
-    setExpandedReceipts((prev) => {
-      const next = new Set(prev);
-      if (next.has(lane)) next.delete(lane);
-      else next.add(lane);
-      return next;
-    });
+    setExpandedClusters((prev) => { const n = new Set(prev); if (n.has(key)) n.delete(key); else n.add(key); return n; });
   };
 
   useEffect(() => {
     if (visible && player) {
       setActiveTab(defaultTab);
       setExpandedClusters(new Set());
-      setExpandedCareer(new Set());
-      setBioExpanded(false);
       setShowAllAwards(false);
-      setShowFitSelector(false);
-      setShowFullBreakdown(false);
-      setExpandedReceipts(new Set());
     }
   }, [visible, player]);
 
+  // Player data
   const ratings = useMemo(() => player ? getPlayerRatings(player.id) : null, [player?.id]);
   const clusters = clusterOverride ?? ratings?.clusters ?? null;
-
-  const fitKR = useMemo(() => {
-    if (!clusters) return 0;
-    return computeFitKR(clusters, offStyle, defStyle);
-  }, [clusters, offStyle, defStyle]);
-
-  const fitReasons = useMemo(() => {
-    if (!clusters) return [];
-    return getFitReasons(clusters, player ? [player.archetype] : [], offStyle, defStyle);
-  }, [clusters, player?.archetype, offStyle, defStyle]);
-
-  const offDef = useMemo(() => {
-    if (!clusters) return { baseOff: 0, baseDef: 0, fitOff: 0, fitDef: 0 };
-    return computeOffDefKR(clusters, offStyle, defStyle);
-  }, [clusters, offStyle, defStyle]);
-
+  const fitKR = useMemo(() => clusters ? computeFitKR(clusters, offStyle, defStyle) : 0, [clusters, offStyle, defStyle]);
+  const fitReasons = useMemo(() => clusters ? getFitReasons(clusters, player ? [player.archetype] : [], offStyle, defStyle) : [], [clusters, player?.archetype, offStyle, defStyle]);
+  const offDef = useMemo(() => clusters ? computeOffDefKR(clusters, offStyle, defStyle) : { baseOff: 0, baseDef: 0, fitOff: 0, fitDef: 0 }, [clusters, offStyle, defStyle]);
   const seasons = useMemo(() => player ? getPlayerSeasons(player.id) : [], [player?.id]);
 
-  // FMU data (roster players only)
+  // FMU data
   const bio = jerseyNumber ? FMU_PLAYER_BIOS[jerseyNumber] ?? null : null;
   const about = jerseyNumber ? FMU_PLAYER_ABOUT[jerseyNumber] ?? null : null;
   const awards = useMemo(() => {
-    if (jerseyNumber) {
-      const raw = getFmuAwards(jerseyNumber);
-      return [...raw].sort((a, b) => b.year.localeCompare(a.year));
-    }
-    // Pool player awards
-    const poolAwards = player ? (POOL_PLAYER_AWARDS[player.id] ?? []) : [];
-    return poolAwards.map((title) => ({ title, year: '' }));
+    if (jerseyNumber) return [...getFmuAwards(jerseyNumber)].sort((a, b) => b.year.localeCompare(a.year));
+    return (player ? (POOL_PLAYER_AWARDS[player.id] ?? []) : []).map((title) => ({ title, year: '' }));
   }, [jerseyNumber, player?.id]);
   const career = useMemo(() => jerseyNumber ? getFmuCareer(jerseyNumber) : [], [jerseyNumber]);
-  const highlights = useMemo(() => jerseyNumber ? getFmuHighlights(jerseyNumber).slice(0, 3) : [], [jerseyNumber]);
+  const highlights = useMemo(() => jerseyNumber ? getFmuHighlights(jerseyNumber).slice(0, 5) : [], [jerseyNumber]);
   const tsPct = useMemo(() => jerseyNumber ? getFmuTS(jerseyNumber) : 0, [jerseyNumber]);
+  const seasonGames = useMemo(() => jerseyNumber ? getFmuSeasonGames(jerseyNumber) : [], [jerseyNumber]);
 
-  // Current season leader stats
   const leaderStats = useMemo(() => {
     if (!jerseyNumber) return null;
-    const j = parseInt(jerseyNumber, 10);
-    const jStr = isNaN(j) ? jerseyNumber : String(j);
-    return FMU_LEADERS.find((l) => {
-      const n = parseInt(l.number, 10);
-      return (isNaN(n) ? l.number : String(n)) === jStr;
-    }) ?? null;
+    const jStr = String(parseInt(jerseyNumber, 10));
+    return FMU_LEADERS.find((l) => String(parseInt(l.number, 10)) === jStr) ?? null;
   }, [jerseyNumber]);
 
-  // Current season career entry (for GP/MPG/GS)
-  const currentSeason = useMemo(() => career.find((s) => s.current) ?? null, [career]);
-
-  // Player badges
+  // Badges
   const playerBadges = useMemo(() => {
     if (!clusters) return [];
     const getSubs = (key: keyof typeof clusters) =>
-      jerseyNumber
-        ? getPlayerSubclusters(jerseyNumber, key)
-        : player ? getPoolPlayerSubclusters(player.id, key, clusters[key]) : [];
+      jerseyNumber ? getPlayerSubclusters(jerseyNumber, key) : player ? getPoolPlayerSubclusters(player.id, key, clusters[key]) : [];
     return computePlayerBadges(clusters, getSubs);
   }, [clusters, jerseyNumber, player?.id]);
 
-  // Comms timeline
+  // Comms
   const commsEntries = useMemo(() => {
     if (!player) return [];
     return jerseyNumber ? getPlayerComms(jerseyNumber) : getRecruitComms(player.id);
   }, [player?.id, jerseyNumber]);
 
-  // Similar players — same position or archetype, with shared badge overlap
-  const similarPlayers = useMemo(() => {
-    if (!player) return [];
-    const myKR = baseKROverride ?? ratings?.overall ?? 0;
-    const myBadgeNames = new Set(playerBadges.map((b) => b.name));
-    return PLAYER_POOL
-      .filter((p) => p.id !== player.id)
-      .map((p) => {
-        const r = getPlayerRatings(p.id);
-        const kr = r?.overall ?? 0;
-        const posMatch = p.position === player.position;
-        const archMatch = p.archetype === player.archetype;
-        if (!posMatch && !archMatch) return null;
-        // Compute shared badges
-        let sharedBadge: string | null = null;
-        if (r?.clusters) {
-          const pSubs = (key: keyof ClusterRatings) => getPoolPlayerSubclusters(p.id, key, r.clusters[key]);
-          const pBadges = computePlayerBadges(r.clusters, pSubs);
-          const shared = pBadges.find((b) => myBadgeNames.has(b.name));
-          if (shared) sharedBadge = shared.name;
-        }
-        return { player: p, kr, posMatch, archMatch, dist: Math.abs(kr - myKR), sharedBadge };
-      })
-      .filter(Boolean)
-      .sort((a, b) => a!.dist - b!.dist)
-      .slice(0, 3) as { player: PoolPlayer; kr: number; posMatch: boolean; archMatch: boolean; dist: number; sharedBadge: string | null }[];
-  }, [player?.id, player?.position, player?.archetype, baseKROverride, ratings?.overall, playerBadges]);
-
-  // Team targets — teammates from recruit's school ranked by system fit
-  const teamTargets = useMemo(() => {
-    if (!player) return [];
-    return PLAYER_POOL
-      .filter((p) => p.id !== player.id && p.currentSchool === player.currentSchool)
-      .map((p) => {
-        const r = getPlayerRatings(p.id);
-        const clusters = r?.clusters ?? null;
-        const baseKr = r?.overall ?? 0;
-        const fitKr = clusters ? computeFitKR(clusters, offStyle, defStyle) : baseKr;
-        const delta = fitKr - baseKr;
-        return { player: p, baseKr, fitKr, delta };
-      })
-      .sort((a, b) => b.fitKr - a.fitKr)
-      .slice(0, 5);
-  }, [player?.id, player?.currentSchool, offStyle, defStyle]);
-
-  // Growth tab: trend summary (must be before early return to satisfy Rules of Hooks)
-  const growthTrend = useMemo(() => {
-    if (seasons.length >= 2 && seasons[0].kr != null && seasons[1].kr != null) {
-      const diff = seasons[0].kr - seasons[1].kr;
-      if (diff >= 5) return { label: 'Trending Up', color: '#4CAF50', delta: `+${diff}` };
-      if (diff <= -5) return { label: 'Declining', color: '#EF4444', delta: `${diff}` };
-      return { label: 'Steady', color: '#FF9800', delta: diff > 0 ? `+${diff}` : `${diff}` };
-    }
-    if (career.length >= 2) {
-      const currentKR = career.find((s) => s.current)?.kr;
-      const prevKR = career.find((s) => !s.current)?.kr;
-      if (currentKR != null && prevKR != null) {
-        const diff = currentKR - prevKR;
-        if (diff >= 5) return { label: 'Trending Up', color: '#4CAF50', delta: `+${diff}` };
-        if (diff <= -5) return { label: 'Declining', color: '#EF4444', delta: `${diff}` };
-        return { label: 'Steady', color: '#FF9800', delta: diff > 0 ? `+${diff}` : `${diff}` };
-      }
-    }
-    return { label: 'Developing', color: '#6e6e6e', delta: null };
-  }, [seasons, career]);
-
-  // Receipts: receipt strength (recruits only, must be before early return)
-  const receiptStrength = useMemo(() => {
-    if (isRoster || !player) return null;
-    let filled = 0;
-    if (seasons.length > 0) filled++;
-    if (player.currentSchool && player.level) filled++;
-    if (filled === 0) return null;
-    if (filled === 1) return { label: 'Low', color: GRAY };
-    if (filled === 2) return { label: 'Medium', color: '#FF9800' };
-    return { label: 'High', color: '#4CAF50' };
-  }, [isRoster, seasons.length, player?.currentSchool, player?.level, player]);
+  // Development, Health, Admin
+  const devPlan = useMemo(() => jerseyNumber ? getPlayerDevelopment(jerseyNumber) : null, [jerseyNumber]);
+  const health = useMemo(() => jerseyNumber ? getPlayerHealth(jerseyNumber) : null, [jerseyNumber]);
+  const admin = useMemo(() => jerseyNumber ? getPlayerAdmin(jerseyNumber) : null, [jerseyNumber]);
+  const rosterMeta = jerseyNumber ? ROSTER_META[jerseyNumber] ?? null : null;
 
   if (!player) return null;
 
@@ -498,2406 +322,387 @@ export function PlayerSheet({
   const delta = fitKR - baseKR;
   const deltaColor = delta > 0 ? '#4CAF50' : delta < 0 ? '#EF4444' : '#6e6e6e';
   const deltaText = delta > 0 ? `+${delta}` : `${delta}`;
-
-  // Identity line
   const helioPos = TRADITIONAL_TO_HELIO[player.position];
   const posLabel = HELIO_POSITION_LABELS[helioPos] ?? player.position;
   const levelLabel = player.level === 'HS' ? 'Prep' : player.level;
   const archetypeLabel = ARCHETYPE_LABELS[player.archetype] ?? player.archetype;
-
-  // Role block
-  const { usage, touches } = getUsageTouches(player.archetype);
+  const { usage } = getUsageTouches(player.archetype);
   const lineupSlot = getLineupSlot(fitKR);
   const pairings = PAIRING_MAP[player.position] ?? ['two_way_wing', 'spot_up_specialist'];
   const pairingLabels = pairings.map((a) => ARCHETYPE_LABELS[a] ?? a);
-
-  // Header vitals
   const displayHeight = bio?.height ?? physicals?.height ?? player.height;
   const displayWeight = bio ? bio.weight : physicals?.weight ? `${physicals.weight}` : player.weight ? `${player.weight}` : null;
   const classYearShort = bio ? (CLASS_SHORT[bio.classYear] ?? bio.classYear) : null;
-
-  // Drivers / risks for FIT tab
   const drivers = fitReasons.filter((r) => r.delta > 0).slice(0, 3);
   const risks = fitReasons.filter((r) => r.delta < 0).slice(0, 2);
-  const allDeltas = [...fitReasons].sort((a, b) => b.delta - a.delta);
-
-  // System labels
-  const offStyleLabel = OFFENSIVE_STYLES.find(s => s.value === offStyle)?.label ?? offStyle;
-  const defStyleLabel = DEFENSIVE_STYLES.find(s => s.value === defStyle)?.label ?? defStyle;
-
-  // Badge strip: first 3 + overflow
   const headerBadges = playerBadges.slice(0, 3);
   const overflowBadgeCount = Math.max(0, playerBadges.length - 3);
+  const offStyleLabel = OFFENSIVE_STYLES.find(s => s.value === offStyle)?.label ?? offStyle;
+  const defStyleLabel = DEFENSIVE_STYLES.find(s => s.value === defStyle)?.label ?? defStyle;
+  const playerStatus = rosterMeta?.status ?? 'available';
 
   return (
-    <>
-    <BottomSheet useModal visible={visible} onClose={onClose} mode="full">
-      {/* §1 Header — Identity */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.headerName}>
-            {bio ? `${bio.firstName} ${bio.lastName}` : `${player.firstName} ${player.lastName}`}
-            {jerseyNumber ? ` #${jerseyNumber}` : ''}
-          </Text>
-          {(displayHeight || displayWeight) && (
-            <Text style={styles.headerPhysicals}>
-              {displayHeight}{displayWeight ? ` \u00B7 ${displayWeight} lbs` : ''}
+    <BottomSheet useModal visible={visible} onClose={onClose}>
+      {/* ═══════════ HEADER ═══════════ */}
+      <View style={s.header}>
+        <View style={s.headerTop}>
+          <View style={{ flex: 1 }}>
+            <Text style={[s.headerName, { color: colors.text }]}>
+              {bio ? `${bio.firstName} ${bio.lastName}` : `${player.firstName} ${player.lastName}`}
+              {jerseyNumber ? ` #${jerseyNumber}` : ''}
             </Text>
-          )}
-        </View>
-        <View style={styles.headerRight}>
-          <View style={styles.headerBadges}>
-            <View style={styles.headerBadge}>
-              <Text style={styles.headerBadgeText}>{levelLabel}</Text>
+            {(displayHeight || displayWeight) && (
+              <Text style={[s.headerPhysicals, { color: colors.textSecondary }]}>
+                {displayHeight}{displayWeight ? ` · ${displayWeight} lbs` : ''}
+              </Text>
+            )}
+          </View>
+          <View style={s.headerBadges}>
+            <View style={[s.headerBadge, { backgroundColor: colors.backgroundSecondary }]}>
+              <Text style={[s.headerBadgeText, { color: colors.textSecondary }]}>{levelLabel}</Text>
             </View>
-            <View style={styles.headerBadge}>
-              <Text style={styles.headerBadgeText}>{helioPos}</Text>
+            <View style={[s.headerBadge, { backgroundColor: colors.backgroundSecondary }]}>
+              <Text style={[s.headerBadgeText, { color: colors.textSecondary }]}>{helioPos}</Text>
             </View>
           </View>
-          <View style={styles.headerGlyphs}>
-            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}>
-              <FontAwesome6 name="x-twitter" size={14} color="#888" iconStyle="brand" />
-            </Pressable>
-            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}>
-              <FontAwesome6 name="instagram" size={15} color="#888" iconStyle="brand" />
-            </Pressable>
-            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}>
-              <IconSymbol name="play.circle.fill" size={16} color="#888" />
-            </Pressable>
+        </View>
+
+        {isRoster && playerStatus !== 'available' && (
+          <View style={[s.statusPill, { backgroundColor: `${getStatusColor(playerStatus)}20` }]}>
+            <Text style={[s.statusText, { color: getStatusColor(playerStatus) }]}>{playerStatus.replace(/_/g, ' ').toUpperCase()}</Text>
           </View>
-        </View>
-      </View>
+        )}
 
-      {/* §2 Rating block */}
-      <View style={styles.ratingRow}>
-        <View style={styles.krBlock}>
-          <Text style={styles.krLabel}>BASE</Text>
-          <Text style={styles.krNum}>{baseKR}</Text>
-        </View>
-        <View style={styles.krBlock}>
-          <Text style={styles.krLabel}>FIT</Text>
-          <Text style={[styles.krNum, { color: deltaColor }]}>{fitKR}</Text>
-        </View>
-        <View style={[styles.deltaBadge, { backgroundColor: `${deltaColor}20` }]}>
-          <Text style={[styles.deltaText, { color: deltaColor }]}>{deltaText}</Text>
-        </View>
-      </View>
+        {krVisibility !== 'hidden' && (
+          <View style={s.krStrip}>
+            <View style={s.krBlock}><Text style={[s.krLabel, { color: colors.textTertiary }]}>BASE</Text><Text style={[s.krNum, { color: colors.text }]}>{formatKR(baseKR, krVisibility)}</Text></View>
+            <View style={s.krBlock}><Text style={[s.krLabel, { color: colors.textTertiary }]}>FIT</Text><Text style={[s.krNum, { color: deltaColor }]}>{formatKR(fitKR, krVisibility)}</Text></View>
+            {krVisibility === 'full' && <View style={[s.deltaBadge, { backgroundColor: `${deltaColor}20` }]}><Text style={[s.deltaText, { color: deltaColor }]}>{deltaText}</Text></View>}
+            <View style={s.krBlock}><Text style={[s.krLabel, { color: colors.textTertiary }]}>OFF</Text><Text style={[s.krNum, { color: colors.text }]}>{formatKR(offDef.fitOff, krVisibility)}</Text></View>
+            <View style={s.krBlock}><Text style={[s.krLabel, { color: colors.textTertiary }]}>DEF</Text><Text style={[s.krNum, { color: colors.text }]}>{formatKR(offDef.fitDef, krVisibility)}</Text></View>
+          </View>
+        )}
 
-      {/* §2.5 Badge Strip — below rating, above tabs */}
-      {headerBadges.length > 0 && (
-        <View style={styles.badgeStrip}>
-          {headerBadges.map((b, i) => (
-            <View key={i} style={[styles.badgeStripPill, { borderLeftColor: BADGE_LEVEL_COLORS[b.level] }]}>
-              <Text style={styles.badgeStripName}>{b.name}</Text>
-            </View>
+        {headerBadges.length > 0 && (
+          <View style={s.badgeStrip}>
+            {headerBadges.map((b, i) => (
+              <View key={i} style={[s.badgeStripPill, { borderLeftColor: BADGE_LEVEL_COLORS[b.level] }]}>
+                <Text style={s.badgeStripName}>{b.name}</Text>
+              </View>
+            ))}
+            {overflowBadgeCount > 0 && (
+              <Pressable style={s.badgeStripOverflow} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveTab('kanext_eval'); }}>
+                <Text style={s.badgeStripOverflowText}>+{overflowBadgeCount}</Text>
+              </Pressable>
+            )}
+          </View>
+        )}
+
+        <View style={s.quickActions}>
+          {[{ icon: 'message.fill' }, { icon: 'note.text' }, { icon: 'link' }, { icon: 'square.and.arrow.up' }].map((a, i) => (
+            <Pressable key={i} style={[s.actionBtn, { backgroundColor: colors.backgroundSecondary }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+              <IconSymbol name={a.icon as any} size={14} color={colors.textSecondary} />
+            </Pressable>
           ))}
-          {overflowBadgeCount > 0 && (
-            <Pressable
-              style={styles.badgeStripOverflow}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setActiveTab('kanext');
-              }}
-            >
-              <Text style={styles.badgeStripOverflowText}>+{overflowBadgeCount}</Text>
-            </Pressable>
-          )}
+          {coachActions && <Pressable style={[s.actionBtn, { backgroundColor: colors.backgroundSecondary }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}><IconSymbol name="person.2.fill" size={14} color={colors.textSecondary} /></Pressable>}
+          {adminActions && <Pressable style={[s.actionBtn, { backgroundColor: colors.backgroundSecondary }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}><IconSymbol name="doc.text.fill" size={14} color={colors.textSecondary} /></Pressable>}
         </View>
-      )}
+      </View>
 
-      {/* §3 Tab pills */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabScroll} contentContainerStyle={styles.tabRow}>
+      {/* TAB PILLS */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.tabScroll} contentContainerStyle={s.tabRow}>
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
-            <Pressable
-              key={tab.key}
-              style={[styles.tabPill, isActive && styles.tabPillActive]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setActiveTab(tab.key);
-              }}
-            >
-              <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
-                {tab.label}
-              </Text>
+            <Pressable key={tab.key} style={[s.tabPill, { borderColor: colors.border }, isActive && { backgroundColor: colors.text, borderColor: colors.text }]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveTab(tab.key); }}>
+              <Text style={[s.tabText, { color: colors.textSecondary }, isActive && { color: colors.background }]}>{tab.label}</Text>
             </Pressable>
           );
         })}
       </ScrollView>
 
-      {/* ═══════════ BIO TAB ═══════════ */}
-      {activeTab === 'bio' && (
-        <View style={[styles.tabContent, styles.tabContentSpaced]}>
-          {/* 1) Identity Chips — horizontal scroll of attribute pills */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.idChipScroll} contentContainerStyle={styles.idChipRow}>
-            <View style={styles.idChip}><Text style={styles.idChipText}>{helioPos}</Text></View>
-            <View style={styles.idChip}><Text style={styles.idChipText}>{classYearShort ?? player.classYear}</Text></View>
-            {displayHeight ? <View style={styles.idChip}><Text style={styles.idChipText}>{displayHeight}</Text></View> : null}
-            {displayWeight ? <View style={styles.idChip}><Text style={styles.idChipText}>{displayWeight} lbs</Text></View> : null}
-            <View style={styles.idChip}>
-              <Text style={styles.idChipText} numberOfLines={1}>
-                {bio?.hometown ?? player.state}
-              </Text>
-            </View>
-            <View style={styles.idChip}>
-              <Text style={styles.idChipText} numberOfLines={1}>
-                {bio?.highSchool ?? player.currentSchool}
-              </Text>
-            </View>
-            {!isRoster && player.level && (
-              <View style={styles.idChip}><Text style={styles.idChipText}>{levelLabel}</Text></View>
-            )}
+      {/* ═══════════ 1. OVERVIEW ═══════════ */}
+      {activeTab === 'overview' && (
+        <View style={s.tabContent}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.chipRow}>
+            {[helioPos, classYearShort ?? player.classYear, displayHeight, displayWeight ? `${displayWeight} lbs` : null, bio?.hometown ?? player.state].filter(Boolean).map((t, i) => (
+              <View key={i} style={[s.chip, { backgroundColor: colors.backgroundSecondary }]}><Text style={[s.chipText, { color: colors.textSecondary }]}>{t}</Text></View>
+            ))}
           </ScrollView>
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>ROLE SNAPSHOT</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
+            <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Archetype</Text><Text style={[s.statValue, { color: colors.text }]}>{archetypeLabel}</Text></View>
+            <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Lineup Slot</Text><Text style={[s.statValue, { color: colors.text }]}>{lineupSlot}</Text></View>
+            <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Usage</Text><Text style={[s.statValue, { color: colors.text }]}>{usage}</Text></View>
+            {isRoster && leaderStats && (<>
+              <View style={[s.divider, { backgroundColor: colors.divider }]} />
+              <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>PPG</Text><Text style={[s.statValue, { color: colors.text }]}>{leaderStats.ppg.toFixed(1)}</Text></View>
+              <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>RPG</Text><Text style={[s.statValue, { color: colors.text }]}>{leaderStats.rpg.toFixed(1)}</Text></View>
+              <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>APG</Text><Text style={[s.statValue, { color: colors.text }]}>{leaderStats.apg.toFixed(1)}</Text></View>
+            </>)}
+          </View>
+          {about && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>ABOUT</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><Text style={[s.aboutText, { color: colors.textSecondary }]}>{about}</Text></View></>)}
+          {awards.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>AWARDS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{(showAllAwards ? awards : awards.slice(0, 3)).map((a, i) => (<Text key={i} style={[s.awardItem, { color: colors.text }]}>{a.year ? `${a.year} — ` : ''}{a.title}</Text>))}{awards.length > 3 && !showAllAwards && (<Pressable onPress={() => setShowAllAwards(true)}><Text style={[s.showMore, { color: colors.textTertiary }]}>Show all ({awards.length})</Text></Pressable>)}</View></>)}
+          <View style={s.socialRow}>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}><FontAwesome6 name="x-twitter" size={14} color="#888" iconStyle="brand" /></Pressable>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}><FontAwesome6 name="instagram" size={15} color="#888" iconStyle="brand" /></Pressable>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}><IconSymbol name="play.circle.fill" size={16} color="#888" /></Pressable>
+          </View>
+        </View>
+      )}
 
-          {/* 2) Role + Archetype */}
-          <View style={styles.roleArchRow}>
-            <View style={styles.roleArchCol}>
-              <Text style={styles.roleArchLabel}>Role</Text>
-              <Text style={styles.roleArchValue}>{lineupSlot}</Text>
-            </View>
-            <View style={styles.roleArchCol}>
-              <Text style={styles.roleArchLabel}>Archetype</Text>
-              <Text style={styles.roleArchValue}>{archetypeLabel}</Text>
+      {/* ═══════════ 2. PERFORMANCE ═══════════ */}
+      {activeTab === 'performance' && (
+        <View style={s.tabContent}>
+          {leaderStats && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>SEASON SUMMARY</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>PPG</Text><Text style={[s.statValue, { color: colors.text }]}>{leaderStats.ppg.toFixed(1)}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>RPG</Text><Text style={[s.statValue, { color: colors.text }]}>{leaderStats.rpg.toFixed(1)}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>APG</Text><Text style={[s.statValue, { color: colors.text }]}>{leaderStats.apg.toFixed(1)}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>GP</Text><Text style={[s.statValue, { color: colors.text }]}>{leaderStats.gamesPlayed}</Text></View></View></>)}
+          {tsPct > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>EFFICIENCY</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>TS%</Text><Text style={[s.statValue, { color: colors.text }]}>{tsPct.toFixed(1)}%</Text></View></View></>)}
+          {seasonGames.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>GAME LOG (LAST 5)</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><View style={s.gameLogHeader}><Text style={[s.gameLogCol, { color: colors.textTertiary, flex: 1 }]}>OPP</Text><Text style={[s.gameLogCol, { color: colors.textTertiary }]}>PTS</Text><Text style={[s.gameLogCol, { color: colors.textTertiary }]}>REB</Text><Text style={[s.gameLogCol, { color: colors.textTertiary }]}>AST</Text></View>{seasonGames.slice(0, 5).map((g, i) => (<View key={i} style={[s.gameLogRow, { borderTopColor: colors.divider }]}><Text style={[s.gameLogCol, { color: colors.text, flex: 1 }]} numberOfLines={1}>{g.opponent}</Text><Text style={[s.gameLogCol, { color: colors.text, fontWeight: '600' }]}>{g.pts}</Text><Text style={[s.gameLogCol, { color: colors.textSecondary }]}>{g.reb}</Text><Text style={[s.gameLogCol, { color: colors.textSecondary }]}>{g.ast}</Text></View>))}</View></>)}
+          {career.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>CAREER</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{career.map((c, i) => (<View key={i} style={[s.careerRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={[s.careerYear, { color: colors.text }]}>{c.year} — {c.school}</Text><View style={s.careerStats}><Text style={[s.careerStat, { color: colors.textSecondary }]}>{c.ppg.toFixed(1)} PPG</Text><Text style={[s.careerStat, { color: colors.textSecondary }]}>{c.rpg.toFixed(1)} RPG</Text><Text style={[s.careerStat, { color: colors.textSecondary }]}>{c.apg.toFixed(1)} APG</Text></View></View>))}</View></>)}
+        </View>
+      )}
+
+      {/* ═══════════ 3. FILM ═══════════ */}
+      {activeTab === 'film' && (
+        <View style={s.tabContent}>
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FILM SOURCES</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
+            {highlights.length > 0 ? highlights.map((h, i) => (
+              <Pressable key={i} style={[s.filmRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
+                <IconSymbol name="play.circle.fill" size={18} color={colors.textSecondary} />
+                <Text style={[s.filmText, { color: colors.text }]}>{h}</Text>
+              </Pressable>
+            )) : <Text style={[s.emptyText, { color: colors.textSecondary }]}>No film available.</Text>}
+          </View>
+        </View>
+      )}
+
+      {/* ═══════════ 4. KANEXT EVAL ═══════════ */}
+      {activeTab === 'kanext_eval' && clusters && (
+        <View style={s.tabContent}>
+          {krVisibility !== 'hidden' && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>KR PANEL</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><View style={s.krPanelRow}><View style={s.krPanelBlock}><Text style={[s.krPanelLabel, { color: colors.textTertiary }]}>Overall</Text><Text style={[s.krPanelValue, { color: colors.text }]}>{formatKR(baseKR, krVisibility)}</Text></View><View style={s.krPanelBlock}><Text style={[s.krPanelLabel, { color: colors.textTertiary }]}>Off KR</Text><Text style={[s.krPanelValue, { color: colors.text }]}>{formatKR(offDef.baseOff, krVisibility)}</Text></View><View style={s.krPanelBlock}><Text style={[s.krPanelLabel, { color: colors.textTertiary }]}>Def KR</Text><Text style={[s.krPanelValue, { color: colors.text }]}>{formatKR(offDef.baseDef, krVisibility)}</Text></View></View></View></>)}
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>CLUSTER RATINGS</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{ALL_CLUSTER_KEYS.map((key) => (<ClusterBar key={key} clusterKey={key} value={clusters[key]} playerId={player.id} jerseyNumber={jerseyNumber} expanded={expandedClusters.has(key)} onToggle={() => toggleCluster(key)} />))}</View>
+          {playerBadges.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>CALLING CARDS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{playerBadges.map((b, i) => (<View key={i} style={[s.badgeRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.badgeDot, { backgroundColor: BADGE_LEVEL_COLORS[b.level] }]} /><View style={{ flex: 1 }}><Text style={[s.badgeName, { color: colors.text }]}>{b.name}</Text><Text style={[s.badgeDesc, { color: colors.textTertiary }]}>{BADGE_DESCRIPTIONS[b.name] ?? b.component}</Text></View><Text style={[s.badgeLevel, { color: BADGE_LEVEL_COLORS[b.level] }]}>{b.level}</Text></View>))}</View></>)}
+        </View>
+      )}
+
+      {/* ═══════════ 5. FIT + ROLE ═══════════ */}
+      {activeTab === 'fit_role' && (
+        <View style={s.tabContent}>
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>SYSTEM FIT</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
+            <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Offense</Text><Text style={[s.statValue, { color: colors.text }]}>{offStyleLabel}</Text></View>
+            <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Defense</Text><Text style={[s.statValue, { color: colors.text }]}>{defStyleLabel}</Text></View>
+            {krVisibility !== 'hidden' && (<><View style={[s.divider, { backgroundColor: colors.divider }]} /><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Base KR</Text><Text style={[s.statValue, { color: colors.text }]}>{formatKR(baseKR, krVisibility)}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Fit KR</Text><Text style={[s.statValue, { color: deltaColor }]}>{formatKR(fitKR, krVisibility)}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Delta</Text><Text style={[s.statValue, { color: deltaColor }]}>{deltaText}</Text></View></>)}
+          </View>
+          {drivers.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT DRIVERS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{drivers.map((d, i) => (<View key={i} style={s.driverRow}><Text style={{ color: '#4CAF50', fontSize: 12 }}>▲</Text><Text style={[s.driverText, { color: colors.text }]}>{d.reason}</Text><Text style={{ color: '#4CAF50', fontSize: 13, fontWeight: '700' }}>+{d.delta}</Text></View>))}</View></>)}
+          {risks.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT RISKS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{risks.map((r, i) => (<View key={i} style={s.driverRow}><Text style={{ color: '#EF4444', fontSize: 12 }}>▼</Text><Text style={[s.driverText, { color: colors.text }]}>{r.reason}</Text><Text style={{ color: '#EF4444', fontSize: 13, fontWeight: '700' }}>{r.delta}</Text></View>))}</View></>)}
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>USAGE + ROLE</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
+            <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Archetype</Text><Text style={[s.statValue, { color: colors.text }]}>{archetypeLabel}</Text></View>
+            <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Usage Type</Text><Text style={[s.statValue, { color: colors.text }]}>{usage}</Text></View>
+            <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Lineup Slot</Text><Text style={[s.statValue, { color: colors.text }]}>{lineupSlot}</Text></View>
+            <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Best Pairs</Text><Text style={[s.statValue, { color: colors.text }]} numberOfLines={1}>{pairingLabels.join(', ')}</Text></View>
+          </View>
+          {coachActions && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT NOTE</Text><TextInput style={[s.noteInput, { backgroundColor: colors.backgroundSecondary, color: colors.text, borderColor: colors.border }]} value={fitNote} onChangeText={onFitNoteChange} placeholder="Add fit notes..." placeholderTextColor={colors.textTertiary} multiline /></>)}
+        </View>
+      )}
+
+      {/* ═══════════ 6. DEVELOPMENT ═══════════ */}
+      {activeTab === 'development' && devPlan && (
+        <View style={s.tabContent}>
+          {[{ label: '2-WEEK GOALS', goals: devPlan.twoWeekGoals }, { label: '6-WEEK GOALS', goals: devPlan.sixWeekGoals }, { label: '12-WEEK GOALS', goals: devPlan.twelveWeekGoals }].map(({ label, goals }) => (
+            <React.Fragment key={label}>
+              <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>{label}</Text>
+              <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
+                {goals.map((g, i) => (<View key={i} style={[s.goalRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={[s.goalIcon, { color: getGoalColor(g.status) }]}>{getGoalIcon(g.status)}</Text><Text style={[s.goalText, { color: colors.text }]}>{g.label}</Text></View>))}
+              </View>
+            </React.Fragment>
+          ))}
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>PRIORITIES</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{devPlan.priorities.map((p, i) => (<View key={i} style={[s.priorityRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={[s.priorityCluster, { color: colors.text }]}>{p.cluster}</Text><Text style={[s.priorityDesc, { color: colors.textSecondary }]}>{p.description}</Text><Text style={s.priorityDelta}>+{p.targetDelta} target</Text></View>))}</View>
+          {devPlan.checkIns.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>CHECK-INS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{devPlan.checkIns.map((c, i) => (<View key={i} style={[s.checkinRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={[s.checkinDate, { color: colors.textTertiary }]}>{c.date}</Text><Text style={[s.checkinNote, { color: colors.text }]}>{c.note}</Text><Text style={[s.checkinAuthor, { color: colors.textTertiary }]}>— {c.author}</Text></View>))}</View></>)}
+        </View>
+      )}
+
+      {/* ═══════════ 7. HEALTH ═══════════ */}
+      {activeTab === 'health' && health && sensitive && (
+        <View style={s.tabContent}>
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>STATUS</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
+            <View style={[s.healthPill, { backgroundColor: `${getStatusColor(health.status)}20` }]}><Text style={[s.healthPillText, { color: getStatusColor(health.status) }]}>{health.status.replace(/_/g, ' ').toUpperCase()}</Text></View>
+            <Text style={[s.healthNote, { color: colors.textSecondary }]}>{health.statusNote}</Text>
+          </View>
+          {health.timeline.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>TIMELINE</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{health.timeline.map((t, i) => (<View key={i} style={[s.timelineRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={[s.timelineDate, { color: colors.textTertiary }]}>{t.date}</Text><Text style={[s.timelineEvent, { color: colors.text }]}>{t.event}</Text></View>))}</View></>)}
+          {health.restrictions.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>RESTRICTIONS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{health.restrictions.map((r, i) => (<Text key={i} style={{ fontSize: 13, color: '#EF4444', marginBottom: 4 }}>• {r}</Text>))}</View></>)}
+          {health.returnCheckpoints.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>RETURN-TO-PLAY</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{health.returnCheckpoints.map((cp, i) => (<View key={i} style={[s.checkpointRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={{ fontSize: 14, width: 18, textAlign: 'center', color: cp.completed ? '#22C55E' : colors.textTertiary }}>{cp.completed ? '✓' : '○'}</Text><Text style={[{ fontSize: 13, flex: 1 }, { color: colors.text }]}>{cp.label}</Text>{cp.date && <Text style={{ fontSize: 11, color: colors.textTertiary }}>{cp.date}</Text>}</View>))}</View></>)}
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>7-DAY PRACTICE</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
+            <View style={s.practiceRow}>
+              {health.practiceAvailability.map((d, i) => {
+                const pColor = d.status === 'full' ? '#22C55E' : d.status === 'limited' ? '#F59E0B' : d.status === 'rest' ? '#6AA9FF' : '#EF4444';
+                return (<View key={i} style={s.practiceDay}><Text style={[s.practiceDayLabel, { color: colors.textTertiary }]}>{d.day}</Text><View style={[s.practiceDot, { backgroundColor: pColor }]} /><Text style={[s.practiceDayStatus, { color: pColor }]}>{d.status}</Text></View>);
+              })}
             </View>
           </View>
+        </View>
+      )}
 
-          {/* 3) Calling Cards — top 3 badges as expanded cards */}
-          <View style={styles.sectionBlock}>
-            <Text style={styles.sectionTitle}>CALLING CARDS</Text>
-            {playerBadges.length > 0 ? (
-              playerBadges.slice(0, 3).map((b, i) => (
-                <View key={i} style={[styles.callingCard, { borderLeftColor: BADGE_LEVEL_COLORS[b.level] }]}>
-                  <View style={styles.callingCardHeader}>
-                    <Text style={[styles.callingCardName, { color: BADGE_LEVEL_COLORS[b.level] }]}>{b.name}</Text>
-                    <Text style={[styles.callingCardLevel, { color: BADGE_LEVEL_COLORS[b.level] + 'AA' }]}>{b.level}</Text>
-                  </View>
-                  <Text style={styles.callingCardDesc}>
-                    {BADGE_DESCRIPTIONS[b.name] ?? 'Elite ability in this area of the game'}
-                  </Text>
-                </View>
-              ))
-            ) : (
-              <Text style={styles.emptyText}>No calling cards yet</Text>
-            )}
-          </View>
+      {/* ═══════════ 8. ADMIN ═══════════ */}
+      {activeTab === 'admin' && admin && sensitive && (
+        <View style={s.tabContent}>
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>ELIGIBILITY</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{admin.eligibility.map((e, i) => (<View key={i} style={[s.eligRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.eligDot, { backgroundColor: getEligibilityColor(e.status) }]} /><View style={{ flex: 1 }}><Text style={[{ fontSize: 13, fontWeight: '500' }, { color: colors.text }]}>{e.label}</Text>{e.note && <Text style={{ fontSize: 12, marginTop: 1, color: colors.textTertiary }}>{e.note}</Text>}</View><Text style={[{ fontSize: 11, fontWeight: '600', textTransform: 'capitalize' }, { color: getEligibilityColor(e.status) }]}>{e.status}</Text></View>))}</View>
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>SCHOLARSHIP / AID</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Type</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.aid.type}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Percentage</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.aid.percent}%</Text></View>{admin.aid.renewalDate && <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Renewal</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.aid.renewalDate}</Text></View>}</View>
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>NIL</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Status</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.nil.status}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Deals</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.nil.dealCount}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Value Band</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.nil.valueBand}</Text></View>{admin.nil.topDeal && <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Top Deal</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.nil.topDeal}</Text></View>}</View>
+          <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>ACADEMICS</Text>
+          <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>GPA</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.gpa.toFixed(1)}</Text></View></View>
+          {admin.complianceHolds.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COMPLIANCE HOLDS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{admin.complianceHolds.map((h, i) => (<View key={h.id} style={[s.holdRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.holdDot, { backgroundColor: h.severity === 'high' ? '#EF4444' : h.severity === 'medium' ? '#F59E0B' : '#22C55E' }]} /><View style={{ flex: 1 }}><Text style={[{ fontSize: 13 }, { color: colors.text }]}>{h.label}</Text><Text style={{ fontSize: 11, marginTop: 1, color: colors.textTertiary }}>{h.date}</Text></View><Text style={{ fontSize: 11, fontWeight: '600', color: h.resolved ? '#22C55E' : '#EF4444' }}>{h.resolved ? 'Resolved' : 'Active'}</Text></View>))}</View></>)}
+        </View>
+      )}
 
-          {/* 4) Snapshot Stats — 2x3 grid */}
-          {leaderStats && leaderStats.gamesPlayed > 0 ? (
-            <View style={styles.statCard}>
-              <Text style={styles.statCardTitle}>SNAPSHOT</Text>
-              <View style={styles.statGrid}>
-                {[
-                  { v: leaderStats.ppg.toFixed(1), l: 'PPG' },
-                  { v: leaderStats.rpg.toFixed(1), l: 'RPG' },
-                  { v: leaderStats.apg.toFixed(1), l: 'APG' },
-                  { v: `${leaderStats.fgPct.toFixed(1)}%`, l: 'FG%' },
-                  { v: `${leaderStats.threePct.toFixed(1)}%`, l: '3P%' },
-                  { v: currentSeason ? `${currentSeason.mpg}` : '\u2014', l: 'MPG' },
-                ].map((s) => (
-                  <View key={s.l} style={styles.statGridItem}>
-                    <Text style={styles.statValue}>{s.v}</Text>
-                    <Text style={styles.statLabel}>{s.l}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          ) : seasons.length > 0 ? (
-            <View style={styles.statCard}>
-              <Text style={styles.statCardTitle}>SNAPSHOT</Text>
-              <View style={styles.statGrid}>
-                {[
-                  { v: seasons[0].ppg.toFixed(1), l: 'PPG' },
-                  { v: seasons[0].rpg.toFixed(1), l: 'RPG' },
-                  { v: seasons[0].apg.toFixed(1), l: 'APG' },
-                  { v: `${seasons[0].fgPct}%`, l: 'FG%' },
-                  { v: seasons[0].threePct > 0 ? `${seasons[0].threePct}%` : '\u2014', l: '3P%' },
-                  { v: `${seasons[0].mpg}`, l: 'MPG' },
-                ].map((s) => (
-                  <View key={s.l} style={styles.statGridItem}>
-                    <Text style={styles.statValue}>{s.v}</Text>
-                    <Text style={styles.statLabel}>{s.l}</Text>
-                  </View>
-                ))}
-              </View>
-              <Text style={styles.statMeta}>
-                {seasons[0].gp} GP {'\u00B7'} {seasons[0].school}
-              </Text>
-            </View>
-          ) : player.keyStatLine ? (
-            <View style={styles.statCard}>
-              <Text style={styles.statCardTitle}>KEY STATS</Text>
-              <Text style={styles.keyStatLine}>{player.keyStatLine}</Text>
-            </View>
-          ) : null}
-
-          {/* 5) Similar Players — mini cards with shared badge */}
-          {similarPlayers.length > 0 && (
-            <View style={styles.sectionBlock}>
-              <Text style={styles.sectionTitle}>SIMILAR PLAYERS</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.simRow}>
-                {similarPlayers.map((sp) => {
-                  const krColor = sp.kr >= 75 ? '#4CAF50' : sp.kr >= 60 ? '#FF9800' : '#8A8F98';
-                  return (
-                    <View key={sp.player.id} style={styles.simCard}>
-                      <View style={styles.simCardTop}>
-                        <View style={styles.simAvatar}>
-                          <Text style={styles.simAvatarText}>
-                            {sp.player.firstName.charAt(0)}{sp.player.lastName.charAt(0)}
-                          </Text>
-                        </View>
-                        <View style={{ flex: 1, marginLeft: 8 }}>
-                          <Text style={styles.simName} numberOfLines={1}>
-                            {sp.player.firstName.charAt(0)}. {sp.player.lastName}
-                          </Text>
-                          <Text style={[styles.simKR, { color: krColor }]}>{sp.kr}</Text>
-                        </View>
-                      </View>
-                      {sp.sharedBadge && (
-                        <View style={styles.simBadgePill}>
-                          <Text style={styles.simBadgePillText}>{sp.sharedBadge}</Text>
-                        </View>
-                      )}
-                    </View>
-                  );
+      {/* ═══════════ 9. RECRUITING ═══════════ */}
+      {activeTab === 'recruiting' && (
+        <View style={s.tabContent}>
+          {boardEntry ? (<>
+            <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>PIPELINE</Text>
+            <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.pipelineRow}>
+                {PIPELINE_STAGES.map((stage, i) => {
+                  const isActive = boardEntry.status === stage;
+                  const isPast = PIPELINE_STAGES.indexOf(boardEntry.status) > i;
+                  const color = isActive ? (BOARD_COLUMN_COLORS as any)[stage] ?? '#FFF' : isPast ? '#4CAF50' : '#333';
+                  return (<View key={stage} style={s.pipelineStage}><View style={[s.pipelineDot, { backgroundColor: color }]} /><Text style={[s.pipelineLabel, { color: isActive ? '#FFF' : '#666' }]}>{stage}</Text></View>);
                 })}
               </ScrollView>
             </View>
-          )}
-
-          {/* 6) Receipts — recruits only */}
-          {!isRoster && receiptStrength && (
-            <View style={styles.sectionBlock}>
-              <View style={styles.receiptHeader}>
-                <Text style={styles.sectionTitle}>RECEIPTS</Text>
-                <View style={[styles.receiptStrengthPill, { backgroundColor: receiptStrength.color + '20' }]}>
-                  <Text style={[styles.receiptStrengthText, { color: receiptStrength.color }]}>
-                    {receiptStrength.label}
-                  </Text>
-                </View>
-              </View>
-
-              {/* Performance lane */}
-              <Pressable
-                style={styles.receiptLane}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  toggleReceipt('performance');
-                }}
-              >
-                <Text style={styles.receiptLaneTitle}>Verified Performance</Text>
-                <Text style={styles.receiptLaneChevron}>{expandedReceipts.has('performance') ? '\u25BE' : '\u203A'}</Text>
-              </Pressable>
-              {expandedReceipts.has('performance') && (
-                <View style={styles.receiptLaneContent}>
-                  {seasons.length > 0 ? (
-                    <View>
-                      <Text style={styles.receiptStatLine}>
-                        {seasons[0].ppg} PPG {'\u00B7'} {seasons[0].rpg} RPG {'\u00B7'} {seasons[0].apg} APG
-                      </Text>
-                      <Text style={styles.receiptStatLine}>
-                        {seasons[0].fgPct}% FG {'\u00B7'} {seasons[0].threePct > 0 ? `${seasons[0].threePct}% 3P` : ''} {'\u00B7'} {seasons[0].gp} GP
-                      </Text>
-                    </View>
-                  ) : (
-                    <Text style={styles.receiptEmpty}>No verified stats available</Text>
-                  )}
-                </View>
-              )}
-
-              {/* Film lane */}
-              <Pressable
-                style={styles.receiptLane}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  toggleReceipt('film');
-                }}
-              >
-                <Text style={styles.receiptLaneTitle}>Verified Film Evidence</Text>
-                <Text style={styles.receiptLaneChevron}>{expandedReceipts.has('film') ? '\u25BE' : '\u203A'}</Text>
-              </Pressable>
-              {expandedReceipts.has('film') && (
-                <View style={styles.receiptLaneContent}>
-                  <Text style={styles.receiptEmpty}>No verified film yet</Text>
-                </View>
-              )}
-
-              {/* Context lane */}
-              <Pressable
-                style={styles.receiptLane}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  toggleReceipt('context');
-                }}
-              >
-                <Text style={styles.receiptLaneTitle}>Verified Context</Text>
-                <Text style={styles.receiptLaneChevron}>{expandedReceipts.has('context') ? '\u25BE' : '\u203A'}</Text>
-              </Pressable>
-              {expandedReceipts.has('context') && (
-                <View style={styles.receiptLaneContent}>
-                  <Text style={styles.receiptStatLine}>Level: {player.level}</Text>
-                  <Text style={styles.receiptStatLine}>School: {player.currentSchool}</Text>
-                  <Text style={styles.receiptStatLine}>Position: {posLabel}</Text>
-                  <Text style={styles.receiptStatLine}>Conference: {player.conference}</Text>
-                </View>
-              )}
+            <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>BOARD INFO</Text>
+            <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
+              <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Status</Text><Text style={[s.statValue, { color: colors.text }]}>{boardEntry.status}</Text></View>
+              <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Priority</Text><Text style={[s.statValue, { color: colors.text }]}>{boardEntry.priority}</Text></View>
+              <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Recruiter</Text><Text style={[s.statValue, { color: colors.text }]}>{boardEntry.recruiter}</Text></View>
+              {boardEntry.temperature && <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Temperature</Text><Text style={[s.statValue, { color: TEMPERATURE_COLORS[boardEntry.temperature as Temperature] ?? colors.text }]}>{boardEntry.temperature}</Text></View>}
+              {boardEntry.nextStep && <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Next Step</Text><Text style={[s.statValue, { color: colors.text }]}>{boardEntry.nextStep}</Text></View>}
             </View>
-          )}
-
-          {!about && !bio && awards.length === 0 && playerBadges.length === 0 && (
-            <Text style={styles.emptyText}>No bio data available.</Text>
-          )}
-        </View>
-      )}
-
-      {/* ═══════════ FIT TAB ═══════════ */}
-      {activeTab === 'fit' && (
-        <View style={[styles.tabContent, styles.tabContentSpaced]}>
-          {/* §1 Delta Card */}
-          <View style={styles.deltaCard}>
-            {/* Main row: Base → Fit (Δ) */}
-            <View style={styles.deltaMainRow}>
-              <Text style={styles.deltaBaseNum}>{baseKR}</Text>
-              <Text style={styles.deltaArrowText}>{'\u2192'}</Text>
-              <Text style={styles.deltaFitNum}>{fitKR}</Text>
-              <View style={[styles.deltaBadgeInline, { backgroundColor: `${deltaColor}20` }]}>
-                <Text style={[styles.deltaBadgeInlineText, { color: deltaColor }]}>{deltaText}</Text>
-              </View>
-            </View>
-
-            {/* System context + Change button */}
-            <View style={styles.deltaSystemRow}>
-              <Text style={styles.deltaSystemText} numberOfLines={1}>
-                {offStyleLabel} {'\u00B7'} {defStyleLabel}
-              </Text>
-              <Pressable
-                style={styles.changeFitBtn}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setShowFitSelector(true);
-                }}
-              >
-                <Text style={styles.changeFitText}>Change</Text>
-              </Pressable>
-            </View>
-
-            {/* Off / Def split */}
-            <View style={styles.deltaOffDefRow}>
-              <View style={styles.deltaOffDefItem}>
-                <Text style={styles.deltaOffDefLabel}>OFF</Text>
-                <Text style={styles.deltaOffDefNums}>
-                  {offDef.baseOff} {'\u2192'} {offDef.fitOff}{' '}
-                  <Text style={{ color: offDef.fitOff - offDef.baseOff >= 0 ? '#4CAF50' : '#EF4444' }}>
-                    ({offDef.fitOff - offDef.baseOff >= 0 ? '+' : ''}{offDef.fitOff - offDef.baseOff})
-                  </Text>
-                </Text>
-              </View>
-              <View style={styles.deltaOffDefItem}>
-                <Text style={styles.deltaOffDefLabel}>DEF</Text>
-                <Text style={styles.deltaOffDefNums}>
-                  {offDef.baseDef} {'\u2192'} {offDef.fitDef}{' '}
-                  <Text style={{ color: offDef.fitDef - offDef.baseDef >= 0 ? '#4CAF50' : '#EF4444' }}>
-                    ({offDef.fitDef - offDef.baseDef >= 0 ? '+' : ''}{offDef.fitDef - offDef.baseDef})
-                  </Text>
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* §2 Role Card */}
-          <View style={styles.roleBox}>
-            <Text style={styles.roleValue}>Primary Role: {archetypeLabel}</Text>
-            <Text style={styles.roleDetail}>
-              Usage: {usage} {'\u00B7'} Touches: {touches}
-            </Text>
-            <Text style={styles.roleDetail}>Lineup Slot: {lineupSlot}</Text>
-            <Text style={styles.roleDetail}>
-              <Text style={styles.roleDetailLabel}>Best Pairings: </Text>
-              {pairingLabels.join(', ')}
-            </Text>
-          </View>
-
-          {/* §3 Full Breakdown (waterfall) */}
-          {allDeltas.length > 0 ? (
-            <View style={styles.breakdownList}>
-              <View style={styles.breakdownRow}>
-                <Text style={styles.breakdownLabel}>Base KR</Text>
-                <Text style={styles.breakdownValue}>{baseKR}</Text>
-              </View>
-              {allDeltas.map((r, i) => {
-                const sign = r.delta >= 0 ? '+' : '';
-                const color = r.delta > 0 ? '#4CAF50' : r.delta < 0 ? '#EF4444' : '#6e6e6e';
-                return (
-                  <View key={i} style={styles.breakdownRow}>
-                    <Text style={styles.breakdownLabel}>
-                      {r.delta >= 0 ? '+' : '\u2212'} {r.cluster}
-                    </Text>
-                    <Text style={[styles.breakdownValue, { color }]}>
-                      {sign}{r.delta}
-                    </Text>
-                  </View>
-                );
-              })}
-              <View style={styles.breakdownDivider} />
-              <View style={styles.breakdownRow}>
-                <Text style={styles.breakdownTotal}>= System Fit KR</Text>
-                <Text style={styles.breakdownTotal}>{fitKR}</Text>
-              </View>
-            </View>
-          ) : (
-            <Text style={styles.emptyText}>No cluster data available.</Text>
-          )}
-
-          {/* §6 Notes */}
-          <View style={styles.noteBox}>
-            <Text style={styles.noteLabel}>FIT NOTE</Text>
-            <TextInput
-              style={styles.noteInput}
-              value={fitNote}
-              onChangeText={onFitNoteChange}
-              placeholder="Add fit-specific note for this system\u2026"
-              placeholderTextColor="#4A4D55"
-              multiline
-            />
-          </View>
-
-          <View style={styles.noteBox}>
-            <Text style={styles.noteLabel}>COACH NOTE</Text>
-            <TextInput
-              style={styles.noteInput}
-              value={coachNote}
-              onChangeText={onCoachNoteChange}
-              placeholder="Add universal coach note\u2026"
-              placeholderTextColor="#4A4D55"
-              multiline
-            />
-          </View>
-
-        </View>
-      )}
-
-      {/* ═══════════ KaNeXT TAB ═══════════ */}
-      {activeTab === 'kanext' && clusters && (
-        <View style={styles.tabContent}>
-          <Text style={styles.kanextSectionTitle}>KaNeXT</Text>
-          {ALL_CLUSTER_KEYS.map((key) => (
-            <ClusterBar
-              key={key}
-              clusterKey={key}
-              value={clusters[key]}
-              playerId={player.id}
-              jerseyNumber={jerseyNumber}
-              expanded={expandedClusters.has(key)}
-              onToggle={() => toggleCluster(key)}
-              showEvidence
-            />
-          ))}
-
-          {/* Badges */}
-          {playerBadges.length > 0 && (
-            <View style={[styles.sectionBlock, { marginTop: 16 }]}>
-              <Text style={styles.sectionTitle}>BADGES</Text>
-              <View style={styles.badgeRow}>
-                {playerBadges.map((b, i) => (
-                  <View key={i} style={[styles.badgePill, { borderColor: BADGE_LEVEL_COLORS[b.level] + '60' }]}>
-                    <View style={[styles.badgeDot, { backgroundColor: BADGE_LEVEL_COLORS[b.level] }]} />
-                    <Text style={[styles.badgeName, { color: BADGE_LEVEL_COLORS[b.level] }]}>{b.name}</Text>
-                    <Text style={[styles.badgeLevel, { color: BADGE_LEVEL_COLORS[b.level] + 'AA' }]}>{b.level}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
-
-          {/* Coach note */}
-          <View style={[styles.noteBox, { marginTop: 16 }]}>
-            <Text style={styles.noteLabel}>COACH NOTE</Text>
-            <TextInput
-              style={styles.noteInput}
-              value={coachNote}
-              onChangeText={onCoachNoteChange}
-              placeholder="Add universal coach note\u2026"
-              placeholderTextColor="#4A4D55"
-              multiline
-            />
-          </View>
-        </View>
-      )}
-
-      {activeTab === 'kanext' && !clusters && (
-        <Text style={styles.emptyText}>No cluster data available.</Text>
-      )}
-
-      {/* ═══════════ GROWTH TAB ═══════════ */}
-      {activeTab === 'growth' && (
-        <View style={[styles.tabContent, styles.tabContentSpaced]}>
-          {/* §1 Trend Summary */}
-          <View style={[styles.trendCard, { borderLeftColor: growthTrend.color }]}>
-            <Text style={[styles.trendLabel, { color: growthTrend.color }]}>{growthTrend.label}</Text>
-            {growthTrend.delta && (
-              <Text style={[styles.trendDelta, { color: growthTrend.color }]}>
-                KR {growthTrend.delta}
-              </Text>
-            )}
-          </View>
-
-          {/* §2 Year-by-Year Progression */}
-          {career.length > 0 ? (
-            career.map((s, idx) => {
-              const isExpanded = expandedCareer.has(s.year);
-              const krColor = (s.kr ?? 0) >= 75 ? '#4CAF50' : (s.kr ?? 0) >= 60 ? '#FF9800' : '#8A8F98';
-              const isLast = idx === career.length - 1;
-              return (
-                <View key={s.year}>
-                  <View style={styles.growthTimelineRow}>
-                    <View style={styles.growthDotCol}>
-                      <View style={[styles.growthDot, { backgroundColor: krColor }]} />
-                      {!isLast && <View style={styles.growthLine} />}
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Pressable
-                        style={styles.careerRow}
-                        onPress={() => {
-                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                          toggleCareer(s.year);
-                        }}
-                      >
-                        <View style={{ flex: 1 }}>
-                          <Text style={styles.careerYear}>
-                            {s.year} {'\u00B7'} {s.school} {'\u00B7'} {s.division}
-                          </Text>
-                          <Text style={styles.careerMeta}>
-                            {s.gp} GP {'\u00B7'} {s.mpg} MPG
-                            {s.current ? '  (Current)' : ''}
-                          </Text>
-                        </View>
-                        {s.kr != null && (
-                          <View style={[styles.careerKRBadge, { backgroundColor: krColor + '20' }]}>
-                            <Text style={[styles.careerKRText, { color: krColor }]}>{s.kr}</Text>
-                          </View>
-                        )}
-                        <Text style={styles.careerChevron}>{isExpanded ? '\u25BE' : '\u203A'}</Text>
-                      </Pressable>
-
-                      {isExpanded && (
-                        <View style={styles.careerExpanded}>
-                          <View style={styles.careerStatsGrid}>
-                            {[
-                              { v: s.ppg.toFixed(1), l: 'PPG' },
-                              { v: s.rpg.toFixed(1), l: 'RPG' },
-                              { v: s.apg.toFixed(1), l: 'APG' },
-                              { v: `${s.fgPct}%`, l: 'FG%' },
-                              ...(s.threePct > 0 ? [{ v: `${s.threePct}%`, l: '3P%' }] : []),
-                              { v: `${s.ftPct}%`, l: 'FT%' },
-                            ].map((stat) => (
-                              <View key={stat.l} style={styles.careerStatItem}>
-                                <Text style={styles.careerStatValue}>{stat.v}</Text>
-                                <Text style={styles.careerStatLabel}>{stat.l}</Text>
-                              </View>
-                            ))}
-                          </View>
-                        </View>
-                      )}
-                    </View>
-                  </View>
-                </View>
-              );
-            })
-          ) : seasons.length > 0 ? (
-            seasons.map((s, idx) => {
-              const isExpanded = expandedCareer.has(s.season);
-              const sKrColor = (s.kr ?? 0) >= 75 ? '#4CAF50' : (s.kr ?? 0) >= 60 ? '#FF9800' : '#8A8F98';
-              const isLast = idx === seasons.length - 1;
-              return (
-                <View key={s.season}>
-                  <View style={styles.growthTimelineRow}>
-                    <View style={styles.growthDotCol}>
-                      <View style={[styles.growthDot, { backgroundColor: sKrColor }]} />
-                      {!isLast && <View style={styles.growthLine} />}
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Pressable
-                        style={styles.careerRow}
-                        onPress={() => {
-                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                          toggleCareer(s.season);
-                        }}
-                      >
-                        <View style={{ flex: 1 }}>
-                          <Text style={styles.careerYear}>
-                            {s.season} {'\u00B7'} {s.school} {'\u00B7'} {s.level}
-                          </Text>
-                          <Text style={styles.careerMeta}>
-                            {s.gp} GP {'\u00B7'} {s.mpg} MPG
-                          </Text>
-                        </View>
-                        {s.kr != null && (
-                          <View style={[styles.careerKRBadge, { backgroundColor: sKrColor + '20' }]}>
-                            <Text style={[styles.careerKRText, { color: sKrColor }]}>{s.kr}</Text>
-                          </View>
-                        )}
-                        <Text style={styles.careerChevron}>{isExpanded ? '\u25BE' : '\u203A'}</Text>
-                      </Pressable>
-
-                      {isExpanded && (
-                        <View style={styles.careerExpanded}>
-                          <View style={styles.careerStatsGrid}>
-                            {[
-                              { v: s.ppg.toFixed(1), l: 'PPG' },
-                              { v: s.rpg.toFixed(1), l: 'RPG' },
-                              { v: s.apg.toFixed(1), l: 'APG' },
-                              { v: s.spg.toFixed(1), l: 'SPG' },
-                              { v: s.bpg.toFixed(1), l: 'BPG' },
-                              { v: `${s.fgPct}%`, l: 'FG%' },
-                              ...(s.threePct > 0 ? [{ v: `${s.threePct}%`, l: '3P%' }] : []),
-                              { v: `${s.ftPct}%`, l: 'FT%' },
-                            ].map((stat) => (
-                              <View key={stat.l} style={styles.careerStatItem}>
-                                <Text style={styles.careerStatValue}>{stat.v}</Text>
-                                <Text style={styles.careerStatLabel}>{stat.l}</Text>
-                              </View>
-                            ))}
-                          </View>
-                        </View>
-                      )}
-                    </View>
-                  </View>
-                </View>
-              );
-            })
-          ) : (
-            <View style={styles.growthEmpty}>
-              <Text style={styles.careerYear}>Current Stats</Text>
-              {player.keyStatLine ? (
-                <Text style={styles.careerMeta}>{player.keyStatLine}</Text>
-              ) : null}
-              <Text style={styles.emptyText}>First tracked season</Text>
-            </View>
-          )}
-
-          {/* §3 Badge Evolution */}
-          {playerBadges.length > 0 && (
-            <View style={[styles.sectionBlock, { marginTop: 16 }]}>
-              <Text style={styles.sectionTitle}>BADGE EVOLUTION</Text>
-              {playerBadges.map((b, i) => (
-                <View key={i} style={styles.badgeEvoRow}>
-                  <View style={[styles.badgeDot, { backgroundColor: BADGE_LEVEL_COLORS[b.level] }]} />
-                  <Text style={[styles.badgeEvoName, { color: BADGE_LEVEL_COLORS[b.level] }]}>{b.name}</Text>
-                  <View style={styles.badgeEvoTag}>
-                    <Text style={styles.badgeEvoTagText}>Current</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          )}
-
-          {/* §4 Development Notes placeholder */}
-          <View style={[styles.sectionBlock, { marginTop: 16 }]}>
-            <Text style={styles.sectionTitle}>DEVELOPMENT NOTES</Text>
-            <Text style={styles.emptyText}>Development notes will appear here</Text>
-          </View>
-        </View>
-      )}
-
-      {/* ═══════════ MESSAGES TAB ═══════════ */}
-      {activeTab === 'messages' && (
-        <View style={[styles.tabContent, styles.tabContentSpaced]}>
-          {/* Open Messages button */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.openThreadRow,
-              { backgroundColor: pressed ? '#222' : '#1a1a1a' },
-            ]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              onClose();
-              router.push('/(tabs)/activity' as any);
-            }}
-          >
-            <IconSymbol name="bubble.left.and.bubble.right.fill" size={16} color="#3B82F6" />
-            <Text style={styles.openThreadText}>Open Messages</Text>
-            <IconSymbol name="chevron.right" size={14} color="#6e6e6e" />
-          </Pressable>
-
-          {commsEntries.length > 0 ? (
-            commsEntries.map((entry) => {
-              const meta = COMMS_TYPE_META[entry.type];
-              const relTime = getRelativeTime(entry.timestamp);
-              return (
-                <Pressable
-                  key={entry.id}
-                  style={({ pressed }) => [
-                    styles.commsRow,
-                    pressed && styles.commsRowPressed,
-                  ]}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    onClose();
-                    const route = entry.deepLinkRoute;
-                    if (route) {
-                      router.push(route as any);
-                    }
-                  }}
-                >
-                  <View style={[styles.commsIcon, { backgroundColor: meta.color + '33' }]}>
-                    <Text style={[styles.commsIconText, { color: meta.color }]}>{meta.icon}</Text>
-                  </View>
-                  <View style={styles.commsContent}>
-                    <View style={styles.commsTopRow}>
-                      <Text style={styles.commsAuthor}>{entry.author}</Text>
-                      <Text style={styles.commsTime}> {'\u00B7'} {relTime}</Text>
-                    </View>
-                    <Text style={styles.commsBody} numberOfLines={3}>{entry.body}</Text>
-                    {/* Type-specific badges */}
-                    {entry.type === 'touch' && entry.touchMethod && (
-                      <View style={styles.commsBadge}>
-                        <Text style={styles.commsBadgeText}>{entry.touchMethod}</Text>
-                      </View>
-                    )}
-                    {entry.type === 'status_change' && entry.fromStatus && entry.toStatus && (
-                      <View style={[styles.commsBadge, { backgroundColor: '#F9731620' }]}>
-                        <Text style={[styles.commsBadgeText, { color: '#F97316' }]}>
-                          {entry.fromStatus} {'\u2192'} {entry.toStatus}
-                        </Text>
-                      </View>
-                    )}
-                    {entry.type === 'key_date' && entry.dateLabel && (
-                      <View style={[styles.commsBadge, { backgroundColor: '#EF444420' }]}>
-                        <Text style={[styles.commsBadgeText, { color: '#EF4444' }]}>
-                          {entry.dateLabel}{entry.dateValue ? ` \u00B7 ${entry.dateValue.toLocaleDateString()}` : ''}
-                        </Text>
-                      </View>
-                    )}
-                    {entry.type === 'film_share' && entry.clipTitle && (
-                      <View style={[styles.commsBadge, { backgroundColor: '#22C55E20' }]}>
-                        <Text style={[styles.commsBadgeText, { color: '#22C55E' }]}>
-                          {entry.clipTitle}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                  {/* Source chip with chevron */}
-                  {entry.sourceChip && (
-                    <View style={[styles.sourceChip, { backgroundColor: meta.color + '20' }]}>
-                      <Text style={[styles.sourceChipText, { color: meta.color }]}>
-                        {entry.sourceChip}
-                      </Text>
-                      <Text style={[styles.sourceChipChevron, { color: meta.color }]}>{'\u2197'}</Text>
-                    </View>
-                  )}
-                </Pressable>
-              );
-            })
-          ) : (
-            <Text style={styles.emptyText}>No communication history yet.</Text>
-          )}
-        </View>
-      )}
-
-      {/* ═══════════ RECRUITING TAB ═══════════ */}
-      {activeTab === 'recruiting' && !isRoster && (
-        <View style={[styles.tabContent, styles.tabContentSpaced]}>
-          {/* §1 Stage Pipeline */}
-          <View style={rcStyles.pipelineContainer}>
-            <Text style={rcStyles.pipelineTitle}>PIPELINE</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={rcStyles.pipelineRow}>
-                {PIPELINE_STAGES.map((stage, idx) => {
-                  const currentIdx = boardEntry ? PIPELINE_STAGES.indexOf(boardEntry.status) : -1;
-                  const isCurrent = boardEntry?.status === stage;
-                  const isCompleted = currentIdx >= 0 && idx < currentIdx;
-                  const stageColor = BOARD_COLUMN_COLORS[stage as BoardStatus] ?? '#6e6e6e';
-                  return (
-                    <View key={stage} style={styles.pipelineItem}>
-                      <View style={[
-                        rcStyles.pipelineDot,
-                        isCompleted && { backgroundColor: stageColor },
-                        isCurrent && { backgroundColor: stageColor, borderWidth: 2, borderColor: '#fff' },
-                        !isCompleted && !isCurrent && { backgroundColor: '#2a2a2a' },
-                      ]} />
-                      <Text style={[
-                        rcStyles.pipelineLabel,
-                        isCurrent && { color: stageColor, fontWeight: '700' },
-                        isCompleted && { color: '#999' },
-                      ]} numberOfLines={1}>{stage}</Text>
-                      {idx < PIPELINE_STAGES.length - 1 && (
-                        <View style={[
-                          rcStyles.pipelineConnector,
-                          isCompleted ? { backgroundColor: stageColor + '80' } : { backgroundColor: '#2a2a2a' },
-                        ]} />
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-            </ScrollView>
-          </View>
-
-          {/* §2 Enhanced Snapshot */}
-          <View style={rcStyles.snapshotCard}>
-            <Text style={rcStyles.snapshotLabel}>RECRUITING SNAPSHOT</Text>
-            {boardEntry ? (
-              <>
-                <View style={rcStyles.snapshotRow}>
-                  <View style={[rcStyles.boardPill, { backgroundColor: (BOARD_COLUMN_COLORS[boardEntry.status] ?? '#2A2D35') + '30' }]}>
-                    <View style={[rcStyles.boardPillDot, { backgroundColor: BOARD_COLUMN_COLORS[boardEntry.status] ?? '#8A8F98' }]} />
-                    <Text style={[rcStyles.boardPillText, { color: BOARD_COLUMN_COLORS[boardEntry.status] ?? '#f5f5f5' }]}>
-                      {boardEntry.status}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* Temperature + Risk */}
-                <View style={rcStyles.snapshotMetaRow}>
-                  <View style={[rcStyles.tempPill, { backgroundColor: (TEMPERATURE_COLORS[boardEntry.temperature] ?? '#6e6e6e') + '20' }]}>
-                    <Text style={[rcStyles.tempText, { color: TEMPERATURE_COLORS[boardEntry.temperature] ?? '#6e6e6e' }]}>
-                      {boardEntry.temperature}
-                    </Text>
-                  </View>
-                  <View style={[rcStyles.riskPill, { backgroundColor: (RISK_LEVEL_COLORS[boardEntry.riskLevel] ?? '#6e6e6e') + '20' }]}>
-                    <Text style={[rcStyles.riskText, { color: RISK_LEVEL_COLORS[boardEntry.riskLevel] ?? '#6e6e6e' }]}>
-                      Risk: {boardEntry.riskLevel}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* Offer status */}
-                {boardEntry.offer && (
-                  <Text style={rcStyles.snapshotDetail}>
-                    Offer: {boardEntry.offer.scholarshipPct}% ({boardEntry.offer.offerType})
-                  </Text>
-                )}
-
-                {/* NIL range */}
-                {boardEntry.nil && (
-                  <Text style={rcStyles.snapshotDetail}>
-                    NIL: {boardEntry.nil.amount} {'\u00B7'} {boardEntry.nil.status}
-                  </Text>
-                )}
-
-                {/* Visit status */}
-                {boardEntry.visit && (
-                  <Text style={rcStyles.snapshotDetail}>
-                    Visit: {boardEntry.visit.visitType}
-                    {boardEntry.visit.confirmedDate ? ` \u00B7 ${boardEntry.visit.confirmedDate}` : boardEntry.visit.proposedDate ? ` \u00B7 Proposed ${boardEntry.visit.proposedDate}` : ''}
-                  </Text>
-                )}
-
-                {/* Relationships */}
-                {boardEntry.relationships && (
-                  <View style={{ marginTop: 6 }}>
-                    <Text style={rcStyles.snapshotDetail}>
-                      Decision: {boardEntry.relationships.primaryDecisionMaker.role} ({boardEntry.relationships.primaryDecisionMaker.name})
-                    </Text>
-                    {boardEntry.relationships.influencers.length > 0 && (
-                      <Text style={rcStyles.snapshotDetail}>
-                        Influencers: {boardEntry.relationships.influencers.map((i) => `${i.role}`).join(', ')}
-                      </Text>
-                    )}
-                  </View>
-                )}
-              </>
-            ) : (
-              <View style={[rcStyles.boardPill, { backgroundColor: '#2A2D3540' }]}>
-                <Text style={[rcStyles.boardPillText, { color: '#6e6e6e' }]}>Not on Board</Text>
-              </View>
-            )}
-          </View>
-
-          {/* §3 Staff Outreach Log */}
-          <View style={rcStyles.logSection}>
-            <Text style={rcStyles.logTitle}>STAFF OUTREACH LOG</Text>
-            {boardEntry && boardEntry.log.length > 0 ? (
-              [...boardEntry.log]
-                .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-                .map((entry) => {
-                  const meta = LOG_TYPE_META[entry.type];
-                  return (
-                    <View key={entry.id} style={rcStyles.logRow}>
-                      <View style={[rcStyles.logIcon, { backgroundColor: meta.color + '25' }]}>
-                        <Text style={[rcStyles.logIconText, { color: meta.color }]}>{meta.icon}</Text>
-                      </View>
-                      <View style={rcStyles.logContent}>
-                        <Text style={rcStyles.logBody} numberOfLines={2}>{entry.summary}</Text>
-                        <Text style={rcStyles.logTime}>
-                          {entry.author} {'\u00B7'} {getRelativeTime(entry.timestamp)}
-                        </Text>
-                      </View>
-                      <View style={[rcStyles.logTag, { backgroundColor: meta.color + '20' }]}>
-                        <Text style={[rcStyles.logTagText, { color: meta.color }]}>{entry.type}</Text>
-                      </View>
-                    </View>
-                  );
-                })
-            ) : (
-              <Text style={styles.emptyText}>No recruiting activity yet.</Text>
-            )}
-          </View>
-
-          {/* §4 Notes placeholder */}
-          <View style={rcStyles.notesSection}>
-            <Text style={rcStyles.logTitle}>COACH NOTES</Text>
-            {boardEntry?.longNotes ? (
-              <Text style={rcStyles.notesText}>{boardEntry.longNotes}</Text>
-            ) : (
-              <Text style={styles.emptyText}>No coach notes yet.</Text>
-            )}
-          </View>
-
-          {/* §5 Board Controls */}
-          {boardEntry && (
-            <View style={rcStyles.boardControls}>
-              <Text style={rcStyles.boardControlsTitle}>BOARD CONTROLS</Text>
-              <View style={rcStyles.boardMoveRow}>
-                {BOARD_COLUMNS.filter((col) => col !== boardEntry.status).map((col) => (
-                  <Pressable
-                    key={col}
-                    style={[rcStyles.movePill, { borderColor: BOARD_COLUMN_COLORS[col] + '60' }]}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                      onMoveOnBoard?.(boardEntry.id, col);
-                    }}
-                  >
-                    <View style={[rcStyles.movePillDot, { backgroundColor: BOARD_COLUMN_COLORS[col] }]} />
-                    <Text style={rcStyles.movePillText}>{col}</Text>
-                  </Pressable>
-                ))}
-              </View>
-              <Pressable
-                style={rcStyles.removeBtn}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  onRemoveFromBoard?.(boardEntry.id);
-                  onClose();
-                }}
-              >
-                <Text style={rcStyles.removeBtnText}>Remove from Board</Text>
-              </Pressable>
-            </View>
-          )}
+            {boardEntry.shortNotes ? <><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>NOTES</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><Text style={[s.aboutText, { color: colors.textSecondary }]}>{boardEntry.shortNotes}</Text></View></> : null}
+            {commsEntries.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COMMS TIMELINE</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{commsEntries.slice(0, 5).map((c, i) => { const meta = COMMS_TYPE_META[c.type]; return (<View key={i} style={[s.commsRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.commsDot, { backgroundColor: meta?.color ?? '#8F8F8F' }]} /><View style={{ flex: 1 }}><Text style={[s.commsMethod, { color: colors.text }]}>{c.type.replace(/_/g, ' ')}</Text><Text style={[s.commsNote, { color: colors.textSecondary }]} numberOfLines={2}>{c.body}</Text></View><Text style={[s.commsDate, { color: colors.textTertiary }]}>{c.timestamp.toLocaleDateString()}</Text></View>); })}</View></>)}
+            {adminActions && onMoveOnBoard && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>BOARD ACTIONS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.boardActionRow}>{BOARD_COLUMNS.filter((st) => st !== boardEntry.status).slice(0, 4).map((st) => (<Pressable key={st} style={[s.boardActionPill, { borderColor: (BOARD_COLUMN_COLORS as any)[st] ?? colors.border }]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onMoveOnBoard(boardEntry.id, st); }}><Text style={[s.boardActionText, { color: (BOARD_COLUMN_COLORS as any)[st] ?? colors.text }]}>{st}</Text></Pressable>))}</ScrollView>{onRemoveFromBoard && (<Pressable style={s.removeBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); onRemoveFromBoard(boardEntry.id); }}><Text style={s.removeBtnText}>Remove from Board</Text></Pressable>)}</View></>)}
+          </>) : (<View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><Text style={[s.emptyText, { color: colors.textSecondary }]}>Not on recruiting board.</Text></View>)}
+          {coachActions && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COACH NOTE</Text><TextInput style={[s.noteInput, { backgroundColor: colors.backgroundSecondary, color: colors.text, borderColor: colors.border }]} value={coachNote} onChangeText={onCoachNoteChange} placeholder="Add recruiting notes..." placeholderTextColor={colors.textTertiary} multiline /></>)}
         </View>
       )}
     </BottomSheet>
-
-      {/* Fit Selector Bottom Sheet */}
-      <BottomSheet
-        useModal
-        visible={showFitSelector}
-        onClose={() => setShowFitSelector(false)}
-        title="Change System Fit"
-      >
-        <View style={styles.fitSelectorSection}>
-          <Text style={styles.fitSelectorTitle}>OFFENSIVE SYSTEM</Text>
-          <View style={styles.fitSelectorGrid}>
-            {OFFENSIVE_STYLES.map((s) => {
-              const active = s.value === offStyle;
-              return (
-                <Pressable
-                  key={s.value}
-                  style={[styles.systemPill, active && styles.systemPillActive]}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    onOffStyleChange(s.value);
-                    setShowFitSelector(false);
-                  }}
-                >
-                  <Text style={[styles.systemPillText, active && styles.systemPillTextActive]}>
-                    {s.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
-        <View style={styles.fitSelectorSection}>
-          <Text style={styles.fitSelectorTitle}>DEFENSIVE SYSTEM</Text>
-          <View style={styles.fitSelectorGrid}>
-            {DEFENSIVE_STYLES.map((s) => {
-              const active = s.value === defStyle;
-              return (
-                <Pressable
-                  key={s.value}
-                  style={[styles.systemPill, active && styles.systemPillActive]}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    onDefStyleChange(s.value);
-                    setShowFitSelector(false);
-                  }}
-                >
-                  <Text style={[styles.systemPillText, active && styles.systemPillTextActive]}>
-                    {s.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
-      </BottomSheet>
-    </>
   );
 }
 
-// ── Relative time helper ──
+// =============================================================================
+// STYLES
+// =============================================================================
 
-function getRelativeTime(date: Date): string {
-  const now = Date.now();
-  const diff = now - date.getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'Just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days === 1) return 'Yesterday';
-  if (days < 7) return `${days}d ago`;
-  const weeks = Math.floor(days / 7);
-  if (weeks < 4) return `${weeks}w ago`;
-  return date.toLocaleDateString();
-}
-
-const styles = StyleSheet.create({
-  // Header
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: 8,
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  headerName: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#f5f5f5',
-  },
-  headerPhysicals: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#ccc',
-    marginTop: 2,
-  },
-  headerLine2: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#f5f5f5',
-    marginTop: 3,
-  },
-  headerRight: {
-    alignItems: 'flex-end',
-  },
-  headerBadges: {
-    flexDirection: 'row',
-    gap: 6,
-    alignItems: 'center',
-    marginTop: 2,
-  },
-  headerGlyphs: {
-    flexDirection: 'row',
-    gap: 12,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  headerBadge: {
-    backgroundColor: '#2A2D35',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  headerBadgeText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#f5f5f5',
-    letterSpacing: 0.3,
-  },
-
-  // Badge strip (below rating, above tabs)
-  badgeStrip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: 4,
-    marginTop: 2,
-  },
-  badgeStripPill: {
-    borderLeftWidth: 4,
-    backgroundColor: '#1E2028',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  badgeStripName: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#f5f5f5',
-  },
-  badgeStripOverflow: {
-    backgroundColor: '#2A2D35',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  badgeStripOverflowText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#6e6e6e',
-  },
-
-  // Rating row
-  ratingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: 6,
-  },
-  krBlock: {
-    alignItems: 'center',
-  },
-  krLabel: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-  },
-  krNum: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#f5f5f5',
-  },
-  deltaBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-  },
-  deltaText: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
-
-  // Tabs
-  tabScroll: {
-    marginTop: 12,
-    paddingBottom: Spacing.sm,
-  },
-  tabRow: {
-    flexDirection: 'row',
-    gap: 6,
-    paddingHorizontal: Spacing.lg,
-  },
-  tabPill: {
-    paddingVertical: 5,
-    paddingHorizontal: 12,
-    borderRadius: BorderRadius.lg,
-    backgroundColor: '#2a2a2a',
-  },
-  tabPillActive: {
-    backgroundColor: '#f5f5f5',
-  },
-  tabText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#6e6e6e',
-  },
-  tabTextActive: {
-    color: '#111',
-  },
-
-  // Shared tab content wrapper
-  tabContent: {
-    paddingBottom: 40,
-  },
-  tabContentSpaced: {
-    marginTop: 12,
-  },
-
-  // ── Bio tab ──
-
-  // Identity chips
-  idChipScroll: {
-    marginBottom: 12,
-  },
-  idChipRow: {
-    flexDirection: 'row',
-    gap: 6,
-  },
-  idChip: {
-    backgroundColor: '#1E2028',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-  },
-  idChipText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#ccc',
-  },
-
-  // Role + Archetype row
-  roleArchRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 14,
-  },
-  roleArchCol: {
-    flex: 1,
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.md,
-    padding: 10,
-  },
-  roleArchLabel: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.3,
-    marginBottom: 2,
-  },
-  roleArchValue: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#f5f5f5',
-  },
-
-  // Calling cards
-  callingCard: {
-    backgroundColor: '#1E2028',
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 8,
-  },
-  callingCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  callingCardName: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  callingCardLevel: {
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  callingCardDesc: {
-    fontSize: 12,
-    color: '#999',
-    lineHeight: 16,
-  },
-
-  // Quick Facts row
-  quickFactsRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 14,
-  },
-  quickFact: {
-    flex: 1,
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.md,
-    padding: 8,
-  },
-  quickFactLabel: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.3,
-    marginBottom: 2,
-  },
-  quickFactValue: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#f5f5f5',
-  },
-
-  // Stat card (snapshot)
-  statCard: {
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.lg,
-    padding: 12,
-    marginBottom: 14,
-  },
-  statCardTitle: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 10,
-  },
-  statGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    marginBottom: 8,
-  },
-  statGridItem: {
-    alignItems: 'center',
-    width: '33%',
-    marginBottom: 8,
-  },
-  statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 8,
-  },
-  statItem: {
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#f5f5f5',
-  },
-  statLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: GRAY,
-    marginTop: 2,
-  },
-  statMeta: {
-    fontSize: 12,
-    color: GRAY,
-    textAlign: 'center',
-  },
-  keyStatLine: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#f5f5f5',
-    textAlign: 'center',
-    paddingVertical: 4,
-  },
-
-  // Section blocks
-  sectionBlock: {
-    marginBottom: 14,
-  },
-  sectionTitle: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 6,
-  },
-
-  // Highlights
-  highlightBullet: {
-    fontSize: 13,
-    color: '#ccc',
-    lineHeight: 20,
-  },
-
-  // Awards
-  awardRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 5,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2A2D35',
-  },
-  awardTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#f5f5f5',
-    flex: 1,
-    marginRight: 8,
-  },
-  awardYear: {
-    fontSize: 12,
-    color: GRAY,
-  },
-  viewAllLink: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#6e6e6e',
-    marginTop: 6,
-  },
-
-  // Identity mini row
-  identityRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    marginBottom: 14,
-  },
-  identityLabel: {
-    fontSize: 12,
-    color: GRAY,
-  },
-  identityValue: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#f5f5f5',
-  },
-  identityDivider: {
-    fontSize: 12,
-    color: GRAY,
-  },
-
-  // Badges
-  badgeRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  badgePill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#1E2028',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-  },
-  badgeDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  badgeName: {
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  badgeLevel: {
-    fontSize: 9,
-    fontWeight: '600',
-  },
-
-  // About
-  aboutText: {
-    fontSize: 14,
-    color: '#ccc',
-    lineHeight: 20,
-  },
-
-  // Similar Players
-  simRow: {
-    marginBottom: 4,
-  },
-  simCard: {
-    backgroundColor: '#1E2028',
-    borderRadius: 10,
-    padding: 10,
-    marginRight: 8,
-    width: 130,
-  },
-  simCardTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  simAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#2A2D35',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  simAvatarText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#888',
-  },
-  simName: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#f5f5f5',
-  },
-  simKR: {
-    fontSize: 14,
-    fontWeight: '800',
-  },
-  simMeta: {
-    fontSize: 10,
-    color: GRAY,
-    marginBottom: 2,
-  },
-  simSchool: {
-    fontSize: 10,
-    color: '#999',
-    marginBottom: 3,
-  },
-  simAward: {
-    fontSize: 9,
-    color: '#FFFFFF',
-    marginBottom: 3,
-  },
-  ttDelta: {
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  simBadgePill: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#2A2D35',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  simBadgePillText: {
-    fontSize: 9,
-    fontWeight: '600',
-    color: '#888',
-  },
-  simTagRow: {
-    flexDirection: 'row',
-  },
-  simTag: {
-    fontSize: 9,
-    fontWeight: '600',
-    color: '#888',
-    backgroundColor: '#2A2D35',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-
-  // Receipts
-  receiptHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 6,
-  },
-  receiptStrengthPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  receiptStrengthText: {
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  receiptLane: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2A2D35',
-  },
-  receiptLaneTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#f5f5f5',
-  },
-  receiptLaneChevron: {
-    fontSize: 14,
-    color: '#6e6e6e',
-    width: 20,
-    textAlign: 'center',
-  },
-  receiptLaneContent: {
-    paddingVertical: 8,
-    paddingLeft: 12,
-  },
-  receiptStatLine: {
-    fontSize: 12,
-    color: '#ccc',
-    lineHeight: 18,
-  },
-  receiptEmpty: {
-    fontSize: 12,
-    color: '#6e6e6e',
-    fontStyle: 'italic',
-  },
-
-  // Socials / Links
-  socialsRow: {
-    flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
-  },
-  socialPill: {
-    backgroundColor: '#2a2a2a',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  socialText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#ccc',
-  },
-
-  emptyText: {
-    fontSize: 13,
-    color: '#6e6e6e',
-    paddingTop: 8,
-  },
-
-  // ── FIT tab ──
-
-  // Delta card
-  deltaCard: {
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.lg,
-    padding: 14,
-    marginBottom: 14,
-  },
-  deltaMainRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 8,
-  },
-  deltaBaseNum: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#f5f5f5',
-  },
-  deltaArrowText: {
-    fontSize: 20,
-    color: '#6e6e6e',
-  },
-  deltaFitNum: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#f5f5f5',
-  },
-  deltaBadgeInline: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-    marginLeft: 4,
-  },
-  deltaBadgeInlineText: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  deltaSystemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  deltaSystemText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#999',
-    flex: 1,
-    marginRight: 8,
-  },
-  deltaOffDefRow: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  deltaOffDefItem: {
-    flex: 1,
-  },
-  deltaOffDefLabel: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 2,
-  },
-  deltaOffDefNums: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#ccc',
-  },
-
-  // Breakdown waterfall
-  breakdownToggle: {
-    paddingVertical: 8,
-  },
-  breakdownToggleText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#6e6e6e',
-  },
-  breakdownList: {
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.md,
-    padding: 12,
-    marginBottom: 12,
-  },
-  breakdownRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 4,
-  },
-  breakdownLabel: {
-    fontSize: 13,
-    color: '#ccc',
-  },
-  breakdownValue: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#f5f5f5',
-  },
-  breakdownDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#3a3a3a',
-    marginVertical: 6,
-  },
-  breakdownTotal: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#f5f5f5',
-  },
-  changeFitBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    backgroundColor: '#2a2a2a',
-  },
-  changeFitText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#f5f5f5',
-  },
-
-  // Fit selector bottom sheet
-  fitSelectorSection: {
-    marginBottom: 16,
-  },
-  fitSelectorTitle: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 8,
-  },
-  fitSelectorGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-
-  systemPill: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 12,
-    backgroundColor: '#2a2a2a',
-  },
-  systemPillActive: {
-    backgroundColor: '#f5f5f5',
-  },
-  systemPillText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#6e6e6e',
-  },
-  systemPillTextActive: {
-    color: '#111',
-  },
-
-  // Fit boost/gap blocks
-  fitBlock: {
-    marginBottom: 20,
-  },
-  fitBlockLabel: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 4,
-  },
-  fitReasonLine: {
-    fontSize: 13,
-    color: '#ccc',
-    lineHeight: 20,
-    marginBottom: 2,
-  },
-
-  // Role block (compressed)
-  roleBox: {
-    marginTop: 10,
-    padding: Spacing.sm,
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.md,
-    gap: 2,
-  },
-  roleValue: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#f5f5f5',
-  },
-  roleDetail: {
-    fontSize: 12,
-    color: '#ccc',
-    lineHeight: 16,
-  },
-  roleDetailLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#999',
-  },
-
-  // Notes
-  noteBox: {
-    marginTop: 12,
-    padding: Spacing.sm,
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.md,
-  },
-  noteLabel: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 4,
-  },
-  noteInput: {
-    fontSize: 13,
-    color: '#f5f5f5',
-    minHeight: 36,
-    lineHeight: 18,
-    padding: 0,
-  },
-
-  // Season stats (recruiting)
-  seasonCard: {
-    backgroundColor: '#0F1115',
-    borderRadius: 12,
-    padding: 14,
-    marginTop: 12,
-  },
-  seasonLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: GRAY,
-    letterSpacing: 0.5,
-    marginBottom: 10,
-  },
-  seasonStatRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 10,
-  },
-  seasonValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  seasonSublabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: GRAY,
-    marginTop: 2,
-  },
-  seasonMeta: {
-    fontSize: 12,
-    color: GRAY,
-    textAlign: 'center',
-  },
-
-  // ── KaNeXT tab ──
-  kanextSectionTitle: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 8,
-  },
-
-  // ── Growth tab ──
-  trendCard: {
-    borderLeftWidth: 4,
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.md,
-    padding: 12,
-    marginBottom: 14,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  trendLabel: {
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  trendDelta: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  growthTimelineRow: {
-    flexDirection: 'row',
-  },
-  growthDotCol: {
-    alignItems: 'center',
-    width: 20,
-    marginRight: 8,
-  },
-  growthDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginTop: 14,
-  },
-  growthLine: {
-    width: 2,
-    flex: 1,
-    backgroundColor: '#2A2D35',
-    marginTop: 4,
-  },
-  growthEmpty: {
-    padding: 12,
-  },
-  badgeEvoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingVertical: 6,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2A2D35',
-  },
-  badgeEvoName: {
-    fontSize: 13,
-    fontWeight: '600',
-    flex: 1,
-  },
-  badgeEvoTag: {
-    backgroundColor: '#2A2D35',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  badgeEvoTagText: {
-    fontSize: 9,
-    fontWeight: '600',
-    color: '#888',
-  },
-
-  // ── Career rows (shared Growth + old Timeline) ──
-  careerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2A2D35',
-  },
-  careerYear: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#f5f5f5',
-  },
-  careerMeta: {
-    fontSize: 11,
-    color: GRAY,
-    marginTop: 2,
-  },
-  careerKRBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    marginLeft: 8,
-  },
-  careerKRText: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  careerChevron: {
-    fontSize: 14,
-    color: '#6e6e6e',
-    width: 20,
-    textAlign: 'center',
-    marginLeft: 4,
-  },
-  careerExpanded: {
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.md,
-    padding: Spacing.sm,
-    marginBottom: 8,
-  },
-  careerStatsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 12,
-  },
-  careerStatItem: {
-    alignItems: 'center',
-    minWidth: 44,
-  },
-  careerStatValue: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#f5f5f5',
-  },
-  careerStatLabel: {
-    fontSize: 9,
-    fontWeight: '600',
-    color: GRAY,
-    marginTop: 1,
-  },
-  careerClusters: {
-    marginTop: 4,
-  },
-  careerClusterTitle: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 6,
-  },
-  careerClusterRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  careerClusterLabel: {
-    fontSize: 10,
-    color: '#999',
-    width: 68,
-  },
-  careerClusterBarTrack: {
-    flex: 1,
-    height: 5,
-    backgroundColor: '#222',
-    borderRadius: 3,
-    overflow: 'hidden',
-    marginHorizontal: 6,
-  },
-  careerClusterValue: {
-    fontSize: 11,
-    fontWeight: '600',
-    width: 24,
-    textAlign: 'right',
-  },
-
-  // ── Messages tab ──
-  openThreadRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: BorderRadius.md,
-    marginBottom: 8,
-  },
-  openThreadText: {
-    flex: 1,
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#3B82F6',
-  },
-  commsRow: {
-    flexDirection: 'row',
-    paddingVertical: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2A2D35',
-    gap: 10,
-  },
-  commsRowPressed: {
-    backgroundColor: '#1a1a1a',
-  },
-  commsIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 2,
-  },
-  commsIconText: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  commsContent: {
-    flex: 1,
-  },
-  commsTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 2,
-  },
-  commsAuthor: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#f5f5f5',
-  },
-  commsTime: {
-    fontSize: 12,
-    color: '#6e6e6e',
-  },
-  commsBody: {
-    fontSize: 13,
-    color: '#ccc',
-    lineHeight: 18,
-  },
-  commsBadge: {
-    alignSelf: 'flex-start',
-    marginTop: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    backgroundColor: '#2a2a2a',
-  },
-  commsBadgeText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#ccc',
-  },
-  sourceChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: 3,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    marginTop: 2,
-  },
-  sourceChipText: {
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  sourceChipChevron: {
-    fontSize: 10,
-    fontWeight: '700',
-  },
-
-  // Pipeline item (used inside Recruiting tab)
-  pipelineItem: {
-    alignItems: 'center',
-    position: 'relative',
-  },
-});
-
-// ── Recruiting tab styles ──
-const rcStyles = StyleSheet.create({
-  // Pipeline
-  pipelineContainer: {
-    marginBottom: 14,
-  },
-  pipelineTitle: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 8,
-  },
-  pipelineRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  pipelineDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginBottom: 4,
-  },
-  pipelineLabel: {
-    fontSize: 8,
-    color: '#6e6e6e',
-    textAlign: 'center',
-    width: 56,
-  },
-  pipelineConnector: {
-    position: 'absolute',
-    right: -4,
-    top: 5,
-    width: 8,
-    height: 2,
-  },
-
-  // Snapshot
-  snapshotCard: {
-    backgroundColor: '#1a1a1a',
-    borderRadius: BorderRadius.lg,
-    padding: 14,
-    marginBottom: 14,
-    gap: 8,
-  },
-  snapshotRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  snapshotLabel: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-  },
-  snapshotMetaRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  snapshotDetail: {
-    fontSize: 12,
-    color: '#ccc',
-    lineHeight: 18,
-  },
-  tempPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  tempText: {
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  riskPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  riskText: {
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  boardPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-  },
-  boardPillDot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-  },
-  boardPillText: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  needsText: {
-    fontSize: 12,
-    color: '#FF9800',
-    fontWeight: '500',
-  },
-  lastTouchText: {
-    fontSize: 12,
-    color: GRAY,
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 18,
-  },
-  actionBtn: {
-    alignItems: 'center',
-    gap: 6,
-  },
-  actionIconWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  actionLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#f5f5f5',
-  },
-  logSection: {
-    marginBottom: 18,
-  },
-  logTitle: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 8,
-  },
-  logRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2A2D35',
-    gap: 10,
-  },
-  logIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logIconText: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  logContent: {
-    flex: 1,
-  },
-  logBody: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#f5f5f5',
-    lineHeight: 18,
-  },
-  logTime: {
-    fontSize: 11,
-    color: '#6e6e6e',
-    marginTop: 1,
-  },
-  logTag: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-  },
-  logTagText: {
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  notesSection: {
-    marginBottom: 18,
-  },
-  notesText: {
-    fontSize: 13,
-    color: '#ccc',
-    lineHeight: 18,
-  },
-  boardControls: {
-    marginBottom: 20,
-  },
-  boardControlsTitle: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#6e6e6e',
-    letterSpacing: 0.5,
-    marginBottom: 8,
-  },
-  boardMoveRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 12,
-  },
-  movePill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 12,
-    borderWidth: 1,
-    backgroundColor: '#1a1a1a',
-  },
-  movePillDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  movePillText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#f5f5f5',
-  },
-  removeBtn: {
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 10,
-    backgroundColor: '#EF444415',
-  },
-  removeBtnText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#EF4444',
-  },
+const s = StyleSheet.create({
+  header: { paddingBottom: 4 },
+  headerTop: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+  headerName: { fontSize: 20, fontWeight: '700', letterSpacing: -0.3 },
+  headerPhysicals: { fontSize: 13, marginTop: 2 },
+  headerBadges: { flexDirection: 'row', gap: 6 },
+  headerBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: BorderRadius.full },
+  headerBadgeText: { fontSize: 11, fontWeight: '600' },
+  statusPill: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: BorderRadius.full, marginTop: 6 },
+  statusText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  krStrip: { flexDirection: 'row', gap: 14, marginTop: 10, alignItems: 'center' },
+  krBlock: { alignItems: 'center' },
+  krLabel: { fontSize: 10, fontWeight: '600', letterSpacing: 0.5, marginBottom: 2 },
+  krNum: { fontSize: 18, fontWeight: '700' },
+  deltaBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: BorderRadius.full },
+  deltaText: { fontSize: 13, fontWeight: '700' },
+  badgeStrip: { flexDirection: 'row', gap: 6, marginTop: 8, flexWrap: 'wrap' },
+  badgeStripPill: { borderLeftWidth: 3, paddingLeft: 8, paddingVertical: 3, backgroundColor: '#1a1a1a', borderRadius: 6, paddingRight: 10 },
+  badgeStripName: { fontSize: 11, fontWeight: '600', color: '#e0e0e0' },
+  badgeStripOverflow: { paddingHorizontal: 8, paddingVertical: 3, backgroundColor: '#222', borderRadius: 6 },
+  badgeStripOverflowText: { fontSize: 11, fontWeight: '600', color: '#888' },
+  quickActions: { flexDirection: 'row', gap: 8, marginTop: 10 },
+  actionBtn: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  tabScroll: { marginTop: 10, marginBottom: 10 },
+  tabRow: { flexDirection: 'row', gap: 8, paddingVertical: 4 },
+  tabPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: BorderRadius.full, borderWidth: 1 },
+  tabText: { fontSize: 12, fontWeight: '600' },
+  tabContent: { gap: 4 },
+  sectionLabel: { fontSize: 11, fontWeight: '600', letterSpacing: 0.5, marginTop: 12, marginBottom: 4 },
+  card: { borderRadius: BorderRadius.lg, padding: 14 },
+  statRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 },
+  statLabel: { fontSize: 13 },
+  statValue: { fontSize: 13, fontWeight: '600', flexShrink: 1, textAlign: 'right' },
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: 8 },
+  chipRow: { flexDirection: 'row', gap: 6, paddingVertical: 4 },
+  chip: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: BorderRadius.full },
+  chipText: { fontSize: 11, fontWeight: '600' },
+  aboutText: { fontSize: 13, lineHeight: 19 },
+  awardItem: { fontSize: 13, marginBottom: 4 },
+  showMore: { fontSize: 12, marginTop: 4 },
+  socialRow: { flexDirection: 'row', gap: 16, marginTop: 12, paddingVertical: 4 },
+  emptyText: { fontSize: 13, textAlign: 'center', paddingVertical: 16 },
+  gameLogHeader: { flexDirection: 'row', paddingBottom: 4 },
+  gameLogCol: { width: 36, fontSize: 10, fontWeight: '600', letterSpacing: 0.3, textAlign: 'center' },
+  gameLogRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 5, borderTopWidth: StyleSheet.hairlineWidth },
+  careerRow: { paddingVertical: 8 },
+  careerYear: { fontSize: 13, fontWeight: '600' },
+  careerStats: { flexDirection: 'row', gap: 12, marginTop: 4 },
+  careerStat: { fontSize: 12 },
+  filmRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8 },
+  filmText: { fontSize: 13, flex: 1 },
+  krPanelRow: { flexDirection: 'row', justifyContent: 'space-around' },
+  krPanelBlock: { alignItems: 'center' },
+  krPanelLabel: { fontSize: 10, fontWeight: '600', letterSpacing: 0.5, marginBottom: 2 },
+  krPanelValue: { fontSize: 22, fontWeight: '700' },
+  badgeRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8 },
+  badgeDot: { width: 8, height: 8, borderRadius: 4 },
+  badgeName: { fontSize: 13, fontWeight: '600' },
+  badgeDesc: { fontSize: 12, marginTop: 1 },
+  badgeLevel: { fontSize: 11, fontWeight: '700' },
+  driverRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
+  driverText: { fontSize: 13, flex: 1 },
+  noteInput: { borderWidth: 1, borderRadius: BorderRadius.lg, padding: 12, fontSize: 13, minHeight: 60, textAlignVertical: 'top' },
+  goalRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 7 },
+  goalIcon: { fontSize: 14, width: 18, textAlign: 'center' },
+  goalText: { fontSize: 13, flex: 1 },
+  priorityRow: { paddingVertical: 8 },
+  priorityCluster: { fontSize: 13, fontWeight: '600' },
+  priorityDesc: { fontSize: 12, marginTop: 2 },
+  priorityDelta: { fontSize: 12, fontWeight: '600', marginTop: 2, color: '#4CAF50' },
+  checkinRow: { paddingVertical: 8 },
+  checkinDate: { fontSize: 11, marginBottom: 2 },
+  checkinNote: { fontSize: 13, lineHeight: 19 },
+  checkinAuthor: { fontSize: 11, marginTop: 2 },
+  healthPill: { alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 5, borderRadius: BorderRadius.full, marginBottom: 8 },
+  healthPillText: { fontSize: 12, fontWeight: '700', letterSpacing: 0.5 },
+  healthNote: { fontSize: 13 },
+  timelineRow: { paddingVertical: 7 },
+  timelineDate: { fontSize: 11, marginBottom: 1 },
+  timelineEvent: { fontSize: 13 },
+  checkpointRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6 },
+  practiceRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  practiceDay: { alignItems: 'center', gap: 4 },
+  practiceDayLabel: { fontSize: 10, fontWeight: '600' },
+  practiceDot: { width: 10, height: 10, borderRadius: 5 },
+  practiceDayStatus: { fontSize: 9, fontWeight: '600' },
+  eligRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 7 },
+  eligDot: { width: 8, height: 8, borderRadius: 4 },
+  holdRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 7 },
+  holdDot: { width: 8, height: 8, borderRadius: 4 },
+  pipelineRow: { flexDirection: 'row', gap: 12, paddingVertical: 8 },
+  pipelineStage: { alignItems: 'center', gap: 4 },
+  pipelineDot: { width: 12, height: 12, borderRadius: 6 },
+  pipelineLabel: { fontSize: 9, fontWeight: '600' },
+  commsRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, paddingVertical: 8 },
+  commsDot: { width: 8, height: 8, borderRadius: 4, marginTop: 4 },
+  commsMethod: { fontSize: 13, fontWeight: '600' },
+  commsNote: { fontSize: 12, marginTop: 1 },
+  commsDate: { fontSize: 11 },
+  boardActionRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
+  boardActionPill: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, backgroundColor: '#1a1a1a' },
+  boardActionText: { fontSize: 12, fontWeight: '600' },
+  removeBtn: { alignItems: 'center', paddingVertical: 10, borderRadius: 10, backgroundColor: '#EF444415' },
+  removeBtnText: { fontSize: 13, fontWeight: '600', color: '#EF4444' },
 });

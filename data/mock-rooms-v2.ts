@@ -150,10 +150,15 @@ export const SCOPE_CHIPS: Record<Mode, ScopeChip[]> = {
     { key: 'department', label: 'Department' },
     { key: 'quarter', label: 'Quarter/Period' },
   ],
-  community: [
+  competition: [
     { key: 'competition', label: 'Competition' },
     { key: 'event-weekend', label: 'Event Weekend' },
     { key: 'venue', label: 'Venue' },
+  ],
+  business: [
+    { key: 'company', label: 'Company' },
+    { key: 'department', label: 'Department' },
+    { key: 'quarter', label: 'Quarter/Period' },
   ],
 };
 
@@ -214,7 +219,7 @@ export const ROOM_TEMPLATES: Record<Mode, RoomTemplateOption[]> = {
     { key: 'marketing', label: 'Marketing', icon: 'megaphone.fill', description: 'Marketing coordination' },
     { key: 'support', label: 'Support', icon: 'questionmark.circle.fill', description: 'Customer support' },
   ],
-  community: [
+  competition: [
     { key: 'competition-ops', label: 'Competition Ops', icon: 'flag.checkered', description: 'Competition operations' },
     { key: 'team-reps', label: 'Team Reps', icon: 'person.2.fill', description: 'Team representative channel' },
     { key: 'officials', label: 'Officials', icon: 'shield.checkered', description: 'Officials coordination' },
@@ -225,6 +230,19 @@ export const ROOM_TEMPLATES: Record<Mode, RoomTemplateOption[]> = {
     { key: 'venue-ops', label: 'Venue Ops', icon: 'building.fill', description: 'Venue operations' },
     { key: 'incident', label: 'Incident', icon: 'exclamationmark.triangle.fill', description: 'Incident response' },
     { key: 'media', label: 'Media', icon: 'camera.fill', description: 'Media relations' },
+  ],
+  business: [
+    { key: 'all-hands', label: 'All-Hands', icon: 'megaphone.fill', description: 'Company-wide updates' },
+    { key: 'leadership', label: 'Leadership', icon: 'crown.fill', description: 'Executive leadership' },
+    { key: 'ops', label: 'Ops', icon: 'gearshape.2.fill', description: 'Operations coordination' },
+    { key: 'department', label: 'Department', icon: 'folder.fill', description: 'Department communication' },
+    { key: 'project', label: 'Project', icon: 'hammer.fill', description: 'Project workspace' },
+    { key: 'deal', label: 'Deal', icon: 'banknote.fill', description: 'Deal room coordination' },
+    { key: 'client', label: 'Client', icon: 'person.crop.circle.badge.checkmark', description: 'Client-facing channel' },
+    { key: 'hr', label: 'HR', icon: 'person.text.rectangle.fill', description: 'Human resources' },
+    { key: 'engineering', label: 'Engineering', icon: 'wrench.and.screwdriver.fill', description: 'Engineering team' },
+    { key: 'marketing', label: 'Marketing', icon: 'megaphone.fill', description: 'Marketing coordination' },
+    { key: 'support', label: 'Support', icon: 'questionmark.circle.fill', description: 'Customer support' },
   ],
 };
 
@@ -1103,7 +1121,7 @@ const ENTERPRISE_ROOMS: Room[] = [
 const COMMUNITY_ROOMS: Room[] = [
   {
     room_id: 'xr-001',
-    mode: 'community',
+    mode: 'competition',
     room_type: 'competition-ops',
     scope_object: 'competition',
     title: 'K-1 Race Ops',
@@ -1135,7 +1153,7 @@ const COMMUNITY_ROOMS: Room[] = [
   },
   {
     room_id: 'xr-002',
-    mode: 'community',
+    mode: 'competition',
     room_type: 'team-reps',
     scope_object: 'competition',
     title: 'Team Representatives',
@@ -1165,7 +1183,7 @@ const COMMUNITY_ROOMS: Room[] = [
   },
   {
     room_id: 'xr-003',
-    mode: 'community',
+    mode: 'competition',
     room_type: 'officials',
     scope_object: 'competition',
     title: 'Race Officials',
@@ -1196,7 +1214,7 @@ const COMMUNITY_ROOMS: Room[] = [
   },
   {
     room_id: 'xr-004',
-    mode: 'community',
+    mode: 'competition',
     room_type: 'event-weekend-staff',
     scope_object: 'event-weekend',
     title: 'Round 3 — Lakeside',
@@ -1227,7 +1245,7 @@ const COMMUNITY_ROOMS: Room[] = [
   },
   {
     room_id: 'xr-005',
-    mode: 'community',
+    mode: 'competition',
     room_type: 'broadcast-streaming',
     scope_object: 'competition',
     title: 'Broadcast Team',
@@ -1256,7 +1274,7 @@ const COMMUNITY_ROOMS: Room[] = [
   },
   {
     room_id: 'xr-006',
-    mode: 'community',
+    mode: 'competition',
     room_type: 'sponsors',
     scope_object: 'competition',
     title: 'Sponsor Relations',
@@ -1291,7 +1309,8 @@ export const MOCK_ROOMS: Record<Mode, Room[]> = {
   education: EDUCATION_ROOMS,
   church: CHURCH_ROOMS,
   enterprise: ENTERPRISE_ROOMS,
-  community: COMMUNITY_ROOMS,
+  competition: COMMUNITY_ROOMS,
+  business: ENTERPRISE_ROOMS,
 };
 
 // =============================================================================
@@ -1317,9 +1336,13 @@ export const ROOM_REQUESTS: Record<Mode, RoomRequest[]> = {
     { id: 'rr-b1', room_id: 'br-004', room_title: 'Engineering', requester_name: 'New Hire — Wei Zhang', requester_initials: 'WZ', request_type: 'invite', timestamp: '3 hr ago' },
     { id: 'rr-b2', room_id: 'br-003', room_title: 'Operations', requester_name: 'Contractor — Lisa Park', requester_initials: 'LP', request_type: 'join', message: 'Onboarding as ops contractor', timestamp: '1 day ago' },
   ],
-  community: [
+  competition: [
     { id: 'rr-x1', room_id: 'xr-002', room_title: 'Team Representatives', requester_name: 'New Team — Blaze Racing', requester_initials: 'BR', request_type: 'join', message: 'Registered for Season 1 — requesting rep access', timestamp: '5 hr ago' },
     { id: 'rr-x2', room_id: 'xr-005', room_title: 'Broadcast Team', requester_name: 'Freelance — Kai Wu', requester_initials: 'KW', request_type: 'join', message: 'Freelance camera operator available for Round 3', timestamp: '1 day ago' },
+  ],
+  business: [
+    { id: 'rr-b1', room_id: 'br-004', room_title: 'Engineering', requester_name: 'New Hire — Wei Zhang', requester_initials: 'WZ', request_type: 'invite', timestamp: '3 hr ago' },
+    { id: 'rr-b2', room_id: 'br-003', room_title: 'Operations', requester_name: 'Contractor — Lisa Park', requester_initials: 'LP', request_type: 'join', message: 'Onboarding as ops contractor', timestamp: '1 day ago' },
   ],
 };
 
@@ -1354,11 +1377,17 @@ export const ROOM_SETTINGS: Record<Mode, RoomSettingToggle[]> = {
     { id: 'sb-3', label: 'Enable client/partner rooms', description: 'Allow client-facing communication channels', enabled: true },
     { id: 'sb-4', label: 'Require manager approval', description: 'New rooms need manager approval before creation', enabled: false },
   ],
-  community: [
+  competition: [
     { id: 'sx-1', label: 'Auto-create event weekend rooms', description: 'Rooms auto-created for each scheduled event weekend', enabled: true },
     { id: 'sx-2', label: 'Auto-create incident rooms', description: 'Incident rooms auto-created on flag trigger', enabled: true },
     { id: 'sx-3', label: 'Restrict media room posting', description: 'Media room posting limited to broadcast staff', enabled: true },
     { id: 'sx-4', label: 'Auto-archive post-event rooms', description: 'Event rooms auto-archive 48h after conclusion', enabled: true },
+  ],
+  business: [
+    { id: 'sb-1', label: 'Auto-create project rooms', description: 'Rooms auto-created when new projects are spun up', enabled: true },
+    { id: 'sb-2', label: 'Auto-create deal rooms', description: 'Rooms auto-created for deals above $100K', enabled: true },
+    { id: 'sb-3', label: 'Enable client/partner rooms', description: 'Allow client-facing communication channels', enabled: true },
+    { id: 'sb-4', label: 'Require manager approval', description: 'New rooms need manager approval before creation', enabled: false },
   ],
 };
 

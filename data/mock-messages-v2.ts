@@ -1352,7 +1352,8 @@ export const MESSAGES_V2: Record<Mode, MsgItem[]> = {
   church: CHURCH_MESSAGES,
   education: EDUCATION_MESSAGES,
   enterprise: BUSINESS_MESSAGES,
-  community: COMMUNITY_MESSAGES,
+  business: BUSINESS_MESSAGES,
+  competition: COMMUNITY_MESSAGES,
 };
 
 export const MSG_ROOMS: Record<Mode, MsgRoom[]> = {
@@ -1360,5 +1361,6 @@ export const MSG_ROOMS: Record<Mode, MsgRoom[]> = {
   church: CHURCH_ROOMS,
   education: EDUCATION_ROOMS,
   enterprise: BUSINESS_ROOMS,
-  community: COMMUNITY_ROOMS,
+  business: BUSINESS_ROOMS,
+  competition: COMMUNITY_ROOMS,
 };

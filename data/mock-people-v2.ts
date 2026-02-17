@@ -85,7 +85,12 @@ export const PEOPLE_SCOPE_CHIPS: Record<Mode, ScopeChip[]> = {
     { key: 'entity', label: 'Entity' },
     { key: 'department', label: 'Department' },
   ],
-  community: [
+  business: [
+    { key: 'organization', label: 'Organization' },
+    { key: 'entity', label: 'Entity' },
+    { key: 'department', label: 'Department' },
+  ],
+  competition: [
     { key: 'organization', label: 'Organization' },
     { key: 'series', label: 'Series' },
     { key: 'event-weekend', label: 'Event Weekend' },
@@ -148,7 +153,20 @@ export const ROLE_TEMPLATES: Record<Mode, RoleTemplate[]> = {
     { key: 'hr', label: 'HR / People Ops' },
     { key: 'advisor', label: 'Advisor/Contractor' },
   ],
-  community: [
+  business: [
+    { key: 'founder-ceo', label: 'Founder/CEO' },
+    { key: 'leadership', label: 'Leadership' },
+    { key: 'operations', label: 'Operations' },
+    { key: 'product', label: 'Product' },
+    { key: 'engineering', label: 'Engineering' },
+    { key: 'sales', label: 'Sales' },
+    { key: 'marketing', label: 'Marketing' },
+    { key: 'finance', label: 'Finance' },
+    { key: 'legal', label: 'Legal' },
+    { key: 'hr', label: 'HR / People Ops' },
+    { key: 'advisor', label: 'Advisor/Contractor' },
+  ],
+  competition: [
     { key: 'comp-ops-director', label: 'Competition Ops Director' },
     { key: 'ops-staff', label: 'Ops Staff' },
     { key: 'venue-rep', label: 'Venue Rep' },
@@ -181,7 +199,8 @@ export const UNIT_OPTIONS: Record<Mode, string[]> = {
   education: ['Business', 'Nursing', 'Aviation', 'STEM', 'Liberal Arts'],
   church: ['Main Campus', 'Youth Ministry', "Women's Ministry", "Men's Ministry", "Children's Ministry", 'Worship', 'Missions', 'Prayer'],
   enterprise: ['Executive', 'Product', 'Engineering', 'Sales', 'Marketing', 'Operations', 'Finance'],
-  community: ['K-1 Season 1', 'Round 1 — Desert', 'Round 2 — Coastal', 'Round 3 — Lakeside'],
+  business: ['Executive', 'Product', 'Engineering', 'Sales', 'Marketing', 'Operations', 'Finance'],
+  competition: ['K-1 Season 1', 'Round 1 — Desert', 'Round 2 — Coastal', 'Round 3 — Lakeside'],
 };
 
 // =============================================================================
@@ -1305,7 +1324,8 @@ export const PEOPLE_DIRECTORY: Record<Mode, Person[]> = {
   church: CHURCH_PEOPLE,
   education: EDUCATION_PEOPLE,
   enterprise: ENTERPRISE_PEOPLE,
-  community: COMMUNITY_PEOPLE,
+  business: ENTERPRISE_PEOPLE,
+  competition: COMMUNITY_PEOPLE,
 };
 
 export const PEOPLE_GROUPS: Record<Mode, PersonGroup[]> = {
@@ -1313,7 +1333,8 @@ export const PEOPLE_GROUPS: Record<Mode, PersonGroup[]> = {
   church: CHURCH_GROUPS,
   education: EDUCATION_GROUPS,
   enterprise: ENTERPRISE_GROUPS,
-  community: COMMUNITY_GROUPS,
+  business: ENTERPRISE_GROUPS,
+  competition: COMMUNITY_GROUPS,
 };
 
 // =============================================================================

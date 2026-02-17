@@ -6,7 +6,16 @@
 
 import React, { createContext, useContext, useReducer, useCallback, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { AppContextState, Mode, Role, Organization, Cycle, Program } from '@/types';
+import type { AppContextState, Mode, Role, Organization, Cycle, Program, ActiveContext, RecentContext } from '@/types';
+import {
+  DEFAULT_ACTIVE_CONTEXT,
+  SEEDED_RECENT_CONTEXTS,
+  getOrgById,
+  getProgramById,
+  getSeasonById,
+  getDefaultContextForMode,
+} from '@/data/mock-memberships';
+import { deriveRoleBadge } from '@/utils/role-badge';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -16,6 +25,8 @@ const STORAGE_KEYS = {
   sportsOrganization: 'kx:sportsOrganization',
   sportsProgram: 'kx:sportsProgram',
   sportsSeason: 'kx:sportsSeason',
+  activeContext: 'kx:activeContext',
+  recentContexts: 'kx:recentContexts',
 };
 
 // Auth state type
@@ -24,10 +35,12 @@ type AuthState = 'viewer' | 'owner';
 // Landing tab for navigation control
 type LandingTab = 'home' | 'nexus' | null;
 
-// Extended state with auth and landing control
+// Extended state with auth, landing control, and V2 context
 interface ExtendedAppState extends AppContextState {
   authState: AuthState;
   pendingLandingTab: LandingTab;
+  activeContext: ActiveContext;
+  recentContexts: RecentContext[];
 }
 
 // =============================================================================
@@ -67,13 +80,21 @@ const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
     location: 'San Diego County, CA',
     description: 'Private Christian Liberal Arts College',
   },
-  community: {
+  business: {
+    id: 'kanext-biz',
+    name: 'KaNeXT',
+    mode: 'business',
+    type: 'platform',
+    location: 'Tennessee',
+    description: 'KaNeXT Institutional OS Platform',
+  },
+  competition: {
     id: 'k1-league',
-    name: 'K-1 Competition',
-    mode: 'community',
+    name: 'K-1 Hypercar Championship',
+    mode: 'competition',
     type: 'motorsport_league',
     location: 'Global',
-    description: 'K-1 Speed Motorsport League Management',
+    description: 'K-1 Hypercar Championship',
   },
 };
 
@@ -106,7 +127,14 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
     endDate: new Date('2026-05-15'),
     isCurrent: true,
   },
-  community: {
+  business: {
+    id: 'fy2026',
+    name: 'FY 2026',
+    startDate: new Date('2026-01-01'),
+    endDate: new Date('2026-12-31'),
+    isCurrent: true,
+  },
+  competition: {
     id: 'k1-s1-2026',
     name: 'Season 1 · 2026',
     startDate: new Date('2026-03-01'),
@@ -120,7 +148,8 @@ const DEMO_ROLES: Record<Mode, Role> = {
   enterprise: 'founder',
   church: 'member',
   education: 'faculty',
-  community: 'league_admin',
+  business: 'founder',
+  competition: 'league_admin',
 };
 
 const DEMO_PROGRAM: Program = {
@@ -180,15 +209,17 @@ export { SPORTS_ORGANIZATIONS, SPORTS_PROGRAMS, SPORTS_SEASONS };
 // =============================================================================
 
 const defaultState: ExtendedAppState = {
-  mode: 'enterprise',
-  organization: DEMO_ORGANIZATIONS.enterprise,
-  operatingRole: DEMO_ROLES.enterprise,
-  cycle: DEMO_CYCLES.enterprise,
-  program: null,
+  mode: 'sports',
+  organization: DEMO_ORGANIZATIONS.sports,
+  operatingRole: DEMO_ROLES.sports,
+  cycle: DEMO_CYCLES.sports,
+  program: DEMO_PROGRAM,
   isFirstRun: true,
   isLoading: true,
   authState: 'viewer',
   pendingLandingTab: null,
+  activeContext: DEFAULT_ACTIVE_CONTEXT,
+  recentContexts: SEEDED_RECENT_CONTEXTS,
 };
 
 // =============================================================================
@@ -207,7 +238,8 @@ type AppAction =
   | { type: 'SET_AUTH_STATE'; payload: AuthState }
   | { type: 'SET_PENDING_LANDING_TAB'; payload: LandingTab }
   | { type: 'INITIALIZE'; payload: Partial<ExtendedAppState> }
-  | { type: 'RESTORE_STATE'; payload: { mode: Mode; authState: AuthState; organization?: string; program?: string; season?: string } };
+  | { type: 'RESTORE_STATE'; payload: { mode: Mode; authState: AuthState; organization?: string; program?: string; season?: string } }
+  | { type: 'SWITCH_CONTEXT'; payload: ActiveContext };
 
 function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppState {
   switch (action.type) {
@@ -261,6 +293,42 @@ function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppStat
         authState,
       };
     }
+    case 'SWITCH_CONTEXT': {
+      const ctx = action.payload;
+      const v2Org = getOrgById(ctx.org_id);
+      const v2Program = getProgramById(ctx.program_id);
+      const v2Season = getSeasonById(ctx.season_id);
+
+      const legacyOrg: Organization | null = v2Org
+        ? { id: v2Org.org_id, name: v2Org.org_name, mode: v2Org.mode, type: v2Org.org_type ?? '', location: v2Org.location, description: v2Org.description }
+        : null;
+
+      const legacyProgram: Program | null = v2Program
+        ? { id: v2Program.program_id, name: v2Program.program_name, level: 'varsity' }
+        : null;
+
+      const legacyCycle: Cycle | null = v2Season
+        ? { id: v2Season.season_id, name: v2Season.season_name, startDate: new Date(v2Season.start_date), endDate: new Date(v2Season.end_date), isCurrent: v2Season.is_current }
+        : null;
+
+      // Push previous context to recents (dedup by membership+program+season)
+      const prev: RecentContext = { ...state.activeContext, timestamp: Date.now() };
+      const deduped = state.recentContexts.filter(
+        (r) => !(r.org_id === prev.org_id && r.program_id === prev.program_id && r.membership_id === prev.membership_id),
+      );
+      const newRecents = [prev, ...deduped].slice(0, 10);
+
+      return {
+        ...state,
+        activeContext: ctx,
+        recentContexts: newRecents,
+        mode: ctx.mode,
+        organization: legacyOrg,
+        program: legacyProgram,
+        cycle: legacyCycle,
+        operatingRole: DEMO_ROLES[ctx.mode] ?? 'head_coach',
+      };
+    }
     default:
       return state;
   }
@@ -274,6 +342,7 @@ interface AppContextValue {
   state: ExtendedAppState;
   setMode: (mode: Mode) => void;
   switchMode: (mode: Mode) => void;
+  switchContext: (ctx: ActiveContext) => void;
   setOrganization: (org: Organization | null) => void;
   setRole: (role: Role) => void;
   setCycle: (cycle: Cycle | null) => void;
@@ -313,11 +382,13 @@ export function AppProvider({ children }: AppProviderProps) {
         ]);
 
         if (lastMode) {
+          // Migrate old mode names
+          const resolvedMode = lastMode === 'community' ? 'competition' : lastMode;
           // Mode exists - skip first run
           dispatch({
             type: 'RESTORE_STATE',
             payload: {
-              mode: lastMode as Mode,
+              mode: resolvedMode as Mode,
               authState: (auth as AuthState) || 'viewer',
               organization: organization || undefined,
               program: program || undefined,
@@ -348,6 +419,12 @@ export function AppProvider({ children }: AppProviderProps) {
     AsyncStorage.setItem(STORAGE_KEYS.auth, state.authState).catch(console.error);
   }, [state.authState, state.isLoading]);
 
+  // Persist V2 recent contexts
+  useEffect(() => {
+    if (state.isLoading) return;
+    AsyncStorage.setItem(STORAGE_KEYS.recentContexts, JSON.stringify(state.recentContexts)).catch(console.error);
+  }, [state.recentContexts, state.isLoading]);
+
   // Persist sports organization/program/season when they change
   useEffect(() => {
     if (state.isLoading || state.mode !== 'sports') return;
@@ -367,7 +444,21 @@ export function AppProvider({ children }: AppProviderProps) {
   }, []);
 
   const switchMode = useCallback((mode: Mode) => {
-    dispatch({ type: 'SWITCH_MODE', payload: mode });
+    // Try V2 context switch first, fall back to legacy
+    const defaultCtx = getDefaultContextForMode(mode);
+    if (defaultCtx) {
+      const badge = deriveRoleBadge(defaultCtx.membership_id, defaultCtx.program_id);
+      dispatch({ type: 'SWITCH_CONTEXT', payload: { ...defaultCtx, derived_role_badge: badge } });
+    } else {
+      dispatch({ type: 'SWITCH_MODE', payload: mode });
+    }
+  }, []);
+
+  const switchContext = useCallback((ctx: ActiveContext) => {
+    const badge = deriveRoleBadge(ctx.membership_id, ctx.program_id);
+    dispatch({ type: 'SWITCH_CONTEXT', payload: { ...ctx, derived_role_badge: badge } });
+    // Persist
+    AsyncStorage.setItem(STORAGE_KEYS.activeContext, JSON.stringify({ ...ctx, derived_role_badge: badge })).catch(console.error);
   }, []);
 
   const setOrganization = useCallback((org: Organization | null) => {
@@ -440,6 +531,7 @@ export function AppProvider({ children }: AppProviderProps) {
     state,
     setMode,
     switchMode,
+    switchContext,
     setOrganization,
     setRole,
     setCycle,

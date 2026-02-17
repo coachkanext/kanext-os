@@ -232,7 +232,8 @@ export const PAYMENTS: Record<Mode, Payment[]> = {
   church: churchPayments,
   education: educationPayments,
   enterprise: enterprisePayments,
-  community: communityPayments,
+  business: enterprisePayments,
+  competition: communityPayments,
 };
 
 export const SETTLEMENTS: Record<Mode, Settlement[]> = {
@@ -240,7 +241,8 @@ export const SETTLEMENTS: Record<Mode, Settlement[]> = {
   church: churchSettlements,
   education: educationSettlements,
   enterprise: enterpriseSettlements,
-  community: communitySettlements,
+  business: enterpriseSettlements,
+  competition: communitySettlements,
 };
 
 export const REFUNDS: Record<Mode, Refund[]> = {
@@ -248,7 +250,8 @@ export const REFUNDS: Record<Mode, Refund[]> = {
   church: churchRefunds,
   education: educationRefunds,
   enterprise: enterpriseRefunds,
-  community: communityRefunds,
+  business: enterpriseRefunds,
+  competition: communityRefunds,
 };
 
 export const PAYMENT_SNAPSHOTS: Record<Mode, PaymentSnapshot> = {
@@ -256,5 +259,6 @@ export const PAYMENT_SNAPSHOTS: Record<Mode, PaymentSnapshot> = {
   church: churchSnapshot,
   education: educationSnapshot,
   enterprise: enterpriseSnapshot,
-  community: communitySnapshot,
+  business: enterpriseSnapshot,
+  competition: communitySnapshot,
 };

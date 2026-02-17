@@ -1402,7 +1402,17 @@ export const INBOX_THREADS_BY_MODE: Record<Mode, ChatThread[]> = {
   church: CHURCH_CHAT_THREADS,
   education: EDUCATION_CHAT_THREADS,
   enterprise: ENTERPRISE_CHAT_THREADS,
-  community: COMMUNITY_CHAT_THREADS,
+  competition: COMMUNITY_CHAT_THREADS,
+  business: ENTERPRISE_CHAT_THREADS,
+};
+
+export const PINNED_THREADS_BY_MODE: Record<Mode, ChatThread[]> = {
+  sports: MOCK_CHAT_THREADS.filter((t) => !t.isGroup && t.pinned),
+  church: CHURCH_CHAT_THREADS.filter((t) => t.pinned),
+  education: EDUCATION_CHAT_THREADS.filter((t) => t.pinned),
+  enterprise: ENTERPRISE_CHAT_THREADS.filter((t) => t.pinned),
+  competition: COMMUNITY_CHAT_THREADS.filter((t) => t.pinned),
+  business: ENTERPRISE_CHAT_THREADS.filter((t) => t.pinned),
 };
 
 // =============================================================================
@@ -1481,7 +1491,8 @@ export function getModeRooms(mode: Mode): ChatThread[] {
     case 'enterprise': return BUSINESS_ROOMS;
     case 'church': return CHURCH_ROOMS;
     case 'education': return EDUCATION_ROOMS;
-    case 'community': return COMPETITION_ROOMS;
+    case 'competition': return COMPETITION_ROOMS;
+    case 'business': return BUSINESS_ROOMS;
     default: return SPORTS_ROOMS;
   }
 }

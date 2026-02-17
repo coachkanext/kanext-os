@@ -380,7 +380,8 @@ const MODE_LABELS: Record<Mode, string> = {
   education: 'Education',
   church: 'Church',
   enterprise: 'Enterprise',
-  community: 'Community',
+  business: 'Enterprise',
+  competition: 'Competition',
 };
 
 // =============================================================================

@@ -227,10 +227,15 @@ export const FINANCE_SCOPE_CHIPS: Record<Mode, FinanceScopeChip[]> = {
     { key: 'entity', label: 'Entity' },
     { key: 'department', label: 'Department' },
   ],
-  community: [
+  competition: [
     { key: 'org', label: 'Organization' },
     { key: 'series', label: 'Series' },
     { key: 'event-weekend', label: 'Event Weekend' },
+  ],
+  business: [
+    { key: 'org', label: 'Organization' },
+    { key: 'entity', label: 'Entity' },
+    { key: 'department', label: 'Department' },
   ],
 };
 
@@ -1098,7 +1103,8 @@ const FINANCE_DASHBOARDS: Record<Mode, FinanceDashboardBlock[]> = {
   education: EDUCATION_DASHBOARD,
   church: CHURCH_DASHBOARD,
   enterprise: ENTERPRISE_DASHBOARD,
-  community: COMMUNITY_DASHBOARD,
+  competition: COMMUNITY_DASHBOARD,
+  business: ENTERPRISE_DASHBOARD,
 };
 
 const FINANCE_BUDGETS_V2: Record<Mode, FinanceBudget[]> = {
@@ -1106,7 +1112,8 @@ const FINANCE_BUDGETS_V2: Record<Mode, FinanceBudget[]> = {
   education: EDUCATION_BUDGETS,
   church: CHURCH_BUDGETS,
   enterprise: ENTERPRISE_BUDGETS,
-  community: COMMUNITY_BUDGETS,
+  competition: COMMUNITY_BUDGETS,
+  business: ENTERPRISE_BUDGETS,
 };
 
 const FINANCE_LEDGERS: Record<Mode, FinanceLedgerEntry[]> = {
@@ -1114,7 +1121,8 @@ const FINANCE_LEDGERS: Record<Mode, FinanceLedgerEntry[]> = {
   education: EDUCATION_LEDGER,
   church: CHURCH_LEDGER,
   enterprise: ENTERPRISE_LEDGER,
-  community: COMMUNITY_LEDGER,
+  competition: COMMUNITY_LEDGER,
+  business: ENTERPRISE_LEDGER,
 };
 
 const FINANCE_APPROVALS: Record<Mode, FinanceApproval[]> = {
@@ -1122,7 +1130,8 @@ const FINANCE_APPROVALS: Record<Mode, FinanceApproval[]> = {
   education: EDUCATION_APPROVALS,
   church: CHURCH_APPROVALS,
   enterprise: ENTERPRISE_APPROVALS,
-  community: COMMUNITY_APPROVALS,
+  competition: COMMUNITY_APPROVALS,
+  business: ENTERPRISE_APPROVALS,
 };
 
 const FINANCE_PAYABLES: Record<Mode, FinancePayable[]> = {
@@ -1130,7 +1139,8 @@ const FINANCE_PAYABLES: Record<Mode, FinancePayable[]> = {
   education: EDUCATION_PAYABLES,
   church: CHURCH_PAYABLES,
   enterprise: ENTERPRISE_PAYABLES,
-  community: COMMUNITY_PAYABLES,
+  competition: COMMUNITY_PAYABLES,
+  business: ENTERPRISE_PAYABLES,
 };
 
 const FINANCE_RECEIVABLES: Record<Mode, FinanceReceivable[]> = {
@@ -1138,7 +1148,8 @@ const FINANCE_RECEIVABLES: Record<Mode, FinanceReceivable[]> = {
   education: EDUCATION_RECEIVABLES,
   church: CHURCH_RECEIVABLES,
   enterprise: ENTERPRISE_RECEIVABLES,
-  community: COMMUNITY_RECEIVABLES,
+  competition: COMMUNITY_RECEIVABLES,
+  business: ENTERPRISE_RECEIVABLES,
 };
 
 const FINANCE_CONTRACTS: Record<Mode, FinanceContract[]> = {
@@ -1146,7 +1157,8 @@ const FINANCE_CONTRACTS: Record<Mode, FinanceContract[]> = {
   education: EDUCATION_CONTRACTS,
   church: CHURCH_CONTRACTS,
   enterprise: ENTERPRISE_CONTRACTS,
-  community: COMMUNITY_CONTRACTS,
+  competition: COMMUNITY_CONTRACTS,
+  business: ENTERPRISE_CONTRACTS,
 };
 
 const FINANCE_PURCHASING: Record<Mode, FinancePurchaseRequest[]> = {
@@ -1154,7 +1166,8 @@ const FINANCE_PURCHASING: Record<Mode, FinancePurchaseRequest[]> = {
   education: EDUCATION_PURCHASING,
   church: CHURCH_PURCHASING,
   enterprise: ENTERPRISE_PURCHASING,
-  community: COMMUNITY_PURCHASING,
+  competition: COMMUNITY_PURCHASING,
+  business: ENTERPRISE_PURCHASING,
 };
 
 const FINANCE_PAYROLL: Record<Mode, FinancePayrollItem[]> = {
@@ -1162,7 +1175,8 @@ const FINANCE_PAYROLL: Record<Mode, FinancePayrollItem[]> = {
   education: EDUCATION_PAYROLL,
   church: CHURCH_PAYROLL,
   enterprise: ENTERPRISE_PAYROLL,
-  community: COMMUNITY_PAYROLL,
+  competition: COMMUNITY_PAYROLL,
+  business: ENTERPRISE_PAYROLL,
 };
 
 const FINANCE_REIMBURSEMENTS: Record<Mode, FinanceReimbursement[]> = {
@@ -1170,7 +1184,8 @@ const FINANCE_REIMBURSEMENTS: Record<Mode, FinanceReimbursement[]> = {
   education: EDUCATION_REIMBURSEMENTS,
   church: CHURCH_REIMBURSEMENTS,
   enterprise: ENTERPRISE_REIMBURSEMENTS,
-  community: COMMUNITY_REIMBURSEMENTS,
+  competition: COMMUNITY_REIMBURSEMENTS,
+  business: ENTERPRISE_REIMBURSEMENTS,
 };
 
 const FINANCE_REPORTS: Record<Mode, FinanceReport[]> = {
@@ -1178,7 +1193,8 @@ const FINANCE_REPORTS: Record<Mode, FinanceReport[]> = {
   education: EDUCATION_REPORTS,
   church: CHURCH_REPORTS,
   enterprise: ENTERPRISE_REPORTS,
-  community: COMMUNITY_REPORTS,
+  competition: COMMUNITY_REPORTS,
+  business: ENTERPRISE_REPORTS,
 };
 
 const FINANCE_CONTROLS: Record<Mode, FinanceControl[]> = {
@@ -1186,7 +1202,8 @@ const FINANCE_CONTROLS: Record<Mode, FinanceControl[]> = {
   education: EDUCATION_CONTROLS,
   church: CHURCH_CONTROLS,
   enterprise: ENTERPRISE_CONTROLS,
-  community: COMMUNITY_CONTROLS,
+  competition: COMMUNITY_CONTROLS,
+  business: ENTERPRISE_CONTROLS,
 };
 
 const FINANCE_AUDITS: Record<Mode, FinanceAuditEntry[]> = {
@@ -1194,7 +1211,8 @@ const FINANCE_AUDITS: Record<Mode, FinanceAuditEntry[]> = {
   education: EDUCATION_AUDIT,
   church: CHURCH_AUDIT,
   enterprise: ENTERPRISE_AUDIT,
-  community: COMMUNITY_AUDIT,
+  competition: COMMUNITY_AUDIT,
+  business: ENTERPRISE_AUDIT,
 };
 
 // =============================================================================

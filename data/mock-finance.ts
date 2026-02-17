@@ -247,7 +247,8 @@ export const FINANCE_BUDGETS: Record<Mode, BudgetCategory[]> = {
   church: CHURCH_BUDGETS,
   education: EDUCATION_BUDGETS,
   enterprise: ENTERPRISE_BUDGETS,
-  community: COMMUNITY_BUDGETS,
+  competition: COMMUNITY_BUDGETS,
+  business: ENTERPRISE_BUDGETS,
 };
 
 export const FINANCE_TRANSACTIONS: Record<Mode, Transaction[]> = {
@@ -255,7 +256,8 @@ export const FINANCE_TRANSACTIONS: Record<Mode, Transaction[]> = {
   church: CHURCH_TRANSACTIONS,
   education: EDUCATION_TRANSACTIONS,
   enterprise: ENTERPRISE_TRANSACTIONS,
-  community: COMMUNITY_TRANSACTIONS,
+  competition: COMMUNITY_TRANSACTIONS,
+  business: ENTERPRISE_TRANSACTIONS,
 };
 
 export const FINANCE_INVOICES: Record<Mode, Invoice[]> = {
@@ -263,7 +265,8 @@ export const FINANCE_INVOICES: Record<Mode, Invoice[]> = {
   church: CHURCH_INVOICES,
   education: EDUCATION_INVOICES,
   enterprise: ENTERPRISE_INVOICES,
-  community: COMMUNITY_INVOICES,
+  competition: COMMUNITY_INVOICES,
+  business: ENTERPRISE_INVOICES,
 };
 
 export const FINANCE_SNAPSHOTS: Record<Mode, FinanceSnapshot> = {
@@ -271,5 +274,6 @@ export const FINANCE_SNAPSHOTS: Record<Mode, FinanceSnapshot> = {
   church: CHURCH_SNAPSHOT,
   education: EDUCATION_SNAPSHOT,
   enterprise: ENTERPRISE_SNAPSHOT,
-  community: COMMUNITY_SNAPSHOT,
+  competition: COMMUNITY_SNAPSHOT,
+  business: ENTERPRISE_SNAPSHOT,
 };

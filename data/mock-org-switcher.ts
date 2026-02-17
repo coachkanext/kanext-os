@@ -1,9 +1,9 @@
 /**
  * Organization Switcher — orgs available per mode.
- * Sports has 3 orgs; all other modes have 1.
+ * V2: delegates to mock-memberships for multi-org support.
  */
 import type { Mode } from '@/types';
-import { SPORTS_ORGANIZATIONS } from '@/context/app-context';
+import { getOrgsForModeV2 } from '@/data/mock-memberships';
 
 export interface SwitcherOrg {
   id: string;
@@ -12,21 +12,23 @@ export interface SwitcherOrg {
   icon: string;
 }
 
-const SINGLE_MODE_ORGS: Record<Exclude<Mode, 'sports'>, SwitcherOrg[]> = {
-  enterprise: [{ id: 'kanext', name: 'KaNeXT', subtitle: 'Institutional OS Platform', icon: 'building.2.fill' }],
-  church: [{ id: 'icc', name: 'International Christian Center', subtitle: 'Los Angeles, CA', icon: 'heart.fill' }],
-  education: [{ id: 'sdcc', name: 'San Diego Christian College', subtitle: 'San Diego County, CA', icon: 'graduationcap.fill' }],
-  community: [{ id: 'k1-league', name: 'K-1 Competition', subtitle: 'Season 1 · 2026', icon: 'flag.checkered' }],
+const MODE_ICONS: Record<Mode, string> = {
+  sports: 'sportscourt.fill',
+  competition: 'flag.checkered',
+  church: 'building.columns.fill',
+  education: 'graduationcap.fill',
+  enterprise: 'building.2.fill',
+  business: 'briefcase.fill',
 };
 
 export function getOrgsForMode(mode: Mode): SwitcherOrg[] {
-  if (mode === 'sports') {
-    return Object.values(SPORTS_ORGANIZATIONS).map((org) => ({
-      id: org.id,
-      name: org.name,
-      subtitle: org.location ?? '',
-      icon: 'sportscourt.fill',
-    }));
-  }
-  return SINGLE_MODE_ORGS[mode] ?? [];
+  const icon = MODE_ICONS[mode] ?? 'square.grid.2x2';
+  return getOrgsForModeV2(mode).map((org) => ({
+    id: org.org_id,
+    name: org.org_name,
+    subtitle: org.view_variant
+      ? `${org.view_variant} View`
+      : org.location ?? '',
+    icon,
+  }));
 }

@@ -1,40 +1,69 @@
 /**
- * KaNeXT OS Avatar Drawer
+ * KaNeXT OS Avatar Drawer — V3
  *
- * Twitter/X-style navigation drawer with push animation.
- * Main content slides right when drawer opens.
+ * Global Control Plane with RBCA, inline mode switching, 21-view matrix,
+ * permissions panel, contextual fast actions, and ViewDetailsSheet.
  *
- * Structure (v1 Locked):
- * - Identity Header (avatar, name, mode · org, season/fiscal)
- * - Primary Nav: Profile, Nexus
- * - Divider
- * - Utility Nav: Settings & Privacy, Help / Support, Terms & Policies, Sign Out
+ * Section layout:
+ * A — Identity Header (avatar, name, primary badge, demo chip)
+ * B — Current Context Block (mode, org, role+scope, season chip)
+ * C1 — Mode Switch Row (5 horizontal chips)
+ * C2 — My Views (filtered by selected mode)
+ * D — Permissions Panel (collapsible)
+ * E — Fast Actions (4 buttons)
+ * F — Global Items (Settings, Help, Terms, Sign Out)
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   Pressable,
   Animated,
   Dimensions,
   ScrollView,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
 import { useAuth } from '@/context/auth-context';
+import { getOrgById, getMembershipById } from '@/data/mock-memberships';
+import { CANONICAL_VIEWS, getViewsForMode, DRAWER_MODES, MODE_CHIP_CONFIG } from '@/data/views';
+import { TIER_LABELS, derivePrimaryBadge, deriveRBCATier, PERMISSION_BULLETS, FAST_ACTIONS } from '@/data/rbca';
+import { deriveRoleBadge } from '@/utils/role-badge';
+import type { ActiveContext } from '@/types';
+import type { ViewDefinition } from '@/data/views';
+import type { RBCATier } from '@/data/rbca';
+
+// Enable LayoutAnimation on Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DRAWER_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
 
-// Export for use in layout to animate content
 export const AVATAR_DRAWER_WIDTH = DRAWER_WIDTH;
+
+// Mode display labels
+const MODE_LABELS: Record<string, string> = {
+  sports: 'Sports',
+  competition: 'Competition',
+  church: 'Church',
+  education: 'Education',
+  enterprise: 'Enterprise',
+  business: 'Business',
+};
 
 interface AvatarDrawerProps {
   visible: boolean;
@@ -47,11 +76,26 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { state } = useAppContext();
+  const { state, switchContext } = useAppContext();
   const { state: authState, signOut } = useAuth();
 
   const isLoggedIn = authState.isAuthenticated;
+  const { activeContext } = state;
 
+  // Local state
+  const [selectedMode, setSelectedMode] = useState(activeContext.mode);
+  const [permissionsExpanded, setPermissionsExpanded] = useState(false);
+  const [detailsView, setDetailsView] = useState<ViewDefinition | null>(null);
+
+  // Reset selected mode to active context when drawer opens
+  useEffect(() => {
+    if (visible) {
+      setSelectedMode(activeContext.mode);
+      setPermissionsExpanded(false);
+    }
+  }, [visible, activeContext.mode]);
+
+  // Animation refs
   const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -69,15 +113,16 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
           duration: 200,
           useNativeDriver: true,
         }),
-        // Animate content to slide right
-        ...(contentSlideAnim ? [
-          Animated.spring(contentSlideAnim, {
-            toValue: DRAWER_WIDTH,
-            tension: 65,
-            friction: 11,
-            useNativeDriver: true,
-          }),
-        ] : []),
+        ...(contentSlideAnim
+          ? [
+              Animated.spring(contentSlideAnim, {
+                toValue: DRAWER_WIDTH,
+                tension: 65,
+                friction: 11,
+                useNativeDriver: true,
+              }),
+            ]
+          : []),
       ]).start();
     } else {
       Animated.parallel([
@@ -91,34 +136,95 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
           duration: 200,
           useNativeDriver: true,
         }),
-        // Animate content back
-        ...(contentSlideAnim ? [
-          Animated.timing(contentSlideAnim, {
-            toValue: 0,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-        ] : []),
+        ...(contentSlideAnim
+          ? [
+              Animated.timing(contentSlideAnim, {
+                toValue: 0,
+                duration: 200,
+                useNativeDriver: true,
+              }),
+            ]
+          : []),
       ]).start();
     }
   }, [visible, slideAnim, fadeAnim, contentSlideAnim]);
 
-  // Build context lines
-  const modeLine = state.mode
-    ? `${state.mode.charAt(0).toUpperCase() + state.mode.slice(1)}${state.organization?.name ? ` · ${state.organization.name}` : ''}`
-    : '';
+  // Derive highest RBCA tier across all 21 views for primary badge
+  const highestTier = useMemo<RBCATier>(() => {
+    let max: RBCATier = 0;
+    for (const view of CANONICAL_VIEWS) {
+      if (view.rbca_tier > max) max = view.rbca_tier;
+    }
+    return max;
+  }, []);
 
-  const detailLine =
-    state.mode === 'sports' && state.program?.name
-      ? `${state.program.name}${state.cycle?.name ? ` · ${state.cycle.name}` : ''}`
-      : state.cycle?.name || '';
+  const primaryBadge = derivePrimaryBadge(highestTier);
 
-  const handleNavigation = (route: string) => {
-    onClose();
-    setTimeout(() => {
-      router.push(route as any);
-    }, 250);
-  };
+  // Get views for the selected mode chip
+  const filteredViews = useMemo(() => {
+    return getViewsForMode(selectedMode);
+  }, [selectedMode]);
+
+  // View counts per mode for disabling empty chips
+  const viewCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const m of DRAWER_MODES) {
+      counts[m] = getViewsForMode(m).length;
+    }
+    return counts;
+  }, []);
+
+  // Current context display info
+  const currentOrg = getOrgById(activeContext.org_id);
+  const currentModeLabel = MODE_LABELS[activeContext.mode] ?? activeContext.mode;
+
+  // Current view (from canonical views)
+  const currentView = useMemo(() => {
+    return CANONICAL_VIEWS.find((v) => v.membership_id === activeContext.membership_id);
+  }, [activeContext.membership_id]);
+
+  // Permission bullets for current view
+  const permissionBullets = PERMISSION_BULLETS[activeContext.membership_id] ?? [];
+
+  // Fast actions for current view
+  const fastActions = FAST_ACTIONS[activeContext.membership_id] ?? [];
+
+  // Handlers
+  const handleNavigation = useCallback(
+    (route: string) => {
+      onClose();
+      setTimeout(() => {
+        router.push(route as any);
+      }, 250);
+    },
+    [onClose, router],
+  );
+
+  const handleViewSwitch = useCallback(
+    (view: ViewDefinition) => {
+      const badge = deriveRoleBadge(view.membership_id, view.program_id);
+      const newContext: ActiveContext = {
+        mode: view.mode,
+        org_id: view.org_id,
+        program_id: view.program_id,
+        season_id: view.season_id,
+        membership_id: view.membership_id,
+        derived_role_badge: badge,
+      };
+      switchContext(newContext);
+      onClose();
+    },
+    [switchContext, onClose],
+  );
+
+  const handleViewLongPress = useCallback((view: ViewDefinition) => {
+    setDetailsView(view);
+  }, []);
+
+  const togglePermissions = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setPermissionsExpanded((prev) => !prev);
+  }, []);
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents={visible ? 'auto' : 'none'}>
@@ -140,63 +246,195 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
           },
         ]}
       >
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* ===== IDENTITY HEADER (Large, Dominant) ===== */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.identityHeader,
-              pressed && { opacity: 0.7 },
-            ]}
-            onPress={() => handleNavigation('/profile')}
-          >
-            <View style={[styles.avatar, { backgroundColor: colors.backgroundTertiary }]}>
-              <IconSymbol name="person.fill" size={32} color={colors.icon} />
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          {/* ===== A. IDENTITY HEADER ===== */}
+          <View style={styles.identityBlock}>
+            <View style={styles.identityRow}>
+              <Image
+                source={require('@/assets/images/sammy-kalejaiye.jpg')}
+                style={styles.avatarImage}
+              />
+              <View style={styles.identityChips}>
+                <View style={[styles.badgePill, { backgroundColor: colors.backgroundTertiary }]}>
+                  <Text style={[styles.badgePillText, { color: colors.text }]}>{primaryBadge}</Text>
+                </View>
+                <View style={[styles.demoPill, { backgroundColor: 'rgba(255,255,255,0.08)' }]}>
+                  <Text style={[styles.demoPillText, { color: colors.textSecondary }]}>Demo</Text>
+                </View>
+              </View>
             </View>
-
-            {/* Name - Headline sized */}
             <Text style={[styles.identityName, { color: colors.text }]}>
-              {isLoggedIn ? (authState.session?.displayName ?? 'User') : 'Viewer'}
+              {isLoggedIn ? authState.session?.displayName ?? 'User' : 'Viewer'}
             </Text>
-
-            {/* Mode · Organization - Body text, clearly readable */}
-            {modeLine && (
-              <Text style={[styles.identityMode, { color: colors.textSecondary }]}>
-                {modeLine}
-              </Text>
-            )}
-
-            {/* Program · Season - Smaller but readable */}
-            {detailLine && (
-              <Text style={[styles.identityDetail, { color: colors.textTertiary }]}>
-                {detailLine}
-              </Text>
-            )}
-          </Pressable>
-
-          {/* ===== PRIMARY NAVIGATION ===== */}
-          <View style={styles.primaryNav}>
-            <PrimaryNavItem
-              icon="person.circle"
-              label="Profile"
-              colors={colors}
-              onPress={() => handleNavigation('/profile')}
-            />
-            <PrimaryNavItem
-              icon="sparkles"
-              label="Nexus"
-              colors={colors}
-              onPress={() => handleNavigation('/(tabs)/nexus')}
-            />
           </View>
 
-          {/* ===== SINGLE DIVIDER ===== */}
-          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+          {/* ===== B. CURRENT CONTEXT BLOCK ===== */}
+          <View
+            style={[
+              styles.activeContextBlock,
+              { backgroundColor: colors.backgroundSecondary, borderColor: colors.border },
+            ]}
+          >
+            <View style={styles.activeContextContent}>
+              <Text style={[styles.contextLine1, { color: colors.textSecondary }]}>
+                {currentModeLabel}
+              </Text>
+              <Text style={[styles.contextLine2, { color: colors.text }]} numberOfLines={1}>
+                {currentView?.org_display_name ?? currentOrg?.org_name ?? ''}
+              </Text>
+              <Text style={[styles.contextLine3, { color: colors.textSecondary }]} numberOfLines={2}>
+                {currentView?.role_title ?? activeContext.derived_role_badge} {'\u00b7'} {currentView?.scope_line ?? ''}
+              </Text>
+            </View>
+            <View style={[styles.seasonChip, { backgroundColor: colors.backgroundTertiary }]}>
+              <Text style={[styles.seasonChipText, { color: colors.text }]}>
+                {currentView?.season_chip ?? ''}
+              </Text>
+            </View>
+          </View>
 
-          {/* ===== UTILITY NAVIGATION ===== */}
+          {/* ===== C1. MODE SWITCH ROW ===== */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.modeChipScroll}
+            contentContainerStyle={styles.modeChipContainer}
+          >
+            {MODE_CHIP_CONFIG.map((chip) => {
+              const isActive = chip.mode === selectedMode;
+              const count = viewCounts[chip.mode] ?? 0;
+              const isDisabled = count === 0;
+              return (
+                <Pressable
+                  key={chip.mode}
+                  style={[
+                    styles.modeChip,
+                    isActive
+                      ? { backgroundColor: colors.text }
+                      : { backgroundColor: 'transparent', borderColor: colors.border, borderWidth: 1 },
+                    isDisabled && { opacity: 0.3 },
+                  ]}
+                  onPress={() => !isDisabled && setSelectedMode(chip.mode)}
+                  disabled={isDisabled}
+                >
+                  <IconSymbol
+                    name={chip.icon as any}
+                    size={14}
+                    color={isActive ? colors.background : colors.textSecondary}
+                  />
+                  <Text
+                    style={[
+                      styles.modeChipLabel,
+                      { color: isActive ? colors.background : colors.textSecondary },
+                    ]}
+                  >
+                    {chip.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
+          {/* ===== C2. MY VIEWS ===== */}
+          <View style={styles.viewsSection}>
+            <Text style={[styles.sectionLabel, { color: colors.textTertiary }]}>MY VIEWS</Text>
+            {filteredViews.map((view) => {
+              const isCurrentView = view.membership_id === activeContext.membership_id;
+              const tierLabel = TIER_LABELS[view.rbca_tier];
+              return (
+                <Pressable
+                  key={view.view_id}
+                  style={({ pressed }) => [
+                    styles.viewRow,
+                    isCurrentView && { backgroundColor: colors.backgroundSecondary },
+                    pressed && !isCurrentView && { backgroundColor: colors.backgroundSecondary },
+                  ]}
+                  onPress={() => handleViewSwitch(view)}
+                  onLongPress={() => handleViewLongPress(view)}
+                  delayLongPress={300}
+                >
+                  <View style={styles.viewRowContent}>
+                    <View style={styles.viewRowTop}>
+                      <Text style={[styles.viewOrgName, { color: colors.text }]} numberOfLines={1}>
+                        {view.org_display_name}
+                      </Text>
+                      {isCurrentView && (
+                        <IconSymbol name="checkmark" size={14} color={colors.tint} />
+                      )}
+                    </View>
+                    <Text style={[styles.viewRoleTitle, { color: colors.textSecondary }]} numberOfLines={1}>
+                      {view.role_title}
+                    </Text>
+                    <View style={styles.viewRowBottom}>
+                      <View style={[styles.tierPill, { backgroundColor: colors.backgroundTertiary }]}>
+                        <Text style={[styles.tierPillText, { color: colors.textSecondary }]}>
+                          {tierLabel}
+                        </Text>
+                      </View>
+                      <Text style={[styles.viewScope, { color: colors.textTertiary }]}>
+                        {view.scope_line}
+                      </Text>
+                    </View>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {/* ===== D. PERMISSIONS PANEL ===== */}
+          {permissionBullets.length > 0 && (
+            <View style={styles.permissionsSection}>
+              <Pressable style={styles.permissionsHeader} onPress={togglePermissions}>
+                <Text style={[styles.permissionsTitle, { color: colors.textSecondary }]}>
+                  Your access in this view
+                </Text>
+                <IconSymbol
+                  name={permissionsExpanded ? 'chevron.up' : 'chevron.down'}
+                  size={14}
+                  color={colors.textTertiary}
+                />
+              </Pressable>
+              {permissionsExpanded && (
+                <View style={styles.permissionsList}>
+                  {permissionBullets.map((bullet, i) => (
+                    <View key={i} style={styles.permissionBullet}>
+                      <Text style={[styles.bulletDot, { color: colors.textTertiary }]}>{'\u2022'}</Text>
+                      <Text style={[styles.bulletText, { color: colors.textSecondary }]}>{bullet}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* ===== E. FAST ACTIONS ===== */}
+          {fastActions.length > 0 && (
+            <>
+              <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+              <View style={styles.fastActionsRow}>
+                {fastActions.map((action, i) => (
+                  <Pressable
+                    key={i}
+                    style={({ pressed }) => [
+                      styles.fastActionButton,
+                      pressed && { opacity: 0.6 },
+                    ]}
+                    onPress={() => handleNavigation(action.route)}
+                  >
+                    <View style={[styles.fastActionIconWrap, { backgroundColor: colors.backgroundSecondary }]}>
+                      <IconSymbol name={action.icon as any} size={18} color={colors.icon} />
+                    </View>
+                    <Text style={[styles.fastActionLabel, { color: colors.textSecondary }]} numberOfLines={1}>
+                      {action.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </>
+          )}
+
+          {/* ===== F. GLOBAL ITEMS ===== */}
+          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
           <View style={styles.utilityNav}>
             <UtilityNavItem
               icon="gear"
@@ -230,40 +468,77 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
           </View>
         </ScrollView>
       </Animated.View>
+
+      {/* View Details Sheet (long-press) */}
+      <ViewDetailsSheet
+        view={detailsView}
+        onClose={() => setDetailsView(null)}
+      />
     </View>
   );
 }
 
 // =============================================
-// PRIMARY NAV ITEM (Large tap targets)
+// VIEW DETAILS SHEET (long-press on a view row)
 // =============================================
-function PrimaryNavItem({
-  icon,
-  label,
-  colors,
-  onPress,
+function ViewDetailsSheet({
+  view,
+  onClose,
 }: {
-  icon: string;
-  label: string;
-  colors: typeof Colors.light;
-  onPress: () => void;
+  view: ViewDefinition | null;
+  onClose: () => void;
 }) {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
+  if (!view) return null;
+
+  const bullets = PERMISSION_BULLETS[view.membership_id] ?? [];
+  const actions = FAST_ACTIONS[view.membership_id] ?? [];
+  const tierLabel = TIER_LABELS[view.rbca_tier];
+
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.primaryNavItem,
-        pressed && { backgroundColor: colors.backgroundSecondary },
-      ]}
-      onPress={onPress}
-    >
-      <IconSymbol name={icon as any} size={24} color={colors.text} />
-      <Text style={[styles.primaryNavLabel, { color: colors.text }]}>{label}</Text>
-    </Pressable>
+    <BottomSheet visible={!!view} onClose={onClose} useModal title={view.org_display_name}>
+      <View style={detailStyles.section}>
+        <Text style={[detailStyles.roleTitle, { color: colors.text }]}>{view.role_title}</Text>
+        <View style={detailStyles.metaRow}>
+          <View style={[styles.tierPill, { backgroundColor: colors.backgroundTertiary }]}>
+            <Text style={[styles.tierPillText, { color: colors.textSecondary }]}>{tierLabel}</Text>
+          </View>
+          <Text style={[detailStyles.scope, { color: colors.textTertiary }]}>{view.scope_line}</Text>
+          <Text style={[detailStyles.season, { color: colors.textTertiary }]}>{view.season_chip}</Text>
+        </View>
+      </View>
+
+      {bullets.length > 0 && (
+        <View style={detailStyles.section}>
+          <Text style={[detailStyles.sectionTitle, { color: colors.textTertiary }]}>PERMISSIONS</Text>
+          {bullets.map((b, i) => (
+            <View key={i} style={styles.permissionBullet}>
+              <Text style={[styles.bulletDot, { color: colors.textTertiary }]}>{'\u2022'}</Text>
+              <Text style={[styles.bulletText, { color: colors.textSecondary }]}>{b}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {actions.length > 0 && (
+        <View style={detailStyles.section}>
+          <Text style={[detailStyles.sectionTitle, { color: colors.textTertiary }]}>SHORTCUTS</Text>
+          {actions.map((a, i) => (
+            <View key={i} style={detailStyles.shortcutRow}>
+              <IconSymbol name={a.icon as any} size={16} color={colors.icon} />
+              <Text style={[detailStyles.shortcutLabel, { color: colors.textSecondary }]}>{a.label}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </BottomSheet>
   );
 }
 
 // =============================================
-// UTILITY NAV ITEM (Normal sized)
+// UTILITY NAV ITEM
 // =============================================
 function UtilityNavItem({
   icon,
@@ -290,6 +565,9 @@ function UtilityNavItem({
   );
 }
 
+// =============================================
+// STYLES
+// =============================================
 const styles = StyleSheet.create({
   scrim: {
     ...StyleSheet.absoluteFillObject,
@@ -311,64 +589,239 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-  },
-
-  // ===== IDENTITY HEADER =====
-  identityHeader: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
     paddingBottom: 24,
   },
-  avatar: {
+
+  // ===== A. IDENTITY BLOCK =====
+  identityBlock: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
+  },
+  identityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  avatarImage: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
+  },
+  identityChips: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  badgePill: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.full,
+  },
+  badgePillText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  demoPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.full,
+  },
+  demoPillText: {
+    fontSize: 11,
+    fontWeight: '500',
   },
   identityName: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '700',
     letterSpacing: -0.3,
+  },
+
+  // ===== B. ACTIVE CONTEXT BLOCK =====
+  activeContextBlock: {
+    marginHorizontal: 12,
+    marginBottom: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderRadius: BorderRadius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  activeContextContent: {
+    flex: 1,
+  },
+  contextLine1: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: 2,
+  },
+  contextLine2: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  contextLine3: {
+    fontSize: 12,
+    fontWeight: '400',
+  },
+  seasonChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.md,
+    marginLeft: 8,
+  },
+  seasonChipText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+
+  // ===== C1. MODE CHIP ROW =====
+  modeChipScroll: {
+    marginBottom: 12,
+  },
+  modeChipContainer: {
+    paddingHorizontal: 12,
+    gap: 6,
+  },
+  modeChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: BorderRadius.full,
+    gap: 5,
+  },
+  modeChipLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+
+  // ===== C2. VIEWS LIST =====
+  viewsSection: {
+    paddingHorizontal: 12,
+    marginBottom: 8,
+  },
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.8,
+    paddingHorizontal: 8,
     marginBottom: 6,
   },
-  identityMode: {
-    fontSize: 16,
-    fontWeight: '400',
-    marginBottom: 4,
+  viewRow: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: BorderRadius.md,
+    marginBottom: 2,
   },
-  identityDetail: {
+  viewRowContent: {
+    gap: 2,
+  },
+  viewRowTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  viewOrgName: {
     fontSize: 14,
+    fontWeight: '600',
+    flex: 1,
+  },
+  viewRoleTitle: {
+    fontSize: 12,
+    fontWeight: '400',
+  },
+  viewRowBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 2,
+  },
+  tierPill: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+  },
+  tierPillText: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  viewScope: {
+    fontSize: 11,
     fontWeight: '400',
   },
 
-  // ===== PRIMARY NAVIGATION =====
-  primaryNav: {
+  // ===== D. PERMISSIONS PANEL =====
+  permissionsSection: {
+    paddingHorizontal: 12,
+    marginBottom: 4,
+  },
+  permissionsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+  },
+  permissionsTitle: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  permissionsList: {
     paddingHorizontal: 8,
     paddingBottom: 8,
   },
-  primaryNavItem: {
+  permissionBullet: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: BorderRadius.lg,
+    paddingVertical: 3,
+    gap: 6,
   },
-  primaryNavLabel: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginLeft: 16,
+  bulletDot: {
+    fontSize: 12,
+    lineHeight: 18,
+  },
+  bulletText: {
+    fontSize: 12,
+    lineHeight: 18,
+    flex: 1,
+  },
+
+  // ===== E. FAST ACTIONS =====
+  fastActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  fastActionButton: {
+    alignItems: 'center',
+    width: 60,
+    gap: 6,
+  },
+  fastActionIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fastActionLabel: {
+    fontSize: 11,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 
   // ===== DIVIDER =====
   divider: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: 20,
-    marginVertical: 12,
+    marginVertical: 8,
   },
 
-  // ===== UTILITY NAVIGATION =====
+  // ===== F. UTILITY NAVIGATION =====
   utilityNav: {
     paddingHorizontal: 8,
     paddingTop: 4,
@@ -376,7 +829,7 @@ const styles = StyleSheet.create({
   utilityNavItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 11,
     paddingHorizontal: 16,
     borderRadius: BorderRadius.md,
   },
@@ -384,5 +837,44 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '400',
     marginLeft: 14,
+  },
+});
+
+// ===== VIEW DETAILS SHEET STYLES =====
+const detailStyles = StyleSheet.create({
+  section: {
+    marginBottom: 16,
+  },
+  roleTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  scope: {
+    fontSize: 12,
+  },
+  season: {
+    fontSize: 12,
+  },
+  sectionTitle: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.8,
+    marginBottom: 8,
+  },
+  shortcutRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 6,
+  },
+  shortcutLabel: {
+    fontSize: 13,
+    fontWeight: '400',
   },
 });

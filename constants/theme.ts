@@ -55,7 +55,13 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string; nexu
     nexusGlyph: '#FFFFFF',
     nexusGlyphDim: '#8F8F8F',
   },
-  community: {
+  business: {
+    primary: '#FFFFFF',
+    secondary: '#8F8F8F',
+    nexusGlyph: '#FFFFFF',
+    nexusGlyphDim: '#8F8F8F',
+  },
+  competition: {
     primary: '#FFFFFF',
     secondary: '#8F8F8F',
     nexusGlyph: '#FFFFFF',

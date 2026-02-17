@@ -20,6 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
+import { useAppContext } from '@/context/app-context';
 import { FMU_RECORD, FMU_STANDINGS, ROSTER_KR, getPlayerSeasonPGIS, getPGISColor } from '@/data/fmu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ARCHETYPE_LABELS, type Archetype } from '@/data/system-demand-profiles';
@@ -1087,6 +1088,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
   const [selectedSubcluster, setSelectedSubcluster] = useState<string | null>(null);
   const [listFilter, setListFilter] = useState<ListFilter>('all');
   const [listSort, setListSort] = useState<ListSortOption>('number');
+  const { state: appState } = useAppContext();
 
   // Player sheet state (for cards/list views)
   const [sheetJersey, setSheetJersey] = useState<string | null>(null);
@@ -1248,6 +1250,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
           clusterOverride={sheetJersey ? PLAYER_CLUSTERS[sheetJersey] : undefined}
           baseKROverride={sheetJersey ? ROSTER_KR[sheetJersey] : undefined}
           physicals={sheetJersey ? PLAYER_PHYSICALS[sheetJersey] : undefined}
+          membershipId={appState.activeContext.membership_id}
         />
       )}
     </View>

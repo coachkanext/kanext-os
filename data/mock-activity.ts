@@ -287,9 +287,10 @@ const EDUCATION_ACTIVITY: ActivityItem[] = [
 const ALL_ACTIVITY: Record<Mode, ActivityItem[]> = {
   sports: SPORTS_ACTIVITY,
   enterprise: ENTERPRISE_ACTIVITY,
+  business: ENTERPRISE_ACTIVITY,
   church: CHURCH_ACTIVITY,
   education: EDUCATION_ACTIVITY,
-  community: [],
+  competition: [],
 };
 
 // =============================================================================

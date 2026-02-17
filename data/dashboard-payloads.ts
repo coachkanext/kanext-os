@@ -47,6 +47,15 @@ import {
   K1_STANDINGS,
 } from '@/data/mock-community';
 
+import {
+  CEO_APPROVALS,
+  RISK_WATCH,
+  SEASON_BLUEPRINT,
+  REVENUE_DELIVERY_PULSE,
+  INTEGRITY_COMPLIANCE_PULSE,
+  EXECUTIVE_HISTORY,
+} from '@/data/mock-ceo-competition';
+
 // =============================================================================
 // SPORTS
 // =============================================================================
@@ -298,9 +307,8 @@ export function buildBusinessDashboard(
 // =============================================================================
 
 export function buildCompetitionDashboard(): DashboardTruthPayload {
-  const nextEvent = K1_EVENTS.find((e) => e.status === 'upcoming');
-  const lastEvent = [...K1_EVENTS].reverse().find((e) => e.status === 'completed');
-  const topDrivers = K1_STANDINGS.slice(0, 5);
+  const pendingApprovals = CEO_APPROVALS.filter((a) => a.status === 'pending').length;
+  const criticalRisks = RISK_WATCH.filter((r) => r.riskLevel === 'critical').length;
 
   return {
     heroVideo: {
@@ -308,47 +316,73 @@ export function buildCompetitionDashboard(): DashboardTruthPayload {
       subtitle: 'Top moments from the 2026 championship',
     },
     contextSnapshot: [
-      { id: 'teams', label: 'Teams', value: K1_TEAMS.length },
-      { id: 'drivers', label: 'Drivers', value: K1_DRIVERS.length },
-      { id: 'races', label: 'Races', value: K1_EVENTS.length },
+      {
+        id: 'league-health',
+        label: 'League Health',
+        value: `${SEASON_BLUEPRINT.completed}/${SEASON_BLUEPRINT.totalEvents}`,
+        sublabel: SEASON_BLUEPRINT.currentPhase.split('(')[0].trim(),
+      },
+      {
+        id: 'revenue',
+        label: 'Revenue YTD',
+        value: REVENUE_DELIVERY_PULSE.totalRevenueYTD,
+        sublabel: `${REVENUE_DELIVERY_PULSE.pctOfTarget}% of target`,
+        trend: REVENUE_DELIVERY_PULSE.pctOfTarget >= 75 ? 'up' : 'down',
+      },
+      {
+        id: 'compliance',
+        label: 'Compliance',
+        value: `${INTEGRITY_COMPLIANCE_PULSE.overallComplianceRate}%`,
+        sublabel: `${INTEGRITY_COMPLIANCE_PULSE.openInvestigations} open investigations`,
+        trend: INTEGRITY_COMPLIANCE_PULSE.overallComplianceRate >= 90 ? 'up' : 'down',
+      },
     ],
     todayNext: [
-      ...(nextEvent
-        ? [{
-            id: 'next-race',
-            type: 'next' as const,
-            title: nextEvent.name,
-            subtitle: `${nextEvent.track} · ${nextEvent.location}`,
-            metadata: `${nextEvent.date} · ${nextEvent.laps} laps`,
-          }]
-        : []),
-      ...(lastEvent
-        ? [{
-            id: 'last-race',
-            type: 'today' as const,
-            title: lastEvent.name,
-            subtitle: lastEvent.winner
-              ? `Winner: ${lastEvent.winner} (${lastEvent.winnerTeam})`
-              : lastEvent.track,
-            metadata: lastEvent.date,
-          }]
-        : []),
+      {
+        id: 'today-qualifying',
+        type: 'today' as const,
+        title: 'Qualifying LIVE — Thunder Classic',
+        subtitle: 'Portland International Raceway · Q2 in progress',
+        metadata: 'Race: Sun 2:00 PM',
+      },
+      {
+        id: 'next-decision',
+        type: 'next' as const,
+        title: 'Shadow GP Engine Decision',
+        subtitle: 'Seal #4 lab results pending — ruling required before race',
+        metadata: 'Deadline: Sat 6:00 PM',
+      },
+    ],
+    alerts: [
+      { id: 'alert-engine', severity: 'critical', title: 'Engine Integrity Flag', message: 'Shadow GP SHD-Phantom V2 seal #4 under investigation' },
+      { id: 'alert-fire', severity: 'warning', title: 'Fire Cert Overdue', message: 'Annual fire suppression re-certification expired Jul 15' },
+      { id: 'alert-approvals', severity: 'info', title: `${pendingApprovals} Approvals Pending`, message: `${criticalRisks} critical items require immediate action` },
     ],
     quickActions: [
-      { id: 'qa-calendar', label: 'Calendar', icon: 'calendar' },
+      { id: 'qa-event', label: 'Event Status', icon: 'flag.checkered' },
       { id: 'qa-standings', label: 'Standings', icon: 'list.number' },
-      { id: 'qa-teams', label: 'Teams', icon: 'flag.checkered' },
+      { id: 'qa-revenue', label: 'Revenue', icon: 'dollarsign.circle.fill' },
+      { id: 'qa-compliance', label: 'Compliance', icon: 'shield.checkered' },
+      { id: 'qa-teams', label: 'Teams', icon: 'person.3.fill' },
+      { id: 'qa-calendar', label: 'Calendar', icon: 'calendar' },
+      { id: 'qa-broadcast', label: 'Broadcast', icon: 'video.fill' },
+      { id: 'qa-reports', label: 'Reports', icon: 'chart.bar.fill' },
     ],
     feedPreview: {
-      title: 'Championship',
-      items: topDrivers.map((entry) => ({
-        id: entry.driverId,
-        title: `P${entry.position} — ${entry.driverName}`,
-        subtitle: `${entry.teamName} · ${entry.wins}W · ${entry.podiums}P`,
-        metadata: `${entry.points} pts`,
+      title: 'Executive Feed',
+      items: EXECUTIVE_HISTORY.slice(0, 4).map((entry) => ({
+        id: entry.id,
+        title: entry.action,
+        subtitle: `${entry.actor} · ${entry.detail}`,
+        timestamp: entry.date,
+        metadata: entry.category.toUpperCase(),
       })),
-      viewAllLabel: 'View full standings',
+      viewAllLabel: 'View full executive history',
     },
-    pinnedShelf: undefined,
+    pinnedShelf: [
+      { id: 'pin-1', type: 'doc_link', title: 'K-1 Rulebook v1.2', subtitle: '15 articles · Last updated Jun 28' },
+      { id: 'pin-2', type: 'doc_link', title: 'Season 1 Budget Summary', subtitle: '$4.8M of $6.2M target (77%)' },
+      { id: 'pin-3', type: 'doc_link', title: 'Championship Scenarios', subtitle: '3 races remaining · Vasquez leads by 22 pts' },
+    ],
   };
 }

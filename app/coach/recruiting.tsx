@@ -23,6 +23,7 @@ import { ThemedText } from '@/components/themed-text';
 import { TabFooter } from '@/components/tab-footer';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Spacing, BorderRadius } from '@/constants/theme';
+import { useAppContext } from '@/context/app-context';
 import { PLAYER_POOL, type PoolLevel, type PoolPlayer } from '@/data/playerPool';
 import { getPlayerRatings, getPoolPlayerSubclusters, WEEKLY_UPDATE_OPTIONS } from '@/data/playerRatings';
 import { HELIO_TO_TRADITIONAL, TRADITIONAL_TO_HELIO, HELIO_POSITIONS, HELIO_POSITION_LABELS } from '@/data/position-mapping';
@@ -220,6 +221,7 @@ function getSubclusterRating(playerId: string, subclusterId: string): number {
 export function PlayerPoolContent() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { state: appState } = useAppContext();
 
   // State
   const [filters, setFilters] = useState<NationalPoolFilters>({ ...DEFAULT_FILTERS });
@@ -804,6 +806,7 @@ export function PlayerPoolContent() {
           setBoardEntries((prev) => removeEntry(prev, entryId));
         }}
         defaultTabOverride="recruiting"
+        membershipId={appState.activeContext.membership_id}
       />
 
       {/* ═══ AVATAR SHEET — Recruiting CRM Surface ═══ */}

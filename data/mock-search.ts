@@ -383,9 +383,10 @@ const EDUCATION_RESULTS: SearchResult[] = [
 const ALL_RESULTS: Record<Mode, SearchResult[]> = {
   sports: SPORTS_RESULTS,
   enterprise: ENTERPRISE_RESULTS,
+  business: ENTERPRISE_RESULTS,
   church: CHURCH_RESULTS,
   education: EDUCATION_RESULTS,
-  community: [],
+  competition: [],
 };
 
 // =============================================================================

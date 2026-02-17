@@ -180,7 +180,8 @@ export function getOrgOperations(mode: Mode): OrgOperationsData {
     case 'enterprise': return enterpriseOps();
     case 'church': return CHURCH_OPS;
     case 'education': return EDUCATION_OPS;
-    case 'community': return COMMUNITY_OPS;
+    case 'competition': return COMMUNITY_OPS;
+    case 'business': return enterpriseOps();
     default: return { workstreams: [], meetings: [], rules: [], compliance: [] };
   }
 }

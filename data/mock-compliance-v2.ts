@@ -242,10 +242,15 @@ export const COMPLIANCE_SCOPE_CHIPS: Record<Mode, ComplianceScopeChip[]> = {
     { key: 'entity', label: 'Entity' },
     { key: 'department', label: 'Department' },
   ],
-  community: [
+  competition: [
     { key: 'organization', label: 'Organization' },
     { key: 'series', label: 'Series' },
     { key: 'event-weekend', label: 'Event Weekend' },
+  ],
+  business: [
+    { key: 'organization', label: 'Organization' },
+    { key: 'entity', label: 'Entity' },
+    { key: 'department', label: 'Department' },
   ],
 };
 
@@ -816,7 +821,7 @@ export function getComplianceData(mode: Mode): ComplianceModeData {
         audit: enterpriseAudit,
         settings: enterpriseSettings,
       };
-    case 'community':
+    case 'competition':
       return {
         dashboard: communityDashboard,
         requirements: communityRequirements,
@@ -830,6 +835,21 @@ export function getComplianceData(mode: Mode): ComplianceModeData {
         reports: communityReports,
         audit: communityAudit,
         settings: communitySettings,
+      };
+    case 'business':
+      return {
+        dashboard: enterpriseDashboard,
+        requirements: enterpriseRequirements,
+        checklists: enterpriseChecklists,
+        evidence: enterpriseEvidence,
+        incidents: enterpriseIncidents,
+        actions: enterpriseActions,
+        training: enterpriseTraining,
+        policies: enterprisePolicies,
+        deadlines: enterpriseDeadlines,
+        reports: enterpriseReports,
+        audit: enterpriseAudit,
+        settings: enterpriseSettings,
       };
   }
 }

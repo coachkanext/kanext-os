@@ -56,7 +56,19 @@ const MODE_OPTIONS: ModeOption[] = [
     defaultRole: 'faculty',
   },
   {
-    mode: 'community',
+    mode: 'enterprise',
+    label: 'Enterprise',
+    icon: 'building.2.fill',
+    defaultRole: 'founder',
+  },
+  {
+    mode: 'business',
+    label: 'Business',
+    icon: 'briefcase.fill',
+    defaultRole: 'founder',
+  },
+  {
+    mode: 'competition',
     label: 'Competition',
     icon: 'flag.checkered',
     defaultRole: 'league_admin',

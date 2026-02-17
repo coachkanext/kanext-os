@@ -30,12 +30,17 @@ import { NewThreadSheet } from '@/components/messages/new-thread-sheet';
 import { RequestRow } from '@/components/messages/request-row';
 import { RequestDetail } from '@/components/messages/request-detail';
 import { RoomsHub } from '@/components/rooms/rooms-hub';
+import { SportsInbox } from '@/components/messages/sports-inbox';
+import { SportsRooms } from '@/components/messages/sports-rooms';
+import { SportsRequests } from '@/components/messages/sports-requests';
+import { SportsPinned } from '@/components/messages/sports-pinned';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import {
   MOCK_CHAT_THREADS,
   INBOX_THREADS_BY_MODE,
+  PINNED_THREADS_BY_MODE,
   formatMessageTime,
   getModeRooms,
 } from '@/data/mock-messages';
@@ -145,17 +150,43 @@ function RoomsPage({
 // PINNED PAGE (placeholder)
 // =============================================================================
 
-function PinnedPage({ colors }: { colors: typeof Colors.light }) {
-  return (
-    <ScrollView contentContainerStyle={styles.placeholderContent} showsVerticalScrollIndicator={false}>
-      <View style={[styles.placeholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <IconSymbol name="pin.fill" size={32} color={colors.textTertiary} />
-        <ThemedText style={[styles.placeholderTitle, { color: colors.text }]}>Pinned</ThemedText>
-        <ThemedText style={[styles.placeholderText, { color: colors.textTertiary }]}>
-          Pin important threads and messages for quick access. Long-press any conversation to pin it here.
+function PinnedPage({
+  colors,
+  mode,
+  onSelectThread,
+}: {
+  colors: typeof Colors.light;
+  mode: import('@/types').Mode;
+  onSelectThread: (t: ChatThread) => void;
+}) {
+  const threads = PINNED_THREADS_BY_MODE[mode] ?? [];
+
+  const renderThread = useCallback(
+    ({ item }: { item: ChatThread }) => (
+      <SwipeableThreadRow thread={item} onPress={() => onSelectThread(item)} />
+    ),
+    [onSelectThread],
+  );
+
+  if (threads.length === 0) {
+    return (
+      <View style={styles.emptyState}>
+        <IconSymbol name="pin.fill" size={28} color={colors.textTertiary} />
+        <ThemedText style={[styles.emptyText, { color: colors.textTertiary, marginTop: 8 }]}>
+          No pinned conversations
         </ThemedText>
       </View>
-    </ScrollView>
+    );
+  }
+
+  return (
+    <FlatList
+      data={threads}
+      keyExtractor={(item) => item.id}
+      renderItem={renderThread}
+      contentContainerStyle={styles.listContent}
+      showsVerticalScrollIndicator={false}
+    />
   );
 }
 
@@ -340,32 +371,48 @@ export default function MessagesScreen() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           <View key="inbox" style={{ flex: 1 }}>
-            <InboxPage
-              colors={colors}
-              search={search}
-              mode={mode}
-              onSelectThread={setSelectedThread}
-            />
+            {mode === 'sports' ? (
+              <SportsInbox search={search} />
+            ) : (
+              <InboxPage
+                colors={colors}
+                search={search}
+                mode={mode}
+                onSelectThread={setSelectedThread}
+              />
+            )}
           </View>
           <View key="rooms" style={{ flex: 1 }}>
-            <RoomsHub
-              mode={mode}
-              colors={colors}
-              accentColor={ModeColors[mode].primary}
-            />
+            {mode === 'sports' ? (
+              <SportsRooms search={search} />
+            ) : (
+              <RoomsHub
+                mode={mode}
+                colors={colors}
+                accentColor={ModeColors[mode].primary}
+              />
+            )}
           </View>
           <View key="requests" style={{ flex: 1 }}>
-            <RequestsPage
-              colors={colors}
-              pending={pending}
-              approved={approved}
-              onSelectRequest={setSelectedRequest}
-              onApprove={handleApprove}
-              onIgnore={handleIgnore}
-            />
+            {mode === 'sports' ? (
+              <SportsRequests />
+            ) : (
+              <RequestsPage
+                colors={colors}
+                pending={pending}
+                approved={approved}
+                onSelectRequest={setSelectedRequest}
+                onApprove={handleApprove}
+                onIgnore={handleIgnore}
+              />
+            )}
           </View>
           <View key="pinned" style={{ flex: 1 }}>
-            <PinnedPage colors={colors} />
+            {mode === 'sports' ? (
+              <SportsPinned />
+            ) : (
+              <PinnedPage colors={colors} mode={mode} onSelectThread={setSelectedThread} />
+            )}
           </View>
         </PagerView>
       </EdgeHoldAdvance>

@@ -7,7 +7,7 @@
 // MODES & ROLES
 // =============================================================================
 
-export type Mode = 'sports' | 'enterprise' | 'church' | 'education' | 'community';
+export type Mode = 'sports' | 'enterprise' | 'business' | 'church' | 'education' | 'competition';
 
 export type Role =
   // Enterprise
@@ -869,4 +869,60 @@ export interface ProgramCalendarEvent {
   isReadOnly?: boolean;
   gameScore?: string;
   gameStatus?: 'upcoming' | 'live' | 'final';
+}
+
+// =============================================================================
+// V2 CONTEXT SWITCHING
+// =============================================================================
+
+export interface V2Organization {
+  org_id: string;
+  org_name: string;
+  mode: Mode;
+  location?: string;
+  description?: string;
+  org_type?: string;
+  view_variant?: string;
+}
+
+export interface V2Membership {
+  membership_id: string;
+  mode: Mode;
+  org_id: string;
+  role_titles: string[];
+  permission_tier: string;
+  program_scopes: string[];
+}
+
+export interface V2Program {
+  program_id: string;
+  org_id: string;
+  mode: Mode;
+  program_name: string;
+  program_type: string;
+  source_tag: string;
+  status: 'Active' | 'Pending';
+}
+
+export interface V2Season {
+  season_id: string;
+  org_id: string;
+  mode: Mode;
+  season_name: string;
+  start_date: string;
+  end_date: string;
+  is_current: boolean;
+}
+
+export interface ActiveContext {
+  mode: Mode;
+  org_id: string;
+  program_id: string;
+  season_id: string;
+  membership_id: string;
+  derived_role_badge: string;
+}
+
+export interface RecentContext extends ActiveContext {
+  timestamp: number;
 }

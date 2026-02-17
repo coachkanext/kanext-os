@@ -960,7 +960,8 @@ export const LIBRARY_ITEMS: Record<Mode, LibraryItem[]> = {
   church: CHURCH_ITEMS,
   education: EDUCATION_ITEMS,
   enterprise: BUSINESS_ITEMS,
-  community: COMMUNITY_ITEMS,
+  business: BUSINESS_ITEMS,
+  competition: COMMUNITY_ITEMS,
 };
 
 export const LIBRARY_COLLECTIONS: Record<Mode, LibraryCollection[]> = {
@@ -968,5 +969,6 @@ export const LIBRARY_COLLECTIONS: Record<Mode, LibraryCollection[]> = {
   church: CHURCH_COLLECTIONS,
   education: EDUCATION_COLLECTIONS,
   enterprise: BUSINESS_COLLECTIONS,
-  community: COMMUNITY_COLLECTIONS,
+  business: BUSINESS_COLLECTIONS,
+  competition: COMMUNITY_COLLECTIONS,
 };

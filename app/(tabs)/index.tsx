@@ -602,10 +602,11 @@ function SportsHome() {
 
 const MODE_OPTIONS: { mode: Mode; label: string }[] = [
   { mode: 'sports', label: 'Athletics' },
+  { mode: 'competition', label: 'Competition' },
   { mode: 'church', label: 'Church' },
-  { mode: 'enterprise', label: 'Business' },
   { mode: 'education', label: 'Education' },
-  { mode: 'community', label: 'Competition' },
+  { mode: 'enterprise', label: 'Enterprise' },
+  { mode: 'business', label: 'Business' },
 ];
 
 function getModeLabel(mode: Mode): string {
@@ -699,8 +700,8 @@ export default function HomeScreen() {
     );
   }
 
-  // Community mode handles its own scroll (hub tabs)
-  if (mode === 'community') {
+  // Competition mode handles its own scroll (hub tabs)
+  if (mode === 'competition') {
     return (
       <ThemedView style={styles.container}>
         <CommunityHome />

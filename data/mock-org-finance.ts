@@ -161,7 +161,8 @@ export function getOrgFinance(mode: Mode): OrgFinanceData {
     case 'enterprise': return ENTERPRISE_FINANCE;
     case 'church': return CHURCH_FINANCE;
     case 'education': return EDUCATION_FINANCE;
-    case 'community': return COMMUNITY_FINANCE;
+    case 'competition': return COMMUNITY_FINANCE;
+    case 'business': return ENTERPRISE_FINANCE;
     default: return { kpis: [], rails: [], ledger: [] };
   }
 }

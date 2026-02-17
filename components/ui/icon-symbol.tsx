@@ -27,6 +27,7 @@ const MAPPING = {
   'arrow.up': 'arrow-upward',
   'arrow.right': 'arrow-forward',
   'xmark': 'close',
+  'xmark.circle.fill': 'cancel',
   'chevron.right': 'chevron-right',
   'chevron.left': 'chevron-left',
   'checkmark': 'check',
@@ -178,6 +179,19 @@ const MAPPING = {
   'list.clipboard': 'assignment',
   'clock.fill': 'schedule',
   'flag.fill': 'flag',
+
+  // Compliance / Tech
+  'person.text.rectangle': 'badge',
+  'car.fill': 'directions-car',
+  'shield.checkered': 'security',
+  'doc.text.magnifyingglass': 'find-in-page',
+
+  // Avatar Drawer V3
+  'flag.checkered': 'flag',
+  'rectangle.portrait.and.arrow.right': 'logout',
+  'shield.fill': 'shield',
+  'doc.text': 'article',
+  'square.grid.2x2': 'grid-view',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];

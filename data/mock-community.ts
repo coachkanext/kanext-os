@@ -192,3 +192,153 @@ export const COMMUNITY_HUB_TABS: { id: CommunityHubTab; label: string }[] = [
   { id: 'sim', label: 'Sim' },
   { id: 'development', label: 'Development' },
 ];
+
+// =============================================================================
+// FAN / PROMOTIONAL EVENT TYPES
+// =============================================================================
+
+export interface K1FanEvent {
+  id: string;
+  name: string;
+  type: 'fan_event' | 'media_day' | 'promo' | 'sponsor_activation' | 'community' | 'awards';
+  location: string;
+  date: string;
+  time: string;
+  description: string;
+  status: 'upcoming' | 'confirmed' | 'completed';
+  attendance?: number;
+  linkedRace?: string;
+}
+
+// =============================================================================
+// RACEWEEK OPS TYPES
+// =============================================================================
+
+export type OpsTaskStatus = 'not_started' | 'in_progress' | 'completed' | 'blocked';
+export type OpsTaskPriority = 'critical' | 'high' | 'medium' | 'low';
+export type OpsCategory = 'logistics' | 'track_prep' | 'safety' | 'media' | 'hospitality' | 'tech_inspection' | 'timing' | 'medical';
+
+export interface K1OpsTask {
+  id: string;
+  title: string;
+  category: OpsCategory;
+  priority: OpsTaskPriority;
+  status: OpsTaskStatus;
+  assignee: string;
+  dueDate: string;
+  dueTime?: string;
+  linkedRace: string;
+  notes?: string;
+}
+
+export interface K1OpsChecklist {
+  id: string;
+  name: string;
+  category: OpsCategory;
+  totalItems: number;
+  completedItems: number;
+  assignee: string;
+  linkedRace: string;
+}
+
+export interface K1CrewAssignment {
+  id: string;
+  name: string;
+  role: string;
+  department: OpsCategory;
+  linkedRace: string;
+  checkInTime: string;
+  status: 'confirmed' | 'pending' | 'unavailable';
+}
+
+// =============================================================================
+// MOCK FAN EVENTS
+// =============================================================================
+
+export const K1_FAN_EVENTS: K1FanEvent[] = [
+  { id: 'fe-1', name: 'Fan Fest — COTA', type: 'fan_event', location: 'Austin, TX', date: 'Mar 7, 2026', time: '10:00 AM', description: 'Season-opening fan festival with driver autographs, kart demos, and live music at COTA.', status: 'completed', attendance: 4200, linkedRace: 'e-1' },
+  { id: 'fe-2', name: 'Media Day — Laguna Seca', type: 'media_day', location: 'Monterey, CA', date: 'Mar 21, 2026', time: '9:00 AM', description: 'Pre-race media availability with all 16 drivers and team principals at Laguna Seca.', status: 'completed', attendance: 320, linkedRace: 'e-2' },
+  { id: 'fe-3', name: 'K-1 x Nike Activation', type: 'sponsor_activation', location: 'Lexington, OH', date: 'May 2, 2026', time: '11:00 AM', description: 'Nike pop-up experience with limited-edition K-1 racing gear and athlete meet-and-greet.', status: 'completed', attendance: 1800, linkedRace: 'e-5' },
+  { id: 'fe-4', name: 'Driver Meet & Greet — Road Atlanta', type: 'fan_event', location: 'Braselton, GA', date: 'Apr 4, 2026', time: '2:00 PM', description: 'Exclusive paddock access and driver signing session at Road Atlanta.', status: 'completed', attendance: 2600, linkedRace: 'e-3' },
+  { id: 'fe-5', name: 'Charity Kart Race', type: 'community', location: 'Indianapolis, IN', date: 'Jul 3, 2026', time: '3:00 PM', description: 'K-1 drivers race rental karts to raise funds for youth STEM programs.', status: 'completed', attendance: 1500 },
+  { id: 'fe-6', name: 'Season Awards Gala', type: 'awards', location: 'Los Angeles, CA', date: 'Sep 20, 2026', time: '7:00 PM', description: 'Black-tie season-ending awards ceremony honoring top drivers, teams, and crew.', status: 'upcoming' },
+  { id: 'fe-7', name: 'Thunder Classic Fan Zone', type: 'fan_event', location: 'Portland, OR', date: 'Jul 31, 2026', time: '10:00 AM', description: 'Fan zone with simulators, merch, food trucks, and pre-race entertainment at Portland.', status: 'upcoming', linkedRace: 'e-12' },
+  { id: 'fe-8', name: 'Pre-Race Concert — Portland', type: 'promo', location: 'Portland, OR', date: 'Jul 31, 2026', time: '7:00 PM', description: 'Live concert featuring regional artists the evening before the Thunder Classic.', status: 'upcoming', linkedRace: 'e-12' },
+  { id: 'fe-9', name: 'Lonestar Fan Fest', type: 'fan_event', location: 'Austin, TX', date: 'Aug 14, 2026', time: '10:00 AM', description: 'Texas-sized fan festival with BBQ, live demos, and driver Q&A at COTA.', status: 'upcoming', linkedRace: 'e-13' },
+  { id: 'fe-10', name: 'Season Finale Watch Party', type: 'fan_event', location: 'Monterey, CA', date: 'Sep 5, 2026', time: '12:00 PM', description: 'Outdoor big-screen watch party at Laguna Seca with live commentary and giveaways.', status: 'upcoming', linkedRace: 'e-14' },
+  { id: 'fe-11', name: 'K-1 x Red Bull Activation', type: 'sponsor_activation', location: 'Austin, TX', date: 'Aug 14, 2026', time: '11:00 AM', description: 'Red Bull energy zone with gaming stations, sampling, and racing challenges.', status: 'upcoming', linkedRace: 'e-13' },
+  { id: 'fe-12', name: 'Community Karting Clinic', type: 'community', location: 'Portland, OR', date: 'Jul 30, 2026', time: '9:00 AM', description: 'Free karting clinic for local youth led by K-1 drivers and instructors.', status: 'upcoming' },
+];
+
+// =============================================================================
+// MOCK OPS TASKS (Thunder Classic — e-12)
+// =============================================================================
+
+export const K1_OPS_TASKS: K1OpsTask[] = [
+  { id: 'ot-1', title: 'Track surface inspection', category: 'track_prep', priority: 'critical', status: 'completed', assignee: 'Chris Donovan', dueDate: 'Jul 29, 2026', dueTime: '8:00 AM', linkedRace: 'Thunder Classic' },
+  { id: 'ot-2', title: 'Timing system calibration', category: 'timing', priority: 'critical', status: 'in_progress', assignee: 'Diego Fuentes', dueDate: 'Jul 30, 2026', dueTime: '12:00 PM', linkedRace: 'Thunder Classic' },
+  { id: 'ot-3', title: 'Medical tent setup', category: 'medical', priority: 'high', status: 'not_started', assignee: 'Dr. Maria Santos', dueDate: 'Jul 31, 2026', dueTime: '6:00 AM', linkedRace: 'Thunder Classic' },
+  { id: 'ot-4', title: 'VIP hospitality tent setup', category: 'hospitality', priority: 'medium', status: 'in_progress', assignee: 'Lisa Park', dueDate: 'Jul 31, 2026', dueTime: '7:00 AM', linkedRace: 'Thunder Classic' },
+  { id: 'ot-5', title: 'TV broadcast equipment check', category: 'media', priority: 'high', status: 'completed', assignee: 'Mike Johnson', dueDate: 'Jul 30, 2026', dueTime: '3:00 PM', linkedRace: 'Thunder Classic' },
+  { id: 'ot-6', title: 'Fire marshal walk-through', category: 'safety', priority: 'critical', status: 'not_started', assignee: 'Sarah Nakamura', dueDate: 'Jul 31, 2026', dueTime: '7:00 AM', linkedRace: 'Thunder Classic' },
+  { id: 'ot-7', title: 'Paddock power & generator check', category: 'logistics', priority: 'high', status: 'in_progress', assignee: 'Tom Bradley', dueDate: 'Jul 30, 2026', dueTime: '2:00 PM', linkedRace: 'Thunder Classic' },
+  { id: 'ot-8', title: 'Driver credential distribution', category: 'logistics', priority: 'medium', status: 'completed', assignee: 'Tom Bradley', dueDate: 'Jul 29, 2026', dueTime: '4:00 PM', linkedRace: 'Thunder Classic' },
+  { id: 'ot-9', title: 'Tech inspection bay prep', category: 'tech_inspection', priority: 'high', status: 'not_started', assignee: 'Kenji Tanaka', dueDate: 'Jul 31, 2026', dueTime: '6:30 AM', linkedRace: 'Thunder Classic' },
+  { id: 'ot-10', title: 'Ambulance & medical staff confirm', category: 'medical', priority: 'critical', status: 'blocked', assignee: 'Dr. Maria Santos', dueDate: 'Jul 30, 2026', dueTime: '5:00 PM', linkedRace: 'Thunder Classic', notes: 'Waiting on county EMS confirmation' },
+];
+
+// =============================================================================
+// MOCK OPS CHECKLISTS (Thunder Classic — e-12)
+// =============================================================================
+
+export const K1_OPS_CHECKLISTS: K1OpsChecklist[] = [
+  { id: 'oc-1', name: 'Track Prep Checklist', category: 'track_prep', totalItems: 12, completedItems: 10, assignee: 'Chris Donovan', linkedRace: 'Thunder Classic' },
+  { id: 'oc-2', name: 'Safety Systems Checklist', category: 'safety', totalItems: 8, completedItems: 3, assignee: 'Sarah Nakamura', linkedRace: 'Thunder Classic' },
+  { id: 'oc-3', name: 'Timing & Scoring Setup', category: 'timing', totalItems: 6, completedItems: 6, assignee: 'Diego Fuentes', linkedRace: 'Thunder Classic' },
+  { id: 'oc-4', name: 'Media & Broadcast Setup', category: 'media', totalItems: 10, completedItems: 7, assignee: 'Dana Wells', linkedRace: 'Thunder Classic' },
+  { id: 'oc-5', name: 'Hospitality & Catering', category: 'hospitality', totalItems: 8, completedItems: 2, assignee: 'Lisa Park', linkedRace: 'Thunder Classic' },
+  { id: 'oc-6', name: 'Medical & Emergency', category: 'medical', totalItems: 10, completedItems: 4, assignee: 'Dr. Maria Santos', linkedRace: 'Thunder Classic' },
+];
+
+// =============================================================================
+// MOCK CREW ASSIGNMENTS (Thunder Classic — e-12)
+// =============================================================================
+
+export const K1_CREW_ASSIGNMENTS: K1CrewAssignment[] = [
+  { id: 'ca-1', name: 'Tom Bradley', role: 'Race Director', department: 'logistics', linkedRace: 'Thunder Classic', checkInTime: '6:00 AM', status: 'confirmed' },
+  { id: 'ca-2', name: 'Sarah Nakamura', role: 'Chief Steward', department: 'safety', linkedRace: 'Thunder Classic', checkInTime: '6:30 AM', status: 'confirmed' },
+  { id: 'ca-3', name: 'Diego Fuentes', role: 'Head of Timing', department: 'timing', linkedRace: 'Thunder Classic', checkInTime: '7:00 AM', status: 'confirmed' },
+  { id: 'ca-4', name: 'Chris Donovan', role: 'Track Marshal Lead', department: 'track_prep', linkedRace: 'Thunder Classic', checkInTime: '5:30 AM', status: 'confirmed' },
+  { id: 'ca-5', name: 'Dana Wells', role: 'Media Coordinator', department: 'media', linkedRace: 'Thunder Classic', checkInTime: '7:00 AM', status: 'confirmed' },
+  { id: 'ca-6', name: 'Lisa Park', role: 'Hospitality Manager', department: 'hospitality', linkedRace: 'Thunder Classic', checkInTime: '6:00 AM', status: 'confirmed' },
+  { id: 'ca-7', name: 'Kenji Tanaka', role: 'Chief Technical Inspector', department: 'tech_inspection', linkedRace: 'Thunder Classic', checkInTime: '6:00 AM', status: 'confirmed' },
+  { id: 'ca-8', name: 'Dr. Maria Santos', role: 'Chief Medical Officer', department: 'medical', linkedRace: 'Thunder Classic', checkInTime: '6:30 AM', status: 'pending' },
+  { id: 'ca-9', name: 'Mike Johnson', role: 'Broadcast Director', department: 'media', linkedRace: 'Thunder Classic', checkInTime: '7:30 AM', status: 'confirmed' },
+  { id: 'ca-10', name: 'Alex Rivera', role: 'Paddock Manager', department: 'logistics', linkedRace: 'Thunder Classic', checkInTime: '5:00 AM', status: 'unavailable' },
+];
+
+// =============================================================================
+// OPS CATEGORY LABELS & COLORS
+// =============================================================================
+
+export const OPS_CATEGORY_LABELS: Record<OpsCategory, string> = {
+  logistics: 'Logistics',
+  track_prep: 'Track Prep',
+  safety: 'Safety',
+  media: 'Media',
+  hospitality: 'Hospitality',
+  tech_inspection: 'Tech Inspection',
+  timing: 'Timing',
+  medical: 'Medical',
+};
+
+export const OPS_CATEGORY_COLORS: Record<OpsCategory, string> = {
+  logistics: '#6366F1',
+  track_prep: '#F59E0B',
+  safety: '#EF4444',
+  media: '#3B82F6',
+  hospitality: '#EC4899',
+  tech_inspection: '#8B5CF6',
+  timing: '#06B6D4',
+  medical: '#22C55E',
+};

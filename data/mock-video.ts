@@ -952,7 +952,8 @@ export const VIDEO_GAMES_BY_MODE: Record<Mode, VideoGame[]> = {
   church: CHURCH_VIDEO_GAMES,
   education: EDUCATION_VIDEO_GAMES,
   enterprise: ENTERPRISE_VIDEO_GAMES,
-  community: COMMUNITY_VIDEO_GAMES,
+  business: ENTERPRISE_VIDEO_GAMES,
+  competition: COMMUNITY_VIDEO_GAMES,
 };
 
 export const VIDEO_CLIPS_BY_MODE: Record<Mode, VideoClip[]> = {
@@ -960,7 +961,8 @@ export const VIDEO_CLIPS_BY_MODE: Record<Mode, VideoClip[]> = {
   church: CHURCH_VIDEO_CLIPS,
   education: EDUCATION_VIDEO_CLIPS,
   enterprise: ENTERPRISE_VIDEO_CLIPS,
-  community: COMMUNITY_VIDEO_CLIPS,
+  business: ENTERPRISE_VIDEO_CLIPS,
+  competition: COMMUNITY_VIDEO_CLIPS,
 };
 
 export const SCOUT_PACKS_BY_MODE: Record<Mode, ScoutPack[]> = {
@@ -968,7 +970,8 @@ export const SCOUT_PACKS_BY_MODE: Record<Mode, ScoutPack[]> = {
   church: CHURCH_SCOUT_PACKS,
   education: EDUCATION_SCOUT_PACKS,
   enterprise: ENTERPRISE_SCOUT_PACKS,
-  community: COMMUNITY_SCOUT_PACKS,
+  business: ENTERPRISE_SCOUT_PACKS,
+  competition: COMMUNITY_SCOUT_PACKS,
 };
 
 export const PLAYER_CHANNELS_BY_MODE: Record<Mode, PlayerChannel[]> = {
@@ -976,7 +979,8 @@ export const PLAYER_CHANNELS_BY_MODE: Record<Mode, PlayerChannel[]> = {
   church: CHURCH_PLAYER_CHANNELS,
   education: EDUCATION_PLAYER_CHANNELS,
   enterprise: ENTERPRISE_PLAYER_CHANNELS,
-  community: COMMUNITY_PLAYER_CHANNELS,
+  business: ENTERPRISE_PLAYER_CHANNELS,
+  competition: COMMUNITY_PLAYER_CHANNELS,
 };
 
 export const REELS_BY_MODE: Record<Mode, Reel[]> = {
@@ -984,7 +988,8 @@ export const REELS_BY_MODE: Record<Mode, Reel[]> = {
   church: CHURCH_REELS,
   education: EDUCATION_REELS,
   enterprise: ENTERPRISE_REELS,
-  community: COMMUNITY_REELS,
+  business: ENTERPRISE_REELS,
+  competition: COMMUNITY_REELS,
 };
 
 export const WATCH_HISTORY_BY_MODE: Record<Mode, WatchHistoryItem[]> = {
@@ -992,7 +997,8 @@ export const WATCH_HISTORY_BY_MODE: Record<Mode, WatchHistoryItem[]> = {
   church: CHURCH_WATCH_HISTORY,
   education: EDUCATION_WATCH_HISTORY,
   enterprise: ENTERPRISE_WATCH_HISTORY,
-  community: COMMUNITY_WATCH_HISTORY,
+  business: ENTERPRISE_WATCH_HISTORY,
+  competition: COMMUNITY_WATCH_HISTORY,
 };
 
 export const RECRUIT_CLIPS_BY_MODE: Record<Mode, RecruitClip[]> = {
@@ -1000,5 +1006,6 @@ export const RECRUIT_CLIPS_BY_MODE: Record<Mode, RecruitClip[]> = {
   church: [],
   education: [],
   enterprise: [],
-  community: [],
+  business: [],
+  competition: [],
 };

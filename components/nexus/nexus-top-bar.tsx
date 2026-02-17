@@ -16,17 +16,19 @@ import type { Mode } from '@/types';
 const MODE_LABELS: Record<Mode, string> = {
   sports: 'Sports',
   enterprise: 'Business',
+  business: 'Business',
   church: 'Church',
   education: 'Education',
-  community: 'Competition',
+  competition: 'Competition',
 };
 
 const MODE_ICONS: Record<Mode, import('@/components/ui/icon-symbol').IconSymbolName> = {
   sports: 'basketball.fill',
   enterprise: 'briefcase.fill',
+  business: 'briefcase.fill',
   church: 'building.columns.fill',
   education: 'graduationcap.fill',
-  community: 'flag.checkered',
+  competition: 'flag.checkered',
 };
 
 interface NexusTopBarProps {

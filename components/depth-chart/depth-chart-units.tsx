@@ -16,6 +16,7 @@ import {
 import * as Haptics from 'expo-haptics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Spacing, BorderRadius } from '@/constants/theme';
+import { useAppContext } from '@/context/app-context';
 import { TEAM_COLORS, PLAYER_CLUSTERS, PLAYER_PHYSICALS, computeOffKR, computeDefKR, getPlayerSubclusters } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
 import { ARCHETYPE_LABELS } from '@/data/system-demand-profiles';
@@ -521,6 +522,7 @@ export function UnitsView({
   lensOverride?: LensKey;
   subclusterOverride?: { cluster: keyof ClusterRatings; index: number };
 }) {
+  const { state: appState } = useAppContext();
   const clusterMap = externalClusters ?? PLAYER_CLUSTERS;
   const physMap = externalPhysicals ?? PLAYER_PHYSICALS;
 
@@ -1192,6 +1194,7 @@ export function UnitsView({
           clusterOverride={sheetClusters}
           baseKROverride={sheetSlot?.baseKR}
           physicals={sheetPlayer ? physMap[sheetPlayer] : undefined}
+          membershipId={appState.activeContext.membership_id}
         />
       )}
     </View>

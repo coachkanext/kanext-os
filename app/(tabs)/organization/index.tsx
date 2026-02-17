@@ -33,6 +33,7 @@ import { OrgComplianceTab } from '@/components/organization/org-compliance-tab';
 import { OrgResourcesTab } from '@/components/organization/org-resources-tab';
 import { OrgSponsorsTab } from '@/components/organization/org-sponsors-tab';
 import { RoomsHub } from '@/components/rooms/rooms-hub';
+import { OrgFacilitiesTab } from '@/components/organization/org-facilities-tab';
 import {
   INSTITUTION,
   INSTITUTION_LEADERSHIP,
@@ -115,7 +116,7 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
     { id: 'resources', label: 'Resources' },
     { id: 'policies', label: 'Policies' },
   ],
-  community: [
+  competition: [
     { id: 'series', label: 'Series' },
     { id: 'people', label: 'People' },
     { id: 'rooms', label: 'Rooms' },
@@ -126,6 +127,18 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
     { id: 'compliance', label: 'Compliance' },
     { id: 'venues', label: 'Venues' },
     { id: 'sponsors', label: 'Sponsors' },
+  ],
+  business: [
+    { id: 'entities', label: 'Entities' },
+    { id: 'people', label: 'People' },
+    { id: 'rooms', label: 'Rooms' },
+    { id: 'operations', label: 'Operations' },
+    { id: 'finance', label: 'Finance' },
+    { id: 'payment-rails', label: 'Payment Rails' },
+    { id: 'legal', label: 'Legal' },
+    { id: 'compliance', label: 'Compliance' },
+    { id: 'assets', label: 'Assets' },
+    { id: 'reports', label: 'Reports' },
   ],
   church: [
     { id: 'ministries', label: 'Ministries' },
@@ -225,7 +238,7 @@ function SportsOrganization() {
 
         {/* Page 6: Facilities */}
         <View key="facilities" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Facilities" />
+          <OrgFacilitiesTab colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 7: Resources */}
@@ -792,8 +805,8 @@ function CommunityOrganization() {
 
   return (
     <>
-      <PagedTabBar tabs={ORG_TABS.community} activeIndex={activeIndex} onTabPress={handleTabPress} />
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.community.length} onAdvance={handleTabPress}>
+      <PagedTabBar tabs={ORG_TABS.competition} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.competition.length} onAdvance={handleTabPress}>
         <PagerView
           ref={pagerRef}
           style={{ flex: 1 }}
@@ -802,32 +815,32 @@ function CommunityOrganization() {
         >
           {/* Page 0: Series */}
           <View key="series" style={{ flex: 1 }}>
-            <OrgSeriesTab colors={colors} accentColor={ModeColors.community.primary} />
+            <OrgSeriesTab colors={colors} accentColor={ModeColors.competition.primary} />
           </View>
 
           {/* Page 1: People */}
           <View key="people" style={{ flex: 1 }}>
-            <OrgPeopleTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
+            <OrgPeopleTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
           </View>
 
           {/* Page 2: Rooms */}
           <View key="rooms" style={{ flex: 1 }}>
-            <RoomsHub mode="community" colors={colors} accentColor={ModeColors.community.primary} />
+            <RoomsHub mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
           </View>
 
           {/* Page 3: Operations */}
           <View key="operations" style={{ flex: 1 }}>
-            <OrgOperationsTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
+            <OrgOperationsTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
           </View>
 
           {/* Page 4: Finance */}
           <View key="finance" style={{ flex: 1 }}>
-            <OrgFinanceTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
+            <OrgFinanceTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
           </View>
 
           {/* Page 4: Payment Rails */}
           <View key="payment-rails" style={{ flex: 1 }}>
-            <OrgPaymentRailsTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
+            <OrgPaymentRailsTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
           </View>
 
           {/* Page 5: Rules */}
@@ -837,7 +850,7 @@ function CommunityOrganization() {
 
           {/* Page 6: Compliance */}
           <View key="compliance" style={{ flex: 1 }}>
-            <OrgComplianceTab mode="community" colors={colors} accentColor={ModeColors.community.primary} />
+            <OrgComplianceTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
           </View>
 
           {/* Page 7: Venues */}
@@ -874,8 +887,10 @@ export default function OrganizationScreen() {
         return <ChurchOrganization />;
       case 'education':
         return <EducationOrganization />;
-      case 'community':
+      case 'competition':
         return <CommunityOrganization />;
+      case 'business':
+        return <EnterpriseOrganization />;
       default:
         return null;
     }
