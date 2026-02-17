@@ -32,18 +32,10 @@ import {
 } from '@/data/mock-video-feed';
 import type { StoryCircle, VideoFeedPost } from '@/data/mock-video-feed';
 import type { Mode } from '@/types';
-import { SportsExplorePage } from '@/components/sports-explore/sports-explore-page';
 import { SportsExplorePageV2 } from '@/components/sports-explore/sports-explore-page-v2';
 import { SportsFilmRoomV2 } from '@/components/film-room/sports-film-room-v2';
-import { EducationExplorePage } from '@/components/education-explore/education-explore-page';
-import { ChurchExplorePage } from '@/components/church-explore/church-explore-page';
-import { BusinessExplorePage } from '@/components/business-explore/business-explore-page';
-import { CompetitionExplorePage } from '@/components/competition-explore/competition-explore-page';
-import { SportsFilmRoom } from '@/components/film-room/sports-film-room';
-import { ChurchFilmRoom } from '@/components/film-room/church-film-room';
-import { EducationFilmRoom } from '@/components/film-room/education-film-room';
-import { BusinessFilmRoom } from '@/components/film-room/business-film-room';
-import { CommunityFilmRoom } from '@/components/film-room/community-film-room';
+import { ModeExplorePageV2 } from '@/components/explore/mode-explore-page-v2';
+import { ModeFilmRoomV2 } from '@/components/film-room/mode-film-room-v2';
 import { LibraryHub } from '@/components/library/library-hub';
 
 const ACCENT_GOLD = '#FFFFFF';
@@ -326,44 +318,12 @@ function FeedPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode })
 
 function ExplorePage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
   if (mode === 'sports') return <SportsExplorePageV2 />;
-  if (mode === 'education') return <EducationExplorePage />;
-  if (mode === 'church') return <ChurchExplorePage />;
-  if (mode === 'enterprise') return <BusinessExplorePage />;
-  if (mode === 'competition') return <CompetitionExplorePage />;
-  if (mode === 'business') return <BusinessExplorePage />;
-
-  return (
-    <ScrollView contentContainerStyle={styles.placeholderContent} showsVerticalScrollIndicator={false}>
-      <View style={[styles.placeholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <IconSymbol name="magnifyingglass" size={32} color={colors.textTertiary} />
-        <ThemedText style={[styles.placeholderTitle, { color: colors.text }]}>Explore</ThemedText>
-        <ThemedText style={[styles.placeholderText, { color: colors.textTertiary }]}>
-          Discover trending content, creators, and topics across your organization.
-        </ThemedText>
-      </View>
-    </ScrollView>
-  );
+  return <ModeExplorePageV2 mode={mode} />;
 }
 
 function RoomPage({ colors, label, mode }: { colors: typeof Colors.light; label: string; mode: Mode }) {
   if (mode === 'sports') return <SportsFilmRoomV2 />;
-  if (mode === 'church') return <ChurchFilmRoom />;
-  if (mode === 'education') return <EducationFilmRoom />;
-  if (mode === 'enterprise') return <BusinessFilmRoom />;
-  if (mode === 'competition') return <CommunityFilmRoom />;
-  if (mode === 'business') return <BusinessFilmRoom />;
-
-  return (
-    <ScrollView contentContainerStyle={styles.placeholderContent} showsVerticalScrollIndicator={false}>
-      <View style={[styles.placeholderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <IconSymbol name="play.rectangle.fill" size={32} color={colors.textTertiary} />
-        <ThemedText style={[styles.placeholderTitle, { color: colors.text }]}>{label}</ThemedText>
-        <ThemedText style={[styles.placeholderText, { color: colors.textTertiary }]}>
-          Curated content rooms for focused viewing and collaboration.
-        </ThemedText>
-      </View>
-    </ScrollView>
-  );
+  return <ModeFilmRoomV2 mode={mode} />;
 }
 
 function LibraryPage() {

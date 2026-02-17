@@ -24,25 +24,22 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { SwipeableThreadRow } from '@/components/messages/swipeable-thread-row';
 import { ChatComposer } from '@/components/messages/chat-composer';
 import { NewThreadSheet } from '@/components/messages/new-thread-sheet';
 import { RequestRow } from '@/components/messages/request-row';
 import { RequestDetail } from '@/components/messages/request-detail';
-import { RoomsHub } from '@/components/rooms/rooms-hub';
 import { SportsInbox } from '@/components/messages/sports-inbox';
 import { SportsRooms } from '@/components/messages/sports-rooms';
 import { SportsRequests } from '@/components/messages/sports-requests';
 import { SportsPinned } from '@/components/messages/sports-pinned';
-import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
+import { ModeInboxV2 } from '@/components/messages/mode-inbox-v2';
+import { ModeRoomsV2 } from '@/components/messages/mode-rooms-v2';
+import { ModePinnedV2 } from '@/components/messages/mode-pinned-v2';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import {
-  MOCK_CHAT_THREADS,
-  INBOX_THREADS_BY_MODE,
-  PINNED_THREADS_BY_MODE,
   formatMessageTime,
-  getModeRooms,
 } from '@/data/mock-messages';
 import type { ChatThread } from '@/data/mock-messages';
 import {
@@ -61,134 +58,6 @@ const MESSAGES_TABS = [
   { id: 'requests', label: 'Requests' },
   { id: 'pinned', label: 'Pinned' },
 ];
-
-// =============================================================================
-// INBOX PAGE
-// =============================================================================
-
-function InboxPage({
-  colors,
-  search,
-  mode,
-  onSelectThread,
-}: {
-  colors: typeof Colors.light;
-  search: string;
-  mode: import('@/types').Mode;
-  onSelectThread: (t: ChatThread) => void;
-}) {
-  const threads = useMemo(() => {
-    const list = INBOX_THREADS_BY_MODE[mode] ?? MOCK_CHAT_THREADS.filter((t) => !t.isGroup);
-    if (!search.trim()) return list;
-    const q = search.toLowerCase();
-    return list.filter(
-      (t) => t.title.toLowerCase().includes(q) || t.lastMessage.toLowerCase().includes(q),
-    );
-  }, [search, mode]);
-
-  const renderThread = useCallback(
-    ({ item }: { item: ChatThread }) => (
-      <SwipeableThreadRow thread={item} onPress={() => onSelectThread(item)} />
-    ),
-    [onSelectThread],
-  );
-
-  return (
-    <FlatList
-      data={threads}
-      keyExtractor={(item) => item.id}
-      renderItem={renderThread}
-      contentContainerStyle={styles.listContent}
-      showsVerticalScrollIndicator={false}
-    />
-  );
-}
-
-// =============================================================================
-// ROOMS PAGE (mode-specific Slack-style rooms)
-// =============================================================================
-
-function RoomsPage({
-  colors,
-  search,
-  mode,
-  onSelectThread,
-}: {
-  colors: typeof Colors.light;
-  search: string;
-  mode: import('@/types').Mode;
-  onSelectThread: (t: ChatThread) => void;
-}) {
-  const threads = useMemo(() => {
-    const list = getModeRooms(mode);
-    if (!search.trim()) return list;
-    const q = search.toLowerCase();
-    return list.filter(
-      (t) => t.title.toLowerCase().includes(q) || t.lastMessage.toLowerCase().includes(q),
-    );
-  }, [search, mode]);
-
-  const renderThread = useCallback(
-    ({ item }: { item: ChatThread }) => (
-      <SwipeableThreadRow thread={item} onPress={() => onSelectThread(item)} />
-    ),
-    [onSelectThread],
-  );
-
-  return (
-    <FlatList
-      data={threads}
-      keyExtractor={(item) => item.id}
-      renderItem={renderThread}
-      contentContainerStyle={styles.listContent}
-      showsVerticalScrollIndicator={false}
-    />
-  );
-}
-
-// =============================================================================
-// PINNED PAGE (placeholder)
-// =============================================================================
-
-function PinnedPage({
-  colors,
-  mode,
-  onSelectThread,
-}: {
-  colors: typeof Colors.light;
-  mode: import('@/types').Mode;
-  onSelectThread: (t: ChatThread) => void;
-}) {
-  const threads = PINNED_THREADS_BY_MODE[mode] ?? [];
-
-  const renderThread = useCallback(
-    ({ item }: { item: ChatThread }) => (
-      <SwipeableThreadRow thread={item} onPress={() => onSelectThread(item)} />
-    ),
-    [onSelectThread],
-  );
-
-  if (threads.length === 0) {
-    return (
-      <View style={styles.emptyState}>
-        <IconSymbol name="pin.fill" size={28} color={colors.textTertiary} />
-        <ThemedText style={[styles.emptyText, { color: colors.textTertiary, marginTop: 8 }]}>
-          No pinned conversations
-        </ThemedText>
-      </View>
-    );
-  }
-
-  return (
-    <FlatList
-      data={threads}
-      keyExtractor={(item) => item.id}
-      renderItem={renderThread}
-      contentContainerStyle={styles.listContent}
-      showsVerticalScrollIndicator={false}
-    />
-  );
-}
 
 // =============================================================================
 // REQUESTS PAGE
@@ -374,23 +243,14 @@ export default function MessagesScreen() {
             {mode === 'sports' ? (
               <SportsInbox search={search} />
             ) : (
-              <InboxPage
-                colors={colors}
-                search={search}
-                mode={mode}
-                onSelectThread={setSelectedThread}
-              />
+              <ModeInboxV2 mode={mode} search={search} />
             )}
           </View>
           <View key="rooms" style={{ flex: 1 }}>
             {mode === 'sports' ? (
               <SportsRooms search={search} />
             ) : (
-              <RoomsHub
-                mode={mode}
-                colors={colors}
-                accentColor={ModeColors[mode].primary}
-              />
+              <ModeRoomsV2 mode={mode} search={search} />
             )}
           </View>
           <View key="requests" style={{ flex: 1 }}>
@@ -411,7 +271,7 @@ export default function MessagesScreen() {
             {mode === 'sports' ? (
               <SportsPinned />
             ) : (
-              <PinnedPage colors={colors} mode={mode} onSelectThread={setSelectedThread} />
+              <ModePinnedV2 mode={mode} search={search} />
             )}
           </View>
         </PagerView>

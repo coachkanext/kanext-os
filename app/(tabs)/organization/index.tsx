@@ -25,6 +25,7 @@ import { OrgOperationsTab } from '@/components/organization/org-operations-tab-v
 import { OrgFinanceTab } from '@/components/organization/org-finance-tab-v2';
 import { OrgSwitcherSheet } from '@/components/organization/org-switcher-sheet';
 import { OrgProgramTab } from '@/components/organization/org-program-tab';
+import { SportsOrgProgramsV2 } from '@/components/organization/sports-org-programs-v2';
 import { OrgMinistriesTab } from '@/components/organization/org-ministries-tab';
 import { OrgInstitutionsTab } from '@/components/organization/org-institutions-tab';
 import { OrgSeriesTab } from '@/components/organization/org-series-tab';
@@ -203,7 +204,7 @@ function SportsOrganization() {
         >
           {/* Page 0: Program */}
         <View key="program" style={{ flex: 1 }}>
-          <OrgProgramTab colors={colors} accentColor={modeColors.primary} />
+          <SportsOrgProgramsV2 colors={colors} accentColor={modeColors.primary} />
         </View>
 
         {/* Page 1: People */}

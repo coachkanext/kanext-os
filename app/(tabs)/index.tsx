@@ -43,10 +43,17 @@ import { registerTeamSheetHandlers } from '@/utils/global-team-sheet';
 import { GOVERNING_BODIES } from '@/data/governing-bodies';
 import { ScheduleHub } from '@/components/schedule/schedule-hub';
 import { GamePlanContent } from '@/components/game-plan/game-plan-content';
+import { SportsGamePlanV2 } from '@/components/game-plan/sports-game-plan-v2';
 import { GameOpsHubContent } from '@/components/game-ops/game-ops-hub-content';
 import { VideoHeroCard } from '@/components/ui/video-hero-card';
 import { DashboardRenderer } from '@/components/dashboard/dashboard-renderer';
+import { SportsDashboardV2 } from '@/components/dashboard/sports-dashboard-v2';
 import { buildSportsDashboard } from '@/data/dashboard-payloads';
+import { SportsCalendarV2 } from '@/components/calendar/sports-calendar-v2';
+import { SportsStatsV2 } from '@/components/stats/sports-stats-v2';
+import { SportsSimulationV2 } from '@/components/simulation/sports-simulation-v2';
+import { SportsDevelopmentV2 } from '@/components/development/sports-development-v2';
+import { SportsProgramV2 } from '@/components/program/sports-program-v2';
 import { SimulationContent } from '@/components/simulation/simulation-content';
 import { DevelopmentContent } from '@/components/development/development-content';
 import { CommunityHome } from '@/components/community/community-home';
@@ -340,20 +347,14 @@ function SportsHome() {
           initialPage={0}
           onPageSelected={(e) => setActiveHubIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Dashboard */}
-          <ScrollView
-            key="dashboard"
-            style={styles.sportsScrollView}
-            contentContainerStyle={styles.sportsScrollContent}
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled
-          >
-            {renderHomeContent()}
-          </ScrollView>
+          {/* Page 0: Dashboard (V2) */}
+          <View key="dashboard" style={{ flex: 1 }}>
+            <SportsDashboardV2 onTabJump={(idx) => { setActiveHubIndex(idx); pagerRef.current?.setPage(idx); }} />
+          </View>
 
-          {/* Page 1: Schedule (full Games Hub) */}
+          {/* Page 1: Calendar (V2) */}
           <View key="schedule" style={{ flex: 1 }}>
-            <ScheduleHub colors={colors} router={router} openLiveTrigger={openLiveTrigger} jumpToStandings={jumpToStandings} />
+            <SportsCalendarV2 colors={colors} />
           </View>
 
           {/* Page 2: Roster */}
@@ -372,29 +373,29 @@ function SportsHome() {
             <PlayerPoolContent />
           </View>
 
-          {/* Page 4: Statistics */}
+          {/* Page 4: Statistics (V2) */}
           <View key="stats" style={{ flex: 1 }}>
-            <StatsContent />
+            <SportsStatsV2 />
           </View>
 
-          {/* Page 5: Game Plan */}
+          {/* Page 5: Game Plan (V2) */}
           <View key="game-plan" style={{ flex: 1 }}>
-            <GamePlanContent />
+            <SportsGamePlanV2 />
           </View>
 
-          {/* Page 6: Simulation */}
+          {/* Page 6: Simulation (V2) */}
           <View key="simulation" style={{ flex: 1 }}>
-            <SimulationContent />
+            <SportsSimulationV2 />
           </View>
 
-          {/* Page 7: Development */}
+          {/* Page 7: Development (V2) */}
           <View key="development" style={{ flex: 1 }}>
-            <DevelopmentContent />
+            <SportsDevelopmentV2 />
           </View>
 
-          {/* Page 8: Program */}
+          {/* Page 8: Program (V2) */}
           <View key="program" style={{ flex: 1 }}>
-            <ProgramContent />
+            <SportsProgramV2 />
           </View>
         </PagerView>
       </EdgeHoldAdvance>
