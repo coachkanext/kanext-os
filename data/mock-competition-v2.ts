@@ -650,3 +650,435 @@ export const COMPLIANCE_SUMMARIES: ComplianceSummary[] = [
   { workspace: 'sponsorship', label: 'Sponsorship', icon: 'building.2.fill', total: 3, approved: 2, pending: 1, flagged: 0 },
   { workspace: 'audit_log', label: 'Audit Log', icon: 'doc.text.magnifyingglass', total: 10, approved: 4, pending: 3, flagged: 3 },
 ];
+
+// =============================================================================
+// UNIVERSAL SHEET TYPES
+// =============================================================================
+
+export type SeriesFormat = 'league' | 'tournament';
+export type SeriesStatus = 'preseason' | 'live' | 'completed';
+export type EntrantStatus = 'active' | 'under_review' | 'suspended' | 'withdrawn';
+export type EventStatus = 'upcoming' | 'live' | 'completed';
+export type SessionType = 'practice' | 'qualifying' | 'main' | 'media' | 'tech' | 'ceremony' | 'wildcard';
+export type SessionStatus = 'scheduled' | 'live' | 'delayed' | 'red_flag' | 'complete';
+export type IncidentType = 'protest' | 'penalty' | 'safety';
+export type IncidentStatus = 'new' | 'assigned' | 'under_review' | 'decided' | 'closed';
+export type PayoutStatus = 'locked' | 'hold' | 'released' | 'pending';
+export type DeliverableStatus = 'on_track' | 'at_risk' | 'overdue' | 'delivered';
+export type StandingsState = 'provisional' | 'under_review' | 'official';
+export type GateState = 'cleared' | 'pending' | 'blocked';
+export type DirectiveStatus = 'draft' | 'published' | 'expired';
+
+export interface SeriesObject {
+  id: string;
+  name: string;
+  logo?: string;
+  format: SeriesFormat;
+  season: string;
+  status: SeriesStatus;
+  nextKeyDate: string;
+  entrantsCount: number;
+  eventsCount: number;
+  currentPhase: string;
+  opsBlockers: number;
+  financeReady: boolean;
+  complianceIncidents: number;
+}
+
+export interface EntrantObject {
+  id: string;
+  seriesId: string;
+  name: string;
+  logo?: string;
+  type: 'team' | 'entry';
+  rank: number;
+  points: number;
+  status: EntrantStatus;
+  teamColor: string;
+  contactRep: string;
+  recentResults: { event: string; finish: number }[];
+  credentialsStatus: 'complete' | 'pending' | 'missing';
+  complianceDocsComplete: number;
+  complianceDocsTotal: number;
+  payoutEligible: string;
+  payoutStatus: PayoutStatus;
+  sponsorDeliverablesDue: number;
+  atRiskFlags: string[];
+}
+
+export interface EventObject {
+  id: string;
+  seriesId: string;
+  name: string;
+  venue: string;
+  location: string;
+  dateRange: string;
+  status: EventStatus;
+  sessionsCount: number;
+  opsBlockers: number;
+  nextSession: string;
+}
+
+export interface EventSession {
+  id: string;
+  eventId: string;
+  name: string;
+  type: SessionType;
+  startTime: string;
+  endTime: string;
+  status: SessionStatus;
+  owner: string;
+  dependencies: string[];
+  format?: string;
+  participantsScope?: string;
+}
+
+export interface EventIncident {
+  id: string;
+  eventId: string;
+  type: IncidentType;
+  title: string;
+  description: string;
+  status: IncidentStatus;
+  owner: string;
+  driversInvolved: string[];
+  filedAt: string;
+  impactFlags: string[];
+}
+
+export interface PayoutItem {
+  id: string;
+  entrantName: string;
+  amount: string;
+  status: PayoutStatus;
+  reason?: string;
+  gatesCleared: number;
+  gatesTotal: number;
+}
+
+export interface SponsorDeliverable {
+  id: string;
+  sponsorName: string;
+  title: string;
+  dueDate: string;
+  status: DeliverableStatus;
+  owner: string;
+  eventId?: string;
+}
+
+export interface StandingsGate {
+  id: string;
+  label: string;
+  status: GateState;
+  owner: string;
+  dueTime: string;
+}
+
+export interface RuleCategory {
+  id: string;
+  title: string;
+  purpose: string;
+  lastUpdated: string;
+  activeDirectives: number;
+  visibility: 'public' | 'restricted';
+}
+
+export interface ActiveDirective {
+  id: string;
+  title: string;
+  effectiveStart: string;
+  effectiveEnd: string;
+  scope: string;
+  owner: string;
+  tags: string[];
+  status: DirectiveStatus;
+  impactFlags: string[];
+}
+
+export interface RuleInterpretation {
+  id: string;
+  ruleRef: string;
+  title: string;
+  summary: string;
+  issuedBy: string;
+  issuedDate: string;
+  status: 'active' | 'superseded';
+  visibility: 'public' | 'restricted';
+}
+
+export interface RuleChangeLog {
+  id: string;
+  title: string;
+  type: 'amendment' | 'bulletin' | 'interpretation' | 'directive';
+  effectiveDate: string;
+  approvedBy: string;
+  categories: string[];
+  visibility: 'public' | 'restricted';
+}
+
+export interface OpsTask {
+  id: string;
+  title: string;
+  owner: string;
+  deadline: string;
+  status: 'open' | 'blocker' | 'done';
+  impactFlags: string[];
+  department: string;
+}
+
+export interface Announcement {
+  id: string;
+  title: string;
+  severity: 'info' | 'important' | 'urgent';
+  audience: 'staff' | 'teams' | 'public';
+  content: string;
+  postedAt: string;
+}
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  role: string;
+  department: string;
+  contactEmail?: string;
+}
+
+// =============================================================================
+// UNIVERSAL SHEET DATA — Series
+// =============================================================================
+
+export const SERIES_LIST: SeriesObject[] = [
+  {
+    id: 'series-k1',
+    name: 'K-1 Hypercar Championship',
+    format: 'league',
+    season: '2026 Season',
+    status: 'live',
+    nextKeyDate: 'Next: Round 3 · Aug 2 · Portland GP',
+    entrantsCount: 16,
+    eventsCount: 8,
+    currentPhase: 'Mid-Season',
+    opsBlockers: 2,
+    financeReady: true,
+    complianceIncidents: 1,
+  },
+  {
+    id: 'series-btw',
+    name: 'BTW Memorial Classic',
+    format: 'tournament',
+    season: '2026',
+    status: 'upcoming',
+    nextKeyDate: 'Next: Opening Round · Aug 15',
+    entrantsCount: 24,
+    eventsCount: 3,
+    currentPhase: 'Registration',
+    opsBlockers: 0,
+    financeReady: false,
+    complianceIncidents: 0,
+  },
+];
+
+// =============================================================================
+// UNIVERSAL SHEET DATA — Entrants (12 entries for K-1)
+// =============================================================================
+
+export const ENTRANT_LIST: EntrantObject[] = [
+  { id: 'ent-1', seriesId: 'series-k1', name: 'Apex Racing #1', type: 'entry', rank: 1, points: 312, status: 'active', teamColor: '#EF4444', contactRep: 'Marcus Kane', recentResults: [{ event: 'Rd 1', finish: 1 }, { event: 'Rd 2', finish: 2 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$125,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-2', seriesId: 'series-k1', name: 'Apex Racing #2', type: 'entry', rank: 5, points: 198, status: 'active', teamColor: '#EF4444', contactRep: 'Marcus Kane', recentResults: [{ event: 'Rd 1', finish: 4 }, { event: 'Rd 2', finish: 6 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$45,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-3', seriesId: 'series-k1', name: 'Velocity Works #3', type: 'entry', rank: 2, points: 287, status: 'active', teamColor: '#3B82F6', contactRep: 'Nadia Patel', recentResults: [{ event: 'Rd 1', finish: 2 }, { event: 'Rd 2', finish: 1 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$110,000', payoutStatus: 'released', sponsorDeliverablesDue: 1, atRiskFlags: [] },
+  { id: 'ent-4', seriesId: 'series-k1', name: 'Velocity Works #4', type: 'entry', rank: 7, points: 145, status: 'active', teamColor: '#3B82F6', contactRep: 'Nadia Patel', recentResults: [{ event: 'Rd 1', finish: 8 }, { event: 'Rd 2', finish: 5 }], credentialsStatus: 'complete', complianceDocsComplete: 7, complianceDocsTotal: 8, payoutEligible: '$30,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-5', seriesId: 'series-k1', name: 'Phoenix Motorsport #5', type: 'entry', rank: 3, points: 256, status: 'active', teamColor: '#F59E0B', contactRep: 'Andre Williams', recentResults: [{ event: 'Rd 1', finish: 3 }, { event: 'Rd 2', finish: 3 }], credentialsStatus: 'pending', complianceDocsComplete: 6, complianceDocsTotal: 8, payoutEligible: '$85,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: ['Medical recertification required'] },
+  { id: 'ent-6', seriesId: 'series-k1', name: 'Zenith Racing #6', type: 'entry', rank: 4, points: 241, status: 'active', teamColor: '#22C55E', contactRep: 'Sofia Torres', recentResults: [{ event: 'Rd 1', finish: 5 }, { event: 'Rd 2', finish: 4 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$70,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-7', seriesId: 'series-k1', name: 'Shadow GP #7', type: 'entry', rank: 6, points: 167, status: 'under_review', teamColor: '#7C3AED', contactRep: 'Grace Kim', recentResults: [{ event: 'Rd 1', finish: 6 }, { event: 'Rd 2', finish: 7 }], credentialsStatus: 'pending', complianceDocsComplete: 5, complianceDocsTotal: 8, payoutEligible: '$55,000', payoutStatus: 'hold', sponsorDeliverablesDue: 1, atRiskFlags: ['Engine seal under review', 'Missing compliance docs'] },
+  { id: 'ent-8', seriesId: 'series-k1', name: 'Shadow GP #8', type: 'entry', rank: 10, points: 89, status: 'active', teamColor: '#7C3AED', contactRep: 'Grace Kim', recentResults: [{ event: 'Rd 1', finish: 10 }, { event: 'Rd 2', finish: 9 }], credentialsStatus: 'complete', complianceDocsComplete: 7, complianceDocsTotal: 8, payoutEligible: '$15,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-9', seriesId: 'series-k1', name: 'Titan Racing #9', type: 'entry', rank: 8, points: 132, status: 'active', teamColor: '#EC4899', contactRep: 'Diego Mendez', recentResults: [{ event: 'Rd 1', finish: 7 }, { event: 'Rd 2', finish: 8 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$25,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-10', seriesId: 'series-k1', name: 'Nova Speed #10', type: 'entry', rank: 9, points: 112, status: 'active', teamColor: '#06B6D4', contactRep: 'Yuki Sato', recentResults: [{ event: 'Rd 1', finish: 9 }, { event: 'Rd 2', finish: 10 }], credentialsStatus: 'complete', complianceDocsComplete: 7, complianceDocsTotal: 8, payoutEligible: '$20,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: ['Front wing non-standard'] },
+  { id: 'ent-11', seriesId: 'series-k1', name: 'Iron Circuit #11', type: 'entry', rank: 11, points: 76, status: 'active', teamColor: '#6B7280', contactRep: 'Tom Harris', recentResults: [{ event: 'Rd 1', finish: 11 }, { event: 'Rd 2', finish: 11 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$10,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-12', seriesId: 'series-k1', name: 'Iron Circuit #12', type: 'entry', rank: 12, points: 56, status: 'active', teamColor: '#6B7280', contactRep: 'Tom Harris', recentResults: [{ event: 'Rd 1', finish: 12 }, { event: 'Rd 2', finish: 12 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$5,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+];
+
+// =============================================================================
+// UNIVERSAL SHEET DATA — Events (2 under K-1)
+// =============================================================================
+
+export const EVENT_LIST: EventObject[] = [
+  { id: 'evt-1', seriesId: 'series-k1', name: 'Round 1 · Laguna Seca GP', venue: 'Laguna Seca Raceway', location: 'Monterey, CA', dateRange: 'Jun 20–22, 2026', status: 'completed', sessionsCount: 7, opsBlockers: 0, nextSession: '' },
+  { id: 'evt-2', seriesId: 'series-k1', name: 'Round 2 · Portland Thunder Classic', venue: 'Portland International Raceway', location: 'Portland, OR', dateRange: 'Jul 28–Aug 2, 2026', status: 'live', sessionsCount: 7, opsBlockers: 2, nextSession: 'Qualifying — Q3' },
+];
+
+// =============================================================================
+// UNIVERSAL SHEET DATA — Event Sessions (Round 2)
+// =============================================================================
+
+export const EVENT_SESSIONS: EventSession[] = [
+  { id: 'es-1', eventId: 'evt-2', name: 'Free Practice 1', type: 'practice', startTime: 'Fri 9:00 AM', endTime: 'Fri 10:30 AM', status: 'complete', owner: 'Race Director', dependencies: [], format: '90 min', participantsScope: 'All entries' },
+  { id: 'es-2', eventId: 'evt-2', name: 'Free Practice 2', type: 'practice', startTime: 'Fri 2:00 PM', endTime: 'Fri 3:30 PM', status: 'complete', owner: 'Race Director', dependencies: [], format: '90 min', participantsScope: 'All entries' },
+  { id: 'es-3', eventId: 'evt-2', name: 'Tech Inspection', type: 'tech', startTime: 'Sat 8:00 AM', endTime: 'Sat 11:00 AM', status: 'complete', owner: 'Chief Inspector', dependencies: ['Scrutineering docs submitted'], format: 'Sequential', participantsScope: 'All entries' },
+  { id: 'es-4', eventId: 'evt-2', name: 'Qualifying', type: 'qualifying', startTime: 'Sat 2:00 PM', endTime: 'Sat 3:30 PM', status: 'live', owner: 'Race Director', dependencies: ['Tech inspection cleared', 'Safety briefing attended'], format: 'Q1/Q2/Q3 knockout', participantsScope: 'All entries' },
+  { id: 'es-5', eventId: 'evt-2', name: 'Wildcard Qualifier', type: 'wildcard', startTime: 'Sat 5:00 PM', endTime: 'Sat 6:00 PM', status: 'scheduled', owner: 'Race Director', dependencies: ['Qualifying complete', 'Wildcard entries cleared'], format: '30 min sprint', participantsScope: '2 wildcard entries' },
+  { id: 'es-6', eventId: 'evt-2', name: 'Media Day Appearances', type: 'media', startTime: 'Sat 12:00 PM', endTime: 'Sat 1:30 PM', status: 'complete', owner: 'Media Director', dependencies: [], format: 'Press conference + interviews', participantsScope: 'Top 6 drivers' },
+  { id: 'es-7', eventId: 'evt-2', name: 'Portland Thunder Classic — Main Race', type: 'main', startTime: 'Sun 2:00 PM', endTime: 'Sun 4:00 PM', status: 'scheduled', owner: 'Race Director', dependencies: ['Race start clearance', 'Fire suppression certified', 'Broadcast lock confirmed'], format: '65 laps', participantsScope: 'All entries' },
+];
+
+// =============================================================================
+// UNIVERSAL SHEET DATA — Incidents
+// =============================================================================
+
+export const EVENT_INCIDENTS: EventIncident[] = [
+  { id: 'inc-1', eventId: 'evt-2', type: 'protest', title: 'Shadow GP Engine Seal Protest', description: 'Apex Racing filed protest against Shadow GP #7 engine seal irregularity detected during Rd 2 tech inspection.', status: 'under_review', owner: 'Chief Steward', driversInvolved: ['Grace Kim'], filedAt: 'Jul 29, 2026 5:15 PM', impactFlags: ['Blocks Start', 'Compliance Risk'] },
+  { id: 'inc-2', eventId: 'evt-1', type: 'penalty', title: 'Phoenix #5 Unsafe Pit Release', description: '5-second time penalty applied for unsafe pit release during Rd 1 main race lap 23.', status: 'decided', owner: 'Chief Steward', driversInvolved: ['Andre Williams'], filedAt: 'Jun 22, 2026 3:45 PM', impactFlags: [] },
+];
+
+// =============================================================================
+// UNIVERSAL SHEET DATA — Payouts
+// =============================================================================
+
+export const PAYOUT_ITEMS: PayoutItem[] = [
+  { id: 'pay-1', entrantName: 'Apex Racing #1', amount: '$125,000', status: 'released', gatesCleared: 5, gatesTotal: 5 },
+  { id: 'pay-2', entrantName: 'Velocity Works #3', amount: '$110,000', status: 'released', gatesCleared: 5, gatesTotal: 5 },
+  { id: 'pay-3', entrantName: 'Shadow GP #7', amount: '$55,000', status: 'hold', reason: 'Engine protest pending — payout blocked until resolution', gatesCleared: 3, gatesTotal: 5 },
+  { id: 'pay-4', entrantName: 'Phoenix Motorsport #5', amount: '$85,000', status: 'released', gatesCleared: 5, gatesTotal: 5 },
+  { id: 'pay-5', entrantName: 'Nova Speed #10', amount: '$20,000', status: 'pending', reason: 'Awaiting results certification', gatesCleared: 4, gatesTotal: 5 },
+];
+
+// =============================================================================
+// UNIVERSAL SHEET DATA — Sponsor Deliverables
+// =============================================================================
+
+export const SPONSOR_DELIVERABLES: SponsorDeliverable[] = [
+  { id: 'sd-1', sponsorName: 'Nike', title: 'Courtside lounge activation walk-through', dueDate: 'Today 4:00 PM', status: 'at_risk', owner: 'Partnerships Director', eventId: 'evt-2' },
+  { id: 'sd-2', sponsorName: 'Red Bull', title: 'Grid walk branded content drop', dueDate: 'Tomorrow 10:00 AM', status: 'on_track', owner: 'Media Director', eventId: 'evt-2' },
+  { id: 'sd-3', sponsorName: 'Pirelli', title: 'Tire analysis segment for broadcast', dueDate: 'Today 1:00 PM', status: 'delivered', owner: 'Broadcast Producer', eventId: 'evt-2' },
+  { id: 'sd-4', sponsorName: 'Nike', title: 'Post-race podium branded backdrop', dueDate: 'Sun 4:30 PM', status: 'on_track', owner: 'Ops Coordinator', eventId: 'evt-2' },
+];
+
+// =============================================================================
+// UNIVERSAL SHEET DATA — Standings Gates (governs official → payout flow)
+// =============================================================================
+
+export const STANDINGS_GATES: StandingsGate[] = [
+  { id: 'sg-1', label: 'Tech Inspection Cleared', status: 'cleared', owner: 'Chief Inspector', dueTime: 'Sat 11:00 AM' },
+  { id: 'sg-2', label: 'Protests Resolved', status: 'pending', owner: 'Chief Steward', dueTime: 'Sun 6:00 PM' },
+  { id: 'sg-3', label: 'Safety Incidents Closed', status: 'cleared', owner: 'Safety Director', dueTime: 'Sun 5:00 PM' },
+  { id: 'sg-4', label: 'Broadcast Package Locked', status: 'pending', owner: 'Broadcast Producer', dueTime: 'Sun 1:00 PM' },
+  { id: 'sg-5', label: 'Payout Inputs Verified', status: 'blocked', owner: 'Finance Officer', dueTime: 'Sun 8:00 PM' },
+];
+
+// =============================================================================
+// RULES DATA — Categories (K-1 grounded)
+// =============================================================================
+
+export const RULE_CATEGORIES: RuleCategory[] = [
+  { id: 'rc-1', title: 'Vehicle Eligibility', purpose: 'Define what can enter the championship.', lastUpdated: 'Jan 15, 2026', activeDirectives: 0, visibility: 'public' },
+  { id: 'rc-2', title: 'Teams, Entries & Grid', purpose: 'Team structure, entry requirements, grid procedures.', lastUpdated: 'Jan 15, 2026', activeDirectives: 0, visibility: 'public' },
+  { id: 'rc-3', title: 'Cost Cap Regulations', purpose: '$10M car-only cost cap. Inside/outside cap definitions.', lastUpdated: 'Mar 1, 2026', activeDirectives: 0, visibility: 'public' },
+  { id: 'rc-4', title: 'Sporting Format', purpose: 'Weekend structure, session definitions, points system.', lastUpdated: 'Jan 15, 2026', activeDirectives: 1, visibility: 'public' },
+  { id: 'rc-5', title: 'Wildcard System', purpose: '1–2 wildcard slots per event, qualifier process.', lastUpdated: 'Feb 10, 2026', activeDirectives: 0, visibility: 'public' },
+  { id: 'rc-6', title: 'Championships & Awards', purpose: 'Drivers, Constructors, Crew championships + awards criteria.', lastUpdated: 'Jan 15, 2026', activeDirectives: 0, visibility: 'public' },
+  { id: 'rc-7', title: 'Tech & Compliance Procedures', purpose: 'Scrutineering, clearance statuses, inspection escalation.', lastUpdated: 'Jul 18, 2026', activeDirectives: 0, visibility: 'public' },
+  { id: 'rc-8', title: 'Penalties, Protests & Appeals', purpose: 'Filing, evidence, steward panel, sanctions, appeal process.', lastUpdated: 'Jun 22, 2026', activeDirectives: 0, visibility: 'public' },
+  { id: 'rc-9', title: 'Media, Rights & Content Rules', purpose: 'Filming, takedowns, broadcast precedence, obligations.', lastUpdated: 'Jan 15, 2026', activeDirectives: 0, visibility: 'public' },
+  { id: 'rc-10', title: 'Sponsor & Commercial Obligations', purpose: 'Branding, activation, conflict policy, deliverables.', lastUpdated: 'Jan 15, 2026', activeDirectives: 0, visibility: 'public' },
+];
+
+// =============================================================================
+// RULES DATA — Active Directives
+// =============================================================================
+
+export const ACTIVE_DIRECTIVES: ActiveDirective[] = [
+  { id: 'dir-1', title: 'Round 3 — Weather Contingency Schedule Directive', effectiveStart: 'Aug 1, 2026', effectiveEnd: 'Aug 2, 2026', scope: 'All entries', owner: 'Race Director', tags: ['Ops', 'Safety', 'Broadcast'], status: 'draft', impactFlags: ['Blocks Start', 'Broadcast Risk'] },
+];
+
+// =============================================================================
+// RULES DATA — Interpretations
+// =============================================================================
+
+export const RULE_INTERPRETATIONS: RuleInterpretation[] = [
+  { id: 'ri-1', ruleRef: 'Cost Cap §4.2', title: 'Treatment of replacement aero kits as spares', summary: 'Replacement aero components used during race weekends count as spares under the inside-cap allocation, not as new development parts.', issuedBy: 'Commissioner', issuedDate: 'Apr 15, 2026', status: 'active', visibility: 'restricted' },
+  { id: 'ri-2', ruleRef: 'Sporting Format §2.1', title: 'Red flag restart procedure clarification', summary: 'In the event of a red flag after lap 40, the race will not be restarted if fewer than 10 laps remain. Results will be declared at the last completed lap.', issuedBy: 'Chief Steward', issuedDate: 'Jun 25, 2026', status: 'active', visibility: 'public' },
+];
+
+// =============================================================================
+// RULES DATA — Change Log
+// =============================================================================
+
+export const RULE_CHANGE_LOG: RuleChangeLog[] = [
+  { id: 'rcl-1', title: 'Updated scrutineering clearance statuses', type: 'amendment', effectiveDate: 'Jul 18, 2026', approvedBy: 'Commissioner', categories: ['Tech & Compliance'], visibility: 'public' },
+  { id: 'rcl-2', title: 'Red flag restart interpretation published', type: 'interpretation', effectiveDate: 'Jun 25, 2026', approvedBy: 'Chief Steward', categories: ['Sporting Format'], visibility: 'public' },
+  { id: 'rcl-3', title: 'Unsafe pit release penalty matrix updated', type: 'amendment', effectiveDate: 'Jun 22, 2026', approvedBy: 'Commissioner', categories: ['Penalties, Protests & Appeals'], visibility: 'public' },
+  { id: 'rcl-4', title: 'Aero kit cost cap interpretation issued', type: 'interpretation', effectiveDate: 'Apr 15, 2026', approvedBy: 'Commissioner', categories: ['Cost Cap Regulations'], visibility: 'restricted' },
+  { id: 'rcl-5', title: 'Wildcard qualifier timing adjusted', type: 'bulletin', effectiveDate: 'Feb 10, 2026', approvedBy: 'Race Director', categories: ['Wildcard System', 'Sporting Format'], visibility: 'public' },
+];
+
+// =============================================================================
+// DASHBOARD DATA — Ops Tasks
+// =============================================================================
+
+export const OPS_TASKS: OpsTask[] = [
+  { id: 'ot-1', title: 'Broadcast package lock — missing sponsor slate', owner: 'Broadcast Producer', deadline: 'Today 1:00 PM', status: 'blocker', impactFlags: ['Broadcast Risk', 'Sponsor Risk'], department: 'Broadcast' },
+  { id: 'ot-2', title: '2 entries missing compliance docs', owner: 'Compliance Officer', deadline: 'Today 5:00 PM', status: 'blocker', impactFlags: ['Blocks Start', 'Compliance Risk'], department: 'Compliance' },
+  { id: 'ot-3', title: 'Grid walk security briefing', owner: 'Ops Coordinator', deadline: 'Tomorrow 8:00 AM', status: 'open', impactFlags: [], department: 'Ops' },
+  { id: 'ot-4', title: 'Post-race podium setup verification', owner: 'Ops Coordinator', deadline: 'Sun 12:00 PM', status: 'open', impactFlags: [], department: 'Ops' },
+  { id: 'ot-5', title: 'Fire suppression re-certification', owner: 'Safety Director', deadline: 'Today 5:00 PM', status: 'open', impactFlags: ['Safety Risk'], department: 'Safety' },
+];
+
+// =============================================================================
+// DASHBOARD DATA — Announcements
+// =============================================================================
+
+export const ANNOUNCEMENTS: Announcement[] = [
+  { id: 'ann-1', title: 'Weather Contingency — Portland Round', severity: 'important', audience: 'teams', content: 'Potential thunderstorms forecast for Sunday. Contingency schedule under review.', postedAt: 'Jul 30, 2026' },
+  { id: 'ann-2', title: 'Qualifying Format Update', severity: 'info', audience: 'public', content: 'Q1/Q2/Q3 knockout qualifying confirmed for all remaining rounds.', postedAt: 'Jul 28, 2026' },
+  { id: 'ann-3', title: 'Fire Suppression Certification Notice', severity: 'urgent', audience: 'staff', content: 'Annual fire suppression re-certification overdue. Must be resolved before race day.', postedAt: 'Jul 29, 2026' },
+];
+
+// =============================================================================
+// DASHBOARD DATA — Staff Directory
+// =============================================================================
+
+export const STAFF_DIRECTORY: StaffMember[] = [
+  { id: 'staff-1', name: 'Sarah Nakamura', role: 'Chief Steward', department: 'Integrity', contactEmail: 's.nakamura@k1racing.com' },
+  { id: 'staff-2', name: 'James Wright', role: 'Race Director', department: 'Racing Ops', contactEmail: 'j.wright@k1racing.com' },
+  { id: 'staff-3', name: 'Maria Rodriguez', role: 'Media Director', department: 'Broadcast & Media', contactEmail: 'm.rodriguez@k1racing.com' },
+  { id: 'staff-4', name: 'Kenji Tanaka', role: 'Chief Inspector', department: 'Tech & Compliance', contactEmail: 'k.tanaka@k1racing.com' },
+  { id: 'staff-5', name: 'Lisa Chen', role: 'Partnerships Director', department: 'Commercial', contactEmail: 'l.chen@k1racing.com' },
+  { id: 'staff-6', name: 'David Kim', role: 'Finance Officer', department: 'Finance', contactEmail: 'd.kim@k1racing.com' },
+  { id: 'staff-7', name: 'Alex Okafor', role: 'Safety Director', department: 'Safety', contactEmail: 'a.okafor@k1racing.com' },
+  { id: 'staff-8', name: 'Priya Sharma', role: 'Ops Coordinator', department: 'Event Ops', contactEmail: 'p.sharma@k1racing.com' },
+];
+
+// =============================================================================
+// HELPERS
+// =============================================================================
+
+export function getSeriesById(id: string): SeriesObject | undefined {
+  return SERIES_LIST.find((s) => s.id === id);
+}
+
+export function getEntrantsBySeries(seriesId: string): EntrantObject[] {
+  return ENTRANT_LIST.filter((e) => e.seriesId === seriesId);
+}
+
+export function getEventsBySeries(seriesId: string): EventObject[] {
+  return EVENT_LIST.filter((e) => e.seriesId === seriesId);
+}
+
+export function getSessionsByEvent(eventId: string): EventSession[] {
+  return EVENT_SESSIONS.filter((s) => s.eventId === eventId);
+}
+
+export function getIncidentsByEvent(eventId: string): EventIncident[] {
+  return EVENT_INCIDENTS.filter((i) => i.eventId === eventId);
+}
+
+export function getAtRiskEntrants(): EntrantObject[] {
+  return ENTRANT_LIST.filter((e) => e.atRiskFlags.length > 0 || e.status === 'under_review');
+}
+
+export function getBlockerTasks(): OpsTask[] {
+  return OPS_TASKS.filter((t) => t.status === 'blocker');
+}
+
+export function getUpcomingDeliverables(): SponsorDeliverable[] {
+  return SPONSOR_DELIVERABLES.filter((d) => d.status !== 'delivered');
+}

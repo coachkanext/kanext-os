@@ -15,8 +15,9 @@ import {
 import type { CEOTeamCard, TeamsCEOKPI, TeamType } from '@/data/mock-ceo-competition';
 import { K1_DRIVERS } from '@/data/mock-community';
 import type { K1Driver } from '@/data/mock-community';
-import { TEAM_PERSONNEL, TEAM_CARS } from '@/data/mock-competition-v2';
-import type { TeamPerson, TeamCar } from '@/data/mock-competition-v2';
+import { TEAM_PERSONNEL, TEAM_CARS, getAtRiskEntrants, ENTRANT_LIST } from '@/data/mock-competition-v2';
+import type { TeamPerson, TeamCar, EntrantObject } from '@/data/mock-competition-v2';
+import { mapRoleToCompetitionLens, isFullAccess } from '@/utils/competition-rbac';
 
 // =============================================================================
 // CONSTANTS
@@ -739,6 +740,65 @@ function TeamDetail({
 // TEAM LIST VIEW
 // =============================================================================
 
+type TeamFilter = 'all' | 'favorites' | 'ready' | 'at_risk' | 'non_compliant';
+
+const FILTER_CHIPS: { key: TeamFilter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'favorites', label: 'Favorites' },
+  { key: 'ready', label: 'Ready' },
+  { key: 'at_risk', label: 'At Risk' },
+  { key: 'non_compliant', label: 'Non-Compliant' },
+];
+
+// =============================================================================
+// ROUND READINESS PULSE
+// =============================================================================
+
+function RoundReadinessPulse({ colors }: { colors: typeof Colors.light }) {
+  const readyCount = CEO_TEAM_CARDS.filter((t) => t.readiness.ops >= 80 && t.readiness.compliance >= 80).length;
+  const atRiskCount = CEO_TEAM_CARDS.filter((t) => (t.readiness.ops < 80 && t.readiness.ops >= 50) || (t.readiness.compliance < 80 && t.readiness.compliance >= 50)).length;
+  const nonCompliantCount = CEO_TEAM_CARDS.filter((t) => t.readiness.compliance < 50).length;
+  const atRiskEntrants = getAtRiskEntrants();
+  const topBlockers = atRiskEntrants.slice(0, 3).map((e) => e.atRiskFlags[0] ?? `${e.name}: under review`);
+
+  return (
+    <View style={[readinessStyles.pulseCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[readinessStyles.pulseTitle, { color: colors.text }]}>
+        Round Readiness Pulse
+      </ThemedText>
+      <View style={readinessStyles.pulseStatsRow}>
+        <View style={readinessStyles.pulseStat}>
+          <ThemedText style={[readinessStyles.pulseStatValue, { color: '#22C55E' }]}>{readyCount}</ThemedText>
+          <ThemedText style={[readinessStyles.pulseStatLabel, { color: colors.textTertiary }]}>Ready</ThemedText>
+        </View>
+        <View style={readinessStyles.pulseStat}>
+          <ThemedText style={[readinessStyles.pulseStatValue, { color: '#F59E0B' }]}>{atRiskCount}</ThemedText>
+          <ThemedText style={[readinessStyles.pulseStatLabel, { color: colors.textTertiary }]}>At Risk</ThemedText>
+        </View>
+        <View style={readinessStyles.pulseStat}>
+          <ThemedText style={[readinessStyles.pulseStatValue, { color: '#EF4444' }]}>{nonCompliantCount}</ThemedText>
+          <ThemedText style={[readinessStyles.pulseStatLabel, { color: colors.textTertiary }]}>Non-Compliant</ThemedText>
+        </View>
+      </View>
+      {topBlockers.length > 0 && (
+        <View style={readinessStyles.blockersSection}>
+          <ThemedText style={[readinessStyles.blockersLabel, { color: colors.textTertiary }]}>
+            Top Blockers
+          </ThemedText>
+          {topBlockers.map((blocker, idx) => (
+            <View key={idx} style={readinessStyles.blockerRow}>
+              <View style={[readinessStyles.blockerDot, { backgroundColor: '#EF4444' }]} />
+              <ThemedText style={[readinessStyles.blockerText, { color: colors.textSecondary }]} numberOfLines={1}>
+                {blocker}
+              </ThemedText>
+            </View>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
 function TeamListView({
   colors,
   onSelectTeam,
@@ -747,12 +807,36 @@ function TeamListView({
   onSelectTeam: (team: CEOTeamCard) => void;
 }) {
   const [search, setSearch] = useState('');
+  const [activeFilter, setActiveFilter] = useState<TeamFilter>('all');
+  const role = mapRoleToCompetitionLens('owner');
 
   const filteredTeams = useMemo(() => {
-    if (!search.trim()) return CEO_TEAM_CARDS;
-    const q = search.toLowerCase();
-    return CEO_TEAM_CARDS.filter((t) => t.name.toLowerCase().includes(q));
-  }, [search]);
+    let teams = CEO_TEAM_CARDS;
+
+    // Apply search
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      teams = teams.filter((t) => t.name.toLowerCase().includes(q));
+    }
+
+    // Apply filter
+    switch (activeFilter) {
+      case 'ready':
+        teams = teams.filter((t) => t.readiness.ops >= 80 && t.readiness.compliance >= 80);
+        break;
+      case 'at_risk':
+        teams = teams.filter((t) => (t.readiness.ops < 80 && t.readiness.ops >= 50) || (t.readiness.compliance < 80 && t.readiness.compliance >= 50));
+        break;
+      case 'non_compliant':
+        teams = teams.filter((t) => t.readiness.compliance < 50);
+        break;
+      case 'favorites':
+        // All teams shown for now (favorites not yet tracked)
+        break;
+    }
+
+    return teams;
+  }, [search, activeFilter]);
 
   return (
     <ScrollView
@@ -778,6 +862,38 @@ function TeamListView({
           </View>
         ))}
       </View>
+
+      {/* Round Readiness Pulse */}
+      <RoundReadinessPulse colors={colors} />
+
+      {/* Filter Chips */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={readinessStyles.filterChipsRow}>
+        {FILTER_CHIPS.map((chip) => {
+          const isActive = activeFilter === chip.key;
+          return (
+            <Pressable
+              key={chip.key}
+              style={[
+                readinessStyles.filterChip,
+                { backgroundColor: isActive ? colors.text + 'E0' : colors.backgroundSecondary },
+              ]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActiveFilter(chip.key);
+              }}
+            >
+              <ThemedText
+                style={[
+                  readinessStyles.filterChipText,
+                  { color: isActive ? colors.background : colors.textSecondary },
+                ]}
+              >
+                {chip.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
 
       {/* Search bar */}
       <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -861,6 +977,30 @@ function TeamListView({
                     {team.business.financialStatus.charAt(0).toUpperCase() + team.business.financialStatus.slice(1)}
                   </ThemedText>
                 </View>
+              </View>
+
+              {/* Ops Readiness / Compliance / Payout status chips */}
+              <View style={readinessStyles.opsChipsRow}>
+                {/* Ops Readiness */}
+                <View style={[readinessStyles.opsChip, { backgroundColor: (team.readiness.ops >= 80 ? '#22C55E' : team.readiness.ops >= 50 ? '#F59E0B' : '#EF4444') + '18' }]}>
+                  <ThemedText style={[readinessStyles.opsChipText, { color: team.readiness.ops >= 80 ? '#22C55E' : team.readiness.ops >= 50 ? '#F59E0B' : '#EF4444' }]}>
+                    Ops: {team.readiness.ops >= 80 ? 'Ready' : team.readiness.ops >= 50 ? 'At Risk' : 'Blocked'}
+                  </ThemedText>
+                </View>
+                {/* Compliance */}
+                <View style={[readinessStyles.opsChip, { backgroundColor: (team.readiness.compliance >= 80 ? '#22C55E' : team.readiness.compliance >= 50 ? '#F59E0B' : '#EF4444') + '18' }]}>
+                  <ThemedText style={[readinessStyles.opsChipText, { color: team.readiness.compliance >= 80 ? '#22C55E' : team.readiness.compliance >= 50 ? '#F59E0B' : '#EF4444' }]}>
+                    Comp: {team.readiness.compliance >= 80 ? 'OK' : team.readiness.compliance >= 50 ? 'Warning' : 'Non-Compliant'}
+                  </ThemedText>
+                </View>
+                {/* Payout (C1/C2 only) */}
+                {isFullAccess(role) && (
+                  <View style={[readinessStyles.opsChip, { backgroundColor: team.business.financialStatus === 'current' ? '#22C55E18' : '#EF444418' }]}>
+                    <ThemedText style={[readinessStyles.opsChipText, { color: team.business.financialStatus === 'current' ? '#22C55E' : '#EF4444' }]}>
+                      Payout: {team.business.financialStatus === 'current' ? 'Eligible' : 'Hold'}
+                    </ThemedText>
+                  </View>
+                )}
               </View>
 
               {/* Risk flags */}
@@ -1526,5 +1666,90 @@ const styles = StyleSheet.create({
   riskDetail: {
     fontSize: 12,
     marginTop: 2,
+  },
+});
+
+// Additional styles for readiness features
+const readinessStyles = StyleSheet.create({
+  pulseCard: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 14,
+  },
+  pulseTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  pulseStatsRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  pulseStat: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  pulseStatValue: {
+    fontSize: 22,
+    fontWeight: '800',
+  },
+  pulseStatLabel: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+  blockersSection: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#9CA3AF30',
+  },
+  blockersLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+    marginBottom: 6,
+  },
+  blockerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 3,
+  },
+  blockerDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+  },
+  blockerText: {
+    fontSize: 12,
+    flex: 1,
+  },
+  filterChipsRow: {
+    gap: 6,
+    paddingVertical: 2,
+  },
+  filterChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 18,
+  },
+  filterChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  opsChipsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  opsChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  opsChipText: {
+    fontSize: 10,
+    fontWeight: '700',
   },
 });

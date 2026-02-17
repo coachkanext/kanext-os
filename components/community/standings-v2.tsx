@@ -32,6 +32,9 @@ import {
   POINTS_SWING_SCENARIOS,
   PENALTY_LEDGER,
   LEVERAGE_BATTLES,
+  STANDINGS_GATES,
+  EVENT_SESSIONS,
+  getBlockerTasks,
 } from '@/data/mock-competition-v2';
 import type {
   StandingsView,
@@ -40,7 +43,12 @@ import type {
   PointsSwingScenario,
   PenaltyLedgerEntry,
   LeverageBattle,
+  StandingsGate,
+  StandingsState,
 } from '@/data/mock-competition-v2';
+
+// RBAC
+import { mapRoleToCompetitionLens, isFullAccess } from '@/utils/competition-rbac';
 
 // Community data
 import { K1_STANDINGS } from '@/data/mock-community';
@@ -773,6 +781,151 @@ function LeverageBattlesContent({ colors }: { colors: typeof Colors.light }) {
 }
 
 // =============================================================================
+// RACE WEEK PULSE STRIP
+// =============================================================================
+
+const GATE_STATE_COLOR: Record<string, string> = {
+  cleared: '#22C55E',
+  pending: '#F59E0B',
+  blocked: '#EF4444',
+};
+
+const STANDINGS_STATE_COLOR: Record<StandingsState, string> = {
+  provisional: '#F59E0B',
+  under_review: '#3B82F6',
+  official: '#22C55E',
+};
+
+function RaceWeekPulseStrip({ colors }: { colors: typeof Colors.light }) {
+  const nextSession = EVENT_SESSIONS.find((s) => s.status === 'live' || s.status === 'scheduled');
+  const blockers = getBlockerTasks();
+  const allGatesCleared = STANDINGS_GATES.every((g) => g.status === 'cleared');
+
+  return (
+    <View style={[styles.pulseStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.pulseStripTitle, { color: colors.text }]}>
+        Race Week Pulse
+      </ThemedText>
+      <View style={styles.pulseStripRow}>
+        <View style={styles.pulseItem}>
+          <ThemedText style={[styles.pulseLabel, { color: colors.textTertiary }]}>Next Session</ThemedText>
+          <ThemedText style={[styles.pulseValue, { color: colors.text }]}>
+            {nextSession ? `${nextSession.name} · ${nextSession.startTime}` : 'None'}
+          </ThemedText>
+        </View>
+        <View style={styles.pulseItem}>
+          <ThemedText style={[styles.pulseLabel, { color: colors.textTertiary }]}>Blockers</ThemedText>
+          <ThemedText style={[styles.pulseValue, { color: blockers.length > 0 ? '#EF4444' : '#22C55E' }]}>
+            {blockers.length}
+          </ThemedText>
+        </View>
+        <View style={styles.pulseItem}>
+          <ThemedText style={[styles.pulseLabel, { color: colors.textTertiary }]}>Results Lock</ThemedText>
+          <ThemedText style={[styles.pulseValue, { color: allGatesCleared ? '#22C55E' : '#F59E0B' }]}>
+            {allGatesCleared ? 'Locked' : 'Pending'}
+          </ThemedText>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+// =============================================================================
+// STANDINGS STATE PILL
+// =============================================================================
+
+function StandingsStatePill({ state, colors }: { state: StandingsState; colors: typeof Colors.light }) {
+  const stateColor = STANDINGS_STATE_COLOR[state];
+  return (
+    <View style={[styles.standingsStatePill, { backgroundColor: stateColor + '20' }]}>
+      <View style={[styles.standingsStateDot, { backgroundColor: stateColor }]} />
+      <ThemedText style={[styles.standingsStateText, { color: stateColor }]}>
+        {state === 'under_review' ? 'Under Review' : state.charAt(0).toUpperCase() + state.slice(1)}
+      </ThemedText>
+    </View>
+  );
+}
+
+// =============================================================================
+// GOVERNED CONTROLS (C1 only)
+// =============================================================================
+
+function GovernedControls({ colors }: { colors: typeof Colors.light }) {
+  const role = mapRoleToCompetitionLens('owner');
+  if (!isFullAccess(role)) return null;
+
+  const actions = [
+    { label: 'Lock Results', color: '#22C55E' },
+    { label: 'Mark Under Review', color: '#3B82F6' },
+    { label: 'Finalize Official', color: '#F59E0B' },
+    { label: 'Initiate Payout Release', color: '#8B5CF6' },
+  ];
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+        Governed Controls
+      </ThemedText>
+      <View style={styles.governedGrid}>
+        {actions.map((action) => (
+          <Pressable
+            key={action.label}
+            style={[styles.governedButton, { backgroundColor: action.color + '15', borderColor: action.color + '30' }]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+          >
+            <ThemedText style={[styles.governedButtonText, { color: action.color }]}>
+              {action.label}
+            </ThemedText>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+// =============================================================================
+// GATES PANEL
+// =============================================================================
+
+function GatesPanel({ colors }: { colors: typeof Colors.light }) {
+  const clearedCount = STANDINGS_GATES.filter((g) => g.status === 'cleared').length;
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View style={styles.gatesPanelHeader}>
+        <ThemedText style={[styles.sectionTitle, { color: colors.text, marginBottom: 0 }]}>
+          Standings Gates
+        </ThemedText>
+        <ThemedText style={[styles.gatesCounter, { color: colors.textTertiary }]}>
+          {clearedCount}/{STANDINGS_GATES.length} cleared
+        </ThemedText>
+      </View>
+      {STANDINGS_GATES.map((gate: StandingsGate) => {
+        const gateColor = GATE_STATE_COLOR[gate.status] ?? '#9CA3AF';
+        return (
+          <View key={gate.id} style={[styles.gateRow, { borderBottomColor: colors.border }]}>
+            <View style={[styles.gateDot, { backgroundColor: gateColor }]} />
+            <View style={styles.gateInfo}>
+              <ThemedText style={[styles.gateName, { color: colors.text }]}>
+                {gate.label}
+              </ThemedText>
+              <ThemedText style={[styles.gateMeta, { color: colors.textTertiary }]}>
+                {gate.owner} · Due: {gate.dueTime}
+              </ThemedText>
+            </View>
+            <View style={[styles.statusBadge, { backgroundColor: gateColor + '20' }]}>
+              <ThemedText style={[styles.statusBadgeText, { color: gateColor }]}>
+                {gate.status.toUpperCase()}
+              </ThemedText>
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+// =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
@@ -782,6 +935,7 @@ export function StandingsV2({ colors }: { colors: typeof Colors.light }) {
   const [swingExpanded, setSwingExpanded] = useState(false);
   const [penaltiesExpanded, setPenaltiesExpanded] = useState(false);
   const [leverageExpanded, setLeverageExpanded] = useState(false);
+  const [standingsState] = useState<StandingsState>('provisional');
 
   // Resolve which drivers view to show based on lens
   const renderDriversView = () => {
@@ -801,8 +955,17 @@ export function StandingsV2({ colors }: { colors: typeof Colors.light }) {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
-      {/* -- CEO KPI Strip -- */}
+      {/* -- Race Week Pulse Strip -- */}
+      <RaceWeekPulseStrip colors={colors} />
+
+      {/* -- Standings State + CEO KPI Strip -- */}
+      <View style={styles.stateKpiRow}>
+        <StandingsStatePill state={standingsState} colors={colors} />
+      </View>
       <CEOKPIStrip colors={colors} />
+
+      {/* -- Governed Controls (C1 only) -- */}
+      <GovernedControls colors={colors} />
 
       {/* -- CEO Lens Toggle -- */}
       <View style={styles.pillRow}>
@@ -897,6 +1060,9 @@ export function StandingsV2({ colors }: { colors: typeof Colors.light }) {
       >
         <LeverageBattlesContent colors={colors} />
       </CollapsibleSection>
+
+      {/* -- Standings Gates Panel -- */}
+      <GatesPanel colors={colors} />
     </ScrollView>
   );
 }
@@ -1301,6 +1467,111 @@ const styles = StyleSheet.create({
   },
 
   // Leverage Battles
+  // Race Week Pulse Strip
+  pulseStrip: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 14,
+  },
+  pulseStripTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  pulseStripRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  pulseItem: {
+    flex: 1,
+  },
+  pulseLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  pulseValue: {
+    fontSize: 13,
+    fontWeight: '700',
+    marginTop: 2,
+  },
+
+  // Standings State Pill
+  stateKpiRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  standingsStatePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 999,
+    gap: 6,
+  },
+  standingsStateDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
+  standingsStateText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+
+  // Governed Controls
+  governedGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  governedButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  governedButtonText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+
+  // Gates Panel
+  gatesPanelHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  gatesCounter: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  gateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 10,
+  },
+  gateDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  gateInfo: {
+    flex: 1,
+  },
+  gateName: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  gateMeta: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+
   battlesContainer: {
     gap: 12,
   },

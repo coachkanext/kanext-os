@@ -17,10 +17,13 @@ import type {
 } from '@/data/mock-ceo-competition';
 import {
   RULE_ARTICLES, RULING_CASES, POINTS_TABLE,
+  RULE_CATEGORIES, ACTIVE_DIRECTIVES, RULE_INTERPRETATIONS, RULE_CHANGE_LOG,
 } from '@/data/mock-competition-v2';
 import type {
   RuleArticle, RulingCase, PointsTableEntry,
+  RuleCategory, ActiveDirective, RuleInterpretation, RuleChangeLog,
 } from '@/data/mock-competition-v2';
+import { mapRoleToCompetitionLens, isFullAccess } from '@/utils/competition-rbac';
 
 // =============================================================================
 // CONSTANTS
@@ -503,6 +506,241 @@ function PointsTab({ colors }: { colors: typeof Colors.light }) {
 }
 
 // =============================================================================
+// RULES HEADER
+// =============================================================================
+
+function RulesHeader({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, marginHorizontal: Spacing.md, marginTop: Spacing.sm }]}>
+      <ThemedText style={[styles.rulesHeaderTitle, { color: colors.text }]}>
+        K-1 Hypercar Championship Regulations
+      </ThemedText>
+      <View style={styles.rulesHeaderMeta}>
+        <ThemedText style={[styles.rulesHeaderMetaText, { color: colors.textSecondary }]}>
+          2026 Season · Version 2.3
+        </ThemedText>
+        <ThemedText style={[styles.rulesHeaderMetaText, { color: colors.textTertiary }]}>
+          Effective: Jan 15 - Dec 31, 2026
+        </ThemedText>
+      </View>
+      <View style={styles.trustRow}>
+        <View style={[styles.trustBadge, { backgroundColor: '#22C55E20' }]}>
+          <ThemedText style={[styles.trustBadgeText, { color: '#22C55E' }]}>RATIFIED</ThemedText>
+        </View>
+        <View style={[styles.trustBadge, { backgroundColor: '#3B82F620' }]}>
+          <ThemedText style={[styles.trustBadgeText, { color: '#3B82F6' }]}>PUBLISHED</ThemedText>
+        </View>
+        <View style={[styles.trustBadge, { backgroundColor: '#8B5CF620' }]}>
+          <ThemedText style={[styles.trustBadgeText, { color: '#8B5CF6' }]}>
+            {RULE_CHANGE_LOG.length} CHANGES
+          </ThemedText>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+// =============================================================================
+// QUICK INDEX
+// =============================================================================
+
+function QuickIndex({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+        Quick Index
+      </ThemedText>
+      {RULE_CATEGORIES.map((cat: RuleCategory) => (
+        <View key={cat.id} style={[styles.quickIndexRow, { borderBottomColor: colors.border }]}>
+          <View style={styles.quickIndexInfo}>
+            <ThemedText style={[styles.quickIndexTitle, { color: colors.text }]}>
+              {cat.title}
+            </ThemedText>
+            <ThemedText style={[styles.quickIndexPurpose, { color: colors.textSecondary }]} numberOfLines={1}>
+              {cat.purpose}
+            </ThemedText>
+          </View>
+          <View style={styles.quickIndexRight}>
+            <ThemedText style={[styles.quickIndexDate, { color: colors.textTertiary }]}>
+              {cat.lastUpdated}
+            </ThemedText>
+            {cat.activeDirectives > 0 && (
+              <View style={[styles.directiveCountBadge, { backgroundColor: '#F59E0B20' }]}>
+                <ThemedText style={[styles.directiveCountText, { color: '#F59E0B' }]}>
+                  {cat.activeDirectives} active
+                </ThemedText>
+              </View>
+            )}
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+// =============================================================================
+// ACTIVE DIRECTIVES SECTION
+// =============================================================================
+
+function ActiveDirectivesSection({ colors }: { colors: typeof Colors.light }) {
+  if (ACTIVE_DIRECTIVES.length === 0) return null;
+
+  const DIRECTIVE_STATUS_COLOR: Record<string, string> = {
+    draft: '#F59E0B',
+    published: '#22C55E',
+    expired: '#9CA3AF',
+  };
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+        Active Directives
+      </ThemedText>
+      {ACTIVE_DIRECTIVES.map((dir: ActiveDirective) => {
+        const statusColor = DIRECTIVE_STATUS_COLOR[dir.status] ?? '#9CA3AF';
+        return (
+          <View key={dir.id} style={[styles.directiveRow, { borderBottomColor: colors.border }]}>
+            <View style={styles.directiveInfo}>
+              <ThemedText style={[styles.directiveTitle, { color: colors.text }]}>
+                {dir.title}
+              </ThemedText>
+              <ThemedText style={[styles.directiveMeta, { color: colors.textTertiary }]}>
+                {dir.effectiveStart} - {dir.effectiveEnd} · {dir.owner}
+              </ThemedText>
+              <View style={styles.directiveTagsRow}>
+                {dir.tags.map((tag) => (
+                  <View key={tag} style={[styles.directiveTag, { backgroundColor: colors.backgroundSecondary }]}>
+                    <ThemedText style={[styles.directiveTagText, { color: colors.textSecondary }]}>{tag}</ThemedText>
+                  </View>
+                ))}
+              </View>
+              {dir.impactFlags.length > 0 && (
+                <View style={styles.directiveTagsRow}>
+                  {dir.impactFlags.map((flag) => (
+                    <View key={flag} style={[styles.directiveTag, { backgroundColor: '#EF444418' }]}>
+                      <ThemedText style={[styles.directiveTagText, { color: '#EF4444' }]}>{flag}</ThemedText>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+            <View style={[styles.categoryBadge, { backgroundColor: statusColor + '20' }]}>
+              <ThemedText style={[styles.categoryBadgeText, { color: statusColor }]}>
+                {dir.status.toUpperCase()}
+              </ThemedText>
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+// =============================================================================
+// INTERPRETATIONS SECTION
+// =============================================================================
+
+function InterpretationsSection({ colors }: { colors: typeof Colors.light }) {
+  if (RULE_INTERPRETATIONS.length === 0) return null;
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+        Interpretations
+      </ThemedText>
+      {RULE_INTERPRETATIONS.map((interp: RuleInterpretation) => (
+        <View key={interp.id} style={[styles.interpretationRow, { borderBottomColor: colors.border }]}>
+          <View style={[styles.interpRefBadge, { backgroundColor: colors.backgroundSecondary }]}>
+            <ThemedText style={[styles.interpRefText, { color: colors.textSecondary }]}>
+              {interp.ruleRef}
+            </ThemedText>
+          </View>
+          <ThemedText style={[styles.interpTitle, { color: colors.text }]}>
+            {interp.title}
+          </ThemedText>
+          <ThemedText style={[styles.interpSummary, { color: colors.textSecondary }]}>
+            {interp.summary}
+          </ThemedText>
+          <ThemedText style={[styles.interpMeta, { color: colors.textTertiary }]}>
+            {interp.issuedBy} · {interp.issuedDate}
+            {interp.visibility === 'restricted' ? ' · Restricted' : ''}
+          </ThemedText>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+// =============================================================================
+// CHANGE LOG SECTION
+// =============================================================================
+
+const CHANGE_TYPE_COLOR: Record<string, string> = {
+  amendment: '#3B82F6',
+  bulletin: '#F59E0B',
+  interpretation: '#8B5CF6',
+  directive: '#22C55E',
+};
+
+function ChangeLogSection({ colors }: { colors: typeof Colors.light }) {
+  if (RULE_CHANGE_LOG.length === 0) return null;
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+        Change Log
+      </ThemedText>
+      {RULE_CHANGE_LOG.map((entry: RuleChangeLog) => {
+        const typeColor = CHANGE_TYPE_COLOR[entry.type] ?? '#9CA3AF';
+        return (
+          <View key={entry.id} style={[styles.changeLogRow, { borderBottomColor: colors.border }]}>
+            <View style={styles.changeLogInfo}>
+              <ThemedText style={[styles.changeLogTitle, { color: colors.text }]}>
+                {entry.title}
+              </ThemedText>
+              <ThemedText style={[styles.changeLogMeta, { color: colors.textTertiary }]}>
+                {entry.effectiveDate} · Approved by {entry.approvedBy}
+              </ThemedText>
+              <View style={styles.changeLogCatsRow}>
+                {entry.categories.map((cat) => (
+                  <View key={cat} style={[styles.directiveTag, { backgroundColor: colors.backgroundSecondary }]}>
+                    <ThemedText style={[styles.directiveTagText, { color: colors.textSecondary }]}>{cat}</ThemedText>
+                  </View>
+                ))}
+              </View>
+            </View>
+            <View style={[styles.categoryBadge, { backgroundColor: typeColor + '20' }]}>
+              <ThemedText style={[styles.categoryBadgeText, { color: typeColor }]}>
+                {entry.type.toUpperCase()}
+              </ThemedText>
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+// =============================================================================
+// PROPOSE A CHANGE BUTTON (C1/C2 only)
+// =============================================================================
+
+function ProposeChangeButton({ colors }: { colors: typeof Colors.light }) {
+  const role = mapRoleToCompetitionLens('owner');
+  if (!isFullAccess(role)) return null;
+
+  return (
+    <Pressable
+      style={[styles.proposeButton, { backgroundColor: '#8B5CF615', borderColor: '#8B5CF630' }]}
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+    >
+      <IconSymbol name="plus.circle.fill" size={18} color="#8B5CF6" />
+      <ThemedText style={styles.proposeButtonText}>Propose a Change</ThemedText>
+    </Pressable>
+  );
+}
+
+// =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
@@ -528,6 +766,9 @@ export function RulesV2({ colors }: { colors: typeof Colors.light }) {
 
   return (
     <View style={styles.container}>
+      {/* Rules Header */}
+      <RulesHeader colors={colors} />
+
       {/* Pill Nav */}
       <View style={styles.pillRow}>
         {TAB_PILLS.map((pill) => {
@@ -563,8 +804,8 @@ export function RulesV2({ colors }: { colors: typeof Colors.light }) {
         })}
       </View>
 
-      {/* Search bar (Rulebook tab only) */}
-      {activeTab === 'rulebook' && (
+      {/* Search bar */}
+      {(activeTab === 'rulebook' || activeTab === 'directives') && (
         <View style={[styles.searchContainer, { backgroundColor: colors.backgroundSecondary, borderColor: colors.border }]}>
           <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
           <TextInput
@@ -602,6 +843,21 @@ export function RulesV2({ colors }: { colors: typeof Colors.light }) {
         {activeTab === 'directives' && <DirectivesTab colors={colors} />}
         {activeTab === 'caselaw' && <CaseLawTab colors={colors} />}
         {activeTab === 'points' && <PointsTab colors={colors} />}
+
+        {/* Quick Index (all tabs) */}
+        {activeTab === 'rulebook' && <QuickIndex colors={colors} />}
+
+        {/* Active Directives */}
+        {activeTab === 'directives' && <ActiveDirectivesSection colors={colors} />}
+
+        {/* Interpretations (shown on case law tab) */}
+        {activeTab === 'caselaw' && <InterpretationsSection colors={colors} />}
+
+        {/* Change Log (shown on all tabs except points) */}
+        {activeTab !== 'points' && <ChangeLogSection colors={colors} />}
+
+        {/* Propose a Change (C1/C2 only) */}
+        <ProposeChangeButton colors={colors} />
       </ScrollView>
     </View>
   );
@@ -961,5 +1217,174 @@ const styles = StyleSheet.create({
   },
   bonusText: {
     fontSize: 13,
+  },
+
+  // Rules Header
+  rulesHeaderTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    marginBottom: 6,
+  },
+  rulesHeaderMeta: {
+    gap: 2,
+    marginBottom: 10,
+  },
+  rulesHeaderMetaText: {
+    fontSize: 13,
+  },
+  trustRow: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  trustBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+  },
+  trustBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+
+  // Quick Index
+  quickIndexRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 10,
+  },
+  quickIndexInfo: {
+    flex: 1,
+  },
+  quickIndexTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  quickIndexPurpose: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  quickIndexRight: {
+    alignItems: 'flex-end',
+    gap: 4,
+  },
+  quickIndexDate: {
+    fontSize: 11,
+  },
+  directiveCountBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 999,
+  },
+  directiveCountText: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+
+  // Active Directives
+  directiveRow: {
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  directiveInfo: {
+    marginBottom: 8,
+  },
+  directiveTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  directiveMeta: {
+    fontSize: 12,
+    marginBottom: 8,
+  },
+  directiveTagsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 4,
+  },
+  directiveTag: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  directiveTagText: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+
+  // Interpretations
+  interpretationRow: {
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  interpRefBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    marginBottom: 6,
+  },
+  interpRefText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  interpTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  interpSummary: {
+    fontSize: 13,
+    lineHeight: 19,
+    marginBottom: 6,
+  },
+  interpMeta: {
+    fontSize: 11,
+  },
+
+  // Change Log
+  changeLogRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 8,
+  },
+  changeLogInfo: {
+    flex: 1,
+  },
+  changeLogTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  changeLogMeta: {
+    fontSize: 11,
+    marginBottom: 6,
+  },
+  changeLogCatsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+  },
+
+  // Propose a Change button
+  proposeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 8,
+  },
+  proposeButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#8B5CF6',
   },
 });

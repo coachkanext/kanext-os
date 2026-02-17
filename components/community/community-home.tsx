@@ -8,19 +8,16 @@ import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   StyleSheet,
-  ScrollView,
 } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedView } from '@/components/themed-view';
-import { Colors, Spacing } from '@/constants/theme';
+import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { PagedTabBar } from '@/components/ui/paged-tab-bar';
 import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
-import { RailsSection } from '@/components/rails/rails-section';
-import { DashboardRenderer } from '@/components/dashboard/dashboard-renderer';
-import { buildCompetitionDashboard } from '@/data/dashboard-payloads';
+import CompetitionDashboardV2 from '@/components/community/competition-dashboard-v2';
 import { StandingsV2 } from '@/components/community/standings-v2';
 import { TeamsV2 } from '@/components/community/teams-v2';
 import { RaceweekOpsV2 } from '@/components/community/raceweek-ops-v2';
@@ -33,7 +30,7 @@ const K1_HUB_TABS = [
   { id: 'race-calendar', label: 'Calendar' },
   { id: 'standings', label: 'Standings' },
   { id: 'teams', label: 'Teams' },
-  { id: 'raceweek-ops', label: 'Raceweek Ops' },
+  { id: 'raceweek', label: 'Race Week' },
   { id: 'rules', label: 'Rules' },
   { id: 'tech-compliance', label: 'Tech & Compliance' },
 ];
@@ -43,14 +40,7 @@ const K1_HUB_TABS = [
 // =============================================================================
 
 function HomeTab({ colors }: { colors: typeof Colors.light }) {
-  const payload = buildCompetitionDashboard();
-
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.tabContent}>
-      <DashboardRenderer payload={payload} renderAsFragment />
-      <RailsSection />
-    </ScrollView>
-  );
+  return <CompetitionDashboardV2 colors={colors} />;
 }
 
 
@@ -96,7 +86,7 @@ export function CommunityHome() {
           <View key="teams" style={{ flex: 1 }}>
             <TeamsV2 colors={colors} />
           </View>
-          <View key="raceweek-ops" style={{ flex: 1 }}>
+          <View key="raceweek" style={{ flex: 1 }}>
             <RaceweekOpsV2 colors={colors} />
           </View>
           <View key="rules" style={{ flex: 1 }}>
@@ -118,10 +108,5 @@ export function CommunityHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  tabContent: {
-    padding: Spacing.md,
-    paddingBottom: 120,
-    gap: 12,
   },
 });

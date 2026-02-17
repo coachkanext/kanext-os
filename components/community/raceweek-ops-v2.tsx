@@ -19,10 +19,14 @@ import {
 import type { CEOTop5Item, Bulletin, ApprovalItem } from '@/data/mock-ceo-competition';
 import {
   RACE_WEEK_SESSIONS, TEAM_READINESS, RACE_INCIDENTS,
+  ENTRANT_LIST, EVENT_SESSIONS, EVENT_INCIDENTS,
+  getBlockerTasks, getUpcomingDeliverables, SPONSOR_DELIVERABLES,
+  PAYOUT_ITEMS, OPS_TASKS,
 } from '@/data/mock-competition-v2';
 import type {
-  RaceWeekSession, TeamReadiness, RaceIncident,
+  RaceWeekSession, TeamReadiness, RaceIncident, EntrantObject, EventIncident,
 } from '@/data/mock-competition-v2';
+import { mapRoleToCompetitionLens, isFullAccess } from '@/utils/competition-rbac';
 
 // =============================================================================
 // CONSTANTS
@@ -636,6 +640,232 @@ function BulletinsSection({ colors }: { colors: typeof Colors.light }) {
 }
 
 // =============================================================================
+// BLOCK 2: EXECUTIVE SNAPSHOT
+// =============================================================================
+
+function ExecutiveSnapshot({ colors }: { colors: typeof Colors.light }) {
+  const blockerTasks = getBlockerTasks();
+  const upcomingDeliverables = getUpcomingDeliverables();
+  const pendingApprovals = CEO_APPROVALS.filter((a) => a.status === 'pending').length;
+  const holdPayouts = PAYOUT_ITEMS.filter((p) => p.status === 'hold').length;
+  const releasedPayouts = PAYOUT_ITEMS.filter((p) => p.status === 'released').length;
+  const atRiskDeliverables = SPONSOR_DELIVERABLES.filter((d) => d.status === 'at_risk').length;
+  const openIncidents = EVENT_INCIDENTS.filter((i) => i.status === 'under_review').length;
+
+  const snapItems: { label: string; value: string; color: string }[] = [
+    { label: 'Blockers', value: String(blockerTasks.length), color: blockerTasks.length > 0 ? '#EF4444' : '#22C55E' },
+    { label: 'Approvals Queue', value: String(pendingApprovals), color: pendingApprovals > 0 ? '#F59E0B' : '#22C55E' },
+    { label: 'Integrity Signals', value: String(openIncidents), color: openIncidents > 0 ? '#EF4444' : '#22C55E' },
+    { label: 'Payouts Ready', value: `${releasedPayouts}/${PAYOUT_ITEMS.length}`, color: holdPayouts > 0 ? '#F59E0B' : '#22C55E' },
+    { label: 'Broadcast Health', value: 'On Track', color: '#22C55E' },
+    { label: 'Sponsor Delivery', value: atRiskDeliverables > 0 ? `${atRiskDeliverables} at risk` : 'On Track', color: atRiskDeliverables > 0 ? '#F59E0B' : '#22C55E' },
+  ];
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+        Executive Snapshot
+      </ThemedText>
+      <View style={styles.snapGrid}>
+        {snapItems.map((item) => (
+          <View key={item.label} style={styles.snapCell}>
+            <ThemedText style={[styles.snapValue, { color: item.color }]}>{item.value}</ThemedText>
+            <ThemedText style={[styles.snapLabel, { color: colors.textTertiary }]}>{item.label}</ThemedText>
+          </View>
+        ))}
+      </View>
+
+      {/* Top 3 blockers */}
+      {blockerTasks.length > 0 && (
+        <View style={styles.blockersList}>
+          <ThemedText style={[styles.blockersListTitle, { color: colors.textTertiary }]}>
+            Top Blockers
+          </ThemedText>
+          {blockerTasks.slice(0, 3).map((task) => (
+            <View key={task.id} style={styles.blockerItem}>
+              <View style={[styles.blockerDot, { backgroundColor: '#EF4444' }]} />
+              <ThemedText style={[styles.blockerItemText, { color: colors.text }]} numberOfLines={1}>
+                {task.title}
+              </ThemedText>
+              <ThemedText style={[styles.blockerItemDeadline, { color: colors.textTertiary }]}>
+                {task.deadline}
+              </ThemedText>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* Next 3 deadlines */}
+      <View style={styles.blockersList}>
+        <ThemedText style={[styles.blockersListTitle, { color: colors.textTertiary }]}>
+          Next Deadlines
+        </ThemedText>
+        {OPS_TASKS.filter((t) => t.status !== 'done').slice(0, 3).map((task) => (
+          <View key={task.id} style={styles.blockerItem}>
+            <View style={[styles.blockerDot, { backgroundColor: task.status === 'blocker' ? '#EF4444' : '#F59E0B' }]} />
+            <ThemedText style={[styles.blockerItemText, { color: colors.text }]} numberOfLines={1}>
+              {task.title}
+            </ThemedText>
+            <ThemedText style={[styles.blockerItemDeadline, { color: colors.textTertiary }]}>
+              {task.deadline}
+            </ThemedText>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+// =============================================================================
+// BLOCK 4: COMMAND PANELS (4 tiles)
+// =============================================================================
+
+function CommandPanels({ colors }: { colors: typeof Colors.light }) {
+  const role = mapRoleToCompetitionLens('owner');
+  const tiles: { title: string; icon: string; count: number; color: string }[] = [
+    { title: 'Ops Command', icon: 'antenna.radiowaves.left.and.right', count: OPS_TASKS.filter((t) => t.status !== 'done').length, color: '#3B82F6' },
+    { title: 'Tech & Compliance', icon: 'checkmark.shield.fill', count: TEAM_READINESS.filter((t) => !t.overallReady).length, color: '#8B5CF6' },
+    { title: 'Broadcast Ops', icon: 'play.rectangle.fill', count: 0, color: '#F59E0B' },
+    { title: 'Sponsor Delivery', icon: 'gift.fill', count: SPONSOR_DELIVERABLES.filter((d) => d.status === 'at_risk').length, color: '#22C55E' },
+  ];
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+        Command Panels
+      </ThemedText>
+      <View style={styles.commandGrid}>
+        {tiles.map((tile) => (
+          <Pressable
+            key={tile.title}
+            style={[styles.commandTile, { backgroundColor: tile.color + '10', borderColor: tile.color + '30' }]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <IconSymbol name={tile.icon as any} size={20} color={tile.color} />
+            <ThemedText style={[styles.commandTileTitle, { color: colors.text }]}>
+              {tile.title}
+            </ThemedText>
+            {tile.count > 0 && (
+              <View style={[styles.commandCountBadge, { backgroundColor: tile.color + '20' }]}>
+                <ThemedText style={[styles.commandCountText, { color: tile.color }]}>
+                  {tile.count}
+                </ThemedText>
+              </View>
+            )}
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+// =============================================================================
+// BLOCK 5: PARTICIPANTS & TEAMS
+// =============================================================================
+
+function ParticipantsBlock({ colors }: { colors: typeof Colors.light }) {
+  const role = mapRoleToCompetitionLens('owner');
+  const entries = ENTRANT_LIST.filter((e) => e.seriesId === 'series-k1').slice(0, 8);
+
+  const ENTRANT_STATUS_COLOR: Record<string, string> = {
+    active: '#22C55E',
+    under_review: '#F59E0B',
+    suspended: '#EF4444',
+    withdrawn: '#9CA3AF',
+  };
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+        Participants & Teams
+      </ThemedText>
+      {entries.map((entry: EntrantObject) => {
+        const statusColor = ENTRANT_STATUS_COLOR[entry.status] ?? '#9CA3AF';
+        return (
+          <View key={entry.id} style={[styles.entrantRow, { borderBottomColor: colors.border }]}>
+            <View style={[styles.entrantDot, { backgroundColor: entry.teamColor }]} />
+            <View style={styles.entrantInfo}>
+              <ThemedText style={[styles.entrantName, { color: colors.text }]}>
+                {entry.name}
+              </ThemedText>
+              <ThemedText style={[styles.entrantMeta, { color: colors.textTertiary }]}>
+                P{entry.rank} · {entry.points} pts
+              </ThemedText>
+            </View>
+            <View style={styles.entrantChips}>
+              <View style={[styles.badge, { backgroundColor: statusColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: statusColor }]}>
+                  {entry.status === 'under_review' ? 'REVIEW' : entry.status.toUpperCase()}
+                </ThemedText>
+              </View>
+              {entry.atRiskFlags.length > 0 && (
+                <View style={[styles.badge, { backgroundColor: '#EF444420' }]}>
+                  <ThemedText style={[styles.badgeText, { color: '#EF4444' }]}>
+                    {entry.atRiskFlags.length} FLAG{entry.atRiskFlags.length !== 1 ? 'S' : ''}
+                  </ThemedText>
+                </View>
+              )}
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+// =============================================================================
+// BLOCK 6: INCIDENTS & REQUESTS
+// =============================================================================
+
+function IncidentsRequestsBlock({ colors }: { colors: typeof Colors.light }) {
+  const incidents = EVENT_INCIDENTS;
+  const INCIDENT_TYPE_COLOR: Record<string, string> = {
+    protest: '#F59E0B',
+    penalty: '#EF4444',
+    safety: '#3B82F6',
+  };
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>
+        Incidents & Requests
+      </ThemedText>
+      {incidents.map((incident: EventIncident) => {
+        const typeColor = INCIDENT_TYPE_COLOR[incident.type] ?? '#9CA3AF';
+        const statusColor = incident.status === 'decided' ? '#22C55E' : incident.status === 'under_review' ? '#F59E0B' : '#9CA3AF';
+        return (
+          <View key={incident.id} style={[styles.incidentBlockRow, { borderBottomColor: colors.border }]}>
+            <View style={styles.incidentBlockInfo}>
+              <ThemedText style={[styles.incidentBlockTitle, { color: colors.text }]}>
+                {incident.title}
+              </ThemedText>
+              <ThemedText style={[styles.incidentBlockDesc, { color: colors.textSecondary }]} numberOfLines={2}>
+                {incident.description}
+              </ThemedText>
+              <ThemedText style={[styles.incidentBlockMeta, { color: colors.textTertiary }]}>
+                {incident.filedAt} · {incident.owner}
+              </ThemedText>
+            </View>
+            <View style={styles.incidentBlockBadges}>
+              <View style={[styles.badge, { backgroundColor: typeColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: typeColor }]}>
+                  {incident.type.toUpperCase()}
+                </ThemedText>
+              </View>
+              <View style={[styles.badge, { backgroundColor: statusColor + '20' }]}>
+                <ThemedText style={[styles.badgeText, { color: statusColor }]}>
+                  {incident.status === 'under_review' ? 'REVIEW' : incident.status.toUpperCase()}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+// =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
@@ -647,15 +877,15 @@ export function RaceweekOpsV2({ colors }: { colors: typeof Colors.light }) {
     setActivePill(pill);
   };
 
+  // Determine if the 6-block overview or the drilled-in pill panel is active
+  const showOverview = activePill === 'timeline';
+
   return (
     <View style={styles.container}>
-      {/* Fixed Top Bar */}
+      {/* Block 1: Race Week Header */}
       <TopBar colors={colors} />
 
-      {/* CEO Top 5 Strip */}
-      <CEOTop5Strip colors={colors} />
-
-      {/* Pill Nav */}
+      {/* Pill Nav — drills into subsection or shows overview */}
       <View style={styles.pillRow}>
         {OPS_PILLS.map((pill) => {
           const isActive = activePill === pill.key;
@@ -687,16 +917,39 @@ export function RaceweekOpsV2({ colors }: { colors: typeof Colors.light }) {
         })}
       </View>
 
-      {/* Scrollable Panel Content */}
+      {/* Scrollable Content */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {activePill === 'timeline' && <TimelineSection colors={colors} />}
-        {activePill === 'readiness' && <ReadinessSection colors={colors} />}
-        {activePill === 'incidents' && <IncidentsSection colors={colors} />}
-        {activePill === 'approvals' && <ApprovalsSection colors={colors} />}
-        {activePill === 'bulletins' && <BulletinsSection colors={colors} />}
+        {showOverview ? (
+          <>
+            {/* Block 2: Executive Snapshot */}
+            <ExecutiveSnapshot colors={colors} />
+
+            {/* Block 3: Today Timeline */}
+            <TimelineSection colors={colors} />
+
+            {/* Block 4: Command Panels */}
+            <CommandPanels colors={colors} />
+
+            {/* Block 5: Participants & Teams */}
+            <ParticipantsBlock colors={colors} />
+
+            {/* Block 6: Incidents & Requests */}
+            <IncidentsRequestsBlock colors={colors} />
+
+            {/* CEO Top 5 */}
+            <CEOTop5Strip colors={colors} />
+          </>
+        ) : (
+          <>
+            {activePill === 'readiness' && <ReadinessSection colors={colors} />}
+            {activePill === 'incidents' && <IncidentsSection colors={colors} />}
+            {activePill === 'approvals' && <ApprovalsSection colors={colors} />}
+            {activePill === 'bulletins' && <BulletinsSection colors={colors} />}
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -1082,5 +1335,150 @@ const styles = StyleSheet.create({
   bulletinAudience: {
     fontSize: 12,
     fontStyle: 'italic',
+  },
+
+  // ---------------------------------------------------------------------------
+  // Executive Snapshot (Block 2)
+  // ---------------------------------------------------------------------------
+  snapGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  snapCell: {
+    width: '33.33%',
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  snapValue: {
+    fontSize: 18,
+    fontWeight: '800',
+  },
+  snapLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    marginTop: 2,
+    textAlign: 'center',
+  },
+  blockersList: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#9CA3AF30',
+    gap: 6,
+  },
+  blockersListTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+    marginBottom: 2,
+  },
+  blockerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  blockerDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  blockerItemText: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
+  },
+  blockerItemDeadline: {
+    fontSize: 11,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Command Panels (Block 4)
+  // ---------------------------------------------------------------------------
+  commandGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  commandTile: {
+    width: '48%',
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 14,
+    alignItems: 'center',
+    gap: 6,
+  },
+  commandTileTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  commandCountBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: 999,
+  },
+  commandCountText: {
+    fontSize: 11,
+    fontWeight: '800',
+  },
+
+  // ---------------------------------------------------------------------------
+  // Participants Block (Block 5)
+  // ---------------------------------------------------------------------------
+  entrantRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 10,
+  },
+  entrantDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  entrantInfo: {
+    flex: 1,
+  },
+  entrantName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  entrantMeta: {
+    fontSize: 12,
+    marginTop: 1,
+  },
+  entrantChips: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Incidents Block (Block 6)
+  // ---------------------------------------------------------------------------
+  incidentBlockRow: {
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  incidentBlockInfo: {
+    marginBottom: 8,
+  },
+  incidentBlockTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  incidentBlockDesc: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 4,
+  },
+  incidentBlockMeta: {
+    fontSize: 11,
+  },
+  incidentBlockBadges: {
+    flexDirection: 'row',
+    gap: 6,
   },
 });
