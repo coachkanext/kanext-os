@@ -25,17 +25,17 @@ export const BIZ_PEOPLE_TABS: { id: BizPeopleTabId; label: string; icon: string 
 ];
 
 export const BIZ_PEOPLE_SCOPE_CHIPS = [
-  'All Entities',
-  'KaNeXT HoldCo',
-  'KaNeXT OpsCo',
-  'KaNeXT IP',
+  'All',
+  'HoldCo',
+  'OpsCo',
+  'IP',
 ];
 
 export const ENTITY_SCOPE_MAP: Record<string, string | null> = {
-  'All Entities': null,
-  'KaNeXT HoldCo': KANEXT_HOLDCO,
-  'KaNeXT OpsCo': KANEXT_OPSCO,
-  'KaNeXT IP': KANEXT_IP,
+  'All': null,
+  'HoldCo': KANEXT_HOLDCO,
+  'OpsCo': KANEXT_OPSCO,
+  'IP': KANEXT_IP,
 };
 
 export const DEPARTMENT_CHIPS = [
@@ -58,6 +58,8 @@ export const DEPARTMENT_CHIPS = [
 export type SignatureAuthority = 'approve' | 'release' | 'both' | 'none';
 export type RBACLevel = 'B1' | 'B2a' | 'B2b' | 'B3' | 'B4' | 'B5';
 
+export type CoverageCategory = 'exec' | 'finance' | 'rails' | 'compliance' | 'ops' | 'media';
+
 export interface BizPerson {
   id: string;
   name: string;
@@ -76,6 +78,12 @@ export interface BizPerson {
   status: 'active' | 'on_leave' | 'terminated';
   startDate: string;
   permissionPackage: string;
+  canApprove: boolean;
+  canRelease: boolean;
+  sensitiveAccess: 'full' | 'partial' | 'none';
+  riskFlags: string[];
+  accountability: { initiatives: number; blockers: number; approvalsPending: number };
+  coverageCategory: CoverageCategory;
 }
 
 export interface RoleSeat {
@@ -195,6 +203,12 @@ const PEOPLE: BizPerson[] = [
     status: 'active',
     startDate: 'Jan 15, 2022',
     permissionPackage: 'pkg-founder',
+    canApprove: true,
+    canRelease: true,
+    sensitiveAccess: 'full',
+    riskFlags: ['Single point of failure'],
+    accountability: { initiatives: 5, blockers: 2, approvalsPending: 3 },
+    coverageCategory: 'exec',
   },
   {
     id: 'ppl-002',
@@ -214,6 +228,12 @@ const PEOPLE: BizPerson[] = [
     status: 'active',
     startDate: 'Mar 1, 2022',
     permissionPackage: 'pkg-c-suite',
+    canApprove: true,
+    canRelease: false,
+    sensitiveAccess: 'full',
+    riskFlags: ['Over-permissioned'],
+    accountability: { initiatives: 2, blockers: 0, approvalsPending: 1 },
+    coverageCategory: 'finance',
   },
   {
     id: 'ppl-003',
@@ -233,6 +253,12 @@ const PEOPLE: BizPerson[] = [
     status: 'active',
     startDate: 'Apr 10, 2022',
     permissionPackage: 'pkg-c-suite',
+    canApprove: true,
+    canRelease: false,
+    sensitiveAccess: 'full',
+    riskFlags: [],
+    accountability: { initiatives: 3, blockers: 1, approvalsPending: 2 },
+    coverageCategory: 'ops',
   },
   {
     id: 'ppl-004',
@@ -252,6 +278,12 @@ const PEOPLE: BizPerson[] = [
     status: 'active',
     startDate: 'Jun 1, 2022',
     permissionPackage: 'pkg-c-suite',
+    canApprove: true,
+    canRelease: false,
+    sensitiveAccess: 'full',
+    riskFlags: [],
+    accountability: { initiatives: 1, blockers: 0, approvalsPending: 1 },
+    coverageCategory: 'compliance',
   },
   {
     id: 'ppl-005',
@@ -271,6 +303,12 @@ const PEOPLE: BizPerson[] = [
     status: 'active',
     startDate: 'Sep 15, 2022',
     permissionPackage: 'pkg-vp',
+    canApprove: false,
+    canRelease: false,
+    sensitiveAccess: 'partial',
+    riskFlags: [],
+    accountability: { initiatives: 2, blockers: 1, approvalsPending: 0 },
+    coverageCategory: 'rails',
   },
   {
     id: 'ppl-006',
@@ -290,6 +328,12 @@ const PEOPLE: BizPerson[] = [
     status: 'active',
     startDate: 'Nov 1, 2022',
     permissionPackage: 'pkg-vp',
+    canApprove: false,
+    canRelease: false,
+    sensitiveAccess: 'partial',
+    riskFlags: ['Missing 2FA'],
+    accountability: { initiatives: 1, blockers: 0, approvalsPending: 0 },
+    coverageCategory: 'ops',
   },
   {
     id: 'ppl-007',
@@ -309,6 +353,12 @@ const PEOPLE: BizPerson[] = [
     status: 'active',
     startDate: 'Jan 10, 2023',
     permissionPackage: 'pkg-compliance',
+    canApprove: true,
+    canRelease: false,
+    sensitiveAccess: 'full',
+    riskFlags: [],
+    accountability: { initiatives: 0, blockers: 0, approvalsPending: 2 },
+    coverageCategory: 'compliance',
   },
   {
     id: 'ppl-008',
@@ -328,6 +378,12 @@ const PEOPLE: BizPerson[] = [
     status: 'active',
     startDate: 'Mar 20, 2023',
     permissionPackage: 'pkg-director',
+    canApprove: false,
+    canRelease: false,
+    sensitiveAccess: 'partial',
+    riskFlags: [],
+    accountability: { initiatives: 1, blockers: 0, approvalsPending: 0 },
+    coverageCategory: 'ops',
   },
   {
     id: 'ppl-009',
@@ -347,6 +403,12 @@ const PEOPLE: BizPerson[] = [
     status: 'on_leave',
     startDate: 'Jun 5, 2023',
     permissionPackage: 'pkg-director',
+    canApprove: false,
+    canRelease: false,
+    sensitiveAccess: 'partial',
+    riskFlags: ['Privileged but inactive'],
+    accountability: { initiatives: 0, blockers: 0, approvalsPending: 0 },
+    coverageCategory: 'finance',
   },
   {
     id: 'ppl-010',
@@ -366,6 +428,12 @@ const PEOPLE: BizPerson[] = [
     status: 'active',
     startDate: 'Aug 14, 2023',
     permissionPackage: 'pkg-director',
+    canApprove: false,
+    canRelease: false,
+    sensitiveAccess: 'none',
+    riskFlags: [],
+    accountability: { initiatives: 1, blockers: 0, approvalsPending: 0 },
+    coverageCategory: 'rails',
   },
 ];
 
@@ -865,3 +933,16 @@ export function getPersonById(id: string): BizPerson | undefined {
 export function getPackageById(id: string): PermissionPackage | undefined {
   return PERMISSION_PACKAGES.find((p) => p.id === id);
 }
+
+// =============================================================================
+// COVERAGE SCORES
+// =============================================================================
+
+export const COVERAGE_SCORES: Record<string, { filled: number; total: number }> = {
+  exec: { filled: 3, total: 3 },
+  finance: { filled: 2, total: 3 },
+  rails: { filled: 2, total: 2 },
+  compliance: { filled: 1, total: 2 },
+  ops: { filled: 4, total: 5 },
+  media: { filled: 1, total: 2 },
+};

@@ -1910,6 +1910,7 @@ export function CompFinanceV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.tabPillRow}
       >
         {COMP_FINANCE_TABS.map((tab) => {
@@ -1940,6 +1941,7 @@ export function CompFinanceV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.scopeChipRow}
       >
         {COMP_FINANCE_SCOPE_CHIPS.map((chip, index) => {

@@ -17,6 +17,7 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { useBusiness } from '@/context/business-context';
 import {
   BizCard,
   BizSubTabBar,
@@ -54,6 +55,99 @@ import type {
 } from '@/data/mock-biz-org-operations';
 
 const BP = BusinessPalette;
+
+// =============================================================================
+// VIEW TOGGLE
+// =============================================================================
+
+type InitiativeViewMode = 'board' | 'list' | 'timeline' | 'owners';
+
+const VIEW_MODE_OPTIONS: Array<{ id: InitiativeViewMode; label: string }> = [
+  { id: 'board', label: 'Board' },
+  { id: 'list', label: 'List' },
+  { id: 'timeline', label: 'Timeline' },
+  { id: 'owners', label: 'Owners' },
+];
+
+// =============================================================================
+// ENHANCED FILTER CHIPS
+// =============================================================================
+
+type OpsFilterChipId =
+  | 'needs_attention'
+  | 'blocked'
+  | 'decisions_needed'
+  | 'due_7d'
+  | 'at_risk'
+  | 'by_owner'
+  | 'by_type'
+  | 'completed';
+
+const OPS_FILTER_CHIPS: Array<{ id: OpsFilterChipId; label: string; icon: string; color: string }> = [
+  { id: 'needs_attention', label: 'Attention', icon: 'exclamationmark.triangle.fill', color: '#F59E0B' },
+  { id: 'blocked', label: 'Blocked', icon: 'xmark.octagon.fill', color: '#EF4444' },
+  { id: 'decisions_needed', label: 'Decisions', icon: 'hand.raised.fill', color: '#F97316' },
+  { id: 'due_7d', label: 'Due <7d', icon: 'clock.fill', color: '#3B82F6' },
+  { id: 'at_risk', label: 'At Risk', icon: 'exclamationmark.circle.fill', color: '#DC2626' },
+  { id: 'by_owner', label: 'By Owner', icon: 'person.fill', color: '#8B5CF6' },
+  { id: 'by_type', label: 'By Type', icon: 'tag.fill', color: '#06B6D4' },
+  { id: 'completed', label: 'Completed', icon: 'checkmark.circle.fill', color: '#22C55E' },
+];
+
+// =============================================================================
+// OPS FEED DATA
+// =============================================================================
+
+interface OpsFeedItem {
+  id: string;
+  type: 'initiative_moved' | 'blocker_created' | 'decision_approved' | 'deliverable_shipped';
+  title: string;
+  actor: string;
+  timestamp: string;
+  entityId: string;
+}
+
+const OPS_FEED_ITEMS: OpsFeedItem[] = [
+  { id: 'of-1', type: 'initiative_moved', title: 'Payment Rails Launch moved to "In Progress"', actor: 'Sammy Kalejaiye', timestamp: '2026-02-17 09:30', entityId: 'ent-kanext-holdco' },
+  { id: 'of-2', type: 'blocker_created', title: 'PCI-DSS recertification blocker created', actor: 'Maya Rodriguez', timestamp: '2026-02-16 14:00', entityId: 'ent-payment-processor' },
+  { id: 'of-3', type: 'decision_approved', title: 'Board approved Q1 budget allocation', actor: 'Jordan Blake', timestamp: '2026-02-15 11:00', entityId: 'ent-kanext-opsco' },
+  { id: 'of-4', type: 'deliverable_shipped', title: 'Investor deck v3 published to data room', actor: 'Liam Chen', timestamp: '2026-02-14 16:30', entityId: 'ent-kanext-holdco' },
+  { id: 'of-5', type: 'initiative_moved', title: 'Bank Charter App moved to "Under Review"', actor: 'Rachel Kim', timestamp: '2026-02-13 10:00', entityId: 'ent-target-bank' },
+  { id: 'of-6', type: 'blocker_created', title: 'Malta FA compliance deadline extension needed', actor: 'Rachel Kim', timestamp: '2026-02-12 15:00', entityId: 'ent-sliema-wanderers' },
+  { id: 'of-7', type: 'decision_approved', title: 'Approved secondary processor vendor selection', actor: 'Tom Bradley', timestamp: '2026-02-11 09:00', entityId: 'ent-payment-processor' },
+  { id: 'of-8', type: 'deliverable_shipped', title: 'SOC 2 prep audit report delivered', actor: 'Maya Rodriguez', timestamp: '2026-02-10 17:00', entityId: 'ent-kanext-opsco' },
+];
+
+function opsFeedTypeIcon(type: OpsFeedItem['type']): string {
+  switch (type) {
+    case 'initiative_moved': return 'arrow.right.circle.fill';
+    case 'blocker_created': return 'exclamationmark.triangle.fill';
+    case 'decision_approved': return 'checkmark.circle.fill';
+    case 'deliverable_shipped': return 'shippingbox.fill';
+  }
+}
+
+function opsFeedTypeColor(type: OpsFeedItem['type']): string {
+  switch (type) {
+    case 'initiative_moved': return '#3B82F6';
+    case 'blocker_created': return '#EF4444';
+    case 'decision_approved': return '#22C55E';
+    case 'deliverable_shipped': return '#8B5CF6';
+  }
+}
+
+function relativeTimestamp(timestamp: string): string {
+  const now = new Date('2026-02-18T12:00:00');
+  const then = new Date(timestamp);
+  const diffMs = now.getTime() - then.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  if (diffHours < 1) return 'Just now';
+  if (diffHours < 24) return `${diffHours}h ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays === 1) return '1d ago';
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return `${Math.floor(diffDays / 7)}w ago`;
+}
 
 // =============================================================================
 // PROPS
@@ -461,6 +555,9 @@ function TriageTab({
           <TriageCard key={item.id} item={item} colors={colors} onPress={() => {}} />
         ))
       )}
+
+      {/* Section 6: OPS FEED */}
+      <OpsFeedSection colors={colors} accentColor={accentColor} />
     </ScrollView>
   );
 }
@@ -480,7 +577,32 @@ function InitiativesTab({
   data: OpsInitiative[];
   onSelectInitiative: (initiative: OpsInitiative) => void;
 }) {
-  const renderItem = useCallback(
+  const [viewMode, setViewMode] = useState<InitiativeViewMode>('board');
+  const [activeFilters, setActiveFilters] = useState<Set<OpsFilterChipId>>(new Set(['needs_attention']));
+
+  const toggleFilter = useCallback((id: OpsFilterChipId) => {
+    setActiveFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }, []);
+
+  // Group initiatives by owner for "Owners" view
+  const groupedByOwner = useMemo(() => {
+    const map: Record<string, OpsInitiative[]> = {};
+    for (const item of data) {
+      if (!map[item.owner]) map[item.owner] = [];
+      map[item.owner].push(item);
+    }
+    return map;
+  }, [data]);
+
+  const renderBoardItem = useCallback(
     ({ item }: { item: OpsInitiative }) => {
       const stColor = INITIATIVE_STATUS_COLOR[item.status];
       const pColor = progressColor(item.progress);
@@ -524,6 +646,14 @@ function InitiativesTab({
             </View>
           </View>
 
+          {/* Linked Proof indicator */}
+          {(item as any).linkedProof && (
+            <View style={s.linkedProofChip}>
+              <IconSymbol name="link.circle.fill" size={11} color="#8B5CF6" />
+              <ThemedText style={s.linkedProofText}>Has Proof</ThemedText>
+            </View>
+          )}
+
           {/* Bottom row: entity + timeline */}
           <View style={[s.initiativeBottomRow, { borderTopColor: colors.border }]}>
             <EntityBadge name={item.entityName} />
@@ -537,17 +667,187 @@ function InitiativesTab({
     [colors, accentColor, onSelectInitiative],
   );
 
-  return (
-    <FlatList
-      data={data}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      contentContainerStyle={s.tabListContent}
-      showsVerticalScrollIndicator={false}
-      ListEmptyComponent={
+  // List view — compact rows
+  const renderListView = () => (
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabListContent}>
+      {data.map((item) => {
+        const stColor = INITIATIVE_STATUS_COLOR[item.status];
+        return (
+          <Pressable
+            key={item.id}
+            style={[s.listRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onSelectInitiative(item);
+            }}
+          >
+            <View style={[s.listRowDot, { backgroundColor: stColor }]} />
+            <ThemedText style={[s.listRowName, { color: colors.text }]} numberOfLines={1}>
+              {item.name}
+            </ThemedText>
+            <BizStatusChip label={initiativeStatusLabel(item.status)} variant={initiativeStatusVariant(item.status)} />
+            <ThemedText style={[s.listRowOwner, { color: colors.textTertiary }]} numberOfLines={1}>
+              {item.owner}
+            </ThemedText>
+            {(item as any).linkedProof && (
+              <View style={s.linkedProofChip}>
+                <IconSymbol name="link.circle.fill" size={10} color="#8B5CF6" />
+                <ThemedText style={s.linkedProofText}>Proof</ThemedText>
+              </View>
+            )}
+          </Pressable>
+        );
+      })}
+      {data.length === 0 && (
         <EmptyState icon="flag.fill" label="No initiatives found" colors={colors} />
-      }
-    />
+      )}
+    </ScrollView>
+  );
+
+  // Timeline view — shows Ops Feed
+  const renderTimelineView = () => (
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabListContent}>
+      <OpsFeedSection colors={colors} accentColor={accentColor} />
+    </ScrollView>
+  );
+
+  // Owners view — group by owner
+  const renderOwnersView = () => (
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabListContent}>
+      {Object.entries(groupedByOwner).map(([owner, items]) => (
+        <View key={owner} style={{ marginBottom: Spacing.md }}>
+          <View style={s.ownerGroupHeader}>
+            <View style={[s.taskAvatarCircle, { backgroundColor: accentColor + '20' }]}>
+              <ThemedText style={[s.taskAvatarText, { color: accentColor }]}>
+                {owner.charAt(0)}
+              </ThemedText>
+            </View>
+            <ThemedText style={[s.ownerGroupName, { color: colors.text }]}>{owner}</ThemedText>
+            <View style={[s.triageLaneCount, { backgroundColor: accentColor + '20' }]}>
+              <ThemedText style={[s.triageLaneCountText, { color: accentColor }]}>
+                {items.length}
+              </ThemedText>
+            </View>
+          </View>
+          {items.map((item) => {
+            const stColor = INITIATIVE_STATUS_COLOR[item.status];
+            return (
+              <Pressable
+                key={item.id}
+                style={[s.listRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onSelectInitiative(item);
+                }}
+              >
+                <View style={[s.listRowDot, { backgroundColor: stColor }]} />
+                <ThemedText style={[s.listRowName, { color: colors.text }]} numberOfLines={1}>
+                  {item.name}
+                </ThemedText>
+                <BizStatusChip label={initiativeStatusLabel(item.status)} variant={initiativeStatusVariant(item.status)} />
+                {(item as any).linkedProof && (
+                  <View style={s.linkedProofChip}>
+                    <IconSymbol name="link.circle.fill" size={10} color="#8B5CF6" />
+                    <ThemedText style={s.linkedProofText}>Proof</ThemedText>
+                  </View>
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
+      ))}
+      {data.length === 0 && (
+        <EmptyState icon="flag.fill" label="No initiatives found" colors={colors} />
+      )}
+    </ScrollView>
+  );
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* View Toggle Row */}
+      <View style={s.viewToggleRow}>
+        {VIEW_MODE_OPTIONS.map((opt) => {
+          const isActive = opt.id === viewMode;
+          return (
+            <Pressable
+              key={opt.id}
+              style={[
+                s.viewTogglePill,
+                isActive && [s.viewTogglePillActive, { backgroundColor: accentColor + '20', borderColor: accentColor + '40' }],
+              ]}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setViewMode(opt.id);
+              }}
+            >
+              <ThemedText
+                style={[
+                  s.viewTogglePillText,
+                  { color: isActive ? accentColor : BP.ash },
+                ]}
+              >
+                {opt.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {/* Enhanced Filter Chips */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
+        contentContainerStyle={s.taskFilterRow}
+      >
+        {OPS_FILTER_CHIPS.map((chip) => {
+          const isActive = activeFilters.has(chip.id);
+          return (
+            <Pressable
+              key={chip.id}
+              style={[
+                s.taskFilterPill,
+                {
+                  backgroundColor: isActive ? chip.color + '20' : BP.glass,
+                  borderColor: isActive ? chip.color + '40' : BP.graphite,
+                },
+              ]}
+              onPress={() => {
+                Haptics.selectionAsync();
+                toggleFilter(chip.id);
+              }}
+            >
+              <IconSymbol name={chip.icon as any} size={10} color={isActive ? chip.color : BP.ash} />
+              <ThemedText
+                style={[
+                  s.taskFilterText,
+                  { color: isActive ? chip.color : BP.ash },
+                ]}
+              >
+                {chip.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {/* View content */}
+      {viewMode === 'board' && (
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id}
+          renderItem={renderBoardItem}
+          contentContainerStyle={s.tabListContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <EmptyState icon="flag.fill" label="No initiatives found" colors={colors} />
+          }
+        />
+      )}
+      {viewMode === 'list' && renderListView()}
+      {viewMode === 'timeline' && renderTimelineView()}
+      {viewMode === 'owners' && renderOwnersView()}
+    </View>
   );
 }
 
@@ -735,6 +1035,7 @@ function TasksTab({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.taskFilterRow}
       >
         {TASK_PRIORITY_FILTERS.map((filter) => {
@@ -948,6 +1249,25 @@ function DecisionsTab({
             </View>
           )}
 
+          {/* Implementation Owner (if present) */}
+          {(item as any).implementationOwner && (
+            <View style={s.decisionProposedRow}>
+              <ThemedText style={[s.decisionProposedText, { color: colors.textSecondary }]}>
+                Implementation: {(item as any).implementationOwner}
+              </ThemedText>
+            </View>
+          )}
+
+          {/* Audit receipt note for finalized decisions */}
+          {(item.status === 'approved' || item.status === 'rejected') && hasReceipt && (
+            <View style={s.decisionReceipt}>
+              <IconSymbol name="doc.text.fill" size={11} color={BP.emerald} />
+              <ThemedText style={[s.decisionReceiptText, { color: BP.emerald }]}>
+                Audit note + receipt generated
+              </ThemedText>
+            </View>
+          )}
+
           {/* Bottom row: receipt badge + entity */}
           <View style={[s.decisionBottomRow, { borderTopColor: colors.border }]}>
             <EntityBadge name={item.entityName} />
@@ -983,6 +1303,63 @@ function DecisionsTab({
         <EmptyState icon="hand.raised.fill" label="No decisions found" colors={colors} />
       }
     />
+  );
+}
+
+// =============================================================================
+// OPS FEED SECTION — Structured Activity Log (Section 6)
+// =============================================================================
+
+function OpsFeedSection({
+  colors,
+  accentColor,
+}: {
+  colors: typeof Colors.light;
+  accentColor: string;
+}) {
+  return (
+    <View style={s.opsFeedSection}>
+      {/* Section header */}
+      <View style={s.triageLaneHeader}>
+        <View style={[s.triageLaneIconCircle, { backgroundColor: '#8B5CF6' + '18' }]}>
+          <IconSymbol name="list.bullet.rectangle.fill" size={14} color="#8B5CF6" />
+        </View>
+        <ThemedText style={[s.triageLaneTitle, { color: colors.text }]}>OPS FEED</ThemedText>
+        <View style={[s.triageLaneCount, { backgroundColor: '#8B5CF6' + '20' }]}>
+          <ThemedText style={[s.triageLaneCountText, { color: '#8B5CF6' }]}>
+            {OPS_FEED_ITEMS.length}
+          </ThemedText>
+        </View>
+      </View>
+
+      {/* Timeline items */}
+      {OPS_FEED_ITEMS.map((item, index) => {
+        const typeColor = opsFeedTypeColor(item.type);
+        const typeIcon = opsFeedTypeIcon(item.type);
+        const isLast = index === OPS_FEED_ITEMS.length - 1;
+        return (
+          <View key={item.id} style={s.opsFeedItem}>
+            {/* Dot + Line */}
+            <View style={s.opsFeedDotColumn}>
+              <View style={[s.opsFeedDot, { backgroundColor: typeColor }]}>
+                <IconSymbol name={typeIcon as any} size={10} color="#FFF" />
+              </View>
+              {!isLast && <View style={[s.opsFeedLine, { backgroundColor: typeColor + '30' }]} />}
+            </View>
+
+            {/* Content */}
+            <View style={s.opsFeedContent}>
+              <ThemedText style={[s.opsFeedTitle, { color: colors.text }]} numberOfLines={2}>
+                {item.title}
+              </ThemedText>
+              <ThemedText style={[s.opsFeedMeta, { color: colors.textTertiary }]}>
+                {item.actor} \u2022 {relativeTimestamp(item.timestamp)}
+              </ThemedText>
+            </View>
+          </View>
+        );
+      })}
+    </View>
   );
 }
 
@@ -1535,6 +1912,11 @@ function DecisionDetailSheet({
 // =============================================================================
 
 export function BizOrgOperationsV2({ colors, accentColor, role = 'B1' }: Props) {
+  // === Entity Scope (must be called before any early returns — hooks rules) ===
+  const { selectedEntityId } = useBusiness();
+  // TODO: Filter initiatives, projects, tasks, blockers, decisions, and ops feed
+  // by selectedEntityId when entity-scoped data layer is implemented.
+
   // === RBAC Gate: B3+ and B2a locked (operations are internal) ===
   if (!isBoardLevel(role)) {
     return <BizEmptyLock title="Operations" message="This section is restricted. Contact the Founder for access." />;
@@ -2460,5 +2842,159 @@ const s = StyleSheet.create({
   sheetGhostButtonText: {
     fontSize: 14,
     fontWeight: '600',
+  },
+
+  // ==========================================================================
+  // VIEW TOGGLE
+  // ==========================================================================
+  viewToggleRow: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.xs,
+    gap: Spacing.xs,
+  },
+  viewTogglePill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: BP.graphite,
+    backgroundColor: BP.glass,
+  },
+  viewTogglePillActive: {
+    borderWidth: 1,
+  },
+  viewTogglePillText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // ==========================================================================
+  // OPS FEED
+  // ==========================================================================
+  opsFeedSection: {
+    marginTop: Spacing.lg,
+    paddingBottom: Spacing.md,
+  },
+  opsFeedItem: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    minHeight: 52,
+  },
+  opsFeedDotColumn: {
+    alignItems: 'center',
+    width: 24,
+  },
+  opsFeedDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  opsFeedLine: {
+    width: 2,
+    flex: 1,
+    marginTop: 2,
+    marginBottom: 2,
+    borderRadius: 1,
+  },
+  opsFeedContent: {
+    flex: 1,
+    paddingBottom: Spacing.sm,
+  },
+  opsFeedTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    lineHeight: 18,
+    marginBottom: 2,
+  },
+  opsFeedMeta: {
+    fontSize: 11,
+  },
+
+  // ==========================================================================
+  // LINKED PROOF
+  // ==========================================================================
+  linkedProofChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#8B5CF6' + '15',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.full,
+    alignSelf: 'flex-start',
+    marginTop: 6,
+  },
+  linkedProofText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#8B5CF6',
+    letterSpacing: 0.3,
+  },
+
+  // ==========================================================================
+  // DECISION RECEIPT NOTE
+  // ==========================================================================
+  decisionReceipt: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: BP.emerald + '10',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: BorderRadius.md,
+    marginBottom: 8,
+    alignSelf: 'flex-start',
+  },
+  decisionReceiptText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+
+  // ==========================================================================
+  // LIST VIEW (compact initiative rows)
+  // ==========================================================================
+  listRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 10,
+    marginBottom: 6,
+  },
+  listRowDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  listRowName: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
+  },
+  listRowOwner: {
+    fontSize: 11,
+    maxWidth: 80,
+  },
+
+  // ==========================================================================
+  // OWNERS VIEW
+  // ==========================================================================
+  ownerGroupHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+    marginTop: Spacing.xs,
+  },
+  ownerGroupName: {
+    fontSize: 14,
+    fontWeight: '700',
+    flex: 1,
   },
 });

@@ -1946,6 +1946,7 @@ export function CompAssetsV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.tabPillRow}
       >
         {COMP_ASSETS_TABS.map((tab) => {
@@ -1976,6 +1977,7 @@ export function CompAssetsV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.scopeChipRow}
       >
         {COMP_ASSETS_SCOPE_CHIPS.map((chip, index) => {

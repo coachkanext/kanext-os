@@ -94,6 +94,51 @@ export function trafficLightLabel(value: TrafficLight): string {
 }
 
 // =============================================================================
+// ENTITY STATUS
+// =============================================================================
+
+export type EntityStatus =
+  | 'active'
+  | 'under_evaluation'
+  | 'negotiating'
+  | 'closed'
+  | 'dormant'
+  | 'flagged';
+
+export const ENTITY_STATUS_LABELS: Record<EntityStatus, string> = {
+  active: 'Active',
+  under_evaluation: 'Under Evaluation',
+  negotiating: 'Negotiating',
+  closed: 'Closed',
+  dormant: 'Dormant',
+  flagged: 'Flagged',
+};
+
+export const ENTITY_STATUS_COLORS: Record<EntityStatus, string> = {
+  active: '#22C55E',
+  under_evaluation: '#F59E0B',
+  negotiating: '#3B82F6',
+  closed: '#9CA3AF',
+  dormant: '#6B7280',
+  flagged: '#EF4444',
+};
+
+// =============================================================================
+// SNAPSHOT METRICS
+// =============================================================================
+
+export interface SnapshotMetrics {
+  moneyIn30d: number;
+  moneyOut30d: number;
+  exceptions: number;
+  docsComplete: number;
+  docsMissing: number;
+  peopleFilled: number;
+  peopleGaps: number;
+  activeDeals: number;
+}
+
+// =============================================================================
 // ENTITY TYPES
 // =============================================================================
 

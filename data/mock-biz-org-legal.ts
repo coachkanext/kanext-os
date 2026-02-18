@@ -36,6 +36,11 @@ export type AgreementStatus =
   | 'expired'
   | 'terminated';
 
+export interface LegalAgreementKeyTerm {
+  term: string;
+  value: string;
+}
+
 export interface LegalAgreement {
   id: string;
   title: string;
@@ -48,7 +53,10 @@ export interface LegalAgreement {
   expiryDate: string;
   value: string;
   summary: string;
+  keyTerms: LegalAgreementKeyTerm[];
 }
+
+export type AuthorityType = 'contract_signing' | 'spend_approval' | 'policy_signoff';
 
 export interface SignatureAuthority {
   id: string;
@@ -58,7 +66,10 @@ export interface SignatureAuthority {
   maxAmount: string;
   types: string[];
   linkedPersonId: string;
+  authorityTypes: AuthorityType[];
 }
+
+export type ObligationLinkageType = 'payment' | 'compliance' | 'deliverable' | 'renewal';
 
 export interface LegalObligation {
   id: string;
@@ -70,6 +81,7 @@ export interface LegalObligation {
   complianceImpact: string | null;
   status: 'pending' | 'met' | 'overdue' | 'waived';
   entityName: string;
+  linkageType: ObligationLinkageType;
 }
 
 export interface LegalTemplate {
@@ -227,6 +239,11 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2028-08-01',
     value: '$0',
     summary: 'Mutual NDA covering content strategy, revenue data, audience analytics, and partnership terms shared between KaNeXT and Valuetainment for co-branded media initiatives.',
+    keyTerms: [
+      { term: 'Confidentiality Period', value: '3 years from disclosure' },
+      { term: 'Governing Law', value: 'State of Delaware' },
+      { term: 'Permitted Disclosures', value: 'Employees, legal counsel, auditors' },
+    ],
   },
   {
     id: 'agr-002',
@@ -240,6 +257,12 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2028-06-15',
     value: '$480,000',
     summary: 'Master services agreement governing analytics platform deployment, scouting tools, and performance data integration for Sliema Wanderers FC across all departments.',
+    keyTerms: [
+      { term: 'Payment Terms', value: 'Net 30 quarterly invoicing' },
+      { term: 'Liability Cap', value: '12 months of fees paid' },
+      { term: 'Termination Notice', value: '90 days written notice' },
+      { term: 'Data Ownership', value: 'Club retains all player data' },
+    ],
   },
   {
     id: 'agr-003',
@@ -253,6 +276,11 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2026-06-30',
     value: '$2,400,000',
     summary: 'Internal SOW defining deliverables, milestones, and budget allocation for the KaNeXT OS platform build across mobile, web, and API layers. Phase 2 scope with 18-month timeline.',
+    keyTerms: [
+      { term: 'Milestone Count', value: '6 phases, quarterly delivery' },
+      { term: 'Acceptance Criteria', value: '5 business day review window' },
+      { term: 'Change Order Process', value: 'Written approval from CEO' },
+    ],
   },
   {
     id: 'agr-004',
@@ -266,6 +294,11 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2029-09-01',
     value: '$1,200,000',
     summary: 'Exclusive license from KaNeXT IP entity to OpsCo for use of all patented algorithms, trademarks, copyrights, and trade secrets in commercial product offerings.',
+    keyTerms: [
+      { term: 'License Scope', value: 'Exclusive, worldwide, all commercial products' },
+      { term: 'Royalty Rate', value: '8% of net revenue attributable to licensed IP' },
+      { term: 'IP Assignment', value: 'All derivative works assigned to IP entity' },
+    ],
   },
   {
     id: 'agr-005',
@@ -279,6 +312,12 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2027-12-31',
     value: '$250,000+/yr',
     summary: 'Standard executive employment agreement template covering base compensation, equity vesting schedule, non-compete clauses, IP assignment provisions, and severance terms.',
+    keyTerms: [
+      { term: 'Vesting Schedule', value: '4-year with 1-year cliff' },
+      { term: 'Non-Compete', value: '12 months post-termination' },
+      { term: 'Severance', value: '6 months base salary' },
+      { term: 'IP Assignment', value: 'All work product during employment' },
+    ],
   },
   {
     id: 'agr-006',
@@ -292,6 +331,12 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2028-12-31',
     value: '$18,500/mo',
     summary: 'Five-year commercial office lease for primary headquarters. Includes 12,000 sq ft of Class A office space with shared amenities, parking, and infrastructure.',
+    keyTerms: [
+      { term: 'Square Footage', value: '12,000 sq ft' },
+      { term: 'Annual Escalation', value: '3% per year' },
+      { term: 'CAM Charges', value: '$4.50/sq ft annually' },
+      { term: 'Early Termination', value: '6 months rent penalty' },
+    ],
   },
   {
     id: 'agr-007',
@@ -305,6 +350,11 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2027-11-01',
     value: '$500,000',
     summary: 'Banking partnership agreement establishing KaNeXT as a fintech partner for payment processing, ledger management, and embedded banking services via Sponsor Bank infrastructure.',
+    keyTerms: [
+      { term: 'Revenue Share', value: '15% of interchange fees' },
+      { term: 'Compliance Requirement', value: 'Annual BSA/AML audit' },
+      { term: 'Exclusivity', value: 'Non-exclusive, multi-partner permitted' },
+    ],
   },
   {
     id: 'agr-008',
@@ -318,6 +368,12 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2031-04-01',
     value: '$15,000,000',
     summary: 'Senior secured term loan facility for the acquisition of Target Bank. 5-year term with quarterly amortization and SOFR+325bps interest rate. Subject to OCC charter approval.',
+    keyTerms: [
+      { term: 'Interest Rate', value: 'SOFR + 325bps' },
+      { term: 'Amortization', value: 'Quarterly, 20-year schedule' },
+      { term: 'Collateral', value: 'All Target Bank assets' },
+      { term: 'Financial Covenants', value: 'Debt/EBITDA < 4.0x, Min liquidity $2M' },
+    ],
   },
   {
     id: 'agr-009',
@@ -331,6 +387,11 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2027-12-15',
     value: '$0',
     summary: 'One-way NDA protecting Target Bank confidential information during due diligence phase. Covers financial records, customer data, regulatory correspondence, and technology systems.',
+    keyTerms: [
+      { term: 'Direction', value: 'One-way (Target Bank disclosing)' },
+      { term: 'Confidentiality Period', value: '2 years from disclosure' },
+      { term: 'Permitted Use', value: 'Acquisition evaluation only' },
+    ],
   },
   {
     id: 'agr-010',
@@ -344,6 +405,12 @@ const AGREEMENTS: LegalAgreement[] = [
     expiryDate: '2027-07-31',
     value: '$600,000/yr',
     summary: 'Content co-production and revenue sharing agreement. 70/30 split favoring KaNeXT for platform-originated content, 60/40 for co-branded productions. Quarterly reconciliation.',
+    keyTerms: [
+      { term: 'Platform Content Split', value: '70/30 (KaNeXT favored)' },
+      { term: 'Co-Branded Split', value: '60/40 (KaNeXT favored)' },
+      { term: 'Reconciliation', value: 'Quarterly, within 15 business days' },
+      { term: 'Minimum Guarantee', value: '$150,000/quarter' },
+    ],
   },
 ];
 
@@ -360,6 +427,7 @@ const SIGNATURE_AUTHORITIES: SignatureAuthority[] = [
     maxAmount: 'Unlimited',
     types: ['All Agreement Types'],
     linkedPersonId: 'ppl-sammy-k',
+    authorityTypes: ['contract_signing', 'spend_approval', 'policy_signoff'],
   },
   {
     id: 'sig-002',
@@ -369,6 +437,7 @@ const SIGNATURE_AUTHORITIES: SignatureAuthority[] = [
     maxAmount: '$500,000',
     types: ['MSA', 'SOW', 'Lease', 'Loan', 'Partnership'],
     linkedPersonId: 'ppl-marcus-c',
+    authorityTypes: ['contract_signing', 'spend_approval'],
   },
   {
     id: 'sig-003',
@@ -378,6 +447,7 @@ const SIGNATURE_AUTHORITIES: SignatureAuthority[] = [
     maxAmount: '$250,000',
     types: ['NDA', 'MSA', 'SOW', 'Employment', 'License'],
     linkedPersonId: 'ppl-david-p',
+    authorityTypes: ['contract_signing', 'policy_signoff'],
   },
   {
     id: 'sig-004',
@@ -387,6 +457,7 @@ const SIGNATURE_AUTHORITIES: SignatureAuthority[] = [
     maxAmount: '$100,000',
     types: ['SOW', 'Lease', 'NDA'],
     linkedPersonId: 'ppl-aisha-o',
+    authorityTypes: ['contract_signing'],
   },
   {
     id: 'sig-005',
@@ -396,6 +467,7 @@ const SIGNATURE_AUTHORITIES: SignatureAuthority[] = [
     maxAmount: '$50,000',
     types: ['NDA', 'Employment'],
     linkedPersonId: 'ppl-rachel-k',
+    authorityTypes: ['contract_signing'],
   },
 ];
 
@@ -414,6 +486,7 @@ const OBLIGATIONS: LegalObligation[] = [
     complianceImpact: null,
     status: 'pending',
     entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
+    linkageType: 'payment',
   },
   {
     id: 'obl-002',
@@ -425,6 +498,7 @@ const OBLIGATIONS: LegalObligation[] = [
     complianceImpact: 'Club license suspension risk if not filed',
     status: 'overdue',
     entityName: SEEDED_ENTITY_NAMES[SLIEMA_WANDERERS],
+    linkageType: 'compliance',
   },
   {
     id: 'obl-003',
@@ -436,6 +510,7 @@ const OBLIGATIONS: LegalObligation[] = [
     complianceImpact: 'Charter application delayed if incomplete',
     status: 'pending',
     entityName: SEEDED_ENTITY_NAMES[TARGET_BANK],
+    linkageType: 'compliance',
   },
   {
     id: 'obl-004',
@@ -447,6 +522,7 @@ const OBLIGATIONS: LegalObligation[] = [
     complianceImpact: 'IP ownership gap if not executed',
     status: 'overdue',
     entityName: SEEDED_ENTITY_NAMES[KANEXT_IP],
+    linkageType: 'renewal',
   },
   {
     id: 'obl-005',
@@ -458,6 +534,7 @@ const OBLIGATIONS: LegalObligation[] = [
     complianceImpact: 'Partnership agreement breach risk',
     status: 'pending',
     entityName: SEEDED_ENTITY_NAMES[SPONSOR_BANK],
+    linkageType: 'compliance',
   },
   {
     id: 'obl-006',
@@ -469,6 +546,7 @@ const OBLIGATIONS: LegalObligation[] = [
     complianceImpact: null,
     status: 'pending',
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
+    linkageType: 'renewal',
   },
   {
     id: 'obl-007',
@@ -480,6 +558,7 @@ const OBLIGATIONS: LegalObligation[] = [
     complianceImpact: null,
     status: 'met',
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
+    linkageType: 'deliverable',
   },
   {
     id: 'obl-008',
@@ -491,6 +570,7 @@ const OBLIGATIONS: LegalObligation[] = [
     complianceImpact: null,
     status: 'met',
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
+    linkageType: 'payment',
   },
 ];
 

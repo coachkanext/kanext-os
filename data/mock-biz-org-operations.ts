@@ -38,6 +38,7 @@ export interface OpsInitiative {
   entityName: string;
   startDate: string;
   targetDate: string;
+  linkedProof: string | null;
 }
 
 export interface OpsProject {
@@ -89,6 +90,7 @@ export interface OpsDecision {
   receiptId?: string;
   entityName: string;
   linkedInitiativeId?: string;
+  implementationOwner: string;
 }
 
 export interface OpsSummaryTile {
@@ -241,6 +243,7 @@ const MOCK_INITIATIVES: OpsInitiative[] = [
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
     startDate: 'Nov 15, 2025',
     targetDate: 'Apr 30, 2026',
+    linkedProof: 'PCI DSS Level 1 certification report',
   },
   {
     id: 'init-2',
@@ -254,6 +257,7 @@ const MOCK_INITIATIVES: OpsInitiative[] = [
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
     startDate: 'Jan 10, 2026',
     targetDate: 'Jun 30, 2026',
+    linkedProof: 'Board-approved use-of-proceeds matrix v2',
   },
   {
     id: 'init-3',
@@ -267,6 +271,7 @@ const MOCK_INITIATIVES: OpsInitiative[] = [
     entityName: SEEDED_ENTITY_NAMES[SLIEMA_WANDERERS],
     startDate: 'Dec 1, 2025',
     targetDate: 'Sep 30, 2026',
+    linkedProof: null,
   },
   {
     id: 'init-4',
@@ -280,6 +285,7 @@ const MOCK_INITIATIVES: OpsInitiative[] = [
     entityName: SEEDED_ENTITY_NAMES[KANEXT_IP],
     startDate: 'Sep 1, 2025',
     targetDate: 'May 31, 2026',
+    linkedProof: 'TestFlight build v2.4.0 + App Store review screenshots',
   },
   {
     id: 'init-5',
@@ -293,6 +299,7 @@ const MOCK_INITIATIVES: OpsInitiative[] = [
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
     startDate: 'Jan 1, 2026',
     targetDate: 'Mar 31, 2026',
+    linkedProof: 'Signed LOIs and executed annual contracts',
   },
 ];
 
@@ -781,6 +788,7 @@ const MOCK_DECISIONS: OpsDecision[] = [
     date: 'Mar 3, 2026',
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
     linkedInitiativeId: 'init-2',
+    implementationOwner: 'Sammy Kalejaiye',
   },
   {
     id: 'dec-2',
@@ -793,6 +801,7 @@ const MOCK_DECISIONS: OpsDecision[] = [
     receiptId: 'rcpt-ops-1',
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
     linkedInitiativeId: 'init-1',
+    implementationOwner: 'Derek Novak',
   },
   {
     id: 'dec-3',
@@ -804,6 +813,7 @@ const MOCK_DECISIONS: OpsDecision[] = [
     date: 'Mar 1, 2026',
     entityName: SEEDED_ENTITY_NAMES[SLIEMA_WANDERERS],
     linkedInitiativeId: 'init-3',
+    implementationOwner: 'Derek Novak',
   },
   {
     id: 'dec-4',
@@ -816,6 +826,7 @@ const MOCK_DECISIONS: OpsDecision[] = [
     receiptId: 'rcpt-ops-2',
     entityName: SEEDED_ENTITY_NAMES[SLIEMA_WANDERERS],
     linkedInitiativeId: 'init-3',
+    implementationOwner: 'Legal Team',
   },
   {
     id: 'dec-5',
@@ -827,6 +838,87 @@ const MOCK_DECISIONS: OpsDecision[] = [
     date: 'Mar 2, 2026',
     entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
     linkedInitiativeId: 'init-5',
+    implementationOwner: 'Tony Reeves',
+  },
+];
+
+// =============================================================================
+// OPS FEED
+// =============================================================================
+
+export interface OpsFeedEvent {
+  id: string;
+  type: 'initiative_moved' | 'blocker_created' | 'decision_approved' | 'deliverable_shipped';
+  title: string;
+  actor: string;
+  timestamp: string;
+  entityId: string;
+}
+
+const MOCK_OPS_FEED: OpsFeedEvent[] = [
+  {
+    id: 'feed-1',
+    type: 'decision_approved',
+    title: 'QSA auditor switch to SecureWorks approved',
+    actor: 'Sammy Kalejaiye',
+    timestamp: '2026-02-15T14:30:00Z',
+    entityId: KANEXT_OPSCO,
+  },
+  {
+    id: 'feed-2',
+    type: 'blocker_created',
+    title: 'PCI QSA auditor availability delayed 3 weeks',
+    actor: 'Derek Novak',
+    timestamp: '2026-02-18T09:00:00Z',
+    entityId: KANEXT_OPSCO,
+  },
+  {
+    id: 'feed-3',
+    type: 'initiative_moved',
+    title: 'International Expansion (Malta) paused — UBO documentation issue',
+    actor: 'Derek Novak',
+    timestamp: '2026-02-20T11:15:00Z',
+    entityId: SLIEMA_WANDERERS,
+  },
+  {
+    id: 'feed-4',
+    type: 'decision_approved',
+    title: 'EU-based non-executive director hire approved for Malta entity',
+    actor: 'Sammy Kalejaiye',
+    timestamp: '2026-02-22T09:15:00Z',
+    entityId: SLIEMA_WANDERERS,
+  },
+  {
+    id: 'feed-5',
+    type: 'deliverable_shipped',
+    title: 'RBAC & Mode Switching project completed (100%)',
+    actor: 'Marcus Chen',
+    timestamp: '2026-02-28T16:00:00Z',
+    entityId: KANEXT_IP,
+  },
+  {
+    id: 'feed-6',
+    type: 'blocker_created',
+    title: 'Referral program revenue-share model awaiting legal sign-off',
+    actor: 'Tony Reeves',
+    timestamp: '2026-02-25T10:30:00Z',
+    entityId: VALUETAINMENT,
+  },
+  {
+    id: 'feed-7',
+    type: 'initiative_moved',
+    title: 'KaNeXT OS Platform Build reached 74% progress',
+    actor: 'Marcus Chen',
+    timestamp: '2026-03-01T08:00:00Z',
+    entityId: KANEXT_IP,
+  },
+  {
+    id: 'feed-8',
+    type: 'deliverable_shipped',
+    title: 'Product roadmap update shipped to board Slack channel',
+    actor: 'Sammy Kalejaiye',
+    timestamp: '2026-03-01T12:00:00Z',
+    entityId: KANEXT_IP,
   },
 ];
 
@@ -935,6 +1027,7 @@ export interface BizOpsV2Data {
   blockers: OpsBlocker[];
   decisions: OpsDecision[];
   receipts: BizReceipt[];
+  opsFeed: OpsFeedEvent[];
   triage: {
     criticalBlockers: TriageItem[];
     decisionsNeeded: TriageItem[];
@@ -952,6 +1045,7 @@ export function getBizOpsData(): BizOpsV2Data {
     blockers: MOCK_BLOCKERS,
     decisions: MOCK_DECISIONS,
     receipts: MOCK_RECEIPTS,
+    opsFeed: MOCK_OPS_FEED,
     triage: {
       criticalBlockers: buildTriageCriticalBlockers(),
       decisionsNeeded: buildTriageDecisionsNeeded(),

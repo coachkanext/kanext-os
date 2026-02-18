@@ -33,6 +33,7 @@ import {
 } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel } from '@/utils/business-rbac';
+import { useBusiness } from '@/context/business-context';
 import type {
   TrafficLight,
   CrossTabLink,
@@ -91,6 +92,75 @@ import type {
 } from '@/data/mock-biz-org-compliance';
 
 const BP = BusinessPalette;
+
+// =============================================================================
+// PAYMENT RAILS READINESS DATA
+// =============================================================================
+
+const RAILS_READINESS = {
+  score: 72,
+  label: 'On Track',
+  items: [
+    { label: 'KYC/AML Program', status: 'complete' as const },
+    { label: 'PCI-DSS Certification', status: 'in_progress' as const },
+    { label: 'BSA Compliance', status: 'pending' as const },
+    { label: 'Processor Agreement', status: 'complete' as const },
+    { label: 'Dispute Resolution SLA', status: 'complete' as const },
+  ],
+};
+
+const RAILS_STATUS_COLOR: Record<string, string> = {
+  complete: BP.emerald,
+  in_progress: BP.amber,
+  pending: BP.ash,
+};
+
+const RAILS_STATUS_LABEL: Record<string, string> = {
+  complete: 'Complete',
+  in_progress: 'In Progress',
+  pending: 'Pending',
+};
+
+// =============================================================================
+// NEXT 5 ACTIONS DATA
+// =============================================================================
+
+const NEXT_5_ACTIONS = [
+  { id: 'na-1', label: 'Complete PCI-DSS SAQ-D self-assessment', severity: 'high' as const, dueDate: 'Mar 31' },
+  { id: 'na-2', label: 'Submit Malta FA compliance docs', severity: 'high' as const, dueDate: 'OVERDUE' },
+  { id: 'na-3', label: 'File Delaware annual report', severity: 'medium' as const, dueDate: 'Mar 1' },
+  { id: 'na-4', label: 'Submit FinCEN BOI report', severity: 'medium' as const, dueDate: 'Mar 15' },
+  { id: 'na-5', label: 'Update CRA plan for bank charter', severity: 'low' as const, dueDate: 'Apr 30' },
+];
+
+const SEVERITY_BORDER_COLOR: Record<string, string> = {
+  high: BP.red,
+  medium: BP.amber,
+  low: BP.ash,
+};
+
+// =============================================================================
+// ATTESTATION STATUS DATA
+// =============================================================================
+
+const ATTESTATION_STATUS = [
+  { policyLabel: 'AML/KYC Policy', attestedCount: 8, requiredCount: 8, status: 'complete' as const },
+  { policyLabel: 'Data Privacy Policy', attestedCount: 6, requiredCount: 8, status: 'pending' as const },
+  { policyLabel: 'Acceptable Use Policy', attestedCount: 8, requiredCount: 8, status: 'complete' as const },
+  { policyLabel: 'Incident Response Plan', attestedCount: 3, requiredCount: 8, status: 'overdue' as const },
+];
+
+const ATTESTATION_COLOR: Record<string, string> = {
+  complete: BP.emerald,
+  pending: BP.amber,
+  overdue: BP.red,
+};
+
+const ATTESTATION_LABEL: Record<string, string> = {
+  complete: 'Complete',
+  pending: 'Pending',
+  overdue: 'Overdue',
+};
 
 // =============================================================================
 // PROPS
@@ -212,6 +282,10 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
   if (!isBoardLevel(role)) {
     return <BizEmptyLock title="Compliance" message="This section is restricted. Contact the Founder for access." />;
   }
+
+  // === Entity Scope ===
+  const { selectedEntityId } = useBusiness();
+  // TODO: Filter compliance data by selectedEntityId when backend wires up entity-scoped queries
 
   // === State ===
   const [activeTab, setActiveTab] = useState<ComplianceSubTabId>('overview');
@@ -433,6 +507,91 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={st.tabScroll}
       >
+        {/* Payment Rails Readiness */}
+        <View style={[st.readinessCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <ThemedText style={[st.sectionTitle, { color: colors.textSecondary }]}>
+            PAYMENT RAILS READINESS
+          </ThemedText>
+          <View style={st.readinessTopRow}>
+            <View style={[st.readinessScoreCircle, { borderColor: BP.amber }]}>
+              <ThemedText style={[st.readinessScoreText, { color: BP.amber }]}>
+                {RAILS_READINESS.score}%
+              </ThemedText>
+            </View>
+            <View style={{ flex: 1, gap: 2 }}>
+              <ThemedText style={[{ fontSize: 15, fontWeight: '700', color: colors.text }]}>
+                {RAILS_READINESS.label}
+              </ThemedText>
+              <ThemedText style={[{ fontSize: 12, color: colors.textSecondary }]}>
+                {RAILS_READINESS.items.filter((i) => i.status === 'complete').length} of {RAILS_READINESS.items.length} requirements met
+              </ThemedText>
+            </View>
+          </View>
+          {RAILS_READINESS.items.map((item, idx) => (
+            <View key={idx} style={st.readinessItemRow}>
+              <View
+                style={[
+                  st.readinessDot,
+                  { backgroundColor: RAILS_STATUS_COLOR[item.status] },
+                ]}
+              />
+              <ThemedText style={[st.readinessItemLabel, { color: colors.text }]}>
+                {item.label}
+              </ThemedText>
+              <ThemedText
+                style={[
+                  st.readinessItemStatus,
+                  { color: RAILS_STATUS_COLOR[item.status] },
+                ]}
+              >
+                {RAILS_STATUS_LABEL[item.status]}
+              </ThemedText>
+            </View>
+          ))}
+          <Pressable
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            style={({ pressed }) => [pressed && { opacity: 0.7 }]}
+          >
+            <ThemedText style={[st.readinessDeepLink, { color: BP.amber }]}>
+              Open Payment Rails →
+            </ThemedText>
+          </Pressable>
+        </View>
+
+        {/* Next 5 Actions */}
+        <View style={[st.next5Card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <ThemedText style={[st.sectionTitle, { color: colors.textSecondary }]}>
+            NEXT 5 ACTIONS
+          </ThemedText>
+          {NEXT_5_ACTIONS.map((action, idx) => (
+            <View
+              key={action.id}
+              style={[
+                st.nextActionRow,
+                { borderLeftColor: SEVERITY_BORDER_COLOR[action.severity] },
+              ]}
+            >
+              <ThemedText style={[st.nextActionNumber, { color: colors.textTertiary }]}>
+                {idx + 1}
+              </ThemedText>
+              <ThemedText style={[st.nextActionLabel, { color: colors.text }]} numberOfLines={2}>
+                {action.label}
+              </ThemedText>
+              <ThemedText
+                style={[
+                  st.nextActionDue,
+                  {
+                    color: action.dueDate === 'OVERDUE' ? BP.red : colors.textSecondary,
+                    fontWeight: action.dueDate === 'OVERDUE' ? '700' : '500',
+                  },
+                ]}
+              >
+                {action.dueDate}
+              </ThemedText>
+            </View>
+          ))}
+        </View>
+
         {/* Compliance Score */}
         <View style={[st.scoreCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <ThemedText style={[st.sectionTitle, { color: colors.textSecondary }]}>
@@ -668,6 +827,29 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                     </ThemedText>
                   </View>
                 </View>
+                {/* Attestation row — matched by policy name */}
+                {(() => {
+                  const att = ATTESTATION_STATUS.find((a) => a.policyLabel === item.name);
+                  if (!att) return null;
+                  const pct = att.requiredCount > 0 ? (att.attestedCount / att.requiredCount) * 100 : 0;
+                  const attColor = ATTESTATION_COLOR[att.status] ?? BP.ash;
+                  return (
+                    <View style={st.attestationRow}>
+                      <ThemedText style={[st.attestationLabel, { color: colors.textSecondary }]}>
+                        Attestation: {att.attestedCount}/{att.requiredCount}
+                      </ThemedText>
+                      <View style={[st.attestationBarBg, { backgroundColor: colors.backgroundTertiary }]}>
+                        <View
+                          style={[
+                            st.attestationBarFill,
+                            { width: `${pct}%`, backgroundColor: attColor },
+                          ]}
+                        />
+                      </View>
+                      <StatusBadge label={ATTESTATION_LABEL[att.status]} color={attColor} />
+                    </View>
+                  );
+                })()}
               </View>
             </View>
           </Pressable>
@@ -808,6 +990,14 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                     </View>
                   )}
                 </View>
+                {item.canBlockRails && (
+                  <View style={st.blockReleaseBadge}>
+                    <IconSymbol name="exclamationmark.octagon.fill" size={12} color="#FFF" />
+                    <ThemedText style={st.blockReleaseBadgeText}>
+                      CAN BLOCK RELEASE
+                    </ThemedText>
+                  </View>
+                )}
                 <View style={st.cardStatsRow}>
                   <View style={st.cardStat}>
                     <IconSymbol name="clock" size={12} color={colors.textTertiary} />
@@ -993,6 +1183,13 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
 
   // === Tab 7: Incidents ===
   const renderIncidents = () => (
+    <View style={{ flex: 1 }}>
+      <View style={st.immutabilityNote}>
+        <IconSymbol name="lock.fill" size={12} color={BP.ash} />
+        <ThemedText style={st.immutabilityNoteText}>
+          Closed incidents are append-only and cannot be modified
+        </ThemedText>
+      </View>
     <FlatList<ComplianceIncident>
       data={filteredIncidents}
       keyExtractor={(item) => item.id}
@@ -1093,6 +1290,7 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
         );
       }}
     />
+    </View>
   );
 
   // === Tab 8: Exceptions ===
@@ -2474,5 +2672,148 @@ const st = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     flex: 1,
+  },
+
+  // === Payment Rails Readiness ===
+  readinessCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
+  },
+  readinessTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  readinessScoreCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    borderWidth: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  readinessScoreText: {
+    fontSize: 18,
+    fontWeight: '800',
+    fontVariant: ['tabular-nums'],
+  },
+  readinessItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: 5,
+  },
+  readinessDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  readinessItemLabel: {
+    flex: 1,
+    fontSize: 13,
+  },
+  readinessItemStatus: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  readinessDeepLink: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginTop: Spacing.sm,
+  },
+
+  // === Next 5 Actions ===
+  next5Card: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
+  },
+  nextActionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: 8,
+    paddingLeft: Spacing.sm,
+    borderLeftWidth: 3,
+    marginBottom: 2,
+  },
+  nextActionNumber: {
+    fontSize: 13,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+    width: 18,
+    textAlign: 'center',
+  },
+  nextActionLabel: {
+    flex: 1,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  nextActionDue: {
+    fontSize: 11,
+    fontVariant: ['tabular-nums'],
+  },
+
+  // === Attestation ===
+  attestationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginTop: 6,
+    paddingTop: 6,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255,255,255,0.06)',
+  },
+  attestationLabel: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+  attestationBarBg: {
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  attestationBarFill: {
+    height: 4,
+    borderRadius: 2,
+  },
+
+  // === Block Release Badge ===
+  blockReleaseBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.sm,
+    alignSelf: 'flex-start',
+    marginTop: 4,
+  },
+  blockReleaseBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+    color: '#FFFFFF',
+  },
+
+  // === Immutability Note ===
+  immutabilityNote: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    marginBottom: Spacing.xs,
+  },
+  immutabilityNoteText: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    color: BP.ash,
   },
 });

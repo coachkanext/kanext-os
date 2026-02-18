@@ -119,6 +119,26 @@ export interface EntitySummary {
   status: 'on_track' | 'at_risk' | 'over_budget';
 }
 
+export interface FinanceTopDriver {
+  id: string;
+  label: string;
+  type: 'revenue' | 'obligation';
+  amount: number;
+  impact: 'high' | 'medium' | 'low';
+  dueDate?: string;
+}
+
+export interface FinanceApprovalQueueItem {
+  id: string;
+  label: string;
+  amount: number;
+  requester: string;
+  status: 'pending' | 'approved' | 'denied';
+  urgency: 'high' | 'medium' | 'low';
+}
+
+export type FinanceControlCategories = Record<string, number>;
+
 export interface BizFinanceV2Data {
   truthChips: FinanceTruthChip[];
   entitySummaries: EntitySummary[];
@@ -130,6 +150,9 @@ export interface BizFinanceV2Data {
   forecastBear: FinanceForecastMonth[];
   controls: FinanceControl[];
   auditTrail: FinanceAuditEntry[];
+  topDrivers: FinanceTopDriver[];
+  approvalQueue: FinanceApprovalQueueItem[];
+  controlCategories: FinanceControlCategories;
 }
 
 // =============================================================================
@@ -1062,6 +1085,109 @@ const AUDIT_TRAIL: FinanceAuditEntry[] = [
 ];
 
 // =============================================================================
+// TOP DRIVERS
+// =============================================================================
+
+const TOP_DRIVERS: FinanceTopDriver[] = [
+  {
+    id: 'td-001',
+    label: 'Stripe Subscription Revenue — Pro Plans',
+    type: 'revenue',
+    amount: 82000,
+    impact: 'high',
+  },
+  {
+    id: 'td-002',
+    label: 'Enterprise Plan — Acme Corp Quarterly',
+    type: 'revenue',
+    amount: 58000,
+    impact: 'high',
+  },
+  {
+    id: 'td-003',
+    label: 'Engineering Payroll — Biweekly Cycle',
+    type: 'obligation',
+    amount: 48000,
+    impact: 'high',
+    dueDate: 'Mar 1, 2026',
+  },
+  {
+    id: 'td-004',
+    label: 'Target Bank Due Diligence Retainer',
+    type: 'obligation',
+    amount: 75000,
+    impact: 'high',
+    dueDate: 'Jun 30, 2026',
+  },
+  {
+    id: 'td-005',
+    label: 'API Licensing Revenue — Partner Tier',
+    type: 'revenue',
+    amount: 12000,
+    impact: 'medium',
+  },
+  {
+    id: 'td-006',
+    label: 'Sliema Wanderers FC — Quarterly Sponsorship',
+    type: 'obligation',
+    amount: 18000,
+    impact: 'low',
+    dueDate: 'Mar 31, 2026',
+  },
+];
+
+// =============================================================================
+// APPROVAL QUEUE
+// =============================================================================
+
+const APPROVAL_QUEUE: FinanceApprovalQueueItem[] = [
+  {
+    id: 'aq-001',
+    label: 'GPU Cluster Upgrade — R&D Lab Equipment (NVIDIA)',
+    amount: 24000,
+    requester: 'Engineering — Sarah Lin',
+    status: 'pending',
+    urgency: 'high',
+  },
+  {
+    id: 'aq-002',
+    label: 'Consulting Engagement — Valuetainment Strategic Advisory',
+    amount: 24000,
+    requester: 'Operations — James Wilson',
+    status: 'pending',
+    urgency: 'medium',
+  },
+  {
+    id: 'aq-003',
+    label: 'Target Bank Due Diligence Retainer',
+    amount: 75000,
+    requester: 'M&A — Sammy Kalejaiye',
+    status: 'pending',
+    urgency: 'high',
+  },
+  {
+    id: 'aq-004',
+    label: 'SaaStr Annual Conference Travel Expenses',
+    amount: 7200,
+    requester: 'Operations — James Wilson',
+    status: 'denied',
+    urgency: 'low',
+  },
+];
+
+// =============================================================================
+// CONTROL CATEGORIES (blocked items per category)
+// =============================================================================
+
+const CONTROL_CATEGORIES: FinanceControlCategories = {
+  authority: 2,
+  budget: 1,
+  eligibility: 0,
+  compliance: 1,
+  technical: 0,
+};
+
+// =============================================================================
 // DATA ACCESSOR
 // =============================================================================
 
@@ -1077,5 +1203,8 @@ export function getBizFinanceV2Data(): BizFinanceV2Data {
     forecastBear: FORECAST_BEAR,
     controls: CONTROLS,
     auditTrail: AUDIT_TRAIL,
+    topDrivers: TOP_DRIVERS,
+    approvalQueue: APPROVAL_QUEUE,
+    controlCategories: CONTROL_CATEGORIES,
   };
 }

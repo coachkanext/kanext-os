@@ -67,6 +67,13 @@ export interface AssetOverviewStats {
   acquisitionPipeline: number;
 }
 
+export interface AssetHealthStrip {
+  maintenance: 'green' | 'yellow' | 'red';
+  insurance: 'green' | 'yellow' | 'red';
+  compliance: 'green' | 'yellow' | 'red';
+  payments: 'green' | 'yellow' | 'red';
+}
+
 export interface AssetItem {
   id: string;
   name: string;
@@ -78,6 +85,7 @@ export interface AssetItem {
   depreciation: string;
   acquiredDate: string;
   description: string;
+  healthStrip: AssetHealthStrip;
 }
 
 export interface AssetLocation {
@@ -144,15 +152,25 @@ export interface AssetDiligenceItem {
   linkedDocumentId: string | null;
 }
 
+export type RequestLifecycle = 'draft' | 'submitted' | 'approved' | 'routed_to_finance' | 'archived';
+
 export interface AssetRequest {
   id: string;
   title: string;
   type: 'purchase' | 'lease' | 'dispose';
   status: 'pending' | 'approved' | 'rejected';
+  requestLifecycle: RequestLifecycle;
   requestedBy: string;
   amount: number;
   entityName: string;
   date: string;
+}
+
+export interface DiligenceTemplate {
+  id: string;
+  name: string;
+  type: 'bank' | 'school' | 'real_estate' | 'vendor';
+  items: { label: string; done: boolean }[];
 }
 
 export interface AssetExportOption {
@@ -317,6 +335,7 @@ const ASSETS: AssetItem[] = [
     depreciation: 'N/A (leased)',
     acquiredDate: 'Jan 2024',
     description: 'Primary HQ — 5,200 sq ft open-plan office with 2 conference rooms, WeWork Century City.',
+    healthStrip: { maintenance: 'green', insurance: 'green', compliance: 'green', payments: 'green' },
   },
   {
     id: 'ast-2',
@@ -329,6 +348,7 @@ const ASSETS: AssetItem[] = [
     depreciation: 'N/A (leased)',
     acquiredDate: 'Jun 2025',
     description: 'Hot-desk co-working arrangement for UK operations — 12 desks, meeting pod.',
+    healthStrip: { maintenance: 'green', insurance: 'green', compliance: 'green', payments: 'yellow' },
   },
   {
     id: 'ast-3',
@@ -341,6 +361,7 @@ const ASSETS: AssetItem[] = [
     depreciation: 'N/A (leased)',
     acquiredDate: 'Mar 2026',
     description: 'Shared office space in Sliema — 4 desks, regulatory liaison point.',
+    healthStrip: { maintenance: 'yellow', insurance: 'yellow', compliance: 'red', payments: 'green' },
   },
   {
     id: 'ast-4',
@@ -353,6 +374,7 @@ const ASSETS: AssetItem[] = [
     depreciation: '20% declining balance',
     acquiredDate: 'May 2025',
     description: 'Executive fleet vehicle — assigned to CEO/GM for client meetings and travel.',
+    healthStrip: { maintenance: 'red', insurance: 'green', compliance: 'green', payments: 'green' },
   },
   {
     id: 'ast-5',
@@ -365,6 +387,7 @@ const ASSETS: AssetItem[] = [
     depreciation: '5-yr straight line',
     acquiredDate: 'Nov 2025',
     description: 'Primary compute rack hosting KaNeXT OS workloads — Data Center Rack A.',
+    healthStrip: { maintenance: 'yellow', insurance: 'green', compliance: 'green', payments: 'green' },
   },
   {
     id: 'ast-6',
@@ -377,6 +400,7 @@ const ASSETS: AssetItem[] = [
     depreciation: '5-yr straight line',
     acquiredDate: 'Jan 2026',
     description: 'Engineering team fleet — 16" M4 Pro, 36 GB RAM per unit.',
+    healthStrip: { maintenance: 'green', insurance: 'green', compliance: 'green', payments: 'green' },
   },
   {
     id: 'ast-7',
@@ -389,6 +413,7 @@ const ASSETS: AssetItem[] = [
     depreciation: 'Amortized over 7 yrs',
     acquiredDate: 'Feb 2023',
     description: 'Core SaaS platform — cross-mode operating system for sports, business, education, church, competition.',
+    healthStrip: { maintenance: 'green', insurance: 'green', compliance: 'green', payments: 'green' },
   },
   {
     id: 'ast-8',
@@ -401,6 +426,7 @@ const ASSETS: AssetItem[] = [
     depreciation: 'N/A',
     acquiredDate: 'Sep 2022',
     description: 'Domain portfolio: kanext.com, kanext.io, kanext.app — auto-renewed through 2028.',
+    healthStrip: { maintenance: 'green', insurance: 'yellow', compliance: 'green', payments: 'green' },
   },
   {
     id: 'ast-9',
@@ -413,6 +439,7 @@ const ASSETS: AssetItem[] = [
     depreciation: 'N/A',
     acquiredDate: 'Jan 2026',
     description: 'Short-term US Treasury allocation — matures Jun 30, 2026.',
+    healthStrip: { maintenance: 'green', insurance: 'green', compliance: 'green', payments: 'green' },
   },
   {
     id: 'ast-10',
@@ -425,6 +452,7 @@ const ASSETS: AssetItem[] = [
     depreciation: 'N/A (equity)',
     acquiredDate: 'Feb 2026',
     description: 'Strategic partnership stake in Sliema Wanderers FC — pending regulatory approval.',
+    healthStrip: { maintenance: 'green', insurance: 'yellow', compliance: 'red', payments: 'yellow' },
   },
 ];
 
@@ -817,6 +845,7 @@ const REQUESTS: AssetRequest[] = [
     title: 'Purchase 6x MacBook Pro M4 for new hires',
     type: 'purchase',
     status: 'pending',
+    requestLifecycle: 'submitted',
     requestedBy: 'Marcus Chen',
     amount: 21_000,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
@@ -827,6 +856,7 @@ const REQUESTS: AssetRequest[] = [
     title: 'Lease additional WeWork desks — London',
     type: 'lease',
     status: 'approved',
+    requestLifecycle: 'routed_to_finance',
     requestedBy: 'Olivia Park',
     amount: 4_200,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
@@ -837,6 +867,7 @@ const REQUESTS: AssetRequest[] = [
     title: 'Dispose retired Dell R750 server rack',
     type: 'dispose',
     status: 'pending',
+    requestLifecycle: 'draft',
     requestedBy: 'Jason Wu',
     amount: 0,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_IP],
@@ -847,6 +878,7 @@ const REQUESTS: AssetRequest[] = [
     title: 'Purchase standing desk fleet expansion (8 units)',
     type: 'purchase',
     status: 'rejected',
+    requestLifecycle: 'archived',
     requestedBy: 'Sarah Kim',
     amount: 9_600,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
@@ -918,6 +950,50 @@ const EXPORT_OPTIONS: AssetExportOption[] = [
 ];
 
 // =============================================================================
+// MOCK DATA — DILIGENCE TEMPLATES
+// =============================================================================
+
+const DILIGENCE_TEMPLATES: DiligenceTemplate[] = [
+  {
+    id: 'dtpl-1',
+    name: 'Bank Acquisition Diligence',
+    type: 'bank',
+    items: [
+      { label: 'Review 3-year audited financial statements', done: true },
+      { label: 'Analyze loan portfolio quality and loss reserves', done: true },
+      { label: 'FDIC / OCC regulatory compliance review', done: false },
+      { label: 'BSA / AML program assessment', done: false },
+      { label: 'Core banking system assessment', done: false },
+      { label: 'Capital adequacy and stress test results', done: false },
+    ],
+  },
+  {
+    id: 'dtpl-2',
+    name: 'Real Estate Acquisition Diligence',
+    type: 'real_estate',
+    items: [
+      { label: 'Title search and lien verification', done: true },
+      { label: 'Environmental Phase I assessment', done: true },
+      { label: 'Property condition / inspection report', done: false },
+      { label: 'Zoning and permitting compliance', done: true },
+      { label: 'Appraisal and market valuation', done: false },
+    ],
+  },
+  {
+    id: 'dtpl-3',
+    name: 'Vendor Onboarding Diligence',
+    type: 'vendor',
+    items: [
+      { label: 'Business registration and W-9 verification', done: true },
+      { label: 'Insurance certificate (COI) collection', done: true },
+      { label: 'Security questionnaire and SOC 2 review', done: true },
+      { label: 'Data processing agreement (DPA) signed', done: false },
+      { label: 'Financial stability check (D&B report)', done: false },
+    ],
+  },
+];
+
+// =============================================================================
 // DATA GETTER
 // =============================================================================
 
@@ -931,6 +1007,7 @@ export function getBizAssetsData() {
     insurance: INSURANCE,
     acquisitions: ACQUISITIONS,
     diligenceItems: DILIGENCE_ITEMS,
+    diligenceTemplates: DILIGENCE_TEMPLATES,
     requests: REQUESTS,
     exportOptions: EXPORT_OPTIONS,
   };

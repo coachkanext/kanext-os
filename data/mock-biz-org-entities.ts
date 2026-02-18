@@ -4,7 +4,7 @@
  * 8 seeded entities, ~50 requirements, ~25 activity events.
  */
 
-import type { BizEntityType, EntityHealth, CrossTabLink, TrafficLight } from '@/data/biz-org-shared-types';
+import type { BizEntityType, EntityHealth, CrossTabLink, TrafficLight, EntityStatus, SnapshotMetrics } from '@/data/biz-org-shared-types';
 import {
   KANEXT_HOLDCO,
   KANEXT_OPSCO,
@@ -27,11 +27,17 @@ export interface BizEntity {
   name: string;
   type: BizEntityType;
   status: 'active' | 'inactive' | 'pending' | 'dissolved';
+  entityStatus: EntityStatus;
   health: EntityHealth;
   parentId?: string;
   childIds: string[];
   nextAction: string;
+  nextRequiredAction: string;
   lastActivity: string;
+  owner: string;
+  lastUpdated: string;
+  pinnedDefault?: boolean;
+  snapshot: SnapshotMetrics;
   crossTabLinks: CrossTabLink[];
 }
 
@@ -65,6 +71,7 @@ const ENTITIES: BizEntity[] = [
     name: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
     type: SEEDED_ENTITY_TYPES[KANEXT_HOLDCO],
     status: 'active',
+    entityStatus: 'active',
     health: {
       governance: 'green',
       finance: 'green',
@@ -74,7 +81,12 @@ const ENTITIES: BizEntity[] = [
     parentId: undefined,
     childIds: [KANEXT_OPSCO, KANEXT_IP],
     nextAction: 'Annual compliance filing due Mar 15',
+    nextRequiredAction: 'File Delaware annual report by Mar 1 — compliance yellow',
     lastActivity: '2026-02-14',
+    owner: 'Sammy Kalejaiye',
+    lastUpdated: '2026-02-14',
+    pinnedDefault: true,
+    snapshot: { moneyIn30d: 285000, moneyOut30d: 142000, exceptions: 0, docsComplete: 12, docsMissing: 2, peopleFilled: 8, peopleGaps: 0, activeDeals: 1 },
     crossTabLinks: [
       { targetTab: 'compliance', targetSubTab: 'filings', targetId: 'cpl-holdco-annual', label: 'Annual Filing' },
       { targetTab: 'finance', targetSubTab: 'accounts', targetId: 'fin-holdco-opex', label: 'HoldCo Operating Account' },
@@ -87,6 +99,7 @@ const ENTITIES: BizEntity[] = [
     name: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
     type: SEEDED_ENTITY_TYPES[KANEXT_OPSCO],
     status: 'active',
+    entityStatus: 'active',
     health: {
       governance: 'green',
       finance: 'green',
@@ -96,7 +109,12 @@ const ENTITIES: BizEntity[] = [
     parentId: KANEXT_HOLDCO,
     childIds: [],
     nextAction: 'Q1 board package due Feb 28',
+    nextRequiredAction: 'Submit Q1 board package by Feb 28',
     lastActivity: '2026-02-15',
+    owner: 'Sammy Kalejaiye',
+    lastUpdated: '2026-02-15',
+    pinnedDefault: true,
+    snapshot: { moneyIn30d: 520000, moneyOut30d: 385000, exceptions: 0, docsComplete: 18, docsMissing: 0, peopleFilled: 28, peopleGaps: 2, activeDeals: 0 },
     crossTabLinks: [
       { targetTab: 'operations', targetSubTab: 'workflows', targetId: 'ops-opsco-onboard', label: 'Onboarding Workflow' },
       { targetTab: 'people', targetSubTab: 'roster', targetId: 'ppl-opsco-team', label: 'OpsCo Team Roster' },
@@ -109,6 +127,7 @@ const ENTITIES: BizEntity[] = [
     name: SEEDED_ENTITY_NAMES[KANEXT_IP],
     type: SEEDED_ENTITY_TYPES[KANEXT_IP],
     status: 'active',
+    entityStatus: 'active',
     health: {
       governance: 'yellow',
       finance: 'green',
@@ -118,7 +137,11 @@ const ENTITIES: BizEntity[] = [
     parentId: KANEXT_HOLDCO,
     childIds: [],
     nextAction: 'IP assignment review with counsel',
+    nextRequiredAction: 'Complete IP assignment for 2 new contractors — governance yellow',
     lastActivity: '2026-02-12',
+    owner: 'Rachel Kim',
+    lastUpdated: '2026-02-12',
+    snapshot: { moneyIn30d: 45000, moneyOut30d: 12000, exceptions: 0, docsComplete: 9, docsMissing: 2, peopleFilled: 3, peopleGaps: 0, activeDeals: 0 },
     crossTabLinks: [
       { targetTab: 'assets', targetSubTab: 'ip', targetId: 'ast-ip-portfolio', label: 'IP Portfolio' },
       { targetTab: 'legal', targetSubTab: 'ip', targetId: 'leg-ip-assign', label: 'IP Assignment Agreements' },
@@ -131,6 +154,7 @@ const ENTITIES: BizEntity[] = [
     name: SEEDED_ENTITY_NAMES[SPONSOR_BANK],
     type: SEEDED_ENTITY_TYPES[SPONSOR_BANK],
     status: 'active',
+    entityStatus: 'active',
     health: {
       governance: 'green',
       finance: 'green',
@@ -140,7 +164,11 @@ const ENTITIES: BizEntity[] = [
     parentId: undefined,
     childIds: [],
     nextAction: 'Quarterly partner review call',
+    nextRequiredAction: 'Schedule quarterly review call by Mar 15',
     lastActivity: '2026-02-10',
+    owner: 'Tom Bradley',
+    lastUpdated: '2026-02-10',
+    snapshot: { moneyIn30d: 0, moneyOut30d: 8500, exceptions: 0, docsComplete: 7, docsMissing: 0, peopleFilled: 2, peopleGaps: 0, activeDeals: 0 },
     crossTabLinks: [
       { targetTab: 'payment-rails', targetSubTab: 'banks', targetId: 'pr-sponsor-main', label: 'Sponsor Bank Rail Config' },
       { targetTab: 'finance', targetSubTab: 'accounts', targetId: 'fin-sponsor-acct', label: 'Sponsor Bank Accounts' },
@@ -152,6 +180,7 @@ const ENTITIES: BizEntity[] = [
     name: SEEDED_ENTITY_NAMES[PAYMENT_PROCESSOR],
     type: SEEDED_ENTITY_TYPES[PAYMENT_PROCESSOR],
     status: 'active',
+    entityStatus: 'active',
     health: {
       governance: 'green',
       finance: 'green',
@@ -161,7 +190,11 @@ const ENTITIES: BizEntity[] = [
     parentId: undefined,
     childIds: [],
     nextAction: 'PCI-DSS recertification by Mar 31',
+    nextRequiredAction: 'Complete PCI-DSS SAQ-D by Mar 31 — rails yellow',
     lastActivity: '2026-02-08',
+    owner: 'Maya Rodriguez',
+    lastUpdated: '2026-02-08',
+    snapshot: { moneyIn30d: 0, moneyOut30d: 24000, exceptions: 1, docsComplete: 5, docsMissing: 1, peopleFilled: 1, peopleGaps: 0, activeDeals: 0 },
     crossTabLinks: [
       { targetTab: 'payment-rails', targetSubTab: 'processors', targetId: 'pr-processor-main', label: 'Processor Configuration' },
       { targetTab: 'compliance', targetSubTab: 'certifications', targetId: 'cpl-pci-dss', label: 'PCI-DSS Certification' },
@@ -173,6 +206,7 @@ const ENTITIES: BizEntity[] = [
     name: SEEDED_ENTITY_NAMES[VALUETAINMENT],
     type: SEEDED_ENTITY_TYPES[VALUETAINMENT],
     status: 'active',
+    entityStatus: 'active',
     health: {
       governance: 'green',
       finance: 'yellow',
@@ -182,7 +216,11 @@ const ENTITIES: BizEntity[] = [
     parentId: undefined,
     childIds: [],
     nextAction: 'Revenue share reconciliation pending',
+    nextRequiredAction: 'Reconcile Q1 revenue share — finance yellow',
     lastActivity: '2026-02-07',
+    owner: 'Jordan Blake',
+    lastUpdated: '2026-02-07',
+    snapshot: { moneyIn30d: 142000, moneyOut30d: 99400, exceptions: 0, docsComplete: 6, docsMissing: 1, peopleFilled: 2, peopleGaps: 0, activeDeals: 0 },
     crossTabLinks: [
       { targetTab: 'finance', targetSubTab: 'revenue', targetId: 'fin-vtm-revshare', label: 'Revenue Share Ledger' },
       { targetTab: 'legal', targetSubTab: 'contracts', targetId: 'leg-vtm-agreement', label: 'Partnership Agreement' },
@@ -194,6 +232,7 @@ const ENTITIES: BizEntity[] = [
     name: SEEDED_ENTITY_NAMES[SLIEMA_WANDERERS],
     type: SEEDED_ENTITY_TYPES[SLIEMA_WANDERERS],
     status: 'active',
+    entityStatus: 'flagged',
     health: {
       governance: 'green',
       finance: 'green',
@@ -203,7 +242,11 @@ const ENTITIES: BizEntity[] = [
     parentId: undefined,
     childIds: [],
     nextAction: 'Malta FA compliance docs overdue',
+    nextRequiredAction: 'Submit Malta FA licensing docs — OVERDUE since Jan 31 — compliance red',
     lastActivity: '2026-02-05',
+    owner: 'Rachel Kim',
+    lastUpdated: '2026-02-05',
+    snapshot: { moneyIn30d: 15000, moneyOut30d: 68000, exceptions: 2, docsComplete: 4, docsMissing: 3, peopleFilled: 4, peopleGaps: 1, activeDeals: 0 },
     crossTabLinks: [
       { targetTab: 'compliance', targetSubTab: 'international', targetId: 'cpl-malta-fa', label: 'Malta FA Filing' },
       { targetTab: 'legal', targetSubTab: 'contracts', targetId: 'leg-sliema-opa', label: 'Operating Agreement' },
@@ -216,6 +259,7 @@ const ENTITIES: BizEntity[] = [
     name: SEEDED_ENTITY_NAMES[TARGET_BANK],
     type: SEEDED_ENTITY_TYPES[TARGET_BANK],
     status: 'pending',
+    entityStatus: 'under_evaluation',
     health: {
       governance: 'red',
       finance: 'yellow',
@@ -225,7 +269,11 @@ const ENTITIES: BizEntity[] = [
     parentId: undefined,
     childIds: [],
     nextAction: 'OCC charter approval pending',
+    nextRequiredAction: 'Await OCC charter approval — governance & rails red, finance & compliance yellow',
     lastActivity: '2026-02-16',
+    owner: 'Sammy Kalejaiye',
+    lastUpdated: '2026-02-16',
+    snapshot: { moneyIn30d: 0, moneyOut30d: 75000, exceptions: 3, docsComplete: 3, docsMissing: 5, peopleFilled: 2, peopleGaps: 4, activeDeals: 1 },
     crossTabLinks: [
       { targetTab: 'compliance', targetSubTab: 'regulators', targetId: 'cpl-occ-charter', label: 'OCC Charter App' },
       { targetTab: 'finance', targetSubTab: 'fundraising', targetId: 'fin-target-capplan', label: 'Capital Plan' },

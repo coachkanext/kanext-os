@@ -3,7 +3,8 @@
  * Template-based room system with immutable receipts, decisions, artifacts,
  * members, and timeline events.
  *
- * Sub-tabs: Active Rooms | Templates | Archive
+ * Filter chips: All | Active | My Rooms | Board-visible | Investor-visible | Restricted | Needs Attention | by Type
+ * View modes: Cards (default) | List (dense)
  * Room Detail Sheet: Overview | Work | Artifacts | Decisions | Receipts | People | Timeline
  */
 import React, { useState, useMemo, useCallback } from 'react';
@@ -24,6 +25,7 @@ import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/them
 import { BizCard, BizSubTabBar, BizStatusChip, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel } from '@/utils/business-rbac';
+import { useBusiness } from '@/context/business-context';
 import type { BizReceipt, CrossTabLink } from '@/data/biz-org-shared-types';
 import { KANEXT_HOLDCO, KANEXT_OPSCO, SEEDED_ENTITY_NAMES } from '@/data/biz-org-shared-types';
 import {
@@ -62,13 +64,20 @@ interface Props {
 // CONSTANTS
 // =============================================================================
 
-const SUB_TABS = [
-  { id: 'active', label: 'Active Rooms' },
-  { id: 'templates', label: 'Templates' },
-  { id: 'archive', label: 'Archive' },
-];
+// --- Filter chip definitions ---
+const FILTER_CHIPS = [
+  { id: 'all', label: 'All' },
+  { id: 'active', label: 'Active' },
+  { id: 'my_rooms', label: 'My Rooms' },
+  { id: 'board', label: 'Board' },
+  { id: 'investor', label: 'Investor' },
+  { id: 'restricted', label: 'Restricted' },
+  { id: 'needs_attention', label: 'Attention' },
+  { id: 'by_type', label: 'by Type' },
+] as const;
 
-type SubTabId = 'active' | 'templates' | 'archive';
+type FilterChipId = (typeof FILTER_CHIPS)[number]['id'];
+type ViewMode = 'cards' | 'list';
 
 const DETAIL_TABS = [
   { id: 'overview', label: 'Overview' },
@@ -182,6 +191,55 @@ function receiptTypeLabel(type: BizReceipt['type']): string {
   }
 }
 
+// --- Visibility helpers ---
+function visibilityLabel(v?: BizRoom['visibility']): string {
+  switch (v) {
+    case 'board': return 'Board';
+    case 'investor': return 'Investor';
+    case 'public': return 'Public';
+    case 'internal':
+    default:
+      return 'Internal';
+  }
+}
+
+function visibilityColor(v?: BizRoom['visibility']): string {
+  switch (v) {
+    case 'board': return '#8B5CF6';
+    case 'investor': return '#14B8A6';
+    case 'public': return '#3B82F6';
+    case 'internal':
+    default:
+      return BP.ash;
+  }
+}
+
+// --- Filter logic ---
+function applyFilter(rooms: BizRoom[], filter: FilterChipId): BizRoom[] {
+  switch (filter) {
+    case 'all':
+      return rooms;
+    case 'active':
+      return rooms.filter((r) => r.status === 'active');
+    case 'my_rooms':
+      // TODO: filter by current user membership once auth identity is wired
+      return rooms;
+    case 'board':
+      return rooms.filter((r) => r.visibility === 'board');
+    case 'investor':
+      return rooms.filter((r) => r.visibility === 'investor');
+    case 'restricted':
+      return rooms.filter((r) => r.visibility === 'internal');
+    case 'needs_attention':
+      return rooms.filter((r) => r.openItems > 0);
+    case 'by_type':
+      // When "by Type" is selected, return all — the caller groups by template
+      return rooms;
+    default:
+      return rooms;
+  }
+}
+
 // =============================================================================
 // EMPTY STATE
 // =============================================================================
@@ -218,6 +276,53 @@ function StatusBadge({ status }: { status: BizRoom['status'] }) {
     <View style={[st.statusBadge, { backgroundColor: color + '18' }]}>
       <View style={[st.statusDot, { backgroundColor: color }]} />
       <ThemedText style={[st.statusBadgeText, { color }]}>{statusLabel(status)}</ThemedText>
+    </View>
+  );
+}
+
+// =============================================================================
+// ROOM HEALTH STRIP — 4 mini indicators (tasks / blockers / decisions / updates)
+// =============================================================================
+
+function RoomHealthStrip({ room }: { room: BizRoom }) {
+  const tasks = room.checklist?.length ?? 0;
+  const done = room.checklist?.filter((c) => c.done).length ?? 0;
+  const blockers = room.openItems;
+  const decisions = room.decisions?.length ?? 0;
+  const updates = room.timeline?.length ?? 0;
+
+  const items: { icon: string; label: string; value: number; color: string }[] = [
+    { icon: 'checklist', label: 'Tasks', value: tasks > 0 ? done : 0, color: '#22C55E' },
+    { icon: 'exclamationmark.triangle.fill', label: 'Blockers', value: blockers, color: blockers > 0 ? '#F59E0B' : BP.ash },
+    { icon: 'list.bullet.clipboard.fill', label: 'Decisions', value: decisions, color: '#8B5CF6' },
+    { icon: 'bell.fill', label: 'Updates', value: updates, color: '#3B82F6' },
+  ];
+
+  return (
+    <View style={st.roomHealthStrip}>
+      {items.map((item) => (
+        <View key={item.label} style={st.healthIndicator}>
+          <IconSymbol name={item.icon as any} size={10} color={item.color} />
+          <ThemedText style={[st.healthIndicatorText, { color: item.color }]}>
+            {item.value}
+          </ThemedText>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+// =============================================================================
+// ACCESS BADGE — small badge showing room visibility level
+// =============================================================================
+
+function AccessBadge({ visibility }: { visibility?: BizRoom['visibility'] }) {
+  const label = visibilityLabel(visibility);
+  const color = visibilityColor(visibility);
+  return (
+    <View style={[st.roomAccessBadge, { backgroundColor: color + '15', borderColor: color + '30' }]}>
+      <IconSymbol name="lock.shield.fill" size={9} color={color} />
+      <ThemedText style={[st.roomAccessBadgeText, { color }]}>{label}</ThemedText>
     </View>
   );
 }
@@ -301,10 +406,11 @@ function ActiveRoomsTab({
                 onSelectRoom(item);
               }}
             >
-              {/* Template badge row */}
+              {/* Template badge + status + access badge row */}
               <View style={st.cardBadgeRow}>
                 <TemplateBadge template={item.template} />
                 <StatusBadge status={item.status} />
+                <AccessBadge visibility={item.visibility} />
               </View>
 
               {/* Room name */}
@@ -316,6 +422,14 @@ function ActiveRoomsTab({
               <ThemedText style={[st.cardEntity, { color: BP.ash }]} numberOfLines={1}>
                 {item.entityName}
               </ThemedText>
+
+              {/* Next action line */}
+              <ThemedText style={[st.roomNextAction, { color: BP.platinum }]} numberOfLines={1}>
+                {item.nextAction ?? item.description ?? ''}
+              </ThemedText>
+
+              {/* Health strip — tasks / blockers / decisions / updates */}
+              <RoomHealthStrip room={item} />
 
               {/* Metrics row */}
               <View style={[st.cardMetricsRow, { borderTopColor: BP.graphite }]}>
@@ -906,6 +1020,7 @@ function RoomDetailSheet({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={st.detailTabRow}
       >
         {DETAIL_TABS.map((tab) => {
@@ -953,10 +1068,15 @@ export function BizOrgRoomsV2({ colors, accentColor, role = 'B1' }: Props) {
     return <BizEmptyLock title="Rooms" message="This section is restricted. Contact the Founder for access." />;
   }
 
+  // --- Entity scope integration ---
+  const { selectedEntityId } = useBusiness();
+  // TODO: Apply entity filtering — when selectedEntityId changes, filter
+  // allRooms by room.entityId === selectedEntityId (or show all if holdco-level)
+
   // --- State ---
-  const [activeSubTab, setActiveSubTab] = useState<SubTabId>('active');
-  const [activeSearchQuery, setActiveSearchQuery] = useState('');
-  const [archiveSearchQuery, setArchiveSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState<FilterChipId>('all');
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedRoom, setSelectedRoom] = useState<BizRoom | null>(null);
   const [showRoomDetail, setShowRoomDetail] = useState(false);
 
@@ -965,13 +1085,34 @@ export function BizOrgRoomsV2({ colors, accentColor, role = 'B1' }: Props) {
 
   // --- Data ---
   const allRooms = useMemo(() => getBizRoomsData(), []);
-  const activeRooms = useMemo(() => allRooms.filter((r) => r.status === 'active' || r.status === 'paused'), [allRooms]);
-  const archivedRooms = useMemo(() => allRooms.filter((r) => r.status === 'archived'), [allRooms]);
+
+  // Apply filter chip + search query
+  const filteredRooms = useMemo(() => {
+    let rooms = applyFilter(allRooms, activeFilter);
+
+    // Search within filtered results
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      rooms = rooms.filter(
+        (r) =>
+          r.name.toLowerCase().includes(q) ||
+          r.entityName.toLowerCase().includes(q) ||
+          templateLabel(r.template).toLowerCase().includes(q),
+      );
+    }
+
+    return rooms;
+  }, [allRooms, activeFilter, searchQuery]);
 
   // --- Callbacks ---
-  const handleSubTabChange = useCallback((id: string) => {
+  const handleFilterChange = useCallback((id: FilterChipId) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setActiveSubTab(id as SubTabId);
+    setActiveFilter(id);
+  }, []);
+
+  const handleViewModeChange = useCallback((mode: ViewMode) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setViewMode(mode);
   }, []);
 
   const handleSelectRoom = useCallback((room: BizRoom) => {
@@ -983,48 +1124,138 @@ export function BizOrgRoomsV2({ colors, accentColor, role = 'B1' }: Props) {
     setShowRoomDetail(false);
   }, []);
 
-  // --- Sub-tab content ---
-  const renderSubTabContent = () => {
-    switch (activeSubTab) {
-      case 'active':
-        return (
-          <ActiveRoomsTab
-            rooms={activeRooms}
-            onSelectRoom={handleSelectRoom}
-            searchQuery={activeSearchQuery}
-            onSearchChange={setActiveSearchQuery}
-            isWide={isWide}
-          />
-        );
-      case 'templates':
-        return <TemplatesTab />;
-      case 'archive':
-        return (
-          <ArchiveTab
-            rooms={archivedRooms}
-            onSelectRoom={handleSelectRoom}
-            searchQuery={archiveSearchQuery}
-            onSearchChange={setArchiveSearchQuery}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  // --- List view row renderer ---
+  const renderListRow = useCallback(({ item }: { item: BizRoom }) => (
+    <Pressable
+      style={[st.listRow, { borderBottomColor: BP.graphite }]}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        handleSelectRoom(item);
+      }}
+    >
+      <ThemedText style={[st.listRowName, { color: BP.smoke }]} numberOfLines={1}>
+        {item.name}
+      </ThemedText>
+      <View style={[st.listRowStatusWrap]}>
+        <View style={[st.statusDot, { backgroundColor: ROOM_STATUS_COLORS[item.status] }]} />
+        <ThemedText style={[st.listRowStatus, { color: BP.ash }]}>
+          {statusLabel(item.status)}
+        </ThemedText>
+      </View>
+      <ThemedText style={[st.listRowAction, { color: BP.platinum }]} numberOfLines={1}>
+        {item.nextAction ?? item.description ?? ''}
+      </ThemedText>
+    </Pressable>
+  ), [handleSelectRoom]);
 
   // --- Render ---
   return (
     <View style={st.container}>
-      {/* Sub-tab bar */}
-      <BizSubTabBar
-        tabs={SUB_TABS}
-        activeId={activeSubTab}
-        onSelect={handleSubTabChange}
-      />
+      {/* Filter chips row */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
+        contentContainerStyle={st.filterChipRow}
+      >
+        {FILTER_CHIPS.map((chip) => {
+          const isActive = chip.id === activeFilter;
+          return (
+            <Pressable
+              key={chip.id}
+              style={[
+                st.filterChip,
+                isActive && st.filterChipActive,
+              ]}
+              onPress={() => handleFilterChange(chip.id)}
+            >
+              <ThemedText
+                style={[
+                  st.filterChipText,
+                  { color: isActive ? BP.smoke : BP.ash },
+                ]}
+              >
+                {chip.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
 
-      {/* Tab content */}
+      {/* View toggle + count row */}
+      <View style={st.viewToggleRow}>
+        <ThemedText style={[st.countText, { color: BP.ash }]}>
+          {filteredRooms.length} room{filteredRooms.length !== 1 ? 's' : ''}
+        </ThemedText>
+        <View style={{ flexDirection: 'row', gap: 4 }}>
+          <Pressable
+            style={[st.viewToggleBtn, viewMode === 'cards' && st.viewToggleBtnActive]}
+            onPress={() => handleViewModeChange('cards')}
+          >
+            <IconSymbol
+              name="square.grid.2x2.fill"
+              size={14}
+              color={viewMode === 'cards' ? BP.smoke : BP.ash}
+            />
+          </Pressable>
+          <Pressable
+            style={[st.viewToggleBtn, viewMode === 'list' && st.viewToggleBtnActive]}
+            onPress={() => handleViewModeChange('list')}
+          >
+            <IconSymbol
+              name="list.bullet"
+              size={14}
+              color={viewMode === 'list' ? BP.smoke : BP.ash}
+            />
+          </Pressable>
+        </View>
+      </View>
+
+      {/* Content area */}
       <View style={st.contentContainer}>
-        {renderSubTabContent()}
+        {viewMode === 'cards' ? (
+          <ActiveRoomsTab
+            rooms={filteredRooms}
+            onSelectRoom={handleSelectRoom}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            isWide={isWide}
+          />
+        ) : (
+          /* List (dense) view */
+          <View style={st.tabContent}>
+            {/* Search */}
+            <View style={st.searchContainer}>
+              <View style={[st.searchBar, { backgroundColor: BP.carbon, borderColor: BP.graphite }]}>
+                <IconSymbol name="magnifyingglass" size={16} color={BP.ash} />
+                <TextInput
+                  style={[st.searchInput, { color: BP.smoke }]}
+                  placeholder="Search rooms..."
+                  placeholderTextColor={BP.ash}
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                />
+                {searchQuery.length > 0 && (
+                  <Pressable onPress={() => setSearchQuery('')} hitSlop={8}>
+                    <IconSymbol name="xmark.circle.fill" size={16} color={BP.ash} />
+                  </Pressable>
+                )}
+              </View>
+            </View>
+
+            {filteredRooms.length === 0 ? (
+              <EmptyState icon="rectangle.stack.fill" label="No rooms match this filter" />
+            ) : (
+              <FlatList
+                data={filteredRooms}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={st.cardListContent}
+                showsVerticalScrollIndicator={false}
+                renderItem={renderListRow}
+              />
+            )}
+          </View>
+        )}
       </View>
 
       {/* Room Detail Sheet */}
@@ -1622,5 +1853,122 @@ const st = StyleSheet.create({
   timelineMeta: {
     fontSize: 11,
     lineHeight: 16,
+  },
+
+  // --- Filter Chips ---
+  filterChipRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+  },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    backgroundColor: BP.glass,
+    borderWidth: 1,
+    borderColor: BP.graphite,
+  },
+  filterChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  filterChipActive: {
+    backgroundColor: BP.champagneGold + '20',
+    borderColor: BP.champagneGold + '40',
+  },
+
+  // --- View Toggle ---
+  viewToggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm,
+  },
+  viewToggleBtn: {
+    width: 30,
+    height: 28,
+    borderRadius: BorderRadius.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: BP.glass,
+    borderWidth: 1,
+    borderColor: BP.graphite,
+  },
+  viewToggleBtnActive: {
+    backgroundColor: BP.champagneGold + '18',
+    borderColor: BP.champagneGold + '35',
+  },
+
+  // --- Room Health Strip ---
+  roomHealthStrip: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+    paddingVertical: 6,
+  },
+  healthIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  healthIndicatorText: {
+    fontSize: 10,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+
+  // --- Room Access Badge ---
+  roomAccessBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  roomAccessBadgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+
+  // --- Room Next Action ---
+  roomNextAction: {
+    fontSize: 12,
+    lineHeight: 16,
+    marginBottom: 2,
+  },
+
+  // --- List View (dense) ---
+  listRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: Spacing.md,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: Spacing.sm,
+  },
+  listRowName: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  listRowStatusWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    minWidth: 60,
+  },
+  listRowStatus: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  listRowAction: {
+    flex: 1,
+    fontSize: 11,
+    textAlign: 'right',
   },
 });

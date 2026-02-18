@@ -29,6 +29,7 @@ import {
 } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel, isInvestor } from '@/utils/business-rbac';
+import { useBusiness } from '@/context/business-context';
 import {
   BIZ_TXN_STATE_LABELS,
   BIZ_TXN_STATE_COLORS,
@@ -63,6 +64,47 @@ import type {
 } from '@/data/mock-biz-org-finance';
 
 const BP = BusinessPalette;
+
+// =============================================================================
+// INLINE DATA — Financial Health, Drivers, Approvals
+// =============================================================================
+
+const FINANCE_HEALTH = {
+  cashPosition: 2_400_000,
+  monthlyBurn: 185_000,
+  runway: 13,
+  burnTrend: 'stable' as const, // 'increasing' | 'stable' | 'decreasing'
+};
+
+const TOP_DRIVERS = [
+  { id: 'td-1', label: 'SaaS subscription revenue', type: 'revenue' as const, amount: 520_000, impact: 'high' as const },
+  { id: 'td-2', label: 'Payroll obligations', type: 'obligation' as const, amount: 385_000, impact: 'high' as const },
+  { id: 'td-3', label: 'Content partnership rev share', type: 'revenue' as const, amount: 142_000, impact: 'medium' as const },
+  { id: 'td-4', label: 'Infrastructure & hosting', type: 'obligation' as const, amount: 45_000, impact: 'medium' as const },
+  { id: 'td-5', label: 'Legal & compliance fees', type: 'obligation' as const, amount: 28_000, impact: 'low' as const },
+];
+
+const APPROVAL_QUEUE = [
+  { id: 'aq-1', label: 'Q1 marketing budget increase', amount: 25_000, requester: 'Jalen Torres', urgency: 'high' as const },
+  { id: 'aq-2', label: 'New contractor payment', amount: 8_500, requester: 'Tom Bradley', urgency: 'medium' as const },
+  { id: 'aq-3', label: 'Conference sponsorship', amount: 15_000, requester: 'Liam Chen', urgency: 'low' as const },
+];
+
+const URGENCY_COLORS: Record<'high' | 'medium' | 'low', string> = {
+  high: '#EF4444',
+  medium: '#F59E0B',
+  low: '#6B7280',
+};
+
+const IMPACT_COLORS: Record<'high' | 'medium' | 'low', string> = {
+  high: '#8B5CF6',
+  medium: '#3B82F6',
+  low: '#6B7280',
+};
+
+type TimeFilter = 'MTD' | 'QTD' | 'YTD' | 'Custom';
+
+const TIME_FILTERS: TimeFilter[] = ['MTD', 'QTD', 'YTD', 'Custom'];
 
 // =============================================================================
 // PROPS
@@ -174,20 +216,136 @@ function OverviewTab({
   truthChips,
   entitySummaries,
   pendingCount,
+  role = 'B1',
 }: {
   colors: typeof Colors.light;
   accentColor: string;
   truthChips: FinanceTruthChip[];
   entitySummaries: EntitySummary[];
   pendingCount: number;
+  role?: BusinessRoleLens;
 }) {
+  const burnTrendIcon =
+    FINANCE_HEALTH.burnTrend === 'increasing'
+      ? 'arrow.up.right'
+      : FINANCE_HEALTH.burnTrend === 'decreasing'
+        ? 'arrow.down.right'
+        : 'arrow.right';
+  const burnTrendColor =
+    FINANCE_HEALTH.burnTrend === 'increasing'
+      ? '#EF4444'
+      : FINANCE_HEALTH.burnTrend === 'decreasing'
+        ? '#22C55E'
+        : '#F59E0B';
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
-      {/* Truth Strip */}
-      <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Financial Truth Strip</ThemedText>
+      {/* ── Financial Health Snapshot ── */}
+      <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Financial Health Snapshot</ThemedText>
+      <View style={[s.healthSnapshotCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={s.healthSnapshotRow}>
+          <View style={s.healthSnapshotItem}>
+            <ThemedText style={[s.healthSnapshotValue, { color: '#22C55E' }]}>
+              {formatCurrencyCompact(FINANCE_HEALTH.cashPosition)}
+            </ThemedText>
+            <ThemedText style={[s.healthSnapshotLabel, { color: colors.textTertiary }]}>Cash Position</ThemedText>
+          </View>
+          <View style={s.healthSnapshotItem}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <ThemedText style={[s.healthSnapshotValue, { color: '#EF4444' }]}>
+                {formatCurrencyCompact(FINANCE_HEALTH.monthlyBurn)}
+              </ThemedText>
+              <IconSymbol name={burnTrendIcon as any} size={12} color={burnTrendColor} />
+            </View>
+            <ThemedText style={[s.healthSnapshotLabel, { color: colors.textTertiary }]}>Monthly Burn</ThemedText>
+          </View>
+          <View style={s.healthSnapshotItem}>
+            <ThemedText style={[s.healthSnapshotValue, { color: colors.text }]}>
+              {FINANCE_HEALTH.runway} mo
+            </ThemedText>
+            <ThemedText style={[s.healthSnapshotLabel, { color: colors.textTertiary }]}>Runway</ThemedText>
+          </View>
+        </View>
+      </View>
+
+      {/* ── Approvals Needed (Founder only) ── */}
+      {isFounder(role) && APPROVAL_QUEUE.length > 0 && (
+        <>
+          <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.md }]}>
+            Approvals Needed
+          </ThemedText>
+          <View style={[s.approvalCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {APPROVAL_QUEUE.map((aq, idx) => {
+              const uColor = URGENCY_COLORS[aq.urgency];
+              return (
+                <View
+                  key={aq.id}
+                  style={[
+                    s.approvalRow,
+                    idx < APPROVAL_QUEUE.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+                  ]}
+                >
+                  <View style={{ flex: 1 }}>
+                    <ThemedText style={[s.driverLabel, { color: colors.text }]} numberOfLines={1}>
+                      {aq.label}
+                    </ThemedText>
+                    <ThemedText style={{ fontSize: 11, color: colors.textTertiary, marginTop: 2 }}>
+                      {aq.requester}
+                    </ThemedText>
+                  </View>
+                  <ThemedText style={[s.driverAmount, { color: '#EF4444' }]}>
+                    {formatCurrencyCompact(aq.amount)}
+                  </ThemedText>
+                  <View style={[s.urgencyBadge, { backgroundColor: uColor + '20' }]}>
+                    <ThemedText style={[s.badgeText, { color: uColor }]}>
+                      {aq.urgency.toUpperCase()}
+                    </ThemedText>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </>
+      )}
+
+      {/* ── Top 5 Financial Drivers ── */}
+      <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.md }]}>
+        Top 5 Financial Drivers
+      </ThemedText>
+      {TOP_DRIVERS.map((driver, idx) => {
+        const isRevenue = driver.type === 'revenue';
+        const impactColor = IMPACT_COLORS[driver.impact];
+        return (
+          <View
+            key={driver.id}
+            style={[s.driverRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            <View style={[s.driverRank, { backgroundColor: (isRevenue ? '#22C55E' : '#EF4444') + '15' }]}>
+              <ThemedText style={{ fontSize: 13, fontWeight: '700', color: isRevenue ? '#22C55E' : '#EF4444' }}>
+                {idx + 1}
+              </ThemedText>
+            </View>
+            <ThemedText style={[s.driverLabel, { color: colors.text }]} numberOfLines={1}>
+              {driver.label}
+            </ThemedText>
+            <ThemedText style={[s.driverAmount, { color: isRevenue ? '#22C55E' : '#EF4444' }]}>
+              {isRevenue ? '+' : '-'}{formatCurrencyCompact(driver.amount)}
+            </ThemedText>
+            <View style={[s.badge, { backgroundColor: impactColor + '20' }]}>
+              <ThemedText style={[s.badgeText, { color: impactColor }]}>
+                {driver.impact.toUpperCase()}
+              </ThemedText>
+            </View>
+          </View>
+        );
+      })}
+
+      {/* ── Truth Strip ── */}
+      <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.lg }]}>Financial Truth Strip</ThemedText>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.truthStripRow}
       >
         {truthChips.map((chip) => (
@@ -1058,30 +1216,25 @@ function AuditTab({
 // =============================================================================
 
 export function BizOrgFinanceV2({ colors, accentColor, role = 'B1' }: Props) {
-  // === RBAC Gate: B3+ locked ===
-  if (!isFounder(role) && !isInvestor(role)) {
-    return <BizEmptyLock title="Finance" message="This section is restricted. Contact the Founder for access." />;
-  }
+  // === Entity Scope ===
+  // TODO: Use selectedEntityId to filter finance data per-entity when backend is wired
+  const { selectedEntityId } = useBusiness();
 
-  // === State ===
+  // === All hooks declared before any early returns (React hooks rules) ===
   const [activeTab, setActiveTab] = useState<BizFinanceV2TabId>('overview');
   const [searchQuery, setSearchQuery] = useState('');
-
-  // Bottom sheet state
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>('MTD');
   const [selectedLedgerEntry, setSelectedLedgerEntry] = useState<FinanceLedgerEntry | null>(null);
   const [showLedgerDetail, setShowLedgerDetail] = useState(false);
 
-  // === Data ===
   const data = useMemo(() => getBizFinanceV2Data(), []);
 
-  // Count pending ledger entries for alerts
   const pendingCount = useMemo(() => {
     return data.ledger.filter(
       (e) => e.state === 'proposed' || e.state === 'draft' || e.state === 'rule_checked',
     ).length;
   }, [data.ledger]);
 
-  // === Callbacks ===
   const handleTabSelect = useCallback((id: string) => {
     setActiveTab(id as BizFinanceV2TabId);
     setSearchQuery('');
@@ -1092,7 +1245,6 @@ export function BizOrgFinanceV2({ colors, accentColor, role = 'B1' }: Props) {
     setShowLedgerDetail(true);
   }, []);
 
-  // === Sub-tab definitions (RBAC-aware) ===
   const subTabs = useMemo(() => {
     const all = BIZ_FINANCE_V2_TABS.map((t) => ({ id: t.id, label: t.label }));
     if (isFounder(role)) return all;
@@ -1101,8 +1253,12 @@ export function BizOrgFinanceV2({ colors, accentColor, role = 'B1' }: Props) {
     return all.filter((t) => t.id === 'overview');
   }, [role]);
 
-  // === Show search for applicable tabs ===
   const showSearch = activeTab !== 'overview' && activeTab !== 'forecast';
+
+  // === RBAC Gate: B3+ locked ===
+  if (!isFounder(role) && !isInvestor(role)) {
+    return <BizEmptyLock title="Finance" message="This section is restricted. Contact the Founder for access." />;
+  }
 
   // === Tab content renderer ===
   const renderTabContent = () => {
@@ -1115,6 +1271,7 @@ export function BizOrgFinanceV2({ colors, accentColor, role = 'B1' }: Props) {
             truthChips={data.truthChips}
             entitySummaries={data.entitySummaries}
             pendingCount={pendingCount}
+            role={role}
           />
         );
       case 'ledger':
@@ -1202,6 +1359,38 @@ export function BizOrgFinanceV2({ colors, accentColor, role = 'B1' }: Props) {
                 <IconSymbol name="xmark.circle.fill" size={16} color={colors.textTertiary} />
               </Pressable>
             )}
+          </View>
+
+          {/* Time Filter Chips */}
+          <View style={s.timeFilterRow}>
+            {TIME_FILTERS.map((tf) => {
+              const isActive = tf === timeFilter;
+              return (
+                <Pressable
+                  key={tf}
+                  style={[
+                    s.timeFilterChip,
+                    {
+                      backgroundColor: isActive ? accentColor + '20' : colors.backgroundTertiary,
+                      borderColor: isActive ? accentColor : colors.border,
+                    },
+                  ]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setTimeFilter(tf);
+                  }}
+                >
+                  <ThemedText
+                    style={[
+                      s.badgeText,
+                      { color: isActive ? accentColor : colors.textSecondary, fontSize: 11 },
+                    ]}
+                  >
+                    {tf}
+                  </ThemedText>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
       )}
@@ -1884,5 +2073,98 @@ const s = StyleSheet.create({
   auditMetaText: {
     fontSize: 12,
     flex: 1,
+  },
+
+  // ==========================================================================
+  // FINANCIAL HEALTH SNAPSHOT
+  // ==========================================================================
+  healthSnapshotCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  healthSnapshotRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  healthSnapshotItem: {
+    alignItems: 'center',
+  },
+  healthSnapshotValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  healthSnapshotLabel: {
+    fontSize: 11,
+    marginTop: 4,
+  },
+
+  // ==========================================================================
+  // TOP FINANCIAL DRIVERS
+  // ==========================================================================
+  driverRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.xs,
+    gap: Spacing.sm,
+  },
+  driverRank: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  driverLabel: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  driverAmount: {
+    fontSize: 14,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+
+  // ==========================================================================
+  // APPROVALS NEEDED
+  // ==========================================================================
+  approvalCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    overflow: 'hidden',
+    marginBottom: Spacing.sm,
+  },
+  approvalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: Spacing.md,
+    gap: Spacing.sm,
+  },
+  urgencyBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+  },
+
+  // ==========================================================================
+  // TIME FILTER CHIPS
+  // ==========================================================================
+  timeFilterRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
+  },
+  timeFilterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
   },
 });

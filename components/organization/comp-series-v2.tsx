@@ -1136,6 +1136,7 @@ export function CompSeriesV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.tabPillRow}
       >
         {COMP_SERIES_TABS.map((tab) => {
@@ -1166,6 +1167,7 @@ export function CompSeriesV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.scopeChipRow}
       >
         {COMP_SERIES_SCOPE_CHIPS.map((chip, index) => {

@@ -17,9 +17,10 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
-import { BizCard, BizSubTabBar, BizStatusChip, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
+import { BizCard, BizSubTabBar, BizStatusChip, BizAlertCard, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel } from '@/utils/business-rbac';
+import { useBusiness } from '@/context/business-context';
 import { formatCurrency, KANEXT_HOLDCO, KANEXT_OPSCO, KANEXT_IP, TARGET_BANK, SLIEMA_WANDERERS, SEEDED_ENTITY_NAMES } from '@/data/biz-org-shared-types';
 import type { CrossTabLink } from '@/data/biz-org-shared-types';
 import {
@@ -53,6 +54,7 @@ import type {
   AssetDiligenceItem,
   AssetRequest,
   AssetExportOption,
+  RequestLifecycle,
 } from '@/data/mock-biz-org-assets';
 
 // =============================================================================
@@ -217,6 +219,127 @@ function ProgressBar({ percent, color, bgColor }: { percent: number; color: stri
 }
 
 // =============================================================================
+// ASSET HEALTH DATA & COMPONENT
+// =============================================================================
+
+type HealthStatus = 'green' | 'yellow' | 'red';
+interface AssetHealth { maintenance: HealthStatus; insurance: HealthStatus; compliance: HealthStatus; payments: HealthStatus }
+
+const ASSET_HEALTH_MAP: Record<string, AssetHealth> = {
+  'ast-1':  { maintenance: 'green',  insurance: 'green',  compliance: 'green',  payments: 'green' },
+  'ast-2':  { maintenance: 'yellow', insurance: 'green',  compliance: 'green',  payments: 'green' },
+  'ast-3':  { maintenance: 'green',  insurance: 'red',    compliance: 'yellow', payments: 'green' },
+  'ast-4':  { maintenance: 'green',  insurance: 'green',  compliance: 'green',  payments: 'yellow' },
+  'ast-5':  { maintenance: 'red',    insurance: 'yellow', compliance: 'green',  payments: 'green' },
+  'ast-6':  { maintenance: 'green',  insurance: 'green',  compliance: 'red',    payments: 'green' },
+  'ast-7':  { maintenance: 'green',  insurance: 'green',  compliance: 'green',  payments: 'red' },
+  'ast-8':  { maintenance: 'yellow', insurance: 'yellow', compliance: 'green',  payments: 'green' },
+  'ast-9':  { maintenance: 'green',  insurance: 'green',  compliance: 'yellow', payments: 'yellow' },
+  'ast-10': { maintenance: 'green',  insurance: 'green',  compliance: 'green',  payments: 'green' },
+  default:  { maintenance: 'green',  insurance: 'green',  compliance: 'green',  payments: 'green' },
+};
+
+function getAssetHealth(assetId: string): AssetHealth {
+  return ASSET_HEALTH_MAP[assetId] ?? ASSET_HEALTH_MAP['default'];
+}
+
+function AssetHealthStrip({ health }: { health: AssetHealth }) {
+  const dims = [
+    { key: 'maintenance', label: 'Maint' },
+    { key: 'insurance', label: 'Ins' },
+    { key: 'compliance', label: 'Comp' },
+    { key: 'payments', label: 'Pay' },
+  ] as const;
+  const colorMap: Record<string, string> = { green: '#22C55E', yellow: '#F59E0B', red: '#EF4444' };
+  return (
+    <View style={s.assetHealthStrip}>
+      {dims.map((d) => (
+        <View key={d.key} style={s.assetHealthItem}>
+          <View style={[s.assetHealthDot, { backgroundColor: colorMap[health[d.key]] || '#22C55E' }]} />
+          <ThemedText style={[s.assetHealthLabel, { color: BP.ash }]}>{d.label}</ThemedText>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+// =============================================================================
+// INSURANCE ALERTS DATA
+// =============================================================================
+
+const INSURANCE_ALERTS = [
+  { assetName: 'Office Lease \u2014 Austin HQ', policyType: 'General Liability', expiryDate: '2026-01-15', status: 'expired' as const },
+];
+
+// =============================================================================
+// DILIGENCE TEMPLATES DATA
+// =============================================================================
+
+const DILIGENCE_TEMPLATES = [
+  { id: 'dt-1', name: 'Bank Acquisition Checklist', type: 'bank', itemCount: 24, completedCount: 8 },
+  { id: 'dt-2', name: 'Vendor Onboarding Checklist', type: 'vendor', itemCount: 12, completedCount: 12 },
+  { id: 'dt-3', name: 'Real Estate Due Diligence', type: 'real_estate', itemCount: 18, completedCount: 0 },
+];
+
+const TEMPLATE_TYPE_COLOR: Record<string, string> = {
+  bank: '#6AA9FF',
+  vendor: '#8B5CF6',
+  real_estate: '#EC4899',
+};
+
+// =============================================================================
+// REQUEST LIFECYCLE BAR
+// =============================================================================
+
+const REQUEST_LIFECYCLE_STAGES: { key: RequestLifecycle; label: string }[] = [
+  { key: 'draft', label: 'Draft' },
+  { key: 'submitted', label: 'Submitted' },
+  { key: 'approved', label: 'Approved' },
+  { key: 'routed_to_finance', label: 'Finance' },
+  { key: 'archived', label: 'Archived' },
+];
+
+function RequestLifecycleBar({ currentStage }: { currentStage: RequestLifecycle }) {
+  const currentIdx = REQUEST_LIFECYCLE_STAGES.findIndex((st) => st.key === currentStage);
+  return (
+    <View style={s.lifecycleRow}>
+      {REQUEST_LIFECYCLE_STAGES.map((stage, idx) => {
+        const isActive = idx <= currentIdx;
+        const isCurrent = idx === currentIdx;
+        return (
+          <React.Fragment key={stage.key}>
+            {idx > 0 && (
+              <View style={[s.lifecycleLine, { backgroundColor: isActive ? '#22C55E' : BP.ash + '40' }]} />
+            )}
+            <View style={s.lifecycleStep}>
+              <View
+                style={[
+                  s.lifecycleDot,
+                  {
+                    backgroundColor: isCurrent ? '#22C55E' : isActive ? '#22C55E80' : BP.ash + '40',
+                    borderWidth: isCurrent ? 2 : 0,
+                    borderColor: isCurrent ? '#22C55E' : 'transparent',
+                  },
+                ]}
+              />
+              <ThemedText
+                style={[
+                  s.lifecycleLabel,
+                  { color: isCurrent ? '#22C55E' : isActive ? BP.smoke : BP.ash },
+                ]}
+                numberOfLines={1}
+              >
+                {stage.label}
+              </ThemedText>
+            </View>
+          </React.Fragment>
+        );
+      })}
+    </View>
+  );
+}
+
+// =============================================================================
 // STAT CARD (Overview)
 // =============================================================================
 
@@ -255,6 +378,10 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
   if (!isFounder(role) && !isBoardLevel(role) && role !== 'B2a' && role !== 'B5') {
     return <BizEmptyLock title="Assets" message="This section is restricted. Contact the Founder for access." />;
   }
+
+  // === Entity Scope ===
+  const { selectedEntityId } = useBusiness();
+  // TODO: filter all asset data by selectedEntityId once backend supports entity-scoped queries
 
   // === State ===
   const [activeTab, setActiveTab] = useState<BizAssetsTabId>('overview');
@@ -753,6 +880,9 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
                     </ThemedText>
                   </View>
                 </View>
+
+                {/* Asset Health Strip */}
+                <AssetHealthStrip health={getAssetHealth(item.id)} />
               </Pressable>
             )}
           />
@@ -1034,6 +1164,21 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
   const renderInsurance = () => {
     return (
       <View style={{ flex: 1 }}>
+        {/* Expired Policy Alerts */}
+        {INSURANCE_ALERTS.filter((a) => a.status === 'expired').length > 0 && (
+          <View style={s.insuranceAlert}>
+            {INSURANCE_ALERTS.filter((a) => a.status === 'expired').map((alert, idx) => (
+              <BizAlertCard
+                key={`ins-alert-${idx}`}
+                icon="exclamationmark.shield"
+                title={`Expired: ${alert.policyType}`}
+                subtitle={`${alert.assetName} \u2014 expired ${alert.expiryDate}`}
+                variant="error"
+              />
+            ))}
+          </View>
+        )}
+
         <View style={[s.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <IconSymbol name="magnifyingglass" size={16} color={colors.textSecondary} />
           <TextInput
@@ -1224,6 +1369,39 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
 
     return (
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
+        {/* Checklist Templates */}
+        <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Templates</ThemedText>
+        {DILIGENCE_TEMPLATES.map((tpl) => {
+          const pct = tpl.itemCount > 0 ? Math.round((tpl.completedCount / tpl.itemCount) * 100) : 0;
+          const barClr = pct >= 80 ? '#22C55E' : pct >= 40 ? '#F59E0B' : '#EF4444';
+          const typeBg = TEMPLATE_TYPE_COLOR[tpl.type] || '#6AA9FF';
+          return (
+            <View key={tpl.id} style={[s.templateCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: Spacing.xs }}>
+                <ThemedText style={[s.listCardTitle, { color: colors.text }]} numberOfLines={1}>
+                  {tpl.name}
+                </ThemedText>
+                <View style={[s.badge, { backgroundColor: typeBg + '20' }]}>
+                  <ThemedText style={[s.badgeText, { color: typeBg }]}>{tpl.type.replace('_', ' ')}</ThemedText>
+                </View>
+              </View>
+              <View style={s.templateProgress}>
+                <ProgressBar percent={pct} color={barClr} bgColor={colors.border} />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <ThemedText style={[s.listCardFooterLabel, { color: colors.textTertiary }]}>
+                  {tpl.completedCount}/{tpl.itemCount} items
+                </ThemedText>
+                <ThemedText style={[s.templateProgressBar, { color: barClr }]}>
+                  {pct}%
+                </ThemedText>
+              </View>
+            </View>
+          );
+        })}
+
+        <View style={{ height: Spacing.lg }} />
+        <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Active Checklists</ThemedText>
         {diligenceByAcquisition.map((group) => {
           const completionPercent = Math.round((group.completedCount / group.totalCount) * 100);
           const barColor = completionPercent >= 80 ? '#22C55E' : completionPercent >= 50 ? '#F59E0B' : '#EF4444';
@@ -1394,6 +1572,9 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
                     </ThemedText>
                   </View>
                 </View>
+
+                {/* Request Lifecycle Indicator */}
+                <RequestLifecycleBar currentStage={item.requestLifecycle} />
               </Pressable>
             )}
           />
@@ -2448,5 +2629,85 @@ const s = StyleSheet.create({
   detailActionText: {
     fontSize: 14,
     fontWeight: '600',
+  },
+
+  // === Asset Health Strip ===
+  assetHealthStrip: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+    marginTop: Spacing.sm,
+    paddingTop: Spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#FFFFFF10',
+  },
+  assetHealthItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  assetHealthDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  assetHealthLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+  },
+
+  // === Insurance Alert ===
+  insuranceAlert: {
+    marginBottom: Spacing.sm,
+  },
+
+  // === Diligence Template Card ===
+  templateCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  templateProgress: {
+    marginBottom: Spacing.xs,
+  },
+  templateProgressBar: {
+    fontSize: 12,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+
+  // === Request Lifecycle ===
+  lifecycleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: Spacing.md,
+    paddingTop: Spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#FFFFFF10',
+  },
+  lifecycleStep: {
+    alignItems: 'center',
+    gap: 3,
+  },
+  lifecycleStepActive: {},
+  lifecycleDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  lifecycleLine: {
+    height: 2,
+    width: 16,
+    borderRadius: 1,
+    marginHorizontal: 2,
+    marginBottom: 14,
+  },
+  lifecycleLabel: {
+    fontSize: 8,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.2,
   },
 });

@@ -1923,6 +1923,7 @@ export function CompPaymentRailsV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.tabPillRow}
       >
         {COMP_RAILS_TABS.map((tab) => {
@@ -1953,6 +1954,7 @@ export function CompPaymentRailsV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.scopeChipRow}
       >
         {COMP_RAILS_SCOPE_CHIPS.map((chip, index) => {

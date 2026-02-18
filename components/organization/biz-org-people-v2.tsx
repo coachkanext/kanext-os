@@ -20,6 +20,7 @@ import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/them
 import { BizCard, BizSubTabBar, BizStatusChip, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel } from '@/utils/business-rbac';
+import { useBusiness } from '@/context/business-context';
 import type { CrossTabLink } from '@/data/biz-org-shared-types';
 import {
   KANEXT_HOLDCO,
@@ -45,6 +46,7 @@ import {
   getFilledCount,
   getCoveragePercent,
   getPackageById,
+  COVERAGE_SCORES,
 } from '@/data/mock-biz-org-people';
 import type {
   BizPeopleTabId,
@@ -55,9 +57,46 @@ import type {
   OrgChartLevel,
   RBACLevel,
   SignatureAuthority,
+  CoverageCategory,
 } from '@/data/mock-biz-org-people';
 
 const BP = BusinessPalette;
+
+// =============================================================================
+// COVERAGE DASHBOARD HELPERS
+// =============================================================================
+
+const COVERAGE_SCORES_FALLBACK: Record<string, { filled: number; total: number }> = {
+  exec: { filled: 3, total: 3 },
+  finance: { filled: 2, total: 3 },
+  rails: { filled: 2, total: 2 },
+  compliance: { filled: 1, total: 2 },
+  ops: { filled: 4, total: 5 },
+  media: { filled: 1, total: 2 },
+};
+
+const COVERAGE_CATEGORY_LABELS: Record<string, string> = {
+  exec: 'Executive',
+  finance: 'Finance',
+  rails: 'Rails',
+  compliance: 'Compliance',
+  ops: 'Operations',
+  media: 'Media',
+};
+
+function getCoverageColor(filled: number, total: number): string {
+  if (total === 0) return '#9CA3AF';
+  const pct = (filled / total) * 100;
+  if (pct >= 80) return '#22C55E';
+  if (pct >= 50) return '#F59E0B';
+  return '#EF4444';
+}
+
+const SENSITIVE_ACCESS_COLOR: Record<string, string> = {
+  full: '#EF4444',
+  partial: '#F59E0B',
+  none: '#9CA3AF',
+};
 
 // =============================================================================
 // PROPS
@@ -194,6 +233,12 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
     return <BizEmptyLock title="People" message="This section is restricted. Contact the Founder for access." />;
   }
 
+  // === Entity Scope ===
+  const { selectedEntityId } = useBusiness();
+  // TODO: Wire entity scoping — filter people by selectedEntityId when
+  // person records gain `entityIds` or `primaryEntityId` fields.
+  // Currently, entity scoping is handled via the scope chips + getBizPeopleData().
+
   // === State ===
   const [activeTab, setActiveTab] = useState<BizPeopleTabId>('directory');
   const [activeScope, setActiveScope] = useState(0);
@@ -215,7 +260,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
   const scopeLabel = BIZ_PEOPLE_SCOPE_CHIPS[activeScope];
   const data = useMemo(() => getBizPeopleData(scopeLabel), [scopeLabel]);
 
-  // === Filtered people ===
+  // === Filtered people (triage-first sort) ===
   const filteredPeople = useMemo(() => {
     let result = data.people;
     const deptLabel = DEPARTMENT_CHIPS[activeDepartment];
@@ -233,6 +278,28 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
           matchesSearch(p.role, q),
       );
     }
+    // Triage-first sort:
+    // 1. canRelease === true
+    // 2. accountability.approvalsPending > 0
+    // 3. riskFlags.length > 0
+    // 4. Then alphabetical
+    result = [...result].sort((a, b) => {
+      const aRelease = (a as any).canRelease ? 1 : 0;
+      const bRelease = (b as any).canRelease ? 1 : 0;
+      if (aRelease !== bRelease) return bRelease - aRelease;
+
+      const aPending = (a as any).accountability?.approvalsPending ?? 0;
+      const bPending = (b as any).accountability?.approvalsPending ?? 0;
+      const aHasPending = aPending > 0 ? 1 : 0;
+      const bHasPending = bPending > 0 ? 1 : 0;
+      if (aHasPending !== bHasPending) return bHasPending - aHasPending;
+
+      const aRisk = ((a as any).riskFlags?.length ?? 0) > 0 ? 1 : 0;
+      const bRisk = ((b as any).riskFlags?.length ?? 0) > 0 ? 1 : 0;
+      if (aRisk !== bRisk) return bRisk - aRisk;
+
+      return a.name.localeCompare(b.name);
+    });
     return result;
   }, [data.people, activeDepartment, searchQuery]);
 
@@ -358,6 +425,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.chipRow}
       >
         {DEPARTMENT_CHIPS.map((chip, i) => (
@@ -460,6 +528,43 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
                     <SignatureAuthorityBadge authority={item.signatureAuthority} />
                   )}
                 </View>
+
+                {/* Authority strip — only for Founder / Board-level roles */}
+                {(isFounder(role) || isBoardLevel(role)) && (
+                  <View style={s.authorityStrip}>
+                    <View style={s.authorityItem}>
+                      <View style={[s.authorityDot, { backgroundColor: item.canApprove ? '#22C55E' : '#EF4444' }]} />
+                      <ThemedText style={[s.authorityLabel, { color: colors.textTertiary }]}>
+                        Approve: {item.canApprove ? '\u2713' : '\u2717'}
+                      </ThemedText>
+                    </View>
+                    <View style={[s.authoritySep, { backgroundColor: colors.divider }]} />
+                    <View style={s.authorityItem}>
+                      <View style={[s.authorityDot, { backgroundColor: item.canRelease ? '#F59E0B' : '#9CA3AF' }]} />
+                      <ThemedText style={[s.authorityLabel, { color: item.canRelease ? '#F59E0B' : colors.textTertiary }]}>
+                        Release: {item.canRelease ? '\u2713' : '\u2717'}
+                      </ThemedText>
+                    </View>
+                    <View style={[s.authoritySep, { backgroundColor: colors.divider }]} />
+                    <View style={s.authorityItem}>
+                      <View style={[s.authorityDot, { backgroundColor: SENSITIVE_ACCESS_COLOR[item.sensitiveAccess] }]} />
+                      <ThemedText style={[s.authorityLabel, { color: SENSITIVE_ACCESS_COLOR[item.sensitiveAccess] }]}>
+                        Sensitive: {item.sensitiveAccess === 'full' ? 'Full' : item.sensitiveAccess === 'partial' ? 'Partial' : 'None'}
+                      </ThemedText>
+                    </View>
+                  </View>
+                )}
+
+                {/* Risk flags — only for Founder */}
+                {isFounder(role) && item.riskFlags && item.riskFlags.length > 0 && (
+                  <View style={s.riskFlagsRow}>
+                    {item.riskFlags.map((flag) => (
+                      <View key={flag} style={s.riskFlagChip}>
+                        <ThemedText style={s.riskFlagText}>{flag}</ThemedText>
+                      </View>
+                    ))}
+                  </View>
+                )}
               </View>
             </View>
           </Pressable>
@@ -653,8 +758,41 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
   // TAB 3: ROLES & COVERAGE
   // ===================================================================
 
+  // Coverage scores data (use exported COVERAGE_SCORES, fallback to inline)
+  const coverageScores = COVERAGE_SCORES ?? COVERAGE_SCORES_FALLBACK;
+  const coverageEntries = Object.entries(coverageScores);
+
   const renderRoles = () => (
     <View style={s.tabContent}>
+      {/* Coverage Dashboard — 2x3 grid of category cards */}
+      <View style={[s.coverageDashboardCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <ThemedText style={[s.coverageDashboardTitle, { color: colors.textSecondary }]}>
+          COVERAGE DASHBOARD
+        </ThemedText>
+        <View style={s.coverageGrid}>
+          {coverageEntries.map(([key, val]) => {
+            const pct = val.total > 0 ? Math.round((val.filled / val.total) * 100) : 0;
+            const barColor = getCoverageColor(val.filled, val.total);
+            return (
+              <View key={key} style={[s.coverageGridCell, { backgroundColor: colors.backgroundTertiary }]}>
+                <ThemedText style={[s.coverageGridLabel, { color: colors.textSecondary }]}>
+                  {COVERAGE_CATEGORY_LABELS[key] ?? key}
+                </ThemedText>
+                <ThemedText style={[s.coverageGridFraction, { color: colors.text, fontVariant: ['tabular-nums'] }]}>
+                  {val.filled}/{val.total}
+                </ThemedText>
+                <View style={[s.coverageGridBar, { backgroundColor: colors.border }]}>
+                  <View style={[s.coverageGridBarFill, { width: `${pct}%`, backgroundColor: barColor }]} />
+                </View>
+                <ThemedText style={[s.coverageGridPct, { color: barColor, fontVariant: ['tabular-nums'] }]}>
+                  {pct}%
+                </ThemedText>
+              </View>
+            );
+          })}
+        </View>
+      </View>
+
       {/* Coverage summary */}
       <View style={[s.coverageSummaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.coverageHeader}>
@@ -1269,6 +1407,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          style={{ flexGrow: 0 }}
           contentContainerStyle={s.chipRow}
         >
           {BIZ_PEOPLE_SCOPE_CHIPS.map((chip, i) => (
@@ -1958,5 +2097,102 @@ const s = StyleSheet.create({
   detailActionText: {
     fontSize: 14,
     fontWeight: '600',
+  },
+
+  // === Authority Strip (Directory card enhancement) ===
+  authorityStrip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    paddingTop: 6,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255,255,255,0.06)',
+    gap: 6,
+  },
+  authorityItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  authorityDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  authorityLabel: {
+    fontSize: 10,
+    fontWeight: '500',
+  },
+  authoritySep: {
+    width: StyleSheet.hairlineWidth,
+    height: 12,
+  },
+
+  // === Risk Flags (Directory card enhancement) ===
+  riskFlagsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 4,
+  },
+  riskFlagChip: {
+    backgroundColor: '#EF4444' + '18',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+  },
+  riskFlagText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#EF4444',
+  },
+
+  // === Coverage Dashboard (Roles & Coverage tab) ===
+  coverageDashboardCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    gap: Spacing.sm,
+  },
+  coverageDashboardTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  coverageGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
+  coverageGridCell: {
+    width: '30.5%' as any,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.sm,
+    alignItems: 'center',
+    gap: 4,
+  },
+  coverageGridLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    textTransform: 'capitalize',
+  },
+  coverageGridFraction: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  coverageGridBar: {
+    width: '100%',
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  coverageGridBarFill: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  coverageGridPct: {
+    fontSize: 12,
+    fontWeight: '700',
   },
 });

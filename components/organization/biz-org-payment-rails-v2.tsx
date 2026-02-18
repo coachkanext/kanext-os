@@ -33,6 +33,7 @@ import {
 } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel } from '@/utils/business-rbac';
+import { useBusiness } from '@/context/business-context';
 import {
   BIZ_TXN_STATE_LABELS,
   BIZ_TXN_STATE_COLORS,
@@ -139,6 +140,30 @@ function txnStateVariant(state: BizTxnState): 'success' | 'warning' | 'error' | 
 }
 
 // =============================================================================
+// IMPACT TAGS — colored badges showing what a NOW item blocks
+// =============================================================================
+
+const IMPACT_TAG_KEYS = ['blocks_payroll', 'blocks_close', 'blocks_vendor', 'blocks_transfer'] as const;
+
+const IMPACT_TAGS: Record<string, { label: string; color: string }> = {
+  blocks_payroll: { label: 'Blocks Payroll', color: '#EF4444' },
+  blocks_close: { label: 'Blocks Close', color: '#F59E0B' },
+  blocks_vendor: { label: 'Blocks Vendor', color: '#F97316' },
+  blocks_transfer: { label: 'Blocks Transfer', color: '#EC4899' },
+};
+
+// =============================================================================
+// EXCEPTION ENHANCEMENTS — root cause, failing rule, next steps
+// =============================================================================
+
+const EXCEPTION_ENHANCEMENTS = [
+  { rootCause: 'Authority', color: '#8B5CF6', failingRule: 'Release requires dual authorization', nextSteps: ['Obtain second signatory', 'Update authority matrix'] },
+  { rootCause: 'Budget', color: '#F59E0B', failingRule: 'Amount exceeds quarterly budget cap', nextSteps: ['Request budget increase', 'Submit to CFO for override'] },
+  { rootCause: 'Compliance', color: '#EF4444', failingRule: 'KYC verification incomplete', nextSteps: ['Complete KYC form', 'Upload supporting docs', 'Re-submit for review'] },
+  { rootCause: 'Technical', color: '#3B82F6', failingRule: 'ACH routing validation failed', nextSteps: ['Verify routing number', 'Contact processor support'] },
+];
+
+// =============================================================================
 // EMPTY STATE
 // =============================================================================
 
@@ -186,6 +211,32 @@ function DotIndicator({ color, size = 8 }: { color: string; size?: number }) {
 
 function SectionDivider() {
   return <View style={s.sectionDivider} />;
+}
+
+// =============================================================================
+// IMPACT TAG BADGE
+// =============================================================================
+
+function ImpactTagBadge({ tagKey }: { tagKey: string }) {
+  const tag = IMPACT_TAGS[tagKey];
+  if (!tag) return null;
+  return (
+    <View style={[s.impactTag, { backgroundColor: tag.color + '18', borderColor: tag.color + '30' }]}>
+      <ThemedText style={[s.impactTagText, { color: tag.color }]}>{tag.label}</ThemedText>
+    </View>
+  );
+}
+
+// =============================================================================
+// GOVERNANCE RECEIPT NOTE
+// =============================================================================
+
+function ReceiptNote() {
+  return (
+    <ThemedText style={s.receiptNote}>
+      Every action generates an immutable receipt
+    </ThemedText>
+  );
 }
 
 // =============================================================================
@@ -271,6 +322,7 @@ function FilterChips({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={{ flexGrow: 0 }}
       contentContainerStyle={s.filterChipRow}
     >
       {RAILS_FILTER_CHIPS.map((chip) => {
@@ -377,7 +429,7 @@ function NowTab({
       {inFlightBatches.length === 0 ? (
         <EmptyState icon="paperplane" label="No batches in flight" colors={colors} />
       ) : (
-        inFlightBatches.map((batch) => (
+        inFlightBatches.map((batch, idx) => (
           <BizCard key={batch.id}>
             <View style={s.cardRow}>
               <View style={{ flex: 1 }}>
@@ -401,6 +453,7 @@ function NowTab({
               <ThemedText style={[s.etaText, { color: BP.ash }]}>
                 Settlement ETA: ~1-2 business days
               </ThemedText>
+              <ImpactTagBadge tagKey={IMPACT_TAG_KEYS[idx % IMPACT_TAG_KEYS.length]} />
             </View>
           </BizCard>
         ))
@@ -415,14 +468,18 @@ function NowTab({
       {openExceptions.length === 0 ? (
         <EmptyState icon="checkmark.shield" label="No open exceptions" colors={colors} />
       ) : (
-        openExceptions.map((exc) => (
-          <BizAlertCard
-            key={exc.id}
-            icon="exclamationmark.triangle.fill"
-            title={exc.description}
-            subtitle={`${EXCEPTION_TYPE_LABELS[exc.type]} / ${formatCurrency(exc.amount)} / ${exc.entityName}`}
-            variant="error"
-          />
+        openExceptions.map((exc, idx) => (
+          <View key={exc.id}>
+            <BizAlertCard
+              icon="exclamationmark.triangle.fill"
+              title={exc.description}
+              subtitle={`${EXCEPTION_TYPE_LABELS[exc.type]} / ${formatCurrency(exc.amount)} / ${exc.entityName}`}
+              variant="error"
+            />
+            <View style={{ marginTop: -8, marginBottom: 8, paddingHorizontal: 4 }}>
+              <ImpactTagBadge tagKey={IMPACT_TAG_KEYS[idx % IMPACT_TAG_KEYS.length]} />
+            </View>
+          </View>
         ))
       )}
 
@@ -465,14 +522,18 @@ function NowTab({
           <ThemedText style={[s.sectionTitle, { color: colors.text }]}>
             Pending Approvals ({data.approvals.length})
           </ThemedText>
-          {data.approvals.slice(0, 3).map((appr) => (
-            <BizAlertCard
-              key={appr.id}
-              icon="clock.badge.exclamationmark.fill"
-              title={appr.batchName}
-              subtitle={`${formatCurrency(appr.amount)} / ${URGENCY_LABELS[appr.urgency]} / ${appr.requestedBy}`}
-              variant={appr.urgency === 'critical' ? 'error' : appr.urgency === 'high' ? 'warning' : 'info'}
-            />
+          {data.approvals.slice(0, 3).map((appr, idx) => (
+            <View key={appr.id}>
+              <BizAlertCard
+                icon="clock.badge.exclamationmark.fill"
+                title={appr.batchName}
+                subtitle={`${formatCurrency(appr.amount)} / ${URGENCY_LABELS[appr.urgency]} / ${appr.requestedBy}`}
+                variant={appr.urgency === 'critical' ? 'error' : appr.urgency === 'high' ? 'warning' : 'info'}
+              />
+              <View style={{ marginTop: -8, marginBottom: 8, paddingHorizontal: 4 }}>
+                <ImpactTagBadge tagKey={IMPACT_TAG_KEYS[idx % IMPACT_TAG_KEYS.length]} />
+              </View>
+            </View>
           ))}
         </>
       )}
@@ -743,6 +804,7 @@ function ApprovalsTab({
             </ThemedText>
           </Pressable>
         </View>
+        <ReceiptNote />
         <RoleIndicator roles="B1 / B2b" />
       </BizCard>
     ),
@@ -833,6 +895,7 @@ function ReleaseTab({
             </ThemedText>
           </Pressable>
         </View>
+        <ReceiptNote />
         <RoleIndicator roles="B1 only" />
       </BizCard>
     ),
@@ -898,67 +961,93 @@ function ExceptionsTab({
   const resolvedCount = useMemo(() => filtered.filter((e) => !!e.resolution).length, [filtered]);
 
   const renderException = useCallback(
-    ({ item }: { item: RailsException }) => (
-      <Pressable
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          onSelectException(item);
-        }}
-      >
-        <BizCard>
-          <View style={s.cardRow}>
-            <View style={{ flex: 1 }}>
-              <ThemedText
-                style={[s.cardName, { color: BP.smoke }]}
-                numberOfLines={2}
-              >
-                {item.description}
-              </ThemedText>
-              <View style={s.chipRow}>
-                <StatusBadge
-                  label={EXCEPTION_TYPE_LABELS[item.type]}
-                  color={EXCEPTION_TYPE_COLORS[item.type]}
-                />
-                <StatusBadge label={item.entityName} color="#8B5CF6" />
+    ({ item, index }: { item: RailsException; index: number }) => {
+      const enhancement = EXCEPTION_ENHANCEMENTS[index % EXCEPTION_ENHANCEMENTS.length];
+      return (
+        <Pressable
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            onSelectException(item);
+          }}
+        >
+          <BizCard>
+            <View style={s.cardRow}>
+              <View style={{ flex: 1 }}>
+                <ThemedText
+                  style={[s.cardName, { color: BP.smoke }]}
+                  numberOfLines={2}
+                >
+                  {item.description}
+                </ThemedText>
+                <View style={s.chipRow}>
+                  <StatusBadge
+                    label={EXCEPTION_TYPE_LABELS[item.type]}
+                    color={EXCEPTION_TYPE_COLORS[item.type]}
+                  />
+                  <StatusBadge label={item.entityName} color="#8B5CF6" />
+                  <View style={[s.rootCauseBadge, { backgroundColor: enhancement.color + '18', borderColor: enhancement.color + '30' }]}>
+                    <ThemedText style={[s.impactTagText, { color: enhancement.color }]}>
+                      {enhancement.rootCause}
+                    </ThemedText>
+                  </View>
+                </View>
+              </View>
+              <View style={s.cardRight}>
+                <ThemedText style={[s.cardAmount, { color: EXCEPTION_TYPE_COLORS[item.type] }]}>
+                  {formatCurrency(item.amount)}
+                </ThemedText>
               </View>
             </View>
-            <View style={s.cardRight}>
-              <ThemedText style={[s.cardAmount, { color: EXCEPTION_TYPE_COLORS[item.type] }]}>
-                {formatCurrency(item.amount)}
-              </ThemedText>
+
+            {/* Failing Rule */}
+            <ThemedText style={s.failingRuleText} numberOfLines={1}>
+              Rule: {enhancement.failingRule}
+            </ThemedText>
+
+            {/* Next Steps Checklist */}
+            <View style={{ marginTop: 6 }}>
+              {enhancement.nextSteps.map((step, stepIdx) => (
+                <View key={stepIdx} style={s.nextStepItem}>
+                  <View style={s.nextStepCheck}>
+                    <IconSymbol name="square" size={10} color={BP.ash} />
+                  </View>
+                  <ThemedText style={s.nextStepText}>{step}</ThemedText>
+                </View>
+              ))}
             </View>
-          </View>
-          <View style={s.exceptionFooter}>
-            <View style={s.batchMetaItem}>
-              <IconSymbol name="calendar" size={12} color={BP.ash} />
-              <ThemedText style={[s.batchMetaText, { color: BP.ash }]}>
-                {formatDate(item.date)}
-              </ThemedText>
+
+            <View style={s.exceptionFooter}>
+              <View style={s.batchMetaItem}>
+                <IconSymbol name="calendar" size={12} color={BP.ash} />
+                <ThemedText style={[s.batchMetaText, { color: BP.ash }]}>
+                  {formatDate(item.date)}
+                </ThemedText>
+              </View>
+              <View style={s.batchMetaItem}>
+                {item.resolution ? (
+                  <>
+                    <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
+                    <ThemedText
+                      style={[s.batchMetaText, { color: '#22C55E' }]}
+                      numberOfLines={1}
+                    >
+                      Resolution in progress
+                    </ThemedText>
+                  </>
+                ) : (
+                  <>
+                    <IconSymbol name="exclamationmark.circle.fill" size={12} color="#EF4444" />
+                    <ThemedText style={[s.batchMetaText, { color: '#EF4444' }]}>
+                      Unresolved
+                    </ThemedText>
+                  </>
+                )}
+              </View>
             </View>
-            <View style={s.batchMetaItem}>
-              {item.resolution ? (
-                <>
-                  <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
-                  <ThemedText
-                    style={[s.batchMetaText, { color: '#22C55E' }]}
-                    numberOfLines={1}
-                  >
-                    Resolution in progress
-                  </ThemedText>
-                </>
-              ) : (
-                <>
-                  <IconSymbol name="exclamationmark.circle.fill" size={12} color="#EF4444" />
-                  <ThemedText style={[s.batchMetaText, { color: '#EF4444' }]}>
-                    Unresolved
-                  </ThemedText>
-                </>
-              )}
-            </View>
-          </View>
-        </BizCard>
-      </Pressable>
-    ),
+          </BizCard>
+        </Pressable>
+      );
+    },
     [colors, onSelectException]
   );
 
@@ -1847,6 +1936,11 @@ export function BizOrgPaymentRailsV2({ colors, accentColor, role = 'B1' }: Props
     return <BizEmptyLock title="Payment Rails" message="This section is restricted. Contact the Founder for access." />;
   }
 
+  // --- Entity Scope ---
+  const { selectedEntityId } = useBusiness();
+  // TODO: Filter wallets, batches, approvals, exceptions, disputes, receipts
+  // by selectedEntityId once backend entity-scoped queries are available.
+
   // --- Data ---
   const data = useMemo(() => getBizPaymentRailsData(), []);
 
@@ -2681,6 +2775,66 @@ const s = StyleSheet.create({
   entityPickerText: {
     fontSize: 13,
     fontWeight: '600',
+  },
+
+  // Impact Tags
+  impactTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    alignSelf: 'flex-start',
+  },
+  impactTagText: {
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+  },
+
+  // Exception Enhancements
+  rootCauseBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    alignSelf: 'flex-start',
+  },
+  failingRuleText: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: BP.ash,
+    fontStyle: 'italic',
+    marginTop: 6,
+  },
+  nextStepItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 3,
+  },
+  nextStepCheck: {
+    width: 14,
+    height: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nextStepText: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: BP.ash,
+  },
+
+  // Governance Receipt Note
+  receiptNote: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: BP.ash,
+    marginTop: 6,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
 

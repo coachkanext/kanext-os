@@ -88,7 +88,9 @@ import { CompAssetsV2 } from '@/components/organization/comp-assets-v2';
 import { CompReportsV2 } from '@/components/organization/comp-reports-v2';
 import { CompSponsorsV2 } from '@/components/organization/comp-sponsors-v2';
 
-// Business v2 tab components
+// Business v2 tab components + scope bar + switcher
+import { EntityScopeBar } from '@/components/business/entity-scope-bar';
+import { EntitySwitcherSheet } from '@/components/business/entity-switcher-sheet';
 import { BizOrgEntitiesV2 } from '@/components/organization/biz-org-entities-v2';
 import { BizOrgPeopleV2 } from '@/components/organization/biz-org-people-v2';
 import { BizOrgRoomsV2 } from '@/components/organization/biz-org-rooms-v2';
@@ -101,6 +103,10 @@ import { BizOrgAssetsTab } from '@/components/organization/biz-org-assets-v2';
 import { BizOrgReportsV2 } from '@/components/organization/biz-org-reports-v2';
 
 // Church v2 org tab components
+import { ChurchOrgMinistries } from '@/components/organization/church-org-ministries-v2';
+import { ChurchOrgPeople } from '@/components/organization/church-org-people-v2';
+import { ChurchOrgRooms } from '@/components/organization/church-org-rooms-v2';
+import { ChurchOrgOperations } from '@/components/organization/church-org-operations-v2';
 import { ChurchOrgFacilities } from '@/components/organization/church-org-facilities';
 import { ChurchOrgResources } from '@/components/organization/church-org-resources';
 import { ChurchOrgDonations } from '@/components/organization/church-org-donations';
@@ -457,16 +463,16 @@ function ChurchOrganizationInner() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           <View key="ministries" style={{ flex: 1 }}>
-            <OrgMinistriesTab colors={colors} accentColor={accent} />
+            <ChurchOrgMinistries colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="people" style={{ flex: 1 }}>
-            <OrgPeopleTab mode="church" colors={colors} accentColor={accent} />
+            <ChurchOrgPeople colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="rooms" style={{ flex: 1 }}>
-            <RoomsHub mode="church" colors={colors} accentColor={accent} />
+            <ChurchOrgRooms colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="operations" style={{ flex: 1 }}>
-            <OrgOperationsTab mode="church" colors={colors} accentColor={accent} />
+            <ChurchOrgOperations colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="finance" style={{ flex: 1 }}>
             <OrgFinanceTab mode="church" colors={colors} accentColor={accent} />
@@ -792,8 +798,9 @@ function BusinessOrganizationInner() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = ModeColors.business.primary;
-  const { viewAsRole } = useBusiness();
+  const { viewAsRole, selectedEntity, selectedEntityId } = useBusiness();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [entitySwitcherVisible, setEntitySwitcherVisible] = useState(false);
   const pagerRef = useRef<PagerView>(null);
 
   const handleTabPress = useCallback((index: number) => {
@@ -821,6 +828,14 @@ function BusinessOrganizationInner() {
   return (
     <>
       <PagedTabBar tabs={ORG_TABS.business} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EntityScopeBar
+        entityId={selectedEntityId}
+        entityName={selectedEntity.name}
+        entityType={selectedEntity.type}
+        status="active"
+        onSwitch={() => setEntitySwitcherVisible(true)}
+        colors={colors}
+      />
       <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.business.length} onAdvance={handleTabPress}>
         <PagerView
           ref={pagerRef}
@@ -860,6 +875,10 @@ function BusinessOrganizationInner() {
           </View>
         </PagerView>
       </EdgeHoldAdvance>
+      <EntitySwitcherSheet
+        visible={entitySwitcherVisible}
+        onClose={() => setEntitySwitcherVisible(false)}
+      />
     </>
   );
 }

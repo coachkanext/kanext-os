@@ -43,6 +43,10 @@ export interface BizRoom {
   decisions: RoomDecision[];
   receipts: BizReceipt[];
   timeline: RoomTimelineEvent[];
+  visibility: 'internal' | 'board' | 'investor' | 'public';
+  nextAction: string;
+  checklist: { label: string; done: boolean }[];
+  artifactCategories: string[];
 }
 
 export interface RoomMember {
@@ -244,6 +248,16 @@ const SEEDED_ROOMS: BizRoom[] = [
       { id: 'tl-eo-7', action: 'EMEA expansion decision proposed', actor: 'David Okafor', timestamp: 'Feb 5, 2026 11:00 AM' },
       { id: 'tl-eo-8', action: 'OKR Scorecard mid-quarter revision', actor: 'Jordan Ellis', timestamp: 'Feb 10, 2026 2:00 PM' },
     ],
+    visibility: 'internal',
+    nextAction: 'Review EMEA expansion proposal and vote by Feb 20',
+    checklist: [
+      { label: 'Q1 OKR Scorecard finalized', done: true },
+      { label: 'Hiring plan signed off', done: true },
+      { label: 'Budget reallocation executed', done: true },
+      { label: 'EMEA expansion decision', done: false },
+      { label: 'Mid-quarter board update sent', done: false },
+    ],
+    artifactCategories: ['decks', 'models'],
   },
 
   // ---- 2. Series B Fundraising ----
@@ -288,6 +302,17 @@ const SEEDED_ROOMS: BizRoom[] = [
       { id: 'tl-fb-6', action: 'Uploaded Cap Table — Current', actor: 'Priya Patel', timestamp: 'Jan 28, 2026 10:00 AM' },
       { id: 'tl-fb-7', action: 'Sequoia term sheet received and submitted for decision', actor: 'Tanya Reeves', timestamp: 'Feb 10, 2026 9:30 AM' },
     ],
+    visibility: 'investor',
+    nextAction: 'Evaluate Sequoia lead term sheet and schedule partner meeting',
+    checklist: [
+      { label: 'Pitch deck finalized', done: true },
+      { label: 'Financial model reviewed by CFO', done: true },
+      { label: 'Cap table updated', done: true },
+      { label: 'Term sheet comparison matrix', done: false },
+      { label: 'Board approval for final terms', done: false },
+      { label: 'Wire instructions & closing docs', done: false },
+    ],
+    artifactCategories: ['decks', 'models', 'contracts'],
   },
 
   // ---- 3. Board Governance ----
@@ -333,6 +358,16 @@ const SEEDED_ROOMS: BizRoom[] = [
       { id: 'tl-bg-5', action: 'Q4 2025 financials ratified', actor: 'Board of Directors', timestamp: 'Jan 10, 2026 11:00 AM' },
       { id: 'tl-bg-6', action: 'Uploaded Q1 Board Meeting Agenda', actor: 'Sammy Kalejaiye', timestamp: 'Feb 1, 2026 4:00 PM' },
     ],
+    visibility: 'board',
+    nextAction: 'Distribute Q1 board pack and confirm attendance by Feb 25',
+    checklist: [
+      { label: 'Q4 financials ratified', done: true },
+      { label: 'Audit Committee charter approved', done: true },
+      { label: 'Series B authorization granted', done: true },
+      { label: 'Q1 board meeting agenda sent', done: true },
+      { label: 'Committee nominations finalized', done: false },
+    ],
+    artifactCategories: ['policies', 'contracts'],
   },
 
   // ---- 4. Valuetainment Partnership ----
@@ -374,6 +409,16 @@ const SEEDED_ROOMS: BizRoom[] = [
       { id: 'tl-vp-5', action: 'MOU countersigned by partner', actor: 'Patrick Bet-David', timestamp: 'Feb 2, 2026 1:00 PM' },
       { id: 'tl-vp-6', action: 'Joint podcast pilot decision proposed', actor: 'Sammy Kalejaiye', timestamp: 'Feb 8, 2026 10:00 AM' },
     ],
+    visibility: 'internal',
+    nextAction: 'Finalize joint podcast pilot scope and sign co-production agreement',
+    checklist: [
+      { label: 'MOU drafted and countersigned', done: true },
+      { label: 'Revenue share model approved', done: true },
+      { label: 'Podcast pilot scope defined', done: false },
+      { label: 'Co-production agreement signed', done: false },
+      { label: 'First episode recording scheduled', done: false },
+    ],
+    artifactCategories: ['contracts', 'models'],
   },
 
   // ---- 5. Target Bank Acquisition ----
@@ -422,6 +467,18 @@ const SEEDED_ROOMS: BizRoom[] = [
       { id: 'tl-tb-7', action: 'Uploaded Tech Stack Assessment', actor: 'Angela Morris', timestamp: 'Feb 1, 2026 11:00 AM' },
       { id: 'tl-tb-8', action: 'Uploaded Integration Plan — Draft', actor: 'Jordan Ellis', timestamp: 'Feb 8, 2026 4:00 PM' },
     ],
+    visibility: 'board',
+    nextAction: 'Draft final acquisition offer and circulate to board for approval',
+    checklist: [
+      { label: 'NDA executed', done: true },
+      { label: 'Phase 1 financial review', done: true },
+      { label: 'Phase 2 full audit authorized', done: true },
+      { label: 'Tech stack assessment complete', done: true },
+      { label: 'Integration plan finalized', done: false },
+      { label: 'Final offer submitted', done: false },
+      { label: 'Regulatory approval obtained', done: false },
+    ],
+    artifactCategories: ['models', 'contracts', 'technical'],
   },
 
   // ---- 6. FY2025 Finance Close (archived) ----
@@ -464,6 +521,15 @@ const SEEDED_ROOMS: BizRoom[] = [
       { id: 'tl-fc-6', action: 'Audited financials released to board', actor: 'Priya Patel', timestamp: 'Jan 15, 2026 10:00 AM' },
       { id: 'tl-fc-7', action: 'Room archived — FY2025 close complete', actor: 'Priya Patel', timestamp: 'Jan 18, 2026 9:00 AM' },
     ],
+    visibility: 'internal',
+    nextAction: 'Archived — no further actions required',
+    checklist: [
+      { label: 'Trial balance reconciled', done: true },
+      { label: 'Year-end journal entries posted', done: true },
+      { label: 'Controller sign-off obtained', done: true },
+      { label: 'Audited financials released to board', done: true },
+    ],
+    artifactCategories: ['models'],
   },
 
   // ---- 7. Payment Rails v2 Launch ----
@@ -509,6 +575,17 @@ const SEEDED_ROOMS: BizRoom[] = [
       { id: 'tl-pr-6', action: 'PCI DSS compliance audit passed', actor: 'Derek Chen', timestamp: 'Feb 3, 2026 11:00 AM' },
       { id: 'tl-pr-7', action: 'Uploaded Go-Live Readiness Checklist', actor: 'Jordan Ellis', timestamp: 'Feb 5, 2026 10:00 AM' },
     ],
+    visibility: 'internal',
+    nextAction: 'Confirm March 1 go-live date with engineering and compliance sign-off',
+    checklist: [
+      { label: 'Stripe processor integration complete', done: true },
+      { label: 'Ledger migration schema approved', done: true },
+      { label: 'PCI DSS compliance audit passed', done: true },
+      { label: 'Processor test results validated', done: true },
+      { label: 'Go-live readiness checklist complete', done: false },
+      { label: 'Production cutover executed', done: false },
+    ],
+    artifactCategories: ['technical', 'policies'],
   },
 
   // ---- 8. SOC 2 Compliance ----
@@ -550,6 +627,19 @@ const SEEDED_ROOMS: BizRoom[] = [
       { id: 'tl-sc-5', action: 'Uploaded Evidence Collection Tracker', actor: 'Raj Gupta', timestamp: 'Jan 15, 2026 11:00 AM' },
       { id: 'tl-sc-6', action: '22/25 controls validated — 3 findings identified', actor: 'Raj Gupta', timestamp: 'Feb 1, 2026 2:00 PM' },
     ],
+    visibility: 'internal',
+    nextAction: 'Complete remediation of 3 audit findings within 45-day window',
+    checklist: [
+      { label: 'Deloitte engagement signed', done: true },
+      { label: 'Controls matrix mapped (25 controls)', done: true },
+      { label: 'Evidence collection tracker built', done: true },
+      { label: '22/25 controls validated', done: true },
+      { label: 'Finding #1 remediated', done: false },
+      { label: 'Finding #2 remediated', done: false },
+      { label: 'Finding #3 remediated', done: false },
+      { label: 'Final audit report received', done: false },
+    ],
+    artifactCategories: ['policies', 'proof'],
   },
 
   // ---- 9. Product Demo — Investor Day (archived) ----
@@ -595,6 +685,17 @@ const SEEDED_ROOMS: BizRoom[] = [
       { id: 'tl-pd-7', action: 'Investor Day event completed successfully', actor: 'Sammy Kalejaiye', timestamp: 'Dec 15, 2025 6:00 PM' },
       { id: 'tl-pd-8', action: 'Uploaded Post-Event Feedback Summary', actor: 'Tanya Reeves', timestamp: 'Dec 18, 2025 11:00 AM' },
     ],
+    visibility: 'investor',
+    nextAction: 'Archived — no further actions required',
+    checklist: [
+      { label: 'Presentation deck finalized', done: true },
+      { label: 'Demo script approved', done: true },
+      { label: 'Live data environment sanitized', done: true },
+      { label: 'Rehearsal runs completed', done: true },
+      { label: 'Investor Day event executed', done: true },
+      { label: 'Post-event feedback collected', done: true },
+    ],
+    artifactCategories: ['decks', 'proof'],
   },
 ];
 

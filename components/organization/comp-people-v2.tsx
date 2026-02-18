@@ -940,6 +940,7 @@ export function CompPeopleV2({ colors, accentColor }: Props) {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          style={{ flexGrow: 0 }}
           contentContainerStyle={s.scopeBar}
         >
           {COMP_PEOPLE_SCOPE_CHIPS.map((chip, i) => (

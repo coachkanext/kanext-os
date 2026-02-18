@@ -221,6 +221,9 @@ export interface RailsException {
   date: string;
   resolution: string | null;
   entityName: string;
+  rootCauseCategory: string;
+  failingRule: string;
+  nextSteps: string[];
 }
 
 export const EXCEPTION_TYPE_COLORS: Record<ExceptionType, string> = {
@@ -246,6 +249,8 @@ export interface RailsDisputeTimelineEvent {
   action: string;
 }
 
+export type DisputeStage = 'new' | 'evidence_gathering' | 'submitted' | 'review' | 'resolved';
+
 export interface RailsDispute {
   id: string;
   description: string;
@@ -255,6 +260,7 @@ export interface RailsDispute {
   entityName: string;
   timeline: RailsDisputeTimelineEvent[];
   receiptChain: string[];
+  disputeStage: DisputeStage;
 }
 
 export const DISPUTE_STATUS_COLORS: Record<DisputeStatus, string> = {
@@ -282,6 +288,7 @@ export interface RailsAdminConfig {
   label: string;
   value: string;
   category: AdminConfigCategory;
+  sandboxMode: boolean;
 }
 
 export const ADMIN_CATEGORY_COLORS: Record<AdminConfigCategory, string> = {
@@ -309,6 +316,7 @@ export interface RailsNowSummary {
   icon: string;
   color: string;
   delta?: string;
+  impactTag?: string;
 }
 
 // =============================================================================
@@ -635,6 +643,13 @@ const EXCEPTIONS: RailsException[] = [
     date: '2026-02-14',
     resolution: null,
     entityName: 'KaNeXT HoldCo',
+    rootCauseCategory: 'Technical',
+    failingRule: 'IRS EFTPS gateway rejected — invalid EIN format on submission',
+    nextSteps: [
+      'Verify EIN format against IRS EFTPS requirements',
+      'Re-submit with corrected employer identification number',
+      'Confirm acceptance via EFTPS acknowledgment receipt',
+    ],
   },
   {
     id: 'exc-002',
@@ -646,6 +661,13 @@ const EXCEPTIONS: RailsException[] = [
     date: '2026-02-11',
     resolution: null,
     entityName: 'KaNeXT OpsCo',
+    rootCauseCategory: 'Budget',
+    failingRule: 'Vendor invoice exceeds contracted tier ceiling by $4,200',
+    nextSteps: [
+      'Await AWS usage breakdown report',
+      'Compare usage against contracted tier limits',
+      'Negotiate credit or adjusted invoice',
+    ],
   },
   {
     id: 'exc-003',
@@ -657,6 +679,12 @@ const EXCEPTIONS: RailsException[] = [
     date: '2026-02-09',
     resolution: 'Re-submitted with corrected routing — awaiting confirmation',
     entityName: 'KaNeXT OpsCo',
+    rootCauseCategory: 'Technical',
+    failingRule: 'ACH return code R03 — no account / unable to locate account',
+    nextSteps: [
+      'Confirm corrected routing number with recipient',
+      'Monitor re-submission settlement status',
+    ],
   },
   {
     id: 'exc-004',
@@ -668,6 +696,13 @@ const EXCEPTIONS: RailsException[] = [
     date: '2026-02-13',
     resolution: null,
     entityName: 'KaNeXT OpsCo',
+    rootCauseCategory: 'Compliance',
+    failingRule: 'Single equipment reimbursement exceeds $3,000 policy cap',
+    nextSteps: [
+      'Request CFO override for policy exception',
+      'Obtain additional documentation for equipment justification',
+      'Re-submit with override approval attached',
+    ],
   },
 ];
 
@@ -690,6 +725,7 @@ const DISPUTES: RailsDispute[] = [
       { date: '2026-02-16', action: 'Awaiting usage breakdown report from AWS' },
     ],
     receiptChain: ['rcp-001', 'rcp-004', 'rcp-007'],
+    disputeStage: 'evidence_gathering',
   },
   {
     id: 'disp-002',
@@ -703,6 +739,7 @@ const DISPUTES: RailsDispute[] = [
       { date: '2026-02-16', action: 'Dispute notice sent to Creative Agency AP team' },
     ],
     receiptChain: ['rcp-003', 'rcp-008'],
+    disputeStage: 'new',
   },
 ];
 
@@ -850,18 +887,18 @@ const RECEIPTS: BizReceipt[] = [
 // =============================================================================
 
 const ADMIN_CONFIG: RailsAdminConfig[] = [
-  { id: 'cfg-001', label: 'Primary Bank Provider', value: 'Mercury Financial', category: 'provider' },
-  { id: 'cfg-002', label: 'Payment Processor', value: 'Stripe Treasury', category: 'provider' },
-  { id: 'cfg-003', label: 'ACH Provider', value: 'Modern Treasury', category: 'provider' },
-  { id: 'cfg-004', label: 'Batch Settlement Webhook', value: 'https://api.kanext.io/webhooks/settlement', category: 'webhook' },
-  { id: 'cfg-005', label: 'Exception Alert Webhook', value: 'https://api.kanext.io/webhooks/exceptions', category: 'webhook' },
-  { id: 'cfg-006', label: 'Slack Notification Channel', value: '#finance-alerts', category: 'webhook' },
-  { id: 'cfg-007', label: 'Single Batch Limit', value: '$5,000,000', category: 'limit' },
-  { id: 'cfg-008', label: 'Daily Outflow Limit', value: '$10,000,000', category: 'limit' },
-  { id: 'cfg-009', label: 'Auto-Approve Threshold', value: '$5,000', category: 'limit' },
-  { id: 'cfg-010', label: 'Default Currency', value: 'USD', category: 'general' },
-  { id: 'cfg-011', label: 'Reconciliation Frequency', value: 'Daily', category: 'general' },
-  { id: 'cfg-012', label: 'Receipt Retention Period', value: '7 years', category: 'general' },
+  { id: 'cfg-001', label: 'Primary Bank Provider', value: 'Mercury Financial', category: 'provider', sandboxMode: false },
+  { id: 'cfg-002', label: 'Payment Processor', value: 'Stripe Treasury', category: 'provider', sandboxMode: false },
+  { id: 'cfg-003', label: 'ACH Provider', value: 'Modern Treasury', category: 'provider', sandboxMode: true },
+  { id: 'cfg-004', label: 'Batch Settlement Webhook', value: 'https://api.kanext.io/webhooks/settlement', category: 'webhook', sandboxMode: false },
+  { id: 'cfg-005', label: 'Exception Alert Webhook', value: 'https://api.kanext.io/webhooks/exceptions', category: 'webhook', sandboxMode: false },
+  { id: 'cfg-006', label: 'Slack Notification Channel', value: '#finance-alerts', category: 'webhook', sandboxMode: false },
+  { id: 'cfg-007', label: 'Single Batch Limit', value: '$5,000,000', category: 'limit', sandboxMode: false },
+  { id: 'cfg-008', label: 'Daily Outflow Limit', value: '$10,000,000', category: 'limit', sandboxMode: false },
+  { id: 'cfg-009', label: 'Auto-Approve Threshold', value: '$5,000', category: 'limit', sandboxMode: true },
+  { id: 'cfg-010', label: 'Default Currency', value: 'USD', category: 'general', sandboxMode: false },
+  { id: 'cfg-011', label: 'Reconciliation Frequency', value: 'Daily', category: 'general', sandboxMode: false },
+  { id: 'cfg-012', label: 'Receipt Retention Period', value: '7 years', category: 'general', sandboxMode: false },
 ];
 
 // =============================================================================
@@ -876,6 +913,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     icon: 'paperplane.fill',
     color: '#0EA5E9',
     delta: '2 batches',
+    impactTag: 'Blocks Vendor',
   },
   {
     id: 'now-pending',
@@ -884,6 +922,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     icon: 'clock.fill',
     color: '#F59E0B',
     delta: '4 items',
+    impactTag: 'Blocks Payroll',
   },
   {
     id: 'now-settled-today',
@@ -900,6 +939,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     icon: 'exclamationmark.triangle.fill',
     color: '#EF4444',
     delta: '$101,700 at risk',
+    impactTag: 'Blocks Close',
   },
   {
     id: 'now-wallet-total',
@@ -916,6 +956,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     icon: 'arrow.up.circle.fill',
     color: '#6366F1',
     delta: '3 batches',
+    impactTag: 'Blocks Vendor',
   },
 ];
 

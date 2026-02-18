@@ -76,6 +76,7 @@ export interface ComplianceControl {
   type: 'preventive' | 'detective' | 'corrective';
   effectiveness: 'effective' | 'partially_effective' | 'ineffective';
   canBlockRails: boolean;
+  blockRelease: boolean;
   lastTested: string;
   testResult: 'pass' | 'fail' | 'partial';
   linkedRiskIds: string[];
@@ -577,6 +578,7 @@ const controls: ComplianceControl[] = [
     type: 'preventive',
     effectiveness: 'effective',
     canBlockRails: false,
+    blockRelease: false,
     lastTested: '2026-01-15',
     testResult: 'pass',
     linkedRiskIds: ['crisk-1'],
@@ -589,6 +591,7 @@ const controls: ComplianceControl[] = [
     type: 'detective',
     effectiveness: 'effective',
     canBlockRails: true,
+    blockRelease: true,
     lastTested: '2026-02-01',
     testResult: 'pass',
     linkedRiskIds: ['crisk-2'],
@@ -601,6 +604,7 @@ const controls: ComplianceControl[] = [
     type: 'corrective',
     effectiveness: 'effective',
     canBlockRails: false,
+    blockRelease: false,
     lastTested: '2026-01-20',
     testResult: 'pass',
     linkedRiskIds: ['crisk-3'],
@@ -613,6 +617,7 @@ const controls: ComplianceControl[] = [
     type: 'preventive',
     effectiveness: 'partially_effective',
     canBlockRails: true,
+    blockRelease: true,
     lastTested: '2026-02-05',
     testResult: 'partial',
     linkedRiskIds: ['crisk-5'],
@@ -625,6 +630,7 @@ const controls: ComplianceControl[] = [
     type: 'detective',
     effectiveness: 'partially_effective',
     canBlockRails: false,
+    blockRelease: false,
     lastTested: '2026-01-28',
     testResult: 'partial',
     linkedRiskIds: ['crisk-1', 'crisk-6'],
@@ -637,6 +643,7 @@ const controls: ComplianceControl[] = [
     type: 'preventive',
     effectiveness: 'effective',
     canBlockRails: true,
+    blockRelease: true,
     lastTested: '2026-02-10',
     testResult: 'pass',
     linkedRiskIds: ['crisk-2', 'crisk-5'],
@@ -649,6 +656,7 @@ const controls: ComplianceControl[] = [
     type: 'corrective',
     effectiveness: 'ineffective',
     canBlockRails: false,
+    blockRelease: false,
     lastTested: '2025-12-15',
     testResult: 'fail',
     linkedRiskIds: ['crisk-4'],
@@ -661,6 +669,7 @@ const controls: ComplianceControl[] = [
     type: 'detective',
     effectiveness: 'effective',
     canBlockRails: false,
+    blockRelease: false,
     lastTested: '2026-02-01',
     testResult: 'pass',
     linkedRiskIds: ['crisk-6'],
@@ -945,6 +954,19 @@ const recentActivity: ComplianceActivity[] = [
 // DATA GETTER
 // =============================================================================
 
+export interface RailsReadiness {
+  score: number;
+  label: string;
+  color: string;
+}
+
+export interface AttestationRequirement {
+  policyId: string;
+  attestedBy: string[];
+  dueDate: string;
+  status: 'complete' | 'pending' | 'overdue';
+}
+
 export interface BizComplianceV2Data {
   overview: ComplianceOverview;
   policies: CompliancePolicy[];
@@ -956,7 +978,54 @@ export interface BizComplianceV2Data {
   exceptions: ComplianceException[];
   exportOptions: ComplianceExportOption[];
   recentActivity: ComplianceActivity[];
+  railsReadiness: RailsReadiness;
+  attestationRequirements: AttestationRequirement[];
 }
+
+// =============================================================================
+// RAILS READINESS
+// =============================================================================
+
+const railsReadiness: RailsReadiness = {
+  score: 72,
+  label: 'On Track',
+  color: '#F59E0B',
+};
+
+// =============================================================================
+// ATTESTATION REQUIREMENTS
+// =============================================================================
+
+const attestationRequirements: AttestationRequirement[] = [
+  {
+    policyId: 'cpol-1',
+    attestedBy: ['Sarah Chen', 'David Kim'],
+    dueDate: '2026-03-15',
+    status: 'complete',
+  },
+  {
+    policyId: 'cpol-2',
+    attestedBy: ['David Kim'],
+    dueDate: '2026-03-01',
+    status: 'pending',
+  },
+  {
+    policyId: 'cpol-5',
+    attestedBy: [],
+    dueDate: '2026-02-15',
+    status: 'overdue',
+  },
+  {
+    policyId: 'cpol-9',
+    attestedBy: ['Victor Borg', 'Maria Rodriguez'],
+    dueDate: '2026-04-01',
+    status: 'complete',
+  },
+];
+
+// =============================================================================
+// DATA GETTER
+// =============================================================================
 
 export function getBizComplianceData(): BizComplianceV2Data {
   return {
@@ -970,5 +1039,7 @@ export function getBizComplianceData(): BizComplianceV2Data {
     exceptions,
     exportOptions,
     recentActivity,
+    railsReadiness,
+    attestationRequirements,
   };
 }

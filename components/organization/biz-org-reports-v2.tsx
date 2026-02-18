@@ -24,6 +24,7 @@ import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/them
 import { BizCard, BizSubTabBar, BizStatusChip, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel, isInvestor } from '@/utils/business-rbac';
+import { useBusiness } from '@/context/business-context';
 import type { BizReceipt, CrossTabLink } from '@/data/biz-org-shared-types';
 import { KANEXT_HOLDCO, KANEXT_OPSCO, SEEDED_ENTITY_NAMES } from '@/data/biz-org-shared-types';
 import {
@@ -52,6 +53,81 @@ import type {
 } from '@/data/mock-biz-org-reports';
 
 const BP = BusinessPalette;
+
+// =============================================================================
+// STATIC DATA — TIME RANGES, OVERVIEW ENHANCEMENTS, DASHBOARDS, AUDIT LOG
+// =============================================================================
+
+const TIME_RANGES = [
+  { id: '7d', label: '7D' },
+  { id: '30d', label: '30D' },
+  { id: 'qtd', label: 'QTD' },
+  { id: 'ytd', label: 'YTD' },
+  { id: 'custom', label: 'Custom' },
+];
+
+const TRUTH_STRIP = [
+  { label: 'Finance', status: 'green' as const },
+  { label: 'Rails', status: 'yellow' as const },
+  { label: 'Compliance', status: 'yellow' as const },
+  { label: 'Ops', status: 'green' as const },
+];
+
+const WHAT_CHANGED = [
+  { id: 'wc-1', date: 'Feb 17', description: 'Payment Rails Launch initiative moved to In Progress', tab: 'Operations' },
+  { id: 'wc-2', date: 'Feb 16', description: 'OCC charter application submitted for Target Bank', tab: 'Compliance' },
+  { id: 'wc-3', date: 'Feb 15', description: 'Q1 board package draft uploaded', tab: 'Reports' },
+  { id: 'wc-4', date: 'Feb 14', description: 'Delaware franchise tax payment processed', tab: 'Finance' },
+  { id: 'wc-5', date: 'Feb 13', description: 'Bank Charter App moved to Under Review', tab: 'Operations' },
+  { id: 'wc-6', date: 'Feb 12', description: 'IP assignment agreement sent to new contractors', tab: 'Legal' },
+];
+
+const TOP_RISKS = [
+  { id: 'tr-1', label: 'Malta FA compliance docs overdue — could affect club license', severity: 'high' as const, source: 'Compliance' },
+  { id: 'tr-2', label: 'PCI-DSS recertification deadline approaching (Mar 31)', severity: 'high' as const, source: 'Compliance' },
+  { id: 'tr-3', label: 'OCC charter approval timeline uncertain', severity: 'medium' as const, source: 'Legal' },
+  { id: 'tr-4', label: 'Revenue share reconciliation delayed', severity: 'low' as const, source: 'Finance' },
+];
+
+const DASHBOARDS_READINESS = [
+  { id: 'dash-ceo', label: 'CEO Dashboard', audience: 'Founder', readiness: 95, lastUpdated: 'Feb 17' },
+  { id: 'dash-board', label: 'Board Pack', audience: 'Board', readiness: 78, lastUpdated: 'Feb 15' },
+  { id: 'dash-investor', label: 'Investor Update', audience: 'Investor', readiness: 60, lastUpdated: 'Feb 10' },
+  { id: 'dash-bank', label: 'Bank Readiness', audience: 'Regulatory', readiness: 45, lastUpdated: 'Feb 8' },
+];
+
+const AUDIT_LOG = [
+  { id: 'al-1', action: 'exported' as const, actor: 'Sammy Kalejaiye', timestamp: 'Feb 17 09:30', reportLabel: 'CEO Dashboard' },
+  { id: 'al-2', action: 'published' as const, actor: 'Jordan Blake', timestamp: 'Feb 15 16:00', reportLabel: 'Q1 Board Pack' },
+  { id: 'al-3', action: 'accessed' as const, actor: 'Rachel Kim', timestamp: 'Feb 14 11:00', reportLabel: 'Compliance Summary' },
+  { id: 'al-4', action: 'ran' as const, actor: 'Tom Bradley', timestamp: 'Feb 13 14:30', reportLabel: 'Financial Health Report' },
+  { id: 'al-5', action: 'exported' as const, actor: 'Liam Chen', timestamp: 'Feb 12 10:00', reportLabel: 'Investor Update' },
+];
+
+const TRUTH_STATUS_COLOR: Record<string, string> = {
+  green: '#22C55E',
+  yellow: '#F59E0B',
+  red: '#EF4444',
+};
+
+const SEVERITY_BORDER_COLOR: Record<string, string> = {
+  high: '#EF4444',
+  medium: '#F59E0B',
+  low: '#9CA3AF',
+};
+
+const AUDIT_ACTION_ICON: Record<string, string> = {
+  exported: 'arrow.down.doc',
+  published: 'paperplane',
+  accessed: 'eye',
+  ran: 'play.circle',
+};
+
+function readinessColor(value: number): string {
+  if (value >= 80) return '#22C55E';
+  if (value >= 50) return '#F59E0B';
+  return '#EF4444';
+}
 
 // =============================================================================
 // PROPS
@@ -166,8 +242,77 @@ function OverviewTab({
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
+      {/* Truth Strip */}
+      <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Health</ThemedText>
+      <View style={s.truthStrip}>
+        {TRUTH_STRIP.map((item) => (
+          <View key={item.label} style={s.truthStripItem}>
+            <View style={[s.truthStripDot, { backgroundColor: TRUTH_STATUS_COLOR[item.status] }]} />
+            <ThemedText style={[{ color: colors.textSecondary, fontSize: 12, fontWeight: '600' }]}>
+              {item.label}
+            </ThemedText>
+          </View>
+        ))}
+      </View>
+
+      {/* What Changed (7D) */}
+      <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.lg }]}>
+        What Changed (7D)
+      </ThemedText>
+      <View style={[s.changeLogCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        {WHAT_CHANGED.map((item, idx) => (
+          <View
+            key={item.id}
+            style={[
+              s.changeLogRow,
+              idx < WHAT_CHANGED.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+            ]}
+          >
+            <ThemedText style={[s.changeLogDate, { color: colors.text }]}>{item.date}</ThemedText>
+            <ThemedText style={[s.changeLogDesc, { color: colors.textSecondary }]} numberOfLines={2}>
+              {item.description}
+            </ThemedText>
+            <View style={[s.changeLogTab, { backgroundColor: accentColor + '15' }]}>
+              <ThemedText style={{ fontSize: 9, fontWeight: '700', color: accentColor, letterSpacing: 0.3 }}>
+                {item.tab.toUpperCase()}
+              </ThemedText>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* Top Risks */}
+      <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.lg }]}>
+        Top Risks
+      </ThemedText>
+      <View style={[s.riskCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        {TOP_RISKS.map((risk, idx) => (
+          <View
+            key={risk.id}
+            style={[
+              s.riskRow,
+              { borderLeftColor: SEVERITY_BORDER_COLOR[risk.severity] },
+              idx < TOP_RISKS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+            ]}
+          >
+            <View style={{ flex: 1 }}>
+              <ThemedText style={[s.riskLabel, { color: colors.text }]} numberOfLines={2}>
+                {risk.label}
+              </ThemedText>
+            </View>
+            <View style={s.riskSeverity}>
+              <View style={[s.riskSource, { backgroundColor: SEVERITY_BORDER_COLOR[risk.severity] + '18' }]}>
+                <ThemedText style={{ fontSize: 9, fontWeight: '700', color: SEVERITY_BORDER_COLOR[risk.severity], letterSpacing: 0.3 }}>
+                  {risk.source.toUpperCase()}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+        ))}
+      </View>
+
       {/* Stat cards */}
-      <ThemedText style={[s.sectionTitle, { color: colors.text }]}>At a Glance</ThemedText>
+      <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.lg }]}>At a Glance</ThemedText>
       <View style={s.statGrid}>
         {statCards.map((card, idx) => (
           <View
@@ -367,7 +512,51 @@ function DashboardsTab({
 }) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
+      {/* Readiness Indicators */}
       <ThemedText style={[s.sectionTitle, { color: colors.text }]}>
+        Readiness
+      </ThemedText>
+      <ThemedText style={[s.sectionSubtitle, { color: colors.textSecondary }]}>
+        Track how complete each dashboard or deliverable is before sharing.
+      </ThemedText>
+      {DASHBOARDS_READINESS.map((dash) => {
+        const barColor = readinessColor(dash.readiness);
+        return (
+          <View
+            key={dash.id}
+            style={[s.dashboardCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <ThemedText style={[{ fontSize: 14, fontWeight: '700', color: colors.text }]}>
+                {dash.label}
+              </ThemedText>
+              <StatusBadge label={dash.audience.toUpperCase()} color={barColor} />
+            </View>
+            {/* Progress bar */}
+            <View style={[s.dashboardReadiness, { backgroundColor: colors.backgroundTertiary }]}>
+              <View
+                style={{
+                  width: `${dash.readiness}%`,
+                  height: '100%',
+                  backgroundColor: barColor,
+                  borderRadius: BorderRadius.full,
+                }}
+              />
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
+              <ThemedText style={{ fontSize: 11, fontWeight: '600', color: barColor }}>
+                {dash.readiness}%
+              </ThemedText>
+              <ThemedText style={{ fontSize: 11, color: colors.textTertiary }}>
+                Updated {dash.lastUpdated}
+              </ThemedText>
+            </View>
+          </View>
+        );
+      })}
+
+      {/* Configurable Tiles */}
+      <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.lg }]}>
         Configurable Dashboards
       </ThemedText>
       <ThemedText style={[s.sectionSubtitle, { color: colors.textSecondary }]}>
@@ -723,6 +912,7 @@ function PackBuilderTab({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.packSelectorRow}
       >
         {templates.map((tmpl) => {
@@ -841,12 +1031,14 @@ function ExportsTab({
   exportLog,
   searchQuery,
   onExportAll,
+  role = 'B1',
 }: {
   colors: typeof Colors.light;
   accentColor: string;
   exportLog: ExportLogEntry[];
   searchQuery: string;
   onExportAll: () => void;
+  role?: BusinessRoleLens;
 }) {
   const filtered = useMemo(() => {
     if (!searchQuery.trim()) return exportLog;
@@ -927,6 +1119,42 @@ function ExportsTab({
         )}
         ListEmptyComponent={
           <EmptyState icon="square.and.arrow.up" label="No export history" colors={colors} />
+        }
+        ListFooterComponent={
+          isFounder(role) ? (
+            <View style={{ marginTop: Spacing.lg }}>
+              <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Audit Log</ThemedText>
+              <View style={[s.changeLogCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                {AUDIT_LOG.map((entry, idx) => (
+                  <View
+                    key={entry.id}
+                    style={[
+                      s.auditLogRow,
+                      idx < AUDIT_LOG.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+                    ]}
+                  >
+                    <View style={[s.auditLogIcon, { backgroundColor: accentColor + '15' }]}>
+                      <IconSymbol
+                        name={AUDIT_ACTION_ICON[entry.action] as any}
+                        size={14}
+                        color={accentColor}
+                      />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <ThemedText style={[s.auditLogText, { color: colors.text }]}>
+                        <ThemedText style={{ fontWeight: '700', color: colors.text }}>{entry.actor}</ThemedText>
+                        {' '}{entry.action}{' '}
+                        <ThemedText style={{ fontWeight: '600', color: colors.text }}>{entry.reportLabel}</ThemedText>
+                      </ThemedText>
+                      <ThemedText style={{ fontSize: 11, color: colors.textTertiary, marginTop: 2 }}>
+                        {entry.timestamp}
+                      </ThemedText>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
+          ) : null
         }
       />
     </View>
@@ -1324,6 +1552,14 @@ export function BizOrgReportsV2({ colors, accentColor, role = 'B1' }: Props) {
     return <BizEmptyLock title="Reports" message="This section is restricted. Contact the Founder for access." />;
   }
 
+  // === Entity scope integration ===
+  const { selectedEntityId } = useBusiness();
+  // TODO: Filter reports / dashboards / data room by selectedEntityId when backend is ready
+
+  // === Time range & compare state ===
+  const [timeRange, setTimeRange] = useState('30d');
+  const [comparePrior, setComparePrior] = useState(false);
+
   // === Sub-tab state ===
   const [activeTab, setActiveTab] = useState<BizReportsV2TabId>('overview');
   const [searchQuery, setSearchQuery] = useState('');
@@ -1456,6 +1692,7 @@ export function BizOrgReportsV2({ colors, accentColor, role = 'B1' }: Props) {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
+              style={{ flexGrow: 0 }}
               contentContainerStyle={s.filterChipRow}
             >
               {categoryFilterChips.map((chip) => {
@@ -1558,6 +1795,7 @@ export function BizOrgReportsV2({ colors, accentColor, role = 'B1' }: Props) {
             exportLog={data.exportLog}
             searchQuery={searchQuery}
             onExportAll={handleExportAll}
+            role={role}
           />
         );
 
@@ -1578,6 +1816,61 @@ export function BizOrgReportsV2({ colors, accentColor, role = 'B1' }: Props) {
   // === Render ===
   return (
     <View style={s.container}>
+      {/* Time Range Selector */}
+      <View style={s.timeRangeRow}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ flexGrow: 0 }}
+          contentContainerStyle={{ gap: 6, paddingRight: Spacing.sm }}
+        >
+          {TIME_RANGES.map((tr) => {
+            const isActive = tr.id === timeRange;
+            return (
+              <Pressable
+                key={tr.id}
+                style={[
+                  s.timeRangePill,
+                  isActive && [s.timeRangePillActive, { backgroundColor: accentColor + '20', borderColor: accentColor + '40' }],
+                ]}
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  setTimeRange(tr.id);
+                }}
+              >
+                <ThemedText
+                  style={[
+                    s.timeRangePillText,
+                    { color: isActive ? accentColor : colors.textSecondary },
+                  ]}
+                >
+                  {tr.label}
+                </ThemedText>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+        <Pressable
+          style={[
+            s.compareToggle,
+            comparePrior && [s.compareToggleActive, { backgroundColor: accentColor + '20', borderColor: accentColor + '40' }],
+          ]}
+          onPress={() => {
+            Haptics.selectionAsync();
+            setComparePrior((prev) => !prev);
+          }}
+        >
+          <ThemedText
+            style={[
+              s.timeRangePillText,
+              { color: comparePrior ? accentColor : colors.textSecondary },
+            ]}
+          >
+            vs Prior
+          </ThemedText>
+        </Pressable>
+      </View>
+
       {/* Sub-tab bar */}
       <BizSubTabBar
         tabs={subTabs}
@@ -2322,5 +2615,158 @@ const s = StyleSheet.create({
   sheetGhostButtonText: {
     fontSize: 14,
     fontWeight: '600',
+  },
+
+  // =========================================================================
+  // TIME RANGE SELECTOR
+  // =========================================================================
+  timeRangeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  timeRangePill: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  timeRangePillActive: {
+    // backgroundColor and borderColor applied inline
+  },
+  timeRangePillText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  compareToggle: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  compareToggleActive: {
+    // backgroundColor and borderColor applied inline
+  },
+
+  // =========================================================================
+  // TRUTH STRIP
+  // =========================================================================
+  truthStrip: {
+    flexDirection: 'row',
+    gap: Spacing.lg,
+    marginBottom: Spacing.sm,
+  },
+  truthStripItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  truthStripDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+
+  // =========================================================================
+  // WHAT CHANGED (CHANGE LOG)
+  // =========================================================================
+  changeLogCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  changeLogRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  changeLogDate: {
+    fontSize: 12,
+    fontWeight: '700',
+    width: 48,
+  },
+  changeLogDesc: {
+    fontSize: 12,
+    lineHeight: 17,
+    flex: 1,
+  },
+  changeLogTab: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+  },
+
+  // =========================================================================
+  // TOP RISKS
+  // =========================================================================
+  riskCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  riskRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderLeftWidth: 3,
+    gap: Spacing.sm,
+  },
+  riskSeverity: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  riskLabel: {
+    fontSize: 12,
+    lineHeight: 17,
+  },
+  riskSource: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+  },
+
+  // =========================================================================
+  // DASHBOARD READINESS CARDS
+  // =========================================================================
+  dashboardCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  dashboardReadiness: {
+    height: 6,
+    borderRadius: BorderRadius.full,
+    overflow: 'hidden',
+  },
+
+  // =========================================================================
+  // AUDIT LOG
+  // =========================================================================
+  auditLogRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  auditLogIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 2,
+  },
+  auditLogText: {
+    fontSize: 13,
+    lineHeight: 18,
   },
 });

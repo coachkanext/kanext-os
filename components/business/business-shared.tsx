@@ -54,6 +54,7 @@ export function BizSubTabBar({ tabs, activeId, onSelect }: BizSubTabBarProps) {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={{ flexGrow: 0 }}
       contentContainerStyle={s.subTabRow}
     >
       {tabs.map((t) => {

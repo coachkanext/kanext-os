@@ -85,6 +85,30 @@ export interface ExportLogEntry {
   accessedBy: string[];
 }
 
+export type ReportTimeRange = '7d' | '30d' | 'qtd' | 'ytd' | 'custom';
+
+export interface ReportChangeLogEntry {
+  id: string;
+  date: string;
+  description: string;
+  tab: string;
+}
+
+export interface ReportTopRisk {
+  id: string;
+  label: string;
+  severity: 'high' | 'medium' | 'low';
+  source: string;
+}
+
+export interface ReportAuditLogEntry {
+  id: string;
+  action: 'ran' | 'published' | 'accessed' | 'exported';
+  actor: string;
+  timestamp: string;
+  reportId: string;
+}
+
 export interface ReportOverviewStats {
   totalReports: number;
   recentlyGenerated: number;
@@ -843,6 +867,128 @@ export const DATA_ROOM_SECTIONS = [
 ] as const;
 
 // =============================================================================
+// SEEDED DATA — TIME RANGE DEFAULT
+// =============================================================================
+
+const defaultTimeRange: ReportTimeRange = '30d';
+
+// =============================================================================
+// SEEDED DATA — CHANGE LOG
+// =============================================================================
+
+const CHANGE_LOG: ReportChangeLogEntry[] = [
+  {
+    id: 'cl-01',
+    date: '2026-02-17',
+    description: 'Payment Rails reconciliation report regenerated with corrected ACH totals',
+    tab: 'rails',
+  },
+  {
+    id: 'cl-02',
+    date: '2026-02-16',
+    description: 'Board Pack template updated — added ESG section placeholder',
+    tab: 'pack_builder',
+  },
+  {
+    id: 'cl-03',
+    date: '2026-02-15',
+    description: 'SOC 2 certificate uploaded to Data Room (v1.1 replacing v1.0)',
+    tab: 'data_room',
+  },
+  {
+    id: 'cl-04',
+    date: '2026-02-14',
+    description: 'Q4 P&L exported by CFO and shared with external auditors',
+    tab: 'finance',
+  },
+  {
+    id: 'cl-05',
+    date: '2026-02-13',
+    description: 'New report template added: Runway Analysis under Finance',
+    tab: 'library',
+  },
+  {
+    id: 'cl-06',
+    date: '2026-02-12',
+    description: 'Investor Update pack built and distributed to 47 investors',
+    tab: 'pack_builder',
+  },
+];
+
+// =============================================================================
+// SEEDED DATA — TOP RISKS
+// =============================================================================
+
+const TOP_RISKS: ReportTopRisk[] = [
+  {
+    id: 'tr-01',
+    label: 'Cash runway below 12-month threshold',
+    severity: 'high',
+    source: 'Finance — Runway Analysis',
+  },
+  {
+    id: 'tr-02',
+    label: 'SOC 2 remediation items still open (2 of 3)',
+    severity: 'medium',
+    source: 'Compliance & Legal — Audit Summary',
+  },
+  {
+    id: 'tr-03',
+    label: 'Vendor contract expiry: Figma renewal pending',
+    severity: 'low',
+    source: 'Operations — Vendor Review',
+  },
+  {
+    id: 'tr-04',
+    label: 'Sliema FC regulatory filing deadline approaching',
+    severity: 'high',
+    source: 'Compliance & Legal — Filing Tracker',
+  },
+];
+
+// =============================================================================
+// SEEDED DATA — AUDIT LOG
+// =============================================================================
+
+const AUDIT_LOG: ReportAuditLogEntry[] = [
+  {
+    id: 'al-01',
+    action: 'ran',
+    actor: 'Sammy Kalejaiye',
+    timestamp: '2026-02-17T14:30:00Z',
+    reportId: 'rpt-f-01',
+  },
+  {
+    id: 'al-02',
+    action: 'exported',
+    actor: 'CFO — Morgan Blake',
+    timestamp: '2026-02-16T11:15:00Z',
+    reportId: 'rpt-f-02',
+  },
+  {
+    id: 'al-03',
+    action: 'published',
+    actor: 'Sammy Kalejaiye',
+    timestamp: '2026-02-15T09:00:00Z',
+    reportId: 'rpt-cl-01',
+  },
+  {
+    id: 'al-04',
+    action: 'accessed',
+    actor: 'VP Finance — Aisha Patel',
+    timestamp: '2026-02-14T16:45:00Z',
+    reportId: 'rpt-r-01',
+  },
+  {
+    id: 'al-05',
+    action: 'exported',
+    actor: 'General Counsel — Taylor Brooks',
+    timestamp: '2026-02-13T10:20:00Z',
+    reportId: 'rpt-a-01',
+  },
+];
+
+// =============================================================================
 // PUBLIC DATA ACCESSOR
 // =============================================================================
 
@@ -855,5 +1001,9 @@ export function getBizReportsData() {
     packTemplates: PACK_TEMPLATES,
     exportLog: EXPORT_LOG,
     reportTemplates: REPORT_TEMPLATES,
+    timeRange: defaultTimeRange,
+    changeLog: CHANGE_LOG,
+    topRisks: TOP_RISKS,
+    auditLog: AUDIT_LOG,
   };
 }

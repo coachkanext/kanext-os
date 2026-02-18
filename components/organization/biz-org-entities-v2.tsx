@@ -1,10 +1,11 @@
 /**
  * Business Organization Entities V2 — Health-centric entity management.
- * Sub-tabs: Overview | Entity List | Requirements | Activity
- * Traffic-light health model (Governance / Finance / Rails / Compliance).
+ * New layout: Fixed header + Filter chips + View toggle (Cards/List) +
+ * Enhanced entity cards + Triage-first sorting + Entity detail bottom sheet.
+ * RBAC: B1 full, B2b read-only exact, B2a curated, B3/B4 public profiles only.
  */
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, ScrollView, FlatList, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -12,7 +13,6 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
 import {
   BizCard,
-  BizSubTabBar,
   BizStatusChip,
   BizAlertCard,
   BizEmptyLock,
@@ -20,27 +20,24 @@ import {
   statusColor,
 } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
-import { isFounder, isBoardLevel } from '@/utils/business-rbac';
+import { isFounder, isBoardLevel, isInvestor } from '@/utils/business-rbac';
 import type {
   TrafficLight,
   BizEntityType,
   EntityHealth,
+  EntityStatus,
+  SnapshotMetrics,
   CrossTabLink,
 } from '@/data/biz-org-shared-types';
 import {
   TRAFFIC_LIGHT_COLORS,
   BIZ_ENTITY_TYPE_LABELS,
   BIZ_ENTITY_TYPE_COLORS,
+  ENTITY_STATUS_LABELS,
+  ENTITY_STATUS_COLORS,
   worstHealth,
   triageSortHealth,
-  KANEXT_HOLDCO,
-  KANEXT_OPSCO,
-  KANEXT_IP,
-  SPONSOR_BANK,
-  PAYMENT_PROCESSOR,
-  VALUETAINMENT,
-  SLIEMA_WANDERERS,
-  TARGET_BANK,
+  formatCurrency,
   SEEDED_ENTITY_NAMES,
   SEEDED_ENTITY_TYPES,
 } from '@/data/biz-org-shared-types';
@@ -62,22 +59,17 @@ import type {
 
 const BP = BusinessPalette;
 
-const SUB_TABS = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'entity-list', label: 'Entity List' },
-  { id: 'requirements', label: 'Requirements' },
-  { id: 'activity', label: 'Activity' },
-];
+type FilterChipId = 'all' | EntityStatus | 'partner' | 'acquisition_target' | 'asset';
 
-const FILTER_CHIPS: { id: BizEntityType | 'all'; label: string }[] = [
+const FILTER_CHIPS: { id: FilterChipId; label: string }[] = [
   { id: 'all', label: 'All' },
-  { id: 'internal', label: 'Internal' },
-  { id: 'holdco', label: 'HoldCo' },
+  { id: 'active', label: 'Active' },
+  { id: 'under_evaluation', label: 'Evaluation' },
   { id: 'partner', label: 'Partner' },
-  { id: 'relationship', label: 'Relationship' },
+  { id: 'acquisition_target', label: 'Acquisition' },
   { id: 'asset', label: 'Asset' },
-  { id: 'deal_acquisition', label: 'Deal' },
-  { id: 'project', label: 'Project' },
+  { id: 'dormant', label: 'Dormant' },
+  { id: 'flagged', label: 'Flagged' },
 ];
 
 const HEALTH_DIMENSIONS: { key: keyof EntityHealth; label: string; icon: string }[] = [
@@ -88,18 +80,27 @@ const HEALTH_DIMENSIONS: { key: keyof EntityHealth; label: string; icon: string 
 ];
 
 const CATEGORY_LABELS: Record<EntityRequirement['category'], string> = {
-  formation: 'Formation',
+  formation: 'Governance',
   compliance: 'Compliance',
   finance: 'Finance',
   ops: 'Operations',
 };
 
 const CATEGORY_ICONS: Record<EntityRequirement['category'], string> = {
-  formation: 'doc.text.fill',
+  formation: 'building.columns.fill',
   compliance: 'checkmark.shield.fill',
   finance: 'dollarsign.circle.fill',
   ops: 'gear',
 };
+
+const DEEP_LINKS = [
+  { label: 'Open Finance', icon: 'dollarsign.circle.fill', tab: 'finance' },
+  { label: 'Open Rails', icon: 'arrow.left.arrow.right', tab: 'payment-rails' },
+  { label: 'Open People', icon: 'person.2.fill', tab: 'people' },
+  { label: 'Open Legal', icon: 'doc.text.fill', tab: 'legal' },
+  { label: 'Open Compliance', icon: 'checkmark.shield.fill', tab: 'compliance' },
+  { label: 'Open Ops', icon: 'gear', tab: 'operations' },
+];
 
 // =============================================================================
 // PROPS
@@ -115,26 +116,7 @@ interface Props {
 // HELPERS
 // =============================================================================
 
-function statusLabel(status: BizEntity['status']): string {
-  switch (status) {
-    case 'active': return 'Active';
-    case 'inactive': return 'Inactive';
-    case 'pending': return 'Pending';
-    case 'dissolved': return 'Dissolved';
-  }
-}
-
-function statusChipVariant(status: BizEntity['status']): 'success' | 'warning' | 'error' | 'neutral' {
-  switch (status) {
-    case 'active': return 'success';
-    case 'pending': return 'warning';
-    case 'inactive': return 'neutral';
-    case 'dissolved': return 'error';
-  }
-}
-
 function formatTimestamp(ts: string): string {
-  // Input: "2026-02-16 14:30" or "2026-02-16"
   const parts = ts.split(' ');
   const dateParts = parts[0].split('-');
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -158,6 +140,84 @@ function relativeTime(ts: string): string {
   if (diffDays === 1) return '1d ago';
   if (diffDays < 30) return `${diffDays}d ago`;
   return formatTimestamp(ts);
+}
+
+/** Top reason string for a non-green health dimension */
+function healthReason(entity: BizEntity, dim: keyof EntityHealth): string | null {
+  const val = entity.health[dim];
+  if (val === 'green') return null;
+  // Derive a brief reason from the entity's nextRequiredAction
+  const action = entity.nextRequiredAction || entity.nextAction;
+  const dimLabel = dim.charAt(0).toUpperCase() + dim.slice(1);
+  if (action.toLowerCase().includes(dim)) return action;
+  return `${dimLabel} status: ${val}`;
+}
+
+/** Entity status to chip variant */
+function entityStatusVariant(status: EntityStatus): 'success' | 'warning' | 'error' | 'neutral' | 'info' {
+  switch (status) {
+    case 'active': return 'success';
+    case 'under_evaluation': return 'warning';
+    case 'negotiating': return 'info';
+    case 'flagged': return 'error';
+    case 'dormant': return 'neutral';
+    case 'closed': return 'neutral';
+    default: return 'neutral';
+  }
+}
+
+/**
+ * Triage-first sorting:
+ * Flagged -> Rails Offline (rails=red) -> Governance Red -> Under Evaluation -> Active -> Rest
+ */
+function triageSortEntities(a: BizEntity, b: BizEntity): number {
+  const score = (e: BizEntity): number => {
+    let s = 0;
+    // Highest priority: flagged
+    if (e.entityStatus === 'flagged') s += 1000;
+    // Rails offline (red)
+    if (e.health.rails === 'red') s += 500;
+    // Governance red
+    if (e.health.governance === 'red') s += 250;
+    // Any other red
+    if (worstHealth(e.health) === 'red') s += 100;
+    // Under evaluation
+    if (e.entityStatus === 'under_evaluation') s += 50;
+    // Active gets a small bump over the rest
+    if (e.entityStatus === 'active') s += 10;
+    // Any yellow
+    if (worstHealth(e.health) === 'yellow') s += 5;
+    return s;
+  };
+  return score(b) - score(a);
+}
+
+/** Filter entities by chip ID */
+function filterByChip(entities: BizEntity[], chip: FilterChipId): BizEntity[] {
+  if (chip === 'all') return entities;
+  if (chip === 'partner') return entities.filter((e) => e.type === 'partner' || e.type === 'relationship');
+  if (chip === 'acquisition_target') return entities.filter((e) => e.type === 'deal_acquisition');
+  if (chip === 'asset') return entities.filter((e) => e.type === 'asset');
+  // EntityStatus filters
+  if (chip === 'flagged') {
+    return entities.filter((e) => e.entityStatus === 'flagged' || worstHealth(e.health) === 'red');
+  }
+  return entities.filter((e) => e.entityStatus === chip);
+}
+
+/** RBAC: can view snapshot metrics? B1 and B2b yes, B2a no, B3/B4 no */
+function canSeeMetrics(role: BusinessRoleLens): boolean {
+  return isBoardLevel(role);
+}
+
+/** RBAC: can see health strip? B1, B2b, B2a yes, B3/B4 no */
+function canSeeHealth(role: BusinessRoleLens): boolean {
+  return role === 'B1' || role === 'B2b' || role === 'B2a';
+}
+
+/** RBAC: can create/edit entities? B1 only */
+function canCreateEntity(role: BusinessRoleLens): boolean {
+  return isFounder(role);
 }
 
 // =============================================================================
@@ -199,24 +259,40 @@ function HealthStrip({ health, compact = false }: { health: EntityHealth; compac
 }
 
 // =============================================================================
-// HEALTH SUMMARY — 4 traffic lights in a row with labels and icons
+// HEALTH SUMMARY — 4 traffic lights with icons + top reason per non-green
 // =============================================================================
 
-function HealthSummary({ health }: { health: EntityHealth }) {
+function HealthSummary({ health, entity }: { health: EntityHealth; entity: BizEntity }) {
   return (
-    <View style={s.healthSummaryRow}>
+    <View style={s.healthSummaryContainer}>
+      <View style={s.healthSummaryRow}>
+        {HEALTH_DIMENSIONS.map((dim) => {
+          const color = TRAFFIC_LIGHT_COLORS[health[dim.key]];
+          return (
+            <View key={dim.key} style={s.healthSummaryItem}>
+              <View style={[s.healthSummaryDot, { backgroundColor: color + '20' }]}>
+                <IconSymbol name={dim.icon as any} size={16} color={color} />
+              </View>
+              <ThemedText style={[s.healthSummaryLabel, { color: BP.ash }]}>
+                {dim.label}
+              </ThemedText>
+              <ThemedText style={[s.healthSummaryValue, { color }]}>
+                {health[dim.key].charAt(0).toUpperCase() + health[dim.key].slice(1)}
+              </ThemedText>
+            </View>
+          );
+        })}
+      </View>
+      {/* Top reason per non-green dimension */}
       {HEALTH_DIMENSIONS.map((dim) => {
+        const reason = healthReason(entity, dim.key);
+        if (!reason) return null;
         const color = TRAFFIC_LIGHT_COLORS[health[dim.key]];
         return (
-          <View key={dim.key} style={s.healthSummaryItem}>
-            <View style={[s.healthSummaryDot, { backgroundColor: color + '20' }]}>
-              <IconSymbol name={dim.icon as any} size={16} color={color} />
-            </View>
-            <ThemedText style={[s.healthSummaryLabel, { color: BP.ash }]}>
-              {dim.label}
-            </ThemedText>
-            <ThemedText style={[s.healthSummaryValue, { color }]}>
-              {health[dim.key].charAt(0).toUpperCase() + health[dim.key].slice(1)}
+          <View key={`reason-${dim.key}`} style={s.healthReasonRow}>
+            <TrafficLightDot value={health[dim.key]} size={6} />
+            <ThemedText style={[s.healthReasonText, { color }]} numberOfLines={2}>
+              {reason}
             </ThemedText>
           </View>
         );
@@ -266,533 +342,190 @@ function ProgressBar({ percent, color }: { percent: number; color: string }) {
 }
 
 // =============================================================================
-// OVERVIEW SUB-TAB
+// ENTITY STATUS BADGE (uses EntityStatus enum)
 // =============================================================================
 
-function OverviewTab({
-  colors,
-  accentColor,
-  entities,
-  onSelectEntity,
-}: {
-  colors: typeof Colors.light;
-  accentColor: string;
-  entities: BizEntity[];
-  onSelectEntity: (entity: BizEntity) => void;
-}) {
-  // Triage sort: worst health first
-  const sortedEntities = useMemo(() => {
-    return [...entities].sort((a, b) => triageSortHealth(a.health, b.health));
-  }, [entities]);
-
-  // Alert cards for entities with red health
-  const redEntities = useMemo(() => {
-    return sortedEntities.filter((e) => worstHealth(e.health) === 'red');
-  }, [sortedEntities]);
-
-  // Stats
-  const totalCount = entities.length;
-  const activeCount = entities.filter((e) => e.status === 'active').length;
-  const pendingCount = entities.filter((e) => e.status === 'pending').length;
-  const yellowCount = entities.filter((e) => worstHealth(e.health) === 'yellow').length;
-  const redCount = redEntities.length;
-
+function EntityStatusBadge({ status }: { status: EntityStatus }) {
+  const color = ENTITY_STATUS_COLORS[status];
+  const label = ENTITY_STATUS_LABELS[status];
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={s.tabScroll}
-    >
-      {/* KPI Row */}
-      <View style={s.kpiRow}>
-        <View style={[s.kpiCard, { backgroundColor: BP.carbon, borderColor: BP.graphite }]}>
-          <ThemedText style={[s.kpiValue, { color: BP.smoke }]}>{totalCount}</ThemedText>
-          <ThemedText style={[s.kpiLabel, { color: BP.ash }]}>Total</ThemedText>
-        </View>
-        <View style={[s.kpiCard, { backgroundColor: BP.carbon, borderColor: BP.graphite }]}>
-          <ThemedText style={[s.kpiValue, { color: BP.emerald }]}>{activeCount}</ThemedText>
-          <ThemedText style={[s.kpiLabel, { color: BP.ash }]}>Active</ThemedText>
-        </View>
-        <View style={[s.kpiCard, { backgroundColor: BP.carbon, borderColor: BP.graphite }]}>
-          <ThemedText style={[s.kpiValue, { color: BP.amber }]}>{pendingCount}</ThemedText>
-          <ThemedText style={[s.kpiLabel, { color: BP.ash }]}>Pending</ThemedText>
-        </View>
-        <View style={[s.kpiCard, { backgroundColor: BP.carbon, borderColor: BP.graphite }]}>
-          <ThemedText style={[s.kpiValue, { color: BP.red }]}>{redCount}</ThemedText>
-          <ThemedText style={[s.kpiLabel, { color: BP.ash }]}>Critical</ThemedText>
-        </View>
-      </View>
-
-      {/* Alerts for red entities */}
-      {redEntities.length > 0 && (
-        <View style={s.alertSection}>
-          <ThemedText style={[s.sectionTitle, { color: BP.smoke }]}>Requires Attention</ThemedText>
-          {redEntities.map((entity) => (
-            <BizAlertCard
-              key={entity.id}
-              icon="exclamationmark.triangle.fill"
-              title={entity.name}
-              subtitle={entity.nextAction}
-              variant="error"
-            />
-          ))}
-        </View>
-      )}
-
-      {/* Entity Health Grid */}
-      <ThemedText style={[s.sectionTitle, { color: BP.smoke, marginTop: Spacing.md }]}>
-        Entity Health Grid
-      </ThemedText>
-      <ThemedText style={[s.sectionSubtitle, { color: BP.ash }]}>
-        Triage-sorted: worst health first
-      </ThemedText>
-
-      {sortedEntities.map((entity) => (
-        <Pressable
-          key={entity.id}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onSelectEntity(entity);
-          }}
-        >
-          <BizCard>
-            {/* Header: Name + Type */}
-            <View style={s.overviewCardHeader}>
-              <View style={s.overviewCardNameCol}>
-                <ThemedText style={[s.overviewCardName, { color: BP.smoke }]} numberOfLines={1}>
-                  {entity.name}
-                </ThemedText>
-                <EntityTypeBadge type={entity.type} />
-              </View>
-              <BizStatusChip label={statusLabel(entity.status)} variant={statusChipVariant(entity.status)} />
-            </View>
-
-            {/* Health Dots Row */}
-            <View style={s.overviewHealthRow}>
-              {HEALTH_DIMENSIONS.map((dim) => {
-                const color = TRAFFIC_LIGHT_COLORS[entity.health[dim.key]];
-                return (
-                  <View key={dim.key} style={s.overviewHealthItem}>
-                    <View style={[s.overviewHealthDot, { backgroundColor: color }]} />
-                    <ThemedText style={[s.overviewHealthLabel, { color: BP.ash }]}>
-                      {dim.label}
-                    </ThemedText>
-                  </View>
-                );
-              })}
-            </View>
-
-            {/* Next Action */}
-            <View style={s.overviewNextAction}>
-              <IconSymbol name="arrow.right.circle" size={12} color={BP.ash} />
-              <ThemedText style={[s.overviewNextActionText, { color: BP.ash }]} numberOfLines={1}>
-                {entity.nextAction}
-              </ThemedText>
-            </View>
-          </BizCard>
-        </Pressable>
-      ))}
-
-      {sortedEntities.length === 0 && (
-        <EmptyState icon="building.2.fill" label="No entities found" />
-      )}
-    </ScrollView>
-  );
-}
-
-// =============================================================================
-// ENTITY LIST SUB-TAB
-// =============================================================================
-
-function EntityListTab({
-  colors,
-  accentColor,
-  entities,
-  filterType,
-  searchQuery,
-  onFilterChange,
-  onSearchChange,
-  onSelectEntity,
-}: {
-  colors: typeof Colors.light;
-  accentColor: string;
-  entities: BizEntity[];
-  filterType: BizEntityType | 'all';
-  searchQuery: string;
-  onFilterChange: (type: BizEntityType | 'all') => void;
-  onSearchChange: (q: string) => void;
-  onSelectEntity: (entity: BizEntity) => void;
-}) {
-  // Filtered list
-  const filteredEntities = useMemo(() => {
-    let list = entities;
-    if (filterType !== 'all') {
-      list = list.filter((e) => e.type === filterType);
-    }
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(
-        (e) =>
-          e.name.toLowerCase().includes(q) ||
-          BIZ_ENTITY_TYPE_LABELS[e.type].toLowerCase().includes(q) ||
-          e.nextAction.toLowerCase().includes(q),
-      );
-    }
-    return list;
-  }, [entities, filterType, searchQuery]);
-
-  const renderItem = useCallback(
-    ({ item }: { item: BizEntity }) => {
-      const typeColor = BIZ_ENTITY_TYPE_COLORS[item.type];
-      return (
-        <Pressable
-          style={[s.entityListCard, { backgroundColor: BP.carbon, borderColor: BP.graphite }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onSelectEntity(item);
-          }}
-        >
-          {/* Top Row: Type badge + Name */}
-          <View style={s.entityListTop}>
-            <View style={[s.entityListTypeDot, { backgroundColor: typeColor }]} />
-            <View style={s.entityListNameCol}>
-              <ThemedText style={[s.entityListName, { color: BP.smoke }]} numberOfLines={1}>
-                {item.name}
-              </ThemedText>
-              <EntityTypeBadge type={item.type} />
-            </View>
-            <BizStatusChip label={statusLabel(item.status)} variant={statusChipVariant(item.status)} />
-          </View>
-
-          {/* Health Strip */}
-          <View style={s.entityListHealthRow}>
-            <HealthStrip health={item.health} />
-          </View>
-
-          {/* Next Action */}
-          <View style={[s.entityListFooter, { borderTopColor: BP.graphite }]}>
-            <IconSymbol name="arrow.right.circle" size={12} color={BP.ash} />
-            <ThemedText style={[s.entityListNextAction, { color: BP.ash }]} numberOfLines={1}>
-              {item.nextAction}
-            </ThemedText>
-          </View>
-        </Pressable>
-      );
-    },
-    [onSelectEntity],
-  );
-
-  return (
-    <View style={s.flex1}>
-      {/* Filter Chips */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={s.filterChipRow}
-      >
-        {FILTER_CHIPS.map((chip) => {
-          const isActive = chip.id === filterType;
-          return (
-            <Pressable
-              key={chip.id}
-              style={[
-                s.filterChip,
-                {
-                  backgroundColor: isActive ? BP.champagneGold + '20' : BP.glass,
-                  borderColor: isActive ? BP.champagneGold + '40' : BP.graphite,
-                },
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onFilterChange(chip.id);
-              }}
-            >
-              <ThemedText
-                style={[
-                  s.filterChipText,
-                  { color: isActive ? BP.champagneGold : BP.ash },
-                ]}
-              >
-                {chip.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-
-      {/* Search */}
-      <View style={s.searchContainer}>
-        <View style={[s.searchBar, { backgroundColor: BP.carbon, borderColor: BP.graphite }]}>
-          <IconSymbol name="magnifyingglass" size={16} color={BP.ash} />
-          <TextInput
-            style={[s.searchInput, { color: BP.smoke }]}
-            placeholder="Search entities..."
-            placeholderTextColor={BP.ash}
-            value={searchQuery}
-            onChangeText={onSearchChange}
-          />
-          {searchQuery.length > 0 && (
-            <Pressable onPress={() => onSearchChange('')} hitSlop={8}>
-              <IconSymbol name="xmark.circle.fill" size={16} color={BP.ash} />
-            </Pressable>
-          )}
-        </View>
-      </View>
-
-      {/* Entity FlatList */}
-      <FlatList
-        data={filteredEntities}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={s.tabListContent}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          <EmptyState icon="building.2.fill" label="No entities match filter" />
-        }
-      />
+    <View style={[s.entityStatusBadge, { backgroundColor: color + '15' }]}>
+      <ThemedText style={[s.entityStatusBadgeText, { color }]}>{label}</ThemedText>
     </View>
   );
 }
 
 // =============================================================================
-// REQUIREMENTS SUB-TAB
+// SNAPSHOT METRICS STRIP
 // =============================================================================
 
-function RequirementsTab({
-  colors,
-  accentColor,
-  entities,
-  requirements,
-  reqOverrides,
-  onToggleReq,
-}: {
-  colors: typeof Colors.light;
-  accentColor: string;
-  entities: BizEntity[];
-  requirements: EntityRequirement[];
-  reqOverrides: Record<string, boolean>;
-  onToggleReq: (reqId: string) => void;
-}) {
-  // Expandable state for categories within entities
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
-
-  const toggleSection = useCallback((key: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));
-  }, []);
-
-  // Group requirements by entity, then category
-  const grouped = useMemo(() => {
-    return entities.map((entity) => {
-      const entityReqs = requirements.filter((r) => r.entityId === entity.id);
-      const categories: EntityRequirement['category'][] = ['formation', 'compliance', 'finance', 'ops'];
-      const catGroups = categories
-        .map((cat) => ({
-          category: cat,
-          reqs: entityReqs.filter((r) => r.category === cat),
-        }))
-        .filter((g) => g.reqs.length > 0);
-
-      const totalReqs = entityReqs.length;
-      const completedReqs = entityReqs.filter((r) => {
-        const override = reqOverrides[r.id];
-        return override !== undefined ? override : r.completed;
-      }).length;
-      const pct = totalReqs > 0 ? Math.round((completedReqs / totalReqs) * 100) : 100;
-
-      return { entity, catGroups, totalReqs, completedReqs, pct };
-    });
-  }, [entities, requirements, reqOverrides]);
+function SnapshotStrip({ snapshot }: { snapshot: SnapshotMetrics }) {
+  const items: { label: string; value: string; color: string }[] = [
+    { label: 'In 30d', value: formatCurrency(snapshot.moneyIn30d), color: BP.emerald },
+    { label: 'Out 30d', value: formatCurrency(snapshot.moneyOut30d), color: BP.red },
+    { label: 'Exceptions', value: String(snapshot.exceptions), color: snapshot.exceptions > 0 ? BP.amber : BP.ash },
+    {
+      label: 'Docs',
+      value: `${snapshot.docsComplete}/${snapshot.docsComplete + snapshot.docsMissing}`,
+      color: snapshot.docsMissing > 0 ? BP.amber : BP.emerald,
+    },
+    {
+      label: 'People',
+      value: `${snapshot.peopleFilled}/${snapshot.peopleFilled + snapshot.peopleGaps}`,
+      color: snapshot.peopleGaps > 0 ? BP.amber : BP.emerald,
+    },
+    { label: 'Deals', value: String(snapshot.activeDeals), color: snapshot.activeDeals > 0 ? BP.champagneGold : BP.ash },
+  ];
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={s.tabScroll}
-    >
-      {grouped.map(({ entity, catGroups, totalReqs, completedReqs, pct }) => (
-        <View key={entity.id} style={s.reqEntitySection}>
-          {/* Entity Header */}
-          <View style={s.reqEntityHeader}>
-            <View style={s.reqEntityNameCol}>
-              <ThemedText style={[s.reqEntityName, { color: BP.smoke }]} numberOfLines={1}>
-                {entity.name}
-              </ThemedText>
-              <ThemedText style={[s.reqEntityPctText, { color: BP.ash }]}>
-                {completedReqs}/{totalReqs} complete
-              </ThemedText>
-            </View>
-            <ThemedText style={[s.reqEntityPct, { color: pct === 100 ? BP.emerald : pct >= 70 ? BP.amber : BP.red }]}>
-              {pct}%
-            </ThemedText>
-          </View>
-
-          {/* Progress Bar */}
-          <ProgressBar
-            percent={pct}
-            color={pct === 100 ? BP.emerald : pct >= 70 ? BP.amber : BP.red}
-          />
-
-          {/* Category Groups */}
-          {catGroups.map(({ category, reqs }) => {
-            const sectionKey = `${entity.id}-${category}`;
-            const isExpanded = expandedSections[sectionKey] !== false; // default expanded
-            const catCompleted = reqs.filter((r) => {
-              const override = reqOverrides[r.id];
-              return override !== undefined ? override : r.completed;
-            }).length;
-            return (
-              <View key={sectionKey} style={s.reqCatGroup}>
-                {/* Category Header */}
-                <Pressable
-                  style={s.reqCatHeader}
-                  onPress={() => toggleSection(sectionKey)}
-                >
-                  <IconSymbol
-                    name={CATEGORY_ICONS[category] as any}
-                    size={14}
-                    color={BP.ash}
-                  />
-                  <ThemedText style={[s.reqCatTitle, { color: BP.smoke }]}>
-                    {CATEGORY_LABELS[category]}
-                  </ThemedText>
-                  <ThemedText style={[s.reqCatCount, { color: BP.ash }]}>
-                    {catCompleted}/{reqs.length}
-                  </ThemedText>
-                  <IconSymbol
-                    name={isExpanded ? 'chevron.down' : 'chevron.right'}
-                    size={12}
-                    color={BP.ash}
-                  />
-                </Pressable>
-
-                {/* Requirements List */}
-                {isExpanded && reqs.map((req) => {
-                  const isCompleted = reqOverrides[req.id] !== undefined
-                    ? reqOverrides[req.id]
-                    : req.completed;
-                  return (
-                    <Pressable
-                      key={req.id}
-                      style={s.reqItem}
-                      onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        onToggleReq(req.id);
-                      }}
-                    >
-                      <IconSymbol
-                        name={isCompleted ? 'checkmark.circle.fill' : 'circle'}
-                        size={20}
-                        color={isCompleted ? BP.emerald : BP.ash}
-                      />
-                      <View style={s.reqItemTextCol}>
-                        <ThemedText
-                          style={[
-                            s.reqItemLabel,
-                            { color: isCompleted ? BP.ash : BP.smoke },
-                            isCompleted && s.reqItemStrikethrough,
-                          ]}
-                          numberOfLines={2}
-                        >
-                          {req.label}
-                        </ThemedText>
-                        <ThemedText style={[s.reqItemDetail, { color: BP.ash }]} numberOfLines={2}>
-                          {req.detail}
-                        </ThemedText>
-                      </View>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            );
-          })}
+    <View style={s.snapshotStrip}>
+      {items.map((item) => (
+        <View key={item.label} style={s.snapshotItem}>
+          <ThemedText style={[s.snapshotValue, { color: item.color }]}>{item.value}</ThemedText>
+          <ThemedText style={[s.snapshotLabel, { color: BP.ash }]}>{item.label}</ThemedText>
         </View>
       ))}
-
-      {grouped.length === 0 && (
-        <EmptyState icon="checklist" label="No requirements found" />
-      )}
-    </ScrollView>
+    </View>
   );
 }
 
 // =============================================================================
-// ACTIVITY SUB-TAB
+// ENTITY CARD (Enhanced — Cards View)
 // =============================================================================
 
-function ActivityTab({
-  colors,
-  accentColor,
-  events,
+function EntityCardView({
+  entity,
+  role,
+  onPress,
 }: {
-  colors: typeof Colors.light;
-  accentColor: string;
-  events: EntityActivityEvent[];
+  entity: BizEntity;
+  role: BusinessRoleLens;
+  onPress: () => void;
 }) {
-  const renderItem = useCallback(
-    ({ item, index }: { item: EntityActivityEvent; index: number }) => {
-      const isLast = index === events.length - 1;
-      const entityColor = SEEDED_ENTITY_TYPES[item.entityId]
-        ? BIZ_ENTITY_TYPE_COLORS[SEEDED_ENTITY_TYPES[item.entityId]]
-        : BP.ash;
-
-      return (
-        <View style={s.timelineItem}>
-          {/* Timeline line + dot */}
-          <View style={s.timelineLeft}>
-            <View style={[s.timelineDot, { backgroundColor: entityColor }]} />
-            {!isLast && <View style={[s.timelineLine, { backgroundColor: BP.graphite }]} />}
-          </View>
-
-          {/* Content */}
-          <View style={s.timelineContent}>
-            {/* Timestamp + Actor */}
-            <View style={s.timelineMetaRow}>
-              <ThemedText style={[s.timelineTimestamp, { color: BP.ash }]}>
-                {relativeTime(item.timestamp)}
-              </ThemedText>
-              <ThemedText style={[s.timelineActor, { color: BP.platinum }]}>
-                {item.actor}
-              </ThemedText>
-            </View>
-
-            {/* Action */}
-            <ThemedText style={[s.timelineAction, { color: BP.smoke }]} numberOfLines={3}>
-              {item.action}
-            </ThemedText>
-
-            {/* Entity Badge */}
-            <View style={[s.timelineEntityBadge, { backgroundColor: entityColor + '15' }]}>
-              <ThemedText style={[s.timelineEntityName, { color: entityColor }]} numberOfLines={1}>
-                {item.entityName}
-              </ThemedText>
-            </View>
-
-            {/* Linked Tab */}
-            {item.linkedTab && (
-              <View style={s.timelineLinkedRow}>
-                <IconSymbol name="arrow.right.circle" size={10} color={BP.ash} />
-                <ThemedText style={[s.timelineLinkedText, { color: BP.ash }]}>
-                  {item.linkedTab.charAt(0).toUpperCase() + item.linkedTab.slice(1).replace('-', ' ')}
-                </ThemedText>
-              </View>
-            )}
-          </View>
-        </View>
-      );
-    },
-    [events.length],
-  );
+  const showMetrics = canSeeMetrics(role);
+  const showHealth = canSeeHealth(role);
+  const isPublic = role === 'B3' || role === 'B4';
 
   return (
-    <FlatList
-      data={events}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      contentContainerStyle={s.tabListContent}
-      showsVerticalScrollIndicator={false}
-      ListEmptyComponent={
-        <EmptyState icon="clock.fill" label="No activity events" />
-      }
-    />
+    <Pressable
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress();
+      }}
+    >
+      <BizCard>
+        {/* A) Identity block */}
+        <View style={s.cardIdentityRow}>
+          <View style={s.cardIdentityLeft}>
+            <ThemedText style={[s.cardName, { color: BP.smoke }]} numberOfLines={1}>
+              {entity.name}
+            </ThemedText>
+            <View style={s.cardBadgeRow}>
+              <EntityTypeBadge type={entity.type} />
+              <EntityStatusBadge status={entity.entityStatus} />
+            </View>
+          </View>
+          <IconSymbol name="chevron.right" size={14} color={BP.ash} />
+        </View>
+
+        {/* Owner + Last Updated (visible to B1, B2b, B2a) */}
+        {!isPublic && (
+          <View style={s.cardMetaRow}>
+            <View style={s.cardMetaItem}>
+              <IconSymbol name="person.fill" size={10} color={BP.ash} />
+              <ThemedText style={[s.cardMetaText, { color: BP.ash }]} numberOfLines={1}>
+                {entity.owner}
+              </ThemedText>
+            </View>
+            <View style={s.cardMetaItem}>
+              <IconSymbol name="clock" size={10} color={BP.ash} />
+              <ThemedText style={[s.cardMetaText, { color: BP.ash }]}>
+                {relativeTime(entity.lastUpdated)}
+              </ThemedText>
+            </View>
+          </View>
+        )}
+
+        {/* B) Health strip — hidden for B3/B4 */}
+        {showHealth && (
+          <View style={s.cardHealthSection}>
+            <HealthStrip health={entity.health} />
+          </View>
+        )}
+
+        {/* C) Snapshot metrics — hidden for B2a, B3, B4 */}
+        {showMetrics && (
+          <View style={s.cardSnapshotSection}>
+            <SnapshotStrip snapshot={entity.snapshot} />
+          </View>
+        )}
+
+        {/* D) Next Required Action */}
+        {!isPublic && (
+          <View style={s.cardNextAction}>
+            <IconSymbol name="arrow.right.circle" size={12} color={BP.ash} />
+            <ThemedText style={[s.cardNextActionText, { color: BP.ash }]} numberOfLines={1}>
+              {entity.nextRequiredAction || entity.nextAction}
+            </ThemedText>
+          </View>
+        )}
+      </BizCard>
+    </Pressable>
+  );
+}
+
+// =============================================================================
+// ENTITY LIST ROW (Dense / List View)
+// =============================================================================
+
+function EntityListRow({
+  entity,
+  role,
+  onPress,
+}: {
+  entity: BizEntity;
+  role: BusinessRoleLens;
+  onPress: () => void;
+}) {
+  const showHealth = canSeeHealth(role);
+  const isPublic = role === 'B3' || role === 'B4';
+  const statusColor = ENTITY_STATUS_COLORS[entity.entityStatus];
+
+  return (
+    <Pressable
+      style={[s.listRow, { backgroundColor: BP.carbon, borderColor: BP.graphite }]}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress();
+      }}
+    >
+      {/* Status dot */}
+      <View style={[s.listStatusDot, { backgroundColor: statusColor }]} />
+
+      {/* Name */}
+      <ThemedText style={[s.listName, { color: BP.smoke }]} numberOfLines={1}>
+        {entity.name}
+      </ThemedText>
+
+      {/* Type badge */}
+      <EntityTypeBadge type={entity.type} />
+
+      {/* Compact health strip */}
+      {showHealth && (
+        <View style={s.listHealthWrap}>
+          <HealthStrip health={entity.health} compact />
+        </View>
+      )}
+
+      {/* Next action (truncated) */}
+      {!isPublic && (
+        <ThemedText style={[s.listNextAction, { color: BP.ash }]} numberOfLines={1}>
+          {entity.nextRequiredAction || entity.nextAction}
+        </ThemedText>
+      )}
+
+      <IconSymbol name="chevron.right" size={12} color={BP.ash} />
+    </Pressable>
   );
 }
 
@@ -808,6 +541,7 @@ function EntityDetailSheet({
   events,
   reqOverrides,
   onToggleReq,
+  role,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -816,7 +550,16 @@ function EntityDetailSheet({
   events: EntityActivityEvent[];
   reqOverrides: Record<string, boolean>;
   onToggleReq: (reqId: string) => void;
+  role: BusinessRoleLens;
 }) {
+  // Expandable categories
+  const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({});
+
+  const toggleCat = useCallback((key: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setExpandedCats((prev) => ({ ...prev, [key]: !prev[key] }));
+  }, []);
+
   if (!entity) return null;
 
   const entityReqs = requirements.filter((r) => r.entityId === entity.id);
@@ -833,23 +576,50 @@ function EntityDetailSheet({
   const totalReqs = entityReqs.length;
   const pct = totalReqs > 0 ? Math.round((completedReqs / totalReqs) * 100) : 100;
 
+  // Group requirements by category
+  const categories: EntityRequirement['category'][] = ['formation', 'compliance', 'finance', 'ops'];
+  const catGroups = categories
+    .map((cat) => ({
+      category: cat,
+      reqs: entityReqs.filter((r) => r.category === cat),
+    }))
+    .filter((g) => g.reqs.length > 0);
+
   return (
     <BottomSheet visible={visible} onClose={onClose} title={entity.name} useModal>
       {/* Status + Type Row */}
       <View style={s.sheetBadgeRow}>
-        <BizStatusChip label={statusLabel(entity.status)} variant={statusChipVariant(entity.status)} />
+        <EntityStatusBadge status={entity.entityStatus} />
         <EntityTypeBadge type={entity.type} />
       </View>
 
-      {/* Section 1: Health Summary */}
+      {/* Section 1: Health Summary (4 traffic lights with icons + top reason per non-green) */}
       <View style={s.sheetSection}>
         <ThemedText style={[s.sheetSectionTitle, { color: BP.smoke }]}>Health Summary</ThemedText>
-        <HealthSummary health={entity.health} />
+        <HealthSummary health={entity.health} entity={entity} />
       </View>
 
-      {/* Section 2: Structure (Parent / Children) */}
+      {/* Section 2: Structure (type, parent/children, owner) */}
       <View style={s.sheetSection}>
         <ThemedText style={[s.sheetSectionTitle, { color: BP.smoke }]}>Structure</ThemedText>
+
+        {/* Type */}
+        <View style={s.sheetStructureRow}>
+          <IconSymbol name="tag.fill" size={12} color={BP.ash} />
+          <ThemedText style={[s.sheetStructureText, { color: BP.ash }]}>
+            Type: {BIZ_ENTITY_TYPE_LABELS[entity.type]}
+          </ThemedText>
+        </View>
+
+        {/* Owner */}
+        <View style={s.sheetStructureRow}>
+          <IconSymbol name="person.fill" size={12} color={BP.ash} />
+          <ThemedText style={[s.sheetStructureText, { color: BP.ash }]}>
+            Owner: {entity.owner}
+          </ThemedText>
+        </View>
+
+        {/* Parent */}
         {parentEntity ? (
           <View style={s.sheetStructureRow}>
             <IconSymbol name="arrow.up" size={12} color={BP.ash} />
@@ -865,6 +635,8 @@ function EntityDetailSheet({
             </ThemedText>
           </View>
         )}
+
+        {/* Children */}
         {childEntities.length > 0 ? (
           childEntities.map((child) => (
             <View key={child.id} style={s.sheetStructureRow}>
@@ -884,7 +656,7 @@ function EntityDetailSheet({
         )}
       </View>
 
-      {/* Section 3: Key Requirements Checklist */}
+      {/* Section 3: Key Requirements Checklist (grouped, toggleable) */}
       <View style={s.sheetSection}>
         <View style={s.sheetSectionTitleRow}>
           <ThemedText style={[s.sheetSectionTitle, { color: BP.smoke }]}>
@@ -898,76 +670,94 @@ function EntityDetailSheet({
           percent={pct}
           color={pct === 100 ? BP.emerald : pct >= 70 ? BP.amber : BP.red}
         />
-        <View style={s.sheetReqList}>
-          {entityReqs.slice(0, 8).map((req) => {
-            const isCompleted = reqOverrides[req.id] !== undefined
-              ? reqOverrides[req.id]
-              : req.completed;
-            return (
-              <Pressable
-                key={req.id}
-                style={s.sheetReqItem}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  onToggleReq(req.id);
-                }}
-              >
-                <IconSymbol
-                  name={isCompleted ? 'checkmark.circle.fill' : 'circle'}
-                  size={18}
-                  color={isCompleted ? BP.emerald : BP.ash}
-                />
-                <ThemedText
-                  style={[
-                    s.sheetReqLabel,
-                    { color: isCompleted ? BP.ash : BP.smoke },
-                    isCompleted && s.reqItemStrikethrough,
-                  ]}
-                  numberOfLines={1}
-                >
-                  {req.label}
-                </ThemedText>
-              </Pressable>
-            );
-          })}
-          {entityReqs.length === 0 && (
-            <ThemedText style={[s.sheetEmptyText, { color: BP.ash }]}>
-              No requirements defined
-            </ThemedText>
-          )}
-        </View>
-      </View>
+        {catGroups.map(({ category, reqs }) => {
+          const catKey = `${entity.id}-${category}`;
+          const isExpanded = expandedCats[catKey] !== false; // default expanded
+          const catCompleted = reqs.filter((r) => {
+            const override = reqOverrides[r.id];
+            return override !== undefined ? override : r.completed;
+          }).length;
 
-      {/* Section 4: Cross-Tab Links */}
-      <View style={s.sheetSection}>
-        <ThemedText style={[s.sheetSectionTitle, { color: BP.smoke }]}>Cross-Tab Links</ThemedText>
-        {entity.crossTabLinks.map((link, i) => (
-          <Pressable
-            key={`link-${i}`}
-            style={s.sheetLinkRow}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          >
-            <IconSymbol name="arrow.right.circle.fill" size={16} color={BP.champagneGold} />
-            <View style={s.sheetLinkTextCol}>
-              <ThemedText style={[s.sheetLinkLabel, { color: BP.smoke }]}>
-                {link.label}
-              </ThemedText>
-              <ThemedText style={[s.sheetLinkTarget, { color: BP.ash }]}>
-                {link.targetTab.charAt(0).toUpperCase() + link.targetTab.slice(1).replace('-', ' ')}
-                {link.targetSubTab ? ` > ${link.targetSubTab}` : ''}
-              </ThemedText>
+          return (
+            <View key={catKey} style={s.reqCatGroup}>
+              <Pressable style={s.reqCatHeader} onPress={() => toggleCat(catKey)}>
+                <IconSymbol name={CATEGORY_ICONS[category] as any} size={14} color={BP.ash} />
+                <ThemedText style={[s.reqCatTitle, { color: BP.smoke }]}>
+                  {CATEGORY_LABELS[category]}
+                </ThemedText>
+                <ThemedText style={[s.reqCatCount, { color: BP.ash }]}>
+                  {catCompleted}/{reqs.length}
+                </ThemedText>
+                <IconSymbol
+                  name={isExpanded ? 'chevron.down' : 'chevron.right'}
+                  size={12}
+                  color={BP.ash}
+                />
+              </Pressable>
+
+              {isExpanded && reqs.map((req) => {
+                const isCompleted = reqOverrides[req.id] !== undefined
+                  ? reqOverrides[req.id]
+                  : req.completed;
+                return (
+                  <Pressable
+                    key={req.id}
+                    style={s.sheetReqItem}
+                    onPress={() => {
+                      if (isFounder(role)) {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        onToggleReq(req.id);
+                      }
+                    }}
+                  >
+                    <IconSymbol
+                      name={isCompleted ? 'checkmark.circle.fill' : 'circle'}
+                      size={18}
+                      color={isCompleted ? BP.emerald : BP.ash}
+                    />
+                    <ThemedText
+                      style={[
+                        s.sheetReqLabel,
+                        { color: isCompleted ? BP.ash : BP.smoke },
+                        isCompleted && s.reqItemStrikethrough,
+                      ]}
+                      numberOfLines={2}
+                    >
+                      {req.label}
+                    </ThemedText>
+                  </Pressable>
+                );
+              })}
             </View>
-            <IconSymbol name="chevron.right" size={12} color={BP.ash} />
-          </Pressable>
-        ))}
-        {entity.crossTabLinks.length === 0 && (
+          );
+        })}
+        {entityReqs.length === 0 && (
           <ThemedText style={[s.sheetEmptyText, { color: BP.ash }]}>
-            No cross-tab links
+            No requirements defined
           </ThemedText>
         )}
       </View>
 
-      {/* Section 5: Recent Activity */}
+      {/* Section 4: Deep links row */}
+      <View style={s.sheetSection}>
+        <ThemedText style={[s.sheetSectionTitle, { color: BP.smoke }]}>Deep Links</ThemedText>
+        <View style={s.deepLinkRow}>
+          {DEEP_LINKS.map((link) => (
+            <Pressable
+              key={link.tab}
+              style={[s.deepLinkChip, { backgroundColor: BP.glass, borderColor: BP.graphite }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <IconSymbol name={link.icon as any} size={14} color={BP.champagneGold} />
+              <ThemedText style={[s.deepLinkText, { color: BP.smoke }]} numberOfLines={1}>
+                {link.label}
+              </ThemedText>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+
+      {/* Section 5: Recent Activity (last 5 events) */}
       <View style={s.sheetSection}>
         <ThemedText style={[s.sheetSectionTitle, { color: BP.smoke }]}>Recent Activity</ThemedText>
         {entityEvents.map((evt) => (
@@ -994,30 +784,6 @@ function EntityDetailSheet({
           </ThemedText>
         )}
       </View>
-
-      {/* Actions */}
-      <View style={s.sheetActions}>
-        <Pressable
-          style={[s.sheetActionButton, { backgroundColor: BP.champagneGold }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            onClose();
-          }}
-        >
-          <ThemedText style={s.sheetActionButtonText}>View Full Entity</ThemedText>
-        </Pressable>
-        <Pressable
-          style={[s.sheetGhostButton, { borderColor: BP.graphite }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onClose();
-          }}
-        >
-          <ThemedText style={[s.sheetGhostButtonText, { color: BP.ash }]}>
-            Close
-          </ThemedText>
-        </Pressable>
-      </View>
     </BottomSheet>
   );
 }
@@ -1027,21 +793,38 @@ function EntityDetailSheet({
 // =============================================================================
 
 export function BizOrgEntitiesV2({ colors, accentColor, role = 'B1' }: Props) {
-  // === RBAC Gate: B3+ locked ===
-  if (!isFounder(role) && !isBoardLevel(role) && role !== 'B2a') {
-    return <BizEmptyLock title="Entities" message="This section is restricted. Contact the Founder for access." />;
-  }
-
   // === State ===
-  const [activeSubTab, setActiveSubTab] = useState('overview');
   const [selectedEntity, setSelectedEntity] = useState<BizEntity | null>(null);
   const [sheetVisible, setSheetVisible] = useState(false);
-  const [filterType, setFilterType] = useState<BizEntityType | 'all'>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState<FilterChipId>('all');
+  const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
   const [reqOverrides, setReqOverrides] = useState<Record<string, boolean>>({});
 
   // === Data ===
   const data = useMemo(() => getBizEntitiesData(), []);
+
+  // === RBAC: determine visible entities ===
+  const rbacEntities = useMemo(() => {
+    const isPublic = role === 'B3' || role === 'B4';
+    const isRetail = role === 'B2a';
+
+    if (isPublic) {
+      // B3/B4: public entity profiles only (active entities, name/type/status)
+      return data.entities.filter((e) => e.entityStatus === 'active');
+    }
+    if (isRetail) {
+      // B2a: curated list — active entities only, no snapshot metrics
+      return data.entities.filter((e) => e.entityStatus === 'active');
+    }
+    // B1/B2b: all entities
+    return data.entities;
+  }, [data.entities, role]);
+
+  // === Filtered + triage-sorted entities ===
+  const displayEntities = useMemo(() => {
+    const filtered = filterByChip(rbacEntities, activeFilter);
+    return [...filtered].sort(triageSortEntities);
+  }, [rbacEntities, activeFilter]);
 
   // === Callbacks ===
   const handleSelectEntity = useCallback((entity: BizEntity) => {
@@ -1053,15 +836,6 @@ export function BizOrgEntitiesV2({ colors, accentColor, role = 'B1' }: Props) {
     setSheetVisible(false);
   }, []);
 
-  const handleFilterChange = useCallback((type: BizEntityType | 'all') => {
-    Haptics.selectionAsync();
-    setFilterType(type);
-  }, []);
-
-  const handleSearchChange = useCallback((q: string) => {
-    setSearchQuery(q);
-  }, []);
-
   const handleToggleReq = useCallback((reqId: string) => {
     setReqOverrides((prev) => {
       const req = data.requirements.find((r) => r.id === reqId);
@@ -1070,79 +844,145 @@ export function BizOrgEntitiesV2({ colors, accentColor, role = 'B1' }: Props) {
     });
   }, [data.requirements]);
 
-  // === RBAC-aware sub-tabs ===
-  const visibleSubTabs = useMemo(() => {
-    if (isFounder(role)) return SUB_TABS;
-    if (isBoardLevel(role)) return SUB_TABS; // Board sees all tabs (read-only)
-    // B2a: overview only
-    return SUB_TABS.filter((t) => t.id === 'overview');
-  }, [role]);
+  // === Render item for FlatList ===
+  const renderCardItem = useCallback(
+    ({ item }: { item: BizEntity }) => (
+      <EntityCardView
+        entity={item}
+        role={role}
+        onPress={() => handleSelectEntity(item)}
+      />
+    ),
+    [role, handleSelectEntity],
+  );
 
-  // === Sub-tab content ===
-  const renderContent = () => {
-    switch (activeSubTab) {
-      case 'overview':
-        return (
-          <OverviewTab
-            colors={colors}
-            accentColor={accentColor}
-            entities={data.entities}
-            onSelectEntity={handleSelectEntity}
-          />
-        );
-      case 'entity-list':
-        if (!isBoardLevel(role)) return null;
-        return (
-          <EntityListTab
-            colors={colors}
-            accentColor={accentColor}
-            entities={data.entities}
-            filterType={filterType}
-            searchQuery={searchQuery}
-            onFilterChange={handleFilterChange}
-            onSearchChange={handleSearchChange}
-            onSelectEntity={handleSelectEntity}
-          />
-        );
-      case 'requirements':
-        if (!isBoardLevel(role)) return null;
-        return (
-          <RequirementsTab
-            colors={colors}
-            accentColor={accentColor}
-            entities={data.entities}
-            requirements={data.requirements}
-            reqOverrides={reqOverrides}
-            onToggleReq={handleToggleReq}
-          />
-        );
-      case 'activity':
-        if (!isBoardLevel(role)) return null;
-        return (
-          <ActivityTab
-            colors={colors}
-            accentColor={accentColor}
-            events={data.activityEvents}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  const renderListItem = useCallback(
+    ({ item }: { item: BizEntity }) => (
+      <EntityListRow
+        entity={item}
+        role={role}
+        onPress={() => handleSelectEntity(item)}
+      />
+    ),
+    [role, handleSelectEntity],
+  );
 
   return (
     <View style={s.container}>
-      {/* Sub-tab bar */}
-      <BizSubTabBar
-        tabs={visibleSubTabs}
-        activeId={activeSubTab}
-        onSelect={setActiveSubTab}
-      />
-
-      {/* Content */}
-      <View style={s.contentContainer}>
-        {renderContent()}
+      {/* 1) Fixed header block */}
+      <View style={s.headerBlock}>
+        <View style={s.headerTitleRow}>
+          <ThemedText style={[s.headerTitle, { color: BP.smoke }]}>Entities</ThemedText>
+          {canCreateEntity(role) && (
+            <View style={s.headerActions}>
+              <Pressable
+                style={[s.headerActionBtn, { backgroundColor: BP.champagneGold }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+              >
+                <IconSymbol name="plus" size={14} color="#000" />
+                <ThemedText style={s.headerActionBtnText}>Create Entity</ThemedText>
+              </Pressable>
+              <Pressable
+                style={[s.headerActionBtnGhost, { borderColor: BP.graphite }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              >
+                <IconSymbol name="square.and.arrow.up" size={14} color={BP.ash} />
+                <ThemedText style={[s.headerActionBtnGhostText, { color: BP.ash }]}>Export</ThemedText>
+              </Pressable>
+            </View>
+          )}
+        </View>
       </View>
+
+      {/* 2) Filter chips (horizontal scroll) */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
+        contentContainerStyle={s.filterChipRow}
+      >
+        {FILTER_CHIPS.map((chip) => {
+          const isActive = chip.id === activeFilter;
+          return (
+            <Pressable
+              key={chip.id}
+              style={[
+                s.filterChip,
+                {
+                  backgroundColor: isActive ? BP.champagneGold + '20' : BP.glass,
+                  borderColor: isActive ? BP.champagneGold + '40' : BP.graphite,
+                },
+              ]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActiveFilter(chip.id);
+              }}
+            >
+              <ThemedText
+                style={[
+                  s.filterChipText,
+                  { color: isActive ? BP.champagneGold : BP.ash },
+                ]}
+              >
+                {chip.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {/* 3) View toggle: Cards / List */}
+      <View style={s.viewToggleRow}>
+        <ThemedText style={[s.viewToggleLabel, { color: BP.ash }]}>
+          {displayEntities.length} {displayEntities.length === 1 ? 'entity' : 'entities'}
+        </ThemedText>
+        <View style={s.viewToggleIcons}>
+          <Pressable
+            style={[
+              s.viewToggleBtn,
+              viewMode === 'cards' && { backgroundColor: BP.champagneGold + '20' },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setViewMode('cards');
+            }}
+          >
+            <IconSymbol
+              name="square.grid.2x2"
+              size={16}
+              color={viewMode === 'cards' ? BP.champagneGold : BP.ash}
+            />
+          </Pressable>
+          <Pressable
+            style={[
+              s.viewToggleBtn,
+              viewMode === 'list' && { backgroundColor: BP.champagneGold + '20' },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setViewMode('list');
+            }}
+          >
+            <IconSymbol
+              name="list.bullet"
+              size={16}
+              color={viewMode === 'list' ? BP.champagneGold : BP.ash}
+            />
+          </Pressable>
+        </View>
+      </View>
+
+      {/* 4) Entity list (Cards or List view) */}
+      <FlatList
+        data={displayEntities}
+        keyExtractor={(item) => item.id}
+        renderItem={viewMode === 'cards' ? renderCardItem : renderListItem}
+        contentContainerStyle={s.entityListContent}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <EmptyState icon="building.2.fill" label="No entities match filter" />
+        }
+      />
 
       {/* Entity Detail Bottom Sheet */}
       <EntityDetailSheet
@@ -1153,6 +993,7 @@ export function BizOrgEntitiesV2({ colors, accentColor, role = 'B1' }: Props) {
         events={data.activityEvents}
         reqOverrides={reqOverrides}
         onToggleReq={handleToggleReq}
+        role={role}
       />
     </View>
   );
@@ -1166,111 +1007,145 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
   },
-  flex1: {
-    flex: 1,
-  },
-  contentContainer: {
-    flex: 1,
-  },
 
-  // -- Tab scroll containers --
-  tabScroll: {
-    padding: Spacing.md,
-    paddingBottom: 120,
+  // -- Header block --
+  headerBlock: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.xs,
   },
-  tabListContent: {
-    padding: Spacing.md,
-    paddingBottom: 120,
-  },
-
-  // -- Section titles --
-  sectionTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    marginBottom: Spacing.xs,
-  },
-  sectionSubtitle: {
-    fontSize: 12,
-    marginBottom: Spacing.md,
-  },
-
-  // -- Empty state --
-  emptyContainer: {
+  headerTitleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Spacing.xxl,
   },
-  emptyText: {
-    fontSize: 14,
-    marginTop: Spacing.sm,
-    textAlign: 'center',
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
   },
-
-  // -- KPI Row --
-  kpiRow: {
+  headerActions: {
     flexDirection: 'row',
     gap: Spacing.sm,
-    marginBottom: Spacing.md,
   },
-  kpiCard: {
-    flex: 1,
+  headerActionBtn: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.lg,
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: BorderRadius.md,
+  },
+  headerActionBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#000',
+  },
+  headerActionBtnGhost: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: BorderRadius.md,
     borderWidth: 1,
   },
-  kpiValue: {
-    fontSize: 22,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  kpiLabel: {
-    fontSize: 11,
-    marginTop: 2,
+  headerActionBtnGhostText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
 
-  // -- Alert section --
-  alertSection: {
-    marginBottom: Spacing.md,
+  // -- Filter chips --
+  filterChipRow: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  filterChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  filterChipText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
 
-  // -- Overview entity cards --
-  overviewCardHeader: {
+  // -- View toggle --
+  viewToggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm,
+  },
+  viewToggleLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  viewToggleIcons: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  viewToggleBtn: {
+    padding: 6,
+    borderRadius: BorderRadius.sm,
+  },
+
+  // -- Entity list content --
+  entityListContent: {
+    padding: Spacing.md,
+    paddingBottom: 120,
+  },
+
+  // -- Card view styles --
+  cardIdentityRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: Spacing.sm,
   },
-  overviewCardNameCol: {
+  cardIdentityLeft: {
     flex: 1,
     marginRight: Spacing.sm,
   },
-  overviewCardName: {
+  cardName: {
     fontSize: 15,
     fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: 6,
   },
-  overviewHealthRow: {
+  cardBadgeRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    flexWrap: 'wrap',
+  },
+  cardMetaRow: {
     flexDirection: 'row',
     gap: Spacing.lg,
     marginBottom: Spacing.sm,
-    paddingVertical: Spacing.xs,
   },
-  overviewHealthItem: {
+  cardMetaItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
-  overviewHealthDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  overviewHealthLabel: {
+  cardMetaText: {
     fontSize: 11,
     fontWeight: '500',
   },
-  overviewNextAction: {
+  cardHealthSection: {
+    paddingVertical: Spacing.xs,
+    marginBottom: Spacing.xs,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: BP.graphite,
+  },
+  cardSnapshotSection: {
+    paddingVertical: Spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: BP.graphite,
+  },
+  cardNextAction: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
@@ -1278,8 +1153,72 @@ const s = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: BP.graphite,
   },
-  overviewNextActionText: {
+  cardNextActionText: {
     fontSize: 12,
+    flex: 1,
+  },
+
+  // -- Snapshot strip --
+  snapshotStrip: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
+  snapshotItem: {
+    alignItems: 'center',
+    minWidth: 48,
+  },
+  snapshotValue: {
+    fontSize: 13,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  snapshotLabel: {
+    fontSize: 9,
+    fontWeight: '500',
+    marginTop: 1,
+  },
+
+  // -- Entity status badge --
+  entityStatusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.full,
+    alignSelf: 'flex-start',
+  },
+  entityStatusBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+
+  // -- List view styles --
+  listRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    marginBottom: Spacing.sm,
+  },
+  listStatusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  listName: {
+    fontSize: 13,
+    fontWeight: '600',
+    flexShrink: 1,
+    maxWidth: 120,
+  },
+  listHealthWrap: {
+    flexShrink: 0,
+  },
+  listNextAction: {
+    fontSize: 11,
     flex: 1,
   },
 
@@ -1299,6 +1238,9 @@ const s = StyleSheet.create({
   },
 
   // -- Health summary (sheet) --
+  healthSummaryContainer: {
+    marginTop: Spacing.xs,
+  },
   healthSummaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -1325,6 +1267,17 @@ const s = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
   },
+  healthReasonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 3,
+    paddingHorizontal: Spacing.sm,
+  },
+  healthReasonText: {
+    fontSize: 11,
+    flex: 1,
+  },
 
   // -- Type badge --
   typeBadge: {
@@ -1339,85 +1292,16 @@ const s = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  // -- Filter chips (Entity List) --
-  filterChipRow: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-  },
-  filterChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: BorderRadius.full,
-    borderWidth: 1,
-  },
-  filterChipText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // -- Search --
-  searchContainer: {
-    paddingHorizontal: Spacing.md,
-    paddingBottom: Spacing.sm,
-  },
-  searchBar: {
-    flexDirection: 'row',
+  // -- Empty state --
+  emptyContainer: {
     alignItems: 'center',
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    paddingHorizontal: Spacing.sm,
-    height: 40,
-    gap: Spacing.sm,
+    justifyContent: 'center',
+    paddingVertical: Spacing.xxl,
   },
-  searchInput: {
-    flex: 1,
+  emptyText: {
     fontSize: 14,
-    height: '100%',
-  },
-
-  // -- Entity List cards --
-  entityListCard: {
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    marginBottom: Spacing.sm,
-    overflow: 'hidden',
-  },
-  entityListTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: Spacing.md,
-    gap: Spacing.sm,
-  },
-  entityListTypeDot: {
-    width: 4,
-    height: 32,
-    borderRadius: 2,
-  },
-  entityListNameCol: {
-    flex: 1,
-  },
-  entityListName: {
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  entityListHealthRow: {
-    paddingHorizontal: Spacing.md,
-    paddingBottom: Spacing.sm,
-  },
-  entityListFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  entityListNextAction: {
-    fontSize: 12,
-    flex: 1,
+    marginTop: Spacing.sm,
+    textAlign: 'center',
   },
 
   // -- Progress bar --
@@ -1433,38 +1317,7 @@ const s = StyleSheet.create({
     borderRadius: 2,
   },
 
-  // -- Requirements --
-  reqEntitySection: {
-    marginBottom: Spacing.lg,
-    backgroundColor: BP.carbon,
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    borderColor: BP.graphite,
-    padding: Spacing.md,
-  },
-  reqEntityHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.sm,
-  },
-  reqEntityNameCol: {
-    flex: 1,
-    marginRight: Spacing.sm,
-  },
-  reqEntityName: {
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  reqEntityPctText: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  reqEntityPct: {
-    fontSize: 22,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
+  // -- Requirement category groups (sheet) --
   reqCatGroup: {
     marginTop: Spacing.sm,
   },
@@ -1486,95 +1339,8 @@ const s = StyleSheet.create({
     fontWeight: '600',
     fontVariant: ['tabular-nums'],
   },
-  reqItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: Spacing.sm,
-    paddingVertical: Spacing.sm,
-    paddingLeft: 4,
-  },
-  reqItemTextCol: {
-    flex: 1,
-  },
-  reqItemLabel: {
-    fontSize: 13,
-    fontWeight: '500',
-    lineHeight: 18,
-  },
   reqItemStrikethrough: {
     textDecorationLine: 'line-through',
-  },
-  reqItemDetail: {
-    fontSize: 11,
-    lineHeight: 16,
-    marginTop: 2,
-  },
-
-  // -- Activity timeline --
-  timelineItem: {
-    flexDirection: 'row',
-    marginBottom: 0,
-  },
-  timelineLeft: {
-    alignItems: 'center',
-    width: 24,
-    paddingTop: 4,
-  },
-  timelineDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  timelineLine: {
-    width: 2,
-    flex: 1,
-    marginTop: 4,
-  },
-  timelineContent: {
-    flex: 1,
-    paddingBottom: Spacing.lg,
-    paddingLeft: Spacing.sm,
-  },
-  timelineMetaRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  timelineTimestamp: {
-    fontSize: 11,
-    fontWeight: '500',
-  },
-  timelineActor: {
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  timelineAction: {
-    fontSize: 13,
-    lineHeight: 18,
-    marginBottom: 6,
-  },
-  timelineEntityBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: BorderRadius.full,
-    alignSelf: 'flex-start',
-    marginBottom: 4,
-  },
-  timelineEntityName: {
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.3,
-  },
-  timelineLinkedRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 2,
-  },
-  timelineLinkedText: {
-    fontSize: 10,
-    fontWeight: '500',
   },
 
   // -- Bottom Sheet shared --
@@ -1617,14 +1383,12 @@ const s = StyleSheet.create({
     fontSize: 13,
     flex: 1,
   },
-  sheetReqList: {
-    marginTop: Spacing.xs,
-  },
   sheetReqItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
     paddingVertical: 5,
+    paddingLeft: 4,
   },
   sheetReqLabel: {
     fontSize: 13,
@@ -1634,25 +1398,28 @@ const s = StyleSheet.create({
     fontSize: 12,
     fontStyle: 'italic',
   },
-  sheetLinkRow: {
+
+  // -- Deep links --
+  deepLinkRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
+  deepLinkChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
-    paddingVertical: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: BP.graphite,
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
   },
-  sheetLinkTextCol: {
-    flex: 1,
-  },
-  sheetLinkLabel: {
-    fontSize: 13,
+  deepLinkText: {
+    fontSize: 11,
     fontWeight: '600',
   },
-  sheetLinkTarget: {
-    fontSize: 11,
-    marginTop: 1,
-  },
+
+  // -- Activity (sheet) --
   sheetActivityRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -1684,31 +1451,5 @@ const s = StyleSheet.create({
   },
   sheetActivityTime: {
     fontSize: 11,
-  },
-  sheetActions: {
-    gap: Spacing.sm,
-    marginTop: Spacing.sm,
-  },
-  sheetActionButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 14,
-    borderRadius: BorderRadius.md,
-  },
-  sheetActionButtonText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#000',
-  },
-  sheetGhostButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-  },
-  sheetGhostButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
   },
 });

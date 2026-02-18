@@ -19,6 +19,7 @@ import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/them
 import { BizCard, BizSubTabBar, BizStatusChip, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel } from '@/utils/business-rbac';
+import { useBusiness } from '@/context/business-context';
 import type { CrossTabLink, BizReceipt } from '@/data/biz-org-shared-types';
 import {
   KANEXT_HOLDCO,
@@ -56,6 +57,50 @@ import type {
 } from '@/data/mock-biz-org-legal';
 
 const BP = BusinessPalette;
+
+// =============================================================================
+// ENHANCEMENT DATA
+// =============================================================================
+
+const CONTRACT_PIPELINE = {
+  draft: 3,
+  review: 2,
+  sent: 1,
+  executed: 12,
+  expiring: 2,
+};
+
+const PIPELINE_STAGES: {
+  key: keyof typeof CONTRACT_PIPELINE;
+  label: string;
+  color: string;
+}[] = [
+  { key: 'draft', label: 'Draft', color: '#9CA3AF' },
+  { key: 'review', label: 'Review', color: '#F59E0B' },
+  { key: 'sent', label: 'Sent', color: '#3B82F6' },
+  { key: 'executed', label: 'Executed', color: '#22C55E' },
+  { key: 'expiring', label: 'Expiring', color: '#EF4444' },
+];
+
+const SAMPLE_KEY_TERMS = [
+  { term: 'Term Length', value: '3 years' },
+  { term: 'Auto-Renewal', value: 'Yes, 1-year increments' },
+  { term: 'Termination Notice', value: '90 days' },
+  { term: 'Governing Law', value: 'Delaware' },
+];
+
+const AUTHORITY_TYPES = [
+  { type: 'contract_signing', label: 'Contract Signing', color: '#3B82F6', threshold: '$500K' },
+  { type: 'spend_approval', label: 'Spend Approval', color: '#22C55E', threshold: '$100K' },
+  { type: 'policy_signoff', label: 'Policy Sign-off', color: '#8B5CF6', threshold: 'N/A' },
+];
+
+const OBLIGATION_LINKAGE: Record<string, { label: string; color: string }> = {
+  payment: { label: '\u2192 Finance', color: '#22C55E' },
+  compliance: { label: '\u2192 Compliance', color: '#3B82F6' },
+  deliverable: { label: '\u2192 Operations', color: '#8B5CF6' },
+  renewal: { label: '\u2192 Legal', color: '#F59E0B' },
+};
 
 // =============================================================================
 // PROPS
@@ -215,6 +260,38 @@ function OverviewTab({
       showsVerticalScrollIndicator={false}
       contentContainerStyle={s.tabScroll}
     >
+      {/* Contract Pipeline */}
+      <ThemedText style={[s.sectionTitle, { color: colors.text }]}>
+        Contract Pipeline
+      </ThemedText>
+      <View style={[s.pipelineRow, { marginBottom: Spacing.lg }]}>
+        {PIPELINE_STAGES.map((stage) => (
+          <View
+            key={stage.key}
+            style={[
+              s.pipelineCard,
+              { backgroundColor: colors.card, borderColor: colors.border },
+            ]}
+          >
+            <View
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: 3,
+                backgroundColor: stage.color,
+                marginBottom: 4,
+              }}
+            />
+            <ThemedText style={[s.pipelineCount, { color: stage.color }]}>
+              {CONTRACT_PIPELINE[stage.key]}
+            </ThemedText>
+            <ThemedText style={[s.pipelineLabel, { color: colors.textSecondary }]}>
+              {stage.label}
+            </ThemedText>
+          </View>
+        ))}
+      </View>
+
       {/* Stat Cards */}
       <ThemedText style={[s.sectionTitle, { color: colors.text }]}>
         Overview
@@ -397,6 +474,7 @@ function AgreementsTab({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.filterChipRow}
       >
         {AGREEMENT_TYPE_CHIPS.map((chip) => {
@@ -698,6 +776,34 @@ function SignaturesTab({
             </View>
           </View>
 
+          {/* Authority Types */}
+          <View
+            style={[
+              s.signatureTypesRow,
+              { borderTopColor: colors.border },
+            ]}
+          >
+            <ThemedText
+              style={[s.signatureTypesLabel, { color: colors.textTertiary }]}
+            >
+              Authority Types:
+            </ThemedText>
+            <View style={s.signatureTypesWrap}>
+              {AUTHORITY_TYPES.map((at) => (
+                <View key={at.type} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <View style={[s.authorityTypeBadge, { backgroundColor: at.color + '20' }]}>
+                    <ThemedText style={[s.badgeText, { color: at.color }]}>
+                      {at.label.toUpperCase()}
+                    </ThemedText>
+                  </View>
+                  <ThemedText style={[s.authorityThreshold, { color: at.color }]}>
+                    {'>'}{at.threshold}
+                  </ThemedText>
+                </View>
+              ))}
+            </View>
+          </View>
+
           {/* Cross-link to People */}
           <Pressable
             style={[s.crossLinkRow, { backgroundColor: accentColor + '08' }]}
@@ -904,6 +1010,44 @@ function ObligationsTab({
                 )}
               </View>
             )}
+
+            {/* Linkage Indicators */}
+            <View
+              style={[
+                s.obligationImpacts,
+                { borderTopColor: colors.border, flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+              ]}
+            >
+              {/* Derive linkage types from obligation characteristics */}
+              {item.financialImpact && OBLIGATION_LINKAGE.payment && (
+                <View style={[s.linkageChip, { backgroundColor: OBLIGATION_LINKAGE.payment.color + '18' }]}>
+                  <ThemedText style={[s.linkageChipText, { color: OBLIGATION_LINKAGE.payment.color }]}>
+                    {OBLIGATION_LINKAGE.payment.label}
+                  </ThemedText>
+                </View>
+              )}
+              {item.complianceImpact && OBLIGATION_LINKAGE.compliance && (
+                <View style={[s.linkageChip, { backgroundColor: OBLIGATION_LINKAGE.compliance.color + '18' }]}>
+                  <ThemedText style={[s.linkageChipText, { color: OBLIGATION_LINKAGE.compliance.color }]}>
+                    {OBLIGATION_LINKAGE.compliance.label}
+                  </ThemedText>
+                </View>
+              )}
+              {item.description.toLowerCase().includes('deliver') && OBLIGATION_LINKAGE.deliverable && (
+                <View style={[s.linkageChip, { backgroundColor: OBLIGATION_LINKAGE.deliverable.color + '18' }]}>
+                  <ThemedText style={[s.linkageChipText, { color: OBLIGATION_LINKAGE.deliverable.color }]}>
+                    {OBLIGATION_LINKAGE.deliverable.label}
+                  </ThemedText>
+                </View>
+              )}
+              {(item.description.toLowerCase().includes('renew') || item.status === 'pending') && OBLIGATION_LINKAGE.renewal && (
+                <View style={[s.linkageChip, { backgroundColor: OBLIGATION_LINKAGE.renewal.color + '18' }]}>
+                  <ThemedText style={[s.linkageChipText, { color: OBLIGATION_LINKAGE.renewal.color }]}>
+                    {OBLIGATION_LINKAGE.renewal.label}
+                  </ThemedText>
+                </View>
+              )}
+            </View>
           </View>
         );
       }}
@@ -1266,12 +1410,14 @@ function AgreementDetailSheet({
   agreement,
   colors,
   accentColor,
+  role,
 }: {
   visible: boolean;
   onClose: () => void;
   agreement: LegalAgreement | null;
   colors: typeof Colors.light;
   accentColor: string;
+  role: BusinessRoleLens;
 }) {
   if (!agreement) return null;
 
@@ -1370,6 +1516,33 @@ function AgreementDetailSheet({
         </ThemedText>
       </View>
 
+      {/* Key Terms — founder/board only */}
+      {(isFounder(role) || isBoardLevel(role)) && (
+        <View style={[s.sheetSection, { borderColor: colors.border }]}>
+          <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>
+            Key Terms
+          </ThemedText>
+          <View style={s.keyTermsGrid}>
+            {SAMPLE_KEY_TERMS.map((kt, idx) => (
+              <View key={idx} style={s.keyTermRow}>
+                <ThemedText
+                  style={[s.keyTermLabel, { color: colors.textTertiary }]}
+                  numberOfLines={1}
+                >
+                  {kt.term}
+                </ThemedText>
+                <ThemedText
+                  style={[s.keyTermValue, { color: colors.text }]}
+                  numberOfLines={1}
+                >
+                  {kt.value}
+                </ThemedText>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
+
       {/* Actions */}
       <View style={s.sheetActions}>
         <Pressable
@@ -1410,6 +1583,10 @@ export function BizOrgLegalV2({ colors, accentColor, role = 'B1' }: Props) {
   if (!isBoardLevel(role)) {
     return <BizEmptyLock title="Legal" message="This section is restricted. Contact the Founder for access." />;
   }
+
+  // === Entity Scope ===
+  const { selectedEntityId } = useBusiness();
+  // TODO: filter legal data by selectedEntityId when backend supports entity-scoped queries
 
   // === State ===
   const [activeTab, setActiveTab] = useState<LegalSubTabId>('overview');
@@ -1553,6 +1730,7 @@ export function BizOrgLegalV2({ colors, accentColor, role = 'B1' }: Props) {
         agreement={selectedAgreement}
         colors={colors}
         accentColor={accentColor}
+        role={role}
       />
     </View>
   );
@@ -2182,5 +2360,87 @@ const s = StyleSheet.create({
   sheetGhostButtonText: {
     fontSize: 14,
     fontWeight: '600',
+  },
+
+  // ===================================================================
+  // CONTRACT PIPELINE
+  // ===================================================================
+
+  pipelineRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+  },
+  pipelineCard: {
+    flex: 1,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    padding: Spacing.sm,
+    alignItems: 'center',
+  },
+  pipelineCount: {
+    fontSize: 20,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  pipelineLabel: {
+    fontSize: 9,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+    marginTop: 2,
+  },
+
+  // ===================================================================
+  // KEY TERMS (Agreement Detail Sheet)
+  // ===================================================================
+
+  keyTermsGrid: {
+    gap: 6,
+  },
+  keyTermRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  keyTermLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    flex: 1,
+  },
+  keyTermValue: {
+    fontSize: 12,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'right',
+  },
+
+  // ===================================================================
+  // AUTHORITY TYPES (Signatures Tab)
+  // ===================================================================
+
+  authorityTypeBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+  },
+  authorityThreshold: {
+    fontSize: 10,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+
+  // ===================================================================
+  // LINKAGE CHIPS (Obligations Tab)
+  // ===================================================================
+
+  linkageChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.full,
+  },
+  linkageChipText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.2,
   },
 });

@@ -2120,6 +2120,7 @@ export function CompReportsV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.tabPillRow}
       >
         {COMP_REPORTS_TABS.map((tab) => {
@@ -2150,6 +2151,7 @@ export function CompReportsV2({ colors, accentColor }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
         contentContainerStyle={s.scopeChipRow}
       >
         {COMP_REPORTS_SCOPE_CHIPS.map((chip, index) => {
