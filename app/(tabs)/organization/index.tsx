@@ -121,9 +121,10 @@ import { EduOrgRoomsV2 } from '@/components/organization/edu-org-rooms-v2';
 import { EduOrgOperationsV2 } from '@/components/organization/edu-org-operations-v2';
 import { EduOrgFinanceV2 } from '@/components/organization/edu-org-finance-v2';
 import { EduOrgPaymentRailsV2 } from '@/components/organization/edu-org-payment-rails-v2';
-import { EduOrgFacilities } from '@/components/organization/edu-org-facilities';
-import { EduOrgResources } from '@/components/organization/edu-org-resources';
-import { EduOrgSponsors } from '@/components/organization/edu-org-sponsors';
+import { EduOrgComplianceV2 } from '@/components/organization/edu-org-compliance-v2';
+import { EduOrgFacilitiesV2 } from '@/components/organization/edu-org-facilities-v2';
+import { EduOrgResourcesV2 } from '@/components/organization/edu-org-resources-v2';
+import { EduOrgSponsorsV2 } from '@/components/organization/edu-org-sponsors-v2';
 
 // =============================================================================
 // ORG TAB & MORE DEFINITIONS (per mode)
@@ -695,16 +696,16 @@ function EducationOrganizationInner() {
             <EduOrgPaymentRailsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="compliance" style={{ flex: 1 }}>
-            <OrgComplianceTab mode="education" colors={colors} accentColor={accent} />
+            <EduOrgComplianceV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="facilities" style={{ flex: 1 }}>
-            <EduOrgFacilities colors={colors} accentColor={accent} role={viewAsRole} />
+            <EduOrgFacilitiesV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="resources" style={{ flex: 1 }}>
-            <EduOrgResources colors={colors} accentColor={accent} role={viewAsRole} />
+            <EduOrgResourcesV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="sponsors" style={{ flex: 1 }}>
-            <EduOrgSponsors colors={colors} accentColor={accent} role={viewAsRole} />
+            <EduOrgSponsorsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
         </PagerView>
       </EdgeHoldAdvance>
