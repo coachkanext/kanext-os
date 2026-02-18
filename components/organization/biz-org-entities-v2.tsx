@@ -974,6 +974,7 @@ export function BizOrgEntitiesV2({ colors, accentColor, role = 'B1' }: Props) {
 
       {/* 4) Entity list (Cards or List view) */}
       <FlatList
+        style={{ flex: 1 }}
         data={displayEntities}
         keyExtractor={(item) => item.id}
         renderItem={viewMode === 'cards' ? renderCardItem : renderListItem}

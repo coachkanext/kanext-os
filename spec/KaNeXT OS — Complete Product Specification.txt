@@ -1,7 +1,7 @@
 ================================================================================
   KaNeXT OS — Complete Product Specification
-  Version 2.0 — February 2026
-  Generated from codebase at commit c12df72+
+  Version 3.0 — February 2026
+  Generated from codebase at commit e95e1f3
 ================================================================================
 
 TABLE OF CONTENTS
@@ -15,14 +15,15 @@ TABLE OF CONTENTS
   7.  Nexus Tab (AI Surface)
   8.  Activity Tab (Messages)
   9.  Organization Tab (Per-Mode Operational Hub)
- 10.  Coach Stack Screens (Sports Mode)
- 11.  UI System & Primitives
- 12.  Data Layer
- 13.  Authentication & Identity
- 14.  Bottom Sheet System
- 15.  Canonical Systems (Sports Mode)
- 16.  Appendix A — File Inventory
- 17.  Appendix B — Placeholder Surfaces
+ 10.  V2 Organization Architecture
+ 11.  Coach Stack Screens (Sports Mode)
+ 12.  UI System & Primitives
+ 13.  Data Layer
+ 14.  Authentication & Identity
+ 15.  Bottom Sheet System
+ 16.  Canonical Systems (Sports Mode)
+ 17.  Appendix A — File Inventory
+ 18.  Appendix B — V2 Completion Status
 
 
 ================================================================================
@@ -49,7 +50,7 @@ Primary instantiation (Sports Mode):
 Secondary instantiations:
   - Enterprise: KaNeXT Inc. (founder OS)
   - Church: International Christian Center Los Angeles (ICCLA)
-  - Education: FMU (academic lens)
+  - Education: FMU + Bethune-Cookman University (BCU) (academic lens)
   - Community: K-1 Speed Racing League
 
 
@@ -61,7 +62,8 @@ Framework:       Expo SDK + React Native
 Routing:         Expo Router (file-based, typed routes)
 Navigation:      Stack + Tabs (5 bottom tabs, coach stack for push screens)
 State:           React Context (AppContext, AuthContext, NexusContext,
-                 EnterpriseContext)
+                 EnterpriseContext, ChurchContext, EducationContext,
+                 BusinessContext)
 Persistence:     AsyncStorage (session, mode, program context)
 AI:              OpenAI GPT via utils/openai (Nexus conversations)
 Bottom Sheets:   @gorhom/bottom-sheet v5 (universal wrapper)
@@ -87,7 +89,7 @@ Sports            sports         FMU Monarchs             Royal Blue
 Enterprise        enterprise     KaNeXT Inc.              Violet
 Church            church         ICCLA                    Gold
 Education         education      FMU (academic)           Teal
-Community         community      K-1 Speed League         Orange
+Community         competition    K-1 Speed League         Orange
 
 Each mode defines its own:
   - Dashboard payload (hero video, KPIs, today/next, alerts, quick actions)
@@ -98,6 +100,8 @@ Each mode defines its own:
   - People directory
   - Operations, Finance, Compliance, Payment Rails (all mode-aware)
 
+3.1 ROLE SYSTEMS
+─────────────────
 Roles (21 total across modes):
   Sports:     head_coach, assistant_coach, coordinator, analyst, trainer,
               player, recruit, parent_guardian
@@ -105,6 +109,39 @@ Roles (21 total across modes):
   Church:     senior_pastor, pastor, elder, deacon, member
   Education:  president, dean, faculty, registrar, student
   Community:  league_admin, team_rep, official, broadcaster, participant
+
+3.2 RBAC LENS SYSTEMS (V2 Organization Tabs)
+──────────────────────────────────────────────
+V2 organization tabs use a 5-tier Role Lens system for fine-grained visibility
+gating within each tab. Each lens maps to a tier number (1 = highest authority,
+5 = most restricted).
+
+  Church Role Lens (utils/church-rbac.ts):
+    C1 — Senior Pastor        Full 10-tab access
+    C2 — Elder / Board        Full 10-tab access
+    C3 — Staff / Deacon       Most tabs, some admin areas restricted
+    C4 — Member               Limited tabs (overview + member-facing)
+    C5 — Visitor / Public     Locked or curated view only
+
+  Education Role Lens (utils/education-rbac.ts):
+    E1 — President/Chancellor Full 10-tab access
+    E2 — Provost / Dean       Full 10-tab access
+    E3 — Faculty / Staff      Most tabs, admin areas restricted
+    E4 — Student              Limited tabs (overview + student-facing)
+    E5 — Public               Locked or curated view only
+
+  Business Role Lens (utils/business-rbac.ts):
+    B1  — Founder / CEO       Full access
+    B2a — Investor (Retail)   Limited disclosure views
+    B2b — Investor (Strategic/Board)  Enhanced disclosure views
+    B3  — Public              Minimal access
+    B4  — Subscriber          Curated access
+    B5  — Prospective Acquirer  Due diligence views
+
+  Helper functions per mode: isDeanLevel(), isFacultyLevel(), isEnrolled(),
+  isPresident(), isPastorLevel(), isStaffLevel(), isMember(), etc.
+  Each v2 component receives a `role` prop and gates sub-tabs + content
+  visibility accordingly.
 
 
 ================================================================================
@@ -275,24 +312,28 @@ Community inbox contacts: Sarah Nakamura, Diego Fuentes, Tom Bradley,
 
 Component: OrganizationScreen
 Dispatches to one of five mode-specific PagerView + PagedTabBar surfaces.
-All modes have exactly 10 swipeable tabs.
+All modes have exactly 10 swipeable tabs. Four of five modes (Business, Church,
+Education, Competition) are fully rebuilt with v2 components featuring 10-sub-tab
+hubs, RBAC gating, and domain-specific mock data. Sports remains partially v1.
 
 9.1 SPORTS MODE — SportsOrganization
 ─────────────────────────────────────
-  Index  Tab Label       Component              Status
-  ─────  ─────────       ─────────              ──────
-  0      Program         OrgProgramTab          Live
-  1      People          OrgPeopleTab           Live
-  2      Rooms           RoomsHub               Live
-  3      Operations      OrgOperationsTab       Live
-  4      Finance         OrgFinanceTab          Live
-  5      Payment Rails   OrgPaymentRailsTab     Live
-  6      Compliance      OrgComplianceTab       Live
-  7      Facilities      OrgFacilitiesTab       Live (11 inner tabs)
-  8      Resources       OrgResourcesTab        Live
-  9      Sponsors        OrgSponsorsTab         Live
+  Index  Tab Label       Component                    Version
+  ─────  ─────────       ─────────                    ───────
+  0      Program         SportsOrgProgramsV2          V2
+  1      People          OrgPeopleTab                 V1
+  2      Rooms           RoomsHub                     V1
+  3      Operations      OrgOperationsTab (v2)        V2 (shared, mode="sports")
+  4      Finance         OrgFinanceTab (v2)           V2 (shared, mode="sports")
+  5      Payment Rails   OrgPaymentRailsTab           V1
+  6      Compliance      OrgComplianceTab             V1 (shared, mode="sports")
+  7      Facilities      OrgFacilitiesTab             V1 (11 inner tabs)
+  8      Resources       OrgResourcesTab              V1
+  9      Sponsors        OrgSponsorsTab               V1
 
-  *** Facilities Inner Tabs (11): ***
+  Sports V2 status: 3 of 10 tabs rebuilt. Remaining 7 are functional v1.
+
+  *** Sports Facilities Inner Tabs (11): ***
     0  Dashboard     — today's bookings, quick actions, facility/safety/vendor pulse
     1  Spaces        — 10 spaces (court, weight, training, locker, film, office,
                        meeting, storage, home venue, practice venue)
@@ -306,78 +347,188 @@ All modes have exactly 10 swipeable tabs.
     9  Audit         — timestamped action log
    10  Settings      — toggle switches for facility policies
 
-9.2 ENTERPRISE MODE — EnterpriseOrganization (EnterpriseProvider)
-─────────────────────────────────────────────────────────────────
-  Index  Tab Label       Component              Status
-  ─────  ─────────       ─────────              ──────
-  0      Entities        OrgEntitiesTab         Live
-  1      People          OrgPeopleTab           Live
-  2      Rooms           RoomsHub               Live
-  3      Operations      OrgOperationsTab       Live
-  4      Finance         OrgFinanceTab          Live
-  5      Payment Rails   OrgPaymentRailsTab     Live
-  6      Legal           TabPlaceholderPage     Placeholder
-  7      Compliance      OrgComplianceTab       Live
-  8      Assets          TabPlaceholderPage     Placeholder
-  9      Reports         TabPlaceholderPage     Placeholder
+9.2 ENTERPRISE MODE — BusinessOrganization (BusinessProvider)
+─────────────────────────────────────────────────────────────
+Wraps BusinessProvider. Includes EntityScopeBar + EntitySwitcherSheet above
+the PagerView. All tabs pass role={viewAsRole} via useBusiness() context.
 
-9.3 CHURCH MODE — ChurchOrganization
-─────────────────────────────────────
-  Index  Tab Label       Component              Status
-  ─────  ─────────       ─────────              ──────
-  0      Ministries      OrgMinistriesTab       Live
-  1      People          OrgPeopleTab           Live
-  2      Rooms           RoomsHub               Live
-  3      Operations      OrgOperationsTab       Live
-  4      Finance         OrgFinanceTab          Live
-  5      Payment Rails   OrgPaymentRailsTab     Live
-  6      Compliance      OrgComplianceTab       Live
-  7      Facilities      TabPlaceholderPage     Placeholder
-  8      Resources       TabPlaceholderPage     Placeholder
-  9      Policies        TabPlaceholderPage     Placeholder
+  Index  Tab Label       Component                    Version
+  ─────  ─────────       ─────────                    ───────
+  0      Entities        BizOrgEntitiesV2             V2 (10 sub-tabs)
+  1      People          BizOrgPeopleV2               V2 (10 sub-tabs)
+  2      Rooms           BizOrgRoomsV2                V2 (10 sub-tabs)
+  3      Operations      BizOrgOperationsV2           V2 (10 sub-tabs)
+  4      Finance         BizOrgFinanceV2              V2 (10 sub-tabs)
+  5      Payment Rails   BizOrgPaymentRailsV2         V2 (10 sub-tabs)
+  6      Legal           BizOrgLegalV2                V2 (10 sub-tabs)
+  7      Compliance      BizOrgComplianceV2           V2 (10 sub-tabs)
+  8      Assets          BizOrgAssetsTab              V2 (10 sub-tabs)
+  9      Reports         BizOrgReportsV2              V2 (10 sub-tabs)
 
-9.4 EDUCATION MODE — EducationOrganization
-──────────────────────────────────────────
-  Index  Tab Label       Component              Status
-  ─────  ─────────       ─────────              ──────
-  0      Institutions    OrgInstitutionsTab     Live
-  1      People          OrgPeopleTab           Live
-  2      Rooms           RoomsHub               Live
-  3      Operations      OrgOperationsTab       Live
-  4      Finance         OrgFinanceTab          Live
-  5      Payment Rails   OrgPaymentRailsTab     Live
-  6      Compliance      OrgComplianceTab       Live
-  7      Facilities      TabPlaceholderPage     Placeholder
-  8      Resources       TabPlaceholderPage     Placeholder
-  9      Policies        TabPlaceholderPage     Placeholder
+  Business V2 status: 10 of 10 — FULLY V2.
 
-9.5 COMMUNITY MODE — CommunityOrganization
-──────────────────────────────────────────
-  Index  Tab Label       Component              Status
-  ─────  ─────────       ─────────              ──────
-  0      Series          OrgSeriesTab           Live
-  1      People          OrgPeopleTab           Live
-  2      Rooms           RoomsHub               Live
-  3      Operations      OrgOperationsTab       Live
-  4      Finance         OrgFinanceTab          Live
-  5      Payment Rails   OrgPaymentRailsTab     Live
-  6      Rules           TabPlaceholderPage     Placeholder
-  7      Compliance      OrgComplianceTab       Live
-  8      Venues          TabPlaceholderPage     Placeholder
-  9      Sponsors        TabPlaceholderPage     Placeholder
+9.3 CHURCH MODE — ChurchOrganization (ChurchProvider)
+─────────────────────────────────────────────────────
+Wraps ChurchProvider. All tabs pass role={viewAsRole} (ChurchRoleLens).
+RBAC: C1-C5 lens per tab.
 
-SHARED ORGANIZATION COMPONENTS (mode-aware, used across modes):
-  - OrgPeopleTab       — people directory with quick filters
-  - OrgOperationsTab   — operations workstreams (14 inner tabs)
-  - OrgFinanceTab      — finance KPIs + rails (14 inner tabs)
-  - OrgPaymentRailsTab — payment rails (14 inner tabs)
-  - OrgComplianceTab   — compliance status (14 inner tabs)
-  - RoomsHub           — communication rooms (6 inner tabs: Inbox, Rooms,
-                          Requests, Pinned, Audit, Settings)
+  Index  Tab Label       Component                    Version
+  ─────  ─────────       ─────────                    ───────
+  0      Ministries      ChurchOrgMinistries           V2 (10 sub-tabs)
+  1      People          ChurchOrgPeople               V2 (10 sub-tabs)
+  2      Rooms           ChurchOrgRooms                V2 (10 sub-tabs)
+  3      Operations      ChurchOrgOperations           V2 (10 sub-tabs)
+  4      Finance         ChurchOrgFinance              V2 (10 sub-tabs)
+  5      Payment Rails   ChurchOrgPaymentRails         V2 (10 sub-tabs)
+  6      Compliance      ChurchOrgCompliance           V2 (10 sub-tabs)
+  7      Facilities      ChurchOrgFacilitiesV2         V2 (10 sub-tabs)
+  8      Resources       ChurchOrgResourcesV2          V2 (10 sub-tabs)
+  9      Donations       ChurchOrgDonationsV2          V2 (10 sub-tabs)
+
+  Church V2 status: 10 of 10 — FULLY V2.
+  Note: Tab 9 is "Donations/Giving" (church-specific), not "Policies".
+
+9.4 EDUCATION MODE — EducationOrganization (EducationProvider)
+──────────────────────────────────────────────────────────────
+Wraps EducationProvider. All tabs pass role={viewAsRole} (EducationRoleLens).
+RBAC: E1-E5 lens per tab. HBCU-seeded mock data (FMU + BCU).
+
+  Index  Tab Label       Component                    Version
+  ─────  ─────────       ─────────                    ───────
+  0      Institutions    EduOrgInstitutionsV2          V2 (10 sub-tabs)
+  1      People          EduOrgPeopleV2                V2 (10 sub-tabs)
+  2      Rooms           EduOrgRoomsV2                 V2 (10 sub-tabs)
+  3      Operations      EduOrgOperationsV2            V2 (10 sub-tabs)
+  4      Finance         EduOrgFinanceV2               V2 (10 sub-tabs)
+  5      Payment Rails   EduOrgPaymentRailsV2          V2 (10 sub-tabs)
+  6      Compliance      EduOrgComplianceV2            V2 (10 sub-tabs)
+  7      Facilities      EduOrgFacilitiesV2            V2 (10 sub-tabs)
+  8      Resources       EduOrgResourcesV2             V2 (10 sub-tabs)
+  9      Sponsors        EduOrgSponsorsV2              V2 (10 sub-tabs)
+
+  Education V2 status: 10 of 10 — FULLY V2.
+  Note: Tab 9 is "Sponsors" (education-specific), not "Policies".
+
+  Education V2 Sub-Tab Breakdown:
+    Tab 0 Institutions:  Overview | Directory | Campuses | Programs | Accreditation | Leadership | History | Rankings | Partnerships | Settings
+    Tab 1 People:        Overview | Directory | Faculty | Staff | Students | Alumni | Contacts | Roles | Onboarding | Admin
+    Tab 2 Rooms:         Overview | Rooms | Channels | Announcements | Scheduled | Archive | Moderation | Templates | Integrations | Settings
+    Tab 3 Operations:    Overview | Workstreams | Calendar | Tasks | Approvals | Workflows | Incidents | Vendors | Reports | Settings
+    Tab 4 Finance:       Overview | Budget | Revenue | Expenses | Aid & Scholarships | Accounts | Reconciliation | Reports | Forecasting | Settings
+    Tab 5 Payment Rails: Overview | Tuition Rails | Aid Disbursement | Vendor Payments | Refunds | Holds | Reconciliation | Audit | Compliance | Settings
+    Tab 6 Compliance:    Overview | Policies | Controls | Evidence | Risk Register | Audits | Findings | Incidents | Exceptions | Exports
+    Tab 7 Facilities:    Overview | Buildings | Rooms | Assets | Work Orders | Maintenance | Inspections | Vendors | Safety & Access | Projects
+    Tab 8 Resources:     Overview | Library | Packs | Templates | SOPs / Playbooks | Policies | Role Kits | Requests | Updates | Admin
+    Tab 9 Sponsors:      Overview | Sponsors | Pipeline | Agreements | Deliverables | Proof | Payments | Risk / Compliance | Contacts | Reports
+
+9.5 COMMUNITY MODE — CommunityOrganization (mode key: "competition")
+─────────────────────────────────────────────────────────────────────
+Internal mode key is "competition". All tabs are dedicated v2 components.
+
+  Index  Tab Label       Component                    Version
+  ─────  ─────────       ─────────                    ───────
+  0      Series          CompSeriesV2                  V2 (10 sub-tabs)
+  1      People          CompPeopleV2                  V2 (10 sub-tabs)
+  2      Rooms           CompRoomsV2                   V2 (10 sub-tabs)
+  3      Operations      CompOperationsV2              V2 (10 sub-tabs)
+  4      Finance         CompFinanceV2                 V2 (10 sub-tabs)
+  5      Payment Rails   CompPaymentRailsV2            V2 (10 sub-tabs)
+  6      Compliance      CompComplianceV2              V2 (10 sub-tabs)
+  7      Assets          CompAssetsV2                  V2 (10 sub-tabs)
+  8      Reports         CompReportsV2                 V2 (10 sub-tabs)
+  9      Sponsors        CompSponsorsV2                V2 (10 sub-tabs)
+
+  Community V2 status: 10 of 10 — FULLY V2.
+  Note: Tab 7 is "Assets" (not "Venues"). Tab 6 is "Compliance" (not "Rules").
+
+9.6 V2 COMPLETION SUMMARY
+──────────────────────────
+
+  Mode          V2 Tabs    V1 Tabs    Placeholders
+  ────          ───────    ───────    ────────────
+  Sports        3/10       7/10       0
+  Business      10/10      0          0
+  Church        10/10      0          0
+  Education     10/10      0          0
+  Community     10/10      0          0
+  ─────────────────────────────────────────────────
+  TOTAL         43/50      7/50       0
+
+  Zero placeholder tabs remain. All 50 tabs are functional.
+  Sports is the only mode with remaining v1 work (7 tabs).
 
 
 ================================================================================
-10. COACH STACK SCREENS (SPORTS MODE)
+10. V2 ORGANIZATION ARCHITECTURE
+================================================================================
+
+V2 organization tabs follow a standardized architectural pattern across all
+modes. Each v2 tab is a self-contained component with its own mock data file.
+
+10.1 STRUCTURAL PATTERN
+────────────────────────
+Every v2 component follows this internal structure:
+
+  1. JSDoc header (component name, sub-tab list, RBAC rules)
+  2. Imports (React, RN, ThemedText, IconSymbol, BottomSheet, theme, RBAC utils)
+  3. SUB_TABS constant (array of { id, label } — always 10 entries)
+  4. Props interface ({ colors, accentColor, role })
+  5. Helper functions (formatDate, formatCurrency, daysUntil)
+  6. Reusable sub-components (EmptyState, StatusBadge, ProgressBar, SubTabBar)
+  7. 10 sub-tab content functions (each a React component)
+  8. Detail bottom sheets (2-4 per component, all using useModal)
+  9. Main export function with RBAC gating + state + renderContent switch
+ 10. StyleSheet.create block
+
+10.2 SUB-TAB BAR
+─────────────────
+Each v2 component renders a horizontal ScrollView tab bar at the top with
+10 sub-tabs. The active sub-tab determines which content function renders.
+This is NOT a PagerView — it's a simple state-driven switch with haptic
+feedback on tab press.
+
+10.3 RBAC GATING PATTERN
+──────────────────────────
+  - Highest-restricted roles (C5/E5/B3) → Locked state (lock icon + message)
+  - Mid-restricted roles (C4/E4) → Limited sub-tab access (2-4 tabs)
+  - Staff roles (C3/E3) → Most sub-tabs, admin areas restricted
+  - Leadership roles (C1-C2/E1-E2/B1) → Full 10-tab access
+
+  The visibleSubTabs useMemo filters the SUB_TABS array based on role.
+  Content functions also have inline RBAC guards for sensitive data (e.g.,
+  financial values hidden from student roles).
+
+10.4 DETAIL BOTTOM SHEETS
+──────────────────────────
+Each v2 component includes 2-4 detail bottom sheets using the BottomSheet
+wrapper with useModal prop (portal-based for deeply nested rendering).
+Sheets follow the standard 50%/100% snap point pattern.
+
+10.5 MOCK DATA FILE PATTERN
+─────────────────────────────
+Each v2 component has a dedicated mock data file that follows this structure:
+
+  1. Type aliases (union types for all domain enums)
+  2. Interfaces (exported, one per data entity)
+  3. Label/color/icon constant maps (Record<Type, string>)
+  4. Seeded data arrays (realistic, domain-appropriate)
+  5. Factory function (e.g., getEduComplianceData())
+
+All types, interfaces, and label/color maps are exported for use by
+the component. The factory function returns a flat object with all
+data collections.
+
+10.6 INTERACTION PATTERNS
+──────────────────────────
+  - All Pressable elements trigger expo-haptics (ImpactFeedbackStyle.Light
+    for navigation, Medium for actions)
+  - FlatList for list-heavy tabs, ScrollView for non-list tabs
+  - useCallback/useMemo for render optimization
+  - contentContainerStyle includes paddingBottom: 120 for safe scrolling
+
+
+================================================================================
+11. COACH STACK SCREENS (SPORTS MODE)
 ================================================================================
 
 Accessed as stack pushes from Sports Home. No bottom tab bar visible.
@@ -422,10 +573,10 @@ LOCKED DESIGN RULES (game-detail):
 
 
 ================================================================================
-11. UI SYSTEM & PRIMITIVES
+12. UI SYSTEM & PRIMITIVES
 ================================================================================
 
-11.1 CORE PRIMITIVES (components/ui/)
+12.1 CORE PRIMITIVES (components/ui/)
 ──────────────────────────────────────
   PagedTabBar        — scrollable paged horizontal tab bar (4 tabs per page,
                        screenWidth/4 per tab). Haptic feedback. Used by all
@@ -442,16 +593,16 @@ LOCKED DESIGN RULES (game-detail):
   EmptyState         — standardized empty content placeholder
   ErrorState         — standardized error display
   LoadingState       — standardized loading indicator
-  TabPlaceholderPage — generic "Coming Soon" placeholder
+  TabPlaceholderPage — generic "Coming Soon" placeholder (no longer used)
 
-11.2 THEMED COMPONENTS
+12.2 THEMED COMPONENTS
 ──────────────────────
   ThemedText         — auto light/dark text primitive
   ThemedView         — auto light/dark view primitive
   GlobalHeader       — persistent header shown across all screens
   HapticTab          — tab button with haptic feedback
 
-11.3 BOTTOM SHEET RULES (LOCKED)
+12.3 BOTTOM SHEET RULES (LOCKED)
 ────────────────────────────────
   - Two snap points ONLY: 50% (medium) and 100% (full)
   - All sheets open at 50% first
@@ -461,7 +612,7 @@ LOCKED DESIGN RULES (game-detail):
   - PROHIBITED: fixed-height modals, close-button-only, center modals,
     >2 snap points, custom Animated.View/PanResponder implementations
 
-11.4 THEMING
+12.4 THEMING
 ─────────────
   Colors.light / Colors.dark — full palette with semantic names
   ModeColors[mode].primary   — per-mode accent color
@@ -471,12 +622,12 @@ LOCKED DESIGN RULES (game-detail):
 
 
 ================================================================================
-12. DATA LAYER
+13. DATA LAYER
 ================================================================================
 
 All mock data lives in /data/. No backend yet — future target is Airtable.
 
-12.1 SPORTS / FMU CORE
+13.1 SPORTS / FMU CORE
 ───────────────────────
   fmu.ts                    — central FMU data bridge (games, leaders, standings,
                               news, record, BPR, game impact PGIS/TGIS, pregame)
@@ -491,7 +642,7 @@ All mock data lives in /data/. No backend yet — future target is Airtable.
   mock-facilities-v2.ts     — 10 spaces, bookings, work orders, issues,
                               inventory, vendors, safety, audit, settings
 
-12.2 RECRUITING SYSTEM
+13.2 RECRUITING SYSTEM
 ───────────────────────
   recruitingBoard.ts        — 10-stage pipeline definition
   recruitingLogs.ts         — touch action timeline
@@ -504,48 +655,94 @@ All mock data lives in /data/. No backend yet — future target is Airtable.
   position-mapping.ts       — heliocentric ↔ traditional position mapping
   governing-bodies.ts       — NCAA/NAIA/JUCO/NCCAA hierarchy
 
-12.3 NEXUS / AI
+13.3 NEXUS / AI
 ────────────────
   mock-nexus.ts             — mock conversations (real GPT used in production)
   mock-program-context.ts   — system presets, styles, defaults
   mock-ask-nexus.ts         — Ask Nexus entry types
 
-12.4 CALENDAR & SCHEDULE
+13.4 CALENDAR & SCHEDULE
 ─────────────────────────
   mock-calendar-events.ts   — non-game calendar events (2025-26 season)
   calendar-utils.ts         — event type colors, game-to-event mapper
 
-12.5 DASHBOARD
+13.5 DASHBOARD
 ──────────────
   dashboard-payloads.ts     — pure payload builders for all 5 mode dashboards
 
-12.6 ENTERPRISE / BUSINESS
+13.6 ENTERPRISE / BUSINESS
 ───────────────────────────
   mock-enterprise-v2.ts     — multi-company, proof events, engines, data room
   mock-business.ts          — founder OS (mandates, proof wedges, rails)
   mock-entities-v2.ts       — 12 entity types with audit log
   mock-business-explore.ts  — business content discovery
 
-12.7 CHURCH
+  Business Org V2 Mock Data (10 files):
+  mock-biz-org-entities.ts       — entities with governance, finance, rails, compliance
+  mock-biz-org-people.ts         — org directory with roles, departments
+  mock-biz-org-rooms.ts          — communication channels
+  mock-biz-org-operations.ts     — operational workstreams
+  mock-biz-org-finance.ts        — financial data, budgets, accounts
+  mock-biz-org-payment-rails.ts  — payment processing rails
+  mock-biz-org-legal.ts          — legal matters, contracts, IP
+  mock-biz-org-compliance.ts     — regulatory compliance
+  mock-biz-org-assets.ts         — company assets, equipment, IP
+  mock-biz-org-reports.ts        — operational reports
+
+13.7 CHURCH
 ───────────
   mock-church.ts            — ICCLA organization, campuses, ministries
   mock-ministries-v3.ts     — comprehensive ministry hub data
   mock-church-explore.ts    — church content discovery
 
-12.8 EDUCATION
+  Church Org V2 Mock Data:
+  mock-church-org-compliance-legal.ts — compliance & legal (1,112 lines)
+  mock-church-org-facilities-v2.ts    — buildings, rooms, assets, work orders
+  mock-church-org-resources-v2.ts     — resource library, SOPs, role kits
+  mock-church-org-donations-v2.ts     — giving, campaigns, pledges, funds
+
+13.8 EDUCATION
 ──────────────
   mock-education.ts         — FMU organization, departments, terms, calendar
-  mock-institutions-v2.ts   — education institutions
+  mock-education-v2.ts      — v2 education core data
   mock-education-explore.ts — school discovery
 
-12.9 COMMUNITY / COMPETITION
+  Education Org V2 Mock Data (10 files, HBCU-seeded — FMU + BCU):
+  mock-edu-org-institutions-v2.ts — institutions directory, campuses, programs
+  mock-edu-org-people-v2.ts       — faculty, staff, students, alumni
+  mock-edu-org-rooms-v2.ts        — communication channels
+  mock-edu-org-operations-v2.ts   — academic operations
+  mock-edu-org-finance.ts         — institutional finance, aid, budgets
+  mock-edu-org-payment-rails.ts   — tuition rails, aid disbursement
+  mock-edu-org-compliance.ts      — FERPA, accreditation, policy compliance
+                                    (17 types, 15 interfaces, 18 label maps)
+  mock-edu-org-facilities-v2.ts   — buildings, rooms, assets, work orders
+                                    (16 types, 13 interfaces, 4 HBCU buildings)
+  mock-edu-org-resources-v2.ts    — resource library, SOPs, role kits, templates
+                                    (12 types, 12 interfaces, 7 role kits)
+  mock-edu-org-sponsors-v2.ts     — sponsors, pipeline, agreements, deliverables
+                                    (12 types, 13 interfaces, 8 sponsors)
+
+13.9 COMMUNITY / COMPETITION
 ─────────────────────────────
   mock-community.ts         — K-1 Speed league data
   mock-series-v2.ts         — series/tournaments/showcases
   mock-competition-explore.ts — racing content discovery
   mock-sports-explore.ts    — YouTube-style sports discovery
 
-12.10 COMMUNICATIONS / VIDEO
+  Competition Org V2 Mock Data (10 files):
+  mock-comp-org-series.ts         — series/race weekends
+  mock-comp-org-people.ts         — drivers, officials, crew
+  mock-comp-org-rooms.ts          — communication channels
+  mock-comp-org-operations.ts     — race operations
+  mock-comp-org-finance.ts        — league finances
+  mock-comp-org-payment-rails.ts  — prize money, entry fees
+  mock-comp-org-compliance.ts     — technical compliance, rules
+  mock-comp-org-assets.ts         — karts, equipment, venues
+  mock-comp-org-reports.ts        — performance reports
+  mock-comp-org-sponsors.ts       — league sponsors
+
+13.10 COMMUNICATIONS / VIDEO
 ─────────────────────────────
   mock-messages.ts          — feed, inbox, alerts, mode-scoped DM threads,
                               pinned threads, rooms per mode
@@ -555,8 +752,8 @@ All mock data lives in /data/. No backend yet — future target is Airtable.
   mock-video-inbox.ts       — video inbox and quick share per mode
   mock-film-room.ts         — film room data per mode
 
-12.11 CROSS-CUTTING HUBS (mode-aware)
-──────────────────────────────────────
+13.11 CROSS-CUTTING HUBS (mode-aware, used by Sports v1 + shared surfaces)
+───────────────────────────────────────────────────────────────────────────
   mock-ops-v2.ts            — operations (14 sub-tabs, all 5 modes)
   mock-finance-v2.ts        — finance (14 sub-tabs, all 5 modes)
   mock-compliance-v2.ts     — compliance (14 sub-tabs, all 5 modes)
@@ -571,7 +768,7 @@ All mock data lives in /data/. No backend yet — future target is Airtable.
 
 
 ================================================================================
-13. AUTHENTICATION & IDENTITY
+14. AUTHENTICATION & IDENTITY
 ================================================================================
 
 Two auth systems (in migration):
@@ -593,7 +790,7 @@ Auth modal supports: Apple Sign-In, Google Sign-In, Email
 
 
 ================================================================================
-14. BOTTOM SHEET SYSTEM
+15. BOTTOM SHEET SYSTEM
 ================================================================================
 
 Library: @gorhom/bottom-sheet v5
@@ -618,10 +815,10 @@ Prohibited:
 
 
 ================================================================================
-15. CANONICAL SYSTEMS (SPORTS MODE)
+16. CANONICAL SYSTEMS (SPORTS MODE)
 ================================================================================
 
-15.1 TEAM KR & CLUSTER SYSTEM (v1 — LOCKED)
+16.1 TEAM KR & CLUSTER SYSTEM (v1 — LOCKED)
 ─────────────────────────────────────────────
   Team KR = Team Off KR (53%) + Team Def KR (47%), range 0–100
 
@@ -642,7 +839,7 @@ Prohibited:
 
   Team KR is NEVER manually edited — always derived from player truths.
 
-15.2 GAME PLAN (11 Sections)
+16.2 GAME PLAN (11 Sections)
 ──────────────────────────────
   S01: Decision Summary
   S02: Opponent Offense
@@ -656,14 +853,14 @@ Prohibited:
   S10: Scout Confidence
   S11: Practice Translation
 
-15.3 SIMULATION ENGINE (9 Types)
+16.3 SIMULATION ENGINE (9 Types)
 ─────────────────────────────────
   Types: Game, Season, Lineup, Transfer Impact, Draft, Recruiting,
          Development, Matchup, What-If
 
   Confidence gates, comparison view, projected box scores.
 
-15.4 RECRUITING PIPELINE (10 Stages)
+16.4 RECRUITING PIPELINE (10 Stages)
 ──────────────────────────────────────
   Pipeline columns defined in recruitingBoard.ts
   4-view workspace: Board (kanban), Big Board (ranked), CRM (table),
@@ -672,12 +869,12 @@ Prohibited:
   200-player national pool across NAIA/NCAA/JUCO/HS/International
   Each player: KR + 7-cluster ratings, trait evaluations, archetype mapping
 
-15.5 DEVELOPMENT OS
+16.5 DEVELOPMENT OS
 ────────────────────
   Weekly plan builder, drill library, evidence queue, position group board,
   transfer tracker
 
-15.6 GAME OPS
+16.6 GAME OPS
 ──────────────
   Live game operations center (GameOpsHubContent)
   Pregame → In-Game → Halftime → Postgame flow
@@ -685,52 +882,73 @@ Prohibited:
 
 
 ================================================================================
-16. APPENDIX A — FILE INVENTORY SUMMARY
+17. APPENDIX A — FILE INVENTORY SUMMARY
 ================================================================================
 
 Category                    Approximate Count
 ────────                    ─────────────────
-Context files               4
+Context files               7 (App, Auth, Nexus, Enterprise, Church,
+                               Education, Business)
 Type definition files       2
-Component files (.tsx)      ~190
-Data files (.ts)            ~75
-Component directories       ~30
+Component files (.tsx)      ~352
+Data files (.ts)            ~170
+RBAC utility files          6 (church, education, business, sports,
+                               competition, nexus)
 Coach stack screens         23
 Bottom tab screens          5
 Mode-specific home screens  5
 
-Total lines of code:        ~67,000+ (data + components)
+Total lines of code:        ~437,000+ (data + components + utils)
 
 
 ================================================================================
-17. APPENDIX B — PLACEHOLDER SURFACES
+18. APPENDIX B — V2 COMPLETION STATUS
 ================================================================================
 
-The following Organization tabs are currently TabPlaceholderPage ("Coming Soon")
-and need implementation:
+V2 Organization Component Inventory (43 v2 components):
 
-Enterprise mode:
-  - Legal (index 6)
-  - Assets (index 8)
-  - Reports (index 9)
+  Sports (3 v2):
+    sports-org-programs-v2.tsx
+    org-operations-tab-v2.tsx (shared, mode="sports")
+    org-finance-tab-v2.tsx (shared, mode="sports")
 
-Church mode:
-  - Facilities (index 7)
-  - Resources (index 8)
-  - Policies (index 9)
+  Business (10 v2):
+    biz-org-entities-v2.tsx, biz-org-people-v2.tsx, biz-org-rooms-v2.tsx,
+    biz-org-operations-v2.tsx, biz-org-finance-v2.tsx,
+    biz-org-payment-rails-v2.tsx, biz-org-legal-v2.tsx,
+    biz-org-compliance-v2.tsx, biz-org-assets-v2.tsx, biz-org-reports-v2.tsx
 
-Education mode:
-  - Facilities (index 7)
-  - Resources (index 8)
-  - Policies (index 9)
+  Church (10 v2):
+    church-org-ministries-v2.tsx, church-org-people-v2.tsx,
+    church-org-rooms-v2.tsx, church-org-operations-v2.tsx,
+    church-org-finance-v2.tsx, church-org-payment-rails-v2.tsx,
+    church-org-compliance-v2.tsx, church-org-facilities-v2.tsx,
+    church-org-resources-v2.tsx, church-org-donations-v2.tsx
 
-Community mode:
-  - Rules (index 6)
-  - Venues (index 8)
-  - Sponsors (index 9)
+  Education (10 v2):
+    edu-org-institutions-v2.tsx, edu-org-people-v2.tsx,
+    edu-org-rooms-v2.tsx, edu-org-operations-v2.tsx,
+    edu-org-finance-v2.tsx, edu-org-payment-rails-v2.tsx,
+    edu-org-compliance-v2.tsx, edu-org-facilities-v2.tsx,
+    edu-org-resources-v2.tsx, edu-org-sponsors-v2.tsx
 
-Total placeholder tabs: 13 out of 50 Organization tabs (26%)
-Live tabs: 37 out of 50 (74%)
+  Competition (10 v2):
+    comp-series-v2.tsx, comp-people-v2.tsx, comp-rooms-v2.tsx,
+    comp-operations-v2.tsx, comp-finance-v2.tsx,
+    comp-payment-rails-v2.tsx, comp-compliance-v2.tsx,
+    comp-assets-v2.tsx, comp-reports-v2.tsx, comp-sponsors-v2.tsx
+
+Remaining V1 tabs (Sports mode only, 7 tabs):
+  - People (OrgPeopleTab) — index 1
+  - Rooms (RoomsHub) — index 2
+  - Payment Rails (OrgPaymentRailsTab) — index 5
+  - Compliance (OrgComplianceTab) — index 6
+  - Facilities (OrgFacilitiesTab) — index 7
+  - Resources (OrgResourcesTab) — index 8
+  - Sponsors (OrgSponsorsTab) — index 9
+
+  All 7 are functional v1 implementations (not placeholders).
+  Zero TabPlaceholderPage instances remain in the codebase.
 
 
 ================================================================================
