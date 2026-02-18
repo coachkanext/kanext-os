@@ -4,8 +4,7 @@
  */
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
-import { View, FlatList, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, FlatList, StyleSheet, ActivityIndicator, Pressable, Animated } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { MessageBubble } from './message-bubble';
@@ -21,23 +20,28 @@ interface ChatThreadProps {
   messages: Message[];
   isLoading?: boolean;
   conversation?: Conversation | null;
+  mode?: string;
 }
 
-const NEXUS_QUOTES = [
-  { text: 'The hand of the diligent will rule,\nbut the slothful will be put to forced labor.', attribution: '— Prov 12:24' },
-  { text: 'Whatever your hand finds to do,\ndo it with your might.', attribution: '— Eccl 9:10' },
-  { text: 'In all hard work there is profit,\nbut mere talk leads only to poverty.', attribution: '— Prov 14:23' },
-  { text: 'If anyone is unwilling to work,\nhe shall not eat.', attribution: '— 2 Thess 3:10' },
-  { text: 'A slack hand causes poverty,\nbut the hand of the diligent makes rich.', attribution: '— Prov 10:4' },
-  { text: 'By wisdom a house is built,\nand by understanding it is established.', attribution: '— Prov 24:3' },
-  { text: 'The wise store up knowledge,\nbut the mouth of a fool brings ruin near.', attribution: '— Prov 10:14' },
-  { text: 'It is better to live in a desert land\nthan with a quarrelsome and fretful wife.', attribution: '— Prov 21:19' },
+const GLOBAL_QUOTES = [
+  { text: 'The thing you want to do least is usually the thing that gets you what you want most.', attribution: '— KaNeXT Core Principle' },
+  { text: 'Your mood is irrelevant. The job must get done.', attribution: '— KaNeXT Core Principle' },
+  { text: 'Decide the goal. Define the work. Execute.', attribution: '— KaNeXT Core Principle' },
+  { text: 'The future looks bright.', attribution: '— Patrick Bet-David' },
+  { text: 'Words talk… numbers scream.', attribution: '— Thomas Ellsworth' },
+  { text: 'Greatness is a lot of small things done well.', attribution: '— Ray Lewis' },
+  { text: 'Truth is not racist.', attribution: '— Vince Everett Ellison' },
+  { text: 'Why can\'t you do it? Do they have two heads?', attribution: '— Oladipo Kalejaiye' },
+  { text: 'The magic you\'re looking for is in the work you\'re avoiding.', attribution: '— Chris Williamson' },
 ];
 
-const QUOTE_STORAGE_KEY = 'kx:nexusLastQuoteIndex';
-const QUOTE_ROTATE_MS = 6_000;
+const CHURCH_QUOTES = [
+  { text: 'The one who is unwilling to work shall not eat.', attribution: '— 2 Thessalonians 3:10' },
+  { text: 'Lazy hands make for poverty, but diligent hands bring wealth.', attribution: '— Proverbs 10:4' },
+  { text: 'All hard work brings a profit, but mere talk leads only to poverty.', attribution: '— Proverbs 14:23' },
+];
 
-export function ChatThread({ messages, isLoading = false, conversation }: ChatThreadProps) {
+export function ChatThread({ messages, isLoading = false, conversation, mode }: ChatThreadProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const flatListRef = useRef<FlatList>(null);
@@ -49,44 +53,23 @@ export function ChatThread({ messages, isLoading = false, conversation }: ChatTh
     handleEscalationChoice: ctxHandleEscalation,
   } = useNexusContext();
 
-  // ── Quote rotation ──
+  // ── Quote system ──
+  const quotes = mode === 'church' ? CHURCH_QUOTES : GLOBAL_QUOTES;
   const [quoteIndex, setQuoteIndex] = useState(0);
-  const lastPersistedRef = useRef<number | null>(null);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const prevMessageCountRef = useRef(messages.length);
 
-  const isEmptyState = messages.length === 0 && !isLoading && conversation?.type !== 'game-ops';
-
-  // Pick a random starting quote that differs from the last one shown
+  // Fade out quote when first message arrives
   useEffect(() => {
-    if (!isEmptyState) return;
-    (async () => {
-      const stored = await AsyncStorage.getItem(QUOTE_STORAGE_KEY);
-      const lastIndex = stored != null ? parseInt(stored, 10) : -1;
-      let next: number;
-      do {
-        next = Math.floor(Math.random() * NEXUS_QUOTES.length);
-      } while (next === lastIndex && NEXUS_QUOTES.length > 1);
-      setQuoteIndex(next);
-      lastPersistedRef.current = next;
-      await AsyncStorage.setItem(QUOTE_STORAGE_KEY, String(next));
-    })();
-  }, [isEmptyState]);
-
-  // Auto-rotate every 10s while on empty state
-  useEffect(() => {
-    if (!isEmptyState) {
-      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-      return;
+    if (prevMessageCountRef.current === 0 && messages.length > 0) {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 275,
+        useNativeDriver: true,
+      }).start();
     }
-    timerRef.current = setInterval(() => {
-      setQuoteIndex((prev) => {
-        const next = (prev + 1) % NEXUS_QUOTES.length;
-        AsyncStorage.setItem(QUOTE_STORAGE_KEY, String(next));
-        return next;
-      });
-    }, QUOTE_ROTATE_MS);
-    return () => { if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; } };
-  }, [isEmptyState]);
+    prevMessageCountRef.current = messages.length;
+  }, [messages.length, fadeAnim]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -223,31 +206,20 @@ export function ChatThread({ messages, isLoading = false, conversation }: ChatTh
       );
     }
 
-    const q = NEXUS_QUOTES[quoteIndex] ?? NEXUS_QUOTES[0];
+    const q = quotes[quoteIndex] ?? quotes[0];
     return (
       <Pressable
         style={styles.emptyContainer}
-        onPress={() => {
-          const next = (quoteIndex + 1) % NEXUS_QUOTES.length;
-          setQuoteIndex(next);
-          AsyncStorage.setItem(QUOTE_STORAGE_KEY, String(next));
-          // Reset rotation timer on tap
-          if (timerRef.current) clearInterval(timerRef.current);
-          timerRef.current = setInterval(() => {
-            setQuoteIndex((prev) => {
-              const n = (prev + 1) % NEXUS_QUOTES.length;
-              AsyncStorage.setItem(QUOTE_STORAGE_KEY, String(n));
-              return n;
-            });
-          }, QUOTE_ROTATE_MS);
-        }}
+        onPress={() => setQuoteIndex((prev) => (prev + 1) % quotes.length)}
       >
-        <ThemedText style={[styles.quote, { color: colors.textSecondary }]}>
-          {q.text}
-        </ThemedText>
-        <ThemedText style={[styles.attribution, { color: colors.textTertiary }]}>
-          {q.attribution}
-        </ThemedText>
+        <Animated.View style={{ opacity: fadeAnim, alignItems: 'center' }}>
+          <ThemedText style={[styles.quote, { color: colors.textSecondary }]}>
+            {q.text}
+          </ThemedText>
+          <ThemedText style={[styles.attribution, { color: colors.textTertiary }]}>
+            {q.attribution}
+          </ThemedText>
+        </Animated.View>
       </Pressable>
     );
   };
@@ -345,13 +317,13 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     textAlign: 'center',
     lineHeight: 40,
-    opacity: 0.8,
+    opacity: 0.65,
   },
   attribution: {
     fontSize: 16,
     fontStyle: 'italic',
     marginTop: Spacing.md,
-    opacity: 0.6,
+    opacity: 0.5,
   },
   gameOpsMatchup: {
     alignItems: 'center',

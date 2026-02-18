@@ -89,6 +89,7 @@ function NexusScreenContent() {
   const colors = Colors[colorScheme];
   const { state: authState, completeOnboarding } = useAuth();
   const { state: appState } = useAppContext();
+  const mode = useMode();
 
   // Local UI state
   const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
@@ -287,6 +288,7 @@ function NexusScreenContent() {
             messages={nexusState.messages}
             isLoading={nexusState.isLoading}
             conversation={nexusState.conversations.find(c => c.id === nexusState.activeConversationId) ?? null}
+            mode={mode}
           />
         </Pressable>
 
