@@ -117,6 +117,8 @@ import { ChurchOrgDonationsV2 } from '@/components/organization/church-org-donat
 // Education v2 org tab components
 import { EduOrgInstitutionsV2 } from '@/components/organization/edu-org-institutions-v2';
 import { EduOrgPeopleV2 } from '@/components/organization/edu-org-people-v2';
+import { EduOrgRoomsV2 } from '@/components/organization/edu-org-rooms-v2';
+import { EduOrgOperationsV2 } from '@/components/organization/edu-org-operations-v2';
 import { EduOrgFacilities } from '@/components/organization/edu-org-facilities';
 import { EduOrgResources } from '@/components/organization/edu-org-resources';
 import { EduOrgSponsors } from '@/components/organization/edu-org-sponsors';
@@ -679,10 +681,10 @@ function EducationOrganizationInner() {
             <EduOrgPeopleV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="rooms" style={{ flex: 1 }}>
-            <RoomsHub mode="education" colors={colors} accentColor={accent} />
+            <EduOrgRoomsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="operations" style={{ flex: 1 }}>
-            <OrgOperationsTab mode="education" colors={colors} accentColor={accent} />
+            <EduOrgOperationsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="finance" style={{ flex: 1 }}>
             <OrgFinanceTab mode="education" colors={colors} accentColor={accent} />
