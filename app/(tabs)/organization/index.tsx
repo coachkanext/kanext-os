@@ -34,7 +34,7 @@ import { OrgSwitcherSheet } from '@/components/organization/org-switcher-sheet';
 import { OrgProgramTab } from '@/components/organization/org-program-tab';
 import { SportsOrgProgramsV2 } from '@/components/organization/sports-org-programs-v2';
 import { OrgMinistriesTab } from '@/components/organization/org-ministries-tab';
-import { OrgInstitutionsTab } from '@/components/organization/org-institutions-tab';
+
 import { OrgSeriesTab } from '@/components/organization/org-series-tab';
 import { OrgPaymentRailsTab } from '@/components/organization/org-payment-rails-tab';
 import { OrgComplianceTab } from '@/components/organization/org-compliance-tab';
@@ -109,11 +109,14 @@ import { ChurchOrgRooms } from '@/components/organization/church-org-rooms-v2';
 import { ChurchOrgOperations } from '@/components/organization/church-org-operations-v2';
 import { ChurchOrgFinance } from '@/components/organization/church-org-finance-v2';
 import { ChurchOrgPaymentRails } from '@/components/organization/church-org-payment-rails-v2';
-import { ChurchOrgFacilities } from '@/components/organization/church-org-facilities';
-import { ChurchOrgResources } from '@/components/organization/church-org-resources';
-import { ChurchOrgDonations } from '@/components/organization/church-org-donations';
+import { ChurchOrgCompliance } from '@/components/organization/church-org-compliance-v2';
+import { ChurchOrgFacilitiesV2 } from '@/components/organization/church-org-facilities-v2';
+import { ChurchOrgResourcesV2 } from '@/components/organization/church-org-resources-v2';
+import { ChurchOrgDonationsV2 } from '@/components/organization/church-org-donations-v2';
 
 // Education v2 org tab components
+import { EduOrgInstitutionsV2 } from '@/components/organization/edu-org-institutions-v2';
+import { EduOrgPeopleV2 } from '@/components/organization/edu-org-people-v2';
 import { EduOrgFacilities } from '@/components/organization/edu-org-facilities';
 import { EduOrgResources } from '@/components/organization/edu-org-resources';
 import { EduOrgSponsors } from '@/components/organization/edu-org-sponsors';
@@ -483,16 +486,16 @@ function ChurchOrganizationInner() {
             <ChurchOrgPaymentRails colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="compliance" style={{ flex: 1 }}>
-            <OrgComplianceTab mode="church" colors={colors} accentColor={accent} />
+            <ChurchOrgCompliance colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="facilities" style={{ flex: 1 }}>
-            <ChurchOrgFacilities colors={colors} accentColor={accent} role={viewAsRole} />
+            <ChurchOrgFacilitiesV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="resources" style={{ flex: 1 }}>
-            <ChurchOrgResources colors={colors} accentColor={accent} role={viewAsRole} />
+            <ChurchOrgResourcesV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="donations" style={{ flex: 1 }}>
-            <ChurchOrgDonations colors={colors} accentColor={accent} role={viewAsRole} />
+            <ChurchOrgDonationsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
         </PagerView>
       </EdgeHoldAdvance>
@@ -670,10 +673,10 @@ function EducationOrganizationInner() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           <View key="institutions" style={{ flex: 1 }}>
-            <OrgInstitutionsTab colors={colors} accentColor={accent} />
+            <EduOrgInstitutionsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="people" style={{ flex: 1 }}>
-            <OrgPeopleTab mode="education" colors={colors} accentColor={accent} />
+            <EduOrgPeopleV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="rooms" style={{ flex: 1 }}>
             <RoomsHub mode="education" colors={colors} accentColor={accent} />
