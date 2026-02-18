@@ -1,6 +1,7 @@
 /**
  * Mock Business Payment Rails — Data layer for the Payment Rails tab.
- * 8 scroll sections: Now, Wallets, Batches, Approvals, Exceptions, Disputes, Receipts, Admin.
+ * 9 scroll sections: Now, Wallets, Batches, Approvals, Release Queue, Exceptions,
+ * Disputes & Returns, Receipts, Admin.
  * All data references KaNeXT entities: Mercury Bank, Stripe, KaNeXT Inc, OSK Group,
  * FMU partnership payments, ICCLA donations.
  */
@@ -95,33 +96,55 @@ export interface AdminSetting {
 }
 
 // =============================================================================
-// RAILS HEALTH (4 metrics)
+// RAILS HEALTH (enhanced — overall status + 7 metrics)
 // =============================================================================
+
+export type RailsOverallStatus = 'GREEN' | 'YELLOW' | 'RED';
+
+export const RAILS_OVERALL_STATUS: RailsOverallStatus = 'YELLOW';
 
 export const RAILS_HEALTH: RailsHealthMetric[] = [
   {
     id: 'rh-1',
-    label: 'Settlement',
+    label: 'Settlement Clock',
     value: 'On Time',
     status: 'green',
   },
   {
     id: 'rh-2',
-    label: 'Exceptions',
-    value: '2 Open',
-    status: 'yellow',
+    label: 'Connected Processors',
+    value: '3 Active',
+    status: 'green',
   },
   {
     id: 'rh-3',
-    label: 'Approval Queue',
-    value: '3 Pending',
+    label: 'Holds',
+    value: '1',
     status: 'yellow',
   },
   {
     id: 'rh-4',
+    label: 'Failed (24h)',
+    value: '1',
+    status: 'red',
+  },
+  {
+    id: 'rh-5',
     label: 'Disputes',
-    value: '0 Active',
+    value: '2 Active',
+    status: 'yellow',
+  },
+  {
+    id: 'rh-6',
+    label: 'Audit',
+    value: '94%',
     status: 'green',
+  },
+  {
+    id: 'rh-7',
+    label: 'Approval Queue',
+    value: '3 Pending',
+    status: 'yellow',
   },
 ];
 
@@ -545,6 +568,7 @@ export type RailsSubTab =
   | 'wallets'
   | 'batches'
   | 'approvals'
+  | 'release_queue'
   | 'exceptions'
   | 'disputes'
   | 'receipts'
@@ -555,8 +579,9 @@ export const RAILS_SUB_TABS: { id: RailsSubTab; label: string }[] = [
   { id: 'wallets', label: 'Wallets' },
   { id: 'batches', label: 'Batches' },
   { id: 'approvals', label: 'Approvals' },
+  { id: 'release_queue', label: 'Release Queue' },
   { id: 'exceptions', label: 'Exceptions' },
-  { id: 'disputes', label: 'Disputes' },
+  { id: 'disputes', label: 'Disputes & Returns' },
   { id: 'receipts', label: 'Receipts' },
   { id: 'admin', label: 'Admin' },
 ];
@@ -573,6 +598,78 @@ export const RAIL_TYPE_FILTERS: { id: RailTypeFilter; label: string }[] = [
   { id: 'Wire', label: 'Wire' },
   { id: 'Card', label: 'Card' },
   { id: 'Crypto', label: 'Crypto' },
+];
+
+// =============================================================================
+// STATUS-BASED FILTER OPTIONS (replaces rail-type filter in header)
+// =============================================================================
+
+export const STATUS_FILTERS = [
+  { id: 'all', label: 'All' },
+  { id: 'pending', label: 'Pending' },
+  { id: 'needs_approval', label: 'Needs Approval' },
+  { id: 'needs_release', label: 'Needs Release' },
+  { id: 'scheduled', label: 'Scheduled' },
+  { id: 'in_flight', label: 'In Flight' },
+  { id: 'settled', label: 'Settled' },
+  { id: 'held', label: 'Held' },
+  { id: 'failed', label: 'Failed' },
+  { id: 'disputes', label: 'Disputes' },
+  { id: 'restricted', label: 'Restricted' },
+] as const;
+export type StatusFilter = typeof STATUS_FILTERS[number]['id'];
+
+// =============================================================================
+// RELEASE QUEUE ITEMS (3 items)
+// =============================================================================
+
+export interface ReleaseQueueItem {
+  id: string;
+  title: string;
+  amount: string;
+  approvedBy: string;
+  approvedAt: string;
+  releaseAuthority: string;
+  auditNote: string;
+  rail: string;
+  status: 'awaiting_release' | 'released';
+}
+
+export const RELEASE_QUEUE_ITEMS: ReleaseQueueItem[] = [
+  { id: 'rlq-1', title: 'Vendor payout — Design agency', amount: '$12,500', approvedBy: 'Sammy K.', approvedAt: 'Feb 15', releaseAuthority: 'Treasury', auditNote: '', rail: 'ACH', status: 'awaiting_release' },
+  { id: 'rlq-2', title: 'Contractor sprint payment', amount: '$8,200', approvedBy: 'Sammy K.', approvedAt: 'Feb 14', releaseAuthority: 'Treasury', auditNote: '', rail: 'ACH', status: 'awaiting_release' },
+  { id: 'rlq-3', title: 'Annual SaaS renewal', amount: '$4,800', approvedBy: 'Finance', approvedAt: 'Feb 13', releaseAuthority: 'Ops', auditNote: 'Pre-approved in budget', rail: 'Card', status: 'released' },
+];
+
+// =============================================================================
+// TRANSACTION STATE MACHINE
+// =============================================================================
+
+export const RAILS_TXN_STATES = [
+  'Draft', 'Proposed', 'Rule-Checked', 'Authorized', 'Scheduled',
+  'Released', 'In Flight', 'Settled', 'Held', 'Failed',
+  'Disputed', 'Returned', 'Reversed',
+] as const;
+export type RailsTxnState = typeof RAILS_TXN_STATES[number];
+
+// =============================================================================
+// RETURN ITEMS (for Disputes & Returns tab)
+// =============================================================================
+
+export interface ReturnItem {
+  id: string;
+  title: string;
+  amount: string;
+  counterparty: string;
+  returnDate: string;
+  reason: string;
+  status: 'pending' | 'processed' | 'credited';
+}
+
+export const RETURN_ITEMS: ReturnItem[] = [
+  { id: 'ret-1', title: 'ACH Return — Studio Noir Creative', amount: '$6,800.00', counterparty: 'Studio Noir Creative', returnDate: 'Feb 16, 2026', reason: 'Invalid Account', status: 'pending' },
+  { id: 'ret-2', title: 'Wire Return — Duplicate Payment', amount: '$3,210.44', counterparty: 'Amazon Web Services', returnDate: 'Feb 12, 2026', reason: 'Duplicate', status: 'processed' },
+  { id: 'ret-3', title: 'Card Refund — ToolStack Subscription', amount: '$299.00', counterparty: 'ToolStack Inc', returnDate: 'Feb 10, 2026', reason: 'Unauthorized Charge', status: 'credited' },
 ];
 
 // =============================================================================
@@ -655,5 +752,38 @@ export function adminSettingTypeIcon(type: AdminSetting['type']): string {
     case 'threshold': return 'dollarsign.circle';
     case 'text': return 'text.alignleft';
     default: return 'gear';
+  }
+}
+
+export function returnStatusLabel(status: ReturnItem['status']): string {
+  switch (status) {
+    case 'pending': return 'Pending';
+    case 'processed': return 'Processed';
+    case 'credited': return 'Credited';
+    default: return status;
+  }
+}
+
+/**
+ * Map a NowItem status to a TXN state machine label for badge display.
+ */
+export function nowItemTxnState(status: NowItem['status']): RailsTxnState {
+  switch (status) {
+    case 'processing': return 'In Flight';
+    case 'pending_approval': return 'Proposed';
+    case 'scheduled': return 'Scheduled';
+    case 'failed': return 'Failed';
+    default: return 'Draft';
+  }
+}
+
+/**
+ * Map a ReleaseQueueItem status to a TXN state machine label.
+ */
+export function releaseQueueTxnState(status: ReleaseQueueItem['status']): RailsTxnState {
+  switch (status) {
+    case 'awaiting_release': return 'Authorized';
+    case 'released': return 'Released';
+    default: return 'Draft';
   }
 }

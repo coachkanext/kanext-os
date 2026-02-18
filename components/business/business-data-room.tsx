@@ -74,7 +74,7 @@ const BP = BusinessPalette;
 /** Which sub-tabs are visible for each role */
 function getVisibleSubTabs(role: BusinessRoleLens): DataRoomSubTab[] {
   if (isFounder(role)) {
-    return ['overview', 'library', 'versioning', 'packets', 'requests', 'audit'];
+    return ['overview', 'library', 'versioning', 'packets', 'requests', 'audit', 'builder'];
   }
   if (role === 'B2b') {
     return ['overview', 'library', 'packets', 'audit'];
@@ -416,14 +416,59 @@ function LibrarySection({ role }: { role: BusinessRoleLens }) {
 
 // ---- Document Row -----------------------------------------------------------
 
+/** Mock metadata per document */
+interface DocMetadata {
+  entityScope: string;
+  owner: string;
+  sensitivity: 'Public' | 'Internal' | 'Confidential' | 'Restricted';
+  audienceAllowed: string;
+  expirationDate?: string;
+  verificationStatus: string;
+  notes?: string;
+  isCanonical: boolean;
+}
+
+const DOC_METADATA: Record<string, DocMetadata> = {
+  'doc-001': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Confidential', audienceAllowed: 'Retail + Board', expirationDate: 'Jun 30, 2026', verificationStatus: 'Verified', notes: 'Latest investor deck, refreshed quarterly', isCanonical: true },
+  'doc-002': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Public', audienceAllowed: 'All', verificationStatus: 'Verified', isCanonical: true },
+  'doc-003': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Restricted', audienceAllowed: 'Board Only', verificationStatus: 'Verified', notes: 'Updated monthly with actuals', isCanonical: true },
+  'doc-004': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Restricted', audienceAllowed: 'Founder Only', verificationStatus: 'Verified', isCanonical: true },
+  'doc-005': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Confidential', audienceAllowed: 'Board + Legal', verificationStatus: 'Verified', isCanonical: false },
+  'doc-006': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Internal', audienceAllowed: 'Retail + Board', verificationStatus: 'Verified', isCanonical: false },
+  'doc-007': { entityScope: 'KaNeXT Inc.', owner: 'Marcus Chen', sensitivity: 'Internal', audienceAllowed: 'Retail + Partners', verificationStatus: 'Verified', isCanonical: false },
+  'doc-008': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Confidential', audienceAllowed: 'Board Only', verificationStatus: 'Verified', isCanonical: true },
+  'doc-009': { entityScope: 'KaNeXT Inc.', owner: 'Jordan Hayes', sensitivity: 'Restricted', audienceAllowed: 'Founder Only', verificationStatus: 'Draft', isCanonical: false },
+  'doc-010': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Public', audienceAllowed: 'All', verificationStatus: 'Verified', isCanonical: true },
+  'doc-011': { entityScope: 'FMU Partnership', owner: 'Jordan Hayes', sensitivity: 'Internal', audienceAllowed: 'Retail + Partners', verificationStatus: 'Verified', isCanonical: false },
+  'doc-012': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Confidential', audienceAllowed: 'Board Only', verificationStatus: 'Outdated', isCanonical: false },
+};
+
+function sensitivityColor(sensitivity: string): string {
+  switch (sensitivity) {
+    case 'Public': return BP.emerald;
+    case 'Internal': return '#6AA9FF';
+    case 'Confidential': return BP.amber;
+    case 'Restricted': return BP.red;
+    default: return BP.ash;
+  }
+}
+
 function DocumentRow({ doc }: { doc: DataRoomDocument }) {
+  const [metaExpanded, setMetaExpanded] = useState(false);
   const catDef = DOC_CATEGORIES.find((c) => c.id === doc.category);
   const alColor = accessLevelColor(doc.accessLevel);
+  const meta = DOC_METADATA[doc.id];
 
   return (
     <BizCard style={s.docCard}>
       {/* Top row: file type icon + title + version badge */}
-      <View style={s.docTopRow}>
+      <Pressable
+        style={s.docTopRow}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          setMetaExpanded((prev) => !prev);
+        }}
+      >
         <View style={[s.fileTypeIcon, { backgroundColor: (catDef?.color ?? BP.ash) + '15' }]}>
           <IconSymbol
             name={fileTypeIcon(doc.fileType) as any}
@@ -432,9 +477,18 @@ function DocumentRow({ doc }: { doc: DataRoomDocument }) {
           />
         </View>
         <View style={s.docTitleBlock}>
-          <ThemedText style={s.docTitle} numberOfLines={1}>
-            {doc.title}
-          </ThemedText>
+          <View style={s.docTitleWithCanonical}>
+            <ThemedText style={s.docTitle} numberOfLines={1}>
+              {doc.title}
+            </ThemedText>
+            {/* Canonical badge */}
+            {meta?.isCanonical && (
+              <View style={s.canonicalBadge}>
+                <IconSymbol name="lock.fill" size={9} color={BP.champagneGold} />
+                <ThemedText style={s.canonicalBadgeText}>Canonical</ThemedText>
+              </View>
+            )}
+          </View>
           <View style={s.docMetaRow}>
             {/* Version badge */}
             <View style={s.versionBadge}>
@@ -447,7 +501,7 @@ function DocumentRow({ doc }: { doc: DataRoomDocument }) {
             />
           </View>
         </View>
-      </View>
+      </Pressable>
 
       {/* Bottom row: updated, access level, watermark, file type, size */}
       <View style={s.docBottomRow}>
@@ -474,6 +528,57 @@ function DocumentRow({ doc }: { doc: DataRoomDocument }) {
           {fileTypeLabel(doc.fileType)} &middot; {doc.size}
         </ThemedText>
       </View>
+
+      {/* Collapsible metadata section */}
+      {metaExpanded && meta && (
+        <View style={s.docMetadataSection}>
+          <View style={s.docMetadataGrid}>
+            <View style={s.docMetadataItem}>
+              <ThemedText style={s.docMetadataLabel}>Entity Scope</ThemedText>
+              <ThemedText style={s.docMetadataValue}>{meta.entityScope}</ThemedText>
+            </View>
+            <View style={s.docMetadataItem}>
+              <ThemedText style={s.docMetadataLabel}>Owner</ThemedText>
+              <ThemedText style={s.docMetadataValue}>{meta.owner}</ThemedText>
+            </View>
+            <View style={s.docMetadataItem}>
+              <ThemedText style={s.docMetadataLabel}>Sensitivity</ThemedText>
+              <View style={[s.sensitivityBadge, { backgroundColor: sensitivityColor(meta.sensitivity) + '15' }]}>
+                <ThemedText style={[s.sensitivityBadgeText, { color: sensitivityColor(meta.sensitivity) }]}>
+                  {meta.sensitivity}
+                </ThemedText>
+              </View>
+            </View>
+            <View style={s.docMetadataItem}>
+              <ThemedText style={s.docMetadataLabel}>Audience</ThemedText>
+              <ThemedText style={s.docMetadataValue}>{meta.audienceAllowed}</ThemedText>
+            </View>
+            {meta.expirationDate && (
+              <View style={s.docMetadataItem}>
+                <ThemedText style={s.docMetadataLabel}>Expiration</ThemedText>
+                <ThemedText style={s.docMetadataValue}>{meta.expirationDate}</ThemedText>
+              </View>
+            )}
+            <View style={s.docMetadataItem}>
+              <ThemedText style={s.docMetadataLabel}>Verification</ThemedText>
+              <ThemedText style={s.docMetadataValue}>{meta.verificationStatus}</ThemedText>
+            </View>
+          </View>
+          {meta.notes && (
+            <ThemedText style={s.docMetadataNotes}>Note: {meta.notes}</ThemedText>
+          )}
+          {/* Promote to Canonical button for non-canonical docs */}
+          {!meta.isCanonical && (
+            <Pressable
+              style={({ pressed }) => [s.promoteCanonicalBtn, { opacity: pressed ? 0.7 : 1 }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+            >
+              <IconSymbol name="lock.fill" size={12} color={BP.champagneGold} />
+              <ThemedText style={s.promoteCanonicalText}>Promote to Canonical</ThemedText>
+            </Pressable>
+          )}
+        </View>
+      )}
     </BizCard>
   );
 }
@@ -531,6 +636,12 @@ function VersionRow({ entry }: { entry: VersionEntry }) {
 
 // ---- Packets ----------------------------------------------------------------
 
+/** 7 named spec packet types */
+const SPEC_PACKET_TYPES = [
+  'Board Pack', 'Investor Update', 'Compliance Export', 'Regulatory Filing',
+  'Due Diligence', 'Audit Response', 'Public Report',
+];
+
 function PacketsSection({ role }: { role: BusinessRoleLens }) {
   // B2a only sees retail/partner audience packets
   const visiblePackets = useMemo(() => {
@@ -544,6 +655,21 @@ function PacketsSection({ role }: { role: BusinessRoleLens }) {
 
   return (
     <View>
+      {/* Spec packet types reference */}
+      {isFounder(role) && (
+        <BizCard>
+          <BizCardTitle text="Packet Types" />
+          <View style={s.specPacketGrid}>
+            {SPEC_PACKET_TYPES.map((name) => (
+              <View key={name} style={s.specPacketChip}>
+                <IconSymbol name="shippingbox.fill" size={11} color={BP.champagneGold} />
+                <ThemedText style={s.specPacketChipText}>{name}</ThemedText>
+              </View>
+            ))}
+          </View>
+        </BizCard>
+      )}
+
       {visiblePackets.length === 0 ? (
         <BizCard>
           <ThemedText style={s.emptyText}>No packets available for your access level.</ThemedText>
@@ -612,6 +738,21 @@ function PacketCard({ packet, role }: { packet: DataPacket; role: BusinessRoleLe
 
 // ---- Requests ---------------------------------------------------------------
 
+/** Mock SLA data per request */
+interface RequestSLA {
+  dueDate: string;
+  daysRemaining: number;
+  checklist: { label: string; done: boolean }[];
+}
+
+const REQUEST_SLA: Record<string, RequestSLA> = {
+  'req-001': { dueDate: 'Feb 12, 2026', daysRemaining: 0, checklist: [{ label: 'NDA verified', done: true }, { label: 'Access provisioned', done: true }, { label: 'Watermark applied', done: true }] },
+  'req-002': { dueDate: 'Feb 6, 2026', daysRemaining: 0, checklist: [{ label: 'Documents compiled', done: true }, { label: 'Sent via secure link', done: true }] },
+  'req-003': { dueDate: 'Feb 20, 2026', daysRemaining: 3, checklist: [{ label: 'Background check', done: false }, { label: 'NDA signed', done: true }, { label: 'Access level approved', done: false }] },
+  'req-004': { dueDate: 'Feb 22, 2026', daysRemaining: 5, checklist: [{ label: 'Fund verification', done: true }, { label: 'NDA signed', done: false }, { label: 'Access scope confirmed', done: false }, { label: 'Watermark configured', done: false }] },
+  'req-005': { dueDate: 'Feb 10, 2026', daysRemaining: 0, checklist: [{ label: 'Request reviewed', done: true }, { label: 'Denial communicated', done: true }] },
+};
+
 function RequestsSection() {
   return (
     <View>
@@ -630,6 +771,7 @@ function RequestsSection() {
 
 function RequestRow({ request }: { request: DataRequest }) {
   const [expanded, setExpanded] = useState(false);
+  const sla = REQUEST_SLA[request.id];
 
   return (
     <Pressable
@@ -666,6 +808,34 @@ function RequestRow({ request }: { request: DataRequest }) {
           </>
         )}
       </View>
+
+      {/* SLA tracking */}
+      {sla && (
+        <View style={s.slaRow}>
+          <View style={s.slaDateRow}>
+            <IconSymbol name="calendar.badge.clock" size={12} color={sla.daysRemaining > 0 && sla.daysRemaining <= 3 ? BP.amber : sla.daysRemaining === 0 ? BP.ash : BP.emerald} />
+            <ThemedText style={[s.slaDueText, { color: sla.daysRemaining > 0 && sla.daysRemaining <= 3 ? BP.amber : BP.ash }]}>
+              Due: {sla.dueDate}
+              {sla.daysRemaining > 0 ? ` (${sla.daysRemaining}d remaining)` : ''}
+            </ThemedText>
+          </View>
+          {/* SLA checklist */}
+          <View style={s.slaChecklist}>
+            {sla.checklist.map((item, cIdx) => (
+              <View key={cIdx} style={s.slaChecklistItem}>
+                <IconSymbol
+                  name={item.done ? 'checkmark.circle.fill' : 'circle'}
+                  size={12}
+                  color={item.done ? BP.emerald : BP.ash}
+                />
+                <ThemedText style={[s.slaChecklistText, { color: item.done ? BP.smoke : BP.ash }]}>
+                  {item.label}
+                </ThemedText>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
 
       {/* Notes — expanded */}
       {expanded && request.notes && (
@@ -735,6 +905,123 @@ function AuditRow({ entry }: { entry: DataRoomAudit }) {
   );
 }
 
+// ---- Packet Builder ---------------------------------------------------------
+
+/** Packet builder options */
+const REDACTION_LEVELS = ['None', 'Light', 'Heavy', 'Full'];
+
+function PacketBuilderSection() {
+  const [selectedDocs, setSelectedDocs] = useState<Record<string, boolean>>({});
+  const [redactionLevel, setRedactionLevel] = useState('None');
+  const [watermark, setWatermark] = useState(true);
+
+  const toggleDoc = (docId: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedDocs((prev) => ({ ...prev, [docId]: !prev[docId] }));
+  };
+
+  const selectedCount = Object.values(selectedDocs).filter(Boolean).length;
+
+  return (
+    <View>
+      {/* Document selection */}
+      <BizCard>
+        <BizCardTitle text="Select Documents" />
+        {DATA_ROOM_DOCUMENTS.slice(0, 8).map((doc) => (
+          <Pressable
+            key={doc.id}
+            style={s.pktBuilderDocRow}
+            onPress={() => toggleDoc(doc.id)}
+          >
+            <IconSymbol
+              name={selectedDocs[doc.id] ? 'checkmark.square.fill' : 'square'}
+              size={16}
+              color={selectedDocs[doc.id] ? BP.champagneGold : BP.ash}
+            />
+            <ThemedText
+              style={[s.pktBuilderDocTitle, { color: selectedDocs[doc.id] ? BP.smoke : BP.ash }]}
+              numberOfLines={1}
+            >
+              {doc.title}
+            </ThemedText>
+            <ThemedText style={s.pktBuilderDocMeta}>{fileTypeLabel(doc.fileType)}</ThemedText>
+          </Pressable>
+        ))}
+      </BizCard>
+
+      {/* Configuration options */}
+      <BizCard>
+        <BizCardTitle text="Packet Options" />
+        {/* Redaction level */}
+        <View style={s.pktBuilderOptionRow}>
+          <ThemedText style={s.pktBuilderOptionLabel}>Redaction Level</ThemedText>
+          <View style={s.pktBuilderPillRow}>
+            {REDACTION_LEVELS.map((level) => (
+              <Pressable
+                key={level}
+                style={[
+                  s.pktBuilderPill,
+                  { backgroundColor: redactionLevel === level ? BP.champagneGold + '20' : BP.glass },
+                ]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setRedactionLevel(level);
+                }}
+              >
+                <ThemedText style={[
+                  s.pktBuilderPillText,
+                  { color: redactionLevel === level ? BP.champagneGold : BP.ash },
+                ]}>
+                  {level}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
+        {/* Audience */}
+        <View style={s.pktBuilderOptionRow}>
+          <ThemedText style={s.pktBuilderOptionLabel}>Audience</ThemedText>
+          <ThemedText style={s.pktBuilderOptionValue}>Board + Investors</ThemedText>
+        </View>
+
+        {/* Expiry */}
+        <View style={s.pktBuilderOptionRow}>
+          <ThemedText style={s.pktBuilderOptionLabel}>Expiry</ThemedText>
+          <ThemedText style={s.pktBuilderOptionValue}>90 days</ThemedText>
+        </View>
+
+        {/* Watermark toggle */}
+        <Pressable
+          style={s.pktBuilderOptionRow}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setWatermark((prev) => !prev);
+          }}
+        >
+          <ThemedText style={s.pktBuilderOptionLabel}>Watermark</ThemedText>
+          <IconSymbol
+            name={watermark ? 'checkmark.square.fill' : 'square'}
+            size={16}
+            color={watermark ? BP.champagneGold : BP.ash}
+          />
+        </Pressable>
+      </BizCard>
+
+      {/* Build Packet CTA */}
+      <Pressable
+        style={({ pressed }) => [s.quickActionBtn, { opacity: pressed ? 0.7 : 1 }]}
+        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+      >
+        <IconSymbol name="shippingbox.fill" size={18} color={BP.champagneGold} />
+        <ThemedText style={s.quickActionText}>
+          Build Packet ({selectedCount} docs)
+        </ThemedText>
+      </Pressable>
+    </View>
+  );
+}
+
 // =============================================================================
 // MAIN COMPONENT
 // =============================================================================
@@ -796,6 +1083,8 @@ export function BusinessDataRoom({ colors, role = 'B1' }: Props) {
         return <RequestsSection />;
       case 'audit':
         return <AuditSection />;
+      case 'builder':
+        return <PacketBuilderSection />;
       default:
         return null;
     }
@@ -974,7 +1263,7 @@ const s = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: BP.smoke,
-    marginBottom: 4,
+    flex: 1,
   },
   docMetaRow: {
     flexDirection: 'row',
@@ -1273,5 +1562,194 @@ const s = StyleSheet.create({
     color: BP.ash,
     textAlign: 'center',
     paddingVertical: Spacing.md,
+  },
+
+  // -- Document: Title with Canonical ----------------------------------------
+  docTitleWithCanonical: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  canonicalBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: BP.champagneGold + '15',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+  },
+  canonicalBadgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: BP.champagneGold,
+    letterSpacing: 0.3,
+  },
+
+  // -- Document: Metadata section -------------------------------------------
+  docMetadataSection: {
+    marginTop: Spacing.sm,
+    paddingTop: Spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: BP.graphite,
+  },
+  docMetadataGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
+  docMetadataItem: {
+    minWidth: '45%',
+    marginBottom: 4,
+  },
+  docMetadataLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: BP.ash,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+    marginBottom: 1,
+  },
+  docMetadataValue: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: BP.smoke,
+  },
+  sensitivityBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+    alignSelf: 'flex-start',
+  },
+  sensitivityBadgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  docMetadataNotes: {
+    fontSize: 11,
+    color: BP.ash,
+    fontStyle: 'italic',
+    marginTop: Spacing.xs,
+    lineHeight: 16,
+  },
+  promoteCanonicalBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    backgroundColor: BP.glass,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: BP.champagneGold + '30',
+  },
+  promoteCanonicalText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: BP.champagneGold,
+  },
+
+  // -- Packets: Spec packet types -------------------------------------------
+  specPacketGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.xs,
+  },
+  specPacketChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: BP.glass,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.full,
+  },
+  specPacketChipText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: BP.smoke,
+  },
+
+  // -- Requests: SLA tracking -----------------------------------------------
+  slaRow: {
+    marginTop: Spacing.xs,
+  },
+  slaDateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 4,
+  },
+  slaDueText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  slaChecklist: {
+    gap: 3,
+    paddingLeft: Spacing.xs,
+  },
+  slaChecklistItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  slaChecklistText: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+
+  // -- Packet Builder -------------------------------------------------------
+  pktBuilderDocRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: 6,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: BP.graphite,
+  },
+  pktBuilderDocTitle: {
+    fontSize: 13,
+    fontWeight: '500',
+    flex: 1,
+  },
+  pktBuilderDocMeta: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: BP.ash,
+    letterSpacing: 0.3,
+  },
+  pktBuilderOptionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.sm,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: BP.graphite,
+  },
+  pktBuilderOptionLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: BP.smoke,
+  },
+  pktBuilderOptionValue: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: BP.ash,
+  },
+  pktBuilderPillRow: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  pktBuilderPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.full,
+  },
+  pktBuilderPillText: {
+    fontSize: 11,
+    fontWeight: '600',
   },
 });

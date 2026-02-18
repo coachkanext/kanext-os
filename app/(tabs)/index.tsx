@@ -61,6 +61,8 @@ import { BusinessHome } from '@/components/business/business-home';
 import { ChurchHome as ChurchHomeComponent } from '@/components/church/church-home';
 import { EducationHome as EducationHomeComponent } from '@/components/education/education-home';
 import { BusinessProvider } from '@/context/business-context';
+import { ChurchProvider } from '@/context/church-context';
+import { EducationProvider } from '@/context/education-context';
 
 // =============================================================================
 // SPORTS HOME (v1.1 Spec - Team Hub Home / Coach HQ)
@@ -718,29 +720,29 @@ export default function HomeScreen() {
     );
   }
 
-  // Church mode handles its own scroll (hub tabs + identity block)
+  // Church mode handles its own scroll (hub tabs + RBAC)
   if (mode === 'church') {
     return (
-      <ThemedView style={styles.container}>
+      <ChurchProvider>
         <ChurchHomeComponent />
-      </ThemedView>
+      </ChurchProvider>
     );
   }
 
-  // Education mode handles its own scroll (hub tabs + identity block)
+  // Education mode handles its own scroll (hub tabs + RBAC)
   if (mode === 'education') {
     return (
-      <ThemedView style={styles.container}>
+      <EducationProvider>
         <EducationHomeComponent />
-      </ThemedView>
+      </EducationProvider>
     );
   }
 
   // Fallback
   return (
-    <ThemedView style={styles.container}>
+    <ChurchProvider>
       <ChurchHomeComponent />
-    </ThemedView>
+    </ChurchProvider>
   );
 }
 

@@ -42,6 +42,7 @@ import type { BusinessRoleLens, MetricVisibility } from '@/utils/business-rbac';
 interface Props {
   colors: typeof Colors.light;
   role?: BusinessRoleLens;
+  onSwitchTab?: (index: number) => void;
 }
 
 // =============================================================================
@@ -135,6 +136,13 @@ const TODAY_ITEMS: TodayItem[] = [
     owner: 'Legal',
     time: '5:00 PM',
   },
+  {
+    id: 'td-3',
+    title: 'Investor Update Draft Due',
+    badge: 'INVESTOR',
+    owner: 'Sammy K.',
+    time: '3:00 PM',
+  },
 ];
 
 interface NextItem {
@@ -157,7 +165,7 @@ const NEXT_ITEM: NextItem = {
 
 // --- Block 3: Alerts Strip ---
 
-type AlertSeverity = 'blocker' | 'approval' | 'due_24h' | 'rails_exception' | 'compliance' | 'investor_risk';
+type AlertSeverity = 'blocker' | 'approval' | 'due_24h' | 'rails_exception' | 'compliance' | 'investor_risk' | 'partner_risk' | 'people_risk';
 
 interface AlertItem {
   id: string;
@@ -217,6 +225,22 @@ const ALERTS: AlertItem[] = [
     owner: 'Sammy K.',
     time: 'Tomorrow',
   },
+  {
+    id: 'al-7',
+    severity: 'partner_risk',
+    type: 'PARTNER',
+    title: 'Vendor SLA breach \u2014 API uptime below 99%',
+    owner: 'Partnerships',
+    time: '1d ago',
+  },
+  {
+    id: 'al-8',
+    severity: 'people_risk',
+    type: 'PEOPLE',
+    title: 'Key hire onboarding incomplete \u2014 3 days overdue',
+    owner: 'HR',
+    time: '2d ago',
+  },
 ];
 
 const ALERT_SEVERITY_COLOR: Record<AlertSeverity, string> = {
@@ -226,6 +250,8 @@ const ALERT_SEVERITY_COLOR: Record<AlertSeverity, string> = {
   rails_exception: '#EF4444',
   compliance: '#3B82F6',
   investor_risk: '#8B5CF6',
+  partner_risk: '#F97316',
+  people_risk: '#EC4899',
 };
 
 // --- Block 4: Quick Actions ---
@@ -321,14 +347,15 @@ interface PinnedItem {
   icon: string;
   badge?: string;
   badgeColor?: string;
+  targetTab?: number;
 }
 
 const PINNED_SHELF: PinnedItem[] = [
-  { id: 'pin-1', title: 'Board Room', icon: 'person.3.fill', badge: 'DUE SOON', badgeColor: '#F59E0B' },
-  { id: 'pin-2', title: 'Fundraising Workspace', icon: 'briefcase.fill' },
-  { id: 'pin-3', title: 'Term Sheet', icon: 'doc.text.fill', badge: 'BLOCKER', badgeColor: '#EF4444' },
-  { id: 'pin-4', title: 'Budget', icon: 'dollarsign.circle.fill' },
-  { id: 'pin-5', title: 'Settlement Queue', icon: 'creditcard.fill', badge: 'DUE SOON', badgeColor: '#F59E0B' },
+  { id: 'pin-1', title: 'Board Room', icon: 'person.3.fill', badge: 'DUE SOON', badgeColor: '#F59E0B', targetTab: 5 },
+  { id: 'pin-2', title: 'Fundraising Workspace', icon: 'briefcase.fill', targetTab: 8 },
+  { id: 'pin-3', title: 'Term Sheet', icon: 'doc.text.fill', badge: 'BLOCKER', badgeColor: '#EF4444', targetTab: 8 },
+  { id: 'pin-4', title: 'Budget', icon: 'dollarsign.circle.fill', targetTab: 3 },
+  { id: 'pin-5', title: 'Settlement Queue', icon: 'creditcard.fill', badge: 'DUE SOON', badgeColor: '#F59E0B', targetTab: 4 },
 ];
 
 // =============================================================================
@@ -576,12 +603,12 @@ function AlertsStrip({ colors, role: _role }: { colors: typeof Colors.light; rol
     <View style={s.moduleContainer}>
       <SectionHeader title="ALERTS" colors={colors} />
       <Card colors={colors}>
-        {ALERTS.slice(0, 6).map((alert, idx) => (
+        {ALERTS.map((alert, idx) => (
           <View
             key={alert.id}
             style={[
               s.alertRow,
-              idx < Math.min(ALERTS.length, 6) - 1 && {
+              idx < ALERTS.length - 1 && {
                 borderBottomWidth: StyleSheet.hairlineWidth,
                 borderBottomColor: colors.border,
               },
@@ -624,7 +651,26 @@ function AlertsStrip({ colors, role: _role }: { colors: typeof Colors.light; rol
 // BLOCK 4 — QUICK ACTIONS (CEO EXECUTION GRID)
 // =============================================================================
 
-function QuickActionsGrid({ colors, role }: { colors: typeof Colors.light; role: BusinessRoleLens }) {
+const QUICK_ACTION_TAB_MAP: Record<string, number> = {
+  'qa-board-pack': 5,
+  'qa-investor-update': 5,
+  'qa-ops-command': 2,
+  'qa-finance': 3,
+  'qa-payment-rails': 4,
+  'qa-compliance': 6,
+  'qa-people': 2,
+  'qa-data-room': 8,
+};
+
+function QuickActionsGrid({
+  colors,
+  role,
+  onSwitchTab,
+}: {
+  colors: typeof Colors.light;
+  role: BusinessRoleLens;
+  onSwitchTab?: (index: number) => void;
+}) {
   const actions = getQuickActions(role);
 
   return (
@@ -642,7 +688,13 @@ function QuickActionsGrid({ colors, role }: { colors: typeof Colors.light; role:
                 opacity: pressed ? 0.7 : 1,
               },
             ]}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              const tabIndex = QUICK_ACTION_TAB_MAP[action.id];
+              if (tabIndex != null && onSwitchTab) {
+                onSwitchTab(tabIndex);
+              }
+            }}
           >
             <IconSymbol name={action.icon as any} size={20} color={colors.textSecondary} />
             <ThemedText style={[s.actionTileLabel, { color: colors.text }]} numberOfLines={2}>
@@ -659,7 +711,25 @@ function QuickActionsGrid({ colors, role }: { colors: typeof Colors.light; role:
 // BLOCK 5 — FEED PREVIEW
 // =============================================================================
 
-function FeedPreview({ colors, role }: { colors: typeof Colors.light; role: BusinessRoleLens }) {
+const FEED_CATEGORY_TAB_MAP: Record<string, number> = {
+  approval: 3,
+  board: 5,
+  media: 7,
+  compliance: 6,
+  milestone: 2,
+  investor_update: 5,
+  public: 7,
+};
+
+function FeedPreview({
+  colors,
+  role,
+  onSwitchTab,
+}: {
+  colors: typeof Colors.light;
+  role: BusinessRoleLens;
+  onSwitchTab?: (index: number) => void;
+}) {
   const visibleFeed = getVisibleFeed(role).slice(0, 10);
 
   if (visibleFeed.length === 0) return null;
@@ -669,7 +739,7 @@ function FeedPreview({ colors, role }: { colors: typeof Colors.light; role: Busi
       <SectionHeader title="FEED" colors={colors} />
       <Card colors={colors}>
         {visibleFeed.map((item, idx) => (
-          <View
+          <Pressable
             key={item.id}
             style={[
               s.feedRow,
@@ -678,6 +748,13 @@ function FeedPreview({ colors, role }: { colors: typeof Colors.light; role: Busi
                 borderBottomColor: colors.border,
               },
             ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              const tabIndex = FEED_CATEGORY_TAB_MAP[item.category];
+              if (tabIndex != null && onSwitchTab) {
+                onSwitchTab(tabIndex);
+              }
+            }}
           >
             <View style={s.feedTextBlock}>
               <ThemedText style={[s.feedText, { color: colors.text }]} numberOfLines={1}>
@@ -688,7 +765,7 @@ function FeedPreview({ colors, role }: { colors: typeof Colors.light; role: Busi
               </ThemedText>
             </View>
             <IconSymbol name="chevron.right" size={10} color={colors.textTertiary} />
-          </View>
+          </Pressable>
         ))}
       </Card>
     </View>
@@ -699,7 +776,15 @@ function FeedPreview({ colors, role }: { colors: typeof Colors.light; role: Busi
 // BLOCK 6 — PINNED SHELF
 // =============================================================================
 
-function PinnedShelf({ colors, role: _role }: { colors: typeof Colors.light; role: BusinessRoleLens }) {
+function PinnedShelf({
+  colors,
+  role: _role,
+  onSwitchTab,
+}: {
+  colors: typeof Colors.light;
+  role: BusinessRoleLens;
+  onSwitchTab?: (index: number) => void;
+}) {
   return (
     <View style={s.moduleContainer}>
       <SectionHeader title="PINNED" colors={colors} />
@@ -719,7 +804,12 @@ function PinnedShelf({ colors, role: _role }: { colors: typeof Colors.light; rol
                 opacity: pressed ? 0.7 : 1,
               },
             ]}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              if (item.targetTab != null && onSwitchTab) {
+                onSwitchTab(item.targetTab);
+              }
+            }}
           >
             <IconSymbol name={item.icon as any} size={24} color={colors.textSecondary} />
             <ThemedText style={[s.pinnedTitle, { color: colors.text }]} numberOfLines={2}>
@@ -743,7 +833,7 @@ function PinnedShelf({ colors, role: _role }: { colors: typeof Colors.light; rol
 // MAIN COMPONENT
 // =============================================================================
 
-export function BusinessDashboardV2({ colors, role = 'B1' }: Props) {
+export function BusinessDashboardV2({ colors, role = 'B1', onSwitchTab }: Props) {
   return (
     <ScrollView
       style={[s.container, { backgroundColor: colors.background }]}
@@ -765,14 +855,14 @@ export function BusinessDashboardV2({ colors, role = 'B1' }: Props) {
       )}
 
       {/* Block 4 — Quick Actions */}
-      <QuickActionsGrid colors={colors} role={role} />
+      <QuickActionsGrid colors={colors} role={role} onSwitchTab={onSwitchTab} />
 
       {/* Block 5 — Feed Preview */}
-      <FeedPreview colors={colors} role={role} />
+      <FeedPreview colors={colors} role={role} onSwitchTab={onSwitchTab} />
 
       {/* Block 6 — Pinned Shelf */}
       {(isFounder(role) || isBoardLevel(role)) && (
-        <PinnedShelf colors={colors} role={role} />
+        <PinnedShelf colors={colors} role={role} onSwitchTab={onSwitchTab} />
       )}
 
       {/* Bottom spacer */}

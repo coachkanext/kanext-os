@@ -46,6 +46,10 @@ import {
   RISK_CONTROLS,
   AUDIT_LOG,
   BOARD_PACK_SECTIONS,
+  TRUTH_STRIP_KPIS,
+  RELEASE_QUEUE,
+  EARMARKS,
+  TXN_STATES,
   getFinanceSubTabs,
 } from '@/data/mock-biz-finance';
 import type {
@@ -64,6 +68,10 @@ import type {
   RiskControl,
   AuditEntry,
   BoardPackSection,
+  TruthStripKPI,
+  ReleaseQueueItem,
+  EarmarkItem,
+  TxnState,
 } from '@/data/mock-biz-finance';
 
 const BP = BusinessPalette;
@@ -156,6 +164,24 @@ function formatCurrency(num: number): string {
 }
 
 // =============================================================================
+// TRUTH STRIP — Persistent KPI chips above sub-tab bar
+// =============================================================================
+
+function TruthStrip() {
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.truthStripScroll}>
+      {TRUTH_STRIP_KPIS.map((kpi) => (
+        <View key={kpi.id} style={s.truthChip}>
+          <IconSymbol name={kpi.icon as any} size={12} color={BP.ash} />
+          <ThemedText style={s.truthLabel}>{kpi.label}</ThemedText>
+          <ThemedText style={s.truthValue}>{kpi.value}</ThemedText>
+        </View>
+      ))}
+    </ScrollView>
+  );
+}
+
+// =============================================================================
 // SECTION: OVERVIEW (Sub-tab 1)
 // =============================================================================
 
@@ -235,18 +261,27 @@ function OverviewSection({ role }: { role: BusinessRoleLens }) {
 // SECTION: LEDGER TRUTH (Sub-tab 2)
 // =============================================================================
 
-function LedgerSection() {
+function LedgerSection({
+  onExplain,
+}: {
+  onExplain: (entry: LedgerEntry) => void;
+}) {
   return (
     <View>
       <BizCard>
         <BizCardTitle text="GENERAL LEDGER" />
         {LEDGER_ENTRIES.map((entry, idx) => (
-          <View
+          <Pressable
             key={entry.id}
-            style={[
+            style={({ pressed }) => [
               s.ledgerRow,
               idx < LEDGER_ENTRIES.length - 1 && s.ledgerRowBorder,
+              { opacity: pressed ? 0.7 : 1 },
             ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onExplain(entry);
+            }}
           >
             <View style={s.ledgerLeft}>
               <ThemedText style={s.ledgerDate}>{entry.date}</ThemedText>
@@ -270,7 +305,7 @@ function LedgerSection() {
                 {formatCurrency(entry.balance)}
               </ThemedText>
             </View>
-          </View>
+          </Pressable>
         ))}
       </BizCard>
     </View>
@@ -646,6 +681,57 @@ function ApprovalsSection() {
           </View>
         ))}
       </BizCard>
+
+      {/* Release Queue */}
+      <BizCard>
+        <BizCardTitle text="RELEASE QUEUE" />
+        {RELEASE_QUEUE.map((item, idx) => (
+          <View
+            key={item.id}
+            style={[
+              s.releaseRow,
+              idx < RELEASE_QUEUE.length - 1 && s.releaseRowBorder,
+            ]}
+          >
+            <View style={s.releaseHeader}>
+              <ThemedText style={s.releaseTitle} numberOfLines={1}>
+                {item.title}
+              </ThemedText>
+              <ThemedText style={s.releaseAmount}>{item.amount}</ThemedText>
+            </View>
+            <View style={s.releaseMeta}>
+              <ThemedText style={s.releaseDetail}>
+                Approved by {item.approvedBy} on {item.approvedAt}
+              </ThemedText>
+              <ThemedText style={s.releaseDetail}>
+                Release Authority: {item.releaseAuthority}
+              </ThemedText>
+            </View>
+            <View style={s.releaseFooter}>
+              {item.status === 'awaiting_release' ? (
+                <Pressable
+                  style={({ pressed }) => [
+                    s.releaseCta,
+                    { opacity: pressed ? 0.7 : 1 },
+                  ]}
+                  onPress={() =>
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+                  }
+                >
+                  <IconSymbol
+                    name={"arrow.up.circle.fill" as any}
+                    size={12}
+                    color={BP.champagneGold}
+                  />
+                  <ThemedText style={s.releaseCtaText}>Release</ThemedText>
+                </Pressable>
+              ) : (
+                <BizStatusChip label="Released" variant="success" />
+              )}
+            </View>
+          </View>
+        ))}
+      </BizCard>
     </View>
   );
 }
@@ -747,8 +833,47 @@ function RevenueSection() {
 // =============================================================================
 
 function CostsBurnSection() {
+  const cashOnHand = 142000;
+  const monthlyBurn = 19800;
+  const runwayMonths = parseFloat((cashOnHand / monthlyBurn).toFixed(1));
+  const runwayPct = Math.min((runwayMonths / 12) * 100, 100);
+
   return (
     <View>
+      {/* Runway KPI Card */}
+      <BizCard>
+        <BizCardTitle text="RUNWAY" />
+        <View style={s.runwayKpi}>
+          <View style={s.runwayValueRow}>
+            <ThemedText style={s.runwayValue}>{runwayMonths}</ThemedText>
+            <ThemedText style={s.runwayUnit}>months</ThemedText>
+          </View>
+          <ThemedText style={s.runwayFormula}>
+            {formatCurrency(cashOnHand)} cash / {formatCurrency(monthlyBurn)}/mo burn
+          </ThemedText>
+          <View style={s.runwayBarBg}>
+            <View
+              style={[
+                s.runwayBarFill,
+                {
+                  width: `${runwayPct}%`,
+                  backgroundColor:
+                    runwayMonths >= 9
+                      ? BP.emerald
+                      : runwayMonths >= 6
+                        ? BP.amber
+                        : BP.red,
+                },
+              ]}
+            />
+          </View>
+          <View style={s.runwayLegend}>
+            <ThemedText style={s.runwayLegendText}>0 mo</ThemedText>
+            <ThemedText style={s.runwayLegendText}>12 mo</ThemedText>
+          </View>
+        </View>
+      </BizCard>
+
       <BizCard>
         <BizCardTitle text="COST BREAKDOWN" />
         {COST_ITEMS.map((item, idx) => (
@@ -1082,15 +1207,17 @@ function BoardPackSection_() {
 function SubTabContent({
   activeTab,
   role,
+  onExplain,
 }: {
   activeTab: FinanceSubTab;
   role: BusinessRoleLens;
+  onExplain: (entry: LedgerEntry) => void;
 }) {
   switch (activeTab) {
     case 'overview':
       return <OverviewSection role={role} />;
     case 'ledger':
-      return <LedgerSection />;
+      return <LedgerSection onExplain={onExplain} />;
     case 'budgets':
       return <BudgetsSection />;
     case 'commitments':
@@ -1129,6 +1256,7 @@ export function BusinessFinance({ colors, role = 'B1' }: Props) {
   const [activeTab, setActiveTab] = useState<FinanceSubTab>(
     visibleTabs.length > 0 ? visibleTabs[0].id : 'overview',
   );
+  const [explainEntry, setExplainEntry] = useState<LedgerEntry | null>(null);
 
   // B3 / B4 / B5: locked
   if (visibleTabs.length === 0) {
@@ -1159,33 +1287,141 @@ export function BusinessFinance({ colors, role = 'B1' }: Props) {
   const resolvedTab = isTabValid ? activeTab : visibleTabs[0].id;
 
   return (
-    <ScrollView
-      style={[s.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={s.contentContainer}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Entity Scope Bar */}
-      <EntityScopeBar
-        entityId={DEFAULT_ENTITY.id}
-        entityName={DEFAULT_ENTITY.name}
-        entityType={DEFAULT_ENTITY.type}
-        status={DEFAULT_ENTITY.status}
-        colors={colors}
-      />
+    <View style={[s.container, { backgroundColor: colors.background }]}>
+      <ScrollView
+        style={s.container}
+        contentContainerStyle={s.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Entity Scope Bar */}
+        <EntityScopeBar
+          entityId={DEFAULT_ENTITY.id}
+          entityName={DEFAULT_ENTITY.name}
+          entityType={DEFAULT_ENTITY.type}
+          status={DEFAULT_ENTITY.status}
+          colors={colors}
+        />
 
-      {/* Sub-tab bar */}
-      <BizSubTabBar
-        tabs={visibleTabs}
-        activeId={resolvedTab}
-        onSelect={(id) => setActiveTab(id as FinanceSubTab)}
-      />
+        {/* Truth Strip */}
+        <TruthStrip />
 
-      {/* Content */}
-      <SubTabContent activeTab={resolvedTab} role={role} />
+        {/* Sub-tab bar */}
+        <BizSubTabBar
+          tabs={visibleTabs}
+          activeId={resolvedTab}
+          onSelect={(id) => setActiveTab(id as FinanceSubTab)}
+        />
 
-      {/* Bottom spacer */}
-      <View style={s.bottomSpacer} />
-    </ScrollView>
+        {/* Content */}
+        <SubTabContent
+          activeTab={resolvedTab}
+          role={role}
+          onExplain={setExplainEntry}
+        />
+
+        {/* Bottom spacer */}
+        <View style={s.bottomSpacer} />
+      </ScrollView>
+
+      {/* Explain This Dollar Overlay */}
+      {explainEntry && (
+        <Pressable
+          style={s.explainOverlay}
+          onPress={() => setExplainEntry(null)}
+        >
+          <Pressable style={s.explainSheet} onPress={() => {}}>
+            <View style={s.explainHeader}>
+              <ThemedText style={s.explainTitle}>Explain This Dollar</ThemedText>
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setExplainEntry(null);
+                }}
+                style={({ pressed }) => [
+                  s.explainClose,
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+              >
+                <IconSymbol name={"xmark" as any} size={14} color={BP.smoke} />
+              </Pressable>
+            </View>
+
+            {/* Entry Summary */}
+            <View style={s.explainSection}>
+              <ThemedText style={s.explainSectionTitle}>TRANSACTION</ThemedText>
+              <ThemedText style={s.explainDesc}>
+                {explainEntry.description}
+              </ThemedText>
+              <View style={s.explainRow}>
+                <ThemedText style={s.explainLabel}>Amount</ThemedText>
+                <ThemedText
+                  style={[
+                    s.explainValue,
+                    {
+                      color:
+                        explainEntry.credit > 0 ? BP.emerald : BP.red,
+                    },
+                  ]}
+                >
+                  {explainEntry.credit > 0
+                    ? `+${formatCurrency(explainEntry.credit)}`
+                    : `-${formatCurrency(explainEntry.debit)}`}
+                </ThemedText>
+              </View>
+              <View style={s.explainRow}>
+                <ThemedText style={s.explainLabel}>Entity</ThemedText>
+                <ThemedText style={s.explainValue}>
+                  {explainEntry.entity}
+                </ThemedText>
+              </View>
+              <View style={s.explainRow}>
+                <ThemedText style={s.explainLabel}>Category</ThemedText>
+                <ThemedText style={s.explainValue}>
+                  {explainEntry.category}
+                </ThemedText>
+              </View>
+            </View>
+
+            {/* Provenance Chain */}
+            <View style={s.explainSection}>
+              <ThemedText style={s.explainSectionTitle}>
+                PROVENANCE CHAIN
+              </ThemedText>
+              {[
+                { step: 'Source', detail: `${explainEntry.category} — ${explainEntry.entity}`, done: true },
+                { step: 'Rule Check', detail: 'Policy engine passed — no exceptions', done: true },
+                { step: 'Authorization', detail: 'Approved by Sammy K. (Founder)', done: true },
+                { step: 'Settlement', detail: explainEntry.credit > 0 ? 'Deposited via Mercury ACH' : 'Disbursed via Mercury ACH', done: explainEntry.balance > 0 },
+              ].map((node, idx) => (
+                <View key={idx} style={s.provenanceNode}>
+                  <View style={s.provenanceDotCol}>
+                    <View
+                      style={[
+                        s.provenanceDot,
+                        {
+                          backgroundColor: node.done
+                            ? BP.emerald
+                            : BP.ash,
+                        },
+                      ]}
+                    />
+                    {idx < 3 && <View style={s.provenanceLine} />}
+                  </View>
+                  <View style={s.provenanceContent}>
+                    <ThemedText style={s.provenanceStep}>
+                      {node.step}
+                    </ThemedText>
+                    <ThemedText style={s.provenanceDetail}>
+                      {node.detail}
+                    </ThemedText>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </Pressable>
+        </Pressable>
+      )}
+    </View>
   );
 }
 
@@ -1946,5 +2182,251 @@ const s = StyleSheet.create({
     fontWeight: '700',
     color: BP.champagneGold,
     letterSpacing: 0.3,
+  },
+
+  // ---- Truth Strip ----
+  truthStripScroll: {
+    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  truthChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: BP.glass,
+    borderWidth: 1,
+    borderColor: BP.graphite,
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  truthLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: BP.ash,
+    letterSpacing: 0.3,
+  },
+  truthValue: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: BP.smoke,
+  },
+
+  // ---- Release Queue ----
+  releaseRow: {
+    paddingVertical: Spacing.sm,
+  },
+  releaseRowBorder: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: BP.graphite,
+  },
+  releaseHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  releaseTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: BP.smoke,
+    flex: 1,
+    marginRight: Spacing.sm,
+  },
+  releaseAmount: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: BP.champagneGold,
+  },
+  releaseMeta: {
+    marginBottom: Spacing.sm,
+  },
+  releaseDetail: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: BP.ash,
+    marginBottom: 2,
+  },
+  releaseFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  releaseCta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: BP.champagneGold + '40',
+    backgroundColor: BP.champagneGold + '10',
+  },
+  releaseCtaText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: BP.champagneGold,
+  },
+
+  // ---- Runway ----
+  runwayKpi: {
+    alignItems: 'center',
+    paddingVertical: Spacing.sm,
+  },
+  runwayValueRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 4,
+    marginBottom: 4,
+  },
+  runwayValue: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: BP.smoke,
+  },
+  runwayUnit: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: BP.ash,
+  },
+  runwayFormula: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: BP.platinum,
+    marginBottom: Spacing.md,
+  },
+  runwayBarBg: {
+    width: '100%',
+    height: 8,
+    backgroundColor: BP.glass,
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 4,
+  },
+  runwayBarFill: {
+    height: 8,
+    borderRadius: 4,
+  },
+  runwayLegend: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  runwayLegendText: {
+    fontSize: 9,
+    fontWeight: '500',
+    color: BP.ash,
+  },
+
+  // ---- Explain This Dollar Overlay ----
+  explainOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    justifyContent: 'flex-end',
+  },
+  explainSheet: {
+    backgroundColor: '#1C1C1E',
+    borderTopLeftRadius: BorderRadius.lg,
+    borderTopRightRadius: BorderRadius.lg,
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.md,
+    paddingBottom: 40,
+    maxHeight: '80%',
+  },
+  explainHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.md,
+  },
+  explainTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: BP.smoke,
+  },
+  explainClose: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: BP.glass,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  explainSection: {
+    marginBottom: Spacing.md,
+  },
+  explainSectionTitle: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: BP.ash,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: Spacing.sm,
+  },
+  explainDesc: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: BP.smoke,
+    lineHeight: 18,
+    marginBottom: Spacing.sm,
+  },
+  explainRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  explainLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: BP.ash,
+  },
+  explainValue: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: BP.smoke,
+  },
+
+  // ---- Provenance Chain ----
+  provenanceNode: {
+    flexDirection: 'row',
+    marginBottom: 0,
+  },
+  provenanceDotCol: {
+    width: 20,
+    alignItems: 'center',
+  },
+  provenanceDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginTop: 4,
+  },
+  provenanceLine: {
+    width: 1,
+    flex: 1,
+    backgroundColor: BP.graphite,
+    marginVertical: 2,
+  },
+  provenanceContent: {
+    flex: 1,
+    paddingLeft: Spacing.sm,
+    paddingBottom: Spacing.sm,
+  },
+  provenanceStep: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: BP.smoke,
+    marginBottom: 2,
+  },
+  provenanceDetail: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: BP.platinum,
+    lineHeight: 15,
   },
 });

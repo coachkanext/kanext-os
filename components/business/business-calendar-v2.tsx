@@ -4,7 +4,7 @@
  * Default demo role: founder (B1) — full access.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
   ScrollView,
@@ -12,6 +12,7 @@ import {
   StyleSheet,
   TextInput,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -67,8 +68,10 @@ interface CalendarEvent {
   owner: string;
   dueLabel: string;
   dueHours: number; // hours until due (for sorting)
+  dueDate: string; // ISO date string (YYYY-MM-DD) for date-based filtering
   decisionRequired: boolean;
   prepAssets: number;
+  isPublic?: boolean;
   // Meeting fields
   attendeesCount?: number;
   location?: string;
@@ -134,6 +137,13 @@ const OBJECT_TYPE_LABELS: Record<CalendarObjectType, string> = {
 // MOCK CALENDAR EVENTS
 // =============================================================================
 
+// Helper: get ISO date string offset from today
+function getDateOffset(days: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
+}
+
 const CALENDAR_EVENTS: CalendarEvent[] = [
   {
     id: 'cal-1',
@@ -144,6 +154,7 @@ const CALENDAR_EVENTS: CalendarEvent[] = [
     owner: 'SK',
     dueLabel: '3 days',
     dueHours: 72,
+    dueDate: getDateOffset(3),
     decisionRequired: true,
     prepAssets: 2,
     attendeesCount: 4,
@@ -159,6 +170,7 @@ const CALENDAR_EVENTS: CalendarEvent[] = [
     owner: 'SK',
     dueLabel: 'This week',
     dueHours: 96,
+    dueDate: getDateOffset(4),
     decisionRequired: false,
     prepAssets: 1,
     attendeesCount: 3,
@@ -174,6 +186,7 @@ const CALENDAR_EVENTS: CalendarEvent[] = [
     owner: 'SK',
     dueLabel: '5 days',
     dueHours: 120,
+    dueDate: getDateOffset(5),
     decisionRequired: false,
     prepAssets: 3,
     dependencyCount: 2,
@@ -189,6 +202,7 @@ const CALENDAR_EVENTS: CalendarEvent[] = [
     owner: 'Finance Lead',
     dueLabel: '4 days',
     dueHours: 96,
+    dueDate: getDateOffset(4),
     decisionRequired: false,
     prepAssets: 4,
     severity: 'high',
@@ -204,6 +218,7 @@ const CALENDAR_EVENTS: CalendarEvent[] = [
     owner: 'Ops Lead',
     dueLabel: 'Opens tomorrow',
     dueHours: 24,
+    dueDate: getDateOffset(1),
     decisionRequired: true,
     prepAssets: 1,
     opensAt: 'Feb 18 · 9:00 AM',
@@ -220,6 +235,7 @@ const CALENDAR_EVENTS: CalendarEvent[] = [
     owner: 'Legal Counsel',
     dueLabel: '<24h',
     dueHours: 18,
+    dueDate: getDateOffset(0),
     decisionRequired: true,
     prepAssets: 2,
     severity: 'critical',
@@ -235,6 +251,7 @@ const CALENDAR_EVENTS: CalendarEvent[] = [
     owner: 'BD Lead',
     dueLabel: '6 days',
     dueHours: 144,
+    dueDate: getDateOffset(6),
     decisionRequired: false,
     prepAssets: 1,
     counterparty: 'StreamVision Media',
@@ -250,10 +267,29 @@ const CALENDAR_EVENTS: CalendarEvent[] = [
     owner: 'SK',
     dueLabel: '5 days',
     dueHours: 120,
+    dueDate: getDateOffset(5),
     decisionRequired: false,
     prepAssets: 0,
+    isPublic: true,
     attendeesCount: 25,
     location: 'YouTube Live + Discord',
+    outcomeRequired: false,
+  },
+  {
+    id: 'cal-9',
+    title: 'Community Town Hall',
+    category: 'public',
+    status: 'on_track',
+    objectType: 'meeting',
+    owner: 'SK',
+    dueLabel: '2 days',
+    dueHours: 48,
+    dueDate: getDateOffset(2),
+    decisionRequired: false,
+    prepAssets: 0,
+    isPublic: true,
+    attendeesCount: 50,
+    location: 'Twitter Spaces',
     outcomeRequired: false,
   },
 ];
@@ -653,6 +689,317 @@ function ObjectTypeDetails({ event, colors }: { event: CalendarEvent; colors: ty
 }
 
 // =============================================================================
+// DATE UTILITIES
+// =============================================================================
+
+const DAY_NAMES_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTH_NAMES_SHORT = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+function toDateKey(d: Date): string {
+  return d.toISOString().split('T')[0];
+}
+
+function isSameDay(a: Date, b: Date): boolean {
+  return toDateKey(a) === toDateKey(b);
+}
+
+/** Get the Monday-starting week containing the given date */
+function getWeekDays(anchor: Date): Date[] {
+  const d = new Date(anchor);
+  const day = d.getDay(); // 0=Sun
+  const diffToMon = day === 0 ? -6 : 1 - day;
+  const monday = new Date(d);
+  monday.setDate(d.getDate() + diffToMon);
+  const days: Date[] = [];
+  for (let i = 0; i < 7; i++) {
+    const dd = new Date(monday);
+    dd.setDate(monday.getDate() + i);
+    days.push(dd);
+  }
+  return days;
+}
+
+/** Get the full month grid (6 rows x 7 cols) for the month of the given date */
+function getMonthGrid(anchor: Date): (Date | null)[][] {
+  const year = anchor.getFullYear();
+  const month = anchor.getMonth();
+  const firstOfMonth = new Date(year, month, 1);
+  const startDow = firstOfMonth.getDay(); // 0=Sun
+  // Shift so Monday=0
+  const offset = startDow === 0 ? 6 : startDow - 1;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const grid: (Date | null)[][] = [];
+  let currentDay = 1 - offset;
+  for (let row = 0; row < 6; row++) {
+    const week: (Date | null)[] = [];
+    for (let col = 0; col < 7; col++) {
+      if (currentDay >= 1 && currentDay <= daysInMonth) {
+        week.push(new Date(year, month, currentDay));
+      } else {
+        week.push(null);
+      }
+      currentDay++;
+    }
+    // Skip entirely empty trailing rows
+    if (week.every((d) => d === null)) break;
+    grid.push(week);
+  }
+  return grid;
+}
+
+/** Get start/end ISO date range for a view mode + selected date */
+function getDateRange(viewMode: ViewMode, selectedDate: Date): { start: string; end: string } {
+  if (viewMode === 'day') {
+    const key = toDateKey(selectedDate);
+    return { start: key, end: key };
+  }
+  if (viewMode === 'week') {
+    const weekDays = getWeekDays(selectedDate);
+    return { start: toDateKey(weekDays[0]), end: toDateKey(weekDays[6]) };
+  }
+  // month
+  const year = selectedDate.getFullYear();
+  const month = selectedDate.getMonth();
+  const first = new Date(year, month, 1);
+  const last = new Date(year, month + 1, 0);
+  return { start: toDateKey(first), end: toDateKey(last) };
+}
+
+function filterEventsByDateRange(events: CalendarEvent[], viewMode: ViewMode, selectedDate: Date): CalendarEvent[] {
+  const { start, end } = getDateRange(viewMode, selectedDate);
+  return events.filter((e) => e.dueDate >= start && e.dueDate <= end);
+}
+
+/** Format a date for group header: "Today -- Feb 17", "Tomorrow -- Feb 18", "Wed, Feb 19" */
+function formatDateGroupHeader(date: Date): string {
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  const monthStr = MONTH_NAMES_SHORT[date.getMonth()];
+  const dayNum = date.getDate();
+  if (isSameDay(date, today)) return `Today \u2014 ${monthStr} ${dayNum}`;
+  if (isSameDay(date, tomorrow)) return `Tomorrow \u2014 ${monthStr} ${dayNum}`;
+  return `${DAY_NAMES_SHORT[date.getDay()]}, ${monthStr} ${dayNum}`;
+}
+
+/** Group events by dueDate and return sorted groups */
+function groupEventsByDate(events: CalendarEvent[]): { dateKey: string; label: string; events: CalendarEvent[] }[] {
+  const map = new Map<string, CalendarEvent[]>();
+  for (const e of events) {
+    const list = map.get(e.dueDate) || [];
+    list.push(e);
+    map.set(e.dueDate, list);
+  }
+  const groups = Array.from(map.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([dateKey, evts]) => {
+      const [year, month, day] = dateKey.split('-').map(Number);
+      const d = new Date(year, month - 1, day);
+      return { dateKey, label: formatDateGroupHeader(d), events: evts };
+    });
+  return groups;
+}
+
+// =============================================================================
+// WEEK DATE SELECTOR
+// =============================================================================
+
+function WeekDateSelector({
+  selectedDate,
+  onSelectDate,
+  colors,
+}: {
+  selectedDate: Date;
+  onSelectDate: (d: Date) => void;
+  colors: typeof Colors.light;
+}) {
+  const weekDays = useMemo(() => getWeekDays(selectedDate), [toDateKey(selectedDate)]);
+  const today = new Date();
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={st.weekSelectorScroll}
+      contentContainerStyle={st.weekSelectorContent}
+    >
+      {weekDays.map((d) => {
+        const isSelected = isSameDay(d, selectedDate);
+        const isToday = isSameDay(d, today);
+        return (
+          <Pressable
+            key={toDateKey(d)}
+            onPress={() => onSelectDate(d)}
+            style={[
+              st.dayChip,
+              {
+                backgroundColor: isSelected ? colors.text : colors.backgroundTertiary,
+                borderColor: isToday && !isSelected ? colors.textSecondary : isSelected ? colors.text : colors.border,
+              },
+            ]}
+          >
+            <ThemedText
+              style={[
+                st.dayChipName,
+                { color: isSelected ? colors.background : colors.textSecondary },
+              ]}
+            >
+              {DAY_NAMES_SHORT[d.getDay()]}
+            </ThemedText>
+            <ThemedText
+              style={[
+                st.dayChipNumber,
+                { color: isSelected ? colors.background : colors.text },
+                isToday && !isSelected && { color: '#3B82F6' },
+              ]}
+            >
+              {d.getDate()}
+            </ThemedText>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+// =============================================================================
+// MONTH GRID SELECTOR
+// =============================================================================
+
+function MonthGridSelector({
+  selectedDate,
+  onSelectDate,
+  colors,
+}: {
+  selectedDate: Date;
+  onSelectDate: (d: Date) => void;
+  colors: typeof Colors.light;
+}) {
+  const grid = useMemo(() => getMonthGrid(selectedDate), [selectedDate.getMonth(), selectedDate.getFullYear()]);
+  const today = new Date();
+  const monthLabel = `${MONTH_NAMES_SHORT[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`;
+  const headerDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  return (
+    <View style={st.monthGridContainer}>
+      <ThemedText style={[st.monthGridTitle, { color: colors.text }]}>{monthLabel}</ThemedText>
+      {/* Day-of-week header row */}
+      <View style={st.monthGridHeaderRow}>
+        {headerDays.map((name) => (
+          <View key={name} style={st.monthGridHeaderCell}>
+            <ThemedText style={[st.monthGridHeaderText, { color: colors.textTertiary }]}>
+              {name}
+            </ThemedText>
+          </View>
+        ))}
+      </View>
+      {/* Weeks */}
+      {grid.map((week, rowIdx) => (
+        <View key={`week-${rowIdx}`} style={st.monthGridRow}>
+          {week.map((d, colIdx) => {
+            if (!d) {
+              return <View key={`empty-${colIdx}`} style={st.monthGridCell} />;
+            }
+            const isSelected = isSameDay(d, selectedDate);
+            const isToday = isSameDay(d, today);
+            return (
+              <Pressable
+                key={toDateKey(d)}
+                onPress={() => onSelectDate(d)}
+                style={[
+                  st.monthGridCell,
+                  isSelected && { backgroundColor: colors.text, borderRadius: 16 },
+                  isToday && !isSelected && { borderWidth: 1, borderColor: '#3B82F6', borderRadius: 16 },
+                ]}
+              >
+                <ThemedText
+                  style={[
+                    st.monthGridDayText,
+                    { color: isSelected ? colors.background : colors.text },
+                    isToday && !isSelected && { color: '#3B82F6', fontWeight: '700' },
+                  ]}
+                >
+                  {d.getDate()}
+                </ThemedText>
+              </Pressable>
+            );
+          })}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+// =============================================================================
+// DATE GROUP HEADER
+// =============================================================================
+
+function DateGroupHeader({ label, colors }: { label: string; colors: typeof Colors.light }) {
+  return (
+    <View style={st.dateGroupHeader}>
+      <ThemedText style={[st.dateGroupHeaderText, { color: colors.text }]}>
+        {label}
+      </ThemedText>
+    </View>
+  );
+}
+
+// =============================================================================
+// RSVP CHIP
+// =============================================================================
+
+function RSVPChip({ colors }: { colors: typeof Colors.light }) {
+  const [rsvpd, setRsvpd] = useState(false);
+  return (
+    <Pressable
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setRsvpd((prev) => !prev);
+      }}
+      style={[
+        st.rsvpChip,
+        {
+          backgroundColor: rsvpd ? '#22C55E20' : colors.backgroundTertiary,
+          borderColor: rsvpd ? '#22C55E' : colors.border,
+        },
+      ]}
+    >
+      <IconSymbol
+        name={rsvpd ? 'checkmark.circle.fill' : 'calendar.badge.plus' as any}
+        size={12}
+        color={rsvpd ? '#22C55E' : colors.textSecondary}
+      />
+      <ThemedText style={[st.rsvpChipText, { color: rsvpd ? '#22C55E' : colors.textSecondary }]}>
+        {rsvpd ? "RSVP'd" : 'RSVP'}
+      </ThemedText>
+    </Pressable>
+  );
+}
+
+// =============================================================================
+// BOARD REQUEST AGENDA ITEM CTA
+// =============================================================================
+
+function BoardRequestAgendaCTA({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <Pressable
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      }}
+      style={[st.boardAgendaCTA, { backgroundColor: '#8B5CF615', borderColor: '#8B5CF6' }]}
+    >
+      <IconSymbol name={'plus.circle.fill' as any} size={18} color="#8B5CF6" />
+      <ThemedText style={[st.boardAgendaCTAText, { color: '#8B5CF6' }]}>
+        Request Agenda Item
+      </ThemedText>
+    </Pressable>
+  );
+}
+
+// =============================================================================
 // AGENDA ROW
 // =============================================================================
 
@@ -660,11 +1007,14 @@ function AgendaRow({
   event,
   colors,
   isLast,
+  role,
 }: {
   event: CalendarEvent;
   colors: typeof Colors.light;
   isLast: boolean;
+  role: BusinessRoleLens;
 }) {
+  const showRSVP = event.isPublic && (role === 'B2a' || role === 'B3');
   return (
     <View
       style={[
@@ -680,6 +1030,7 @@ function AgendaRow({
             {event.title}
           </ThemedText>
         </View>
+        {showRSVP && <RSVPChip colors={colors} />}
       </View>
 
       {/* Tags row: category + status + object type */}
@@ -739,6 +1090,8 @@ function CalendarHeader({
   activeCategories,
   toggleCategory,
   visibleCategories,
+  selectedDate,
+  onSelectDate,
 }: {
   colors: typeof Colors.light;
   role: BusinessRoleLens;
@@ -749,6 +1102,8 @@ function CalendarHeader({
   activeCategories: Set<CalendarCategory>;
   toggleCategory: (c: CalendarCategory) => void;
   visibleCategories: CalendarCategory[];
+  selectedDate: Date;
+  onSelectDate: (d: Date) => void;
 }) {
   return (
     <View style={st.headerArea}>
@@ -777,7 +1132,10 @@ function CalendarHeader({
             onChangeText={setSearchQuery}
           />
         </View>
-        <Pressable style={[st.todayButton, { backgroundColor: colors.backgroundTertiary, borderColor: colors.border }]}>
+        <Pressable
+          onPress={() => onSelectDate(new Date())}
+          style={[st.todayButton, { backgroundColor: colors.backgroundTertiary, borderColor: colors.border }]}
+        >
           <ThemedText style={[st.todayButtonText, { color: colors.textSecondary }]}>Today</ThemedText>
         </Pressable>
         {isFounder(role) && (
@@ -786,6 +1144,17 @@ function CalendarHeader({
           </Pressable>
         )}
       </View>
+
+      {/* Date selector: Week chips or Month grid */}
+      {viewMode === 'week' && (
+        <WeekDateSelector selectedDate={selectedDate} onSelectDate={onSelectDate} colors={colors} />
+      )}
+      {viewMode === 'month' && (
+        <MonthGridSelector selectedDate={selectedDate} onSelectDate={onSelectDate} colors={colors} />
+      )}
+      {viewMode === 'day' && (
+        <WeekDateSelector selectedDate={selectedDate} onSelectDate={onSelectDate} colors={colors} />
+      )}
 
       {/* Category filter chips */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={st.categoryScroll} contentContainerStyle={st.categoryScrollContent}>
@@ -856,10 +1225,14 @@ function CalendarStats({ events, colors }: { events: CalendarEvent[]; colors: ty
 function AgendaList({
   events,
   colors,
+  role,
 }: {
   events: CalendarEvent[];
   colors: typeof Colors.light;
+  role: BusinessRoleLens;
 }) {
+  const groups = useMemo(() => groupEventsByDate(events), [events]);
+
   if (events.length === 0) {
     return (
       <Card colors={colors}>
@@ -874,16 +1247,24 @@ function AgendaList({
   }
 
   return (
-    <Card colors={colors}>
-      {events.map((event, idx) => (
-        <AgendaRow
-          key={event.id}
-          event={event}
-          colors={colors}
-          isLast={idx === events.length - 1}
-        />
+    <View>
+      {groups.map((group) => (
+        <View key={group.dateKey}>
+          <DateGroupHeader label={group.label} colors={colors} />
+          <Card colors={colors}>
+            {group.events.map((event, idx) => (
+              <AgendaRow
+                key={event.id}
+                event={event}
+                colors={colors}
+                isLast={idx === group.events.length - 1}
+                role={role}
+              />
+            ))}
+          </Card>
+        </View>
       ))}
-    </Card>
+    </View>
   );
 }
 
@@ -1017,6 +1398,7 @@ export function BusinessCalendarV2({ colors, role = 'B1' }: Props) {
   const [viewMode, setViewMode] = useState<ViewMode>('week');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategories, setActiveCategories] = useState<Set<CalendarCategory>>(new Set());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const visibleCategories = useMemo(() => getVisibleCategories(role), [role]);
 
@@ -1032,8 +1414,15 @@ export function BusinessCalendarV2({ colors, role = 'B1' }: Props) {
     });
   };
 
+  const handleSelectDate = useCallback((d: Date) => {
+    setSelectedDate(d);
+  }, []);
+
   const filteredEvents = useMemo(() => {
     let events = getVisibleEvents(role, CALENDAR_EVENTS);
+
+    // Date range filter based on view mode + selected date
+    events = filterEventsByDateRange(events, viewMode, selectedDate);
 
     // Category filter
     if (activeCategories.size > 0) {
@@ -1052,7 +1441,7 @@ export function BusinessCalendarV2({ colors, role = 'B1' }: Props) {
     }
 
     return sortEvents(events);
-  }, [activeCategories, searchQuery]);
+  }, [activeCategories, searchQuery, viewMode, selectedDate, role]);
 
   return (
     <ScrollView
@@ -1069,7 +1458,10 @@ export function BusinessCalendarV2({ colors, role = 'B1' }: Props) {
         colors={colors}
       />
 
-      {/* Header: View toggle, search, category filters */}
+      {/* Board: Request Agenda Item CTA (B2b only) */}
+      {role === 'B2b' && <BoardRequestAgendaCTA colors={colors} />}
+
+      {/* Header: View toggle, search, date selector, category filters */}
       <CalendarHeader
         colors={colors}
         role={role}
@@ -1080,6 +1472,8 @@ export function BusinessCalendarV2({ colors, role = 'B1' }: Props) {
         activeCategories={activeCategories}
         toggleCategory={toggleCategory}
         visibleCategories={visibleCategories}
+        selectedDate={selectedDate}
+        onSelectDate={handleSelectDate}
       />
 
       {/* Calendar Stats Strip */}
@@ -1088,10 +1482,10 @@ export function BusinessCalendarV2({ colors, role = 'B1' }: Props) {
       {/* Week Preview */}
       <WeekPreview events={filteredEvents} colors={colors} />
 
-      {/* Agenda List */}
+      {/* Agenda List (with date group headers) */}
       <View style={st.moduleContainer}>
         <SectionHeader title="AGENDA" colors={colors} />
-        <AgendaList events={filteredEvents} colors={colors} />
+        <AgendaList events={filteredEvents} colors={colors} role={role} />
       </View>
 
       {/* Event Type Legend */}
@@ -1550,5 +1944,113 @@ const st = StyleSheet.create({
   emptyStateText: {
     fontSize: 14,
     textAlign: 'center',
+  },
+
+  // Week date selector
+  weekSelectorScroll: {
+    flexDirection: 'row',
+    marginBottom: Spacing.md,
+  },
+  weekSelectorContent: {
+    gap: Spacing.sm,
+    paddingVertical: 2,
+  },
+  dayChip: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 46,
+    paddingVertical: 8,
+    borderRadius: BorderRadius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  dayChipName: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  dayChipNumber: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+
+  // Month grid selector
+  monthGridContainer: {
+    marginBottom: Spacing.md,
+  },
+  monthGridTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: Spacing.sm,
+  },
+  monthGridHeaderRow: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  monthGridHeaderCell: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  monthGridHeaderText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  monthGridRow: {
+    flexDirection: 'row',
+    marginBottom: 2,
+  },
+  monthGridCell: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 32,
+  },
+  monthGridDayText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+
+  // Date group header
+  dateGroupHeader: {
+    paddingVertical: Spacing.xs,
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.xs,
+  },
+  dateGroupHeaderText: {
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+
+  // RSVP chip
+  rsvpChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.full,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  rsvpChipText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+
+  // Board Request Agenda Item CTA
+  boardAgendaCTA: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    marginBottom: Spacing.md,
+  },
+  boardAgendaCTAText: {
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

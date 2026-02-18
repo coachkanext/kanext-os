@@ -60,9 +60,71 @@ import type {
 interface Props {
   colors: typeof Colors.light;
   role?: BusinessRoleLens;
+  onSwitchTab?: (index: number) => void;
 }
 
 const BP = BusinessPalette;
+
+// =============================================================================
+// FILTER CHIPS
+// =============================================================================
+
+type FilterChip =
+  | 'All'
+  | 'Blocked'
+  | 'Decisions Needed'
+  | 'Due <7d'
+  | 'Initiative'
+  | 'Project'
+  | 'People'
+  | 'Entity'
+  | 'Type';
+
+const FILTER_CHIPS: FilterChip[] = [
+  'All',
+  'Blocked',
+  'Decisions Needed',
+  'Due <7d',
+  'Initiative',
+  'Project',
+  'People',
+  'Entity',
+  'Type',
+];
+
+// =============================================================================
+// KPI DATA
+// =============================================================================
+
+interface OpsKPI {
+  id: string;
+  label: string;
+  value: string;
+  color: string;
+}
+
+function getOpsKPIs(): OpsKPI[] {
+  const topPriorities = INITIATIVES.filter(
+    (i) => i.priority === 'critical' || i.priority === 'high',
+  ).length;
+  const openBlockers = TOP_BLOCKERS.length;
+  const atRisk = INITIATIVES.filter((i) => i.status === 'blocked').length +
+    PROJECTS.filter((p) => p.status === 'blocked').length;
+  const decisionQueue = DECISION_QUEUE.filter((d) => d.status === 'pending').length;
+  const dueSoon = PROJECTS.filter((p) => {
+    // Simple heuristic: items with "Feb" or "Mar" in dueLabel and < 7d
+    return p.dueLabel.includes('Feb') || p.dueLabel.startsWith('Mar 1') || p.dueLabel.startsWith('Mar 5');
+  }).length;
+
+  return [
+    { id: 'kpi-1', label: 'Top 3 Priorities', value: String(topPriorities), color: BP.champagneGold },
+    { id: 'kpi-2', label: 'Open Blockers', value: String(openBlockers), color: BP.red },
+    { id: 'kpi-3', label: 'At Risk Initiatives', value: String(atRisk), color: BP.amber },
+    { id: 'kpi-4', label: 'Decision Queue', value: String(decisionQueue), color: '#6AA9FF' },
+    { id: 'kpi-5', label: 'Due <7d', value: String(dueSoon), color: BP.amber },
+    { id: 'kpi-6', label: 'Last Updated', value: 'Today', color: BP.emerald },
+  ];
+}
 
 // =============================================================================
 // SEVERITY HELPERS
@@ -173,6 +235,75 @@ function feedCategoryColor(category: OpsFeedItem['category']): string {
 // SUB-COMPONENTS
 // =============================================================================
 
+// ---- Filter Chips Bar -------------------------------------------------------
+
+function FilterChipsBar({
+  activeFilter,
+  onSelectFilter,
+}: {
+  activeFilter: FilterChip;
+  onSelectFilter: (chip: FilterChip) => void;
+}) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={s.filterChipsRow}
+      style={s.filterChipsContainer}
+    >
+      {FILTER_CHIPS.map((chip) => {
+        const isActive = chip === activeFilter;
+        return (
+          <Pressable
+            key={chip}
+            style={[
+              s.filterChip,
+              {
+                backgroundColor: isActive ? BP.champagneGold + '20' : BP.carbon,
+                borderColor: isActive ? BP.champagneGold : BP.graphite,
+              },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onSelectFilter(chip);
+            }}
+          >
+            <ThemedText
+              style={[
+                s.filterChipText,
+                { color: isActive ? BP.champagneGold : BP.ash },
+              ]}
+            >
+              {chip}
+            </ThemedText>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+// ---- KPI Tiles Grid ---------------------------------------------------------
+
+function KPITilesGrid() {
+  const kpis = getOpsKPIs();
+
+  return (
+    <View style={s.kpiGrid}>
+      {kpis.map((kpi) => (
+        <View key={kpi.id} style={s.kpiTile}>
+          <ThemedText style={[s.kpiTileValue, { color: kpi.color }]}>
+            {kpi.value}
+          </ThemedText>
+          <ThemedText style={s.kpiTileLabel} numberOfLines={1}>
+            {kpi.label}
+          </ThemedText>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 // ---- Command Header --------------------------------------------------------
 
 function CommandHeader() {
@@ -191,6 +322,9 @@ function CommandHeader() {
         {blockerCount} blockers &middot; {initCount} initiatives &middot;{' '}
         {projCount} projects
       </ThemedText>
+
+      {/* KPI Tiles */}
+      <KPITilesGrid />
     </View>
   );
 }
@@ -347,6 +481,42 @@ function ProjectCard({ item }: { item: Project }) {
   );
 }
 
+// ---- Initiative Group (collapsible) -----------------------------------------
+
+function InitiativeGroupHeader({
+  name,
+  count,
+  collapsed,
+  onToggle,
+}: {
+  name: string;
+  count: number;
+  collapsed: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <Pressable
+      style={s.initiativeGroupHeader}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onToggle();
+      }}
+    >
+      <IconSymbol
+        name={collapsed ? 'chevron.right' : 'chevron.down'}
+        size={12}
+        color={BP.champagneGold}
+      />
+      <ThemedText style={s.initiativeGroupName} numberOfLines={1}>
+        {name}
+      </ThemedText>
+      <View style={s.initiativeGroupCountBadge}>
+        <ThemedText style={s.initiativeGroupCountText}>{count}</ThemedText>
+      </View>
+    </Pressable>
+  );
+}
+
 // ---- Decision Row ----------------------------------------------------------
 
 function DecisionRow({ item }: { item: DecisionItem }) {
@@ -465,6 +635,13 @@ function RetailSummaryCard() {
 // =============================================================================
 
 export function BusinessOperations({ colors, role = 'B1' }: Props) {
+  const [activeFilter, setActiveFilter] = useState<FilterChip>('All');
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+
+  const toggleCollapsed = (key: string) => {
+    setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
   // ---------------------------------------------------------------------------
   // RBAC: B3/B4/B5 — fully locked
   // ---------------------------------------------------------------------------
@@ -533,6 +710,70 @@ export function BusinessOperations({ colors, role = 'B1' }: Props) {
     ? DECISION_QUEUE
     : DECISION_QUEUE.filter((d) => d.type === 'review');
 
+  // ---------------------------------------------------------------------------
+  // Filter logic — applies to initiatives + projects
+  // ---------------------------------------------------------------------------
+  const filteredInitiatives = INITIATIVES.filter((init) => {
+    switch (activeFilter) {
+      case 'All':
+        return true;
+      case 'Blocked':
+        return init.status === 'blocked';
+      case 'Decisions Needed':
+        return false; // initiatives don't have decisions
+      case 'Due <7d':
+        return init.dueLabel.includes('Feb') || init.dueLabel.startsWith('Mar 1') || init.dueLabel.startsWith('Mar 5');
+      case 'Initiative':
+        return true; // show all initiatives
+      case 'Project':
+        return false; // hide initiatives in project filter
+      case 'People':
+        return true; // show all (has owner)
+      case 'Entity':
+        return true;
+      case 'Type':
+        return true;
+      default:
+        return true;
+    }
+  });
+
+  const filteredProjects = PROJECTS.filter((proj) => {
+    switch (activeFilter) {
+      case 'All':
+        return true;
+      case 'Blocked':
+        return proj.status === 'blocked';
+      case 'Decisions Needed':
+        return false;
+      case 'Due <7d':
+        return proj.dueLabel.includes('Feb') || proj.dueLabel.startsWith('Mar 1') || proj.dueLabel.startsWith('Mar 5');
+      case 'Initiative':
+        return false; // hide projects in initiative filter
+      case 'Project':
+        return true; // show all projects
+      case 'People':
+        return true;
+      case 'Entity':
+        return true;
+      case 'Type':
+        return true;
+      default:
+        return true;
+    }
+  });
+
+  // Group projects by initiative
+  const projectsByInitiative: Record<string, Project[]> = {};
+  filteredProjects.forEach((proj) => {
+    const key = proj.initiative;
+    if (!projectsByInitiative[key]) {
+      projectsByInitiative[key] = [];
+    }
+    projectsByInitiative[key].push(proj);
+  });
+  const initiativeGroupNames = Object.keys(projectsByInitiative);
+
   return (
     <ScrollView
       style={[s.root, { backgroundColor: colors.background }]}
@@ -550,6 +791,12 @@ export function BusinessOperations({ colors, role = 'B1' }: Props) {
 
       {/* ---- 1. Command Header ---- */}
       <CommandHeader />
+
+      {/* ---- Filter Chips Bar ---- */}
+      <FilterChipsBar
+        activeFilter={activeFilter}
+        onSelectFilter={setActiveFilter}
+      />
 
       {/* ---- 2. Top Blockers ---- */}
       <View style={s.section}>
@@ -572,17 +819,43 @@ export function BusinessOperations({ colors, role = 'B1' }: Props) {
       {/* ---- 3. Initiatives Board ---- */}
       <View style={s.section}>
         <BizCardTitle text="Initiatives" />
-        {INITIATIVES.map((init) => (
+        {filteredInitiatives.map((init) => (
           <InitiativeCard key={init.id} item={init} />
         ))}
+        {filteredInitiatives.length === 0 && (
+          <ThemedText style={s.emptyText}>
+            No initiatives match the current filter.
+          </ThemedText>
+        )}
       </View>
 
-      {/* ---- 4. Projects ---- */}
+      {/* ---- 4. Projects (grouped by initiative) ---- */}
       <View style={s.section}>
         <BizCardTitle text="Projects" />
-        {PROJECTS.map((proj) => (
-          <ProjectCard key={proj.id} item={proj} />
-        ))}
+        {initiativeGroupNames.map((groupName) => {
+          const groupProjects = projectsByInitiative[groupName];
+          const isCollapsed = !!collapsed[groupName];
+
+          return (
+            <View key={groupName} style={s.initiativeGroup}>
+              <InitiativeGroupHeader
+                name={groupName}
+                count={groupProjects.length}
+                collapsed={isCollapsed}
+                onToggle={() => toggleCollapsed(groupName)}
+              />
+              {!isCollapsed &&
+                groupProjects.map((proj) => (
+                  <ProjectCard key={proj.id} item={proj} />
+                ))}
+            </View>
+          );
+        })}
+        {initiativeGroupNames.length === 0 && (
+          <ThemedText style={s.emptyText}>
+            No projects match the current filter.
+          </ThemedText>
+        )}
       </View>
 
       {/* ---- 5. Decision Queue ---- */}
@@ -892,6 +1165,83 @@ const s = StyleSheet.create({
     color: BP.ash,
     textAlign: 'center',
     marginTop: Spacing.sm,
+  },
+
+  // -- Filter Chips Bar -------------------------------------------------------
+  filterChipsContainer: {
+    marginBottom: Spacing.md,
+  },
+  filterChipsRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    paddingVertical: 2,
+  },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  filterChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // -- KPI Tiles Grid ---------------------------------------------------------
+  kpiGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+    marginTop: Spacing.md,
+  },
+  kpiTile: {
+    width: '30%',
+    backgroundColor: BP.graphite + '60',
+    borderRadius: BorderRadius.md,
+    padding: Spacing.sm,
+    alignItems: 'center',
+    gap: 2,
+  },
+  kpiTileValue: {
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  kpiTileLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: BP.ash,
+    textAlign: 'center',
+    letterSpacing: 0.2,
+  },
+
+  // -- Initiative Group -------------------------------------------------------
+  initiativeGroup: {
+    marginBottom: Spacing.xs,
+  },
+  initiativeGroupHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.xs,
+  },
+  initiativeGroupName: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '700',
+    color: BP.champagneGold,
+    letterSpacing: 0.2,
+  },
+  initiativeGroupCountBadge: {
+    backgroundColor: BP.graphite,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+  },
+  initiativeGroupCountText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: BP.ash,
   },
 
   // -- Shared ----------------------------------------------------------------

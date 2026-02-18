@@ -257,6 +257,27 @@ function visibilityVariant(vis: Playlist['visibility']): 'success' | 'warning' |
 // SUB-TAB: OVERVIEW
 // =============================================================================
 
+/** Proof Score — composite coverage breakdown */
+const PROOF_SCORE_CATEGORIES = [
+  { label: 'Product', score: 85 },
+  { label: 'Traction', score: 78 },
+  { label: 'Outcomes', score: 65 },
+  { label: 'Partnerships', score: 90 },
+  { label: 'Compliance', score: 60 },
+  { label: 'Financial', score: 55 },
+  { label: 'Team', score: 82 },
+];
+
+const PROOF_SCORE_OVERALL = Math.round(
+  PROOF_SCORE_CATEGORIES.reduce((sum, c) => sum + c.score, 0) / PROOF_SCORE_CATEGORIES.length,
+);
+
+function proofScoreColor(score: number): string {
+  if (score >= 80) return BP.emerald;
+  if (score >= 60) return BP.champagneGold;
+  return BP.red;
+}
+
 function OverviewContent({ role }: { role: BusinessRoleLens }) {
   const stats = MEDIA_OVERVIEW;
 
@@ -289,6 +310,35 @@ function OverviewContent({ role }: { role: BusinessRoleLens }) {
 
   return (
     <View>
+      {/* Proof Score */}
+      <BizCard>
+        <BizCardTitle text="PROOF SCORE" />
+        <View style={s.proofScoreHero}>
+          <ThemedText style={[s.proofScoreNumber, { color: proofScoreColor(PROOF_SCORE_OVERALL) }]}>
+            {PROOF_SCORE_OVERALL}%
+          </ThemedText>
+          <ThemedText style={s.proofScoreLabel}>Composite Coverage</ThemedText>
+        </View>
+        <View style={s.proofScoreGrid}>
+          {PROOF_SCORE_CATEGORIES.map((cat) => (
+            <View key={cat.label} style={s.proofScoreCatRow}>
+              <ThemedText style={s.proofScoreCatLabel}>{cat.label}</ThemedText>
+              <View style={s.proofScoreBarBg}>
+                <View
+                  style={[
+                    s.proofScoreBarFill,
+                    { width: `${cat.score}%`, backgroundColor: proofScoreColor(cat.score) },
+                  ]}
+                />
+              </View>
+              <ThemedText style={[s.proofScoreCatValue, { color: proofScoreColor(cat.score) }]}>
+                {cat.score}%
+              </ThemedText>
+            </View>
+          ))}
+        </View>
+      </BizCard>
+
       {/* Stats grid */}
       <BizCard>
         <BizCardTitle text="MEDIA SNAPSHOT" />
@@ -334,59 +384,106 @@ function OverviewContent({ role }: { role: BusinessRoleLens }) {
 // SUB-TAB: LIBRARY
 // =============================================================================
 
+/** Verification status per asset */
+type VerificationLevel = 'self_reported' | 'evidence_backed' | 'third_party_validated';
+
+const ASSET_VERIFICATION: Record<string, VerificationLevel> = {
+  'ma-1': 'third_party_validated',
+  'ma-2': 'evidence_backed',
+  'ma-3': 'evidence_backed',
+  'ma-4': 'self_reported',
+  'ma-5': 'self_reported',
+  'ma-6': 'evidence_backed',
+  'ma-7': 'third_party_validated',
+  'ma-8': 'self_reported',
+};
+
+function verificationLabel(v: VerificationLevel): string {
+  switch (v) {
+    case 'self_reported': return 'Self-reported';
+    case 'evidence_backed': return 'Evidence-backed';
+    case 'third_party_validated': return 'Third-party validated';
+  }
+}
+
+function verificationColor(v: VerificationLevel): string {
+  switch (v) {
+    case 'self_reported': return BP.ash;
+    case 'evidence_backed': return '#6AA9FF';
+    case 'third_party_validated': return BP.emerald;
+  }
+}
+
 function LibraryContent() {
   return (
     <View>
       <BizCard>
         <BizCardTitle text="MEDIA LIBRARY" />
-        {MEDIA_LIBRARY.map((asset, idx) => (
-          <Pressable
-            key={asset.id}
-            style={({ pressed }) => [
-              s.libraryRow,
-              idx < MEDIA_LIBRARY.length - 1 && s.libraryRowBorder,
-              { opacity: pressed ? 0.7 : 1 },
-            ]}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          >
-            {/* Type icon */}
-            <View style={s.libraryIcon}>
-              <IconSymbol
-                name={mediaTypeIcon(asset.type) as any}
-                size={22}
-                color={BP.champagneGold}
-              />
-            </View>
+        {MEDIA_LIBRARY.map((asset, idx) => {
+          const verification = ASSET_VERIFICATION[asset.id] ?? 'self_reported';
 
-            {/* Info */}
-            <View style={s.libraryInfo}>
-              <ThemedText style={s.libraryTitle} numberOfLines={1}>
-                {asset.title}
-              </ThemedText>
-              <View style={s.libraryMeta}>
-                <View style={s.categoryPill}>
-                  <ThemedText style={s.categoryPillText}>{asset.category}</ThemedText>
-                </View>
-                <ThemedText style={s.librarySize}>{asset.size}</ThemedText>
-                <ThemedText style={s.libraryDate}>{asset.uploadedAt}</ThemedText>
+          return (
+            <Pressable
+              key={asset.id}
+              style={({ pressed }) => [
+                s.libraryRow,
+                idx < MEDIA_LIBRARY.length - 1 && s.libraryRowBorder,
+                { opacity: pressed ? 0.7 : 1 },
+              ]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              {/* Type icon */}
+              <View style={s.libraryIcon}>
+                <IconSymbol
+                  name={mediaTypeIcon(asset.type) as any}
+                  size={22}
+                  color={BP.champagneGold}
+                />
               </View>
-              {/* Tags */}
-              <View style={s.tagRow}>
-                {asset.tags.slice(0, 3).map((tag) => (
-                  <View key={tag} style={s.tagChip}>
-                    <ThemedText style={s.tagText}>{tag}</ThemedText>
+
+              {/* Info */}
+              <View style={s.libraryInfo}>
+                <ThemedText style={s.libraryTitle} numberOfLines={1}>
+                  {asset.title}
+                </ThemedText>
+                <View style={s.libraryMeta}>
+                  <View style={s.categoryPill}>
+                    <ThemedText style={s.categoryPillText}>{asset.category}</ThemedText>
                   </View>
-                ))}
-                {asset.tags.length > 3 && (
-                  <ThemedText style={s.tagMore}>+{asset.tags.length - 3}</ThemedText>
-                )}
-              </View>
-            </View>
+                  <ThemedText style={s.librarySize}>{asset.size}</ThemedText>
+                  <ThemedText style={s.libraryDate}>{asset.uploadedAt}</ThemedText>
+                </View>
 
-            {/* Chevron */}
-            <IconSymbol name="chevron.right" size={12} color={BP.ash} />
-          </Pressable>
-        ))}
+                {/* Verification badge */}
+                <View style={[s.verificationBadge, { backgroundColor: verificationColor(verification) + '15' }]}>
+                  <IconSymbol
+                    name={verification === 'third_party_validated' ? 'checkmark.seal.fill' : verification === 'evidence_backed' ? 'checkmark.circle.fill' : 'info.circle.fill'}
+                    size={10}
+                    color={verificationColor(verification)}
+                  />
+                  <ThemedText style={[s.verificationBadgeText, { color: verificationColor(verification) }]}>
+                    {verificationLabel(verification)}
+                  </ThemedText>
+                </View>
+
+                {/* Tags */}
+                <View style={s.tagRow}>
+                  {asset.tags.slice(0, 3).map((tag) => (
+                    <View key={tag} style={s.tagChip}>
+                      <ThemedText style={s.tagText}>{tag}</ThemedText>
+                    </View>
+                  ))}
+                  {asset.tags.length > 3 && (
+                    <ThemedText style={s.tagMore}>+{asset.tags.length - 3}</ThemedText>
+                  )}
+                </View>
+              </View>
+
+              {/* Chevron */}
+              <IconSymbol name="chevron.right" size={12} color={BP.ash} />
+            </Pressable>
+          );
+        })}
       </BizCard>
     </View>
   );
@@ -396,7 +493,29 @@ function LibraryContent() {
 // SUB-TAB: PROOF PACKS
 // =============================================================================
 
+/** Mock expandable sections per proof pack */
+const PROOF_PACK_SECTIONS: Record<string, { narrative: string; sections: string[] }> = {
+  'pp-1': {
+    narrative: 'This pack demonstrates product-market fit and early traction through live deployments, user engagement metrics, and investor-grade financial projections.',
+    sections: ['Product Demo Recording', 'FMU Traction Metrics Deck', 'Financial Summary Slide', 'Founder Walkthrough Video'],
+  },
+  'pp-2': {
+    narrative: 'Board-ready evidence package covering quarterly performance, compliance posture, and partnership health across all proof wedges.',
+    sections: ['KPI Dashboard Export', 'FMU Partnership Summary', 'ICCLA Pilot Results', 'Compliance Score Card'],
+  },
+  'pp-3': {
+    narrative: 'Onboarding materials for integration partners including API documentation and proof-of-concept recordings.',
+    sections: ['API Documentation', 'Brand Guidelines PDF', 'Demo Recording', 'Case Study One-Pager'],
+  },
+  'pp-4': {
+    narrative: 'Public-facing compilation showcasing the KaNeXT story, founder vision, and product capabilities for general audiences.',
+    sections: ['Founder Interview Clips', 'Product Overview Video', 'Press Highlights Reel', 'Brand Sizzle Reel'],
+  },
+};
+
 function ProofPacksContent({ role }: { role: BusinessRoleLens }) {
+  const [expandedPack, setExpandedPack] = useState<string | null>(null);
+
   // B2a sees only investor/public packs; B2b sees all except draft
   const visiblePacks = isFounder(role)
     ? PROOF_PACKS
@@ -406,44 +525,81 @@ function ProofPacksContent({ role }: { role: BusinessRoleLens }) {
 
   return (
     <View>
-      {visiblePacks.map((pack) => (
-        <BizCard key={pack.id}>
-          <View style={s.packHeader}>
-            <View style={s.packTitleRow}>
-              <IconSymbol name="shippingbox.fill" size={16} color={BP.champagneGold} />
-              <ThemedText style={s.packTitle} numberOfLines={1}>
-                {pack.title}
-              </ThemedText>
-            </View>
-            <BizStatusChip
-              label={proofPackStatusLabel(pack.status)}
-              variant={proofPackStatusVariant(pack.status)}
-            />
-          </View>
+      {visiblePacks.map((pack) => {
+        const isExpanded = expandedPack === pack.id;
+        const detail = PROOF_PACK_SECTIONS[pack.id];
 
-          <ThemedText style={s.packDescription} numberOfLines={2}>
-            {pack.description}
-          </ThemedText>
+        return (
+          <Pressable
+            key={pack.id}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setExpandedPack(isExpanded ? null : pack.id);
+            }}
+          >
+            <BizCard>
+              <View style={s.packHeader}>
+                <View style={s.packTitleRow}>
+                  <IconSymbol name="shippingbox.fill" size={16} color={BP.champagneGold} />
+                  <ThemedText style={s.packTitle} numberOfLines={1}>
+                    {pack.title}
+                  </ThemedText>
+                </View>
+                <BizStatusChip
+                  label={proofPackStatusLabel(pack.status)}
+                  variant={proofPackStatusVariant(pack.status)}
+                />
+              </View>
 
-          <View style={s.packFooter}>
-            <View style={s.packMetaRow}>
-              <IconSymbol name="doc.fill" size={12} color={BP.ash} />
-              <ThemedText style={s.packMetaText}>
-                {pack.assetCount} assets
+              <ThemedText style={s.packDescription} numberOfLines={isExpanded ? undefined : 2}>
+                {pack.description}
               </ThemedText>
-            </View>
-            <View style={s.packMetaRow}>
-              <IconSymbol name="calendar" size={12} color={BP.ash} />
-              <ThemedText style={s.packMetaText}>{pack.createdAt}</ThemedText>
-            </View>
-            <View style={s.audienceBadge}>
-              <ThemedText style={s.audienceBadgeText}>
-                {audienceLabel(pack.audience)}
-              </ThemedText>
-            </View>
-          </View>
-        </BizCard>
-      ))}
+
+              <View style={s.packFooter}>
+                <View style={s.packMetaRow}>
+                  <IconSymbol name="doc.fill" size={12} color={BP.ash} />
+                  <ThemedText style={s.packMetaText}>
+                    {pack.assetCount} assets
+                  </ThemedText>
+                </View>
+                <View style={s.packMetaRow}>
+                  <IconSymbol name="calendar" size={12} color={BP.ash} />
+                  <ThemedText style={s.packMetaText}>{pack.createdAt}</ThemedText>
+                </View>
+                <View style={s.audienceBadge}>
+                  <ThemedText style={s.audienceBadgeText}>
+                    {audienceLabel(pack.audience)}
+                  </ThemedText>
+                </View>
+                <IconSymbol
+                  name={isExpanded ? 'chevron.up' : 'chevron.down'}
+                  size={11}
+                  color={BP.ash}
+                />
+              </View>
+
+              {/* Expandable sections */}
+              {isExpanded && detail && (
+                <View style={s.packExpandedSection}>
+                  {/* Narrative */}
+                  <ThemedText style={s.packNarrative}>{detail.narrative}</ThemedText>
+
+                  {/* Sections list */}
+                  <View style={s.packSectionsList}>
+                    <ThemedText style={s.packSectionsTitle}>SECTIONS</ThemedText>
+                    {detail.sections.map((section, sIdx) => (
+                      <View key={sIdx} style={s.packSectionItem}>
+                        <IconSymbol name="doc.text.fill" size={12} color={BP.champagneGold} />
+                        <ThemedText style={s.packSectionItemText}>{section}</ThemedText>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              )}
+            </BizCard>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
@@ -452,45 +608,75 @@ function ProofPacksContent({ role }: { role: BusinessRoleLens }) {
 // SUB-TAB: PLAYLISTS
 // =============================================================================
 
+/** Mock playlist items for sequential display */
+const PLAYLIST_ITEMS: Record<string, string[]> = {
+  'pl-1': ['FMU vs Tuskegee — Top Plays', 'FMU vs Howard — Broadcast Clip', 'Conference Semifinal Highlights', 'Post-Game Interviews Compilation'],
+  'pl-2': ['MVP Demo — Aug 2025', 'V1 Launch Recording', 'V1.5 Feature Walkthrough', 'OS v2 Full Demo'],
+  'pl-3': ['Round 1 Recap + Telemetry', 'Round 2 Highlights', 'Round 3 Driver Interview', 'Round 5 Race Analysis'],
+  'pl-4': ['Jan 5 Sunday Service', 'Jan 12 Campus Event', 'Jan 19 Sunday Service', 'Special Program — MLK Day'],
+};
+
 function PlaylistsContent() {
   return (
     <View>
-      {PLAYLISTS.map((pl) => (
-        <BizCard key={pl.id}>
-          <View style={s.playlistHeader}>
-            <View style={s.playlistTitleRow}>
-              <IconSymbol name="play.rectangle.fill" size={16} color={BP.champagneGold} />
-              <ThemedText style={s.playlistTitle} numberOfLines={1}>
-                {pl.title}
-              </ThemedText>
-            </View>
-            <BizStatusChip
-              label={visibilityLabel(pl.visibility)}
-              variant={visibilityVariant(pl.visibility)}
-            />
-          </View>
+      {PLAYLISTS.map((pl) => {
+        const items = PLAYLIST_ITEMS[pl.id] ?? [];
 
-          <ThemedText style={s.playlistDescription} numberOfLines={2}>
-            {pl.description}
-          </ThemedText>
+        return (
+          <BizCard key={pl.id}>
+            <View style={s.playlistHeader}>
+              <View style={s.playlistTitleRow}>
+                <IconSymbol name="play.rectangle.fill" size={16} color={BP.champagneGold} />
+                <ThemedText style={s.playlistTitle} numberOfLines={1}>
+                  {pl.title}
+                </ThemedText>
+              </View>
+              <BizStatusChip
+                label={visibilityLabel(pl.visibility)}
+                variant={visibilityVariant(pl.visibility)}
+              />
+            </View>
 
-          <View style={s.playlistFooter}>
-            <View style={s.playlistMetaRow}>
-              <IconSymbol name="film.fill" size={12} color={BP.ash} />
-              <ThemedText style={s.playlistMetaText}>
-                {pl.itemCount} items
-              </ThemedText>
+            <ThemedText style={s.playlistDescription} numberOfLines={2}>
+              {pl.description}
+            </ThemedText>
+
+            {/* Sequential item list */}
+            <View style={s.playlistItemsList}>
+              {items.map((item, itemIdx) => (
+                <View key={itemIdx} style={s.playlistItemRow}>
+                  <View style={s.playlistItemNumber}>
+                    <ThemedText style={s.playlistItemNumberText}>{itemIdx + 1}</ThemedText>
+                  </View>
+                  <IconSymbol name="play.fill" size={10} color={BP.champagneGold} />
+                  <ThemedText style={s.playlistItemLabel} numberOfLines={1}>{item}</ThemedText>
+                </View>
+              ))}
+              {pl.itemCount > items.length && (
+                <ThemedText style={s.playlistItemMore}>
+                  +{pl.itemCount - items.length} more items
+                </ThemedText>
+              )}
             </View>
-            <View style={s.playlistMetaRow}>
-              <IconSymbol name="clock.fill" size={12} color={BP.ash} />
-              <ThemedText style={s.playlistMetaText}>{pl.duration}</ThemedText>
+
+            <View style={s.playlistFooter}>
+              <View style={s.playlistMetaRow}>
+                <IconSymbol name="film.fill" size={12} color={BP.ash} />
+                <ThemedText style={s.playlistMetaText}>
+                  {pl.itemCount} items
+                </ThemedText>
+              </View>
+              <View style={s.playlistMetaRow}>
+                <IconSymbol name="clock.fill" size={12} color={BP.ash} />
+                <ThemedText style={s.playlistMetaText}>{pl.duration}</ThemedText>
+              </View>
+              <View style={s.categoryPill}>
+                <ThemedText style={s.categoryPillText}>{pl.category}</ThemedText>
+              </View>
             </View>
-            <View style={s.categoryPill}>
-              <ThemedText style={s.categoryPillText}>{pl.category}</ThemedText>
-            </View>
-          </View>
-        </BizCard>
-      ))}
+          </BizCard>
+        );
+      })}
     </View>
   );
 }
@@ -554,9 +740,17 @@ function CaseStudiesContent({ role }: { role: BusinessRoleLens }) {
 // SUB-TAB: PRESS
 // =============================================================================
 
+/** Mock outbound press releases */
+const OUTBOUND_PRESS: { id: string; title: string; date: string; status: 'Draft' | 'Published' }[] = [
+  { id: 'opr-1', title: 'KaNeXT Announces FMU Partnership Expansion for 2026-27', date: 'Feb 15, 2026', status: 'Draft' },
+  { id: 'opr-2', title: 'KaNeXT OS v2 Launches with Multi-Mode Architecture', date: 'Feb 1, 2026', status: 'Published' },
+  { id: 'opr-3', title: 'KaNeXT Raises Pre-Seed Round Led by Valuetainment', date: 'Jan 15, 2026', status: 'Published' },
+];
+
 function PressContent() {
   return (
     <View>
+      {/* Inbound coverage */}
       <BizCard>
         <BizCardTitle text="PRESS COVERAGE" />
         {PRESS_ITEMS.map((item, idx) => (
@@ -595,6 +789,31 @@ function PressContent() {
           </Pressable>
         ))}
       </BizCard>
+
+      {/* Outbound press releases */}
+      <BizCard>
+        <BizCardTitle text="OUTBOUND PRESS RELEASES" />
+        {OUTBOUND_PRESS.map((pr, idx) => (
+          <View
+            key={pr.id}
+            style={[
+              s.outboundPressRow,
+              idx < OUTBOUND_PRESS.length - 1 && s.outboundPressRowBorder,
+            ]}
+          >
+            <View style={s.outboundPressInfo}>
+              <ThemedText style={s.outboundPressTitle} numberOfLines={2}>
+                {pr.title}
+              </ThemedText>
+              <ThemedText style={s.outboundPressDate}>{pr.date}</ThemedText>
+            </View>
+            <BizStatusChip
+              label={pr.status.toUpperCase()}
+              variant={pr.status === 'Published' ? 'success' : 'warning'}
+            />
+          </View>
+        ))}
+      </BizCard>
     </View>
   );
 }
@@ -603,49 +822,69 @@ function PressContent() {
 // SUB-TAB: RIGHTS
 // =============================================================================
 
+/** Source attribution per rights item */
+const RIGHTS_SOURCE: Record<string, string> = {
+  'ri-1': 'FMU Athletics Department — Athletic Director office',
+  'ri-2': 'ICCLA Senior Pastor — Media Ministry agreement',
+  'ri-3': 'K-1 Racing Series — Partnership contract, Exhibit B',
+  'ri-4': 'KaNeXT Inc. internal — Brand Guidelines v2.0',
+};
+
 function RightsContent() {
   return (
     <View>
       <BizCard>
         <BizCardTitle text="RIGHTS & LICENSES" />
-        {RIGHTS_ITEMS.map((item, idx) => (
-          <View
-            key={item.id}
-            style={[
-              s.rightsRow,
-              idx < RIGHTS_ITEMS.length - 1 && s.rightsRowBorder,
-            ]}
-          >
-            <View style={s.rightsHeader}>
-              <ThemedText style={s.rightsAssetTitle} numberOfLines={1}>
-                {item.assetTitle}
-              </ThemedText>
-              <BizStatusChip
-                label={rightsStatusLabel(item.status)}
-                variant={rightsStatusVariant(item.status)}
-              />
-            </View>
+        {RIGHTS_ITEMS.map((item, idx) => {
+          const source = RIGHTS_SOURCE[item.id];
 
-            <View style={s.rightsDetails}>
-              <View style={s.rightsDetailItem}>
-                <ThemedText style={s.rightsDetailLabel}>License</ThemedText>
-                <ThemedText style={s.rightsDetailValue}>{item.licenseType}</ThemedText>
+          return (
+            <View
+              key={item.id}
+              style={[
+                s.rightsRow,
+                idx < RIGHTS_ITEMS.length - 1 && s.rightsRowBorder,
+              ]}
+            >
+              <View style={s.rightsHeader}>
+                <ThemedText style={s.rightsAssetTitle} numberOfLines={1}>
+                  {item.assetTitle}
+                </ThemedText>
+                <BizStatusChip
+                  label={rightsStatusLabel(item.status)}
+                  variant={rightsStatusVariant(item.status)}
+                />
               </View>
-              <View style={s.rightsDetailItem}>
-                <ThemedText style={s.rightsDetailLabel}>Holder</ThemedText>
-                <ThemedText style={s.rightsDetailValue}>{item.holder}</ThemedText>
+
+              <View style={s.rightsDetails}>
+                <View style={s.rightsDetailItem}>
+                  <ThemedText style={s.rightsDetailLabel}>License</ThemedText>
+                  <ThemedText style={s.rightsDetailValue}>{item.licenseType}</ThemedText>
+                </View>
+                <View style={s.rightsDetailItem}>
+                  <ThemedText style={s.rightsDetailLabel}>Holder</ThemedText>
+                  <ThemedText style={s.rightsDetailValue}>{item.holder}</ThemedText>
+                </View>
+                <View style={s.rightsDetailItem}>
+                  <ThemedText style={s.rightsDetailLabel}>Expires</ThemedText>
+                  <ThemedText style={s.rightsDetailValue}>{item.expiryDate}</ThemedText>
+                </View>
+                <View style={s.rightsDetailItem}>
+                  <ThemedText style={s.rightsDetailLabel}>Territory</ThemedText>
+                  <ThemedText style={s.rightsDetailValue}>{item.territory}</ThemedText>
+                </View>
               </View>
-              <View style={s.rightsDetailItem}>
-                <ThemedText style={s.rightsDetailLabel}>Expires</ThemedText>
-                <ThemedText style={s.rightsDetailValue}>{item.expiryDate}</ThemedText>
-              </View>
-              <View style={s.rightsDetailItem}>
-                <ThemedText style={s.rightsDetailLabel}>Territory</ThemedText>
-                <ThemedText style={s.rightsDetailValue}>{item.territory}</ThemedText>
-              </View>
+
+              {/* Source attribution */}
+              {source && (
+                <View style={s.rightsSourceRow}>
+                  <ThemedText style={s.rightsDetailLabel}>Source</ThemedText>
+                  <ThemedText style={s.rightsSourceValue}>{source}</ThemedText>
+                </View>
+              )}
             </View>
-          </View>
-        ))}
+          );
+        })}
       </BizCard>
     </View>
   );
@@ -711,6 +950,20 @@ function ShareLinksContent() {
           </Pressable>
         ))}
       </BizCard>
+
+      {/* Create Share Link CTA */}
+      <Pressable
+        style={({ pressed }) => [
+          s.createShareLinkCTA,
+          { opacity: pressed ? 0.7 : 1 },
+        ]}
+        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+      >
+        <IconSymbol name="link" size={18} color={BP.champagneGold} />
+        <ThemedText style={s.createShareLinkCTAText}>
+          Create Share Link
+        </ThemedText>
+      </Pressable>
     </View>
   );
 }
@@ -1291,5 +1544,213 @@ const s = StyleSheet.create({
     fontWeight: '700',
     color: BP.emerald,
     letterSpacing: 0.3,
+  },
+
+  // ---- Proof Score ----
+  proofScoreHero: {
+    alignItems: 'center',
+    paddingVertical: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  proofScoreNumber: {
+    fontSize: 48,
+    fontWeight: '800',
+    lineHeight: 56,
+  },
+  proofScoreLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: BP.ash,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+    marginTop: 4,
+  },
+  proofScoreGrid: {
+    gap: Spacing.xs,
+  },
+  proofScoreCatRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: 3,
+  },
+  proofScoreCatLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: BP.ash,
+    width: 80,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  proofScoreBarBg: {
+    flex: 1,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: BP.glass,
+    overflow: 'hidden',
+  },
+  proofScoreBarFill: {
+    height: 6,
+    borderRadius: 3,
+  },
+  proofScoreCatValue: {
+    fontSize: 11,
+    fontWeight: '700',
+    width: 36,
+    textAlign: 'right',
+  },
+
+  // ---- Library: Verification badge ----
+  verificationBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+    alignSelf: 'flex-start',
+    marginBottom: 4,
+  },
+  verificationBadgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+
+  // ---- Proof Packs: Expandable ----
+  packExpandedSection: {
+    marginTop: Spacing.sm,
+    paddingTop: Spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: BP.graphite,
+  },
+  packNarrative: {
+    fontSize: 12,
+    color: BP.platinum,
+    lineHeight: 18,
+    fontStyle: 'italic',
+    marginBottom: Spacing.sm,
+  },
+  packSectionsList: {
+    gap: 4,
+  },
+  packSectionsTitle: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: BP.ash,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: 4,
+  },
+  packSectionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: 3,
+    paddingLeft: Spacing.xs,
+  },
+  packSectionItemText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: BP.smoke,
+  },
+
+  // ---- Playlists: Sequential items ----
+  playlistItemsList: {
+    marginBottom: Spacing.sm,
+    gap: 2,
+  },
+  playlistItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: 3,
+  },
+  playlistItemNumber: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: BP.glass,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  playlistItemNumberText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: BP.champagneGold,
+  },
+  playlistItemLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: BP.smoke,
+    flex: 1,
+  },
+  playlistItemMore: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: BP.ash,
+    paddingLeft: 32,
+    marginTop: 2,
+  },
+
+  // ---- Press: Outbound ----
+  outboundPressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: Spacing.sm,
+  },
+  outboundPressRowBorder: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: BP.graphite,
+  },
+  outboundPressInfo: {
+    flex: 1,
+  },
+  outboundPressTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: BP.smoke,
+    lineHeight: 18,
+    marginBottom: 2,
+  },
+  outboundPressDate: {
+    fontSize: 12,
+    color: BP.ash,
+  },
+
+  // ---- Rights: Source attribution ----
+  rightsSourceRow: {
+    marginTop: Spacing.xs,
+    paddingTop: Spacing.xs,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: BP.graphite,
+  },
+  rightsSourceValue: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: BP.platinum,
+    fontStyle: 'italic',
+    marginTop: 1,
+  },
+
+  // ---- Share Links: Create CTA ----
+  createShareLinkCTA: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    paddingVertical: Spacing.md,
+    backgroundColor: BP.carbon,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: BP.graphite,
+    borderStyle: 'dashed',
+    marginBottom: Spacing.md,
+  },
+  createShareLinkCTAText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: BP.champagneGold,
   },
 });

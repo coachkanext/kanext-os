@@ -17,6 +17,11 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode } from '@/context/app-context';
+import { BusinessProvider, useBusiness } from '@/context/business-context';
+import { ChurchProvider, useChurch } from '@/context/church-context';
+import { EducationProvider, useEducation } from '@/context/education-context';
+import type { ChurchRoleLens } from '@/utils/church-rbac';
+import type { EducationRoleLens } from '@/utils/education-rbac';
 import { PagedTabBar } from '@/components/ui/paged-tab-bar';
 import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
@@ -93,6 +98,16 @@ import { BizOrgComplianceV2 } from '@/components/organization/biz-org-compliance
 import { BizOrgAssetsTab } from '@/components/organization/biz-org-assets-v2';
 import { BizOrgReportsV2 } from '@/components/organization/biz-org-reports-v2';
 
+// Church v2 org tab components
+import { ChurchOrgFacilities } from '@/components/organization/church-org-facilities';
+import { ChurchOrgResources } from '@/components/organization/church-org-resources';
+import { ChurchOrgDonations } from '@/components/organization/church-org-donations';
+
+// Education v2 org tab components
+import { EduOrgFacilities } from '@/components/organization/edu-org-facilities';
+import { EduOrgResources } from '@/components/organization/edu-org-resources';
+import { EduOrgSponsors } from '@/components/organization/edu-org-sponsors';
+
 // =============================================================================
 // ORG TAB & MORE DEFINITIONS (per mode)
 // =============================================================================
@@ -120,7 +135,7 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
     { id: 'compliance', label: 'Compliance' },
     { id: 'facilities', label: 'Facilities' },
     { id: 'resources', label: 'Resources' },
-    { id: 'policies', label: 'Policies' },
+    { id: 'sponsors', label: 'Sponsors' },
   ],
   competition: [
     { id: 'series', label: 'Series' },
@@ -153,10 +168,10 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
     { id: 'payment-rails', label: 'Payment Rails' },
-    { id: 'compliance', label: 'Compliance' },
+    { id: 'compliance', label: 'Compliance/Legal' },
     { id: 'facilities', label: 'Facilities' },
     { id: 'resources', label: 'Resources' },
-    { id: 'policies', label: 'Policies' },
+    { id: 'donations', label: 'Donations/Giving' },
   ],
 };
 
@@ -375,46 +390,24 @@ function MinistryRow({ ministry, colors, accentColor, onPress }: MinistryRowProp
 // =============================================================================
 
 function ChurchOrganization() {
+  return (
+    <ChurchProvider>
+      <ChurchOrganizationInner />
+    </ChurchProvider>
+  );
+}
+
+function ChurchOrganizationInner() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const router = useRouter();
-  const modeColors = ModeColors.church;
+  const accent = ModeColors.church.primary;
+  const { viewAsRole } = useChurch();
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
 
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
-
-  const handleCampusPress = (campusId: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push(`/organization/campuses/${campusId}`);
-  };
-
-  const handleMinistriesPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/ministries');
-  };
-
-  const handleMinistryPress = (ministryId: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push(`/organization/ministries/${ministryId}`);
-  };
-
-  const handleMessagesPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/messages');
-  };
-
-  const handleGivingPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/giving');
-  };
-
-  const handleConnectPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/connect');
-  };
 
   return (
     <>
@@ -426,55 +419,36 @@ function ChurchOrganization() {
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Ministries */}
           <View key="ministries" style={{ flex: 1 }}>
-            <OrgMinistriesTab colors={colors} accentColor={modeColors.primary} />
+            <OrgMinistriesTab colors={colors} accentColor={accent} />
           </View>
-
-        {/* Page 1: People */}
-        <View key="people" style={{ flex: 1 }}>
-          <OrgPeopleTab mode="church" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 2: Rooms */}
-        <View key="rooms" style={{ flex: 1 }}>
-          <RoomsHub mode="church" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 3: Operations */}
-        <View key="operations" style={{ flex: 1 }}>
-          <OrgOperationsTab mode="church" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 4: Finance */}
-        <View key="finance" style={{ flex: 1 }}>
-          <OrgFinanceTab mode="church" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 4: Payment Rails */}
-        <View key="payment-rails" style={{ flex: 1 }}>
-          <OrgPaymentRailsTab mode="church" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 5: Compliance */}
-        <View key="compliance" style={{ flex: 1 }}>
-          <OrgComplianceTab mode="church" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 6: Facilities */}
-        <View key="facilities" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Facilities" />
-        </View>
-
-        {/* Page 7: Resources */}
-        <View key="resources" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Resources" />
-        </View>
-
-        {/* Page 8: Policies */}
-        <View key="policies" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Policies" />
-        </View>
+          <View key="people" style={{ flex: 1 }}>
+            <OrgPeopleTab mode="church" colors={colors} accentColor={accent} />
+          </View>
+          <View key="rooms" style={{ flex: 1 }}>
+            <RoomsHub mode="church" colors={colors} accentColor={accent} />
+          </View>
+          <View key="operations" style={{ flex: 1 }}>
+            <OrgOperationsTab mode="church" colors={colors} accentColor={accent} />
+          </View>
+          <View key="finance" style={{ flex: 1 }}>
+            <OrgFinanceTab mode="church" colors={colors} accentColor={accent} />
+          </View>
+          <View key="payment-rails" style={{ flex: 1 }}>
+            <OrgPaymentRailsTab mode="church" colors={colors} accentColor={accent} />
+          </View>
+          <View key="compliance" style={{ flex: 1 }}>
+            <OrgComplianceTab mode="church" colors={colors} accentColor={accent} />
+          </View>
+          <View key="facilities" style={{ flex: 1 }}>
+            <ChurchOrgFacilities colors={colors} accentColor={accent} role={viewAsRole} />
+          </View>
+          <View key="resources" style={{ flex: 1 }}>
+            <ChurchOrgResources colors={colors} accentColor={accent} role={viewAsRole} />
+          </View>
+          <View key="donations" style={{ flex: 1 }}>
+            <ChurchOrgDonations colors={colors} accentColor={accent} role={viewAsRole} />
+          </View>
         </PagerView>
       </EdgeHoldAdvance>
     </>
@@ -603,54 +577,24 @@ function FacultyRow({ faculty, colors, onPress }: FacultyRowProps) {
 // =============================================================================
 
 function EducationOrganization() {
+  return (
+    <EducationProvider>
+      <EducationOrganizationInner />
+    </EducationProvider>
+  );
+}
+
+function EducationOrganizationInner() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const router = useRouter();
-  const modeColors = ModeColors.education;
+  const accent = ModeColors.education.primary;
+  const { viewAsRole } = useEducation();
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
-
-  const currentTerm = getCurrentTerm();
-  const upcomingEvents = getUpcomingEvents(4);
 
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
-
-  const handleSchedulePress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/schedule');
-  };
-
-  const handleResultsPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/results');
-  };
-
-  const handleMetricsPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/metrics');
-  };
-
-  const handleLeadershipPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/leadership');
-  };
-
-  const handleArchivePress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/organization/archive');
-  };
-
-  const handleFacultyPress = (facultyId: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push(`/organization/members/${facultyId}`);
-  };
-
-  const handleTermPress = (termId: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push(`/organization/events/${termId}`);
-  };
 
   return (
     <>
@@ -662,55 +606,36 @@ function EducationOrganization() {
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Institutions */}
           <View key="institutions" style={{ flex: 1 }}>
-            <OrgInstitutionsTab colors={colors} accentColor={modeColors.primary} />
+            <OrgInstitutionsTab colors={colors} accentColor={accent} />
           </View>
-
-        {/* Page 1: People */}
-        <View key="people" style={{ flex: 1 }}>
-          <OrgPeopleTab mode="education" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 2: Rooms */}
-        <View key="rooms" style={{ flex: 1 }}>
-          <RoomsHub mode="education" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 3: Operations */}
-        <View key="operations" style={{ flex: 1 }}>
-          <OrgOperationsTab mode="education" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 4: Finance */}
-        <View key="finance" style={{ flex: 1 }}>
-          <OrgFinanceTab mode="education" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 4: Payment Rails */}
-        <View key="payment-rails" style={{ flex: 1 }}>
-          <OrgPaymentRailsTab mode="education" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 5: Compliance */}
-        <View key="compliance" style={{ flex: 1 }}>
-          <OrgComplianceTab mode="education" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 6: Facilities */}
-        <View key="facilities" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Facilities" />
-        </View>
-
-        {/* Page 7: Resources */}
-        <View key="resources" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Resources" />
-        </View>
-
-        {/* Page 8: Policies */}
-        <View key="policies" style={{ flex: 1 }}>
-          <TabPlaceholderPage title="Policies" />
-        </View>
+          <View key="people" style={{ flex: 1 }}>
+            <OrgPeopleTab mode="education" colors={colors} accentColor={accent} />
+          </View>
+          <View key="rooms" style={{ flex: 1 }}>
+            <RoomsHub mode="education" colors={colors} accentColor={accent} />
+          </View>
+          <View key="operations" style={{ flex: 1 }}>
+            <OrgOperationsTab mode="education" colors={colors} accentColor={accent} />
+          </View>
+          <View key="finance" style={{ flex: 1 }}>
+            <OrgFinanceTab mode="education" colors={colors} accentColor={accent} />
+          </View>
+          <View key="payment-rails" style={{ flex: 1 }}>
+            <OrgPaymentRailsTab mode="education" colors={colors} accentColor={accent} />
+          </View>
+          <View key="compliance" style={{ flex: 1 }}>
+            <OrgComplianceTab mode="education" colors={colors} accentColor={accent} />
+          </View>
+          <View key="facilities" style={{ flex: 1 }}>
+            <EduOrgFacilities colors={colors} accentColor={accent} role={viewAsRole} />
+          </View>
+          <View key="resources" style={{ flex: 1 }}>
+            <EduOrgResources colors={colors} accentColor={accent} role={viewAsRole} />
+          </View>
+          <View key="sponsors" style={{ flex: 1 }}>
+            <EduOrgSponsors colors={colors} accentColor={accent} role={viewAsRole} />
+          </View>
         </PagerView>
       </EdgeHoldAdvance>
     </>
@@ -783,9 +708,18 @@ function CommunityOrganization() {
 // =============================================================================
 
 function BusinessOrganization() {
+  return (
+    <BusinessProvider>
+      <BusinessOrganizationInner />
+    </BusinessProvider>
+  );
+}
+
+function BusinessOrganizationInner() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = ModeColors.business.primary;
+  const { viewAsRole } = useBusiness();
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
 
@@ -804,34 +738,34 @@ function BusinessOrganization() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           <View key="entities" style={{ flex: 1 }}>
-            <BizOrgEntitiesV2 colors={colors} accentColor={accent} />
+            <BizOrgEntitiesV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="people" style={{ flex: 1 }}>
-            <BizOrgPeopleV2 colors={colors} accentColor={accent} />
+            <BizOrgPeopleV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="rooms" style={{ flex: 1 }}>
-            <BizOrgRoomsV2 colors={colors} accentColor={accent} />
+            <BizOrgRoomsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="operations" style={{ flex: 1 }}>
-            <BizOrgOperationsV2 colors={colors} accentColor={accent} />
+            <BizOrgOperationsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="finance" style={{ flex: 1 }}>
-            <BizOrgFinanceV2 colors={colors} accentColor={accent} />
+            <BizOrgFinanceV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="payment-rails" style={{ flex: 1 }}>
-            <BizOrgPaymentRailsV2 colors={colors} accentColor={accent} />
+            <BizOrgPaymentRailsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="legal" style={{ flex: 1 }}>
-            <BizOrgLegalV2 colors={colors} accentColor={accent} />
+            <BizOrgLegalV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="compliance" style={{ flex: 1 }}>
-            <BizOrgComplianceV2 colors={colors} accentColor={accent} />
+            <BizOrgComplianceV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="assets" style={{ flex: 1 }}>
-            <BizOrgAssetsTab colors={colors} accentColor={accent} />
+            <BizOrgAssetsTab colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="reports" style={{ flex: 1 }}>
-            <BizOrgReportsV2 colors={colors} accentColor={accent} />
+            <BizOrgReportsV2 colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
         </PagerView>
       </EdgeHoldAdvance>

@@ -1,137 +1,215 @@
 /**
- * Education Mode RBAC — 4-level role lens visibility matrix.
- * ED1: Program Director (Program-level access)
- * ED2: Student (Self-only access)
- * ED3: Full Access (Founder + Head of BBall Ops)
- * ED4: Parent / Guardian (Dependent-only access)
+ * Education Mode RBAC — 5-level role lens visibility matrix.
+ * E1: President / Chancellor (Full access)
+ * E2: Provost / Dean
+ * E3: Faculty / Staff
+ * E4: Student
+ * E5: Public
  */
 
 // =============================================================================
 // ROLE LEVELS
 // =============================================================================
 
-export type EducationRoleLens = 'ED1' | 'ED2' | 'ED3' | 'ED4';
+export type EducationRoleLens = 'E1' | 'E2' | 'E3' | 'E4' | 'E5';
 
-export type EducationVisibility = 'full' | 'limited' | 'self_only' | 'hidden';
+export type EducationVisibility = 'full' | 'exact' | 'limited' | 'hidden';
 
 export const EDUCATION_ROLE_LABELS: Record<EducationRoleLens, string> = {
-  ED1: 'Program Director',
-  ED2: 'Student',
-  ED3: 'Administrator',
-  ED4: 'Parent / Guardian',
+  E1: 'President / Chancellor',
+  E2: 'Provost / Dean',
+  E3: 'Faculty / Staff',
+  E4: 'Student',
+  E5: 'Public',
 };
 
 // =============================================================================
-// STUDENT SHEET TAB VISIBILITY
+// HOME TAB VISIBILITY
 // =============================================================================
 
-export type StudentTab =
-  | 'overview' | 'schedule' | 'courses' | 'progress' | 'attendance'
-  | 'advising' | 'holds_compliance' | 'billing_payment' | 'documents';
+export type EducationHomeTab =
+  | 'dashboard' | 'calendar' | 'academics' | 'campus' | 'people'
+  | 'admissions' | 'athletics' | 'financial' | 'housing' | 'policies';
 
-const STUDENT_TAB_MATRIX: Record<StudentTab, Record<EducationRoleLens, EducationVisibility>> = {
-  overview:          { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'self_only' },
-  schedule:          { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited'   },
-  courses:           { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited'   },
-  progress:          { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited'   },
-  attendance:        { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited'   },
-  advising:          { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited'   },
-  holds_compliance:  { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited'   },
-  billing_payment:   { ED1: 'limited',   ED2: 'hidden',    ED3: 'full', ED4: 'limited'   },
-  documents:         { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited'   },
+const EDU_HOME_TAB_MATRIX: Record<EducationHomeTab, Record<EducationRoleLens, EducationVisibility>> = {
+  dashboard:  { E1: 'full', E2: 'full', E3: 'full', E4: 'limited', E5: 'limited' },
+  calendar:   { E1: 'full', E2: 'full', E3: 'full', E4: 'full',    E5: 'limited' },
+  academics:  { E1: 'full', E2: 'full', E3: 'full', E4: 'limited', E5: 'limited' },
+  campus:     { E1: 'full', E2: 'full', E3: 'full', E4: 'full',    E5: 'full' },
+  people:     { E1: 'full', E2: 'full', E3: 'full', E4: 'limited', E5: 'hidden' },
+  admissions: { E1: 'full', E2: 'full', E3: 'limited', E4: 'limited', E5: 'full' },
+  athletics:  { E1: 'full', E2: 'full', E3: 'full', E4: 'full',    E5: 'full' },
+  financial:  { E1: 'full', E2: 'full', E3: 'limited', E4: 'limited', E5: 'hidden' },
+  housing:    { E1: 'full', E2: 'full', E3: 'full', E4: 'full',    E5: 'limited' },
+  policies:   { E1: 'full', E2: 'full', E3: 'full', E4: 'limited', E5: 'limited' },
 };
 
-export function getStudentSheetTabs(role: EducationRoleLens): { id: StudentTab; label: string; visibility: EducationVisibility }[] {
-  const labels: Record<StudentTab, string> = {
-    overview: 'Overview',
-    schedule: 'Schedule',
-    courses: 'Courses',
-    progress: 'Progress',
-    attendance: 'Attendance',
-    advising: 'Advising',
-    holds_compliance: 'Holds + Compliance',
-    billing_payment: 'Billing + Payment Rails',
-    documents: 'Documents',
-  };
-  return (Object.keys(STUDENT_TAB_MATRIX) as StudentTab[])
-    .filter((tab) => STUDENT_TAB_MATRIX[tab][role] !== 'hidden')
-    .map((tab) => ({ id: tab, label: labels[tab], visibility: STUDENT_TAB_MATRIX[tab][role] }));
+export function getEduHomeTabVisibility(tab: EducationHomeTab, role: EducationRoleLens): EducationVisibility {
+  return EDU_HOME_TAB_MATRIX[tab]?.[role] ?? 'hidden';
 }
 
 // =============================================================================
-// COURSE SHEET TAB VISIBILITY
+// ORG TAB VISIBILITY
 // =============================================================================
 
-export type CourseTab =
-  | 'overview' | 'syllabus' | 'sessions' | 'roster' | 'assignments'
-  | 'grades' | 'attendance' | 'operations' | 'compliance';
+export type EducationOrgTab =
+  | 'institutions' | 'people' | 'rooms' | 'operations' | 'finance'
+  | 'payment-rails' | 'compliance' | 'facilities' | 'resources' | 'sponsors';
 
-const COURSE_TAB_MATRIX: Record<CourseTab, Record<EducationRoleLens, EducationVisibility>> = {
-  overview:    { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited' },
-  syllabus:    { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited' },
-  sessions:    { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited' },
-  roster:      { ED1: 'limited',   ED2: 'hidden',    ED3: 'full', ED4: 'hidden'  },
-  assignments: { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited' },
-  grades:      { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited' },
-  attendance:  { ED1: 'limited',   ED2: 'self_only', ED3: 'full', ED4: 'limited' },
-  operations:  { ED1: 'limited',   ED2: 'hidden',    ED3: 'full', ED4: 'hidden'  },
-  compliance:  { ED1: 'limited',   ED2: 'hidden',    ED3: 'full', ED4: 'hidden'  },
+const EDU_ORG_TAB_MATRIX: Record<EducationOrgTab, Record<EducationRoleLens, EducationVisibility>> = {
+  institutions:    { E1: 'full', E2: 'full',    E3: 'full',    E4: 'limited', E5: 'limited' },
+  people:          { E1: 'full', E2: 'full',    E3: 'full',    E4: 'limited', E5: 'hidden' },
+  rooms:           { E1: 'full', E2: 'full',    E3: 'full',    E4: 'limited', E5: 'hidden' },
+  operations:      { E1: 'full', E2: 'full',    E3: 'limited', E4: 'hidden',  E5: 'hidden' },
+  finance:         { E1: 'full', E2: 'full',    E3: 'limited', E4: 'hidden',  E5: 'hidden' },
+  'payment-rails': { E1: 'full', E2: 'full',    E3: 'hidden',  E4: 'hidden',  E5: 'hidden' },
+  compliance:      { E1: 'full', E2: 'full',    E3: 'limited', E4: 'hidden',  E5: 'hidden' },
+  facilities:      { E1: 'full', E2: 'full',    E3: 'full',    E4: 'limited', E5: 'hidden' },
+  resources:       { E1: 'full', E2: 'full',    E3: 'full',    E4: 'full',    E5: 'limited' },
+  sponsors:        { E1: 'full', E2: 'full',    E3: 'limited', E4: 'hidden',  E5: 'limited' },
 };
 
-export function getCourseSheetTabs(role: EducationRoleLens): { id: CourseTab; label: string; visibility: EducationVisibility }[] {
-  const labels: Record<CourseTab, string> = {
-    overview: 'Overview',
-    syllabus: 'Syllabus',
-    sessions: 'Sessions',
-    roster: 'Roster',
-    assignments: 'Assignments',
-    grades: 'Grades',
-    attendance: 'Attendance',
-    operations: 'Operations',
-    compliance: 'Compliance',
-  };
-  return (Object.keys(COURSE_TAB_MATRIX) as CourseTab[])
-    .filter((tab) => COURSE_TAB_MATRIX[tab][role] !== 'hidden')
-    .map((tab) => ({ id: tab, label: labels[tab], visibility: COURSE_TAB_MATRIX[tab][role] }));
+export function getEduOrgTabVisibility(tab: EducationOrgTab, role: EducationRoleLens): EducationVisibility {
+  return EDU_ORG_TAB_MATRIX[tab]?.[role] ?? 'hidden';
+}
+
+export function getVisibleEduOrgTabs(role: EducationRoleLens): EducationOrgTab[] {
+  return (Object.keys(EDU_ORG_TAB_MATRIX) as EducationOrgTab[])
+    .filter((tab) => EDU_ORG_TAB_MATRIX[tab][role] !== 'hidden');
 }
 
 // =============================================================================
-// PROGRAM SHEET TAB VISIBILITY
+// QUICK ACTIONS BY ROLE
 // =============================================================================
 
-export type ProgramTab =
-  | 'overview' | 'people' | 'courses' | 'students' | 'calendar'
-  | 'operations' | 'finance' | 'payment_rails' | 'compliance' | 'reports';
+export interface EducationQuickAction {
+  id: string;
+  label: string;
+  icon: string;
+}
 
-const PROGRAM_TAB_MATRIX: Record<ProgramTab, Record<EducationRoleLens, EducationVisibility>> = {
-  overview:      { ED1: 'limited',   ED2: 'limited', ED3: 'full', ED4: 'limited' },
-  people:        { ED1: 'limited',   ED2: 'limited', ED3: 'full', ED4: 'limited' },
-  courses:       { ED1: 'limited',   ED2: 'limited', ED3: 'full', ED4: 'limited' },
-  students:      { ED1: 'limited',   ED2: 'hidden',  ED3: 'full', ED4: 'hidden'  },
-  calendar:      { ED1: 'limited',   ED2: 'limited', ED3: 'full', ED4: 'limited' },
-  operations:    { ED1: 'limited',   ED2: 'hidden',  ED3: 'full', ED4: 'hidden'  },
-  finance:       { ED1: 'limited',   ED2: 'hidden',  ED3: 'full', ED4: 'hidden'  },
-  payment_rails: { ED1: 'limited',   ED2: 'hidden',  ED3: 'full', ED4: 'hidden'  },
-  compliance:    { ED1: 'limited',   ED2: 'hidden',  ED3: 'full', ED4: 'hidden'  },
-  reports:       { ED1: 'limited',   ED2: 'hidden',  ED3: 'full', ED4: 'hidden'  },
+const EDU_QUICK_ACTIONS: Record<EducationRoleLens, EducationQuickAction[]> = {
+  E1: [
+    { id: 'enrollment', label: 'Enrollment', icon: 'person.3.fill' },
+    { id: 'budget', label: 'Budget Overview', icon: 'dollarsign.circle.fill' },
+    { id: 'strategic-plan', label: 'Strategic Plan', icon: 'map.fill' },
+    { id: 'accreditation', label: 'Accreditation', icon: 'checkmark.seal.fill' },
+    { id: 'board-report', label: 'Board Report', icon: 'doc.text.fill' },
+    { id: 'campus-safety', label: 'Campus Safety', icon: 'shield.fill' },
+  ],
+  E2: [
+    { id: 'academic-programs', label: 'Academic Programs', icon: 'book.fill' },
+    { id: 'faculty-hiring', label: 'Faculty Hiring', icon: 'person.badge.plus' },
+    { id: 'curriculum', label: 'Curriculum Review', icon: 'doc.text.fill' },
+    { id: 'research', label: 'Research Grants', icon: 'magnifyingglass' },
+  ],
+  E3: [
+    { id: 'my-courses', label: 'My Courses', icon: 'book.fill' },
+    { id: 'grading', label: 'Grading', icon: 'checkmark.circle.fill' },
+    { id: 'office-hours', label: 'Office Hours', icon: 'clock.fill' },
+    { id: 'research', label: 'Research', icon: 'magnifyingglass' },
+  ],
+  E4: [
+    { id: 'my-schedule', label: 'My Schedule', icon: 'calendar' },
+    { id: 'grades', label: 'Grades', icon: 'chart.bar.fill' },
+    { id: 'financial-aid', label: 'Financial Aid', icon: 'dollarsign.circle.fill' },
+    { id: 'campus-map', label: 'Campus Map', icon: 'map.fill' },
+  ],
+  E5: [
+    { id: 'apply', label: 'Apply Now', icon: 'pencil.and.outline' },
+    { id: 'visit', label: 'Plan a Visit', icon: 'mappin.and.ellipse' },
+    { id: 'programs', label: 'Programs', icon: 'book.fill' },
+  ],
 };
 
-export function getProgramSheetTabs(role: EducationRoleLens): { id: ProgramTab; label: string; visibility: EducationVisibility }[] {
-  const labels: Record<ProgramTab, string> = {
-    overview: 'Overview',
-    people: 'People',
-    courses: 'Courses',
-    students: 'Students',
-    calendar: 'Calendar',
-    operations: 'Operations',
-    finance: 'Finance',
-    payment_rails: 'Payment Rails',
-    compliance: 'Compliance',
-    reports: 'Reports',
-  };
-  return (Object.keys(PROGRAM_TAB_MATRIX) as ProgramTab[])
-    .filter((tab) => PROGRAM_TAB_MATRIX[tab][role] !== 'hidden')
-    .map((tab) => ({ id: tab, label: labels[tab], visibility: PROGRAM_TAB_MATRIX[tab][role] }));
+export function getEduQuickActions(role: EducationRoleLens): EducationQuickAction[] {
+  return EDU_QUICK_ACTIONS[role] || EDU_QUICK_ACTIONS.E5;
+}
+
+// =============================================================================
+// VISIBILITY HELPERS
+// =============================================================================
+
+export function isPresident(role: EducationRoleLens): boolean {
+  return role === 'E1';
+}
+
+export function isDeanLevel(role: EducationRoleLens): boolean {
+  return role === 'E1' || role === 'E2';
+}
+
+export function isFacultyLevel(role: EducationRoleLens): boolean {
+  return role === 'E1' || role === 'E2' || role === 'E3';
+}
+
+export function isStudent(role: EducationRoleLens): boolean {
+  return role === 'E4';
+}
+
+export function isEnrolled(role: EducationRoleLens): boolean {
+  return role !== 'E5';
+}
+
+// =============================================================================
+// BACKWARD COMPAT — used by universal-course-sheet, universal-program-sheet,
+// universal-student-sheet from previous session
+// =============================================================================
+
+export type CourseTab = 'overview' | 'roster' | 'grades' | 'assignments' | 'syllabus' | 'sessions' | 'attendance' | 'operations' | 'compliance';
+export type ProgramTab = 'overview' | 'curriculum' | 'students' | 'outcomes' | 'people' | 'courses' | 'calendar' | 'operations' | 'finance' | 'payment_rails' | 'compliance' | 'notes';
+export type StudentTab = 'overview' | 'academics' | 'financial' | 'housing' | 'activities' | 'enrollment' | 'attendance' | 'grades' | 'notes' | 'compliance';
+
+export function getCourseSheetTabs(role: EducationRoleLens): { id: CourseTab; label: string }[] {
+  const all: { id: CourseTab; label: string }[] = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'roster', label: 'Roster' },
+    { id: 'grades', label: 'Grades' },
+    { id: 'assignments', label: 'Assignments' },
+  ];
+  if (role === 'E5') return all.filter((t) => t.id === 'overview');
+  if (role === 'E4') return all.filter((t) => t.id !== 'roster');
+  return all;
+}
+
+export function getProgramSheetTabs(role: EducationRoleLens): { id: ProgramTab; label: string }[] {
+  const all: { id: ProgramTab; label: string }[] = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'curriculum', label: 'Curriculum' },
+    { id: 'students', label: 'Students' },
+    { id: 'outcomes', label: 'Outcomes' },
+  ];
+  if (role === 'E5') return all.filter((t) => t.id === 'overview');
+  if (role === 'E4') return all.filter((t) => t.id !== 'students');
+  return all;
+}
+
+export function getStudentSheetTabs(role: EducationRoleLens): { id: StudentTab; label: string }[] {
+  const all: { id: StudentTab; label: string }[] = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'academics', label: 'Academics' },
+    { id: 'financial', label: 'Financial' },
+    { id: 'housing', label: 'Housing' },
+    { id: 'activities', label: 'Activities' },
+  ];
+  if (role === 'E5') return [];
+  if (role === 'E4') return all.filter((t) => t.id !== 'financial');
+  return all;
+}
+
+export function isFullAccess(role: EducationRoleLens): boolean {
+  return role === 'E1';
+}
+
+export function isProgramDirector(role: EducationRoleLens): boolean {
+  return isDeanLevel(role);
+}
+
+export function isStudentOrParent(role: EducationRoleLens): boolean {
+  return role === 'E4';
+}
+
+export function canViewGrades(role: EducationRoleLens): boolean {
+  return role !== 'E5';
 }
 
 // =============================================================================
@@ -140,73 +218,28 @@ export function getProgramSheetTabs(role: EducationRoleLens): { id: ProgramTab; 
 
 export function mapRoleToEducationLens(role: string): EducationRoleLens {
   switch (role) {
-    case 'program_director':
-    case 'director':
-    case 'department_head':
-      return 'ED1';
+    case 'president':
+    case 'chancellor':
+    case 'superintendent':
+      return 'E1';
+    case 'provost':
+    case 'dean':
+    case 'vp_academic':
+      return 'E2';
+    case 'faculty':
+    case 'professor':
+    case 'staff':
+    case 'instructor':
+      return 'E3';
     case 'student':
-    case 'learner':
-      return 'ED2';
-    case 'founder':
-    case 'admin':
-    case 'administrator':
-    case 'head_of_ops':
-    case 'owner':
-      return 'ED3';
-    case 'parent':
-    case 'guardian':
-    case 'family':
+    case 'graduate':
+    case 'undergraduate':
+      return 'E4';
+    case 'public':
+    case 'visitor':
+    case 'applicant':
+      return 'E5';
     default:
-      return 'ED4';
+      return 'E5';
   }
-}
-
-// =============================================================================
-// VISIBILITY HELPERS
-// =============================================================================
-
-export function isFullAccess(role: EducationRoleLens): boolean {
-  return role === 'ED3';
-}
-
-export function isProgramDirector(role: EducationRoleLens): boolean {
-  return role === 'ED1';
-}
-
-export function isStudentOrParent(role: EducationRoleLens): boolean {
-  return role === 'ED2' || role === 'ED4';
-}
-
-/**
- * Grade visibility by role:
- * - ED1 (Program Director): aggregate only — class averages, distribution, no individual grades
- * - ED2 (Student): self only — sees own grades across all enrolled courses
- * - ED3 (Administrator): full — all students, all courses, all grades
- * - ED4 (Parent / Guardian): dependent only — sees linked dependent's grades
- */
-export function canViewGrades(role: EducationRoleLens): boolean {
-  return role !== 'ED4' || true; // all roles can view some form of grades
-}
-
-export type GradeAccessLevel = 'full' | 'aggregate' | 'self' | 'dependent';
-
-export function getGradeAccessLevel(role: EducationRoleLens): GradeAccessLevel {
-  switch (role) {
-    case 'ED3': return 'full';
-    case 'ED1': return 'aggregate';
-    case 'ED2': return 'self';
-    case 'ED4': return 'dependent';
-  }
-}
-
-export function canSeeStudentTab(tab: StudentTab, role: EducationRoleLens): boolean {
-  return STUDENT_TAB_MATRIX[tab][role] !== 'hidden';
-}
-
-export function canSeeCourseTab(tab: CourseTab, role: EducationRoleLens): boolean {
-  return COURSE_TAB_MATRIX[tab][role] !== 'hidden';
-}
-
-export function canSeeProgramTab(tab: ProgramTab, role: EducationRoleLens): boolean {
-  return PROGRAM_TAB_MATRIX[tab][role] !== 'hidden';
 }

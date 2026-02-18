@@ -37,6 +37,7 @@ export interface Initiative {
 export interface Project {
   id: string;
   name: string;
+  initiative: string;
   status: 'active' | 'blocked' | 'done';
   progress: number;
   owner: string;
@@ -199,6 +200,7 @@ export const PROJECTS: Project[] = [
   {
     id: 'proj-1',
     name: 'Video Pipeline — GPU Transcoding',
+    initiative: 'KaNeXT OS v2 Launch',
     status: 'blocked',
     progress: 40,
     owner: 'Adriana Ruiz',
@@ -209,6 +211,7 @@ export const PROJECTS: Project[] = [
   {
     id: 'proj-2',
     name: 'Payment Rails — Stripe Connect',
+    initiative: 'ICCLA Pilot Rollout',
     status: 'blocked',
     progress: 55,
     owner: 'David Okonkwo',
@@ -219,6 +222,7 @@ export const PROJECTS: Project[] = [
   {
     id: 'proj-3',
     name: 'Nexus Chat v2 — RBAC + Workspaces',
+    initiative: 'KaNeXT OS v2 Launch',
     status: 'active',
     progress: 78,
     owner: 'Marcus Chen',
@@ -229,6 +233,7 @@ export const PROJECTS: Project[] = [
   {
     id: 'proj-4',
     name: 'FMU Media Value Dashboard',
+    initiative: 'FMU Partnership Activation',
     status: 'active',
     progress: 33,
     owner: 'Lisa Park',
@@ -239,6 +244,7 @@ export const PROJECTS: Project[] = [
   {
     id: 'proj-5',
     name: 'Trademark & IP Filing Package',
+    initiative: 'Board Prep & Data Room Refresh',
     status: 'active',
     progress: 60,
     owner: 'Sammy Kalejaiye',

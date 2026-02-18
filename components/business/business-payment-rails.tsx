@@ -1,11 +1,15 @@
 /**
- * Business Payment Rails — 8-section RBAC-gated Payment Rails tab.
- * Fixed sticky header concept: health strip, CTA buttons, rail type filter pills.
- * Sub-tabs: Now | Wallets | Batches | Approvals | Exceptions | Disputes | Receipts | Admin
+ * Business Payment Rails — 9-section RBAC-gated Payment Rails tab.
+ * Fixed sticky header concept: overall status banner, health strip, CTA buttons,
+ * status-based filter pills.
+ * Sub-tabs: Now | Wallets | Batches | Approvals | Release Queue | Exceptions |
+ *           Disputes & Returns | Receipts | Admin
  *
  * RBAC:
- *   B1 (Founder): Full access to all 8 sections.
- *   B2a/B2b/B3/B4/B5: Locked — Payment Rails are Founder-only.
+ *   B1 (Founder): Full access to all 9 sections.
+ *   B2b (Board): Board Rails Health — health strip, major exceptions, governance receipts, monthly summaries.
+ *   B2a (Retail): Curated proof — health indicator, monthly flows, compliance proof.
+ *   B3 (Public): Locked with optional branding.
  */
 
 import React, { useState } from 'react';
@@ -36,6 +40,7 @@ import { DEFAULT_ENTITY } from '@/data/mock-business-v3';
 
 import {
   RAILS_HEALTH,
+  RAILS_OVERALL_STATUS,
   NOW_ITEMS,
   WALLET_ACCOUNTS,
   PAYOUT_BATCHES,
@@ -45,7 +50,9 @@ import {
   RECEIPTS,
   ADMIN_SETTINGS,
   RAILS_SUB_TABS,
-  RAIL_TYPE_FILTERS,
+  STATUS_FILTERS,
+  RELEASE_QUEUE_ITEMS,
+  RETURN_ITEMS,
   nowStatusLabel,
   batchStatusLabel,
   approvalStatusLabel,
@@ -54,11 +61,15 @@ import {
   walletStatusLabel,
   walletTypeLabel,
   adminSettingTypeIcon,
+  returnStatusLabel,
+  nowItemTxnState,
+  releaseQueueTxnState,
 } from '@/data/mock-biz-payment-rails';
 import type {
   RailsSubTab,
-  RailTypeFilter,
+  StatusFilter,
   RailsHealthMetric,
+  RailsOverallStatus,
   NowItem,
   WalletAccount,
   PayoutBatch,
@@ -67,6 +78,9 @@ import type {
   DisputeItem,
   ReceiptItem,
   AdminSetting,
+  ReleaseQueueItem,
+  ReturnItem,
+  RailsTxnState,
 } from '@/data/mock-biz-payment-rails';
 
 // =============================================================================
@@ -155,6 +169,65 @@ function walletStatusVariant(status: WalletAccount['status']): 'success' | 'warn
   }
 }
 
+function returnStatusVariant(status: ReturnItem['status']): 'success' | 'warning' | 'error' | 'info' | 'neutral' {
+  switch (status) {
+    case 'pending': return 'warning';
+    case 'processed': return 'info';
+    case 'credited': return 'success';
+    default: return 'neutral';
+  }
+}
+
+function overallStatusColor(status: RailsOverallStatus): string {
+  switch (status) {
+    case 'GREEN': return BP.emerald;
+    case 'YELLOW': return BP.amber;
+    case 'RED': return BP.red;
+    default: return BP.ash;
+  }
+}
+
+function overallStatusText(status: RailsOverallStatus): string {
+  switch (status) {
+    case 'GREEN': return 'All Systems Operational';
+    case 'YELLOW': return 'Attention Needed';
+    case 'RED': return 'Critical Issues';
+    default: return status;
+  }
+}
+
+function txnStateBadgeColor(state: RailsTxnState): string {
+  switch (state) {
+    case 'Draft': return BP.ash;
+    case 'Proposed': return BP.platinum;
+    case 'Rule-Checked': return BP.platinum;
+    case 'Authorized': return BP.champagneGold;
+    case 'Scheduled': return '#6AA9FF';
+    case 'Released': return BP.emerald;
+    case 'In Flight': return BP.amber;
+    case 'Settled': return BP.emerald;
+    case 'Held': return BP.amber;
+    case 'Failed': return BP.red;
+    case 'Disputed': return BP.red;
+    case 'Returned': return BP.amber;
+    case 'Reversed': return BP.red;
+    default: return BP.ash;
+  }
+}
+
+/**
+ * Map NowItem status to a StatusFilter id for filtering.
+ */
+function nowStatusToFilter(status: NowItem['status']): StatusFilter | null {
+  switch (status) {
+    case 'pending_approval': return 'needs_approval';
+    case 'processing': return 'in_flight';
+    case 'scheduled': return 'scheduled';
+    case 'failed': return 'failed';
+    default: return null;
+  }
+}
+
 function healthStatusColor(status: RailsHealthMetric['status']): string {
   switch (status) {
     case 'green': return BP.emerald;
@@ -189,25 +262,44 @@ function approvalTypeBadgeColor(type: RailsApproval['type']): string {
 // =============================================================================
 
 function RailsHeader({
-  railFilter,
-  onRailFilterChange,
+  statusFilter,
+  onStatusFilterChange,
 }: {
-  railFilter: RailTypeFilter;
-  onRailFilterChange: (f: RailTypeFilter) => void;
+  statusFilter: StatusFilter;
+  onStatusFilterChange: (f: StatusFilter) => void;
 }) {
+  const statusColor = overallStatusColor(RAILS_OVERALL_STATUS);
+
   return (
     <View style={s.headerContainer}>
+      {/* Overall Status Banner */}
+      <View style={[s.overallStatusBanner, { backgroundColor: statusColor + '12', borderColor: statusColor + '30' }]}>
+        <View style={[s.overallStatusDot, { backgroundColor: statusColor }]} />
+        <ThemedText style={[s.overallStatusText, { color: statusColor }]}>
+          {overallStatusText(RAILS_OVERALL_STATUS)}
+        </ThemedText>
+        <ThemedText style={[s.overallStatusLabel, { color: statusColor }]}>
+          {RAILS_OVERALL_STATUS}
+        </ThemedText>
+      </View>
+
       {/* Health Strip */}
       <View style={s.healthStrip}>
-        {RAILS_HEALTH.map((metric) => (
-          <View key={metric.id} style={s.healthMetric}>
-            <View style={s.healthMetricTop}>
-              <View style={[s.healthDot, { backgroundColor: healthStatusColor(metric.status) }]} />
-              <ThemedText style={[s.healthLabel, { color: BP.ash }]}>{metric.label}</ThemedText>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={s.healthStripScroll}
+        >
+          {RAILS_HEALTH.map((metric) => (
+            <View key={metric.id} style={s.healthMetric}>
+              <View style={s.healthMetricTop}>
+                <View style={[s.healthDot, { backgroundColor: healthStatusColor(metric.status) }]} />
+                <ThemedText style={[s.healthLabel, { color: BP.ash }]}>{metric.label}</ThemedText>
+              </View>
+              <ThemedText style={[s.healthValue, { color: BP.smoke }]}>{metric.value}</ThemedText>
             </View>
-            <ThemedText style={[s.healthValue, { color: BP.smoke }]}>{metric.value}</ThemedText>
-          </View>
-        ))}
+          ))}
+        </ScrollView>
       </View>
 
       {/* CTA Buttons */}
@@ -234,14 +326,14 @@ function RailsHeader({
         </Pressable>
       </View>
 
-      {/* Rail Type Filter Pills */}
+      {/* Status-Based Filter Pills */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={s.filterPillRow}
       >
-        {RAIL_TYPE_FILTERS.map((filter) => {
-          const isActive = filter.id === railFilter;
+        {STATUS_FILTERS.map((filter) => {
+          const isActive = filter.id === statusFilter;
           return (
             <Pressable
               key={filter.id}
@@ -254,7 +346,7 @@ function RailsHeader({
               ]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onRailFilterChange(filter.id);
+                onStatusFilterChange(filter.id);
               }}
             >
               <ThemedText
@@ -274,10 +366,74 @@ function RailsHeader({
 // SECTION: NOW — Live Transaction Feed
 // =============================================================================
 
-function NowSection({ railFilter }: { railFilter: RailTypeFilter }) {
-  const filtered = railFilter === 'all'
+function NowItemCard({ item }: { item: NowItem }) {
+  const txnState = nowItemTxnState(item.status);
+  return (
+    <BizCard style={s.nowCard}>
+      <View style={s.nowCardHeader}>
+        <ThemedText style={[s.nowTitle, { color: BP.smoke }]} numberOfLines={1}>
+          {item.title}
+        </ThemedText>
+        <ThemedText style={[s.nowAmount, { color: BP.champagneGold }]}>
+          {item.amount}
+        </ThemedText>
+      </View>
+
+      <View style={s.nowCardMeta}>
+        {/* Status Pill */}
+        <BizStatusChip label={nowStatusLabel(item.status)} variant={nowStatusVariant(item.status)} />
+
+        {/* TXN State Badge */}
+        <View style={[s.txnStateBadge, { backgroundColor: txnStateBadgeColor(txnState) + '15' }]}>
+          <ThemedText style={[s.txnStateBadgeText, { color: txnStateBadgeColor(txnState) }]}>
+            {txnState}
+          </ThemedText>
+        </View>
+
+        {/* Rail Type Badge */}
+        <View style={[s.railBadge, { backgroundColor: railBadgeColor(item.rail) + '15' }]}>
+          <ThemedText style={[s.railBadgeText, { color: railBadgeColor(item.rail) }]}>
+            {item.rail}
+          </ThemedText>
+        </View>
+      </View>
+
+      <View style={s.nowCardFooter}>
+        <ThemedText style={[s.nowCounterparty, { color: BP.ash }]} numberOfLines={1}>
+          {item.counterparty}
+        </ThemedText>
+        <ThemedText style={[s.nowEta, { color: BP.platinum }]}>
+          {item.eta}
+        </ThemedText>
+      </View>
+    </BizCard>
+  );
+}
+
+function NowLane({ label, items }: { label: string; items: NowItem[] }) {
+  return (
+    <View style={s.nowLane}>
+      <ThemedText style={[s.nowLaneLabel, { color: BP.platinum }]}>{label}</ThemedText>
+      {items.length === 0 ? (
+        <ThemedText style={[s.nowLaneEmpty, { color: BP.ash }]}>None</ThemedText>
+      ) : (
+        items.map((item) => <NowItemCard key={item.id} item={item} />)
+      )}
+    </View>
+  );
+}
+
+function NowSection({ statusFilter }: { statusFilter: StatusFilter }) {
+  // Apply status filter across all items
+  const filtered = statusFilter === 'all'
     ? NOW_ITEMS
-    : NOW_ITEMS.filter((item) => item.rail === railFilter);
+    : NOW_ITEMS.filter((item) => nowStatusToFilter(item.status) === statusFilter);
+
+  // Partition into 4 lanes
+  const laneA = filtered.filter((item) => item.status === 'pending_approval');
+  const laneB = filtered.filter((item) => item.status === 'scheduled');
+  const laneC = filtered.filter((item) => item.status === 'processing');
+  const laneD = filtered.filter((item) => item.status === 'failed');
 
   if (filtered.length === 0) {
     return (
@@ -285,7 +441,7 @@ function NowSection({ railFilter }: { railFilter: RailTypeFilter }) {
         <View style={s.emptyState}>
           <IconSymbol name="tray" size={24} color={BP.ash} />
           <ThemedText style={[s.emptyText, { color: BP.ash }]}>
-            No transactions for this rail type.
+            No transactions for this status filter.
           </ThemedText>
         </View>
       </BizCard>
@@ -295,39 +451,10 @@ function NowSection({ railFilter }: { railFilter: RailTypeFilter }) {
   return (
     <View>
       <BizCardTitle text="LIVE TRANSACTIONS" />
-      {filtered.map((item) => (
-        <BizCard key={item.id} style={s.nowCard}>
-          <View style={s.nowCardHeader}>
-            <ThemedText style={[s.nowTitle, { color: BP.smoke }]} numberOfLines={1}>
-              {item.title}
-            </ThemedText>
-            <ThemedText style={[s.nowAmount, { color: BP.champagneGold }]}>
-              {item.amount}
-            </ThemedText>
-          </View>
-
-          <View style={s.nowCardMeta}>
-            {/* Status Pill */}
-            <BizStatusChip label={nowStatusLabel(item.status)} variant={nowStatusVariant(item.status)} />
-
-            {/* Rail Type Badge */}
-            <View style={[s.railBadge, { backgroundColor: railBadgeColor(item.rail) + '15' }]}>
-              <ThemedText style={[s.railBadgeText, { color: railBadgeColor(item.rail) }]}>
-                {item.rail}
-              </ThemedText>
-            </View>
-          </View>
-
-          <View style={s.nowCardFooter}>
-            <ThemedText style={[s.nowCounterparty, { color: BP.ash }]} numberOfLines={1}>
-              {item.counterparty}
-            </ThemedText>
-            <ThemedText style={[s.nowEta, { color: BP.platinum }]}>
-              {item.eta}
-            </ThemedText>
-          </View>
-        </BizCard>
-      ))}
+      <NowLane label="Needs Approval" items={laneA} />
+      <NowLane label="Needs Release" items={laneB} />
+      <NowLane label="In Flight" items={laneC} />
+      <NowLane label="Exceptions" items={laneD} />
     </View>
   );
 }
@@ -599,7 +726,9 @@ function ExceptionsSection() {
 function DisputesSection() {
   return (
     <View>
-      <BizCardTitle text="DISPUTES" />
+      {/* Disputes subsection */}
+      <BizCardTitle text="DISPUTES & RETURNS" />
+      <ThemedText style={[s.subsectionLabel, { color: BP.platinum }]}>Disputes</ThemedText>
       {DISPUTES.map((dispute) => (
         <BizCard key={dispute.id} style={s.disputeCard}>
           <View style={s.disputeCardHeader}>
@@ -629,6 +758,42 @@ function DisputesSection() {
             </ThemedText>
             <ThemedText style={[s.disputeDate, { color: BP.platinum }]}>
               Filed {dispute.filedDate}
+            </ThemedText>
+          </View>
+        </BizCard>
+      ))}
+
+      {/* Returns subsection */}
+      <ThemedText style={[s.subsectionLabel, { color: BP.platinum, marginTop: Spacing.md }]}>Returns</ThemedText>
+      {RETURN_ITEMS.map((ret) => (
+        <BizCard key={ret.id} style={s.disputeCard}>
+          <View style={s.disputeCardHeader}>
+            <ThemedText style={[s.disputeTitle, { color: BP.smoke }]} numberOfLines={1}>
+              {ret.title}
+            </ThemedText>
+            <ThemedText style={[s.disputeAmount, { color: BP.champagneGold }]}>
+              {ret.amount}
+            </ThemedText>
+          </View>
+
+          <View style={s.disputeCardMeta}>
+            <BizStatusChip
+              label={returnStatusLabel(ret.status)}
+              variant={returnStatusVariant(ret.status)}
+            />
+            <View style={[s.disputeCategoryPill, { backgroundColor: BP.glass }]}>
+              <ThemedText style={[s.disputeCategoryText, { color: BP.platinum }]}>
+                {ret.reason}
+              </ThemedText>
+            </View>
+          </View>
+
+          <View style={s.disputeCardFooter}>
+            <ThemedText style={[s.disputeCounterparty, { color: BP.ash }]} numberOfLines={1}>
+              {ret.counterparty}
+            </ThemedText>
+            <ThemedText style={[s.disputeDate, { color: BP.platinum }]}>
+              {ret.returnDate}
             </ThemedText>
           </View>
         </BizCard>
@@ -758,19 +923,107 @@ function AdminSection() {
 }
 
 // =============================================================================
+// SECTION: RELEASE QUEUE — Approved items awaiting release
+// =============================================================================
+
+function ReleaseQueueSection() {
+  return (
+    <View>
+      <BizCardTitle text="RELEASE QUEUE" />
+      {RELEASE_QUEUE_ITEMS.map((item) => {
+        const txnState = releaseQueueTxnState(item.status);
+        return (
+          <BizCard key={item.id} style={s.releaseCard}>
+            <View style={s.releaseCardHeader}>
+              <ThemedText style={[s.releaseTitle, { color: BP.smoke }]} numberOfLines={1}>
+                {item.title}
+              </ThemedText>
+              <ThemedText style={[s.releaseAmount, { color: BP.champagneGold }]}>
+                {item.amount}
+              </ThemedText>
+            </View>
+
+            <View style={s.releaseCardMeta}>
+              {/* TXN State Badge */}
+              <View style={[s.txnStateBadge, { backgroundColor: txnStateBadgeColor(txnState) + '15' }]}>
+                <ThemedText style={[s.txnStateBadgeText, { color: txnStateBadgeColor(txnState) }]}>
+                  {txnState}
+                </ThemedText>
+              </View>
+
+              {/* Rail Badge */}
+              <View style={[s.railBadge, { backgroundColor: BP.glass }]}>
+                <ThemedText style={[s.railBadgeText, { color: BP.platinum }]}>
+                  {item.rail}
+                </ThemedText>
+              </View>
+
+              {/* Status Badge */}
+              {item.status === 'released' ? (
+                <BizStatusChip label="Released" variant="success" />
+              ) : (
+                <BizStatusChip label="Awaiting Release" variant="warning" />
+              )}
+            </View>
+
+            <View style={s.releaseCardFooter}>
+              <ThemedText style={[s.releaseDetail, { color: BP.ash }]}>
+                Approved by {item.approvedBy} on {item.approvedAt}
+              </ThemedText>
+              <ThemedText style={[s.releaseDetail, { color: BP.ash }]}>
+                Authority: {item.releaseAuthority}
+              </ThemedText>
+            </View>
+
+            {item.auditNote !== '' && (
+              <ThemedText style={[s.releaseAuditNote, { color: BP.platinum }]}>
+                Note: {item.auditNote}
+              </ThemedText>
+            )}
+
+            {/* Release CTA for awaiting items */}
+            {item.status === 'awaiting_release' && (
+              <View style={s.releaseActions}>
+                <ThemedText style={[s.releaseAuditHint, { color: BP.ash }]}>
+                  Add audit note before releasing
+                </ThemedText>
+                <Pressable
+                  style={({ pressed }) => [
+                    s.releaseCta,
+                    { opacity: pressed ? 0.7 : 1 },
+                  ]}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+                >
+                  <IconSymbol name="arrow.up.circle.fill" size={14} color={BP.emerald} />
+                  <ThemedText style={[s.releaseCtaText, { color: BP.emerald }]}>
+                    Release
+                  </ThemedText>
+                </Pressable>
+              </View>
+            )}
+          </BizCard>
+        );
+      })}
+    </View>
+  );
+}
+
+// =============================================================================
 // CONTENT SWITCHER — Renders active sub-tab
 // =============================================================================
 
-function TabContent({ activeTab, railFilter }: { activeTab: RailsSubTab; railFilter: RailTypeFilter }) {
+function TabContent({ activeTab, statusFilter }: { activeTab: RailsSubTab; statusFilter: StatusFilter }) {
   switch (activeTab) {
     case 'now':
-      return <NowSection railFilter={railFilter} />;
+      return <NowSection statusFilter={statusFilter} />;
     case 'wallets':
       return <WalletsSection />;
     case 'batches':
       return <BatchesSection />;
     case 'approvals':
       return <ApprovalsSection />;
+    case 'release_queue':
+      return <ReleaseQueueSection />;
     case 'exceptions':
       return <ExceptionsSection />;
     case 'disputes':
@@ -790,10 +1043,11 @@ function TabContent({ activeTab, railFilter }: { activeTab: RailsSubTab; railFil
 
 export function BusinessPaymentRails({ colors, role = 'B1' }: Props) {
   const [activeTab, setActiveTab] = useState<RailsSubTab>('now');
-  const [railFilter, setRailFilter] = useState<RailTypeFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
-  // ---- RBAC Gate: Only B1 (Founder) has access ----
-  if (!isFounder(role)) {
+  // ---- RBAC Gate: Tiered access ----
+  // B3+ (Public): Fully locked
+  if (role === 'B3') {
     return (
       <View style={[s.container, { backgroundColor: colors.background }]}>
         <View style={s.contentContainer}>
@@ -806,10 +1060,206 @@ export function BusinessPaymentRails({ colors, role = 'B1' }: Props) {
           />
           <BizEmptyLock
             title="Payment Rails"
-            message="Payment Rails are visible to Founder view only."
+            message="Payment infrastructure details are private."
           />
+          <View style={s.poweredBranding}>
+            <ThemedText style={[s.poweredText, { color: BP.ash }]}>Payments powered by KaNeXT</ThemedText>
+          </View>
         </View>
       </View>
+    );
+  }
+
+  // B2a (Retail Investor): Curated proof — health indicator, monthly flows, compliance proof
+  if (role === 'B2a') {
+    const statusClr = overallStatusColor(RAILS_OVERALL_STATUS);
+    const majorExceptions = EXCEPTIONS.filter((e) => e.severity === 'critical' && e.status !== 'resolved');
+    const settledBatches = PAYOUT_BATCHES.filter((b) => b.status === 'settled');
+    return (
+      <ScrollView
+        style={[s.container, { backgroundColor: colors.background }]}
+        contentContainerStyle={s.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <EntityScopeBar
+          entityId={DEFAULT_ENTITY.id}
+          entityName={DEFAULT_ENTITY.name}
+          entityType={DEFAULT_ENTITY.type}
+          status={DEFAULT_ENTITY.status}
+          colors={colors}
+        />
+
+        {/* Rails Health Indicator */}
+        <BizCard>
+          <BizCardTitle>Rails Health</BizCardTitle>
+          <View style={[s.overallStatusBanner, { backgroundColor: statusClr + '12', borderColor: statusClr + '30' }]}>
+            <View style={[s.overallStatusDot, { backgroundColor: statusClr }]} />
+            <ThemedText style={[s.overallStatusText, { color: statusClr }]}>
+              {overallStatusText(RAILS_OVERALL_STATUS)}
+            </ThemedText>
+            <ThemedText style={[s.overallStatusLabel, { color: statusClr }]}>
+              {RAILS_OVERALL_STATUS}
+            </ThemedText>
+          </View>
+          <View style={s.retailHealthRow}>
+            {RAILS_HEALTH.filter((m) => ['Settlement Clock', 'Connected Processors', 'Audit'].includes(m.label)).map((metric) => (
+              <View key={metric.id} style={s.retailHealthItem}>
+                <View style={[s.healthDot, { backgroundColor: healthStatusColor(metric.status) }]} />
+                <ThemedText style={[s.retailHealthLabel, { color: BP.ash }]}>{metric.label}</ThemedText>
+                <ThemedText style={[s.retailHealthValue, { color: BP.smoke }]}>{metric.value}</ThemedText>
+              </View>
+            ))}
+          </View>
+        </BizCard>
+
+        {/* Monthly Flows Summary */}
+        <BizCard>
+          <BizCardTitle>Monthly Settlement Summary</BizCardTitle>
+          {settledBatches.length > 0 ? settledBatches.map((batch) => (
+            <View key={batch.id} style={s.retailFlowRow}>
+              <View style={{ flex: 1 }}>
+                <ThemedText style={[s.retailFlowTitle, { color: BP.smoke }]}>{batch.label}</ThemedText>
+                <ThemedText style={[s.retailFlowSub, { color: BP.ash }]}>{batch.createdAt}</ThemedText>
+              </View>
+              <ThemedText style={[s.retailFlowAmount, { color: BP.champagneGold }]}>{batch.totalAmount}</ThemedText>
+            </View>
+          )) : (
+            <ThemedText style={[s.retailFlowSub, { color: BP.ash }]}>No settled batches this period.</ThemedText>
+          )}
+        </BizCard>
+
+        {/* Compliance Proof */}
+        <BizCard>
+          <BizCardTitle>Compliance & Status</BizCardTitle>
+          <View style={s.retailProofGrid}>
+            <View style={s.retailProofItem}>
+              <IconSymbol name="checkmark.seal.fill" size={18} color={BP.emerald} />
+              <ThemedText style={[s.retailProofLabel, { color: BP.smoke }]}>Rails Active</ThemedText>
+            </View>
+            <View style={s.retailProofItem}>
+              <IconSymbol name="shield.fill" size={18} color={BP.emerald} />
+              <ThemedText style={[s.retailProofLabel, { color: BP.smoke }]}>Fraud Monitoring On</ThemedText>
+            </View>
+            <View style={s.retailProofItem}>
+              <IconSymbol name="doc.text.fill" size={18} color={BP.emerald} />
+              <ThemedText style={[s.retailProofLabel, { color: BP.smoke }]}>Audit Score: 94%</ThemedText>
+            </View>
+            {majorExceptions.length > 0 && (
+              <View style={s.retailProofItem}>
+                <IconSymbol name="exclamationmark.triangle.fill" size={18} color={BP.red} />
+                <ThemedText style={[s.retailProofLabel, { color: BP.red }]}>
+                  {majorExceptions.length} Critical Exception{majorExceptions.length > 1 ? 's' : ''}
+                </ThemedText>
+              </View>
+            )}
+          </View>
+        </BizCard>
+
+        <View style={s.bottomSpacer} />
+      </ScrollView>
+    );
+  }
+
+  // B2b (Board/Strategic Investor): Board Rails Health — health strip, major exceptions, governance receipts, monthly summaries
+  if (role === 'B2b') {
+    const statusClr = overallStatusColor(RAILS_OVERALL_STATUS);
+    const majorExceptions = EXCEPTIONS.filter((e) => e.severity === 'critical' || e.severity === 'high');
+    const governanceReceipts = RECEIPTS.filter((r) => ['Partnership', 'Donations', 'Banking'].includes(r.category));
+    const recentBatches = PAYOUT_BATCHES.slice(0, 4);
+    return (
+      <ScrollView
+        style={[s.container, { backgroundColor: colors.background }]}
+        contentContainerStyle={s.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <EntityScopeBar
+          entityId={DEFAULT_ENTITY.id}
+          entityName={DEFAULT_ENTITY.name}
+          entityType={DEFAULT_ENTITY.type}
+          status={DEFAULT_ENTITY.status}
+          colors={colors}
+        />
+
+        {/* Overall Status + Full Health Strip */}
+        <View style={s.headerContainer}>
+          <View style={[s.overallStatusBanner, { backgroundColor: statusClr + '12', borderColor: statusClr + '30' }]}>
+            <View style={[s.overallStatusDot, { backgroundColor: statusClr }]} />
+            <ThemedText style={[s.overallStatusText, { color: statusClr }]}>
+              {overallStatusText(RAILS_OVERALL_STATUS)}
+            </ThemedText>
+            <ThemedText style={[s.overallStatusLabel, { color: statusClr }]}>
+              {RAILS_OVERALL_STATUS}
+            </ThemedText>
+          </View>
+          <View style={s.healthStrip}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.healthStripScroll}>
+              {RAILS_HEALTH.map((metric) => (
+                <View key={metric.id} style={s.healthMetric}>
+                  <View style={s.healthMetricTop}>
+                    <View style={[s.healthDot, { backgroundColor: healthStatusColor(metric.status) }]} />
+                    <ThemedText style={[s.healthLabel, { color: BP.ash }]}>{metric.label}</ThemedText>
+                  </View>
+                  <ThemedText style={[s.healthValue, { color: BP.smoke }]}>{metric.value}</ThemedText>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+
+        {/* Major Exceptions (critical + high only) */}
+        <BizCard>
+          <BizCardTitle>Major Exceptions</BizCardTitle>
+          {majorExceptions.length === 0 ? (
+            <ThemedText style={[s.retailFlowSub, { color: BP.ash }]}>No major exceptions.</ThemedText>
+          ) : majorExceptions.map((ex) => (
+            <View key={ex.id} style={s.boardExceptionRow}>
+              <View style={{ flex: 1 }}>
+                <ThemedText style={[s.boardExceptionTitle, { color: BP.smoke }]}>{ex.title}</ThemedText>
+                <View style={{ flexDirection: 'row', gap: 8, marginTop: 2 }}>
+                  <BizStatusChip label={exceptionTypeLabel(ex.type)} variant={exceptionSeverityVariant(ex.severity)} />
+                  <BizStatusChip label={ex.status} variant={exceptionStatusVariant(ex.status)} />
+                </View>
+              </View>
+              <ThemedText style={[s.boardExceptionAmount, { color: BP.champagneGold }]}>{ex.amount}</ThemedText>
+            </View>
+          ))}
+        </BizCard>
+
+        {/* Monthly Settlement Summaries */}
+        <BizCard>
+          <BizCardTitle>Monthly Settlement Summary</BizCardTitle>
+          {recentBatches.map((batch) => (
+            <View key={batch.id} style={s.retailFlowRow}>
+              <View style={{ flex: 1 }}>
+                <ThemedText style={[s.retailFlowTitle, { color: BP.smoke }]}>{batch.label}</ThemedText>
+                <View style={{ flexDirection: 'row', gap: 8, marginTop: 2 }}>
+                  <ThemedText style={[s.retailFlowSub, { color: BP.ash }]}>{batch.createdAt}</ThemedText>
+                  <BizStatusChip label={batchStatusLabel(batch.status)} variant={batchStatusVariant(batch.status)} />
+                </View>
+              </View>
+              <ThemedText style={[s.retailFlowAmount, { color: BP.champagneGold }]}>{batch.totalAmount}</ThemedText>
+            </View>
+          ))}
+        </BizCard>
+
+        {/* Governance Receipts */}
+        <BizCard>
+          <BizCardTitle>Governance Receipts</BizCardTitle>
+          {governanceReceipts.length === 0 ? (
+            <ThemedText style={[s.retailFlowSub, { color: BP.ash }]}>No governance receipts.</ThemedText>
+          ) : governanceReceipts.map((receipt) => (
+            <View key={receipt.id} style={s.retailFlowRow}>
+              <View style={{ flex: 1 }}>
+                <ThemedText style={[s.retailFlowTitle, { color: BP.smoke }]}>{receipt.description}</ThemedText>
+                <ThemedText style={[s.retailFlowSub, { color: BP.ash }]}>{receipt.date} · {receipt.entity}</ThemedText>
+              </View>
+              <ThemedText style={[s.retailFlowAmount, { color: BP.champagneGold }]}>{receipt.amount}</ThemedText>
+            </View>
+          ))}
+        </BizCard>
+
+        <View style={s.bottomSpacer} />
+      </ScrollView>
     );
   }
 
@@ -830,11 +1280,11 @@ export function BusinessPaymentRails({ colors, role = 'B1' }: Props) {
 
       {/* Fixed Sticky Header Concept */}
       <RailsHeader
-        railFilter={railFilter}
-        onRailFilterChange={setRailFilter}
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
       />
 
-      {/* 8-Section Sub-Tab Bar */}
+      {/* 9-Section Sub-Tab Bar */}
       <BizSubTabBar
         tabs={RAILS_SUB_TABS}
         activeId={activeTab}
@@ -842,7 +1292,7 @@ export function BusinessPaymentRails({ colors, role = 'B1' }: Props) {
       />
 
       {/* Content Area */}
-      <TabContent activeTab={activeTab} railFilter={railFilter} />
+      <TabContent activeTab={activeTab} statusFilter={statusFilter} />
 
       {/* Bottom spacer */}
       <View style={s.bottomSpacer} />
@@ -867,13 +1317,38 @@ const s = StyleSheet.create({
     height: 120,
   },
 
+  // ---- Header: Overall Status Banner ----
+  overallStatusBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: 8,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    marginBottom: Spacing.sm,
+  },
+  overallStatusDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  overallStatusText: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
+  },
+  overallStatusLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+
   // ---- Header: Health Strip ----
   headerContainer: {
     marginBottom: Spacing.md,
   },
   healthStrip: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     backgroundColor: BP.carbon,
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
@@ -881,10 +1356,15 @@ const s = StyleSheet.create({
     padding: Spacing.sm,
     marginBottom: Spacing.sm,
   },
+  healthStripScroll: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+  },
   healthMetric: {
-    flex: 1,
     alignItems: 'center',
     paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
+    minWidth: 72,
   },
   healthMetricTop: {
     flexDirection: 'row',
@@ -931,7 +1411,7 @@ const s = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // ---- Header: Rail Type Filter Pills ----
+  // ---- Header: Status Filter Pills ----
   filterPillRow: {
     flexDirection: 'row',
     gap: Spacing.sm,
@@ -999,6 +1479,37 @@ const s = StyleSheet.create({
     fontWeight: '500',
   },
 
+  // ---- TXN State Badges ----
+  txnStateBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.full,
+  },
+  txnStateBadgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+  },
+
+  // ---- Now Lanes ----
+  nowLane: {
+    marginBottom: Spacing.md,
+  },
+  nowLaneLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: Spacing.xs,
+    paddingLeft: 2,
+  },
+  nowLaneEmpty: {
+    fontSize: 12,
+    paddingVertical: Spacing.sm,
+    paddingLeft: 2,
+  },
+
   // ---- Empty State ----
   emptyState: {
     alignItems: 'center',
@@ -1008,6 +1519,83 @@ const s = StyleSheet.create({
   emptyText: {
     fontSize: 13,
     textAlign: 'center',
+  },
+
+  // ---- Subsection Labels ----
+  subsectionLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: Spacing.sm,
+    paddingLeft: 2,
+  },
+
+  // ---- Release Queue Section ----
+  releaseCard: {
+    marginBottom: Spacing.sm,
+  },
+  releaseCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: Spacing.sm,
+  },
+  releaseTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    flex: 1,
+    marginRight: Spacing.sm,
+  },
+  releaseAmount: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  releaseCardMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+    flexWrap: 'wrap',
+  },
+  releaseCardFooter: {
+    marginBottom: Spacing.xs,
+  },
+  releaseDetail: {
+    fontSize: 12,
+    marginBottom: 2,
+  },
+  releaseAuditNote: {
+    fontSize: 11,
+    fontStyle: 'italic',
+    marginBottom: Spacing.sm,
+  },
+  releaseActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: Spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: BP.graphite,
+  },
+  releaseAuditHint: {
+    fontSize: 11,
+    flex: 1,
+  },
+  releaseCta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: BP.emerald + '40',
+    backgroundColor: BP.emerald + '10',
+  },
+  releaseCtaText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
 
   // ---- Wallets Section ----
@@ -1423,5 +2011,85 @@ const s = StyleSheet.create({
   adminValue: {
     fontSize: 12,
     fontWeight: '600',
+  },
+
+  // ---- B3 Powered Branding ----
+  poweredBranding: {
+    alignItems: 'center',
+    paddingVertical: Spacing.xl,
+  },
+  poweredText: {
+    fontSize: 12,
+    fontWeight: '500',
+    letterSpacing: 0.3,
+  },
+
+  // ---- B2a Retail View ----
+  retailHealthRow: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+    marginTop: Spacing.sm,
+    flexWrap: 'wrap',
+  },
+  retailHealthItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  retailHealthLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  retailHealthValue: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  retailFlowRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: BP.graphite,
+  },
+  retailFlowTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  retailFlowSub: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+  retailFlowAmount: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  retailProofGrid: {
+    gap: Spacing.sm,
+  },
+  retailProofItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  retailProofLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+
+  // ---- B2b Board View ----
+  boardExceptionRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: BP.graphite,
+  },
+  boardExceptionTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  boardExceptionAmount: {
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

@@ -22,7 +22,8 @@ export type DataRoomSubTab =
   | 'versioning'
   | 'packets'
   | 'requests'
-  | 'audit';
+  | 'audit'
+  | 'builder';
 
 export interface DataRoomStats {
   totalDocs: number;
@@ -39,7 +40,10 @@ export type DocCategory =
   | 'product'
   | 'governance'
   | 'team'
-  | 'proof';
+  | 'proof'
+  | 'compliance'
+  | 'payment_rails'
+  | 'media_proof';
 
 export interface DataRoomDocument {
   id: string;
@@ -109,6 +113,7 @@ export const DATA_ROOM_SUB_TABS: { id: DataRoomSubTab; label: string }[] = [
   { id: 'packets', label: 'Packets' },
   { id: 'requests', label: 'Requests' },
   { id: 'audit', label: 'Audit' },
+  { id: 'builder', label: 'Builder' },
 ];
 
 // =============================================================================
@@ -123,13 +128,16 @@ export interface DocCategoryDef {
 }
 
 export const DOC_CATEGORIES: DocCategoryDef[] = [
-  { id: 'pitch', label: 'Pitch', color: '#FFFFFF', icon: 'megaphone.fill' },
-  { id: 'financial', label: 'Financial', color: '#2FE38C', icon: 'dollarsign.circle.fill' },
+  { id: 'pitch', label: 'Corporate & Governance', color: '#FFFFFF', icon: 'megaphone.fill' },
+  { id: 'financial', label: 'Finance', color: '#2FE38C', icon: 'dollarsign.circle.fill' },
   { id: 'legal', label: 'Legal', color: '#FFB020', icon: 'doc.text.fill' },
   { id: 'product', label: 'Product', color: '#6AA9FF', icon: 'app.fill' },
   { id: 'governance', label: 'Governance', color: '#8F8F8F', icon: 'building.columns.fill' },
-  { id: 'team', label: 'Team', color: '#B8C0CC', icon: 'person.2.fill' },
+  { id: 'team', label: 'Operations', color: '#B8C0CC', icon: 'person.2.fill' },
   { id: 'proof', label: 'Proof', color: '#FF4D4D', icon: 'checkmark.seal.fill' },
+  { id: 'compliance', label: 'Compliance', color: '#E8A838', icon: 'checkmark.shield.fill' },
+  { id: 'payment_rails', label: 'Payment Rails', color: '#34C759', icon: 'creditcard.fill' },
+  { id: 'media_proof', label: 'Media/Proof', color: '#AF52DE', icon: 'play.rectangle.fill' },
 ];
 
 // =============================================================================
@@ -138,7 +146,7 @@ export const DOC_CATEGORIES: DocCategoryDef[] = [
 
 export const DATA_ROOM_STATS: DataRoomStats = {
   totalDocs: 12,
-  categories: 7,
+  categories: 10,
   pendingRequests: 3,
   lastUpdated: 'Feb 14, 2026',
   accessLog7d: 47,

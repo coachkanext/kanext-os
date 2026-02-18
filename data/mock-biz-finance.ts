@@ -35,14 +35,14 @@ export const FINANCE_SUB_TABS: { id: FinanceSubTab; label: string }[] = [
   { id: 'commitments', label: 'Commitments' },
   { id: 'receivables', label: 'Receivables' },
   { id: 'payables', label: 'Payables' },
-  { id: 'approvals', label: 'Approvals' },
-  { id: 'splits', label: 'Splits' },
-  { id: 'revenue', label: 'Revenue' },
-  { id: 'costs_burn', label: 'Costs / Burn' },
-  { id: 'entities', label: 'Entities' },
+  { id: 'approvals', label: 'Approvals & Release' },
+  { id: 'splits', label: 'Splits & Earmarks' },
+  { id: 'revenue', label: 'Revenue Streams' },
+  { id: 'costs_burn', label: 'Costs / Burn / Runway' },
+  { id: 'entities', label: 'Entities & Consolidation' },
   { id: 'risk_controls', label: 'Risk / Controls' },
   { id: 'audit', label: 'Audit' },
-  { id: 'board_pack', label: 'Board Pack' },
+  { id: 'board_pack', label: 'Board & Investor Pack' },
 ];
 
 // =============================================================================
@@ -915,6 +915,75 @@ export const BOARD_PACK_SECTIONS: BoardPackSection[] = [
     assignee: 'Sammy Kalejaiye',
     dueDate: '2026-02-20',
   },
+];
+
+// =============================================================================
+// TXN STATE MACHINE
+// =============================================================================
+
+export const TXN_STATES = [
+  'Draft', 'Proposed', 'Rule-Checked', 'Authorized', 'Scheduled',
+  'Released', 'In Flight', 'Settled', 'Held', 'Failed',
+  'Disputed', 'Reversed',
+] as const;
+export type TxnState = typeof TXN_STATES[number];
+
+// =============================================================================
+// RELEASE QUEUE
+// =============================================================================
+
+export interface ReleaseQueueItem {
+  id: string;
+  title: string;
+  amount: string;
+  approvedBy: string;
+  approvedAt: string;
+  releaseAuthority: string;
+  status: 'awaiting_release' | 'released';
+}
+
+export const RELEASE_QUEUE: ReleaseQueueItem[] = [
+  { id: 'rq-1', title: 'Vendor payout — Design agency', amount: '$12,500', approvedBy: 'Sammy K.', approvedAt: 'Feb 15', releaseAuthority: 'Treasury', status: 'awaiting_release' },
+  { id: 'rq-2', title: 'Contractor payment — Q1 sprint', amount: '$8,200', approvedBy: 'Sammy K.', approvedAt: 'Feb 14', releaseAuthority: 'Treasury', status: 'awaiting_release' },
+  { id: 'rq-3', title: 'SaaS subscription — Annual', amount: '$4,800', approvedBy: 'Finance', approvedAt: 'Feb 13', releaseAuthority: 'Ops', status: 'released' },
+];
+
+// =============================================================================
+// EARMARKS
+// =============================================================================
+
+export interface EarmarkItem {
+  id: string;
+  label: string;
+  amount: string;
+  entity: string;
+  purpose: string;
+  expiresAt: string;
+}
+
+export const EARMARKS: EarmarkItem[] = [
+  { id: 'em-1', label: 'Series A Legal Reserve', amount: '$25,000', entity: 'KaNeXT Inc.', purpose: 'Legal fees for Series A close', expiresAt: 'Mar 31' },
+  { id: 'em-2', label: 'Q2 Marketing Budget', amount: '$15,000', entity: 'KaNeXT Inc.', purpose: 'Earmarked for Q2 campaign spend', expiresAt: 'Jun 30' },
+];
+
+// =============================================================================
+// TRUTH STRIP KPIS
+// =============================================================================
+
+export interface TruthStripKPI {
+  id: string;
+  label: string;
+  value: string;
+  icon: string;
+}
+
+export const TRUTH_STRIP_KPIS: TruthStripKPI[] = [
+  { id: 'ts-cash', label: 'Cash', value: '$142K', icon: 'dollarsign.circle.fill' },
+  { id: 'ts-auth', label: 'Auth\'d Not Settled', value: '$18.2K', icon: 'clock.fill' },
+  { id: 'ts-recv', label: 'Receivables', value: '$34.5K', icon: 'arrow.down.circle.fill' },
+  { id: 'ts-pay', label: 'Payables', value: '$22.1K', icon: 'arrow.up.circle.fill' },
+  { id: 'ts-blocked', label: 'Rule-Blocked', value: '2', icon: 'exclamationmark.triangle.fill' },
+  { id: 'ts-audit', label: 'Audit Score', value: '94%', icon: 'checkmark.shield.fill' },
 ];
 
 // =============================================================================

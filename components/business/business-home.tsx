@@ -44,10 +44,10 @@ const BIZ_HUB_TABS = [
   { id: 'calendar', label: 'Calendar' },
   { id: 'operations', label: 'Operations' },
   { id: 'finance', label: 'Finance' },
-  { id: 'payment_rails', label: 'Rails' },
-  { id: 'board_investors', label: 'Board' },
-  { id: 'compliance_legal', label: 'Legal' },
-  { id: 'media_proof', label: 'Media' },
+  { id: 'payment_rails', label: 'Payment Rails' },
+  { id: 'board_investors', label: 'Board & Investors' },
+  { id: 'compliance_legal', label: 'Compliance & Legal' },
+  { id: 'media_proof', label: 'Media & Proof' },
   { id: 'data_room', label: 'Data Room' },
 ];
 
@@ -135,6 +135,10 @@ export function BusinessHome() {
     pagerRef.current?.setPage(index);
   }, []);
 
+  const handleSwitchTab = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
+
   return (
     <ThemedView style={s.container}>
       <ViewAsBar />
@@ -151,31 +155,31 @@ export function BusinessHome() {
           onPageSelected={(e) => setActiveTab(e.nativeEvent.position)}
         >
           <View key="dashboard" style={{ flex: 1 }}>
-            <BusinessDashboardV2 colors={colors} role={viewAsRole} />
+            <BusinessDashboardV2 colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
           </View>
           <View key="calendar" style={{ flex: 1 }}>
-            <BusinessCalendarV2 colors={colors} role={viewAsRole} />
+            <BusinessCalendarV2 colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
           </View>
           <View key="operations" style={{ flex: 1 }}>
-            <BusinessOperations colors={colors} role={viewAsRole} />
+            <BusinessOperations colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
           </View>
           <View key="finance" style={{ flex: 1 }}>
-            <BusinessFinance colors={colors} role={viewAsRole} />
+            <BusinessFinance colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
           </View>
           <View key="payment_rails" style={{ flex: 1 }}>
-            <BusinessPaymentRails colors={colors} role={viewAsRole} />
+            <BusinessPaymentRails colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
           </View>
           <View key="board_investors" style={{ flex: 1 }}>
-            <BusinessBoardInvestors colors={colors} role={viewAsRole} />
+            <BusinessBoardInvestors colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
           </View>
           <View key="compliance_legal" style={{ flex: 1 }}>
-            <BusinessComplianceLegal colors={colors} role={viewAsRole} />
+            <BusinessComplianceLegal colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
           </View>
           <View key="media_proof" style={{ flex: 1 }}>
-            <BusinessMediaProof colors={colors} role={viewAsRole} />
+            <BusinessMediaProof colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
           </View>
           <View key="data_room" style={{ flex: 1 }}>
-            <BusinessDataRoom colors={colors} role={viewAsRole} />
+            <BusinessDataRoom colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
           </View>
         </PagerView>
       </EdgeHoldAdvance>
