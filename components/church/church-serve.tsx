@@ -112,10 +112,34 @@ const NEXT_SUNDAY_COVERAGE: CoverageSlot[] = [
 ];
 
 // =============================================================================
+// INLINE MOCK DATA — VOLUNTEER PIPELINE
+// =============================================================================
+
+interface PipelineStage {
+  label: string;
+  count: number;
+  color: string;
+}
+
+const VOLUNTEER_PIPELINE: PipelineStage[] = [
+  { label: 'Prospects', count: 24, color: '#8F8F8F' },
+  { label: 'Applied', count: 16, color: '#3B82F6' },
+  { label: 'BGC', count: 8, color: '#F59E0B' },
+  { label: 'Trained', count: 6, color: '#8B5CF6' },
+  { label: 'Active', count: 320, color: '#22C55E' },
+];
+
+// =============================================================================
 // INLINE MOCK DATA — TEAMS
 // =============================================================================
 
 type TeamHealth = 'fully-staffed' | 'understaffed' | 'critical';
+
+interface TeamRole {
+  role: string;
+  required: number;
+  filled: number;
+}
 
 interface ServeTeam {
   id: string;
@@ -129,19 +153,20 @@ interface ServeTeam {
   health: TeamHealth;
   icon: string;
   color: string;
+  roles?: TeamRole[];
 }
 
 const SERVE_TEAMS: ServeTeam[] = [
-  { id: 'st-1', name: 'Greeting Team', ministry: 'Hospitality', leader: 'Deacon Martinez', activeMembers: 12, capacity: 12, meetingCadence: 'Monthly', description: 'Welcome guests at all entrance points before and after services. First impression ministry.', health: 'fully-staffed', icon: 'hand.wave.fill', color: '#22C55E' },
-  { id: 'st-2', name: 'Parking Team', ministry: 'Hospitality', leader: 'Brother Williams', activeMembers: 5, capacity: 8, meetingCadence: 'Quarterly', description: 'Direct traffic, assist with parking, and welcome guests in the lot. Rain or shine servants.', health: 'understaffed', icon: 'car.fill', color: '#F59E0B' },
-  { id: 'st-3', name: 'Children\'s Ministry', ministry: 'Next Gen', leader: 'Sister Angela Davis', activeMembers: 20, capacity: 24, meetingCadence: 'Weekly', description: 'Nursery through 5th grade care and curriculum. Background check required for all volunteers.', health: 'understaffed', icon: 'figure.and.child.holdinghands', color: '#EC4899' },
-  { id: 'st-4', name: 'Youth Ministry', ministry: 'Next Gen', leader: 'Pastor Alex Kim', activeMembers: 14, capacity: 16, meetingCadence: 'Weekly', description: 'Middle school, high school, and young adult programming. Small group leaders and event support.', health: 'understaffed', icon: 'person.3.fill', color: '#3B82F6' },
-  { id: 'st-5', name: 'Worship Team', ministry: 'Worship & Creative Arts', leader: 'Marcus Johnson', activeMembers: 15, capacity: 15, meetingCadence: 'Weekly', description: 'Praise band, vocalists, choir, and dance ministry. Rehearsals every Thursday 7PM.', health: 'fully-staffed', icon: 'music.note.list', color: '#8B5CF6' },
-  { id: 'st-6', name: 'AV/Media', ministry: 'Worship & Creative Arts', leader: 'David Park', activeMembers: 4, capacity: 6, meetingCadence: 'Bi-weekly', description: 'Sound engineering, livestream, cameras, projection, and social media. Technical training provided.', health: 'critical', icon: 'video.fill', color: '#EF4444' },
-  { id: 'st-7', name: 'Hospitality/Ushers', ministry: 'Hospitality', leader: 'Elder Thompson', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Seat guests, collect offerings, distribute bulletins, and maintain sanctuary order during services.', health: 'understaffed', icon: 'heart.fill', color: '#06B6D4' },
-  { id: 'st-8', name: 'Prayer Team', ministry: 'Prayer Ministry', leader: 'Mother Johnson', activeMembers: 8, capacity: 8, meetingCadence: 'Weekly', description: 'Altar call prayer, intercessory prayer meetings, and prayer chain coordination.', health: 'fully-staffed', icon: 'hands.sparkles.fill', color: '#F97316' },
-  { id: 'st-9', name: 'Outreach', ministry: 'Missions & Outreach', leader: 'Minister Lewis', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Community food pantry, neighborhood outreach, evangelism, and missions trip coordination.', health: 'understaffed', icon: 'globe.americas.fill', color: '#14B8A6' },
-  { id: 'st-10', name: 'Campus Care', ministry: 'Facilities', leader: 'Brother Harris', activeMembers: 3, capacity: 6, meetingCadence: 'As needed', description: 'Building setup/teardown, maintenance requests, grounds keeping, and security coordination.', health: 'critical', icon: 'wrench.fill', color: '#EF4444' },
+  { id: 'st-1', name: 'Greeting Team', ministry: 'Hospitality', leader: 'Deacon Martinez', activeMembers: 12, capacity: 12, meetingCadence: 'Monthly', description: 'Welcome guests at all entrance points before and after services. First impression ministry.', health: 'fully-staffed', icon: 'hand.wave.fill', color: '#22C55E', roles: [{ role: 'Lead Greeter', required: 2, filled: 2 }, { role: 'Greeter', required: 8, filled: 8 }, { role: 'Info Desk', required: 2, filled: 2 }] },
+  { id: 'st-2', name: 'Parking Team', ministry: 'Hospitality', leader: 'Brother Williams', activeMembers: 5, capacity: 8, meetingCadence: 'Quarterly', description: 'Direct traffic, assist with parking, and welcome guests in the lot. Rain or shine servants.', health: 'understaffed', icon: 'car.fill', color: '#F59E0B', roles: [{ role: 'Lot Captain', required: 1, filled: 1 }, { role: 'Lot Attendant', required: 5, filled: 3 }, { role: 'Shuttle Driver', required: 2, filled: 1 }] },
+  { id: 'st-3', name: 'Children\'s Ministry', ministry: 'Next Gen', leader: 'Sister Angela Davis', activeMembers: 20, capacity: 24, meetingCadence: 'Weekly', description: 'Nursery through 5th grade care and curriculum. Background check required for all volunteers.', health: 'understaffed', icon: 'figure.and.child.holdinghands', color: '#EC4899', roles: [{ role: 'Director', required: 1, filled: 1 }, { role: 'Nursery Lead', required: 2, filled: 2 }, { role: 'Nursery Helper', required: 4, filled: 3 }, { role: 'K-2nd Lead', required: 2, filled: 2 }, { role: '3rd-5th Lead', required: 2, filled: 2 }, { role: 'Check-In', required: 3, filled: 2 }] },
+  { id: 'st-4', name: 'Youth Ministry', ministry: 'Next Gen', leader: 'Pastor Alex Kim', activeMembers: 14, capacity: 16, meetingCadence: 'Weekly', description: 'Middle school, high school, and young adult programming. Small group leaders and event support.', health: 'understaffed', icon: 'person.3.fill', color: '#3B82F6', roles: [{ role: 'Youth Pastor', required: 1, filled: 1 }, { role: 'MS Lead', required: 2, filled: 2 }, { role: 'HS Lead', required: 2, filled: 2 }, { role: 'Young Adult Lead', required: 2, filled: 1 }, { role: 'Small Group Leader', required: 6, filled: 5 }, { role: 'Event Support', required: 3, filled: 3 }] },
+  { id: 'st-5', name: 'Worship Team', ministry: 'Worship & Creative Arts', leader: 'Marcus Johnson', activeMembers: 15, capacity: 15, meetingCadence: 'Weekly', description: 'Praise band, vocalists, choir, and dance ministry. Rehearsals every Thursday 7PM.', health: 'fully-staffed', icon: 'music.note.list', color: '#8B5CF6', roles: [{ role: 'Worship Leader', required: 1, filled: 1 }, { role: 'Vocalist', required: 4, filled: 4 }, { role: 'Keys', required: 2, filled: 2 }, { role: 'Guitar', required: 2, filled: 2 }, { role: 'Bass', required: 1, filled: 1 }, { role: 'Drums', required: 1, filled: 1 }, { role: 'Choir', required: 4, filled: 4 }] },
+  { id: 'st-6', name: 'AV/Media', ministry: 'Worship & Creative Arts', leader: 'David Park', activeMembers: 4, capacity: 6, meetingCadence: 'Bi-weekly', description: 'Sound engineering, livestream, cameras, projection, and social media. Technical training provided.', health: 'critical', icon: 'video.fill', color: '#EF4444', roles: [{ role: 'FOH', required: 1, filled: 1 }, { role: 'Livestream', required: 1, filled: 1 }, { role: 'Camera Op', required: 2, filled: 1 }, { role: 'Slides', required: 1, filled: 1 }, { role: 'Tracks', required: 1, filled: 0 }] },
+  { id: 'st-7', name: 'Hospitality/Ushers', ministry: 'Hospitality', leader: 'Elder Thompson', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Seat guests, collect offerings, distribute bulletins, and maintain sanctuary order during services.', health: 'understaffed', icon: 'heart.fill', color: '#06B6D4', roles: [{ role: 'Head Usher', required: 1, filled: 1 }, { role: 'Usher', required: 6, filled: 5 }, { role: 'Offering Counter', required: 2, filled: 1 }, { role: 'Bulletin Prep', required: 1, filled: 1 }] },
+  { id: 'st-8', name: 'Prayer Team', ministry: 'Prayer Ministry', leader: 'Mother Johnson', activeMembers: 8, capacity: 8, meetingCadence: 'Weekly', description: 'Altar call prayer, intercessory prayer meetings, and prayer chain coordination.', health: 'fully-staffed', icon: 'hands.sparkles.fill', color: '#F97316', roles: [{ role: 'Prayer Lead', required: 1, filled: 1 }, { role: 'Altar Ministry', required: 3, filled: 3 }, { role: 'Intercessor', required: 3, filled: 3 }, { role: 'Prayer Chain Coord', required: 1, filled: 1 }] },
+  { id: 'st-9', name: 'Outreach', ministry: 'Missions & Outreach', leader: 'Minister Lewis', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Community food pantry, neighborhood outreach, evangelism, and missions trip coordination.', health: 'understaffed', icon: 'globe.americas.fill', color: '#14B8A6', roles: [{ role: 'Director', required: 1, filled: 1 }, { role: 'Food Pantry', required: 3, filled: 3 }, { role: 'Neighborhood', required: 3, filled: 2 }, { role: 'Missions Coord', required: 1, filled: 1 }, { role: 'Evangelism', required: 2, filled: 1 }] },
+  { id: 'st-10', name: 'Campus Care', ministry: 'Facilities', leader: 'Brother Harris', activeMembers: 3, capacity: 6, meetingCadence: 'As needed', description: 'Building setup/teardown, maintenance requests, grounds keeping, and security coordination.', health: 'critical', icon: 'wrench.fill', color: '#EF4444', roles: [{ role: 'Setup Lead', required: 1, filled: 1 }, { role: 'Teardown', required: 2, filled: 1 }, { role: 'Maintenance', required: 1, filled: 0 }, { role: 'Grounds', required: 1, filled: 1 }, { role: 'Security', required: 1, filled: 0 }] },
 ];
 
 const TEAM_HEALTH_COLOR: Record<TeamHealth, string> = {
@@ -335,6 +360,30 @@ const TRAINING_PROGRAMS: TrainingProgram[] = [
   { id: 'tp-4', name: 'AV/Media Technical Training', requiredFor: ['AV/Media'], completionRate: 67, totalEnrolled: 6, totalCompleted: 4, nextSessionDate: 'Feb 28, 2026', duration: '6 hours', description: 'Sound board operation, camera angles, livestream software, projection system, and troubleshooting.', expiresAfter: 'None' },
   { id: 'tp-5', name: 'Hospitality & Welcome Training', requiredFor: ['Greeting Team', 'Hospitality/Ushers'], completionRate: 95, totalEnrolled: 22, totalCompleted: 21, nextSessionDate: 'Apr 12, 2026', duration: '2 hours', description: 'Guest engagement, accessibility awareness, emergency protocols, and de-escalation basics.', expiresAfter: '1 year' },
   { id: 'tp-6', name: 'Worship Ministry Onboarding', requiredFor: ['Worship Team'], completionRate: 100, totalEnrolled: 15, totalCompleted: 15, nextSessionDate: 'N/A', duration: '2 hours', description: 'Song preparation workflow, rehearsal expectations, stage etiquette, and spiritual preparation.', expiresAfter: 'None' },
+];
+
+interface VolunteerTrainingRecord {
+  volunteerId: string;
+  volunteerName: string;
+  programId: string;
+  programName: string;
+  completedDate: string | null;
+  evidenceLink?: string;
+  expiryDate?: string;
+  status: ReadinessLevel;
+}
+
+const VOLUNTEER_TRAINING_RECORDS: VolunteerTrainingRecord[] = [
+  { volunteerId: 'v-4', volunteerName: 'Sister Angela Davis', programId: 'tp-1', programName: 'Child Safety & Protection', completedDate: 'Jun 12, 2025', evidenceLink: 'cert-cs-001.pdf', expiryDate: 'Jun 12, 2027', status: 'ready' },
+  { volunteerId: 'v-4', volunteerName: 'Sister Angela Davis', programId: 'tp-2', programName: 'First Aid & CPR', completedDate: 'Aug 20, 2025', evidenceLink: 'cert-fa-001.pdf', expiryDate: 'Aug 20, 2027', status: 'ready' },
+  { volunteerId: 'v-9', volunteerName: 'Tamika Williams', programId: 'tp-1', programName: 'Child Safety & Protection', completedDate: 'Jan 15, 2025', evidenceLink: 'cert-cs-002.pdf', expiryDate: 'Jan 15, 2027', status: 'ready' },
+  { volunteerId: 'v-9', volunteerName: 'Tamika Williams', programId: 'tp-2', programName: 'First Aid & CPR', completedDate: null, status: 'needs-training' },
+  { volunteerId: 'v-19', volunteerName: 'Hannah Davis', programId: 'tp-1', programName: 'Child Safety & Protection', completedDate: null, status: 'in-training' },
+  { volunteerId: 'v-19', volunteerName: 'Hannah Davis', programId: 'tp-2', programName: 'First Aid & CPR', completedDate: null, status: 'needs-training' },
+  { volunteerId: 'v-2', volunteerName: 'David Park', programId: 'tp-4', programName: 'AV/Media Technical Training', completedDate: 'Sep 5, 2024', evidenceLink: 'cert-av-001.pdf', status: 'ready' },
+  { volunteerId: 'v-15', volunteerName: 'James Carter', programId: 'tp-4', programName: 'AV/Media Technical Training', completedDate: null, status: 'in-training' },
+  { volunteerId: 'v-3', volunteerName: 'Deacon Martinez', programId: 'tp-5', programName: 'Hospitality & Welcome', completedDate: 'Mar 10, 2025', evidenceLink: 'cert-hw-001.pdf', expiryDate: 'Mar 10, 2026', status: 'ready' },
+  { volunteerId: 'v-3', volunteerName: 'Deacon Martinez', programId: 'tp-3', programName: 'General Safety', completedDate: 'Feb 1, 2025', expiryDate: 'Feb 1, 2026', status: 'expired' },
 ];
 
 interface ReadinessCount {
@@ -577,6 +626,30 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Chu
         </View>
       )}
 
+      {/* Volunteer Pipeline (staff+) */}
+      {isStaff && (
+        <View style={s.moduleContainer}>
+          <SectionHeader title="VOLUNTEER PIPELINE" colors={colors} />
+          <Card colors={colors}>
+            <View style={s.pipelineRow}>
+              {VOLUNTEER_PIPELINE.map((stage, idx) => (
+                <React.Fragment key={stage.label}>
+                  <View style={s.pipelineStage}>
+                    <View style={[s.pipelineBubble, { backgroundColor: stage.color + '20', borderColor: stage.color + '40' }]}>
+                      <ThemedText style={[s.pipelineBubbleValue, { color: stage.color }]}>{stage.count}</ThemedText>
+                    </View>
+                    <ThemedText style={[s.pipelineStageLabel, { color: colors.textSecondary }]}>{stage.label}</ThemedText>
+                  </View>
+                  {idx < VOLUNTEER_PIPELINE.length - 1 && (
+                    <IconSymbol name="chevron.right" size={10} color={colors.textTertiary} />
+                  )}
+                </React.Fragment>
+              ))}
+            </View>
+          </Card>
+        </View>
+      )}
+
       {/* Sign Up CTA */}
       {isMember(role) && (
         <View style={s.moduleContainer}>
@@ -642,6 +715,23 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Church
                   </ThemedText>
                 </View>
 
+                {/* Role breakdown (staff+) */}
+                {isStaffLevel(role) && team.roles && team.roles.length > 0 && (
+                  <View style={s.roleBreakdown}>
+                    {team.roles.map((r) => {
+                      const isFull = r.filled >= r.required;
+                      const roleColor = isFull ? '#22C55E' : r.filled === 0 ? '#EF4444' : '#F59E0B';
+                      return (
+                        <View key={r.role} style={s.roleRow}>
+                          <View style={[s.roleDot, { backgroundColor: roleColor }]} />
+                          <ThemedText style={[s.roleName, { color: colors.text }]} numberOfLines={1}>{r.role}</ThemedText>
+                          <ThemedText style={[s.roleCount, { color: roleColor }]}>{r.filled}/{r.required}</ThemedText>
+                        </View>
+                      );
+                    })}
+                  </View>
+                )}
+
                 {/* Meta row */}
                 <View style={s.teamMetaRow}>
                   <View style={s.teamMetaItem}>
@@ -668,13 +758,31 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Church
 // VIEW 3: SCHEDULE
 // =============================================================================
 
+type ScheduleScope = 'day' | 'week' | 'month';
+
 function ScheduleView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
   const [expandedDay, setExpandedDay] = useState<string | null>(SCHEDULE_DAYS[0]?.date ?? null);
+  const [scope, setScope] = useState<ScheduleScope>('day');
 
   return (
     <>
       <View style={s.moduleContainer}>
         <SectionHeader title="SERVE SCHEDULE" colors={colors} count={SCHEDULE_DAYS.length} />
+
+        {/* Scope toggle */}
+        <View style={s.scopeToggleRow}>
+          {(['day', 'week', 'month'] as ScheduleScope[]).map((sc) => (
+            <Pressable
+              key={sc}
+              style={[s.scopeToggle, { backgroundColor: scope === sc ? colors.text : 'transparent', borderColor: scope === sc ? colors.text : colors.border }]}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setScope(sc); }}
+            >
+              <ThemedText style={[s.scopeToggleText, { color: scope === sc ? colors.background : colors.textSecondary }]}>
+                {sc.charAt(0).toUpperCase() + sc.slice(1)}
+              </ThemedText>
+            </Pressable>
+          ))}
+        </View>
 
         {SCHEDULE_DAYS.map((day) => {
           const isExpanded = expandedDay === day.date;
@@ -983,6 +1091,49 @@ function TrainingView({ colors, role }: { colors: typeof Colors.light; role: Chu
           );
         })}
       </View>
+
+      {/* Per-volunteer training records (admin only) */}
+      {isElderLevel(role) && (
+        <View style={s.moduleContainer}>
+          <SectionHeader title="VOLUNTEER TRAINING RECORDS" colors={colors} count={VOLUNTEER_TRAINING_RECORDS.length} />
+          <Card colors={colors}>
+            {VOLUNTEER_TRAINING_RECORDS.map((rec, idx) => {
+              const statusColor = READINESS_COLOR[rec.status];
+              const statusLabel = rec.status === 'ready' ? 'COMPLETE' : rec.status === 'needs-training' ? 'NEEDED' : rec.status === 'in-training' ? 'IN PROGRESS' : 'EXPIRED';
+              return (
+                <View
+                  key={`${rec.volunteerId}-${rec.programId}`}
+                  style={[s.trainingRecordRow, idx < VOLUNTEER_TRAINING_RECORDS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}
+                >
+                  <View style={s.trainingRecordInfo}>
+                    <ThemedText style={[s.trainingRecordName, { color: colors.text }]}>{rec.volunteerName}</ThemedText>
+                    <ThemedText style={[s.trainingRecordProgram, { color: colors.textSecondary }]}>{rec.programName}</ThemedText>
+                    <View style={s.trainingRecordMeta}>
+                      {rec.completedDate && (
+                        <ThemedText style={[s.trainingRecordDate, { color: colors.textTertiary }]}>
+                          Completed: {rec.completedDate}
+                        </ThemedText>
+                      )}
+                      {rec.expiryDate && (
+                        <ThemedText style={[s.trainingRecordDate, { color: rec.status === 'expired' ? '#EF4444' : colors.textTertiary }]}>
+                          {rec.status === 'expired' ? 'Expired' : 'Expires'}: {rec.expiryDate}
+                        </ThemedText>
+                      )}
+                      {rec.evidenceLink && (
+                        <View style={s.trainingRecordEvidence}>
+                          <IconSymbol name="doc.fill" size={9} color={colors.textTertiary} />
+                          <ThemedText style={[s.trainingRecordDate, { color: colors.textTertiary }]}>{rec.evidenceLink}</ThemedText>
+                        </View>
+                      )}
+                    </View>
+                  </View>
+                  <StatusBadge label={statusLabel} color={statusColor} />
+                </View>
+              );
+            })}
+          </Card>
+        </View>
+      )}
     </>
   );
 }
@@ -1311,6 +1462,34 @@ const s = StyleSheet.create({
   trainingMetaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   trainingMetaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   trainingMetaText: { fontSize: 10 },
+
+  // Pipeline (Overview)
+  pipelineRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: Spacing.sm },
+  pipelineStage: { alignItems: 'center', gap: 4, minWidth: 48 },
+  pipelineBubble: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center', borderWidth: 1 },
+  pipelineBubbleValue: { fontSize: 14, fontWeight: '800' },
+  pipelineStageLabel: { fontSize: 8, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.3 },
+
+  // Role breakdown (Teams)
+  roleBreakdown: { marginBottom: Spacing.sm, gap: 3 },
+  roleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  roleDot: { width: 5, height: 5, borderRadius: 2.5 },
+  roleName: { fontSize: 11, flex: 1 },
+  roleCount: { fontSize: 11, fontWeight: '700', minWidth: 28, textAlign: 'right' },
+
+  // Scope toggle (Schedule)
+  scopeToggleRow: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.md },
+  scopeToggle: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: BorderRadius.full, borderWidth: StyleSheet.hairlineWidth },
+  scopeToggleText: { fontSize: 12, fontWeight: '600' },
+
+  // Training records
+  trainingRecordRow: { flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 10, gap: 8 },
+  trainingRecordInfo: { flex: 1 },
+  trainingRecordName: { fontSize: 13, fontWeight: '600', marginBottom: 1 },
+  trainingRecordProgram: { fontSize: 11, marginBottom: 3 },
+  trainingRecordMeta: { gap: 1 },
+  trainingRecordDate: { fontSize: 10 },
+  trainingRecordEvidence: { flexDirection: 'row', alignItems: 'center', gap: 3 },
 
   // Requests view
   requestRow: { flexDirection: 'row', paddingVertical: 12, gap: 10, alignItems: 'flex-start' },

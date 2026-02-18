@@ -275,7 +275,7 @@ const STATUS_LABELS: Record<RequestStatus, string> = {
 // =============================================================================
 
 type QueueUrgency = 'urgent' | 'normal' | 'low';
-type FollowUpStatus = 'new' | 'in-progress' | 'contacted' | 'resolved';
+type FollowUpStatus = 'new' | 'in-progress' | 'contacted' | 'resolved' | 'escalated';
 
 interface QueueItem {
   id: string;
@@ -287,7 +287,11 @@ interface QueueItem {
   assignedTo: string | null;
   followUpStatus: FollowUpStatus;
   privacy: PrayerPrivacy;
+  escalated?: boolean;
+  needsFollowUp?: boolean;
 }
+
+type QueueNamedFilter = 'all' | 'urgent' | 'new' | 'needs-followup' | 'my-team' | 'escalations' | 'closed';
 
 const QUEUE_ITEMS: QueueItem[] = [
   {
@@ -296,7 +300,7 @@ const QUEUE_ITEMS: QueueItem[] = [
   },
   {
     id: 'qi-2', personName: 'Brother Chen', requestSummary: 'Suicidal ideation — crisis referral needed. Member reached out via prayer line.',
-    category: 'health', urgency: 'urgent', submittedDate: 'Feb 17, 2026', assignedTo: null, followUpStatus: 'new', privacy: 'private',
+    category: 'health', urgency: 'urgent', submittedDate: 'Feb 17, 2026', assignedTo: null, followUpStatus: 'escalated', privacy: 'private', escalated: true,
   },
   {
     id: 'qi-3', personName: 'Sister Adams', requestSummary: 'Hospitalized after car accident. Family requesting pastoral visit and meal train.',
@@ -304,7 +308,7 @@ const QUEUE_ITEMS: QueueItem[] = [
   },
   {
     id: 'qi-4', personName: 'Garcia Family', requestSummary: 'Facing eviction — need benevolence fund review and community support.',
-    category: 'financial', urgency: 'urgent', submittedDate: 'Feb 14, 2026', assignedTo: 'Deacon Roberts', followUpStatus: 'in-progress', privacy: 'leadership',
+    category: 'financial', urgency: 'urgent', submittedDate: 'Feb 14, 2026', assignedTo: 'Deacon Roberts', followUpStatus: 'in-progress', privacy: 'leadership', needsFollowUp: true,
   },
   {
     id: 'qi-5', personName: 'Anonymous Member', requestSummary: 'Struggling with addiction recovery. Requesting ongoing accountability partner and prayer.',
@@ -316,7 +320,7 @@ const QUEUE_ITEMS: QueueItem[] = [
   },
   {
     id: 'qi-7', personName: 'Sister Okafor', requestSummary: 'Bereavement support — mother passed away last week. Needs grief counseling referral.',
-    category: 'family', urgency: 'normal', submittedDate: 'Feb 11, 2026', assignedTo: null, followUpStatus: 'new', privacy: 'leadership',
+    category: 'family', urgency: 'normal', submittedDate: 'Feb 11, 2026', assignedTo: null, followUpStatus: 'new', privacy: 'leadership', needsFollowUp: true,
   },
   {
     id: 'qi-8', personName: 'Youth Leader Mike', requestSummary: 'Student disclosed abuse at home. Mandatory reporting protocol initiated.',
@@ -343,6 +347,7 @@ const FOLLOW_UP_COLORS: Record<FollowUpStatus, string> = {
   'in-progress': '#F59E0B',
   contacted: '#8B5CF6',
   resolved: '#22C55E',
+  escalated: '#EF4444',
 };
 
 const FOLLOW_UP_LABELS: Record<FollowUpStatus, string> = {
@@ -350,6 +355,7 @@ const FOLLOW_UP_LABELS: Record<FollowUpStatus, string> = {
   'in-progress': 'In Progress',
   contacted: 'Contacted',
   resolved: 'Resolved',
+  escalated: 'Escalated',
 };
 
 const QUEUE_STATS = {
@@ -362,6 +368,12 @@ const QUEUE_STATS = {
 // INLINE MOCK DATA — TEAMS
 // =============================================================================
 
+interface OnCallSlot {
+  day: string;
+  person: string;
+  phone: string;
+}
+
 interface PrayerTeam {
   id: string;
   name: string;
@@ -371,6 +383,7 @@ interface PrayerTeam {
   focusArea: string;
   attendanceRate: number;
   activeRate: number;
+  onCallRotation?: OnCallSlot[];
 }
 
 const PRAYER_TEAMS: PrayerTeam[] = [
@@ -383,6 +396,12 @@ const PRAYER_TEAMS: PrayerTeam[] = [
     id: 'pt-2', name: 'Pastoral Prayer Team', leader: 'Elder Thompson', membersCount: 8,
     meetingSchedule: 'On-Call', focusArea: 'Altar call, hospital visits, crisis prayer support',
     attendanceRate: 90, activeRate: 100,
+    onCallRotation: [
+      { day: 'Mon-Tue', person: 'Elder Thompson', phone: '(213) 555-0101' },
+      { day: 'Wed-Thu', person: 'Deaconess Williams', phone: '(213) 555-0102' },
+      { day: 'Fri-Sat', person: 'Mother Johnson', phone: '(213) 555-0103' },
+      { day: 'Sunday', person: 'Pastor Williams', phone: '(213) 555-0100' },
+    ],
   },
   {
     id: 'pt-3', name: 'Youth Prayer Warriors', leader: 'Pastor Alex Kim', membersCount: 6,
@@ -393,6 +412,10 @@ const PRAYER_TEAMS: PrayerTeam[] = [
     id: 'pt-4', name: 'Hospital Visitation Prayer', leader: 'Deaconess Williams', membersCount: 4,
     meetingSchedule: 'As Needed', focusArea: 'Bedside prayer, family support during hospitalization',
     attendanceRate: 95, activeRate: 100,
+    onCallRotation: [
+      { day: 'Mon-Wed', person: 'Deaconess Williams', phone: '(213) 555-0102' },
+      { day: 'Thu-Sun', person: 'Sister Adams', phone: '(213) 555-0104' },
+    ],
   },
   {
     id: 'pt-5', name: 'Missions Prayer', leader: 'Sister Nguyen', membersCount: 10,
@@ -417,6 +440,7 @@ interface PraiseReport {
   praiseCount: number;
   hallelujahCount: number;
   amenCount: number;
+  consentLinked: boolean; // whether the person consented to link this praise to their original prayer
 }
 
 const PRAISE_REPORTS: PraiseReport[] = [
@@ -424,61 +448,61 @@ const PRAISE_REPORTS: PraiseReport[] = [
     id: 'pr-1', title: 'Healing After Surgery', person: 'Brother Jackson', isAnonymous: false,
     date: 'Feb 15, 2026', testimony: 'After 3 months of recovery from my car accident, I am walking again! The doctors said it would take 6 months minimum. God is a healer and I give Him all the glory.',
     originalPrayerRef: 'Prayer for healing after car accident (Nov 2025)', category: 'health',
-    praiseCount: 156, hallelujahCount: 89, amenCount: 134,
+    praiseCount: 156, hallelujahCount: 89, amenCount: 134, consentLinked: true,
   },
   {
     id: 'pr-2', title: 'Job Provision Beyond Expectations', person: 'Sister Nguyen', isAnonymous: false,
     date: 'Feb 12, 2026', testimony: 'God opened an incredible door. I start my new position next Monday with a 30% salary increase. He gave me more than what I asked for! Exceedingly, abundantly above.',
     originalPrayerRef: 'Prayer for employment (Jan 2026)', category: 'financial',
-    praiseCount: 89, hallelujahCount: 52, amenCount: 71,
+    praiseCount: 89, hallelujahCount: 52, amenCount: 71, consentLinked: true,
   },
   {
     id: 'pr-3', title: 'Family Restoration', person: 'Mother Williams', isAnonymous: false,
     date: 'Feb 10, 2026', testimony: 'After 5 years away from the church, my son came back last Sunday and rededicated his life to Christ. He said he felt the prayers of the saints pulling him back. God is faithful!',
     originalPrayerRef: 'Prayer for prodigal son to return (ongoing since 2021)', category: 'family',
-    praiseCount: 234, hallelujahCount: 178, amenCount: 201,
+    praiseCount: 234, hallelujahCount: 178, amenCount: 201, consentLinked: true,
   },
   {
     id: 'pr-4', title: 'Addiction Breakthrough', person: 'Anonymous', isAnonymous: true,
     date: 'Feb 8, 2026', testimony: 'One year sober today. I could not have done this without the prayer covering of this church and my accountability partners. If you are struggling, there is hope.',
     originalPrayerRef: 'Confidential prayer request (Feb 2025)', category: 'health',
-    praiseCount: 198, hallelujahCount: 145, amenCount: 167,
+    praiseCount: 198, hallelujahCount: 145, amenCount: 167, consentLinked: false,
   },
   {
     id: 'pr-5', title: 'Financial Miracle — Mortgage Saved', person: 'Garcia Family', isAnonymous: false,
     date: 'Feb 5, 2026', testimony: 'The church benevolence fund and an anonymous donor covered our back payments. We are keeping our home! The body of Christ is real.',
     originalPrayerRef: 'Prayer for housing crisis (Jan 2026)', category: 'financial',
-    praiseCount: 67, hallelujahCount: 43, amenCount: 58,
+    praiseCount: 67, hallelujahCount: 43, amenCount: 58, consentLinked: true,
   },
   {
     id: 'pr-6', title: 'Pregnancy After Years of Prayer', person: 'The Parkers', isAnonymous: false,
     date: 'Feb 2, 2026', testimony: 'After 4 years of trying and two miscarriages, we are 12 weeks pregnant with a healthy baby! Every prayer, every tear, every faith-filled word was heard by God.',
     originalPrayerRef: 'Prayer for conception (ongoing since 2022)', category: 'family',
-    praiseCount: 312, hallelujahCount: 245, amenCount: 289,
+    praiseCount: 312, hallelujahCount: 245, amenCount: 289, consentLinked: true,
   },
   {
     id: 'pr-7', title: 'Reconciliation With Estranged Father', person: 'Anonymous', isAnonymous: true,
     date: 'Jan 28, 2026', testimony: 'My father and I spoke for the first time in 8 years. We both cried. He apologized. I forgave him. God healed what seemed impossible to heal.',
     originalPrayerRef: 'Prayer for family reconciliation (2024)', category: 'family',
-    praiseCount: 145, hallelujahCount: 98, amenCount: 122,
+    praiseCount: 145, hallelujahCount: 98, amenCount: 122, consentLinked: false,
   },
   {
     id: 'pr-8', title: 'College Acceptance — Full Scholarship', person: 'Sister Davis', isAnonymous: false,
     date: 'Jan 22, 2026', testimony: 'My son got accepted to his dream medical school with a full scholarship! We prayed over every application. God ordered his steps.',
     originalPrayerRef: 'Prayer for college admissions (Oct 2025)', category: 'guidance',
-    praiseCount: 94, hallelujahCount: 67, amenCount: 81,
+    praiseCount: 94, hallelujahCount: 67, amenCount: 81, consentLinked: true,
   },
   {
     id: 'pr-9', title: 'Cancer Free — Clean Scans', person: 'Brother Kim', isAnonymous: false,
     date: 'Jan 18, 2026', testimony: 'My father\'s latest scans came back completely clean. The oncologist called it remarkable. We call it a miracle. Thank you prayer warriors!',
     originalPrayerRef: 'Prayer for father\'s cancer diagnosis (2025)', category: 'health',
-    praiseCount: 267, hallelujahCount: 198, amenCount: 234,
+    praiseCount: 267, hallelujahCount: 198, amenCount: 234, consentLinked: true,
   },
   {
     id: 'pr-10', title: 'Community Outreach Impact', person: 'Missions Team', isAnonymous: false,
     date: 'Jan 15, 2026', testimony: 'Our neighborhood outreach last Saturday reached 200+ families. 14 people gave their lives to Christ. The harvest is plentiful!',
     originalPrayerRef: 'Prayer for community outreach event (Jan 2026)', category: 'church',
-    praiseCount: 178, hallelujahCount: 134, amenCount: 156,
+    praiseCount: 178, hallelujahCount: 134, amenCount: 156, consentLinked: true,
   },
 ];
 
@@ -539,8 +563,21 @@ function canSeePrivacy(privacy: PrayerPrivacy, role: ChurchRoleLens): boolean {
 
 function FeedView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
   const [prayedIds, setPrayedIds] = useState<Set<string>>(new Set());
+  const [privacyFilter, setPrivacyFilter] = useState<PrayerPrivacy | 'all'>('all');
 
-  const visiblePrayers = FEED_PRAYERS.filter((p) => canSeePrivacy(p.privacy, role));
+  // Filter by role-permitted privacy levels
+  const roleVisible = FEED_PRAYERS.filter((p) => canSeePrivacy(p.privacy, role));
+  // Then apply user-selected privacy filter
+  const visiblePrayers = privacyFilter === 'all'
+    ? roleVisible
+    : roleVisible.filter((p) => p.privacy === privacyFilter);
+
+  // Build available privacy filters based on what this role can see
+  const availablePrivacyFilters: (PrayerPrivacy | 'all')[] = ['all'];
+  if (canSeePrivacy('public', role)) availablePrivacyFilters.push('public');
+  if (canSeePrivacy('church', role)) availablePrivacyFilters.push('church');
+  if (canSeePrivacy('leadership', role)) availablePrivacyFilters.push('leadership');
+  if (canSeePrivacy('private', role)) availablePrivacyFilters.push('private');
 
   const handlePray = (id: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -555,6 +592,28 @@ function FeedView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
   return (
     <View style={s.viewContainer}>
       <SectionHeader title="COMMUNITY PRAYER WALL" colors={colors} count={visiblePrayers.length} />
+
+      {/* Privacy filter chips */}
+      {availablePrivacyFilters.length > 2 && (
+        <View style={s.filterRow}>
+          {availablePrivacyFilters.map((pf) => {
+            const isActive = privacyFilter === pf;
+            const label = pf === 'all' ? 'All' : PRIVACY_LABELS[pf];
+            const chipColor = pf === 'all' ? colors.text : PRIVACY_COLORS[pf];
+            return (
+              <Pressable
+                key={pf}
+                style={[s.filterPill, { backgroundColor: isActive ? chipColor + '20' : colors.backgroundSecondary }]}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPrivacyFilter(pf); }}
+              >
+                <ThemedText style={[s.filterPillText, { color: isActive ? chipColor : colors.textSecondary }]}>
+                  {label}
+                </ThemedText>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
 
       {visiblePrayers.map((prayer) => {
         const catColor = CATEGORY_COLORS[prayer.category];
@@ -719,6 +778,26 @@ function MyRequestsView({ colors, role }: { colors: typeof Colors.light; role: C
                 </ThemedText>
               </View>
             </View>
+
+            {/* Edit window — editable within 2h of submission or while still active (not yet assigned) */}
+            {req.status === 'active' && (
+              <View style={s.myReqEditRow}>
+                <Pressable
+                  style={[s.myReqEditBtn, { borderColor: colors.border }]}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                >
+                  <IconSymbol name="pencil" size={11} color={colors.textSecondary} />
+                  <ThemedText style={[s.myReqEditText, { color: colors.textSecondary }]}>Edit</ThemedText>
+                </Pressable>
+                <Pressable
+                  style={[s.myReqEditBtn, { borderColor: '#EF444430' }]}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                >
+                  <IconSymbol name="trash" size={11} color="#EF4444" />
+                  <ThemedText style={[s.myReqEditText, { color: '#EF4444' }]}>Delete</ThemedText>
+                </Pressable>
+              </View>
+            )}
           </Card>
         );
       })}
@@ -740,21 +819,42 @@ function MyRequestsView({ colors, role }: { colors: typeof Colors.light; role: C
 // =============================================================================
 
 function QueueView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
-  const [filterStatus, setFilterStatus] = useState<FollowUpStatus | 'all'>('all');
+  const [namedFilter, setNamedFilter] = useState<QueueNamedFilter>('all');
 
-  // Sort: urgent first, then by date
+  // Sort: escalated first, then urgent, then by date
   const sorted = [...QUEUE_ITEMS].sort((a, b) => {
+    if (a.escalated && !b.escalated) return -1;
+    if (!a.escalated && b.escalated) return 1;
     const urgencyOrder: Record<QueueUrgency, number> = { urgent: 0, normal: 1, low: 2 };
     if (urgencyOrder[a.urgency] !== urgencyOrder[b.urgency]) return urgencyOrder[a.urgency] - urgencyOrder[b.urgency];
-    return 0; // maintain mock data order for same urgency
+    return 0;
   });
 
   // Filter by privacy (C3 can't see private)
   const privacyFiltered = sorted.filter((item) => canSeePrivacy(item.privacy, role));
 
-  const filtered = filterStatus === 'all'
-    ? privacyFiltered
-    : privacyFiltered.filter((item) => item.followUpStatus === filterStatus);
+  // Apply named filter
+  const filtered = (() => {
+    switch (namedFilter) {
+      case 'urgent': return privacyFiltered.filter((i) => i.urgency === 'urgent');
+      case 'new': return privacyFiltered.filter((i) => i.followUpStatus === 'new');
+      case 'needs-followup': return privacyFiltered.filter((i) => i.needsFollowUp || i.followUpStatus === 'new' || i.followUpStatus === 'in-progress');
+      case 'my-team': return privacyFiltered.filter((i) => i.assignedTo != null);
+      case 'escalations': return privacyFiltered.filter((i) => i.escalated || i.followUpStatus === 'escalated');
+      case 'closed': return privacyFiltered.filter((i) => i.followUpStatus === 'resolved');
+      default: return privacyFiltered;
+    }
+  })();
+
+  const NAMED_FILTER_LABELS: Record<QueueNamedFilter, string> = {
+    all: 'All',
+    urgent: 'Urgent',
+    new: 'New',
+    'needs-followup': 'Needs Follow-Up',
+    'my-team': 'Assigned',
+    escalations: 'Escalations',
+    closed: 'Closed',
+  };
 
   return (
     <View style={s.viewContainer}>
@@ -777,27 +877,26 @@ function QueueView({ colors, role }: { colors: typeof Colors.light; role: Church
         </View>
       </Card>
 
-      {/* Follow-up status filter */}
-      <View style={s.filterRow}>
-        {(['all', 'new', 'in-progress', 'contacted', 'resolved'] as const).map((status) => {
-          const isActive = filterStatus === status;
-          const label = status === 'all' ? 'All' : FOLLOW_UP_LABELS[status as FollowUpStatus];
+      {/* 6 named filter views */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.filterRow}>
+        {(['all', 'urgent', 'new', 'needs-followup', 'my-team', 'escalations', 'closed'] as QueueNamedFilter[]).map((nf) => {
+          const isActive = namedFilter === nf;
           return (
             <Pressable
-              key={status}
+              key={nf}
               style={[s.filterPill, { backgroundColor: isActive ? colors.text + 'E0' : colors.backgroundSecondary }]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setFilterStatus(status);
+                setNamedFilter(nf);
               }}
             >
               <ThemedText style={[s.filterPillText, { color: isActive ? colors.background : colors.textSecondary }]}>
-                {label}
+                {NAMED_FILTER_LABELS[nf]}
               </ThemedText>
             </Pressable>
           );
         })}
-      </View>
+      </ScrollView>
 
       {/* Queue items */}
       <SectionHeader title="REQUESTS REQUIRING FOLLOW-UP" colors={colors} count={filtered.length} />
@@ -958,6 +1057,38 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Church
                 </View>
               </View>
             </View>
+
+            {/* On-call rotation */}
+            {team.onCallRotation && team.onCallRotation.length > 0 && (
+              <View style={[s.onCallSection, { borderTopColor: colors.border }]}>
+                <ThemedText style={[s.onCallTitle, { color: colors.textSecondary }]}>ON-CALL ROTATION</ThemedText>
+                {team.onCallRotation.map((slot) => (
+                  <View key={slot.day} style={s.onCallRow}>
+                    <ThemedText style={[s.onCallDay, { color: colors.textTertiary }]}>{slot.day}</ThemedText>
+                    <ThemedText style={[s.onCallPerson, { color: colors.text }]}>{slot.person}</ThemedText>
+                    <ThemedText style={[s.onCallPhone, { color: colors.textTertiary }]}>{slot.phone}</ThemedText>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Join / Leave action */}
+            <View style={s.teamActionRow}>
+              <Pressable
+                style={[s.teamJoinBtn, { borderColor: '#3B82F640' }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+              >
+                <IconSymbol name="person.badge.plus" size={12} color="#3B82F6" />
+                <ThemedText style={[s.teamJoinText, { color: '#3B82F6' }]}>Join Team</ThemedText>
+              </Pressable>
+              <Pressable
+                style={[s.teamJoinBtn, { borderColor: colors.border }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              >
+                <IconSymbol name="rectangle.portrait.and.arrow.right" size={12} color={colors.textTertiary} />
+                <ThemedText style={[s.teamJoinText, { color: colors.textTertiary }]}>Leave</ThemedText>
+              </Pressable>
+            </View>
           </Card>
         );
       })}
@@ -1018,11 +1149,23 @@ function PraiseView({ colors, role }: { colors: typeof Colors.light; role: Churc
               {report.testimony}
             </ThemedText>
 
-            {/* Original prayer reference */}
-            <View style={[s.praiseOriginalRef, { borderColor: colors.border }]}>
-              <ThemedText style={[s.praiseOriginalLabel, { color: colors.textTertiary }]}>Original Prayer:</ThemedText>
-              <ThemedText style={[s.praiseOriginalText, { color: colors.textTertiary }]}>{report.originalPrayerRef}</ThemedText>
-            </View>
+            {/* Original prayer reference — only shown when consent is granted */}
+            {report.consentLinked ? (
+              <View style={[s.praiseOriginalRef, { borderColor: colors.border }]}>
+                <View style={s.praiseConsentRow}>
+                  <IconSymbol name="link" size={10} color={colors.textTertiary} />
+                  <ThemedText style={[s.praiseOriginalLabel, { color: colors.textTertiary }]}>Linked Prayer Request:</ThemedText>
+                </View>
+                <ThemedText style={[s.praiseOriginalText, { color: colors.textTertiary }]}>{report.originalPrayerRef}</ThemedText>
+              </View>
+            ) : (
+              <View style={[s.praiseOriginalRef, { borderColor: colors.border }]}>
+                <View style={s.praiseConsentRow}>
+                  <IconSymbol name="lock.fill" size={10} color={colors.textTertiary} />
+                  <ThemedText style={[s.praiseOriginalLabel, { color: colors.textTertiary }]}>Original prayer kept private</ThemedText>
+                </View>
+              </View>
+            )}
 
             {/* Category badge */}
             <View style={[s.categoryBadge, { backgroundColor: catColor + '20' }]}>
@@ -1206,6 +1349,11 @@ const s = StyleSheet.create({
   feedCommentRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   feedCommentCount: { fontSize: 12 },
 
+  // ---- MY REQUESTS VIEW (edit window) ----
+  myReqEditRow: { flexDirection: 'row', gap: 8, marginTop: 6 },
+  myReqEditBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: BorderRadius.md, borderWidth: StyleSheet.hairlineWidth },
+  myReqEditText: { fontSize: 11, fontWeight: '600' },
+
   // ---- MY REQUESTS VIEW ----
   myReqHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.sm },
   myReqDate: { fontSize: 12 },
@@ -1261,6 +1409,17 @@ const s = StyleSheet.create({
   teamHealthDot: { width: 6, height: 6, borderRadius: 3 },
   teamHealthValue: { fontSize: 14, fontWeight: '700' },
 
+  // ---- TEAMS VIEW (on-call + join/leave) ----
+  onCallSection: { marginTop: Spacing.sm, paddingTop: Spacing.sm, borderTopWidth: StyleSheet.hairlineWidth },
+  onCallTitle: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 6 },
+  onCallRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
+  onCallDay: { fontSize: 11, fontWeight: '600', width: 60 },
+  onCallPerson: { fontSize: 11, flex: 1 },
+  onCallPhone: { fontSize: 10 },
+  teamActionRow: { flexDirection: 'row', gap: 8, marginTop: Spacing.sm },
+  teamJoinBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: BorderRadius.md, borderWidth: StyleSheet.hairlineWidth },
+  teamJoinText: { fontSize: 11, fontWeight: '600' },
+
   // ---- PRAISE VIEW ----
   praiseHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginBottom: Spacing.sm },
   praiseHeaderInfo: { flex: 1 },
@@ -1272,7 +1431,8 @@ const s = StyleSheet.create({
     paddingLeft: 10,
     marginBottom: Spacing.sm,
   },
-  praiseOriginalLabel: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.3, marginBottom: 2 },
+  praiseConsentRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 },
+  praiseOriginalLabel: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.3 },
   praiseOriginalText: { fontSize: 12, fontStyle: 'italic' },
   praiseReactionRow: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' },
   praiseReactionBtn: {

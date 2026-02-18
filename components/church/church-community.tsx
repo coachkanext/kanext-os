@@ -125,8 +125,43 @@ const RECENT_EVENTS: CommunityEvent[] = [
 ];
 
 // =============================================================================
+// INLINE MOCK DATA — OVERVIEW ALERTS
+// =============================================================================
+
+interface CommunityAlert {
+  id: string;
+  label: string;
+  detail: string;
+  severity: 'warning' | 'info';
+  icon: string;
+}
+
+const OVERVIEW_ALERTS: CommunityAlert[] = [
+  { id: 'al-1', label: 'Visitor follow-up overdue', detail: '3 visitors from last Sunday have not been contacted (48h SLA expired)', severity: 'warning', icon: 'exclamationmark.triangle.fill' },
+  { id: 'al-2', label: 'Care request unresponded', detail: '1 care request pending assignment for 36h', severity: 'warning', icon: 'heart.text.square.fill' },
+  { id: 'al-3', label: '2 new members awaiting group placement', detail: 'James & Kathy Lee and Fatima Al-Hassan need small group connection', severity: 'info', icon: 'person.badge.plus' },
+];
+
+interface QuickAction {
+  id: string;
+  label: string;
+  icon: string;
+  color: string;
+}
+
+const OVERVIEW_QUICK_ACTIONS: QuickAction[] = [
+  { id: 'qa-1', label: 'Log Visit', icon: 'person.fill.checkmark', color: '#22C55E' },
+  { id: 'qa-2', label: 'New Care Case', icon: 'heart.text.square.fill', color: '#EF4444' },
+  { id: 'qa-3', label: 'Send Message', icon: 'paperplane.fill', color: '#3B82F6' },
+  { id: 'qa-4', label: 'Schedule Follow-up', icon: 'calendar.badge.plus', color: '#8B5CF6' },
+];
+
+// =============================================================================
 // INLINE MOCK DATA — PEOPLE (DIRECTORY)
 // =============================================================================
+
+type FollowUpStatus = 'none' | 'due' | 'in-progress' | 'completed';
+type Sensitivity = 'normal' | 'restricted';
 
 interface PersonEntry {
   id: string;
@@ -139,7 +174,23 @@ interface PersonEntry {
   email: string;
   phone: string;
   notes?: string;
+  followUpStatus?: FollowUpStatus;
+  sensitivity?: Sensitivity;
 }
+
+const FOLLOW_UP_COLORS: Record<FollowUpStatus, string> = {
+  none: '#8F8F8F',
+  due: '#EF4444',
+  'in-progress': '#F59E0B',
+  completed: '#22C55E',
+};
+
+const FOLLOW_UP_LABELS: Record<FollowUpStatus, string> = {
+  none: 'None',
+  due: 'Due',
+  'in-progress': 'In Progress',
+  completed: 'Completed',
+};
 
 const PEOPLE_DIRECTORY: PersonEntry[] = [
   // Leaders
@@ -160,13 +211,13 @@ const PEOPLE_DIRECTORY: PersonEntry[] = [
   { id: 'p-13', name: 'Carlos Martinez', role: 'Tech Team Volunteer', ministry: 'Production', campus: 'South Bay', memberSince: 'Oct 2021', category: 'member', email: 'cmartinez@gmail.com', phone: '(424) 555-7004' },
   { id: 'p-14', name: 'Dorothy Mae Harris', role: 'Intercessory Prayer', ministry: 'Prayer', campus: 'Downtown', memberSince: 'Jun 1984', category: 'member', email: 'dharris@gmail.com', phone: '(213) 555-7005' },
   // New Members
-  { id: 'p-15', name: 'James & Kathy Lee', role: 'New Member', ministry: '\u2014', campus: 'Westside', memberSince: 'Jan 2026', category: 'new-member', email: 'jklee@gmail.com', phone: '(310) 555-8001' },
-  { id: 'p-16', name: 'Fatima Al-Hassan', role: 'New Member', ministry: '\u2014', campus: 'Downtown', memberSince: 'Feb 2026', category: 'new-member', email: 'falhassan@gmail.com', phone: '(213) 555-8002' },
-  { id: 'p-17', name: 'Devon & Crystal Washington', role: 'New Member', ministry: 'Children (exploring)', campus: 'South Bay', memberSince: 'Jan 2026', category: 'new-member', email: 'dwashington@gmail.com', phone: '(424) 555-8003' },
+  { id: 'p-15', name: 'James & Kathy Lee', role: 'New Member', ministry: '\u2014', campus: 'Westside', memberSince: 'Jan 2026', category: 'new-member', email: 'jklee@gmail.com', phone: '(310) 555-8001', followUpStatus: 'in-progress' },
+  { id: 'p-16', name: 'Fatima Al-Hassan', role: 'New Member', ministry: '\u2014', campus: 'Downtown', memberSince: 'Feb 2026', category: 'new-member', email: 'falhassan@gmail.com', phone: '(213) 555-8002', followUpStatus: 'due' },
+  { id: 'p-17', name: 'Devon & Crystal Washington', role: 'New Member', ministry: 'Children (exploring)', campus: 'South Bay', memberSince: 'Jan 2026', category: 'new-member', email: 'dwashington@gmail.com', phone: '(424) 555-8003', followUpStatus: 'completed' },
   // Visitors
-  { id: 'p-18', name: 'Michael Torres', role: 'Visitor', ministry: '\u2014', campus: 'Downtown', memberSince: 'Feb 2026', category: 'visitor', email: 'mtorres@gmail.com', phone: '(213) 555-9001' },
-  { id: 'p-19', name: 'Sophia Grant', role: 'Visitor', ministry: '\u2014', campus: 'Westside', memberSince: 'Feb 2026', category: 'visitor', email: 'sgrant@gmail.com', phone: '(310) 555-9002' },
-  { id: 'p-20', name: 'Robert & Yolanda Simmons', role: 'Visitor', ministry: '\u2014', campus: 'South Bay', memberSince: 'Feb 2026', category: 'visitor', email: 'rsimmons@gmail.com', phone: '(424) 555-9003' },
+  { id: 'p-18', name: 'Michael Torres', role: 'Visitor', ministry: '\u2014', campus: 'Downtown', memberSince: 'Feb 2026', category: 'visitor', email: 'mtorres@gmail.com', phone: '(213) 555-9001', followUpStatus: 'due', sensitivity: 'restricted' },
+  { id: 'p-19', name: 'Sophia Grant', role: 'Visitor', ministry: '\u2014', campus: 'Westside', memberSince: 'Feb 2026', category: 'visitor', email: 'sgrant@gmail.com', phone: '(310) 555-9002', followUpStatus: 'due' },
+  { id: 'p-20', name: 'Robert & Yolanda Simmons', role: 'Visitor', ministry: '\u2014', campus: 'South Bay', memberSince: 'Feb 2026', category: 'visitor', email: 'rsimmons@gmail.com', phone: '(424) 555-9003', followUpStatus: 'none' },
 ];
 
 const PEOPLE_FILTER_CHIPS = ['All', 'Leaders', 'Staff', 'New Members', 'Visitors'] as const;
@@ -186,6 +237,8 @@ const FILTER_TO_CATEGORY: Record<PeopleFilter, PersonEntry['category'] | 'all'> 
 
 type GroupType = 'Bible Study' | 'Life Group' | 'Recovery' | 'Men\'s' | 'Women\'s' | 'Young Adults' | 'Couples' | 'Prayer' | 'Foundations' | 'Support' | 'Outreach' | 'Seniors';
 
+type GroupHealth = 'healthy' | 'at-risk' | 'inactive';
+
 interface SmallGroup {
   id: string;
   name: string;
@@ -199,21 +252,34 @@ interface SmallGroup {
   campus: string;
   avgAttendance?: number; // staff+ only
   trend?: 'up' | 'down' | 'stable'; // staff+ only
+  health?: GroupHealth;
 }
 
+const GROUP_HEALTH_COLOR: Record<GroupHealth, string> = {
+  healthy: '#22C55E',
+  'at-risk': '#F59E0B',
+  inactive: '#EF4444',
+};
+
+const GROUP_HEALTH_LABEL: Record<GroupHealth, string> = {
+  healthy: 'HEALTHY',
+  'at-risk': 'AT RISK',
+  inactive: 'INACTIVE',
+};
+
 const GROUPS: SmallGroup[] = [
-  { id: 'g-1', name: 'Men of Purpose', leader: 'Elder Robert Thompson', dayTime: 'Tue 7:00 PM', location: 'Downtown \u2014 Room 204', type: 'Men\'s', currentMembers: 12, capacity: 15, status: 'open', campus: 'Downtown', avgAttendance: 88, trend: 'up' },
-  { id: 'g-2', name: 'Women of Grace', leader: 'Deaconess Sarah Mitchell', dayTime: 'Wed 10:00 AM', location: 'Downtown \u2014 Fellowship Hall', type: 'Women\'s', currentMembers: 18, capacity: 20, status: 'open', campus: 'Downtown', avgAttendance: 92, trend: 'stable' },
-  { id: 'g-3', name: 'Young Adults Connect', leader: 'Pastor Alex Kim', dayTime: 'Thu 7:30 PM', location: 'Westside \u2014 Lounge', type: 'Young Adults', currentMembers: 25, capacity: 30, status: 'open', campus: 'Westside', avgAttendance: 78, trend: 'up' },
-  { id: 'g-4', name: 'Marriage Enrichment', leader: 'Pastor & Mrs. Williams', dayTime: 'Fri 7:00 PM', location: 'Downtown \u2014 Room 110', type: 'Couples', currentMembers: 8, capacity: 10, status: 'open', campus: 'Downtown', avgAttendance: 95, trend: 'stable' },
-  { id: 'g-5', name: 'Grief & Hope', leader: 'Chaplain Davis', dayTime: 'Sat 10:00 AM', location: 'Downtown \u2014 Chapel', type: 'Support', currentMembers: 6, capacity: 12, status: 'open', campus: 'Downtown', avgAttendance: 82, trend: 'up' },
-  { id: 'g-6', name: 'New Believers Foundations', leader: 'Deacon Martinez', dayTime: 'Sun 12:00 PM', location: 'All Campuses', type: 'Foundations', currentMembers: 14, capacity: 20, status: 'open', campus: 'All', avgAttendance: 70, trend: 'down' },
-  { id: 'g-7', name: 'Intercessory Prayer Warriors', leader: 'Mother Johnson', dayTime: 'Daily 6:00 AM', location: 'Downtown \u2014 Prayer Room', type: 'Prayer', currentMembers: 20, capacity: 20, status: 'closed', campus: 'Downtown', avgAttendance: 96, trend: 'stable' },
-  { id: 'g-8', name: 'Genesis Bible Study', leader: 'Pastor David Chen', dayTime: 'Wed 7:00 PM', location: 'Downtown \u2014 Sanctuary', type: 'Bible Study', currentMembers: 45, capacity: 60, status: 'open', campus: 'Downtown', avgAttendance: 85, trend: 'up' },
-  { id: 'g-9', name: 'Freedom Recovery', leader: 'Minister Thomas', dayTime: 'Mon 7:00 PM', location: 'Downtown \u2014 Room 106', type: 'Recovery', currentMembers: 10, capacity: 15, status: 'open', campus: 'Downtown', avgAttendance: 74, trend: 'up' },
-  { id: 'g-10', name: 'Community Outreach Team', leader: 'Deacon Marcus Rivera', dayTime: 'Sat 9:00 AM', location: 'Rotating Locations', type: 'Outreach', currentMembers: 22, capacity: 30, status: 'open', campus: 'All', avgAttendance: 68, trend: 'stable' },
-  { id: 'g-11', name: 'Wisdom Circle (Seniors)', leader: 'Elder Patricia Moore', dayTime: 'Thu 11:00 AM', location: 'Downtown \u2014 Fellowship Hall', type: 'Seniors', currentMembers: 16, capacity: 20, status: 'open', campus: 'Downtown', avgAttendance: 91, trend: 'stable' },
-  { id: 'g-12', name: 'South Bay Life Group', leader: 'Pastor James Okafor', dayTime: 'Tue 7:00 PM', location: 'South Bay \u2014 Main Room', type: 'Life Group', currentMembers: 15, capacity: 18, status: 'open', campus: 'South Bay', avgAttendance: 80, trend: 'up' },
+  { id: 'g-1', name: 'Men of Purpose', leader: 'Elder Robert Thompson', dayTime: 'Tue 7:00 PM', location: 'Downtown \u2014 Room 204', type: 'Men\'s', currentMembers: 12, capacity: 15, status: 'open', campus: 'Downtown', avgAttendance: 88, trend: 'up', health: 'healthy' },
+  { id: 'g-2', name: 'Women of Grace', leader: 'Deaconess Sarah Mitchell', dayTime: 'Wed 10:00 AM', location: 'Downtown \u2014 Fellowship Hall', type: 'Women\'s', currentMembers: 18, capacity: 20, status: 'open', campus: 'Downtown', avgAttendance: 92, trend: 'stable', health: 'healthy' },
+  { id: 'g-3', name: 'Young Adults Connect', leader: 'Pastor Alex Kim', dayTime: 'Thu 7:30 PM', location: 'Westside \u2014 Lounge', type: 'Young Adults', currentMembers: 25, capacity: 30, status: 'open', campus: 'Westside', avgAttendance: 78, trend: 'up', health: 'healthy' },
+  { id: 'g-4', name: 'Marriage Enrichment', leader: 'Pastor & Mrs. Williams', dayTime: 'Fri 7:00 PM', location: 'Downtown \u2014 Room 110', type: 'Couples', currentMembers: 8, capacity: 10, status: 'open', campus: 'Downtown', avgAttendance: 95, trend: 'stable', health: 'healthy' },
+  { id: 'g-5', name: 'Grief & Hope', leader: 'Chaplain Davis', dayTime: 'Sat 10:00 AM', location: 'Downtown \u2014 Chapel', type: 'Support', currentMembers: 6, capacity: 12, status: 'open', campus: 'Downtown', avgAttendance: 82, trend: 'up', health: 'healthy' },
+  { id: 'g-6', name: 'New Believers Foundations', leader: 'Deacon Martinez', dayTime: 'Sun 12:00 PM', location: 'All Campuses', type: 'Foundations', currentMembers: 14, capacity: 20, status: 'open', campus: 'All', avgAttendance: 70, trend: 'down', health: 'at-risk' },
+  { id: 'g-7', name: 'Intercessory Prayer Warriors', leader: 'Mother Johnson', dayTime: 'Daily 6:00 AM', location: 'Downtown \u2014 Prayer Room', type: 'Prayer', currentMembers: 20, capacity: 20, status: 'closed', campus: 'Downtown', avgAttendance: 96, trend: 'stable', health: 'healthy' },
+  { id: 'g-8', name: 'Genesis Bible Study', leader: 'Pastor David Chen', dayTime: 'Wed 7:00 PM', location: 'Downtown \u2014 Sanctuary', type: 'Bible Study', currentMembers: 45, capacity: 60, status: 'open', campus: 'Downtown', avgAttendance: 85, trend: 'up', health: 'healthy' },
+  { id: 'g-9', name: 'Freedom Recovery', leader: 'Minister Thomas', dayTime: 'Mon 7:00 PM', location: 'Downtown \u2014 Room 106', type: 'Recovery', currentMembers: 10, capacity: 15, status: 'open', campus: 'Downtown', avgAttendance: 74, trend: 'up', health: 'at-risk' },
+  { id: 'g-10', name: 'Community Outreach Team', leader: 'Deacon Marcus Rivera', dayTime: 'Sat 9:00 AM', location: 'Rotating Locations', type: 'Outreach', currentMembers: 22, capacity: 30, status: 'open', campus: 'All', avgAttendance: 68, trend: 'stable', health: 'at-risk' },
+  { id: 'g-11', name: 'Wisdom Circle (Seniors)', leader: 'Elder Patricia Moore', dayTime: 'Thu 11:00 AM', location: 'Downtown \u2014 Fellowship Hall', type: 'Seniors', currentMembers: 16, capacity: 20, status: 'open', campus: 'Downtown', avgAttendance: 91, trend: 'stable', health: 'healthy' },
+  { id: 'g-12', name: 'South Bay Life Group', leader: 'Pastor James Okafor', dayTime: 'Tue 7:00 PM', location: 'South Bay \u2014 Main Room', type: 'Life Group', currentMembers: 15, capacity: 18, status: 'open', campus: 'South Bay', avgAttendance: 80, trend: 'up', health: 'healthy' },
 ];
 
 const GROUP_TYPE_COLORS: Record<string, string> = {
@@ -444,9 +510,50 @@ const vt = StyleSheet.create({
 function OverviewView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
   return (
     <View>
-      {/* Community Health KPIs */}
+      {/* Alerts (staff+) */}
+      {isStaffLevel(role) && OVERVIEW_ALERTS.length > 0 && (
+        <View style={s.moduleContainer}>
+          <SectionHeader title="ALERTS" colors={colors} icon="exclamationmark.triangle.fill" count={OVERVIEW_ALERTS.length} />
+          {OVERVIEW_ALERTS.map((alert) => (
+            <Card key={alert.id} colors={colors} style={{ borderColor: alert.severity === 'warning' ? '#F59E0B40' : colors.border }}>
+              <View style={s.alertRow}>
+                <View style={[s.alertIconWrap, { backgroundColor: alert.severity === 'warning' ? '#F59E0B20' : '#3B82F620' }]}>
+                  <IconSymbol name={alert.icon as any} size={14} color={alert.severity === 'warning' ? '#F59E0B' : '#3B82F6'} />
+                </View>
+                <View style={s.alertContent}>
+                  <ThemedText style={[s.alertLabel, { color: colors.text }]}>{alert.label}</ThemedText>
+                  <ThemedText style={[s.alertDetail, { color: colors.textSecondary }]}>{alert.detail}</ThemedText>
+                </View>
+              </View>
+            </Card>
+          ))}
+        </View>
+      )}
+
+      {/* Quick Actions (staff+) */}
+      {isStaffLevel(role) && (
+        <View style={s.moduleContainer}>
+          <SectionHeader title="QUICK ACTIONS" colors={colors} />
+          <View style={s.quickActionsGrid}>
+            {OVERVIEW_QUICK_ACTIONS.map((qa) => (
+              <Pressable
+                key={qa.id}
+                style={({ pressed }) => [s.quickActionTile, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.7 : 1 }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              >
+                <View style={[s.quickActionIcon, { backgroundColor: qa.color + '20' }]}>
+                  <IconSymbol name={qa.icon as any} size={16} color={qa.color} />
+                </View>
+                <ThemedText style={[s.quickActionLabel, { color: colors.text }]}>{qa.label}</ThemedText>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Connection Health Snapshot */}
       <View style={s.moduleContainer}>
-        <SectionHeader title="COMMUNITY HEALTH" colors={colors} icon="heart.fill" />
+        <SectionHeader title="CONNECTION HEALTH SNAPSHOT" colors={colors} icon="heart.fill" />
         <Card colors={colors}>
           <View style={s.kpiGrid}>
             {HEALTH_KPIS.map((kpi) => (
@@ -715,6 +822,25 @@ function PeopleView({ colors, role }: { colors: typeof Colors.light; role: Churc
                     {person.ministry} {'\u00B7'} {person.campus} {'\u00B7'} Since {person.memberSince}
                   </ThemedText>
 
+                  {/* Follow-up status + sensitivity badges (staff+) */}
+                  {showContactInfo && (person.followUpStatus || person.sensitivity === 'restricted') && (
+                    <View style={s.personBadgeRow}>
+                      {person.followUpStatus && person.followUpStatus !== 'none' && (
+                        <View style={[s.fuBadge, { backgroundColor: FOLLOW_UP_COLORS[person.followUpStatus] + '20' }]}>
+                          <ThemedText style={[s.fuBadgeText, { color: FOLLOW_UP_COLORS[person.followUpStatus] }]}>
+                            {FOLLOW_UP_LABELS[person.followUpStatus].toUpperCase()}
+                          </ThemedText>
+                        </View>
+                      )}
+                      {person.sensitivity === 'restricted' && (
+                        <View style={[s.fuBadge, { backgroundColor: '#EF444420' }]}>
+                          <IconSymbol name="lock.fill" size={8} color="#EF4444" />
+                          <ThemedText style={[s.fuBadgeText, { color: '#EF4444' }]}>RESTRICTED</ThemedText>
+                        </View>
+                      )}
+                    </View>
+                  )}
+
                   {isExpanded && (
                     <View style={s.expandedDetails}>
                       {showContactInfo && (
@@ -875,6 +1001,14 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
                   <ThemedText style={[s.groupMembers, { color: colors.textTertiary }]}>
                     {group.currentMembers}/{group.capacity} members
                   </ThemedText>
+                  {group.health && (
+                    <View style={[s.groupHealthBadge, { backgroundColor: GROUP_HEALTH_COLOR[group.health] + '20' }]}>
+                      <View style={[s.groupHealthDot, { backgroundColor: GROUP_HEALTH_COLOR[group.health] }]} />
+                      <ThemedText style={[s.groupHealthBadgeText, { color: GROUP_HEALTH_COLOR[group.health] }]}>
+                        {GROUP_HEALTH_LABEL[group.health]}
+                      </ThemedText>
+                    </View>
+                  )}
                   {isFull ? (
                     <View style={[s.groupStatusBadge, { backgroundColor: '#EF444420' }]}>
                       <ThemedText style={[s.groupStatusText, { color: '#EF4444' }]}>FULL</ThemedText>
@@ -1039,17 +1173,13 @@ function CareView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
         </View>
       )}
 
-      {/* Care Cases */}
-      <View style={s.moduleContainer}>
-        <SectionHeader title="CARE CASES" colors={colors} count={filtered.length} />
-        {filtered.length === 0 && (
-          <Card colors={colors}>
-            <ThemedText style={[s.emptyText, { color: colors.textTertiary }]}>
-              No cases match your current filter.
-            </ThemedText>
-          </Card>
-        )}
-        {filtered.map((cc) => {
+      {/* 3 Named Queues */}
+      {(() => {
+        const newVisitors = filtered.filter((c) => c.type === 'new-member-followup');
+        const followUps = filtered.filter((c) => c.type !== 'new-member-followup' && c.type !== 'counseling' && c.type !== 'crisis');
+        const careRestricted = filtered.filter((c) => c.type === 'counseling' || c.type === 'crisis');
+
+        const renderCareCard = (cc: CareCase) => {
           const isExpanded = expandedId === cc.id;
           const typeColor = CARE_TYPE_COLORS[cc.type] ?? '#6B7280';
           const priorityColor = PRIORITY_COLORS[cc.priority];
@@ -1116,8 +1246,54 @@ function CareView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
               </Card>
             </Pressable>
           );
-        })}
-      </View>
+        };
+
+        return (
+          <>
+            {/* Queue 1: New Visitor Queue */}
+            {newVisitors.length > 0 && (
+              <View style={s.moduleContainer}>
+                <SectionHeader title="NEW VISITOR QUEUE" colors={colors} count={newVisitors.length} icon="person.badge.plus" />
+                <View style={[s.slaBanner, { backgroundColor: '#F59E0B15', borderColor: '#F59E0B30' }]}>
+                  <IconSymbol name="clock.fill" size={11} color="#F59E0B" />
+                  <ThemedText style={[s.slaBannerText, { color: '#F59E0B' }]}>48h SLA — contact within 48 hours of first visit</ThemedText>
+                </View>
+                {newVisitors.map(renderCareCard)}
+              </View>
+            )}
+
+            {/* Queue 2: Follow-up Queue */}
+            {followUps.length > 0 && (
+              <View style={s.moduleContainer}>
+                <SectionHeader title="FOLLOW-UP QUEUE" colors={colors} count={followUps.length} icon="arrow.uturn.forward" />
+                {followUps.map(renderCareCard)}
+              </View>
+            )}
+
+            {/* Queue 3: Care Requests (restricted — elder+ only) */}
+            {careRestricted.length > 0 && isElderLevel(role) && (
+              <View style={s.moduleContainer}>
+                <SectionHeader title="CARE REQUESTS" colors={colors} count={careRestricted.length} icon="lock.fill" />
+                <View style={[s.slaBanner, { backgroundColor: '#EF444415', borderColor: '#EF444430' }]}>
+                  <IconSymbol name="lock.fill" size={11} color="#EF4444" />
+                  <ThemedText style={[s.slaBannerText, { color: '#EF4444' }]}>Restricted — pastoral care cases visible to C1/C2 only</ThemedText>
+                </View>
+                {careRestricted.map(renderCareCard)}
+              </View>
+            )}
+
+            {filtered.length === 0 && (
+              <View style={s.moduleContainer}>
+                <Card colors={colors}>
+                  <ThemedText style={[s.emptyText, { color: colors.textTertiary }]}>
+                    No cases match your current filter.
+                  </ThemedText>
+                </Card>
+              </View>
+            )}
+          </>
+        );
+      })()}
     </View>
   );
 }
@@ -1520,4 +1696,39 @@ const s = StyleSheet.create({
   hiddenContent: { alignItems: 'center', paddingVertical: Spacing.xl, gap: Spacing.sm },
   hiddenTitle: { fontSize: 16, fontWeight: '700' },
   hiddenText: { fontSize: 13, textAlign: 'center', lineHeight: 18, paddingHorizontal: Spacing.md },
+
+  // ---- Overview: Alerts ----
+  alertRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  alertIconWrap: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginTop: 2 },
+  alertContent: { flex: 1 },
+  alertLabel: { fontSize: 13, fontWeight: '600', marginBottom: 2 },
+  alertDetail: { fontSize: 11, lineHeight: 15 },
+
+  // ---- Overview: Quick Actions ----
+  quickActionsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
+  quickActionTile: {
+    width: '48%', flexDirection: 'row', alignItems: 'center', gap: 8,
+    padding: Spacing.sm, borderRadius: BorderRadius.md, borderWidth: StyleSheet.hairlineWidth,
+  },
+  quickActionIcon: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  quickActionLabel: { fontSize: 12, fontWeight: '600' },
+
+  // ---- People: Follow-up + Sensitivity badges ----
+  personBadgeRow: { flexDirection: 'row', gap: 4, marginTop: 4 },
+  fuBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  fuBadgeText: { fontSize: 8, fontWeight: '700', letterSpacing: 0.3 },
+
+  // ---- Groups: Health badge ----
+  groupHealthBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  groupHealthDot: { width: 5, height: 5, borderRadius: 2.5 },
+  groupHealthBadgeText: { fontSize: 8, fontWeight: '700', letterSpacing: 0.3 },
+
+  // ---- Care: SLA banner ----
+  slaBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: Spacing.sm, paddingVertical: 8,
+    borderRadius: BorderRadius.md, borderWidth: StyleSheet.hairlineWidth,
+    marginBottom: Spacing.sm,
+  },
+  slaBannerText: { fontSize: 11, fontWeight: '500', flex: 1 },
 });

@@ -77,6 +77,17 @@ interface AgendaEvent {
   notes?: string;
   staffOnly?: boolean;
   leaderOnly?: boolean;
+  isBlocked?: boolean;
+  decisionRequired?: boolean;
+  dueWithin24h?: boolean;
+}
+
+function sortAgendaByPriority(events: AgendaEvent[]): AgendaEvent[] {
+  return [...events].sort((a, b) => {
+    const scoreA = (a.isBlocked ? 100 : 0) + (a.decisionRequired ? 50 : 0) + (a.dueWithin24h ? 25 : 0) + (a.type === 'service' ? 10 : 0);
+    const scoreB = (b.isBlocked ? 100 : 0) + (b.decisionRequired ? 50 : 0) + (b.dueWithin24h ? 25 : 0) + (b.type === 'service' ? 10 : 0);
+    return scoreB - scoreA;
+  });
 }
 
 const EVENT_TYPE_COLOR: Record<AgendaEventType, string> = {
@@ -99,7 +110,7 @@ const EVENT_TYPE_LABEL: Record<AgendaEventType, string> = {
 
 const TODAY_AGENDA: AgendaEvent[] = [
   { id: 'ca-1', time: '6:00 AM', endTime: '6:45 AM', title: 'Pastoral Prayer Walk', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Kalejaiye', leaderOnly: true },
-  { id: 'ca-2', time: '7:00 AM', endTime: '7:30 AM', title: 'AV System Check & Sound Test', type: 'facility', location: 'Main Sanctuary', assignedTo: 'Media Team', staffOnly: true },
+  { id: 'ca-2', time: '7:00 AM', endTime: '7:30 AM', title: 'AV System Check & Sound Test', type: 'facility', location: 'Main Sanctuary', assignedTo: 'Media Team', staffOnly: true, isBlocked: true },
   { id: 'ca-3', time: '7:30 AM', endTime: '8:00 AM', title: 'Worship Team Rehearsal (Early)', type: 'volunteer', location: 'Main Sanctuary', assignedTo: 'Worship Team' },
   { id: 'ca-4', time: '8:00 AM', endTime: '9:15 AM', title: 'Sunday Early Service', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Kalejaiye', notes: 'Communion Sunday' },
   { id: 'ca-5', time: '9:15 AM', endTime: '9:45 AM', title: 'Greeter & Usher Setup', type: 'volunteer', location: 'Lobby / Entrance', assignedTo: 'Hospitality Team' },
@@ -107,7 +118,7 @@ const TODAY_AGENDA: AgendaEvent[] = [
   { id: 'ca-7', time: '10:00 AM', endTime: '11:30 AM', title: 'Sunday Main Worship', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Kalejaiye', notes: 'Sermon: "Walking by Faith" — Hebrews 11' },
   { id: 'ca-8', time: '10:00 AM', endTime: '11:30 AM', title: "Children's Church", type: 'ministry', location: 'Children\'s Wing', assignedTo: 'Sis. Adeola Johnson' },
   { id: 'ca-9', time: '11:30 AM', endTime: '12:00 PM', title: 'New Members Meet & Greet', type: 'ministry', location: 'Fellowship Hall', assignedTo: 'Assimilation Team' },
-  { id: 'ca-10', time: '12:00 PM', endTime: '12:00 PM', title: 'Bulletin Submission Deadline', type: 'deadline', notes: 'All announcements for next Sunday due by noon today', staffOnly: true },
+  { id: 'ca-10', time: '12:00 PM', endTime: '12:00 PM', title: 'Bulletin Submission Deadline', type: 'deadline', notes: 'All announcements for next Sunday due by noon today', staffOnly: true, dueWithin24h: true },
   { id: 'ca-11', time: '4:00 PM', endTime: '5:30 PM', title: 'New Believers Class (Session 4)', type: 'class', location: 'Room 201', assignedTo: 'Min. David Okafor', notes: 'Topic: "The Power of Prayer"' },
   { id: 'ca-12', time: '6:00 PM', endTime: '7:30 PM', title: 'Sunday Evening Service', type: 'service', location: 'Main Sanctuary', assignedTo: 'Associate Pastor' },
 ];
@@ -115,7 +126,7 @@ const TODAY_AGENDA: AgendaEvent[] = [
 const TOMORROW_AGENDA: AgendaEvent[] = [
   { id: 'ca-t1', time: '6:00 PM', endTime: '7:30 PM', title: "Men's Bible Study", type: 'class', location: 'Room 103', assignedTo: 'Bro. Marcus Williams', notes: 'Book of James — Chapter 3' },
   { id: 'ca-t2', time: '7:00 PM', endTime: '8:30 PM', title: 'Worship Team Practice', type: 'volunteer', location: 'Main Sanctuary', assignedTo: 'Worship Director' },
-  { id: 'ca-t3', time: '7:00 PM', endTime: '8:00 PM', title: 'Elder Board Financial Review', type: 'deadline', location: 'Board Room', assignedTo: 'Finance Committee', leaderOnly: true, notes: 'Monthly financial statements review' },
+  { id: 'ca-t3', time: '7:00 PM', endTime: '8:00 PM', title: 'Elder Board Financial Review', type: 'deadline', location: 'Board Room', assignedTo: 'Finance Committee', leaderOnly: true, notes: 'Monthly financial statements review', decisionRequired: true },
 ];
 
 const THIS_WEEK_AGENDA: AgendaEvent[] = [
@@ -123,7 +134,7 @@ const THIS_WEEK_AGENDA: AgendaEvent[] = [
   { id: 'ca-w2', time: '7:00 PM', endTime: '8:30 PM', title: 'Choir Rehearsal', type: 'volunteer', location: 'Music Room', assignedTo: 'Choir Director', notes: 'Tuesday' },
   { id: 'ca-w3', time: '7:00 PM', endTime: '8:30 PM', title: 'Midweek Bible Study & Prayer', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Kalejaiye', notes: 'Wednesday — "Spiritual Warfare" series' },
   { id: 'ca-w4', time: '6:30 PM', endTime: '8:00 PM', title: 'Youth Group Night', type: 'ministry', location: 'Youth Center', assignedTo: 'Youth Pastor T. Banks', notes: 'Thursday' },
-  { id: 'ca-w5', time: '5:00 PM', endTime: '5:00 PM', title: 'Easter Planning Docs Due', type: 'deadline', notes: 'Thursday — All ministry heads submit Easter event proposals', staffOnly: true },
+  { id: 'ca-w5', time: '5:00 PM', endTime: '5:00 PM', title: 'Easter Planning Docs Due', type: 'deadline', notes: 'Thursday — All ministry heads submit Easter event proposals', staffOnly: true, dueWithin24h: true, decisionRequired: true },
   { id: 'ca-w6', time: '7:00 PM', endTime: '9:00 PM', title: 'Friday Night Worship', type: 'service', location: 'Main Sanctuary', assignedTo: 'Worship Director', notes: 'Friday' },
   { id: 'ca-w7', time: '9:00 AM', endTime: '12:00 PM', title: 'Community Outreach — Food Distribution', type: 'ministry', location: 'Parking Lot / Fellowship Hall', assignedTo: 'Outreach Team', notes: 'Saturday' },
   { id: 'ca-w8', time: '10:00 AM', endTime: '12:00 PM', title: 'Sanctuary Deep Clean & Setup', type: 'facility', location: 'Main Sanctuary', assignedTo: 'Facilities Team', notes: 'Saturday', staffOnly: true },
@@ -155,10 +166,12 @@ interface ServiceEntry {
   time: string;
   campus: string;
   expectedAttendance: number;
+  readinessScore: number;
   worshipLeader: string;
   pastor: string;
   teams: ServiceTeam[];
   staffGap?: string;
+  keyAssets: { name: string; status: 'ready' | 'pending' | 'issue' }[];
 }
 
 const CONFIRM_COLOR: Record<ConfirmStatus, string> = {
@@ -175,6 +188,7 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
     time: '8:00 AM',
     campus: 'Main Campus',
     expectedAttendance: 180,
+    readinessScore: 82,
     worshipLeader: 'Min. Sarah Owens',
     pastor: 'Pastor Kalejaiye',
     teams: [
@@ -184,6 +198,12 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
       { name: "Children's", status: 'partial', lead: 'Sis. Adeola Johnson' },
     ],
     staffGap: "Children's ministry needs 1 more volunteer",
+    keyAssets: [
+      { name: 'Sermon Slides', status: 'ready' },
+      { name: 'Worship Charts', status: 'ready' },
+      { name: 'Kids Curriculum', status: 'pending' },
+      { name: 'Livestream', status: 'ready' },
+    ],
   },
   {
     id: 'svc-2',
@@ -192,6 +212,7 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
     time: '10:00 AM',
     campus: 'Main Campus',
     expectedAttendance: 450,
+    readinessScore: 74,
     worshipLeader: 'Min. Sarah Owens',
     pastor: 'Pastor Kalejaiye',
     teams: [
@@ -203,6 +224,13 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
       { name: 'Parking', status: 'partial', lead: 'Bro. Tony Elam' },
     ],
     staffGap: 'Parking team needs 2 more volunteers',
+    keyAssets: [
+      { name: 'Sermon Slides', status: 'ready' },
+      { name: 'Worship Charts', status: 'ready' },
+      { name: 'Kids Curriculum', status: 'ready' },
+      { name: 'Livestream', status: 'issue' },
+      { name: 'Parking Plan', status: 'pending' },
+    ],
   },
   {
     id: 'svc-3',
@@ -211,6 +239,7 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
     time: '6:00 PM',
     campus: 'Main Campus',
     expectedAttendance: 120,
+    readinessScore: 65,
     worshipLeader: 'Min. David Okafor',
     pastor: 'Associate Pastor',
     teams: [
@@ -219,6 +248,10 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
       { name: 'Ushers', status: 'confirmed', lead: 'Dea. Frank Mensah' },
     ],
     staffGap: 'AV operator not yet assigned',
+    keyAssets: [
+      { name: 'Sermon Slides', status: 'pending' },
+      { name: 'Worship Charts', status: 'ready' },
+    ],
   },
   {
     id: 'svc-4',
@@ -227,12 +260,17 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
     time: '7:00 PM',
     campus: 'Main Campus',
     expectedAttendance: 200,
+    readinessScore: 95,
     worshipLeader: 'Min. Sarah Owens',
     pastor: 'Pastor Kalejaiye',
     teams: [
       { name: 'Worship', status: 'confirmed', lead: 'Min. Sarah Owens' },
       { name: 'AV / Media', status: 'confirmed', lead: 'Bro. James Obi' },
       { name: 'Ushers', status: 'confirmed', lead: 'Bro. Paul Adekunle' },
+    ],
+    keyAssets: [
+      { name: 'Study Notes', status: 'ready' },
+      { name: 'Worship Charts', status: 'ready' },
     ],
   },
   {
@@ -242,6 +280,7 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
     time: '7:00 PM',
     campus: 'Main Campus',
     expectedAttendance: 150,
+    readinessScore: 88,
     worshipLeader: 'Min. David Okafor',
     pastor: 'Youth Pastor T. Banks',
     teams: [
@@ -250,6 +289,10 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
       { name: 'Youth Greeters', status: 'confirmed', lead: 'Sis. Tasha Lewis' },
     ],
     staffGap: 'Need backup camera operator',
+    keyAssets: [
+      { name: 'Worship Charts', status: 'ready' },
+      { name: 'Youth Slides', status: 'ready' },
+    ],
   },
 ];
 
@@ -259,6 +302,8 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
 
 type NewsCategory = 'announcement' | 'event' | 'testimony' | 'update';
 
+type NewsAction = 'RSVP' | 'Serve' | 'Give' | 'Join' | 'Learn More';
+
 interface NewsItem {
   id: string;
   title: string;
@@ -267,6 +312,8 @@ interface NewsItem {
   authorRole: string;
   preview: string;
   category: NewsCategory;
+  appliesToDate?: string;
+  actionCta?: NewsAction;
 }
 
 const NEWS_CATEGORY_COLOR: Record<NewsCategory, string> = {
@@ -292,6 +339,8 @@ const CHURCH_NEWS: NewsItem[] = [
     authorRole: 'Senior Pastor',
     preview: 'All ministry leaders, please mark your calendars for our Easter planning meeting this Saturday at 10 AM. We will finalize service times, volunteer assignments, outreach events, and the Easter production schedule.',
     category: 'announcement',
+    appliesToDate: 'Feb 22, 2026',
+    actionCta: 'RSVP',
   },
   {
     id: 'nw-2',
@@ -301,6 +350,8 @@ const CHURCH_NEWS: NewsItem[] = [
     authorRole: 'Small Groups Director',
     preview: 'Excited to announce a new small group for working professionals starting March 4th. We will meet every Wednesday at 6 PM in Room 103 to discuss integrating faith into our professional lives.',
     category: 'event',
+    appliesToDate: 'Mar 4 – ongoing',
+    actionCta: 'Join',
   },
   {
     id: 'nw-3',
@@ -319,6 +370,8 @@ const CHURCH_NEWS: NewsItem[] = [
     authorRole: 'Pastoral Staff',
     preview: 'We are thrilled to celebrate baptism with 8 new believers during the March 1st main worship service. If you have not yet been baptized and would like to participate, please contact the church office.',
     category: 'announcement',
+    appliesToDate: 'Mar 1, 2026',
+    actionCta: 'RSVP',
   },
   {
     id: 'nw-5',
@@ -328,6 +381,7 @@ const CHURCH_NEWS: NewsItem[] = [
     authorRole: 'Finance Committee Chair',
     preview: 'Praise God! Our Building Fund has reached $670,000 of our $1M Phase 2 goal for the Youth Center expansion. We are on track to break ground in August 2026. Thank you for your generous giving.',
     category: 'update',
+    actionCta: 'Give',
   },
   {
     id: 'nw-6',
@@ -337,6 +391,8 @@ const CHURCH_NEWS: NewsItem[] = [
     authorRole: 'Youth Ministry',
     preview: 'Camp Springs 2026 is June 15-19! Early bird registration is $175 (regular $225). Scholarships available. Sign up at the youth desk or online. Space is limited to 80 campers.',
     category: 'event',
+    appliesToDate: 'Jun 15–19, 2026',
+    actionCta: 'RSVP',
   },
   {
     id: 'nw-7',
@@ -474,11 +530,11 @@ const sh = StyleSheet.create({
 // =============================================================================
 
 function AgendaDayBlock({ dayLabel, events, colors, role }: { dayLabel: string; events: AgendaEvent[]; colors: typeof Colors.light; role: ChurchRoleLens }) {
-  const filtered = events.filter((ev) => {
+  const filtered = sortAgendaByPriority(events.filter((ev) => {
     if (ev.staffOnly && !isStaffLevel(role)) return false;
     if (ev.leaderOnly && !isElderLevel(role)) return false;
     return true;
-  });
+  }));
 
   if (filtered.length === 0) return null;
 
@@ -534,6 +590,21 @@ function AgendaDayBlock({ dayLabel, events, colors, role }: { dayLabel: string; 
               {ev.leaderOnly && (
                 <View style={[s.staffBadge, { backgroundColor: '#F59E0B20' }]}>
                   <ThemedText style={[s.staffBadgeText, { color: '#F59E0B' }]}>LEADERSHIP</ThemedText>
+                </View>
+              )}
+              {ev.isBlocked && (
+                <View style={[s.staffBadge, { backgroundColor: '#EF444420' }]}>
+                  <ThemedText style={[s.staffBadgeText, { color: '#EF4444' }]}>BLOCKED</ThemedText>
+                </View>
+              )}
+              {ev.decisionRequired && (
+                <View style={[s.staffBadge, { backgroundColor: '#F59E0B20' }]}>
+                  <ThemedText style={[s.staffBadgeText, { color: '#F59E0B' }]}>DECISION REQ.</ThemedText>
+                </View>
+              )}
+              {ev.dueWithin24h && (
+                <View style={[s.staffBadge, { backgroundColor: '#EF444420' }]}>
+                  <ThemedText style={[s.staffBadgeText, { color: '#EF4444' }]}>DUE &lt;24H</ThemedText>
                 </View>
               )}
             </View>
@@ -694,6 +765,31 @@ function ServicesView({ colors, role }: { colors: typeof Colors.light; role: Chu
                   </View>
                 </View>
 
+                {/* Readiness score (staff+) */}
+                {isStaffLevel(role) && (
+                  <View style={s.readinessRow}>
+                    <ThemedText style={[s.readinessLabel, { color: colors.textTertiary }]}>Readiness</ThemedText>
+                    <View style={[s.readinessTrack, { backgroundColor: colors.backgroundTertiary }]}>
+                      <View style={[s.readinessFill, {
+                        width: `${svc.readinessScore}%`,
+                        backgroundColor: svc.readinessScore >= 85 ? '#22C55E' : svc.readinessScore >= 70 ? '#F59E0B' : '#EF4444',
+                      }]} />
+                    </View>
+                    <ThemedText style={[s.readinessValue, {
+                      color: svc.readinessScore >= 85 ? '#22C55E' : svc.readinessScore >= 70 ? '#F59E0B' : '#EF4444',
+                    }]}>{svc.readinessScore}%</ThemedText>
+                  </View>
+                )}
+
+                {/* Volunteer coverage strip */}
+                {isStaffLevel(role) && (
+                  <View style={s.coverageStrip}>
+                    {svc.teams.map((team) => (
+                      <View key={team.name} style={[s.coveragePip, { backgroundColor: CONFIRM_COLOR[team.status] }]} />
+                    ))}
+                  </View>
+                )}
+
                 {/* Key people */}
                 <View style={s.serviceKeyPeople}>
                   <View style={s.servicePersonRow}>
@@ -714,9 +810,26 @@ function ServicesView({ colors, role }: { colors: typeof Colors.light; role: Chu
                   </View>
                 )}
 
-                {/* Expanded: team assignments */}
+                {/* Expanded: team assignments + key assets */}
                 {isExpanded && (
                   <View style={[s.serviceTeamsContainer, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
+                    {/* Key assets status */}
+                    {svc.keyAssets.length > 0 && (
+                      <>
+                        <ThemedText style={[s.serviceTeamsTitle, { color: colors.textSecondary }]}>KEY ASSETS</ThemedText>
+                        <View style={s.assetsRow}>
+                          {svc.keyAssets.map((asset) => {
+                            const assetColor = asset.status === 'ready' ? '#22C55E' : asset.status === 'pending' ? '#F59E0B' : '#EF4444';
+                            return (
+                              <View key={asset.name} style={[s.assetChip, { backgroundColor: assetColor + '15', borderColor: assetColor + '30' }]}>
+                                <View style={[s.assetDot, { backgroundColor: assetColor }]} />
+                                <ThemedText style={[s.assetLabel, { color: assetColor }]}>{asset.name}</ThemedText>
+                              </View>
+                            );
+                          })}
+                        </View>
+                      </>
+                    )}
                     <ThemedText style={[s.serviceTeamsTitle, { color: colors.textSecondary }]}>ASSIGNED TEAMS</ThemedText>
                     {svc.teams.map((team, idx) => (
                       <View
@@ -824,6 +937,23 @@ function NewsView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
               <ThemedText style={[s.newsPreview, { color: colors.textTertiary }]} numberOfLines={3}>
                 {item.preview}
               </ThemedText>
+              {(item.appliesToDate || item.actionCta) && (
+                <View style={s.newsActionRow}>
+                  {item.appliesToDate && (
+                    <ThemedText style={[s.newsAppliesTo, { color: colors.textTertiary }]}>
+                      {item.appliesToDate}
+                    </ThemedText>
+                  )}
+                  {item.actionCta && (
+                    <Pressable
+                      style={[s.newsCtaButton, { backgroundColor: NEWS_CATEGORY_COLOR[item.category] }]}
+                      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+                    >
+                      <ThemedText style={s.newsCtaText}>{item.actionCta}</ThemedText>
+                    </Pressable>
+                  )}
+                </View>
+              )}
             </Card>
           </Pressable>
         ))}
@@ -1107,6 +1237,17 @@ const s = StyleSheet.create({
   staffBadgeText: { fontSize: 8, fontWeight: '700', letterSpacing: 0.3 },
 
   // Services
+  readinessRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
+  readinessLabel: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, width: 60 },
+  readinessTrack: { flex: 1, height: 6, borderRadius: 3, overflow: 'hidden' },
+  readinessFill: { height: '100%', borderRadius: 3 },
+  readinessValue: { fontSize: 12, fontWeight: '800', width: 36, textAlign: 'right' },
+  coverageStrip: { flexDirection: 'row', gap: 3, marginBottom: 8 },
+  coveragePip: { width: 16, height: 4, borderRadius: 2 },
+  assetsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 },
+  assetChip: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: BorderRadius.sm, borderWidth: StyleSheet.hairlineWidth },
+  assetDot: { width: 5, height: 5, borderRadius: 2.5 },
+  assetLabel: { fontSize: 10, fontWeight: '600' },
   serviceHeader: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 8 },
   serviceHeaderLeft: { flex: 1 },
   serviceName: { fontSize: 15, fontWeight: '700', marginBottom: 2 },
@@ -1143,6 +1284,10 @@ const s = StyleSheet.create({
   newsAuthor: { fontSize: 12, fontWeight: '600' },
   newsAuthorRole: { fontSize: 12 },
   newsPreview: { fontSize: 12, lineHeight: 18 },
+  newsActionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10, paddingTop: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#ffffff10' },
+  newsAppliesTo: { fontSize: 11, fontStyle: 'italic' },
+  newsCtaButton: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: BorderRadius.sm },
+  newsCtaText: { color: '#fff', fontSize: 11, fontWeight: '700' },
 
   // Calendar grid
   monthNav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.sm },

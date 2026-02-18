@@ -148,9 +148,33 @@ const NEXT_STEP: NextStepRec = {
   cta: 'Explore Mentoring',
 };
 
+// 6-stage meta-journey model
+type JourneyStage = 'explore' | 'foundations' | 'practices' | 'community' | 'serve' | 'lead';
+
+interface JourneyStageInfo {
+  id: JourneyStage;
+  label: string;
+  icon: string;
+  color: string;
+}
+
+const JOURNEY_STAGES: JourneyStageInfo[] = [
+  { id: 'explore', label: 'Explore', icon: 'magnifyingglass', color: '#8F8F8F' },
+  { id: 'foundations', label: 'Foundations', icon: 'book.fill', color: '#3B82F6' },
+  { id: 'practices', label: 'Practices', icon: 'hands.sparkles.fill', color: '#8B5CF6' },
+  { id: 'community', label: 'Community', icon: 'person.2.fill', color: '#22C55E' },
+  { id: 'serve', label: 'Serve', icon: 'heart.fill', color: '#F59E0B' },
+  { id: 'lead', label: 'Lead', icon: 'star.fill', color: '#EC4899' },
+];
+
+// Derived from milestones: completed Foundations + Joined Group + Started Serving = stage 4 (serve)
+const CURRENT_JOURNEY_STAGE: JourneyStage = 'serve';
+
 // =============================================================================
 // INLINE MOCK DATA — PATHWAYS
 // =============================================================================
+
+type EnrollmentType = 'open' | 'approval' | 'invite-only';
 
 interface DiscipleshipPathway {
   id: string;
@@ -162,7 +186,20 @@ interface DiscipleshipPathway {
   enrolledCount: number;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   stages: string[];
+  enrollmentType: EnrollmentType;
 }
+
+const ENROLLMENT_TYPE_LABELS: Record<EnrollmentType, string> = {
+  open: 'Open Enrollment',
+  approval: 'Approval Required',
+  'invite-only': 'Invite Only',
+};
+
+const ENROLLMENT_TYPE_COLORS: Record<EnrollmentType, string> = {
+  open: '#22C55E',
+  approval: '#F59E0B',
+  'invite-only': '#8B5CF6',
+};
 
 const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
   {
@@ -175,6 +212,7 @@ const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
     enrolledCount: 64,
     difficulty: 'beginner',
     stages: ['Salvation', 'Baptism', 'Membership', 'First Serve'],
+    enrollmentType: 'open',
   },
   {
     id: 'dp-2',
@@ -186,6 +224,7 @@ const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
     enrolledCount: 42,
     difficulty: 'intermediate',
     stages: ['Genesis-Deuteronomy', 'Historical Books', 'Wisdom Literature', 'Major Prophets', 'Minor Prophets', 'OT Summary', 'Gospels', 'Acts', 'Pauline Epistles', 'General Epistles', 'Revelation', 'Theology Basics'],
+    enrollmentType: 'open',
   },
   {
     id: 'dp-3',
@@ -197,6 +236,7 @@ const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
     enrolledCount: 18,
     difficulty: 'advanced',
     stages: ['Character', 'Gifting Discovery', 'Small Group Leader', 'Ministry Leader', 'Conflict Resolution', 'Vision Casting'],
+    enrollmentType: 'approval',
   },
   {
     id: 'dp-4',
@@ -208,6 +248,7 @@ const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
     enrolledCount: 28,
     difficulty: 'beginner',
     stages: ['Communication', 'Finances', 'Intimacy', 'Parenting', 'Legacy'],
+    enrollmentType: 'open',
   },
   {
     id: 'dp-5',
@@ -219,6 +260,7 @@ const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
     enrolledCount: 36,
     difficulty: 'beginner',
     stages: ['Intro to Prayer', 'Intercessory Prayer', 'Spiritual Warfare', 'Fasting'],
+    enrollmentType: 'open',
   },
   {
     id: 'dp-6',
@@ -230,6 +272,7 @@ const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
     enrolledCount: 14,
     difficulty: 'intermediate',
     stages: ['Heart for Nations', 'Cross-Cultural Awareness', 'Short-Term Prep', 'Long-Term Calling', 'Support Raising', 'Field Readiness'],
+    enrollmentType: 'invite-only',
   },
 ];
 
@@ -250,6 +293,8 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 // INLINE MOCK DATA — GROUPS
 // =============================================================================
 
+type GroupJoinType = 'open' | 'request' | 'invite-only';
+
 interface DiscipleshipGroup {
   id: string;
   name: string;
@@ -260,24 +305,36 @@ interface DiscipleshipGroup {
   currentMembers: number;
   capacity: number;
   type: 'Bible Study' | 'Book Study' | 'Mentoring' | 'Accountability' | 'Discussion';
-  open: boolean;
+  joinType: GroupJoinType;
   avgAttendance: number;
   engagementScore: number;
 }
 
+const JOIN_TYPE_LABELS: Record<GroupJoinType, string> = {
+  open: 'OPEN',
+  request: 'REQUEST',
+  'invite-only': 'INVITE ONLY',
+};
+
+const JOIN_TYPE_COLORS: Record<GroupJoinType, string> = {
+  open: '#22C55E',
+  request: '#F59E0B',
+  'invite-only': '#8B5CF6',
+};
+
 const DISCIPLESHIP_GROUPS: DiscipleshipGroup[] = [
-  { id: 'dg-1', name: 'Men of Valor', leader: 'Elder Thompson', topic: 'Spiritual Leadership', dayTime: 'Tue 6:30 AM', location: 'Downtown - Room 105', currentMembers: 8, capacity: 12, type: 'Accountability', open: true, avgAttendance: 88, engagementScore: 92 },
-  { id: 'dg-2', name: 'Women of Purpose', leader: 'Deaconess Mitchell', topic: 'Proverbs 31 Study', dayTime: 'Wed 10:00 AM', location: 'Downtown - Room 201', currentMembers: 14, capacity: 16, type: 'Bible Study', open: true, avgAttendance: 82, engagementScore: 88 },
-  { id: 'dg-3', name: 'Young Adults Connect', leader: 'Pastor Marcus', topic: 'Faith in the Real World', dayTime: 'Thu 7:00 PM', location: 'Westside - Lounge', currentMembers: 20, capacity: 25, type: 'Discussion', open: true, avgAttendance: 76, engagementScore: 84 },
-  { id: 'dg-4', name: 'Couples Journey', leader: 'Pastor & Mrs. Williams', topic: 'Marriage God\'s Way', dayTime: 'Fri 7:00 PM', location: 'Downtown - Room 110', currentMembers: 14, capacity: 14, type: 'Book Study', open: false, avgAttendance: 90, engagementScore: 94 },
-  { id: 'dg-5', name: 'New Believers Circle', leader: 'Deacon Park', topic: 'Foundations of Faith', dayTime: 'Sun 12:15 PM', location: 'Downtown - Room 102', currentMembers: 10, capacity: 15, type: 'Bible Study', open: true, avgAttendance: 72, engagementScore: 78 },
-  { id: 'dg-6', name: 'Intercessory Prayer Team', leader: 'Mother Johnson', topic: 'Strategic Prayer', dayTime: 'Mon 6:30 PM', location: 'Downtown - Prayer Room', currentMembers: 8, capacity: 12, type: 'Accountability', open: true, avgAttendance: 94, engagementScore: 96 },
-  { id: 'dg-7', name: 'Theology Deep Dive', leader: 'Dr. Chen', topic: 'Systematic Theology', dayTime: 'Sat 9:00 AM', location: 'Downtown - Library', currentMembers: 6, capacity: 8, type: 'Discussion', open: false, avgAttendance: 86, engagementScore: 90 },
-  { id: 'dg-8', name: 'Grief & Hope', leader: 'Sister Ramirez', topic: 'Walking Through Loss', dayTime: 'Wed 6:30 PM', location: 'South Bay - Room B', currentMembers: 5, capacity: 10, type: 'Book Study', open: true, avgAttendance: 80, engagementScore: 85 },
-  { id: 'dg-9', name: 'Leadership Pipeline', leader: 'Pastor David Chen', topic: 'Next-Gen Leaders', dayTime: 'Sat 10:00 AM', location: 'Downtown - Board Room', currentMembers: 12, capacity: 15, type: 'Mentoring', open: true, avgAttendance: 88, engagementScore: 92 },
-  { id: 'dg-10', name: 'Spanish Bible Study', leader: 'Hermano Rodriguez', topic: 'Estudio del Evangelio de Juan', dayTime: 'Thu 7:00 PM', location: 'South Bay - Room A', currentMembers: 11, capacity: 15, type: 'Bible Study', open: true, avgAttendance: 78, engagementScore: 82 },
-  { id: 'dg-11', name: 'Financial Stewardship', leader: 'Deacon Williams', topic: 'Managing God\'s Resources', dayTime: 'Tue 7:00 PM', location: 'Westside - Room 103', currentMembers: 9, capacity: 12, type: 'Book Study', open: true, avgAttendance: 74, engagementScore: 80 },
-  { id: 'dg-12', name: 'Missions Heart', leader: 'Brother Okafor', topic: 'Global Outreach Prep', dayTime: 'Sat 8:00 AM', location: 'Downtown - Room 205', currentMembers: 7, capacity: 10, type: 'Mentoring', open: true, avgAttendance: 70, engagementScore: 76 },
+  { id: 'dg-1', name: 'Men of Valor', leader: 'Elder Thompson', topic: 'Spiritual Leadership', dayTime: 'Tue 6:30 AM', location: 'Downtown - Room 105', currentMembers: 8, capacity: 12, type: 'Accountability', joinType: 'open', avgAttendance: 88, engagementScore: 92 },
+  { id: 'dg-2', name: 'Women of Purpose', leader: 'Deaconess Mitchell', topic: 'Proverbs 31 Study', dayTime: 'Wed 10:00 AM', location: 'Downtown - Room 201', currentMembers: 14, capacity: 16, type: 'Bible Study', joinType: 'open', avgAttendance: 82, engagementScore: 88 },
+  { id: 'dg-3', name: 'Young Adults Connect', leader: 'Pastor Marcus', topic: 'Faith in the Real World', dayTime: 'Thu 7:00 PM', location: 'Westside - Lounge', currentMembers: 20, capacity: 25, type: 'Discussion', joinType: 'open', avgAttendance: 76, engagementScore: 84 },
+  { id: 'dg-4', name: 'Couples Journey', leader: 'Pastor & Mrs. Williams', topic: 'Marriage God\'s Way', dayTime: 'Fri 7:00 PM', location: 'Downtown - Room 110', currentMembers: 14, capacity: 14, type: 'Book Study', joinType: 'request', avgAttendance: 90, engagementScore: 94 },
+  { id: 'dg-5', name: 'New Believers Circle', leader: 'Deacon Park', topic: 'Foundations of Faith', dayTime: 'Sun 12:15 PM', location: 'Downtown - Room 102', currentMembers: 10, capacity: 15, type: 'Bible Study', joinType: 'open', avgAttendance: 72, engagementScore: 78 },
+  { id: 'dg-6', name: 'Intercessory Prayer Team', leader: 'Mother Johnson', topic: 'Strategic Prayer', dayTime: 'Mon 6:30 PM', location: 'Downtown - Prayer Room', currentMembers: 8, capacity: 12, type: 'Accountability', joinType: 'request', avgAttendance: 94, engagementScore: 96 },
+  { id: 'dg-7', name: 'Theology Deep Dive', leader: 'Dr. Chen', topic: 'Systematic Theology', dayTime: 'Sat 9:00 AM', location: 'Downtown - Library', currentMembers: 6, capacity: 8, type: 'Discussion', joinType: 'invite-only', avgAttendance: 86, engagementScore: 90 },
+  { id: 'dg-8', name: 'Grief & Hope', leader: 'Sister Ramirez', topic: 'Walking Through Loss', dayTime: 'Wed 6:30 PM', location: 'South Bay - Room B', currentMembers: 5, capacity: 10, type: 'Book Study', joinType: 'open', avgAttendance: 80, engagementScore: 85 },
+  { id: 'dg-9', name: 'Leadership Pipeline', leader: 'Pastor David Chen', topic: 'Next-Gen Leaders', dayTime: 'Sat 10:00 AM', location: 'Downtown - Board Room', currentMembers: 12, capacity: 15, type: 'Mentoring', joinType: 'request', avgAttendance: 88, engagementScore: 92 },
+  { id: 'dg-10', name: 'Spanish Bible Study', leader: 'Hermano Rodriguez', topic: 'Estudio del Evangelio de Juan', dayTime: 'Thu 7:00 PM', location: 'South Bay - Room A', currentMembers: 11, capacity: 15, type: 'Bible Study', joinType: 'open', avgAttendance: 78, engagementScore: 82 },
+  { id: 'dg-11', name: 'Financial Stewardship', leader: 'Deacon Williams', topic: 'Managing God\'s Resources', dayTime: 'Tue 7:00 PM', location: 'Westside - Room 103', currentMembers: 9, capacity: 12, type: 'Book Study', joinType: 'open', avgAttendance: 74, engagementScore: 80 },
+  { id: 'dg-12', name: 'Missions Heart', leader: 'Brother Okafor', topic: 'Global Outreach Prep', dayTime: 'Sat 8:00 AM', location: 'Downtown - Room 205', currentMembers: 7, capacity: 10, type: 'Mentoring', joinType: 'invite-only', avgAttendance: 70, engagementScore: 76 },
 ];
 
 const GROUP_TYPE_COLORS: Record<string, string> = {
@@ -292,6 +349,8 @@ const GROUP_TYPE_COLORS: Record<string, string> = {
 // INLINE MOCK DATA — RESOURCES
 // =============================================================================
 
+type AudienceScope = 'all' | 'leaders' | 'pathway-specific';
+
 interface DiscipleshipResource {
   id: string;
   title: string;
@@ -301,29 +360,31 @@ interface DiscipleshipResource {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   recommendedFor: string;
   featured: boolean;
+  audienceScope: AudienceScope;
+  topicTags: string[];
 }
 
 const DISCIPLESHIP_RESOURCES: DiscipleshipResource[] = [
-  { id: 'dr-1', title: 'Mere Christianity', author: 'C.S. Lewis', type: 'Book', description: 'A classic exploration of the rational basis for Christianity and core Christian beliefs.', difficulty: 'beginner', recommendedFor: 'Foundations Pathway', featured: true },
-  { id: 'dr-2', title: 'Experiencing God', author: 'Henry Blackaby', type: 'Study Guide', description: 'Knowing and doing the will of God. A foundational study on hearing from God and joining His work.', difficulty: 'beginner', recommendedFor: 'Foundations Pathway', featured: false },
-  { id: 'dr-3', title: 'The Bible Project', author: 'Tim Mackie & Jon Collins', type: 'Video Series', description: 'Animated videos explaining every book of the Bible, themes, and theological concepts.', difficulty: 'beginner', recommendedFor: 'Bible Overview Pathway', featured: true },
-  { id: 'dr-4', title: 'RightNow Media', author: 'Various', type: 'External Link', description: 'The Netflix of Bible study. Free access for church members to thousands of video studies.', difficulty: 'beginner', recommendedFor: 'All Members', featured: false },
-  { id: 'dr-5', title: 'Spiritual Disciplines Handbook', author: 'Adele Calhoun', type: 'Book', description: 'Practices that transform us. A comprehensive guide to over 60 spiritual disciplines.', difficulty: 'intermediate', recommendedFor: 'Growth Pathway', featured: false },
-  { id: 'dr-6', title: 'Foundations Study Guide', author: 'Church Staff', type: 'Study Guide', description: 'Our church\'s official 12-week foundations curriculum for new believers and new members.', difficulty: 'beginner', recommendedFor: 'Foundations Pathway', featured: false },
-  { id: 'dr-7', title: 'Jesus and the Gospels', author: 'Craig Blomberg', type: 'Book', description: 'An introduction to the four Gospels and the life and teaching of Jesus Christ.', difficulty: 'intermediate', recommendedFor: 'Bible Overview Pathway', featured: false },
-  { id: 'dr-8', title: 'Prayer Journal Template', author: 'Church Staff', type: 'Worksheet', description: 'Printable daily prayer journal with ACTS framework (Adoration, Confession, Thanksgiving, Supplication).', difficulty: 'beginner', recommendedFor: 'Prayer & Fasting Pathway', featured: false },
-  { id: 'dr-9', title: 'Celebration of Discipline', author: 'Richard Foster', type: 'Book', description: 'The path to spiritual growth through inward, outward, and corporate disciplines.', difficulty: 'intermediate', recommendedFor: 'Growth Pathway', featured: false },
-  { id: 'dr-10', title: 'Leadership Development Workbook', author: 'Church Staff', type: 'Worksheet', description: 'Self-assessment and development plan for emerging ministry leaders.', difficulty: 'advanced', recommendedFor: 'Leadership Pathway', featured: false },
-  { id: 'dr-11', title: 'Daily Devotional: Walking with Jesus', author: 'Church Staff', type: 'Devotional', description: '365-day devotional with daily Scripture reading, reflection questions, and prayer prompts.', difficulty: 'beginner', recommendedFor: 'All Members', featured: false },
-  { id: 'dr-12', title: 'Marriage Enrichment Workbook', author: 'Pastor & Mrs. Williams', type: 'Worksheet', description: 'Companion workbook for the Marriage Enrichment pathway with discussion guides and exercises.', difficulty: 'beginner', recommendedFor: 'Marriage Pathway', featured: false },
-  { id: 'dr-13', title: 'Knowing God', author: 'J.I. Packer', type: 'Book', description: 'A deep exploration of the character and attributes of God. A theological classic.', difficulty: 'intermediate', recommendedFor: 'Bible Overview Pathway', featured: false },
-  { id: 'dr-14', title: 'Missions Prep Guide', author: 'Brother Okafor', type: 'Study Guide', description: 'Cultural awareness, spiritual preparation, and practical logistics for short-term missions.', difficulty: 'intermediate', recommendedFor: 'Missions Pathway', featured: false },
-  { id: 'dr-15', title: 'The Screwtape Letters', author: 'C.S. Lewis', type: 'Book', description: 'A satirical look at spiritual warfare from the perspective of a senior demon.', difficulty: 'beginner', recommendedFor: 'Prayer & Fasting Pathway', featured: false },
-  { id: 'dr-16', title: 'Scripture Memory Cards', author: 'Church Staff', type: 'Worksheet', description: 'Printable verse cards organized by topic: faith, prayer, identity, spiritual warfare, love.', difficulty: 'beginner', recommendedFor: 'All Members', featured: false },
-  { id: 'dr-17', title: 'Desiring God', author: 'John Piper', type: 'Book', description: 'Christian hedonism and finding ultimate satisfaction in God.', difficulty: 'advanced', recommendedFor: 'Growth Pathway', featured: false },
-  { id: 'dr-18', title: 'Old Testament Overview', author: 'Church Staff', type: 'Video Series', description: 'Church-produced 12-part video series walking through the major sections and themes of the Old Testament.', difficulty: 'intermediate', recommendedFor: 'Bible Overview Pathway', featured: false },
-  { id: 'dr-19', title: 'Fasting Guide', author: 'Church Staff', type: 'Study Guide', description: 'Practical guide to different types of fasts: Daniel Fast, water fast, media fast, with spiritual preparation.', difficulty: 'beginner', recommendedFor: 'Prayer & Fasting Pathway', featured: false },
-  { id: 'dr-20', title: 'YouVersion Bible App', author: 'Life.Church', type: 'External Link', description: 'Free Bible app with reading plans, audio Bible, verse images, and community features.', difficulty: 'beginner', recommendedFor: 'All Members', featured: false },
+  { id: 'dr-1', title: 'Mere Christianity', author: 'C.S. Lewis', type: 'Book', description: 'A classic exploration of the rational basis for Christianity and core Christian beliefs.', difficulty: 'beginner', recommendedFor: 'Foundations Pathway', featured: true, audienceScope: 'all', topicTags: ['Apologetics', 'Faith', 'Theology'] },
+  { id: 'dr-2', title: 'Experiencing God', author: 'Henry Blackaby', type: 'Study Guide', description: 'Knowing and doing the will of God. A foundational study on hearing from God and joining His work.', difficulty: 'beginner', recommendedFor: 'Foundations Pathway', featured: false, audienceScope: 'all', topicTags: ['Discipleship', 'Prayer', 'Obedience'] },
+  { id: 'dr-3', title: 'The Bible Project', author: 'Tim Mackie & Jon Collins', type: 'Video Series', description: 'Animated videos explaining every book of the Bible, themes, and theological concepts.', difficulty: 'beginner', recommendedFor: 'Bible Overview Pathway', featured: true, audienceScope: 'all', topicTags: ['Bible', 'Theology', 'Overview'] },
+  { id: 'dr-4', title: 'RightNow Media', author: 'Various', type: 'External Link', description: 'The Netflix of Bible study. Free access for church members to thousands of video studies.', difficulty: 'beginner', recommendedFor: 'All Members', featured: false, audienceScope: 'all', topicTags: ['Bible Study', 'Video', 'Library'] },
+  { id: 'dr-5', title: 'Spiritual Disciplines Handbook', author: 'Adele Calhoun', type: 'Book', description: 'Practices that transform us. A comprehensive guide to over 60 spiritual disciplines.', difficulty: 'intermediate', recommendedFor: 'Growth Pathway', featured: false, audienceScope: 'all', topicTags: ['Spiritual Disciplines', 'Growth', 'Practices'] },
+  { id: 'dr-6', title: 'Foundations Study Guide', author: 'Church Staff', type: 'Study Guide', description: 'Our church\'s official 12-week foundations curriculum for new believers and new members.', difficulty: 'beginner', recommendedFor: 'Foundations Pathway', featured: false, audienceScope: 'pathway-specific', topicTags: ['New Believer', 'Foundations', 'Membership'] },
+  { id: 'dr-7', title: 'Jesus and the Gospels', author: 'Craig Blomberg', type: 'Book', description: 'An introduction to the four Gospels and the life and teaching of Jesus Christ.', difficulty: 'intermediate', recommendedFor: 'Bible Overview Pathway', featured: false, audienceScope: 'all', topicTags: ['Gospels', 'Jesus', 'Bible'] },
+  { id: 'dr-8', title: 'Prayer Journal Template', author: 'Church Staff', type: 'Worksheet', description: 'Printable daily prayer journal with ACTS framework (Adoration, Confession, Thanksgiving, Supplication).', difficulty: 'beginner', recommendedFor: 'Prayer & Fasting Pathway', featured: false, audienceScope: 'all', topicTags: ['Prayer', 'Journal', 'Spiritual Disciplines'] },
+  { id: 'dr-9', title: 'Celebration of Discipline', author: 'Richard Foster', type: 'Book', description: 'The path to spiritual growth through inward, outward, and corporate disciplines.', difficulty: 'intermediate', recommendedFor: 'Growth Pathway', featured: false, audienceScope: 'all', topicTags: ['Spiritual Disciplines', 'Growth', 'Classic'] },
+  { id: 'dr-10', title: 'Leadership Development Workbook', author: 'Church Staff', type: 'Worksheet', description: 'Self-assessment and development plan for emerging ministry leaders.', difficulty: 'advanced', recommendedFor: 'Leadership Pathway', featured: false, audienceScope: 'leaders', topicTags: ['Leadership', 'Assessment', 'Development'] },
+  { id: 'dr-11', title: 'Daily Devotional: Walking with Jesus', author: 'Church Staff', type: 'Devotional', description: '365-day devotional with daily Scripture reading, reflection questions, and prayer prompts.', difficulty: 'beginner', recommendedFor: 'All Members', featured: false, audienceScope: 'all', topicTags: ['Devotional', 'Daily Reading', 'Prayer'] },
+  { id: 'dr-12', title: 'Marriage Enrichment Workbook', author: 'Pastor & Mrs. Williams', type: 'Worksheet', description: 'Companion workbook for the Marriage Enrichment pathway with discussion guides and exercises.', difficulty: 'beginner', recommendedFor: 'Marriage Pathway', featured: false, audienceScope: 'pathway-specific', topicTags: ['Marriage', 'Family', 'Communication'] },
+  { id: 'dr-13', title: 'Knowing God', author: 'J.I. Packer', type: 'Book', description: 'A deep exploration of the character and attributes of God. A theological classic.', difficulty: 'intermediate', recommendedFor: 'Bible Overview Pathway', featured: false, audienceScope: 'all', topicTags: ['Theology', 'God', 'Classic'] },
+  { id: 'dr-14', title: 'Missions Prep Guide', author: 'Brother Okafor', type: 'Study Guide', description: 'Cultural awareness, spiritual preparation, and practical logistics for short-term missions.', difficulty: 'intermediate', recommendedFor: 'Missions Pathway', featured: false, audienceScope: 'pathway-specific', topicTags: ['Missions', 'Cross-Cultural', 'Outreach'] },
+  { id: 'dr-15', title: 'The Screwtape Letters', author: 'C.S. Lewis', type: 'Book', description: 'A satirical look at spiritual warfare from the perspective of a senior demon.', difficulty: 'beginner', recommendedFor: 'Prayer & Fasting Pathway', featured: false, audienceScope: 'all', topicTags: ['Spiritual Warfare', 'Fiction', 'Classic'] },
+  { id: 'dr-16', title: 'Scripture Memory Cards', author: 'Church Staff', type: 'Worksheet', description: 'Printable verse cards organized by topic: faith, prayer, identity, spiritual warfare, love.', difficulty: 'beginner', recommendedFor: 'All Members', featured: false, audienceScope: 'all', topicTags: ['Scripture', 'Memory', 'Printable'] },
+  { id: 'dr-17', title: 'Desiring God', author: 'John Piper', type: 'Book', description: 'Christian hedonism and finding ultimate satisfaction in God.', difficulty: 'advanced', recommendedFor: 'Growth Pathway', featured: false, audienceScope: 'all', topicTags: ['Theology', 'Joy', 'Worship'] },
+  { id: 'dr-18', title: 'Old Testament Overview', author: 'Church Staff', type: 'Video Series', description: 'Church-produced 12-part video series walking through the major sections and themes of the Old Testament.', difficulty: 'intermediate', recommendedFor: 'Bible Overview Pathway', featured: false, audienceScope: 'pathway-specific', topicTags: ['Old Testament', 'Bible', 'Video'] },
+  { id: 'dr-19', title: 'Fasting Guide', author: 'Church Staff', type: 'Study Guide', description: 'Practical guide to different types of fasts: Daniel Fast, water fast, media fast, with spiritual preparation.', difficulty: 'beginner', recommendedFor: 'Prayer & Fasting Pathway', featured: false, audienceScope: 'all', topicTags: ['Fasting', 'Prayer', 'Spiritual Disciplines'] },
+  { id: 'dr-20', title: 'YouVersion Bible App', author: 'Life.Church', type: 'External Link', description: 'Free Bible app with reading plans, audio Bible, verse images, and community features.', difficulty: 'beginner', recommendedFor: 'All Members', featured: false, audienceScope: 'all', topicTags: ['Bible', 'App', 'Reading Plans'] },
 ];
 
 const RESOURCE_TYPE_COLORS: Record<string, string> = {
@@ -398,6 +459,63 @@ const PIPELINE_STATUS_COLORS: Record<string, string> = {
   'in-training': '#F59E0B',
   'ready': '#3B82F6',
   'leading': '#22C55E',
+};
+
+// Placement Queue — unplaced members
+interface UnplacedMember {
+  id: string;
+  name: string;
+  joinedDate: string;
+  interests: string[];
+  status: 'awaiting' | 'contacted' | 'placed';
+}
+
+const UNPLACED_MEMBERS: UnplacedMember[] = [
+  { id: 'um-1', name: 'Hannah Davis', joinedDate: 'Jan 2026', interests: ['Bible Study', 'Women\'s Ministry'], status: 'awaiting' },
+  { id: 'um-2', name: 'Chris Adams', joinedDate: 'Jan 2026', interests: ['Men\'s Group', 'Service'], status: 'contacted' },
+  { id: 'um-3', name: 'Jasmine Wright', joinedDate: 'Feb 2026', interests: ['Worship', 'Young Adults'], status: 'awaiting' },
+  { id: 'um-4', name: 'Daniel Okafor', joinedDate: 'Feb 2026', interests: ['Missions', 'Prayer'], status: 'awaiting' },
+];
+
+// At-Risk — disengaging members
+interface AtRiskMember {
+  id: string;
+  name: string;
+  pathway: string;
+  lastActivity: string;
+  daysInactive: number;
+  riskLevel: 'warning' | 'critical';
+}
+
+const AT_RISK_MEMBERS: AtRiskMember[] = [
+  { id: 'ar-1', name: 'Patricia Evans', pathway: 'Bible Overview', lastActivity: 'Dec 14, 2025', daysInactive: 66, riskLevel: 'critical' },
+  { id: 'ar-2', name: 'Daniel Wright', pathway: 'Foundations', lastActivity: 'Nov 10, 2025', daysInactive: 100, riskLevel: 'critical' },
+  { id: 'ar-3', name: 'Kevin Brooks', pathway: 'Prayer & Fasting', lastActivity: 'Feb 2, 2026', daysInactive: 16, riskLevel: 'warning' },
+  { id: 'ar-4', name: 'Nicole Foster', pathway: 'Marriage Enrichment', lastActivity: 'Jan 26, 2026', daysInactive: 23, riskLevel: 'warning' },
+];
+
+// Cohort Management
+interface Cohort {
+  id: string;
+  name: string;
+  pathway: string;
+  startDate: string;
+  endDate: string;
+  enrolled: number;
+  status: 'active' | 'upcoming' | 'completed';
+}
+
+const COHORTS: Cohort[] = [
+  { id: 'co-1', name: 'Foundations Spring 2026', pathway: 'Foundations', startDate: 'Mar 1, 2026', endDate: 'Apr 26, 2026', enrolled: 22, status: 'upcoming' },
+  { id: 'co-2', name: 'Bible Overview Q1 2026', pathway: 'Bible Overview', startDate: 'Jan 12, 2026', endDate: 'Jun 28, 2026', enrolled: 18, status: 'active' },
+  { id: 'co-3', name: 'Leadership Dev Cohort 3', pathway: 'Leadership Development', startDate: 'Feb 1, 2026', endDate: 'May 24, 2026', enrolled: 8, status: 'active' },
+  { id: 'co-4', name: 'Foundations Winter 2025', pathway: 'Foundations', startDate: 'Oct 6, 2025', endDate: 'Dec 14, 2025', enrolled: 28, status: 'completed' },
+];
+
+const COHORT_STATUS_COLORS: Record<string, string> = {
+  active: '#3B82F6',
+  upcoming: '#F59E0B',
+  completed: '#22C55E',
 };
 
 interface GrowthTrend {
@@ -505,8 +623,45 @@ const sh = StyleSheet.create({
 // =============================================================================
 
 function MyPathView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
+  const stageIdx = JOURNEY_STAGES.findIndex((s) => s.id === CURRENT_JOURNEY_STAGE);
+
   return (
     <>
+      {/* 6-Stage Journey Strip */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="YOUR DISCIPLESHIP JOURNEY" colors={colors} />
+        <Card colors={colors}>
+          <View style={s.journeyStrip}>
+            {JOURNEY_STAGES.map((stage, idx) => {
+              const isCompleted = idx < stageIdx;
+              const isCurrent = idx === stageIdx;
+              const isFuture = idx > stageIdx;
+              const dotColor = isCompleted ? '#22C55E' : isCurrent ? stage.color : colors.backgroundTertiary;
+              const labelColor = isCompleted ? '#22C55E' : isCurrent ? stage.color : colors.textTertiary;
+
+              return (
+                <React.Fragment key={stage.id}>
+                  <View style={s.journeyStageWrap}>
+                    <View style={[
+                      s.journeyDot,
+                      { backgroundColor: dotColor, borderColor: isCurrent ? stage.color : 'transparent' },
+                      isCurrent && s.journeyDotCurrent,
+                    ]}>
+                      {isCompleted && <IconSymbol name="checkmark" size={8} color="#FFFFFF" />}
+                      {isCurrent && <IconSymbol name={stage.icon as any} size={10} color="#FFFFFF" />}
+                    </View>
+                    <ThemedText style={[s.journeyLabel, { color: labelColor }]}>{stage.label}</ThemedText>
+                  </View>
+                  {idx < JOURNEY_STAGES.length - 1 && (
+                    <View style={[s.journeyConnector, { backgroundColor: isCompleted ? '#22C55E' : colors.backgroundTertiary }]} />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </View>
+        </Card>
+      </View>
+
       {/* Current Pathway Progress */}
       <View style={s.moduleContainer}>
         <SectionHeader title="CURRENT PATHWAY" colors={colors} />
@@ -692,6 +847,11 @@ function PathwaysView({ colors, role }: { colors: typeof Colors.light; role: Chu
                           {pathway.difficulty.toUpperCase()}
                         </ThemedText>
                       </View>
+                      <View style={[s.pwTypeBadge, { backgroundColor: ENROLLMENT_TYPE_COLORS[pathway.enrollmentType] + '20' }]}>
+                        <ThemedText style={[s.pwTypeBadgeText, { color: ENROLLMENT_TYPE_COLORS[pathway.enrollmentType] }]}>
+                          {ENROLLMENT_TYPE_LABELS[pathway.enrollmentType].toUpperCase()}
+                        </ThemedText>
+                      </View>
                     </View>
                   </View>
                   <View style={s.pwStageCountWrap}>
@@ -745,7 +905,9 @@ function PathwaysView({ colors, role }: { colors: typeof Colors.light; role: Chu
                     ]}
                     onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                   >
-                    <ThemedText style={[s.pwEnrollBtnText, { color: typeColor }]}>Enroll</ThemedText>
+                    <ThemedText style={[s.pwEnrollBtnText, { color: typeColor }]}>
+                      {pathway.enrollmentType === 'open' ? 'Enroll Now' : pathway.enrollmentType === 'approval' ? 'Request to Enroll' : 'Request Invite'}
+                    </ThemedText>
                   </Pressable>
                 )}
               </Card>
@@ -840,9 +1002,9 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
                         {group.type.toUpperCase()}
                       </ThemedText>
                     </View>
-                    <View style={[s.groupOpenBadge, { backgroundColor: group.open ? '#22C55E20' : '#F59E0B20' }]}>
-                      <ThemedText style={[s.groupOpenBadgeText, { color: group.open ? '#22C55E' : '#F59E0B' }]}>
-                        {group.open ? 'OPEN' : 'CLOSED'}
+                    <View style={[s.groupOpenBadge, { backgroundColor: JOIN_TYPE_COLORS[group.joinType] + '20' }]}>
+                      <ThemedText style={[s.groupOpenBadgeText, { color: JOIN_TYPE_COLORS[group.joinType] }]}>
+                        {JOIN_TYPE_LABELS[group.joinType]}
                       </ThemedText>
                     </View>
                   </View>
@@ -889,6 +1051,21 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
                     </View>
                   )}
                 </View>
+
+                {/* Join button */}
+                {isMember(role) && !isFull && (
+                  <Pressable
+                    style={({ pressed }) => [
+                      s.groupJoinBtn,
+                      { borderColor: JOIN_TYPE_COLORS[group.joinType] + '40', opacity: pressed ? 0.7 : 1 },
+                    ]}
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  >
+                    <ThemedText style={[s.groupJoinBtnText, { color: JOIN_TYPE_COLORS[group.joinType] }]}>
+                      {group.joinType === 'open' ? 'Join Group' : group.joinType === 'request' ? 'Request to Join' : 'Request Invite'}
+                    </ThemedText>
+                  </Pressable>
+                )}
               </Card>
             </Pressable>
           );
@@ -912,16 +1089,28 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
 function ResourcesView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [topicFilter, setTopicFilter] = useState('All');
 
-  const featured = DISCIPLESHIP_RESOURCES.filter((r) => r.featured);
+  // Collect unique topic tags
+  const allTopics = Array.from(new Set(DISCIPLESHIP_RESOURCES.flatMap((r) => r.topicTags))).sort();
 
-  const filtered = DISCIPLESHIP_RESOURCES.filter((r) => {
+  // Filter by audience scope based on role
+  const scopeFiltered = DISCIPLESHIP_RESOURCES.filter((r) => {
+    if (r.audienceScope === 'all') return true;
+    if (r.audienceScope === 'leaders') return isStaffLevel(role);
+    return true; // pathway-specific visible to all
+  });
+
+  const featured = scopeFiltered.filter((r) => r.featured);
+
+  const filtered = scopeFiltered.filter((r) => {
     const matchesSearch = search.length === 0 ||
       r.title.toLowerCase().includes(search.toLowerCase()) ||
       r.author.toLowerCase().includes(search.toLowerCase()) ||
       r.description.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = categoryFilter === 'All' || r.type === categoryFilter;
-    return matchesSearch && matchesCategory;
+    const matchesTopic = topicFilter === 'All' || r.topicTags.includes(topicFilter);
+    return matchesSearch && matchesCategory && matchesTopic;
   });
 
   return (
@@ -998,6 +1187,28 @@ function ResourcesView({ colors, role }: { colors: typeof Colors.light; role: Ch
               <ThemedText style={[s.filterPillText, { color: categoryFilter === cat ? colors.text : colors.textSecondary }]}>
                 {cat}
               </ThemedText>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Topic filter chips */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="TOPICS" colors={colors} />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.filterRow}>
+          <Pressable
+            style={[s.filterPill, { backgroundColor: topicFilter === 'All' ? colors.text + '15' : 'transparent', borderColor: colors.border }]}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setTopicFilter('All'); }}
+          >
+            <ThemedText style={[s.filterPillText, { color: topicFilter === 'All' ? colors.text : colors.textSecondary }]}>All</ThemedText>
+          </Pressable>
+          {allTopics.map((topic) => (
+            <Pressable
+              key={topic}
+              style={[s.filterPill, { backgroundColor: topicFilter === topic ? colors.text + '15' : 'transparent', borderColor: colors.border }]}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setTopicFilter(topic); }}
+            >
+              <ThemedText style={[s.filterPillText, { color: topicFilter === topic ? colors.text : colors.textSecondary }]}>{topic}</ThemedText>
             </Pressable>
           ))}
         </ScrollView>
@@ -1197,6 +1408,94 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
             );
           })}
         </Card>
+      </View>
+
+      {/* Placement Queue */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="PLACEMENT QUEUE" colors={colors} count={UNPLACED_MEMBERS.filter((m) => m.status !== 'placed').length} />
+        <Card colors={colors}>
+          {UNPLACED_MEMBERS.map((member, idx) => {
+            const statusColor = member.status === 'awaiting' ? '#F59E0B' : member.status === 'contacted' ? '#3B82F6' : '#22C55E';
+            return (
+              <View
+                key={member.id}
+                style={[s.placementRow, idx < UNPLACED_MEMBERS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}
+              >
+                <View style={s.placementInfo}>
+                  <ThemedText style={[s.placementName, { color: colors.text }]}>{member.name}</ThemedText>
+                  <ThemedText style={[s.placementMeta, { color: colors.textTertiary }]}>Joined {member.joinedDate}</ThemedText>
+                  <View style={s.placementTagsRow}>
+                    {member.interests.map((interest) => (
+                      <View key={interest} style={[s.placementTag, { backgroundColor: colors.backgroundTertiary }]}>
+                        <ThemedText style={[s.placementTagText, { color: colors.textSecondary }]}>{interest}</ThemedText>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+                <View style={[s.placementStatusBadge, { backgroundColor: statusColor + '20' }]}>
+                  <ThemedText style={[s.placementStatusText, { color: statusColor }]}>{member.status.toUpperCase()}</ThemedText>
+                </View>
+              </View>
+            );
+          })}
+        </Card>
+      </View>
+
+      {/* At-Risk Members */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="AT-RISK MEMBERS" colors={colors} count={AT_RISK_MEMBERS.length} />
+        <Card colors={colors}>
+          {AT_RISK_MEMBERS.map((member, idx) => {
+            const riskColor = member.riskLevel === 'critical' ? '#EF4444' : '#F59E0B';
+            return (
+              <View
+                key={member.id}
+                style={[s.atRiskRow, idx < AT_RISK_MEMBERS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}
+              >
+                <View style={[s.atRiskDot, { backgroundColor: riskColor }]} />
+                <View style={s.atRiskInfo}>
+                  <ThemedText style={[s.atRiskName, { color: colors.text }]}>{member.name}</ThemedText>
+                  <ThemedText style={[s.atRiskMeta, { color: colors.textSecondary }]}>{member.pathway}</ThemedText>
+                  <ThemedText style={[s.atRiskMeta, { color: colors.textTertiary }]}>Last activity: {member.lastActivity} ({member.daysInactive}d ago)</ThemedText>
+                </View>
+                <View style={[s.atRiskBadge, { backgroundColor: riskColor + '20' }]}>
+                  <ThemedText style={[s.atRiskBadgeText, { color: riskColor }]}>{member.riskLevel.toUpperCase()}</ThemedText>
+                </View>
+              </View>
+            );
+          })}
+        </Card>
+      </View>
+
+      {/* Cohort Management */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="COHORT MANAGEMENT" colors={colors} count={COHORTS.length} />
+        {COHORTS.map((cohort) => {
+          const statusColor = COHORT_STATUS_COLORS[cohort.status] ?? '#8F8F8F';
+          return (
+            <Card key={cohort.id} colors={colors}>
+              <View style={s.cohortHeader}>
+                <View style={s.cohortHeaderLeft}>
+                  <ThemedText style={[s.cohortName, { color: colors.text }]}>{cohort.name}</ThemedText>
+                  <ThemedText style={[s.cohortPathway, { color: colors.textSecondary }]}>{cohort.pathway}</ThemedText>
+                </View>
+                <View style={[s.cohortStatusBadge, { backgroundColor: statusColor + '20' }]}>
+                  <ThemedText style={[s.cohortStatusText, { color: statusColor }]}>{cohort.status.toUpperCase()}</ThemedText>
+                </View>
+              </View>
+              <View style={s.cohortDetailsRow}>
+                <View style={s.cohortDetail}>
+                  <IconSymbol name="calendar" size={10} color={colors.textTertiary} />
+                  <ThemedText style={[s.cohortDetailText, { color: colors.textTertiary }]}>{cohort.startDate} — {cohort.endDate}</ThemedText>
+                </View>
+                <View style={s.cohortDetail}>
+                  <IconSymbol name="person.2.fill" size={10} color={colors.textTertiary} />
+                  <ThemedText style={[s.cohortDetailText, { color: colors.textTertiary }]}>{cohort.enrolled} enrolled</ThemedText>
+                </View>
+              </View>
+            </Card>
+          );
+        })}
       </View>
 
       {/* Growth Trends */}
@@ -1443,6 +1742,14 @@ const s = StyleSheet.create({
   pwEnrollBtn: { alignSelf: 'flex-start', paddingHorizontal: 16, paddingVertical: 7, borderRadius: BorderRadius.md, borderWidth: StyleSheet.hairlineWidth },
   pwEnrollBtnText: { fontSize: 13, fontWeight: '600' },
 
+  // ---- MY PATH: Journey Strip ----
+  journeyStrip: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 0, paddingVertical: Spacing.sm },
+  journeyStageWrap: { alignItems: 'center', gap: 4, minWidth: 40 },
+  journeyDot: { width: 22, height: 22, borderRadius: 11, justifyContent: 'center', alignItems: 'center', borderWidth: 2 },
+  journeyDotCurrent: { width: 26, height: 26, borderRadius: 13 },
+  journeyLabel: { fontSize: 8, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.3 },
+  journeyConnector: { width: 12, height: 2, borderRadius: 1, marginBottom: 16 },
+
   // ---- GROUPS ----
   startGroupBtn: {
     flexDirection: 'row',
@@ -1473,6 +1780,8 @@ const s = StyleSheet.create({
   groupCapacityText: { fontSize: 10 },
   groupHealth: { flexDirection: 'row', gap: Spacing.sm },
   groupHealthText: { fontSize: 10, fontWeight: '600' },
+  groupJoinBtn: { alignSelf: 'flex-start', paddingHorizontal: 14, paddingVertical: 6, borderRadius: BorderRadius.md, borderWidth: StyleSheet.hairlineWidth, marginTop: Spacing.sm },
+  groupJoinBtnText: { fontSize: 12, fontWeight: '600' },
 
   // ---- RESOURCES ----
   featuredCard: {
@@ -1536,6 +1845,37 @@ const s = StyleSheet.create({
   pipelineProgressBar: { width: 50, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.08)', overflow: 'hidden' },
   pipelineProgressFill: { height: '100%', borderRadius: 2 },
   pipelineProgressText: { fontSize: 9 },
+
+  // ---- LEADER TOOLS: Placement Queue ----
+  placementRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, gap: 8 },
+  placementInfo: { flex: 1 },
+  placementName: { fontSize: 13, fontWeight: '600', marginBottom: 1 },
+  placementMeta: { fontSize: 10, marginBottom: 4 },
+  placementTagsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
+  placementTag: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  placementTagText: { fontSize: 9, fontWeight: '500' },
+  placementStatusBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  placementStatusText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
+
+  // ---- LEADER TOOLS: At-Risk ----
+  atRiskRow: { flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 10, gap: 8 },
+  atRiskDot: { width: 8, height: 8, borderRadius: 4, marginTop: 4 },
+  atRiskInfo: { flex: 1 },
+  atRiskName: { fontSize: 13, fontWeight: '600', marginBottom: 1 },
+  atRiskMeta: { fontSize: 10, marginBottom: 1 },
+  atRiskBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  atRiskBadgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
+
+  // ---- LEADER TOOLS: Cohort Management ----
+  cohortHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 },
+  cohortHeaderLeft: { flex: 1 },
+  cohortName: { fontSize: 14, fontWeight: '700', marginBottom: 1 },
+  cohortPathway: { fontSize: 11 },
+  cohortStatusBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  cohortStatusText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
+  cohortDetailsRow: { flexDirection: 'row', gap: Spacing.md },
+  cohortDetail: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  cohortDetailText: { fontSize: 10 },
 
   // ---- LEADER TOOLS: Growth Trends ----
   trendTableRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, gap: Spacing.sm },

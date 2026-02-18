@@ -7,11 +7,13 @@
  * Thin orchestrator — each tab lives in its own file.
  */
 
-import React, { useState, useRef, useCallback } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { View, Pressable, StyleSheet, InteractionManager } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/core';
+import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
@@ -139,6 +141,27 @@ export function ChurchHome() {
   const handleSwitchTab = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
+
+  // Reset to Dashboard (page 0) when Home tab is pressed
+  const resetToHome = useCallback(() => {
+    setActiveTab(0);
+    pagerRef.current?.setPage(0);
+  }, []);
+
+  useEffect(() => {
+    registerHomeResetCallback(resetToHome);
+    return () => registerHomeResetCallback(null);
+  }, [resetToHome]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeHomeReset()) {
+        InteractionManager.runAfterInteractions(() => {
+          resetToHome();
+        });
+      }
+    }, [resetToHome])
+  );
 
   return (
     <ThemedView style={s.container}>

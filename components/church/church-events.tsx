@@ -79,6 +79,8 @@ function getAvailableViews(role: ChurchRoleLens): ViewDef[] {
 type EventType = 'worship' | 'fellowship' | 'outreach' | 'conference' | 'class' | 'retreat';
 type FilterChip = 'all' | 'this-week' | 'this-month' | 'worship' | 'fellowship' | 'outreach' | 'youth' | 'kids';
 
+type EventVisibility = 'public' | 'members' | 'leaders';
+
 interface BrowseEvent {
   id: string;
   title: string;
@@ -87,6 +89,7 @@ interface BrowseEvent {
   location: string;
   ministry: string;
   type: EventType;
+  visibility: EventVisibility;
   registrationStatus: 'open' | 'full' | 'waitlist';
   attendeeCount: number;
   capacity: number;
@@ -102,6 +105,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Main Sanctuary',
     ministry: 'Worship Ministry',
     type: 'worship',
+    visibility: 'public',
     registrationStatus: 'open',
     attendeeCount: 620,
     capacity: 1200,
@@ -115,6 +119,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Fellowship Hall',
     ministry: "Women's Ministry",
     type: 'conference',
+    visibility: 'members',
     registrationStatus: 'open',
     attendeeCount: 145,
     capacity: 200,
@@ -128,6 +133,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Pine Ridge Conference Center',
     ministry: "Men's Ministry",
     type: 'retreat',
+    visibility: 'members',
     registrationStatus: 'open',
     attendeeCount: 52,
     capacity: 80,
@@ -141,6 +147,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Youth Center',
     ministry: 'Youth Ministry',
     type: 'fellowship',
+    visibility: 'members',
     registrationStatus: 'open',
     attendeeCount: 38,
     capacity: 60,
@@ -154,6 +161,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Church Parking Lot & Figueroa Corridor',
     ministry: 'Outreach Ministry',
     type: 'outreach',
+    visibility: 'public',
     registrationStatus: 'open',
     attendeeCount: 67,
     capacity: 100,
@@ -167,6 +175,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: "Children's Wing",
     ministry: "Children's Ministry",
     type: 'class',
+    visibility: 'public',
     registrationStatus: 'waitlist',
     attendeeCount: 200,
     capacity: 200,
@@ -180,6 +189,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Garden Room',
     ministry: 'Couples Ministry',
     type: 'class',
+    visibility: 'members',
     registrationStatus: 'open',
     attendeeCount: 28,
     capacity: 40,
@@ -193,6 +203,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Chapel',
     ministry: 'Prayer Ministry',
     type: 'worship',
+    visibility: 'members',
     registrationStatus: 'open',
     attendeeCount: 48,
     capacity: 120,
@@ -206,6 +217,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Main Sanctuary - Baptismal',
     ministry: 'Pastoral Team',
     type: 'worship',
+    visibility: 'public',
     registrationStatus: 'open',
     attendeeCount: 12,
     capacity: 30,
@@ -219,6 +231,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Conference Room A&B',
     ministry: 'Pastoral Team',
     type: 'conference',
+    visibility: 'leaders',
     registrationStatus: 'open',
     attendeeCount: 34,
     capacity: 60,
@@ -232,6 +245,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Room 201',
     ministry: 'Membership',
     type: 'class',
+    visibility: 'members',
     registrationStatus: 'open',
     attendeeCount: 15,
     capacity: 30,
@@ -245,6 +259,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Fellowship Hall',
     ministry: 'Small Groups',
     type: 'fellowship',
+    visibility: 'members',
     registrationStatus: 'open',
     attendeeCount: 92,
     capacity: 150,
@@ -258,6 +273,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: "Children's Wing",
     ministry: "Children's Ministry",
     type: 'worship',
+    visibility: 'public',
     registrationStatus: 'full',
     attendeeCount: 80,
     capacity: 80,
@@ -271,6 +287,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Downtown Shelter',
     ministry: 'Youth Ministry',
     type: 'outreach',
+    visibility: 'public',
     registrationStatus: 'open',
     attendeeCount: 22,
     capacity: 40,
@@ -284,6 +301,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     location: 'Fellowship Hall',
     ministry: 'Senior Ministry',
     type: 'fellowship',
+    visibility: 'members',
     registrationStatus: 'open',
     attendeeCount: 38,
     capacity: 50,
@@ -317,6 +335,12 @@ const REG_STATUS_COLOR: Record<string, string> = {
   waitlist: '#F59E0B',
 };
 
+const VISIBILITY_COLOR: Record<EventVisibility, string> = {
+  public: '#22C55E',
+  members: '#3B82F6',
+  leaders: '#F59E0B',
+};
+
 // =============================================================================
 // INLINE MOCK DATA — MY EVENTS
 // =============================================================================
@@ -338,6 +362,20 @@ const MY_EVENTS_UPCOMING: MyEvent[] = [
   { id: 'me-5', title: "Men's Retreat: Iron Sharpens Iron", date: 'Apr 17-19, 2026', role: 'attendee', rsvpStatus: 'maybe', reminderOn: false },
   { id: 'me-6', title: 'Leadership Summit 2026', date: 'May 8-9, 2026', role: 'volunteer', rsvpStatus: 'going', reminderOn: true },
   { id: 'me-7', title: 'Baptism Celebration Sunday', date: 'Sun, Mar 8, 2026', role: 'attendee', rsvpStatus: 'going', reminderOn: true },
+];
+
+interface RecurringCommitment {
+  id: string;
+  title: string;
+  schedule: string;
+  role: 'attendee' | 'volunteer' | 'host';
+}
+
+const RECURRING_COMMITMENTS: RecurringCommitment[] = [
+  { id: 'rc-1', title: 'Sunday Morning Worship', schedule: 'Every Sunday, 10:00 AM', role: 'attendee' },
+  { id: 'rc-2', title: 'Wednesday Prayer Night', schedule: 'Every Wednesday, 7:00 PM', role: 'attendee' },
+  { id: 'rc-3', title: 'Sunday Greeter Rotation', schedule: '1st & 3rd Sundays, 9:15 AM', role: 'volunteer' },
+  { id: 'rc-4', title: 'Small Group: Men of Faith', schedule: 'Every Thursday, 7:00 PM', role: 'host' },
 ];
 
 interface PastMyEvent {
@@ -471,6 +509,7 @@ interface ServicePlan {
   id: string;
   date: string;
   serviceName: string;
+  worshipSetLink?: string;
   elements: ServiceElement[];
 }
 
@@ -479,6 +518,7 @@ const SERVICE_PLANS: ServicePlan[] = [
     id: 'sp-1',
     date: 'Sun, Feb 23, 2026',
     serviceName: '10:00 AM Morning Worship',
+    worshipSetLink: 'Goodness of God, Way Maker, Holy Spirit, Great Is Thy Faithfulness',
     elements: [
       { id: 'el-1', label: 'Pre-Service Music', timeAllocation: '15 min', assignedPerson: 'Marcus Jenkins', notes: 'Instrumental worship mix', status: 'confirmed' },
       { id: 'el-2', label: 'Welcome', timeAllocation: '3 min', assignedPerson: 'Deacon Williams', notes: 'Welcome visitors, announcements', status: 'confirmed' },
@@ -728,22 +768,24 @@ interface FollowUpItem {
   id: string;
   name: string;
   type: FollowUpType;
+  event: string;
   lastAttendance: string;
   assignedTo: string;
   status: 'pending' | 'in-progress' | 'completed';
+  notes: string;
 }
 
 const FOLLOWUP_ITEMS: FollowUpItem[] = [
-  { id: 'fu-1', name: 'Michael Turner', type: 'first-time', lastAttendance: 'Feb 16, 2026', assignedTo: 'Minister Clarke', status: 'pending' },
-  { id: 'fu-2', name: 'Jasmine Wright', type: 'first-time', lastAttendance: 'Feb 16, 2026', assignedTo: 'Deacon Williams', status: 'pending' },
-  { id: 'fu-3', name: 'Emily Parker', type: 'first-time', lastAttendance: 'Feb 16, 2026', assignedTo: 'Sister Davis', status: 'in-progress' },
-  { id: 'fu-4', name: 'Andrew Phillips', type: 'first-time', lastAttendance: 'Feb 16, 2026', assignedTo: 'Elder Thompson', status: 'pending' },
-  { id: 'fu-5', name: 'Karen Mitchell', type: 'absent', lastAttendance: 'Jan 19, 2026', assignedTo: 'Deacon Harris', status: 'in-progress' },
-  { id: 'fu-6', name: 'Victor Okonkwo', type: 'absent', lastAttendance: 'Jan 12, 2026', assignedTo: 'Minister Clarke', status: 'pending' },
-  { id: 'fu-7', name: 'Lisa Hernandez', type: 'absent', lastAttendance: 'Dec 29, 2025', assignedTo: 'Elder Martha Reed', status: 'pending' },
-  { id: 'fu-8', name: 'Raymond Foster', type: 'returning', lastAttendance: 'Feb 9, 2026', assignedTo: 'Deacon Williams', status: 'completed' },
-  { id: 'fu-9', name: 'Denise Brooks', type: 'absent', lastAttendance: 'Jan 5, 2026', assignedTo: 'Sister Davis', status: 'in-progress' },
-  { id: 'fu-10', name: 'Carlos Rivera', type: 'returning', lastAttendance: 'Feb 16, 2026', assignedTo: 'Deacon Harris', status: 'completed' },
+  { id: 'fu-1', name: 'Michael Turner', type: 'first-time', event: 'Sunday Morning Worship', lastAttendance: 'Feb 16, 2026', assignedTo: 'Minister Clarke', status: 'pending', notes: 'Came with a friend; interested in small groups' },
+  { id: 'fu-2', name: 'Jasmine Wright', type: 'first-time', event: 'Sunday Morning Worship', lastAttendance: 'Feb 16, 2026', assignedTo: 'Deacon Williams', status: 'pending', notes: 'Left before service ended; send welcome packet' },
+  { id: 'fu-3', name: 'Emily Parker', type: 'first-time', event: 'Sunday Morning Worship', lastAttendance: 'Feb 16, 2026', assignedTo: 'Sister Davis', status: 'in-progress', notes: 'Called Tuesday; scheduling coffee meeting' },
+  { id: 'fu-4', name: 'Andrew Phillips', type: 'first-time', event: 'Youth Service', lastAttendance: 'Feb 16, 2026', assignedTo: 'Elder Thompson', status: 'pending', notes: 'College student; new to area' },
+  { id: 'fu-5', name: 'Karen Mitchell', type: 'absent', event: 'Sunday Morning Worship', lastAttendance: 'Jan 19, 2026', assignedTo: 'Deacon Harris', status: 'in-progress', notes: 'Recovering from surgery; sent card' },
+  { id: 'fu-6', name: 'Victor Okonkwo', type: 'absent', event: 'Sunday Morning Worship', lastAttendance: 'Jan 12, 2026', assignedTo: 'Minister Clarke', status: 'pending', notes: 'No response to calls; try home visit' },
+  { id: 'fu-7', name: 'Lisa Hernandez', type: 'absent', event: 'Sunday Morning Worship', lastAttendance: 'Dec 29, 2025', assignedTo: 'Elder Martha Reed', status: 'pending', notes: 'Family issues; needs pastoral care referral' },
+  { id: 'fu-8', name: 'Raymond Foster', type: 'returning', event: 'Sunday Morning Worship', lastAttendance: 'Feb 9, 2026', assignedTo: 'Deacon Williams', status: 'completed', notes: 'Rejoined men\'s small group' },
+  { id: 'fu-9', name: 'Denise Brooks', type: 'absent', event: 'Evening Bible Study', lastAttendance: 'Jan 5, 2026', assignedTo: 'Sister Davis', status: 'in-progress', notes: 'Work schedule conflict; exploring online options' },
+  { id: 'fu-10', name: 'Carlos Rivera', type: 'returning', event: 'Sunday Morning Worship', lastAttendance: 'Feb 16, 2026', assignedTo: 'Deacon Harris', status: 'completed', notes: 'Back from military deployment; reconnected' },
 ];
 
 const FOLLOWUP_TYPE_COLOR: Record<FollowUpType, string> = {
@@ -926,11 +968,28 @@ function BrowseView({ colors, role }: { colors: typeof Colors.light; role: Churc
         filtered.map((event) => {
           const typeColor = EVENT_TYPE_COLOR[event.type];
           const regColor = REG_STATUS_COLOR[event.registrationStatus];
+          const visColor = VISIBILITY_COLOR[event.visibility];
           const fillPct = Math.round((event.attendeeCount / event.capacity) * 100);
+          const canRsvp = event.registrationStatus !== 'full';
 
           return (
             <Pressable key={event.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
               <Card colors={colors}>
+                {/* Badge row: type + visibility */}
+                <View style={s.browseBadgeRow}>
+                  <View style={[s.typeBadge, { backgroundColor: typeColor + '20' }]}>
+                    <ThemedText style={[s.typeBadgeText, { color: typeColor }]}>
+                      {event.type.toUpperCase()}
+                    </ThemedText>
+                  </View>
+                  <View style={[s.visBadge, { backgroundColor: visColor + '20' }]}>
+                    <IconSymbol name={event.visibility === 'public' ? 'globe' : event.visibility === 'members' ? 'person.2.fill' : 'lock.fill' as any} size={8} color={visColor} />
+                    <ThemedText style={[s.visBadgeText, { color: visColor }]}>
+                      {event.visibility.toUpperCase()}
+                    </ThemedText>
+                  </View>
+                </View>
+
                 {/* Title row */}
                 <View style={s.browseHeader}>
                   <View style={[s.catDot, { backgroundColor: typeColor }]} />
@@ -938,11 +997,6 @@ function BrowseView({ colors, role }: { colors: typeof Colors.light; role: Churc
                     <ThemedText style={[s.browseTitle, { color: colors.text }]}>{event.title}</ThemedText>
                     <ThemedText style={[s.browseDatetime, { color: colors.textSecondary }]}>
                       {event.date} {'\u00B7'} {event.time}
-                    </ThemedText>
-                  </View>
-                  <View style={[s.typeBadge, { backgroundColor: typeColor + '20' }]}>
-                    <ThemedText style={[s.typeBadgeText, { color: typeColor }]}>
-                      {event.type.toUpperCase()}
                     </ThemedText>
                   </View>
                 </View>
@@ -957,7 +1011,7 @@ function BrowseView({ colors, role }: { colors: typeof Colors.light; role: Churc
                   <ThemedText style={[s.browseDetailText, { color: colors.textTertiary }]}>{event.ministry}</ThemedText>
                 </View>
 
-                {/* Bottom row: registration + capacity */}
+                {/* Bottom row: registration + capacity + RSVP */}
                 <View style={s.browseBottomRow}>
                   <View style={[s.regBadge, { backgroundColor: regColor + '20' }]}>
                     <View style={[s.regDot, { backgroundColor: regColor }]} />
@@ -968,6 +1022,14 @@ function BrowseView({ colors, role }: { colors: typeof Colors.light; role: Churc
                   <ThemedText style={[s.capacityText, { color: colors.textTertiary }]}>
                     {event.attendeeCount} / {event.capacity} ({fillPct}%)
                   </ThemedText>
+                  <Pressable
+                    style={[s.rsvpButton, { backgroundColor: canRsvp ? '#3B82F6' : colors.backgroundTertiary }]}
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+                  >
+                    <ThemedText style={[s.rsvpButtonText, { color: canRsvp ? '#fff' : colors.textTertiary }]}>
+                      {canRsvp ? 'RSVP' : 'FULL'}
+                    </ThemedText>
+                  </Pressable>
                 </View>
               </Card>
             </Pressable>
@@ -985,42 +1047,76 @@ function BrowseView({ colors, role }: { colors: typeof Colors.light; role: Churc
 function MyEventsView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
   const [showPast, setShowPast] = useState(false);
 
+  // Split upcoming events into RSVPs vs Serving Assignments
+  const rsvpEvents = MY_EVENTS_UPCOMING.filter((e) => e.role === 'attendee');
+  const servingEvents = MY_EVENTS_UPCOMING.filter((e) => e.role === 'volunteer' || e.role === 'host');
+
+  const renderEventCard = (event: typeof MY_EVENTS_UPCOMING[0]) => {
+    const roleColor = ROLE_BADGE_COLOR[event.role];
+    const rsvpColor = RSVP_COLOR[event.rsvpStatus];
+    return (
+      <Pressable key={event.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+        <Card colors={colors}>
+          <View style={s.myEventHeader}>
+            <View style={{ flex: 1 }}>
+              <ThemedText style={[s.myEventTitle, { color: colors.text }]}>{event.title}</ThemedText>
+              <ThemedText style={[s.myEventDate, { color: colors.textSecondary }]}>{event.date}</ThemedText>
+            </View>
+            <View style={{ alignItems: 'flex-end', gap: 4 }}>
+              <View style={[s.roleBadge, { backgroundColor: roleColor + '20' }]}>
+                <ThemedText style={[s.roleBadgeText, { color: roleColor }]}>{event.role.toUpperCase()}</ThemedText>
+              </View>
+              <View style={[s.rsvpBadge, { backgroundColor: rsvpColor + '20' }]}>
+                <View style={[s.rsvpDot, { backgroundColor: rsvpColor }]} />
+                <ThemedText style={[s.rsvpText, { color: rsvpColor }]}>{event.rsvpStatus.toUpperCase()}</ThemedText>
+              </View>
+            </View>
+          </View>
+          <View style={s.reminderRow}>
+            <IconSymbol name={event.reminderOn ? 'bell.fill' : 'bell.slash' as any} size={12} color={event.reminderOn ? '#22C55E' : colors.textTertiary} />
+            <ThemedText style={[s.reminderText, { color: event.reminderOn ? '#22C55E' : colors.textTertiary }]}>
+              Reminder {event.reminderOn ? 'On' : 'Off'}
+            </ThemedText>
+          </View>
+        </Card>
+      </Pressable>
+    );
+  };
+
   return (
     <View>
-      <SectionHeader title="MY UPCOMING EVENTS" colors={colors} count={MY_EVENTS_UPCOMING.length} />
+      {/* Section 1: RSVPs */}
+      <SectionHeader title="MY RSVPs" colors={colors} count={rsvpEvents.length} />
+      {rsvpEvents.length === 0 ? (
+        <Card colors={colors}>
+          <ThemedText style={[s.emptyText, { color: colors.textTertiary }]}>No upcoming RSVPs.</ThemedText>
+        </Card>
+      ) : rsvpEvents.map(renderEventCard)}
 
-      {MY_EVENTS_UPCOMING.map((event) => {
-        const roleColor = ROLE_BADGE_COLOR[event.role];
-        const rsvpColor = RSVP_COLOR[event.rsvpStatus];
+      {/* Section 2: Serving Assignments */}
+      <SectionHeader title="SERVING ASSIGNMENTS" colors={colors} count={servingEvents.length} />
+      {servingEvents.length === 0 ? (
+        <Card colors={colors}>
+          <ThemedText style={[s.emptyText, { color: colors.textTertiary }]}>No upcoming serving assignments.</ThemedText>
+        </Card>
+      ) : servingEvents.map(renderEventCard)}
 
+      {/* Section 3: Recurring Commitments */}
+      <SectionHeader title="RECURRING COMMITMENTS" colors={colors} count={RECURRING_COMMITMENTS.length} />
+      {RECURRING_COMMITMENTS.map((item) => {
+        const roleColor = ROLE_BADGE_COLOR[item.role];
         return (
-          <Pressable key={event.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-            <Card colors={colors}>
-              <View style={s.myEventHeader}>
-                <View style={{ flex: 1 }}>
-                  <ThemedText style={[s.myEventTitle, { color: colors.text }]}>{event.title}</ThemedText>
-                  <ThemedText style={[s.myEventDate, { color: colors.textSecondary }]}>{event.date}</ThemedText>
-                </View>
-                <View style={{ alignItems: 'flex-end', gap: 4 }}>
-                  <View style={[s.roleBadge, { backgroundColor: roleColor + '20' }]}>
-                    <ThemedText style={[s.roleBadgeText, { color: roleColor }]}>{event.role.toUpperCase()}</ThemedText>
-                  </View>
-                  <View style={[s.rsvpBadge, { backgroundColor: rsvpColor + '20' }]}>
-                    <View style={[s.rsvpDot, { backgroundColor: rsvpColor }]} />
-                    <ThemedText style={[s.rsvpText, { color: rsvpColor }]}>{event.rsvpStatus.toUpperCase()}</ThemedText>
-                  </View>
-                </View>
+          <Card key={item.id} colors={colors}>
+            <View style={s.myEventHeader}>
+              <View style={{ flex: 1 }}>
+                <ThemedText style={[s.myEventTitle, { color: colors.text }]}>{item.title}</ThemedText>
+                <ThemedText style={[s.myEventDate, { color: colors.textSecondary }]}>{item.schedule}</ThemedText>
               </View>
-
-              {/* Reminder toggle row */}
-              <View style={s.reminderRow}>
-                <IconSymbol name={event.reminderOn ? 'bell.fill' : 'bell.slash' as any} size={12} color={event.reminderOn ? '#22C55E' : colors.textTertiary} />
-                <ThemedText style={[s.reminderText, { color: event.reminderOn ? '#22C55E' : colors.textTertiary }]}>
-                  Reminder {event.reminderOn ? 'On' : 'Off'}
-                </ThemedText>
+              <View style={[s.roleBadge, { backgroundColor: roleColor + '20' }]}>
+                <ThemedText style={[s.roleBadgeText, { color: roleColor }]}>{item.role.toUpperCase()}</ThemedText>
               </View>
-            </Card>
-          </Pressable>
+            </View>
+          </Card>
         );
       })}
 
@@ -1175,6 +1271,20 @@ function ServicePlanView({ colors, role }: { colors: typeof Colors.light; role: 
                 <IconSymbol name={isExpanded ? 'chevron.up' : 'chevron.down' as any} size={12} color={colors.textTertiary} />
               </View>
 
+              {/* Worship set link */}
+              {plan.worshipSetLink && (
+                <Pressable
+                  style={s.worshipSetLink}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                >
+                  <IconSymbol name="music.note.list" size={12} color="#8B5CF6" />
+                  <ThemedText style={s.worshipSetLinkText} numberOfLines={1}>
+                    Worship Set: {plan.worshipSetLink}
+                  </ThemedText>
+                  <IconSymbol name="chevron.right" size={10} color={colors.textTertiary} />
+                </Pressable>
+              )}
+
               {/* Expanded: order of service */}
               {isExpanded && (
                 <View style={s.planExpanded}>
@@ -1320,22 +1430,64 @@ function VolunteersView({ colors, role }: { colors: typeof Colors.light; role: C
 // VIEW 6: CHECK-IN
 // =============================================================================
 
+const CHECKIN_EVENTS = [
+  { id: 'ce-1', label: 'Sunday Morning Worship — 10:00 AM', capacity: 500 },
+  { id: 'ce-2', label: 'Youth Service — 10:00 AM', capacity: 80 },
+  { id: 'ce-3', label: 'Evening Bible Study — 7:00 PM', capacity: 150 },
+];
+
 function CheckInView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
-  // Live badge
+  const [selectedEvent, setSelectedEvent] = useState(CHECKIN_EVENTS[0].id);
   const liveNow = CHECKIN_STATIONS.some((st) => st.status === 'active');
+
+  const currentEvent = CHECKIN_EVENTS.find((e) => e.id === selectedEvent) ?? CHECKIN_EVENTS[0];
+  const totalCheckedIn = CHECKIN_STATIONS.reduce((a, b) => a + b.checkedIn, 0);
+  const capacityPct = Math.round((totalCheckedIn / currentEvent.capacity) * 100);
+  const capacityColor = capacityPct >= 90 ? '#EF4444' : capacityPct >= 70 ? '#F59E0B' : '#22C55E';
 
   return (
     <View>
+      {/* Event Selector */}
+      <SectionHeader title="SELECT EVENT" colors={colors} />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.filterRow} contentContainerStyle={s.filterRowContent}>
+        {CHECKIN_EVENTS.map((ev) => {
+          const isActive = selectedEvent === ev.id;
+          return (
+            <Pressable
+              key={ev.id}
+              style={[s.filterPill, { backgroundColor: isActive ? colors.text + '12' : 'transparent', borderColor: isActive ? colors.text + '25' : colors.border }]}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedEvent(ev.id); }}
+            >
+              <ThemedText style={[s.filterPillText, { color: isActive ? colors.text : colors.textSecondary }]}>{ev.label}</ThemedText>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
       {/* Live indicator */}
       {liveNow && (
         <View style={s.liveBanner}>
           <View style={s.liveDot} />
           <ThemedText style={s.liveText}>LIVE CHECK-IN ACTIVE</ThemedText>
           <ThemedText style={[s.liveServiceText, { color: 'rgba(255,255,255,0.6)' }]}>
-            Sunday Morning Worship {'\u00B7'} 10:00 AM
+            {currentEvent.label}
           </ThemedText>
         </View>
       )}
+
+      {/* Live capacity counter */}
+      <Card colors={colors}>
+        <View style={s.capacityHeader}>
+          <ThemedText style={[shrd.sectionLabel, { color: colors.textSecondary }]}>LIVE CAPACITY</ThemedText>
+          <ThemedText style={[s.capacityPctLabel, { color: capacityColor }]}>{capacityPct}%</ThemedText>
+        </View>
+        <ProgressBar percentage={capacityPct} color={capacityColor} colors={colors} />
+        <View style={[s.statsRow, { marginTop: Spacing.sm }]}>
+          <StatBox label="Checked In" value={String(totalCheckedIn)} colors={colors} valueColor="#3B82F6" />
+          <StatBox label="Capacity" value={String(currentEvent.capacity)} colors={colors} />
+          <StatBox label="Remaining" value={String(Math.max(0, currentEvent.capacity - totalCheckedIn))} colors={colors} valueColor={capacityColor} />
+        </View>
+      </Card>
 
       {/* Stats strip */}
       <Card colors={colors}>
@@ -1345,6 +1497,25 @@ function CheckInView({ colors, role }: { colors: typeof Colors.light; role: Chur
           <StatBox label="First-Time" value={String(CHECKIN_STATS.firstTimeVisitors)} colors={colors} valueColor="#22C55E" />
         </View>
       </Card>
+
+      {/* New attendee quick-add */}
+      {isStaffLevel(role) && (
+        <>
+          <SectionHeader title="QUICK ADD ATTENDEE" colors={colors} />
+          <Card colors={colors}>
+            <Pressable
+              style={s.quickAddButton}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+            >
+              <IconSymbol name="plus.circle.fill" size={18} color="#3B82F6" />
+              <ThemedText style={[s.quickAddText, { color: '#3B82F6' }]}>Add New Attendee</ThemedText>
+            </Pressable>
+            <ThemedText style={[s.quickAddHint, { color: colors.textTertiary }]}>
+              For walk-ins or visitors not yet in the system
+            </ThemedText>
+          </Card>
+        </>
+      )}
 
       {/* Stations */}
       <SectionHeader title="CHECK-IN STATIONS" colors={colors} count={CHECKIN_STATIONS.length} />
@@ -1558,7 +1729,10 @@ function AttendanceView({ colors, role }: { colors: typeof Colors.light; role: C
               <View style={{ flex: 1 }}>
                 <ThemedText style={[s.fuName, { color: colors.text }]}>{item.name}</ThemedText>
                 <ThemedText style={[s.fuMeta, { color: colors.textTertiary }]}>
-                  Last: {item.lastAttendance} {'\u00B7'} Assigned: {item.assignedTo}
+                  {item.event} {'\u00B7'} Last: {item.lastAttendance}
+                </ThemedText>
+                <ThemedText style={[s.fuMeta, { color: colors.textTertiary }]}>
+                  Assigned: {item.assignedTo}
                 </ThemedText>
               </View>
               <View style={{ alignItems: 'flex-end', gap: 4 }}>
@@ -1575,6 +1749,14 @@ function AttendanceView({ colors, role }: { colors: typeof Colors.light; role: C
                 </View>
               </View>
             </View>
+            {item.notes ? (
+              <View style={s.fuNotesRow}>
+                <IconSymbol name="note.text" size={10} color={colors.textTertiary} />
+                <ThemedText style={[s.fuNotesText, { color: colors.textTertiary }]} numberOfLines={2}>
+                  {item.notes}
+                </ThemedText>
+              </View>
+            ) : null}
           </Card>
         );
       })}
@@ -1708,6 +1890,11 @@ const s = StyleSheet.create({
   featuredSpotsText: { color: 'rgba(255,255,255,0.5)', fontSize: 11 },
 
   // ============= Browse View =============
+  browseBadgeRow: { flexDirection: 'row', gap: 6, marginBottom: 6 },
+  visBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  visBadgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
+  rsvpButton: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: BorderRadius.sm, marginLeft: 'auto' },
+  rsvpButtonText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
   browseHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginBottom: 6 },
   catDot: { width: 8, height: 8, borderRadius: 4, marginTop: 5 },
   browseTitle: { fontSize: 15, fontWeight: '700', marginBottom: 2 },
@@ -1748,6 +1935,8 @@ const s = StyleSheet.create({
   ministryEventMeta: { fontSize: 11 },
 
   // ============= Service Plan View =============
+  worshipSetLink: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8, paddingTop: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#ffffff10' },
+  worshipSetLinkText: { flex: 1, fontSize: 12, fontWeight: '500', color: '#8B5CF6' },
   planHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
   planServiceName: { fontSize: 15, fontWeight: '700', marginBottom: 2 },
   planDate: { fontSize: 12 },
@@ -1781,6 +1970,11 @@ const s = StyleSheet.create({
   slotTime: { fontSize: 10, fontWeight: '500' },
 
   // ============= Check-In View =============
+  capacityHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  capacityPctLabel: { fontSize: 16, fontWeight: '800' },
+  quickAddButton: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8 },
+  quickAddText: { fontSize: 14, fontWeight: '600' },
+  quickAddHint: { fontSize: 11, marginTop: 4 },
   liveBanner: {
     backgroundColor: '#22C55E20',
     borderRadius: BorderRadius.lg,
@@ -1821,6 +2015,8 @@ const s = StyleSheet.create({
   fuStatusBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
   fuStatusDot: { width: 5, height: 5, borderRadius: 2.5 },
   fuStatusText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
+  fuNotesRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 8, paddingTop: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#ffffff10' },
+  fuNotesText: { flex: 1, fontSize: 11, fontStyle: 'italic' },
 
   // Attendance breakdown
   breakdownRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8 },

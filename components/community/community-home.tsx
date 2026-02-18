@@ -4,13 +4,16 @@
  * Dashboard | Calendar | Standings | Teams | Raceweek Ops | Rules | Tech & Compliance
  */
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
   View,
   StyleSheet,
+  InteractionManager,
 } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import * as Haptics from 'expo-haptics';
+import { useFocusEffect } from '@react-navigation/core';
+import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
@@ -60,6 +63,27 @@ export function CommunityHome() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     pagerRef.current?.setPage(index);
   }, []);
+
+  // Reset to Dashboard (page 0) when Home tab is pressed
+  const resetToHome = useCallback(() => {
+    setActiveIndex(0);
+    pagerRef.current?.setPage(0);
+  }, []);
+
+  useEffect(() => {
+    registerHomeResetCallback(resetToHome);
+    return () => registerHomeResetCallback(null);
+  }, [resetToHome]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeHomeReset()) {
+        InteractionManager.runAfterInteractions(() => {
+          resetToHome();
+        });
+      }
+    }, [resetToHome])
+  );
 
   return (
     <ThemedView style={styles.container}>

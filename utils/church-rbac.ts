@@ -32,16 +32,16 @@ export type ChurchHomeTab =
   | 'give' | 'events' | 'prayer' | 'messages' | 'discipleship';
 
 const CHURCH_HOME_TAB_MATRIX: Record<ChurchHomeTab, Record<ChurchRoleLens, ChurchVisibility>> = {
-  dashboard:    { C1: 'full', C2: 'full', C3: 'full', C4: 'limited', C5: 'limited' },
-  calendar:     { C1: 'full', C2: 'full', C3: 'full', C4: 'limited', C5: 'limited' },
-  worship:      { C1: 'full', C2: 'full', C3: 'full', C4: 'full',    C5: 'limited' },
-  community:    { C1: 'full', C2: 'full', C3: 'full', C4: 'full',    C5: 'limited' },
-  serve:        { C1: 'full', C2: 'full', C3: 'full', C4: 'limited', C5: 'hidden' },
-  give:         { C1: 'full', C2: 'full', C3: 'full', C4: 'full',    C5: 'limited' },
-  events:       { C1: 'full', C2: 'full', C3: 'full', C4: 'full',    C5: 'full' },
-  prayer:       { C1: 'full', C2: 'full', C3: 'full', C4: 'full',    C5: 'hidden' },
-  messages:     { C1: 'full', C2: 'full', C3: 'full', C4: 'full',    C5: 'full' },
-  discipleship: { C1: 'full', C2: 'full', C3: 'full', C4: 'limited', C5: 'hidden' },
+  dashboard:    { C1: 'full', C2: 'full',    C3: 'full',    C4: 'limited', C5: 'limited' },
+  calendar:     { C1: 'full', C2: 'full',    C3: 'full',    C4: 'limited', C5: 'limited' },
+  worship:      { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'limited' },
+  community:    { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'limited' },
+  serve:        { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
+  give:         { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'limited' },
+  events:       { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'full' },
+  prayer:       { C1: 'full', C2: 'full',    C3: 'limited', C4: 'full',    C5: 'hidden' },
+  messages:     { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'limited' },
+  discipleship: { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
 };
 
 export function getChurchHomeTabVisibility(tab: ChurchHomeTab, role: ChurchRoleLens): ChurchVisibility {
@@ -58,15 +58,15 @@ export type ChurchOrgTab =
 
 const CHURCH_ORG_TAB_MATRIX: Record<ChurchOrgTab, Record<ChurchRoleLens, ChurchVisibility>> = {
   ministries:      { C1: 'full', C2: 'full',    C3: 'full',    C4: 'limited', C5: 'limited' },
-  people:          { C1: 'full', C2: 'full',    C3: 'full',    C4: 'limited', C5: 'hidden' },
-  rooms:           { C1: 'full', C2: 'full',    C3: 'full',    C4: 'hidden',  C5: 'hidden' },
+  people:          { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
+  rooms:           { C1: 'full', C2: 'full',    C3: 'limited', C4: 'hidden',  C5: 'hidden' },
   operations:      { C1: 'full', C2: 'full',    C3: 'limited', C4: 'hidden',  C5: 'hidden' },
   finance:         { C1: 'full', C2: 'full',    C3: 'limited', C4: 'hidden',  C5: 'hidden' },
   'payment-rails': { C1: 'full', C2: 'full',    C3: 'hidden',  C4: 'hidden',  C5: 'hidden' },
   compliance:      { C1: 'full', C2: 'full',    C3: 'limited', C4: 'hidden',  C5: 'hidden' },
-  facilities:      { C1: 'full', C2: 'full',    C3: 'full',    C4: 'limited', C5: 'hidden' },
-  resources:       { C1: 'full', C2: 'full',    C3: 'full',    C4: 'limited', C5: 'hidden' },
-  donations:       { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'limited' },
+  facilities:      { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
+  resources:       { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
+  donations:       { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
 };
 
 export function getChurchOrgTabVisibility(tab: ChurchOrgTab, role: ChurchRoleLens): ChurchVisibility {
@@ -95,19 +95,27 @@ const CHURCH_QUICK_ACTIONS: Record<ChurchRoleLens, ChurchQuickAction[]> = {
     { id: 'staff-meeting', label: 'Staff Meeting', icon: 'person.3.fill' },
     { id: 'budget-review', label: 'Budget Review', icon: 'dollarsign.circle.fill' },
     { id: 'prayer-wall', label: 'Prayer Wall', icon: 'hands.sparkles.fill' },
-    { id: 'announcements', label: 'Announcements', icon: 'megaphone.fill' },
+    { id: 'post-announcement', label: 'Post Announcement', icon: 'megaphone.fill' },
+    { id: 'approve-requests', label: 'Approve Requests', icon: 'checkmark.seal.fill' },
+    { id: 'pin-hero-video', label: 'Pin Hero Video', icon: 'pin.fill' },
+    { id: 'open-payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
+    { id: 'open-announcements', label: 'Announcements', icon: 'bell.fill' },
   ],
   C2: [
-    { id: 'board-meeting', label: 'Board Meeting', icon: 'person.3.fill' },
-    { id: 'budget-review', label: 'Budget Review', icon: 'dollarsign.circle.fill' },
-    { id: 'policy-review', label: 'Policy Review', icon: 'doc.text.fill' },
-    { id: 'staff-oversight', label: 'Staff Oversight', icon: 'person.2.fill' },
+    { id: 'create-event', label: 'Create Event', icon: 'calendar.badge.plus' },
+    { id: 'manage-volunteers', label: 'Manage Volunteers', icon: 'person.3.fill' },
+    { id: 'post-update', label: 'Post Update', icon: 'square.and.pencil' },
+    { id: 'request-budget', label: 'Request Budget', icon: 'dollarsign.circle.fill' },
+    { id: 'open-my-ministry', label: 'Open My Ministry', icon: 'heart.fill' },
+    { id: 'open-check-in', label: 'Open Check-In', icon: 'checkmark.circle.fill' },
+    { id: 'schedule-event', label: 'Schedule Event', icon: 'clock.fill' },
   ],
   C3: [
     { id: 'my-ministries', label: 'My Ministries', icon: 'heart.fill' },
     { id: 'events', label: 'Events', icon: 'calendar' },
     { id: 'volunteer-schedule', label: 'Volunteer Schedule', icon: 'clock.fill' },
-    { id: 'announcements', label: 'Announcements', icon: 'megaphone.fill' },
+    { id: 'submit-request', label: 'Submit Request', icon: 'paperplane.fill' },
+    { id: 'open-check-in', label: 'Check-In', icon: 'checkmark.circle.fill' },
   ],
   C4: [
     { id: 'worship', label: 'Watch Worship', icon: 'play.circle.fill' },

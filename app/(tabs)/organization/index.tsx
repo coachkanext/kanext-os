@@ -6,10 +6,12 @@
  */
 
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, ScrollView, StyleSheet, Pressable, InteractionManager } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/core';
 import * as Haptics from 'expo-haptics';
+import { consumeOrgReset, registerOrgResetCallback } from '@/utils/global-org';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -211,6 +213,23 @@ function SportsOrganization() {
     pagerRef.current?.setPage(index);
   }, []);
 
+  const resetToFirst = useCallback(() => {
+    setActiveIndex(0);
+    pagerRef.current?.setPage(0);
+  }, []);
+
+  useEffect(() => {
+    registerOrgResetCallback(resetToFirst);
+    return () => registerOrgResetCallback(null);
+  }, [resetToFirst]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeOrgReset()) {
+        InteractionManager.runAfterInteractions(() => { resetToFirst(); });
+      }
+    }, [resetToFirst])
+  );
 
   return (
     <>
@@ -409,6 +428,24 @@ function ChurchOrganizationInner() {
     pagerRef.current?.setPage(index);
   }, []);
 
+  const resetToFirst = useCallback(() => {
+    setActiveIndex(0);
+    pagerRef.current?.setPage(0);
+  }, []);
+
+  useEffect(() => {
+    registerOrgResetCallback(resetToFirst);
+    return () => registerOrgResetCallback(null);
+  }, [resetToFirst]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeOrgReset()) {
+        InteractionManager.runAfterInteractions(() => { resetToFirst(); });
+      }
+    }, [resetToFirst])
+  );
+
   return (
     <>
       <PagedTabBar tabs={ORG_TABS.church} activeIndex={activeIndex} onTabPress={handleTabPress} />
@@ -596,6 +633,24 @@ function EducationOrganizationInner() {
     pagerRef.current?.setPage(index);
   }, []);
 
+  const resetToFirst = useCallback(() => {
+    setActiveIndex(0);
+    pagerRef.current?.setPage(0);
+  }, []);
+
+  useEffect(() => {
+    registerOrgResetCallback(resetToFirst);
+    return () => registerOrgResetCallback(null);
+  }, [resetToFirst]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeOrgReset()) {
+        InteractionManager.runAfterInteractions(() => { resetToFirst(); });
+      }
+    }, [resetToFirst])
+  );
+
   return (
     <>
       <PagedTabBar tabs={ORG_TABS.education} activeIndex={activeIndex} onTabPress={handleTabPress} />
@@ -656,6 +711,24 @@ function CommunityOrganization() {
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
+
+  const resetToFirst = useCallback(() => {
+    setActiveIndex(0);
+    pagerRef.current?.setPage(0);
+  }, []);
+
+  useEffect(() => {
+    registerOrgResetCallback(resetToFirst);
+    return () => registerOrgResetCallback(null);
+  }, [resetToFirst]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeOrgReset()) {
+        InteractionManager.runAfterInteractions(() => { resetToFirst(); });
+      }
+    }, [resetToFirst])
+  );
 
   return (
     <>
@@ -726,6 +799,24 @@ function BusinessOrganizationInner() {
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
+
+  const resetToFirst = useCallback(() => {
+    setActiveIndex(0);
+    pagerRef.current?.setPage(0);
+  }, []);
+
+  useEffect(() => {
+    registerOrgResetCallback(resetToFirst);
+    return () => registerOrgResetCallback(null);
+  }, [resetToFirst]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeOrgReset()) {
+        InteractionManager.runAfterInteractions(() => { resetToFirst(); });
+      }
+    }, [resetToFirst])
+  );
 
   return (
     <>

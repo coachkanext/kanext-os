@@ -1,18 +1,19 @@
 /**
- * Church Dashboard — 10-block RBAC-gated Church Mode home dashboard.
+ * Church Dashboard — 9-block RBAC-gated Church Mode home dashboard.
  * Default demo role: C1 (Senior Pastor) — full access.
  *
  * Blocks:
- *   0 — Hero Video (Sunday Worship Experience — video-first, matches edu-dashboard pattern)
- *   1 — Spiritual Focus (sermon series, memory verse, prayer focus)
- *   2 — Today + Next (role-varied schedule & event countdown)
- *   3 — Service Readiness (C1/C2/C3 — next-service checklist)
- *   4 — Ministry Pulse (C1/C2 — KPI chips + top ministries)
- *   5 — Alerts Strip (C1/C2/C3 — color-coded alerts)
- *   6 — Quick Actions (role-specific action grid)
- *   7 — Feed Preview (recent announcements/posts)
- *   8 — Pinned Shelf (saved sermons, verses, events)
- *   9 — Giving Snapshot (C1/C2 — YTD giving, building/missions fund)
+ *   0 — Hero Video (badge types: NEW/LIVE/REPLAY, deterministic priority, role-differentiated tap)
+ *   1 — Weekly Theme Card (sermon series, memory verse, prayer focus)
+ *   2 — Today + Next (location, prepRequired, volunteerGaps, 72h guard on NEXT)
+ *   3 — Service Readiness (0-100 score, volunteer coverage by team, critical assets, C3/C4/C5 views)
+ *   4 — Ministry Pulse (extends to C3-C5 with role-specific views)
+ *   5 — Alerts Strip (type taxonomy, severity+due sort, RBAC filtering)
+ *   6 — Quick Actions (role-specific action grid via RBAC)
+ *   7 — Feed Preview (8-12 items, RBAC filtering, compact one-line format)
+ *   8 — Pinned Shelf (ministry object types, blocker/dueDate sort)
+ *
+ * Block 9 (Giving Snapshot) — REMOVED per spec.
  */
 
 import React from 'react';
@@ -53,23 +54,31 @@ interface Props {
 
 // --- Block 0: Hero Video ---
 
+type HeroBadge = 'NEW' | 'LIVE' | 'REPLAY';
+
 interface HeroVideoInfo {
   title: string;
   subtitle: string;
   duration: string;
-  orgName: string;
-  term: string;
-  todayDate: string;
+  badge: HeroBadge;
+  contentField: string;
   tickerItems: string[];
 }
 
+function getHeroPriority(badge: HeroBadge): number {
+  switch (badge) {
+    case 'LIVE': return 0;
+    case 'NEW': return 1;
+    case 'REPLAY': return 2;
+  }
+}
+
 const HERO_VIDEO: HeroVideoInfo = {
-  title: 'ICCLA \u2014 Sunday Worship Experience',
-  subtitle: 'Worship \u00B7 Praise \u00B7 Fellowship \u00B7 The Word',
+  title: 'Unshakeable Faith — Week 4',
+  subtitle: 'Sunday Morning Worship Experience',
   duration: '1:12:34',
-  orgName: 'International Church of Christ LA',
-  term: 'Spring 2026',
-  todayDate: 'Tuesday, Feb 18',
+  badge: 'REPLAY',
+  contentField: 'Pastor Johnson explores Hebrews 11:32–40 — faith through fire',
   tickerItems: [
     'Baptism class begins this Saturday \u2014 10 AM Fellowship Hall',
     'Women\'s Conference registration closes Friday',
@@ -77,7 +86,7 @@ const HERO_VIDEO: HeroVideoInfo = {
   ],
 };
 
-// --- Block 1: Spiritual Focus ---
+// --- Block 1: Weekly Theme Card ---
 
 interface SermonSeries {
   name: string;
@@ -105,7 +114,7 @@ const MEMORY_VERSE: MemoryVerse = {
   reference: 'Hebrews 11:1 (NIV)',
 };
 
-const PRAYER_FOCUS = 'Pray for our missionaries in East Africa and for the families affected by recent storms in our community.';
+const PRAYER_FOCUS = 'our missionaries in East Africa and for the families affected by recent storms in our community';
 
 // --- Block 2: Today + Next ---
 
@@ -116,24 +125,27 @@ interface TodayItem {
   badgeColor?: string;
   owner: string;
   time: string;
+  location?: string;
+  prepRequired?: boolean;
+  volunteerGaps?: number;
 }
 
 const TODAY_STAFF: TodayItem[] = [
-  { id: 'ts-1', title: 'Staff Prayer Meeting', badge: 'DAILY', badgeColor: '#8B5CF6', owner: 'Pastoral Team', time: '8:00 AM' },
-  { id: 'ts-2', title: 'Worship Rehearsal', badge: 'REHEARSAL', badgeColor: '#3B82F6', owner: 'Praise Team', time: '4:00 PM' },
-  { id: 'ts-3', title: 'Facilities Setup', badgeColor: '#F59E0B', owner: 'Operations', time: '5:00 PM' },
-  { id: 'ts-4', title: 'Marriage Counseling \u2014 Jones Family', badge: 'PASTORAL', badgeColor: '#EC4899', owner: 'Pastor Williams', time: '6:00 PM' },
-  { id: 'ts-5', title: 'Elder Board Call', badge: 'LEADERSHIP', badgeColor: '#EF4444', owner: 'Elder Board', time: '7:00 PM' },
+  { id: 'ts-1', title: 'Staff Prayer Meeting', badge: 'DAILY', badgeColor: '#8B5CF6', owner: 'Pastoral Team', time: '8:00 AM', location: 'Room 201' },
+  { id: 'ts-2', title: 'Worship Rehearsal', badge: 'REHEARSAL', badgeColor: '#3B82F6', owner: 'Praise Team', time: '4:00 PM', location: 'Sanctuary', prepRequired: true, volunteerGaps: 1 },
+  { id: 'ts-3', title: 'Facilities Setup', badgeColor: '#F59E0B', owner: 'Operations', time: '5:00 PM', location: 'Main Campus' },
+  { id: 'ts-4', title: 'Marriage Counseling \u2014 Jones Family', badge: 'PASTORAL', badgeColor: '#EC4899', owner: 'Pastor Williams', time: '6:00 PM', location: 'Office 104' },
+  { id: 'ts-5', title: 'Elder Board Call', badge: 'LEADERSHIP', badgeColor: '#EF4444', owner: 'Elder Board', time: '7:00 PM', location: 'Zoom' },
 ];
 
 const TODAY_MEMBER: TodayItem[] = [
-  { id: 'tm-1', title: 'Small Group \u2014 West Side', badge: 'GROUP', badgeColor: '#22C55E', owner: 'Michael Chen', time: '7:00 PM' },
-  { id: 'tm-2', title: 'Serve: Parking Team', badge: 'SERVE', badgeColor: '#3B82F6', owner: 'Operations Ministry', time: 'Sunday 9:00 AM' },
-  { id: 'tm-3', title: 'Youth Bible Study', badge: 'WEEKLY', badgeColor: '#8B5CF6', owner: 'Youth Ministry', time: '6:30 PM' },
+  { id: 'tm-1', title: 'Small Group \u2014 West Side', badge: 'GROUP', badgeColor: '#22C55E', owner: 'Michael Chen', time: '7:00 PM', location: 'Chen Home' },
+  { id: 'tm-2', title: 'Serve: Parking Team', badge: 'SERVE', badgeColor: '#3B82F6', owner: 'Operations Ministry', time: 'Sunday 9:00 AM', location: 'Lot B' },
+  { id: 'tm-3', title: 'Youth Bible Study', badge: 'WEEKLY', badgeColor: '#8B5CF6', owner: 'Youth Ministry', time: '6:30 PM', location: 'Youth Room' },
 ];
 
 const TODAY_VISITOR: TodayItem[] = [
-  { id: 'tv-1', title: 'Sunday Morning Worship', badge: 'SERVICE', badgeColor: '#3B82F6', owner: 'All Campuses', time: 'Sunday 10:00 AM' },
+  { id: 'tv-1', title: 'Sunday Morning Worship', badge: 'SERVICE', badgeColor: '#3B82F6', owner: 'All Campuses', time: 'Sunday 10:00 AM', location: 'Main Sanctuary' },
 ];
 
 interface NextEvent {
@@ -141,6 +153,7 @@ interface NextEvent {
   title: string;
   participants: string;
   countdown: string;
+  countdownHours: number;
   readiness: string;
   readinessColor: string;
 }
@@ -150,8 +163,9 @@ const NEXT_EVENT_STAFF: NextEvent = {
   title: 'Sunday Morning Worship',
   participants: 'All Campuses \u00B7 Full Team',
   countdown: '4 days',
-  readiness: 'On Track',
-  readinessColor: '#22C55E',
+  countdownHours: 96,
+  readiness: 'At Risk',
+  readinessColor: '#F59E0B',
 };
 
 const NEXT_EVENT_MEMBER: NextEvent = {
@@ -159,6 +173,7 @@ const NEXT_EVENT_MEMBER: NextEvent = {
   title: 'Sunday Morning Worship',
   participants: 'Main Campus',
   countdown: '4 days',
+  countdownHours: 96,
   readiness: 'Confirmed',
   readinessColor: '#22C55E',
 };
@@ -168,26 +183,43 @@ const NEXT_EVENT_VISITOR: NextEvent = {
   title: 'Sunday Worship Service',
   participants: 'Open to All',
   countdown: '4 days',
+  countdownHours: 96,
   readiness: 'Open',
   readinessColor: '#3B82F6',
 };
 
 // --- Block 3: Service Readiness ---
 
-interface ReadinessItem {
+interface VolunteerTeamCoverage {
   id: string;
-  label: string;
+  team: string;
+  required: number;
+  filled: number;
+}
+
+interface CriticalAsset {
+  id: string;
+  name: string;
   status: 'ready' | 'pending' | 'issue';
 }
 
-const SERVICE_READINESS: ReadinessItem[] = [
-  { id: 'sr-1', label: 'Worship team confirmed', status: 'ready' },
-  { id: 'sr-2', label: 'AV check completed', status: 'ready' },
-  { id: 'sr-3', label: 'Ushers assigned', status: 'ready' },
-  { id: 'sr-4', label: 'Children\'s ministry staffed', status: 'issue' },
-  { id: 'sr-5', label: 'Communion prep', status: 'pending' },
-  { id: 'sr-6', label: 'Sermon notes finalized', status: 'ready' },
-  { id: 'sr-7', label: 'Parking team confirmed', status: 'ready' },
+const VOLUNTEER_COVERAGE: VolunteerTeamCoverage[] = [
+  { id: 'vc-1', team: 'Worship', required: 8, filled: 8 },
+  { id: 'vc-2', team: 'AV / Tech', required: 4, filled: 4 },
+  { id: 'vc-3', team: 'Ushers / Greeters', required: 12, filled: 10 },
+  { id: 'vc-4', team: 'Children\'s', required: 8, filled: 6 },
+  { id: 'vc-5', team: 'Parking', required: 4, filled: 4 },
+  { id: 'vc-6', team: 'Hospitality', required: 6, filled: 6 },
+  { id: 'vc-7', team: 'Prayer', required: 3, filled: 3 },
+];
+
+const CRITICAL_ASSETS: CriticalAsset[] = [
+  { id: 'ca-1', name: 'Sermon notes finalized', status: 'ready' },
+  { id: 'ca-2', name: 'Worship set approved', status: 'ready' },
+  { id: 'ca-3', name: 'Slides / lyrics uploaded', status: 'pending' },
+  { id: 'ca-4', name: 'Communion prepared', status: 'pending' },
+  { id: 'ca-5', name: 'Livestream tested', status: 'ready' },
+  { id: 'ca-6', name: 'HVAC operational', status: 'issue' },
 ];
 
 const SERVICE_INFO = {
@@ -195,6 +227,17 @@ const SERVICE_INFO = {
   campus: 'Main Campus \u2014 Sanctuary',
   expectedAttendance: '~1,300',
 };
+
+function computeReadinessScore(volunteers: VolunteerTeamCoverage[], assets: CriticalAsset[]): number {
+  const volTotal = volunteers.reduce((s, v) => s + v.required, 0);
+  const volFilled = volunteers.reduce((s, v) => s + Math.min(v.filled, v.required), 0);
+  const volPct = volTotal > 0 ? volFilled / volTotal : 1;
+  const assetReady = assets.filter((a) => a.status === 'ready').length;
+  const assetPct = assets.length > 0 ? assetReady / assets.length : 1;
+  return Math.round((volPct * 0.6 + assetPct * 0.4) * 100);
+}
+
+const READINESS_SCORE = computeReadinessScore(VOLUNTEER_COVERAGE, CRITICAL_ASSETS);
 
 const READINESS_STATUS_ICON: Record<string, string> = {
   ready: 'checkmark.circle.fill',
@@ -207,6 +250,15 @@ const READINESS_STATUS_COLOR: Record<string, string> = {
   pending: '#F59E0B',
   issue: '#EF4444',
 };
+
+// Service times data for C4/C5 views
+const SERVICE_TIMES = [
+  { id: 'st-1', label: 'Sunday 8:00 AM', campus: 'Main Campus', type: 'Traditional' },
+  { id: 'st-2', label: 'Sunday 10:00 AM', campus: 'Main Campus', type: 'Contemporary' },
+  { id: 'st-3', label: 'Sunday 6:00 PM', campus: 'West Campus', type: 'Evening' },
+];
+
+const LIVESTREAM_URL = 'https://iccla.church/live';
 
 // --- Block 4: Ministry Pulse ---
 
@@ -232,44 +284,71 @@ interface TopMinistry {
   volunteers: number;
   trend: 'up' | 'down' | 'stable';
   engagement: string;
+  nextMeeting?: string;
+  needsCount?: number;
+  deepLink?: string;
 }
 
 const TOP_MINISTRIES: TopMinistry[] = [
-  { id: 'tm-1', name: 'Worship Ministry', volunteers: 48, trend: 'up', engagement: '96%' },
-  { id: 'tm-2', name: 'Children\'s Ministry', volunteers: 42, trend: 'up', engagement: '94%' },
-  { id: 'tm-3', name: 'Small Groups', volunteers: 36, trend: 'stable', engagement: '92%' },
+  { id: 'tm-1', name: 'Worship Ministry', volunteers: 48, trend: 'up', engagement: '96%', nextMeeting: 'Thu 4 PM', needsCount: 1, deepLink: 'worship' },
+  { id: 'tm-2', name: 'Children\'s Ministry', volunteers: 42, trend: 'up', engagement: '94%', nextMeeting: 'Sun 9 AM', needsCount: 2, deepLink: 'children' },
+  { id: 'tm-3', name: 'Small Groups', volunteers: 36, trend: 'stable', engagement: '92%', nextMeeting: 'Wed 7 PM', needsCount: 0, deepLink: 'groups' },
+];
+
+// C3 — assigned teams
+const MY_TEAMS_C3: TopMinistry[] = [
+  { id: 'mt-1', name: 'Worship Ministry', volunteers: 48, trend: 'up', engagement: '96%', nextMeeting: 'Thu 4 PM', needsCount: 1, deepLink: 'worship' },
+  { id: 'mt-2', name: 'Youth Ministry', volunteers: 18, trend: 'stable', engagement: '90%', nextMeeting: 'Sat 10 AM', needsCount: 0, deepLink: 'youth' },
+];
+
+// C4 — joined groups
+const MY_GROUPS_C4: TopMinistry[] = [
+  { id: 'mg-1', name: 'West Side Small Group', volunteers: 12, trend: 'stable', engagement: '88%', nextMeeting: 'Wed 7 PM', needsCount: 0, deepLink: 'group-west' },
+  { id: 'mg-2', name: 'Men\'s Bible Study', volunteers: 8, trend: 'up', engagement: '92%', nextMeeting: 'Sat 8 AM', needsCount: 0, deepLink: 'mens-study' },
 ];
 
 // --- Block 5: Alerts Strip ---
 
 type AlertLevel = 'red' | 'amber' | 'blue';
+type AlertType = 'Service Blocker' | 'Pastoral Care' | 'Volunteer Gap' | 'Facility Issue' | 'Finance Exception' | 'Compliance' | 'Due <24h';
 
 interface AlertItem {
   id: string;
   level: AlertLevel;
+  type: AlertType;
   title: string;
   detail: string;
+  dueDate?: string;
+  financeGated?: boolean;
 }
 
 const ALERT_ITEMS: AlertItem[] = [
-  { id: 'al-1', level: 'red', title: 'Children\'s Ministry', detail: '2 volunteers needed Sunday' },
-  { id: 'al-2', level: 'amber', title: 'Building Fund', detail: 'At 78% of $1M goal' },
-  { id: 'al-3', level: 'blue', title: 'Baptism Class', detail: 'Enrollment open \u2014 14 registered' },
-  { id: 'al-4', level: 'red', title: 'Background Checks', detail: '12 volunteer renewals overdue' },
-  { id: 'al-5', level: 'amber', title: 'HVAC Repair', detail: 'Sanctuary unit scheduled for Thursday' },
-  { id: 'al-6', level: 'blue', title: 'Youth Retreat', detail: 'Registration opens tomorrow' },
+  { id: 'al-1', level: 'red', type: 'Volunteer Gap', title: 'Children\'s Ministry', detail: '2 volunteers needed Sunday', dueDate: '2026-02-22' },
+  { id: 'al-2', level: 'red', type: 'Compliance', title: 'Background Checks', detail: '12 volunteer renewals overdue', dueDate: '2026-02-20' },
+  { id: 'al-3', level: 'red', type: 'Pastoral Care', title: 'Care Request', detail: '1 urgent pastoral care request unresponded' },
+  { id: 'al-4', level: 'amber', type: 'Facility Issue', title: 'HVAC Repair', detail: 'Sanctuary unit scheduled for Thursday', dueDate: '2026-02-20' },
+  { id: 'al-5', level: 'amber', type: 'Finance Exception', title: 'Building Fund', detail: 'At 78% of $1M goal', financeGated: true },
+  { id: 'al-6', level: 'blue', type: 'Due <24h', title: 'Baptism Class', detail: 'Enrollment open \u2014 14 registered', dueDate: '2026-02-19' },
+  { id: 'al-7', level: 'blue', type: 'Service Blocker', title: 'Youth Retreat', detail: 'Registration opens tomorrow' },
 ];
+
+// Sort: severity (red > amber > blue) then due date ascending
+function sortAlerts(alerts: AlertItem[]): AlertItem[] {
+  const sevOrder: Record<AlertLevel, number> = { red: 0, amber: 1, blue: 2 };
+  return [...alerts].sort((a, b) => {
+    const sevDiff = sevOrder[a.level] - sevOrder[b.level];
+    if (sevDiff !== 0) return sevDiff;
+    if (a.dueDate && b.dueDate) return a.dueDate.localeCompare(b.dueDate);
+    if (a.dueDate) return -1;
+    if (b.dueDate) return 1;
+    return 0;
+  });
+}
 
 const ALERT_LEVEL_COLOR: Record<AlertLevel, string> = {
   red: '#EF4444',
   amber: '#F59E0B',
   blue: '#3B82F6',
-};
-
-const ALERT_LEVEL_LABEL: Record<AlertLevel, string> = {
-  red: 'URGENT',
-  amber: 'ATTENTION',
-  blue: 'INFO',
 };
 
 // --- Block 6: Quick Actions ---
@@ -280,13 +359,22 @@ const QUICK_ACTION_TAB_MAP: Record<string, number> = {
   'staff-meeting': 4,
   'budget-review': 5,
   'prayer-wall': 7,
-  'announcements': 0,
-  'board-meeting': 4,
-  'policy-review': 4,
-  'staff-oversight': 4,
+  'post-announcement': 8,
+  'approve-requests': 8,
+  'pin-hero-video': 0,
+  'open-payment-rails': 5,
+  'open-announcements': 8,
+  'create-event': 6,
+  'manage-volunteers': 4,
+  'post-update': 8,
+  'request-budget': 5,
+  'open-my-ministry': 3,
+  'open-check-in': 6,
+  'schedule-event': 1,
   'my-ministries': 4,
   'events': 6,
   'volunteer-schedule': 4,
+  'submit-request': 8,
   'worship': 2,
   'give': 5,
   'prayer': 7,
@@ -300,102 +388,89 @@ interface FeedPost {
   title: string;
   author: string;
   date: string;
-  preview: string;
-  type: 'announcement' | 'devotional' | 'update';
+  type: 'announcement' | 'devotional' | 'update' | 'ministry' | 'prayer' | 'event';
+  visibility: 'all' | 'members' | 'staff' | 'leadership';
+  role?: ChurchRoleLens;
 }
 
 const FEED_POSTS: FeedPost[] = [
-  {
-    id: 'fp-1',
-    title: 'New Sermon Series: Unshakeable Faith',
-    author: 'Pastor Johnson',
-    date: '1h ago',
-    preview: 'Starting this Sunday we embark on an 8-week journey through Hebrews 11, exploring what it means to walk by faith in every season of life.',
-    type: 'announcement',
-  },
-  {
-    id: 'fp-2',
-    title: 'Morning Devotional \u2014 Feb 18',
-    author: 'Devotional Team',
-    date: '4h ago',
-    preview: 'Let us fix our eyes on Jesus, the pioneer and perfecter of faith. For the joy set before Him He endured the cross.',
-    type: 'devotional',
-  },
-  {
-    id: 'fp-3',
-    title: 'Building Fund Update',
-    author: 'Finance Team',
-    date: '8h ago',
-    preview: 'We have reached $780K of our $1M building fund goal! Thank you for your faithful generosity. Phase 2 construction begins in March.',
-    type: 'update',
-  },
-  {
-    id: 'fp-4',
-    title: 'Community Food Drive Results',
-    author: 'Outreach Ministry',
-    date: '1d ago',
-    preview: 'Our food drive collected 2,400 lbs of food, serving 180 families in our community. Thank you to all 47 volunteers who made this possible.',
-    type: 'announcement',
-  },
+  { id: 'fp-1', title: 'New Sermon Series: Unshakeable Faith — starting Sunday', author: 'Pastor Johnson', date: '1h ago', type: 'announcement', visibility: 'all' },
+  { id: 'fp-2', title: 'Morning Devotional — Feb 18', author: 'Devotional Team', date: '4h ago', type: 'devotional', visibility: 'all' },
+  { id: 'fp-3', title: 'Building Fund Update — $780K of $1M raised', author: 'Finance Team', date: '8h ago', type: 'update', visibility: 'all' },
+  { id: 'fp-4', title: 'Community Food Drive: 2,400 lbs collected, 180 families served', author: 'Outreach Ministry', date: '1d ago', type: 'announcement', visibility: 'all' },
+  { id: 'fp-5', title: 'Small Group Leaders Training — new curriculum materials', author: 'Discipleship', date: '1d ago', type: 'ministry', visibility: 'staff' },
+  { id: 'fp-6', title: 'Baptism class Saturday 10 AM — 14 registered', author: 'Membership', date: '2d ago', type: 'event', visibility: 'all' },
+  { id: 'fp-7', title: 'Worship team rehearsal schedule updated for March', author: 'Worship Ministry', date: '2d ago', type: 'ministry', visibility: 'members' },
+  { id: 'fp-8', title: 'Youth retreat registration opens tomorrow', author: 'Youth Ministry', date: '2d ago', type: 'event', visibility: 'all' },
+  { id: 'fp-9', title: 'Q1 giving report prepared — board review pending', author: 'Finance', date: '3d ago', type: 'update', visibility: 'leadership' },
+  { id: 'fp-10', title: 'Prayer chain activated for storm-affected families', author: 'Prayer Ministry', date: '3d ago', type: 'prayer', visibility: 'members' },
+  { id: 'fp-11', title: 'Easter service planning kickoff — Mar 1 all-staff', author: 'Operations', date: '4d ago', type: 'ministry', visibility: 'staff' },
+  { id: 'fp-12', title: 'Women\'s Conference early-bird ends Friday', author: 'Women\'s Ministry', date: '5d ago', type: 'event', visibility: 'all' },
 ];
 
 const FEED_TYPE_COLOR: Record<string, string> = {
   announcement: '#3B82F6',
   devotional: '#8B5CF6',
   update: '#22C55E',
+  ministry: '#F59E0B',
+  prayer: '#EC4899',
+  event: '#06B6D4',
 };
 
+function filterFeedByRole(posts: FeedPost[], role: ChurchRoleLens): FeedPost[] {
+  return posts.filter((p) => {
+    if (p.visibility === 'all') return true;
+    if (p.visibility === 'members' && role !== 'C5') return true;
+    if (p.visibility === 'staff' && isStaffLevel(role)) return true;
+    if (p.visibility === 'leadership' && isElderLevel(role)) return true;
+    return false;
+  });
+}
+
 // --- Block 8: Pinned Shelf ---
+
+type PinnedType = 'ministry' | 'service-plan' | 'worship-plan' | 'kids-curriculum' | 'volunteer-roster' | 'facility-checklist' | 'prayer-list';
 
 interface PinnedItem {
   id: string;
   title: string;
-  type: 'sermon' | 'verse' | 'event' | 'document';
+  type: PinnedType;
   date: string;
   icon: string;
+  isBlocker?: boolean;
+  dueDate?: string;
 }
 
 const PINNED_ITEMS: PinnedItem[] = [
-  { id: 'pi-1', title: 'Unshakeable Faith Wk 3', type: 'sermon', date: 'Feb 9', icon: 'play.circle.fill' },
-  { id: 'pi-2', title: 'Hebrews 11:1', type: 'verse', date: 'Saved', icon: 'book.fill' },
-  { id: 'pi-3', title: 'Women\'s Conference', type: 'event', date: 'Mar 15', icon: 'calendar' },
-  { id: 'pi-4', title: 'Easter Service Plan', type: 'document', date: 'Apr 20', icon: 'doc.text.fill' },
-  { id: 'pi-5', title: 'The Cost of Discipleship', type: 'sermon', date: 'Jan 26', icon: 'play.circle.fill' },
+  { id: 'pi-1', title: 'Sunday Service Plan', type: 'service-plan', date: 'Feb 22', icon: 'doc.text.fill', isBlocker: true, dueDate: '2026-02-22' },
+  { id: 'pi-2', title: 'Worship Set — Wk 4', type: 'worship-plan', date: 'Feb 22', icon: 'music.note.list', isBlocker: false, dueDate: '2026-02-22' },
+  { id: 'pi-3', title: 'Kids Curriculum Q1', type: 'kids-curriculum', date: 'Mar 1', icon: 'book.fill', isBlocker: true, dueDate: '2026-03-01' },
+  { id: 'pi-4', title: 'Volunteer Roster', type: 'volunteer-roster', date: 'Updated', icon: 'person.3.fill' },
+  { id: 'pi-5', title: 'Facility Checklist', type: 'facility-checklist', date: 'Weekly', icon: 'checklist' },
+  { id: 'pi-6', title: 'Prayer List — Feb', type: 'prayer-list', date: 'Active', icon: 'hands.sparkles.fill' },
 ];
 
-const PINNED_TYPE_COLOR: Record<string, string> = {
-  sermon: '#3B82F6',
-  verse: '#8B5CF6',
-  event: '#F59E0B',
-  document: '#22C55E',
+// Sort: blockers first, then by dueDate ascending
+function sortPinned(items: PinnedItem[]): PinnedItem[] {
+  return [...items].sort((a, b) => {
+    if (a.isBlocker && !b.isBlocker) return -1;
+    if (!a.isBlocker && b.isBlocker) return 1;
+    if (a.dueDate && b.dueDate) return a.dueDate.localeCompare(b.dueDate);
+    if (a.dueDate) return -1;
+    if (b.dueDate) return 1;
+    return 0;
+  });
+}
+
+const PINNED_TYPE_COLOR: Record<PinnedType, string> = {
+  'ministry': '#8B5CF6',
+  'service-plan': '#3B82F6',
+  'worship-plan': '#F59E0B',
+  'kids-curriculum': '#22C55E',
+  'volunteer-roster': '#06B6D4',
+  'facility-checklist': '#EF4444',
+  'prayer-list': '#EC4899',
 };
-
-// --- Block 9: Giving Snapshot ---
-
-interface GivingKPI {
-  label: string;
-  value: string;
-  trend?: string;
-  trendUp?: boolean;
-}
-
-const GIVING_KPIS: GivingKPI[] = [
-  { label: 'YTD Giving', value: '$284,600', trend: '+12% vs last year', trendUp: true },
-  { label: 'This Month', value: '$42,800', trend: '+$3,200 vs last month', trendUp: true },
-];
-
-interface FundProgress {
-  id: string;
-  name: string;
-  current: number;
-  goal: number;
-  color: string;
-}
-
-const FUND_PROGRESS: FundProgress[] = [
-  { id: 'fund-1', name: 'Building Fund', current: 780000, goal: 1000000, color: '#3B82F6' },
-  { id: 'fund-2', name: 'Missions Fund', current: 48000, goal: 75000, color: '#22C55E' },
-];
 
 // =============================================================================
 // SHARED SUB-COMPONENTS
@@ -434,11 +509,17 @@ const sh = StyleSheet.create({
 // BLOCK 0 — HERO VIDEO
 // =============================================================================
 
+const HERO_BADGE_COLOR: Record<HeroBadge, string> = {
+  LIVE: '#EF4444',
+  NEW: '#22C55E',
+  REPLAY: '#8B5CF6',
+};
+
 function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
   const colorScheme = useColorScheme() ?? 'light';
   const c = Colors[colorScheme];
 
-  // CTA by role
+  // Role-differentiated tap behavior
   let ctaLabel = 'Open Media Center';
   let ctaSecondary = 'Watch This Week\'s Sermon';
   if (role === 'C4') {
@@ -458,10 +539,10 @@ function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: C
         ]}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
       >
-        {/* PINNED badge */}
-        <View style={s.pinnedBadge}>
-          <IconSymbol name="pin.fill" size={10} color="#fff" />
-          <ThemedText style={s.pinnedText}>PINNED</ThemedText>
+        {/* Badge (NEW / LIVE / REPLAY) */}
+        <View style={[s.heroBadge, { backgroundColor: HERO_BADGE_COLOR[HERO_VIDEO.badge] }]}>
+          {HERO_VIDEO.badge === 'LIVE' && <View style={s.liveDot} />}
+          <ThemedText style={s.heroBadgeText}>{HERO_VIDEO.badge}</ThemedText>
         </View>
 
         {/* Center play icon */}
@@ -476,13 +557,13 @@ function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: C
           <ThemedText style={s.durationText}>{HERO_VIDEO.duration}</ThemedText>
         </View>
 
-        {/* Bottom overlay — org name, term, today date */}
+        {/* Bottom overlay — content field, not org metadata */}
         <View style={s.bottomOverlay}>
           <ThemedText style={s.heroTitle} numberOfLines={2}>
             {HERO_VIDEO.title}
           </ThemedText>
-          <ThemedText style={s.heroSubtitle} numberOfLines={1}>
-            {HERO_VIDEO.orgName} {'\u00B7'} {HERO_VIDEO.term} {'\u00B7'} Today: {HERO_VIDEO.todayDate}
+          <ThemedText style={s.heroSubtitle} numberOfLines={2}>
+            {HERO_VIDEO.contentField}
           </ThemedText>
         </View>
       </Pressable>
@@ -529,15 +610,15 @@ function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: C
 }
 
 // =============================================================================
-// BLOCK 1 — SPIRITUAL FOCUS
+// BLOCK 1 — WEEKLY THEME CARD
 // =============================================================================
 
-function SpiritualFocusBlock({ colors }: { colors: typeof Colors.light }) {
+function WeeklyThemeBlock({ colors }: { colors: typeof Colors.light }) {
   const progress = SERMON_SERIES.currentWeek / SERMON_SERIES.totalWeeks;
 
   return (
     <View style={s.moduleContainer}>
-      <SectionHeader title="SPIRITUAL FOCUS" colors={colors} />
+      <SectionHeader title="WEEKLY THEME CARD" colors={colors} />
       <Card colors={colors}>
         {/* Sermon series */}
         <View style={s.seriesHeader}>
@@ -580,7 +661,7 @@ function SpiritualFocusBlock({ colors }: { colors: typeof Colors.light }) {
         {/* Divider */}
         <View style={[s.divider, { backgroundColor: colors.border }]} />
 
-        {/* Prayer focus */}
+        {/* Prayer focus — with "This week we're praying for:" prefix */}
         <View style={s.prayerContainer}>
           <IconSymbol name="hands.sparkles.fill" size={14} color="#EC4899" />
           <View style={s.prayerTextBlock}>
@@ -588,7 +669,7 @@ function SpiritualFocusBlock({ colors }: { colors: typeof Colors.light }) {
               PRAYER FOCUS THIS WEEK
             </ThemedText>
             <ThemedText style={[s.prayerText, { color: colors.text }]} numberOfLines={3}>
-              {PRAYER_FOCUS}
+              This week we're praying for: {PRAYER_FOCUS}.
             </ThemedText>
           </View>
         </View>
@@ -629,6 +710,9 @@ function TodayNextBlock({ colors, role }: { colors: typeof Colors.light; role: C
     nextEvent = NEXT_EVENT_VISITOR;
   }
 
+  // 72h countdown guard — only show NEXT card if within 72 hours
+  const showNext = nextEvent.countdownHours <= 72;
+
   return (
     <View style={s.moduleContainer}>
       <SectionHeader title="TODAY + NEXT" colors={colors} />
@@ -652,55 +736,139 @@ function TodayNextBlock({ colors, role }: { colors: typeof Colors.light; role: C
               </View>
               <ThemedText style={[s.todayItemMeta, { color: colors.textSecondary }]}>
                 {item.owner} {'\u00B7'} {item.time}
+                {item.location ? ` \u00B7 ${item.location}` : ''}
               </ThemedText>
+              {(item.prepRequired || (item.volunteerGaps != null && item.volunteerGaps > 0)) && (
+                <View style={s.todayFlagsRow}>
+                  {item.prepRequired && (
+                    <View style={[s.todayFlag, { backgroundColor: '#F59E0B20' }]}>
+                      <ThemedText style={[s.todayFlagText, { color: '#F59E0B' }]}>PREP</ThemedText>
+                    </View>
+                  )}
+                  {item.volunteerGaps != null && item.volunteerGaps > 0 && (
+                    <View style={[s.todayFlag, { backgroundColor: '#EF444420' }]}>
+                      <ThemedText style={[s.todayFlagText, { color: '#EF4444' }]}>{item.volunteerGaps} GAP</ThemedText>
+                    </View>
+                  )}
+                </View>
+              )}
             </View>
           ))}
         </View>
 
-        {/* NEXT card */}
-        <View style={[s.nextCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.cardHeading, { color: colors.text }]}>Next</ThemedText>
-          <ThemedText style={[s.nextTitle, { color: colors.text }]} numberOfLines={2}>
-            {nextEvent.title}
-          </ThemedText>
-          <ThemedText style={[s.nextSubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
-            {nextEvent.participants}
-          </ThemedText>
-          <View style={s.nextCountdownRow}>
-            <IconSymbol name="clock.fill" size={12} color={colors.textSecondary} />
-            <ThemedText style={[s.nextCountdown, { color: colors.text }]}>
-              {nextEvent.countdown}
+        {/* NEXT card — 72h guard */}
+        {showNext ? (
+          <View style={[s.nextCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <ThemedText style={[s.cardHeading, { color: colors.text }]}>Next</ThemedText>
+            <ThemedText style={[s.nextTitle, { color: colors.text }]} numberOfLines={2}>
+              {nextEvent.title}
             </ThemedText>
-          </View>
-          <View style={s.nextReadinessRow}>
-            <ThemedText style={[s.nextReadinessLabel, { color: colors.textSecondary }]}>
-              Status:
+            <ThemedText style={[s.nextSubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
+              {nextEvent.participants}
             </ThemedText>
-            <View style={[s.readinessBadge, { backgroundColor: nextEvent.readinessColor + '20' }]}>
-              <ThemedText style={[s.readinessBadgeText, { color: nextEvent.readinessColor }]}>
-                {nextEvent.readiness}
+            <View style={s.nextCountdownRow}>
+              <IconSymbol name="clock.fill" size={12} color={colors.textSecondary} />
+              <ThemedText style={[s.nextCountdown, { color: colors.text }]}>
+                {nextEvent.countdown}
               </ThemedText>
             </View>
+            <View style={s.nextReadinessRow}>
+              <ThemedText style={[s.nextReadinessLabel, { color: colors.textSecondary }]}>
+                Status:
+              </ThemedText>
+              <View style={[s.readinessBadgeSm, { backgroundColor: nextEvent.readinessColor + '20' }]}>
+                <ThemedText style={[s.readinessBadgeSmText, { color: nextEvent.readinessColor }]}>
+                  {nextEvent.readiness}
+                </ThemedText>
+              </View>
+            </View>
           </View>
-        </View>
+        ) : (
+          <View style={[s.nextCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <ThemedText style={[s.cardHeading, { color: colors.text }]}>Next</ThemedText>
+            <ThemedText style={[s.nextTitle, { color: colors.textSecondary }]}>
+              No upcoming events within 72 hours
+            </ThemedText>
+          </View>
+        )}
       </View>
     </View>
   );
 }
 
 // =============================================================================
-// BLOCK 3 — SERVICE READINESS (C1/C2/C3)
+// BLOCK 3 — SERVICE READINESS
 // =============================================================================
 
 function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
-  if (!isStaffLevel(role)) return null;
+  // C5: hidden entirely. C4: service times + "how to serve" CTA. C3: team-scoped.
+  // C1/C2: full view with score + volunteer coverage + critical assets.
 
-  const readyCount = SERVICE_READINESS.filter((r) => r.status === 'ready').length;
-  const totalCount = SERVICE_READINESS.length;
+  if (role === 'C5') {
+    // C5: service times + livestream link
+    return (
+      <View style={s.moduleContainer}>
+        <SectionHeader title="SERVICE TIMES" colors={colors} />
+        <Card colors={colors}>
+          {SERVICE_TIMES.map((st) => (
+            <View key={st.id} style={s.serviceTimeRow}>
+              <IconSymbol name="clock.fill" size={14} color={colors.textSecondary} />
+              <View style={{ flex: 1 }}>
+                <ThemedText style={[s.serviceTimeLabel, { color: colors.text }]}>{st.label}</ThemedText>
+                <ThemedText style={[s.serviceTimeMeta, { color: colors.textSecondary }]}>{st.campus} \u00B7 {st.type}</ThemedText>
+              </View>
+            </View>
+          ))}
+        </Card>
+        <Pressable
+          style={({ pressed }) => [s.devoCTA, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <IconSymbol name="video.fill" size={16} color="#3B82F6" />
+          <ThemedText style={[s.devoCTAText, { color: colors.text }]}>Watch Livestream</ThemedText>
+          <IconSymbol name="chevron.right" size={12} color={colors.textSecondary} />
+        </Pressable>
+      </View>
+    );
+  }
+
+  if (role === 'C4') {
+    // C4: service times + "how to serve" CTA
+    return (
+      <View style={s.moduleContainer}>
+        <SectionHeader title="SERVICE TIMES" colors={colors} />
+        <Card colors={colors}>
+          {SERVICE_TIMES.map((st) => (
+            <View key={st.id} style={s.serviceTimeRow}>
+              <IconSymbol name="clock.fill" size={14} color={colors.textSecondary} />
+              <View style={{ flex: 1 }}>
+                <ThemedText style={[s.serviceTimeLabel, { color: colors.text }]}>{st.label}</ThemedText>
+                <ThemedText style={[s.serviceTimeMeta, { color: colors.textSecondary }]}>{st.campus} \u00B7 {st.type}</ThemedText>
+              </View>
+            </View>
+          ))}
+        </Card>
+        <Pressable
+          style={({ pressed }) => [s.devoCTA, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <IconSymbol name="hands.sparkles.fill" size={16} color="#22C55E" />
+          <ThemedText style={[s.devoCTAText, { color: colors.text }]}>How to Serve</ThemedText>
+          <IconSymbol name="chevron.right" size={12} color={colors.textSecondary} />
+        </Pressable>
+      </View>
+    );
+  }
+
+  // C1/C2/C3 — full readiness view
+  const scoreColor = READINESS_SCORE >= 80 ? '#22C55E' : READINESS_SCORE >= 60 ? '#F59E0B' : '#EF4444';
+
+  // C3: only show teams they're assigned to (filter mock — show first 3)
+  const visibleTeams = role === 'C3' ? VOLUNTEER_COVERAGE.slice(0, 3) : VOLUNTEER_COVERAGE;
 
   return (
     <View style={s.moduleContainer}>
-      <SectionHeader title="SERVICE READINESS" colors={colors} count={readyCount} />
+      <SectionHeader title="SERVICE READINESS" colors={colors} />
 
       {/* Service info strip */}
       <View style={[s.serviceInfoStrip, { backgroundColor: colors.backgroundTertiary, borderColor: colors.border }]}>
@@ -718,59 +886,183 @@ function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; 
         </View>
       </View>
 
-      {/* Checklist */}
+      {/* Readiness Score */}
       <Card colors={colors}>
-        <View style={s.readinessOverview}>
-          <ThemedText style={[s.readinessOverviewText, { color: colors.text }]}>
-            {readyCount}/{totalCount} Ready
-          </ThemedText>
-          <View style={[s.readinessProgressBg, { backgroundColor: colors.backgroundTertiary }]}>
-            <View
-              style={[
-                s.readinessProgressFill,
-                {
-                  width: `${Math.round((readyCount / totalCount) * 100)}%`,
-                  backgroundColor: readyCount === totalCount ? '#22C55E' : '#F59E0B',
-                },
-              ]}
-            />
+        <View style={s.readinessScoreRow}>
+          <View style={[s.readinessScoreCircle, { borderColor: scoreColor }]}>
+            <ThemedText style={[s.readinessScoreText, { color: scoreColor }]}>{READINESS_SCORE}</ThemedText>
           </View>
-        </View>
-        {SERVICE_READINESS.map((item, idx) => (
-          <View
-            key={item.id}
-            style={[
-              s.readinessRow,
-              idx < SERVICE_READINESS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <IconSymbol
-              name={READINESS_STATUS_ICON[item.status] as any}
-              size={16}
-              color={READINESS_STATUS_COLOR[item.status]}
-            />
-            <ThemedText style={[s.readinessLabel, { color: colors.text }]}>
-              {item.label}
+          <View style={{ flex: 1 }}>
+            <ThemedText style={[s.readinessScoreLabel, { color: colors.text }]}>
+              Readiness Score
             </ThemedText>
-            <View style={[s.readinessStatusBadge, { backgroundColor: READINESS_STATUS_COLOR[item.status] + '20' }]}>
-              <ThemedText style={[s.readinessStatusText, { color: READINESS_STATUS_COLOR[item.status] }]}>
-                {item.status.toUpperCase()}
-              </ThemedText>
+            <View style={[s.readinessProgressBg, { backgroundColor: colors.backgroundTertiary }]}>
+              <View
+                style={[
+                  s.readinessProgressFill,
+                  { width: `${READINESS_SCORE}%`, backgroundColor: scoreColor },
+                ]}
+              />
             </View>
           </View>
-        ))}
+        </View>
+
+        {/* Volunteer Coverage by Team */}
+        <ThemedText style={[s.readinessSubHeading, { color: colors.textSecondary }]}>
+          VOLUNTEER COVERAGE
+        </ThemedText>
+        {visibleTeams.map((team, idx) => {
+          const full = team.filled >= team.required;
+          const teamColor = full ? '#22C55E' : '#EF4444';
+          return (
+            <View
+              key={team.id}
+              style={[
+                s.readinessRow,
+                idx < visibleTeams.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              ]}
+            >
+              <ThemedText style={[s.readinessLabel, { color: colors.text }]}>{team.team}</ThemedText>
+              <View style={[s.readinessStatusBadge, { backgroundColor: teamColor + '20' }]}>
+                <ThemedText style={[s.readinessStatusText, { color: teamColor }]}>
+                  {team.filled}/{team.required}
+                </ThemedText>
+              </View>
+            </View>
+          );
+        })}
+
+        {/* Critical Assets Status — only for C1/C2 */}
+        {isElderLevel(role) && (
+          <>
+            <View style={[s.divider, { backgroundColor: colors.border, marginTop: Spacing.sm }]} />
+            <ThemedText style={[s.readinessSubHeading, { color: colors.textSecondary, marginTop: Spacing.sm }]}>
+              CRITICAL ASSETS
+            </ThemedText>
+            {CRITICAL_ASSETS.map((asset, idx) => (
+              <View
+                key={asset.id}
+                style={[
+                  s.readinessRow,
+                  idx < CRITICAL_ASSETS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+                ]}
+              >
+                <IconSymbol
+                  name={READINESS_STATUS_ICON[asset.status] as any}
+                  size={16}
+                  color={READINESS_STATUS_COLOR[asset.status]}
+                />
+                <ThemedText style={[s.readinessLabel, { color: colors.text }]}>{asset.name}</ThemedText>
+                <View style={[s.readinessStatusBadge, { backgroundColor: READINESS_STATUS_COLOR[asset.status] + '20' }]}>
+                  <ThemedText style={[s.readinessStatusText, { color: READINESS_STATUS_COLOR[asset.status] }]}>
+                    {asset.status.toUpperCase()}
+                  </ThemedText>
+                </View>
+              </View>
+            ))}
+          </>
+        )}
       </Card>
     </View>
   );
 }
 
 // =============================================================================
-// BLOCK 4 — MINISTRY PULSE (C1/C2)
+// BLOCK 4 — MINISTRY PULSE
 // =============================================================================
 
 function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colors.light; role: ChurchRoleLens; onSwitchTab?: (index: number) => void }) {
-  if (!isElderLevel(role)) return null;
+  // C5: "Get connected" CTA
+  if (role === 'C5') {
+    return (
+      <View style={s.moduleContainer}>
+        <SectionHeader title="GET CONNECTED" colors={colors} />
+        <Card colors={colors}>
+          <ThemedText style={[s.connectedText, { color: colors.text }]}>
+            Discover ministries, small groups, and ways to get involved at ICCLA.
+          </ThemedText>
+        </Card>
+        <Pressable
+          style={({ pressed }) => [s.ministryCTA, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (onSwitchTab) onSwitchTab(3); }}
+        >
+          <IconSymbol name="person.2.fill" size={16} color={colors.text} />
+          <ThemedText style={[s.ministryCTAText, { color: colors.text }]}>Explore Ministries</ThemedText>
+          <IconSymbol name="chevron.right" size={12} color={colors.textSecondary} />
+        </Pressable>
+      </View>
+    );
+  }
 
+  // C4: joined groups
+  if (role === 'C4') {
+    return (
+      <View style={s.moduleContainer}>
+        <SectionHeader title="MY GROUPS" colors={colors} />
+        <Card colors={colors}>
+          {MY_GROUPS_C4.map((group, idx) => (
+            <View
+              key={group.id}
+              style={[
+                s.topMinistryRow,
+                idx < MY_GROUPS_C4.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              ]}
+            >
+              <View style={s.topMinistryContent}>
+                <ThemedText style={[s.topMinistryName, { color: colors.text }]}>{group.name}</ThemedText>
+                <ThemedText style={[s.topMinistryMeta, { color: colors.textSecondary }]}>
+                  Next: {group.nextMeeting ?? 'TBD'}
+                </ThemedText>
+              </View>
+              <IconSymbol name="chevron.right" size={12} color={colors.textSecondary} />
+            </View>
+          ))}
+        </Card>
+        <Pressable
+          style={({ pressed }) => [s.ministryCTA, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (onSwitchTab) onSwitchTab(3); }}
+        >
+          <IconSymbol name="heart.fill" size={16} color={colors.text} />
+          <ThemedText style={[s.ministryCTAText, { color: colors.text }]}>Browse All Groups</ThemedText>
+          <IconSymbol name="chevron.right" size={12} color={colors.textSecondary} />
+        </Pressable>
+      </View>
+    );
+  }
+
+  // C3: assigned teams
+  if (role === 'C3') {
+    return (
+      <View style={s.moduleContainer}>
+        <SectionHeader title="MY TEAMS" colors={colors} />
+        <Card colors={colors}>
+          {MY_TEAMS_C3.map((team, idx) => (
+            <View
+              key={team.id}
+              style={[
+                s.topMinistryRow,
+                idx < MY_TEAMS_C3.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              ]}
+            >
+              <View style={s.topMinistryContent}>
+                <ThemedText style={[s.topMinistryName, { color: colors.text }]}>{team.name}</ThemedText>
+                <ThemedText style={[s.topMinistryMeta, { color: colors.textSecondary }]}>
+                  Next: {team.nextMeeting ?? 'TBD'}{team.needsCount ? ` \u00B7 ${team.needsCount} need${team.needsCount > 1 ? 's' : ''}` : ''}
+                </ThemedText>
+              </View>
+              <IconSymbol
+                name={team.trend === 'up' ? 'arrow.up.right' : team.trend === 'down' ? 'arrow.down.right' : ('arrow.right' as any)}
+                size={14}
+                color={team.trend === 'up' ? '#22C55E' : team.trend === 'down' ? '#EF4444' : colors.textSecondary}
+              />
+            </View>
+          ))}
+        </Card>
+      </View>
+    );
+  }
+
+  // C1/C2: full KPIs + top ministries
   return (
     <View style={s.moduleContainer}>
       <SectionHeader title="MINISTRY PULSE" colors={colors} />
@@ -813,7 +1105,7 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
         ))}
       </ScrollView>
 
-      {/* Top 3 ministries by engagement */}
+      {/* Top 3 ministries */}
       <Card colors={colors}>
         <ThemedText style={[s.topMinistriesHeading, { color: colors.text }]}>
           Top Ministries by Engagement
@@ -836,7 +1128,8 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
                 {ministry.name}
               </ThemedText>
               <ThemedText style={[s.topMinistryMeta, { color: colors.textSecondary }]}>
-                {ministry.volunteers} volunteers {'\u00B7'} {ministry.engagement} active
+                {ministry.volunteers} vol {'\u00B7'} {ministry.engagement} active{ministry.nextMeeting ? ` \u00B7 Next: ${ministry.nextMeeting}` : ''}
+                {ministry.needsCount ? ` \u00B7 ${ministry.needsCount} need${ministry.needsCount > 1 ? 's' : ''}` : ''}
               </ThemedText>
             </View>
             <IconSymbol
@@ -868,35 +1161,45 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
 }
 
 // =============================================================================
-// BLOCK 5 — ALERTS STRIP (C1/C2/C3)
+// BLOCK 5 — ALERTS STRIP (C1/C2/C3 — RBAC type-filtering)
 // =============================================================================
 
 function AlertsStripBlock({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
   if (!isStaffLevel(role)) return null;
 
+  // RBAC filtering: Finance gated to C1/C2
+  const filteredAlerts = sortAlerts(
+    ALERT_ITEMS.filter((a) => {
+      if (a.financeGated && !isElderLevel(role)) return false;
+      return true;
+    }),
+  );
+
   return (
     <View style={s.moduleContainer}>
-      <SectionHeader title="ALERTS" colors={colors} count={ALERT_ITEMS.length} />
+      <SectionHeader title="ALERTS" colors={colors} count={filteredAlerts.length} />
       <Card colors={colors}>
-        {ALERT_ITEMS.map((alert, idx) => (
+        {filteredAlerts.map((alert, idx) => (
           <Pressable
             key={alert.id}
             style={[
               s.alertRow,
-              idx < ALERT_ITEMS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              idx < filteredAlerts.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
             ]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
             <View style={[s.alertDot, { backgroundColor: ALERT_LEVEL_COLOR[alert.level] }]} />
-            <View style={[s.alertLevelBadge, { backgroundColor: ALERT_LEVEL_COLOR[alert.level] + '20' }]}>
-              <ThemedText style={[s.alertLevelText, { color: ALERT_LEVEL_COLOR[alert.level] }]}>
-                {ALERT_LEVEL_LABEL[alert.level]}
-              </ThemedText>
-            </View>
             <View style={s.alertContent}>
-              <ThemedText style={[s.alertTitle, { color: colors.text }]} numberOfLines={1}>
-                {alert.title}
-              </ThemedText>
+              <View style={s.alertTitleRow}>
+                <ThemedText style={[s.alertTitle, { color: colors.text }]} numberOfLines={1}>
+                  {alert.title}
+                </ThemedText>
+                <View style={[s.alertTypeBadge, { backgroundColor: ALERT_LEVEL_COLOR[alert.level] + '15' }]}>
+                  <ThemedText style={[s.alertTypeText, { color: ALERT_LEVEL_COLOR[alert.level] }]}>
+                    {alert.type}
+                  </ThemedText>
+                </View>
+              </View>
               <ThemedText style={[s.alertDetail, { color: colors.textSecondary }]} numberOfLines={1}>
                 {alert.detail}
               </ThemedText>
@@ -958,42 +1261,32 @@ function QuickActionsBlock({
 }
 
 // =============================================================================
-// BLOCK 7 — FEED PREVIEW
+// BLOCK 7 — FEED PREVIEW (8-12 items, RBAC, compact one-line)
 // =============================================================================
 
-function FeedPreviewBlock({ colors }: { colors: typeof Colors.light }) {
+function FeedPreviewBlock({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
+  const visiblePosts = filterFeedByRole(FEED_POSTS, role);
+
   return (
     <View style={s.moduleContainer}>
-      <SectionHeader title="RECENT POSTS" colors={colors} count={FEED_POSTS.length} />
+      <SectionHeader title="RECENT POSTS" colors={colors} count={visiblePosts.length} />
       <Card colors={colors}>
-        {FEED_POSTS.map((post, idx) => (
+        {visiblePosts.map((post, idx) => (
           <Pressable
             key={post.id}
             style={[
-              s.feedRow,
-              idx < FEED_POSTS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              s.feedRowCompact,
+              idx < visiblePosts.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
             ]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
-            <View style={s.feedContent}>
-              <View style={s.feedTitleRow}>
-                <ThemedText style={[s.feedTitle, { color: colors.text }]} numberOfLines={1}>
-                  {post.title}
-                </ThemedText>
-                <View style={[s.feedTypeBadge, { backgroundColor: (FEED_TYPE_COLOR[post.type] ?? '#3B82F6') + '20' }]}>
-                  <ThemedText style={[s.feedTypeBadgeText, { color: FEED_TYPE_COLOR[post.type] ?? '#3B82F6' }]}>
-                    {post.type.toUpperCase()}
-                  </ThemedText>
-                </View>
-              </View>
-              <ThemedText style={[s.feedAuthorDate, { color: colors.textSecondary }]}>
-                {post.author} {'\u00B7'} {post.date}
-              </ThemedText>
-              <ThemedText style={[s.feedPreview, { color: colors.textSecondary }]} numberOfLines={2}>
-                {post.preview}
-              </ThemedText>
-            </View>
-            <IconSymbol name="chevron.right" size={10} color={colors.textTertiary} />
+            <View style={[s.feedDot, { backgroundColor: FEED_TYPE_COLOR[post.type] ?? '#3B82F6' }]} />
+            <ThemedText style={[s.feedTitleCompact, { color: colors.text }]} numberOfLines={1}>
+              {post.title}
+            </ThemedText>
+            <ThemedText style={[s.feedDateCompact, { color: colors.textTertiary }]}>
+              {post.date}
+            </ThemedText>
           </Pressable>
         ))}
       </Card>
@@ -1002,10 +1295,12 @@ function FeedPreviewBlock({ colors }: { colors: typeof Colors.light }) {
 }
 
 // =============================================================================
-// BLOCK 8 — PINNED SHELF
+// BLOCK 8 — PINNED SHELF (ministry object types, blocker/due sort)
 // =============================================================================
 
 function PinnedShelfBlock({ colors }: { colors: typeof Colors.light }) {
+  const sorted = sortPinned(PINNED_ITEMS);
+
   return (
     <View style={s.moduleContainer}>
       <SectionHeader title="PINNED" colors={colors} />
@@ -1014,120 +1309,47 @@ function PinnedShelfBlock({ colors }: { colors: typeof Colors.light }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={s.pinnedScroll}
       >
-        {PINNED_ITEMS.map((item) => (
-          <Pressable
-            key={item.id}
-            style={({ pressed }) => [
-              s.pinnedCard,
-              {
-                backgroundColor: colors.card,
-                borderColor: colors.border,
-                opacity: pressed ? 0.7 : 1,
-              },
-            ]}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          >
-            {/* Thumbnail placeholder */}
-            <View style={[s.pinnedThumb, { backgroundColor: colors.backgroundTertiary }]}>
-              <IconSymbol name={item.icon as any} size={24} color={PINNED_TYPE_COLOR[item.type] ?? colors.textSecondary} />
-            </View>
-            <ThemedText style={[s.pinnedTitle, { color: colors.text }]} numberOfLines={2}>
-              {item.title}
-            </ThemedText>
-            <View style={s.pinnedMeta}>
-              <View style={[s.pinnedTypeBadge, { backgroundColor: (PINNED_TYPE_COLOR[item.type] ?? '#3B82F6') + '20' }]}>
-                <ThemedText style={[s.pinnedTypeBadgeText, { color: PINNED_TYPE_COLOR[item.type] ?? '#3B82F6' }]}>
-                  {item.type.toUpperCase()}
-                </ThemedText>
-              </View>
-              <ThemedText style={[s.pinnedDate, { color: colors.textTertiary }]}>
-                {item.date}
-              </ThemedText>
-            </View>
-          </Pressable>
-        ))}
-      </ScrollView>
-    </View>
-  );
-}
-
-// =============================================================================
-// BLOCK 9 — GIVING SNAPSHOT (C1/C2)
-// =============================================================================
-
-function GivingSnapshotBlock({ colors, role, onSwitchTab }: { colors: typeof Colors.light; role: ChurchRoleLens; onSwitchTab?: (index: number) => void }) {
-  if (!isElderLevel(role)) return null;
-
-  return (
-    <View style={s.moduleContainer}>
-      <SectionHeader title="GIVING SNAPSHOT" colors={colors} />
-
-      {/* KPI row */}
-      <View style={s.givingKPIRow}>
-        {GIVING_KPIS.map((kpi, idx) => (
-          <View key={idx} style={[s.givingKPITile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[s.givingKPIValue, { color: colors.text }]}>{kpi.value}</ThemedText>
-            <ThemedText style={[s.givingKPILabel, { color: colors.textSecondary }]}>{kpi.label}</ThemedText>
-            {kpi.trend && (
-              <View style={s.givingTrendRow}>
-                <IconSymbol
-                  name={kpi.trendUp ? 'arrow.up.right' : ('arrow.down.right' as any)}
-                  size={9}
-                  color={kpi.trendUp ? '#22C55E' : '#EF4444'}
-                />
-                <ThemedText style={[s.givingTrendText, { color: kpi.trendUp ? '#22C55E' : '#EF4444' }]}>
-                  {kpi.trend}
-                </ThemedText>
-              </View>
-            )}
-          </View>
-        ))}
-      </View>
-
-      {/* Fund progress bars */}
-      <Card colors={colors}>
-        {FUND_PROGRESS.map((fund, idx) => {
-          const pct = Math.round((fund.current / fund.goal) * 100);
+        {sorted.map((item) => {
+          const typeColor = PINNED_TYPE_COLOR[item.type] ?? '#3B82F6';
           return (
-            <View
-              key={fund.id}
-              style={[
-                s.fundRow,
-                idx < FUND_PROGRESS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+            <Pressable
+              key={item.id}
+              style={({ pressed }) => [
+                s.pinnedCard,
+                {
+                  backgroundColor: colors.card,
+                  borderColor: item.isBlocker ? '#EF4444' : colors.border,
+                  borderWidth: item.isBlocker ? 1.5 : StyleSheet.hairlineWidth,
+                  opacity: pressed ? 0.7 : 1,
+                },
               ]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
             >
-              <View style={s.fundLabelCol}>
-                <ThemedText style={[s.fundName, { color: colors.text }]}>{fund.name}</ThemedText>
-                <ThemedText style={[s.fundAmounts, { color: colors.textSecondary }]}>
-                  ${(fund.current / 1000).toFixed(0)}K / ${(fund.goal / 1000).toFixed(0)}K
+              {item.isBlocker && (
+                <View style={s.blockerFlag}>
+                  <ThemedText style={s.blockerFlagText}>BLOCKER</ThemedText>
+                </View>
+              )}
+              <View style={[s.pinnedThumb, { backgroundColor: colors.backgroundTertiary }]}>
+                <IconSymbol name={item.icon as any} size={24} color={typeColor} />
+              </View>
+              <ThemedText style={[s.pinnedTitle, { color: colors.text }]} numberOfLines={2}>
+                {item.title}
+              </ThemedText>
+              <View style={s.pinnedMeta}>
+                <View style={[s.pinnedTypeBadge, { backgroundColor: typeColor + '20' }]}>
+                  <ThemedText style={[s.pinnedTypeBadgeText, { color: typeColor }]}>
+                    {item.type.replace(/-/g, ' ').toUpperCase()}
+                  </ThemedText>
+                </View>
+                <ThemedText style={[s.pinnedDate, { color: colors.textTertiary }]}>
+                  {item.date}
                 </ThemedText>
               </View>
-              <View style={s.fundBarCol}>
-                <View style={[s.fundBarBg, { backgroundColor: colors.backgroundTertiary }]}>
-                  <View style={[s.fundBarFill, { width: `${pct}%`, backgroundColor: fund.color }]} />
-                </View>
-                <ThemedText style={[s.fundPct, { color: fund.color }]}>{pct}%</ThemedText>
-              </View>
-            </View>
+            </Pressable>
           );
         })}
-      </Card>
-
-      {/* View Full Finance CTA */}
-      <Pressable
-        style={({ pressed }) => [
-          s.financeCTA,
-          { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
-        ]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          if (onSwitchTab) onSwitchTab(5);
-        }}
-      >
-        <IconSymbol name="dollarsign.circle.fill" size={16} color={colors.text} />
-        <ThemedText style={[s.financeCTAText, { color: colors.text }]}>View Full Finance</ThemedText>
-        <IconSymbol name="chevron.right" size={12} color={colors.textSecondary} />
-      </Pressable>
+      </ScrollView>
     </View>
   );
 }
@@ -1146,32 +1368,29 @@ export function ChurchDashboard({ colors, role = 'C1', onSwitchTab }: Props) {
       {/* Block 0 — Hero Video (All roles) */}
       <HeroVideoBlock colors={colors} role={role} />
 
-      {/* Block 1 — Spiritual Focus (All roles) */}
-      <SpiritualFocusBlock colors={colors} />
+      {/* Block 1 — Weekly Theme Card (All roles) */}
+      <WeeklyThemeBlock colors={colors} />
 
       {/* Block 2 — Today + Next (All roles, content varies) */}
       <TodayNextBlock colors={colors} role={role} />
 
-      {/* Block 3 — Service Readiness (C1/C2/C3 only) */}
+      {/* Block 3 — Service Readiness (role-variant views) */}
       <ServiceReadinessBlock colors={colors} role={role} />
 
-      {/* Block 4 — Ministry Pulse (C1/C2 only) */}
+      {/* Block 4 — Ministry Pulse (role-variant views) */}
       <MinistryPulseBlock colors={colors} role={role} onSwitchTab={onSwitchTab} />
 
-      {/* Block 5 — Alerts Strip (C1/C2/C3 only) */}
+      {/* Block 5 — Alerts Strip (C1/C2/C3 only, RBAC-filtered) */}
       <AlertsStripBlock colors={colors} role={role} />
 
       {/* Block 6 — Quick Actions (All roles, role-specific actions) */}
       <QuickActionsBlock colors={colors} role={role} onSwitchTab={onSwitchTab} />
 
-      {/* Block 7 — Feed Preview (All roles) */}
-      <FeedPreviewBlock colors={colors} />
+      {/* Block 7 — Feed Preview (All roles, RBAC-filtered) */}
+      <FeedPreviewBlock colors={colors} role={role} />
 
       {/* Block 8 — Pinned Shelf (All roles) */}
       <PinnedShelfBlock colors={colors} />
-
-      {/* Block 9 — Giving Snapshot (C1/C2 only) */}
-      <GivingSnapshotBlock colors={colors} role={role} onSwitchTab={onSwitchTab} />
 
       {/* Bottom spacer */}
       <View style={s.bottomSpacer} />
@@ -1200,19 +1419,19 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  pinnedBadge: {
+  heroBadge: {
     position: 'absolute',
     top: 10,
     left: 10,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(0,0,0,0.6)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: BorderRadius.full,
   },
-  pinnedText: { color: '#fff', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  heroBadgeText: { color: '#fff', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#fff' },
   playOverlay: { alignItems: 'center', justifyContent: 'center' },
   playCircle: {
     width: 56,
@@ -1241,7 +1460,7 @@ const s = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   heroTitle: { color: '#fff', fontSize: 15, fontWeight: '700', marginBottom: 2 },
-  heroSubtitle: { color: 'rgba(255,255,255,0.8)', fontSize: 11 },
+  heroSubtitle: { color: 'rgba(255,255,255,0.8)', fontSize: 11, lineHeight: 15 },
   tickerRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1265,7 +1484,7 @@ const s = StyleSheet.create({
   },
   heroCTAText: { fontSize: 13, fontWeight: '600', flex: 1 },
 
-  // ---- Block 1: Spiritual Focus ----
+  // ---- Block 1: Weekly Theme Card ----
   seriesHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
   seriesName: { fontSize: 15, fontWeight: '700' },
   seriesScripture: { fontSize: 12, marginBottom: 4 },
@@ -1305,14 +1524,17 @@ const s = StyleSheet.create({
   todayBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
   todayBadgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
   todayItemMeta: { fontSize: 11 },
+  todayFlagsRow: { flexDirection: 'row', gap: 4, marginTop: 3 },
+  todayFlag: { paddingHorizontal: 5, paddingVertical: 1, borderRadius: BorderRadius.sm },
+  todayFlagText: { fontSize: 8, fontWeight: '700', letterSpacing: 0.3 },
   nextTitle: { fontSize: 13, fontWeight: '600', marginBottom: 2, lineHeight: 18 },
   nextSubtitle: { fontSize: 11, marginBottom: Spacing.sm },
   nextCountdownRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 6 },
   nextCountdown: { fontSize: 14, fontWeight: '700' },
   nextReadinessRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   nextReadinessLabel: { fontSize: 11 },
-  readinessBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
-  readinessBadgeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
+  readinessBadgeSm: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  readinessBadgeSmText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
 
   // ---- Block 3: Service Readiness ----
   serviceInfoStrip: {
@@ -1328,10 +1550,23 @@ const s = StyleSheet.create({
   },
   serviceInfoItem: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   serviceInfoText: { fontSize: 12, fontWeight: '500' },
-  readinessOverview: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginBottom: Spacing.sm },
-  readinessOverviewText: { fontSize: 13, fontWeight: '600', minWidth: 70 },
+  serviceTimeRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 10 },
+  serviceTimeLabel: { fontSize: 14, fontWeight: '600' },
+  serviceTimeMeta: { fontSize: 11, marginTop: 2 },
+  readinessScoreRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, marginBottom: Spacing.md },
+  readinessScoreCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    borderWidth: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  readinessScoreText: { fontSize: 18, fontWeight: '800' },
+  readinessScoreLabel: { fontSize: 13, fontWeight: '600', marginBottom: 6 },
   readinessProgressBg: { flex: 1, height: 6, borderRadius: 3, overflow: 'hidden' },
   readinessProgressFill: { height: '100%', borderRadius: 3 },
+  readinessSubHeading: { fontSize: 10, fontWeight: '600', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: Spacing.sm },
   readinessRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 10 },
   readinessLabel: { fontSize: 13, fontWeight: '500', flex: 1 },
   readinessStatusBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
@@ -1370,14 +1605,16 @@ const s = StyleSheet.create({
     marginTop: 4,
   },
   ministryCTAText: { fontSize: 13, fontWeight: '600', flex: 1 },
+  connectedText: { fontSize: 13, lineHeight: 19 },
 
   // ---- Block 5: Alerts Strip ----
-  alertRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 10 },
-  alertDot: { width: 8, height: 8, borderRadius: 4 },
-  alertLevelBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
-  alertLevelText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
+  alertRow: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm, paddingVertical: 10 },
+  alertDot: { width: 8, height: 8, borderRadius: 4, marginTop: 4 },
   alertContent: { flex: 1 },
-  alertTitle: { fontSize: 13, fontWeight: '600', marginBottom: 2 },
+  alertTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
+  alertTitle: { fontSize: 13, fontWeight: '600', flex: 1 },
+  alertTypeBadge: { paddingHorizontal: 5, paddingVertical: 1, borderRadius: BorderRadius.sm },
+  alertTypeText: { fontSize: 8, fontWeight: '700', letterSpacing: 0.3 },
   alertDetail: { fontSize: 11 },
 
   // ---- Block 6: Quick Actions Grid ----
@@ -1394,15 +1631,11 @@ const s = StyleSheet.create({
   },
   actionTileLabel: { fontSize: 11, fontWeight: '600', textAlign: 'center', lineHeight: 14 },
 
-  // ---- Block 7: Feed Preview ----
-  feedRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, gap: Spacing.sm },
-  feedContent: { flex: 1 },
-  feedTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
-  feedTitle: { fontSize: 13, fontWeight: '600', flex: 1 },
-  feedTypeBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
-  feedTypeBadgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
-  feedAuthorDate: { fontSize: 11, marginBottom: 4 },
-  feedPreview: { fontSize: 12, lineHeight: 17 },
+  // ---- Block 7: Feed Preview (compact one-line) ----
+  feedRowCompact: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, gap: Spacing.sm },
+  feedDot: { width: 6, height: 6, borderRadius: 3 },
+  feedTitleCompact: { fontSize: 13, fontWeight: '500', flex: 1 },
+  feedDateCompact: { fontSize: 10, fontWeight: '500' },
 
   // ---- Block 8: Pinned Shelf ----
   pinnedScroll: { flexDirection: 'row', gap: Spacing.sm, paddingVertical: 2 },
@@ -1410,7 +1643,6 @@ const s = StyleSheet.create({
     width: 130,
     borderRadius: BorderRadius.lg,
     padding: Spacing.md,
-    borderWidth: StyleSheet.hairlineWidth,
     alignItems: 'center',
     gap: Spacing.sm,
   },
@@ -1426,38 +1658,15 @@ const s = StyleSheet.create({
   pinnedTypeBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
   pinnedTypeBadgeText: { fontSize: 8, fontWeight: '700', letterSpacing: 0.3 },
   pinnedDate: { fontSize: 10 },
-
-  // ---- Block 9: Giving Snapshot ----
-  givingKPIRow: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.sm },
-  givingKPITile: {
-    flex: 1,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    alignItems: 'center',
-    gap: 4,
+  blockerFlag: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: BorderRadius.sm,
+    zIndex: 1,
   },
-  givingKPIValue: { fontSize: 18, fontWeight: '700' },
-  givingKPILabel: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.3 },
-  givingTrendRow: { flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 2 },
-  givingTrendText: { fontSize: 10, fontWeight: '600' },
-  fundRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, gap: Spacing.sm },
-  fundLabelCol: { width: 110 },
-  fundName: { fontSize: 13, fontWeight: '600', marginBottom: 2 },
-  fundAmounts: { fontSize: 10 },
-  fundBarCol: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  fundBarBg: { flex: 1, height: 8, borderRadius: 4, overflow: 'hidden' },
-  fundBarFill: { height: '100%', borderRadius: 4 },
-  fundPct: { fontSize: 12, fontWeight: '700', minWidth: 36, textAlign: 'right' },
-  financeCTA: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    paddingVertical: 12,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    marginTop: 4,
-  },
-  financeCTAText: { fontSize: 13, fontWeight: '600', flex: 1 },
+  blockerFlagText: { color: '#fff', fontSize: 7, fontWeight: '700', letterSpacing: 0.3 },
 });

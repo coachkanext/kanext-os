@@ -15,6 +15,7 @@ import {
   ScrollView,
   Pressable,
   StyleSheet,
+  TextInput,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -121,20 +122,24 @@ interface Fund {
   trend: string;
   color: string;
   icon: string;
+  allowedUses?: string[];
 }
 
 const ACTIVE_FUNDS: Fund[] = [
   {
     id: 'fund-1', name: 'General Tithes & Offering', description: 'Primary operating fund for ministry, staff, and facilities.',
     goal: null, raised: 842000, ongoing: true, deadline: null, donorCount: 1284, trend: '+6.2%', color: '#3B82F6', icon: 'dollarsign.circle.fill',
+    allowedUses: ['Staff salaries', 'Ministry operations', 'Facility maintenance', 'Utilities'],
   },
   {
     id: 'fund-2', name: 'Building Fund', description: 'Capital campaign for new sanctuary and community center. Phase 2.',
     goal: 2500000, raised: 1950000, ongoing: false, deadline: 'Dec 2026', donorCount: 842, trend: '+4.8%', color: '#8B5CF6', icon: 'building.2.fill',
+    allowedUses: ['Construction', 'Architectural fees', 'Permits', 'Furnishings'],
   },
   {
     id: 'fund-3', name: 'Missions Fund', description: 'Supporting 12 missionary families and 3 international partnerships.',
     goal: 150000, raised: 89000, ongoing: false, deadline: 'Dec 2026', donorCount: 356, trend: '+12.1%', color: '#06B6D4', icon: 'globe.americas.fill',
+    allowedUses: ['Missionary support', 'Travel', 'Supplies', 'Partner organizations'],
   },
   {
     id: 'fund-4', name: 'Youth Summer Camp', description: 'Send 150 youth to summer camp with scholarships for families in need.',
@@ -452,10 +457,68 @@ const shrd = StyleSheet.create({
 
 function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
+  const [customAmount, setCustomAmount] = useState('');
   const [selectedFund, setSelectedFund] = useState<string>('tithe');
   const [selectedPayment, setSelectedPayment] = useState<string>('bank');
   const [selectedFrequency, setSelectedFrequency] = useState<Frequency>('one-time');
+  const [coverFees, setCoverFees] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const isVisitor = role === 'C5';
+
+  const activeAmount = selectedAmount ?? (customAmount ? parseFloat(customAmount) : 0);
+  const fundLabel = GIVING_FUNDS_QUICK.find(f => f.id === selectedFund)?.name ?? 'General';
+
+  if (showConfirmation) {
+    const receiptId = `ICCLA-2026-${Math.floor(Math.random() * 90000 + 10000)}`;
+    const timestamp = new Date().toLocaleString();
+    return (
+      <View>
+        <View style={s.moduleContainer}>
+          <Card colors={colors}>
+            <View style={{ alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.md }}>
+              <IconSymbol name="checkmark.circle.fill" size={48} color="#22C55E" />
+              <ThemedText style={[{ fontSize: 20, fontWeight: '800' }, { color: colors.text }]}>Thank You!</ThemedText>
+              <ThemedText style={[{ fontSize: 14, textAlign: 'center' }, { color: colors.textSecondary }]}>
+                Your gift of ${activeAmount.toLocaleString()} to {fundLabel} has been received.
+              </ThemedText>
+              <View style={{ gap: 4, alignItems: 'center' }}>
+                <ThemedText style={[{ fontSize: 11 }, { color: colors.textTertiary }]}>Receipt: {receiptId}</ThemedText>
+                <ThemedText style={[{ fontSize: 11 }, { color: colors.textTertiary }]}>{timestamp}</ThemedText>
+              </View>
+            </View>
+          </Card>
+        </View>
+        <View style={s.moduleContainer}>
+          <Pressable
+            style={[s.giveCTA, { backgroundColor: colors.text + '10', borderColor: colors.border }]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <IconSymbol name="doc.text.fill" size={16} color={colors.text} />
+            <ThemedText style={[s.giveCTAText, { color: colors.text, fontSize: 14 }]}>View Receipt</ThemedText>
+          </Pressable>
+        </View>
+        {selectedFrequency === 'one-time' && (
+          <View style={s.moduleContainer}>
+            <Pressable
+              style={[s.giveCTA, { backgroundColor: colors.text + '10', borderColor: colors.border }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <IconSymbol name="arrow.triangle.2.circlepath" size={16} color={colors.text} />
+              <ThemedText style={[s.giveCTAText, { color: colors.text, fontSize: 14 }]}>Set Up Recurring</ThemedText>
+            </Pressable>
+          </View>
+        )}
+        <View style={s.moduleContainer}>
+          <Pressable
+            style={[s.giveCTA, { borderColor: colors.border }]}
+            onPress={() => { setShowConfirmation(false); setSelectedAmount(null); setCustomAmount(''); }}
+          >
+            <ThemedText style={[s.giveCTAText, { color: colors.textSecondary, fontSize: 14 }]}>Give Again</ThemedText>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View>
@@ -489,17 +552,17 @@ function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: Chur
             })}
           </View>
 
-          <Pressable
-            style={[s.customAmountBtn, { borderColor: colors.border }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setSelectedAmount(null);
-            }}
-          >
-            <ThemedText style={[s.customAmountText, { color: colors.textSecondary }]}>
-              Enter Custom Amount
-            </ThemedText>
-          </Pressable>
+          <View style={[s.customAmountBtn, { borderColor: colors.border, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12 }]}>
+            <ThemedText style={[{ fontSize: 15, fontWeight: '700' }, { color: colors.textSecondary }]}>$</ThemedText>
+            <TextInput
+              style={[s.customAmountInput, { color: colors.text }]}
+              placeholder="Custom amount"
+              placeholderTextColor={colors.textTertiary}
+              keyboardType="decimal-pad"
+              value={customAmount}
+              onChangeText={(text) => { setCustomAmount(text); setSelectedAmount(null); }}
+            />
+          </View>
         </Card>
       </View>
 
@@ -605,6 +668,24 @@ function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: Chur
         </View>
       )}
 
+      {/* Cover Fees Toggle */}
+      <View style={s.moduleContainer}>
+        <Card colors={colors}>
+          <Pressable
+            style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCoverFees(!coverFees); }}
+          >
+            <View style={[s.toggleTrack, { backgroundColor: coverFees ? '#22C55E' : colors.backgroundTertiary }]}>
+              <View style={[s.toggleThumb, { transform: [{ translateX: coverFees ? 16 : 0 }] }]} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <ThemedText style={[{ fontSize: 13, fontWeight: '600' }, { color: colors.text }]}>Cover processing fees</ThemedText>
+              <ThemedText style={[{ fontSize: 11 }, { color: colors.textTertiary }]}>Add ~3% so 100% of your gift goes to the church</ThemedText>
+            </View>
+          </Pressable>
+        </Card>
+      </View>
+
       {/* Give CTA */}
       <View style={s.moduleContainer}>
         <Pressable
@@ -612,11 +693,11 @@ function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: Chur
             s.giveCTA,
             { backgroundColor: pressed ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)', borderColor: colors.borderStrong },
           ]}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); if (activeAmount > 0) setShowConfirmation(true); }}
         >
           <IconSymbol name="heart.fill" size={18} color={colors.text} />
           <ThemedText style={[s.giveCTAText, { color: colors.text }]}>
-            {selectedAmount ? `Give $${selectedAmount.toLocaleString()}` : 'Give Now'}
+            {activeAmount > 0 ? `Give $${activeAmount.toLocaleString()}${coverFees ? ' + fees' : ''}` : 'Give Now'}
           </ThemedText>
         </Pressable>
       </View>
@@ -675,6 +756,17 @@ function FundsView({ colors, role }: { colors: typeof Colors.light; role: Church
               <ThemedText style={[s.fundCardDesc, { color: colors.textSecondary }]} numberOfLines={2}>
                 {fund.description}
               </ThemedText>
+
+              {/* Allowed uses */}
+              {fund.allowedUses && fund.allowedUses.length > 0 && (
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: Spacing.sm }}>
+                  {fund.allowedUses.map((use) => (
+                    <View key={use} style={{ backgroundColor: fund.color + '15', paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm }}>
+                      <ThemedText style={{ fontSize: 9, fontWeight: '600', color: fund.color }}>{use}</ThemedText>
+                    </View>
+                  ))}
+                </View>
+              )}
 
               {/* Progress bar (campaign funds only) */}
               {hasCampaignGoal && (
@@ -739,11 +831,30 @@ function FundsView({ colors, role }: { colors: typeof Colors.light; role: Church
 // =============================================================================
 
 function HistoryView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
+  const [selectedYear, setSelectedYear] = useState(2026);
+  const [expandedTx, setExpandedTx] = useState<string | null>(null);
+  const years = [2026, 2025, 2024];
+
   return (
     <View>
+      {/* Year Selector */}
+      <View style={s.moduleContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexDirection: 'row', gap: Spacing.sm, paddingVertical: 2 }}>
+          {years.map((year) => (
+            <Pressable
+              key={year}
+              style={[s.filterPill, { backgroundColor: selectedYear === year ? colors.text + '15' : 'transparent', borderColor: colors.border, paddingHorizontal: 14, paddingVertical: 6, borderRadius: BorderRadius.full, borderWidth: StyleSheet.hairlineWidth }]}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedYear(year); }}
+            >
+              <ThemedText style={{ fontSize: 13, fontWeight: '600', color: selectedYear === year ? colors.text : colors.textSecondary }}>{year}</ThemedText>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+
       {/* YTD Summary */}
       <View style={s.moduleContainer}>
-        <SectionHeader title="YEAR-TO-DATE SUMMARY" colors={colors} />
+        <SectionHeader title={`${selectedYear} SUMMARY`} colors={colors} />
         <Card colors={colors}>
           <View style={s.ytdHero}>
             <ThemedText style={[s.ytdLabel, { color: colors.textSecondary }]}>Total Given (2026)</ThemedText>
@@ -785,39 +896,73 @@ function HistoryView({ colors, role }: { colors: typeof Colors.light; role: Chur
         <Card colors={colors}>
           {GIVING_HISTORY.map((tx, idx) => {
             const statusColor = TX_STATUS_COLOR[tx.status] ?? '#8F8F8F';
+            const isExpanded = expandedTx === tx.id;
             return (
-              <View
+              <Pressable
                 key={tx.id}
                 style={[
                   s.txRow,
+                  { flexDirection: 'column' },
                   idx < GIVING_HISTORY.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
                 ]}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setExpandedTx(isExpanded ? null : tx.id); }}
               >
-                <View style={s.txInfo}>
-                  <View style={s.txHeaderLine}>
-                    <ThemedText style={[s.txFund, { color: colors.text }]}>{tx.fund}</ThemedText>
-                    {tx.taxDeductible && (
-                      <View style={[s.taxBadge, { backgroundColor: '#22C55E20' }]}>
-                        <ThemedText style={[s.taxBadgeText, { color: '#22C55E' }]}>TAX</ThemedText>
-                      </View>
-                    )}
-                  </View>
-                  <ThemedText style={[s.txMeta, { color: colors.textTertiary }]}>
-                    {tx.date} {'\u00B7'} {tx.method}
-                  </ThemedText>
-                  <ThemedText style={[s.txReceipt, { color: colors.textTertiary }]}>
-                    {tx.receiptNo}
-                  </ThemedText>
-                </View>
-                <View style={s.txRight}>
-                  <ThemedText style={[s.txAmount, { color: colors.text }]}>{tx.amount}</ThemedText>
-                  <View style={[s.txStatusBadge, { backgroundColor: statusColor + '20' }]}>
-                    <ThemedText style={[s.txStatusText, { color: statusColor }]}>
-                      {tx.status === 'recurring' ? 'AUTO' : tx.status.toUpperCase()}
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={s.txInfo}>
+                    <View style={s.txHeaderLine}>
+                      <ThemedText style={[s.txFund, { color: colors.text }]}>{tx.fund}</ThemedText>
+                      {tx.taxDeductible && (
+                        <View style={[s.taxBadge, { backgroundColor: '#22C55E20' }]}>
+                          <ThemedText style={[s.taxBadgeText, { color: '#22C55E' }]}>TAX</ThemedText>
+                        </View>
+                      )}
+                    </View>
+                    <ThemedText style={[s.txMeta, { color: colors.textTertiary }]}>
+                      {tx.date} {'\u00B7'} {tx.method}
                     </ThemedText>
                   </View>
+                  <View style={s.txRight}>
+                    <ThemedText style={[s.txAmount, { color: colors.text }]}>{tx.amount}</ThemedText>
+                    <View style={[s.txStatusBadge, { backgroundColor: statusColor + '20' }]}>
+                      <ThemedText style={[s.txStatusText, { color: statusColor }]}>
+                        {tx.status === 'recurring' ? 'AUTO' : tx.status.toUpperCase()}
+                      </ThemedText>
+                    </View>
+                  </View>
                 </View>
-              </View>
+                {/* Expanded receipt detail */}
+                {isExpanded && (
+                  <View style={{ marginTop: Spacing.sm, padding: Spacing.sm, backgroundColor: colors.backgroundTertiary, borderRadius: BorderRadius.md, gap: 4 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <ThemedText style={{ fontSize: 11, color: colors.textTertiary }}>Receipt ID</ThemedText>
+                      <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.text }}>{tx.receiptNo}</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <ThemedText style={{ fontSize: 11, color: colors.textTertiary }}>Amount</ThemedText>
+                      <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.text }}>{tx.amount}</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <ThemedText style={{ fontSize: 11, color: colors.textTertiary }}>Fund</ThemedText>
+                      <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.text }}>{tx.fund}</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <ThemedText style={{ fontSize: 11, color: colors.textTertiary }}>Payment</ThemedText>
+                      <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.text }}>{tx.method}</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <ThemedText style={{ fontSize: 11, color: colors.textTertiary }}>Date</ThemedText>
+                      <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.text }}>{tx.date}</ThemedText>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <ThemedText style={{ fontSize: 11, color: colors.textTertiary }}>Tax Deductible</ThemedText>
+                      <ThemedText style={{ fontSize: 11, fontWeight: '600', color: tx.taxDeductible ? '#22C55E' : colors.textTertiary }}>{tx.taxDeductible ? 'Yes' : 'No'}</ThemedText>
+                    </View>
+                    <ThemedText style={{ fontSize: 9, color: colors.textTertiary, marginTop: 4, fontStyle: 'italic' }}>
+                      International Church of Christ LA is a 501(c)(3) organization. EIN: 95-1234567.
+                    </ThemedText>
+                  </View>
+                )}
+              </Pressable>
             );
           })}
         </Card>
@@ -874,6 +1019,26 @@ function PledgesView({ colors, role }: { colors: typeof Colors.light; role: Chur
                 <ThemedText style={[s.pledgeNextPayment, { color: colors.textTertiary }]}>
                   Next payment: {pledge.nextPayment}
                 </ThemedText>
+              )}
+
+              {/* Modify / Cancel actions */}
+              {pledge.status !== 'completed' && (
+                <View style={{ flexDirection: 'row', gap: Spacing.sm, marginTop: Spacing.sm }}>
+                  <Pressable
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: BorderRadius.md, backgroundColor: colors.backgroundTertiary }}
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  >
+                    <IconSymbol name="pencil" size={11} color={colors.textSecondary} />
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.textSecondary }}>Modify</ThemedText>
+                  </Pressable>
+                  <Pressable
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: BorderRadius.md, backgroundColor: '#EF444410' }}
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  >
+                    <IconSymbol name="xmark" size={11} color="#EF4444" />
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', color: '#EF4444' }}>Cancel</ThemedText>
+                  </Pressable>
+                </View>
               )}
             </Card>
           );
@@ -1042,6 +1207,61 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
           </Card>
         </View>
       )}
+
+      {/* Deposit / Close Workflow */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="DEPOSIT & CLOSE" colors={colors} />
+        <Card colors={colors}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: Spacing.sm }}>
+            {[
+              { v: '12', l: 'Unreconciled', c: '#F59E0B' },
+              { v: '84', l: 'Receipts Generated', c: '#22C55E' },
+              { v: '3', l: 'Exceptions', c: '#EF4444' },
+            ].map(item => (
+              <View key={item.l} style={{ alignItems: 'center' }}>
+                <ThemedText style={{ fontSize: 20, fontWeight: '800', color: item.c }}>{item.v}</ThemedText>
+                <ThemedText style={{ fontSize: 10, fontWeight: '500', color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.3, marginTop: 2 }}>{item.l}</ThemedText>
+              </View>
+            ))}
+          </View>
+          <Pressable
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 12, borderRadius: BorderRadius.md, backgroundColor: colors.text + '10' }}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <IconSymbol name="checkmark.seal.fill" size={16} color={colors.text} />
+            <ThemedText style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>Process Deposit</ThemedText>
+          </Pressable>
+        </Card>
+      </View>
+
+      {/* Exceptions Queue */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="EXCEPTIONS QUEUE" colors={colors} count={3} />
+        <Card colors={colors}>
+          {[
+            { id: 'ex-1', category: 'Failed Payment', reason: 'Insufficient funds — Visa ****8890', action: 'Contact donor', amount: '$250', color: '#EF4444' },
+            { id: 'ex-2', category: 'Chargeback', reason: 'Disputed transaction — Jan 28', action: 'Review documentation', amount: '$100', color: '#F59E0B' },
+            { id: 'ex-3', category: 'Refund Request', reason: 'Duplicate gift — Feb 12', action: 'Process refund', amount: '$500', color: '#3B82F6' },
+          ].map((ex, idx) => (
+            <View
+              key={ex.id}
+              style={[
+                { paddingVertical: 10, gap: 4 },
+                idx < 2 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              ]}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <View style={{ backgroundColor: ex.color + '20', paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm }}>
+                  <ThemedText style={{ fontSize: 9, fontWeight: '700', color: ex.color }}>{ex.category.toUpperCase()}</ThemedText>
+                </View>
+                <ThemedText style={{ fontSize: 14, fontWeight: '700', color: colors.text, flex: 1 }}>{ex.amount}</ThemedText>
+              </View>
+              <ThemedText style={{ fontSize: 12, color: colors.textSecondary }}>{ex.reason}</ThemedText>
+              <ThemedText style={{ fontSize: 11, color: colors.textTertiary }}>Required action: {ex.action}</ThemedText>
+            </View>
+          ))}
+        </Card>
+      </View>
     </View>
   );
 }
@@ -1180,6 +1400,91 @@ function SettingsView({ colors, role }: { colors: typeof Colors.light; role: Chu
         </Card>
       </View>
 
+      {/* Default Fund & Toggles */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="GIVING DEFAULTS" colors={colors} />
+        <Card colors={colors}>
+          <View style={s.taxConfigRow}>
+            <ThemedText style={[s.taxConfigLabel, { color: colors.textSecondary }]}>Default Fund</ThemedText>
+            <ThemedText style={[s.taxConfigValue, { color: colors.text }]}>Tithes</ThemedText>
+          </View>
+          <View style={[s.divider, { backgroundColor: colors.border }]} />
+          {[
+            { label: 'Auto-email receipts', enabled: true },
+            { label: 'Cover fees by default', enabled: false },
+            { label: 'Public giving (show on leaderboard)', enabled: false },
+          ].map((toggle) => (
+            <View key={toggle.label}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10 }}>
+                <ThemedText style={{ fontSize: 13, color: colors.text }}>{toggle.label}</ThemedText>
+                <View style={[s.toggleTrack, { backgroundColor: toggle.enabled ? '#22C55E' : colors.backgroundTertiary }]}>
+                  <View style={[s.toggleThumb, { transform: [{ translateX: toggle.enabled ? 16 : 0 }] }]} />
+                </View>
+              </View>
+              <View style={[s.divider, { backgroundColor: colors.border }]} />
+            </View>
+          ))}
+        </Card>
+      </View>
+
+      {/* Receipt Template Editor */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="RECEIPT TEMPLATE" colors={colors} />
+        <Card colors={colors}>
+          <ThemedText style={{ fontSize: 12, color: colors.textSecondary, marginBottom: Spacing.sm }}>
+            Customize the receipt sent to donors after each gift.
+          </ThemedText>
+          <Pressable
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 12, borderRadius: BorderRadius.md, backgroundColor: colors.backgroundTertiary }}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <IconSymbol name="doc.text.fill" size={14} color={colors.text} />
+            <ThemedText style={{ fontSize: 13, fontWeight: '600', color: colors.text }}>Edit Receipt Template</ThemedText>
+          </Pressable>
+        </Card>
+      </View>
+
+      {/* Export Controls */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="EXPORT & REPORTS" colors={colors} />
+        <Card colors={colors}>
+          {[
+            { label: 'Export All Transactions (CSV)', icon: 'arrow.down.doc.fill' },
+            { label: 'Export Donor List (CSV)', icon: 'person.3.fill' },
+            { label: 'Generate Tax Statements', icon: 'doc.richtext.fill' },
+          ].map((exp) => (
+            <Pressable
+              key={exp.label}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 12 }}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <IconSymbol name={exp.icon as any} size={14} color={colors.textSecondary} />
+              <ThemedText style={{ fontSize: 13, fontWeight: '500', color: colors.text, flex: 1 }}>{exp.label}</ThemedText>
+              <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+            </Pressable>
+          ))}
+        </Card>
+      </View>
+
+      {/* Permissions */}
+      <View style={s.moduleContainer}>
+        <SectionHeader title="PERMISSIONS" colors={colors} />
+        <Card colors={colors}>
+          {[
+            { role: 'Senior Pastor (C1)', access: 'Full access — all views, all actions' },
+            { role: 'Elder / Board (C2)', access: 'Full access — all views, all actions' },
+            { role: 'Staff (C3)', access: 'Give, Funds, History, Pledges — no finance console or settings' },
+            { role: 'Member (C4)', access: 'Give, Funds, History, Pledges — personal giving only' },
+            { role: 'Visitor (C5)', access: 'Give Now only — one-time gifts' },
+          ].map((perm) => (
+            <View key={perm.role} style={{ paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }}>
+              <ThemedText style={{ fontSize: 13, fontWeight: '600', color: colors.text }}>{perm.role}</ThemedText>
+              <ThemedText style={{ fontSize: 11, color: colors.textTertiary, marginTop: 2 }}>{perm.access}</ThemedText>
+            </View>
+          ))}
+        </Card>
+      </View>
+
       {/* Tax Configuration */}
       <View style={s.moduleContainer}>
         <SectionHeader title="TAX CONFIGURATION" colors={colors} />
@@ -1300,6 +1605,10 @@ const s = StyleSheet.create({
     borderStyle: 'dashed',
   },
   customAmountText: { fontSize: 13, fontWeight: '500' },
+  customAmountInput: { flex: 1, fontSize: 15, fontWeight: '600', paddingVertical: 0 },
+  toggleTrack: { width: 36, height: 20, borderRadius: 10, justifyContent: 'center', paddingHorizontal: 2 },
+  toggleThumb: { width: 16, height: 16, borderRadius: 8, backgroundColor: '#fff' },
+  filterPill: {},
 
   fundScrollContent: { flexDirection: 'row', gap: 6, paddingVertical: 2 },
   fundPill: {

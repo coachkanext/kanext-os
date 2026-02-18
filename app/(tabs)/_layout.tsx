@@ -28,6 +28,7 @@ import { startGlobalVoice } from '@/utils/global-voice';
 import { openFinder } from '@/utils/global-finder';
 import { triggerKXTransition } from '@/utils/global-transition';
 import { requestHomeReset } from '@/utils/global-home';
+import { requestOrgReset } from '@/utils/global-org';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
 
 // Tab icon component
@@ -119,6 +120,7 @@ export default function TabLayout() {
         }}
         onPress={(e: any) => {
           triggerKXTransition();
+          requestOrgReset();
           props.onPress?.(e);
         }}
       />
