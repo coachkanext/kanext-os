@@ -69,8 +69,8 @@ const SPORTS_OPS: OrgOperationsData = {
   ],
 };
 
-// ── Enterprise (reuses existing WORKSTREAMS & MEETINGS) ─────────────────
-function enterpriseOps(): OrgOperationsData {
+// ── Business (reuses existing WORKSTREAMS & MEETINGS) ─────────────────
+function businessOps(): OrgOperationsData {
   return {
     workstreams: WORKSTREAMS.map((w) => ({
       id: w.id,
@@ -177,11 +177,10 @@ const COMMUNITY_OPS: OrgOperationsData = {
 export function getOrgOperations(mode: Mode): OrgOperationsData {
   switch (mode) {
     case 'sports': return SPORTS_OPS;
-    case 'enterprise': return enterpriseOps();
+    case 'business': return businessOps();
     case 'church': return CHURCH_OPS;
     case 'education': return EDUCATION_OPS;
     case 'competition': return COMMUNITY_OPS;
-    case 'business': return enterpriseOps();
     default: return { workstreams: [], meetings: [], rules: [], compliance: [] };
   }
 }

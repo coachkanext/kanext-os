@@ -254,11 +254,6 @@ export const PAYRAILS_SCOPE_CHIPS: Record<Mode, PayRailsScopeChip[]> = {
     { key: 'campus', label: 'Campus' },
     { key: 'ministry', label: 'Ministry' },
   ],
-  enterprise: [
-    { key: 'organization', label: 'Organization' },
-    { key: 'entity', label: 'Entity' },
-    { key: 'department', label: 'Department' },
-  ],
   competition: [
     { key: 'organization', label: 'Organization' },
     { key: 'series', label: 'Series' },
@@ -606,10 +601,10 @@ const CHURCH_SETTINGS: PayRailsSettingToggle[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE MODE
+// BUSINESS MODE
 // =============================================================================
 
-const ENTERPRISE_OVERVIEW: PayRailsOverviewBlock[] = [
+const BUSINESS_OVERVIEW: PayRailsOverviewBlock[] = [
   { id: 'en-ov-1', label: 'Revenue Collected', value: '$17,598.00', trend: '+14.2%', trendUp: true },
   { id: 'en-ov-2', label: 'Vendor Payouts', value: '$19,485.00' },
   { id: 'en-ov-3', label: 'Pending AR', value: '$13,700.00' },
@@ -618,13 +613,13 @@ const ENTERPRISE_OVERVIEW: PayRailsOverviewBlock[] = [
   { id: 'en-ov-6', label: 'Revenue Trend (MoM)', value: '+18.5%', trend: '+18.5%', trendUp: true },
 ];
 
-const ENTERPRISE_ACCOUNTS: PayRailsAccount[] = [
+const BUSINESS_ACCOUNTS: PayRailsAccount[] = [
   { id: 'en-acct-1', name: 'KaNeXT Operating', type: 'primary', scope: 'Organization', balance: 185420.33, currency: 'USD', status: 'active', lastActivity: 'Feb 15, 2026' },
   { id: 'en-acct-2', name: 'Product', type: 'subaccount', scope: 'Entity', balance: 42180.67, currency: 'USD', status: 'active', lastActivity: 'Feb 14, 2026' },
   { id: 'en-acct-3', name: 'Sales', type: 'subaccount', scope: 'Department', balance: 18750.12, currency: 'USD', status: 'active', lastActivity: 'Feb 12, 2026' },
 ];
 
-const ENTERPRISE_CHARGES: PayRailsCharge[] = [
+const BUSINESS_CHARGES: PayRailsCharge[] = [
   { id: 'en-chg-1', description: 'Customer invoice — FMU license (annual)', amount: 8500.00, fee: 255.00, net: 8245.00, payer: 'Florida Memorial University', payerInitials: 'FM', product: 'Enterprise License', status: 'succeeded', date: 'Feb 14, 2026', scope: 'Organization', receiptRef: 'INV-KX-2026-0042' },
   { id: 'en-chg-2', description: 'Subscription — Pro tier (monthly)', amount: 299.00, fee: 8.97, net: 290.03, payer: 'Acme Sports Group', payerInitials: 'AS', product: 'Subscription', status: 'succeeded', date: 'Feb 12, 2026', scope: 'Entity', receiptRef: 'SUB-20260212-PRO' },
   { id: 'en-chg-3', description: 'Deposit — pilot engagement', amount: 5000.00, fee: 150.00, net: 4850.00, payer: 'Beta Athletics Inc', payerInitials: 'BA', product: 'Deposit/Retainer', status: 'succeeded', date: 'Feb 10, 2026', scope: 'Organization', receiptRef: 'DEP-KX-2026-008' },
@@ -633,60 +628,60 @@ const ENTERPRISE_CHARGES: PayRailsCharge[] = [
   { id: 'en-chg-6', description: 'Marketplace revenue — template sales', amount: 450.00, fee: 13.50, net: 436.50, payer: 'Various Buyers', payerInitials: 'VB', product: 'Marketplace', status: 'succeeded', date: 'Feb 3, 2026', scope: 'Entity' },
 ];
 
-const ENTERPRISE_PAYOUTS: PayRailsPayout[] = [
+const BUSINESS_PAYOUTS: PayRailsPayout[] = [
   { id: 'en-po-1', recipient: 'Amazon Web Services', recipientInitials: 'AW', description: 'Cloud infrastructure — January invoice', amount: 2418.62, purpose: 'Vendor invoice', category: 'Infrastructure', status: 'succeeded', dueDate: 'Feb 5, 2026', paidDate: 'Feb 4, 2026', scope: 'Entity', evidence: 'INV-AWS-2026-01' },
   { id: 'en-po-2', recipient: 'Studio Nine', recipientInitials: 'SN', description: 'Design contractor — Jan deliverables', amount: 4800.00, purpose: 'Contractor payout', category: 'Contractor', status: 'succeeded', dueDate: 'Feb 10, 2026', paidDate: 'Feb 9, 2026', scope: 'Entity', evidence: 'CTR-SN-JAN26' },
   { id: 'en-po-3', recipient: 'Gusto Payroll', recipientInitials: 'GP', description: 'Payroll link — February first half', amount: 12000.00, purpose: 'Payroll', category: 'Payroll', status: 'succeeded', dueDate: 'Feb 14, 2026', paidDate: 'Feb 14, 2026', scope: 'Organization', evidence: 'PAY-GUSTO-FEB1' },
   { id: 'en-po-4', recipient: 'Sammy Kalejaiye', recipientInitials: 'SK', description: 'Conference travel reimbursement — AfroTech', amount: 285.40, purpose: 'Reimbursement', category: 'Reimbursement', status: 'succeeded', dueDate: 'Feb 7, 2026', paidDate: 'Feb 6, 2026', scope: 'Organization', evidence: 'RCPT-SK-0203' },
 ];
 
-const ENTERPRISE_TRANSFERS: PayRailsTransfer[] = [
+const BUSINESS_TRANSFERS: PayRailsTransfer[] = [
   { id: 'en-xfr-1', fromAccount: 'KaNeXT Operating', toAccount: 'Product', amount: 15000.00, description: 'Operating → Product Q1 allocation', status: 'succeeded', date: 'Jan 31, 2026', initiator: 'Sammy Kalejaiye' },
   { id: 'en-xfr-2', fromAccount: 'Sales', toAccount: 'KaNeXT Operating', amount: 4200.00, description: 'Sales commission sweep → Operating', status: 'succeeded', date: 'Feb 3, 2026', initiator: 'Sammy Kalejaiye' },
   { id: 'en-xfr-3', fromAccount: 'KaNeXT Operating', toAccount: 'KaNeXT Operating', amount: 10000.00, description: 'Revenue → Savings reserve transfer', status: 'succeeded', date: 'Feb 10, 2026', initiator: 'Sammy Kalejaiye' },
 ];
 
-const ENTERPRISE_SETTLEMENTS: PayRailsSettlement[] = [
+const BUSINESS_SETTLEMENTS: PayRailsSettlement[] = [
   { id: 'en-stl-1', title: 'January Monthly Close', type: 'Monthly Close', grossAmount: 42815.00, fees: 1284.45, netAmount: 41530.55, itemCount: 28, status: 'settled', period: 'Jan 1–31, 2026', settledDate: 'Feb 5, 2026' },
   { id: 'en-stl-2', title: 'Q4 Vendor Settlement', type: 'Quarterly Vendor', grossAmount: 38420.00, fees: 1152.60, netAmount: 37267.40, itemCount: 15, status: 'settled', period: 'Oct 1 – Dec 31, 2025', settledDate: 'Jan 15, 2026' },
   { id: 'en-stl-3', title: 'Customer Deposit Settlement', type: 'Deposit', grossAmount: 5000.00, fees: 150.00, netAmount: 4850.00, itemCount: 1, status: 'processing', period: 'Feb 10, 2026' },
 ];
 
-const ENTERPRISE_REFUNDS: PayRailsRefund[] = [
+const BUSINESS_REFUNDS: PayRailsRefund[] = [
   { id: 'en-rfd-1', originalChargeId: 'en-chg-2', originalDescription: 'Subscription — Pro tier (monthly)', amount: 149.50, reason: 'Prorated subscription downgrade — mid-cycle', type: 'partial', status: 'succeeded', requestedDate: 'Feb 8, 2026', processedDate: 'Feb 9, 2026', requestedBy: 'Acme Sports Group' },
   { id: 'en-rfd-2', originalChargeId: 'en-chg-4', originalDescription: 'Customer invoice — integration pilot', amount: 3200.00, reason: 'Pilot cancelled before kickoff — full refund', type: 'full', status: 'pending', requestedDate: 'Feb 12, 2026', requestedBy: 'Gamma Labs' },
 ];
 
-const ENTERPRISE_RECONCILIATIONS: PayRailsReconciliation[] = [
+const BUSINESS_RECONCILIATIONS: PayRailsReconciliation[] = [
   { id: 'en-rec-1', period: 'January 2026 Close', expectedAmount: 42815.00, actualAmount: 42815.00, variance: 0, status: 'matched', itemsMatched: 28, itemsUnmatched: 0, reconciledDate: 'Feb 5, 2026' },
   { id: 'en-rec-2', period: 'Q4 2025 Vendor', expectedAmount: 38420.00, actualAmount: 37685.40, variance: -734.60, status: 'variance', itemsMatched: 12, itemsUnmatched: 3, reconciledDate: 'Jan 18, 2026' },
 ];
 
-const ENTERPRISE_DISPUTES: PayRailsDispute[] = [
+const BUSINESS_DISPUTES: PayRailsDispute[] = [
   { id: 'en-dsp-1', chargeId: 'en-chg-1', chargeDescription: 'Customer invoice — FMU license (annual)', amount: 8500.00, type: 'chargeback', status: 'open', filedDate: 'Feb 15, 2026', respondBy: 'Mar 1, 2026', disputant: 'Florida Memorial University' },
   { id: 'en-dsp-2', chargeId: 'en-po-2', chargeDescription: 'Design contractor — Jan deliverables', amount: 4800.00, type: 'failed-payout', status: 'under-review', filedDate: 'Feb 11, 2026', disputant: 'Studio Nine' },
 ];
 
-const ENTERPRISE_TAX_FORMS: PayRailsTaxForm[] = [
+const BUSINESS_TAX_FORMS: PayRailsTaxForm[] = [
   { id: 'en-tf-1', recipientName: 'Various Marketplace Sellers', recipientInitials: 'VM', formType: '1099-K', year: '2025', totalAmount: 18420.00, status: 'filed', dueDate: 'Jan 31, 2026' },
   { id: 'en-tf-2', recipientName: 'Studio Nine', recipientInitials: 'SN', formType: '1099-NEC', year: '2025', totalAmount: 52800.00, status: 'ready', dueDate: 'Jan 31, 2026' },
   { id: 'en-tf-3', recipientName: 'Gamma Labs', recipientInitials: 'GL', formType: 'W-9', year: '2026', totalAmount: 0, status: 'draft', dueDate: 'Feb 28, 2026' },
 ];
 
-const ENTERPRISE_EXPORTS: PayRailsExport[] = [
+const BUSINESS_EXPORTS: PayRailsExport[] = [
   { id: 'en-exp-1', title: 'January Monthly Close Packet', type: 'Monthly Close', period: 'January 2026', generatedAt: 'Feb 5, 2026', format: 'PDF', size: '4.2 MB' },
   { id: 'en-exp-2', title: 'Vendor Spend Report', type: 'Vendor Spend', period: 'Q4 2025', generatedAt: 'Jan 18, 2026', format: 'XLSX', size: '1.8 MB' },
   { id: 'en-exp-3', title: 'Receivables Aging', type: 'Receivables Aging', period: 'As of Feb 15, 2026', generatedAt: 'Feb 15, 2026', format: 'CSV', size: '320 KB' },
 ];
 
-const ENTERPRISE_CONTROLS: PayRailsControl[] = [
+const BUSINESS_CONTROLS: PayRailsControl[] = [
   { id: 'en-ctl-1', title: 'Invoice Approval Threshold', description: 'Require manual approval for any customer invoice exceeding this amount', threshold: 10000, enabled: true, scope: 'Organization' },
   { id: 'en-ctl-2', title: 'Contractor Payout Dual Approval', description: 'Require two authorized signers for contractor payouts over $5,000', threshold: 5000, enabled: true, scope: 'Entity' },
   { id: 'en-ctl-3', title: 'Auto-Match Subscription Payments', description: 'Automatically reconcile incoming subscription payments to customer accounts', enabled: true, scope: 'Entity' },
   { id: 'en-ctl-4', title: 'Require PO for Vendor Payouts', description: 'Block vendor payout initiation without an attached purchase order for amounts over $2,000', threshold: 2000, enabled: true, scope: 'Organization' },
 ];
 
-const ENTERPRISE_AUDIT: PayRailsAuditEntry[] = [
+const BUSINESS_AUDIT: PayRailsAuditEntry[] = [
   { id: 'en-aud-1', action: 'charge_received', actor: 'System', actorInitials: 'SY', target: 'FMU license invoice ($8,500.00)', timestamp: 'Feb 14, 2026 11:20 AM' },
   { id: 'en-aud-2', action: 'payout_initiated', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Amazon Web Services — cloud infra ($2,418.62)', timestamp: 'Feb 4, 2026 09:15 AM' },
   { id: 'en-aud-3', action: 'settlement_closed', actor: 'System', actorInitials: 'SY', target: 'January Monthly Close — 28 items ($41,530.55 net)', timestamp: 'Feb 5, 2026 06:00 PM' },
@@ -697,7 +692,7 @@ const ENTERPRISE_AUDIT: PayRailsAuditEntry[] = [
   { id: 'en-aud-8', action: 'account_created', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Subaccount "Sales" created under KaNeXT Operating', timestamp: 'Jan 2, 2026 10:30 AM' },
 ];
 
-const ENTERPRISE_SETTINGS: PayRailsSettingToggle[] = [
+const BUSINESS_SETTINGS: PayRailsSettingToggle[] = [
   { id: 'en-set-1', label: 'Auto-Reconcile Subscription Payments', description: 'Automatically mark subscription payments as reconciled when they match customer billing records', enabled: true },
   { id: 'en-set-2', label: 'Batch Process Vendor Payouts', description: 'Process all approved vendor payouts in a single weekly batch every Wednesday', enabled: true },
   { id: 'en-set-3', label: 'Revenue Recognition on Collection', description: 'Recognize revenue at the time of successful charge collection, not at invoice date', enabled: true },
@@ -862,23 +857,6 @@ export function getPayRailsData(mode: Mode): PayRailsModeData {
         audit: CHURCH_AUDIT,
         settings: CHURCH_SETTINGS,
       };
-    case 'enterprise':
-      return {
-        overview: ENTERPRISE_OVERVIEW,
-        accounts: ENTERPRISE_ACCOUNTS,
-        charges: ENTERPRISE_CHARGES,
-        payouts: ENTERPRISE_PAYOUTS,
-        transfers: ENTERPRISE_TRANSFERS,
-        settlements: ENTERPRISE_SETTLEMENTS,
-        refunds: ENTERPRISE_REFUNDS,
-        reconciliations: ENTERPRISE_RECONCILIATIONS,
-        disputes: ENTERPRISE_DISPUTES,
-        taxForms: ENTERPRISE_TAX_FORMS,
-        exports: ENTERPRISE_EXPORTS,
-        controls: ENTERPRISE_CONTROLS,
-        audit: ENTERPRISE_AUDIT,
-        settings: ENTERPRISE_SETTINGS,
-      };
     case 'competition':
       return {
         overview: COMMUNITY_OVERVIEW,
@@ -898,20 +876,20 @@ export function getPayRailsData(mode: Mode): PayRailsModeData {
       };
     case 'business':
       return {
-        overview: ENTERPRISE_OVERVIEW,
-        accounts: ENTERPRISE_ACCOUNTS,
-        charges: ENTERPRISE_CHARGES,
-        payouts: ENTERPRISE_PAYOUTS,
-        transfers: ENTERPRISE_TRANSFERS,
-        settlements: ENTERPRISE_SETTLEMENTS,
-        refunds: ENTERPRISE_REFUNDS,
-        reconciliations: ENTERPRISE_RECONCILIATIONS,
-        disputes: ENTERPRISE_DISPUTES,
-        taxForms: ENTERPRISE_TAX_FORMS,
-        exports: ENTERPRISE_EXPORTS,
-        controls: ENTERPRISE_CONTROLS,
-        audit: ENTERPRISE_AUDIT,
-        settings: ENTERPRISE_SETTINGS,
+        overview: BUSINESS_OVERVIEW,
+        accounts: BUSINESS_ACCOUNTS,
+        charges: BUSINESS_CHARGES,
+        payouts: BUSINESS_PAYOUTS,
+        transfers: BUSINESS_TRANSFERS,
+        settlements: BUSINESS_SETTLEMENTS,
+        refunds: BUSINESS_REFUNDS,
+        reconciliations: BUSINESS_RECONCILIATIONS,
+        disputes: BUSINESS_DISPUTES,
+        taxForms: BUSINESS_TAX_FORMS,
+        exports: BUSINESS_EXPORTS,
+        controls: BUSINESS_CONTROLS,
+        audit: BUSINESS_AUDIT,
+        settings: BUSINESS_SETTINGS,
       };
   }
 }

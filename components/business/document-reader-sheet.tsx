@@ -10,8 +10,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { getCategoryLabelV2 } from '@/data/mock-enterprise-v2';
-import { getFileTypeIcon } from '@/data/mock-enterprise';
+import { getCategoryLabelV2 } from '@/data/mock-business-investor-v2';
+import { getFileTypeIcon } from '@/data/mock-business-investor';
 import type { DocumentV2 } from '@/types';
 
 const ACCENT_GOLD = '#FFFFFF';

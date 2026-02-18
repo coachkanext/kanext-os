@@ -43,7 +43,7 @@ import {
   LEADERSHIP_TEAM,
   DOMAINS,
   DOCUMENTS,
-} from './mock-enterprise';
+} from './mock-business-investor';
 import {
   ICC_ORGANIZATION,
   CAMPUSES,
@@ -95,7 +95,7 @@ export async function fetchSportsOrganization() {
   return mockFetch(INSTITUTION);
 }
 
-export async function fetchEnterpriseOrganization() {
+export async function fetchBusinessOrganization() {
   return mockFetch(KANEXT_ORGANIZATION);
 }
 
@@ -139,7 +139,7 @@ export async function fetchSchedule(programId: string, limit = 10): Promise<Game
 }
 
 // =============================================================================
-// ENTERPRISE API
+// BUSINESS API
 // =============================================================================
 
 export async function fetchDocuments(role: Role): Promise<Document[]> {

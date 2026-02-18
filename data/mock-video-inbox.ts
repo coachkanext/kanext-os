@@ -216,10 +216,10 @@ const EDUCATION_INBOX_THREADS: VideoInboxThread[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Quick Share Targets + Inbox Threads
+// BUSINESS — Quick Share Targets + Inbox Threads
 // =============================================================================
 
-const ENTERPRISE_QUICK_SHARE_TARGETS: QuickShareTarget[] = [
+const BUSINESS_QUICK_SHARE_TARGETS: QuickShareTarget[] = [
   { id: 'bqs-1', name: 'Product Team', initials: 'PT', role: 'Team' },
   { id: 'bqs-2', name: 'Engineering', initials: 'EN', role: 'Team' },
   { id: 'bqs-3', name: 'Marketing', initials: 'MK', role: 'Team' },
@@ -227,7 +227,7 @@ const ENTERPRISE_QUICK_SHARE_TARGETS: QuickShareTarget[] = [
   { id: 'bqs-5', name: 'Investors', initials: 'IV', role: 'External' },
 ];
 
-const ENTERPRISE_INBOX_THREADS: VideoInboxThread[] = [
+const BUSINESS_INBOX_THREADS: VideoInboxThread[] = [
   {
     id: 'bvt-1',
     title: 'Product Team',
@@ -351,8 +351,7 @@ export const QUICK_SHARE_TARGETS_BY_MODE: Record<Mode, QuickShareTarget[]> = {
   sports: QUICK_SHARE_TARGETS,
   church: CHURCH_QUICK_SHARE_TARGETS,
   education: EDUCATION_QUICK_SHARE_TARGETS,
-  enterprise: ENTERPRISE_QUICK_SHARE_TARGETS,
-  business: ENTERPRISE_QUICK_SHARE_TARGETS,
+  business: BUSINESS_QUICK_SHARE_TARGETS,
   competition: COMMUNITY_QUICK_SHARE_TARGETS,
 };
 
@@ -360,7 +359,6 @@ export const INBOX_THREADS_BY_MODE: Record<Mode, VideoInboxThread[]> = {
   sports: VIDEO_INBOX_THREADS,
   church: CHURCH_INBOX_THREADS,
   education: EDUCATION_INBOX_THREADS,
-  enterprise: ENTERPRISE_INBOX_THREADS,
-  business: ENTERPRISE_INBOX_THREADS,
+  business: BUSINESS_INBOX_THREADS,
   competition: COMMUNITY_INBOX_THREADS,
 };

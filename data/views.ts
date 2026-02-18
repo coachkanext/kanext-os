@@ -1,7 +1,6 @@
 /**
  * Canonical 21-View Matrix
  * Every view is a pre-resolved ActiveContext ready for instant switching.
- * Enterprise mode is excluded from the drawer's 5 mode chips.
  */
 
 import type { Mode } from '@/types';
@@ -27,7 +26,7 @@ export interface ViewDefinition {
 }
 
 // =============================================================================
-// DRAWER MODES (enterprise excluded)
+// DRAWER MODES
 // =============================================================================
 
 export const DRAWER_MODES = ['sports', 'church', 'competition', 'business', 'education'] as const;

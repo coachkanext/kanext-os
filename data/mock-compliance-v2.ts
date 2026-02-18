@@ -237,11 +237,6 @@ export const COMPLIANCE_SCOPE_CHIPS: Record<Mode, ComplianceScopeChip[]> = {
     { key: 'campus', label: 'Campus' },
     { key: 'ministry', label: 'Ministry' },
   ],
-  enterprise: [
-    { key: 'organization', label: 'Organization' },
-    { key: 'entity', label: 'Entity' },
-    { key: 'department', label: 'Department' },
-  ],
   competition: [
     { key: 'organization', label: 'Organization' },
     { key: 'series', label: 'Series' },
@@ -572,10 +567,10 @@ const churchSettings: ComplianceSettingToggle[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE MODE — KaNeXT
+// BUSINESS MODE — KaNeXT
 // =============================================================================
 
-const enterpriseDashboard: ComplianceDashboardBlock[] = [
+const businessDashboard: ComplianceDashboardBlock[] = [
   { id: 'bd-01', label: 'Policy Acknowledgements', value: '92% complete', status: 'good', detail: '11 of 12 employees have acknowledged all current policies' },
   { id: 'bd-02', label: 'Security/Access Review', value: 'Due in 45 days', status: 'good', detail: 'Next quarterly access review scheduled for Mar 31' },
   { id: 'bd-03', label: 'Vendor Compliance', value: '3/4 current', status: 'warning', detail: 'Studio Nine insurance certificate expiring Feb 28' },
@@ -585,7 +580,7 @@ const enterpriseDashboard: ComplianceDashboardBlock[] = [
   { id: 'bd-07', label: 'Audit Readiness', value: '2 exports pending', status: 'warning', detail: 'Quarterly posture report and vendor compliance export not yet generated' },
 ];
 
-const enterpriseRequirements: ComplianceRequirement[] = [
+const businessRequirements: ComplianceRequirement[] = [
   { id: 'br-01', title: 'Annual Policy Acknowledgements', description: 'All employees and contractors must acknowledge updated company policies annually.', category: 'Policy', cadence: 'Annual', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', severity: 'critical', status: 'due-soon', dueDate: 'Mar 31, 2026', lastVerified: 'Jan 2, 2026', scope: 'Organization' },
   { id: 'br-02', title: 'Quarterly Access Reviews', description: 'Review and verify all system access permissions quarterly to ensure principle of least privilege.', category: 'Security', cadence: 'Quarterly', owner: 'Jordan Kim', ownerInitials: 'JK', severity: 'high', status: 'compliant', dueDate: 'Mar 31, 2026', lastVerified: 'Dec 31, 2025', scope: 'Organization' },
   { id: 'br-03', title: 'Vendor Compliance Docs', description: 'Maintain current insurance certificates, compliance attestations, and contract documentation for all active vendors.', category: 'Vendor', cadence: 'Per Vendor', owner: 'Nkechi Adamu', ownerInitials: 'NA', severity: 'high', status: 'due-soon', dueDate: 'Feb 28, 2026', lastVerified: 'Jan 15, 2026', scope: 'Entity' },
@@ -593,13 +588,13 @@ const enterpriseRequirements: ComplianceRequirement[] = [
   { id: 'br-05', title: 'Incident Response Playbook Adherence', description: 'All security and operational incidents must be handled per the documented incident response playbook.', category: 'Security', cadence: 'Per Incident', owner: 'Jordan Kim', ownerInitials: 'JK', severity: 'medium', status: 'compliant', dueDate: 'Ongoing', lastVerified: 'Feb 10, 2026', scope: 'Organization' },
 ];
 
-const enterpriseChecklists: ComplianceChecklist[] = [
+const businessChecklists: ComplianceChecklist[] = [
   { id: 'bc-01', title: 'Q1 2026 Compliance Review', description: 'Quarterly compliance review covering policy updates, access reviews, and training status.', requirementCount: 8, completedCount: 6, owner: 'Sammy Kalejaiye', ownerInitials: 'SK', dueDate: 'Mar 31, 2026', status: 'in-progress', scope: 'Organization' },
   { id: 'bc-02', title: 'Vendor Onboarding', description: 'Compliance checklist for onboarding new vendors including documentation and background verification.', requirementCount: 5, completedCount: 5, owner: 'Nkechi Adamu', ownerInitials: 'NA', dueDate: 'Jan 31, 2026', status: 'complete', scope: 'Entity' },
   { id: 'bc-03', title: 'SOC 2 Prep', description: 'Preparation checklist for SOC 2 Type II audit readiness milestone.', requirementCount: 12, completedCount: 8, owner: 'Jordan Kim', ownerInitials: 'JK', dueDate: 'Mar 15, 2026', status: 'in-progress', scope: 'Organization' },
 ];
 
-const enterpriseEvidence: ComplianceEvidence[] = [
+const businessEvidence: ComplianceEvidence[] = [
   { id: 'be-01', title: 'Policy Acknowledgement Batch', requirementId: 'br-01', requirementTitle: 'Annual Policy Acknowledgements', type: 'attestation', submittedBy: 'Sammy Kalejaiye', submittedByInitials: 'SK', submittedDate: 'Jan 15, 2026', status: 'verified', verifiedBy: 'HR', verifiedDate: 'Jan 18, 2026' },
   { id: 'be-02', title: 'Access Review Log — Q4 2025', requirementId: 'br-02', requirementTitle: 'Quarterly Access Reviews', type: 'document', submittedBy: 'Jordan Kim', submittedByInitials: 'JK', submittedDate: 'Dec 31, 2025', status: 'verified', verifiedBy: 'Sammy Kalejaiye', verifiedDate: 'Jan 3, 2026' },
   { id: 'be-03', title: 'Vendor Insurance Cert — Studio Nine', requirementId: 'br-03', requirementTitle: 'Vendor Compliance Docs', type: 'certificate', submittedBy: 'Nkechi Adamu', submittedByInitials: 'NA', submittedDate: 'Jan 15, 2026', status: 'submitted', expiresDate: 'Feb 28, 2026' },
@@ -607,45 +602,45 @@ const enterpriseEvidence: ComplianceEvidence[] = [
   { id: 'be-05', title: 'Incident Response Drill Log', requirementId: 'br-05', requirementTitle: 'Incident Response Playbook Adherence', type: 'link', submittedBy: 'Jordan Kim', submittedByInitials: 'JK', submittedDate: 'Feb 10, 2026', status: 'pending' },
 ];
 
-const enterpriseIncidents: ComplianceIncident[] = [
+const businessIncidents: ComplianceIncident[] = [
   { id: 'bi-01', title: 'Unauthorized Access Attempt — Staging Env', description: 'Anomalous login attempt detected on staging environment from unrecognized IP. Credentials locked and investigation underway.', severity: 'high', status: 'investigating', reportedBy: 'Jordan Kim', reportedByInitials: 'JK', reportedDate: 'Feb 12, 2026', assignedTo: 'Jordan Kim', assignedToInitials: 'JK', scope: 'Organization' },
   { id: 'bi-02', title: 'Vendor SLA Breach — Response Time', description: 'Apex Dev Studio missed the 24-hour response time SLA on a critical bug report by 18 hours.', severity: 'medium', status: 'open', reportedBy: 'Nkechi Adamu', reportedByInitials: 'NA', reportedDate: 'Feb 10, 2026', scope: 'Entity' },
   { id: 'bi-03', title: 'Employee Policy Violation — Remote Work', description: 'An employee accessed production systems from an unsecured public network in violation of remote work policy.', severity: 'low', status: 'resolved', reportedBy: 'Jordan Kim', reportedByInitials: 'JK', reportedDate: 'Feb 3, 2026', assignedTo: 'Sammy Kalejaiye', assignedToInitials: 'SK', resolvedDate: 'Feb 6, 2026', scope: 'Organization' },
 ];
 
-const enterpriseActions: ComplianceAction[] = [
+const businessActions: ComplianceAction[] = [
   { id: 'ba-01', title: 'Investigate Staging Access Attempt', description: 'Perform full investigation of the unauthorized staging environment access attempt, review logs, and update access controls.', incidentId: 'bi-01', incidentTitle: 'Unauthorized Access Attempt — Staging Env', assignee: 'Jordan Kim', assigneeInitials: 'JK', dueDate: 'Feb 18, 2026', status: 'in-progress', priority: 'critical' },
   { id: 'ba-02', title: 'Follow Up with Vendor on SLA', description: 'Schedule a call with Apex Dev Studio to discuss the SLA breach and establish corrective measures.', incidentId: 'bi-02', incidentTitle: 'Vendor SLA Breach — Response Time', assignee: 'Nkechi Adamu', assigneeInitials: 'NA', dueDate: 'Feb 20, 2026', status: 'pending', priority: 'high' },
   { id: 'ba-03', title: 'Update Remote Work Policy Acknowledgement', description: 'Re-issue remote work policy for employee acknowledgement and add VPN requirement enforcement.', incidentId: 'bi-03', incidentTitle: 'Employee Policy Violation — Remote Work', assignee: 'Sammy Kalejaiye', assigneeInitials: 'SK', dueDate: 'Feb 10, 2026', status: 'completed', priority: 'medium', verifiedBy: 'Jordan Kim', verifiedDate: 'Feb 11, 2026' },
 ];
 
-const enterpriseTraining: ComplianceTraining[] = [
+const businessTraining: ComplianceTraining[] = [
   { id: 'bt-01', title: 'Security Awareness Training', description: 'Annual security awareness training covering phishing, social engineering, and data protection.', assignee: 'All Employees', assigneeInitials: 'AE', module: 'Security Awareness 2026', dueDate: 'Apr 30, 2026', status: 'in-progress', score: 88 },
   { id: 'bt-02', title: 'Anti-Harassment Training', description: 'Mandatory anti-harassment training for all employees and contractors.', assignee: 'All Employees', assigneeInitials: 'AE', module: 'Anti-Harassment 2026', dueDate: 'Mar 31, 2026', completedDate: 'Jan 28, 2026', status: 'completed', score: 100 },
   { id: 'bt-03', title: 'Data Handling Certification', description: 'Certification on proper data handling, classification, and encryption practices.', assignee: 'Engineering', assigneeInitials: 'EN', module: 'Data Handling Standards', dueDate: 'Apr 30, 2026', status: 'in-progress', score: 80 },
   { id: 'bt-04', title: 'Incident Response Drill', description: 'Tabletop exercise simulating a security incident response scenario.', assignee: 'Security Team', assigneeInitials: 'ST', module: 'IR Drill Q1 2026', dueDate: 'Mar 15, 2026', status: 'in-progress', score: 75 },
 ];
 
-const enterprisePolicies: CompliancePolicy[] = [
+const businessPolicies: CompliancePolicy[] = [
   { id: 'bp-01', title: 'Information Security Policy', description: 'Comprehensive information security policy covering access control, data protection, and incident response.', version: 'v3.1', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Jordan Kim', ownerInitials: 'JK', status: 'active', acknowledgedCount: 11, totalCount: 12 },
   { id: 'bp-02', title: 'Employee Code of Conduct', description: 'Standards of professional conduct, ethics, and behavior for all KaNeXT employees and contractors.', version: 'v2.0', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'active', acknowledgedCount: 12, totalCount: 12 },
   { id: 'bp-03', title: 'Vendor Management Policy', description: 'Guidelines for vendor selection, onboarding, compliance monitoring, and offboarding.', version: 'v1.1', effectiveDate: 'Nov 1, 2025', reviewDate: 'Nov 1, 2026', owner: 'Nkechi Adamu', ownerInitials: 'NA', status: 'under-review', acknowledgedCount: 8, totalCount: 12 },
 ];
 
-const enterpriseDeadlines: ComplianceDeadline[] = [
+const businessDeadlines: ComplianceDeadline[] = [
   { id: 'bdl-01', title: 'Q1 Policy Acknowledgement Deadline', description: 'All employees must acknowledge updated policies for Q1 2026.', dueDate: 'Mar 31, 2026', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'upcoming', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
   { id: 'bdl-02', title: 'Vendor Cert Renewal — Studio Nine', description: 'Insurance certificate for Studio Nine expires. Renewal required before expiry.', dueDate: 'Feb 28, 2026', owner: 'Nkechi Adamu', ownerInitials: 'NA', status: 'due-soon', proofRequired: true, proofSubmitted: false, scope: 'Entity' },
   { id: 'bdl-03', title: 'SOC 2 Readiness Milestone', description: 'Complete all SOC 2 preparation items and generate audit-ready evidence packet.', dueDate: 'Mar 15, 2026', owner: 'Jordan Kim', ownerInitials: 'JK', status: 'due-soon', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
   { id: 'bdl-04', title: 'Annual Security Training Completion', description: 'All employees and contractors must complete security awareness training.', dueDate: 'Apr 30, 2026', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'upcoming', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
 ];
 
-const enterpriseReports: ComplianceReport[] = [
+const businessReports: ComplianceReport[] = [
   { id: 'brp-01', title: 'Quarterly Compliance Posture Export', type: 'Quarterly', period: 'Q1 2026', generatedAt: 'Feb 14, 2026', format: 'PDF', size: '2.8 MB' },
   { id: 'brp-02', title: 'Vendor Compliance Export', type: 'Vendor', period: 'Jan 2026', generatedAt: 'Feb 10, 2026', format: 'XLSX', size: '450 KB' },
   { id: 'brp-03', title: 'Audit Packet Export', type: 'Audit', period: '2025-26', generatedAt: 'Feb 12, 2026', format: 'PDF', size: '4.6 MB' },
 ];
 
-const enterpriseAudit: ComplianceAuditEntry[] = [
+const businessAudit: ComplianceAuditEntry[] = [
   { id: 'bau-01', action: 'policy_updated', actor: 'Jordan Kim', actorInitials: 'JK', target: 'Information Security Policy', timestamp: 'Jan 2, 2026 9:00 AM', detail: 'Updated to v3.1 with SOC 2 requirements' },
   { id: 'bau-02', action: 'evidence_submitted', actor: 'Jordan Kim', actorInitials: 'JK', target: 'Access Review Log — Q4 2025', timestamp: 'Dec 31, 2025 5:00 PM', detail: 'Quarterly access review completed and logged' },
   { id: 'bau-03', action: 'incident_opened', actor: 'Jordan Kim', actorInitials: 'JK', target: 'Unauthorized Access Attempt — Staging Env', timestamp: 'Feb 12, 2026 2:15 PM', detail: 'Anomalous login detected and credentials locked' },
@@ -656,7 +651,7 @@ const enterpriseAudit: ComplianceAuditEntry[] = [
   { id: 'bau-08', action: 'action_verified', actor: 'Jordan Kim', actorInitials: 'JK', target: 'Update Remote Work Policy Acknowledgement', timestamp: 'Feb 11, 2026 3:00 PM', detail: 'Policy re-issued and VPN enforcement confirmed' },
 ];
 
-const enterpriseSettings: ComplianceSettingToggle[] = [
+const businessSettings: ComplianceSettingToggle[] = [
   { id: 'bst-01', label: 'Auto-flag Unacknowledged Policies', description: 'Automatically flag employees who have not acknowledged policies within 14 days of publication.', enabled: true },
   { id: 'bst-02', label: 'Email Vendor Cert Expiry Warnings 60 Days Out', description: 'Send automated email alerts when vendor certificates are within 60 days of expiration.', enabled: true },
   { id: 'bst-03', label: 'Require Evidence for All Access Reviews', description: 'Require documented evidence to be attached for every quarterly access review completion.', enabled: true },
@@ -806,21 +801,6 @@ export function getComplianceData(mode: Mode): ComplianceModeData {
         audit: churchAudit,
         settings: churchSettings,
       };
-    case 'enterprise':
-      return {
-        dashboard: enterpriseDashboard,
-        requirements: enterpriseRequirements,
-        checklists: enterpriseChecklists,
-        evidence: enterpriseEvidence,
-        incidents: enterpriseIncidents,
-        actions: enterpriseActions,
-        training: enterpriseTraining,
-        policies: enterprisePolicies,
-        deadlines: enterpriseDeadlines,
-        reports: enterpriseReports,
-        audit: enterpriseAudit,
-        settings: enterpriseSettings,
-      };
     case 'competition':
       return {
         dashboard: communityDashboard,
@@ -838,18 +818,18 @@ export function getComplianceData(mode: Mode): ComplianceModeData {
       };
     case 'business':
       return {
-        dashboard: enterpriseDashboard,
-        requirements: enterpriseRequirements,
-        checklists: enterpriseChecklists,
-        evidence: enterpriseEvidence,
-        incidents: enterpriseIncidents,
-        actions: enterpriseActions,
-        training: enterpriseTraining,
-        policies: enterprisePolicies,
-        deadlines: enterpriseDeadlines,
-        reports: enterpriseReports,
-        audit: enterpriseAudit,
-        settings: enterpriseSettings,
+        dashboard: businessDashboard,
+        requirements: businessRequirements,
+        checklists: businessChecklists,
+        evidence: businessEvidence,
+        incidents: businessIncidents,
+        actions: businessActions,
+        training: businessTraining,
+        policies: businessPolicies,
+        deadlines: businessDeadlines,
+        reports: businessReports,
+        audit: businessAudit,
+        settings: businessSettings,
       };
   }
 }

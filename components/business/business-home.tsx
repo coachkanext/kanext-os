@@ -19,7 +19,7 @@ import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 
 import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useEnterprise } from '@/context/enterprise-context';
+import { useBusiness } from '@/context/business-context';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 
 // Tab components
@@ -63,7 +63,7 @@ const VIEW_AS_ROLES: { id: BusinessRoleLens; label: string }[] = [
 ];
 
 function ViewAsBar() {
-  const { viewAsRole, setViewAsRole } = useEnterprise();
+  const { viewAsRole, setViewAsRole } = useBusiness();
 
   return (
     <View style={viewStyles.container}>
@@ -129,7 +129,7 @@ export function BusinessHome() {
   const pagerRef = useRef<PagerView>(null);
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { viewAsRole } = useEnterprise();
+  const { viewAsRole } = useBusiness();
 
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);

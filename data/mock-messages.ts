@@ -1123,10 +1123,10 @@ const EDUCATION_CHAT_THREADS: ChatThread[] = EDUCATION_THREADS.map((t) => ({
 }));
 
 // =============================================================================
-// ENTERPRISE MODE DM THREADS
+// BUSINESS MODE DM THREADS
 // =============================================================================
 
-const ENTERPRISE_THREADS: InboxThread[] = [
+const BUSINESS_THREADS: InboxThread[] = [
   {
     id: 'bz-th-1',
     title: 'Priya Patel (CTO)',
@@ -1251,7 +1251,7 @@ const ENTERPRISE_THREADS: InboxThread[] = [
   },
 ];
 
-const ENTERPRISE_CHAT_THREADS: ChatThread[] = ENTERPRISE_THREADS.map((t) => ({
+const BUSINESS_CHAT_THREADS: ChatThread[] = BUSINESS_THREADS.map((t) => ({
   ...t,
   context: { type: 'staff' as const, subtitle: 'Team' },
   template: 'dm' as ThreadTemplate,
@@ -1401,18 +1401,16 @@ export const INBOX_THREADS_BY_MODE: Record<Mode, ChatThread[]> = {
   sports: MOCK_CHAT_THREADS.filter((t) => !t.isGroup),
   church: CHURCH_CHAT_THREADS,
   education: EDUCATION_CHAT_THREADS,
-  enterprise: ENTERPRISE_CHAT_THREADS,
   competition: COMMUNITY_CHAT_THREADS,
-  business: ENTERPRISE_CHAT_THREADS,
+  business: BUSINESS_CHAT_THREADS,
 };
 
 export const PINNED_THREADS_BY_MODE: Record<Mode, ChatThread[]> = {
   sports: MOCK_CHAT_THREADS.filter((t) => !t.isGroup && t.pinned),
   church: CHURCH_CHAT_THREADS.filter((t) => t.pinned),
   education: EDUCATION_CHAT_THREADS.filter((t) => t.pinned),
-  enterprise: ENTERPRISE_CHAT_THREADS.filter((t) => t.pinned),
   competition: COMMUNITY_CHAT_THREADS.filter((t) => t.pinned),
-  business: ENTERPRISE_CHAT_THREADS.filter((t) => t.pinned),
+  business: BUSINESS_CHAT_THREADS.filter((t) => t.pinned),
 };
 
 // =============================================================================
@@ -1488,7 +1486,6 @@ const COMPETITION_ROOMS: ChatThread[] = [
 export function getModeRooms(mode: Mode): ChatThread[] {
   switch (mode) {
     case 'sports': return SPORTS_ROOMS;
-    case 'enterprise': return BUSINESS_ROOMS;
     case 'church': return CHURCH_ROOMS;
     case 'education': return EDUCATION_ROOMS;
     case 'competition': return COMPETITION_ROOMS;

@@ -37,12 +37,6 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string; nexu
     nexusGlyph: '#FFFFFF',
     nexusGlyphDim: '#8F8F8F',
   },
-  enterprise: {
-    primary: '#FFFFFF',
-    secondary: '#8F8F8F',
-    nexusGlyph: '#FFFFFF',
-    nexusGlyphDim: '#8F8F8F',
-  },
   church: {
     primary: '#FFFFFF',
     secondary: '#8F8F8F',

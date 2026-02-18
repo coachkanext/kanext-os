@@ -163,10 +163,10 @@ const EDUCATION_SNAPSHOT: FinanceSnapshot = {
 };
 
 // =============================================================================
-// ENTERPRISE (Business)
+// BUSINESS
 // =============================================================================
 
-const ENTERPRISE_BUDGETS: BudgetCategory[] = [
+const BUSINESS_BUDGETS: BudgetCategory[] = [
   { id: 'bb-1', name: 'Engineering', allocated: 120000, spent: 95000, remaining: 25000, status: 'warning' },
   { id: 'bb-2', name: 'Marketing', allocated: 80000, spent: 52000, remaining: 28000, status: 'on-track' },
   { id: 'bb-3', name: 'Sales', allocated: 65000, spent: 48000, remaining: 17000, status: 'on-track' },
@@ -175,7 +175,7 @@ const ENTERPRISE_BUDGETS: BudgetCategory[] = [
   { id: 'bb-6', name: 'R&D', allocated: 100000, spent: 75000, remaining: 25000, status: 'on-track' },
 ];
 
-const ENTERPRISE_TRANSACTIONS: Transaction[] = [
+const BUSINESS_TRANSACTIONS: Transaction[] = [
   { id: 'btx-1', description: 'SaaS subscription — Acme Corp', amount: 4800, type: 'income', category: 'Revenue', date: 'Feb 15, 2026', status: 'completed' },
   { id: 'btx-2', description: 'AWS infrastructure', amount: 3200, type: 'expense', category: 'Engineering', date: 'Feb 14, 2026', vendor: 'Amazon Web Services', status: 'completed' },
   { id: 'btx-3', description: 'SaaS subscription — Beta Inc', amount: 2400, type: 'income', category: 'Revenue', date: 'Feb 12, 2026', status: 'completed' },
@@ -188,7 +188,7 @@ const ENTERPRISE_TRANSACTIONS: Transaction[] = [
   { id: 'btx-10', description: 'Enterprise license — Omega Corp', amount: 12000, type: 'income', category: 'Revenue', date: 'Jan 28, 2026', status: 'completed' },
 ];
 
-const ENTERPRISE_INVOICES: Invoice[] = [
+const BUSINESS_INVOICES: Invoice[] = [
   { id: 'bi-1', recipient: 'Acme Corp', amount: 4800, dueDate: 'Mar 1, 2026', status: 'pending', description: 'Monthly SaaS license — March' },
   { id: 'bi-2', recipient: 'Wilson & Associates', amount: 2800, dueDate: 'Feb 25, 2026', status: 'paid', description: 'Legal review — ToS update' },
   { id: 'bi-3', recipient: 'Studio Nine', amount: 5500, dueDate: 'Feb 28, 2026', status: 'pending', description: 'Design contractor — Feb deliverables' },
@@ -196,7 +196,7 @@ const ENTERPRISE_INVOICES: Invoice[] = [
   { id: 'bi-5', recipient: 'Amazon Web Services', amount: 3200, dueDate: 'Mar 5, 2026', status: 'pending', description: 'Cloud infrastructure — Feb usage' },
 ];
 
-const ENTERPRISE_SNAPSHOT: FinanceSnapshot = {
+const BUSINESS_SNAPSHOT: FinanceSnapshot = {
   totalBudget: 500000,
   totalSpent: 380000,
   totalIncome: 420000,
@@ -246,34 +246,30 @@ export const FINANCE_BUDGETS: Record<Mode, BudgetCategory[]> = {
   sports: SPORTS_BUDGETS,
   church: CHURCH_BUDGETS,
   education: EDUCATION_BUDGETS,
-  enterprise: ENTERPRISE_BUDGETS,
   competition: COMMUNITY_BUDGETS,
-  business: ENTERPRISE_BUDGETS,
+  business: BUSINESS_BUDGETS,
 };
 
 export const FINANCE_TRANSACTIONS: Record<Mode, Transaction[]> = {
   sports: SPORTS_TRANSACTIONS,
   church: CHURCH_TRANSACTIONS,
   education: EDUCATION_TRANSACTIONS,
-  enterprise: ENTERPRISE_TRANSACTIONS,
   competition: COMMUNITY_TRANSACTIONS,
-  business: ENTERPRISE_TRANSACTIONS,
+  business: BUSINESS_TRANSACTIONS,
 };
 
 export const FINANCE_INVOICES: Record<Mode, Invoice[]> = {
   sports: SPORTS_INVOICES,
   church: CHURCH_INVOICES,
   education: EDUCATION_INVOICES,
-  enterprise: ENTERPRISE_INVOICES,
   competition: COMMUNITY_INVOICES,
-  business: ENTERPRISE_INVOICES,
+  business: BUSINESS_INVOICES,
 };
 
 export const FINANCE_SNAPSHOTS: Record<Mode, FinanceSnapshot> = {
   sports: SPORTS_SNAPSHOT,
   church: CHURCH_SNAPSHOT,
   education: EDUCATION_SNAPSHOT,
-  enterprise: ENTERPRISE_SNAPSHOT,
   competition: COMMUNITY_SNAPSHOT,
-  business: ENTERPRISE_SNAPSHOT,
+  business: BUSINESS_SNAPSHOT,
 };

@@ -1,5 +1,5 @@
 /**
- * Enterprise Home — Investor Room
+ * Business Investor Home — Investor Room
  * 8 card sections scoped by active company.
  */
 
@@ -11,7 +11,7 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useEnterprise } from '@/context/enterprise-context';
+import { useBusiness } from '@/context/business-context';
 import {
   getProofEventsByCompany,
   ENGINES,
@@ -21,12 +21,12 @@ import {
   ARCHITECTURE_LAYERS,
   RECENT_UPDATES,
   getStageColor,
-} from '@/data/mock-enterprise-v2';
-import { formatCurrency, COMPANY_METRICS } from '@/data/mock-enterprise';
+} from '@/data/mock-business-investor-v2';
+import { formatCurrency, COMPANY_METRICS } from '@/data/mock-business-investor';
 import { AskNexusCTA } from '@/components/ui/ask-nexus-cta';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { CompanyProfileSheet } from './company-profile-sheet';
-import { EngineDetailSheet } from './engine-detail-sheet';
+import { CompanyProfileSheet } from '@/components/business/company-profile-sheet';
+import { EngineDetailSheet } from '@/components/business/engine-detail-sheet';
 import type { Engine } from '@/types';
 
 // Domain data for inline section
@@ -172,14 +172,14 @@ function CollapsibleCard({
   );
 }
 
-interface EnterpriseHomeContentProps {
+interface BusinessInvestorHomeProps {
   onSwitchTab?: (index: number) => void;
 }
 
-export function EnterpriseHomeContent({ onSwitchTab }: EnterpriseHomeContentProps) {
+export function BusinessInvestorHome({ onSwitchTab }: BusinessInvestorHomeProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { activeCompany, activeCompanyId } = useEnterprise();
+  const { activeCompany, activeCompanyId } = useBusiness();
 
   const [companySheetVisible, setCompanySheetVisible] = useState(false);
   const [engineSheetVisible, setEngineSheetVisible] = useState(false);
@@ -568,6 +568,9 @@ export function EnterpriseHomeContent({ onSwitchTab }: EnterpriseHomeContentProp
     </View>
   );
 }
+
+// Backward-compat alias (temporary)
+export { BusinessInvestorHome as EnterpriseHomeContent };
 
 const styles = StyleSheet.create({
   container: {

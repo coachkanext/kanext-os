@@ -335,10 +335,10 @@ const EDUCATION_FEED_POSTS: VideoFeedPost[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Story Circles + Feed Posts
+// BUSINESS — Story Circles + Feed Posts
 // =============================================================================
 
-const ENTERPRISE_STORY_CIRCLES: StoryCircle[] = [
+const BUSINESS_STORY_CIRCLES: StoryCircle[] = [
   { id: 'bs-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
   { id: 'bs-1', name: 'Sammy K.', initials: 'SK', hasNew: true, ringColor: '#6AA9FF' },
   { id: 'bs-2', name: 'Product', initials: 'PR', hasNew: true, ringColor: '#22C55E' },
@@ -350,7 +350,7 @@ const ENTERPRISE_STORY_CIRCLES: StoryCircle[] = [
   { id: 'bs-8', name: 'Culture', initials: 'CU', hasNew: false },
 ];
 
-const ENTERPRISE_FEED_POSTS: VideoFeedPost[] = [
+const BUSINESS_FEED_POSTS: VideoFeedPost[] = [
   {
     id: 'bfp-1',
     authorName: 'KaNeXT Team',
@@ -538,8 +538,7 @@ export const STORY_CIRCLES_BY_MODE: Record<Mode, StoryCircle[]> = {
   sports: STORY_CIRCLES,
   church: CHURCH_STORY_CIRCLES,
   education: EDUCATION_STORY_CIRCLES,
-  enterprise: ENTERPRISE_STORY_CIRCLES,
-  business: ENTERPRISE_STORY_CIRCLES,
+  business: BUSINESS_STORY_CIRCLES,
   competition: COMMUNITY_STORY_CIRCLES,
 };
 
@@ -547,7 +546,6 @@ export const FEED_POSTS_BY_MODE: Record<Mode, VideoFeedPost[]> = {
   sports: VIDEO_FEED_POSTS,
   church: CHURCH_FEED_POSTS,
   education: EDUCATION_FEED_POSTS,
-  enterprise: ENTERPRISE_FEED_POSTS,
-  business: ENTERPRISE_FEED_POSTS,
+  business: BUSINESS_FEED_POSTS,
   competition: COMMUNITY_FEED_POSTS,
 };

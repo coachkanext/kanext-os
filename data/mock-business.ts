@@ -1,5 +1,5 @@
 /**
- * Mock Business Mode Data (Enterprise v2 → "KaNeXT Business Mode")
+ * Mock Business Mode Data ("KaNeXT Business Mode")
  * Founder OS — proof wedges, mandates, media, settlement rails.
  * Everything mock by default. Only publicly safe identity facts allowed.
  */

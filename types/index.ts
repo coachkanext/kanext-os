@@ -7,10 +7,10 @@
 // MODES & ROLES
 // =============================================================================
 
-export type Mode = 'sports' | 'enterprise' | 'business' | 'church' | 'education' | 'competition';
+export type Mode = 'sports' | 'business' | 'church' | 'education' | 'competition';
 
 export type Role =
-  // Enterprise
+  // Business
   | 'founder'
   | 'investor'
   | 'viewer'
@@ -196,7 +196,7 @@ export interface ProgramContext {
 }
 
 // =============================================================================
-// ENTERPRISE MODE
+// BUSINESS MODE
 // =============================================================================
 
 export type DocumentCategory =
@@ -242,7 +242,7 @@ export interface Domain {
   icon: string;
 }
 
-export interface EnterpriseScenario {
+export interface BusinessScenario {
   id: string;
   title: string;
   prompt: string;
@@ -251,7 +251,7 @@ export interface EnterpriseScenario {
   isPinned: boolean;
 }
 
-export interface EnterpriseOrganization extends Organization {
+export interface BusinessOrganization extends Organization {
   legalStructure: string;
   stateOfFormation: string;
   status: string;
@@ -261,7 +261,7 @@ export interface EnterpriseOrganization extends Organization {
   domains?: Domain[];
 }
 
-// Enterprise v2 ----------------------------------------------------------------
+// Business v2 -----------------------------------------------------------------
 
 export interface Company {
   id: string;
@@ -691,7 +691,7 @@ export type ActivityType =
   | 'schedule_updated'
   | 'media_added'
   | 'roster_published'
-  // Enterprise
+  // Business
   | 'document_added'
   | 'document_updated'
   | 'scenario_saved'

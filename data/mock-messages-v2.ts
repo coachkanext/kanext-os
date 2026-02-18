@@ -854,7 +854,7 @@ const EDUCATION_ROOMS: MsgRoom[] = [
 ];
 
 // =============================================================================
-// BUSINESS (ENTERPRISE) MESSAGES DATA
+// BUSINESS MESSAGES DATA
 // =============================================================================
 
 const BUSINESS_MESSAGES: MsgItem[] = [
@@ -1351,7 +1351,6 @@ export const MESSAGES_V2: Record<Mode, MsgItem[]> = {
   sports: SPORTS_MESSAGES,
   church: CHURCH_MESSAGES,
   education: EDUCATION_MESSAGES,
-  enterprise: BUSINESS_MESSAGES,
   business: BUSINESS_MESSAGES,
   competition: COMMUNITY_MESSAGES,
 };
@@ -1360,7 +1359,6 @@ export const MSG_ROOMS: Record<Mode, MsgRoom[]> = {
   sports: SPORTS_ROOMS,
   church: CHURCH_ROOMS,
   education: EDUCATION_ROOMS,
-  enterprise: BUSINESS_ROOMS,
   business: BUSINESS_ROOMS,
   competition: COMMUNITY_ROOMS,
 };

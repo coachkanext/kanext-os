@@ -17,7 +17,6 @@ const MODE_ICONS: Record<Mode, string> = {
   competition: 'flag.checkered',
   church: 'building.columns.fill',
   education: 'graduationcap.fill',
-  enterprise: 'building.2.fill',
   business: 'briefcase.fill',
 };
 

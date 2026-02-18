@@ -145,11 +145,6 @@ export const SCOPE_CHIPS: Record<Mode, ScopeChip[]> = {
     { key: 'ministry', label: 'Ministry' },
     { key: 'season', label: 'Season' },
   ],
-  enterprise: [
-    { key: 'company', label: 'Company' },
-    { key: 'department', label: 'Department' },
-    { key: 'quarter', label: 'Quarter/Period' },
-  ],
   competition: [
     { key: 'competition', label: 'Competition' },
     { key: 'event-weekend', label: 'Event Weekend' },
@@ -205,19 +200,6 @@ export const ROOM_TEMPLATES: Record<Mode, RoomTemplateOption[]> = {
     { key: 'missions', label: 'Missions', icon: 'globe.americas.fill', description: 'Missions coordination' },
     { key: 'events', label: 'Events', icon: 'calendar', description: 'Event planning' },
     { key: 'volunteers', label: 'Volunteers', icon: 'hand.raised.fill', description: 'Volunteer coordination' },
-  ],
-  enterprise: [
-    { key: 'all-hands', label: 'All-Hands', icon: 'megaphone.fill', description: 'Company-wide updates' },
-    { key: 'leadership', label: 'Leadership', icon: 'crown.fill', description: 'Executive leadership' },
-    { key: 'ops', label: 'Ops', icon: 'gearshape.2.fill', description: 'Operations coordination' },
-    { key: 'department', label: 'Department', icon: 'folder.fill', description: 'Department communication' },
-    { key: 'project', label: 'Project', icon: 'hammer.fill', description: 'Project workspace' },
-    { key: 'deal', label: 'Deal', icon: 'banknote.fill', description: 'Deal room coordination' },
-    { key: 'client', label: 'Client', icon: 'person.crop.circle.badge.checkmark', description: 'Client-facing channel' },
-    { key: 'hr', label: 'HR', icon: 'person.text.rectangle.fill', description: 'Human resources' },
-    { key: 'engineering', label: 'Engineering', icon: 'wrench.and.screwdriver.fill', description: 'Engineering team' },
-    { key: 'marketing', label: 'Marketing', icon: 'megaphone.fill', description: 'Marketing coordination' },
-    { key: 'support', label: 'Support', icon: 'questionmark.circle.fill', description: 'Customer support' },
   ],
   competition: [
     { key: 'competition-ops', label: 'Competition Ops', icon: 'flag.checkered', description: 'Competition operations' },
@@ -899,10 +881,10 @@ const CHURCH_ROOMS: Room[] = [
   },
 ];
 
-const ENTERPRISE_ROOMS: Room[] = [
+const BUSINESS_ROOMS: Room[] = [
   {
     room_id: 'br-001',
-    mode: 'enterprise',
+    mode: 'business',
     room_type: 'all-hands',
     scope_object: 'company',
     title: 'All-Hands',
@@ -935,7 +917,7 @@ const ENTERPRISE_ROOMS: Room[] = [
   },
   {
     room_id: 'br-002',
-    mode: 'enterprise',
+    mode: 'business',
     room_type: 'leadership',
     scope_object: 'company',
     title: 'Leadership Team',
@@ -966,7 +948,7 @@ const ENTERPRISE_ROOMS: Room[] = [
   },
   {
     room_id: 'br-003',
-    mode: 'enterprise',
+    mode: 'business',
     room_type: 'ops',
     scope_object: 'company',
     title: 'Operations',
@@ -997,7 +979,7 @@ const ENTERPRISE_ROOMS: Room[] = [
   },
   {
     room_id: 'br-004',
-    mode: 'enterprise',
+    mode: 'business',
     room_type: 'department',
     scope_object: 'department',
     title: 'Engineering',
@@ -1028,7 +1010,7 @@ const ENTERPRISE_ROOMS: Room[] = [
   },
   {
     room_id: 'br-005',
-    mode: 'enterprise',
+    mode: 'business',
     room_type: 'project',
     scope_object: 'department',
     title: 'Project Phoenix',
@@ -1059,7 +1041,7 @@ const ENTERPRISE_ROOMS: Room[] = [
   },
   {
     room_id: 'br-006',
-    mode: 'enterprise',
+    mode: 'business',
     room_type: 'deal',
     scope_object: 'quarter',
     title: 'Acme Corp Deal',
@@ -1089,7 +1071,7 @@ const ENTERPRISE_ROOMS: Room[] = [
   },
   {
     room_id: 'br-007',
-    mode: 'enterprise',
+    mode: 'business',
     room_type: 'client',
     scope_object: 'company',
     title: 'GlobalTech Support',
@@ -1308,9 +1290,8 @@ export const MOCK_ROOMS: Record<Mode, Room[]> = {
   sports: SPORTS_ROOMS,
   education: EDUCATION_ROOMS,
   church: CHURCH_ROOMS,
-  enterprise: ENTERPRISE_ROOMS,
+  business: BUSINESS_ROOMS,
   competition: COMMUNITY_ROOMS,
-  business: ENTERPRISE_ROOMS,
 };
 
 // =============================================================================
@@ -1331,10 +1312,6 @@ export const ROOM_REQUESTS: Record<Mode, RoomRequest[]> = {
     { id: 'rr-c1', room_id: 'cr-004', room_title: 'Worship Ministry', requester_name: 'Sister Angela Bello', requester_initials: 'AB', request_type: 'join', message: 'I play drums and would love to serve', timestamp: '6 hr ago' },
     { id: 'rr-c2', room_id: 'cr-006', room_title: 'Youth Ministry', requester_name: 'Brother Daniel Obi', requester_initials: 'DO', request_type: 'join', message: 'Interested in volunteering with the youth', timestamp: '1 day ago' },
     { id: 'rr-c3', room_id: 'cr-005', room_title: "Men's Fellowship", requester_name: 'New Member Ade', requester_initials: 'NA', request_type: 'join', timestamp: '2 days ago' },
-  ],
-  enterprise: [
-    { id: 'rr-b1', room_id: 'br-004', room_title: 'Engineering', requester_name: 'New Hire — Wei Zhang', requester_initials: 'WZ', request_type: 'invite', timestamp: '3 hr ago' },
-    { id: 'rr-b2', room_id: 'br-003', room_title: 'Operations', requester_name: 'Contractor — Lisa Park', requester_initials: 'LP', request_type: 'join', message: 'Onboarding as ops contractor', timestamp: '1 day ago' },
   ],
   competition: [
     { id: 'rr-x1', room_id: 'xr-002', room_title: 'Team Representatives', requester_name: 'New Team — Blaze Racing', requester_initials: 'BR', request_type: 'join', message: 'Registered for Season 1 — requesting rep access', timestamp: '5 hr ago' },
@@ -1370,12 +1347,6 @@ export const ROOM_SETTINGS: Record<Mode, RoomSettingToggle[]> = {
     { id: 'sc-3', label: 'Auto-pin ministry rooms', description: 'Ministry rooms are pinned by default', enabled: false },
     { id: 'sc-4', label: 'Enable anonymous prayer requests', description: 'Allow anonymous posts in prayer rooms', enabled: true },
     { id: 'sc-5', label: 'Auto-create small group rooms', description: 'Auto-create rooms when new small groups register', enabled: true },
-  ],
-  enterprise: [
-    { id: 'sb-1', label: 'Auto-create project rooms', description: 'Rooms auto-created when new projects are spun up', enabled: true },
-    { id: 'sb-2', label: 'Auto-create deal rooms', description: 'Rooms auto-created for deals above $100K', enabled: true },
-    { id: 'sb-3', label: 'Enable client/partner rooms', description: 'Allow client-facing communication channels', enabled: true },
-    { id: 'sb-4', label: 'Require manager approval', description: 'New rooms need manager approval before creation', enabled: false },
   ],
   competition: [
     { id: 'sx-1', label: 'Auto-create event weekend rooms', description: 'Rooms auto-created for each scheduled event weekend', enabled: true },

@@ -170,7 +170,6 @@ const TEMPLATE_MAP: Record<string, WorkspaceTemplate[]> = {
   competition: COMPETITION_TEMPLATES,
   church: CHURCH_TEMPLATES,
   business: BUSINESS_TEMPLATES,
-  enterprise: BUSINESS_TEMPLATES,
   education: EDUCATION_TEMPLATES,
 };
 

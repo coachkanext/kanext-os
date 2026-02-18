@@ -36,9 +36,9 @@ const MODE_OPTIONS: ModeOption[] = [
     defaultRole: 'head_coach',
   },
   {
-    mode: 'enterprise',
+    mode: 'business',
     label: 'Business',
-    icon: 'building.2.fill', // briefcase style
+    icon: 'briefcase.fill',
     defaultRole: 'founder',
   },
   {
@@ -54,18 +54,6 @@ const MODE_OPTIONS: ModeOption[] = [
     label: 'Education',
     icon: 'graduationcap.fill', // diploma/grad cap
     defaultRole: 'faculty',
-  },
-  {
-    mode: 'enterprise',
-    label: 'Enterprise',
-    icon: 'building.2.fill',
-    defaultRole: 'founder',
-  },
-  {
-    mode: 'business',
-    label: 'Business',
-    icon: 'briefcase.fill',
-    defaultRole: 'founder',
   },
   {
     mode: 'competition',

@@ -131,7 +131,7 @@ export function mapRoleToRBAC(role: string, mode: Mode): RBACLevel {
     }
   }
   // Business mode
-  if (mode === 'business' || mode === 'enterprise') {
+  if (mode === 'business') {
     switch (role) {
       case 'founder': return 'R1';
       case 'investor': return 'R5';

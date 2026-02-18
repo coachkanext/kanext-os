@@ -60,7 +60,7 @@ import { CommunityHome } from '@/components/community/community-home';
 import { BusinessHome } from '@/components/business/business-home';
 import { ChurchHome as ChurchHomeComponent } from '@/components/church/church-home';
 import { EducationHome as EducationHomeComponent } from '@/components/education/education-home';
-import { EnterpriseProvider } from '@/context/enterprise-context';
+import { BusinessProvider } from '@/context/business-context';
 
 // =============================================================================
 // SPORTS HOME (v1.1 Spec - Team Hub Home / Coach HQ)
@@ -606,7 +606,6 @@ const MODE_OPTIONS: { mode: Mode; label: string }[] = [
   { mode: 'competition', label: 'Competition' },
   { mode: 'church', label: 'Church' },
   { mode: 'education', label: 'Education' },
-  { mode: 'enterprise', label: 'Enterprise' },
   { mode: 'business', label: 'Business' },
 ];
 
@@ -711,11 +710,11 @@ export default function HomeScreen() {
   }
 
   // Business mode handles its own scroll (9-tab pager + RBAC)
-  if (mode === 'enterprise' || mode === 'business') {
+  if (mode === 'business') {
     return (
-      <EnterpriseProvider>
+      <BusinessProvider>
         <BusinessHome />
-      </EnterpriseProvider>
+      </BusinessProvider>
     );
   }
 

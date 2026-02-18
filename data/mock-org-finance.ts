@@ -59,8 +59,8 @@ const SPORTS_FINANCE: OrgFinanceData = {
   ],
 };
 
-// ── Enterprise ──────────────────────────────────────────────────────────
-const ENTERPRISE_FINANCE: OrgFinanceData = {
+// ── Business ──────────────────────────────────────────────────────────
+const BUSINESS_FINANCE: OrgFinanceData = {
   kpis: [
     { id: 'ek-1', label: 'Revenue', value: '$48K', delta: '+22% MoM', deltaType: 'up' },
     { id: 'ek-2', label: 'Burn Rate', value: '$32K/mo', delta: '-5%', deltaType: 'down' },
@@ -158,11 +158,10 @@ const COMMUNITY_FINANCE: OrgFinanceData = {
 export function getOrgFinance(mode: Mode): OrgFinanceData {
   switch (mode) {
     case 'sports': return SPORTS_FINANCE;
-    case 'enterprise': return ENTERPRISE_FINANCE;
+    case 'business': return BUSINESS_FINANCE;
     case 'church': return CHURCH_FINANCE;
     case 'education': return EDUCATION_FINANCE;
     case 'competition': return COMMUNITY_FINANCE;
-    case 'business': return ENTERPRISE_FINANCE;
     default: return { kpis: [], rails: [], ledger: [] };
   }
 }

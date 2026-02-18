@@ -62,11 +62,6 @@ const MODE_CONFIG: Record<Mode, ModeConfig> = {
     filters: ['All', 'Lectures', 'Events', 'Campus', 'Athletics', 'Research'],
     shelfLabels: { games: 'Lectures & Events', clips: 'Academic Clips', reels: 'Campus Highlights', channels: 'Department Channels', upcoming: 'Upcoming' },
   },
-  enterprise: {
-    searchPlaceholder: 'Search demos, all-hands, sprints...',
-    filters: ['All', 'Product', 'Engineering', 'Marketing', 'Customer', 'Press'],
-    shelfLabels: { games: 'Meetings & Events', clips: 'Product Clips', reels: 'Team Highlights', channels: 'Team Channels', upcoming: 'Upcoming' },
-  },
   business: {
     searchPlaceholder: 'Search demos, all-hands, sprints...',
     filters: ['All', 'Product', 'Engineering', 'Marketing', 'Customer', 'Press'],

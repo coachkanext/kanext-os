@@ -810,10 +810,10 @@ const EDUCATION_WATCH_HISTORY: WatchHistoryItem[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE MODE — Product demos, all-hands, conferences, team channels, etc.
+// BUSINESS MODE — Product demos, all-hands, conferences, team channels, etc.
 // =============================================================================
 
-const ENTERPRISE_VIDEO_GAMES: VideoGame[] = [
+const BUSINESS_VIDEO_GAMES: VideoGame[] = [
   { id: 'bvg-1', opponent: 'All-Hands Meeting — February', date: 'Feb 14, 2026', result: 'W', score: '32 attended', tags: ['All-Hands', 'Company'], thumbnailColor: '#0A0A2A', clipCount: 8, duration: 5400 },
   { id: 'bvg-2', opponent: 'KaNeXT V2 Demo Day', date: 'Feb 10, 2026', result: 'W', score: '85 viewers', tags: ['Demo', 'Product'], thumbnailColor: '#1A1A2A', clipCount: 12, duration: 3600 },
   { id: 'bvg-3', opponent: 'Sprint 14 Demo', date: 'Feb 7, 2026', result: 'W', score: '18 attendees', tags: ['Sprint', 'Engineering'], thumbnailColor: '#1A2A1A', clipCount: 6, duration: 2700 },
@@ -824,7 +824,7 @@ const ENTERPRISE_VIDEO_GAMES: VideoGame[] = [
   { id: 'bvg-8', opponent: 'All-Hands Meeting — January', date: 'Jan 10, 2026', result: 'W', score: '30 attended', tags: ['All-Hands', 'Company'], thumbnailColor: '#0A1A0A', clipCount: 7, duration: 4800 },
 ];
 
-const ENTERPRISE_VIDEO_CLIPS: VideoClip[] = [
+const BUSINESS_VIDEO_CLIPS: VideoClip[] = [
   { id: 'bvc-1', title: 'KaNeXT V2 — Full Product Demo', gameId: 'bvg-2', type: 'highlight', duration: 900, source: 'Recording', tags: ['Product', 'Demo'], thumbnailColor: '#1A1A2A' },
   { id: 'bvc-2', title: 'Mode Switching Deep-Dive', gameId: 'bvg-2', type: 'breakdown', duration: 480, source: 'Recording', tags: ['Product', 'Feature'], thumbnailColor: '#2A1A2A' },
   { id: 'bvc-3', title: 'Sprint 14 — Film Room Feature', gameId: 'bvg-3', type: 'breakdown', duration: 600, source: 'Recording', tags: ['Engineering', 'Sprint'], thumbnailColor: '#1A2A1A' },
@@ -837,7 +837,7 @@ const ENTERPRISE_VIDEO_CLIPS: VideoClip[] = [
   { id: 'bvc-10', title: 'Competitive Landscape Analysis', type: 'scout', duration: 1500, source: 'Recording', tags: ['Strategy', 'Research'], thumbnailColor: '#0A2A1A' },
 ];
 
-const ENTERPRISE_SCOUT_PACKS: ScoutPack[] = [
+const BUSINESS_SCOUT_PACKS: ScoutPack[] = [
   { id: 'bsp-1', opponent: 'Series A Prep', date: 'Mar 15, 2026', clipCount: 8, coverColor: '#22C55E', tags: ['Finance', 'Milestone'] },
   { id: 'bsp-2', opponent: 'Product Hunt Launch', date: 'Mar 1, 2026', clipCount: 6, coverColor: '#EF4444', tags: ['Marketing', 'Launch'] },
   { id: 'bsp-3', opponent: 'SXSW Conference', date: 'Mar 8, 2026', clipCount: 12, coverColor: '#F59E0B', tags: ['Conference', 'External'] },
@@ -845,7 +845,7 @@ const ENTERPRISE_SCOUT_PACKS: ScoutPack[] = [
   { id: 'bsp-5', opponent: 'Customer Advisory Board', date: 'Feb 28, 2026', clipCount: 5, coverColor: '#7C3AED', tags: ['Customer', 'Feedback'] },
 ];
 
-const ENTERPRISE_PLAYER_CHANNELS: PlayerChannel[] = [
+const BUSINESS_PLAYER_CHANNELS: PlayerChannel[] = [
   { id: 'bpc-1', name: 'Product Team', number: '', position: 'Product', clipCount: 34, avatarInitials: 'PT' },
   { id: 'bpc-2', name: 'Engineering', number: '', position: 'Engineering', clipCount: 28, avatarInitials: 'EN' },
   { id: 'bpc-3', name: 'Marketing', number: '', position: 'Growth', clipCount: 22, avatarInitials: 'MK' },
@@ -856,7 +856,7 @@ const ENTERPRISE_PLAYER_CHANNELS: PlayerChannel[] = [
   { id: 'bpc-8', name: 'Partnerships', number: '', position: 'BD', clipCount: 12, avatarInitials: 'PA' },
 ];
 
-const ENTERPRISE_REELS: Reel[] = [
+const BUSINESS_REELS: Reel[] = [
   { id: 'breel-1', title: 'Founder Diary #12', caption: 'On focus and iteration. Building the OS that runs itself.', duration: 55, thumbnailColor: '#0A1A3A', teamTag: 'KaNeXT', tags: ['Founder', 'Culture'], source: 'Recording', likes: 345, saves: 78, createdAt: '2026-02-10' },
   { id: 'breel-2', title: 'V2 Demo in 60 Seconds', caption: 'The entire KaNeXT V2 experience in one minute flat.', duration: 60, thumbnailColor: '#1A1A2A', teamTag: 'KaNeXT', tags: ['Product', 'Demo'], source: 'Recording', likes: 567, saves: 145, createdAt: '2026-02-10' },
   { id: 'breel-3', title: 'HBCU Tech Summit — Booth Energy', caption: 'The energy at our booth was unmatched. Thank you everyone who stopped by.', duration: 35, thumbnailColor: '#1A1A1A', teamTag: 'KaNeXT', tags: ['Conference', 'Culture'], source: 'YouTube', likes: 890, saves: 198, createdAt: '2026-02-03' },
@@ -867,7 +867,7 @@ const ENTERPRISE_REELS: Reel[] = [
   { id: 'breel-8', title: 'Team Standup Energy', caption: 'This is how we start every day. Alignment, energy, execution.', duration: 20, thumbnailColor: '#1A0A1A', teamTag: 'KaNeXT', tags: ['Culture', 'Team'], source: 'Recording', likes: 189, saves: 42, createdAt: '2026-02-14' },
 ];
 
-const ENTERPRISE_WATCH_HISTORY: WatchHistoryItem[] = [
+const BUSINESS_WATCH_HISTORY: WatchHistoryItem[] = [
   { id: 'bwh-1', contentId: 'bvg-1', contentType: 'game', title: 'All-Hands — February', thumbnailColor: '#0A0A2A', duration: 5400, watchedAt: '2026-02-14', progress: 100 },
   { id: 'bwh-2', contentId: 'bvc-1', contentType: 'clip', title: 'V2 Product Demo', thumbnailColor: '#1A1A2A', duration: 900, watchedAt: '2026-02-10', progress: 100 },
   { id: 'bwh-3', contentId: 'breel-1', contentType: 'reel', title: 'Founder Diary #12', thumbnailColor: '#0A1A3A', duration: 55, watchedAt: '2026-02-10', progress: 100 },
@@ -951,8 +951,7 @@ export const VIDEO_GAMES_BY_MODE: Record<Mode, VideoGame[]> = {
   sports: MOCK_VIDEO_GAMES,
   church: CHURCH_VIDEO_GAMES,
   education: EDUCATION_VIDEO_GAMES,
-  enterprise: ENTERPRISE_VIDEO_GAMES,
-  business: ENTERPRISE_VIDEO_GAMES,
+  business: BUSINESS_VIDEO_GAMES,
   competition: COMMUNITY_VIDEO_GAMES,
 };
 
@@ -960,8 +959,7 @@ export const VIDEO_CLIPS_BY_MODE: Record<Mode, VideoClip[]> = {
   sports: MOCK_VIDEO_CLIPS,
   church: CHURCH_VIDEO_CLIPS,
   education: EDUCATION_VIDEO_CLIPS,
-  enterprise: ENTERPRISE_VIDEO_CLIPS,
-  business: ENTERPRISE_VIDEO_CLIPS,
+  business: BUSINESS_VIDEO_CLIPS,
   competition: COMMUNITY_VIDEO_CLIPS,
 };
 
@@ -969,8 +967,7 @@ export const SCOUT_PACKS_BY_MODE: Record<Mode, ScoutPack[]> = {
   sports: MOCK_SCOUT_PACKS,
   church: CHURCH_SCOUT_PACKS,
   education: EDUCATION_SCOUT_PACKS,
-  enterprise: ENTERPRISE_SCOUT_PACKS,
-  business: ENTERPRISE_SCOUT_PACKS,
+  business: BUSINESS_SCOUT_PACKS,
   competition: COMMUNITY_SCOUT_PACKS,
 };
 
@@ -978,8 +975,7 @@ export const PLAYER_CHANNELS_BY_MODE: Record<Mode, PlayerChannel[]> = {
   sports: MOCK_PLAYER_CHANNELS,
   church: CHURCH_PLAYER_CHANNELS,
   education: EDUCATION_PLAYER_CHANNELS,
-  enterprise: ENTERPRISE_PLAYER_CHANNELS,
-  business: ENTERPRISE_PLAYER_CHANNELS,
+  business: BUSINESS_PLAYER_CHANNELS,
   competition: COMMUNITY_PLAYER_CHANNELS,
 };
 
@@ -987,8 +983,7 @@ export const REELS_BY_MODE: Record<Mode, Reel[]> = {
   sports: MOCK_REELS,
   church: CHURCH_REELS,
   education: EDUCATION_REELS,
-  enterprise: ENTERPRISE_REELS,
-  business: ENTERPRISE_REELS,
+  business: BUSINESS_REELS,
   competition: COMMUNITY_REELS,
 };
 
@@ -996,8 +991,7 @@ export const WATCH_HISTORY_BY_MODE: Record<Mode, WatchHistoryItem[]> = {
   sports: MOCK_WATCH_HISTORY,
   church: CHURCH_WATCH_HISTORY,
   education: EDUCATION_WATCH_HISTORY,
-  enterprise: ENTERPRISE_WATCH_HISTORY,
-  business: ENTERPRISE_WATCH_HISTORY,
+  business: BUSINESS_WATCH_HISTORY,
   competition: COMMUNITY_WATCH_HISTORY,
 };
 
@@ -1005,7 +999,6 @@ export const RECRUIT_CLIPS_BY_MODE: Record<Mode, RecruitClip[]> = {
   sports: MOCK_RECRUIT_CLIPS,
   church: [],
   education: [],
-  enterprise: [],
   business: [],
   competition: [],
 };

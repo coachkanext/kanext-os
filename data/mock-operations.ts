@@ -212,10 +212,10 @@ const EDUCATION_SNAPSHOT: OperationsSnapshot = {
 };
 
 // =============================================================================
-// ENTERPRISE (Business)
+// BUSINESS
 // =============================================================================
 
-const ENTERPRISE_EVENTS: CalendarEvent[] = [
+const BUSINESS_EVENTS: CalendarEvent[] = [
   { id: 'be-1', title: 'Engineering Standup', date: 'Feb 17, 2026', time: '9:30 AM', type: 'meeting', location: 'Zoom', status: 'confirmed' },
   { id: 'be-2', title: 'Board Meeting — Q1 Review', date: 'Feb 19, 2026', time: '10:00 AM', type: 'meeting', location: 'HQ Conference Room', status: 'confirmed' },
   { id: 'be-3', title: 'Product Launch Rehearsal', date: 'Feb 20, 2026', time: '2:00 PM', type: 'event', location: 'Demo Lab', status: 'confirmed' },
@@ -226,7 +226,7 @@ const ENTERPRISE_EVENTS: CalendarEvent[] = [
   { id: 'be-8', title: 'Tax Filing Deadline', date: 'Mar 15, 2026', time: '11:59 PM', type: 'deadline', location: 'N/A', status: 'confirmed' },
 ];
 
-const ENTERPRISE_TASKS: Task[] = [
+const BUSINESS_TASKS: Task[] = [
   { id: 'bt-1', title: 'Q1 Financial Report Draft', assignee: 'CFO', dueDate: 'Feb 20', priority: 'high', status: 'in-progress', category: 'Finance' },
   { id: 'bt-2', title: 'Product release v2.1 final QA', assignee: 'Engineering Lead', dueDate: 'Feb 22', priority: 'high', status: 'in-progress', category: 'Product' },
   { id: 'bt-3', title: 'Hire senior backend engineer', assignee: 'HR Director', dueDate: 'Mar 1', priority: 'high', status: 'pending', category: 'Hiring' },
@@ -235,25 +235,25 @@ const ENTERPRISE_TASKS: Task[] = [
   { id: 'bt-6', title: 'Renew office lease', assignee: 'Operations', dueDate: 'Mar 15', priority: 'low', status: 'pending', category: 'Operations' },
 ];
 
-const ENTERPRISE_FACILITIES: Facility[] = [
+const BUSINESS_FACILITIES: Facility[] = [
   { id: 'bf-1', name: 'Main Office — 3rd Floor', type: 'Office Space', capacity: 40, status: 'booked' },
   { id: 'bf-2', name: 'HQ Conference Room', type: 'Meeting Room', capacity: 12, status: 'booked', nextAvailable: 'Feb 17, 2:00 PM' },
   { id: 'bf-3', name: 'Co-Working Space (WeWork)', type: 'Flex Space', capacity: 20, status: 'available' },
   { id: 'bf-4', name: 'Event Space — Level 1', type: 'Event Venue', capacity: 150, status: 'available' },
 ];
 
-const ENTERPRISE_EQUIPMENT: Equipment[] = [
+const BUSINESS_EQUIPMENT: Equipment[] = [
   { id: 'beq-1', name: 'Server Rack (Production)', category: 'Infrastructure', quantity: 2, condition: 'good', lastChecked: 'Feb 10, 2026' },
   { id: 'beq-2', name: 'Employee Laptops', category: 'Hardware', quantity: 35, condition: 'good', lastChecked: 'Jan 25, 2026' },
   { id: 'beq-3', name: 'Presentation Equipment', category: 'AV', quantity: 4, condition: 'fair', lastChecked: 'Feb 5, 2026' },
 ];
 
-const ENTERPRISE_TRAVEL: TravelPlan[] = [
+const BUSINESS_TRAVEL: TravelPlan[] = [
   { id: 'btr-1', destination: 'Investor Roadshow — SF', date: 'Mar 3, 2026', returnDate: 'Mar 5, 2026', partySize: 3, status: 'booked', budget: 6500 },
   { id: 'btr-2', destination: 'Tech Conference — Austin, TX', date: 'Mar 15, 2026', returnDate: 'Mar 18, 2026', partySize: 5, status: 'planned', budget: 8200 },
 ];
 
-const ENTERPRISE_SNAPSHOT: OperationsSnapshot = {
+const BUSINESS_SNAPSHOT: OperationsSnapshot = {
   upcomingEvents: 8,
   openTasks: 4,
   facilitiesBooked: 2,
@@ -314,52 +314,46 @@ export const OPERATIONS_EVENTS: Record<Mode, CalendarEvent[]> = {
   sports: SPORTS_EVENTS,
   church: CHURCH_EVENTS,
   education: EDUCATION_EVENTS,
-  enterprise: ENTERPRISE_EVENTS,
   competition: COMMUNITY_EVENTS,
-  business: ENTERPRISE_EVENTS,
+  business: BUSINESS_EVENTS,
 };
 
 export const OPERATIONS_TASKS: Record<Mode, Task[]> = {
   sports: SPORTS_TASKS,
   church: CHURCH_TASKS,
   education: EDUCATION_TASKS,
-  enterprise: ENTERPRISE_TASKS,
   competition: COMMUNITY_TASKS,
-  business: ENTERPRISE_TASKS,
+  business: BUSINESS_TASKS,
 };
 
 export const OPERATIONS_FACILITIES: Record<Mode, Facility[]> = {
   sports: SPORTS_FACILITIES,
   church: CHURCH_FACILITIES,
   education: EDUCATION_FACILITIES,
-  enterprise: ENTERPRISE_FACILITIES,
   competition: COMMUNITY_FACILITIES,
-  business: ENTERPRISE_FACILITIES,
+  business: BUSINESS_FACILITIES,
 };
 
 export const OPERATIONS_EQUIPMENT: Record<Mode, Equipment[]> = {
   sports: SPORTS_EQUIPMENT,
   church: CHURCH_EQUIPMENT,
   education: EDUCATION_EQUIPMENT,
-  enterprise: ENTERPRISE_EQUIPMENT,
   competition: COMMUNITY_EQUIPMENT,
-  business: ENTERPRISE_EQUIPMENT,
+  business: BUSINESS_EQUIPMENT,
 };
 
 export const OPERATIONS_TRAVEL: Record<Mode, TravelPlan[]> = {
   sports: SPORTS_TRAVEL,
   church: CHURCH_TRAVEL,
   education: EDUCATION_TRAVEL,
-  enterprise: ENTERPRISE_TRAVEL,
   competition: COMMUNITY_TRAVEL,
-  business: ENTERPRISE_TRAVEL,
+  business: BUSINESS_TRAVEL,
 };
 
 export const OPERATIONS_SNAPSHOTS: Record<Mode, OperationsSnapshot> = {
   sports: SPORTS_SNAPSHOT,
   church: CHURCH_SNAPSHOT,
   education: EDUCATION_SNAPSHOT,
-  enterprise: ENTERPRISE_SNAPSHOT,
   competition: COMMUNITY_SNAPSHOT,
-  business: ENTERPRISE_SNAPSHOT,
+  business: BUSINESS_SNAPSHOT,
 };

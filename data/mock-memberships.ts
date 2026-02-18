@@ -47,8 +47,6 @@ export const V2_ORGANIZATIONS: V2Organization[] = [
   { org_id: 'edu_kanext_academy', org_name: 'KaNeXT Academy', mode: 'education', location: 'Academy Education', org_type: 'academy' },
   { org_id: 'edu_lincoln', org_name: 'Lincoln University', mode: 'education', location: 'Jefferson City, MO', org_type: 'university' },
 
-  // ── Enterprise ──
-  { org_id: 'ent_kanext', org_name: 'KaNeXT', mode: 'enterprise', location: 'Tennessee' },
 ];
 
 // =============================================================================
@@ -250,15 +248,6 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
     program_scopes: ['edu_lincoln_main'],
   },
 
-  // ── Enterprise ──
-  {
-    membership_id: 'mem_ent_kanext_founder',
-    mode: 'enterprise',
-    org_id: 'ent_kanext',
-    role_titles: ['Founder', 'CEO'],
-    permission_tier: 'Full',
-    program_scopes: ['*'],
-  },
 ];
 
 // =============================================================================
@@ -325,8 +314,6 @@ export const V2_PROGRAMS: V2Program[] = [
   // ── Church Programs (Children's Church for ICC IE) ──
   { program_id: 'icc_ie_kids', org_id: 'church_icc_ie', mode: 'church', program_name: "Children's Church", program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
 
-  // ── Enterprise ──
-  { program_id: 'ent_kanext_main', org_id: 'ent_kanext', mode: 'enterprise', program_name: 'KaNeXT Platform', program_type: 'Platform', source_tag: 'OFFICIAL', status: 'Active' },
 ];
 
 // =============================================================================
@@ -365,8 +352,6 @@ export const V2_SEASONS: V2Season[] = [
   { season_id: 'edu_kxa_2025_26', org_id: 'edu_kanext_academy', mode: 'education', season_name: '2025\u20132026', start_date: '2025-09-01', end_date: '2026-06-30', is_current: true },
   { season_id: 'edu_lincoln_2025_26', org_id: 'edu_lincoln', mode: 'education', season_name: 'Fall 2026', start_date: '2025-08-20', end_date: '2026-05-12', is_current: true },
 
-  // Enterprise
-  { season_id: 'ent_fy2026', org_id: 'ent_kanext', mode: 'enterprise', season_name: 'FY 2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 ];
 
 // =============================================================================

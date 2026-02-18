@@ -9,8 +9,8 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useEnterprise } from '@/context/enterprise-context';
-import { COMPANIES, BOARD_MEMBERS, LEADERSHIP_TEAM } from '@/data/mock-enterprise';
+import { useBusiness } from '@/context/business-context';
+import { BOARD_MEMBERS, LEADERSHIP_TEAM } from '@/data/mock-business-investor';
 import type { BoardMember } from '@/types';
 
 const ACCENT_GOLD = '#FFFFFF';
@@ -47,7 +47,7 @@ const POLICIES = [
 export function GovernanceContent() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { activeCompany } = useEnterprise();
+  const { activeCompany } = useBusiness();
 
   return (
     <View style={styles.container}>

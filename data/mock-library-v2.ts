@@ -626,7 +626,7 @@ const EDUCATION_COLLECTIONS: LibraryCollection[] = [
 ];
 
 // =============================================================================
-// BUSINESS (ENTERPRISE) LIBRARY DATA
+// BUSINESS LIBRARY DATA
 // =============================================================================
 
 const BUSINESS_ITEMS: LibraryItem[] = [
@@ -959,7 +959,6 @@ export const LIBRARY_ITEMS: Record<Mode, LibraryItem[]> = {
   sports: SPORTS_ITEMS,
   church: CHURCH_ITEMS,
   education: EDUCATION_ITEMS,
-  enterprise: BUSINESS_ITEMS,
   business: BUSINESS_ITEMS,
   competition: COMMUNITY_ITEMS,
 };
@@ -968,7 +967,6 @@ export const LIBRARY_COLLECTIONS: Record<Mode, LibraryCollection[]> = {
   sports: SPORTS_COLLECTIONS,
   church: CHURCH_COLLECTIONS,
   education: EDUCATION_COLLECTIONS,
-  enterprise: BUSINESS_COLLECTIONS,
   business: BUSINESS_COLLECTIONS,
   competition: COMMUNITY_COLLECTIONS,
 };

@@ -10,10 +10,10 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useEnterprise } from '@/context/enterprise-context';
-import { getDocsByCompany, getCategoryLabelV2 } from '@/data/mock-enterprise-v2';
-import { DocumentReaderSheet } from './document-reader-sheet';
-import { ViewAsToggle } from './view-as-toggle';
+import { useBusiness } from '@/context/business-context';
+import { getDocsByCompany, getCategoryLabelV2 } from '@/data/mock-business-investor-v2';
+import { DocumentReaderSheet } from '@/components/business/document-reader-sheet';
+import { ViewAsToggle } from '@/components/business/view-as-toggle';
 import type { DocumentV2, DocumentCategory } from '@/types';
 
 const ACCENT_GOLD = '#FFFFFF';
@@ -33,7 +33,7 @@ const CATEGORY_FILTERS: { label: string; value: DocumentCategory | 'all' }[] = [
 export function DataRoomContent() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { activeCompanyId, viewAsRole } = useEnterprise();
+  const { activeCompanyId, viewAsRole } = useBusiness();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<DocumentCategory | 'all'>('all');

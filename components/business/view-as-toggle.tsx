@@ -1,5 +1,5 @@
 /**
- * View As Toggle — RBAC role switcher for Enterprise mode.
+ * View As Toggle — RBAC role switcher for Business mode.
  * 3-segment pill: Founder | Investor | Public
  */
 
@@ -10,7 +10,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useEnterprise } from '@/context/enterprise-context';
+import { useBusiness } from '@/context/business-context';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 
 const ACCENT_GOLD = '#FFFFFF';
@@ -24,7 +24,7 @@ const ROLES: { id: BusinessRoleLens; label: string }[] = [
 export function ViewAsToggle() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { viewAsRole, setViewAsRole } = useEnterprise();
+  const { viewAsRole, setViewAsRole } = useBusiness();
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundTertiary }]}>

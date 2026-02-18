@@ -231,11 +231,6 @@ export const OPS_SCOPE_CHIPS: Record<Mode, OpsScopeChip[]> = {
     { key: 'campus', label: 'Campus' },
     { key: 'ministry', label: 'Ministry' },
   ],
-  enterprise: [
-    { key: 'organization', label: 'Organization' },
-    { key: 'entity', label: 'Entity' },
-    { key: 'department', label: 'Department' },
-  ],
   business: [
     { key: 'organization', label: 'Organization' },
     { key: 'entity', label: 'Entity' },
@@ -581,10 +576,10 @@ const CHURCH_AUDIT: OpsAuditEntry[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE MODE — Mock Data
+// BUSINESS MODE — Mock Data
 // =============================================================================
 
-const ENTERPRISE_TASKS: OpsTask[] = [
+const BUSINESS_TASKS: OpsTask[] = [
   { id: 'en-t-1', title: 'Sprint planning — Q2 product roadmap', owner: 'Engineering Lead', ownerInitials: 'EL', dueDate: '2026-02-24', priority: 'P0', status: 'active', unit: 'Entity' },
   { id: 'en-t-2', title: 'Vendor review — cloud infrastructure renewal', owner: 'CTO', ownerInitials: 'CT', dueDate: '2026-02-20', priority: 'P1', status: 'active', unit: 'Entity' },
   { id: 'en-t-3', title: 'Office setup — new hires onboarding stations', owner: 'Operations Mgr', ownerInitials: 'OM', dueDate: '2026-02-21', priority: 'P1', status: 'draft', unit: 'Department' },
@@ -595,21 +590,21 @@ const ENTERPRISE_TASKS: OpsTask[] = [
   { id: 'en-t-8', title: 'Renew office lease — 3rd floor extension', owner: 'Operations Mgr', ownerInitials: 'OM', dueDate: '2026-03-15', priority: 'P3', status: 'draft', unit: 'Organization' },
 ];
 
-const ENTERPRISE_WORK_ORDERS: OpsWorkOrder[] = [
+const BUSINESS_WORK_ORDERS: OpsWorkOrder[] = [
   { id: 'en-wo-1', title: 'Conference room AV upgrade — 4K display install', requestedBy: 'CTO', assignedTo: 'IT Ops', assignedToInitials: 'IO', dueDate: '2026-02-25', priority: 'P2', status: 'active', category: 'IT' },
   { id: 'en-wo-2', title: 'Standing desk assembly — new hires (x3)', requestedBy: 'HR Director', assignedTo: 'Office Services', assignedToInitials: 'OS', dueDate: '2026-02-20', priority: 'P1', status: 'active', category: 'Facilities' },
   { id: 'en-wo-3', title: 'Server room cooling unit maintenance', requestedBy: 'Engineering Lead', assignedTo: 'HVAC Vendor', assignedToInitials: 'HV', dueDate: '2026-02-28', priority: 'P0', status: 'active', category: 'Facilities' },
   { id: 'en-wo-4', title: 'Product launch event setup — demo stations', requestedBy: 'Marketing Dir', assignedTo: 'Events Team', assignedToInitials: 'ET', dueDate: '2026-02-24', priority: 'P1', status: 'draft', category: 'Event Setup' },
 ];
 
-const ENTERPRISE_ISSUES: OpsIssue[] = [
+const BUSINESS_ISSUES: OpsIssue[] = [
   { id: 'en-i-1', title: 'Production API latency spike — P95 > 800ms', severity: 'critical', owner: 'Engineering Lead', ownerInitials: 'EL', status: 'active', reportedAt: '2026-02-15', category: 'Infrastructure' },
   { id: 'en-i-2', title: 'Office WiFi dead zone — east wing 3rd floor', severity: 'medium', owner: 'IT Ops', ownerInitials: 'IO', status: 'active', reportedAt: '2026-02-13', category: 'IT' },
   { id: 'en-i-3', title: 'Badge reader malfunction — main entrance', severity: 'high', owner: 'Office Services', ownerInitials: 'OS', status: 'active', reportedAt: '2026-02-14', category: 'Security' },
   { id: 'en-i-4', title: 'Zoom room license expired — Conference Room B', severity: 'low', owner: 'IT Ops', ownerInitials: 'IO', status: 'complete', resolution: 'License renewed through 2027', reportedAt: '2026-02-08', category: 'IT' },
 ];
 
-const ENTERPRISE_ASSETS: OpsAsset[] = [
+const BUSINESS_ASSETS: OpsAsset[] = [
   { id: 'en-a-1', name: 'Employee MacBooks (Pool)', category: 'Device', assignedTo: 'IT Ops', condition: 'good', location: 'IT Storage Closet' },
   { id: 'en-a-2', name: 'Server Rack — Production (x2)', category: 'Equipment', condition: 'excellent', location: 'Server Room' },
   { id: 'en-a-3', name: 'Presentation Equipment — Projector Kit', category: 'Equipment', assignedTo: 'Office Services', condition: 'fair', location: 'Conference Room A' },
@@ -617,26 +612,26 @@ const ENTERPRISE_ASSETS: OpsAsset[] = [
   { id: 'en-a-5', name: 'Company Vehicle — Sedan', category: 'Vehicle', condition: 'good', location: 'Building Garage — Spot 4' },
 ];
 
-const ENTERPRISE_VENDORS: OpsVendor[] = [
+const BUSINESS_VENDORS: OpsVendor[] = [
   { id: 'en-v-1', name: 'AWS — Cloud Infrastructure', category: 'IT', contractEnd: '2026-12-31', activeTickets: 1, status: 'active' },
   { id: 'en-v-2', name: 'WeWork — Flex Office Space', category: 'Facilities', contractEnd: '2026-06-30', activeTickets: 0, status: 'active' },
   { id: 'en-v-3', name: 'Gusto — Payroll & Benefits', category: 'HR', contractEnd: '2026-08-15', activeTickets: 0, status: 'active' },
   { id: 'en-v-4', name: 'Catering by Design', category: 'Catering', contractEnd: '2026-03-01', activeTickets: 1, status: 'pending-renewal' },
 ];
 
-const ENTERPRISE_FACILITIES: OpsFacility[] = [
+const BUSINESS_FACILITIES: OpsFacility[] = [
   { id: 'en-f-1', name: 'Main Office — 3rd Floor', location: 'HQ Building', type: 'Office', maintenanceQueue: 1, status: 'operational' },
   { id: 'en-f-2', name: 'HQ Conference Room', location: 'HQ Building', type: 'Office', maintenanceQueue: 0, status: 'operational' },
   { id: 'en-f-3', name: 'Event Space — Level 1', location: 'HQ Building', type: 'Event Space', maintenanceQueue: 0, status: 'operational' },
 ];
 
-const ENTERPRISE_TRAVEL: OpsTravelItem[] = [
+const BUSINESS_TRAVEL: OpsTravelItem[] = [
   { id: 'en-tr-1', title: 'Investor Roadshow', destination: 'San Francisco, CA', departDate: '2026-03-03', returnDate: '2026-03-05', travelers: 3, status: 'booked' },
   { id: 'en-tr-2', title: 'Tech Conference — SXSW', destination: 'Austin, TX', departDate: '2026-03-15', returnDate: '2026-03-18', travelers: 5, status: 'planned' },
   { id: 'en-tr-3', title: 'Client Kickoff — Acme Corp', destination: 'Chicago, IL', departDate: '2026-02-25', returnDate: '2026-02-26', travelers: 2, status: 'booked' },
 ];
 
-const ENTERPRISE_SOPS: OpsSOP[] = [
+const BUSINESS_SOPS: OpsSOP[] = [
   { id: 'en-sop-1', title: 'New Employee Onboarding Checklist', category: 'HR', steps: 16, lastUpdated: '2026-01-20', owner: 'HR Director' },
   { id: 'en-sop-2', title: 'Incident Response & Escalation Procedure', category: 'Engineering', steps: 12, lastUpdated: '2026-02-01', owner: 'Engineering Lead' },
   { id: 'en-sop-3', title: 'Vendor Evaluation & Procurement Process', category: 'Operations', steps: 10, lastUpdated: '2025-12-15', owner: 'Operations Mgr' },
@@ -644,20 +639,20 @@ const ENTERPRISE_SOPS: OpsSOP[] = [
   { id: 'en-sop-5', title: 'Product Release & Deployment Runbook', category: 'Engineering', steps: 20, lastUpdated: '2026-02-10', owner: 'Engineering Lead' },
 ];
 
-const ENTERPRISE_REPORTS: OpsReport[] = [
+const BUSINESS_REPORTS: OpsReport[] = [
   { id: 'en-r-1', title: 'Weekly Ops Summary — W7', type: 'Weekly Snapshot', generatedAt: '2026-02-14', owner: 'Operations Mgr' },
   { id: 'en-r-2', title: 'Q4 2025 Operations Review', type: 'Monthly Summary', generatedAt: '2026-01-15', owner: 'COO' },
   { id: 'en-r-3', title: 'Product Launch Readiness Report — v2.1', type: 'Event Report', generatedAt: '2026-02-13', owner: 'Engineering Lead' },
 ];
 
-const ENTERPRISE_CADENCE: OpsCadenceMeeting[] = [
+const BUSINESS_CADENCE: OpsCadenceMeeting[] = [
   { id: 'en-c-1', title: 'Engineering Standup', frequency: 'Daily', nextDate: '2026-02-17', time: '9:30 AM', attendees: ['Engineering Lead', 'Backend Team', 'Frontend Team', 'QA'], agenda: 'Blockers, sprint progress, deploy schedule' },
   { id: 'en-c-2', title: 'All-Hands', frequency: 'Weekly', nextDate: '2026-02-18', time: '11:00 AM', attendees: ['CEO', 'All Staff'], agenda: 'Company updates, team wins, open Q&A' },
   { id: 'en-c-3', title: 'Board Meeting', frequency: 'Monthly', nextDate: '2026-03-19', time: '10:00 AM', attendees: ['CEO', 'CFO', 'CTO', 'Board Members'], agenda: 'Financials, product roadmap, fundraising, governance' },
   { id: 'en-c-4', title: 'Investor Update Call', frequency: 'Monthly', nextDate: '2026-03-21', time: '3:00 PM', attendees: ['CEO', 'CFO'], agenda: 'KPIs, runway, upcoming milestones' },
 ];
 
-const ENTERPRISE_DASHBOARD: DashboardBlock[] = [
+const BUSINESS_DASHBOARD: DashboardBlock[] = [
   { id: 'en-d-1', label: 'Open Tasks', icon: 'checkmark.circle', value: '7', subValue: '3 P0', color: '#EF4444' },
   { id: 'en-d-2', label: 'Work Orders', icon: 'wrench.and.screwdriver', value: '4', subValue: '3 active', color: '#6AA9FF' },
   { id: 'en-d-3', label: 'Open Issues', icon: 'exclamationmark.triangle', value: '3', subValue: '1 critical', color: '#EF4444' },
@@ -668,7 +663,7 @@ const ENTERPRISE_DASHBOARD: DashboardBlock[] = [
   { id: 'en-d-8', label: 'SOPs', icon: 'doc.text', value: '5', color: '#6AA9FF' },
 ];
 
-const ENTERPRISE_AUDIT: OpsAuditEntry[] = [
+const BUSINESS_AUDIT: OpsAuditEntry[] = [
   { id: 'en-au-1', action: 'task.created', actor: 'Engineering Lead', timestamp: '2026-02-16T15:00:00Z', timestampMs: 1739718000000, description: 'Created task "Sprint planning — Q2 product roadmap"' },
   { id: 'en-au-2', action: 'issue.reported', actor: 'Engineering Lead', timestamp: '2026-02-15T22:15:00Z', timestampMs: 1739657700000, description: 'Reported issue "Production API latency spike — P95 > 800ms"' },
   { id: 'en-au-3', action: 'work-order.created', actor: 'Engineering Lead', timestamp: '2026-02-15T10:00:00Z', timestampMs: 1739613600000, description: 'Created work order "Server room cooling unit maintenance"' },
@@ -835,33 +830,19 @@ const OPS_DATA: Record<Mode, {
     dashboard: CHURCH_DASHBOARD,
     audit: CHURCH_AUDIT,
   },
-  enterprise: {
-    tasks: ENTERPRISE_TASKS,
-    workOrders: ENTERPRISE_WORK_ORDERS,
-    issues: ENTERPRISE_ISSUES,
-    assets: ENTERPRISE_ASSETS,
-    vendors: ENTERPRISE_VENDORS,
-    facilities: ENTERPRISE_FACILITIES,
-    travel: ENTERPRISE_TRAVEL,
-    sops: ENTERPRISE_SOPS,
-    reports: ENTERPRISE_REPORTS,
-    cadence: ENTERPRISE_CADENCE,
-    dashboard: ENTERPRISE_DASHBOARD,
-    audit: ENTERPRISE_AUDIT,
-  },
   business: {
-    tasks: ENTERPRISE_TASKS,
-    workOrders: ENTERPRISE_WORK_ORDERS,
-    issues: ENTERPRISE_ISSUES,
-    assets: ENTERPRISE_ASSETS,
-    vendors: ENTERPRISE_VENDORS,
-    facilities: ENTERPRISE_FACILITIES,
-    travel: ENTERPRISE_TRAVEL,
-    sops: ENTERPRISE_SOPS,
-    reports: ENTERPRISE_REPORTS,
-    cadence: ENTERPRISE_CADENCE,
-    dashboard: ENTERPRISE_DASHBOARD,
-    audit: ENTERPRISE_AUDIT,
+    tasks: BUSINESS_TASKS,
+    workOrders: BUSINESS_WORK_ORDERS,
+    issues: BUSINESS_ISSUES,
+    assets: BUSINESS_ASSETS,
+    vendors: BUSINESS_VENDORS,
+    facilities: BUSINESS_FACILITIES,
+    travel: BUSINESS_TRAVEL,
+    sops: BUSINESS_SOPS,
+    reports: BUSINESS_REPORTS,
+    cadence: BUSINESS_CADENCE,
+    dashboard: BUSINESS_DASHBOARD,
+    audit: BUSINESS_AUDIT,
   },
   competition: {
     tasks: COMMUNITY_TASKS,

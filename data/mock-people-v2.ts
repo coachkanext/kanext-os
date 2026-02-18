@@ -80,11 +80,6 @@ export const PEOPLE_SCOPE_CHIPS: Record<Mode, ScopeChip[]> = {
     { key: 'campus', label: 'Campus' },
     { key: 'ministry', label: 'Ministry' },
   ],
-  enterprise: [
-    { key: 'organization', label: 'Organization' },
-    { key: 'entity', label: 'Entity' },
-    { key: 'department', label: 'Department' },
-  ],
   business: [
     { key: 'organization', label: 'Organization' },
     { key: 'entity', label: 'Entity' },
@@ -140,19 +135,6 @@ export const ROLE_TEMPLATES: Record<Mode, RoleTemplate[]> = {
     { key: 'member', label: 'Member' },
     { key: 'volunteer', label: 'Volunteer' },
   ],
-  enterprise: [
-    { key: 'founder-ceo', label: 'Founder/CEO' },
-    { key: 'leadership', label: 'Leadership' },
-    { key: 'operations', label: 'Operations' },
-    { key: 'product', label: 'Product' },
-    { key: 'engineering', label: 'Engineering' },
-    { key: 'sales', label: 'Sales' },
-    { key: 'marketing', label: 'Marketing' },
-    { key: 'finance', label: 'Finance' },
-    { key: 'legal', label: 'Legal' },
-    { key: 'hr', label: 'HR / People Ops' },
-    { key: 'advisor', label: 'Advisor/Contractor' },
-  ],
   business: [
     { key: 'founder-ceo', label: 'Founder/CEO' },
     { key: 'leadership', label: 'Leadership' },
@@ -198,7 +180,6 @@ export const UNIT_OPTIONS: Record<Mode, string[]> = {
   sports: ["Men's Basketball", "Women's Basketball", 'Baseball', 'Softball', 'Track & Field'],
   education: ['Business', 'Nursing', 'Aviation', 'STEM', 'Liberal Arts'],
   church: ['Main Campus', 'Youth Ministry', "Women's Ministry", "Men's Ministry", "Children's Ministry", 'Worship', 'Missions', 'Prayer'],
-  enterprise: ['Executive', 'Product', 'Engineering', 'Sales', 'Marketing', 'Operations', 'Finance'],
   business: ['Executive', 'Product', 'Engineering', 'Sales', 'Marketing', 'Operations', 'Finance'],
   competition: ['K-1 Season 1', 'Round 1 — Desert', 'Round 2 — Coastal', 'Round 3 — Lakeside'],
 };
@@ -937,10 +918,10 @@ const EDUCATION_GROUPS: PersonGroup[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE (BUSINESS) MODE — KaNeXT
+// BUSINESS MODE — KaNeXT
 // =============================================================================
 
-const ENTERPRISE_PEOPLE: Person[] = [
+const BUSINESS_PEOPLE: Person[] = [
   {
     id: 'bz-001',
     name: 'Sammy Kalejaiye',
@@ -1127,7 +1108,7 @@ const ENTERPRISE_PEOPLE: Person[] = [
   },
 ];
 
-const ENTERPRISE_GROUPS: PersonGroup[] = [
+const BUSINESS_GROUPS: PersonGroup[] = [
   { id: 'bz-grp-exec', label: 'Executive', count: 3 },
   { id: 'bz-grp-product', label: 'Product', count: 3 },
   { id: 'bz-grp-ops', label: 'Operations', count: 4 },
@@ -1323,8 +1304,7 @@ export const PEOPLE_DIRECTORY: Record<Mode, Person[]> = {
   sports: SPORTS_PEOPLE,
   church: CHURCH_PEOPLE,
   education: EDUCATION_PEOPLE,
-  enterprise: ENTERPRISE_PEOPLE,
-  business: ENTERPRISE_PEOPLE,
+  business: BUSINESS_PEOPLE,
   competition: COMMUNITY_PEOPLE,
 };
 
@@ -1332,8 +1312,7 @@ export const PEOPLE_GROUPS: Record<Mode, PersonGroup[]> = {
   sports: SPORTS_GROUPS,
   church: CHURCH_GROUPS,
   education: EDUCATION_GROUPS,
-  enterprise: ENTERPRISE_GROUPS,
-  business: ENTERPRISE_GROUPS,
+  business: BUSINESS_GROUPS,
   competition: COMMUNITY_GROUPS,
 };
 

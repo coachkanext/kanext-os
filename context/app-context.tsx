@@ -56,14 +56,6 @@ const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
     location: 'Miami Gardens, FL',
     description: 'Florida Memorial University Lions Men\'s Basketball',
   },
-  enterprise: {
-    id: 'kanext',
-    name: 'KaNeXT',
-    mode: 'enterprise',
-    type: 'llc',
-    location: 'Tennessee',
-    description: 'Institutional OS + Governed Intelligence Platform',
-  },
   church: {
     id: 'icc',
     name: 'International Christian Center',
@@ -106,13 +98,6 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
     endDate: new Date('2026-04-01'),
     isCurrent: true,
   },
-  enterprise: {
-    id: 'fy2025',
-    name: 'FY 2025',
-    startDate: new Date('2025-01-01'),
-    endDate: new Date('2025-12-31'),
-    isCurrent: true,
-  },
   church: {
     id: '2025',
     name: '2025',
@@ -145,7 +130,6 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
 
 const DEMO_ROLES: Record<Mode, Role> = {
   sports: 'head_coach',
-  enterprise: 'founder',
   church: 'member',
   education: 'faculty',
   business: 'founder',

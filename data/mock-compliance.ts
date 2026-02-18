@@ -177,10 +177,10 @@ const educationSnapshot: ComplianceSnapshot = {
 };
 
 // =============================================================================
-// ENTERPRISE MODE — KaNeXT
+// BUSINESS MODE — KaNeXT
 // =============================================================================
 
-const enterprisePolicies: CompliancePolicy[] = [
+const businessPolicies: CompliancePolicy[] = [
   { id: 'en-pol-001', title: 'SOC 2 Type II Controls', category: 'privacy', status: 'compliant', lastReviewed: '2026-01-20', nextReview: '2026-07-20', description: 'Service Organization Control 2 compliance for security, availability, processing integrity, confidentiality, and privacy trust services criteria.' },
   { id: 'en-pol-002', title: 'GDPR Data Processing', category: 'privacy', status: 'compliant', lastReviewed: '2026-02-01', nextReview: '2026-08-01', description: 'General Data Protection Regulation compliance for EU data subjects including consent management, data portability, and right to erasure.' },
   { id: 'en-pol-003', title: 'Employment Law — Multi-State', category: 'conduct', status: 'compliant', lastReviewed: '2025-12-15', nextReview: '2026-06-15', description: 'Federal and state employment law compliance including FLSA, FMLA, at-will employment, contractor classification, and remote work policies.' },
@@ -189,25 +189,25 @@ const enterprisePolicies: CompliancePolicy[] = [
   { id: 'en-pol-006', title: 'Anti-Harassment & DEI Policy', category: 'conduct', status: 'compliant', lastReviewed: '2025-11-20', nextReview: '2026-05-20', description: 'Workplace anti-harassment policy, reporting procedures, investigation protocols, and diversity/equity/inclusion commitments.' },
 ];
 
-const enterpriseAudits: ComplianceAudit[] = [
+const businessAudits: ComplianceAudit[] = [
   { id: 'en-aud-001', title: 'SOC 2 Type II Annual Audit', auditor: 'Ernst & Young', date: '2026-06-01', status: 'scheduled', findings: 0, criticalFindings: 0 },
   { id: 'en-aud-002', title: 'GDPR Data Mapping Review', auditor: 'Privacy Shield Consulting', date: '2026-01-30', status: 'passed', findings: 2, criticalFindings: 0 },
   { id: 'en-aud-003', title: 'Code Security Audit — Q4 2025', auditor: 'NCC Group', date: '2025-12-20', status: 'passed', findings: 5, criticalFindings: 1 },
 ];
 
-const enterpriseIncidents: ComplianceIncident[] = [
+const businessIncidents: ComplianceIncident[] = [
   { id: 'en-inc-001', title: 'Third-Party Data Processor Breach Notification', severity: 'major', status: 'investigating', reportedDate: '2026-02-05', assignee: 'CTO', description: 'Third-party analytics provider reported a potential data exposure. No KaNeXT customer data confirmed affected. Vendor audit initiated.' },
   { id: 'en-inc-002', title: 'Employee Laptop Lost — Encrypted', severity: 'minor', status: 'closed', reportedDate: '2026-01-22', assignee: 'IT Security Lead', description: 'Employee laptop reported lost during travel. Device was fully encrypted with remote wipe capability. Wipe executed within 4 hours.' },
 ];
 
-const enterpriseTraining: ComplianceTraining[] = [
+const businessTraining: ComplianceTraining[] = [
   { id: 'en-trn-001', title: 'SOC 2 Security Awareness', required: true, completionRate: 94, dueDate: '2026-03-01', category: 'Privacy' },
   { id: 'en-trn-002', title: 'GDPR Data Handling', required: true, completionRate: 89, dueDate: '2026-04-01', category: 'Privacy' },
   { id: 'en-trn-003', title: 'Anti-Harassment Training — Annual', required: true, completionRate: 100, dueDate: '2026-01-31', category: 'Conduct' },
   { id: 'en-trn-004', title: 'Secure Development Practices', required: false, completionRate: 82, dueDate: '2026-05-01', category: 'Privacy' },
 ];
 
-const enterpriseSnapshot: ComplianceSnapshot = {
+const businessSnapshot: ComplianceSnapshot = {
   overallStatus: 'compliant',
   policiesCount: 6,
   openIncidents: 1,
@@ -258,43 +258,38 @@ export const COMPLIANCE_POLICIES: Record<Mode, CompliancePolicy[]> = {
   sports: sportsPolicies,
   church: churchPolicies,
   education: educationPolicies,
-  enterprise: enterprisePolicies,
   competition: communityPolicies,
-  business: enterprisePolicies,
+  business: businessPolicies,
 };
 
 export const COMPLIANCE_AUDITS: Record<Mode, ComplianceAudit[]> = {
   sports: sportsAudits,
   church: churchAudits,
   education: educationAudits,
-  enterprise: enterpriseAudits,
   competition: communityAudits,
-  business: enterpriseAudits,
+  business: businessAudits,
 };
 
 export const COMPLIANCE_INCIDENTS: Record<Mode, ComplianceIncident[]> = {
   sports: sportsIncidents,
   church: churchIncidents,
   education: educationIncidents,
-  enterprise: enterpriseIncidents,
   competition: communityIncidents,
-  business: enterpriseIncidents,
+  business: businessIncidents,
 };
 
 export const COMPLIANCE_TRAINING: Record<Mode, ComplianceTraining[]> = {
   sports: sportsTraining,
   church: churchTraining,
   education: educationTraining,
-  enterprise: enterpriseTraining,
   competition: communityTraining,
-  business: enterpriseTraining,
+  business: businessTraining,
 };
 
 export const COMPLIANCE_SNAPSHOTS: Record<Mode, ComplianceSnapshot> = {
   sports: sportsSnapshot,
   church: churchSnapshot,
   education: educationSnapshot,
-  enterprise: enterpriseSnapshot,
   competition: communitySnapshot,
-  business: enterpriseSnapshot,
+  business: businessSnapshot,
 };

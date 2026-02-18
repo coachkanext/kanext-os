@@ -1,14 +1,14 @@
 /**
- * Mock Enterprise Data
- * KaNeXT company information for Enterprise mode.
+ * Mock Business Investor Data
+ * KaNeXT company information for Business mode.
  */
 
 import type {
-  EnterpriseOrganization,
+  BusinessOrganization,
   Document,
   BoardMember,
   Domain,
-  EnterpriseScenario,
+  BusinessScenario,
   ActivityItem,
 } from '@/types';
 
@@ -16,10 +16,10 @@ import type {
 // ORGANIZATION
 // =============================================================================
 
-export const KANEXT_ORGANIZATION: EnterpriseOrganization = {
+export const KANEXT_ORGANIZATION: BusinessOrganization = {
   id: 'kanext-001',
   name: 'KaNeXT',
-  mode: 'enterprise',
+  mode: 'business',
   type: 'Technology Company',
   location: 'San Diego, CA',
   description:
@@ -241,7 +241,7 @@ export const DOMAINS: Domain[] = [
   {
     id: 'domain-enterprise',
     name: 'Enterprise',
-    mode: 'enterprise',
+    mode: 'business',
     description: 'Investor data room and corporate intelligence platform',
     status: 'active',
     icon: 'building.2.fill',
@@ -268,7 +268,7 @@ export const DOMAINS: Domain[] = [
 // SCENARIOS (Saved Nexus outputs)
 // =============================================================================
 
-export const SAVED_SCENARIOS: EnterpriseScenario[] = [
+export const SAVED_SCENARIOS: BusinessScenario[] = [
   {
     id: 'scenario-1',
     title: 'Series A Timeline Analysis',
@@ -302,7 +302,7 @@ export const SAVED_SCENARIOS: EnterpriseScenario[] = [
 // ACTIVITY
 // =============================================================================
 
-export const ENTERPRISE_ACTIVITY: ActivityItem[] = [
+export const BUSINESS_ACTIVITY: ActivityItem[] = [
   {
     id: 'ent-act-1',
     type: 'document_added',
@@ -313,7 +313,7 @@ export const ENTERPRISE_ACTIVITY: ActivityItem[] = [
     sourceId: 'doc-1',
     route: '/organization/documents',
     organizationId: 'kanext-001',
-    mode: 'enterprise',
+    mode: 'business',
     visibility: ['founder', 'investor'],
   },
   {
@@ -326,7 +326,7 @@ export const ENTERPRISE_ACTIVITY: ActivityItem[] = [
     sourceId: 'scenario-1',
     route: '/nexus',
     organizationId: 'kanext-001',
-    mode: 'enterprise',
+    mode: 'business',
     visibility: ['founder'],
   },
   {
@@ -339,7 +339,7 @@ export const ENTERPRISE_ACTIVITY: ActivityItem[] = [
     sourceId: 'doc-11',
     route: '/organization/documents',
     organizationId: 'kanext-001',
-    mode: 'enterprise',
+    mode: 'business',
     visibility: ['founder', 'investor'],
   },
   {
@@ -352,7 +352,7 @@ export const ENTERPRISE_ACTIVITY: ActivityItem[] = [
     sourceId: 'config-1',
     route: '/organization',
     organizationId: 'kanext-001',
-    mode: 'enterprise',
+    mode: 'business',
     visibility: ['founder'],
   },
 ];
@@ -467,4 +467,4 @@ export {
   getStageColor,
   getMilestoneStatusColor,
   getRiskSeverityColor,
-} from './mock-enterprise-v2';
+} from './mock-business-investor-v2';

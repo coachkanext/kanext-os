@@ -8,14 +8,14 @@ import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useEnterprise } from '@/context/enterprise-context';
+import { useBusiness } from '@/context/business-context';
 
 const ACCENT_GOLD = '#FFFFFF';
 
 export function CompanySwitcher() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { companies, activeCompanyId, setActiveCompany } = useEnterprise();
+  const { companies, activeCompanyId, setActiveCompany } = useBusiness();
 
   return (
     <View style={styles.container}>

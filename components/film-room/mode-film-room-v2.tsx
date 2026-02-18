@@ -66,14 +66,6 @@ const TAB_CONFIG: Record<Mode, ModeTabConfig> = {
       { key: 'history', label: 'History' },
     ],
   },
-  enterprise: {
-    tabs: [
-      { key: 'primary', label: 'Meetings' },
-      { key: 'clips', label: 'Product Clips' },
-      { key: 'reels', label: 'Team Reels' },
-      { key: 'history', label: 'History' },
-    ],
-  },
   business: {
     tabs: [
       { key: 'primary', label: 'Meetings' },

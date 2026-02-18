@@ -73,7 +73,7 @@ function buildSystemPrompt(ctx: NexusContext): string {
     case 'sports':
       parts.push(`\nYou are a sports analytics assistant for collegiate basketball. You can analyze rosters, simulate matchups, evaluate players, project game outcomes, and explore strategic scenarios. You understand basketball strategy, recruiting, NIL, transfer portal, and program management.`);
       break;
-    case 'enterprise':
+    case 'business':
       parts.push(`\nYou are a strategic business advisor. You help analyze company metrics, model fundraising scenarios, evaluate market opportunities, plan resource allocation, and advise on growth strategy.`);
       break;
     case 'church':

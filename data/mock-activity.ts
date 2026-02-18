@@ -1,6 +1,6 @@
 /**
  * Mock data for Activity feed.
- * Provides demo activity items for all 4 modes.
+ * Provides demo activity items for all 5 modes.
  */
 
 import type { ActivityItem, Mode, Role } from '@/types';
@@ -104,10 +104,10 @@ const SPORTS_ACTIVITY: ActivityItem[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE MODE ACTIVITY
+// BUSINESS MODE ACTIVITY
 // =============================================================================
 
-const ENTERPRISE_ACTIVITY: ActivityItem[] = [
+const BUSINESS_ACTIVITY: ActivityItem[] = [
   {
     id: 'act-ent-1',
     type: 'document_updated',
@@ -118,7 +118,7 @@ const ENTERPRISE_ACTIVITY: ActivityItem[] = [
     sourceId: 'doc-pitch',
     route: '/organization/documents',
     organizationId: 'kanext',
-    mode: 'enterprise',
+    mode: 'business',
     visibility: ['founder', 'investor'],
   },
   {
@@ -131,7 +131,7 @@ const ENTERPRISE_ACTIVITY: ActivityItem[] = [
     sourceId: 'scenario-west-coast',
     route: '/nexus',
     organizationId: 'kanext',
-    mode: 'enterprise',
+    mode: 'business',
     visibility: ['founder'],
   },
   {
@@ -144,7 +144,7 @@ const ENTERPRISE_ACTIVITY: ActivityItem[] = [
     sourceId: 'doc-tech-arch',
     route: '/organization/documents',
     organizationId: 'kanext',
-    mode: 'enterprise',
+    mode: 'business',
     visibility: ['founder', 'investor'],
   },
   {
@@ -157,7 +157,7 @@ const ENTERPRISE_ACTIVITY: ActivityItem[] = [
     sourceId: 'settings',
     route: '/organization',
     organizationId: 'kanext',
-    mode: 'enterprise',
+    mode: 'business',
     visibility: ['founder'],
   },
 ];
@@ -286,8 +286,7 @@ const EDUCATION_ACTIVITY: ActivityItem[] = [
 
 const ALL_ACTIVITY: Record<Mode, ActivityItem[]> = {
   sports: SPORTS_ACTIVITY,
-  enterprise: ENTERPRISE_ACTIVITY,
-  business: ENTERPRISE_ACTIVITY,
+  business: BUSINESS_ACTIVITY,
   church: CHURCH_ACTIVITY,
   education: EDUCATION_ACTIVITY,
   competition: [],

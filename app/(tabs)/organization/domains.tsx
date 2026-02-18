@@ -15,7 +15,7 @@ import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
-import { DOMAINS, KANEXT_ORGANIZATION, getDomainStatusColor } from '@/data/mock-enterprise';
+import { DOMAINS, KANEXT_ORGANIZATION, getDomainStatusColor } from '@/data/mock-business-investor';
 import type { Domain, Mode } from '@/types';
 
 // =============================================================================
@@ -91,7 +91,7 @@ export default function DomainsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state, setMode } = useAppContext();
-  const modeColors = ModeColors.enterprise;
+  const modeColors = ModeColors.business;
 
   const handleBack = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

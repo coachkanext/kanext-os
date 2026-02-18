@@ -10,7 +10,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useEnterprise } from '@/context/enterprise-context';
+import { useBusiness } from '@/context/business-context';
 
 const ACCENT_GOLD = '#FFFFFF';
 
@@ -22,7 +22,7 @@ interface CompanyProfileSheetProps {
 export function CompanyProfileSheet({ visible, onClose }: CompanyProfileSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { activeCompany } = useEnterprise();
+  const { activeCompany } = useBusiness();
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={activeCompany.displayName} useModal>

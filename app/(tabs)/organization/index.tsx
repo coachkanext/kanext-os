@@ -66,15 +66,32 @@ import {
   getCalendarEventTypeLabel,
 } from '@/data/mock-education';
 import type { Campus, Ministry, AcademicTerm, AcademicCalendarEvent, Department, FacultyMember } from '@/types';
-import { EnterpriseProvider } from '@/context/enterprise-context';
-import { CompanySwitcher } from '@/components/enterprise/company-switcher';
-import { EnterpriseHomeContent } from '@/components/enterprise/enterprise-home';
-import { ProofEventsContent } from '@/components/enterprise/proof-events-content';
-import { DataRoomContent } from '@/components/enterprise/data-room-content';
-import { GovernanceContent } from '@/components/enterprise/governance-content';
 import { RailsSection } from '@/components/rails/rails-section';
-import { OrgEntitiesTab } from '@/components/organization/org-entities-tab';
 import type { Mode } from '@/types';
+
+// Competition v2 tab components
+import { CompSeriesV2 } from '@/components/organization/comp-series-v2';
+import { CompPeopleV2 } from '@/components/organization/comp-people-v2';
+import { CompRoomsV2 } from '@/components/organization/comp-rooms-v2';
+import { CompOperationsV2 } from '@/components/organization/comp-operations-v2';
+import { CompFinanceV2 } from '@/components/organization/comp-finance-v2';
+import { CompPaymentRailsV2 } from '@/components/organization/comp-payment-rails-v2';
+import { CompComplianceV2 } from '@/components/organization/comp-compliance-v2';
+import { CompAssetsV2 } from '@/components/organization/comp-assets-v2';
+import { CompReportsV2 } from '@/components/organization/comp-reports-v2';
+import { CompSponsorsV2 } from '@/components/organization/comp-sponsors-v2';
+
+// Business v2 tab components
+import { BizOrgEntitiesV2 } from '@/components/organization/biz-org-entities-v2';
+import { BizOrgPeopleV2 } from '@/components/organization/biz-org-people-v2';
+import { BizOrgRoomsV2 } from '@/components/organization/biz-org-rooms-v2';
+import { BizOrgOperationsV2 } from '@/components/organization/biz-org-operations-v2';
+import { BizOrgFinanceV2 } from '@/components/organization/biz-org-finance-v2';
+import { BizOrgPaymentRailsV2 } from '@/components/organization/biz-org-payment-rails-v2';
+import { BizOrgLegalV2 } from '@/components/organization/biz-org-legal-v2';
+import { BizOrgComplianceV2 } from '@/components/organization/biz-org-compliance-v2';
+import { BizOrgAssetsTab } from '@/components/organization/biz-org-assets-v2';
+import { BizOrgReportsV2 } from '@/components/organization/biz-org-reports-v2';
 
 // =============================================================================
 // ORG TAB & MORE DEFINITIONS (per mode)
@@ -92,18 +109,6 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
     { id: 'facilities', label: 'Facilities' },
     { id: 'resources', label: 'Resources' },
     { id: 'sponsors', label: 'Sponsors' },
-  ],
-  enterprise: [
-    { id: 'entities', label: 'Entities' },
-    { id: 'people', label: 'People' },
-    { id: 'rooms', label: 'Rooms' },
-    { id: 'operations', label: 'Operations' },
-    { id: 'finance', label: 'Finance' },
-    { id: 'payment-rails', label: 'Payment Rails' },
-    { id: 'legal', label: 'Legal' },
-    { id: 'compliance', label: 'Compliance' },
-    { id: 'assets', label: 'Assets' },
-    { id: 'reports', label: 'Reports' },
   ],
   education: [
     { id: 'institutions', label: 'Institutions' },
@@ -124,9 +129,9 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
     { id: 'operations', label: 'Operations' },
     { id: 'finance', label: 'Finance' },
     { id: 'payment-rails', label: 'Payment Rails' },
-    { id: 'rules', label: 'Rules' },
     { id: 'compliance', label: 'Compliance' },
-    { id: 'venues', label: 'Venues' },
+    { id: 'assets', label: 'Assets' },
+    { id: 'reports', label: 'Reports' },
     { id: 'sponsors', label: 'Sponsors' },
   ],
   business: [
@@ -283,84 +288,6 @@ function MetricCard({ label, value, subValue, colors, accentColor }: MetricCardP
   );
 }
 
-// =============================================================================
-// ENTERPRISE MODE CONTENT (with PagerView — uses new ORG_TABS labels)
-// =============================================================================
-
-function EnterpriseOrganization() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const [activeIndex, setActiveIndex] = useState(0);
-  const pagerRef = useRef<PagerView>(null);
-
-  const handleTabPress = useCallback((index: number) => {
-    pagerRef.current?.setPage(index);
-  }, []);
-
-  return (
-    <EnterpriseProvider>
-      <PagedTabBar tabs={ORG_TABS.enterprise} activeIndex={activeIndex} onTabPress={handleTabPress} />
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.enterprise.length} onAdvance={handleTabPress}>
-        <PagerView
-          ref={pagerRef}
-          style={{ flex: 1 }}
-          initialPage={0}
-          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-        >
-          {/* Page 0: Entities */}
-          <View key="entities" style={{ flex: 1 }}>
-            <OrgEntitiesTab colors={colors} accentColor={ModeColors.enterprise.primary} />
-          </View>
-
-          {/* Page 1: People */}
-          <View key="people" style={{ flex: 1 }}>
-            <OrgPeopleTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
-          </View>
-
-          {/* Page 2: Rooms */}
-          <View key="rooms" style={{ flex: 1 }}>
-            <RoomsHub mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
-          </View>
-
-          {/* Page 3: Operations */}
-          <View key="operations" style={{ flex: 1 }}>
-            <OrgOperationsTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
-          </View>
-
-          {/* Page 4: Finance */}
-          <View key="finance" style={{ flex: 1 }}>
-            <OrgFinanceTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
-          </View>
-
-          {/* Page 4: Payment Rails */}
-          <View key="payment-rails" style={{ flex: 1 }}>
-            <OrgPaymentRailsTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
-          </View>
-
-          {/* Page 5: Legal */}
-          <View key="legal" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Legal" />
-          </View>
-
-          {/* Page 6: Compliance */}
-          <View key="compliance" style={{ flex: 1 }}>
-            <OrgComplianceTab mode="enterprise" colors={colors} accentColor={ModeColors.enterprise.primary} />
-          </View>
-
-          {/* Page 7: Assets */}
-          <View key="assets" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Assets" />
-          </View>
-
-          {/* Page 8: Reports */}
-          <View key="reports" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Reports" />
-          </View>
-        </PagerView>
-      </EdgeHoldAdvance>
-    </EnterpriseProvider>
-  );
-}
 
 // =============================================================================
 // CHURCH MODE COMPONENTS
@@ -797,6 +724,7 @@ function EducationOrganization() {
 function CommunityOrganization() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = ModeColors.competition.primary;
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
 
@@ -814,54 +742,96 @@ function CommunityOrganization() {
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Series */}
           <View key="series" style={{ flex: 1 }}>
-            <OrgSeriesTab colors={colors} accentColor={ModeColors.competition.primary} />
+            <CompSeriesV2 colors={colors} accentColor={accent} />
           </View>
-
-          {/* Page 1: People */}
           <View key="people" style={{ flex: 1 }}>
-            <OrgPeopleTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
+            <CompPeopleV2 colors={colors} accentColor={accent} />
           </View>
-
-          {/* Page 2: Rooms */}
           <View key="rooms" style={{ flex: 1 }}>
-            <RoomsHub mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
+            <CompRoomsV2 colors={colors} accentColor={accent} />
           </View>
-
-          {/* Page 3: Operations */}
           <View key="operations" style={{ flex: 1 }}>
-            <OrgOperationsTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
+            <CompOperationsV2 colors={colors} accentColor={accent} />
           </View>
-
-          {/* Page 4: Finance */}
           <View key="finance" style={{ flex: 1 }}>
-            <OrgFinanceTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
+            <CompFinanceV2 colors={colors} accentColor={accent} />
           </View>
-
-          {/* Page 4: Payment Rails */}
           <View key="payment-rails" style={{ flex: 1 }}>
-            <OrgPaymentRailsTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
+            <CompPaymentRailsV2 colors={colors} accentColor={accent} />
           </View>
-
-          {/* Page 5: Rules */}
-          <View key="rules" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Rules" />
-          </View>
-
-          {/* Page 6: Compliance */}
           <View key="compliance" style={{ flex: 1 }}>
-            <OrgComplianceTab mode="competition" colors={colors} accentColor={ModeColors.competition.primary} />
+            <CompComplianceV2 colors={colors} accentColor={accent} />
           </View>
-
-          {/* Page 7: Venues */}
-          <View key="venues" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Venues" />
+          <View key="assets" style={{ flex: 1 }}>
+            <CompAssetsV2 colors={colors} accentColor={accent} />
           </View>
-
-          {/* Page 8: Sponsors */}
+          <View key="reports" style={{ flex: 1 }}>
+            <CompReportsV2 colors={colors} accentColor={accent} />
+          </View>
           <View key="sponsors" style={{ flex: 1 }}>
-            <TabPlaceholderPage title="Sponsors" />
+            <CompSponsorsV2 colors={colors} accentColor={accent} />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
+    </>
+  );
+}
+
+// =============================================================================
+// BUSINESS MODE CONTENT (v2 — dedicated components)
+// =============================================================================
+
+function BusinessOrganization() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const accent = ModeColors.business.primary;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const pagerRef = useRef<PagerView>(null);
+
+  const handleTabPress = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
+
+  return (
+    <>
+      <PagedTabBar tabs={ORG_TABS.business} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.business.length} onAdvance={handleTabPress}>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          <View key="entities" style={{ flex: 1 }}>
+            <BizOrgEntitiesV2 colors={colors} accentColor={accent} />
+          </View>
+          <View key="people" style={{ flex: 1 }}>
+            <BizOrgPeopleV2 colors={colors} accentColor={accent} />
+          </View>
+          <View key="rooms" style={{ flex: 1 }}>
+            <BizOrgRoomsV2 colors={colors} accentColor={accent} />
+          </View>
+          <View key="operations" style={{ flex: 1 }}>
+            <BizOrgOperationsV2 colors={colors} accentColor={accent} />
+          </View>
+          <View key="finance" style={{ flex: 1 }}>
+            <BizOrgFinanceV2 colors={colors} accentColor={accent} />
+          </View>
+          <View key="payment-rails" style={{ flex: 1 }}>
+            <BizOrgPaymentRailsV2 colors={colors} accentColor={accent} />
+          </View>
+          <View key="legal" style={{ flex: 1 }}>
+            <BizOrgLegalV2 colors={colors} accentColor={accent} />
+          </View>
+          <View key="compliance" style={{ flex: 1 }}>
+            <BizOrgComplianceV2 colors={colors} accentColor={accent} />
+          </View>
+          <View key="assets" style={{ flex: 1 }}>
+            <BizOrgAssetsTab colors={colors} accentColor={accent} />
+          </View>
+          <View key="reports" style={{ flex: 1 }}>
+            <BizOrgReportsV2 colors={colors} accentColor={accent} />
           </View>
         </PagerView>
       </EdgeHoldAdvance>
@@ -882,8 +852,6 @@ export default function OrganizationScreen() {
     switch (mode) {
       case 'sports':
         return <SportsOrganization />;
-      case 'enterprise':
-        return <EnterpriseOrganization />;
       case 'church':
         return <ChurchOrganization />;
       case 'education':
@@ -891,7 +859,7 @@ export default function OrganizationScreen() {
       case 'competition':
         return <CommunityOrganization />;
       case 'business':
-        return <EnterpriseOrganization />;
+        return <BusinessOrganization />;
       default:
         return null;
     }
@@ -1172,7 +1140,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  // Enterprise Metrics
+  // Business Metrics
   metricsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

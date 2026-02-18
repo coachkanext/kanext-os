@@ -22,7 +22,6 @@ const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string }[] = [
   { mode: 'competition', icon: 'flag.checkered', label: 'Competition' },
   { mode: 'church', icon: 'building.columns.fill', label: 'Church' },
   { mode: 'education', icon: 'graduationcap.fill', label: 'Education' },
-  { mode: 'enterprise', icon: 'building.2.fill', label: 'Enterprise' },
   { mode: 'business', icon: 'briefcase.fill', label: 'Business' },
 ];
 

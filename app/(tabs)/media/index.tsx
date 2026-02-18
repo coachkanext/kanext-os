@@ -49,7 +49,6 @@ const ROOM_LABEL: Record<Mode, string> = {
   sports: 'Film Room',
   church: 'Ministry Rooms',
   education: 'Classrooms',
-  enterprise: 'Workspaces',
   business: 'Workspaces',
   competition: 'Paddock',
 };

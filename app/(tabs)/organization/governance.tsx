@@ -1,6 +1,6 @@
 /**
  * Governance Screen
- * Enterprise board, advisors, and legal structure.
+ * Business board, advisors, and legal structure.
  */
 
 import React from 'react';
@@ -18,7 +18,7 @@ import {
   KANEXT_ORGANIZATION,
   BOARD_MEMBERS,
   LEADERSHIP_TEAM,
-} from '@/data/mock-enterprise';
+} from '@/data/mock-business-investor';
 import type { BoardMember } from '@/types';
 
 // =============================================================================
@@ -81,7 +81,7 @@ export default function GovernanceScreen() {
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const modeColors = ModeColors.enterprise;
+  const modeColors = ModeColors.business;
 
   const handleBack = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

@@ -126,7 +126,7 @@ export default function TabLayout() {
     []
   );
 
-  // Post-auth default: route to Home (Business Mode Home in enterprise default)
+  // Post-auth default: route to Home (Business Mode Home)
   useEffect(() => {
     if (hasNavigated.current) return;
     hasNavigated.current = true;

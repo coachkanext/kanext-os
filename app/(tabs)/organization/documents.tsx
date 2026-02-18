@@ -1,6 +1,6 @@
 /**
  * Documents Screen
- * Enterprise data room documents for investors and founders.
+ * Business data room documents for investors and founders.
  */
 
 import React, { useState, useMemo } from 'react';
@@ -20,7 +20,7 @@ import {
   getDocumentsByVisibility,
   getCategoryLabel,
   getFileTypeIcon,
-} from '@/data/mock-enterprise';
+} from '@/data/mock-business-investor';
 import type { Document, DocumentCategory, Role } from '@/types';
 
 // =============================================================================
@@ -147,7 +147,7 @@ export default function DocumentsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
-  const modeColors = ModeColors.enterprise;
+  const modeColors = ModeColors.business;
 
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
 

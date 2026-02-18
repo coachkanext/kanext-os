@@ -63,7 +63,7 @@ const BADGE_OVERRIDES: Record<string, Record<string, string> | string> = {
   // ── Church (additional) ──
   mem_church_icc_ie_teacher: "Children's Church Teacher",
 
-  // ── Enterprise ──
+  // ── Business (legacy enterprise memberships) ──
   mem_ent_kanext_founder: 'Founder/CEO',
 };
 

@@ -17,7 +17,6 @@ const MODES: { id: Mode; label: string }[] = [
   { id: 'competition', label: 'Competition' },
   { id: 'church', label: 'Church' },
   { id: 'education', label: 'Education' },
-  { id: 'enterprise', label: 'Enterprise' },
   { id: 'business', label: 'Business' },
 ];
 

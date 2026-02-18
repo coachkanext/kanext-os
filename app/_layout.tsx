@@ -8,7 +8,7 @@
  * 3. If session valid → Resolve access tier → Route to Business Mode Home
  * 4. If no session → Auth modal → Sign in → Resolve tier → Route to Business Mode Home
  *
- * Post-auth default route: Business / Enterprise Mode Home (not Sports).
+ * Post-auth default route: Business Mode Home (not Sports).
  * Only shows splash on cold start, not when resuming from background.
  */
 

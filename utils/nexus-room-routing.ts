@@ -214,7 +214,7 @@ const CHURCH_ROUTING: ModeRoutingProfile = {
 };
 
 // =============================================================================
-// BUSINESS/ENTERPRISE MODE ROUTING
+// BUSINESS MODE ROUTING
 // =============================================================================
 
 const BUSINESS_ROUTING: ModeRoutingProfile = {
@@ -315,7 +315,6 @@ const ROUTING_PROFILES: Record<string, ModeRoutingProfile> = {
   competition: COMPETITION_ROUTING,
   church: CHURCH_ROUTING,
   business: BUSINESS_ROUTING,
-  enterprise: BUSINESS_ROUTING,
   education: EDUCATION_ROUTING,
 };
 

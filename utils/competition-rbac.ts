@@ -231,3 +231,33 @@ export function isFullAccess(role: CompetitionRoleLens): boolean {
 export function isStaffOrAbove(role: CompetitionRoleLens): boolean {
   return role === 'C1' || role === 'C2';
 }
+
+// =============================================================================
+// ORG TAB VISIBILITY (10 tabs in Competition Organization)
+// =============================================================================
+
+export type CompOrgTab =
+  | 'series' | 'people' | 'rooms' | 'operations' | 'finance'
+  | 'payment-rails' | 'compliance' | 'assets' | 'reports' | 'sponsors';
+
+const COMP_ORG_TAB_MATRIX: Record<CompOrgTab, Record<CompetitionRoleLens, Visibility>> = {
+  series:         { C1: 'full', C2: 'full', C3: 'limited', C4: 'limited' },
+  people:         { C1: 'full', C2: 'full', C3: 'limited', C4: 'hidden' },
+  rooms:          { C1: 'full', C2: 'full', C3: 'limited', C4: 'hidden' },
+  operations:     { C1: 'full', C2: 'full', C3: 'limited', C4: 'hidden' },
+  finance:        { C1: 'full', C2: 'full', C3: 'hidden',  C4: 'hidden' },
+  'payment-rails':{ C1: 'full', C2: 'full', C3: 'hidden',  C4: 'hidden' },
+  compliance:     { C1: 'full', C2: 'full', C3: 'limited', C4: 'hidden' },
+  assets:         { C1: 'full', C2: 'full', C3: 'limited', C4: 'hidden' },
+  reports:        { C1: 'full', C2: 'full', C3: 'limited', C4: 'hidden' },
+  sponsors:       { C1: 'full', C2: 'full', C3: 'limited', C4: 'limited' },
+};
+
+export function getCompOrgTabVisibility(tab: CompOrgTab, role: CompetitionRoleLens): Visibility {
+  return COMP_ORG_TAB_MATRIX[tab]?.[role] ?? 'hidden';
+}
+
+export function getVisibleCompOrgTabs(role: CompetitionRoleLens): CompOrgTab[] {
+  return (Object.keys(COMP_ORG_TAB_MATRIX) as CompOrgTab[])
+    .filter((tab) => COMP_ORG_TAB_MATRIX[tab][role] !== 'hidden');
+}

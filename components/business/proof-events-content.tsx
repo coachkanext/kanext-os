@@ -10,13 +10,13 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useEnterprise } from '@/context/enterprise-context';
+import { useBusiness } from '@/context/business-context';
 import {
   getProofEventsByCompany,
   getStageColor,
   getMilestoneStatusColor,
   getRiskSeverityColor,
-} from '@/data/mock-enterprise-v2';
+} from '@/data/mock-business-investor-v2';
 import type { ProofEvent } from '@/types';
 
 const ACCENT_GOLD = '#FFFFFF';
@@ -205,7 +205,7 @@ function ProofEventCard({ event }: { event: ProofEvent }) {
 }
 
 export function ProofEventsContent() {
-  const { activeCompanyId } = useEnterprise();
+  const { activeCompanyId } = useBusiness();
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const proofEvents = getProofEventsByCompany(activeCompanyId);

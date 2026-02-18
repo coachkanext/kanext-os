@@ -57,7 +57,7 @@ function educationAdapter(): OrgPerson[] {
   }));
 }
 
-function enterpriseAdapter(): OrgPerson[] {
+function businessAdapter(): OrgPerson[] {
   return DIRECTORY.map((d) => ({
     id: d.id,
     name: d.name,
@@ -95,9 +95,8 @@ export function getOrgPeople(mode: Mode): OrgPerson[] {
     case 'sports': return sportsAdapter();
     case 'church': return churchAdapter();
     case 'education': return educationAdapter();
-    case 'enterprise': return enterpriseAdapter();
+    case 'business': return businessAdapter();
     case 'competition': return communityAdapter();
-    case 'business': return enterpriseAdapter();
     default: return [];
   }
 }

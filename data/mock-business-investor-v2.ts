@@ -1,5 +1,5 @@
 /**
- * Enterprise Mode v2 — Mock Data
+ * Business Investor Mode v2 — Mock Data
  * Companies, Proof Events, Engines, Documents v2, revenue, moat, fundraising.
  */
 
@@ -64,7 +64,7 @@ export const COMPANIES: Company[] = [
       role: 'Founder & CEO',
     },
     initials: 'KX',
-    status: 'Active — Pre-Seed',
+    status: 'Active \u2014 Pre-Seed',
     lastUpdated: new Date('2026-02-14'),
     visibility: 'investor',
   },
@@ -78,10 +78,10 @@ export const PROOF_EVENTS: ProofEvent[] = [
   {
     id: 'pe-fmu',
     companyId: 'co-kanext',
-    name: 'FMU Men\'s Basketball — Live Proof',
+    name: 'FMU Men\'s Basketball \u2014 Live Proof',
     stage: 'active',
     overview:
-      'Deploying KaNeXT OS as the primary operational intelligence layer for the Florida Memorial University men\'s basketball program. This proof event validates the Sports domain end-to-end: recruiting, game operations, player evaluation, team analytics, and coaching intelligence — all in a live D2 program.',
+      'Deploying KaNeXT OS as the primary operational intelligence layer for the Florida Memorial University men\'s basketball program. This proof event validates the Sports domain end-to-end: recruiting, game operations, player evaluation, team analytics, and coaching intelligence \u2014 all in a live D2 program.',
     kpis: [
       { id: 'kpi-1', label: 'Roster Players', value: '15', target: '15', trend: 'flat' },
       { id: 'kpi-2', label: 'Games Tracked', value: '24', target: '30', trend: 'up' },
@@ -99,7 +99,7 @@ export const PROOF_EVENTS: ProofEvent[] = [
     ],
     risks: [
       { id: 'risk-1', title: 'Season-ending injuries reduce data quality', severity: 'medium', mitigation: 'Aggregate at team level; per-player eval adapts to minutes played' },
-      { id: 'risk-2', title: 'Coach adoption friction', severity: 'low', mitigation: 'Founder is head coach — full alignment' },
+      { id: 'risk-2', title: 'Coach adoption friction', severity: 'low', mitigation: 'Founder is head coach \u2014 full alignment' },
       { id: 'risk-3', title: 'D2 scheduling volatility', severity: 'low', mitigation: 'Flexible game tracker handles postponements/cancellations' },
     ],
     opsActions: [
@@ -109,7 +109,7 @@ export const PROOF_EVENTS: ProofEvent[] = [
     ],
     constraints: [
       'Single-sport proof (basketball only for now)',
-      'D2 data ecosystem is thinner than D1 — less public stat coverage',
+      'D2 data ecosystem is thinner than D1 \u2014 less public stat coverage',
       'No NIL budget data available for proof validation',
     ],
     lastUpdated: new Date('2026-02-14'),
@@ -124,15 +124,15 @@ export const PROOF_EVENTS: ProofEvent[] = [
 export const ENGINES: Engine[] = [
   {
     id: 'engine-00',
-    name: 'Engine 00 — Coach Master Input',
+    name: 'Engine 00 \u2014 Coach Master Input',
     purpose: 'Captures and structures the head coach\'s philosophy, system preferences, and strategic priorities into a machine-readable context that all downstream engines consume.',
     inputs: ['Offensive/defensive style selections', 'Tempo preference', 'Cluster weight priorities', 'Position importance rankings', 'Recruiting biases'],
     outputs: ['ProgramContext object', 'System identity vector', 'Weighted cluster profile'],
-    whyItMatters: ['Every decision KaNeXT makes is filtered through the coach\'s philosophy', 'Eliminates generic recommendations — everything is contextual'],
+    whyItMatters: ['Every decision KaNeXT makes is filtered through the coach\'s philosophy', 'Eliminates generic recommendations \u2014 everything is contextual'],
   },
   {
     id: 'engine-01',
-    name: 'Engine 01 — Player Evaluation',
+    name: 'Engine 01 \u2014 Player Evaluation',
     purpose: 'Evaluates individual players across 7 canonical clusters and their subclusters, producing a KaNeXT Rating (KR) for each player.',
     inputs: ['Game stats', 'Practice observations', 'Physical measurables', 'Coach assessments'],
     outputs: ['Player KR (0-100)', 'Cluster ratings', 'Subcluster breakdowns', 'Trend trajectories'],
@@ -140,7 +140,7 @@ export const ENGINES: Engine[] = [
   },
   {
     id: 'engine-02',
-    name: 'Engine 02 — Team Evaluation',
+    name: 'Engine 02 \u2014 Team Evaluation',
     purpose: 'Rolls up player-level truth into team-level intelligence: Team KR, offensive/defensive ratings, and roster composition analysis.',
     inputs: ['All player KRs', 'Minutes distribution', 'Usage rates', 'Lineup combinations'],
     outputs: ['Team KR', 'Team Offensive KR (53%)', 'Team Defensive KR (47%)', '7 team cluster ratings'],
@@ -148,7 +148,7 @@ export const ENGINES: Engine[] = [
   },
   {
     id: 'engine-03',
-    name: 'Engine 03 — Global Evaluation',
+    name: 'Engine 03 \u2014 Global Evaluation',
     purpose: 'Evaluates opponents and the broader competitive landscape using the same canonical cluster framework.',
     inputs: ['Opponent game data', 'Conference statistics', 'National rankings', 'Historical matchup data'],
     outputs: ['Opponent KR profiles', 'Matchup differential analysis', 'Conference power rankings'],
@@ -156,7 +156,7 @@ export const ENGINES: Engine[] = [
   },
   {
     id: 'engine-04',
-    name: 'Engine 04 — Scouting',
+    name: 'Engine 04 \u2014 Scouting',
     purpose: 'Powers the recruiting pipeline by evaluating prospects against the program\'s specific needs, philosophy, and cluster priorities.',
     inputs: ['Prospect profiles', 'Highlight film metadata', 'Academic eligibility', 'ProgramContext priorities'],
     outputs: ['Prospect fit scores', 'Cluster-gap recommendations', 'Recruiting board rankings'],
@@ -164,7 +164,7 @@ export const ENGINES: Engine[] = [
   },
   {
     id: 'engine-05',
-    name: 'Engine 05 — Simulation',
+    name: 'Engine 05 \u2014 Simulation',
     purpose: 'Runs probabilistic game simulations using team/opponent KR profiles, matchup differentials, and coaching context.',
     inputs: ['Home/away team profiles', 'Roster availability', 'Historical performance', 'ProgramContext'],
     outputs: ['Win probability', 'Projected score', 'Player impact projections', 'Key matchup analysis'],
@@ -172,7 +172,7 @@ export const ENGINES: Engine[] = [
   },
   {
     id: 'engine-06',
-    name: 'Engine 06 — Development',
+    name: 'Engine 06 \u2014 Development',
     purpose: 'Tracks player growth trajectories over time and recommends development priorities based on program needs.',
     inputs: ['Historical player KRs', 'Practice data', 'Game trend analysis', 'Program needs from Engine 02'],
     outputs: ['Growth trajectories', 'Development priority recommendations', 'Projected future KRs'],
@@ -303,7 +303,7 @@ export const DOCUMENTS_V2: DocumentV2[] = [
     createdAt: new Date('2025-09-01'),
     updatedAt: new Date('2026-01-01'),
     tags: ['overview', 'one-pager'],
-    summary: 'One-page overview of KaNeXT — mission, product, market, and traction summary for general audiences.',
+    summary: 'One-page overview of KaNeXT \u2014 mission, product, market, and traction summary for general audiences.',
     attachments: [],
   },
   {
@@ -343,7 +343,7 @@ export const DOCUMENTS_V2: DocumentV2[] = [
     createdAt: new Date('2025-08-01'),
     updatedAt: new Date('2025-11-15'),
     tags: ['architecture', 'technical', 'infrastructure'],
-    summary: 'Three-layer architecture overview (Reality → Intelligence → Nexus) with technology stack decisions and scaling strategy.',
+    summary: 'Three-layer architecture overview (Reality \u2192 Intelligence \u2192 Nexus) with technology stack decisions and scaling strategy.',
     attachments: [],
   },
   // New v2 docs
@@ -358,7 +358,7 @@ export const DOCUMENTS_V2: DocumentV2[] = [
     updatedAt: new Date('2026-02-10'),
     tags: ['proof', 'fmu', 'sports', 'traction'],
     proofEventId: 'pe-fmu',
-    summary: 'Detailed report on the FMU men\'s basketball proof event — KPIs, milestones achieved, product validation findings, and next steps.',
+    summary: 'Detailed report on the FMU men\'s basketball proof event \u2014 KPIs, milestones achieved, product validation findings, and next steps.',
     attachments: ['fmu-kpi-dashboard.png', 'game-ops-screenshots.pdf'],
   },
   {
@@ -376,7 +376,7 @@ export const DOCUMENTS_V2: DocumentV2[] = [
   },
   {
     id: 'doc-v2-15',
-    title: 'Canonical Engine Library — Spec',
+    title: 'Canonical Engine Library \u2014 Spec',
     description: 'Engine 00-06 specification document',
     category: 'engines',
     visibility: 'founder',
@@ -384,12 +384,12 @@ export const DOCUMENTS_V2: DocumentV2[] = [
     createdAt: new Date('2025-09-15'),
     updatedAt: new Date('2026-02-01'),
     tags: ['engines', 'spec', 'canonical', 'architecture'],
-    summary: 'Complete specification for all 7 canonical engines (00-06) — inputs, outputs, scoring methodology, and integration points.',
+    summary: 'Complete specification for all 7 canonical engines (00-06) \u2014 inputs, outputs, scoring methodology, and integration points.',
     attachments: ['engine-flow-diagram.pdf'],
   },
   {
     id: 'doc-v2-16',
-    title: 'SAFE Note — Pre-Seed',
+    title: 'SAFE Note \u2014 Pre-Seed',
     description: 'Simple Agreement for Future Equity',
     category: 'legal',
     visibility: 'founder',
@@ -402,7 +402,7 @@ export const DOCUMENTS_V2: DocumentV2[] = [
   },
   {
     id: 'doc-v2-17',
-    title: 'GII — Global Intelligence Index',
+    title: 'GII \u2014 Global Intelligence Index',
     description: 'Proprietary competitive intelligence framework',
     category: 'ip',
     visibility: 'investor',
@@ -410,7 +410,7 @@ export const DOCUMENTS_V2: DocumentV2[] = [
     createdAt: new Date('2025-10-01'),
     updatedAt: new Date('2026-01-20'),
     tags: ['gii', 'ip', 'moat', 'intelligence'],
-    summary: 'Overview of the Global Intelligence Index — KaNeXT\'s proprietary framework for cross-domain organizational intelligence scoring.',
+    summary: 'Overview of the Global Intelligence Index \u2014 KaNeXT\'s proprietary framework for cross-domain organizational intelligence scoring.',
     attachments: [],
   },
   {
@@ -437,7 +437,7 @@ export const REVENUE_STREAMS: RevenueStream[] = [
     id: 'rev-1',
     name: 'Platform SaaS',
     description: 'Subscription-based access to KaNeXT OS for sports programs. Tiered by program size, division level, and feature set.',
-    pricing: '$500–$5,000/mo per program',
+    pricing: '$500\u2013$5,000/mo per program',
     status: 'beta',
   },
   {
@@ -514,7 +514,7 @@ export const ARCHITECTURE_LAYERS: ArchitectureLayer[] = [
   {
     id: 'layer-reality',
     name: 'Reality Layer',
-    description: 'Structured ground-truth data — rosters, schedules, stats, game results, organizational records. The single source of what IS.',
+    description: 'Structured ground-truth data \u2014 rosters, schedules, stats, game results, organizational records. The single source of what IS.',
     icon: 'square.stack.3d.up.fill',
   },
   {
@@ -539,14 +539,14 @@ export const RECENT_UPDATES: RecentUpdate[] = [
   {
     id: 'update-1',
     title: 'Proof Event KPIs Updated',
-    description: 'FMU proof event metrics refreshed — 24 games tracked, 78% sim accuracy.',
+    description: 'FMU proof event metrics refreshed \u2014 24 games tracked, 78% sim accuracy.',
     timestamp: new Date('2026-02-14'),
     type: 'metric',
   },
   {
     id: 'update-2',
     title: 'Recruiting Board Milestone',
-    description: '47 prospects in pipeline — exceeded 40-prospect milestone.',
+    description: '47 prospects in pipeline \u2014 exceeded 40-prospect milestone.',
     timestamp: new Date('2026-02-10'),
     type: 'milestone',
   },

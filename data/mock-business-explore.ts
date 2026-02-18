@@ -1,6 +1,6 @@
 /**
  * Mock data for Business Explore page (Company YouTube).
- * Discovery homepage for business/enterprise content.
+ * Discovery homepage for business content.
  */
 
 // =============================================================================

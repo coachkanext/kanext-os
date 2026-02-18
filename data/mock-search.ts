@@ -123,17 +123,17 @@ const SPORTS_RESULTS: SearchResult[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE MODE RESULTS
+// BUSINESS MODE RESULTS
 // =============================================================================
 
-const ENTERPRISE_RESULTS: SearchResult[] = [
+const BUSINESS_RESULTS: SearchResult[] = [
   // Organization
   {
     id: 'kanext',
     title: 'KaNeXT',
     subtitle: 'Institutional OS + Governed Intelligence',
     category: 'organization',
-    mode: 'enterprise',
+    mode: 'business',
     route: '/organization',
   },
   // Members - route to leadership
@@ -142,7 +142,7 @@ const ENTERPRISE_RESULTS: SearchResult[] = [
     title: 'Marcus Thompson',
     subtitle: 'Founder & CEO',
     category: 'member',
-    mode: 'enterprise',
+    mode: 'business',
     route: '/organization/leadership',
   },
   {
@@ -150,7 +150,7 @@ const ENTERPRISE_RESULTS: SearchResult[] = [
     title: 'Dr. Sarah Chen',
     subtitle: 'Board Member • Horizon Ventures',
     category: 'member',
-    mode: 'enterprise',
+    mode: 'business',
     route: '/organization/governance',
   },
   // Documents - route to documents screen
@@ -159,7 +159,7 @@ const ENTERPRISE_RESULTS: SearchResult[] = [
     title: 'Series Seed Pitch Deck',
     subtitle: 'Investor Materials • Updated Jan 2026',
     category: 'document',
-    mode: 'enterprise',
+    mode: 'business',
     route: '/organization/documents',
   },
   {
@@ -167,7 +167,7 @@ const ENTERPRISE_RESULTS: SearchResult[] = [
     title: '2026 Product Roadmap',
     subtitle: 'Roadmap • Updated Jan 2026',
     category: 'document',
-    mode: 'enterprise',
+    mode: 'business',
     route: '/organization/documents',
   },
   // Domains
@@ -176,7 +176,7 @@ const ENTERPRISE_RESULTS: SearchResult[] = [
     title: 'Sports Domain',
     subtitle: 'Active • Athletic Programs',
     category: 'record',
-    mode: 'enterprise',
+    mode: 'business',
     route: '/organization/domains',
   },
   // Metrics
@@ -185,7 +185,7 @@ const ENTERPRISE_RESULTS: SearchResult[] = [
     title: 'Company Metrics',
     subtitle: 'MRR, Growth, Runway',
     category: 'record',
-    mode: 'enterprise',
+    mode: 'business',
     route: '/organization/metrics',
   },
 ];
@@ -382,8 +382,7 @@ const EDUCATION_RESULTS: SearchResult[] = [
 
 const ALL_RESULTS: Record<Mode, SearchResult[]> = {
   sports: SPORTS_RESULTS,
-  enterprise: ENTERPRISE_RESULTS,
-  business: ENTERPRISE_RESULTS,
+  business: BUSINESS_RESULTS,
   church: CHURCH_RESULTS,
   education: EDUCATION_RESULTS,
   competition: [],

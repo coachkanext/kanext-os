@@ -157,10 +157,10 @@ const educationSnapshot: PaymentSnapshot = {
 };
 
 // =============================================================================
-// ENTERPRISE MODE — KaNeXT
+// BUSINESS MODE — KaNeXT
 // =============================================================================
 
-const enterprisePayments: Payment[] = [
+const businessPayments: Payment[] = [
   { id: 'bp-001', description: 'Client Invoice — FMU Platform License', amount: 24000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'Florida Memorial University', reference: 'INV-2026-001' },
   { id: 'bp-002', description: 'Client Invoice — ICCLA Platform License', amount: 18000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'International Christian Center', reference: 'INV-2026-002' },
   { id: 'bp-003', description: 'SaaS Subscription — AWS Infrastructure', amount: 8200, type: 'payout', method: 'card', status: 'completed', date: '2026-02-03', counterparty: 'Amazon Web Services', reference: 'SUB-2026-002' },
@@ -173,19 +173,19 @@ const enterprisePayments: Payment[] = [
   { id: 'bp-010', description: 'Contractor — AI/ML Pipeline', amount: 18500, type: 'payout', method: 'bank', status: 'pending', date: '2026-02-16', counterparty: 'Tensor Works LLC', reference: 'CTR-2026-005' },
 ];
 
-const enterpriseSettlements: Settlement[] = [
+const businessSettlements: Settlement[] = [
   { id: 'bs-001', period: 'January 2026', totalCollected: 66500, totalPaidOut: 54200, netAmount: 12300, status: 'settled', date: '2026-02-01' },
   { id: 'bs-002', period: 'December 2025', totalCollected: 58000, totalPaidOut: 48900, netAmount: 9100, status: 'settled', date: '2026-01-01' },
   { id: 'bs-003', period: 'February 2026', totalCollected: 66500, totalPaidOut: 88400, netAmount: -21900, status: 'in-progress', date: '2026-02-16' },
 ];
 
-const enterpriseRefunds: Refund[] = [
+const businessRefunds: Refund[] = [
   { id: 'br-001', originalPaymentId: 'bp-003', amount: 1200, reason: 'AWS reserved instance credit adjustment', status: 'processed', requestDate: '2026-02-04', processedDate: '2026-02-06' },
   { id: 'br-002', originalPaymentId: 'bp-004', amount: 2000, reason: 'Sprint deliverable scope reduction', status: 'approved', requestDate: '2026-02-08', processedDate: '2026-02-10' },
   { id: 'br-003', originalPaymentId: 'bp-006', amount: 750, reason: 'Duplicate billing on retainer', status: 'pending', requestDate: '2026-02-12' },
 ];
 
-const enterpriseSnapshot: PaymentSnapshot = {
+const businessSnapshot: PaymentSnapshot = {
   totalCollected: 185000,
   totalPaidOut: 142000,
   pendingPayments: 5,
@@ -231,8 +231,7 @@ export const PAYMENTS: Record<Mode, Payment[]> = {
   sports: sportsPayments,
   church: churchPayments,
   education: educationPayments,
-  enterprise: enterprisePayments,
-  business: enterprisePayments,
+  business: businessPayments,
   competition: communityPayments,
 };
 
@@ -240,8 +239,7 @@ export const SETTLEMENTS: Record<Mode, Settlement[]> = {
   sports: sportsSettlements,
   church: churchSettlements,
   education: educationSettlements,
-  enterprise: enterpriseSettlements,
-  business: enterpriseSettlements,
+  business: businessSettlements,
   competition: communitySettlements,
 };
 
@@ -249,8 +247,7 @@ export const REFUNDS: Record<Mode, Refund[]> = {
   sports: sportsRefunds,
   church: churchRefunds,
   education: educationRefunds,
-  enterprise: enterpriseRefunds,
-  business: enterpriseRefunds,
+  business: businessRefunds,
   competition: communityRefunds,
 };
 
@@ -258,7 +255,6 @@ export const PAYMENT_SNAPSHOTS: Record<Mode, PaymentSnapshot> = {
   sports: sportsSnapshot,
   church: churchSnapshot,
   education: educationSnapshot,
-  enterprise: enterpriseSnapshot,
-  business: enterpriseSnapshot,
+  business: businessSnapshot,
   competition: communitySnapshot,
 };

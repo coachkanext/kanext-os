@@ -279,3 +279,33 @@ const BUSINESS_QUICK_ACTIONS: Record<BusinessRoleLens, BusinessQuickAction[]> = 
 export function getBusinessQuickActions(role: BusinessRoleLens): BusinessQuickAction[] {
   return BUSINESS_QUICK_ACTIONS[role] || BUSINESS_QUICK_ACTIONS.B3;
 }
+
+// =============================================================================
+// ORG TAB VISIBILITY (10 tabs in Business Organization)
+// =============================================================================
+
+export type BizOrgTab =
+  | 'entities' | 'people' | 'rooms' | 'operations' | 'finance'
+  | 'payment-rails' | 'legal' | 'compliance' | 'assets' | 'reports';
+
+const BIZ_ORG_TAB_MATRIX: Record<BizOrgTab, Record<BusinessRoleLens, BusinessVisibility>> = {
+  entities:       { B1: 'full', B2a: 'limited', B2b: 'limited', B3: 'limited', B4: 'limited', B5: 'limited' },
+  people:         { B1: 'full', B2a: 'limited', B2b: 'exact',   B3: 'limited', B4: 'hidden',  B5: 'hidden' },
+  rooms:          { B1: 'full', B2a: 'hidden',  B2b: 'limited', B3: 'hidden',  B4: 'hidden',  B5: 'hidden' },
+  operations:     { B1: 'full', B2a: 'hidden',  B2b: 'limited', B3: 'hidden',  B4: 'hidden',  B5: 'hidden' },
+  finance:        { B1: 'full', B2a: 'banded',  B2b: 'exact',   B3: 'hidden',  B4: 'hidden',  B5: 'hidden' },
+  'payment-rails':{ B1: 'full', B2a: 'hidden',  B2b: 'exact',   B3: 'hidden',  B4: 'hidden',  B5: 'hidden' },
+  legal:          { B1: 'full', B2a: 'hidden',  B2b: 'exact',   B3: 'hidden',  B4: 'hidden',  B5: 'hidden' },
+  compliance:     { B1: 'full', B2a: 'hidden',  B2b: 'limited', B3: 'hidden',  B4: 'hidden',  B5: 'hidden' },
+  assets:         { B1: 'full', B2a: 'limited', B2b: 'exact',   B3: 'hidden',  B4: 'hidden',  B5: 'limited' },
+  reports:        { B1: 'full', B2a: 'banded',  B2b: 'exact',   B3: 'hidden',  B4: 'hidden',  B5: 'limited' },
+};
+
+export function getBizOrgTabVisibility(tab: BizOrgTab, role: BusinessRoleLens): BusinessVisibility {
+  return BIZ_ORG_TAB_MATRIX[tab]?.[role] ?? 'hidden';
+}
+
+export function getVisibleBizOrgTabs(role: BusinessRoleLens): BizOrgTab[] {
+  return (Object.keys(BIZ_ORG_TAB_MATRIX) as BizOrgTab[])
+    .filter((tab) => BIZ_ORG_TAB_MATRIX[tab][role] !== 'hidden');
+}

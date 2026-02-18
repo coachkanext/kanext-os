@@ -222,11 +222,6 @@ export const FINANCE_SCOPE_CHIPS: Record<Mode, FinanceScopeChip[]> = {
     { key: 'campus', label: 'Campus' },
     { key: 'ministry', label: 'Ministry' },
   ],
-  enterprise: [
-    { key: 'org', label: 'Organization' },
-    { key: 'entity', label: 'Entity' },
-    { key: 'department', label: 'Department' },
-  ],
   competition: [
     { key: 'org', label: 'Organization' },
     { key: 'series', label: 'Series' },
@@ -761,10 +756,10 @@ const CHURCH_AUDIT: FinanceAuditEntry[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Dashboard
+// BUSINESS — Dashboard
 // =============================================================================
 
-const ENTERPRISE_DASHBOARD: FinanceDashboardBlock[] = [
+const BUSINESS_DASHBOARD: FinanceDashboardBlock[] = [
   { id: 'end-1', label: 'Monthly Burn Rate', icon: 'flame.fill', value: '$42K', subValue: '18-mo runway', color: '#EF4444' },
   { id: 'end-2', label: 'Revenue MTD', icon: 'chart.line.uptrend.xyaxis', value: '$32K', subValue: '+12% MoM', color: '#22C55E' },
   { id: 'end-3', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '5', subValue: '$18,200 total', color: '#F59E0B' },
@@ -776,10 +771,10 @@ const ENTERPRISE_DASHBOARD: FinanceDashboardBlock[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Budgets
+// BUSINESS — Budgets
 // =============================================================================
 
-const ENTERPRISE_BUDGETS: FinanceBudget[] = [
+const BUSINESS_BUDGETS: FinanceBudget[] = [
   { id: 'enb-1', category: 'Payroll', period: 'FY 2026', budgeted: 180000, actual: 135000, owner: 'CFO', status: 'on-track' },
   { id: 'enb-2', category: 'Contractors', period: 'FY 2026', budgeted: 45000, actual: 38000, owner: 'VP Engineering', status: 'at-risk' },
   { id: 'enb-3', category: 'Cloud / Tools', period: 'FY 2026', budgeted: 12000, actual: 9200, owner: 'CTO', status: 'on-track' },
@@ -792,10 +787,10 @@ const ENTERPRISE_BUDGETS: FinanceBudget[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Ledger
+// BUSINESS — Ledger
 // =============================================================================
 
-const ENTERPRISE_LEDGER: FinanceLedgerEntry[] = [
+const BUSINESS_LEDGER: FinanceLedgerEntry[] = [
   { id: 'enl-1', date: 'Feb 15, 2026', description: 'SaaS subscription — Acme Corp', type: 'income', category: 'Revenue', amount: 4800, scope: 'Entity' },
   { id: 'enl-2', date: 'Feb 14, 2026', description: 'AWS infrastructure — February', type: 'expense', category: 'Cloud / Tools', amount: 3200, scope: 'Entity', evidence: 'AWS-FEB-26' },
   { id: 'enl-3', date: 'Feb 12, 2026', description: 'SaaS subscription — Beta Inc', type: 'income', category: 'Revenue', amount: 2400, scope: 'Entity' },
@@ -811,10 +806,10 @@ const ENTERPRISE_LEDGER: FinanceLedgerEntry[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Approvals
+// BUSINESS — Approvals
 // =============================================================================
 
-const ENTERPRISE_APPROVALS: FinanceApproval[] = [
+const BUSINESS_APPROVALS: FinanceApproval[] = [
   { id: 'ena-1', title: 'Annual AWS Reserved Instances', amount: 8400, purpose: 'Lock in 1-year RI pricing for production workloads', requestedBy: 'Devon Okafor', requestedByInitials: 'DO', approvers: ['CTO', 'CFO'], status: 'pending', submittedAt: 'Feb 13, 2026', evidence: 'AWS-RI-Quote-2026' },
   { id: 'ena-2', title: 'Q2 Marketing Campaign', amount: 5000, purpose: 'Paid acquisition + content syndication for spring launch', requestedBy: 'Priya Desai', requestedByInitials: 'PD', approvers: ['VP Marketing', 'CFO'], status: 'approved', submittedAt: 'Feb 10, 2026' },
   { id: 'ena-3', title: 'Legal Retainer — IP Filing', amount: 3800, purpose: 'Patent application preparation for core algorithm', requestedBy: 'General Counsel', requestedByInitials: 'GC', approvers: ['CEO'], status: 'pending', submittedAt: 'Feb 8, 2026' },
@@ -822,10 +817,10 @@ const ENTERPRISE_APPROVALS: FinanceApproval[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Payables
+// BUSINESS — Payables
 // =============================================================================
 
-const ENTERPRISE_PAYABLES: FinancePayable[] = [
+const BUSINESS_PAYABLES: FinancePayable[] = [
   { id: 'enp-1', vendor: 'Amazon Web Services', description: 'Cloud infrastructure — February usage', amount: 3200, dueDate: 'Mar 5, 2026', category: 'Cloud / Tools', status: 'pending', invoiceRef: 'AWS-INV-FEB26' },
   { id: 'enp-2', vendor: 'Wilson & Associates', description: 'Legal counsel — ToS review + IP consult', amount: 2800, dueDate: 'Feb 25, 2026', category: 'Legal', status: 'paid' },
   { id: 'enp-3', vendor: 'Studio Nine', description: 'Design contractor — February deliverables', amount: 5500, dueDate: 'Feb 28, 2026', category: 'Contractors', status: 'pending', invoiceRef: 'SN-2026-02' },
@@ -834,10 +829,10 @@ const ENTERPRISE_PAYABLES: FinancePayable[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Receivables
+// BUSINESS — Receivables
 // =============================================================================
 
-const ENTERPRISE_RECEIVABLES: FinanceReceivable[] = [
+const BUSINESS_RECEIVABLES: FinanceReceivable[] = [
   { id: 'enr-1', source: 'Acme Corp', description: 'Monthly SaaS license — March', amount: 4800, dueDate: 'Mar 1, 2026', category: 'Subscriptions', status: 'pending' },
   { id: 'enr-2', source: 'Omega Corp', description: 'Enterprise annual license — Q2 installment', amount: 12000, dueDate: 'Apr 1, 2026', category: 'Subscriptions', status: 'pending' },
   { id: 'enr-3', source: 'Gamma Labs', description: 'Pilot extension fee — Phase 2', amount: 8000, dueDate: 'Mar 15, 2026', category: 'Pilot Fees', status: 'approved' },
@@ -845,10 +840,10 @@ const ENTERPRISE_RECEIVABLES: FinanceReceivable[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Contracts
+// BUSINESS — Contracts
 // =============================================================================
 
-const ENTERPRISE_CONTRACTS: FinanceContract[] = [
+const BUSINESS_CONTRACTS: FinanceContract[] = [
   { id: 'enc-1', title: 'AWS Enterprise Support', vendor: 'Amazon Web Services', value: 38400, startDate: 'Jan 1, 2026', endDate: 'Dec 31, 2026', status: 'active' },
   { id: 'enc-2', title: 'Design Services Agreement', vendor: 'Studio Nine', value: 66000, startDate: 'Jul 1, 2025', endDate: 'Jun 30, 2026', renewalDate: 'Apr 1, 2026', status: 'active' },
   { id: 'enc-3', title: 'Legal Retainer', vendor: 'Wilson & Associates', value: 24000, startDate: 'Jan 1, 2026', endDate: 'Dec 31, 2026', status: 'active' },
@@ -856,10 +851,10 @@ const ENTERPRISE_CONTRACTS: FinanceContract[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Purchasing
+// BUSINESS — Purchasing
 // =============================================================================
 
-const ENTERPRISE_PURCHASING: FinancePurchaseRequest[] = [
+const BUSINESS_PURCHASING: FinancePurchaseRequest[] = [
   { id: 'enpr-1', title: 'MacBook Pro — New Engineering Hire', requestedBy: 'VP Engineering', requestedByInitials: 'VE', amount: 3200, category: 'Equipment', status: 'approved', submittedAt: 'Feb 12, 2026' },
   { id: 'enpr-2', title: 'Conference Tickets — SaaStr Annual', requestedBy: 'Priya Desai', requestedByInitials: 'PD', amount: 2400, category: 'Marketing', status: 'pending', submittedAt: 'Feb 10, 2026' },
   { id: 'enpr-3', title: 'Security Audit — SOC 2 Prep', requestedBy: 'CTO', requestedByInitials: 'CT', amount: 8500, category: 'Compliance', status: 'pending', submittedAt: 'Feb 8, 2026' },
@@ -867,10 +862,10 @@ const ENTERPRISE_PURCHASING: FinancePurchaseRequest[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Payroll
+// BUSINESS — Payroll
 // =============================================================================
 
-const ENTERPRISE_PAYROLL: FinancePayrollItem[] = [
+const BUSINESS_PAYROLL: FinancePayrollItem[] = [
   { id: 'enpy-1', payee: 'Full-Time Employees (12)', payeeInitials: 'FT', period: 'Feb 2026', amount: 148000, type: 'salary', status: 'paid' },
   { id: 'enpy-2', payee: 'Studio Nine — Design', payeeInitials: 'SN', period: 'Feb 2026', amount: 5500, type: 'contractor', status: 'pending' },
   { id: 'enpy-3', payee: 'DevOps Consultant', payeeInitials: 'DC', period: 'Feb 2026', amount: 4200, type: 'contractor', status: 'pending' },
@@ -879,20 +874,20 @@ const ENTERPRISE_PAYROLL: FinancePayrollItem[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Reimbursements
+// BUSINESS — Reimbursements
 // =============================================================================
 
-const ENTERPRISE_REIMBURSEMENTS: FinanceReimbursement[] = [
+const BUSINESS_REIMBURSEMENTS: FinanceReimbursement[] = [
   { id: 'enrm-1', claimant: 'Devon Okafor', claimantInitials: 'DO', description: 'Client dinner — Omega Corp renewal', amount: 285, receipts: 1, status: 'approved', submittedAt: 'Feb 11, 2026' },
   { id: 'enrm-2', claimant: 'Priya Desai', claimantInitials: 'PD', description: 'Uber / meals — Nashville offsite', amount: 340, receipts: 6, status: 'pending', submittedAt: 'Feb 3, 2026' },
   { id: 'enrm-3', claimant: 'VP Engineering', claimantInitials: 'VE', description: 'Monitor adapter + cables — home office', amount: 95, receipts: 2, status: 'paid', submittedAt: 'Jan 28, 2026' },
 ];
 
 // =============================================================================
-// ENTERPRISE — Reports
+// BUSINESS — Reports
 // =============================================================================
 
-const ENTERPRISE_REPORTS: FinanceReport[] = [
+const BUSINESS_REPORTS: FinanceReport[] = [
   { id: 'enrp-1', title: 'Monthly P&L — January 2026', type: 'P&L Statement', period: 'Jan 2026', generatedAt: 'Feb 5, 2026', owner: 'CFO' },
   { id: 'enrp-2', title: 'Runway & Burn Analysis', type: 'Cash Flow Report', period: 'FY 2026 YTD', generatedAt: 'Feb 10, 2026', owner: 'CFO' },
   { id: 'enrp-3', title: 'Revenue by Customer Segment', type: 'Revenue Report', period: 'Q4 2025 + Q1 2026', generatedAt: 'Feb 8, 2026', owner: 'VP Sales' },
@@ -900,10 +895,10 @@ const ENTERPRISE_REPORTS: FinanceReport[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Controls
+// BUSINESS — Controls
 // =============================================================================
 
-const ENTERPRISE_CONTROLS: FinanceControl[] = [
+const BUSINESS_CONTROLS: FinanceControl[] = [
   { id: 'enct-1', title: 'Single Purchase Limit', description: 'Purchases above threshold require CFO approval', threshold: 1000, enabled: true, category: 'Purchasing' },
   { id: 'enct-2', title: 'Contractor Payment Cap', description: 'Monthly contractor payments above threshold flagged', threshold: 10000, enabled: true, category: 'Payroll' },
   { id: 'enct-3', title: 'Travel Pre-Approval', description: 'All travel over $500 requires manager + CFO approval', threshold: 500, enabled: true, category: 'Travel' },
@@ -912,10 +907,10 @@ const ENTERPRISE_CONTROLS: FinanceControl[] = [
 ];
 
 // =============================================================================
-// ENTERPRISE — Audit
+// BUSINESS — Audit
 // =============================================================================
 
-const ENTERPRISE_AUDIT: FinanceAuditEntry[] = [
+const BUSINESS_AUDIT: FinanceAuditEntry[] = [
   { id: 'enau-1', action: 'Revenue Received', actor: 'System', timestamp: 'Feb 15, 2026 9:00 AM', timestampMs: 1739610000000, description: 'Acme Corp SaaS payment — $4,800 auto-collected' },
   { id: 'enau-2', action: 'Invoice Paid', actor: 'Finance', timestamp: 'Feb 14, 2026 2:00 PM', timestampMs: 1739552400000, description: 'AWS February infrastructure — $3,200' },
   { id: 'enau-3', action: 'Approval Submitted', actor: 'Devon Okafor', timestamp: 'Feb 13, 2026 4:30 PM', timestampMs: 1739470200000, description: 'AWS Reserved Instances — $8,400 request' },
@@ -1102,117 +1097,104 @@ const FINANCE_DASHBOARDS: Record<Mode, FinanceDashboardBlock[]> = {
   sports: SPORTS_DASHBOARD,
   education: EDUCATION_DASHBOARD,
   church: CHURCH_DASHBOARD,
-  enterprise: ENTERPRISE_DASHBOARD,
   competition: COMMUNITY_DASHBOARD,
-  business: ENTERPRISE_DASHBOARD,
+  business: BUSINESS_DASHBOARD,
 };
 
 const FINANCE_BUDGETS_V2: Record<Mode, FinanceBudget[]> = {
   sports: SPORTS_BUDGETS,
   education: EDUCATION_BUDGETS,
   church: CHURCH_BUDGETS,
-  enterprise: ENTERPRISE_BUDGETS,
   competition: COMMUNITY_BUDGETS,
-  business: ENTERPRISE_BUDGETS,
+  business: BUSINESS_BUDGETS,
 };
 
 const FINANCE_LEDGERS: Record<Mode, FinanceLedgerEntry[]> = {
   sports: SPORTS_LEDGER,
   education: EDUCATION_LEDGER,
   church: CHURCH_LEDGER,
-  enterprise: ENTERPRISE_LEDGER,
   competition: COMMUNITY_LEDGER,
-  business: ENTERPRISE_LEDGER,
+  business: BUSINESS_LEDGER,
 };
 
 const FINANCE_APPROVALS: Record<Mode, FinanceApproval[]> = {
   sports: SPORTS_APPROVALS,
   education: EDUCATION_APPROVALS,
   church: CHURCH_APPROVALS,
-  enterprise: ENTERPRISE_APPROVALS,
   competition: COMMUNITY_APPROVALS,
-  business: ENTERPRISE_APPROVALS,
+  business: BUSINESS_APPROVALS,
 };
 
 const FINANCE_PAYABLES: Record<Mode, FinancePayable[]> = {
   sports: SPORTS_PAYABLES,
   education: EDUCATION_PAYABLES,
   church: CHURCH_PAYABLES,
-  enterprise: ENTERPRISE_PAYABLES,
   competition: COMMUNITY_PAYABLES,
-  business: ENTERPRISE_PAYABLES,
+  business: BUSINESS_PAYABLES,
 };
 
 const FINANCE_RECEIVABLES: Record<Mode, FinanceReceivable[]> = {
   sports: SPORTS_RECEIVABLES,
   education: EDUCATION_RECEIVABLES,
   church: CHURCH_RECEIVABLES,
-  enterprise: ENTERPRISE_RECEIVABLES,
   competition: COMMUNITY_RECEIVABLES,
-  business: ENTERPRISE_RECEIVABLES,
+  business: BUSINESS_RECEIVABLES,
 };
 
 const FINANCE_CONTRACTS: Record<Mode, FinanceContract[]> = {
   sports: SPORTS_CONTRACTS,
   education: EDUCATION_CONTRACTS,
   church: CHURCH_CONTRACTS,
-  enterprise: ENTERPRISE_CONTRACTS,
   competition: COMMUNITY_CONTRACTS,
-  business: ENTERPRISE_CONTRACTS,
+  business: BUSINESS_CONTRACTS,
 };
 
 const FINANCE_PURCHASING: Record<Mode, FinancePurchaseRequest[]> = {
   sports: SPORTS_PURCHASING,
   education: EDUCATION_PURCHASING,
   church: CHURCH_PURCHASING,
-  enterprise: ENTERPRISE_PURCHASING,
   competition: COMMUNITY_PURCHASING,
-  business: ENTERPRISE_PURCHASING,
+  business: BUSINESS_PURCHASING,
 };
 
 const FINANCE_PAYROLL: Record<Mode, FinancePayrollItem[]> = {
   sports: SPORTS_PAYROLL,
   education: EDUCATION_PAYROLL,
   church: CHURCH_PAYROLL,
-  enterprise: ENTERPRISE_PAYROLL,
   competition: COMMUNITY_PAYROLL,
-  business: ENTERPRISE_PAYROLL,
+  business: BUSINESS_PAYROLL,
 };
 
 const FINANCE_REIMBURSEMENTS: Record<Mode, FinanceReimbursement[]> = {
   sports: SPORTS_REIMBURSEMENTS,
   education: EDUCATION_REIMBURSEMENTS,
   church: CHURCH_REIMBURSEMENTS,
-  enterprise: ENTERPRISE_REIMBURSEMENTS,
   competition: COMMUNITY_REIMBURSEMENTS,
-  business: ENTERPRISE_REIMBURSEMENTS,
+  business: BUSINESS_REIMBURSEMENTS,
 };
 
 const FINANCE_REPORTS: Record<Mode, FinanceReport[]> = {
   sports: SPORTS_REPORTS,
   education: EDUCATION_REPORTS,
   church: CHURCH_REPORTS,
-  enterprise: ENTERPRISE_REPORTS,
   competition: COMMUNITY_REPORTS,
-  business: ENTERPRISE_REPORTS,
+  business: BUSINESS_REPORTS,
 };
 
 const FINANCE_CONTROLS: Record<Mode, FinanceControl[]> = {
   sports: SPORTS_CONTROLS,
   education: EDUCATION_CONTROLS,
   church: CHURCH_CONTROLS,
-  enterprise: ENTERPRISE_CONTROLS,
   competition: COMMUNITY_CONTROLS,
-  business: ENTERPRISE_CONTROLS,
+  business: BUSINESS_CONTROLS,
 };
 
 const FINANCE_AUDITS: Record<Mode, FinanceAuditEntry[]> = {
   sports: SPORTS_AUDIT,
   education: EDUCATION_AUDIT,
   church: CHURCH_AUDIT,
-  enterprise: ENTERPRISE_AUDIT,
   competition: COMMUNITY_AUDIT,
-  business: ENTERPRISE_AUDIT,
+  business: BUSINESS_AUDIT,
 };
 
 // =============================================================================
