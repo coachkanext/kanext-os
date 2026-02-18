@@ -1,0 +1,903 @@
+/**
+ * Education Organization Payment Rails — Mock Data & Types
+ * Money-movement execution layer: wallets, transactions, batches, approvals,
+ * releases, exceptions, returns, and receipts for HBCU operations.
+ */
+
+// =============================================================================
+// TYPES
+// =============================================================================
+
+export type EduRailsStatus = 'green' | 'yellow' | 'red';
+
+export type EduRailMethod = 'ach' | 'wire' | 'internal' | 'card' | 'check';
+
+export type EduTransactionState =
+  | 'draft'
+  | 'proposed'
+  | 'rule_checked'
+  | 'authorized'
+  | 'scheduled'
+  | 'released'
+  | 'in_flight'
+  | 'settled'
+  | 'held'
+  | 'failed'
+  | 'returned'
+  | 'disputed'
+  | 'reversed';
+
+export type EduBatchType =
+  | 'pell_disbursement'
+  | 'faculty_payroll'
+  | 'vendor_run'
+  | 'student_refund'
+  | 'athletics_travel'
+  | 'aid_disbursement'
+  | 'housing_refund';
+
+export type EduExceptionType = 'held' | 'failed' | 'returned' | 'disputed' | 'reversal';
+
+export type EduExceptionCause =
+  | 'authority_rule'       // A
+  | 'budget_cap_rule'      // B
+  | 'compliance_rule'      // C
+  | 'documentation_rule'   // D
+  | 'eligibility_rule'     // E
+  | 'processor_technical'; // F
+
+export type EduWalletType =
+  | 'operating'
+  | 'payroll'
+  | 'tuition_receipts'
+  | 'housing_receipts'
+  | 'aid_disbursement'
+  | 'athletics_ops'
+  | 'restricted_funds';
+
+// =============================================================================
+// INTERFACES
+// =============================================================================
+
+export interface EduRailsHealthStrip {
+  status: EduRailsStatus;
+  connectedRails: number;
+  pendingApprovals: number;
+  pendingReleases: number;
+  inFlight: number;
+  exceptions: number;
+  nextSettlementWindow: string;
+}
+
+export interface EduRailsWallet {
+  id: string;
+  name: string;
+  walletType: EduWalletType;
+  institution: string;
+  available: number;
+  committed: number;
+  pendingInflows: number;
+  pendingOutflows: number;
+  allowedRails: EduRailMethod[];
+  controls: string;
+  exceptionsCount: number;
+}
+
+export interface EduRailsTransaction {
+  id: string;
+  type: string;
+  amount: number;
+  fromWallet: EduWalletType;
+  toPayee: string;
+  toPayeeMasked: boolean;
+  state: EduTransactionState;
+  method: EduRailMethod;
+  impact: string;
+  nextOwner: string;
+  createdAt: string;
+  deadline?: string;
+  holdReason?: string;
+  failReason?: string;
+  batchId?: string;
+  institution: string;
+}
+
+export interface EduRailsBatch {
+  id: string;
+  name: string;
+  type: EduBatchType;
+  recipientCount: number;
+  totalAmount: number;
+  state: EduTransactionState;
+  approvalStatus: 'pending' | 'approved' | 'partial';
+  exceptionsCount: number;
+  scheduledWindow: string;
+  institution: string;
+}
+
+export interface EduRailsApprovalItem {
+  id: string;
+  transactionId: string;
+  amount: number;
+  walletType: EduWalletType;
+  category: string;
+  requestor: string;
+  approverSeat: string;
+  missingRequirements: string[];
+  auditNote?: string;
+  institution: string;
+}
+
+export interface EduRailsReleaseItem {
+  id: string;
+  transactionId: string;
+  amount: number;
+  walletType: EduWalletType;
+  method: EduRailMethod;
+  approvedBy: string;
+  scheduledTime: string;
+  requiresSecondApprover: boolean;
+  institution: string;
+}
+
+export interface EduRailsException {
+  id: string;
+  transactionId: string;
+  type: EduExceptionType;
+  cause: EduExceptionCause;
+  causeLabel: string;
+  failingRule: string;
+  governedActions: string[];
+  owner: string;
+  escalationPath: string;
+  evidence: string[];
+  amount: number;
+  walletType: EduWalletType;
+  institution: string;
+  createdAt: string;
+}
+
+export interface EduRailsReturn {
+  id: string;
+  transactionId: string;
+  amount: number;
+  stage: 'received' | 'evidence_requested' | 'submitted' | 'resolved';
+  aging: number;
+  description: string;
+  institution: string;
+  createdAt: string;
+}
+
+export interface EduRailsReceipt {
+  id: string;
+  transactionId: string;
+  requestEvent: string;
+  rulesApplied: string;
+  approvalChain: string;
+  releaseAuth: string;
+  settlementRecord: string;
+  ledgerPostings: string;
+  amount: number;
+  settledDate: string;
+  immutable: boolean;
+  institution: string;
+}
+
+// =============================================================================
+// CONSTANTS / LABELS
+// =============================================================================
+
+export const EDU_RAILS_STATUS_COLORS: Record<EduRailsStatus, string> = {
+  green: '#22C55E',
+  yellow: '#F59E0B',
+  red: '#EF4444',
+};
+
+export const EDU_RAIL_METHOD_LABELS: Record<EduRailMethod, string> = {
+  ach: 'ACH',
+  wire: 'Wire',
+  internal: 'Internal Transfer',
+  card: 'Card',
+  check: 'Check',
+};
+
+export const EDU_RAIL_METHOD_ICONS: Record<EduRailMethod, string> = {
+  ach: 'building.columns.fill',
+  wire: 'bolt.fill',
+  internal: 'arrow.left.arrow.right',
+  card: 'creditcard.fill',
+  check: 'doc.text.fill',
+};
+
+export const EDU_TRANSACTION_STATE_LABELS: Record<EduTransactionState, string> = {
+  draft: 'Draft',
+  proposed: 'Proposed',
+  rule_checked: 'Rule Checked',
+  authorized: 'Authorized',
+  scheduled: 'Scheduled',
+  released: 'Released',
+  in_flight: 'In Flight',
+  settled: 'Settled',
+  held: 'Held',
+  failed: 'Failed',
+  returned: 'Returned',
+  disputed: 'Disputed',
+  reversed: 'Reversed',
+};
+
+export const EDU_TRANSACTION_STATE_COLORS: Record<EduTransactionState, string> = {
+  draft: '#8F8F8F',
+  proposed: '#8B5CF6',
+  rule_checked: '#6AA9FF',
+  authorized: '#22C55E',
+  scheduled: '#6AA9FF',
+  released: '#10B981',
+  in_flight: '#F59E0B',
+  settled: '#22C55E',
+  held: '#F59E0B',
+  failed: '#EF4444',
+  returned: '#EF4444',
+  disputed: '#DC2626',
+  reversed: '#EC4899',
+};
+
+export const EDU_BATCH_TYPE_LABELS: Record<EduBatchType, string> = {
+  pell_disbursement: 'Pell Disbursement',
+  faculty_payroll: 'Faculty Payroll',
+  vendor_run: 'Vendor Run',
+  student_refund: 'Student Refund',
+  athletics_travel: 'Athletics Travel',
+  aid_disbursement: 'Aid Disbursement',
+  housing_refund: 'Housing Refund',
+};
+
+export const EDU_EXCEPTION_TYPE_LABELS: Record<EduExceptionType, string> = {
+  held: 'Held',
+  failed: 'Failed',
+  returned: 'Returned',
+  disputed: 'Disputed',
+  reversal: 'Reversal',
+};
+
+export const EDU_EXCEPTION_TYPE_COLORS: Record<EduExceptionType, string> = {
+  held: '#F59E0B',
+  failed: '#EF4444',
+  returned: '#EF4444',
+  disputed: '#DC2626',
+  reversal: '#8B5CF6',
+};
+
+export const EDU_EXCEPTION_CAUSE_LABELS: Record<EduExceptionCause, string> = {
+  authority_rule: 'Authority Rule',
+  budget_cap_rule: 'Budget Cap Rule',
+  compliance_rule: 'Compliance Rule',
+  documentation_rule: 'Documentation Rule',
+  eligibility_rule: 'Eligibility Rule',
+  processor_technical: 'Processor Technical',
+};
+
+export const EDU_WALLET_TYPE_LABELS: Record<EduWalletType, string> = {
+  operating: 'Operating',
+  payroll: 'Payroll',
+  tuition_receipts: 'Tuition Receipts',
+  housing_receipts: 'Housing Receipts',
+  aid_disbursement: 'Aid Disbursement',
+  athletics_ops: 'Athletics Ops',
+  restricted_funds: 'Restricted Funds',
+};
+
+export const EDU_WALLET_TYPE_COLORS: Record<EduWalletType, string> = {
+  operating: '#3B82F6',
+  payroll: '#22C55E',
+  tuition_receipts: '#8B5CF6',
+  housing_receipts: '#F97316',
+  aid_disbursement: '#10B981',
+  athletics_ops: '#EC4899',
+  restricted_funds: '#6AA9FF',
+};
+
+// =============================================================================
+// HEALTH STRIP
+// =============================================================================
+
+const HEALTH_STRIP: EduRailsHealthStrip = {
+  status: 'green',
+  connectedRails: 5,
+  pendingApprovals: 5,
+  pendingReleases: 3,
+  inFlight: 4,
+  exceptions: 2,
+  nextSettlementWindow: 'Today 4:00 PM EST',
+};
+
+// =============================================================================
+// WALLETS
+// =============================================================================
+
+const WALLETS: EduRailsWallet[] = [
+  {
+    id: 'edu-wal-001',
+    name: 'FMU Operating',
+    walletType: 'operating',
+    institution: 'Florida Memorial University',
+    available: 2180000,
+    committed: 340000,
+    pendingInflows: 125000,
+    pendingOutflows: 89000,
+    allowedRails: ['ach', 'wire', 'internal', 'card', 'check'],
+    controls: 'Dual approval >$25K; Board approval >$100K',
+    exceptionsCount: 1,
+  },
+  {
+    id: 'edu-wal-002',
+    name: 'BCU Payroll',
+    walletType: 'payroll',
+    institution: 'Bethune-Cookman University',
+    available: 890000,
+    committed: 445000,
+    pendingInflows: 0,
+    pendingOutflows: 445000,
+    allowedRails: ['ach'],
+    controls: 'Automated bi-weekly; Controller pre-authorization required',
+    exceptionsCount: 0,
+  },
+  {
+    id: 'edu-wal-003',
+    name: 'FMU Tuition Receipts',
+    walletType: 'tuition_receipts',
+    institution: 'Florida Memorial University',
+    available: 1450000,
+    committed: 0,
+    pendingInflows: 280000,
+    pendingOutflows: 0,
+    allowedRails: ['ach', 'card'],
+    controls: 'Auto-sweep to Operating daily; hold on disputed amounts',
+    exceptionsCount: 1,
+  },
+  {
+    id: 'edu-wal-004',
+    name: 'BCU Housing Receipts',
+    walletType: 'housing_receipts',
+    institution: 'Bethune-Cookman University',
+    available: 620000,
+    committed: 0,
+    pendingInflows: 45000,
+    pendingOutflows: 12000,
+    allowedRails: ['ach', 'card', 'check'],
+    controls: 'Semester billing cycles; refund window 14 business days',
+    exceptionsCount: 0,
+  },
+  {
+    id: 'edu-wal-005',
+    name: 'FMU Aid Disbursement',
+    walletType: 'aid_disbursement',
+    institution: 'Florida Memorial University',
+    available: 1850000,
+    committed: 820000,
+    pendingInflows: 0,
+    pendingOutflows: 380000,
+    allowedRails: ['ach', 'internal'],
+    controls: 'Title IV compliance required; SAP verification pre-disbursement',
+    exceptionsCount: 0,
+  },
+  {
+    id: 'edu-wal-006',
+    name: 'BCU Athletics Ops',
+    walletType: 'athletics_ops',
+    institution: 'Bethune-Cookman University',
+    available: 340000,
+    committed: 125000,
+    pendingInflows: 18000,
+    pendingOutflows: 42000,
+    allowedRails: ['ach', 'card', 'check'],
+    controls: 'AD approval >$5K; travel advances require reconciliation within 30 days',
+    exceptionsCount: 1,
+  },
+  {
+    id: 'edu-wal-007',
+    name: 'FMU Restricted Funds',
+    walletType: 'restricted_funds',
+    institution: 'Florida Memorial University',
+    available: 2400000,
+    committed: 180000,
+    pendingInflows: 0,
+    pendingOutflows: 125000,
+    allowedRails: ['ach', 'wire'],
+    controls: 'Grant-specific spending; federal compliance audit trail required',
+    exceptionsCount: 0,
+  },
+];
+
+// =============================================================================
+// CONTROL TOWER TRANSACTIONS
+// =============================================================================
+
+const TRANSACTIONS: EduRailsTransaction[] = [
+  // --- Needs Approval (3) ---
+  {
+    id: 'edu-txn-001',
+    type: 'batch_disbursement',
+    amount: 382400,
+    fromWallet: 'aid_disbursement',
+    toPayee: 'Pell Grant Spring Batch — 412 recipients',
+    toPayeeMasked: false,
+    state: 'proposed',
+    method: 'ach',
+    impact: 'Title IV Pell disbursement — spring semester; SAP verification complete',
+    nextOwner: 'Director of Financial Aid',
+    createdAt: '2026-02-16',
+    deadline: '2026-03-01',
+    batchId: 'edu-bat-001',
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-txn-002',
+    type: 'vendor',
+    amount: 145000,
+    fromWallet: 'athletics_ops',
+    toPayee: 'Nike Inc.',
+    toPayeeMasked: false,
+    state: 'proposed',
+    method: 'ach',
+    impact: 'Athletics equipment contract — spring sports outfitting',
+    nextOwner: 'Athletic Director',
+    createdAt: '2026-02-15',
+    deadline: '2026-02-28',
+    institution: 'Bethune-Cookman University',
+  },
+  {
+    id: 'edu-txn-003',
+    type: 'reimbursement',
+    amount: 8200,
+    fromWallet: 'operating',
+    toPayee: 'Faculty Travel Reimbursement Batch — 4 recipients',
+    toPayeeMasked: false,
+    state: 'proposed',
+    method: 'ach',
+    impact: 'SACS-COC conference travel and per diem reimbursements',
+    nextOwner: 'Provost Office',
+    createdAt: '2026-02-14',
+    institution: 'Florida Memorial University',
+  },
+  // --- Ready to Release (2) ---
+  {
+    id: 'edu-txn-004',
+    type: 'vendor',
+    amount: 38500,
+    fromWallet: 'operating',
+    toPayee: 'Sodexo Food Services',
+    toPayeeMasked: false,
+    state: 'authorized',
+    method: 'ach',
+    impact: 'Monthly dining services contract — February billing',
+    nextOwner: 'VP Finance',
+    createdAt: '2026-02-12',
+    deadline: '2026-02-20',
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-txn-005',
+    type: 'batch_refund',
+    amount: 42300,
+    fromWallet: 'tuition_receipts',
+    toPayee: 'Student Refund Batch — 23 recipients',
+    toPayeeMasked: false,
+    state: 'authorized',
+    method: 'ach',
+    impact: 'Spring withdrawal refunds — Title IV R2T4 calculations complete',
+    nextOwner: 'Bursar',
+    createdAt: '2026-02-15',
+    batchId: 'edu-bat-004',
+    institution: 'Bethune-Cookman University',
+  },
+  // --- In Flight (3) ---
+  {
+    id: 'edu-txn-006',
+    type: 'payroll',
+    amount: 445000,
+    fromWallet: 'payroll',
+    toPayee: 'BCU Faculty Payroll — 186 recipients',
+    toPayeeMasked: true,
+    state: 'in_flight',
+    method: 'ach',
+    impact: 'February bi-weekly faculty payroll — processing via ADP',
+    nextOwner: 'ACH Processor',
+    createdAt: '2026-02-17',
+    batchId: 'edu-bat-002',
+    institution: 'Bethune-Cookman University',
+  },
+  {
+    id: 'edu-txn-007',
+    type: 'vendor',
+    amount: 28500,
+    fromWallet: 'operating',
+    toPayee: 'Johnson Controls',
+    toPayeeMasked: false,
+    state: 'in_flight',
+    method: 'ach',
+    impact: 'HVAC quarterly maintenance — campus-wide service agreement',
+    nextOwner: 'ACH Processor',
+    createdAt: '2026-02-16',
+    institution: 'Bethune-Cookman University',
+  },
+  {
+    id: 'edu-txn-008',
+    type: 'vendor',
+    amount: 12800,
+    fromWallet: 'operating',
+    toPayee: 'ADP Payroll Processing',
+    toPayeeMasked: false,
+    state: 'in_flight',
+    method: 'ach',
+    impact: 'Payroll processing fees — February cycle',
+    nextOwner: 'ACH Processor',
+    createdAt: '2026-02-17',
+    institution: 'Florida Memorial University',
+  },
+  // --- Exceptions (2) ---
+  {
+    id: 'edu-txn-009',
+    type: 'refund',
+    amount: 1250,
+    fromWallet: 'tuition_receipts',
+    toPayee: 'Student A. J****',
+    toPayeeMasked: true,
+    state: 'returned',
+    method: 'ach',
+    impact: 'ACH return — student refund failed; invalid account on file',
+    nextOwner: 'Bursar Office',
+    createdAt: '2026-02-15',
+    failReason: 'ACH R03 — No Account/Unable to Locate Account',
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-txn-010',
+    type: 'vendor',
+    amount: 22400,
+    fromWallet: 'operating',
+    toPayee: 'Campus Landscaping LLC',
+    toPayeeMasked: false,
+    state: 'held',
+    method: 'check',
+    impact: 'Vendor payment held — missing W-9 documentation',
+    nextOwner: 'Procurement Office',
+    createdAt: '2026-02-14',
+    holdReason: 'IRS §6109 — W-9 required before payment release',
+    institution: 'Florida Memorial University',
+  },
+];
+
+// =============================================================================
+// BATCHES
+// =============================================================================
+
+const BATCHES: EduRailsBatch[] = [
+  {
+    id: 'edu-bat-001',
+    name: 'Pell Grant Spring Disbursement',
+    type: 'pell_disbursement',
+    recipientCount: 412,
+    totalAmount: 1420000,
+    state: 'proposed',
+    approvalStatus: 'pending',
+    exceptionsCount: 2,
+    scheduledWindow: 'Mar 1',
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-bat-002',
+    name: 'February Faculty Payroll',
+    type: 'faculty_payroll',
+    recipientCount: 186,
+    totalAmount: 890000,
+    state: 'in_flight',
+    approvalStatus: 'approved',
+    exceptionsCount: 0,
+    scheduledWindow: 'Today',
+    institution: 'Bethune-Cookman University',
+  },
+  {
+    id: 'edu-bat-003',
+    name: 'Monthly Vendor Run',
+    type: 'vendor_run',
+    recipientCount: 12,
+    totalAmount: 285000,
+    state: 'authorized',
+    approvalStatus: 'approved',
+    exceptionsCount: 1,
+    scheduledWindow: 'Today 4:00 PM',
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-bat-004',
+    name: 'Spring Withdrawal Refunds',
+    type: 'student_refund',
+    recipientCount: 23,
+    totalAmount: 42300,
+    state: 'authorized',
+    approvalStatus: 'approved',
+    exceptionsCount: 0,
+    scheduledWindow: 'Feb 20',
+    institution: 'Bethune-Cookman University',
+  },
+  {
+    id: 'edu-bat-005',
+    name: 'Basketball Conference Travel',
+    type: 'athletics_travel',
+    recipientCount: 18,
+    totalAmount: 24600,
+    state: 'proposed',
+    approvalStatus: 'pending',
+    exceptionsCount: 0,
+    scheduledWindow: 'Feb 28',
+    institution: 'Bethune-Cookman University',
+  },
+];
+
+// =============================================================================
+// APPROVALS QUEUE
+// =============================================================================
+
+const APPROVALS_QUEUE: EduRailsApprovalItem[] = [
+  {
+    id: 'edu-appr-001',
+    transactionId: 'edu-txn-001',
+    amount: 382400,
+    walletType: 'aid_disbursement',
+    category: 'Pell Disbursement',
+    requestor: 'Financial Aid Office',
+    approverSeat: 'Director of Financial Aid',
+    missingRequirements: ['SAP batch certification', 'Title IV compliance sign-off'],
+    auditNote: 'Spring 2026 Pell disbursement — 412 eligible students verified',
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-appr-002',
+    transactionId: 'edu-txn-002',
+    amount: 145000,
+    walletType: 'athletics_ops',
+    category: 'Athletics Equipment',
+    requestor: 'Athletics Department',
+    approverSeat: 'Athletic Director',
+    missingRequirements: ['AD approval', 'VP Finance co-approval >$100K'],
+    auditNote: 'Nike contract — spring sports equipment order; exceeds single-approval threshold',
+    institution: 'Bethune-Cookman University',
+  },
+  {
+    id: 'edu-appr-003',
+    transactionId: 'edu-txn-003',
+    amount: 8200,
+    walletType: 'operating',
+    category: 'Travel Reimbursement',
+    requestor: 'Provost Office',
+    approverSeat: 'Provost',
+    missingRequirements: ['Itemized receipts for 2 of 4 travelers'],
+    auditNote: 'SACS-COC accreditation conference — required institutional representation',
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-appr-004',
+    transactionId: 'edu-bat-003',
+    amount: 125000,
+    walletType: 'restricted_funds',
+    category: 'Grant Expenditure',
+    requestor: 'Office of Sponsored Programs',
+    approverSeat: 'VP Research & Compliance',
+    missingRequirements: ['Federal expenditure report attachment', 'PI certification'],
+    auditNote: 'NSF grant #2026-FMU-0412 — lab equipment procurement per approved budget',
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-appr-005',
+    transactionId: 'edu-bat-005',
+    amount: 18500,
+    walletType: 'operating',
+    category: 'Maintenance Contract',
+    requestor: 'Facilities Management',
+    approverSeat: 'VP Operations',
+    missingRequirements: ['Competitive bid documentation'],
+    auditNote: 'Annual elevator maintenance renewal — sole-source justification required if no bids',
+    institution: 'Bethune-Cookman University',
+  },
+];
+
+// =============================================================================
+// RELEASE QUEUE
+// =============================================================================
+
+const RELEASE_QUEUE: EduRailsReleaseItem[] = [
+  {
+    id: 'edu-rel-001',
+    transactionId: 'edu-txn-004',
+    amount: 38500,
+    walletType: 'operating',
+    method: 'ach',
+    approvedBy: 'VP Finance & Controller',
+    scheduledTime: 'Today 4:00 PM EST',
+    requiresSecondApprover: false,
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-rel-002',
+    transactionId: 'edu-txn-005',
+    amount: 42300,
+    walletType: 'tuition_receipts',
+    method: 'ach',
+    approvedBy: 'Bursar & VP Finance',
+    scheduledTime: 'Feb 20',
+    requiresSecondApprover: false,
+    institution: 'Bethune-Cookman University',
+  },
+  {
+    id: 'edu-rel-003',
+    transactionId: 'edu-bat-003',
+    amount: 285000,
+    walletType: 'operating',
+    method: 'ach',
+    approvedBy: 'Controller',
+    scheduledTime: 'Today 4:00 PM EST',
+    requiresSecondApprover: true,
+    institution: 'Florida Memorial University',
+  },
+];
+
+// =============================================================================
+// EXCEPTIONS
+// =============================================================================
+
+const EXCEPTIONS: EduRailsException[] = [
+  {
+    id: 'edu-exc-001',
+    transactionId: 'edu-txn-009',
+    type: 'returned',
+    cause: 'processor_technical',
+    causeLabel: 'ACH return — invalid account number at receiving institution',
+    failingRule: 'ACH R03 — No Account/Unable to Locate Account',
+    governedActions: ['retry', 'reroute', 'escalate'],
+    owner: 'Bursar Office',
+    escalationPath: 'Bursar Office → VP Finance → President',
+    evidence: ['ACH return notice', 'Original disbursement confirmation', 'Student account record'],
+    amount: 1250,
+    walletType: 'tuition_receipts',
+    institution: 'Florida Memorial University',
+    createdAt: '2026-02-15',
+  },
+  {
+    id: 'edu-exc-002',
+    transactionId: 'edu-txn-010',
+    type: 'held',
+    cause: 'documentation_rule',
+    causeLabel: 'Missing IRS W-9 form — vendor cannot receive payment',
+    failingRule: 'IRS §6109 — W-9 required before payment release',
+    governedActions: ['escalate', 'override'],
+    owner: 'Procurement Office',
+    escalationPath: 'Procurement Office → Controller → VP Finance',
+    evidence: ['Vendor file — no W-9 on record', 'Purchase order #PO-2026-0218'],
+    amount: 22400,
+    walletType: 'operating',
+    institution: 'Florida Memorial University',
+    createdAt: '2026-02-14',
+  },
+  {
+    id: 'edu-exc-003',
+    transactionId: 'edu-bat-005',
+    type: 'held',
+    cause: 'budget_cap_rule',
+    causeLabel: 'Athletics travel budget approaching cap — 92% consumed',
+    failingRule: 'Athletics travel budget 92% consumed — requires AD override or budget amendment',
+    governedActions: ['split', 'escalate', 'override'],
+    owner: 'Athletic Director',
+    escalationPath: 'Athletic Director → VP Finance → President',
+    evidence: ['FY2026 athletics budget report', 'Conference travel mandate', 'Budget utilization dashboard'],
+    amount: 24600,
+    walletType: 'athletics_ops',
+    institution: 'Bethune-Cookman University',
+    createdAt: '2026-02-16',
+  },
+];
+
+// =============================================================================
+// RETURNS
+// =============================================================================
+
+const RETURNS: EduRailsReturn[] = [
+  {
+    id: 'edu-ret-001',
+    transactionId: 'edu-txn-009',
+    amount: 1250,
+    stage: 'evidence_requested',
+    aging: 3,
+    description: 'Student refund ACH return — invalid account on file. Awaiting corrected banking details from student.',
+    institution: 'Florida Memorial University',
+    createdAt: '2026-02-15',
+  },
+  {
+    id: 'edu-ret-002',
+    transactionId: 'edu-ret-chk-001',
+    amount: 850,
+    stage: 'received',
+    aging: 1,
+    description: 'Vendor check stale-dated — 90-day expiry exceeded. Reissue required for janitorial supply vendor.',
+    institution: 'Bethune-Cookman University',
+    createdAt: '2026-02-17',
+  },
+];
+
+// =============================================================================
+// RECEIPTS (SETTLED)
+// =============================================================================
+
+const RECEIPTS: EduRailsReceipt[] = [
+  {
+    id: 'edu-rcp-001',
+    transactionId: 'edu-rcp-txn-001',
+    requestEvent: 'Registrar triggered fall semester Pell disbursement batch for 398 eligible students',
+    rulesApplied: 'Title IV compliance verified; SAP standing confirmed; enrollment census date passed',
+    approvalChain: 'Financial Aid Director (initiated) → Controller (budget check) → VP Finance (authorized)',
+    releaseAuth: 'VP Finance released via ACH batch — dual authorization confirmed',
+    settlementRecord: 'ACH settled 2026-01-15 — Trace #920261500098765',
+    ledgerPostings: 'DR Aid Disbursement — Pell Grants $1,380,000; CR Student Accounts Receivable $1,380,000',
+    amount: 1380000,
+    settledDate: '2026-01-15',
+    immutable: true,
+    institution: 'Florida Memorial University',
+  },
+  {
+    id: 'edu-rcp-002',
+    transactionId: 'edu-rcp-txn-002',
+    requestEvent: 'HR submitted January faculty payroll for 186 full-time faculty members',
+    rulesApplied: 'Payroll budget allocation confirmed; tax withholdings calculated; benefits deductions applied',
+    approvalChain: 'HR Director (initiated) → Controller (pre-authorized) → VP Finance (approved)',
+    releaseAuth: 'Controller released via automated ADP integration',
+    settlementRecord: 'ACH settled 2026-01-31 — Trace #920261310045678',
+    ledgerPostings: 'DR Payroll — Faculty Salaries $875,000; DR Payroll — Benefits $215,000; CR Operating Cash $1,090,000',
+    amount: 875000,
+    settledDate: '2026-01-31',
+    immutable: true,
+    institution: 'Bethune-Cookman University',
+  },
+  {
+    id: 'edu-rcp-003',
+    transactionId: 'edu-rcp-txn-003',
+    requestEvent: 'Facilities Manager submitted emergency HVAC repair invoice for Science Building',
+    rulesApplied: 'Emergency expenditure policy — single approval allowed; Operating Fund budget check passed',
+    approvalChain: 'Facilities Manager (requestor) → VP Operations (emergency approval) → Controller (budget confirmed)',
+    releaseAuth: 'Controller released via ACH — expedited processing',
+    settlementRecord: 'ACH settled 2026-02-05 — Trace #920260500034567',
+    ledgerPostings: 'DR Operating — Facilities Maintenance $45,200; CR Operating Cash $45,200',
+    amount: 45200,
+    settledDate: '2026-02-05',
+    immutable: true,
+    institution: 'Florida Memorial University',
+  },
+];
+
+// =============================================================================
+// DATA ACCESSORS
+// =============================================================================
+
+export function getEduPaymentRailsData() {
+  return {
+    healthStrip: HEALTH_STRIP,
+    wallets: WALLETS,
+    transactions: TRANSACTIONS,
+    batches: BATCHES,
+    approvalsQueue: APPROVALS_QUEUE,
+    releaseQueue: RELEASE_QUEUE,
+    exceptions: EXCEPTIONS,
+    returns: RETURNS,
+    receipts: RECEIPTS,
+  };
+}
+
+export function getEduWalletById(id: string): EduRailsWallet | undefined {
+  return WALLETS.find((w) => w.id === id);
+}
+
+export function getEduTransactionById(id: string): EduRailsTransaction | undefined {
+  return TRANSACTIONS.find((t) => t.id === id);
+}
+
+export function getEduBatchById(id: string): EduRailsBatch | undefined {
+  return BATCHES.find((b) => b.id === id);
+}
