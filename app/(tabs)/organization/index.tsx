@@ -107,6 +107,8 @@ import { ChurchOrgMinistries } from '@/components/organization/church-org-minist
 import { ChurchOrgPeople } from '@/components/organization/church-org-people-v2';
 import { ChurchOrgRooms } from '@/components/organization/church-org-rooms-v2';
 import { ChurchOrgOperations } from '@/components/organization/church-org-operations-v2';
+import { ChurchOrgFinance } from '@/components/organization/church-org-finance-v2';
+import { ChurchOrgPaymentRails } from '@/components/organization/church-org-payment-rails-v2';
 import { ChurchOrgFacilities } from '@/components/organization/church-org-facilities';
 import { ChurchOrgResources } from '@/components/organization/church-org-resources';
 import { ChurchOrgDonations } from '@/components/organization/church-org-donations';
@@ -475,10 +477,10 @@ function ChurchOrganizationInner() {
             <ChurchOrgOperations colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="finance" style={{ flex: 1 }}>
-            <OrgFinanceTab mode="church" colors={colors} accentColor={accent} />
+            <ChurchOrgFinance colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="payment-rails" style={{ flex: 1 }}>
-            <OrgPaymentRailsTab mode="church" colors={colors} accentColor={accent} />
+            <ChurchOrgPaymentRails colors={colors} accentColor={accent} role={viewAsRole} />
           </View>
           <View key="compliance" style={{ flex: 1 }}>
             <OrgComplianceTab mode="church" colors={colors} accentColor={accent} />
