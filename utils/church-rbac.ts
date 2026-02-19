@@ -231,9 +231,7 @@ export function isMinistryLevel(role: ChurchRoleLens): boolean {
 // =============================================================================
 
 const CHURCH_MEMBERSHIP_MAP: Record<string, ChurchRoleLens> = {
-  mem_church_icc_ie: 'C1',
-  mem_church_icc_ie_teacher: 'C3',
-  mem_church_iccla: 'C3',
+  mem_church_iccla: 'C1',
 };
 
 export function getChurchRole(membershipId: string): ChurchRoleLens {

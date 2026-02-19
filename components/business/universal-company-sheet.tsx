@@ -409,7 +409,7 @@ function OverviewTab({ colors, roleLens }: { colors: typeof Colors.light; roleLe
       <SectionCard title="This Month Priorities" colors={colors}>
         <BulletItem text="Close PBD Co-Founder SAFE Tranche 1 -- wire target Mar 1, 2026" colors={colors} />
         <BulletItem text="Ship video mandate camera specs to NAIA HQ for Feb 25 meeting" colors={colors} />
-        <BulletItem text="Finalize Valuetainment Classic selection committee and broadcast plan" colors={colors} />
+        <BulletItem text="Finalize KaNeXT Classic selection committee and broadcast plan" colors={colors} />
       </SectionCard>
 
       {showLinks && (
@@ -645,7 +645,7 @@ function RoadmapTab({ colors, board }: { colors: typeof Colors.light; board: boo
   ];
 
   const milestones6mo = [
-    'Execute Valuetainment Classic (32-team postseason)',
+    'Execute KaNeXT Classic (32-team postseason)',
     'Complete all 5 PBD SAFE tranches ($500K total)',
     'Onboard 10+ HBCU institutions via mandate',
     'Hire senior engineer + designer',

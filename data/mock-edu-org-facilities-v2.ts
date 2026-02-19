@@ -1,6 +1,6 @@
 /**
  * Education Organization Facilities V2 — Mock Data & Types
- * Campus facility management for HBCU-themed institutions (FMU / BCU).
+ * Campus facility management for HBCU-themed institutions (FMU).
  * Covers: Buildings, Rooms, Assets, Work Orders, Maintenance, Inspections,
  * Vendors, Safety Zones, Access Groups, and Capital Projects.
  */
@@ -562,7 +562,7 @@ export const INSPECTION_TYPE_ICONS: Record<InspectionType, string> = {
 
 const POSTURE: FacilitiesPosture = {
   status: 'watch',
-  criticalWorkOrders: 2,
+  criticalWorkOrders: 1,
   inspectionsDue: 1,
   areasDown: 1,
 };
@@ -582,19 +582,11 @@ const TODAY_IMPACT: TodayImpact[] = [
   },
   {
     id: 'ti-002',
-    title: 'Gym Prep — BCU Homecoming Game Day',
-    buildingId: 'bld-003',
+    title: 'ADA Ramp Repair — Adams Hall East Entrance',
+    buildingId: 'bld-001',
     severity: 'high',
     description:
-      'Moore Gymnasium requires full game-day setup by 2 PM. Scoreboard firmware update pending, bleacher inspection due, and court needs to be cleaned and lined.',
-  },
-  {
-    id: 'ti-003',
-    title: 'Cafeteria Dishwasher Malfunction',
-    buildingId: 'bld-004',
-    severity: 'normal',
-    description:
-      'Commercial dishwasher in BCU Student Center cafeteria not reaching sanitization temperature. Temporary disposable service in use. Repair tech scheduled for afternoon.',
+      'Concrete ADA ramp at east entrance has significant cracking and uneven surface. Temporary barrier installed. Concrete contractor quote pending approval.',
   },
 ];
 
@@ -638,41 +630,6 @@ const BUILDINGS: Building[] = [
     nextInspection: '2026-02-28',
     yearBuilt: 1985,
     sqft: 32000,
-  },
-  {
-    id: 'bld-003',
-    name: 'BCU Moore Gymnasium',
-    type: 'athletics',
-    campus: 'Bethune-Cookman University',
-    status: 'good',
-    condition: 78,
-    systems: [
-      { type: 'hvac', status: 'good', lastService: '2026-01-25' },
-      { type: 'electrical', status: 'good', lastService: '2026-01-10' },
-      { type: 'security', status: 'good', lastService: '2026-02-05' },
-    ],
-    workOrderCount: 2,
-    nextInspection: '2026-04-01',
-    yearBuilt: 1972,
-    sqft: 55000,
-  },
-  {
-    id: 'bld-004',
-    name: 'BCU Student Center',
-    type: 'multipurpose',
-    campus: 'Bethune-Cookman University',
-    status: 'good',
-    condition: 85,
-    systems: [
-      { type: 'hvac', status: 'good', lastService: '2026-02-01' },
-      { type: 'electrical', status: 'good', lastService: '2025-12-20' },
-      { type: 'plumbing', status: 'good', lastService: '2026-01-18' },
-      { type: 'internet', status: 'good', lastService: '2026-02-08' },
-    ],
-    workOrderCount: 1,
-    nextInspection: '2026-05-10',
-    yearBuilt: 1990,
-    sqft: 38000,
   },
 ];
 
@@ -731,36 +688,6 @@ const ROOMS: FacilityRoom[] = [
     accessLevel: 'restricted',
     floor: 3,
   },
-  {
-    id: 'rm-006',
-    buildingId: 'bld-003',
-    name: 'Main Gymnasium Floor',
-    type: 'gym',
-    capacity: 3500,
-    status: 'available',
-    accessLevel: 'public',
-    floor: 1,
-  },
-  {
-    id: 'rm-007',
-    buildingId: 'bld-004',
-    name: 'Main Cafeteria',
-    type: 'dining',
-    capacity: 400,
-    status: 'limited',
-    accessLevel: 'public',
-    floor: 1,
-  },
-  {
-    id: 'rm-008',
-    buildingId: 'bld-004',
-    name: 'Conference Room A',
-    type: 'conference',
-    capacity: 20,
-    status: 'available',
-    accessLevel: 'restricted',
-    floor: 2,
-  },
 ];
 
 // =============================================================================
@@ -781,30 +708,6 @@ const ASSETS: FacilityAsset[] = [
     value: 42000,
   },
   {
-    id: 'ast-002',
-    name: 'Daktronics LED Scoreboard',
-    category: 'scoreboard',
-    buildingId: 'bld-003',
-    location: 'BCU Moore Gymnasium — North Wall',
-    condition: 'ok',
-    warrantyExpiry: '2027-06-15',
-    maintenanceCadence: 'Annual',
-    lastService: '2025-09-01',
-    value: 85000,
-  },
-  {
-    id: 'ast-003',
-    name: 'Blue Bird 72-Passenger Campus Bus',
-    category: 'bus',
-    buildingId: 'bld-004',
-    location: 'BCU Student Center — Bus Lot',
-    condition: 'ok',
-    warrantyExpiry: '2028-03-01',
-    maintenanceCadence: 'Monthly',
-    lastService: '2026-02-05',
-    value: 120000,
-  },
-  {
     id: 'ast-004',
     name: 'Speed Queen Commercial Laundry System',
     category: 'laundry',
@@ -815,18 +718,6 @@ const ASSETS: FacilityAsset[] = [
     maintenanceCadence: 'Monthly',
     lastService: '2026-01-28',
     value: 28000,
-  },
-  {
-    id: 'ast-005',
-    name: 'Hikvision Security Camera Array (32 ch)',
-    category: 'security_camera',
-    buildingId: 'bld-003',
-    location: 'BCU Moore Gymnasium — Control Room',
-    condition: 'ok',
-    warrantyExpiry: '2027-09-20',
-    maintenanceCadence: 'Quarterly',
-    lastService: '2026-01-15',
-    value: 18000,
   },
   {
     id: 'ast-006',
@@ -878,21 +769,6 @@ const WORK_ORDERS: WorkOrder[] = [
     requiresEvidence: true,
   },
   {
-    id: 'wo-003',
-    title: 'Scoreboard Firmware Update — Moore Gym',
-    buildingId: 'bld-003',
-    category: 'electrical',
-    priority: 'normal',
-    status: 'assigned',
-    assignee: 'AV Tech Staff',
-    createdDate: '2026-02-12',
-    dueDate: '2026-02-18',
-    slaHours: 48,
-    description:
-      'Daktronics scoreboard firmware v4.2 available. Update needed before homecoming game. Requires 2-hour maintenance window and vendor remote support.',
-    requiresEvidence: false,
-  },
-  {
     id: 'wo-004',
     title: 'Plumbing Leak — Adams Hall 3rd Floor Bathroom',
     buildingId: 'bld-001',
@@ -921,51 +797,6 @@ const WORK_ORDERS: WorkOrder[] = [
     description:
       'Main electrical panel in science building approaching capacity with new lab equipment loads. Panel upgrade from 400A to 600A service recommended by inspector.',
     requiresEvidence: false,
-  },
-  {
-    id: 'wo-006',
-    title: 'Wi-Fi Dead Zone — Student Center 2nd Floor',
-    buildingId: 'bld-004',
-    category: 'it',
-    priority: 'normal',
-    status: 'assigned',
-    assignee: 'Campus IT',
-    createdDate: '2026-02-13',
-    dueDate: '2026-02-20',
-    slaHours: 72,
-    description:
-      'Students reporting consistent Wi-Fi dead zone in the 2nd floor study lounge and conference room area. Access point survey needed; likely requires additional AP installation.',
-    requiresEvidence: false,
-  },
-  {
-    id: 'wo-007',
-    title: 'Cafeteria Dishwasher — Temp Not Reaching Sanitization',
-    buildingId: 'bld-004',
-    category: 'general',
-    priority: 'critical',
-    status: 'assigned',
-    assignee: 'Kitchen Equipment Services',
-    createdDate: '2026-02-17',
-    dueDate: '2026-02-18',
-    slaHours: 12,
-    description:
-      'Commercial dishwasher failing to reach 180F sanitization temperature. Health code compliance at risk. Temporary disposable service deployed. Repair tech scheduled today.',
-    requiresEvidence: true,
-  },
-  {
-    id: 'wo-008',
-    title: 'Emergency Exit Light Replacement — Moore Gym',
-    buildingId: 'bld-003',
-    category: 'safety',
-    priority: 'high',
-    status: 'new',
-    assignee: 'Facilities Team',
-    createdDate: '2026-02-15',
-    dueDate: '2026-02-19',
-    slaHours: 48,
-    description:
-      'Two emergency exit signs on the east corridor of Moore Gymnasium have failed battery backup. Must be replaced before next scheduled event for fire code compliance.',
-    requiresEvidence: true,
   },
 ];
 
@@ -1005,26 +836,6 @@ const MAINTENANCE_TASKS: MaintenanceTask[] = [
     assignee: 'Campus Electrician',
   },
   {
-    id: 'mt-004',
-    title: 'Gym Floor Refinish & Line Painting',
-    buildingId: 'bld-003',
-    system: 'hvac',
-    status: 'missed',
-    frequency: 'Term',
-    scheduledDate: '2026-01-15',
-    assignee: 'SportsCourt Pros',
-  },
-  {
-    id: 'mt-005',
-    title: 'Security Camera Firmware Update',
-    buildingId: 'bld-003',
-    system: 'security',
-    status: 'scheduled',
-    frequency: 'Quarterly',
-    scheduledDate: '2026-03-01',
-    assignee: 'Campus Security',
-  },
-  {
     id: 'mt-006',
     title: 'Plumbing Winterization Check — Adams Hall',
     buildingId: 'bld-001',
@@ -1060,14 +871,6 @@ const INSPECTIONS: Inspection[] = [
     inspector: 'State Housing Authority',
   },
   {
-    id: 'insp-003',
-    type: 'health',
-    buildingId: 'bld-004',
-    status: 'scheduled',
-    dueDate: '2026-03-05',
-    inspector: 'County Health Department',
-  },
-  {
     id: 'insp-004',
     type: 'ada',
     buildingId: 'bld-001',
@@ -1077,14 +880,6 @@ const INSPECTIONS: Inspection[] = [
     result: 'Failed — east entrance ADA ramp not compliant. Cracking and uneven surface.',
     inspector: 'ADA Compliance Officer',
     remediationWorkOrderId: 'wo-002',
-  },
-  {
-    id: 'insp-005',
-    type: 'athletics',
-    buildingId: 'bld-003',
-    status: 'scheduled',
-    dueDate: '2026-03-20',
-    inspector: 'NCAA Facilities Inspector',
   },
 ];
 
@@ -1152,22 +947,6 @@ const SAFETY_ZONES: SafetyZone[] = [
     description:
       'Chemistry lab chemical storage area. Restricted access, requires safety training certification. Emergency shower and eyewash station at entrance.',
   },
-  {
-    id: 'sz-002',
-    name: 'Athletic Equipment Zone',
-    buildingId: 'bld-003',
-    type: 'restricted',
-    description:
-      'Weight room and athletic training equipment area. Access limited to student-athletes with signed liability waivers and coaching staff.',
-  },
-  {
-    id: 'sz-003',
-    name: 'Server & Telecom Room',
-    buildingId: 'bld-004',
-    type: 'secured',
-    description:
-      'Campus network infrastructure and server room. Biometric access only. Climate-controlled environment with fire suppression system.',
-  },
 ];
 
 // =============================================================================
@@ -1185,19 +964,13 @@ const ACCESS_GROUPS: AccessGroup[] = [
     id: 'ag-002',
     name: 'Faculty & Staff',
     members: 85,
-    zones: ['bld-001', 'bld-002', 'bld-003', 'bld-004'],
+    zones: ['bld-001', 'bld-002'],
   },
   {
     id: 'ag-003',
-    name: 'Student-Athletes',
-    members: 140,
-    zones: ['bld-003'],
-  },
-  {
-    id: 'ag-004',
     name: 'IT Administrators',
     members: 6,
-    zones: ['bld-002', 'bld-004'],
+    zones: ['bld-002'],
   },
 ];
 
@@ -1221,23 +994,6 @@ const CAPITAL_PROJECTS: CapitalProject[] = [
       'Supply chain delays on ADA fixtures',
       'Asbestos abatement required in 1st floor ceiling tiles',
       'Student relocation coordination during summer break',
-    ],
-  },
-  {
-    id: 'cp-002',
-    name: 'Moore Gymnasium Expansion & Modernization',
-    buildingId: 'bld-003',
-    status: 'planned',
-    startDate: '2026-06-01',
-    endDate: '2027-05-01',
-    budget: 5200000,
-    spent: 0,
-    description:
-      'Expansion of Moore Gymnasium to include a new 2,000-seat wing, updated locker rooms, sports medicine facility, and new HVAC system. Project tied to NCAA Division II compliance requirements.',
-    risks: [
-      'City zoning permit approval pending',
-      'NCAA compliance timeline pressure',
-      'Budget contingency for unforeseen structural work on 1972 foundation',
     ],
   },
 ];

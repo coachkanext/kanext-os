@@ -273,7 +273,7 @@ export default function DonationsScreen() {
         </Pressable>
         <View style={styles.headerContent}>
           <ThemedText type="title" style={styles.headerTitle}>
-            Support Lincoln Athletics
+            Support FMU Athletics
           </ThemedText>
           <ThemedText style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
             Join our booster community
@@ -336,7 +336,7 @@ export default function DonationsScreen() {
           <IconSymbol name="envelope.fill" size={24} color={modeColors.primary} />
           <ThemedText style={styles.contactTitle}>Questions about giving?</ThemedText>
           <ThemedText style={[styles.contactText, { color: colors.textSecondary }]}>
-            Contact our Development Office at athletics@lincoln.edu
+            Contact our Development Office at athletics@fmu.edu
           </ThemedText>
         </View>
       </ScrollView>

@@ -16,7 +16,6 @@ import {
   KANEXT_IP,
   SPONSOR_BANK,
   PAYMENT_PROCESSOR,
-  VALUETAINMENT,
   SLIEMA_WANDERERS,
   TARGET_BANK,
   SEEDED_ENTITY_NAMES,
@@ -440,18 +439,6 @@ const MOCK_PROJECTS: OpsProject[] = [
     startDate: 'Jan 5, 2026',
     dueDate: 'Mar 31, 2026',
   },
-  {
-    id: 'proj-12',
-    name: 'Partner Referral Program Launch',
-    initiativeId: 'init-5',
-    initiativeName: 'Q1 Revenue Acceleration',
-    status: 'at_risk',
-    taskCompletion: 30,
-    owner: 'Tony Reeves',
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    startDate: 'Jan 20, 2026',
-    dueDate: 'Mar 15, 2026',
-  },
 ];
 
 // =============================================================================
@@ -603,28 +590,6 @@ const MOCK_TASKS: OpsTask[] = [
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
   },
   {
-    id: 'task-14',
-    title: 'Draft referral program terms for Valuetainment partnership',
-    projectId: 'proj-12',
-    projectName: 'Partner Referral Program Launch',
-    assignee: 'Tony Reeves',
-    dueDate: 'Mar 5, 2026',
-    priority: 'high',
-    status: 'in_progress',
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-  },
-  {
-    id: 'task-15',
-    title: 'Build referral tracking dashboard in admin portal',
-    projectId: 'proj-12',
-    projectName: 'Partner Referral Program Launch',
-    assignee: 'Jasmine Ortiz',
-    dueDate: 'Mar 12, 2026',
-    priority: 'medium',
-    status: 'todo',
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-  },
-  {
     id: 'task-16',
     title: 'Prepare MGA personal declaration forms for all directors',
     projectId: 'proj-7',
@@ -723,18 +688,6 @@ const MOCK_BLOCKERS: OpsBlocker[] = [
     entityName: SEEDED_ENTITY_NAMES[SLIEMA_WANDERERS],
   },
   {
-    id: 'block-4',
-    title: 'Referral program revenue-share model awaiting legal sign-off',
-    description: 'Legal review of the partner referral revenue-share agreement flagged concerns around SEC securities classification for token-based referral rewards. Needs restructuring.',
-    severity: 'high',
-    initiativeId: 'init-5',
-    initiativeName: 'Q1 Revenue Acceleration',
-    owner: 'Tony Reeves',
-    status: 'investigating',
-    createdDate: 'Feb 25, 2026',
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-  },
-  {
     id: 'block-5',
     title: 'Stripe Connect payout delays for international merchants',
     description: 'Stripe Connect cross-border payouts to non-US merchants are experiencing 72-hour settlement delays due to additional compliance checks. Affecting multi-currency settlement testing.',
@@ -828,18 +781,6 @@ const MOCK_DECISIONS: OpsDecision[] = [
     linkedInitiativeId: 'init-3',
     implementationOwner: 'Legal Team',
   },
-  {
-    id: 'dec-5',
-    title: 'Restructure referral program from token-based to cash-based rewards',
-    description: 'Pivot the partner referral reward mechanism from token incentives to direct cash commissions to avoid SEC securities classification risk.',
-    status: 'open',
-    proposedBy: 'Tony Reeves',
-    voters: ['Sammy Kalejaiye', 'Tony Reeves', 'Legal Team'],
-    date: 'Mar 2, 2026',
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    linkedInitiativeId: 'init-5',
-    implementationOwner: 'Tony Reeves',
-  },
 ];
 
 // =============================================================================
@@ -895,14 +836,6 @@ const MOCK_OPS_FEED: OpsFeedEvent[] = [
     actor: 'Marcus Chen',
     timestamp: '2026-02-28T16:00:00Z',
     entityId: KANEXT_IP,
-  },
-  {
-    id: 'feed-6',
-    type: 'blocker_created',
-    title: 'Referral program revenue-share model awaiting legal sign-off',
-    actor: 'Tony Reeves',
-    timestamp: '2026-02-25T10:30:00Z',
-    entityId: VALUETAINMENT,
   },
   {
     id: 'feed-7',

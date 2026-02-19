@@ -1,6 +1,6 @@
 /**
  * Education Organization Institutions V2 — Mock Data & Types
- * ICCLA-realistic institution portfolio: FMU, Bethune-Cookman, Morris Brown, Edward Waters, Paul Quinn.
+ * ICCLA-realistic institution portfolio: FMU, Morris Brown, Edward Waters, Paul Quinn.
  */
 
 // =============================================================================
@@ -233,47 +233,6 @@ const INSTITUTIONS: EduInstitution[] = [
     complianceAlerts: 3,
   },
   {
-    id: 'inst-002',
-    name: 'Bethune-Cookman University',
-    shortName: 'BCU',
-    location: 'Daytona Beach, FL',
-    type: 'university',
-    status: 'partner',
-    pipelineStage: 'active',
-    priority: 'high',
-    risk: 'stable',
-    leadership: [
-      { title: 'President', name: 'Dr. Lawrence M. Drake II' },
-      { title: 'Provost', name: 'Dr. Hiram Powell' },
-      { title: 'CFO', name: 'Dr. Kelsey Davis' },
-    ],
-    healthBars: {
-      admissions: { level: 'green', trend: 'up', score: 80 },
-      academics: { level: 'green', trend: 'flat', score: 85 },
-      campus: { level: 'green', trend: 'up', score: 88 },
-      athletics: { level: 'green', trend: 'up', score: 90 },
-      financial: { level: 'green', trend: 'flat', score: 76 },
-      housing: { level: 'yellow', trend: 'flat', score: 72 },
-      compliance: { level: 'green', trend: 'flat', score: 88 },
-    },
-    keyNumbers: [
-      { label: 'Fall Apps', value: '5,420' },
-      { label: 'Admits', value: '3,680' },
-      { label: 'Deposits', value: '2,140' },
-      { label: 'Retention Rate', value: '72%' },
-      { label: 'Avg GPA', value: '3.02' },
-    ],
-    nextActions: [
-      { action: 'Partnership performance review', owner: 'President', due: '2026-03-01' },
-      { action: 'Joint athletics integration plan', owner: 'AD', due: '2026-03-15' },
-    ],
-    enrollment: { current: 2850, target: 3200 },
-    deposits: 2140,
-    housingOccupancy: 92,
-    tuitionAR: '$4.1M',
-    complianceAlerts: 1,
-  },
-  {
     id: 'inst-003',
     name: 'Morris Brown College',
     shortName: 'MBC',
@@ -418,14 +377,6 @@ const TODAY_ITEMS: TodayItem[] = [
     due: '2026-02-20',
   },
   {
-    id: 'today-003',
-    title: 'Financial aid disbursement batch',
-    institution: 'Bethune-Cookman University',
-    type: 'batch',
-    priority: 'normal',
-    due: '2026-02-18',
-  },
-  {
     id: 'today-004',
     title: 'Pipeline review committee — Morris Brown',
     institution: 'Morris Brown College',
@@ -454,13 +405,6 @@ const NEXT_MILESTONES: NextMilestone[] = [
     institution: 'Florida Memorial University',
     date: '2026-03-15',
     category: 'Compliance',
-  },
-  {
-    id: 'ms-002',
-    title: 'BCU partnership renewal vote',
-    institution: 'Bethune-Cookman University',
-    date: '2026-04-01',
-    category: 'Partnership',
   },
   {
     id: 'ms-003',
@@ -497,20 +441,19 @@ const NEXT_MILESTONES: NextMilestone[] = [
 // =============================================================================
 
 const OVERVIEW_TILES: OverviewTiles = {
-  totalInstitutions: 5,
+  totalInstitutions: 4,
   activeCount: 2,
-  partnerCount: 1,
+  partnerCount: 0,
   pipelineCount: 2,
-  totalEnrollment: 5810,
-  enrollmentTarget: 6800,
-  admissionsFunnel: { apps: 11230, admits: 7490, deposits: 4337 },
-  housingOccupancy: 82,
-  tuitionReceivable: '$10.4M',
-  agingRisk: '$2.1M 90+ days',
-  complianceAlerts: 11,
+  totalEnrollment: 2960,
+  enrollmentTarget: 3600,
+  admissionsFunnel: { apps: 5810, admits: 3810, deposits: 2197 },
+  housingOccupancy: 76,
+  tuitionReceivable: '$6.3M',
+  agingRisk: '$1.4M 90+ days',
+  complianceAlerts: 10,
   deadlines: [
     { title: 'SACSCOC interim report', date: '2026-03-15', institution: 'FMU' },
-    { title: 'Partnership renewal vote', date: '2026-04-01', institution: 'BCU' },
     { title: 'Accreditation self-study', date: '2026-04-15', institution: 'MBC' },
     { title: 'Title III grant report', date: '2026-04-01', institution: 'EWU' },
   ],

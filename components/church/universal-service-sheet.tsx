@@ -127,7 +127,7 @@ const SERVICE_ATTENDANCE_DATA = {
   followUpTargets: [
     { id: 'fut-1', name: 'Michael Okafor', reason: 'First-time visitor', status: 'pending' },
     { id: 'fut-2', name: 'Rita Onyekachi', reason: 'Returning visitor (2nd visit)', status: 'pending' },
-    { id: 'fut-3', name: 'Taiwo Olaniyan', reason: 'First-time visitor (ICCIE)', status: 'pending' },
+    { id: 'fut-3', name: 'Taiwo Olaniyan', reason: 'First-time visitor', status: 'pending' },
     { id: 'fut-4', name: 'Sola Ogunleye', reason: 'Has not attended in 3 weeks', status: 'contacted' },
   ],
 };
@@ -261,7 +261,7 @@ function ServiceHeader({
   seniorPastor: boolean;
   onClose: () => void;
 }) {
-  const campusLabel = service.orgId === 'iccla' ? 'ICCLA' : 'ICCIE';
+  const campusLabel = 'ICCLA';
   const owner = CHURCH_MEMBERS.find((m) => m.id === service.owner);
   const staffingMissing = service.staffingNeeded - service.staffingFilled;
 

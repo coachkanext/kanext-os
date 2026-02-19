@@ -11,7 +11,6 @@ import {
   KANEXT_IP,
   SPONSOR_BANK,
   PAYMENT_PROCESSOR,
-  VALUETAINMENT,
   SLIEMA_WANDERERS,
   TARGET_BANK,
   SEEDED_ENTITY_NAMES,
@@ -200,33 +199,7 @@ const ENTITIES: BizEntity[] = [
       { targetTab: 'compliance', targetSubTab: 'certifications', targetId: 'cpl-pci-dss', label: 'PCI-DSS Certification' },
     ],
   },
-  // 6. Valuetainment
-  {
-    id: VALUETAINMENT,
-    name: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    type: SEEDED_ENTITY_TYPES[VALUETAINMENT],
-    status: 'active',
-    entityStatus: 'active',
-    health: {
-      governance: 'green',
-      finance: 'yellow',
-      rails: 'green',
-      compliance: 'green',
-    },
-    parentId: undefined,
-    childIds: [],
-    nextAction: 'Revenue share reconciliation pending',
-    nextRequiredAction: 'Reconcile Q1 revenue share — finance yellow',
-    lastActivity: '2026-02-07',
-    owner: 'Jordan Blake',
-    lastUpdated: '2026-02-07',
-    snapshot: { moneyIn30d: 142000, moneyOut30d: 99400, exceptions: 0, docsComplete: 6, docsMissing: 1, peopleFilled: 2, peopleGaps: 0, activeDeals: 0 },
-    crossTabLinks: [
-      { targetTab: 'finance', targetSubTab: 'revenue', targetId: 'fin-vtm-revshare', label: 'Revenue Share Ledger' },
-      { targetTab: 'legal', targetSubTab: 'contracts', targetId: 'leg-vtm-agreement', label: 'Partnership Agreement' },
-    ],
-  },
-  // 7. Sliema Wanderers FC
+  // 6. Sliema Wanderers FC
   {
     id: SLIEMA_WANDERERS,
     name: SEEDED_ENTITY_NAMES[SLIEMA_WANDERERS],
@@ -329,14 +302,6 @@ const REQUIREMENTS: EntityRequirement[] = [
   { id: 'req-pp-05', entityId: PAYMENT_PROCESSOR, category: 'ops', label: 'Failover processor configured', completed: false, detail: 'Secondary processor integration pending for disaster recovery.' },
   { id: 'req-pp-06', entityId: PAYMENT_PROCESSOR, category: 'compliance', label: 'Dispute resolution SLA signed', completed: true, detail: '48-hour response SLA for chargeback disputes. Signed Jan 2025.' },
 
-  // --- Valuetainment (6) ---
-  { id: 'req-vt-01', entityId: VALUETAINMENT, category: 'formation', label: 'Revenue share agreement signed', completed: true, detail: 'Content partnership with 70/30 revenue split. Signed Aug 2025.' },
-  { id: 'req-vt-02', entityId: VALUETAINMENT, category: 'compliance', label: 'Content licensing terms verified', completed: true, detail: 'All content usage rights confirmed per partnership agreement.' },
-  { id: 'req-vt-03', entityId: VALUETAINMENT, category: 'finance', label: 'Q4 2025 revenue share settled', completed: true, detail: '$142K revenue share paid to Valuetainment for Q4 content performance.' },
-  { id: 'req-vt-04', entityId: VALUETAINMENT, category: 'finance', label: 'Q1 2026 revenue share reconciliation', completed: false, detail: 'Pending reconciliation of January and February content revenue numbers.' },
-  { id: 'req-vt-05', entityId: VALUETAINMENT, category: 'ops', label: 'Content delivery pipeline', completed: true, detail: 'Automated content delivery pipeline established. 3 uploads/week cadence.' },
-  { id: 'req-vt-06', entityId: VALUETAINMENT, category: 'ops', label: 'Analytics dashboard shared', completed: true, detail: 'Shared analytics dashboard provides real-time content performance metrics.' },
-
   // --- Sliema Wanderers FC (7) ---
   { id: 'req-sw-01', entityId: SLIEMA_WANDERERS, category: 'formation', label: 'Ownership stake registered', completed: true, detail: 'Minority ownership stake registered with Malta Football Association.' },
   { id: 'req-sw-02', entityId: SLIEMA_WANDERERS, category: 'formation', label: 'Operating agreement signed', completed: true, detail: 'Multi-party operating agreement governing club operations.' },
@@ -417,15 +382,6 @@ const ACTIVITY_EVENTS: EntityActivityEvent[] = [
     linkedTab: 'compliance',
   },
   {
-    id: 'evt-07',
-    entityId: VALUETAINMENT,
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    action: 'Q4 2025 revenue share of $142K settled to partner',
-    actor: 'Jordan Blake',
-    timestamp: '2026-02-07 14:00',
-    linkedTab: 'finance',
-  },
-  {
     id: 'evt-08',
     entityId: SLIEMA_WANDERERS,
     entityName: SEEDED_ENTITY_NAMES[SLIEMA_WANDERERS],
@@ -486,15 +442,6 @@ const ACTIVITY_EVENTS: EntityActivityEvent[] = [
     action: 'Webhook endpoint monitoring dashboard deployed',
     actor: 'Maya Rodriguez',
     timestamp: '2026-01-27 11:30',
-    linkedTab: 'operations',
-  },
-  {
-    id: 'evt-15',
-    entityId: VALUETAINMENT,
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    action: 'Content delivery pipeline automated — 3x/week schedule',
-    actor: 'Jalen Torres',
-    timestamp: '2026-01-25 13:45',
     linkedTab: 'operations',
   },
   {
@@ -559,15 +506,6 @@ const ACTIVITY_EVENTS: EntityActivityEvent[] = [
     actor: 'Maya Rodriguez',
     timestamp: '2026-01-08 16:30',
     linkedTab: 'compliance',
-  },
-  {
-    id: 'evt-23',
-    entityId: VALUETAINMENT,
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    action: 'Shared analytics dashboard deployed for content performance',
-    actor: 'Liam Chen',
-    timestamp: '2026-01-06 13:00',
-    linkedTab: 'reports',
   },
   {
     id: 'evt-24',

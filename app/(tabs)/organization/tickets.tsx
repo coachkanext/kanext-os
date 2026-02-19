@@ -104,7 +104,7 @@ const UPCOMING_EVENTS: UpcomingEvent[] = [
     opponent: 'State University',
     date: 'Feb 15',
     time: '7:00 PM',
-    venue: 'Lincoln Arena',
+    venue: 'FMU Arena',
     sport: 'Basketball',
     ticketsAvailable: true,
     priceRange: { min: 15, max: 35 },
@@ -115,7 +115,7 @@ const UPCOMING_EVENTS: UpcomingEvent[] = [
     opponent: 'Central College',
     date: 'Feb 17',
     time: '5:00 PM',
-    venue: 'Lincoln Arena',
+    venue: 'FMU Arena',
     sport: 'Basketball',
     ticketsAvailable: true,
     priceRange: { min: 10, max: 25 },
@@ -137,7 +137,7 @@ const UPCOMING_EVENTS: UpcomingEvent[] = [
     opponent: 'Metro State',
     date: 'Mar 5',
     time: '7:30 PM',
-    venue: 'Lincoln Arena',
+    venue: 'FMU Arena',
     sport: 'Basketball',
     ticketsAvailable: false,
     priceRange: { min: 20, max: 45 },
@@ -358,7 +358,7 @@ export default function TicketsScreen() {
             Tickets
           </ThemedText>
           <ThemedText style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
-            Lincoln University Athletics
+            FMU Athletics
           </ThemedText>
         </View>
       </View>
@@ -439,7 +439,7 @@ export default function TicketsScreen() {
           <View style={styles.infoRow}>
             <IconSymbol name="envelope.fill" size={16} color={colors.textTertiary} />
             <ThemedText style={[styles.infoValue, { color: colors.textSecondary }]}>
-              tickets@lincoln.edu
+              tickets@fmu.edu
             </ThemedText>
           </View>
         </View>

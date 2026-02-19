@@ -370,58 +370,7 @@ const SEEDED_ROOMS: BizRoom[] = [
     artifactCategories: ['policies', 'contracts'],
   },
 
-  // ---- 4. Valuetainment Partnership ----
-  {
-    id: 'room-valuetainment',
-    name: 'Valuetainment Partnership',
-    template: 'partner',
-    status: 'active',
-    memberCount: 4,
-    openItems: 6,
-    lastActivity: '45m ago',
-    entityId: 'ent-valuetainment',
-    entityName: 'Valuetainment',
-    description: 'Strategic partnership coordination with Valuetainment — joint ventures, content licensing, co-marketing, and revenue share alignment.',
-    members: [
-      { id: 'mem-vp-1', name: 'Sammy Kalejaiye', role: 'CEO', avatarInitials: 'SK' },
-      { id: 'mem-vp-2', name: 'Tanya Reeves', role: 'Head of Partnerships', avatarInitials: 'TR' },
-      { id: 'mem-vp-3', name: 'Patrick Bet-David', role: 'Partner Contact', avatarInitials: 'PB' },
-      { id: 'mem-vp-4', name: 'Adam Sosnick', role: 'Partner Ops', avatarInitials: 'AS' },
-    ],
-    artifacts: [
-      { id: 'art-vp-1', name: 'Partnership MOU — Draft v2.pdf', type: 'document', uploadedBy: 'Tanya Reeves', uploadDate: 'Jan 18, 2026' },
-      { id: 'art-vp-2', name: 'Revenue Share Model.xlsx', type: 'spreadsheet', uploadedBy: 'Priya Patel', uploadDate: 'Jan 25, 2026' },
-    ],
-    decisions: [
-      { id: 'dec-vp-1', title: 'Approve 70/30 revenue share on co-branded content', status: 'approved', proposedBy: 'Tanya Reeves', date: 'Jan 30, 2026', receiptId: 'rcpt-vp-1' },
-      { id: 'dec-vp-2', title: 'Proceed with joint podcast series pilot', status: 'open', proposedBy: 'Sammy Kalejaiye', date: 'Feb 8, 2026' },
-    ],
-    receipts: [
-      { id: 'rcpt-vp-1', type: 'approval', action: 'Revenue share terms approved — 70/30 split on co-branded content', actor: 'Sammy Kalejaiye', timestamp: 'Jan 30, 2026 5:00 PM', linkedEntity: 'ent-valuetainment', linkedTab: 'rooms' as BizOrgTab, linkedId: 'room-valuetainment', immutable: true },
-      { id: 'rcpt-vp-2', type: 'creation', action: 'Room created — Valuetainment Partnership', actor: 'Sammy Kalejaiye', timestamp: 'Jan 10, 2026 9:00 AM', linkedEntity: 'ent-valuetainment', linkedTab: 'rooms' as BizOrgTab, linkedId: 'room-valuetainment', immutable: true },
-      { id: 'rcpt-vp-3', type: 'signature', action: 'MOU draft v2 countersigned by partner', actor: 'Patrick Bet-David', timestamp: 'Feb 2, 2026 1:00 PM', linkedEntity: 'ent-valuetainment', linkedTab: 'rooms' as BizOrgTab, linkedId: 'room-valuetainment', immutable: true },
-    ],
-    timeline: [
-      { id: 'tl-vp-1', action: 'Room created', actor: 'Sammy Kalejaiye', timestamp: 'Jan 10, 2026 9:00 AM' },
-      { id: 'tl-vp-2', action: 'Uploaded Partnership MOU — Draft v2', actor: 'Tanya Reeves', timestamp: 'Jan 18, 2026 11:00 AM' },
-      { id: 'tl-vp-3', action: 'Uploaded Revenue Share Model', actor: 'Priya Patel', timestamp: 'Jan 25, 2026 3:30 PM' },
-      { id: 'tl-vp-4', action: 'Revenue share approved — 70/30', actor: 'Sammy Kalejaiye', timestamp: 'Jan 30, 2026 5:00 PM' },
-      { id: 'tl-vp-5', action: 'MOU countersigned by partner', actor: 'Patrick Bet-David', timestamp: 'Feb 2, 2026 1:00 PM' },
-      { id: 'tl-vp-6', action: 'Joint podcast pilot decision proposed', actor: 'Sammy Kalejaiye', timestamp: 'Feb 8, 2026 10:00 AM' },
-    ],
-    visibility: 'internal',
-    nextAction: 'Finalize joint podcast pilot scope and sign co-production agreement',
-    checklist: [
-      { label: 'MOU drafted and countersigned', done: true },
-      { label: 'Revenue share model approved', done: true },
-      { label: 'Podcast pilot scope defined', done: false },
-      { label: 'Co-production agreement signed', done: false },
-      { label: 'First episode recording scheduled', done: false },
-    ],
-    artifactCategories: ['contracts', 'models'],
-  },
-
-  // ---- 5. Target Bank Acquisition ----
+  // ---- 4. Target Bank Acquisition ----
   {
     id: 'room-target-bank',
     name: 'Target Bank Acquisition',

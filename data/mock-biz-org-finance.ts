@@ -16,7 +16,6 @@ import {
   KANEXT_IP,
   SPONSOR_BANK,
   PAYMENT_PROCESSOR,
-  VALUETAINMENT,
   SLIEMA_WANDERERS,
   TARGET_BANK,
   SEEDED_ENTITY_NAMES,
@@ -318,14 +317,6 @@ const ENTITY_SUMMARIES: EntitySummary[] = [
     status: 'on_track',
   },
   {
-    entityId: VALUETAINMENT,
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    revenue: 48000,
-    expenses: 72000,
-    net: -24000,
-    status: 'at_risk',
-  },
-  {
     entityId: SLIEMA_WANDERERS,
     entityName: SEEDED_ENTITY_NAMES[SLIEMA_WANDERERS],
     revenue: 18000,
@@ -451,22 +442,6 @@ const LEDGER_ENTRIES: FinanceLedgerEntry[] = [
     releasedBy: 'Payment Rails — Automated',
     commitmentId: null,
     receiptId: 'rcpt-006',
-  },
-  {
-    id: 'led-008',
-    date: 'Feb 10, 2026',
-    description: 'Consulting engagement — Strategic advisory (Valuetainment)',
-    amount: 24000,
-    type: 'debit',
-    state: 'proposed',
-    entityId: VALUETAINMENT,
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    category: 'consulting',
-    createdBy: 'Operations — James Wilson',
-    approvedBy: null,
-    releasedBy: null,
-    commitmentId: 'cmt-005',
-    receiptId: null,
   },
   {
     id: 'led-009',
@@ -803,16 +778,6 @@ const COMMITMENTS: FinanceCommitment[] = [
     status: 'active',
   },
   {
-    id: 'cmt-005',
-    description: 'Consulting agreement — Valuetainment strategic advisory',
-    amount: 72000,
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    sourceTab: 'legal',
-    sourceId: 'legal-consult-002',
-    dueDate: 'Jun 30, 2026',
-    status: 'pending',
-  },
-  {
     id: 'cmt-006',
     description: 'Sliema Wanderers FC — Annual sponsorship commitment',
     amount: 72000,
@@ -1074,14 +1039,6 @@ const AUDIT_TRAIL: FinanceAuditEntry[] = [
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
     type: 'budget_alert',
   },
-  {
-    id: 'aud-015',
-    action: 'Created Valuetainment consulting commitment ($72,000)',
-    actor: 'Operations — James Wilson',
-    timestamp: 'Jan 28, 2026 — 3:50 PM',
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    type: 'creation',
-  },
 ];
 
 // =============================================================================
@@ -1148,14 +1105,6 @@ const APPROVAL_QUEUE: FinanceApprovalQueueItem[] = [
     requester: 'Engineering — Sarah Lin',
     status: 'pending',
     urgency: 'high',
-  },
-  {
-    id: 'aq-002',
-    label: 'Consulting Engagement — Valuetainment Strategic Advisory',
-    amount: 24000,
-    requester: 'Operations — James Wilson',
-    status: 'pending',
-    urgency: 'medium',
   },
   {
     id: 'aq-003',

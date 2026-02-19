@@ -23,11 +23,6 @@ export type SportsRoleLens = 'R1' | 'R2' | 'R3' | 'R4' | 'R5';
  */
 const SPORTS_ROLE_MAP: Record<string, SportsRoleLens> = {
   mem_sports_fmu_admin: 'R1',
-  mem_sports_kxa_admin: 'R1',
-  mem_sports_kxa_athlete: 'R2',
-  mem_sports_lincoln_coach: 'R3',
-  mem_sports_salima_limited: 'R4',
-  mem_sports_yankees_viewer: 'R5',
 };
 
 export function getSportsRole(membershipId: string): SportsRoleLens {

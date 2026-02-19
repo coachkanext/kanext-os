@@ -275,7 +275,7 @@ function MemberHeader({
     .slice(0, 2)
     .toUpperCase();
 
-  const org = member.orgId === 'iccla' ? 'ICCLA' : 'ICCIE';
+  const org = 'ICCLA';
 
   return (
     <View style={[styles.header, { borderBottomColor: colors.border }]}>
@@ -401,7 +401,7 @@ function OverviewTab({
         {seniorPastor && member.email && (
           <InfoRow label="Email" value={member.email} colors={colors} />
         )}
-        <InfoRow label="Campus" value={member.orgId === 'iccla' ? 'ICC Los Angeles' : 'ICC Inland Empire'} colors={colors} />
+        <InfoRow label="Campus" value="ICC Los Angeles" colors={colors} />
       </SectionCard>
 
       {/* Profile */}

@@ -710,7 +710,7 @@ export function NexusProvider({ children }: NexusProviderProps) {
 
     if (simIntent.isSimulation) {
       const simulation = generateMockSimulation(
-        'Lincoln University',
+        'FMU Lions',
         simIntent.opponent || 'Opponent'
       );
       dispatch({ type: 'ADD_SIMULATION', payload: simulation });

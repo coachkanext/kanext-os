@@ -182,10 +182,6 @@ export function canAccessDoc(tag: DocAccessTag, role: BusinessRoleLens, tier?: I
 
 const BUSINESS_MEMBERSHIP_MAP: Record<string, BusinessRoleLens> = {
   mem_biz_kanext_founder: 'B1',
-  mem_biz_kanext_investor: 'B2a',
-  mem_biz_kanext_public: 'B3',
-  mem_biz_valuetainment_subscriber: 'B4',
-  mem_biz_sliema_prospective_acquirer: 'B5',
 };
 
 export function getBusinessRole(membershipId: string): BusinessRoleLens {

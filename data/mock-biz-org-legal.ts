@@ -8,7 +8,6 @@ import {
   KANEXT_HOLDCO,
   KANEXT_OPSCO,
   KANEXT_IP,
-  VALUETAINMENT,
   SLIEMA_WANDERERS,
   TARGET_BANK,
   SPONSOR_BANK,
@@ -228,24 +227,6 @@ export const AGREEMENT_TYPE_CHIPS: { id: AgreementType | 'all'; label: string }[
 
 const AGREEMENTS: LegalAgreement[] = [
   {
-    id: 'agr-001',
-    title: 'Mutual Non-Disclosure Agreement — Valuetainment',
-    type: 'nda',
-    status: 'active',
-    counterparty: 'Valuetainment LLC',
-    entityId: VALUETAINMENT,
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    effectiveDate: '2025-08-01',
-    expiryDate: '2028-08-01',
-    value: '$0',
-    summary: 'Mutual NDA covering content strategy, revenue data, audience analytics, and partnership terms shared between KaNeXT and Valuetainment for co-branded media initiatives.',
-    keyTerms: [
-      { term: 'Confidentiality Period', value: '3 years from disclosure' },
-      { term: 'Governing Law', value: 'State of Delaware' },
-      { term: 'Permitted Disclosures', value: 'Employees, legal counsel, auditors' },
-    ],
-  },
-  {
     id: 'agr-002',
     title: 'Master Services Agreement — Sliema Wanderers FC',
     type: 'msa',
@@ -393,25 +374,6 @@ const AGREEMENTS: LegalAgreement[] = [
       { term: 'Permitted Use', value: 'Acquisition evaluation only' },
     ],
   },
-  {
-    id: 'agr-010',
-    title: 'Revenue Share Agreement — Valuetainment Content',
-    type: 'partnership',
-    status: 'active',
-    counterparty: 'Valuetainment LLC',
-    entityId: VALUETAINMENT,
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    effectiveDate: '2025-08-01',
-    expiryDate: '2027-07-31',
-    value: '$600,000/yr',
-    summary: 'Content co-production and revenue sharing agreement. 70/30 split favoring KaNeXT for platform-originated content, 60/40 for co-branded productions. Quarterly reconciliation.',
-    keyTerms: [
-      { term: 'Platform Content Split', value: '70/30 (KaNeXT favored)' },
-      { term: 'Co-Branded Split', value: '60/40 (KaNeXT favored)' },
-      { term: 'Reconciliation', value: 'Quarterly, within 15 business days' },
-      { term: 'Minimum Guarantee', value: '$150,000/quarter' },
-    ],
-  },
 ];
 
 // =============================================================================
@@ -476,18 +438,6 @@ const SIGNATURE_AUTHORITIES: SignatureAuthority[] = [
 // =============================================================================
 
 const OBLIGATIONS: LegalObligation[] = [
-  {
-    id: 'obl-001',
-    description: 'Deliver Q1 2026 revenue share reconciliation report to Valuetainment',
-    agreementId: 'agr-010',
-    agreementTitle: 'Revenue Share Agreement — Valuetainment Content',
-    dueDate: '2026-04-15',
-    financialImpact: '$142,000',
-    complianceImpact: null,
-    status: 'pending',
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-    linkageType: 'payment',
-  },
   {
     id: 'obl-002',
     description: 'Submit annual Malta FA licensing documents for Sliema Wanderers',
@@ -678,17 +628,6 @@ const REQUESTS: LegalRequest[] = [
     createdDate: '2026-02-05',
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
   },
-  {
-    id: 'req-005',
-    title: 'Review Valuetainment content co-production addendum',
-    type: 'review',
-    priority: 'normal',
-    requestedBy: 'Jordan Blake',
-    assignee: null,
-    status: 'open',
-    createdDate: '2026-02-01',
-    entityName: SEEDED_ENTITY_NAMES[VALUETAINMENT],
-  },
 ];
 
 // =============================================================================
@@ -704,7 +643,6 @@ export interface LegalActivityEvent {
 const RECENT_ACTIVITY: LegalActivityEvent[] = [
   { id: 'la-01', text: 'Target Bank acquisition term sheet received for legal review', time: '2 hours ago' },
   { id: 'la-02', text: 'IP assignment agreement v3.1 sent to Q1 contractors for signature', time: '4 hours ago' },
-  { id: 'la-03', text: 'Valuetainment revenue share reconciliation approved by CFO', time: '1 day ago' },
   { id: 'la-04', text: 'Sliema Wanderers Malta FA compliance docs flagged as overdue', time: '2 days ago' },
   { id: 'la-05', text: 'Phase 2 milestone 3 deliverables accepted under KaNeXT OS SOW', time: '3 days ago' },
   { id: 'la-06', text: 'Executive employment agreement template updated to v4.2', time: '5 days ago' },
@@ -727,7 +665,6 @@ const UPCOMING_DEADLINES: LegalDeadline[] = [
   { id: 'dl-02', label: 'IP license assignments — Q1 contractors', dueDate: '2026-02-28', daysRemaining: 11, urgency: 'critical' },
   { id: 'dl-03', label: 'Executive employment agreements refresh', dueDate: '2026-03-01', daysRemaining: 12, urgency: 'critical' },
   { id: 'dl-04', label: 'OCC charter application docs — Target Bank', dueDate: '2026-03-15', daysRemaining: 26, urgency: 'soon' },
-  { id: 'dl-05', label: 'Q1 revenue share reconciliation — Valuetainment', dueDate: '2026-04-15', daysRemaining: 57, urgency: 'normal' },
   { id: 'dl-06', label: 'Sponsor Bank annual compliance review', dueDate: '2026-12-01', daysRemaining: 287, urgency: 'normal' },
 ];
 

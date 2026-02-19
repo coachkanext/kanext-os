@@ -85,7 +85,7 @@ function buildSystemPrompt(ctx: NexusContext): string {
   }
 
   if (ctx.isOnboarding) {
-    parts.push(`\nThis is a NEW user who just signed in for the first time. Start by welcoming them to Nexus. Ask if they have an organization link or code to connect to an existing organization. If they provide one, confirm the connection (mock: connect them to "Lincoln University" as Head Coach). If they don't have one, let them know they can continue as a Viewer and join an organization later from Settings. Keep the onboarding natural and conversational — just a few quick questions, then let them explore.`);
+    parts.push(`\nThis is a NEW user who just signed in for the first time. Start by welcoming them to Nexus. Ask if they have an organization link or code to connect to an existing organization. If they provide one, confirm the connection (mock: connect them to "FMU Lions" as Head Coach). If they don't have one, let them know they can continue as a Viewer and join an organization later from Settings. Keep the onboarding natural and conversational — just a few quick questions, then let them explore.`);
   }
 
   if (ctx.isGameOps) {

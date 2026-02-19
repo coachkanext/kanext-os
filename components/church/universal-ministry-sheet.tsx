@@ -235,7 +235,7 @@ function MinistryHeader({
   seniorPastor: boolean;
   onClose: () => void;
 }) {
-  const campusLabel = ministry.orgId === 'iccla' ? 'ICCLA' : 'ICCIE';
+  const campusLabel = 'ICCLA';
 
   return (
     <View style={[styles.header, { borderBottomColor: colors.border }]}>

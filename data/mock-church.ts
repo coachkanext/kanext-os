@@ -21,7 +21,7 @@ export const ICC_ORGANIZATION: ChurchOrganization = {
   id: 'icc-001',
   name: 'International Christian Center',
   mode: 'church',
-  type: 'Multi-Campus Church',
+  type: 'Church',
   location: 'Los Angeles, CA',
   description:
     'International Christian Center is a vibrant, multicultural church committed to reaching the nations with the love of Christ. Founded in 1985, ICC has grown to serve communities across Los Angeles and internationally through our campuses and outreach ministries.',
@@ -45,18 +45,6 @@ export const CAMPUSES: Campus[] = [
       { day: 'Sunday', time: '8:00 AM', service: 'Early Morning Service', campusId: 'iccla' },
       { day: 'Sunday', time: '10:30 AM', service: 'Main Service', campusId: 'iccla' },
       { day: 'Wednesday', time: '7:00 PM', service: 'Midweek Service', campusId: 'iccla' },
-    ],
-  },
-  {
-    id: 'iccie',
-    name: 'ICC Inland Empire',
-    shortName: 'ICCIE',
-    location: 'Inland Empire, CA',
-    address: '1234 Mission Blvd, Ontario, CA 91764',
-    description: 'Reaching the Inland Empire community with faith, hope, and love.',
-    serviceTimes: [
-      { day: 'Sunday', time: '10:00 AM', service: 'Sunday Service', campusId: 'iccie' },
-      { day: 'Thursday', time: '7:00 PM', service: 'Bible Study', campusId: 'iccie' },
     ],
   },
 ];
@@ -236,14 +224,6 @@ export const CHURCH_LEADERSHIP: ChurchLeader[] = [
     title: 'Associate Pastor',
     role: 'associate_pastor',
     bio: 'Pastor Sarah oversees discipleship and small groups ministry.',
-  },
-  {
-    id: 'leader-3',
-    name: 'Pastor David Williams',
-    title: 'Campus Pastor - Inland Empire',
-    role: 'associate_pastor',
-    campusId: 'iccie',
-    bio: 'Pastor David leads our Inland Empire campus.',
   },
   {
     id: 'leader-4',

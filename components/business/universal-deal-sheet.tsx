@@ -159,43 +159,6 @@ const SLIEMA_DILIGENCE: DiligenceCategory[] = [
   },
 ];
 
-const VALUETAINMENT_DILIGENCE: DiligenceCategory[] = [
-  {
-    id: 'dc-fin-v',
-    category: 'Financial',
-    items: [
-      { id: 'di-v1', title: 'SAFE structure finalization', status: 'complete', assignee: 'Sammy K', notes: '5-tranche structure approved by board Feb 14' },
-      { id: 'di-v2', title: 'Valuation cap analysis', status: 'complete', assignee: 'Sammy K', notes: 'Cap set based on comparable pre-seed rounds' },
-      { id: 'di-v3', title: 'Wire instructions and banking setup', status: 'in_progress', assignee: 'Sammy K', notes: 'Target: Tranche 1 wire by Mar 1' },
-    ],
-  },
-  {
-    id: 'dc-legal-v',
-    category: 'Legal',
-    items: [
-      { id: 'di-v4', title: 'SAFE agreement execution', status: 'in_progress', assignee: 'Legal Counsel', notes: 'Final review by both parties' },
-      { id: 'di-v5', title: 'Board seat terms documentation', status: 'complete', assignee: 'Legal Counsel', notes: 'Activates at tranche threshold' },
-      { id: 'di-v6', title: 'Distribution rights agreement', status: 'pending', assignee: 'Legal Counsel', notes: 'Valuetainment channel and event co-branding' },
-    ],
-  },
-  {
-    id: 'dc-ops-v',
-    category: 'Operational',
-    items: [
-      { id: 'di-v7', title: 'Valuetainment Classic event planning', status: 'in_progress', assignee: 'Sammy K', notes: '32-team postseason championship' },
-      { id: 'di-v8', title: 'Content production pipeline', status: 'pending', assignee: 'Sammy K', notes: 'Co-branded content for Valuetainment channels' },
-      { id: 'di-v9', title: 'Selection committee formation', status: 'in_progress', assignee: 'Sammy K', notes: '"The Call" selection show concept' },
-    ],
-  },
-  {
-    id: 'dc-reg-v',
-    category: 'Regulatory',
-    items: [
-      { id: 'di-v10', title: 'Securities compliance (SAFE)', status: 'complete', assignee: 'Legal Counsel', notes: 'Standard accredited investor verification' },
-    ],
-  },
-];
-
 const DEAL_RISKS: Record<string, { id: string; title: string; severity: 'critical' | 'high' | 'medium' | 'low'; mitigation: string; owner: string }[]> = {
   'deal-1': [],
   'deal-2': [
@@ -256,7 +219,7 @@ export function UniversalDealSheet({
   const founder = isFounder(roleLens);
   const board = isBoardLevel(roleLens);
 
-  const diligenceData = deal.id === 'deal-2' ? SLIEMA_DILIGENCE : VALUETAINMENT_DILIGENCE;
+  const diligenceData = SLIEMA_DILIGENCE;
   const dealRisks = DEAL_RISKS[deal.id] ?? [];
   const dealApprovals = DEAL_APPROVALS[deal.id] ?? [];
   const auditLog = AUDIT_LOGS[deal.id] ?? [];

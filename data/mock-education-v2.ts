@@ -201,7 +201,6 @@ export interface DegreeRequirement {
 export const EDUCATION_ORGS: EducationOrg[] = [
   { id: 'fmu', name: 'Florida Memorial University', abbreviation: 'FMU', type: 'university', city: 'Miami Gardens', state: 'FL', status: 'active' },
   { id: 'kanext-academy', name: 'KaNeXT Academy', abbreviation: 'KXA', type: 'academy', city: 'Miami', state: 'FL', status: 'active' },
-  { id: 'lincoln', name: 'Lincoln University', abbreviation: 'LU', type: 'university', city: 'Lincoln University', state: 'PA', status: 'active' },
 ];
 
 // =============================================================================

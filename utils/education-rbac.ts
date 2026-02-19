@@ -221,10 +221,7 @@ export function canViewGrades(role: EducationRoleLens): boolean {
 // =============================================================================
 
 const EDUCATION_MEMBERSHIP_MAP: Record<string, EducationRoleLens> = {
-  mem_edu_fmu_pd: 'E2',
-  mem_edu_fmu_student: 'E4',
-  mem_edu_kxa_founder: 'E1',
-  mem_edu_lincoln_parent: 'E4',
+  mem_edu_fmu_president: 'E1',
 };
 
 export function getEducationRole(membershipId: string): EducationRoleLens {

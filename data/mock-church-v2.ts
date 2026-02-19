@@ -183,15 +183,6 @@ export const CHURCH_ORGS: ChurchOrg[] = [
     state: 'CA',
     status: 'active',
   },
-  {
-    id: 'iccie',
-    name: 'ICCIE',
-    abbreviation: 'ICCIE',
-    campus: 'Inland Empire',
-    city: 'Fontana',
-    state: 'CA',
-    status: 'active',
-  },
 ];
 
 // =============================================================================
@@ -247,22 +238,6 @@ export const MINISTRIES: Ministry[] = [
     upcomingEvents: 1,
     openBlockers: 0,
   },
-  {
-    id: 'min-children-iccie',
-    name: "Children's Ministry",
-    orgId: 'iccie',
-    campus: 'Inland Empire',
-    status: 'active',
-    mission: 'Providing a joyful, safe, and Christ-centered environment for children at the Inland Empire campus to learn, play, and grow in faith.',
-    goals: [
-      'Recruit 3 additional cleared volunteers by spring',
-      'Update curriculum materials for K-2 age group',
-      'Establish parent communication channel',
-    ],
-    activeVolunteers: 5,
-    upcomingEvents: 1,
-    openBlockers: 1,
-  },
 ];
 
 // =============================================================================
@@ -270,22 +245,6 @@ export const MINISTRIES: Ministry[] = [
 // =============================================================================
 
 export const CHURCH_MEMBERS: ChurchMember[] = [
-  // --- Staff ---
-  {
-    id: 'pastor-dipo',
-    name: 'Pastor Dipo Kalejaiye',
-    orgId: 'iccie',
-    type: 'staff',
-    status: 'active',
-    phone: '(909) 555-0100',
-    email: 'dipo@iccie.org',
-    ministries: ['all'],
-    safetyClearance: 'cleared',
-    lastAttendance: '2026-02-16',
-    followUpCount: 0,
-    baptized: true,
-    membershipStatus: 'full',
-  },
   // --- Leaders ---
   {
     id: 'mbr-tolu',
@@ -326,21 +285,6 @@ export const CHURCH_MEMBERS: ChurchMember[] = [
     phone: '(310) 555-0203',
     email: 'grace.nwosu@iccla.org',
     ministries: ['min-singles-iccla'],
-    safetyClearance: 'cleared',
-    lastAttendance: '2026-02-16',
-    followUpCount: 0,
-    baptized: true,
-    membershipStatus: 'full',
-  },
-  {
-    id: 'mbr-funke',
-    name: 'Funke Balogun',
-    orgId: 'iccie',
-    type: 'leader',
-    status: 'active',
-    phone: '(909) 555-0204',
-    email: 'funke.balogun@iccie.org',
-    ministries: ['min-children-iccie'],
     safetyClearance: 'cleared',
     lastAttendance: '2026-02-16',
     followUpCount: 0,
@@ -408,21 +352,6 @@ export const CHURCH_MEMBERS: ChurchMember[] = [
     baptized: true,
     membershipStatus: 'full',
   },
-  {
-    id: 'mbr-blessing',
-    name: 'Blessing Afolabi',
-    orgId: 'iccie',
-    type: 'volunteer',
-    status: 'active',
-    phone: '(909) 555-0305',
-    email: 'blessing.afolabi@gmail.com',
-    ministries: ['min-children-iccie'],
-    safetyClearance: 'cleared',
-    lastAttendance: '2026-02-16',
-    followUpCount: 0,
-    baptized: true,
-    membershipStatus: 'full',
-  },
   // --- Regular Members ---
   {
     id: 'mbr-ade',
@@ -470,21 +399,6 @@ export const CHURCH_MEMBERS: ChurchMember[] = [
     membershipStatus: 'provisional',
   },
   {
-    id: 'mbr-nkechi',
-    name: 'Nkechi Obi',
-    orgId: 'iccie',
-    type: 'member',
-    status: 'active',
-    phone: '(909) 555-0404',
-    email: 'nkechi.obi@gmail.com',
-    ministries: [],
-    safetyClearance: 'cleared',
-    lastAttendance: '2026-02-16',
-    followUpCount: 0,
-    baptized: true,
-    membershipStatus: 'full',
-  },
-  {
     id: 'mbr-emeka',
     name: 'Emeka Chukwu',
     orgId: 'iccla',
@@ -495,21 +409,6 @@ export const CHURCH_MEMBERS: ChurchMember[] = [
     ministries: [],
     safetyClearance: 'cleared',
     lastAttendance: '2026-02-16',
-    followUpCount: 0,
-    baptized: true,
-    membershipStatus: 'full',
-  },
-  {
-    id: 'mbr-kemi',
-    name: 'Kemi Adebayo',
-    orgId: 'iccie',
-    type: 'member',
-    status: 'active',
-    phone: '(909) 555-0406',
-    email: 'kemi.adebayo@gmail.com',
-    ministries: [],
-    safetyClearance: 'cleared',
-    lastAttendance: '2026-02-09',
     followUpCount: 0,
     baptized: true,
     membershipStatus: 'full',
@@ -540,21 +439,6 @@ export const CHURCH_MEMBERS: ChurchMember[] = [
     ministries: [],
     safetyClearance: 'cleared',
     lastAttendance: '2026-02-02',
-    followUpCount: 0,
-    baptized: false,
-    membershipStatus: 'none',
-  },
-  {
-    id: 'mbr-taiwo',
-    name: 'Taiwo Olaniyan',
-    orgId: 'iccie',
-    type: 'visitor',
-    status: 'visitor',
-    phone: '(909) 555-0503',
-    email: 'taiwo.olaniyan@gmail.com',
-    ministries: [],
-    safetyClearance: 'cleared',
-    lastAttendance: '2026-02-16',
     followUpCount: 0,
     baptized: false,
     membershipStatus: 'none',
@@ -630,7 +514,7 @@ export const FOLLOW_UPS: FollowUp[] = [
     id: 'fu-2',
     memberId: 'mbr-yemi',
     date: '2026-02-10',
-    owner: 'pastor-dipo',
+    owner: 'mbr-tolu',
     summary: 'Visited Sister Yemi at Cedars-Sinai after her surgery. She is recovering well and in good spirits. Family is with her.',
     outcome: 'Visited, doing better',
     nextStep: 'Check in again mid-week by phone',
@@ -651,7 +535,7 @@ export const CHURCH_INCIDENTS: ChurchIncident[] = [
     sensitivity: 'restricted',
     title: 'Unauthorized pickup attempt',
     description: 'An adult not on the approved pickup list attempted to collect a child from the K-2 classroom. Volunteer followed protocol, denied release, and contacted the custodial parent who confirmed the individual was not authorized. Child remained safe at all times.',
-    owner: 'pastor-dipo',
+    owner: 'mbr-tolu',
     status: 'investigating',
   },
 ];
@@ -755,13 +639,6 @@ export const PRAYER_REQUESTS: PrayerRequest[] = [
     text: 'Praying for direction regarding a job transition. Would appreciate prayers for wisdom and open doors.',
     visibility: 'private',
   },
-  {
-    id: 'pr-3',
-    memberId: 'mbr-funke',
-    date: '2026-02-12',
-    text: 'Requesting prayer for the children\'s ministry curriculum rollout at ICCIE. We want it to be impactful and age-appropriate.',
-    visibility: 'staff',
-  },
 ];
 
 // =============================================================================
@@ -827,7 +704,7 @@ export const AGENDA_BLOCKS: AgendaBlock[] = [
     time: '10:40 AM',
     title: 'Word + Teaching',
     type: 'teaching',
-    owner: 'pastor-dipo',
+    owner: 'mbr-tolu',
   },
   {
     id: 'ab-6',
@@ -835,7 +712,7 @@ export const AGENDA_BLOCKS: AgendaBlock[] = [
     time: '11:20 AM',
     title: 'Announcements + Benediction',
     type: 'announcements',
-    owner: 'pastor-dipo',
+    owner: 'mbr-tolu',
   },
   {
     id: 'ab-7',

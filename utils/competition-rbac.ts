@@ -201,9 +201,6 @@ export function getQuickActions(role: CompetitionRoleLens): QuickAction[] {
 
 const COMPETITION_MEMBERSHIP_MAP: Record<string, CompetitionRoleLens> = {
   mem_comp_k1_owner_commish: 'C1',
-  mem_comp_btw_director: 'C2',
-  mem_comp_mlk_advisor: 'C3',
-  mem_comp_valuetainment_public: 'C4',
 };
 
 export function getCompetitionRole(membershipId: string): CompetitionRoleLens {

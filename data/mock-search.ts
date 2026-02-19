@@ -12,9 +12,9 @@ import type { SearchResult, Mode } from '@/types';
 const SPORTS_RESULTS: SearchResult[] = [
   // Organization
   {
-    id: 'lincoln-basketball',
-    title: 'Lincoln University',
-    subtitle: 'Blue Tigers Men\'s Basketball',
+    id: 'fmu-basketball',
+    title: 'Florida Memorial University',
+    subtitle: 'Lions Men\'s Basketball',
     category: 'organization',
     mode: 'sports',
     route: '/organization',
@@ -199,7 +199,7 @@ const CHURCH_RESULTS: SearchResult[] = [
   {
     id: 'icc',
     title: 'International Christian Center',
-    subtitle: 'Los Angeles & Inland Empire',
+    subtitle: 'Los Angeles',
     category: 'organization',
     mode: 'church',
     route: '/organization',
@@ -229,14 +229,6 @@ const CHURCH_RESULTS: SearchResult[] = [
     category: 'organization',
     mode: 'church',
     route: '/organization/campuses/iccla',
-  },
-  {
-    id: 'iccie',
-    title: 'ICC Inland Empire',
-    subtitle: '1234 Mission Blvd, Ontario',
-    category: 'organization',
-    mode: 'church',
-    route: '/organization/campuses/iccie',
   },
   // Ministries
   {

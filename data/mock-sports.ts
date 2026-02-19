@@ -1,9 +1,7 @@
 /**
  * Mock data for Sports mode.
- * Lincoln University Oakland Men's Basketball
+ * FMU Men's Basketball
  */
-
-import { FIREBASE_GAMES, FIREBASE_RECORD } from './firebase-lincoln';
 
 // =============================================================================
 // TYPES (extended from base types)
@@ -156,18 +154,18 @@ export interface ProgramData {
 // =============================================================================
 
 export const INSTITUTION = {
-  id: 'lincoln-university',
-  name: 'Lincoln University',
-  nickname: 'Oaklanders',
-  location: 'Oakland, CA',
-  conference: 'Independent',
+  id: 'fmu',
+  name: 'Florida Memorial University',
+  nickname: 'Lions',
+  location: 'Miami Gardens, FL',
+  conference: 'Sun Conference',
   division: 'NAIA',
-  founded: 1919,
+  founded: 1879,
   colors: {
-    primary: '#003366',
-    secondary: '#FFD700',
+    primary: '#003DA5',
+    secondary: '#FFB81C',
   },
-  description: 'Lincoln University is a private university located in Oakland, California. The basketball program competes as an independent at the NAIA level.',
+  description: 'Florida Memorial University is a private HBCU located in Miami Gardens, Florida. The basketball program competes in the NAIA Sun Conference.',
 };
 
 // =============================================================================
@@ -380,8 +378,14 @@ export const PROGRAMS: ProgramData[] = [
         nilAmount: 0,
       },
     ],
-    schedule: FIREBASE_GAMES as Game[],
-    record: FIREBASE_RECORD,
+    schedule: [],
+    record: {
+      overall: { wins: 0, losses: 0 },
+      conference: { wins: 0, losses: 0 },
+      home: { wins: 0, losses: 0 },
+      away: { wins: 0, losses: 0 },
+      streak: '—',
+    },
   },
   {
     id: 'dev-1',
@@ -576,53 +580,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
 // MEDIA
 // =============================================================================
 
-export const MEDIA_ITEMS: MediaItem[] = [
-  {
-    id: 'media-recap-ohlone',
-    title: 'Kalejaiye\'s 33-Point Explosion Lifts Lincoln Over Ohlone',
-    description: 'Laolu Kalejaiye puts on a scoring clinic as Lincoln earns first win of the season.',
-    type: 'article',
-    source: 'Lincoln Athletics',
-    url: '#',
-    date: new Date('2025-01-01'),
-  },
-  {
-    id: 'media-recap-simpson',
-    title: 'Lincoln Holds Off Simpson University 86-79',
-    description: 'Lincoln overcomes halftime deficit to secure home victory.',
-    type: 'article',
-    source: 'Lincoln Athletics',
-    url: '#',
-    date: new Date('2025-01-01'),
-  },
-  {
-    id: 'media-recap-calmaritime2',
-    title: 'Lincoln Outshoots Cal Maritime in Rematch 102-96',
-    description: 'Brandon Williams and Laolu Kalejaiye lead a balanced offensive attack.',
-    type: 'article',
-    source: 'Lincoln Athletics',
-    url: '#',
-    date: new Date('2025-01-01'),
-  },
-  {
-    id: 'media-recap-bethesda',
-    title: 'Lincoln Cruises Past Bethesda 112-88',
-    description: 'A dominant home performance extends Lincoln\'s winning streak.',
-    type: 'article',
-    source: 'Lincoln Athletics',
-    url: '#',
-    date: new Date('2025-01-01'),
-  },
-  {
-    id: 'media-season-preview',
-    title: '2025-26 Season Preview: Lincoln University Basketball',
-    description: 'A comprehensive look at the roster, schedule, and expectations for the season.',
-    type: 'article',
-    source: 'Lincoln Athletics',
-    url: '#',
-    date: new Date('2025-10-15'),
-  },
-];
+export const MEDIA_ITEMS: MediaItem[] = [];
 
 // =============================================================================
 // HELPERS

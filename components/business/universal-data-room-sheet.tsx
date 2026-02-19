@@ -795,7 +795,7 @@ function LegalTab({
 
   const keyAgreements = [
     { name: 'FMU Partnership Agreement', type: 'Partnership', status: 'Active', detail: 'Athletics OS deployment for 13 sports programs' },
-    { name: 'Valuetainment Distribution LOI', type: 'Letter of Intent', status: 'Signed', detail: 'Media distribution and co-branded event rights' },
+    { name: 'PBD Co-Founder Distribution LOI', type: 'Letter of Intent', status: 'Signed', detail: 'Media distribution and co-branded event rights' },
     { name: 'SAFE Agreement -- Family Round', type: 'Investment', status: 'Template Ready', detail: 'Standard SAFE for friends and family investors' },
     { name: 'SAFE Agreement -- PBD Co-Founder', type: 'Investment', status: 'Board Approved', detail: '5-tranche SAFE with board seat activation' },
   ];
