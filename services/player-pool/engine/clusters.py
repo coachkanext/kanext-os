@@ -11,7 +11,7 @@ using the calibration tables from the Trait Library spec.
 """
 
 import math
-from klvn import shrink, get_lambda
+from klvn import shrink
 
 
 def _band(value: float, thresholds: list[tuple[float, int]], lower_is_better: bool = False) -> int:
@@ -239,12 +239,9 @@ def score_perimeter_defense(
         (0.0, 40), (0.02, 50), (0.04, 60), (0.06, 70), (0.08, 80), (0.10, 90),
     ])
 
-    # With only box score, we weight steals heavily but temper with uncertainty
-    # Default floor of 50 for traits we can't measure (containment, contests, etc.)
-    unmeasured_floor = 50.0
-
-    # Weighted: steals 40%, foul discipline 20%, activity 15%, unmeasured 25%
-    raw = 0.40 * stl_band + 0.20 * foul_band + 0.15 * activity_band + 0.25 * unmeasured_floor
+    # Scale measurable components to full 0-100 range (no unmeasured floor)
+    # Weighted: steals 50%, foul discipline 25%, activity 25%
+    raw = 0.50 * stl_band + 0.25 * foul_band + 0.25 * activity_band
 
     return max(0, min(100, round(raw)))
 
@@ -291,10 +288,9 @@ def score_interior_defense(
         (0.0, 35), (2.0, 50), (3.5, 60), (5.0, 70), (7.0, 80), (9.0, 90),
     ])
 
-    unmeasured_floor = 50.0
-
-    # Weighted: blocks 35%, deterrence 15%, fouls 15%, dreb 15%, unmeasured 20%
-    raw = 0.35 * blk_band + 0.15 * deter_band + 0.15 * foul_band + 0.15 * dreb_band + 0.20 * unmeasured_floor
+    # Scale measurable components to full 0-100 range (no unmeasured floor)
+    # Weighted: blocks 40%, deterrence 20%, fouls 15%, dreb 25%
+    raw = 0.40 * blk_band + 0.20 * deter_band + 0.15 * foul_band + 0.25 * dreb_band
 
     return max(0, min(100, round(raw)))
 
@@ -392,9 +388,9 @@ def score_frame(
         (0.0, 40), (0.03, 50), (0.06, 60), (0.09, 70), (0.12, 80), (0.16, 90),
     ])
 
-    # If no height/weight data, rely more on activity proxies
+    # If no height/weight data, scale activity proxies to full range
     if height <= 0 and wt <= 0:
-        raw = 0.40 * endurance_band + 0.35 * motor_band + 0.25 * 50.0
+        raw = 0.55 * endurance_band + 0.45 * motor_band
     else:
         raw = 0.25 * ht_band + 0.20 * wt_band + 0.25 * endurance_band + 0.20 * motor_band + 0.10 * 50.0
 
@@ -418,8 +414,6 @@ def compute_all_clusters(
                      fg_pct, three_pct, ft_pct, fga_pg, three_pa_pg, fta_pg,
                      oreb_pg, dreb_pg, minutes_pg, games_played
     """
-    lam = get_lambda(level_key)
-
     shooting = score_shooting(
         three_pct=stats.get("three_pct", 0),
         three_pa_pg=stats.get("three_pa_pg", 0),
@@ -485,18 +479,12 @@ def compute_all_clusters(
         level_key=level_key,
     )
 
-    # Apply KLVN level adjustment — boost lower-level scores slightly less,
-    # penalize overperformance at weak levels.
-    # The raw cluster scores are already banded against college-level tables,
-    # so we apply a soft level correction (not full lambda) to avoid double-penalizing.
-    level_adj = 0.5 + 0.5 * lam  # ranges from 0.80 at D3 to 1.0 at D1 HM
-
     return {
-        "shooting": max(0, min(100, round(shooting * level_adj))),
-        "finishing": max(0, min(100, round(finishing * level_adj))),
-        "playmaking": max(0, min(100, round(playmaking * level_adj))),
-        "perimeter_defense": max(0, min(100, round(perimeter_defense * level_adj))),
-        "interior_defense": max(0, min(100, round(interior_defense * level_adj))),
-        "rebounding": max(0, min(100, round(rebounding * level_adj))),
-        "frame": max(0, min(100, round(frame * level_adj))),
+        "shooting": max(0, min(100, round(shooting))),
+        "finishing": max(0, min(100, round(finishing))),
+        "playmaking": max(0, min(100, round(playmaking))),
+        "perimeter_defense": max(0, min(100, round(perimeter_defense))),
+        "interior_defense": max(0, min(100, round(interior_defense))),
+        "rebounding": max(0, min(100, round(rebounding))),
+        "frame": max(0, min(100, round(frame))),
     }

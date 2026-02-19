@@ -1,7 +1,7 @@
 ================================================================================
   KaNeXT OS — Complete Product Specification
-  Version 3.0 — February 2026
-  Generated from codebase at commit e95e1f3
+  Version 4.0 — February 2026
+  Generated from codebase at commit 71f7024
 ================================================================================
 
 TABLE OF CONTENTS
@@ -13,17 +13,20 @@ TABLE OF CONTENTS
   5.  Home Tab (Per-Mode Dashboard)
   6.  Media Tab
   7.  Nexus Tab (AI Surface)
-  8.  Activity Tab (Messages)
-  9.  Organization Tab (Per-Mode Operational Hub)
- 10.  V2 Organization Architecture
- 11.  Coach Stack Screens (Sports Mode)
- 12.  UI System & Primitives
- 13.  Data Layer
- 14.  Authentication & Identity
- 15.  Bottom Sheet System
+  8.  Activity Tab (Messages V3)
+  9.  Organization Tab (V3 — 6 Universal Tabs)
+ 10.  Coach Stack Screens (Sports Mode)
+ 11.  UI System & Primitives
+ 12.  Data Layer
+ 13.  Authentication & Identity
+ 14.  Bottom Sheet System
+ 15.  Entity Sheet System
  16.  Canonical Systems (Sports Mode)
- 17.  Appendix A — File Inventory
- 18.  Appendix B — V2 Completion Status
+ 17.  National Player Pool Backend
+ 18.  KR Computation Engine
+ 19.  Appendix A — File Inventory
+ 20.  Appendix B — V3 Component Inventory
+ 21.  Appendix C — Change Log (v3.0 → v4.0)
 
 
 ================================================================================
@@ -31,8 +34,8 @@ TABLE OF CONTENTS
 ================================================================================
 
 KaNeXT OS is a cross-platform mobile operating system for organizations. It
-serves five institutional modes — Sports, Enterprise, Church, Education, and
-Community — through a single universal shell with mode-specific instantiations.
+serves five institutional modes — Sports, Business, Church, Education, and
+Competition — through a single universal shell with mode-specific instantiations.
 
 Every mode shares the same 5-tab navigation, the same UI primitives, and the
 same AI layer (Nexus). What changes per mode is the data, the labels, the
@@ -48,10 +51,10 @@ Primary instantiation (Sports Mode):
   - Conference: Sun Conference (NAIA)
 
 Secondary instantiations:
-  - Enterprise: KaNeXT Inc. (founder OS)
+  - Business: KaNeXT Inc. (founder OS)
   - Church: International Christian Center Los Angeles (ICCLA)
   - Education: FMU + Bethune-Cookman University (BCU) (academic lens)
-  - Community: K-1 Speed Racing League
+  - Competition: K-1 Speed Racing League
 
 
 ================================================================================
@@ -62,10 +65,10 @@ Framework:       Expo SDK + React Native
 Routing:         Expo Router (file-based, typed routes)
 Navigation:      Stack + Tabs (5 bottom tabs, coach stack for push screens)
 State:           React Context (AppContext, AuthContext, NexusContext,
-                 EnterpriseContext, ChurchContext, EducationContext,
-                 BusinessContext)
-Persistence:     AsyncStorage (session, mode, program context)
-AI:              OpenAI GPT via utils/openai (Nexus conversations)
+                 BusinessContext, ChurchContext, EducationContext)
+Persistence:     AsyncStorage (session, mode, program context, ActiveView)
+AI:              OpenAI GPT-4o via utils/openai.ts (Nexus conversations)
+Backend:         PostgreSQL (kanext_player_pool — 19 tables, player/team data)
 Bottom Sheets:   @gorhom/bottom-sheet v5 (universal wrapper)
 Animations:      react-native-reanimated
 Paging:          react-native-pager-view (all swipeable tab surfaces)
@@ -85,63 +88,65 @@ Targets: iOS, Android, Web
 
 Mode Type         Mode Key       Primary Org              Accent Color
 ─────────────     ────────       ───────────              ────────────
-Sports            sports         FMU Monarchs             Royal Blue
-Enterprise        enterprise     KaNeXT Inc.              Violet
-Church            church         ICCLA                    Gold
-Education         education      FMU (academic)           Teal
-Community         competition    K-1 Speed League         Orange
+Sports            sports         FMU Monarchs             Royal Blue (#1E40AF)
+Business          business       KaNeXT Inc.              Violet (#7C3AED)
+Church            church         ICCLA                    Gold (#FBBF24)
+Education         education      FMU (academic)           Teal (#14B8A6)
+Competition       competition    K-1 Speed League         Red (#FF5555)
 
 Each mode defines its own:
   - Dashboard payload (hero video, KPIs, today/next, alerts, quick actions)
-  - Organization tabs (10 per mode)
-  - Message threads (mode-scoped inbox, rooms, pinned)
-  - Film Room variant (Media tab, page 2)
-  - Explore page variant (Media tab, page 1)
-  - People directory
-  - Operations, Finance, Compliance, Payment Rails (all mode-aware)
+  - Organization content (6 universal tabs, 5 mode-specific component sets)
+  - Message threads (mode-scoped inbox, rooms, Nexus escalations)
+  - Film Room variant (Media tab, page 3)
+  - Explore page variant (Media tab, page 2)
+  - Entity sheets (8 types total, mode-specific subsets)
 
 3.1 ROLE SYSTEMS
 ─────────────────
-Roles (21 total across modes):
-  Sports:     head_coach, assistant_coach, coordinator, analyst, trainer,
-              player, recruit, parent_guardian
-  Enterprise: founder, cofounder, investor, advisor, employee
-  Church:     senior_pastor, pastor, elder, deacon, member
-  Education:  president, dean, faculty, registrar, student
-  Community:  league_admin, team_rep, official, broadcaster, participant
+Roles per mode (mapped in types/index.ts):
+  Sports:     admin, head_coach, assistant_coach, gm, student_athlete, fan,
+              agent, scout, donor, media
+  Business:   founder, investor, viewer
+  Church:     member, staff, leadership
+  Education:  faculty, student
+  Competition: league_admin, team_owner, driver
 
-3.2 RBAC LENS SYSTEMS (V2 Organization Tabs)
-──────────────────────────────────────────────
-V2 organization tabs use a 5-tier Role Lens system for fine-grained visibility
-gating within each tab. Each lens maps to a tier number (1 = highest authority,
-5 = most restricted).
+3.2 RBAC LENS SYSTEMS
+──────────────────────
+Each mode uses a 5-tier Role Lens system for fine-grained visibility gating.
+
+  Sports Role Lens (utils/sports-rbac.ts):
+    R1 — AD / HC / GM          Full access (all tabs, all drill-downs)
+    R2 — Player                Self-only (cards view, no recruiting/game-plan)
+    R3 — Asst Coach / RC       Limited eval, most tabs
+    R4 — Scout / Analyst       Limited eval, no game-plan/sim/development
+    R5 — Fan                   Public only, cards-only roster, no recruiting
 
   Church Role Lens (utils/church-rbac.ts):
-    C1 — Senior Pastor        Full 10-tab access
-    C2 — Elder / Board        Full 10-tab access
-    C3 — Staff / Deacon       Most tabs, some admin areas restricted
-    C4 — Member               Limited tabs (overview + member-facing)
-    C5 — Visitor / Public     Locked or curated view only
+    C1 — Senior Pastor         Full access
+    C2 — Elder / Board         Full access
+    C3 — Staff / Deacon        Most tabs, admin restricted
+    C4 — Member                Limited tabs (overview + member-facing)
+    C5 — Visitor / Public      Locked or curated view
 
   Education Role Lens (utils/education-rbac.ts):
-    E1 — President/Chancellor Full 10-tab access
-    E2 — Provost / Dean       Full 10-tab access
-    E3 — Faculty / Staff      Most tabs, admin areas restricted
-    E4 — Student              Limited tabs (overview + student-facing)
-    E5 — Public               Locked or curated view only
+    E1 — President/Chancellor  Full access
+    E2 — Provost / Dean        Full access
+    E3 — Faculty / Staff       Most tabs, admin restricted
+    E4 — Student               Limited tabs (overview + student-facing)
+    E5 — Public                Locked or curated view
 
   Business Role Lens (utils/business-rbac.ts):
-    B1  — Founder / CEO       Full access
-    B2a — Investor (Retail)   Limited disclosure views
-    B2b — Investor (Strategic/Board)  Enhanced disclosure views
-    B3  — Public              Minimal access
-    B4  — Subscriber          Curated access
-    B5  — Prospective Acquirer  Due diligence views
+    B1  — Founder / CEO        Full access
+    B2a — Investor (Retail)    Limited disclosure
+    B2b — Investor (Strategic) Enhanced disclosure
+    B3  — Public               Minimal access
+    B4  — Subscriber           Curated access
+    B5  — Prospective Acquirer Due diligence views
 
-  Helper functions per mode: isDeanLevel(), isFacultyLevel(), isEnrolled(),
-  isPresident(), isPastorLevel(), isStaffLevel(), isMember(), etc.
-  Each v2 component receives a `role` prop and gates sub-tabs + content
-  visibility accordingly.
+  Competition Role Lens (utils/competition-rbac.ts):
+    Per-role gating for league_admin, team_owner, driver.
 
 
 ================================================================================
@@ -153,85 +158,116 @@ Five tabs, glyph icons only (no labels). Fixed order across all modes.
 Position  Route                     Icon                         Special
 ────────  ─────                     ────                         ───────
 1         /(tabs)/index             house.fill                   Long-press → Avatar Drawer
-2         /(tabs)/media             play.rectangle.fill          —
-3         /(tabs)/nexus             nexus-logo.png (custom)      Long-press → Voice; Double-tap → Finder
-4         /(tabs)/activity          bubble.left.and.bubble.right Long-press → —
-5         /(tabs)/organization      building.2.fill              Long-press → Mode Switcher
+2         /(tabs)/media/            play.rectangle.fill          Directory-based (nested routes)
+3         /(tabs)/nexus             nexus-logo.png (custom)      Long-press → Voice; Double-tap → SplitNexusOverlay
+4         /(tabs)/activity/         bubble.left.and.bubble.right —
+5         /(tabs)/organization/     building.2.fill              Long-press → Mode Switcher
 
 Hidden routes (registered, href: null): search, home, explore
+
+Global overlays mounted in app/_layout.tsx:
+  - SplitNexusOverlay     — double-tap Nexus tab
+  - UniversalFinder       — global finder
+  - ModeSwitcherOverlay   — long-press Organization tab
+  - KXTransition          — mode transition animation
+  - SearchOverlay         — global search
+  - AskNexusSheet         — contextual Nexus prompt
+  - AvatarDrawer          — user profile drawer
+  - 8 Entity Card Sheets  — see Section 15
 
 
 ================================================================================
 5. HOME TAB (PER-MODE DASHBOARD)
 ================================================================================
 
-The Home tab dispatches to a mode-specific home component. Each uses the
-universal DashboardRenderer block system or a custom PagerView workspace.
+The Home tab dispatches to a mode-specific home component based on useMode().
 
 5.1 SPORTS HOME — SportsHome
 ─────────────────────────────
-9 swipeable tabs via PagerView + PagedTabBar:
+4 swipeable tabs via PagerView + PagedTabBar:
 
   Index  Tab Label      Component                  Status
   ─────  ─────────      ─────────                  ──────
-  0      Dashboard      DashboardRenderer          Live
-  1      Calendar       ScheduleHub                Live
-  2      Roster         RosterContent              Live
-  3      Recruiting     PlayerPoolContent          Live
-  4      Statistics     StatsContent               Live
-  5      Game Plan      GamePlanContent            Live
-  6      Simulation     SimulationContent          Live
-  7      Development    DevelopmentContent         Live
-  8      Program        ProgramContent             Live
+  0      Dashboard      (inline in SportsHome)     Live
+  1      Roster         RosterContent              Live
+  2      Calendar       SportsCalendarV2           Live
+  3      Recruiting     PlayerPoolContentV2        Live (real national pool data)
 
-Dashboard blocks (universal renderer):
-  Block 0: Hero Video (16:9 autoplay/loop/muted)
-  Block 1: Context Snapshot (3-KPI card strip)
-  Block 2: Today / Next (event cards)
-  Block 3: Alerts Strip (horizontal chips, severity-coded)
-  Block 4: Quick Actions (shortcut grid)
-  Block 5: Feed Preview (activity list)
-  Block 6: Pinned Shelf (horizontal shelf)
+Dashboard content (index 0):
+  - Video Hero Card (16:9 LinearGradient, FMU seal watermark, play button)
+    - Badge overlay: LIVE / NEXT / RECAP / FILM
+  - Next Game Card (FMU vs opponent, tappable logos via openTeamCard())
+  - Action Buttons: Buy Tickets / Watch / Live Stats
+  - Commerce Row (3 cards: Tickets, Team Store, Support)
+  - Domain Section Cards (5 drill-down cards):
+    - Statistics → SportsStatsV2
+    - Game Plan → SportsGamePlanV2
+    - Simulation → SportsSimulationV2
+    - Development → SportsDevelopmentV2
+    - Alerts & Decisions → (inline)
 
-Additional sheets: KRDetailsSheet, TeamQuickSheet, opponent pregame/postgame.
+Domain drill-down pattern:
+  - Tap card → sets drillDown state → replaces view with back bar + full component
+  - Back bar returns to Dashboard overview
 
-5.2 ENTERPRISE HOME — BusinessHome (wrapped in EnterpriseProvider)
-5.3 CHURCH HOME — ChurchHome
-5.4 EDUCATION HOME — EducationHome
-5.5 COMMUNITY HOME — CommunityHome
+RBAC (Sports Home):
+  - DOMAIN_HIDDEN: R2/R4/R5 hide game-plan, simulation, development
+  - PILL_HIDDEN: R2/R5 hide recruiting tab entirely
 
-Each mode home uses DashboardRenderer with mode-specific payload from
-data/dashboard-payloads.ts.
+Roster tab views: List | System | Cards
+  - RBAC-aware defaults: R1/R3 see all 3 (default list); R2/R5 cards only
+  - CRM list (roster-crm-list.tsx) with KR colors, tier labels, archetype tags
+  - System view = positional depth chart (5 positions: PG/CG/W/F/B)
+
+Calendar tab (SportsCalendarV2): Agenda | Games | Standings | News
+  - Agenda → CalendarHub (Day/Week/Month toggle)
+  - Games → CalendarGamesView (Upcoming/Completed from FMU_GAMES)
+  - Standings → CalendarStandingsView (Conference, NAIA Top 25, KaNeXT National)
+  - News → CalendarNewsView (video-first, category pills)
+
+Recruiting tab (PlayerPoolContentV2): Board | Database | Portal
+  - Board → RecruitingBoardV2 (CRM kanban from recruitingBoard.ts, 20 entries)
+  - Database → RecruitingDatabaseV2 (real nationalPool.search(), 9K+ players)
+  - Portal → RecruitingPortalV2 (portal entries with dates)
+  - All tabs use universal KR colors, badge dots, tap→openPlayerCard()
+
+5.2 BUSINESS HOME — BusinessHome (wrapped in BusinessProvider)
+5.3 CHURCH HOME — ChurchHome (wrapped in ChurchProvider)
+5.4 EDUCATION HOME — EducationHome (wrapped in EducationProvider)
+5.5 COMPETITION HOME — CommunityHome
 
 
 ================================================================================
 6. MEDIA TAB
 ================================================================================
 
-Component: VideoHomeScreen
+Directory-based route: app/(tabs)/media/
+Component: VideoHomeScreen (media/index.tsx)
 4 swipeable tabs via PagerView:
 
   Index  Tab Label        Component              Notes
   ─────  ─────────        ─────────              ─────
   0      Feed             FeedPage               Stories row + video post feed
   1      Explore          ExplorePage            Mode-specific explore dispatch
-  2      [Mode-specific]  RoomPage               Mode-specific film room dispatch
-  3      Library          LibraryHub             7-tab library (All/Collections/
-                                                  Saved/Created/Shared/Pinned/Archive)
+  2      [Mode-specific]  RoomPage               Mode-specific room dispatch
+  3      Library          LibraryHub             Multi-tab library
 
 Tab 2 label per mode:
   - Sports:     "Film Room"      → SportsFilmRoom
   - Church:     "Ministry Rooms" → ChurchFilmRoom
   - Education:  "Classrooms"     → EducationFilmRoom
-  - Enterprise: "Workspaces"     → BusinessFilmRoom
-  - Community:  "Paddock"        → CommunityFilmRoom
+  - Business:   "Workspaces"     → BusinessFilmRoom
+  - Competition: "Paddock"       → CommunityFilmRoom
+
+Hidden sub-routes (registered, href: null):
+  reels, create, inbox, library, you — future surfaces
 
 Explore page per mode:
   - Sports:     SportsExplorePage      (YouTube-style sports content discovery)
   - Church:     ChurchExplorePage      (sermon/ministry content discovery)
   - Education:  EducationExplorePage   (school/program discovery)
-  - Enterprise: BusinessExplorePage    (business content discovery)
-  - Community:  CompetitionExplorePage (racing/competition content discovery)
+  - Business:   BusinessExplorePage    (business content discovery)
+  - Competition: CompetitionExplorePage (racing/competition discovery)
 
 
 ================================================================================
@@ -243,7 +279,7 @@ Single conversational canvas — no sub-tabs.
 
 Two states:
   - Locked (unauthenticated): NexusLockedState — "Sign in to unlock Nexus"
-  - Unlocked: Full conversational AI surface with GPT backend
+  - Unlocked: Full conversational AI surface with GPT-4o backend
 
 Panels and overlays (slide in without leaving screen):
   - ConversationsPanel      — hamburger icon → conversation list
@@ -259,276 +295,150 @@ Panels and overlays (slide in without leaving screen):
 Conversation types: general, player_eval, team_eval, simulation, game_ops,
 recruiting, development, film_analysis
 
-Nexus uses program context (system preset, offensive/defensive styles, roster,
-recruiting board, cluster weights) to ground all AI responses in the user's
-actual program truth.
+Player Query System (utils/nexus-player-query.ts):
+  - Auto-detects player-related queries via keyword+regex analysis
+  - Extracts filters from natural language (level, position, KR range, etc.)
+  - Searches real national pool (9K+ players) via nationalPool.search()
+  - Injects matched player data as [PLAYER DATA] block into GPT context
+  - GPT responds with real statistical data, not hallucinated numbers
+
+V2 Governed Actions (utils/nexus-actions.ts):
+  - Action classification: "add player to board", "send message", etc.
+  - Pending action confirmation flow before execution
+  - Intent classification via voice-classifier.ts
+
+Pool Awareness Prompt (always injected in sports mode):
+  - Describes 9K+ player database, KR methodology, 7-cluster system
+  - Teaches GPT the [LINK:player:ID:Name] tappable format
 
 
 ================================================================================
-8. ACTIVITY TAB (MESSAGES)
+8. ACTIVITY TAB (MESSAGES V3)
 ================================================================================
 
+Route: app/(tabs)/activity/index.tsx
 Component: MessagesScreen
-4 swipeable tabs via PagerView:
+
+3 swipeable tabs via PagerView (V3 — changed from 4 tabs in V2):
 
   Index  Tab Label    Component        Content
   ─────  ─────────    ─────────        ───────
-  0      Inbox        InboxPage        Mode-scoped DM threads (SwipeableThreadRow)
-  1      Rooms        RoomsHub         Mode-specific Slack-style rooms
-  2      Requests     RequestsPage     Pending + Approved (SectionList)
-  3      Pinned       PinnedPage       Mode-scoped pinned threads
+  0      Inbox        InboxListV3      Mode-scoped DM threads + inline requests
+  1      Rooms        RoomsListV3      Mode-specific Slack-style rooms
+  2      Nexus (N)    NexusQueueV3     AI-escalated intelligence queue
 
-Mode-aware data:
-  - INBOX_THREADS_BY_MODE — unique DM threads per mode (10 per mode)
-  - PINNED_THREADS_BY_MODE — pinned subset per mode
-  - getModeRooms(mode) — room channels per mode
+V3 Changes (from V2):
+  - Requests tab REMOVED — Accept/Decline folded inline into Inbox rows
+  - Pinned tab REMOVED — pinned threads sort to top of Inbox
+  - Nexus tab ADDED — shows AI escalations with live badge count
+  - NexusAnswerSheet — bottom sheet for answering/resolving Nexus escalations
+  - Tab 2 label shows "(N)" badge when unanswered count > 0
 
-Bottom sheets: Thread Detail (chat + ChatComposer), Request Detail, New Thread.
+V3 Components:
+  - inbox-list-v3.tsx — threaded inbox with inline request actions
+  - rooms-list-v3.tsx — room directory with category grouping
+  - nexus-queue-v3.tsx — escalation queue with status badges
+  - nexus-escalation-row-v3.tsx — individual escalation row
+  - inbox-row-v3.tsx — individual inbox thread row
+  - room-row-v3.tsx — individual room row
+  - nexus-answer-sheet.tsx — answer/resolve bottom sheet
+
+Data: mock-messages-v3.ts (mode-aware threads, rooms, escalations)
+Types: InboxThreadV3, RoomV3, NexusEscalationV3, ConversationMessageV3,
+       NexusEscalationStatus ('unanswered' | 'answered')
+
+Bottom sheets: Thread Detail (chat + ChatComposer), New Thread Sheet.
 FAB: Compose button (opens New Thread Sheet).
 
-Sports inbox contacts: Coach Miller, Darius Thompson, Athletic Trainer,
-  Devon Williams (Recruit), AD Office, Compliance Office, Andre Mitchell,
-  Scout Williams, Marcus Johnson, Jaylen Carter (Recruit)
-
-Church inbox contacts: Pastor Sarah, Elder James, Deacon Ruth, David Eze
-  (Worship), Minister Tunde, Deaconess Folake, Sister Grace, Deacon Michael,
-  New Member Ade, Media Team Lead
-
-Education inbox contacts: Dr. Chen, Karen Mitchell, Rachel Kim, Dr. Foster,
-  Dr. Santos, Lisa Morales, Student Government, Jake Torres, Facilities,
-  Alumni Relations
-
-Enterprise inbox contacts: Priya Patel, Jordan Lee, Sam Okafor, Jamie Torres,
-  Morgan Chen, Casey Rodriguez, Drew Singh, Robert Kim, Riley Brown, HR
-
-Community inbox contacts: Sarah Nakamura, Diego Fuentes, Tom Bradley,
-  Chief Steward Roberts, Chris Donovan, Dana Wells, Lisa Park, Kenji Tanaka,
-  Mike Johnson, Blaze Racing
-
 
 ================================================================================
-9. ORGANIZATION TAB (PER-MODE OPERATIONAL HUB)
+9. ORGANIZATION TAB (V3 — 6 UNIVERSAL TABS)
 ================================================================================
 
+Route: app/(tabs)/organization/index.tsx
 Component: OrganizationScreen
-Dispatches to one of five mode-specific PagerView + PagedTabBar surfaces.
-All modes have exactly 10 swipeable tabs. Four of five modes (Business, Church,
-Education, Competition) are fully rebuilt with v2 components featuring 10-sub-tab
-hubs, RBAC gating, and domain-specific mock data. Sports remains partially v1.
 
-9.1 SPORTS MODE — SportsOrganization
+V3 REDESIGN (changed from V2's 10 mode-specific tabs):
+  - 6 universal tabs shared across ALL 5 modes
+  - Same tab labels, different content components per mode
+  - 30 total V3 components (6 tabs × 5 modes)
+
+6 Universal Tabs:
+
+  Index  Tab Label      Component Pattern
+  ─────  ─────────      ─────────────────
+  0      Program        {Mode}Program (e.g. SportsProgram, BizProgram)
+  1      People         {Mode}People
+  2      Finance        {Mode}Finance
+  3      Compliance     {Mode}Compliance
+  4      Facilities     {Mode}Facilities
+  5      Ledger         {Mode}Ledger
+
+Tabs REMOVED from V2:
+  - Rooms (folded into People)
+  - Operations (folded into Program)
+  - Payment Rails (replaced by Ledger)
+  - Resources (folded into Program)
+  - Sponsors/Donations/Assets/Reports (folded into relevant tabs)
+
+9.1 SPORTS MODE — V3 Components
+─────────────────────────────────
+  sports-program-v3.tsx    — Program overview, staff, operations, resources
+  sports-people-v3.tsx     — Roster directory, staff, contacts, roles
+  sports-finance-v3.tsx    — Budget, revenue, expenses, aid, accounts
+  sports-compliance-v3.tsx — NCAA/NAIA compliance, eligibility, audits
+  sports-facilities-v3.tsx — Venues, bookings, work orders, safety
+  sports-ledger-v3.tsx     — Payment rails, transactions, disbursements
+
+9.2 BUSINESS MODE — V3 Components
+──────────────────────────────────
+  biz-program-v3.tsx       — Entities, workstreams, operations
+  biz-people-v3.tsx        — Org directory, roles, departments
+  biz-finance-v3.tsx       — Financial data, budgets, accounts
+  biz-compliance-v3.tsx    — Regulatory compliance, legal
+  biz-facilities-v3.tsx    — Assets, equipment, offices
+  biz-ledger-v3.tsx        — Payment processing, invoices
+
+9.3 CHURCH MODE — V3 Components
+────────────────────────────────
+  church-program-v3.tsx    — Ministries, worship, community
+  church-people-v3.tsx     — Congregation, staff, volunteers
+  church-finance-v3.tsx    — Giving, budget, campaigns
+  church-compliance-v3.tsx — Governance, bylaws, audits
+  church-facilities-v3.tsx — Buildings, rooms, maintenance
+  church-ledger-v3.tsx     — Donations, disbursements, tithes
+
+9.4 EDUCATION MODE — V3 Components
+───────────────────────────────────
+  edu-program-v3.tsx       — Institutions, programs, accreditation
+  edu-people-v3.tsx        — Faculty, staff, students, alumni
+  edu-finance-v3.tsx       — Tuition, aid, institutional budget
+  edu-compliance-v3.tsx    — FERPA, accreditation, policies
+  edu-facilities-v3.tsx    — Campus buildings, rooms, assets
+  edu-ledger-v3.tsx        — Tuition rails, aid disbursement
+
+9.5 COMPETITION MODE — V3 Components
 ─────────────────────────────────────
-  Index  Tab Label       Component                    Version
-  ─────  ─────────       ─────────                    ───────
-  0      Program         SportsOrgProgramsV2          V2
-  1      People          OrgPeopleTab                 V1
-  2      Rooms           RoomsHub                     V1
-  3      Operations      OrgOperationsTab (v2)        V2 (shared, mode="sports")
-  4      Finance         OrgFinanceTab (v2)           V2 (shared, mode="sports")
-  5      Payment Rails   OrgPaymentRailsTab           V1
-  6      Compliance      OrgComplianceTab             V1 (shared, mode="sports")
-  7      Facilities      OrgFacilitiesTab             V1 (11 inner tabs)
-  8      Resources       OrgResourcesTab              V1
-  9      Sponsors        OrgSponsorsTab               V1
+  comp-program-v3.tsx      — Series, race weekends, operations
+  comp-people-v3.tsx       — Drivers, crew, officials
+  comp-finance-v3.tsx      — League finances, entry fees
+  comp-compliance-v3.tsx   — Technical rules, compliance
+  comp-facilities-v3.tsx   — Tracks, venues, equipment
+  comp-ledger-v3.tsx       — Prize money, payments
 
-  Sports V2 status: 3 of 10 tabs rebuilt. Remaining 7 are functional v1.
+V3 COMPLETION STATUS:
+  All 5 modes × 6 tabs = 30 V3 components — FULLY BUILT.
+  Zero V1/V2 tabs remain. Zero placeholders.
 
-  *** Sports Facilities Inner Tabs (11): ***
-    0  Dashboard     — today's bookings, quick actions, facility/safety/vendor pulse
-    1  Spaces        — 10 spaces (court, weight, training, locker, film, office,
-                       meeting, storage, home venue, practice venue)
-    2  Bookings      — grouped by day, sorted by time, type badges
-    3  Work Orders   — severity pipeline (requested → closed)
-    4  Issues        — real-time problems with severity + status
-    5  Inventory     — sectioned by category, condition badges
-    6  Vendors       — directory with open WO counts, renewal dates
-    7  Safety        — inspections with cadence + compliance status
-    8  Reports       — 5 export cards
-    9  Audit         — timestamped action log
-   10  Settings      — toggle switches for facility policies
-
-9.2 ENTERPRISE MODE — BusinessOrganization (BusinessProvider)
-─────────────────────────────────────────────────────────────
-Wraps BusinessProvider. Includes EntityScopeBar + EntitySwitcherSheet above
-the PagerView. All tabs pass role={viewAsRole} via useBusiness() context.
-
-  Index  Tab Label       Component                    Version
-  ─────  ─────────       ─────────                    ───────
-  0      Entities        BizOrgEntitiesV2             V2 (10 sub-tabs)
-  1      People          BizOrgPeopleV2               V2 (10 sub-tabs)
-  2      Rooms           BizOrgRoomsV2                V2 (10 sub-tabs)
-  3      Operations      BizOrgOperationsV2           V2 (10 sub-tabs)
-  4      Finance         BizOrgFinanceV2              V2 (10 sub-tabs)
-  5      Payment Rails   BizOrgPaymentRailsV2         V2 (10 sub-tabs)
-  6      Legal           BizOrgLegalV2                V2 (10 sub-tabs)
-  7      Compliance      BizOrgComplianceV2           V2 (10 sub-tabs)
-  8      Assets          BizOrgAssetsTab              V2 (10 sub-tabs)
-  9      Reports         BizOrgReportsV2              V2 (10 sub-tabs)
-
-  Business V2 status: 10 of 10 — FULLY V2.
-
-9.3 CHURCH MODE — ChurchOrganization (ChurchProvider)
-─────────────────────────────────────────────────────
-Wraps ChurchProvider. All tabs pass role={viewAsRole} (ChurchRoleLens).
-RBAC: C1-C5 lens per tab.
-
-  Index  Tab Label       Component                    Version
-  ─────  ─────────       ─────────                    ───────
-  0      Ministries      ChurchOrgMinistries           V2 (10 sub-tabs)
-  1      People          ChurchOrgPeople               V2 (10 sub-tabs)
-  2      Rooms           ChurchOrgRooms                V2 (10 sub-tabs)
-  3      Operations      ChurchOrgOperations           V2 (10 sub-tabs)
-  4      Finance         ChurchOrgFinance              V2 (10 sub-tabs)
-  5      Payment Rails   ChurchOrgPaymentRails         V2 (10 sub-tabs)
-  6      Compliance      ChurchOrgCompliance           V2 (10 sub-tabs)
-  7      Facilities      ChurchOrgFacilitiesV2         V2 (10 sub-tabs)
-  8      Resources       ChurchOrgResourcesV2          V2 (10 sub-tabs)
-  9      Donations       ChurchOrgDonationsV2          V2 (10 sub-tabs)
-
-  Church V2 status: 10 of 10 — FULLY V2.
-  Note: Tab 9 is "Donations/Giving" (church-specific), not "Policies".
-
-9.4 EDUCATION MODE — EducationOrganization (EducationProvider)
-──────────────────────────────────────────────────────────────
-Wraps EducationProvider. All tabs pass role={viewAsRole} (EducationRoleLens).
-RBAC: E1-E5 lens per tab. HBCU-seeded mock data (FMU + BCU).
-
-  Index  Tab Label       Component                    Version
-  ─────  ─────────       ─────────                    ───────
-  0      Institutions    EduOrgInstitutionsV2          V2 (10 sub-tabs)
-  1      People          EduOrgPeopleV2                V2 (10 sub-tabs)
-  2      Rooms           EduOrgRoomsV2                 V2 (10 sub-tabs)
-  3      Operations      EduOrgOperationsV2            V2 (10 sub-tabs)
-  4      Finance         EduOrgFinanceV2               V2 (10 sub-tabs)
-  5      Payment Rails   EduOrgPaymentRailsV2          V2 (10 sub-tabs)
-  6      Compliance      EduOrgComplianceV2            V2 (10 sub-tabs)
-  7      Facilities      EduOrgFacilitiesV2            V2 (10 sub-tabs)
-  8      Resources       EduOrgResourcesV2             V2 (10 sub-tabs)
-  9      Sponsors        EduOrgSponsorsV2              V2 (10 sub-tabs)
-
-  Education V2 status: 10 of 10 — FULLY V2.
-  Note: Tab 9 is "Sponsors" (education-specific), not "Policies".
-
-  Education V2 Sub-Tab Breakdown:
-    Tab 0 Institutions:  Overview | Directory | Campuses | Programs | Accreditation | Leadership | History | Rankings | Partnerships | Settings
-    Tab 1 People:        Overview | Directory | Faculty | Staff | Students | Alumni | Contacts | Roles | Onboarding | Admin
-    Tab 2 Rooms:         Overview | Rooms | Channels | Announcements | Scheduled | Archive | Moderation | Templates | Integrations | Settings
-    Tab 3 Operations:    Overview | Workstreams | Calendar | Tasks | Approvals | Workflows | Incidents | Vendors | Reports | Settings
-    Tab 4 Finance:       Overview | Budget | Revenue | Expenses | Aid & Scholarships | Accounts | Reconciliation | Reports | Forecasting | Settings
-    Tab 5 Payment Rails: Overview | Tuition Rails | Aid Disbursement | Vendor Payments | Refunds | Holds | Reconciliation | Audit | Compliance | Settings
-    Tab 6 Compliance:    Overview | Policies | Controls | Evidence | Risk Register | Audits | Findings | Incidents | Exceptions | Exports
-    Tab 7 Facilities:    Overview | Buildings | Rooms | Assets | Work Orders | Maintenance | Inspections | Vendors | Safety & Access | Projects
-    Tab 8 Resources:     Overview | Library | Packs | Templates | SOPs / Playbooks | Policies | Role Kits | Requests | Updates | Admin
-    Tab 9 Sponsors:      Overview | Sponsors | Pipeline | Agreements | Deliverables | Proof | Payments | Risk / Compliance | Contacts | Reports
-
-9.5 COMMUNITY MODE — CommunityOrganization (mode key: "competition")
-─────────────────────────────────────────────────────────────────────
-Internal mode key is "competition". All tabs are dedicated v2 components.
-
-  Index  Tab Label       Component                    Version
-  ─────  ─────────       ─────────                    ───────
-  0      Series          CompSeriesV2                  V2 (10 sub-tabs)
-  1      People          CompPeopleV2                  V2 (10 sub-tabs)
-  2      Rooms           CompRoomsV2                   V2 (10 sub-tabs)
-  3      Operations      CompOperationsV2              V2 (10 sub-tabs)
-  4      Finance         CompFinanceV2                 V2 (10 sub-tabs)
-  5      Payment Rails   CompPaymentRailsV2            V2 (10 sub-tabs)
-  6      Compliance      CompComplianceV2              V2 (10 sub-tabs)
-  7      Assets          CompAssetsV2                  V2 (10 sub-tabs)
-  8      Reports         CompReportsV2                 V2 (10 sub-tabs)
-  9      Sponsors        CompSponsorsV2                V2 (10 sub-tabs)
-
-  Community V2 status: 10 of 10 — FULLY V2.
-  Note: Tab 7 is "Assets" (not "Venues"). Tab 6 is "Compliance" (not "Rules").
-
-9.6 V2 COMPLETION SUMMARY
-──────────────────────────
-
-  Mode          V2 Tabs    V1 Tabs    Placeholders
-  ────          ───────    ───────    ────────────
-  Sports        3/10       7/10       0
-  Business      10/10      0          0
-  Church        10/10      0          0
-  Education     10/10      0          0
-  Community     10/10      0          0
-  ─────────────────────────────────────────────────
-  TOTAL         43/50      7/50       0
-
-  Zero placeholder tabs remain. All 50 tabs are functional.
-  Sports is the only mode with remaining v1 work (7 tabs).
+Context providers per mode:
+  - Business: BusinessProvider wraps BusinessOrganization
+  - Church: ChurchProvider wraps ChurchOrganization
+  - Education: EducationProvider wraps EducationOrganization
+  - Sports, Competition: no wrapper needed
 
 
 ================================================================================
-10. V2 ORGANIZATION ARCHITECTURE
-================================================================================
-
-V2 organization tabs follow a standardized architectural pattern across all
-modes. Each v2 tab is a self-contained component with its own mock data file.
-
-10.1 STRUCTURAL PATTERN
-────────────────────────
-Every v2 component follows this internal structure:
-
-  1. JSDoc header (component name, sub-tab list, RBAC rules)
-  2. Imports (React, RN, ThemedText, IconSymbol, BottomSheet, theme, RBAC utils)
-  3. SUB_TABS constant (array of { id, label } — always 10 entries)
-  4. Props interface ({ colors, accentColor, role })
-  5. Helper functions (formatDate, formatCurrency, daysUntil)
-  6. Reusable sub-components (EmptyState, StatusBadge, ProgressBar, SubTabBar)
-  7. 10 sub-tab content functions (each a React component)
-  8. Detail bottom sheets (2-4 per component, all using useModal)
-  9. Main export function with RBAC gating + state + renderContent switch
- 10. StyleSheet.create block
-
-10.2 SUB-TAB BAR
-─────────────────
-Each v2 component renders a horizontal ScrollView tab bar at the top with
-10 sub-tabs. The active sub-tab determines which content function renders.
-This is NOT a PagerView — it's a simple state-driven switch with haptic
-feedback on tab press.
-
-10.3 RBAC GATING PATTERN
-──────────────────────────
-  - Highest-restricted roles (C5/E5/B3) → Locked state (lock icon + message)
-  - Mid-restricted roles (C4/E4) → Limited sub-tab access (2-4 tabs)
-  - Staff roles (C3/E3) → Most sub-tabs, admin areas restricted
-  - Leadership roles (C1-C2/E1-E2/B1) → Full 10-tab access
-
-  The visibleSubTabs useMemo filters the SUB_TABS array based on role.
-  Content functions also have inline RBAC guards for sensitive data (e.g.,
-  financial values hidden from student roles).
-
-10.4 DETAIL BOTTOM SHEETS
-──────────────────────────
-Each v2 component includes 2-4 detail bottom sheets using the BottomSheet
-wrapper with useModal prop (portal-based for deeply nested rendering).
-Sheets follow the standard 50%/100% snap point pattern.
-
-10.5 MOCK DATA FILE PATTERN
-─────────────────────────────
-Each v2 component has a dedicated mock data file that follows this structure:
-
-  1. Type aliases (union types for all domain enums)
-  2. Interfaces (exported, one per data entity)
-  3. Label/color/icon constant maps (Record<Type, string>)
-  4. Seeded data arrays (realistic, domain-appropriate)
-  5. Factory function (e.g., getEduComplianceData())
-
-All types, interfaces, and label/color maps are exported for use by
-the component. The factory function returns a flat object with all
-data collections.
-
-10.6 INTERACTION PATTERNS
-──────────────────────────
-  - All Pressable elements trigger expo-haptics (ImpactFeedbackStyle.Light
-    for navigation, Medium for actions)
-  - FlatList for list-heavy tabs, ScrollView for non-list tabs
-  - useCallback/useMemo for render optimization
-  - contentContainerStyle includes paddingBottom: 120 for safe scrolling
-
-
-================================================================================
-11. COACH STACK SCREENS (SPORTS MODE)
+10. COACH STACK SCREENS (SPORTS MODE)
 ================================================================================
 
 Accessed as stack pushes from Sports Home. No bottom tab bar visible.
@@ -541,7 +451,7 @@ coach/games              games.tsx               Season games list
 coach/game-detail        game-detail.tsx         Game detail (3 tabs: Pregame/Live/Report)
 coach/injuries           injuries.tsx            Injury report
 coach/more-resources     more-resources.tsx       Additional program resources
-coach/recruiting         recruiting.tsx          Recruiting board (4-view workspace)
+coach/recruiting         recruiting.tsx          Recruiting board (3-segment: Board/Database/Portal)
 coach/film               film.tsx                Film viewing screen
 coach/player-bio         player-bio.tsx          Player biographical detail
 coach/player-profile     player-profile.tsx      Player full profile
@@ -567,16 +477,15 @@ LOCKED DESIGN RULES (game-detail):
   - Live tab = real-time awareness ONLY (score, clock, play-by-play)
   - Report tab = rolling game report with ALL analytical content
   - Report is NOT post-game only — active during LIVE games with cumulative data
-  - Report ONE UI rule: same sections in same order regardless of game state
   - Section order: Score Header → Team Stats → Game Flow → Leaders →
     Box Score → Play-by-Play → Nexus Analysis → Ask Nexus CTA
 
 
 ================================================================================
-12. UI SYSTEM & PRIMITIVES
+11. UI SYSTEM & PRIMITIVES
 ================================================================================
 
-12.1 CORE PRIMITIVES (components/ui/)
+11.1 CORE PRIMITIVES (components/ui/)
 ──────────────────────────────────────
   PagedTabBar        — scrollable paged horizontal tab bar (4 tabs per page,
                        screenWidth/4 per tab). Haptic feedback. Used by all
@@ -593,193 +502,138 @@ LOCKED DESIGN RULES (game-detail):
   EmptyState         — standardized empty content placeholder
   ErrorState         — standardized error display
   LoadingState       — standardized loading indicator
-  TabPlaceholderPage — generic "Coming Soon" placeholder (no longer used)
 
-12.2 THEMED COMPONENTS
+11.2 THEMED COMPONENTS
 ──────────────────────
   ThemedText         — auto light/dark text primitive
   ThemedView         — auto light/dark view primitive
   GlobalHeader       — persistent header shown across all screens
   HapticTab          — tab button with haptic feedback
 
-12.3 BOTTOM SHEET RULES (LOCKED)
-────────────────────────────────
-  - Two snap points ONLY: 50% (medium) and 100% (full)
-  - All sheets open at 50% first
-  - Drag-to-dismiss from ANYWHERE inside the sheet
-  - Backdrop tap dismisses (40% opacity dim)
-  - Spring animation (no linear, no abrupt)
-  - PROHIBITED: fixed-height modals, close-button-only, center modals,
-    >2 snap points, custom Animated.View/PanResponder implementations
+11.3 THEMING (constants/theme.ts)
+──────────────────────────────────
+Design philosophy: "Luxury Control Room (Power-First)" — Dark-first, monochrome.
 
-12.4 THEMING
-─────────────
-  Colors.light / Colors.dark — full palette with semantic names
-  ModeColors[mode].primary   — per-mode accent color
-  Spacing, BorderRadius      — consistent spacing constants
-  useColorScheme()           — system color scheme detection
-  useThemeColor()            — theme-aware color resolution
+Core palette:
+  background: #000000 (jet black)
+  backgroundSecondary: #0E0C0C
+  backgroundTertiary: #181616
+  text: #DDDDDD
+  textSecondary: #8F8F8F
+  textTertiary: #424242
+  border: rgba(255,255,255,0.06)
+  card: #181616
+  cardElevated: #1E1C1C
+
+Brand: primary #FFFFFF, precision/nexus #6AA9FF (Ice Blue),
+       success #22C55E, warning #F59E0B, error #EF4444
+
+Spacing: xs=4, sm=8, md=16, lg=24, xl=32, xxl=48
+BorderRadius: sm=4, md=8, lg=12, xl=16, full=9999
+Layout: topBarHeight=56, tabBarHeight=96, avatarSize=32, maxContentWidth=600
+
+11.4 POSITION RULE (LOCKED)
+─────────────────────────────
+PagedTabBar is ALWAYS the first rendered element on every screen. It sits at
+the exact same Y-level on every screen (Home, Media, Messages, Organization)
+regardless of mode. Nothing renders above it except the system status bar.
+It is OUTSIDE the scrollable content area (fixed/sticky).
 
 
 ================================================================================
-13. DATA LAYER
+12. DATA LAYER
 ================================================================================
 
-All mock data lives in /data/. No backend yet — future target is Airtable.
+All mock data lives in /data/. Sports mode connects to real backend data
+(PostgreSQL national player pool) via JSON export + TypeScript adapter.
 
-13.1 SPORTS / FMU CORE
+12.1 SPORTS / FMU CORE
 ───────────────────────
-  fmu.ts                    — central FMU data bridge (games, leaders, standings,
-                              news, record, BPR, game impact PGIS/TGIS, pregame)
-  roster-data.ts            — team colors, cluster ratings, subclusters
-  mock-roster.ts            — 10-player FMU roster
-  playerPool.ts             — 200-player national recruiting pool
-  playerRatings.ts          — KR + 7-cluster ratings per pool player
-  playerSeasons.ts          — year-by-year season history
-  player-stats.ts           — per-player season box score averages
-  mock-simulations.ts       — 9 simulation types, FMU roster impacts
-  game-plan-v2.ts           — 11-section game plan data generator
-  mock-facilities-v2.ts     — 10 spaces, bookings, work orders, issues,
-                              inventory, vendors, safety, audit, settings
+  fmu.ts (1,847 lines) — central FMU data bridge:
+    - FMU_GAMES — full 2025-26 season schedule (derived from team game logs)
+    - FMU_STANDINGS — Sun Conference standings
+    - FMU_LEADERS — statistical leaders
+    - FMU_RECORD — overall + conference record
+    - FMU_NEXT_GAME / FMU_LAST_GAME — current context
+    - jerseyArchetypeMap — jersey number → archetype display
+    - ROSTER_KR — team KR aggregate
+    - BPR/PGIS/TGIS game impact data
+    - Game date logic: Oct-Dec = 2025, Jan-Mar = 2026
+    - Sun Conference teams + opponent venue mapping
 
-13.2 RECRUITING SYSTEM
+  roster-data.ts — 17-player FMU roster:
+    - PLAYER_CLUSTERS — 7-cluster ratings per jersey number
+    - PLAYER_PHYSICALS — height/weight per jersey
+    - ROSTER_META — status, aidPct, nilAmount, GPA, flags
+    - computeOffKR(), computeDefKR(), computePortalRisk()
+    - CLUSTER_SUBCLUSTERS — 54 subclusters across 7 clusters
+
+  national-pool.ts + national-pool.json — LIVE DATA:
+    - 9,950+ players from PostgreSQL backend
+    - 3,646 with computed KR ratings
+    - 8,976 with season statistics
+    - 3,524 with scholarship & NIL allocations
+    - nationalPool.search() with full filter API
+    - toGlobalPlayerCard() converter for entity sheets
+
+12.2 RECRUITING SYSTEM
 ───────────────────────
-  recruitingBoard.ts        — 10-stage pipeline definition
-  recruitingLogs.ts         — touch action timeline
-  evalSnapshots.ts          — saved Nexus evaluation snapshots
-  mock-comms.ts             — communication timeline
-  team-needs.ts             — positional roster projection
-  trait-library.ts          — 54 sub-traits across 7 clusters (canonical)
-  system-demand-profiles.ts — archetype × system demand mappings
-  archetype-options.ts      — 21-archetype filter list
-  position-mapping.ts       — heliocentric ↔ traditional position mapping
-  governing-bodies.ts       — NCAA/NAIA/JUCO/NCCAA hierarchy
+  recruitingBoard.ts — 20-entry CRM pipeline:
+    - 8-stage V2 pipeline: Prospect → Contact Made → Eval Sent →
+      Visit Scheduled → Offer Out → Committed → Signed → Dead
+    - Per-entry: priority (A/B/C), temperature, risk, offers, NIL,
+      visit details, relationship tracking, action logs
+    - STAGE_COLORS, BOARD_COLUMN_COLORS per stage
 
-13.3 NEXUS / AI
+  Supporting files:
+    - recruitingLogs.ts — touch action timeline
+    - evalSnapshots.ts — saved Nexus evaluation snapshots
+    - trait-library.ts — 54 sub-traits across 7 clusters
+    - system-demand-profiles.ts — archetype × system demand mappings
+    - archetype-options.ts — 21-archetype filter list
+    - position-mapping.ts — canonical 5-position system (PG/CG/W/F/B)
+    - governing-bodies.ts — association hierarchy
+
+12.3 CALENDAR V2
+─────────────────
+  mock-calendar-v2.ts:
+    - 28 agenda items (practice, game, film, meeting, lift, travel, etc.)
+    - NAIA_TOP_25 (25 entries), KANEXT_NATIONAL_TOP_50 (50 entries)
+    - News with video-first vertical scroll + category pills
+    - Standings: Conference, NAIA Top 25, KaNeXT National
+
+12.4 NEXUS / AI
 ────────────────
-  mock-nexus.ts             — mock conversations (real GPT used in production)
-  mock-program-context.ts   — system presets, styles, defaults
-  mock-ask-nexus.ts         — Ask Nexus entry types
+  mock-nexus-v2.ts — seeded conversations + mock responses
+  mock-program-context.ts — system presets, styles, defaults
+  nexus-player-query.ts — player query detection + data injection
 
-13.4 CALENDAR & SCHEDULE
-─────────────────────────
-  mock-calendar-events.ts   — non-game calendar events (2025-26 season)
-  calendar-utils.ts         — event type colors, game-to-event mapper
+12.5 CROSS-MODE DATA
+─────────────────────
+  mock-messages-v3.ts — V3 inbox threads, rooms, Nexus escalations per mode
+  mock-memberships.ts — membership definitions per mode
+  views.ts — canonical view definitions
+  mock-entities-v2.ts — 12 entity types with audit log
+  workspace-templates.ts — workspace configuration templates
 
-13.5 DASHBOARD
-──────────────
-  dashboard-payloads.ts     — pure payload builders for all 5 mode dashboards
-
-13.6 ENTERPRISE / BUSINESS
-───────────────────────────
-  mock-enterprise-v2.ts     — multi-company, proof events, engines, data room
-  mock-business.ts          — founder OS (mandates, proof wedges, rails)
-  mock-entities-v2.ts       — 12 entity types with audit log
-  mock-business-explore.ts  — business content discovery
-
-  Business Org V2 Mock Data (10 files):
-  mock-biz-org-entities.ts       — entities with governance, finance, rails, compliance
-  mock-biz-org-people.ts         — org directory with roles, departments
-  mock-biz-org-rooms.ts          — communication channels
-  mock-biz-org-operations.ts     — operational workstreams
-  mock-biz-org-finance.ts        — financial data, budgets, accounts
-  mock-biz-org-payment-rails.ts  — payment processing rails
-  mock-biz-org-legal.ts          — legal matters, contracts, IP
-  mock-biz-org-compliance.ts     — regulatory compliance
-  mock-biz-org-assets.ts         — company assets, equipment, IP
-  mock-biz-org-reports.ts        — operational reports
-
-13.7 CHURCH
-───────────
-  mock-church.ts            — ICCLA organization, campuses, ministries
-  mock-ministries-v3.ts     — comprehensive ministry hub data
-  mock-church-explore.ts    — church content discovery
-
-  Church Org V2 Mock Data:
-  mock-church-org-compliance-legal.ts — compliance & legal (1,112 lines)
-  mock-church-org-facilities-v2.ts    — buildings, rooms, assets, work orders
-  mock-church-org-resources-v2.ts     — resource library, SOPs, role kits
-  mock-church-org-donations-v2.ts     — giving, campaigns, pledges, funds
-
-13.8 EDUCATION
-──────────────
-  mock-education.ts         — FMU organization, departments, terms, calendar
-  mock-education-v2.ts      — v2 education core data
-  mock-education-explore.ts — school discovery
-
-  Education Org V2 Mock Data (10 files, HBCU-seeded — FMU + BCU):
-  mock-edu-org-institutions-v2.ts — institutions directory, campuses, programs
-  mock-edu-org-people-v2.ts       — faculty, staff, students, alumni
-  mock-edu-org-rooms-v2.ts        — communication channels
-  mock-edu-org-operations-v2.ts   — academic operations
-  mock-edu-org-finance.ts         — institutional finance, aid, budgets
-  mock-edu-org-payment-rails.ts   — tuition rails, aid disbursement
-  mock-edu-org-compliance.ts      — FERPA, accreditation, policy compliance
-                                    (17 types, 15 interfaces, 18 label maps)
-  mock-edu-org-facilities-v2.ts   — buildings, rooms, assets, work orders
-                                    (16 types, 13 interfaces, 4 HBCU buildings)
-  mock-edu-org-resources-v2.ts    — resource library, SOPs, role kits, templates
-                                    (12 types, 12 interfaces, 7 role kits)
-  mock-edu-org-sponsors-v2.ts     — sponsors, pipeline, agreements, deliverables
-                                    (12 types, 13 interfaces, 8 sponsors)
-
-13.9 COMMUNITY / COMPETITION
-─────────────────────────────
-  mock-community.ts         — K-1 Speed league data
-  mock-series-v2.ts         — series/tournaments/showcases
-  mock-competition-explore.ts — racing content discovery
-  mock-sports-explore.ts    — YouTube-style sports discovery
-
-  Competition Org V2 Mock Data (10 files):
-  mock-comp-org-series.ts         — series/race weekends
-  mock-comp-org-people.ts         — drivers, officials, crew
-  mock-comp-org-rooms.ts          — communication channels
-  mock-comp-org-operations.ts     — race operations
-  mock-comp-org-finance.ts        — league finances
-  mock-comp-org-payment-rails.ts  — prize money, entry fees
-  mock-comp-org-compliance.ts     — technical compliance, rules
-  mock-comp-org-assets.ts         — karts, equipment, venues
-  mock-comp-org-reports.ts        — performance reports
-  mock-comp-org-sponsors.ts       — league sponsors
-
-13.10 COMMUNICATIONS / VIDEO
-─────────────────────────────
-  mock-messages.ts          — feed, inbox, alerts, mode-scoped DM threads,
-                              pinned threads, rooms per mode
-  mock-messages-v2.ts       — v2 messages hub (inbox/rooms/requests/pinned)
-  mock-video.ts             — video/media per mode
-  mock-video-feed.ts        — video feed (stories + posts) per mode
-  mock-video-inbox.ts       — video inbox and quick share per mode
-  mock-film-room.ts         — film room data per mode
-
-13.11 CROSS-CUTTING HUBS (mode-aware, used by Sports v1 + shared surfaces)
-───────────────────────────────────────────────────────────────────────────
-  mock-ops-v2.ts            — operations (14 sub-tabs, all 5 modes)
-  mock-finance-v2.ts        — finance (14 sub-tabs, all 5 modes)
-  mock-compliance-v2.ts     — compliance (14 sub-tabs, all 5 modes)
-  mock-payment-rails-v2.ts  — payment rails (14 sub-tabs, all 5 modes)
-  mock-people-v2.ts         — people directory (all 5 modes)
-  mock-rooms-v2.ts          — rooms/channels (all 5 modes)
-  mock-library-v2.ts        — library hub (all 5 modes)
-  mock-development-v2.ts    — development OS
-  mock-resources-v2.ts      — resources/knowledge base (sports)
-  mock-sponsors-v2.ts       — sponsors hub (sports)
-  mock-program-v2.ts        — 7-page program workspace
+12.6 MODE-SPECIFIC DATA FILES
+──────────────────────────────
+  Business: mock-business-v3.ts, mock-biz-org-*.ts (10 V2 data files)
+  Church: mock-church-v2.ts, mock-ministries-v3.ts, mock-church-org-*.ts
+  Education: mock-education-v2.ts, mock-edu-org-*.ts (10 V2 data files)
+  Competition: mock-competition-v2.ts, mock-comp-org-*.ts (10 V2 data files)
 
 
 ================================================================================
-14. AUTHENTICATION & IDENTITY
+13. AUTHENTICATION & IDENTITY
 ================================================================================
 
 Two auth systems (in migration):
-
-1) Legacy: authState 'viewer' | 'owner' in AppContext
-2) New: AuthProvider with real session (AuthSession)
+  1) Legacy: authState 'viewer' | 'owner' in AppContext
+  2) New: AuthProvider with real session (AuthSession)
 
 AuthProvider wraps AppProvider as outermost provider.
 AsyncStorage keys: kx:session, kx:onboardingComplete
-
-Access tiers: founder, cofounder, investor, public
 
 Current user identity:
   Name:   Sammy Kalejaiye
@@ -788,9 +642,16 @@ Current user identity:
 
 Auth modal supports: Apple Sign-In, Google Sign-In, Email
 
+ActiveView System (persisted context):
+  - ActiveView type in types/index.ts — richer than old ActiveContext
+  - SET_ACTIVE_VIEW action syncs all legacy fields in AppContext
+  - Persisted to kx:activeView in AsyncStorage, restored on boot
+  - utils/active-view.ts — buildActiveView(), getActiveViewKey()
+  - utils/view-switch-lifecycle.ts — pub/sub notification on view switch
+
 
 ================================================================================
-15. BOTTOM SHEET SYSTEM
+14. BOTTOM SHEET SYSTEM
 ================================================================================
 
 Library: @gorhom/bottom-sheet v5
@@ -815,140 +676,388 @@ Prohibited:
 
 
 ================================================================================
+15. ENTITY SHEET SYSTEM
+================================================================================
+
+8 entity sheet types, all globally mounted in app/_layout.tsx.
+Controlled via utils/global-entity-sheets.ts (module-level pub/sub pattern).
+
+Sheet Type        Component                      Mode Context     Open Function
+──────────        ─────────                      ────────────     ─────────────
+TeamCard          team-card-sheet.tsx             Sports           openTeamCard()
+PlayerCard        player-card-sheet.tsx           Sports           openPlayerCard()
+CoachCard         coach-card-sheet.tsx            Sports           openCoachCard()
+DriverCard        driver-card-sheet.tsx           Competition      openDriverCard()
+CrewCard          crew-card-sheet.tsx             Competition      openCrewCard()
+PersonCard        person-card-sheet.tsx           Church/Cross     openPersonCard()
+MinistryCard      ministry-card-sheet.tsx         Church           openMinistryCard()
+LeaderCard        leader-card-sheet.tsx           Church/Cross     openLeaderCard()
+
+PlayerCard data model (PlayerCardData):
+  name, number, position, height, weight, classYear, hometown, previousSchool,
+  kr, offKR, defKR, archetype, confidence, clusters (7 keys),
+  ppg/rpg/apg/spg/bpg/topg/fgPct/threePct/ftPct/mpg/gp,
+  school, conference, levelKey, levelDisplay, bprAvg, portalEntryDate,
+  scholarshipPct, nilAmount, overallFitPct
+
+PlayerCard sections (6):
+  1. KR header (color-coded, level-aware tier label)
+  2. Archetype + badge display (Gold/Silver/Bronze dots)
+  3. 7-cluster horizontal bars (color-coded)
+  4. Stats grid (season averages)
+  5. Scholarship/NIL strip
+  6. "Ask Nexus" CTA
+
+TeamCard data model (TeamCardData):
+  name, record, confRecord, conference, teamKR, logoUri, category
+
+
+================================================================================
 16. CANONICAL SYSTEMS (SPORTS MODE)
 ================================================================================
 
-16.1 TEAM KR & CLUSTER SYSTEM (v1 — LOCKED)
-─────────────────────────────────────────────
-  Team KR = Team Off KR (53%) + Team Def KR (47%), range 0–100
+16.1 KR (KANEXT RATING) SYSTEM
+───────────────────────────────
+  KR = composite player quality rating, range 0–100.
+  Computed from 7 canonical clusters via position-weighted formula.
 
-  7 Canonical Clusters (immutable):
+  5 Canonical Positions: PG (Point Guard), CG (Combo Guard), W (Wing),
+                         F (Forward), B (Big)
+
+  7 Canonical Clusters:
     Offense: Shooting, Finishing, Playmaking
-    Defense: On-Ball Defense, Team Defense, Rebounding
-    Physical: Physical
+    Defense: Perimeter Defense, Interior Defense, Rebounding
+    Physical: Frame
 
-  Offense clusters: minutes × usage weighted
-  Defense/Physical: minutes-weighted only
+  Position Cluster Weights (College):
+    PG: OKR 55%, DKR 40%, TKR 5%
+    CG: OKR 60%, DKR 35%, TKR 5%
+    W:  OKR 50%, DKR 40%, TKR 10%
+    F:  OKR 45%, DKR 40%, TKR 15%
+    B:  OKR 35%, DKR 45%, TKR 20%
 
-  Each cluster has subclusters (atomic units, canonical library objects)
-  54 total sub-traits across 7 clusters
+  KR Color Bands (10 universal bands — utils/kr-display.ts):
+    97–100: Gold #FFD700 (Elite/Transcendent)
+    94–96:  Silver #C0C0C0 (Franchise Anchor)
+    90–93:  Purple #7B2FF7 (High-Impact)
+    86–89:  Blue #2196F3 (Solid Starter)
+    82–85:  Cyan #00BCD4 (Trusted Rotation)
+    78–81:  Green #4CAF50 (Reliable Bench)
+    74–77:  Amber #FFC107 (Situational)
+    70–73:  Orange #FF9800 (Limited)
+    66–69:  Red #F44336 (Fringe/Project)
+    0–65:   Gray #757575 (Below Viability)
 
-  Rollup chain:
-    Player Subclusters → Team Subclusters → Team Clusters →
-    Off KR / Def KR → Team KR
+  Level-Aware Tier Labels (KR_LEGEND): 13 competitive levels with
+    custom tier breakpoints per level. Higher levels (NCAA D1 high-major)
+    have higher thresholds for top tiers.
 
-  Team KR is NEVER manually edited — always derived from player truths.
+  21 Archetypes: floor_general, primary_ball_handler,
+    pick_and_roll_operator, dho_handoff_hub, combo_scorer,
+    three_level_scorer, two_way_wing, slasher_wing, three_and_d_wing,
+    switchable_defender_wing, spot_up_specialist, secondary_creator_wing,
+    connector_guard_wing, off_ball_shooter, slasher_rim_pressure_wing,
+    rim_protector, rim_protector_anchor, stretch_big,
+    post_hub_facilitator_big, rebounding_interior_enforcer,
+    small_ball_big, vertical_spacer
 
-16.2 GAME PLAN (11 Sections)
+16.2 BADGE SYSTEM (utils/player-badges.ts)
+──────────────────────────────────────────
+  13 Offensive Badges: Catch-and-Shoot, Movement Shooter, Deep Range,
+    Pull-Up Shot Maker, Rim Finisher, Contact Finisher, Rim Pressure,
+    FT Generator, Cutter, Primary Playmaker, Drive-and-Kick,
+    Ball Security, Transition Playmaker
+
+  9 Defensive Badges: Point-of-Attack, Ball Pressure, Lockdown Perimeter,
+    Rim Protector, Paint Anchor, Help Defender, Passing Lane Disruptor,
+    Defensive Rebounder, Physical Rebounder
+
+  Thresholds (College): Bronze ≥90, Silver ≥94, Gold ≥97
+  Effects: Bronze +3, Silver +6, Gold +10
+  Caps: max 1 Gold, max 3 Silver, unlimited Bronze
+
+16.3 GAME PLAN (11 Sections)
 ──────────────────────────────
-  S01: Decision Summary
-  S02: Opponent Offense
-  S03: Opponent Defense
-  S04: Shot Profile
-  S05: Actions & Triggers
+  S01: Decision Summary      S07: Rotation Board
+  S02: Opponent Offense       S08: Player Cards
+  S03: Opponent Defense       S09: Constraints & Risk
+  S04: Shot Profile           S10: Scout Confidence
+  S05: Actions & Triggers     S11: Practice Translation
   S06: Situations Package
-  S07: Rotation Board
-  S08: Player Cards
-  S09: Constraints & Risk
-  S10: Scout Confidence
-  S11: Practice Translation
 
-16.3 SIMULATION ENGINE (9 Types)
+16.4 SIMULATION ENGINE (9 Types)
 ─────────────────────────────────
   Types: Game, Season, Lineup, Transfer Impact, Draft, Recruiting,
          Development, Matchup, What-If
 
-  Confidence gates, comparison view, projected box scores.
+16.5 SYSTEM IDENTITY (OSIE/DSIE)
+─────────────────────────────────
+  11 Offensive Systems: Motion, Spread PnR, High-Low Post,
+    Princeton, Dribble-Drive, Pace-and-Space, Swing,
+    Read-and-React, Horns-based, Transition Heavy, Zone Offense
+  9 Defensive Systems: Man-to-Man Pack, Switch-All, Drop PnR,
+    ICE PnR, Hedge Hard, 2-3 Zone, 3-2 Zone, Matchup Zone,
+    Full-Court Press
 
-16.4 RECRUITING PIPELINE (10 Stages)
-──────────────────────────────────────
-  Pipeline columns defined in recruitingBoard.ts
-  4-view workspace: Board (kanban), Big Board (ranked), CRM (table),
-  KaNeXT Database (national pool browser)
-
-  200-player national pool across NAIA/NCAA/JUCO/HS/International
-  Each player: KR + 7-cluster ratings, trait evaluations, archetype mapping
-
-16.5 DEVELOPMENT OS
+16.6 DEVELOPMENT OS
 ────────────────────
-  Weekly plan builder, drill library, evidence queue, position group board,
-  transfer tracker
-
-16.6 GAME OPS
-──────────────
-  Live game operations center (GameOpsHubContent)
-  Pregame → In-Game → Halftime → Postgame flow
-  Real-time play-by-play, box score, key plays
+  Weekly plan builder, drill library, evidence queue,
+  position group board, transfer tracker
 
 
 ================================================================================
-17. APPENDIX A — FILE INVENTORY SUMMARY
+17. NATIONAL PLAYER POOL BACKEND
+================================================================================
+
+17.1 DATABASE (PostgreSQL)
+──────────────────────────
+  Database: kanext_player_pool (localhost:5432)
+  Schema: 19 tables (services/player-pool/schema/)
+
+  Key tables:
+    associations, divisions, competitive_levels, conferences,
+    teams, team_seasons, players, player_team_seasons,
+    player_game_stats, player_season_stats, team_game_stats,
+    player_kr, player_kr_traits, player_kr_clusters,
+    team_system_identity, scholarship_nil_allocations,
+    bpr_scores, impact_scores
+
+17.2 SCRAPER SYSTEM (services/player-pool/scraper/)
+────────────────────────────────────────────────────
+  Two scraper architectures:
+
+  A) PrestoSports Scraper (scraper.py):
+    - Sources: NJCAA, NAIA, CCCAA, USCAA
+    - HTML table parsing (roster pages + box score pages)
+    - Per-game box scores → player_game_stats rows
+    - 10s crawl delay, 60s HTTP timeout
+
+  B) Sidearm Sports Scraper (nccaa_scraper.py):
+    - Source: NCCAA (thenccaa.org)
+    - JSON API (conf_stats.ashx) + HTML team discovery
+    - Season-level cumulative stats only (no per-game box scores)
+    - Chrome user-agent required (Sidearm blocks default UA)
+
+  C) NCAA Scraper (ncaa_scraper.py):
+    - Source: stats.ncaa.org
+    - Separate infrastructure from PrestoSports
+    - Barely started (5 teams scraped)
+
+  Scraping Status (as of Feb 19, 2026):
+
+    Level              Teams    Players   Status
+    ─────              ─────    ───────   ──────
+    NJCAA D1           136      1,599     COMPLETE
+    NJCAA D2           139      1,711     COMPLETE
+    NJCAA D3           92       1,150     COMPLETE
+    NAIA               223      2,609     COMPLETE
+    CCCAA              104      1,258     COMPLETE
+    USCAA              56       577       COMPLETE
+    NCCAA D1           43*      ~900*     IN PROGRESS (scraping now)
+    NCCAA D2           7*       ~17*      IN PROGRESS (scraping now)
+    NCAA D1 Mid-Major  5        41        BARELY STARTED
+    NCAA D1 High/Low   0        0         NOT STARTED
+    NCAA D2            0        0         NOT STARTED
+    NCAA D3            0        0         NOT STARTED
+    ─────────────────────────────────────────────
+    TOTAL              ~1,118   ~9,950+
+
+    * NCCAA numbers updating — previous run found 356 "teams" but only
+      988 players (stale data). Fresh scrape discovering 43 real D1 teams
+      with ~20 players each.
+
+17.3 EXPORT PIPELINE
+─────────────────────
+  services/player-pool/export_to_json.py:
+    PostgreSQL → data/national-pool.json
+    Run after: scraping or KR engine updates
+    Handles: cluster name mapping, level key mapping, null handling
+
+  data/national-pool.ts:
+    Loads JSON, provides nationalPool.search() TypeScript API
+    Filters: level, position, KR range, conference, archetype,
+             portal entry, sort, pagination
+
+
+================================================================================
+18. KR COMPUTATION ENGINE
+================================================================================
+
+Location: services/player-pool/engine/ (8 Python modules)
+Run: cd services/player-pool/engine && python3 compute_engine.py
+Version: v1.0-boxscore
+
+7-Step Pipeline:
+  1. Season stats aggregation — per-player, per-season
+  2. BPR (Basketball Performance Rating) — zero-centered, per-game z-score
+  3. PGIS (Per-Game Impact Score) — system-aware cluster multipliers
+  4. TGIS (Team Game Impact Score) — team-level game impact
+  5. Player KR — KLVN normalization + position weights → archetype
+  6. Team KR — participation-weighted (53% OFF / 47% DEF locked split)
+  7. OSIE/DSIE — system inference (11 OFF + 9 DEF systems)
+
+Post-pipeline: Scholarship & NIL Allocation Engine (scholarship_nil.py)
+
+Engine Results (latest run):
+  3,646 Player KRs computed
+  32,362 BPR scores
+  32,362 PGIS scores
+  1,578 TGIS scores
+  388 Team KRs
+  685 OSIE/DSIE entries
+  3,524 Scholarship/NIL allocations
+
+Modules:
+  compute_engine.py    — Main orchestrator
+  bpr.py               — Basketball Performance Rating
+  clusters.py          — 7-cluster score computation (0-100 each)
+  player_kr.py         — Position-weighted KR + archetype derivation
+  team_kr.py           — Team KR aggregation
+  osie_dsie.py         — System Inference Engine
+  klvn.py              — Level normalization parameters
+  impact_scores.py     — PGIS, TGIS, Impact Modifiers
+  scholarship_nil.py   — Scholarship & NIL Allocation Engine
+
+NOT YET BUILT:
+  - Pro KR (separate position weights, archetypes, badge thresholds)
+  - badges.py (full badge computation in engine — currently frontend-only)
+  - kr_legend.py (tier definitions for engine)
+
+
+================================================================================
+19. APPENDIX A — FILE INVENTORY
 ================================================================================
 
 Category                    Approximate Count
 ────────                    ─────────────────
-Context files               7 (App, Auth, Nexus, Enterprise, Church,
-                               Education, Business)
+Context files               7 (App, Auth, Nexus, Business, Church,
+                               Education, Competition)
 Type definition files       2
-Component files (.tsx)      ~352
-Data files (.ts)            ~170
-RBAC utility files          6 (church, education, business, sports,
+Component files (.tsx)      ~370+
+Data files (.ts)            ~130+
+RBAC utility files          6 (sports, church, education, business,
                                competition, nexus)
 Coach stack screens         23
-Bottom tab screens          5
+Bottom tab screens          5 (with nested routes)
 Mode-specific home screens  5
+Entity sheet components     8
+V3 organization components  30 (6 × 5 modes)
+V3 messages components      6
+Python backend modules      ~15 (scraper + engine + export)
+PostgreSQL tables           19
 
-Total lines of code:        ~437,000+ (data + components + utils)
+Total lines of code:        ~500,000+
 
 
 ================================================================================
-18. APPENDIX B — V2 COMPLETION STATUS
+20. APPENDIX B — V3 COMPONENT INVENTORY
 ================================================================================
 
-V2 Organization Component Inventory (43 v2 components):
+Organization V3 (30 components):
 
-  Sports (3 v2):
-    sports-org-programs-v2.tsx
-    org-operations-tab-v2.tsx (shared, mode="sports")
-    org-finance-tab-v2.tsx (shared, mode="sports")
+  Sports (6):
+    sports-program-v3.tsx, sports-people-v3.tsx, sports-finance-v3.tsx,
+    sports-compliance-v3.tsx, sports-facilities-v3.tsx, sports-ledger-v3.tsx
 
-  Business (10 v2):
-    biz-org-entities-v2.tsx, biz-org-people-v2.tsx, biz-org-rooms-v2.tsx,
-    biz-org-operations-v2.tsx, biz-org-finance-v2.tsx,
-    biz-org-payment-rails-v2.tsx, biz-org-legal-v2.tsx,
-    biz-org-compliance-v2.tsx, biz-org-assets-v2.tsx, biz-org-reports-v2.tsx
+  Business (6):
+    biz-program-v3.tsx, biz-people-v3.tsx, biz-finance-v3.tsx,
+    biz-compliance-v3.tsx, biz-facilities-v3.tsx, biz-ledger-v3.tsx
 
-  Church (10 v2):
-    church-org-ministries-v2.tsx, church-org-people-v2.tsx,
-    church-org-rooms-v2.tsx, church-org-operations-v2.tsx,
-    church-org-finance-v2.tsx, church-org-payment-rails-v2.tsx,
-    church-org-compliance-v2.tsx, church-org-facilities-v2.tsx,
-    church-org-resources-v2.tsx, church-org-donations-v2.tsx
+  Church (6):
+    church-program-v3.tsx, church-people-v3.tsx, church-finance-v3.tsx,
+    church-compliance-v3.tsx, church-facilities-v3.tsx, church-ledger-v3.tsx
 
-  Education (10 v2):
-    edu-org-institutions-v2.tsx, edu-org-people-v2.tsx,
-    edu-org-rooms-v2.tsx, edu-org-operations-v2.tsx,
-    edu-org-finance-v2.tsx, edu-org-payment-rails-v2.tsx,
-    edu-org-compliance-v2.tsx, edu-org-facilities-v2.tsx,
-    edu-org-resources-v2.tsx, edu-org-sponsors-v2.tsx
+  Education (6):
+    edu-program-v3.tsx, edu-people-v3.tsx, edu-finance-v3.tsx,
+    edu-compliance-v3.tsx, edu-facilities-v3.tsx, edu-ledger-v3.tsx
 
-  Competition (10 v2):
-    comp-series-v2.tsx, comp-people-v2.tsx, comp-rooms-v2.tsx,
-    comp-operations-v2.tsx, comp-finance-v2.tsx,
-    comp-payment-rails-v2.tsx, comp-compliance-v2.tsx,
-    comp-assets-v2.tsx, comp-reports-v2.tsx, comp-sponsors-v2.tsx
+  Competition (6):
+    comp-program-v3.tsx, comp-people-v3.tsx, comp-finance-v3.tsx,
+    comp-compliance-v3.tsx, comp-facilities-v3.tsx, comp-ledger-v3.tsx
 
-Remaining V1 tabs (Sports mode only, 7 tabs):
-  - People (OrgPeopleTab) — index 1
-  - Rooms (RoomsHub) — index 2
-  - Payment Rails (OrgPaymentRailsTab) — index 5
-  - Compliance (OrgComplianceTab) — index 6
-  - Facilities (OrgFacilitiesTab) — index 7
-  - Resources (OrgResourcesTab) — index 8
-  - Sponsors (OrgSponsorsTab) — index 9
+Messages V3 (6 components):
+    inbox-list-v3.tsx, rooms-list-v3.tsx, nexus-queue-v3.tsx,
+    nexus-escalation-row-v3.tsx, inbox-row-v3.tsx, room-row-v3.tsx
 
-  All 7 are functional v1 implementations (not placeholders).
-  Zero TabPlaceholderPage instances remain in the codebase.
+Entity Sheets (8 components):
+    team-card-sheet.tsx, player-card-sheet.tsx, coach-card-sheet.tsx,
+    driver-card-sheet.tsx, crew-card-sheet.tsx, person-card-sheet.tsx,
+    ministry-card-sheet.tsx, leader-card-sheet.tsx
+
+Sports Home Drill-Down V2 (4 components):
+    sports-stats-v2.tsx, sports-game-plan-v2.tsx,
+    sports-simulation-v2.tsx, sports-development-v2.tsx
+
+Sports Calendar V2 (4 components):
+    sports-calendar-v2.tsx, calendar-games-view.tsx,
+    calendar-standings-view.tsx, calendar-news-view.tsx
+
+Sports Recruiting V2 (3 components):
+    recruiting-board-v2.tsx, recruiting-database-v2.tsx,
+    recruiting-portal-v2.tsx
+
+
+================================================================================
+21. APPENDIX C — CHANGE LOG (v3.0 → v4.0)
+================================================================================
+
+BREAKING CHANGES:
+
+  1. Organization Tab: V2 (10 mode-specific tabs) → V3 (6 universal tabs)
+     - Tabs removed: Rooms, Operations, Payment Rails, Resources,
+       Sponsors/Donations/Assets/Reports
+     - Tabs added: Ledger (replaces Payment Rails)
+     - Content consolidated into 6 universal categories
+     - 30 new V3 components (6 × 5 modes) replace all V2 components
+     - Old V2 component files still exist but are no longer imported
+
+  2. Messages Tab: V2 (4 tabs) → V3 (3 tabs)
+     - Tabs removed: Requests, Pinned
+     - Tab added: Nexus (AI escalation queue with badge count)
+     - Requests folded inline into Inbox
+     - Pinned threads sort to top of Inbox
+     - 6 new V3 components
+
+  3. Sports Home: 9 swipeable tabs → 4 pill tabs
+     - Tabs removed as top-level: Statistics, Game Plan, Simulation,
+       Development, Program
+     - These are now domain drill-down cards on the Dashboard
+     - Roster & Recruiting promoted from domain cards to top-level tabs
+
+  4. Entity Sheets: 3 types → 8 types
+     - Added: DriverCard, CrewCard, PersonCard, MinistryCard, LeaderCard
+
+ADDITIONS:
+
+  5. National Player Pool Backend
+     - PostgreSQL database with 19 tables
+     - PrestoSports scraper (NJCAA/NAIA/CCCAA/USCAA)
+     - Sidearm Sports scraper (NCCAA)
+     - NCAA scraper (barely started)
+     - 9,950+ players scraped across 1,118 teams
+
+  6. KR Computation Engine
+     - 8 Python modules computing BPR, KR, clusters, archetypes
+     - System inference (OSIE/DSIE)
+     - Scholarship & NIL allocation
+     - 3,646 players with computed KR ratings
+
+  7. Nexus Player Query System
+     - Auto-detects player queries in natural language
+     - Injects real player data from national pool into GPT context
+     - Pool awareness prompt always active in sports mode
+
+  8. Calendar V2 (4 sub-views)
+     - Agenda (Day/Week/Month), Games, Standings, News
+
+  9. Recruiting V2 (3-segment toggle)
+     - Board (CRM kanban), Database (real 9K+ player search), Portal
+
+ 10. Roster CRM List
+     - Universal KR colors, tier labels, archetype tags
+
+ 11. SplitNexusOverlay, UniversalFinder, ModeSwitcherOverlay,
+     KXTransition, SearchOverlay — new global overlays
 
 
 ================================================================================

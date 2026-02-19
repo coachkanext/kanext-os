@@ -397,6 +397,53 @@ def fetch_team_ranking(conn, stat_seq: str, division: str,
     return results
 
 
+# ── Ranking Period Detection ──
+
+def detect_ranking_period(conn, division: str) -> str:
+    """
+    Detect the latest ranking period for a division by fetching the
+    stats category page and reading the first option in the period dropdown.
+    D1 uses ranking_period ~120, D2 ~59, D3 varies.
+    Returns the ranking period string (e.g., '120.0', '59.0').
+    """
+    url = f"{NCAA_BASE_URL}/rankings/change_sport_year_div"
+    params = {
+        "sport_code": NCAA_SPORT_CODE,
+        "academic_year": NCAA_ACADEMIC_YEAR.replace(".0", ""),
+        "division": division,
+        "team_individual": "I",
+    }
+    headers = {"X-Requested-With": "XMLHttpRequest"}
+
+    r = fetch(url, conn, params=params, headers=headers)
+    if not r:
+        log.warning(f"Could not detect ranking period for division {division}, defaulting to 120.0")
+        return "120.0"
+
+    soup = BeautifulSoup(r.text, "lxml")
+
+    # Find the ranking period select or stat links with ranking_period param
+    for link in soup.find_all("a", href=re.compile(r"ranking_period=[\d.]+")):
+        m = re.search(r"ranking_period=([\d.]+)", link["href"])
+        if m:
+            period = m.group(1)
+            log.info(f"  Detected ranking period for division {division}: {period}")
+            return period
+
+    # Fallback: try the select dropdown
+    for sel in soup.find_all("select"):
+        sel_id = sel.get("id", sel.get("name", ""))
+        if "rp" in sel_id.lower():
+            first_opt = sel.find("option")
+            if first_opt and first_opt.get("value"):
+                period = first_opt["value"]
+                log.info(f"  Detected ranking period for division {division}: {period}")
+                return period
+
+    log.warning(f"Could not detect ranking period for division {division}, defaulting to 120.0")
+    return "120.0"
+
+
 # ── Stat Merging ──
 
 def merge_player_stats(conn, division: str) -> dict[str, dict]:
@@ -405,8 +452,11 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
     Key pages:
       - PPG: FGM, 3FG(=3PM), FT(=FTM), PTS (most complete, ~1500 players)
       - FG%: FGM, FGA
+      - Total FGM: FGM, FGA (broader coverage)
       - 3P%: 3FG, 3FGA
+      - Total 3PM: 3FG, 3FGA (broader coverage)
       - FT%: FT, FTA
+      - Total FTM: FT, FTA (broader coverage)
       - Total Rebounds: ORebs, DRebs, REB
       - A/TO Ratio: AST, TO
       - SPG: ST
@@ -414,6 +464,10 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
       - MPG: MP, MPG
     Returns dict of player_key -> merged stat dict.
     """
+    # Auto-detect the correct ranking period for this division
+    ranking_period = detect_ranking_period(conn, division)
+    log.info(f"  Using ranking period: {ranking_period}")
+
     merged: dict[str, dict] = {}
 
     def _merge(rows: list[dict], stat_fields: dict):
@@ -443,7 +497,7 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
 
     # 1. PPG (primary — has the most players: ~1500)
     log.info(f"  Fetching PPG rankings...")
-    ppg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["ppg"], division)
+    ppg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["ppg"], division, ranking_period)
     log.info(f"    {len(ppg_rows)} players from PPG")
     _merge(ppg_rows, {
         "FGM": "fgm_raw", "3FG": "three_pm_raw", "FT": "ftm_raw",
@@ -452,7 +506,7 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
 
     # 2. FG% — gives us FGA
     log.info(f"  Fetching FG% rankings...")
-    fgp_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["fg_pct"], division)
+    fgp_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["fg_pct"], division, ranking_period)
     log.info(f"    {len(fgp_rows)} players from FG%")
     _merge(fgp_rows, {
         "FGM": "fgm_raw", "FGA": "fga_raw", "FG%": "fg_pct",
@@ -460,7 +514,7 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
 
     # 3. Total FGM — also has FGA (broader coverage than FG%, ~370 players)
     log.info(f"  Fetching Total FGM rankings...")
-    tfgm_rows = fetch_ranking_page(conn, "611.0", division)
+    tfgm_rows = fetch_ranking_page(conn, "611.0", division, ranking_period)
     log.info(f"    {len(tfgm_rows)} players from Total FGM")
     _merge(tfgm_rows, {
         "FGM": "fgm_raw", "FGA": "fga_raw",
@@ -468,7 +522,7 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
 
     # 4. 3P% — gives us 3FGA
     log.info(f"  Fetching 3P% rankings...")
-    tpp_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["3p_pct"], division)
+    tpp_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["3p_pct"], division, ranking_period)
     log.info(f"    {len(tpp_rows)} players from 3P%")
     _merge(tpp_rows, {
         "3FG": "three_pm_raw", "3FGA": "three_pa_raw", "3FG%": "three_pct",
@@ -476,7 +530,7 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
 
     # 5. Total 3PM — also has 3FGA (broader coverage than 3P%, ~354 players)
     log.info(f"  Fetching Total 3PM rankings...")
-    t3pm_rows = fetch_ranking_page(conn, "621.0", division)
+    t3pm_rows = fetch_ranking_page(conn, "621.0", division, ranking_period)
     log.info(f"    {len(t3pm_rows)} players from Total 3PM")
     _merge(t3pm_rows, {
         "3FG": "three_pm_raw", "3FGA": "three_pa_raw",
@@ -484,7 +538,7 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
 
     # 6. FT% — gives us FTA
     log.info(f"  Fetching FT% rankings...")
-    ftp_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["ft_pct"], division)
+    ftp_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["ft_pct"], division, ranking_period)
     log.info(f"    {len(ftp_rows)} players from FT%")
     _merge(ftp_rows, {
         "FT": "ftm_raw", "FTA": "fta_raw", "FT%": "ft_pct",
@@ -492,63 +546,63 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
 
     # 7. Total FTM — also has FTA (broader coverage than FT%, ~367 players)
     log.info(f"  Fetching Total FTM rankings...")
-    tftm_rows = fetch_ranking_page(conn, "850.0", division)
+    tftm_rows = fetch_ranking_page(conn, "850.0", division, ranking_period)
     log.info(f"    {len(tftm_rows)} players from Total FTM")
     _merge(tftm_rows, {
         "FT": "ftm_raw", "FTA": "fta_raw",
     })
 
-    # 5. Total Rebounds — gives us ORebs, DRebs, REB
+    # 8. Total Rebounds — gives us ORebs, DRebs, REB
     log.info(f"  Fetching Total Rebounds rankings...")
-    reb_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["total_reb"], division)
+    reb_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["total_reb"], division, ranking_period)
     log.info(f"    {len(reb_rows)} players from Total Rebounds")
     _merge(reb_rows, {
         "ORebs": "oreb_raw", "DRebs": "dreb_raw", "REB": "reb_raw",
     })
 
-    # 6. A/TO Ratio — gives us AST, TO
+    # 9. A/TO Ratio — gives us AST, TO
     log.info(f"  Fetching Assist/Turnover Ratio rankings...")
-    ato_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["ato"], division)
+    ato_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["ato"], division, ranking_period)
     log.info(f"    {len(ato_rows)} players from A/TO Ratio")
     _merge(ato_rows, {
         "AST": "ast_raw", "TO": "to_raw",
     })
 
-    # 7. SPG — gives us ST (steals total)
+    # 10. SPG — gives us ST (steals total)
     log.info(f"  Fetching Steals Per Game rankings...")
-    spg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["spg"], division)
+    spg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["spg"], division, ranking_period)
     log.info(f"    {len(spg_rows)} players from SPG")
     _merge(spg_rows, {
         "ST": "stl_raw",
     })
 
-    # 8. BPG — gives us BLKS (blocks total)
+    # 11. BPG — gives us BLKS (blocks total)
     log.info(f"  Fetching Blocks Per Game rankings...")
-    bpg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["bpg"], division)
+    bpg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["bpg"], division, ranking_period)
     log.info(f"    {len(bpg_rows)} players from BPG")
     _merge(bpg_rows, {
         "BLKS": "blk_raw",
     })
 
-    # 9. MPG — gives us total minutes and per-game
+    # 12. MPG — gives us total minutes and per-game
     log.info(f"  Fetching Minutes Per Game rankings...")
-    mpg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["mpg"], division)
+    mpg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["mpg"], division, ranking_period)
     log.info(f"    {len(mpg_rows)} players from MPG")
     _merge(mpg_rows, {
         "MP": "mp_raw", "MPG": "mpg_raw",
     })
 
-    # 10. APG — gives us AST (assists total) for players not in A/TO list
+    # 13. APG — gives us AST (assists total) for players not in A/TO list
     log.info(f"  Fetching Assists Per Game rankings...")
-    apg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["apg"], division)
+    apg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["apg"], division, ranking_period)
     log.info(f"    {len(apg_rows)} players from APG")
     _merge(apg_rows, {
         "AST": "ast_raw",
     })
 
-    # 11. RPG — gives us REB total for players not in total rebounds list
+    # 14. RPG — gives us REB total for players not in total rebounds list
     log.info(f"  Fetching Rebounds Per Game rankings...")
-    rpg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["rpg"], division)
+    rpg_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["rpg"], division, ranking_period)
     log.info(f"    {len(rpg_rows)} players from RPG")
     _merge(rpg_rows, {
         "REB": "reb_raw",

@@ -70,6 +70,89 @@ def _fmt_height(inches) -> str:
     return f"{inches // 12}'{inches % 12}\""
 
 
+def _normalize_class_year(raw: str | None) -> str:
+    """Normalize class year strings to consistent format."""
+    if not raw:
+        return ""
+    r = raw.strip().lower().rstrip(".")
+    MAP = {
+        "fr": "Fr.", "freshman": "Fr.", "fy": "Fr.", "r-fr": "R-Fr.",
+        "so": "So.", "sophomore": "So.", "r-so": "R-So.",
+        "jr": "Jr.", "junior": "Jr.", "r-jr": "R-Jr.",
+        "sr": "Sr.", "senior": "Sr.", "r-sr": "R-Sr.", "gr": "Gr.",
+        "graduate": "Gr.", "grad": "Gr.",
+    }
+    return MAP.get(r, raw.strip())
+
+
+def _infer_position(positions: list[str] | None, ppg, apg, rpg, bpg, stl,
+                     mpg, oreb, fga) -> str:
+    """Infer canonical position from declared_positions or stats."""
+    # First try declared positions
+    PM = {
+        "PG": "PG", "CG": "CG", "W": "W", "F": "F", "B": "B",
+        "SG": "CG", "SF": "W", "PF": "F", "C": "B",
+        "G": None,  # ambiguous — infer from stats
+        "G/F": "W", "F/C": "F", "W/F": "W",
+        "PF/C": "F", "SF/PF": "F", "C/F": "F", "G/W": "CG",
+        "WING": "W", "GUARD": None,
+    }
+    if positions and len(positions) > 0 and positions[0]:
+        mapped = PM.get(positions[0].upper())
+        if mapped is not None:
+            return mapped
+        # "G" or "Guard" — need stats to disambiguate
+
+    # Stat-based inference
+    apg_v = float(apg) if apg is not None else 0
+    rpg_v = float(rpg) if rpg is not None else 0
+    bpg_v = float(bpg) if bpg is not None else 0
+    stl_v = float(stl) if stl is not None else 0
+    ppg_v = float(ppg) if ppg is not None else 0
+    oreb_v = float(oreb) if oreb is not None else 0
+    fga_v = float(fga) if fga is not None else 0
+
+    # Big: high rebounds + blocks
+    if rpg_v >= 6 and bpg_v >= 1.0:
+        return "B"
+    if rpg_v >= 8:
+        return "B"
+
+    # Forward: moderate rebounds, low assists
+    if rpg_v >= 5 and apg_v < 3:
+        return "F"
+
+    # Point guard: high assists
+    if apg_v >= 4:
+        return "PG"
+    if apg_v >= 3 and stl_v >= 1.0:
+        return "PG"
+
+    # Combo guard: moderate assists + scoring
+    if apg_v >= 2 and ppg_v >= 8:
+        return "CG"
+
+    # If declared "G" / "Guard" with low assists → CG
+    if positions and len(positions) > 0:
+        tag = (positions[0] or "").upper()
+        if tag in ("G", "GUARD"):
+            return "PG" if apg_v >= 2.5 else "CG"
+
+    # Wing: default for players with balanced stats or no data
+    if ppg_v >= 5 and rpg_v >= 3 and apg_v < 3:
+        return "W"
+
+    # Forward: if rebounds dominate
+    if rpg_v > apg_v * 2 and rpg_v >= 3:
+        return "F"
+
+    # Guard-like: more assists/steals relative to rebounds
+    if apg_v > rpg_v:
+        return "PG"
+
+    return "W"  # ultimate fallback
+
+
 def export_players(conn) -> list[dict]:
     """Export all players with KR, archetype, team, level info."""
     cur = conn.cursor()
