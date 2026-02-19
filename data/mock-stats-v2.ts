@@ -119,6 +119,49 @@ export interface PlayerStatRow {
   kr: number;
   offKR: number;
   defKR: number;
+  rpg: number;
+  apg: number;
+  spg: number;
+  bpg: number;
+  mpg: number;
+  fgPct: number;
+  ftPct: number;
+}
+
+export interface TeamAverages {
+  ppg: number;
+  oppPpg: number;
+  rpg: number;
+  apg: number;
+  spg: number;
+  bpg: number;
+  topg: number;
+  fgPct: number;
+  threePct: number;
+  ftPct: number;
+  netRtg: number;
+}
+
+export interface SystemIdentity {
+  offenseLabel: string;
+  defenseLabel: string;
+  tempoLabel: string;
+  paceRank: number;
+  offConfidencePct: number;
+  defConfidencePct: number;
+}
+
+export interface LineupKROverlay {
+  lineupId: string;
+  combinedKR: number;
+  combinedOffKR: number;
+  combinedDefKR: number;
+  fitPct: number;
+}
+
+export interface Last5Entry {
+  opponent: string;
+  result: 'W' | 'L';
 }
 
 // =============================================================================
@@ -206,16 +249,68 @@ export const GAME_LOG: GameLogEntry[] = [
 ];
 
 export const PLAYER_LEADERBOARD: PlayerStatRow[] = [
-  { id: 'ps-1', name: 'D. Cole', number: '1', position: 'PG', gp: 30, minutes: 33.2, usage: 28.4, pts: 18.6, efg: 52.4, threePct: 37.8, ftRate: 38.6, toPct: 14.8, astRate: 32.4, orebRate: 2.4, drebRate: 12.6, kr: 78, offKR: 80, defKR: 74 },
-  { id: 'ps-2', name: 'J. Brown', number: '4', position: 'CG', gp: 30, minutes: 31.8, usage: 24.2, pts: 16.4, efg: 54.8, threePct: 40.2, ftRate: 28.4, toPct: 12.2, astRate: 14.8, orebRate: 1.8, drebRate: 14.2, kr: 76, offKR: 78, defKR: 72 },
-  { id: 'ps-3', name: 'T. Singleton', number: '12', position: 'W', gp: 28, minutes: 30.4, usage: 20.8, pts: 14.2, efg: 50.6, threePct: 35.4, ftRate: 34.2, toPct: 16.4, astRate: 18.6, orebRate: 3.2, drebRate: 16.8, kr: 74, offKR: 72, defKR: 76 },
-  { id: 'ps-4', name: 'M. Peeples', number: '24', position: 'F', gp: 30, minutes: 28.6, usage: 18.4, pts: 12.8, efg: 56.2, threePct: 32.8, ftRate: 36.8, toPct: 10.8, astRate: 8.4, orebRate: 8.6, drebRate: 22.4, kr: 72, offKR: 68, defKR: 78 },
-  { id: 'ps-5', name: 'D. Williams', number: '32', position: 'B', gp: 30, minutes: 26.4, usage: 14.6, pts: 10.4, efg: 58.4, threePct: 28.6, ftRate: 42.4, toPct: 12.6, astRate: 6.2, orebRate: 10.4, drebRate: 24.6, kr: 70, offKR: 64, defKR: 80 },
-  { id: 'ps-6', name: 'A. Garland', number: '3', position: 'CG', gp: 28, minutes: 24.2, usage: 22.6, pts: 13.8, efg: 48.4, threePct: 34.6, ftRate: 30.2, toPct: 18.2, astRate: 12.4, orebRate: 1.6, drebRate: 10.8, kr: 68, offKR: 72, defKR: 62 },
-  { id: 'ps-7', name: 'C. Henderson', number: '11', position: 'W', gp: 26, minutes: 22.8, usage: 16.8, pts: 9.6, efg: 46.2, threePct: 32.4, ftRate: 26.8, toPct: 14.6, astRate: 16.2, orebRate: 2.8, drebRate: 14.4, kr: 66, offKR: 64, defKR: 68 },
-  { id: 'ps-8', name: 'K. Riley', number: '22', position: 'F', gp: 30, minutes: 20.4, usage: 12.4, pts: 8.2, efg: 52.8, threePct: 30.8, ftRate: 34.6, toPct: 10.2, astRate: 4.8, orebRate: 7.8, drebRate: 20.2, kr: 64, offKR: 58, defKR: 72 },
-  { id: 'ps-9', name: 'J. Okafor', number: '34', position: 'B', gp: 24, minutes: 16.8, usage: 10.8, pts: 6.4, efg: 54.6, threePct: 22.4, ftRate: 38.2, toPct: 14.4, astRate: 3.6, orebRate: 9.2, drebRate: 18.6, kr: 62, offKR: 56, defKR: 70 },
-  { id: 'ps-10', name: 'R. Jackson', number: '5', position: 'PG', gp: 28, minutes: 14.6, usage: 18.2, pts: 7.8, efg: 44.8, threePct: 36.2, ftRate: 24.6, toPct: 20.4, astRate: 28.6, orebRate: 1.2, drebRate: 8.4, kr: 60, offKR: 62, defKR: 56 },
+  { id: 'ps-1', name: 'D. Cole', number: '1', position: 'PG', gp: 30, minutes: 33.2, usage: 28.4, pts: 18.6, efg: 52.4, threePct: 37.8, ftRate: 38.6, toPct: 14.8, astRate: 32.4, orebRate: 2.4, drebRate: 12.6, kr: 78, offKR: 80, defKR: 74, rpg: 3.8, apg: 6.2, spg: 1.8, bpg: 0.2, mpg: 33.2, fgPct: 44.8, ftPct: 82.4 },
+  { id: 'ps-2', name: 'J. Brown', number: '4', position: 'CG', gp: 30, minutes: 31.8, usage: 24.2, pts: 16.4, efg: 54.8, threePct: 40.2, ftRate: 28.4, toPct: 12.2, astRate: 14.8, orebRate: 1.8, drebRate: 14.2, kr: 76, offKR: 78, defKR: 72, rpg: 4.2, apg: 3.6, spg: 1.4, bpg: 0.4, mpg: 31.8, fgPct: 46.2, ftPct: 78.6 },
+  { id: 'ps-3', name: 'T. Singleton', number: '12', position: 'W', gp: 28, minutes: 30.4, usage: 20.8, pts: 14.2, efg: 50.6, threePct: 35.4, ftRate: 34.2, toPct: 16.4, astRate: 18.6, orebRate: 3.2, drebRate: 16.8, kr: 74, offKR: 72, defKR: 76, rpg: 5.6, apg: 3.8, spg: 1.2, bpg: 0.6, mpg: 30.4, fgPct: 43.4, ftPct: 76.2 },
+  { id: 'ps-4', name: 'M. Peeples', number: '24', position: 'F', gp: 30, minutes: 28.6, usage: 18.4, pts: 12.8, efg: 56.2, threePct: 32.8, ftRate: 36.8, toPct: 10.8, astRate: 8.4, orebRate: 8.6, drebRate: 22.4, kr: 72, offKR: 68, defKR: 78, rpg: 7.8, apg: 1.6, spg: 0.8, bpg: 1.2, mpg: 28.6, fgPct: 48.6, ftPct: 72.8 },
+  { id: 'ps-5', name: 'D. Williams', number: '32', position: 'B', gp: 30, minutes: 26.4, usage: 14.6, pts: 10.4, efg: 58.4, threePct: 28.6, ftRate: 42.4, toPct: 12.6, astRate: 6.2, orebRate: 10.4, drebRate: 24.6, kr: 70, offKR: 64, defKR: 80, rpg: 8.4, apg: 1.2, spg: 0.6, bpg: 1.8, mpg: 26.4, fgPct: 52.4, ftPct: 68.2 },
+  { id: 'ps-6', name: 'A. Garland', number: '3', position: 'CG', gp: 28, minutes: 24.2, usage: 22.6, pts: 13.8, efg: 48.4, threePct: 34.6, ftRate: 30.2, toPct: 18.2, astRate: 12.4, orebRate: 1.6, drebRate: 10.8, kr: 68, offKR: 72, defKR: 62, rpg: 3.2, apg: 4.4, spg: 1.6, bpg: 0.2, mpg: 24.2, fgPct: 41.8, ftPct: 80.4 },
+  { id: 'ps-7', name: 'C. Henderson', number: '11', position: 'W', gp: 26, minutes: 22.8, usage: 16.8, pts: 9.6, efg: 46.2, threePct: 32.4, ftRate: 26.8, toPct: 14.6, astRate: 16.2, orebRate: 2.8, drebRate: 14.4, kr: 66, offKR: 64, defKR: 68, rpg: 4.4, apg: 3.2, spg: 1.0, bpg: 0.4, mpg: 22.8, fgPct: 40.2, ftPct: 74.6 },
+  { id: 'ps-8', name: 'K. Riley', number: '22', position: 'F', gp: 30, minutes: 20.4, usage: 12.4, pts: 8.2, efg: 52.8, threePct: 30.8, ftRate: 34.6, toPct: 10.2, astRate: 4.8, orebRate: 7.8, drebRate: 20.2, kr: 64, offKR: 58, defKR: 72, rpg: 6.2, apg: 0.8, spg: 0.6, bpg: 0.8, mpg: 20.4, fgPct: 46.8, ftPct: 70.2 },
+  { id: 'ps-9', name: 'J. Okafor', number: '34', position: 'B', gp: 24, minutes: 16.8, usage: 10.8, pts: 6.4, efg: 54.6, threePct: 22.4, ftRate: 38.2, toPct: 14.4, astRate: 3.6, orebRate: 9.2, drebRate: 18.6, kr: 62, offKR: 56, defKR: 70, rpg: 5.4, apg: 0.6, spg: 0.4, bpg: 1.4, mpg: 16.8, fgPct: 50.2, ftPct: 66.8 },
+  { id: 'ps-10', name: 'R. Jackson', number: '5', position: 'PG', gp: 28, minutes: 14.6, usage: 18.2, pts: 7.8, efg: 44.8, threePct: 36.2, ftRate: 24.6, toPct: 20.4, astRate: 28.6, orebRate: 1.2, drebRate: 8.4, kr: 60, offKR: 62, defKR: 56, rpg: 2.4, apg: 4.8, spg: 1.2, bpg: 0.1, mpg: 14.6, fgPct: 38.4, ftPct: 84.2 },
+];
+
+// =============================================================================
+// TEAM AVERAGES
+// =============================================================================
+
+export const TEAM_AVERAGES: TeamAverages = {
+  ppg: 79.8,
+  oppPpg: 72.4,
+  rpg: 38.2,
+  apg: 16.4,
+  spg: 7.6,
+  bpg: 3.8,
+  topg: 13.2,
+  fgPct: 45.6,
+  threePct: 35.8,
+  ftPct: 74.2,
+  netRtg: 7.2,
+};
+
+// =============================================================================
+// SYSTEM IDENTITY
+// =============================================================================
+
+export const SYSTEM_IDENTITY: SystemIdentity = {
+  offenseLabel: 'Motion Read & React',
+  defenseLabel: 'Pack Line',
+  tempoLabel: 'Moderate',
+  paceRank: 4,
+  offConfidencePct: 86,
+  defConfidencePct: 82,
+};
+
+// =============================================================================
+// LAST 5 (derived from GAME_LOG)
+// =============================================================================
+
+export const LAST_5: Last5Entry[] = GAME_LOG.slice(0, 5).map((g) => ({
+  opponent: g.opponent,
+  result: g.result,
+}));
+
+// =============================================================================
+// LINEUP KR OVERLAYS
+// =============================================================================
+
+export const LINEUP_KR_OVERLAYS: LineupKROverlay[] = [
+  { lineupId: 'lu-1', combinedKR: 74, combinedOffKR: 72, combinedDefKR: 76, fitPct: 88 },
+  { lineupId: 'lu-2', combinedKR: 72, combinedOffKR: 74, combinedDefKR: 70, fitPct: 84 },
+  { lineupId: 'lu-3', combinedKR: 70, combinedOffKR: 68, combinedDefKR: 72, fitPct: 82 },
+  { lineupId: 'lu-4', combinedKR: 68, combinedOffKR: 66, combinedDefKR: 70, fitPct: 78 },
+  { lineupId: 'lu-5', combinedKR: 71, combinedOffKR: 70, combinedDefKR: 72, fitPct: 80 },
 ];
 
 // =============================================================================

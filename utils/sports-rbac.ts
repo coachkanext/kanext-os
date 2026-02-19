@@ -242,6 +242,57 @@ export function formatKR(value: number, visibility: KRVisibility): string {
 }
 
 // =============================================================================
+// STATS HUB — 7 CANONICAL TABS
+// =============================================================================
+
+export type StatsTab =
+  | 'dashboard'
+  | 'traditional'
+  | 'kr_intelligence'
+  | 'clusters'
+  | 'lineups'
+  | 'play_types'
+  | 'players';
+
+export const STATS_TAB_LABELS: Record<StatsTab, string> = {
+  dashboard: 'Dashboard',
+  traditional: 'Traditional',
+  kr_intelligence: 'KR Intelligence',
+  clusters: 'Clusters',
+  lineups: 'Lineups',
+  play_types: 'Play Types',
+  players: 'Players',
+};
+
+export const STATS_TAB_ORDER: StatsTab[] = [
+  'dashboard', 'traditional', 'kr_intelligence', 'clusters',
+  'lineups', 'play_types', 'players',
+];
+
+/** Stats Hub visibility matrix: Tab → Role → Visibility */
+const STATS_HUB_MATRIX: Record<StatsTab, Record<SportsRoleLens, Visibility>> = {
+  dashboard:       { R1: 'full',    R2: 'full',    R3: 'full',    R4: 'full',    R5: 'full' },
+  traditional:     { R1: 'full',    R2: 'limited', R3: 'full',    R4: 'full',    R5: 'full' },
+  kr_intelligence: { R1: 'full',    R2: 'self',    R3: 'limited', R4: 'hidden',  R5: 'hidden' },
+  clusters:        { R1: 'full',    R2: 'self',    R3: 'full',    R4: 'hidden',  R5: 'hidden' },
+  lineups:         { R1: 'full',    R2: 'hidden',  R3: 'limited', R4: 'hidden',  R5: 'hidden' },
+  play_types:      { R1: 'full',    R2: 'hidden',  R3: 'full',    R4: 'hidden',  R5: 'hidden' },
+  players:         { R1: 'full',    R2: 'limited', R3: 'full',    R4: 'full',    R5: 'full' },
+};
+
+/** Returns visible Stats Hub tabs for a role (in canonical order) */
+export function getStatsHubTabs(role: SportsRoleLens): { key: StatsTab; label: string }[] {
+  return STATS_TAB_ORDER
+    .filter((tab) => STATS_HUB_MATRIX[tab][role] !== 'hidden')
+    .map((tab) => ({ key: tab, label: STATS_TAB_LABELS[tab] }));
+}
+
+/** Get the visibility level for a specific stats tab + role */
+export function getStatsTabVisibility(tab: StatsTab, role: SportsRoleLens): Visibility {
+  return STATS_HUB_MATRIX[tab][role];
+}
+
+// =============================================================================
 // SENSITIVE DATA POLICY
 // =============================================================================
 

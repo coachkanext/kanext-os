@@ -41,6 +41,7 @@ import { registerTeamSheetHandlers } from '@/utils/global-team-sheet';
 import { SportsGamePlanV2 } from '@/components/game-plan/sports-game-plan-v2';
 import { SportsCalendarV2 } from '@/components/calendar/sports-calendar-v2';
 import { SportsStatsV2 } from '@/components/stats/sports-stats-v2';
+import { TEAM_IDENTITY as STATS_TEAM_IDENTITY, TEAM_AVERAGES as STATS_TEAM_AVERAGES, LAST_5 as STATS_LAST_5 } from '@/data/mock-stats-v2';
 import { SportsSimulationV2 } from '@/components/simulation/sports-simulation-v2';
 import { SportsDevelopmentV2 } from '@/components/development/sports-development-v2';
 import { TicketsSheet } from '@/components/commerce/tickets-sheet';
@@ -540,28 +541,84 @@ function SportsHome() {
 
                   {/* ===== REMAINING DOMAIN CARDS ===== */}
                   <View style={{ paddingHorizontal: Spacing.md, gap: Spacing.sm }}>
-                    {visibleCards.map(card => (
-                      <Pressable
-                        key={card.id}
-                        onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-                        style={({ pressed }) => [
-                          styles.domainCard,
-                          { backgroundColor: colors.card, borderColor: colors.border },
-                          pressed && { opacity: 0.7 },
-                        ]}
-                      >
-                        <View style={styles.domainCardHeader}>
-                          <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
-                            <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                    {visibleCards.map(card => {
+                      // Rich Statistics card
+                      if (card.id === 'stats') {
+                        const netRtg = STATS_TEAM_AVERAGES.netRtg;
+                        return (
+                          <Pressable
+                            key={card.id}
+                            onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                            style={({ pressed }) => [
+                              styles.domainCard,
+                              { backgroundColor: '#181616', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
+                              pressed && { opacity: 0.7 },
+                            ]}
+                          >
+                            <View style={styles.domainCardHeader}>
+                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
+                                <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                              </View>
+                              <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
+                              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+                            </View>
+                            {/* Record */}
+                            <View style={{ paddingLeft: 40 }}>
+                              <Text style={[styles.statsRichRecord, { color: colors.text }]}>{STATS_TEAM_IDENTITY.record}</Text>
+                              <Text style={[styles.statsRichConf, { color: colors.textSecondary }]}>{STATS_TEAM_IDENTITY.confRecord} {STATS_TEAM_IDENTITY.conference}</Text>
+                              {/* 3 Stat Pills */}
+                              <View style={[styles.statsPreviewRow]}>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>PPG</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{STATS_TEAM_AVERAGES.ppg}</Text>
+                                </View>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>OPP</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{STATS_TEAM_AVERAGES.oppPpg}</Text>
+                                </View>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>NET</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: netRtg >= 0 ? '#22c55e' : '#ef4444' }]}>
+                                    {netRtg > 0 ? '+' : ''}{netRtg.toFixed(1)}
+                                  </Text>
+                                </View>
+                              </View>
+                              {/* Last 5 Dots */}
+                              <View style={styles.statsLast5Row}>
+                                <Text style={[styles.statsLast5Label, { color: colors.textTertiary }]}>L5</Text>
+                                {STATS_LAST_5.map((g, i) => (
+                                  <View key={i} style={[styles.statsLast5Dot, { backgroundColor: g.result === 'W' ? '#22c55e' : '#ef4444' }]} />
+                                ))}
+                              </View>
+                            </View>
+                          </Pressable>
+                        );
+                      }
+
+                      // Default domain card
+                      return (
+                        <Pressable
+                          key={card.id}
+                          onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                          style={({ pressed }) => [
+                            styles.domainCard,
+                            { backgroundColor: colors.card, borderColor: colors.border },
+                            pressed && { opacity: 0.7 },
+                          ]}
+                        >
+                          <View style={styles.domainCardHeader}>
+                            <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
+                              <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                            </View>
+                            <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
+                            <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
                           </View>
-                          <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
-                          <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-                        </View>
-                        <Text style={[styles.domainCardPreview, { color: colors.textSecondary }]}>
-                          {previews[card.id]}
-                        </Text>
-                      </Pressable>
-                    ))}
+                          <Text style={[styles.domainCardPreview, { color: colors.textSecondary }]}>
+                            {previews[card.id]}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
                   </View>
                 </ScrollView>
               </View>
@@ -1881,6 +1938,58 @@ const styles = StyleSheet.create({
   commerceSubtext: {
     fontSize: 10,
     fontWeight: '500',
+  },
+
+  // Rich Statistics Card
+  statsRichRecord: {
+    fontSize: 28,
+    fontWeight: '800',
+    letterSpacing: -1,
+  },
+  statsRichConf: {
+    fontSize: 13,
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  statsPreviewRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 10,
+  },
+  statsPreviewPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    alignItems: 'center',
+  },
+  statsPreviewPillLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#888',
+    letterSpacing: 0.3,
+  },
+  statsPreviewPillValue: {
+    fontSize: 14,
+    fontWeight: '800',
+    marginTop: 1,
+  },
+  statsLast5Row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 10,
+  },
+  statsLast5Label: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    marginRight: 2,
+  },
+  statsLast5Dot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
 
 });
