@@ -19,6 +19,7 @@ import {
   REELS_BY_MODE,
   PLAYER_CHANNELS_BY_MODE,
   SCOUT_PACKS_BY_MODE,
+  TRENDING_BY_MODE,
   formatDuration,
   getResultColor,
   type VideoGame,
@@ -26,6 +27,7 @@ import {
   type Reel,
   type PlayerChannel,
   type ScoutPack,
+  type TrendingItem,
 } from '@/data/mock-video';
 
 // =============================================================================
@@ -356,6 +358,22 @@ export function ModeExplorePageV2({ mode }: Props) {
 
   const channels = PLAYER_CHANNELS_BY_MODE[mode] ?? [];
   const upcoming = SCOUT_PACKS_BY_MODE[mode] ?? [];
+  const trending = TRENDING_BY_MODE[mode] ?? [];
+
+  // Filter chip → shelf visibility mapping
+  const FILTER_SHELF_MAP: Record<Mode, Record<string, ('games' | 'clips' | 'reels' | 'channels' | 'upcoming')[]>> = {
+    church: { Sermons: ['games'], Worship: ['reels'], Teaching: ['clips'], Events: ['upcoming'], Youth: ['clips', 'reels'] },
+    education: { Lectures: ['games'], Events: ['upcoming'], Campus: ['reels'], Athletics: ['reels'], Research: ['clips'] },
+    business: { Product: ['games', 'clips'], Engineering: ['clips'], Marketing: ['reels'], Customer: ['reels'], Press: ['upcoming'] },
+    competition: { Races: ['games'], Qualifying: ['games'], Onboard: ['clips'], Analysis: ['clips'], Paddock: ['reels'] },
+    sports: {},
+  };
+
+  const showShelf = (shelf: 'games' | 'clips' | 'reels' | 'channels' | 'upcoming') => {
+    if (activeFilter === 'All') return true;
+    const map = FILTER_SHELF_MAP[mode]?.[activeFilter];
+    return map ? map.includes(shelf) : true;
+  };
 
   return (
     <ScrollView
@@ -374,6 +392,40 @@ export function ModeExplorePageV2({ mode }: Props) {
           onChangeText={setSearch}
         />
       </View>
+
+      {/* Trending Section */}
+      {trending.length > 0 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.trendingScroll}
+          style={styles.trendingContainer}
+        >
+          {trending.map((item) => (
+            <Pressable
+              key={item.id}
+              style={[styles.trendingCard, { backgroundColor: item.thumbnailColor }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <View style={styles.trendingBadge}>
+                <ThemedText style={styles.trendingBadgeText}>
+                  {item.badge === 'featured' ? 'FEATURED' : 'TRENDING'}
+                </ThemedText>
+              </View>
+              <IconSymbol name="play.fill" size={24} color="rgba(255,255,255,0.8)" />
+              <View style={styles.trendingBottom}>
+                <ThemedText style={styles.trendingTitle} numberOfLines={1}>{item.title}</ThemedText>
+                <ThemedText style={styles.trendingSubtitle} numberOfLines={1}>{item.subtitle}</ThemedText>
+                <View style={styles.trendingMeta}>
+                  <ThemedText style={styles.trendingMetaText}>{item.duration}</ThemedText>
+                  <View style={styles.trendingMetaDot} />
+                  <ThemedText style={styles.trendingMetaText}>{item.viewCount.toLocaleString()} views</ThemedText>
+                </View>
+              </View>
+            </Pressable>
+          ))}
+        </ScrollView>
+      )}
 
       {/* Filter Chips */}
       <View style={styles.chipRow}>
@@ -399,49 +451,59 @@ export function ModeExplorePageV2({ mode }: Props) {
       </View>
 
       {/* Shelf A: Games/Services/Lectures/Meetings/Races */}
-      <ShelfRow
-        title={config.shelfLabels.games}
-        data={games}
-        keyExtractor={(g) => g.id}
-        renderItem={(g) => <GameCard game={g} />}
-        accent={accent}
-      />
+      {showShelf('games') && (
+        <ShelfRow
+          title={config.shelfLabels.games}
+          data={games}
+          keyExtractor={(g) => g.id}
+          renderItem={(g) => <GameCard game={g} />}
+          accent={accent}
+        />
+      )}
 
       {/* Shelf B: Clips */}
-      <ShelfRow
-        title={config.shelfLabels.clips}
-        data={clips.slice(0, 8)}
-        keyExtractor={(c) => c.id}
-        renderItem={(c) => <ClipCard clip={c} />}
-        accent={accent}
-      />
+      {showShelf('clips') && (
+        <ShelfRow
+          title={config.shelfLabels.clips}
+          data={clips.slice(0, 8)}
+          keyExtractor={(c) => c.id}
+          renderItem={(c) => <ClipCard clip={c} />}
+          accent={accent}
+        />
+      )}
 
       {/* Shelf C: Reels/Highlights */}
-      <ShelfRow
-        title={config.shelfLabels.reels}
-        data={reels}
-        keyExtractor={(r) => r.id}
-        renderItem={(r) => <ReelCard reel={r} />}
-        accent={accent}
-      />
+      {showShelf('reels') && (
+        <ShelfRow
+          title={config.shelfLabels.reels}
+          data={reels}
+          keyExtractor={(r) => r.id}
+          renderItem={(r) => <ReelCard reel={r} />}
+          accent={accent}
+        />
+      )}
 
       {/* Shelf D: Channels */}
-      <ShelfRow
-        title={config.shelfLabels.channels}
-        data={channels}
-        keyExtractor={(c) => c.id}
-        renderItem={(c) => <ChannelCard channel={c} />}
-        accent={accent}
-      />
+      {showShelf('channels') && (
+        <ShelfRow
+          title={config.shelfLabels.channels}
+          data={channels}
+          keyExtractor={(c) => c.id}
+          renderItem={(c) => <ChannelCard channel={c} />}
+          accent={accent}
+        />
+      )}
 
       {/* Shelf E: Upcoming/Scout Packs */}
-      <ShelfRow
-        title={config.shelfLabels.upcoming}
-        data={upcoming}
-        keyExtractor={(s) => s.id}
-        renderItem={(s) => <ScoutCard pack={s} accent={accent} />}
-        accent={accent}
-      />
+      {showShelf('upcoming') && (
+        <ShelfRow
+          title={config.shelfLabels.upcoming}
+          data={upcoming}
+          keyExtractor={(s) => s.id}
+          renderItem={(s) => <ScoutCard pack={s} accent={accent} />}
+          accent={accent}
+        />
+      )}
 
       {games.length === 0 && clips.length === 0 && reels.length === 0 && (
         <View style={styles.emptyState}>
@@ -476,6 +538,72 @@ const styles = StyleSheet.create({
   chipScroll: { paddingHorizontal: Spacing.md, gap: 8, alignItems: 'center' },
   chip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, borderWidth: 1 },
   chipText: { fontSize: 13, fontWeight: '600' },
+  trendingContainer: {
+    flexGrow: 0,
+    marginBottom: Spacing.md,
+  },
+  trendingScroll: {
+    paddingHorizontal: Spacing.md,
+    gap: 12,
+  },
+  trendingCard: {
+    width: 280,
+    height: 200,
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  trendingBadge: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 4,
+  },
+  trendingBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: 0.8,
+  },
+  trendingBottom: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 12,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+  },
+  trendingTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  trendingSubtitle: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.7)',
+    marginTop: 2,
+  },
+  trendingMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 4,
+  },
+  trendingMetaText: {
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.6)',
+    fontWeight: '600',
+  },
+  trendingMetaDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: 'rgba(255,255,255,0.4)',
+  },
   emptyState: { alignItems: 'center', paddingTop: Spacing.xxl * 2, gap: 8 },
   emptyText: { fontSize: 14 },
 });

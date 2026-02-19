@@ -59,6 +59,26 @@ export const SHELF_SORT_OPTIONS: { key: ShelfSort; label: string }[] = [
 ];
 
 // =============================================================================
+// TRENDING
+// =============================================================================
+
+export interface TrendingItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  thumbnailColor: string;
+  viewCount: number;
+  badge: 'featured' | 'trending';
+  duration: string;
+}
+
+export const SPORTS_TRENDING: TrendingItem[] = [
+  { id: 'st-1', title: 'FMU vs Lincoln Christian — Full Highlights', subtitle: 'Season Opener · Sun Conference', thumbnailColor: '#1E3A5F', viewCount: 5200, badge: 'featured', duration: '8:42' },
+  { id: 'st-2', title: 'Jaylen Carter 32-Point Explosion', subtitle: 'Career High · Feb 14', thumbnailColor: '#2D1B69', viewCount: 3800, badge: 'trending', duration: '4:15' },
+  { id: 'st-3', title: 'Dunk of the Week: Carter Poster', subtitle: 'Sun Conference Honors', thumbnailColor: '#1A3D2A', viewCount: 7100, badge: 'trending', duration: '0:48' },
+];
+
+// =============================================================================
 // DATA — 8 SHELVES
 // =============================================================================
 

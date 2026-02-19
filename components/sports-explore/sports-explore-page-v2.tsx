@@ -15,10 +15,12 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { getVideoSectionVisibility, type SportsRoleLens } from '@/utils/sports-rbac';
 import {
   SPORTS_EXPLORE_SHELVES,
+  SPORTS_TRENDING,
   EXPLORE_TYPE_OPTIONS,
   EXPLORE_ACCESS_OPTIONS,
   type ExploreFilterType,
   type ExploreFilterAccess,
+  type TrendingItem,
 } from '@/data/mock-sports-explore-v2';
 
 // Default to R1 for now — will wire to context later
@@ -66,6 +68,38 @@ export function SportsExplorePageV2() {
           onChangeText={setSearch}
         />
       </View>
+
+      {/* Trending Section */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.trendingScroll}
+        style={styles.trendingContainer}
+      >
+        {SPORTS_TRENDING.map((item) => (
+          <Pressable
+            key={item.id}
+            style={[styles.trendingCard, { backgroundColor: item.thumbnailColor }]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <View style={styles.trendingBadge}>
+              <ThemedText style={styles.trendingBadgeText}>
+                {item.badge === 'featured' ? 'FEATURED' : 'TRENDING'}
+              </ThemedText>
+            </View>
+            <IconSymbol name="play.fill" size={24} color="rgba(255,255,255,0.8)" />
+            <View style={styles.trendingBottom}>
+              <ThemedText style={styles.trendingTitle} numberOfLines={1}>{item.title}</ThemedText>
+              <ThemedText style={styles.trendingSubtitle} numberOfLines={1}>{item.subtitle}</ThemedText>
+              <View style={styles.trendingMeta}>
+                <ThemedText style={styles.trendingMetaText}>{item.duration}</ThemedText>
+                <View style={styles.trendingMetaDot} />
+                <ThemedText style={styles.trendingMetaText}>{item.viewCount.toLocaleString()} views</ThemedText>
+              </View>
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
 
       {/* Filter Chips */}
       <View style={styles.chipRow}>
@@ -168,6 +202,72 @@ const styles = StyleSheet.create({
     width: 1,
     height: 20,
     marginHorizontal: 4,
+  },
+  trendingContainer: {
+    flexGrow: 0,
+    marginBottom: Spacing.md,
+  },
+  trendingScroll: {
+    paddingHorizontal: Spacing.md,
+    gap: 12,
+  },
+  trendingCard: {
+    width: 280,
+    height: 200,
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  trendingBadge: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 4,
+  },
+  trendingBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: 0.8,
+  },
+  trendingBottom: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 12,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+  },
+  trendingTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  trendingSubtitle: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.7)',
+    marginTop: 2,
+  },
+  trendingMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 4,
+  },
+  trendingMetaText: {
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.6)',
+    fontWeight: '600',
+  },
+  trendingMetaDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: 'rgba(255,255,255,0.4)',
   },
   emptyState: {
     alignItems: 'center',

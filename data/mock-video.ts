@@ -1002,3 +1002,41 @@ export const RECRUIT_CLIPS_BY_MODE: Record<Mode, RecruitClip[]> = {
   business: [],
   competition: [],
 };
+
+// =============================================================================
+// TRENDING BY MODE
+// =============================================================================
+
+export interface TrendingItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  thumbnailColor: string;
+  viewCount: number;
+  badge: 'featured' | 'trending';
+  duration: string;
+}
+
+export const TRENDING_BY_MODE: Record<Mode, TrendingItem[]> = {
+  sports: [], // Sports uses SPORTS_TRENDING from mock-sports-explore-v2
+  church: [
+    { id: 'ct-1', title: 'Walking in Faith — Full Sermon', subtitle: 'Pastor Dipo · Faith Forward Series', thumbnailColor: '#1B2044', viewCount: 1240, badge: 'featured', duration: '42:15' },
+    { id: 'ct-2', title: 'Baptism Sunday — 7 New Believers', subtitle: 'Celebration Service · Feb 1', thumbnailColor: '#0A1A2A', viewCount: 890, badge: 'trending', duration: '12:30' },
+    { id: 'ct-3', title: 'Worship Night Highlights', subtitle: 'ICCLA Worship Team', thumbnailColor: '#2D1044', viewCount: 650, badge: 'trending', duration: '6:18' },
+  ],
+  education: [
+    { id: 'et-1', title: 'Solo Flight Day — 6 Cadets Soar', subtitle: 'FMU Aviation Program', thumbnailColor: '#1A2A3A', viewCount: 3400, badge: 'featured', duration: '8:45' },
+    { id: 'et-2', title: 'Homecoming 2026 — Best Moments', subtitle: 'Campus Life · FMU', thumbnailColor: '#2A2A0A', viewCount: 5600, badge: 'trending', duration: '4:30' },
+    { id: 'et-3', title: 'AI in Healthcare — Research Spotlight', subtitle: 'Dr. Chen · Graduate Studies', thumbnailColor: '#1A0A2A', viewCount: 1200, badge: 'featured', duration: '18:20' },
+  ],
+  business: [
+    { id: 'bt-1', title: 'KaNeXT V2 — Full Product Demo', subtitle: 'Demo Day · 85 Viewers', thumbnailColor: '#1A1A2A', viewCount: 2100, badge: 'featured', duration: '15:00' },
+    { id: 'bt-2', title: 'HBCU Tech Summit — Booth Highlights', subtitle: 'Conference · 500+ Visits', thumbnailColor: '#1A1A1A', viewCount: 1800, badge: 'trending', duration: '4:00' },
+    { id: 'bt-3', title: 'Founder Diary #12 — On Focus', subtitle: 'Sammy Kalejaiye', thumbnailColor: '#0A1A3A', viewCount: 950, badge: 'featured', duration: '3:22' },
+  ],
+  competition: [
+    { id: 'kt-1', title: 'Race 6 — Last 5 Laps at Laguna Seca', subtitle: 'Kane P1 · Championship Round', thumbnailColor: '#2A0A0A', viewCount: 8900, badge: 'featured', duration: '12:30' },
+    { id: 'kt-2', title: 'Corkscrew Send — Side by Side', subtitle: 'Kane vs Reeves · Wheel to Wheel', thumbnailColor: '#2A1A0A', viewCount: 12400, badge: 'trending', duration: '0:48' },
+    { id: 'kt-3', title: 'Pit Stop Perfection — 2.8 Seconds', subtitle: 'Apex Racing Crew', thumbnailColor: '#0A2A0A', viewCount: 5600, badge: 'trending', duration: '1:15' },
+  ],
+};

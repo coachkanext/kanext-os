@@ -1,216 +1,337 @@
 /**
- * SportsLibrary — RBAC-gated library with 4 collapsible sections.
- * Search bar + filter pills (Access Level, Type) + sections.
+ * SportsLibrary — 3-tab layout: Saved | Downloads | History
+ * Simplified from the old 4-section RBAC-gated collapsible layout.
  */
 
 import React, { useState, useMemo } from 'react';
-import { View, StyleSheet, ScrollView, Pressable, TextInput } from 'react-native';
+import { View, StyleSheet, ScrollView, Pressable, FlatList } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { LibrarySection } from '@/components/library/library-section';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { getVideoSectionVisibility, type SportsRoleLens } from '@/utils/sports-rbac';
 import {
-  SPORTS_LIBRARY_SECTIONS,
   SPORTS_LIBRARY_RECORDS,
-  type AccessLevel,
-  type LibraryRecordType,
+  getAccessLevelColor,
+  getAccessLevelLabel,
+  getRecordTypeLabel,
+  type LibraryRecord,
 } from '@/data/mock-sports-library';
+import {
+  WATCH_HISTORY_BY_MODE,
+  formatDuration,
+  type WatchHistoryItem,
+} from '@/data/mock-video';
 
-const ACCESS_FILTERS: ('All' | AccessLevel)[] = ['All', 'public', 'team', 'staff', 'ad_only'];
-const TYPE_FILTERS: ('All' | LibraryRecordType)[] = ['All', 'game_film', 'practice', 'install', 'dev_clip', 'highlight', 'interview'];
+type SportsLibraryTab = 'saved' | 'downloads' | 'history';
 
-const ACCESS_LABELS: Record<string, string> = {
-  All: 'All Access',
-  public: 'Public',
-  team: 'Team',
-  staff: 'Staff',
-  ad_only: 'AD Only',
-};
-
-const TYPE_LABELS: Record<string, string> = {
-  All: 'All Types',
-  game_film: 'Game Film',
-  practice: 'Practice',
-  install: 'Install',
-  dev_clip: 'Dev Clip',
-  highlight: 'Highlight',
-  interview: 'Interview',
-};
-
-const DEFAULT_ROLE: SportsRoleLens = 'R1';
+const TABS: { key: SportsLibraryTab; label: string }[] = [
+  { key: 'saved', label: 'Saved' },
+  { key: 'downloads', label: 'Downloads' },
+  { key: 'history', label: 'History' },
+];
 
 export function SportsLibrary() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const role = DEFAULT_ROLE;
-  const [search, setSearch] = useState('');
-  const [accessFilter, setAccessFilter] = useState<'All' | AccessLevel>('All');
-  const [typeFilter, setTypeFilter] = useState<'All' | LibraryRecordType>('All');
+  const [activeTab, setActiveTab] = useState<SportsLibraryTab>('saved');
 
-  const visibleSections = useMemo(() => {
-    return SPORTS_LIBRARY_SECTIONS.filter(
-      (s) => getVideoSectionVisibility(s.rbacSection, role) !== 'hidden',
-    );
-  }, [role]);
+  const savedRecords = useMemo(() => SPORTS_LIBRARY_RECORDS, []);
+  const downloadedRecords = useMemo(() => SPORTS_LIBRARY_RECORDS.filter((r) => r.downloaded), []);
+  const history = WATCH_HISTORY_BY_MODE.sports ?? [];
 
-  const filteredRecords = useMemo(() => {
-    let records = SPORTS_LIBRARY_RECORDS;
-    if (accessFilter !== 'All') {
-      records = records.filter((r) => r.accessLevel === accessFilter);
-    }
-    if (typeFilter !== 'All') {
-      records = records.filter((r) => r.type === typeFilter);
-    }
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      records = records.filter(
-        (r) =>
-          r.title.toLowerCase().includes(q) ||
-          r.tags.some((t) => t.toLowerCase().includes(q)) ||
-          (r.opponent && r.opponent.toLowerCase().includes(q)),
-      );
-    }
-    return records;
-  }, [search, accessFilter, typeFilter]);
+  const handleTabPress = (tab: SportsLibraryTab) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setActiveTab(tab);
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Search Bar */}
-      <View style={[styles.searchBar, { backgroundColor: colors.backgroundTertiary, borderColor: colors.border }]}>
-        <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-        <TextInput
-          style={[styles.searchInput, { color: colors.text }]}
-          placeholder="Search library..."
-          placeholderTextColor={colors.textTertiary}
-          value={search}
-          onChangeText={setSearch}
-        />
-      </View>
-
-      {/* Filter Pills */}
+      {/* Pill Nav */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filterRow}
-        style={styles.filterScroll}
+        contentContainerStyle={styles.pillRow}
+        style={styles.pillScroll}
       >
-        {ACCESS_FILTERS.map((f) => (
-          <Pressable
-            key={f}
-            style={[
-              styles.filterPill,
-              { backgroundColor: accessFilter === f ? '#fff' : colors.backgroundTertiary },
-            ]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setAccessFilter(f);
-            }}
-          >
-            <ThemedText
-              style={[styles.filterText, { color: accessFilter === f ? '#000' : colors.textSecondary }]}
-            >
-              {ACCESS_LABELS[f]}
-            </ThemedText>
-          </Pressable>
-        ))}
-        <View style={[styles.filterDivider, { backgroundColor: colors.border }]} />
-        {TYPE_FILTERS.map((f) => (
-          <Pressable
-            key={f}
-            style={[
-              styles.filterPill,
-              { backgroundColor: typeFilter === f ? '#fff' : colors.backgroundTertiary },
-            ]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setTypeFilter(f);
-            }}
-          >
-            <ThemedText
-              style={[styles.filterText, { color: typeFilter === f ? '#000' : colors.textSecondary }]}
-            >
-              {TYPE_LABELS[f]}
-            </ThemedText>
-          </Pressable>
-        ))}
-      </ScrollView>
-
-      {/* Sections */}
-      <ScrollView
-        contentContainerStyle={styles.sectionList}
-        showsVerticalScrollIndicator={false}
-      >
-        {visibleSections.map((section) => {
-          const sectionRecords = filteredRecords.filter((r) => r.section === section.id);
-          if (sectionRecords.length === 0) return null;
+        {TABS.map((tab) => {
+          const isActive = activeTab === tab.key;
           return (
-            <LibrarySection key={section.id} config={section} records={sectionRecords} />
+            <Pressable
+              key={tab.key}
+              onPress={() => handleTabPress(tab.key)}
+              style={[
+                styles.pill,
+                { backgroundColor: isActive ? '#fff' : colors.backgroundTertiary },
+              ]}
+            >
+              <ThemedText
+                style={[styles.pillText, { color: isActive ? '#000' : colors.textSecondary }]}
+              >
+                {tab.label}
+              </ThemedText>
+            </Pressable>
           );
         })}
-
-        {filteredRecords.length === 0 && (
-          <View style={styles.emptyState}>
-            <IconSymbol name="doc.text.magnifyingglass" size={28} color={colors.textTertiary} />
-            <ThemedText style={[styles.emptyText, { color: colors.textTertiary }]}>
-              No matching records
-            </ThemedText>
-          </View>
-        )}
-        <View style={{ height: 60 }} />
       </ScrollView>
+
+      {/* Content */}
+      {activeTab === 'saved' && (
+        <FlatList
+          data={savedRecords}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <RecordRow record={item} colors={colors} />}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<EmptyState colors={colors} label="No saved items" icon="bookmark" />}
+        />
+      )}
+      {activeTab === 'downloads' && (
+        <FlatList
+          data={downloadedRecords}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <RecordRow record={item} colors={colors} showDownloadSize />}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<EmptyState colors={colors} label="No downloads" icon="arrow.down.circle" />}
+        />
+      )}
+      {activeTab === 'history' && (
+        <FlatList
+          data={history}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <HistoryRow item={item} colors={colors} />}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<EmptyState colors={colors} label="No watch history" icon="clock" />}
+        />
+      )}
     </View>
   );
 }
+
+// =============================================================================
+// RECORD ROW
+// =============================================================================
+
+function RecordRow({ record, colors, showDownloadSize }: { record: LibraryRecord; colors: typeof Colors.dark; showDownloadSize?: boolean }) {
+  const accessColor = getAccessLevelColor(record.accessLevel);
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.recordCard,
+        { backgroundColor: pressed ? colors.cardElevated : colors.card },
+      ]}
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+    >
+      <View style={[styles.recordStrip, { backgroundColor: record.thumbnailColor }]} />
+      <View style={styles.recordContent}>
+        <View style={styles.recordHeader}>
+          <ThemedText style={[styles.recordTitle, { color: colors.text }]} numberOfLines={1}>
+            {record.title}
+          </ThemedText>
+          <View style={[styles.accessBadge, { backgroundColor: accessColor + '1A' }]}>
+            <ThemedText style={[styles.accessText, { color: accessColor }]}>
+              {getAccessLevelLabel(record.accessLevel)}
+            </ThemedText>
+          </View>
+        </View>
+        <View style={styles.recordMeta}>
+          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>
+            {getRecordTypeLabel(record.type)}
+          </ThemedText>
+          <View style={styles.metaDot} />
+          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>{record.duration}</ThemedText>
+          <View style={styles.metaDot} />
+          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>{record.date}</ThemedText>
+        </View>
+        {showDownloadSize && record.downloadSize && (
+          <View style={styles.downloadInfo}>
+            <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
+            <ThemedText style={[styles.downloadSize, { color: colors.textTertiary }]}>
+              {record.downloadSize}
+            </ThemedText>
+          </View>
+        )}
+        <View style={styles.tagRow}>
+          {record.tags.slice(0, 3).map((tag) => (
+            <View key={tag} style={[styles.tagChip, { backgroundColor: colors.backgroundTertiary }]}>
+              <ThemedText style={[styles.tagText, { color: colors.textSecondary }]}>{tag}</ThemedText>
+            </View>
+          ))}
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+// =============================================================================
+// HISTORY ROW
+// =============================================================================
+
+function HistoryRow({ item, colors }: { item: WatchHistoryItem; colors: typeof Colors.dark }) {
+  const typeColor = item.contentType === 'game' ? '#3B82F6' : item.contentType === 'reel' ? '#8B5CF6' : '#22C55E';
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.recordCard,
+        { backgroundColor: pressed ? colors.cardElevated : colors.card },
+      ]}
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+    >
+      <View style={[styles.recordStrip, { backgroundColor: item.thumbnailColor }]} />
+      <View style={styles.recordContent}>
+        <View style={styles.recordHeader}>
+          <ThemedText style={[styles.recordTitle, { color: colors.text }]} numberOfLines={1}>
+            {item.title}
+          </ThemedText>
+          <View style={[styles.accessBadge, { backgroundColor: typeColor + '1A' }]}>
+            <ThemedText style={[styles.accessText, { color: typeColor }]}>
+              {item.contentType.toUpperCase()}
+            </ThemedText>
+          </View>
+        </View>
+        <View style={styles.recordMeta}>
+          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>{formatDuration(item.duration)}</ThemedText>
+          <View style={styles.metaDot} />
+          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>{item.watchedAt}</ThemedText>
+        </View>
+        <View style={[styles.progressTrack, { backgroundColor: colors.backgroundTertiary }]}>
+          <View style={[styles.progressFill, { width: `${item.progress}%`, backgroundColor: item.progress === 100 ? '#22C55E' : '#3B82F6' }]} />
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+// =============================================================================
+// EMPTY STATE
+// =============================================================================
+
+function EmptyState({ colors, label, icon }: { colors: typeof Colors.dark; label: string; icon: string }) {
+  return (
+    <View style={styles.emptyState}>
+      <IconSymbol name={icon as any} size={28} color={colors.textTertiary} />
+      <ThemedText style={[styles.emptyText, { color: colors.textTertiary }]}>{label}</ThemedText>
+    </View>
+  );
+}
+
+// =============================================================================
+// STYLES
+// =============================================================================
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: Spacing.md,
-    marginTop: Spacing.sm,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    gap: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    padding: 0,
-  },
-  filterScroll: {
+  pillScroll: {
     flexGrow: 0,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
   },
-  filterRow: {
+  pillRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: 6,
-    alignItems: 'center',
+    paddingVertical: Spacing.sm + 2,
   },
-  filterPill: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 14,
+  pill: {
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
   },
-  filterText: {
-    fontSize: 12,
+  pillText: {
+    fontSize: 13,
     fontWeight: '600',
   },
-  filterDivider: {
-    width: 1,
-    height: 18,
-    marginHorizontal: 4,
-  },
-  sectionList: {
+  listContent: {
+    paddingHorizontal: Spacing.md,
     paddingBottom: Spacing.xxl,
+    gap: Spacing.sm,
+    paddingTop: Spacing.sm,
+  },
+  recordCard: {
+    flexDirection: 'row',
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  recordStrip: {
+    width: 4,
+  },
+  recordContent: {
+    flex: 1,
+    padding: Spacing.sm + 4,
+    gap: 6,
+  },
+  recordHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  recordTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    flex: 1,
+    marginRight: Spacing.sm,
+  },
+  accessBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+  },
+  accessText: {
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  recordMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  metaText: {
+    fontSize: 12,
+  },
+  metaDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: '#424242',
+  },
+  downloadInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  downloadSize: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  tagRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 2,
+  },
+  tagChip: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+  },
+  tagText: {
+    fontSize: 10,
+    fontWeight: '500',
+  },
+  progressTrack: {
+    height: 3,
+    borderRadius: 1.5,
+    marginTop: 2,
+  },
+  progressFill: {
+    height: 3,
+    borderRadius: 1.5,
   },
   emptyState: {
     alignItems: 'center',

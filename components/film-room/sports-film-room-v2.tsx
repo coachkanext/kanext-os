@@ -1,55 +1,204 @@
 /**
- * SportsFilmRoomV2 — 4-tab pill nav: Workspaces | Cutups | Assignments | Notes
- * RBAC-gated tabs via getVideoSectionVisibility.
+ * SportsFilmRoomV2 — 3-tab pill nav: Game Film | Practice Film | Scouting
+ * Game Film: recorded games, most recent first
+ * Practice Film: practice recordings by date
+ * Scouting: opponent film organized by team
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Pressable, FlatList } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { WorkspaceCard } from '@/components/film-room/workspace-card';
-import { CutupTemplateCard } from '@/components/film-room/cutup-template-card';
-import { AssignmentRow } from '@/components/film-room/assignment-row';
-import { FilmNoteRow } from '@/components/film-room/film-note-row';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { getVideoSectionVisibility, type SportsRoleLens, type VideoSection } from '@/utils/sports-rbac';
 import {
-  MOCK_WORKSPACES,
-  MOCK_CUTUP_TEMPLATES,
-  MOCK_FILM_ASSIGNMENTS,
-  MOCK_FILM_NOTES,
-} from '@/data/mock-sports-workspaces';
+  VIDEO_GAMES_BY_MODE,
+  SCOUT_PACKS_BY_MODE,
+  formatDuration,
+  getResultColor,
+  type VideoGame,
+  type ScoutPack,
+} from '@/data/mock-video';
+import { MOCK_PRACTICE_FILM, type PracticeFilmItem } from '@/data/mock-sports-workspaces';
 
-type FilmTab = 'workspaces' | 'cutups' | 'assignments' | 'notes';
+type FilmTab = 'game_film' | 'practice_film' | 'scouting';
 
 interface TabDef {
   key: FilmTab;
   label: string;
-  rbacSection: VideoSection;
 }
 
-const ALL_TABS: TabDef[] = [
-  { key: 'workspaces', label: 'Workspaces', rbacSection: 'filmroom_workspaces' },
-  { key: 'cutups', label: 'Cutups', rbacSection: 'filmroom_cutups' },
-  { key: 'assignments', label: 'Assignments', rbacSection: 'filmroom_assignments' },
-  { key: 'notes', label: 'Notes', rbacSection: 'filmroom_notes' },
+const TABS: TabDef[] = [
+  { key: 'game_film', label: 'Game Film' },
+  { key: 'practice_film', label: 'Practice Film' },
+  { key: 'scouting', label: 'Scouting' },
 ];
 
-const DEFAULT_ROLE: SportsRoleLens = 'R1';
+// =============================================================================
+// CARD COMPONENTS
+// =============================================================================
+
+function GameFilmRow({ game, colors }: { game: VideoGame; colors: typeof Colors.light }) {
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        cardStyles.card,
+        { backgroundColor: pressed ? colors.cardElevated : colors.card },
+      ]}
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+    >
+      <View style={[cardStyles.colorStrip, { backgroundColor: game.thumbnailColor }]} />
+      <View style={cardStyles.cardContent}>
+        <View style={cardStyles.cardHeader}>
+          <ThemedText style={[cardStyles.cardTitle, { color: colors.text }]} numberOfLines={1}>
+            {game.opponent}
+          </ThemedText>
+          <View style={[cardStyles.resultBadge, { backgroundColor: getResultColor(game.result) + '1A' }]}>
+            <ThemedText style={[cardStyles.resultText, { color: getResultColor(game.result) }]}>
+              {game.result} {game.score}
+            </ThemedText>
+          </View>
+        </View>
+        <View style={cardStyles.metaRow}>
+          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{game.date}</ThemedText>
+          <View style={cardStyles.metaDot} />
+          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{formatDuration(game.duration)}</ThemedText>
+          <View style={cardStyles.metaDot} />
+          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{game.clipCount} clips</ThemedText>
+        </View>
+        <View style={cardStyles.tagRow}>
+          {game.tags.map((tag) => (
+            <View key={tag} style={[cardStyles.tagChip, { backgroundColor: colors.backgroundTertiary }]}>
+              <ThemedText style={[cardStyles.tagText, { color: colors.textSecondary }]}>{tag}</ThemedText>
+            </View>
+          ))}
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+function PracticeFilmRow({ item, colors }: { item: PracticeFilmItem; colors: typeof Colors.light }) {
+  const typeColor = item.practiceType === 'Full Practice' ? '#3B82F6'
+    : item.practiceType === 'Walkthrough' ? '#22C55E'
+    : item.practiceType === 'Shootaround' ? '#F59E0B'
+    : item.practiceType === 'Film Session' ? '#8B5CF6'
+    : '#EC4899';
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        cardStyles.card,
+        { backgroundColor: pressed ? colors.cardElevated : colors.card },
+      ]}
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+    >
+      <View style={[cardStyles.colorStrip, { backgroundColor: item.thumbnailColor }]} />
+      <View style={cardStyles.cardContent}>
+        <View style={cardStyles.cardHeader}>
+          <ThemedText style={[cardStyles.cardTitle, { color: colors.text }]} numberOfLines={1}>
+            {item.date}
+          </ThemedText>
+          <View style={[cardStyles.typeBadge, { backgroundColor: typeColor + '1A' }]}>
+            <ThemedText style={[cardStyles.typeText, { color: typeColor }]}>
+              {item.practiceType.toUpperCase()}
+            </ThemedText>
+          </View>
+        </View>
+        <View style={cardStyles.metaRow}>
+          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{item.duration}</ThemedText>
+        </View>
+        {item.notes && (
+          <ThemedText style={[cardStyles.noteText, { color: colors.textTertiary }]} numberOfLines={1}>
+            {item.notes}
+          </ThemedText>
+        )}
+      </View>
+    </Pressable>
+  );
+}
+
+function ScoutPackRow({ pack, colors }: { pack: ScoutPack; colors: typeof Colors.light }) {
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        cardStyles.card,
+        { backgroundColor: pressed ? colors.cardElevated : colors.card },
+      ]}
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+    >
+      <View style={[cardStyles.colorStrip, { backgroundColor: pack.coverColor }]} />
+      <View style={cardStyles.cardContent}>
+        <View style={cardStyles.cardHeader}>
+          <ThemedText style={[cardStyles.cardTitle, { color: colors.text }]} numberOfLines={1}>
+            {pack.opponent}
+          </ThemedText>
+          {pack.tags[0] && (
+            <View style={[cardStyles.typeBadge, { backgroundColor: '#F59E0B1A' }]}>
+              <ThemedText style={[cardStyles.typeText, { color: '#F59E0B' }]}>
+                {pack.tags[0].toUpperCase()}
+              </ThemedText>
+            </View>
+          )}
+        </View>
+        <View style={cardStyles.metaRow}>
+          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{pack.date}</ThemedText>
+          <View style={cardStyles.metaDot} />
+          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{pack.clipCount} clips</ThemedText>
+        </View>
+        <View style={cardStyles.tagRow}>
+          {pack.tags.slice(1).map((tag) => (
+            <View key={tag} style={[cardStyles.tagChip, { backgroundColor: colors.backgroundTertiary }]}>
+              <ThemedText style={[cardStyles.tagText, { color: colors.textSecondary }]}>{tag}</ThemedText>
+            </View>
+          ))}
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+function EmptyState({ colors, label, icon }: { colors: typeof Colors.light; label: string; icon: string }) {
+  return (
+    <View style={styles.emptyState}>
+      <IconSymbol name={icon as any} size={28} color={colors.textTertiary} />
+      <ThemedText style={[styles.emptyText, { color: colors.textTertiary }]}>{label}</ThemedText>
+    </View>
+  );
+}
+
+const cardStyles = StyleSheet.create({
+  card: { flexDirection: 'row', borderRadius: BorderRadius.lg, overflow: 'hidden' },
+  colorStrip: { width: 4 },
+  cardContent: { flex: 1, padding: Spacing.sm + 4, gap: 6 },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  cardTitle: { fontSize: 14, fontWeight: '600', flex: 1, marginRight: Spacing.sm },
+  resultBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  resultText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
+  typeBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  typeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  metaText: { fontSize: 12 },
+  metaDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#424242' },
+  tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 2 },
+  tagChip: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  tagText: { fontSize: 10, fontWeight: '500' },
+  noteText: { fontSize: 12, fontStyle: 'italic' },
+});
+
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
 
 export function SportsFilmRoomV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const role = DEFAULT_ROLE;
+  const [activeTab, setActiveTab] = useState<FilmTab>('game_film');
 
-  const visibleTabs = useMemo(
-    () => ALL_TABS.filter((t) => getVideoSectionVisibility(t.rbacSection, role) !== 'hidden'),
-    [role],
-  );
-
-  const [activeTab, setActiveTab] = useState<FilmTab>(visibleTabs[0]?.key ?? 'workspaces');
+  const games = VIDEO_GAMES_BY_MODE.sports;
+  const practiceFilm = MOCK_PRACTICE_FILM;
+  const scoutPacks = SCOUT_PACKS_BY_MODE.sports;
 
   const handleTabPress = (tab: FilmTab) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -58,44 +207,37 @@ export function SportsFilmRoomV2() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'workspaces':
+      case 'game_film':
         return (
           <FlatList
-            data={MOCK_WORKSPACES}
+            data={games}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <WorkspaceCard workspace={item} />}
+            renderItem={({ item }) => <GameFilmRow game={item} colors={colors} />}
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={<EmptyState colors={colors} label="No game film" icon="play.rectangle.fill" />}
           />
         );
-      case 'cutups':
-        return (
-          <ScrollView contentContainerStyle={styles.gridContent} showsVerticalScrollIndicator={false}>
-            <View style={styles.grid}>
-              {MOCK_CUTUP_TEMPLATES.map((template) => (
-                <CutupTemplateCard key={template.id} template={template} />
-              ))}
-            </View>
-          </ScrollView>
-        );
-      case 'assignments':
+      case 'practice_film':
         return (
           <FlatList
-            data={MOCK_FILM_ASSIGNMENTS}
+            data={practiceFilm}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <AssignmentRow assignment={item} />}
+            renderItem={({ item }) => <PracticeFilmRow item={item} colors={colors} />}
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={<EmptyState colors={colors} label="No practice film" icon="figure.run" />}
           />
         );
-      case 'notes':
+      case 'scouting':
         return (
           <FlatList
-            data={MOCK_FILM_NOTES}
+            data={scoutPacks}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <FilmNoteRow note={item} />}
+            renderItem={({ item }) => <ScoutPackRow pack={item} colors={colors} />}
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={<EmptyState colors={colors} label="No scouting packs" icon="binoculars.fill" />}
           />
         );
     }
@@ -110,7 +252,7 @@ export function SportsFilmRoomV2() {
         contentContainerStyle={styles.pillRow}
         style={styles.pillScroll}
       >
-        {visibleTabs.map((tab) => {
+        {TABS.map((tab) => {
           const active = activeTab === tab.key;
           return (
             <Pressable
@@ -167,13 +309,12 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xxl,
     gap: Spacing.sm,
   },
-  gridContent: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
+  emptyState: {
+    alignItems: 'center',
+    paddingTop: Spacing.xxl * 2,
+    gap: 8,
   },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm + 4,
+  emptyText: {
+    fontSize: 14,
   },
 });

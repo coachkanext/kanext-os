@@ -26,6 +26,8 @@ export interface LibraryItem {
   createdByMe: boolean;
   collectionId?: string;
   tags: string[];
+  downloaded?: boolean;
+  downloadSize?: string;
 }
 
 export interface LibraryCollection {
@@ -37,16 +39,12 @@ export interface LibraryCollection {
   lastUpdated: string;
 }
 
-export type LibraryTab = 'all' | 'collections' | 'saved' | 'created' | 'shared' | 'pinned' | 'archive';
+export type LibraryTab = 'saved' | 'downloads' | 'history';
 
 export const LIBRARY_TABS: { key: LibraryTab; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'collections', label: 'Collections' },
   { key: 'saved', label: 'Saved' },
-  { key: 'created', label: 'Created' },
-  { key: 'shared', label: 'Shared' },
-  { key: 'pinned', label: 'Pinned' },
-  { key: 'archive', label: 'Archive' },
+  { key: 'downloads', label: 'Downloads' },
+  { key: 'history', label: 'History' },
 ];
 
 // =============================================================================
@@ -93,6 +91,8 @@ const SPORTS_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'sc-1',
     tags: ['game film', 'conference'],
+    downloaded: true,
+    downloadSize: '1.2 GB',
   },
   {
     id: 'sl-2',
@@ -107,6 +107,8 @@ const SPORTS_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'sc-2',
     tags: ['scouting', 'opponent'],
+    downloaded: true,
+    downloadSize: '4.5 MB',
   },
   {
     id: 'sl-3',
@@ -135,6 +137,8 @@ const SPORTS_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'sc-1',
     tags: ['film', 'defense'],
+    downloaded: true,
+    downloadSize: '340 MB',
   },
   {
     id: 'sl-5',
@@ -300,6 +304,8 @@ const CHURCH_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'cc-1',
     tags: ['sermon', 'sunday'],
+    downloaded: true,
+    downloadSize: '890 MB',
   },
   {
     id: 'cl-2',
@@ -314,6 +320,8 @@ const CHURCH_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'cc-2',
     tags: ['bible study', 'Romans'],
+    downloaded: true,
+    downloadSize: '2.1 MB',
   },
   {
     id: 'cl-3',
@@ -356,6 +364,8 @@ const CHURCH_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'cc-1',
     tags: ['worship', 'music'],
+    downloaded: true,
+    downloadSize: '45 MB',
   },
   {
     id: 'cl-6',
@@ -471,6 +481,8 @@ const EDUCATION_ITEMS: LibraryItem[] = [
     createdByMe: true,
     collectionId: 'ec-1',
     tags: ['lecture', 'theology'],
+    downloaded: true,
+    downloadSize: '1.8 MB',
   },
   {
     id: 'el-2',
@@ -527,6 +539,8 @@ const EDUCATION_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'ec-2',
     tags: ['lecture', 'guest'],
+    downloaded: true,
+    downloadSize: '520 MB',
   },
   {
     id: 'el-6',
@@ -581,6 +595,8 @@ const EDUCATION_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'ec-2',
     tags: ['chapel', 'audio'],
+    downloaded: true,
+    downloadSize: '38 MB',
   },
   {
     id: 'el-10',
@@ -643,6 +659,8 @@ const BUSINESS_ITEMS: LibraryItem[] = [
     createdByMe: true,
     collectionId: 'bc-1',
     tags: ['pitch', 'fundraising'],
+    downloaded: true,
+    downloadSize: '12 MB',
   },
   {
     id: 'bl-2',
@@ -657,6 +675,8 @@ const BUSINESS_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'bc-1',
     tags: ['demo', 'product'],
+    downloaded: true,
+    downloadSize: '680 MB',
   },
   {
     id: 'bl-3',
@@ -699,6 +719,8 @@ const BUSINESS_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'bc-4',
     tags: ['training', 'onboarding'],
+    downloaded: true,
+    downloadSize: '3.2 MB',
   },
   {
     id: 'bl-6',
@@ -824,6 +846,8 @@ const COMMUNITY_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'kc-1',
     tags: ['race', 'highlights'],
+    downloaded: true,
+    downloadSize: '450 MB',
   },
   {
     id: 'kl-2',
@@ -838,6 +862,8 @@ const COMMUNITY_ITEMS: LibraryItem[] = [
     createdByMe: false,
     collectionId: 'kc-2',
     tags: ['setup', 'wet'],
+    downloaded: true,
+    downloadSize: '5.8 MB',
   },
   {
     id: 'kl-3',
@@ -866,6 +892,8 @@ const COMMUNITY_ITEMS: LibraryItem[] = [
     createdByMe: true,
     collectionId: 'kc-1',
     tags: ['onboard', 'race'],
+    downloaded: true,
+    downloadSize: '1.1 GB',
   },
   {
     id: 'kl-5',

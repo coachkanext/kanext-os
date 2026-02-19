@@ -1,36 +1,34 @@
 /**
  * ModeFilmRoomV2 — Pill-nav tabbed film room for non-sports modes.
- * Each mode gets 4 tabs: primary content, clips, reels, watch history.
+ * Each mode gets 3 mode-specific tabs.
  * Uses mode-keyed data from mock-video.ts.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Pressable, FlatList } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { Mode } from '@/types';
 import {
   VIDEO_GAMES_BY_MODE,
   VIDEO_CLIPS_BY_MODE,
   REELS_BY_MODE,
-  WATCH_HISTORY_BY_MODE,
   formatDuration,
   getResultColor,
   type VideoGame,
   type VideoClip,
   type Reel,
-  type WatchHistoryItem,
 } from '@/data/mock-video';
 
 // =============================================================================
 // MODE TAB CONFIGURATION
 // =============================================================================
 
-type TabKey = 'primary' | 'clips' | 'reels' | 'history';
+type TabKey = 'primary' | 'secondary' | 'tertiary';
 
 interface TabDef {
   key: TabKey;
@@ -45,41 +43,36 @@ const TAB_CONFIG: Record<Mode, ModeTabConfig> = {
   sports: {
     tabs: [
       { key: 'primary', label: 'Games' },
-      { key: 'clips', label: 'Clips' },
-      { key: 'reels', label: 'Reels' },
-      { key: 'history', label: 'History' },
+      { key: 'secondary', label: 'Clips' },
+      { key: 'tertiary', label: 'Reels' },
     ],
   },
   church: {
     tabs: [
       { key: 'primary', label: 'Services' },
-      { key: 'clips', label: 'Ministry Clips' },
-      { key: 'reels', label: 'Highlights' },
-      { key: 'history', label: 'History' },
+      { key: 'secondary', label: 'Ministry Content' },
+      { key: 'tertiary', label: 'Testimonies' },
     ],
   },
   education: {
     tabs: [
       { key: 'primary', label: 'Lectures' },
-      { key: 'clips', label: 'Academic Clips' },
-      { key: 'reels', label: 'Campus Reels' },
-      { key: 'history', label: 'History' },
+      { key: 'secondary', label: 'Campus' },
+      { key: 'tertiary', label: 'Training' },
     ],
   },
   business: {
     tabs: [
-      { key: 'primary', label: 'Meetings' },
-      { key: 'clips', label: 'Product Clips' },
-      { key: 'reels', label: 'Team Reels' },
-      { key: 'history', label: 'History' },
+      { key: 'primary', label: 'Demos' },
+      { key: 'secondary', label: 'Meetings' },
+      { key: 'tertiary', label: 'Content' },
     ],
   },
   competition: {
     tabs: [
-      { key: 'primary', label: 'Sessions' },
-      { key: 'clips', label: 'Race Clips' },
-      { key: 'reels', label: 'Paddock Reels' },
-      { key: 'history', label: 'History' },
+      { key: 'primary', label: 'Race Film' },
+      { key: 'secondary', label: 'Technical' },
+      { key: 'tertiary', label: 'Broadcast' },
     ],
   },
 };
@@ -209,42 +202,6 @@ function ReelRow({ reel, colors }: { reel: Reel; colors: typeof Colors.light }) 
   );
 }
 
-function HistoryRow({ item, colors }: { item: WatchHistoryItem; colors: typeof Colors.light }) {
-  const typeColor = item.contentType === 'game' ? '#3B82F6' : item.contentType === 'reel' ? '#8B5CF6' : '#22C55E';
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        cardStyles.card,
-        { backgroundColor: pressed ? colors.cardElevated : colors.card },
-      ]}
-      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-    >
-      <View style={[cardStyles.colorStrip, { backgroundColor: item.thumbnailColor }]} />
-      <View style={cardStyles.cardContent}>
-        <View style={cardStyles.cardHeader}>
-          <ThemedText style={[cardStyles.cardTitle, { color: colors.text }]} numberOfLines={1}>
-            {item.title}
-          </ThemedText>
-          <View style={[cardStyles.typeBadge, { backgroundColor: typeColor + '1A' }]}>
-            <ThemedText style={[cardStyles.typeText, { color: typeColor }]}>
-              {item.contentType.toUpperCase()}
-            </ThemedText>
-          </View>
-        </View>
-        <View style={cardStyles.metaRow}>
-          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{formatDuration(item.duration)}</ThemedText>
-          <View style={cardStyles.metaDot} />
-          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{item.watchedAt}</ThemedText>
-        </View>
-        {/* Progress bar */}
-        <View style={[cardStyles.progressTrack, { backgroundColor: colors.backgroundTertiary }]}>
-          <View style={[cardStyles.progressFill, { width: `${item.progress}%`, backgroundColor: item.progress === 100 ? '#22C55E' : '#3B82F6' }]} />
-        </View>
-      </View>
-    </Pressable>
-  );
-}
-
 const cardStyles = StyleSheet.create({
   card: { flexDirection: 'row', borderRadius: BorderRadius.lg, overflow: 'hidden' },
   colorStrip: { width: 4 },
@@ -264,8 +221,6 @@ const cardStyles = StyleSheet.create({
   reelCaption: { fontSize: 12 },
   reelStats: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   reelStatNum: { fontSize: 11, fontWeight: '600' },
-  progressTrack: { height: 3, borderRadius: 1.5, marginTop: 2 },
-  progressFill: { height: 3, borderRadius: 1.5 },
 });
 
 // =============================================================================
@@ -285,7 +240,6 @@ export function ModeFilmRoomV2({ mode }: Props) {
   const games = VIDEO_GAMES_BY_MODE[mode] ?? [];
   const clips = VIDEO_CLIPS_BY_MODE[mode] ?? [];
   const reels = REELS_BY_MODE[mode] ?? [];
-  const history = WATCH_HISTORY_BY_MODE[mode] ?? [];
 
   const handleTabPress = (tab: TabKey) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -305,7 +259,7 @@ export function ModeFilmRoomV2({ mode }: Props) {
             ListEmptyComponent={<EmptyState colors={colors} label="No content yet" icon="play.rectangle.fill" />}
           />
         );
-      case 'clips':
+      case 'secondary':
         return (
           <FlatList
             data={clips}
@@ -316,7 +270,7 @@ export function ModeFilmRoomV2({ mode }: Props) {
             ListEmptyComponent={<EmptyState colors={colors} label="No clips" icon="film" />}
           />
         );
-      case 'reels':
+      case 'tertiary':
         return (
           <FlatList
             data={reels}
@@ -324,18 +278,7 @@ export function ModeFilmRoomV2({ mode }: Props) {
             renderItem={({ item }) => <ReelRow reel={item} colors={colors} />}
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
-            ListEmptyComponent={<EmptyState colors={colors} label="No reels" icon="play.circle" />}
-          />
-        );
-      case 'history':
-        return (
-          <FlatList
-            data={history}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <HistoryRow item={item} colors={colors} />}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={<EmptyState colors={colors} label="No watch history" icon="clock" />}
+            ListEmptyComponent={<EmptyState colors={colors} label="No content" icon="play.circle" />}
           />
         );
     }

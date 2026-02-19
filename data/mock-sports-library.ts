@@ -37,6 +37,8 @@ export interface LibraryRecord {
   workspaceRef?: string;
   exportable: boolean;
   rbacSection: VideoSection;
+  downloaded?: boolean;
+  downloadSize?: string;
 }
 
 export interface LibrarySectionConfig {
@@ -101,12 +103,14 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     accessLevel: 'team', owner: 'FMU Athletics', date: 'Feb 14', opponent: 'Lincoln Christian',
     tags: ['Sun Conference', 'Home', 'Win'], clipCount: 1, duration: '1:48:22',
     thumbnailColor: '#1E3A5F', workspaceRef: 'Last Game Review', exportable: true, rbacSection: 'library_official_games',
+    downloaded: true, downloadSize: '1.8 GB',
   },
   {
     id: 'lr-2', title: 'FMU vs SW Assemblies — Full Game', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'FMU Athletics', date: 'Feb 8', opponent: 'SW Assemblies',
     tags: ['Sun Conference', 'Away', 'Win'], clipCount: 1, duration: '1:52:10',
     thumbnailColor: '#3D2A1A', exportable: true, rbacSection: 'library_official_games',
+    downloaded: true, downloadSize: '1.9 GB',
   },
   {
     id: 'lr-3', title: 'FMU vs Mid-America Nazarene', section: 'official_games', type: 'game_film',
@@ -151,6 +155,7 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     accessLevel: 'staff', owner: 'Coach Kalejaiye', date: 'Feb 13',
     tags: ['Practice', 'Defense', 'Transition'], clipCount: 1, duration: '45:20',
     thumbnailColor: '#1A3D1A', exportable: false, rbacSection: 'library_practices_install',
+    downloaded: true, downloadSize: '420 MB',
   },
   {
     id: 'lr-10', title: 'Install: Motion Offense v2', section: 'practices_install', type: 'install',

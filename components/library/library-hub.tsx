@@ -1,6 +1,6 @@
 /**
- * Library Hub — Mode-aware library with 7-tab pill nav.
- * Tabs: All | Collections | Saved | Created | Shared | Pinned | Archive
+ * Library Hub — Mode-aware library with 3-tab pill nav.
+ * Tabs: Saved | Downloads | History
  */
 
 import React, { useState, useMemo } from 'react';
@@ -15,12 +15,16 @@ import { useMode } from '@/context/app-context';
 import { SportsLibrary } from '@/components/library/sports-library';
 import {
   LIBRARY_ITEMS,
-  LIBRARY_COLLECTIONS,
   LIBRARY_TABS,
   getTypeIcon,
   getTypeColor,
 } from '@/data/mock-library-v2';
-import type { LibraryTab, LibraryItem, LibraryCollection } from '@/data/mock-library-v2';
+import type { LibraryTab, LibraryItem } from '@/data/mock-library-v2';
+import {
+  WATCH_HISTORY_BY_MODE,
+  formatDuration,
+  type WatchHistoryItem,
+} from '@/data/mock-video';
 
 // =============================================================================
 // LIBRARY HUB
@@ -34,31 +38,13 @@ export function LibraryHub() {
   // Sports mode uses the RBAC-gated library
   if (mode === 'sports') return <SportsLibrary />;
 
-  const [activeTab, setActiveTab] = useState<LibraryTab>('all');
+  const [activeTab, setActiveTab] = useState<LibraryTab>('saved');
 
   const items = LIBRARY_ITEMS[mode];
-  const collections = LIBRARY_COLLECTIONS[mode];
+  const history = WATCH_HISTORY_BY_MODE[mode] ?? [];
 
-  const filteredItems = useMemo(() => {
-    switch (activeTab) {
-      case 'all':
-        return items.filter((i) => !i.archived);
-      case 'saved':
-        return items.filter((i) => !i.archived);
-      case 'created':
-        return items.filter((i) => i.createdByMe && !i.archived);
-      case 'shared':
-        return items.filter((i) => i.shared && !i.archived);
-      case 'pinned':
-        return items.filter((i) => i.pinned && !i.archived);
-      case 'archive':
-        return items.filter((i) => i.archived);
-      case 'collections':
-        return [];
-      default:
-        return items;
-    }
-  }, [items, activeTab]);
+  const savedItems = useMemo(() => items.filter((i) => !i.archived), [items]);
+  const downloadedItems = useMemo(() => items.filter((i) => i.downloaded), [items]);
 
   const handleTabPress = (tab: LibraryTab) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -101,21 +87,39 @@ export function LibraryHub() {
       </ScrollView>
 
       {/* Content */}
-      {activeTab === 'collections' ? (
-        <CollectionGrid collections={collections} colors={colors} />
-      ) : (
+      {activeTab === 'saved' && (
         <FlatList
-          data={filteredItems}
+          data={savedItems}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <ItemRow item={item} colors={colors} />}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <ThemedText style={[styles.emptyText, { color: colors.textTertiary }]}>
-                No items in this view
-              </ThemedText>
-            </View>
+            <EmptyState colors={colors} label="No saved items" icon="bookmark" />
+          }
+        />
+      )}
+      {activeTab === 'downloads' && (
+        <FlatList
+          data={downloadedItems}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <DownloadRow item={item} colors={colors} />}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <EmptyState colors={colors} label="No downloads" icon="arrow.down.circle" />
+          }
+        />
+      )}
+      {activeTab === 'history' && (
+        <FlatList
+          data={history}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <HistoryRow item={item} colors={colors} />}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <EmptyState colors={colors} label="No watch history" icon="clock" />
           }
         />
       )}
@@ -124,7 +128,7 @@ export function LibraryHub() {
 }
 
 // =============================================================================
-// ITEM ROW
+// ITEM ROW (Saved)
 // =============================================================================
 
 interface ItemRowProps {
@@ -147,12 +151,9 @@ function ItemRow({ item, colors }: ItemRowProps) {
       ]}
       onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
     >
-      {/* Type indicator */}
       <View style={[styles.typeIndicator, { backgroundColor: typeColor + '20' }]}>
         <IconSymbol name={typeIcon as any} size={18} color={typeColor} />
       </View>
-
-      {/* Content */}
       <View style={styles.itemContent}>
         <ThemedText style={[styles.itemTitle, { color: colors.text }]} numberOfLines={1}>
           {item.title}
@@ -166,81 +167,105 @@ function ItemRow({ item, colors }: ItemRowProps) {
           </ThemedText>
         </View>
       </View>
+      <IconSymbol name="ellipsis" size={16} color={colors.textTertiary} />
+    </Pressable>
+  );
+}
 
-      {/* Status indicators */}
-      <View style={styles.itemIndicators}>
-        {item.pinned && (
-          <IconSymbol name="pin.fill" size={12} color={colors.textTertiary} />
-        )}
-        {item.shared && (
-          <IconSymbol name="paperplane.fill" size={12} color={colors.textTertiary} />
-        )}
-        <IconSymbol name="ellipsis" size={16} color={colors.textTertiary} />
+// =============================================================================
+// DOWNLOAD ROW
+// =============================================================================
+
+function DownloadRow({ item, colors }: ItemRowProps) {
+  const typeColor = getTypeColor(item.type);
+  const typeIcon = getTypeIcon(item.type);
+
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.itemRow,
+        {
+          backgroundColor: pressed ? colors.backgroundSecondary : 'transparent',
+          borderBottomColor: colors.border,
+        },
+      ]}
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+    >
+      <View style={[styles.typeIndicator, { backgroundColor: typeColor + '20' }]}>
+        <IconSymbol name={typeIcon as any} size={18} color={typeColor} />
+      </View>
+      <View style={styles.itemContent}>
+        <ThemedText style={[styles.itemTitle, { color: colors.text }]} numberOfLines={1}>
+          {item.title}
+        </ThemedText>
+        <View style={styles.itemMeta}>
+          <ThemedText style={[styles.itemSource, { color: colors.textSecondary }]} numberOfLines={1}>
+            {item.source}
+          </ThemedText>
+          <ThemedText style={[styles.itemDate, { color: colors.textTertiary }]}>
+            {item.downloadSize ?? item.date}
+          </ThemedText>
+        </View>
+      </View>
+      <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
+    </Pressable>
+  );
+}
+
+// =============================================================================
+// HISTORY ROW
+// =============================================================================
+
+function HistoryRow({ item, colors }: { item: WatchHistoryItem; colors: typeof Colors.dark }) {
+  const typeColor = item.contentType === 'game' ? '#3B82F6' : item.contentType === 'reel' ? '#8B5CF6' : '#22C55E';
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.historyCard,
+        { backgroundColor: pressed ? colors.cardElevated : colors.card },
+      ]}
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+    >
+      <View style={[styles.historyStrip, { backgroundColor: item.thumbnailColor }]} />
+      <View style={styles.historyContent}>
+        <View style={styles.historyHeader}>
+          <ThemedText style={[styles.itemTitle, { color: colors.text }]} numberOfLines={1}>
+            {item.title}
+          </ThemedText>
+          <View style={[styles.historyBadge, { backgroundColor: typeColor + '1A' }]}>
+            <ThemedText style={[styles.historyBadgeText, { color: typeColor }]}>
+              {item.contentType.toUpperCase()}
+            </ThemedText>
+          </View>
+        </View>
+        <View style={styles.itemMeta}>
+          <ThemedText style={[styles.itemSource, { color: colors.textSecondary }]}>
+            {formatDuration(item.duration)}
+          </ThemedText>
+          <ThemedText style={[styles.itemDate, { color: colors.textTertiary }]}>
+            {item.watchedAt}
+          </ThemedText>
+        </View>
+        <View style={[styles.progressTrack, { backgroundColor: colors.backgroundTertiary }]}>
+          <View style={[styles.progressFill, { width: `${item.progress}%`, backgroundColor: item.progress === 100 ? '#22C55E' : '#3B82F6' }]} />
+        </View>
       </View>
     </Pressable>
   );
 }
 
 // =============================================================================
-// COLLECTION GRID
+// EMPTY STATE
 // =============================================================================
 
-interface CollectionGridProps {
-  collections: LibraryCollection[];
-  colors: typeof Colors.dark;
-}
-
-function CollectionGrid({ collections, colors }: CollectionGridProps) {
+function EmptyState({ colors, label, icon }: { colors: typeof Colors.dark; label: string; icon: string }) {
   return (
-    <ScrollView
-      contentContainerStyle={styles.gridContent}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={styles.grid}>
-        {collections.map((collection) => (
-          <Pressable
-            key={collection.id}
-            style={({ pressed }) => [
-              styles.collectionCard,
-              {
-                backgroundColor: pressed
-                  ? colors.backgroundSecondary
-                  : colors.backgroundTertiary,
-                borderColor: colors.border,
-              },
-            ]}
-            onPress={() =>
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-            }
-          >
-            <View
-              style={[
-                styles.collectionCover,
-                { backgroundColor: collection.coverColor + '20' },
-              ]}
-            >
-              <View
-                style={[
-                  styles.collectionDot,
-                  { backgroundColor: collection.coverColor },
-                ]}
-              />
-            </View>
-            <ThemedText
-              style={[styles.collectionName, { color: colors.text }]}
-              numberOfLines={1}
-            >
-              {collection.name}
-            </ThemedText>
-            <ThemedText
-              style={[styles.collectionCount, { color: colors.textSecondary }]}
-            >
-              {collection.itemCount} {collection.itemCount === 1 ? 'item' : 'items'}
-            </ThemedText>
-          </Pressable>
-        ))}
-      </View>
-    </ScrollView>
+    <View style={styles.emptyContainer}>
+      <IconSymbol name={icon as any} size={28} color={colors.textTertiary} />
+      <ThemedText style={[styles.emptyText, { color: colors.textTertiary }]}>
+        {label}
+      </ThemedText>
+    </View>
   );
 }
 
@@ -317,54 +342,53 @@ const styles = StyleSheet.create({
   itemDate: {
     fontSize: 12,
   },
-  itemIndicators: {
+
+  // History card
+  historyCard: {
     flexDirection: 'row',
-    alignItems: 'center',
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    marginHorizontal: Spacing.md,
+    marginTop: Spacing.sm,
+  },
+  historyStrip: {
+    width: 4,
+  },
+  historyContent: {
+    flex: 1,
+    padding: Spacing.sm + 4,
     gap: 6,
   },
-
-  // Collection grid
-  gridContent: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
-  grid: {
+  historyHeader: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm + 4,
-  },
-  collectionCard: {
-    width: '47.5%',
-    borderRadius: BorderRadius.lg,
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
-  },
-  collectionCover: {
-    width: '100%',
-    height: 72,
-    borderRadius: BorderRadius.md,
-    marginBottom: Spacing.sm + 2,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  collectionDot: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+  historyBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
   },
-  collectionName: {
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 2,
+  historyBadgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
-  collectionCount: {
-    fontSize: 12,
+  progressTrack: {
+    height: 3,
+    borderRadius: 1.5,
+    marginTop: 2,
+  },
+  progressFill: {
+    height: 3,
+    borderRadius: 1.5,
   },
 
   // Empty state
   emptyContainer: {
     paddingTop: Spacing.xxl * 2,
     alignItems: 'center',
+    gap: 8,
   },
   emptyText: {
     fontSize: 14,

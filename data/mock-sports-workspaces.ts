@@ -536,3 +536,27 @@ export const MOCK_FILM_NOTES: FilmNote[] = [
     rbacSection: 'filmroom_notes',
   },
 ];
+
+// =============================================================================
+// PRACTICE FILM
+// =============================================================================
+
+export type PracticeType = 'Full Practice' | 'Walkthrough' | 'Shootaround' | 'Individual' | 'Film Session';
+
+export interface PracticeFilmItem {
+  id: string;
+  date: string;
+  practiceType: PracticeType;
+  duration: string;
+  thumbnailColor: string;
+  notes?: string;
+}
+
+export const MOCK_PRACTICE_FILM: PracticeFilmItem[] = [
+  { id: 'pf-1', date: 'Feb 18, 2026', practiceType: 'Full Practice', duration: '1:45:00', thumbnailColor: '#1A3D1A', notes: 'Transition defense focus' },
+  { id: 'pf-2', date: 'Feb 17, 2026', practiceType: 'Shootaround', duration: '0:45:00', thumbnailColor: '#2D1B69', notes: 'Pre-game prep vs Lincoln Christian' },
+  { id: 'pf-3', date: 'Feb 15, 2026', practiceType: 'Full Practice', duration: '2:00:00', thumbnailColor: '#1E3A5F', notes: '5-on-5 scrimmage + press break install' },
+  { id: 'pf-4', date: 'Feb 13, 2026', practiceType: 'Walkthrough', duration: '0:55:00', thumbnailColor: '#3D1A1A', notes: 'Motion offense v2 walkthrough' },
+  { id: 'pf-5', date: 'Feb 12, 2026', practiceType: 'Individual', duration: '1:10:00', thumbnailColor: '#1A1A3D', notes: 'Carter finishing drills + Thompson shooting' },
+  { id: 'pf-6', date: 'Feb 10, 2026', practiceType: 'Film Session', duration: '0:40:00', thumbnailColor: '#3D2A1A', notes: 'SW Assemblies post-mortem review' },
+];
