@@ -12,6 +12,7 @@ import {
   Pressable,
   TextInput,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -69,6 +70,27 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 
 const PAGE_SIZE = 50;
 
+type ViewMode = 'list' | 'table';
+type TableSortKey = 'name' | 'school' | 'pos' | 'kr' | 'gp' | 'ppg' | 'rpg' | 'apg' | 'spg' | 'bpg' | 'topg' | 'mpg' | 'fgPct' | 'threePct' | 'ftPct';
+
+const TABLE_COLS: { key: TableSortKey; label: string; width: number }[] = [
+  { key: 'name', label: 'Player', width: 140 },
+  { key: 'school', label: 'School', width: 110 },
+  { key: 'pos', label: 'Pos', width: 36 },
+  { key: 'kr', label: 'KR', width: 42 },
+  { key: 'gp', label: 'GP', width: 36 },
+  { key: 'ppg', label: 'PPG', width: 46 },
+  { key: 'rpg', label: 'RPG', width: 46 },
+  { key: 'apg', label: 'APG', width: 46 },
+  { key: 'spg', label: 'SPG', width: 46 },
+  { key: 'bpg', label: 'BPG', width: 46 },
+  { key: 'topg', label: 'TO', width: 42 },
+  { key: 'mpg', label: 'MPG', width: 46 },
+  { key: 'fgPct', label: 'FG%', width: 48 },
+  { key: 'threePct', label: '3P%', width: 48 },
+  { key: 'ftPct', label: 'FT%', width: 48 },
+];
+
 // =============================================================================
 // COMPONENT
 // =============================================================================
@@ -90,6 +112,9 @@ export function RecruitingDatabaseV2({ colors }: Props) {
   const [minKR, setMinKR] = useState<number | undefined>();
   const [archetypeFilter, setArchetypeFilter] = useState('');
   const [conferenceFilter, setConferenceFilter] = useState('');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [tableSortKey, setTableSortKey] = useState<TableSortKey>('ppg');
+  const [tableSortAsc, setTableSortAsc] = useState(false);
 
   // Data query
   const filtered = useMemo(() => {
@@ -170,6 +195,41 @@ export function RecruitingDatabaseV2({ colors }: Props) {
   const handlePlayerTap = useCallback((player: NationalPlayer) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     openPlayerCard(toGlobalPlayerCard(player));
+  }, []);
+
+  // Table sort
+  const handleTableSort = useCallback((key: TableSortKey) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (tableSortKey === key) setTableSortAsc((a) => !a);
+    else { setTableSortKey(key); setTableSortAsc(false); }
+  }, [tableSortKey]);
+
+  const tableSorted = useMemo(() => {
+    if (viewMode !== 'table') return filtered;
+    const list = [...filtered];
+    const mult = tableSortAsc ? 1 : -1;
+    list.sort((a, b) => {
+      if (tableSortKey === 'name') return mult * a.fullName.localeCompare(b.fullName);
+      if (tableSortKey === 'school') return mult * a.school.localeCompare(b.school);
+      if (tableSortKey === 'pos') return mult * (a.position ?? '').localeCompare(b.position ?? '');
+      const av = (a[tableSortKey as keyof NationalPlayer] as number) ?? 0;
+      const bv = (b[tableSortKey as keyof NationalPlayer] as number) ?? 0;
+      return mult * (av - bv);
+    });
+    return list;
+  }, [filtered, viewMode, tableSortKey, tableSortAsc]);
+
+  const getCellValue = useCallback((player: NationalPlayer, key: TableSortKey): string => {
+    switch (key) {
+      case 'name': return player.fullName;
+      case 'school': return player.school;
+      case 'pos': return player.position ?? '—';
+      case 'kr': return player.kr != null ? Math.round(player.kr).toString() : '—';
+      default: {
+        const v = player[key as keyof NationalPlayer] as number | null;
+        return v != null ? v.toFixed(1) : '—';
+      }
+    }
   }, []);
 
   const renderRow = useCallback(({ item: player }: { item: NationalPlayer }) => {
@@ -289,20 +349,40 @@ export function RecruitingDatabaseV2({ colors }: Props) {
 
       {/* Sort & count */}
       <View style={styles.sortRow}>
-        <View style={styles.sortPills}>
-          {SORT_OPTIONS.map((opt) => {
-            const isActive = sortBy === opt.key;
-            return (
-              <Pressable
-                key={opt.key}
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSortBy(opt.key); }}
-              >
-                <ThemedText style={[styles.sortText, { color: isActive ? accent : colors.textSecondary }]}>
-                  {opt.label}
-                </ThemedText>
-              </Pressable>
-            );
-          })}
+        <View style={styles.sortLeft}>
+          <View style={styles.viewToggle}>
+            {(['list', 'table'] as ViewMode[]).map((m) => {
+              const active = viewMode === m;
+              return (
+                <Pressable
+                  key={m}
+                  style={[styles.viewTogglePill, active && { backgroundColor: accent }]}
+                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setViewMode(m); }}
+                >
+                  <Text style={[styles.viewToggleText, { color: active ? '#000' : colors.textSecondary }]}>
+                    {m === 'list' ? 'List' : 'Table'}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          {viewMode === 'list' && (
+            <View style={styles.sortPills}>
+              {SORT_OPTIONS.map((opt) => {
+                const isActive = sortBy === opt.key;
+                return (
+                  <Pressable
+                    key={opt.key}
+                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSortBy(opt.key); }}
+                  >
+                    <ThemedText style={[styles.sortText, { color: isActive ? accent : colors.textSecondary }]}>
+                      {opt.label}
+                    </ThemedText>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
         </View>
         <ThemedText style={[styles.countText, { color: colors.textSecondary }]}>
           {totalCount.toLocaleString()} players
@@ -310,18 +390,74 @@ export function RecruitingDatabaseV2({ colors }: Props) {
       </View>
 
       {/* Results */}
-      <FlatList
-        data={filtered}
-        keyExtractor={(p, i) => `${p.id}-${i}`}
-        renderItem={renderRow}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.5}
-        initialNumToRender={20}
-        maxToRenderPerBatch={20}
-        windowSize={10}
-      />
+      {viewMode === 'table' ? (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View>
+              {/* Header */}
+              <View style={[styles.tableHeaderRow, { borderBottomColor: colors.border }]}>
+                {TABLE_COLS.map((col) => {
+                  const active = tableSortKey === col.key;
+                  return (
+                    <Pressable key={col.key} onPress={() => handleTableSort(col.key)} style={{ width: col.width, paddingVertical: 8, paddingHorizontal: 4 }}>
+                      <Text style={[styles.tHeader, { color: active ? accent : colors.textSecondary }]} numberOfLines={1}>
+                        {col.label}{active ? (tableSortAsc ? ' ↑' : ' ↓') : ''}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+              {/* Rows */}
+              {tableSorted.map((player, idx) => (
+                <Pressable
+                  key={`${player.id}-${idx}`}
+                  style={[styles.tableDataRow, idx % 2 === 1 && styles.tableRowAlt, { borderBottomColor: colors.border }]}
+                  onPress={() => handlePlayerTap(player)}
+                >
+                  {TABLE_COLS.map((col) => {
+                    const val = getCellValue(player, col.key);
+                    const isKR = col.key === 'kr';
+                    const isName = col.key === 'name';
+                    return (
+                      <View key={col.key} style={{ width: col.width, paddingVertical: 10, paddingHorizontal: 4 }}>
+                        <Text
+                          style={[
+                            styles.tCell,
+                            { color: isKR && player.kr != null ? getKRColor(player.kr) : colors.text },
+                            isName && { fontWeight: '600' },
+                            isKR && player.kr == null && { color: '#777', fontStyle: 'italic' as const },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {val}
+                        </Text>
+                      </View>
+                    );
+                  })}
+                </Pressable>
+              ))}
+            </View>
+          </ScrollView>
+          {filtered.length >= displayCount && (
+            <Pressable style={styles.loadMoreBtn} onPress={loadMore}>
+              <Text style={[styles.loadMoreText, { color: accent }]}>Load More</Text>
+            </Pressable>
+          )}
+        </ScrollView>
+      ) : (
+        <FlatList
+          data={filtered}
+          keyExtractor={(p, i) => `${p.id}-${i}`}
+          renderItem={renderRow}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.5}
+          initialNumToRender={20}
+          maxToRenderPerBatch={20}
+          windowSize={10}
+        />
+      )}
 
       {/* Advanced Filters Sheet */}
       <BottomSheet
@@ -462,4 +598,17 @@ const styles = StyleSheet.create({
     borderWidth: 1, marginTop: 8,
   },
   clearBtnText: { fontSize: 15, fontWeight: '700' },
+  // View toggle
+  viewToggle: { flexDirection: 'row', borderRadius: 6, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' },
+  viewTogglePill: { paddingHorizontal: 10, paddingVertical: 4 },
+  viewToggleText: { fontSize: 11, fontWeight: '700' },
+  sortLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  // Table
+  tableHeaderRow: { flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, paddingHorizontal: 8 },
+  tHeader: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase' },
+  tableDataRow: { flexDirection: 'row', alignItems: 'center', borderBottomWidth: StyleSheet.hairlineWidth, paddingHorizontal: 8 },
+  tableRowAlt: { backgroundColor: 'rgba(255,255,255,0.03)' },
+  tCell: { fontSize: 12 },
+  loadMoreBtn: { paddingVertical: 16, alignItems: 'center' },
+  loadMoreText: { fontSize: 13, fontWeight: '700' },
 });

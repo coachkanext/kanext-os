@@ -293,6 +293,169 @@ export function getStatsTabVisibility(tab: StatsTab, role: SportsRoleLens): Visi
 }
 
 // =============================================================================
+// GAME PLAN HUB — 7 CANONICAL TABS
+// =============================================================================
+
+export type GamePlanTab =
+  | 'overview'
+  | 'offense'
+  | 'defense'
+  | 'matchups'
+  | 'rotation'
+  | 'scout'
+  | 'staff';
+
+export const GAME_PLAN_TAB_LABELS: Record<GamePlanTab, string> = {
+  overview: 'Overview',
+  offense: 'Offense',
+  defense: 'Defense',
+  matchups: 'Matchups',
+  rotation: 'Rotation',
+  scout: 'Scout',
+  staff: 'Staff',
+};
+
+export const GAME_PLAN_TAB_ORDER: GamePlanTab[] = [
+  'overview', 'offense', 'defense', 'matchups', 'rotation', 'scout', 'staff',
+];
+
+/**
+ * Game Plan RBAC:
+ * R1 (AD/HC): Full access all 7 tabs
+ * R2 (Player): Overview only (limited — sees win prob, matchup header, own assignment)
+ * R3 (Asst Coach): All tabs, KR values as bands
+ * R4 (Medical): No access — competitive intelligence
+ * R5 (Fan): No access
+ */
+const GAME_PLAN_HUB_MATRIX: Record<GamePlanTab, Record<SportsRoleLens, Visibility>> = {
+  overview:  { R1: 'full',   R2: 'limited', R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  offense:   { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  defense:   { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  matchups:  { R1: 'full',   R2: 'limited', R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  rotation:  { R1: 'full',   R2: 'hidden',  R3: 'limited', R4: 'hidden', R5: 'hidden' },
+  scout:     { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  staff:     { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'hidden', R5: 'hidden' },
+};
+
+export function getGamePlanHubTabs(role: SportsRoleLens): { key: GamePlanTab; label: string }[] {
+  return GAME_PLAN_TAB_ORDER
+    .filter((tab) => GAME_PLAN_HUB_MATRIX[tab][role] !== 'hidden')
+    .map((tab) => ({ key: tab, label: GAME_PLAN_TAB_LABELS[tab] }));
+}
+
+export function getGamePlanTabVisibility(tab: GamePlanTab, role: SportsRoleLens): Visibility {
+  return GAME_PLAN_HUB_MATRIX[tab][role];
+}
+
+// =============================================================================
+// SIMULATION HUB — 6 CANONICAL TABS
+// =============================================================================
+
+export type SimulationTab =
+  | 'overview'
+  | 'system_x_system'
+  | 'possession_engine'
+  | 'matchup_interactions'
+  | 'box_score_projection'
+  | 'scenarios';
+
+export const SIMULATION_TAB_LABELS: Record<SimulationTab, string> = {
+  overview: 'Overview',
+  system_x_system: 'System × System',
+  possession_engine: 'Possession Engine',
+  matchup_interactions: 'Matchup Interactions',
+  box_score_projection: 'Box Score',
+  scenarios: 'Scenarios',
+};
+
+export const SIMULATION_TAB_ORDER: SimulationTab[] = [
+  'overview', 'system_x_system', 'possession_engine',
+  'matchup_interactions', 'box_score_projection', 'scenarios',
+];
+
+/**
+ * Simulation RBAC:
+ * R1 (AD): Full access all 6, sees exact KRs, line translation
+ * R2 (Player): Overview only — win prob, pace, five factors
+ * R3 (Asst Coach): All tabs, KR as bands, no line translation
+ * R4-R5: No access
+ */
+const SIMULATION_HUB_MATRIX: Record<SimulationTab, Record<SportsRoleLens, Visibility>> = {
+  overview:              { R1: 'full',   R2: 'limited', R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  system_x_system:       { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  possession_engine:     { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  matchup_interactions:  { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  box_score_projection:  { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'hidden', R5: 'hidden' },
+  scenarios:             { R1: 'full',   R2: 'hidden',  R3: 'limited', R4: 'hidden', R5: 'hidden' },
+};
+
+export function getSimulationHubTabs(role: SportsRoleLens): { key: SimulationTab; label: string }[] {
+  return SIMULATION_TAB_ORDER
+    .filter((tab) => SIMULATION_HUB_MATRIX[tab][role] !== 'hidden')
+    .map((tab) => ({ key: tab, label: SIMULATION_TAB_LABELS[tab] }));
+}
+
+export function getSimulationTabVisibility(tab: SimulationTab, role: SportsRoleLens): Visibility {
+  return SIMULATION_HUB_MATRIX[tab][role];
+}
+
+// =============================================================================
+// DEVELOPMENT HUB — 7 CANONICAL TABS
+// =============================================================================
+
+export type DevelopmentTab =
+  | 'overview'
+  | 'player_kr_profile'
+  | 'pathway'
+  | 'weekly_plan'
+  | 'evidence'
+  | 'pro_readiness'
+  | 'transfer_portal';
+
+export const DEVELOPMENT_TAB_LABELS: Record<DevelopmentTab, string> = {
+  overview: 'Overview',
+  player_kr_profile: 'KR Profile',
+  pathway: 'Pathway',
+  weekly_plan: 'Weekly Plan',
+  evidence: 'Evidence',
+  pro_readiness: 'Pro Readiness',
+  transfer_portal: 'Transfer',
+};
+
+export const DEVELOPMENT_TAB_ORDER: DevelopmentTab[] = [
+  'overview', 'player_kr_profile', 'pathway', 'weekly_plan',
+  'evidence', 'pro_readiness', 'transfer_portal',
+];
+
+/**
+ * Development RBAC:
+ * R1 (AD/HC): Full access all 7, all players
+ * R2 (Player): Own profile (tabs 2-6 self only), no overview, no transfer
+ * R3 (Asst Coach): All tabs, KR as bands, no economic projections
+ * R4 (Medical): Overview + weekly plan + evidence (limited)
+ * R5 (Fan): No access
+ */
+const DEVELOPMENT_HUB_MATRIX: Record<DevelopmentTab, Record<SportsRoleLens, Visibility>> = {
+  overview:          { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'limited', R5: 'hidden' },
+  player_kr_profile: { R1: 'full',   R2: 'self',    R3: 'full',    R4: 'hidden',  R5: 'hidden' },
+  pathway:           { R1: 'full',   R2: 'self',    R3: 'full',    R4: 'hidden',  R5: 'hidden' },
+  weekly_plan:       { R1: 'full',   R2: 'self',    R3: 'full',    R4: 'limited', R5: 'hidden' },
+  evidence:          { R1: 'full',   R2: 'self',    R3: 'full',    R4: 'limited', R5: 'hidden' },
+  pro_readiness:     { R1: 'full',   R2: 'self',    R3: 'limited', R4: 'hidden',  R5: 'hidden' },
+  transfer_portal:   { R1: 'full',   R2: 'hidden',  R3: 'full',    R4: 'hidden',  R5: 'hidden' },
+};
+
+export function getDevelopmentHubTabs(role: SportsRoleLens): { key: DevelopmentTab; label: string }[] {
+  return DEVELOPMENT_TAB_ORDER
+    .filter((tab) => DEVELOPMENT_HUB_MATRIX[tab][role] !== 'hidden')
+    .map((tab) => ({ key: tab, label: DEVELOPMENT_TAB_LABELS[tab] }));
+}
+
+export function getDevelopmentTabVisibility(tab: DevelopmentTab, role: SportsRoleLens): Visibility {
+  return DEVELOPMENT_HUB_MATRIX[tab][role];
+}
+
+// =============================================================================
 // SENSITIVE DATA POLICY
 // =============================================================================
 

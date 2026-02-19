@@ -44,6 +44,10 @@ import { SportsStatsV2 } from '@/components/stats/sports-stats-v2';
 import { TEAM_IDENTITY as STATS_TEAM_IDENTITY, TEAM_AVERAGES as STATS_TEAM_AVERAGES, LAST_5 as STATS_LAST_5 } from '@/data/mock-stats-v2';
 import { SportsSimulationV2 } from '@/components/simulation/sports-simulation-v2';
 import { SportsDevelopmentV2 } from '@/components/development/sports-development-v2';
+import { GAME_PLANS } from '@/data/mock-game-plan-v2';
+import { MOCK_KEISER_GAME } from '@/data/mock-simulation-v2';
+import { PROGRESS_SNAPSHOT, PLAYER_PLANS, WEEKLY_PLANS, EVIDENCE_QUEUE_EXTENDED, TRANSFER_METRICS } from '@/data/mock-development-v2';
+import { getKRColor } from '@/utils/kr-display';
 import { TicketsSheet } from '@/components/commerce/tickets-sheet';
 import { StoreSheet } from '@/components/commerce/store-sheet';
 import { SupportSheet } from '@/components/commerce/support-sheet';
@@ -595,7 +599,150 @@ function SportsHome() {
                         );
                       }
 
-                      // Default domain card
+                      // Rich Game Plan card
+                      if (card.id === 'game-plan') {
+                        const activePlan = GAME_PLANS.find((gp) => gp.header.status === 'in-review') ?? GAME_PLANS[0];
+                        const gph = activePlan.header;
+                        const wpRaw = gph.simWinPct;
+                        const wpColor = wpRaw >= 60 ? '#22c55e' : wpRaw >= 45 ? '#F59E0B' : '#ef4444';
+                        const tendencyNote = activePlan.scoutNotes.find((n) => n.category === 'tendency');
+                        const oppSystem = tendencyNote?.title ?? 'Man Defense';
+                        return (
+                          <Pressable
+                            key={card.id}
+                            onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                            style={({ pressed }) => [
+                              styles.domainCard,
+                              { backgroundColor: '#181616', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
+                              pressed && { opacity: 0.7 },
+                            ]}
+                          >
+                            <View style={styles.domainCardHeader}>
+                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
+                                <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                              </View>
+                              <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
+                              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+                            </View>
+                            <View style={{ paddingLeft: 40 }}>
+                              <Text style={[styles.richCardHeadline, { color: colors.text }]}>vs {gph.opponent}</Text>
+                              <Text style={[styles.richCardSubline, { color: colors.textSecondary }]}>{gph.date} · {gph.location} · {gph.status}</Text>
+                              <View style={styles.statsPreviewRow}>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>WIN%</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: wpColor }]}>{wpRaw}%</Text>
+                                </View>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>CONF</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{gph.simConfidence}%</Text>
+                                </View>
+                              </View>
+                              <Text style={[styles.richCardSystemLine, { color: colors.textTertiary }]}>
+                                OPP: {oppSystem}
+                              </Text>
+                            </View>
+                          </Pressable>
+                        );
+                      }
+
+                      // Rich Simulation card
+                      if (card.id === 'simulation') {
+                        const sim = MOCK_KEISER_GAME;
+                        const wpMid = sim.win_pct.mid;
+                        const wpColor = wpMid >= 60 ? '#22c55e' : wpMid >= 45 ? '#F59E0B' : '#ef4444';
+                        return (
+                          <Pressable
+                            key={card.id}
+                            onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                            style={({ pressed }) => [
+                              styles.domainCard,
+                              { backgroundColor: '#181616', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
+                              pressed && { opacity: 0.7 },
+                            ]}
+                          >
+                            <View style={styles.domainCardHeader}>
+                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
+                                <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                              </View>
+                              <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
+                              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+                            </View>
+                            <View style={{ paddingLeft: 40 }}>
+                              <Text style={[styles.richCardHeadline, { color: colors.text }]}>vs {sim.team_b}</Text>
+                              <View style={styles.statsPreviewRow}>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>WIN%</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: wpColor }]}>{wpMid}%</Text>
+                                </View>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>MARGIN</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>+{sim.margin.mid}</Text>
+                                </View>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>CONF</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{sim.sim_confidence_pct}%</Text>
+                                </View>
+                              </View>
+                              <Text style={[styles.richCardSystemLine, { color: colors.textTertiary }]}>
+                                {sim.sim_version} · Pace {sim.projected_pace}
+                              </Text>
+                            </View>
+                          </Pressable>
+                        );
+                      }
+
+                      // Rich Development card
+                      if (card.id === 'development') {
+                        const snap = PROGRESS_SNAPSHOT;
+                        const activePlans = PLAYER_PLANS.length;
+                        const pendingEvidence = EVIDENCE_QUEUE_EXTENDED.filter((e) => e.status === 'pending').length;
+                        const negativeTransfers = TRANSFER_METRICS.filter((t) => t.transferLabel === 'negative').length;
+                        return (
+                          <Pressable
+                            key={card.id}
+                            onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                            style={({ pressed }) => [
+                              styles.domainCard,
+                              { backgroundColor: '#181616', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
+                              pressed && { opacity: 0.7 },
+                            ]}
+                          >
+                            <View style={styles.domainCardHeader}>
+                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
+                                <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                              </View>
+                              <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
+                              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+                            </View>
+                            <View style={{ paddingLeft: 40 }}>
+                              <View style={styles.statsPreviewRow}>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>PLANS</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{activePlans}</Text>
+                                </View>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>SCORE</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: MODE_ACCENT.sports }]}>{snap.overallScore}</Text>
+                                </View>
+                                <View style={styles.statsPreviewPill}>
+                                  <Text style={styles.statsPreviewPillLabel}>Δ WEEK</Text>
+                                  <Text style={[styles.statsPreviewPillValue, { color: '#22c55e' }]}>+{snap.deltaFromLastWeek}</Text>
+                                </View>
+                              </View>
+                              <Text style={[styles.richCardSubline, { color: colors.textSecondary, marginTop: 6 }]}>
+                                {WEEKLY_PLANS[0].weekLabel} active · {pendingEvidence} evidence pending
+                              </Text>
+                              {negativeTransfers > 0 && (
+                                <Text style={[styles.richCardAlert, { color: '#EF4444' }]}>
+                                  {negativeTransfers} negative transfer{negativeTransfers !== 1 ? 's' : ''} flagged
+                                </Text>
+                              )}
+                            </View>
+                          </Pressable>
+                        );
+                      }
+
+                      // Default domain card (alerts, etc.)
                       return (
                         <Pressable
                           key={card.id}
@@ -1990,6 +2137,28 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
+  },
+
+  // Rich Domain Cards (Game Plan, Simulation, Development)
+  richCardHeadline: {
+    fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+  },
+  richCardSubline: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  richCardSystemLine: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 6,
+  },
+  richCardAlert: {
+    fontSize: 11,
+    fontWeight: '700',
+    marginTop: 4,
   },
 
 });
