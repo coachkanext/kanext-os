@@ -44,7 +44,7 @@ export function SportsCalendarV2({ colors: propColors }: Props) {
             style={[styles.pill, activeTab === pill && { backgroundColor: accent }]}
             onPress={() => setActiveTab(pill)}
           >
-            <ThemedText style={[styles.pillText, { color: activeTab === pill ? '#fff' : colors.textSecondary }]}>
+            <ThemedText style={[styles.pillText, { color: activeTab === pill ? '#000' : colors.textSecondary }]}>
               {pill}
             </ThemedText>
           </Pressable>
@@ -81,7 +81,7 @@ function AgendaView({ colors, accent }: { colors: typeof Colors.light; accent: s
               <View style={{ flex: 1 }}>
                 <ThemedText style={[styles.agendaTitle, { color: colors.text }]}>{item.title}</ThemedText>
                 <ThemedText style={[styles.agendaMeta, { color: colors.textSecondary }]}>
-                  {item.time} \u00b7 {item.location}
+                  {item.time} · {item.location}
                 </ThemedText>
               </View>
               <View style={[styles.agendaTypeBadge, { backgroundColor: getAgendaTypeColor(item.type) + '22' }]}>
@@ -111,7 +111,7 @@ function ScheduleView({ colors, accent }: { colors: typeof Colors.light; accent:
               {game.location === 'Home' ? 'vs' : '@'} {game.opponent}
             </ThemedText>
             <ThemedText style={[styles.scheduleMeta, { color: colors.textSecondary }]}>
-              {game.date} \u00b7 {game.gameType}
+              {game.date} · {game.gameType}
             </ThemedText>
           </View>
           {game.status === 'final' && game.result && (
@@ -186,7 +186,7 @@ function NewsView({ colors, accent }: { colors: typeof Colors.light; accent: str
           <ThemedText style={[styles.newsTitle, { color: colors.text }]}>{post.title}</ThemedText>
           <ThemedText style={[styles.newsSummary, { color: colors.textSecondary }]} numberOfLines={2}>{post.summary}</ThemedText>
           <ThemedText style={[styles.newsMeta, { color: colors.textSecondary }]}>
-            {post.source} \u00b7 {post.timestamp}
+            {post.source} · {post.timestamp}
           </ThemedText>
         </View>
       ))}

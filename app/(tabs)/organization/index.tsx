@@ -8,7 +8,6 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable, InteractionManager } from 'react-native';
 import PagerView from 'react-native-pager-view';
-import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/core';
 import * as Haptics from 'expo-haptics';
 import { consumeOrgReset, registerOrgResetCallback } from '@/utils/global-org';
@@ -18,62 +17,31 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAppContext, useMode } from '@/context/app-context';
+import { useAppContext, useMode, useMembershipId } from '@/context/app-context';
+import { getSportsRole, type SportsRoleLens } from '@/utils/sports-rbac';
+import { getChurchRole, getChurchOrgTabVisibility, type ChurchOrgTab } from '@/utils/church-rbac';
+import { getBusinessRole, getBizOrgTabVisibility, type BusinessRoleLens } from '@/utils/business-rbac';
+import { getEducationRole, getEduOrgTabVisibility, type EducationRoleLens } from '@/utils/education-rbac';
+import { getCompetitionRole, getCompOrgTabVisibility, type CompetitionRoleLens } from '@/utils/competition-rbac';
 import { BusinessProvider, useBusiness } from '@/context/business-context';
 import { ChurchProvider, useChurch } from '@/context/church-context';
 import { EducationProvider, useEducation } from '@/context/education-context';
-import type { ChurchRoleLens } from '@/utils/church-rbac';
-import type { EducationRoleLens } from '@/utils/education-rbac';
 import { PagedTabBar } from '@/components/ui/paged-tab-bar';
 import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
-import { OrgPeopleTab } from '@/components/organization/org-people-tab';
-import { OrgOperationsTab } from '@/components/organization/org-operations-tab-v2';
-import { OrgFinanceTab } from '@/components/organization/org-finance-tab-v2';
 import { OrgSwitcherSheet } from '@/components/organization/org-switcher-sheet';
-import { OrgProgramTab } from '@/components/organization/org-program-tab';
-import { SportsOrgProgramsV2 } from '@/components/organization/sports-org-programs-v2';
-import { OrgMinistriesTab } from '@/components/organization/org-ministries-tab';
 
-import { OrgSeriesTab } from '@/components/organization/org-series-tab';
-import { OrgPaymentRailsTab } from '@/components/organization/org-payment-rails-tab';
-import { OrgComplianceTab } from '@/components/organization/org-compliance-tab';
-import { OrgResourcesTab } from '@/components/organization/org-resources-tab';
-import { OrgSponsorsTab } from '@/components/organization/org-sponsors-tab';
-import { RoomsHub } from '@/components/rooms/rooms-hub';
-import { OrgFacilitiesTab } from '@/components/organization/org-facilities-tab';
-import {
-  INSTITUTION,
-  INSTITUTION_LEADERSHIP,
-  PROGRAMS,
-  formatRecord,
-  getProgramLevelLabel,
-  type ProgramData,
-  type Staff,
-} from '@/data/mock-sports';
-
-import {
-  ICC_ORGANIZATION,
-  CAMPUSES,
-  MINISTRIES,
-  CHURCH_LEADERSHIP,
-  formatServiceTime,
-} from '@/data/mock-church';
-import {
-  SDCC_ORGANIZATION,
-  ACADEMIC_TERMS,
-  ACADEMIC_CALENDAR,
-  DEPARTMENTS,
-  FACULTY_LEADERSHIP,
-  INSTITUTIONAL_METRICS,
-  getCurrentTerm,
-  getUpcomingEvents,
-  formatTermDates,
-  formatCalendarEventDate,
-  getCalendarEventTypeLabel,
-} from '@/data/mock-education';
-import type { Campus, Ministry, AcademicTerm, AcademicCalendarEvent, Department, FacultyMember } from '@/types';
-import { RailsSection } from '@/components/rails/rails-section';
+// Sports v2 org tab components
+import { SportsOrgProgramV2 } from '@/components/organization/sports-org-program-v2';
+import { SportsOrgPeopleV2 } from '@/components/organization/sports-org-people-v2';
+import { SportsOrgRoomsV2 } from '@/components/organization/sports-org-rooms-v2';
+import { SportsOrgOperationsV2 } from '@/components/organization/sports-org-operations-v2';
+import { SportsOrgFinanceV2 } from '@/components/organization/sports-org-finance-v2';
+import { SportsOrgPaymentRailsV2 } from '@/components/organization/sports-org-payment-rails-v2';
+import { SportsOrgComplianceV2 } from '@/components/organization/sports-org-compliance-v2';
+import { SportsOrgFacilitiesV2 } from '@/components/organization/sports-org-facilities-v2';
+import { SportsOrgResourcesV2 } from '@/components/organization/sports-org-resources-v2';
+import { SportsOrgSponsorsV2 } from '@/components/organization/sports-org-sponsors-v2';
 import type { Mode } from '@/types';
 
 // Competition v2 tab components
@@ -129,6 +97,31 @@ import { EduOrgSponsorsV2 } from '@/components/organization/edu-org-sponsors-v2'
 // =============================================================================
 // ORG TAB & MORE DEFINITIONS (per mode)
 // =============================================================================
+
+/** Filter org tabs by RBAC — hides tabs where visibility is 'hidden' for the current role */
+function getFilteredOrgTabs(mode: Mode, membershipId: string): { id: string; label: string }[] {
+  const allTabs = ORG_TABS[mode];
+  switch (mode) {
+    case 'church': {
+      const role = getChurchRole(membershipId);
+      return allTabs.filter((t) => getChurchOrgTabVisibility(t.id as ChurchOrgTab, role) !== 'hidden');
+    }
+    case 'business': {
+      const role = getBusinessRole(membershipId);
+      return allTabs.filter((t) => getBizOrgTabVisibility(t.id as any, role) !== 'hidden');
+    }
+    case 'education': {
+      const role = getEducationRole(membershipId);
+      return allTabs.filter((t) => getEduOrgTabVisibility(t.id as any, role) !== 'hidden');
+    }
+    case 'competition': {
+      const role = getCompetitionRole(membershipId);
+      return allTabs.filter((t) => getCompOrgTabVisibility(t.id as any, role) !== 'hidden');
+    }
+    default:
+      return allTabs; // Sports: no org-tab RBAC matrix yet — show all
+  }
+}
 
 const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
   sports: [
@@ -195,33 +188,16 @@ const ORG_TABS: Record<Mode, { id: string; label: string }[]> = {
 
 
 // =============================================================================
-// SPORTS MODE COMPONENTS
-// =============================================================================
-
-interface SectionHeaderProps {
-  title: string;
-  colors: typeof Colors.light;
-}
-
-function SectionHeader({ title, colors }: SectionHeaderProps) {
-  return (
-    <View style={styles.sectionHeader}>
-      <ThemedText style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-        {title}
-      </ThemedText>
-    </View>
-  );
-}
-
-// =============================================================================
 // SPORTS MODE CONTENT (with PagerView)
 // =============================================================================
 
 function SportsOrganization() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const router = useRouter();
   const modeColors = ModeColors.sports;
+  const membershipId = useMembershipId();
+  const role = useMemo(() => getSportsRole(membershipId), [membershipId]);
+  const tabs = useMemo(() => getFilteredOrgTabs('sports', membershipId), [membershipId]);
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
 
@@ -249,174 +225,33 @@ function SportsOrganization() {
 
   return (
     <>
-      <PagedTabBar tabs={ORG_TABS.sports} activeIndex={activeIndex} onTabPress={handleTabPress} />
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.sports.length} onAdvance={handleTabPress}>
+      <PagedTabBar tabs={tabs} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={tabs.length} onAdvance={handleTabPress}>
         <PagerView
           ref={pagerRef}
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor: colors.background }}
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          {/* Page 0: Program */}
-        <View key="program" style={{ flex: 1 }}>
-          <SportsOrgProgramsV2 colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 1: People */}
-        <View key="people" style={{ flex: 1 }}>
-          <OrgPeopleTab mode="sports" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 2: Rooms */}
-        <View key="rooms" style={{ flex: 1 }}>
-          <RoomsHub mode="sports" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 3: Operations */}
-        <View key="operations" style={{ flex: 1 }}>
-          <OrgOperationsTab mode="sports" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 4: Finance */}
-        <View key="finance" style={{ flex: 1 }}>
-          <OrgFinanceTab mode="sports" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 4: Payment Rails */}
-        <View key="payment-rails" style={{ flex: 1 }}>
-          <OrgPaymentRailsTab mode="sports" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 5: Compliance */}
-        <View key="compliance" style={{ flex: 1 }}>
-          <OrgComplianceTab mode="sports" colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 6: Facilities */}
-        <View key="facilities" style={{ flex: 1 }}>
-          <OrgFacilitiesTab colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 7: Resources */}
-        <View key="resources" style={{ flex: 1 }}>
-          <OrgResourcesTab colors={colors} accentColor={modeColors.primary} />
-        </View>
-
-        {/* Page 8: Sponsors */}
-        <View key="sponsors" style={{ flex: 1 }}>
-          <OrgSponsorsTab colors={colors} accentColor={modeColors.primary} />
-        </View>
+          {tabs.map((tab) => {
+            const p = { colors, accentColor: modeColors.primary, role };
+            switch (tab.id) {
+              case 'program': return <View key="program" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgProgramV2 {...p} /></View>;
+              case 'people': return <View key="people" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgPeopleV2 {...p} /></View>;
+              case 'rooms': return <View key="rooms" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgRoomsV2 {...p} /></View>;
+              case 'operations': return <View key="operations" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgOperationsV2 {...p} /></View>;
+              case 'finance': return <View key="finance" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgFinanceV2 {...p} /></View>;
+              case 'payment-rails': return <View key="payment-rails" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgPaymentRailsV2 {...p} /></View>;
+              case 'compliance': return <View key="compliance" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgComplianceV2 {...p} /></View>;
+              case 'facilities': return <View key="facilities" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgFacilitiesV2 {...p} /></View>;
+              case 'resources': return <View key="resources" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgResourcesV2 {...p} /></View>;
+              case 'sponsors': return <View key="sponsors" style={{ flex: 1, backgroundColor: colors.background }}><SportsOrgSponsorsV2 {...p} /></View>;
+              default: return <View key={tab.id} style={{ flex: 1, backgroundColor: colors.background }} />;
+            }
+          })}
         </PagerView>
       </EdgeHoldAdvance>
     </>
-  );
-}
-
-// =============================================================================
-// SHARED COMPONENTS
-// =============================================================================
-
-interface MetricCardProps {
-  label: string;
-  value: string;
-  subValue?: string;
-  colors: typeof Colors.light;
-  accentColor: string;
-}
-
-function MetricCard({ label, value, subValue, colors, accentColor }: MetricCardProps) {
-  return (
-    <View style={[styles.metricCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-      <ThemedText style={[styles.metricValue, { color: accentColor }]}>{value}</ThemedText>
-      {subValue && (
-        <ThemedText style={[styles.metricSubValue, { color: colors.textSecondary }]}>
-          {subValue}
-        </ThemedText>
-      )}
-      <ThemedText style={[styles.metricLabel, { color: colors.textTertiary }]}>{label}</ThemedText>
-    </View>
-  );
-}
-
-
-// =============================================================================
-// CHURCH MODE COMPONENTS
-// =============================================================================
-
-interface CampusCardProps {
-  campus: Campus;
-  colors: typeof Colors.light;
-  accentColor: string;
-  onPress: () => void;
-}
-
-function CampusCard({ campus, colors, accentColor, onPress }: CampusCardProps) {
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.campusCard,
-        { backgroundColor: colors.card, borderColor: colors.border },
-        pressed && { opacity: 0.8 },
-      ]}
-      onPress={onPress}
-    >
-      <View style={styles.campusHeader}>
-        <View style={[styles.campusBadge, { backgroundColor: accentColor }]}>
-          <ThemedText style={styles.campusBadgeText}>{campus.shortName}</ThemedText>
-        </View>
-        <View style={styles.campusInfo}>
-          <ThemedText style={styles.campusName}>{campus.name}</ThemedText>
-          <ThemedText style={[styles.campusLocation, { color: colors.textSecondary }]}>
-            {campus.location}
-          </ThemedText>
-        </View>
-        <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
-      </View>
-      {campus.serviceTimes.length > 0 && (
-        <View style={styles.campusServices}>
-          {campus.serviceTimes.slice(0, 2).map((service, index) => (
-            <ThemedText
-              key={index}
-              style={[styles.campusServiceText, { color: colors.textTertiary }]}
-            >
-              {formatServiceTime(service)}
-            </ThemedText>
-          ))}
-        </View>
-      )}
-    </Pressable>
-  );
-}
-
-interface MinistryRowProps {
-  ministry: Ministry;
-  colors: typeof Colors.light;
-  accentColor: string;
-  onPress: () => void;
-}
-
-function MinistryRow({ ministry, colors, accentColor, onPress }: MinistryRowProps) {
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.ministryRow,
-        pressed && { backgroundColor: colors.backgroundSecondary },
-      ]}
-      onPress={onPress}
-    >
-      <View style={[styles.ministryIcon, { backgroundColor: accentColor + '15' }]}>
-        <IconSymbol name={ministry.icon as any || 'heart.fill'} size={18} color={accentColor} />
-      </View>
-      <View style={styles.ministryInfo}>
-        <ThemedText style={styles.ministryName}>{ministry.name}</ThemedText>
-        {ministry.description && (
-          <ThemedText style={[styles.ministryDesc, { color: colors.textSecondary }]} numberOfLines={1}>
-            {ministry.description}
-          </ThemedText>
-        )}
-      </View>
-      <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-    </Pressable>
   );
 }
 
@@ -437,6 +272,10 @@ function ChurchOrganizationInner() {
   const colors = Colors[colorScheme];
   const accent = ModeColors.church.primary;
   const { viewAsRole } = useChurch();
+  const membershipId = useMembershipId();
+  const derivedRole = useMemo(() => getChurchRole(membershipId), [membershipId]);
+  const effectiveRole = viewAsRole ?? derivedRole;
+  const tabs = useMemo(() => getFilteredOrgTabs('church', membershipId), [membershipId]);
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
 
@@ -464,164 +303,33 @@ function ChurchOrganizationInner() {
 
   return (
     <>
-      <PagedTabBar tabs={ORG_TABS.church} activeIndex={activeIndex} onTabPress={handleTabPress} />
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.church.length} onAdvance={handleTabPress}>
+      <PagedTabBar tabs={tabs} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={tabs.length} onAdvance={handleTabPress}>
         <PagerView
           ref={pagerRef}
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor: colors.background }}
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          <View key="ministries" style={{ flex: 1 }}>
-            <ChurchOrgMinistries colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="people" style={{ flex: 1 }}>
-            <ChurchOrgPeople colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="rooms" style={{ flex: 1 }}>
-            <ChurchOrgRooms colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="operations" style={{ flex: 1 }}>
-            <ChurchOrgOperations colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="finance" style={{ flex: 1 }}>
-            <ChurchOrgFinance colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="payment-rails" style={{ flex: 1 }}>
-            <ChurchOrgPaymentRails colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="compliance" style={{ flex: 1 }}>
-            <ChurchOrgCompliance colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="facilities" style={{ flex: 1 }}>
-            <ChurchOrgFacilitiesV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="resources" style={{ flex: 1 }}>
-            <ChurchOrgResourcesV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="donations" style={{ flex: 1 }}>
-            <ChurchOrgDonationsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
+          {tabs.map((tab) => {
+            const p = { colors, accentColor: accent, role: effectiveRole };
+            switch (tab.id) {
+              case 'ministries': return <View key="ministries" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgMinistries {...p} /></View>;
+              case 'people': return <View key="people" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgPeople {...p} /></View>;
+              case 'rooms': return <View key="rooms" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgRooms {...p} /></View>;
+              case 'operations': return <View key="operations" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgOperations {...p} /></View>;
+              case 'finance': return <View key="finance" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgFinance {...p} /></View>;
+              case 'payment-rails': return <View key="payment-rails" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgPaymentRails {...p} /></View>;
+              case 'compliance': return <View key="compliance" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgCompliance {...p} /></View>;
+              case 'facilities': return <View key="facilities" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgFacilitiesV2 {...p} /></View>;
+              case 'resources': return <View key="resources" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgResourcesV2 {...p} /></View>;
+              case 'donations': return <View key="donations" style={{ flex: 1, backgroundColor: colors.background }}><ChurchOrgDonationsV2 {...p} /></View>;
+              default: return <View key={tab.id} style={{ flex: 1, backgroundColor: colors.background }} />;
+            }
+          })}
         </PagerView>
       </EdgeHoldAdvance>
     </>
-  );
-}
-
-// =============================================================================
-// EDUCATION MODE COMPONENTS
-// =============================================================================
-
-interface TermCardProps {
-  term: AcademicTerm;
-  colors: typeof Colors.light;
-  accentColor: string;
-  isCurrent: boolean;
-  onPress?: () => void;
-}
-
-function TermCard({ term, colors, accentColor, isCurrent, onPress }: TermCardProps) {
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.termCard,
-        {
-          backgroundColor: colors.card,
-          borderColor: isCurrent ? accentColor : colors.border,
-          borderWidth: isCurrent ? 2 : 1,
-        },
-        pressed && { opacity: 0.8 },
-      ]}
-      onPress={onPress}
-    >
-      <View style={styles.termHeader}>
-        <ThemedText style={styles.termName}>{term.name}</ThemedText>
-        {isCurrent && (
-          <View style={[styles.currentBadge, { backgroundColor: accentColor }]}>
-            <ThemedText style={styles.currentBadgeText}>Current</ThemedText>
-          </View>
-        )}
-      </View>
-      <View style={styles.termFooter}>
-        <ThemedText style={[styles.termDates, { color: colors.textSecondary }]}>
-          {formatTermDates(term)}
-        </ThemedText>
-        {onPress && <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />}
-      </View>
-    </Pressable>
-  );
-}
-
-interface CalendarEventRowProps {
-  event: AcademicCalendarEvent;
-  colors: typeof Colors.light;
-  accentColor: string;
-}
-
-function CalendarEventRow({ event, colors, accentColor }: CalendarEventRowProps) {
-  return (
-    <View style={styles.calendarRow}>
-      <View style={[styles.calendarDate, { backgroundColor: accentColor + '15' }]}>
-        <ThemedText style={[styles.calendarMonth, { color: accentColor }]}>
-          {event.date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase()}
-        </ThemedText>
-        <ThemedText style={[styles.calendarDay, { color: accentColor }]}>
-          {event.date.getDate()}
-        </ThemedText>
-      </View>
-      <View style={styles.calendarInfo}>
-        <ThemedText style={styles.calendarTitle}>{event.title}</ThemedText>
-        <ThemedText style={[styles.calendarType, { color: colors.textSecondary }]}>
-          {getCalendarEventTypeLabel(event.type)}
-        </ThemedText>
-      </View>
-    </View>
-  );
-}
-
-interface DepartmentCardProps {
-  department: Department;
-  colors: typeof Colors.light;
-  accentColor: string;
-}
-
-function DepartmentCard({ department, colors, accentColor }: DepartmentCardProps) {
-  return (
-    <View style={[styles.departmentCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-      <ThemedText style={styles.departmentName}>{department.name}</ThemedText>
-      <ThemedText style={[styles.departmentPrograms, { color: accentColor }]}>
-        {department.programCount} programs
-      </ThemedText>
-    </View>
-  );
-}
-
-interface FacultyRowProps {
-  faculty: FacultyMember;
-  colors: typeof Colors.light;
-  onPress?: () => void;
-}
-
-function FacultyRow({ faculty, colors, onPress }: FacultyRowProps) {
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.leadershipRow,
-        pressed && { backgroundColor: colors.backgroundSecondary },
-      ]}
-      onPress={onPress}
-    >
-      <View style={[styles.leadershipAvatar, { backgroundColor: colors.backgroundTertiary }]}>
-        <IconSymbol name="person.fill" size={20} color={colors.textTertiary} />
-      </View>
-      <View style={styles.leadershipInfo}>
-        <ThemedText style={styles.leadershipName}>{faculty.name}</ThemedText>
-        <ThemedText style={[styles.leadershipTitle, { color: colors.textSecondary }]}>
-          {faculty.title}
-        </ThemedText>
-      </View>
-      {onPress && <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />}
-    </Pressable>
   );
 }
 
@@ -642,6 +350,10 @@ function EducationOrganizationInner() {
   const colors = Colors[colorScheme];
   const accent = ModeColors.education.primary;
   const { viewAsRole } = useEducation();
+  const membershipId = useMembershipId();
+  const derivedRole = useMemo(() => getEducationRole(membershipId), [membershipId]);
+  const effectiveRole = viewAsRole ?? derivedRole;
+  const tabs = useMemo(() => getFilteredOrgTabs('education', membershipId), [membershipId]);
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
 
@@ -669,44 +381,30 @@ function EducationOrganizationInner() {
 
   return (
     <>
-      <PagedTabBar tabs={ORG_TABS.education} activeIndex={activeIndex} onTabPress={handleTabPress} />
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.education.length} onAdvance={handleTabPress}>
+      <PagedTabBar tabs={tabs} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={tabs.length} onAdvance={handleTabPress}>
         <PagerView
           ref={pagerRef}
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor: colors.background }}
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          <View key="institutions" style={{ flex: 1 }}>
-            <EduOrgInstitutionsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="people" style={{ flex: 1 }}>
-            <EduOrgPeopleV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="rooms" style={{ flex: 1 }}>
-            <EduOrgRoomsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="operations" style={{ flex: 1 }}>
-            <EduOrgOperationsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="finance" style={{ flex: 1 }}>
-            <EduOrgFinanceV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="payment-rails" style={{ flex: 1 }}>
-            <EduOrgPaymentRailsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="compliance" style={{ flex: 1 }}>
-            <EduOrgComplianceV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="facilities" style={{ flex: 1 }}>
-            <EduOrgFacilitiesV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="resources" style={{ flex: 1 }}>
-            <EduOrgResourcesV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="sponsors" style={{ flex: 1 }}>
-            <EduOrgSponsorsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
+          {tabs.map((tab) => {
+            const p = { colors, accentColor: accent, role: effectiveRole };
+            switch (tab.id) {
+              case 'institutions': return <View key="institutions" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgInstitutionsV2 {...p} /></View>;
+              case 'people': return <View key="people" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgPeopleV2 {...p} /></View>;
+              case 'rooms': return <View key="rooms" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgRoomsV2 {...p} /></View>;
+              case 'operations': return <View key="operations" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgOperationsV2 {...p} /></View>;
+              case 'finance': return <View key="finance" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgFinanceV2 {...p} /></View>;
+              case 'payment-rails': return <View key="payment-rails" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgPaymentRailsV2 {...p} /></View>;
+              case 'compliance': return <View key="compliance" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgComplianceV2 {...p} /></View>;
+              case 'facilities': return <View key="facilities" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgFacilitiesV2 {...p} /></View>;
+              case 'resources': return <View key="resources" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgResourcesV2 {...p} /></View>;
+              case 'sponsors': return <View key="sponsors" style={{ flex: 1, backgroundColor: colors.background }}><EduOrgSponsorsV2 {...p} /></View>;
+              default: return <View key={tab.id} style={{ flex: 1, backgroundColor: colors.background }} />;
+            }
+          })}
         </PagerView>
       </EdgeHoldAdvance>
     </>
@@ -721,6 +419,8 @@ function CommunityOrganization() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = ModeColors.competition.primary;
+  const membershipId = useMembershipId();
+  const tabs = useMemo(() => getFilteredOrgTabs('competition', membershipId), [membershipId]);
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
 
@@ -748,44 +448,30 @@ function CommunityOrganization() {
 
   return (
     <>
-      <PagedTabBar tabs={ORG_TABS.competition} activeIndex={activeIndex} onTabPress={handleTabPress} />
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.competition.length} onAdvance={handleTabPress}>
+      <PagedTabBar tabs={tabs} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={tabs.length} onAdvance={handleTabPress}>
         <PagerView
           ref={pagerRef}
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor: colors.background }}
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          <View key="series" style={{ flex: 1 }}>
-            <CompSeriesV2 colors={colors} accentColor={accent} />
-          </View>
-          <View key="people" style={{ flex: 1 }}>
-            <CompPeopleV2 colors={colors} accentColor={accent} />
-          </View>
-          <View key="rooms" style={{ flex: 1 }}>
-            <CompRoomsV2 colors={colors} accentColor={accent} />
-          </View>
-          <View key="operations" style={{ flex: 1 }}>
-            <CompOperationsV2 colors={colors} accentColor={accent} />
-          </View>
-          <View key="finance" style={{ flex: 1 }}>
-            <CompFinanceV2 colors={colors} accentColor={accent} />
-          </View>
-          <View key="payment-rails" style={{ flex: 1 }}>
-            <CompPaymentRailsV2 colors={colors} accentColor={accent} />
-          </View>
-          <View key="compliance" style={{ flex: 1 }}>
-            <CompComplianceV2 colors={colors} accentColor={accent} />
-          </View>
-          <View key="assets" style={{ flex: 1 }}>
-            <CompAssetsV2 colors={colors} accentColor={accent} />
-          </View>
-          <View key="reports" style={{ flex: 1 }}>
-            <CompReportsV2 colors={colors} accentColor={accent} />
-          </View>
-          <View key="sponsors" style={{ flex: 1 }}>
-            <CompSponsorsV2 colors={colors} accentColor={accent} />
-          </View>
+          {tabs.map((tab) => {
+            const p = { colors, accentColor: accent };
+            switch (tab.id) {
+              case 'series': return <View key="series" style={{ flex: 1, backgroundColor: colors.background }}><CompSeriesV2 {...p} /></View>;
+              case 'people': return <View key="people" style={{ flex: 1, backgroundColor: colors.background }}><CompPeopleV2 {...p} /></View>;
+              case 'rooms': return <View key="rooms" style={{ flex: 1, backgroundColor: colors.background }}><CompRoomsV2 {...p} /></View>;
+              case 'operations': return <View key="operations" style={{ flex: 1, backgroundColor: colors.background }}><CompOperationsV2 {...p} /></View>;
+              case 'finance': return <View key="finance" style={{ flex: 1, backgroundColor: colors.background }}><CompFinanceV2 {...p} /></View>;
+              case 'payment-rails': return <View key="payment-rails" style={{ flex: 1, backgroundColor: colors.background }}><CompPaymentRailsV2 {...p} /></View>;
+              case 'compliance': return <View key="compliance" style={{ flex: 1, backgroundColor: colors.background }}><CompComplianceV2 {...p} /></View>;
+              case 'assets': return <View key="assets" style={{ flex: 1, backgroundColor: colors.background }}><CompAssetsV2 {...p} /></View>;
+              case 'reports': return <View key="reports" style={{ flex: 1, backgroundColor: colors.background }}><CompReportsV2 {...p} /></View>;
+              case 'sponsors': return <View key="sponsors" style={{ flex: 1, backgroundColor: colors.background }}><CompSponsorsV2 {...p} /></View>;
+              default: return <View key={tab.id} style={{ flex: 1, backgroundColor: colors.background }} />;
+            }
+          })}
         </PagerView>
       </EdgeHoldAdvance>
     </>
@@ -809,6 +495,10 @@ function BusinessOrganizationInner() {
   const colors = Colors[colorScheme];
   const accent = ModeColors.business.primary;
   const { viewAsRole, selectedEntity, selectedEntityId } = useBusiness();
+  const membershipId = useMembershipId();
+  const derivedRole = useMemo(() => getBusinessRole(membershipId), [membershipId]);
+  const effectiveRole = viewAsRole ?? derivedRole;
+  const tabs = useMemo(() => getFilteredOrgTabs('business', membershipId), [membershipId]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [entitySwitcherVisible, setEntitySwitcherVisible] = useState(false);
   const pagerRef = useRef<PagerView>(null);
@@ -837,7 +527,7 @@ function BusinessOrganizationInner() {
 
   return (
     <>
-      <PagedTabBar tabs={ORG_TABS.business} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <PagedTabBar tabs={tabs} activeIndex={activeIndex} onTabPress={handleTabPress} />
       <EntityScopeBar
         entityId={selectedEntityId}
         entityName={selectedEntity.name}
@@ -846,43 +536,29 @@ function BusinessOrganizationInner() {
         onSwitch={() => setEntitySwitcherVisible(true)}
         colors={colors}
       />
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ORG_TABS.business.length} onAdvance={handleTabPress}>
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={tabs.length} onAdvance={handleTabPress}>
         <PagerView
           ref={pagerRef}
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor: colors.background }}
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
-          <View key="entities" style={{ flex: 1 }}>
-            <BizOrgEntitiesV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="people" style={{ flex: 1 }}>
-            <BizOrgPeopleV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="rooms" style={{ flex: 1 }}>
-            <BizOrgRoomsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="operations" style={{ flex: 1 }}>
-            <BizOrgOperationsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="finance" style={{ flex: 1 }}>
-            <BizOrgFinanceV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="payment-rails" style={{ flex: 1 }}>
-            <BizOrgPaymentRailsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="legal" style={{ flex: 1 }}>
-            <BizOrgLegalV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="compliance" style={{ flex: 1 }}>
-            <BizOrgComplianceV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="assets" style={{ flex: 1 }}>
-            <BizOrgAssetsTab colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
-          <View key="reports" style={{ flex: 1 }}>
-            <BizOrgReportsV2 colors={colors} accentColor={accent} role={viewAsRole} />
-          </View>
+          {tabs.map((tab) => {
+            const p = { colors, accentColor: accent, role: effectiveRole };
+            switch (tab.id) {
+              case 'entities': return <View key="entities" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgEntitiesV2 {...p} /></View>;
+              case 'people': return <View key="people" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgPeopleV2 {...p} /></View>;
+              case 'rooms': return <View key="rooms" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgRoomsV2 {...p} /></View>;
+              case 'operations': return <View key="operations" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgOperationsV2 {...p} /></View>;
+              case 'finance': return <View key="finance" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgFinanceV2 {...p} /></View>;
+              case 'payment-rails': return <View key="payment-rails" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgPaymentRailsV2 {...p} /></View>;
+              case 'legal': return <View key="legal" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgLegalV2 {...p} /></View>;
+              case 'compliance': return <View key="compliance" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgComplianceV2 {...p} /></View>;
+              case 'assets': return <View key="assets" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgAssetsTab {...p} /></View>;
+              case 'reports': return <View key="reports" style={{ flex: 1, backgroundColor: colors.background }}><BizOrgReportsV2 {...p} /></View>;
+              default: return <View key={tab.id} style={{ flex: 1, backgroundColor: colors.background }} />;
+            }
+          })}
         </PagerView>
       </EdgeHoldAdvance>
       <EntitySwitcherSheet

@@ -137,7 +137,7 @@ export const TEAM_IDENTITY: TeamIdentity = {
   offKR: 72,
   defKR: 76,
   coverageBadge: 'Synergy',
-  lastUpdated: 'Feb 15, 2026 \u00b7 11:42 AM',
+  lastUpdated: 'Feb 15, 2026 · 11:42 AM',
 };
 
 export const TEAM_DASHBOARD: TeamDashboard = {

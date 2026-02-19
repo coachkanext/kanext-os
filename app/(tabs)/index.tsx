@@ -4,58 +4,42 @@
  * Per spec: Home displays key stats and quick actions for the current mode.
  */
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Pressable, TextInput, InteractionManager, Image, Text } from 'react-native';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { View, ScrollView, StyleSheet, Pressable, InteractionManager, Text, Dimensions, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/core';
 import * as Haptics from 'expo-haptics';
-import PagerView from 'react-native-pager-view';
-
+import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
-import { ProgramContextSection } from '@/components/program-context-section';
-import { ProgramContent } from '@/components/program/program-content';
 import { RosterContent, DepthChartView, DEPTH_CHART_BY_SEASON, CURRENT_SEASON } from '@/components/roster-content';
 import { UnitsView } from '@/components/depth-chart/depth-chart-units';
 import { KRDetailsSheet } from '@/components/kr-details-sheet';
 import { PlayerPoolContent } from '@/app/coach/recruiting';
-import { StatsContent } from '@/app/coach/stats';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import type { Archetype } from '@/data/system-demand-profiles';
 import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAppContext, useMode } from '@/context/app-context';
+import { useAppContext, useMode, useMembershipId } from '@/context/app-context';
 import type { Mode, OffensiveStyle, DefensiveStyle } from '@/types';
-import { PagedTabBar } from '@/components/ui/paged-tab-bar';
-import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
-import { TabPlaceholderPage } from '@/components/ui/tab-placeholder-page';
+import { RECRUITING_BOARD } from '@/data/recruitingBoard';
+import { openTeamCard } from '@/utils/global-entity-sheets';
 
 // Mock data imports (other modes)
 
 // FMU data
 import { FMU_GAMES, FMU_GAMES_BY_ID, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getPGISColor, getTGISColor, tgisToDisplay, FMU_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
 import { TeamQuickSheet } from '@/components/team-quick-sheet';
-import { LiveGamePanel } from '@/components/live-game-panel';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
+import { getSportsRole, type SportsRoleLens } from '@/utils/sports-rbac';
 import { registerTeamSheetHandlers } from '@/utils/global-team-sheet';
-import { GOVERNING_BODIES } from '@/data/governing-bodies';
-import { ScheduleHub } from '@/components/schedule/schedule-hub';
-import { GamePlanContent } from '@/components/game-plan/game-plan-content';
 import { SportsGamePlanV2 } from '@/components/game-plan/sports-game-plan-v2';
-import { GameOpsHubContent } from '@/components/game-ops/game-ops-hub-content';
-import { VideoHeroCard } from '@/components/ui/video-hero-card';
-import { DashboardRenderer } from '@/components/dashboard/dashboard-renderer';
-import { SportsDashboardV2 } from '@/components/dashboard/sports-dashboard-v2';
-import { buildSportsDashboard } from '@/data/dashboard-payloads';
 import { SportsCalendarV2 } from '@/components/calendar/sports-calendar-v2';
 import { SportsStatsV2 } from '@/components/stats/sports-stats-v2';
 import { SportsSimulationV2 } from '@/components/simulation/sports-simulation-v2';
 import { SportsDevelopmentV2 } from '@/components/development/sports-development-v2';
-import { SportsProgramV2 } from '@/components/program/sports-program-v2';
-import { SimulationContent } from '@/components/simulation/simulation-content';
-import { DevelopmentContent } from '@/components/development/development-content';
 import { CommunityHome } from '@/components/community/community-home';
 import { BusinessHome } from '@/components/business/business-home';
 import { ChurchHome as ChurchHomeComponent } from '@/components/church/church-home';
@@ -71,21 +55,45 @@ import { EducationProvider } from '@/context/education-context';
 // Shows: state, identity, and motion — nothing else.
 // =============================================================================
 
-// Sports Home Top Tabs — all items in scrollable paged row
-const TEAM_HUB_TABS = [
-  // Page 1
+// Sports Home — 4-pill layout (Dashboard + Calendar + Roster + Recruiting)
+type HomePill = 'dashboard' | 'calendar' | 'roster' | 'recruiting';
+type DrillDownId = 'stats' | 'game-plan' | 'simulation' | 'development' | 'alerts';
+
+const HOME_PILLS: { id: HomePill; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
-  { id: 'schedule', label: 'Calendar' },
+  { id: 'calendar', label: 'Calendar' },
   { id: 'roster', label: 'Roster' },
   { id: 'recruiting', label: 'Recruiting' },
-  // Page 2
-  { id: 'stats', label: 'Statistics' },
-  { id: 'game-plan', label: 'Game Plan' },
-  { id: 'simulation', label: 'Simulation' },
-  { id: 'development', label: 'Development' },
-  // Page 3
-  { id: 'program', label: 'Program' },
 ];
+
+// Domain section cards shown on Dashboard pill (5 remaining after roster/recruiting promoted)
+const DOMAIN_CARD_DEFS: { id: DrillDownId; title: string; icon: IconSymbolName }[] = [
+  { id: 'stats', title: 'Statistics', icon: 'chart.bar.fill' },
+  { id: 'game-plan', title: 'Game Plan', icon: 'sportscourt.fill' },
+  { id: 'simulation', title: 'Simulation', icon: 'play.circle.fill' },
+  { id: 'development', title: 'Development', icon: 'arrow.up.right.circle.fill' },
+  { id: 'alerts', title: 'Alerts & Decisions', icon: 'bell.badge.fill' },
+];
+
+/** RBAC: which domain cards are hidden per role */
+const DOMAIN_HIDDEN: Record<SportsRoleLens, Set<DrillDownId>> = {
+  R1: new Set(),
+  R2: new Set(['game-plan', 'simulation', 'development']),
+  R3: new Set(),
+  R4: new Set(['game-plan', 'simulation', 'development']),
+  R5: new Set(['game-plan', 'simulation', 'development']),
+};
+
+/** RBAC: which pills are hidden per role */
+const PILL_HIDDEN: Record<SportsRoleLens, Set<HomePill>> = {
+  R1: new Set(),
+  R2: new Set(['recruiting']),
+  R3: new Set(),
+  R4: new Set(),
+  R5: new Set(['recruiting']),
+};
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 // FMU seal logo
 const FMU_SEAL = require('@/assets/images/fmu-seal.png');
@@ -129,15 +137,8 @@ const NEXT_CONF_GAMES = FMU_SEASON_COMPLETE
 // Game IDs for routing
 const LAST_GAME_ID = FMU_LAST_GAME_ID;
 
-const SEASON_YEARS = [
-  { id: '2025-26', label: '2025-26' },
-  { id: '2024-25', label: '2024-25' },
-  { id: '2023-24', label: '2023-24' },
-];
-
-
 // =============================================================================
-// SCHEDULE HUB — extracted to components/schedule/schedule-hub.tsx
+// OPPONENT HELPERS (used by Recent BPR bottom sheet)
 // =============================================================================
 
 
@@ -216,19 +217,27 @@ function SportsHome() {
   const colors = Colors[colorScheme];
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ hubTab?: string }>();
+  const membershipId = useMembershipId();
 
-  // Active hub tab index (synced with PagerView)
-  const initialTab = params.hubTab ? parseInt(params.hubTab, 10) : 0;
-  const [activeHubIndex, setActiveHubIndex] = useState(initialTab);
-  const pagerRef = useRef<PagerView>(null);
-  const [openLiveTrigger, setOpenLiveTrigger] = useState(0);
-  const [jumpToStandings, setJumpToStandings] = useState(0);
+  // RBAC + pills
+  const sportsRole = getSportsRole(membershipId);
+  const [activePill, setActivePill] = useState<HomePill>('dashboard');
+  const [drillDown, setDrillDown] = useState<DrillDownId | null>(null);
 
-  // Reset PagerView to page 0 (the main Home hub)
+  const visibleCards = useMemo(() => {
+    const hidden = DOMAIN_HIDDEN[sportsRole];
+    return DOMAIN_CARD_DEFS.filter(c => !hidden.has(c.id));
+  }, [sportsRole]);
+
+  const visiblePills = useMemo(() => {
+    const hidden = PILL_HIDDEN[sportsRole];
+    return HOME_PILLS.filter(p => !hidden.has(p.id));
+  }, [sportsRole]);
+
+  // Reset to dashboard overview
   const resetToHome = useCallback(() => {
-    setActiveHubIndex(0);
-    pagerRef.current?.setPage(0);
+    setDrillDown(null);
+    setActivePill('dashboard');
   }, []);
 
   // Register immediate callback so pressing Home while already focused resets the pager
@@ -247,17 +256,6 @@ function SportsHome() {
       }
     }, [])
   );
-
-  // Navigate to requested hub tab when params change
-  React.useEffect(() => {
-    if (params.hubTab) {
-      const idx = parseInt(params.hubTab, 10);
-      if (!isNaN(idx) && idx !== activeHubIndex) {
-        setActiveHubIndex(idx);
-        pagerRef.current?.setPage(idx);
-      }
-    }
-  }, [params.hubTab]);
 
   // KR details sheet
   const [krSheetVisible, setKrSheetVisible] = useState(false);
@@ -309,98 +307,231 @@ function SportsHome() {
   const liveDefKR = systemKRModifier(selectedDefSystem, baseDefKRHome);
   const liveTeamKR = Math.round((liveOffKR * 53 + liveDefKR * 47) / 100);
 
-  // Season year picker
-  const [selectedYear, setSelectedYear] = useState('2025-26');
-  const [yearPickerOpen, setYearPickerOpen] = useState(false);
+  // Computed card previews
+  const previews = useMemo((): Record<DrillDownId, string> => {
+    const topScorer = FMU_LEADERS[0];
+    const topReb = [...FMU_LEADERS].sort((a, b) => b.rpg - a.rpg)[0];
+    const nextOpp = FMU_NEXT_GAME?.opponent ?? 'TBD';
+    const nextPre = FMU_NEXT_GAME_ID ? FMU_PREGAME[FMU_NEXT_GAME_ID] : null;
+    return {
+      stats: `${topScorer?.name.split(' ').pop()} ${topScorer?.ppg} PPG · ${topReb?.name.split(' ').pop()} ${topReb?.rpg} RPG · #${FMU_CONF_POSITION} Sun Conf`,
+      'game-plan': `vs ${nextOpp}${nextPre ? ` · KR ${nextPre.oppKR}` : ''}`,
+      simulation: 'Season Projection: 22-8 · Tournament: 74% advance',
+      development: '2 practice plans · 4 drill assignments · 3 evidence items pending',
+      alerts: 'Recruiting: 2 responses due · Compliance: 1 form overdue',
+    };
+  }, [liveTeamKR]);
 
-  const handleTabPress = useCallback((index: number) => {
-    pagerRef.current?.setPage(index);
-  }, []);
-
-  // Pregame packet shown when there's a next game
-  const showPregamePacket = FMU_NEXT_GAME != null;
-
-  // Home tab content — GM/HC Dashboard
-  const renderHomeContent = () => {
-    return (
-      <>
-        {/* ===== DASHBOARD BLOCKS (0–6) ===== */}
-        <View style={{ marginTop: Spacing.sm }}>
-          <DashboardRenderer
-            payload={buildSportsDashboard(liveTeamKR, liveOffKR, liveDefKR)}
-            renderAsFragment
-          />
-        </View>
-
-      </>
-    );
-  };
+  // Drill-down back label
+  const drillLabel = drillDown ? DOMAIN_CARD_DEFS.find(c => c.id === drillDown)?.title ?? '' : '';
 
   return (
     <View style={styles.sportsHomeContainer}>
-      {/* ===== STICKY TABS (scrollable paged row) ===== */}
-      <PagedTabBar tabs={TEAM_HUB_TABS} activeIndex={activeHubIndex} onTabPress={handleTabPress} />
-
-      {/* ===== SWIPEABLE CONTENT ===== */}
-      <EdgeHoldAdvance activeIndex={activeHubIndex} tabCount={TEAM_HUB_TABS.length} onAdvance={handleTabPress}>
-        <PagerView
-          ref={pagerRef}
-          style={styles.pagerView}
-          initialPage={0}
-          onPageSelected={(e) => setActiveHubIndex(e.nativeEvent.position)}
-        >
-          {/* Page 0: Dashboard (V2) */}
-          <View key="dashboard" style={{ flex: 1 }}>
-            <SportsDashboardV2 onTabJump={(idx) => { setActiveHubIndex(idx); pagerRef.current?.setPage(idx); }} />
-          </View>
-
-          {/* Page 1: Calendar (V2) */}
-          <View key="schedule" style={{ flex: 1 }}>
-            <SportsCalendarV2 colors={colors} />
-          </View>
-
-          {/* Page 2: Roster */}
-          <ScrollView
-            key="roster"
-            style={styles.sportsScrollView}
-            contentContainerStyle={styles.rosterScrollContent}
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled
+      {drillDown ? (
+        <>
+          {/* ===== DRILL-DOWN BACK BAR ===== */}
+          <Pressable
+            style={styles.drillBackBar}
+            onPress={() => setDrillDown(null)}
+            accessibilityRole="button"
+            accessibilityLabel={`Back to Dashboard`}
           >
-            <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { setActiveHubIndex(4); pagerRef.current?.setPage(4); }} onKRPress={() => setKrSheetVisible(true)} />
-          </ScrollView>
+            <IconSymbol name="chevron.left" size={18} color={colors.tint} />
+            <Text style={[styles.drillBackText, { color: colors.tint }]}>Dashboard</Text>
+            <Text style={[styles.drillBackTitle, { color: colors.text }]}>{drillLabel}</Text>
+          </Pressable>
 
-          {/* Page 3: Recruiting (National Pool) */}
-          <View key="recruiting" style={{ flex: 1 }}>
+          {/* ===== DRILL-DOWN DETAIL ===== */}
+          <View style={{ flex: 1 }}>
+            {drillDown === 'stats' && <SportsStatsV2 />}
+            {drillDown === 'game-plan' && <SportsGamePlanV2 />}
+            {drillDown === 'simulation' && <SportsSimulationV2 />}
+            {drillDown === 'development' && <SportsDevelopmentV2 />}
+            {drillDown === 'alerts' && (
+              <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }}>
+                <View style={[styles.domainCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.domainCardTitle, { color: colors.text }]}>Alerts & Decisions Queue</Text>
+                  <Text style={[styles.domainCardPreview, { color: colors.textSecondary, marginTop: 8 }]}>
+                    Recruiting: 2 recruit responses due{'\n'}
+                    Compliance: 1 eligibility form overdue{'\n'}
+                    Travel: Away game booking approval needed{'\n'}
+                    Finance: Equipment purchase request pending
+                  </Text>
+                </View>
+              </ScrollView>
+            )}
+          </View>
+        </>
+      ) : (
+        <>
+          {/* ===== PILL TOGGLE ===== */}
+          <View style={styles.pillBar}>
+            {visiblePills.map(pill => (
+              <Pressable
+                key={pill.id}
+                style={[styles.pill, activePill === pill.id && { backgroundColor: colors.tint }]}
+                onPress={() => { setActivePill(pill.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+              >
+                <Text style={[styles.pillText, { color: activePill === pill.id ? '#000' : colors.textSecondary }]}>
+                  {pill.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+
+          {activePill === 'dashboard' ? (
+            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+              {/* ===== BLOCK 1 — VIDEO HERO ===== */}
+              {(() => {
+                const liveGame = FMU_GAMES.find(g => g.status === 'live');
+                const heroOverlay = liveGame
+                  ? `LIVE: FMU ${liveGame.score ?? ''} · ${liveGame.clock ?? ''}`
+                  : FMU_LAST_GAME
+                    ? `Last: ${FMU_LAST_GAME.result === 'W' ? 'W' : 'L'} ${FMU_LAST_GAME.score} vs ${FMU_LAST_GAME.opponent}`
+                    : FMU_NEXT_GAME
+                      ? `Next: vs ${FMU_NEXT_GAME.opponent} · ${FMU_NEXT_GAME.date}`
+                      : 'FMU Athletics';
+                return (
+                  <View style={styles.videoHero}>
+                    <LinearGradient
+                      colors={['#0a1628', '#162a4a', '#0a1628']}
+                      style={StyleSheet.absoluteFill}
+                    />
+                    <Image source={FMU_SEAL} style={styles.heroWatermark} />
+                    <View style={styles.heroPlayButton}>
+                      <IconSymbol name="play.fill" size={32} color="#fff" />
+                    </View>
+                    <View style={styles.heroOverlay}>
+                      <Text style={styles.heroOverlayText} numberOfLines={1}>{heroOverlay}</Text>
+                    </View>
+                  </View>
+                );
+              })()}
+
+              {/* ===== BLOCK 2 — NEXT GAME CARD ===== */}
+              {FMU_NEXT_GAME && (() => {
+                const nextGame = FMU_NEXT_GAME_ID ? FMU_GAMES_BY_ID[FMU_NEXT_GAME_ID] : null;
+                const oppHue = confHash(FMU_NEXT_GAME.opponent) % 360;
+                const oppInitials = FMU_NEXT_GAME.opponent.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+                const isHome = FMU_NEXT_GAME.location === 'Home';
+                return (
+                  <View style={[styles.nextGameCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                    {/* FMU side */}
+                    <Pressable style={styles.ngTeamCol} onPress={openTeamSheet}>
+                      <Image source={FMU_SEAL} style={styles.ngLogo} />
+                      <Text style={[styles.ngTeamName, { color: colors.text }]} numberOfLines={1}>Florida Memorial</Text>
+                      <Text style={[styles.ngRecord, { color: colors.textSecondary }]}>{FMU_RECORD.overall}</Text>
+                    </Pressable>
+
+                    {/* Center info */}
+                    <View style={styles.ngCenter}>
+                      <View style={[styles.ngLocationBadge, { backgroundColor: isHome ? '#22c55e22' : '#f59e0b22' }]}>
+                        <Text style={[styles.ngLocationText, { color: isHome ? '#22c55e' : '#f59e0b' }]}>{isHome ? 'HOME' : 'AWAY'}</Text>
+                      </View>
+                      <Text style={[styles.ngDate, { color: colors.text }]}>{nextGame?.date ?? FMU_NEXT_GAME.date}</Text>
+                      <Text style={[styles.ngTime, { color: colors.textSecondary }]}>{nextGame?.gameTime ?? ''}</Text>
+                      <Text style={[styles.ngVenue, { color: colors.textTertiary }]} numberOfLines={1}>{nextGame?.venue ?? FMU_NEXT_GAME.location}</Text>
+                      <View style={[styles.ngConfBadge, { backgroundColor: nextGame?.gameType === 'CONF' ? '#2563eb22' : '#71717a22' }]}>
+                        <Text style={[styles.ngConfText, { color: nextGame?.gameType === 'CONF' ? '#60a5fa' : '#a1a1aa' }]}>{nextGame?.gameType ?? 'NON-CONF'}</Text>
+                      </View>
+                    </View>
+
+                    {/* Opponent side */}
+                    <Pressable
+                      style={styles.ngTeamCol}
+                      onPress={() => openTeamCard({
+                        name: FMU_NEXT_GAME!.opponent,
+                        record: FMU_NEXT_GAME!.opponentRecord ?? '',
+                        conference: 'Sun Conference',
+                        teamKR: FMU_NEXT_GAME!.opponentKR,
+                      })}
+                    >
+                      <View style={[styles.ngOppCircle, { backgroundColor: `hsl(${oppHue}, 50%, 35%)` }]}>
+                        <Text style={styles.ngOppInitials}>{oppInitials}</Text>
+                      </View>
+                      <Text style={[styles.ngTeamName, { color: colors.text }]} numberOfLines={1}>{FMU_NEXT_GAME.opponent}</Text>
+                      <Text style={[styles.ngRecord, { color: colors.textSecondary }]}>{FMU_NEXT_GAME.opponentRecord ?? ''}</Text>
+                    </Pressable>
+                  </View>
+                );
+              })()}
+
+              {/* ===== BLOCK 2b — ACTION BUTTONS ===== */}
+              {FMU_NEXT_GAME && (
+                <View style={styles.ngActions}>
+                  <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Buy Tickets')}>
+                    <IconSymbol name="ticket.fill" size={14} color={colors.tint} />
+                    <Text style={[styles.ngActionText, { color: colors.text }]}>Buy Tickets</Text>
+                  </Pressable>
+                  <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Watch / Live Stats')}>
+                    <IconSymbol name="play.rectangle.fill" size={14} color={colors.tint} />
+                    <Text style={[styles.ngActionText, { color: colors.text }]}>Watch / Live Stats</Text>
+                  </Pressable>
+                </View>
+              )}
+
+              {/* ===== BLOCK 3 — COMMERCE ROW ===== */}
+              <View style={styles.commerceRow}>
+                <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Tickets')}>
+                  <View style={[styles.commerceIconWrap, { backgroundColor: '#f59e0b22' }]}>
+                    <IconSymbol name="ticket.fill" size={18} color="#f59e0b" />
+                  </View>
+                  <Text style={[styles.commerceLabel, { color: colors.text }]}>Buy Tickets</Text>
+                  <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>FMU Athletics Events</Text>
+                </Pressable>
+                <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Store')}>
+                  <View style={[styles.commerceIconWrap, { backgroundColor: '#8b5cf622' }]}>
+                    <IconSymbol name="bag.fill" size={18} color="#8b5cf6" />
+                  </View>
+                  <Text style={[styles.commerceLabel, { color: colors.text }]}>Team Store</Text>
+                  <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>Official FMU Gear</Text>
+                </Pressable>
+                <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Support')}>
+                  <View style={[styles.commerceIconWrap, { backgroundColor: '#ef444422' }]}>
+                    <IconSymbol name="heart.fill" size={18} color="#ef4444" />
+                  </View>
+                  <Text style={[styles.commerceLabel, { color: colors.text }]}>Support</Text>
+                  <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>Support FMU Athletics</Text>
+                </Pressable>
+              </View>
+
+              {/* ===== REMAINING DOMAIN CARDS ===== */}
+              <View style={{ paddingHorizontal: Spacing.md, gap: Spacing.sm }}>
+                {visibleCards.map(card => (
+                  <Pressable
+                    key={card.id}
+                    onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                    style={({ pressed }) => [
+                      styles.domainCard,
+                      { backgroundColor: colors.card, borderColor: colors.border },
+                      pressed && { opacity: 0.7 },
+                    ]}
+                  >
+                    <View style={styles.domainCardHeader}>
+                      <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
+                        <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                      </View>
+                      <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
+                      <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+                    </View>
+                    <Text style={[styles.domainCardPreview, { color: colors.textSecondary }]}>
+                      {previews[card.id]}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </ScrollView>
+          ) : activePill === 'roster' ? (
+            <ScrollView style={styles.sportsScrollView} contentContainerStyle={styles.rosterScrollContent} showsVerticalScrollIndicator={false} nestedScrollEnabled>
+              <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { setActivePill('dashboard'); setDrillDown('stats'); }} onKRPress={() => setKrSheetVisible(true)} />
+            </ScrollView>
+          ) : activePill === 'recruiting' ? (
             <PlayerPoolContent />
-          </View>
-
-          {/* Page 4: Statistics (V2) */}
-          <View key="stats" style={{ flex: 1 }}>
-            <SportsStatsV2 />
-          </View>
-
-          {/* Page 5: Game Plan (V2) */}
-          <View key="game-plan" style={{ flex: 1 }}>
-            <SportsGamePlanV2 />
-          </View>
-
-          {/* Page 6: Simulation (V2) */}
-          <View key="simulation" style={{ flex: 1 }}>
-            <SportsSimulationV2 />
-          </View>
-
-          {/* Page 7: Development (V2) */}
-          <View key="development" style={{ flex: 1 }}>
-            <SportsDevelopmentV2 />
-          </View>
-
-          {/* Page 8: Program (V2) */}
-          <View key="program" style={{ flex: 1 }}>
-            <SportsProgramV2 />
-          </View>
-        </PagerView>
-      </EdgeHoldAdvance>
+          ) : (
+            <SportsCalendarV2 colors={colors} />
+          )}
+        </>
+      )}
 
       {/* KR Details Bottom Sheet */}
       <KRDetailsSheet
@@ -830,7 +961,7 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xxl,
   },
 
-  // Sports Home (sticky header layout)
+  // Sports Home
   sportsHomeContainer: {
     flex: 1,
   },
@@ -844,8 +975,99 @@ const styles = StyleSheet.create({
   rosterScrollContent: {
     flexGrow: 1,
   },
-  pagerView: {
+
+  // Pill Bar
+  pillBar: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 10,
+  },
+  pill: {
+    paddingHorizontal: 18,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.12)',
+  },
+  pillText: {
+    fontSize: 14,
+    fontWeight: '600',
+    letterSpacing: -0.2,
+  },
+
+  // Drill-Down Back Bar
+  drillBackBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 10,
+    gap: 4,
+  },
+  drillBackText: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  drillBackTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    marginLeft: 'auto',
+  },
+
+  // Command Strip KPI Chips
+  kpiChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    minWidth: 110,
+    gap: 2,
+  },
+  kpiLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  kpiValue: {
+    fontSize: 17,
+    fontWeight: '800',
+    letterSpacing: -0.3,
+  },
+  kpiSub: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+
+  // Domain Section Cards
+  domainCard: {
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: Spacing.md,
+  },
+  domainCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 6,
+  },
+  domainCardIconWrap: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  domainCardTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    letterSpacing: -0.2,
     flex: 1,
+  },
+  domainCardPreview: {
+    fontSize: 13,
+    fontWeight: '500',
+    lineHeight: 18,
+    paddingLeft: 40,
   },
   // Schedule tab
   sectionHeader: {
@@ -1431,6 +1653,188 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '400',
     marginTop: 2,
+  },
+
+  // Video Hero
+  videoHero: {
+    height: SCREEN_HEIGHT * 0.4,
+    marginHorizontal: Spacing.md,
+    marginBottom: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroWatermark: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    opacity: 0.12,
+    resizeMode: 'contain',
+  },
+  heroPlayButton: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  heroOverlayText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#fff',
+    letterSpacing: 0.3,
+    textAlign: 'center',
+  },
+
+  // Next Game Card
+  nextGameCard: {
+    marginHorizontal: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: Spacing.md,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  ngTeamCol: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 6,
+  },
+  ngLogo: {
+    width: 44,
+    height: 44,
+    resizeMode: 'contain',
+  },
+  ngTeamName: {
+    fontSize: 12,
+    fontWeight: '700',
+    textAlign: 'center',
+    letterSpacing: -0.2,
+  },
+  ngRecord: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+  ngCenter: {
+    flex: 1.2,
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 4,
+  },
+  ngLocationBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  ngLocationText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  ngDate: {
+    fontSize: 14,
+    fontWeight: '700',
+    letterSpacing: -0.2,
+  },
+  ngTime: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  ngVenue: {
+    fontSize: 11,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  ngConfBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginTop: 2,
+  },
+  ngConfText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  ngOppCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ngOppInitials: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: 0.5,
+  },
+  ngActions: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: Spacing.md,
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  ngActionBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: BorderRadius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  ngActionText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+
+  // Commerce Row
+  commerceRow: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.md,
+  },
+  commerceCard: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 6,
+    borderRadius: BorderRadius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    gap: 6,
+  },
+  commerceIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  commerceLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    textAlign: 'center',
+    letterSpacing: -0.2,
+  },
+  commerceSub: {
+    fontSize: 10,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 
 });

@@ -543,7 +543,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityMs: Date.now() - 6 * 60 * 60 * 1000,
     createdAt: '2025-08-15',
     avatarColor: '#14B8A6',
-    contextField: 'Proof wedge partner \u00b7 Active since Aug 2025',
+    contextField: 'Proof wedge partner · Active since Aug 2025',
     hasRoom: true,
     roomId: 'room-fmu-partner',
   },
@@ -575,7 +575,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityMs: Date.now() - 5 * 24 * 60 * 60 * 1000,
     createdAt: '2026-01-18',
     avatarColor: '#8F8F8F',
-    contextField: 'Initial conversation \u00b7 Church mode demo scheduled',
+    contextField: 'Initial conversation · Church mode demo scheduled',
   },
 
   // ── Resources (3) ──
@@ -591,7 +591,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityMs: Date.now() - 2 * 24 * 60 * 60 * 1000,
     createdAt: '2025-06-01',
     avatarColor: '#F472B6',
-    contextField: 'Template \u00b7 Last revised Feb 2026',
+    contextField: 'Template · Last revised Feb 2026',
   },
   {
     id: 'ue-res-onboarding',
@@ -605,7 +605,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityMs: Date.now() - 3 * 24 * 60 * 60 * 1000,
     createdAt: '2025-07-15',
     avatarColor: '#F472B6',
-    contextField: 'Playbook \u00b7 V3 in review',
+    contextField: 'Playbook · V3 in review',
   },
   {
     id: 'ue-res-brand-guide',
@@ -619,7 +619,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityMs: Date.now() - 5 * 24 * 60 * 60 * 1000,
     createdAt: '2025-11-01',
     avatarColor: '#F472B6',
-    contextField: 'Guidelines \u00b7 Covers logo, type, color system',
+    contextField: 'Guidelines · Covers logo, type, color system',
   },
 
   // ── Decisions (3) ──
@@ -679,7 +679,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityMs: Date.now() - 7 * 24 * 60 * 60 * 1000,
     createdAt: '2025-03-01',
     avatarColor: '#64748B',
-    contextField: 'Effective since Mar 2025 \u00b7 All departments',
+    contextField: 'Effective since Mar 2025 · All departments',
   },
   {
     id: 'ue-pol-data-retention',
@@ -693,7 +693,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityMs: Date.now() - 10 * 24 * 60 * 60 * 1000,
     createdAt: '2025-05-01',
     avatarColor: '#64748B',
-    contextField: 'Effective since May 2025 \u00b7 Engineering + Product',
+    contextField: 'Effective since May 2025 · Engineering + Product',
   },
 
   // ── Evidence (3) ──

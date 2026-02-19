@@ -128,7 +128,7 @@ function ProgramCard({ prog, colors, accent }: { prog: OrgProgram; colors: typeo
       </View>
 
       <ThemedText style={[styles.progNext, { color: colors.textSecondary }]}>
-        Next: {prog.nextEvent} \u00b7 {prog.nextEventDate}
+        Next: {prog.nextEvent} · {prog.nextEventDate}
       </ThemedText>
     </Pressable>
   );

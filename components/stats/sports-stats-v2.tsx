@@ -66,7 +66,7 @@ function DashboardView({ colors, accent }: { colors: typeof Colors.light; accent
           <ThemedText style={[styles.cardTitle, { color: colors.text }]}>{ti.name}</ThemedText>
           <View style={[styles.badge, { backgroundColor: accent }]}><ThemedText style={styles.badgeText}>KR {ti.teamKR}</ThemedText></View>
         </View>
-        <ThemedText style={[styles.cardSub, { color: colors.textSecondary }]}>{ti.level} \u00b7 {ti.conference} \u00b7 {ti.record} ({ti.confRecord} conf)</ThemedText>
+        <ThemedText style={[styles.cardSub, { color: colors.textSecondary }]}>{ti.level} · {ti.conference} · {ti.record} ({ti.confRecord} conf)</ThemedText>
         <View style={[styles.row, { marginTop: 10, gap: 16 }]}>
           <View><ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>OFF KR</ThemedText><ThemedText style={[styles.metricValue, { color: colors.text }]}>{ti.offKR}</ThemedText></View>
           <View><ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>DEF KR</ThemedText><ThemedText style={[styles.metricValue, { color: colors.text }]}>{ti.defKR}</ThemedText></View>
@@ -160,7 +160,7 @@ function LineupsView({ colors, accent }: { colors: typeof Colors.light; accent: 
         <View key={lu.id} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: 10 }]}>
           <View style={styles.row}>
             <View style={[styles.rankBadge, { backgroundColor: accent }]}><ThemedText style={styles.badgeText}>#{lu.rank}</ThemedText></View>
-            <ThemedText style={[styles.cardSub, { color: colors.textSecondary }]}>{lu.minutes} min \u00b7 {lu.possessions} poss</ThemedText>
+            <ThemedText style={[styles.cardSub, { color: colors.textSecondary }]}>{lu.minutes} min · {lu.possessions} poss</ThemedText>
           </View>
           <ThemedText style={[styles.lineupPlayers, { color: colors.text }]}>{lu.players.join(' \u2022 ')}</ThemedText>
           <View style={[styles.row, { marginTop: 8, gap: 16 }]}>
@@ -230,7 +230,7 @@ function GameLogView({ colors, accent }: { colors: typeof Colors.light; accent: 
             <ThemedText style={[styles.glOpponent, { color: colors.text }]}>{game.result} vs {game.opponent}</ThemedText>
             <ThemedText style={[styles.glScore, { color: colors.textSecondary }]}>{game.score}</ThemedText>
           </View>
-          <ThemedText style={[styles.glDate, { color: colors.textSecondary }]}>{game.date} \u00b7 Pace {game.pace} \u00b7 ORtg {game.offRtg} \u00b7 DRtg {game.defRtg}</ThemedText>
+          <ThemedText style={[styles.glDate, { color: colors.textSecondary }]}>{game.date} · Pace {game.pace} · ORtg {game.offRtg} · DRtg {game.defRtg}</ThemedText>
           <ThemedText style={[styles.glSwing, { color: accent }]}>Swing: {game.swingFactor}</ThemedText>
         </View>
       ))}

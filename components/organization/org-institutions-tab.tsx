@@ -271,7 +271,7 @@ function InstitutionCard({
         <View style={s.keyDateRow}>
           <IconSymbol name="calendar" size={12} color={colors.textSecondary} />
           <ThemedText style={[s.keyDateText, { color: colors.textSecondary }]}>
-            {institution.nextKeyDate.label} {'\u00b7'} {institution.nextKeyDate.date}
+            {institution.nextKeyDate.label} {'·'} {institution.nextKeyDate.date}
           </ThemedText>
         </View>
       ) : null}
@@ -372,7 +372,7 @@ function InstitutionHub({
                 <View style={s.keyDateRow}>
                   <IconSymbol name="calendar" size={14} color={accentColor} />
                   <ThemedText style={[s.keyDateLabel, { color: colors.text }]}>
-                    {institution.nextKeyDate.label} {'\u00b7'} {institution.nextKeyDate.date}
+                    {institution.nextKeyDate.label} {'·'} {institution.nextKeyDate.date}
                   </ThemedText>
                 </View>
               </View>
@@ -437,7 +437,7 @@ function InstitutionHub({
                 <View key={dept.id} style={[s.deptRow, { borderColor: colors.border }]}>
                   <ThemedText style={[s.deptName, { color: colors.text }]} numberOfLines={1}>{dept.name}</ThemedText>
                   <ThemedText style={[s.deptMeta, { color: colors.textTertiary }]}>
-                    {dept.programCount} programs {'\u00b7'} {dept.facultyCount} faculty
+                    {dept.programCount} programs {'·'} {dept.facultyCount} faculty
                   </ThemedText>
                 </View>
               ))}
@@ -748,7 +748,7 @@ function InstitutionHub({
                       {item.description}
                     </ThemedText>
                     <ThemedText style={[s.auditMeta, { color: colors.textTertiary }]}>
-                      {item.actor} {'\u00b7'} {item.timestamp}
+                      {item.actor} {'·'} {item.timestamp}
                     </ThemedText>
                   </View>
                 </View>
@@ -841,7 +841,7 @@ function InstitutionHub({
             {institution.founded || institution.accreditation ? (
               <ThemedText style={[s.hubFoundLine, { color: colors.textTertiary }]}>
                 {institution.founded ? `Est. ${institution.founded}` : ''}
-                {institution.founded && institution.accreditation ? ' \u00b7 ' : ''}
+                {institution.founded && institution.accreditation ? ' · ' : ''}
                 {institution.accreditation ? `Accredited: ${institution.accreditation}` : ''}
               </ThemedText>
             ) : null}

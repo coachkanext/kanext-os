@@ -81,7 +81,7 @@ export const TEAM_TRUTH_HEADER: TeamTruthHeader = {
   teamKR: FMU_KR,
   availability: { available: 13, injured: 1, out: 1, redshirt: 2 },
   nextGameSummary: FMU_NEXT_GAME
-    ? `Next: ${FMU_NEXT_GAME.location === 'Home' ? 'vs' : '@'} ${FMU_NEXT_GAME.opponent} \u00b7 ${FMU_NEXT_GAME.date}`
+    ? `Next: ${FMU_NEXT_GAME.location === 'Home' ? 'vs' : '@'} ${FMU_NEXT_GAME.opponent} · ${FMU_NEXT_GAME.date}`
     : FMU_SEASON_COMPLETE ? 'Season Complete' : null,
   rbac: 'R1',
 };

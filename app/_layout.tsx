@@ -36,9 +36,17 @@ import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
 import { registerDrawerHandlers } from '@/utils/global-drawer';
 import { registerVoiceHandlers } from '@/utils/global-voice';
 import { registerAskNexusHandlers } from '@/utils/global-ask-nexus';
+import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
+import { requestHomeReset } from '@/utils/global-home';
+import { requestOrgReset } from '@/utils/global-org';
 import { AskNexusSheet } from '@/components/ask-nexus-sheet';
 import { UniversalFinder } from '@/components/universal-finder';
 import type { AskNexusContext } from '@/data/mock-ask-nexus';
+import { registerEntitySheetHandlers } from '@/utils/global-entity-sheets';
+import type { TeamCardData, PlayerCardData, CoachCardData } from '@/utils/global-entity-sheets';
+import { TeamCardSheet } from '@/components/entity-sheets/team-card-sheet';
+import { PlayerCardSheet } from '@/components/entity-sheets/player-card-sheet';
+import { CoachCardSheet } from '@/components/entity-sheets/coach-card-sheet';
 
 // Prevent the native splash screen from auto-hiding
 SplashScreenModule.preventAutoHideAsync();
@@ -75,6 +83,15 @@ function AppShell() {
     );
   }, []);
 
+  // Register view-switch lifecycle callbacks — reset Home + Org tabs on view change
+  useEffect(() => {
+    const unsub = registerViewSwitchCallback(() => {
+      requestHomeReset();
+      requestOrgReset();
+    });
+    return unsub;
+  }, []);
+
   // Register global Ask Nexus handlers
   useEffect(() => {
     registerAskNexusHandlers(
@@ -84,6 +101,25 @@ function AppShell() {
       },
       () => setAskNexusVisible(false)
     );
+  }, []);
+
+  // Entity card sheets — global open/close for team/player/coach cards
+  const [teamCardData, setTeamCardData] = useState<TeamCardData | null>(null);
+  const [teamCardVisible, setTeamCardVisible] = useState(false);
+  const [playerCardData, setPlayerCardData] = useState<PlayerCardData | null>(null);
+  const [playerCardVisible, setPlayerCardVisible] = useState(false);
+  const [coachCardData, setCoachCardData] = useState<CoachCardData | null>(null);
+  const [coachCardVisible, setCoachCardVisible] = useState(false);
+
+  useEffect(() => {
+    registerEntitySheetHandlers({
+      openTeamCard: (data) => { setTeamCardData(data); setTeamCardVisible(true); },
+      closeTeamCard: () => setTeamCardVisible(false),
+      openPlayerCard: (data) => { setPlayerCardData(data); setPlayerCardVisible(true); },
+      closePlayerCard: () => setPlayerCardVisible(false),
+      openCoachCard: (data) => { setCoachCardData(data); setCoachCardVisible(true); },
+      closeCoachCard: () => setCoachCardVisible(false),
+    });
   }, []);
 
   // Global voice state — mounted at root so it works from any tab
@@ -151,6 +187,23 @@ function AppShell() {
         visible={askNexusVisible}
         onClose={() => setAskNexusVisible(false)}
         context={askNexusContext}
+      />
+
+      {/* Entity Card Sheets — lightweight team/player/coach previews */}
+      <TeamCardSheet
+        visible={teamCardVisible}
+        onClose={() => setTeamCardVisible(false)}
+        data={teamCardData}
+      />
+      <PlayerCardSheet
+        visible={playerCardVisible}
+        onClose={() => setPlayerCardVisible(false)}
+        data={playerCardData}
+      />
+      <CoachCardSheet
+        visible={coachCardVisible}
+        onClose={() => setCoachCardVisible(false)}
+        data={coachCardData}
       />
 
       {/* Universal Finder — triggered from Nexus tab double-tap */}

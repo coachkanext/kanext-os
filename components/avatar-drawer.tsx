@@ -37,11 +37,10 @@ import { Colors, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
 import { useAuth } from '@/context/auth-context';
-import { getOrgById, getMembershipById } from '@/data/mock-memberships';
+import { getOrgById } from '@/data/mock-memberships';
 import { CANONICAL_VIEWS, getViewsForMode, DRAWER_MODES, MODE_CHIP_CONFIG } from '@/data/views';
 import { TIER_LABELS, derivePrimaryBadge, deriveRBCATier, PERMISSION_BULLETS, FAST_ACTIONS } from '@/data/rbca';
-import { deriveRoleBadge } from '@/utils/role-badge';
-import type { ActiveContext } from '@/types';
+import { buildActiveView } from '@/utils/active-view';
 import type { ViewDefinition } from '@/data/views';
 import type { RBCATier } from '@/data/rbca';
 
@@ -75,7 +74,7 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { state, switchContext } = useAppContext();
+  const { state, switchContext, setActiveView } = useAppContext();
   const { state: authState, signOut } = useAuth();
 
   const isLoggedIn = authState.isAuthenticated;
@@ -201,19 +200,12 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
 
   const handleViewSwitch = useCallback(
     (view: ViewDefinition) => {
-      const badge = deriveRoleBadge(view.membership_id, view.program_id);
-      const newContext: ActiveContext = {
-        mode: view.mode,
-        org_id: view.org_id,
-        program_id: view.program_id,
-        season_id: view.season_id,
-        membership_id: view.membership_id,
-        derived_role_badge: badge,
-      };
-      switchContext(newContext);
+      const activeView = buildActiveView(view);
+      setActiveView(activeView);
+      router.replace('/(tabs)/' as any); // Hard nav reset to Home
       onClose();
     },
-    [switchContext, onClose],
+    [setActiveView, router, onClose],
   );
 
   const handleViewLongPress = useCallback((view: ViewDefinition) => {
@@ -282,7 +274,7 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
                 {currentView?.org_display_name ?? currentOrg?.org_name ?? ''}
               </Text>
               <Text style={[styles.contextLine3, { color: colors.textSecondary }]} numberOfLines={2}>
-                {currentView?.role_title ?? activeContext.derived_role_badge} {'\u00b7'} {currentView?.scope_line ?? ''}
+                {currentView?.role_title ?? activeContext.derived_role_badge} {'·'} {currentView?.scope_line ?? ''}
               </Text>
             </View>
             <View style={[styles.seasonChip, { backgroundColor: colors.backgroundTertiary }]}>

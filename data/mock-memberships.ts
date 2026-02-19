@@ -330,7 +330,7 @@ export const V2_SEASONS: V2Season[] = [
   { season_id: 'kxa_2025_26', org_id: 'sports_kanext_academy', mode: 'sports', season_name: '2025\u201326', start_date: '2025-09-01', end_date: '2026-06-30', is_current: true },
 
   // Competition seasons
-  { season_id: 'k1_s1_2026', org_id: 'comp_k1_hypercar', mode: 'competition', season_name: 'Season 1 \u00b7 2026', start_date: '2026-03-01', end_date: '2026-11-30', is_current: true },
+  { season_id: 'k1_s1_2026', org_id: 'comp_k1_hypercar', mode: 'competition', season_name: 'Season 1 · 2026', start_date: '2026-03-01', end_date: '2026-11-30', is_current: true },
   { season_id: 'btw_2026', org_id: 'comp_btw_memorial', mode: 'competition', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
   { season_id: 'mlk_2026', org_id: 'comp_mlk_truth', mode: 'competition', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
   { season_id: 'vt_classic_2026', org_id: 'comp_valuetainment_classic', mode: 'competition', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
@@ -364,7 +364,7 @@ export const DEFAULT_ACTIVE_CONTEXT: ActiveContext = {
   program_id: 'fmu_mbb',
   season_id: 'fmu_2025_26',
   membership_id: 'mem_sports_fmu_admin',
-  derived_role_badge: 'AD \u00b7 Head Coach \u00b7 GM',
+  derived_role_badge: 'AD · Head Coach · GM',
 };
 
 // =============================================================================
@@ -375,15 +375,15 @@ export const SEEDED_RECENT_CONTEXTS: RecentContext[] = [
   // Sports
   {
     mode: 'sports', org_id: 'sports_fmu', program_id: 'fmu_mbb', season_id: 'fmu_2025_26',
-    membership_id: 'mem_sports_fmu_admin', derived_role_badge: 'AD \u00b7 Head Coach \u00b7 GM', timestamp: Date.now() - 1000,
+    membership_id: 'mem_sports_fmu_admin', derived_role_badge: 'AD · Head Coach · GM', timestamp: Date.now() - 1000,
   },
   {
     mode: 'sports', org_id: 'sports_lincoln', program_id: 'lincoln_mbb', season_id: 'lincoln_2025_26',
-    membership_id: 'mem_sports_lincoln_coach', derived_role_badge: 'Assistant Coach \u00b7 Recruiting Coordinator', timestamp: Date.now() - 2000,
+    membership_id: 'mem_sports_lincoln_coach', derived_role_badge: 'Assistant Coach · Recruiting Coordinator', timestamp: Date.now() - 2000,
   },
   {
     mode: 'sports', org_id: 'sports_kanext_academy', program_id: 'kxa_basketball_flagship', season_id: 'kxa_2025_26',
-    membership_id: 'mem_sports_kxa_admin', derived_role_badge: 'Founder/CEO \u00b7 Head of Basketball Ops', timestamp: Date.now() - 3000,
+    membership_id: 'mem_sports_kxa_admin', derived_role_badge: 'Founder/CEO · Head of Basketball Ops', timestamp: Date.now() - 3000,
   },
   {
     mode: 'sports', org_id: 'sports_kanext_academy', program_id: 'kxa_basketball_flagship', season_id: 'kxa_2025_26',
@@ -391,7 +391,7 @@ export const SEEDED_RECENT_CONTEXTS: RecentContext[] = [
   },
   {
     mode: 'sports', org_id: 'sports_salima_wanderers', program_id: 'salima_first_team', season_id: 'salima_2025_26',
-    membership_id: 'mem_sports_salima_limited', derived_role_badge: 'Scout \u00b7 External Analyst (Limited)', timestamp: Date.now() - 5000,
+    membership_id: 'mem_sports_salima_limited', derived_role_badge: 'Scout · External Analyst (Limited)', timestamp: Date.now() - 5000,
   },
   {
     mode: 'sports', org_id: 'sports_yankees_fan', program_id: 'nyy_mlb', season_id: 'nyy_2026',
@@ -414,16 +414,16 @@ export const SEEDED_RECENT_CONTEXTS: RecentContext[] = [
   // Competition
   {
     mode: 'competition', org_id: 'comp_k1_hypercar', program_id: 'k1_main', season_id: 'k1_s1_2026',
-    membership_id: 'mem_comp_k1_owner_commish', derived_role_badge: 'League Owner \u00b7 Commissioner', timestamp: Date.now() - 10000,
+    membership_id: 'mem_comp_k1_owner_commish', derived_role_badge: 'League Owner · Commissioner', timestamp: Date.now() - 10000,
   },
   // Education
   {
     mode: 'education', org_id: 'edu_fmu', program_id: 'edu_fmu_main', season_id: 'edu_fmu_2025_26',
-    membership_id: 'mem_edu_fmu_pd', derived_role_badge: 'Program Director \u00b7 AD Academic Liaison', timestamp: Date.now() - 11000,
+    membership_id: 'mem_edu_fmu_pd', derived_role_badge: 'Program Director · AD Academic Liaison', timestamp: Date.now() - 11000,
   },
   {
     mode: 'education', org_id: 'edu_kanext_academy', program_id: 'edu_kxa_main', season_id: 'edu_kxa_2025_26',
-    membership_id: 'mem_edu_kxa_founder', derived_role_badge: 'Founder \u00b7 Head of Basketball Ops', timestamp: Date.now() - 12000,
+    membership_id: 'mem_edu_kxa_founder', derived_role_badge: 'Founder · Head of Basketball Ops', timestamp: Date.now() - 12000,
   },
 ];
 
@@ -499,7 +499,7 @@ export function getDefaultContextForMode(mode: Mode): ActiveContext | null {
   const membership = memberships[0];
 
   // Import deriveRoleBadge lazily to avoid circular deps
-  const badge = membership.role_titles.join(' \u00b7 ');
+  const badge = membership.role_titles.join(' · ');
 
   return {
     mode,

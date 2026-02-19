@@ -267,7 +267,7 @@ function MinistryCard({
         <View style={s.nextEventRow}>
           <IconSymbol name="calendar" size={12} color={colors.textSecondary} />
           <ThemedText style={[s.nextEventText, { color: colors.textSecondary }]} numberOfLines={1}>
-            {ministry.nextEvent.date} {ministry.nextEvent.time} \u00b7 {ministry.nextEvent.location}
+            {ministry.nextEvent.date} {ministry.nextEvent.time} · {ministry.nextEvent.location}
           </ThemedText>
         </View>
       ) : null}
@@ -511,7 +511,7 @@ function EventsTab({
                   {item.title}
                 </ThemedText>
                 <ThemedText style={[s.itemMeta, { color: colors.textSecondary }]}>
-                  {item.time} \u00b7 {item.location}
+                  {item.time} · {item.location}
                 </ThemedText>
                 <View style={[s.typeBadge, { backgroundColor: typeColor + '2E', marginTop: 6 }]}>
                   <ThemedText style={[s.typeBadgeText, { color: typeColor }]}>
@@ -570,7 +570,7 @@ function TeachingsTab({
                   {item.title}
                 </ThemedText>
                 <ThemedText style={[s.itemMeta, { color: colors.textSecondary }]}>
-                  {item.speaker} \u00b7 {item.duration}
+                  {item.speaker} · {item.duration}
                 </ThemedText>
                 <View style={s.badgeRow}>
                   {item.series ? (
@@ -641,7 +641,7 @@ function PacksTab({
                   {item.description}
                 </ThemedText>
                 <ThemedText style={[s.itemMeta, { color: colors.textTertiary }]}>
-                  {item.lessons} lessons \u00b7 {item.duration}
+                  {item.lessons} lessons · {item.duration}
                 </ThemedText>
                 <View style={[s.typeBadge, { backgroundColor: statusColor + '2E', marginTop: 6 }]}>
                   <ThemedText style={[s.typeBadgeText, { color: statusColor }]}>
@@ -706,7 +706,7 @@ function ActionsTab({
                   {item.title}
                 </ThemedText>
                 <ThemedText style={[s.itemMeta, { color: colors.textSecondary }]}>
-                  {item.assignee} \u00b7 Due: {item.dueDate}
+                  {item.assignee} · Due: {item.dueDate}
                 </ThemedText>
                 <View style={s.badgeRow}>
                   <View style={[s.typeBadge, { backgroundColor: priorityColor + '2E' }]}>
@@ -881,7 +881,7 @@ function AuditTab({
                 {item.description}
               </ThemedText>
               <ThemedText style={[s.auditMeta, { color: colors.textTertiary }]}>
-                {item.actor} \u00b7 {new Date(item.timestamp).toLocaleDateString('en-US', {
+                {item.actor} · {new Date(item.timestamp).toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
                   year: 'numeric',

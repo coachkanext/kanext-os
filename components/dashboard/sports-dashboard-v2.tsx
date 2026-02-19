@@ -106,7 +106,7 @@ function VideoCard({ item, colors }: { item: VideoStripCard; colors: typeof Colo
         <ThemedText style={styles.videoTitle} numberOfLines={2}>{item.title}</ThemedText>
         <View style={styles.videoMeta}>
           <ThemedText style={styles.videoMetaText}>{item.duration}</ThemedText>
-          <ThemedText style={styles.videoMetaText}> \u00b7 {item.timestamp}</ThemedText>
+          <ThemedText style={styles.videoMetaText}> · {item.timestamp}</ThemedText>
         </View>
       </View>
     </Pressable>
@@ -128,7 +128,7 @@ function TeamTruth({ colors, accent }: { colors: typeof Colors.light; accent: st
         </View>
       </View>
       <ThemedText style={[styles.truthSub, { color: colors.textSecondary }]}>
-        {h.level} \u00b7 {h.conference} \u00b7 {h.season}
+        {h.level} · {h.conference} · {h.season}
       </ThemedText>
       <View style={styles.truthStats}>
         <StatChip label="Record" value={h.record} colors={colors} />
@@ -192,7 +192,7 @@ function TodayNext({ colors, accent }: { colors: typeof Colors.light; accent: st
             {NEXT_GAME_CARD.location === 'Home' ? 'vs' : '@'} {NEXT_GAME_CARD.opponent}
           </ThemedText>
           <ThemedText style={[styles.nextGameDate, { color: colors.textSecondary }]}>
-            {NEXT_GAME_CARD.date} \u00b7 {NEXT_GAME_CARD.countdownDays}d away
+            {NEXT_GAME_CARD.date} · {NEXT_GAME_CARD.countdownDays}d away
           </ThemedText>
           <View style={styles.statusChips}>
             {NEXT_GAME_CARD.statusChips.map((chip) => (
@@ -315,7 +315,7 @@ function WorkRow({ item, colors }: { item: WorkQueueItem; colors: typeof Colors.
       <View style={{ flex: 1, marginLeft: 10 }}>
         <ThemedText style={[styles.workTitle, { color: colors.text }]} numberOfLines={1}>{item.title}</ThemedText>
         <ThemedText style={[styles.workMeta, { color: colors.textSecondary }]}>
-          {item.dueDate} \u00b7 {item.owner}
+          {item.dueDate} · {item.owner}
         </ThemedText>
       </View>
       <View style={[styles.priorityDot, { backgroundColor: getWorkPriorityColor(item.priority) }]} />

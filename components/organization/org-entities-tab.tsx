@@ -172,7 +172,7 @@ function EntityRow({
 
           {/* Owner + last activity */}
           <ThemedText style={[s.ownerLine, { color: colors.textTertiary }]} numberOfLines={1}>
-            {entity.owner} \u00b7 {entity.lastActivityAt}
+            {entity.owner} · {entity.lastActivityAt}
           </ThemedText>
 
           {/* Context field */}
@@ -269,7 +269,7 @@ function AuditTimeline({
                 {item.entityName}
               </ThemedText>
               <ThemedText style={[s.auditMeta, { color: colors.textTertiary }]}>
-                {item.actor} \u00b7 {item.timestamp}
+                {item.actor} · {item.timestamp}
               </ThemedText>
             </View>
           </View>
@@ -502,7 +502,7 @@ function EntityDetailView({
                       {entry.action}
                     </ThemedText>
                     <ThemedText style={[s.detailAuditMeta, { color: colors.textTertiary }]}>
-                      {entry.actor} \u00b7 {entry.timestamp}
+                      {entry.actor} · {entry.timestamp}
                     </ThemedText>
                   </View>
                 </View>
