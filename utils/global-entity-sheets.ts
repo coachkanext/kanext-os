@@ -28,6 +28,30 @@ export interface PlayerCardData {
   ppg?: number;
   rpg?: number;
   apg?: number;
+  // Extended fields for full intelligence display
+  playerId?: string;
+  school?: string;
+  conference?: string;
+  levelKey?: string;
+  levelDisplay?: string;
+  offKR?: number;
+  defKR?: number;
+  archetype?: string;
+  confidence?: number;
+  clusters?: Record<string, number>;
+  spg?: number;
+  bpg?: number;
+  topg?: number;
+  fgPct?: number;
+  threePct?: number;
+  ftPct?: number;
+  mpg?: number;
+  gp?: number;
+  bprAvg?: number;
+  portalEntryDate?: string | null;
+  scholarshipPct?: number;
+  nilAmount?: number;
+  overallFitPct?: number;
 }
 
 export interface CoachCardData {

@@ -1,6 +1,7 @@
 /**
- * Recruiting Board V2 — CRM-style board view
+ * Recruiting Board V2 — CRM-style board view enhanced with real KR intelligence
  * Team needs bar, capacity indicator, filter pills, sort, FlatList rows.
+ * Board entries are the coach's pipeline — enriched with KR data from national pool.
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -9,14 +10,12 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  TextInput,
   FlatList,
   Modal,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, ModeColors } from '@/constants/theme';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import {
@@ -27,6 +26,13 @@ import {
   type BoardEntry,
   type PipelineStageV2,
 } from '@/data/recruitingBoard';
+import { getKRColor, getArchetypeDisplay, LEVEL_DISPLAY_SHORT } from '@/utils/kr-display';
+import { nationalPool, toGlobalPlayerCard } from '@/data/national-pool';
+import { openPlayerCard } from '@/utils/global-entity-sheets';
+
+// =============================================================================
+// TYPES
+// =============================================================================
 
 interface Props {
   colors: typeof Colors.light;
@@ -65,6 +71,10 @@ function getV2Stage(entry: BoardEntry): PipelineStageV2 {
   return STAGE_MIGRATION[entry.status] ?? 'Prospect';
 }
 
+// =============================================================================
+// COMPONENT
+// =============================================================================
+
 export function RecruitingBoardV2({ colors }: Props) {
   const accent = ModeColors.sports.primary;
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
@@ -99,20 +109,36 @@ export function RecruitingBoardV2({ colors }: Props) {
   const activeCount = RECRUITING_BOARD.filter((e) => !['Missed', 'Signed'].includes(e.status)).length;
   const sortLabel = SORT_OPTIONS.find((o) => o.key === sortKey)?.label ?? 'KR';
 
+  // Try to look up real player data from national pool when viewing details
+  const handleEntryTap = useCallback((entry: BoardEntry) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Try to find this player in the national pool by name search
+    const nameFromNotes = entry.shortNotes.split(',')[0].replace('Committed! ', '').replace('Lost to ', '').trim();
+    const results = nationalPool.search({ query: nameFromNotes, limit: 1 });
+    if (results.length > 0) {
+      // Found real data — open full intelligence player card
+      openPlayerCard(toGlobalPlayerCard(results[0]));
+    } else {
+      // Fallback to local sheet with board entry info
+      setSelectedEntry(entry);
+    }
+  }, []);
+
   const renderRow = useCallback(({ item: entry }: { item: BoardEntry }) => {
     const stage = getV2Stage(entry);
     const stageColor = STAGE_COLORS[stage];
     const nameFromNotes = entry.shortNotes.split(',')[0].replace('Committed! ', '').replace('Lost to ', '');
 
+    // Try matching to real player for KR color
+    const krValue = entry.bigBoardRank != null ? entry.bigBoardRank : null;
+    const krColor = getKRColor(krValue);
+
     return (
       <Pressable
         style={styles.row}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setSelectedEntry(entry);
-        }}
+        onPress={() => handleEntryTap(entry)}
       >
-        {/* Avatar */}
+        {/* Avatar with position */}
         <View style={[styles.avatar, { backgroundColor: BOARD_COLUMN_COLORS[entry.status] }]}>
           <Text style={styles.avatarText}>{entry.position}</Text>
         </View>
@@ -126,16 +152,16 @@ export function RecruitingBoardV2({ colors }: Props) {
             </View>
           </View>
           <View style={styles.rowBottomLine}>
-            {entry.bigBoardRank && (
-              <View style={[styles.krBadge, { backgroundColor: accent + '22' }]}>
-                <Text style={[styles.krText, { color: accent }]}>#{entry.bigBoardRank}</Text>
+            {krValue != null && (
+              <View style={[styles.krBadge, { backgroundColor: krColor + '22' }]}>
+                <Text style={[styles.krText, { color: krColor }]}>KR {krValue}</Text>
               </View>
             )}
             <View style={[styles.stagePill, { backgroundColor: stageColor + '22' }]}>
               <Text style={[styles.stageText, { color: stageColor }]}>{stage}</Text>
             </View>
-            {entry.fitScore && (
-              <Text style={[styles.fitText, { color: colors.textSecondary }]}>Fit {entry.fitScore}</Text>
+            {entry.fitScore != null && (
+              <Text style={[styles.fitText, { color: colors.textSecondary }]}>Fit {entry.fitScore}%</Text>
             )}
             {entry.motivations && entry.motivations.length > 0 && (
               <View style={styles.motivationsRow}>
@@ -153,7 +179,7 @@ export function RecruitingBoardV2({ colors }: Props) {
         <Text style={[styles.lastContact, { color: colors.textSecondary }]}>{entry.updated.slice(5)}</Text>
       </Pressable>
     );
-  }, [colors, accent]);
+  }, [colors, handleEntryTap]);
 
   return (
     <View style={styles.container}>
@@ -161,7 +187,7 @@ export function RecruitingBoardV2({ colors }: Props) {
       <View style={styles.needsBar}>
         <ThemedText style={[styles.needsLabel, { color: colors.textSecondary }]}>Team Needs</ThemedText>
         <View style={styles.needsPills}>
-          {Object.entries(NEED_PRIORITIES).map(([pos, { color, label }]) => (
+          {Object.entries(NEED_PRIORITIES).map(([pos, { color }]) => (
             <View key={pos} style={[styles.needPill, { borderColor: color + '44' }]}>
               <Text style={[styles.needPillText, { color }]}>{pos}</Text>
             </View>
@@ -244,7 +270,7 @@ export function RecruitingBoardV2({ colors }: Props) {
         contentContainerStyle={styles.listContent}
       />
 
-      {/* Prospect Card sheet */}
+      {/* Fallback Prospect Card sheet (when player not in national pool) */}
       <BottomSheet
         visible={!!selectedEntry}
         onClose={() => setSelectedEntry(null)}
@@ -259,9 +285,18 @@ export function RecruitingBoardV2({ colors }: Props) {
             <ThemedText style={[styles.sheetDetail, { color: colors.textSecondary }]}>
               {selectedEntry.position} · {selectedEntry.classYear} · {getV2Stage(selectedEntry)}
             </ThemedText>
-            {selectedEntry.fitScore && (
+            {selectedEntry.bigBoardRank != null && (
+              <View style={styles.sheetKRRow}>
+                <View style={[styles.sheetKRBadge, { backgroundColor: getKRColor(selectedEntry.bigBoardRank) + '22' }]}>
+                  <Text style={[styles.sheetKRText, { color: getKRColor(selectedEntry.bigBoardRank) }]}>
+                    KR {selectedEntry.bigBoardRank}
+                  </Text>
+                </View>
+              </View>
+            )}
+            {selectedEntry.fitScore != null && (
               <ThemedText style={[styles.sheetDetail, { color: colors.textSecondary }]}>
-                Fit Score: {selectedEntry.fitScore}
+                Fit Score: {selectedEntry.fitScore}%
               </ThemedText>
             )}
             {selectedEntry.motivations && (
@@ -284,6 +319,10 @@ export function RecruitingBoardV2({ colors }: Props) {
     </View>
   );
 }
+
+// =============================================================================
+// STYLES
+// =============================================================================
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -332,6 +371,9 @@ const styles = StyleSheet.create({
   sheetContent: { paddingHorizontal: Spacing.lg, paddingBottom: 24, gap: 8 },
   sheetName: { fontSize: 18, fontWeight: '700' },
   sheetDetail: { fontSize: 13 },
+  sheetKRRow: { flexDirection: 'row', marginTop: 4 },
+  sheetKRBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6 },
+  sheetKRText: { fontSize: 14, fontWeight: '800' },
   sheetNotes: { fontSize: 13, lineHeight: 20, marginTop: 4 },
   nexusBtn: { marginTop: 16, paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
   nexusBtnText: { fontSize: 15, fontWeight: '700', color: '#000' },

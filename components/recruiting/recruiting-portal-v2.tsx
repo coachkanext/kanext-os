@@ -1,7 +1,6 @@
 /**
- * Recruiting Portal V2 — Transfer portal view
- * Same layout as Database, pre-filtered to portal entries.
- * Additional fields: entry date, eligibility remaining.
+ * Recruiting Portal V2 — Transfer portal view with real national pool data
+ * Pre-filtered to portal entries. Shows entry date, eligibility, full KR intelligence.
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -12,44 +11,44 @@ import {
   Pressable,
   TextInput,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, ModeColors } from '@/constants/theme';
+import { nationalPool, toGlobalPlayerCard, type NationalPlayer } from '@/data/national-pool';
+import { openPlayerCard } from '@/utils/global-entity-sheets';
+import {
+  getKRColor,
+  getArchetypeDisplay,
+  LEVEL_DISPLAY_SHORT,
+} from '@/utils/kr-display';
 
-interface PortalPlayer {
-  id: string;
-  name: string;
-  fromSchool: string;
-  position: string;
-  height: string;
-  kr: number | null;
-  level: string;
-  entryDate: string;
-  eligibilityRemaining: number;
-  classYear: string;
-  conference: string;
-}
+// =============================================================================
+// FILTER DEFINITIONS
+// =============================================================================
 
-const MOCK_PORTAL: PortalPlayer[] = [
-  { id: 'pp-1', name: 'Terrell Washington', fromSchool: 'Webber International', position: 'SF', height: '6-6', kr: 80, level: 'NAIA', entryDate: '2026-01-05', eligibilityRemaining: 2, classYear: 'Junior', conference: 'Sun Conference' },
-  { id: 'pp-2', name: 'Darius Okafor', fromSchool: 'Palm Beach Atlantic', position: 'PF', height: '6-7', kr: 76, level: 'D2', entryDate: '2025-12-20', eligibilityRemaining: 2, classYear: 'Sophomore', conference: 'SSC' },
-  { id: 'pp-3', name: 'Andre Mitchell', fromSchool: 'Indian River State', position: 'PF', height: '6-8', kr: 77, level: 'NJCAA', entryDate: '2026-01-10', eligibilityRemaining: 2, classYear: 'Sophomore', conference: 'FCSAA' },
-  { id: 'pp-4', name: 'Marcus Cole', fromSchool: 'Ave Maria', position: 'SG', height: '6-3', kr: 75, level: 'NAIA', entryDate: '2026-01-15', eligibilityRemaining: 1, classYear: 'Senior', conference: 'Sun Conference' },
-  { id: 'pp-5', name: 'DeShawn Harris', fromSchool: 'Southeastern', position: 'PG', height: '6-1', kr: 73, level: 'NAIA', entryDate: '2026-01-20', eligibilityRemaining: 2, classYear: 'Sophomore', conference: 'Sun Conference' },
-  { id: 'pp-6', name: 'Kevin Park', fromSchool: 'Warner', position: 'C', height: '6-10', kr: 72, level: 'NAIA', entryDate: '2026-02-01', eligibilityRemaining: 1, classYear: 'Junior', conference: 'Sun Conference' },
-  { id: 'pp-7', name: 'Jamal Wright', fromSchool: 'Keiser', position: 'W', height: '6-5', kr: null, level: 'NAIA', entryDate: '2026-02-05', eligibilityRemaining: 3, classYear: 'Freshman', conference: 'Sun Conference' },
-  { id: 'pp-8', name: 'Chris Adams', fromSchool: 'St. Thomas', position: 'F', height: '6-7', kr: 71, level: 'NAIA', entryDate: '2026-02-08', eligibilityRemaining: 2, classYear: 'Sophomore', conference: 'Sun Conference' },
-  { id: 'pp-9', name: 'Dominic Ray', fromSchool: 'William Carey', position: 'SG', height: '6-4', kr: 78, level: 'NAIA', entryDate: '2026-01-25', eligibilityRemaining: 1, classYear: 'Senior', conference: 'SSAC' },
-  { id: 'pp-10', name: 'Elijah Stone', fromSchool: 'Campbellsville', position: 'B', height: '6-9', kr: null, level: 'NAIA', entryDate: '2026-02-10', eligibilityRemaining: 2, classYear: 'Sophomore', conference: 'MSC' },
+const POS_OPTIONS = ['All', 'PG', 'SG', 'SF', 'PF', 'C'] as const;
+
+const LEVEL_OPTIONS = nationalPool.getLevels().map((k) => ({
+  key: k,
+  label: LEVEL_DISPLAY_SHORT[k] ?? k,
+}));
+
+type SortKey = 'kr' | 'ppg' | 'name';
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: 'kr', label: 'KR' },
+  { key: 'ppg', label: 'PPG' },
+  { key: 'name', label: 'Name' },
 ];
 
-type PositionFilter = 'All' | 'PG' | 'SG' | 'SF' | 'PF' | 'C' | 'W' | 'F' | 'B';
+const PAGE_SIZE = 50;
 
-const POS_FILTERS: PositionFilter[] = ['All', 'PG', 'SG', 'W', 'F', 'B'];
+// =============================================================================
+// COMPONENT
+// =============================================================================
 
 interface Props {
   colors: typeof Colors.light;
@@ -58,64 +57,96 @@ interface Props {
 export function RecruitingPortalV2({ colors }: Props) {
   const accent = ModeColors.sports.primary;
   const [searchQuery, setSearchQuery] = useState('');
-  const [posFilter, setPosFilter] = useState<PositionFilter>('All');
-  const [selectedPlayer, setSelectedPlayer] = useState<PortalPlayer | null>(null);
+  const [posFilter, setPosFilter] = useState('All');
+  const [levelFilter, setLevelFilter] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<SortKey>('kr');
+  const [displayCount, setDisplayCount] = useState(PAGE_SIZE);
 
+  // Portal-filtered data
   const filtered = useMemo(() => {
-    let result = MOCK_PORTAL;
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter((p) =>
-        p.name.toLowerCase().includes(q) || p.fromSchool.toLowerCase().includes(q)
-      );
-    }
-    if (posFilter !== 'All') {
-      result = result.filter((p) => p.position === posFilter || p.position.includes(posFilter));
-    }
-    return result;
-  }, [searchQuery, posFilter]);
+    return nationalPool.search({
+      query: searchQuery || undefined,
+      hasPortalEntry: true,
+      position: posFilter !== 'All' ? posFilter : undefined,
+      level: levelFilter.length > 0 ? levelFilter : undefined,
+      sortBy,
+      sortDir: sortBy === 'name' ? 'asc' : 'desc',
+      limit: displayCount,
+    });
+  }, [searchQuery, posFilter, levelFilter, sortBy, displayCount]);
 
-  const renderRow = useCallback(({ item: player }: { item: PortalPlayer }) => {
-    const isUnscouted = player.kr == null;
+  const totalCount = useMemo(() => {
+    return nationalPool.search({
+      query: searchQuery || undefined,
+      hasPortalEntry: true,
+      position: posFilter !== 'All' ? posFilter : undefined,
+      level: levelFilter.length > 0 ? levelFilter : undefined,
+    }).length;
+  }, [searchQuery, posFilter, levelFilter]);
+
+  const toggleLevel = useCallback((key: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setLevelFilter((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+    setDisplayCount(PAGE_SIZE);
+  }, []);
+
+  const loadMore = useCallback(() => {
+    if (filtered.length >= displayCount) {
+      setDisplayCount((c) => c + PAGE_SIZE);
+    }
+  }, [filtered.length, displayCount]);
+
+  const handlePlayerTap = useCallback((player: NationalPlayer) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    openPlayerCard(toGlobalPlayerCard(player));
+  }, []);
+
+  const renderRow = useCallback(({ item: player }: { item: NationalPlayer }) => {
+    const krColor = getKRColor(player.kr);
+    const hasKR = player.kr != null;
+    const levelShort = LEVEL_DISPLAY_SHORT[player.levelKey] ?? player.levelKey;
+    const archetypeName = getArchetypeDisplay(player.archetype);
+    const entryDate = player.portalEntryDate
+      ? player.portalEntryDate.slice(5) // MM-DD
+      : '';
+
     return (
-      <Pressable
-        style={styles.row}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setSelectedPlayer(player);
-        }}
-      >
+      <Pressable style={styles.row} onPress={() => handlePlayerTap(player)}>
         <View style={styles.rowInfo}>
           <View style={styles.topLine}>
             <ThemedText style={[styles.playerName, { color: colors.text }]} numberOfLines={1}>
-              {player.name}
+              {player.fullName}
             </ThemedText>
             <View style={[styles.levelTag, { backgroundColor: '#ffffff08' }]}>
-              <ThemedText style={[styles.levelText, { color: colors.textSecondary }]}>{player.level}</ThemedText>
+              <Text style={[styles.levelText, { color: colors.textSecondary }]}>{levelShort}</Text>
             </View>
           </View>
           <ThemedText style={[styles.school, { color: colors.textSecondary }]} numberOfLines={1}>
-            {player.fromSchool} · {player.position}/{player.height}
+            {player.school} · {player.position}/{player.height} · {archetypeName}
           </ThemedText>
-          <View style={styles.portalMeta}>
-            <ThemedText style={[styles.portalMetaText, { color: colors.textSecondary }]}>
-              Entered: {player.entryDate.slice(5)} · {player.eligibilityRemaining}yr remaining
-            </ThemedText>
-          </View>
+          {entryDate && (
+            <View style={styles.portalMeta}>
+              <ThemedText style={[styles.portalMetaText, { color: colors.textSecondary }]}>
+                Portal entry: {entryDate}
+              </ThemedText>
+            </View>
+          )}
         </View>
 
-        {isUnscouted ? (
-          <View style={[styles.krBadge, { backgroundColor: '#55555530' }]}>
-            <Text style={styles.krTextUnscouted}>Est.</Text>
+        {hasKR ? (
+          <View style={[styles.krBadge, { backgroundColor: krColor + '22' }]}>
+            <Text style={[styles.krTextScouted, { color: krColor }]}>{Math.round(player.kr!)}</Text>
           </View>
         ) : (
-          <View style={[styles.krBadge, { backgroundColor: accent + '22' }]}>
-            <Text style={[styles.krTextScouted, { color: accent }]}>{player.kr}</Text>
+          <View style={[styles.krBadge, { backgroundColor: '#55555530' }]}>
+            <Text style={styles.krTextUnscouted}>--</Text>
           </View>
         )}
       </Pressable>
     );
-  }, [colors, accent]);
+  }, [colors, handlePlayerTap]);
 
   return (
     <View style={styles.container}>
@@ -127,14 +158,37 @@ export function RecruitingPortalV2({ colors }: Props) {
           placeholder="Search portal players..."
           placeholderTextColor={colors.textSecondary}
           value={searchQuery}
-          onChangeText={setSearchQuery}
+          onChangeText={(t) => { setSearchQuery(t); setDisplayCount(PAGE_SIZE); }}
           returnKeyType="done"
         />
+        {searchQuery.length > 0 && (
+          <Pressable onPress={() => { setSearchQuery(''); setDisplayCount(PAGE_SIZE); }}>
+            <IconSymbol name="xmark.circle.fill" size={16} color={colors.textSecondary} />
+          </Pressable>
+        )}
       </View>
 
-      {/* Position filter */}
+      {/* Level filter pills */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
+        {LEVEL_OPTIONS.map(({ key, label }) => {
+          const isActive = levelFilter.includes(key);
+          return (
+            <Pressable
+              key={key}
+              style={[styles.filterPill, isActive && { backgroundColor: accent, borderColor: accent }]}
+              onPress={() => toggleLevel(key)}
+            >
+              <ThemedText style={[styles.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
+                {label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {/* Position filter pills */}
       <View style={styles.filterRow}>
-        {POS_FILTERS.map((pos) => {
+        {POS_OPTIONS.map((pos) => {
           const isActive = posFilter === pos;
           return (
             <Pressable
@@ -143,6 +197,7 @@ export function RecruitingPortalV2({ colors }: Props) {
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setPosFilter(pos);
+                setDisplayCount(PAGE_SIZE);
               }}
             >
               <ThemedText style={[styles.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
@@ -153,49 +208,54 @@ export function RecruitingPortalV2({ colors }: Props) {
         })}
       </View>
 
+      {/* Sort & count */}
+      <View style={styles.sortRow}>
+        <View style={styles.sortPills}>
+          {SORT_OPTIONS.map((opt) => {
+            const isActive = sortBy === opt.key;
+            return (
+              <Pressable
+                key={opt.key}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSortBy(opt.key); }}
+              >
+                <ThemedText style={[styles.sortText, { color: isActive ? accent : colors.textSecondary }]}>
+                  {opt.label}
+                </ThemedText>
+              </Pressable>
+            );
+          })}
+        </View>
+        <ThemedText style={[styles.countText, { color: colors.textSecondary }]}>
+          {totalCount} in portal
+        </ThemedText>
+      </View>
+
       <FlatList
         data={filtered}
         keyExtractor={(p) => p.id}
         renderItem={renderRow}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
-      />
-
-      {/* Player card sheet */}
-      <BottomSheet
-        visible={!!selectedPlayer}
-        onClose={() => setSelectedPlayer(null)}
-        title="Portal Player"
-        useModal
-      >
-        {selectedPlayer && (
-          <View style={styles.sheetContent}>
-            <ThemedText style={[styles.sheetName, { color: colors.text }]}>{selectedPlayer.name}</ThemedText>
-            <ThemedText style={[styles.sheetDetail, { color: colors.textSecondary }]}>
-              {selectedPlayer.position} · {selectedPlayer.height} · {selectedPlayer.fromSchool}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
+        windowSize={10}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <ThemedText style={[styles.emptyText, { color: colors.textSecondary }]}>
+              No portal entries found
             </ThemedText>
-            <ThemedText style={[styles.sheetDetail, { color: colors.textSecondary }]}>
-              Portal entry: {selectedPlayer.entryDate} · {selectedPlayer.eligibilityRemaining} years remaining
-            </ThemedText>
-            {selectedPlayer.kr != null ? (
-              <ThemedText style={[styles.sheetKR, { color: accent }]}>KR: {selectedPlayer.kr}</ThemedText>
-            ) : (
-              <ThemedText style={[styles.sheetKR, { color: colors.textSecondary }]}>Unscouted</ThemedText>
-            )}
-            <View style={styles.sheetActions}>
-              <Pressable style={[styles.actionBtn, { backgroundColor: '#ffffff10', borderWidth: 1, borderColor: accent }]}>
-                <ThemedText style={[styles.actionBtnText, { color: accent }]}>Add to Board</ThemedText>
-              </Pressable>
-              <Pressable style={[styles.actionBtn, { backgroundColor: '#ffffff10' }]}>
-                <ThemedText style={[styles.actionBtnText, { color: colors.text }]}>Ask Nexus</ThemedText>
-              </Pressable>
-            </View>
           </View>
-        )}
-      </BottomSheet>
+        }
+      />
     </View>
   );
 }
+
+// =============================================================================
+// STYLES
+// =============================================================================
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -211,6 +271,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.05)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
   },
   filterPillText: { fontSize: 12, fontWeight: '600' },
+  sortRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.lg, paddingBottom: 4, paddingTop: 2,
+  },
+  sortPills: { flexDirection: 'row', gap: 12 },
+  sortText: { fontSize: 11, fontWeight: '600' },
+  countText: { fontSize: 11 },
   listContent: { paddingBottom: 120, paddingHorizontal: Spacing.lg },
   row: {
     flexDirection: 'row', alignItems: 'center', paddingVertical: 10,
@@ -226,12 +293,7 @@ const styles = StyleSheet.create({
   portalMetaText: { fontSize: 10 },
   krBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, minWidth: 40, alignItems: 'center' },
   krTextUnscouted: { fontSize: 10, fontWeight: '600', color: '#777', fontStyle: 'italic' },
-  krTextScouted: { fontSize: 12, fontWeight: '800' },
-  sheetContent: { paddingHorizontal: Spacing.lg, paddingBottom: 24, gap: 8 },
-  sheetName: { fontSize: 18, fontWeight: '700' },
-  sheetDetail: { fontSize: 13 },
-  sheetKR: { fontSize: 15, fontWeight: '700', marginTop: 4 },
-  sheetActions: { marginTop: 16, gap: 10 },
-  actionBtn: { paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
-  actionBtnText: { fontSize: 15, fontWeight: '700', color: '#000' },
+  krTextScouted: { fontSize: 13, fontWeight: '800' },
+  emptyState: { paddingTop: 40, alignItems: 'center' },
+  emptyText: { fontSize: 14 },
 });

@@ -1,7 +1,7 @@
 /**
- * Recruiting Database V2 — Compact search + filter rows from player pool
- * Shows name, school, position/height, KR badge, archetype tag, level tag.
- * Unscouted players show gray estimated badge.
+ * Recruiting Database V2 — Real national player pool with full KR intelligence
+ * Shows name, school, position/height, KR badge (color coded), archetype tag,
+ * level tag, top badge indicator. Filters work against real data.
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -12,6 +12,7 @@ import {
   Pressable,
   TextInput,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -19,37 +20,42 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, ModeColors } from '@/constants/theme';
+import { nationalPool, toGlobalPlayerCard, type NationalPlayer } from '@/data/national-pool';
+import { openPlayerCard } from '@/utils/global-entity-sheets';
+import {
+  getKRColor,
+  getKRTierLabel,
+  getArchetypeDisplay,
+  LEVEL_DISPLAY_SHORT,
+} from '@/utils/kr-display';
+import { computePlayerBadges, type PlayerBadge } from '@/utils/player-badges';
+import type { ClusterType } from '@/types';
 
-// Mock database entries (simplified player pool)
-interface DatabasePlayer {
-  id: string;
-  name: string;
-  school: string;
-  position: string;
-  height: string;
-  kr: number | null; // null = unscouted
-  archetype: string;
-  level: string;
-  classYear: string;
-}
+// =============================================================================
+// FILTER DEFINITIONS
+// =============================================================================
 
-const MOCK_DATABASE: DatabasePlayer[] = [
-  { id: 'db-1', name: 'Marcus Thompson', school: 'Chipola CC', position: 'PG', height: '6-2', kr: 78, archetype: 'Playmaker', level: 'NJCAA', classYear: '2026' },
-  { id: 'db-2', name: 'Jaylen Harris', school: 'Tallahassee CC', position: 'SG', height: '6-3', kr: 82, archetype: 'Shooter', level: 'NJCAA', classYear: '2025' },
-  { id: 'db-3', name: 'Darius Okafor', school: 'Palm Beach Atlantic', position: 'PF', height: '6-7', kr: 76, archetype: 'High Motor', level: 'D2', classYear: '2025' },
-  { id: 'db-4', name: 'Terrell Washington', school: 'Webber International', position: 'SF', height: '6-6', kr: 80, archetype: 'Versatile', level: 'NAIA', classYear: '2025' },
-  { id: 'db-5', name: 'Kendrick Brooks', school: 'Chipola College', position: 'C', height: '6-10', kr: 71, archetype: 'Rim Protector', level: 'NJCAA', classYear: '2025' },
-  { id: 'db-6', name: 'Devon Williams', school: 'Miami Norland HS', position: 'PG', height: '5-11', kr: 74, archetype: 'Playmaker', level: 'HS', classYear: '2025' },
-  { id: 'db-7', name: 'Andre Mitchell', school: 'Indian River State', position: 'PF', height: '6-8', kr: 77, archetype: 'Stretch Big', level: 'NJCAA', classYear: '2025' },
-  { id: 'db-8', name: 'Tyler Jackson', school: 'Daytona State', position: 'SG', height: '6-4', kr: 79, archetype: 'Shooter', level: 'NJCAA', classYear: '2025' },
-  { id: 'db-9', name: 'Carlos Mendez', school: 'Broward College', position: 'W', height: '6-5', kr: null, archetype: 'Athletic', level: 'NJCAA', classYear: '2025' },
-  { id: 'db-10', name: 'James Porter', school: 'Eastern Florida', position: 'B', height: '6-9', kr: null, archetype: 'Rim Protector', level: 'NJCAA', classYear: '2025' },
-  { id: 'db-11', name: 'Ryan Cooper', school: 'Hillsborough CC', position: 'CG', height: '6-3', kr: null, archetype: 'Two-Way', level: 'NJCAA', classYear: '2025' },
-  { id: 'db-12', name: 'Brandon Scott', school: 'College of Central FL', position: 'SF', height: '6-7', kr: 73, archetype: 'Versatile', level: 'NJCAA', classYear: '2025' },
-  { id: 'db-13', name: 'Isaiah Thomas', school: 'Santa Fe College', position: 'PG', height: '6-0', kr: null, archetype: 'Speed', level: 'NJCAA', classYear: '2026' },
-  { id: 'db-14', name: 'Michael Brown', school: 'Miami Dade College', position: 'F', height: '6-6', kr: 70, archetype: 'High Motor', level: 'NJCAA', classYear: '2025' },
-  { id: 'db-15', name: 'Luis Fernandez', school: 'CB Marbella (Spain)', position: 'B', height: '6-11', kr: null, archetype: 'Project', level: 'Int\'l', classYear: '2025' },
+const LEVEL_OPTIONS = nationalPool.getLevels().map((k) => ({
+  key: k,
+  label: LEVEL_DISPLAY_SHORT[k] ?? k,
+}));
+
+const POS_OPTIONS = ['PG', 'SG', 'SF', 'PF', 'C'] as const;
+
+type SortKey = 'kr' | 'ppg' | 'rpg' | 'name' | 'height';
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: 'kr', label: 'KR' },
+  { key: 'ppg', label: 'PPG' },
+  { key: 'rpg', label: 'RPG' },
+  { key: 'name', label: 'Name' },
+  { key: 'height', label: 'Height' },
 ];
+
+const PAGE_SIZE = 50;
+
+// =============================================================================
+// COMPONENT
+// =============================================================================
 
 interface Props {
   colors: typeof Colors.light;
@@ -57,35 +63,116 @@ interface Props {
 
 export function RecruitingDatabaseV2({ colors }: Props) {
   const accent = ModeColors.sports.primary;
+
+  // Search & filters
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPlayer, setSelectedPlayer] = useState<DatabasePlayer | null>(null);
+  const [levelFilter, setLevelFilter] = useState<string[]>([]);
+  const [posFilter, setPosFilter] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<SortKey>('kr');
+  const [displayCount, setDisplayCount] = useState(PAGE_SIZE);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [minKR, setMinKR] = useState<number | undefined>();
+  const [archetypeFilter, setArchetypeFilter] = useState('');
+  const [conferenceFilter, setConferenceFilter] = useState('');
 
+  // Data query
   const filtered = useMemo(() => {
-    if (!searchQuery.trim()) return MOCK_DATABASE;
-    const q = searchQuery.toLowerCase();
-    return MOCK_DATABASE.filter((p) =>
-      p.name.toLowerCase().includes(q) || p.school.toLowerCase().includes(q) || p.position.toLowerCase().includes(q)
-    );
-  }, [searchQuery]);
+    return nationalPool.search({
+      query: searchQuery || undefined,
+      level: levelFilter.length > 0 ? levelFilter : undefined,
+      position: posFilter.length > 0 ? posFilter : undefined,
+      minKR,
+      conference: conferenceFilter || undefined,
+      archetype: archetypeFilter || undefined,
+      sortBy,
+      sortDir: sortBy === 'name' ? 'asc' : 'desc',
+      limit: displayCount,
+    });
+  }, [searchQuery, levelFilter, posFilter, minKR, conferenceFilter, archetypeFilter, sortBy, displayCount]);
 
-  const renderRow = useCallback(({ item: player }: { item: DatabasePlayer }) => {
-    const isUnscouted = player.kr == null;
+  const totalCount = useMemo(() => {
+    return nationalPool.search({
+      query: searchQuery || undefined,
+      level: levelFilter.length > 0 ? levelFilter : undefined,
+      position: posFilter.length > 0 ? posFilter : undefined,
+      minKR,
+      conference: conferenceFilter || undefined,
+      archetype: archetypeFilter || undefined,
+    }).length;
+  }, [searchQuery, levelFilter, posFilter, minKR, conferenceFilter, archetypeFilter]);
+
+  // Toggle level filter
+  const toggleLevel = useCallback((key: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setLevelFilter((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+    setDisplayCount(PAGE_SIZE);
+  }, []);
+
+  // Toggle position filter
+  const togglePos = useCallback((pos: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setPosFilter((prev) =>
+      prev.includes(pos) ? prev.filter((p) => p !== pos) : [...prev, pos]
+    );
+    setDisplayCount(PAGE_SIZE);
+  }, []);
+
+  // Load more
+  const loadMore = useCallback(() => {
+    if (filtered.length >= displayCount) {
+      setDisplayCount((c) => c + PAGE_SIZE);
+    }
+  }, [filtered.length, displayCount]);
+
+  // Get top badge for a player
+  const getTopBadge = useCallback((p: NationalPlayer): PlayerBadge | null => {
+    if (!p.clusters) return null;
+    const clusters = p.clusters as Record<ClusterType, number>;
+    const badges = computePlayerBadges(
+      clusters as any,
+      (clusterKey: string) => {
+        const score = clusters[clusterKey as ClusterType] ?? 50;
+        return [{ name: clusterKey, rating: score }];
+      },
+    );
+    // Return highest badge (Gold > Silver > Bronze)
+    return badges.find((b) => b.level === 'Gold')
+      ?? badges.find((b) => b.level === 'Silver')
+      ?? null;
+  }, []);
+
+  // Active filter count
+  const activeFilterCount =
+    levelFilter.length + posFilter.length +
+    (minKR != null ? 1 : 0) +
+    (archetypeFilter ? 1 : 0) +
+    (conferenceFilter ? 1 : 0);
+
+  // Open player card sheet
+  const handlePlayerTap = useCallback((player: NationalPlayer) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    openPlayerCard(toGlobalPlayerCard(player));
+  }, []);
+
+  const renderRow = useCallback(({ item: player }: { item: NationalPlayer }) => {
+    const krColor = getKRColor(player.kr);
+    const hasKR = player.kr != null;
+    const levelShort = LEVEL_DISPLAY_SHORT[player.levelKey] ?? player.levelKey;
+    const archetypeName = getArchetypeDisplay(player.archetype);
+    const topBadge = getTopBadge(player);
+
     return (
-      <Pressable
-        style={styles.row}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setSelectedPlayer(player);
-        }}
-      >
+      <Pressable style={styles.row} onPress={() => handlePlayerTap(player)}>
         <View style={styles.rowInfo}>
           <View style={styles.topLine}>
             <ThemedText style={[styles.playerName, { color: colors.text }]} numberOfLines={1}>
-              {player.name}
+              {player.fullName}
             </ThemedText>
-            <View style={[styles.levelTag, { backgroundColor: '#ffffff08' }]}>
-              <ThemedText style={[styles.levelText, { color: colors.textSecondary }]}>{player.level}</ThemedText>
-            </View>
+            {topBadge && (
+              <View style={[styles.badgeDot, { backgroundColor: topBadge.level === 'Gold' ? '#FFD700' : '#A8A9AD' }]} />
+            )}
           </View>
           <ThemedText style={[styles.school, { color: colors.textSecondary }]} numberOfLines={1}>
             {player.school} · {player.position}/{player.height} · {player.classYear}
@@ -93,22 +180,27 @@ export function RecruitingDatabaseV2({ colors }: Props) {
         </View>
 
         <View style={styles.rowRight}>
-          <View style={[styles.archetypeTag, { backgroundColor: '#ffffff08' }]}>
-            <ThemedText style={[styles.archetypeText, { color: colors.textSecondary }]}>{player.archetype}</ThemedText>
+          <View style={styles.tagsRow}>
+            <View style={[styles.levelTag, { backgroundColor: '#ffffff08' }]}>
+              <Text style={[styles.levelText, { color: colors.textSecondary }]}>{levelShort}</Text>
+            </View>
+            <View style={[styles.archetypeTag, { backgroundColor: '#ffffff08' }]}>
+              <Text style={[styles.archetypeText, { color: colors.textSecondary }]}>{archetypeName}</Text>
+            </View>
           </View>
-          {isUnscouted ? (
-            <View style={[styles.krBadge, { backgroundColor: '#55555530' }]}>
-              <Text style={styles.krTextUnscouted}>Est. 68-74</Text>
+          {hasKR ? (
+            <View style={[styles.krBadge, { backgroundColor: krColor + '22' }]}>
+              <Text style={[styles.krTextScouted, { color: krColor }]}>{Math.round(player.kr!)}</Text>
             </View>
           ) : (
-            <View style={[styles.krBadge, { backgroundColor: accent + '22' }]}>
-              <Text style={[styles.krTextScouted, { color: accent }]}>{player.kr}</Text>
+            <View style={[styles.krBadge, { backgroundColor: '#55555530' }]}>
+              <Text style={styles.krTextUnscouted}>Unrated</Text>
             </View>
           )}
         </View>
       </Pressable>
     );
-  }, [colors, accent]);
+  }, [colors, handlePlayerTap, getTopBadge]);
 
   return (
     <View style={styles.container}>
@@ -117,64 +209,179 @@ export function RecruitingDatabaseV2({ colors }: Props) {
         <IconSymbol name="magnifyingglass" size={14} color={colors.textSecondary} />
         <TextInput
           style={[styles.searchInput, { color: colors.text }]}
-          placeholder="Search players, schools..."
+          placeholder="Search players, schools, conferences..."
           placeholderTextColor={colors.textSecondary}
           value={searchQuery}
-          onChangeText={setSearchQuery}
+          onChangeText={(t) => { setSearchQuery(t); setDisplayCount(PAGE_SIZE); }}
           returnKeyType="done"
         />
         {searchQuery.length > 0 && (
-          <Pressable onPress={() => setSearchQuery('')}>
+          <Pressable onPress={() => { setSearchQuery(''); setDisplayCount(PAGE_SIZE); }}>
             <IconSymbol name="xmark.circle.fill" size={16} color={colors.textSecondary} />
           </Pressable>
         )}
       </View>
 
+      {/* Level filter pills */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
+        {LEVEL_OPTIONS.map(({ key, label }) => {
+          const isActive = levelFilter.includes(key);
+          return (
+            <Pressable
+              key={key}
+              style={[styles.filterPill, isActive && { backgroundColor: accent, borderColor: accent }]}
+              onPress={() => toggleLevel(key)}
+            >
+              <ThemedText style={[styles.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
+                {label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {/* Position filter pills */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
+        {POS_OPTIONS.map((pos) => {
+          const isActive = posFilter.includes(pos);
+          return (
+            <Pressable
+              key={pos}
+              style={[styles.filterPill, isActive && { backgroundColor: accent, borderColor: accent }]}
+              onPress={() => togglePos(pos)}
+            >
+              <ThemedText style={[styles.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
+                {pos}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+        {/* Advanced filters button */}
+        <Pressable
+          style={[styles.filterPill, { borderColor: activeFilterCount > 0 ? accent : 'rgba(255,255,255,0.08)' }]}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowAdvanced(true); }}
+        >
+          <ThemedText style={[styles.filterPillText, { color: activeFilterCount > 0 ? accent : colors.textSecondary }]}>
+            Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+          </ThemedText>
+        </Pressable>
+      </ScrollView>
+
+      {/* Sort & count */}
+      <View style={styles.sortRow}>
+        <View style={styles.sortPills}>
+          {SORT_OPTIONS.map((opt) => {
+            const isActive = sortBy === opt.key;
+            return (
+              <Pressable
+                key={opt.key}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSortBy(opt.key); }}
+              >
+                <ThemedText style={[styles.sortText, { color: isActive ? accent : colors.textSecondary }]}>
+                  {opt.label}
+                </ThemedText>
+              </Pressable>
+            );
+          })}
+        </View>
+        <ThemedText style={[styles.countText, { color: colors.textSecondary }]}>
+          {totalCount.toLocaleString()} players
+        </ThemedText>
+      </View>
+
+      {/* Results */}
       <FlatList
         data={filtered}
         keyExtractor={(p) => p.id}
         renderItem={renderRow}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
+        windowSize={10}
       />
 
-      {/* Player card sheet */}
+      {/* Advanced Filters Sheet */}
       <BottomSheet
-        visible={!!selectedPlayer}
-        onClose={() => setSelectedPlayer(null)}
-        title="Player Card"
+        visible={showAdvanced}
+        onClose={() => setShowAdvanced(false)}
+        title="Filters"
         useModal
       >
-        {selectedPlayer && (
-          <View style={styles.sheetContent}>
-            <ThemedText style={[styles.sheetName, { color: colors.text }]}>{selectedPlayer.name}</ThemedText>
-            <ThemedText style={[styles.sheetDetail, { color: colors.textSecondary }]}>
-              {selectedPlayer.position} · {selectedPlayer.height} · {selectedPlayer.school} · {selectedPlayer.level}
-            </ThemedText>
-            {selectedPlayer.kr != null ? (
-              <ThemedText style={[styles.sheetKR, { color: accent }]}>KR: {selectedPlayer.kr}</ThemedText>
-            ) : (
-              <ThemedText style={[styles.sheetKR, { color: colors.textSecondary }]}>Unscouted — Est. 68-74</ThemedText>
-            )}
-            <View style={styles.sheetActions}>
-              {selectedPlayer.kr == null && (
-                <Pressable style={[styles.actionBtn, { backgroundColor: accent }]}>
-                  <ThemedText style={styles.actionBtnText}>Scout via Nexus</ThemedText>
-                </Pressable>
-              )}
-              <Pressable style={[styles.actionBtn, { backgroundColor: '#ffffff10', borderWidth: 1, borderColor: accent }]}>
-                <ThemedText style={[styles.actionBtnText, { color: accent }]}>Add to Board</ThemedText>
-              </Pressable>
-              <Pressable style={[styles.actionBtn, { backgroundColor: '#ffffff10' }]}>
-                <ThemedText style={[styles.actionBtnText, { color: colors.text }]}>Ask Nexus</ThemedText>
-              </Pressable>
+        <View style={styles.advancedContent}>
+          {/* Min KR */}
+          <View style={styles.advRow}>
+            <ThemedText style={[styles.advLabel, { color: colors.text }]}>Min KR</ThemedText>
+            <View style={styles.advInputRow}>
+              {[undefined, 60, 65, 70, 75, 80].map((val) => {
+                const isActive = minKR === val;
+                return (
+                  <Pressable
+                    key={val ?? 'any'}
+                    style={[styles.advPill, isActive && { backgroundColor: accent, borderColor: accent }]}
+                    onPress={() => { setMinKR(val); setDisplayCount(PAGE_SIZE); }}
+                  >
+                    <Text style={[styles.advPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
+                      {val ?? 'Any'}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </View>
           </View>
-        )}
+
+          {/* Conference */}
+          <View style={styles.advRow}>
+            <ThemedText style={[styles.advLabel, { color: colors.text }]}>Conference</ThemedText>
+            <TextInput
+              style={[styles.advTextInput, { color: colors.text, borderColor: colors.border }]}
+              placeholder="Type conference name..."
+              placeholderTextColor={colors.textSecondary}
+              value={conferenceFilter}
+              onChangeText={(t) => { setConferenceFilter(t); setDisplayCount(PAGE_SIZE); }}
+              returnKeyType="done"
+            />
+          </View>
+
+          {/* Archetype */}
+          <View style={styles.advRow}>
+            <ThemedText style={[styles.advLabel, { color: colors.text }]}>Archetype</ThemedText>
+            <TextInput
+              style={[styles.advTextInput, { color: colors.text, borderColor: colors.border }]}
+              placeholder="e.g. floor_general, two_way_wing..."
+              placeholderTextColor={colors.textSecondary}
+              value={archetypeFilter}
+              onChangeText={(t) => { setArchetypeFilter(t); setDisplayCount(PAGE_SIZE); }}
+              returnKeyType="done"
+            />
+          </View>
+
+          {/* Clear all */}
+          <Pressable
+            style={[styles.clearBtn, { borderColor: accent }]}
+            onPress={() => {
+              setLevelFilter([]);
+              setPosFilter([]);
+              setMinKR(undefined);
+              setConferenceFilter('');
+              setArchetypeFilter('');
+              setDisplayCount(PAGE_SIZE);
+              setShowAdvanced(false);
+            }}
+          >
+            <ThemedText style={[styles.clearBtnText, { color: accent }]}>Clear All Filters</ThemedText>
+          </Pressable>
+        </View>
       </BottomSheet>
     </View>
   );
 }
+
+// =============================================================================
+// STYLES
+// =============================================================================
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -184,6 +391,19 @@ const styles = StyleSheet.create({
     gap: 8, borderWidth: 1,
   },
   searchInput: { flex: 1, fontSize: 14, paddingVertical: 0 },
+  pillRow: { paddingHorizontal: Spacing.lg, paddingBottom: 6, gap: 6 },
+  filterPill: {
+    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.05)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+  },
+  filterPillText: { fontSize: 12, fontWeight: '600' },
+  sortRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.lg, paddingBottom: 4, paddingTop: 2,
+  },
+  sortPills: { flexDirection: 'row', gap: 12 },
+  sortText: { fontSize: 11, fontWeight: '600' },
+  countText: { fontSize: 11 },
   listContent: { paddingBottom: 120, paddingHorizontal: Spacing.lg },
   row: {
     flexDirection: 'row', alignItems: 'center', paddingVertical: 10,
@@ -192,20 +412,34 @@ const styles = StyleSheet.create({
   rowInfo: { flex: 1, gap: 3 },
   topLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   playerName: { fontSize: 14, fontWeight: '600', flex: 1 },
-  levelTag: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  levelText: { fontSize: 9, fontWeight: '700' },
+  badgeDot: { width: 8, height: 8, borderRadius: 4 },
   school: { fontSize: 11 },
   rowRight: { alignItems: 'flex-end', gap: 4 },
+  tagsRow: { flexDirection: 'row', gap: 4 },
+  levelTag: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
+  levelText: { fontSize: 9, fontWeight: '700' },
   archetypeTag: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
   archetypeText: { fontSize: 9, fontWeight: '600' },
   krBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, minWidth: 46, alignItems: 'center' },
   krTextUnscouted: { fontSize: 10, fontWeight: '600', color: '#777', fontStyle: 'italic' },
-  krTextScouted: { fontSize: 12, fontWeight: '800' },
-  sheetContent: { paddingHorizontal: Spacing.lg, paddingBottom: 24, gap: 8 },
-  sheetName: { fontSize: 18, fontWeight: '700' },
-  sheetDetail: { fontSize: 13 },
-  sheetKR: { fontSize: 15, fontWeight: '700', marginTop: 4 },
-  sheetActions: { marginTop: 16, gap: 10 },
-  actionBtn: { paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
-  actionBtnText: { fontSize: 15, fontWeight: '700', color: '#000' },
+  krTextScouted: { fontSize: 13, fontWeight: '800' },
+  // Advanced filters
+  advancedContent: { paddingHorizontal: Spacing.lg, paddingBottom: 24, gap: 16 },
+  advRow: { gap: 8 },
+  advLabel: { fontSize: 13, fontWeight: '600' },
+  advInputRow: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
+  advPill: {
+    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.05)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+  },
+  advPillText: { fontSize: 12, fontWeight: '600' },
+  advTextInput: {
+    height: 38, borderRadius: 10, paddingHorizontal: 12,
+    fontSize: 14, borderWidth: 1,
+  },
+  clearBtn: {
+    paddingVertical: 14, borderRadius: 12, alignItems: 'center',
+    borderWidth: 1, marginTop: 8,
+  },
+  clearBtnText: { fontSize: 15, fontWeight: '700' },
 });

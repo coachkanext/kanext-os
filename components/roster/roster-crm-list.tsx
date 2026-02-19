@@ -1,7 +1,7 @@
 /**
- * Roster CRM List View
- * Compact, filterable, sortable player rows with KR badges, status tags,
- * portal risk dots, and flag icons. 6-8 rows visible per screen.
+ * Roster CRM List View — Enhanced with universal KR intelligence
+ * Compact, filterable, sortable player rows with KR badges (universal color bands),
+ * level-aware tier labels, archetype tags, status tags, portal risk dots, and flag icons.
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -15,13 +15,13 @@ import {
   Modal,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Spacing } from '@/constants/theme';
-import { TEAM_COLORS, ROSTER_META, PLAYER_CLUSTERS, computeOffKR, computeDefKR, getKRBadgeColor, computePortalRisk, getPortalRiskColor } from '@/data/roster-data';
+import { TEAM_COLORS, ROSTER_META, computePortalRisk, getPortalRiskColor } from '@/data/roster-data';
+import { jerseyArchetypeMap } from '@/data/fmu';
+import { getKRColor, getKRTierLabel, getArchetypeDisplay } from '@/utils/kr-display';
 import type { RosterFilterCategory, RosterSortKey } from '@/types';
-import { openPlayerCard } from '@/utils/global-entity-sheets';
 
 type RosterPlayer = {
   id: string;
@@ -175,6 +175,14 @@ export function RosterCRMList({ roster, onPlayerTap }: Props) {
     const isFlagged = localFlags.has(player.number);
     const initials = `${player.firstName[0]}${player.lastName[0]}`;
 
+    // Universal KR display
+    const krColor = getKRColor(player.kr);
+    const krTier = getKRTierLabel(player.kr, 'naia'); // FMU is NAIA
+
+    // Archetype from FMU data
+    const archetypeKey = jerseyArchetypeMap.get(player.number);
+    const archetypeLabel = archetypeKey ? getArchetypeDisplay(archetypeKey) : null;
+
     return (
       <Pressable
         style={styles.row}
@@ -198,14 +206,21 @@ export function RosterCRMList({ roster, onPlayerTap }: Props) {
             </View>
           </View>
           <View style={styles.rowBottomLine}>
-            <View style={[styles.krBadge, { backgroundColor: getKRBadgeColor(player.kr) + '22' }]}>
-              <Text style={[styles.krText, { color: getKRBadgeColor(player.kr) }]}>{player.kr}</Text>
+            <View style={[styles.krBadge, { backgroundColor: krColor + '22' }]}>
+              <Text style={[styles.krText, { color: krColor }]}>{player.kr}</Text>
             </View>
             <View style={[styles.statusTag, { backgroundColor: statusColor.bg }]}>
               <Text style={[styles.statusText, { color: statusColor.text }]}>{STATUS_LABEL[effectiveRole] ?? effectiveRole}</Text>
             </View>
+            {archetypeLabel && (
+              <View style={styles.archetypeTag}>
+                <Text style={styles.archetypeText}>{archetypeLabel}</Text>
+              </View>
+            )}
             <Text style={styles.statValue}>{getStatValue(player)}</Text>
           </View>
+          {/* KR tier label */}
+          <Text style={[styles.krTierLabel, { color: krColor }]}>{krTier}</Text>
         </View>
 
         {/* Right column: portal risk + flag */}
@@ -420,7 +435,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   avatarText: { fontSize: 14, fontWeight: '700', color: '#fff' },
-  rowInfo: { flex: 1, gap: 4 },
+  rowInfo: { flex: 1, gap: 3 },
   rowTopLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   jersey: { fontSize: 12, fontWeight: '700', color: TEAM_COLORS.gray },
   playerName: { fontSize: 14, fontWeight: '600', color: '#f5f5f5', flex: 1 },
@@ -431,12 +446,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#2a2a2a',
   },
   posPillText: { fontSize: 10, fontWeight: '700', color: '#f5f5f5' },
-  rowBottomLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  rowBottomLine: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
   krBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
   krText: { fontSize: 11, fontWeight: '800' },
   statusTag: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
   statusText: { fontSize: 10, fontWeight: '700' },
+  archetypeTag: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    backgroundColor: '#ffffff08',
+  },
+  archetypeText: { fontSize: 9, fontWeight: '600', color: '#aaa' },
   statValue: { fontSize: 11, color: TEAM_COLORS.gray },
+  krTierLabel: { fontSize: 9, fontWeight: '600', marginTop: 1 },
   rowRight: { alignItems: 'center', gap: 8, paddingLeft: 4 },
   riskDot: { width: 8, height: 8, borderRadius: 4 },
 });

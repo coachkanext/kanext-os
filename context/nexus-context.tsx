@@ -24,6 +24,7 @@ import type { ActionIntent, MessageV2, NexusContext as NexusContextScope } from 
 import { MOCK_CONVERSATIONS, getMessagesForConversation } from '@/data/mock-nexus';
 import { detectSimulationIntent, generateMockSimulation } from '@/data/mock-simulations';
 import { sendToGPT, type ChatMessage } from '@/utils/openai';
+import { processPlayerQuery } from '@/utils/nexus-player-query';
 import { classifyIntent } from '@/utils/nexus-actions';
 import { processAction, executeConfirmedAction } from '@/utils/nexus-action-engine';
 import { mapRoleToRBAC } from '@/utils/nexus-rbac';
@@ -740,6 +741,9 @@ export function NexusProvider({ children }: NexusProviderProps) {
     conversationHistoryRef.current.set(conversationId, trimmedHistory);
 
     try {
+      // Pre-process player queries in sports mode
+      const playerQuery = mode === 'sports' ? processPlayerQuery(inputText) : null;
+
       const isGameOpsConv = conversation?.type === 'game-ops';
       const responseText = await sendToGPT({
         messages: trimmedHistory,
@@ -752,6 +756,7 @@ export function NexusProvider({ children }: NexusProviderProps) {
           isGameOps: isGameOpsConv,
           gameOpsOpponent: isGameOpsConv ? conversation?.gameOpsConfig?.opponent : undefined,
         },
+        playerDataContext: playerQuery?.isPlayerQuery ? playerQuery.contextBlock : undefined,
       });
 
       // Add assistant response to history

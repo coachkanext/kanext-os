@@ -5,6 +5,7 @@
 
 import OpenAI from 'openai';
 import type { Mode, Role, Organization, Program } from '@/types';
+import { buildPoolAwarenessPrompt } from '@/utils/nexus-player-query';
 
 // API key loaded from environment or hardcoded for dev
 // In production, this should come from a secure backend proxy
@@ -72,6 +73,7 @@ function buildSystemPrompt(ctx: NexusContext): string {
   switch (ctx.mode) {
     case 'sports':
       parts.push(`\nYou are a sports analytics assistant for collegiate basketball. You can analyze rosters, simulate matchups, evaluate players, project game outcomes, and explore strategic scenarios. You understand basketball strategy, recruiting, NIL, transfer portal, and program management.`);
+      parts.push(buildPoolAwarenessPrompt());
       break;
     case 'business':
       parts.push(`\nYou are a strategic business advisor. You help analyze company metrics, model fundraising scenarios, evaluate market opportunities, plan resource allocation, and advise on growth strategy.`);
@@ -128,16 +130,23 @@ export interface ChatMessage {
 interface SendMessageOptions {
   messages: ChatMessage[];
   context: NexusContext;
+  /** Optional player data context block injected by the query preprocessor */
+  playerDataContext?: string;
 }
 
-export async function sendToGPT({ messages, context }: SendMessageOptions): Promise<string> {
+export async function sendToGPT({ messages, context, playerDataContext }: SendMessageOptions): Promise<string> {
   if (!OPENAI_API_KEY) {
     // Fallback: return a helpful message if no API key
     return "Nexus is not connected to GPT yet. Set EXPO_PUBLIC_OPENAI_API_KEY in your environment to enable AI responses.";
   }
 
   try {
-    const systemPrompt = buildSystemPrompt(context);
+    let systemPrompt = buildSystemPrompt(context);
+
+    // Inject player data context if available
+    if (playerDataContext) {
+      systemPrompt += '\n' + playerDataContext;
+    }
 
     const response = await getClient().chat.completions.create({
       model: 'gpt-4o',
