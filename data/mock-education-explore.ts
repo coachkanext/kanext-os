@@ -97,7 +97,7 @@ export const SCHOOLS_FOR_YOU: SchoolCard[] = [
   { id: 'sfy-3', name: 'Tuskegee University', initials: 'TU', location: 'Tuskegee, AL', type: 'HBCU', badges: ['NCAA D-II', 'STEM'], thumbnailColor: '#C2185B' },
   { id: 'sfy-4', name: 'Hampton University', initials: 'HU', location: 'Hampton, VA', type: 'HBCU', badges: ['NCAA D-I', 'Business'], thumbnailColor: '#7A5CFF' },
   { id: 'sfy-5', name: 'Howard University', initials: 'HOW', location: 'Washington, DC', type: 'HBCU', badges: ['NCAA D-I', 'Law'], thumbnailColor: '#EF4444' },
-  { id: 'sfy-6', name: 'Bethune-Cookman', initials: 'BCU', location: 'Daytona Beach, FL', type: 'HBCU', badges: ['NCAA D-I', 'Nursing'], thumbnailColor: '#F59E0B' },
+  { id: 'sfy-6', name: 'Morehouse College', initials: 'MC', location: 'Atlanta, GA', type: 'HBCU', badges: ['NCAA D-II', 'Liberal Arts'], thumbnailColor: '#F59E0B' },
   { id: 'sfy-7', name: 'Edward Waters University', initials: 'EWU', location: 'Jacksonville, FL', type: 'HBCU', badges: ['NAIA', 'Faith-Based'], thumbnailColor: '#22C55E' },
   { id: 'sfy-8', name: 'Warner University', initials: 'WU', location: 'Lake Wales, FL', type: 'Faith-Based', badges: ['NAIA', 'Ministry'], thumbnailColor: '#F59E0B' },
 ];
@@ -153,7 +153,7 @@ export const CAMPUS_LIFE: CampusCard[] = [
   { id: 'cl-3', title: 'Greek Life & Organizations', schoolName: 'Hampton University', category: 'Student Life', thumbnailColor: '#7A5CFF' },
   { id: 'cl-4', title: 'Chapel Services', schoolName: 'San Diego Christian', category: 'Faith', thumbnailColor: '#6AA9FF' },
   { id: 'cl-5', title: 'Athletics Game Day', schoolName: 'Tuskegee University', category: 'Athletics', thumbnailColor: '#C2185B' },
-  { id: 'cl-6', title: 'Research Opportunities', schoolName: 'Bethune-Cookman', category: 'Academics', thumbnailColor: '#F59E0B' },
+  { id: 'cl-6', title: 'Research Opportunities', schoolName: 'Morehouse College', category: 'Academics', thumbnailColor: '#F59E0B' },
 ];
 
 // =============================================================================

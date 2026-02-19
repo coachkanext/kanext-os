@@ -380,7 +380,7 @@ export const PRODUCT_MILESTONES: ProductMilestone[] = [
     name: 'Education Mode Live',
     status: 'upcoming',
     date: '2026-04-15',
-    description: 'FMU + Lincoln integration — academic tracking, department org, student services, compliance',
+    description: 'FMU integration — academic tracking, department org, student services, compliance',
   },
   {
     id: 'pm-7',
@@ -439,9 +439,9 @@ export interface TractionMetrics {
 }
 
 export const TRACTION_METRICS: TractionMetrics = {
-  institutions: 4,
-  institutionNames: ['FMU Lions', 'ICCLA', 'Lincoln University', 'K-1 Grand Prix'],
-  activeViews: 47,
+  institutions: 3,
+  institutionNames: ['FMU Lions', 'ICCLA', 'K-1 Grand Prix'],
+  activeViews: 5,
   ipDocs: 6,
   enginesBuilt: 5,
   transactionsProcessed: 1_240,
@@ -674,15 +674,6 @@ export const PROOF_INSTITUTIONS: ProofInstitution[] = [
     activeViews: 8,
     keyMetrics: 'Church Mode beta · Member management · Giving portal · Event calendar',
     sinceDate: '2026-02-05',
-  },
-  {
-    id: 'pi-3',
-    name: 'Lincoln University',
-    mode: 'education',
-    status: 'prospect',
-    activeViews: 0,
-    keyMetrics: 'Education Mode demo scheduled · Academic tracking · Department org',
-    sinceDate: '2026-02-15',
   },
   {
     id: 'pi-4',

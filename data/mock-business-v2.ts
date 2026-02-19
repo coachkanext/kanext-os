@@ -687,7 +687,7 @@ export const PIPELINE_ITEMS: PipelineItem[] = [
   },
   {
     id: 'pip-4',
-    name: 'Lincoln University (PA)',
+    name: 'Tuskegee University',
     stage: 'Initial Contact',
     type: 'partnership',
     status: 'active',

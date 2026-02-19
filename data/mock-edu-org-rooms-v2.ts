@@ -1,7 +1,7 @@
 /**
  * Education Organization Rooms V2 — Mock Data & Types
  * Operational / governance / incident / project / committee rooms across
- * the ICCLA education portfolio (org-wide + FMU + BCU).
+ * the ICCLA education portfolio (org-wide + FMU).
  */
 
 // =============================================================================
@@ -22,7 +22,7 @@ export interface EduOrgRoom {
   status: RoomStatus;
   access: RoomAccess;
   scope: RoomScope;
-  institution?: string;        // e.g. 'FMU' | 'BCU' — undefined for org-level
+  institution?: string;        // e.g. 'FMU' — undefined for org-level
   department?: string;
   owner: string;
   memberCount: number;
@@ -342,120 +342,6 @@ const ROOMS: EduOrgRoom[] = [
     incident: { severity: 'critical' },
   },
 
-  // --- BCU (Bethune-Cookman University) ---
-  {
-    id: 'er-bcu-admissions',
-    name: 'Admissions Ops',
-    type: 'ops',
-    domain: 'admissions',
-    status: 'active',
-    access: 'restricted',
-    scope: 'institution',
-    institution: 'BCU',
-    owner: 'Dir. Admissions',
-    memberCount: 12,
-    description: 'BCU admissions pipeline — application review, campus tours, yield events.',
-    lastActivity: '2026-02-18T10:00:00Z',
-    pendingItems: 16,
-    urgentItems: 2,
-  },
-  {
-    id: 'er-bcu-registrar',
-    name: 'Registrar Ops',
-    type: 'ops',
-    domain: 'academics',
-    status: 'active',
-    access: 'restricted',
-    scope: 'institution',
-    institution: 'BCU',
-    owner: 'Registrar',
-    memberCount: 7,
-    description: 'Course scheduling, enrollment verification, transcript services.',
-    lastActivity: '2026-02-17T15:45:00Z',
-    pendingItems: 10,
-    urgentItems: 1,
-  },
-  {
-    id: 'er-bcu-housing',
-    name: 'Housing Ops',
-    type: 'ops',
-    domain: 'campus',
-    status: 'active',
-    access: 'open',
-    scope: 'institution',
-    institution: 'BCU',
-    owner: 'Dir. Residential Life',
-    memberCount: 9,
-    description: 'Room assignments, move-in/out logistics, RA scheduling, maintenance tickets.',
-    lastActivity: '2026-02-18T07:30:00Z',
-    pendingItems: 7,
-    urgentItems: 1,
-  },
-  {
-    id: 'er-bcu-budget',
-    name: 'Budget & Approvals',
-    type: 'ops',
-    domain: 'financial',
-    status: 'active',
-    access: 'confidential',
-    scope: 'institution',
-    institution: 'BCU',
-    owner: 'CFO – BCU',
-    memberCount: 5,
-    description: 'Budget management, purchase orders, variance analysis.',
-    lastActivity: '2026-02-17T14:00:00Z',
-    pendingItems: 6,
-    urgentItems: 1,
-  },
-  {
-    id: 'er-bcu-success',
-    name: 'Student Success Ops',
-    type: 'ops',
-    domain: 'academics',
-    status: 'active',
-    access: 'restricted',
-    scope: 'institution',
-    institution: 'BCU',
-    owner: 'Dean of Students',
-    memberCount: 8,
-    description: 'Retention programs, tutoring coordination, academic alerts, advising queue.',
-    lastActivity: '2026-02-18T09:15:00Z',
-    pendingItems: 14,
-    urgentItems: 3,
-  },
-  {
-    id: 'er-bcu-compliance',
-    name: 'Compliance Council',
-    type: 'governance',
-    domain: 'policies',
-    status: 'active',
-    access: 'confidential',
-    scope: 'institution',
-    institution: 'BCU',
-    owner: 'Compliance Officer',
-    memberCount: 6,
-    description: 'BCU regulatory compliance — Title IV, Clery, NCAA, accreditation status.',
-    lastActivity: '2026-02-17T11:30:00Z',
-    pendingItems: 4,
-    urgentItems: 1,
-    governance: { nextMeeting: '2026-02-26', pendingDecisions: 3, pendingApprovals: 1, documentsCount: 10 },
-  },
-  {
-    id: 'er-bcu-facilities',
-    name: 'Facilities Project',
-    type: 'project',
-    domain: 'campus',
-    status: 'active',
-    access: 'restricted',
-    scope: 'institution',
-    institution: 'BCU',
-    owner: 'Dir. Facilities',
-    memberCount: 10,
-    description: 'BCU campus renovation project — STEM building, residence hall upgrades, ADA compliance.',
-    lastActivity: '2026-02-18T08:00:00Z',
-    pendingItems: 11,
-    urgentItems: 2,
-  },
 ];
 
 // =============================================================================

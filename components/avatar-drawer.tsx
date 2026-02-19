@@ -147,7 +147,7 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
     }
   }, [visible, slideAnim, fadeAnim, contentSlideAnim]);
 
-  // Derive highest RBCA tier across all 21 views for primary badge
+  // Derive highest RBCA tier across all views for primary badge
   const highestTier = useMemo<RBCATier>(() => {
     let max: RBCATier = 0;
     for (const view of CANONICAL_VIEWS) {

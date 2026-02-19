@@ -1,7 +1,7 @@
 /**
  * Education Organization Compliance — Mock Data & Types
  * Policies, controls, evidence, audits, risks, incidents, exceptions, export packets.
- * HBCU-themed: FMU = Florida Memorial University, BCU = Bethune-Cookman University.
+ * HBCU-themed: FMU = Florida Memorial University.
  */
 
 // =============================================================================

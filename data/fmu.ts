@@ -2,7 +2,7 @@
  * FMU Data Bridge
  *
  * Transforms normalized FMU data (from data/sun-conference/florida-memorial/)
- * into the shapes each app screen expects. Replaces Lincoln demo data.
+ * into the shapes each app screen expects.
  */
 
 import {
