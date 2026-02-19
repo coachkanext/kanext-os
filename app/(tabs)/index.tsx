@@ -43,6 +43,9 @@ import { SportsCalendarV2 } from '@/components/calendar/sports-calendar-v2';
 import { SportsStatsV2 } from '@/components/stats/sports-stats-v2';
 import { SportsSimulationV2 } from '@/components/simulation/sports-simulation-v2';
 import { SportsDevelopmentV2 } from '@/components/development/sports-development-v2';
+import { TicketsSheet } from '@/components/commerce/tickets-sheet';
+import { StoreSheet } from '@/components/commerce/store-sheet';
+import { SupportSheet } from '@/components/commerce/support-sheet';
 import { CommunityHome } from '@/components/community/community-home';
 import { BusinessHome } from '@/components/business/business-home';
 import { ChurchHome as ChurchHomeComponent } from '@/components/church/church-home';
@@ -279,6 +282,15 @@ function SportsHome() {
     registerTeamSheetHandlers(openTeamSheet, closeTeamSheet);
   }, [openTeamSheet, closeTeamSheet]);
 
+  // Commerce sheets
+  const [ticketsVisible, setTicketsVisible] = useState(false);
+  const [storeVisible, setStoreVisible] = useState(false);
+  const [supportVisible, setSupportVisible] = useState(false);
+
+  // Upcoming home games (for tickets card)
+  const upcomingHomeGames = useMemo(() => FMU_GAMES.filter(g => g.location === 'Home' && g.status === 'upcoming'), []);
+  const nextHomeGame = upcomingHomeGames[0];
+
   // Team system selection state
   const [selectedOffSystem, setSelectedOffSystem] = useState('Motion Read & React');
   const [selectedDefSystem, setSelectedDefSystem] = useState('Pack Line');
@@ -492,7 +504,7 @@ function SportsHome() {
                   {/* ===== BLOCK 2b — ACTION BUTTONS ===== */}
                   {FMU_NEXT_GAME && (
                     <View style={styles.ngActions}>
-                      <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Buy Tickets')}>
+                      <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => setTicketsVisible(true)}>
                         <IconSymbol name="ticket.fill" size={14} color={colors.tint} />
                         <Text style={[styles.ngActionText, { color: colors.text }]}>Buy Tickets</Text>
                       </Pressable>
@@ -505,26 +517,24 @@ function SportsHome() {
 
                   {/* ===== BLOCK 3 — COMMERCE ROW ===== */}
                   <View style={styles.commerceRow}>
-                    <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Tickets')}>
-                      <View style={[styles.commerceIconWrap, { backgroundColor: '#f59e0b22' }]}>
-                        <IconSymbol name="ticket.fill" size={18} color="#f59e0b" />
-                      </View>
-                      <Text style={[styles.commerceLabel, { color: colors.text }]}>Buy Tickets</Text>
-                      <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>FMU Athletics Events</Text>
+                    <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderTopColor: MODE_ACCENT.sports }]} onPress={() => setTicketsVisible(true)}>
+                      <Text style={[styles.commerceTitle, { color: colors.text }]}>Tickets</Text>
+                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>
+                        {nextHomeGame ? `vs ${nextHomeGame.opponent.length > 12 ? nextHomeGame.opponent.slice(0, 12) + '…' : nextHomeGame.opponent} · ${nextHomeGame.date}` : 'No upcoming games'}
+                      </Text>
+                      {upcomingHomeGames.length > 0 && (
+                        <Text style={[styles.commerceSubtext, { color: colors.textTertiary }]}>
+                          {upcomingHomeGames.length} home game{upcomingHomeGames.length !== 1 ? 's' : ''} left
+                        </Text>
+                      )}
                     </Pressable>
-                    <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Store')}>
-                      <View style={[styles.commerceIconWrap, { backgroundColor: '#8b5cf622' }]}>
-                        <IconSymbol name="bag.fill" size={18} color="#8b5cf6" />
-                      </View>
-                      <Text style={[styles.commerceLabel, { color: colors.text }]}>Team Store</Text>
-                      <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>Official FMU Gear</Text>
+                    <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderTopColor: MODE_ACCENT.sports }]} onPress={() => setStoreVisible(true)}>
+                      <Text style={[styles.commerceTitle, { color: colors.text }]}>Store</Text>
+                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Official FMU Lions Gear</Text>
                     </Pressable>
-                    <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Support')}>
-                      <View style={[styles.commerceIconWrap, { backgroundColor: '#ef444422' }]}>
-                        <IconSymbol name="heart.fill" size={18} color="#ef4444" />
-                      </View>
-                      <Text style={[styles.commerceLabel, { color: colors.text }]}>Support</Text>
-                      <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>Support FMU Athletics</Text>
+                    <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderTopColor: MODE_ACCENT.sports }]} onPress={() => setSupportVisible(true)}>
+                      <Text style={[styles.commerceTitle, { color: colors.text }]}>Support</Text>
+                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Back the Lions</Text>
                     </Pressable>
                   </View>
 
@@ -770,6 +780,11 @@ function SportsHome() {
         offSystemName={selectedOffSystem}
         defSystemName={selectedDefSystem}
       />
+
+      {/* ===== COMMERCE SHEETS ===== */}
+      <TicketsSheet visible={ticketsVisible} onClose={() => setTicketsVisible(false)} colors={colors} />
+      <StoreSheet visible={storeVisible} onClose={() => setStoreVisible(false)} colors={colors} />
+      <SupportSheet visible={supportVisible} onClose={() => setSupportVisible(false)} colors={colors} />
     </View>
   );
 }
@@ -1849,30 +1864,23 @@ const styles = StyleSheet.create({
   },
   commerceCard: {
     flex: 1,
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
     borderRadius: BorderRadius.lg,
-    borderWidth: StyleSheet.hairlineWidth,
-    gap: 6,
+    borderTopWidth: 2,
+    gap: 3,
   },
-  commerceIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  commerceLabel: {
-    fontSize: 12,
+  commerceTitle: {
+    fontSize: 13,
     fontWeight: '700',
-    textAlign: 'center',
-    letterSpacing: -0.2,
   },
-  commerceSub: {
+  commerceDetail: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+  commerceSubtext: {
     fontSize: 10,
     fontWeight: '500',
-    textAlign: 'center',
   },
 
 });
