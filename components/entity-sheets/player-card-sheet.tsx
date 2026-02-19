@@ -1,17 +1,14 @@
 /**
  * Player Card Sheet — Full intelligence player preview bottom sheet.
  * Shows KR (level-aware), archetype, badges, clusters, stats, system fit.
- * "Ask Nexus about this player" CTA at bottom.
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { openAskNexus } from '@/utils/global-ask-nexus';
 import type { PlayerCardData } from '@/utils/global-entity-sheets';
 import {
   getKRColor,
@@ -266,20 +263,6 @@ export function PlayerCardSheet({ visible, onClose, data }: Props) {
             </View>
           )}
 
-          {/* ── ASK NEXUS CTA ── */}
-          <Pressable
-            style={[styles.askNexusButton, { backgroundColor: `hsl(${hue}, 50%, 25%)` }]}
-            onPress={() => {
-              onClose();
-              const prefill = data.playerId
-                ? `Tell me about ${data.name} (ID: ${data.playerId}) — full evaluation`
-                : `Tell me about ${data.name}`;
-              openAskNexus({ screen: '/nexus', mode: 'sports', prefill });
-            }}
-          >
-            <IconSymbol name="sparkles" size={16} color="#fff" />
-            <Text style={styles.askNexusText}>Ask Nexus about this player →</Text>
-          </Pressable>
         </View>
       </ScrollView>
     </BottomSheet>
@@ -376,7 +359,4 @@ const styles = StyleSheet.create({
   infoLabel: { fontSize: 12, fontWeight: '600' },
   infoValue: { fontSize: 13, fontWeight: '600' },
 
-  // Ask Nexus
-  askNexusButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, borderRadius: BorderRadius.lg, marginTop: 4 },
-  askNexusText: { fontSize: 15, fontWeight: '600', color: '#fff' },
 });

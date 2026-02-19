@@ -307,12 +307,6 @@ export function RecruitingBoardV2({ colors }: Props) {
             <ThemedText style={[styles.sheetNotes, { color: colors.text }]}>
               {selectedEntry.longNotes}
             </ThemedText>
-            <Pressable
-              style={[styles.nexusBtn, { backgroundColor: accent }]}
-              onPress={() => setSelectedEntry(null)}
-            >
-              <ThemedText style={styles.nexusBtnText}>Ask Nexus</ThemedText>
-            </Pressable>
           </View>
         )}
       </BottomSheet>
@@ -375,6 +369,4 @@ const styles = StyleSheet.create({
   sheetKRBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6 },
   sheetKRText: { fontSize: 14, fontWeight: '800' },
   sheetNotes: { fontSize: 13, lineHeight: 20, marginTop: 4 },
-  nexusBtn: { marginTop: 16, paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
-  nexusBtnText: { fontSize: 15, fontWeight: '700', color: '#000' },
 });

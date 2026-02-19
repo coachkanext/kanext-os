@@ -59,6 +59,7 @@ export interface PlayerQueryResult {
   isPlayerQuery: boolean;
   contextBlock: string;
   playerCount: number;
+  matchedPlayers?: NationalPlayer[];
 }
 
 /**
@@ -270,6 +271,7 @@ export function processPlayerQuery(userMessage: string): PlayerQueryResult {
     isPlayerQuery: true,
     contextBlock,
     playerCount: results.length,
+    matchedPlayers: results,
   };
 }
 

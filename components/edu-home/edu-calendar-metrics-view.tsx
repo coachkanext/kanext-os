@@ -30,9 +30,6 @@ function SectionCard({ title, accent, colors, children }: { title: string; accen
     <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <ThemedText style={[styles.sectionTitle, { color: accent }]}>{title}</ThemedText>
       {children}
-      <ThemedText style={[styles.nexusCta, { color: colors.textSecondary }]}>
-        Ask Nexus for deeper analysis {'\u2192'}
-      </ThemedText>
     </View>
   );
 }
@@ -165,8 +162,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: { fontSize: 12, fontWeight: '800', letterSpacing: 1, marginBottom: 12 },
-  nexusCta: { fontSize: 11, marginTop: 12 },
-
   // Summary row
   summaryRow: { flexDirection: 'row', gap: 24, marginBottom: 12 },
   summaryItem: {},

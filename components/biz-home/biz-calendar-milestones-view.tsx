@@ -1,10 +1,10 @@
 /**
  * Biz Calendar Milestones View — Product, Fundraise, Traction sections
- * Timeline checklist, progress bars, and "Ask Nexus" CTAs.
+ * Timeline checklist, progress bars, and metric pills.
  */
 
 import React from 'react';
-import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
@@ -60,7 +60,6 @@ export function BizCalendarMilestonesView({ colors, accent }: Props) {
           );
         })}
 
-        <NexusCta colors={colors} accent={accent} />
       </View>
 
       {/* ── FUNDRAISE ── */}
@@ -87,7 +86,6 @@ export function BizCalendarMilestonesView({ colors, accent }: Props) {
           <MetricPill label="Runway" value={`${fm.runway} mo`} colors={colors} />
         </View>
 
-        <NexusCta colors={colors} accent={accent} />
       </View>
 
       {/* ── TRACTION ── */}
@@ -110,7 +108,6 @@ export function BizCalendarMilestonesView({ colors, accent }: Props) {
           ))}
         </View>
 
-        <NexusCta colors={colors} accent={accent} />
       </View>
 
       <View style={{ height: 120 }} />
@@ -124,16 +121,6 @@ function MetricPill({ label, value, colors }: { label: string; value: string; co
       <ThemedText style={[styles.metricValue, { color: colors.text }]}>{value}</ThemedText>
       <ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>{label}</ThemedText>
     </View>
-  );
-}
-
-function NexusCta({ colors, accent }: { colors: typeof Colors.light; accent: string }) {
-  return (
-    <Pressable style={styles.nexusCta}>
-      <ThemedText style={[styles.nexusCtaText, { color: accent }]}>
-        Ask Nexus for deeper analysis {'\u2192'}
-      </ThemedText>
-    </Pressable>
   );
 }
 
@@ -156,6 +143,4 @@ const styles = StyleSheet.create({
   metricLabel: { fontSize: 10, marginTop: 2 },
   institutionList: { marginTop: 4, gap: 4, marginBottom: 8 },
   institutionName: { fontSize: 12 },
-  nexusCta: { marginTop: 8, paddingVertical: 6 },
-  nexusCtaText: { fontSize: 12, fontWeight: '600' },
 });

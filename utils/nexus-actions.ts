@@ -196,6 +196,123 @@ const INTENT_PATTERNS: IntentPattern[] = [
       title: _match[1]?.trim(),
     }),
   },
+
+  // ── Add to Board ──
+  {
+    patterns: [
+      /^(?:add|put)\s+(.+?)\s+(?:to|on)\s+(?:the\s+)?(?:recruiting\s+)?board/i,
+      /^board\s+(?:add|put)\s+(.+)/i,
+    ],
+    extract: (_match) => ({
+      type: 'add_to_board',
+      player_name: _match[1]?.trim(),
+    }),
+  },
+
+  // ── Remove from Board ──
+  {
+    patterns: [
+      /^(?:remove|take|drop)\s+(.+?)\s+(?:from|off)\s+(?:the\s+)?(?:recruiting\s+)?board/i,
+    ],
+    extract: (_match) => ({
+      type: 'remove_from_board',
+      player_name: _match[1]?.trim(),
+    }),
+  },
+
+  // ── Change Pipeline Stage ──
+  {
+    patterns: [
+      /^(?:move|change|set)\s+(.+?)\s+(?:to|stage)\s+(.+)/i,
+    ],
+    extract: (_match) => ({
+      type: 'change_pipeline_stage',
+      player_name: _match[1]?.trim(),
+      stage: _match[2]?.trim(),
+    }),
+  },
+
+  // ── Flag Player ──
+  {
+    patterns: [
+      /^flag\s+(.+?)(?:\s+(?:for|because)\s+(.+))?$/i,
+    ],
+    extract: (_match) => ({
+      type: 'flag_player',
+      player_name: _match[1]?.trim(),
+      reason: _match[2]?.trim(),
+    }),
+  },
+
+  // ── Create Calendar Event ──
+  {
+    patterns: [
+      /^(?:schedule|create\s+(?:a\s+)?(?:calendar\s+)?event)[:\s]+(.+)/i,
+      /^(?:add\s+(?:to\s+)?calendar)[:\s]+(.+)/i,
+    ],
+    extract: (_match) => {
+      const body = _match[1]?.trim();
+      const dateMatch = body.match(/(?:on|for)\s+(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)/i);
+      const timeMatch = body.match(/(?:at)\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
+      return {
+        type: 'create_calendar_event',
+        title: body.replace(/(?:on|for)\s+\d.+$/i, '').trim(),
+        date: dateMatch?.[1],
+        time: timeMatch?.[1],
+      };
+    },
+  },
+
+  // ── Update Scholarship ──
+  {
+    patterns: [
+      /^(?:update|set|change)\s+scholarship\s+(?:for\s+)?(.+?)\s+(?:to\s+)?(\d+)%?/i,
+    ],
+    extract: (_match) => ({
+      type: 'update_scholarship',
+      player_name: _match[1]?.trim(),
+      percentage: parseInt(_match[2], 10),
+    }),
+  },
+
+  // ── Adjust Budget ──
+  {
+    patterns: [
+      /^(?:increase|decrease|adjust)\s+(.+?)\s+budget\s+(?:by\s+)?\$?(\d[\d,]*)/i,
+    ],
+    extract: (_match, input) => ({
+      type: 'adjust_budget',
+      category: _match[1]?.trim(),
+      amount: parseInt(_match[2].replace(/,/g, ''), 10),
+      direction: /^increase/i.test(input) ? 'increase' : 'decrease',
+    }),
+  },
+
+  // ── Send DM ──
+  {
+    patterns: [
+      /^(?:send\s+(?:a\s+)?(?:dm|message)|dm)\s+(?:to\s+)?(.+?)[:\s]+(.+)/i,
+    ],
+    extract: (_match) => ({
+      type: 'send_dm',
+      recipient: _match[1]?.trim(),
+      content: _match[2]?.trim(),
+    }),
+  },
+
+  // ── Pin / Unpin Conversation ──
+  {
+    patterns: [
+      /^pin\s+(?:this\s+)?(?:conversation|chat|thread)/i,
+    ],
+    extract: () => ({ type: 'pin_conversation' }),
+  },
+  {
+    patterns: [
+      /^unpin\s+(?:this\s+)?(?:conversation|chat|thread)/i,
+    ],
+    extract: () => ({ type: 'unpin_conversation' }),
+  },
 ];
 
 // =============================================================================

@@ -9,7 +9,6 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { AskNexusCTA } from '@/components/ui/ask-nexus-cta';
 import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
@@ -282,9 +281,6 @@ export function SimHome() {
           ))}
         </>
       )}
-
-      {/* Ask Nexus CTA */}
-      <AskNexusCTA label="Run New Simulation" engineContext="simulation" />
 
       <View style={{ height: 40 }} />
     </ScrollView>

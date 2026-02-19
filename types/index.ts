@@ -628,6 +628,8 @@ export interface Conversation {
   evalConfig?: PlayerEvalConfig;
   simConfig?: SimulationThreadConfig;
   gameOpsConfig?: GameOpsConfig;
+  mode?: Mode;
+  workspace?: string;
 }
 
 export type NexusPanelState = 'closed' | 'conversations' | 'context' | 'roster' | 'recruiting' | 'simulation';

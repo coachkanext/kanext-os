@@ -158,13 +158,6 @@ export function BizDashboardV2({ colors, accent }: Props) {
         ))}
       </View>
 
-      {/* ── Ask Nexus CTA ── */}
-      <Pressable style={[styles.nexusCta, { backgroundColor: accent + '18' }]}>
-        <ThemedText style={[styles.nexusCtaText, { color: accent }]}>
-          Ask Nexus about KaNeXT OS {'\u2192'}
-        </ThemedText>
-      </Pressable>
-
       {/* Bottom spacer */}
       <View style={{ height: 120 }} />
     </ScrollView>
@@ -269,7 +262,4 @@ const styles = StyleSheet.create({
   dealSummaryCompany: { fontSize: 11, marginTop: 2 },
   dealSummaryValue: { fontSize: 14, fontWeight: '800', marginLeft: 8 },
 
-  // Ask Nexus CTA
-  nexusCta: { borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginBottom: 12 },
-  nexusCtaText: { fontSize: 14, fontWeight: '700' },
 });

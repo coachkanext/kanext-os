@@ -1,16 +1,14 @@
 /**
  * Driver Card Sheet — lightweight driver preview bottom sheet.
- * Quick preview with "Ask Nexus about this driver" CTA.
+ * Quick preview with identity and season stats.
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { openAskNexus } from '@/utils/global-ask-nexus';
 import type { DriverCardData } from '@/utils/global-entity-sheets';
 
 function nameToHue(name: string): number {
@@ -74,17 +72,6 @@ export function DriverCardSheet({ visible, onClose, data }: Props) {
           </View>
         )}
 
-        {/* Ask Nexus CTA */}
-        <Pressable
-          style={[styles.askNexusButton, { backgroundColor: `hsl(${hue}, 50%, 25%)` }]}
-          onPress={() => {
-            onClose();
-            openAskNexus({ screen: '/nexus', mode: 'sports', prefill: `Tell me about driver ${data.name}` });
-          }}
-        >
-          <IconSymbol name="sparkles" size={16} color="#fff" />
-          <Text style={styles.askNexusText}>Ask Nexus about this driver</Text>
-        </Pressable>
       </View>
     </BottomSheet>
   );
@@ -149,18 +136,5 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 17,
     fontWeight: '800',
-  },
-  askNexusButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 14,
-    borderRadius: BorderRadius.lg,
-  },
-  askNexusText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#fff',
   },
 });

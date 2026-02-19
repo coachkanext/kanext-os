@@ -432,9 +432,10 @@ export function NexusProvider({ children }: NexusProviderProps) {
       isGroup: false,
       unreadCount: 0,
       type: 'chat',
+      mode,
     };
     dispatch({ type: 'NEW_CONVERSATION', payload: newConversation });
-  }, []);
+  }, [mode]);
 
   // New conversation sheet
   const openNewConversationSheet = useCallback(() => {
@@ -687,6 +688,33 @@ export function NexusProvider({ children }: NexusProviderProps) {
     // ── Governed Action Intercept (v2) ──
     // Classify intent locally before GPT. If it's a governed action, handle instantly.
     const intent = classifyIntent(inputText);
+
+    // Handle pin/unpin directly in context
+    if (intent.type === 'pin_conversation') {
+      pinConversation(conversationId);
+      const msg: Message = {
+        id: `msg-${Date.now()}-pin`,
+        conversationId,
+        role: 'assistant',
+        content: 'Conversation pinned.',
+        timestamp: new Date(),
+      };
+      dispatch({ type: 'ADD_MESSAGE', payload: msg });
+      return;
+    }
+    if (intent.type === 'unpin_conversation') {
+      unpinConversation(conversationId);
+      const msg: Message = {
+        id: `msg-${Date.now()}-unpin`,
+        conversationId,
+        role: 'assistant',
+        content: 'Conversation unpinned.',
+        timestamp: new Date(),
+      };
+      dispatch({ type: 'ADD_MESSAGE', payload: msg });
+      return;
+    }
+
     if (intent.type !== 'none') {
       const rbacLevel = mapRoleToRBAC(appState.operatingRole || 'head_coach', mode);
       const nexusScope = buildNexusScope();
@@ -786,6 +814,30 @@ export function NexusProvider({ children }: NexusProviderProps) {
           timestamp: new Date(),
         };
         dispatch({ type: 'ADD_MESSAGE', payload: assistantMessage });
+      }
+
+      // Post-process: if player data was injected, append inline player cards
+      if (playerQuery?.isPlayerQuery && playerQuery.matchedPlayers && playerQuery.matchedPlayers.length > 0) {
+        const playerCards: MessageV2[] = playerQuery.matchedPlayers.slice(0, 3).map((p: any, idx: number) => ({
+          id: `msg-${Date.now()}-pcard-${idx}`,
+          conversationId,
+          role: 'assistant' as const,
+          content: '',
+          timestamp: new Date(),
+          messageType: 'player_card' as const,
+          playerCard: {
+            playerId: p.id || p.player_id || `p-${idx}`,
+            name: p.name || p.player_name || 'Unknown',
+            position: p.position || '',
+            team: p.team || p.school || '',
+            kr: p.kr ?? p.overall_kr,
+            levelKey: p.level_key || p.levelKey,
+            archetype: p.archetype,
+          },
+        }));
+        if (playerCards.length > 0) {
+          dispatch({ type: 'ADD_V2_MESSAGES', payload: playerCards });
+        }
       }
     } catch (error) {
       console.error('Failed to get GPT response:', error);

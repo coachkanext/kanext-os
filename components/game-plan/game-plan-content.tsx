@@ -1,6 +1,6 @@
 /**
  * Game Plan V2 — 11-section pregame command center orchestrator.
- * Layout: fixed header → collapsible staff strip → scrollable sections → Ask Nexus CTA
+ * Layout: fixed header → collapsible staff strip → scrollable sections
  */
 
 import React, { useRef, useCallback } from 'react';
@@ -8,7 +8,6 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { AskNexusCTA } from '@/components/ui/ask-nexus-cta';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { FMU_NEXT_GAME_ID } from '@/data/fmu';
@@ -174,9 +173,6 @@ export function GamePlanContent() {
           drills={packet.practiceTranslation}
           onLayout={(y) => registerSection(11, y)}
         />
-
-        {/* Ask Nexus CTA */}
-        <AskNexusCTA label="Ask Nexus About This Game" engineContext="scouting" />
 
         <View style={{ height: 40 }} />
       </ScrollView>

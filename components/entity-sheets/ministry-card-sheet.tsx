@@ -1,16 +1,14 @@
 /**
  * Ministry Card Sheet — lightweight ministry preview bottom sheet.
- * Quick preview with mission, volunteers, leader, and "Ask Nexus about this ministry" CTA.
+ * Quick preview with mission, volunteers, and leader.
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { openAskNexus } from '@/utils/global-ask-nexus';
 import type { MinistryCardData } from '@/utils/global-entity-sheets';
 
 function nameToHue(name: string): number {
@@ -74,17 +72,6 @@ export function MinistryCardSheet({ visible, onClose, data }: Props) {
           </View>
         )}
 
-        {/* Ask Nexus CTA */}
-        <Pressable
-          style={[styles.askNexusButton, { backgroundColor: `hsl(${hue}, 45%, 25%)` }]}
-          onPress={() => {
-            onClose();
-            openAskNexus({ screen: '/nexus', mode: 'church', prefill: `Tell me about the ${data.name} ministry` });
-          }}
-        >
-          <IconSymbol name="sparkles" size={16} color="#fff" />
-          <Text style={styles.askNexusText}>Ask Nexus about this ministry</Text>
-        </Pressable>
       </View>
     </BottomSheet>
   );
@@ -151,18 +138,5 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 15,
     fontWeight: '700',
-  },
-  askNexusButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 14,
-    borderRadius: BorderRadius.lg,
-  },
-  askNexusText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#fff',
   },
 });

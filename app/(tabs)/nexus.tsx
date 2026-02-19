@@ -19,6 +19,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AvatarDrawer } from '@/components/avatar-drawer';
 import { ChatThread } from '@/components/nexus/chat-thread';
 import { InputBar } from '@/components/nexus/input-bar';
+import { NexusLanding } from '@/components/nexus/nexus-landing';
 import { ConversationsPanel } from '@/components/nexus/conversations-panel';
 import { ProgramContextDrawer } from '@/components/nexus/program-context-drawer';
 import { RosterOverlay } from '@/components/nexus/roster-overlay';
@@ -265,52 +266,72 @@ function NexusScreenContent() {
         ]}
       >
 
-        {/* Game Ops Sub-header */}
-        {isGameOps && gameOpsConfig && (
-          <View style={[styles.gameOpsSubHeader, { borderBottomColor: colors.divider }]}>
-            <Text style={[styles.gameOpsSubHeaderText, { color: colors.textSecondary }]}>
-              FMU vs {gameOpsConfig.opponent}
-            </Text>
-          </View>
+        {/* Landing or Chat */}
+        {!nexusState.activeConversationId ? (
+          <>
+            <Pressable
+              style={styles.canvas}
+              onPress={() => {
+                Keyboard.dismiss();
+                if (isPanelOpen) closePanel();
+              }}
+            >
+              <NexusLanding mode={mode} />
+            </Pressable>
+            <InputBar
+              value={nexusState.inputText}
+              onChangeText={setInputText}
+              onSend={sendMessage}
+              onMicPress={handleMicPress}
+              onAttachPress={handlePlusPress}
+              isVoiceActive={voiceState !== 'idle'}
+              onFocus={() => createNewConversation()}
+              placeholder="Ask Nexus anything..."
+            />
+          </>
+        ) : (
+          <>
+            {/* Game Ops Sub-header */}
+            {isGameOps && gameOpsConfig && (
+              <View style={[styles.gameOpsSubHeader, { borderBottomColor: colors.divider }]}>
+                <Text style={[styles.gameOpsSubHeaderText, { color: colors.textSecondary }]}>
+                  FMU vs {gameOpsConfig.opponent}
+                </Text>
+              </View>
+            )}
+
+            {/* Chat Thread / Canvas */}
+            <Pressable
+              style={styles.canvas}
+              onPress={() => {
+                Keyboard.dismiss();
+                if (isPanelOpen) closePanel();
+              }}
+            >
+              <ChatThread
+                messages={nexusState.messages}
+                isLoading={nexusState.isLoading}
+                conversation={nexusState.conversations.find(c => c.id === nexusState.activeConversationId) ?? null}
+                mode={mode}
+              />
+            </Pressable>
+
+            {/* Input Bar */}
+            <InputBar
+              value={nexusState.inputText}
+              onChangeText={setInputText}
+              onSend={sendMessage}
+              onMicPress={handleMicPress}
+              onAttachPress={handlePlusPress}
+              isVoiceActive={voiceState !== 'idle'}
+              onFocus={() => {
+                if (!nexusState.activeConversationId) createNewConversation();
+              }}
+              placeholder="Ask Nexus"
+              contextPill={isGameOps ? { icon: 'basketball.fill', label: 'Game Ops' } : null}
+            />
+          </>
         )}
-
-        {/* Chat Thread / Canvas - tap to dismiss keyboard and close panel */}
-        <Pressable
-          style={styles.canvas}
-          onPress={() => {
-            Keyboard.dismiss();
-            if (isPanelOpen) {
-              closePanel();
-            }
-          }}
-        >
-          <ChatThread
-            messages={nexusState.messages}
-            isLoading={nexusState.isLoading}
-            conversation={nexusState.conversations.find(c => c.id === nexusState.activeConversationId) ?? null}
-            mode={mode}
-          />
-        </Pressable>
-
-        {/* Game Ops: conversational flow — no chips, user types naturally */}
-
-        {/* Input Bar */}
-        <InputBar
-          value={nexusState.inputText}
-          onChangeText={setInputText}
-          onSend={sendMessage}
-          onMicPress={handleMicPress}
-          onAttachPress={handlePlusPress}
-          isVoiceActive={voiceState !== 'idle'}
-          onFocus={() => {
-            // Create a new conversation if none is active
-            if (!nexusState.activeConversationId) {
-              createNewConversation();
-            }
-          }}
-          placeholder="Ask Nexus"
-          contextPill={isGameOps ? { icon: 'basketball.fill', label: 'Game Ops' } : null}
-        />
       </Animated.View>
 
       {/* Right Drawer: Program Context */}

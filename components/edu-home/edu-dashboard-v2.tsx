@@ -20,7 +20,6 @@ import {
   type EduCommerceItem,
 } from '@/data/mock-education-home';
 import { openPersonCard } from '@/utils/global-entity-sheets';
-import { openAskNexus } from '@/utils/global-ask-nexus';
 
 interface Props {
   colors: typeof Colors.light;
@@ -125,17 +124,6 @@ export function EduDashboardV2({ colors, accent }: Props) {
         </View>
       </View>
 
-      {/* Ask Nexus CTA */}
-      <Pressable
-        style={[styles.nexusCta, { backgroundColor: accent + '18' }]}
-        onPress={() => openAskNexus({ screen: '/nexus', mode: 'education', prefill: 'Tell me about FMU' })}
-      >
-        <IconSymbol name="sparkles" size={16} color={accent} />
-        <ThemedText style={[styles.nexusCtaText, { color: accent }]}>
-          Ask Nexus about FMU
-        </ThemedText>
-      </Pressable>
-
       <View style={{ height: 120 }} />
     </ScrollView>
   );
@@ -225,15 +213,4 @@ const styles = StyleSheet.create({
   quickStatLabel: { fontSize: 10, marginTop: 2 },
   quickStatDivider: { width: 1, height: 32 },
 
-  // Nexus CTA
-  nexusCta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 14,
-    borderRadius: 12,
-    marginTop: 12,
-  },
-  nexusCtaText: { fontSize: 15, fontWeight: '600' },
 });

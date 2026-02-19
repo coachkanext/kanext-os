@@ -84,7 +84,7 @@ export type NexusCapability =
 // ENHANCED MESSAGE (v2)
 // =============================================================================
 
-export type MessageType = 'text' | 'receipt' | 'confirmation' | 'escalation' | 'system';
+export type MessageType = 'text' | 'receipt' | 'confirmation' | 'escalation' | 'system' | 'player_card' | 'stat_table' | 'kr_card';
 export type ReceiptStatus = 'done' | 'posted' | 'created' | 'updated' | 'blocked' | 'escalated' | 'failed';
 export type ConfirmationState = 'pending' | 'confirmed' | 'cancelled';
 
@@ -126,6 +126,34 @@ export interface EscalationPayload {
   options: { label: string; action: 'post_room' | 'create_request' | 'save_question' }[];
 }
 
+/** Inline player card payload */
+export interface PlayerCardPayload {
+  playerId: string;
+  name: string;
+  position: string;
+  team: string;
+  kr?: number;
+  levelKey?: string;
+  archetype?: string;
+}
+
+/** Inline stat table payload */
+export interface StatTablePayload {
+  title?: string;
+  headers: string[];
+  rows: string[][];
+}
+
+/** Inline KR card payload */
+export interface KRCardPayload {
+  playerId: string;
+  name: string;
+  kr: number;
+  levelKey?: string;
+  archetype?: string;
+  clusters?: Record<string, number>;
+}
+
 /** Enhanced message with rich rendering support */
 export interface MessageV2 extends Omit<Message, 'metadata'> {
   messageType: MessageType;
@@ -134,6 +162,9 @@ export interface MessageV2 extends Omit<Message, 'metadata'> {
   receipt?: ReceiptPayload;
   confirmation?: ConfirmationPayload;
   escalation?: EscalationPayload;
+  playerCard?: PlayerCardPayload;
+  statTable?: StatTablePayload;
+  krCard?: KRCardPayload;
   metadata?: Record<string, unknown>;
 }
 
@@ -368,6 +399,16 @@ export type ActionIntent =
   | { type: 'show_workspaces' }
   | { type: 'create_workspace'; title: string; template?: WorkspaceType }
   | { type: 'summarize_room'; room_name: string }
+  | { type: 'add_to_board'; player_name: string; stage?: string }
+  | { type: 'remove_from_board'; player_name: string }
+  | { type: 'change_pipeline_stage'; player_name: string; stage: string }
+  | { type: 'flag_player'; player_name: string; reason?: string }
+  | { type: 'create_calendar_event'; title: string; date?: string; time?: string }
+  | { type: 'update_scholarship'; player_name: string; percentage?: number }
+  | { type: 'adjust_budget'; category: string; amount: number; direction: 'increase' | 'decrease' }
+  | { type: 'send_dm'; recipient: string; content: string }
+  | { type: 'pin_conversation' }
+  | { type: 'unpin_conversation' }
   | { type: 'none' }; // fallback → send to GPT
 
 // =============================================================================

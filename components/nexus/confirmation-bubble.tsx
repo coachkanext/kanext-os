@@ -86,7 +86,7 @@ export function ConfirmationBubble({ confirmation, onConfirm, onCancel }: Props)
           ]}
           onPress={onConfirm}
         >
-          <ThemedText style={styles.confirmBtnText}>YES</ThemedText>
+          <ThemedText style={styles.confirmBtnText}>Confirm</ThemedText>
         </Pressable>
         <Pressable
           style={({ pressed }) => [

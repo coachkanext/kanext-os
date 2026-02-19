@@ -1178,19 +1178,6 @@ export default function GameOpsScreen() {
             <Text style={[styles.timeoutSnapshot, { color: colors.textTertiary }]}>
               Nexus snapshot captured
             </Text>
-            <Pressable
-              style={({ pressed }) => [
-                styles.timeoutCta,
-                { backgroundColor: colors.backgroundSecondary, opacity: pressed ? 0.7 : 1 },
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                setShowTimeoutCard(false);
-              }}
-            >
-              <IconSymbol name="sparkles" size={16} color={colors.text} />
-              <Text style={[styles.timeoutCtaText, { color: colors.text }]}>Ask Nexus</Text>
-            </Pressable>
             <Pressable style={styles.timeoutDismiss} onPress={() => setShowTimeoutCard(false)}>
               <Text style={[styles.timeoutDismissText, { color: colors.textTertiary }]}>Dismiss</Text>
             </Pressable>
@@ -1575,16 +1562,6 @@ const styles = StyleSheet.create({
   timeoutTitle: { fontSize: 22, fontWeight: '700' },
   timeoutSubtitle: { fontSize: 14 },
   timeoutSnapshot: { fontSize: 12, marginTop: 4 },
-  timeoutCta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: BorderRadius.md,
-    marginTop: Spacing.md,
-  },
-  timeoutCtaText: { fontSize: 15, fontWeight: '600' },
   timeoutDismiss: { marginTop: Spacing.sm, paddingVertical: 8 },
   timeoutDismissText: { fontSize: 14, fontWeight: '500' },
 

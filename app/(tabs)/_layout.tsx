@@ -24,8 +24,9 @@ import { Colors, Layout, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import { openAvatarDrawer } from '@/utils/global-drawer';
-import { startGlobalVoice } from '@/utils/global-voice';
+import { openSearchOverlay } from '@/utils/global-search-overlay';
 import { openFinder } from '@/utils/global-finder';
+import { openSplitNexus } from '@/utils/global-split-nexus';
 import { triggerKXTransition } from '@/utils/global-transition';
 import { requestHomeReset } from '@/utils/global-home';
 import { requestOrgReset } from '@/utils/global-org';
@@ -85,19 +86,19 @@ export default function TabLayout() {
     []
   );
 
-  // Nexus tab button: long-press → voice, double-tap → Ask Nexus
+  // Nexus tab button: long-press → search overlay, double-tap → split Nexus
   const lastNexusTapRef = useRef(0);
   const NexusTabButton = useCallback(
     (props: any) => (
       <HapticTab
         {...props}
-        onLongPress={startGlobalVoice}
+        onLongPress={openSearchOverlay}
         onPress={(e: any) => {
           const now = Date.now();
           if (now - lastNexusTapRef.current < 350) {
-            // Double-tap detected → open Universal Finder
+            // Double-tap detected → open Split Nexus overlay
             lastNexusTapRef.current = 0;
-            openFinder();
+            openSplitNexus();
             return;
           }
           lastNexusTapRef.current = now;

@@ -10,7 +10,6 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { AskNexusCTA } from '@/components/ui/ask-nexus-cta';
 import { DepthChartView, DEPTH_CHART_BY_SEASON, CURRENT_SEASON } from '@/components/roster-content';
 import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -108,9 +107,6 @@ export function GameOpsHubContent() {
         <ThemedText style={[styles.launchLabel, { color: ctaConfig.color }]}>{ctaConfig.label}</ThemedText>
         <IconSymbol name="chevron.right" size={14} color={ctaConfig.color} />
       </Pressable>
-
-      {/* Ask Nexus */}
-      <AskNexusCTA label="Ask During Game" engineContext="game-ops" />
 
       <View style={{ height: 40 }} />
     </ScrollView>

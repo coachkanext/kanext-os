@@ -20,6 +20,9 @@ import { ConfirmationBubble } from './confirmation-bubble';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-nexus';
+import { InlinePlayerCard } from './inline-player-card';
+import { InlineStatTable } from './inline-stat-table';
+import { InlineKRCard } from './inline-kr-card';
 import { isMessageV2 } from '@/types/nexus-v2';
 import type { Message, SimulationResult, SavedSimulation, EvalSnapshot } from '@/types';
 import type { MessageV2, LinkChip } from '@/types/nexus-v2';
@@ -134,6 +137,57 @@ export function MessageBubble({
           ))}
         </View>
 
+        <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+          {formatMessageTime(message.timestamp)}
+        </ThemedText>
+      </View>
+    );
+  }
+
+  // ── Inline player card message ──
+  if (v2?.messageType === 'player_card' && v2.playerCard) {
+    return (
+      <View style={[styles.container, styles.assistantContainer]}>
+        {v2.content ? (
+          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }]}>
+            <ThemedText style={[styles.messageText, { color: colors.text }]}>{v2.content}</ThemedText>
+          </View>
+        ) : null}
+        <InlinePlayerCard data={v2.playerCard} />
+        <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+          {formatMessageTime(message.timestamp)}
+        </ThemedText>
+      </View>
+    );
+  }
+
+  // ── Inline stat table message ──
+  if (v2?.messageType === 'stat_table' && v2.statTable) {
+    return (
+      <View style={[styles.container, styles.assistantContainer]}>
+        {v2.content ? (
+          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }]}>
+            <ThemedText style={[styles.messageText, { color: colors.text }]}>{v2.content}</ThemedText>
+          </View>
+        ) : null}
+        <InlineStatTable data={v2.statTable} />
+        <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+          {formatMessageTime(message.timestamp)}
+        </ThemedText>
+      </View>
+    );
+  }
+
+  // ── Inline KR card message ──
+  if (v2?.messageType === 'kr_card' && v2.krCard) {
+    return (
+      <View style={[styles.container, styles.assistantContainer]}>
+        {v2.content ? (
+          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }]}>
+            <ThemedText style={[styles.messageText, { color: colors.text }]}>{v2.content}</ThemedText>
+          </View>
+        ) : null}
+        <InlineKRCard data={v2.krCard} />
         <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
           {formatMessageTime(message.timestamp)}
         </ThemedText>

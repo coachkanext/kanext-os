@@ -268,6 +268,163 @@ function executeAction(
       };
     }
 
+    case 'add_to_board': {
+      return {
+        id: baseId,
+        conversationId,
+        role: 'assistant',
+        content: '',
+        timestamp: now,
+        messageType: 'receipt',
+        receipt: {
+          status: 'done',
+          action_type: 'add_to_board',
+          summary: `Added ${intent.player_name} to recruiting board${intent.stage ? ` (stage: ${intent.stage})` : ''}.`,
+          objects: [
+            { id: 'lc-board-add', objectType: 'player', objectId: `board-${Date.now()}`, label: intent.player_name },
+          ],
+        },
+      };
+    }
+
+    case 'remove_from_board': {
+      return {
+        id: baseId,
+        conversationId,
+        role: 'assistant',
+        content: '',
+        timestamp: now,
+        messageType: 'receipt',
+        receipt: {
+          status: 'done',
+          action_type: 'remove_from_board',
+          summary: `Removed ${intent.player_name} from recruiting board.`,
+          objects: [],
+        },
+      };
+    }
+
+    case 'change_pipeline_stage': {
+      return {
+        id: baseId,
+        conversationId,
+        role: 'assistant',
+        content: '',
+        timestamp: now,
+        messageType: 'receipt',
+        receipt: {
+          status: 'updated',
+          action_type: 'change_pipeline_stage',
+          summary: `Moved ${intent.player_name} to pipeline stage: ${intent.stage}.`,
+          objects: [
+            { id: 'lc-stage-change', objectType: 'player', objectId: `stage-${Date.now()}`, label: `${intent.player_name} → ${intent.stage}` },
+          ],
+        },
+      };
+    }
+
+    case 'flag_player': {
+      return {
+        id: baseId,
+        conversationId,
+        role: 'assistant',
+        content: '',
+        timestamp: now,
+        messageType: 'receipt',
+        receipt: {
+          status: 'done',
+          action_type: 'flag_player',
+          summary: `Flagged ${intent.player_name}${intent.reason ? `: ${intent.reason}` : ''}.`,
+          objects: [
+            { id: 'lc-flag', objectType: 'player', objectId: `flag-${Date.now()}`, label: intent.player_name },
+          ],
+        },
+      };
+    }
+
+    case 'create_calendar_event': {
+      return {
+        id: baseId,
+        conversationId,
+        role: 'assistant',
+        content: '',
+        timestamp: now,
+        messageType: 'receipt',
+        receipt: {
+          status: 'created',
+          action_type: 'create_calendar_event',
+          summary: `Created event: '${intent.title}'${intent.date ? ` on ${intent.date}` : ''}${intent.time ? ` at ${intent.time}` : ''}.`,
+          objects: [],
+        },
+      };
+    }
+
+    case 'update_scholarship': {
+      return {
+        id: baseId,
+        conversationId,
+        role: 'assistant',
+        content: '',
+        timestamp: now,
+        messageType: 'receipt',
+        receipt: {
+          status: 'updated',
+          action_type: 'update_scholarship',
+          summary: `Updated scholarship for ${intent.player_name}${intent.percentage != null ? ` to ${intent.percentage}%` : ''}.`,
+          objects: [
+            { id: 'lc-scholarship', objectType: 'player', objectId: `schol-${Date.now()}`, label: intent.player_name },
+          ],
+        },
+      };
+    }
+
+    case 'adjust_budget': {
+      const sign = intent.direction === 'increase' ? '+' : '-';
+      return {
+        id: baseId,
+        conversationId,
+        role: 'assistant',
+        content: '',
+        timestamp: now,
+        messageType: 'receipt',
+        receipt: {
+          status: 'updated',
+          action_type: 'adjust_budget',
+          summary: `${intent.direction === 'increase' ? 'Increased' : 'Decreased'} ${intent.category} budget by ${sign}$${intent.amount.toLocaleString()}.`,
+          objects: [],
+        },
+      };
+    }
+
+    case 'send_dm': {
+      return {
+        id: baseId,
+        conversationId,
+        role: 'assistant',
+        content: '',
+        timestamp: now,
+        messageType: 'receipt',
+        receipt: {
+          status: 'done',
+          action_type: 'send_dm',
+          summary: `Message sent to ${intent.recipient}.`,
+          objects: [],
+        },
+      };
+    }
+
+    case 'pin_conversation':
+    case 'unpin_conversation': {
+      return {
+        id: baseId,
+        conversationId,
+        role: 'assistant',
+        content: intent.type === 'pin_conversation' ? 'Conversation pinned.' : 'Conversation unpinned.',
+        timestamp: now,
+        messageType: 'text',
+      };
+    }
+
     default: {
       return {
         id: baseId,
@@ -311,6 +468,30 @@ function createConfirmationMessage(
     case 'generate_packet':
       actionSummary = `Generate ${(intent as any).packet_type} packet for ${(intent as any).target}`;
       impactLine = 'This will create a shareable packet document.';
+      break;
+    case 'add_to_board':
+      actionSummary = `Add ${(intent as any).player_name} to recruiting board`;
+      impactLine = 'Player will appear on your recruiting board.';
+      break;
+    case 'remove_from_board':
+      actionSummary = `Remove ${(intent as any).player_name} from recruiting board`;
+      impactLine = 'Player will be removed from your board.';
+      break;
+    case 'change_pipeline_stage':
+      actionSummary = `Move ${(intent as any).player_name} to ${(intent as any).stage}`;
+      impactLine = 'Pipeline stage will be updated.';
+      break;
+    case 'update_scholarship':
+      actionSummary = `Update scholarship for ${(intent as any).player_name}`;
+      impactLine = 'This will adjust the scholarship allocation.';
+      break;
+    case 'adjust_budget':
+      actionSummary = `${(intent as any).direction === 'increase' ? 'Increase' : 'Decrease'} ${(intent as any).category} budget by $${(intent as any).amount?.toLocaleString()}`;
+      impactLine = 'This will modify the budget allocation.';
+      break;
+    case 'send_dm':
+      actionSummary = `Send message to ${(intent as any).recipient}`;
+      impactLine = 'This message will be delivered to the recipient.';
       break;
     default:
       actionSummary = `Execute action: ${intent.type}`;

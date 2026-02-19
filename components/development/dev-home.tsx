@@ -8,7 +8,6 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { AskNexusCTA } from '@/components/ui/ask-nexus-cta';
 import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
@@ -195,7 +194,6 @@ export function DevHome() {
         </View>
       </View>
 
-      <AskNexusCTA label="Get Development Recommendations" engineContext="development" />
       <View style={{ height: 40 }} />
     </ScrollView>
   );

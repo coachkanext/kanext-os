@@ -17,7 +17,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, StyleSheet, Animated, Keyboard } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
@@ -26,22 +26,23 @@ import { SplashScreen } from '@/components/splash-screen';
 import { GlobalHeader } from '@/components/global-header';
 import { AvatarDrawer } from '@/components/avatar-drawer';
 import { AuthModal } from '@/components/auth/auth-modal';
-import { VoiceOverlay } from '@/components/nexus/voice-overlay';
+import { SearchOverlay } from '@/components/nexus/search-overlay';
 import { ModeSwitcherOverlay } from '@/components/mode-switcher-overlay';
 import { KXTransition } from '@/components/kx-transition';
 import { AppProvider } from '@/context/app-context';
 import { AuthProvider, useAuth } from '@/context/auth-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
 import { registerDrawerHandlers } from '@/utils/global-drawer';
-import { registerVoiceHandlers } from '@/utils/global-voice';
-import { registerAskNexusHandlers } from '@/utils/global-ask-nexus';
+import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
+import { registerSplitNexusHandlers } from '@/utils/global-split-nexus';
+
 import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
 import { requestOrgReset } from '@/utils/global-org';
-import { AskNexusSheet } from '@/components/ask-nexus-sheet';
+
 import { UniversalFinder } from '@/components/universal-finder';
-import type { AskNexusContext } from '@/data/mock-ask-nexus';
+import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
+
 import { registerEntitySheetHandlers } from '@/utils/global-entity-sheets';
 import type {
   TeamCardData, PlayerCardData, CoachCardData,
@@ -76,8 +77,6 @@ export const unstable_settings = {
 function AppShell() {
   const colorScheme = useColorScheme();
   const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
-  const [askNexusVisible, setAskNexusVisible] = useState(false);
-  const [askNexusContext, setAskNexusContext] = useState<AskNexusContext | undefined>();
   const { state: authState } = useAuth();
 
   // Animation value for content slide (Twitter/X style push)
@@ -98,17 +97,6 @@ function AppShell() {
       requestOrgReset();
     });
     return unsub;
-  }, []);
-
-  // Register global Ask Nexus handlers
-  useEffect(() => {
-    registerAskNexusHandlers(
-      (ctx) => {
-        setAskNexusContext(ctx);
-        setAskNexusVisible(true);
-      },
-      () => setAskNexusVisible(false)
-    );
   }, []);
 
   // Entity card sheets — global open/close for team/player/coach/driver/crew/person/ministry/leader cards
@@ -150,28 +138,25 @@ function AppShell() {
     });
   }, []);
 
-  // Global voice state — mounted at root so it works from any tab
-  const globalTranscriptRef = useRef('');
+  // Global search overlay state
+  const [searchOverlayVisible, setSearchOverlayVisible] = useState(false);
 
-  const { voiceState, audioLevel, startListening, stopListening } = useSpeechRecognition({
-    onTranscript: useCallback((text: string, isFinal: boolean) => {
-      globalTranscriptRef.current = text;
-    }, []),
-  });
-
-  // Register global voice handlers
   useEffect(() => {
-    registerVoiceHandlers(
-      () => {
-        Keyboard.dismiss();
-        globalTranscriptRef.current = '';
-        startListening();
-      },
-      () => {
-        stopListening();
-      }
+    registerSearchOverlayHandlers(
+      () => setSearchOverlayVisible(true),
+      () => setSearchOverlayVisible(false),
     );
-  }, [startListening, stopListening]);
+  }, []);
+
+  // Split Nexus overlay state (double-tap on Nexus tab)
+  const [splitNexusVisible, setSplitNexusVisible] = useState(false);
+
+  useEffect(() => {
+    registerSplitNexusHandlers(
+      () => setSplitNexusVisible(true),
+      () => setSplitNexusVisible(false),
+    );
+  }, []);
 
   // Show auth modal when not authenticated (and not still checking)
   const showAuthModal = !authState.isChecking && !authState.isAuthenticated;
@@ -208,13 +193,6 @@ function AppShell() {
         visible={avatarDrawerVisible}
         onClose={() => setAvatarDrawerVisible(false)}
         contentSlideAnim={contentSlideAnim}
-      />
-
-      {/* Global Ask Nexus Sheet */}
-      <AskNexusSheet
-        visible={askNexusVisible}
-        onClose={() => setAskNexusVisible(false)}
-        context={askNexusContext}
       />
 
       {/* Entity Card Sheets — lightweight entity previews */}
@@ -262,12 +240,16 @@ function AppShell() {
       {/* Universal Finder — triggered from Nexus tab double-tap */}
       <UniversalFinder />
 
-      {/* Global Voice Overlay — triggered from Nexus tab long-press */}
-      <VoiceOverlay
-        visible={voiceState !== 'idle'}
-        voiceState={voiceState}
-        audioLevel={audioLevel}
-        onStop={stopListening}
+      {/* Split Nexus — triggered from Nexus tab double-tap */}
+      <SplitNexusOverlay
+        visible={splitNexusVisible}
+        onClose={() => setSplitNexusVisible(false)}
+      />
+
+      {/* Search Overlay — triggered from Nexus tab long-press */}
+      <SearchOverlay
+        visible={searchOverlayVisible}
+        onClose={() => setSearchOverlayVisible(false)}
       />
 
       {/* Mode Switcher — triggered from Ops tab long-press */}

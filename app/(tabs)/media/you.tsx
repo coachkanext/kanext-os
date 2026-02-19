@@ -21,7 +21,6 @@ import { VideoHeader } from '@/components/media/video-header';
 import { ReelCard } from '@/components/media/reel-card';
 import { ClipCard } from '@/components/media/clip-card';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { AskNexusCta } from '@/components/media/ask-nexus-cta';
 import { ContentTabRow, type ContentTab, type VideoMode } from '@/components/media/content-tab-row';
 import { FilmRecruitingToggle } from '@/components/media/film-recruiting-toggle';
 import { TeamHeader } from '@/components/media/team-header';
@@ -225,7 +224,6 @@ function MyTeamContent({ onShare }: { onShare: (title: string) => void }) {
       </ScrollView>
 
       <ContinueWatchingRow items={MOCK_WATCH_HISTORY} />
-      <AskNexusCta />
     </ScrollView>
   );
 }
@@ -243,7 +241,6 @@ function LeagueContent() {
       renderItem={({ item }) => <ClipCard clip={item} />}
       contentContainerStyle={styles.filmListContent}
       showsVerticalScrollIndicator={false}
-      ListFooterComponent={<AskNexusCta />}
     />
   );
 }

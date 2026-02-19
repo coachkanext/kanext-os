@@ -1,10 +1,10 @@
 /**
  * Conversations Panel Component
- * Left slide-in drawer showing the list of Nexus conversations.
- * ChatGPT-style layout with new conversation options and recent history.
+ * Left slide-in drawer with mode filter pills, search, pinned section,
+ * workspace collapsibles, and recent conversations.
  */
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import {
   View,
   StyleSheet,
@@ -19,28 +19,32 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ConversationContextMenu } from './conversation-context-menu';
 import { WorkspaceCard } from './workspace-card';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatTimestamp } from '@/data/mock-nexus';
 import { MOCK_NEXUS_WORKSPACES } from '@/data/mock-nexus-v2';
-import type { Conversation } from '@/types';
+import type { Conversation, Mode } from '@/types';
 import type { NexusWorkspace } from '@/types/nexus-v2';
 
-interface DrawerItem {
-  id: 'new-chat' | 'search' | 'pinned' | 'recents';
-  label: string;
-  icon: IconSymbolName;
-}
-
-const DRAWER_ITEMS: DrawerItem[] = [
-  { id: 'new-chat', label: 'New Chat', icon: 'plus.message.fill' },
-  { id: 'search', label: 'Search', icon: 'magnifyingglass' },
-  { id: 'pinned', label: 'Pinned', icon: 'pin.fill' },
-  { id: 'recents', label: 'Recents', icon: 'clock.fill' },
+const MODE_FILTER_PILLS: Array<{ key: Mode | 'all'; label: string }> = [
+  { key: 'all', label: 'All' },
+  { key: 'sports', label: 'Sports' },
+  { key: 'church', label: 'Church' },
+  { key: 'business', label: 'Business' },
+  { key: 'education', label: 'Education' },
+  { key: 'competition', label: 'Comp' },
 ];
+
+const MODE_DOT_COLORS: Record<Mode, string> = {
+  sports: '#3B82F6',
+  church: '#A855F7',
+  business: '#10B981',
+  education: '#F59E0B',
+  competition: '#EF4444',
+};
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const PANEL_WIDTH = SCREEN_WIDTH * 0.7;
@@ -86,6 +90,11 @@ export function ConversationsPanel({
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
+  // Filter state
+  const [modeFilter, setModeFilter] = useState<Mode | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [collapsedWorkspaces, setCollapsedWorkspaces] = useState<Set<string>>(new Set());
+
   useEffect(() => {
     Animated.timing(slideAnim, {
       toValue: visible ? 0 : -PANEL_WIDTH,
@@ -94,34 +103,43 @@ export function ConversationsPanel({
     }).start();
   }, [visible, slideAnim]);
 
-  // Active drawer section
-  const [activeSection, setActiveSection] = useState<'pinned' | 'recents' | 'search'>('recents');
-  const [searchQuery, setSearchQuery] = useState('');
+  // Filter and group conversations
+  const filtered = useMemo(() => {
+    let list = conversations;
 
-  const handleDrawerItemPress = (id: DrawerItem['id']) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    switch (id) {
-      case 'new-chat':
-        onNewChat();
-        break;
-      case 'search':
-        setActiveSection('search');
-        break;
-      case 'pinned':
-        setActiveSection('pinned');
-        break;
-      case 'recents':
-        setActiveSection('recents');
-        break;
+    // Search filter
+    if (searchQuery.length > 0) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(
+        (c) =>
+          c.title.toLowerCase().includes(q) ||
+          c.lastMessage?.content.toLowerCase().includes(q),
+      );
     }
-  };
+
+    // Mode filter (does NOT affect pinned — pinned always visible)
+    if (modeFilter !== 'all') {
+      list = list.filter((c) => c.isPinned || c.mode === modeFilter);
+    }
+
+    return list;
+  }, [conversations, searchQuery, modeFilter]);
+
+  const pinned = useMemo(() => filtered.filter((c) => c.isPinned), [filtered]);
+  const recent = useMemo(
+    () => filtered.filter((c) => !c.isPinned && c.lastMessage),
+    [filtered],
+  );
 
   const handleConversationPress = (id: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onSelectConversation(id);
   };
 
-  const handleConversationLongPress = (conversation: Conversation, event: { nativeEvent: { pageX: number; pageY: number } }) => {
+  const handleConversationLongPress = (
+    conversation: Conversation,
+    event: { nativeEvent: { pageX: number; pageY: number } },
+  ) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSelectedConversation(conversation);
     setMenuPosition({ x: event.nativeEvent.pageX - 120, y: event.nativeEvent.pageY - 20 });
@@ -129,20 +147,79 @@ export function ConversationsPanel({
   };
 
   const handleShare = async (id: string) => {
-    const conversation = conversations.find((c) => c.id === id);
-    if (conversation) {
+    const conv = conversations.find((c) => c.id === id);
+    if (conv) {
       try {
-        await Share.share({
-          message: `Check out this conversation: ${conversation.title}`,
-        });
-      } catch (error) {
-        console.log('Share error:', error);
-      }
+        await Share.share({ message: `Check out this conversation: ${conv.title}` });
+      } catch {}
     }
   };
 
-  // Don't render when fully hidden
+  const toggleWorkspace = (id: string) => {
+    setCollapsedWorkspaces((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   if (!visible) return null;
+
+  const renderConversationRow = (conversation: Conversation) => {
+    const isActive = conversation.id === activeConversationId;
+    const dotColor = conversation.mode ? MODE_DOT_COLORS[conversation.mode] : colors.textTertiary;
+    return (
+      <Pressable
+        key={conversation.id}
+        style={({ pressed }) => [
+          styles.conversationRow,
+          {
+            backgroundColor: isActive
+              ? colors.backgroundSecondary
+              : pressed
+              ? colors.backgroundSecondary
+              : 'transparent',
+          },
+        ]}
+        onPress={() => handleConversationPress(conversation.id)}
+        onLongPress={(event) => handleConversationLongPress(conversation, event)}
+        delayLongPress={300}
+      >
+        {/* Mode dot */}
+        <View style={[styles.modeDot, { backgroundColor: dotColor }]} />
+        <View style={styles.conversationContent}>
+          <View style={styles.titleRow}>
+            <ThemedText
+              style={[styles.conversationTitle, isActive && { fontWeight: '600' }]}
+              numberOfLines={1}
+            >
+              {conversation.isPinned ? '📌 ' : ''}{conversation.title}
+            </ThemedText>
+            <ThemedText style={[styles.conversationTime, { color: colors.textTertiary }]}>
+              {formatTimestamp(conversation.updatedAt)}
+            </ThemedText>
+          </View>
+          {conversation.workspace && (
+            <ThemedText
+              style={[styles.workspaceTag, { color: colors.textTertiary }]}
+              numberOfLines={1}
+            >
+              {conversation.workspace}
+            </ThemedText>
+          )}
+          {conversation.lastMessage && (
+            <ThemedText
+              style={[styles.conversationPreview, { color: colors.textTertiary }]}
+              numberOfLines={1}
+            >
+              {conversation.lastMessage.content}
+            </ThemedText>
+          )}
+        </View>
+      </Pressable>
+    );
+  };
 
   return (
     <Animated.View
@@ -157,193 +234,150 @@ export function ConversationsPanel({
         },
       ]}
     >
-      {/* Drawer Items */}
-      <View style={styles.drawerItems}>
-        {DRAWER_ITEMS.map((item) => {
-          const isActive =
-            (item.id === 'pinned' && activeSection === 'pinned') ||
-            (item.id === 'recents' && activeSection === 'recents') ||
-            (item.id === 'search' && activeSection === 'search');
+      {/* Mode Filter Pills */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.modePillsRow}
+        style={styles.modePillsScroll}
+      >
+        {MODE_FILTER_PILLS.map((pill) => {
+          const isActive = modeFilter === pill.key;
+          const bg = isActive
+            ? pill.key === 'all'
+              ? colors.text
+              : ModeColors[pill.key as Mode]?.primary ?? colors.text
+            : 'transparent';
+          const fg = isActive ? colors.background : colors.textSecondary;
           return (
             <Pressable
-              key={item.id}
-              style={({ pressed }) => [
-                styles.drawerItemRow,
-                {
-                  backgroundColor: isActive
-                    ? colors.backgroundSecondary
-                    : pressed
-                    ? colors.backgroundSecondary
-                    : 'transparent',
-                },
+              key={pill.key}
+              style={[
+                styles.modePill,
+                { backgroundColor: bg, borderColor: isActive ? bg : colors.border },
               ]}
-              onPress={() => handleDrawerItemPress(item.id)}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setModeFilter(pill.key);
+              }}
             >
-              <IconSymbol
-                name={item.icon}
-                size={20}
-                color={isActive ? colors.text : colors.textSecondary}
-                style={styles.drawerItemIcon}
-              />
-              <ThemedText
-                style={[
-                  styles.drawerItemLabel,
-                  isActive && { fontWeight: '600' },
-                ]}
-              >
-                {item.label}
+              <ThemedText style={[styles.modePillText, { color: fg }]}>
+                {pill.label}
               </ThemedText>
             </Pressable>
           );
         })}
+      </ScrollView>
+
+      {/* Search bar (always visible) */}
+      <View style={styles.searchRow}>
+        <View
+          style={[styles.searchContainer, { backgroundColor: colors.backgroundSecondary }]}
+        >
+          <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
+          <TextInput
+            style={[styles.searchInput, { color: colors.text }]}
+            placeholder="Search conversations"
+            placeholderTextColor={colors.textTertiary}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </View>
       </View>
 
-      {/* Search bar (shown when search section is active) */}
-      {activeSection === 'search' && (
-        <View style={styles.header}>
-          <View
-            style={[
-              styles.searchContainer,
-              { backgroundColor: colors.backgroundSecondary },
-            ]}
-          >
-            <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-            <TextInput
-              style={[styles.searchInput, { color: colors.text }]}
-              placeholder="Search conversations"
-              placeholderTextColor={colors.textTertiary}
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              autoCapitalize="none"
-              autoCorrect={false}
-              autoFocus
-            />
-          </View>
-        </View>
-      )}
+      {/* + New Workspace */}
+      <Pressable
+        style={({ pressed }) => [
+          styles.newWorkspaceBtn,
+          { opacity: pressed ? 0.7 : 1 },
+        ]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          onNewChat();
+        }}
+      >
+        <IconSymbol name="plus" size={16} color={colors.tint} />
+        <ThemedText style={[styles.newWorkspaceText, { color: colors.tint }]}>
+          New Workspace
+        </ThemedText>
+      </Pressable>
 
       {/* Conversation List */}
-      <ScrollView
-        style={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Workspaces Section */}
-        {activeSection === 'recents' && MOCK_NEXUS_WORKSPACES.length > 0 && (
-          <View style={styles.workspacesSection}>
-            <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
-              Workspaces
-            </ThemedText>
-            {MOCK_NEXUS_WORKSPACES.map((ws) => (
-              <WorkspaceCard
-                key={ws.id}
-                workspace={ws}
-                onPress={(w: NexusWorkspace) => {
-                  // Select the first thread in the workspace, or create a new one
-                  if (w.thread_ids.length > 0) {
-                    onSelectConversation(w.thread_ids[0]);
-                  }
-                }}
-              />
-            ))}
-          </View>
-        )}
-
-        <View style={styles.recentSection}>
-          {activeSection === 'pinned' && (
+      <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Pinned Section (always visible) */}
+        {pinned.length > 0 && (
+          <View style={styles.section}>
             <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
               Pinned
             </ThemedText>
-          )}
-          {activeSection === 'recents' && (
+            {pinned.map(renderConversationRow)}
+          </View>
+        )}
+
+        {/* Workspaces as collapsible sections */}
+        {MOCK_NEXUS_WORKSPACES.length > 0 && (
+          <View style={styles.section}>
+            <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
+              Workspaces
+            </ThemedText>
+            {MOCK_NEXUS_WORKSPACES.map((ws) => {
+              const isCollapsed = collapsedWorkspaces.has(ws.id);
+              return (
+                <View key={ws.id}>
+                  <Pressable
+                    style={styles.workspaceHeader}
+                    onPress={() => toggleWorkspace(ws.id)}
+                  >
+                    <IconSymbol
+                      name={isCollapsed ? 'chevron.right' : 'chevron.down'}
+                      size={12}
+                      color={colors.textTertiary}
+                    />
+                    <ThemedText style={[styles.workspaceName, { color: colors.text }]}>
+                      {ws.name}
+                    </ThemedText>
+                    <ThemedText style={[styles.workspaceCount, { color: colors.textTertiary }]}>
+                      {ws.thread_ids.length}
+                    </ThemedText>
+                  </Pressable>
+                  {!isCollapsed && (
+                    <WorkspaceCard
+                      workspace={ws}
+                      onPress={(w: NexusWorkspace) => {
+                        if (w.thread_ids.length > 0) {
+                          onSelectConversation(w.thread_ids[0]);
+                        }
+                      }}
+                    />
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        )}
+
+        {/* Recent Section */}
+        {recent.length > 0 && (
+          <View style={styles.section}>
             <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
               Recent
             </ThemedText>
-          )}
-          {activeSection === 'search' && searchQuery.length > 0 && (
-            <ThemedText style={[styles.sectionTitle, { color: colors.textTertiary }]}>
-              Results
-            </ThemedText>
-          )}
-          {conversations
-            .filter((c) => {
-              if (activeSection === 'pinned') return c.isPinned;
-              if (activeSection === 'search') {
-                if (!searchQuery) return false;
-                const q = searchQuery.toLowerCase();
-                return (
-                  c.title.toLowerCase().includes(q) ||
-                  c.lastMessage?.content.toLowerCase().includes(q)
-                );
-              }
-              return !!c.lastMessage; // recents
-            })
-            .map((conversation) => {
-              const isActive = conversation.id === activeConversationId;
-              return (
-                <Pressable
-                  key={conversation.id}
-                  style={({ pressed }) => [
-                    styles.conversationRow,
-                    {
-                      backgroundColor: isActive
-                        ? colors.backgroundSecondary
-                        : pressed
-                        ? colors.backgroundSecondary
-                        : 'transparent',
-                    },
-                  ]}
-                  onPress={() => handleConversationPress(conversation.id)}
-                  onLongPress={(event) => handleConversationLongPress(conversation, event)}
-                  delayLongPress={300}
-                >
-                  <IconSymbol
-                    name={conversation.isPinned ? 'pin.fill' : 'text.bubble'}
-                    size={16}
-                    color={conversation.isPinned ? colors.text : colors.textSecondary}
-                    style={styles.conversationIcon}
-                  />
-                  <View style={styles.conversationContent}>
-                    <ThemedText
-                      style={[styles.conversationTitle, isActive && { fontWeight: '600' }]}
-                      numberOfLines={1}
-                    >
-                      {conversation.title}
-                    </ThemedText>
-                    {conversation.lastMessage && (
-                      <ThemedText
-                        style={[styles.conversationPreview, { color: colors.textTertiary }]}
-                        numberOfLines={1}
-                      >
-                        {conversation.lastMessage.content}
-                      </ThemedText>
-                    )}
-                  </View>
-                  <ThemedText style={[styles.conversationTime, { color: colors.textTertiary }]}>
-                    {formatTimestamp(conversation.updatedAt)}
-                  </ThemedText>
-                </Pressable>
-              );
-            })}
-        </View>
+            {recent.map(renderConversationRow)}
+          </View>
+        )}
       </ScrollView>
 
       {/* Footer - Avatar, Name */}
       <View style={[styles.footer, { marginBottom: Spacing.sm }]}>
         <Pressable
-          style={({ pressed }) => [
-            styles.userRow,
-            { opacity: pressed ? 0.7 : 1 },
-          ]}
+          style={({ pressed }) => [styles.userRow, { opacity: pressed ? 0.7 : 1 }]}
           onPress={onAvatarPress}
           accessibilityLabel="Open profile"
           accessibilityRole="button"
         >
-          <View
-            style={[
-              styles.avatarButton,
-              { backgroundColor: colors.backgroundTertiary },
-            ]}
-          >
+          <View style={[styles.avatarButton, { backgroundColor: colors.backgroundTertiary }]}>
             <IconSymbol name="person.fill" size={18} color={colors.icon} />
           </View>
           <ThemedText style={styles.userName}>Sammy Kalejaiye</ThemedText>
@@ -375,14 +409,35 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRightWidth: 1,
   },
-  header: {
+
+  // Mode filter pills
+  modePillsScroll: {
+    flexGrow: 0,
+    paddingTop: Spacing.sm,
+  },
+  modePillsRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    gap: 6,
     paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.sm,
+    paddingBottom: Spacing.sm,
+  },
+  modePill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  modePillText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // Search
+  searchRow: {
+    paddingHorizontal: Spacing.sm,
+    paddingBottom: Spacing.sm,
   },
   searchContainer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     height: 36,
@@ -395,73 +450,100 @@ const styles = StyleSheet.create({
     marginLeft: Spacing.xs,
     paddingVertical: 0,
   },
+
+  // New workspace
+  newWorkspaceBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+  },
+  newWorkspaceText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
   scrollContent: {
     flex: 1,
   },
-  drawerItems: {
-    paddingTop: Spacing.sm,
-    paddingBottom: Spacing.xs,
-  },
-  drawerItemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: Spacing.sm + 2,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.md,
-    marginHorizontal: Spacing.xs,
-    marginVertical: 1,
-  },
-  drawerItemIcon: {
-    marginRight: Spacing.sm,
-    width: 24,
-  },
-  drawerItemLabel: {
-    fontSize: 15,
-    fontWeight: '500',
-  },
-  workspacesSection: {
-    paddingTop: Spacing.sm,
-    paddingBottom: Spacing.sm,
-  },
-  recentSection: {
-    marginTop: Spacing.md,
+
+  // Sections
+  section: {
     paddingTop: Spacing.sm,
   },
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.xs,
   },
-  conversationRow: {
+
+  // Workspaces
+  workspaceHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 8,
+  },
+  workspaceName: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
+  },
+  workspaceCount: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+
+  // Conversation rows
+  conversationRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.md,
     marginHorizontal: Spacing.xs,
     marginVertical: 1,
+    gap: 8,
   },
-  conversationIcon: {
-    marginRight: Spacing.sm,
+  modeDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginTop: 5,
   },
   conversationContent: {
     flex: 1,
-    marginRight: Spacing.sm,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   conversationTitle: {
     fontSize: 14,
     fontWeight: '500',
+    flex: 1,
+    marginRight: 8,
+  },
+  conversationTime: {
+    fontSize: 11,
+  },
+  workspaceTag: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 1,
   },
   conversationPreview: {
     fontSize: 12,
     marginTop: 2,
   },
-  conversationTime: {
-    fontSize: 11,
-  },
+
+  // Footer
   footer: {
     flexDirection: 'row',
     alignItems: 'center',

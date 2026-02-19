@@ -69,6 +69,16 @@ const ACTION_CAPABILITY_MAP: Record<string, NexusCapability> = {
   show_contexts: 'C1_ask',
   show_workspaces: 'C1_ask',
   create_workspace: 'C3_create_task',
+  add_to_board: 'C3_create_task',
+  remove_from_board: 'C3_create_task',
+  change_pipeline_stage: 'C3_create_task',
+  flag_player: 'C3_create_task',
+  create_calendar_event: 'C3_create_task',
+  update_scholarship: 'C8_high_impact',
+  adjust_budget: 'C8_high_impact',
+  send_dm: 'C5_post_room',
+  pin_conversation: 'C1_ask',
+  unpin_conversation: 'C1_ask',
 };
 
 export function getRequiredCapability(actionType: string): NexusCapability | null {
@@ -81,6 +91,8 @@ export function getRequiredCapability(actionType: string): NexusCapability | nul
 
 const HIGH_IMPACT_ACTIONS = new Set([
   'approve', 'deny', 'generate_packet', 'post_room',
+  'add_to_board', 'remove_from_board', 'change_pipeline_stage',
+  'update_scholarship', 'adjust_budget', 'send_dm',
 ]);
 
 export function isHighImpactAction(actionType: string): boolean {

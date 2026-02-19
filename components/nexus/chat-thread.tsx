@@ -3,8 +3,8 @@
  * Renders the list of messages in a Nexus conversation.
  */
 
-import React, { useRef, useEffect, useCallback, useState } from 'react';
-import { View, FlatList, StyleSheet, ActivityIndicator, Pressable, Animated } from 'react-native';
+import React, { useRef, useEffect, useCallback } from 'react';
+import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { MessageBubble } from './message-bubble';
@@ -23,24 +23,6 @@ interface ChatThreadProps {
   mode?: string;
 }
 
-const GLOBAL_QUOTES = [
-  { text: 'The thing you want to do least is usually the thing that gets you what you want most.', attribution: '— KaNeXT Core Principle' },
-  { text: 'Your mood is irrelevant. The job must get done.', attribution: '— KaNeXT Core Principle' },
-  { text: 'Decide the goal. Define the work. Execute.', attribution: '— KaNeXT Core Principle' },
-  { text: 'The future looks bright.', attribution: '— Patrick Bet-David' },
-  { text: 'Words talk… numbers scream.', attribution: '— Thomas Ellsworth' },
-  { text: 'Greatness is a lot of small things done well.', attribution: '— Ray Lewis' },
-  { text: 'Truth is not racist.', attribution: '— Vince Everett Ellison' },
-  { text: 'Why can\'t you do it? Do they have two heads?', attribution: '— Oladipo Kalejaiye' },
-  { text: 'The magic you\'re looking for is in the work you\'re avoiding.', attribution: '— Chris Williamson' },
-];
-
-const CHURCH_QUOTES = [
-  { text: 'The one who is unwilling to work shall not eat.', attribution: '— 2 Thessalonians 3:10' },
-  { text: 'Lazy hands make for poverty, but diligent hands bring wealth.', attribution: '— Proverbs 10:4' },
-  { text: 'All hard work brings a profit, but mere talk leads only to poverty.', attribution: '— Proverbs 14:23' },
-];
-
 export function ChatThread({ messages, isLoading = false, conversation, mode }: ChatThreadProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
@@ -52,24 +34,6 @@ export function ChatThread({ messages, isLoading = false, conversation, mode }: 
     cancelAction: ctxCancelAction,
     handleEscalationChoice: ctxHandleEscalation,
   } = useNexusContext();
-
-  // ── Quote system ──
-  const quotes = mode === 'church' ? CHURCH_QUOTES : GLOBAL_QUOTES;
-  const [quoteIndex, setQuoteIndex] = useState(0);
-  const fadeAnim = useRef(new Animated.Value(1)).current;
-  const prevMessageCountRef = useRef(messages.length);
-
-  // Fade out quote when first message arrives
-  useEffect(() => {
-    if (prevMessageCountRef.current === 0 && messages.length > 0) {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 275,
-        useNativeDriver: true,
-      }).start();
-    }
-    prevMessageCountRef.current = messages.length;
-  }, [messages.length, fadeAnim]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -206,22 +170,8 @@ export function ChatThread({ messages, isLoading = false, conversation, mode }: 
       );
     }
 
-    const q = quotes[quoteIndex] ?? quotes[0];
-    return (
-      <Pressable
-        style={styles.emptyContainer}
-        onPress={() => setQuoteIndex((prev) => (prev + 1) % quotes.length)}
-      >
-        <Animated.View style={{ opacity: fadeAnim, alignItems: 'center' }}>
-          <ThemedText style={[styles.quote, { color: colors.textSecondary }]}>
-            {q.text}
-          </ThemedText>
-          <ThemedText style={[styles.attribution, { color: colors.textTertiary }]}>
-            {q.attribution}
-          </ThemedText>
-        </Animated.View>
-      </Pressable>
-    );
+    // Empty conversation — minimal state (quotes live on landing screen)
+    return <View style={styles.emptyContainer} />;
   };
 
   // Render the thread header based on conversation type

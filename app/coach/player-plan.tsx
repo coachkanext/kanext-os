@@ -11,7 +11,6 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { AskNexusCTA } from '@/components/ui/ask-nexus-cta';
 import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { PLAYER_PLANS } from '@/data/mock-development-v2';
@@ -161,7 +160,6 @@ export default function PlayerPlanScreen() {
           <ThemedText style={[styles.coachNote, { color: colors.textSecondary }]}>{plan.coachNote}</ThemedText>
         </View>
 
-        <AskNexusCTA label={`Development Advice for ${plan.playerName}`} engineContext="development" />
         <View style={{ height: 40 }} />
       </ScrollView>
     </ThemedView>

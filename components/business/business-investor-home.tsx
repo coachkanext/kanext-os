@@ -23,7 +23,6 @@ import {
   getStageColor,
 } from '@/data/mock-business-investor-v2';
 import { formatCurrency, COMPANY_METRICS } from '@/data/mock-business-investor';
-import { AskNexusCTA } from '@/components/ui/ask-nexus-cta';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { CompanyProfileSheet } from '@/components/business/company-profile-sheet';
 import { EngineDetailSheet } from '@/components/business/engine-detail-sheet';
@@ -516,9 +515,6 @@ export function BusinessInvestorHome({ onSwitchTab }: BusinessInvestorHomeProps)
           </View>
         ))}
       </View>
-
-      {/* Ask Nexus */}
-      <AskNexusCTA label="Ask Nexus About This Company" engineContext="enterprise" />
 
       {/* Bottom Sheets */}
       <CompanyProfileSheet

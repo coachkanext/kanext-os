@@ -176,13 +176,6 @@ export function ChurchDashboardV2({ colors, accent }: Props) {
         </ThemedText>
       </View>
 
-      {/* ── Ask Nexus CTA ── */}
-      <Pressable style={[styles.askNexusCta, { backgroundColor: accent + '15', borderColor: accent + '33' }]}>
-        <ThemedText style={[styles.askNexusText, { color: accent }]}>
-          Ask Nexus about ICCLA
-        </ThemedText>
-      </Pressable>
-
       <View style={{ height: 120 }} />
     </ScrollView>
   );
@@ -223,6 +216,4 @@ const styles = StyleSheet.create({
   campaignTrack: { height: 8, borderRadius: 4, overflow: 'hidden', marginBottom: 6 },
   campaignFill: { height: 8, borderRadius: 4 },
   campaignPct: { fontSize: 11, textAlign: 'right' },
-  askNexusCta: { borderRadius: 12, borderWidth: 1, padding: 16, marginTop: 14, alignItems: 'center' },
-  askNexusText: { fontSize: 14, fontWeight: '700' },
 });
