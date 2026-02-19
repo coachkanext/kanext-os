@@ -86,8 +86,6 @@ const DOMAIN_HIDDEN: Record<SportsRoleLens, Set<DrillDownId>> = {
   R5: new Set(['game-plan', 'simulation', 'development']),
 };
 
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-
 // FMU seal logo
 const FMU_SEAL = require('@/assets/images/fmu-seal.png');
 
@@ -380,26 +378,65 @@ function SportsHome() {
                   {/* ===== BLOCK 1 — VIDEO HERO ===== */}
                   {(() => {
                     const liveGame = FMU_GAMES.find(g => g.status === 'live');
-                    const heroOverlay = liveGame
-                      ? `LIVE: FMU ${liveGame.score ?? ''} · ${liveGame.clock ?? ''}`
-                      : FMU_LAST_GAME
-                        ? `Last: ${FMU_LAST_GAME.result === 'W' ? 'W' : 'L'} ${FMU_LAST_GAME.score} vs ${FMU_LAST_GAME.opponent}`
-                        : FMU_NEXT_GAME
-                          ? `Next: vs ${FMU_NEXT_GAME.opponent} · ${FMU_NEXT_GAME.date}`
-                          : 'FMU Athletics';
+                    // Determine hero context: live → upcoming (within 3 days) → last game recap → film fallback
+                    let heroTitle = '';
+                    let heroSubtitle = '';
+                    let heroBadge = '';
+                    let badgeColor = '#1E40AF';
+                    let badgePulse = false;
+
+                    if (liveGame) {
+                      heroTitle = `FMU Lions vs ${liveGame.opponent}`;
+                      heroSubtitle = `LIVE · ${liveGame.clock ?? ''} · FMU ${liveGame.score ?? ''}`;
+                      heroBadge = 'LIVE';
+                      badgeColor = '#EF4444';
+                      badgePulse = true;
+                    } else if (FMU_NEXT_GAME) {
+                      heroTitle = `FMU Lions vs ${FMU_NEXT_GAME.opponent}`;
+                      const loc = FMU_NEXT_GAME.location === 'Home' ? 'Home' : 'Away';
+                      heroSubtitle = `${FMU_NEXT_GAME.date} · ${loc} · Conference Matchup`;
+                      heroBadge = 'NEXT';
+                      badgeColor = '#1E40AF';
+                    } else if (FMU_LAST_GAME) {
+                      const wl = FMU_LAST_GAME.result === 'W' ? 'W' : 'L';
+                      heroTitle = `FMU Lions vs ${FMU_LAST_GAME.opponent}`;
+                      heroSubtitle = `Final · ${wl} ${FMU_LAST_GAME.score} · Full Game Recap`;
+                      heroBadge = 'RECAP';
+                      badgeColor = '#6B7280';
+                    } else {
+                      heroTitle = 'Practice Film — Defensive Rotations';
+                      heroSubtitle = 'Film Room · Season Review';
+                      heroBadge = 'FILM';
+                      badgeColor = '#7C3AED';
+                    }
+
                     return (
                       <View style={styles.videoHero}>
                         <LinearGradient
                           colors={['#0a1628', '#162a4a', '#0a1628']}
-                          style={StyleSheet.absoluteFill}
-                        />
-                        <Image source={FMU_SEAL} style={styles.heroWatermark} />
-                        <View style={styles.heroPlayButton}>
-                          <IconSymbol name="play.fill" size={32} color="#fff" />
-                        </View>
-                        <View style={styles.heroOverlay}>
-                          <Text style={styles.heroOverlayText} numberOfLines={1}>{heroOverlay}</Text>
-                        </View>
+                          style={styles.heroGradient}
+                        >
+                          {/* Play Button */}
+                          <Pressable style={styles.heroPlayButton}>
+                            <IconSymbol name="play.circle.fill" size={56} color="rgba(255,255,255,0.7)" />
+                          </Pressable>
+
+                          {/* Badge */}
+                          <View style={[styles.heroBadge, { backgroundColor: badgeColor }]}>
+                            {badgePulse && <View style={styles.heroBadgeDot} />}
+                            <Text style={styles.heroBadgeText}>{heroBadge}</Text>
+                          </View>
+
+                          {/* Text block at bottom */}
+                          <View style={styles.heroTextBlock}>
+                            <ThemedText style={styles.heroTitle} numberOfLines={2}>
+                              {heroTitle}
+                            </ThemedText>
+                            <ThemedText style={styles.heroSubtitle} numberOfLines={2}>
+                              {heroSubtitle}
+                            </ThemedText>
+                          </View>
+                        </LinearGradient>
                       </View>
                     );
                   })()}
@@ -1644,43 +1681,57 @@ const styles = StyleSheet.create({
 
   // Video Hero
   videoHero: {
-    height: SCREEN_HEIGHT * 0.4,
     marginHorizontal: Spacing.md,
     marginBottom: Spacing.md,
     borderRadius: BorderRadius.lg,
     overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  heroWatermark: {
-    position: 'absolute',
-    width: 120,
-    height: 120,
-    opacity: 0.12,
-    resizeMode: 'contain',
+  heroGradient: {
+    aspectRatio: 16 / 9,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    padding: 20,
   },
   heroPlayButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  heroOverlay: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    top: '35%',
   },
-  heroOverlayText: {
-    fontSize: 13,
-    fontWeight: '700',
+  heroBadge: {
+    position: 'absolute',
+    top: 14,
+    right: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+    gap: 5,
+  },
+  heroBadgeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#fff',
+  },
+  heroBadgeText: {
     color: '#fff',
-    letterSpacing: 0.3,
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  heroTextBlock: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  heroTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  heroSubtitle: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 13,
     textAlign: 'center',
   },
 

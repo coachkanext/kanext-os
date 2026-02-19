@@ -31,9 +31,11 @@ export interface PagedTabBarProps {
   activeIndex: number;
   onTabPress: (index: number) => void;
   accentColor?: string;
+  /** Override per-tab width (default: SCREEN_WIDTH / 4). Use SCREEN_WIDTH / 3 for 3-tab layouts. */
+  tabWidth?: number;
 }
 
-export function PagedTabBar({ tabs, activeIndex, onTabPress, accentColor }: PagedTabBarProps) {
+export function PagedTabBar({ tabs, activeIndex, onTabPress, accentColor, tabWidth }: PagedTabBarProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const scrollRef = useRef<ScrollView>(null);
@@ -64,6 +66,8 @@ export function PagedTabBar({ tabs, activeIndex, onTabPress, accentColor }: Page
         {tabs.map((tab, index) => {
           const isActive = index === activeIndex;
 
+          const resolvedWidth = tabWidth ?? TAB_WIDTH;
+
           if (accentColor) {
             // Flat-button accent styling
             return (
@@ -71,6 +75,7 @@ export function PagedTabBar({ tabs, activeIndex, onTabPress, accentColor }: Page
                 key={tab.id}
                 style={[
                   styles.tab,
+                  { width: resolvedWidth },
                   isActive && { borderBottomColor: accentColor, borderBottomWidth: 2 },
                 ]}
                 onPress={() => {
@@ -98,6 +103,7 @@ export function PagedTabBar({ tabs, activeIndex, onTabPress, accentColor }: Page
               key={tab.id}
               style={[
                 styles.tab,
+                { width: resolvedWidth },
                 isActive && [styles.tabActive, { borderBottomColor: colors.text }],
               ]}
               onPress={() => {
@@ -129,7 +135,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   tab: {
-    width: TAB_WIDTH,
+    width: TAB_WIDTH, // default; overridden by resolvedWidth inline
     paddingVertical: 12,
     borderBottomWidth: 2,
     borderBottomColor: 'transparent',

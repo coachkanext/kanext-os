@@ -971,3 +971,62 @@ export type NewsCategoryTag = 'Recap' | 'Announcement' | 'Recruiting' | 'Program
 
 export type RecruitingViewModeV2 = 'board' | 'database' | 'portal';
 export type RecruitingPipelineStage = 'Prospect' | 'Contact Made' | 'Eval Sent' | 'Visit Scheduled' | 'Offer Out' | 'Committed' | 'Signed' | 'Dead';
+
+// =============================================================================
+// MESSAGES V3
+// =============================================================================
+
+export type NexusEscalationStatus = 'unanswered' | 'answered';
+
+export interface InboxThreadV3 {
+  id: string;
+  mode: Mode;
+  name: string;
+  initials: string;
+  role: string;
+  preview: string;
+  timestamp: Date;
+  unread: boolean;
+  pinned: boolean;
+  isRequest: boolean;
+  avatar?: string;
+}
+
+export interface RoomV3 {
+  id: string;
+  mode: Mode;
+  name: string;
+  initials: string;
+  color: string;
+  memberCount: number;
+  lastMessage: string;
+  timestamp: Date;
+  unread: boolean;
+  pinned: boolean;
+  locked: boolean;
+  isAnnouncement: boolean;
+  readCount?: number;
+  totalCount?: number;
+}
+
+export interface NexusEscalationV3 {
+  id: string;
+  mode: Mode;
+  askerName: string;
+  askerInitials: string;
+  askerRole: string;
+  question: string;
+  viewingContext: string;
+  timestamp: Date;
+  status: NexusEscalationStatus;
+  answer?: string;
+}
+
+export interface ConversationMessageV3 {
+  id: string;
+  sender: string;
+  initials: string;
+  content: string;
+  timestamp: Date;
+  isMe: boolean;
+}
