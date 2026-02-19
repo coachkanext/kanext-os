@@ -20,6 +20,7 @@ from config import (
     NJCAA_BASE_URL, NJCAA_DIV_TO_LEVEL_KEY, NJCAA_DIV_DISPLAY,
     NAIA_BASE_URL, NAIA_LEVEL_KEY,
     CCCAA_BASE_URL, CCCAA_LEVEL_KEY,
+    USCAA_BASE_URL, USCAA_LEVEL_KEY,
 )
 
 # Legacy aliases for backward compat within this file
@@ -743,6 +744,32 @@ def scrape_cccaa(conn, limit: int | None = None):
     return stats
 
 
+def scrape_uscaa(conn, limit: int | None = None):
+    """Scrape all USCAA teams (single division, no division path segment)."""
+    teams = discover_teams(conn, None, base_url=USCAA_BASE_URL, display_name="USCAA")
+    if limit:
+        teams = teams[:limit]
+
+    stats = {"teams": 0, "games": 0, "player_game_stats": 0, "roster": 0}
+    for i, team in enumerate(teams):
+        log.info(f"\n[{i+1}/{len(teams)}] {team['name']}")
+        try:
+            result = scrape_team(conn, team, None,
+                                 base_url=USCAA_BASE_URL,
+                                 assoc_code="uscaa",
+                                 level_key=USCAA_LEVEL_KEY)
+            stats["teams"] += 1
+            stats["games"] += result["games"]
+            stats["player_game_stats"] += result["player_game_stats"]
+            stats["roster"] += result["roster"]
+        except Exception as e:
+            log.error(f"Error scraping {team['name']}: {e}")
+            conn.rollback()
+            continue
+
+    return stats
+
+
 def print_summary(conn, label: str = "SCRAPER"):
     """Print final summary of database state."""
     with conn.cursor() as cur:
@@ -842,8 +869,26 @@ def main():
                             level_key=CCCAA_LEVEL_KEY)
                 conn.commit()
                 print_summary(conn, "CCCAA SCRAPER")
+        elif mode == "uscaa":
+            # Scrape all USCAA teams
+            log.info(f"\n{'='*60}")
+            log.info(f"  STARTING USCAA")
+            log.info(f"{'='*60}")
+            scrape_uscaa(conn)
+            conn.commit()
+            print_summary(conn, "USCAA SCRAPER")
+        elif mode == "uscaa-one":
+            # Test with one USCAA team
+            teams = discover_teams(conn, None, base_url=USCAA_BASE_URL,
+                                   display_name="USCAA")
+            if teams:
+                scrape_team(conn, teams[0], None,
+                            base_url=USCAA_BASE_URL, assoc_code="uscaa",
+                            level_key=USCAA_LEVEL_KEY)
+                conn.commit()
+                print_summary(conn, "USCAA SCRAPER")
         else:
-            print("Usage: python scraper.py [one|division|all|naia|naia-one|cccaa|cccaa-one] [div1|div2|div3]")
+            print("Usage: python scraper.py [one|division|all|naia|naia-one|cccaa|cccaa-one|uscaa|uscaa-one] [div1|div2|div3]")
             sys.exit(1)
     finally:
         conn.close()

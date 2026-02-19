@@ -271,6 +271,74 @@ def update_game_possessions(conn, game_id: str):
         )
 
 
+def upsert_player_season_stats(
+    conn, player_team_season_id: str, stats: dict,
+) -> str:
+    """Insert or update player_season_stats. Used by scrapers that only have
+    cumulative season data (no per-game box scores), e.g. NCCAA."""
+    row = conn.execute(
+        "SELECT id FROM player_season_stats WHERE player_team_season_id = %s",
+        (player_team_season_id,),
+    ).fetchone()
+    if row:
+        conn.execute(
+            """UPDATE player_season_stats SET
+                games_played = %s, games_started = %s,
+                minutes_per_game = %s, pts_per_game = %s,
+                reb_per_game = %s, ast_per_game = %s,
+                stl_per_game = %s, blk_per_game = %s,
+                to_per_game = %s, fg_pct = %s,
+                three_pct = %s, ft_pct = %s,
+                oreb_per_game = %s, dreb_per_game = %s,
+                fga_per_game = %s, three_pa_per_game = %s,
+                fta_per_game = %s, pf_per_game = %s,
+                usage_rate = %s
+            WHERE id = %s""",
+            (
+                stats.get("games_played", 0), stats.get("games_started", 0),
+                stats.get("minutes_per_game", 0), stats.get("pts_per_game", 0),
+                stats.get("reb_per_game", 0), stats.get("ast_per_game", 0),
+                stats.get("stl_per_game", 0), stats.get("blk_per_game", 0),
+                stats.get("to_per_game", 0), stats.get("fg_pct", 0),
+                stats.get("three_pct", 0), stats.get("ft_pct", 0),
+                stats.get("oreb_per_game", 0), stats.get("dreb_per_game", 0),
+                stats.get("fga_per_game", 0), stats.get("three_pa_per_game", 0),
+                stats.get("fta_per_game", 0), stats.get("pf_per_game", 0),
+                stats.get("usage_rate", 0),
+                str(row["id"]),
+            ),
+        )
+        return str(row["id"])
+    row = conn.execute(
+        """INSERT INTO player_season_stats (
+            player_team_season_id, games_played, games_started,
+            minutes_per_game, pts_per_game, reb_per_game, ast_per_game,
+            stl_per_game, blk_per_game, to_per_game,
+            fg_pct, three_pct, ft_pct,
+            oreb_per_game, dreb_per_game,
+            fga_per_game, three_pa_per_game, fta_per_game,
+            pf_per_game, usage_rate
+        ) VALUES (
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        ) RETURNING id""",
+        (
+            player_team_season_id,
+            stats.get("games_played", 0), stats.get("games_started", 0),
+            stats.get("minutes_per_game", 0), stats.get("pts_per_game", 0),
+            stats.get("reb_per_game", 0), stats.get("ast_per_game", 0),
+            stats.get("stl_per_game", 0), stats.get("blk_per_game", 0),
+            stats.get("to_per_game", 0),
+            stats.get("fg_pct", 0), stats.get("three_pct", 0), stats.get("ft_pct", 0),
+            stats.get("oreb_per_game", 0), stats.get("dreb_per_game", 0),
+            stats.get("fga_per_game", 0), stats.get("three_pa_per_game", 0),
+            stats.get("fta_per_game", 0),
+            stats.get("pf_per_game", 0), stats.get("usage_rate", 0),
+        ),
+    ).fetchone()
+    return str(row["id"])
+
+
 def log_scrape(conn, url: str, status: str, response_code: int, error_message: str | None, records_created: int):
     """Log a scrape attempt."""
     conn.execute(

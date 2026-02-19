@@ -12,7 +12,6 @@ import {
   Pressable,
   TextInput,
   FlatList,
-  ScrollView,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -35,10 +34,27 @@ import type { ClusterType } from '@/types';
 // FILTER DEFINITIONS
 // =============================================================================
 
-const LEVEL_OPTIONS = nationalPool.getLevels().map((k) => ({
-  key: k,
-  label: LEVEL_DISPLAY_SHORT[k] ?? k,
-}));
+const LEVEL_OPTIONS: { key: string; label: string }[] = [
+  { key: 'ncaa_d1', label: 'NCAA D1' },
+  { key: 'ncaa_d2', label: 'NCAA D2' },
+  { key: 'ncaa_d3', label: 'NCAA D3' },
+  { key: 'naia', label: 'NAIA' },
+  { key: 'njcaa_d1', label: 'JUCO D1' },
+  { key: 'njcaa_d2', label: 'JUCO D2' },
+  { key: 'njcaa_d3', label: 'JUCO D3' },
+  { key: 'cccaa', label: 'CCCAA' },
+  { key: 'uscaa', label: 'USCAA' },
+  { key: 'nccaa_d1', label: 'NCCAA D1' },
+  { key: 'nccaa_d2', label: 'NCCAA D2' },
+];
+
+// NCAA D1 is stored as 3 sub-levels — expand for search
+const LEVEL_EXPAND: Record<string, string[]> = {
+  ncaa_d1: ['ncaa_d1_high_major', 'ncaa_d1_mid_major', 'ncaa_d1_low_major'],
+};
+function expandLevels(keys: string[]): string[] {
+  return keys.flatMap((k) => LEVEL_EXPAND[k] ?? [k]);
+}
 
 const POS_OPTIONS = ['PG', 'CG', 'W', 'F', 'B'] as const;
 
@@ -79,7 +95,7 @@ export function RecruitingDatabaseV2({ colors }: Props) {
   const filtered = useMemo(() => {
     return nationalPool.search({
       query: searchQuery || undefined,
-      level: levelFilter.length > 0 ? levelFilter : undefined,
+      level: levelFilter.length > 0 ? expandLevels(levelFilter) : undefined,
       position: posFilter.length > 0 ? posFilter : undefined,
       minKR,
       conference: conferenceFilter || undefined,
@@ -93,7 +109,7 @@ export function RecruitingDatabaseV2({ colors }: Props) {
   const totalCount = useMemo(() => {
     return nationalPool.search({
       query: searchQuery || undefined,
-      level: levelFilter.length > 0 ? levelFilter : undefined,
+      level: levelFilter.length > 0 ? expandLevels(levelFilter) : undefined,
       position: posFilter.length > 0 ? posFilter : undefined,
       minKR,
       conference: conferenceFilter || undefined,
@@ -175,7 +191,11 @@ export function RecruitingDatabaseV2({ colors }: Props) {
             )}
           </View>
           <ThemedText style={[styles.school, { color: colors.textSecondary }]} numberOfLines={1}>
-            {player.school} · {player.position}/{player.height} · {player.classYear}
+            {[
+              player.school,
+              [player.position, player.height].filter(Boolean).join(' · '),
+              player.classYear,
+            ].filter(Boolean).join(' · ')}
           </ThemedText>
         </View>
 
@@ -223,7 +243,7 @@ export function RecruitingDatabaseV2({ colors }: Props) {
       </View>
 
       {/* Level filter pills */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
+      <View style={styles.pillRow}>
         {LEVEL_OPTIONS.map(({ key, label }) => {
           const isActive = levelFilter.includes(key);
           return (
@@ -232,16 +252,16 @@ export function RecruitingDatabaseV2({ colors }: Props) {
               style={[styles.filterPill, isActive && { backgroundColor: accent, borderColor: accent }]}
               onPress={() => toggleLevel(key)}
             >
-              <ThemedText style={[styles.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
+              <Text style={[styles.filterPillText, { color: isActive ? '#000' : colors.text }]}>
                 {label}
-              </ThemedText>
+              </Text>
             </Pressable>
           );
         })}
-      </ScrollView>
+      </View>
 
       {/* Position filter pills */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
+      <View style={styles.pillRow}>
         {POS_OPTIONS.map((pos) => {
           const isActive = posFilter.includes(pos);
           return (
@@ -250,22 +270,22 @@ export function RecruitingDatabaseV2({ colors }: Props) {
               style={[styles.filterPill, isActive && { backgroundColor: accent, borderColor: accent }]}
               onPress={() => togglePos(pos)}
             >
-              <ThemedText style={[styles.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
+              <Text style={[styles.filterPillText, { color: isActive ? '#000' : colors.text }]}>
                 {pos}
-              </ThemedText>
+              </Text>
             </Pressable>
           );
         })}
         {/* Advanced filters button */}
         <Pressable
-          style={[styles.filterPill, { borderColor: activeFilterCount > 0 ? accent : 'rgba(255,255,255,0.08)' }]}
+          style={[styles.filterPill, { borderColor: activeFilterCount > 0 ? accent : 'rgba(255,255,255,0.20)' }]}
           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowAdvanced(true); }}
         >
-          <ThemedText style={[styles.filterPillText, { color: activeFilterCount > 0 ? accent : colors.textSecondary }]}>
+          <Text style={[styles.filterPillText, { color: activeFilterCount > 0 ? accent : colors.text }]}>
             Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
-          </ThemedText>
+          </Text>
         </Pressable>
-      </ScrollView>
+      </View>
 
       {/* Sort & count */}
       <View style={styles.sortRow}>
@@ -292,7 +312,7 @@ export function RecruitingDatabaseV2({ colors }: Props) {
       {/* Results */}
       <FlatList
         data={filtered}
-        keyExtractor={(p) => p.id}
+        keyExtractor={(p, i) => `${p.id}-${i}`}
         renderItem={renderRow}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
@@ -323,7 +343,7 @@ export function RecruitingDatabaseV2({ colors }: Props) {
                     style={[styles.advPill, isActive && { backgroundColor: accent, borderColor: accent }]}
                     onPress={() => { setMinKR(val); setDisplayCount(PAGE_SIZE); }}
                   >
-                    <Text style={[styles.advPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
+                    <Text style={[styles.advPillText, { color: isActive ? '#000' : colors.text }]}>
                       {val ?? 'Any'}
                     </Text>
                   </Pressable>
@@ -391,12 +411,12 @@ const styles = StyleSheet.create({
     gap: 8, borderWidth: 1,
   },
   searchInput: { flex: 1, fontSize: 14, paddingVertical: 0 },
-  pillRow: { paddingHorizontal: Spacing.lg, paddingBottom: 6, gap: 6 },
+  pillRow: { flexDirection: 'row' as const, flexWrap: 'wrap' as const, paddingHorizontal: Spacing.lg, paddingBottom: 6, gap: 6 },
   filterPill: {
-    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.05)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.10)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.20)',
   },
-  filterPillText: { fontSize: 12, fontWeight: '600' },
+  filterPillText: { fontSize: 13, fontWeight: '600' },
   sortRow: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: Spacing.lg, paddingBottom: 4, paddingTop: 2,
