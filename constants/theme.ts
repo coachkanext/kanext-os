@@ -64,6 +64,18 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string; nexu
 };
 
 // =============================================================================
+// MODE ACCENT — Tab bar accent colors per mode
+// =============================================================================
+
+export const MODE_ACCENT: Record<Mode, string> = {
+  sports: '#1E40AF',
+  business: '#7C3AED',
+  church: '#FBBF24',
+  education: '#14B8A6',
+  competition: '#FF5555',
+};
+
+// =============================================================================
 // BASE COLORS — Luxury Control Room
 // =============================================================================
 

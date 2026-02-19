@@ -23,6 +23,8 @@ export interface EdgeHoldAdvanceProps {
   onAdvance: (newIndex: number) => void;
   children: React.ReactNode;
   enabled?: boolean;
+  /** When true, wraps around from last→first and first→last with a medium haptic */
+  wrap?: boolean;
 }
 
 export function EdgeHoldAdvance({
@@ -31,6 +33,7 @@ export function EdgeHoldAdvance({
   onAdvance,
   children,
   enabled = true,
+  wrap = false,
 }: EdgeHoldAdvanceProps) {
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -60,14 +63,31 @@ export function EdgeHoldAdvance({
   const startAdvancing = useCallback((direction: 'left' | 'right') => {
     const step = () => {
       const current = indexRef.current;
-      const next = direction === 'right'
-        ? Math.min(current + 1, tabCount - 1)
-        : Math.max(current - 1, 0);
+      let next: number;
+
+      if (wrap) {
+        // Modular wrap-around
+        next = direction === 'right'
+          ? (current + 1) % tabCount
+          : (current - 1 + tabCount) % tabCount;
+      } else {
+        next = direction === 'right'
+          ? Math.min(current + 1, tabCount - 1)
+          : Math.max(current - 1, 0);
+      }
 
       if (next !== current) {
+        const isWrapping = wrap && (
+          (direction === 'right' && current === tabCount - 1) ||
+          (direction === 'left' && current === 0)
+        );
         indexRef.current = next;
         stepsRef.current += 1;
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        if (isWrapping) {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+        } else {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
         onAdvance(next);
       }
 
@@ -81,7 +101,7 @@ export function EdgeHoldAdvance({
     // First step immediately
     step();
     intervalRef.current = setInterval(step, INITIAL_INTERVAL);
-  }, [tabCount, onAdvance]);
+  }, [tabCount, onAdvance, wrap]);
 
   const handleEdgePressIn = useCallback((direction: 'left' | 'right') => {
     if (!enabled) return;

@@ -1,19 +1,20 @@
 /**
- * Business Home — KaNeXT 4-pill layout
+ * Business Home — KaNeXT 4-tab PagerView layout
  * Dashboard | Calendar | Vault | Deals
  *
- * Replaces old 9-tab PagerView with SportsHome-style pill navigation.
+ * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.
  */
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { View, StyleSheet, Pressable, InteractionManager } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
+import { View, StyleSheet, InteractionManager } from 'react-native';
 import { useFocusEffect } from '@react-navigation/core';
+import PagerView from 'react-native-pager-view';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 import { ThemedView } from '@/components/themed-view';
-import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMembershipId } from '@/context/app-context';
 import {
@@ -27,14 +28,14 @@ import { BizCalendarV2 } from '@/components/biz-home/biz-calendar-v2';
 import { BizVaultV2 } from '@/components/biz-home/biz-vault-v2';
 import { BizDealsV2 } from '@/components/biz-home/biz-deals-v2';
 
-const ALL_PILLS: { id: BusinessHomePill; label: string }[] = [
+const ALL_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'calendar', label: 'Calendar' },
   { id: 'vault', label: 'Vault' },
   { id: 'deals', label: 'Deals' },
 ];
 
-const ACCENT = '#F59E0B';
+const ACCENT = MODE_ACCENT.business;
 
 // =============================================================================
 // MAIN COMPONENT
@@ -44,15 +45,17 @@ export function BusinessHome() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const membershipId = useMembershipId();
-  const bizRole = useMemo(() => getBusinessRole(membershipId), [membershipId]);
-  const visiblePillIds = useMemo(() => new Set(getBusinessVisiblePills(bizRole)), [bizRole]);
-  const pills = useMemo(() => ALL_PILLS.filter((p) => visiblePillIds.has(p.id)), [visiblePillIds]);
+  const pagerRef = useRef<PagerView>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const [activePill, setActivePill] = useState<BusinessHomePill>('dashboard');
+  const handleTabPress = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
 
   // Reset to Dashboard when Home tab is pressed
   const resetToHome = useCallback(() => {
-    setActivePill('dashboard');
+    setActiveIndex(0);
+    pagerRef.current?.setPage(0);
   }, []);
 
   useEffect(() => {
@@ -72,34 +75,34 @@ export function BusinessHome() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* Pill Bar */}
-      <View style={styles.pillBar}>
-        {pills.map((pill) => {
-          const isActive = activePill === pill.id;
-          return (
-            <Pressable
-              key={pill.id}
-              style={[styles.pill, isActive && { backgroundColor: ACCENT }]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setActivePill(pill.id);
-              }}
-            >
-              <ThemedText
-                style={[styles.pillText, { color: isActive ? '#000' : colors.textSecondary }]}
-              >
-                {pill.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
+      <PagedTabBar
+        tabs={ALL_TABS}
+        activeIndex={activeIndex}
+        onTabPress={handleTabPress}
+        accentColor={ACCENT}
+      />
 
-      {/* Content */}
-      {activePill === 'dashboard' && <BizDashboardV2 colors={colors} accent={ACCENT} />}
-      {activePill === 'calendar' && <BizCalendarV2 colors={colors} accent={ACCENT} />}
-      {activePill === 'vault' && <BizVaultV2 colors={colors} accent={ACCENT} />}
-      {activePill === 'deals' && <BizDealsV2 colors={colors} accent={ACCENT} />}
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ALL_TABS.length} onAdvance={handleTabPress} wrap>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          <View key="dashboard" style={{ flex: 1 }}>
+            <BizDashboardV2 colors={colors} accent={ACCENT} />
+          </View>
+          <View key="calendar" style={{ flex: 1 }}>
+            <BizCalendarV2 colors={colors} accent={ACCENT} />
+          </View>
+          <View key="vault" style={{ flex: 1 }}>
+            <BizVaultV2 colors={colors} accent={ACCENT} />
+          </View>
+          <View key="deals" style={{ flex: 1 }}>
+            <BizDealsV2 colors={colors} accent={ACCENT} />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </ThemedView>
   );
 }
@@ -111,22 +114,5 @@ export function BusinessHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  pillBar: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingTop: 2,
-    paddingBottom: 10,
-    gap: 8,
-  },
-  pill: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-  },
-  pillText: {
-    fontSize: 13,
-    fontWeight: '600',
   },
 });

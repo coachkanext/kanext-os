@@ -21,7 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import {
@@ -350,10 +350,10 @@ export default function VideoHomeScreen() {
   return (
     <ThemedView style={styles.container}>
       {/* ===== MEDIA HUB TAB BAR ===== */}
-      <PagedTabBar tabs={tabs} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <PagedTabBar tabs={tabs} activeIndex={activeIndex} onTabPress={handleTabPress} accentColor={MODE_ACCENT[mode]} />
 
       {/* ===== SWIPEABLE CONTENT ===== */}
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={tabs.length} onAdvance={handleTabPress}>
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={tabs.length} onAdvance={handleTabPress} wrap>
         <PagerView
           ref={pagerRef}
           style={{ flex: 1 }}

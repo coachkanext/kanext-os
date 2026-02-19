@@ -4,13 +4,16 @@
  * Per spec: Home displays key stats and quick actions for the current mode.
  */
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { View, ScrollView, StyleSheet, Pressable, InteractionManager, Text, Dimensions, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/core';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
+import PagerView from 'react-native-pager-view';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
@@ -20,7 +23,7 @@ import { KRDetailsSheet } from '@/components/kr-details-sheet';
 import { PlayerPoolContent, PlayerPoolContentV2 } from '@/app/coach/recruiting';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import type { Archetype } from '@/data/system-demand-profiles';
-import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, ModeColors, Brand, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode, useMembershipId } from '@/context/app-context';
 import type { Mode, OffensiveStyle, DefensiveStyle } from '@/types';
@@ -55,11 +58,10 @@ import { EducationProvider } from '@/context/education-context';
 // Shows: state, identity, and motion — nothing else.
 // =============================================================================
 
-// Sports Home — 4-pill layout (Dashboard + Calendar + Roster + Recruiting)
-type HomePill = 'dashboard' | 'calendar' | 'roster' | 'recruiting';
+// Sports Home — 4-tab PagerView layout (Dashboard + Roster + Calendar + Recruiting)
 type DrillDownId = 'stats' | 'game-plan' | 'simulation' | 'development' | 'alerts';
 
-const HOME_PILLS: { id: HomePill; label: string }[] = [
+const HOME_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'roster', label: 'Roster' },
   { id: 'calendar', label: 'Calendar' },
@@ -82,15 +84,6 @@ const DOMAIN_HIDDEN: Record<SportsRoleLens, Set<DrillDownId>> = {
   R3: new Set(),
   R4: new Set(['game-plan', 'simulation', 'development']),
   R5: new Set(['game-plan', 'simulation', 'development']),
-};
-
-/** RBAC: which pills are hidden per role */
-const PILL_HIDDEN: Record<SportsRoleLens, Set<HomePill>> = {
-  R1: new Set(),
-  R2: new Set(['recruiting']),
-  R3: new Set(),
-  R4: new Set(),
-  R5: new Set(['recruiting']),
 };
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -219,9 +212,10 @@ function SportsHome() {
   const insets = useSafeAreaInsets();
   const membershipId = useMembershipId();
 
-  // RBAC + pills
+  // RBAC + PagerView
   const sportsRole = getSportsRole(membershipId);
-  const [activePill, setActivePill] = useState<HomePill>('dashboard');
+  const pagerRef = useRef<PagerView>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [drillDown, setDrillDown] = useState<DrillDownId | null>(null);
 
   const visibleCards = useMemo(() => {
@@ -229,15 +223,15 @@ function SportsHome() {
     return DOMAIN_CARD_DEFS.filter(c => !hidden.has(c.id));
   }, [sportsRole]);
 
-  const visiblePills = useMemo(() => {
-    const hidden = PILL_HIDDEN[sportsRole];
-    return HOME_PILLS.filter(p => !hidden.has(p.id));
-  }, [sportsRole]);
+  const handleTabPress = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
 
   // Reset to dashboard overview
   const resetToHome = useCallback(() => {
     setDrillDown(null);
-    setActivePill('dashboard');
+    setActiveIndex(0);
+    pagerRef.current?.setPage(0);
   }, []);
 
   // Register immediate callback so pressing Home while already focused resets the pager
@@ -364,172 +358,185 @@ function SportsHome() {
         </>
       ) : (
         <>
-          {/* ===== PILL TOGGLE ===== */}
-          <View style={styles.pillBar}>
-            {visiblePills.map(pill => (
-              <Pressable
-                key={pill.id}
-                style={[styles.pill, activePill === pill.id && { backgroundColor: colors.tint }]}
-                onPress={() => { setActivePill(pill.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-              >
-                <Text style={[styles.pillText, { color: activePill === pill.id ? '#000' : colors.textSecondary }]}>
-                  {pill.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
+          {/* ===== TAB BAR ===== */}
+          <PagedTabBar
+            tabs={HOME_TABS}
+            activeIndex={activeIndex}
+            onTabPress={handleTabPress}
+            accentColor={MODE_ACCENT.sports}
+          />
 
-          {activePill === 'dashboard' ? (
-            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-              {/* ===== BLOCK 1 — VIDEO HERO ===== */}
-              {(() => {
-                const liveGame = FMU_GAMES.find(g => g.status === 'live');
-                const heroOverlay = liveGame
-                  ? `LIVE: FMU ${liveGame.score ?? ''} · ${liveGame.clock ?? ''}`
-                  : FMU_LAST_GAME
-                    ? `Last: ${FMU_LAST_GAME.result === 'W' ? 'W' : 'L'} ${FMU_LAST_GAME.score} vs ${FMU_LAST_GAME.opponent}`
-                    : FMU_NEXT_GAME
-                      ? `Next: vs ${FMU_NEXT_GAME.opponent} · ${FMU_NEXT_GAME.date}`
-                      : 'FMU Athletics';
-                return (
-                  <View style={styles.videoHero}>
-                    <LinearGradient
-                      colors={['#0a1628', '#162a4a', '#0a1628']}
-                      style={StyleSheet.absoluteFill}
-                    />
-                    <Image source={FMU_SEAL} style={styles.heroWatermark} />
-                    <View style={styles.heroPlayButton}>
-                      <IconSymbol name="play.fill" size={32} color="#fff" />
-                    </View>
-                    <View style={styles.heroOverlay}>
-                      <Text style={styles.heroOverlayText} numberOfLines={1}>{heroOverlay}</Text>
-                    </View>
-                  </View>
-                );
-              })()}
+          {/* ===== SWIPEABLE CONTENT ===== */}
+          <EdgeHoldAdvance activeIndex={activeIndex} tabCount={HOME_TABS.length} onAdvance={handleTabPress} wrap>
+            <PagerView
+              ref={pagerRef}
+              style={{ flex: 1 }}
+              initialPage={0}
+              onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+            >
+              {/* Dashboard */}
+              <View key="dashboard" style={{ flex: 1 }}>
+                <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+                  {/* ===== BLOCK 1 — VIDEO HERO ===== */}
+                  {(() => {
+                    const liveGame = FMU_GAMES.find(g => g.status === 'live');
+                    const heroOverlay = liveGame
+                      ? `LIVE: FMU ${liveGame.score ?? ''} · ${liveGame.clock ?? ''}`
+                      : FMU_LAST_GAME
+                        ? `Last: ${FMU_LAST_GAME.result === 'W' ? 'W' : 'L'} ${FMU_LAST_GAME.score} vs ${FMU_LAST_GAME.opponent}`
+                        : FMU_NEXT_GAME
+                          ? `Next: vs ${FMU_NEXT_GAME.opponent} · ${FMU_NEXT_GAME.date}`
+                          : 'FMU Athletics';
+                    return (
+                      <View style={styles.videoHero}>
+                        <LinearGradient
+                          colors={['#0a1628', '#162a4a', '#0a1628']}
+                          style={StyleSheet.absoluteFill}
+                        />
+                        <Image source={FMU_SEAL} style={styles.heroWatermark} />
+                        <View style={styles.heroPlayButton}>
+                          <IconSymbol name="play.fill" size={32} color="#fff" />
+                        </View>
+                        <View style={styles.heroOverlay}>
+                          <Text style={styles.heroOverlayText} numberOfLines={1}>{heroOverlay}</Text>
+                        </View>
+                      </View>
+                    );
+                  })()}
 
-              {/* ===== BLOCK 2 — NEXT GAME CARD ===== */}
-              {FMU_NEXT_GAME && (() => {
-                const nextGame = FMU_NEXT_GAME_ID ? FMU_GAMES_BY_ID[FMU_NEXT_GAME_ID] : null;
-                const oppHue = confHash(FMU_NEXT_GAME.opponent) % 360;
-                const oppInitials = FMU_NEXT_GAME.opponent.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-                const isHome = FMU_NEXT_GAME.location === 'Home';
-                return (
-                  <View style={[styles.nextGameCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                    {/* FMU side */}
-                    <Pressable style={styles.ngTeamCol} onPress={openTeamSheet}>
-                      <Image source={FMU_SEAL} style={styles.ngLogo} />
-                      <Text style={[styles.ngTeamName, { color: colors.text }]} numberOfLines={1}>Florida Memorial</Text>
-                      <Text style={[styles.ngRecord, { color: colors.textSecondary }]}>{FMU_RECORD.overall}</Text>
+                  {/* ===== BLOCK 2 — NEXT GAME CARD ===== */}
+                  {FMU_NEXT_GAME && (() => {
+                    const nextGame = FMU_NEXT_GAME_ID ? FMU_GAMES_BY_ID[FMU_NEXT_GAME_ID] : null;
+                    const oppHue = confHash(FMU_NEXT_GAME.opponent) % 360;
+                    const oppInitials = FMU_NEXT_GAME.opponent.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+                    const isHome = FMU_NEXT_GAME.location === 'Home';
+                    return (
+                      <View style={[styles.nextGameCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                        {/* FMU side */}
+                        <Pressable style={styles.ngTeamCol} onPress={openTeamSheet}>
+                          <Image source={FMU_SEAL} style={styles.ngLogo} />
+                          <Text style={[styles.ngTeamName, { color: colors.text }]} numberOfLines={1}>Florida Memorial</Text>
+                          <Text style={[styles.ngRecord, { color: colors.textSecondary }]}>{FMU_RECORD.overall}</Text>
+                        </Pressable>
+
+                        {/* Center info */}
+                        <View style={styles.ngCenter}>
+                          <View style={[styles.ngLocationBadge, { backgroundColor: isHome ? '#22c55e22' : '#f59e0b22' }]}>
+                            <Text style={[styles.ngLocationText, { color: isHome ? '#22c55e' : '#f59e0b' }]}>{isHome ? 'HOME' : 'AWAY'}</Text>
+                          </View>
+                          <Text style={[styles.ngDate, { color: colors.text }]}>{nextGame?.date ?? FMU_NEXT_GAME.date}</Text>
+                          <Text style={[styles.ngTime, { color: colors.textSecondary }]}>{nextGame?.gameTime ?? ''}</Text>
+                          <Text style={[styles.ngVenue, { color: colors.textTertiary }]} numberOfLines={1}>{nextGame?.venue ?? FMU_NEXT_GAME.location}</Text>
+                          <View style={[styles.ngConfBadge, { backgroundColor: nextGame?.gameType === 'CONF' ? '#2563eb22' : '#71717a22' }]}>
+                            <Text style={[styles.ngConfText, { color: nextGame?.gameType === 'CONF' ? '#60a5fa' : '#a1a1aa' }]}>{nextGame?.gameType ?? 'NON-CONF'}</Text>
+                          </View>
+                        </View>
+
+                        {/* Opponent side */}
+                        <Pressable
+                          style={styles.ngTeamCol}
+                          onPress={() => openTeamCard({
+                            name: FMU_NEXT_GAME!.opponent,
+                            record: FMU_NEXT_GAME!.opponentRecord ?? '',
+                            conference: 'Sun Conference',
+                            teamKR: FMU_NEXT_GAME!.opponentKR,
+                          })}
+                        >
+                          <View style={[styles.ngOppCircle, { backgroundColor: `hsl(${oppHue}, 50%, 35%)` }]}>
+                            <Text style={styles.ngOppInitials}>{oppInitials}</Text>
+                          </View>
+                          <Text style={[styles.ngTeamName, { color: colors.text }]} numberOfLines={1}>{FMU_NEXT_GAME.opponent}</Text>
+                          <Text style={[styles.ngRecord, { color: colors.textSecondary }]}>{FMU_NEXT_GAME.opponentRecord ?? ''}</Text>
+                        </Pressable>
+                      </View>
+                    );
+                  })()}
+
+                  {/* ===== BLOCK 2b — ACTION BUTTONS ===== */}
+                  {FMU_NEXT_GAME && (
+                    <View style={styles.ngActions}>
+                      <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Buy Tickets')}>
+                        <IconSymbol name="ticket.fill" size={14} color={colors.tint} />
+                        <Text style={[styles.ngActionText, { color: colors.text }]}>Buy Tickets</Text>
+                      </Pressable>
+                      <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Watch / Live Stats')}>
+                        <IconSymbol name="play.rectangle.fill" size={14} color={colors.tint} />
+                        <Text style={[styles.ngActionText, { color: colors.text }]}>Watch / Live Stats</Text>
+                      </Pressable>
+                    </View>
+                  )}
+
+                  {/* ===== BLOCK 3 — COMMERCE ROW ===== */}
+                  <View style={styles.commerceRow}>
+                    <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Tickets')}>
+                      <View style={[styles.commerceIconWrap, { backgroundColor: '#f59e0b22' }]}>
+                        <IconSymbol name="ticket.fill" size={18} color="#f59e0b" />
+                      </View>
+                      <Text style={[styles.commerceLabel, { color: colors.text }]}>Buy Tickets</Text>
+                      <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>FMU Athletics Events</Text>
                     </Pressable>
-
-                    {/* Center info */}
-                    <View style={styles.ngCenter}>
-                      <View style={[styles.ngLocationBadge, { backgroundColor: isHome ? '#22c55e22' : '#f59e0b22' }]}>
-                        <Text style={[styles.ngLocationText, { color: isHome ? '#22c55e' : '#f59e0b' }]}>{isHome ? 'HOME' : 'AWAY'}</Text>
+                    <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Store')}>
+                      <View style={[styles.commerceIconWrap, { backgroundColor: '#8b5cf622' }]}>
+                        <IconSymbol name="bag.fill" size={18} color="#8b5cf6" />
                       </View>
-                      <Text style={[styles.ngDate, { color: colors.text }]}>{nextGame?.date ?? FMU_NEXT_GAME.date}</Text>
-                      <Text style={[styles.ngTime, { color: colors.textSecondary }]}>{nextGame?.gameTime ?? ''}</Text>
-                      <Text style={[styles.ngVenue, { color: colors.textTertiary }]} numberOfLines={1}>{nextGame?.venue ?? FMU_NEXT_GAME.location}</Text>
-                      <View style={[styles.ngConfBadge, { backgroundColor: nextGame?.gameType === 'CONF' ? '#2563eb22' : '#71717a22' }]}>
-                        <Text style={[styles.ngConfText, { color: nextGame?.gameType === 'CONF' ? '#60a5fa' : '#a1a1aa' }]}>{nextGame?.gameType ?? 'NON-CONF'}</Text>
+                      <Text style={[styles.commerceLabel, { color: colors.text }]}>Team Store</Text>
+                      <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>Official FMU Gear</Text>
+                    </Pressable>
+                    <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Support')}>
+                      <View style={[styles.commerceIconWrap, { backgroundColor: '#ef444422' }]}>
+                        <IconSymbol name="heart.fill" size={18} color="#ef4444" />
                       </View>
-                    </View>
-
-                    {/* Opponent side */}
-                    <Pressable
-                      style={styles.ngTeamCol}
-                      onPress={() => openTeamCard({
-                        name: FMU_NEXT_GAME!.opponent,
-                        record: FMU_NEXT_GAME!.opponentRecord ?? '',
-                        conference: 'Sun Conference',
-                        teamKR: FMU_NEXT_GAME!.opponentKR,
-                      })}
-                    >
-                      <View style={[styles.ngOppCircle, { backgroundColor: `hsl(${oppHue}, 50%, 35%)` }]}>
-                        <Text style={styles.ngOppInitials}>{oppInitials}</Text>
-                      </View>
-                      <Text style={[styles.ngTeamName, { color: colors.text }]} numberOfLines={1}>{FMU_NEXT_GAME.opponent}</Text>
-                      <Text style={[styles.ngRecord, { color: colors.textSecondary }]}>{FMU_NEXT_GAME.opponentRecord ?? ''}</Text>
+                      <Text style={[styles.commerceLabel, { color: colors.text }]}>Support</Text>
+                      <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>Support FMU Athletics</Text>
                     </Pressable>
                   </View>
-                );
-              })()}
 
-              {/* ===== BLOCK 2b — ACTION BUTTONS ===== */}
-              {FMU_NEXT_GAME && (
-                <View style={styles.ngActions}>
-                  <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Buy Tickets')}>
-                    <IconSymbol name="ticket.fill" size={14} color={colors.tint} />
-                    <Text style={[styles.ngActionText, { color: colors.text }]}>Buy Tickets</Text>
-                  </Pressable>
-                  <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Watch / Live Stats')}>
-                    <IconSymbol name="play.rectangle.fill" size={14} color={colors.tint} />
-                    <Text style={[styles.ngActionText, { color: colors.text }]}>Watch / Live Stats</Text>
-                  </Pressable>
-                </View>
-              )}
-
-              {/* ===== BLOCK 3 — COMMERCE ROW ===== */}
-              <View style={styles.commerceRow}>
-                <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Tickets')}>
-                  <View style={[styles.commerceIconWrap, { backgroundColor: '#f59e0b22' }]}>
-                    <IconSymbol name="ticket.fill" size={18} color="#f59e0b" />
+                  {/* ===== REMAINING DOMAIN CARDS ===== */}
+                  <View style={{ paddingHorizontal: Spacing.md, gap: Spacing.sm }}>
+                    {visibleCards.map(card => (
+                      <Pressable
+                        key={card.id}
+                        onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                        style={({ pressed }) => [
+                          styles.domainCard,
+                          { backgroundColor: colors.card, borderColor: colors.border },
+                          pressed && { opacity: 0.7 },
+                        ]}
+                      >
+                        <View style={styles.domainCardHeader}>
+                          <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
+                            <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                          </View>
+                          <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
+                          <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+                        </View>
+                        <Text style={[styles.domainCardPreview, { color: colors.textSecondary }]}>
+                          {previews[card.id]}
+                        </Text>
+                      </Pressable>
+                    ))}
                   </View>
-                  <Text style={[styles.commerceLabel, { color: colors.text }]}>Buy Tickets</Text>
-                  <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>FMU Athletics Events</Text>
-                </Pressable>
-                <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Store')}>
-                  <View style={[styles.commerceIconWrap, { backgroundColor: '#8b5cf622' }]}>
-                    <IconSymbol name="bag.fill" size={18} color="#8b5cf6" />
-                  </View>
-                  <Text style={[styles.commerceLabel, { color: colors.text }]}>Team Store</Text>
-                  <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>Official FMU Gear</Text>
-                </Pressable>
-                <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Support')}>
-                  <View style={[styles.commerceIconWrap, { backgroundColor: '#ef444422' }]}>
-                    <IconSymbol name="heart.fill" size={18} color="#ef4444" />
-                  </View>
-                  <Text style={[styles.commerceLabel, { color: colors.text }]}>Support</Text>
-                  <Text style={[styles.commerceSub, { color: colors.textTertiary }]}>Support FMU Athletics</Text>
-                </Pressable>
+                </ScrollView>
               </View>
 
-              {/* ===== REMAINING DOMAIN CARDS ===== */}
-              <View style={{ paddingHorizontal: Spacing.md, gap: Spacing.sm }}>
-                {visibleCards.map(card => (
-                  <Pressable
-                    key={card.id}
-                    onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-                    style={({ pressed }) => [
-                      styles.domainCard,
-                      { backgroundColor: colors.card, borderColor: colors.border },
-                      pressed && { opacity: 0.7 },
-                    ]}
-                  >
-                    <View style={styles.domainCardHeader}>
-                      <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
-                        <IconSymbol name={card.icon} size={16} color={colors.tint} />
-                      </View>
-                      <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
-                      <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-                    </View>
-                    <Text style={[styles.domainCardPreview, { color: colors.textSecondary }]}>
-                      {previews[card.id]}
-                    </Text>
-                  </Pressable>
-                ))}
+              {/* Roster */}
+              <View key="roster" style={{ flex: 1 }}>
+                <ScrollView style={styles.sportsScrollView} contentContainerStyle={styles.rosterScrollContent} showsVerticalScrollIndicator={false} nestedScrollEnabled>
+                  <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { setActiveIndex(0); pagerRef.current?.setPage(0); setDrillDown('stats'); }} onKRPress={() => setKrSheetVisible(true)} />
+                </ScrollView>
               </View>
-            </ScrollView>
-          ) : activePill === 'roster' ? (
-            <ScrollView style={styles.sportsScrollView} contentContainerStyle={styles.rosterScrollContent} showsVerticalScrollIndicator={false} nestedScrollEnabled>
-              <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { setActivePill('dashboard'); setDrillDown('stats'); }} onKRPress={() => setKrSheetVisible(true)} />
-            </ScrollView>
-          ) : activePill === 'recruiting' ? (
-            <PlayerPoolContentV2 colors={colors} />
-          ) : (
-            <SportsCalendarV2 colors={colors} />
-          )}
+
+              {/* Calendar */}
+              <View key="calendar" style={{ flex: 1 }}>
+                <SportsCalendarV2 colors={colors} />
+              </View>
+
+              {/* Recruiting */}
+              <View key="recruiting" style={{ flex: 1 }}>
+                <PlayerPoolContentV2 colors={colors} />
+              </View>
+            </PagerView>
+          </EdgeHoldAdvance>
         </>
       )}
 
@@ -974,26 +981,6 @@ const styles = StyleSheet.create({
   },
   rosterScrollContent: {
     flexGrow: 1,
-  },
-
-  // Pill Bar
-  pillBar: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 10,
-  },
-  pill: {
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.12)',
-  },
-  pillText: {
-    fontSize: 14,
-    fontWeight: '600',
-    letterSpacing: -0.2,
   },
 
   // Drill-Down Back Bar

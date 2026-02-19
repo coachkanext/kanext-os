@@ -35,7 +35,7 @@ import { SportsPinned } from '@/components/messages/sports-pinned';
 import { ModeInboxV2 } from '@/components/messages/mode-inbox-v2';
 import { ModeRoomsV2 } from '@/components/messages/mode-rooms-v2';
 import { ModePinnedV2 } from '@/components/messages/mode-pinned-v2';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import {
@@ -203,7 +203,7 @@ export default function MessagesScreen() {
   return (
     <ThemedView style={styles.container}>
       {/* ===== MESSAGES HUB TAB BAR ===== */}
-      <PagedTabBar tabs={MESSAGES_TABS} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      <PagedTabBar tabs={MESSAGES_TABS} activeIndex={activeIndex} onTabPress={handleTabPress} accentColor={MODE_ACCENT[mode]} />
 
       {/* ===== SEARCH BAR + NEW MESSAGE ===== */}
       <View style={styles.topRow}>
@@ -232,7 +232,7 @@ export default function MessagesScreen() {
       </View>
 
       {/* ===== SWIPEABLE CONTENT ===== */}
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={MESSAGES_TABS.length} onAdvance={handleTabPress}>
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={MESSAGES_TABS.length} onAdvance={handleTabPress} wrap>
         <PagerView
           ref={pagerRef}
           style={{ flex: 1 }}

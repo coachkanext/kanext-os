@@ -1,20 +1,23 @@
 /**
- * Church Home — ICCLA 4-pill layout
+ * Church Home — ICCLA 4-tab PagerView layout
  * Dashboard | Calendar | Ministries | Connect
  *
- * Replaces old 10-tab PagerView with SportsHome-style pill navigation.
+ * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.
  * Keeps ViewAsBar for RBAC role switching.
  */
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { View, Pressable, StyleSheet, InteractionManager } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from '@react-navigation/core';
+import PagerView from 'react-native-pager-view';
+import { PagedTabBar } from '@/components/ui/paged-tab-bar';
+import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useChurch } from '@/context/church-context';
 import { useMembershipId } from '@/context/app-context';
@@ -30,14 +33,14 @@ import { ChurchCalendarV2 } from '@/components/church-home/church-calendar-v2';
 import { ChurchMinistriesV2 } from '@/components/church-home/church-ministries-v2';
 import { ChurchConnectV2 } from '@/components/church-home/church-connect-v2';
 
-const ALL_PILLS: { id: ChurchHomePill; label: string }[] = [
+const ALL_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'calendar', label: 'Calendar' },
   { id: 'ministries', label: 'Ministries' },
   { id: 'connect', label: 'Connect' },
 ];
 
-const ACCENT = '#8B5CF6';
+const ACCENT = MODE_ACCENT.church;
 
 // =============================================================================
 // VIEW AS BAR — 4-pill RBAC toggle
@@ -117,32 +120,17 @@ export function ChurchHome() {
   const colors = Colors[colorScheme];
   const { viewAsRole } = useChurch();
   const membershipId = useMembershipId();
+  const pagerRef = useRef<PagerView>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Derive role from ActiveView membership; ViewAsBar can override for debugging
-  const derivedRole = useMemo(() => getChurchRole(membershipId), [membershipId]);
-  const effectiveRole = viewAsRole ?? derivedRole;
-
-  const visiblePillIds = useMemo(
-    () => new Set(getChurchVisiblePills(effectiveRole)),
-    [effectiveRole],
-  );
-  const pills = useMemo(
-    () => ALL_PILLS.filter((p) => visiblePillIds.has(p.id)),
-    [visiblePillIds],
-  );
-
-  const [activePill, setActivePill] = useState<ChurchHomePill>('dashboard');
-
-  // If active pill becomes hidden due to role change, reset to dashboard
-  useEffect(() => {
-    if (!visiblePillIds.has(activePill)) {
-      setActivePill('dashboard');
-    }
-  }, [visiblePillIds, activePill]);
+  const handleTabPress = useCallback((index: number) => {
+    pagerRef.current?.setPage(index);
+  }, []);
 
   // Reset to Dashboard when Home tab is pressed
   const resetToHome = useCallback(() => {
-    setActivePill('dashboard');
+    setActiveIndex(0);
+    pagerRef.current?.setPage(0);
   }, []);
 
   useEffect(() => {
@@ -164,34 +152,34 @@ export function ChurchHome() {
     <ThemedView style={styles.container}>
       <ViewAsBar />
 
-      {/* Pill Bar */}
-      <View style={styles.pillBar}>
-        {pills.map((pill) => {
-          const isActive = activePill === pill.id;
-          return (
-            <Pressable
-              key={pill.id}
-              style={[styles.pill, isActive && { backgroundColor: ACCENT }]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setActivePill(pill.id);
-              }}
-            >
-              <ThemedText
-                style={[styles.pillText, { color: isActive ? '#000' : colors.textSecondary }]}
-              >
-                {pill.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
+      <PagedTabBar
+        tabs={ALL_TABS}
+        activeIndex={activeIndex}
+        onTabPress={handleTabPress}
+        accentColor={ACCENT}
+      />
 
-      {/* Content */}
-      {activePill === 'dashboard' && <ChurchDashboardV2 colors={colors} accent={ACCENT} />}
-      {activePill === 'calendar' && <ChurchCalendarV2 colors={colors} accent={ACCENT} />}
-      {activePill === 'ministries' && <ChurchMinistriesV2 colors={colors} accent={ACCENT} />}
-      {activePill === 'connect' && <ChurchConnectV2 colors={colors} accent={ACCENT} />}
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={ALL_TABS.length} onAdvance={handleTabPress} wrap>
+        <PagerView
+          ref={pagerRef}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
+        >
+          <View key="dashboard" style={{ flex: 1 }}>
+            <ChurchDashboardV2 colors={colors} accent={ACCENT} />
+          </View>
+          <View key="calendar" style={{ flex: 1 }}>
+            <ChurchCalendarV2 colors={colors} accent={ACCENT} />
+          </View>
+          <View key="ministries" style={{ flex: 1 }}>
+            <ChurchMinistriesV2 colors={colors} accent={ACCENT} />
+          </View>
+          <View key="connect" style={{ flex: 1 }}>
+            <ChurchConnectV2 colors={colors} accent={ACCENT} />
+          </View>
+        </PagerView>
+      </EdgeHoldAdvance>
     </ThemedView>
   );
 }
@@ -203,22 +191,5 @@ export function ChurchHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  pillBar: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingTop: 2,
-    paddingBottom: 10,
-    gap: 8,
-  },
-  pill: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-  },
-  pillText: {
-    fontSize: 13,
-    fontWeight: '600',
   },
 });

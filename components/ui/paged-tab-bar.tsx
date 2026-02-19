@@ -3,6 +3,10 @@
  * Replaces all 8 inline hub tab implementations.
  * Tabs render in a horizontal ScrollView with pagingEnabled snap.
  * Each tab is fixed width = screenWidth / 4 (exactly 4 per "page").
+ *
+ * When `accentColor` is provided, uses flat-button styling with mode-specific
+ * accent colors (Home, Media, Messages tabs). Without it, uses the default
+ * white/monochrome styling (Organization tab).
  */
 
 import React, { useRef, useCallback, useEffect } from 'react';
@@ -26,18 +30,21 @@ export interface PagedTabBarProps {
   tabs: { id: string; label: string }[];
   activeIndex: number;
   onTabPress: (index: number) => void;
+  accentColor?: string;
 }
 
-export function PagedTabBar({ tabs, activeIndex, onTabPress }: PagedTabBarProps) {
+export function PagedTabBar({ tabs, activeIndex, onTabPress, accentColor }: PagedTabBarProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const scrollRef = useRef<ScrollView>(null);
 
-  // Auto-scroll to the page containing the active tab
+  // Auto-scroll to the page containing the active tab (only when paging)
   const scrollToPage = useCallback((index: number) => {
-    const page = Math.floor(index / 4);
-    scrollRef.current?.scrollTo({ x: page * SCREEN_WIDTH, animated: true });
-  }, []);
+    if (!accentColor) {
+      const page = Math.floor(index / 4);
+      scrollRef.current?.scrollTo({ x: page * SCREEN_WIDTH, animated: true });
+    }
+  }, [accentColor]);
 
   useEffect(() => {
     scrollToPage(activeIndex);
@@ -48,13 +55,44 @@ export function PagedTabBar({ tabs, activeIndex, onTabPress }: PagedTabBarProps)
       <ScrollView
         ref={scrollRef}
         horizontal
-        pagingEnabled
-        snapToInterval={SCREEN_WIDTH}
+        pagingEnabled={!accentColor}
+        snapToInterval={accentColor ? undefined : SCREEN_WIDTH}
         decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
+        scrollEnabled={!accentColor}
       >
         {tabs.map((tab, index) => {
           const isActive = index === activeIndex;
+
+          if (accentColor) {
+            // Flat-button accent styling
+            return (
+              <Pressable
+                key={tab.id}
+                style={[
+                  styles.tab,
+                  isActive && { borderBottomColor: accentColor, borderBottomWidth: 2 },
+                ]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onTabPress(index);
+                }}
+              >
+                <ThemedText
+                  style={[
+                    styles.accentTabLabel,
+                    { color: isActive ? accentColor : '#888888' },
+                    isActive && styles.accentTabLabelActive,
+                  ]}
+                  numberOfLines={1}
+                >
+                  {tab.label}
+                </ThemedText>
+              </Pressable>
+            );
+          }
+
+          // Default white/monochrome styling (Organization tab)
           return (
             <Pressable
               key={tab.id}
@@ -108,5 +146,14 @@ const styles = StyleSheet.create({
   },
   tabLabelActive: {
     fontWeight: '700',
+  },
+  // Accent mode styles
+  accentTabLabel: {
+    fontSize: 15,
+    fontWeight: '400',
+    letterSpacing: 0.2,
+  },
+  accentTabLabelActive: {
+    fontWeight: '600',
   },
 });
