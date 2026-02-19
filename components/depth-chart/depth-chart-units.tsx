@@ -797,7 +797,7 @@ export function UnitsView({
     const firstName = nameParts[0] ?? '';
     const lastName = nameParts.slice(1).join(' ') || '';
     const posAbbrev = POS_ABBREV[sheetSlot.positionGroup] ?? sheetSlot.positionGroup;
-    const tradPos = (HELIO_TO_TRADITIONAL as Record<string, PoolPosition>)[posAbbrev] ?? 'SF';
+    const tradPos = (HELIO_TO_TRADITIONAL as Record<string, PoolPosition>)[posAbbrev] ?? 'W';
     return {
       id: `roster-${sheetSlot.playerNumber}`,
       firstName,

@@ -214,20 +214,20 @@ export const STAFF_MEMBERS: StaffMember[] = [
 
 export const ATHLETE_MEMBERS: AthleteMember[] = [
   { id: '1', name: 'Brandon Williams', number: '1', position: 'PG', classYear: 'SR', team: 'varsity', status: 'active' },
-  { id: '2', name: 'Chris Plantey', number: '2', position: 'SG', classYear: 'JR', team: 'varsity', status: 'active' },
-  { id: '3', name: 'Paul Diomande', number: '3', position: 'PF', classYear: 'SO', team: 'varsity', status: 'active' },
-  { id: '4', name: 'Nathan Chtelan', number: '4', position: 'SF', classYear: 'JR', team: 'varsity', status: 'active' },
-  { id: '5', name: 'Laolu Kalejaiye', number: '5', position: 'C', classYear: 'SO', team: 'varsity', status: 'active' },
+  { id: '2', name: 'Chris Plantey', number: '2', position: 'CG', classYear: 'JR', team: 'varsity', status: 'active' },
+  { id: '3', name: 'Paul Diomande', number: '3', position: 'F', classYear: 'SO', team: 'varsity', status: 'active' },
+  { id: '4', name: 'Nathan Chtelan', number: '4', position: 'W', classYear: 'JR', team: 'varsity', status: 'active' },
+  { id: '5', name: 'Laolu Kalejaiye', number: '5', position: 'B', classYear: 'SO', team: 'varsity', status: 'active' },
   { id: '6', name: 'David Blake', number: '6', position: 'PG', classYear: 'SR', team: 'varsity', status: 'active' },
-  { id: '7', name: 'Marcus Collins', number: '7', position: 'SG', classYear: 'FR', team: 'varsity', status: 'active' },
-  { id: '8', name: 'Adrian Hernandez', number: '8', position: 'SF', classYear: 'JR', team: 'varsity', status: 'active' },
-  { id: '9', name: 'Jaylen Moore', number: '9', position: 'PF', classYear: 'SO', team: 'varsity', status: 'active' },
-  { id: '10', name: 'Jalen Washington', number: '10', position: 'C', classYear: 'FR', team: 'varsity', status: 'active' },
+  { id: '7', name: 'Marcus Collins', number: '7', position: 'CG', classYear: 'FR', team: 'varsity', status: 'active' },
+  { id: '8', name: 'Adrian Hernandez', number: '8', position: 'W', classYear: 'JR', team: 'varsity', status: 'active' },
+  { id: '9', name: 'Jaylen Moore', number: '9', position: 'F', classYear: 'SO', team: 'varsity', status: 'active' },
+  { id: '10', name: 'Jalen Washington', number: '10', position: 'B', classYear: 'FR', team: 'varsity', status: 'active' },
   { id: '11', name: 'Trevor Hayes', number: '11', position: 'PG', classYear: 'FR', team: 'jv', status: 'active' },
-  { id: '12', name: 'Devon Mitchell', number: '12', position: 'SG', classYear: 'FR', team: 'jv', status: 'active' },
-  { id: '13', name: 'Isaiah Green', number: '13', position: 'SF', classYear: 'FR', team: 'jv', status: 'active' },
-  { id: '14', name: 'Caleb Torres', number: '14', position: 'PF', classYear: 'FR', team: 'jv', status: 'active' },
-  { id: '15', name: 'Elijah Brown', number: '15', position: 'C', classYear: 'FR', team: 'jv', status: 'active' },
+  { id: '12', name: 'Devon Mitchell', number: '12', position: 'CG', classYear: 'FR', team: 'jv', status: 'active' },
+  { id: '13', name: 'Isaiah Green', number: '13', position: 'W', classYear: 'FR', team: 'jv', status: 'active' },
+  { id: '14', name: 'Caleb Torres', number: '14', position: 'F', classYear: 'FR', team: 'jv', status: 'active' },
+  { id: '15', name: 'Elijah Brown', number: '15', position: 'B', classYear: 'FR', team: 'jv', status: 'active' },
 ];
 
 // =============================================================================

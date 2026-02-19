@@ -206,7 +206,7 @@ export const REGION_OPTIONS = ['Southeast', 'Northeast', 'Midwest', 'Southwest',
 export function computeWingspan(playerId: string, heightInches: number, position: string): number {
   const h = hashStr(playerId + 'ws');
   // Bigs tend to have longer wingspans relative to height
-  const bonus = position === 'C' || position === 'PF' ? 5 : position === 'SF' ? 4 : 3;
+  const bonus = position === 'B' || position === 'F' ? 5 : position === 'W' ? 4 : 3;
   const variation = (h % 7) - 2; // -2 to +4
   return heightInches + bonus + variation;
 }
@@ -215,7 +215,7 @@ export function computeWingspan(playerId: string, heightInches: number, position
 export function computeVertical(playerId: string, position: string): number {
   const h = hashStr(playerId + 'vert');
   // Guards tend to jump higher
-  const base = position === 'PG' || position === 'SG' ? 34 : position === 'SF' ? 33 : 31;
+  const base = position === 'PG' || position === 'CG' ? 34 : position === 'W' ? 33 : 31;
   const variation = (h % 11) - 3; // -3 to +7
   return base + variation;
 }

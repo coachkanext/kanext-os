@@ -1080,9 +1080,9 @@ function CardsView({ roster, krSortKey, onPlayerTap }: { roster: RosterPlayer[];
 }
 
 
-// Helio abbreviation → traditional position mapping for PoolPlayer construction
-const POS_ABBREV_TO_TRAD: Record<string, PoolPosition> = {
-  PG: 'PG', CG: 'SG', W: 'SF', F: 'PF', B: 'C',
+// Canonical position mapping (identity — all positions are canonical)
+const POS_ABBREV_TO_CANONICAL: Record<string, PoolPosition> = {
+  PG: 'PG', CG: 'CG', W: 'W', F: 'F', B: 'B',
 };
 
 export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPress, onOpenStatistics, onKRPress }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoLongPress?: () => void; onOpenStatistics?: (context?: { season: string }) => void; onKRPress?: () => void } = {}) {
@@ -1140,7 +1140,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
     if (!sheetJersey) return null;
     const p = roster.find((r) => r.number === sheetJersey);
     if (!p) return null;
-    const tradPos = POS_ABBREV_TO_TRAD[p.listPos] ?? 'SF';
+    const tradPos = POS_ABBREV_TO_CANONICAL[p.listPos] ?? 'W';
     return {
       id: `roster-${p.number}`,
       firstName: p.firstName,

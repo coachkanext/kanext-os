@@ -44,7 +44,7 @@ export interface Player {
   id: string;
   name: string;
   number: string;
-  position: 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+  position: 'PG' | 'CG' | 'W' | 'F' | 'B';
   height: string;
   weight: string;
   classYear: 'FR' | 'SO' | 'JR' | 'SR' | 'GR';
@@ -247,7 +247,7 @@ export const PROGRAMS: ProgramData[] = [
           id: 'player-plantey',
           name: 'Chris Plantey',
           number: '2',
-          position: 'SG',
+          position: 'CG',
           height: '6\'2"',
           weight: '185 lbs',
           classYear: 'JR',
@@ -277,7 +277,7 @@ export const PROGRAMS: ProgramData[] = [
           id: 'player-manzo',
           name: 'Samuel Manzo',
           number: '5',
-          position: 'SG',
+          position: 'CG',
           height: '—',
           weight: '—',
           classYear: 'FR',
@@ -292,7 +292,7 @@ export const PROGRAMS: ProgramData[] = [
           id: 'player-wall',
           name: 'Samuel Wall',
           number: '6',
-          position: 'SG',
+          position: 'CG',
           height: '6\'3"',
           weight: '190 lbs',
           classYear: 'JR',
@@ -307,7 +307,7 @@ export const PROGRAMS: ProgramData[] = [
           id: 'player-hernandez',
           name: 'Adrian Hernandez',
           number: '10',
-          position: 'SG',
+          position: 'CG',
           height: '6\'1"',
           weight: '180 lbs',
           classYear: 'SO',
@@ -322,7 +322,7 @@ export const PROGRAMS: ProgramData[] = [
           id: 'player-kalejaiye',
           name: 'Laolu Kalejaiye',
           number: '11',
-          position: 'SG',
+          position: 'CG',
           height: '6\'4"',
           weight: '195 lbs',
           classYear: 'SR',
@@ -337,7 +337,7 @@ export const PROGRAMS: ProgramData[] = [
           id: 'player-chtelan',
           name: 'Nathan Chtelan',
           number: '15',
-          position: 'SF',
+          position: 'W',
           height: '6\'5"',
           weight: '210 lbs',
           classYear: 'JR',
@@ -352,7 +352,7 @@ export const PROGRAMS: ProgramData[] = [
           id: 'player-bansraj',
           name: 'Nicholas Bansraj',
           number: '20',
-          position: 'PF',
+          position: 'F',
           height: '6\'6"',
           weight: '215 lbs',
           classYear: 'SO',
@@ -367,7 +367,7 @@ export const PROGRAMS: ProgramData[] = [
           id: 'player-diomande',
           name: 'Paul Diomande',
           number: '21',
-          position: 'PF',
+          position: 'F',
           height: '6\'7"',
           weight: '220 lbs',
           classYear: 'JR',
@@ -470,7 +470,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
     id: 'player-plantey',
     name: 'Chris Plantey',
     number: '2',
-    position: 'SG',
+    position: 'CG',
     height: '6\'2"',
     weight: '185 lbs',
     classYear: 'JR',
@@ -494,7 +494,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
     id: 'player-manzo',
     name: 'Samuel Manzo',
     number: '5',
-    position: 'SG',
+    position: 'CG',
     height: '—',
     weight: '—',
     classYear: 'FR',
@@ -506,7 +506,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
     id: 'player-wall',
     name: 'Samuel Wall',
     number: '6',
-    position: 'SG',
+    position: 'CG',
     height: '6\'3"',
     weight: '190 lbs',
     classYear: 'JR',
@@ -518,7 +518,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
     id: 'player-hernandez',
     name: 'Adrian Hernandez',
     number: '10',
-    position: 'SG',
+    position: 'CG',
     height: '6\'1"',
     weight: '180 lbs',
     classYear: 'SO',
@@ -530,7 +530,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
     id: 'player-kalejaiye',
     name: 'Laolu Kalejaiye',
     number: '11',
-    position: 'SG',
+    position: 'CG',
     height: '6\'4"',
     weight: '195 lbs',
     classYear: 'SR',
@@ -542,7 +542,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
     id: 'player-chtelan',
     name: 'Nathan Chtelan',
     number: '15',
-    position: 'SF',
+    position: 'W',
     height: '6\'5"',
     weight: '210 lbs',
     classYear: 'JR',
@@ -554,7 +554,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
     id: 'player-bansraj',
     name: 'Nicholas Bansraj',
     number: '20',
-    position: 'PF',
+    position: 'F',
     height: '6\'6"',
     weight: '215 lbs',
     classYear: 'SO',
@@ -566,7 +566,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
     id: 'player-diomande',
     name: 'Paul Diomande',
     number: '21',
-    position: 'PF',
+    position: 'F',
     height: '6\'7"',
     weight: '220 lbs',
     classYear: 'JR',
@@ -668,10 +668,10 @@ export function getProgramLevelLabel(level: string): string {
 export function getPositionName(position: string): string {
   const names: Record<string, string> = {
     PG: 'Point Guard',
-    SG: 'Shooting Guard',
-    SF: 'Small Forward',
-    PF: 'Power Forward',
-    C: 'Center',
+    CG: 'Combo Guard',
+    W: 'Wing',
+    F: 'Forward',
+    B: 'Big',
   };
   return names[position] || position;
 }
@@ -704,7 +704,7 @@ export type Division = 'NCAA_D1' | 'NCAA_D2' | 'NCAA_D3' | 'NAIA' | 'NJCAA' | 'C
 export interface NationalPlayer {
   id: string;
   name: string;
-  position: 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+  position: 'PG' | 'CG' | 'W' | 'F' | 'B';
   height: string;
   weight: string;
   classYear: 'FR' | 'SO' | 'JR' | 'SR' | 'GR';
@@ -758,7 +758,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
   {
     id: 'np-marcus-wells',
     name: 'Marcus Wells',
-    position: 'SG',
+    position: 'CG',
     height: '6\'4"',
     weight: '195 lbs',
     classYear: 'SR',
@@ -771,7 +771,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
   {
     id: 'np-darius-coleman',
     name: 'Darius Coleman',
-    position: 'SF',
+    position: 'W',
     height: '6\'6"',
     weight: '210 lbs',
     classYear: 'SO',
@@ -784,7 +784,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
   {
     id: 'np-tre-washington',
     name: 'Tre Washington',
-    position: 'PF',
+    position: 'F',
     height: '6\'7"',
     weight: '225 lbs',
     classYear: 'JR',
@@ -797,7 +797,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
   {
     id: 'np-anthony-harris',
     name: 'Anthony Harris',
-    position: 'C',
+    position: 'B',
     height: '6\'10"',
     weight: '245 lbs',
     classYear: 'SR',
@@ -822,7 +822,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
   {
     id: 'np-chris-taylor',
     name: 'Chris Taylor',
-    position: 'SG',
+    position: 'CG',
     height: '6\'3"',
     weight: '185 lbs',
     classYear: 'SO',
@@ -834,7 +834,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
   {
     id: 'np-malik-brown',
     name: 'Malik Brown',
-    position: 'SF',
+    position: 'W',
     height: '6\'5"',
     weight: '200 lbs',
     classYear: 'JR',
@@ -847,7 +847,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
   {
     id: 'np-devon-carter',
     name: 'Devon Carter',
-    position: 'PF',
+    position: 'F',
     height: '6\'8"',
     weight: '235 lbs',
     classYear: 'GR',
@@ -860,7 +860,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
   {
     id: 'np-jermaine-scott',
     name: 'Jermaine Scott',
-    position: 'C',
+    position: 'B',
     height: '6\'9"',
     weight: '250 lbs',
     classYear: 'SO',
@@ -885,7 +885,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
   {
     id: 'np-xavier-green',
     name: 'Xavier Green',
-    position: 'SG',
+    position: 'CG',
     height: '6\'5"',
     weight: '205 lbs',
     classYear: 'SR',

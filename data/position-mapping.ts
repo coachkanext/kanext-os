@@ -1,27 +1,31 @@
 /**
- * Position Mapping — Heliocentric to Traditional position mapping
- * Maps between the 5-position helio system and traditional positions.
+ * Position Mapping — Canonical 5-position system.
+ * PG (Point Guard), CG (Combo Guard), W (Wing), F (Forward), B (Big).
+ * These are the ONLY positions used anywhere in the app.
  */
 
-import type { HeliocentricPosition, Position } from '@/types';
+import type { HeliocentricPosition } from '@/types';
 import type { PoolPosition } from '@/data/playerPool';
 
-/** Heliocentric → Traditional position mapping */
-export const HELIO_TO_TRADITIONAL: Record<HeliocentricPosition, PoolPosition> = {
+/** Heliocentric → Pool (identity — both use canonical positions now) */
+export const HELIO_TO_POOL: Record<HeliocentricPosition, PoolPosition> = {
   PG: 'PG',
-  CG: 'SG',
-  W: 'SF',
-  F: 'PF',
-  B: 'C',
+  CG: 'CG',
+  W: 'W',
+  F: 'F',
+  B: 'B',
 };
 
-/** Traditional → Heliocentric position mapping */
-export const TRADITIONAL_TO_HELIO: Record<PoolPosition, HeliocentricPosition> = {
+/** Traditional → Canonical mapping (for any legacy data) */
+export const TRADITIONAL_TO_CANONICAL: Record<string, HeliocentricPosition> = {
   PG: 'PG',
   SG: 'CG',
   SF: 'W',
   PF: 'F',
   C: 'B',
+  G: 'PG',
+  'G/F': 'W',
+  'F/C': 'F',
 };
 
 /** Heliocentric position display labels */
@@ -33,5 +37,9 @@ export const HELIO_POSITION_LABELS: Record<HeliocentricPosition, string> = {
   B: 'Big',
 };
 
-/** All helio positions in order for filter UI */
+/** All canonical positions in order for filter UI */
 export const HELIO_POSITIONS: HeliocentricPosition[] = ['PG', 'CG', 'W', 'F', 'B'];
+
+// Legacy aliases for backwards compatibility
+export const HELIO_TO_TRADITIONAL = HELIO_TO_POOL;
+export const TRADITIONAL_TO_HELIO = TRADITIONAL_TO_CANONICAL;

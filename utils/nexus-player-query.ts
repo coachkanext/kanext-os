@@ -116,18 +116,18 @@ function extractFilters(text: string): ExtractedFilters {
   if (/\bcccaa\b|\b3c2a\b/i.test(lower)) levels.push('cccaa');
   if (levels.length > 0) filters.level = levels;
 
-  // Position extraction
+  // Position extraction — canonical 5 positions: PG, CG, W, F, B
   const positions: string[] = [];
   if (/\bpg\b|\bpoint guard/i.test(lower)) positions.push('PG');
-  if (/\bsg\b|\bshooting guard/i.test(lower)) positions.push('SG');
-  if (/\bsf\b|\bsmall forward/i.test(lower)) positions.push('SF');
-  if (/\bpf\b|\bpower forward/i.test(lower)) positions.push('PF');
-  if (/\bcenter\b|\b\bc\b/i.test(lower) && /player|position|big/i.test(lower)) positions.push('C');
-  if (/\bguard/i.test(lower) && !positions.length) { positions.push('PG'); positions.push('SG'); }
-  if (/\bwing/i.test(lower) && !positions.length) positions.push('SF');
-  if (/\bforward/i.test(lower) && !positions.length) positions.push('PF');
-  if (/\bbig/i.test(lower) && !positions.length) positions.push('C');
-  if (positions.length > 0) filters.position = positions;
+  if (/\bcg\b|\bcombo guard/i.test(lower)) positions.push('CG');
+  if (/\bsg\b|\bshooting guard/i.test(lower)) positions.push('CG');
+  if (/\bwing\b|\bw\b/i.test(lower) && /player|position|wing/i.test(lower)) positions.push('W');
+  if (/\bsf\b|\bsmall forward/i.test(lower)) positions.push('W');
+  if (/\bforward\b|\bpf\b|\bpower forward/i.test(lower)) positions.push('F');
+  if (/\bbig\b|\bcenter\b/i.test(lower) && /player|position|big|center/i.test(lower)) positions.push('B');
+  if (/\b[cb]\b/i.test(lower) && /player|position|big|center/i.test(lower)) positions.push('B');
+  if (/\bguard/i.test(lower) && !positions.length) { positions.push('PG'); positions.push('CG'); }
+  if (positions.length > 0) filters.position = [...new Set(positions)];
 
   // KR threshold
   const krMatch = lower.match(/kr\s*(?:above|over|>=?|at least)\s*(\d+)/i);

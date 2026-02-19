@@ -304,7 +304,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
     ],
   },
   {
-    id: 'be-09', playerId: 'pp-13', status: 'Watchlist', priority: 'C', rank: 1, position: 'SF', classYear: '2025',
+    id: 'be-09', playerId: 'pp-13', status: 'Watchlist', priority: 'C', rank: 1, position: 'W', classYear: '2025',
     tier: 'Watch', slot: 'W', interest: 'Low',
     tags: ['Versatile'], shortNotes: 'European wing, high skill level', fitScore: 65, motivations: ['Academics', 'Location'],
     longNotes: 'Watching tape. Visa/eligibility questions to research.',
@@ -318,7 +318,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Evaluating
   {
-    id: 'be-06', playerId: 'pp-07', status: 'Evaluating', priority: 'B', rank: 0, position: 'C', classYear: '2026',
+    id: 'be-06', playerId: 'pp-07', status: 'Evaluating', priority: 'B', rank: 0, position: 'B', classYear: '2026',
     tier: 'Secondary', slot: 'B', bigBoardRank: 42, interest: 'Med',
     tags: ['Rim Protector', 'Project'], shortNotes: 'Rim protector with upside', fitScore: 68, motivations: ['Development', 'Culture'],
     longNotes: 'Still developing offensively. Elite shot blocker. Could be a project recruit.',
@@ -331,7 +331,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
     ],
   },
   {
-    id: 'be-07', playerId: 'pp-21', status: 'Evaluating', priority: 'A', rank: 1, position: 'SG', classYear: '2025',
+    id: 'be-07', playerId: 'pp-21', status: 'Evaluating', priority: 'A', rank: 1, position: 'CG', classYear: '2025',
     tier: 'Primary', slot: 'CG', bigBoardRank: 8, interest: 'High',
     tags: ['Shooter', 'Athletic'], shortNotes: 'Dynamic scorer, explosive athlete', fitScore: 85, motivations: ['Playing Time', 'NIL'],
     longNotes: 'Just became available after decommitment. Need to act fast.',
@@ -346,7 +346,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Contacted
   {
-    id: 'be-04', playerId: 'pp-08', status: 'Contacted', priority: 'B', rank: 0, position: 'SG', classYear: '2025',
+    id: 'be-04', playerId: 'pp-08', status: 'Contacted', priority: 'B', rank: 0, position: 'CG', classYear: '2025',
     tier: 'Secondary', slot: 'CG', bigBoardRank: 28, interest: 'Med',
     tags: ['Shooter'], shortNotes: 'Knockdown shooter, needs to see defense',
     longNotes: 'DM\'d on Instagram. Responded positively. Watching more film this week.',
@@ -367,7 +367,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
     ],
   },
   {
-    id: 'be-08', playerId: 'pp-18', status: 'Contacted', priority: 'B', rank: 1, position: 'SF', classYear: '2025',
+    id: 'be-08', playerId: 'pp-18', status: 'Contacted', priority: 'B', rank: 1, position: 'W', classYear: '2025',
     tier: 'Secondary', slot: 'W', bigBoardRank: 35, interest: 'Med',
     tags: ['Versatile'], shortNotes: 'Versatile wing, can guard 1-3',
     longNotes: 'Good conversation. Interested in our program style. Wants to know about playing time.',
@@ -413,7 +413,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Visited
   {
-    id: 'be-01', playerId: 'pp-02', status: 'Visited', priority: 'A', rank: 0, position: 'SG', classYear: '2025',
+    id: 'be-01', playerId: 'pp-02', status: 'Visited', priority: 'A', rank: 0, position: 'CG', classYear: '2025',
     tier: 'Must Get', slot: 'CG', bigBoardRank: 2, interest: 'High',
     tags: ['Immediate Impact', 'Shooter'], shortNotes: 'Elite scorer, ready to contribute day 1', fitScore: 92, motivations: ['NIL', 'Culture', 'Family'],
     longNotes: 'Visited campus Jan 15. Very interested. Family supportive. Needs answer on scholarship by Feb 28.',
@@ -442,7 +442,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Offer Out
   {
-    id: 'be-02', playerId: 'pp-06', status: 'Offer Out', priority: 'A', rank: 0, position: 'PF', classYear: '2025',
+    id: 'be-02', playerId: 'pp-06', status: 'Offer Out', priority: 'A', rank: 0, position: 'F', classYear: '2025',
     tier: 'Must Get', slot: 'F', bigBoardRank: 3, interest: 'High',
     tags: ['Athletic', 'High Motor'], shortNotes: 'Physical 4-man, great motor', fitScore: 88, motivations: ['Culture', 'Academics'],
     longNotes: 'Watched 3 games in person. Dominant on the glass. Also hearing from two D1 programs.',
@@ -498,7 +498,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Committed (3 more to reach 4 total)
   {
-    id: 'be-11', playerId: 'pp-30', status: 'Committed', priority: 'A', rank: 1, position: 'SG', classYear: '2025',
+    id: 'be-11', playerId: 'pp-30', status: 'Committed', priority: 'A', rank: 1, position: 'CG', classYear: '2025',
     tier: 'Must Get', slot: 'CG', bigBoardRank: 4, interest: 'High',
     tags: ['Shooter', 'Immediate Impact'], shortNotes: 'Committed! JUCO scorer, immediate backcourt upgrade', fitScore: 91, motivations: ['Family', 'Playing Time'],
     longNotes: 'Transfer from Tallahassee CC. 18.2 PPG, 42% from three. Committed Feb 5 after campus visit. Will enroll summer 2025. Strong relationship with coaching staff. data_source: demo_seed',
@@ -523,7 +523,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
     ],
   },
   {
-    id: 'be-12', playerId: 'pp-31', status: 'Committed', priority: 'A', rank: 2, position: 'PF', classYear: '2025',
+    id: 'be-12', playerId: 'pp-31', status: 'Committed', priority: 'A', rank: 2, position: 'F', classYear: '2025',
     tier: 'Primary', slot: 'F', bigBoardRank: 6, interest: 'High',
     tags: ['Athletic', 'High Motor', 'Portal'], shortNotes: 'Committed! Portal big from D2, physical presence', fitScore: 87, motivations: ['Playing Time', 'Development'], portalEntryDate: '2025-12-20', eligibilityRemaining: 2,
     longNotes: 'Transfer from Palm Beach Atlantic (D2). 12.8 PPG, 9.1 RPG. Physical, undersized 4 who rebounds everything. Committed Feb 10 after two visits. data_source: demo_seed',
@@ -574,7 +574,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Evaluating (1 more to reach 3 total)
   {
-    id: 'be-14', playerId: 'pp-33', status: 'Evaluating', priority: 'B', rank: 2, position: 'SF', classYear: '2025',
+    id: 'be-14', playerId: 'pp-33', status: 'Evaluating', priority: 'B', rank: 2, position: 'W', classYear: '2025',
     tier: 'Secondary', slot: 'W', bigBoardRank: 22, interest: 'Med',
     tags: ['Versatile', 'Athletic'], shortNotes: 'Long wing from College of Central Florida, two-way potential',
     longNotes: 'JUCO wing at CF. 6-7 with 6-10 wingspan. 11.4 PPG, 5.2 RPG. Raw offensively but elite defender. Film shows switchability 1-4. Need more eval on shooting consistency. data_source: demo_seed',
@@ -590,7 +590,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Contacted (1 more to reach 3 total)
   {
-    id: 'be-15', playerId: 'pp-34', status: 'Contacted', priority: 'B', rank: 2, position: 'C', classYear: '2025',
+    id: 'be-15', playerId: 'pp-34', status: 'Contacted', priority: 'B', rank: 2, position: 'B', classYear: '2025',
     tier: 'Secondary', slot: 'B', bigBoardRank: 31, interest: 'Med',
     tags: ['Rim Protector', 'Project'], shortNotes: 'Big body center from Chipola, shot-blocking machine',
     longNotes: 'JUCO center at Chipola College. 6-10, 240. 8.6 PPG, 7.9 RPG, 3.2 BPG. Limited offensive game but dominant rim protector. We need interior presence badly. Initial DM was positive — open to NAIA path. data_source: demo_seed',
@@ -613,7 +613,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Watchlist (1 more to reach 3 total — keeping at 3 since Priority holds spot 4)
   {
-    id: 'be-16', playerId: 'pp-35', status: 'Watchlist', priority: 'C', rank: 2, position: 'SG', classYear: '2026',
+    id: 'be-16', playerId: 'pp-35', status: 'Watchlist', priority: 'C', rank: 2, position: 'CG', classYear: '2026',
     tier: 'Watch', slot: 'CG', interest: 'Low',
     tags: ['Shooter'], shortNotes: 'Class of 2026 shooter, long-term tracking',
     longNotes: 'HS junior at Miami Northwestern. 6-3, 175. Averaging 16.1 PPG, 39% from three. Still developing physically but has a pure stroke. Tracking for next cycle. data_source: demo_seed',
@@ -628,7 +628,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Offer Out (1 more to reach 2 total)
   {
-    id: 'be-17', playerId: 'pp-36', status: 'Offer Out', priority: 'A', rank: 1, position: 'SF', classYear: '2025',
+    id: 'be-17', playerId: 'pp-36', status: 'Offer Out', priority: 'A', rank: 1, position: 'W', classYear: '2025',
     tier: 'Must Get', slot: 'W', bigBoardRank: 7, interest: 'High',
     tags: ['Athletic', 'Versatile', 'Immediate Impact'], shortNotes: 'Portal wing from Webber, top target at the 3', fitScore: 89, motivations: ['Playing Time', 'Culture'], portalEntryDate: '2026-01-05', eligibilityRemaining: 2,
     longNotes: 'Transfer from Webber International (NAIA). 15.8 PPG, 6.3 RPG, 2.1 APG. Long, athletic wing who can score at all three levels. Knows our conference. Multiple Sun Conference programs pursuing. Need to close fast. data_source: demo_seed',
@@ -657,7 +657,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Visited (1 more to reach 2 total)
   {
-    id: 'be-18', playerId: 'pp-37', status: 'Visited', priority: 'A', rank: 1, position: 'PF', classYear: '2025',
+    id: 'be-18', playerId: 'pp-37', status: 'Visited', priority: 'A', rank: 1, position: 'F', classYear: '2025',
     tier: 'Primary', slot: 'F', bigBoardRank: 10, interest: 'High',
     tags: ['High Motor', 'Versatile'], shortNotes: 'Stretch 4 from Indian River State, visited Feb 8',
     longNotes: 'JUCO transfer from Indian River State College. 6-8, 215. 13.1 PPG, 7.4 RPG, shoots 35% from three. Can play 4 or small-ball 5. Visited campus Feb 8 — very positive. Family supportive. Waiting on our offer package. data_source: demo_seed',
@@ -682,7 +682,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
 
   // Missed (2 to fill the pipeline)
   {
-    id: 'be-19', playerId: 'pp-38', status: 'Missed', priority: 'B', rank: 0, position: 'SG', classYear: '2025',
+    id: 'be-19', playerId: 'pp-38', status: 'Missed', priority: 'B', rank: 0, position: 'CG', classYear: '2025',
     tier: 'Secondary', slot: 'CG', bigBoardRank: 15, interest: 'Low',
     tags: ['Shooter', 'Athletic'], shortNotes: 'Lost to Southeastern — chose D2 path',
     longNotes: 'Was a top target at the 2. 6-4 combo guard from Daytona State College. 16.9 PPG, 41% from three. We made strong push but he committed to Southeastern University (NAIA) on Feb 3 — closer to family in Lakeland. data_source: demo_seed',
@@ -697,7 +697,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
     ],
   },
   {
-    id: 'be-20', playerId: 'pp-39', status: 'Missed', priority: 'A', rank: 1, position: 'C', classYear: '2025',
+    id: 'be-20', playerId: 'pp-39', status: 'Missed', priority: 'A', rank: 1, position: 'B', classYear: '2025',
     tier: 'Must Get', slot: 'B', bigBoardRank: 11, interest: 'Low',
     tags: ['Rim Protector', 'Immediate Impact'], shortNotes: 'Lost to Warner — NIL gap too large',
     longNotes: 'Portal big from South Florida State College. 6-11, 245. 10.2 PPG, 8.8 RPG, 3.5 BPG. Was our top center target. Visited campus Jan 20 and loved it, but Warner offered significantly more NIL through their collective. Could not match. data_source: demo_seed',

@@ -30,7 +30,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   {
     playerId: 'player-kalejaiye',
     playerName: 'Laolu Kalejaiye',
-    position: 'C',
+    position: 'B',
     projectedPoints: 14.0,
     projectedRebounds: 10.2,
     projectedAssists: 1.1,
@@ -40,7 +40,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   {
     playerId: 'player-diomande',
     playerName: 'Paul Diomande',
-    position: 'PF',
+    position: 'F',
     projectedPoints: 15.5,
     projectedRebounds: 8.0,
     projectedAssists: 2.0,
@@ -50,7 +50,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   {
     playerId: 'player-hernandez',
     playerName: 'Adrian Hernandez',
-    position: 'SG',
+    position: 'CG',
     projectedPoints: 13.2,
     projectedRebounds: 3.5,
     projectedAssists: 2.3,
@@ -60,7 +60,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   {
     playerId: 'player-chtelan',
     playerName: 'Nathan Chtelan',
-    position: 'SF',
+    position: 'W',
     projectedPoints: 8.0,
     projectedRebounds: 4.5,
     projectedAssists: 1.5,

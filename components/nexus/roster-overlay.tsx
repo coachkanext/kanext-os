@@ -369,7 +369,7 @@ export function RosterOverlay({ visible, onClose }: RosterOverlayProps) {
   };
 
   // Group by position for depth chart
-  const positions = ['PG', 'SG', 'SF', 'PF', 'C'];
+  const positions = ['PG', 'CG', 'W', 'F', 'B'];
   const rosterByPosition = positions.map((pos) => ({
     position: pos,
     players: roster.filter((e) => e.player.position === pos),

@@ -207,14 +207,14 @@ export const GAME_LOG: GameLogEntry[] = [
 
 export const PLAYER_LEADERBOARD: PlayerStatRow[] = [
   { id: 'ps-1', name: 'D. Cole', number: '1', position: 'PG', gp: 30, minutes: 33.2, usage: 28.4, pts: 18.6, efg: 52.4, threePct: 37.8, ftRate: 38.6, toPct: 14.8, astRate: 32.4, orebRate: 2.4, drebRate: 12.6, kr: 78, offKR: 80, defKR: 74 },
-  { id: 'ps-2', name: 'J. Brown', number: '4', position: 'SG', gp: 30, minutes: 31.8, usage: 24.2, pts: 16.4, efg: 54.8, threePct: 40.2, ftRate: 28.4, toPct: 12.2, astRate: 14.8, orebRate: 1.8, drebRate: 14.2, kr: 76, offKR: 78, defKR: 72 },
-  { id: 'ps-3', name: 'T. Singleton', number: '12', position: 'SF', gp: 28, minutes: 30.4, usage: 20.8, pts: 14.2, efg: 50.6, threePct: 35.4, ftRate: 34.2, toPct: 16.4, astRate: 18.6, orebRate: 3.2, drebRate: 16.8, kr: 74, offKR: 72, defKR: 76 },
-  { id: 'ps-4', name: 'M. Peeples', number: '24', position: 'PF', gp: 30, minutes: 28.6, usage: 18.4, pts: 12.8, efg: 56.2, threePct: 32.8, ftRate: 36.8, toPct: 10.8, astRate: 8.4, orebRate: 8.6, drebRate: 22.4, kr: 72, offKR: 68, defKR: 78 },
-  { id: 'ps-5', name: 'D. Williams', number: '32', position: 'C', gp: 30, minutes: 26.4, usage: 14.6, pts: 10.4, efg: 58.4, threePct: 28.6, ftRate: 42.4, toPct: 12.6, astRate: 6.2, orebRate: 10.4, drebRate: 24.6, kr: 70, offKR: 64, defKR: 80 },
-  { id: 'ps-6', name: 'A. Garland', number: '3', position: 'SG', gp: 28, minutes: 24.2, usage: 22.6, pts: 13.8, efg: 48.4, threePct: 34.6, ftRate: 30.2, toPct: 18.2, astRate: 12.4, orebRate: 1.6, drebRate: 10.8, kr: 68, offKR: 72, defKR: 62 },
-  { id: 'ps-7', name: 'C. Henderson', number: '11', position: 'SF', gp: 26, minutes: 22.8, usage: 16.8, pts: 9.6, efg: 46.2, threePct: 32.4, ftRate: 26.8, toPct: 14.6, astRate: 16.2, orebRate: 2.8, drebRate: 14.4, kr: 66, offKR: 64, defKR: 68 },
-  { id: 'ps-8', name: 'K. Riley', number: '22', position: 'PF', gp: 30, minutes: 20.4, usage: 12.4, pts: 8.2, efg: 52.8, threePct: 30.8, ftRate: 34.6, toPct: 10.2, astRate: 4.8, orebRate: 7.8, drebRate: 20.2, kr: 64, offKR: 58, defKR: 72 },
-  { id: 'ps-9', name: 'J. Okafor', number: '34', position: 'C', gp: 24, minutes: 16.8, usage: 10.8, pts: 6.4, efg: 54.6, threePct: 22.4, ftRate: 38.2, toPct: 14.4, astRate: 3.6, orebRate: 9.2, drebRate: 18.6, kr: 62, offKR: 56, defKR: 70 },
+  { id: 'ps-2', name: 'J. Brown', number: '4', position: 'CG', gp: 30, minutes: 31.8, usage: 24.2, pts: 16.4, efg: 54.8, threePct: 40.2, ftRate: 28.4, toPct: 12.2, astRate: 14.8, orebRate: 1.8, drebRate: 14.2, kr: 76, offKR: 78, defKR: 72 },
+  { id: 'ps-3', name: 'T. Singleton', number: '12', position: 'W', gp: 28, minutes: 30.4, usage: 20.8, pts: 14.2, efg: 50.6, threePct: 35.4, ftRate: 34.2, toPct: 16.4, astRate: 18.6, orebRate: 3.2, drebRate: 16.8, kr: 74, offKR: 72, defKR: 76 },
+  { id: 'ps-4', name: 'M. Peeples', number: '24', position: 'F', gp: 30, minutes: 28.6, usage: 18.4, pts: 12.8, efg: 56.2, threePct: 32.8, ftRate: 36.8, toPct: 10.8, astRate: 8.4, orebRate: 8.6, drebRate: 22.4, kr: 72, offKR: 68, defKR: 78 },
+  { id: 'ps-5', name: 'D. Williams', number: '32', position: 'B', gp: 30, minutes: 26.4, usage: 14.6, pts: 10.4, efg: 58.4, threePct: 28.6, ftRate: 42.4, toPct: 12.6, astRate: 6.2, orebRate: 10.4, drebRate: 24.6, kr: 70, offKR: 64, defKR: 80 },
+  { id: 'ps-6', name: 'A. Garland', number: '3', position: 'CG', gp: 28, minutes: 24.2, usage: 22.6, pts: 13.8, efg: 48.4, threePct: 34.6, ftRate: 30.2, toPct: 18.2, astRate: 12.4, orebRate: 1.6, drebRate: 10.8, kr: 68, offKR: 72, defKR: 62 },
+  { id: 'ps-7', name: 'C. Henderson', number: '11', position: 'W', gp: 26, minutes: 22.8, usage: 16.8, pts: 9.6, efg: 46.2, threePct: 32.4, ftRate: 26.8, toPct: 14.6, astRate: 16.2, orebRate: 2.8, drebRate: 14.4, kr: 66, offKR: 64, defKR: 68 },
+  { id: 'ps-8', name: 'K. Riley', number: '22', position: 'F', gp: 30, minutes: 20.4, usage: 12.4, pts: 8.2, efg: 52.8, threePct: 30.8, ftRate: 34.6, toPct: 10.2, astRate: 4.8, orebRate: 7.8, drebRate: 20.2, kr: 64, offKR: 58, defKR: 72 },
+  { id: 'ps-9', name: 'J. Okafor', number: '34', position: 'B', gp: 24, minutes: 16.8, usage: 10.8, pts: 6.4, efg: 54.6, threePct: 22.4, ftRate: 38.2, toPct: 14.4, astRate: 3.6, orebRate: 9.2, drebRate: 18.6, kr: 62, offKR: 56, defKR: 70 },
   { id: 'ps-10', name: 'R. Jackson', number: '5', position: 'PG', gp: 28, minutes: 14.6, usage: 18.2, pts: 7.8, efg: 44.8, threePct: 36.2, ftRate: 24.6, toPct: 20.4, astRate: 28.6, orebRate: 1.2, drebRate: 8.4, kr: 60, offKR: 62, defKR: 56 },
 ];
 

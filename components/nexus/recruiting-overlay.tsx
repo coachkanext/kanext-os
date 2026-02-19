@@ -44,7 +44,7 @@ const OVERLAY_WIDTH = Math.min(420, SCREEN_WIDTH * 0.95);
 // =============================================================================
 
 type StatusTab = RecruitingStatus | 'all';
-type PositionFilter = 'PG' | 'SG' | 'SF' | 'PF' | 'C' | 'all';
+type PositionFilter = 'PG' | 'CG' | 'W' | 'F' | 'B' | 'all';
 type DivisionFilter = Division | 'all';
 
 interface ProspectPanelData {
@@ -544,10 +544,10 @@ export function RecruitingOverlay({ visible, onClose, onOpenRosterSandbox }: Rec
   const positions: { value: PositionFilter; label: string }[] = [
     { value: 'all', label: 'All' },
     { value: 'PG', label: 'PG' },
-    { value: 'SG', label: 'SG' },
-    { value: 'SF', label: 'SF' },
-    { value: 'PF', label: 'PF' },
-    { value: 'C', label: 'C' },
+    { value: 'CG', label: 'CG' },
+    { value: 'W', label: 'W' },
+    { value: 'F', label: 'F' },
+    { value: 'B', label: 'B' },
   ];
 
   const divisions: { value: DivisionFilter; label: string }[] = [

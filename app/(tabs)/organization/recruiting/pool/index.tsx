@@ -29,7 +29,7 @@ import {
 
 type SortField = 'name' | 'ppg' | 'rpg' | 'apg' | 'height';
 type SortDirection = 'asc' | 'desc';
-type PositionFilter = 'ALL' | 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+type PositionFilter = 'ALL' | 'PG' | 'CG' | 'W' | 'F' | 'B';
 type DivisionFilter = 'ALL' | Division;
 type ClassFilter = 'ALL' | 'FR' | 'SO' | 'JR' | 'SR' | 'GR';
 
@@ -303,7 +303,7 @@ export default function NationalPlayerPoolScreen() {
     router.push(`/organization/recruiting/pool/${playerId}`);
   };
 
-  const positions: PositionFilter[] = ['ALL', 'PG', 'SG', 'SF', 'PF', 'C'];
+  const positions: PositionFilter[] = ['ALL', 'PG', 'CG', 'W', 'F', 'B'];
   const divisions: DivisionFilter[] = ['ALL', 'NCAA_D2', 'NAIA', 'NJCAA'];
   const classes: ClassFilter[] = ['ALL', 'FR', 'SO', 'JR', 'SR', 'GR'];
 

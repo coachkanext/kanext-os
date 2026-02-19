@@ -462,16 +462,16 @@ export const MOCK_SCOUT_PACKS: ScoutPack[] = [
 // =============================================================================
 
 export const MOCK_PLAYER_CHANNELS: PlayerChannel[] = [
-  { id: 'pc-1', name: 'Marcus Johnson', number: '5', position: 'SG', clipCount: 34, avatarInitials: 'MJ' },
-  { id: 'pc-2', name: 'Deon Williams', number: '23', position: 'PF', clipCount: 28, avatarInitials: 'DW' },
+  { id: 'pc-1', name: 'Marcus Johnson', number: '5', position: 'CG', clipCount: 34, avatarInitials: 'MJ' },
+  { id: 'pc-2', name: 'Deon Williams', number: '23', position: 'F', clipCount: 28, avatarInitials: 'DW' },
   { id: 'pc-3', name: 'Tyler Roberts', number: '12', position: 'PG', clipCount: 31, avatarInitials: 'TR' },
-  { id: 'pc-4', name: 'Andre Harris', number: '3', position: 'SF', clipCount: 22, avatarInitials: 'AH' },
-  { id: 'pc-5', name: 'Chris Thompson', number: '44', position: 'C', clipCount: 18, avatarInitials: 'CT' },
+  { id: 'pc-4', name: 'Andre Harris', number: '3', position: 'W', clipCount: 22, avatarInitials: 'AH' },
+  { id: 'pc-5', name: 'Chris Thompson', number: '44', position: 'B', clipCount: 18, avatarInitials: 'CT' },
   { id: 'pc-6', name: 'Jamal Peterson', number: '11', position: 'PG', clipCount: 15, avatarInitials: 'JP' },
-  { id: 'pc-7', name: 'Brandon Lewis', number: '32', position: 'PF', clipCount: 20, avatarInitials: 'BL' },
-  { id: 'pc-8', name: 'Kevin Scott', number: '2', position: 'SG', clipCount: 12, avatarInitials: 'KS' },
-  { id: 'pc-9', name: 'David Brown', number: '15', position: 'SF', clipCount: 9, avatarInitials: 'DB' },
-  { id: 'pc-10', name: 'Ryan Mitchell', number: '24', position: 'C', clipCount: 7, avatarInitials: 'RM' },
+  { id: 'pc-7', name: 'Brandon Lewis', number: '32', position: 'F', clipCount: 20, avatarInitials: 'BL' },
+  { id: 'pc-8', name: 'Kevin Scott', number: '2', position: 'CG', clipCount: 12, avatarInitials: 'KS' },
+  { id: 'pc-9', name: 'David Brown', number: '15', position: 'W', clipCount: 9, avatarInitials: 'DB' },
+  { id: 'pc-10', name: 'Ryan Mitchell', number: '24', position: 'B', clipCount: 7, avatarInitials: 'RM' },
 ];
 
 // =============================================================================
@@ -666,12 +666,12 @@ export const MOCK_WATCH_HISTORY: WatchHistoryItem[] = [
 
 export const MOCK_RECRUIT_CLIPS: RecruitClip[] = [
   { id: 'rc-1', title: 'Jaylen Carter — Senior Mixtape', recruitId: 'r-1', recruitName: 'Jaylen Carter', school: 'Oak Hill Academy', position: 'PG', classYear: '2026', krOverall: 82, type: 'highlight', duration: 240, source: 'Hudl', tags: ['Recruit', 'PG'], thumbnailColor: '#2a4a2a' },
-  { id: 'rc-2', title: 'Marcus Williams — State Championship', recruitId: 'r-2', recruitName: 'Marcus Williams', school: 'DeMatha Catholic', position: 'SG', classYear: '2026', krOverall: 78, type: 'highlight', duration: 180, source: 'MaxPreps', tags: ['Recruit', 'SG'], thumbnailColor: '#3a2a5a' },
-  { id: 'rc-3', title: 'DeAndre Thompson — AAU Season', recruitId: 'r-3', recruitName: 'DeAndre Thompson', school: 'Montverde Academy', position: 'SF', classYear: '2027', krOverall: 85, type: 'highlight', duration: 300, source: 'YouTube', tags: ['Recruit', 'SF'], thumbnailColor: '#5a2a2a' },
-  { id: 'rc-4', title: 'Chris Evans — Defensive Showcase', recruitId: 'r-4', recruitName: 'Chris Evans', school: 'IMG Academy', position: 'PF', classYear: '2026', krOverall: 74, type: 'scout', duration: 210, source: 'Synergy', tags: ['Recruit', 'PF'], thumbnailColor: '#2a3a5a' },
-  { id: 'rc-5', title: 'Tyler Brown — 30-Point Game', recruitId: 'r-5', recruitName: 'Tyler Brown', school: 'Findlay Prep', position: 'SG', classYear: '2026', krOverall: 80, type: 'highlight', duration: 195, source: 'Hudl', tags: ['Recruit', 'SG'], thumbnailColor: '#4a4a2a' },
-  { id: 'rc-6', title: 'Jordan Mitchell — Summer League', recruitId: 'r-6', recruitName: 'Jordan Mitchell', school: 'Sunrise Christian', position: 'C', classYear: '2027', krOverall: 76, type: 'highlight', duration: 270, source: 'YouTube', tags: ['Recruit', 'C'], thumbnailColor: '#2a5a4a' },
-  { id: 'rc-7', title: 'David Lee — Pick & Pop Specialist', recruitId: 'r-7', recruitName: 'David Lee', school: 'La Lumiere', position: 'PF', classYear: '2026', krOverall: 71, type: 'scout', duration: 165, source: 'Synergy', tags: ['Recruit', 'PF'], thumbnailColor: '#5a3a2a' },
+  { id: 'rc-2', title: 'Marcus Williams — State Championship', recruitId: 'r-2', recruitName: 'Marcus Williams', school: 'DeMatha Catholic', position: 'CG', classYear: '2026', krOverall: 78, type: 'highlight', duration: 180, source: 'MaxPreps', tags: ['Recruit', 'CG'], thumbnailColor: '#3a2a5a' },
+  { id: 'rc-3', title: 'DeAndre Thompson — AAU Season', recruitId: 'r-3', recruitName: 'DeAndre Thompson', school: 'Montverde Academy', position: 'W', classYear: '2027', krOverall: 85, type: 'highlight', duration: 300, source: 'YouTube', tags: ['Recruit', 'W'], thumbnailColor: '#5a2a2a' },
+  { id: 'rc-4', title: 'Chris Evans — Defensive Showcase', recruitId: 'r-4', recruitName: 'Chris Evans', school: 'IMG Academy', position: 'F', classYear: '2026', krOverall: 74, type: 'scout', duration: 210, source: 'Synergy', tags: ['Recruit', 'F'], thumbnailColor: '#2a3a5a' },
+  { id: 'rc-5', title: 'Tyler Brown — 30-Point Game', recruitId: 'r-5', recruitName: 'Tyler Brown', school: 'Findlay Prep', position: 'CG', classYear: '2026', krOverall: 80, type: 'highlight', duration: 195, source: 'Hudl', tags: ['Recruit', 'CG'], thumbnailColor: '#4a4a2a' },
+  { id: 'rc-6', title: 'Jordan Mitchell — Summer League', recruitId: 'r-6', recruitName: 'Jordan Mitchell', school: 'Sunrise Christian', position: 'B', classYear: '2027', krOverall: 76, type: 'highlight', duration: 270, source: 'YouTube', tags: ['Recruit', 'B'], thumbnailColor: '#2a5a4a' },
+  { id: 'rc-7', title: 'David Lee — Pick & Pop Specialist', recruitId: 'r-7', recruitName: 'David Lee', school: 'La Lumiere', position: 'F', classYear: '2026', krOverall: 71, type: 'scout', duration: 165, source: 'Synergy', tags: ['Recruit', 'F'], thumbnailColor: '#5a3a2a' },
   { id: 'rc-8', title: 'Amir Johnson — Floor General', recruitId: 'r-8', recruitName: 'Amir Johnson', school: 'Brewster Academy', position: 'PG', classYear: '2027', krOverall: 88, type: 'highlight', duration: 225, source: 'Hudl', tags: ['Recruit', 'PG'], thumbnailColor: '#3a5a2a' },
 ];
 

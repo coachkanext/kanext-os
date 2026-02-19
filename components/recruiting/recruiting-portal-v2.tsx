@@ -30,7 +30,7 @@ import {
 // FILTER DEFINITIONS
 // =============================================================================
 
-const POS_OPTIONS = ['All', 'PG', 'SG', 'SF', 'PF', 'C'] as const;
+const POS_OPTIONS = ['All', 'PG', 'CG', 'W', 'F', 'B'] as const;
 
 const LEVEL_OPTIONS = nationalPool.getLevels().map((k) => ({
   key: k,

@@ -40,7 +40,7 @@ const LEVEL_OPTIONS = nationalPool.getLevels().map((k) => ({
   label: LEVEL_DISPLAY_SHORT[k] ?? k,
 }));
 
-const POS_OPTIONS = ['PG', 'SG', 'SF', 'PF', 'C'] as const;
+const POS_OPTIONS = ['PG', 'CG', 'W', 'F', 'B'] as const;
 
 type SortKey = 'kr' | 'ppg' | 'rpg' | 'name' | 'height';
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [

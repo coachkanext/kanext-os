@@ -160,13 +160,13 @@ export const TRENDING_PROGRAMS: ProgramTile[] = [
 
 export const PLAYERS_TO_WATCH: PlayerSpotlight[] = [
   { id: 'pw-1', name: 'Brandon Williams', position: 'PG', team: 'Florida Memorial', stat: '18.5 PPG / 7.1 APG', thumbnailColor: '#1B4F8A' },
-  { id: 'pw-2', name: 'Laolu Kalejaiye', position: 'C', team: 'Florida Memorial', stat: '14.0 PPG / 10.2 RPG', thumbnailColor: '#1B4F8A' },
-  { id: 'pw-3', name: 'Paul Diomande', position: 'PF', team: 'Florida Memorial', stat: '15.5 PPG / 8.0 RPG', thumbnailColor: '#1B4F8A' },
-  { id: 'pw-4', name: 'Marcus Thompson', position: 'SG', team: 'Southeastern', stat: '22.3 PPG / 4.1 APG', thumbnailColor: '#C2185B' },
-  { id: 'pw-5', name: 'DeShawn Carter', position: 'PF', team: 'Keiser', stat: '16.8 PPG / 9.4 RPG', thumbnailColor: '#EF4444' },
-  { id: 'pw-6', name: 'Jaylen Mitchell', position: 'SG', team: 'Warner', stat: '19.2 PPG / 3.8 SPG', thumbnailColor: '#F59E0B' },
+  { id: 'pw-2', name: 'Laolu Kalejaiye', position: 'B', team: 'Florida Memorial', stat: '14.0 PPG / 10.2 RPG', thumbnailColor: '#1B4F8A' },
+  { id: 'pw-3', name: 'Paul Diomande', position: 'F', team: 'Florida Memorial', stat: '15.5 PPG / 8.0 RPG', thumbnailColor: '#1B4F8A' },
+  { id: 'pw-4', name: 'Marcus Thompson', position: 'CG', team: 'Southeastern', stat: '22.3 PPG / 4.1 APG', thumbnailColor: '#C2185B' },
+  { id: 'pw-5', name: 'DeShawn Carter', position: 'F', team: 'Keiser', stat: '16.8 PPG / 9.4 RPG', thumbnailColor: '#EF4444' },
+  { id: 'pw-6', name: 'Jaylen Mitchell', position: 'CG', team: 'Warner', stat: '19.2 PPG / 3.8 SPG', thumbnailColor: '#F59E0B' },
   { id: 'pw-7', name: 'Tyrell Adams', position: 'PG', team: 'Ave Maria', stat: '14.6 PPG / 8.2 APG', thumbnailColor: '#22C55E' },
-  { id: 'pw-8', name: 'Chris Patterson', position: 'C', team: 'Webber Intl', stat: '12.4 PPG / 11.0 RPG', thumbnailColor: '#7A5CFF' },
+  { id: 'pw-8', name: 'Chris Patterson', position: 'B', team: 'Webber Intl', stat: '12.4 PPG / 11.0 RPG', thumbnailColor: '#7A5CFF' },
 ];
 
 // =============================================================================

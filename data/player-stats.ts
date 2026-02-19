@@ -107,7 +107,7 @@ function generateStats(id: string, keyStatLine: string, position: string): Playe
   const blk = parsed.bpg ?? 0.2 + ((h % 20) / 10);
 
   // Derive splits from totals
-  const orebPct = position === 'C' || position === 'PF' ? 0.3 + (h % 10) / 100 : 0.15 + (h % 10) / 100;
+  const orebPct = position === 'B' || position === 'F' ? 0.3 + (h % 10) / 100 : 0.15 + (h % 10) / 100;
   const oreb = Math.round(reb * orebPct * 10) / 10;
   const dreb = Math.round((reb - oreb) * 10) / 10;
 

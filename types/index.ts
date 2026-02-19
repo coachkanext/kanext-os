@@ -154,7 +154,7 @@ export interface ClusterWeight {
   weight: number; // 0-100
 }
 
-export type Position = 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+export type Position = 'PG' | 'CG' | 'W' | 'F' | 'B';
 
 export type ImportanceLevel = 'critical' | 'high' | 'medium' | 'low';
 

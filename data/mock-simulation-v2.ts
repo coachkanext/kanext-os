@@ -130,13 +130,13 @@ export const MOCK_SINGLE_GAME: SingleGameOutput = {
 
 export const MOCK_BOX_SCORE_A: BoxScorePlayerLine[] = [
   { name: 'B. Williams', position: 'PG', minutes: 33, points: 18, fg: '7-14', three_pt: '2-5', rebounds: 4, assists: 7, turnovers: 3, steals: 2, blocks: 0 },
-  { name: 'C. Plantey', position: 'SG', minutes: 30, points: 12, fg: '4-10', three_pt: '3-7', rebounds: 3, assists: 2, turnovers: 1, steals: 1, blocks: 0 },
-  { name: 'N. Chtelan', position: 'SF', minutes: 28, points: 10, fg: '4-9', three_pt: '1-3', rebounds: 5, assists: 2, turnovers: 1, steals: 1, blocks: 1 },
-  { name: 'P. Diomande', position: 'PF', minutes: 27, points: 11, fg: '5-10', three_pt: '0-2', rebounds: 8, assists: 1, turnovers: 2, steals: 0, blocks: 1 },
-  { name: 'L. Kalejaiye', position: 'C', minutes: 29, points: 14, fg: '6-9', three_pt: '0-0', rebounds: 10, assists: 1, turnovers: 2, steals: 1, blocks: 3 },
+  { name: 'C. Plantey', position: 'CG', minutes: 30, points: 12, fg: '4-10', three_pt: '3-7', rebounds: 3, assists: 2, turnovers: 1, steals: 1, blocks: 0 },
+  { name: 'N. Chtelan', position: 'W', minutes: 28, points: 10, fg: '4-9', three_pt: '1-3', rebounds: 5, assists: 2, turnovers: 1, steals: 1, blocks: 1 },
+  { name: 'P. Diomande', position: 'F', minutes: 27, points: 11, fg: '5-10', three_pt: '0-2', rebounds: 8, assists: 1, turnovers: 2, steals: 0, blocks: 1 },
+  { name: 'L. Kalejaiye', position: 'B', minutes: 29, points: 14, fg: '6-9', three_pt: '0-0', rebounds: 10, assists: 1, turnovers: 2, steals: 1, blocks: 3 },
   { name: 'D. Blake', position: 'PG', minutes: 7, points: 2, fg: '1-3', three_pt: '0-1', rebounds: 1, assists: 2, turnovers: 1, steals: 0, blocks: 0 },
-  { name: 'M. Collins', position: 'SG', minutes: 10, points: 5, fg: '2-5', three_pt: '1-3', rebounds: 1, assists: 0, turnovers: 0, steals: 1, blocks: 0 },
-  { name: 'A. Hernandez', position: 'SF', minutes: 12, points: 4, fg: '2-4', three_pt: '0-1', rebounds: 3, assists: 1, turnovers: 1, steals: 1, blocks: 0 },
+  { name: 'M. Collins', position: 'CG', minutes: 10, points: 5, fg: '2-5', three_pt: '1-3', rebounds: 1, assists: 0, turnovers: 0, steals: 1, blocks: 0 },
+  { name: 'A. Hernandez', position: 'W', minutes: 12, points: 4, fg: '2-4', three_pt: '0-1', rebounds: 3, assists: 1, turnovers: 1, steals: 1, blocks: 0 },
 ];
 
 export const MOCK_DRIVERS: SimDriver[] = [
@@ -247,24 +247,24 @@ export const MOCK_KEISER_GAME: SingleGameOutput = {
 
 export const MOCK_BOX_SCORE_KEISER_FMU: BoxScorePlayerLine[] = [
   { name: 'B. Williams', position: 'PG', minutes: 34, points: 19, fg: '7-15', three_pt: '2-6', rebounds: 3, assists: 6, turnovers: 3, steals: 2, blocks: 0 },
-  { name: 'C. Plantey', position: 'SG', minutes: 31, points: 11, fg: '4-11', three_pt: '2-6', rebounds: 4, assists: 1, turnovers: 1, steals: 1, blocks: 0 },
-  { name: 'N. Chtelan', position: 'SF', minutes: 28, points: 8, fg: '3-8', three_pt: '1-3', rebounds: 5, assists: 3, turnovers: 2, steals: 0, blocks: 1 },
-  { name: 'P. Diomande', position: 'PF', minutes: 26, points: 10, fg: '4-9', three_pt: '0-1', rebounds: 7, assists: 1, turnovers: 1, steals: 0, blocks: 1 },
-  { name: 'L. Kalejaiye', position: 'C', minutes: 30, points: 13, fg: '5-8', three_pt: '0-0', rebounds: 9, assists: 1, turnovers: 2, steals: 0, blocks: 3 },
+  { name: 'C. Plantey', position: 'CG', minutes: 31, points: 11, fg: '4-11', three_pt: '2-6', rebounds: 4, assists: 1, turnovers: 1, steals: 1, blocks: 0 },
+  { name: 'N. Chtelan', position: 'W', minutes: 28, points: 8, fg: '3-8', three_pt: '1-3', rebounds: 5, assists: 3, turnovers: 2, steals: 0, blocks: 1 },
+  { name: 'P. Diomande', position: 'F', minutes: 26, points: 10, fg: '4-9', three_pt: '0-1', rebounds: 7, assists: 1, turnovers: 1, steals: 0, blocks: 1 },
+  { name: 'L. Kalejaiye', position: 'B', minutes: 30, points: 13, fg: '5-8', three_pt: '0-0', rebounds: 9, assists: 1, turnovers: 2, steals: 0, blocks: 3 },
   { name: 'D. Blake', position: 'PG', minutes: 6, points: 2, fg: '1-2', three_pt: '0-1', rebounds: 0, assists: 2, turnovers: 1, steals: 0, blocks: 0 },
-  { name: 'M. Collins', position: 'SG', minutes: 11, points: 5, fg: '2-5', three_pt: '1-3', rebounds: 2, assists: 0, turnovers: 0, steals: 0, blocks: 0 },
-  { name: 'A. Hernandez', position: 'SF', minutes: 14, points: 3, fg: '1-3', three_pt: '0-0', rebounds: 2, assists: 1, turnovers: 0, steals: 2, blocks: 0 },
+  { name: 'M. Collins', position: 'CG', minutes: 11, points: 5, fg: '2-5', three_pt: '1-3', rebounds: 2, assists: 0, turnovers: 0, steals: 0, blocks: 0 },
+  { name: 'A. Hernandez', position: 'W', minutes: 14, points: 3, fg: '1-3', three_pt: '0-0', rebounds: 2, assists: 1, turnovers: 0, steals: 2, blocks: 0 },
 ];
 
 export const MOCK_BOX_SCORE_KEISER_OPP: BoxScorePlayerLine[] = [
   { name: 'D. Harris', position: 'PG', minutes: 35, points: 21, fg: '8-18', three_pt: '1-5', rebounds: 3, assists: 6, turnovers: 4, steals: 1, blocks: 0 },
-  { name: 'T. Mitchell', position: 'SG', minutes: 30, points: 10, fg: '4-12', three_pt: '2-7', rebounds: 2, assists: 2, turnovers: 2, steals: 1, blocks: 0 },
-  { name: 'R. Davis', position: 'SF', minutes: 27, points: 8, fg: '3-7', three_pt: '1-3', rebounds: 4, assists: 1, turnovers: 1, steals: 0, blocks: 0 },
-  { name: 'K. Jones', position: 'PF', minutes: 25, points: 7, fg: '3-8', three_pt: '0-2', rebounds: 5, assists: 1, turnovers: 2, steals: 0, blocks: 0 },
-  { name: 'J. Carter', position: 'C', minutes: 30, points: 12, fg: '5-9', three_pt: '0-0', rebounds: 11, assists: 0, turnovers: 1, steals: 0, blocks: 2 },
+  { name: 'T. Mitchell', position: 'CG', minutes: 30, points: 10, fg: '4-12', three_pt: '2-7', rebounds: 2, assists: 2, turnovers: 2, steals: 1, blocks: 0 },
+  { name: 'R. Davis', position: 'W', minutes: 27, points: 8, fg: '3-7', three_pt: '1-3', rebounds: 4, assists: 1, turnovers: 1, steals: 0, blocks: 0 },
+  { name: 'K. Jones', position: 'F', minutes: 25, points: 7, fg: '3-8', three_pt: '0-2', rebounds: 5, assists: 1, turnovers: 2, steals: 0, blocks: 0 },
+  { name: 'J. Carter', position: 'B', minutes: 30, points: 12, fg: '5-9', three_pt: '0-0', rebounds: 11, assists: 0, turnovers: 1, steals: 0, blocks: 2 },
   { name: 'A. Phillips', position: 'PG', minutes: 5, points: 2, fg: '1-2', three_pt: '0-0', rebounds: 0, assists: 1, turnovers: 1, steals: 0, blocks: 0 },
-  { name: 'L. Brown', position: 'SF', minutes: 12, points: 4, fg: '2-4', three_pt: '0-1', rebounds: 3, assists: 0, turnovers: 0, steals: 1, blocks: 0 },
-  { name: 'M. Thompson', position: 'PF', minutes: 8, points: 3, fg: '1-3', three_pt: '1-2', rebounds: 2, assists: 0, turnovers: 1, steals: 0, blocks: 0 },
+  { name: 'L. Brown', position: 'W', minutes: 12, points: 4, fg: '2-4', three_pt: '0-1', rebounds: 3, assists: 0, turnovers: 0, steals: 1, blocks: 0 },
+  { name: 'M. Thompson', position: 'F', minutes: 8, points: 3, fg: '1-3', three_pt: '1-2', rebounds: 2, assists: 0, turnovers: 1, steals: 0, blocks: 0 },
 ];
 
 export const MOCK_KEISER_DRIVERS: SimDriver[] = [

@@ -146,12 +146,17 @@ def export_players(conn) -> list[dict]:
         first_name = name_parts[0]
         last_name = name_parts[1] if len(name_parts) > 1 else ""
 
-        # Position mapping
-        pos = "SF"
+        # Position mapping — canonical 5-position system only: PG, CG, W, F, B
+        pos = "W"  # default fallback
         if positions and len(positions) > 0:
-            pm = {"PG": "PG", "SG": "SG", "SF": "SF", "PF": "PF", "C": "C",
-                  "G": "PG", "F": "PF", "CG": "SG", "W": "SF", "B": "C"}
-            pos = pm.get(positions[0].upper(), "SF") if positions[0] else "SF"
+            pm = {
+                "PG": "PG", "CG": "CG", "W": "W", "F": "F", "B": "B",
+                "SG": "CG", "SF": "W", "PF": "F", "C": "B",
+                "G": "PG", "G/F": "W", "F/C": "F", "W/F": "W",
+                "PF/C": "F", "SF/PF": "F", "C/F": "F", "G/W": "CG",
+                "WING": "W",
+            }
+            pos = pm.get(positions[0].upper(), "W") if positions[0] else "W"
 
         players.append({
             "id": str(pid),

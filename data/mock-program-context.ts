@@ -123,10 +123,10 @@ export const CLUSTER_LABELS: Record<ClusterType, { label: string; description: s
 
 export const POSITION_LABELS: Record<Position, string> = {
   PG: 'Point Guard',
-  SG: 'Shooting Guard',
-  SF: 'Small Forward',
-  PF: 'Power Forward',
-  C: 'Center',
+  CG: 'Combo Guard',
+  W: 'Wing',
+  F: 'Forward',
+  B: 'Big',
 };
 
 export const BIAS_LABELS: Record<BiasType, { label: string; description: string }> = {
@@ -159,10 +159,10 @@ export const DEFAULT_CLUSTER_WEIGHTS: ClusterWeight[] = [
 
 export const DEFAULT_POSITION_IMPORTANCE: PositionImportance[] = [
   { position: 'PG', weight: 20 },
-  { position: 'SG', weight: 20 },
-  { position: 'SF', weight: 20 },
-  { position: 'PF', weight: 20 },
-  { position: 'C', weight: 20 },
+  { position: 'CG', weight: 20 },
+  { position: 'W', weight: 20 },
+  { position: 'F', weight: 20 },
+  { position: 'B', weight: 20 },
 ];
 
 export const DEFAULT_BIASES: ProgramBias[] = [

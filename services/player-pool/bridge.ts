@@ -28,7 +28,7 @@ export type PoolLevel =
   | 'USCAA' | 'NCCAA' | 'NCCAA D1' | 'NCCAA D2'
   | '3C2A' | 'International' | 'HS';
 
-export type PoolPosition = 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+export type PoolPosition = 'PG' | 'CG' | 'W' | 'F' | 'B';
 
 export type ClusterType =
   | 'shooting' | 'finishing' | 'playmaking'
@@ -257,15 +257,15 @@ const APP_CLUSTER_TO_DB: Record<ClusterType, string> = {
 // ─── Position mapping (declared_positions[0] -> traditional) ───
 
 function toPoolPosition(positions: string[] | null): PoolPosition {
-  if (!positions || positions.length === 0) return 'SF';
+  if (!positions || positions.length === 0) return 'W';
   const primary = positions[0].toUpperCase();
   const map: Record<string, PoolPosition> = {
-    PG: 'PG', SG: 'SG', SF: 'SF', PF: 'PF', C: 'C',
-    G: 'PG', F: 'PF',
-    // Heliocentric -> traditional
-    CG: 'SG', W: 'SF', B: 'C',
+    PG: 'PG', CG: 'CG', W: 'W', F: 'F', B: 'B',
+    // Traditional -> canonical
+    SG: 'CG', SF: 'W', PF: 'F', C: 'B',
+    G: 'PG',
   };
-  return map[primary] ?? 'SF';
+  return map[primary] ?? 'W';
 }
 
 // ─── Height formatting (inches -> display string) ───

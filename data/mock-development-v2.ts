@@ -179,10 +179,10 @@ export const TEAM_PRIORITIES: TeamPriority[] = [
 // =============================================================================
 
 export const POSITION_GROUPS: PositionGroup[] = [
-  { id: 'pg-guards', name: 'Guards', positions: ['PG', 'SG'], playerCount: 4, topFocus: 'Ball screen decision-making', healthScore: 78 },
-  { id: 'pg-wings', name: 'Wings', positions: ['SF', 'SG/SF'], playerCount: 3, topFocus: 'Off-screen movement', healthScore: 65 },
-  { id: 'pg-forwards', name: 'Forwards', positions: ['PF', 'SF/PF'], playerCount: 3, topFocus: '3PT shooting & post footwork', healthScore: 55 },
-  { id: 'pg-centers', name: 'Centers', positions: ['C'], playerCount: 2, topFocus: 'Rim protection & pick-and-pop', healthScore: 82 },
+  { id: 'pg-guards', name: 'Guards', positions: ['PG', 'CG'], playerCount: 4, topFocus: 'Ball screen decision-making', healthScore: 78 },
+  { id: 'pg-wings', name: 'Wings', positions: ['W', 'CG/W'], playerCount: 3, topFocus: 'Off-screen movement', healthScore: 65 },
+  { id: 'pg-forwards', name: 'Forwards', positions: ['F', 'W/F'], playerCount: 3, topFocus: '3PT shooting & post footwork', healthScore: 55 },
+  { id: 'pg-bigs', name: 'Bigs', positions: ['B'], playerCount: 2, topFocus: 'Rim protection & pick-and-pop', healthScore: 82 },
 ];
 
 // =============================================================================
@@ -294,7 +294,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'progressing',
   },
   {
-    playerId: '2', playerName: 'Chris Plantey', number: '2', position: 'SG',
+    playerId: '2', playerName: 'Chris Plantey', number: '2', position: 'CG',
     roleTarget: '3-and-D Wing / Spot-Up Specialist',
     topGaps: ['Off-screen movement timing', 'Ball screen D switches', 'Help-side rotation'],
     planBlocks: [
@@ -314,7 +314,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'progressing',
   },
   {
-    playerId: '3', playerName: 'Paul Diomande', number: '3', position: 'PF',
+    playerId: '3', playerName: 'Paul Diomande', number: '3', position: 'F',
     roleTarget: 'Stretch 4 / Double-Double Threat',
     topGaps: ['3PT shooting mechanics', 'Post footwork variety', 'Defensive rebounding boxing out'],
     planBlocks: [
@@ -335,7 +335,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'needs-work',
   },
   {
-    playerId: '5', playerName: 'Laolu Kalejaiye', number: '5', position: 'C',
+    playerId: '5', playerName: 'Laolu Kalejaiye', number: '5', position: 'B',
     roleTarget: 'Defensive Anchor / Rim Protector',
     topGaps: ['FT shooting', 'Passing out of doubles', 'Perimeter closeouts'],
     planBlocks: [
@@ -357,7 +357,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'achieved',
   },
   {
-    playerId: '4', playerName: 'Nathan Chtelan', number: '4', position: 'SF',
+    playerId: '4', playerName: 'Nathan Chtelan', number: '4', position: 'W',
     roleTarget: 'Versatile Wing / Defensive Stopper',
     topGaps: ['Rim protection positioning', 'Pick-and-pop 3s', 'Weakside help'],
     planBlocks: [
@@ -396,7 +396,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'progressing',
   },
   {
-    playerId: '7', playerName: 'Marcus Collins', number: '7', position: 'SG',
+    playerId: '7', playerName: 'Marcus Collins', number: '7', position: 'CG',
     roleTarget: 'Sharpshooter / Spot-Up Threat',
     topGaps: ['Defensive awareness', 'Off-dribble 3s', 'Physical conditioning'],
     planBlocks: [
@@ -416,7 +416,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'needs-work',
   },
   {
-    playerId: '8', playerName: 'Adrian Hernandez', number: '8', position: 'SF',
+    playerId: '8', playerName: 'Adrian Hernandez', number: '8', position: 'W',
     roleTarget: 'Defensive Stopper / Transition Spark',
     topGaps: ['On-ball D technique', 'Rebounding positioning', 'Transition finishing'],
     planBlocks: [
@@ -437,7 +437,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'achieved',
   },
   {
-    playerId: '9', playerName: 'Jaylen Moore', number: '9', position: 'PF',
+    playerId: '9', playerName: 'Jaylen Moore', number: '9', position: 'F',
     roleTarget: 'Energy Big / Double-Double Machine',
     topGaps: ['Post moves variety', 'Conditioning for late games', 'FT shooting'],
     planBlocks: [
@@ -459,7 +459,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'progressing',
   },
   {
-    playerId: '10', playerName: 'Jalen Washington', number: '10', position: 'C',
+    playerId: '10', playerName: 'Jalen Washington', number: '10', position: 'B',
     roleTarget: 'Developmental Big / Future Starter',
     topGaps: ['Defensive positioning', 'Conditioning baseline', 'Offensive awareness'],
     planBlocks: [
