@@ -17,7 +17,7 @@ import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { RosterContent, DepthChartView, DEPTH_CHART_BY_SEASON, CURRENT_SEASON } from '@/components/roster-content';
 import { UnitsView } from '@/components/depth-chart/depth-chart-units';
 import { KRDetailsSheet } from '@/components/kr-details-sheet';
-import { PlayerPoolContent } from '@/app/coach/recruiting';
+import { PlayerPoolContent, PlayerPoolContentV2 } from '@/app/coach/recruiting';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import type { Archetype } from '@/data/system-demand-profiles';
 import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/theme';
@@ -61,8 +61,8 @@ type DrillDownId = 'stats' | 'game-plan' | 'simulation' | 'development' | 'alert
 
 const HOME_PILLS: { id: HomePill; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
-  { id: 'calendar', label: 'Calendar' },
   { id: 'roster', label: 'Roster' },
+  { id: 'calendar', label: 'Calendar' },
   { id: 'recruiting', label: 'Recruiting' },
 ];
 
@@ -526,7 +526,7 @@ function SportsHome() {
               <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { setActivePill('dashboard'); setDrillDown('stats'); }} onKRPress={() => setKrSheetVisible(true)} />
             </ScrollView>
           ) : activePill === 'recruiting' ? (
-            <PlayerPoolContent />
+            <PlayerPoolContentV2 colors={colors} />
           ) : (
             <SportsCalendarV2 colors={colors} />
           )}

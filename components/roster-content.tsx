@@ -29,6 +29,8 @@ import { PlayerSheet } from '@/components/player-sheet';
 import type { OffensiveStyle, DefensiveStyle } from '@/types';
 import { HELIO_TO_TRADITIONAL } from '@/data/position-mapping';
 import type { PoolPlayer, PoolPosition } from '@/data/playerPool';
+import { getSportsRole, getVisibleRosterViews, getDefaultRosterView, type RosterViewMode } from '@/utils/sports-rbac';
+import { RosterCRMList } from '@/components/roster/roster-crm-list';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -243,7 +245,7 @@ const LAST_3_GAMES_BY_SEASON: Record<Season, Record<string, GameLog[]>> = {
   '2026-27': {},
 };
 
-type ViewType = 'cards' | 'depth' | 'list';
+type ViewType = 'list' | 'system' | 'cards';
 
 
 // ── Full-bleed Player Section (NBA.com style) ──
@@ -322,9 +324,9 @@ function PlayerSection({
 
 /* ── Roster Controls: Season + Filter + Sort + Search + View toggle ── */
 const VIEW_OPTIONS: { key: ViewType; label?: string; icon?: string }[] = [
-  { key: 'cards', icon: 'square.grid.2x2.fill' },
-  { key: 'depth', label: 'Depth' },
   { key: 'list', icon: 'list.bullet' },
+  { key: 'system', label: 'System' },
+  { key: 'cards', icon: 'square.grid.2x2.fill' },
 ];
 
 function RosterControls({
@@ -338,6 +340,7 @@ function RosterControls({
   onKrSortChange,
   dismissSubclusters,
   onSubclusterChange,
+  visibleViews,
 }: {
   activeView: ViewType;
   onViewChange: (view: ViewType) => void;
@@ -349,6 +352,7 @@ function RosterControls({
   onKrSortChange: (key: KrSortKey | null) => void;
   dismissSubclusters: number;
   onSubclusterChange?: (sub: string | null) => void;
+  visibleViews?: RosterViewMode[];
 }) {
   const [seasonOpen, setSeasonOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
@@ -431,38 +435,40 @@ function RosterControls({
           </Pressable>
         </View>
 
-        {/* View toggle */}
-        <View style={styles.viewToggle}>
-          {VIEW_OPTIONS.map((v) => {
-            const isActive = activeView === v.key;
-            return (
-              <Pressable
-                key={v.key}
-                style={[styles.viewToggleBtn, isActive && styles.viewToggleBtnActive, v.label ? { paddingHorizontal: 10 } : {}]}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  onViewChange(v.key);
-                }}
-              >
-                {v.icon ? (
-                  <IconSymbol
-                    name={v.icon as any}
-                    size={16}
-                    color={isActive ? TEAM_COLORS.white : TEAM_COLORS.gray}
-                  />
-                ) : (
-                  <Text style={{ fontSize: 11, fontWeight: '700', color: isActive ? TEAM_COLORS.white : TEAM_COLORS.gray }}>
-                    {v.label}
-                  </Text>
-                )}
-              </Pressable>
-            );
-          })}
-        </View>
+        {/* View toggle — hidden when only one view available (RBAC) */}
+        {(!visibleViews || visibleViews.length > 1) && (
+          <View style={styles.viewToggle}>
+            {VIEW_OPTIONS.filter((v) => !visibleViews || visibleViews.includes(v.key as RosterViewMode)).map((v) => {
+              const isActive = activeView === v.key;
+              return (
+                <Pressable
+                  key={v.key}
+                  style={[styles.viewToggleBtn, isActive && styles.viewToggleBtnActive, v.label ? { paddingHorizontal: 10 } : {}]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    onViewChange(v.key);
+                  }}
+                >
+                  {v.icon ? (
+                    <IconSymbol
+                      name={v.icon as any}
+                      size={16}
+                      color={isActive ? TEAM_COLORS.white : TEAM_COLORS.gray}
+                    />
+                  ) : (
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: isActive ? TEAM_COLORS.white : TEAM_COLORS.gray }}>
+                      {v.label}
+                    </Text>
+                  )}
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
       </View>
 
       {/* Depth: KaNeXT Cluster Picker (with subclusters) */}
-      {activeView === 'depth' && (
+      {activeView === 'system' && (
         <View>
           <View style={styles.clusterPickerRow}>
             <Text style={styles.clusterPickerLabel}>KaNeXT</Text>
@@ -1080,7 +1086,10 @@ const POS_ABBREV_TO_TRAD: Record<string, PoolPosition> = {
 };
 
 export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPress, onOpenStatistics, onKRPress }: { onViewChange?: () => void; teamKR?: number; offKR?: number; defKR?: number; onLogoLongPress?: () => void; onOpenStatistics?: (context?: { season: string }) => void; onKRPress?: () => void } = {}) {
-  const [activeView, setActiveView] = useState<ViewType>('cards');
+  const { state: appCtx } = useAppContext();
+  const sportsRole = getSportsRole(appCtx.activeContext.membership_id);
+  const visibleViews = getVisibleRosterViews(sportsRole);
+  const [activeView, setActiveView] = useState<ViewType>(() => getDefaultRosterView(sportsRole) as ViewType);
   const [selectedSeason, setSelectedSeason] = useState<Season>(CURRENT_SEASON);
   const [searchQuery, setSearchQuery] = useState('');
   const [krSortKey, setKrSortKey] = useState<KrSortKey | null>(null);
@@ -1088,7 +1097,6 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
   const [selectedSubcluster, setSelectedSubcluster] = useState<string | null>(null);
   const [listFilter, setListFilter] = useState<ListFilter>('all');
   const [listSort, setListSort] = useState<ListSortOption>('number');
-  const { state: appState } = useAppContext();
 
   // Player sheet state (for cards/list views)
   const [sheetJersey, setSheetJersey] = useState<string | null>(null);
@@ -1199,6 +1207,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
         onKrSortChange={setKrSortKey}
         dismissSubclusters={dismissCount}
         onSubclusterChange={setSelectedSubcluster}
+        visibleViews={visibleViews}
       />
 
       {/* Subtle divider under controls */}
@@ -1210,7 +1219,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
           <CardsView roster={filteredRoster} krSortKey={krSortKey} onPlayerTap={handlePlayerTap} />
         </Pressable>
       )}
-      {activeView === 'depth' && (
+      {activeView === 'system' && (
         <UnitsView
           depthChart={DEPTH_CHART_BY_SEASON[selectedSeason]}
           lensOverride={krSortKey && krSortKey !== 'kr' ? (krSortKey === 'offKR' ? 'offense' : krSortKey === 'defKR' ? 'defense' : krSortKey === 'pgis' ? 'pgis' : krSortKey) as any : undefined}
@@ -1221,19 +1230,14 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
         />
       )}
       {activeView === 'list' && (
-        <RosterListView
+        <RosterCRMList
           roster={filteredRoster}
-          listFilter={listFilter}
-          onFilterChange={setListFilter}
-          listSort={listSort}
-          onSortChange={setListSort}
           onPlayerTap={handlePlayerTap}
-          onOpenStatistics={() => onOpenStatistics?.({ season: selectedSeason })}
         />
       )}
 
       {/* Player Sheet for cards/list views (depth view has its own inside UnitsView) */}
-      {activeView !== 'depth' && (
+      {activeView !== 'system' && (
         <PlayerSheet
           visible={!!sheetJersey}
           onClose={() => { setSheetJersey(null); setSheetFitNote(''); setSheetCoachNote(''); }}
@@ -1250,7 +1254,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
           clusterOverride={sheetJersey ? PLAYER_CLUSTERS[sheetJersey] : undefined}
           baseKROverride={sheetJersey ? ROSTER_KR[sheetJersey] : undefined}
           physicals={sheetJersey ? PLAYER_PHYSICALS[sheetJersey] : undefined}
-          membershipId={appState.activeContext.membership_id}
+          membershipId={appCtx.activeContext.membership_id}
         />
       )}
     </View>

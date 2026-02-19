@@ -216,6 +216,21 @@ export function canViewGrades(role: EducationRoleLens): boolean {
 // ROLE MAPPING
 // =============================================================================
 
+// =============================================================================
+// MEMBERSHIP → LENS (direct membership_id mapping for ActiveView)
+// =============================================================================
+
+const EDUCATION_MEMBERSHIP_MAP: Record<string, EducationRoleLens> = {
+  mem_edu_fmu_pd: 'E2',
+  mem_edu_fmu_student: 'E4',
+  mem_edu_kxa_founder: 'E1',
+  mem_edu_lincoln_parent: 'E4',
+};
+
+export function getEducationRole(membershipId: string): EducationRoleLens {
+  return EDUCATION_MEMBERSHIP_MAP[membershipId] ?? 'E1';
+}
+
 export function mapRoleToEducationLens(role: string): EducationRoleLens {
   switch (role) {
     case 'president':
@@ -242,4 +257,22 @@ export function mapRoleToEducationLens(role: string): EducationRoleLens {
     default:
       return 'E5';
   }
+}
+
+// =============================================================================
+// HOME PILL VISIBILITY (4-pill layout)
+// =============================================================================
+
+export type EducationHomePill = 'dashboard' | 'calendar' | 'faculty' | 'admissions';
+
+const EDU_HOME_PILL_MATRIX: Record<EducationHomePill, Record<EducationRoleLens, EducationVisibility>> = {
+  dashboard:  { E1: 'full', E2: 'full', E3: 'full',   E4: 'full',   E5: 'full' },
+  calendar:   { E1: 'full', E2: 'full', E3: 'full',   E4: 'full',   E5: 'full' },
+  faculty:    { E1: 'full', E2: 'full', E3: 'full',   E4: 'full',   E5: 'full' },
+  admissions: { E1: 'full', E2: 'full', E3: 'full',   E4: 'full',   E5: 'full' },
+};
+
+export function getEducationVisiblePills(role: EducationRoleLens): EducationHomePill[] {
+  return (Object.keys(EDU_HOME_PILL_MATRIX) as EducationHomePill[])
+    .filter((pill) => EDU_HOME_PILL_MATRIX[pill][role] !== 'hidden');
 }

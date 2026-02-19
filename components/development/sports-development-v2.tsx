@@ -42,13 +42,13 @@ export function SportsDevelopmentV2() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillBar}>
+      <View style={styles.pillBar}>
         {PILLS.map((pill) => (
           <Pressable key={pill} style={[styles.pill, activeTab === pill && { backgroundColor: accent }]} onPress={() => setActiveTab(pill)}>
             <ThemedText style={[styles.pillText, { color: activeTab === pill ? '#fff' : colors.textSecondary }]}>{pill}</ThemedText>
           </Pressable>
         ))}
-      </ScrollView>
+      </View>
 
       {activeTab === 'Overview' && <OverviewView colors={colors} accent={accent} />}
       {activeTab === 'Weekly Plan' && <WeeklyPlanView colors={colors} accent={accent} />}
@@ -303,7 +303,7 @@ function TransferView({ colors, accent }: { colors: typeof Colors.light; accent:
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
-  pillBar: { paddingHorizontal: 16, paddingVertical: 10, gap: 8 },
+  pillBar: { flexDirection: 'row' as const, flexWrap: 'wrap' as const, paddingHorizontal: 16, paddingVertical: 10, gap: 8 },
   pill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
   pillText: { fontSize: 13, fontWeight: '600' },
   sectionTitle: { fontSize: 13, fontWeight: '700', marginTop: 16, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },

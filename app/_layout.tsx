@@ -43,10 +43,18 @@ import { AskNexusSheet } from '@/components/ask-nexus-sheet';
 import { UniversalFinder } from '@/components/universal-finder';
 import type { AskNexusContext } from '@/data/mock-ask-nexus';
 import { registerEntitySheetHandlers } from '@/utils/global-entity-sheets';
-import type { TeamCardData, PlayerCardData, CoachCardData } from '@/utils/global-entity-sheets';
+import type {
+  TeamCardData, PlayerCardData, CoachCardData,
+  DriverCardData, CrewCardData, PersonCardData, MinistryCardData, LeaderCardData,
+} from '@/utils/global-entity-sheets';
 import { TeamCardSheet } from '@/components/entity-sheets/team-card-sheet';
 import { PlayerCardSheet } from '@/components/entity-sheets/player-card-sheet';
 import { CoachCardSheet } from '@/components/entity-sheets/coach-card-sheet';
+import { DriverCardSheet } from '@/components/entity-sheets/driver-card-sheet';
+import { CrewCardSheet } from '@/components/entity-sheets/crew-card-sheet';
+import { PersonCardSheet } from '@/components/entity-sheets/person-card-sheet';
+import { MinistryCardSheet } from '@/components/entity-sheets/ministry-card-sheet';
+import { LeaderCardSheet } from '@/components/entity-sheets/leader-card-sheet';
 
 // Prevent the native splash screen from auto-hiding
 SplashScreenModule.preventAutoHideAsync();
@@ -103,13 +111,23 @@ function AppShell() {
     );
   }, []);
 
-  // Entity card sheets — global open/close for team/player/coach cards
+  // Entity card sheets — global open/close for team/player/coach/driver/crew/person/ministry/leader cards
   const [teamCardData, setTeamCardData] = useState<TeamCardData | null>(null);
   const [teamCardVisible, setTeamCardVisible] = useState(false);
   const [playerCardData, setPlayerCardData] = useState<PlayerCardData | null>(null);
   const [playerCardVisible, setPlayerCardVisible] = useState(false);
   const [coachCardData, setCoachCardData] = useState<CoachCardData | null>(null);
   const [coachCardVisible, setCoachCardVisible] = useState(false);
+  const [driverCardData, setDriverCardData] = useState<DriverCardData | null>(null);
+  const [driverCardVisible, setDriverCardVisible] = useState(false);
+  const [crewCardData, setCrewCardData] = useState<CrewCardData | null>(null);
+  const [crewCardVisible, setCrewCardVisible] = useState(false);
+  const [personCardData, setPersonCardData] = useState<PersonCardData | null>(null);
+  const [personCardVisible, setPersonCardVisible] = useState(false);
+  const [ministryCardData, setMinistryCardData] = useState<MinistryCardData | null>(null);
+  const [ministryCardVisible, setMinistryCardVisible] = useState(false);
+  const [leaderCardData, setLeaderCardData] = useState<LeaderCardData | null>(null);
+  const [leaderCardVisible, setLeaderCardVisible] = useState(false);
 
   useEffect(() => {
     registerEntitySheetHandlers({
@@ -119,6 +137,16 @@ function AppShell() {
       closePlayerCard: () => setPlayerCardVisible(false),
       openCoachCard: (data) => { setCoachCardData(data); setCoachCardVisible(true); },
       closeCoachCard: () => setCoachCardVisible(false),
+      openDriverCard: (data) => { setDriverCardData(data); setDriverCardVisible(true); },
+      closeDriverCard: () => setDriverCardVisible(false),
+      openCrewCard: (data) => { setCrewCardData(data); setCrewCardVisible(true); },
+      closeCrewCard: () => setCrewCardVisible(false),
+      openPersonCard: (data) => { setPersonCardData(data); setPersonCardVisible(true); },
+      closePersonCard: () => setPersonCardVisible(false),
+      openMinistryCard: (data) => { setMinistryCardData(data); setMinistryCardVisible(true); },
+      closeMinistryCard: () => setMinistryCardVisible(false),
+      openLeaderCard: (data) => { setLeaderCardData(data); setLeaderCardVisible(true); },
+      closeLeaderCard: () => setLeaderCardVisible(false),
     });
   }, []);
 
@@ -189,7 +217,7 @@ function AppShell() {
         context={askNexusContext}
       />
 
-      {/* Entity Card Sheets — lightweight team/player/coach previews */}
+      {/* Entity Card Sheets — lightweight entity previews */}
       <TeamCardSheet
         visible={teamCardVisible}
         onClose={() => setTeamCardVisible(false)}
@@ -204,6 +232,31 @@ function AppShell() {
         visible={coachCardVisible}
         onClose={() => setCoachCardVisible(false)}
         data={coachCardData}
+      />
+      <DriverCardSheet
+        visible={driverCardVisible}
+        onClose={() => setDriverCardVisible(false)}
+        data={driverCardData}
+      />
+      <CrewCardSheet
+        visible={crewCardVisible}
+        onClose={() => setCrewCardVisible(false)}
+        data={crewCardData}
+      />
+      <PersonCardSheet
+        visible={personCardVisible}
+        onClose={() => setPersonCardVisible(false)}
+        data={personCardData}
+      />
+      <MinistryCardSheet
+        visible={ministryCardVisible}
+        onClose={() => setMinistryCardVisible(false)}
+        data={ministryCardData}
+      />
+      <LeaderCardSheet
+        visible={leaderCardVisible}
+        onClose={() => setLeaderCardVisible(false)}
+        data={leaderCardData}
       />
 
       {/* Universal Finder — triggered from Nexus tab double-tap */}

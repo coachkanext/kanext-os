@@ -1,52 +1,40 @@
 /**
- * Competition Home — K-1 main dashboard.
- * 7 swipeable hub tabs with paged tab bar + edge-hold advance
- * Dashboard | Calendar | Standings | Teams | Raceweek Ops | Rules | Tech & Compliance
+ * Competition Home — K-1 4-pill layout
+ * Dashboard | Calendar | Grid | Entries
+ *
+ * Replaces old 7-tab PagerView with SportsHome-style pill navigation.
  */
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  InteractionManager,
-} from 'react-native';
-import PagerView from 'react-native-pager-view';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { View, StyleSheet, Pressable, InteractionManager } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from '@react-navigation/core';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { PagedTabBar } from '@/components/ui/paged-tab-bar';
-import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
-import CompetitionDashboardV2 from '@/components/community/competition-dashboard-v2';
-import { StandingsV2 } from '@/components/community/standings-v2';
-import { TeamsV2 } from '@/components/community/teams-v2';
-import { RaceweekOpsV2 } from '@/components/community/raceweek-ops-v2';
-import { RulesV2 } from '@/components/community/rules-v2';
-import { TechComplianceV2 } from '@/components/community/tech-compliance-v2';
-import { CEOCalendarV2 } from '@/components/community/ceo-calendar-v2';
+import { useMembershipId } from '@/context/app-context';
+import {
+  getCompetitionRole,
+  getCompetitionVisiblePills,
+  type CompetitionHomePill,
+} from '@/utils/competition-rbac';
 
-const K1_HUB_TABS = [
+import { CompDashboardV2 } from '@/components/competition/comp-dashboard-v2';
+import { CompCalendarV2 } from '@/components/competition/comp-calendar-v2';
+import { CompGridV2 } from '@/components/competition/comp-grid-v2';
+import { CompEntriesV2 } from '@/components/competition/comp-entries-v2';
+
+const ALL_PILLS: { id: CompetitionHomePill; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
-  { id: 'race-calendar', label: 'Calendar' },
-  { id: 'standings', label: 'Standings' },
-  { id: 'teams', label: 'Teams' },
-  { id: 'raceweek', label: 'Race Week' },
-  { id: 'rules', label: 'Rules' },
-  { id: 'tech-compliance', label: 'Tech & Compliance' },
+  { id: 'calendar', label: 'Calendar' },
+  { id: 'grid', label: 'Grid' },
+  { id: 'entries', label: 'Entries' },
 ];
 
-// =============================================================================
-// SUB-COMPONENTS
-// =============================================================================
-
-function HomeTab({ colors }: { colors: typeof Colors.light }) {
-  return <CompetitionDashboardV2 colors={colors} />;
-}
-
-
+const ACCENT = '#EF4444';
 
 // =============================================================================
 // MAIN COMPONENT
@@ -55,19 +43,16 @@ function HomeTab({ colors }: { colors: typeof Colors.light }) {
 export function CommunityHome() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const [activeIndex, setActiveIndex] = useState(0);
+  const membershipId = useMembershipId();
+  const compRole = useMemo(() => getCompetitionRole(membershipId), [membershipId]);
+  const visiblePillIds = useMemo(() => new Set(getCompetitionVisiblePills(compRole)), [compRole]);
+  const pills = useMemo(() => ALL_PILLS.filter((p) => visiblePillIds.has(p.id)), [visiblePillIds]);
 
-  const pagerRef = useRef<PagerView>(null);
+  const [activePill, setActivePill] = useState<CompetitionHomePill>('dashboard');
 
-  const handleTabPress = useCallback((index: number) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    pagerRef.current?.setPage(index);
-  }, []);
-
-  // Reset to Dashboard (page 0) when Home tab is pressed
+  // Reset to Dashboard when Home tab is pressed
   const resetToHome = useCallback(() => {
-    setActiveIndex(0);
-    pagerRef.current?.setPage(0);
+    setActivePill('dashboard');
   }, []);
 
   useEffect(() => {
@@ -82,45 +67,39 @@ export function CommunityHome() {
           resetToHome();
         });
       }
-    }, [resetToHome])
+    }, [resetToHome]),
   );
 
   return (
     <ThemedView style={styles.container}>
-      {/* Hub Tab Bar */}
-      <PagedTabBar tabs={K1_HUB_TABS} activeIndex={activeIndex} onTabPress={handleTabPress} />
+      {/* Pill Bar */}
+      <View style={styles.pillBar}>
+        {pills.map((pill) => {
+          const isActive = activePill === pill.id;
+          return (
+            <Pressable
+              key={pill.id}
+              style={[styles.pill, isActive && { backgroundColor: ACCENT }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActivePill(pill.id);
+              }}
+            >
+              <ThemedText
+                style={[styles.pillText, { color: isActive ? '#000' : colors.textSecondary }]}
+              >
+                {pill.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
 
-      {/* Tab Content (PagerView — swipeable) */}
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={K1_HUB_TABS.length} onAdvance={handleTabPress}>
-        <PagerView
-          ref={pagerRef}
-          style={{ flex: 1 }}
-          initialPage={0}
-          onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
-        >
-          <View key="dashboard" style={{ flex: 1 }}>
-            <HomeTab colors={colors} />
-          </View>
-          <View key="race-calendar" style={{ flex: 1 }}>
-            <CEOCalendarV2 colors={colors} />
-          </View>
-          <View key="standings" style={{ flex: 1 }}>
-            <StandingsV2 colors={colors} />
-          </View>
-          <View key="teams" style={{ flex: 1 }}>
-            <TeamsV2 colors={colors} />
-          </View>
-          <View key="raceweek" style={{ flex: 1 }}>
-            <RaceweekOpsV2 colors={colors} />
-          </View>
-          <View key="rules" style={{ flex: 1 }}>
-            <RulesV2 colors={colors} />
-          </View>
-          <View key="tech-compliance" style={{ flex: 1 }}>
-            <TechComplianceV2 colors={colors} />
-          </View>
-        </PagerView>
-      </EdgeHoldAdvance>
+      {/* Content */}
+      {activePill === 'dashboard' && <CompDashboardV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'calendar' && <CompCalendarV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'grid' && <CompGridV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'entries' && <CompEntriesV2 colors={colors} accent={ACCENT} />}
     </ThemedView>
   );
 }
@@ -132,5 +111,22 @@ export function CommunityHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  pillBar: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingTop: 2,
+    paddingBottom: 10,
+    gap: 8,
+  },
+  pill: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  pillText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
 });

@@ -546,3 +546,420 @@ export const PROGRESS_SNAPSHOT: ProgressSnapshot = {
   topImprover: 'Paul Diomande',
   topImproverDelta: 4,
 };
+
+// =============================================================================
+// LAST WEEK'S PLAN (Week 21 — Feb 10-16)
+// data_source: 'demo_seed'
+// =============================================================================
+
+export const LAST_WEEKLY_PLAN: WeeklyPlan = {
+  weekLabel: 'Week 21',
+  startDate: 'Feb 10',
+  endDate: 'Feb 16',
+  days: [
+    {
+      day: 'Monday',
+      date: 'Feb 10',
+      sessions: [
+        { id: 'w21-m1', type: 'film', title: 'Post-Game Film: Ave Maria', time: '9:00 AM', duration: '45 min', focus: 'Transition offense execution review — 18 fast break points' },
+        { id: 'w21-m2', type: 'practice', title: 'Full Practice', time: '2:00 PM', duration: '2 hr', focus: 'Ball security drills, half-court offense flow', notes: 'Emphasis on reducing turnovers — 16 TOs vs Ave Maria' },
+        { id: 'w21-m3', type: 'individual', title: 'Individual Skill Work', time: '4:30 PM', duration: '30 min', focus: 'Position-specific: guards — PnR reads, bigs — post footwork' },
+      ],
+    },
+    {
+      day: 'Tuesday',
+      date: 'Feb 11',
+      sessions: [
+        { id: 'w21-t1', type: 'lift', title: 'Strength Training', time: '8:00 AM', duration: '1 hr', focus: 'Upper body, core stabilization' },
+        { id: 'w21-t2', type: 'practice', title: 'Practice — Defensive Focus', time: '2:00 PM', duration: '1.5 hr', focus: 'Pack line rotations, closeout technique', notes: 'Blake limited — left ankle soreness' },
+        { id: 'w21-t3', type: 'film', title: 'Scouting Report: Thomas', time: '5:00 PM', duration: '30 min', focus: 'Thomas offensive tendencies, PnR coverage' },
+      ],
+    },
+    {
+      day: 'Wednesday',
+      date: 'Feb 12',
+      sessions: [
+        { id: 'w21-w1', type: 'individual', title: 'Shooting Lab', time: '9:00 AM', duration: '45 min', focus: '200 makes — catch-and-shoot + FT work' },
+        { id: 'w21-w2', type: 'practice', title: 'Walk-Through + Scrimmage', time: '2:00 PM', duration: '2 hr', focus: 'Thomas game plan install — defensive assignments', notes: 'Washington cleared all conditioning benchmarks' },
+      ],
+    },
+    {
+      day: 'Thursday',
+      date: 'Feb 13',
+      sessions: [
+        { id: 'w21-th1', type: 'lift', title: 'Strength Training', time: '8:00 AM', duration: '45 min', focus: 'Lower body, explosiveness' },
+        { id: 'w21-th2', type: 'practice', title: 'Shootaround — Game Prep', time: '11:00 AM', duration: '1 hr', focus: 'Thomas game plan final review, emphasis plays walk-through' },
+        { id: 'w21-th3', type: 'film', title: 'Pre-Game Film: Thomas', time: '3:00 PM', duration: '30 min', focus: 'Thomas key actions, late-clock tendencies' },
+      ],
+    },
+    {
+      day: 'Friday',
+      date: 'Feb 14',
+      sessions: [
+        { id: 'w21-f1', type: 'rest', title: 'Game Day — Recovery', time: '10:00 AM', duration: '1 hr', notes: 'Light shooting, stretching, mental prep' },
+        { id: 'w21-f2', type: 'practice', title: 'Game vs Thomas University', time: '7:00 PM', duration: '2 hr', focus: 'GAME DAY — FMU W, final score 78-62' },
+      ],
+    },
+    {
+      day: 'Saturday',
+      date: 'Feb 15',
+      sessions: [
+        { id: 'w21-s1', type: 'rest', title: 'Recovery Day', time: '—', duration: '—', notes: 'Active recovery — pool, stretch, no live contact' },
+        { id: 'w21-s2', type: 'film', title: 'Quick-Hits Film: STT Scout', time: '4:00 PM', duration: '30 min', focus: 'Initial scout look at St. Thomas — Sun Conference rival game tomorrow' },
+      ],
+    },
+    {
+      day: 'Sunday',
+      date: 'Feb 16',
+      sessions: [
+        { id: 'w21-su1', type: 'practice', title: 'Game vs St. Thomas University', time: '4:00 PM', duration: '2 hr', focus: 'GAME DAY — FMU W 72-65. Kalejaiye 18-11-3. Plantey 14 pts (5-9 3PT).' },
+        { id: 'w21-su2', type: 'film', title: 'Post-Game Quick Review', time: '7:00 PM', duration: '30 min', focus: 'STT game — defensive adjustments that worked in 2nd half', notes: 'Coach Davis noted Rivera containment effective after Hernandez switch' },
+      ],
+    },
+  ],
+};
+
+/** Both weekly plans for list views */
+export const WEEKLY_PLANS: WeeklyPlan[] = [CURRENT_WEEKLY_PLAN, LAST_WEEKLY_PLAN];
+
+// =============================================================================
+// DRILL ASSIGNMENTS (8 assignments across position groups)
+// data_source: 'demo_seed'
+// =============================================================================
+
+export interface DrillAssignment {
+  id: string;
+  drillId: string;
+  drillName: string;
+  positionGroup: 'guards' | 'wings' | 'bigs';
+  assignedPlayers: { name: string; number: string }[];
+  assignedDate: string;
+  completedDate?: string;
+  status: 'assigned' | 'in-progress' | 'completed';
+  coachNotes?: string;
+  repsCompleted?: string;
+  data_source?: string;
+}
+
+export const DRILL_ASSIGNMENTS: DrillAssignment[] = [
+  {
+    id: 'da-1',
+    drillId: 'dr-1',
+    drillName: '2-on-1 PnR Reads',
+    positionGroup: 'guards',
+    assignedPlayers: [
+      { name: 'Carter', number: '4' },
+      { name: 'Mentor', number: '11' },
+      { name: 'Noel', number: '13' },
+    ],
+    assignedDate: 'Feb 17',
+    status: 'in-progress',
+    coachNotes: 'Focus on reading the drop vs hedge. Carter needs to attack downhill more aggressively.',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'da-2',
+    drillId: 'dr-2',
+    drillName: 'Decision Speed Drill',
+    positionGroup: 'guards',
+    assignedPlayers: [
+      { name: 'Carter', number: '4' },
+      { name: 'Noel', number: '13' },
+    ],
+    assignedDate: 'Feb 17',
+    status: 'assigned',
+    coachNotes: '2-second decision window. Carter and Noel need to sharpen late-clock reads. Pair with game film from STT.',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'da-3',
+    drillId: 'dr-6',
+    drillName: 'Curl-to-Corner',
+    positionGroup: 'wings',
+    assignedPlayers: [
+      { name: 'Munir-Jones', number: '55' },
+      { name: 'Selden', number: '5' },
+    ],
+    assignedDate: 'Feb 17',
+    status: 'in-progress',
+    coachNotes: 'Munir-Jones has the athleticism for the curl — needs tighter cuts. Selden reads the defense well but must quicken release.',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'da-4',
+    drillId: 'dr-14',
+    drillName: 'Closeout-to-Contest',
+    positionGroup: 'wings',
+    assignedPlayers: [
+      { name: 'Munir-Jones', number: '55' },
+      { name: 'Selden', number: '5' },
+    ],
+    assignedDate: 'Feb 18',
+    status: 'assigned',
+    coachNotes: 'SEU shoots 39.2% from corners. Both wings must master closeout technique before Saturday. No fouling on pump fakes.',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'da-5',
+    drillId: 'dr-7',
+    drillName: 'Drop Step Series',
+    positionGroup: 'bigs',
+    assignedPlayers: [
+      { name: 'Brewer', number: '41' },
+      { name: 'Selden', number: '5' },
+    ],
+    assignedDate: 'Feb 17',
+    completedDate: 'Feb 17',
+    status: 'completed',
+    coachNotes: 'Brewer showed great improvement — sealing with the hip consistently. Selden still telegraphing the drop step.',
+    repsCompleted: '3 sets × 8 reps each side (both players)',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'da-6',
+    drillId: 'dr-9',
+    drillName: 'Box-Out to Outlet',
+    positionGroup: 'bigs',
+    assignedPlayers: [
+      { name: 'Brewer', number: '41' },
+      { name: 'Selden', number: '5' },
+    ],
+    assignedDate: 'Feb 18',
+    status: 'assigned',
+    coachNotes: 'Keiser top-20 nationally in OREB%. Bigs must box out Carter every possession. Drill with game-speed reps.',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'da-7',
+    drillId: 'dr-13',
+    drillName: 'Pressure Dribbling',
+    positionGroup: 'guards',
+    assignedPlayers: [
+      { name: 'Carter', number: '4' },
+      { name: 'Mentor', number: '11' },
+      { name: 'Noel', number: '13' },
+    ],
+    assignedDate: 'Feb 18',
+    status: 'assigned',
+    coachNotes: 'SEU presses after makes in 2nd half. Guards must handle pressure without turning it over. Mentor has the steadiest handle — pair him with Carter for competitive reps.',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'da-8',
+    drillId: 'dr-11',
+    drillName: 'Pressure FT Drill',
+    positionGroup: 'bigs',
+    assignedPlayers: [
+      { name: 'Brewer', number: '41' },
+    ],
+    assignedDate: 'Feb 17',
+    status: 'in-progress',
+    coachNotes: 'Brewer at 64% FT this season — must improve. 100 makes with sprint-between consequence. Track make percentage daily.',
+    repsCompleted: '62 of 100 makes completed (session 1)',
+    data_source: 'demo_seed',
+  },
+];
+
+// =============================================================================
+// ADDITIONAL EVIDENCE QUEUE ITEMS (film clips for review)
+// data_source: 'demo_seed'
+// =============================================================================
+
+export const EVIDENCE_QUEUE_EXTENDED: EvidenceItem[] = [
+  ...EVIDENCE_QUEUE,
+  {
+    id: 'ev-9',
+    playerId: 'carter-4',
+    playerName: 'Carter (#4, PG)',
+    planItemTitle: 'PnR Decision-Making',
+    type: 'clip',
+    status: 'pending',
+    date: 'Feb 16',
+    description: 'STT game: Carter 2-on-1 PnR read in transition — found Selden for corner 3. Correct read under pressure.',
+    // @ts-ignore — optional enrichment
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'ev-10',
+    playerId: 'selden-5',
+    playerName: 'Selden (#5, Forward)',
+    planItemTitle: 'Post Footwork',
+    type: 'clip',
+    status: 'reviewed',
+    date: 'Feb 15',
+    description: 'STT game: Selden drop step to baby hook — 2 buckets in 4Q. Improved hip seal from drill work.',
+    // @ts-ignore — optional enrichment
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'ev-11',
+    playerId: 'mentor-11',
+    playerName: 'Mentor (#11, CG)',
+    planItemTitle: 'Ball Handling Under Pressure',
+    type: 'clip',
+    status: 'pending',
+    date: 'Feb 16',
+    description: 'STT game: Mentor broke full-court press 3 consecutive times in 4Q — calm handle, found open man every time.',
+    // @ts-ignore — optional enrichment
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'ev-12',
+    playerId: 'noel-13',
+    playerName: 'Noel (#13, CG)',
+    planItemTitle: 'Defensive Awareness',
+    type: 'clip',
+    status: 'flagged',
+    date: 'Feb 16',
+    description: 'STT game: Noel lost his man on 2 back-cuts in 3Q — ball-watching on weak side. Needs film review and Shell Drill reps.',
+    // @ts-ignore — optional enrichment
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'ev-13',
+    playerId: 'brewer-41',
+    playerName: 'Brewer (#41, Forward)',
+    planItemTitle: 'Box-Out Discipline',
+    type: 'clip',
+    status: 'pending',
+    date: 'Feb 16',
+    description: 'STT game: Brewer boxed out Contreras on 5 of 6 possessions in 4Q — zero OREB allowed. Best box-out effort of the season.',
+    // @ts-ignore — optional enrichment
+    data_source: 'demo_seed',
+  },
+];
+
+// =============================================================================
+// PLAYER DEVELOPMENT NOTES — TOP 3 PRIORITIES
+// data_source: 'demo_seed'
+// =============================================================================
+
+export interface PlayerDevNote {
+  id: string;
+  priorityId: string;
+  priorityTitle: string;
+  playerName: string;
+  playerNumber: string;
+  position: string;
+  note: string;
+  actionItems: string[];
+  progressIndicator: ProgressLevel;
+  weekUpdated: string;
+  data_source?: string;
+}
+
+/**
+ * Development notes linked to top 3 team priorities:
+ * 1. Perimeter Shooting Consistency
+ * 2. Transition Defense
+ * 3. Free Throw Improvement
+ */
+export const PLAYER_DEV_NOTES: PlayerDevNote[] = [
+  // Priority 1: Perimeter Shooting Consistency
+  {
+    id: 'pdn-1',
+    priorityId: 'tp-1',
+    priorityTitle: 'Perimeter Shooting Consistency',
+    playerName: 'Carter',
+    playerNumber: '4',
+    position: 'PG',
+    note: 'Carter catch-and-shoot 3PT% has dropped from 38% to 32% over the last 3 weeks. Film shows he is rushing his release off the catch — feet not set. Added 50 extra catch-and-shoot reps to daily routine.',
+    actionItems: [
+      'Spot-Up 3s drill: 200 makes daily with emphasis on feet-set-before-catch',
+      'Film review: 5 clips of rushed vs set releases for self-comparison',
+      'Track 3PT% by week — target back to 36% by end of Feb',
+    ],
+    progressIndicator: 'needs-work',
+    weekUpdated: 'W22',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'pdn-2',
+    priorityId: 'tp-1',
+    priorityTitle: 'Perimeter Shooting Consistency',
+    playerName: 'Munir-Jones',
+    playerNumber: '55',
+    position: 'Wing',
+    note: 'Munir-Jones is the team best off-screen shooter (41% on curl 3s) but only gets 2.1 attempts per game. Need to run more stagger screens for him. SEU game plan should feature him.',
+    actionItems: [
+      'Curl-to-Corner drill: 3 sets × 10 reps daily',
+      'Install 2 new stagger screen plays featuring Munir-Jones for SEU game',
+      'Track attempts per game — target 4+ catch-and-shoot 3PA',
+    ],
+    progressIndicator: 'progressing',
+    weekUpdated: 'W22',
+    data_source: 'demo_seed',
+  },
+  // Priority 2: Transition Defense
+  {
+    id: 'pdn-3',
+    priorityId: 'tp-2',
+    priorityTitle: 'Transition Defense',
+    playerName: 'Noel',
+    playerNumber: '13',
+    position: 'CG',
+    note: 'Noel is the primary offender in transition D breakdowns. Film from STT game shows him ball-watching on 4 possessions where his man leaked out for easy buckets. Need Shell Drill and Sprint-to-Paint reps.',
+    actionItems: [
+      '3-on-2 Transition D drill: 4 sets daily until habit is corrected',
+      'Sprint-to-Paint drill: 5 sets × 4 reps as conditioning penalty for ball-watching',
+      'Film session: watch 5 clips of transition D breakdowns from STT game — identify where eyes went wrong',
+      'Pair with Mentor for competitive transition D drills — Mentor is the model for this habit',
+    ],
+    progressIndicator: 'needs-work',
+    weekUpdated: 'W22',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'pdn-4',
+    priorityId: 'tp-2',
+    priorityTitle: 'Transition Defense',
+    playerName: 'Selden',
+    playerNumber: '5',
+    position: 'Forward',
+    note: 'Selden sprint-back effort has improved significantly over the last 2 weeks. He touched paint first on 82% of transition possessions in the STT game (up from 61% three weeks ago). Maintain this standard.',
+    actionItems: [
+      'Continue Sprint-to-Paint drill 3x per week to maintain habit',
+      'Positive reinforcement in film session — show his improvement clips to the team',
+      'Target: 85%+ paint-first rate by end of regular season',
+    ],
+    progressIndicator: 'progressing',
+    weekUpdated: 'W22',
+    data_source: 'demo_seed',
+  },
+  // Priority 3: Free Throw Improvement
+  {
+    id: 'pdn-5',
+    priorityId: 'tp-3',
+    priorityTitle: 'Free Throw Improvement',
+    playerName: 'Brewer',
+    playerNumber: '41',
+    position: 'Forward',
+    note: 'Brewer is at 64% FT this season — worst among rotation players. Gets fouled 4.2 times per game, so FT improvement is high-leverage. Mechanics look fine in warm-ups but break down under pressure. Added pressure FT drill with sprint consequence.',
+    actionItems: [
+      'Pressure FT Drill: 100 makes daily with sprint-between consequence',
+      'Pre-game routine: 30 FTs before every game (no miss streak allowed over 2)',
+      'Track FT% weekly — target 72% by conference tournament',
+      'Mental rehearsal: visualize FT routine for 2 minutes before bed (Coach Williams to check in)',
+    ],
+    progressIndicator: 'needs-work',
+    weekUpdated: 'W22',
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'pdn-6',
+    priorityId: 'tp-3',
+    priorityTitle: 'Free Throw Improvement',
+    playerName: 'Mentor',
+    playerNumber: '11',
+    position: 'CG',
+    note: 'Mentor FT% is 81% — best on the team. He is the model for the FT routine. Pair him with Brewer and Noel for FT sessions so they can observe his routine consistency. Also use him as a positive example in film.',
+    actionItems: [
+      'Lead FT group sessions with Brewer and Noel (Tu/Th)',
+      'Film his routine for reference clips — post in locker room',
+      'Maintain 80%+ FT — no regression allowed',
+    ],
+    progressIndicator: 'achieved',
+    weekUpdated: 'W22',
+    data_source: 'demo_seed',
+  },
+];

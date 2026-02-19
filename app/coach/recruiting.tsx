@@ -67,6 +67,10 @@ import {
 } from '@/components/recruiting/filter-sort-panel';
 import type { ClusterType } from '@/types';
 import { PlayerSheet } from '@/components/player-sheet';
+import { RecruitingHeaderV2 } from '@/components/recruiting/recruiting-header-v2';
+import { RecruitingBoardV2 } from '@/components/recruiting/recruiting-board-v2';
+import { RecruitingDatabaseV2 } from '@/components/recruiting/recruiting-database-v2';
+import { RecruitingPortalV2 } from '@/components/recruiting/recruiting-portal-v2';
 
 // Board imports
 import {
@@ -1708,6 +1712,24 @@ export function PlayerPoolContent() {
           </Pressable>
         </View>
       </FilterSheet>
+    </View>
+  );
+}
+
+// ─── V2 Content — 3-segment (Board / Database / Portal) ───
+export function PlayerPoolContentV2({ colors }: { colors: typeof import('@/constants/theme').Colors.light }) {
+  const [viewMode, setViewMode] = useState<import('@/types').RecruitingViewModeV2>('board');
+
+  return (
+    <View style={{ flex: 1 }}>
+      <RecruitingHeaderV2
+        activeMode={viewMode}
+        onModeChange={setViewMode}
+        colors={colors}
+      />
+      {viewMode === 'board' && <RecruitingBoardV2 colors={colors} />}
+      {viewMode === 'database' && <RecruitingDatabaseV2 colors={colors} />}
+      {viewMode === 'portal' && <RecruitingPortalV2 colors={colors} />}
     </View>
   );
 }

@@ -49,6 +49,24 @@ export function getChurchHomeTabVisibility(tab: ChurchHomeTab, role: ChurchRoleL
 }
 
 // =============================================================================
+// HOME PILL VISIBILITY (4-pill layout)
+// =============================================================================
+
+export type ChurchHomePill = 'dashboard' | 'calendar' | 'ministries' | 'connect';
+
+const CHURCH_HOME_PILL_MATRIX: Record<ChurchHomePill, Record<ChurchRoleLens, ChurchVisibility>> = {
+  dashboard:  { C1: 'full', C2: 'full', C3: 'full',    C4: 'full',    C5: 'full' },
+  calendar:   { C1: 'full', C2: 'full', C3: 'full',    C4: 'full',    C5: 'full' },
+  ministries: { C1: 'full', C2: 'full', C3: 'full',    C4: 'full',    C5: 'hidden' },
+  connect:    { C1: 'full', C2: 'full', C3: 'full',    C4: 'hidden',  C5: 'hidden' },
+};
+
+export function getChurchVisiblePills(role: ChurchRoleLens): ChurchHomePill[] {
+  return (Object.keys(CHURCH_HOME_PILL_MATRIX) as ChurchHomePill[])
+    .filter((pill) => CHURCH_HOME_PILL_MATRIX[pill][role] !== 'hidden');
+}
+
+// =============================================================================
 // ORG TAB VISIBILITY
 // =============================================================================
 
@@ -207,6 +225,20 @@ export function isMinistryLevel(role: ChurchRoleLens): boolean {
 // =============================================================================
 // ROLE MAPPING
 // =============================================================================
+
+// =============================================================================
+// MEMBERSHIP → LENS (direct membership_id mapping for ActiveView)
+// =============================================================================
+
+const CHURCH_MEMBERSHIP_MAP: Record<string, ChurchRoleLens> = {
+  mem_church_icc_ie: 'C1',
+  mem_church_icc_ie_teacher: 'C3',
+  mem_church_iccla: 'C3',
+};
+
+export function getChurchRole(membershipId: string): ChurchRoleLens {
+  return CHURCH_MEMBERSHIP_MAP[membershipId] ?? 'C1';
+}
 
 export function mapRoleToChurchLens(role: string): ChurchRoleLens {
   switch (role) {

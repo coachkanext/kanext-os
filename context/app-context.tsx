@@ -6,7 +6,7 @@
 
 import React, { createContext, useContext, useReducer, useCallback, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { AppContextState, Mode, Role, Organization, Cycle, Program, ActiveContext, RecentContext } from '@/types';
+import type { AppContextState, Mode, Role, Organization, Cycle, Program, ActiveContext, RecentContext, ActiveView, ActiveViewKey } from '@/types';
 import {
   DEFAULT_ACTIVE_CONTEXT,
   SEEDED_RECENT_CONTEXTS,
@@ -16,6 +16,8 @@ import {
   getDefaultContextForMode,
 } from '@/data/mock-memberships';
 import { deriveRoleBadge } from '@/utils/role-badge';
+import { buildActiveView, getActiveViewKey } from '@/utils/active-view';
+import { notifyViewSwitch } from '@/utils/view-switch-lifecycle';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -27,6 +29,7 @@ const STORAGE_KEYS = {
   sportsSeason: 'kx:sportsSeason',
   activeContext: 'kx:activeContext',
   recentContexts: 'kx:recentContexts',
+  activeView: 'kx:activeView',
 };
 
 // Auth state type
@@ -35,12 +38,14 @@ type AuthState = 'viewer' | 'owner';
 // Landing tab for navigation control
 type LandingTab = 'home' | 'nexus' | null;
 
-// Extended state with auth, landing control, and V2 context
+// Extended state with auth, landing control, V2 context, and ActiveView
 interface ExtendedAppState extends AppContextState {
   authState: AuthState;
   pendingLandingTab: LandingTab;
   activeContext: ActiveContext;
   recentContexts: RecentContext[];
+  activeView: ActiveView | null;
+  activeViewKey: ActiveViewKey;
 }
 
 // =============================================================================
@@ -204,6 +209,8 @@ const defaultState: ExtendedAppState = {
   pendingLandingTab: null,
   activeContext: DEFAULT_ACTIVE_CONTEXT,
   recentContexts: SEEDED_RECENT_CONTEXTS,
+  activeView: null,
+  activeViewKey: '',
 };
 
 // =============================================================================
@@ -223,7 +230,8 @@ type AppAction =
   | { type: 'SET_PENDING_LANDING_TAB'; payload: LandingTab }
   | { type: 'INITIALIZE'; payload: Partial<ExtendedAppState> }
   | { type: 'RESTORE_STATE'; payload: { mode: Mode; authState: AuthState; organization?: string; program?: string; season?: string } }
-  | { type: 'SWITCH_CONTEXT'; payload: ActiveContext };
+  | { type: 'SWITCH_CONTEXT'; payload: ActiveContext }
+  | { type: 'SET_ACTIVE_VIEW'; payload: ActiveView };
 
 function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppState {
   switch (action.type) {
@@ -277,6 +285,59 @@ function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppStat
         authState,
       };
     }
+    case 'SET_ACTIVE_VIEW': {
+      const view = action.payload;
+      const viewKey = getActiveViewKey(view);
+
+      // Build legacy ActiveContext from the view for V2 backwards compat
+      const legacyCtx: ActiveContext = {
+        mode: view.mode,
+        org_id: view.org_id,
+        program_id: view.scope_id,
+        season_id: view.season_id,
+        membership_id: view.membership_id,
+        derived_role_badge: view.derived_role_badge,
+      };
+
+      // Resolve legacy Organization shape
+      const viewOrg = getOrgById(view.org_id);
+      const legacyOrg: Organization | null = viewOrg
+        ? { id: viewOrg.org_id, name: viewOrg.org_name, mode: viewOrg.mode, type: viewOrg.org_type ?? '', location: viewOrg.location, description: viewOrg.description }
+        : { id: view.org_id, name: view.org_name, mode: view.mode, type: '', location: '', description: '' };
+
+      // Resolve legacy Program shape
+      const viewProgram = getProgramById(view.scope_id);
+      const legacyProgram: Program | null = viewProgram
+        ? { id: viewProgram.program_id, name: viewProgram.program_name, level: 'varsity' }
+        : null;
+
+      // Resolve legacy Cycle shape
+      const viewSeason = getSeasonById(view.season_id);
+      const legacyCycle: Cycle | null = viewSeason
+        ? { id: viewSeason.season_id, name: viewSeason.season_name, startDate: new Date(viewSeason.start_date), endDate: new Date(viewSeason.end_date), isCurrent: viewSeason.is_current }
+        : DEMO_CYCLES[view.mode] ?? null;
+
+      // Push previous context to recents (dedup by membership_id)
+      const prevCtx: RecentContext = { ...state.activeContext, timestamp: Date.now() };
+      const dedupedRecents = state.recentContexts.filter(
+        (r) => !(r.org_id === prevCtx.org_id && r.membership_id === prevCtx.membership_id),
+      );
+      const updatedRecents = [prevCtx, ...dedupedRecents].slice(0, 10);
+
+      return {
+        ...state,
+        activeView: view,
+        activeViewKey: viewKey,
+        activeContext: legacyCtx,
+        recentContexts: updatedRecents,
+        mode: view.mode,
+        organization: legacyOrg,
+        program: legacyProgram,
+        cycle: legacyCycle,
+        operatingRole: DEMO_ROLES[view.mode] ?? 'head_coach',
+        isFirstRun: false,
+      };
+    }
     case 'SWITCH_CONTEXT': {
       const ctx = action.payload;
       const v2Org = getOrgById(ctx.org_id);
@@ -327,6 +388,7 @@ interface AppContextValue {
   setMode: (mode: Mode) => void;
   switchMode: (mode: Mode) => void;
   switchContext: (ctx: ActiveContext) => void;
+  setActiveView: (view: ActiveView) => void;
   setOrganization: (org: Organization | null) => void;
   setRole: (role: Role) => void;
   setCycle: (cycle: Cycle | null) => void;
@@ -357,6 +419,23 @@ export function AppProvider({ children }: AppProviderProps) {
   useEffect(() => {
     const loadPersistedState = async () => {
       try {
+        // Try ActiveView first (new system)
+        const savedActiveView = await AsyncStorage.getItem(STORAGE_KEYS.activeView);
+        if (savedActiveView) {
+          try {
+            const parsed = JSON.parse(savedActiveView) as ActiveView;
+            if (parsed.view_id && parsed.mode && parsed.org_id) {
+              dispatch({ type: 'SET_ACTIVE_VIEW', payload: parsed });
+              dispatch({ type: 'SET_LOADING', payload: false });
+              // Also restore auth
+              const auth = await AsyncStorage.getItem(STORAGE_KEYS.auth);
+              if (auth) dispatch({ type: 'SET_AUTH_STATE', payload: (auth as AuthState) || 'viewer' });
+              return; // Skip legacy restore
+            }
+          } catch { /* fall through to legacy */ }
+        }
+
+        // Legacy restore path
         const [lastMode, auth, organization, program, season] = await Promise.all([
           AsyncStorage.getItem(STORAGE_KEYS.lastMode),
           AsyncStorage.getItem(STORAGE_KEYS.auth),
@@ -445,6 +524,19 @@ export function AppProvider({ children }: AppProviderProps) {
     AsyncStorage.setItem(STORAGE_KEYS.activeContext, JSON.stringify({ ...ctx, derived_role_badge: badge })).catch(console.error);
   }, []);
 
+  const setActiveView = useCallback((view: ActiveView) => {
+    const newKey = getActiveViewKey(view);
+    const prevKey = state.activeViewKey;
+    // Dedup — no-op if same view tapped again
+    if (newKey === prevKey && prevKey !== '') return;
+    dispatch({ type: 'SET_ACTIVE_VIEW', payload: view });
+    // Persist
+    AsyncStorage.setItem(STORAGE_KEYS.activeView, JSON.stringify(view)).catch(console.error);
+    AsyncStorage.setItem(STORAGE_KEYS.lastMode, view.mode).catch(console.error);
+    // Notify lifecycle listeners
+    notifyViewSwitch(view, prevKey);
+  }, [state.activeViewKey]);
+
   const setOrganization = useCallback((org: Organization | null) => {
     dispatch({ type: 'SET_ORGANIZATION', payload: org });
   }, []);
@@ -499,6 +591,7 @@ export function AppProvider({ children }: AppProviderProps) {
         STORAGE_KEYS.sportsOrganization,
         STORAGE_KEYS.sportsProgram,
         STORAGE_KEYS.sportsSeason,
+        STORAGE_KEYS.activeView,
       ]);
     } catch (error) {
       console.error('Failed to clear persisted state:', error);
@@ -516,6 +609,7 @@ export function AppProvider({ children }: AppProviderProps) {
     setMode,
     switchMode,
     switchContext,
+    setActiveView,
     setOrganization,
     setRole,
     setCycle,
@@ -568,4 +662,24 @@ export function useProgram(): Program | null {
 export function useAuthState(): AuthState {
   const { state } = useAppContext();
   return state.authState;
+}
+
+export function useActiveView(): ActiveView | null {
+  const { state } = useAppContext();
+  return state.activeView;
+}
+
+export function useActiveViewKey(): ActiveViewKey {
+  const { state } = useAppContext();
+  return state.activeViewKey;
+}
+
+export function useMembershipId(): string {
+  const { state } = useAppContext();
+  return state.activeView?.membership_id ?? state.activeContext.membership_id;
+}
+
+export function useOrgId(): string {
+  const { state } = useAppContext();
+  return state.activeView?.org_id ?? state.activeContext.org_id;
 }

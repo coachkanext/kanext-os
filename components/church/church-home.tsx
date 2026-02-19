@@ -1,58 +1,43 @@
 /**
- * Church Home — ICCLA Control Room
- * 10 swipeable hub tabs with PagedTabBar + EdgeHoldAdvance
- * Dashboard | Calendar | Worship | Community | Serve | Give |
- * Events | Prayer | Messages | Discipleship
+ * Church Home — ICCLA 4-pill layout
+ * Dashboard | Calendar | Ministries | Connect
  *
- * Thin orchestrator — each tab lives in its own file.
+ * Replaces old 10-tab PagerView with SportsHome-style pill navigation.
+ * Keeps ViewAsBar for RBAC role switching.
  */
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { View, Pressable, StyleSheet, InteractionManager } from 'react-native';
-import PagerView from 'react-native-pager-view';
 import * as Haptics from 'expo-haptics';
-import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/core';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
-import { PagedTabBar } from '@/components/ui/paged-tab-bar';
-import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
-
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useChurch } from '@/context/church-context';
-import type { ChurchRoleLens } from '@/utils/church-rbac';
+import { useMembershipId } from '@/context/app-context';
+import {
+  getChurchRole,
+  getChurchVisiblePills,
+  type ChurchRoleLens,
+  type ChurchHomePill,
+} from '@/utils/church-rbac';
 
-// Tab components
-import { ChurchDashboard } from '@/components/church/church-dashboard';
-import { ChurchCalendar } from '@/components/church/church-calendar';
-import { ChurchWorship } from '@/components/church/church-worship';
-import { ChurchCommunity } from '@/components/church/church-community';
-import { ChurchServe } from '@/components/church/church-serve';
-import { ChurchGive } from '@/components/church/church-give';
-import { ChurchEvents } from '@/components/church/church-events';
-import { ChurchPrayer } from '@/components/church/church-prayer';
-import { ChurchMessages } from '@/components/church/church-messages';
-import { ChurchDiscipleship } from '@/components/church/church-discipleship';
+import { ChurchDashboardV2 } from '@/components/church-home/church-dashboard-v2';
+import { ChurchCalendarV2 } from '@/components/church-home/church-calendar-v2';
+import { ChurchMinistriesV2 } from '@/components/church-home/church-ministries-v2';
+import { ChurchConnectV2 } from '@/components/church-home/church-connect-v2';
 
-// =============================================================================
-// TAB DEFINITIONS
-// =============================================================================
-
-const CHURCH_HUB_TABS = [
+const ALL_PILLS: { id: ChurchHomePill; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'calendar', label: 'Calendar' },
-  { id: 'worship', label: 'Worship' },
-  { id: 'community', label: 'Community' },
-  { id: 'serve', label: 'Serve' },
-  { id: 'give', label: 'Give' },
-  { id: 'events', label: 'Events' },
-  { id: 'prayer', label: 'Prayer' },
-  { id: 'messages', label: 'Messages' },
-  { id: 'discipleship', label: 'Discipleship' },
+  { id: 'ministries', label: 'Ministries' },
+  { id: 'connect', label: 'Connect' },
 ];
+
+const ACCENT = '#8B5CF6';
 
 // =============================================================================
 // VIEW AS BAR — 4-pill RBAC toggle
@@ -128,24 +113,36 @@ const viewStyles = StyleSheet.create({
 // =============================================================================
 
 export function ChurchHome() {
-  const [activeTab, setActiveTab] = useState(0);
-  const pagerRef = useRef<PagerView>(null);
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const { viewAsRole } = useChurch();
+  const membershipId = useMembershipId();
 
-  const handleTabPress = useCallback((index: number) => {
-    pagerRef.current?.setPage(index);
-  }, []);
+  // Derive role from ActiveView membership; ViewAsBar can override for debugging
+  const derivedRole = useMemo(() => getChurchRole(membershipId), [membershipId]);
+  const effectiveRole = viewAsRole ?? derivedRole;
 
-  const handleSwitchTab = useCallback((index: number) => {
-    pagerRef.current?.setPage(index);
-  }, []);
+  const visiblePillIds = useMemo(
+    () => new Set(getChurchVisiblePills(effectiveRole)),
+    [effectiveRole],
+  );
+  const pills = useMemo(
+    () => ALL_PILLS.filter((p) => visiblePillIds.has(p.id)),
+    [visiblePillIds],
+  );
 
-  // Reset to Dashboard (page 0) when Home tab is pressed
+  const [activePill, setActivePill] = useState<ChurchHomePill>('dashboard');
+
+  // If active pill becomes hidden due to role change, reset to dashboard
+  useEffect(() => {
+    if (!visiblePillIds.has(activePill)) {
+      setActivePill('dashboard');
+    }
+  }, [visiblePillIds, activePill]);
+
+  // Reset to Dashboard when Home tab is pressed
   const resetToHome = useCallback(() => {
-    setActiveTab(0);
-    pagerRef.current?.setPage(0);
+    setActivePill('dashboard');
   }, []);
 
   useEffect(() => {
@@ -160,56 +157,41 @@ export function ChurchHome() {
           resetToHome();
         });
       }
-    }, [resetToHome])
+    }, [resetToHome]),
   );
 
   return (
-    <ThemedView style={s.container}>
+    <ThemedView style={styles.container}>
       <ViewAsBar />
-      <PagedTabBar tabs={CHURCH_HUB_TABS} activeIndex={activeTab} onTabPress={handleTabPress} />
-      <EdgeHoldAdvance
-        activeIndex={activeTab}
-        tabCount={CHURCH_HUB_TABS.length}
-        onAdvance={handleTabPress}
-      >
-        <PagerView
-          ref={pagerRef}
-          style={{ flex: 1 }}
-          initialPage={0}
-          onPageSelected={(e) => setActiveTab(e.nativeEvent.position)}
-        >
-          <View key="dashboard" style={{ flex: 1 }}>
-            <ChurchDashboard colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="calendar" style={{ flex: 1 }}>
-            <ChurchCalendar colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="worship" style={{ flex: 1 }}>
-            <ChurchWorship colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="community" style={{ flex: 1 }}>
-            <ChurchCommunity colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="serve" style={{ flex: 1 }}>
-            <ChurchServe colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="give" style={{ flex: 1 }}>
-            <ChurchGive colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="events" style={{ flex: 1 }}>
-            <ChurchEvents colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="prayer" style={{ flex: 1 }}>
-            <ChurchPrayer colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="messages" style={{ flex: 1 }}>
-            <ChurchMessages colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="discipleship" style={{ flex: 1 }}>
-            <ChurchDiscipleship colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-        </PagerView>
-      </EdgeHoldAdvance>
+
+      {/* Pill Bar */}
+      <View style={styles.pillBar}>
+        {pills.map((pill) => {
+          const isActive = activePill === pill.id;
+          return (
+            <Pressable
+              key={pill.id}
+              style={[styles.pill, isActive && { backgroundColor: ACCENT }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActivePill(pill.id);
+              }}
+            >
+              <ThemedText
+                style={[styles.pillText, { color: isActive ? '#000' : colors.textSecondary }]}
+              >
+                {pill.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {/* Content */}
+      {activePill === 'dashboard' && <ChurchDashboardV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'calendar' && <ChurchCalendarV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'ministries' && <ChurchMinistriesV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'connect' && <ChurchConnectV2 colors={colors} accent={ACCENT} />}
     </ThemedView>
   );
 }
@@ -218,8 +200,25 @@ export function ChurchHome() {
 // STYLES
 // =============================================================================
 
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  pillBar: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingTop: 2,
+    paddingBottom: 10,
+    gap: 8,
+  },
+  pill: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  pillText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
 });

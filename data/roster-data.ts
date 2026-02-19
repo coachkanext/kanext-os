@@ -164,22 +164,23 @@ export interface RosterMeta {
   nilAmount: number;
   gpa: number;
   rosterNotes: string;
+  flagged?: boolean;
 }
 
 export const ROSTER_META: Record<string, RosterMeta> = {
   '4':  { status: 'available', aidPct: 100, nilAmount: 8500,  gpa: 3.4, rosterNotes: 'Go-to guy. Feed him early.' },
   '5':  { status: 'available', aidPct: 100, nilAmount: 6000,  gpa: 3.1, rosterNotes: 'Most versatile big. Can pass out of the post.' },
-  '11': { status: 'available', aidPct: 75,  nilAmount: 5000,  gpa: 2.8, rosterNotes: 'Veteran leader, strong mid-range game.' },
+  '11': { status: 'available', aidPct: 75,  nilAmount: 5000,  gpa: 2.8, rosterNotes: 'Veteran leader, strong mid-range game.', flagged: true },
   '13': { status: 'available', aidPct: 75,  nilAmount: 0,     gpa: 3.2, rosterNotes: 'Consistent shooter, can get hot.' },
   '41': { status: 'available', aidPct: 50,  nilAmount: 0,     gpa: 2.6, rosterNotes: 'Reliable scorer, good positional rebounder.' },
   '55': { status: 'available', aidPct: 50,  nilAmount: 3500,  gpa: 2.9, rosterNotes: 'Athletic, strong rebounder for his position.' },
   '0':  { status: 'available', aidPct: 25,  nilAmount: 0,     gpa: 3.0, rosterNotes: 'Good defender, offense still developing.' },
   '7':  { status: 'available', aidPct: 50,  nilAmount: 0,     gpa: 2.5, rosterNotes: 'Long, athletic. Good rim protection.' },
   '1':  { status: 'available', aidPct: 40,  nilAmount: 0,     gpa: 2.7, rosterNotes: 'Tallest player on roster. Stay out of foul trouble.' },
-  '15': { status: 'available', aidPct: 25,  nilAmount: 0,     gpa: 2.4, rosterNotes: 'Developing — needs more reps.' },
+  '15': { status: 'available', aidPct: 25,  nilAmount: 0,     gpa: 2.4, rosterNotes: 'Developing — needs more reps.', flagged: true },
   '9':  { status: 'available', aidPct: 0,   nilAmount: 0,     gpa: 3.5, rosterNotes: 'Young — learning the system.' },
   '3':  { status: 'available', aidPct: 0,   nilAmount: 0,     gpa: 2.3, rosterNotes: 'Needs confidence.' },
-  '10': { status: 'injured',   aidPct: 25,  nilAmount: 0,     gpa: 2.1, rosterNotes: 'Working on his frame.', statusNote: 'Ankle sprain — day-to-day' },
+  '10': { status: 'injured',   aidPct: 25,  nilAmount: 0,     gpa: 2.1, rosterNotes: 'Working on his frame.', statusNote: 'Ankle sprain — day-to-day', flagged: true },
   '12': { status: 'redshirt',  aidPct: 0,   nilAmount: 0,     gpa: 3.6, rosterNotes: 'Physical, needs polish. RS year.' },
   '20': { status: 'out',       aidPct: 0,   nilAmount: 0,     gpa: 2.0, rosterNotes: 'Personal leave.', statusNote: 'Excused absence' },
   '2':  { status: 'available', aidPct: 0,   nilAmount: 0,     gpa: 2.8, rosterNotes: 'Physical, needs polish.' },
@@ -211,4 +212,46 @@ export function getPlayerSubclusters(
     const rating = Math.max(15, Math.min(98, baseRating + variation));
     return { name, rating };
   });
+}
+
+// ── Portal Risk computation ──
+
+import type { PortalRiskLevel } from '@/types';
+
+/**
+ * Compute portal risk for a player based on KR, minutes, role, and NIL.
+ * KR badge color: green 80+, yellow 70-79, orange 60-69, red <60
+ */
+export function getKRBadgeColor(kr: number): string {
+  if (kr >= 80) return '#22c55e';
+  if (kr >= 70) return '#f59e0b';
+  if (kr >= 60) return '#f97316';
+  return '#ef4444';
+}
+
+export function computePortalRisk(jersey: string, kr: number, minutes: number, nilAmount: number): PortalRiskLevel {
+  let risk = 0;
+  // Low minutes + decent KR = higher risk (underused talent)
+  if (kr >= 70 && minutes < 15) risk += 2;
+  if (kr >= 60 && minutes < 10) risk += 1;
+  // No NIL = slightly higher risk
+  if (nilAmount === 0 && kr >= 65) risk += 1;
+  // Injured/redshirt players have elevated risk
+  const meta = ROSTER_META[jersey];
+  if (meta?.status === 'injured' || meta?.status === 'redshirt') risk += 1;
+
+  if (risk >= 3) return 'red';
+  if (risk >= 2) return 'yellow';
+  if (risk >= 1) return 'yellow';
+  return 'green';
+}
+
+export function getPortalRiskColor(risk: PortalRiskLevel): string {
+  const map: Record<PortalRiskLevel, string> = {
+    green: '#22c55e',
+    yellow: '#f59e0b',
+    orange: '#f97316',
+    red: '#ef4444',
+  };
+  return map[risk];
 }

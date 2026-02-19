@@ -33,6 +33,7 @@ export interface GameFilm {
   tags: string[];
   result?: 'W' | 'L';
   score?: string;
+  data_source?: string;
 }
 
 export interface PracticeSession {
@@ -45,6 +46,7 @@ export interface PracticeSession {
   status: FilmStatus;
   tags: string[];
   focusArea: string;
+  data_source?: string;
 }
 
 export interface BreakdownClip {
@@ -57,6 +59,7 @@ export interface BreakdownClip {
   status: FilmStatus;
   tags: string[];
   gameRef: string;
+  data_source?: string;
 }
 
 export const FILM_TAGS: FilmTag[] = [
@@ -75,223 +78,335 @@ export const FILM_TAGS: FilmTag[] = [
 ];
 
 export const GAME_FILMS: GameFilm[] = [
+  // ── FMU Lions — Feb 2026 Sun Conference games ─────────────────────────
   {
     id: 'gf-1',
-    title: 'vs Texas Southern',
-    opponent: 'Texas Southern',
-    date: '2025-02-08',
+    title: 'vs St. Thomas',
+    opponent: 'St. Thomas',
+    date: '2026-02-15',
     duration: 5820,
-    thumbnailColor: '#8B0000',
+    thumbnailColor: '#1E3A5F',
     category: 'conference',
-    status: 'watched',
-    tags: ['Half-Court Offense', 'Man-to-Man'],
+    status: 'new',
+    tags: ['Half-Court Offense', 'Man-to-Man', 'Full-Court Press'],
     result: 'W',
-    score: '78-65',
+    score: '81-73',
+    data_source: 'demo_seed',
   },
   {
     id: 'gf-2',
-    title: 'vs Prairie View A&M',
-    opponent: 'Prairie View A&M',
-    date: '2025-02-05',
+    title: 'vs Warner',
+    opponent: 'Warner',
+    date: '2026-02-11',
     duration: 6120,
-    thumbnailColor: '#4B0082',
+    thumbnailColor: '#8B0000',
     category: 'conference',
     status: 'in-progress',
-    tags: ['Zone Defense', 'Fast Break'],
+    tags: ['Zone Defense', 'Fast Break', 'Pick & Roll'],
     result: 'W',
-    score: '82-71',
+    score: '76-68',
+    data_source: 'demo_seed',
   },
   {
     id: 'gf-3',
-    title: 'vs Grambling State',
-    opponent: 'Grambling State',
-    date: '2025-01-29',
+    title: 'vs Coastal Georgia',
+    opponent: 'Coastal Georgia',
+    date: '2026-02-08',
     duration: 5940,
-    thumbnailColor: '#FFD700',
+    thumbnailColor: '#003DA5',
     category: 'conference',
     status: 'watched',
-    tags: ['Pick & Roll', 'Help & Recover'],
+    tags: ['Transition Offense', 'Help & Recover'],
     result: 'L',
-    score: '68-72',
+    score: '65-71',
+    data_source: 'demo_seed',
   },
   {
     id: 'gf-4',
-    title: 'vs Southern',
-    opponent: 'Southern',
-    date: '2025-01-25',
+    title: 'vs Webber International',
+    opponent: 'Webber International',
+    date: '2026-02-04',
     duration: 6300,
-    thumbnailColor: '#00508B',
-    category: 'conference',
-    status: 'new',
-    tags: ['Transition Offense', 'Full-Court Press'],
-    result: 'W',
-    score: '91-84',
-  },
-  {
-    id: 'gf-5',
-    title: 'vs Alcorn State',
-    opponent: 'Alcorn State',
-    date: '2025-01-18',
-    duration: 5700,
     thumbnailColor: '#4B0082',
     category: 'conference',
     status: 'watched',
-    tags: ['Post-Up', 'Zone Defense'],
+    tags: ['Post-Up', 'Full-Court Press'],
     result: 'W',
-    score: '75-60',
+    score: '88-79',
+    data_source: 'demo_seed',
   },
   {
-    id: 'gf-6',
-    title: 'vs Jackson State',
-    opponent: 'Jackson State',
-    date: '2025-01-11',
-    duration: 6060,
-    thumbnailColor: '#003DA5',
+    id: 'gf-5',
+    title: 'vs Ave Maria',
+    opponent: 'Ave Maria',
+    date: '2026-01-28',
+    duration: 5700,
+    thumbnailColor: '#FFD700',
     category: 'conference',
-    status: 'new',
-    tags: ['Fast Break', 'Transition Defense'],
-    result: 'L',
-    score: '70-77',
+    status: 'watched',
+    tags: ['Half-Court Offense', 'Zone Defense'],
+    result: 'W',
+    score: '92-77',
+    data_source: 'demo_seed',
   },
 ];
 
 export const PRACTICE_SESSIONS: PracticeSession[] = [
   {
     id: 'ps-1',
-    title: 'Pre-Game Shootaround',
-    date: '2025-02-08',
+    title: 'Pre-Game Shootaround — St. Thomas',
+    date: '2026-02-15',
     duration: 2700,
     thumbnailColor: '#2E4A2E',
     category: 'shootaround',
     status: 'watched',
     tags: ['Shooting', 'Pre-Game'],
     focusArea: 'Shooting',
+    data_source: 'demo_seed',
   },
   {
     id: 'ps-2',
-    title: 'Defensive Rotation Drill',
-    date: '2025-02-06',
+    title: 'Defensive Rotation Drill — Press Break',
+    date: '2026-02-13',
     duration: 3600,
     thumbnailColor: '#4A2E2E',
     category: 'drill',
     status: 'in-progress',
-    tags: ['Defense', 'Rotations'],
+    tags: ['Defense', 'Rotations', 'Press Break'],
     focusArea: 'Defensive Rotations',
+    data_source: 'demo_seed',
   },
   {
     id: 'ps-3',
-    title: 'Full Practice — Offensive Sets',
-    date: '2025-02-04',
+    title: 'Full Practice — Offensive Sets vs Zone',
+    date: '2026-02-10',
     duration: 5400,
     thumbnailColor: '#2E3A4A',
     category: 'full',
-    status: 'new',
-    tags: ['Offense', 'Sets', 'Walk-Through'],
+    status: 'watched',
+    tags: ['Offense', 'Sets', 'Zone Attack'],
     focusArea: 'Offensive Sets',
+    data_source: 'demo_seed',
   },
   {
     id: 'ps-4',
     title: 'Conditioning & Scrimmage',
-    date: '2025-02-02',
+    date: '2026-02-07',
     duration: 4200,
     thumbnailColor: '#3A3A2E',
     category: 'scrimmage',
     status: 'watched',
     tags: ['Conditioning', 'Scrimmage'],
     focusArea: 'Conditioning',
+    data_source: 'demo_seed',
   },
 ];
 
 export const BREAKDOWN_CLIPS: BreakdownClip[] = [
   {
     id: 'bc-1',
-    title: 'Pick & Roll Coverage — TSU',
-    date: '2025-02-09',
+    title: 'Press Break Execution — St. Thomas',
+    date: '2026-02-16',
     duration: 180,
-    thumbnailColor: '#8B4513',
+    thumbnailColor: '#1E3A5F',
     category: 'offense',
     status: 'new',
-    tags: ['Pick & Roll', 'Offensive Breakdown'],
-    gameRef: 'vs Texas Southern',
+    tags: ['Full-Court Press', 'Half-Court Offense'],
+    gameRef: 'vs St. Thomas',
+    data_source: 'demo_seed',
   },
   {
     id: 'bc-2',
-    title: 'Transition Buckets — PVAMU',
-    date: '2025-02-06',
+    title: 'Fast Break Buckets — Warner',
+    date: '2026-02-12',
     duration: 145,
-    thumbnailColor: '#2E4A4A',
+    thumbnailColor: '#8B0000',
     category: 'offense',
     status: 'watched',
-    tags: ['Transition Offense', 'Fast Break'],
-    gameRef: 'vs Prairie View A&M',
+    tags: ['Fast Break', 'Transition Offense'],
+    gameRef: 'vs Warner',
+    data_source: 'demo_seed',
   },
   {
     id: 'bc-3',
-    title: 'Zone Breakers — Grambling',
-    date: '2025-01-30',
+    title: 'Help Side Breakdowns — Coastal Georgia',
+    date: '2026-02-09',
     duration: 210,
-    thumbnailColor: '#4A3A2E',
-    category: 'offense',
+    thumbnailColor: '#003DA5',
+    category: 'defense',
     status: 'in-progress',
-    tags: ['Zone Defense', 'Offensive Sets'],
-    gameRef: 'vs Grambling State',
+    tags: ['Help & Recover', 'Man-to-Man'],
+    gameRef: 'vs Coastal Georgia',
+    data_source: 'demo_seed',
   },
   {
     id: 'bc-4',
-    title: 'Press Break Execution',
-    date: '2025-01-26',
+    title: 'Pick & Roll Coverage — Webber',
+    date: '2026-02-05',
     duration: 165,
-    thumbnailColor: '#2E2E4A',
-    category: 'special',
-    status: 'new',
-    tags: ['Full-Court Press', 'Inbounds Plays'],
-    gameRef: 'vs Southern',
+    thumbnailColor: '#4B0082',
+    category: 'offense',
+    status: 'watched',
+    tags: ['Pick & Roll', 'Offensive Breakdown'],
+    gameRef: 'vs Webber International',
+    data_source: 'demo_seed',
   },
   {
     id: 'bc-5',
-    title: 'Post Defense Breakdowns',
-    date: '2025-01-19',
+    title: 'Zone Attack Sequences — Ave Maria',
+    date: '2026-01-29',
     duration: 195,
-    thumbnailColor: '#4A2E3A',
-    category: 'defense',
+    thumbnailColor: '#FFD700',
+    category: 'offense',
     status: 'watched',
-    tags: ['Post-Up', 'Man-to-Man'],
-    gameRef: 'vs Alcorn State',
+    tags: ['Zone Defense', 'Offensive Sets'],
+    gameRef: 'vs Ave Maria',
+    data_source: 'demo_seed',
   },
   {
     id: 'bc-6',
-    title: 'Turnover Sequences — JSU',
-    date: '2025-01-12',
+    title: 'Turnover Sequences — Coastal Georgia',
+    date: '2026-02-09',
     duration: 130,
     thumbnailColor: '#3A4A2E',
     category: 'transition',
     status: 'new',
     tags: ['Transition Defense', 'Turnovers'],
-    gameRef: 'vs Jackson State',
+    gameRef: 'vs Coastal Georgia',
+    data_source: 'demo_seed',
   },
   {
     id: 'bc-7',
-    title: 'End-of-Half Execution',
-    date: '2025-02-08',
+    title: 'End-of-Half Execution — St. Thomas',
+    date: '2026-02-16',
     duration: 90,
     thumbnailColor: '#4A4A2E',
     category: 'special',
-    status: 'watched',
+    status: 'new',
     tags: ['End of Clock', 'Half-Court Offense'],
-    gameRef: 'vs Texas Southern',
+    gameRef: 'vs St. Thomas',
+    data_source: 'demo_seed',
   },
   {
     id: 'bc-8',
-    title: 'Help Side Rotations Reel',
-    date: '2025-02-05',
+    title: 'Post Defense Reel — Warner',
+    date: '2026-02-12',
     duration: 155,
     thumbnailColor: '#2E3A3A',
     category: 'defense',
     status: 'in-progress',
-    tags: ['Help & Recover', 'Zone Defense'],
-    gameRef: 'vs Prairie View A&M',
+    tags: ['Post-Up', 'Man-to-Man'],
+    gameRef: 'vs Warner',
+    data_source: 'demo_seed',
   },
 ];
+
+// =============================================================================
+// SPORTS — VIDEO FEED POSTS & STORIES (demo_seed)
+// =============================================================================
+
+export interface VideoFeedPost {
+  id: string;
+  title: string;
+  caption: string;
+  date: string;
+  duration: number;
+  thumbnailColor: string;
+  category: 'highlight' | 'practice' | 'team-content' | 'behind-scenes';
+  author: string;
+  viewCount: number;
+  likeCount: number;
+  data_source?: string;
+}
+
+export interface StoryItem {
+  id: string;
+  title: string;
+  date: string;
+  duration: number;
+  thumbnailColor: string;
+  category: 'game-day' | 'travel' | 'community' | 'recruiting';
+  slideCount: number;
+  viewed: boolean;
+  data_source?: string;
+}
+
+export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
+  {
+    id: 'vfp-1',
+    title: 'Lions Win! FMU 81, St. Thomas 73',
+    caption: 'Highlights from tonight\'s conference win at Lehman Center. The Lions forced 22 turnovers and shot 48% from the field. #FMULions #SunConference',
+    date: '2026-02-15',
+    duration: 145,
+    thumbnailColor: '#1E3A5F',
+    category: 'highlight',
+    author: 'FMU Athletics',
+    viewCount: 1240,
+    likeCount: 187,
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'vfp-2',
+    title: 'Practice Intensity — Conference Tournament Prep',
+    caption: 'The Lions are locked in. Coach Kalejaiye running the squad through defensive rotations ahead of the tournament push. #WorkHard #FMUBasketball',
+    date: '2026-02-13',
+    duration: 92,
+    thumbnailColor: '#2E4A2E',
+    category: 'practice',
+    author: 'FMU Basketball',
+    viewCount: 680,
+    likeCount: 94,
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'vfp-3',
+    title: 'Team Meal — Bonding Off the Court',
+    caption: 'FMU MBB team dinner in Miami Gardens before the homestretch. These moments matter as much as the game reps. #FMUFamily #LionPride',
+    date: '2026-02-10',
+    duration: 65,
+    thumbnailColor: '#F59E0B',
+    category: 'team-content',
+    author: 'FMU Basketball',
+    viewCount: 520,
+    likeCount: 112,
+    data_source: 'demo_seed',
+  },
+];
+
+export const STORY_ITEMS: StoryItem[] = [
+  {
+    id: 'story-1',
+    title: 'Game Day vs St. Thomas',
+    date: '2026-02-15',
+    duration: 30,
+    thumbnailColor: '#1E3A5F',
+    category: 'game-day',
+    slideCount: 8,
+    viewed: false,
+    data_source: 'demo_seed',
+  },
+  {
+    id: 'story-2',
+    title: 'Road Trip — Warner Game',
+    date: '2026-02-11',
+    duration: 25,
+    thumbnailColor: '#8B0000',
+    category: 'game-day',
+    slideCount: 6,
+    viewed: true,
+    data_source: 'demo_seed',
+  },
+];
+
+/** Get video feed posts sorted by date (most recent first) */
+export function getVideoFeedPosts(): VideoFeedPost[] {
+  return [...VIDEO_FEED_POSTS].sort((a, b) => b.date.localeCompare(a.date));
+}
+
+/** Get story items sorted by date (most recent first) */
+export function getStoryItems(): StoryItem[] {
+  return [...STORY_ITEMS].sort((a, b) => b.date.localeCompare(a.date));
+}
 
 // =============================================================================
 // CHURCH FILM ROOM (Ministry Rooms)

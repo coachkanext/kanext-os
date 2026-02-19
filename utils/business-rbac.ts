@@ -176,6 +176,22 @@ export function canAccessDoc(tag: DocAccessTag, role: BusinessRoleLens, tier?: I
 // ROLE MAPPING
 // =============================================================================
 
+// =============================================================================
+// MEMBERSHIP → LENS (direct membership_id mapping for ActiveView)
+// =============================================================================
+
+const BUSINESS_MEMBERSHIP_MAP: Record<string, BusinessRoleLens> = {
+  mem_biz_kanext_founder: 'B1',
+  mem_biz_kanext_investor: 'B2a',
+  mem_biz_kanext_public: 'B3',
+  mem_biz_valuetainment_subscriber: 'B4',
+  mem_biz_sliema_prospective_acquirer: 'B5',
+};
+
+export function getBusinessRole(membershipId: string): BusinessRoleLens {
+  return BUSINESS_MEMBERSHIP_MAP[membershipId] ?? 'B1';
+}
+
 export function mapRoleToBusinessLens(role: string): BusinessRoleLens {
   switch (role) {
     case 'founder':
@@ -308,4 +324,22 @@ export function getBizOrgTabVisibility(tab: BizOrgTab, role: BusinessRoleLens): 
 export function getVisibleBizOrgTabs(role: BusinessRoleLens): BizOrgTab[] {
   return (Object.keys(BIZ_ORG_TAB_MATRIX) as BizOrgTab[])
     .filter((tab) => BIZ_ORG_TAB_MATRIX[tab][role] !== 'hidden');
+}
+
+// =============================================================================
+// HOME PILL VISIBILITY (4-pill layout)
+// =============================================================================
+
+export type BusinessHomePill = 'dashboard' | 'calendar' | 'vault' | 'deals';
+
+const BIZ_HOME_PILL_MATRIX: Record<BusinessHomePill, Record<BusinessRoleLens, BusinessVisibility>> = {
+  dashboard: { B1: 'full', B2a: 'full', B2b: 'full', B3: 'full', B4: 'full', B5: 'full' },
+  calendar:  { B1: 'full', B2a: 'full', B2b: 'full', B3: 'full', B4: 'full', B5: 'full' },
+  vault:     { B1: 'full', B2a: 'full', B2b: 'full', B3: 'full', B4: 'full', B5: 'full' },
+  deals:     { B1: 'full', B2a: 'full', B2b: 'full', B3: 'full', B4: 'full', B5: 'full' },
+};
+
+export function getBusinessVisiblePills(role: BusinessRoleLens): BusinessHomePill[] {
+  return (Object.keys(BIZ_HOME_PILL_MATRIX) as BusinessHomePill[])
+    .filter((pill) => BIZ_HOME_PILL_MATRIX[pill][role] !== 'hidden');
 }

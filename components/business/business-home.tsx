@@ -1,150 +1,58 @@
 /**
- * Business Home — KaNeXT Founder OS Control Room
- * 9 swipeable hub tabs with PagedTabBar + EdgeHoldAdvance
- * Dashboard | Calendar | Operations | Finance | Payment Rails |
- * Board/Investors | Compliance/Legal | Media/Proof | Data Room
+ * Business Home — KaNeXT 4-pill layout
+ * Dashboard | Calendar | Vault | Deals
  *
- * Thin orchestrator — each tab lives in its own file.
+ * Replaces old 9-tab PagerView with SportsHome-style pill navigation.
  */
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { View, Pressable, StyleSheet, InteractionManager } from 'react-native';
-import PagerView from 'react-native-pager-view';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { View, StyleSheet, Pressable, InteractionManager } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from '@react-navigation/core';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
-import { PagedTabBar } from '@/components/ui/paged-tab-bar';
-import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
-
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useBusiness } from '@/context/business-context';
-import type { BusinessRoleLens } from '@/utils/business-rbac';
+import { useMembershipId } from '@/context/app-context';
+import {
+  getBusinessRole,
+  getBusinessVisiblePills,
+  type BusinessHomePill,
+} from '@/utils/business-rbac';
 
-// Tab components
-import { BusinessDashboardV2 } from '@/components/business/business-dashboard-v2';
-import { BusinessCalendarV2 } from '@/components/business/business-calendar-v2';
-import { BusinessOperations } from '@/components/business/business-operations';
-import { BusinessFinance } from '@/components/business/business-finance';
-import { BusinessPaymentRails } from '@/components/business/business-payment-rails';
-import { BusinessBoardInvestors } from '@/components/business/business-board-investors';
-import { BusinessComplianceLegal } from '@/components/business/business-compliance-legal';
-import { BusinessMediaProof } from '@/components/business/business-media-proof';
-import { BusinessDataRoom } from '@/components/business/business-data-room';
+import { BizDashboardV2 } from '@/components/biz-home/biz-dashboard-v2';
+import { BizCalendarV2 } from '@/components/biz-home/biz-calendar-v2';
+import { BizVaultV2 } from '@/components/biz-home/biz-vault-v2';
+import { BizDealsV2 } from '@/components/biz-home/biz-deals-v2';
 
-const BP = BusinessPalette;
-
-// =============================================================================
-// TAB DEFINITIONS
-// =============================================================================
-
-const BIZ_HUB_TABS = [
+const ALL_PILLS: { id: BusinessHomePill; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'calendar', label: 'Calendar' },
-  { id: 'operations', label: 'Operations' },
-  { id: 'finance', label: 'Finance' },
-  { id: 'payment_rails', label: 'Payment Rails' },
-  { id: 'board_investors', label: 'Board & Investors' },
-  { id: 'compliance_legal', label: 'Compliance & Legal' },
-  { id: 'media_proof', label: 'Media & Proof' },
-  { id: 'data_room', label: 'Data Room' },
+  { id: 'vault', label: 'Vault' },
+  { id: 'deals', label: 'Deals' },
 ];
 
-// =============================================================================
-// VIEW AS BAR — 4-pill RBAC toggle
-// =============================================================================
-
-const VIEW_AS_ROLES: { id: BusinessRoleLens; label: string }[] = [
-  { id: 'B1', label: 'Founder' },
-  { id: 'B2b', label: 'Board' },
-  { id: 'B2a', label: 'Retail' },
-  { id: 'B3', label: 'Public' },
-];
-
-function ViewAsBar() {
-  const { viewAsRole, setViewAsRole } = useBusiness();
-
-  return (
-    <View style={viewStyles.container}>
-      <View style={viewStyles.pillRow}>
-        {VIEW_AS_ROLES.map((r) => {
-          const isActive = r.id === viewAsRole;
-          return (
-            <Pressable
-              key={r.id}
-              style={[
-                viewStyles.pill,
-                { backgroundColor: isActive ? BP.champagneGold + '20' : 'transparent' },
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setViewAsRole(r.id);
-              }}
-            >
-              <ThemedText
-                style={[viewStyles.pillText, { color: isActive ? BP.champagneGold : BP.ash }]}
-              >
-                {r.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
-    </View>
-  );
-}
-
-const viewStyles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-  },
-  pillRow: {
-    flexDirection: 'row',
-    borderRadius: BorderRadius.full,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: BP.graphite,
-  },
-  pill: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-  },
-  pillText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-});
+const ACCENT = '#F59E0B';
 
 // =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
 export function BusinessHome() {
-  const [activeTab, setActiveTab] = useState(0);
-  const pagerRef = useRef<PagerView>(null);
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { viewAsRole } = useBusiness();
+  const membershipId = useMembershipId();
+  const bizRole = useMemo(() => getBusinessRole(membershipId), [membershipId]);
+  const visiblePillIds = useMemo(() => new Set(getBusinessVisiblePills(bizRole)), [bizRole]);
+  const pills = useMemo(() => ALL_PILLS.filter((p) => visiblePillIds.has(p.id)), [visiblePillIds]);
 
-  const handleTabPress = useCallback((index: number) => {
-    pagerRef.current?.setPage(index);
-  }, []);
+  const [activePill, setActivePill] = useState<BusinessHomePill>('dashboard');
 
-  const handleSwitchTab = useCallback((index: number) => {
-    pagerRef.current?.setPage(index);
-  }, []);
-
-  // Reset to Dashboard (page 0) when Home tab is pressed
+  // Reset to Dashboard when Home tab is pressed
   const resetToHome = useCallback(() => {
-    setActiveTab(0);
-    pagerRef.current?.setPage(0);
+    setActivePill('dashboard');
   }, []);
 
   useEffect(() => {
@@ -159,53 +67,39 @@ export function BusinessHome() {
           resetToHome();
         });
       }
-    }, [resetToHome])
+    }, [resetToHome]),
   );
 
   return (
-    <ThemedView style={s.container}>
-      <ViewAsBar />
-      <PagedTabBar tabs={BIZ_HUB_TABS} activeIndex={activeTab} onTabPress={handleTabPress} />
-      <EdgeHoldAdvance
-        activeIndex={activeTab}
-        tabCount={BIZ_HUB_TABS.length}
-        onAdvance={handleTabPress}
-      >
-        <PagerView
-          ref={pagerRef}
-          style={{ flex: 1 }}
-          initialPage={0}
-          onPageSelected={(e) => setActiveTab(e.nativeEvent.position)}
-        >
-          <View key="dashboard" style={{ flex: 1 }}>
-            <BusinessDashboardV2 colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="calendar" style={{ flex: 1 }}>
-            <BusinessCalendarV2 colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="operations" style={{ flex: 1 }}>
-            <BusinessOperations colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="finance" style={{ flex: 1 }}>
-            <BusinessFinance colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="payment_rails" style={{ flex: 1 }}>
-            <BusinessPaymentRails colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="board_investors" style={{ flex: 1 }}>
-            <BusinessBoardInvestors colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="compliance_legal" style={{ flex: 1 }}>
-            <BusinessComplianceLegal colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="media_proof" style={{ flex: 1 }}>
-            <BusinessMediaProof colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="data_room" style={{ flex: 1 }}>
-            <BusinessDataRoom colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-        </PagerView>
-      </EdgeHoldAdvance>
+    <ThemedView style={styles.container}>
+      {/* Pill Bar */}
+      <View style={styles.pillBar}>
+        {pills.map((pill) => {
+          const isActive = activePill === pill.id;
+          return (
+            <Pressable
+              key={pill.id}
+              style={[styles.pill, isActive && { backgroundColor: ACCENT }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActivePill(pill.id);
+              }}
+            >
+              <ThemedText
+                style={[styles.pillText, { color: isActive ? '#000' : colors.textSecondary }]}
+              >
+                {pill.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {/* Content */}
+      {activePill === 'dashboard' && <BizDashboardV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'calendar' && <BizCalendarV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'vault' && <BizVaultV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'deals' && <BizDealsV2 colors={colors} accent={ACCENT} />}
     </ThemedView>
   );
 }
@@ -214,9 +108,25 @@ export function BusinessHome() {
 // STYLES
 // =============================================================================
 
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: BP.obsidian,
+  },
+  pillBar: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingTop: 2,
+    paddingBottom: 10,
+    gap: 8,
+  },
+  pill: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  pillText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
 });

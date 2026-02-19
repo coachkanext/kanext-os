@@ -195,6 +195,21 @@ export function getQuickActions(role: CompetitionRoleLens): QuickAction[] {
 // ROLE MAPPING
 // =============================================================================
 
+// =============================================================================
+// MEMBERSHIP → LENS (direct membership_id mapping for ActiveView)
+// =============================================================================
+
+const COMPETITION_MEMBERSHIP_MAP: Record<string, CompetitionRoleLens> = {
+  mem_comp_k1_owner_commish: 'C1',
+  mem_comp_btw_director: 'C2',
+  mem_comp_mlk_advisor: 'C3',
+  mem_comp_valuetainment_public: 'C4',
+};
+
+export function getCompetitionRole(membershipId: string): CompetitionRoleLens {
+  return COMPETITION_MEMBERSHIP_MAP[membershipId] ?? 'C4';
+}
+
 export function mapRoleToCompetitionLens(role: string): CompetitionRoleLens {
   switch (role) {
     case 'league_admin':
@@ -260,4 +275,22 @@ export function getCompOrgTabVisibility(tab: CompOrgTab, role: CompetitionRoleLe
 export function getVisibleCompOrgTabs(role: CompetitionRoleLens): CompOrgTab[] {
   return (Object.keys(COMP_ORG_TAB_MATRIX) as CompOrgTab[])
     .filter((tab) => COMP_ORG_TAB_MATRIX[tab][role] !== 'hidden');
+}
+
+// =============================================================================
+// HOME PILL VISIBILITY (4-pill layout)
+// =============================================================================
+
+export type CompetitionHomePill = 'dashboard' | 'calendar' | 'grid' | 'entries';
+
+const COMP_HOME_PILL_MATRIX: Record<CompetitionHomePill, Record<CompetitionRoleLens, Visibility>> = {
+  dashboard: { C1: 'full', C2: 'full', C3: 'full',   C4: 'full' },
+  calendar:  { C1: 'full', C2: 'full', C3: 'full',   C4: 'full' },
+  grid:      { C1: 'full', C2: 'full', C3: 'full',   C4: 'full' },
+  entries:   { C1: 'full', C2: 'full', C3: 'full',   C4: 'full' },
+};
+
+export function getCompetitionVisiblePills(role: CompetitionRoleLens): CompetitionHomePill[] {
+  return (Object.keys(COMP_HOME_PILL_MATRIX) as CompetitionHomePill[])
+    .filter((pill) => COMP_HOME_PILL_MATRIX[pill][role] !== 'hidden');
 }

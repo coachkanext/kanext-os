@@ -33,13 +33,13 @@ export function SportsStatsV2() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Pill Bar */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillBar}>
+      <View style={styles.pillBar}>
         {PILLS.map((pill) => (
           <Pressable key={pill} style={[styles.pill, activeTab === pill && { backgroundColor: accent }]} onPress={() => setActiveTab(pill)}>
             <ThemedText style={[styles.pillText, { color: activeTab === pill ? '#fff' : colors.textSecondary }]}>{pill}</ThemedText>
           </Pressable>
         ))}
-      </ScrollView>
+      </View>
 
       {activeTab === 'Dashboard' && <DashboardView colors={colors} accent={accent} />}
       {activeTab === 'Splits' && <SplitsView colors={colors} accent={accent} />}
@@ -285,7 +285,7 @@ function MiniStat({ label, value, colors }: { label: string; value: string; colo
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
-  pillBar: { paddingHorizontal: 16, paddingVertical: 10, gap: 8 },
+  pillBar: { flexDirection: 'row' as const, flexWrap: 'wrap' as const, paddingHorizontal: 16, paddingVertical: 10, gap: 8 },
   pill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
   pillText: { fontSize: 12, fontWeight: '600' },
 

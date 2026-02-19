@@ -28,9 +28,10 @@ type ViewMode = 'day' | 'week' | 'month';
 interface CalendarHubProps {
   colors: typeof Colors.light;
   router: any;
+  events?: ProgramCalendarEvent[];
 }
 
-export function CalendarHub({ colors, router }: CalendarHubProps) {
+export function CalendarHub({ colors, router, events }: CalendarHubProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('week');
   const [selectedDate, setSelectedDate] = useState(() => new Date());
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
@@ -41,10 +42,12 @@ export function CalendarHub({ colors, router }: CalendarHubProps) {
   const [selectedEvent, setSelectedEvent] = useState<ProgramCalendarEvent | null>(null);
 
   // Merge game events + mock events (Spec 3: auto-populate)
+  // When external events prop is provided, use those instead of internal merge.
   const allEvents = useMemo(() => {
+    if (events) return events;
     const gameEvents = gamesToCalendarEvents(FMU_GAMES);
     return [...gameEvents, ...MOCK_CALENDAR_EVENTS];
-  }, []);
+  }, [events]);
 
   // Apply filters
   const filteredEvents = useMemo(() => {

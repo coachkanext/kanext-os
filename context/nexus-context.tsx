@@ -28,7 +28,7 @@ import { classifyIntent } from '@/utils/nexus-actions';
 import { processAction, executeConfirmedAction } from '@/utils/nexus-action-engine';
 import { mapRoleToRBAC } from '@/utils/nexus-rbac';
 import { parseGPTResponse } from '@/utils/nexus-response-parser';
-import { useMode, useAppContext } from './app-context';
+import { useMode, useAppContext, useActiveView } from './app-context';
 
 const MAX_PINNED_CONVERSATIONS = 3;
 
@@ -48,7 +48,7 @@ const defaultState: NexusState = {
   savedSimulations: {},
   newConversationSheetOpen: false,
   evalSnapshots: {},
-  targetContext: { organizationId: 'lincoln-basketball' },
+  targetContext: { organizationId: '' },
   pendingAction: undefined,
   pendingActionConversationId: undefined,
 };
@@ -383,6 +383,14 @@ export function NexusProvider({ children }: NexusProviderProps) {
   const [state, dispatch] = useReducer(nexusReducer, defaultState);
   const mode = useMode();
   const { state: appState } = useAppContext();
+  const activeView = useActiveView();
+
+  // Sync targetContext from ActiveView whenever it changes
+  React.useEffect(() => {
+    if (activeView?.org_id) {
+      dispatch({ type: 'SET_TARGET_CONTEXT', payload: { organizationId: activeView.org_id } });
+    }
+  }, [activeView?.org_id]);
 
   // Panel controls
   const openConversations = useCallback(() => {

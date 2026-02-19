@@ -930,3 +930,42 @@ export interface ActiveContext {
 export interface RecentContext extends ActiveContext {
   timestamp: number;
 }
+
+export interface ActiveView {
+  view_id: string;
+  mode: Mode;
+  org_id: string;
+  org_name: string;
+  membership_id: string;
+  role_label: string;
+  rbac_level: number;
+  scope_type: 'program' | 'ministry' | 'department' | 'league' | 'workspace' | null;
+  scope_id: string;
+  scope_name: string;
+  season_id: string;
+  season_label: string;
+  derived_role_badge: string;
+}
+
+export type ActiveViewKey = string;
+
+// =============================================================================
+// ROSTER CRM TYPES
+// =============================================================================
+
+export type PortalRiskLevel = 'green' | 'yellow' | 'orange' | 'red';
+export type RosterFilterCategory = 'all' | 'starters' | 'guards' | 'wings' | 'forwards' | 'bigs' | 'flagged';
+export type RosterSortKey = 'kr' | 'name' | 'position' | 'minutes' | 'nil' | 'ppg';
+
+// =============================================================================
+// CALENDAR / NEWS TYPES
+// =============================================================================
+
+export type NewsCategoryTag = 'Recap' | 'Announcement' | 'Recruiting' | 'Program';
+
+// =============================================================================
+// RECRUITING V2 TYPES
+// =============================================================================
+
+export type RecruitingViewModeV2 = 'board' | 'database' | 'portal';
+export type RecruitingPipelineStage = 'Prospect' | 'Contact Made' | 'Eval Sent' | 'Visit Scheduled' | 'Offer Out' | 'Committed' | 'Signed' | 'Dead';

@@ -1,150 +1,58 @@
 /**
- * Education Home — SDCC Control Room
- * 10 swipeable hub tabs with PagedTabBar + EdgeHoldAdvance
- * Dashboard | Calendar | Academics | Campus | People | Admissions |
- * Athletics | Financial | Housing | Policies
+ * Education Home — FMU 4-pill layout
+ * Dashboard | Calendar | Faculty | Admissions
  *
- * Thin orchestrator — each tab lives in its own file.
+ * Replaces old 10-tab PagerView with SportsHome-style pill navigation.
  */
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { View, Pressable, StyleSheet, InteractionManager } from 'react-native';
-import PagerView from 'react-native-pager-view';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { View, StyleSheet, Pressable, InteractionManager } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from '@react-navigation/core';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
 import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
-import { PagedTabBar } from '@/components/ui/paged-tab-bar';
-import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
-
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useEducation } from '@/context/education-context';
-import type { EducationRoleLens } from '@/utils/education-rbac';
+import { useMembershipId } from '@/context/app-context';
+import {
+  getEducationRole,
+  getEducationVisiblePills,
+  type EducationHomePill,
+} from '@/utils/education-rbac';
 
-// Tab components
-import { EduDashboard } from '@/components/education/edu-dashboard';
-import { EduCalendar } from '@/components/education/edu-calendar';
-import { EduAcademics } from '@/components/education/edu-academics';
-import { EduCampus } from '@/components/education/edu-campus';
-import { EduPeople } from '@/components/education/edu-people';
-import { EduAdmissions } from '@/components/education/edu-admissions';
-import { EduAthletics } from '@/components/education/edu-athletics';
-import { EduFinancial } from '@/components/education/edu-financial';
-import { EduHousing } from '@/components/education/edu-housing';
-import { EduPolicies } from '@/components/education/edu-policies';
+import { EduDashboardV2 } from '@/components/edu-home/edu-dashboard-v2';
+import { EduCalendarV2 } from '@/components/edu-home/edu-calendar-v2';
+import { EduFacultyV2 } from '@/components/edu-home/edu-faculty-v2';
+import { EduAdmissionsV2 } from '@/components/edu-home/edu-admissions-v2';
 
-// =============================================================================
-// TAB DEFINITIONS
-// =============================================================================
-
-const EDU_HUB_TABS = [
+const ALL_PILLS: { id: EducationHomePill; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'calendar', label: 'Calendar' },
-  { id: 'academics', label: 'Academics' },
-  { id: 'campus', label: 'Campus' },
-  { id: 'people', label: 'People' },
+  { id: 'faculty', label: 'Faculty' },
   { id: 'admissions', label: 'Admissions' },
-  { id: 'athletics', label: 'Athletics' },
-  { id: 'financial', label: 'Financial' },
-  { id: 'housing', label: 'Housing' },
-  { id: 'policies', label: 'Policies' },
 ];
 
-// =============================================================================
-// VIEW AS BAR — 4-pill RBAC toggle
-// =============================================================================
-
-const VIEW_AS_ROLES: { id: EducationRoleLens; label: string }[] = [
-  { id: 'E1', label: 'President' },
-  { id: 'E2', label: 'Dean' },
-  { id: 'E3', label: 'Faculty' },
-  { id: 'E4', label: 'Student' },
-];
-
-function ViewAsBar() {
-  const { viewAsRole, setViewAsRole } = useEducation();
-
-  return (
-    <View style={viewStyles.container}>
-      <View style={viewStyles.pillRow}>
-        {VIEW_AS_ROLES.map((r) => {
-          const isActive = r.id === viewAsRole;
-          return (
-            <Pressable
-              key={r.id}
-              style={[
-                viewStyles.pill,
-                { backgroundColor: isActive ? '#FFFFFF20' : 'transparent' },
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setViewAsRole(r.id);
-              }}
-            >
-              <ThemedText
-                style={[viewStyles.pillText, { color: isActive ? '#FFFFFF' : '#999' }]}
-              >
-                {r.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
-    </View>
-  );
-}
-
-const viewStyles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-  },
-  pillRow: {
-    flexDirection: 'row',
-    borderRadius: BorderRadius.full,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  pill: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-  },
-  pillText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-});
+const ACCENT = '#10B981';
 
 // =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
 export function EducationHome() {
-  const [activeTab, setActiveTab] = useState(0);
-  const pagerRef = useRef<PagerView>(null);
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const { viewAsRole } = useEducation();
+  const membershipId = useMembershipId();
+  const eduRole = useMemo(() => getEducationRole(membershipId), [membershipId]);
+  const visiblePillIds = useMemo(() => new Set(getEducationVisiblePills(eduRole)), [eduRole]);
+  const pills = useMemo(() => ALL_PILLS.filter((p) => visiblePillIds.has(p.id)), [visiblePillIds]);
 
-  const handleTabPress = useCallback((index: number) => {
-    pagerRef.current?.setPage(index);
-  }, []);
+  const [activePill, setActivePill] = useState<EducationHomePill>('dashboard');
 
-  const handleSwitchTab = useCallback((index: number) => {
-    pagerRef.current?.setPage(index);
-  }, []);
-
-  // Reset to Dashboard (page 0) when Home tab is pressed
+  // Reset to Dashboard when Home tab is pressed
   const resetToHome = useCallback(() => {
-    setActiveTab(0);
-    pagerRef.current?.setPage(0);
+    setActivePill('dashboard');
   }, []);
 
   useEffect(() => {
@@ -159,56 +67,39 @@ export function EducationHome() {
           resetToHome();
         });
       }
-    }, [resetToHome])
+    }, [resetToHome]),
   );
 
   return (
-    <ThemedView style={s.container}>
-      <ViewAsBar />
-      <PagedTabBar tabs={EDU_HUB_TABS} activeIndex={activeTab} onTabPress={handleTabPress} />
-      <EdgeHoldAdvance
-        activeIndex={activeTab}
-        tabCount={EDU_HUB_TABS.length}
-        onAdvance={handleTabPress}
-      >
-        <PagerView
-          ref={pagerRef}
-          style={{ flex: 1 }}
-          initialPage={0}
-          onPageSelected={(e) => setActiveTab(e.nativeEvent.position)}
-        >
-          <View key="dashboard" style={{ flex: 1 }}>
-            <EduDashboard colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="calendar" style={{ flex: 1 }}>
-            <EduCalendar colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="academics" style={{ flex: 1 }}>
-            <EduAcademics colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="campus" style={{ flex: 1 }}>
-            <EduCampus colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="people" style={{ flex: 1 }}>
-            <EduPeople colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="admissions" style={{ flex: 1 }}>
-            <EduAdmissions colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="athletics" style={{ flex: 1 }}>
-            <EduAthletics colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="financial" style={{ flex: 1 }}>
-            <EduFinancial colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="housing" style={{ flex: 1 }}>
-            <EduHousing colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-          <View key="policies" style={{ flex: 1 }}>
-            <EduPolicies colors={colors} role={viewAsRole} onSwitchTab={handleSwitchTab} />
-          </View>
-        </PagerView>
-      </EdgeHoldAdvance>
+    <ThemedView style={styles.container}>
+      {/* Pill Bar */}
+      <View style={styles.pillBar}>
+        {pills.map((pill) => {
+          const isActive = activePill === pill.id;
+          return (
+            <Pressable
+              key={pill.id}
+              style={[styles.pill, isActive && { backgroundColor: ACCENT }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActivePill(pill.id);
+              }}
+            >
+              <ThemedText
+                style={[styles.pillText, { color: isActive ? '#000' : colors.textSecondary }]}
+              >
+                {pill.label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {/* Content */}
+      {activePill === 'dashboard' && <EduDashboardV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'calendar' && <EduCalendarV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'faculty' && <EduFacultyV2 colors={colors} accent={ACCENT} />}
+      {activePill === 'admissions' && <EduAdmissionsV2 colors={colors} accent={ACCENT} />}
     </ThemedView>
   );
 }
@@ -217,8 +108,25 @@ export function EducationHome() {
 // STYLES
 // =============================================================================
 
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  pillBar: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingTop: 2,
+    paddingBottom: 10,
+    gap: 8,
+  },
+  pill: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  pillText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
 });

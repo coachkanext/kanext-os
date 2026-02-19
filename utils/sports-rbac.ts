@@ -31,7 +31,7 @@ const SPORTS_ROLE_MAP: Record<string, SportsRoleLens> = {
 };
 
 export function getSportsRole(membershipId: string): SportsRoleLens {
-  return SPORTS_ROLE_MAP[membershipId] ?? 'R5';
+  return SPORTS_ROLE_MAP[membershipId] ?? 'R1';
 }
 
 // =============================================================================
@@ -266,6 +266,38 @@ export function canSeeCoachActions(role: SportsRoleLens): boolean {
 /** R1 only: offer, aid, NIL buttons */
 export function canSeeAdminActions(role: SportsRoleLens): boolean {
   return role === 'R1';
+}
+
+// =============================================================================
+// ROSTER VIEW RBAC
+// =============================================================================
+
+export type RosterViewMode = 'list' | 'system' | 'cards';
+
+const ROSTER_VIEW_MATRIX: Record<SportsRoleLens, RosterViewMode[]> = {
+  R1: ['list', 'system', 'cards'],
+  R2: ['cards'],
+  R3: ['list', 'system', 'cards'],
+  R4: ['list', 'system', 'cards'],
+  R5: ['cards'],
+};
+
+const ROSTER_DEFAULT_VIEW: Record<SportsRoleLens, RosterViewMode> = {
+  R1: 'list',
+  R2: 'cards',
+  R3: 'list',
+  R4: 'cards',
+  R5: 'cards',
+};
+
+/** Returns visible roster view modes for a given role */
+export function getVisibleRosterViews(role: SportsRoleLens): RosterViewMode[] {
+  return ROSTER_VIEW_MATRIX[role];
+}
+
+/** Returns the default roster view mode for a given role */
+export function getDefaultRosterView(role: SportsRoleLens): RosterViewMode {
+  return ROSTER_DEFAULT_VIEW[role];
 }
 
 // =============================================================================
