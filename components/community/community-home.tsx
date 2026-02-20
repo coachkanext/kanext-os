@@ -45,6 +45,7 @@ export function CommunityHome() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const membershipId = useMembershipId();
+  const compRole = getCompetitionRole(membershipId);
   const pagerRef = useRef<PagerView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -90,7 +91,7 @@ export function CommunityHome() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           <View key="dashboard" style={{ flex: 1 }}>
-            <CompDashboardV2 colors={colors} accent={ACCENT} />
+            <CompDashboardV2 colors={colors} accent={ACCENT} role={compRole} />
           </View>
           <View key="calendar" style={{ flex: 1 }}>
             <CompCalendarV2 colors={colors} accent={ACCENT} />

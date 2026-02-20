@@ -725,7 +725,7 @@ function SponsorsRevenue({ colors }: { colors: typeof Colors.light }) {
       </View>
 
       {/* Revenue card — C1 only */}
-      {roleLens === 'C1' && (
+      {roleLens === 'CO1' && (
         <Card colors={colors}>
           <ThemedText style={[s.cardHeading, { color: colors.text }]}>Revenue YTD</ThemedText>
           <View style={s.revenueGrid}>

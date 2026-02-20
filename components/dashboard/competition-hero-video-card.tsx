@@ -86,24 +86,30 @@ function selectBroadcast(): BroadcastHero {
 function getBroadcastCTA(role: CompetitionRoleLens, status: BroadcastStatus): string {
   if (status === 'live') {
     switch (role) {
-      case 'C1':
+      case 'CO1':
         return 'Open Live Broadcast';
-      case 'C2':
+      case 'CO2':
         return 'Watch + Team Ops';
-      case 'C3':
-      case 'C4':
+      case 'CO3':
+      case 'CO4':
+      case 'CO5':
+      case 'CO10':
+      case 'CO11':
       default:
         return 'Watch Live';
     }
   }
   if (status === 'upcoming') {
     switch (role) {
-      case 'C1':
+      case 'CO1':
         return 'Open Live Ops';
-      case 'C2':
+      case 'CO2':
         return 'Watch + Team Ops';
-      case 'C3':
-      case 'C4':
+      case 'CO3':
+      case 'CO4':
+      case 'CO5':
+      case 'CO10':
+      case 'CO11':
       default:
         return 'Watch Live';
     }

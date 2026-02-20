@@ -1,6 +1,6 @@
 /**
  * Competition Context — Competition Mode state
- * Active series switcher + 4-level RBAC via CompetitionRoleLens.
+ * Active series switcher + 7-level RBAC via CompetitionRoleLens (CO1-CO11).
  */
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
@@ -34,7 +34,7 @@ const CompetitionContext = createContext<CompetitionContextValue | null>(null);
 
 export function CompetitionProvider({ children }: { children: React.ReactNode }) {
   const [activeSeriesId, setActiveSeriesId] = useState('ser-iccla-24');
-  const [viewAsRole, setViewAsRoleState] = useState<CompetitionRoleLens>('C1');
+  const [viewAsRole, setViewAsRoleState] = useState<CompetitionRoleLens>('CO1');
 
   const handleSetActive = useCallback((id: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

@@ -198,22 +198,26 @@ export interface DriverStanding {
   poles: number;
   fastestLaps: number;
   delta: number;
+  lastRaceResult?: number | 'DNF' | 'DNS';
 }
 
 export const DRIVER_STANDINGS: DriverStanding[] = [
-  { position: 1, name: 'Marco Alvarez', team: 'KaNeXT Works Racing', points: 156, wins: 3, podiums: 5, poles: 2, fastestLaps: 1, delta: 0 },
-  { position: 2, name: 'Lena Hoffmann', team: 'Apex Motorsport', points: 138, wins: 1, podiums: 5, poles: 2, fastestLaps: 1, delta: 1 },
-  { position: 3, name: 'Darius Okonkwo', team: 'Velocity Racing', points: 124, wins: 1, podiums: 4, poles: 1, fastestLaps: 1, delta: -1 },
-  { position: 4, name: 'Yuki Tanaka', team: 'Summit Engineering', points: 118, wins: 1, podiums: 4, poles: 1, fastestLaps: 0, delta: 2 },
-  { position: 5, name: 'Sofia Petrov', team: 'Apex Motorsport', points: 104, wins: 0, podiums: 3, poles: 0, fastestLaps: 1, delta: -1 },
-  { position: 6, name: 'Amir Khalil', team: 'Velocity Racing', points: 97, wins: 0, podiums: 2, poles: 0, fastestLaps: 1, delta: 0 },
-  { position: 7, name: 'Kwame Asante', team: 'Titan Performance', points: 89, wins: 0, podiums: 2, poles: 0, fastestLaps: 0, delta: 1 },
-  { position: 8, name: 'Jake Morrison', team: 'Grid Iron Motors', points: 82, wins: 0, podiums: 1, poles: 0, fastestLaps: 0, delta: -1 },
-  { position: 9, name: 'Elena Cruz', team: 'KaNeXT Works Racing', points: 76, wins: 0, podiums: 1, poles: 0, fastestLaps: 0, delta: 0 },
-  { position: 10, name: 'Ravi Sharma', team: 'Summit Engineering', points: 68, wins: 0, podiums: 1, poles: 0, fastestLaps: 1, delta: 2 },
-  { position: 11, name: 'Nia Jackson', team: 'Titan Performance', points: 54, wins: 0, podiums: 0, poles: 0, fastestLaps: 0, delta: -1 },
-  { position: 12, name: 'Cody Bergmann', team: 'Grid Iron Motors', points: 41, wins: 0, podiums: 0, poles: 0, fastestLaps: 0, delta: -1 },
+  { position: 1, name: 'Marco Alvarez', team: 'KaNeXT Works Racing', points: 156, wins: 3, podiums: 5, poles: 2, fastestLaps: 1, delta: 0, lastRaceResult: 1 },
+  { position: 2, name: 'Lena Hoffmann', team: 'Apex Motorsport', points: 138, wins: 1, podiums: 5, poles: 2, fastestLaps: 1, delta: 1, lastRaceResult: 2 },
+  { position: 3, name: 'Darius Okonkwo', team: 'Velocity Racing', points: 124, wins: 1, podiums: 4, poles: 1, fastestLaps: 1, delta: -1, lastRaceResult: 5 },
+  { position: 4, name: 'Yuki Tanaka', team: 'Summit Engineering', points: 118, wins: 1, podiums: 4, poles: 1, fastestLaps: 0, delta: 2, lastRaceResult: 3 },
+  { position: 5, name: 'Sofia Petrov', team: 'Apex Motorsport', points: 104, wins: 0, podiums: 3, poles: 0, fastestLaps: 1, delta: -1, lastRaceResult: 6 },
+  { position: 6, name: 'Amir Khalil', team: 'Velocity Racing', points: 97, wins: 0, podiums: 2, poles: 0, fastestLaps: 1, delta: 0, lastRaceResult: 4 },
+  { position: 7, name: 'Kwame Asante', team: 'Titan Performance', points: 89, wins: 0, podiums: 2, poles: 0, fastestLaps: 0, delta: 1, lastRaceResult: 7 },
+  { position: 8, name: 'Jake Morrison', team: 'Grid Iron Motors', points: 82, wins: 0, podiums: 1, poles: 0, fastestLaps: 0, delta: -1, lastRaceResult: 9 },
+  { position: 9, name: 'Elena Cruz', team: 'KaNeXT Works Racing', points: 76, wins: 0, podiums: 1, poles: 0, fastestLaps: 0, delta: 0, lastRaceResult: 8 },
+  { position: 10, name: 'Ravi Sharma', team: 'Summit Engineering', points: 68, wins: 0, podiums: 1, poles: 0, fastestLaps: 1, delta: 2, lastRaceResult: 10 },
+  { position: 11, name: 'Nia Jackson', team: 'Titan Performance', points: 54, wins: 0, podiums: 0, poles: 0, fastestLaps: 0, delta: -1, lastRaceResult: 11 },
+  { position: 12, name: 'Cody Bergmann', team: 'Grid Iron Motors', points: 41, wins: 0, podiums: 0, poles: 0, fastestLaps: 0, delta: -1, lastRaceResult: 'DNF' },
 ];
+
+export const STEWARD_PENDING_DECISIONS = 2;
+export const HOMOLOGATION_DEADLINE = 'Aug 1, 2025';
 
 // =============================================================================
 // STANDINGS — Constructors
