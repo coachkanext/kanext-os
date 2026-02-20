@@ -227,50 +227,50 @@ export function ChurchPrayerSheet({ visible, onClose, colors }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { gap: Spacing.sm },
+  container: { gap: 12 },
 
-  tabRow: { flexDirection: 'row', gap: 8, marginBottom: 8 },
-  tabPill: { flex: 1, borderWidth: 1, borderRadius: BorderRadius.md, paddingVertical: 8, alignItems: 'center' },
-  tabPillText: { fontSize: 13, fontWeight: '700' },
+  tabRow: { flexDirection: 'row', gap: 8, marginBottom: 10 },
+  tabPill: { flex: 1, borderWidth: StyleSheet.hairlineWidth, borderRadius: 20, paddingVertical: 10, alignItems: 'center' },
+  tabPillText: { fontSize: 13, fontWeight: '700', letterSpacing: 0.3 },
 
-  section: { gap: Spacing.sm },
+  section: { gap: 12 },
 
-  sectionLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 },
+  sectionLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 6 },
 
   textArea: {
-    borderWidth: 1, borderRadius: BorderRadius.md,
-    padding: Spacing.sm, fontSize: 14,
+    borderWidth: StyleSheet.hairlineWidth, borderRadius: 14,
+    padding: 14, fontSize: 14,
     minHeight: 80,
   },
 
-  pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 10 },
-  catPill: { borderWidth: 1, borderRadius: BorderRadius.md, paddingHorizontal: 12, paddingVertical: 6 },
-  catPillText: { fontSize: 12, fontWeight: '600' },
+  pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
+  catPill: { borderWidth: StyleSheet.hairlineWidth, borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6 },
+  catPillText: { fontSize: 12, fontWeight: '700', letterSpacing: 0.2 },
 
-  ctaButton: { paddingVertical: 12, borderRadius: BorderRadius.md, alignItems: 'center' },
-  ctaText: { fontSize: 15, fontWeight: '700' },
+  ctaButton: { paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
+  ctaText: { fontSize: 15, fontWeight: '700', letterSpacing: -0.2 },
 
   successBlock: {
-    backgroundColor: '#22C55E22',
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
+    backgroundColor: '#22C55E12',
+    borderRadius: 14,
+    padding: 16,
     alignItems: 'center',
   },
-  successText: { color: '#22C55E', fontSize: 14, fontWeight: '700', textAlign: 'center' },
+  successText: { color: '#22C55E', fontSize: 14, fontWeight: '700', textAlign: 'center', letterSpacing: -0.2 },
 
   requestCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.sm,
-    gap: 6,
+    padding: 16,
+    gap: 8,
   },
   requestHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  requestName: { fontSize: 13, fontWeight: '700' },
-  categoryBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  categoryBadgeText: { fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
-  requestText: { fontSize: 13, lineHeight: 18 },
+  requestName: { fontSize: 13, fontWeight: '800', letterSpacing: -0.2 },
+  categoryBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  categoryBadgeText: { fontSize: 9, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8 },
+  requestText: { fontSize: 13, lineHeight: 19 },
   requestFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 },
-  requestDate: { fontSize: 10 },
-  prayButton: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: BorderRadius.md },
-  prayButtonText: { fontSize: 11, fontWeight: '700' },
+  requestDate: { fontSize: 10, fontWeight: '500', letterSpacing: 0.2 },
+  prayButton: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
+  prayButtonText: { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
 });

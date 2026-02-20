@@ -251,55 +251,55 @@ export function ChurchGiveSheet({ visible, onClose, colors }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { gap: Spacing.md },
+  container: { gap: 14 },
 
-  sectionLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 },
+  sectionLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 6 },
 
   pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14 },
   pill: {
-    borderWidth: 1, borderRadius: BorderRadius.md,
+    borderWidth: StyleSheet.hairlineWidth, borderRadius: 20,
     paddingHorizontal: 14, paddingVertical: 8,
   },
-  pillText: { fontSize: 13, fontWeight: '600' },
+  pillText: { fontSize: 13, fontWeight: '700', letterSpacing: 0.2 },
 
   customInput: {
-    borderWidth: 1, borderRadius: BorderRadius.md,
-    paddingHorizontal: 14, paddingVertical: 10,
+    borderWidth: StyleSheet.hairlineWidth, borderRadius: 14,
+    paddingHorizontal: 14, paddingVertical: 12,
     fontSize: 15, marginBottom: 14,
   },
 
   confirmCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
-    gap: 10,
+    padding: 16,
+    gap: 12,
   },
   confirmRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  confirmLabel: { fontSize: 13, fontWeight: '500' },
-  confirmValue: { fontSize: 13, fontWeight: '700' },
-  amountText: { fontSize: 24, fontWeight: '800' },
-  statusText: { fontSize: 13, fontWeight: '700' },
+  confirmLabel: { fontSize: 13, fontWeight: '500', letterSpacing: 0.1 },
+  confirmValue: { fontSize: 13, fontWeight: '700', letterSpacing: -0.2 },
+  amountText: { fontSize: 26, fontWeight: '800', letterSpacing: -0.3 },
+  statusText: { fontSize: 13, fontWeight: '700', letterSpacing: 0.5 },
 
-  ctaButton: { paddingVertical: 12, borderRadius: BorderRadius.md, alignItems: 'center' },
-  ctaButtonText: { fontSize: 15, fontWeight: '700' },
-  cancelButton: { borderWidth: 1, paddingVertical: 12, borderRadius: BorderRadius.md, alignItems: 'center' },
-  cancelButtonText: { fontSize: 15, fontWeight: '600' },
+  ctaButton: { paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
+  ctaButtonText: { fontSize: 15, fontWeight: '700', letterSpacing: -0.2 },
+  cancelButton: { borderWidth: StyleSheet.hairlineWidth, paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
+  cancelButtonText: { fontSize: 15, fontWeight: '700', letterSpacing: -0.2 },
 
   chainCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
-    gap: 8,
+    padding: 16,
+    gap: 10,
   },
   chainRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
   chainDot: { width: 8, height: 8, borderRadius: 4, marginTop: 4 },
-  chainStage: { fontSize: 12, fontWeight: '700' },
-  chainDetail: { fontSize: 11, fontWeight: '500', marginTop: 1 },
+  chainStage: { fontSize: 12, fontWeight: '700', letterSpacing: 0.3 },
+  chainDetail: { fontSize: 11, fontWeight: '500', marginTop: 2 },
 
   taxNote: {
-    borderRadius: BorderRadius.md,
+    borderRadius: 14,
     padding: Spacing.sm,
     alignItems: 'center',
   },
-  taxNoteText: { fontSize: 11, fontWeight: '600', textAlign: 'center' },
+  taxNoteText: { fontSize: 11, fontWeight: '700', textAlign: 'center', letterSpacing: 0.2 },
 });

@@ -100,22 +100,24 @@ const styles = StyleSheet.create({
   },
   crewName: {
     fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: -0.3,
+    fontWeight: '800',
+    letterSpacing: -0.5,
   },
   crewRole: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '700',
+    letterSpacing: 0.5,
     marginTop: 2,
   },
   crewTeam: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: '600',
+    letterSpacing: 0.3,
     marginTop: 1,
   },
   scoreCard: {
     flexDirection: 'row',
-    borderRadius: BorderRadius.lg,
+    borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     justifyContent: 'space-around',
@@ -127,10 +129,12 @@ const styles = StyleSheet.create({
   scoreLabel: {
     fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   scoreValue: {
     fontSize: 17,
     fontWeight: '800',
+    letterSpacing: -0.3,
   },
 });

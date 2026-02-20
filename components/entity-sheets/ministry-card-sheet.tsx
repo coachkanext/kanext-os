@@ -100,11 +100,11 @@ const styles = StyleSheet.create({
   },
   ministryName: {
     fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: -0.3,
+    fontWeight: '800',
+    letterSpacing: -0.5,
   },
   missionCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     gap: 6,
@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
   missionLabel: {
     fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   missionText: {
     fontSize: 13,
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
   },
   statsCard: {
     flexDirection: 'row',
-    borderRadius: BorderRadius.lg,
+    borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     justifyContent: 'space-around',
@@ -133,10 +134,12 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   statValue: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '800',
+    letterSpacing: -0.3,
   },
 });

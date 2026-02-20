@@ -142,37 +142,37 @@ export function EduCatalogSheet({ visible, onClose, colors }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { gap: Spacing.sm },
+  container: { gap: 12 },
 
   pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
-  pill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: BorderRadius.full },
-  pillText: { fontSize: 12, fontWeight: '600' },
+  pill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
+  pillText: { fontSize: 12, fontWeight: '700', letterSpacing: 0.3 },
 
   searchInput: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     fontSize: 14,
   },
 
-  emptyText: { fontSize: 14, textAlign: 'center', paddingVertical: Spacing.xl },
+  emptyText: { fontSize: 14, textAlign: 'center', paddingVertical: Spacing.xl, fontWeight: '500' },
 
   programCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
+    padding: 16,
   },
   programHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  programName: { fontSize: 14, fontWeight: '700' },
-  badgeRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 },
-  degreeBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  degreeBadgeText: { fontSize: 10, fontWeight: '700' },
-  programEnrollment: { fontSize: 11, fontWeight: '500' },
+  programName: { fontSize: 14, fontWeight: '800', letterSpacing: -0.3 },
+  badgeRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 5 },
+  degreeBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  degreeBadgeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  programEnrollment: { fontSize: 11, fontWeight: '500', letterSpacing: 0.1 },
   statusDot: { width: 8, height: 8, borderRadius: 4 },
 
-  detailSection: { marginTop: 10, gap: 6, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.06)', paddingTop: 10 },
+  detailSection: { marginTop: 12, gap: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.06)', paddingTop: 12 },
   detailRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  detailLabel: { fontSize: 12, fontWeight: '500' },
-  detailValue: { fontSize: 12, fontWeight: '700' },
+  detailLabel: { fontSize: 12, fontWeight: '500', letterSpacing: 0.1 },
+  detailValue: { fontSize: 12, fontWeight: '700', letterSpacing: -0.2 },
 });

@@ -10,7 +10,7 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { FMU_GAMES, type FMUGame } from '@/data/fmu';
 import { SEAT_TIERS, buildCommerceChain, type SeatTier, type PaymentChain } from '@/data/commerce-data';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 
 type Stage = 'browse' | 'confirm' | 'receipt';
 
@@ -187,74 +187,80 @@ export function TicketsSheet({ visible, onClose, colors }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    gap: Spacing.md,
+    gap: 14,
   },
   emptyText: {
     fontSize: 14,
     textAlign: 'center',
     paddingVertical: Spacing.xl,
+    letterSpacing: 0.2,
   },
 
   // Game cards
   gameCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
+    padding: 16,
   },
   gameOpponent: {
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '800',
+    letterSpacing: -0.5,
   },
   gameMeta: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: '600',
     marginTop: 4,
+    letterSpacing: 0.3,
   },
 
   // Tier selection
   tierList: {
     marginTop: Spacing.sm,
-    gap: Spacing.sm,
+    gap: 10,
   },
   tierRow: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.sm,
+    borderRadius: 14,
+    padding: 16,
   },
   tierLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: -0.3,
   },
   tierPrice: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 13,
+    fontWeight: '800',
     marginTop: 2,
+    letterSpacing: -0.3,
   },
   selectBtn: {
     backgroundColor: '#1E40AF',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: BorderRadius.md,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
   },
   selectBtnText: {
     color: '#fff',
     fontSize: 12,
     fontWeight: '700',
+    letterSpacing: 0.5,
   },
 
   // Confirm / Receipt
   confirmCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
-    gap: 10,
+    padding: 16,
+    gap: 12,
   },
   sectionLabel: {
     fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 1,
+    letterSpacing: 1.2,
     textTransform: 'uppercase',
     marginBottom: 4,
   },
@@ -266,49 +272,55 @@ const styles = StyleSheet.create({
   confirmLabel: {
     fontSize: 13,
     fontWeight: '500',
+    letterSpacing: 0.1,
   },
   confirmValue: {
     fontSize: 13,
     fontWeight: '700',
+    letterSpacing: -0.2,
   },
   amountText: {
     fontSize: 24,
     fontWeight: '800',
+    letterSpacing: -0.3,
   },
   statusText: {
     fontSize: 13,
     fontWeight: '700',
+    letterSpacing: 0.5,
   },
 
   // CTA
   ctaButton: {
     backgroundColor: '#22C55E',
-    paddingVertical: 12,
-    borderRadius: BorderRadius.md,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
   },
   ctaButtonText: {
     color: '#fff',
     fontSize: 15,
     fontWeight: '700',
+    letterSpacing: -0.2,
   },
   cancelButton: {
-    borderWidth: 1,
-    paddingVertical: 12,
-    borderRadius: BorderRadius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
   },
   cancelButtonText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: -0.2,
   },
 
   // Payment chain
   chainCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
-    gap: 8,
+    padding: 16,
+    gap: 10,
   },
   chainRow: {
     flexDirection: 'row',
@@ -324,10 +336,13 @@ const styles = StyleSheet.create({
   chainStage: {
     fontSize: 12,
     fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   chainDetail: {
     fontSize: 11,
     fontWeight: '500',
-    marginTop: 1,
+    marginTop: 2,
+    letterSpacing: 0.1,
   },
 });

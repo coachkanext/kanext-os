@@ -9,7 +9,8 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { STORE_PRODUCTS, buildCommerceChain, type CartItem, type PaymentChain } from '@/data/commerce-data';
-import { Spacing, BorderRadius } from '@/constants/theme';
+
+
 
 type Stage = 'browse' | 'confirm' | 'receipt';
 
@@ -210,29 +211,31 @@ export function StoreSheet({ visible, onClose, colors }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    gap: Spacing.md,
+    gap: 14,
   },
 
-  // Product grid (2×2)
+  // Product grid (2x2)
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.sm,
+    gap: 10,
   },
   productCard: {
     width: '48%',
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.sm,
-    gap: 6,
+    padding: 16,
+    gap: 8,
   },
   productName: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '800',
+    letterSpacing: -0.5,
   },
   productPrice: {
-    fontSize: 13,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: -0.3,
   },
 
   // Size selector
@@ -240,13 +243,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 4,
-    marginTop: 2,
+    marginTop: 4,
   },
   sizePill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   sizePillActive: {
     backgroundColor: '#1E40AF',
@@ -254,21 +257,23 @@ const styles = StyleSheet.create({
   },
   sizePillText: {
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   sizePillTextActive: {
     color: '#fff',
   },
   oneSizeText: {
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
 
   // Add to cart
   addBtn: {
     backgroundColor: '#1E40AF',
-    paddingVertical: 6,
-    borderRadius: BorderRadius.md,
+    paddingVertical: 8,
+    borderRadius: 12,
     alignItems: 'center',
     marginTop: 4,
   },
@@ -276,33 +281,35 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 12,
     fontWeight: '700',
+    letterSpacing: 0.3,
   },
 
   // Cart footer
   cartFooterBtn: {
     flex: 1,
     backgroundColor: '#22C55E',
-    paddingVertical: 12,
-    borderRadius: BorderRadius.md,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
   },
   cartFooterText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
+    letterSpacing: -0.2,
   },
 
   // Confirm / Receipt shared
   confirmCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
-    gap: 10,
+    padding: 16,
+    gap: 12,
   },
   sectionLabel: {
     fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 1,
+    letterSpacing: 1.2,
     textTransform: 'uppercase',
     marginBottom: 4,
   },
@@ -315,18 +322,22 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     flex: 1,
+    letterSpacing: 0.1,
   },
   confirmValue: {
     fontSize: 13,
     fontWeight: '700',
+    letterSpacing: -0.2,
   },
   amountText: {
     fontSize: 24,
     fontWeight: '800',
+    letterSpacing: -0.3,
   },
   statusText: {
     fontSize: 13,
     fontWeight: '700',
+    letterSpacing: 0.5,
   },
   divider: {
     height: StyleSheet.hairlineWidth,
@@ -335,32 +346,34 @@ const styles = StyleSheet.create({
   // CTA / Cancel
   ctaButton: {
     backgroundColor: '#22C55E',
-    paddingVertical: 12,
-    borderRadius: BorderRadius.md,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
   },
   ctaButtonText: {
     color: '#fff',
     fontSize: 15,
     fontWeight: '700',
+    letterSpacing: -0.2,
   },
   cancelButton: {
-    borderWidth: 1,
-    paddingVertical: 12,
-    borderRadius: BorderRadius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
   },
   cancelButtonText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: -0.2,
   },
 
   // Payment chain
   chainCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
-    gap: 8,
+    padding: 16,
+    gap: 10,
   },
   chainRow: {
     flexDirection: 'row',
@@ -376,10 +389,13 @@ const styles = StyleSheet.create({
   chainStage: {
     fontSize: 12,
     fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   chainDetail: {
     fontSize: 11,
     fontWeight: '500',
-    marginTop: 1,
+    marginTop: 2,
+    letterSpacing: 0.1,
   },
 });

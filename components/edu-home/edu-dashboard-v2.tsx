@@ -114,7 +114,7 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
             <ThemedText style={[styles.nextEventMeta, { color: colors.textSecondary }]}>
               {nextEvent.date} · {nextEvent.time}
             </ThemedText>
-            <View style={[styles.nextEventBadge, { backgroundColor: EDU_EVENT_CATEGORY_COLORS[nextEvent.category] + '22' }]}>
+            <View style={[styles.nextEventBadge, { backgroundColor: EDU_EVENT_CATEGORY_COLORS[nextEvent.category] + '15' }]}>
               <ThemedText style={[styles.nextEventBadgeText, { color: EDU_EVENT_CATEGORY_COLORS[nextEvent.category] }]}>
                 {nextEvent.category.replace('_', ' ')}
               </ThemedText>
@@ -276,7 +276,7 @@ function MetricCell({ label, value, trend, status }: { label: string; value: str
 
 function DomainPill({ label, color }: { label: string; color: string }) {
   return (
-    <View style={[styles.domainPill, { backgroundColor: color + '22' }]}>
+    <View style={[styles.domainPill, { backgroundColor: color + '18' }]}>
       <ThemedText style={[styles.domainPillText, { color }]}>{label}</ThemedText>
     </View>
   );
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
 
   // Hero
-  heroContainer: { borderRadius: 14, overflow: 'hidden', marginBottom: 12 },
+  heroContainer: { borderRadius: 16, overflow: 'hidden', marginBottom: 16 },
   heroGradient: { aspectRatio: 16 / 9, justifyContent: 'center', alignItems: 'center' },
   playButton: {
     width: 56, height: 56, borderRadius: 28,
@@ -299,69 +299,69 @@ const styles = StyleSheet.create({
   },
   liveBadge: {
     position: 'absolute', top: 12, left: 12,
-    backgroundColor: '#EF4444', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6,
+    backgroundColor: '#EF4444', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20,
   },
-  liveText: { color: '#fff', fontSize: 11, fontWeight: '800' },
-  heroOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 14 },
-  heroTitle: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  heroSubtitle: { color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 2 },
-  heroInstructor: { color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 4, textDecorationLine: 'underline' },
+  liveText: { color: '#fff', fontSize: 11, fontWeight: '800', letterSpacing: 1.2 },
+  heroOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16 },
+  heroTitle: { color: '#fff', fontSize: 16, fontWeight: '800', letterSpacing: -0.5 },
+  heroSubtitle: { color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 2, letterSpacing: 0.2 },
+  heroInstructor: { color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 4, textDecorationLine: 'underline', letterSpacing: 0.2 },
 
   // Next Event
-  nextEventCard: { borderRadius: 12, borderWidth: 1, padding: 14, marginBottom: 12 },
-  nextEventLabel: { fontSize: 10, fontWeight: '800', letterSpacing: 1, marginBottom: 4 },
-  nextEventTitle: { fontSize: 15, fontWeight: '700', marginBottom: 4 },
-  nextEventMeta: { fontSize: 12, marginBottom: 8 },
-  nextEventBadge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 },
-  nextEventBadgeText: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase' },
+  nextEventCard: { borderRadius: 14, borderWidth: StyleSheet.hairlineWidth, padding: 16, marginBottom: 16 },
+  nextEventLabel: { fontSize: 10, fontWeight: '800', letterSpacing: 1.2, marginBottom: 4, textTransform: 'uppercase' },
+  nextEventTitle: { fontSize: 15, fontWeight: '800', letterSpacing: -0.5, marginBottom: 4 },
+  nextEventMeta: { fontSize: 12, marginBottom: 8, letterSpacing: 0.2 },
+  nextEventBadge: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  nextEventBadgeText: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 },
 
   // Action Row
-  actionRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
+  actionRow: { flexDirection: 'row', gap: 10, marginBottom: 16 },
   actionCard: {
-    flex: 1, backgroundColor: '#181616', borderRadius: 12, padding: 12,
+    flex: 1, backgroundColor: '#181616', borderRadius: 14, padding: 16,
     overflow: 'hidden',
   },
   actionTopBorder: { position: 'absolute', top: 0, left: 0, right: 0, height: 3 },
-  actionTitle: { color: '#fff', fontSize: 14, fontWeight: '700', marginTop: 2 },
-  actionSubtitle: { color: 'rgba(255,255,255,0.5)', fontSize: 10, marginTop: 2 },
+  actionTitle: { color: '#fff', fontSize: 14, fontWeight: '800', letterSpacing: -0.3, marginTop: 2 },
+  actionSubtitle: { color: 'rgba(255,255,255,0.5)', fontSize: 10, marginTop: 3, letterSpacing: 0.2 },
 
   // Institutional Metrics
   metricsCard: {
-    backgroundColor: '#181616', borderRadius: 12, padding: 14, marginBottom: 12,
+    backgroundColor: '#181616', borderRadius: 14, padding: 16, marginBottom: 16,
   },
-  sectionTitle: { color: '#fff', fontSize: 14, fontWeight: '700', marginBottom: 10 },
+  sectionTitle: { color: '#fff', fontSize: 13, fontWeight: '800', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 },
   metricsGrid: { flexDirection: 'row', flexWrap: 'wrap' },
-  metricCell: { width: '33.33%', paddingVertical: 8, paddingHorizontal: 4 },
+  metricCell: { width: '33.33%', paddingVertical: 10, paddingHorizontal: 4 },
   metricValueRow: { flexDirection: 'row', alignItems: 'baseline', gap: 4 },
-  metricValue: { color: '#fff', fontSize: 18, fontWeight: '800' },
-  metricTrend: { color: '#22C55E', fontSize: 10, fontWeight: '700' },
-  metricLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  metricValue: { color: '#fff', fontSize: 18, fontWeight: '800', letterSpacing: -0.3 },
+  metricTrend: { color: '#22C55E', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  metricLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 3 },
   statusDot: { width: 6, height: 6, borderRadius: 3 },
-  metricLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 10 },
+  metricLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 10, letterSpacing: 0.3 },
 
   // Academic Health
   healthCard: {
-    backgroundColor: '#181616', borderRadius: 12, padding: 14, marginBottom: 12,
+    backgroundColor: '#181616', borderRadius: 14, padding: 16, marginBottom: 16,
   },
-  schoolRow: { marginBottom: 10 },
+  schoolRow: { marginBottom: 12 },
   schoolHeader: { marginBottom: 4 },
-  schoolName: { color: '#fff', fontSize: 13, fontWeight: '700' },
-  schoolStats: { color: 'rgba(255,255,255,0.5)', fontSize: 10, marginTop: 2 },
+  schoolName: { color: '#fff', fontSize: 13, fontWeight: '800', letterSpacing: -0.3 },
+  schoolStats: { color: 'rgba(255,255,255,0.5)', fontSize: 10, marginTop: 2, letterSpacing: 0.2 },
   alertRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 4 },
   alertDot: { width: 6, height: 6, borderRadius: 3, marginTop: 4 },
-  alertText: { color: '#F59E0B', fontSize: 11, flex: 1 },
+  alertText: { color: '#F59E0B', fontSize: 11, flex: 1, letterSpacing: 0.1 },
 
   // Domain Cards
   domainCard: {
-    backgroundColor: '#181616', borderRadius: 12, overflow: 'hidden', marginBottom: 10,
+    backgroundColor: '#181616', borderRadius: 14, overflow: 'hidden', marginBottom: 12,
   },
   domainAccent: { height: 3 },
-  domainContent: { padding: 14 },
+  domainContent: { padding: 16 },
   domainHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
-  domainTitle: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  domainPills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 4 },
-  domainPill: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 },
-  domainPillText: { fontSize: 10, fontWeight: '700' },
-  domainStatus: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginBottom: 2 },
-  domainMeta: { color: 'rgba(255,255,255,0.4)', fontSize: 11 },
+  domainTitle: { color: '#fff', fontSize: 14, fontWeight: '800', letterSpacing: -0.3 },
+  domainPills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 6 },
+  domainPill: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  domainPillText: { fontSize: 11, fontWeight: '700', letterSpacing: 0.5 },
+  domainStatus: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginBottom: 2, letterSpacing: 0.1 },
+  domainMeta: { color: 'rgba(255,255,255,0.4)', fontSize: 11, letterSpacing: 0.1 },
 });

@@ -94,7 +94,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
               <View style={[styles.roundBadge, { backgroundColor: accent }]}>
                 <ThemedText style={styles.roundBadgeText}>R{nextRound.round}</ThemedText>
               </View>
-              <View style={[styles.nextLabel, { backgroundColor: accent + '22' }]}>
+              <View style={[styles.nextLabel, { backgroundColor: accent + '15' }]}>
                 <ThemedText style={[styles.nextLabelText, { color: accent }]}>NEXT RACE</ThemedText>
               </View>
             </View>
@@ -180,7 +180,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
                 key={d.position}
                 style={[
                   styles.standingsRow,
-                  i < topDrivers.length - 1 && { borderBottomWidth: 1, borderBottomColor: colors.border },
+                  i < topDrivers.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
                 ]}
                 onPress={() =>
                   openDriverCard({ name: d.name, number: '', team: d.team, points: d.points, wins: d.wins, podiums: d.podiums })
@@ -192,7 +192,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
                 <View style={[styles.teamColorBar, { backgroundColor: teamColor }]} />
                 <View style={{ flex: 1 }}>
                   <ThemedText
-                    style={[styles.standingsName, { color: i === 0 ? accent : colors.text, fontWeight: i === 0 ? '700' : '400' }]}
+                    style={[styles.standingsName, { color: i === 0 ? accent : colors.text, fontWeight: i === 0 ? '800' : '400' }]}
                   >
                     {d.name}
                   </ThemedText>
@@ -224,7 +224,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
                 key={t.position}
                 style={[
                   styles.standingsRow,
-                  i < topTeams.length - 1 && { borderBottomWidth: 1, borderBottomColor: colors.border },
+                  i < topTeams.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
                 ]}
                 onPress={() => openTeamCard({ name: t.name, category: t.category })}
               >
@@ -234,7 +234,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
                 <View style={[styles.teamColorBar, { backgroundColor: teamColor }]} />
                 <View style={{ flex: 1 }}>
                   <ThemedText
-                    style={[styles.standingsName, { color: i === 0 ? accent : colors.text, fontWeight: i === 0 ? '700' : '400' }]}
+                    style={[styles.standingsName, { color: i === 0 ? accent : colors.text, fontWeight: i === 0 ? '800' : '400' }]}
                   >
                     {t.name}
                   </ThemedText>
@@ -363,16 +363,16 @@ function LastRaceBadge({ result }: { result: number | 'DNF' | 'DNS' }) {
 
 const badgeStyles = StyleSheet.create({
   badge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
     marginRight: 2,
   },
   badgeText: {
     fontSize: 9,
-    fontWeight: '800',
+    fontWeight: '700',
     color: '#000',
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
   },
 });
 
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
 
   // Hero
-  heroWrapper: { borderRadius: 16, overflow: 'hidden', marginBottom: 14 },
+  heroWrapper: { borderRadius: 16, overflow: 'hidden', marginBottom: 16 },
   heroGradient: {
     aspectRatio: 16 / 9,
     alignItems: 'center',
@@ -419,81 +419,81 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     backgroundColor: '#EF4444',
     paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 4,
+    paddingVertical: 4,
+    borderRadius: 20,
     marginBottom: 6,
   },
-  liveText: { color: '#fff', fontSize: 10, fontWeight: '800', letterSpacing: 1 },
-  heroTitle: { color: '#fff', fontSize: 18, fontWeight: '800' },
-  heroSubtitle: { color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 2 },
+  liveText: { color: '#fff', fontSize: 11, fontWeight: '700', letterSpacing: 1.2 },
+  heroTitle: { color: '#fff', fontSize: 18, fontWeight: '800', letterSpacing: -0.5 },
+  heroSubtitle: { color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 2, letterSpacing: 0.2 },
 
   // Next Event
-  nextEventCard: { borderRadius: 12, borderWidth: 2, padding: 14, marginBottom: 14 },
+  nextEventCard: { borderRadius: 14, borderWidth: StyleSheet.hairlineWidth, padding: 16, marginBottom: 16 },
   nextEventHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
   roundBadge: {
     width: 36,
     height: 36,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  roundBadgeText: { color: '#000', fontSize: 12, fontWeight: '800' },
-  nextLabel: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
-  nextLabelText: { fontSize: 10, fontWeight: '700' },
-  nextEventName: { fontSize: 17, fontWeight: '700' },
-  nextEventMeta: { fontSize: 12, marginTop: 3 },
+  roundBadgeText: { color: '#000', fontSize: 12, fontWeight: '800', letterSpacing: -0.3 },
+  nextLabel: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  nextLabelText: { fontSize: 11, fontWeight: '700', letterSpacing: 0.8 },
+  nextEventName: { fontSize: 17, fontWeight: '800', letterSpacing: -0.5 },
+  nextEventMeta: { fontSize: 12, marginTop: 3, letterSpacing: 0.1 },
   weekendSchedule: { marginTop: 10, gap: 4 },
-  weekendRow: { fontSize: 11 },
+  weekendRow: { fontSize: 11, letterSpacing: 0.1 },
   defendingRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 10,
     paddingTop: 10,
-    borderTopWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(255,255,255,0.08)',
   },
-  defendingLabel: { fontSize: 11 },
-  defendingName: { fontSize: 12, fontWeight: '700' },
+  defendingLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.5, textTransform: 'uppercase' as const },
+  defendingName: { fontSize: 12, fontWeight: '700', letterSpacing: -0.2 },
 
   // Commerce Row (text-stack cards)
   commerceRow: { flexDirection: 'row', gap: 8, marginBottom: 18 },
   commerceCard: {
     flex: 1,
     borderTopWidth: 2,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
     gap: 3,
   },
-  commerceCardTitle: { fontSize: 13, fontWeight: '700' },
-  commerceCardSub: { fontSize: 11, fontWeight: '500' },
-  commerceCardMeta: { fontSize: 10, fontWeight: '500' },
+  commerceCardTitle: { fontSize: 13, fontWeight: '800', letterSpacing: -0.3 },
+  commerceCardSub: { fontSize: 11, fontWeight: '500', letterSpacing: 0.1 },
+  commerceCardMeta: { fontSize: 10, fontWeight: '500', letterSpacing: 0.1 },
 
   // Standings
-  sectionHeader: { fontSize: 12, fontWeight: '800', letterSpacing: 1, marginBottom: 8 },
-  standingsCard: { borderRadius: 12, borderWidth: 1, overflow: 'hidden' },
-  standingsRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 12, gap: 8 },
-  standingsPos: { width: 24, fontSize: 14, fontWeight: '700' },
+  sectionHeader: { fontSize: 11, fontWeight: '800', letterSpacing: 1, textTransform: 'uppercase' as const, marginBottom: 8 },
+  standingsCard: { borderRadius: 14, borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden' },
+  standingsRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 14, gap: 8 },
+  standingsPos: { width: 24, fontSize: 14, fontWeight: '800', letterSpacing: -0.3 },
   teamColorBar: { width: 3, height: 28, borderRadius: 1.5 },
-  standingsName: { fontSize: 14 },
-  standingsTeam: { fontSize: 10, marginTop: 1 },
-  standingsPoints: { fontSize: 13, fontWeight: '700', marginRight: 4 },
-  delta: { fontSize: 10, fontWeight: '600', width: 28, textAlign: 'right' },
+  standingsName: { fontSize: 14, letterSpacing: -0.2 },
+  standingsTeam: { fontSize: 10, marginTop: 1, letterSpacing: 0.2 },
+  standingsPoints: { fontSize: 13, fontWeight: '800', letterSpacing: -0.3, marginRight: 4 },
+  delta: { fontSize: 10, fontWeight: '700', width: 28, textAlign: 'right', letterSpacing: 0.5 },
 
   seeAllLink: { alignSelf: 'center', paddingVertical: 8, marginBottom: 4 },
-  seeAllText: { fontSize: 12, fontWeight: '700' },
+  seeAllText: { fontSize: 12, fontWeight: '700', letterSpacing: 0.5 },
 
   // Domain Cards
   domainCard: {
     backgroundColor: '#181616',
     borderTopWidth: 2,
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 12,
     gap: 4,
   },
   domainHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
-  domainTitle: { fontSize: 14, fontWeight: '700', flex: 1 },
-  domainPreview: { fontSize: 11 },
+  domainTitle: { fontSize: 14, fontWeight: '800', letterSpacing: -0.3, flex: 1 },
+  domainPreview: { fontSize: 11, letterSpacing: 0.1 },
 });

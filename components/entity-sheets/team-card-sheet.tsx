@@ -109,17 +109,18 @@ const styles = StyleSheet.create({
   },
   teamName: {
     fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: -0.3,
+    fontWeight: '800',
+    letterSpacing: -0.5,
   },
   conference: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '700',
+    letterSpacing: 0.5,
     marginTop: 2,
   },
   recordCard: {
     flexDirection: 'row',
-    borderRadius: BorderRadius.lg,
+    borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     justifyContent: 'space-around',
@@ -131,10 +132,12 @@ const styles = StyleSheet.create({
   recordLabel: {
     fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   recordValue: {
     fontSize: 17,
     fontWeight: '800',
+    letterSpacing: -0.3,
   },
 });

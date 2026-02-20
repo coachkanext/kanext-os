@@ -96,16 +96,17 @@ const styles = StyleSheet.create({
   },
   coachName: {
     fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: -0.3,
+    fontWeight: '800',
+    letterSpacing: -0.5,
   },
   coachTitle: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '700',
+    letterSpacing: 0.5,
     marginTop: 2,
   },
   detailsCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     gap: 10,
@@ -117,11 +118,13 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   detailValue: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '800',
+    letterSpacing: -0.3,
   },
   bioText: {
     fontSize: 13,

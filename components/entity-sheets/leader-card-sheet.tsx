@@ -104,16 +104,17 @@ const styles = StyleSheet.create({
   },
   leaderName: {
     fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: -0.3,
+    fontWeight: '800',
+    letterSpacing: -0.5,
   },
   leaderTitle: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '700',
+    letterSpacing: 0.5,
     marginTop: 2,
   },
   ministriesCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     gap: 8,
@@ -121,7 +122,8 @@ const styles = StyleSheet.create({
   ministriesLabel: {
     fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   pillsRow: {
     flexDirection: 'row',
@@ -130,15 +132,15 @@ const styles = StyleSheet.create({
   },
   ministryPill: {
     paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
   },
   ministryPillText: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: '700',
   },
   bioCard: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
   },

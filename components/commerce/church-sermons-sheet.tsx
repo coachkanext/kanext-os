@@ -69,35 +69,35 @@ export function ChurchSermonsSheet({ visible, onClose, colors }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { gap: Spacing.sm },
+  container: { gap: 12 },
 
   seriesCard: {
     backgroundColor: '#181616',
-    borderRadius: BorderRadius.lg,
+    borderRadius: 16,
     overflow: 'hidden',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   seriesAccent: { height: 3 },
-  seriesContent: { padding: Spacing.md },
-  seriesLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1, marginBottom: 4 },
-  seriesName: { color: '#fff', fontSize: 16, fontWeight: '800', marginBottom: 4 },
-  seriesProgress: { color: 'rgba(255,255,255,0.5)', fontSize: 12 },
+  seriesContent: { padding: 16 },
+  seriesLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1.2, marginBottom: 6, textTransform: 'uppercase' },
+  seriesName: { color: '#fff', fontSize: 17, fontWeight: '800', letterSpacing: -0.6, marginBottom: 4 },
+  seriesProgress: { color: 'rgba(255,255,255,0.45)', fontSize: 12, fontWeight: '500', letterSpacing: 0.2 },
 
-  sectionLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 },
+  sectionLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 6 },
 
   sermonRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: BorderRadius.lg,
+    borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.sm,
-    gap: 10,
+    padding: 16,
+    gap: 12,
   },
-  sermonTitle: { fontSize: 14, fontWeight: '700', marginBottom: 2 },
-  sermonMeta: { fontSize: 11, marginBottom: 4 },
-  seriesBadge: { alignSelf: 'flex-start', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  seriesBadgeText: { fontSize: 9, fontWeight: '700' },
+  sermonTitle: { fontSize: 14, fontWeight: '800', letterSpacing: -0.3, marginBottom: 3 },
+  sermonMeta: { fontSize: 11, fontWeight: '500', letterSpacing: 0.1, marginBottom: 5 },
+  seriesBadge: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  seriesBadgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
 
-  sermonActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  sermonActions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   actionBtn: { padding: 4 },
 });

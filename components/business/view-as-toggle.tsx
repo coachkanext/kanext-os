@@ -40,7 +40,7 @@ export function ViewAsToggle() {
               key={role.id}
               style={[
                 styles.pill,
-                isActive && { backgroundColor: ACCENT_GOLD + '20' },
+                isActive && { backgroundColor: ACCENT_GOLD + '28' },
               ]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -69,13 +69,13 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     gap: 8,
   },
-  label: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  label: { fontSize: 10, fontWeight: '700', letterSpacing: 0.8 },
   pillRow: { flexDirection: 'row', flex: 1, gap: 4 },
   pill: {
     flex: 1,
     paddingVertical: 6,
-    borderRadius: BorderRadius.sm,
+    borderRadius: 20,
     alignItems: 'center',
   },
-  pillText: { fontSize: 12, fontWeight: '600' },
+  pillText: { fontSize: 12, fontWeight: '700', letterSpacing: 0.3 },
 });
