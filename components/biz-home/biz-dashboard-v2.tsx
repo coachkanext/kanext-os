@@ -2,7 +2,7 @@
  * Biz Dashboard V2 — Full rewrite
  *
  * 7 RBAC-gated blocks + 3 bottom sheets + domain card drill-downs.
- * Dark card aesthetic matching Sports mode.
+ * Luxury dark card aesthetic — investor-grade visual polish.
  *
  * Blocks:
  *  1. Video Hero (all roles)
@@ -32,8 +32,10 @@ import {
   FUNDRAISE_METRICS,
   PIPELINE_SUMMARY,
   DEALS,
+  DEAL_STAGE_LABELS,
   type BizActionCardId,
   type BizDomainCardId,
+  type BizDealStage,
 } from '@/data/mock-business-home';
 import {
   isDashboardBlockVisible,
@@ -71,6 +73,17 @@ const ATTENDEE_ROLE_COLORS: Record<string, string> = {
   legal: '#6B7280',
 };
 
+const STAGE_COLORS: Record<string, string> = {
+  lead: '#6B7280',
+  contacted: '#3B82F6',
+  meeting_set: '#8B5CF6',
+  proposal_sent: '#F59E0B',
+  negotiating: '#F97316',
+  due_diligence: '#EC4899',
+  closed_won: '#10B981',
+  closed_lost: '#EF4444',
+};
+
 export function BizDashboardV2({ colors, accent }: Props) {
   const { viewAsRole } = useBusiness();
 
@@ -102,14 +115,22 @@ export function BizDashboardV2({ colors, accent }: Props) {
         {/* ── Block 1: Video Hero ── */}
         {isDashboardBlockVisible('video_hero', viewAsRole) && (
           <View style={styles.heroWrapper}>
-            <LinearGradient colors={['#1a0a2e', '#0d0d1a', '#000']} style={styles.heroGradient}>
+            <LinearGradient colors={['#0a0618', '#1a0a2e', '#0a0618']} style={styles.heroGradient}>
+              {/* Subtle inner vignette */}
+              <LinearGradient
+                colors={['transparent', 'rgba(0,0,0,0.6)']}
+                style={styles.heroScrim}
+              />
               {BIZ_HERO.isLive && (
                 <View style={styles.liveBadge}>
+                  <View style={styles.liveDot} />
                   <ThemedText style={styles.liveText}>LIVE</ThemedText>
                 </View>
               )}
               <Pressable style={styles.playButton}>
-                <IconSymbol name="play.circle.fill" size={56} color="rgba(255,255,255,0.7)" />
+                <View style={styles.playRing}>
+                  <IconSymbol name="play.fill" size={24} color="rgba(255,255,255,0.9)" />
+                </View>
               </Pressable>
               <View style={styles.heroOverlay}>
                 <ThemedText style={styles.heroTitle}>{BIZ_HERO.title}</ThemedText>
@@ -121,10 +142,12 @@ export function BizDashboardV2({ colors, accent }: Props) {
 
         {/* ── Block 2: Next Event ── */}
         {isDashboardBlockVisible('next_event', viewAsRole) && nextEvent && (
-          <View style={[styles.darkCard, { borderTopColor: accent }]}>
+          <View style={styles.darkCard}>
+            <View style={[styles.cardAccentStripe, { backgroundColor: accent }]} />
             <View style={styles.eventHeader}>
               <ThemedText style={[styles.sectionLabel, { color: accent }]}>NEXT EVENT</ThemedText>
-              <View style={[styles.eventTypeBadge, { backgroundColor: (EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#6B7280') + '22' }]}>
+              <View style={[styles.eventTypeBadge, { backgroundColor: (EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#6B7280') + '18' }]}>
+                <View style={[styles.microDot, { backgroundColor: EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#6B7280' }]} />
                 <ThemedText style={[styles.eventTypeText, { color: EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#6B7280' }]}>
                   {nextEvent.eventType}
                 </ThemedText>
@@ -136,7 +159,7 @@ export function BizDashboardV2({ colors, accent }: Props) {
             </ThemedText>
             <View style={styles.attendeeRow}>
               {nextEvent.attendees.slice(0, 4).map((a) => (
-                <View key={a.name} style={styles.attendeePill}>
+                <View key={a.name} style={[styles.attendeePill, { backgroundColor: (ATTENDEE_ROLE_COLORS[a.role] ?? '#6B7280') + '12' }]}>
                   <View style={[styles.attendeeDot, { backgroundColor: ATTENDEE_ROLE_COLORS[a.role] ?? '#6B7280' }]} />
                   <ThemedText style={styles.attendeeName}>{a.name}</ThemedText>
                 </View>
@@ -157,8 +180,8 @@ export function BizDashboardV2({ colors, accent }: Props) {
                 style={styles.actionCard}
                 onPress={() => handleActionCard(card.id)}
               >
-                <View style={[styles.actionIconWrap, { backgroundColor: card.color + '22' }]}>
-                  <IconSymbol name={card.icon as any} size={20} color={card.color} />
+                <View style={[styles.actionIconWrap, { backgroundColor: card.color + '18' }]}>
+                  <IconSymbol name={card.icon as any} size={22} color={card.color} />
                 </View>
                 <ThemedText style={styles.actionTitle}>{card.title}</ThemedText>
                 <ThemedText style={styles.actionDetail} numberOfLines={2}>{card.detail}</ThemedText>
@@ -169,7 +192,8 @@ export function BizDashboardV2({ colors, accent }: Props) {
 
         {/* ── Block 4: Pipeline ── */}
         {isDashboardBlockVisible('pipeline', viewAsRole) && (
-          <View style={[styles.darkCard, { borderTopColor: '#22C55E' }]}>
+          <View style={styles.darkCard}>
+            <View style={[styles.cardAccentStripe, { backgroundColor: '#22C55E' }]} />
             <ThemedText style={[styles.sectionLabel, { color: accent }]}>PIPELINE</ThemedText>
             <View style={styles.metricsRow}>
               <PipelineMetric
@@ -215,14 +239,17 @@ export function BizDashboardV2({ colors, accent }: Props) {
 
         {/* ── Block 6: Top Deals ── */}
         {isDashboardBlockVisible('top_deals', viewAsRole) && (
-          <View style={[styles.darkCard, { borderTopColor: '#F59E0B' }]}>
+          <View style={styles.darkCard}>
+            <View style={[styles.cardAccentStripe, { backgroundColor: '#F59E0B' }]} />
             <ThemedText style={[styles.sectionLabel, { color: accent }]}>TOP DEALS</ThemedText>
-            {DEALS.filter((d) => d.priority === 'high').slice(0, 3).map((deal) => {
+            {DEALS.filter((d) => d.priority === 'high').slice(0, 3).map((deal, i, arr) => {
               const isAnonymized = viewAsRole === 'B2b';
+              const stageColor = STAGE_COLORS[deal.stage] ?? '#6B7280';
+              const stageLabel = DEAL_STAGE_LABELS[deal.stage] ?? deal.stage;
               return (
                 <Pressable
                   key={deal.id}
-                  style={styles.dealRow}
+                  style={[styles.dealRow, i === arr.length - 1 && { borderBottomWidth: 0 }]}
                   onPress={() => openPersonCard({
                     name: isAnonymized ? 'Undisclosed' : deal.contactName,
                     role: isAnonymized ? 'Investor' : deal.company,
@@ -232,9 +259,17 @@ export function BizDashboardV2({ colors, accent }: Props) {
                     <ThemedText style={styles.dealName}>
                       {isAnonymized ? 'Undisclosed Investor' : deal.contactName}
                     </ThemedText>
-                    <ThemedText style={styles.dealCompany}>
-                      {isAnonymized ? 'Confidential' : deal.company}
-                    </ThemedText>
+                    <View style={styles.dealSubRow}>
+                      <ThemedText style={styles.dealCompany}>
+                        {isAnonymized ? 'Confidential' : deal.company}
+                      </ThemedText>
+                      <View style={[styles.stagePill, { backgroundColor: stageColor + '18' }]}>
+                        <View style={[styles.stageDot, { backgroundColor: stageColor }]} />
+                        <ThemedText style={[styles.stageText, { color: stageColor }]}>
+                          {isAnonymized ? 'Active' : stageLabel}
+                        </ThemedText>
+                      </View>
+                    </View>
                   </View>
                   <ThemedText style={[styles.dealValue, { color: accent }]}>
                     {deal.value != null ? formatValue(deal.value) : '--'}
@@ -251,12 +286,16 @@ export function BizDashboardV2({ colors, accent }: Props) {
             {BIZ_DOMAIN_CARDS.filter((card) => isBizDomainCardVisible(card.id, viewAsRole)).map((card) => (
               <Pressable
                 key={card.id}
-                style={[styles.domainCard, { borderTopColor: card.accent }]}
+                style={styles.domainCard}
                 onPress={() => handleDomainCard(card.id)}
               >
+                <View style={[styles.cardAccentStripe, { backgroundColor: card.accent }]} />
                 <View style={styles.domainHeader}>
-                  <IconSymbol name={card.icon as any} size={18} color={card.accent} />
+                  <View style={[styles.domainIconWrap, { backgroundColor: card.accent + '18' }]}>
+                    <IconSymbol name={card.icon as any} size={16} color={card.accent} />
+                  </View>
                   <ThemedText style={styles.domainTitle}>{card.title}</ThemedText>
+                  <IconSymbol name="chevron.right" size={12} color="rgba(255,255,255,0.25)" />
                 </View>
                 <ThemedText style={styles.domainPreview} numberOfLines={2}>{card.preview}</ThemedText>
               </Pressable>
@@ -319,7 +358,6 @@ function formatValue(n: number): string {
 }
 
 function bandValue(v: string): string {
-  // Replace exact numbers with ranges
   const num = parseFloat(v.replace(/[$%KM,]/g, ''));
   if (isNaN(num)) return v;
   if (v.includes('M')) {
@@ -344,102 +382,288 @@ function bandValue(v: string): string {
 const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
 
-  // Hero
-  heroWrapper: { borderRadius: 16, overflow: 'hidden', marginBottom: 12 },
+  // ─── Video Hero ───
+  heroWrapper: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginBottom: 14,
+  },
   heroGradient: {
     aspectRatio: 16 / 9,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
   },
+  heroScrim: {
+    ...StyleSheet.absoluteFillObject,
+    top: '40%',
+  },
   liveBadge: {
     position: 'absolute',
-    top: 12, right: 12,
+    top: 14,
+    right: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
     backgroundColor: '#EF4444',
-    paddingHorizontal: 10, paddingVertical: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: 6,
   },
-  liveText: { color: '#fff', fontSize: 11, fontWeight: '800' },
+  liveDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#fff',
+  },
+  liveText: { color: '#fff', fontSize: 11, fontWeight: '800', letterSpacing: 0.5 },
   playButton: { zIndex: 1 },
-  heroOverlay: { position: 'absolute', bottom: 16, left: 16, right: 16 },
-  heroTitle: { color: '#fff', fontSize: 20, fontWeight: '800' },
-  heroSubtitle: { color: 'rgba(255,255,255,0.7)', fontSize: 13, marginTop: 4 },
+  playRing: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: 3,
+  },
+  heroOverlay: { position: 'absolute', bottom: 18, left: 18, right: 18 },
+  heroTitle: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+  },
+  heroSubtitle: {
+    color: 'rgba(255,255,255,0.55)',
+    fontSize: 13,
+    fontWeight: '500',
+    marginTop: 4,
+    letterSpacing: 0.2,
+  },
 
-  // Dark Card (shared)
+  // ─── Dark Card (shared) ───
   darkCard: {
     backgroundColor: '#181616',
-    borderRadius: 12,
-    borderTopWidth: 3,
-    padding: 14,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+    padding: 16,
+    marginBottom: 12,
+    overflow: 'hidden',
+  },
+  cardAccentStripe: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+  },
+  sectionLabel: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.2,
+    marginBottom: 10,
+  },
+
+  // ─── Next Event ───
+  eventHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  eventTypeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  microDot: { width: 5, height: 5, borderRadius: 2.5 },
+  eventTypeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
+  eventTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: -0.3,
+    marginBottom: 4,
+  },
+  eventMeta: {
+    color: 'rgba(255,255,255,0.4)',
+    fontSize: 12,
+    fontWeight: '500',
     marginBottom: 12,
   },
-  sectionLabel: { fontSize: 10, fontWeight: '800', letterSpacing: 1, marginBottom: 8 },
+  attendeeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  attendeePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+  attendeeDot: { width: 5, height: 5, borderRadius: 2.5 },
+  attendeeName: {
+    color: 'rgba(255,255,255,0.65)',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  attendeeMore: { color: 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: '500' },
 
-  // Next Event
-  eventHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
-  eventTypeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 },
-  eventTypeText: { fontSize: 9, fontWeight: '700' },
-  eventTitle: { color: '#fff', fontSize: 15, fontWeight: '700', marginBottom: 4 },
-  eventMeta: { color: 'rgba(255,255,255,0.5)', fontSize: 11, marginBottom: 10 },
-  attendeeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  attendeePill: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  attendeeDot: { width: 6, height: 6, borderRadius: 3 },
-  attendeeName: { color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: '600' },
-  attendeeMore: { color: 'rgba(255,255,255,0.4)', fontSize: 11 },
-
-  // Action Row
+  // ─── Action Row ───
   actionRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   actionCard: {
     flex: 1,
     backgroundColor: '#181616',
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+    padding: 14,
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
   },
-  actionIconWrap: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  actionTitle: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  actionDetail: { color: 'rgba(255,255,255,0.45)', fontSize: 9, fontWeight: '500', textAlign: 'center' },
+  actionIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionTitle: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: -0.2,
+  },
+  actionDetail: {
+    color: 'rgba(255,255,255,0.35)',
+    fontSize: 10,
+    fontWeight: '500',
+    textAlign: 'center',
+    lineHeight: 14,
+  },
 
-  // Pipeline
-  metricsRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  metricsItem: { alignItems: 'center' },
-  metricsValue: { fontSize: 16, fontWeight: '800' },
-  metricsLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 9, fontWeight: '600', marginTop: 2 },
+  // ─── Pipeline ───
+  metricsRow: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 2 },
+  metricsItem: { alignItems: 'center', flex: 1 },
+  metricsValue: {
+    fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+  },
+  metricsLabel: {
+    color: 'rgba(255,255,255,0.4)',
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+    marginTop: 4,
+    textTransform: 'uppercase',
+  },
 
-  // Proof
+  // ─── Proof ───
   statsRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   statBlock: {
     flex: 1,
     backgroundColor: '#181616',
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+    paddingVertical: 16,
+    paddingHorizontal: 12,
     alignItems: 'center',
   },
-  statValue: { fontSize: 20, fontWeight: '800' },
-  statLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 10, marginTop: 4 },
+  statValue: {
+    fontSize: 24,
+    fontWeight: '800',
+    letterSpacing: -1,
+  },
+  statLabel: {
+    color: 'rgba(255,255,255,0.4)',
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+    marginTop: 4,
+    textTransform: 'uppercase',
+  },
 
-  // Top Deals
+  // ─── Top Deals ───
   dealRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(255,255,255,0.06)',
   },
-  dealName: { color: '#fff', fontSize: 13, fontWeight: '700' },
-  dealCompany: { color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 2 },
-  dealValue: { fontSize: 14, fontWeight: '800', marginLeft: 8 },
+  dealName: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '700',
+    letterSpacing: -0.2,
+  },
+  dealSubRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 3,
+  },
+  dealCompany: { color: 'rgba(255,255,255,0.4)', fontSize: 11, fontWeight: '500' },
+  dealValue: {
+    fontSize: 16,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+    marginLeft: 10,
+  },
+  stagePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  stageDot: { width: 4, height: 4, borderRadius: 2 },
+  stageText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.2 },
 
-  // Domain Cards
+  // ─── Domain Cards ───
   domainSection: { gap: 8, marginBottom: 12 },
   domainCard: {
     backgroundColor: '#181616',
-    borderRadius: 12,
-    borderTopWidth: 3,
-    padding: 14,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+    padding: 16,
+    overflow: 'hidden',
   },
-  domainHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
-  domainTitle: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  domainPreview: { color: 'rgba(255,255,255,0.45)', fontSize: 11, fontWeight: '500' },
+  domainHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 8,
+  },
+  domainIconWrap: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  domainTitle: {
+    flex: 1,
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '700',
+    letterSpacing: -0.2,
+  },
+  domainPreview: {
+    color: 'rgba(255,255,255,0.35)',
+    fontSize: 12,
+    fontWeight: '500',
+    lineHeight: 17,
+    marginLeft: 40,
+  },
 });
