@@ -21,6 +21,7 @@ import {
   getEducationRole,
   getEducationVisiblePills,
   type EducationHomePill,
+  type EducationRoleLens,
 } from '@/utils/education-rbac';
 
 import { EduDashboardV2 } from '@/components/edu-home/edu-dashboard-v2';
@@ -45,6 +46,7 @@ export function EducationHome() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const membershipId = useMembershipId();
+  const eduRole: EducationRoleLens = getEducationRole(membershipId);
   const pagerRef = useRef<PagerView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -90,7 +92,7 @@ export function EducationHome() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           <View key="dashboard" style={{ flex: 1 }}>
-            <EduDashboardV2 colors={colors} accent={ACCENT} />
+            <EduDashboardV2 colors={colors} accent={ACCENT} role={eduRole} />
           </View>
           <View key="calendar" style={{ flex: 1 }}>
             <EduCalendarV2 colors={colors} accent={ACCENT} />

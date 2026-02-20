@@ -902,3 +902,46 @@ export function getStageCount(stage: AdmissionsStage): number {
 export function getStageColor(stage: AdmissionsStage): string {
   return ADMISSIONS_STAGES.find((s) => s.key === stage)?.color ?? '#6B7280';
 }
+
+// =============================================================================
+// INSTITUTIONAL METRICS — 6 KPIs for the 2x3 grid
+// =============================================================================
+
+export const INSTITUTIONAL_METRICS = {
+  enrollment: { value: 1285, trend: '+4%', status: 'green' as const },
+  retention: { value: '72%', trend: '+3%', status: 'green' as const },
+  graduationRate: { value4yr: '31%', value6yr: '42%', status: 'amber' as const },
+  studentFacultyRatio: { value: '14:1', status: 'green' as const },
+  avgGPA: { value: '2.87', status: 'green' as const },
+  financialHealth: { endowment: '$12.4M', revenueTarget: '96%', status: 'green' as const },
+};
+
+// =============================================================================
+// SCHOOL HEALTH — per-school summary with alerts
+// =============================================================================
+
+export interface SchoolHealth {
+  name: string;
+  programCount: number;
+  enrolledStudents: number;
+  avgGPA: number;
+  facultyCount: number;
+  alerts: string[];
+}
+
+export const SCHOOL_HEALTH: SchoolHealth[] = [
+  { name: 'Arts & Sciences', programCount: 6, enrolledStudents: 420, avgGPA: 2.91, facultyCount: 18, alerts: [] },
+  { name: 'School of Business', programCount: 6, enrolledStudents: 312, avgGPA: 2.94, facultyCount: 12, alerts: [] },
+  { name: 'School of Education', programCount: 4, enrolledStudents: 280, avgGPA: 3.05, facultyCount: 14, alerts: ['Accreditation self-study due Apr 15'] },
+  { name: 'Health Sciences', programCount: 3, enrolledStudents: 245, avgGPA: 3.12, facultyCount: 10, alerts: [] },
+  { name: 'Professional Studies', programCount: 3, enrolledStudents: 195, avgGPA: 2.78, facultyCount: 8, alerts: ['Criminal Justice — enrollment down 22% YoY', 'Aviation — 3 faculty vacancies'] },
+];
+
+// =============================================================================
+// DOMAIN CARD SUMMARY DATA
+// =============================================================================
+
+export const STUDENT_SUCCESS_SUMMARY = { atRiskCount: 23, interventionRate: 78, probationCount: 15, earlyAlertCount: 120 };
+export const CAMPUS_LIFE_SUMMARY = { activeOrgs: 32, nextCampusEvent: 'Homecoming Week · Mar 10-15', housingOccupancy: '88%', diningEnrollment: 640 };
+export const ADVANCEMENT_SUMMARY = { annualGivingTotal: 1_800_000, goal: 2_500_000, majorGiftProspects: 3, prospectThreshold: '100K+' };
+export const ACCREDITATION_SUMMARY = { status: 'SACSCOC — Accredited through 2028', nextMilestone: 'Fifth-Year Report due Sep 2026', selfStudyProgress: '64%' };
