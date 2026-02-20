@@ -186,6 +186,13 @@ export const BIZ_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
 // 2. BIZ EVENTS
 // =============================================================================
 
+export type BizEventType = 'INVESTOR' | 'PARTNER' | 'INTERNAL' | 'DEMO';
+
+export interface EventAttendee {
+  name: string;
+  role: 'founder' | 'investor' | 'advisor' | 'board' | 'partner' | 'staff' | 'press' | 'legal';
+}
+
 export interface BizEvent {
   id: string;
   title: string;
@@ -194,8 +201,14 @@ export interface BizEvent {
   location: string;
   category: 'investor' | 'board' | 'product' | 'legal' | 'media' | 'conference';
   status: 'upcoming' | 'completed';
-  attendees: string[];
+  attendees: EventAttendee[];
+  eventType: BizEventType;
   outcome?: string;
+}
+
+/** Backward-compat: extract attendee names as string[] */
+export function getAttendeeNames(attendees: EventAttendee[]): string[] {
+  return attendees.map((a) => a.name);
 }
 
 export const BIZ_EVENTS: BizEvent[] = [
@@ -208,7 +221,12 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'Virtual (Zoom)',
     category: 'board',
     status: 'upcoming',
-    attendees: ['Sammy (Founder)', 'Board Advisor 1', 'Board Advisor 2'],
+    eventType: 'INTERNAL',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Board Advisor 1', role: 'board' },
+      { name: 'Board Advisor 2', role: 'board' },
+    ],
   },
   {
     id: 'be-2',
@@ -218,7 +236,11 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'Menlo Park, CA',
     category: 'investor',
     status: 'upcoming',
-    attendees: ['Sammy (Founder)', 'Michael Mignano (Lightspeed)'],
+    eventType: 'INVESTOR',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Michael Mignano', role: 'investor' },
+    ],
   },
   {
     id: 'be-3',
@@ -228,7 +250,11 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'San Francisco, CA',
     category: 'investor',
     status: 'upcoming',
-    attendees: ['Sammy (Founder)', 'Charles Hudson (Precursor)'],
+    eventType: 'INVESTOR',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Charles Hudson', role: 'investor' },
+    ],
   },
   {
     id: 'be-4',
@@ -238,7 +264,12 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'Atlanta, GA',
     category: 'conference',
     status: 'upcoming',
-    attendees: ['Sammy (Founder)', 'Panel Moderator', '3 Co-Panelists'],
+    eventType: 'PARTNER',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Panel Moderator', role: 'partner' },
+      { name: '3 Co-Panelists', role: 'partner' },
+    ],
   },
   {
     id: 'be-5',
@@ -248,7 +279,11 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'Oakland, CA',
     category: 'investor',
     status: 'upcoming',
-    attendees: ['Sammy (Founder)', 'Ulili Onovakpuri (Kapor)'],
+    eventType: 'INVESTOR',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Ulili Onovakpuri', role: 'investor' },
+    ],
   },
   {
     id: 'be-6',
@@ -258,7 +293,11 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'New York, NY',
     category: 'investor',
     status: 'upcoming',
-    attendees: ['Sammy (Founder)', 'Henri Pierre-Jacques (Harlem Capital)'],
+    eventType: 'INVESTOR',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Henri Pierre-Jacques', role: 'investor' },
+    ],
   },
   {
     id: 'be-7',
@@ -268,7 +307,11 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'Virtual',
     category: 'media',
     status: 'upcoming',
-    attendees: ['Sammy (Founder)', 'TC Reporter'],
+    eventType: 'PARTNER',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'TC Reporter', role: 'press' },
+    ],
   },
   {
     id: 'be-8',
@@ -278,7 +321,11 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'USPTO (Online)',
     category: 'legal',
     status: 'upcoming',
-    attendees: ['Sammy (Founder)', 'IP Counsel'],
+    eventType: 'INTERNAL',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'IP Counsel', role: 'legal' },
+    ],
   },
   // ─── Completed (4) ───
   {
@@ -289,7 +336,12 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'FMU Campus, Miami Gardens',
     category: 'product',
     status: 'completed',
-    attendees: ['Sammy (Founder)', 'Coach Davis', 'AD Williams'],
+    eventType: 'DEMO',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Coach Davis', role: 'partner' },
+      { name: 'AD Williams', role: 'partner' },
+    ],
     outcome: 'Positive reception. Sports Mode v2 approved for expanded rollout.',
   },
   {
@@ -300,7 +352,12 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'Virtual',
     category: 'product',
     status: 'completed',
-    attendees: ['Sammy (Founder)', 'Pastor Richards', 'Admin Team (3)'],
+    eventType: 'DEMO',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Pastor Richards', role: 'partner' },
+      { name: 'Admin Team (3)', role: 'staff' },
+    ],
     outcome: 'Church Mode onboarding confirmed. Launch date set for March 2026.',
   },
   {
@@ -311,7 +368,11 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'Online Filing',
     category: 'legal',
     status: 'completed',
-    attendees: ['Sammy (Founder)', 'Corporate Counsel'],
+    eventType: 'INTERNAL',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Corporate Counsel', role: 'legal' },
+    ],
     outcome: 'C-Corp formation complete. EIN issued.',
   },
   {
@@ -322,7 +383,11 @@ export const BIZ_EVENTS: BizEvent[] = [
     location: 'Virtual',
     category: 'investor',
     status: 'completed',
-    attendees: ['Sammy (Founder)', 'Arlan Hamilton (Backstage)'],
+    eventType: 'INVESTOR',
+    attendees: [
+      { name: 'Sammy', role: 'founder' },
+      { name: 'Arlan Hamilton', role: 'investor' },
+    ],
     outcome: 'Strong interest. Requested data room access and follow-up in March.',
   },
 ];
@@ -1033,3 +1098,155 @@ export const PIPELINE_SUMMARY = {
   totalPipelineValue: 4_592_000,
   winRate: 0.14,
 } as const;
+
+// =============================================================================
+// 18. BIZ ACTION ROW (replaces Commerce Row for dashboard)
+// =============================================================================
+
+export type BizActionCardId = 'deck' | 'data_room' | 'invest';
+
+export interface BizActionCard {
+  id: BizActionCardId;
+  title: string;
+  detail: string;
+  icon: string;
+  color: string;
+}
+
+export const BIZ_ACTION_ROW: BizActionCard[] = [
+  { id: 'deck', title: 'Deck', detail: 'Pitch Deck & Overview', icon: 'doc.richtext.fill', color: '#8B5CF6' },
+  { id: 'data_room', title: 'Data Room', detail: 'Due Diligence & Proof', icon: 'folder.fill', color: '#3B82F6' },
+  { id: 'invest', title: 'Invest', detail: 'Back KaNeXT', icon: 'dollarsign.circle.fill', color: '#10B981' },
+];
+
+// =============================================================================
+// 19. CURRENT ROUND
+// =============================================================================
+
+export interface CurrentRound {
+  name: string;
+  instrument: string;
+  cap: number;
+  discount: number;
+  raised: number;
+  target: number;
+}
+
+export const CURRENT_ROUND: CurrentRound = {
+  name: 'Family Round',
+  instrument: 'SAFE',
+  cap: 100_000_000,
+  discount: 20,
+  raised: 150_000,
+  target: 1_000_000,
+};
+
+// =============================================================================
+// 20. INVEST TIERS
+// =============================================================================
+
+export interface InvestTier {
+  id: string;
+  label: string;
+  amount: number;
+  description: string;
+}
+
+export const INVEST_TIERS: InvestTier[] = [
+  { id: 'tier-1', label: '$10K', amount: 10_000, description: 'Angel' },
+  { id: 'tier-2', label: '$25K', amount: 25_000, description: 'Pre-Seed' },
+  { id: 'tier-3', label: '$50K', amount: 50_000, description: 'Seed Supporter' },
+  { id: 'tier-4', label: '$100K', amount: 100_000, description: 'Lead Investor' },
+  { id: 'tier-5', label: '$250K+', amount: 250_000, description: 'Strategic Partner' },
+];
+
+// =============================================================================
+// 21. SAFE TERMS
+// =============================================================================
+
+export interface SafeTerms {
+  instrument: string;
+  cap: string;
+  discount: string;
+  mfn: boolean;
+  proRata: boolean;
+  regDDisclaimer: string;
+}
+
+export const SAFE_TERMS: SafeTerms = {
+  instrument: 'Post-Money SAFE',
+  cap: '$100M valuation cap',
+  discount: '20% discount to next priced round',
+  mfn: true,
+  proRata: true,
+  regDDisclaimer: 'Securities offered under Regulation D Rule 506(b). Available to accredited investors only. This is not a public offering.',
+};
+
+// =============================================================================
+// 22. DECK DOCUMENTS
+// =============================================================================
+
+export interface DeckDocument {
+  id: string;
+  title: string;
+  type: 'deck' | 'pdf' | 'video' | 'doc';
+  size: string;
+  isPrimary?: boolean;
+}
+
+export const DECK_DOCUMENTS: DeckDocument[] = [
+  { id: 'dd-1', title: 'Seed Pitch Deck', type: 'deck', size: '8.4 MB', isPrimary: true },
+  { id: 'dd-2', title: 'One-Pager', type: 'pdf', size: '1.2 MB' },
+  { id: 'dd-3', title: 'Executive Summary', type: 'doc', size: '420 KB' },
+  { id: 'dd-4', title: 'Product Demo Video', type: 'video', size: '45 MB' },
+];
+
+// =============================================================================
+// 23. BIZ DOMAIN CARDS
+// =============================================================================
+
+export type BizDomainCardId = 'cap_table' | 'metrics' | 'updates';
+
+export interface BizDomainCard {
+  id: BizDomainCardId;
+  title: string;
+  icon: string;
+  accent: string;
+  preview: string;
+}
+
+export const BIZ_DOMAIN_CARDS: BizDomainCard[] = [
+  { id: 'cap_table', title: 'Cap Table', icon: 'chart.pie.fill', accent: '#8B5CF6', preview: '85% founder · 5% advisor · 8% ESOP · 2% SAFE' },
+  { id: 'metrics', title: 'Metrics', icon: 'chart.line.uptrend.xyaxis', accent: '#3B82F6', preview: '3 institutions · 5 active views · 5 engines built' },
+  { id: 'updates', title: 'Updates', icon: 'megaphone.fill', accent: '#F59E0B', preview: 'Latest: Sports Mode v2 approved for expanded rollout' },
+];
+
+// =============================================================================
+// 24. INVEST PAYMENT CHAIN BUILDER
+// =============================================================================
+
+export function buildInvestChain(amount: number, tierLabel: string) {
+  const now = new Date();
+  const ts = (offsetMs: number) => {
+    const d = new Date(now.getTime() + offsetMs);
+    return d.toISOString().replace('T', ' ').slice(0, 19);
+  };
+  const num = Math.floor(1000 + Math.random() * 9000);
+  const transactionId = `SAFE-2026-${num}`;
+
+  return {
+    transactionId,
+    type: 'SAFE Investment',
+    amount,
+    description: `${tierLabel} — Family Round SAFE`,
+    status: 'Settled' as const,
+    chain: [
+      { stage: 'Initiation', detail: `Investment initiated — ${tierLabel}`, timestamp: ts(0) },
+      { stage: 'Accreditation', detail: 'Accredited investor verification confirmed', timestamp: ts(500) },
+      { stage: 'KYC/AML', detail: 'Identity and compliance checks passed', timestamp: ts(1200) },
+      { stage: 'Escrow', detail: `$${amount.toLocaleString()} received into escrow`, timestamp: ts(2000) },
+      { stage: 'SAFE Execution', detail: 'Post-Money SAFE countersigned', timestamp: ts(3000) },
+      { stage: 'Ledger', detail: `Cap table updated — ${transactionId}`, timestamp: ts(3500) },
+    ],
+  };
+}

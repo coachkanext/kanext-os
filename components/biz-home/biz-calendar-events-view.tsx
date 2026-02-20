@@ -34,7 +34,7 @@ export function BizCalendarEventsView({ colors, accent }: Props) {
     return BIZ_EVENTS.filter(
       (e) =>
         e.title.toLowerCase().includes(q) ||
-        e.attendees.some((a) => a.toLowerCase().includes(q)) ||
+        e.attendees.some((a) => a.name.toLowerCase().includes(q)) ||
         e.category.toLowerCase().includes(q),
     );
   }, [search]);
@@ -94,12 +94,12 @@ function EventCard({ event, colors }: { event: BizEvent; colors: typeof Colors.l
 
       {/* Attendees */}
       <View style={styles.attendeeRow}>
-        {event.attendees.map((name) => (
+        {event.attendees.map((a) => (
           <Pressable
-            key={name}
-            onPress={() => openPersonCard({ name, role: '', status: 'active' })}
+            key={a.name}
+            onPress={() => openPersonCard({ name: a.name, role: a.role, status: 'active' })}
           >
-            <ThemedText style={[styles.attendeeName, { color: '#6AA9FF' }]}>{name}</ThemedText>
+            <ThemedText style={[styles.attendeeName, { color: '#6AA9FF' }]}>{a.name}</ThemedText>
           </Pressable>
         ))}
       </View>

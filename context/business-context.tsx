@@ -22,7 +22,7 @@ interface BusinessContextValue {
   activeCompanyId: string;
   activeCompany: Company;
   setActiveCompany: (id: string) => void;
-  /** 5-level RBAC: B1 (Founder) | B2a (Retail) | B2b (Board) | B3 (Public) | B4 | B5 */
+  /** 8-level RBAC: B1 (Founder) | B2a (Retail) | B2b (Board) | B3 (Public) | B4 | B5 | B8 (Advisor) | B13 (HoldCo) */
   viewAsRole: BusinessRoleLens;
   setViewAsRole: (role: BusinessRoleLens) => void;
   /** Entity scoping — scopes all 10 Org tabs */
