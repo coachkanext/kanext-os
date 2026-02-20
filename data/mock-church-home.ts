@@ -1269,3 +1269,198 @@ export const PIPELINE_STAGE_COLORS: Record<ChurchPipelineStage, string> = {
   member: '#22C55E',
   leader: '#EF4444',
 };
+
+// =============================================================================
+// MINISTRY HEALTH SUMMARY (Dashboard block)
+// =============================================================================
+
+export interface MinistryHealthEntry {
+  name: string;
+  leader: string;
+  members: number;
+  trend: string;
+  trendDir: 'up' | 'flat' | 'down';
+}
+
+export interface MinistryFlagged {
+  name: string;
+  alert: string;
+}
+
+export interface MinistryHealthSummary {
+  activeCount: number;
+  top3: MinistryHealthEntry[];
+  flagged: MinistryFlagged[];
+}
+
+export const MINISTRY_HEALTH_SUMMARY: MinistryHealthSummary = {
+  activeCount: 10,
+  top3: [
+    { name: 'T.O.R.C.H.', leader: 'Minister Brianna Carter', members: 47, trend: '+12%', trendDir: 'up' },
+    { name: 'The Harvesters', leader: 'Deacon Raymond Shaw', members: 31, trend: '0%', trendDir: 'flat' },
+    { name: 'Vineyard Voices', leader: 'Minister Jasmine Okafor', members: 35, trend: '+5%', trendDir: 'up' },
+  ],
+  flagged: [
+    { name: 'Kingdom Builders', alert: 'Leader vacancy — Elder Marcus stepping down Q2' },
+    { name: 'Sheepfold', alert: 'Below 50% volunteer fill (12 of 24 slots)' },
+  ],
+};
+
+// =============================================================================
+// GROWTH DASHBOARD (2×2 grid)
+// =============================================================================
+
+export interface GrowthDashboardMetric {
+  label: string;
+  value: string;
+  detail: string;
+  status: 'green' | 'amber' | 'red';
+}
+
+export const GROWTH_DASHBOARD: GrowthDashboardMetric[] = [
+  { label: 'Weekly Attendance', value: '342', detail: '+8% vs last month', status: 'green' },
+  { label: 'New Visitors', value: '23', detail: '35% returned', status: 'green' },
+  { label: 'Active Members', value: '487', detail: '+12 this quarter', status: 'green' },
+  { label: 'Monthly Giving', value: '$47,200', detail: '94% of budget', status: 'amber' },
+];
+
+// =============================================================================
+// SERMON SERIES + RECENT SERMONS (Sermons Sheet)
+// =============================================================================
+
+export interface SermonSeries {
+  name: string;
+  totalParts: number;
+  currentPart: number;
+  color: string;
+}
+
+export const CURRENT_SERIES: SermonSeries = {
+  name: 'Faith That Moves Mountains',
+  totalParts: 6,
+  currentPart: 4,
+  color: '#FBBF24',
+};
+
+export interface SermonEntry {
+  id: string;
+  title: string;
+  speaker: string;
+  date: string;
+  duration: string;
+  seriesName?: string;
+}
+
+export const RECENT_SERMONS: SermonEntry[] = [
+  { id: 'ser-001', title: 'The Unshakeable Foundation', speaker: 'Pastor Isaiah', date: 'Feb 16', duration: '48:22', seriesName: 'Faith That Moves Mountains' },
+  { id: 'ser-002', title: 'Planted by Living Water', speaker: 'Pastor Isaiah', date: 'Feb 9', duration: '52:10', seriesName: 'Faith That Moves Mountains' },
+  { id: 'ser-003', title: 'Laying the First Stone', speaker: 'Minister Terrence Jackson', date: 'Feb 2', duration: '44:15', seriesName: 'Faith That Moves Mountains' },
+  { id: 'ser-004', title: 'The God Who Provides', speaker: 'Pastor Isaiah', date: 'Jan 26', duration: '50:30', seriesName: 'Faith That Moves Mountains' },
+  { id: 'ser-005', title: 'Hebrews 10 — Drawing Near', speaker: 'Elder Marcus Williams', date: 'Feb 19', duration: '38:45' },
+  { id: 'ser-006', title: 'Walking in Purpose in Your 20s', speaker: 'Minister Terrence Jackson', date: 'Feb 4', duration: '41:10' },
+];
+
+// =============================================================================
+// PRAYER REQUESTS (Prayer Sheet)
+// =============================================================================
+
+export type PrayerCategory = 'healing' | 'provision' | 'family' | 'guidance' | 'praise' | 'other';
+
+export const PRAYER_CATEGORY_LABELS: Record<PrayerCategory, string> = {
+  healing: 'Healing',
+  provision: 'Provision',
+  family: 'Family',
+  guidance: 'Guidance',
+  praise: 'Praise Report',
+  other: 'Other',
+};
+
+export const PRAYER_CATEGORY_COLORS: Record<PrayerCategory, string> = {
+  healing: '#EF4444',
+  provision: '#3B82F6',
+  family: '#EC4899',
+  guidance: '#8B5CF6',
+  praise: '#FBBF24',
+  other: '#6B7280',
+};
+
+export interface PrayerRequest {
+  id: string;
+  name: string;
+  anonymous: boolean;
+  category: PrayerCategory;
+  text: string;
+  date: string;
+  prayerCount: number;
+  isPraise: boolean;
+  privacy: 'public' | 'leaders_only' | 'private';
+}
+
+export const PRAYER_REQUESTS: PrayerRequest[] = [
+  {
+    id: 'pr-001',
+    name: 'Keisha Brown',
+    anonymous: false,
+    category: 'healing',
+    text: 'Please pray for my mother recovering from hip surgery. She needs strength and comfort.',
+    date: '2025-02-18',
+    prayerCount: 24,
+    isPraise: false,
+    privacy: 'public',
+  },
+  {
+    id: 'pr-002',
+    name: '',
+    anonymous: true,
+    category: 'provision',
+    text: 'Facing possible layoff at work. Praying for God to open doors and provide for my family.',
+    date: '2025-02-17',
+    prayerCount: 31,
+    isPraise: false,
+    privacy: 'public',
+  },
+  {
+    id: 'pr-003',
+    name: 'Charles & Denise Wright',
+    anonymous: false,
+    category: 'praise',
+    text: 'God is faithful! Our grandson was accepted to Morehouse College with a full scholarship. To God be the glory!',
+    date: '2025-02-16',
+    prayerCount: 42,
+    isPraise: true,
+    privacy: 'public',
+  },
+  {
+    id: 'pr-004',
+    name: 'Veronica Banks',
+    anonymous: false,
+    category: 'family',
+    text: 'Praying for restoration in my sister\'s marriage. They are separated and need God\'s intervention.',
+    date: '2025-02-15',
+    prayerCount: 18,
+    isPraise: false,
+    privacy: 'public',
+  },
+  {
+    id: 'pr-005',
+    name: 'DeAndre Harris',
+    anonymous: false,
+    category: 'guidance',
+    text: 'Starting a new business venture. Praying for wisdom, favor, and the right connections.',
+    date: '2025-02-14',
+    prayerCount: 15,
+    isPraise: false,
+    privacy: 'public',
+  },
+  {
+    id: 'pr-006',
+    name: 'Crystal Odom',
+    anonymous: false,
+    category: 'praise',
+    text: 'My biopsy came back clear! After months of prayer, God answered. Thank you church family for standing with me.',
+    date: '2025-02-13',
+    prayerCount: 56,
+    isPraise: true,
+    privacy: 'public',
+  },
+];

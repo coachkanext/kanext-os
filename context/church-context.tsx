@@ -1,6 +1,6 @@
 /**
  * Church Context — Church Mode state
- * 5-level RBAC via ChurchRoleLens.
+ * 11-level RBAC via ChurchRoleLens (C1–C11).
  */
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 
 interface ChurchContextValue {
-  /** 5-level RBAC: C1 (Senior Pastor) | C2 (Elder/Board) | C3 (Staff) | C4 (Member) | C5 (Visitor) */
+  /** 11-level RBAC: C1-C5 (original) + C6-C11 (expanded). See church-rbac.ts for full mapping. */
   viewAsRole: ChurchRoleLens;
   setViewAsRole: (role: ChurchRoleLens) => void;
 }

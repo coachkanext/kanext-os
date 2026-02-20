@@ -1,17 +1,28 @@
 /**
- * Church Mode RBAC — 5-level role lens visibility matrix.
- * C1: Senior Pastor (Full access)
- * C2: Elder / Board
- * C3: Staff
- * C4: Member
- * C5: Visitor / Public
+ * Church Mode RBAC — 11-level role lens visibility matrix.
+ *
+ * C1:  Senior Pastor           (spec CH1)
+ * C2:  Elder / Board           (spec CH3)
+ * C3:  Staff                   (spec CH5)
+ * C4:  Member                  (spec CH8)
+ * C5:  Visitor / Public        (spec CH11)
+ * C6:  Lead / Executive Pastor (spec CH2)
+ * C7:  Ministry Leader         (spec CH4)
+ * C8:  Worship Team            (spec CH6)
+ * C9:  Volunteer               (spec CH7)
+ * C10: Regular Attendee        (spec CH10)
+ * C11: New Believer            (spec CH9)
+ *
+ * Privilege order: C1 > C6 > C2 > C7 > C3 > C8 > C9 > C4 > C11 > C10 > C5
  */
 
 // =============================================================================
 // ROLE LEVELS
 // =============================================================================
 
-export type ChurchRoleLens = 'C1' | 'C2' | 'C3' | 'C4' | 'C5';
+export type ChurchRoleLens =
+  | 'C1' | 'C2' | 'C3' | 'C4' | 'C5'
+  | 'C6' | 'C7' | 'C8' | 'C9' | 'C10' | 'C11';
 
 export type ChurchVisibility = 'full' | 'exact' | 'limited' | 'hidden';
 
@@ -21,7 +32,19 @@ export const CHURCH_ROLE_LABELS: Record<ChurchRoleLens, string> = {
   C3: 'Staff',
   C4: 'Member',
   C5: 'Visitor / Public',
+  C6: 'Lead / Executive Pastor',
+  C7: 'Ministry Leader',
+  C8: 'Worship Team',
+  C9: 'Volunteer',
+  C10: 'Regular Attendee',
+  C11: 'New Believer',
 };
+
+// Helper to build an 11-column row concisely
+type V = ChurchVisibility;
+function r(c1: V, c2: V, c3: V, c4: V, c5: V, c6: V, c7: V, c8: V, c9: V, c10: V, c11: V): Record<ChurchRoleLens, V> {
+  return { C1: c1, C2: c2, C3: c3, C4: c4, C5: c5, C6: c6, C7: c7, C8: c8, C9: c9, C10: c10, C11: c11 };
+}
 
 // =============================================================================
 // HOME TAB VISIBILITY
@@ -31,17 +54,18 @@ export type ChurchHomeTab =
   | 'dashboard' | 'calendar' | 'worship' | 'community' | 'serve'
   | 'give' | 'events' | 'prayer' | 'messages' | 'discipleship';
 
-const CHURCH_HOME_TAB_MATRIX: Record<ChurchHomeTab, Record<ChurchRoleLens, ChurchVisibility>> = {
-  dashboard:    { C1: 'full', C2: 'full',    C3: 'full',    C4: 'limited', C5: 'limited' },
-  calendar:     { C1: 'full', C2: 'full',    C3: 'full',    C4: 'limited', C5: 'limited' },
-  worship:      { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'limited' },
-  community:    { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'limited' },
-  serve:        { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
-  give:         { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'limited' },
-  events:       { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'full' },
-  prayer:       { C1: 'full', C2: 'full',    C3: 'limited', C4: 'full',    C5: 'hidden' },
-  messages:     { C1: 'full', C2: 'full',    C3: 'full',    C4: 'full',    C5: 'limited' },
-  discipleship: { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
+//                                                         C1      C2      C3      C4       C5        C6      C7      C8      C9       C10      C11
+const CHURCH_HOME_TAB_MATRIX: Record<ChurchHomeTab, Record<ChurchRoleLens, V>> = {
+  dashboard:    r('full',    'full',    'full',    'limited', 'limited', 'full',    'full',    'full',    'limited', 'limited', 'limited'),
+  calendar:     r('full',    'full',    'full',    'limited', 'limited', 'full',    'full',    'full',    'limited', 'limited', 'limited'),
+  worship:      r('full',    'full',    'full',    'full',    'limited', 'full',    'full',    'full',    'full',    'limited', 'full'),
+  community:    r('full',    'full',    'full',    'full',    'limited', 'full',    'full',    'full',    'full',    'limited', 'full'),
+  serve:        r('full',    'full',    'limited', 'limited', 'hidden',  'full',    'full',    'limited', 'limited', 'hidden',  'hidden'),
+  give:         r('full',    'full',    'full',    'full',    'limited', 'full',    'full',    'full',    'full',    'limited', 'full'),
+  events:       r('full',    'full',    'full',    'full',    'full',    'full',    'full',    'full',    'full',    'full',    'full'),
+  prayer:       r('full',    'full',    'limited', 'full',    'hidden',  'full',    'full',    'limited', 'full',    'hidden',  'full'),
+  messages:     r('full',    'full',    'full',    'full',    'limited', 'full',    'full',    'full',    'full',    'limited', 'full'),
+  discipleship: r('full',    'full',    'limited', 'limited', 'hidden',  'full',    'limited', 'limited', 'limited', 'hidden',  'limited'),
 };
 
 export function getChurchHomeTabVisibility(tab: ChurchHomeTab, role: ChurchRoleLens): ChurchVisibility {
@@ -54,16 +78,38 @@ export function getChurchHomeTabVisibility(tab: ChurchHomeTab, role: ChurchRoleL
 
 export type ChurchHomePill = 'dashboard' | 'calendar' | 'ministries' | 'connect';
 
-const CHURCH_HOME_PILL_MATRIX: Record<ChurchHomePill, Record<ChurchRoleLens, ChurchVisibility>> = {
-  dashboard:  { C1: 'full', C2: 'full', C3: 'full',    C4: 'full',    C5: 'full' },
-  calendar:   { C1: 'full', C2: 'full', C3: 'full',    C4: 'full',    C5: 'full' },
-  ministries: { C1: 'full', C2: 'full', C3: 'full',    C4: 'full',    C5: 'hidden' },
-  connect:    { C1: 'full', C2: 'full', C3: 'full',    C4: 'hidden',  C5: 'hidden' },
+//                                                           C1     C2     C3     C4       C5       C6     C7     C8     C9       C10      C11
+const CHURCH_HOME_PILL_MATRIX: Record<ChurchHomePill, Record<ChurchRoleLens, V>> = {
+  dashboard:  r('full', 'full', 'full',   'full',   'full',   'full', 'full', 'full',   'full',   'full',   'full'),
+  calendar:   r('full', 'full', 'full',   'full',   'full',   'full', 'full', 'full',   'full',   'full',   'full'),
+  ministries: r('full', 'full', 'full',   'full',   'hidden', 'full', 'full', 'full',   'full',   'hidden', 'full'),
+  connect:    r('full', 'full', 'full',   'hidden', 'hidden', 'full', 'full', 'full',   'hidden', 'hidden', 'hidden'),
 };
 
 export function getChurchVisiblePills(role: ChurchRoleLens): ChurchHomePill[] {
   return (Object.keys(CHURCH_HOME_PILL_MATRIX) as ChurchHomePill[])
     .filter((pill) => CHURCH_HOME_PILL_MATRIX[pill][role] !== 'hidden');
+}
+
+// =============================================================================
+// DASHBOARD SECTION VISIBILITY
+// =============================================================================
+
+export type ChurchDashboardSection =
+  | 'video_hero' | 'next_service' | 'commerce_row'
+  | 'ministry_health' | 'growth_metrics';
+
+//                                                                      C1     C2      C3      C4       C5       C6     C7      C8       C9       C10      C11
+const CHURCH_DASHBOARD_SECTION_MATRIX: Record<ChurchDashboardSection, Record<ChurchRoleLens, V>> = {
+  video_hero:       r('full', 'full',    'full',    'full',    'full',    'full', 'full',    'full',    'full',    'full',    'full'),
+  next_service:     r('full', 'full',    'full',    'full',    'full',    'full', 'full',    'full',    'full',    'full',    'full'),
+  commerce_row:     r('full', 'full',    'full',    'full',    'full',    'full', 'full',    'full',    'full',    'full',    'full'),
+  ministry_health:  r('full', 'limited', 'limited', 'hidden', 'hidden',  'full', 'limited', 'hidden',  'hidden',  'hidden',  'hidden'),
+  growth_metrics:   r('full', 'full',    'limited', 'limited', 'hidden', 'full', 'limited', 'limited', 'limited', 'limited', 'limited'),
+};
+
+export function canSeeChurchDashboardSection(section: ChurchDashboardSection, role: ChurchRoleLens): ChurchVisibility {
+  return CHURCH_DASHBOARD_SECTION_MATRIX[section]?.[role] ?? 'hidden';
 }
 
 // =============================================================================
@@ -74,17 +120,18 @@ export type ChurchOrgTab =
   | 'ministries' | 'people' | 'rooms' | 'operations' | 'finance'
   | 'payment-rails' | 'compliance' | 'facilities' | 'resources' | 'donations';
 
-const CHURCH_ORG_TAB_MATRIX: Record<ChurchOrgTab, Record<ChurchRoleLens, ChurchVisibility>> = {
-  ministries:      { C1: 'full', C2: 'full',    C3: 'full',    C4: 'limited', C5: 'limited' },
-  people:          { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
-  rooms:           { C1: 'full', C2: 'full',    C3: 'limited', C4: 'hidden',  C5: 'hidden' },
-  operations:      { C1: 'full', C2: 'full',    C3: 'limited', C4: 'hidden',  C5: 'hidden' },
-  finance:         { C1: 'full', C2: 'full',    C3: 'limited', C4: 'hidden',  C5: 'hidden' },
-  'payment-rails': { C1: 'full', C2: 'full',    C3: 'hidden',  C4: 'hidden',  C5: 'hidden' },
-  compliance:      { C1: 'full', C2: 'full',    C3: 'limited', C4: 'hidden',  C5: 'hidden' },
-  facilities:      { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
-  resources:       { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
-  donations:       { C1: 'full', C2: 'full',    C3: 'limited', C4: 'limited', C5: 'hidden' },
+//                                                         C1     C2      C3       C4       C5       C6     C7      C8       C9       C10      C11
+const CHURCH_ORG_TAB_MATRIX: Record<ChurchOrgTab, Record<ChurchRoleLens, V>> = {
+  ministries:      r('full', 'full',    'full',    'limited', 'limited', 'full', 'full',    'full',    'limited', 'limited', 'limited'),
+  people:          r('full', 'full',    'limited', 'limited', 'hidden',  'full', 'full',    'limited', 'limited', 'hidden',  'hidden'),
+  rooms:           r('full', 'full',    'limited', 'hidden',  'hidden',  'full', 'full',    'limited', 'hidden',  'hidden',  'hidden'),
+  operations:      r('full', 'full',    'limited', 'hidden',  'hidden',  'full', 'full',    'hidden',  'hidden',  'hidden',  'hidden'),
+  finance:         r('full', 'full',    'limited', 'hidden',  'hidden',  'full', 'limited', 'hidden',  'hidden',  'hidden',  'hidden'),
+  'payment-rails': r('full', 'full',    'hidden',  'hidden',  'hidden',  'full', 'hidden',  'hidden',  'hidden',  'hidden',  'hidden'),
+  compliance:      r('full', 'full',    'limited', 'hidden',  'hidden',  'full', 'limited', 'hidden',  'hidden',  'hidden',  'hidden'),
+  facilities:      r('full', 'full',    'limited', 'limited', 'hidden',  'full', 'full',    'limited', 'limited', 'hidden',  'hidden'),
+  resources:       r('full', 'full',    'limited', 'limited', 'hidden',  'full', 'full',    'limited', 'limited', 'hidden',  'hidden'),
+  donations:       r('full', 'full',    'limited', 'limited', 'hidden',  'full', 'full',    'limited', 'limited', 'hidden',  'hidden'),
 };
 
 export function getChurchOrgTabVisibility(tab: ChurchOrgTab, role: ChurchRoleLens): ChurchVisibility {
@@ -119,6 +166,15 @@ const CHURCH_QUICK_ACTIONS: Record<ChurchRoleLens, ChurchQuickAction[]> = {
     { id: 'open-payment-rails', label: 'Payment Rails', icon: 'creditcard.fill' },
     { id: 'open-announcements', label: 'Announcements', icon: 'bell.fill' },
   ],
+  C6: [
+    { id: 'worship-plan', label: 'Worship Plan', icon: 'music.note.list' },
+    { id: 'sermon-prep', label: 'Sermon Prep', icon: 'book.fill' },
+    { id: 'staff-meeting', label: 'Staff Meeting', icon: 'person.3.fill' },
+    { id: 'budget-review', label: 'Budget Review', icon: 'dollarsign.circle.fill' },
+    { id: 'prayer-wall', label: 'Prayer Wall', icon: 'hands.sparkles.fill' },
+    { id: 'post-announcement', label: 'Post Announcement', icon: 'megaphone.fill' },
+    { id: 'approve-requests', label: 'Approve Requests', icon: 'checkmark.seal.fill' },
+  ],
   C2: [
     { id: 'create-event', label: 'Create Event', icon: 'calendar.badge.plus' },
     { id: 'manage-volunteers', label: 'Manage Volunteers', icon: 'person.3.fill' },
@@ -128,6 +184,13 @@ const CHURCH_QUICK_ACTIONS: Record<ChurchRoleLens, ChurchQuickAction[]> = {
     { id: 'open-check-in', label: 'Open Check-In', icon: 'checkmark.circle.fill' },
     { id: 'schedule-event', label: 'Schedule Event', icon: 'clock.fill' },
   ],
+  C7: [
+    { id: 'create-event', label: 'Create Event', icon: 'calendar.badge.plus' },
+    { id: 'manage-volunteers', label: 'Manage Volunteers', icon: 'person.3.fill' },
+    { id: 'open-my-ministry', label: 'Open My Ministry', icon: 'heart.fill' },
+    { id: 'open-check-in', label: 'Open Check-In', icon: 'checkmark.circle.fill' },
+    { id: 'post-update', label: 'Post Update', icon: 'square.and.pencil' },
+  ],
   C3: [
     { id: 'my-ministries', label: 'My Ministries', icon: 'heart.fill' },
     { id: 'events', label: 'Events', icon: 'calendar' },
@@ -135,11 +198,34 @@ const CHURCH_QUICK_ACTIONS: Record<ChurchRoleLens, ChurchQuickAction[]> = {
     { id: 'submit-request', label: 'Submit Request', icon: 'paperplane.fill' },
     { id: 'open-check-in', label: 'Check-In', icon: 'checkmark.circle.fill' },
   ],
+  C8: [
+    { id: 'my-ministries', label: 'My Ministries', icon: 'heart.fill' },
+    { id: 'events', label: 'Events', icon: 'calendar' },
+    { id: 'volunteer-schedule', label: 'Volunteer Schedule', icon: 'clock.fill' },
+    { id: 'worship', label: 'Watch Worship', icon: 'play.circle.fill' },
+  ],
+  C9: [
+    { id: 'volunteer-schedule', label: 'Volunteer Schedule', icon: 'clock.fill' },
+    { id: 'events', label: 'Events', icon: 'calendar' },
+    { id: 'give', label: 'Give', icon: 'heart.fill' },
+    { id: 'prayer', label: 'Prayer Request', icon: 'hands.sparkles.fill' },
+  ],
   C4: [
     { id: 'worship', label: 'Watch Worship', icon: 'play.circle.fill' },
     { id: 'give', label: 'Give', icon: 'heart.fill' },
     { id: 'events', label: 'Events', icon: 'calendar' },
     { id: 'prayer', label: 'Prayer Request', icon: 'hands.sparkles.fill' },
+  ],
+  C11: [
+    { id: 'worship', label: 'Watch Worship', icon: 'play.circle.fill' },
+    { id: 'give', label: 'Give', icon: 'heart.fill' },
+    { id: 'events', label: 'Events', icon: 'calendar' },
+    { id: 'prayer', label: 'Prayer Request', icon: 'hands.sparkles.fill' },
+  ],
+  C10: [
+    { id: 'worship', label: 'Watch Online', icon: 'play.circle.fill' },
+    { id: 'events', label: 'Events', icon: 'calendar' },
+    { id: 'give', label: 'Give', icon: 'heart.fill' },
   ],
   C5: [
     { id: 'visit', label: 'Plan a Visit', icon: 'mappin.and.ellipse' },
@@ -156,25 +242,23 @@ export function getChurchQuickActions(role: ChurchRoleLens): ChurchQuickAction[]
 // VISIBILITY HELPERS
 // =============================================================================
 
+const MEMBER_LEVEL_ROLES: Set<ChurchRoleLens> = new Set(['C4', 'C5', 'C9', 'C10', 'C11']);
+
 export function isSeniorPastor(role: ChurchRoleLens): boolean {
   return role === 'C1';
 }
 
 export function isElderLevel(role: ChurchRoleLens): boolean {
-  return role === 'C1' || role === 'C2';
+  return role === 'C1' || role === 'C2' || role === 'C6';
 }
 
 export function isStaffLevel(role: ChurchRoleLens): boolean {
-  return role === 'C1' || role === 'C2' || role === 'C3';
+  return role === 'C1' || role === 'C2' || role === 'C3' || role === 'C6' || role === 'C7' || role === 'C8';
 }
 
 export function isMember(role: ChurchRoleLens): boolean {
   return role !== 'C5';
 }
-
-// =============================================================================
-// ROLE MAPPING
-// =============================================================================
 
 // =============================================================================
 // BACKWARD COMPAT — used by universal-member-sheet, universal-ministry-sheet,
@@ -192,7 +276,7 @@ export function getMemberSheetTabs(role: ChurchRoleLens): { id: MemberTab; label
     { id: 'groups', label: 'Groups' },
     { id: 'notes', label: 'Notes' },
   ];
-  if (role === 'C4' || role === 'C5') return all.filter((t) => t.id === 'overview' || t.id === 'groups');
+  if (MEMBER_LEVEL_ROLES.has(role)) return all.filter((t) => t.id === 'overview' || t.id === 'groups');
   return all;
 }
 
@@ -203,7 +287,7 @@ export function getMinistrySheetTabs(role: ChurchRoleLens): { id: MinistryTab; l
     { id: 'schedule', label: 'Schedule' },
     { id: 'budget', label: 'Budget' },
   ];
-  if (role === 'C4' || role === 'C5') return all.filter((t) => t.id === 'overview');
+  if (MEMBER_LEVEL_ROLES.has(role)) return all.filter((t) => t.id === 'overview');
   return all;
 }
 
@@ -223,10 +307,6 @@ export function isMinistryLevel(role: ChurchRoleLens): boolean {
 }
 
 // =============================================================================
-// ROLE MAPPING
-// =============================================================================
-
-// =============================================================================
 // MEMBERSHIP → LENS (direct membership_id mapping for ActiveView)
 // =============================================================================
 
@@ -241,20 +321,32 @@ export function getChurchRole(membershipId: string): ChurchRoleLens {
 export function mapRoleToChurchLens(role: string): ChurchRoleLens {
   switch (role) {
     case 'senior_pastor':
-    case 'lead_pastor':
     case 'pastor':
       return 'C1';
+    case 'lead_pastor':
+    case 'executive_pastor':
+      return 'C6';
     case 'elder':
     case 'board':
     case 'deacon':
       return 'C2';
+    case 'ministry_leader':
+      return 'C7';
     case 'staff':
-    case 'worship_leader':
     case 'youth_pastor':
       return 'C3';
+    case 'worship_leader':
+    case 'worship_team':
+      return 'C8';
+    case 'volunteer':
+      return 'C9';
     case 'member':
-    case 'regular':
       return 'C4';
+    case 'new_believer':
+      return 'C11';
+    case 'regular':
+    case 'attendee':
+      return 'C10';
     case 'visitor':
     case 'public':
     case 'guest':

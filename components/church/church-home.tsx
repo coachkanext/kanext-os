@@ -17,6 +17,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMembershipId } from '@/context/app-context';
+import { getChurchRole } from '@/utils/church-rbac';
 
 import { ChurchDashboardV2 } from '@/components/church-home/church-dashboard-v2';
 import { ChurchCalendarV2 } from '@/components/church-home/church-calendar-v2';
@@ -40,6 +41,7 @@ export function ChurchHome() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const membershipId = useMembershipId();
+  const churchRole = getChurchRole(membershipId);
   const pagerRef = useRef<PagerView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -85,7 +87,7 @@ export function ChurchHome() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           <View key="dashboard" style={{ flex: 1 }}>
-            <ChurchDashboardV2 colors={colors} accent={ACCENT} />
+            <ChurchDashboardV2 colors={colors} accent={ACCENT} role={churchRole} />
           </View>
           <View key="calendar" style={{ flex: 1 }}>
             <ChurchCalendarV2 colors={colors} accent={ACCENT} />
