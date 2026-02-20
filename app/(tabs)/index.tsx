@@ -458,67 +458,124 @@ function SportsHome() {
                     );
                   })()}
 
-                  {/* ===== BLOCK 2 — NEXT GAME CARD ===== */}
-                  {FMU_NEXT_GAME && (() => {
-                    const nextGame = FMU_NEXT_GAME_ID ? FMU_GAMES_BY_ID[FMU_NEXT_GAME_ID] : null;
-                    const oppHue = confHash(FMU_NEXT_GAME.opponent) % 360;
-                    const oppInitials = FMU_NEXT_GAME.opponent.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-                    const isHome = FMU_NEXT_GAME.location === 'Home';
+                  {/* ===== BLOCK 2 — NEXT GAME BLOCK (dark card) ===== */}
+                  {(() => {
+                    // When season is complete, show tournament TBD
+                    const isTBD = !FMU_NEXT_GAME;
+                    const nextGame = (!isTBD && FMU_NEXT_GAME_ID) ? FMU_GAMES_BY_ID[FMU_NEXT_GAME_ID] : null;
+                    const oppName = isTBD ? 'TBD' : FMU_NEXT_GAME!.opponent;
+                    const oppHue = confHash(oppName) % 360;
+                    const oppInitials = isTBD ? '?' : oppName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+                    const pregame = (!isTBD && FMU_NEXT_GAME_ID) ? FMU_PREGAME[FMU_NEXT_GAME_ID] : null;
+                    const oppKR = pregame?.oppKR ?? nextGame?.opponentKR ?? 0;
+                    const krGap = pregame?.krGap ?? 0;
+                    const winPct = isTBD ? 0 : Math.min(92, Math.max(28, Math.round(50 + krGap * 0.8)));
+                    const winColor = winPct >= 60 ? '#22C55E' : winPct >= 45 ? '#F59E0B' : '#EF4444';
+                    const gameTypeLabel = isTBD ? 'TOURNAMENT' : (nextGame?.gameType ?? 'NON-CONF');
+                    const gameTypeColor = isTBD ? '#c084fc' : gameTypeLabel === 'CONF' ? '#60a5fa' : '#a1a1aa';
+                    const gameTypeBg = isTBD ? '#7c3aed22' : gameTypeLabel === 'CONF' ? '#2563eb22' : '#71717a22';
+                    const oppRecord = isTBD ? '' : (nextGame?.opponentRecord ?? '');
+                    const oppConf = isTBD ? '' : 'Sun Conference';
+                    const dateLine = isTBD
+                      ? 'NAIA National Tournament · TBD'
+                      : `${nextGame?.date ?? FMU_NEXT_GAME!.date} · ${nextGame?.gameTime ?? ''} · ${nextGame?.venue ?? FMU_NEXT_GAME!.location}`;
                     return (
-                      <View style={[styles.nextGameCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                        {/* FMU side */}
-                        <Pressable style={styles.ngTeamCol} onPress={openTeamSheet}>
-                          <Image source={FMU_SEAL} style={styles.ngLogo} />
-                          <Text style={[styles.ngTeamName, { color: colors.text }]} numberOfLines={1}>Florida Memorial</Text>
-                          <Text style={[styles.ngRecord, { color: colors.textSecondary }]}>{FMU_RECORD.overall}</Text>
-                        </Pressable>
+                      <Pressable
+                        onPress={() => { setDrillDown('game-plan'); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                        style={({ pressed }) => [styles.ngBlock, pressed && { opacity: 0.85 }]}
+                      >
+                        <View style={styles.ngBlockAccent} />
+                        <View style={styles.ngBlockBody}>
+                          {/* Label */}
+                          <Text style={styles.ngLabel}>{isTBD ? 'POSTSEASON' : 'NEXT GAME'}</Text>
 
-                        {/* Center info */}
-                        <View style={styles.ngCenter}>
-                          <View style={[styles.ngLocationBadge, { backgroundColor: isHome ? '#22c55e22' : '#f59e0b22' }]}>
-                            <Text style={[styles.ngLocationText, { color: isHome ? '#22c55e' : '#f59e0b' }]}>{isHome ? 'HOME' : 'AWAY'}</Text>
+                          {/* Teams row */}
+                          <View style={styles.ngTeamsRow}>
+                            <View style={styles.ngTeamSide}>
+                              <Image source={FMU_SEAL} style={styles.ngLogo} />
+                              <Text style={styles.ngTeamName} numberOfLines={1}>FL Memorial</Text>
+                              <Text style={styles.ngTeamRecord}>{FMU_RECORD.overall}</Text>
+                            </View>
+
+                            <Text style={styles.ngVsText}>vs</Text>
+
+                            {isTBD ? (
+                              <View style={styles.ngTeamSide}>
+                                <View style={[styles.ngOppCircle, { backgroundColor: '#333' }]}>
+                                  <Text style={styles.ngOppInitials}>?</Text>
+                                </View>
+                                <Text style={styles.ngTeamName}>TBD</Text>
+                                <Text style={styles.ngTeamRecord}>Opponent TBD</Text>
+                              </View>
+                            ) : (
+                              <Pressable
+                                style={styles.ngTeamSide}
+                                onPress={(e) => {
+                                  e.stopPropagation();
+                                  openTeamCard({
+                                    name: oppName,
+                                    record: oppRecord,
+                                    conference: oppConf,
+                                    teamKR: oppKR,
+                                  });
+                                }}
+                              >
+                                <View style={[styles.ngOppCircle, { backgroundColor: `hsl(${oppHue}, 50%, 35%)` }]}>
+                                  <Text style={styles.ngOppInitials}>{oppInitials}</Text>
+                                </View>
+                                <Text style={styles.ngTeamName} numberOfLines={1}>{oppName}</Text>
+                                <Text style={styles.ngTeamRecord}>{oppRecord}{oppConf ? ` · ${oppConf}` : ''}</Text>
+                              </Pressable>
+                            )}
                           </View>
-                          <Text style={[styles.ngDate, { color: colors.text }]}>{nextGame?.date ?? FMU_NEXT_GAME.date}</Text>
-                          <Text style={[styles.ngTime, { color: colors.textSecondary }]}>{nextGame?.gameTime ?? ''}</Text>
-                          <Text style={[styles.ngVenue, { color: colors.textTertiary }]} numberOfLines={1}>{nextGame?.venue ?? FMU_NEXT_GAME.location}</Text>
-                          <View style={[styles.ngConfBadge, { backgroundColor: nextGame?.gameType === 'CONF' ? '#2563eb22' : '#71717a22' }]}>
-                            <Text style={[styles.ngConfText, { color: nextGame?.gameType === 'CONF' ? '#60a5fa' : '#a1a1aa' }]}>{nextGame?.gameType ?? 'NON-CONF'}</Text>
+
+                          {/* Date / time / venue */}
+                          <Text style={styles.ngInfoLine}>{dateLine}</Text>
+
+                          {/* Pill row */}
+                          <View style={styles.ngPillRow}>
+                            <View style={[styles.ngPill, { backgroundColor: gameTypeBg }]}>
+                              <Text style={[styles.ngPillText, { color: gameTypeColor }]}>{gameTypeLabel}</Text>
+                            </View>
+                            {!isTBD && (
+                              <>
+                                <View style={[styles.ngPill, { backgroundColor: `${getKRColor(oppKR)}22` }]}>
+                                  <Text style={[styles.ngPillText, { color: getKRColor(oppKR) }]}>KR {oppKR}</Text>
+                                  <View style={[styles.ngPillDot, { backgroundColor: getKRColor(oppKR) }]} />
+                                </View>
+                                <View style={[styles.ngPill, { backgroundColor: `${winColor}22` }]}>
+                                  <Text style={[styles.ngPillText, { color: winColor }]}>WIN {winPct}%</Text>
+                                  <View style={[styles.ngPillDot, { backgroundColor: winColor }]} />
+                                </View>
+                              </>
+                            )}
+                          </View>
+
+                          {/* Action buttons */}
+                          <View style={styles.ngActionsRow}>
+                            <Pressable
+                              style={styles.ngActionBtn}
+                              onPress={(e) => { e.stopPropagation(); setTicketsVisible(true); }}
+                            >
+                              <Text style={styles.ngActionBtnText}>Buy Tickets</Text>
+                            </Pressable>
+                            <Pressable
+                              style={styles.ngActionBtn}
+                              onPress={(e) => { e.stopPropagation(); console.log('Watch / Live Stats'); }}
+                            >
+                              <Text style={styles.ngActionBtnText}>Watch</Text>
+                            </Pressable>
+                            <Pressable
+                              style={[styles.ngActionBtn, styles.ngActionBtnPrimary]}
+                              onPress={(e) => { e.stopPropagation(); setDrillDown('game-plan'); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                            >
+                              <Text style={[styles.ngActionBtnText, { color: '#fff' }]}>Game Plan</Text>
+                            </Pressable>
                           </View>
                         </View>
-
-                        {/* Opponent side */}
-                        <Pressable
-                          style={styles.ngTeamCol}
-                          onPress={() => openTeamCard({
-                            name: FMU_NEXT_GAME!.opponent,
-                            record: FMU_NEXT_GAME!.opponentRecord ?? '',
-                            conference: 'Sun Conference',
-                            teamKR: FMU_NEXT_GAME!.opponentKR,
-                          })}
-                        >
-                          <View style={[styles.ngOppCircle, { backgroundColor: `hsl(${oppHue}, 50%, 35%)` }]}>
-                            <Text style={styles.ngOppInitials}>{oppInitials}</Text>
-                          </View>
-                          <Text style={[styles.ngTeamName, { color: colors.text }]} numberOfLines={1}>{FMU_NEXT_GAME.opponent}</Text>
-                          <Text style={[styles.ngRecord, { color: colors.textSecondary }]}>{FMU_NEXT_GAME.opponentRecord ?? ''}</Text>
-                        </Pressable>
-                      </View>
+                      </Pressable>
                     );
                   })()}
-
-                  {/* ===== BLOCK 2b — ACTION BUTTONS ===== */}
-                  {FMU_NEXT_GAME && (
-                    <View style={styles.ngActions}>
-                      <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => setTicketsVisible(true)}>
-                        <IconSymbol name="ticket.fill" size={14} color={colors.tint} />
-                        <Text style={[styles.ngActionText, { color: colors.text }]}>Buy Tickets</Text>
-                      </Pressable>
-                      <Pressable style={[styles.ngActionBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => console.log('Watch / Live Stats')}>
-                        <IconSymbol name="play.rectangle.fill" size={14} color={colors.tint} />
-                        <Text style={[styles.ngActionText, { color: colors.text }]}>Watch / Live Stats</Text>
-                      </Pressable>
-                    </View>
-                  )}
 
                   {/* ===== BLOCK 3 — COMMERCE ROW ===== */}
                   <View style={styles.commerceRow}>
@@ -1954,82 +2011,67 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Next Game Card
-  nextGameCard: {
+  // Next Game Block (dark card)
+  ngBlock: {
+    backgroundColor: '#181616',
+    borderRadius: 12,
+    overflow: 'hidden' as const,
     marginHorizontal: Spacing.md,
-    borderRadius: BorderRadius.lg,
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: Spacing.md,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    marginBottom: Spacing.md,
   },
-  ngTeamCol: {
+  ngBlockAccent: {
+    height: 3,
+    backgroundColor: '#1E40AF',
+  },
+  ngBlockBody: {
+    padding: 14,
+  },
+  ngLabel: {
+    color: '#1E40AF',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  ngTeamsRow: {
+    flexDirection: 'row' as const,
+    justifyContent: 'space-around' as const,
+    alignItems: 'center' as const,
+    paddingVertical: 12,
+  },
+  ngTeamSide: {
+    alignItems: 'center' as const,
+    gap: 4,
     flex: 1,
-    alignItems: 'center',
-    gap: 6,
   },
   ngLogo: {
     width: 44,
     height: 44,
-    resizeMode: 'contain',
+    resizeMode: 'contain' as const,
   },
   ngTeamName: {
+    color: '#fff',
     fontSize: 12,
     fontWeight: '700',
-    textAlign: 'center',
+    textAlign: 'center' as const,
     letterSpacing: -0.2,
   },
-  ngRecord: {
+  ngTeamRecord: {
+    color: 'rgba(255,255,255,0.5)',
     fontSize: 11,
     fontWeight: '500',
+    textAlign: 'center' as const,
   },
-  ngCenter: {
-    flex: 1.2,
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 4,
-  },
-  ngLocationBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 8,
-  },
-  ngLocationText: {
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-  },
-  ngDate: {
+  ngVsText: {
+    color: 'rgba(255,255,255,0.3)',
     fontSize: 14,
     fontWeight: '700',
-    letterSpacing: -0.2,
-  },
-  ngTime: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  ngVenue: {
-    fontSize: 11,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  ngConfBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-    marginTop: 2,
-  },
-  ngConfText: {
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.3,
   },
   ngOppCircle: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
   },
   ngOppInitials: {
     fontSize: 16,
@@ -2037,26 +2079,58 @@ const styles = StyleSheet.create({
     color: '#fff',
     letterSpacing: 0.5,
   },
-  ngActions: {
-    flexDirection: 'row',
-    gap: 10,
-    paddingHorizontal: Spacing.md,
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.md,
+  ngInfoLine: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 12,
+    textAlign: 'center' as const,
+    marginBottom: 8,
+  },
+  ngPillRow: {
+    flexDirection: 'row' as const,
+    justifyContent: 'center' as const,
+    gap: 8,
+    marginTop: 4,
+  },
+  ngPill: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    gap: 4,
+  },
+  ngPillText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  ngPillDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+  },
+  ngActionsRow: {
+    flexDirection: 'row' as const,
+    gap: 8,
+    marginTop: 12,
   },
   ngActionBtn: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 10,
-    borderRadius: BorderRadius.md,
-    borderWidth: StyleSheet.hairlineWidth,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
   },
-  ngActionText: {
-    fontSize: 13,
+  ngActionBtnText: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 12,
     fontWeight: '600',
+  },
+  ngActionBtnPrimary: {
+    backgroundColor: '#1E40AF',
+    borderColor: '#1E40AF',
   },
 
   // Commerce Row
