@@ -36,11 +36,16 @@ from config import DB_CONFIG
 from bpr import compute_bpr, season_bpr
 from clusters import compute_all_clusters
 from player_kr import compute_player_kr, map_position
+from badges import compute_badges
 from team_kr import compute_team_kr
 from osie_dsie import infer_offensive_system, infer_defensive_system
-from klvn import compute_confidence, get_lambda
+from klvn import compute_confidence, get_lambda, klvn_translate
 from impact_scores import compute_pgis, compute_tgis, compute_season_pgis
 from scholarship_nil import run_allocation, SCHOLARSHIP_CAPS
+from context_engine import apply_context_adjustments
+
+# Level keys that use Pro KR mode (higher thresholds, different weights)
+PRO_LEVEL_KEYS = {"professional", "nba", "g_league", "overseas_pro"}
 
 KR_VERSION = "v1.0-boxscore"
 
@@ -67,7 +72,50 @@ def compute_season_stats(conn):
     """Aggregate player_game_stats into player_season_stats."""
     print("\n[1/8] Computing season stats...")
 
+    # ── Sentinel fix: minutes=0/1 with real stats → NULL ──
+    conn.execute("""
+        DO $$ BEGIN
+            ALTER TABLE player_game_stats ADD COLUMN minutes_status varchar;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$
+    """)
+    conn.execute("""
+        DO $$ BEGIN
+            ALTER TABLE player_season_stats ADD COLUMN games_with_minutes integer;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$
+    """)
+    conn.execute("""
+        DO $$ BEGIN
+            ALTER TABLE player_season_stats ADD COLUMN minutes_coverage_pct numeric;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$
+    """)
+    conn.commit()
+
+    # Reset previous sentinel flags (in case of re-run with restored data)
+    conn.execute("""
+        UPDATE player_game_stats
+        SET minutes_status = NULL
+        WHERE minutes_status = 'MISSING_BOX_MINUTES'
+    """)
+    conn.commit()
+
+    # Flag sentinel minutes: 0 or 1 with real stat production → NULL
+    sentinel_result = conn.execute("""
+        UPDATE player_game_stats
+        SET minutes = NULL, minutes_status = 'MISSING_BOX_MINUTES'
+        WHERE (minutes IS NOT NULL AND minutes <= 1)
+          AND (COALESCE(pts, 0) + COALESCE(oreb, 0) + COALESCE(dreb, 0) +
+               COALESCE(ast, 0) + COALESCE(stl, 0) + COALESCE(blk, 0) +
+               COALESCE(fga, 0) + COALESCE(fta, 0)) > 0
+        RETURNING id
+    """).fetchall()
+    conn.commit()
+    print(f"  Sentinel fix: {len(sentinel_result)} game rows with minutes=0/1 → NULL")
+
     # Get all player_team_seasons with game data
+    # NOTE: avg(pgs.minutes) automatically excludes NULLs (sentinel-fixed rows)
     rows = conn.execute("""
         SELECT
             pts.id AS pts_id,
@@ -76,6 +124,7 @@ def compute_season_stats(conn):
             p.declared_positions,
             count(pgs.id) AS games_played,
             count(CASE WHEN pgs.started THEN 1 END) AS games_started,
+            count(CASE WHEN pgs.minutes IS NOT NULL THEN 1 END) AS games_with_minutes,
             coalesce(avg(pgs.minutes), 0) AS minutes_pg,
             coalesce(avg(pgs.pts), 0) AS pts_pg,
             coalesce(avg(pgs.reb), 0) AS reb_pg,
@@ -114,6 +163,11 @@ def compute_season_stats(conn):
         min_pg = _f(r["minutes_pg"])
         usage = ((fga_pg + 0.44 * fta_pg + to_pg) / (min_pg / 40.0 * 70.0) * 100) if min_pg > 5 else 0
 
+        # Minutes coverage: fraction of games with real (non-sentinel) minutes
+        gp = int(r["games_played"] or 0)
+        gwm = int(r["games_with_minutes"] or 0)
+        min_coverage = gwm / gp if gp > 0 else 0.0
+
         conn.execute("""
             INSERT INTO player_season_stats (
                 player_team_season_id, games_played, games_started,
@@ -122,10 +176,12 @@ def compute_season_stats(conn):
                 fg_pct, three_pct, ft_pct,
                 oreb_per_game, dreb_per_game,
                 fga_per_game, three_pa_per_game, fta_per_game,
-                pf_per_game, usage_rate
+                pf_per_game, usage_rate,
+                games_with_minutes, minutes_coverage_pct
             ) VALUES (
                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                %s, %s
             )
         """, (
             r["pts_id"], r["games_played"], r["games_started"],
@@ -137,12 +193,91 @@ def compute_season_stats(conn):
             round(_f(r["oreb_pg"]), 1), round(_f(r["dreb_pg"]), 1),
             round(_f(r["fga_pg"]), 1), round(_f(r["three_pa_pg"]), 1), round(_f(r["fta_pg"]), 1),
             round(_f(r["pf_pg"]), 1), round(usage, 1),
+            gwm, round(min_coverage, 3),
         ))
         inserted += 1
 
     conn.commit()
     print(f"  Inserted {inserted} season stat rows")
     return rows
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# STEP 1.5: Data Validation — flag INVALID_SOURCE rows
+# ═══════════════════════════════════════════════════════════════════════════
+
+def validate_season_stats(conn) -> set[str]:
+    """
+    Cross-check player_season_stats vs player_game_stats totals.
+    Returns set of player_team_season_ids that should be excluded from KR.
+
+    Checks:
+      1. Game count mismatch (reported GP vs actual PGS rows)
+      2. Total minutes mismatch (GP * MPG vs SUM(pgs.minutes))
+      3. Total points mismatch (GP * PPG vs SUM(pgs.pts))
+    Tolerance: 15% for totals, exact for game count.
+    """
+    print("\n[1.5/8] Validating season stats...")
+
+    rows = conn.execute("""
+        SELECT pss.player_team_season_id,
+               pss.games_played AS reported_gp,
+               COUNT(pgs.id) AS actual_gp,
+               COUNT(pgs.minutes) AS games_with_min,
+               pss.minutes_per_game AS mpg,
+               COUNT(pgs.minutes) * pss.minutes_per_game AS expected_min,
+               COALESCE(SUM(pgs.minutes), 0) AS actual_min,
+               pss.games_played * pss.pts_per_game AS expected_pts,
+               COALESCE(SUM(pgs.pts), 0) AS actual_pts,
+               pss.games_played * pss.to_per_game AS expected_to,
+               COALESCE(SUM(pgs.turnovers), 0) AS actual_to
+        FROM player_season_stats pss
+        JOIN player_game_stats pgs ON pgs.player_team_season_id = pss.player_team_season_id
+        WHERE pss.games_played >= 3 AND pss.minutes_per_game >= 5
+        GROUP BY pss.player_team_season_id, pss.games_played,
+                 pss.minutes_per_game, pss.pts_per_game, pss.to_per_game
+    """).fetchall()
+
+    invalid_ids: set[str] = set()
+    reasons: dict[str, list[str]] = {}
+
+    for r in rows:
+        pts_id = str(r["player_team_season_id"])
+        fails = []
+
+        # Check 1: game count mismatch
+        if r["reported_gp"] != r["actual_gp"]:
+            fails.append(f"GP mismatch: reported={r['reported_gp']} actual={r['actual_gp']}")
+
+        # Check 2: total minutes mismatch (> 15%)
+        # Compare only against games that actually have minutes data (many box
+        # scores omit minutes — NULL minutes != 0 minutes played).
+        exp_min = float(r["expected_min"] or 0)   # games_with_min * MPG
+        act_min = float(r["actual_min"] or 0)
+        if exp_min > 0 and abs(act_min - exp_min) / exp_min > 0.15:
+            fails.append(f"MIN mismatch: expected={exp_min:.0f} actual={act_min:.0f}")
+
+        # Check 3: total points mismatch (> 15%)
+        exp_pts = float(r["expected_pts"] or 0)
+        act_pts = float(r["actual_pts"] or 0)
+        if exp_pts > 5 and abs(act_pts - exp_pts) / exp_pts > 0.15:
+            fails.append(f"PTS mismatch: expected={exp_pts:.0f} actual={act_pts:.0f}")
+
+        if fails:
+            invalid_ids.add(pts_id)
+            reasons[pts_id] = fails
+
+    if invalid_ids:
+        print(f"  Flagged {len(invalid_ids)} player-seasons as INVALID_SOURCE")
+        # Show first 5 examples
+        for pts_id in list(invalid_ids)[:5]:
+            print(f"    {pts_id}: {'; '.join(reasons[pts_id])}")
+        if len(invalid_ids) > 5:
+            print(f"    ... and {len(invalid_ids) - 5} more")
+    else:
+        print("  All season stats validated OK")
+
+    return invalid_ids
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -313,11 +448,43 @@ def compute_all_tgis(conn):
 # STEP 4: Player KR + Clusters
 # ═══════════════════════════════════════════════════════════════════════════
 
-def compute_all_player_kr(conn, season_data: list[dict]):
+def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None = None,
+                          invalid_ids: set[str] | None = None):
     """Compute clusters and KR for every player."""
     print("\n[4/8] Computing Player KR (clusters + archetype)...")
 
-    # Clear existing KR data
+    # Ensure kr_status column exists
+    conn.execute("""
+        DO $$ BEGIN
+            ALTER TABLE player_kr ADD COLUMN kr_status varchar DEFAULT 'FINAL';
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$
+    """)
+    # League-internal + translation columns
+    for col, ctype in [
+        ("kr_league_internal", "REAL DEFAULT 0"),
+        ("off_kr_league_internal", "REAL DEFAULT 0"),
+        ("def_kr_league_internal", "REAL DEFAULT 0"),
+        ("level_offset", "REAL DEFAULT 0"),
+        ("confidence_penalty", "REAL DEFAULT 0"),
+        ("schedule_adjustment", "REAL DEFAULT 0"),
+    ]:
+        conn.execute(f"""
+            DO $$ BEGIN
+                ALTER TABLE player_kr ADD COLUMN {col} {ctype};
+            EXCEPTION WHEN duplicate_column THEN NULL;
+            END $$
+        """)
+    conn.execute("""
+        DO $$ BEGIN
+            ALTER TABLE player_kr_clusters ADD COLUMN score_league_internal REAL DEFAULT 0;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$
+    """)
+    conn.commit()
+
+    # Clear existing KR data (badges cascade from player_kr)
+    conn.execute("DELETE FROM player_badges")
     conn.execute("DELETE FROM player_kr_traits")
     conn.execute("DELETE FROM player_kr_clusters")
     conn.execute("DELETE FROM player_kr")
@@ -334,14 +501,16 @@ def compute_all_player_kr(conn, season_data: list[dict]):
     for lr in level_rows:
         team_levels[str(lr["team_season_id"])] = lr["level_key"]
 
-    # Get player height/weight
+    # Get player height/weight + name
     player_info = {}
     pinfo_rows = conn.execute("""
-        SELECT id, height_inches, weight_lbs, declared_positions
+        SELECT id, full_name, height_inches, weight_lbs, declared_positions
         FROM players
     """).fetchall()
     for pi in pinfo_rows:
         player_info[str(pi["id"])] = pi
+
+    debug_lower = debug_name.lower() if debug_name else None
 
     inserted = 0
     for r in season_data:
@@ -350,6 +519,10 @@ def compute_all_player_kr(conn, season_data: list[dict]):
         ts_id = str(r["team_season_id"])
         level_key = team_levels.get(ts_id, "naia")
         pinfo = player_info.get(player_id, {})
+
+        # Skip invalid source data
+        if invalid_ids and pts_id in invalid_ids:
+            continue
 
         # Skip players with < 3 games or < 5 min/game
         if (r["games_played"] or 0) < 3:
@@ -361,6 +534,11 @@ def compute_all_player_kr(conn, season_data: list[dict]):
         positions = pinfo.get("declared_positions") or r.get("declared_positions") or []
         pos_raw = positions[0] if positions else None
         position = map_position(pos_raw)
+
+        # Minutes coverage
+        gwm = int(r.get("games_with_minutes") or r.get("games_played") or 0)
+        gp_val = int(r["games_played"] or 0)
+        min_cov = gwm / gp_val if gp_val > 0 else 0.0
 
         stats = {
             "pts_pg": _f(r["pts_pg"]),
@@ -379,11 +557,12 @@ def compute_all_player_kr(conn, season_data: list[dict]):
             "oreb_pg": _f(r["oreb_pg"]),
             "dreb_pg": _f(r["dreb_pg"]),
             "minutes_pg": _f(r["minutes_pg"]),
-            "games_played": int(r["games_played"] or 0),
+            "games_played": gp_val,
+            "minutes_coverage_pct": min_cov,
         }
 
-        # Compute clusters
-        clusters = compute_all_clusters(
+        # Compute clusters (returns tuple: clusters_cross, clusters_league, traits_list)
+        clusters, clusters_league, trait_diagnostics = compute_all_clusters(
             stats=stats,
             level_key=level_key,
             height_inches=pinfo.get("height_inches"),
@@ -391,43 +570,151 @@ def compute_all_player_kr(conn, season_data: list[dict]):
             position=pos_raw,
         )
 
-        # Compute KR
-        kr = compute_player_kr(clusters, position)
+        # Determine KR mode: pro or college
+        kr_mode = "pro" if level_key in PRO_LEVEL_KEYS else "college"
 
-        # Confidence
+        # Confidence (needed for KLVN)
         confidence = round(compute_confidence(r["games_played"] or 0, level_key) * 100)
+        kr_status = "FINAL" if confidence >= 60 else "PROVISIONAL"
+
+        # ── Pipeline: badges BEFORE KLVN, KLVN is the LAST step ──
+
+        # Step 1: League-internal KR (within-league eval, per-level μ/σ0)
+        kr_league = compute_player_kr(clusters_league, position, mode=kr_mode)
+
+        # Step 2: Badges on league-internal clusters
+        badge_result = compute_badges(clusters_league, mode=kr_mode)
+
+        # Step 3: League-final with badges (overall-only — badges do NOT touch OKR/DKR)
+        league_final_off = kr_league["base_off_kr"]
+        league_final_def = kr_league["base_def_kr"]
+        league_final_overall = min(100.0, kr_league["overall_kr"] + badge_result["overall_boost"])
+
+        # Step 3.5: Context Engine (gated — disabled by default)
+        ctx = apply_context_adjustments(
+            league_final_off, league_final_def, league_final_overall,
+            stats, clusters, level_key, position,
+        )
+        league_final_off = ctx["adjusted_off"]
+        league_final_def = ctx["adjusted_def"]
+        league_final_overall = ctx["adjusted_overall"]
+
+        # Step 4: KLVN — cross-level translation (FINAL STEP, nothing added after)
+        final_off_kr = klvn_translate(league_final_off, level_key, confidence_pct=confidence, coverage_pct=min_cov)
+        final_def_kr = klvn_translate(league_final_def, level_key, confidence_pct=confidence, coverage_pct=min_cov)
+        final_overall_kr = klvn_translate(league_final_overall, level_key, confidence_pct=confidence, coverage_pct=min_cov)
+
+        # base_* columns = KLVN of league base (no badges) — used by team_kr
+        base_off_kr = klvn_translate(kr_league["base_off_kr"], level_key, confidence_pct=confidence, coverage_pct=min_cov)
+        base_def_kr = klvn_translate(kr_league["base_def_kr"], level_key, confidence_pct=confidence, coverage_pct=min_cov)
+        base_overall_kr = klvn_translate(kr_league["overall_kr"], level_key, confidence_pct=confidence, coverage_pct=min_cov)
+
+        # Translation components
+        level_offset = round(final_overall_kr - league_final_overall, 2)
+        confidence_penalty = 0.0  # placeholder
+        schedule_adj = 0.0        # placeholder
 
         # Participation %: total minutes / team total minutes
         total_min = r.get("total_minutes", 0) or 0
         participation = 0.0  # computed later at team level
 
+        # ── Debug output ──────────────────────────────────────────────
+        player_name = pinfo.get("full_name", "")
+        if debug_lower and debug_lower in player_name.lower():
+            print(f"\n{'=' * 60}")
+            print(f"=== DEBUG: {player_name} ({level_key}, {position}) ===")
+            print(f"{'=' * 60}")
+            # Group traits by cluster
+            by_cluster: dict[str, list[dict]] = {}
+            for td in trait_diagnostics:
+                c = td.get("cluster", "?")
+                by_cluster.setdefault(c, []).append(td)
+            for cname in ["shooting", "finishing", "playmaking",
+                          "perimeter_defense", "interior_defense",
+                          "rebounding", "frame"]:
+                ctraits = by_cluster.get(cname, [])
+                cscore_l = clusters_league.get(cname, 0)
+                print(f"  {cname.upper()} (league: {cscore_l})")
+                for td in ctraits:
+                    tk = td.get("trait_key", "?")
+                    z_l = td.get("Z_league", "—")
+                    skr_l = td.get("skill_kr_league", "—")
+                    print(f"    {tk:<18} p={td['p']:<8} N={td['N']:<5} "
+                          f"Z_league={z_l:<7} League={skr_l}")
+            print(f"  league_kr_internal:    off={kr_league['base_off_kr']}  def={kr_league['base_def_kr']}  overall={kr_league['overall_kr']}")
+            print(f"  badge_bonus_internal:  off={badge_result['off_boost']}  def={badge_result['def_boost']}  overall={badge_result['overall_boost']}")
+            print(f"  league_final_internal: off={round(league_final_off, 1)}  def={round(league_final_def, 1)}  overall={round(league_final_overall, 1)}")
+            print(f"  kr_pre_translation:    {round(league_final_overall, 1)}")
+            print(f"  kr_post_translation:   {round(final_overall_kr, 1)}  (KLVN, \u03bb={get_lambda(level_key)})")
+            print(f"  level_offset:          {level_offset}")
+            print(f"  Badges: {len(badge_result['badges'])} (based on league-internal clusters)")
+            print(f"  Confidence: {confidence}% \u2192 {kr_status}")
+            print(f"{'=' * 60}\n")
+
         # Insert player_kr
         kr_row = conn.execute("""
             INSERT INTO player_kr (
                 player_team_season_id, base_off_kr, base_def_kr, overall_kr,
-                kr_version, eval_mode, confidence_pct,
+                off_badge_boost, def_badge_boost, overall_badge_boost,
+                final_off_kr, final_def_kr, final_overall_kr,
+                kr_version, eval_mode, confidence_pct, kr_status,
                 primary_archetype, secondary_archetypes,
-                participation_pct, klvn_level, computed_at
+                participation_pct, klvn_level, computed_at,
+                kr_league_internal, off_kr_league_internal, def_kr_league_internal,
+                level_offset, confidence_penalty, schedule_adjustment
             ) VALUES (
-                %s, %s, %s, %s, %s, 'boxscore', %s, %s, %s, %s, %s, now()
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                %s, 'boxscore', %s, %s, %s, %s, %s, %s, now(),
+                %s, %s, %s, %s, %s, %s
             ) RETURNING id
         """, (
-            pts_id, kr["base_off_kr"], kr["base_def_kr"], kr["overall_kr"],
-            KR_VERSION, confidence,
-            kr["primary_archetype"], kr["secondary_archetypes"],
+            pts_id, round(base_off_kr, 1), round(base_def_kr, 1), round(base_overall_kr, 1),
+            badge_result["off_boost"], badge_result["def_boost"], badge_result["overall_boost"],
+            round(final_off_kr, 1), round(final_def_kr, 1), round(final_overall_kr, 1),
+            KR_VERSION, confidence, kr_status,
+            kr_league["primary_archetype"], kr_league["secondary_archetypes"],
             participation, level_key,
+            round(kr_league["overall_kr"], 1),
+            round(kr_league["base_off_kr"], 1),
+            round(kr_league["base_def_kr"], 1),
+            level_offset, confidence_penalty, schedule_adj,
         )).fetchone()
 
         kr_id = str(kr_row["id"])
 
-        # Insert cluster scores
+        # Insert cluster scores (cross-level + league-internal)
         for cluster_name, score in clusters.items():
             off_w = 1.0 if cluster_name in ("shooting", "finishing", "playmaking") else 0.0
             def_w = 1.0 if cluster_name in ("perimeter_defense", "interior_defense", "rebounding", "frame") else 0.0
+            league_score = clusters_league.get(cluster_name, score)
             conn.execute("""
-                INSERT INTO player_kr_clusters (player_kr_id, cluster, score, weight_in_off_kr, weight_in_def_kr)
+                INSERT INTO player_kr_clusters (player_kr_id, cluster, score, weight_in_off_kr, weight_in_def_kr, score_league_internal)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (kr_id, cluster_name, score, off_w, def_w, league_score))
+
+        # Insert per-trait diagnostics
+        for td in trait_diagnostics:
+            conn.execute("""
+                INSERT INTO player_kr_traits (
+                    player_kr_id, cluster, trait_key,
+                    raw_score, klvn_score, confidence,
+                    volume_rate, efficiency, sample_size
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                kr_id, td.get("cluster", ""),
+                td.get("trait_key", ""),
+                td.get("p"), td.get("skill_kr"),
+                td.get("Z"),
+                td.get("p_adj"), td.get("mu"),
+                td.get("N"),
+            ))
+
+        # Insert earned badges
+        for badge in badge_result["badges"]:
+            conn.execute("""
+                INSERT INTO player_badges (player_kr_id, badge_name, cluster, tier, effect)
                 VALUES (%s, %s, %s, %s, %s)
-            """, (kr_id, cluster_name, score, off_w, def_w))
+            """, (kr_id, badge["name"], badge["cluster"], badge["tier"], badge["effect"]))
 
         inserted += 1
         if inserted % 500 == 0:
@@ -784,8 +1071,8 @@ def _estimate_nil_pool(level_key: str, roster_size: int) -> float:
     """Estimate NIL pool by level when coach hasn't set one.
     Realistic estimates for college basketball."""
     base_pools = {
+        "ncaa_d1":            1_000_000,
         "ncaa_d1_high_major": 2_000_000,
-        "ncaa_d1_mid_major":    500_000,
         "ncaa_d1_low_major":    200_000,
         "ncaa_d2":               50_000,
         "ncaa_d3":               10_000,  # academic merit only, no NIL
@@ -820,6 +1107,676 @@ def log_computation(conn, duration_ms: int, player_count: int, team_count: int):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# DEBUG COMPARE — Side-by-side trait diagnostic for two players
+# ═══════════════════════════════════════════════════════════════════════════
+
+DATA_SOURCE_MAP = {
+    "njcaa_d1": "PrestoSports", "njcaa_d2": "PrestoSports", "njcaa_d3": "PrestoSports",
+    "naia": "PrestoSports", "cccaa": "PrestoSports", "uscaa": "PrestoSports",
+    "nccaa_d1": "Sidearm Sports", "nccaa_d2": "Sidearm Sports",
+    "ncaa_d1": "ESPN API", "ncaa_d2": "DB Only", "ncaa_d3": "DB Only",
+}
+
+N_COMPUTATION_DOCS = [
+    ("three_pct",       "int(3PA/g × GP) = total 3PA"),
+    ("three_pa_pg",     "GP (games played)"),
+    ("two_pt_pct",      "int((FGA/g − 3PA/g) × GP) = total 2PT FGA"),
+    ("ft_pct",          "int(FTA/g × GP) = total FTA"),
+    ("two_fga_pg",      "GP (games played)"),
+    ("foul_draw_rate",  "int(FGA/g × GP) = total FGA"),
+    ("ast_pg",          "GP (games played)"),
+    ("tov_per_usage",   "GP (usage_events = FGA + 0.44*FTA + TO)"),
+    ("ast_to_ratio",    "GP (games played)"),
+    ("stl_per_100",     "GP (games played)"),
+    ("pf_per_100",      "GP (games played)"),
+    ("blk_per_100",     "GP (games played)"),
+    ("dreb_pg",         "GP (games played)"),
+    ("oreb_pg",         "GP (games played)"),
+    ("minutes_pg",      "GP (games played)"),
+    ("height",          "1 (anthropometric, Z-score, no shrinkage)"),
+    ("weight",          "1 (anthropometric, Z-score, no shrinkage)"),
+]
+
+
+def _lookup_player(conn, name: str) -> dict | None:
+    """Look up a player by name substring, return season stats + metadata."""
+    rows = conn.execute("""
+        SELECT pss.games_played, pss.minutes_per_game, pss.pts_per_game,
+               pss.reb_per_game, pss.ast_per_game, pss.stl_per_game,
+               pss.blk_per_game, pss.to_per_game, pss.pf_per_game,
+               pss.fg_pct, pss.three_pct, pss.ft_pct,
+               pss.oreb_per_game, pss.dreb_per_game,
+               pss.fga_per_game, pss.three_pa_per_game, pss.fta_per_game,
+               pss.games_with_minutes, pss.minutes_coverage_pct,
+               pts.id AS pts_id, p.id AS player_id, p.full_name,
+               p.height_inches, p.weight_lbs, p.declared_positions,
+               cl.level_key, ts.season, t.name AS team_name
+        FROM player_season_stats pss
+        JOIN player_team_seasons pts ON pss.player_team_season_id = pts.id
+        JOIN players p ON pts.player_id = p.id
+        JOIN team_seasons ts ON pts.team_season_id = ts.id
+        JOIN teams t ON ts.team_id = t.id
+        JOIN competitive_levels cl ON t.competitive_level_id = cl.id
+        WHERE p.full_name ILIKE %s
+          AND pss.games_played >= 3 AND pss.minutes_per_game >= 5
+        ORDER BY pss.games_played DESC
+        LIMIT 1
+    """, (f"%{name}%",)).fetchall()
+    return rows[0] if rows else None
+
+
+def _compute_player_debug(row: dict) -> dict:
+    """Recompute clusters + KR for one player. Returns all diagnostics."""
+    level_key = row["level_key"]
+    positions = row.get("declared_positions") or []
+    pos_raw = positions[0] if positions else None
+    position = map_position(pos_raw)
+    kr_mode = "pro" if level_key in PRO_LEVEL_KEYS else "college"
+
+    gp = int(row.get("games_played") or 0)
+    gwm = int(row.get("games_with_minutes") or gp)
+    min_cov = float(row.get("minutes_coverage_pct") or (gwm / gp if gp > 0 else 1.0))
+
+    stats = {
+        "pts_pg":      _f(row.get("pts_per_game")),
+        "reb_pg":      _f(row.get("reb_per_game")),
+        "ast_pg":      _f(row.get("ast_per_game")),
+        "stl_pg":      _f(row.get("stl_per_game")),
+        "blk_pg":      _f(row.get("blk_per_game")),
+        "to_pg":       _f(row.get("to_per_game")),
+        "pf_pg":       _f(row.get("pf_per_game")),
+        "fg_pct":      _f(row.get("fg_pct")),
+        "three_pct":   _f(row.get("three_pct")),
+        "ft_pct":      _f(row.get("ft_pct")),
+        "fga_pg":      _f(row.get("fga_per_game")),
+        "three_pa_pg": _f(row.get("three_pa_per_game")),
+        "fta_pg":      _f(row.get("fta_per_game")),
+        "oreb_pg":     _f(row.get("oreb_per_game")),
+        "dreb_pg":     _f(row.get("dreb_per_game")),
+        "minutes_pg":  _f(row.get("minutes_per_game")),
+        "games_played": gp,
+        "minutes_coverage_pct": min_cov,
+    }
+
+    clusters, clusters_league, trait_diagnostics = compute_all_clusters(
+        stats=stats,
+        level_key=level_key,
+        height_inches=row.get("height_inches"),
+        weight_lbs=row.get("weight_lbs"),
+        position=pos_raw,
+    )
+
+    # Pipeline: badges BEFORE KLVN, KLVN is the LAST step
+    kr_league = compute_player_kr(clusters_league, position, mode=kr_mode)
+    badge_result = compute_badges(clusters_league, mode=kr_mode)
+    confidence = round(compute_confidence(stats["games_played"], level_key) * 100)
+    kr_status = "FINAL" if confidence >= 60 else "PROVISIONAL"
+
+    # League-final with badges (overall-only — badges do NOT touch OKR/DKR)
+    league_final_off = kr_league["base_off_kr"]
+    league_final_def = kr_league["base_def_kr"]
+    league_final_overall = min(100.0, kr_league["overall_kr"] + badge_result["overall_boost"])
+
+    # Context Engine (gated — disabled by default)
+    ctx = apply_context_adjustments(
+        league_final_off, league_final_def, league_final_overall,
+        stats, clusters, level_key, position,
+    )
+    league_final_off = ctx["adjusted_off"]
+    league_final_def = ctx["adjusted_def"]
+    league_final_overall = ctx["adjusted_overall"]
+
+    # KLVN — cross-level translation (FINAL STEP)
+    final_off_kr = klvn_translate(league_final_off, level_key, confidence_pct=confidence, coverage_pct=min_cov)
+    final_def_kr = klvn_translate(league_final_def, level_key, confidence_pct=confidence, coverage_pct=min_cov)
+    final_overall_kr = klvn_translate(league_final_overall, level_key, confidence_pct=confidence, coverage_pct=min_cov)
+
+    level_offset = round(final_overall_kr - league_final_overall, 2)
+
+    return {
+        "stats": stats,
+        "clusters": clusters,
+        "clusters_league": clusters_league,
+        "traits": trait_diagnostics,
+        "kr_league": kr_league,
+        "badges": badge_result,
+        "context": ctx,
+        "confidence": confidence,
+        "kr_status": kr_status,
+        "league_final_off": round(league_final_off, 1),
+        "league_final_def": round(league_final_def, 1),
+        "league_final_overall": round(league_final_overall, 1),
+        "final_off_kr": round(final_off_kr, 1),
+        "final_def_kr": round(final_def_kr, 1),
+        "final_overall_kr": round(final_overall_kr, 1),
+        "level_offset": level_offset,
+        "position": position,
+        "level_key": level_key,
+    }
+
+
+def run_debug_compare(conn, name1: str, name2: str):
+    """Print full trait diagnostic comparison for two players side-by-side."""
+    p1_row = _lookup_player(conn, name1)
+    p2_row = _lookup_player(conn, name2)
+
+    if not p1_row:
+        print(f"ERROR: No player found matching '{name1}' with >= 3 GP and >= 5 MPG")
+        return
+    if not p2_row:
+        print(f"ERROR: No player found matching '{name2}' with >= 3 GP and >= 5 MPG")
+        return
+
+    d1 = _compute_player_debug(p1_row)
+    d2 = _compute_player_debug(p2_row)
+
+    W = 26  # column width
+
+    def _row(label, v1, v2):
+        print(f"  {label:<22} {str(v1):<{W}} {str(v2)}")
+
+    print("=" * 80)
+    print("DEBUG COMPARE")
+    print("=" * 80)
+
+    # ── Player Info ──
+    print(f"\n{'─'*2} PLAYER INFO {'─'*64}")
+    _row("", "[P1]", "[P2]")
+    _row("player_id", p1_row["player_id"], p2_row["player_id"])
+    _row("full_name", p1_row["full_name"], p2_row["full_name"])
+    _row("level_key", d1["level_key"], d2["level_key"])
+    _row("season_year", p1_row.get("season", "?"), p2_row.get("season", "?"))
+    _row("team", p1_row.get("team_name", "?"), p2_row.get("team_name", "?"))
+    _row("data_source",
+         DATA_SOURCE_MAP.get(d1["level_key"], "Unknown"),
+         DATA_SOURCE_MAP.get(d2["level_key"], "Unknown"))
+    _row("position", d1["position"], d2["position"])
+    _row("games_played", d1["stats"]["games_played"], d2["stats"]["games_played"])
+    _row("minutes_pg", d1["stats"]["minutes_pg"], d2["stats"]["minutes_pg"])
+    _row("min_coverage_pct",
+         f"{d1['stats']['minutes_coverage_pct']:.1%}",
+         f"{d2['stats']['minutes_coverage_pct']:.1%}")
+
+    # ── Group traits by cluster ──
+    def _group(traits):
+        by = {}
+        for t in traits:
+            by.setdefault(t.get("cluster", "?"), {})[t["trait_key"]] = t
+        return by
+
+    tc1 = _group(d1["traits"])
+    tc2 = _group(d2["traits"])
+
+    cluster_order = ["shooting", "finishing", "playmaking",
+                     "perimeter_defense", "interior_defense",
+                     "rebounding", "frame"]
+
+    trait_fields = ["p", "v", "N", "mu", "alpha", "E_v", "sigma_v",
+                    "p_adj", "delta", "Z", "skill_kr"]
+
+    for cname in cluster_order:
+        cs1 = d1["clusters"].get(cname, 0)
+        cs2 = d2["clusters"].get(cname, 0)
+        ls1 = d1["clusters_league"].get(cname, 0)
+        ls2 = d2["clusters_league"].get(cname, 0)
+        header = f" {cname.upper()} (cross: {cs1}|{cs2}  league: {ls1}|{ls2}) "
+        print(f"\n{'─'*2}{header}{'─'*max(1, 76 - len(header))}")
+
+        # Union of trait keys for this cluster
+        t1 = tc1.get(cname, {})
+        t2 = tc2.get(cname, {})
+        all_keys = list(dict.fromkeys(list(t1.keys()) + list(t2.keys())))
+
+        for tk in all_keys:
+            td1 = t1.get(tk, {})
+            td2 = t2.get(tk, {})
+            print(f"  {tk}:")
+            for field in trait_fields:
+                v1 = td1.get(field, "\u2014")
+                v2 = td2.get(field, "\u2014")
+                _row(f"    {field}", v1, v2)
+            # N function
+            _row("    N_func",
+                 td1.get("n_desc", "\u2014"),
+                 td2.get("n_desc", "\u2014"))
+
+    # ── Summary ──
+    print(f"\n{'─'*2} SUMMARY {'─'*69}")
+    _row("", "[P1]", "[P2]")
+    _row("league_kr_internal", d1["kr_league"]["overall_kr"], d2["kr_league"]["overall_kr"])
+    _row("  league_off_kr", d1["kr_league"]["base_off_kr"], d2["kr_league"]["base_off_kr"])
+    _row("  league_def_kr", d1["kr_league"]["base_def_kr"], d2["kr_league"]["base_def_kr"])
+    _row("  league_tkr", d1["kr_league"]["base_tkr"], d2["kr_league"]["base_tkr"])
+    _row("  position_split", d1["kr_league"]["position_split"], d2["kr_league"]["position_split"])
+    _row("badge_bonus_internal", d1["badges"]["overall_boost"], d2["badges"]["overall_boost"])
+    _row("  off_badge_boost", d1["badges"]["off_boost"], d2["badges"]["off_boost"])
+    _row("  def_badge_boost", d1["badges"]["def_boost"], d2["badges"]["def_boost"])
+    _row("league_final_internal", d1["league_final_overall"], d2["league_final_overall"])
+    _row("kr_pre_translation", d1["league_final_overall"], d2["league_final_overall"])
+    _row("kr_post_translation", d1["final_overall_kr"], d2["final_overall_kr"])
+    _row("  final_off_kr", d1["final_off_kr"], d2["final_off_kr"])
+    _row("  final_def_kr", d1["final_def_kr"], d2["final_def_kr"])
+    _row("level_offset", d1["level_offset"], d2["level_offset"])
+    _row("primary_archetype", d1["kr_league"]["primary_archetype"], d2["kr_league"]["primary_archetype"])
+    sec1 = ", ".join(d1["kr_league"]["secondary_archetypes"]) or "\u2014"
+    sec2 = ", ".join(d2["kr_league"]["secondary_archetypes"]) or "\u2014"
+    _row("secondary_arch", sec1, sec2)
+    _row("kr_status", d1["kr_status"], d2["kr_status"])
+    _row("confidence_pct", d1["confidence"], d2["confidence"])
+
+    # ── Badges ──
+    print(f"\n{'─'*2} BADGES {'─'*70}")
+    b1 = d1["badges"]["badges"]
+    b2 = d2["badges"]["badges"]
+    max_b = max(len(b1), len(b2))
+    _row("", "[P1]", "[P2]")
+    for i in range(max_b):
+        b1s = f"{b1[i]['name']} ({b1[i]['tier']}, +{b1[i]['effect']})" if i < len(b1) else "\u2014"
+        b2s = f"{b2[i]['name']} ({b2[i]['tier']}, +{b2[i]['effect']})" if i < len(b2) else "\u2014"
+        _row(f"  [{i+1}]", b1s, b2s)
+
+    # ── N Computation Reference ──
+    print(f"\n{'─'*2} N COMPUTATION REFERENCE {'─'*53}")
+    print(f"  {'trait_key':<20} {'N formula'}")
+    print(f"  {'─'*20} {'─'*50}")
+    for tk, formula in N_COMPUTATION_DOCS:
+        print(f"  {tk:<20} {formula}")
+
+    print(f"\n{'=' * 80}")
+    print("DONE.")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# AUDIT PACKET — Full KLVN pipeline transparency for named players
+# ═══════════════════════════════════════════════════════════════════════════
+
+CLUSTER_DISPLAY = {
+    "shooting": "Shooting",
+    "finishing": "Finishing",
+    "playmaking": "Playmaking",
+    "perimeter_defense": "OnBallDefense",
+    "interior_defense": "TeamDefense",
+    "rebounding": "Rebounding",
+    "frame": "Physical",
+}
+
+SUBMETRIC_WEIGHTS = {
+    "shooting": {"three_pct": 0.42, "three_pa_pg": 0.18, "two_pt_pct": 0.25, "ft_pct": 0.15},
+    "finishing": {"two_pt_pct": 0.55, "two_fga_pg": 0.25, "foul_draw_rate": 0.20},
+    "playmaking": {"ast_pg": 0.50, "tov_per_usage": 0.20, "ast_to_ratio": 0.30},
+    "perimeter_defense": {"stl_per_100": 0.65, "pf_per_100": 0.35},
+    "interior_defense": {"blk_per_100": 0.50, "pf_per_100": 0.20, "dreb_pg": 0.30},
+    "rebounding": {"dreb_pg": 0.55, "oreb_pg": 0.45},
+    "frame": {"minutes_pg": 1.0},
+    "frame_phys": {"height": 0.30, "weight": 0.25, "minutes_pg": 0.35},
+}
+
+
+def _build_player_audit(conn, name: str) -> dict | None:
+    """Build full audit packet for one player matching exact JSON schema."""
+    row = _lookup_player(conn, name)
+    if not row:
+        print(f"  WARNING: No player found matching '{name}'")
+        return None
+
+    debug = _compute_player_debug(row)
+    level_key = debug["level_key"]
+    position = debug["position"]
+    kr_mode = "pro" if level_key in PRO_LEVEL_KEYS else "college"
+    stats = debug["stats"]
+    gp = stats["games_played"]
+    pts_id = str(row["pts_id"])
+
+    from player_kr import (POSITION_CLUSTER_WEIGHTS, PRO_POSITION_CLUSTER_WEIGHTS,
+                           DEFAULT_WEIGHTS, OFF_KEYS, DEF_KEYS, TKR_KEYS,
+                           POSITION_COMPONENT_SPLITS, DEFAULT_COMPONENT_SPLIT)
+
+    if kr_mode == "pro":
+        weights = PRO_POSITION_CLUSTER_WEIGHTS.get(position, DEFAULT_WEIGHTS)
+    else:
+        weights = POSITION_CLUSTER_WEIGHTS.get(position, DEFAULT_WEIGHTS)
+
+    # ── raw_inputs: game-level aggregates ──
+    pgs_rows = conn.execute("""
+        SELECT pgs.minutes, pgs.pts, pgs.fgm, pgs.fga, pgs.three_pm, pgs.three_pa,
+               pgs.ftm, pgs.fta, pgs.oreb, pgs.dreb, pgs.reb, pgs.ast, pgs.stl,
+               pgs.blk, pgs.turnovers, pgs.pf, pgs.minutes_status,
+               tgs.possessions AS team_poss
+        FROM player_game_stats pgs
+        LEFT JOIN team_game_stats tgs ON tgs.game_id = pgs.game_id
+            AND tgs.team_season_id = (
+                SELECT team_season_id FROM player_team_seasons WHERE id = %s
+            )
+        WHERE pgs.player_team_season_id = %s
+        ORDER BY pgs.id
+    """, (pts_id, pts_id)).fetchall()
+
+    sentinel_games = sum(1 for r in pgs_rows
+                         if r.get("minutes_status") == "MISSING_BOX_MINUTES")
+    total_min = round(sum(_f(r["minutes"]) for r in pgs_rows
+                          if r["minutes"] is not None), 1)
+    poss_vals = [_f(r["team_poss"]) for r in pgs_rows if r.get("team_poss")]
+    avg_poss = round(sum(poss_vals) / len(poss_vals), 1) if poss_vals else None
+
+    raw_inputs = {
+        "box_stats": {
+            "points": sum(int(r["pts"] or 0) for r in pgs_rows),
+            "fga": sum(int(r["fga"] or 0) for r in pgs_rows),
+            "fta": sum(int(r["fta"] or 0) for r in pgs_rows),
+            "three_pa": sum(int(r["three_pa"] or 0) for r in pgs_rows),
+            "oreb": sum(int(r["oreb"] or 0) for r in pgs_rows),
+            "dreb": sum(int(r["dreb"] or 0) for r in pgs_rows),
+            "ast": sum(int(r["ast"] or 0) for r in pgs_rows),
+            "tov": sum(int(r["turnovers"] or 0) for r in pgs_rows),
+            "stl": sum(int(r["stl"] or 0) for r in pgs_rows),
+            "blk": sum(int(r["blk"] or 0) for r in pgs_rows),
+            "pf": sum(int(r["pf"] or 0) for r in pgs_rows),
+        },
+        "possession_proxies": {
+            "avg_team_poss_per_game": avg_poss,
+            "per_100_scalar": round(100 / 70, 4),
+        },
+    }
+
+    # ── step_1: season aggregation ──
+    min_cov = stats["minutes_coverage_pct"]
+    validation_flags = []
+    if gp < 3:
+        validation_flags.append("BELOW_MIN_GAMES")
+    if stats["minutes_pg"] < 5:
+        validation_flags.append("BELOW_MIN_MPG")
+
+    step_1 = {
+        "player_season_stats": {k: v for k, v in stats.items()
+                                 if k != "minutes_coverage_pct"},
+        "minutes_sentinel_fix_applied": sentinel_games > 0,
+        "any_validation_flags": validation_flags,
+    }
+
+    # ── Level population N from calibration params ──
+    from klvn import _load_params
+    cal_params = _load_params()
+    level_pop_n = cal_params.get("sample_counts", {}).get(level_key, 0)
+
+    # ── z_p99 for this level from DB ──
+    p99_row = conn.execute("""
+        SELECT percentile_cont(0.99) WITHIN GROUP (ORDER BY abs(pkt.confidence)) AS p99
+        FROM player_kr_traits pkt
+        JOIN player_kr pk ON pkt.player_kr_id = pk.id
+        WHERE pk.klvn_level = %s AND pkt.confidence IS NOT NULL
+    """, (level_key,)).fetchone()
+    z_p99_level = round(float(p99_row["p99"]), 3) if p99_row and p99_row.get("p99") else None
+
+    # ── Group trait diagnostics by cluster ──
+    traits_by_cluster: dict[str, list[dict]] = {}
+    for td in debug["traits"]:
+        c = td.get("cluster", "?")
+        traits_by_cluster.setdefault(c, []).append(td)
+
+    cluster_order = ["shooting", "finishing", "playmaking",
+                     "perimeter_defense", "interior_defense",
+                     "rebounding", "frame"]
+
+    step_2_metrics: dict = {}
+    step_3_metrics: dict = {}
+    step_4_clusters: dict = {}
+    z_all: list[float] = []
+
+    for cname in cluster_order:
+        display = CLUSTER_DISPLAY[cname]
+        ctraits = traits_by_cluster.get(cname, [])
+        cscore = debug["clusters"].get(cname, 0)
+
+        has_phys = any(t["trait_key"] in ("height", "weight") for t in ctraits)
+        if cname == "frame" and has_phys:
+            smw = SUBMETRIC_WEIGHTS["frame_phys"]
+        else:
+            smw = SUBMETRIC_WEIGHTS.get(cname, {})
+
+        submetrics_used = []
+        metric_weights = {}
+
+        for td in ctraits:
+            tk = td["trait_key"]
+            n_val = td.get("N", 0) or 0
+            sqrt_n = n_val ** 0.5 if n_val > 0 else 0
+            vol_corr = (1 + 0.25 * n_val) ** 0.5 if n_val > 0 else 1.0
+
+            # step_2: distribution context per metric
+            step_2_metrics[tk] = {
+                "mu_level": td.get("mu"),
+                "sigma0_level": td.get("sigma0"),
+                "sigma_v_final": td.get("sigma_v"),
+                "sigma_floor": td.get("sigma_floor"),
+                "sigma_formula_components": {
+                    "N": n_val,
+                    "sqrtN": round(sqrt_n, 4),
+                    "volume_correction_term": round(vol_corr, 4),
+                    "pre_floor_sigma": td.get("pre_floor_sigma"),
+                },
+            }
+
+            # step_3: z-scores per metric
+            z_raw = td.get("z_raw", td.get("Z", 0))
+            z_capped = td.get("Z", 0)
+            step_3_metrics[tk] = {
+                "value": td.get("p"),
+                "z": z_raw,
+                "z_capped": z_capped,
+                "cap": "5*tanh(z/5)",
+            }
+            if isinstance(z_capped, (int, float)):
+                z_all.append(z_capped)
+
+            submetrics_used.append(tk)
+            metric_weights[tk] = smw.get(tk, 0)
+
+        step_4_clusters[display] = {
+            "submetrics_used": submetrics_used,
+            "metric_weights": metric_weights,
+            "pre_badge_cluster_kr": cscore,
+        }
+
+    # step_2 final
+    step_2 = {
+        "level_population_n": level_pop_n,
+        "for_each_metric": step_2_metrics,
+    }
+
+    # step_3 final with z_summary
+    z_summary = {}
+    if z_all:
+        z_summary = {
+            "z_min": round(min(z_all), 3),
+            "z_max": round(max(z_all), 3),
+            "z_p99_level": z_p99_level,
+        }
+
+    step_3 = {
+        "for_each_metric": step_3_metrics,
+        "z_summary": z_summary,
+    }
+
+    # step_4 final with overall pre-badge KR (league-internal)
+    kr_league = debug["kr_league"]
+    step_4 = {
+        "clusters": step_4_clusters,
+        "skillkr_overall_pre_badges": kr_league["overall_kr"],
+    }
+
+    # ── step_5: off/def/tkr rollup (league-internal, 3-way position split) ──
+    off_c = {k: weights[k] for k in OFF_KEYS if k in weights}
+    def_c = {k: weights[k] for k in DEF_KEYS if k in weights}
+    off_sum = sum(off_c.values())
+    def_sum = sum(def_c.values())
+
+    off_w_norm = {CLUSTER_DISPLAY[k]: round(v / off_sum, 4)
+                  for k, v in off_c.items()} if off_sum > 0 else {}
+    def_w_norm = {CLUSTER_DISPLAY[k]: round(v / def_sum, 4)
+                  for k, v in def_c.items()} if def_sum > 0 else {}
+
+    w_ok, w_dk, w_tk = POSITION_COMPONENT_SPLITS.get(position, DEFAULT_COMPONENT_SPLIT)
+
+    step_5 = {
+        "off_clusters": ["Shooting", "Finishing", "Playmaking"],
+        "def_clusters": ["OnBallDefense", "TeamDefense", "Rebounding"],
+        "tkr_clusters": ["Physical"],
+        "off_cluster_weights_alpha": off_w_norm,
+        "def_cluster_weights_beta": def_w_norm,
+        "position_split": {"OKR": w_ok, "DKR": w_dk, "TKR": w_tk},
+        "off_kr_100": kr_league["base_off_kr"],
+        "def_kr_100": kr_league["base_def_kr"],
+        "tkr_100": kr_league["base_tkr"],
+        "off_kr_scaled": round(w_ok * kr_league["base_off_kr"], 2),
+        "def_kr_scaled": round(w_dk * kr_league["base_def_kr"], 2),
+        "tkr_scaled": round(w_tk * kr_league["base_tkr"], 2),
+        "league_kr_internal": kr_league["overall_kr"],
+        "league_final_internal": debug["league_final_overall"],
+        "kr_post_translation": debug["final_overall_kr"],
+        "level_offset": debug["level_offset"],
+    }
+
+    # ── step_6: badges ──
+    badge_result = debug["badges"]
+    all_badges = []
+    for b in badge_result["badges"]:
+        cluster_key = b["cluster"]
+        all_badges.append({
+            "badge_id": b["name"],
+            "badge_tier": b["tier"].title(),
+            "cluster": CLUSTER_DISPLAY.get(cluster_key, cluster_key),
+            "trigger_metric": CLUSTER_DISPLAY.get(cluster_key, cluster_key),
+            "trigger_value": debug["clusters_league"].get(cluster_key, 0),
+            "trigger_z": None,
+        })
+
+    badge_bonus_total = badge_result["overall_boost"]
+    step_6 = {
+        "all_badges_awarded": all_badges,
+        "badge_bonus_total": badge_bonus_total,
+        "final_overall_kr": debug["final_overall_kr"],
+    }
+
+    # ── sanity_checks ──
+    out_of_range = [
+        td["trait_key"] for td in debug["traits"]
+        if td.get("skill_kr") is not None
+        and isinstance(td["skill_kr"], (int, float))
+        and (td["skill_kr"] < 0 or td["skill_kr"] > 100)
+    ]
+    has_nan = any(td.get("skill_kr") is None for td in debug["traits"])
+
+    notes = []
+    if min_cov < 0.70:
+        notes.append(f"Minutes coverage {min_cov:.0%} < 70%: frame endurance disabled")
+    if sentinel_games > 0:
+        notes.append(f"{sentinel_games} games had sentinel minutes (fixed)")
+
+    sanity = {
+        "alpha_sum": round(sum(off_w_norm.values()), 4),
+        "beta_sum": round(sum(def_w_norm.values()), 4),
+        "any_nan": has_nan,
+        "any_out_of_range": out_of_range,
+        "notes": notes,
+    }
+
+    return {
+        "player_id": str(row["player_id"]),
+        "player_name": row["full_name"],
+        "level_id": level_key,
+        "season_id": str(row.get("season", "")),
+        "gp": gp,
+        "minutes_total": total_min,
+        "mpg": stats["minutes_pg"],
+        "raw_inputs": raw_inputs,
+        "step_1_season_aggregation": step_1,
+        "step_2_distribution_context": step_2,
+        "step_3_zscores": step_3,
+        "step_4_skillkr_by_cluster": step_4,
+        "step_5_off_def_rollup": step_5,
+        "step_6_badges": step_6,
+        "sanity_checks": sanity,
+    }
+
+
+def run_audit_packet(conn):
+    """Generate kr_audit_packet.json for Shannon and Dybantsa + random samples."""
+    from datetime import datetime
+
+    print("\n" + "=" * 60)
+    print("AUDIT PACKET \u2014 kr_audit_packet.json")
+    print("=" * 60)
+
+    packet = {
+        "engine_version": KR_VERSION,
+        "run_timestamp": datetime.now().isoformat(),
+        "players": [],
+    }
+
+    # Build audit for Terrence Shannon (NJCAA D2) and AJ Dybantsa (NCAA D1)
+    levels_seen = set()
+    for name in ["Terrence Shannon", "AJ Dybantsa"]:
+        print(f"  Building audit for '{name}'...")
+        audit = _build_player_audit(conn, name)
+        if audit:
+            packet["players"].append(audit)
+            levels_seen.add(audit["level_id"])
+            print(f"    \u2192 {audit['player_name']} ({audit['level_id']}, gp={audit['gp']}) "
+                  f"final_kr={audit['step_6_badges']['final_overall_kr']}")
+        else:
+            print(f"    \u2192 NOT FOUND")
+
+    # Random samples: 25 per level_id — lightweight fields only
+    for level in sorted(levels_seen):
+        rows = conn.execute("""
+            SELECT p.id AS player_id, pk.klvn_level,
+                   pss.games_played, pss.minutes_per_game,
+                   pk.overall_kr, pk.final_overall_kr, pk.overall_badge_boost,
+                   (SELECT min(pkt.confidence) FROM player_kr_traits pkt
+                    WHERE pkt.player_kr_id = pk.id AND pkt.confidence IS NOT NULL) AS z_min,
+                   (SELECT max(pkt.confidence) FROM player_kr_traits pkt
+                    WHERE pkt.player_kr_id = pk.id AND pkt.confidence IS NOT NULL) AS z_max
+            FROM player_kr pk
+            JOIN player_team_seasons pts ON pk.player_team_season_id = pts.id
+            JOIN players p ON pts.player_id = p.id
+            JOIN player_season_stats pss ON pss.player_team_season_id = pts.id
+            WHERE pk.klvn_level = %s
+            ORDER BY random()
+            LIMIT 25
+        """, (level,)).fetchall()
+
+        samples = []
+        for r in rows:
+            samples.append({
+                "player_id": str(r["player_id"]),
+                "level_id": r["klvn_level"],
+                "gp": int(r["games_played"] or 0),
+                "mpg": round(float(r["minutes_per_game"] or 0), 1),
+                "base_overall_kr": round(float(r["overall_kr"] or 0), 1),
+                "final_overall_kr": round(float(r["final_overall_kr"] or 0), 1),
+                "skillkr_overall_pre_badges": round(float(r["overall_kr"] or 0), 1),
+                "z_summary": {
+                    "z_min": round(float(r["z_min"] or 0), 3),
+                    "z_max": round(float(r["z_max"] or 0), 3),
+                },
+                "badge_bonus_total": round(float(r["overall_badge_boost"] or 0), 1),
+            })
+
+        packet.setdefault("samples", {})[level] = samples
+        print(f"  {level}: {len(samples)} random samples")
+
+    # Write output
+    out_path = os.path.join(os.path.dirname(__file__), "kr_audit_packet.json")
+    with open(out_path, "w") as f:
+        json.dump(packet, f, indent=2, default=str)
+    print(f"\n  Written to: {out_path}")
+    print("=" * 60)
+
+    return out_path
+
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -827,15 +1784,32 @@ def main():
     parser = argparse.ArgumentParser(description="KaNeXT KR Computation Engine")
     parser.add_argument("--level", help="Process only this competitive level (e.g. 'naia')")
     parser.add_argument("--team-only", action="store_true", help="Skip player KR, recompute team KR only")
+    parser.add_argument("--debug", metavar="NAME", help="Print per-trait diagnostics for matching player name (case-insensitive substring)")
+    parser.add_argument("--debug_compare", nargs=2, metavar=("NAME1", "NAME2"),
+                        help="Side-by-side trait diagnostic for two players (fast-path, no full engine run)")
+    parser.add_argument("--audit_packet", action="store_true",
+                        help="Generate kr_audit_packet.json for Shannon + Dybantsa (fast-path)")
     args = parser.parse_args()
+
+    conn = get_conn()
+
+    # Fast-path: debug compare exits immediately
+    if args.debug_compare:
+        run_debug_compare(conn, args.debug_compare[0], args.debug_compare[1])
+        conn.close()
+        return
+
+    # Fast-path: audit packet exits immediately
+    if args.audit_packet:
+        run_audit_packet(conn)
+        conn.close()
+        return
 
     start = time.time()
     print("=" * 70)
     print("KaNeXT KR Computation Engine — V1 (Box-Score)")
     print(f"Version: {KR_VERSION}")
     print("=" * 70)
-
-    conn = get_conn()
 
     # Count data
     player_count = conn.execute("SELECT count(*) AS c FROM player_team_seasons").fetchone()["c"]
@@ -847,6 +1821,9 @@ def main():
         # Step 1: Season stats
         season_data = compute_season_stats(conn)
 
+        # Step 1.5: Validate
+        invalid_ids = validate_season_stats(conn)
+
         # Step 2: BPR + PGIS
         compute_all_bpr_pgis(conn)
 
@@ -854,7 +1831,8 @@ def main():
         compute_all_tgis(conn)
 
         # Step 4: Player KR
-        compute_all_player_kr(conn, season_data)
+        compute_all_player_kr(conn, season_data, debug_name=args.debug,
+                              invalid_ids=invalid_ids)
 
     # Step 5: Team KR
     compute_all_team_kr(conn)
@@ -883,6 +1861,10 @@ def main():
 
     sna_count = conn.execute("SELECT count(*) AS c FROM scholarship_nil_allocations").fetchone()["c"]
     tas_count = conn.execute("SELECT count(*) AS c FROM team_allocation_summary").fetchone()["c"]
+    badge_count = conn.execute("SELECT count(*) AS c FROM player_badges").fetchone()["c"]
+    gold_count = conn.execute("SELECT count(*) AS c FROM player_badges WHERE tier = 'gold'").fetchone()["c"]
+    silver_count = conn.execute("SELECT count(*) AS c FROM player_badges WHERE tier = 'silver'").fetchone()["c"]
+    bronze_count = conn.execute("SELECT count(*) AS c FROM player_badges WHERE tier = 'bronze'").fetchone()["c"]
 
     print(f"  Player KRs computed:    {kr_count}")
     print(f"  BPR values computed:    {bpr_count}")
@@ -890,6 +1872,7 @@ def main():
     print(f"  TGIS values computed:   {tgis_count}")
     print(f"  Team KRs computed:      {team_kr_count}")
     print(f"  System identities:      {osie_count}")
+    print(f"  Badges awarded:         {badge_count} (Gold: {gold_count}, Silver: {silver_count}, Bronze: {bronze_count})")
     print(f"  Scholarship/NIL allocs: {sna_count}")
     print(f"  Team alloc summaries:   {tas_count}")
     print(f"{'=' * 70}")

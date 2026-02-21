@@ -1,400 +1,416 @@
 from __future__ import annotations
 """
-Cluster Scoring — Box-Score Approximation of 7 Canonical Clusters
-Maps available box-score stats to the 7 KR clusters on a 0-100 scale.
+Cluster Scoring — KLVN SkillKR Pipeline (v1.4)
+Maps box-score stats to 7 KR clusters via the exact KLVN 4-step normalization
+pipeline (shrinkage → expectation → Z-score → sigmoid) per sub-trait.
 
-Reference: spec/canonical/_text/01_Player Evaluation Engine/Trait Library.txt
+Each cluster = weighted composite of sub-trait SkillKR scores.
 
-Since we only have aggregate box-score data (no Synergy/tracking), each cluster
-is approximated using the best available statistical proxies. Scores are banded
-using the calibration tables from the Trait Library spec.
+v1.4 changes:
+  - Removed all per-minute traits (ast_per_min, stl_per_min, blk_per_min,
+    reb_per_min, motor) — these inflate low-MPG players
+  - Only per-game and efficiency traits remain
+  - Redistributed weights across remaining traits
+  - Z clamped to [-4, 4] in klvn.compute_skillkr
 """
 
 import math
-from klvn import shrink
+from klvn import compute_skillkr
 
 
-def _band(value: float, thresholds: list[tuple[float, int]], lower_is_better: bool = False) -> int:
-    """
-    Map a value to a score band (0-100) using threshold breakpoints.
-    thresholds: list of (cutoff, score) sorted by cutoff ascending for normal,
-                or descending for lower-is-better.
-    """
-    if lower_is_better:
-        # Reverse: lower values = higher scores
-        for cutoff, score in thresholds:
-            if value <= cutoff:
-                return score
-        return thresholds[-1][1] if thresholds else 50
-    else:
-        for cutoff, score in reversed(thresholds):
-            if value >= cutoff:
-                return score
-        return thresholds[0][1] if thresholds else 50
-
-
-def _lerp_band(value: float, bands: list[tuple[float, float, int]], lower_is_better: bool = False) -> float:
-    """
-    Linear interpolation between band boundaries for smoother scoring.
-    bands: list of (low, high, score) where value in [low, high) maps to score.
-    Returns a float score with interpolation.
-    """
-    if lower_is_better:
-        bands = [(lo, hi, sc) for lo, hi, sc in reversed(bands)]
-
-    for i, (lo, hi, sc) in enumerate(bands):
-        if lower_is_better:
-            if value <= hi:
-                if i + 1 < len(bands):
-                    next_lo, next_hi, next_sc = bands[i + 1]
-                    # Interpolate within band
-                    if hi != lo:
-                        frac = (value - lo) / (hi - lo)
-                        return sc + frac * (next_sc - sc)
-                return float(sc)
-        else:
-            if lo <= value <= hi:
-                return float(sc)
-            elif value > hi and i == len(bands) - 1:
-                return float(sc)
-    return 50.0
+def _sigmoid_stretch(z: float) -> float:
+    """Sigmoid stretch for physical traits (height/weight) without shrinkage."""
+    return 1.0 / (1.0 + math.exp(-1.2 * z)) - 0.5
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# SHOOTING CLUSTER (traits 1-7)
+# SHOOTING CLUSTER (4 sub-traits)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def score_shooting(
     three_pct: float, three_pa_pg: float,
     fg_pct: float, ft_pct: float,
-    fga_pg: float, three_pm_pg: float,
+    fga_pg: float, fta_pg: float,
     level_key: str, n_games: int,
-) -> float:
+) -> tuple[float, float, list[dict]]:
     """
-    Approximate Shooting cluster from aggregate 3P%, volume, FG%, FT%.
-    Spec traits: Spot-Up 3, Movement 3, Off-Dribble 3, Deep 3, 2PT C&S, 2PT OD, FT.
-    Without shot-type breakdowns, we approximate from aggregate shooting.
+    Shooting cluster via KLVN sub-traits.
+    Composite: 0.60 * (0.70 * three_eff + 0.30 * three_vol) + 0.25 * two_pt + 0.15 * ft
+    Returns: (cross_score, league_score, traits)
     """
-    # 3PT efficiency band (Tables 1-4 averaged — catch-and-shoot proxy)
-    # 90: 42%+, 80: 38-41%, 70: 35-37%, 60: 31-34%, <60: <31%
-    three_pct_band = _band(three_pct, [
-        (0.00, 35), (0.31, 55), (0.35, 65), (0.38, 75), (0.42, 90),
-    ])
+    total_3pa = int(three_pa_pg * n_games)
+    total_fta = int(fta_pg * n_games)
 
-    # 3PT volume band (Tables 1-4 averaged)
-    # 90: 3.5+, 80: 2.5-3.4, 70: 1.8-2.4, 60: 1.0-1.7
-    three_vol_band = _band(three_pa_pg, [
-        (0.0, 35), (1.0, 55), (1.8, 65), (2.5, 75), (3.5, 90),
-    ])
+    # 3PT efficiency
+    three_eff = compute_skillkr(three_pct, total_3pa, level_key, "three_pct")
 
-    # Combined 3PT score: 70% efficiency, 30% volume (spec formula)
-    three_score = 0.70 * three_pct_band + 0.30 * three_vol_band
+    # 3PT volume
+    three_vol = compute_skillkr(three_pa_pg, n_games, level_key, "three_pa_pg")
 
-    # 2PT/midrange proxy from overall FG% minus 3P contribution
-    two_pt_fga = max(0, fga_pg - three_pa_pg) if fga_pg > 0 else 0
-    two_pt_fgm = max(0, (fg_pct * fga_pg) - (three_pct * three_pa_pg)) if fga_pg > 0 else 0
-    two_pt_pct = (two_pt_fgm / two_pt_fga) if two_pt_fga > 0.5 else 0.45
-    # Table 5/6: 90: 50%+, 80: 46-49%, 70: 42-45%, 60: 38-41%
-    two_pt_band = _band(two_pt_pct, [
-        (0.00, 35), (0.38, 55), (0.42, 65), (0.46, 75), (0.50, 90),
-    ])
+    # 2PT% derived
+    two_fga = max(0, fga_pg - three_pa_pg)
+    total_2pt_fga = int(two_fga * n_games)
+    if two_fga > 0.5:
+        two_fgm = fg_pct * fga_pg - three_pct * three_pa_pg
+        two_pt_pct = max(0, two_fgm / two_fga)
+    else:
+        two_pt_pct = 0.45
+    two_pt = compute_skillkr(two_pt_pct, total_2pt_fga, level_key, "two_pt_pct")
 
-    # Free throw (Table 7)
-    # 90: 88%+, 80: 80-87%, 70: 72-79%, 60: 65-71%
-    ft_band = _band(ft_pct, [
-        (0.00, 35), (0.65, 55), (0.72, 65), (0.80, 75), (0.88, 90),
-    ])
+    # FT efficiency — N = total FTA
+    ft = compute_skillkr(ft_pct, total_fta, level_key, "ft_pct")
 
-    # Weighted composite:
-    # 3PT dominates shooting cluster (~60%), 2PT midrange (~25%), FT (~15%)
-    # This approximates the 7 trait weights when we can't break down shot types
-    raw = 0.60 * three_score + 0.25 * two_pt_band + 0.15 * ft_band
+    # Cross-level composite
+    three_combined = 0.70 * three_eff["skill_kr"] + 0.30 * three_vol["skill_kr"]
+    raw = 0.60 * three_combined + 0.25 * two_pt["skill_kr"] + 0.15 * ft["skill_kr"]
+    score = max(0, min(100, round(raw, 1)))
 
-    return max(0, min(100, round(raw)))
+    # League-internal composite
+    three_combined_l = 0.70 * three_eff["skill_kr_league"] + 0.30 * three_vol["skill_kr_league"]
+    raw_l = 0.60 * three_combined_l + 0.25 * two_pt["skill_kr_league"] + 0.15 * ft["skill_kr_league"]
+    score_league = max(0, min(100, round(raw_l, 1)))
+
+    traits = [
+        {"cluster": "shooting", "trait_key": "three_pct",
+         "v": total_3pa, "n_desc": "int(3PA/g * GP) = total 3PA", **three_eff},
+        {"cluster": "shooting", "trait_key": "three_pa_pg",
+         "v": int(three_pa_pg * n_games), "n_desc": "GP", **three_vol},
+        {"cluster": "shooting", "trait_key": "two_pt_pct",
+         "v": total_2pt_fga, "n_desc": "int((FGA/g - 3PA/g) * GP) = total 2PT FGA", **two_pt},
+        {"cluster": "shooting", "trait_key": "ft_pct",
+         "v": total_fta, "n_desc": "int(FTA/g * GP) = total FTA", **ft},
+    ]
+
+    return score, score_league, traits
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# FINISHING CLUSTER (traits 1-5)
+# FINISHING CLUSTER (3 sub-traits)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def score_finishing(
     fg_pct: float, fga_pg: float,
     three_pct: float, three_pa_pg: float,
-    fta_pg: float, ftm_pg: float,
-    pts_pg: float, level_key: str,
-) -> float:
+    fta_pg: float, level_key: str, n_games: int,
+) -> tuple[float, float, list[dict]]:
     """
-    Approximate Finishing cluster.
-    Spec traits: Layup, Floater, Dunk, Close Finishing, Foul Draw Rate.
-    Approximated from 2P efficiency at the rim (FG% - 3P contribution) and FT rate.
+    Finishing cluster: 0.55 * eff + 0.25 * vol + 0.20 * foul_draw
+    Returns: (cross_score, league_score, traits)
     """
-    # Estimate paint/rim FGA: non-3P attempts
     two_fga_pg = max(0, fga_pg - three_pa_pg)
-    two_fgm_pg = max(0, (fg_pct * fga_pg) - (three_pct * three_pa_pg)) if fga_pg > 0 else 0
-    two_pt_pct = (two_fgm_pg / two_fga_pg) if two_fga_pg > 0.5 else 0.45
+    total_2pt_fga = int(two_fga_pg * n_games)
+    total_fga = int(fga_pg * n_games)
 
-    # Rim finishing efficiency (Table 8 layups + Table 11 close finishing)
-    # 90: 65%+, 80: 58-64%, 70: 52-57%, 60: 46-51%
-    finish_eff_band = _band(two_pt_pct, [
-        (0.00, 35), (0.46, 55), (0.52, 65), (0.58, 75), (0.65, 90),
-    ])
+    if two_fga_pg > 0.5:
+        two_fgm = fg_pct * fga_pg - three_pct * three_pa_pg
+        two_pt_pct = max(0, two_fgm / two_fga_pg)
+    else:
+        two_pt_pct = 0.45
 
-    # Finishing volume: 2P attempts per game
-    # 90: 4.0+, 80: 2.8-3.9, 70: 1.8-2.7, 60: 1.0-1.7
-    finish_vol_band = _band(two_fga_pg, [
-        (0.0, 35), (1.0, 55), (1.8, 65), (2.8, 75), (4.0, 90),
-    ])
+    # Interior efficiency
+    eff = compute_skillkr(two_pt_pct, total_2pt_fga, level_key, "two_pt_pct")
 
-    # Foul draw rate: FTA / (2P FGA) — proxy for paint finishing aggression
-    # Table 12: 90: 0.40+, 80: 0.32-0.39, 70: 0.25-0.31, 60: 0.18-0.24
-    foul_draw = (fta_pg / two_fga_pg) if two_fga_pg > 0.5 else 0.15
-    foul_band = _band(foul_draw, [
-        (0.00, 35), (0.18, 55), (0.25, 65), (0.32, 75), (0.40, 90),
-    ])
+    # Finishing volume
+    vol = compute_skillkr(two_fga_pg, n_games, level_key, "two_fga_pg")
 
-    # Weighted: 65% efficiency, 20% volume, 15% foul draw (spec weights)
-    raw = 0.55 * finish_eff_band + 0.25 * finish_vol_band + 0.20 * foul_band
+    # Foul draw rate
+    foul_draw_rate = fta_pg / fga_pg if fga_pg > 0 else 0.15
+    foul = compute_skillkr(foul_draw_rate, total_fga, level_key, "foul_draw_rate")
 
-    return max(0, min(100, round(raw)))
+    raw = 0.55 * eff["skill_kr"] + 0.25 * vol["skill_kr"] + 0.20 * foul["skill_kr"]
+    score = max(0, min(100, round(raw, 1)))
+
+    raw_l = 0.55 * eff["skill_kr_league"] + 0.25 * vol["skill_kr_league"] + 0.20 * foul["skill_kr_league"]
+    score_league = max(0, min(100, round(raw_l, 1)))
+
+    traits = [
+        {"cluster": "finishing", "trait_key": "two_pt_pct",
+         "v": total_2pt_fga, "n_desc": "int((FGA/g - 3PA/g) * GP) = total 2PT FGA", **eff},
+        {"cluster": "finishing", "trait_key": "two_fga_pg",
+         "v": int(two_fga_pg * n_games), "n_desc": "GP", **vol},
+        {"cluster": "finishing", "trait_key": "foul_draw_rate",
+         "v": total_fga, "n_desc": "int(FGA/g * GP) = total FGA", **foul},
+    ]
+
+    return score, score_league, traits
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# PLAYMAKING CLUSTER (traits 1-7)
+# PLAYMAKING CLUSTER (3 sub-traits — per-game only)
+# Removed: ast_per_min (per-minute, inflates low-MPG)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def score_playmaking(
     ast_pg: float, to_pg: float,
-    fga_pg: float, pts_pg: float,
-    minutes_pg: float, level_key: str,
-) -> float:
+    fga_pg: float, fta_pg: float,
+    level_key: str, n_games: int,
+) -> tuple[float, float, list[dict]]:
     """
-    Approximate Playmaking cluster.
-    Spec traits: Passing Accuracy, Passing Vision, Drive-Kick, Transition,
-                 Ball Security, Screen Assists, Hockey Assists.
-    Approximated from assists, turnovers, AST/TO ratio.
+    Playmaking cluster: 0.50 * ast_kr + 0.20 * tov_rate_kr + 0.30 * ast_to_kr
+
+    v1.5: replaced raw tov_pg with usage-adjusted turnover rate
+    (tov_per_usage = TO / usage_events) to stop penalizing high-usage creators.
+    Returns: (cross_score, league_score, traits)
     """
-    # Passing Vision proxy: AST/G → Potential Assists ≈ AST * 2
-    # Table 14: 90: 8.0+, 80: 6.0-7.9, 70: 4.0-5.9, 60: 2.5-3.9
-    pot_ast = ast_pg * 2.0  # rough approximation
-    vision_band = _band(pot_ast, [
-        (0.0, 35), (2.5, 55), (4.0, 65), (6.0, 75), (8.0, 90),
-    ])
+    # Assist rate (per game)
+    ast_kr = compute_skillkr(ast_pg, n_games, level_key, "ast_pg")
 
-    # Ball Security (Table 17): TOV per 100 touches — lower is better
-    # Approximate touches from FGA + AST + TO
-    touches_pg = fga_pg + ast_pg + to_pg
-    tov_rate = (to_pg / touches_pg * 100) if touches_pg > 0 else 5.0
-    security_band = _band(tov_rate, [
-        (2.5, 90), (3.6, 80), (5.0, 70), (6.8, 60), (100.0, 35),
-    ], lower_is_better=True)
+    # Turnover rate per usage event (lower is better)
+    # usage_events = FGA + 0.44*FTA + TO (same formula as Usage%)
+    usage_events = fga_pg + 0.44 * fta_pg + to_pg
+    tov_per_usage = to_pg / usage_events if usage_events > 0.5 else 0.15
+    tov_rate_kr = compute_skillkr(tov_per_usage, n_games, level_key, "tov_per_usage",
+                                  lower_is_better=True)
 
-    # AST/TO ratio as playmaking efficiency signal
-    ast_to = (ast_pg / to_pg) if to_pg > 0.1 else ast_pg * 5
-    ast_to_band = _band(ast_to, [
-        (0.0, 35), (1.0, 50), (1.5, 60), (2.0, 70), (2.5, 80), (3.5, 90),
-    ])
+    # AST/TO ratio
+    ast_to = ast_pg / to_pg if to_pg > 0.1 else ast_pg * 5
+    ast_to_kr = compute_skillkr(ast_to, n_games, level_key, "ast_to_ratio")
 
-    # Raw assist volume (per game)
-    ast_vol_band = _band(ast_pg, [
-        (0.0, 35), (1.5, 50), (3.0, 60), (4.5, 70), (6.0, 80), (8.0, 90),
-    ])
+    raw = 0.50 * ast_kr["skill_kr"] + 0.20 * tov_rate_kr["skill_kr"] + \
+          0.30 * ast_to_kr["skill_kr"]
+    score = max(0, min(100, round(raw, 1)))
 
-    # Weighted composite: vision 35%, security 25%, AST ratio 20%, volume 20%
-    raw = 0.35 * vision_band + 0.25 * security_band + 0.20 * ast_to_band + 0.20 * ast_vol_band
+    raw_l = 0.50 * ast_kr["skill_kr_league"] + 0.20 * tov_rate_kr["skill_kr_league"] + \
+            0.30 * ast_to_kr["skill_kr_league"]
+    score_league = max(0, min(100, round(raw_l, 1)))
 
-    return max(0, min(100, round(raw)))
+    traits = [
+        {"cluster": "playmaking", "trait_key": "ast_pg",
+         "v": int(ast_pg * n_games), "n_desc": "GP", **ast_kr},
+        {"cluster": "playmaking", "trait_key": "tov_per_usage",
+         "v": n_games, "n_desc": "GP (usage_events = FGA + 0.44*FTA + TO)",
+         **tov_rate_kr},
+        {"cluster": "playmaking", "trait_key": "ast_to_ratio",
+         "v": n_games, "n_desc": "GP", **ast_to_kr},
+    ]
+
+    return score, score_league, traits
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# PERIMETER DEFENSE CLUSTER (traits 1-8)
+# PERIMETER DEFENSE CLUSTER (2 sub-traits — per-game only)
+# Removed: stl_per_min (per-minute, inflates low-MPG)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def score_perimeter_defense(
     stl_pg: float, pf_pg: float,
-    minutes_pg: float, level_key: str,
-    dreb_pg: float = 0,
-) -> float:
+    level_key: str, n_games: int,
+) -> tuple[float, float, list[dict]]:
     """
-    Approximate Perimeter Defense cluster.
-    Spec traits: On-Ball Containment, Ball Pressure, Screen Navigation,
-                 Shot Contest, Steal, Off-Ball Denial, Disruption, Foul Discipline.
-    Very limited from box score — primarily steals and fouls.
+    Perimeter defense: 0.65 * stl_kr + 0.35 * foul_kr
+    Returns: (cross_score, league_score, traits)
     """
-    # Steal rate proxy (Table 24): STL/100 poss ≈ STL/G * (100/70)
-    stl_per100 = stl_pg * (100 / 70)  # approximate
-    stl_band = _band(stl_per100, [
-        (0.0, 35), (1.3, 55), (2.0, 65), (2.7, 75), (3.5, 90),
-    ])
+    # Steal rate (per 100 poss — linear scale of per-game, not per-minute)
+    stl_per_100 = stl_pg * (100 / 70)
+    stl_kr = compute_skillkr(stl_per_100, n_games, level_key, "stl_per_100")
 
-    # Foul discipline proxy (Table 27): lower PF/100 = better
-    # 90: ≤2.6, 80: 2.7-3.4, 70: 3.5-4.3, 60: 4.4-5.3
-    pf_per100 = pf_pg * (100 / 70)
-    foul_band = _band(pf_per100, [
-        (2.6, 90), (3.4, 80), (4.3, 70), (5.3, 60), (100.0, 35),
-    ], lower_is_better=True)
+    # Foul discipline (lower is better)
+    pf_per_100 = pf_pg * (100 / 70)
+    foul_kr = compute_skillkr(pf_per_100, n_games, level_key, "pf_per_100", lower_is_better=True)
 
-    # Per-minute activity as proxy for defensive engagement
-    stl_per_min = (stl_pg / minutes_pg) if minutes_pg > 0 else 0
-    activity_band = _band(stl_per_min, [
-        (0.0, 40), (0.02, 50), (0.04, 60), (0.06, 70), (0.08, 80), (0.10, 90),
-    ])
+    raw = 0.65 * stl_kr["skill_kr"] + 0.35 * foul_kr["skill_kr"]
+    score = max(0, min(100, round(raw, 1)))
 
-    # Scale measurable components to full 0-100 range (no unmeasured floor)
-    # Weighted: steals 50%, foul discipline 25%, activity 25%
-    raw = 0.50 * stl_band + 0.25 * foul_band + 0.25 * activity_band
+    raw_l = 0.65 * stl_kr["skill_kr_league"] + 0.35 * foul_kr["skill_kr_league"]
+    score_league = max(0, min(100, round(raw_l, 1)))
 
-    return max(0, min(100, round(raw)))
+    traits = [
+        {"cluster": "perimeter_defense", "trait_key": "stl_per_100",
+         "v": int(stl_pg * n_games), "n_desc": "GP", **stl_kr},
+        {"cluster": "perimeter_defense", "trait_key": "pf_per_100",
+         "v": int(pf_pg * n_games), "n_desc": "GP", **foul_kr},
+    ]
+
+    return score, score_league, traits
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# INTERIOR DEFENSE CLUSTER (traits 1-9)
+# INTERIOR DEFENSE CLUSTER (3 sub-traits — per-game only)
+# Removed: blk_per_min (per-minute, inflates low-MPG)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def score_interior_defense(
     blk_pg: float, pf_pg: float,
-    dreb_pg: float, minutes_pg: float,
-    level_key: str,
-) -> float:
+    dreb_pg: float,
+    level_key: str, n_games: int,
+) -> tuple[float, float, list[dict]]:
     """
-    Approximate Interior Defense cluster.
-    Spec traits: Block, Rim Deterrence, Vertical Contest, Post Defense,
-                 Help Defense, Roll Man Defense, Disruption, Foul Discipline, Positioning.
-    Primarily from blocks, with fouls as foul discipline proxy.
+    Interior defense: 0.50 * blk_kr + 0.20 * foul_kr + 0.30 * dreb_kr
+    Returns: (cross_score, league_score, traits)
     """
-    # Block rate (Table 28): BLK/100 opponent paint FGA
-    # Approximate: BLK/G * (100/70) as proxy for BLK/100 poss
-    blk_per100 = blk_pg * (100 / 70)
-    # Table 28 uses BLK/100 PaintFGA — our proxy is rougher
-    # 90: 12.0+, 80: 8.5-11.9, 70: 5.5-8.4, 60: 3.0-5.4
-    # Scale down since we're using total possessions not paint FGA
-    blk_band = _band(blk_per100, [
-        (0.0, 35), (1.0, 50), (2.0, 60), (3.5, 70), (5.0, 80), (7.0, 90),
-    ])
+    # Block rate (per 100 poss — linear scale of per-game)
+    blk_per_100 = blk_pg * (100 / 70)
+    blk_kr = compute_skillkr(blk_per_100, n_games, level_key, "blk_per_100")
 
-    # Interior foul discipline (Table 35): lower fouls = better
-    pf_per100 = pf_pg * (100 / 70)
-    foul_band = _band(pf_per100, [
-        (2.0, 90), (3.0, 80), (4.2, 70), (5.5, 60), (100.0, 35),
-    ], lower_is_better=True)
+    # Foul discipline (lower is better)
+    pf_per_100 = pf_pg * (100 / 70)
+    foul_kr = compute_skillkr(pf_per_100, n_games, level_key, "pf_per_100", lower_is_better=True)
 
-    # Rim deterrence proxy: blocks per minute
-    blk_per_min = (blk_pg / minutes_pg) if minutes_pg > 0 else 0
-    deter_band = _band(blk_per_min, [
-        (0.0, 40), (0.02, 50), (0.04, 60), (0.07, 70), (0.10, 80), (0.14, 90),
-    ])
+    # DREB
+    dreb_kr = compute_skillkr(dreb_pg, n_games, level_key, "dreb_pg")
 
-    # DREB as help defense proxy — interior defenders rebound
-    dreb_band = _band(dreb_pg, [
-        (0.0, 35), (2.0, 50), (3.5, 60), (5.0, 70), (7.0, 80), (9.0, 90),
-    ])
+    raw = 0.50 * blk_kr["skill_kr"] + 0.20 * foul_kr["skill_kr"] + 0.30 * dreb_kr["skill_kr"]
+    score = max(0, min(100, round(raw, 1)))
 
-    # Scale measurable components to full 0-100 range (no unmeasured floor)
-    # Weighted: blocks 40%, deterrence 20%, fouls 15%, dreb 25%
-    raw = 0.40 * blk_band + 0.20 * deter_band + 0.15 * foul_band + 0.25 * dreb_band
+    raw_l = 0.50 * blk_kr["skill_kr_league"] + 0.20 * foul_kr["skill_kr_league"] + 0.30 * dreb_kr["skill_kr_league"]
+    score_league = max(0, min(100, round(raw_l, 1)))
 
-    return max(0, min(100, round(raw)))
+    traits = [
+        {"cluster": "interior_defense", "trait_key": "blk_per_100",
+         "v": int(blk_pg * n_games), "n_desc": "GP", **blk_kr},
+        {"cluster": "interior_defense", "trait_key": "pf_per_100",
+         "v": int(pf_pg * n_games), "n_desc": "GP", **foul_kr},
+        {"cluster": "interior_defense", "trait_key": "dreb_pg",
+         "v": int(dreb_pg * n_games), "n_desc": "GP", **dreb_kr},
+    ]
+
+    return score, score_league, traits
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# REBOUNDING CLUSTER (traits 1-6)
+# REBOUNDING CLUSTER (2 sub-traits — per-game only)
+# Removed: reb_per_min (per-minute, inflates low-MPG)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def score_rebounding(
-    oreb_pg: float, dreb_pg: float, reb_pg: float,
-    minutes_pg: float, level_key: str,
-) -> float:
+    oreb_pg: float, dreb_pg: float,
+    level_key: str, n_games: int,
+) -> tuple[float, float, list[dict]]:
     """
-    Approximate Rebounding cluster.
-    Spec traits: Defensive Rebounding, Offensive Rebounding, Box-Out,
-                 Rebound Conversion, Range & Tracking, Outlet Impact.
+    Rebounding: 0.55 * dreb_kr + 0.45 * oreb_kr
+    Returns: (cross_score, league_score, traits)
     """
-    # Defensive rebounding (Table 37): DREB/G
-    # 90: 7.5+, 80: 5.5-7.4, 70: 3.8-5.4, 60: 2.5-3.7
-    dreb_band = _band(dreb_pg, [
-        (0.0, 35), (2.5, 55), (3.8, 65), (5.5, 75), (7.5, 90),
-    ])
+    dreb_kr = compute_skillkr(dreb_pg, n_games, level_key, "dreb_pg")
+    oreb_kr = compute_skillkr(oreb_pg, n_games, level_key, "oreb_pg")
 
-    # Offensive rebounding (Table 38): OREB/G
-    # 90: 3.2+, 80: 2.2-3.1, 70: 1.4-2.1, 60: 0.7-1.3
-    oreb_band = _band(oreb_pg, [
-        (0.0, 35), (0.7, 55), (1.4, 65), (2.2, 75), (3.2, 90),
-    ])
+    raw = 0.55 * dreb_kr["skill_kr"] + 0.45 * oreb_kr["skill_kr"]
+    score = max(0, min(100, round(raw, 1)))
 
-    # Reb per minute as intensity proxy
-    reb_per_min = (reb_pg / minutes_pg) if minutes_pg > 0 else 0
-    intensity_band = _band(reb_per_min, [
-        (0.0, 35), (0.10, 45), (0.15, 55), (0.20, 65), (0.25, 75), (0.30, 90),
-    ])
+    raw_l = 0.55 * dreb_kr["skill_kr_league"] + 0.45 * oreb_kr["skill_kr_league"]
+    score_league = max(0, min(100, round(raw_l, 1)))
 
-    # Weighted: DREB 45%, OREB 35%, intensity 20%
-    # (Spec: DREB is 60% rate + 40% volume, OREB same — we use per-game as combined proxy)
-    raw = 0.45 * dreb_band + 0.35 * oreb_band + 0.20 * intensity_band
+    traits = [
+        {"cluster": "rebounding", "trait_key": "dreb_pg",
+         "v": int(dreb_pg * n_games), "n_desc": "GP", **dreb_kr},
+        {"cluster": "rebounding", "trait_key": "oreb_pg",
+         "v": int(oreb_pg * n_games), "n_desc": "GP", **oreb_kr},
+    ]
 
-    return max(0, min(100, round(raw)))
+    return score, score_league, traits
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# FRAME / PHYSICAL CLUSTER (traits 1-12)
+# FRAME / PHYSICAL CLUSTER (1-3 sub-traits)
+# Removed: motor ((stl+blk)/min — per-minute, inflates low-MPG)
 # ═══════════════════════════════════════════════════════════════════════════
+
+# Position-specific height/weight μ and σ for Z-score normalization
+_POS_PHYS = {
+    # (height_mu, height_sigma, weight_mu, weight_sigma)
+    "PG": (74.0, 2.5, 180, 15),
+    "CG": (76.0, 2.5, 190, 15),
+    "W":  (78.0, 2.5, 205, 18),
+    "F":  (80.0, 2.5, 220, 20),
+    "B":  (82.0, 2.5, 240, 22),
+}
+
 
 def score_frame(
     height_inches: int | None,
     weight_lbs: int | None,
     position: str | None,
     minutes_pg: float,
-    stl_pg: float, blk_pg: float,
-    level_key: str,
-) -> float:
+    level_key: str, n_games: int,
+    minutes_coverage_pct: float = 1.0,
+) -> tuple[float, float, list[dict]]:
     """
-    Approximate Frame/Physical cluster.
-    Spec traits: Speed (w/ and w/o ball), Acceleration, Deceleration,
-                 Agility, Lateral Quickness, Vertical, Strength, Power,
-                 Endurance, Motor, Body Control.
-    Very limited from box score — use height/weight + activity proxies.
+    Frame cluster. Uses KLVN for endurance; Z-score for height/weight.
+    If minutes_coverage_pct < 0.70, endurance is disabled (neutral 50).
+
+    With ht/wt: 0.30*ht + 0.25*wt + 0.35*endurance + 0.10*50
+    Without:    1.0*endurance (minutes_pg only)
+
+    Returns: (cross_score, league_score, traits)
     """
-    # Height band by position expectation
-    # Guards: 72-78 avg, Wings: 76-80, Forwards: 78-82, Bigs: 80-84
     pos = (position or "W").upper()
+    pos_map = {"PG": "PG", "G": "PG", "SG": "CG", "CG": "CG",
+               "SF": "W", "W": "W", "GF": "W",
+               "PF": "F", "F": "F", "C": "B", "B": "B"}
+    canonical_pos = pos_map.get(pos, "W")
+
+    # Endurance (minutes per game)
+    # Disabled if minutes coverage < 70% — too many sentinel gaps
+    if minutes_coverage_pct >= 0.70:
+        endurance = compute_skillkr(minutes_pg, n_games, level_key, "minutes_pg")
+        endurance_kr = endurance["skill_kr"]
+        endurance_kr_league = endurance["skill_kr_league"]
+        traits = [
+            {"cluster": "frame", "trait_key": "minutes_pg",
+             "v": int(minutes_pg * n_games), "n_desc": "GP (where minutes available)",
+             **endurance},
+        ]
+    else:
+        endurance_kr = 50.0  # neutral
+        endurance_kr_league = 50.0
+        traits = [
+            {"cluster": "frame", "trait_key": "minutes_pg",
+             "skill_kr": 50.0, "skill_kr_league": 50.0,
+             "p": minutes_pg, "N": n_games,
+             "v": int(minutes_pg * n_games), "mu": 0, "sigma0": 0,
+             "alpha": 0, "E_v": 0, "sigma_v": 0,
+             "p_adj": minutes_pg, "p_hat": 0, "delta": 0, "Z": 0,
+             "Z_league": 0, "Z_cross": 0,
+             "league_mu": 0, "league_sigma0": 0,
+             "n_desc": f"DISABLED (coverage={minutes_coverage_pct:.0%} < 70%)"},
+        ]
+
     height = height_inches or 0
-
-    if pos in ("PG", "G"):
-        ht_band = _band(height, [(0, 40), (70, 50), (73, 60), (75, 70), (77, 80), (79, 90)])
-    elif pos in ("CG", "SG"):
-        ht_band = _band(height, [(0, 40), (72, 50), (75, 60), (77, 70), (79, 80), (81, 90)])
-    elif pos in ("W", "SF", "GF"):
-        ht_band = _band(height, [(0, 40), (75, 50), (77, 60), (79, 70), (80, 80), (82, 90)])
-    elif pos in ("F", "PF"):
-        ht_band = _band(height, [(0, 40), (77, 50), (79, 60), (80, 70), (82, 80), (84, 90)])
-    else:  # B, C
-        ht_band = _band(height, [(0, 40), (79, 50), (81, 60), (82, 70), (84, 80), (86, 90)])
-
-    # Weight / strength proxy
     wt = weight_lbs or 0
-    if pos in ("PG", "G", "CG", "SG"):
-        wt_band = _band(wt, [(0, 40), (165, 50), (175, 60), (185, 70), (195, 80), (210, 90)])
-    elif pos in ("W", "SF", "GF"):
-        wt_band = _band(wt, [(0, 40), (185, 50), (195, 60), (205, 70), (215, 80), (230, 90)])
+
+    if height > 0 and wt > 0:
+        ht_mu, ht_sigma, wt_mu, wt_sigma = _POS_PHYS.get(canonical_pos, (78, 2.5, 205, 18))
+
+        # Height Z-score → 0-100 via sigmoid stretch
+        ht_z = (height - ht_mu) / ht_sigma if ht_sigma > 0 else 0
+        ht_z = max(-4.0, min(4.0, ht_z))
+        ht_kr = 50 + 50 * _sigmoid_stretch(ht_z)
+        ht_kr = max(0, min(100, round(ht_kr, 1)))
+
+        wt_z = (wt - wt_mu) / wt_sigma if wt_sigma > 0 else 0
+        wt_z = max(-4.0, min(4.0, wt_z))
+        wt_kr = 50 + 50 * _sigmoid_stretch(wt_z)
+        wt_kr = max(0, min(100, round(wt_kr, 1)))
+
+        traits.append({"cluster": "frame", "trait_key": "height",
+                        "skill_kr": ht_kr, "skill_kr_league": ht_kr,
+                        "p": height, "N": 1, "v": 1,
+                        "mu": ht_mu, "sigma0": ht_sigma, "alpha": 0,
+                        "E_v": ht_mu, "sigma_v": ht_sigma,
+                        "p_adj": height, "p_hat": ht_mu,
+                        "delta": round(height - ht_mu, 2), "Z": round(ht_z, 3),
+                        "Z_league": round(ht_z, 3), "Z_cross": round(ht_z, 3),
+                        "league_mu": ht_mu, "league_sigma0": ht_sigma,
+                        "n_desc": "1 (anthropometric, Z-score, no shrinkage)"})
+        traits.append({"cluster": "frame", "trait_key": "weight",
+                        "skill_kr": wt_kr, "skill_kr_league": wt_kr,
+                        "p": wt, "N": 1, "v": 1,
+                        "mu": wt_mu, "sigma0": wt_sigma, "alpha": 0,
+                        "E_v": wt_mu, "sigma_v": wt_sigma,
+                        "p_adj": wt, "p_hat": wt_mu,
+                        "delta": round(wt - wt_mu, 2), "Z": round(wt_z, 3),
+                        "Z_league": round(wt_z, 3), "Z_cross": round(wt_z, 3),
+                        "league_mu": wt_mu, "league_sigma0": wt_sigma,
+                        "n_desc": "1 (anthropometric, Z-score, no shrinkage)"})
+
+        raw = 0.30 * ht_kr + 0.25 * wt_kr + 0.35 * endurance_kr + 0.10 * 50.0
+        raw_l = 0.30 * ht_kr + 0.25 * wt_kr + 0.35 * endurance_kr_league + 0.10 * 50.0
     else:
-        wt_band = _band(wt, [(0, 40), (205, 50), (215, 60), (225, 70), (240, 80), (260, 90)])
+        raw = endurance_kr
+        raw_l = endurance_kr_league
 
-    # Endurance proxy: minutes played per game
-    endurance_band = _band(minutes_pg, [
-        (0, 30), (10, 40), (18, 50), (24, 60), (30, 70), (34, 80), (38, 90),
-    ])
-
-    # Motor/activity proxy: (STL + BLK) per minute — hustle stats
-    hustle_per_min = ((stl_pg + blk_pg) / minutes_pg) if minutes_pg > 0 else 0
-    motor_band = _band(hustle_per_min, [
-        (0.0, 40), (0.03, 50), (0.06, 60), (0.09, 70), (0.12, 80), (0.16, 90),
-    ])
-
-    # If no height/weight data, scale activity proxies to full range
-    if height <= 0 and wt <= 0:
-        raw = 0.55 * endurance_band + 0.45 * motor_band
-    else:
-        raw = 0.25 * ht_band + 0.20 * wt_band + 0.25 * endurance_band + 0.20 * motor_band + 0.10 * 50.0
-
-    return max(0, min(100, round(raw)))
+    score = max(0, min(100, round(raw, 1)))
+    score_league = max(0, min(100, round(raw_l, 1)))
+    return score, score_league, traits
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -407,84 +423,107 @@ def compute_all_clusters(
     height_inches: int | None = None,
     weight_lbs: int | None = None,
     position: str | None = None,
-) -> dict[str, float]:
+) -> tuple[dict[str, float], dict[str, float], list[dict]]:
     """
-    Compute all 7 cluster scores from season averages.
-    stats dict keys: pts_pg, reb_pg, ast_pg, stl_pg, blk_pg, to_pg, pf_pg,
-                     fg_pct, three_pct, ft_pct, fga_pg, three_pa_pg, fta_pg,
-                     oreb_pg, dreb_pg, minutes_pg, games_played
+    Compute all 7 cluster scores via KLVN SkillKR pipeline.
+    v1.4: per-game traits only (no per-minute).
+
+    Returns:
+        (clusters_cross, clusters_league, all_traits)
+        - clusters_cross: 7 cross-level cluster scores (THE KR)
+        - clusters_league: 7 league-internal cluster scores (hidden)
+        - all_traits: per-trait diagnostics
     """
-    shooting = score_shooting(
+    n_games = stats.get("games_played", 0)
+    all_traits: list[dict] = []
+
+    shooting, shooting_l, s_traits = score_shooting(
         three_pct=stats.get("three_pct", 0),
         three_pa_pg=stats.get("three_pa_pg", 0),
         fg_pct=stats.get("fg_pct", 0),
         ft_pct=stats.get("ft_pct", 0),
         fga_pg=stats.get("fga_pg", 0),
-        three_pm_pg=stats.get("three_pa_pg", 0) * stats.get("three_pct", 0),
+        fta_pg=stats.get("fta_pg", 0),
         level_key=level_key,
-        n_games=stats.get("games_played", 0),
+        n_games=n_games,
     )
+    all_traits.extend(s_traits)
 
-    finishing = score_finishing(
+    finishing, finishing_l, f_traits = score_finishing(
         fg_pct=stats.get("fg_pct", 0),
         fga_pg=stats.get("fga_pg", 0),
         three_pct=stats.get("three_pct", 0),
         three_pa_pg=stats.get("three_pa_pg", 0),
         fta_pg=stats.get("fta_pg", 0),
-        ftm_pg=stats.get("fta_pg", 0) * stats.get("ft_pct", 0),
-        pts_pg=stats.get("pts_pg", 0),
         level_key=level_key,
+        n_games=n_games,
     )
+    all_traits.extend(f_traits)
 
-    playmaking = score_playmaking(
+    playmaking, playmaking_l, p_traits = score_playmaking(
         ast_pg=stats.get("ast_pg", 0),
         to_pg=stats.get("to_pg", 0),
         fga_pg=stats.get("fga_pg", 0),
-        pts_pg=stats.get("pts_pg", 0),
-        minutes_pg=stats.get("minutes_pg", 0),
+        fta_pg=stats.get("fta_pg", 0),
         level_key=level_key,
+        n_games=n_games,
     )
+    all_traits.extend(p_traits)
 
-    perimeter_defense = score_perimeter_defense(
+    perimeter_defense, perimeter_defense_l, pd_traits = score_perimeter_defense(
         stl_pg=stats.get("stl_pg", 0),
         pf_pg=stats.get("pf_pg", 0),
-        minutes_pg=stats.get("minutes_pg", 0),
         level_key=level_key,
-        dreb_pg=stats.get("dreb_pg", 0),
+        n_games=n_games,
     )
+    all_traits.extend(pd_traits)
 
-    interior_defense = score_interior_defense(
+    interior_defense, interior_defense_l, id_traits = score_interior_defense(
         blk_pg=stats.get("blk_pg", 0),
         pf_pg=stats.get("pf_pg", 0),
         dreb_pg=stats.get("dreb_pg", 0),
-        minutes_pg=stats.get("minutes_pg", 0),
         level_key=level_key,
+        n_games=n_games,
     )
+    all_traits.extend(id_traits)
 
-    rebounding = score_rebounding(
+    rebounding, rebounding_l, r_traits = score_rebounding(
         oreb_pg=stats.get("oreb_pg", 0),
         dreb_pg=stats.get("dreb_pg", 0),
-        reb_pg=stats.get("reb_pg", 0),
-        minutes_pg=stats.get("minutes_pg", 0),
         level_key=level_key,
+        n_games=n_games,
     )
+    all_traits.extend(r_traits)
 
-    frame = score_frame(
+    frame, frame_l, fr_traits = score_frame(
         height_inches=height_inches,
         weight_lbs=weight_lbs,
         position=position,
         minutes_pg=stats.get("minutes_pg", 0),
-        stl_pg=stats.get("stl_pg", 0),
-        blk_pg=stats.get("blk_pg", 0),
         level_key=level_key,
+        n_games=n_games,
+        minutes_coverage_pct=stats.get("minutes_coverage_pct", 1.0),
     )
+    all_traits.extend(fr_traits)
 
-    return {
-        "shooting": max(0, min(100, round(shooting))),
-        "finishing": max(0, min(100, round(finishing))),
-        "playmaking": max(0, min(100, round(playmaking))),
-        "perimeter_defense": max(0, min(100, round(perimeter_defense))),
-        "interior_defense": max(0, min(100, round(interior_defense))),
-        "rebounding": max(0, min(100, round(rebounding))),
-        "frame": max(0, min(100, round(frame))),
+    clusters = {
+        "shooting": shooting,
+        "finishing": finishing,
+        "playmaking": playmaking,
+        "perimeter_defense": perimeter_defense,
+        "interior_defense": interior_defense,
+        "rebounding": rebounding,
+        "frame": frame,
     }
+
+    clusters_league = {
+        "shooting": shooting_l,
+        "finishing": finishing_l,
+        "playmaking": playmaking_l,
+        "perimeter_defense": perimeter_defense_l,
+        "interior_defense": interior_defense_l,
+        "rebounding": rebounding_l,
+        "frame": frame_l,
+    }
+
+    return clusters, clusters_league, all_traits
