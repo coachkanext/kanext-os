@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scraper"))
 import psycopg
 from psycopg.rows import dict_row
 from config import DB_CONFIG
+from conference_map import resolve_d1_conference, assign_d1_tier
 
 MIN_SAMPLE = 10  # Minimum players per (trait, level) before falling back to global
 
@@ -36,6 +37,7 @@ TRAIT_KEYS = [
     "blk_per_100", "blk_per_min", "dreb_pg",
     "oreb_pg", "reb_per_min",
     "minutes_pg", "motor",
+    "start_rate",
 ]
 
 
@@ -109,6 +111,10 @@ def derive_traits(row: dict) -> dict[str, float | None]:
     traits["minutes_pg"] = mpg
     traits["motor"] = (stl_pg + blk_pg) / mpg if mpg > 0 else None
 
+    # Team defense trust
+    gs = _f(row.get("games_started", 0))
+    traits["start_rate"] = gs / gp if gp > 0 else None
+
     return traits
 
 
@@ -135,14 +141,15 @@ def main():
         dbname=DB_CONFIG["dbname"], row_factory=dict_row,
     )
 
-    # Query all qualifying player season stats with level key
+    # Query all qualifying player season stats with level key + team name + conference
     rows = conn.execute("""
-        SELECT pss.*, cl.level_key
+        SELECT pss.*, cl.level_key, t.name AS team_name, c.name AS db_conference
         FROM player_season_stats pss
         JOIN player_team_seasons pts ON pss.player_team_season_id = pts.id
         JOIN team_seasons ts ON pts.team_season_id = ts.id
         JOIN teams t ON ts.team_id = t.id
         JOIN competitive_levels cl ON t.competitive_level_id = cl.id
+        LEFT JOIN conferences c ON c.id = t.conference_id
         WHERE pss.games_played >= 3 AND pss.minutes_per_game >= 5
     """).fetchall()
 
@@ -156,6 +163,10 @@ def main():
 
     for row in rows:
         level_key = row["level_key"]
+        # Remap ncaa_d1 → ncaa_d1_high_major / mid_major / low_major
+        if level_key == "ncaa_d1":
+            conf = resolve_d1_conference(row["team_name"], row.get("db_conference"))
+            level_key = assign_d1_tier(conf)
         sample_counts[level_key] += 1
         traits = derive_traits(row)
         for tk in TRAIT_KEYS:

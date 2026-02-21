@@ -1,10 +1,15 @@
 from __future__ import annotations
 """
-Cluster Scoring — KLVN SkillKR Pipeline (v1.4)
-Maps box-score stats to 7 KR clusters via the exact KLVN 4-step normalization
+Cluster Scoring — KLVN SkillKR Pipeline (v1.5)
+Maps box-score stats to 8 KR clusters via the exact KLVN 4-step normalization
 pipeline (shrinkage → expectation → Z-score → sigmoid) per sub-trait.
 
 Each cluster = weighted composite of sub-trait SkillKR scores.
+
+v1.5 changes:
+  - Added team_defense cluster (foul discipline, transition tax, minutes/start trust)
+  - 8 clusters total: shooting, finishing, playmaking, perimeter_defense,
+    interior_defense, rebounding, frame, team_defense
 
 v1.4 changes:
   - Removed all per-minute traits (ast_per_min, stl_per_min, blk_per_min,
@@ -414,7 +419,73 @@ def score_frame(
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# COMPUTE ALL 7 CLUSTERS
+# TEAM DEFENSE CLUSTER (4 sub-traits)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def score_team_defense(
+    pf_pg: float,
+    to_pg: float,
+    fga_pg: float,
+    fta_pg: float,
+    minutes_pg: float,
+    start_rate: float,
+    level_key: str,
+    n_games: int,
+) -> tuple[float, float, list[dict]]:
+    """
+    Team Defense cluster — deterministic box-score proxies for team-level
+    defensive contribution. Measures discipline, transition prevention,
+    and coach trust.
+
+    Composite: 0.30 * foul_discipline + 0.30 * transition_tax + 0.25 * minutes_trust + 0.15 * start_trust
+    """
+    # Foul discipline: pf per 100 possessions (lower is better)
+    pf_per_100 = pf_pg * (100 / 70)
+    foul_kr = compute_skillkr(pf_per_100, n_games, level_key, "pf_per_100",
+                              lower_is_better=True)
+
+    # Transition defense tax: turnover rate (lower is better)
+    usage_events = fga_pg + 0.44 * fta_pg + to_pg
+    tov_per_usage = to_pg / usage_events if usage_events > 0.5 else 0.15
+    tov_kr = compute_skillkr(tov_per_usage, n_games, level_key, "tov_per_usage",
+                             lower_is_better=True)
+
+    # Minutes trust (coach plays trusted defenders more)
+    min_kr = compute_skillkr(minutes_pg, n_games, level_key, "minutes_pg")
+
+    # Start rate trust (starters = most trusted defenders)
+    start_kr = compute_skillkr(start_rate, n_games, level_key, "start_rate")
+
+    # Cross-level composite
+    raw = (0.30 * foul_kr["skill_kr"]
+         + 0.30 * tov_kr["skill_kr"]
+         + 0.25 * min_kr["skill_kr"]
+         + 0.15 * start_kr["skill_kr"])
+    score = max(0, min(100, round(raw, 1)))
+
+    # League-internal composite
+    raw_l = (0.30 * foul_kr["skill_kr_league"]
+           + 0.30 * tov_kr["skill_kr_league"]
+           + 0.25 * min_kr["skill_kr_league"]
+           + 0.15 * start_kr["skill_kr_league"])
+    score_league = max(0, min(100, round(raw_l, 1)))
+
+    traits = [
+        {"cluster": "team_defense", "trait_key": "pf_per_100",
+         "v": n_games, "n_desc": "GP (foul rate)", **foul_kr},
+        {"cluster": "team_defense", "trait_key": "tov_per_usage",
+         "v": n_games, "n_desc": "GP (transition tax)", **tov_kr},
+        {"cluster": "team_defense", "trait_key": "minutes_pg",
+         "v": n_games, "n_desc": "GP (minutes trust)", **min_kr},
+        {"cluster": "team_defense", "trait_key": "start_rate",
+         "v": n_games, "n_desc": "GP (start trust)", **start_kr},
+    ]
+
+    return score, score_league, traits
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# COMPUTE ALL 8 CLUSTERS
 # ═══════════════════════════════════════════════════════════════════════════
 
 def compute_all_clusters(
@@ -425,13 +496,13 @@ def compute_all_clusters(
     position: str | None = None,
 ) -> tuple[dict[str, float], dict[str, float], list[dict]]:
     """
-    Compute all 7 cluster scores via KLVN SkillKR pipeline.
-    v1.4: per-game traits only (no per-minute).
+    Compute all 8 cluster scores via KLVN SkillKR pipeline.
+    v1.5: added team_defense cluster (foul discipline, transition tax, minutes/start trust).
 
     Returns:
         (clusters_cross, clusters_league, all_traits)
-        - clusters_cross: 7 cross-level cluster scores (THE KR)
-        - clusters_league: 7 league-internal cluster scores (hidden)
+        - clusters_cross: 8 cross-level cluster scores (THE KR)
+        - clusters_league: 8 league-internal cluster scores (hidden)
         - all_traits: per-trait diagnostics
     """
     n_games = stats.get("games_played", 0)
@@ -506,6 +577,18 @@ def compute_all_clusters(
     )
     all_traits.extend(fr_traits)
 
+    team_defense, team_defense_l, td_traits = score_team_defense(
+        pf_pg=stats.get("pf_pg", 0),
+        to_pg=stats.get("to_pg", 0),
+        fga_pg=stats.get("fga_pg", 0),
+        fta_pg=stats.get("fta_pg", 0),
+        minutes_pg=stats.get("minutes_pg", 0),
+        start_rate=stats.get("start_rate", 0.5),
+        level_key=level_key,
+        n_games=n_games,
+    )
+    all_traits.extend(td_traits)
+
     clusters = {
         "shooting": shooting,
         "finishing": finishing,
@@ -514,6 +597,7 @@ def compute_all_clusters(
         "interior_defense": interior_defense,
         "rebounding": rebounding,
         "frame": frame,
+        "team_defense": team_defense,
     }
 
     clusters_league = {
@@ -524,6 +608,7 @@ def compute_all_clusters(
         "interior_defense": interior_defense_l,
         "rebounding": rebounding_l,
         "frame": frame_l,
+        "team_defense": team_defense_l,
     }
 
     return clusters, clusters_league, all_traits

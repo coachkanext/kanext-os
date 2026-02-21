@@ -263,7 +263,7 @@ def derive_secondary_archetypes(clusters: dict[str, float], position: str,
 
 
 OFF_KEYS = frozenset(["shooting", "finishing", "playmaking"])
-DEF_KEYS = frozenset(["perimeter_defense", "interior_defense", "rebounding"])
+DEF_KEYS = frozenset(["perimeter_defense", "interior_defense", "rebounding", "team_defense"])
 TKR_KEYS = frozenset(["frame"])
 
 # 53/47 split is for TEAM KR only (team_kr.py). Player KR uses position splits below.
@@ -280,17 +280,26 @@ POSITION_COMPONENT_SPLITS: dict[str, tuple[float, float, float]] = {
 }
 DEFAULT_COMPONENT_SPLIT = (0.50, 0.40, 0.10)
 
-# Position-specific DKR composition weights
-# Guards don't need interior D; bigs don't need perimeter D
-DKR_COMPOSITION: dict[str, dict[str, float]] = {
-    # {perimeter_defense, rebounding, interior_defense}
-    "PG": {"perimeter_defense": 0.80, "rebounding": 0.20, "interior_defense": 0.00},
-    "CG": {"perimeter_defense": 0.80, "rebounding": 0.20, "interior_defense": 0.00},
-    "W":  {"perimeter_defense": 0.60, "rebounding": 0.25, "interior_defense": 0.15},
-    "F":  {"perimeter_defense": 0.35, "rebounding": 0.30, "interior_defense": 0.35},
-    "B":  {"perimeter_defense": 0.15, "rebounding": 0.35, "interior_defense": 0.50},
+# Position-specific on-ball defense blend (perimeter + interior → single score)
+ON_BALL_BLEND: dict[str, dict[str, float]] = {
+    "PG": {"perimeter_defense": 1.00, "interior_defense": 0.00},
+    "CG": {"perimeter_defense": 1.00, "interior_defense": 0.00},
+    "W":  {"perimeter_defense": 0.70, "interior_defense": 0.30},
+    "F":  {"perimeter_defense": 0.35, "interior_defense": 0.65},
+    "B":  {"perimeter_defense": 0.10, "interior_defense": 0.90},
 }
-DEFAULT_DKR_COMPOSITION = {"perimeter_defense": 0.40, "rebounding": 0.30, "interior_defense": 0.30}
+DEFAULT_ON_BALL_BLEND = {"perimeter_defense": 0.50, "interior_defense": 0.50}
+
+# Position-specific DKR composition weights (3 components: on_ball + team_defense + rebounding)
+# Guards get 40% team_defense — discipline + trust is the main DKR signal for guards
+DKR_COMPOSITION: dict[str, dict[str, float]] = {
+    "PG": {"on_ball": 0.40, "team_defense": 0.40, "rebounding": 0.20},
+    "CG": {"on_ball": 0.40, "team_defense": 0.40, "rebounding": 0.20},
+    "W":  {"on_ball": 0.35, "team_defense": 0.30, "rebounding": 0.35},
+    "F":  {"on_ball": 0.30, "team_defense": 0.25, "rebounding": 0.45},
+    "B":  {"on_ball": 0.30, "team_defense": 0.20, "rebounding": 0.50},
+}
+DEFAULT_DKR_COMPOSITION = {"on_ball": 0.35, "team_defense": 0.30, "rebounding": 0.35}
 
 
 def compute_player_kr(
@@ -299,16 +308,15 @@ def compute_player_kr(
     mode: str = "college",
 ) -> dict:
     """
-    Compute player KR from 7 cluster scores.
+    Compute player KR from 8 cluster scores.
     mode: "college" or "pro" — selects position weights and archetype thresholds.
 
-    v1.4 changes:
-      - DKR composition is position-specific: guards weight perimeter D heavily,
-        bigs weight interior D heavily. Prevents guards from being penalized
-        by irrelevant interior defense scores.
-      - 3-way position split: OKR% / DKR% / TKR% per position (from spec).
+    v1.5 changes:
+      - DKR recomposed into 3 components: on-ball defense, team_defense, rebounding.
+      - On-ball defense = position-weighted blend of perimeter_defense + interior_defense.
+      - Guards get 40% team_defense in DKR (discipline + trust signals).
       - OKR = weighted(Shooting, Finishing, Playmaking) via alpha weights
-      - DKR = position-weighted(Perimeter Def, Interior Def, Rebounding)
+      - DKR = on_ball + team_defense + rebounding (position-weighted)
       - TKR = Frame
       - Overall = w_ok * OKR + w_dk * DKR + w_tk * TKR
     Returns: base_off_kr, base_def_kr, base_tkr, overall_kr, dkr_weights, archetype info.
@@ -332,11 +340,14 @@ def compute_player_kr(
         if off_total > 0 else 50.0
     )
 
-    # DKR: position-specific composition weights
+    # DKR: on-ball defense (blend of perim + interior) + team_defense + rebounding
+    ob_blend = ON_BALL_BLEND.get(position, DEFAULT_ON_BALL_BLEND)
+    on_ball_score = sum(present.get(k, 50.0) * w for k, w in ob_blend.items())
+
     dkr_w = DKR_COMPOSITION.get(position, DEFAULT_DKR_COMPOSITION)
-    base_def = sum(
-        present.get(k, 50.0) * w for k, w in dkr_w.items()
-    )
+    base_def = (dkr_w["on_ball"] * on_ball_score
+              + dkr_w["team_defense"] * present.get("team_defense", 50.0)
+              + dkr_w["rebounding"] * present.get("rebounding", 50.0))
 
     # TKR: Frame
     base_tkr = present.get("frame", 50.0)
@@ -355,6 +366,8 @@ def compute_player_kr(
         "base_tkr": round(base_tkr, 1),
         "overall_kr": round(overall, 1),
         "position_split": (w_ok, w_dk, w_tk),
+        "on_ball_score": round(on_ball_score, 1),
+        "on_ball_blend": ob_blend,
         "dkr_weights": dkr_w,
         "primary_archetype": primary,
         "secondary_archetypes": secondaries,

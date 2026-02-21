@@ -43,6 +43,7 @@ from klvn import compute_confidence, get_lambda, klvn_translate
 from impact_scores import compute_pgis, compute_tgis, compute_season_pgis
 from scholarship_nil import run_allocation, SCHOLARSHIP_CAPS
 from context_engine import apply_context_adjustments
+from conference_map import resolve_d1_conference, assign_d1_tier
 
 # Level keys that use Pro KR mode (higher thresholds, different weights)
 PRO_LEVEL_KEYS = {"professional", "nba", "g_league", "overseas_pro"}
@@ -490,16 +491,50 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
     conn.execute("DELETE FROM player_kr")
     conn.commit()
 
-    # Get level info for each team
+    # Get level info + team name + conference for each team_season
     team_levels = {}
+    team_meta = {}  # ts_id -> {level_key, team_name, db_conference}
     level_rows = conn.execute("""
-        SELECT ts.id AS team_season_id, cl.level_key
+        SELECT ts.id AS team_season_id, cl.level_key, t.name AS team_name,
+               c.name AS db_conference
         FROM team_seasons ts
         JOIN teams t ON ts.team_id = t.id
         JOIN competitive_levels cl ON t.competitive_level_id = cl.id
+        LEFT JOIN conferences c ON c.id = t.conference_id
     """).fetchall()
     for lr in level_rows:
-        team_levels[str(lr["team_season_id"])] = lr["level_key"]
+        ts_key = str(lr["team_season_id"])
+        lk = lr["level_key"]
+        # D1 remap: ncaa_d1 → ncaa_d1_high_major / mid_major / low_major
+        if lk == "ncaa_d1":
+            conf = resolve_d1_conference(lr["team_name"], lr.get("db_conference"))
+            lk = assign_d1_tier(conf)
+        team_levels[ts_key] = lk
+        team_meta[ts_key] = {
+            "level_key": lk,
+            "team_name": lr["team_name"],
+            "db_conference": lr.get("db_conference"),
+        }
+
+    # D1 tier audit
+    d1_conf_audit: dict[str, dict[str, int]] = {}  # conf -> {tier: count}
+    d1_missing_conf: list[str] = []
+    for ts_key, meta in team_meta.items():
+        if meta["level_key"].startswith("ncaa_d1_"):
+            conf = resolve_d1_conference(meta["team_name"], meta.get("db_conference"))
+            tier = meta["level_key"]
+            if not conf:
+                d1_missing_conf.append(meta["team_name"])
+            d1_conf_audit.setdefault(conf or "(no conference)", {}).setdefault(tier, 0)
+            d1_conf_audit[conf or "(no conference)"][tier] += 1
+
+    # Hard error: if any team_season still has bare "ncaa_d1"
+    bare_d1 = [ts for ts, lk in team_levels.items() if lk == "ncaa_d1"]
+    if bare_d1:
+        raise RuntimeError(
+            f"KLVN HARD ERROR: {len(bare_d1)} team_seasons still have level_key='ncaa_d1'. "
+            f"All NCAA D1 must be remapped to ncaa_d1_high_major/mid_major/low_major."
+        )
 
     # Get player height/weight + name
     player_info = {}
@@ -540,6 +575,7 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
         gp_val = int(r["games_played"] or 0)
         min_cov = gwm / gp_val if gp_val > 0 else 0.0
 
+        gs_val = int(r.get("games_started") or 0)
         stats = {
             "pts_pg": _f(r["pts_pg"]),
             "reb_pg": _f(r["reb_pg"]),
@@ -558,6 +594,8 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
             "dreb_pg": _f(r["dreb_pg"]),
             "minutes_pg": _f(r["minutes_pg"]),
             "games_played": gp_val,
+            "games_started": gs_val,
+            "start_rate": gs_val / gp_val if gp_val > 0 else 0.5,
             "minutes_coverage_pct": min_cov,
         }
 
@@ -631,7 +669,7 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
                 by_cluster.setdefault(c, []).append(td)
             for cname in ["shooting", "finishing", "playmaking",
                           "perimeter_defense", "interior_defense",
-                          "rebounding", "frame"]:
+                          "rebounding", "frame", "team_defense"]:
                 ctraits = by_cluster.get(cname, [])
                 cscore_l = clusters_league.get(cname, 0)
                 print(f"  {cname.upper()} (league: {cscore_l})")
@@ -685,7 +723,7 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
         # Insert cluster scores (cross-level + league-internal)
         for cluster_name, score in clusters.items():
             off_w = 1.0 if cluster_name in ("shooting", "finishing", "playmaking") else 0.0
-            def_w = 1.0 if cluster_name in ("perimeter_defense", "interior_defense", "rebounding", "frame") else 0.0
+            def_w = 1.0 if cluster_name in ("perimeter_defense", "interior_defense", "rebounding", "frame", "team_defense") else 0.0
             league_score = clusters_league.get(cluster_name, score)
             conn.execute("""
                 INSERT INTO player_kr_clusters (player_kr_id, cluster, score, weight_in_off_kr, weight_in_def_kr, score_league_internal)
@@ -723,6 +761,22 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
 
     conn.commit()
     print(f"  Inserted {inserted} player KR records")
+
+    # ── D1 Tier Audit ──
+    if d1_conf_audit:
+        print(f"\n  ── D1 Conference → Tier Audit ──")
+        print(f"  {'Conference':<30} {'Tier':<25} {'Teams':>6}")
+        print(f"  {'─'*30} {'─'*25} {'─'*6}")
+        for conf in sorted(d1_conf_audit.keys()):
+            for tier, count in sorted(d1_conf_audit[conf].items()):
+                print(f"  {conf:<30} {tier:<25} {count:>6}")
+        if d1_missing_conf:
+            unique_missing = sorted(set(d1_missing_conf))
+            print(f"\n  WARNING: {len(unique_missing)} D1 teams missing conference → defaulted to low_major:")
+            for t in unique_missing[:20]:
+                print(f"    {t}")
+            if len(unique_missing) > 20:
+                print(f"    ... and {len(unique_missing) - 20} more")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -920,12 +974,13 @@ def compute_all_scholarship_nil(conn):
     # Get all team seasons with KR data
     team_seasons = conn.execute("""
         SELECT ts.id AS team_season_id,
-               cl.level_key,
+               cl.level_key, t.name AS team_name, c.name AS db_conference,
                ts.team_off_kr, ts.team_def_kr, ts.team_overall_kr,
                ts.osie_system, ts.dsie_system
         FROM team_seasons ts
         JOIN teams t ON ts.team_id = t.id
         JOIN competitive_levels cl ON t.competitive_level_id = cl.id
+        LEFT JOIN conferences c ON c.id = t.conference_id
         WHERE ts.team_overall_kr IS NOT NULL
     """).fetchall()
 
@@ -935,6 +990,10 @@ def compute_all_scholarship_nil(conn):
     for ts in team_seasons:
         ts_id = str(ts["team_season_id"])
         level_key = ts["level_key"]
+        # D1 remap for scholarship allocation
+        if level_key == "ncaa_d1":
+            conf = resolve_d1_conference(ts.get("team_name", ""), ts.get("db_conference"))
+            level_key = assign_d1_tier(conf)
 
         # Get players with KR data for this team
         players_raw = conn.execute("""
@@ -1071,8 +1130,8 @@ def _estimate_nil_pool(level_key: str, roster_size: int) -> float:
     """Estimate NIL pool by level when coach hasn't set one.
     Realistic estimates for college basketball."""
     base_pools = {
-        "ncaa_d1":            1_000_000,
         "ncaa_d1_high_major": 2_000_000,
+        "ncaa_d1_mid_major":    750_000,
         "ncaa_d1_low_major":    200_000,
         "ncaa_d2":               50_000,
         "ncaa_d3":               10_000,  # academic merit only, no NIL
@@ -1114,7 +1173,9 @@ DATA_SOURCE_MAP = {
     "njcaa_d1": "PrestoSports", "njcaa_d2": "PrestoSports", "njcaa_d3": "PrestoSports",
     "naia": "PrestoSports", "cccaa": "PrestoSports", "uscaa": "PrestoSports",
     "nccaa_d1": "Sidearm Sports", "nccaa_d2": "Sidearm Sports",
-    "ncaa_d1": "ESPN API", "ncaa_d2": "DB Only", "ncaa_d3": "DB Only",
+    "ncaa_d1_high_major": "ESPN API", "ncaa_d1_mid_major": "ESPN API",
+    "ncaa_d1_low_major": "ESPN API",
+    "ncaa_d2": "DB Only", "ncaa_d3": "DB Only",
 }
 
 N_COMPUTATION_DOCS = [
@@ -1141,7 +1202,8 @@ N_COMPUTATION_DOCS = [
 def _lookup_player(conn, name: str) -> dict | None:
     """Look up a player by name substring, return season stats + metadata."""
     rows = conn.execute("""
-        SELECT pss.games_played, pss.minutes_per_game, pss.pts_per_game,
+        SELECT pss.games_played, pss.games_started, pss.minutes_per_game,
+               pss.pts_per_game,
                pss.reb_per_game, pss.ast_per_game, pss.stl_per_game,
                pss.blk_per_game, pss.to_per_game, pss.pf_per_game,
                pss.fg_pct, pss.three_pct, pss.ft_pct,
@@ -1150,19 +1212,28 @@ def _lookup_player(conn, name: str) -> dict | None:
                pss.games_with_minutes, pss.minutes_coverage_pct,
                pts.id AS pts_id, p.id AS player_id, p.full_name,
                p.height_inches, p.weight_lbs, p.declared_positions,
-               cl.level_key, ts.season, t.name AS team_name
+               cl.level_key, ts.season, t.name AS team_name,
+               c.name AS db_conference
         FROM player_season_stats pss
         JOIN player_team_seasons pts ON pss.player_team_season_id = pts.id
         JOIN players p ON pts.player_id = p.id
         JOIN team_seasons ts ON pts.team_season_id = ts.id
         JOIN teams t ON ts.team_id = t.id
         JOIN competitive_levels cl ON t.competitive_level_id = cl.id
+        LEFT JOIN conferences c ON c.id = t.conference_id
         WHERE p.full_name ILIKE %s
           AND pss.games_played >= 3 AND pss.minutes_per_game >= 5
         ORDER BY pss.games_played DESC
         LIMIT 1
     """, (f"%{name}%",)).fetchall()
-    return rows[0] if rows else None
+    if not rows:
+        return None
+    row = dict(rows[0])
+    # D1 remap
+    if row["level_key"] == "ncaa_d1":
+        conf = resolve_d1_conference(row["team_name"], row.get("db_conference"))
+        row["level_key"] = assign_d1_tier(conf)
+    return row
 
 
 def _compute_player_debug(row: dict) -> dict:
@@ -1174,6 +1245,7 @@ def _compute_player_debug(row: dict) -> dict:
     kr_mode = "pro" if level_key in PRO_LEVEL_KEYS else "college"
 
     gp = int(row.get("games_played") or 0)
+    gs = int(row.get("games_started") or 0)
     gwm = int(row.get("games_with_minutes") or gp)
     min_cov = float(row.get("minutes_coverage_pct") or (gwm / gp if gp > 0 else 1.0))
 
@@ -1195,6 +1267,8 @@ def _compute_player_debug(row: dict) -> dict:
         "dreb_pg":     _f(row.get("dreb_per_game")),
         "minutes_pg":  _f(row.get("minutes_per_game")),
         "games_played": gp,
+        "games_started": gs,
+        "start_rate": gs / gp if gp > 0 else 0.5,
         "minutes_coverage_pct": min_cov,
     }
 
@@ -1309,7 +1383,7 @@ def run_debug_compare(conn, name1: str, name2: str):
 
     cluster_order = ["shooting", "finishing", "playmaking",
                      "perimeter_defense", "interior_defense",
-                     "rebounding", "frame"]
+                     "rebounding", "frame", "team_defense"]
 
     trait_fields = ["p", "v", "N", "mu", "alpha", "E_v", "sigma_v",
                     "p_adj", "delta", "Z", "skill_kr"]
@@ -1515,7 +1589,7 @@ def _build_player_audit(conn, name: str) -> dict | None:
 
     cluster_order = ["shooting", "finishing", "playmaking",
                      "perimeter_defense", "interior_defense",
-                     "rebounding", "frame"]
+                     "rebounding", "frame", "team_defense"]
 
     step_2_metrics: dict = {}
     step_3_metrics: dict = {}
@@ -1777,6 +1851,129 @@ def run_audit_packet(conn):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# KLVN DIAGNOSTICS — Required every run
+# ═══════════════════════════════════════════════════════════════════════════
+
+def print_klvn_diagnostics(conn):
+    """Print required KLVN diagnostics: level coverage, distributions, top 50, sanity checks."""
+    from klvn import LEVEL_LAMBDA
+    import statistics
+
+    print(f"\n{'=' * 70}")
+    print("KLVN DIAGNOSTICS")
+    print(f"{'=' * 70}")
+
+    # A) Level coverage audit
+    print(f"\n── A) Level Coverage Audit ──")
+    print(f"  {'level_key':<25} {'count':>6}  {'λ':>6}")
+    print(f"  {'─'*25} {'─'*6}  {'─'*6}")
+    level_counts = conn.execute("""
+        SELECT pk.klvn_level, count(*) AS n
+        FROM player_kr pk
+        GROUP BY pk.klvn_level
+        ORDER BY count(*) DESC
+    """).fetchall()
+    for r in level_counts:
+        lk = r["klvn_level"]
+        lam = LEVEL_LAMBDA.get(lk, None)
+        lam_str = f"{lam:.3f}" if lam is not None else "MISSING!"
+        print(f"  {lk:<25} {r['n']:>6}  {lam_str:>6}")
+
+    # B) Per-level distribution summary
+    print(f"\n── B) Per-Level Distribution ──")
+    print(f"  {'level_key':<25} {'n':>5} {'max':>6} {'p99':>6} {'p95':>6} {'median':>6}")
+    print(f"  {'─'*25} {'─'*5} {'─'*6} {'─'*6} {'─'*6} {'─'*6}")
+    for r in level_counts:
+        lk = r["klvn_level"]
+        stats_rows = conn.execute("""
+            SELECT final_overall_kr FROM player_kr WHERE klvn_level = %s
+            ORDER BY final_overall_kr
+        """, (lk,)).fetchall()
+        vals = sorted([float(sr["final_overall_kr"]) for sr in stats_rows])
+        if vals:
+            n = len(vals)
+            mx = vals[-1]
+            p99 = vals[int(n * 0.99)] if n > 1 else mx
+            p95 = vals[int(n * 0.95)] if n > 1 else mx
+            med = statistics.median(vals)
+            print(f"  {lk:<25} {n:>5} {mx:>6.1f} {p99:>6.1f} {p95:>6.1f} {med:>6.1f}")
+
+    # C) Global leaderboard — Top 50
+    print(f"\n── C) Global Top 50 ──")
+    print(f"  {'#':>3} {'Player':<25} {'Team':<25} {'level_key':<22} {'league':>6} {'λ':>5} {'final':>6}")
+    print(f"  {'─'*3} {'─'*25} {'─'*25} {'─'*22} {'─'*6} {'─'*5} {'─'*6}")
+    top50 = conn.execute("""
+        SELECT p.full_name, t.name AS team_name, pk.klvn_level,
+               pk.kr_league_internal, pk.final_overall_kr
+        FROM player_kr pk
+        JOIN player_team_seasons pts ON pk.player_team_season_id = pts.id
+        JOIN players p ON pts.player_id = p.id
+        JOIN team_seasons ts ON pts.team_season_id = ts.id
+        JOIN teams t ON ts.team_id = t.id
+        ORDER BY pk.final_overall_kr DESC
+        LIMIT 50
+    """).fetchall()
+    for i, r in enumerate(top50, 1):
+        lk = r["klvn_level"]
+        lam = LEVEL_LAMBDA.get(lk, 0)
+        print(f"  {i:>3} {r['full_name']:<25} {r['team_name']:<25} {lk:<22} "
+              f"{float(r['kr_league_internal']):>6.1f} {lam:>5.3f} {float(r['final_overall_kr']):>6.1f}")
+
+    # D) Sanity checks
+    print(f"\n── D) Sanity Checks ──")
+
+    # Max KR per tier (should be HM >= MM >= LM >= D2 >= ...)
+    tier_order = [
+        "ncaa_d1_high_major", "ncaa_d1_mid_major", "ncaa_d1_low_major",
+        "ncaa_d2", "njcaa_d1", "naia", "njcaa_d2", "cccaa", "ncaa_d3",
+        "njcaa_d3", "uscaa", "nccaa_d1", "nccaa_d2",
+    ]
+    tier_maxes = {}
+    for lk in tier_order:
+        row = conn.execute("""
+            SELECT max(final_overall_kr) AS mx FROM player_kr WHERE klvn_level = %s
+        """, (lk,)).fetchone()
+        tier_maxes[lk] = float(row["mx"]) if row and row["mx"] else 0.0
+
+    monotonic = True
+    prev_max = 999.0
+    for lk in tier_order:
+        mx = tier_maxes.get(lk, 0)
+        ok = mx <= prev_max or mx == 0
+        marker = "OK" if ok else "WARN"
+        if not ok:
+            monotonic = False
+        if mx > 0:
+            print(f"  {lk:<25} max={mx:>6.1f}  [{marker}]")
+            prev_max = mx
+
+    if monotonic:
+        print(f"  Max KR monotonicity: PASS")
+    else:
+        print(f"  Max KR monotonicity: FAIL — higher tiers should dominate")
+
+    # Top 25 composition
+    top25_levels = conn.execute("""
+        SELECT klvn_level, count(*) AS n FROM (
+            SELECT klvn_level FROM player_kr ORDER BY final_overall_kr DESC LIMIT 25
+        ) sub GROUP BY klvn_level ORDER BY n DESC
+    """).fetchall()
+    print(f"\n  Top 25 composition:")
+    hm_mm_count = 0
+    for r in top25_levels:
+        lk = r["klvn_level"]
+        if lk in ("ncaa_d1_high_major", "ncaa_d1_mid_major"):
+            hm_mm_count += int(r["n"])
+        print(f"    {lk}: {r['n']}")
+    if hm_mm_count < 15:
+        print(f"  WARNING: Only {hm_mm_count}/25 top players are D1 HM/MM (expected >= 15)")
+    else:
+        print(f"  Top 25 D1 HM/MM dominance: PASS ({hm_mm_count}/25)")
+
+    print(f"{'=' * 70}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -1846,6 +2043,9 @@ def main():
     # Step 8: Audit
     elapsed_ms = int((time.time() - start) * 1000)
     log_computation(conn, elapsed_ms, player_count, team_count)
+
+    # KLVN Diagnostics (required every run)
+    print_klvn_diagnostics(conn)
 
     elapsed = time.time() - start
     print(f"\n{'=' * 70}")
