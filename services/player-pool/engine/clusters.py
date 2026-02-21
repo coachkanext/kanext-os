@@ -419,36 +419,31 @@ def score_frame(
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# TEAM DEFENSE CLUSTER (4 sub-traits)
+# TEAM DEFENSE CLUSTER (4 sub-traits — v2 clean, no offensive contamination)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def score_team_defense(
     pf_pg: float,
-    to_pg: float,
-    fga_pg: float,
-    fta_pg: float,
+    stl_pg: float,
     minutes_pg: float,
     start_rate: float,
     level_key: str,
     n_games: int,
 ) -> tuple[float, float, list[dict]]:
     """
-    Team Defense cluster — deterministic box-score proxies for team-level
-    defensive contribution. Measures discipline, transition prevention,
-    and coach trust.
+    Team Defense cluster v2 — pure defensive box-score proxies.
+    No offensive traits (turnovers removed — already in Playmaking).
 
-    Composite: 0.30 * foul_discipline + 0.30 * transition_tax + 0.25 * minutes_trust + 0.15 * start_trust
+    Composite: 0.35 * foul_discipline + 0.25 * disruption + 0.25 * minutes_trust + 0.15 * start_trust
     """
     # Foul discipline: pf per 100 possessions (lower is better)
     pf_per_100 = pf_pg * (100 / 70)
     foul_kr = compute_skillkr(pf_per_100, n_games, level_key, "pf_per_100",
                               lower_is_better=True)
 
-    # Transition defense tax: turnover rate (lower is better)
-    usage_events = fga_pg + 0.44 * fta_pg + to_pg
-    tov_per_usage = to_pg / usage_events if usage_events > 0.5 else 0.15
-    tov_kr = compute_skillkr(tov_per_usage, n_games, level_key, "tov_per_usage",
-                             lower_is_better=True)
+    # Disruption activity: steals per 100 possessions (higher is better)
+    stl_per_100 = stl_pg * (100 / 70)
+    stl_kr = compute_skillkr(stl_per_100, n_games, level_key, "stl_per_100")
 
     # Minutes trust (coach plays trusted defenders more)
     min_kr = compute_skillkr(minutes_pg, n_games, level_key, "minutes_pg")
@@ -457,24 +452,24 @@ def score_team_defense(
     start_kr = compute_skillkr(start_rate, n_games, level_key, "start_rate")
 
     # Cross-level composite
-    raw = (0.30 * foul_kr["skill_kr"]
-         + 0.30 * tov_kr["skill_kr"]
+    raw = (0.35 * foul_kr["skill_kr"]
+         + 0.25 * stl_kr["skill_kr"]
          + 0.25 * min_kr["skill_kr"]
          + 0.15 * start_kr["skill_kr"])
     score = max(0, min(100, round(raw, 1)))
 
     # League-internal composite
-    raw_l = (0.30 * foul_kr["skill_kr_league"]
-           + 0.30 * tov_kr["skill_kr_league"]
+    raw_l = (0.35 * foul_kr["skill_kr_league"]
+           + 0.25 * stl_kr["skill_kr_league"]
            + 0.25 * min_kr["skill_kr_league"]
            + 0.15 * start_kr["skill_kr_league"])
     score_league = max(0, min(100, round(raw_l, 1)))
 
     traits = [
         {"cluster": "team_defense", "trait_key": "pf_per_100",
-         "v": n_games, "n_desc": "GP (foul rate)", **foul_kr},
-        {"cluster": "team_defense", "trait_key": "tov_per_usage",
-         "v": n_games, "n_desc": "GP (transition tax)", **tov_kr},
+         "v": n_games, "n_desc": "GP (foul discipline)", **foul_kr},
+        {"cluster": "team_defense", "trait_key": "stl_per_100",
+         "v": n_games, "n_desc": "GP (disruption activity)", **stl_kr},
         {"cluster": "team_defense", "trait_key": "minutes_pg",
          "v": n_games, "n_desc": "GP (minutes trust)", **min_kr},
         {"cluster": "team_defense", "trait_key": "start_rate",
@@ -579,9 +574,7 @@ def compute_all_clusters(
 
     team_defense, team_defense_l, td_traits = score_team_defense(
         pf_pg=stats.get("pf_pg", 0),
-        to_pg=stats.get("to_pg", 0),
-        fga_pg=stats.get("fga_pg", 0),
-        fta_pg=stats.get("fta_pg", 0),
+        stl_pg=stats.get("stl_pg", 0),
         minutes_pg=stats.get("minutes_pg", 0),
         start_rate=stats.get("start_rate", 0.5),
         level_key=level_key,
