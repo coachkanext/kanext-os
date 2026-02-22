@@ -16,7 +16,8 @@ import {
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors, Spacing, ModeColors } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import {
   RECRUITING_BOARD,
@@ -76,7 +77,7 @@ function getV2Stage(entry: BoardEntry): PipelineStageV2 {
 // =============================================================================
 
 export function RecruitingBoardV2({ colors }: Props) {
-  const accent = ModeColors.sports.primary;
+  const accent = useAccentColor();
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
   const [sortKey, setSortKey] = useState<SortKey>('kr');
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);

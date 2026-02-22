@@ -11,7 +11,8 @@ import { useFocusEffect } from '@react-navigation/core';
 import { consumeOrgReset, registerOrgResetCallback } from '@/utils/global-org';
 
 import { ThemedView } from '@/components/themed-view';
-import { Colors, ModeColors } from '@/constants/theme';
+import { Colors } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext, useMode, useMembershipId } from '@/context/app-context';
 import { getSportsRole } from '@/utils/sports-rbac';
@@ -124,7 +125,7 @@ function useOrgPager() {
 function SportsOrganization() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors.sports.primary;
+  const accent = useAccentColor();
   const membershipId = useMembershipId();
   const role = useMemo(() => getSportsRole(membershipId), [membershipId]);
   const { activeIndex, setActiveIndex, pagerRef, handleTabPress } = useOrgPager();
@@ -172,7 +173,7 @@ function ChurchOrganization() {
 function ChurchOrganizationInner() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors.church.primary;
+  const accent = useAccentColor();
   const { viewAsRole } = useChurch();
   const membershipId = useMembershipId();
   const derivedRole = useMemo(() => getChurchRole(membershipId), [membershipId]);
@@ -222,7 +223,7 @@ function EducationOrganization() {
 function EducationOrganizationInner() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors.education.primary;
+  const accent = useAccentColor();
   const { viewAsRole } = useEducation();
   const membershipId = useMembershipId();
   const derivedRole = useMemo(() => getEducationRole(membershipId), [membershipId]);
@@ -264,7 +265,7 @@ function EducationOrganizationInner() {
 function CommunityOrganization() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors.competition.primary;
+  const accent = useAccentColor();
   const membershipId = useMembershipId();
   const role = useMemo(() => getCompetitionRole(membershipId), [membershipId]);
   const { activeIndex, setActiveIndex, pagerRef, handleTabPress } = useOrgPager();
@@ -312,7 +313,7 @@ function BusinessOrganization() {
 function BusinessOrganizationInner() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors.business.primary;
+  const accent = useAccentColor();
   const { viewAsRole, selectedEntity, selectedEntityId } = useBusiness();
   const membershipId = useMembershipId();
   const derivedRole = useMemo(() => getBusinessRole(membershipId), [membershipId]);

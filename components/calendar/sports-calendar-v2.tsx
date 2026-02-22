@@ -11,7 +11,8 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors, ModeColors } from '@/constants/theme';
+import { Colors } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { CalendarHub } from '@/components/schedule/calendar-hub';
 import { CalendarGamesView } from '@/components/calendar/calendar-games-view';
@@ -28,7 +29,7 @@ interface Props {
 export function SportsCalendarV2({ colors: propColors }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = propColors ?? Colors[colorScheme];
-  const accent = ModeColors.sports.primary;
+  const accent = useAccentColor();
   const [activeTab, setActiveTab] = useState<PillTab>('Agenda');
   const router = useRouter();
 

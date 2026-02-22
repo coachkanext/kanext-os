@@ -10,7 +10,8 @@ import { View, ScrollView, StyleSheet, Pressable, FlatList } from 'react-native'
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { HomeHeroVideoCard } from '@/components/dashboard/home-hero-video-card';
 
@@ -39,7 +40,7 @@ interface Props {
 export function SportsDashboardV2({ onTabJump }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors.sports.primary;
+  const accent = useAccentColor();
 
   return (
     <ScrollView

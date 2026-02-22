@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { Mode } from '@/types';
 import {
@@ -48,7 +49,7 @@ interface Props {
 export function ModeRoomsV2({ mode, search = '' }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors[mode]?.primary ?? '#fff';
+  const accent = useAccentColor();
 
   const rooms = useMemo(() => {
     let list = getModeRooms(mode);

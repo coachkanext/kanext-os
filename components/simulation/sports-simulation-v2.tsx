@@ -93,7 +93,7 @@ const SIM_CONTEXTS: SimContext[] = [
 export function SportsSimulationV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors.sports.primary;
+  const accent = useAccentColor();
   const membershipId = useMembershipId();
   const role = getSportsRole(membershipId);
   const krVis = getKRVisibility(role);

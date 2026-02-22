@@ -17,7 +17,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, ModeColors } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { nationalPool, toGlobalPlayerCard, type NationalPlayer } from '@/data/national-pool';
 import { openPlayerCard } from '@/utils/global-entity-sheets';
 import {
@@ -55,7 +56,7 @@ interface Props {
 }
 
 export function RecruitingPortalV2({ colors }: Props) {
-  const accent = ModeColors.sports.primary;
+  const accent = useAccentColor();
   const [searchQuery, setSearchQuery] = useState('');
   const [posFilter, setPosFilter] = useState('All');
   const [levelFilter, setLevelFilter] = useState<string[]>([]);

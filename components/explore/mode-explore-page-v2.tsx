@@ -325,7 +325,7 @@ interface Props {
 export function ModeExplorePageV2({ mode }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors[mode]?.primary ?? '#fff';
+  const accent = useAccentColor();
   const config = MODE_CONFIG[mode];
 
   const [search, setSearch] = useState('');

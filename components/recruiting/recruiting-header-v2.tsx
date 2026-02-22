@@ -8,7 +8,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, ModeColors } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import type { RecruitingViewModeV2 } from '@/types';
 
 const SEGMENTS: { key: RecruitingViewModeV2; label: string }[] = [
@@ -24,7 +25,7 @@ interface Props {
 }
 
 export function RecruitingHeaderV2({ activeMode, onModeChange, colors }: Props) {
-  const accent = ModeColors.sports.primary;
+  const accent = useAccentColor();
 
   return (
     <View style={styles.container}>

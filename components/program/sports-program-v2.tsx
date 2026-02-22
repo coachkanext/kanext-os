@@ -47,7 +47,6 @@ export function SportsProgramV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
-  const accent = ModeColors.sports.primary;
   const [activeTab, setActiveTab] = useState<PillTab>('Overview');
 
   return (

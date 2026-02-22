@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, ModeColors } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { Mode } from '@/types';
 import {
@@ -27,7 +28,7 @@ interface Props {
 export function ModePinnedV2({ mode, search = '' }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = ModeColors[mode]?.primary ?? '#fff';
+  const accent = useAccentColor();
 
   const threads = useMemo(() => {
     let list = PINNED_THREADS_BY_MODE[mode] ?? [];

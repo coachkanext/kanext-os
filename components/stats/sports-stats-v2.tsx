@@ -47,7 +47,6 @@ export function SportsStatsV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
-  const accent = ModeColors.sports.primary;
   const membershipId = useMembershipId();
   const role = getSportsRole(membershipId);
   const krVis = getKRVisibility(role);
