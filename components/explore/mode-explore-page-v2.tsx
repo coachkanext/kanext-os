@@ -96,7 +96,6 @@ function ShelfRow<T>({
 }) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = useAccentColor();
 
   if (data.length === 0) return null;
 
