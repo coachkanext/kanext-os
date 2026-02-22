@@ -110,7 +110,7 @@ export function SplashScreen({ onReady, isAppReady }: SplashScreenProps) {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#0B0F14',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -130,11 +130,11 @@ const styles = StyleSheet.create({
   poweredBy: {
     fontSize: 13,
     fontWeight: '400',
-    color: 'rgba(255, 255, 255, 0.4)',
+    color: 'rgba(0, 0, 0, 0.35)',
   },
   nexus: {
     fontSize: 13,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: 'rgba(0, 0, 0, 0.6)',
   },
 });

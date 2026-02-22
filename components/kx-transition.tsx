@@ -72,14 +72,14 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 9999,
-    backgroundColor: '#0B0F14',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
   kx: {
     fontSize: 48,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#000000',
     letterSpacing: 2,
   },
 });
