@@ -156,16 +156,16 @@ export interface ProgramData {
 export const INSTITUTION = {
   id: 'fmu',
   name: 'KaNeXT Sports',
-  nickname: 'Lions',
+  nickname: 'Wolves',
   location: 'Nashville, TN',
   conference: 'KaNeXT Conference',
-  division: 'NAIA',
+  division: 'NAA',
   founded: 1879,
   colors: {
     primary: '#1D9BF0',
     secondary: '#F59E0B',
   },
-  description: 'KaNeXT Sports is a private university located in Nashville, Tennessee. The basketball program competes in the NAIA KaNeXT Conference.',
+  description: 'KaNeXT Sports is a private university located in Nashville, Tennessee. The basketball program competes in the NAA KaNeXT Conference.',
 };
 
 // =============================================================================
@@ -699,7 +699,7 @@ export function formatPercentage(value: number): string {
 // RECRUITING TYPES
 // =============================================================================
 
-export type Division = 'NCAA_D1' | 'NCAA_D2' | 'NCAA_D3' | 'NAIA' | 'NJCAA' | 'CCCAA';
+export type Division = 'NCAA_D1' | 'NCAA_D2' | 'NCAA_D3' | 'NAA' | 'NJCAA' | 'CCCAA';
 
 export interface NationalPlayer {
   id: string;
@@ -750,7 +750,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
     weight: '175 lbs',
     classYear: 'JR',
     currentTeam: 'Central Methodist',
-    currentDivision: 'NAIA',
+    currentDivision: 'NAA',
     hometown: 'Kansas City, MO',
     transferStatus: 'available',
     stats: { gp: 28, gs: 28, mpg: 32.5, ppg: 18.4, rpg: 3.2, apg: 6.8, spg: 1.9, bpg: 0.1, fgPct: 44.2, threePct: 38.1, ftPct: 82.3 },
@@ -877,7 +877,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
     weight: '180 lbs',
     classYear: 'JR',
     currentTeam: 'Evangel',
-    currentDivision: 'NAIA',
+    currentDivision: 'NAA',
     hometown: 'Springfield, MO',
     transferStatus: 'exploring',
     stats: { gp: 29, gs: 29, mpg: 33.8, ppg: 16.9, rpg: 3.5, apg: 7.2, spg: 1.6, bpg: 0.1, fgPct: 43.5, threePct: 37.2, ftPct: 80.6 },
@@ -1048,7 +1048,7 @@ export function getDivisionLabel(division: Division): string {
     NCAA_D1: 'NCAA D1',
     NCAA_D2: 'NCAA D2',
     NCAA_D3: 'NCAA D3',
-    NAIA: 'NAIA',
+    NAIA: 'NAA',
     NJCAA: 'JUCO',
     CCCAA: 'CCCAA',
   };

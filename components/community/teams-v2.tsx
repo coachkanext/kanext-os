@@ -1,5 +1,5 @@
 /**
- * Teams V2 — CEO / Commissioner-level team dossier system for K-1 motorsport league.
+ * Teams V2 — CEO / Commissioner-level team dossier system for KaNeXT motorsport league.
  * Two-state UI: team list (default) and team detail view with 8 inner tabs.
  */
 

@@ -356,7 +356,7 @@ const OUTREACH_SEATS: MinistrySeat[] = [
     ministryId: 'min-004',
     ministryName: 'Outreach & Missions',
     role: 'Benevolence Coordinator',
-    holder: 'Sister Grace Nwosu',
+    holder: 'Sister Grace Wilson',
     status: 'filled',
     critical: false,
     since: '2024-02-14',

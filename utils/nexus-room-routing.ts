@@ -82,7 +82,7 @@ const SPORTS_ROUTING: ModeRoutingProfile = {
   vocabulary: {
     'eligibility': 'compliance',
     'ncaa': 'compliance',
-    'iccla': 'compliance',
+    'kcc': 'compliance',
     'waiver': 'compliance',
     'transfer': 'compliance',
     'nil': 'finance',

@@ -291,7 +291,7 @@ const SPORTS_BUDGETS: FinanceBudget[] = [
 // =============================================================================
 
 const SPORTS_LEDGER: FinanceLedgerEntry[] = [
-  { id: 'sl-1', date: 'Feb 15, 2026', description: 'Team bus charter — Thomas University', type: 'expense', category: 'Travel', amount: 2400, scope: 'Program' },
+  { id: 'sl-1', date: 'Feb 15, 2026', description: 'Team bus charter — Magnolia University', type: 'expense', category: 'Travel', amount: 2400, scope: 'Program' },
   { id: 'sl-2', date: 'Feb 14, 2026', description: 'Nike equipment order — spring uniforms', type: 'expense', category: 'Equipment', amount: 4800, scope: 'Program', evidence: 'PO-2026-014' },
   { id: 'sl-3', date: 'Feb 12, 2026', description: 'Booster donation — Williams Family', type: 'income', category: 'Donations', amount: 5000, scope: 'Organization' },
   { id: 'sl-4', date: 'Feb 10, 2026', description: 'Game guarantee — Homecoming', type: 'income', category: 'Revenue', amount: 15000, scope: 'Program' },
@@ -322,7 +322,7 @@ const SPORTS_APPROVALS: FinanceApproval[] = [
 
 const SPORTS_PAYABLES: FinancePayable[] = [
   { id: 'sp-1', vendor: 'Nike Team Sports', description: 'Spring uniform order — 20 sets', amount: 4800, dueDate: 'Mar 5, 2026', category: 'Equipment', status: 'pending', invoiceRef: 'NTS-44821' },
-  { id: 'sp-2', vendor: 'Charter Express', description: 'Bus charter — Thomas University away game', amount: 2400, dueDate: 'Feb 28, 2026', category: 'Travel', status: 'approved' },
+  { id: 'sp-2', vendor: 'Charter Express', description: 'Bus charter — Magnolia University away game', amount: 2400, dueDate: 'Feb 28, 2026', category: 'Travel', status: 'approved' },
   { id: 'sp-3', vendor: 'Sodexo Dining', description: 'Pre-game meal service — February', amount: 1450, dueDate: 'Mar 1, 2026', category: 'Nutrition', status: 'pending', invoiceRef: 'SOD-8821' },
   { id: 'sp-4', vendor: 'BSN Sports', description: 'Practice pinnies and cones restock', amount: 680, dueDate: 'Feb 22, 2026', category: 'Equipment', status: 'paid' },
   { id: 'sp-5', vendor: 'SportsMed Pro', description: 'Athletic trainer retainer — March', amount: 3200, dueDate: 'Mar 1, 2026', category: 'Medical', status: 'pending' },
@@ -698,7 +698,7 @@ const CHURCH_PURCHASING: FinancePurchaseRequest[] = [
 // =============================================================================
 
 const CHURCH_PAYROLL: FinancePayrollItem[] = [
-  { id: 'chpy-1', payee: 'Pastor Dipo Carter', payeeInitials: 'DK', period: 'Feb 2026', amount: 6500, type: 'salary', status: 'paid' },
+  { id: 'chpy-1', payee: 'Pastor James Carter', payeeInitials: 'DK', period: 'Feb 2026', amount: 6500, type: 'salary', status: 'paid' },
   { id: 'chpy-2', payee: 'Admin Pastor Thomas', payeeInitials: 'AT', period: 'Feb 2026', amount: 4800, type: 'salary', status: 'paid' },
   { id: 'chpy-3', payee: 'Worship Director', payeeInitials: 'WD', period: 'Feb 2026', amount: 3500, type: 'salary', status: 'paid' },
   { id: 'chpy-4', payee: 'Musicians (4)', payeeInitials: 'MU', period: 'Feb 2026', amount: 2400, type: 'contractor', status: 'pending' },

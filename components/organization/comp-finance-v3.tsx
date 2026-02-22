@@ -1,6 +1,6 @@
 /**
  * Competition Finance V3 — 3-pill ViewBar (Budget | Revenue | Prize)
- * K-1 Speed League · Commissioner perspective
+ * KaNeXT Motorsport League · Commissioner perspective
  * $45M operating budget, $52M revenue, $20M prize pool.
  */
 import React, { useState, useCallback } from 'react';

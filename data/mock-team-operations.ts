@@ -95,16 +95,16 @@ export interface SystemsData {
 // =============================================================================
 
 export const KaNeXT_STAFF: StaffMember[] = [
-  { name: 'Alex Morgan', title: 'Head Coach / GM', role: 'head_coach', email: 'skalejaiye@fmu.edu', phone: '(305) 555-0100' },
-  { name: 'Marcus Williams', title: 'Associate Head Coach', role: 'assistant', email: 'mwilliams@fmu.edu', phone: '(305) 555-0101' },
-  { name: 'James Robinson', title: 'Assistant Coach — Defense', role: 'assistant', email: 'jrobinson@fmu.edu', phone: '(305) 555-0102' },
-  { name: 'David Thompson', title: 'Assistant Coach — Player Development', role: 'assistant', email: 'dthompson@fmu.edu', phone: '(305) 555-0103' },
-  { name: 'Alex Rivera', title: 'Recruiting Coordinator', role: 'assistant', email: 'arivera@fmu.edu', phone: '(305) 555-0104' },
-  { name: 'Chris Morgan', title: 'Director of Basketball Operations', role: 'operations', email: 'cmorgan@fmu.edu', phone: '(305) 555-0105' },
-  { name: 'Sarah Johnson', title: 'Athletic Trainer', role: 'support', email: 'sjohnson@fmu.edu', phone: '(305) 555-0106' },
-  { name: 'Michael Davis', title: 'Strength & Conditioning Coach', role: 'support', email: 'mdavis@fmu.edu', phone: '(305) 555-0107' },
-  { name: 'Rachel Kim', title: 'Video Coordinator', role: 'operations', email: 'rkim@fmu.edu', phone: '(305) 555-0108' },
-  { name: 'Jordan Peters', title: 'Team Manager', role: 'operations', email: 'jpeters@fmu.edu', phone: '(305) 555-0109' },
+  { name: 'Alex Morgan', title: 'Head Coach / GM', role: 'head_coach', email: 'skalejaiye@kanext.edu', phone: '(305) 555-0100' },
+  { name: 'Marcus Williams', title: 'Associate Head Coach', role: 'assistant', email: 'mwilliams@kanext.edu', phone: '(305) 555-0101' },
+  { name: 'James Robinson', title: 'Assistant Coach — Defense', role: 'assistant', email: 'jrobinson@kanext.edu', phone: '(305) 555-0102' },
+  { name: 'David Thompson', title: 'Assistant Coach — Player Development', role: 'assistant', email: 'dthompson@kanext.edu', phone: '(305) 555-0103' },
+  { name: 'Alex Rivera', title: 'Recruiting Coordinator', role: 'assistant', email: 'arivera@kanext.edu', phone: '(305) 555-0104' },
+  { name: 'Chris Morgan', title: 'Director of Basketball Operations', role: 'operations', email: 'cmorgan@kanext.edu', phone: '(305) 555-0105' },
+  { name: 'Sarah Johnson', title: 'Athletic Trainer', role: 'support', email: 'sjohnson@kanext.edu', phone: '(305) 555-0106' },
+  { name: 'Michael Davis', title: 'Strength & Conditioning Coach', role: 'support', email: 'mdavis@kanext.edu', phone: '(305) 555-0107' },
+  { name: 'Rachel Kim', title: 'Video Coordinator', role: 'operations', email: 'rkim@kanext.edu', phone: '(305) 555-0108' },
+  { name: 'Jordan Peters', title: 'Team Manager', role: 'operations', email: 'jpeters@kanext.edu', phone: '(305) 555-0109' },
 ];
 
 // =============================================================================
@@ -113,9 +113,9 @@ export const KaNeXT_STAFF: StaffMember[] = [
 
 export const KaNeXT_OPERATIONS: OperationsData = {
   travel: [
-    { date: '2026-02-21', opponent: 'Webber International', departure: '8:00 AM', arrival: '11:30 AM', hotel: 'Holiday Inn Babson Park', status: 'confirmed' },
-    { date: '2026-02-25', opponent: 'Ave Maria', departure: '7:00 AM', arrival: '9:30 AM', status: 'confirmed' },
-    { date: '2026-03-01', opponent: 'Warner', departure: '10:00 AM', arrival: '2:00 PM', hotel: 'Comfort Inn Lake Wales', status: 'pending' },
+    { date: '2026-02-21', opponent: 'Pinecrest University', departure: '8:00 AM', arrival: '11:30 AM', hotel: 'Holiday Inn Babson Park', status: 'confirmed' },
+    { date: '2026-02-25', opponent: 'Westfield', departure: '7:00 AM', arrival: '9:30 AM', status: 'confirmed' },
+    { date: '2026-03-01', opponent: 'Clearwater', departure: '10:00 AM', arrival: '2:00 PM', hotel: 'Comfort Inn Lake Wales', status: 'pending' },
   ],
   facilities: [
     { name: 'Main Court — Pratt Whitney Center', status: 'available' },

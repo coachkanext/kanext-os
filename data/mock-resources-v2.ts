@@ -1189,7 +1189,7 @@ const links: ResourceLink[] = [
   {
     id: 'link-001',
     title: 'KaNeXT MBB Synergy Portal',
-    url: 'https://synergy.fmu.edu/mbb',
+    url: 'https://synergy.kanext.edu/mbb',
     platform: 'synergy',
     pinned: true,
     scope: 'program',
@@ -1222,7 +1222,7 @@ const links: ResourceLink[] = [
   {
     id: 'link-004',
     title: 'KaNeXT Athletics Website',
-    url: 'https://athletics.fmu.edu',
+    url: 'https://athletics.kanext.edu',
     platform: 'website',
     pinned: false,
     scope: 'organization',

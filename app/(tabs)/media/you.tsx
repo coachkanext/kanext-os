@@ -44,7 +44,7 @@ import type { VideoClip } from '@/data/mock-video';
 type YouTab = 'you' | 'film_room';
 
 // KaNeXT identity data for TeamHeader
-const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
+const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
 const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—';
 
 // =============================================================================
@@ -168,8 +168,8 @@ function MyTeamContent({ onShare }: { onShare: (title: string) => void }) {
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
       <TeamHeader
         teamName="KaNeXT Sports"
-        teamLogo={KaNeXT_SEAL}
-        level="NAIA"
+        teamLogo={KaNeXT_LOGO}
+        level="NAA"
         conference="KaNeXT Conference"
         teamKR={74}
         offKR={74}

@@ -40,7 +40,7 @@ interface HomeHeroVideoCardProps {
 
 const PINNED_HERO: HeroVideo = {
   id: 'hero-pinned',
-  title: 'Keiser Scout Breakdown — Transition Defense',
+  title: 'Lakewood Scout Breakdown — Transition Defense',
   subtitle: 'Staff Film · Uploaded 2h ago',
   thumbnailColor: '#1D9BF0',
   duration: '8:42',

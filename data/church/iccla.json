@@ -1,270 +1,212 @@
 {
   "church_profile": {
-    "name": "International Christian Center | Los Angeles",
-    "shortName": "ICCLA",
-    "denomination": "Inter-denominational Pentecostal",
-    "description": "A Multicultural Christian Haven for Worshipping Jesus Christ",
-    "vision": "To make disciples of all nations by teaching, preaching, instructing in the undiluted word of God and through community stewardship",
-    "theme2026": "Year of Divine Manifestation",
-    "website": "https://iccla.com",
-    "serviceTime": "Sundays at 7:00 PM",
+    "name": "KaNeXT Community Church",
+    "shortName": "KCC",
+    "denomination": "Non-denominational",
+    "description": "A vibrant, welcoming community of faith dedicated to worship, growth, and service",
+    "vision": "To build a thriving community of believers who impact the world through faith, love, and service",
+    "theme2026": "Year of New Beginnings",
+    "website": "https://church.kanext.io",
+    "serviceTime": "Sundays at 10:00 AM",
     "social": {
-      "instagram": "https://www.instagram.com/icclosangeles/",
-      "facebook": "https://www.facebook.com/ICCLosAngeles/",
-      "youtube": "https://www.youtube.com/channel/UCht4zJbLE7V8Tra6gA-xcnQ",
-      "twitter": "https://twitter.com/icclosangeles",
-      "tiktok": "https://www.tiktok.com/@icclosangeles"
+      "instagram": "https://www.instagram.com/kanextchurch/",
+      "facebook": "https://www.facebook.com/kanextchurch/",
+      "youtube": "https://www.youtube.com/@kanextchurch",
+      "twitter": "https://twitter.com/kanextchurch",
+      "tiktok": "https://www.tiktok.com/@kanextchurch"
     }
   },
   "leadership": [
     {
-      "id": "pastor-dipo",
-      "name": "Pastor Dipo Kalejaiye",
-      "title": "Senior Pastor / Founder",
+      "id": "pastor-james",
+      "name": "Pastor James Carter",
+      "title": "Lead Pastor",
       "role": "senior_pastor",
-      "bio": "Dr. Oladipo Kalejaiye is the founding Senior Pastor of International Christian Center, Los Angeles. He holds a PhD in Law and has over 25 years of litigation experience. He anchors the Hotline to Heaven global prayer ministry daily at 8:00 AM.",
-      "credentials": "PhD (Law)"
+      "bio": "Pastor James Carter is the founding lead pastor of KaNeXT Community Church. With over 20 years of ministry experience, he has a passion for building authentic community and developing servant leaders.",
+      "credentials": "M.Div."
     },
     {
-      "id": "pastor-nony",
-      "name": "Pastor Nony Kalejaiye",
-      "title": "First Lady / Co-Pastor",
+      "id": "pastor-grace",
+      "name": "Pastor Grace Carter",
+      "title": "Executive Pastor",
       "role": "co_pastor",
-      "bio": "Dr. Nonyelum Kalejaiye is the co-founding pastor and First Lady of ICCLA. She holds a Doctor of Dental Surgery (DDS) degree. She leads the 40 Days of Waiting Upon the Lord prayer initiative for 2026.",
-      "credentials": "DDS"
+      "bio": "Pastor Grace Carter serves as the executive pastor of KaNeXT Community Church. She oversees ministry operations, women's ministry, and community outreach programs.",
+      "credentials": "M.A. Counseling"
     }
   ],
   "ministries": [
     {
-      "id": "men-wondered-at",
-      "name": "Men Wondered At",
+      "id": "mens-fellowship",
+      "name": "Men's Fellowship",
       "type": "mens",
-      "description": "The Men's Ministry at ICCLA.",
-      "status": "coming_soon"
+      "description": "A ministry for men to grow in faith, leadership, and accountability.",
+      "status": "active"
     },
     {
-      "id": "virtuous-women",
-      "name": "Virtuous Women's Fellowship",
+      "id": "womens-fellowship",
+      "name": "Women's Fellowship",
       "type": "womens",
-      "description": "The Women's Ministry at ICCLA.",
-      "status": "coming_soon"
+      "description": "A community for women to connect, grow, and serve together.",
+      "status": "active"
     },
     {
-      "id": "torch-nation",
-      "name": "T.O.R.C.H. Nation",
+      "id": "young-adults",
+      "name": "Next Gen",
       "type": "young_adults",
-      "description": "Young Adults Ministry. T.O.R.C.H. stands for 'when you are Transformed and Open, Real Change Happens.' Trendy, contemporary worship and praise, relatable life transformation groups, and regular, refreshing events.",
-      "contact": "David Eze: +1 (310) 738-8298",
+      "description": "Young adults ministry for ages 18-30. Contemporary worship, life groups, and community events.",
       "status": "active"
     },
     {
-      "id": "sheepfold",
-      "name": "Sheepfold Ministry",
+      "id": "kids-church",
+      "name": "KaNeXT Kids",
       "type": "childrens",
-      "description": "Children's Church with well-trained, professional Christian teachers and exquisite facilities. Parents may stay with their child in the sanctuary or release them to the Children's Church. Nursery available for little ones.",
+      "description": "Children's ministry with engaging, age-appropriate Bible lessons, worship, and activities. Nursery available for infants and toddlers.",
       "status": "active"
     },
     {
-      "id": "fresh-fire",
-      "name": "Fresh Fire Youth Ministry",
+      "id": "youth-ministry",
+      "name": "Ignite Youth",
       "type": "youth",
-      "description": "Teens Church providing an assortment of youth activities for teens all year round.",
+      "description": "Teen ministry with weekly gatherings, retreats, and service projects for students in grades 6-12.",
       "status": "active"
     },
     {
-      "id": "rooted",
-      "name": "Rooted",
+      "id": "life-groups",
+      "name": "Life Groups",
       "type": "discipleship",
-      "description": "Life transformation groups. The Rooted experience redefines how people live life and view their relationship with God and others, giving context to what it means to be part of something bigger. Experience life marked by community, authenticity, and generosity.",
+      "description": "Small group gatherings in homes and on campus for Bible study, prayer, and authentic community. Open to everyone.",
       "status": "active"
     },
     {
-      "id": "icc-connect-groups",
-      "name": "ICC Connect Groups",
+      "id": "connect-groups",
+      "name": "Connect Groups",
       "type": "small_groups",
-      "description": "A cozy haven for Christian fellowship where members engage in interactive discussions, meet new people, and celebrate milestones. Open to both members and non-members of the church.",
+      "description": "Interest-based groups that meet regularly for fellowship, discussion, and shared activities. A great way to meet new people.",
       "status": "active"
     },
     {
-      "id": "vineyard-voices",
-      "name": "Vineyard Voices",
+      "id": "worship-team",
+      "name": "Worship Team",
       "type": "worship",
-      "description": "Music Ministry led by Dr. Kunle Pinmiloye (Ksticks). Key activities include Congregational Worship sessions, Special Ministrations, Praise & Worship services (Altar of Praise), and Special Musical Concerts including the ICCLA Sound of Christmas.",
-      "leader": "Dr. Kunle Pinmiloye (Ksticks)",
+      "description": "Music and worship ministry including vocalists, instrumentalists, and production team. Serves in weekly services and special events.",
+      "leader": "Minister David Brooks",
       "status": "active"
     },
     {
-      "id": "single-saved-serving",
-      "name": "Single Saved and Serving Ministry",
+      "id": "singles-ministry",
+      "name": "Single & Purposeful",
       "type": "singles",
-      "description": "Connects, encourages, and supports seasoned singles as they live a life of faith and trust in God, guiding Christian single adults as they grow in their spiritual, social, and personal lives.",
+      "description": "A ministry for single adults to grow spiritually, build meaningful relationships, and serve the community.",
       "status": "active"
     },
     {
-      "id": "the-harvesters",
-      "name": "The Harvesters",
+      "id": "outreach",
+      "name": "Community Outreach",
       "type": "outreach",
-      "description": "Outreach and evangelism ministry of ICCLA.",
+      "description": "Serving the local community through food drives, mentoring programs, and partnership with local organizations.",
       "status": "active"
     }
   ],
   "giving": {
-    "philosophy": "ICCLA strives to be a church characterized by generosity — not just in financial contributions but in every act of kindness and service. Tithing and offerings reflect trust in Jesus as the ultimate provider.",
-    "categories": ["Tithes", "Offerings", "Donations"],
+    "philosophy": "We believe in the joy of generosity. Every gift supports our mission to build community, serve others, and share hope.",
+    "categories": ["Tithes", "Offerings", "Missions"],
     "methods": [
       {
         "type": "text_to_give",
         "label": "Text to Give",
-        "instructions": "Text ICCLA to (562) 837-2667"
-      },
-      {
-        "type": "zelle",
-        "label": "Zelle",
-        "instructions": "Send to give@iccla.com"
+        "instructions": "Text GIVE to (615) 555-0200"
       },
       {
         "type": "online",
-        "label": "Online",
-        "instructions": "Secure online giving at iccla.com/givee",
-        "url": "https://iccla.com/givee"
+        "label": "Online Giving",
+        "instructions": "Secure online giving at church.kanext.io/give",
+        "url": "https://church.kanext.io/give"
+      },
+      {
+        "type": "app",
+        "label": "KaNeXT App",
+        "instructions": "Give through the KaNeXT app under Church > Giving"
       }
     ]
   },
   "events": [
     {
-      "id": "evt-40-days-2026",
-      "title": "40 Days Fasting & Prayer",
+      "id": "evt-prayer-2026",
+      "title": "21 Days of Prayer & Fasting",
       "date": "2026-01-05",
-      "description": "40 Days of Waiting Upon the Lord in prayer, led by Pastor Nony Kalejaiye. Part of the 2026 Year of Divine Manifestation theme.",
+      "description": "Annual prayer and fasting initiative to start the new year. Led by Pastor Grace Carter.",
       "type": "prayer"
     },
     {
-      "id": "evt-peniel-2026",
-      "title": "PENIEL",
+      "id": "evt-worship-night",
+      "title": "Night of Worship",
       "date": "2026-02-15",
-      "description": "PENIEL worship and prayer event.",
+      "description": "An evening of extended worship and prayer.",
       "type": "worship"
     },
     {
-      "id": "evt-rhythms-2026",
-      "title": "Rhythms From the Roots",
-      "date": "2026-02-22",
-      "description": "Cultural worship experience.",
-      "type": "cultural"
+      "id": "evt-community-day",
+      "title": "Community Impact Day",
+      "date": "2026-03-14",
+      "description": "Churchwide service day partnering with local organizations to serve our neighbors.",
+      "type": "outreach"
     }
   ],
   "messages": [
     {
       "id": "msg-01",
-      "title": "The Word in Season",
+      "title": "Walking in Purpose",
       "date": "2026-02-09",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=5s8Cl8Nvnss"
+      "speaker": "Pastor James Carter"
     },
     {
       "id": "msg-02",
-      "title": "The God of Suddenly",
+      "title": "The Power of Community",
       "date": "2026-02-02",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=eRUhGYfLuQo"
+      "speaker": "Pastor James Carter"
     },
     {
       "id": "msg-03",
-      "title": "Prophetic Encounter Night with Pastor Nony Kalejaiye",
+      "title": "Faith for the Journey",
       "date": "2026-01-26",
-      "speaker": "Pastor Nony Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=2qMwJOlVy4s"
+      "speaker": "Pastor Grace Carter"
     },
     {
       "id": "msg-04",
-      "title": "How to Wage a Good Warfare",
+      "title": "Building on the Rock",
       "date": "2026-01-19",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=s7xJ5wGkxJo"
+      "speaker": "Pastor James Carter"
     },
     {
       "id": "msg-05",
-      "title": "Securing the Foundations of the Year",
+      "title": "New Beginnings",
       "date": "2026-01-12",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=EcqFPBq0d0g"
+      "speaker": "Pastor James Carter"
     },
     {
       "id": "msg-06",
-      "title": "Your Year of Divine Manifestation",
+      "title": "Vision for 2026",
       "date": "2026-01-05",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=xU5oS41F01U"
-    },
-    {
-      "id": "msg-07",
-      "title": "The Siege is Lifted",
-      "date": "2025-12-28",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=kS03fBCuF6k"
-    },
-    {
-      "id": "msg-08",
-      "title": "When God's Word Makes No Sense",
-      "date": "2025-12-25",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=LZPQ8oLKPJ0"
-    },
-    {
-      "id": "msg-09",
-      "title": "The Believer's Victory Over the Spirit of Herod",
-      "date": "2025-12-21",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=YWBlC4kGEBI"
-    },
-    {
-      "id": "msg-10",
-      "title": "KERESIMESI: The Sound of Christmas 2025",
-      "date": "2025-12-14",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=CL4cmOQfuZY"
-    },
-    {
-      "id": "msg-11",
-      "title": "The Spirit of Christ is Always Reconciliatory",
-      "date": "2025-12-07",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=yFeDLKIJ7Lo"
-    },
-    {
-      "id": "msg-12",
-      "title": "The 5 Gates of Life You Must Control to Thrive in Babylon",
-      "date": "2025-11-30",
-      "speaker": "Pastor Dipo Kalejaiye",
-      "youtubeUrl": "https://www.youtube.com/watch?v=GK02NhqSDBE"
+      "speaker": "Pastor James Carter"
     }
   ],
   "programs": {
-    "hotlineToHeaven": {
-      "name": "Hotline to Heaven",
-      "type": "radio_prayer",
-      "description": "Global, non-denominational prayer ministry anchored by Dr. Dipo Kalejaiye. A three-in-one fiery arsenal: The Word, Prayer & Prophecy, to combat the forces of darkness.",
-      "schedule": "Daily at 8:00 AM; Sunday sermon re-broadcast daily at 12:00 PM PST",
-      "access": "Download the ICCLA Church Mobile App from Apple or Google Store and click the Hotline to Heaven logo"
+    "morningPrayer": {
+      "name": "Morning Prayer Line",
+      "type": "prayer",
+      "description": "Daily morning prayer ministry open to all. A time to start the day in prayer and worship together.",
+      "schedule": "Monday - Friday at 6:30 AM",
+      "access": "Join via the KaNeXT Church app or call the prayer line"
     }
   },
   "metadata": {
-    "scraped_at": "2026-02-16",
-    "source_pages": [
-      "https://iccla.com/",
-      "https://iccla.com/about-2/",
-      "https://iccla.com/pastor/",
-      "https://iccla.com/foundation/",
-      "https://iccla.com/messages/",
-      "https://iccla.com/givee/",
-      "https://iccla.com/connect-with-us/"
-    ],
-    "robots_txt_compliant": true,
+    "generated_at": "2026-02-22",
+    "type": "demo_data",
     "counts": {
       "leadership": 2,
       "ministries": 10,
       "events": 3,
-      "messages": 12,
+      "messages": 6,
       "giving_methods": 3
     }
   }

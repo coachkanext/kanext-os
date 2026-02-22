@@ -1,7 +1,7 @@
 /**
  * Edu Compliance V3 — 3-pill ViewBar (Accreditation | Regulatory | Governance)
  * KaNeXT Sports · President perspective
- * HBCU · Founded 1879 · Nashville, TN · SACSCOC Accredited
+ * Private University · Founded 2020 · Nashville, TN · Regionally Accredited
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';

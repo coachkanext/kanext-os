@@ -111,7 +111,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
                 Sat {nextRound.weekendDates.sat} {'\u00B7'} Wildcard Heats + Finals
               </ThemedText>
               <ThemedText style={[styles.weekendRow, { color: colors.textSecondary }]}>
-                Sun {nextRound.weekendDates.sun} {'\u00B7'} K-1 Grand Prix
+                Sun {nextRound.weekendDates.sun} {'\u00B7'} KaNeXT Grand Prix
               </ThemedText>
             </View>
 
@@ -154,7 +154,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
           >
             <ThemedText style={[styles.commerceCardTitle, { color: colors.text }]}>Store</ThemedText>
             <ThemedText style={[styles.commerceCardSub, { color: colors.textSecondary }]} numberOfLines={1}>
-              Official K-1 Racing Gear
+              Official KaNeXT Racing Gear
             </ThemedText>
           </Pressable>
 

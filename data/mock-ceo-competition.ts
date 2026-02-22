@@ -1,7 +1,7 @@
 /**
  * CEO / Commissioner Competition Mode — Mock Data
  * Executive-level data for Dashboard, Calendar (4 sub-pills), and Series overview.
- * All data is from the K-1 Racing League CEO/Commissioner perspective.
+ * All data is from the KaNeXT Racing League CEO/Commissioner perspective.
  */
 
 // =============================================================================
@@ -755,7 +755,7 @@ export const CEO_TEAM_CARDS: CEOTeamCard[] = [
       ],
       historyEntries: [
         { date: 'Jul 18', event: 'Q2 budget report filed', detail: 'Total spend $1.18M — under cap' },
-        { date: 'Jul 1', event: 'Q2 financial review', detail: 'Approved by K-1 audit' },
+        { date: 'Jul 1', event: 'Q2 financial review', detail: 'Approved by KaNeXT audit' },
         { date: 'Jun 14', event: 'Summer Showdown P1+P4', detail: 'Team championship lead extended' },
       ],
       risks: [],
@@ -934,7 +934,7 @@ export const CEO_TEAM_CARDS: CEOTeamCard[] = [
   },
   {
     teamId: 't-8', name: 'Iron Circuit', abbreviation: 'IRC', primaryColor: '#A1A1AA', teamType: 'League-Owned',
-    owner: 'K-1 League', principal: 'Mike Thompson', headquarters: 'Charlottesville, VA', founded: 2022, championships: 0,
+    owner: 'KaNeXT League', principal: 'Mike Thompson', headquarters: 'Charlottesville, VA', founded: 2022, championships: 0,
     points: 132, wins: 0, budget: '$1.1M', budgetUtilization: 75, homeTrack: 'VIR',
     readiness: { tech: 92, compliance: 94, ops: 90, media: 82 },
     business: { sponsorHealth: 'yellow', financialStatus: 'current', sponsorCount: 1, sponsorRevenue: '$120K' },
@@ -1053,7 +1053,7 @@ export const TECHNICAL_DIRECTIVES: TechnicalDirective[] = [
   { id: 'td-3', number: 'TD-2026-003', title: 'Fire Suppression System Quarterly Check', issuedDate: 'Mar 1, 2026', effectiveDate: 'Mar 15, 2026', category: 'safety', summary: 'All fire suppression systems in pit lane and paddock areas must undergo quarterly inspection. Annual re-certification required per FIA mandate.', issuedBy: 'Safety Director', acknowledged: 8, totalTeams: 8 },
   { id: 'td-4', number: 'TD-2026-004', title: 'Tire Pressure Logging Mandate', issuedDate: 'Jul 27, 2026', effectiveDate: 'Jul 28, 2026', category: 'tires', summary: 'Following the Williams tire failure at Portland, all teams must submit tire pressure logs before each session. Random spot-checks in pit lane authorized.', issuedBy: 'Tech Director', acknowledged: 6, totalTeams: 8, supersedes: undefined },
   { id: 'td-5', number: 'TD-2026-005', title: 'Pit Lane Blend Line Enforcement Clarification', issuedDate: 'Jun 28, 2026', effectiveDate: 'Jul 4, 2026', category: 'general', summary: 'Clarifies Article 1.02 enforcement: crossing the blend line on pit exit is a 5-second time penalty on first offense, drive-through on repeat. Sensor data from pit exit loop will be used.', issuedBy: 'Commissioner', acknowledged: 8, totalTeams: 8 },
-  { id: 'td-6', number: 'TD-2026-006', title: 'Data Logger Calibration Standard', issuedDate: 'Apr 15, 2026', effectiveDate: 'Apr 26, 2026', category: 'data', summary: 'Standard K-1 data loggers must be calibrated at the start of each race weekend. Teams must present calibration certificates during technical inspection.', issuedBy: 'Tech Director', acknowledged: 7, totalTeams: 8 },
+  { id: 'td-6', number: 'TD-2026-006', title: 'Data Logger Calibration Standard', issuedDate: 'Apr 15, 2026', effectiveDate: 'Apr 26, 2026', category: 'data', summary: 'Standard KaNeXT data loggers must be calibrated at the start of each race weekend. Teams must present calibration certificates during technical inspection.', issuedBy: 'Tech Director', acknowledged: 7, totalTeams: 8 },
 ];
 
 export const ENHANCED_PENALTY_CATALOG: EnhancedPenaltyCatalog[] = [
@@ -1190,7 +1190,7 @@ export const CLEARANCE_BOARD: ClearanceBoardEntry[] = [
   { id: 'cb-6', entityName: 'Zach Cooper (#41)', entityType: 'driver', teamName: 'Nova Speed', teamColor: '#1D9BF0', clearanceStatus: 'conditional', domains: { technical: 'pending', safety: 'pass', medical: 'pass', financial: 'pass', credential: 'pending' }, blockers: ['Chassis homologation pending', 'Crew credential gap'], lastUpdated: 'Jul 28' },
   { id: 'cb-7', entityName: 'SHD-Phantom V2 (Car #99)', entityType: 'vehicle', teamName: 'Shadow GP', teamColor: '#1D9BF0', clearanceStatus: 'blocked', domains: { technical: 'fail', safety: 'pass', medical: 'n/a', financial: 'n/a', credential: 'n/a' }, blockers: ['Engine seal #4 investigation'], lastUpdated: 'Jul 28' },
   { id: 'cb-8', entityName: 'NVA-Bolt B1 (Car #41)', entityType: 'vehicle', teamName: 'Nova Speed', teamColor: '#1D9BF0', clearanceStatus: 'pending_review', domains: { technical: 'pending', safety: 'pass', medical: 'n/a', financial: 'n/a', credential: 'n/a' }, blockers: ['Front wing re-homologation'], lastUpdated: 'Jul 28' },
-  { id: 'cb-9', entityName: 'Portland International Raceway', entityType: 'venue', teamName: 'K-1 League', teamColor: '#22C55E', clearanceStatus: 'conditional', domains: { technical: 'pass', safety: 'pending', medical: 'pass', financial: 'pass', credential: 'pass' }, blockers: ['Fire suppression re-certification'], lastUpdated: 'Jul 28' },
+  { id: 'cb-9', entityName: 'Portland International Raceway', entityType: 'venue', teamName: 'KaNeXT League', teamColor: '#22C55E', clearanceStatus: 'conditional', domains: { technical: 'pass', safety: 'pending', medical: 'pass', financial: 'pass', credential: 'pass' }, blockers: ['Fire suppression re-certification'], lastUpdated: 'Jul 28' },
 ];
 
 export const SCRUTINEERING_QUEUE: ScrutineeringItem[] = [

@@ -190,10 +190,10 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     rbacSection: 'explore_conference_league',
     items: [
       { id: 'cl-1', title: 'KaNeXT Conference Week 14 Recap', subtitle: 'Standings + Top Plays', thumbnailColor: '#0B0F14', duration: '8:30', badge: 'NEW', date: 'Feb 14', viewCount: 1800, source: 'KaNeXT Conference' },
-      { id: 'cl-2', title: 'NAIA Top 25 Poll Update', subtitle: 'KaNeXT Moves to #8', thumbnailColor: '#1D9BF0', duration: '5:15', date: 'Feb 12', viewCount: 2400, source: 'NAIA' },
+      { id: 'cl-2', title: 'NAIA Top 25 Poll Update', subtitle: 'KaNeXT Moves to #8', thumbnailColor: '#1D9BF0', duration: '5:15', date: 'Feb 12', viewCount: 2400, source: 'NAA' },
       { id: 'cl-3', title: 'Player of the Week: J. Carter', subtitle: 'KaNeXT Conference Honors', thumbnailColor: '#0B0F14', duration: '2:45', date: 'Feb 10', viewCount: 3100, source: 'KaNeXT Conference' },
       { id: 'cl-4', title: 'Conference Tournament Preview', subtitle: 'Bracket Projections', thumbnailColor: '#0B0F14', duration: '12:20', date: 'Feb 8', viewCount: 1500, source: 'KaNeXT Conference' },
-      { id: 'cl-5', title: 'NAIA National Tournament Info', subtitle: 'Qualifying + Format', thumbnailColor: '#0B0F14', duration: '6:45', date: 'Feb 1', viewCount: 4200, source: 'NAIA' },
+      { id: 'cl-5', title: 'NAA Conference Tournament Info', subtitle: 'Qualifying + Format', thumbnailColor: '#0B0F14', duration: '6:45', date: 'Feb 1', viewCount: 4200, source: 'NAA' },
       { id: 'cl-6', title: 'KaNeXT Conference All-Star Selections', subtitle: 'Mid-Season Honors', thumbnailColor: '#0B0F14', duration: '3:10', date: 'Jan 25', viewCount: 2800, source: 'KaNeXT Conference' },
     ],
   },

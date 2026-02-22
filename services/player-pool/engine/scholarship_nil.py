@@ -75,11 +75,11 @@ def classify_tier(overall_kr: float) -> str:
 
 # Canonical cluster demands by position
 POSITION_DEMANDS: dict[str, list[str]] = {
-    "PG": ["playmaking", "shooting", "perimeter_defense"],
-    "CG": ["shooting", "playmaking", "perimeter_defense"],
-    "W":  ["shooting", "perimeter_defense", "finishing"],
-    "F":  ["finishing", "rebounding", "interior_defense"],
-    "B":  ["interior_defense", "rebounding", "finishing"],
+    "PG": ["playmaking", "shooting", "on_ball_defense"],
+    "CG": ["shooting", "playmaking", "on_ball_defense"],
+    "W":  ["shooting", "on_ball_defense", "finishing"],
+    "F":  ["finishing", "rebounding", "team_defense"],
+    "B":  ["team_defense", "rebounding", "finishing"],
 }
 
 
@@ -92,7 +92,7 @@ def compute_need_scarcity(
     Compute need scarcity score (0-100).
     High score = team badly needs what this player provides.
     """
-    demands = POSITION_DEMANDS.get(player_position, ["shooting", "finishing", "perimeter_defense"])
+    demands = POSITION_DEMANDS.get(player_position, ["shooting", "finishing", "on_ball_defense"])
 
     gaps = []
     for cluster in demands:
@@ -122,7 +122,7 @@ def compute_fit_pct(
     from impact_scores import OFF_SYSTEM_MODIFIERS, DEF_SYSTEM_MODIFIERS
 
     off_clusters = ["shooting", "finishing", "playmaking"]
-    def_clusters = ["perimeter_defense", "interior_defense", "rebounding", "frame"]
+    def_clusters = ["on_ball_defense", "team_defense", "rebounding", "physical"]
 
     # Offensive fit: weighted by system modifier importance
     off_mods = OFF_SYSTEM_MODIFIERS.get(off_system or "", {})

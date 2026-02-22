@@ -20,7 +20,7 @@ const MOCK_LEDGER = [
   { id: '1', description: 'Season Ticket Package — Basketball', amount: 2400, type: 'revenue' as const, date: 'Feb 10' },
   { id: '2', description: 'Alumni Donation — Scholarship Fund', amount: 5000, type: 'revenue' as const, date: 'Feb 8' },
   { id: '3', description: 'Equipment Purchase — Training Facility', amount: -1200, type: 'expense' as const, date: 'Feb 6' },
-  { id: '4', description: 'Single Game Tickets — vs Southeastern', amount: 840, type: 'revenue' as const, date: 'Feb 4' },
+  { id: '4', description: 'Single Game Tickets — vs Summit', amount: 840, type: 'revenue' as const, date: 'Feb 4' },
   { id: '5', description: 'Travel — Away Game Transport', amount: -680, type: 'expense' as const, date: 'Feb 2' },
 ];
 

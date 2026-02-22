@@ -34,7 +34,7 @@ from psycopg.rows import dict_row
 from config import DB_CONFIG
 
 from bpr import compute_bpr, season_bpr
-from clusters import compute_all_clusters
+from clusters import compute_all_clusters, compute_derived_lenses
 from player_kr import compute_player_kr, map_position
 from badges import compute_badges
 from team_kr import compute_team_kr
@@ -686,8 +686,8 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
                 c = td.get("cluster", "?")
                 by_cluster.setdefault(c, []).append(td)
             for cname in ["shooting", "finishing", "playmaking",
-                          "perimeter_defense", "interior_defense",
-                          "rebounding", "frame", "team_defense"]:
+                          "on_ball_defense", "team_defense",
+                          "rebounding", "physical"]:
                 ctraits = by_cluster.get(cname, [])
                 cscore_l = clusters_league.get(cname, 0)
                 print(f"  {cname.upper()} (league: {cscore_l})")
@@ -754,7 +754,7 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
         # Insert cluster scores (cross-level + league-internal)
         for cluster_name, score in clusters.items():
             off_w = 1.0 if cluster_name in ("shooting", "finishing", "playmaking") else 0.0
-            def_w = 1.0 if cluster_name in ("perimeter_defense", "interior_defense", "rebounding", "frame", "team_defense") else 0.0
+            def_w = 1.0 if cluster_name in ("on_ball_defense", "team_defense", "rebounding", "physical") else 0.0
             league_score = clusters_league.get(cluster_name, score)
             conn.execute("""
                 INSERT INTO player_kr_clusters (player_kr_id, cluster, score, weight_in_off_kr, weight_in_def_kr, score_league_internal)
@@ -784,6 +784,17 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
                 INSERT INTO player_badges (player_kr_id, badge_name, cluster, tier, effect)
                 VALUES (%s, %s, %s, %s, %s)
             """, (kr_id, badge["name"], badge["cluster"], badge["tier"], badge["effect"]))
+
+        # Compute and store derived defense lenses
+        lenses = compute_derived_lenses(clusters, trait_diagnostics)
+        conn.execute("""
+            INSERT INTO player_kr_clusters (player_kr_id, cluster, score, weight_in_off_kr, weight_in_def_kr, score_league_internal)
+            VALUES (%s, 'perimeter_defense_lens', %s, 0, 0, %s),
+                   (%s, 'interior_defense_lens', %s, 0, 0, %s)
+        """, (
+            kr_id, lenses["perimeter_defense_lens"], lenses["perimeter_defense_lens"],
+            kr_id, lenses["interior_defense_lens"], lenses["interior_defense_lens"],
+        ))
 
         inserted += 1
         if inserted % 500 == 0:
@@ -1426,8 +1437,8 @@ def run_debug_compare(conn, name1: str, name2: str):
     tc2 = _group(d2["traits"])
 
     cluster_order = ["shooting", "finishing", "playmaking",
-                     "perimeter_defense", "interior_defense",
-                     "rebounding", "frame", "team_defense"]
+                     "on_ball_defense", "team_defense",
+                     "rebounding", "physical"]
 
     trait_fields = ["p", "v", "N", "mu", "alpha", "E_v", "sigma_v",
                     "p_adj", "delta", "Z", "skill_kr"]
@@ -1560,21 +1571,21 @@ CLUSTER_DISPLAY = {
     "shooting": "Shooting",
     "finishing": "Finishing",
     "playmaking": "Playmaking",
-    "perimeter_defense": "OnBallDefense",
-    "interior_defense": "TeamDefense",
+    "on_ball_defense": "OnBallDefense",
+    "team_defense": "TeamDefense",
     "rebounding": "Rebounding",
-    "frame": "Physical",
+    "physical": "Physical",
 }
 
 SUBMETRIC_WEIGHTS = {
     "shooting": {"three_pct": 0.42, "three_pa_pg": 0.18, "two_pt_pct": 0.25, "ft_pct": 0.15},
     "finishing": {"two_pt_pct": 0.55, "two_fga_pg": 0.25, "foul_draw_rate": 0.20},
     "playmaking": {"ast_pg": 0.50, "tov_per_usage": 0.20, "ast_to_ratio": 0.30},
-    "perimeter_defense": {"stl_per_100": 0.65, "pf_per_100": 0.35},
-    "interior_defense": {"blk_per_100": 0.50, "pf_per_100": 0.20, "dreb_pg": 0.30},
+    "on_ball_defense": {"stl_per_100": 0.65, "pf_per_100": 0.35},
+    "team_defense": {"pf_per_100": 0.30, "stl_per_100": 0.20, "blk_per_100": 0.20, "minutes_pg": 0.20, "start_rate": 0.10},
     "rebounding": {"dreb_pg": 0.55, "oreb_pg": 0.45},
-    "frame": {"minutes_pg": 1.0},
-    "frame_phys": {"height": 0.30, "weight": 0.25, "minutes_pg": 0.35},
+    "physical": {"minutes_pg": 1.0},
+    "physical_phys": {"height": 0.30, "weight": 0.25, "minutes_pg": 0.35},
 }
 
 
@@ -1680,8 +1691,8 @@ def _build_player_audit(conn, name: str) -> dict | None:
         traits_by_cluster.setdefault(c, []).append(td)
 
     cluster_order = ["shooting", "finishing", "playmaking",
-                     "perimeter_defense", "interior_defense",
-                     "rebounding", "frame", "team_defense"]
+                     "on_ball_defense", "team_defense",
+                     "rebounding", "physical"]
 
     step_2_metrics: dict = {}
     step_3_metrics: dict = {}
@@ -1694,8 +1705,8 @@ def _build_player_audit(conn, name: str) -> dict | None:
         cscore = debug["clusters"].get(cname, 0)
 
         has_phys = any(t["trait_key"] in ("height", "weight") for t in ctraits)
-        if cname == "frame" and has_phys:
-            smw = SUBMETRIC_WEIGHTS["frame_phys"]
+        if cname == "physical" and has_phys:
+            smw = SUBMETRIC_WEIGHTS["physical_phys"]
         else:
             smw = SUBMETRIC_WEIGHTS.get(cname, {})
 
@@ -1834,7 +1845,7 @@ def _build_player_audit(conn, name: str) -> dict | None:
 
     notes = []
     if min_cov < 0.70:
-        notes.append(f"Minutes coverage {min_cov:.0%} < 70%: frame endurance disabled")
+        notes.append(f"Minutes coverage {min_cov:.0%} < 70%: physical endurance disabled")
     if sentinel_games > 0:
         notes.append(f"{sentinel_games} games had sentinel minutes (fixed)")
 

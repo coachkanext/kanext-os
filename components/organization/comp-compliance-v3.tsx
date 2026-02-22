@@ -1,6 +1,6 @@
 /**
  * Competition Compliance V3 — 3-pill ViewBar (Technical | Safety | Regulatory)
- * K-1 Speed League · Commissioner perspective
+ * KaNeXT Motorsport League · Commissioner perspective
  * $10M cap compliance, safety inspections, regulatory status.
  */
 import React, { useState, useCallback } from 'react';
@@ -124,9 +124,9 @@ const GOV_PERMITS = [
 ];
 
 const TRADEMARKS = [
-  { id: 'tm1', mark: 'K-1', status: 'Registered' as ComplianceStatus },
-  { id: 'tm2', mark: 'K-1 Speed League', status: 'Registered' as ComplianceStatus },
-  { id: 'tm3', mark: 'K-1 Grand Prix', status: 'Registered' as ComplianceStatus },
+  { id: 'tm1', mark: 'KaNeXT', status: 'Registered' as ComplianceStatus },
+  { id: 'tm2', mark: 'KaNeXT Motorsport League', status: 'Registered' as ComplianceStatus },
+  { id: 'tm3', mark: 'KaNeXT Grand Prix', status: 'Registered' as ComplianceStatus },
 ];
 
 // =============================================================================

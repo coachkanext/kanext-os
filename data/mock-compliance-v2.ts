@@ -493,8 +493,8 @@ const churchRequirements: ComplianceRequirement[] = [
   { id: 'cr-01', title: 'Background Check Cadence', description: 'All youth and children\'s ministry workers must have a current background check on file, renewed annually.', category: 'Safety', cadence: 'Annual', owner: 'Sister Keisha Williams', ownerInitials: 'KW', severity: 'critical', status: 'compliant', dueDate: 'Mar 15, 2026', lastVerified: 'Jan 20, 2026', scope: 'Ministry' },
   { id: 'cr-02', title: 'Youth Protection Training', description: 'Annual child safety and youth protection training required for all youth ministry leaders and volunteers.', category: 'Training', cadence: 'Annual', owner: 'Sister Keisha Williams', ownerInitials: 'KW', severity: 'critical', status: 'due-soon', dueDate: 'Mar 1, 2026', lastVerified: 'Feb 1, 2026', scope: 'Ministry' },
   { id: 'cr-03', title: 'Facility Safety Inspection', description: 'Annual safety inspection of all campus buildings, classrooms, and gathering spaces.', category: 'Facilities', cadence: 'Annual', owner: 'Deacon Charles Obi', ownerInitials: 'CO', severity: 'high', status: 'compliant', dueDate: 'Jun 1, 2026', lastVerified: 'Dec 10, 2025', scope: 'Campus' },
-  { id: 'cr-04', title: 'Incident Reporting SLA', description: 'All safety incidents must be reported within 24 hours and investigated within 72 hours.', category: 'Incidents', cadence: 'Per Incident', owner: 'Pastor Dipo Carter', ownerInitials: 'DK', severity: 'high', status: 'compliant', dueDate: 'Ongoing', lastVerified: 'Feb 5, 2026', scope: 'Organization' },
-  { id: 'cr-05', title: 'Sensitive-Case Access Policy Ack', description: 'All authorized leaders must acknowledge the sensitive matters handling policy annually.', category: 'Privacy', cadence: 'Annual', owner: 'Pastor Dipo Carter', ownerInitials: 'DK', severity: 'medium', status: 'compliant', dueDate: 'Jun 30, 2026', lastVerified: 'Jan 8, 2026', scope: 'Organization' },
+  { id: 'cr-04', title: 'Incident Reporting SLA', description: 'All safety incidents must be reported within 24 hours and investigated within 72 hours.', category: 'Incidents', cadence: 'Per Incident', owner: 'Pastor James Carter', ownerInitials: 'DK', severity: 'high', status: 'compliant', dueDate: 'Ongoing', lastVerified: 'Feb 5, 2026', scope: 'Organization' },
+  { id: 'cr-05', title: 'Sensitive-Case Access Policy Ack', description: 'All authorized leaders must acknowledge the sensitive matters handling policy annually.', category: 'Privacy', cadence: 'Annual', owner: 'Pastor James Carter', ownerInitials: 'DK', severity: 'medium', status: 'compliant', dueDate: 'Jun 30, 2026', lastVerified: 'Jan 8, 2026', scope: 'Organization' },
 ];
 
 const churchChecklists: ComplianceChecklist[] = [
@@ -508,7 +508,7 @@ const churchEvidence: ComplianceEvidence[] = [
   { id: 'ce-02', title: 'Youth Protection Training Cert — Sister Keisha', requirementId: 'cr-02', requirementTitle: 'Youth Protection Training', type: 'certificate', submittedBy: 'Sister Keisha Williams', submittedByInitials: 'KW', submittedDate: 'Feb 1, 2026', status: 'verified', verifiedBy: 'Church Administration', verifiedDate: 'Feb 3, 2026', expiresDate: 'Feb 1, 2027' },
   { id: 'ce-03', title: 'Facility Inspection Report — Dec 2025', requirementId: 'cr-03', requirementTitle: 'Facility Safety Inspection', type: 'document', submittedBy: 'Deacon Charles Obi', submittedByInitials: 'CO', submittedDate: 'Dec 10, 2025', status: 'verified', verifiedBy: 'Safety Committee', verifiedDate: 'Dec 14, 2025' },
   { id: 'ce-04', title: 'Volunteer Application — New Member', requirementId: 'cr-01', requirementTitle: 'Background Check Cadence', type: 'attestation', submittedBy: 'Deacon Charles Obi', submittedByInitials: 'CO', submittedDate: 'Feb 10, 2026', status: 'pending' },
-  { id: 'ce-05', title: 'Incident Response Training Cert', requirementId: 'cr-04', requirementTitle: 'Incident Reporting SLA', type: 'certificate', submittedBy: 'Pastor Dipo Carter', submittedByInitials: 'DK', submittedDate: 'Jan 15, 2026', status: 'submitted' },
+  { id: 'ce-05', title: 'Incident Response Training Cert', requirementId: 'cr-04', requirementTitle: 'Incident Reporting SLA', type: 'certificate', submittedBy: 'Pastor James Carter', submittedByInitials: 'DK', submittedDate: 'Jan 15, 2026', status: 'submitted' },
 ];
 
 const churchIncidents: ComplianceIncident[] = [
@@ -520,7 +520,7 @@ const churchIncidents: ComplianceIncident[] = [
 const churchActions: ComplianceAction[] = [
   { id: 'ca-01', title: 'Follow Up on 2 Pending Background Checks', description: 'Contact screening vendor to expedite processing for the 2 new volunteer background checks.', incidentId: 'ci-03', incidentTitle: 'Volunteer Screening Delay', assignee: 'Deacon Charles Obi', assigneeInitials: 'CO', dueDate: 'Feb 18, 2026', status: 'in-progress', priority: 'high' },
   { id: 'ca-02', title: 'Submit Parking Lot Lighting Repair Request', description: 'File maintenance request for additional lighting in the west parking lot area.', incidentId: 'ci-02', incidentTitle: 'Parking Lot Lighting Concern', assignee: 'Deacon Charles Obi', assigneeInitials: 'CO', dueDate: 'Feb 22, 2026', status: 'pending', priority: 'medium' },
-  { id: 'ca-03', title: 'Complete Volunteer Screening Process', description: 'Finalize onboarding for volunteers whose background checks have been cleared.', incidentId: 'ci-03', incidentTitle: 'Volunteer Screening Delay', assignee: 'Deacon Charles Obi', assigneeInitials: 'CO', dueDate: 'Feb 15, 2026', status: 'completed', priority: 'medium', verifiedBy: 'Pastor Dipo Carter', verifiedDate: 'Feb 16, 2026' },
+  { id: 'ca-03', title: 'Complete Volunteer Screening Process', description: 'Finalize onboarding for volunteers whose background checks have been cleared.', incidentId: 'ci-03', incidentTitle: 'Volunteer Screening Delay', assignee: 'Deacon Charles Obi', assigneeInitials: 'CO', dueDate: 'Feb 15, 2026', status: 'completed', priority: 'medium', verifiedBy: 'Pastor James Carter', verifiedDate: 'Feb 16, 2026' },
 ];
 
 const churchTraining: ComplianceTraining[] = [
@@ -531,9 +531,9 @@ const churchTraining: ComplianceTraining[] = [
 ];
 
 const churchPolicies: CompliancePolicy[] = [
-  { id: 'cp-01', title: 'Child & Youth Protection Policy', description: 'Comprehensive policy for the protection of children and youth in all church programs and activities.', version: 'v2.0', effectiveDate: 'Jul 1, 2025', reviewDate: 'Jul 1, 2026', owner: 'Pastor Dipo Carter', ownerInitials: 'DK', status: 'active', acknowledgedCount: 20, totalCount: 20 },
+  { id: 'cp-01', title: 'Child & Youth Protection Policy', description: 'Comprehensive policy for the protection of children and youth in all church programs and activities.', version: 'v2.0', effectiveDate: 'Jul 1, 2025', reviewDate: 'Jul 1, 2026', owner: 'Pastor James Carter', ownerInitials: 'DK', status: 'active', acknowledgedCount: 20, totalCount: 20 },
   { id: 'cp-02', title: 'Volunteer Screening Policy', description: 'Requirements and procedures for screening all volunteers who work with minors or vulnerable populations.', version: 'v1.2', effectiveDate: 'Sep 1, 2025', reviewDate: 'Sep 1, 2026', owner: 'Deacon Charles Obi', ownerInitials: 'CO', status: 'active', acknowledgedCount: 18, totalCount: 20 },
-  { id: 'cp-03', title: 'Sensitive Matters Handling Policy', description: 'Procedures for handling sensitive pastoral care matters with appropriate confidentiality and authorization.', version: 'v1.0', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Pastor Dipo Carter', ownerInitials: 'DK', status: 'active', acknowledgedCount: 5, totalCount: 5 },
+  { id: 'cp-03', title: 'Sensitive Matters Handling Policy', description: 'Procedures for handling sensitive pastoral care matters with appropriate confidentiality and authorization.', version: 'v1.0', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Pastor James Carter', ownerInitials: 'DK', status: 'active', acknowledgedCount: 5, totalCount: 5 },
 ];
 
 const churchDeadlines: ComplianceDeadline[] = [
@@ -553,10 +553,10 @@ const churchAudit: ComplianceAuditEntry[] = [
   { id: 'cau-02', action: 'evidence_submitted', actor: 'Sister Keisha Williams', actorInitials: 'KW', target: 'Youth Protection Training Cert', timestamp: 'Feb 1, 2026 1:30 PM', detail: 'Training certificate submitted for renewal' },
   { id: 'cau-03', action: 'incident_opened', actor: 'Deacon Charles Obi', actorInitials: 'CO', target: 'Parking Lot Lighting Concern', timestamp: 'Feb 9, 2026 8:45 PM', detail: 'Reported after Sunday evening service' },
   { id: 'cau-04', action: 'checklist_completed', actor: 'Sister Keisha Williams', actorInitials: 'KW', target: 'Youth Ministry Safety', timestamp: 'Jan 31, 2026 3:00 PM', detail: 'All 8 items verified and marked complete' },
-  { id: 'cau-05', action: 'policy_updated', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Sensitive Matters Handling Policy', timestamp: 'Jan 2, 2026 11:00 AM', detail: 'New policy v1.0 published and distributed to authorized leaders' },
+  { id: 'cau-05', action: 'policy_updated', actor: 'Pastor James Carter', actorInitials: 'DK', target: 'Sensitive Matters Handling Policy', timestamp: 'Jan 2, 2026 11:00 AM', detail: 'New policy v1.0 published and distributed to authorized leaders' },
   { id: 'cau-06', action: 'training_completed', actor: 'All Staff', actorInitials: 'AS', target: 'Mandatory Reporter Training', timestamp: 'Feb 5, 2026 4:00 PM', detail: 'All staff completed mandatory reporter module' },
   { id: 'cau-07', action: 'deadline_met', actor: 'Sister Keisha Williams', actorInitials: 'KW', target: 'Youth Ministry Safety Checklist', timestamp: 'Jan 31, 2026 3:00 PM', detail: 'Completed ahead of deadline' },
-  { id: 'cau-08', action: 'action_verified', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Complete Volunteer Screening Process', timestamp: 'Feb 16, 2026 9:00 AM', detail: 'Volunteer onboarding finalized for cleared applicants' },
+  { id: 'cau-08', action: 'action_verified', actor: 'Pastor James Carter', actorInitials: 'DK', target: 'Complete Volunteer Screening Process', timestamp: 'Feb 16, 2026 9:00 AM', detail: 'Volunteer onboarding finalized for cleared applicants' },
 ];
 
 const churchSettings: ComplianceSettingToggle[] = [
@@ -659,7 +659,7 @@ const businessSettings: ComplianceSettingToggle[] = [
 ];
 
 // =============================================================================
-// COMMUNITY MODE — K-1 Speed League
+// COMMUNITY MODE — KaNeXT Motorsport League
 // =============================================================================
 
 const communityDashboard: ComplianceDashboardBlock[] = [

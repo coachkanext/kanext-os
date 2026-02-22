@@ -2,7 +2,7 @@
  * KaNeXT Sports Men's Basketball
  * Player Identity Table (Step 3)
  * Seasons: 2022-23 through 2025-26
- * Source: NAIA Stats (prestosports.com)
+ * Source: KaNeXT Conference Stats
  */
 
 import type { Player } from '../schema';

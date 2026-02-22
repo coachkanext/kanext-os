@@ -58,19 +58,19 @@ OFFENSIVE_BADGES: list[tuple[str, str]] = [
 ]
 
 DEFENSIVE_BADGES: list[tuple[str, str]] = [
-    # Perimeter Defense (6)
-    ("Lockdown Perimeter",        "perimeter_defense"),
-    ("Pick Dodger",               "perimeter_defense"),
-    ("Closeout King",             "perimeter_defense"),
-    ("Passing Lane Predator",     "perimeter_defense"),
-    ("Ball Hawk",                 "perimeter_defense"),
-    ("Switch Specialist",         "perimeter_defense"),
-    # Interior Defense (5)
-    ("Rim Protector",             "interior_defense"),
-    ("Shot Blocker Elite",        "interior_defense"),
-    ("Post Lockdown",             "interior_defense"),
-    ("Help Side Anchor",          "interior_defense"),
-    ("Verticality Master",        "interior_defense"),
+    # On-Ball Defense (6) — was perimeter_defense
+    ("Lockdown Perimeter",        "on_ball_defense"),
+    ("Pick Dodger",               "on_ball_defense"),
+    ("Closeout King",             "on_ball_defense"),
+    ("Passing Lane Predator",     "on_ball_defense"),
+    ("Ball Hawk",                 "on_ball_defense"),
+    ("Switch Specialist",         "on_ball_defense"),
+    # Team Defense (5) — was interior_defense
+    ("Rim Protector",             "team_defense"),
+    ("Shot Blocker Elite",        "team_defense"),
+    ("Post Lockdown",             "team_defense"),
+    ("Help Side Anchor",          "team_defense"),
+    ("Verticality Master",        "team_defense"),
     # Rebounding (5)
     ("Glass Cleaner",             "rebounding"),
     ("Box Out Boss",              "rebounding"),
@@ -114,10 +114,10 @@ CLUSTER_TO_COMPONENT = {
     "shooting": "off",
     "finishing": "off",
     "playmaking": "off",
-    "perimeter_defense": "def",
-    "interior_defense": "def",
+    "on_ball_defense": "def",
+    "team_defense": "def",
     "rebounding": "def",
-    "frame": "def",
+    "physical": "def",
 }
 
 

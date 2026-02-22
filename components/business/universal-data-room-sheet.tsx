@@ -413,7 +413,7 @@ function PitchPackTab({
   const demos = accessibleDocs.filter((d) => d.type === 'demo');
 
   const marketMap = [
-    { segment: 'NAIA', schools: '250+', status: 'Primary target' },
+    { segment: 'NAA', schools: '250+', status: 'Primary target' },
     { segment: 'NJCAA', schools: '500+', status: 'Secondary target' },
     { segment: 'CCCAA', schools: '110+', status: 'Tertiary target' },
     { segment: 'USCAA', schools: '80+', status: 'Expansion' },
@@ -423,7 +423,7 @@ function PitchPackTab({
   const caseStudies = [
     { name: 'KaNeXT Athletics', mode: 'Sports', status: 'Active deployment', detail: '13 sports programs, 2,340 app installs, ESPN+ broadcasts' },
     { name: 'KaNeXT Church', mode: 'Church', status: 'Active deployment', detail: 'Giving rails, connect groups, pastoral care intelligence' },
-    { name: 'K-1 Speed', mode: 'Competition', status: 'Active deployment', detail: 'Race ops, standings, cap enforcement, broadcast integration' },
+    { name: 'KaNeXT Motorsport', mode: 'Competition', status: 'Active deployment', detail: 'Race ops, standings, cap enforcement, broadcast integration' },
   ];
 
   return (
@@ -520,8 +520,8 @@ function ProductDemoTab({ colors }: { colors: typeof Colors.light }) {
     { step: 1, title: 'Mode Selector', desc: 'Tap the mode icon in the top bar to switch between Sports, Church, Competition, Business, and Education modes.' },
     { step: 2, title: 'Sports Mode (KaNeXT)', desc: 'Explore the dashboard, roster builder, film room, and game-day operations for KaNeXT Sports athletics.' },
     { step: 3, title: 'Nexus AI', desc: 'Long-press the Nexus tab or tap the microphone to activate voice/text AI. Ask about roster, schedule, or strategy.' },
-    { step: 4, title: 'Church Mode (KaNeXT Church)', desc: 'View giving dashboards, connect groups, ministry operations, and the "Hotline to Heaven" pastoral care interface.' },
-    { step: 5, title: 'Competition Mode (K-1)', desc: 'Explore race operations, team standings, driver rosters, and the steward decision audit trail.' },
+    { step: 4, title: 'Church Mode (KaNeXT Church)', desc: 'View giving dashboards, connect groups, ministry operations, and the "Morning Prayer Line" pastoral care interface.' },
+    { step: 5, title: 'Competition Mode (KaNeXT)', desc: 'Explore race operations, team standings, driver rosters, and the steward decision audit trail.' },
     { step: 6, title: 'Business Mode', desc: 'Navigate the founder OS: company overview, data room, deal workspaces, and governance dashboards.' },
   ];
 

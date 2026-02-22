@@ -121,7 +121,7 @@ export const MOCK_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   evt('m-feb-02', 'meeting', 'Staff Meeting', 2026, 1, 2, 15, 0, 16, 0, 'Coach Office', undefined, 'team_staff'),
   evt('m-feb-09', 'meeting', 'Staff Meeting', 2026, 1, 9, 15, 0, 16, 0, 'Coach Office', undefined, 'team_staff'),
   // Travel
-  evt('t-feb-06', 'travel', 'Travel to St. Thomas', 2026, 1, 6, 14, 0, 18, 0, 'Airport', 'Conference road game'),
+  evt('t-feb-06', 'travel', 'Travel to Ridgemont', 2026, 1, 6, 14, 0, 18, 0, 'Airport', 'Conference road game'),
   // Admin
   evt('ad-feb-20', 'admin_deadline', 'Compliance Check-in', 2026, 1, 20, 14, 0, 15, 30, 'Athletics Dept', 'NAIA compliance review', 'team_staff'),
   // Recruiting

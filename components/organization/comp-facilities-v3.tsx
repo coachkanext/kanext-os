@@ -1,6 +1,6 @@
 /**
  * Competition Facilities V3 — 3-pill ViewBar (Venues | Assets | Logistics)
- * K-1 Speed League · Commissioner perspective
+ * KaNeXT Motorsport League · Commissioner perspective
  * 8 race venues, league assets, and per-race logistics planning.
  */
 import React, { useState, useCallback } from 'react';

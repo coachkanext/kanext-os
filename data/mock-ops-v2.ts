@@ -283,8 +283,8 @@ export const CONDITION_COLOR_MAP: Record<AssetCondition, string> = {
 
 const SPORTS_TASKS: OpsTask[] = [
   { id: 'sp-t-1', title: 'Practice court setup — offensive install', owner: 'Antoine Brooks', ownerInitials: 'AB', dueDate: '2026-02-17', priority: 'P1', status: 'active', unit: 'Program' },
-  { id: 'sp-t-2', title: 'Upload film — Webber Intl scouting cuts', owner: 'Coach Harris', ownerInitials: 'CH', dueDate: '2026-02-17', priority: 'P0', status: 'active', unit: 'Program' },
-  { id: 'sp-t-3', title: 'Book charter bus — Thomas University trip', owner: 'Ops Coordinator', ownerInitials: 'OC', dueDate: '2026-02-18', priority: 'P1', status: 'complete', unit: 'Season' },
+  { id: 'sp-t-2', title: 'Upload film — Pinecrest scouting cuts', owner: 'Coach Harris', ownerInitials: 'CH', dueDate: '2026-02-17', priority: 'P0', status: 'active', unit: 'Program' },
+  { id: 'sp-t-3', title: 'Book charter bus — Magnolia University trip', owner: 'Ops Coordinator', ownerInitials: 'OC', dueDate: '2026-02-18', priority: 'P1', status: 'complete', unit: 'Season' },
   { id: 'sp-t-4', title: 'Equipment check — away game bags & med kits', owner: 'Antoine Brooks', ownerInitials: 'AB', dueDate: '2026-02-19', priority: 'P1', status: 'draft', unit: 'Program' },
   { id: 'sp-t-5', title: 'Game day prep — PA script & roster cards', owner: 'Media Coordinator', ownerInitials: 'MC', dueDate: '2026-02-18', priority: 'P2', status: 'active', unit: 'Season' },
   { id: 'sp-t-6', title: 'Recruiting follow-up — top 5 portal targets', owner: 'Alex Morgan', ownerInitials: 'SK', dueDate: '2026-02-20', priority: 'P1', status: 'active', unit: 'Program' },
@@ -328,8 +328,8 @@ const SPORTS_FACILITIES: OpsFacility[] = [
 ];
 
 const SPORTS_TRAVEL: OpsTravelItem[] = [
-  { id: 'sp-tr-1', title: 'Away Game — Webber International', destination: 'Babson Park, FL', departDate: '2026-02-18', returnDate: '2026-02-18', travelers: 18, status: 'booked' },
-  { id: 'sp-tr-2', title: 'Away Game — Thomas University', destination: 'Thomasville, GA', departDate: '2026-02-20', returnDate: '2026-02-22', travelers: 18, status: 'booked' },
+  { id: 'sp-tr-1', title: 'Away Game — Pinecrest University', destination: 'Babson Park, FL', departDate: '2026-02-18', returnDate: '2026-02-18', travelers: 18, status: 'booked' },
+  { id: 'sp-tr-2', title: 'Away Game — Magnolia University', destination: 'Thomasville, GA', departDate: '2026-02-20', returnDate: '2026-02-22', travelers: 18, status: 'booked' },
   { id: 'sp-tr-3', title: 'Conference Tournament', destination: 'TBD', departDate: '2026-02-28', returnDate: '2026-03-03', travelers: 20, status: 'planned' },
 ];
 
@@ -369,8 +369,8 @@ const SPORTS_AUDIT: OpsAuditEntry[] = [
   { id: 'sp-au-1', action: 'task.created', actor: 'Alex Morgan', timestamp: '2026-02-16T14:22:00Z', timestampMs: 1739714520000, description: 'Created task "Recruiting follow-up — top 5 portal targets"' },
   { id: 'sp-au-2', action: 'work-order.status', actor: 'Facilities Mgr', timestamp: '2026-02-16T11:05:00Z', timestampMs: 1739703900000, description: 'Work order "Repair shot clock" moved to Active' },
   { id: 'sp-au-3', action: 'issue.reported', actor: 'Ops Coordinator', timestamp: '2026-02-15T16:30:00Z', timestampMs: 1739637000000, description: 'Reported issue "Bus company double-booked on Feb 20"' },
-  { id: 'sp-au-4', action: 'travel.booked', actor: 'Ops Coordinator', timestamp: '2026-02-15T10:15:00Z', timestampMs: 1739614500000, description: 'Booked travel "Away Game — Thomas University"' },
-  { id: 'sp-au-5', action: 'task.completed', actor: 'Ops Coordinator', timestamp: '2026-02-14T17:00:00Z', timestampMs: 1739552400000, description: 'Completed task "Book charter bus — Thomas University trip"' },
+  { id: 'sp-au-4', action: 'travel.booked', actor: 'Ops Coordinator', timestamp: '2026-02-15T10:15:00Z', timestampMs: 1739614500000, description: 'Booked travel "Away Game — Magnolia University"' },
+  { id: 'sp-au-5', action: 'task.completed', actor: 'Ops Coordinator', timestamp: '2026-02-14T17:00:00Z', timestampMs: 1739552400000, description: 'Completed task "Book charter bus — Magnolia University trip"' },
   { id: 'sp-au-6', action: 'sop.updated', actor: 'Ops Coordinator', timestamp: '2026-02-14T09:30:00Z', timestampMs: 1739525400000, description: 'Updated SOP "Travel Day Protocol" — added emergency contact step' },
   { id: 'sp-au-7', action: 'asset.flagged', actor: 'Antoine Brooks', timestamp: '2026-02-13T15:00:00Z', timestampMs: 1739458800000, description: 'Flagged asset "Portable Shot Clocks" as needs-repair' },
   { id: 'sp-au-8', action: 'vendor.ticket', actor: 'Ops Coordinator', timestamp: '2026-02-12T14:20:00Z', timestampMs: 1739369200000, description: 'Opened ticket with Campus Catering Co. — pregame meal change request' },
@@ -677,7 +677,7 @@ const BUSINESS_AUDIT: OpsAuditEntry[] = [
 ];
 
 // =============================================================================
-// COMMUNITY MODE (Competition / K-1) — Mock Data
+// COMMUNITY MODE (Competition / KaNeXT) — Mock Data
 // =============================================================================
 
 const COMMUNITY_TASKS: OpsTask[] = [

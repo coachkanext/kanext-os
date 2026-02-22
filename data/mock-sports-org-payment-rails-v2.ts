@@ -474,7 +474,7 @@ export const ACTION_QUEUE: PaymentAction[] = [
   {
     id: 'pa-008',
     type: 'approval',
-    title: 'Bus charter — away @ Webber International',
+    title: 'Bus charter — away @ Pinecrest University',
     amount: 3_200,
     owner: 'Alicia Washington',
     reason: 'Awaiting Head Coach approval',
@@ -722,7 +722,7 @@ export const PAYMENT_APPROVALS: PaymentApproval[] = [
   // ── demo_seed approvals — Feb 2026 ──────────────────────────────────────
   {
     id: 'ap-008',
-    title: 'Bus charter — away @ Webber International',
+    title: 'Bus charter — away @ Pinecrest University',
     amount: 3_200,
     requestedBy: 'Alicia Washington',
     requestDate: '2026-02-14',
@@ -927,7 +927,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
   {
     id: 'au-011',
     action: 'released',
-    description: 'Bus charter — away @ Keiser University',
+    description: 'Bus charter — away @ Lakewood University',
     amount: 3_200,
     initiatedBy: 'Alicia Washington',
     approvedBy: 'Alex Morgan',
@@ -957,7 +957,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
   {
     id: 'au-014',
     action: 'released',
-    description: 'Game day meals — Thomas University home game',
+    description: 'Game day meals — Magnolia University home game',
     amount: 540,
     initiatedBy: 'Alicia Washington',
     approvedBy: 'Alex Morgan',
@@ -967,7 +967,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
   {
     id: 'au-015',
     action: 'released',
-    description: 'Hotel block — Southeastern University trip',
+    description: 'Hotel block — Summit University trip',
     amount: 1_680,
     initiatedBy: 'Alicia Washington',
     approvedBy: 'Alex Morgan',
@@ -1065,7 +1065,7 @@ export const DISBURSEMENTS: Disbursement[] = [
   {
     id: 'db-009',
     type: 'per-diem',
-    description: 'Per diem — @ Keiser University (Feb 10)',
+    description: 'Per diem — @ Lakewood University (Feb 10)',
     amount: 50,
     status: 'paid',
     date: '2026-02-10',
@@ -1095,7 +1095,7 @@ export const DISBURSEMENTS: Disbursement[] = [
   {
     id: 'db-012',
     type: 'per-diem',
-    description: 'Per diem — @ Southeastern University (Feb 17)',
+    description: 'Per diem — @ Summit University (Feb 17)',
     amount: 50,
     status: 'pending',
     date: '2026-02-17',
@@ -1146,10 +1146,10 @@ export const CONNECTED_RAILS: ConnectedRail[] = ['ACH', 'Internal'];
 // =============================================================================
 
 export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
-  // ── Transaction 1: Bus charter — away @ Keiser ─────────────────────────
+  // ── Transaction 1: Bus charter — away @ Lakewood ─────────────────────────
   {
     id: 'stx-001',
-    description: 'Bus charter — away @ Keiser University',
+    description: 'Bus charter — away @ Lakewood University',
     amount: 3_200,
     walletId: 'w-002',
     data_source: 'demo_seed',
@@ -1158,7 +1158,7 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
         type: 'travel_expense',
         amount: 3_200,
         date: '2026-02-10',
-        description: 'Bus charter — away @ Keiser University',
+        description: 'Bus charter — away @ Lakewood University',
       },
       rules: {
         policy: 'NAIA Travel Policy',
@@ -1296,10 +1296,10 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
     },
   },
 
-  // ── Transaction 4: Game day meals — Thomas University home game ────────
+  // ── Transaction 4: Game day meals — Magnolia University home game ────────
   {
     id: 'stx-004',
-    description: 'Pre-game meals — Thomas University home game',
+    description: 'Pre-game meals — Magnolia University home game',
     amount: 540,
     walletId: 'w-001',
     data_source: 'demo_seed',
@@ -1308,7 +1308,7 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
         type: 'gameday_expense',
         amount: 540,
         date: '2026-02-12',
-        description: 'Pre-game catering — home vs Thomas University',
+        description: 'Pre-game catering — home vs Magnolia University',
       },
       rules: {
         policy: 'Game Day Ops Policy',
@@ -1346,10 +1346,10 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
     },
   },
 
-  // ── Transaction 5: Hotel block — Southeastern University trip ──────────
+  // ── Transaction 5: Hotel block — Summit University trip ──────────
   {
     id: 'stx-005',
-    description: 'Hotel block — Southeastern University trip (6 rooms, 1 night)',
+    description: 'Hotel block — Summit University trip (6 rooms, 1 night)',
     amount: 1_680,
     walletId: 'w-002',
     data_source: 'demo_seed',

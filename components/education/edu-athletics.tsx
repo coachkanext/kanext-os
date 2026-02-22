@@ -103,7 +103,7 @@ interface AthleticDeptInfo {
 }
 
 const ATHLETIC_DEPT: AthleticDeptInfo = {
-  conference: 'Southeastern Athletic Conference',
+  conference: 'KaNeXT Athletic Conference',
   division: 'NCAA Division I',
   mascot: 'Eagles',
   schoolColors: 'Navy & Gold',

@@ -176,7 +176,7 @@ const DIVISION_HIERARCHY: DivisionItem[] = [
     { value: 'NCAA D2', label: 'D2' },
     { value: 'NCAA D3', label: 'D3' },
   ]},
-  { label: 'NAIA', value: 'NAIA' },
+  { label: 'NAA', value: 'NAA' },
   { label: 'JUCO', value: 'JUCO', children: [
     { value: 'JUCO D1', label: 'D1' },
     { value: 'JUCO D2', label: 'D2' },
@@ -196,7 +196,7 @@ const PARENT_DIVISIONS = new Set(
   DIVISION_HIERARCHY.filter((d) => d.children && d.value).map((d) => d.value!),
 );
 
-const PORTAL_LEVELS = new Set(['NCAA D1', 'NCAA D2', 'NCAA D3', 'NAIA', 'USCAA', 'NCCAA D1', 'NCCAA D2', '3C2A']);
+const PORTAL_LEVELS = new Set(['NCAA D1', 'NCAA D2', 'NCAA D3', 'NAA', 'USCAA', 'NCCAA D1', 'NCCAA D2', '3C2A']);
 
 function matchesDivision(playerLevel: PoolLevel, filterDiv: PoolLevel | 'Portal'): boolean {
   if (filterDiv === 'Portal') return PORTAL_LEVELS.has(playerLevel);
@@ -698,7 +698,7 @@ export function PlayerPoolContent() {
             { label: 'D2', value: 'NCAA D2' as PoolLevel },
             { label: 'D3', value: 'NCAA D3' as PoolLevel },
           ]},
-          { label: 'NAIA', value: 'NAIA' as PoolLevel },
+          { label: 'NAA', value: 'NAA' as PoolLevel },
           { label: 'JUCO', value: 'JUCO' as PoolLevel, children: [
             { label: 'D1', value: 'JUCO D1' as PoolLevel },
             { label: 'D2', value: 'JUCO D2' as PoolLevel },

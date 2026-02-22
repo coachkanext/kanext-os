@@ -258,7 +258,7 @@ const SERVICE_TIMES = [
   { id: 'st-3', label: 'Sunday 6:00 PM', campus: 'West Campus', type: 'Evening' },
 ];
 
-const LIVESTREAM_URL = 'https://iccla.church/live';
+const LIVESTREAM_URL = 'https://church.kanext.io/live';
 
 // --- Block 4: Ministry Pulse ---
 

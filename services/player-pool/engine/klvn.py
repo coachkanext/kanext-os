@@ -300,6 +300,9 @@ def compute_skillkr(
 # KLVN — KaNeXT Level Normalization (MUST be the LAST transformation)
 # ═══════════════════════════════════════════════════════════════════════════
 
+# Maximum KLVN delta (post-translation minus pre-translation), clamped to ±this value.
+PLAYER_KLVN_DELTA_CAP = 6.0
+
 def klvn_translate(
     league_score: float,
     level_key: str,
@@ -316,6 +319,10 @@ def klvn_translate(
     Center-preserving: a league-average player (50) stays at 50 cross-level.
     Above-average performance is discounted by λ for weaker levels.
 
+    Delta cap: the KLVN shift (kr - league_score) is clamped to
+    ±PLAYER_KLVN_DELTA_CAP (±6.0) so no single translation moves a
+    player more than 6 points from their league-internal score.
+
     Placeholder hooks for future:
       - confidence_pct: penalize low-game-count players
       - coverage_pct: penalize sparse minutes data
@@ -323,6 +330,13 @@ def klvn_translate(
     """
     lam = get_lambda(level_key)
     kr = 50.0 + (league_score - 50.0) * lam
+
+    # Clamp the KLVN delta to ±6.0
+    delta = kr - league_score
+    if abs(delta) > PLAYER_KLVN_DELTA_CAP:
+        delta = PLAYER_KLVN_DELTA_CAP if delta > 0 else -PLAYER_KLVN_DELTA_CAP
+        kr = league_score + delta
+
     # Future: confidence penalty
     # Future: coverage penalty
     # Future: schedule strength adjustment

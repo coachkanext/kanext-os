@@ -1,6 +1,6 @@
 /**
  * Sports Program V3 — 3-pill ViewBar (Identity | Teams | Operations)
- * KaNeXT Men's Basketball · NAIA KaNeXT Conference
+ * KaNeXT Men's Basketball · NAA KaNeXT Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback } from 'react';

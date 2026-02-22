@@ -87,9 +87,9 @@ export interface ScoutNote {
 
 export const GAME_PLAN_HEADER: GamePlanHeader = {
   id: 'gp-001',
-  opponent: 'Keiser University',
+  opponent: 'Lakewood University',
   date: 'Wed, Feb 19 \u2014 7:30 PM',
-  location: 'Keiser (Away)',
+  location: 'Lakewood (Away)',
   status: 'in-review',
   version: 3,
   lastEditedBy: 'Coach Carter',
@@ -105,14 +105,14 @@ export const OFFENSIVE_PLAN: OffensiveSystemPlan = {
   tempoTarget: 'Push',
   paceTarget: 72,
   emphasisPlays: [
-    { id: 'ep-1', name: 'Horns PnR (Williams)', priority: 'primary', notes: 'Keiser drops on PnR \u2014 Williams pull-up at elbow is money' },
-    { id: 'ep-2', name: 'Pin-Down to Plantey 3', priority: 'primary', notes: 'Keiser switches late on pin-downs \u2014 Plantey open on curl' },
+    { id: 'ep-1', name: 'Horns PnR (Williams)', priority: 'primary', notes: 'Lakewood drops on PnR \u2014 Williams pull-up at elbow is money' },
+    { id: 'ep-2', name: 'Pin-Down to Plantey 3', priority: 'primary', notes: 'Lakewood switches late on pin-downs \u2014 Plantey open on curl' },
     { id: 'ep-3', name: 'High-Low Post Feed', priority: 'secondary', notes: 'Diomande elbow to Carter block if zone shows' },
-    { id: 'ep-4', name: 'Transition Push (4-on-3)', priority: 'primary', notes: 'Keiser slow in transition \u2014 push every dead ball turnover' },
+    { id: 'ep-4', name: 'Transition Push (4-on-3)', priority: 'primary', notes: 'Lakewood slow in transition \u2014 push every dead ball turnover' },
     { id: 'ep-5', name: 'Delay Lob', priority: 'situational', notes: 'End-of-clock action \u2014 Carter slip to rim off delay' },
   ],
   adjustments: [
-    'If Keiser switches to zone \u2192 overload strong side, post Diomande high',
+    'If Lakewood switches to zone \u2192 overload strong side, post Diomande high',
     'If Williams in foul trouble \u2192 Blake runs same PnR sets, slower pace',
     'If leading by 10+ \u2192 bleed clock, motion only, no forced shots',
   ],
@@ -133,7 +133,7 @@ export const DEFENSIVE_PLAN: DefensiveSystemPlan = {
   ],
   adjustments: [
     'If Harris is cooking 1-on-1 \u2192 face-guard with Hernandez',
-    'If Keiser hits 3 threes in a row \u2192 extend pack line to 3PT arc',
+    'If Lakewood hits 3 threes in a row \u2192 extend pack line to 3PT arc',
     'If foul trouble on Carter \u2192 Moore at 5, zone for 2 possessions',
   ],
 };
@@ -158,9 +158,9 @@ export const ROTATION_PLAN: RotationSlot[] = [
 
 export const SCOUT_NOTES: ScoutNote[] = [
   { id: 'sn-1', category: 'key-player', title: 'D. Harris (PG #3)', detail: '22.4 PPG, 5.8 APG. Goes right 68% of the time. Pull-up jumper from left elbow is go-to. Below-average 3PT shooter (29.4%) but lethal in paint.', source: 'Synergy + Film', confidence: 'high' },
-  { id: 'sn-2', category: 'tendency', title: 'Keiser PnR Coverage', detail: 'Drop coverage 74% of possessions. Big sits at the nail. Ball handler has space for pull-up. Only switch on wings.', source: 'Synergy', confidence: 'high' },
-  { id: 'sn-3', category: 'weakness', title: 'Transition Defense', detail: 'Keiser ranks 142nd in transition defense. They give up 14.8 fast break PPG. Our biggest advantage.', source: 'KaNeXT Analytics', confidence: 'high' },
-  { id: 'sn-4', category: 'strength', title: 'Offensive Rebounding', detail: 'Carter grabs 4.2 OREB/game. Keiser as a team is top-20 in OREB%. Must box out every shot.', source: 'Synergy', confidence: 'medium' },
+  { id: 'sn-2', category: 'tendency', title: 'Lakewood PnR Coverage', detail: 'Drop coverage 74% of possessions. Big sits at the nail. Ball handler has space for pull-up. Only switch on wings.', source: 'Synergy', confidence: 'high' },
+  { id: 'sn-3', category: 'weakness', title: 'Transition Defense', detail: 'Lakewood ranks 142nd in transition defense. They give up 14.8 fast break PPG. Our biggest advantage.', source: 'KaNeXT Analytics', confidence: 'high' },
+  { id: 'sn-4', category: 'strength', title: 'Offensive Rebounding', detail: 'Carter grabs 4.2 OREB/game. Lakewood as a team is top-20 in OREB%. Must box out every shot.', source: 'Synergy', confidence: 'medium' },
   { id: 'sn-5', category: 'situational', title: 'Late-Clock Sets', detail: 'When shot clock is under 8 seconds, Harris ISO left wing is their go-to. He shoots 38% in these spots.', source: 'Film', confidence: 'medium' },
 ];
 
@@ -172,12 +172,12 @@ export const STAFF_ASSIGNMENTS: StaffAssignment[] = [
 ];
 
 // =============================================================================
-// GAME PLAN 2: St. Thomas University (ARCHIVED — KaNeXT Won 72-65)
+// GAME PLAN 2: Ridgemont University (ARCHIVED — KaNeXT Won 72-65)
 // =============================================================================
 
 export const GAME_PLAN_HEADER_STT: GamePlanHeader = {
   id: 'gp-002',
-  opponent: 'St. Thomas University',
+  opponent: 'Ridgemont University',
   date: 'Sat, Feb 15 — 4:00 PM',
   location: 'KaNeXT Wellness Center (Home)',
   status: 'archived',
@@ -269,12 +269,12 @@ export const STAFF_ASSIGNMENTS_STT: StaffAssignment[] = [
 ];
 
 // =============================================================================
-// GAME PLAN 3: Southeastern University (DRAFT — Upcoming Feb 22)
+// GAME PLAN 3: Summit University (DRAFT — Upcoming Feb 22)
 // =============================================================================
 
 export const GAME_PLAN_HEADER_SEU: GamePlanHeader = {
   id: 'gp-003',
-  opponent: 'Southeastern University',
+  opponent: 'Summit University',
   date: 'Sat, Feb 22 — 2:00 PM',
   location: 'KaNeXT Wellness Center (Home)',
   status: 'draft',
@@ -383,7 +383,7 @@ export interface FullGamePlan {
   data_source?: string;
 }
 
-/** All game plans indexed — gp-001 Keiser (in-review), gp-002 STT (archived), gp-003 SEU (draft) */
+/** All game plans indexed — gp-001 Lakewood (in-review), gp-002 STT (archived), gp-003 SEU (draft) */
 export const GAME_PLANS: FullGamePlan[] = [
   {
     header: GAME_PLAN_HEADER,

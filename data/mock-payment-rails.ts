@@ -57,14 +57,14 @@ export interface PaymentSnapshot {
 // =============================================================================
 
 const sportsPayments: Payment[] = [
-  { id: 'sp-001', description: 'Game Officials Fee — vs Webber Int\'l', amount: 1800, type: 'payout', method: 'check', status: 'completed', date: '2026-02-14', counterparty: 'NAIA Officials Association', reference: 'OFF-2026-041' },
+  { id: 'sp-001', description: 'Game Officials Fee — vs Pinecrest Int\'l', amount: 1800, type: 'payout', method: 'check', status: 'completed', date: '2026-02-14', counterparty: 'NAIA Officials Association', reference: 'OFF-2026-041' },
   { id: 'sp-002', description: 'Travel Reimbursement — Savannah State Trip', amount: 4200, type: 'payout', method: 'bank', status: 'completed', date: '2026-02-12', counterparty: 'KaNeXT Travel Services', reference: 'TRV-2026-018' },
   { id: 'sp-003', description: 'Equipment Purchase — Practice Balls', amount: 1250, type: 'payout', method: 'card', status: 'completed', date: '2026-02-10', counterparty: 'Wilson Sporting Goods', reference: 'EQ-2026-009' },
   { id: 'sp-004', description: 'Recruiting Visit — Alex Morgan', amount: 650, type: 'payout', method: 'card', status: 'pending', date: '2026-02-15', counterparty: 'Marriott Hotels', reference: 'REC-2026-022' },
-  { id: 'sp-005', description: 'Gate Revenue — Home vs Edward Waters', amount: 3200, type: 'collect', method: 'digital', status: 'completed', date: '2026-02-08', counterparty: 'KaNeXT Athletics Box Office' },
+  { id: 'sp-005', description: 'Gate Revenue — Home vs Evergreen', amount: 3200, type: 'collect', method: 'digital', status: 'completed', date: '2026-02-08', counterparty: 'KaNeXT Athletics Box Office' },
   { id: 'sp-006', description: 'Booster Club Donation', amount: 5000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-06', counterparty: 'KaNeXT Booster Club' },
-  { id: 'sp-007', description: 'NIL Collective Distribution — January', amount: 8500, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'Lions NIL Collective' },
-  { id: 'sp-008', description: 'Game Officials Fee — vs Warner', amount: 1800, type: 'payout', method: 'check', status: 'pending', date: '2026-02-16', counterparty: 'NAIA Officials Association', reference: 'OFF-2026-042' },
+  { id: 'sp-007', description: 'NIL Collective Distribution — January', amount: 8500, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'Wolves NIL Collective' },
+  { id: 'sp-008', description: 'Game Officials Fee — vs Clearwater', amount: 1800, type: 'payout', method: 'check', status: 'pending', date: '2026-02-16', counterparty: 'NAIA Officials Association', reference: 'OFF-2026-042' },
   { id: 'sp-009', description: 'Athletic Trainer Services — February', amount: 3500, type: 'payout', method: 'bank', status: 'processing', date: '2026-02-03', counterparty: 'Premier Sports Medicine', reference: 'MED-2026-002' },
   { id: 'sp-010', description: 'Tournament Entry Fee — KaNeXT Conference', amount: 2500, type: 'collect', method: 'bank', status: 'pending', date: '2026-02-15', counterparty: 'KaNeXT Conference Office', reference: 'CONF-2026-005' },
 ];
@@ -165,7 +165,7 @@ const businessPayments: Payment[] = [
   { id: 'bp-002', description: 'Client Invoice — KaNeXT Church Platform License', amount: 18000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'KaNeXT Church', reference: 'INV-2026-002' },
   { id: 'bp-003', description: 'SaaS Subscription — AWS Infrastructure', amount: 8200, type: 'payout', method: 'card', status: 'completed', date: '2026-02-03', counterparty: 'Amazon Web Services', reference: 'SUB-2026-002' },
   { id: 'bp-004', description: 'Contractor — Mobile Development', amount: 12000, type: 'payout', method: 'bank', status: 'completed', date: '2026-02-05', counterparty: 'Apex Dev Studio', reference: 'CTR-2026-004' },
-  { id: 'bp-005', description: 'Client Invoice — K-1 Speed League', amount: 15000, type: 'collect', method: 'bank', status: 'pending', date: '2026-02-10', counterparty: 'K-1 Speed', reference: 'INV-2026-003' },
+  { id: 'bp-005', description: 'Client Invoice — KaNeXT Motorsport League', amount: 15000, type: 'collect', method: 'bank', status: 'pending', date: '2026-02-10', counterparty: 'KaNeXT Motorsport', reference: 'INV-2026-003' },
   { id: 'bp-006', description: 'Vendor Payment — Legal Counsel', amount: 6500, type: 'payout', method: 'bank', status: 'completed', date: '2026-02-07', counterparty: 'Morrison & Associates', reference: 'LGL-2026-001' },
   { id: 'bp-007', description: 'Payroll — February Cycle 1', amount: 42000, type: 'payout', method: 'bank', status: 'processing', date: '2026-02-15', counterparty: 'KaNeXT Payroll', reference: 'PAY-2026-003' },
   { id: 'bp-008', description: 'SaaS Subscription — Vercel Hosting', amount: 1200, type: 'payout', method: 'card', status: 'completed', date: '2026-02-01', counterparty: 'Vercel Inc.', reference: 'SUB-2026-003' },
@@ -194,7 +194,7 @@ const businessSnapshot: PaymentSnapshot = {
 };
 
 // =============================================================================
-// COMMUNITY MODE — K-1 Speed League
+// COMMUNITY MODE — KaNeXT Motorsport League
 // =============================================================================
 
 const communityPayments: Payment[] = [

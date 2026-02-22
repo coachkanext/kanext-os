@@ -167,7 +167,7 @@ export function getDivisionAnchor(division: string): DivisionAnchor {
   if (d.includes('D1') || d === 'NCAA_D1') return 'high_major';
   if (d.includes('D2') || d === 'NCAA_D2') return 'mid_major';
   if (d.includes('D3') || d === 'NCAA_D3') return 'low_major';
-  if (d === 'NAIA') return 'naia';
+  if (d === 'NAA') return 'naia';
   if (d.includes('JUCO') || d === 'NJCAA' || d.includes('CCCAA') || d === '3C2A') return 'juco';
   return 'naia'; // default
 }
@@ -194,7 +194,7 @@ const DIVISION_HIERARCHY: DivisionGroup[] = [
     { label: 'NCAA D1', value: 'NCAA D1' },
     { label: 'NCAA D2', value: 'NCAA D2' },
     { label: 'NCAA D3', value: 'NCAA D3' },
-    { label: 'NAIA', value: 'NAIA' },
+    { label: 'NAA', value: 'NAA' },
     { label: 'USCAA', value: 'USCAA' },
     { label: 'NCCAA D1', value: 'NCCAA D1' },
     { label: 'NCCAA D2', value: 'NCCAA D2' },

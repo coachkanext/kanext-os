@@ -255,7 +255,7 @@ export const INSTITUTIONS: InstitutionFull[] = [
     educationOrgId: 'sfat-001',
     name: 'South Ridgemont Academy of Technology',
     shortName: 'SFAT',
-    location: 'Fort Lauderdale, FL',
+    location: 'Beacon, FL',
     type: 'academy',
     status: 'prospect',
     description:

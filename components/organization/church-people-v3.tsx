@@ -46,14 +46,14 @@ interface Leader {
 }
 
 const LEADERSHIP: Leader[] = [
-  { id: 'l1', name: 'Dr. Oladipo Carter', title: 'Senior Pastor', phone: '(310) 555-0101', email: 'pastor@iccla.org', ministries: ['All Ministries', 'Hotline to Heaven'] },
-  { id: 'l2', name: 'Pastor Grace Carter', title: 'Associate Pastor', phone: '(310) 555-0102', email: 'grace@iccla.org', ministries: ['Connect Groups', 'Women\'s Ministry'] },
-  { id: 'l3', name: 'Pastor David Akinola', title: 'Youth Pastor', phone: '(310) 555-0103', email: 'david@iccla.org', ministries: ['Fresh Fire', 'T.O.R.C.H.'] },
-  { id: 'l4', name: 'Minister Sarah Okonkwo', title: 'Worship Leader', phone: '(310) 555-0104', email: 'sarah@iccla.org', ministries: ['Vineyard Voices'] },
-  { id: 'l5', name: 'Deacon James Mensah', title: 'Deacon Board Chair', phone: '(310) 555-0105', email: 'james@iccla.org', ministries: ['Single Saved Serving', 'Operations'] },
-  { id: 'l6', name: 'Elder Ruth Adeyemi', title: 'Elder', phone: '(310) 555-0106', email: 'ruth@iccla.org', ministries: ['Rooted', 'Pastoral Care'] },
-  { id: 'l7', name: 'Brother Michael Osei', title: 'T.O.R.C.H. Leader', phone: '(310) 555-0107', email: 'michael@iccla.org', ministries: ['T.O.R.C.H.', 'The Harvesters'] },
-  { id: 'l8', name: 'Sister Funke Balogun', title: 'Sheepfold Director', phone: '(310) 555-0108', email: 'funke@iccla.org', ministries: ['Sheepfold'] },
+  { id: 'l1', name: 'Pastor James Carter', title: 'Senior Pastor', phone: '(310) 555-0101', email: 'pastor@kanextchurch.org', ministries: ['All Ministries', 'Morning Prayer Line'] },
+  { id: 'l2', name: 'Pastor Grace Carter', title: 'Associate Pastor', phone: '(310) 555-0102', email: 'grace@kanextchurch.org', ministries: ['Connect Groups', 'Women\'s Ministry'] },
+  { id: 'l3', name: 'Pastor Ryan Mitchell', title: 'Youth Pastor', phone: '(310) 555-0103', email: 'david@kanextchurch.org', ministries: ['Ignite Youth', 'Catalyst'] },
+  { id: 'l4', name: 'Minister Lisa Brooks', title: 'Worship Leader', phone: '(310) 555-0104', email: 'sarah@kanextchurch.org', ministries: ['Worship Team'] },
+  { id: 'l5', name: 'Deacon Robert Davis', title: 'Deacon Board Chair', phone: '(310) 555-0105', email: 'james@kanextchurch.org', ministries: ['Single & Purposeful', 'Operations'] },
+  { id: 'l6', name: 'Elder Mary Thompson', title: 'Elder', phone: '(310) 555-0106', email: 'ruth@kanextchurch.org', ministries: ['Rooted', 'Pastoral Care'] },
+  { id: 'l7', name: 'Brother Michael Scott', title: 'Catalyst Leader', phone: '(310) 555-0107', email: 'michael@kanextchurch.org', ministries: ['Catalyst', 'Community Outreach'] },
+  { id: 'l8', name: 'Sister Angela Davis', title: 'KaNeXT Kids Director', phone: '(310) 555-0108', email: 'funke@kanextchurch.org', ministries: ['KaNeXT Kids'] },
 ];
 
 type MemberStatus = 'Member' | 'Regular Attendee' | 'Volunteer' | 'Leader';
@@ -67,18 +67,18 @@ interface ChurchMember {
 }
 
 const MEMBERS: ChurchMember[] = [
-  { id: 'cm1', name: 'Adebayo Oluwaseun', status: 'Member', ministries: ['T.O.R.C.H.', 'Vineyard Voices'], joinDate: 'Jan 2020' },
-  { id: 'cm2', name: 'Chioma Eze', status: 'Volunteer', ministries: ['Sheepfold'], joinDate: 'Mar 2021' },
+  { id: 'cm1', name: 'Adebayo Oluwaseun', status: 'Member', ministries: ['Catalyst', 'Worship Team'], joinDate: 'Jan 2020' },
+  { id: 'cm2', name: 'Chioma Eze', status: 'Volunteer', ministries: ['KaNeXT Kids'], joinDate: 'Mar 2021' },
   { id: 'cm3', name: 'Daniel Kwame', status: 'Member', ministries: ['Connect Groups'], joinDate: 'Sep 2019' },
   { id: 'cm4', name: 'Esther Nwankwo', status: 'Leader', ministries: ['Rooted', 'Connect Groups'], joinDate: 'Jun 2018' },
-  { id: 'cm5', name: 'Francis Adjei', status: 'Member', ministries: ['The Harvesters'], joinDate: 'Feb 2022' },
+  { id: 'cm5', name: 'Francis Adjei', status: 'Member', ministries: ['Community Outreach'], joinDate: 'Feb 2022' },
   { id: 'cm6', name: 'Grace Amponsah', status: 'Regular Attendee', ministries: [], joinDate: 'Nov 2023' },
   { id: 'cm7', name: 'Henry Okafor', status: 'Volunteer', ministries: ['Operations', 'Parking'], joinDate: 'Apr 2021' },
-  { id: 'cm8', name: 'Ifeoma Chukwu', status: 'Member', ministries: ['Vineyard Voices'], joinDate: 'Aug 2020' },
-  { id: 'cm9', name: 'Joseph Mensah', status: 'Volunteer', ministries: ['Sound/Media'], joinDate: 'Jan 2023' },
-  { id: 'cm10', name: 'Kezia Boateng', status: 'Member', ministries: ['Single Saved Serving'], joinDate: 'May 2022' },
+  { id: 'cm8', name: 'Ifeoma Chukwu', status: 'Member', ministries: ['Worship Team'], joinDate: 'Aug 2020' },
+  { id: 'cm9', name: 'Joseph Davis', status: 'Volunteer', ministries: ['Sound/Media'], joinDate: 'Jan 2023' },
+  { id: 'cm10', name: 'Kezia Boateng', status: 'Member', ministries: ['Single & Purposeful'], joinDate: 'May 2022' },
   { id: 'cm11', name: 'Lola Adebisi', status: 'Regular Attendee', ministries: [], joinDate: 'Oct 2024' },
-  { id: 'cm12', name: 'Nnamdi Ugochukwu', status: 'Leader', ministries: ['T.O.R.C.H.', 'The Harvesters'], joinDate: 'Jul 2019' },
+  { id: 'cm12', name: 'Nnamdi Ugochukwu', status: 'Leader', ministries: ['Catalyst', 'Community Outreach'], joinDate: 'Jul 2019' },
 ];
 
 type FollowUpStatus = 'Contacted' | 'Needs Follow-up' | 'Connected';
@@ -97,7 +97,7 @@ const VISITORS: Visitor[] = [
   { id: 'vis2', name: 'Brian Asante', firstVisit: 'Feb 9, 2025', returnVisits: 2, followUpStatus: 'Contacted', assignedGroup: null },
   { id: 'vis3', name: 'Cynthia Okoro', firstVisit: 'Feb 9, 2025', returnVisits: 1, followUpStatus: 'Needs Follow-up', assignedGroup: null },
   { id: 'vis4', name: 'David & Mary Thompson', firstVisit: 'Jan 26, 2025', returnVisits: 4, followUpStatus: 'Connected', assignedGroup: 'Connect Group 2' },
-  { id: 'vis5', name: 'Emmanuel Osei', firstVisit: 'Feb 16, 2025', returnVisits: 0, followUpStatus: 'Needs Follow-up', assignedGroup: null },
+  { id: 'vis5', name: 'Emmanuel Davis', firstVisit: 'Feb 16, 2025', returnVisits: 0, followUpStatus: 'Needs Follow-up', assignedGroup: null },
   { id: 'vis6', name: 'Fatima Bello', firstVisit: 'Feb 16, 2025', returnVisits: 0, followUpStatus: 'Needs Follow-up', assignedGroup: null },
 ];
 

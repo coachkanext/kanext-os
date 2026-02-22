@@ -5,7 +5,7 @@
  * Entities, Risk/Controls, Audit, Board Pack Builder.
  *
  * All data references KaNeXT entities: Alex M, PBD, Tom, KaNeXT, KaNeXT Church,
- * K-1, KaNeXT Inc, KaNeXT Media LLC, KaNeXT Sports LLC, OSK Group.
+ * KaNeXT, KaNeXT Inc, KaNeXT Media LLC, KaNeXT Sports LLC, OSK Group.
  */
 
 // =============================================================================
@@ -311,7 +311,7 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
   {
     id: 'le-8',
     date: '2026-02-04',
-    description: 'K-1 Racing Series sponsorship payment received',
+    description: 'KaNeXT Racing Series sponsorship payment received',
     category: 'Revenue',
     debit: 0,
     credit: 15000,
@@ -400,8 +400,8 @@ export const COMMITMENTS: CommitmentItem[] = [
   },
   {
     id: 'cm-3',
-    title: 'K-1 Racing Series Season Integration',
-    counterparty: 'K-1 Racing',
+    title: 'KaNeXT Racing Series Season Integration',
+    counterparty: 'KaNeXT Racing',
     amount: '$22,500',
     dueDate: '2026-09-15',
     status: 'pending',
@@ -451,7 +451,7 @@ export const RECEIVABLES: ReceivableItem[] = [
   },
   {
     id: 'rv-3',
-    from: 'K-1 Racing Series',
+    from: 'KaNeXT Racing Series',
     amount: '$5,000',
     invoiceDate: '2026-02-10',
     dueDate: '2026-03-10',
@@ -635,7 +635,7 @@ export const REVENUE_ITEMS: RevenueItem[] = [
   },
   {
     id: 're-4',
-    source: 'K-1 Racing Integration License',
+    source: 'KaNeXT Racing Integration License',
     amount: '$22,500',
     period: 'Annual (projected Y1)',
     type: 'partnership',
@@ -864,7 +864,7 @@ export const AUDIT_LOG: AuditEntry[] = [
     action: 'Commitment recorded',
     actor: 'Jordan Hayes',
     category: 'Commitments',
-    detail: 'K-1 Racing Series integration partnership \u2014 $22,500 pending countersign',
+    detail: 'KaNeXT Racing Series integration partnership \u2014 $22,500 pending countersign',
   },
 ];
 

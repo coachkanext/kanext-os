@@ -402,7 +402,7 @@ function OverviewTab({ colors, roleLens }: { colors: typeof Colors.light; roleLe
 
       <SectionCard title="Current Wedge" colors={colors}>
         <ThemedText style={[styles.bodyText, { color: colors.text }]}>
-          Phase 1: Proof Wedge Deployment -- KaNeXT Athletics (13 sports), KaNeXT Church Church (giving + ministries), K-1 Speed Motorsport League (race ops + standings). Three real institutions, three modes, live data.
+          Phase 1: Proof Wedge Deployment -- KaNeXT Athletics (13 sports), KaNeXT Church Church (giving + ministries), KaNeXT Motorsport League (race ops + standings). Three real institutions, three modes, live data.
         </ThemedText>
       </SectionCard>
 
@@ -443,7 +443,7 @@ function ProductTab({ colors }: { colors: typeof Colors.light }) {
     { label: 'Luxury Control Room UI palette', done: true },
     { label: 'KaNeXT Sports Mode deployment (13 sports)', done: true },
     { label: 'KaNeXT Church Church Mode deployment', done: true },
-    { label: 'K-1 Competition Mode deployment', done: true },
+    { label: 'KaNeXT Competition Mode deployment', done: true },
     { label: 'Business Mode data room + governance', done: true },
     { label: 'Settlement rails v1 (Stripe integration)', done: false },
     { label: 'KX-C1 camera hardware deployment', done: false },
@@ -647,7 +647,7 @@ function RoadmapTab({ colors, board }: { colors: typeof Colors.light; board: boo
   const milestones6mo = [
     'Execute KaNeXT Classic (32-team postseason)',
     'Complete all 5 PBD SAFE tranches ($500K total)',
-    'Onboard 10+ HBCU institutions via mandate',
+    'Onboard 10+ partner institutions via mandate',
     'Hire senior engineer + designer',
     'Launch MLK Truth Classic (16-team tournament)',
   ];

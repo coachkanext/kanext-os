@@ -1,6 +1,6 @@
 /**
  * Competition Ledger V3 — 3-pill ViewBar (Transactions | Pending | Receipts)
- * K-1 Speed League · Commissioner perspective
+ * KaNeXT Motorsport League · Commissioner perspective
  * Full financial ledger: transactions, pending items, and receipts.
  */
 import React, { useState, useCallback } from 'react';
@@ -108,7 +108,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: '$420,000',
     direction: 'inflow',
     date: 'Mar 31',
-    counterparty: 'K-1 Merch Store',
+    counterparty: 'KaNeXT Merch Store',
   },
   {
     id: 'tx8',

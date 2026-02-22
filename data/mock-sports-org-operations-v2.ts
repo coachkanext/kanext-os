@@ -263,7 +263,7 @@ export const OPS_SUB_TABS: OpsSubTab[] = [
 export const OPS_TASKS: OpsTask[] = [
   {
     id: 'ot-1',
-    title: 'Book travel for Keiser away game (bus, hotel, meals)',
+    title: 'Book travel for Lakewood away game (bus, hotel, meals)',
     category: 'Travel',
     priority: 'critical',
     owner: 'Tyler Brooks',
@@ -303,7 +303,7 @@ export const OPS_TASKS: OpsTask[] = [
   },
   {
     id: 'ot-5',
-    title: 'Coordinate team meal plan for Keiser trip',
+    title: 'Coordinate team meal plan for Lakewood trip',
     category: 'Player Services',
     priority: 'high',
     owner: 'Tyler Brooks',
@@ -326,7 +326,7 @@ export const OPS_TASKS: OpsTask[] = [
 export const TRAVEL_TRIPS: TravelTrip[] = [
   {
     id: 'tt-1',
-    destination: 'Keiser University — West Palm Beach, FL',
+    destination: 'Lakewood University — West Palm Beach, FL',
     departure: '2026-02-22',
     returnDate: '2026-02-22',
     teamSize: 20,
@@ -355,7 +355,7 @@ export const TRAVEL_TRIPS: TravelTrip[] = [
   },
   {
     id: 'tt-3',
-    destination: 'Ave Maria University — Ave Maria, FL',
+    destination: 'Westfield University — Westfield, FL',
     departure: '2026-02-15',
     returnDate: '2026-02-15',
     teamSize: 20,
@@ -373,7 +373,7 @@ export const FACILITY_BOOKINGS: FacilityBooking[] = [
     facility: 'Main Gymnasium — KaNeXT Wellness Center',
     date: '2026-02-18',
     timeSlot: '3:00 PM – 5:00 PM',
-    purpose: 'Team Practice — Keiser prep',
+    purpose: 'Team Practice — Lakewood prep',
     conflict: false,
     data_source: 'demo_seed',
   },
@@ -382,7 +382,7 @@ export const FACILITY_BOOKINGS: FacilityBooking[] = [
     facility: 'Film Room / Meeting Room',
     date: '2026-02-18',
     timeSlot: '6:00 PM – 7:30 PM',
-    purpose: 'Film Session — Keiser scouting report',
+    purpose: 'Film Session — Lakewood scouting report',
     conflict: false,
     data_source: 'demo_seed',
   },
@@ -409,7 +409,7 @@ export const FACILITY_BOOKINGS: FacilityBooking[] = [
     facility: 'Main Gymnasium — KaNeXT Wellness Center',
     date: '2026-02-20',
     timeSlot: '7:00 PM – 9:30 PM',
-    purpose: 'Home Game vs. Thomas University',
+    purpose: 'Home Game vs. Magnolia University',
     conflict: false,
     data_source: 'demo_seed',
   },
@@ -590,7 +590,7 @@ export const PLAYER_SERVICE_TICKETS: PlayerServiceTicket[] = [
 export const OPS_ANNOUNCEMENTS: OpsAnnouncement[] = [
   {
     id: 'oa-1',
-    title: 'Travel itinerary posted for Saturday\'s away game at Keiser',
+    title: 'Travel itinerary posted for Saturday\'s away game at Lakewood',
     audience: 'all',
     requiredRead: true,
     confirmationRate: 0.8,
@@ -620,7 +620,7 @@ export const OPS_ANNOUNCEMENTS: OpsAnnouncement[] = [
 export const OPS_APPROVALS: OpsApproval[] = [
   {
     id: 'oap-1',
-    title: 'Keiser Away Game — Travel Expense Reimbursement',
+    title: 'Lakewood Away Game — Travel Expense Reimbursement',
     type: 'Travel',
     amount: 3800,
     requestedBy: 'Tyler Brooks',

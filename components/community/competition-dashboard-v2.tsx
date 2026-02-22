@@ -1,5 +1,5 @@
 /**
- * Competition Dashboard V2 — 14 RBAC-gated modules for the K-1 Competition Mode.
+ * Competition Dashboard V2 — 14 RBAC-gated modules for the KaNeXT Competition Mode.
  * Modules are conditionally rendered based on CompetitionRoleLens (C1–C4).
  * Default demo role: league_admin (C1) — full access.
  */

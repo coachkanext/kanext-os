@@ -130,9 +130,9 @@ export const PROGRAM_IDENTITY: ProgramIdentity = {
   name: 'KaNeXT Sports',
   initials: 'KaNeXT',
   organization: 'KaNeXT Sports Athletics',
-  level: 'NAIA',
+  level: 'NAA',
   conference: 'KaNeXT Conference',
-  governingBody: 'NAIA',
+  governingBody: 'NAA',
   location: 'Nashville, TN',
   founded: '1879',
   colors: ['#1D9BF0', '#FFFFFF'],
@@ -168,9 +168,9 @@ export const QUICK_ACTIONS: QuickAction[] = [
 export const TODAY_NEXT: TodayNext = {
   nextEvent: 'Full Practice',
   nextEventTime: 'Tomorrow, 2:00 PM',
-  nextGame: 'vs Webber International',
+  nextGame: 'vs Pinecrest University',
   nextGameDate: 'Sat, Feb 21',
-  lastResult: 'W 82-74 vs Thomas University',
+  lastResult: 'W 82-74 vs Magnolia University',
 };
 
 // =============================================================================
@@ -188,8 +188,8 @@ export const PROGRAM_HEALTH: ProgramHealth = {
 // =============================================================================
 
 export const PINNED_INTEL: PinnedIntel[] = [
-  { id: 'pi-1', type: 'sim', title: 'KaNeXT vs Webber — 64% Win Prob', date: 'Feb 18' },
-  { id: 'pi-2', type: 'game-plan', title: 'Webber Game Plan — Motion Offense Focus', date: 'Feb 17' },
+  { id: 'pi-1', type: 'sim', title: 'KaNeXT vs Pinecrest — 64% Win Prob', date: 'Feb 18' },
+  { id: 'pi-2', type: 'game-plan', title: 'Pinecrest Game Plan — Motion Offense Focus', date: 'Feb 17' },
   { id: 'pi-3', type: 'dev-plan', title: 'Week 22 Development Plan', date: 'Feb 17' },
 ];
 
@@ -198,14 +198,14 @@ export const PINNED_INTEL: PinnedIntel[] = [
 // =============================================================================
 
 export const STAFF_MEMBERS: StaffMember[] = [
-  { id: 'staff-1', name: 'Alex Morgan', initials: 'AM', role: 'Head Coach', teamAssignment: 'Varsity', permissionTier: 'admin', email: 'skalejaiye@fmu.edu' },
-  { id: 'staff-2', name: 'Marcus Johnson', initials: 'MJ', role: 'Assistant Coach', teamAssignment: 'Varsity', permissionTier: 'coach', email: 'mjohnson@fmu.edu' },
-  { id: 'staff-3', name: 'David Chen', initials: 'DC', role: 'Assistant Coach', teamAssignment: 'Varsity', permissionTier: 'coach', email: 'dchen@fmu.edu' },
-  { id: 'staff-4', name: 'Sarah Thompson', initials: 'ST', role: 'Director of Ops', teamAssignment: 'All Teams', permissionTier: 'staff', email: 'sthompson@fmu.edu' },
-  { id: 'staff-5', name: 'James Rivera', initials: 'JR', role: 'Athletic Trainer', teamAssignment: 'All Teams', permissionTier: 'staff', email: 'jrivera@fmu.edu' },
-  { id: 'staff-6', name: 'Michael Park', initials: 'MP', role: 'Strength Coach', teamAssignment: 'All Teams', permissionTier: 'staff', email: 'mpark@fmu.edu' },
-  { id: 'staff-7', name: 'Tyler Brooks', initials: 'TB', role: 'Video Coordinator', teamAssignment: 'Varsity', permissionTier: 'staff', email: 'tbrooks@fmu.edu' },
-  { id: 'staff-8', name: 'Aisha Williams', initials: 'AW', role: 'Graduate Assistant', teamAssignment: 'JV', permissionTier: 'coach', email: 'awilliams@fmu.edu' },
+  { id: 'staff-1', name: 'Alex Morgan', initials: 'AM', role: 'Head Coach', teamAssignment: 'Varsity', permissionTier: 'admin', email: 'skalejaiye@kanext.edu' },
+  { id: 'staff-2', name: 'Marcus Johnson', initials: 'MJ', role: 'Assistant Coach', teamAssignment: 'Varsity', permissionTier: 'coach', email: 'mjohnson@kanext.edu' },
+  { id: 'staff-3', name: 'David Chen', initials: 'DC', role: 'Assistant Coach', teamAssignment: 'Varsity', permissionTier: 'coach', email: 'dchen@kanext.edu' },
+  { id: 'staff-4', name: 'Sarah Thompson', initials: 'ST', role: 'Director of Ops', teamAssignment: 'All Teams', permissionTier: 'staff', email: 'sthompson@kanext.edu' },
+  { id: 'staff-5', name: 'James Rivera', initials: 'JR', role: 'Athletic Trainer', teamAssignment: 'All Teams', permissionTier: 'staff', email: 'jrivera@kanext.edu' },
+  { id: 'staff-6', name: 'Michael Park', initials: 'MP', role: 'Strength Coach', teamAssignment: 'All Teams', permissionTier: 'staff', email: 'mpark@kanext.edu' },
+  { id: 'staff-7', name: 'Tyler Brooks', initials: 'TB', role: 'Video Coordinator', teamAssignment: 'Varsity', permissionTier: 'staff', email: 'tbrooks@kanext.edu' },
+  { id: 'staff-8', name: 'Aisha Williams', initials: 'AW', role: 'Graduate Assistant', teamAssignment: 'JV', permissionTier: 'coach', email: 'awilliams@kanext.edu' },
 ];
 
 // =============================================================================
@@ -265,7 +265,7 @@ export const PERMISSION_ROLES: PermissionRole[] = [
 // =============================================================================
 
 export const AUDIT_LOG: AuditEntry[] = [
-  { id: 'aud-1', action: 'game_plan_edit', actor: 'Alex Morgan', description: 'Updated Webber game plan — offensive adjustments', timestamp: 'Feb 16, 2026 4:32 PM' },
+  { id: 'aud-1', action: 'game_plan_edit', actor: 'Alex Morgan', description: 'Updated Pinecrest game plan — offensive adjustments', timestamp: 'Feb 16, 2026 4:32 PM' },
   { id: 'aud-2', action: 'roster_change', actor: 'Marcus Johnson', description: 'Updated Jalen Washington status: rotation eligible', timestamp: 'Feb 15, 2026 3:15 PM' },
   { id: 'aud-3', action: 'system_update', actor: 'Alex Morgan', description: 'Changed OSIE to Motion Offense (was Flex Cuts)', timestamp: 'Feb 14, 2026 11:22 AM' },
   { id: 'aud-4', action: 'recruitment_update', actor: 'David Chen', description: 'Added 3 new prospects to recruiting board', timestamp: 'Feb 13, 2026 9:45 AM' },
@@ -273,7 +273,7 @@ export const AUDIT_LOG: AuditEntry[] = [
   { id: 'aud-6', action: 'permission_change', actor: 'Alex Morgan', description: 'Granted coach permissions to Aisha Williams', timestamp: 'Feb 10, 2026 10:30 AM' },
   { id: 'aud-7', action: 'season_lock', actor: 'System', description: '2024-25 season data locked automatically', timestamp: 'Apr 1, 2025 12:00 AM' },
   { id: 'aud-8', action: 'roster_change', actor: 'Marcus Johnson', description: 'Added Trevor Hayes, Devon Mitchell to JV roster', timestamp: 'Feb 8, 2026 1:45 PM' },
-  { id: 'aud-9', action: 'game_plan_edit', actor: 'David Chen', description: 'Created Thomas University scouting report', timestamp: 'Feb 7, 2026 4:00 PM' },
+  { id: 'aud-9', action: 'game_plan_edit', actor: 'David Chen', description: 'Created Magnolia University scouting report', timestamp: 'Feb 7, 2026 4:00 PM' },
   { id: 'aud-10', action: 'system_update', actor: 'Alex Morgan', description: 'Updated DSIE to Switching Man (was Pack Line)', timestamp: 'Feb 5, 2026 3:20 PM' },
 ];
 
@@ -342,9 +342,9 @@ export interface UpcomingGame {
 }
 
 export const UPCOMING_GAMES: UpcomingGame[] = [
-  { id: 'ug-1', opponent: 'Webber International', date: 'Sat, Feb 21', location: 'Home', time: '7:00 PM' },
-  { id: 'ug-2', opponent: 'Ave Maria', date: 'Wed, Feb 25', location: 'Away', time: '6:00 PM' },
-  { id: 'ug-3', opponent: 'Warner', date: 'Sat, Feb 28', location: 'Home', time: '4:00 PM' },
+  { id: 'ug-1', opponent: 'Pinecrest University', date: 'Sat, Feb 21', location: 'Home', time: '7:00 PM' },
+  { id: 'ug-2', opponent: 'Westfield', date: 'Wed, Feb 25', location: 'Away', time: '6:00 PM' },
+  { id: 'ug-3', opponent: 'Clearwater', date: 'Sat, Feb 28', location: 'Home', time: '4:00 PM' },
 ];
 
 // =============================================================================
@@ -361,7 +361,7 @@ export interface OperationsPulse {
 export const OPS_PULSE: OperationsPulse = {
   openTasksP0: 1,
   openTasksP1: 4,
-  nextTrip: 'Ave Maria — Feb 25 (bus departs 11 AM)',
+  nextTrip: 'Westfield — Feb 25 (bus departs 11 AM)',
   facilityIssues: 0,
 };
 

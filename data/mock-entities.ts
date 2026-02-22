@@ -351,7 +351,7 @@ export const ENTITY_OPPORTUNITIES: EntityOpportunity[] = [
   {
     id: 'eo-4',
     entityId: 'ent-sales',
-    title: 'K-12 School District License',
+    title: 'KaNeXT2 School District License',
     value: 200000,
     stage: 'prospect',
     contact: 'Dr. Angela Thomas',
@@ -447,7 +447,7 @@ export const ENTITY_CONTACTS: EntityContact[] = [
     name: 'Dr. James Carter',
     initials: 'JC',
     role: 'KaNeXT Athletic Director',
-    email: 'jcarter@fmu.edu',
+    email: 'jcarter@kanext.edu',
     phone: '(803) 555-0200',
   },
 ];

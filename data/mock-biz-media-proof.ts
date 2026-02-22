@@ -5,7 +5,7 @@
  * Press, Rights, Share Links.
  *
  * All data references KaNeXT entities:
- *   Alex Morgan, KaNeXT, KaNeXT Church, K-1 Racing,
+ *   Alex Morgan, KaNeXT, KaNeXT Church, KaNeXT Racing,
  *   Investor demos, brand assets, PBD/Valuetainment mentions.
  */
 
@@ -138,7 +138,7 @@ export const MEDIA_OVERVIEW: MediaOverviewStats = {
 export const MEDIA_LIBRARY: MediaAsset[] = [
   {
     id: 'ma-1',
-    title: 'KaNeXT vs Tuskegee — Full Game Broadcast',
+    title: 'KaNeXT vs Heritage — Full Game Broadcast',
     type: 'video',
     category: 'Game Footage',
     size: '4.2 GB',
@@ -158,13 +158,13 @@ export const MEDIA_LIBRARY: MediaAsset[] = [
   },
   {
     id: 'ma-3',
-    title: 'K-1 Race Day Telemetry Overlay — Round 5',
+    title: 'KaNeXT Race Day Telemetry Overlay — Round 5',
     type: 'video',
     category: 'Race Footage',
     size: '1.7 GB',
     uploadedAt: 'Feb 8, 2026',
     uploadedBy: 'Adriana Ruiz',
-    tags: ['K-1', 'telemetry', 'overlay', 'race'],
+    tags: ['KaNeXT', 'telemetry', 'overlay', 'race'],
   },
   {
     id: 'ma-4',
@@ -292,9 +292,9 @@ export const PLAYLISTS: Playlist[] = [
   },
   {
     id: 'pl-3',
-    title: 'K-1 Race Day Recaps',
+    title: 'KaNeXT Race Day Recaps',
     description:
-      'Race-day recap videos with telemetry overlay, post-race analysis, and driver interviews for each K-1 round.',
+      'Race-day recap videos with telemetry overlay, post-race analysis, and driver interviews for each KaNeXT round.',
     itemCount: 14,
     duration: '2h 6m',
     category: 'Racing',
@@ -349,12 +349,12 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: 'cs-3',
-    title: 'K-1 Racing — Data-Driven Race Day',
-    client: 'K-1 Racing Series',
+    title: 'KaNeXT Racing — Data-Driven Race Day',
+    client: 'KaNeXT Racing Series',
     category: 'Racing',
     status: 'draft',
     summary:
-      'Integrating live telemetry feeds, race-day overlay graphics, and post-race analysis into the KaNeXT OS platform for K-1 — enabling data-driven storytelling and fan-facing race recaps.',
+      'Integrating live telemetry feeds, race-day overlay graphics, and post-race analysis into the KaNeXT OS platform for KaNeXT — enabling data-driven storytelling and fan-facing race recaps.',
     metrics: [
       { label: 'Races Covered', value: '14' },
       { label: 'Telemetry Data Points / Race', value: '48K+' },
@@ -439,9 +439,9 @@ export const RIGHTS_ITEMS: RightsItem[] = [
   },
   {
     id: 'ri-3',
-    assetTitle: 'K-1 Race Telemetry & Overlay Graphics',
+    assetTitle: 'KaNeXT Race Telemetry & Overlay Graphics',
     licenseType: 'Partnership License',
-    holder: 'K-1 Racing Series',
+    holder: 'KaNeXT Racing Series',
     expiryDate: 'Mar 15, 2026',
     status: 'expiring_soon',
     territory: 'North America',

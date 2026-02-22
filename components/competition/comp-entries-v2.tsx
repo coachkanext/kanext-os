@@ -1,6 +1,6 @@
 /**
  * Competition Entries V2 — Orchestrator with 3 sub-pills: Confirmed | Wildcards | Compliance
- * Entry management for the K-1 Racing League.
+ * Entry management for the KaNeXT Racing League.
  */
 
 import React, { useState } from 'react';

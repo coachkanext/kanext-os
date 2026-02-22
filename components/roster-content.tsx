@@ -35,7 +35,7 @@ import { RosterCRMList } from '@/components/roster/roster-crm-list';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // KaNeXT seal used as fallback when no headshot available
-const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
+const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
 
 // Player headshots (keyed by jersey number)
 const HEADSHOTS: Record<string, any> = {
@@ -122,14 +122,14 @@ export const ROSTER = [
   { id: '1',  number: '0',  firstName: 'Tristan',   lastName: 'Thomas',        position: 'Wing', listPos: 'W', height: '6\'4"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Tampa, FL', formerSchool: 'Hillsborough CC', ppg: 3.4, rpg: 3.1, apg: 0, kr: 66, usage: 12.5, minutes: 16, role: 'rotation' as PlayerRole },
   { id: '2',  number: '1',  firstName: 'Petar',      lastName: 'Asceric',       position: 'Big',           listPos: 'B',  height: '6\'10"', weight: 230, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Belgrade, Serbia', formerSchool: 'KK Zemun (Serbia)', ppg: 6.1, rpg: 2.4, apg: 0, kr: 68, usage: 14.8, minutes: 16, role: 'rotation' as PlayerRole },
   { id: '3',  number: '2',  firstName: 'Braxton',    lastName: 'Lewis',         position: 'Wing', listPos: 'W', height: '6\'3"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'West Palm Beach, FL', formerSchool: 'Palm Beach State', ppg: 0, rpg: 0, apg: 0, kr: 54, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
-  { id: '4',  number: '3',  firstName: 'Rico',        lastName: 'Thompson',     position: 'Combo Guard', listPos: 'CG', height: '6\'1"', weight: 180, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Fort Lauderdale, FL', formerSchool: 'Stranahan HS', ppg: 0, rpg: 0, apg: 0, kr: 55, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '4',  number: '3',  firstName: 'Rico',        lastName: 'Thompson',     position: 'Combo Guard', listPos: 'CG', height: '6\'1"', weight: 180, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Beacon, FL', formerSchool: 'Stranahan HS', ppg: 0, rpg: 0, apg: 0, kr: 55, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
   { id: '5',  number: '4',  firstName: 'Devin',      lastName: 'Carter',        position: 'Wing', listPos: 'W', height: '6\'0"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Jackson, MS', formerSchool: 'Hinds CC', ppg: 18.3, rpg: 6.1, apg: 3.4, kr: 82, usage: 28.4, minutes: 32, role: 'starter' as PlayerRole },
-  { id: '6',  number: '5',  firstName: 'Jeffrey',    lastName: 'Selden',        position: 'Big',           listPos: 'B',  height: '6\'6"',  weight: 210, classYear: 'Senior',    scholarship: 0, nil: '—', notes: 'Pembroke Pines, FL', formerSchool: 'Broward College', ppg: 11.2, rpg: 5.9, apg: 3.0, kr: 80, usage: 22.1, minutes: 28, role: 'starter' as PlayerRole },
+  { id: '6',  number: '5',  firstName: 'Jeffrey',    lastName: 'Selden',        position: 'Big',           listPos: 'B',  height: '6\'6"',  weight: 210, classYear: 'Senior',    scholarship: 0, nil: '—', notes: 'Pembroke Pines, FL', formerSchool: 'Riverside Community College', ppg: 11.2, rpg: 5.9, apg: 3.0, kr: 80, usage: 22.1, minutes: 28, role: 'starter' as PlayerRole },
   { id: '7',  number: '7',  firstName: 'Maximo',     lastName: 'Moratinos',     position: 'Forward', listPos: 'F', height: '6\'8"',  weight: 205, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Marbella, Spain', formerSchool: 'CB Marbella (Spain)', ppg: 6.6, rpg: 2.6, apg: 0, kr: 70, usage: 15.2, minutes: 18, role: 'rotation' as PlayerRole },
-  { id: '8',  number: '9',  firstName: "Ka'Mar",     lastName: 'Benbo',         position: 'Point Guard',   listPos: 'PG', height: '6\'0"',  weight: 170, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Nashville, TN', formerSchool: 'Carol City HS', ppg: 0, rpg: 0, apg: 0, kr: 58, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '8',  number: '9',  firstName: "Ka'Mar",     lastName: 'Benbo',         position: 'Point Guard',   listPos: 'PG', height: '6\'0"',  weight: 170, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Nashville, TN', formerSchool: 'Northview Prep HS', ppg: 0, rpg: 0, apg: 0, kr: 58, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
   { id: '9',  number: '10', firstName: 'Jason',      lastName: 'Morris',        position: 'Forward', listPos: 'F', height: '6\'4"',  weight: 200, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Miami, FL', formerSchool: 'Northwestern HS', ppg: 0, rpg: 0, apg: 0, kr: 56, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
   { id: '10', number: '11', firstName: 'Sehmaj',     lastName: 'Mentor',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Orlando, FL', formerSchool: 'Indian River State', ppg: 9.2, rpg: 3.5, apg: 2.4, kr: 78, usage: 20.3, minutes: 30, role: 'starter' as PlayerRole },
-  { id: '11', number: '12', firstName: 'Gavin',      lastName: 'Turner',        position: 'Wing', listPos: 'W', height: '6\'5"',  weight: 195, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Fort Lauderdale, FL', formerSchool: 'Dillard HS', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
+  { id: '11', number: '12', firstName: 'Gavin',      lastName: 'Turner',        position: 'Wing', listPos: 'W', height: '6\'5"',  weight: 195, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Beacon, FL', formerSchool: 'Dillard HS', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
   { id: '12', number: '13', firstName: 'Cameron',    lastName: 'Noel',          position: 'Combo Guard', listPos: 'CG', height: '6\'2"', weight: 180, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Opa-locka, FL', formerSchool: 'Miami Dade College', ppg: 11.0, rpg: 2.8, apg: 1.6, kr: 79, usage: 21.6, minutes: 28, role: 'starter' as PlayerRole },
   { id: '13', number: '15', firstName: 'Micah',      lastName: 'Morgan',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Houston, TX', formerSchool: 'Blinn College', ppg: 2.9, rpg: 2.7, apg: 0, kr: 65, usage: 10.1, minutes: 14, role: 'rotation' as PlayerRole },
   { id: '14', number: '20', firstName: "D'Andre",    lastName: 'Dues',          position: 'Forward', listPos: 'F', height: '6\'7"',  weight: 188, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Lauderdale Lakes, FL', formerSchool: 'Boyd Anderson HS', ppg: 0, rpg: 0, apg: 0, kr: 50, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
@@ -185,7 +185,7 @@ const DEPTH_CHART = [
 const KaNeXT_TEAM = {
   name: 'KaNeXT Sports',
   conference: 'KaNeXT Conference',
-  division: 'NAIA',
+  division: 'NAA',
   record: KaNeXT_RECORD.overall,
   confRecord: KaNeXT_RECORD.conference,
   streak: KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—',
@@ -286,7 +286,7 @@ function PlayerSection({
         <View style={styles.photoArea}>
           <View style={hasHeadshot ? styles.headshotWrapper : styles.photoWrapper}>
             <Image
-              source={HEADSHOTS[player.number] ?? KaNeXT_SEAL}
+              source={HEADSHOTS[player.number] ?? KaNeXT_LOGO}
               style={hasHeadshot ? styles.headshot : styles.sealImage}
               resizeMode="contain"
             />
@@ -1149,7 +1149,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
       height: p.height,
       classYear: p.classYear,
       currentSchool: 'KaNeXT Sports',
-      level: 'NAIA' as const,
+      level: 'NAA' as const,
       conference: '',
       state: 'FL',
       keyStatLine: '',
@@ -1168,7 +1168,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
             onLongPress={() => { if (onLogoLongPress) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onLogoLongPress(); } }}
             delayLongPress={300}
           >
-            <Image source={KaNeXT_SEAL} style={styles.headerLogo} resizeMode="contain" />
+            <Image source={KaNeXT_LOGO} style={styles.headerLogo} resizeMode="contain" />
           </Pressable>
           <View style={{ flex: 1 }}>
             <Text style={styles.teamName}>{KaNeXT_TEAM.name}</Text>

@@ -677,8 +677,8 @@ const CHURCH_ROOMS: Room[] = [
     title: 'Pastoral Team',
     context_line: 'Senior leadership',
     members: [
-      { id: 'c1', name: 'Pastor Dipo Carter', initials: 'DK', role: 'Senior Pastor' },
-      { id: 'c2', name: 'Pastor Sarah Okonkwo', initials: 'SO', role: 'Associate Pastor' },
+      { id: 'c1', name: 'Pastor James Carter', initials: 'JC', role: 'Senior Pastor' },
+      { id: 'c2', name: 'Pastor Lisa Brooks', initials: 'SO', role: 'Associate Pastor' },
       { id: 'c3', name: 'Elder James Wright', initials: 'JW', role: 'Elder' },
     ],
     visibility: 'private',
@@ -695,8 +695,8 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'ql2', label: 'Budget', url: '#', icon: 'chart.bar.fill' },
     ],
     audit_log: [
-      { id: 'a1', action: 'room_created', actor: 'Pastor Dipo Carter', detail: 'Created room', timestamp: 'Jan 1, 2025', timestamp_ms: 1704067200000 },
-      { id: 'a2', action: 'member_added', actor: 'Pastor Dipo Carter', detail: 'Added pastoral team', timestamp: 'Jan 1, 2025', timestamp_ms: 1704070800000 },
+      { id: 'a1', action: 'room_created', actor: 'Pastor James Carter', detail: 'Created room', timestamp: 'Jan 1, 2025', timestamp_ms: 1704067200000 },
+      { id: 'a2', action: 'member_added', actor: 'Pastor James Carter', detail: 'Added pastoral team', timestamp: 'Jan 1, 2025', timestamp_ms: 1704070800000 },
     ],
     avatarColor: '#1D9BF0',
     lastMessage: 'Lenten series outline is attached — review by Wednesday',
@@ -709,9 +709,9 @@ const CHURCH_ROOMS: Room[] = [
     title: 'Prayer Requests',
     context_line: 'Congregation prayer needs',
     members: [
-      { id: 'c1', name: 'Pastor Dipo Carter', initials: 'DK', role: 'Pastor' },
-      { id: 'c4', name: 'Deacon Ruth Adeyemi', initials: 'RA', role: 'Prayer Lead' },
-      { id: 'c5', name: 'Sister Grace Nwosu', initials: 'GN', role: 'Intercessor' },
+      { id: 'c1', name: 'Pastor James Carter', initials: 'JC', role: 'Pastor' },
+      { id: 'c4', name: 'Deacon Mary Thompson', initials: 'RA', role: 'Prayer Lead' },
+      { id: 'c5', name: 'Sister Grace Wilson', initials: 'GN', role: 'Intercessor' },
     ],
     visibility: 'discoverable',
     join_policy: 'open',
@@ -726,7 +726,7 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'ql3', label: 'Prayer Guide', url: '#', icon: 'book.fill' },
     ],
     audit_log: [
-      { id: 'a3', action: 'room_created', actor: 'Deacon Ruth Adeyemi', detail: 'Created room', timestamp: 'Jan 5, 2025', timestamp_ms: 1704412800000 },
+      { id: 'a3', action: 'room_created', actor: 'Deacon Mary Thompson', detail: 'Created room', timestamp: 'Jan 5, 2025', timestamp_ms: 1704412800000 },
     ],
     avatarColor: '#F59E0B',
     lastMessage: 'Please keep the Johnson family in your prayers this week',
@@ -739,7 +739,7 @@ const CHURCH_ROOMS: Room[] = [
     title: 'Care Team',
     context_line: 'Hospital visits & benevolence',
     members: [
-      { id: 'c2', name: 'Pastor Sarah Okonkwo', initials: 'SO', role: 'Care Pastor' },
+      { id: 'c2', name: 'Pastor Lisa Brooks', initials: 'SO', role: 'Care Pastor' },
       { id: 'c6', name: 'Deacon Michael Ibe', initials: 'MI', role: 'Deacon' },
     ],
     visibility: 'private',
@@ -755,8 +755,8 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'ql4', label: 'Visit Schedule', url: '#', icon: 'calendar' },
     ],
     audit_log: [
-      { id: 'a4', action: 'room_created', actor: 'Pastor Sarah Okonkwo', detail: 'Created room', timestamp: 'Feb 1, 2025', timestamp_ms: 1706745600000 },
-      { id: 'a5', action: 'permission_changed', actor: 'Pastor Dipo Carter', detail: 'Set visibility to private', timestamp: 'Feb 2, 2025', timestamp_ms: 1706832000000 },
+      { id: 'a4', action: 'room_created', actor: 'Pastor Lisa Brooks', detail: 'Created room', timestamp: 'Feb 1, 2025', timestamp_ms: 1706745600000 },
+      { id: 'a5', action: 'permission_changed', actor: 'Pastor James Carter', detail: 'Set visibility to private', timestamp: 'Feb 2, 2025', timestamp_ms: 1706832000000 },
     ],
     avatarColor: '#EF4444',
     lastMessage: 'Hospital visit scheduled for Brother Taiwo — Room 412',
@@ -769,7 +769,7 @@ const CHURCH_ROOMS: Room[] = [
     title: 'Worship Ministry',
     context_line: 'Worship team planning & rehearsal',
     members: [
-      { id: 'c7', name: 'David Eze', initials: 'DE', role: 'Worship Leader' },
+      { id: 'c7', name: 'David Brooks', initials: 'DE', role: 'Worship Leader' },
       { id: 'c8', name: 'Blessing Ajayi', initials: 'BA', role: 'Vocalist' },
       { id: 'c9', name: 'Samuel Okoro', initials: 'SO', role: 'Keyboardist' },
     ],
@@ -787,7 +787,7 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'ql6', label: 'Rehearsal Schedule', url: '#', icon: 'calendar' },
     ],
     audit_log: [
-      { id: 'a6', action: 'room_created', actor: 'David Eze', detail: 'Created room', timestamp: 'Mar 1, 2025', timestamp_ms: 1709251200000 },
+      { id: 'a6', action: 'room_created', actor: 'David Brooks', detail: 'Created room', timestamp: 'Mar 1, 2025', timestamp_ms: 1709251200000 },
     ],
     avatarColor: '#1D9BF0',
     lastMessage: 'Sunday setlist is finalized — rehearsal Thursday 7pm',
@@ -827,9 +827,9 @@ const CHURCH_ROOMS: Room[] = [
     title: 'Youth Ministry',
     context_line: 'Youth & teen coordination',
     members: [
-      { id: 'c11', name: 'Minister Tunde Balogun', initials: 'TB', role: 'Youth Pastor' },
+      { id: 'c11', name: 'Minister David Balogun', initials: 'TB', role: 'Youth Pastor' },
       { id: 'c12', name: 'Sister Nneka Obi', initials: 'NO', role: 'Youth Leader' },
-      { id: 'c13', name: 'Brother Emeka Udoh', initials: 'EU', role: 'Volunteer' },
+      { id: 'c13', name: 'Brother Michael Udoh', initials: 'EU', role: 'Volunteer' },
     ],
     visibility: 'discoverable',
     join_policy: 'request',
@@ -844,8 +844,8 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'ql7', label: 'Event Calendar', url: '#', icon: 'calendar' },
     ],
     audit_log: [
-      { id: 'a8', action: 'room_created', actor: 'Minister Tunde Balogun', detail: 'Created room', timestamp: 'May 1, 2025', timestamp_ms: 1714521600000 },
-      { id: 'a9', action: 'member_added', actor: 'Minister Tunde Balogun', detail: 'Added Nneka Obi & Emeka Udoh', timestamp: 'May 2, 2025', timestamp_ms: 1714608000000 },
+      { id: 'a8', action: 'room_created', actor: 'Minister David Balogun', detail: 'Created room', timestamp: 'May 1, 2025', timestamp_ms: 1714521600000 },
+      { id: 'a9', action: 'member_added', actor: 'Minister David Balogun', detail: 'Added Nneka Obi & Emeka Udoh', timestamp: 'May 2, 2025', timestamp_ms: 1714608000000 },
     ],
     avatarColor: '#1D9BF0',
     lastMessage: 'Youth retreat registration closes this Friday!',
@@ -858,8 +858,8 @@ const CHURCH_ROOMS: Room[] = [
     title: 'New Members Class',
     context_line: 'Onboarding & orientation',
     members: [
-      { id: 'c2', name: 'Pastor Sarah Okonkwo', initials: 'SO', role: 'Pastor' },
-      { id: 'c14', name: 'Deaconess Folake Ade', initials: 'FA', role: 'Coordinator' },
+      { id: 'c2', name: 'Pastor Lisa Brooks', initials: 'SO', role: 'Pastor' },
+      { id: 'c14', name: 'Deaconess Angela Ade', initials: 'FA', role: 'Coordinator' },
     ],
     visibility: 'discoverable',
     join_policy: 'open',
@@ -874,7 +874,7 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'ql8', label: 'Welcome Guide', url: '#', icon: 'book.fill' },
     ],
     audit_log: [
-      { id: 'a10', action: 'room_created', actor: 'Pastor Sarah Okonkwo', detail: 'Created room', timestamp: 'Jun 1, 2025', timestamp_ms: 1717200000000 },
+      { id: 'a10', action: 'room_created', actor: 'Pastor Lisa Brooks', detail: 'Created room', timestamp: 'Jun 1, 2025', timestamp_ms: 1717200000000 },
     ],
     avatarColor: '#1D9BF0',
     lastMessage: 'Welcome to KaNeXT Church! Next orientation is Sunday March 1 after service.',
@@ -1106,7 +1106,7 @@ const COMMUNITY_ROOMS: Room[] = [
     mode: 'competition',
     room_type: 'competition-ops',
     scope_object: 'competition',
-    title: 'K-1 Race Ops',
+    title: 'KaNeXT Race Ops',
     context_line: 'Competition-wide operations',
     members: [
       { id: 'x1', name: 'Director Marcus Hall', initials: 'MH', role: 'Race Director' },

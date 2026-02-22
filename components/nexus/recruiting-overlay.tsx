@@ -553,7 +553,7 @@ export function RecruitingOverlay({ visible, onClose, onOpenRosterSandbox }: Rec
   const divisions: { value: DivisionFilter; label: string }[] = [
     { value: 'all', label: 'All' },
     { value: 'NCAA_D2', label: 'D2' },
-    { value: 'NAIA', label: 'NAIA' },
+    { value: 'NAA', label: 'NAA' },
     { value: 'NJCAA', label: 'JUCO' },
   ];
 

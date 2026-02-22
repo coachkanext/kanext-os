@@ -388,7 +388,7 @@ const SPORTS_ROOMS: MsgRoom[] = [
 const CHURCH_MESSAGES: MsgItem[] = [
   {
     id: 'cm-1',
-    senderName: 'Pastor Dipo Carter',
+    senderName: 'Pastor James Carter',
     senderInitials: 'DK',
     preview: 'Sunday sermon notes are posted. Please review before Wednesday study.',
     timestamp: '1h ago',
@@ -537,7 +537,7 @@ const CHURCH_MESSAGES: MsgItem[] = [
   },
   {
     id: 'cm-15',
-    senderName: 'Pastor Dipo Carter',
+    senderName: 'Pastor James Carter',
     senderInitials: 'DK',
     preview: 'New sermon series "Unshakeable" starts next Sunday. Promo graphics in the drive.',
     timestamp: '2d ago',
@@ -1110,7 +1110,7 @@ const BUSINESS_ROOMS: MsgRoom[] = [
 ];
 
 // =============================================================================
-// COMMUNITY (K-1 COMPETITION) MESSAGES DATA
+// COMMUNITY (KaNeXT COMPETITION) MESSAGES DATA
 // =============================================================================
 
 const COMMUNITY_MESSAGES: MsgItem[] = [

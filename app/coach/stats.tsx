@@ -60,7 +60,7 @@ import type { LineupRow } from '@/data/stats/lineup-data';
 
 // ── Constants ──
 
-const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
+const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
 
 type TopTab = 'team' | 'players';
 type TeamSubTab = 'overview' | 'offense' | 'defense' | 'lineups' | 'shot';
@@ -475,10 +475,10 @@ function TeamOverview({
     <>
       {/* A) Team Identity Strip */}
       <View style={st.identityRow}>
-        <Image source={KaNeXT_SEAL} style={st.logo} resizeMode="contain" />
+        <Image source={KaNeXT_LOGO} style={st.logo} resizeMode="contain" />
         <View style={st.identityText}>
           <Text style={st.teamName}>KaNeXT Sports</Text>
-          <Text style={st.teamSubline}>NAIA {'\u00B7'} KaNeXT Conference</Text>
+          <Text style={st.teamSubline}>NAA {'\u00B7'} KaNeXT Conference</Text>
         </View>
         <View style={st.krBadge}>
           <Text style={st.krValue}>{teamKR}</Text>
@@ -511,7 +511,7 @@ function TeamOverview({
         </View>
         <View style={st.projSubRow}>
           <Text style={st.projSub}>{SEASON_PROJECTION.projectedSeed}</Text>
-          <Text style={st.projSub}>NAIA Tournament: {shi(SEASON_PROJECTION.playoffProbability, sp, 0)}%</Text>
+          <Text style={st.projSub}>NAA Conference Tournament: {shi(SEASON_PROJECTION.playoffProbability, sp, 0)}%</Text>
         </View>
       </View>
 

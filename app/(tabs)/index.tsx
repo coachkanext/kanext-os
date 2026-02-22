@@ -95,13 +95,13 @@ const DOMAIN_HIDDEN: Record<SportsRoleLens, Set<DrillDownId>> = {
 };
 
 // KaNeXT logo
-const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
+const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
 
 // KaNeXT team state — derived from real data
 const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—';
 const DEMO_TEAM_STATE = {
   name: 'KaNeXT Sports',
-  level: 'NAIA',
+  level: 'NAA',
   conference: 'KaNeXT Conference',
   record: KaNeXT_RECORD.overall,
   confRecord: KaNeXT_RECORD.conference,
@@ -477,7 +477,7 @@ function SportsHome() {
                     const oppRecord = isTBD ? '' : (nextGame?.opponentRecord ?? '');
                     const oppConf = isTBD ? '' : 'KaNeXT Conference';
                     const dateLine = isTBD
-                      ? 'NAIA National Tournament · TBD'
+                      ? 'NAA Conference Tournament · TBD'
                       : `${nextGame?.date ?? KaNeXT_NEXT_GAME!.date} · ${nextGame?.gameTime ?? ''} · ${nextGame?.venue ?? KaNeXT_NEXT_GAME!.location}`;
                     return (
                       <Pressable
@@ -492,7 +492,7 @@ function SportsHome() {
                           {/* Teams row */}
                           <View style={styles.ngTeamsRow}>
                             <View style={styles.ngTeamSide}>
-                              <Image source={KaNeXT_SEAL} style={styles.ngLogo} />
+                              <Image source={KaNeXT_LOGO} style={styles.ngLogo} />
                               <Text style={styles.ngTeamName} numberOfLines={1}>FL Memorial</Text>
                               <Text style={styles.ngTeamRecord}>{KaNeXT_RECORD.overall}</Text>
                             </View>
@@ -596,7 +596,7 @@ function SportsHome() {
                     </Pressable>
                     <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderTopColor: MODE_ACCENT.sports }]} onPress={() => setSupportVisible(true)}>
                       <Text style={[styles.commerceTitle, { color: colors.text }]}>Support</Text>
-                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Back the Lions</Text>
+                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Back the Wolves</Text>
                     </Pressable>
                   </View>
 

@@ -60,7 +60,7 @@ const BOARD_MINUTES = [
 const CONTRACTS = [
   { id: 'ct1', title: 'NDA - Velocity Ventures', type: 'NDA', parties: 'OSK Group LLC / Velocity Ventures', effective: 'May 2024', expiration: 'May 2026', status: 'active' as const },
   { id: 'ct2', title: 'NDA - Horizon Capital', type: 'NDA', parties: 'OSK Group LLC / Horizon Capital', effective: 'Aug 2024', expiration: 'Aug 2026', status: 'active' as const },
-  { id: 'ct3', title: 'NAIA Beta Partnership', type: 'Partnership', parties: 'KaNeXT Ops / NAIA Conference', effective: 'Jan 2025', expiration: 'Dec 2025', status: 'active' as const },
+  { id: 'ct3', title: 'NAA Beta Partnership', type: 'Partnership', parties: 'KaNeXT Ops / NAA Conference', effective: 'Jan 2025', expiration: 'Dec 2025', status: 'active' as const },
   { id: 'ct4', title: 'AWS Enterprise Agreement', type: 'Vendor', parties: 'KaNeXT Ops / AWS', effective: 'Mar 2024', expiration: 'Mar 2025', status: 'renewal' as const },
   { id: 'ct5', title: 'Employment - Marcus Chen', type: 'Employment', parties: 'KaNeXT Ops / Marcus Chen', effective: 'Jun 2024', expiration: 'N/A', status: 'active' as const },
   { id: 'ct6', title: 'Employment - Aisha Williams', type: 'Employment', parties: 'KaNeXT Ops / Aisha Williams', effective: 'Aug 2024', expiration: 'N/A', status: 'active' as const },

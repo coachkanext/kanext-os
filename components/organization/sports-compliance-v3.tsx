@@ -1,6 +1,6 @@
 /**
  * Sports Compliance V3 — 3-pill ViewBar (Eligibility | Academics | Immigration)
- * KaNeXT Men's Basketball · NAIA KaNeXT Conference
+ * KaNeXT Men's Basketball · NAA KaNeXT Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback } from 'react';
@@ -122,7 +122,7 @@ interface ImmigrationRow {
 
 const IMMIGRATION_DATA: ImmigrationRow[] = [
   {
-    id: 'im1', name: 'Samuel Okonkwo', country: 'Nigeria',
+    id: 'im1', name: 'Samuel Brooks', country: 'Nigeria',
     visaType: 'F-1', visaStatus: 'Active', eVerifyStatus: 'Verified',
     expirationDate: 'Aug 2026',
     documents: ['I-20 on file', 'Passport valid', 'SEVIS active'],
@@ -182,7 +182,7 @@ function StatusBadge({ label, color }: { label: string; color: string }) {
 function EligibilityView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>NAIA ELIGIBILITY</ThemedText>
+      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>NAA ELIGIBILITY</ThemedText>
       {ELIGIBILITY_DATA.map((player) => (
         <View
           key={player.id}

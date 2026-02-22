@@ -35,7 +35,7 @@ const VIEWS: { id: ViewMode; label: string }[] = [
 const PROOF_INSTITUTIONS = [
   { name: 'KaNeXT', type: 'Sports' },
   { name: 'KaNeXT Church', type: 'Church' },
-  { name: 'K-1', type: 'Competition' },
+  { name: 'KaNeXT', type: 'Competition' },
 ];
 
 const MILESTONES = [
@@ -74,7 +74,7 @@ const ENTITIES = [
 
 const TASKS = [
   { id: 't1', label: 'Finalize pitch deck for pre-seed', priority: 'high' as const, assignee: 'Alex M.' },
-  { id: 't2', label: 'Complete NAIA player pool scrape', priority: 'high' as const, assignee: 'Engineering' },
+  { id: 't2', label: 'Complete NAA player pool scrape', priority: 'high' as const, assignee: 'Engineering' },
   { id: 't3', label: 'File KaNeXT trademark', priority: 'medium' as const, assignee: 'Legal' },
   { id: 't4', label: 'Onboard 2 beta partners', priority: 'medium' as const, assignee: 'Alex M.' },
   { id: 't5', label: 'Set up CI/CD pipeline', priority: 'low' as const, assignee: 'Engineering' },

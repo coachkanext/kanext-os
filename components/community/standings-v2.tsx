@@ -1,5 +1,5 @@
 /**
- * Standings V2 — CEO / Commissioner level standings hub for K-1 motorsport league.
+ * Standings V2 — CEO / Commissioner level standings hub for KaNeXT motorsport league.
  * 3 CEO lens tabs (Story / Integrity / Money) + 4 view tabs (Drivers / Teams / Constructors / Crew)
  * + 3 collapsible analysis sections (Points Swing Simulator, Penalties Ledger, Leverage Battles).
  */

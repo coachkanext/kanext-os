@@ -277,7 +277,7 @@ const DASHBOARD_BLOCKS: ReportsDashboardBlock[] = [
 
 const OPERATIONAL_REPORTS: OperationalReport[] = [
   { id: 'op-1', name: 'KaNeXT Church Season Operational Summary', series: 'KaNeXT Church', period: '2025-26 Season', status: 'published', generatedDate: 'Feb 14, 2026', author: 'Tom Bradley', format: 'PDF', pageCount: 42, downloads: 156 },
-  { id: 'op-2', name: 'K-1 Invitational Operations Review', series: 'K-1 Invitational', period: 'Feb 2026', status: 'published', generatedDate: 'Feb 12, 2026', author: 'Alex Morgan', format: 'PDF', pageCount: 28, downloads: 89 },
+  { id: 'op-2', name: 'KaNeXT Invitational Operations Review', series: 'KaNeXT Invitational', period: 'Feb 2026', status: 'published', generatedDate: 'Feb 12, 2026', author: 'Alex Morgan', format: 'PDF', pageCount: 28, downloads: 89 },
   { id: 'op-3', name: 'Conference Tournament Logistics Plan', series: 'Conference Tournament', period: 'Mar 2026', status: 'draft', generatedDate: 'Feb 15, 2026', author: 'Rachel Kim', format: 'PDF', pageCount: 36, downloads: 0 },
   { id: 'op-4', name: 'Facility Usage Report — Arena Complex', series: 'Facilities', period: 'Jan 2026', status: 'published', generatedDate: 'Feb 3, 2026', author: 'James Wright', format: 'XLSX', pageCount: 0, downloads: 67 },
   { id: 'op-5', name: 'Official Assignment Efficiency Report', series: 'Officiating', period: 'Q1 2026', status: 'published', generatedDate: 'Feb 10, 2026', author: 'David Chen', format: 'Dashboard', pageCount: 0, downloads: 112 },
@@ -300,7 +300,7 @@ const FINANCIAL_REPORTS: FinancialReport[] = [
   { id: 'fi-2', name: 'Conference Tournament Budget Variance', type: 'budget-variance', period: 'Mar 2026', amount: 185000, status: 'draft', generatedDate: 'Feb 15, 2026', format: 'XLSX' },
   { id: 'fi-3', name: 'Annual Balance Sheet — FY2025', type: 'balance-sheet', period: 'FY2025', amount: 8750000, status: 'final', generatedDate: 'Jan 20, 2026', format: 'PDF' },
   { id: 'fi-4', name: 'January Cash Flow Analysis', type: 'cash-flow', period: 'Jan 2026', amount: 342000, status: 'final', generatedDate: 'Feb 5, 2026', format: 'PDF' },
-  { id: 'fi-5', name: 'K-1 Invitational Revenue Breakdown', type: 'revenue-breakdown', period: 'Feb 2026', amount: 127500, status: 'final', generatedDate: 'Feb 13, 2026', format: 'Dashboard' },
+  { id: 'fi-5', name: 'KaNeXT Invitational Revenue Breakdown', type: 'revenue-breakdown', period: 'Feb 2026', amount: 127500, status: 'final', generatedDate: 'Feb 13, 2026', format: 'Dashboard' },
   { id: 'fi-6', name: 'Sponsorship Revenue Report', type: 'revenue-breakdown', period: 'Q1 2026', amount: 475000, status: 'pending-review', generatedDate: 'Feb 14, 2026', format: 'PDF' },
   { id: 'fi-7', name: 'Officials Pay Disbursement Summary', type: 'cash-flow', period: 'Jan 2026', amount: 68400, status: 'final', generatedDate: 'Feb 3, 2026', format: 'CSV' },
   { id: 'fi-8', name: 'Facility Rental Income Report', type: 'revenue-breakdown', period: 'Q4 2025', amount: 213000, status: 'final', generatedDate: 'Jan 15, 2026', format: 'PDF' },
@@ -324,7 +324,7 @@ const COMPLIANCE_REPORTS: ComplianceReport[] = [
   { id: 'co-6', name: 'Transfer Eligibility Audit — MBB', type: 'eligibility-audit', period: 'Spring 2026', findings: 0, status: 'pending', generatedDate: 'Feb 15, 2026' },
   { id: 'co-7', name: 'Facility Safety Compliance Report', type: 'rules-review', period: 'Q1 2026', findings: 1, status: 'issues-found', generatedDate: 'Feb 8, 2026' },
   { id: 'co-8', name: 'Random Drug Testing — January', type: 'drug-test-summary', period: 'Jan 2026', findings: 0, status: 'clean', generatedDate: 'Feb 1, 2026' },
-  { id: 'co-9', name: 'Game Day Incident Report — K-1', type: 'incident-log', period: 'Feb 7-9, 2026', findings: 1, status: 'issues-found', generatedDate: 'Feb 11, 2026' },
+  { id: 'co-9', name: 'Game Day Incident Report — KaNeXT', type: 'incident-log', period: 'Feb 7-9, 2026', findings: 1, status: 'issues-found', generatedDate: 'Feb 11, 2026' },
   { id: 'co-10', name: 'Volunteer Background Check Audit', type: 'certification-status', period: 'Q1 2026', findings: 0, status: 'clean', generatedDate: 'Feb 6, 2026' },
   { id: 'co-11', name: 'Title IX Compliance Review', type: 'rules-review', period: 'FY2025', findings: 0, status: 'clean', generatedDate: 'Jan 25, 2026' },
   { id: 'co-12', name: 'Medical Staff Certification Audit', type: 'certification-status', period: 'Feb 2026', findings: 0, status: 'pending', generatedDate: 'Feb 14, 2026' },
@@ -336,7 +336,7 @@ const COMPLIANCE_REPORTS: ComplianceReport[] = [
 // === Performance Reports ===
 
 const PERFORMANCE_REPORTS: PerformanceReport[] = [
-  { id: 'pe-1', name: 'K-1 Invitational Statistics Pack', series: 'K-1 Invitational', type: 'statistics', period: 'Feb 2026', generatedDate: 'Feb 12, 2026', format: 'PDF' },
+  { id: 'pe-1', name: 'KaNeXT Invitational Statistics Pack', series: 'KaNeXT Invitational', type: 'statistics', period: 'Feb 2026', generatedDate: 'Feb 12, 2026', format: 'PDF' },
   { id: 'pe-2', name: 'KaNeXT Church Conference Standings Report', series: 'KaNeXT Church', type: 'standings', period: 'Week 12', generatedDate: 'Feb 14, 2026', format: 'Dashboard' },
   { id: 'pe-3', name: 'MBB Player Rankings — Conference', series: 'KaNeXT Church', type: 'player-rankings', period: 'Feb 2026', generatedDate: 'Feb 13, 2026', format: 'PDF' },
   { id: 'pe-4', name: 'Team Analytics — KaNeXT Basketball', series: 'KaNeXT Church', type: 'team-analytics', period: '2025-26 Season', generatedDate: 'Feb 11, 2026', format: 'Dashboard' },
@@ -357,9 +357,9 @@ const PERFORMANCE_REPORTS: PerformanceReport[] = [
 
 const ATTENDANCE_REPORTS: AttendanceReport[] = [
   { id: 'at-1', event: 'KaNeXT vs Gulf Coast State — MBB', venue: 'Arena Complex', date: 'Feb 14, 2026', attendance: 4850, capacity: 5200, utilization: 93, revenue: 72500, notes: 'Near sellout — rivalry game' },
-  { id: 'at-2', event: 'K-1 Invitational — Day 1', venue: 'Arena Complex', date: 'Feb 7, 2026', attendance: 3200, capacity: 5200, utilization: 62, revenue: 38400, notes: 'First day, building momentum' },
-  { id: 'at-3', event: 'K-1 Invitational — Day 2', venue: 'Arena Complex', date: 'Feb 8, 2026', attendance: 4100, capacity: 5200, utilization: 79, revenue: 49200, notes: 'Strong Saturday turnout' },
-  { id: 'at-4', event: 'K-1 Invitational — Championship', venue: 'Arena Complex', date: 'Feb 9, 2026', attendance: 5050, capacity: 5200, utilization: 97, revenue: 75750, notes: 'Near capacity — championship atmosphere' },
+  { id: 'at-2', event: 'KaNeXT Invitational — Day 1', venue: 'Arena Complex', date: 'Feb 7, 2026', attendance: 3200, capacity: 5200, utilization: 62, revenue: 38400, notes: 'First day, building momentum' },
+  { id: 'at-3', event: 'KaNeXT Invitational — Day 2', venue: 'Arena Complex', date: 'Feb 8, 2026', attendance: 4100, capacity: 5200, utilization: 79, revenue: 49200, notes: 'Strong Saturday turnout' },
+  { id: 'at-4', event: 'KaNeXT Invitational — Championship', venue: 'Arena Complex', date: 'Feb 9, 2026', attendance: 5050, capacity: 5200, utilization: 97, revenue: 75750, notes: 'Near capacity — championship atmosphere' },
   { id: 'at-5', event: 'KaNeXT vs Naples University — MBB', venue: 'Arena Complex', date: 'Feb 1, 2026', attendance: 3800, capacity: 5200, utilization: 73, revenue: 57000, notes: '' },
   { id: 'at-6', event: 'KaNeXT vs SW Ridgemont Tech — WBB', venue: 'Arena Complex', date: 'Feb 12, 2026', attendance: 1850, capacity: 5200, utilization: 36, revenue: 18500, notes: 'Weekday game' },
   { id: 'at-7', event: 'KaNeXT Baseball vs Cape Coral', venue: 'Diamond Field', date: 'Feb 10, 2026', attendance: 1200, capacity: 2500, utilization: 48, revenue: 9600, notes: '' },
@@ -376,7 +376,7 @@ const ATTENDANCE_REPORTS: AttendanceReport[] = [
 // === Media Reports ===
 
 const MEDIA_REPORTS: MediaReport[] = [
-  { id: 'me-1', name: 'K-1 Invitational Broadcast Reach', type: 'broadcast-reach', period: 'Feb 7-9, 2026', metric: 'Total Viewers', value: '128,400', change: 34 },
+  { id: 'me-1', name: 'KaNeXT Invitational Broadcast Reach', type: 'broadcast-reach', period: 'Feb 7-9, 2026', metric: 'Total Viewers', value: '128,400', change: 34 },
   { id: 'me-2', name: 'Conference MBB Social Engagement', type: 'social-engagement', period: 'Feb 2026', metric: 'Engagements', value: '45,200', change: 18 },
   { id: 'me-3', name: 'KaNeXT Church Press Coverage Index', type: 'press-coverage', period: 'Jan 2026', metric: 'Articles', value: '87', change: 12 },
   { id: 'me-4', name: 'Instagram Content Performance', type: 'content-performance', period: 'Feb 2026', metric: 'Reach', value: '312K', change: 22 },
@@ -390,7 +390,7 @@ const MEDIA_REPORTS: MediaReport[] = [
   { id: 'me-12', name: 'Podcast Listenership Metrics', type: 'content-performance', period: 'Feb 2026', metric: 'Downloads', value: '6,100', change: 19 },
   { id: 'me-13', name: 'Game Day Hashtag Performance', type: 'social-engagement', period: 'Feb 14, 2026', metric: 'Uses', value: '2,890', change: 31 },
   { id: 'me-14', name: 'Conference Newsletter Open Rate', type: 'content-performance', period: 'Feb 2026', metric: 'Open Rate', value: '34.2%', change: -2 },
-  { id: 'me-15', name: 'Photo Gallery Engagement — K-1', type: 'content-performance', period: 'Feb 2026', metric: 'Views', value: '18,400', change: 45 },
+  { id: 'me-15', name: 'Photo Gallery Engagement — KaNeXT', type: 'content-performance', period: 'Feb 2026', metric: 'Views', value: '18,400', change: 45 },
 ];
 
 // === Custom Reports ===

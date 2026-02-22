@@ -1,9 +1,9 @@
 /**
- * KaNeXT Conference — NAIA Men's Basketball
+ * KaNeXT Conference — Men's Basketball
  * Normalized Database Schema
  * Per: Claude Global Database Ingest Contract v1
  *
- * Scope: NAIA → The KaNeXT Conference → Men's Basketball only
+ * Scope: KaNeXT Conference → Men's Basketball only
  * Historical depth: 4 seasons (2021-22 through 2024-25)
  */
 
@@ -11,11 +11,11 @@
 
 export interface Program {
   program_id: string;
-  program_name: string;           // e.g. "Ave Maria University Men's Basketball"
-  school_name: string;            // e.g. "Ave Maria University"
+  program_name: string;           // e.g. "Westfield University Men's Basketball"
+  school_name: string;            // e.g. "Westfield University"
   conference: 'The KaNeXT Conference';
-  governing_body: 'NAIA';
-  division: 'NAIA';
+  governing_body: 'NAA';
+  division: 'NAA';
   athletics_website_url: string;
   mens_basketball_home_url: string;
 }

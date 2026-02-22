@@ -1,5 +1,5 @@
 /**
- * Mock Competition Home Data — K-1 Racing League
+ * Mock Competition Home Data — KaNeXT Racing League
  * Pills: Dashboard, Calendar, Grid, Entries
  */
 
@@ -408,7 +408,7 @@ export const GRID_TEAMS: GridTeam[] = [
     crewChief: 'Hana Kuroda', points: 186, capCompliance: 'green', homologation: 'approved', color: '#F59E0B',
   },
   {
-    id: 'gt-5', name: 'Titan Performance', constructor: 'K-1 League Karts', carModel: 'K1-Standard',
+    id: 'gt-5', name: 'Titan Performance', constructor: 'KaNeXT League Karts', carModel: 'K1-Standard',
     category: 'league_owned', drivers: [{ name: 'Kwame Asante', points: 89 }, { name: 'Nia Jackson', points: 54 }],
     crewChief: 'Mikhail Volkov', points: 143, capCompliance: 'green', homologation: 'approved', color: '#1D9BF0',
   },
@@ -642,7 +642,7 @@ export interface CompHeroData {
 }
 
 export const COMP_HERO: CompHeroData = {
-  title: 'K-1 Grand Prix · Round 7 · Nashville',
+  title: 'KaNeXT Grand Prix · Round 7 · Nashville',
   subtitle: 'Round 6 Highlights · Alvarez Takes P1',
   isLive: false,
 };

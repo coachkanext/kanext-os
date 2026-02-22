@@ -1,7 +1,7 @@
 /**
  * Edu Program V3 — 3-pill ViewBar (Identity | Academics | Operations)
  * KaNeXT Sports · President perspective
- * HBCU · Founded 1879 · Nashville, TN · SACSCOC Accredited
+ * Private University · Founded 2020 · Nashville, TN · Regionally Accredited
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
@@ -26,7 +26,7 @@ const INSTITUTION = {
   name: 'KaNeXT Sports',
   founded: 1879,
   location: 'Nashville, TN',
-  type: 'HBCU',
+  type: 'University',
   accreditation: 'SACSCOC',
   motto: 'Truth, Service, Excellence',
   president: 'Dr. Jaffus Hardrick',
@@ -139,7 +139,7 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
           Founded {INSTITUTION.founded} · {INSTITUTION.location}
         </ThemedText>
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
-          <StatusBadge label="HBCU" color={accentColor} />
+          <StatusBadge label="University" color={accentColor} />
           <StatusBadge label="SACSCOC" color="#22C55E" />
         </View>
       </View>

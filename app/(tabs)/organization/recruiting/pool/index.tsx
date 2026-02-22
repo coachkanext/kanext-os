@@ -304,7 +304,7 @@ export default function NationalPlayerPoolScreen() {
   };
 
   const positions: PositionFilter[] = ['ALL', 'PG', 'CG', 'W', 'F', 'B'];
-  const divisions: DivisionFilter[] = ['ALL', 'NCAA_D2', 'NAIA', 'NJCAA'];
+  const divisions: DivisionFilter[] = ['ALL', 'NCAA_D2', 'NAA', 'NJCAA'];
   const classes: ClassFilter[] = ['ALL', 'FR', 'SO', 'JR', 'SR', 'GR'];
 
   return (

@@ -1,5 +1,5 @@
 /**
- * Competition Home — K-1 4-tab PagerView layout
+ * Competition Home — KaNeXT 4-tab PagerView layout
  * Dashboard | Calendar | Grid | Entries
  *
  * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.

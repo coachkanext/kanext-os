@@ -216,7 +216,7 @@ const businessSnapshot: ComplianceSnapshot = {
 };
 
 // =============================================================================
-// COMMUNITY MODE — K-1 Speed League
+// COMMUNITY MODE — KaNeXT Motorsport League
 // =============================================================================
 
 const communityPolicies: CompliancePolicy[] = [
@@ -228,7 +228,7 @@ const communityPolicies: CompliancePolicy[] = [
 ];
 
 const communityAudits: ComplianceAudit[] = [
-  { id: 'cm-aud-001', title: 'Annual Safety Inspection — All Venues', auditor: 'K-1 Safety Commission', date: '2026-04-01', status: 'scheduled', findings: 0, criticalFindings: 0 },
+  { id: 'cm-aud-001', title: 'Annual Safety Inspection — All Venues', auditor: 'KaNeXT Safety Commission', date: '2026-04-01', status: 'scheduled', findings: 0, criticalFindings: 0 },
   { id: 'cm-aud-002', title: 'Insurance Coverage Review', auditor: 'Marsh McLennan', date: '2026-01-10', status: 'passed', findings: 0, criticalFindings: 0 },
 ];
 

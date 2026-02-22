@@ -70,7 +70,7 @@ const SIM_CONTEXTS: SimContext[] = [
   },
   {
     id: 'keiser',
-    label: 'vs Keiser University',
+    label: 'vs Lakewood University',
     game: MOCK_KEISER_GAME,
     boxFMU: MOCK_BOX_SCORE_KEISER_KaNeXT,
     boxOpp: MOCK_BOX_SCORE_KEISER_OPP,

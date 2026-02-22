@@ -49,7 +49,7 @@ const SPORTS_FINANCE: OrgFinanceData = {
   ],
   ledger: [
     { id: 'sl-1', description: 'Season ticket package — Block A', amount: 12500, type: 'revenue', date: 'Feb 15', category: 'Tickets' },
-    { id: 'sl-2', description: 'Away game travel — vs. Edward Waters', amount: -4200, type: 'expense', date: 'Feb 14', category: 'Travel' },
+    { id: 'sl-2', description: 'Away game travel — vs. Evergreen', amount: -4200, type: 'expense', date: 'Feb 14', category: 'Travel' },
     { id: 'sl-3', description: 'Booster donation — Williams Family', amount: 5000, type: 'revenue', date: 'Feb 12', category: 'Donations' },
     { id: 'sl-4', description: 'Equipment order — Nike', amount: -8900, type: 'expense', date: 'Feb 10', category: 'Equipment' },
     { id: 'sl-5', description: 'Game guarantee — Homecoming Classic', amount: 15000, type: 'revenue', date: 'Feb 8', category: 'Events' },
@@ -131,7 +131,7 @@ const EDUCATION_FINANCE: OrgFinanceData = {
   ],
 };
 
-// ── Community (K-1) ─────────────────────────────────────────────────────
+// ── Community (KaNeXT) ─────────────────────────────────────────────────────
 const COMMUNITY_FINANCE: OrgFinanceData = {
   kpis: [
     { id: 'kk-1', label: 'Prize Pool', value: '$250K', delta: 'Season 1', deltaType: 'neutral' },

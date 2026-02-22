@@ -16,7 +16,7 @@ import { PLAYER_CLUSTERS } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
 
 // KaNeXT seal
-const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
+const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
 
 // ── Staff data ──
 const fmuStaff = coachingStaff.find((s) => s.program_id === 'kx-sports');
@@ -49,7 +49,7 @@ const KaNeXT_COACHES: CoachProfile[] = [
     isHC: true,
     yearsWithProgram: 4,
     bio: 'Veteran head coach who has rebuilt the KaNeXT program into a competitive KaNeXT Conference contender. Known for developing JUCO transfers into impact players and running a high-tempo, guard-driven system.',
-    priorStops: ['Miami Dade College (Asst)', 'Broward College (Asst)', 'Stranahan HS (HC)'],
+    priorStops: ['Miami Dade College (Asst)', 'Riverside Community College (Asst)', 'Stranahan HS (HC)'],
     highlights: [
       'Led KaNeXT to first winning conference record in 5 years',
       '2x KaNeXT Conference Coach of the Month',
@@ -132,7 +132,7 @@ const PROGRAM_HISTORY = [
   { season: '2021–22', record: '14–12', finish: 'Conf Quarterfinals' },
 ];
 
-const RIVALS = ['Ave Maria', 'Keiser', 'Webber International'];
+const RIVALS = ['Westfield', 'Lakewood', 'Pinecrest University'];
 
 // ── Tab types ──
 type BioTab = 'team' | 'coaches' | 'system' | 'history';
@@ -183,10 +183,10 @@ export function TeamQuickSheet({
 
           {/* 2.1 Identity row */}
           <View style={s.identityRow}>
-            <Image source={KaNeXT_SEAL} style={s.logo} resizeMode="contain" />
+            <Image source={KaNeXT_LOGO} style={s.logo} resizeMode="contain" />
             <View style={s.identityText}>
               <Text style={s.teamName}>KaNeXT Sports</Text>
-              <Text style={s.teamSubline}>NAIA {'\u00B7'} KaNeXT Conference</Text>
+              <Text style={s.teamSubline}>NAA {'\u00B7'} KaNeXT Conference</Text>
             </View>
             <View style={s.krBadge}>
               <Text style={s.krValue}>{teamKR}</Text>
@@ -397,7 +397,7 @@ export function TeamQuickSheet({
                 </View>
                 <View style={s.progRow}>
                   <Text style={s.progLabel}>Nickname</Text>
-                  <Text style={s.progValue}>Lions</Text>
+                  <Text style={s.progValue}>Wolves</Text>
                 </View>
                 <View style={s.progRow}>
                   <Text style={s.progLabel}>Venue</Text>

@@ -39,7 +39,7 @@ const LEVEL_OPTIONS: { key: string; label: string }[] = [
   { key: 'ncaa_d1', label: 'NCAA D1' },
   { key: 'ncaa_d2', label: 'NCAA D2' },
   { key: 'ncaa_d3', label: 'NCAA D3' },
-  { key: 'naia', label: 'NAIA' },
+  { key: 'naia', label: 'NAA' },
   { key: 'njcaa_d1', label: 'JUCO D1' },
   { key: 'njcaa_d2', label: 'JUCO D2' },
   { key: 'njcaa_d3', label: 'JUCO D3' },

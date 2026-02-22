@@ -126,7 +126,7 @@ const UPCOMING_EVENTS: UpcomingEvent[] = [
     opponent: 'Northern University',
     date: 'Mar 1',
     time: '2:00 PM',
-    venue: 'Lions Field',
+    venue: 'Wolves Field',
     sport: 'Baseball',
     ticketsAvailable: true,
     priceRange: { min: 8, max: 20 },
@@ -439,7 +439,7 @@ export default function TicketsScreen() {
           <View style={styles.infoRow}>
             <IconSymbol name="envelope.fill" size={16} color={colors.textTertiary} />
             <ThemedText style={[styles.infoValue, { color: colors.textSecondary }]}>
-              tickets@fmu.edu
+              tickets@kanext.edu
             </ThemedText>
           </View>
         </View>

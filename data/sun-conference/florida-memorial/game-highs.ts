@@ -17,7 +17,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 26,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '2/7/2026',
   },
   {
@@ -25,7 +25,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 7,
-    opponent: 'University of Fort Lauderdale',
+    opponent: 'Beacon University',
     date: '12/1/2025',
   },
   {
@@ -33,7 +33,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 7,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '2/7/2026',
   },
   {
@@ -41,7 +41,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 4,
-    opponent: 'Indiana Wesleyan (IN)',
+    opponent: 'Heartland (IN)',
     date: '11/5/2025',
   },
   {
@@ -49,7 +49,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 1,
-    opponent: 'Ave Maria (FL)',
+    opponent: 'Westfield (FL)',
     date: '1/3/2026',
   },
   {
@@ -57,7 +57,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 4,
-    opponent: 'LSU Shreveport',
+    opponent: 'Cedarville University',
     date: '12/15/2025',
   },
   {
@@ -65,7 +65,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 17,
-    opponent: 'University of Fort Lauderdale',
+    opponent: 'Beacon University',
     date: '12/1/2025',
   },
   {
@@ -73,7 +73,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 15,
-    opponent: 'Spartanburg Methodist',
+    opponent: 'Brookside',
     date: '11/7/2025',
   },
   {
@@ -81,7 +81,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 10,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -89,7 +89,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 3,
-    opponent: 'Hope International',
+    opponent: 'Pacific Shores',
     date: '12/29/2025',
   },
   {
@@ -97,7 +97,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 3,
-    opponent: 'University of Fort Lauderdale',
+    opponent: 'Beacon University',
     date: '12/1/2025',
   },
   {
@@ -105,7 +105,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 2,
-    opponent: 'LSU Shreveport',
+    opponent: 'Cedarville University',
     date: '12/15/2025',
   },
   {
@@ -113,7 +113,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 9,
-    opponent: 'Warner (FL)',
+    opponent: 'Clearwater',
     date: '11/19/2025',
   },
   {
@@ -121,7 +121,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 7,
-    opponent: 'Tougaloo (MS)',
+    opponent: 'Ashford (MS)',
     date: '10/31/2025',
   },
   {
@@ -129,7 +129,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 2,
-    opponent: 'Keiser',
+    opponent: 'Lakewood',
     date: '1/17/2026',
   },
   {
@@ -137,7 +137,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 4,
-    opponent: 'Nelson (Texas)',
+    opponent: 'Crestwood (TX)',
     date: '12/16/2025',
   },
   {
@@ -145,7 +145,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 2,
-    opponent: 'Nelson (Texas)',
+    opponent: 'Crestwood (TX)',
     date: '12/16/2025',
   },
   {
@@ -153,7 +153,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 3,
-    opponent: 'Warner (FL)',
+    opponent: 'Clearwater',
     date: '11/19/2025',
   },
   {
@@ -161,7 +161,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 23,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -169,7 +169,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 10,
-    opponent: 'Southeastern',
+    opponent: 'Summit',
     date: '1/24/2026',
   },
   {
@@ -177,7 +177,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 2,
-    opponent: 'Ave Maria (FL)',
+    opponent: 'Westfield (FL)',
     date: '1/3/2026',
   },
   {
@@ -185,7 +185,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 3,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -193,7 +193,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 3,
-    opponent: 'Ave Maria (FL)',
+    opponent: 'Westfield (FL)',
     date: '2/9/2026',
   },
   {
@@ -201,7 +201,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 2,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -209,7 +209,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 13,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '2/7/2026',
   },
   {
@@ -225,7 +225,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 4,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -233,7 +233,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 3,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -249,7 +249,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 3,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -257,7 +257,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 12,
-    opponent: 'Hope International',
+    opponent: 'Pacific Shores',
     date: '12/29/2025',
   },
   {
@@ -265,7 +265,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 9,
-    opponent: 'Hope International',
+    opponent: 'Pacific Shores',
     date: '12/29/2025',
   },
   {
@@ -273,7 +273,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 1,
-    opponent: 'Hope International',
+    opponent: 'Pacific Shores',
     date: '12/29/2025',
   },
   {
@@ -281,7 +281,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 2,
-    opponent: 'Hope International',
+    opponent: 'Pacific Shores',
     date: '12/29/2025',
   },
   {
@@ -289,7 +289,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 1,
-    opponent: 'Hope International',
+    opponent: 'Pacific Shores',
     date: '12/29/2025',
   },
   {
@@ -305,7 +305,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 11,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -313,7 +313,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 7,
-    opponent: 'The Master\'s',
+    opponent: 'Valley View\'s',
     date: '12/30/2025',
   },
   {
@@ -321,7 +321,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 6,
-    opponent: 'Southeastern',
+    opponent: 'Summit',
     date: '1/24/2026',
   },
   {
@@ -329,7 +329,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 2,
-    opponent: 'Spartanburg Methodist',
+    opponent: 'Brookside',
     date: '11/7/2025',
   },
   {
@@ -337,7 +337,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 1,
-    opponent: 'Indiana Wesleyan (IN)',
+    opponent: 'Heartland (IN)',
     date: '11/5/2025',
   },
   {
@@ -345,7 +345,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 3,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -361,7 +361,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 3,
-    opponent: 'Warner (FL)',
+    opponent: 'Clearwater',
     date: '11/19/2025',
   },
   {
@@ -385,7 +385,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 20,
-    opponent: 'Tougaloo (MS)',
+    opponent: 'Ashford (MS)',
     date: '10/31/2025',
   },
   {
@@ -393,7 +393,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 6,
-    opponent: 'Nelson (Texas)',
+    opponent: 'Crestwood (TX)',
     date: '12/16/2025',
   },
   {
@@ -401,7 +401,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 5,
-    opponent: 'Tougaloo (MS)',
+    opponent: 'Ashford (MS)',
     date: '10/31/2025',
   },
   {
@@ -409,7 +409,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 5,
-    opponent: 'Indiana Wesleyan (IN)',
+    opponent: 'Heartland (IN)',
     date: '11/5/2025',
   },
   {
@@ -417,7 +417,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 3,
-    opponent: 'Hope International',
+    opponent: 'Pacific Shores',
     date: '12/29/2025',
   },
   {
@@ -425,7 +425,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 22,
-    opponent: 'Coastal Georgia (GA)',
+    opponent: 'Bayshore (GA)',
     date: '1/10/2026',
   },
   {
@@ -433,7 +433,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 6,
-    opponent: 'Ave Maria (FL)',
+    opponent: 'Westfield (FL)',
     date: '2/9/2026',
   },
   {
@@ -441,7 +441,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 5,
-    opponent: 'LSU Shreveport',
+    opponent: 'Cedarville University',
     date: '12/15/2025',
   },
   {
@@ -449,7 +449,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 3,
-    opponent: 'Coastal Georgia (GA)',
+    opponent: 'Bayshore (GA)',
     date: '1/10/2026',
   },
   {
@@ -457,7 +457,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 1,
-    opponent: 'Keiser',
+    opponent: 'Lakewood',
     date: '1/17/2026',
   },
   {
@@ -465,7 +465,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 4,
-    opponent: 'The Master\'s',
+    opponent: 'Valley View\'s',
     date: '12/30/2025',
   },
   {
@@ -473,7 +473,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 14,
-    opponent: 'Indiana Wesleyan (IN)',
+    opponent: 'Heartland (IN)',
     date: '11/5/2025',
   },
   {
@@ -481,7 +481,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 6,
-    opponent: 'Tougaloo (MS)',
+    opponent: 'Ashford (MS)',
     date: '10/31/2025',
   },
   {
@@ -489,7 +489,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 1,
-    opponent: 'Spartanburg Methodist',
+    opponent: 'Brookside',
     date: '11/7/2025',
   },
   {
@@ -497,7 +497,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 1,
-    opponent: 'Tougaloo (MS)',
+    opponent: 'Ashford (MS)',
     date: '10/31/2025',
   },
   {
@@ -505,7 +505,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 1,
-    opponent: 'Spartanburg Methodist',
+    opponent: 'Brookside',
     date: '11/7/2025',
   },
   {
@@ -513,7 +513,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 4,
-    opponent: 'Webber International (FL)',
+    opponent: 'Pinecrest University (FL)',
     date: '1/7/2026',
   },
   {
@@ -521,7 +521,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 6,
-    opponent: 'Warner (FL)',
+    opponent: 'Clearwater',
     date: '11/19/2025',
   },
   {
@@ -529,7 +529,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 1,
-    opponent: 'Warner (FL)',
+    opponent: 'Clearwater',
     date: '11/19/2025',
   },
   {
@@ -537,7 +537,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 1,
-    opponent: 'Nelson (Texas)',
+    opponent: 'Crestwood (TX)',
     date: '12/16/2025',
   },
   {
@@ -545,7 +545,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 1,
-    opponent: 'Warner (FL)',
+    opponent: 'Clearwater',
     date: '11/19/2025',
   },
   {
@@ -553,7 +553,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 8,
-    opponent: 'Pikeville (KY)',
+    opponent: 'Highland (KY)',
     date: '11/8/2025',
   },
   {
@@ -561,7 +561,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 1,
-    opponent: 'Indiana Wesleyan (IN)',
+    opponent: 'Heartland (IN)',
     date: '11/5/2025',
   },
   {
@@ -569,7 +569,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 1,
-    opponent: 'Indiana Wesleyan (IN)',
+    opponent: 'Heartland (IN)',
     date: '11/5/2025',
   },
   {
@@ -577,7 +577,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 2,
-    opponent: 'Warner (FL)',
+    opponent: 'Clearwater',
     date: '11/19/2025',
   },
   {
@@ -585,7 +585,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 10,
-    opponent: 'Nelson (Texas)',
+    opponent: 'Crestwood (TX)',
     date: '12/16/2025',
   },
   {
@@ -593,7 +593,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 7,
-    opponent: 'Pikeville (KY)',
+    opponent: 'Highland (KY)',
     date: '11/8/2025',
   },
   {
@@ -601,7 +601,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 1,
-    opponent: 'Spartanburg Methodist',
+    opponent: 'Brookside',
     date: '11/7/2025',
   },
   {
@@ -609,7 +609,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 2,
-    opponent: 'Nelson (Texas)',
+    opponent: 'Crestwood (TX)',
     date: '12/16/2025',
   },
   {
@@ -617,7 +617,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 1,
-    opponent: 'Pikeville (KY)',
+    opponent: 'Highland (KY)',
     date: '11/8/2025',
   },
   {
@@ -625,7 +625,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 1,
-    opponent: 'Nelson (Texas)',
+    opponent: 'Crestwood (TX)',
     date: '12/16/2025',
   },
   {
@@ -633,7 +633,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 14,
-    opponent: 'Hope International',
+    opponent: 'Pacific Shores',
     date: '12/29/2025',
   },
   {
@@ -641,7 +641,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 4,
-    opponent: 'University of Fort Lauderdale',
+    opponent: 'Beacon University',
     date: '12/1/2025',
   },
   {
@@ -649,7 +649,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 3,
-    opponent: 'Southeastern',
+    opponent: 'Summit',
     date: '1/24/2026',
   },
   {
@@ -657,7 +657,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 2,
-    opponent: 'Southeastern',
+    opponent: 'Summit',
     date: '1/24/2026',
   },
   {
@@ -665,7 +665,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 1,
-    opponent: 'University of Fort Lauderdale',
+    opponent: 'Beacon University',
     date: '12/1/2025',
   },
   {
@@ -673,7 +673,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 2,
-    opponent: 'Warner (FL)',
+    opponent: 'Clearwater',
     date: '11/19/2025',
   },
   {
@@ -689,7 +689,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 1,
-    opponent: 'Ave Maria (FL)',
+    opponent: 'Westfield (FL)',
     date: '2/9/2026',
   },
 ];

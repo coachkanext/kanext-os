@@ -2,12 +2,12 @@
   {
     "game_id": 3379,
     "date": "10/31/2025",
-    "location": "FMU Wellness Center",
+    "location": "KaNeXT Athletics Center",
     "is_complete": true,
     "fmu_score": 82,
     "opp_score": 66,
     "fmu_record": "1-0, 0-0",
-    "opponent": "Tougaloo (MS)",
+    "opponent": "Ashford (MS)",
     "is_home": true,
     "fmu_players": [
       {
@@ -409,12 +409,12 @@
   {
     "game_id": 3380,
     "date": "11/5/2025",
-    "location": "Luckey Arena",
+    "location": "Heartland Arena",
     "is_complete": true,
     "fmu_score": 66,
     "opp_score": 78,
     "fmu_record": "1-1, 0-0",
-    "opponent": "Indiana Wesleyan (IN)",
+    "opponent": "Heartland (IN)",
     "is_home": false,
     "fmu_players": [
       {
@@ -762,12 +762,12 @@
   {
     "game_id": 3381,
     "date": "11/7/2025",
-    "location": "Platt Arena",
+    "location": "Highland Gymnasium",
     "is_complete": true,
     "fmu_score": 67,
     "opp_score": 58,
     "fmu_record": "(1-1)",
-    "opponent": "Spartanburg Methodist",
+    "opponent": "Brookside",
     "is_home": false,
     "fmu_players": [
       {
@@ -1115,12 +1115,12 @@
   {
     "game_id": 3382,
     "date": "11/8/2025",
-    "location": "Platt Arena",
+    "location": "Highland Gymnasium",
     "is_complete": true,
     "fmu_score": 65,
     "opp_score": 59,
     "fmu_record": "3-1, 0-0",
-    "opponent": "Pikeville (KY)",
+    "opponent": "Highland (KY)",
     "is_home": true,
     "fmu_players": [
       {
@@ -1468,12 +1468,12 @@
   {
     "game_id": 3383,
     "date": "11/15/2025",
-    "location": "Miami Gardens, Fla.",
+    "location": "Nashville, TN",
     "is_complete": true,
     "fmu_score": 60,
     "opp_score": 65,
     "fmu_record": "3-2, 0-1",
-    "opponent": "Southeastern",
+    "opponent": "Summit",
     "is_home": true,
     "fmu_players": [
       {
@@ -1821,12 +1821,12 @@
   {
     "game_id": 3384,
     "date": "11/19/2025",
-    "location": "Lake Wales, Fla.",
+    "location": "Clearwater Fieldhouse",
     "is_complete": true,
     "fmu_score": 97,
     "opp_score": 74,
     "fmu_record": "4-2, 1-1",
-    "opponent": "Warner (FL)",
+    "opponent": "Clearwater",
     "is_home": false,
     "fmu_players": [
       {
@@ -2255,12 +2255,12 @@
   {
     "game_id": 3385,
     "date": "11/22/2025",
-    "location": "Miami Gardens, Fla.",
+    "location": "Nashville, TN",
     "is_complete": true,
     "fmu_score": 79,
     "opp_score": 92,
     "fmu_record": "2-3, 0-2",
-    "opponent": "Florida Memorial (FL)",
+    "opponent": "KaNeXT",
     "is_home": false,
     "fmu_players": [
       {
@@ -2608,12 +2608,12 @@
   {
     "game_id": 3386,
     "date": "12/1/2025",
-    "location": "Miami Gardens, Fla.",
+    "location": "Nashville, TN",
     "is_complete": true,
     "fmu_score": 63,
     "opp_score": 58,
     "fmu_record": "6-2",
-    "opponent": "University of Fort Lauderdale",
+    "opponent": "Beacon",
     "is_home": true,
     "fmu_players": [
       {
@@ -2961,12 +2961,12 @@
   {
     "game_id": 3390,
     "date": "12/16/2025",
-    "location": "1200 Sycamore St., Waxahachie, Texas, 75165",
+    "location": "Winter Invitational",
     "is_complete": true,
     "fmu_score": 76,
     "opp_score": 90,
     "fmu_record": "7-4, 2-1",
-    "opponent": "Nelson (Texas)",
+    "opponent": "Crestwood (TX)",
     "is_home": false,
     "fmu_players": [
       {
@@ -3314,12 +3314,12 @@
   {
     "game_id": 3391,
     "date": "12/15/2025",
-    "location": "Waxahachie, Texas",
+    "location": "Winter Invitational",
     "is_complete": true,
     "fmu_score": 88,
     "opp_score": 94,
     "fmu_record": "7-3, 2-1",
-    "opponent": "LSU Shreveport",
+    "opponent": "Cedarville",
     "is_home": true,
     "fmu_players": [
       {
@@ -3667,12 +3667,12 @@
   {
     "game_id": 3392,
     "date": "12/22/2025",
-    "location": "North Miami, FL",
+    "location": "Beacon Gymnasium",
     "is_complete": true,
     "fmu_score": 54,
     "opp_score": 92,
     "fmu_record": "",
-    "opponent": "Fla. Memorial",
+    "opponent": "KaNeXT",
     "is_home": true,
     "fmu_players": [
       {
@@ -4101,12 +4101,12 @@
   {
     "game_id": 3393,
     "date": "12/29/2025",
-    "location": "Fullerton, CA/Darling Pavilion",
+    "location": "Pacific Pavilion",
     "is_complete": true,
     "fmu_score": 76,
     "opp_score": 77,
     "fmu_record": "8-5",
-    "opponent": "Hope International",
+    "opponent": "Pacific Shores",
     "is_home": false,
     "fmu_players": [
       {
@@ -4427,12 +4427,12 @@
   {
     "game_id": 3394,
     "date": "12/30/2025",
-    "location": "Santa Clarita, Calif.",
+    "location": "Valley View Center",
     "is_complete": true,
     "fmu_score": 75,
     "opp_score": 70,
     "fmu_record": "9-5, 2-1",
-    "opponent": "The Master's",
+    "opponent": "Valley View",
     "is_home": false,
     "fmu_players": [
       {
@@ -4753,12 +4753,12 @@
   {
     "game_id": 3395,
     "date": "1/3/2026",
-    "location": "FMU Wellness Center",
+    "location": "KaNeXT Athletics Center",
     "is_complete": true,
     "fmu_score": 75,
     "opp_score": 90,
     "fmu_record": "9-6, 2-2",
-    "opponent": "Ave Maria (FL)",
+    "opponent": "Westfield (FL)",
     "is_home": true,
     "fmu_players": [
       {
@@ -5052,12 +5052,12 @@
   {
     "game_id": 3396,
     "date": "1/5/2026",
-    "location": "FMU Wellness Center",
+    "location": "KaNeXT Athletics Center",
     "is_complete": true,
     "fmu_score": 67,
     "opp_score": 77,
     "fmu_record": "4-8",
-    "opponent": "Florida Memorial (FL)",
+    "opponent": "KaNeXT",
     "is_home": false,
     "fmu_players": [
       {
@@ -5459,12 +5459,12 @@
   {
     "game_id": 3397,
     "date": "1/7/2026",
-    "location": "Miami Gardens, Fla.",
+    "location": "Nashville, TN",
     "is_complete": true,
     "fmu_score": 83,
     "opp_score": 52,
     "fmu_record": "10-6, 2-2",
-    "opponent": "Webber International (FL)",
+    "opponent": "Pinecrest (FL)",
     "is_home": true,
     "fmu_players": [
       {
@@ -5785,12 +5785,12 @@
   {
     "game_id": 3398,
     "date": "1/10/2026",
-    "location": "Brunswick, Ga.",
+    "location": "Bayshore Gymnasium",
     "is_complete": true,
     "fmu_score": 71,
     "opp_score": 64,
     "fmu_record": "12-6, 4-2",
-    "opponent": "Coastal Georgia (GA)",
+    "opponent": "Bayshore (GA)",
     "is_home": false,
     "fmu_players": [
       {
@@ -6111,12 +6111,12 @@
   {
     "game_id": 3399,
     "date": "1/14/2026",
-    "location": "Miami Gardens, Fla.",
+    "location": "Nashville, TN",
     "is_complete": true,
     "fmu_score": 61,
     "opp_score": 63,
     "fmu_record": "11-7, 4-3",
-    "opponent": "St. Thomas",
+    "opponent": "Ridgemont",
     "is_home": false,
     "fmu_players": [
       {
@@ -6464,12 +6464,12 @@
   {
     "game_id": 3400,
     "date": "1/17/2026",
-    "location": "Miami Gardens, Fla.",
+    "location": "Nashville, TN",
     "is_complete": true,
     "fmu_score": 65,
     "opp_score": 51,
     "fmu_record": "13-7, 5-3",
-    "opponent": "Keiser",
+    "opponent": "Lakewood",
     "is_home": true,
     "fmu_players": [
       {
@@ -6844,12 +6844,12 @@
   {
     "game_id": 3402,
     "date": "1/24/2026",
-    "location": "The Furnace",
+    "location": "Summit Arena",
     "is_complete": true,
     "fmu_score": 96,
     "opp_score": 70,
     "fmu_record": "13-7, 6-3",
-    "opponent": "Southeastern",
+    "opponent": "Summit",
     "is_home": false,
     "fmu_players": [
       {
@@ -7170,12 +7170,12 @@
   {
     "game_id": 3403,
     "date": "1/28/2026",
-    "location": "Miami Gardens, Fla.",
+    "location": "Nashville, TN",
     "is_complete": true,
     "fmu_score": 86,
     "opp_score": 66,
     "fmu_record": "15-7, 7-3",
-    "opponent": "Warner (FL)",
+    "opponent": "Clearwater",
     "is_home": true,
     "fmu_players": [
       {
@@ -7496,12 +7496,12 @@
   {
     "game_id": 3404,
     "date": "2/9/2026",
-    "location": "Tom Golisano FH",
+    "location": "Westfield Field House",
     "is_complete": true,
     "fmu_score": 74,
     "opp_score": 96,
     "fmu_record": "17-8, 9-4",
-    "opponent": "Ave Maria (FL)",
+    "opponent": "Westfield (FL)",
     "is_home": false,
     "fmu_players": [
       {
@@ -7930,12 +7930,12 @@
   {
     "game_id": 3405,
     "date": "2/4/2026",
-    "location": "Sarasota, Fla.",
+    "location": "Riverside Gymnasium",
     "is_complete": true,
     "fmu_score": 92,
     "opp_score": 56,
     "fmu_record": "16-7, 8-3",
-    "opponent": "New College of Florida",
+    "opponent": "Riverside",
     "is_home": false,
     "fmu_players": [
       {
@@ -8310,12 +8310,12 @@
   {
     "game_id": 3406,
     "date": "2/7/2026",
-    "location": "Babson Park, Fla.",
+    "location": "Pinecrest Athletic Center",
     "is_complete": true,
     "fmu_score": 84,
     "opp_score": 72,
     "fmu_record": "17-7, 9-3",
-    "opponent": "Webber International (FL)",
+    "opponent": "Pinecrest (FL)",
     "is_home": false,
     "fmu_players": [
       {

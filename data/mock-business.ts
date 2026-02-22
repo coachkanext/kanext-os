@@ -189,7 +189,7 @@ export const BUSINESS_STATUS = {
   org: 'KaNeXT',
   cycle: 'FY 2026',
   build: 'v2',
-  proofWedges: ['KaNeXT', 'KaNeXT Church', 'K-1'],
+  proofWedges: ['KaNeXT', 'KaNeXT Church', 'KaNeXT'],
 };
 
 export const POWER_METRICS: PowerMetric[] = [
@@ -238,11 +238,11 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     id: 'rp-1',
     phase: 1,
     title: 'Proof Wedge Deployment',
-    objective: 'Deploy KaNeXT at 3 real institutions (KaNeXT / KaNeXT Church / K-1) to prove the platform works.',
+    objective: 'Deploy KaNeXT at 3 real institutions (KaNeXT / KaNeXT Church / KaNeXT) to prove the platform works.',
     deliverables: [
       'KaNeXT Athletics OS — full deployment (13 sports)',
       'KaNeXT Church Church OS — giving, ministries, connect groups',
-      'K-1 Competition — teams, drivers, standings, race ops',
+      'KaNeXT Competition — teams, drivers, standings, race ops',
       'Proof event calendar (BTW Classic, MLK Classic, Valuetainment Classic)',
     ],
     proofArtifacts: [
@@ -337,7 +337,7 @@ export const WEDGES: WedgeData[] = [
     orgName: 'KaNeXT Church',
     icon: 'heart.fill',
     color: '#A1A1AA',
-    summary: 'Church OS wedge — multi-campus ministry operations with giving, connect groups, and ministry intelligence. "Hotline to Heaven" concept: AI-powered pastoral care surface.',
+    summary: 'Church OS wedge — multi-campus ministry operations with giving, connect groups, and ministry intelligence. "Morning Prayer Line" concept: AI-powered pastoral care surface.',
     proofEvents: [
       '40 Days Prayer & Fasting Intelligence',
       'Easter Sunday giving campaign',
@@ -352,8 +352,8 @@ export const WEDGES: WedgeData[] = [
   },
   {
     id: 'w-k1',
-    name: 'K-1',
-    orgName: 'K-1 Speed Motorsport League',
+    name: 'KaNeXT',
+    orgName: 'KaNeXT Motorsport League',
     icon: 'flag.checkered',
     color: '#EF4444',
     summary: 'LeagueOS wedge — full motorsport league management with teams, drivers, standings, race operations, and cap enforcement. Decision audit concept for governed competition.',
@@ -445,14 +445,14 @@ export const PROOF_ARTIFACTS: ProofArtifact[] = [
   },
   {
     id: 'pa-post-3',
-    title: 'Booker T. Washington Memorial Classic',
-    subtitle: '8-team HBCU season opener + KaNeXT vs Tuskegee football',
+    title: 'Central Prep Memorial Classic',
+    subtitle: '8-team HBCU season opener + KaNeXT vs Heritage football',
     category: 'postseason',
     section: 'Proof: Postseason Products',
     visibility: ['founder', 'investor', 'public'],
     lastUpdated: 'Feb 15, 2026',
     highlights: [
-      '8 HBCU basketball teams + football (KaNeXT vs Tuskegee)',
+      '8 university basketball teams + football (KaNeXT vs Heritage)',
       '11 total games across 4 days at KaNeXT campus',
       'Landmark announcement: free KaNeXT for all HBCUs',
       'Year 1 revenue: $1.5M-$5.3M (proof event)',
@@ -636,9 +636,9 @@ export const RAILS_FLOW_STEPS = [
 export const MOCK_TRANSACTIONS: MockTransaction[] = [
   { id: 'mt-1', type: 'ticket', description: 'BTW Classic — Courtside (2x)', amount: 450, status: 'settled', date: 'Feb 14', org: 'KaNeXT' },
   { id: 'mt-2', type: 'donation', description: 'KaNeXT Church — Sunday Giving (online)', amount: 2500, status: 'settled', date: 'Feb 12', org: 'KaNeXT Church' },
-  { id: 'mt-3', type: 'payout', description: 'K-1 Race Prize — Round 11 Winner', amount: -5000, status: 'settled', date: 'Feb 10', org: 'K-1' },
+  { id: 'mt-3', type: 'payout', description: 'KaNeXT Race Prize — Round 11 Winner', amount: -5000, status: 'settled', date: 'Feb 10', org: 'KaNeXT' },
   { id: 'mt-4', type: 'ticket', description: 'KaNeXT vs Howard — GA (50x)', amount: 1250, status: 'pending', date: 'Feb 15', org: 'KaNeXT' },
-  { id: 'mt-5', type: 'fine', description: 'K-1 — Avoidable Contact Penalty', amount: -500, status: 'settled', date: 'Feb 9', org: 'K-1' },
+  { id: 'mt-5', type: 'fine', description: 'KaNeXT — Avoidable Contact Penalty', amount: -500, status: 'settled', date: 'Feb 9', org: 'KaNeXT' },
   { id: 'mt-6', type: 'subscription', description: 'KaNeXT Pro — Annual (HBCU pilot)', amount: 2400, status: 'settled', date: 'Feb 8', org: 'KaNeXT' },
   { id: 'mt-7', type: 'donation', description: 'KaNeXT Scholarship Fund — Alumni', amount: 10000, status: 'settled', date: 'Feb 6', org: 'KaNeXT' },
   { id: 'mt-8', type: 'payout', description: 'MLK Classic — Appearance Guarantee', amount: -150000, status: 'pending', date: 'Feb 5', org: 'KaNeXT' },
@@ -653,7 +653,7 @@ export const DIRECTORY: DirectoryEntry[] = [
   { id: 'dir-2', name: 'Patrick Bet-David', role: 'Co-Founder (Pending)', department: 'Strategic', status: 'pending' },
   { id: 'dir-3', name: 'KaNeXT Athletics Staff', role: 'Proof Wedge — Sports', department: 'Operations', status: 'active' },
   { id: 'dir-4', name: 'KaNeXT Church Ministry Team', role: 'Proof Wedge — Church', department: 'Operations', status: 'active' },
-  { id: 'dir-5', name: 'K-1 League Operations', role: 'Proof Wedge — Competition', department: 'Operations', status: 'active' },
+  { id: 'dir-5', name: 'KaNeXT League Operations', role: 'Proof Wedge — Competition', department: 'Operations', status: 'active' },
   { id: 'dir-6', name: 'Legal Counsel', role: 'Outside Counsel', department: 'Legal', status: 'advisor' },
 ];
 

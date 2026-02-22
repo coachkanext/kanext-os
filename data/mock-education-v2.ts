@@ -199,7 +199,7 @@ export interface DegreeRequirement {
 // =============================================================================
 
 export const EDUCATION_ORGS: EducationOrg[] = [
-  { id: 'fmu', name: 'KaNeXT Sports', abbreviation: 'KaNeXT', type: 'university', city: 'Miami Gardens', state: 'FL', status: 'active' },
+  { id: 'fmu', name: 'KaNeXT Sports', abbreviation: 'KaNeXT', type: 'university', city: 'Nashville', state: 'FL', status: 'active' },
   { id: 'kanext-academy', name: 'KaNeXT Academy', abbreviation: 'KXA', type: 'academy', city: 'Miami', state: 'FL', status: 'active' },
 ];
 
@@ -225,10 +225,10 @@ export const PROGRAMS: Program[] = [
 // =============================================================================
 
 export const STAFF_MEMBERS: StaffMember[] = [
-  { id: 'staff-1', name: 'Dr. Angela Morris', role: 'Program Director', department: 'Academic Affairs', orgId: 'fmu', email: 'a.morris@fmu.edu' },
-  { id: 'staff-2', name: 'Prof. David Osei', role: 'Instructor — Sports Management', department: 'Business & Sport', orgId: 'fmu', email: 'd.osei@fmu.edu' },
-  { id: 'staff-3', name: 'Prof. Linda Reyes', role: 'Instructor — Kinesiology', department: 'Health Sciences', orgId: 'fmu', email: 'l.reyes@fmu.edu' },
-  { id: 'staff-4', name: 'Karen Mitchell', role: 'Administrative Coordinator', department: 'Academic Affairs', orgId: 'fmu', email: 'k.mitchell@fmu.edu' },
+  { id: 'staff-1', name: 'Dr. Angela Morris', role: 'Program Director', department: 'Academic Affairs', orgId: 'fmu', email: 'a.morris@kanext.edu' },
+  { id: 'staff-2', name: 'Prof. David Osei', role: 'Instructor — Sports Management', department: 'Business & Sport', orgId: 'fmu', email: 'd.osei@kanext.edu' },
+  { id: 'staff-3', name: 'Prof. Linda Reyes', role: 'Instructor — Kinesiology', department: 'Health Sciences', orgId: 'fmu', email: 'l.reyes@kanext.edu' },
+  { id: 'staff-4', name: 'Karen Mitchell', role: 'Administrative Coordinator', department: 'Academic Affairs', orgId: 'fmu', email: 'k.mitchell@kanext.edu' },
 ];
 
 // =============================================================================
@@ -249,7 +249,7 @@ export const STUDENTS: Student[] = [
     gpa: 3.42,
     attendanceRisk: 'low',
     cohort: 'Fall 2023',
-    email: 'm.johnson@fmu.edu',
+    email: 'm.johnson@kanext.edu',
     advisorId: 'staff-1',
   },
   {
@@ -264,7 +264,7 @@ export const STUDENTS: Student[] = [
     gpa: 3.81,
     attendanceRisk: 'low',
     cohort: 'Fall 2022',
-    email: 'd.williams@fmu.edu',
+    email: 'd.williams@kanext.edu',
     advisorId: 'staff-1',
     parentId: 'parent-01',
   },
@@ -280,7 +280,7 @@ export const STUDENTS: Student[] = [
     gpa: 2.78,
     attendanceRisk: 'medium',
     cohort: 'Spring 2024',
-    email: 'j.carter@fmu.edu',
+    email: 'j.carter@kanext.edu',
     phone: '(305) 555-0147',
     advisorId: 'staff-1',
   },
@@ -296,7 +296,7 @@ export const STUDENTS: Student[] = [
     gpa: 3.15,
     attendanceRisk: 'low',
     cohort: 'Fall 2023',
-    email: 'a.brooks@fmu.edu',
+    email: 'a.brooks@kanext.edu',
     advisorId: 'staff-1',
     parentId: 'parent-02',
   },
@@ -312,7 +312,7 @@ export const STUDENTS: Student[] = [
     gpa: 3.55,
     attendanceRisk: 'low',
     cohort: 'Spring 2024',
-    email: 't.okafor@fmu.edu',
+    email: 't.okafor@kanext.edu',
     advisorId: 'staff-1',
   },
   {
@@ -327,7 +327,7 @@ export const STUDENTS: Student[] = [
     gpa: 2.95,
     attendanceRisk: 'high',
     cohort: 'Fall 2025',
-    email: 'k.thomas@fmu.edu',
+    email: 'k.thomas@kanext.edu',
     advisorId: 'staff-1',
   },
   {
@@ -342,7 +342,7 @@ export const STUDENTS: Student[] = [
     gpa: 3.22,
     attendanceRisk: 'low',
     cohort: 'Fall 2023',
-    email: 'b.mitchell@fmu.edu',
+    email: 'b.mitchell@kanext.edu',
     advisorId: 'staff-1',
   },
   {
@@ -357,7 +357,7 @@ export const STUDENTS: Student[] = [
     gpa: 3.68,
     attendanceRisk: 'low',
     cohort: 'Spring 2023',
-    email: 'i.davis@fmu.edu',
+    email: 'i.davis@kanext.edu',
     advisorId: 'staff-1',
   },
   // 2 applicants
@@ -402,7 +402,7 @@ export const STUDENTS: Student[] = [
     gpa: 2.51,
     attendanceRisk: 'medium',
     cohort: 'Spring 2024',
-    email: 'd.washington@fmu.edu',
+    email: 'd.washington@kanext.edu',
     advisorId: 'staff-1',
   },
   // 1 alumni
@@ -418,7 +418,7 @@ export const STUDENTS: Student[] = [
     gpa: 3.74,
     attendanceRisk: 'low',
     cohort: 'Fall 2021',
-    email: 'j.reed@alumni.fmu.edu',
+    email: 'j.reed@alumni.kanext.edu',
   },
 ];
 

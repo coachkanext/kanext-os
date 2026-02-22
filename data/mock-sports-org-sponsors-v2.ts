@@ -390,7 +390,7 @@ const sponsors: Sponsor[] = [
   // ── KaNeXT Demo Seed Sponsors ────────────────────────────────────────
   {
     id: 'sp-007',
-    name: 'Miami Gardens Auto Group',
+    name: 'Nashville Auto Group',
     tier: 'title',
     primaryContact: 'Raymond Desmond',
     ownerInProgram: 'Alex Morgan',
@@ -507,7 +507,7 @@ const pipelineItems: SponsorPipelineItem[] = [
   // ── KaNeXT Demo Seed Pipeline ──────────────────────────────────────
   {
     id: 'pl-011',
-    name: 'Miami Gardens Auto Group',
+    name: 'Nashville Auto Group',
     stage: 'active',
     daysInStage: 170,
     priority: 'high',
@@ -621,14 +621,14 @@ const deliverables: Deliverable[] = [
     proofRequired: true,
     status: 'not-started',
   },
-  // ── Miami Gardens Auto Group — 3 deliverables ─────────────────────────
+  // ── Nashville Auto Group — 3 deliverables ─────────────────────────
   {
     id: 'del-009',
     sponsorId: 'sp-007',
-    sponsorName: 'Miami Gardens Auto Group',
+    sponsorName: 'Nashville Auto Group',
     type: 'signage',
     dueDate: '2025-11-15',
-    eventLink: 'KaNeXT vs. Webber International — Home Opener',
+    eventLink: 'KaNeXT vs. Pinecrest University — Home Opener',
     owner: 'Marcus Reed',
     proofRequired: true,
     status: 'complete',
@@ -636,7 +636,7 @@ const deliverables: Deliverable[] = [
   {
     id: 'del-010',
     sponsorId: 'sp-007',
-    sponsorName: 'Miami Gardens Auto Group',
+    sponsorName: 'Nashville Auto Group',
     type: 'content',
     dueDate: '2025-12-01',
     eventLink: null,
@@ -647,7 +647,7 @@ const deliverables: Deliverable[] = [
   {
     id: 'del-011',
     sponsorId: 'sp-007',
-    sponsorName: 'Miami Gardens Auto Group',
+    sponsorName: 'Nashville Auto Group',
     type: 'social-post',
     dueDate: '2026-03-01',
     eventLink: null,
@@ -762,12 +762,12 @@ const proofItems: ProofItem[] = [
     reviewer: null,
     status: 'missing',
   },
-  // ── Miami Gardens Auto Group proof ────────────────────────────────────
+  // ── Nashville Auto Group proof ────────────────────────────────────
   {
     id: 'prf-007',
     deliverableId: 'del-009',
     type: 'photo',
-    deliverableName: 'Courtside Banner — Miami Gardens Auto Group',
+    deliverableName: 'Courtside Banner — Nashville Auto Group',
     timestamp: '2025-11-15',
     reviewer: 'Alex Morgan',
     status: 'accepted',
@@ -776,7 +776,7 @@ const proofItems: ProofItem[] = [
     id: 'prf-008',
     deliverableId: 'del-010',
     type: 'link',
-    deliverableName: 'Program Ad — Miami Gardens Auto Group',
+    deliverableName: 'Program Ad — Nashville Auto Group',
     timestamp: '2025-12-02',
     reviewer: 'Alex Morgan',
     status: 'accepted',
@@ -858,11 +858,11 @@ const invoices: SponsorInvoice[] = [
     status: 'blocked',
     blockedReason: 'Awaiting signed in-kind agreement addendum',
   },
-  // ── Miami Gardens Auto Group — on schedule ────────────────────────────
+  // ── Nashville Auto Group — on schedule ────────────────────────────
   {
     id: 'inv-006',
     sponsorId: 'sp-007',
-    sponsorName: 'Miami Gardens Auto Group',
+    sponsorName: 'Nashville Auto Group',
     amount: 3750,
     issueDate: '2025-09-15',
     dueDate: '2025-10-15',
@@ -872,7 +872,7 @@ const invoices: SponsorInvoice[] = [
   {
     id: 'inv-007',
     sponsorId: 'sp-007',
-    sponsorName: 'Miami Gardens Auto Group',
+    sponsorName: 'Nashville Auto Group',
     amount: 3750,
     issueDate: '2025-12-15',
     dueDate: '2026-01-15',
@@ -882,7 +882,7 @@ const invoices: SponsorInvoice[] = [
   {
     id: 'inv-008',
     sponsorId: 'sp-007',
-    sponsorName: 'Miami Gardens Auto Group',
+    sponsorName: 'Nashville Auto Group',
     amount: 3750,
     issueDate: '2026-01-15',
     dueDate: '2026-02-15',
@@ -892,7 +892,7 @@ const invoices: SponsorInvoice[] = [
   {
     id: 'inv-009',
     sponsorId: 'sp-007',
-    sponsorName: 'Miami Gardens Auto Group',
+    sponsorName: 'Nashville Auto Group',
     amount: 3750,
     issueDate: '2026-04-15',
     dueDate: '2026-05-15',
@@ -972,7 +972,7 @@ const renewalItems: RenewalItem[] = [
   {
     id: 'ren-005',
     sponsorId: 'sp-007',
-    sponsorName: 'Miami Gardens Auto Group',
+    sponsorName: 'Nashville Auto Group',
     tier: 'Title',
     contractEnd: '2026-08-31',
     daysUntilRenewal: 194,

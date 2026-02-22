@@ -85,7 +85,7 @@ const CHIP_PLAYER_CARTER: LinkChip = {
 
 const CHIP_GAME_NEXT: LinkChip = {
   id: 'lc-next-game', objectType: 'game', objectId: 'g-next',
-  label: 'vs Southeastern (Feb 22)', icon: 'sportscourt.fill',
+  label: 'vs Summit (Feb 22)', icon: 'sportscourt.fill',
 };
 
 // =============================================================================
@@ -286,7 +286,7 @@ export const MOCK_NEXUS_REQUESTS: NexusRequest[] = [
 export const MOCK_NEXUS_WORKSPACES: NexusWorkspace[] = [
   {
     id: 'nw-001',
-    title: 'KaNeXT MBB — Game Week: vs Southeastern',
+    title: 'KaNeXT MBB — Game Week: vs Summit',
     description: 'All preparation for the February 22 road game.',
     context: KaNeXT_MBB_CONTEXT,
     workspace_type: 'game_week',
@@ -363,7 +363,7 @@ export const MOCK_NEXUS_ROOMS: NexusRoom[] = [
   { id: 'rm-media', name: 'Media Ops — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'media_ops', visibility: 'scoped', owners: [{ owner_type: 'role', owner_id: 'media-lead', owner_label: 'Media Lead' }], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
   { id: 'rm-ad', name: 'AD Command — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'ad_command', visibility: 'restricted', owners: [OWNER_HC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T07:00:00Z' },
   { id: 'rm-player-support', name: 'Player Support — MBB', context: KaNeXT_MBB_CONTEXT, room_type: 'player_support', visibility: 'scoped', owners: [OWNER_AC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
-  { id: 'rm-game-cmd', name: 'Game Command — vs Southeastern', context: KaNeXT_MBB_CONTEXT, room_type: 'game_command', visibility: 'scoped', owners: [OWNER_HC, OWNER_OPS], next_deadline_at: '2025-02-22T19:00:00Z', created_at: '2025-02-17T07:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
+  { id: 'rm-game-cmd', name: 'Game Command — vs Summit', context: KaNeXT_MBB_CONTEXT, room_type: 'game_command', visibility: 'scoped', owners: [OWNER_HC, OWNER_OPS], next_deadline_at: '2025-02-22T19:00:00Z', created_at: '2025-02-17T07:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
   { id: 'rm-dev', name: 'Player Dev — Guards', context: KaNeXT_MBB_CONTEXT, room_type: 'dev_unit', visibility: 'scoped', owners: [OWNER_AC], created_at: '2025-01-15T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
 ];
 
@@ -382,7 +382,7 @@ export const MOCK_NEXUS_THREADS: NexusThread[] = [
   },
   {
     id: 'demo-thread-gameweek',
-    title: 'Game Week: vs Southeastern',
+    title: 'Game Week: vs Summit',
     context: KaNeXT_MBB_CONTEXT,
     workspace_id: 'nw-001',
     scope_mode: 'this_context',

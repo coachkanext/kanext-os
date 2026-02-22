@@ -96,7 +96,7 @@ export const BIZ_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
     title: 'Product Demo — KaNeXT Athletics Staff',
     startDatetime: new Date('2026-03-12T15:00:00'),
     endDatetime: new Date('2026-03-12T16:00:00'),
-    location: 'KaNeXT Campus, Miami Gardens',
+    location: 'KaNeXT Campus, Nashville',
     description: 'Live walkthrough of Sports Mode v2 with coaching staff',
     visibilityScope: 'all_program',
   },
@@ -133,7 +133,7 @@ export const BIZ_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'bce-13',
     type: 'meeting',
-    title: 'NAIA Conference — Demo Booth',
+    title: 'NAA Conference — Demo Booth',
     startDatetime: new Date('2026-04-02T08:00:00'),
     endDatetime: new Date('2026-04-02T17:00:00'),
     location: 'Kansas City, MO',
@@ -157,7 +157,7 @@ export const BIZ_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
     startDatetime: new Date('2026-04-20T09:00:00'),
     endDatetime: new Date('2026-04-20T11:00:00'),
     location: 'Virtual',
-    description: 'Sprint 18: Competition Mode architecture + K-1 integration spec',
+    description: 'Sprint 18: Competition Mode architecture + KaNeXT integration spec',
     visibilityScope: 'all_program',
   },
   {
@@ -333,7 +333,7 @@ export const BIZ_EVENTS: BizEvent[] = [
     title: 'KaNeXT Athletics — Product Demo',
     date: '2026-02-10',
     time: '3:00 PM',
-    location: 'KaNeXT Campus, Miami Gardens',
+    location: 'KaNeXT Campus, Nashville',
     category: 'product',
     status: 'completed',
     eventType: 'DEMO',
@@ -452,7 +452,7 @@ export const PRODUCT_MILESTONES: ProductMilestone[] = [
     name: 'Competition Mode Live',
     status: 'upcoming',
     date: '2026-05-01',
-    description: 'K-1 Grand Prix integration — event management, fighter profiles, bracket engine, broadcast tools',
+    description: 'KaNeXT Grand Prix integration — event management, fighter profiles, bracket engine, broadcast tools',
   },
   {
     id: 'pm-8',
@@ -505,7 +505,7 @@ export interface TractionMetrics {
 
 export const TRACTION_METRICS: TractionMetrics = {
   institutions: 3,
-  institutionNames: ['KaNeXT', 'KaNeXT Church', 'K-1 Grand Prix'],
+  institutionNames: ['KaNeXT', 'KaNeXT Church', 'KaNeXT Grand Prix'],
   activeViews: 5,
   ipDocs: 6,
   enginesBuilt: 5,
@@ -742,7 +742,7 @@ export const PROOF_INSTITUTIONS: ProofInstitution[] = [
   },
   {
     id: 'pi-4',
-    name: 'K-1 Grand Prix',
+    name: 'KaNeXT Grand Prix',
     mode: 'competition',
     status: 'signed',
     activeViews: 3,
@@ -891,7 +891,7 @@ export const DEALS: Deal[] = [
   {
     id: 'd-8',
     contactName: 'Marcus Chen',
-    company: 'K-1 Global Holdings',
+    company: 'KaNeXT Global Holdings',
     dealType: 'partner',
     stage: 'due_diligence',
     value: 50_000,
@@ -942,7 +942,7 @@ export const BIZ_CONTACTS: BizContact[] = [
   { id: 'bc-5', name: 'Henri Pierre-Jacques', company: 'Harlem Capital', role: 'Co-Founder & GP', relationshipType: 'investor', status: 'prospect', lastContact: '2026-02-08', activeDealId: 'd-5' },
   { id: 'bc-6', name: 'Jerome Williams', company: 'KaNeXT Athletics', role: 'Athletic Director', relationshipType: 'client', status: 'active', lastContact: '2026-02-10', activeDealId: 'd-6' },
   { id: 'bc-7', name: 'Pastor David Richards', company: 'KaNeXT Church', role: 'Senior Pastor', relationshipType: 'client', status: 'active', lastContact: '2026-02-05', activeDealId: 'd-7' },
-  { id: 'bc-8', name: 'Marcus Chen', company: 'K-1 Global Holdings', role: 'VP of Technology', relationshipType: 'partner', status: 'active', lastContact: '2026-02-10', activeDealId: 'd-8' },
+  { id: 'bc-8', name: 'Marcus Chen', company: 'KaNeXT Global Holdings', role: 'VP of Technology', relationshipType: 'partner', status: 'active', lastContact: '2026-02-10', activeDealId: 'd-8' },
   { id: 'bc-9', name: 'Jordan Taylor', company: 'Wilson Sonsini', role: 'Startup Counsel', relationshipType: 'vendor', status: 'active', lastContact: '2026-01-20' },
   { id: 'bc-10', name: 'Kendra Brooks', company: 'TechCrunch', role: 'Senior Reporter', relationshipType: 'press', status: 'prospect', lastContact: '2026-02-15' },
 ];
@@ -1011,7 +1011,7 @@ export const RECENT_ACTIVITY: ActivityEntry[] = [
     id: 'ra-7',
     timestamp: '2026-02-13T09:30:00',
     type: 'note',
-    description: 'K-1 integration spec: need bracket engine API by March 15',
+    description: 'KaNeXT integration spec: need bracket engine API by March 15',
     dealId: 'd-8',
     contactName: 'Marcus Chen',
   },

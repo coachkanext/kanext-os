@@ -269,7 +269,7 @@ const MOCK_OPERATIONS = {
   equipment: ['Projector + Screen', 'Whiteboard', 'Lecture Capture System', 'Student Polling Clickers'],
   tas: [
     { name: 'Rachel Foster', role: 'Teaching Assistant', hours: 10 },
-    { name: 'Michael Osei', role: 'Grading Assistant', hours: 8 },
+    { name: 'Michael Scott', role: 'Grading Assistant', hours: 8 },
   ],
   conflicts: [
     { date: 'Mar 4, 2026', issue: 'Room BUS 204 reserved for faculty meeting 8-9 AM', resolution: 'Requested alternate room BUS 210' },

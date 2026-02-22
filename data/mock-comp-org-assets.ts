@@ -335,7 +335,7 @@ const DIGITAL_ASSETS: DigitalAsset[] = [
 // === Equipment Assets ===
 
 const EQUIPMENT_ASSETS: EquipmentAsset[] = [
-  { id: 'eq-1', name: 'K-1 Timing System (Swiss Timing)', category: 'timing', serialNumber: 'ST-2024-00482', condition: 'excellent', location: 'KaNeXT Arena — Control Room', lastServiced: 'Jan 8, 2026', nextService: 'Jul 8, 2026' },
+  { id: 'eq-1', name: 'KaNeXT Timing System (Swiss Timing)', category: 'timing', serialNumber: 'ST-2024-00482', condition: 'excellent', location: 'KaNeXT Arena — Control Room', lastServiced: 'Jan 8, 2026', nextService: 'Jul 8, 2026' },
   { id: 'eq-2', name: 'KaNeXT Arena LED Scoreboard', category: 'scoring', serialNumber: 'DAK-2022-11947', condition: 'excellent', location: 'KaNeXT Arena — Center Court', lastServiced: 'Dec 15, 2025', nextService: 'Jun 15, 2026' },
   { id: 'eq-3', name: 'Daktronics Shot Clock System (4)', category: 'scoring', serialNumber: 'DAK-SC-0042', condition: 'good', location: 'KaNeXT Arena — Court Level', lastServiced: 'Nov 20, 2025', nextService: 'May 20, 2026' },
   { id: 'eq-4', name: 'LiveU Solo+ Broadcast Kit', category: 'broadcast', serialNumber: 'LU-SOLO-8837', condition: 'good', location: 'Broadcast Equipment Room', lastServiced: 'Oct 5, 2025', nextService: 'Apr 5, 2026' },
@@ -392,7 +392,7 @@ const INVENTORY_ITEMS: InventoryItem[] = [
 // === Maintenance Records ===
 
 const MAINTENANCE_RECORDS: MaintenanceRecord[] = [
-  { id: 'mt-1', assetId: 'eq-1', assetName: 'K-1 Timing System (Swiss Timing)', type: 'scheduled', date: 'Jan 8, 2026', cost: 2800, status: 'completed', technician: 'Swiss Timing Service' },
+  { id: 'mt-1', assetId: 'eq-1', assetName: 'KaNeXT Timing System (Swiss Timing)', type: 'scheduled', date: 'Jan 8, 2026', cost: 2800, status: 'completed', technician: 'Swiss Timing Service' },
   { id: 'mt-2', assetId: 'eq-2', assetName: 'KaNeXT Arena LED Scoreboard', type: 'inspection', date: 'Dec 15, 2025', cost: 450, status: 'completed', technician: 'Daktronics Certified Tech' },
   { id: 'mt-3', assetId: 'eq-11', assetName: 'LED Court Projection System', type: 'repair', date: 'Feb 20, 2026', cost: 4200, status: 'scheduled', technician: 'Epson Pro Services' },
   { id: 'mt-4', assetId: 'pa-11', assetName: 'Outdoor Wayfinding Signage (12)', type: 'repair', date: 'Jan 25, 2026', cost: 3800, status: 'overdue', technician: 'SignCraft LLC' },
@@ -413,7 +413,7 @@ const MAINTENANCE_RECORDS: MaintenanceRecord[] = [
 
 const INSURANCE_POLICIES: InsurancePolicy[] = [
   { id: 'ip-1', name: 'General Liability — All Venues', provider: 'Hartford Financial', coverage: 5000000, premium: 48000, startDate: 'Jul 1, 2025', endDate: 'Jun 30, 2026', status: 'active', assets: ['KaNeXT Arena', 'Eagles Field Stadium', 'KaNeXT Church Championship Court'] },
-  { id: 'ip-2', name: 'Equipment Floater — Electronics', provider: 'Chubb Insurance', coverage: 2000000, premium: 18000, startDate: 'Jan 1, 2026', endDate: 'Dec 31, 2026', status: 'active', assets: ['K-1 Timing System', 'LED Scoreboard', 'Hawk-Eye Replay', 'PTZ Camera System'] },
+  { id: 'ip-2', name: 'Equipment Floater — Electronics', provider: 'Chubb Insurance', coverage: 2000000, premium: 18000, startDate: 'Jan 1, 2026', endDate: 'Dec 31, 2026', status: 'active', assets: ['KaNeXT Timing System', 'LED Scoreboard', 'Hawk-Eye Replay', 'PTZ Camera System'] },
   { id: 'ip-3', name: 'Event Cancellation Coverage', provider: 'Lloyd\'s of London', coverage: 3000000, premium: 32000, startDate: 'Sep 1, 2025', endDate: 'Aug 31, 2026', status: 'active', assets: ['Conference Tournament', 'Championship Events'] },
   { id: 'ip-4', name: 'Workers Compensation — Event Staff', provider: 'State Farm', coverage: 1000000, premium: 22000, startDate: 'Jan 1, 2026', endDate: 'Dec 31, 2026', status: 'active', assets: ['All Staff', 'Volunteers'] },
   { id: 'ip-5', name: 'Property Insurance — Owned Assets', provider: 'Hartford Financial', coverage: 4500000, premium: 36000, startDate: 'Jul 1, 2025', endDate: 'Jun 30, 2026', status: 'expiring-soon', assets: ['Gulf Coast Athletic Complex', 'KaNeXT Church Indoor Training Center', 'Trophies', 'Display Cases'] },

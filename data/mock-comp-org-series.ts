@@ -220,11 +220,11 @@ export function getCompSeriesData(_scope: string) {
   ];
 
   const recentActivity = [
-    { id: 'ra-1', text: 'KaNeXT Blazers defeated Tom\u2019s Team (PBD) 3\u20131 in K-1 Invitational Round 3', time: '2h ago' },
+    { id: 'ra-1', text: 'KaNeXT Blazers defeated Tom\u2019s Team (PBD) 3\u20131 in KaNeXT Invitational Round 3', time: '2h ago' },
     { id: 'ra-2', text: 'KaNeXT Church League standings updated \u2014 Blazers move to 2nd place', time: '3h ago' },
     { id: 'ra-3', text: 'PBD Cup quarterfinal draw completed', time: '5h ago' },
     { id: 'ra-4', text: 'New entrant registration: Westside Academy joined Spring Showcase', time: '8h ago' },
-    { id: 'ra-5', text: 'K-1 Invitational MVP voting opened for Round 3', time: '10h ago' },
+    { id: 'ra-5', text: 'KaNeXT Invitational MVP voting opened for Round 3', time: '10h ago' },
     { id: 'ra-6', text: 'Venue confirmed: Meridian Arena for PBD Cup semifinals', time: '12h ago' },
     { id: 'ra-7', text: 'KaNeXT Church League Round 8 schedule published', time: '1d ago' },
     { id: 'ra-8', text: 'KaNeXT Blazers clinched playoff berth in KaNeXT Church League', time: '1d ago' },
@@ -232,7 +232,7 @@ export function getCompSeriesData(_scope: string) {
     { id: 'ra-10', text: 'Award nominations open for 2025\u201326 Season MVP', time: '2d ago' },
     { id: 'ra-11', text: 'Tom\u2019s Team (PBD) roster update: 2 new signings registered', time: '3d ago' },
     { id: 'ra-12', text: 'PBD Cup group stage results certified', time: '3d ago' },
-    { id: 'ra-13', text: 'K-1 Invitational broadcast partnership confirmed with StreamLive', time: '4d ago' },
+    { id: 'ra-13', text: 'KaNeXT Invitational broadcast partnership confirmed with StreamLive', time: '4d ago' },
     { id: 'ra-14', text: 'Penalty review: Yellow card rescinded for match #KI-R2-04', time: '5d ago' },
     { id: 'ra-15', text: 'Season registration deadline extended to March 15', time: '5d ago' },
   ];
@@ -240,7 +240,7 @@ export function getCompSeriesData(_scope: string) {
   // ── Active Series ──
   const activeSeries: ActiveSeries[] = [
     { id: 'as-1', name: 'KaNeXT Church Premier League', shortName: 'KaNeXT Church', format: 'Round Robin', status: 'live', startDate: 'Sep 2025', endDate: 'May 2026', entrantCount: 16, matchCount: 120, currentRound: 'Matchday 22 of 30', prize: '$150,000' },
-    { id: 'as-2', name: 'K-1 Invitational', shortName: 'K-1', format: 'Single Elimination', status: 'live', startDate: 'Jan 2026', endDate: 'Mar 2026', entrantCount: 32, matchCount: 31, currentRound: 'Round of 16', prize: '$75,000' },
+    { id: 'as-2', name: 'KaNeXT Invitational', shortName: 'KaNeXT', format: 'Single Elimination', status: 'live', startDate: 'Jan 2026', endDate: 'Mar 2026', entrantCount: 32, matchCount: 31, currentRound: 'Round of 16', prize: '$75,000' },
     { id: 'as-3', name: 'PBD Cup', shortName: 'PBD', format: 'Group Stage + Knockout', status: 'live', startDate: 'Nov 2025', endDate: 'Apr 2026', entrantCount: 24, matchCount: 52, currentRound: 'Quarterfinals', prize: '$100,000' },
     { id: 'as-4', name: 'Spring Showcase', shortName: 'SS', format: 'Exhibition', status: 'upcoming', startDate: 'Mar 2026', endDate: 'Mar 2026', entrantCount: 12, matchCount: 18, currentRound: 'Pending kickoff', prize: '$10,000' },
     { id: 'as-5', name: 'KaNeXT Church Super Cup', shortName: 'ISC', format: 'Single Elimination', status: 'upcoming', startDate: 'Jun 2026', endDate: 'Jun 2026', entrantCount: 4, matchCount: 3, currentRound: 'Semifinal draw pending', prize: '$50,000' },
@@ -262,7 +262,7 @@ export function getCompSeriesData(_scope: string) {
   // ── Formats ──
   const formats: SeriesFormat[] = [
     { id: 'fmt-1', name: 'KaNeXT Church Round Robin', type: 'round-robin', description: 'Each team plays every other team twice (home and away). Points awarded: 3 for win, 1 for draw, 0 for loss. Full season league format with relegation.', maxEntrants: 20, tiebreakers: ['Goal Difference', 'Goals Scored', 'Head-to-Head Record', 'Fair Play Points'] },
-    { id: 'fmt-2', name: 'K-1 Knockout', type: 'single-elim', description: 'Single-game elimination bracket. Higher seed hosts. Extra time and penalty shootout for drawn matches. No replays.', maxEntrants: 64, tiebreakers: ['Extra Time', 'Penalty Shootout'] },
+    { id: 'fmt-2', name: 'KaNeXT Knockout', type: 'single-elim', description: 'Single-game elimination bracket. Higher seed hosts. Extra time and penalty shootout for drawn matches. No replays.', maxEntrants: 64, tiebreakers: ['Extra Time', 'Penalty Shootout'] },
     { id: 'fmt-3', name: 'PBD Cup Hybrid', type: 'hybrid', description: 'Group stage with 6 groups of 4 teams, followed by knockout rounds from the Round of 16. Top 2 from each group plus 4 best third-placed teams advance.', maxEntrants: 24, tiebreakers: ['Points', 'Goal Difference', 'Goals Scored', 'Disciplinary Record', 'Drawing of Lots'] },
     { id: 'fmt-4', name: 'Swiss Bracket', type: 'swiss', description: 'Teams are paired each round based on current record. No elimination until final rounds. Provides balanced competition with fewer required matches than round-robin.', maxEntrants: 32, tiebreakers: ['Buchholz Score', 'Sonneborn-Berger', 'Direct Encounter', 'Goal Difference'] },
     { id: 'fmt-5', name: 'Double Elimination', type: 'double-elim', description: 'Teams must lose twice to be eliminated. Winners bracket and losers bracket converge in a grand final. Losers bracket champion must beat winners bracket champion twice.', maxEntrants: 16, tiebreakers: ['Bracket Position', 'Head-to-Head'] },
@@ -349,19 +349,19 @@ export function getCompSeriesData(_scope: string) {
   const calendar: CalendarEvent[] = [
     { id: 'cal-1', date: '2026-02-17', title: 'KaNeXT Blazers vs Northridge United', type: 'match', series: 'KaNeXT Church Premier League', venue: 'KaNeXT Arena' },
     { id: 'cal-2', date: '2026-02-17', title: 'Tom\u2019s Team vs Metro FC', type: 'match', series: 'KaNeXT Church Premier League', venue: 'PBD Sports Complex' },
-    { id: 'cal-3', date: '2026-02-18', title: 'K-1 Invitational R16 \u2014 Match 1', type: 'match', series: 'K-1 Invitational', venue: 'Meridian Arena' },
-    { id: 'cal-4', date: '2026-02-18', title: 'K-1 Invitational R16 \u2014 Match 2', type: 'match', series: 'K-1 Invitational', venue: 'Meridian Arena' },
+    { id: 'cal-3', date: '2026-02-18', title: 'KaNeXT Invitational R16 \u2014 Match 1', type: 'match', series: 'KaNeXT Invitational', venue: 'Meridian Arena' },
+    { id: 'cal-4', date: '2026-02-18', title: 'KaNeXT Invitational R16 \u2014 Match 2', type: 'match', series: 'KaNeXT Invitational', venue: 'Meridian Arena' },
     { id: 'cal-5', date: '2026-02-19', title: 'Transfer Deadline \u2014 KaNeXT Church League', type: 'deadline', series: 'KaNeXT Church Premier League', venue: '\u2014' },
     { id: 'cal-6', date: '2026-02-19', title: 'PBD Cup QF Draw Ceremony', type: 'ceremony', series: 'PBD Cup', venue: 'KaNeXT Church Headquarters' },
-    { id: 'cal-7', date: '2026-02-20', title: 'Rest Day \u2014 K-1 Invitational', type: 'rest-day', series: 'K-1 Invitational', venue: '\u2014' },
+    { id: 'cal-7', date: '2026-02-20', title: 'Rest Day \u2014 KaNeXT Invitational', type: 'rest-day', series: 'KaNeXT Invitational', venue: '\u2014' },
     { id: 'cal-8', date: '2026-02-20', title: 'Pre-match Press Conference', type: 'media', series: 'PBD Cup', venue: 'Media Center' },
     { id: 'cal-9', date: '2026-02-21', title: 'PBD Cup QF \u2014 KaNeXT vs Eastside', type: 'match', series: 'PBD Cup', venue: 'KaNeXT Arena' },
     { id: 'cal-10', date: '2026-02-21', title: 'PBD Cup QF \u2014 PBD vs Lakewood', type: 'match', series: 'PBD Cup', venue: 'PBD Sports Complex' },
     { id: 'cal-11', date: '2026-02-22', title: 'Eastside vs Central City', type: 'match', series: 'KaNeXT Church Premier League', venue: 'Eastside Stadium' },
-    { id: 'cal-12', date: '2026-02-22', title: 'K-1 Invitational R16 \u2014 Match 3', type: 'match', series: 'K-1 Invitational', venue: 'Valley Arena' },
+    { id: 'cal-12', date: '2026-02-22', title: 'KaNeXT Invitational R16 \u2014 Match 3', type: 'match', series: 'KaNeXT Invitational', venue: 'Valley Arena' },
     { id: 'cal-13', date: '2026-02-23', title: 'Award Voting Deadline \u2014 February', type: 'deadline', series: 'KaNeXT Church Premier League', venue: '\u2014' },
     { id: 'cal-14', date: '2026-02-24', title: 'KaNeXT Blazers vs Harbor Town', type: 'match', series: 'KaNeXT Church Premier League', venue: 'KaNeXT Arena' },
-    { id: 'cal-15', date: '2026-02-24', title: 'Post-Round Media Day', type: 'media', series: 'K-1 Invitational', venue: 'Press Room' },
+    { id: 'cal-15', date: '2026-02-24', title: 'Post-Round Media Day', type: 'media', series: 'KaNeXT Invitational', venue: 'Press Room' },
     { id: 'cal-16', date: '2026-02-25', title: 'U-19 Dev Cup Round 5 \u2014 Day 1', type: 'match', series: 'U-19 Development Cup', venue: 'Youth Complex' },
     { id: 'cal-17', date: '2026-02-25', title: 'Spring Showcase Registration Deadline', type: 'deadline', series: 'Spring Showcase', venue: '\u2014' },
     { id: 'cal-18', date: '2026-02-26', title: 'U-19 Dev Cup Round 5 \u2014 Day 2', type: 'match', series: 'U-19 Development Cup', venue: 'Youth Complex' },
@@ -369,7 +369,7 @@ export function getCompSeriesData(_scope: string) {
     { id: 'cal-20', date: '2026-02-28', title: 'Monthly Board Meeting', type: 'ceremony', series: 'All Series', venue: 'KaNeXT Church Headquarters' },
     { id: 'cal-21', date: '2026-03-01', title: 'Spring Showcase Kickoff Ceremony', type: 'ceremony', series: 'Spring Showcase', venue: 'Meridian Arena' },
     { id: 'cal-22', date: '2026-03-02', title: 'Spring Showcase Day 1 Matches', type: 'match', series: 'Spring Showcase', venue: 'Meridian Arena' },
-    { id: 'cal-23', date: '2026-03-03', title: 'K-1 Invitational Quarterfinals Day 1', type: 'match', series: 'K-1 Invitational', venue: 'Meridian Arena' },
+    { id: 'cal-23', date: '2026-03-03', title: 'KaNeXT Invitational Quarterfinals Day 1', type: 'match', series: 'KaNeXT Invitational', venue: 'Meridian Arena' },
     { id: 'cal-24', date: '2026-03-04', title: 'KaNeXT Church League Matchday 23', type: 'match', series: 'KaNeXT Church Premier League', venue: 'Various' },
     { id: 'cal-25', date: '2026-03-05', title: 'Broadcast Rights Review Meeting', type: 'media', series: 'All Series', venue: 'KaNeXT Church Headquarters' },
   ];
@@ -379,7 +379,7 @@ export function getCompSeriesData(_scope: string) {
     { id: 'aw-1', name: 'League MVP', recipient: 'Marcus Cole (KaNeXT Blazers)', series: 'KaNeXT Church Premier League', season: '2024\u201325', category: 'individual', date: 'Jun 2025' },
     { id: 'aw-2', name: 'Golden Boot', recipient: 'Jalen Torres (Tom\u2019s Team PBD)', series: 'KaNeXT Church Premier League', season: '2024\u201325', category: 'individual', date: 'Jun 2025' },
     { id: 'aw-3', name: 'Best XI', recipient: 'KaNeXT Blazers (7 players selected)', series: 'KaNeXT Church Premier League', season: '2024\u201325', category: 'team', date: 'Jun 2025' },
-    { id: 'aw-4', name: 'K-1 Invitational MVP', recipient: 'Dante Williams (Metro FC)', series: 'K-1 Invitational', season: '2024\u201325', category: 'individual', date: 'Mar 2025' },
+    { id: 'aw-4', name: 'KaNeXT Invitational MVP', recipient: 'Dante Williams (Metro FC)', series: 'KaNeXT Invitational', season: '2024\u201325', category: 'individual', date: 'Mar 2025' },
     { id: 'aw-5', name: 'PBD Cup Champion', recipient: 'Northridge United', series: 'PBD Cup', season: '2024\u201325', category: 'team', date: 'Apr 2025' },
     { id: 'aw-6', name: 'Fair Play Award', recipient: 'Lakewood SC', series: 'KaNeXT Church Premier League', season: '2024\u201325', category: 'special', date: 'Jun 2025' },
     { id: 'aw-7', name: 'Young Player of the Year', recipient: 'Isaiah Brooks (Eastside Athletic)', series: 'All Series', season: '2024\u201325', category: 'individual', date: 'Jun 2025' },
@@ -414,7 +414,7 @@ export function getCompSeriesData(_scope: string) {
     { id: 'hist-12', season: '2025 Preseason', champion: 'KaNeXT Blazers', runnerUp: 'Lakewood SC', mvp: 'Marcus Cole', totalMatches: 28, totalGoals: 76 },
     { id: 'hist-13', season: '2025 City Derby', champion: 'Westside Academy', runnerUp: 'Central City FC', mvp: 'Ryan Cross', totalMatches: 14, totalGoals: 38 },
     { id: 'hist-14', season: '2025 Winter Classic', champion: 'KaNeXT Blazers', runnerUp: 'Tom\u2019s Team (PBD)', mvp: 'Isaiah Brooks', totalMatches: 12, totalGoals: 31 },
-    { id: 'hist-15', season: '2026 K-1 (in progress)', champion: 'TBD', runnerUp: 'TBD', mvp: 'TBD', totalMatches: 16, totalGoals: 42 },
+    { id: 'hist-15', season: '2026 KaNeXT (in progress)', champion: 'TBD', runnerUp: 'TBD', mvp: 'TBD', totalMatches: 16, totalGoals: 42 },
   ];
 
   // ── Settings ──

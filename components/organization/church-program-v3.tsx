@@ -43,7 +43,7 @@ const CHURCH_IDENTITY = {
   denomination: 'Non-denominational',
   founded: '2015',
   location: 'Nashville, TN',
-  seniorPastor: 'Dr. Oladipo Carter',
+  seniorPastor: 'Pastor James Carter',
   services: [
     { day: 'Sunday', time: '10:00 AM', type: 'Morning Service' },
     { day: 'Sunday', time: '6:00 PM', type: 'Evening Service' },
@@ -64,15 +64,15 @@ interface Ministry {
 }
 
 const MINISTRIES: Ministry[] = [
-  { id: 'm1', name: 'T.O.R.C.H.', category: 'Young Adults', memberCount: 45, leader: 'Bro. Michael Osei', schedule: 'Fridays 7:00 PM', status: 'Active', description: 'Young adult fellowship and discipleship' },
-  { id: 'm2', name: 'Sheepfold', category: 'Children', memberCount: 30, leader: 'Sis. Funke Balogun', schedule: 'Sundays 10:00 AM', status: 'Active', description: 'Children\'s church and education' },
-  { id: 'm3', name: 'Fresh Fire', category: 'Teens', memberCount: 25, leader: 'Pastor David Akinola', schedule: 'Fridays 6:00 PM', status: 'Active', description: 'Teen youth group and mentorship' },
-  { id: 'm4', name: 'Rooted', category: 'Discipleship', memberCount: 60, leader: 'Elder Ruth Adeyemi', schedule: 'Wednesdays', status: 'Active', description: 'Foundational discipleship program' },
+  { id: 'm1', name: 'Catalyst', category: 'Young Adults', memberCount: 45, leader: 'Bro. Michael Scott', schedule: 'Fridays 7:00 PM', status: 'Active', description: 'Young adult fellowship and discipleship' },
+  { id: 'm2', name: 'KaNeXT Kids', category: 'Children', memberCount: 30, leader: 'Sis. Angela Davis', schedule: 'Sundays 10:00 AM', status: 'Active', description: 'Children\'s church and education' },
+  { id: 'm3', name: 'Ignite Youth', category: 'Teens', memberCount: 25, leader: 'Pastor Ryan Mitchell', schedule: 'Fridays 6:00 PM', status: 'Active', description: 'Teen youth group and mentorship' },
+  { id: 'm4', name: 'Rooted', category: 'Discipleship', memberCount: 60, leader: 'Elder Mary Thompson', schedule: 'Wednesdays', status: 'Active', description: 'Foundational discipleship program' },
   { id: 'm5', name: 'Connect Groups', category: 'Small Groups', memberCount: 8, leader: 'Pastor Grace Carter', schedule: 'Various', status: 'Active', description: '8 home-based small groups across LA' },
-  { id: 'm6', name: 'Vineyard Voices', category: 'Music/Worship', memberCount: 20, leader: 'Min. Sarah Okonkwo', schedule: 'Sundays & Rehearsals', status: 'Active', description: 'Worship team and choir' },
-  { id: 'm7', name: 'Single Saved Serving', category: 'Singles', memberCount: 35, leader: 'Deacon James Mensah', schedule: 'Monthly gatherings', status: 'Active', description: 'Singles fellowship and service' },
-  { id: 'm8', name: 'The Harvesters', category: 'Evangelism', memberCount: 15, leader: 'Bro. Michael Osei', schedule: 'Saturdays', status: 'Seasonal', description: 'Street evangelism and community outreach' },
-  { id: 'm9', name: 'Hotline to Heaven', category: 'Radio', memberCount: 0, leader: 'Dr. Oladipo Carter', schedule: 'Weekly broadcast', status: 'Active', description: 'Radio ministry and podcast' },
+  { id: 'm6', name: 'Worship Team', category: 'Music/Worship', memberCount: 20, leader: 'Min. Lisa Brooks', schedule: 'Sundays & Rehearsals', status: 'Active', description: 'Worship team and choir' },
+  { id: 'm7', name: 'Single & Purposeful', category: 'Singles', memberCount: 35, leader: 'Deacon Robert Davis', schedule: 'Monthly gatherings', status: 'Active', description: 'Singles fellowship and service' },
+  { id: 'm8', name: 'Community Outreach', category: 'Evangelism', memberCount: 15, leader: 'Bro. Michael Scott', schedule: 'Saturdays', status: 'Seasonal', description: 'Street evangelism and community outreach' },
+  { id: 'm9', name: 'Morning Prayer Line', category: 'Radio', memberCount: 0, leader: 'Pastor James Carter', schedule: 'Weekly broadcast', status: 'Active', description: 'Radio ministry and podcast' },
 ];
 
 interface Task {
@@ -86,7 +86,7 @@ interface Task {
 const OPS_TASKS: Task[] = [
   { id: 't1', title: 'Update church website with new service times', assignee: 'Media Team', priority: 'High', status: 'In Progress' },
   { id: 't2', title: 'Prepare Easter service program', assignee: 'Pastor Grace', priority: 'High', status: 'Pending' },
-  { id: 't3', title: 'Order communion supplies', assignee: 'Deacon Mensah', priority: 'Normal', status: 'Pending' },
+  { id: 't3', title: 'Order communion supplies', assignee: 'Deacon Davis', priority: 'Normal', status: 'Pending' },
   { id: 't4', title: 'Schedule building inspection', assignee: 'Operations', priority: 'Normal', status: 'In Progress' },
   { id: 't5', title: 'Print new member welcome packets', assignee: 'Admin', priority: 'Low', status: 'Pending' },
 ];
@@ -114,8 +114,8 @@ interface Approval {
 }
 
 const APPROVALS: Approval[] = [
-  { id: 'a1', title: 'Sound system upgrade proposal', requestedBy: 'Min. Sarah Okonkwo', amount: '$4,500' },
-  { id: 'a2', title: 'T.O.R.C.H. retreat venue booking', requestedBy: 'Bro. Michael Osei', amount: '$1,200' },
+  { id: 'a1', title: 'Sound system upgrade proposal', requestedBy: 'Min. Lisa Brooks', amount: '$4,500' },
+  { id: 'a2', title: 'Catalyst retreat venue booking', requestedBy: 'Bro. Michael Scott', amount: '$1,200' },
   { id: 'a3', title: 'New volunteer background check batch', requestedBy: 'Admin', amount: '$350' },
 ];
 
@@ -127,7 +127,7 @@ interface VolunteerGap {
 }
 
 const VOLUNTEER_GAPS: VolunteerGap[] = [
-  { id: 'v1', role: 'Children\'s Church Teacher', ministry: 'Sheepfold', urgency: 'Urgent' },
+  { id: 'v1', role: 'Children\'s Church Teacher', ministry: 'KaNeXT Kids', urgency: 'Urgent' },
   { id: 'v2', role: 'Sound Technician', ministry: 'Worship', urgency: 'Urgent' },
   { id: 'v3', role: 'Parking Lot Attendant', ministry: 'Operations', urgency: 'Normal' },
   { id: 'v4', role: 'Greeter (Sunday PM)', ministry: 'Hospitality', urgency: 'Normal' },

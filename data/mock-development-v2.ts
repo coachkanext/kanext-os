@@ -220,7 +220,7 @@ export const CURRENT_WEEKLY_PLAN: WeeklyPlan = {
       sessions: [
         { id: 'w22-t1', type: 'lift', title: 'Strength Training', time: '8:00 AM', duration: '1 hr', focus: 'Lower body, explosiveness' },
         { id: 'w22-t2', type: 'practice', title: 'Practice — Offensive Focus', time: '2:00 PM', duration: '1.5 hr', focus: 'Post entry, PnR reads' },
-        { id: 'w22-t3', type: 'film', title: 'Scouting Report: Webber', time: '5:00 PM', duration: '30 min', focus: 'Webber defensive tendencies' },
+        { id: 'w22-t3', type: 'film', title: 'Scouting Report: Pinecrest', time: '5:00 PM', duration: '30 min', focus: 'Pinecrest defensive tendencies' },
       ],
     },
     {
@@ -228,7 +228,7 @@ export const CURRENT_WEEKLY_PLAN: WeeklyPlan = {
       date: 'Feb 19',
       sessions: [
         { id: 'w22-w1', type: 'individual', title: 'Shooting Lab', time: '9:00 AM', duration: '45 min', focus: '200 makes, catch-and-shoot focus' },
-        { id: 'w22-w2', type: 'practice', title: 'Walk-Through + Scrimmage', time: '2:00 PM', duration: '2 hr', focus: 'Game plan install: Webber' },
+        { id: 'w22-w2', type: 'practice', title: 'Walk-Through + Scrimmage', time: '2:00 PM', duration: '2 hr', focus: 'Game plan install: Pinecrest' },
       ],
     },
     {
@@ -237,7 +237,7 @@ export const CURRENT_WEEKLY_PLAN: WeeklyPlan = {
       sessions: [
         { id: 'w22-th1', type: 'lift', title: 'Strength Training', time: '8:00 AM', duration: '45 min', focus: 'Upper body, core' },
         { id: 'w22-th2', type: 'practice', title: 'Shootaround — Game Prep', time: '11:00 AM', duration: '1 hr', focus: 'Final game plan review' },
-        { id: 'w22-th3', type: 'film', title: 'Pre-Game Film', time: '3:00 PM', duration: '30 min', focus: 'Webber key actions' },
+        { id: 'w22-th3', type: 'film', title: 'Pre-Game Film', time: '3:00 PM', duration: '30 min', focus: 'Pinecrest key actions' },
       ],
     },
     {
@@ -245,7 +245,7 @@ export const CURRENT_WEEKLY_PLAN: WeeklyPlan = {
       date: 'Feb 21',
       sessions: [
         { id: 'w22-f1', type: 'rest', title: 'Game Day — Recovery', time: '10:00 AM', duration: '1 hr', notes: 'Light shooting, stretching only' },
-        { id: 'w22-f2', type: 'practice', title: 'Game vs Webber International', time: '7:00 PM', duration: '2 hr', focus: 'GAME DAY' },
+        { id: 'w22-f2', type: 'practice', title: 'Game vs Pinecrest University', time: '7:00 PM', duration: '2 hr', focus: 'GAME DAY' },
       ],
     },
     {
@@ -259,7 +259,7 @@ export const CURRENT_WEEKLY_PLAN: WeeklyPlan = {
       day: 'Sunday',
       date: 'Feb 23',
       sessions: [
-        { id: 'w22-su1', type: 'film', title: 'Post-Game Film Review', time: '4:00 PM', duration: '45 min', focus: 'Webber game review' },
+        { id: 'w22-su1', type: 'film', title: 'Post-Game Film Review', time: '4:00 PM', duration: '45 min', focus: 'Pinecrest game review' },
         { id: 'w22-su2', type: 'individual', title: 'Optional Skill Work', time: '5:00 PM', duration: '45 min', notes: 'Open gym for voluntary work' },
       ],
     },
@@ -561,8 +561,8 @@ export const LAST_WEEKLY_PLAN: WeeklyPlan = {
       day: 'Monday',
       date: 'Feb 10',
       sessions: [
-        { id: 'w21-m1', type: 'film', title: 'Post-Game Film: Ave Maria', time: '9:00 AM', duration: '45 min', focus: 'Transition offense execution review — 18 fast break points' },
-        { id: 'w21-m2', type: 'practice', title: 'Full Practice', time: '2:00 PM', duration: '2 hr', focus: 'Ball security drills, half-court offense flow', notes: 'Emphasis on reducing turnovers — 16 TOs vs Ave Maria' },
+        { id: 'w21-m1', type: 'film', title: 'Post-Game Film: Westfield', time: '9:00 AM', duration: '45 min', focus: 'Transition offense execution review — 18 fast break points' },
+        { id: 'w21-m2', type: 'practice', title: 'Full Practice', time: '2:00 PM', duration: '2 hr', focus: 'Ball security drills, half-court offense flow', notes: 'Emphasis on reducing turnovers — 16 TOs vs Westfield' },
         { id: 'w21-m3', type: 'individual', title: 'Individual Skill Work', time: '4:30 PM', duration: '30 min', focus: 'Position-specific: guards — PnR reads, bigs — post footwork' },
       ],
     },
@@ -597,7 +597,7 @@ export const LAST_WEEKLY_PLAN: WeeklyPlan = {
       date: 'Feb 14',
       sessions: [
         { id: 'w21-f1', type: 'rest', title: 'Game Day — Recovery', time: '10:00 AM', duration: '1 hr', notes: 'Light shooting, stretching, mental prep' },
-        { id: 'w21-f2', type: 'practice', title: 'Game vs Thomas University', time: '7:00 PM', duration: '2 hr', focus: 'GAME DAY — KaNeXT W, final score 78-62' },
+        { id: 'w21-f2', type: 'practice', title: 'Game vs Magnolia University', time: '7:00 PM', duration: '2 hr', focus: 'GAME DAY — KaNeXT W, final score 78-62' },
       ],
     },
     {
@@ -605,14 +605,14 @@ export const LAST_WEEKLY_PLAN: WeeklyPlan = {
       date: 'Feb 15',
       sessions: [
         { id: 'w21-s1', type: 'rest', title: 'Recovery Day', time: '—', duration: '—', notes: 'Active recovery — pool, stretch, no live contact' },
-        { id: 'w21-s2', type: 'film', title: 'Quick-Hits Film: STT Scout', time: '4:00 PM', duration: '30 min', focus: 'Initial scout look at St. Thomas — KaNeXT Conference rival game tomorrow' },
+        { id: 'w21-s2', type: 'film', title: 'Quick-Hits Film: STT Scout', time: '4:00 PM', duration: '30 min', focus: 'Initial scout look at Ridgemont — KaNeXT Conference rival game tomorrow' },
       ],
     },
     {
       day: 'Sunday',
       date: 'Feb 16',
       sessions: [
-        { id: 'w21-su1', type: 'practice', title: 'Game vs St. Thomas University', time: '4:00 PM', duration: '2 hr', focus: 'GAME DAY — KaNeXT W 72-65. Carter 18-11-3. Plantey 14 pts (5-9 3PT).' },
+        { id: 'w21-su1', type: 'practice', title: 'Game vs Ridgemont University', time: '4:00 PM', duration: '2 hr', focus: 'GAME DAY — KaNeXT W 72-65. Carter 18-11-3. Plantey 14 pts (5-9 3PT).' },
         { id: 'w21-su2', type: 'film', title: 'Post-Game Quick Review', time: '7:00 PM', duration: '30 min', focus: 'STT game — defensive adjustments that worked in 2nd half', notes: 'Coach Davis noted Rivera containment effective after Hernandez switch' },
       ],
     },
@@ -726,7 +726,7 @@ export const DRILL_ASSIGNMENTS: DrillAssignment[] = [
     ],
     assignedDate: 'Feb 18',
     status: 'assigned',
-    coachNotes: 'Keiser top-20 nationally in OREB%. Bigs must box out Carter every possession. Drill with game-speed reps.',
+    coachNotes: 'Lakewood top-20 nationally in OREB%. Bigs must box out Carter every possession. Drill with game-speed reps.',
     data_source: 'demo_seed',
   },
   {

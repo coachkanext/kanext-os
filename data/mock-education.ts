@@ -299,7 +299,7 @@ export const FACULTY_LEADERSHIP: FacultyMember[] = [
     title: 'Dean, School of Education',
     role: 'dean',
     departmentId: 'dept-education',
-    bio: 'Dr. Williams brings extensive K-12 and higher education leadership experience.',
+    bio: 'Dr. Williams brings extensive KaNeXT2 and higher education leadership experience.',
   },
   {
     id: 'faculty-dean-aviation',

@@ -74,8 +74,8 @@ interface PendingItem {
 }
 
 const PENDING_ITEMS: PendingItem[] = [
-  { id: 'pd1', title: 'Sound Equipment — Vendor Payment', amount: 4500, type: 'debit', requestedBy: 'Min. Sarah Okonkwo', status: 'Awaiting Approval', submittedDate: 'Feb 15, 2025' },
-  { id: 'pd2', title: 'Outreach Supplies Reimbursement', amount: 320, type: 'debit', requestedBy: 'Bro. Michael Osei', status: 'Processing', submittedDate: 'Feb 13, 2025' },
+  { id: 'pd1', title: 'Sound Equipment — Vendor Payment', amount: 4500, type: 'debit', requestedBy: 'Min. Lisa Brooks', status: 'Awaiting Approval', submittedDate: 'Feb 15, 2025' },
+  { id: 'pd2', title: 'Outreach Supplies Reimbursement', amount: 320, type: 'debit', requestedBy: 'Bro. Michael Scott', status: 'Processing', submittedDate: 'Feb 13, 2025' },
   { id: 'pd3', title: 'Designated Gift Processing', amount: 2000, type: 'credit', requestedBy: 'Admin', status: 'Awaiting Documentation', submittedDate: 'Feb 14, 2025' },
 ];
 

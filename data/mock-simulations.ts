@@ -77,9 +77,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-1',
     type: 'single_game',
-    matchupText: 'KaNeXT vs Webber International',
+    matchupText: 'KaNeXT vs Pinecrest University',
     homeTeam: 'KaNeXT Sports',
-    awayTeam: 'Webber International',
+    awayTeam: 'Pinecrest University',
     rosterUsed: 'official',
     timestamp: new Date('2026-02-19T14:30:00'),
     winProbability: 64,
@@ -91,7 +91,7 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     drivers: [
       'Home court advantage (+3.2 pts expected)',
       'KaNeXT superior in perimeter shooting (41% vs 35%)',
-      'Webber strength in paint scoring could narrow gap',
+      'Pinecrest strength in paint scoring could narrow gap',
       'KaNeXT 8-2 in last 10 home games',
     ],
     playerImpact: VARSITY_PLAYERS,
@@ -114,7 +114,7 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     id: 'sim-2',
     type: 'single_game',
     matchupText: 'KaNeXT @ Southeastern',
-    homeTeam: 'Southeastern University',
+    homeTeam: 'Summit University',
     awayTeam: 'KaNeXT Sports',
     rosterUsed: 'official',
     timestamp: new Date('2026-02-19T15:00:00'),
@@ -139,9 +139,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-3',
     type: 'single_game',
-    matchupText: 'KaNeXT vs Warner',
+    matchupText: 'KaNeXT vs Clearwater',
     homeTeam: 'KaNeXT Sports',
-    awayTeam: 'Warner University',
+    awayTeam: 'Clearwater University',
     rosterUsed: 'sandbox',
     timestamp: new Date('2026-02-19T15:30:00'),
     winProbability: 71,
@@ -153,7 +153,7 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     drivers: [
       'Sandbox roster includes Jaylen Brooks (projected +5.2 pts)',
       'Enhanced perimeter defense with lineup change',
-      'Warner struggles on the road (4-6 away)',
+      'Clearwater struggles on the road (4-6 away)',
       'KaNeXT motion offense matches well against zone',
     ],
     playerImpact: [
@@ -181,13 +181,13 @@ export const SAVED_SIMULATIONS: SavedSimulation[] = [
     ...SAMPLE_SIMULATIONS[0],
     threadId: 'thread-sim-1',
     savedAt: new Date('2026-02-18T18:45:00'),
-    title: 'Webber Preview — Base',
+    title: 'Pinecrest Preview — Base',
   },
   {
     ...SAMPLE_SIMULATIONS[2],
     threadId: 'thread-sim-3',
     savedAt: new Date('2026-02-18T19:00:00'),
-    title: 'Warner Preview — Sandbox',
+    title: 'Clearwater Preview — Sandbox',
   },
 ];
 
@@ -215,7 +215,7 @@ export const RECENT_SIM_RUNS: SimRun[] = [
   {
     id: 'run-1',
     simType: 'game',
-    title: 'KaNeXT vs Webber — Base',
+    title: 'KaNeXT vs Pinecrest — Base',
     timestamp: new Date('2026-02-18T18:45:00'),
     winProbability: 64,
     projectedScore: { home: 78, away: 72 },
@@ -307,9 +307,9 @@ export const RECENT_SIM_RUNS: SimRun[] = [
 // =============================================================================
 
 export const SUN_CONFERENCE_OPPONENTS = [
-  'Webber International', 'Southeastern', 'Keiser', 'Warner',
-  'Ave Maria', 'St. Thomas', 'Thomas University', 'Johnson University',
-  'Coastal Georgia', 'Point University',
+  'Pinecrest University', 'Summit', 'Lakewood', 'Clearwater',
+  'Westfield', 'Ridgemont', 'Magnolia University', 'Johnson University',
+  'Bayshore', 'Point University',
 ];
 
 // =============================================================================
@@ -323,7 +323,7 @@ export const SEASON_SIM = {
   gamesRemaining: 2,
   playoffProbability: 88,
   confTournamentSeed: 3,
-  mustWinGames: ['vs Webber International'],
+  mustWinGames: ['vs Pinecrest University'],
   finishDistribution: [
     { wins: 18, probability: 8 },
     { wins: 19, probability: 22 },
@@ -342,9 +342,9 @@ export const CONFERENCE_POSTSEASON = {
   semiFinalOdds: 42,
   quarterFinalOdds: 88,
   bracketPaths: [
-    { round: 'Quarterfinal', opponent: 'Thomas University', winProb: 78, seed: '3 vs 6' },
-    { round: 'Semifinal', opponent: 'Keiser / Warner', winProb: 55, seed: '3 vs 2/7' },
-    { round: 'Championship', opponent: 'Southeastern', winProb: 42, seed: '3 vs 1' },
+    { round: 'Quarterfinal', opponent: 'Magnolia University', winProb: 78, seed: '3 vs 6' },
+    { round: 'Semifinal', opponent: 'Lakewood / Clearwater', winProb: 55, seed: '3 vs 2/7' },
+    { round: 'Championship', opponent: 'Summit', winProb: 42, seed: '3 vs 1' },
   ],
 };
 

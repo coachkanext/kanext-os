@@ -249,7 +249,7 @@ const CHURCH_RESULTS: SearchResult[] = [
   },
   {
     id: 'ministry-prayer',
-    title: 'Hotline to Heaven',
+    title: 'Morning Prayer Line',
     subtitle: 'Prayer Ministry',
     category: 'ministry',
     mode: 'church',

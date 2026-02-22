@@ -77,8 +77,8 @@ const TODAY_START = new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate());
 
 // KaNeXT Conference opponents (used for CONF/NON-CONF tagging + standings)
 const sunConfTeams = [
-  'Ave Maria', 'Coastal Georgia', 'Keiser', 'Southeastern',
-  'St. Thomas', 'Warner', 'Webber International', 'Lakeview College',
+  'Westfield', 'Bayshore', 'Lakewood', 'Summit',
+  'Ridgemont', 'Clearwater', 'Pinecrest University', 'Lakeview College',
 ];
 
 export function isConfGame(opp: string | null): boolean {
@@ -109,37 +109,35 @@ const TODAY_END = new Date(TODAY_START.getTime() + 86400000); // midnight tonigh
 
 // Opponent → away venue name fallback (for games without boxscore venue data)
 const OPPONENT_VENUES: Record<string, string> = {
-  'Ave Maria': 'Tom Golisano FH',
-  'Coastal Georgia': 'Howard Coffin Gym',
-  'Keiser': 'Keiser Student Center',
-  'Southeastern': 'The Furnace',
-  'St. Thomas': 'Bobcat Arena',
-  'Warner': 'Turner Athletic Center',
-  'Webber International': 'Grace & Roger Babson Arena',
-  'Lakeview College': 'Caples Fine Arts Complex',
-  'Indiana Wesleyan': 'Luckey Arena',
-  'Pikeville': 'Platt Arena',
-  'Spartanburg Methodist': 'Platt Arena',
-  'Hope International': 'Darling Pavilion',
-  'Ridgemont National': 'FNU Gym',
-  'Tougaloo': 'Kroger Gymnasium',
-  'Baker': 'Baker Gymnasium',
-  'Faulkner': 'Tine Davis Gymnasium',
-  'Fort Lauderdale': 'FTL Athletic Center',
-  'Ridgemont College': 'Badcock Gymnasium',
-  'Brewton-Parker': 'Fountain-Herndon Gym',
-  'LSU Shreveport': 'The Dock',
-  'Loyola': 'The Den',
-  'William Carey': 'Tatum Court',
-  'Rust': 'Dillard Gymnasium',
-  'Friends': 'Garvey Center',
-  'Nelson': 'Nelson Arena',
-  'The Master\'s': 'Bross Court',
+  'Westfield': 'Westfield Field House',
+  'Bayshore': 'Bayshore Gymnasium',
+  'Lakewood': 'Lakewood Court',
+  'Summit': 'Summit Arena',
+  'Ridgemont': 'Ridgemont Center',
+  'Clearwater': 'Clearwater Fieldhouse',
+  'Pinecrest': 'Pinecrest Athletic Center',
+  'Riverside': 'Riverside Gymnasium',
+  'Heartland': 'Heartland Arena',
+  'Highland': 'Highland Gymnasium',
+  'Brookside': 'Brookside Gymnasium',
+  'Pacific Shores': 'Pacific Pavilion',
+  'Southport': 'Southport Gymnasium',
+  'Ashford': 'Ashford Gymnasium',
+  'Fieldstone': 'Fieldstone Gymnasium',
+  'Crestwood': 'Crestwood Center',
+  'Beacon': 'Beacon Gymnasium',
+  'Lakeview': 'Lakeview Gymnasium',
+  'Cedarville': 'Cedarville Center',
+  'Crescent': 'Crescent Court',
+  'Southern Pines': 'Southern Pines Arena',
+  'Ironwood': 'Ironwood Gymnasium',
+  'Prairie': 'Prairie Center',
+  'Valley View': 'Valley View Center',
 };
 
 function getVenueName(opp: string | null, homeAway: string | null, dateVenue: string | undefined): string {
-  if (homeAway === 'H') return 'KaNeXT Wellness Center';
-  if (dateVenue && dateVenue !== 'Miami Gardens, Fla.') return dateVenue;
+  if (homeAway === 'H') return 'KaNeXT Athletics Center';
+  if (dateVenue && dateVenue !== 'Nashville, TN') return dateVenue;
   if (!opp) return 'Away';
   // Match against OPPONENT_VENUES using partial match
   for (const [key, venue] of Object.entries(OPPONENT_VENUES)) {
@@ -156,8 +154,8 @@ export const KaNeXT_GAMES: KaNeXTGame[] = tgl2526.map((g, i) => {
   const isLive = isToday && !hasResult;
   const dateVenue = d ? venueByDate.get(`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`) ?? undefined : undefined;
   // Placeholder live game for demo — toggle to false for non-game-day view
-  const isTuskegeeLive = false; // g.opponent === 'Tuskegee';
-  const effectiveLive = isTuskegeeLive;
+  const isHeritageLive = false; // g.opponent === 'Heritage';
+  const effectiveLive = isHeritageLive;
   return {
     id: `fmu-2526-${String(i).padStart(2, '0')}`,
     opponent: g.opponent ?? 'Unknown',
@@ -260,7 +258,7 @@ export interface BoxScoreLine {
 const gameIdToFmuId = new Map<string, string>();
 const individualGameIds = [...new Set(gameLogs.map((gl) => gl.game_id))];
 
-// Normalize opponent names for fuzzy matching (e.g. "Tougaloo (MS)" ↔ "Tougaloo (Miss.)")
+// Normalize opponent names for fuzzy matching (e.g. "Ashford (MS)" ↔ "Ashford (Miss.)")
 function oppBase(name: string | null): string {
   if (!name) return '';
   return name.split(/[\s(]/)[0].toLowerCase();
@@ -1277,11 +1275,11 @@ export interface NewsItem {
 
 // Curated highlights keyed by opponent name → inserted after the matching recap
 const HIGHLIGHTS: Record<string, { headline: string }> = {
-  'Tougaloo (MS)': { headline: 'Devin Carter Drops Career-High 38 Points in Season-Opening Blowout' },
-  'Ave Maria': { headline: 'Jeffery Selden Records First Triple-Double in KaNeXT History' },
-  'Webber International (FL)': { headline: 'Cameron Noel\'s Buzzer-Beating Three Caps 15-0 Run to Stun Webber' },
-  'Coastal Georgia': { headline: 'KaNeXT Defense Holds Coastal Georgia to Season-Low 48 Points' },
-  'Southeastern': { headline: 'Devin Carter & Cameron Noel Combine for 52 in Road Win at Southeastern' },
+  'Ashford (MS)': { headline: 'Devin Carter Drops Career-High 38 Points in Season-Opening Blowout' },
+  'Westfield': { headline: 'Jeffery Selden Records First Triple-Double in KaNeXT History' },
+  'Pinecrest University (FL)': { headline: 'Cameron Noel\'s Buzzer-Beating Three Caps 15-0 Run to Stun Pinecrest' },
+  'Bayshore': { headline: 'KaNeXT Defense Holds Bayshore to Season-Low 48 Points' },
+  'Summit': { headline: 'Devin Carter & Cameron Noel Combine for 52 in Road Win at Southeastern' },
 };
 
 const recaps: NewsItem[] = tgl2526
@@ -1611,7 +1609,7 @@ function generatePriorSeasons(jersey: string, numPrior: number, currentKR: numbe
   if (numPrior <= 0) return [];
   const bio = KaNeXT_PLAYER_BIOS[jersey];
   const school = bio?.previousSchool ?? 'KaNeXT Sports';
-  const division = bio?.previousSchool ? 'NCAA' : 'NAIA';
+  const division = bio?.previousSchool ? 'NCAA' : 'NAA';
 
   // Simple hash for stable variation
   let h = 0;
@@ -1634,7 +1632,7 @@ function generatePriorSeasons(jersey: string, numPrior: number, currentKR: numbe
     seasons.push({
       year: PRIOR_SEASON_YEARS[yearIdx],
       school: yearIdx >= numPrior - 1 && numPrior >= 3 ? school : 'KaNeXT Sports',
-      division: yearIdx >= numPrior - 1 && numPrior >= 3 ? division : 'NAIA',
+      division: yearIdx >= numPrior - 1 && numPrior >= 3 ? division : 'NAA',
       current: false,
       kr,
       gp, gs, mpg, ppg, rpg, apg,
@@ -1661,7 +1659,7 @@ export function getFmuCareer(jerseyNumber: string): FmuCareerSeason[] {
       currentSeasons.push({
         year: s.season,
         school: 'KaNeXT Sports',
-        division: 'NAIA',
+        division: 'NAA',
         current: s.season === '2025-26',
         kr: ROSTER_KR[jersey],
         gp,
@@ -1693,21 +1691,21 @@ export function getFmuCareer(jerseyNumber: string): FmuCareerSeason[] {
 /** Short about paragraph per player, keyed by jersey */
 export const KaNeXT_PLAYER_ABOUT: Record<string, string> = {
   '0':  'Tristan Thomas is a versatile forward who brings energy on both ends of the floor. A Miami native, he uses his length and athleticism to contribute on the boards and provides a spark off the bench with his defensive intensity.',
-  '1':  'Petar Asceric is a 6\'10" center from Belgrade, Serbia who anchors the paint for the Lions. His size and footwork make him an effective interior presence, and he continues to develop as a rim protector and finisher around the basket.',
+  '1':  'Petar Asceric is a 6\'10" center from Belgrade, Serbia who anchors the paint for the Wolves. His size and footwork make him an effective interior presence, and he continues to develop as a rim protector and finisher around the basket.',
   '2':  'Braxton Lewis is a long, athletic wing from Miami who is working to establish himself in the rotation. A freshman, he brings physicality and defensive potential as he learns the system.',
   '3':  'Rico Thompson is a veteran wing from Tallahassee who provides depth and experience on the perimeter. A senior, he brings leadership and toughness to the locker room.',
-  '4':  'Devin Carter is the Lions\' go-to scorer and most dynamic offensive player. A junior from Jackson, Mississippi, he creates in isolation, finishes in transition, and can score from all three levels. He leads the team in scoring and rebounds.',
+  '4':  'Devin Carter is the Wolves\' go-to scorer and most dynamic offensive player. A junior from Jackson, Mississippi, he creates in isolation, finishes in transition, and can score from all three levels. He leads the team in scoring and rebounds.',
   '5':  'Jeffrey Selden is a graduate student and one of the most experienced players on the roster. The Austin, Texas native is a versatile forward who contributes across the stat sheet — scoring, rebounding, and facilitating. He anchors the starting lineup.',
   '7':  'Maximo Moratinos is a skilled power forward from Miami who provides size and scoring touch in the frontcourt. A sophomore, he stretches the floor and contributes as a reliable rotation piece.',
   '9':  'Ka\'Mar Benbo is a freshman point guard from Portland, Oregon who is developing his game in the KaNeXT system. He brings quickness and court vision as he works to earn minutes.',
   '10': 'Jason Morris is a wing from Pompano Beach who provides depth and defensive versatility. A junior, he continues to develop his offensive game while contributing to the team\'s defensive identity.',
-  '11': 'Sehmaj Mentor is the Lions\' floor general and a key starter at point guard. The Hollywood, Ridgemont native controls tempo, runs the offense, and is a reliable scorer from mid-range. He brings leadership and poise to every game.',
-  '12': 'Gavin Turner is a lengthy wing from Orlando who is in his first year with the Lions. He provides size on the perimeter and is working to carve out a larger role as he gains experience.',
-  '13': 'Cameron Noel is a dynamic scoring guard and one of the Lions\' most consistent offensive weapons. The Houston native creates off the dribble, knocks down perimeter shots, and has a knack for coming up big in key moments.',
+  '11': 'Sehmaj Mentor is the Wolves\' floor general and a key starter at point guard. The Hollywood, Ridgemont native controls tempo, runs the offense, and is a reliable scorer from mid-range. He brings leadership and poise to every game.',
+  '12': 'Gavin Turner is a lengthy wing from Orlando who is in his first year with the Wolves. He provides size on the perimeter and is working to carve out a larger role as he gains experience.',
+  '13': 'Cameron Noel is a dynamic scoring guard and one of the Wolves\' most consistent offensive weapons. The Houston native creates off the dribble, knocks down perimeter shots, and has a knack for coming up big in key moments.',
   '15': 'Micah Morgan is a junior point guard from Bridgeport, Connecticut who provides solid minutes as a backup ball handler. He pushes tempo, competes on defense, and is a steady presence when he\'s on the floor.',
   '20': 'D\'Andre Dues is a long, athletic forward from Houston who brings size and upside to the frontcourt. A freshman, he is developing his game and working to contribute as he adjusts to the college level.',
   '22': 'Elijah Laird is a sophomore shooting guard from Deltona, Ridgemont who provides depth on the wing. He is working to earn consistent minutes with his perimeter shooting and defensive effort.',
-  '41': 'Morgan Brewer is a tough, physical forward from Inglewood, California and a key starter for the Lions. He impacts the game on both ends with his rebounding, scoring, and defensive presence in the frontcourt.',
+  '41': 'Morgan Brewer is a tough, physical forward from Inglewood, California and a key starter for the Wolves. He impacts the game on both ends with his rebounding, scoring, and defensive presence in the frontcourt.',
   '55': 'Aa\'reyon Munir-Jones is an athletic, two-way guard from Chicago who contributes across the stat sheet. He rebounds well above his size, provides scoring punch off the bench, and is one of the team\'s most versatile players.',
 };
 

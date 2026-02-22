@@ -2,7 +2,7 @@
  * KaNeXT Sports Men's Basketball
  * Roster Entries (Step 3)
  * Seasons: 2022-23 through 2025-26
- * Source: NAIA Stats (prestosports.com) + KaNeXT Athletics (fmuathletics.com)
+ * Source: KaNeXT Conference Stats + KaNeXT Athletics (athletics.kanext.edu)
  * Bio fields (height, weight, hometown, previous_school) available for 2025-26 only
  */
 
@@ -812,8 +812,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 215,
     class_year: 'Sophomore',
     hometown: 'Belgrade, Serbia',
-    previous_school: 'Concord Academy NC',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3993',
+    previous_school: 'Concord Academy',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3993',
   },
   {
     player_id: 'kviux4jgkkq8dkz1',
@@ -825,8 +825,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 175,
     class_year: 'Freshman',
     hometown: 'Portland, Ore.',
-    previous_school: 'Western Canada Prep',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3994',
+    previous_school: 'Northwest Prep',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3994',
   },
   {
     player_id: 'eji3q5b4cwdv1uar',
@@ -838,8 +838,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 200,
     class_year: 'Senior',
     hometown: 'Inglewood, Calif.',
-    previous_school: 'Fredreick KC Price III High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3991',
+    previous_school: 'Legacy Prep Academy',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3991',
   },
   {
     player_id: 'mqr628859kskbk9g',
@@ -852,7 +852,7 @@ export const rosterEntries: RosterEntry[] = [
     class_year: 'Senior',
     hometown: 'Jackson, Miss.',
     previous_school: 'Florence High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3989',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3989',
   },
   {
     player_id: 'rnz0zmlozsxndu4k',
@@ -865,7 +865,7 @@ export const rosterEntries: RosterEntry[] = [
     class_year: 'Junior',
     hometown: 'Houston, Texas',
     previous_school: 'Alpha Omega Academy',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3996',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3996',
   },
   {
     player_id: '0rf840w4dnjxjy4c',
@@ -877,8 +877,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 185,
     class_year: 'Sophomore',
     hometown: 'Deltona, Fla.',
-    previous_school: 'Pine Ridge High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=4087',
+    previous_school: 'Westside Prep High School',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=4087',
   },
   {
     player_id: 'nij9a75w5rwls3pq',
@@ -890,8 +890,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 180,
     class_year: 'Freshman',
     hometown: 'Miami, Fla.',
-    previous_school: 'Booker T. Washington High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3990',
+    previous_school: 'Central Prep High School',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3990',
   },
   {
     player_id: 'ts0ado47fll844p1',
@@ -903,8 +903,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 165,
     class_year: 'Sophomore',
     hometown: 'Hollywood, Fla.',
-    previous_school: 'Cooper City High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3983',
+    previous_school: 'Eastside Prep High School',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3983',
   },
   {
     player_id: 'bx8jozbhesobkhyq',
@@ -917,7 +917,7 @@ export const rosterEntries: RosterEntry[] = [
     class_year: 'Senior',
     hometown: 'Miami, Fla.',
     previous_school: 'American High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3984',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3984',
   },
   {
     player_id: 'lqub09hn86ifocc2',
@@ -929,8 +929,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 185,
     class_year: 'Junior',
     hometown: 'Bridgeport, Conn.',
-    previous_school: 'West Nottingham High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3992',
+    previous_school: 'Northfield Academy',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3992',
   },
   {
     player_id: 'e1f6a2s3lgntlqh9',
@@ -942,8 +942,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 185,
     class_year: 'Junior',
     hometown: 'Pompano Beach, Fla.',
-    previous_school: 'Deerfield Beach High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3997',
+    previous_school: 'Lakeside High School',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3997',
   },
   {
     player_id: '4soc3c2n8aeup5m6',
@@ -956,7 +956,7 @@ export const rosterEntries: RosterEntry[] = [
     class_year: 'Junior',
     hometown: 'Chicago, Ill.',
     previous_school: 'Hillcrest High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3988',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3988',
   },
   {
     player_id: '78ue77rxih6q60m0',
@@ -969,7 +969,7 @@ export const rosterEntries: RosterEntry[] = [
     class_year: 'Senior',
     hometown: 'Houston, Texas',
     previous_school: 'College Park High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3985',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3985',
   },
   {
     player_id: 'lkrjjck20w228biq',
@@ -982,7 +982,7 @@ export const rosterEntries: RosterEntry[] = [
     class_year: 'Graduate Student',
     hometown: 'Austin, Texas',
     previous_school: 'Austin High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3987',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3987',
   },
   {
     player_id: 'qaw97eb2xmvn2hwo',
@@ -994,8 +994,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 190,
     class_year: 'Freshman',
     hometown: 'Miami, Fla.',
-    previous_school: 'Miami Northwestern Senior High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=4013',
+    previous_school: 'Central Academy',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=4013',
   },
   {
     player_id: 'n32bjhw03zaajlpk',
@@ -1007,8 +1007,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 200,
     class_year: 'Senior',
     hometown: 'Tallahassee, Fla.',
-    previous_school: 'Amos P. Godby High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=4011',
+    previous_school: 'Gateway High School',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=4011',
   },
   {
     player_id: 'mxuhnci29qm8bns1',
@@ -1020,8 +1020,8 @@ export const rosterEntries: RosterEntry[] = [
     weight: 200,
     class_year: 'Junior',
     hometown: 'Orlando, Fla.',
-    previous_school: 'Windemere High School',
-    player_profile_url: 'https://fmuathletics.com/roster.aspx?rp_id=3995',
+    previous_school: 'Maple Grove High School',
+    player_profile_url: 'https://athletics.kanext.edu/roster.aspx?rp_id=3995',
   },
   {
     player_id: 't6raih5obb1lbbcm',

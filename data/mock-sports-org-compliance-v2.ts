@@ -366,7 +366,7 @@ const holds: ComplianceHold[] = [
     id: 'hold-002',
     type: 'travel',
     impactedPerson: 'Joshua Laird',
-    impactType: 'Missing travel waiver for Keiser away game — cannot board bus',
+    impactType: 'Missing travel waiver for Lakewood away game — cannot board bus',
     severity: 'high',
     owner: 'Tyler Brooks',
     nextStep: 'Collect signed travel waiver from player before Feb 21',
@@ -430,7 +430,7 @@ const deadlines: ComplianceDeadline[] = [
   },
   {
     id: 'dl-002',
-    title: 'Travel Waiver — Keiser Away Game',
+    title: 'Travel Waiver — Lakewood Away Game',
     audience: 'players',
     dueDate: '2026-02-21',
     completionRate: 82,

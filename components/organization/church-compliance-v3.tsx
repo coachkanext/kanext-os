@@ -61,9 +61,9 @@ interface LeadershipTerm {
 }
 
 const LEADERSHIP_TERMS: LeadershipTerm[] = [
-  { id: 'lt1', name: 'Deacon James Mensah', position: 'Deacon Board Chair', termStart: 'Jan 2023', termEnd: 'Dec 2025', renewable: true },
-  { id: 'lt2', name: 'Elder Ruth Adeyemi', position: 'Elder', termStart: 'Jun 2022', termEnd: 'Jun 2025', renewable: true },
-  { id: 'lt3', name: 'Bro. Michael Osei', position: 'T.O.R.C.H. Leader', termStart: 'Sep 2024', termEnd: 'Aug 2026', renewable: false },
+  { id: 'lt1', name: 'Deacon Robert Davis', position: 'Deacon Board Chair', termStart: 'Jan 2023', termEnd: 'Dec 2025', renewable: true },
+  { id: 'lt2', name: 'Elder Mary Thompson', position: 'Elder', termStart: 'Jun 2022', termEnd: 'Jun 2025', renewable: true },
+  { id: 'lt3', name: 'Bro. Michael Scott', position: 'Catalyst Leader', termStart: 'Sep 2024', termEnd: 'Aug 2026', renewable: false },
 ];
 
 interface ChecklistItem {
@@ -104,8 +104,8 @@ interface EmploymentAgreement {
 }
 
 const EMPLOYMENT_AGREEMENTS: EmploymentAgreement[] = [
-  { id: 'ea1', name: 'Dr. Oladipo Carter', position: 'Senior Pastor', startDate: 'Jan 2015', status: 'Active' },
-  { id: 'ea2', name: 'Pastor David Akinola', position: 'Youth Pastor', startDate: 'Aug 2020', status: 'Active' },
+  { id: 'ea1', name: 'Pastor James Carter', position: 'Senior Pastor', startDate: 'Jan 2015', status: 'Active' },
+  { id: 'ea2', name: 'Pastor Ryan Mitchell', position: 'Youth Pastor', startDate: 'Aug 2020', status: 'Active' },
 ];
 
 interface BackgroundCheck {
@@ -117,9 +117,9 @@ interface BackgroundCheck {
 }
 
 const BACKGROUND_CHECKS: BackgroundCheck[] = [
-  { id: 'bg1', name: 'Pastor David Akinola', role: 'Youth Pastor', status: 'Cleared', lastChecked: 'Oct 2024' },
-  { id: 'bg2', name: 'Sister Funke Balogun', role: 'Sheepfold Director', status: 'Cleared', lastChecked: 'Nov 2024' },
-  { id: 'bg3', name: 'Bro. Michael Osei', role: 'T.O.R.C.H. Leader', status: 'Cleared', lastChecked: 'Sep 2024' },
+  { id: 'bg1', name: 'Pastor Ryan Mitchell', role: 'Youth Pastor', status: 'Cleared', lastChecked: 'Oct 2024' },
+  { id: 'bg2', name: 'Sister Angela Davis', role: 'KaNeXT Kids Director', status: 'Cleared', lastChecked: 'Nov 2024' },
+  { id: 'bg3', name: 'Bro. Michael Scott', role: 'Catalyst Leader', status: 'Cleared', lastChecked: 'Sep 2024' },
   { id: 'bg4', name: 'Chioma Eze', role: 'Children\'s Volunteer', status: 'Cleared', lastChecked: 'Oct 2024' },
   { id: 'bg5', name: 'Henry Okafor', role: 'Youth Volunteer', status: 'Cleared', lastChecked: 'Nov 2024' },
   { id: 'bg6', name: 'Esther Nwankwo', role: 'Connect Group Leader', status: 'Cleared', lastChecked: 'Aug 2024' },
@@ -127,7 +127,7 @@ const BACKGROUND_CHECKS: BackgroundCheck[] = [
   { id: 'bg8', name: 'Grace Amponsah', role: 'Children\'s Helper', status: 'Cleared', lastChecked: 'Nov 2024' },
   { id: 'bg9', name: 'Francis Adjei', role: 'Youth Volunteer', status: 'Cleared', lastChecked: 'Sep 2024' },
   { id: 'bg10', name: 'Kezia Boateng', role: 'Children\'s Volunteer', status: 'Cleared', lastChecked: 'Oct 2024' },
-  { id: 'bg11', name: 'Joseph Mensah', role: 'Media/Youth', status: 'Cleared', lastChecked: 'Nov 2024' },
+  { id: 'bg11', name: 'Joseph Davis', role: 'Media/Youth', status: 'Cleared', lastChecked: 'Nov 2024' },
   { id: 'bg12', name: 'Adebayo Oluwaseun', role: 'Youth Volunteer', status: 'Cleared', lastChecked: 'Oct 2024' },
 ];
 
@@ -138,7 +138,7 @@ interface SecurityMember {
 }
 
 const SECURITY_TEAM: SecurityMember[] = [
-  { id: 'st1', name: 'Deacon James Mensah', role: 'Security Lead' },
+  { id: 'st1', name: 'Deacon Robert Davis', role: 'Security Lead' },
   { id: 'st2', name: 'Henry Okafor', role: 'Entrance Monitor' },
   { id: 'st3', name: 'Nnamdi Ugochukwu', role: 'Parking Lot' },
   { id: 'st4', name: 'Francis Adjei', role: 'Interior Patrol' },

@@ -1,6 +1,6 @@
 /**
  * Competition Grid V2 — Orchestrator with 3 sub-pills: Teams | Drivers | Crew
- * Shows the full grid of teams, drivers, and crew for the K-1 Racing League.
+ * Shows the full grid of teams, drivers, and crew for the KaNeXT Racing League.
  */
 
 import React, { useState } from 'react';

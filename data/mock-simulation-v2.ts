@@ -185,12 +185,12 @@ export const MOCK_SEASON_PROJECTION: SeasonProjectionOutput = {
   current_record: { wins: 18, losses: 6 },
   projected_record: { wins: 22, losses: 8 },
   remaining_games: [
-    { opponent: 'Keiser University', date: 'Feb 19', environment: 'away', win_pct: 64, projected_result: 'W' },
-    { opponent: 'Webber International', date: 'Feb 21', environment: 'away', win_pct: 72, projected_result: 'W' },
-    { opponent: 'Southeastern University', date: 'Feb 22', environment: 'home', win_pct: 58, projected_result: 'W' },
-    { opponent: 'Ave Maria University', date: 'Feb 26', environment: 'home', win_pct: 81, projected_result: 'W' },
-    { opponent: 'Warner University', date: 'Mar 1', environment: 'away', win_pct: 55, projected_result: 'L' },
-    { opponent: 'Thomas University', date: 'Mar 4', environment: 'home', win_pct: 74, projected_result: 'W' },
+    { opponent: 'Lakewood University', date: 'Feb 19', environment: 'away', win_pct: 64, projected_result: 'W' },
+    { opponent: 'Pinecrest University', date: 'Feb 21', environment: 'away', win_pct: 72, projected_result: 'W' },
+    { opponent: 'Summit University', date: 'Feb 22', environment: 'home', win_pct: 58, projected_result: 'W' },
+    { opponent: 'Westfield University', date: 'Feb 26', environment: 'home', win_pct: 81, projected_result: 'W' },
+    { opponent: 'Clearwater University', date: 'Mar 1', environment: 'away', win_pct: 55, projected_result: 'L' },
+    { opponent: 'Magnolia University', date: 'Mar 4', environment: 'home', win_pct: 74, projected_result: 'W' },
   ],
   tournament_probability: 68,
   conference_finish: { projected_seed: 3, range: '2-4' },
@@ -200,7 +200,7 @@ export const MOCK_SEASON_PROJECTION: SeasonProjectionOutput = {
     'KaNeXT home record (11-1) anchors projected wins at Wellness Center',
     'Pack line defense ranks top-3 in KaNeXT Conference — sustains low-scoring opponents',
     'Williams + Carter two-man game is conference-best PnR combo (1.14 PPP)',
-    'Road games at Warner and Keiser are swing games — both projected within 3 pts',
+    'Road games at Clearwater and Lakewood are swing games — both projected within 3 pts',
     '3PT% regression risk: if team drops below 33% from deep, projected record falls to 20-10',
     'Bench depth (Blake ankle, Collins slump) is key vulnerability for late-season fatigue',
   ],
@@ -211,18 +211,18 @@ export const SEASON_PROJECTION_DRIVERS: SimDriver[] = [
   { rank: 1, driver: 'Home Court Advantage', explanation: 'KaNeXT is 11-1 at home. Wellness Center provides a 4.8-point home boost per game. 3 of 6 remaining games are at home.', impact_direction: 'positive' },
   { rank: 2, driver: 'Pack Line Defense Consistency', explanation: 'KaNeXT defensive rating has been below 95 in 7 of last 10 games. Sustained defensive effort projects well for remaining schedule.', impact_direction: 'positive' },
   { rank: 3, driver: 'Carter Foul Trouble Risk', explanation: 'Carter has 4+ fouls in 6 games this season. In those games, KaNeXT is 3-3. If foul trouble continues, projected wins drop.', impact_direction: 'negative' },
-  { rank: 4, driver: 'Road Schedule Difficulty', explanation: 'Three road games remain including Keiser and Warner — both projected within 3 points. Road record is 7-5.', impact_direction: 'negative' },
+  { rank: 4, driver: 'Road Schedule Difficulty', explanation: 'Three road games remain including Lakewood and Clearwater — both projected within 3 points. Road record is 7-5.', impact_direction: 'negative' },
   { rank: 5, driver: 'Conference Tournament Seeding', explanation: 'A 3-seed or better guarantees home-court in first round. KaNeXT needs 3 more wins to clinch no worse than 3-seed.', impact_direction: 'positive' },
 ];
 
 // =============================================================================
-// SIMULATION 3: Next Game vs Keiser — Single Game Deep Dive
+// SIMULATION 3: Next Game vs Lakewood — Single Game Deep Dive
 // =============================================================================
 
 export const MOCK_KEISER_GAME: SingleGameOutput = {
   run_id: 'sim-sg-keiser-001',
   team_a: 'KaNeXT Sports',
-  team_b: 'Keiser University',
+  team_b: 'Lakewood University',
   environment: 'away',
   sim_version: 'V2',
   sim_confidence_pct: 78,
@@ -237,9 +237,9 @@ export const MOCK_KEISER_GAME: SingleGameOutput = {
     { factor: 'Opp eFG%', team_a: 45.6, team_b: 48.2, advantage: 'A' },
   ],
   top_drivers: [
-    'Keiser drops on PnR — Williams pull-up at nail is projected 48% (1.12 PPP)',
-    'KaNeXT transition offense vs Keiser transition D creates +5.8 fast break point margin',
-    'Keiser OREB% (31.4%) is their biggest edge — Carter crashes hard, must box out',
+    'Lakewood drops on PnR — Williams pull-up at nail is projected 48% (1.12 PPP)',
+    'KaNeXT transition offense vs Lakewood transition D creates +5.8 fast break point margin',
+    'Lakewood OREB% (31.4%) is their biggest edge — Carter crashes hard, must box out',
     'Away environment reduces KaNeXT win% by ~4.8% based on season road splits',
     'If Williams held under 14 pts, KaNeXT win% drops to 51% — he must be the engine',
   ],
@@ -268,17 +268,17 @@ export const MOCK_BOX_SCORE_KEISER_OPP: BoxScorePlayerLine[] = [
 ];
 
 export const MOCK_KEISER_DRIVERS: SimDriver[] = [
-  { rank: 1, driver: 'Williams PnR Exploitation', explanation: 'Keiser drops on PnR 74% of possessions. Williams pull-up from nail is projected at 48% (1.12 PPP). This is KaNeXT\'s primary advantage.', impact_direction: 'positive' },
-  { rank: 2, driver: 'Transition Offense Edge', explanation: 'Keiser ranks 142nd nationally in transition D. KaNeXT projected for 16.2 fast break points. This is the biggest single-factor edge.', impact_direction: 'positive' },
-  { rank: 3, driver: 'Carter Rim Protection', explanation: 'Carter projects for 3 blocks and 14% additional contested shots at the rim. This suppresses Keiser\'s paint scoring.', impact_direction: 'positive' },
-  { rank: 4, driver: 'Keiser OREB Crashing', explanation: 'Carter grabs 4.2 OREB/game. Keiser is top-20 nationally in OREB%. Projected second-chance points: 11.4 (KaNeXT avg allows 8.2).', impact_direction: 'negative' },
+  { rank: 1, driver: 'Williams PnR Exploitation', explanation: 'Lakewood drops on PnR 74% of possessions. Williams pull-up from nail is projected at 48% (1.12 PPP). This is KaNeXT\'s primary advantage.', impact_direction: 'positive' },
+  { rank: 2, driver: 'Transition Offense Edge', explanation: 'Lakewood ranks 142nd nationally in transition D. KaNeXT projected for 16.2 fast break points. This is the biggest single-factor edge.', impact_direction: 'positive' },
+  { rank: 3, driver: 'Carter Rim Protection', explanation: 'Carter projects for 3 blocks and 14% additional contested shots at the rim. This suppresses Lakewood\'s paint scoring.', impact_direction: 'positive' },
+  { rank: 4, driver: 'Lakewood OREB Crashing', explanation: 'Carter grabs 4.2 OREB/game. Lakewood is top-20 nationally in OREB%. Projected second-chance points: 11.4 (KaNeXT avg allows 8.2).', impact_direction: 'negative' },
   { rank: 5, driver: 'Away Court Factor', explanation: 'KaNeXT road record is 7-5 this season. Away environment projected to reduce KaNeXT efficiency by 2.1% on both ends.', impact_direction: 'negative' },
   { rank: 6, driver: 'Harris ISO Ability', explanation: 'Harris scores 22.4 PPG and can create against pack line hedges. If Harris exceeds 25 pts, KaNeXT win probability drops to 52%.', impact_direction: 'negative' },
 ];
 
 export const MOCK_KEISER_TRACES: InteractionTrace[] = [
   { id: 'tr-k-1', source_doc: 'Motion Read & React vs Drop PnR Coverage', key: 'Williams pull-up at nail', targets_modified: ['eFG%', 'pnr_ppp', 'ast_rate'], raw_delta: 4.2, bounded_delta: 3.6, step_order: 1 },
-  { id: 'tr-k-2', source_doc: 'Pack Line vs Spread Pick & Roll (Keiser)', key: 'Paint protection vs Harris drives', targets_modified: ['rim_fg%', 'ft_rate', 'opp_paint_pts'], raw_delta: -2.8, bounded_delta: -2.4, step_order: 2 },
+  { id: 'tr-k-2', source_doc: 'Pack Line vs Spread Pick & Roll (Lakewood)', key: 'Paint protection vs Harris drives', targets_modified: ['rim_fg%', 'ft_rate', 'opp_paint_pts'], raw_delta: -2.8, bounded_delta: -2.4, step_order: 2 },
   { id: 'tr-k-3', source_doc: 'Transition Offense vs Slow Transition D', key: 'Fast break advantage', targets_modified: ['fast_break_pts', 'pace_factor'], raw_delta: 5.8, bounded_delta: 4.9, step_order: 3 },
   { id: 'tr-k-4', source_doc: 'Rim Protector vs Interior Attack', key: 'Carter contests', targets_modified: ['opp_rim_fg%', 'block_rate', 'opp_paint_pts'], raw_delta: -3.6, bounded_delta: -3.1, step_order: 4 },
   { id: 'tr-k-5', source_doc: 'Offensive Rebounding Rate', key: 'Carter crash OREB', targets_modified: ['opp_oreb%', 'second_chance_pts'], raw_delta: 3.2, bounded_delta: 2.8, step_order: 5 },
@@ -395,9 +395,9 @@ export const SAVED_SIM_RUNS_ALL: SimRun[] = [
   {
     id: 'sim-sg-keiser-001',
     type: 'single_game',
-    label: 'KaNeXT vs Keiser — Feb 19 Preview',
+    label: 'KaNeXT vs Lakewood — Feb 19 Preview',
     team_a: 'KaNeXT Sports',
-    team_b: 'Keiser University',
+    team_b: 'Lakewood University',
     environment: 'away',
     version: 'V2',
     confidence: 78,

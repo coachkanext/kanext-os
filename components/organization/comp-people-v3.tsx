@@ -1,6 +1,6 @@
 /**
  * Competition People V3 — 3-pill ViewBar (Officials | Teams | Broadcast)
- * K-1 Speed League · Commissioner perspective
+ * KaNeXT Motorsport League · Commissioner perspective
  * League officials, grid teams, and broadcast crew.
  */
 import React, { useState, useCallback } from 'react';
@@ -116,7 +116,7 @@ const TEAMS: TeamEntry[] = [
     id: 't6',
     name: 'Grid One Racing',
     category: 'League-Owned',
-    constructor: 'K-1 Speed League',
+    constructor: 'KaNeXT Motorsport League',
     drivers: ['Russell', 'Bearman'],
     crewChief: 'David Sanchez',
     capStatus: 'Compliant',
@@ -321,7 +321,7 @@ function BroadcastView({ colors, accentColor }: { colors: typeof Colors.light; a
         </View>
         <View style={[s.pressPoolDetail, { borderTopColor: colors.border }]}>
           <ThemedText style={[s.pressDetailText, { color: colors.textSecondary }]}>
-            Full press credentials issued for the 2024-25 K-1 Speed League season. Includes trackside access, paddock entry, and post-race conference attendance.
+            Full press credentials issued for the 2024-25 KaNeXT Motorsport League season. Includes trackside access, paddock entry, and post-race conference attendance.
           </ThemedText>
         </View>
       </View>

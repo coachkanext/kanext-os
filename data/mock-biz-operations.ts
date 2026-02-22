@@ -5,7 +5,7 @@
  * Decision Queue, and Ops Feed.
  *
  * All data references KaNeXT entities:
- *   Alex Morgan, KaNeXT, KaNeXT Church, K-1, PBD/Tom,
+ *   Alex Morgan, KaNeXT, KaNeXT Church, KaNeXT, PBD/Tom,
  *   Adriana Ruiz, Marcus Chen, Jordan Hayes, Lisa Park, David Okonkwo.
  */
 
@@ -95,13 +95,13 @@ export const TOP_BLOCKERS: Blocker[] = [
   },
   {
     id: 'blk-3',
-    title: 'K-1 API auth token rotation failing in staging',
+    title: 'KaNeXT API auth token rotation failing in staging',
     owner: 'Adriana Ruiz',
     severity: 'high',
     category: 'Engineering',
     daysBlocked: 3,
     impact:
-      'K-1 integration sprint cannot proceed to QA; race-day telemetry feed blocked for demo.',
+      'KaNeXT integration sprint cannot proceed to QA; race-day telemetry feed blocked for demo.',
   },
   {
     id: 'blk-4',
@@ -162,7 +162,7 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-4',
-    name: 'K-1 Racing Integration',
+    name: 'KaNeXT Racing Integration',
     status: 'active',
     progress: 37,
     owner: 'Adriana Ruiz',
@@ -267,7 +267,7 @@ export const DECISION_QUEUE: DecisionItem[] = [
     deadline: 'Feb 20',
     status: 'pending',
     impact:
-      'Unlocks video pipeline blocker; required for KaNeXT demo reel and K-1 telemetry feed.',
+      'Unlocks video pipeline blocker; required for KaNeXT demo reel and KaNeXT telemetry feed.',
   },
   {
     id: 'dec-2',
@@ -301,13 +301,13 @@ export const DECISION_QUEUE: DecisionItem[] = [
   },
   {
     id: 'dec-5',
-    title: 'K-1 data partnership NDA terms review',
+    title: 'KaNeXT data partnership NDA terms review',
     type: 'review',
     requester: 'Jordan Hayes',
     deadline: 'Feb 26',
     status: 'pending',
     impact:
-      'NDA must be executed before K-1 shares live telemetry API credentials.',
+      'NDA must be executed before KaNeXT shares live telemetry API credentials.',
   },
 ];
 
@@ -318,7 +318,7 @@ export const DECISION_QUEUE: DecisionItem[] = [
 export const OPS_FEED: OpsFeedItem[] = [
   {
     id: 'feed-1',
-    text: 'Adriana Ruiz resolved blocker: K-1 staging auth token rotation — patched retry logic.',
+    text: 'Adriana Ruiz resolved blocker: KaNeXT staging auth token rotation — patched retry logic.',
     timestamp: '12 min ago',
     category: 'blocker_resolved',
   },

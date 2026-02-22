@@ -1,6 +1,6 @@
 /**
  * Education Organization Institutions V2 — Mock Data & Types
- * KaNeXT Church-realistic institution portfolio: KaNeXT, Morris Brown, Edward Waters, Paul Quinn.
+ * KaNeXT Church-realistic institution portfolio: KaNeXT, Morris Brown, Evergreen, Paul Quinn.
  */
 
 // =============================================================================
@@ -275,7 +275,7 @@ const INSTITUTIONS: EduInstitution[] = [
   },
   {
     id: 'inst-004',
-    name: 'Edward Waters University',
+    name: 'Evergreen University',
     shortName: 'EWU',
     location: 'Jacksonville, FL',
     type: 'university',
@@ -371,7 +371,7 @@ const TODAY_ITEMS: TodayItem[] = [
   {
     id: 'today-002',
     title: 'Housing fire inspection — Building C',
-    institution: 'Edward Waters University',
+    institution: 'Evergreen University',
     type: 'inspection',
     priority: 'high',
     due: '2026-02-20',
@@ -416,7 +416,7 @@ const NEXT_MILESTONES: NextMilestone[] = [
   {
     id: 'ms-004',
     title: 'EWU Title III grant report',
-    institution: 'Edward Waters University',
+    institution: 'Evergreen University',
     date: '2026-04-01',
     category: 'Financial',
   },

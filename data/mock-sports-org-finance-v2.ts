@@ -278,7 +278,7 @@ export const BUDGET_BUCKETS: BudgetBucket[] = [
 export const SPEND_TRANSACTIONS: SpendTransaction[] = [
   {
     id: 'st-1',
-    description: 'Charter bus — Ave Maria away game',
+    description: 'Charter bus — Westfield away game',
     amount: 1850,
     category: 'Travel',
     date: '2026-02-14',
@@ -287,7 +287,7 @@ export const SPEND_TRANSACTIONS: SpendTransaction[] = [
   },
   {
     id: 'st-2',
-    description: 'Hotel block — Warner University trip (9 rooms)',
+    description: 'Hotel block — Clearwater University trip (9 rooms)',
     amount: 2340,
     category: 'Travel',
     date: '2026-02-16',
@@ -351,7 +351,7 @@ export const SPEND_TRANSACTIONS: SpendTransaction[] = [
   // ── demo_seed transactions ──────────────────────────────────────────────
   {
     id: 'st-9',
-    description: 'Bus charter — away @ Keiser University',
+    description: 'Bus charter — away @ Lakewood University',
     amount: 3200,
     category: 'Travel',
     date: '2026-02-10',
@@ -361,7 +361,7 @@ export const SPEND_TRANSACTIONS: SpendTransaction[] = [
   },
   {
     id: 'st-10',
-    description: 'Pre-game meals — Thomas University home game',
+    description: 'Pre-game meals — Magnolia University home game',
     amount: 540,
     category: 'Game Day',
     date: '2026-02-12',
@@ -381,7 +381,7 @@ export const SPEND_TRANSACTIONS: SpendTransaction[] = [
   },
   {
     id: 'st-12',
-    description: 'Hotel block — Southeastern University trip (6 rooms)',
+    description: 'Hotel block — Summit University trip (6 rooms)',
     amount: 1680,
     category: 'Travel',
     date: '2026-02-17',
@@ -449,7 +449,7 @@ export const FINANCE_APPROVALS: FinanceApproval[] = [
   // ── demo_seed approvals ─────────────────────────────────────────────────
   {
     id: 'fa-5',
-    title: 'Bus Charter — Away Game @ Webber International',
+    title: 'Bus Charter — Away Game @ Pinecrest University',
     amount: 3200,
     category: 'Travel',
     requestedBy: 'Alicia Washington',
@@ -536,7 +536,7 @@ export const VENDOR_COMMITMENTS: VendorCommitment[] = [
 export const TRIP_COSTS: TripCost[] = [
   {
     id: 'tc-1',
-    tripName: 'Ave Maria University — Feb 15',
+    tripName: 'Westfield University — Feb 15',
     totalCost: 1950,
     lodging: 0,
     airfare: 0,
@@ -546,7 +546,7 @@ export const TRIP_COSTS: TripCost[] = [
   },
   {
     id: 'tc-2',
-    tripName: 'Warner University — Feb 21-22',
+    tripName: 'Clearwater University — Feb 21-22',
     totalCost: 3100,
     lodging: 1200,
     airfare: 0,
@@ -566,7 +566,7 @@ export const TRIP_COSTS: TripCost[] = [
   },
   {
     id: 'tc-4',
-    tripName: 'Keiser University — Feb 10',
+    tripName: 'Lakewood University — Feb 10',
     totalCost: 3200,
     lodging: 0,
     airfare: 0,
@@ -576,7 +576,7 @@ export const TRIP_COSTS: TripCost[] = [
   },
   {
     id: 'tc-5',
-    tripName: 'Southeastern University — Feb 17-18',
+    tripName: 'Summit University — Feb 17-18',
     totalCost: 2880,
     lodging: 1200,
     airfare: 0,

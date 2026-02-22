@@ -384,7 +384,7 @@ export const TEAM_PERSONNEL: Record<string, TeamPerson[]> = {
   ],
   't-4': [
     { id: 'tp-9', name: 'Elena Rossi', initials: 'ER', role: 'Race Strategist', department: 'Racing Ops', since: '2021' },
-    { id: 'tp-10', name: 'Daniel Kim', initials: 'DK', role: 'Performance Engineer', department: 'Engineering', since: '2022' },
+    { id: 'tp-10', name: 'Daniel Kim', initials: 'JC', role: 'Performance Engineer', department: 'Engineering', since: '2022' },
   ],
   't-5': [
     { id: 'tp-11', name: 'Ana Gutierrez', initials: 'AG', role: 'Pit Crew Chief', department: 'Pit Crew', since: '2020' },
@@ -534,17 +534,17 @@ export const RULE_ARTICLES: RuleArticle[] = [
   { id: 'ra-2', section: 'Race Procedures', articleNumber: '1.02', title: 'Pit Lane Entry & Exit', summary: 'Pit lane speed limit is 40 km/h. Karts must enter and exit the pit lane in a safe and controlled manner. Crossing the blend line on pit exit incurs a 5-second time penalty.', category: 'race' },
   { id: 'ra-3', section: 'Race Procedures', articleNumber: '1.03', title: 'Safety Car Deployment', summary: 'When the safety car is deployed, all karts must reduce speed and form a single-file line behind the safety car. Overtaking is prohibited until the safety car enters the pit lane and the green flag is shown.', category: 'race' },
   { id: 'ra-4', section: 'Race Procedures', articleNumber: '1.04', title: 'Race Restart Procedure', summary: 'After a red flag period, the race restarts from the grid in the order of the last completed lap. A 5-minute board is shown before the restart formation lap begins.', category: 'race' },
-  { id: 'ra-5', section: 'Technical Regulations', articleNumber: '2.01', title: 'Engine Specifications', summary: 'All K-1 karts must use the homologated Rotax 125cc engine package. Engine seals must be intact at all times. Modification of the exhaust system, carburetor, or ignition timing is strictly prohibited.', category: 'technical' },
+  { id: 'ra-5', section: 'Technical Regulations', articleNumber: '2.01', title: 'Engine Specifications', summary: 'All KaNeXT karts must use the homologated Rotax 125cc engine package. Engine seals must be intact at all times. Modification of the exhaust system, carburetor, or ignition timing is strictly prohibited.', category: 'technical' },
   { id: 'ra-6', section: 'Technical Regulations', articleNumber: '2.02', title: 'Chassis & Bodywork', summary: 'Chassis must conform to CIK-FIA homologation standards. Maximum kart width: 140 cm. Bodywork must be complete and undamaged at the start of each session. Minimum weight including driver: 170 kg.', category: 'technical' },
-  { id: 'ra-7', section: 'Technical Regulations', articleNumber: '2.03', title: 'Tire Regulations', summary: 'Only K-1 homologated tires (supplied by official partner) may be used. Maximum tire allocation per race weekend: 2 sets dry, 1 set wet. Tire warmers are prohibited.', category: 'technical' },
-  { id: 'ra-8', section: 'Technical Regulations', articleNumber: '2.04', title: 'Data Logging & Telemetry', summary: 'Only the standard K-1 data logger is permitted. Real-time telemetry transmission to the pit wall is allowed during practice and qualifying only. During races, only GPS position data may be transmitted.', category: 'technical' },
+  { id: 'ra-7', section: 'Technical Regulations', articleNumber: '2.03', title: 'Tire Regulations', summary: 'Only KaNeXT homologated tires (supplied by official partner) may be used. Maximum tire allocation per race weekend: 2 sets dry, 1 set wet. Tire warmers are prohibited.', category: 'technical' },
+  { id: 'ra-8', section: 'Technical Regulations', articleNumber: '2.04', title: 'Data Logging & Telemetry', summary: 'Only the standard KaNeXT data logger is permitted. Real-time telemetry transmission to the pit wall is allowed during practice and qualifying only. During races, only GPS position data may be transmitted.', category: 'technical' },
   { id: 'ra-9', section: 'Safety Standards', articleNumber: '3.01', title: 'Personal Protective Equipment', summary: 'All drivers must wear FIA-approved helmet (Snell SA2020 or newer), fire-resistant suit, gloves, and boots at all times on track. Rib protectors are mandatory for all age categories.', category: 'safety' },
   { id: 'ra-10', section: 'Safety Standards', articleNumber: '3.02', title: 'Track Safety Requirements', summary: 'All race circuits must have FIA Grade C minimum certification. Tire barriers at all high-speed corners. Medical team and ambulance on standby within 60 seconds of any track position.', category: 'safety' },
   { id: 'ra-11', section: 'Safety Standards', articleNumber: '3.03', title: 'Incident Response Protocol', summary: 'Any driver involved in a contact incident must be assessed by the medical team before returning to the track. Race control may mandate a pit-lane observation period of up to 3 laps.', category: 'safety' },
-  { id: 'ra-12', section: 'Sporting Regulations', articleNumber: '4.01', title: 'Driver Conduct & Sportsmanship', summary: 'Drivers must conduct themselves in a manner consistent with K-1 values. Deliberate contact, blocking, or weaving on straights is prohibited. Repeated unsportsmanlike behavior may result in championship point deductions.', category: 'sporting' },
+  { id: 'ra-12', section: 'Sporting Regulations', articleNumber: '4.01', title: 'Driver Conduct & Sportsmanship', summary: 'Drivers must conduct themselves in a manner consistent with KaNeXT values. Deliberate contact, blocking, or weaving on straights is prohibited. Repeated unsportsmanlike behavior may result in championship point deductions.', category: 'sporting' },
   { id: 'ra-13', section: 'Sporting Regulations', articleNumber: '4.02', title: 'Track Limits & Defending', summary: 'Drivers must keep at least two wheels within the white track boundary lines at all times. One defensive move per straight is permitted. Pushing another driver off track results in a penalty.', category: 'sporting' },
   { id: 'ra-14', section: 'Sporting Regulations', articleNumber: '4.03', title: 'Championship Eligibility', summary: 'Drivers must compete in a minimum of 8 out of 12 rounds to be eligible for championship classification. Teams must declare their driver lineup no later than 48 hours before each race weekend.', category: 'sporting' },
-  { id: 'ra-15', section: 'Sporting Regulations', articleNumber: '4.04', title: 'Protest & Appeals Process', summary: 'Protests must be filed within 30 minutes of the provisional results being posted. A $200 protest fee is required (refunded if upheld). The K-1 Stewards Panel has final authority on race-day decisions; championship-level appeals go to the K-1 Tribunal.', category: 'sporting' },
+  { id: 'ra-15', section: 'Sporting Regulations', articleNumber: '4.04', title: 'Protest & Appeals Process', summary: 'Protests must be filed within 30 minutes of the provisional results being posted. A $200 protest fee is required (refunded if upheld). The KaNeXT Stewards Panel has final authority on race-day decisions; championship-level appeals go to the KaNeXT Tribunal.', category: 'sporting' },
 ];
 
 // =============================================================================
@@ -612,13 +612,13 @@ export const COMPLIANCE_ENTITIES: ComplianceEntity[] = [
   { id: 'ce-10', workspace: 'cost_cap', name: 'Shadow GP — 2026 Budget', type: 'Budget Report', status: 'pending', teamName: 'Shadow GP', teamColor: '#1D9BF0', lastInspected: 'Jun 15, 2026', expiresAt: 'Sep 30, 2026', notes: 'Q2 report overdue — awaiting submission' },
   { id: 'ce-11', workspace: 'cost_cap', name: 'Nova Speed — 2026 Budget', type: 'Budget Report', status: 'approved', teamName: 'Nova Speed', teamColor: '#1D9BF0', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2026' },
   // Safety Certification
-  { id: 'ce-12', workspace: 'safety_cert', name: 'Portland International Raceway', type: 'Track Cert', status: 'approved', teamName: 'K-1 League', teamColor: '#22C55E', lastInspected: 'Jul 25, 2026', expiresAt: 'Jan 31, 2027' },
-  { id: 'ce-13', workspace: 'safety_cert', name: 'Medical Crew — Portland', type: 'Medical Team', status: 'approved', teamName: 'K-1 League', teamColor: '#22C55E', lastInspected: 'Jul 28, 2026', expiresAt: 'Aug 2, 2026' },
-  { id: 'ce-14', workspace: 'safety_cert', name: 'Fire Suppression Systems', type: 'Safety Equipment', status: 'expired', teamName: 'K-1 League', teamColor: '#22C55E', lastInspected: 'Jun 1, 2026', expiresAt: 'Jul 15, 2026', notes: 'Annual re-certification overdue — scheduled for Jul 29' },
+  { id: 'ce-12', workspace: 'safety_cert', name: 'Portland International Raceway', type: 'Track Cert', status: 'approved', teamName: 'KaNeXT League', teamColor: '#22C55E', lastInspected: 'Jul 25, 2026', expiresAt: 'Jan 31, 2027' },
+  { id: 'ce-13', workspace: 'safety_cert', name: 'Medical Crew — Portland', type: 'Medical Team', status: 'approved', teamName: 'KaNeXT League', teamColor: '#22C55E', lastInspected: 'Jul 28, 2026', expiresAt: 'Aug 2, 2026' },
+  { id: 'ce-14', workspace: 'safety_cert', name: 'Fire Suppression Systems', type: 'Safety Equipment', status: 'expired', teamName: 'KaNeXT League', teamColor: '#22C55E', lastInspected: 'Jun 1, 2026', expiresAt: 'Jul 15, 2026', notes: 'Annual re-certification overdue — scheduled for Jul 29' },
   // Sponsorship
-  { id: 'ce-15', workspace: 'sponsorship', name: 'Nike — Title Sponsor', type: 'Title Sponsor', status: 'approved', teamName: 'K-1 League', teamColor: '#22C55E', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2027' },
-  { id: 'ce-16', workspace: 'sponsorship', name: 'Red Bull — Energy Partner', type: 'Associate Sponsor', status: 'approved', teamName: 'K-1 League', teamColor: '#22C55E', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2026' },
-  { id: 'ce-17', workspace: 'sponsorship', name: 'Pirelli — Tire Supplier', type: 'Technical Partner', status: 'pending', teamName: 'K-1 League', teamColor: '#22C55E', lastInspected: 'Jun 20, 2026', expiresAt: 'Sep 30, 2026', notes: '2027 renewal under negotiation' },
+  { id: 'ce-15', workspace: 'sponsorship', name: 'Nike — Title Sponsor', type: 'Title Sponsor', status: 'approved', teamName: 'KaNeXT League', teamColor: '#22C55E', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2027' },
+  { id: 'ce-16', workspace: 'sponsorship', name: 'Red Bull — Energy Partner', type: 'Associate Sponsor', status: 'approved', teamName: 'KaNeXT League', teamColor: '#22C55E', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2026' },
+  { id: 'ce-17', workspace: 'sponsorship', name: 'Pirelli — Tire Supplier', type: 'Technical Partner', status: 'pending', teamName: 'KaNeXT League', teamColor: '#22C55E', lastInspected: 'Jun 20, 2026', expiresAt: 'Sep 30, 2026', notes: '2027 renewal under negotiation' },
 ];
 
 // =============================================================================
@@ -631,10 +631,10 @@ export const COMPLIANCE_AUDIT_LOG: ComplianceAuditEntry[] = [
   { id: 'al-3', workspace: 'cost_cap', action: 'Submitted', entity: 'Apex Racing — Q2 Budget', actor: 'Marcus Kane (Team Principal)', timestamp: 'Jul 1, 2026 9:00 AM', details: 'Q2 2026 financial report submitted. Total spend: $1.18M of $2.4M cap.' },
   { id: 'al-4', workspace: 'safety_cert', action: 'Approved', entity: 'Portland International Raceway', actor: 'FIA Track Inspector', timestamp: 'Jul 25, 2026 2:00 PM', details: 'All barriers, run-off areas, and medical facilities meet FIA Grade C requirements.' },
   { id: 'al-5', workspace: 'homologation', action: 'Flagged', entity: 'NVA-Bolt B1 Chassis', actor: 'Kenji Tanaka (Chief Inspector)', timestamp: 'Jul 16, 2026 11:45 AM', details: 'Front wing endplate measured 3mm beyond homologation spec. Team given 48h to rectify.' },
-  { id: 'al-6', workspace: 'sponsorship', action: 'Initiated', entity: 'Pirelli — 2027 Renewal', actor: 'K-1 Commercial Dept.', timestamp: 'Jun 20, 2026 3:30 PM', details: 'Renewal discussions started. Current deal expires Sep 30. Terms under review.' },
+  { id: 'al-6', workspace: 'sponsorship', action: 'Initiated', entity: 'Pirelli — 2027 Renewal', actor: 'KaNeXT Commercial Dept.', timestamp: 'Jun 20, 2026 3:30 PM', details: 'Renewal discussions started. Current deal expires Sep 30. Terms under review.' },
   { id: 'al-7', workspace: 'eligibility', action: 'Pending', entity: 'Andre Williams — Medical Recert', actor: 'FIA Medical Panel', timestamp: 'Jul 10, 2026 1:00 PM', details: 'Post-incident medical observation period started. Full recertification required before next race.' },
   { id: 'al-8', workspace: 'safety_cert', action: 'Flagged', entity: 'Fire Suppression Systems', actor: 'Sarah Nakamura (Chief Steward)', timestamp: 'Jul 16, 2026 9:00 AM', details: 'Annual certification expired Jul 15. Re-inspection scheduled for Jul 29.' },
-  { id: 'al-9', workspace: 'cost_cap', action: 'Pending', entity: 'Shadow GP — Q2 Budget', actor: 'K-1 Financial Audit', timestamp: 'Jul 15, 2026 5:00 PM', details: 'Q2 report not received by deadline. Reminder sent to team principal.' },
+  { id: 'al-9', workspace: 'cost_cap', action: 'Pending', entity: 'Shadow GP — Q2 Budget', actor: 'KaNeXT Financial Audit', timestamp: 'Jul 15, 2026 5:00 PM', details: 'Q2 report not received by deadline. Reminder sent to team principal.' },
   { id: 'al-10', workspace: 'eligibility', action: 'Approved', entity: 'Grace Kim — Driver License', actor: 'FIA Medical Panel', timestamp: 'Jul 14, 2026 11:30 AM', details: 'All clearances current. License valid through end of 2026 season.' },
 ];
 
@@ -879,7 +879,7 @@ export const SERIES_LIST: SeriesObject[] = [
 ];
 
 // =============================================================================
-// UNIVERSAL SHEET DATA — Entrants (12 entries for K-1)
+// UNIVERSAL SHEET DATA — Entrants (12 entries for KaNeXT)
 // =============================================================================
 
 export const ENTRANT_LIST: EntrantObject[] = [
@@ -898,7 +898,7 @@ export const ENTRANT_LIST: EntrantObject[] = [
 ];
 
 // =============================================================================
-// UNIVERSAL SHEET DATA — Events (2 under K-1)
+// UNIVERSAL SHEET DATA — Events (2 under KaNeXT)
 // =============================================================================
 
 export const EVENT_LIST: EventObject[] = [
@@ -965,7 +965,7 @@ export const STANDINGS_GATES: StandingsGate[] = [
 ];
 
 // =============================================================================
-// RULES DATA — Categories (K-1 grounded)
+// RULES DATA — Categories (KaNeXT grounded)
 // =============================================================================
 
 export const RULE_CATEGORIES: RuleCategory[] = [

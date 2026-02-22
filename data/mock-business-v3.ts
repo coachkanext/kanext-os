@@ -1,7 +1,7 @@
 /**
  * Mock Business V3 — Shared data layer for the 9-tab Business Home.
  * Entity definitions, shared types, and cross-tab references.
- * All data references KaNeXT entities: Alex, KaNeXT, KaNeXT Church, K-1, PBD/Tom.
+ * All data references KaNeXT entities: Alex, KaNeXT, KaNeXT Church, KaNeXT, PBD/Tom.
  */
 
 import type { BusinessRoleLens } from '@/utils/business-rbac';
@@ -67,7 +67,7 @@ export interface ProofWedge {
 export const PROOF_WEDGES: ProofWedge[] = [
   { id: 'w-fmu', name: 'KaNeXT', orgName: 'KaNeXT Sports', icon: 'sportscourt.fill', color: '#FFFFFF', stat: '$53M–$157M', statLabel: 'Media Value Y1' },
   { id: 'w-iccla', name: 'KaNeXT Church', orgName: "Int'l Church of Christ LA", icon: 'heart.fill', color: '#A1A1AA', stat: '3', statLabel: 'Campuses' },
-  { id: 'w-k1', name: 'K-1', orgName: 'K-1 Racing Series', icon: 'flag.checkered', color: '#EF4444', stat: '14', statLabel: 'Race Season' },
+  { id: 'w-k1', name: 'KaNeXT', orgName: 'KaNeXT Racing Series', icon: 'flag.checkered', color: '#EF4444', stat: '14', statLabel: 'Race Season' },
 ];
 
 // =============================================================================

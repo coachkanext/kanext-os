@@ -130,7 +130,7 @@ const BROWSE_EVENTS: BrowseEvent[] = [
     title: "Men's Retreat: Iron Sharpens Iron",
     date: 'Fri-Sun, Apr 17-19, 2026',
     time: 'Fri 5:00 PM - Sun 12:00 PM',
-    location: 'Pine Ridge Conference Center',
+    location: 'Westside Prep Conference Center',
     ministry: "Men's Ministry",
     type: 'retreat',
     visibility: 'members',

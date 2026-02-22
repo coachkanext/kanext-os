@@ -336,7 +336,7 @@ export default function DonationsScreen() {
           <IconSymbol name="envelope.fill" size={24} color={modeColors.primary} />
           <ThemedText style={styles.contactTitle}>Questions about giving?</ThemedText>
           <ThemedText style={[styles.contactText, { color: colors.textSecondary }]}>
-            Contact our Development Office at athletics@fmu.edu
+            Contact our Development Office at athletics@kanext.edu
           </ThemedText>
         </View>
       </ScrollView>

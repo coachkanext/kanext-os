@@ -1,6 +1,6 @@
 /**
  * Competition Program V3 — 3-pill ViewBar (Identity | Season | Operations)
- * K-1 Speed League · Commissioner perspective
+ * KaNeXT Motorsport League · Commissioner perspective
  * Road-legal supercar/hypercar racing, $10M cap, no prototypes, no BoP.
  */
 import React, { useState, useCallback } from 'react';
@@ -57,7 +57,7 @@ const RACE_STATUS_LABEL: Record<RaceStatus, string> = {
 const GRID_CATEGORIES = [
   { id: 'g1', label: 'OEM Works', desc: 'Factory-backed manufacturer teams' },
   { id: 'g2', label: 'Premier Tuner', desc: 'Elite aftermarket and tuning houses' },
-  { id: 'g3', label: 'League-Owned', desc: 'Operated by K-1 Speed League' },
+  { id: 'g3', label: 'League-Owned', desc: 'Operated by KaNeXT Motorsport League' },
   { id: 'g4', label: 'KaNeXT Works', desc: 'Commissioner flagship entry' },
 ];
 
@@ -156,7 +156,7 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
       {/* League Card */}
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.brandName, { color: colors.text }]}>K-1 Speed League</ThemedText>
+        <ThemedText style={[s.brandName, { color: colors.text }]}>KaNeXT Motorsport League</ThemedText>
         <ThemedText style={[s.brandTagline, { color: colors.textSecondary }]}>
           "The pinnacle of road-legal motorsport"
         </ThemedText>

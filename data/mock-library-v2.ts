@@ -311,7 +311,7 @@ const CHURCH_ITEMS: LibraryItem[] = [
     id: 'cl-2',
     title: 'Book of Romans Study Guide',
     type: 'document',
-    source: 'Pastor Dipo Carter',
+    source: 'Pastor James Carter',
     date: 'Feb 5, 2026',
     thumbnailColor: '#1D9BF0',
     pinned: true,
@@ -371,7 +371,7 @@ const CHURCH_ITEMS: LibraryItem[] = [
     id: 'cl-6',
     title: 'Wednesday Bible Study Notes',
     type: 'document',
-    source: 'Pastor Dipo Carter',
+    source: 'Pastor James Carter',
     date: 'Feb 12, 2026',
     thumbnailColor: '#1D9BF0',
     pinned: false,
@@ -829,7 +829,7 @@ const BUSINESS_COLLECTIONS: LibraryCollection[] = [
 ];
 
 // =============================================================================
-// COMMUNITY (K-1 COMPETITION) LIBRARY DATA
+// COMMUNITY (KaNeXT COMPETITION) LIBRARY DATA
 // =============================================================================
 
 const COMMUNITY_ITEMS: LibraryItem[] = [
@@ -837,7 +837,7 @@ const COMMUNITY_ITEMS: LibraryItem[] = [
     id: 'kl-1',
     title: 'Laguna Seca Race Highlights',
     type: 'video',
-    source: 'K-1 Media',
+    source: 'KaNeXT Media',
     date: 'Feb 8, 2026',
     thumbnailColor: '#EF4444',
     pinned: true,
@@ -899,7 +899,7 @@ const COMMUNITY_ITEMS: LibraryItem[] = [
     id: 'kl-5',
     title: 'Season Awards Ceremony Photos',
     type: 'image',
-    source: 'K-1 Media',
+    source: 'KaNeXT Media',
     date: 'Jan 25, 2026',
     thumbnailColor: '#F59E0B',
     pinned: false,
@@ -926,7 +926,7 @@ const COMMUNITY_ITEMS: LibraryItem[] = [
     id: 'kl-7',
     title: 'Round 3 Full Race Replay',
     type: 'video',
-    source: 'K-1 Media',
+    source: 'KaNeXT Media',
     date: 'Dec 15, 2025',
     thumbnailColor: '#EF4444',
     pinned: false,

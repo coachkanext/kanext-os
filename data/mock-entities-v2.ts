@@ -516,7 +516,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
   },
   {
     id: 'ue-opp-k12-district',
-    name: 'K-12 School District',
+    name: 'KaNeXT2 School District',
     type: 'opportunity',
     scope: 'KaNeXT \u2192 Sales',
     owner: 'Marcus Williams',
@@ -549,7 +549,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
   },
   {
     id: 'ue-cp-naia',
-    name: 'NAIA Conference Office',
+    name: 'NAA Conference Office',
     type: 'client-partner',
     scope: 'KaNeXT \u2192 Sales',
     owner: 'Marcus Williams',
@@ -812,7 +812,7 @@ export const ENTITY_AUDIT_LOG: EntityAuditEntry[] = [
   {
     id: 'audit-08',
     entityId: 'ue-cp-naia',
-    entityName: 'NAIA Conference Office',
+    entityName: 'NAA Conference Office',
     action: 'Status changed to Active',
     actor: 'Marcus Williams',
     timestamp: '1d ago',

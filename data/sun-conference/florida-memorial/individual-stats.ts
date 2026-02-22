@@ -2,7 +2,7 @@
  * KaNeXT Sports Men's Basketball
  * Individual Season Stats (Step 4B)
  * Seasons: 2022-23 through 2025-26
- * Source: NAIA Stats (prestosports.com)
+ * Source: KaNeXT Conference Stats
  */
 
 import type { IndividualSeasonStats } from '../schema';

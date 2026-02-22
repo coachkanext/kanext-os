@@ -280,21 +280,21 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
 // === Staff ===
 
 const STAFF_MEMBERS: StaffMember[] = [
-  { id: 'st-1', name: 'Alex Morgan', role: 'Commissioner', department: 'Executive', email: 'sammy@fmuathletics.org', phone: '(555) 100-0001', status: 'active', avatar: 'SK', hireDate: '2021-01-15' },
-  { id: 'st-2', name: 'Tom Bradley', role: 'Tournament Director', department: 'Operations', email: 'tom.bradley@fmuathletics.org', phone: '(555) 100-0002', status: 'active', avatar: 'TB', hireDate: '2021-03-22' },
-  { id: 'st-3', name: 'Rachel Kim', role: 'Deputy Commissioner', department: 'Executive', email: 'rachel.kim@fmuathletics.org', phone: '(555) 100-0003', status: 'active', avatar: 'RK', hireDate: '2021-06-10' },
-  { id: 'st-4', name: 'David Chen', role: 'Director of Officiating', department: 'Officiating', email: 'david.chen@fmuathletics.org', phone: '(555) 100-0004', status: 'active', avatar: 'DC', hireDate: '2022-01-08' },
-  { id: 'st-5', name: 'Angela Torres', role: 'Credentials Manager', department: 'Operations', email: 'angela.torres@fmuathletics.org', phone: '(555) 100-0005', status: 'active', avatar: 'AT', hireDate: '2022-04-15' },
-  { id: 'st-6', name: 'Brian Mitchell', role: 'Volunteer Coordinator', department: 'Community', email: 'brian.mitchell@fmuathletics.org', phone: '(555) 100-0006', status: 'active', avatar: 'BM', hireDate: '2022-08-01' },
-  { id: 'st-7', name: 'Linda Nguyen', role: 'Communications Director', department: 'Communications', email: 'linda.nguyen@fmuathletics.org', phone: '(555) 100-0007', status: 'active', avatar: 'LN', hireDate: '2022-09-12' },
-  { id: 'st-8', name: 'James Wright', role: 'Facility Manager', department: 'Operations', email: 'james.wright@fmuathletics.org', phone: '(555) 100-0008', status: 'active', avatar: 'JW', hireDate: '2023-01-20' },
-  { id: 'st-9', name: 'Sandra Lopez', role: 'Finance Officer', department: 'Finance', email: 'sandra.lopez@fmuathletics.org', phone: '(555) 100-0009', status: 'active', avatar: 'SL', hireDate: '2023-03-05' },
-  { id: 'st-10', name: 'Michael Brown', role: 'Safety Director', department: 'Compliance', email: 'michael.brown@fmuathletics.org', phone: '(555) 100-0010', status: 'active', avatar: 'MB', hireDate: '2023-06-18' },
-  { id: 'st-11', name: 'Karen Davis', role: 'IT Coordinator', department: 'Technology', email: 'karen.davis@fmuathletics.org', phone: '(555) 100-0011', status: 'on-leave', avatar: 'KD', hireDate: '2023-09-01' },
-  { id: 'st-12', name: 'Robert Garcia', role: 'Media Relations', department: 'Communications', email: 'robert.garcia@fmuathletics.org', phone: '(555) 100-0012', status: 'active', avatar: 'RG', hireDate: '2023-11-10' },
-  { id: 'st-13', name: 'Patricia Wilson', role: 'Scheduling Coordinator', department: 'Operations', email: 'patricia.wilson@fmuathletics.org', phone: '(555) 100-0013', status: 'active', avatar: 'PW', hireDate: '2024-01-15' },
-  { id: 'st-14', name: 'Chris Anderson', role: 'Logistics Manager', department: 'Operations', email: 'chris.anderson@fmuathletics.org', phone: '(555) 100-0014', status: 'inactive', avatar: 'CA', hireDate: '2022-05-20' },
-  { id: 'st-15', name: 'Natalie Reed', role: 'Event Services Lead', department: 'Operations', email: 'natalie.reed@fmuathletics.org', phone: '(555) 100-0015', status: 'active', avatar: 'NR', hireDate: '2024-04-01' },
+  { id: 'st-1', name: 'Alex Morgan', role: 'Commissioner', department: 'Executive', email: 'sammy@kanext.io', phone: '(555) 100-0001', status: 'active', avatar: 'SK', hireDate: '2021-01-15' },
+  { id: 'st-2', name: 'Tom Bradley', role: 'Tournament Director', department: 'Operations', email: 'tom.bradley@kanext.io', phone: '(555) 100-0002', status: 'active', avatar: 'TB', hireDate: '2021-03-22' },
+  { id: 'st-3', name: 'Rachel Kim', role: 'Deputy Commissioner', department: 'Executive', email: 'rachel.kim@kanext.io', phone: '(555) 100-0003', status: 'active', avatar: 'RK', hireDate: '2021-06-10' },
+  { id: 'st-4', name: 'David Chen', role: 'Director of Officiating', department: 'Officiating', email: 'david.chen@kanext.io', phone: '(555) 100-0004', status: 'active', avatar: 'DC', hireDate: '2022-01-08' },
+  { id: 'st-5', name: 'Angela Torres', role: 'Credentials Manager', department: 'Operations', email: 'angela.torres@kanext.io', phone: '(555) 100-0005', status: 'active', avatar: 'AT', hireDate: '2022-04-15' },
+  { id: 'st-6', name: 'Brian Mitchell', role: 'Volunteer Coordinator', department: 'Community', email: 'brian.mitchell@kanext.io', phone: '(555) 100-0006', status: 'active', avatar: 'BM', hireDate: '2022-08-01' },
+  { id: 'st-7', name: 'Linda Nguyen', role: 'Communications Director', department: 'Communications', email: 'linda.nguyen@kanext.io', phone: '(555) 100-0007', status: 'active', avatar: 'LN', hireDate: '2022-09-12' },
+  { id: 'st-8', name: 'James Wright', role: 'Facility Manager', department: 'Operations', email: 'james.wright@kanext.io', phone: '(555) 100-0008', status: 'active', avatar: 'JW', hireDate: '2023-01-20' },
+  { id: 'st-9', name: 'Sandra Lopez', role: 'Finance Officer', department: 'Finance', email: 'sandra.lopez@kanext.io', phone: '(555) 100-0009', status: 'active', avatar: 'SL', hireDate: '2023-03-05' },
+  { id: 'st-10', name: 'Michael Brown', role: 'Safety Director', department: 'Compliance', email: 'michael.brown@kanext.io', phone: '(555) 100-0010', status: 'active', avatar: 'MB', hireDate: '2023-06-18' },
+  { id: 'st-11', name: 'Karen Davis', role: 'IT Coordinator', department: 'Technology', email: 'karen.davis@kanext.io', phone: '(555) 100-0011', status: 'on-leave', avatar: 'KD', hireDate: '2023-09-01' },
+  { id: 'st-12', name: 'Robert Garcia', role: 'Media Relations', department: 'Communications', email: 'robert.garcia@kanext.io', phone: '(555) 100-0012', status: 'active', avatar: 'RG', hireDate: '2023-11-10' },
+  { id: 'st-13', name: 'Patricia Wilson', role: 'Scheduling Coordinator', department: 'Operations', email: 'patricia.wilson@kanext.io', phone: '(555) 100-0013', status: 'active', avatar: 'PW', hireDate: '2024-01-15' },
+  { id: 'st-14', name: 'Chris Anderson', role: 'Logistics Manager', department: 'Operations', email: 'chris.anderson@kanext.io', phone: '(555) 100-0014', status: 'inactive', avatar: 'CA', hireDate: '2022-05-20' },
+  { id: 'st-15', name: 'Natalie Reed', role: 'Event Services Lead', department: 'Operations', email: 'natalie.reed@kanext.io', phone: '(555) 100-0015', status: 'active', avatar: 'NR', hireDate: '2024-04-01' },
 ];
 
 // === Officials ===

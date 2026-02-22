@@ -1,6 +1,6 @@
 /**
  * Sports Ledger V3 — 3-pill ViewBar (Transactions | Pending | Receipts)
- * KaNeXT Men's Basketball · NAIA KaNeXT Conference
+ * KaNeXT Men's Basketball · NAA KaNeXT Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback, useMemo } from 'react';

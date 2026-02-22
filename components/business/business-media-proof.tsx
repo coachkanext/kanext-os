@@ -300,7 +300,7 @@ function OverviewContent({ role }: { role: BusinessRoleLens }) {
     { id: 'ra-2', text: 'KaNeXT Highlight Reel playlist updated with 3 new clips', time: '4h ago' },
     { id: 'ra-3', text: 'Case Study "KaNeXT Athletics" published', time: '1d ago' },
     { id: 'ra-4', text: 'Board Pack Media link shared with PBD/Tom', time: '2d ago' },
-    { id: 'ra-5', text: 'K-1 Race footage uploaded by Adriana Ruiz', time: '3d ago' },
+    { id: 'ra-5', text: 'KaNeXT Race footage uploaded by Adriana Ruiz', time: '3d ago' },
   ];
 
   // B3 sees fewer activity items
@@ -610,7 +610,7 @@ function ProofPacksContent({ role }: { role: BusinessRoleLens }) {
 
 /** Mock playlist items for sequential display */
 const PLAYLIST_ITEMS: Record<string, string[]> = {
-  'pl-1': ['KaNeXT vs Tuskegee — Top Plays', 'KaNeXT vs Howard — Broadcast Clip', 'Conference Semifinal Highlights', 'Post-Game Interviews Compilation'],
+  'pl-1': ['KaNeXT vs Heritage — Top Plays', 'KaNeXT vs Howard — Broadcast Clip', 'Conference Semifinal Highlights', 'Post-Game Interviews Compilation'],
   'pl-2': ['MVP Demo — Aug 2025', 'V1 Launch Recording', 'V1.5 Feature Walkthrough', 'OS v2 Full Demo'],
   'pl-3': ['Round 1 Recap + Telemetry', 'Round 2 Highlights', 'Round 3 Driver Interview', 'Round 5 Race Analysis'],
   'pl-4': ['Jan 5 Sunday Service', 'Jan 12 Campus Event', 'Jan 19 Sunday Service', 'Special Program — MLK Day'],
@@ -826,7 +826,7 @@ function PressContent() {
 const RIGHTS_SOURCE: Record<string, string> = {
   'ri-1': 'KaNeXT Athletics Department — Athletic Director office',
   'ri-2': 'KaNeXT Church Senior Pastor — Media Ministry agreement',
-  'ri-3': 'K-1 Racing Series — Partnership contract, Exhibit B',
+  'ri-3': 'KaNeXT Racing Series — Partnership contract, Exhibit B',
   'ri-4': 'KaNeXT Inc. internal — Brand Guidelines v2.0',
 };
 

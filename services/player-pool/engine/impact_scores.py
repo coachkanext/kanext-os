@@ -167,30 +167,30 @@ def compute_tgis(
 # Offensive system impact on cluster importance (adjustment multipliers)
 # Applied after base cluster scoring to produce system-adjusted KR.
 OFF_SYSTEM_MODIFIERS: dict[str, dict[str, float]] = {
-    "spread_pick_and_roll":   {"shooting": 1.10, "finishing": 1.05, "playmaking": 1.15, "perimeter_defense": 1.0, "interior_defense": 0.95, "rebounding": 0.90, "frame": 0.95},
-    "five_out_motion":        {"shooting": 1.15, "finishing": 0.95, "playmaking": 1.10, "perimeter_defense": 1.0, "interior_defense": 0.90, "rebounding": 0.90, "frame": 0.95},
-    "motion_read_react":      {"shooting": 1.05, "finishing": 1.00, "playmaking": 1.10, "perimeter_defense": 1.0, "interior_defense": 1.00, "rebounding": 0.95, "frame": 1.00},
-    "pace_and_space":         {"shooting": 1.10, "finishing": 1.05, "playmaking": 1.05, "perimeter_defense": 0.95, "interior_defense": 0.90, "rebounding": 0.95, "frame": 1.05},
-    "dribble_drive":          {"shooting": 0.95, "finishing": 1.15, "playmaking": 1.10, "perimeter_defense": 1.0, "interior_defense": 0.95, "rebounding": 0.95, "frame": 1.05},
-    "princeton":              {"shooting": 1.05, "finishing": 1.00, "playmaking": 1.15, "perimeter_defense": 1.0, "interior_defense": 1.00, "rebounding": 0.95, "frame": 0.95},
-    "flex":                   {"shooting": 1.00, "finishing": 1.05, "playmaking": 1.05, "perimeter_defense": 1.0, "interior_defense": 1.00, "rebounding": 1.00, "frame": 1.00},
-    "swing":                  {"shooting": 1.05, "finishing": 1.00, "playmaking": 1.05, "perimeter_defense": 1.0, "interior_defense": 1.00, "rebounding": 0.95, "frame": 1.00},
-    "post_centric_inside_out":{"shooting": 0.90, "finishing": 1.15, "playmaking": 0.95, "perimeter_defense": 1.0, "interior_defense": 1.10, "rebounding": 1.10, "frame": 1.10},
-    "moreyball":              {"shooting": 1.15, "finishing": 1.10, "playmaking": 1.05, "perimeter_defense": 0.95, "interior_defense": 0.85, "rebounding": 0.85, "frame": 0.95},
-    "heliocentric":           {"shooting": 1.00, "finishing": 1.05, "playmaking": 1.15, "perimeter_defense": 1.0, "interior_defense": 0.95, "rebounding": 0.90, "frame": 1.00},
+    "spread_pick_and_roll":   {"shooting": 1.10, "finishing": 1.05, "playmaking": 1.15, "on_ball_defense": 1.0, "team_defense": 0.95, "rebounding": 0.90, "physical": 0.95},
+    "five_out_motion":        {"shooting": 1.15, "finishing": 0.95, "playmaking": 1.10, "on_ball_defense": 1.0, "team_defense": 0.90, "rebounding": 0.90, "physical": 0.95},
+    "motion_read_react":      {"shooting": 1.05, "finishing": 1.00, "playmaking": 1.10, "on_ball_defense": 1.0, "team_defense": 1.00, "rebounding": 0.95, "physical": 1.00},
+    "pace_and_space":         {"shooting": 1.10, "finishing": 1.05, "playmaking": 1.05, "on_ball_defense": 0.95, "team_defense": 0.90, "rebounding": 0.95, "physical": 1.05},
+    "dribble_drive":          {"shooting": 0.95, "finishing": 1.15, "playmaking": 1.10, "on_ball_defense": 1.0, "team_defense": 0.95, "rebounding": 0.95, "physical": 1.05},
+    "princeton":              {"shooting": 1.05, "finishing": 1.00, "playmaking": 1.15, "on_ball_defense": 1.0, "team_defense": 1.00, "rebounding": 0.95, "physical": 0.95},
+    "flex":                   {"shooting": 1.00, "finishing": 1.05, "playmaking": 1.05, "on_ball_defense": 1.0, "team_defense": 1.00, "rebounding": 1.00, "physical": 1.00},
+    "swing":                  {"shooting": 1.05, "finishing": 1.00, "playmaking": 1.05, "on_ball_defense": 1.0, "team_defense": 1.00, "rebounding": 0.95, "physical": 1.00},
+    "post_centric_inside_out":{"shooting": 0.90, "finishing": 1.15, "playmaking": 0.95, "on_ball_defense": 1.0, "team_defense": 1.10, "rebounding": 1.10, "physical": 1.10},
+    "moreyball":              {"shooting": 1.15, "finishing": 1.10, "playmaking": 1.05, "on_ball_defense": 0.95, "team_defense": 0.85, "rebounding": 0.85, "physical": 0.95},
+    "heliocentric":           {"shooting": 1.00, "finishing": 1.05, "playmaking": 1.15, "on_ball_defense": 1.0, "team_defense": 0.95, "rebounding": 0.90, "physical": 1.00},
 }
 
 # Defensive system impact on cluster importance
 DEF_SYSTEM_MODIFIERS: dict[str, dict[str, float]] = {
-    "containment_man":        {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "perimeter_defense": 1.05, "interior_defense": 1.00, "rebounding": 1.00, "frame": 1.05},
-    "pack_line":              {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "perimeter_defense": 0.95, "interior_defense": 1.15, "rebounding": 1.05, "frame": 1.05},
-    "pressure_man_denial":    {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "perimeter_defense": 1.15, "interior_defense": 0.95, "rebounding": 0.95, "frame": 1.10},
-    "switch_everything":      {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "perimeter_defense": 1.10, "interior_defense": 1.05, "rebounding": 0.95, "frame": 1.15},
-    "ice_no_middle":          {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "perimeter_defense": 1.05, "interior_defense": 1.10, "rebounding": 1.00, "frame": 1.05},
-    "zone_structured":        {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "perimeter_defense": 0.90, "interior_defense": 1.10, "rebounding": 1.10, "frame": 0.95},
-    "matchup_zone_hybrid":    {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "perimeter_defense": 1.00, "interior_defense": 1.05, "rebounding": 1.05, "frame": 1.05},
-    "press_pressure_defense": {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "perimeter_defense": 1.10, "interior_defense": 0.90, "rebounding": 0.90, "frame": 1.15},
-    "junk_special":           {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "perimeter_defense": 1.00, "interior_defense": 1.00, "rebounding": 1.00, "frame": 1.00},
+    "containment_man":        {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "on_ball_defense": 1.05, "team_defense": 1.00, "rebounding": 1.00, "physical": 1.05},
+    "pack_line":              {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "on_ball_defense": 0.95, "team_defense": 1.15, "rebounding": 1.05, "physical": 1.05},
+    "pressure_man_denial":    {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "on_ball_defense": 1.15, "team_defense": 0.95, "rebounding": 0.95, "physical": 1.10},
+    "switch_everything":      {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "on_ball_defense": 1.10, "team_defense": 1.05, "rebounding": 0.95, "physical": 1.15},
+    "ice_no_middle":          {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "on_ball_defense": 1.05, "team_defense": 1.10, "rebounding": 1.00, "physical": 1.05},
+    "zone_structured":        {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "on_ball_defense": 0.90, "team_defense": 1.10, "rebounding": 1.10, "physical": 0.95},
+    "matchup_zone_hybrid":    {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "on_ball_defense": 1.00, "team_defense": 1.05, "rebounding": 1.05, "physical": 1.05},
+    "press_pressure_defense": {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "on_ball_defense": 1.10, "team_defense": 0.90, "rebounding": 0.90, "physical": 1.15},
+    "junk_special":           {"shooting": 1.0, "finishing": 1.0, "playmaking": 1.0, "on_ball_defense": 1.00, "team_defense": 1.00, "rebounding": 1.00, "physical": 1.00},
 }
 
 

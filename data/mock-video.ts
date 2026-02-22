@@ -698,7 +698,7 @@ const CHURCH_VIDEO_CLIPS: VideoClip[] = [
   { id: 'cvc-5', title: 'Baptism Celebration — 7 New Believers', gameId: 'cvg-5', type: 'highlight', duration: 540, source: 'Live Stream', tags: ['Baptism', 'Celebration'], thumbnailColor: '#0B0F14' },
   { id: 'cvc-6', title: 'Choir Rehearsal — Easter Prep', type: 'drill', duration: 1800, source: 'Recording', tags: ['Choir', 'Rehearsal'], thumbnailColor: '#0B0F14' },
   { id: 'cvc-7', title: 'Outreach Saturday — Community Service', type: 'highlight', duration: 420, source: 'YouTube', tags: ['Outreach', 'Community'], thumbnailColor: '#0B0F14' },
-  { id: 'cvc-8', title: 'Pastor Dipo — Leadership Teaching', type: 'breakdown', duration: 1800, source: 'Recording', tags: ['Leadership', 'Teaching'], thumbnailColor: '#0B0F14' },
+  { id: 'cvc-8', title: 'Pastor James — Leadership Teaching', type: 'breakdown', duration: 1800, source: 'Recording', tags: ['Leadership', 'Teaching'], thumbnailColor: '#0B0F14' },
   { id: 'cvc-9', title: 'Worship Team — Sound Check & Setup', type: 'drill', duration: 900, source: 'Recording', tags: ['Production', 'Setup'], thumbnailColor: '#0B0F14' },
   { id: 'cvc-10', title: 'Guest Speaker — Dr. Olu Adeyemi', type: 'scout', duration: 2700, source: 'Live Stream', tags: ['Guest', 'Conference'], thumbnailColor: '#0B0F14' },
 ];
@@ -712,7 +712,7 @@ const CHURCH_SCOUT_PACKS: ScoutPack[] = [
 ];
 
 const CHURCH_PLAYER_CHANNELS: PlayerChannel[] = [
-  { id: 'cpc-1', name: 'Pastor Dipo Carter', number: '', position: 'Senior Pastor', clipCount: 42, avatarInitials: 'DK' },
+  { id: 'cpc-1', name: 'Pastor James Carter', number: '', position: 'Senior Pastor', clipCount: 42, avatarInitials: 'DK' },
   { id: 'cpc-2', name: 'Worship Team', number: '', position: 'Music Ministry', clipCount: 28, avatarInitials: 'WT' },
   { id: 'cpc-3', name: 'Youth Ministry', number: '', position: 'Youth Director', clipCount: 18, avatarInitials: 'YM' },
   { id: 'cpc-4', name: 'Deacon Board', number: '', position: 'Leadership', clipCount: 12, avatarInitials: 'DB' },
@@ -728,7 +728,7 @@ const CHURCH_REELS: Reel[] = [
   { id: 'creel-3', title: 'Youth Retreat Moments', caption: '3 days of fellowship and growth. These kids are on fire.', duration: 35, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Church Youth', tags: ['Youth', 'Retreat'], source: 'YouTube', likes: 287, saves: 65, createdAt: '2026-02-08' },
   { id: 'creel-4', title: 'Baptism Sunday — 7 New Believers', caption: 'Heaven is rejoicing. Welcome to the family of faith.', duration: 50, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Church', tags: ['Baptism', 'Celebration'], source: 'Live Stream', likes: 523, saves: 134, createdAt: '2026-02-01' },
   { id: 'creel-5', title: 'Outreach Saturday Recap', caption: '200+ families served. This is what the church is for.', duration: 28, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Church', tags: ['Outreach', 'Community'], source: 'YouTube', likes: 198, saves: 45, createdAt: '2026-02-14' },
-  { id: 'creel-6', title: 'Pastor Dipo — "Don\'t Quit"', caption: 'One minute that might change your week. Keep going.', duration: 60, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Church', tags: ['Encouragement', 'Sermon'], source: 'Live Stream', likes: 612, saves: 189, createdAt: '2026-01-25' },
+  { id: 'creel-6', title: 'Pastor James — "Don\'t Quit"', caption: 'One minute that might change your week. Keep going.', duration: 60, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Church', tags: ['Encouragement', 'Sermon'], source: 'Live Stream', likes: 612, saves: 189, createdAt: '2026-01-25' },
   { id: 'creel-7', title: 'Choir Rehearsal BTS', caption: 'Easter prep is underway. Something special is coming.', duration: 22, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Church', tags: ['BTS', 'Choir'], source: 'Recording', likes: 145, saves: 32, createdAt: '2026-02-12' },
   { id: 'creel-8', title: 'Prayer Night Atmosphere', caption: 'When the saints pray, things shift. Join us next Thursday.', duration: 30, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Church', tags: ['Prayer', 'Worship'], source: 'Live Stream', likes: 234, saves: 56, createdAt: '2026-01-22' },
 ];
@@ -792,12 +792,12 @@ const EDUCATION_PLAYER_CHANNELS: PlayerChannel[] = [
 const EDUCATION_REELS: Reel[] = [
   { id: 'ereel-1', title: 'Solo Flight Day', caption: 'HBCU aviation excellence. Our cadets took to the sky today.', duration: 45, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Aviation', tags: ['Aviation', 'Achievement'], source: 'YouTube', likes: 1240, saves: 312, createdAt: '2026-02-07' },
   { id: 'ereel-2', title: 'Homecoming 2026 — Best Moments', caption: 'What a week. KaNeXT showed out. Every single moment.', duration: 55, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT', tags: ['Homecoming', 'Culture'], source: 'YouTube', likes: 2340, saves: 567, createdAt: '2026-02-10' },
-  { id: 'ereel-3', title: 'Lions Basketball Highlights', caption: '16-8 and counting. KaNeXT Conference contenders.', duration: 38, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Athletics', tags: ['Athletics', 'Basketball'], source: 'YouTube', likes: 890, saves: 198, createdAt: '2026-02-13' },
+  { id: 'ereel-3', title: 'Wolves Basketball Highlights', caption: '16-8 and counting. KaNeXT Conference contenders.', duration: 38, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Athletics', tags: ['Athletics', 'Basketball'], source: 'YouTube', likes: 890, saves: 198, createdAt: '2026-02-13' },
   { id: 'ereel-4', title: 'Dean\'s List Walk', caption: '142 students honored. Academic excellence on display.', duration: 30, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT', tags: ['Academic', 'Ceremony'], source: 'Recording', likes: 456, saves: 89, createdAt: '2026-02-03' },
   { id: 'ereel-5', title: 'New Science Building Tour', caption: 'State-of-the-art labs. The future is being built here.', duration: 42, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Campus', tags: ['Facilities', 'Tour'], source: 'YouTube', likes: 678, saves: 145, createdAt: '2026-01-28' },
   { id: 'ereel-6', title: 'Student Talent Show Highlights', caption: 'The talent on this campus is UNREAL.', duration: 50, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT', tags: ['Culture', 'Talent'], source: 'YouTube', likes: 1560, saves: 378, createdAt: '2026-01-24' },
   { id: 'ereel-7', title: 'Research Spotlight — AI Lab', caption: 'Student research making real-world impact.', duration: 35, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT Research', tags: ['Research', 'STEM'], source: 'Recording', likes: 345, saves: 78, createdAt: '2026-02-05' },
-  { id: 'ereel-8', title: 'Campus Life — Day in the Life', caption: 'What a day at KaNeXT looks like. Miami Gardens, baby.', duration: 48, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT', tags: ['Campus', 'Culture'], source: 'YouTube', likes: 980, saves: 234, createdAt: '2026-01-20' },
+  { id: 'ereel-8', title: 'Campus Life — Day in the Life', caption: 'What a day at KaNeXT looks like. Nashville, baby.', duration: 48, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT', tags: ['Campus', 'Culture'], source: 'YouTube', likes: 980, saves: 234, createdAt: '2026-01-20' },
 ];
 
 const EDUCATION_WATCH_HISTORY: WatchHistoryItem[] = [
@@ -919,18 +919,18 @@ const COMMUNITY_PLAYER_CHANNELS: PlayerChannel[] = [
   { id: 'kpc-4', name: 'Yuki Tanaka', number: '33', position: 'Rival Driver', clipCount: 18, avatarInitials: 'YT' },
   { id: 'kpc-5', name: 'Race Control', number: '', position: 'Officials', clipCount: 15, avatarInitials: 'RC' },
   { id: 'kpc-6', name: 'Pit Crew', number: '', position: 'Team', clipCount: 22, avatarInitials: 'PC' },
-  { id: 'kpc-7', name: 'K-1 Media', number: '', position: 'Broadcast', clipCount: 35, avatarInitials: 'K1' },
+  { id: 'kpc-7', name: 'KaNeXT Media', number: '', position: 'Broadcast', clipCount: 35, avatarInitials: 'K1' },
   { id: 'kpc-8', name: 'Strategy Room', number: '', position: 'Engineering', clipCount: 28, avatarInitials: 'SR' },
 ];
 
 const COMMUNITY_REELS: Reel[] = [
   { id: 'kreel-1', title: 'Kane — Qualifying Onboard', caption: 'Pole position. 1:23.456. Track record. Listen to that engine.', duration: 42, thumbnailColor: '#0B0F14', playerTag: { name: 'Marcus Kane', number: '1' }, teamTag: 'Apex Racing', tags: ['Qualifying', 'Onboard'], source: 'Onboard', likes: 2340, saves: 567, createdAt: '2026-02-13' },
-  { id: 'kreel-2', title: 'Race 6 — Last 5 Laps', caption: '2.4 second gap. Kane controlled the race from start to finish.', duration: 58, thumbnailColor: '#0B0F14', teamTag: 'K-1', tags: ['Race', 'Highlights'], source: 'Broadcast', likes: 3450, saves: 789, createdAt: '2026-02-14' },
+  { id: 'kreel-2', title: 'Race 6 — Last 5 Laps', caption: '2.4 second gap. Kane controlled the race from start to finish.', duration: 58, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT', tags: ['Race', 'Highlights'], source: 'Broadcast', likes: 3450, saves: 789, createdAt: '2026-02-14' },
   { id: 'kreel-3', title: 'Pit Stop Perfection', caption: '2.8 seconds. Clean left, clean right. Textbook execution.', duration: 25, thumbnailColor: '#0B0F14', teamTag: 'Apex Racing', tags: ['Pit Stop', 'Team'], source: 'Broadcast', likes: 1890, saves: 412, createdAt: '2026-02-14' },
-  { id: 'kreel-4', title: 'Podium Champagne', caption: 'P1 Kane. P2 Reeves. P3 Tanaka. The champagne was earned.', duration: 30, thumbnailColor: '#0B0F14', teamTag: 'K-1', tags: ['Podium', 'Celebration'], source: 'Broadcast', likes: 2670, saves: 598, createdAt: '2026-02-14' },
-  { id: 'kreel-5', title: 'Corkscrew Send — Side by Side', caption: 'Kane and Reeves going wheel to wheel through the corkscrew. Absolute cinema.', duration: 18, thumbnailColor: '#0B0F14', playerTag: { name: 'Marcus Kane', number: '1' }, teamTag: 'K-1', tags: ['Battle', 'Highlight'], source: 'Broadcast', likes: 4560, saves: 1023, createdAt: '2026-02-14' },
+  { id: 'kreel-4', title: 'Podium Champagne', caption: 'P1 Kane. P2 Reeves. P3 Tanaka. The champagne was earned.', duration: 30, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT', tags: ['Podium', 'Celebration'], source: 'Broadcast', likes: 2670, saves: 598, createdAt: '2026-02-14' },
+  { id: 'kreel-5', title: 'Corkscrew Send — Side by Side', caption: 'Kane and Reeves going wheel to wheel through the corkscrew. Absolute cinema.', duration: 18, thumbnailColor: '#0B0F14', playerTag: { name: 'Marcus Kane', number: '1' }, teamTag: 'KaNeXT', tags: ['Battle', 'Highlight'], source: 'Broadcast', likes: 4560, saves: 1023, createdAt: '2026-02-14' },
   { id: 'kreel-6', title: 'Track Walk — Laguna Seca', caption: 'Turn by turn with Marcus Kane. Every corner matters.', duration: 48, thumbnailColor: '#0B0F14', playerTag: { name: 'Marcus Kane', number: '1' }, teamTag: 'Apex Racing', tags: ['Track Walk', 'Preview'], source: 'YouTube', likes: 980, saves: 234, createdAt: '2026-02-12' },
-  { id: 'kreel-7', title: 'Fan Energy — Turn 8', caption: 'The crowd at Turn 8 was ELECTRIC. This is what racing is all about.', duration: 22, thumbnailColor: '#0B0F14', teamTag: 'K-1', tags: ['Fans', 'Atmosphere'], source: 'YouTube', likes: 1560, saves: 345, createdAt: '2026-02-14' },
+  { id: 'kreel-7', title: 'Fan Energy — Turn 8', caption: 'The crowd at Turn 8 was ELECTRIC. This is what racing is all about.', duration: 22, thumbnailColor: '#0B0F14', teamTag: 'KaNeXT', tags: ['Fans', 'Atmosphere'], source: 'YouTube', likes: 1560, saves: 345, createdAt: '2026-02-14' },
   { id: 'kreel-8', title: 'Post-Race Interview — Kane', caption: '"The car was perfect today. Big thanks to the team." — Marcus Kane', duration: 35, thumbnailColor: '#0B0F14', playerTag: { name: 'Marcus Kane', number: '1' }, teamTag: 'Apex Racing', tags: ['Interview', 'Post-Race'], source: 'Broadcast', likes: 1230, saves: 278, createdAt: '2026-02-14' },
 ];
 
@@ -1020,7 +1020,7 @@ export interface TrendingItem {
 export const TRENDING_BY_MODE: Record<Mode, TrendingItem[]> = {
   sports: [], // Sports uses SPORTS_TRENDING from mock-sports-explore-v2
   church: [
-    { id: 'ct-1', title: 'Walking in Faith — Full Sermon', subtitle: 'Pastor Dipo · Faith Forward Series', thumbnailColor: '#0B0F14', viewCount: 1240, badge: 'featured', duration: '42:15' },
+    { id: 'ct-1', title: 'Walking in Faith — Full Sermon', subtitle: 'Pastor James · Faith Forward Series', thumbnailColor: '#0B0F14', viewCount: 1240, badge: 'featured', duration: '42:15' },
     { id: 'ct-2', title: 'Baptism Sunday — 7 New Believers', subtitle: 'Celebration Service · Feb 1', thumbnailColor: '#0B0F14', viewCount: 890, badge: 'trending', duration: '12:30' },
     { id: 'ct-3', title: 'Worship Night Highlights', subtitle: 'KaNeXT Church Worship Team', thumbnailColor: '#0B0F14', viewCount: 650, badge: 'trending', duration: '6:18' },
   ],

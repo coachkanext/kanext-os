@@ -55,7 +55,7 @@ const confHash = (s: string) => {
 };
 
 // KaNeXT seal logo
-const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
+const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
 
 // Opponent depth chart helpers
 const OPP_ARCHETYPE_MAP: Record<string, Archetype> = {
@@ -154,7 +154,7 @@ function GameCard({
         delayLongPress={400}
         style={s.logoZone}
       >
-        <Image source={KaNeXT_SEAL} style={s.teamLogo} resizeMode="contain" />
+        <Image source={KaNeXT_LOGO} style={s.teamLogo} resizeMode="contain" />
       </Pressable>
 
       {/* Primary tap zone — card body */}
@@ -541,18 +541,18 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
 
             const NAIA_POLL = [
               { rank: 1, team: 'Loyola (LA)', record: '22-2', prev: 1 },
-              { rank: 2, team: 'Indiana Wesleyan', record: '21-3', prev: 2 },
+              { rank: 2, team: 'Heartland', record: '21-3', prev: 2 },
               { rank: 3, team: 'Oklahoma City', record: '20-3', prev: 4 },
               { rank: 4, team: 'Life Pacific', record: '20-4', prev: 3 },
               { rank: 5, team: 'Benedictine (KS)', record: '19-4', prev: 8 },
               { rank: 6, team: 'Freed-Hardeman', record: '19-4', prev: 6 },
               { rank: 7, team: 'Georgetown (KY)', record: '18-5', prev: 5 },
               { rank: 8, team: 'William Penn', record: '18-5', prev: 9 },
-              { rank: 9, team: 'Southeastern', record: '18-5', prev: 7 },
+              { rank: 9, team: 'Summit', record: '18-5', prev: 7 },
               { rank: 10, team: 'Carroll (MT)', record: '19-4', prev: 10 },
               { rank: 11, team: 'Olivet Nazarene', record: '18-5', prev: 12 },
               { rank: 12, team: 'Concordia (NE)', record: '18-5', prev: 11 },
-              { rank: 13, team: 'Bethel (IN)', record: '17-6', prev: 14 },
+              { rank: 13, team: 'Northside (IN)', record: '17-6', prev: 14 },
               { rank: 14, team: 'Jamestown', record: '17-5', prev: 16 },
               { rank: 15, team: 'MidAmerica Nazarene', record: '17-6', prev: 13 },
               { rank: 16, team: 'Science & Arts (OK)', record: '17-6', prev: 15 },
@@ -569,7 +569,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
 
             const KR_NATIONAL = [
               { rank: 1, team: 'Loyola (LA)', kr: 91, trend: 2 },
-              { rank: 2, team: 'Indiana Wesleyan', kr: 89, trend: 0 },
+              { rank: 2, team: 'Heartland', kr: 89, trend: 0 },
               { rank: 3, team: 'Oklahoma City', kr: 88, trend: 1 },
               { rank: 4, team: 'Life Pacific', kr: 87, trend: -1 },
               { rank: 5, team: 'Benedictine (KS)', kr: 86, trend: 3 },
@@ -581,7 +581,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
               { rank: 11, team: 'Carroll (MT)', kr: 82, trend: -1 },
               { rank: 12, team: 'Olivet Nazarene', kr: 81, trend: 2 },
               { rank: 13, team: 'Concordia (NE)', kr: 81, trend: 0 },
-              { rank: 14, team: 'Bethel (IN)', kr: 80, trend: 3 },
+              { rank: 14, team: 'Northside (IN)', kr: 80, trend: 3 },
               { rank: 15, team: 'Jamestown', kr: 80, trend: 1 },
               { rank: 16, team: 'MidAmerica Nazarene', kr: 79, trend: -2 },
               { rank: 17, team: 'Science & Arts (OK)', kr: 79, trend: 0 },
@@ -713,7 +713,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
             const sectionLabel = standingsView === 'conference'
               ? 'SUN CONFERENCE'
               : standingsView === 'national'
-                ? 'NAIA'
+                ? 'NAA'
                 : selectedDivisions.length > 0
                   ? selectedDivisions.map(id => (divisionChips.find((c) => c.id === id)?.label ?? '').toUpperCase()).join('  /  ')
                   : '';

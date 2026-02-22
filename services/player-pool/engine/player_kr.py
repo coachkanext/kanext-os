@@ -2,74 +2,75 @@ from __future__ import annotations
 """
 Player KR Computation — Position-weighted cluster aggregation + archetype derivation.
 Reference: spec Position Trait Weighting (College) + Archetype Library
+
+v2.0: 7 canonical clusters (removed interior_defense, renamed perimeter_defense/frame).
+  - on_ball_defense replaces perimeter_defense
+  - physical replaces frame
+  - interior_defense weight redistributed into on_ball_defense + team_defense
+  - team_defense now a first-class cluster in position weights
+  - ON_BALL_BLEND removed — on_ball_defense IS the on-ball score directly
 """
 
 # ═══════════════════════════════════════════════════════════════════════════
 # POSITION WEIGHTS (College) — from spec
-# OPF: OKR%, DKR%, TKR% per position
-# Within each: cluster sub-weights
+# 7 canonical clusters per position (sum to 100)
 # ═══════════════════════════════════════════════════════════════════════════
-
-# Simplified 7-cluster weights per position (sum to 100)
-# Derived from spec OPF + sub-cluster weights:
-#   shooting_w = OKR% * Shooting% of OKR
-#   finishing_w = OKR% * Finishing% of OKR
-#   playmaking_w = OKR% * Playmaking% of OKR
-#   perimeter_defense_w = DKR% * PerimDef% of DKR
-#   interior_defense_w = DKR% * InteriorDef% of DKR
-#   rebounding_w = DKR% * (DefReb% + TKR% * RebTools%) of DKR
-#   frame_w = TKR% * Physical%
 
 POSITION_CLUSTER_WEIGHTS: dict[str, dict[str, float]] = {
     # PG: OKR 55%, DKR 40%, TKR 5%
+    # interior_defense was 6.0 → +3.0 to on_ball_defense, +3.0 to team_defense
     "PG": {
-        "shooting":           17.6,  # 55% * 32%
-        "finishing":           8.8,  # 55% * 16%
-        "playmaking":         27.0,  # 55% * 49%
-        "perimeter_defense":  26.0,  # 40% * 65%
-        "interior_defense":    6.0,  # 40% * 15%
-        "rebounding":         10.3,  # 40% * 20% + 55%*3% + 5%*15%
-        "frame":               4.3,  # 5% * 85%
+        "shooting":           17.6,
+        "finishing":           8.8,
+        "playmaking":         27.0,
+        "on_ball_defense":    29.0,  # was 26.0 + 3.0
+        "team_defense":        3.0,  # new (from interior_defense)
+        "rebounding":         10.3,
+        "physical":            4.3,  # was frame
     },
     # CG: OKR 60%, DKR 35%, TKR 5%
+    # interior_defense was 5.3 → +2.5 to on_ball_defense, +2.8 to team_defense
     "CG": {
-        "shooting":           24.0,  # 60% * 40%
-        "finishing":          13.2,  # 60% * 22%
-        "playmaking":         21.0,  # 60% * 35%
-        "perimeter_defense":  21.0,  # 35% * 60%
-        "interior_defense":    5.3,  # 35% * 15%
-        "rebounding":         11.5,  # 35% * 25% + 60%*3% + 5%*20%
-        "frame":               4.0,  # 5% * 80%
+        "shooting":           24.0,
+        "finishing":          13.2,
+        "playmaking":         21.0,
+        "on_ball_defense":    23.5,  # was 21.0 + 2.5
+        "team_defense":        2.8,  # new (from interior_defense)
+        "rebounding":         11.5,
+        "physical":            4.0,  # was frame
     },
     # W (Wing): OKR 50%, DKR 40%, TKR 10%
+    # interior_defense was 10.0 → +5.0 to on_ball_defense, +5.0 to team_defense
     "W": {
-        "shooting":           21.0,  # 50% * 42%
-        "finishing":          15.0,  # 50% * 30%
-        "playmaking":          9.0,  # 50% * 18%
-        "perimeter_defense":  20.0,  # 40% * 50%
-        "interior_defense":   10.0,  # 40% * 25%
-        "rebounding":         14.5,  # 40% * 25% + 50%*10% + 10%*25%
-        "frame":              10.5,  # 10% * 75% + remainder
+        "shooting":           21.0,
+        "finishing":          15.0,
+        "playmaking":          9.0,
+        "on_ball_defense":    25.0,  # was 20.0 + 5.0
+        "team_defense":        5.0,  # new (from interior_defense)
+        "rebounding":         14.5,
+        "physical":           10.5,  # was frame
     },
     # F (Forward): OKR 45%, DKR 40%, TKR 15%
+    # interior_defense was 14.0 → +7.0 to on_ball_defense, +7.0 to team_defense
     "F": {
-        "shooting":           15.8,  # 45% * 35%
-        "finishing":          18.0,  # 45% * 40%
-        "playmaking":          6.8,  # 45% * 15%
-        "perimeter_defense":  14.0,  # 40% * 35%
-        "interior_defense":   14.0,  # 40% * 35%
-        "rebounding":         17.5,  # 40% * 30% + 45%*10% + 15%*20%
-        "frame":              14.0,  # 15% * 80% + remainder
+        "shooting":           15.8,
+        "finishing":          18.0,
+        "playmaking":          6.8,
+        "on_ball_defense":    21.0,  # was 14.0 + 7.0
+        "team_defense":        7.0,  # new (from interior_defense)
+        "rebounding":         17.5,
+        "physical":           14.0,  # was frame
     },
     # B (Big): OKR 35%, DKR 45%, TKR 20%
+    # interior_defense was 24.8 → +10.0 to on_ball_defense, +14.8 to team_defense
     "B": {
-        "shooting":            5.3,  # 35% * 15%
-        "finishing":          21.0,  # 35% * 60%
-        "playmaking":          3.5,  # 35% * 10%
-        "perimeter_defense":   6.8,  # 45% * 15%
-        "interior_defense":   24.8,  # 45% * 55%
-        "rebounding":         19.8,  # 45% * 30% + 35%*15% + 20%*15%
-        "frame":              19.0,  # 20% * 85% + remainder
+        "shooting":            5.3,
+        "finishing":          21.0,
+        "playmaking":          3.5,
+        "on_ball_defense":    16.8,  # was 6.8 + 10.0
+        "team_defense":       14.8,  # new (from interior_defense)
+        "rebounding":         19.8,
+        "physical":           19.0,  # was frame
     },
 }
 
@@ -79,54 +80,59 @@ POSITION_CLUSTER_WEIGHTS: dict[str, dict[str, float]] = {
 
 PRO_POSITION_CLUSTER_WEIGHTS: dict[str, dict[str, float]] = {
     # PG: OKR 60%, DKR 35%, TKR 5%
+    # interior_defense was 5.3 → +2.5 to on_ball_defense, +2.8 to team_defense
     "PG": {
-        "shooting":           19.2,  # 60% * 32%
-        "finishing":           9.6,  # 60% * 16%
-        "playmaking":         29.4,  # 60% * 49%
-        "perimeter_defense":  22.8,  # 35% * 65%
-        "interior_defense":    5.3,  # 35% * 15%
-        "rebounding":          9.5,  # 35% * 20% + 60%*3% + 5%*15%
-        "frame":               4.3,  # 5% * 85%
+        "shooting":           19.2,
+        "finishing":           9.6,
+        "playmaking":         29.4,
+        "on_ball_defense":    25.3,  # was 22.8 + 2.5
+        "team_defense":        2.8,  # new
+        "rebounding":          9.5,
+        "physical":            4.3,  # was frame
     },
     # CG: OKR 65%, DKR 30%, TKR 5%
+    # interior_defense was 4.5 → +2.0 to on_ball_defense, +2.5 to team_defense
     "CG": {
-        "shooting":           26.0,  # 65% * 40%
-        "finishing":          14.3,  # 65% * 22%
-        "playmaking":         22.8,  # 65% * 35%
-        "perimeter_defense":  18.0,  # 30% * 60%
-        "interior_defense":    4.5,  # 30% * 15%
-        "rebounding":         10.5,  # 30% * 25% + 65%*3% + 5%*20%
-        "frame":               4.0,  # 5% * 80%
+        "shooting":           26.0,
+        "finishing":          14.3,
+        "playmaking":         22.8,
+        "on_ball_defense":    20.0,  # was 18.0 + 2.0
+        "team_defense":        2.5,  # new
+        "rebounding":         10.5,
+        "physical":            4.0,  # was frame
     },
     # W: OKR 55%, DKR 35%, TKR 10%
+    # interior_defense was 8.8 → +4.4 to on_ball_defense, +4.4 to team_defense
     "W": {
-        "shooting":           23.1,  # 55% * 42%
-        "finishing":          16.5,  # 55% * 30%
-        "playmaking":          9.9,  # 55% * 18%
-        "perimeter_defense":  17.5,  # 35% * 50%
-        "interior_defense":    8.8,  # 35% * 25%
-        "rebounding":         14.0,  # 35% * 25% + 55%*10% + 10%*25%
-        "frame":              10.3,  # 10% * 75% + remainder
+        "shooting":           23.1,
+        "finishing":          16.5,
+        "playmaking":          9.9,
+        "on_ball_defense":    21.9,  # was 17.5 + 4.4
+        "team_defense":        4.4,  # new
+        "rebounding":         14.0,
+        "physical":           10.3,  # was frame
     },
     # F: OKR 45%, DKR 40%, TKR 15% (same as college)
+    # interior_defense was 14.0 → +7.0 to on_ball_defense, +7.0 to team_defense
     "F": {
         "shooting":           15.8,
         "finishing":          18.0,
         "playmaking":          6.8,
-        "perimeter_defense":  14.0,
-        "interior_defense":   14.0,
+        "on_ball_defense":    21.0,  # was 14.0 + 7.0
+        "team_defense":        7.0,  # new
         "rebounding":         17.5,
-        "frame":              14.0,
+        "physical":           14.0,  # was frame
     },
     # B: OKR 35%, DKR 40%, TKR 25%
+    # interior_defense was 22.0 → +9.0 to on_ball_defense, +13.0 to team_defense
     "B": {
-        "shooting":            5.3,  # 35% * 15%
-        "finishing":          21.0,  # 35% * 60%
-        "playmaking":          3.5,  # 35% * 10%
-        "perimeter_defense":   6.0,  # 40% * 15%
-        "interior_defense":   22.0,  # 40% * 55%
-        "rebounding":         21.0,  # 40% * 30% + 35%*15% + 25%*15%
-        "frame":              21.3,  # 25% * 85%
+        "shooting":            5.3,
+        "finishing":          21.0,
+        "playmaking":          3.5,
+        "on_ball_defense":    15.0,  # was 6.0 + 9.0
+        "team_defense":       13.0,  # new
+        "rebounding":         21.0,
+        "physical":           21.3,  # was frame
     },
 }
 
@@ -135,10 +141,10 @@ DEFAULT_WEIGHTS = {
     "shooting":           16.0,
     "finishing":          15.0,
     "playmaking":         13.0,
-    "perimeter_defense":  16.0,
-    "interior_defense":   12.0,
+    "on_ball_defense":    16.0,  # was perimeter_defense
+    "team_defense":        8.0,  # new (absorbed interior_defense share)
     "rebounding":         15.0,
-    "frame":              13.0,
+    "physical":           17.0,  # was frame (absorbed interior_defense remainder)
 }
 
 
@@ -159,25 +165,25 @@ ARCHETYPES: dict[str, list[tuple[str, dict[str, float]]]] = {
         ("Spot-Up Specialist",       {"shooting": 75}),
         ("Secondary Creator",        {"playmaking": 65, "shooting": 60}),
         ("Off-Ball Shooter",         {"shooting": 70}),
-        ("3-and-D Guard",            {"shooting": 68, "perimeter_defense": 65}),
+        ("3-and-D Guard",            {"shooting": 68, "on_ball_defense": 65}),
     ],
     "W": [
-        ("Two-Way Wing",             {"shooting": 65, "perimeter_defense": 65}),
+        ("Two-Way Wing",             {"shooting": 65, "on_ball_defense": 65}),
         ("Slasher Wing",             {"finishing": 70}),
-        ("3-and-D Wing",             {"shooting": 70, "perimeter_defense": 60}),
-        ("Switchable Defender",      {"perimeter_defense": 70, "frame": 60}),
+        ("3-and-D Wing",             {"shooting": 70, "on_ball_defense": 60}),
+        ("Switchable Defender",      {"on_ball_defense": 70, "physical": 60}),
     ],
     "F": [
-        ("Stretch Big",              {"shooting": 65, "frame": 60}),
-        ("Small-Ball Big",           {"perimeter_defense": 60, "frame": 65}),
+        ("Stretch Big",              {"shooting": 65, "physical": 60}),
+        ("Small-Ball Big",           {"on_ball_defense": 60, "physical": 65}),
         ("Connector Forward",        {"playmaking": 60, "shooting": 55}),
-        ("Rebounding Enforcer",      {"rebounding": 70, "frame": 65}),
+        ("Rebounding Enforcer",      {"rebounding": 70, "physical": 65}),
     ],
     "B": [
-        ("Rim Protector Anchor",     {"interior_defense": 70, "frame": 65}),
+        ("Rim Protector Anchor",     {"team_defense": 70, "physical": 65}),
         ("Post Hub Facilitator",     {"finishing": 65, "playmaking": 55}),
-        ("Vertical Spacer",          {"finishing": 70, "frame": 60}),
-        ("Rebounding Enforcer",      {"rebounding": 70, "interior_defense": 60}),
+        ("Vertical Spacer",          {"finishing": 70, "physical": 60}),
+        ("Rebounding Enforcer",      {"rebounding": 70, "team_defense": 60}),
     ],
 }
 
@@ -193,25 +199,25 @@ PRO_ARCHETYPES: dict[str, list[tuple[str, dict[str, float]]]] = {
         ("Spot-Up Specialist",       {"shooting": 82}),
         ("Secondary Creator",        {"playmaking": 72, "shooting": 68}),
         ("Off-Ball Shooter",         {"shooting": 78}),
-        ("3-and-D Guard",            {"shooting": 75, "perimeter_defense": 72}),
+        ("3-and-D Guard",            {"shooting": 75, "on_ball_defense": 72}),
     ],
     "W": [
-        ("Two-Way Wing",             {"shooting": 72, "perimeter_defense": 72}),
+        ("Two-Way Wing",             {"shooting": 72, "on_ball_defense": 72}),
         ("Slasher Wing",             {"finishing": 78}),
-        ("3-and-D Wing",             {"shooting": 78, "perimeter_defense": 68}),
-        ("Switchable Defender",      {"perimeter_defense": 78, "frame": 68}),
+        ("3-and-D Wing",             {"shooting": 78, "on_ball_defense": 68}),
+        ("Switchable Defender",      {"on_ball_defense": 78, "physical": 68}),
     ],
     "F": [
-        ("Stretch Big",              {"shooting": 72, "frame": 68}),
-        ("Small-Ball Big",           {"perimeter_defense": 68, "frame": 72}),
+        ("Stretch Big",              {"shooting": 72, "physical": 68}),
+        ("Small-Ball Big",           {"on_ball_defense": 68, "physical": 72}),
         ("Connector Forward",        {"playmaking": 68, "shooting": 62}),
-        ("Rebounding Enforcer",      {"rebounding": 78, "frame": 72}),
+        ("Rebounding Enforcer",      {"rebounding": 78, "physical": 72}),
     ],
     "B": [
-        ("Rim Protector Anchor",     {"interior_defense": 78, "frame": 72}),
+        ("Rim Protector Anchor",     {"team_defense": 78, "physical": 72}),
         ("Post Hub Facilitator",     {"finishing": 72, "playmaking": 62}),
-        ("Vertical Spacer",          {"finishing": 78, "frame": 68}),
-        ("Rebounding Enforcer",      {"rebounding": 78, "interior_defense": 68}),
+        ("Vertical Spacer",          {"finishing": 78, "physical": 68}),
+        ("Rebounding Enforcer",      {"rebounding": 78, "team_defense": 68}),
     ],
 }
 
@@ -263,8 +269,8 @@ def derive_secondary_archetypes(clusters: dict[str, float], position: str,
 
 
 OFF_KEYS = frozenset(["shooting", "finishing", "playmaking"])
-DEF_KEYS = frozenset(["perimeter_defense", "interior_defense", "rebounding", "team_defense"])
-TKR_KEYS = frozenset(["frame"])
+DEF_KEYS = frozenset(["on_ball_defense", "team_defense", "rebounding"])
+TKR_KEYS = frozenset(["physical"])
 
 # 53/47 split is for TEAM KR only (team_kr.py). Player KR uses position splits below.
 TEAM_OFF_DEF_SPLIT = (0.53, 0.47)
@@ -280,26 +286,16 @@ POSITION_COMPONENT_SPLITS: dict[str, tuple[float, float, float]] = {
 }
 DEFAULT_COMPONENT_SPLIT = (0.50, 0.40, 0.10)
 
-# Position-specific on-ball defense blend (perimeter + interior → single score)
-ON_BALL_BLEND: dict[str, dict[str, float]] = {
-    "PG": {"perimeter_defense": 1.00, "interior_defense": 0.00},
-    "CG": {"perimeter_defense": 1.00, "interior_defense": 0.00},
-    "W":  {"perimeter_defense": 0.70, "interior_defense": 0.30},
-    "F":  {"perimeter_defense": 0.35, "interior_defense": 0.65},
-    "B":  {"perimeter_defense": 0.10, "interior_defense": 0.90},
-}
-DEFAULT_ON_BALL_BLEND = {"perimeter_defense": 0.50, "interior_defense": 0.50}
-
-# Position-specific DKR composition weights (3 components: on_ball + team_defense + rebounding)
+# Position-specific DKR composition weights (3 components: on_ball_defense + team_defense + rebounding)
 # Guards get 40% team_defense — discipline + trust is the main DKR signal for guards
 DKR_COMPOSITION: dict[str, dict[str, float]] = {
-    "PG": {"on_ball": 0.40, "team_defense": 0.40, "rebounding": 0.20},
-    "CG": {"on_ball": 0.40, "team_defense": 0.40, "rebounding": 0.20},
-    "W":  {"on_ball": 0.35, "team_defense": 0.30, "rebounding": 0.35},
-    "F":  {"on_ball": 0.30, "team_defense": 0.25, "rebounding": 0.45},
-    "B":  {"on_ball": 0.30, "team_defense": 0.20, "rebounding": 0.50},
+    "PG": {"on_ball_defense": 0.40, "team_defense": 0.40, "rebounding": 0.20},
+    "CG": {"on_ball_defense": 0.40, "team_defense": 0.40, "rebounding": 0.20},
+    "W":  {"on_ball_defense": 0.35, "team_defense": 0.30, "rebounding": 0.35},
+    "F":  {"on_ball_defense": 0.30, "team_defense": 0.25, "rebounding": 0.45},
+    "B":  {"on_ball_defense": 0.30, "team_defense": 0.20, "rebounding": 0.50},
 }
-DEFAULT_DKR_COMPOSITION = {"on_ball": 0.35, "team_defense": 0.30, "rebounding": 0.35}
+DEFAULT_DKR_COMPOSITION = {"on_ball_defense": 0.35, "team_defense": 0.30, "rebounding": 0.35}
 
 
 def compute_player_kr(
@@ -308,16 +304,15 @@ def compute_player_kr(
     mode: str = "college",
 ) -> dict:
     """
-    Compute player KR from 8 cluster scores.
+    Compute player KR from 7 cluster scores.
     mode: "college" or "pro" — selects position weights and archetype thresholds.
 
-    v1.5 changes:
-      - DKR recomposed into 3 components: on-ball defense, team_defense, rebounding.
-      - On-ball defense = position-weighted blend of perimeter_defense + interior_defense.
-      - Guards get 40% team_defense in DKR (discipline + trust signals).
+    v2.0 changes:
+      - 7 canonical clusters (removed interior_defense, renamed perimeter_defense/frame).
+      - DKR = on_ball_defense + team_defense + rebounding (position-weighted).
+      - No ON_BALL_BLEND — on_ball_defense IS the on-ball score directly.
       - OKR = weighted(Shooting, Finishing, Playmaking) via alpha weights
-      - DKR = on_ball + team_defense + rebounding (position-weighted)
-      - TKR = Frame
+      - TKR = Physical
       - Overall = w_ok * OKR + w_dk * DKR + w_tk * TKR
     Returns: base_off_kr, base_def_kr, base_tkr, overall_kr, dkr_weights, archetype info.
     """
@@ -340,17 +335,15 @@ def compute_player_kr(
         if off_total > 0 else 50.0
     )
 
-    # DKR: on-ball defense (blend of perim + interior) + team_defense + rebounding
-    ob_blend = ON_BALL_BLEND.get(position, DEFAULT_ON_BALL_BLEND)
-    on_ball_score = sum(present.get(k, 50.0) * w for k, w in ob_blend.items())
-
+    # DKR: on_ball_defense + team_defense + rebounding (position-weighted)
     dkr_w = DKR_COMPOSITION.get(position, DEFAULT_DKR_COMPOSITION)
-    base_def = (dkr_w["on_ball"] * on_ball_score
+    on_ball_score = present.get("on_ball_defense", 50.0)
+    base_def = (dkr_w["on_ball_defense"] * on_ball_score
               + dkr_w["team_defense"] * present.get("team_defense", 50.0)
               + dkr_w["rebounding"] * present.get("rebounding", 50.0))
 
-    # TKR: Frame
-    base_tkr = present.get("frame", 50.0)
+    # TKR: Physical
+    base_tkr = present.get("physical", 50.0)
 
     # Overall KR = position-specific 3-way split
     w_ok, w_dk, w_tk = POSITION_COMPONENT_SPLITS.get(position, DEFAULT_COMPONENT_SPLIT)
@@ -367,7 +360,6 @@ def compute_player_kr(
         "overall_kr": round(overall, 1),
         "position_split": (w_ok, w_dk, w_tk),
         "on_ball_score": round(on_ball_score, 1),
-        "on_ball_blend": ob_blend,
         "dkr_weights": dkr_w,
         "primary_archetype": primary,
         "secondary_archetypes": secondaries,

@@ -414,7 +414,7 @@ const PEOPLE: EduPerson[] = [
   {
     id: 'edu-p-001',
     name: 'Dr. Roslyn Clark',
-    email: 'rclark@fmu.edu',
+    email: 'rclark@kanext.edu',
     phone: '(803) 555-0101',
     status: 'active',
     accessTier: 'founder',
@@ -433,7 +433,7 @@ const PEOPLE: EduPerson[] = [
   {
     id: 'edu-p-002',
     name: 'Dr. Alex Morgan',
-    email: 'mthompson@fmu.edu',
+    email: 'mthompson@kanext.edu',
     phone: '(803) 555-0102',
     status: 'active',
     accessTier: 'executive',
@@ -452,7 +452,7 @@ const PEOPLE: EduPerson[] = [
   {
     id: 'edu-p-003',
     name: 'Janet Williams',
-    email: 'jwilliams@fmu.edu',
+    email: 'jwilliams@kanext.edu',
     phone: '(803) 555-0103',
     status: 'active',
     accessTier: 'executive',
@@ -471,7 +471,7 @@ const PEOPLE: EduPerson[] = [
   {
     id: 'edu-p-004',
     name: 'Robert Chen',
-    email: 'rchen@fmu.edu',
+    email: 'rchen@kanext.edu',
     phone: '(803) 555-0104',
     status: 'active',
     accessTier: 'executive',
@@ -490,7 +490,7 @@ const PEOPLE: EduPerson[] = [
   {
     id: 'edu-p-005',
     name: 'Dr. Angela Davis',
-    email: 'adavis@fmu.edu',
+    email: 'adavis@kanext.edu',
     phone: '(803) 555-0105',
     status: 'active',
     accessTier: 'operator',
@@ -509,7 +509,7 @@ const PEOPLE: EduPerson[] = [
   {
     id: 'edu-p-006',
     name: 'Michael Torres',
-    email: 'mtorres@fmu.edu',
+    email: 'mtorres@kanext.edu',
     phone: '(803) 555-0106',
     status: 'active',
     accessTier: 'operator',
@@ -528,7 +528,7 @@ const PEOPLE: EduPerson[] = [
   {
     id: 'edu-p-007',
     name: 'Sarah Johnson',
-    email: 'sjohnson@fmu.edu',
+    email: 'sjohnson@kanext.edu',
     phone: '(803) 555-0107',
     status: 'active',
     accessTier: 'operator',
@@ -547,7 +547,7 @@ const PEOPLE: EduPerson[] = [
   {
     id: 'edu-p-008',
     name: 'David Park',
-    email: 'dpark@fmu.edu',
+    email: 'dpark@kanext.edu',
     phone: '(803) 555-0108',
     status: 'active',
     accessTier: 'operator',
@@ -566,7 +566,7 @@ const PEOPLE: EduPerson[] = [
   {
     id: 'edu-p-010',
     name: 'Lisa Martinez',
-    email: 'lmartinez@fmu.edu',
+    email: 'lmartinez@kanext.edu',
     phone: '(803) 555-0110',
     status: 'active',
     accessTier: 'operator',

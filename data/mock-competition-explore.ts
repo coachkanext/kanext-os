@@ -78,7 +78,7 @@ export type CompetitionScope = 'All' | 'Races' | 'Drivers' | 'Teams' | 'Techniqu
 // =============================================================================
 
 export const FEATURED_RACE: FeaturedRace = {
-  title: 'K-1 Laguna Seca Grand Prix',
+  title: 'KaNeXT Laguna Seca Grand Prix',
   subtitle: 'Round 6 Highlights',
   hookText: 'Apex Racing dominates \u2014 Marcus Kane extends championship lead',
   badgeText: 'LIVE REPLAY',
@@ -160,7 +160,7 @@ export const CHAMPIONSHIP_STANDINGS: ChampionshipStanding[] = [
 export const UPCOMING_EVENTS: UpcomingEvent[] = [
   { id: 'ue-1', title: 'Round 7: Watkins Glen GP', track: 'Watkins Glen', date: 'Feb 22', thumbnailColor: '#1D9BF0', type: 'Championship' },
   { id: 'ue-2', title: 'Junior Kart Invitational', track: 'Daytona International', date: 'Mar 1', thumbnailColor: '#22C55E', type: 'Invitational' },
-  { id: 'ue-3', title: 'K-1 All-Star Race', track: 'Indianapolis Motor Speedway', date: 'Mar 8', thumbnailColor: '#F59E0B', type: 'Exhibition' },
+  { id: 'ue-3', title: 'KaNeXT All-Star Race', track: 'Indianapolis Motor Speedway', date: 'Mar 8', thumbnailColor: '#F59E0B', type: 'Exhibition' },
   { id: 'ue-4', title: 'Season Finale: Miami GP', track: 'Homestead-Miami', date: 'Mar 22', thumbnailColor: '#EF4444', type: 'Championship' },
 ];
 

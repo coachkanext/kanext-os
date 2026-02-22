@@ -1,66 +1,61 @@
 {
   "university_profile": {
-    "name": "Florida Memorial University",
-    "shortName": "FMU",
-    "type": "Private, coeducational, Baptist-affiliated HBCU",
-    "founded": 1879,
-    "mascot": "Lions",
+    "name": "KaNeXT University",
+    "shortName": "KXU",
+    "type": "Private university",
+    "founded": 2020,
+    "mascot": "Wolves",
     "colors": {
-      "primary": "#075eab",
-      "secondary": "#fc8c38"
+      "primary": "#1D9BF0",
+      "secondary": "#0B0F14"
     },
-    "address": "15800 N.W. 42nd Avenue, Miami Gardens, Florida 33054",
-    "phone": "305-626-3600",
-    "website": "https://www.fmu.edu",
-    "athleticsWebsite": "https://fmuathletics.com",
-    "conference": "The Sun Conference",
-    "division": "NAIA",
-    "distinction": "One of the oldest academic centers in Florida and the only Historically Black University in South Florida",
-    "alumni_count": "Nearly 10,000",
-    "mission": "The mission of Florida Memorial University is to instill in students the importance of becoming global citizens through life-long learning, leadership, character, and service, which will enhance their lives and the lives of others.",
-    "vision": "As South Florida's HBCU (Historically Black College and University), Florida Memorial University will be a premiere urban-serving liberal arts educational institution preparing the next generation of global leaders.",
+    "address": "100 Innovation Drive, Nashville, TN 37201",
+    "phone": "615-555-0100",
+    "website": "https://www.kanext.edu",
+    "athleticsWebsite": "https://athletics.kanext.edu",
+    "conference": "KaNeXT Conference",
+    "division": "NAA",
+    "distinction": "A premier institution dedicated to innovation, leadership, and athletic excellence",
+    "alumni_count": "5,000+",
+    "mission": "KaNeXT University prepares students to lead in a rapidly changing world through rigorous academics, innovation-driven research, and holistic development.",
+    "vision": "To be the leading institution where technology, athletics, and academics converge to develop the next generation of global leaders.",
     "values": {
-      "acronym": "CLASS",
+      "acronym": "DRIVE",
       "items": [
-        { "letter": "C", "name": "Character", "description": "Embodying the values of fairness, transparency, compassion, respect, integrity, honesty, respect for diversity, and a commitment to equality in everything we undertake." },
-        { "letter": "L", "name": "Leadership", "description": "Cultivating the drive to initiate and sustain change for the good of our campus, our community, and the world." },
-        { "letter": "A", "name": "Accountability", "description": "Taking responsibility for our actions, collectively as well as individually, and delivering products and services that are of high-caliber and responsive to the needs of our community members." },
-        { "letter": "S", "name": "Scholarship", "description": "Promoting excellence in teaching and learning through the identification and retention of quality faculty, staff, and students, who are all engaged in vigorous intellectual exchange as a part of high-quality and competitive educational programs." },
-        { "letter": "S", "name": "Service", "description": "Sharing our academic and human capital as social, educational, and economic resources for the betterment of our campus and our community." }
+        { "letter": "D", "name": "Discipline", "description": "Commitment to excellence in every endeavor, from the classroom to the court." },
+        { "letter": "R", "name": "Resilience", "description": "Building mental and physical toughness to overcome adversity." },
+        { "letter": "I", "name": "Innovation", "description": "Pushing boundaries in technology, athletics, and education." },
+        { "letter": "V", "name": "Vision", "description": "Thinking boldly about the future and leading with purpose." },
+        { "letter": "E", "name": "Excellence", "description": "Striving for the highest standards in all areas of university life." }
       ]
     },
     "history": {
-      "founded_as": "Florida Baptist Institute",
-      "founded_location": "Live Oak, Florida",
-      "founded_by": "Members of the Bethlehem Baptist Association",
+      "founded_as": "KaNeXT Institute of Technology",
+      "founded_location": "Nashville, Tennessee",
+      "founded_by": "KaNeXT Foundation Board of Directors",
       "timeline": [
-        { "year": 1879, "event": "Founded as Florida Baptist Institute in Live Oak, FL" },
-        { "year": 1892, "event": "Rev. Matthew Gilbert fled racial tensions to Jacksonville, founded Florida Baptist Academy" },
-        { "year": 1896, "event": "Nathan White Collier appointed president, held post for 45 years" },
-        { "year": 1900, "event": "J. Rosamond Johnson composed music for 'Lift Ev'ry Voice and Sing' while teaching at the school" },
-        { "year": 1918, "event": "Relocated to St. Augustine as Florida Normal and Industrial Institute" },
-        { "year": 1942, "event": "Merged with Florida Institute at Live Oak, became Florida Normal Industrial and Memorial College" },
-        { "year": 1965, "event": "Trustees purchased 48-acre former air strip near Opa-locka in Dade County" },
-        { "year": 1968, "event": "New campus opened as Florida Memorial College on November 11" },
-        { "year": 2004, "event": "Charter amended, name changed to Florida Memorial University" }
+        { "year": 2020, "event": "Founded as KaNeXT Institute of Technology in Nashville, TN" },
+        { "year": 2021, "event": "First class of 250 students enrolled across 4 programs" },
+        { "year": 2022, "event": "Athletics department established with 6 varsity sports" },
+        { "year": 2023, "event": "Expanded to 14 varsity programs, joined KaNeXT Conference" },
+        { "year": 2024, "event": "Campus expansion: new athletics center and innovation lab" },
+        { "year": 2025, "event": "Enrollment surpasses 2,500 students; university status granted" }
       ],
       "notable_connections": [
-        "J. Rosamond Johnson — composed 'Lift Ev'ry Voice and Sing' (Negro National Anthem) while employed here",
-        "Zora Neale Hurston — Harlem Renaissance writer, served as instructor",
-        "Rev. Dr. Martin Luther King Jr. — orchestrated civil rights protests involving FMU students",
-        "Harry T. Moore — civil rights advocate and NAACP leader, graduate",
-        "Rev. Howard Thurman — renowned American theologian, graduate"
+        "KaNeXT Foundation — primary endowment and technology partnership",
+        "Innovation Hub — partnership with leading tech companies",
+        "Community Leadership Program — civic engagement initiative"
       ]
     }
   },
   "leadership": {
     "president": {
-      "id": "pres-mccormick",
-      "name": "William C. McCormick, Jr.",
+      "id": "pres-carter",
+      "name": "Dr. James A. Carter",
       "title": "President",
-      "email": "William.McCormick@fmuniv.edu",
-      "photoUrl": "https://www.fmu.edu/wp-content/uploads/2024/07/52919833471_8639f2e736_k-1-273x300.jpg",
-      "bio": "William Cullen McCormick, Jr. is the founder and CEO of Americlaims Billing, Inc. With over 32 years of experience in the pharmaceutical and healthcare industries. He holds an MBA with a specialization in Healthcare Administration from Colorado Technical University. Previously served as Chairman of the Board of Trustees for FMU and as the immediate past president of the Fort Lauderdale Branch NAACP."
+      "email": "president@kanext.edu",
+      "photoUrl": null,
+      "bio": "Dr. James A. Carter is the founding president of KaNeXT University. With over 20 years of experience in higher education leadership and a background in computer science, he has guided the institution from its founding through rapid growth."
     },
     "administration_divisions": [
       {
@@ -69,259 +64,162 @@
       },
       {
         "name": "Academic Affairs",
-        "description": "Provides services and leadership to foster a progressive culture of teaching and learning, workforce and career development, scholarship, community engagement, creative work, and global impact."
+        "description": "Oversees academic programs, faculty development, and curriculum innovation."
       },
       {
         "name": "Finance and Administration",
-        "description": "Managing the university's assets, campus safety, facilities and maintenance, IT, Student Accounts, Campus Safety, Bookstore."
+        "description": "Managing the university's financial operations, campus facilities, IT infrastructure, and student services."
       },
       {
-        "name": "University Advancement",
-        "description": "Fundraising and community relations arm of FMU. The only Baptist-affiliated university in South Florida with a special relationship with the faith-based community."
+        "name": "Athletics",
+        "description": "14 varsity programs competing in the KaNeXT Conference with a focus on student-athlete development."
       },
       {
-        "name": "Public Affairs",
-        "description": "Communications, graphic design, social media, marketing, and photography."
+        "name": "Student Affairs",
+        "description": "Student life, housing, campus activities, and community engagement."
       }
     ],
     "advancement_staff": [
       {
-        "name": "Tammy Hamlet",
-        "title": "Vice President for Institutional Advancement & Government Relations",
-        "phone": "(305) 623-4137",
-        "email": "Tammy.Hamlet@fmu.edu"
+        "name": "Dr. Sarah Mitchell",
+        "title": "Vice President for Institutional Advancement",
+        "phone": "(615) 555-0120",
+        "email": "s.mitchell@kanext.edu"
       },
       {
-        "name": "Davica V. Williams, MDIV",
-        "title": "Executive Director of Advancement and Alumni Affairs",
-        "phone": "(305) 626-3197",
-        "email": "Davica.Williams@fmu.edu"
-      },
-      {
-        "name": "Natalie Knight",
-        "title": "University Advancement Coordinator",
-        "phone": "(305) 626-3658",
-        "email": "nknight@fmu.edu"
+        "name": "Marcus Thompson",
+        "title": "Director of Alumni Relations",
+        "phone": "(615) 555-0130",
+        "email": "m.thompson@kanext.edu"
       }
     ]
   },
   "academics": {
     "schools": [
       {
-        "name": "School of Arts and Sciences",
+        "name": "School of Technology & Innovation",
         "departments": [
-          "Arts and the Humanities",
-          "Aviation and Safety",
-          "Computer Science, Mathematics and Technology",
-          "Health and Natural Sciences"
+          "Computer Science",
+          "Data Science & AI",
+          "Cybersecurity",
+          "Software Engineering"
         ]
       },
       {
         "name": "School of Business",
         "departments": [
-          "Center for Entrepreneurship"
+          "Business Administration",
+          "Entrepreneurship",
+          "Sports Management"
         ]
       },
       {
-        "name": "School of Education and Social Sciences",
+        "name": "School of Arts & Sciences",
         "departments": [
-          "Education",
-          "Social Sciences"
+          "Liberal Arts",
+          "Health Sciences",
+          "Communications"
         ]
       }
     ],
     "accreditation": {
-      "institutional": "Southern Association of Colleges and Schools Commission on Colleges (SACSCOC)",
+      "institutional": "Regional Accreditation Board",
       "programmatic": [
-        { "program": "B.S. Computer Science", "body": "Computing Accreditation Commission of ABET" },
-        { "program": "B.S. Information Systems", "body": "Computing Accreditation Commission of ABET" },
-        { "program": "B.S. Business Administration", "body": "ACBSP" },
-        { "program": "B.S. Finance", "body": "ACBSP" },
-        { "program": "MBA", "body": "ACBSP" },
-        { "program": "B.S. Elementary Education/ESOL/Reading", "body": "Florida Department of Education" },
-        { "program": "M.S. Reading Education/ESOL (K-12)", "body": "Florida Department of Education" },
-        { "program": "B.S.W. Social Work", "body": "Council on Social Work Education (CSWE)" }
+        { "program": "B.S. Computer Science", "body": "Computing Accreditation Board" },
+        { "program": "B.S. Data Science", "body": "Computing Accreditation Board" },
+        { "program": "B.S. Business Administration", "body": "Business Programs Accreditation Council" },
+        { "program": "MBA", "body": "Business Programs Accreditation Council" }
       ]
     },
     "support_services": [
-      "Center for Career Advising, Retention Services (C.A.R.S.)",
-      "Testing Center",
-      "Tutoring Labs",
-      "Career Center",
-      "Dual Enrollment and Academic Outreach",
-      "Center Teaching and Learning",
-      "Distance Education and Online Learning",
-      "Honors Program",
-      "Nathan W. Collier Library",
-      "Office of International Affairs"
+      "Academic Advising Center",
+      "Career Services",
+      "Tutoring & Learning Lab",
+      "Student Success Center",
+      "Innovation Hub",
+      "University Library",
+      "International Programs Office"
     ]
   },
   "campus_life": {
     "student_engagement": {
-      "motto": "Leadership, Character, and Service",
-      "description": "The Office of Student Activities advocates for student engagement with programs that complement academic programs, support retention, and increase student success."
+      "motto": "Innovation, Leadership, Excellence",
+      "description": "The Office of Student Life provides programs and activities that complement academics, build community, and develop future leaders."
     },
     "housing": {
-      "description": "Living on campus is part of the college experience. Residential students are part of a living and learning environment that promotes community engagement and social interaction.",
-      "url": "https://www.fmu.edu/student-engagement/housing-and-residence-life/"
+      "description": "On-campus housing offers a dynamic living-learning environment. Residential students participate in community programs, study groups, and social events.",
+      "url": "https://www.kanext.edu/housing"
     },
     "clubs_and_organizations": [
-      "Alpha Eta Rho", "Alpha Kappa Alpha", "Alpha Kappa Delta", "Alpha Kappa Mu",
-      "Alpha Phi Alpha", "Bahamian Connection", "Black Males of Excellence",
-      "Black Women of Excellence", "Caribbean International Student Association",
-      "3 Poetry", "Club Haiti", "Delta Sigma Theta", "Eclat Modeling Troop",
-      "Faces Modeling Troop", "Freshman Class", "Future Educators of America",
-      "Gamma Beta Chi", "Gospel Choir", "Graduate Student Association",
-      "Honors Council", "House Arrest 2", "Iota Phi Theta",
-      "Jamaica Student Association", "Junior Class", "Kappa Alpha Psi",
-      "Lambda Beta Chi", "Lions for Justice", "Lion Country Peer Educators",
-      "NAACP", "National Association of Black Journalists",
-      "National Pan-Hellenic Council", "Omega Psi Phi", "PRSSA",
-      "Phi Beta Sigma", "Pre Alumni Counsel", "Senior Class",
-      "Sigma Gamma Rho", "Sociology Club", "Sophomore Class",
-      "Student Government Association", "Virgin Islands Student Association",
-      "Women of Character", "Women in Aviation", "Youth Alive Bible Club",
-      "Zeta Phi Beta"
+      "Student Government Association", "Coding Club", "Entrepreneurship Society",
+      "Data Science Club", "Debate Team", "Community Service Corps",
+      "International Students Association", "Media & Communications Club",
+      "Athletics Booster Club", "Honors Society", "Music Ensemble",
+      "Wellness & Fitness Club", "Cultural Exchange Club", "Investment Club",
+      "Environmental Action Group"
     ],
     "services": [
-      { "name": "Financial Aid", "url": "https://www.fmu.edu/admissions/financial-aid/" },
-      { "name": "Food Services", "url": "https://www.fmu-thscampusdining.com/" },
-      { "name": "Bookstore", "url": "https://www.bkstr.com/fmunivstore" },
-      { "name": "Cyberzone", "url": "https://www.fmu.edu/about-fmu/administration/information-management-and-technology/fmu-cyberzone/" }
+      { "name": "Financial Aid", "url": "https://www.kanext.edu/financial-aid" },
+      { "name": "Dining Services", "url": "https://www.kanext.edu/dining" },
+      { "name": "Bookstore", "url": "https://www.kanext.edu/bookstore" },
+      { "name": "Health Center", "url": "https://www.kanext.edu/health" }
     ]
   },
   "news": [
     {
       "id": "news-01",
-      "title": "Florida Memorial University Chorale to Perform at National Football Championship Game",
-      "date": "2026-01-16",
-      "url": "https://www.fmu.edu/florida-memorial-university-chorale-to-perform-at-national-football-championship-game/",
-      "summary": "The FMU Chorale will perform 'America the Beautiful' at the 2026 National Football Championship Game at Hard Rock Stadium, live on ESPN."
+      "title": "KaNeXT University Launches New AI Research Center",
+      "date": "2026-02-15",
+      "url": "https://www.kanext.edu/news/ai-research-center",
+      "summary": "The university opens a state-of-the-art AI research facility in partnership with leading technology firms."
     },
     {
       "id": "news-02",
-      "title": "State of the University Address",
-      "date": "2026-01-16",
-      "url": "https://www.fmu.edu/state-of-the-university-address/",
-      "summary": "State of the University Address on January 21, 2026 at 10:00AM, Lou Rawls Performing Arts Center."
+      "title": "Wolves Basketball Clinches Conference Title",
+      "date": "2026-02-10",
+      "url": "https://www.kanext.edu/news/conference-title",
+      "summary": "The men's basketball team secured the KaNeXT Conference regular season championship."
     },
     {
       "id": "news-03",
-      "title": "Homecoming 2025: History In The Making",
-      "date": "2025-10-29",
-      "url": "https://www.fmu.edu/homecoming-2025-history-in-the-making/",
-      "summary": "Recap of Homecoming 2025 under the theme 'It's Our Time.' Lions won 49-21 vs. Warner University."
-    },
-    {
-      "id": "news-04",
-      "title": "2025-2026 Parking Decals Now Available",
-      "date": "2025-07-07",
-      "url": "https://www.fmu.edu/2025-2026-parking-decals-now-available/",
-      "summary": "Transponder and decal renewals: Students $15, Faculty/Staff $20."
-    },
-    {
-      "id": "news-05",
-      "title": "The Florida Memorial University Ambassador Chorale Makes Carnegie Hall Debut",
-      "date": "2025-06-24",
-      "url": "https://www.fmu.edu/the-florida-memorial-university-ambassador-chorale-makes-carnegie-hall-debut/",
-      "summary": "FMU Ambassador Chorale made historic debut at Carnegie Hall on June 21, 2025. Directed by Dr. Argarita Johnson-Palavicini."
-    },
-    {
-      "id": "news-06",
-      "title": "2025 Healthy Heart Nation HBCU Scholarship Application",
-      "date": "2025-06-23",
-      "url": "https://www.fmu.edu/20130-2/",
-      "summary": "$2,500 award for undergraduate students at HBCUs."
-    },
-    {
-      "id": "news-07",
-      "title": "FMU Ambassador Chorale to Perform at Carnegie Hall",
-      "date": "2025-06-18",
-      "url": "https://www.fmu.edu/the-fmu-ambassador-will-perform-in-new-york-citys-carnegie-hall-on-saturday-june-21-2025/",
-      "summary": "Preview: 30-member ensemble under Dr. Argarita Johnson-Palavicini to perform with Choirs of America In Harmony Concert."
-    },
-    {
-      "id": "news-08",
-      "title": "Congratulations to Judge Christopher Benjamin, 1998 Graduate of FMU!",
-      "date": "2025-06-18",
-      "url": "https://www.fmu.edu/congratulations-to-judge-christopher-benjamin-and-1998-graduate-of-fmu/",
-      "summary": "Investiture ceremony for Judge Benjamin, FMU alum (B.S. Political Science, 1998), now County Court Judge for Miami-Dade."
-    },
-    {
-      "id": "news-09",
-      "title": "Florida Memorial University Extends Media Partnership with Urban Edge Network",
-      "date": "2025-06-13",
-      "url": "https://www.fmu.edu/florida-memorial-university-extends-media-partnership-with-urban-edge-network/",
-      "summary": "UEN extended as FMU's exclusive streaming partner until 2028, reaching ~115M U.S. households."
-    },
-    {
-      "id": "news-10",
-      "title": "Dr. Jong-Ebot Visits South Africa on an FMU Global Project",
-      "date": "2025-06-11",
-      "url": "https://www.fmu.edu/dr-jong-ebot-visits-south-africa-on-an-fmu-global-project/",
-      "summary": "Part of the FMU Global: Africa and the African Diaspora Project funded by a U.S. State Department grant."
+      "title": "Spring Enrollment Reaches Record High",
+      "date": "2026-01-20",
+      "url": "https://www.kanext.edu/news/enrollment-record",
+      "summary": "Spring 2026 enrollment surpasses 2,800 students, marking the largest class in university history."
     }
   ],
   "events": [
     {
       "id": "evt-01",
-      "title": "2026 Dr. Mack King Carter Lecture Series & Black Church Conference (Day 1)",
-      "date": "2026-02-06",
-      "time": "6:15 PM - 9:00 PM EST",
-      "location": "Smith Conference Center, FMU",
-      "url": "https://www.fmu.edu/fmu-event/2026-dr-mack-king-carter-lecture-series-black-church-conference/"
+      "title": "Innovation Summit 2026",
+      "date": "2026-03-15",
+      "time": "9:00 AM - 5:00 PM CST",
+      "location": "KaNeXT Innovation Center",
+      "url": "https://www.kanext.edu/events/innovation-summit"
     },
     {
       "id": "evt-02",
-      "title": "2026 Dr. Mack King Carter Lecture Series & Black Church Conference (Day 2)",
-      "date": "2026-02-07",
-      "time": "10:00 AM - 2:00 PM EST",
-      "location": "Smith Conference Center, FMU",
-      "url": "https://www.fmu.edu/fmu-event/2026-dr-mack-king-carter-lecture-series-black-church-conference-2/"
+      "title": "Spring Athletic Awards Banquet",
+      "date": "2026-04-10",
+      "time": "6:00 PM - 9:00 PM CST",
+      "location": "KaNeXT Grand Ballroom",
+      "url": "https://www.kanext.edu/events/athletic-awards"
     },
     {
       "id": "evt-03",
-      "title": "Lion Fest 2026 Greek Stroll Off",
-      "date": "2026-02-12",
-      "time": "Doors at 6:30 PM, event until 9:00 PM EST",
-      "location": "FMU Wellness Center",
-      "description": "Performing Live: YK Osiris & the FMU Marching Band 'The Roar.' General Admission: $25.",
-      "url": "https://www.fmu.edu/fmu-event/lion-fest-2026-greek-stroll-off/"
-    },
-    {
-      "id": "evt-04",
-      "title": "Heritage Books & Arts Festival (Day 1)",
-      "date": "2026-02-20",
-      "time": "9:00 AM - 1:00 PM EST",
-      "location": "Florida Memorial University",
-      "description": "Tickets: $10.00.",
-      "url": "https://www.fmu.edu/fmu-event/heritage-books-arts-festival/"
-    },
-    {
-      "id": "evt-05",
-      "title": "Heritage Books & Arts Festival (Day 2)",
-      "date": "2026-02-21",
-      "time": "10:00 AM - 2:00 PM EST",
-      "location": "Florida Memorial University",
-      "description": "Tickets: $10.00. Vendor Fee: $100.00.",
-      "url": "https://www.fmu.edu/fmu-event/heritage-books-arts-festival-2/"
-    },
-    {
-      "id": "evt-06",
-      "title": "QEP 'Writing with Pride' Spoken Word Contest",
-      "date": "2026-02-26",
-      "time": "11:00 AM - 1:00 PM EST",
-      "location": "Nathan W. Collier Library, FMU",
-      "description": "Submit poem before 11:59 PM on Feb 19, 2026. Prizes: $200-$500.",
-      "url": "https://www.fmu.edu/fmu-event/qep-writing-with-pride-spoken-word-contest/"
+      "title": "Commencement Ceremony",
+      "date": "2026-05-09",
+      "time": "10:00 AM CST",
+      "location": "KaNeXT Stadium",
+      "url": "https://www.kanext.edu/events/commencement"
     }
   ],
   "athletics": {
-    "conference": "The Sun Conference",
-    "division": "NAIA",
+    "conference": "KaNeXT Conference",
+    "division": "NAA",
     "social": {
-      "twitter": "@GoFMULions",
-      "facebook": "FMULionsAthletics"
+      "twitter": "@KXUWolves",
+      "facebook": "KXUAthletics"
     },
     "sports": [
       { "name": "Football", "gender": "men", "path": "/sports/football" },
@@ -329,126 +227,105 @@
       { "name": "Men's Basketball", "gender": "men", "path": "/sports/mens-basketball" },
       { "name": "Men's Soccer", "gender": "men", "path": "/sports/mens-soccer" },
       { "name": "Men's Track & Field", "gender": "men", "path": "/sports/mens-track-and-field" },
-      { "name": "Men's Developmental Basketball", "gender": "men", "path": "/sports/2020/5/18/jv-basketball" },
       { "name": "Women's Basketball", "gender": "women", "path": "/sports/womens-basketball" },
       { "name": "Women's Soccer", "gender": "women", "path": "/sports/womens-soccer" },
       { "name": "Women's Volleyball", "gender": "women", "path": "/sports/womens-volleyball" },
-      { "name": "Women's Beach Volleyball", "gender": "women", "path": "/sports/womens-beach-volleyball" },
       { "name": "Women's Track & Field", "gender": "women", "path": "/sports/womens-track-and-field" },
-      { "name": "Flag Football", "gender": "women", "path": "/sports/flag-football" },
-      { "name": "Softball", "gender": "women", "path": "/sports/sball" },
-      { "name": "Co-Ed Cheer", "gender": "coed", "path": "/sports/competitive-cheer" }
+      { "name": "Softball", "gender": "women", "path": "/sports/softball" },
+      { "name": "Swimming & Diving", "gender": "coed", "path": "/sports/swimming" },
+      { "name": "Competitive Cheer", "gender": "coed", "path": "/sports/competitive-cheer" }
     ],
     "mens_basketball": {
       "season": "2025-26",
       "coaching_staff": [
-        { "name": "Joshua Mendoza", "title": "Head Coach" },
-        { "name": "Brandon Williams", "title": "Associate Head Coach" },
-        { "name": "Anthony King", "title": "Developmental Head Coach" }
+        { "name": "Marcus Williams", "title": "Head Coach" },
+        { "name": "Derek Johnson", "title": "Associate Head Coach" },
+        { "name": "Tyler Brooks", "title": "Assistant Coach" }
       ],
       "roster": [
-        { "number": "0", "name": "Tristan Thomas", "position": "F", "height": "6-4", "weight": 190, "class": "Fr.", "hometown": "Miami, Fla.", "previousSchool": "Miami-Dade College" },
-        { "number": "1", "name": "Petar Asceric", "position": "F", "height": "6-10", "weight": 215, "class": "So.", "hometown": "Belgrade, Serbia", "previousSchool": "Fort Hays State" },
-        { "number": "2", "name": "Braxton Lewis", "position": "W", "height": "6-4", "weight": 180, "class": "Fr.", "hometown": "Miami, Fla.", "previousSchool": "Booker T. Washington HS" },
-        { "number": "3", "name": "Rico Thompson", "position": "W", "height": "6-5", "weight": 200, "class": "Sr.", "hometown": "Tallahassee, Fla.", "previousSchool": "Pasco-Hernando State CC" },
-        { "number": "4", "name": "Devin Carter", "position": "W", "height": "6-0", "weight": 175, "class": "Sr.", "hometown": "Jackson, Miss.", "previousSchool": "Louisiana Christian" },
-        { "number": "5", "name": "Jeffrey Selden", "position": "F", "height": "6-6", "weight": 200, "class": "Gr.", "hometown": "Austin, Texas", "previousSchool": "Faulkner University" },
-        { "number": "7", "name": "Maximo Moratinos", "position": "F", "height": "6-8", "weight": 205, "class": "Sr.", "hometown": "Miami, Fla.", "previousSchool": "Siena Heights" },
-        { "number": "9", "name": "Ka'Mar Benbo", "position": "PG", "height": "6-0", "weight": 175, "class": "Fr.", "hometown": "Portland, Ore.", "previousSchool": "Western Canada Prep" },
-        { "number": "10", "name": "Jason Morris", "position": "W", "height": "6-4", "weight": 185, "class": "Jr.", "hometown": "Pompano Beach, Fla.", "previousSchool": "Cerro Coso CC" },
-        { "number": "11", "name": "Sehmaj Mentor", "position": "PG", "height": "6-2", "weight": 165, "class": "So.", "hometown": "Hollywood, Fla.", "previousSchool": "Cooper City HS" },
-        { "number": "12", "name": "Gavin Turner", "position": "W", "height": "6-5", "weight": 200, "class": "Jr.", "hometown": "Orlando, Fla.", "previousSchool": "Palo Verde CC" },
-        { "number": "13", "name": "Cameron Noel", "position": "PG", "height": "6-2", "weight": 185, "class": "Sr.", "hometown": "Houston, Texas", "previousSchool": "Cabrillo CC" },
-        { "number": "15", "name": "Micah Morgan", "position": "PG", "height": "6-2", "weight": 185, "class": "Jr.", "hometown": "Bridgeport, Conn.", "previousSchool": "CCBC Catonsville" },
-        { "number": "20", "name": "D'Andre Dues", "position": "F", "height": "6-9", "weight": 205, "class": "Jr.", "hometown": "Houston, Texas", "previousSchool": "Texas Southern Univ." },
-        { "number": "22", "name": "Elijah Laird", "position": "SG", "height": "6-3", "weight": 185, "class": "So.", "hometown": "Deltona, Fla.", "previousSchool": "Pine Ridge HS" },
-        { "number": "41", "name": "Morgan Brewer", "position": "W", "height": "6-5", "weight": 200, "class": "Sr.", "hometown": "Inglewood, Calif.", "previousSchool": "Kentucky State Univ." },
-        { "number": "55", "name": "Aa'reyon Munir-Jones", "position": "W", "height": "6-4", "weight": 190, "class": "Jr.", "hometown": "Chicago, Ill.", "previousSchool": "Coppin State Univ." }
+        { "number": "0", "name": "Tristan Thomas", "position": "F", "height": "6-4", "weight": 190, "class": "Fr.", "hometown": "Nashville, TN", "previousSchool": "Metro Prep Academy" },
+        { "number": "1", "name": "Petar Asceric", "position": "F", "height": "6-10", "weight": 215, "class": "So.", "hometown": "Belgrade, Serbia", "previousSchool": "Heartland University" },
+        { "number": "2", "name": "Braxton Lewis", "position": "W", "height": "6-4", "weight": 180, "class": "Fr.", "hometown": "Nashville, TN", "previousSchool": "Central Prep HS" },
+        { "number": "3", "name": "Rico Thompson", "position": "W", "height": "6-5", "weight": 200, "class": "Sr.", "hometown": "Atlanta, GA", "previousSchool": "Southport CC" },
+        { "number": "4", "name": "Devin Carter", "position": "W", "height": "6-0", "weight": 175, "class": "Sr.", "hometown": "Jackson, MS", "previousSchool": "Cornerstone College" },
+        { "number": "5", "name": "Jeffrey Selden", "position": "F", "height": "6-6", "weight": 200, "class": "Gr.", "hometown": "Austin, TX", "previousSchool": "Crestwood University" },
+        { "number": "7", "name": "Maximo Moratinos", "position": "F", "height": "6-8", "weight": 205, "class": "Sr.", "hometown": "Nashville, TN", "previousSchool": "Valley View University" },
+        { "number": "9", "name": "Ka'Mar Benbo", "position": "PG", "height": "6-0", "weight": 175, "class": "Fr.", "hometown": "Portland, OR", "previousSchool": "Northwest Prep" },
+        { "number": "10", "name": "Jason Morris", "position": "W", "height": "6-4", "weight": 185, "class": "Jr.", "hometown": "Memphis, TN", "previousSchool": "Ridgewood CC" },
+        { "number": "11", "name": "Sehmaj Mentor", "position": "PG", "height": "6-2", "weight": 165, "class": "So.", "hometown": "Nashville, TN", "previousSchool": "Eastside Prep HS" },
+        { "number": "12", "name": "Gavin Turner", "position": "W", "height": "6-5", "weight": 200, "class": "Jr.", "hometown": "Orlando, FL", "previousSchool": "Pinecrest CC" },
+        { "number": "13", "name": "Cameron Noel", "position": "PG", "height": "6-2", "weight": 185, "class": "Sr.", "hometown": "Houston, TX", "previousSchool": "Clearwater CC" },
+        { "number": "15", "name": "Micah Morgan", "position": "PG", "height": "6-2", "weight": 185, "class": "Jr.", "hometown": "Bridgeport, CT", "previousSchool": "Harbor CC" },
+        { "number": "20", "name": "D'Andre Dues", "position": "F", "height": "6-9", "weight": 205, "class": "Jr.", "hometown": "Houston, TX", "previousSchool": "Metro State University" },
+        { "number": "22", "name": "Elijah Laird", "position": "SG", "height": "6-3", "weight": 185, "class": "So.", "hometown": "Nashville, TN", "previousSchool": "Westside Prep HS" },
+        { "number": "41", "name": "Morgan Brewer", "position": "W", "height": "6-5", "weight": 200, "class": "Sr.", "hometown": "Los Angeles, CA", "previousSchool": "Pacific State University" },
+        { "number": "55", "name": "Aa'reyon Munir-Jones", "position": "W", "height": "6-4", "weight": 190, "class": "Jr.", "hometown": "Chicago, IL", "previousSchool": "Great Lakes University" }
       ],
       "schedule": [
-        { "date": "2025-10-31", "opponent": "Tougaloo College (Miss.)", "location": "home", "venue": "FMU Wellness Center", "result": null },
-        { "date": "2025-11-05", "opponent": "Indiana Wesleyan University", "location": "away", "venue": "Luckey Arena, Marion, Ind.", "result": null },
-        { "date": "2025-11-07", "opponent": "Spartanburg Methodist College", "location": "neutral", "venue": "Huntington, Ind.", "result": null },
-        { "date": "2025-11-08", "opponent": "University of Pikeville", "location": "neutral", "venue": "Huntington, Ind.", "result": null },
-        { "date": "2025-11-15", "opponent": "Southeastern University", "location": "home", "venue": "FMU Wellness Center", "result": null },
-        { "date": "2025-11-19", "opponent": "Warner University (Fla.)", "location": "away", "venue": "Turner Athletic Center, Lake Wales", "result": null },
-        { "date": "2025-11-22", "opponent": "New College of Florida", "location": "home", "venue": "FMU Wellness Center", "result": null },
-        { "date": "2025-12-01", "opponent": "University of Fort Lauderdale", "location": "home", "venue": "FMU Wellness Center", "result": null },
-        { "date": "2025-12-05", "opponent": "Tuskegee University", "location": "neutral", "venue": "ESPN Wide World of Sports, Orlando", "result": null },
-        { "date": "2025-12-06", "opponent": "Florida A&M University", "location": "neutral", "venue": "ESPN Wide World of Sports, Orlando", "result": null },
-        { "date": "2025-12-15", "opponent": "LSU Shreveport", "location": "neutral", "venue": "Sheaffer Center, Waxahachie, TX", "result": null },
-        { "date": "2025-12-16", "opponent": "Nelson University (TX)", "location": "away", "venue": "Sheaffer Center, Waxahachie, TX", "result": null },
-        { "date": "2025-12-22", "opponent": "University of Fort Lauderdale", "location": "away", "venue": "Scott Galvin Community Center, North Miami", "result": null },
-        { "date": "2025-12-29", "opponent": "Hope International University (Calif.)", "location": "away", "venue": "Darling Pavilion, Fullerton, CA", "result": null },
-        { "date": "2025-12-30", "opponent": "The Master's University (Calif.)", "location": "away", "venue": "The MacArthur Center, Santa Clarita, CA", "result": null },
-        { "date": "2026-01-03", "opponent": "Ave Maria University", "location": "home", "venue": "FMU Wellness Center", "conference": true, "result": null },
-        { "date": "2026-01-05", "opponent": "Florida National University", "location": "home", "venue": "FMU Wellness Center", "conference": true, "result": null },
-        { "date": "2026-01-07", "opponent": "Webber International University (Fla.)", "location": "home", "venue": "FMU Wellness Center", "conference": true, "result": null },
-        { "date": "2026-01-10", "opponent": "College of Coastal Georgia", "location": "away", "venue": "Coffin Gym, Brunswick, GA", "conference": true, "result": null },
-        { "date": "2026-01-14", "opponent": "St. Thomas University (Fla.)", "location": "away", "venue": "Fernandez Family Center, Miami Gardens", "conference": true, "result": null },
-        { "date": "2026-01-17", "opponent": "Keiser University", "location": "home", "venue": "FMU Wellness Center", "conference": true, "result": null },
-        { "date": "2026-01-21", "opponent": "South Florida Bible", "location": "home", "venue": "FMU Wellness Center", "conference": true, "result": null },
-        { "date": "2026-01-24", "opponent": "Southeastern University", "location": "away", "venue": "The Furnace, Lakeland, FL", "conference": true, "result": null },
-        { "date": "2026-01-28", "opponent": "Warner University (Fla.)", "location": "home", "venue": "FMU Wellness Center", "conference": true, "result": "W 86-66", "designation": "Divine Nine Day" },
-        { "date": "2026-02-04", "opponent": "New College of Florida", "location": "away", "venue": "Hal Chasey Gymnasium, Sarasota", "conference": true, "result": "W 92-56" },
-        { "date": "2026-02-07", "opponent": "Webber International University (Fla.)", "location": "away", "venue": "Sabbagh Athletic Center, Babson Park", "conference": true, "result": "W 84-72" },
-        { "date": "2026-02-09", "opponent": "#4 Ave Maria University", "location": "away", "venue": "Tom Golisano Field House, Ave Maria", "conference": true, "result": "L 74-96" },
-        { "date": "2026-02-11", "opponent": "College of Coastal Georgia", "location": "home", "venue": "FMU Wellness Center", "conference": true, "result": "W 69-67", "designation": "PINK OUT/Cheer Senior Night" },
-        { "date": "2026-02-14", "opponent": "St. Thomas University (Fla.)", "location": "home", "venue": "FMU Wellness Center", "conference": true, "result": "L 80-87", "designation": "Senior Day/Alumni Appreciation Day" },
-        { "date": "2026-02-18", "opponent": "#9 Keiser University", "location": "away", "venue": "Massimino Court, West Palm Beach", "conference": true, "result": null, "designation": "Regular Season Finale" }
+        { "date": "2025-10-31", "opponent": "Ashford College", "location": "home", "venue": "KaNeXT Athletics Center" },
+        { "date": "2025-11-05", "opponent": "Heartland University", "location": "away", "venue": "Heartland Arena" },
+        { "date": "2025-11-07", "opponent": "Brookside College", "location": "neutral", "venue": "Crossover Classic" },
+        { "date": "2025-11-08", "opponent": "Highland University", "location": "neutral", "venue": "Crossover Classic" },
+        { "date": "2025-11-15", "opponent": "Summit University", "location": "home", "venue": "KaNeXT Athletics Center" },
+        { "date": "2025-11-19", "opponent": "Clearwater University", "location": "away", "venue": "Clearwater Fieldhouse" },
+        { "date": "2025-11-22", "opponent": "Riverside College", "location": "home", "venue": "KaNeXT Athletics Center" },
+        { "date": "2025-12-01", "opponent": "Beacon University", "location": "home", "venue": "KaNeXT Athletics Center" },
+        { "date": "2025-12-05", "opponent": "Heritage University", "location": "neutral", "venue": "Holiday Showcase, Nashville" },
+        { "date": "2025-12-06", "opponent": "Founders University", "location": "neutral", "venue": "Holiday Showcase, Nashville" },
+        { "date": "2025-12-15", "opponent": "Cedarville University", "location": "neutral", "venue": "Winter Invitational" },
+        { "date": "2025-12-16", "opponent": "Crestwood University", "location": "away", "venue": "Crestwood Center" },
+        { "date": "2025-12-22", "opponent": "Beacon University", "location": "away", "venue": "Beacon Gymnasium" },
+        { "date": "2025-12-29", "opponent": "Pacific Shores University", "location": "away", "venue": "Pacific Pavilion" },
+        { "date": "2025-12-30", "opponent": "Valley View University", "location": "away", "venue": "Valley View Center" },
+        { "date": "2026-01-03", "opponent": "Westfield University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
+        { "date": "2026-01-05", "opponent": "Southport University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
+        { "date": "2026-01-07", "opponent": "Pinecrest University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
+        { "date": "2026-01-10", "opponent": "Bayshore College", "location": "away", "venue": "Bayshore Gymnasium", "conference": true },
+        { "date": "2026-01-14", "opponent": "Ridgemont University", "location": "away", "venue": "Ridgemont Center", "conference": true },
+        { "date": "2026-01-17", "opponent": "Lakewood University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
+        { "date": "2026-01-21", "opponent": "Cornerstone Bible College", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
+        { "date": "2026-01-24", "opponent": "Summit University", "location": "away", "venue": "Summit Arena", "conference": true },
+        { "date": "2026-01-28", "opponent": "Clearwater University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true, "result": "W 86-66" },
+        { "date": "2026-02-04", "opponent": "Riverside College", "location": "away", "venue": "Riverside Gymnasium", "conference": true, "result": "W 92-56" },
+        { "date": "2026-02-07", "opponent": "Pinecrest University", "location": "away", "venue": "Pinecrest Athletic Center", "conference": true, "result": "W 84-72" },
+        { "date": "2026-02-09", "opponent": "#4 Westfield University", "location": "away", "venue": "Westfield Field House", "conference": true, "result": "L 74-96" },
+        { "date": "2026-02-11", "opponent": "Bayshore College", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true, "result": "W 69-67" },
+        { "date": "2026-02-14", "opponent": "Ridgemont University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true, "result": "L 80-87" },
+        { "date": "2026-02-18", "opponent": "#9 Lakewood University", "location": "away", "venue": "Lakewood Court", "conference": true, "designation": "Regular Season Finale" }
       ]
     },
     "football": {
       "season": "2025",
-      "venue": "Betty T. Ferguson Stadium, Miami Gardens, Fla.",
+      "venue": "KaNeXT Stadium, Nashville, TN",
       "roster_count": 116,
       "schedule": [
-        { "date": "2025-08-30", "opponent": "Reinhardt University", "location": "away", "result": "L 35-49" },
-        { "date": "2025-09-06", "opponent": "Clark Atlanta University", "location": "away", "result": "L 12-17" },
-        { "date": "2025-09-27", "opponent": "Cumberland University (Tenn.)", "location": "home", "result": "L 0-1 (Forfeit)", "designation": "Home Opener" },
-        { "date": "2025-10-04", "opponent": "#10 Southeastern University", "location": "away", "result": "W 28-23", "designation": "Conference Opener" },
-        { "date": "2025-10-11", "opponent": "#2 Keiser University", "location": "home", "result": "L 28-49" },
-        { "date": "2025-10-18", "opponent": "Warner University (Fla.)", "location": "home", "result": "W 49-21", "designation": "Homecoming" },
-        { "date": "2025-10-25", "opponent": "Thomas University (Ga.)", "location": "away", "result": "W 85-7", "note": "Program scoring record (85 points)" },
-        { "date": "2025-11-01", "opponent": "Webber International University (Fla.)", "location": "home", "result": "W 42-19", "designation": "Senior Day" },
-        { "date": "2025-11-08", "opponent": "Ave Maria University", "location": "away", "result": "L 39-44" },
-        { "date": "2025-11-15", "opponent": "#17 St. Thomas University (Fla.)", "location": "away", "result": "L 37-44", "designation": "Battle of Miami Gardens" }
+        { "date": "2025-08-30", "opponent": "Oakdale University", "location": "away", "result": "L 35-49" },
+        { "date": "2025-09-06", "opponent": "Metro State University", "location": "away", "result": "L 12-17" },
+        { "date": "2025-09-27", "opponent": "Stonegate University", "location": "home", "result": "L 0-1 (Forfeit)", "designation": "Home Opener" },
+        { "date": "2025-10-04", "opponent": "#10 Summit University", "location": "away", "result": "W 28-23", "designation": "Conference Opener" },
+        { "date": "2025-10-11", "opponent": "#2 Lakewood University", "location": "home", "result": "L 28-49" },
+        { "date": "2025-10-18", "opponent": "Clearwater University", "location": "home", "result": "W 49-21", "designation": "Homecoming" },
+        { "date": "2025-10-25", "opponent": "Magnolia University", "location": "away", "result": "W 85-7" },
+        { "date": "2025-11-01", "opponent": "Pinecrest University", "location": "home", "result": "W 42-19", "designation": "Senior Day" },
+        { "date": "2025-11-08", "opponent": "Westfield University", "location": "away", "result": "L 39-44" },
+        { "date": "2025-11-15", "opponent": "#17 Ridgemont University", "location": "away", "result": "L 37-44" }
       ],
-      "record": "4-6 (official)"
+      "record": "4-6"
     }
   },
   "metadata": {
-    "scraped_at": "2026-02-16",
-    "source_pages": [
-      "https://www.fmu.edu/",
-      "https://www.fmu.edu/about-fmu/",
-      "https://www.fmu.edu/about-fmu/mission-vision/",
-      "https://www.fmu.edu/about-fmu/fmu-history/",
-      "https://www.fmu.edu/about-fmu/accreditation/",
-      "https://www.fmu.edu/about-fmu/administration/",
-      "https://www.fmu.edu/calendar/",
-      "https://www.fmu.edu/feed/",
-      "https://www.fmu.edu/student-engagement/",
-      "https://www.fmu.edu/student-engagement/housing-and-residence-life/",
-      "https://www.fmu.edu/student-engagement/clubs-and-organizations/",
-      "https://fmuathletics.com/",
-      "https://fmuathletics.com/sports/mens-basketball/roster",
-      "https://fmuathletics.com/sports/mens-basketball/schedule",
-      "https://fmuathletics.com/sports/football/roster",
-      "https://fmuathletics.com/sports/football/schedule"
-    ],
-    "robots_txt_compliant": true,
+    "generated_at": "2026-02-22",
+    "type": "demo_data",
     "counts": {
-      "leadership": 4,
+      "leadership": 3,
       "academic_schools": 3,
-      "accreditations": 8,
-      "news_articles": 10,
-      "events": 6,
-      "clubs_organizations": 45,
-      "sports": 14,
+      "accreditations": 4,
+      "news_articles": 3,
+      "events": 3,
+      "clubs_organizations": 15,
+      "sports": 12,
       "mbb_roster": 17,
       "mbb_schedule": 30,
-      "football_roster": 116,
       "football_schedule": 10
     }
   }

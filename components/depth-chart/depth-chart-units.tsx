@@ -806,7 +806,7 @@ export function UnitsView({
       height: '',
       classYear: '',
       currentSchool: 'KaNeXT Sports',
-      level: 'NAIA' as const,
+      level: 'NAA' as const,
       conference: '',
       state: 'FL',
       keyStatLine: '',

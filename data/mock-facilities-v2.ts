@@ -797,7 +797,7 @@ export const FACILITY_VENDORS: FacilityVendor[] = [
       'sp-home-venue',
     ],
     renewalDate: daysFromNow(180),
-    contact: 'custodial@fmu.edu',
+    contact: 'custodial@kanext.edu',
     openWorkOrders: 0,
   },
   {
@@ -841,7 +841,7 @@ export const FACILITY_VENDORS: FacilityVendor[] = [
     name: 'Campus IT Services',
     serviceType: 'IT & AV Support',
     linkedSpaces: ['sp-film', 'sp-meeting', 'sp-office'],
-    contact: 'helpdesk@fmu.edu',
+    contact: 'helpdesk@kanext.edu',
     openWorkOrders: 2,
   },
 ];

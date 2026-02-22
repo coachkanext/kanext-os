@@ -15,7 +15,7 @@ interface SplitViewLayoutProps {
   videoContent?: React.ReactNode;
   /** The chat content to show in the bottom pane */
   chatContent: React.ReactNode;
-  /** Film context label (e.g. "vs Southeastern — Q1 5:32") */
+  /** Film context label (e.g. "vs Summit — Q1 5:32") */
   filmContextLabel?: string;
   /** Called when the user exits split view */
   onExitSplitView: () => void;

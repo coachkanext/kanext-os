@@ -1,6 +1,6 @@
 /**
- * Mock Community (K-1 LeagueOS) Data
- * Teams, drivers, events, standings for K-1 Speed motorsport league.
+ * Mock Community (KaNeXT LeagueOS) Data
+ * Teams, drivers, events, standings for KaNeXT Motorsport motorsport league.
  */
 
 // =============================================================================
@@ -125,7 +125,7 @@ export const K1_DRIVERS: K1Driver[] = [
 // =============================================================================
 
 export const K1_EVENTS: K1Event[] = [
-  { id: 'e-1', name: 'K-1 Opener', track: 'COTA', location: 'Austin, TX', date: 'Mar 8, 2026', status: 'completed', laps: 45, winner: 'Leo Vasquez', winnerTeam: 'Apex Racing' },
+  { id: 'e-1', name: 'KaNeXT Opener', track: 'COTA', location: 'Austin, TX', date: 'Mar 8, 2026', status: 'completed', laps: 45, winner: 'Leo Vasquez', winnerTeam: 'Apex Racing' },
   { id: 'e-2', name: 'Pacific Grand Prix', track: 'Laguna Seca', location: 'Monterey, CA', date: 'Mar 22, 2026', status: 'completed', laps: 42, winner: 'Nadia Patel', winnerTeam: 'Velocity Works' },
   { id: 'e-3', name: 'Peach State Classic', track: 'Road Atlanta', location: 'Braselton, GA', date: 'Apr 5, 2026', status: 'completed', laps: 48, winner: 'Yuki Tanaka', winnerTeam: 'Phoenix Motorsport' },
   { id: 'e-4', name: 'Empire State Grand Prix', track: 'Watkins Glen', location: 'Watkins Glen, NY', date: 'Apr 19, 2026', status: 'completed', laps: 44, winner: 'Sofia Torres', winnerTeam: 'Zenith Racing' },
@@ -258,16 +258,16 @@ export interface K1CrewAssignment {
 export const K1_FAN_EVENTS: K1FanEvent[] = [
   { id: 'fe-1', name: 'Fan Fest — COTA', type: 'fan_event', location: 'Austin, TX', date: 'Mar 7, 2026', time: '10:00 AM', description: 'Season-opening fan festival with driver autographs, kart demos, and live music at COTA.', status: 'completed', attendance: 4200, linkedRace: 'e-1' },
   { id: 'fe-2', name: 'Media Day — Laguna Seca', type: 'media_day', location: 'Monterey, CA', date: 'Mar 21, 2026', time: '9:00 AM', description: 'Pre-race media availability with all 16 drivers and team principals at Laguna Seca.', status: 'completed', attendance: 320, linkedRace: 'e-2' },
-  { id: 'fe-3', name: 'K-1 x Nike Activation', type: 'sponsor_activation', location: 'Lexington, OH', date: 'May 2, 2026', time: '11:00 AM', description: 'Nike pop-up experience with limited-edition K-1 racing gear and athlete meet-and-greet.', status: 'completed', attendance: 1800, linkedRace: 'e-5' },
+  { id: 'fe-3', name: 'KaNeXT x Nike Activation', type: 'sponsor_activation', location: 'Lexington, OH', date: 'May 2, 2026', time: '11:00 AM', description: 'Nike pop-up experience with limited-edition KaNeXT racing gear and athlete meet-and-greet.', status: 'completed', attendance: 1800, linkedRace: 'e-5' },
   { id: 'fe-4', name: 'Driver Meet & Greet — Road Atlanta', type: 'fan_event', location: 'Braselton, GA', date: 'Apr 4, 2026', time: '2:00 PM', description: 'Exclusive paddock access and driver signing session at Road Atlanta.', status: 'completed', attendance: 2600, linkedRace: 'e-3' },
-  { id: 'fe-5', name: 'Charity Kart Race', type: 'community', location: 'Nashville, TN', date: 'Jul 3, 2026', time: '3:00 PM', description: 'K-1 drivers race rental karts to raise funds for youth STEM programs.', status: 'completed', attendance: 1500 },
+  { id: 'fe-5', name: 'Charity Kart Race', type: 'community', location: 'Nashville, TN', date: 'Jul 3, 2026', time: '3:00 PM', description: 'KaNeXT drivers race rental karts to raise funds for youth STEM programs.', status: 'completed', attendance: 1500 },
   { id: 'fe-6', name: 'Season Awards Gala', type: 'awards', location: 'Nashville, TN', date: 'Sep 20, 2026', time: '7:00 PM', description: 'Black-tie season-ending awards ceremony honoring top drivers, teams, and crew.', status: 'upcoming' },
   { id: 'fe-7', name: 'Thunder Classic Fan Zone', type: 'fan_event', location: 'Portland, OR', date: 'Jul 31, 2026', time: '10:00 AM', description: 'Fan zone with simulators, merch, food trucks, and pre-race entertainment at Portland.', status: 'upcoming', linkedRace: 'e-12' },
   { id: 'fe-8', name: 'Pre-Race Concert — Portland', type: 'promo', location: 'Portland, OR', date: 'Jul 31, 2026', time: '7:00 PM', description: 'Live concert featuring regional artists the evening before the Thunder Classic.', status: 'upcoming', linkedRace: 'e-12' },
   { id: 'fe-9', name: 'Lonestar Fan Fest', type: 'fan_event', location: 'Austin, TX', date: 'Aug 14, 2026', time: '10:00 AM', description: 'Texas-sized fan festival with BBQ, live demos, and driver Q&A at COTA.', status: 'upcoming', linkedRace: 'e-13' },
   { id: 'fe-10', name: 'Season Finale Watch Party', type: 'fan_event', location: 'Monterey, CA', date: 'Sep 5, 2026', time: '12:00 PM', description: 'Outdoor big-screen watch party at Laguna Seca with live commentary and giveaways.', status: 'upcoming', linkedRace: 'e-14' },
-  { id: 'fe-11', name: 'K-1 x Red Bull Activation', type: 'sponsor_activation', location: 'Austin, TX', date: 'Aug 14, 2026', time: '11:00 AM', description: 'Red Bull energy zone with gaming stations, sampling, and racing challenges.', status: 'upcoming', linkedRace: 'e-13' },
-  { id: 'fe-12', name: 'Community Karting Clinic', type: 'community', location: 'Portland, OR', date: 'Jul 30, 2026', time: '9:00 AM', description: 'Free karting clinic for local youth led by K-1 drivers and instructors.', status: 'upcoming' },
+  { id: 'fe-11', name: 'KaNeXT x Red Bull Activation', type: 'sponsor_activation', location: 'Austin, TX', date: 'Aug 14, 2026', time: '11:00 AM', description: 'Red Bull energy zone with gaming stations, sampling, and racing challenges.', status: 'upcoming', linkedRace: 'e-13' },
+  { id: 'fe-12', name: 'Community Karting Clinic', type: 'community', location: 'Portland, OR', date: 'Jul 30, 2026', time: '9:00 AM', description: 'Free karting clinic for local youth led by KaNeXT drivers and instructors.', status: 'upcoming' },
 ];
 
 // =============================================================================

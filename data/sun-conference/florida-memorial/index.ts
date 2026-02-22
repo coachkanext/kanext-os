@@ -2,13 +2,13 @@
  * KaNeXT Sports Men's Basketball
  * Normalized Database — Full Stats Stack
  *
- * Scope: NAIA → The KaNeXT Conference → KaNeXT Sports → Men's Basketball
+ * Scope: NAA → The KaNeXT Conference → KaNeXT Sports → Men's Basketball
  * Seasons: 2022-23 through 2025-26
  * Per: Claude Global Database Ingest Contract v1
  *
  * Sources:
- *   - NAIA Stats (naiastats.prestosports.com) — team stats, individual stats, game events
- *   - KaNeXT Athletics (fmuathletics.com) — roster bios, coaching staff, schedule
+ *   - NAA Stats (naiastats.prestosports.com) — team stats, individual stats, game events
+ *   - KaNeXT Athletics (athletics.kanext.edu) — roster bios, coaching staff, schedule
  *
  * Global Rules Applied:
  *   ❌ No inference

@@ -372,7 +372,7 @@ export const EXCEPTIONS: ExceptionItem[] = [
   },
   {
     id: 'ex-2',
-    title: 'NSF — K-1 Racing Sponsorship',
+    title: 'NSF — KaNeXT Racing Sponsorship',
     type: 'nsf',
     amount: '$2,500.00',
     date: 'Feb 14, 2026',

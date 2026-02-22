@@ -1,6 +1,6 @@
 /**
  * Sports People V3 — 3-pill ViewBar (Staff | Contacts | Directory)
- * KaNeXT Men's Basketball · NAIA KaNeXT Conference
+ * KaNeXT Men's Basketball · NAA KaNeXT Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback, useMemo } from 'react';
@@ -32,14 +32,14 @@ interface StaffMember {
 }
 
 const STAFF: StaffMember[] = [
-  { id: 's1', name: 'Marcus Brooks', title: 'Head Coach', team: 'Varsity', phone: '(305) 555-0101', email: 'mbrooks@fmu.edu' },
-  { id: 's2', name: 'Darius Hill', title: 'Head Coach', team: 'Dev 1', phone: '(305) 555-0102', email: 'dhill@fmu.edu' },
-  { id: 's3', name: 'Terrence Williams', title: 'Head Coach', team: 'Dev 2', phone: '(305) 555-0103', email: 'twilliams@fmu.edu' },
-  { id: 's4', name: 'Andre Mitchell', title: 'Assistant Coach', team: 'Varsity', phone: '(305) 555-0104', email: 'amitchell@fmu.edu' },
-  { id: 's5', name: 'Devon Clark', title: 'Strength & Conditioning Coach', team: 'All Teams', phone: '(305) 555-0105', email: 'dclark@fmu.edu' },
-  { id: 's6', name: 'Lisa Perkins', title: 'Athletic Trainer', team: 'All Teams', phone: '(305) 555-0106', email: 'lperkins@fmu.edu' },
-  { id: 's7', name: 'Jamal Foster', title: 'Video Coordinator', team: 'All Teams', phone: '(305) 555-0107', email: 'jfoster@fmu.edu' },
-  { id: 's8', name: 'Tamara Hughes', title: 'Academic Advisor', team: 'All Teams', phone: '(305) 555-0108', email: 'thughes@fmu.edu' },
+  { id: 's1', name: 'Marcus Brooks', title: 'Head Coach', team: 'Varsity', phone: '(305) 555-0101', email: 'mbrooks@kanext.edu' },
+  { id: 's2', name: 'Darius Hill', title: 'Head Coach', team: 'Dev 1', phone: '(305) 555-0102', email: 'dhill@kanext.edu' },
+  { id: 's3', name: 'Terrence Williams', title: 'Head Coach', team: 'Dev 2', phone: '(305) 555-0103', email: 'twilliams@kanext.edu' },
+  { id: 's4', name: 'Andre Mitchell', title: 'Assistant Coach', team: 'Varsity', phone: '(305) 555-0104', email: 'amitchell@kanext.edu' },
+  { id: 's5', name: 'Devon Clark', title: 'Strength & Conditioning Coach', team: 'All Teams', phone: '(305) 555-0105', email: 'dclark@kanext.edu' },
+  { id: 's6', name: 'Lisa Perkins', title: 'Athletic Trainer', team: 'All Teams', phone: '(305) 555-0106', email: 'lperkins@kanext.edu' },
+  { id: 's7', name: 'Jamal Foster', title: 'Video Coordinator', team: 'All Teams', phone: '(305) 555-0107', email: 'jfoster@kanext.edu' },
+  { id: 's8', name: 'Tamara Hughes', title: 'Academic Advisor', team: 'All Teams', phone: '(305) 555-0108', email: 'thughes@kanext.edu' },
 ];
 
 interface Contact {

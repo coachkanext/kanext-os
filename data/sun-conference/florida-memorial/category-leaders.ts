@@ -2,7 +2,7 @@
  * KaNeXT Sports Men's Basketball
  * Category Leaders (Step 4E)
  * Seasons: 2022-23 through 2025-26
- * Source: Derived from NAIA Stats individual data (top 3 per category)
+ * Source: Derived from conference stats individual data (top 3 per category)
  */
 
 import type { CategoryLeader } from '../schema';

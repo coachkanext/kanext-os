@@ -83,7 +83,7 @@ export const FEATURED_SCHOOL: FeaturedSchool = {
   initials: 'KaNeXT',
   location: 'Nashville, TN',
   tagline: 'Where faith, purpose, and excellence converge — HBCU tradition since 1879',
-  type: 'HBCU',
+  type: 'University',
   thumbnailColor: '#1D9BF0',
 };
 
@@ -92,14 +92,14 @@ export const FEATURED_SCHOOL: FeaturedSchool = {
 // =============================================================================
 
 export const SCHOOLS_FOR_YOU: SchoolCard[] = [
-  { id: 'sfy-1', name: 'KaNeXT Sports', initials: 'KaNeXT', location: 'Nashville, TN', type: 'HBCU', badges: ['NAIA', 'Faith-Based'], thumbnailColor: '#1D9BF0' },
-  { id: 'sfy-2', name: 'KaNeXT University', initials: 'KaNeXT University', location: 'Santee, CA', type: 'Faith-Based', badges: ['NAIA', 'Christian'], thumbnailColor: '#1D9BF0' },
-  { id: 'sfy-3', name: 'Tuskegee University', initials: 'TU', location: 'Tuskegee, AL', type: 'HBCU', badges: ['NCAA D-II', 'STEM'], thumbnailColor: '#1D9BF0' },
-  { id: 'sfy-4', name: 'Hampton University', initials: 'HU', location: 'Hampton, VA', type: 'HBCU', badges: ['NCAA D-I', 'Business'], thumbnailColor: '#1D9BF0' },
-  { id: 'sfy-5', name: 'Howard University', initials: 'HOW', location: 'Washington, DC', type: 'HBCU', badges: ['NCAA D-I', 'Law'], thumbnailColor: '#EF4444' },
-  { id: 'sfy-6', name: 'Morehouse College', initials: 'MC', location: 'Nashville, TN', type: 'HBCU', badges: ['NCAA D-II', 'Liberal Arts'], thumbnailColor: '#F59E0B' },
-  { id: 'sfy-7', name: 'Edward Waters University', initials: 'EWU', location: 'Jacksonville, FL', type: 'HBCU', badges: ['NAIA', 'Faith-Based'], thumbnailColor: '#22C55E' },
-  { id: 'sfy-8', name: 'Warner University', initials: 'WU', location: 'Lake Wales, FL', type: 'Faith-Based', badges: ['NAIA', 'Ministry'], thumbnailColor: '#F59E0B' },
+  { id: 'sfy-1', name: 'KaNeXT Sports', initials: 'KaNeXT', location: 'Nashville, TN', type: 'University', badges: ['NAA', 'Faith-Based'], thumbnailColor: '#1D9BF0' },
+  { id: 'sfy-2', name: 'KaNeXT University', initials: 'KaNeXT University', location: 'Santee, CA', type: 'Faith-Based', badges: ['NAA', 'Christian'], thumbnailColor: '#1D9BF0' },
+  { id: 'sfy-3', name: 'Heritage University', initials: 'TU', location: 'Nashville, TN', type: 'University', badges: ['NAA D-II', 'STEM'], thumbnailColor: '#1D9BF0' },
+  { id: 'sfy-4', name: 'Hampton University', initials: 'HU', location: 'Hampton, VA', type: 'University', badges: ['NCAA D-I', 'Business'], thumbnailColor: '#1D9BF0' },
+  { id: 'sfy-5', name: 'Howard University', initials: 'HOW', location: 'Washington, DC', type: 'University', badges: ['NCAA D-I', 'Law'], thumbnailColor: '#EF4444' },
+  { id: 'sfy-6', name: 'Founders College', initials: 'MC', location: 'Nashville, TN', type: 'University', badges: ['NAA D-II', 'Liberal Arts'], thumbnailColor: '#F59E0B' },
+  { id: 'sfy-7', name: 'Evergreen University', initials: 'EWU', location: 'Jacksonville, FL', type: 'University', badges: ['NAA', 'Faith-Based'], thumbnailColor: '#22C55E' },
+  { id: 'sfy-8', name: 'Clearwater University', initials: 'WU', location: 'Lake Wales, FL', type: 'Faith-Based', badges: ['NAA', 'Ministry'], thumbnailColor: '#F59E0B' },
 ];
 
 // =============================================================================
@@ -123,7 +123,7 @@ export const UPCOMING_EVENTS: EducationEvent[] = [
   { id: 'ue-1', title: 'KaNeXT Spring Open House', date: 'Mar 8', location: 'Nashville, TN', type: 'open-house', thumbnailColor: '#1D9BF0' },
   { id: 'ue-2', title: 'HBCU College Fair', date: 'Mar 15', location: 'Nashville, TN', type: 'fair', thumbnailColor: '#1D9BF0' },
   { id: 'ue-3', title: 'Financial Aid Webinar', date: 'Mar 22', location: 'Virtual', type: 'webinar', thumbnailColor: '#22C55E' },
-  { id: 'ue-4', title: 'Campus Visit Day — Tuskegee', date: 'Apr 5', location: 'Tuskegee, AL', type: 'visit', thumbnailColor: '#1D9BF0' },
+  { id: 'ue-4', title: 'Campus Visit Day — Heritage University', date: 'Apr 5', location: 'Nashville, TN', type: 'visit', thumbnailColor: '#1D9BF0' },
   { id: 'ue-5', title: 'NAIA Scholar-Athlete Summit', date: 'Apr 12', location: 'Kansas City, MO', type: 'fair', thumbnailColor: '#F59E0B' },
   { id: 'ue-6', title: 'KaNeXT Admitted Students Day', date: 'Apr 19', location: 'Nashville, TN', type: 'open-house', thumbnailColor: '#1D9BF0' },
 ];
@@ -152,8 +152,8 @@ export const CAMPUS_LIFE: CampusCard[] = [
   { id: 'cl-2', title: 'Student Housing Tour', schoolName: 'Howard University', category: 'Residential', thumbnailColor: '#EF4444' },
   { id: 'cl-3', title: 'Greek Life & Organizations', schoolName: 'Hampton University', category: 'Student Life', thumbnailColor: '#1D9BF0' },
   { id: 'cl-4', title: 'Chapel Services', schoolName: 'KaNeXT University', category: 'Faith', thumbnailColor: '#1D9BF0' },
-  { id: 'cl-5', title: 'Athletics Game Day', schoolName: 'Tuskegee University', category: 'Athletics', thumbnailColor: '#1D9BF0' },
-  { id: 'cl-6', title: 'Research Opportunities', schoolName: 'Morehouse College', category: 'Academics', thumbnailColor: '#F59E0B' },
+  { id: 'cl-5', title: 'Athletics Game Day', schoolName: 'Heritage University', category: 'Athletics', thumbnailColor: '#1D9BF0' },
+  { id: 'cl-6', title: 'Research Opportunities', schoolName: 'Founders College', category: 'Academics', thumbnailColor: '#F59E0B' },
 ];
 
 // =============================================================================
@@ -163,8 +163,8 @@ export const CAMPUS_LIFE: CampusCard[] = [
 export const ADMISSIONS_SPOTLIGHT: AdmissionsSpotlight[] = [
   { id: 'adm-1', schoolName: 'KaNeXT Sports', initials: 'KaNeXT', location: 'Nashville, TN', acceptanceRate: '45%', avgAid: '$18,500', thumbnailColor: '#1D9BF0', ctas: ['Visit', 'Apply', 'Request Info'] },
   { id: 'adm-2', schoolName: 'KaNeXT University', initials: 'KaNeXT University', location: 'Santee, CA', acceptanceRate: '62%', avgAid: '$15,200', thumbnailColor: '#1D9BF0', ctas: ['Visit', 'Apply', 'Request Info'] },
-  { id: 'adm-3', schoolName: 'Tuskegee University', initials: 'TU', location: 'Tuskegee, AL', acceptanceRate: '38%', avgAid: '$22,000', thumbnailColor: '#1D9BF0', ctas: ['Visit', 'Apply', 'Request Info'] },
-  { id: 'adm-4', schoolName: 'Warner University', initials: 'WU', location: 'Lake Wales, FL', acceptanceRate: '55%', avgAid: '$14,800', thumbnailColor: '#F59E0B', ctas: ['Visit', 'Apply', 'Request Info'] },
+  { id: 'adm-3', schoolName: 'Heritage University', initials: 'TU', location: 'Nashville, TN', acceptanceRate: '38%', avgAid: '$22,000', thumbnailColor: '#1D9BF0', ctas: ['Visit', 'Apply', 'Request Info'] },
+  { id: 'adm-4', schoolName: 'Clearwater University', initials: 'WU', location: 'Lake Wales, FL', acceptanceRate: '55%', avgAid: '$14,800', thumbnailColor: '#F59E0B', ctas: ['Visit', 'Apply', 'Request Info'] },
 ];
 
 // =============================================================================

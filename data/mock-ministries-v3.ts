@@ -294,7 +294,7 @@ export const CREATE_DEFAULTS: CreateMinistryDefaults = {
 // CHURCH ID
 // =============================================================================
 
-const CHURCH_ID = 'church-iccla';
+const CHURCH_ID = 'church-kcc';
 
 // =============================================================================
 // MINISTRIES — 12 canonical ministry objects
@@ -347,11 +347,11 @@ export const MINISTRIES_FULL: MinistryFull[] = [
     leaders: [
       { id: 'ldr-david', name: 'Brother David Nwachukwu', initials: 'DN', role: 'Lead', avatarColor: '#1D9BF0' },
       { id: 'ldr-kemi', name: 'Sister Kemi Adeola', initials: 'KA', role: 'Co-Lead', avatarColor: '#1D9BF0' },
-      { id: 'ldr-seyi', name: 'Brother Seyi Oladipo', initials: 'SO', role: 'Coordinator', avatarColor: '#1D9BF0' },
+      { id: 'ldr-seyi', name: 'Brother Seyi James', initials: 'SO', role: 'Coordinator', avatarColor: '#1D9BF0' },
     ],
     members: [
       { id: 'mem-010', name: 'Sister Chioma Onyekachi', initials: 'CO', role: 'Worship Lead', avatarColor: '#1D9BF0', joinedAt: '2024-08-15' },
-      { id: 'mem-011', name: 'Brother Emeka Igwe', initials: 'EI', role: 'Member', avatarColor: '#1D9BF0', joinedAt: '2024-09-20' },
+      { id: 'mem-011', name: 'Brother Michael Igwe', initials: 'EI', role: 'Member', avatarColor: '#1D9BF0', joinedAt: '2024-09-20' },
       { id: 'mem-012', name: 'Sister Adaeze Chukwu', initials: 'AC', role: 'Member', avatarColor: '#1D9BF0', joinedAt: '2025-01-05' },
       { id: 'mem-013', name: 'Brother Kolade Ogunlesi', initials: 'KO', role: 'Small Group Leader', avatarColor: '#1D9BF0', joinedAt: '2025-02-10' },
       { id: 'mem-014', name: 'Sister Folake Balogun', initials: 'FB', role: 'Member', avatarColor: '#1D9BF0', joinedAt: '2025-06-01' },
@@ -523,7 +523,7 @@ export const MINISTRIES_FULL: MinistryFull[] = [
       { id: 'mem-062', name: 'Sister Mercy Ibekwe', initials: 'MI', role: 'Vocalist', avatarColor: '#1D9BF0', joinedAt: '2024-01-15' },
       { id: 'mem-063', name: 'Brother Dotun Ogundipe', initials: 'DO', role: 'Drummer', avatarColor: '#1D9BF0', joinedAt: '2024-03-20' },
       { id: 'mem-064', name: 'Sister Ronke Balogun', initials: 'RB', role: 'Vocalist', avatarColor: '#1D9BF0', joinedAt: '2024-08-10' },
-      { id: 'mem-065', name: 'Brother Emeka Okolie', initials: 'EO', role: 'Bassist', avatarColor: '#1D9BF0', joinedAt: '2025-01-05' },
+      { id: 'mem-065', name: 'Brother Michael Okolie', initials: 'EO', role: 'Bassist', avatarColor: '#1D9BF0', joinedAt: '2025-01-05' },
     ],
     memberCount: 24,
     status: 'active',
@@ -615,7 +615,7 @@ export const MINISTRIES_FULL: MinistryFull[] = [
     icon: 'heart.fill',
     leaders: [
       { id: 'ldr-bisi', name: 'Sister Bisi Ogunnaike', initials: 'BO', role: 'Lead', avatarColor: '#1D9BF0' },
-      { id: 'ldr-pastor-d', name: 'Pastor Dipo Carter', initials: 'DK', role: 'Pastoral Oversight', avatarColor: '#1D9BF0' },
+      { id: 'ldr-pastor-d', name: 'Pastor James Carter', initials: 'JC', role: 'Pastoral Oversight', avatarColor: '#1D9BF0' },
     ],
     members: [
       { id: 'mem-090', name: 'Sister Adetola Fasanya', initials: 'AF', role: 'Visitation Lead', avatarColor: '#1D9BF0', joinedAt: '2023-03-15' },
@@ -1328,7 +1328,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-01',
     ministryId: 'min-discipleship',
     action: 'Created ministry',
-    actor: 'Pastor Dipo Carter',
+    actor: 'Pastor James Carter',
     timestamp: '2023-06-15T10:00:00Z',
     timestampMs: 1686826800000,
     description: 'Ministry "Sunday Discipleship Groups" created with room and events calendar.',
@@ -1337,7 +1337,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-02',
     ministryId: 'min-youth',
     action: 'Added leader',
-    actor: 'Pastor Dipo Carter',
+    actor: 'Pastor James Carter',
     timestamp: '2023-01-10T14:30:00Z',
     timestampMs: 1673361000000,
     description: 'Brother David Nwachukwu added as Lead of Youth Ministry.',
@@ -1349,7 +1349,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     actor: 'Brother David Nwachukwu',
     timestamp: '2024-06-15T09:00:00Z',
     timestampMs: 1718438400000,
-    description: 'Brother Seyi Oladipo added as Coordinator of Youth Ministry.',
+    description: 'Brother Seyi James added as Coordinator of Youth Ministry.',
   },
   {
     id: 'aud-04',
@@ -1400,7 +1400,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-09',
     ministryId: 'min-care',
     action: 'Added leader',
-    actor: 'Pastor Dipo Carter',
+    actor: 'Pastor James Carter',
     timestamp: '2023-01-15T09:30:00Z',
     timestampMs: 1673775000000,
     description: 'Sister Bisi Ogunnaike added as Lead of Care Team.',
@@ -1427,7 +1427,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-12',
     ministryId: 'min-young-adults',
     action: 'Created ministry',
-    actor: 'Pastor Dipo Carter',
+    actor: 'Pastor James Carter',
     timestamp: '2024-01-08T10:00:00Z',
     timestampMs: 1704711600000,
     description: 'Ministry "Young Adults Fellowship" created with room and events calendar.',
@@ -1463,10 +1463,10 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-16',
     ministryId: 'min-worship',
     action: 'Member joined',
-    actor: 'Brother Emeka Okolie',
+    actor: 'Brother Michael Okolie',
     timestamp: '2025-01-05T10:00:00Z',
     timestampMs: 1736071200000,
-    description: 'Brother Emeka Okolie (bassist) joined Worship Team via invitation.',
+    description: 'Brother Michael Okolie (bassist) joined Worship Team via invitation.',
   },
   {
     id: 'aud-17',

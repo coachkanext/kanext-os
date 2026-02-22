@@ -143,7 +143,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
 
 const CHURCH_STORY_CIRCLES: StoryCircle[] = [
   { id: 'cs-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
-  { id: 'cs-1', name: 'Pastor Dipo', initials: 'DK', hasNew: true, ringColor: '#1D9BF0' },
+  { id: 'cs-1', name: 'Pastor James', initials: 'JC', hasNew: true, ringColor: '#1D9BF0' },
   { id: 'cs-2', name: 'Worship Team', initials: 'WT', hasNew: true, ringColor: '#1D9BF0' },
   { id: 'cs-3', name: 'Youth Dir.', initials: 'YD', hasNew: true, ringColor: '#22C55E' },
   { id: 'cs-4', name: 'Deacon Board', initials: 'DB', hasNew: false },
@@ -156,7 +156,7 @@ const CHURCH_STORY_CIRCLES: StoryCircle[] = [
 const CHURCH_FEED_POSTS: VideoFeedPost[] = [
   {
     id: 'cfp-1',
-    authorName: 'Pastor Dipo Carter',
+    authorName: 'Pastor James Carter',
     authorInitials: 'DK',
     authorRole: 'Senior Pastor',
     timestamp: ago(30),
@@ -258,8 +258,8 @@ const EDUCATION_FEED_POSTS: VideoFeedPost[] = [
     authorInitials: 'FA',
     authorRole: 'Athletics Department',
     timestamp: ago(20),
-    caption: 'Lions basketball season highlights — 16-8, KaNeXT Conference contenders. This team is built different.',
-    media: { type: 'clip', title: 'Lions 2025-26 Season Highlights', thumbnailColor: '#0B0F14', duration: '6:15', views: 4120 },
+    caption: 'Wolves basketball season highlights — 16-8, KaNeXT Conference contenders. This team is built different.',
+    media: { type: 'clip', title: 'Wolves 2025-26 Season Highlights', thumbnailColor: '#0B0F14', duration: '6:15', views: 4120 },
     likes: 312,
     comments: 47,
   },
@@ -269,7 +269,7 @@ const EDUCATION_FEED_POSTS: VideoFeedPost[] = [
     authorInitials: 'FC',
     authorRole: 'University',
     timestamp: ago(150),
-    caption: 'Spring 2026 campus tour — explore our Miami Gardens campus. New science building looking amazing.',
+    caption: 'Spring 2026 campus tour — explore our Nashville campus. New science building looking amazing.',
     media: { type: 'clip', title: 'KaNeXT Campus Tour — Spring 2026', thumbnailColor: '#0B0F14', duration: '3:48', views: 2890 },
     likes: 145,
     comments: 18,
@@ -444,14 +444,14 @@ const COMMUNITY_STORY_CIRCLES: StoryCircle[] = [
   { id: 'ks-4', name: 'Onboards', initials: 'OB', hasNew: true, ringColor: '#1D9BF0' },
   { id: 'ks-5', name: 'Stewards', initials: 'ST', hasNew: false },
   { id: 'ks-6', name: 'Grid Girls', initials: 'GG', hasNew: false },
-  { id: 'ks-7', name: 'K-1 Live', initials: 'K1', hasNew: true, ringColor: '#1D9BF0' },
+  { id: 'ks-7', name: 'KaNeXT Live', initials: 'K1', hasNew: true, ringColor: '#1D9BF0' },
   { id: 'ks-8', name: 'Fan Zone', initials: 'FZ', hasNew: false },
 ];
 
 const COMMUNITY_FEED_POSTS: VideoFeedPost[] = [
   {
     id: 'kfp-1',
-    authorName: 'K-1 Official',
+    authorName: 'KaNeXT Official',
     authorInitials: 'K1',
     authorRole: 'League',
     timestamp: ago(35),
@@ -473,7 +473,7 @@ const COMMUNITY_FEED_POSTS: VideoFeedPost[] = [
   },
   {
     id: 'kfp-3',
-    authorName: 'K-1 Grid',
+    authorName: 'KaNeXT Grid',
     authorInitials: 'KG',
     authorRole: 'Media',
     timestamp: ago(300),

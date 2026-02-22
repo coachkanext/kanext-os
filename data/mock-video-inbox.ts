@@ -92,7 +92,7 @@ export const VIDEO_INBOX_THREADS: VideoInboxThread[] = [
 // =============================================================================
 
 const CHURCH_QUICK_SHARE_TARGETS: QuickShareTarget[] = [
-  { id: 'cqs-1', name: 'Pastor Dipo', initials: 'DK', role: 'Senior Pastor' },
+  { id: 'cqs-1', name: 'Pastor James', initials: 'JC', role: 'Senior Pastor' },
   { id: 'cqs-2', name: 'Worship Team', initials: 'WT', role: 'Ministry' },
   { id: 'cqs-3', name: 'Youth Dir.', initials: 'YD', role: 'Ministry' },
   { id: 'cqs-4', name: 'Staff Chat', initials: 'SC', role: 'Group' },
@@ -112,8 +112,8 @@ const CHURCH_INBOX_THREADS: VideoInboxThread[] = [
   },
   {
     id: 'cvt-2',
-    title: 'Pastor Dipo Carter',
-    participants: ['Pastor Dipo Carter'],
+    title: 'Pastor James Carter',
+    participants: ['Pastor James Carter'],
     lastMessage: 'Sermon clip for social media is ready. Let me know if the intro needs trimming.',
     timestamp: ago(120),
     unread: 1,
@@ -192,7 +192,7 @@ const EDUCATION_INBOX_THREADS: VideoInboxThread[] = [
     timestamp: ago(480),
     unread: 0,
     avatarInitials: 'FA',
-    mediaAttachment: { type: 'clip', id: 'ewt-3', title: 'Lions Season Recap — Draft' },
+    mediaAttachment: { type: 'clip', id: 'ewt-3', title: 'Wolves Season Recap — Draft' },
   },
   {
     id: 'evt-4',
@@ -288,7 +288,7 @@ const COMMUNITY_QUICK_SHARE_TARGETS: QuickShareTarget[] = [
   { id: 'kqs-2', name: 'Apex Racing', initials: 'AR', role: 'Team' },
   { id: 'kqs-3', name: 'M. Kane', initials: 'MK', role: 'Driver' },
   { id: 'kqs-4', name: 'Pit Crew', initials: 'PC', role: 'Group' },
-  { id: 'kqs-5', name: 'K-1 Media', initials: 'K1', role: 'Broadcast' },
+  { id: 'kqs-5', name: 'KaNeXT Media', initials: 'K1', role: 'Broadcast' },
 ];
 
 const COMMUNITY_INBOX_THREADS: VideoInboxThread[] = [
@@ -324,8 +324,8 @@ const COMMUNITY_INBOX_THREADS: VideoInboxThread[] = [
   },
   {
     id: 'kvt-4',
-    title: 'K-1 Media',
-    participants: ['K-1 Media'],
+    title: 'KaNeXT Media',
+    participants: ['KaNeXT Media'],
     lastMessage: 'Post-race interview clips are ready for social. Kane and Reeves sound bites included.',
     timestamp: ago(600),
     unread: 0,

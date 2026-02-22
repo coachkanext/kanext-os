@@ -1,5 +1,5 @@
 /**
- * Competition Commerce Data — K-1 Racing Series
+ * Competition Commerce Data — KaNeXT Racing Series
  * Tickets (seat tiers), Store (racing gear), Paddock (VIP hospitality)
  */
 
@@ -68,10 +68,10 @@ export function buildCompCommerceChain(
   prefix: string,
 ): PaymentChain {
   const chain = buildCommerceChain(type, amount, description, prefix);
-  // Patch settlement destination for K-1 Racing
+  // Patch settlement destination for KaNeXT Racing
   const settlement = chain.chain.find((s) => s.stage === 'Settlement');
   if (settlement) {
-    settlement.detail = `Funds settled to K-1 Racing Series`;
+    settlement.detail = `Funds settled to KaNeXT Racing Series`;
   }
   return chain;
 }

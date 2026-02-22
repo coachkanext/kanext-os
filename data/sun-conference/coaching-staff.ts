@@ -1,9 +1,7 @@
 /**
- * KaNeXT Conference — NAIA Men's Basketball
- * STEP 2: Coaching Staff (Program Context)
- *
- * Source: Official athletics websites + web search verification
- * 9 programs — current staff as publicly listed
+ * KaNeXT Conference — Men's Basketball
+ * Coaching Staff (Program Context)
+ * 9 programs — demo coaching staff
  */
 
 import type { CoachingStaff } from './schema';
@@ -11,97 +9,96 @@ import type { CoachingStaff } from './schema';
 export const coachingStaff: CoachingStaff[] = [
   {
     program_id: 'ave-maria',
-    head_coach_name: 'Jamon Copeland',
+    head_coach_name: 'Kevin Morris',
     head_coach_title: 'Head Men\'s Basketball Coach',
     assistant_coaches: [
-      { name: 'Frank O\'Brien', role: null },
-      { name: 'Michael O\'Donnell', role: null },
+      { name: 'Brian Palmer', role: null },
+      { name: 'Chris Henderson', role: null },
       { name: 'Paul Matthews', role: null },
     ],
-    staff_page_url: 'https://avemariagyrenes.com/sports/mens-basketball/coaches',
+    staff_page_url: 'https://westfield.edu/athletics/sports/mens-basketball/coaches',
   },
   {
     program_id: 'coastal-georgia',
-    head_coach_name: 'Tim MacAllister',
+    head_coach_name: 'Tim Parker',
     head_coach_title: 'Head Coach',
     assistant_coaches: [
-      { name: 'Keith Olive', role: 'Assistant Coach' },
-      { name: 'Charles Pankey', role: 'Assistant Coach' },
+      { name: 'Keith Oliver', role: 'Assistant Coach' },
+      { name: 'Charles Banks', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://coastalgeorgiasports.com/sports/mens-basketball/coaches',
+    staff_page_url: 'https://bayshore.edu/athletics/sports/mens-basketball/coaches',
   },
   {
     program_id: 'kx-sports',
-    head_coach_name: 'Delano Thomas',
+    head_coach_name: 'Marcus Williams',
     head_coach_title: 'Head Men\'s Basketball Coach',
     assistant_coaches: [
-      { name: 'Juan Urbina', role: 'Men\'s Basketball Assistant Coach' },
-      { name: 'Jacob Shaw', role: 'Assistant Men\'s Basketball Coach' },
+      { name: 'Derek Johnson', role: 'Associate Head Coach' },
+      { name: 'Tyler Brooks', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://fmuathletics.com/sports/mens-basketball/coaches',
+    staff_page_url: 'https://athletics.kanext.edu/sports/mens-basketball/coaches',
   },
   {
     program_id: 'keiser',
-    head_coach_name: 'Marcus Bryant',
+    head_coach_name: 'Andre Bryant',
     head_coach_title: 'Head Men\'s Basketball Coach',
     assistant_coaches: [
-      { name: 'Max Spinner', role: 'Assistant Men\'s Basketball Coach/Recruiting Coordinator' },
-      { name: 'Payton Hulsey', role: 'Assistant Men\'s Basketball Coach/Player Development' },
-      { name: 'Matt Wargo', role: 'Assistant Men\'s Basketball Coach/Developmental Team Head Coach' },
+      { name: 'Max Spencer', role: 'Assistant Coach / Recruiting Coordinator' },
+      { name: 'Jason Price', role: 'Assistant Coach / Player Development' },
+      { name: 'Matt Walker', role: 'Assistant Coach / Development Team' },
     ],
-    staff_page_url: 'https://kuseahawks.com/sports/mens-basketball/coaches',
+    staff_page_url: 'https://lakewood.edu/athletics/sports/mens-basketball/coaches',
   },
   {
     program_id: 'new-college-florida',
-    head_coach_name: 'Andrew Wingreen',
+    head_coach_name: 'Andrew Green',
     head_coach_title: 'Head Men\'s Basketball Coach',
     assistant_coaches: [
       { name: 'Ty Brooks', role: 'Assistant Coach' },
-      { name: 'Scott Townsend', role: 'Assistant Coach/Development Team Head Coach' },
-      { name: 'Alex Sommers', role: 'Assistant Coach' },
+      { name: 'Scott Taylor', role: 'Assistant Coach / Development Team' },
+      { name: 'Alex Summers', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://gomightybanyans.com/sports/mens-basketball/coaches',
+    staff_page_url: 'https://riverside.edu/athletics/sports/mens-basketball/coaches',
   },
   {
     program_id: 'southeastern',
-    head_coach_name: 'Randy Lee',
+    head_coach_name: 'Randy Lewis',
     head_coach_title: 'Head Coach',
     assistant_coaches: [
-      { name: 'Brandon Mayhan', role: 'Assistant Coach' },
-      { name: 'Tyler Savage', role: 'Assistant Coach' },
-      { name: 'Tanner Rubio', role: 'Assistant Coach' },
-      { name: 'Douglas Peppers', role: 'Assistant Coach' },
+      { name: 'Brandon May', role: 'Assistant Coach' },
+      { name: 'Tyler Stevens', role: 'Assistant Coach' },
+      { name: 'Tanner Rogers', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://fire.seu.edu/sports/mens-basketball/coaches',
+    staff_page_url: 'https://summit.edu/athletics/sports/mens-basketball/coaches',
   },
   {
     program_id: 'st-thomas',
-    head_coach_name: 'Zach Moss',
+    head_coach_name: 'Zach Morrison',
     head_coach_title: 'Head Men\'s Basketball Coach',
     assistant_coaches: [
       { name: 'Jacob Shaw', role: 'Associate Head Coach' },
-      { name: 'Lorel Beckford', role: 'Assistant Coach' },
+      { name: 'Lorel Beck', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://stubobcats.com/sports/mens-basketball/coaches',
+    staff_page_url: 'https://ridgemont.edu/athletics/sports/mens-basketball/coaches',
   },
   {
     program_id: 'warner',
     head_coach_name: 'Matt Warren',
     head_coach_title: 'Head Men\'s Basketball Coach',
     assistant_coaches: [
-      { name: 'Donnie Arey', role: 'Men\'s Basketball Coach' },
-      { name: 'Dylan Harvey', role: 'Men\'s Basketball Coach' },
+      { name: 'Donnie Archer', role: 'Assistant Coach' },
+      { name: 'Dylan Harper', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://warnerroyals.com/sports/mens-basketball/coaches',
+    staff_page_url: 'https://clearwater.edu/athletics/sports/mens-basketball/coaches',
   },
   {
     program_id: 'webber-international',
-    head_coach_name: 'Gabriel Rutledge',
+    head_coach_name: 'Gabriel Rhodes',
     head_coach_title: 'Head Men\'s Basketball Coach',
     assistant_coaches: [
-      { name: 'Johnson Mesidor', role: 'Assistant Men\'s Basketball Coach' },
-      { name: 'Jordan Counts', role: 'Assistant Men\'s Basketball Coach' },
+      { name: 'Johnson Mercer', role: 'Assistant Coach' },
+      { name: 'Jordan Collins', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://webberathletics.com/sports/mens-basketball/coaches',
+    staff_page_url: 'https://pinecrest.edu/athletics/sports/mens-basketball/coaches',
   },
 ];

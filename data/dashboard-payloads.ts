@@ -134,7 +134,7 @@ export function buildChurchDashboard(): DashboardTruthPayload {
   return {
     heroVideo: {
       title: 'Sunday Worship Service',
-      subtitle: 'Watch the latest message from Pastor Dipo Carter',
+      subtitle: 'Watch the latest message from Pastor James Carter',
     },
     contextSnapshot: [
       { id: 'campuses', label: 'Campuses', value: CAMPUSES.length },
@@ -303,7 +303,7 @@ export function buildBusinessDashboard(
 }
 
 // =============================================================================
-// COMPETITION (K-1)
+// COMPETITION (KaNeXT)
 // =============================================================================
 
 export function buildCompetitionDashboard(): DashboardTruthPayload {
@@ -312,7 +312,7 @@ export function buildCompetitionDashboard(): DashboardTruthPayload {
 
   return {
     heroVideo: {
-      title: 'K-1 Season 1 Race Highlights',
+      title: 'KaNeXT Season 1 Race Highlights',
       subtitle: 'Top moments from the 2026 championship',
     },
     contextSnapshot: [
@@ -380,7 +380,7 @@ export function buildCompetitionDashboard(): DashboardTruthPayload {
       viewAllLabel: 'View full executive history',
     },
     pinnedShelf: [
-      { id: 'pin-1', type: 'doc_link', title: 'K-1 Rulebook v1.2', subtitle: '15 articles · Last updated Jun 28' },
+      { id: 'pin-1', type: 'doc_link', title: 'KaNeXT Rulebook v1.2', subtitle: '15 articles · Last updated Jun 28' },
       { id: 'pin-2', type: 'doc_link', title: 'Season 1 Budget Summary', subtitle: '$4.8M of $6.2M target (77%)' },
       { id: 'pin-3', type: 'doc_link', title: 'Championship Scenarios', subtitle: '3 races remaining · Vasquez leads by 22 pts' },
     ],

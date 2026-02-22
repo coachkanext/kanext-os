@@ -110,7 +110,7 @@ const MEMBER_ATTENDANCE_TIMELINE = [
 ];
 
 const MEMBER_TASKS_MOCK = [
-  { id: 'mt-1', title: 'Complete volunteer orientation packet', status: 'completed', assignedBy: 'Pastor Dipo Carter', dueDate: 'Jan 15, 2026', type: 'onboarding' },
+  { id: 'mt-1', title: 'Complete volunteer orientation packet', status: 'completed', assignedBy: 'Pastor James Carter', dueDate: 'Jan 15, 2026', type: 'onboarding' },
   { id: 'mt-2', title: 'Upload signed photo/video consent form', status: 'open', assignedBy: 'Admin Team', dueDate: 'Mar 1, 2026', type: 'task' },
   { id: 'mt-3', title: 'Safeguarding Level 1 e-learning module', status: 'in_progress', assignedBy: 'Safety Coordinator', dueDate: 'Feb 28, 2026', type: 'training' },
 ];

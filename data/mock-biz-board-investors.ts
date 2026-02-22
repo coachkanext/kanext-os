@@ -176,7 +176,7 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     status: 'scheduled',
     recipients: 'All Investors (4)',
     summary:
-      'Upcoming update covering: Series A fundraise progress, KaNeXT OS v2.1 release, new proof wedge onboarding (K-1 Racing), and updated financial projections through Q2 2026.',
+      'Upcoming update covering: Series A fundraise progress, KaNeXT OS v2.1 release, new proof wedge onboarding (KaNeXT Racing), and updated financial projections through Q2 2026.',
     tier: 'all',
   },
   {

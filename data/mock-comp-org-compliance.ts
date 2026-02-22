@@ -1,6 +1,6 @@
 /**
  * Competition Organization Compliance Hub — Mock Data
- * KaNeXT Church rules, KaNeXT compliance records, K-1 equipment standards.
+ * KaNeXT Church rules, KaNeXT compliance records, KaNeXT equipment standards.
  */
 
 // =============================================================================
@@ -250,11 +250,11 @@ const eligibilityRecords: EligibilityRecord[] = [
   { id: 'e-4', entrant: 'Coastal FC', player: 'Jamal Carter', status: 'ineligible', reason: 'Failed pre-season physical — cardiac screening flagged', reviewDate: '2025-11-20', series: 'KaNeXT Championship Series' },
   { id: 'e-5', entrant: 'Metro United', player: 'Devon Brooks', status: 'eligible', reason: 'All requirements met', reviewDate: '2025-12-05', series: 'KaNeXT Championship Series' },
   { id: 'e-6', entrant: 'Metro United', player: 'Andre Mitchell', status: 'waived', reason: 'Age requirement waived — special dispensation granted by KaNeXT Church board', reviewDate: '2025-11-10', series: 'KaNeXT Championship Series' },
-  { id: 'e-7', entrant: 'Valley Athletics', player: 'Chris Thompson', status: 'eligible', reason: 'All requirements met', reviewDate: '2025-12-02', series: 'K-1 Invitational' },
-  { id: 'e-8', entrant: 'Valley Athletics', player: 'Kyle Foster', status: 'under-review', reason: 'Documentation pending — birth certificate verification', reviewDate: '2026-01-15', series: 'K-1 Invitational' },
+  { id: 'e-7', entrant: 'Valley Athletics', player: 'Chris Thompson', status: 'eligible', reason: 'All requirements met', reviewDate: '2025-12-02', series: 'KaNeXT Invitational' },
+  { id: 'e-8', entrant: 'Valley Athletics', player: 'Kyle Foster', status: 'under-review', reason: 'Documentation pending — birth certificate verification', reviewDate: '2026-01-15', series: 'KaNeXT Invitational' },
   { id: 'e-9', entrant: 'Capital City SC', player: 'Rashad Lewis', status: 'ineligible', reason: 'Exceeded age limit (36 years)', reviewDate: '2025-11-25', series: 'KaNeXT Championship Series' },
   { id: 'e-10', entrant: 'KaNeXT', player: 'Tyler Davis', status: 'eligible', reason: 'All requirements met — returning player', reviewDate: '2025-12-01', series: 'KaNeXT Championship Series' },
-  { id: 'e-11', entrant: 'Coastal FC', player: 'Brandon Hall', status: 'eligible', reason: 'All requirements met', reviewDate: '2025-12-03', series: 'K-1 Invitational' },
+  { id: 'e-11', entrant: 'Coastal FC', player: 'Brandon Hall', status: 'eligible', reason: 'All requirements met', reviewDate: '2025-12-03', series: 'KaNeXT Invitational' },
   { id: 'e-12', entrant: 'Harbor SC', player: 'Jason Rivera', status: 'under-review', reason: 'Pending TUE approval for prescribed medication', reviewDate: '2026-01-20', series: 'KaNeXT Championship Series' },
 ];
 
@@ -264,12 +264,12 @@ const drugTests: DrugTest[] = [
   { id: 'dt-3', date: '2026-02-08', athlete: 'Jamal Carter', series: 'KaNeXT Championship', result: 'pending', testType: 'targeted', lab: 'KaNeXT Church Certified Lab — Atlanta' },
   { id: 'dt-4', date: '2026-02-05', athlete: 'Devon Brooks', series: 'KaNeXT Championship', result: 'negative', testType: 'scheduled', lab: 'KaNeXT Church Certified Lab — Atlanta' },
   { id: 'dt-5', date: '2026-02-01', athlete: 'Andre Mitchell', series: 'KaNeXT Championship', result: 'negative', testType: 'random', lab: 'KaNeXT Church Certified Lab — Miami' },
-  { id: 'dt-6', date: '2026-01-28', athlete: 'Chris Thompson', series: 'K-1 Invitational', result: 'negative', testType: 'scheduled', lab: 'KaNeXT Church Certified Lab — Houston' },
+  { id: 'dt-6', date: '2026-01-28', athlete: 'Chris Thompson', series: 'KaNeXT Invitational', result: 'negative', testType: 'scheduled', lab: 'KaNeXT Church Certified Lab — Houston' },
   { id: 'dt-7', date: '2026-01-25', athlete: 'Rashad Lewis', series: 'KaNeXT Championship', result: 'positive', testType: 'random', lab: 'KaNeXT Church Certified Lab — Miami' },
   { id: 'dt-8', date: '2026-01-20', athlete: 'Tyler Davis', series: 'KaNeXT Championship', result: 'negative', testType: 'random', lab: 'KaNeXT Church Certified Lab — Atlanta' },
-  { id: 'dt-9', date: '2026-01-18', athlete: 'Brandon Hall', series: 'K-1 Invitational', result: 'inconclusive', testType: 'scheduled', lab: 'KaNeXT Church Certified Lab — Houston' },
+  { id: 'dt-9', date: '2026-01-18', athlete: 'Brandon Hall', series: 'KaNeXT Invitational', result: 'inconclusive', testType: 'scheduled', lab: 'KaNeXT Church Certified Lab — Houston' },
   { id: 'dt-10', date: '2026-01-15', athlete: 'Jason Rivera', series: 'KaNeXT Championship', result: 'pending', testType: 'targeted', lab: 'KaNeXT Church Certified Lab — Miami' },
-  { id: 'dt-11', date: '2026-01-12', athlete: 'Kyle Foster', series: 'K-1 Invitational', result: 'negative', testType: 'random', lab: 'KaNeXT Church Certified Lab — Houston' },
+  { id: 'dt-11', date: '2026-01-12', athlete: 'Kyle Foster', series: 'KaNeXT Invitational', result: 'negative', testType: 'random', lab: 'KaNeXT Church Certified Lab — Houston' },
   { id: 'dt-12', date: '2026-01-10', athlete: 'Terrence Banks', series: 'KaNeXT Championship', result: 'negative', testType: 'scheduled', lab: 'KaNeXT Church Certified Lab — Atlanta' },
 ];
 
@@ -293,7 +293,7 @@ const incidents: ComplianceIncident[] = [
   { id: 'inc-1', date: '2026-02-12', type: 'doping', severity: 'critical', description: 'Rashad Lewis (Capital City SC) tested positive for prohibited substance (stimulant class S6).', status: 'investigating', party: 'Capital City SC / Rashad Lewis', penalty: 'Provisional suspension pending B-sample' },
   { id: 'inc-2', date: '2026-02-10', type: 'equipment', severity: 'minor', description: 'KaNeXT — two players detected wearing performance tracking wristbands during warm-ups that were not removed before tip-off.', status: 'resolved', party: 'KaNeXT', penalty: 'Written warning — first offense' },
   { id: 'inc-3', date: '2026-02-08', type: 'conduct', severity: 'major', description: 'Post-game altercation between coaching staff of Metro United and Coastal FC in tunnel area.', status: 'investigating', party: 'Metro United / Coastal FC', penalty: 'Under review — potential multi-game suspension' },
-  { id: 'inc-4', date: '2026-02-05', type: 'eligibility', severity: 'major', description: 'Valley Athletics fielded Kyle Foster in K-1 Invitational match while birth certificate verification was still pending.', status: 'open', party: 'Valley Athletics / Kyle Foster', penalty: 'Potential match forfeiture and fine' },
+  { id: 'inc-4', date: '2026-02-05', type: 'eligibility', severity: 'major', description: 'Valley Athletics fielded Kyle Foster in KaNeXT Invitational match while birth certificate verification was still pending.', status: 'open', party: 'Valley Athletics / Kyle Foster', penalty: 'Potential match forfeiture and fine' },
   { id: 'inc-5', date: '2026-01-30', type: 'rule-violation', severity: 'minor', description: 'Harbor SC bench exceeded maximum coaching staff limit by one during KaNeXT Championship Series match.', status: 'resolved', party: 'Harbor SC', penalty: '$2,500 fine' },
   { id: 'inc-6', date: '2026-01-25', type: 'conduct', severity: 'minor', description: 'Unsportsmanlike conduct — player ejected for verbal abuse of officials. Standard protocol followed.', status: 'resolved', party: 'Capital City SC / T. Williams', penalty: '1-game suspension + $1,000 fine' },
   { id: 'inc-7', date: '2026-01-20', type: 'equipment', severity: 'minor', description: 'Coastal FC jerseys missing minimum front number height requirement on 3 alternate uniforms.', status: 'resolved', party: 'Coastal FC', penalty: 'Jerseys removed from rotation, no fine (corrected within 48h)' },
@@ -324,7 +324,7 @@ const certifications: Certification[] = [
   { id: 'cert-4', name: 'Competition Venue Safety', holder: 'KaNeXT Athletic Complex', type: 'venue', expiryDate: '2026-08-01', status: 'valid' },
   { id: 'cert-5', name: 'Competition Venue Safety', holder: 'Metro Arena', type: 'venue', expiryDate: '2026-02-28', status: 'expiring-soon' },
   { id: 'cert-6', name: 'Competition Venue Safety', holder: 'Harbor Fieldhouse', type: 'venue', expiryDate: '2025-12-31', status: 'expired' },
-  { id: 'cert-7', name: 'Ball Certification — KaNeXT Church Approved', holder: 'Spalding K-1 Pro', type: 'equipment', expiryDate: '2027-01-01', status: 'valid' },
+  { id: 'cert-7', name: 'Ball Certification — KaNeXT Church Approved', holder: 'Spalding KaNeXT Pro', type: 'equipment', expiryDate: '2027-01-01', status: 'valid' },
   { id: 'cert-8', name: 'Court Surface Certification', holder: 'Connor Sports Hardwood', type: 'equipment', expiryDate: '2026-07-15', status: 'valid' },
   { id: 'cert-9', name: 'Shot Clock System Certification', holder: 'Daktronics SC-2400', type: 'equipment', expiryDate: '2026-04-01', status: 'valid' },
   { id: 'cert-10', name: 'Courtside Medical — EMT', holder: 'Dr. Angela Freeman', type: 'medical', expiryDate: '2026-09-30', status: 'valid' },
@@ -347,7 +347,7 @@ const reports: ComplianceReport[] = [
   { id: 'rpt-9', name: 'Annual Compliance Audit — 2025', type: 'Audit Report', date: '2026-01-31', format: 'PDF' },
   { id: 'rpt-10', name: 'Entrant Financial Disclosure Summary', type: 'Financial Compliance', date: '2026-01-20', format: 'XLSX' },
   { id: 'rpt-11', name: 'Rule Amendments — 2025 Recap', type: 'Rules Report', date: '2026-01-05', format: 'PDF' },
-  { id: 'rpt-12', name: 'K-1 Series Compliance Scorecard', type: 'Scorecard', date: '2026-02-14', format: 'PDF' },
+  { id: 'rpt-12', name: 'KaNeXT Series Compliance Scorecard', type: 'Scorecard', date: '2026-02-14', format: 'PDF' },
 ];
 
 const settings: ComplianceSettingToggle[] = [

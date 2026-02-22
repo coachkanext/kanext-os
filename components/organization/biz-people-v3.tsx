@@ -53,7 +53,7 @@ const CONTACT_CATEGORIES: ContactCategory[] = ['All', 'Investors', 'Partners', '
 const CONTACTS = [
   { id: 'c1', name: 'Velocity Ventures', category: 'Investors' as ContactCategory, contact: 'Sarah Lin', email: 'sarah@velocityvc.com', note: 'Lead investor, pre-seed round' },
   { id: 'c2', name: 'Horizon Capital', category: 'Investors' as ContactCategory, contact: 'Michael Torres', email: 'mt@horizoncap.io', note: 'Seed-stage interest' },
-  { id: 'c3', name: 'NAIA Conference Partners', category: 'Partners' as ContactCategory, contact: 'Robert Hughes', email: 'rhughes@naia.org', note: 'Beta testing partnership' },
+  { id: 'c3', name: 'NAA Conference Partners', category: 'Partners' as ContactCategory, contact: 'Robert Hughes', email: 'rhughes@naia.org', note: 'Beta testing partnership' },
   { id: 'c4', name: 'Faith Community Church', category: 'Clients' as ContactCategory, contact: 'Pastor David Brown', email: 'dbrown@fcc.org', note: 'Pilot church customer' },
   { id: 'c5', name: 'TechCrunch', category: 'Press' as ContactCategory, contact: 'Amanda Wells', email: 'amanda@techcrunch.com', note: 'Journalist covering EdTech/SaaS' },
   { id: 'c6', name: 'AWS', category: 'Vendors' as ContactCategory, contact: 'Cloud Team', email: 'enterprise@aws.amazon.com', note: 'Infrastructure provider' },

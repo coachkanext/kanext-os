@@ -38,12 +38,12 @@ export interface VideoStripCard {
 }
 
 export const VIDEO_STRIP_CARDS: VideoStripCard[] = [
-  { id: 'vs-1', title: 'Keiser Scout Breakdown', tag: 'SCOUT', timestamp: '2h ago', duration: '8:42', sourceBadge: 'Staff', thumbnailColor: '#1D9BF0', rbac: 'R5' },
+  { id: 'vs-1', title: 'Lakewood Scout Breakdown', tag: 'SCOUT', timestamp: '2h ago', duration: '8:42', sourceBadge: 'Staff', thumbnailColor: '#1D9BF0', rbac: 'R5' },
   { id: 'vs-2', title: 'Tuesday Practice \u2014 Half-Court Sets', tag: 'PRACTICE', timestamp: '5h ago', duration: '14:20', sourceBadge: 'KaNeXT Film', thumbnailColor: '#0B0F14', rbac: 'R5' },
   { id: 'vs-3', title: 'Carter Development \u2014 Pull-Up 3s', tag: 'DEV', timestamp: '1d ago', duration: '6:15', sourceBadge: 'Dev Lab', thumbnailColor: '#0B0F14', rbac: 'R5' },
   { id: 'vs-4', title: KaNeXT_LAST_GAME ? `vs ${KaNeXT_LAST_GAME.opponent} \u2014 Full Game` : 'Season Highlights \u2014 Full Game', tag: 'GAME', timestamp: '3d ago', duration: '1:42:08', sourceBadge: 'KaNeXT Film', thumbnailColor: '#0B0F14', rbac: 'R4' },
   { id: 'vs-5', title: 'Coach K Pregame \u2014 Weekly Presser', tag: 'CONNECTCAST', timestamp: '4d ago', duration: '22:35', sourceBadge: 'ConnectCast', thumbnailColor: '#0B0F14', rbac: 'R1' },
-  { id: 'vs-6', title: 'Lions Gameday Hype \u2014 Social Cut', tag: 'MEDIA', timestamp: '5d ago', duration: '1:12', sourceBadge: 'Media Dept', thumbnailColor: '#0B0F14', rbac: 'R1' },
+  { id: 'vs-6', title: 'Wolves Gameday Hype \u2014 Social Cut', tag: 'MEDIA', timestamp: '5d ago', duration: '1:12', sourceBadge: 'Media Dept', thumbnailColor: '#0B0F14', rbac: 'R1' },
   { id: 'vs-7', title: 'Southeastern Film \u2014 Transition D', tag: 'SCOUT', timestamp: '6d ago', duration: '11:05', sourceBadge: 'Staff', thumbnailColor: '#1D9BF0', rbac: 'R5' },
   { id: 'vs-8', title: 'Strength Session \u2014 Pre-Game Lift', tag: 'PRACTICE', timestamp: '1w ago', duration: '18:40', sourceBadge: 'S&C', thumbnailColor: '#0B0F14', rbac: 'R4' },
 ];
@@ -73,7 +73,7 @@ export const TEAM_TRUTH_HEADER: TeamTruthHeader = {
   programName: 'KaNeXT MBB',
   sportCode: 'MBB',
   season: '2025-26',
-  level: 'NAIA',
+  level: 'NAA',
   conference: 'KaNeXT Conference',
   record: KaNeXT_RECORD.overall,
   confRecord: KaNeXT_RECORD.conference,
@@ -234,7 +234,7 @@ export interface WorkQueueItem {
 
 export const MY_WORK_QUEUE: WorkQueueItem[] = [
   { id: 'wq-1', title: 'Eval: Alex Morgan (PG, 6-2, Class of 2026)', type: 'recruiting', dueDate: 'Today', owner: 'Coach Carter', priority: 'high', linkedObject: 'Recruiting Board', rbac: 'R5' },
-  { id: 'wq-2', title: 'Review opponent tendencies \u2014 Keiser pick-and-roll', type: 'film', dueDate: 'Today', owner: 'Coach Carter', priority: 'high', linkedObject: 'Film Room', rbac: 'R5' },
+  { id: 'wq-2', title: 'Review opponent tendencies \u2014 Lakewood pick-and-roll', type: 'film', dueDate: 'Today', owner: 'Coach Carter', priority: 'high', linkedObject: 'Film Room', rbac: 'R5' },
   { id: 'wq-3', title: 'Approve travel itinerary for away series', type: 'ops', dueDate: 'Tomorrow', owner: 'Ops Staff', priority: 'high', linkedObject: 'Travel Plan', rbac: 'R6' },
   { id: 'wq-4', title: 'Schedule postgame press conference', type: 'media', dueDate: 'Fri, Feb 21', owner: 'Media Dept', priority: 'medium', linkedObject: 'Media Calendar', rbac: 'R4' },
   { id: 'wq-5', title: 'Submit eligibility verification \u2014 3 transfers', type: 'compliance', dueDate: 'Fri, Feb 21', owner: 'Compliance', priority: 'high', linkedObject: 'Compliance Center', rbac: 'R6' },

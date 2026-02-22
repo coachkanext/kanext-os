@@ -252,7 +252,7 @@ export function TeamSheet({
         <View style={styles.headerTop}>
           <View style={{ flex: 1 }}>
             <Text style={[styles.teamName, { color: colors.text }]}>
-              KaNeXT Sports Lions
+              KaNeXT Sports Wolves
             </Text>
             <Text style={[styles.teamSub, { color: colors.textSecondary }]}>
               NAIA · KaNeXT Conference · Men's Basketball

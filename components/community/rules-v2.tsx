@@ -1,5 +1,5 @@
 /**
- * Rules V2 — 5-tab rules hub for K-1 Competition mode (CEO/Commissioner level).
+ * Rules V2 — 5-tab rules hub for KaNeXT Competition mode (CEO/Commissioner level).
  * Tabs: Rulebook | Penalties | Directives | Case Law | Points
  */
 

@@ -47,7 +47,7 @@ const DIVIDER = '#0B0F14';
 
 // ─── Headshots (same map as roster-content) ──────────────────────────────────
 
-const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
+const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
 const HEADSHOTS: Record<string, any> = {
   '0':  require('@/assets/images/headshots/thomas.png'),
   '1':  require('@/assets/images/headshots/asceric.png'),
@@ -105,7 +105,7 @@ export default function PlayerBioScreen() {
     );
   }
 
-  const headshot = HEADSHOTS[jersey] ?? KaNeXT_SEAL;
+  const headshot = HEADSHOTS[jersey] ?? KaNeXT_LOGO;
   const allGames = getFmuSeasonGames(jersey);
   const career = getFmuCareer(jersey);
   const highlights = getFmuHighlights(jersey);

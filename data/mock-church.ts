@@ -35,16 +35,16 @@ export const ICC_ORGANIZATION: ChurchOrganization = {
 
 export const CAMPUSES: Campus[] = [
   {
-    id: 'iccla',
+    id: 'kcc',
     name: 'KaNeXT Church',
     shortName: 'KaNeXT Church',
     location: 'Nashville, TN',
     address: '100 KaNeXT Blvd, Nashville, TN 90043',
     description: 'Our flagship campus in the heart of Los Angeles, serving the community since 1985.',
     serviceTimes: [
-      { day: 'Sunday', time: '8:00 AM', service: 'Early Morning Service', campusId: 'iccla' },
-      { day: 'Sunday', time: '10:30 AM', service: 'Main Service', campusId: 'iccla' },
-      { day: 'Wednesday', time: '7:00 PM', service: 'Midweek Service', campusId: 'iccla' },
+      { day: 'Sunday', time: '8:00 AM', service: 'Early Morning Service', campusId: 'kcc' },
+      { day: 'Sunday', time: '10:30 AM', service: 'Main Service', campusId: 'kcc' },
+      { day: 'Wednesday', time: '7:00 PM', service: 'Midweek Service', campusId: 'kcc' },
     ],
   },
 ];
@@ -77,7 +77,7 @@ export const MINISTRIES: Ministry[] = [
   },
   {
     id: 'ministry-prayer',
-    name: 'Hotline to Heaven',
+    name: 'Morning Prayer Line',
     description: 'Our 24/7 prayer ministry - we believe in the power of prayer.',
     type: 'prayer',
     icon: 'phone.fill',
@@ -119,7 +119,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-1',
     title: 'Walking in Faith',
-    speaker: 'Pastor Dipo Carter',
+    speaker: 'Pastor James Carter',
     date: new Date('2026-02-02'),
     mediaType: 'video',
     seriesName: 'Faith Forward',
@@ -128,7 +128,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-2',
     title: 'The Power of Prayer',
-    speaker: 'Pastor Dipo Carter',
+    speaker: 'Pastor James Carter',
     date: new Date('2026-01-26'),
     mediaType: 'video',
     seriesName: 'Faith Forward',
@@ -146,7 +146,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-4',
     title: 'Fresh Start',
-    speaker: 'Pastor Dipo Carter',
+    speaker: 'Pastor James Carter',
     date: new Date('2026-01-12'),
     mediaType: 'video',
     seriesName: 'New Year, New You',
@@ -155,7 +155,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-5',
     title: 'Year in Review',
-    speaker: 'Pastor Dipo Carter',
+    speaker: 'Pastor James Carter',
     date: new Date('2025-12-29'),
     mediaType: 'video',
     duration: '38:45',
@@ -213,7 +213,7 @@ export interface ChurchLeader {
 export const CHURCH_LEADERSHIP: ChurchLeader[] = [
   {
     id: 'leader-1',
-    name: 'Pastor Dipo Carter',
+    name: 'Pastor James Carter',
     title: 'Senior Pastor',
     role: 'senior_pastor',
     bio: 'Pastor David has led KaNeXT Church since 1995 with a heart for the nations.',

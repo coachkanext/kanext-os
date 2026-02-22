@@ -65,7 +65,7 @@ const UPCOMING_BROADCAST: BroadcastHero = {
 
 const REPLAY_BROADCAST: BroadcastHero = {
   id: 'bcast-replay',
-  title: 'K-1 Round 1 — Austin Replay',
+  title: 'KaNeXT Round 1 — Austin Replay',
   subtitle: 'Circuit of the Americas · Main Race',
   thumbnailColor: '#0B0F14',
   status: 'replay',

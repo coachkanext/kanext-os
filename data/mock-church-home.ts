@@ -35,7 +35,7 @@ export const CHURCH_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'ce-003',
     type: 'meeting',
-    title: 'T.O.R.C.H. Youth Night',
+    title: 'Catalyst Youth Night',
     startDatetime: new Date('2025-02-28T18:30:00'),
     endDatetime: new Date('2025-02-28T21:00:00'),
     location: 'Youth Center',
@@ -45,7 +45,7 @@ export const CHURCH_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'ce-004',
     type: 'meeting',
-    title: 'Hotline to Heaven — Morning Prayer',
+    title: 'Morning Prayer Line — Morning Prayer',
     startDatetime: new Date('2025-02-25T06:00:00'),
     endDatetime: new Date('2025-02-25T07:00:00'),
     location: 'Prayer Chapel',
@@ -75,7 +75,7 @@ export const CHURCH_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'ce-007',
     type: 'meeting',
-    title: 'Sheepfold Children\'s Church',
+    title: 'KaNeXT Kids Children\'s Church',
     startDatetime: new Date('2025-03-02T09:30:00'),
     endDatetime: new Date('2025-03-02T11:30:00'),
     location: 'Children\'s Wing',
@@ -85,7 +85,7 @@ export const CHURCH_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'ce-008',
     type: 'meeting',
-    title: 'The Harvesters — Community Outreach',
+    title: 'Community Outreach — Community Outreach',
     startDatetime: new Date('2025-03-08T08:00:00'),
     endDatetime: new Date('2025-03-08T13:00:00'),
     location: 'Skid Row Community Center',
@@ -95,7 +95,7 @@ export const CHURCH_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'ce-009',
     type: 'meeting',
-    title: 'Fresh Fire Young Adults',
+    title: 'Ignite Youth Young Adults',
     startDatetime: new Date('2025-03-04T19:30:00'),
     endDatetime: new Date('2025-03-04T21:00:00'),
     location: 'Fellowship Hall',
@@ -105,7 +105,7 @@ export const CHURCH_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'ce-010',
     type: 'meeting',
-    title: 'Vineyard Voices Choir Rehearsal',
+    title: 'Worship Team Choir Rehearsal',
     startDatetime: new Date('2025-02-27T19:00:00'),
     endDatetime: new Date('2025-02-27T21:00:00'),
     location: 'Main Sanctuary',
@@ -125,7 +125,7 @@ export const CHURCH_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'ce-012',
     type: 'meeting',
-    title: 'Single Saved Serving — Social Mixer',
+    title: 'Single & Purposeful — Social Mixer',
     startDatetime: new Date('2025-03-07T18:30:00'),
     endDatetime: new Date('2025-03-07T21:00:00'),
     location: 'Fellowship Hall',
@@ -169,7 +169,7 @@ export const CHURCH_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
     startDatetime: new Date('2025-04-18T19:00:00'),
     endDatetime: new Date('2025-04-18T21:00:00'),
     location: 'Main Sanctuary',
-    description: 'Solemn reflection service with communion and Vineyard Voices cantata.',
+    description: 'Solemn reflection service with communion and Worship Team cantata.',
     visibilityScope: 'all_program',
   },
   {
@@ -185,7 +185,7 @@ export const CHURCH_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'ce-018',
     type: 'meeting',
-    title: 'Hotline to Heaven — Friday Night Prayer',
+    title: 'Morning Prayer Line — Friday Night Prayer',
     startDatetime: new Date('2025-02-28T21:00:00'),
     endDatetime: new Date('2025-02-28T23:00:00'),
     location: 'Prayer Chapel',
@@ -497,14 +497,14 @@ export const CHURCH_NEWS: ChurchNewsItem[] = [
   },
   {
     id: 'news-003',
-    title: 'The Harvesters Feed 300+ Families on Skid Row',
+    title: 'Community Outreach Feed 300+ Families on Skid Row',
     category: 'outreach',
     date: '2025-02-10',
     isVideo: false,
   },
   {
     id: 'news-004',
-    title: 'Vineyard Voices — "Great Is Thy Faithfulness" (Live)',
+    title: 'Worship Team — "Great Is Thy Faithfulness" (Live)',
     category: 'worship',
     date: '2025-02-09',
     duration: '6:34',
@@ -519,7 +519,7 @@ export const CHURCH_NEWS: ChurchNewsItem[] = [
   },
   {
     id: 'news-006',
-    title: 'T.O.R.C.H. Youth Night Recap — 120 Teens Show Up!',
+    title: 'Catalyst Youth Night Recap — 120 Teens Show Up!',
     category: 'ministry_highlight',
     date: '2025-02-15',
     isVideo: false,
@@ -574,7 +574,7 @@ export interface Ministry {
 export const CHURCH_MINISTRIES: Ministry[] = [
   {
     id: 'min-001',
-    name: 'T.O.R.C.H.',
+    name: 'Catalyst',
     icon: 'flame.fill',
     mission: 'Teens On the Road to Christ\'s Harvest — igniting the next generation through worship, mentorship, and biblical identity.',
     leader: 'Minister Brianna Carter',
@@ -587,7 +587,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
   },
   {
     id: 'min-002',
-    name: 'Sheepfold',
+    name: 'KaNeXT Kids',
     icon: 'heart.circle.fill',
     mission: 'Nurturing children ages 3-12 in the love and knowledge of Jesus through creative Bible teaching and worship.',
     leader: 'Sister Angela Davis',
@@ -600,7 +600,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
   },
   {
     id: 'min-003',
-    name: 'Fresh Fire',
+    name: 'Ignite Youth',
     icon: 'sparkles',
     mission: 'Young adults (18-30) pursuing God with passion — tackling real-world faith, career, and relationships.',
     leader: 'Minister Terrence Jackson',
@@ -639,7 +639,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
   },
   {
     id: 'min-006',
-    name: 'Vineyard Voices',
+    name: 'Worship Team',
     icon: 'music.note.list',
     mission: 'Leading the congregation into God\'s presence through anointed worship, song, and creative arts.',
     leader: 'Minister Jasmine Okafor',
@@ -652,7 +652,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
   },
   {
     id: 'min-007',
-    name: 'Single Saved Serving',
+    name: 'Single & Purposeful',
     icon: 'star.fill',
     mission: 'Empowering single believers to thrive in purpose, purity, and community while serving the Kingdom.',
     leader: 'Minister Desiree Hamilton',
@@ -665,7 +665,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
   },
   {
     id: 'min-008',
-    name: 'The Harvesters',
+    name: 'Community Outreach',
     icon: 'hand.raised.fill',
     mission: 'Boots-on-the-ground outreach — feeding the homeless, clothing drives, and neighborhood evangelism across Los Angeles.',
     leader: 'Deacon Raymond Shaw',
@@ -678,7 +678,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
   },
   {
     id: 'min-009',
-    name: 'Hotline to Heaven',
+    name: 'Morning Prayer Line',
     icon: 'hands.sparkles.fill',
     mission: 'Corporate and intercessory prayer ministry — standing in the gap for the church, the city, and the nations.',
     leader: 'Mother Estelle Jacobs',
@@ -727,17 +727,17 @@ export const CHURCH_LEADERS: ChurchLeader[] = [
     ministries: ['Kingdom Builders', 'Rooted'],
     bio: 'Founder and senior pastor of KaNeXT Church for over 18 years. A prophetic voice in the city, Pastor Isaiah is known for bold, uncompromising preaching and a deep love for the community.',
     yearsServing: 18,
-    email: 'pastor.isaiah@iccla.org',
+    email: 'pastor.isaiah@kanextchurch.org',
     status: 'active',
   },
   {
     id: 'ldr-002',
     name: 'Lady Monique Carter',
     title: 'Co-Pastor',
-    ministries: ['Single Saved Serving', 'Connect Groups'],
+    ministries: ['Single & Purposeful', 'Connect Groups'],
     bio: 'Co-pastor and co-founder of KaNeXT Church. Lady Monique oversees women\'s initiatives and counseling ministry, bringing warmth and wisdom to every area she touches.',
     yearsServing: 18,
-    email: 'lady.monique@iccla.org',
+    email: 'lady.monique@kanextchurch.org',
     status: 'active',
   },
   {
@@ -747,7 +747,7 @@ export const CHURCH_LEADERS: ChurchLeader[] = [
     ministries: ['Kingdom Builders'],
     bio: 'Leads church administration and leadership development. A retired business executive who brings strategic vision to the House.',
     yearsServing: 14,
-    email: 'elder.marcus@iccla.org',
+    email: 'elder.marcus@kanextchurch.org',
     status: 'active',
   },
   {
@@ -757,57 +757,57 @@ export const CHURCH_LEADERS: ChurchLeader[] = [
     ministries: ['Rooted', 'Connect Groups'],
     bio: 'Shepherds new believers and members through the discipleship pipeline, ensuring no one falls through the cracks.',
     yearsServing: 11,
-    email: 'elder.claudia@iccla.org',
+    email: 'elder.claudia@kanextchurch.org',
     status: 'active',
   },
   {
     id: 'ldr-005',
     name: 'Minister Terrence Jackson',
     title: 'Young Adults Pastor',
-    ministries: ['Fresh Fire'],
+    ministries: ['Ignite Youth'],
     bio: 'Dynamic preacher and mentor to the 18-30 demographic. A graduate of Fuller Theological Seminary with a heart for culture and theology.',
     yearsServing: 6,
-    email: 'minister.terrence@iccla.org',
+    email: 'minister.terrence@kanextchurch.org',
     status: 'active',
   },
   {
     id: 'ldr-006',
     name: 'Minister Brianna Carter',
     title: 'Youth Pastor',
-    ministries: ['T.O.R.C.H.'],
+    ministries: ['Catalyst'],
     bio: 'Pastor Isaiah\'s daughter, called to youth ministry from a young age. Leads with energy, authenticity, and deep compassion for teens.',
     yearsServing: 4,
-    email: 'minister.brianna@iccla.org',
+    email: 'minister.brianna@kanextchurch.org',
     status: 'active',
   },
   {
     id: 'ldr-007',
     name: 'Minister Jasmine Okafor',
     title: 'Worship Director',
-    ministries: ['Vineyard Voices'],
-    bio: 'Berklee-trained musician and worship leader. Under her direction, Vineyard Voices has grown from 12 to 35 members with a full band.',
+    ministries: ['Worship Team'],
+    bio: 'Berklee-trained musician and worship leader. Under her direction, Worship Team has grown from 12 to 35 members with a full band.',
     yearsServing: 7,
-    email: 'minister.jasmine@iccla.org',
+    email: 'minister.jasmine@kanextchurch.org',
     status: 'active',
   },
   {
     id: 'ldr-008',
     name: 'Deacon Raymond Shaw',
     title: 'Outreach Director',
-    ministries: ['The Harvesters'],
+    ministries: ['Community Outreach'],
     bio: 'Vietnam-era veteran and lifelong servant. Coordinates all community outreach, from Skid Row to South Central.',
     yearsServing: 16,
-    email: 'deacon.raymond@iccla.org',
+    email: 'deacon.raymond@kanextchurch.org',
     status: 'active',
   },
   {
     id: 'ldr-009',
     name: 'Mother Estelle Jacobs',
     title: 'Prayer Ministry Director',
-    ministries: ['Hotline to Heaven'],
+    ministries: ['Morning Prayer Line'],
     bio: 'The spiritual anchor of KaNeXT Church. Mother Estelle has been a prayer warrior for 40+ years and leads the intercessory team with authority and grace.',
     yearsServing: 15,
-    email: 'mother.estelle@iccla.org',
+    email: 'mother.estelle@kanextchurch.org',
     status: 'active',
   },
   {
@@ -817,7 +817,7 @@ export const CHURCH_LEADERS: ChurchLeader[] = [
     ministries: ['Connect Groups'],
     bio: 'Former high school principal who now pours into small-group leadership development. Oversees 6 active Connect Groups across LA.',
     yearsServing: 9,
-    email: 'deacon.lawrence@iccla.org',
+    email: 'deacon.lawrence@kanextchurch.org',
     status: 'active',
   },
 ];
@@ -837,17 +837,17 @@ export interface ScheduleSlot {
 
 export const MINISTRY_SCHEDULE: ScheduleSlot[] = [
   { id: 'sch-001', day: 'Sun', time: '9:30 AM', ministry: 'Sunday Worship', location: 'Main Sanctuary', color: '#1D9BF0' },
-  { id: 'sch-002', day: 'Sun', time: '9:30 AM', ministry: 'Sheepfold', location: 'Children\'s Wing', color: '#1D9BF0' },
+  { id: 'sch-002', day: 'Sun', time: '9:30 AM', ministry: 'KaNeXT Kids', location: 'Children\'s Wing', color: '#1D9BF0' },
   { id: 'sch-003', day: 'Sun', time: '1:00 PM', ministry: 'Rooted (Bi-weekly)', location: 'Conference Room B', color: '#22C55E' },
-  { id: 'sch-004', day: 'Tue', time: '6:00 AM', ministry: 'Hotline to Heaven', location: 'Prayer Chapel', color: '#1D9BF0' },
-  { id: 'sch-005', day: 'Tue', time: '7:30 PM', ministry: 'Fresh Fire', location: 'Fellowship Hall', color: '#EF4444' },
+  { id: 'sch-004', day: 'Tue', time: '6:00 AM', ministry: 'Morning Prayer Line', location: 'Prayer Chapel', color: '#1D9BF0' },
+  { id: 'sch-005', day: 'Tue', time: '7:30 PM', ministry: 'Ignite Youth', location: 'Fellowship Hall', color: '#EF4444' },
   { id: 'sch-006', day: 'Wed', time: '7:00 PM', ministry: 'Midweek Bible Study', location: 'Fellowship Hall', color: '#1D9BF0' },
-  { id: 'sch-007', day: 'Thu', time: '7:00 PM', ministry: 'Vineyard Voices Rehearsal', location: 'Main Sanctuary', color: '#1D9BF0' },
-  { id: 'sch-008', day: 'Fri', time: '6:00 AM', ministry: 'Hotline to Heaven', location: 'Prayer Chapel', color: '#1D9BF0' },
-  { id: 'sch-009', day: 'Fri', time: '6:30 PM', ministry: 'T.O.R.C.H. Youth Night', location: 'Youth Center', color: '#F59E0B' },
-  { id: 'sch-010', day: 'Sat', time: '8:00 AM', ministry: 'The Harvesters (2nd Sat)', location: 'Offsite', color: '#1D9BF0' },
+  { id: 'sch-007', day: 'Thu', time: '7:00 PM', ministry: 'Worship Team Rehearsal', location: 'Main Sanctuary', color: '#1D9BF0' },
+  { id: 'sch-008', day: 'Fri', time: '6:00 AM', ministry: 'Morning Prayer Line', location: 'Prayer Chapel', color: '#1D9BF0' },
+  { id: 'sch-009', day: 'Fri', time: '6:30 PM', ministry: 'Catalyst Youth Night', location: 'Youth Center', color: '#F59E0B' },
+  { id: 'sch-010', day: 'Sat', time: '8:00 AM', ministry: 'Community Outreach (2nd Sat)', location: 'Offsite', color: '#1D9BF0' },
   { id: 'sch-011', day: 'Sat', time: '9:00 AM', ministry: 'Kingdom Builders (1st Sat)', location: 'Conference Room A', color: '#1D9BF0' },
-  { id: 'sch-012', day: 'Fri', time: '6:30 PM', ministry: 'Single Saved Serving (1st Fri)', location: 'Fellowship Hall', color: '#F59E0B' },
+  { id: 'sch-012', day: 'Fri', time: '6:30 PM', ministry: 'Single & Purposeful (1st Fri)', location: 'Fellowship Hall', color: '#F59E0B' },
 ];
 
 // =============================================================================
@@ -940,7 +940,7 @@ export const PIPELINE_PEOPLE: PipelinePerson[] = [
     lastVisit: '2025-02-16',
     nextStep: 'Ministry interest form',
     assignedTo: 'Minister Terrence Jackson',
-    notes: 'Completed Rooted. Joined Fresh Fire. Considering the media team.',
+    notes: 'Completed Rooted. Joined Ignite Youth. Considering the media team.',
   },
   {
     id: 'pp-008',
@@ -949,7 +949,7 @@ export const PIPELINE_PEOPLE: PipelinePerson[] = [
     lastVisit: '2025-02-16',
     nextStep: 'Volunteer orientation',
     assignedTo: 'Sister Angela Davis',
-    notes: 'In a Connect Group. Wants to serve in Sheepfold.',
+    notes: 'In a Connect Group. Wants to serve in KaNeXT Kids.',
   },
   {
     id: 'pp-009',
@@ -1023,7 +1023,7 @@ export const PIPELINE_PEOPLE: PipelinePerson[] = [
     name: 'Minister Desiree Hamilton',
     stage: 'leader',
     lastVisit: '2025-02-16',
-    notes: 'Licensed minister. Leads Single Saved Serving. Pursuing ordination.',
+    notes: 'Licensed minister. Leads Single & Purposeful. Pursuing ordination.',
   },
   {
     id: 'pp-018',
@@ -1150,7 +1150,7 @@ export const RECENT_VISITORS: RecentVisitor[] = [
     followUpStatus: 'contacted',
     assignedTo: 'Elder Claudia Monroe',
     notes: 'Came with college friend. Excited about worship.',
-    interests: ['Fresh Fire', 'Worship'],
+    interests: ['Ignite Youth', 'Worship'],
   },
   {
     id: 'vis-002',
@@ -1160,7 +1160,7 @@ export const RECENT_VISITORS: RecentVisitor[] = [
     followUpStatus: 'pending',
     assignedTo: 'Deacon Lawrence Price',
     notes: 'Single mom, two kids ages 5 and 8. Needs childcare info.',
-    interests: ['Sheepfold', 'Single Saved Serving'],
+    interests: ['KaNeXT Kids', 'Single & Purposeful'],
   },
   {
     id: 'vis-003',
@@ -1170,7 +1170,7 @@ export const RECENT_VISITORS: RecentVisitor[] = [
     followUpStatus: 'contacted',
     assignedTo: 'Minister Terrence Jackson',
     notes: 'UCLA sophomore. Found us on IG reels.',
-    interests: ['Fresh Fire', 'Connect Groups'],
+    interests: ['Ignite Youth', 'Connect Groups'],
   },
   {
     id: 'vis-004',
@@ -1180,7 +1180,7 @@ export const RECENT_VISITORS: RecentVisitor[] = [
     followUpStatus: 'scheduled',
     assignedTo: 'Elder Claudia Monroe',
     notes: 'Retired couple. Relocated from Houston. Meeting for coffee Tuesday.',
-    interests: ['Golden Vessels', 'The Harvesters'],
+    interests: ['Golden Vessels', 'Community Outreach'],
   },
   {
     id: 'vis-005',
@@ -1190,7 +1190,7 @@ export const RECENT_VISITORS: RecentVisitor[] = [
     followUpStatus: 'completed',
     assignedTo: 'Minister Terrence Jackson',
     notes: 'Walked in during midweek service. Gave his life to Christ that night.',
-    interests: ['Rooted', 'Fresh Fire'],
+    interests: ['Rooted', 'Ignite Youth'],
   },
   {
     id: 'vis-006',
@@ -1200,7 +1200,7 @@ export const RECENT_VISITORS: RecentVisitor[] = [
     followUpStatus: 'contacted',
     assignedTo: 'Minister Desiree Hamilton',
     notes: 'Attended the Harvesters outreach, came to church the next Sunday.',
-    interests: ['The Harvesters', 'Connect Groups'],
+    interests: ['Community Outreach', 'Connect Groups'],
   },
   {
     id: 'vis-007',
@@ -1296,13 +1296,13 @@ export interface MinistryHealthSummary {
 export const MINISTRY_HEALTH_SUMMARY: MinistryHealthSummary = {
   activeCount: 10,
   top3: [
-    { name: 'T.O.R.C.H.', leader: 'Minister Brianna Carter', members: 47, trend: '+12%', trendDir: 'up' },
-    { name: 'The Harvesters', leader: 'Deacon Raymond Shaw', members: 31, trend: '0%', trendDir: 'flat' },
-    { name: 'Vineyard Voices', leader: 'Minister Jasmine Okafor', members: 35, trend: '+5%', trendDir: 'up' },
+    { name: 'Catalyst', leader: 'Minister Brianna Carter', members: 47, trend: '+12%', trendDir: 'up' },
+    { name: 'Community Outreach', leader: 'Deacon Raymond Shaw', members: 31, trend: '0%', trendDir: 'flat' },
+    { name: 'Worship Team', leader: 'Minister Jasmine Okafor', members: 35, trend: '+5%', trendDir: 'up' },
   ],
   flagged: [
     { name: 'Kingdom Builders', alert: 'Leader vacancy — Elder Marcus stepping down Q2' },
-    { name: 'Sheepfold', alert: 'Below 50% volunteer fill (12 of 24 slots)' },
+    { name: 'KaNeXT Kids', alert: 'Below 50% volunteer fill (12 of 24 slots)' },
   ],
 };
 
@@ -1424,7 +1424,7 @@ export const PRAYER_REQUESTS: PrayerRequest[] = [
     name: 'Charles & Denise Wright',
     anonymous: false,
     category: 'praise',
-    text: 'God is faithful! Our grandson was accepted to Morehouse College with a full scholarship. To God be the glory!',
+    text: 'God is faithful! Our grandson was accepted to Founders College with a full scholarship. To God be the glory!',
     date: '2025-02-16',
     prayerCount: 42,
     isPraise: true,

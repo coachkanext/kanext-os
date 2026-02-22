@@ -70,7 +70,7 @@ const BOOKINGS: Booking[] = [
   { id: 'bk1', title: 'Sunday Morning Service', space: 'Sanctuary', schedule: 'Sundays 10:00 AM', recurring: true, ministry: 'Worship' },
   { id: 'bk2', title: 'Sunday Evening Service', space: 'Sanctuary', schedule: 'Sundays 6:00 PM', recurring: true, ministry: 'Worship' },
   { id: 'bk3', title: 'Wednesday Bible Study', space: 'Fellowship Hall', schedule: 'Wednesdays 7:00 PM', recurring: true, ministry: 'Rooted' },
-  { id: 'bk4', title: 'T.O.R.C.H. Friday', space: 'Youth Room', schedule: 'Fridays 7:00 PM', recurring: true, ministry: 'T.O.R.C.H.' },
+  { id: 'bk4', title: 'Catalyst Friday', space: 'Youth Room', schedule: 'Fridays 7:00 PM', recurring: true, ministry: 'Catalyst' },
   { id: 'bk5', title: 'Connect Group 1', space: 'Classroom A', schedule: 'Tuesdays 7:00 PM', recurring: true, ministry: 'Connect Groups' },
   { id: 'bk6', title: 'Connect Group 3', space: 'Classroom B', schedule: 'Thursdays 7:00 PM', recurring: true, ministry: 'Connect Groups' },
   { id: 'bk7', title: 'Connect Group 5', space: 'Fellowship Hall', schedule: 'Saturdays 10:00 AM', recurring: true, ministry: 'Connect Groups' },

@@ -331,7 +331,7 @@ const SPORTS_CHARGES: PayRailsCharge[] = [
 ];
 
 const SPORTS_PAYOUTS: PayRailsPayout[] = [
-  { id: 'sp-po-1', recipient: 'Charter Express', recipientInitials: 'CE', description: 'Bus charter — Thomas University trip', amount: 2400.00, purpose: 'Travel vendor payment', category: 'Travel', status: 'succeeded', dueDate: 'Feb 15, 2026', paidDate: 'Feb 14, 2026', scope: 'Program', evidence: 'INV-CE-2026-0214' },
+  { id: 'sp-po-1', recipient: 'Charter Express', recipientInitials: 'CE', description: 'Bus charter — Magnolia University trip', amount: 2400.00, purpose: 'Travel vendor payment', category: 'Travel', status: 'succeeded', dueDate: 'Feb 15, 2026', paidDate: 'Feb 14, 2026', scope: 'Program', evidence: 'INV-CE-2026-0214' },
   { id: 'sp-po-2', recipient: 'NAIA Officials Pool', recipientInitials: 'NO', description: 'Officials fees — 3-game home stand', amount: 1800.00, purpose: 'Officials batch payout', category: 'Officials', status: 'succeeded', dueDate: 'Feb 12, 2026', paidDate: 'Feb 12, 2026', scope: 'Season', evidence: 'OFF-BATCH-0212' },
   { id: 'sp-po-3', recipient: 'BSN Sports', recipientInitials: 'BS', description: 'Practice gear restock — mid-season order', amount: 952.75, purpose: 'Equipment vendor', category: 'Equipment', status: 'pending', dueDate: 'Feb 18, 2026', scope: 'Program', evidence: 'PO-BSN-2026-042' },
   { id: 'sp-po-4', recipient: 'DJ Miles', recipientInitials: 'DM', description: 'GA stipend — February', amount: 600.00, purpose: 'Staff stipend', category: 'Staff', status: 'pending', dueDate: 'Feb 28, 2026', scope: 'Program' },
@@ -537,8 +537,8 @@ const CHURCH_PAYOUTS: PayRailsPayout[] = [
 ];
 
 const CHURCH_TRANSFERS: PayRailsTransfer[] = [
-  { id: 'ch-xfr-1', fromAccount: 'KaNeXT Church General Fund', toAccount: 'Building Fund', amount: 5000.00, description: 'General → Building Fund monthly allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'Pastor Dipo Carter' },
-  { id: 'ch-xfr-2', fromAccount: 'KaNeXT Church General Fund', toAccount: 'Benevolence Fund', amount: 2000.00, description: 'General → Benevolence monthly allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'Pastor Dipo Carter' },
+  { id: 'ch-xfr-1', fromAccount: 'KaNeXT Church General Fund', toAccount: 'Building Fund', amount: 5000.00, description: 'General → Building Fund monthly allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'Pastor James Carter' },
+  { id: 'ch-xfr-2', fromAccount: 'KaNeXT Church General Fund', toAccount: 'Benevolence Fund', amount: 2000.00, description: 'General → Benevolence monthly allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'Pastor James Carter' },
   { id: 'ch-xfr-3', fromAccount: 'KaNeXT Church General Fund', toAccount: 'KaNeXT Church General Fund', amount: 1425.00, description: 'Men\'s Retreat revenue → Ministry budget', status: 'succeeded', date: 'Feb 10, 2026', initiator: 'Church Administrator' },
 ];
 
@@ -584,13 +584,13 @@ const CHURCH_CONTROLS: PayRailsControl[] = [
 
 const CHURCH_AUDIT: PayRailsAuditEntry[] = [
   { id: 'ch-aud-1', action: 'charge_received', actor: 'System', actorInitials: 'SY', target: 'Tithe — Emmanuel Okonkwo ($2,000.00)', timestamp: 'Feb 9, 2026 10:30 AM' },
-  { id: 'ch-aud-2', action: 'payout_initiated', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Metro HVAC — sanctuary repair ($3,200.00)', timestamp: 'Feb 11, 2026 09:00 AM' },
+  { id: 'ch-aud-2', action: 'payout_initiated', actor: 'Pastor James Carter', actorInitials: 'DK', target: 'Metro HVAC — sanctuary repair ($3,200.00)', timestamp: 'Feb 11, 2026 09:00 AM' },
   { id: 'ch-aud-3', action: 'settlement_closed', actor: 'System', actorInitials: 'SY', target: 'Weekly Giving Batch — 48 items ($12,454.80 net)', timestamp: 'Feb 11, 2026 06:00 PM' },
   { id: 'ch-aud-4', action: 'refund_processed', actor: 'Church Administrator', actorInitials: 'CA', target: 'James Owusu — retreat registration ($75.00)', timestamp: 'Feb 7, 2026 11:45 AM' },
-  { id: 'ch-aud-5', action: 'transfer_completed', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'General → Building Fund ($5,000.00)', timestamp: 'Feb 1, 2026 08:15 AM' },
-  { id: 'ch-aud-6', action: 'payout_initiated', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Benevolence — Janet Osei rent assistance ($1,500.00)', timestamp: 'Feb 11, 2026 10:00 AM' },
+  { id: 'ch-aud-5', action: 'transfer_completed', actor: 'Pastor James Carter', actorInitials: 'DK', target: 'General → Building Fund ($5,000.00)', timestamp: 'Feb 1, 2026 08:15 AM' },
+  { id: 'ch-aud-6', action: 'payout_initiated', actor: 'Pastor James Carter', actorInitials: 'DK', target: 'Benevolence — Janet Osei rent assistance ($1,500.00)', timestamp: 'Feb 11, 2026 10:00 AM' },
   { id: 'ch-aud-7', action: 'dispute_opened', actor: 'System', actorInitials: 'SY', target: 'Chargeback — Okonkwo tithe ($2,000.00)', timestamp: 'Feb 14, 2026 02:30 PM' },
-  { id: 'ch-aud-8', action: 'control_updated', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Giving Refund Threshold set to $200', timestamp: 'Jan 20, 2026 03:00 PM' },
+  { id: 'ch-aud-8', action: 'control_updated', actor: 'Pastor James Carter', actorInitials: 'DK', target: 'Giving Refund Threshold set to $200', timestamp: 'Jan 20, 2026 03:00 PM' },
 ];
 
 const CHURCH_SETTINGS: PayRailsSettingToggle[] = [

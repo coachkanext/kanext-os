@@ -79,7 +79,7 @@ export function CompStoreSheet({ visible, onClose, colors }: Props) {
   ) : undefined;
 
   return (
-    <BottomSheet visible={visible} onClose={handleClose} title="K-1 Racing Store" footer={cartFooter} useModal>
+    <BottomSheet visible={visible} onClose={handleClose} title="KaNeXT Racing Store" footer={cartFooter} useModal>
       {stage === 'browse' && (
         <View style={styles.container}>
           <View style={styles.productGrid}>

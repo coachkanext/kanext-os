@@ -579,7 +579,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: 'tm-2',
-    name: 'Dipo Carter',
+    name: 'James Carter',
     role: 'Advisor — Pastoral & Culture',
     department: 'Advisory Board',
     type: 'advisor',
@@ -680,14 +680,14 @@ export const PIPELINE_ITEMS: PipelineItem[] = [
   },
   {
     id: 'pip-3',
-    name: 'BTW (Booker T. Washington)',
+    name: 'BTW (Central Prep)',
     stage: 'Initial Contact',
     type: 'partnership',
     status: 'active',
   },
   {
     id: 'pip-4',
-    name: 'Tuskegee University',
+    name: 'Heritage University',
     stage: 'Initial Contact',
     type: 'partnership',
     status: 'active',
@@ -1337,7 +1337,7 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-4',
-    title: 'K-1 Proof Platform',
+    title: 'KaNeXT Proof Platform',
     objective: 'Build the proof-of-impact layer enabling verifiable claims for investors, partners, and compliance audiences.',
     owner: 'Jordan Ellis',
     status: 'on_track',
@@ -2041,7 +2041,7 @@ export const INVESTOR_RECORDS: InvestorRecord[] = [
     type: 'family_office',
     status: 'prospect',
     accessTier: 'none',
-    notes: 'Family office with HBCU portfolio. Intro through Dipo Carter. Pending initial meeting.',
+    notes: 'Family office with university portfolio. Intro through James Carter. Pending initial meeting.',
     lastTouch: 'Feb 5, 2026',
   },
 ];
