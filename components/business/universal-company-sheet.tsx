@@ -9,10 +9,11 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
+
   type CompanyObject,
   type KPIItem,
   type RiskItem,
@@ -42,6 +43,8 @@ import {
   isBoardLevel,
   isInvestor,
 } from '@/utils/business-rbac';
+
+const ACCENT = MODE_ACCENT.business;
 
 // =============================================================================
 // PROPS
@@ -79,14 +82,14 @@ const KPI_STATUS_COLORS: Record<string, string> = {
 const RISK_SEVERITY_COLORS: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#1D9BF0',
+  medium: ACCENT,
   low: '#A1A1AA',
 };
 
 const BUDGET_STATUS_COLORS: Record<string, string> = {
   on_track: '#22C55E',
   over: '#EF4444',
-  under: '#1D9BF0',
+  under: ACCENT,
   at_risk: '#F59E0B',
 };
 
@@ -94,7 +97,7 @@ const FUNDING_STATUS_COLORS: Record<string, string> = {
   closed: '#22C55E',
   active: '#F59E0B',
   open: '#F59E0B',
-  closing: '#1D9BF0',
+  closing: ACCENT,
   planned: '#A1A1AA',
 };
 
@@ -103,14 +106,14 @@ const DECISION_OUTCOME_COLORS: Record<string, string> = {
   rejected: '#EF4444',
   deferred: '#F59E0B',
   tabled: '#F59E0B',
-  pending: '#1D9BF0',
+  pending: ACCENT,
 };
 
 const PIPELINE_STAGE_COLORS: Record<string, string> = {
   lead: '#A1A1AA',
   'Initial Contact': '#A1A1AA',
-  contacted: '#1D9BF0',
-  'Proposal Sent': '#1D9BF0',
+  contacted: ACCENT,
+  'Proposal Sent': ACCENT,
   meeting: '#F59E0B',
   Diligence: '#F59E0B',
   diligence: '#F59E0B',
@@ -291,17 +294,17 @@ function CompanyHeader({
         <View style={styles.quickChipRow}>
           {/* Runway: founder + board exact, retail banded */}
           {(founder || board) && company.runway != null && (
-            <View style={[styles.quickChip, { backgroundColor: '#1D9BF022' }]}>
-              <IconSymbol name="clock.fill" size={12} color="#1D9BF0" />
-              <ThemedText style={[styles.quickChipText, { color: '#1D9BF0' }]}>
+            <View style={[styles.quickChip, { backgroundColor: `${ACCENT}22` }]}>
+              <IconSymbol name="clock.fill" size={12} color={ACCENT} />
+              <ThemedText style={[styles.quickChipText, { color: ACCENT }]}>
                 {company.runway} mo runway
               </ThemedText>
             </View>
           )}
           {investor && company.runway != null && (
-            <View style={[styles.quickChip, { backgroundColor: '#1D9BF022' }]}>
-              <IconSymbol name="clock.fill" size={12} color="#1D9BF0" />
-              <ThemedText style={[styles.quickChipText, { color: '#1D9BF0' }]}>
+            <View style={[styles.quickChip, { backgroundColor: `${ACCENT}22` }]}>
+              <IconSymbol name="clock.fill" size={12} color={ACCENT} />
+              <ThemedText style={[styles.quickChipText, { color: ACCENT }]}>
                 6-12 mo runway
               </ThemedText>
             </View>
@@ -548,7 +551,7 @@ function TractionTab({
           <View>
             <View style={styles.statRow}>
               <StatBlock label="Leads" value={String(pipelineCounts.lead)} color="#A1A1AA" colors={colors} />
-              <StatBlock label="Active" value={String(pipelineCounts.contacted)} color="#1D9BF0" colors={colors} />
+              <StatBlock label="Active" value={String(pipelineCounts.contacted)} color={ACCENT} colors={colors} />
               <StatBlock label="Advanced" value={String(pipelineCounts.meeting + pipelineCounts.advanced)} color="#22C55E" colors={colors} />
             </View>
             <ThemedText style={[styles.captionText, { color: colors.textTertiary, marginTop: Spacing.sm, textAlign: 'center' }]}>
@@ -598,20 +601,20 @@ function TractionTab({
         {board ? (
           <View>
             <View style={styles.statRow}>
-              <StatBlock label="App Installs" value="2,340" color="#1D9BF0" colors={colors} />
+              <StatBlock label="App Installs" value="2,340" color={ACCENT} colors={colors} />
               <StatBlock label="Avg Session" value="8.2 min" color="#22C55E" colors={colors} />
               <StatBlock label="Uptime" value="99.7%" color="#FFFFFF" colors={colors} />
             </View>
             <View style={[styles.statRow, { marginTop: Spacing.md }]}>
               <StatBlock label="Media Reach" value="18.2M" color="#F59E0B" colors={colors} />
               <StatBlock label="Proof Sites" value="3" color="#22C55E" colors={colors} />
-              <StatBlock label="Events" value="7" color="#1D9BF0" colors={colors} />
+              <StatBlock label="Events" value="7" color={ACCENT} colors={colors} />
             </View>
           </View>
         ) : investor ? (
           <View>
             <View style={styles.statRow}>
-              <StatBlock label="App Installs" value="1K-5K" color="#1D9BF0" colors={colors} />
+              <StatBlock label="App Installs" value="1K-5K" color={ACCENT} colors={colors} />
               <StatBlock label="Avg Session" value="5-10 min" color="#22C55E" colors={colors} />
               <StatBlock label="Uptime" value=">99%" color="#FFFFFF" colors={colors} />
             </View>
@@ -622,7 +625,7 @@ function TractionTab({
         ) : (
           <View style={styles.statRow}>
             <StatBlock label="Proof Sites" value="3" color="#22C55E" colors={colors} />
-            <StatBlock label="Events" value="7" color="#1D9BF0" colors={colors} />
+            <StatBlock label="Events" value="7" color={ACCENT} colors={colors} />
             <StatBlock label="Modes" value="5" color="#FFFFFF" colors={colors} />
           </View>
         )}
@@ -787,13 +790,13 @@ function FinanceTab({
         {metricVis === 'exact' ? (
           <View style={styles.statRow}>
             <StatBlock label="Monthly Burn" value="$35K" color="#EF4444" colors={colors} />
-            <StatBlock label="Runway" value="14 mo" color="#1D9BF0" colors={colors} />
+            <StatBlock label="Runway" value="14 mo" color={ACCENT} colors={colors} />
             <StatBlock label="Cash" value="$490K" color="#22C55E" colors={colors} />
           </View>
         ) : (
           <View style={styles.statRow}>
             <StatBlock label="Monthly Burn" value="$25-$50K" color="#EF4444" colors={colors} />
-            <StatBlock label="Runway" value="12-18 mo" color="#1D9BF0" colors={colors} />
+            <StatBlock label="Runway" value="12-18 mo" color={ACCENT} colors={colors} />
             <StatBlock label="Cash" value="$300-$600K" color="#22C55E" colors={colors} />
           </View>
         )}
@@ -1311,16 +1314,16 @@ function LinkRow({
 }) {
   return (
     <Pressable style={[styles.listRow, { borderBottomColor: colors.border }]}>
-      <IconSymbol name={icon as any} size={18} color="#1D9BF0" />
+      <IconSymbol name={icon as any} size={18} color={ACCENT} />
       <View style={{ flex: 1, marginLeft: Spacing.sm }}>
-        <ThemedText style={[styles.listRowTitle, { color: '#1D9BF0' }]}>
+        <ThemedText style={[styles.listRowTitle, { color: ACCENT }]}>
           {label}
         </ThemedText>
         <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
           {subtitle}
         </ThemedText>
       </View>
-      <IconSymbol name="arrow.up.right" size={14} color="#1D9BF0" />
+      <IconSymbol name="arrow.up.right" size={14} color={ACCENT} />
     </Pressable>
   );
 }

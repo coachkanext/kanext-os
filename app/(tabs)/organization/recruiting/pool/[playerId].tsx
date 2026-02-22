@@ -15,6 +15,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, SymbolViewProps } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import {
   getNationalPlayerById,
   getRecruitingTargetForPlayer,
@@ -45,8 +46,8 @@ function BackButton({ onPress, colors }: BackButtonProps) {
       style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.7 }]}
       onPress={onPress}
     >
-      <IconSymbol name="chevron.left" size={20} color={colors.tint} />
-      <ThemedText style={[styles.backButtonText, { color: colors.tint }]}>
+      <IconSymbol name="chevron.left" size={20} color={accent} />
+      <ThemedText style={[styles.backButtonText, { color: accent }]}>
         Back
       </ThemedText>
     </Pressable>
@@ -173,7 +174,7 @@ function RecruitingStatusCard({ target, colors }: RecruitingStatusCardProps) {
 
       {target.nextStep && (
         <View style={[styles.nextStepRow, { borderTopColor: colors.divider }]}>
-          <IconSymbol name="arrow.right.circle.fill" size={14} color={colors.tint} />
+          <IconSymbol name="arrow.right.circle.fill" size={14} color={accent} />
           <ThemedText style={[styles.nextStepText, { color: colors.text }]}>
             {target.nextStep}
           </ThemedText>
@@ -216,6 +217,7 @@ function RecruitingStatusCard({ target, colors }: RecruitingStatusCardProps) {
 export default function NationalPlayerProfileScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { playerId } = useLocalSearchParams<{ playerId: string }>();

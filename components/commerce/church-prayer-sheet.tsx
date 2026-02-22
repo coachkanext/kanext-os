@@ -13,7 +13,7 @@ import {
   PRAYER_CATEGORY_COLORS,
   type PrayerCategory,
 } from '@/data/mock-church-home';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
 interface Props {
   visible: boolean;
@@ -23,7 +23,7 @@ interface Props {
 
 type TabId = 'submit' | 'requests';
 
-const ACCENT = '#1D9BF0';
+const ACCENT = MODE_ACCENT.church;
 const CATEGORIES = Object.keys(PRAYER_CATEGORY_LABELS) as PrayerCategory[];
 const PRIVACY_OPTIONS = [
   { id: 'public' as const, label: 'Share with Church' },

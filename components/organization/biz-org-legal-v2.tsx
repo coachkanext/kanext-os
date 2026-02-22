@@ -15,7 +15,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import { BizCard, BizSubTabBar, BizStatusChip, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel } from '@/utils/business-rbac';
@@ -56,6 +56,8 @@ import type {
   AgreementType,
 } from '@/data/mock-biz-org-legal';
 
+
+const ACCENT = MODE_ACCENT.business;
 const BP = BusinessPalette;
 
 // =============================================================================
@@ -77,7 +79,7 @@ const PIPELINE_STAGES: {
 }[] = [
   { key: 'draft', label: 'Draft', color: '#A1A1AA' },
   { key: 'review', label: 'Review', color: '#F59E0B' },
-  { key: 'sent', label: 'Sent', color: '#1D9BF0' },
+  { key: 'sent', label: 'Sent', color: ACCENT },
   { key: 'executed', label: 'Executed', color: '#22C55E' },
   { key: 'expiring', label: 'Expiring', color: '#EF4444' },
 ];
@@ -90,15 +92,15 @@ const SAMPLE_KEY_TERMS = [
 ];
 
 const AUTHORITY_TYPES = [
-  { type: 'contract_signing', label: 'Contract Signing', color: '#1D9BF0', threshold: '$500K' },
+  { type: 'contract_signing', label: 'Contract Signing', color: ACCENT, threshold: '$500K' },
   { type: 'spend_approval', label: 'Spend Approval', color: '#22C55E', threshold: '$100K' },
-  { type: 'policy_signoff', label: 'Policy Sign-off', color: '#1D9BF0', threshold: 'N/A' },
+  { type: 'policy_signoff', label: 'Policy Sign-off', color: ACCENT, threshold: 'N/A' },
 ];
 
 const OBLIGATION_LINKAGE: Record<string, { label: string; color: string }> = {
   payment: { label: '\u2192 Finance', color: '#22C55E' },
-  compliance: { label: '\u2192 Compliance', color: '#1D9BF0' },
-  deliverable: { label: '\u2192 Operations', color: '#1D9BF0' },
+  compliance: { label: '\u2192 Compliance', color: ACCENT },
+  deliverable: { label: '\u2192 Operations', color: ACCENT },
   renewal: { label: '\u2192 Legal', color: '#F59E0B' },
 };
 
@@ -170,7 +172,7 @@ function deadlineUrgencyColor(urgency: LegalDeadline['urgency']): string {
     case 'critical':
       return '#F59E0B';
     case 'soon':
-      return '#1D9BF0';
+      return ACCENT;
     case 'normal':
       return '#22C55E';
   }
@@ -251,7 +253,7 @@ function OverviewTab({
       label: 'Open Requests',
       value: String(stats.openRequests),
       icon: 'tray.full.fill',
-      color: '#1D9BF0',
+      color: ACCENT,
     },
   ];
 

@@ -10,6 +10,7 @@ import type { TextInput as TextInputType } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Brand, Colors, Spacing } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 interface InputBarProps {
@@ -37,6 +38,7 @@ export function InputBar({
 }: InputBarProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const isDark = colorScheme === 'dark';
   const inputRef = useRef<TextInputType>(null);
 
@@ -133,7 +135,7 @@ export function InputBar({
                     styles.micButton,
                     {
                       backgroundColor: pressed
-                        ? colors.tint
+                        ? accent
                         : colors.backgroundSecondary,
                     },
                   ]}

@@ -21,7 +21,9 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import {
   isPresident,
@@ -902,8 +904,8 @@ const POLICY_UPDATES: PolicyUpdate[] = [
 const CHANGE_TYPE_COLOR: Record<string, string> = {
   new: '#22C55E',
   major_revision: '#F59E0B',
-  minor_update: '#1D9BF0',
-  review_scheduled: '#1D9BF0',
+  minor_update: ACCENT,
+  review_scheduled: ACCENT,
 };
 
 const CHANGE_TYPE_LABEL: Record<string, string> = {
@@ -1028,7 +1030,7 @@ const ENFORCEMENT_ACTIONS: EnforcementAction[] = [
 const ENFORCEMENT_STATUS_COLOR: Record<string, string> = {
   active: '#F59E0B',
   resolved: '#22C55E',
-  appeal_pending: '#1D9BF0',
+  appeal_pending: ACCENT,
   under_investigation: '#EF4444',
 };
 
@@ -1154,7 +1156,7 @@ const COMPLIANCE_STATUS_COLOR: Record<string, string> = {
   compliant: '#22C55E',
   at_risk: '#F59E0B',
   non_compliant: '#EF4444',
-  under_review: '#1D9BF0',
+  under_review: ACCENT,
 };
 
 interface AuditItem {
@@ -1177,7 +1179,7 @@ const AUDIT_SCHEDULE: AuditItem[] = [
 
 const AUDIT_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
-  in_progress: '#1D9BF0',
+  in_progress: ACCENT,
   scheduled: '#A1A1AA',
   overdue: '#EF4444',
 };
@@ -1299,17 +1301,17 @@ const POLICY_CATEGORY_LABEL: Record<string, string> = {
 };
 
 const POLICY_CATEGORY_COLOR: Record<string, string> = {
-  academic: '#1D9BF0',
+  academic: ACCENT,
   conduct: '#F59E0B',
   safety: '#EF4444',
-  hr: '#1D9BF0',
-  it: '#1D9BF0',
+  hr: ACCENT,
+  it: ACCENT,
   financial: '#22C55E',
 };
 
 const POLICY_STATUS_COLOR: Record<string, string> = {
   active: '#22C55E',
-  draft: '#1D9BF0',
+  draft: ACCENT,
   under_review: '#F59E0B',
   archived: '#A1A1AA',
 };
@@ -1322,7 +1324,7 @@ const SEVERITY_COLOR: Record<string, string> = {
 
 const DOC_STATUS_COLOR: Record<string, string> = {
   published: '#22C55E',
-  draft: '#1D9BF0',
+  draft: ACCENT,
   internal: '#F59E0B',
 };
 
@@ -1748,7 +1750,7 @@ function EnforcementView({ colors, role }: { colors: typeof Colors.light; role: 
       <Card colors={colors}>
         <View style={s.statsRow}>
           <StatBox label="Active" value={String(totalActive)} colors={colors} valueColor="#F59E0B" />
-          <StatBox label="Appeals" value={String(totalAppeals)} colors={colors} valueColor="#1D9BF0" />
+          <StatBox label="Appeals" value={String(totalAppeals)} colors={colors} valueColor={ACCENT} />
           <StatBox label="Resolved" value={String(totalResolved)} colors={colors} valueColor="#22C55E" />
           <StatBox label="Critical" value={String(totalCritical)} colors={colors} valueColor="#EF4444" />
         </View>

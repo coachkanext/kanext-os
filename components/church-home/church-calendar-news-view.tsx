@@ -10,9 +10,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { CHURCH_NEWS, type ChurchNewsItem } from '@/data/mock-church-home';
 import { openLeaderCard } from '@/utils/global-entity-sheets';
+
+const ACCENT = MODE_ACCENT.church;
 
 interface Props {
   colors: typeof Colors.light;
@@ -24,12 +26,12 @@ type CategoryFilter = (typeof CATEGORIES)[number];
 
 function getCategoryColor(cat: ChurchNewsItem['category']): string {
   switch (cat) {
-    case 'sermon': return '#1D9BF0';
+    case 'sermon': return ACCENT;
     case 'testimony': return '#22C55E';
-    case 'ministry_highlight': return '#1D9BF0';
+    case 'ministry_highlight': return ACCENT;
     case 'announcement': return '#F59E0B';
-    case 'outreach': return '#1D9BF0';
-    case 'worship': return '#1D9BF0';
+    case 'outreach': return ACCENT;
+    case 'worship': return ACCENT;
     default: return '#A1A1AA';
   }
 }

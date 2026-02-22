@@ -17,7 +17,8 @@ import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Spacing, BorderRadius, Colors } from '@/constants/theme';
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
 
@@ -80,7 +81,7 @@ function getStatusColor(status: string): string {
   switch (status) {
     case 'live': return '#22C55E';
     case 'final': return '#A1A1AA';
-    case 'upcoming': return '#1D9BF0';
+    case 'upcoming': return accent;
     default: return '#A1A1AA';
   }
 }
@@ -152,6 +153,7 @@ export function GameSheet({
 }: GameSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const { state } = useAppContext();
 
   const effectiveMembership = membershipId ?? state.activeContext.membership_id;

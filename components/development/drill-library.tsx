@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { DRILL_LIBRARY, type DrillDifficulty } from '@/data/mock-development-v2';
 
@@ -38,7 +39,7 @@ const DIFFICULTY_COLORS: Record<DrillDifficulty, string> = {
 const CLUSTER_BADGE_COLORS: Record<string, string> = {
   Shooting: Brand.precision,
   Finishing: Brand.warning,
-  Playmaking: '#1D9BF0',
+  Playmaking: accent,
   'On-Ball Defense': Brand.error,
   'Team Defense': '#EF4444',
   Rebounding: '#F59E0B',
@@ -52,6 +53,7 @@ const CLUSTER_BADGE_COLORS: Record<string, string> = {
 export function DrillLibrary() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCluster, setSelectedCluster] = useState('All');
   const [expandedDrill, setExpandedDrill] = useState<string | null>(null);

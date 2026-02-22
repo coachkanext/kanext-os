@@ -22,7 +22,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import {
   BizCard,
   BizSubTabBar,
@@ -75,6 +75,8 @@ import type {
   TrafficLight,
 } from '@/data/mock-biz-org-payment-rails';
 
+
+const ACCENT = MODE_ACCENT.business;
 const BP = BusinessPalette;
 
 // =============================================================================
@@ -149,7 +151,7 @@ const IMPACT_TAGS: Record<string, { label: string; color: string }> = {
   blocks_payroll: { label: 'Blocks Payroll', color: '#EF4444' },
   blocks_close: { label: 'Blocks Close', color: '#F59E0B' },
   blocks_vendor: { label: 'Blocks Vendor', color: '#F59E0B' },
-  blocks_transfer: { label: 'Blocks Transfer', color: '#1D9BF0' },
+  blocks_transfer: { label: 'Blocks Transfer', color: ACCENT },
 };
 
 // =============================================================================
@@ -157,10 +159,10 @@ const IMPACT_TAGS: Record<string, { label: string; color: string }> = {
 // =============================================================================
 
 const EXCEPTION_ENHANCEMENTS = [
-  { rootCause: 'Authority', color: '#1D9BF0', failingRule: 'Release requires dual authorization', nextSteps: ['Obtain second signatory', 'Update authority matrix'] },
+  { rootCause: 'Authority', color: ACCENT, failingRule: 'Release requires dual authorization', nextSteps: ['Obtain second signatory', 'Update authority matrix'] },
   { rootCause: 'Budget', color: '#F59E0B', failingRule: 'Amount exceeds quarterly budget cap', nextSteps: ['Request budget increase', 'Submit to CFO for override'] },
   { rootCause: 'Compliance', color: '#EF4444', failingRule: 'KYC verification incomplete', nextSteps: ['Complete KYC form', 'Upload supporting docs', 'Re-submit for review'] },
-  { rootCause: 'Technical', color: '#1D9BF0', failingRule: 'ACH routing validation failed', nextSteps: ['Verify routing number', 'Contact processor support'] },
+  { rootCause: 'Technical', color: ACCENT, failingRule: 'ACH routing validation failed', nextSteps: ['Verify routing number', 'Contact processor support'] },
 ];
 
 // =============================================================================
@@ -581,7 +583,7 @@ function WalletsTab({
               <View style={s.chipRow}>
                 <StatusBadge
                   label={item.entityName}
-                  color="#1D9BF0"
+                  color={ACCENT}
                 />
                 <StatusBadge
                   label={WALLET_TYPE_LABELS[item.type]}
@@ -681,7 +683,7 @@ function BatchesTab({
                   label={BIZ_TXN_STATE_LABELS[item.state]}
                   color={BIZ_TXN_STATE_COLORS[item.state]}
                 />
-                <StatusBadge label={item.entityName} color="#1D9BF0" />
+                <StatusBadge label={item.entityName} color={ACCENT} />
               </View>
             </View>
             <View style={s.cardRight}>
@@ -764,7 +766,7 @@ function ApprovalsTab({
                 label={URGENCY_LABELS[item.urgency]}
                 color={URGENCY_COLORS[item.urgency]}
               />
-              <StatusBadge label={item.entityName} color="#1D9BF0" />
+              <StatusBadge label={item.entityName} color={ACCENT} />
             </View>
           </View>
           <View style={s.cardRight}>
@@ -866,8 +868,8 @@ function ReleaseTab({
           <View style={{ flex: 1 }}>
             <ThemedText style={[s.cardName, { color: BP.smoke }]}>{item.batchName}</ThemedText>
             <View style={s.chipRow}>
-              <StatusBadge label="Authorized" color="#1D9BF0" />
-              <StatusBadge label={item.entityName} color="#1D9BF0" />
+              <StatusBadge label="Authorized" color={ACCENT} />
+              <StatusBadge label={item.entityName} color={ACCENT} />
             </View>
           </View>
           <View style={s.cardRight}>
@@ -889,8 +891,8 @@ function ReleaseTab({
               onRelease(item.id);
             }}
           >
-            <IconSymbol name="arrow.up.circle.fill" size={16} color="#1D9BF0" />
-            <ThemedText style={[s.actionButtonText, { color: '#1D9BF0' }]}>
+            <IconSymbol name="arrow.up.circle.fill" size={16} color={ACCENT} />
+            <ThemedText style={[s.actionButtonText, { color: ACCENT }]}>
               Release
             </ThemedText>
           </Pressable>
@@ -912,7 +914,7 @@ function ReleaseTab({
       ListHeaderComponent={
         <BizCard style={{ marginBottom: Spacing.md }}>
           <View style={s.cardRow}>
-            <IconSymbol name="arrow.up.circle.fill" size={24} color="#1D9BF0" />
+            <IconSymbol name="arrow.up.circle.fill" size={24} color={ACCENT} />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
               <ThemedText style={[s.totalLabel, { color: BP.ash }]}>
                 Release Queue
@@ -984,7 +986,7 @@ function ExceptionsTab({
                     label={EXCEPTION_TYPE_LABELS[item.type]}
                     color={EXCEPTION_TYPE_COLORS[item.type]}
                   />
-                  <StatusBadge label={item.entityName} color="#1D9BF0" />
+                  <StatusBadge label={item.entityName} color={ACCENT} />
                   <View style={[s.rootCauseBadge, { backgroundColor: enhancement.color + '18', borderColor: enhancement.color + '30' }]}>
                     <ThemedText style={[s.impactTagText, { color: enhancement.color }]}>
                       {enhancement.rootCause}
@@ -1132,7 +1134,7 @@ function DisputesTab({
                     label={DISPUTE_STATUS_LABELS[item.status]}
                     color={DISPUTE_STATUS_COLORS[item.status]}
                   />
-                  <StatusBadge label={item.entityName} color="#1D9BF0" />
+                  <StatusBadge label={item.entityName} color={ACCENT} />
                 </View>
               </View>
               <View style={s.cardRight}>
@@ -1305,7 +1307,7 @@ function ReceiptsTab({
                   label={RECEIPT_TYPE_LABELS[item.type]}
                   color={RECEIPT_TYPE_COLORS[item.type]}
                 />
-                <StatusBadge label={entityName} color="#1D9BF0" />
+                <StatusBadge label={entityName} color={ACCENT} />
               </View>
             </View>
           </View>
@@ -2445,8 +2447,8 @@ const s = StyleSheet.create({
     backgroundColor: '#EF444410',
   },
   releaseButton: {
-    borderColor: '#1D9BF030',
-    backgroundColor: '#1D9BF010',
+    borderColor: `${ACCENT}30`,
+    backgroundColor: `${ACCENT}10`,
   },
   actionButtonText: {
     fontSize: 13,

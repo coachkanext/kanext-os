@@ -16,7 +16,8 @@ import {
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import {
   RESOURCES_TABS,
   DRILL_CATEGORY_COLOR,
@@ -58,7 +59,7 @@ interface OrgResourcesTabProps {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<ResourceReport['format'], string> = {
-  PDF: '#1D9BF0',
+  PDF: accent,
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };
@@ -95,15 +96,15 @@ function auditColor(action: string): string {
     case 'resource_created':
       return '#22C55E';
     case 'resource_updated':
-      return '#1D9BF0';
+      return accent;
     case 'pack_created':
       return '#F59E0B';
     case 'template_cloned':
-      return '#1D9BF0';
+      return accent;
     case 'form_acknowledged':
-      return '#1D9BF0';
+      return accent;
     case 'link_added':
-      return '#1D9BF0';
+      return accent;
     case 'snapshot_saved':
       return '#EF4444';
     case 'setting_changed':

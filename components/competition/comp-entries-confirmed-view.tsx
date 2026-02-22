@@ -7,10 +7,12 @@ import React, { useMemo } from 'react';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { ENTRIES_CONFIRMED, ENTRY_DEADLINE, MAX_GRID_SIZE, RACE_ROUNDS } from '@/data/mock-competition-home';
 import { openDriverCard } from '@/utils/global-entity-sheets';
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accent: string;
@@ -85,13 +87,13 @@ export function CompEntriesConfirmedView({ colors, accent }: Props) {
           <View
             style={[
               styles.typeBadge,
-              { backgroundColor: entry.type === 'permanent' ? '#1D9BF020' : '#F59E0B20' },
+              { backgroundColor: entry.type === 'permanent' ? `${ACCENT}20` : '#F59E0B20' },
             ]}
           >
             <ThemedText
               style={[
                 styles.typeText,
-                { color: entry.type === 'permanent' ? '#1D9BF0' : '#F59E0B' },
+                { color: entry.type === 'permanent' ? ACCENT : '#F59E0B' },
               ]}
             >
               {entry.type === 'permanent' ? 'Permanent' : 'Wildcard'}

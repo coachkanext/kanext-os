@@ -12,6 +12,7 @@ import Constants from 'expo-constants';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useAppContext } from '@/context/app-context';
 
 interface FAQItem {
@@ -37,6 +38,7 @@ const FAQ_ITEMS: FAQItem[] = [
 export default function HelpScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
@@ -98,7 +100,7 @@ export default function HelpScreen() {
           <View style={[styles.card, { backgroundColor: colors.card }]}>
             <Pressable style={styles.row} onPress={handleEmailSupport}>
               <View style={styles.rowContent}>
-                <IconSymbol name="envelope.fill" size={20} color={colors.tint} />
+                <IconSymbol name="envelope.fill" size={20} color={accent} />
                 <Text style={[styles.rowLabel, { color: colors.text }]}>Email Support</Text>
               </View>
               <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
@@ -106,7 +108,7 @@ export default function HelpScreen() {
             <View style={[styles.divider, { backgroundColor: colors.divider }]} />
             <Pressable style={styles.row} onPress={() => router.push('/help/bug-report')}>
               <View style={styles.rowContent}>
-                <IconSymbol name="ant.fill" size={20} color={colors.tint} />
+                <IconSymbol name="ant.fill" size={20} color={accent} />
                 <Text style={[styles.rowLabel, { color: colors.text }]}>Report a Bug</Text>
               </View>
               <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />

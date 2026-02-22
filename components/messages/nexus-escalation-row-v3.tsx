@@ -8,7 +8,8 @@ import { View, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-messages-v3';
 import type { NexusEscalationV3 } from '@/types';
@@ -21,6 +22,7 @@ interface NexusEscalationRowV3Props {
 export function NexusEscalationRowV3({ escalation, onPress }: NexusEscalationRowV3Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const isUnanswered = escalation.status === 'unanswered';
 
   return (
@@ -35,8 +37,8 @@ export function NexusEscalationRowV3({ escalation, onPress }: NexusEscalationRow
       }}
     >
       {/* Avatar */}
-      <View style={[styles.avatar, { backgroundColor: isUnanswered ? '#1D9BF020' : colors.backgroundTertiary }]}>
-        <ThemedText style={[styles.avatarText, { color: isUnanswered ? '#1D9BF0' : colors.textSecondary }]}>
+      <View style={[styles.avatar, { backgroundColor: isUnanswered ? `${accent}20` : colors.backgroundTertiary }]}>
+        <ThemedText style={[styles.avatarText, { color: isUnanswered ? accent : colors.textSecondary }]}>
           {escalation.askerInitials}
         </ThemedText>
       </View>

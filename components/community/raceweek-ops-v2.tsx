@@ -9,7 +9,7 @@ import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   CEO_TOP_5, BULLETINS, CEO_APPROVALS,
   BULLETIN_TYPE_COLOR, BULLETIN_STATUS_COLOR,
@@ -32,6 +32,8 @@ import { mapRoleToCompetitionLens, isFullAccess } from '@/utils/competition-rbac
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 type OpsPill = 'timeline' | 'readiness' | 'incidents' | 'approvals' | 'bulletins';
 
 const OPS_PILLS: { key: OpsPill; label: string }[] = [
@@ -58,7 +60,7 @@ const SESSION_TYPE_LABEL: Record<RaceWeekSession['type'], string> = {
 };
 
 const SEVERITY_COLOR: Record<RaceIncident['severity'], string> = {
-  minor: '#1D9BF0',
+  minor: ACCENT,
   moderate: '#F59E0B',
   major: '#EF4444',
 };
@@ -84,7 +86,7 @@ const CHECK_STATUS_ICON: Record<'pass' | 'fail' | 'pending', { name: 'checkmark.
 const URGENCY_COLOR: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  normal: '#1D9BF0',
+  normal: ACCENT,
 };
 
 const RANK_COLOR: Record<number, string> = {
@@ -381,7 +383,7 @@ function IncidentsSection({ colors }: { colors: typeof Colors.light }) {
             </ThemedText>
           </View>
           <View style={styles.statItem}>
-            <ThemedText style={[styles.statValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[styles.statValue, { color: ACCENT }]}>
               {minorCount}
             </ThemedText>
             <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
@@ -723,8 +725,8 @@ function ExecutiveSnapshot({ colors }: { colors: typeof Colors.light }) {
 function CommandPanels({ colors }: { colors: typeof Colors.light }) {
   const role = mapRoleToCompetitionLens('owner');
   const tiles: { title: string; icon: string; count: number; color: string }[] = [
-    { title: 'Ops Command', icon: 'antenna.radiowaves.left.and.right', count: OPS_TASKS.filter((t) => t.status !== 'done').length, color: '#1D9BF0' },
-    { title: 'Tech & Compliance', icon: 'checkmark.shield.fill', count: TEAM_READINESS.filter((t) => !t.overallReady).length, color: '#1D9BF0' },
+    { title: 'Ops Command', icon: 'antenna.radiowaves.left.and.right', count: OPS_TASKS.filter((t) => t.status !== 'done').length, color: ACCENT },
+    { title: 'Tech & Compliance', icon: 'checkmark.shield.fill', count: TEAM_READINESS.filter((t) => !t.overallReady).length, color: ACCENT },
     { title: 'Broadcast Ops', icon: 'play.rectangle.fill', count: 0, color: '#F59E0B' },
     { title: 'Sponsor Delivery', icon: 'gift.fill', count: SPONSOR_DELIVERABLES.filter((d) => d.status === 'at_risk').length, color: '#22C55E' },
   ];
@@ -822,7 +824,7 @@ function IncidentsRequestsBlock({ colors }: { colors: typeof Colors.light }) {
   const INCIDENT_TYPE_COLOR: Record<string, string> = {
     protest: '#F59E0B',
     penalty: '#EF4444',
-    safety: '#1D9BF0',
+    safety: ACCENT,
   };
 
   return (

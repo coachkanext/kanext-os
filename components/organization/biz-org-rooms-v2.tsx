@@ -21,7 +21,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import { BizCard, BizSubTabBar, BizStatusChip, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel } from '@/utils/business-rbac';
@@ -48,6 +48,8 @@ import type {
   RoomTimelineEvent,
 } from '@/data/mock-biz-org-rooms';
 
+
+const ACCENT = MODE_ACCENT.business;
 const BP = BusinessPalette;
 
 // =============================================================================
@@ -125,8 +127,8 @@ function artifactIconColor(type: string): string {
   switch (type) {
     case 'spreadsheet': return '#22C55E';
     case 'presentation': return '#F59E0B';
-    case 'document': return '#1D9BF0';
-    case 'video': return '#1D9BF0';
+    case 'document': return ACCENT;
+    case 'video': return ACCENT;
     default: return BP.ash;
   }
 }
@@ -134,7 +136,7 @@ function artifactIconColor(type: string): string {
 function decisionStatusColor(status: RoomDecision['status']): string {
   switch (status) {
     case 'approved': return '#22C55E';
-    case 'open': return '#1D9BF0';
+    case 'open': return ACCENT;
     case 'draft': return '#F59E0B';
     case 'rejected': return '#EF4444';
   }
@@ -166,13 +168,13 @@ function receiptTypeIcon(type: BizReceipt['type']): string {
 function receiptTypeColor(type: BizReceipt['type']): string {
   switch (type) {
     case 'approval': return '#22C55E';
-    case 'release': return '#1D9BF0';
-    case 'decision': return '#1D9BF0';
+    case 'release': return ACCENT;
+    case 'decision': return ACCENT;
     case 'signature': return '#F59E0B';
-    case 'transfer': return '#1D9BF0';
-    case 'creation': return '#1D9BF0';
+    case 'transfer': return ACCENT;
+    case 'creation': return ACCENT;
     case 'amendment': return '#F59E0B';
-    case 'compliance': return '#1D9BF0';
+    case 'compliance': return ACCENT;
     default: return BP.ash;
   }
 }
@@ -205,9 +207,9 @@ function visibilityLabel(v?: BizRoom['visibility']): string {
 
 function visibilityColor(v?: BizRoom['visibility']): string {
   switch (v) {
-    case 'board': return '#1D9BF0';
-    case 'investor': return '#1D9BF0';
-    case 'public': return '#1D9BF0';
+    case 'board': return ACCENT;
+    case 'investor': return ACCENT;
+    case 'public': return ACCENT;
     case 'internal':
     default:
       return BP.ash;
@@ -294,8 +296,8 @@ function RoomHealthStrip({ room }: { room: BizRoom }) {
   const items: { icon: string; label: string; value: number; color: string }[] = [
     { icon: 'checklist', label: 'Tasks', value: tasks > 0 ? done : 0, color: '#22C55E' },
     { icon: 'exclamationmark.triangle.fill', label: 'Blockers', value: blockers, color: blockers > 0 ? '#F59E0B' : BP.ash },
-    { icon: 'list.bullet.clipboard.fill', label: 'Decisions', value: decisions, color: '#1D9BF0' },
-    { icon: 'bell.fill', label: 'Updates', value: updates, color: '#1D9BF0' },
+    { icon: 'list.bullet.clipboard.fill', label: 'Decisions', value: decisions, color: ACCENT },
+    { icon: 'bell.fill', label: 'Updates', value: updates, color: ACCENT },
   ];
 
   return (
@@ -710,7 +712,7 @@ function DetailWork({ room }: { room: BizRoom }) {
       </View>
 
       {placeholderTasks.map((task, index) => {
-        const taskColor = task.status === 'in_progress' ? '#1D9BF0' : BP.ash;
+        const taskColor = task.status === 'in_progress' ? ACCENT : BP.ash;
         const taskStatusLabel = task.status === 'in_progress' ? 'In Progress' : 'To Do';
         return (
           <View

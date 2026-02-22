@@ -7,7 +7,8 @@ import { View, StyleSheet, Pressable, Alert } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius } from '@/constants/theme'
+;
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getSeverityColor, getSourceTagColor, formatMessageTime } from '@/data/mock-messages';
 import type { AlertItem } from '@/data/mock-messages';
@@ -125,14 +126,14 @@ export function AlertDetail({ alert, onResolve, onAssign, onSnooze, onEscalate }
             style={({ pressed }) => [styles.deepLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => handleDeepLink('View in Feed')}
           >
-            <IconSymbol name="text.bubble.fill" size={14} color="#1D9BF0" />
+            <IconSymbol name="text.bubble.fill" size={14} color={accent} />
             <ThemedText style={styles.deepLinkText}>View in Feed</ThemedText>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.deepLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => handleDeepLink('Open Chat')}
           >
-            <IconSymbol name="bubble.left.fill" size={14} color="#1D9BF0" />
+            <IconSymbol name="bubble.left.fill" size={14} color={accent} />
             <ThemedText style={styles.deepLinkText}>Open Chat</ThemedText>
           </Pressable>
           {(alert.sourceTag === 'Player Dev' || alert.sourceTag === 'Culture') && (
@@ -140,7 +141,7 @@ export function AlertDetail({ alert, onResolve, onAssign, onSnooze, onEscalate }
               style={({ pressed }) => [styles.deepLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
               onPress={() => handleDeepLink('View Player')}
             >
-              <IconSymbol name="person.fill" size={14} color="#1D9BF0" />
+              <IconSymbol name="person.fill" size={14} color={accent} />
               <ThemedText style={styles.deepLinkText}>View Player</ThemedText>
             </Pressable>
           )}
@@ -149,7 +150,7 @@ export function AlertDetail({ alert, onResolve, onAssign, onSnooze, onEscalate }
               style={({ pressed }) => [styles.deepLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
               onPress={() => handleDeepLink('View Recruit')}
             >
-              <IconSymbol name="person.badge.plus" size={14} color="#1D9BF0" />
+              <IconSymbol name="person.badge.plus" size={14} color={accent} />
               <ThemedText style={styles.deepLinkText}>View Recruit</ThemedText>
             </Pressable>
           )}
@@ -328,6 +329,6 @@ const styles = StyleSheet.create({
   deepLinkText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#1D9BF0',
+    color: accent,
   },
 });

@@ -10,10 +10,12 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { GRID_DRIVERS } from '@/data/mock-competition-home';
 import { openDriverCard } from '@/utils/global-entity-sheets';
 
+
+const ACCENT = MODE_ACCENT.competition;
 const FILTERS = ['All', 'Permanent', 'Wildcard'] as const;
 type FilterTab = (typeof FILTERS)[number];
 
@@ -151,13 +153,13 @@ export function CompGridDriversView({ colors, accent }: Props) {
                   </View>
                 )}
                 {driver.podiums > 0 && (
-                  <View style={[styles.statBadge, { backgroundColor: '#1D9BF020' }]}>
-                    <ThemedText style={[styles.statBadgeText, { color: '#1D9BF0' }]}>{driver.podiums}P</ThemedText>
+                  <View style={[styles.statBadge, { backgroundColor: `${ACCENT}20` }]}>
+                    <ThemedText style={[styles.statBadgeText, { color: ACCENT }]}>{driver.podiums}P</ThemedText>
                   </View>
                 )}
                 {driver.poles > 0 && (
-                  <View style={[styles.statBadge, { backgroundColor: '#1D9BF020' }]}>
-                    <ThemedText style={[styles.statBadgeText, { color: '#1D9BF0' }]}>{driver.poles}PP</ThemedText>
+                  <View style={[styles.statBadge, { backgroundColor: `${ACCENT}20` }]}>
+                    <ThemedText style={[styles.statBadgeText, { color: ACCENT }]}>{driver.poles}PP</ThemedText>
                   </View>
                 )}
               </View>

@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_HERO,
   RACE_ROUNDS,
@@ -31,11 +31,14 @@ import {
 import { openDriverCard, openTeamCard } from '@/utils/global-entity-sheets';
 import {
   canSeeDashboardSection,
+
   type CompetitionRoleLens,
 } from '@/utils/competition-rbac';
 import { CompTicketsSheet } from '@/components/commerce/comp-tickets-sheet';
 import { CompStoreSheet } from '@/components/commerce/comp-store-sheet';
 import { CompPaddockSheet } from '@/components/commerce/comp-paddock-sheet';
+
+const ACCENT = MODE_ACCENT.competition;
 
 interface Props {
   colors: typeof Colors.light;
@@ -342,13 +345,13 @@ function LastRaceBadge({ result }: { result: number | 'DNF' | 'DNS' }) {
     bg = '#A1A1AA';
     label = 'DNS';
   } else if (result === 1) {
-    bg = '#1D9BF0';
+    bg = ACCENT;
     label = 'P1';
   } else if (result === 2) {
     bg = '#A1A1AA';
     label = 'P2';
   } else if (result === 3) {
-    bg = '#1D9BF0';
+    bg = ACCENT;
     label = 'P3';
   } else {
     bg = '#2F3336';

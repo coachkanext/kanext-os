@@ -8,7 +8,9 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import { DEPARTMENTS, type Department, type DepartmentCategory } from '@/data/mock-education-home';
 
 interface Props {
@@ -27,10 +29,10 @@ const FILTER_PILLS: { key: FilterKey; label: string }[] = [
 ];
 
 const CATEGORY_COLORS: Record<DepartmentCategory, string> = {
-  arts_sciences: '#1D9BF0',
+  arts_sciences: ACCENT,
   business: '#F59E0B',
   education: '#22C55E',
-  professional: '#1D9BF0',
+  professional: ACCENT,
 };
 
 const STATUS_COLORS: Record<string, string> = {

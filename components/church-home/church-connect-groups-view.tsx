@@ -7,15 +7,17 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { CONNECT_GROUPS, type ConnectGroup } from '@/data/mock-church-home';
 import { openLeaderCard } from '@/utils/global-entity-sheets';
 
+const ACCENT = MODE_ACCENT.church;
+
 const CATEGORY_COLORS: Record<ConnectGroup['category'], string> = {
-  young_adults: '#1D9BF0',
-  married: '#1D9BF0',
-  men: '#1D9BF0',
-  women: '#1D9BF0',
+  young_adults: ACCENT,
+  married: ACCENT,
+  men: ACCENT,
+  women: ACCENT,
   mixed: '#22C55E',
   seniors: '#F59E0B',
 };

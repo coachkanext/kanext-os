@@ -22,7 +22,8 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ConversationContextMenu } from './conversation-context-menu';
 import { WorkspaceCard } from './workspace-card';
-import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, ModeColors, MODE_ACCENT } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatTimestamp } from '@/data/mock-nexus';
 import { MOCK_NEXUS_WORKSPACES } from '@/data/mock-nexus-v2';
@@ -39,11 +40,11 @@ const MODE_FILTER_PILLS: Array<{ key: Mode | 'all'; label: string }> = [
 ];
 
 const MODE_DOT_COLORS: Record<Mode, string> = {
-  sports: '#1D9BF0',
-  church: '#1D9BF0',
-  business: '#22C55E',
-  education: '#F59E0B',
-  competition: '#EF4444',
+  sports: MODE_ACCENT.sports,
+  church: MODE_ACCENT.church,
+  business: MODE_ACCENT.business,
+  education: MODE_ACCENT.education,
+  competition: MODE_ACCENT.competition,
 };
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -81,6 +82,7 @@ export function ConversationsPanel({
 }: ConversationsPanelProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
 
   const slideAnim = useRef(new Animated.Value(-PANEL_WIDTH)).current;
@@ -298,8 +300,8 @@ export function ConversationsPanel({
           onNewChat();
         }}
       >
-        <IconSymbol name="plus" size={16} color={colors.tint} />
-        <ThemedText style={[styles.newWorkspaceText, { color: colors.tint }]}>
+        <IconSymbol name="plus" size={16} color={accent} />
+        <ThemedText style={[styles.newWorkspaceText, { color: accent }]}>
           New Workspace
         </ThemedText>
       </Pressable>

@@ -9,7 +9,8 @@ import { View, ScrollView, StyleSheet, Pressable, Text } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, ModeColors } from '@/constants/theme';
+import { Colors, ModeColors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMembershipId } from '@/context/app-context';
 import { getSportsRole, getGamePlanHubTabs, getKRVisibility, formatKR, type GamePlanTab } from '@/utils/sports-rbac';
@@ -35,6 +36,7 @@ const STATUS_COLORS: Record<string, string> = {
 export function SportsGamePlanV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const accent = ModeColors.sports.primary;
   const membershipId = useMembershipId();
   const role = getSportsRole(membershipId);
@@ -439,7 +441,7 @@ function RotationTab({ plan, colors, accent }: TabProps) {
 
 // ─── Tab 6: Scout ───
 function ScoutTab({ plan, colors, accent, krVis }: TabProps) {
-  const catColors: Record<string, string> = { tendency: '#F59E0B', weakness: '#EF4444', strength: '#22C55E', 'key-player': accent, situational: '#1D9BF0' };
+  const catColors: Record<string, string> = { tendency: '#F59E0B', weakness: '#EF4444', strength: '#22C55E', 'key-player': accent, situational: accent };
   const oppKR = getOppKR(plan);
 
   return (

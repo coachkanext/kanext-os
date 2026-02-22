@@ -9,10 +9,11 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
+
   type DataRoomDoc,
   type BoardPackItem,
   type DecisionLogEntry,
@@ -39,6 +40,8 @@ import {
   isBoardLevel,
   isInvestor,
 } from '@/utils/business-rbac';
+
+const ACCENT = MODE_ACCENT.business;
 
 // =============================================================================
 // PROPS
@@ -71,7 +74,7 @@ const DOC_TYPE_ICONS: Record<string, string> = {
 
 const ACCESS_TAG_COLORS: Record<string, string> = {
   public: '#22C55E',
-  retail: '#1D9BF0',
+  retail: ACCENT,
   board: '#F59E0B',
   founder_only: '#EF4444',
   workspace_only: '#A1A1AA',
@@ -107,7 +110,7 @@ const DECISION_OUTCOME_COLORS: Record<string, string> = {
   rejected: '#EF4444',
   deferred: '#F59E0B',
   tabled: '#F59E0B',
-  pending: '#1D9BF0',
+  pending: ACCENT,
 };
 
 const KPI_STATUS_COLORS: Record<string, string> = {
@@ -119,7 +122,7 @@ const KPI_STATUS_COLORS: Record<string, string> = {
 const RISK_SEVERITY_COLORS: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#1D9BF0',
+  medium: ACCENT,
   low: '#A1A1AA',
 };
 
@@ -240,7 +243,7 @@ function DataRoomHeader({
   onRequestUpgrade?: () => void;
 }) {
   const tierLabel = investorTier === 'board' ? 'Board' : investor ? 'Retail' : founder ? 'Founder' : 'Viewer';
-  const tierColor = investorTier === 'board' ? '#F59E0B' : investor ? '#1D9BF0' : founder ? '#EF4444' : '#A1A1AA';
+  const tierColor = investorTier === 'board' ? '#F59E0B' : investor ? ACCENT : founder ? '#EF4444' : '#A1A1AA';
 
   return (
     <View style={[styles.header, { borderBottomColor: colors.border }]}>
@@ -280,10 +283,10 @@ function DataRoomHeader({
       <View style={styles.actionRow}>
         {investor && !investorTier && onRequestUpgrade && (
           <Pressable style={styles.actionIconWrap} onPress={onRequestUpgrade}>
-            <View style={[styles.actionIconCircle, { backgroundColor: '#1D9BF022', borderColor: '#1D9BF044' }]}>
-              <IconSymbol name="arrow.up.circle.fill" size={16} color="#1D9BF0" />
+            <View style={[styles.actionIconCircle, { backgroundColor: `${ACCENT}22`, borderColor: `${ACCENT}44` }]}>
+              <IconSymbol name="arrow.up.circle.fill" size={16} color={ACCENT} />
             </View>
-            <ThemedText style={[styles.actionIconLabel, { color: '#1D9BF0' }]}>
+            <ThemedText style={[styles.actionIconLabel, { color: ACCENT }]}>
               Upgrade
             </ThemedText>
           </Pressable>
@@ -354,7 +357,7 @@ function StartHereTab({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="How to Evaluate Valuetainment" colors={colors}>
         {evaluationBullets.map((bullet, idx) => (
           <View key={idx} style={styles.numberRow}>
-            <ThemedText style={[styles.numberBadge, { color: '#1D9BF0' }]}>{idx + 1}</ThemedText>
+            <ThemedText style={[styles.numberBadge, { color: ACCENT }]}>{idx + 1}</ThemedText>
             <ThemedText style={[styles.bulletText, { color: colors.text }]}>{bullet}</ThemedText>
           </View>
         ))}
@@ -363,16 +366,16 @@ function StartHereTab({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Quick Links" colors={colors}>
         {links.map((link) => (
           <Pressable key={link.label} style={[styles.listRow, { borderBottomColor: colors.border }]}>
-            <IconSymbol name={link.icon as any} size={18} color="#1D9BF0" />
+            <IconSymbol name={link.icon as any} size={18} color={ACCENT} />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
-              <ThemedText style={[styles.listRowTitle, { color: '#1D9BF0' }]}>
+              <ThemedText style={[styles.listRowTitle, { color: ACCENT }]}>
                 {link.label}
               </ThemedText>
               <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
                 {link.subtitle}
               </ThemedText>
             </View>
-            <IconSymbol name="arrow.up.right" size={14} color="#1D9BF0" />
+            <IconSymbol name="arrow.up.right" size={14} color={ACCENT} />
           </Pressable>
         ))}
       </SectionCard>
@@ -538,8 +541,8 @@ function ProductDemoTab({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Demo Script" colors={colors}>
         {demoScript.map((item) => (
           <View key={item.step} style={styles.demoStepRow}>
-            <View style={[styles.demoStepBadge, { backgroundColor: '#1D9BF022' }]}>
-              <ThemedText style={[styles.demoStepNumber, { color: '#1D9BF0' }]}>
+            <View style={[styles.demoStepBadge, { backgroundColor: `${ACCENT}22` }]}>
+              <ThemedText style={[styles.demoStepNumber, { color: ACCENT }]}>
                 {item.step}
               </ThemedText>
             </View>
@@ -628,7 +631,7 @@ function FinancialsTab({
             </ThemedText>
             <View style={styles.statRow}>
               <StatBlock label="Monthly Burn" value="$25-$50K" color="#EF4444" colors={colors} />
-              <StatBlock label="Runway" value="12-18 mo" color="#1D9BF0" colors={colors} />
+              <StatBlock label="Runway" value="12-18 mo" color={ACCENT} colors={colors} />
               <StatBlock label="Cash" value="$300-$600K" color="#22C55E" colors={colors} />
             </View>
           </SectionCard>
@@ -680,7 +683,7 @@ function FinancialsTab({
           <SectionCard title="Runway" colors={colors}>
             <View style={styles.statRow}>
               <StatBlock label="Monthly Burn" value="$35K" color="#EF4444" colors={colors} />
-              <StatBlock label="Runway" value="14 mo" color="#1D9BF0" colors={colors} />
+              <StatBlock label="Runway" value="14 mo" color={ACCENT} colors={colors} />
               <StatBlock label="Cash Position" value="$490K" color="#22C55E" colors={colors} />
             </View>
           </SectionCard>
@@ -737,7 +740,7 @@ function FinancialsTab({
                 revenue="$5M Y1"
                 burn="$30K/mo"
                 runway="18+ mo"
-                color="#1D9BF0"
+                color={ACCENT}
                 colors={colors}
               />
             </View>
@@ -874,7 +877,7 @@ function LegalTab({
                 {
                   color:
                     agreement.status === 'Active' || agreement.status === 'Signed' ? '#22C55E' :
-                    agreement.status === 'Board Approved' ? '#1D9BF0' : '#F59E0B',
+                    agreement.status === 'Board Approved' ? ACCENT : '#F59E0B',
                 },
               ]}
             >
@@ -907,7 +910,7 @@ function BoardPackTab({ colors }: { colors: typeof Colors.light }) {
     <View>
       <SectionCard title="Latest Board Deck" colors={colors}>
         <View style={[styles.listRow, { borderBottomColor: colors.border }]}>
-          <IconSymbol name="doc.richtext.fill" size={20} color="#1D9BF0" />
+          <IconSymbol name="doc.richtext.fill" size={20} color={ACCENT} />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Board Deck -- Q1 2026

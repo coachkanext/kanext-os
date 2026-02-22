@@ -9,7 +9,9 @@ import { View, StyleSheet, Pressable, TextInput, FlatList, Text } from 'react-na
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import {
   FACULTY_MEMBERS,
   EDU_DEPARTMENT_LABELS,
@@ -47,7 +49,7 @@ const DEPT_FILTER_PILLS: { key: DeptFilterKey; label: string }[] = [
 
 const TENURE_COLORS: Record<TenureStatus, string> = {
   tenured: '#22C55E',
-  tenure_track: '#1D9BF0',
+  tenure_track: ACCENT,
   adjunct: '#F59E0B',
   staff: '#A1A1AA',
   on_leave: '#EF4444',
@@ -64,7 +66,7 @@ const TENURE_LABELS: Record<TenureStatus, string> = {
 const STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
   sabbatical: '#F59E0B',
-  adjunct: '#1D9BF0',
+  adjunct: ACCENT,
   on_leave: '#EF4444',
 };
 

@@ -16,7 +16,8 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
-import { Spacing, BorderRadius, Colors } from '@/constants/theme';
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
@@ -134,7 +135,7 @@ function getStatusColor(status: string): string {
     case 'available': return '#22C55E';
     case 'questionable': case 'day_to_day': return '#F59E0B';
     case 'injured': case 'out': case 'doubtful': return '#EF4444';
-    case 'redshirt': return '#1D9BF0';
+    case 'redshirt': return accent;
     default: return '#A1A1AA';
   }
 }
@@ -241,6 +242,7 @@ export function PlayerSheet({
 }: PlayerSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const { state } = useAppContext();
   const isRoster = !!jerseyNumber;
 
@@ -540,7 +542,7 @@ export function PlayerSheet({
           <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
             <View style={s.practiceRow}>
               {health.practiceAvailability.map((d, i) => {
-                const pColor = d.status === 'full' ? '#22C55E' : d.status === 'limited' ? '#F59E0B' : d.status === 'rest' ? '#1D9BF0' : '#EF4444';
+                const pColor = d.status === 'full' ? '#22C55E' : d.status === 'limited' ? '#F59E0B' : d.status === 'rest' ? accent : '#EF4444';
                 return (<View key={i} style={s.practiceDay}><Text style={[s.practiceDayLabel, { color: colors.textTertiary }]}>{d.day}</Text><View style={[s.practiceDot, { backgroundColor: pColor }]} /><Text style={[s.practiceDayStatus, { color: pColor }]}>{d.status}</Text></View>);
               })}
             </View>

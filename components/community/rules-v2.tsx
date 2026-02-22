@@ -8,7 +8,7 @@ import { View, StyleSheet, ScrollView, Pressable, TextInput } from 'react-native
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   TECHNICAL_DIRECTIVES, ENHANCED_PENALTY_CATALOG, TD_CATEGORY_COLOR,
 } from '@/data/mock-ceo-competition';
@@ -25,9 +25,12 @@ import type {
 } from '@/data/mock-competition-v2';
 import { mapRoleToCompetitionLens, isFullAccess } from '@/utils/competition-rbac';
 
+const ACCENT = MODE_ACCENT.competition;
+
 // =============================================================================
 // CONSTANTS
 // =============================================================================
+
 
 type RulesTab = 'rulebook' | 'penalties' | 'directives' | 'caselaw' | 'points';
 
@@ -40,8 +43,8 @@ const TAB_PILLS: { key: RulesTab; label: string }[] = [
 ];
 
 const CATEGORY_COLORS: Record<RuleArticle['category'], string> = {
-  race: '#1D9BF0',
-  technical: '#1D9BF0',
+  race: ACCENT,
+  technical: ACCENT,
   safety: '#EF4444',
   sporting: '#22C55E',
 };
@@ -527,11 +530,11 @@ function RulesHeader({ colors }: { colors: typeof Colors.light }) {
         <View style={[styles.trustBadge, { backgroundColor: '#22C55E20' }]}>
           <ThemedText style={[styles.trustBadgeText, { color: '#22C55E' }]}>RATIFIED</ThemedText>
         </View>
-        <View style={[styles.trustBadge, { backgroundColor: '#1D9BF020' }]}>
-          <ThemedText style={[styles.trustBadgeText, { color: '#1D9BF0' }]}>PUBLISHED</ThemedText>
+        <View style={[styles.trustBadge, { backgroundColor: `${ACCENT}20` }]}>
+          <ThemedText style={[styles.trustBadgeText, { color: ACCENT }]}>PUBLISHED</ThemedText>
         </View>
-        <View style={[styles.trustBadge, { backgroundColor: '#1D9BF020' }]}>
-          <ThemedText style={[styles.trustBadgeText, { color: '#1D9BF0' }]}>
+        <View style={[styles.trustBadge, { backgroundColor: `${ACCENT}20` }]}>
+          <ThemedText style={[styles.trustBadgeText, { color: ACCENT }]}>
             {RULE_CHANGE_LOG.length} CHANGES
           </ThemedText>
         </View>
@@ -676,9 +679,9 @@ function InterpretationsSection({ colors }: { colors: typeof Colors.light }) {
 // =============================================================================
 
 const CHANGE_TYPE_COLOR: Record<string, string> = {
-  amendment: '#1D9BF0',
+  amendment: ACCENT,
   bulletin: '#F59E0B',
-  interpretation: '#1D9BF0',
+  interpretation: ACCENT,
   directive: '#22C55E',
 };
 
@@ -731,10 +734,10 @@ function ProposeChangeButton({ colors }: { colors: typeof Colors.light }) {
 
   return (
     <Pressable
-      style={[styles.proposeButton, { backgroundColor: '#1D9BF015', borderColor: '#1D9BF030' }]}
+      style={[styles.proposeButton, { backgroundColor: `${ACCENT}15`, borderColor: `${ACCENT}30` }]}
       onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
     >
-      <IconSymbol name="plus.circle.fill" size={18} color="#1D9BF0" />
+      <IconSymbol name="plus.circle.fill" size={18} color={ACCENT} />
       <ThemedText style={styles.proposeButtonText}>Propose a Change</ThemedText>
     </Pressable>
   );
@@ -1385,6 +1388,6 @@ const styles = StyleSheet.create({
   proposeButtonText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#1D9BF0',
+    color: ACCENT,
   },
 });

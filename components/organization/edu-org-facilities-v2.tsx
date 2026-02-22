@@ -15,7 +15,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isDeanLevel, isFacultyLevel, isEnrolled } from '@/utils/education-rbac';
 import {
@@ -77,6 +77,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'buildings', label: 'Buildings' },
@@ -238,11 +240,11 @@ function OverviewTab({
   // Health tiles
   const healthTiles: { label: string; value: number; color: string; icon: string }[] = [
     { label: 'Critical WOs', value: posture.criticalWorkOrders, color: '#EF4444', icon: 'exclamationmark.triangle.fill' },
-    { label: 'Inspections Due', value: posture.inspectionsDue, color: '#1D9BF0', icon: 'checkmark.shield.fill' },
+    { label: 'Inspections Due', value: posture.inspectionsDue, color: ACCENT, icon: 'checkmark.shield.fill' },
     { label: 'Areas Down', value: posture.areasDown, color: '#EF4444', icon: 'nosign' },
     { label: 'Buildings', value: data.buildings.length, color: '#22C55E', icon: 'building.2.fill' },
     { label: 'Open WOs', value: data.workOrders.filter((w) => w.status !== 'complete' && w.status !== 'closed').length, color: '#F59E0B', icon: 'wrench.and.screwdriver.fill' },
-    { label: 'Vendors', value: data.vendors.length, color: '#1D9BF0', icon: 'person.2.fill' },
+    { label: 'Vendors', value: data.vendors.length, color: ACCENT, icon: 'person.2.fill' },
   ];
 
   // Today's Impact
@@ -1080,7 +1082,7 @@ function SafetyAccessTab({
 
       {safetyZones.map((zone) => {
         const buildingName = getBuildingName(zone.buildingId, buildings);
-        const typeColor = zone.type === 'hazmat' ? '#EF4444' : zone.type === 'secured' ? '#1D9BF0' : '#F59E0B';
+        const typeColor = zone.type === 'hazmat' ? '#EF4444' : zone.type === 'secured' ? ACCENT : '#F59E0B';
         return (
           <View
             key={zone.id}

@@ -9,7 +9,7 @@ import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { CATALOG_SCHOOLS, type CatalogSchool } from '@/data/edu-commerce-data';
 import { ACADEMIC_PROGRAMS, type AcademicProgram } from '@/data/mock-education-home';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
 interface Props {
   visible: boolean;
@@ -17,7 +17,7 @@ interface Props {
   colors: Record<string, string>;
 }
 
-const ACCENT = '#1D9BF0';
+const ACCENT = MODE_ACCENT.education;
 
 const STATUS_COLORS: Record<string, string> = {
   open: '#22C55E',

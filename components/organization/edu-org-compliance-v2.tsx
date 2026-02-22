@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
 import {
@@ -59,6 +59,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'policies', label: 'Policies' },
@@ -249,7 +251,7 @@ function OverviewTab({
             <ThemedText style={[s.postureKpiLabel, { color: colors.textSecondary }]}>Open Findings</ThemedText>
           </View>
           <View style={s.postureKpiItem}>
-            <ThemedText style={[s.postureKpiValue, { color: posture.activeExceptions > 0 ? '#1D9BF0' : '#22C55E' }]}>
+            <ThemedText style={[s.postureKpiValue, { color: posture.activeExceptions > 0 ? ACCENT : '#22C55E' }]}>
               {posture.activeExceptions}
             </ThemedText>
             <ThemedText style={[s.postureKpiLabel, { color: colors.textSecondary }]}>Active Exceptions</ThemedText>
@@ -482,7 +484,7 @@ function ControlsTab({
       const freqLabel = CONTROL_FREQUENCY_LABELS[item.frequency];
       const statusColor = CONTROL_STATUS_COLORS[item.status];
       const statusLabel = CONTROL_STATUS_LABELS[item.status];
-      const scopeColor = item.scope === 'finance' || item.scope === 'data_privacy' ? '#1D9BF0' : '#1D9BF0';
+      const scopeColor = item.scope === 'finance' || item.scope === 'data_privacy' ? ACCENT : ACCENT;
       const scopeLabel = COMPLIANCE_DOMAIN_LABELS[item.scope] || item.scope;
       return (
         <Pressable
@@ -1017,7 +1019,7 @@ function IncidentsTab({
                 <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
                 {isClosed && <StatusBadge label="IMMUTABLE" color="#A1A1AA" />}
                 {hasAddenda && (
-                  <StatusBadge label={`${incident.addenda!.length} ADDENDA`} color="#1D9BF0" />
+                  <StatusBadge label={`${incident.addenda!.length} ADDENDA`} color={ACCENT} />
                 )}
               </View>
               <View style={s.incidentMetaRow}>
@@ -1445,7 +1447,7 @@ function ControlDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={freqLabel.toUpperCase()} color={accentColor} />
         <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
-        <StatusBadge label={scopeLabel.toUpperCase()} color="#1D9BF0" />
+        <StatusBadge label={scopeLabel.toUpperCase()} color={ACCENT} />
       </View>
 
       {/* Linked Policy */}

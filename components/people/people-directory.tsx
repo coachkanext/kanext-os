@@ -8,7 +8,8 @@ import { View, StyleSheet, Pressable, FlatList, TextInput } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import { PEOPLE_DIRECTORY, PEOPLE_GROUPS } from '@/data/mock-people-v2';
@@ -22,7 +23,7 @@ const STATUS_COLORS: Record<PersonStatus, string> = {
   active: '#22C55E',
   inactive: '#A1A1AA',
   pending: '#F59E0B',
-  away: '#1D9BF0',
+  away: accent,
 };
 
 const STATUS_LABELS: Record<PersonStatus, string> = {
@@ -97,6 +98,7 @@ export function PeopleDirectory({
 } = {}) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const mode = useMode();
 
   const [searchQuery, setSearchQuery] = useState('');

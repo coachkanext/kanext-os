@@ -10,9 +10,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { COMP_NEWS, COMP_NEWS_CATEGORY_LABELS, type CompNewsItem } from '@/data/mock-competition-home';
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accent: string;
@@ -20,8 +22,8 @@ interface Props {
 
 const CATEGORY_COLORS: Record<CompNewsItem['category'], string> = {
   race_recap: '#EF4444',
-  onboard: '#1D9BF0',
-  interview: '#1D9BF0',
+  onboard: ACCENT,
+  interview: ACCENT,
   technical: '#F59E0B',
   wildcard: '#22C55E',
 };

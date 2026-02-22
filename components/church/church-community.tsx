@@ -22,7 +22,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import {
   isSeniorPastor,
@@ -30,6 +30,8 @@ import {
   isStaffLevel,
   isMember,
 } from '@/utils/church-rbac';
+
+const ACCENT = MODE_ACCENT.church;
 
 // =============================================================================
 // TYPES
@@ -87,12 +89,12 @@ interface HealthKPI {
 }
 
 const HEALTH_KPIS: HealthKPI[] = [
-  { label: 'Total Members', value: '4,200', icon: 'person.3.fill', color: '#1D9BF0' },
-  { label: 'Active Small Groups', value: '42', icon: 'person.2.circle.fill', color: '#1D9BF0' },
+  { label: 'Total Members', value: '4,200', icon: 'person.3.fill', color: ACCENT },
+  { label: 'Active Small Groups', value: '42', icon: 'person.2.circle.fill', color: ACCENT },
   { label: 'Weekly Attendance', value: '2,850', icon: 'building.2.fill', color: '#F59E0B' },
   { label: 'New Members (Q1)', value: '38', icon: 'person.badge.plus', color: '#22C55E' },
-  { label: 'Baptisms YTD', value: '12', icon: 'drop.fill', color: '#1D9BF0' },
-  { label: 'Connected Rate', value: '78%', icon: 'link', color: '#1D9BF0' },
+  { label: 'Baptisms YTD', value: '12', icon: 'drop.fill', color: ACCENT },
+  { label: 'Connected Rate', value: '78%', icon: 'link', color: ACCENT },
 ];
 
 interface SpotlightStory {
@@ -121,7 +123,7 @@ interface CommunityEvent {
 const RECENT_EVENTS: CommunityEvent[] = [
   { id: 'evt-1', title: 'Community Dinner & Fellowship', date: 'Feb 21, 2026 \u00B7 6:00 PM', location: 'Downtown Campus \u2014 Fellowship Hall', type: 'Fellowship', typeColor: '#F59E0B' },
   { id: 'evt-2', title: 'New Members Luncheon', date: 'Feb 22, 2026 \u00B7 12:30 PM', location: 'Westside Campus \u2014 Lounge', type: 'Welcome', typeColor: '#22C55E' },
-  { id: 'evt-3', title: 'Marriage Retreat Weekend', date: 'Mar 7\u20138, 2026', location: 'Lake Arrowhead Conference Center', type: 'Retreat', typeColor: '#1D9BF0' },
+  { id: 'evt-3', title: 'Marriage Retreat Weekend', date: 'Mar 7\u20138, 2026', location: 'Lake Arrowhead Conference Center', type: 'Retreat', typeColor: ACCENT },
 ];
 
 // =============================================================================
@@ -152,8 +154,8 @@ interface QuickAction {
 const OVERVIEW_QUICK_ACTIONS: QuickAction[] = [
   { id: 'qa-1', label: 'Log Visit', icon: 'person.fill.checkmark', color: '#22C55E' },
   { id: 'qa-2', label: 'New Care Case', icon: 'heart.text.square.fill', color: '#EF4444' },
-  { id: 'qa-3', label: 'Send Message', icon: 'paperplane.fill', color: '#1D9BF0' },
-  { id: 'qa-4', label: 'Schedule Follow-up', icon: 'calendar.badge.plus', color: '#1D9BF0' },
+  { id: 'qa-3', label: 'Send Message', icon: 'paperplane.fill', color: ACCENT },
+  { id: 'qa-4', label: 'Schedule Follow-up', icon: 'calendar.badge.plus', color: ACCENT },
 ];
 
 // =============================================================================
@@ -283,18 +285,18 @@ const GROUPS: SmallGroup[] = [
 ];
 
 const GROUP_TYPE_COLORS: Record<string, string> = {
-  'Bible Study': '#1D9BF0',
-  'Life Group': '#1D9BF0',
-  Recovery: '#1D9BF0',
-  'Men\'s': '#1D9BF0',
-  'Women\'s': '#1D9BF0',
-  'Young Adults': '#1D9BF0',
+  'Bible Study': ACCENT,
+  'Life Group': ACCENT,
+  Recovery: ACCENT,
+  'Men\'s': ACCENT,
+  'Women\'s': ACCENT,
+  'Young Adults': ACCENT,
   Couples: '#F59E0B',
   Prayer: '#F59E0B',
   Foundations: '#22C55E',
-  Support: '#1D9BF0',
+  Support: ACCENT,
   Outreach: '#22C55E',
-  Seniors: '#1D9BF0',
+  Seniors: ACCENT,
 };
 
 // =============================================================================
@@ -339,11 +341,11 @@ const CARE_STATS = {
 
 const CARE_TYPE_COLORS: Record<CareType, string> = {
   hospital: '#EF4444',
-  grief: '#1D9BF0',
-  counseling: '#1D9BF0',
+  grief: ACCENT,
+  counseling: ACCENT,
   'new-member-followup': '#22C55E',
   'prayer-request': '#F59E0B',
-  homebound: '#1D9BF0',
+  homebound: ACCENT,
   crisis: '#EF4444',
 };
 
@@ -354,7 +356,7 @@ const PRIORITY_COLORS: Record<CarePriority, string> = {
 };
 
 const STATUS_COLORS: Record<CareStatus, string> = {
-  active: '#1D9BF0',
+  active: ACCENT,
   pending: '#F59E0B',
   resolved: '#22C55E',
 };
@@ -373,14 +375,14 @@ interface VolunteerTeam {
 }
 
 const VOLUNTEER_TEAMS: VolunteerTeam[] = [
-  { id: 'vt-1', name: 'Worship & Music', headcount: 34, needed: 4, lead: 'Jessica Williams', color: '#1D9BF0' },
-  { id: 'vt-2', name: 'Children\'s Ministry', headcount: 28, needed: 6, lead: 'Marcus Rivera', color: '#1D9BF0' },
+  { id: 'vt-1', name: 'Worship & Music', headcount: 34, needed: 4, lead: 'Jessica Williams', color: ACCENT },
+  { id: 'vt-2', name: 'Children\'s Ministry', headcount: 28, needed: 6, lead: 'Marcus Rivera', color: ACCENT },
   { id: 'vt-3', name: 'Hospitality & Ushers', headcount: 22, needed: 3, lead: 'Terrance Brooks', color: '#F59E0B' },
-  { id: 'vt-4', name: 'Production & Tech', headcount: 16, needed: 5, lead: 'Carlos Martinez', color: '#1D9BF0' },
+  { id: 'vt-4', name: 'Production & Tech', headcount: 16, needed: 5, lead: 'Carlos Martinez', color: ACCENT },
   { id: 'vt-5', name: 'Community Outreach', headcount: 22, needed: 8, lead: 'Deacon Marcus Rivera', color: '#22C55E' },
   { id: 'vt-6', name: 'Parking & Security', headcount: 14, needed: 2, lead: 'Deacon Williams', color: '#A1A1AA' },
   { id: 'vt-7', name: 'Prayer Ministry', headcount: 20, needed: 0, lead: 'Mother Johnson', color: '#F59E0B' },
-  { id: 'vt-8', name: 'Media & Communications', headcount: 8, needed: 4, lead: 'Linda Park', color: '#1D9BF0' },
+  { id: 'vt-8', name: 'Media & Communications', headcount: 8, needed: 4, lead: 'Linda Park', color: ACCENT },
 ];
 
 const SERVE_STATS = {
@@ -517,8 +519,8 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Chu
           {OVERVIEW_ALERTS.map((alert) => (
             <Card key={alert.id} colors={colors} style={{ borderColor: alert.severity === 'warning' ? '#F59E0B40' : colors.border }}>
               <View style={s.alertRow}>
-                <View style={[s.alertIconWrap, { backgroundColor: alert.severity === 'warning' ? '#F59E0B20' : '#1D9BF020' }]}>
-                  <IconSymbol name={alert.icon as any} size={14} color={alert.severity === 'warning' ? '#F59E0B' : '#1D9BF0'} />
+                <View style={[s.alertIconWrap, { backgroundColor: alert.severity === 'warning' ? '#F59E0B20' : `${ACCENT}20` }]}>
+                  <IconSymbol name={alert.icon as any} size={14} color={alert.severity === 'warning' ? '#F59E0B' : ACCENT} />
                 </View>
                 <View style={s.alertContent}>
                   <ThemedText style={[s.alertLabel, { color: colors.text }]}>{alert.label}</ThemedText>
@@ -629,7 +631,7 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Chu
               style={({ pressed }) => [s.ctaButton, { borderColor: colors.border, opacity: pressed ? 0.7 : 1 }]}
               onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
             >
-              <IconSymbol name="person.2.fill" size={14} color="#1D9BF0" />
+              <IconSymbol name="person.2.fill" size={14} color={ACCENT} />
               <ThemedText style={[s.ctaButtonText, { color: colors.text }]}>Join a Small Group</ThemedText>
             </Pressable>
             <Pressable
@@ -697,10 +699,10 @@ function PeopleView({ colors, role }: { colors: typeof Colors.light; role: Churc
   const categoryColor = (cat: PersonEntry['category']): string => {
     switch (cat) {
       case 'leader': return '#F59E0B';
-      case 'staff': return '#1D9BF0';
+      case 'staff': return ACCENT;
       case 'member': return '#22C55E';
-      case 'new-member': return '#1D9BF0';
-      case 'visitor': return '#1D9BF0';
+      case 'new-member': return ACCENT;
+      case 'visitor': return ACCENT;
       default: return '#A1A1AA';
     }
   };
@@ -1115,7 +1117,7 @@ function CareView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
         <Card colors={colors}>
           <View style={s.summaryGrid}>
             {[
-              { v: String(CARE_STATS.activeCases), l: 'Active Cases', c: '#1D9BF0' },
+              { v: String(CARE_STATS.activeCases), l: 'Active Cases', c: ACCENT },
               { v: String(CARE_STATS.resolvedThisMonth), l: 'Resolved (Mo)', c: '#22C55E' },
               { v: CARE_STATS.avgResponseTime, l: 'Avg Response', c: colors.text },
               { v: String(CARE_STATS.pendingAssignment), l: 'Pending', c: '#F59E0B' },
@@ -1316,7 +1318,7 @@ function ServeView({ colors, role }: { colors: typeof Colors.light; role: Church
               { v: String(SERVE_STATS.totalVolunteers), l: 'Total Volunteers', c: colors.text },
               { v: String(SERVE_STATS.openPositionsThisWeek), l: 'Open This Week', c: '#F59E0B' },
               { v: String(SERVE_STATS.newVolunteersThisMonth), l: 'New (Mo)', c: '#22C55E' },
-              ...(showAnalytics ? [{ v: SERVE_STATS.retentionRate, l: 'Retention', c: '#1D9BF0' }] : [{ v: SERVE_STATS.avgHoursPerMonth, l: 'Avg Hrs/Mo', c: colors.text }]),
+              ...(showAnalytics ? [{ v: SERVE_STATS.retentionRate, l: 'Retention', c: ACCENT }] : [{ v: SERVE_STATS.avgHoursPerMonth, l: 'Avg Hrs/Mo', c: colors.text }]),
             ].map((item) => (
               <View key={item.l} style={s.summaryStat}>
                 <ThemedText style={[s.summaryValue, { color: item.c }]}>{item.v}</ThemedText>
@@ -1411,12 +1413,12 @@ function ServeView({ colors, role }: { colors: typeof Colors.light; role: Church
           <Card colors={colors}>
             <View style={s.analyticsGrid}>
               {[
-                { label: 'Total Hrs (MTD)', value: '2,034', color: '#1D9BF0' },
-                { label: 'Avg Engagement', value: '4.2/wk', color: '#1D9BF0' },
+                { label: 'Total Hrs (MTD)', value: '2,034', color: ACCENT },
+                { label: 'Avg Engagement', value: '4.2/wk', color: ACCENT },
                 { label: 'New Sign-ups (Q1)', value: '24', color: '#22C55E' },
                 { label: 'Burnout Risk', value: '6%', color: '#EF4444' },
                 { label: 'First-Time Servers', value: '12', color: '#F59E0B' },
-                { label: 'Returning Rate', value: '91%', color: '#1D9BF0' },
+                { label: 'Returning Rate', value: '91%', color: ACCENT },
               ].map((item) => (
                 <View key={item.label} style={[s.analyticsCell, { borderColor: colors.border }]}>
                   <ThemedText style={[s.analyticsValue, { color: item.color }]}>{item.value}</ThemedText>

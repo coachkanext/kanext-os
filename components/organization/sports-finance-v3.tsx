@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 type ViewId = 'budget' | 'scholarships' | 'nil';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -288,7 +290,7 @@ function ScholarshipsView({ colors, accentColor }: { colors: typeof Colors.light
             <View style={s.listRowBadges}>
               <StatusBadge
                 label={row.type.toUpperCase()}
-                color={row.type === 'Full' ? '#22C55E' : row.type === 'Partial' ? '#1D9BF0' : '#A1A1AA'}
+                color={row.type === 'Full' ? '#22C55E' : row.type === 'Partial' ? ACCENT : '#A1A1AA'}
               />
               <StatusBadge label="ACTIVE" color="#22C55E" />
             </View>

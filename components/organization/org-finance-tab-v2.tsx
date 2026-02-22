@@ -11,7 +11,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import type { Mode } from '@/types';
 import {
   FINANCE_TABS,
@@ -134,10 +135,10 @@ const MODE_LABELS: Record<Mode, string> = {
 // =============================================================================
 
 const PAYROLL_TYPE_COLOR: Record<string, string> = {
-  salary: '#1D9BF0',
+  salary: accent,
   stipend: '#22C55E',
   contractor: '#F59E0B',
-  honorarium: '#1D9BF0',
+  honorarium: accent,
 };
 
 // =============================================================================
@@ -145,11 +146,11 @@ const PAYROLL_TYPE_COLOR: Record<string, string> = {
 // =============================================================================
 
 function auditEntryColor(action: string): string {
-  if (action.includes('payment') || action.includes('payroll')) return '#1D9BF0';
+  if (action.includes('payment') || action.includes('payroll')) return accent;
   if (action.includes('revenue') || action.includes('giving') || action.includes('tuition') || action.includes('grant') || action.includes('sponsorship')) return '#22C55E';
   if (action.includes('alert') || action.includes('overdue')) return '#EF4444';
   if (action.includes('approval') || action.includes('reimbursement')) return '#F59E0B';
-  if (action.includes('contract') || action.includes('insurance')) return '#1D9BF0';
+  if (action.includes('contract') || action.includes('insurance')) return accent;
   if (action.includes('control')) return '#A1A1AA';
   return '#A1A1AA';
 }

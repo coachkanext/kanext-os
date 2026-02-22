@@ -8,7 +8,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   getAccessLevelColor,
@@ -24,6 +25,7 @@ interface LibraryRecordCardProps {
 export function LibraryRecordCard({ record }: LibraryRecordCardProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const accessColor = getAccessLevelColor(record.accessLevel);
 
   return (
@@ -90,8 +92,8 @@ export function LibraryRecordCard({ record }: LibraryRecordCardProps) {
             </View>
           ))}
           {record.workspaceRef && (
-            <View style={[styles.tag, { backgroundColor: '#1D9BF0' + '1A' }]}>
-              <ThemedText style={[styles.tagText, { color: '#1D9BF0' }]}>{record.workspaceRef}</ThemedText>
+            <View style={[styles.tag, { backgroundColor: accent + '1A' }]}>
+              <ThemedText style={[styles.tagText, { color: accent }]}>{record.workspaceRef}</ThemedText>
             </View>
           )}
         </View>

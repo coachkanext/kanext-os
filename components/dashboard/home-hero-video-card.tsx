@@ -9,7 +9,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
 
@@ -42,7 +43,7 @@ const PINNED_HERO: HeroVideo = {
   id: 'hero-pinned',
   title: 'Providence Scout Breakdown — Transition Defense',
   subtitle: 'Staff Film · Uploaded 2h ago',
-  thumbnailColor: '#1D9BF0',
+  thumbnailColor: accent,
   duration: '8:42',
   isPinned: true,
   source: 'pinned',
@@ -98,6 +99,7 @@ function getHeroCTA(role: SportsRoleLens): string {
 export function HomeHeroVideoCard({ role, heroVideo, onPress }: HomeHeroVideoCardProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const video = heroVideo ?? selectHeroVideo();
   const ctaLabel = getHeroCTA(role);
 

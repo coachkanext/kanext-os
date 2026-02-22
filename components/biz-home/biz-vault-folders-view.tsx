@@ -7,13 +7,16 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable, TextInput } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import {
   VAULT_FOLDERS,
   VAULT_DOCUMENTS,
+
   type VaultFolder,
   type VaultDocument,
 } from '@/data/mock-business-home';
+
+const ACCENT = MODE_ACCENT.business;
 
 const CATEGORY_PILLS = ['All', 'Contracts', 'Invoices', 'Proposals', 'Financial', 'Legal'] as const;
 type CategoryFilter = (typeof CATEGORY_PILLS)[number];
@@ -34,8 +37,8 @@ interface Props {
 
 const ACCESS_COLORS: Record<string, string> = {
   public: '#22C55E',
-  investor: '#1D9BF0',
-  board: '#1D9BF0',
+  investor: ACCENT,
+  board: ACCENT,
   founder_only: '#EF4444',
 };
 

@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // CEO competition data
 import {
@@ -58,6 +58,8 @@ import type { K1StandingEntry } from '@/data/mock-community';
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 const ACCENT_GOLD = '#F59E0B';
 
 const VIEW_PILLS: { key: StandingsView; label: string }[] = [
@@ -416,7 +418,7 @@ function DriversMoneyView({ colors }: { colors: typeof Colors.light }) {
             <ThemedText style={[styles.summaryLabel, { color: colors.textTertiary }]}>
               Funded
             </ThemedText>
-            <ThemedText style={[styles.summaryValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[styles.summaryValue, { color: ACCENT }]}>
               77%
             </ThemedText>
           </View>
@@ -792,7 +794,7 @@ const GATE_STATE_COLOR: Record<string, string> = {
 
 const STANDINGS_STATE_COLOR: Record<StandingsState, string> = {
   provisional: '#F59E0B',
-  under_review: '#1D9BF0',
+  under_review: ACCENT,
   official: '#22C55E',
 };
 
@@ -856,9 +858,9 @@ function GovernedControls({ colors }: { colors: typeof Colors.light }) {
 
   const actions = [
     { label: 'Lock Results', color: '#22C55E' },
-    { label: 'Mark Under Review', color: '#1D9BF0' },
+    { label: 'Mark Under Review', color: ACCENT },
     { label: 'Finalize Official', color: '#F59E0B' },
-    { label: 'Initiate Payout Release', color: '#1D9BF0' },
+    { label: 'Initiate Payout Release', color: ACCENT },
   ];
 
   return (

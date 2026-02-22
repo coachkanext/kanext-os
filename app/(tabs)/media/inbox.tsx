@@ -15,7 +15,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { VideoHeader } from '@/components/media/video-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import {
   QUICK_SHARE_TARGETS,
   VIDEO_INBOX_THREADS,
@@ -103,6 +104,7 @@ function ThreadRow({ thread }: { thread: VideoInboxThread }) {
 }
 
 export default function InboxScreen() {
+  const accent = useAccentColor();
   return (
     <View style={styles.container}>
       <VideoHeader title="Inbox" />
@@ -232,7 +234,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: accent,
   },
   listContent: {
     paddingBottom: 100,

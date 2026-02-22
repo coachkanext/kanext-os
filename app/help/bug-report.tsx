@@ -12,6 +12,7 @@ import Constants from 'expo-constants';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useAppContext } from '@/context/app-context';
 
 const CATEGORIES = ['UI', 'Data', 'Crash', 'Other'];
@@ -19,6 +20,7 @@ const CATEGORIES = ['UI', 'Data', 'Crash', 'Other'];
 export default function BugReportScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
@@ -165,7 +167,7 @@ export default function BugReportScreen() {
         {/* Submit button */}
         <View style={styles.field}>
           <Pressable
-            style={[styles.submitButton, { backgroundColor: colors.tint }]}
+            style={[styles.submitButton, { backgroundColor: accent }]}
             onPress={handleSubmit}
           >
             <Text style={styles.submitText}>Submit Report</Text>
@@ -188,7 +190,7 @@ export default function BugReportScreen() {
                 }}
               >
                 <Text style={[styles.pickerOptionText, { color: colors.text }]}>{cat}</Text>
-                {category === cat && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
+                {category === cat && <IconSymbol name="checkmark" size={18} color={accent} />}
               </Pressable>
             ))}
           </View>

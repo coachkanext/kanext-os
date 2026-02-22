@@ -9,7 +9,8 @@ import { View, ScrollView, StyleSheet, Pressable, Text } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, ModeColors } from '@/constants/theme';
+import { Colors, ModeColors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMembershipId } from '@/context/app-context';
 import { getSportsRole, getSimulationHubTabs, getKRVisibility, type SimulationTab } from '@/utils/sports-rbac';
@@ -35,6 +36,8 @@ import {
   type SimDriver,
   type InteractionTrace,
 } from '@/data/mock-simulation-v2';
+
+const accent = useAccentColor();
 
 // ---------------------------------------------------------------------------
 // Simulation Context — one per available opponent sim
@@ -586,7 +589,7 @@ function BoxScoreTab({ ctx, colors, accent }: TabProps) {
       <View style={styles.rangeRow}>
         <RangeChip label="PTS" value={`${totals.pts}`} color={accent} colors={colors} />
         <RangeChip label="REB" value={`${totals.reb}`} color="#22C55E" colors={colors} />
-        <RangeChip label="AST" value={`${totals.ast}`} color="#1D9BF0" colors={colors} />
+        <RangeChip label="AST" value={`${totals.ast}`} color={accent} colors={colors} />
         <RangeChip label="TO" value={`${totals.to}`} color="#EF4444" colors={colors} />
       </View>
 

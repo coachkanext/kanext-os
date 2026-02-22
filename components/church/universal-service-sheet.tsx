@@ -9,7 +9,7 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
@@ -38,6 +38,8 @@ import {
   isMinistryLevel,
 } from '@/utils/church-rbac';
 
+const ACCENT = MODE_ACCENT.church;
+
 // =============================================================================
 // PROPS
 // =============================================================================
@@ -54,26 +56,26 @@ interface UniversalServiceSheetProps {
 // =============================================================================
 
 const SERVICE_STATUS_COLORS: Record<string, string> = {
-  upcoming: '#1D9BF0',
+  upcoming: ACCENT,
   live: '#22C55E',
   completed: '#A1A1AA',
 };
 
 const AGENDA_TYPE_COLORS: Record<string, string> = {
   setup: '#A1A1AA',
-  doors: '#1D9BF0',
-  worship: '#1D9BF0',
+  doors: ACCENT,
+  worship: ACCENT,
   teaching: '#F59E0B',
   small_groups: '#22C55E',
   teardown: '#A1A1AA',
   offering: '#F59E0B',
-  announcements: '#1D9BF0',
+  announcements: ACCENT,
 };
 
 const INCIDENT_TYPE_COLORS: Record<string, string> = {
   child_safety: '#EF4444',
   medical: '#F59E0B',
-  conflict: '#1D9BF0',
+  conflict: ACCENT,
   property: '#A1A1AA',
   other: '#A1A1AA',
 };
@@ -552,17 +554,17 @@ function RunOfShowTab({
               {/* Media links */}
               <View style={styles.mediaLinkRow}>
                 {segment.slidesLink && (
-                  <View style={[styles.mediaLinkChip, { backgroundColor: '#1D9BF022' }]}>
-                    <IconSymbol name="doc.fill" size={10} color="#1D9BF0" />
-                    <ThemedText style={[styles.mediaLinkText, { color: '#1D9BF0' }]}>
+                  <View style={[styles.mediaLinkChip, { backgroundColor: `${ACCENT}22` }]}>
+                    <IconSymbol name="doc.fill" size={10} color={ACCENT} />
+                    <ThemedText style={[styles.mediaLinkText, { color: ACCENT }]}>
                       Slides
                     </ThemedText>
                   </View>
                 )}
                 {segment.lyricsLink && (
-                  <View style={[styles.mediaLinkChip, { backgroundColor: '#1D9BF022' }]}>
-                    <IconSymbol name="music.note" size={10} color="#1D9BF0" />
-                    <ThemedText style={[styles.mediaLinkText, { color: '#1D9BF0' }]}>
+                  <View style={[styles.mediaLinkChip, { backgroundColor: `${ACCENT}22` }]}>
+                    <IconSymbol name="music.note" size={10} color={ACCENT} />
+                    <ThemedText style={[styles.mediaLinkText, { color: ACCENT }]}>
                       Lyrics
                     </ThemedText>
                   </View>
@@ -703,7 +705,7 @@ function AttendanceTab({
           <StatBlock
             label="New Visitors"
             value={String(data.newVisitors)}
-            color="#1D9BF0"
+            color={ACCENT}
             colors={colors}
           />
         </View>
@@ -883,7 +885,7 @@ function RecapFollowUpTab({
             key={idx}
             style={[styles.recapNoteRow, { borderBottomColor: colors.border }]}
           >
-            <View style={[styles.recapBullet, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[styles.recapBullet, { backgroundColor: ACCENT }]} />
             <ThemedText style={[styles.bodyText, { color: colors.text, flex: 1 }]}>
               {note}
             </ThemedText>
@@ -901,13 +903,13 @@ function RecapFollowUpTab({
             <View
               style={[
                 styles.actionTypeBadge,
-                { backgroundColor: action.type === 'follow_up' ? '#1D9BF022' : '#F59E0B22' },
+                { backgroundColor: action.type === 'follow_up' ? `${ACCENT}22` : '#F59E0B22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.actionTypeText,
-                  { color: action.type === 'follow_up' ? '#1D9BF0' : '#F59E0B' },
+                  { color: action.type === 'follow_up' ? ACCENT : '#F59E0B' },
                 ]}
               >
                 {action.type === 'follow_up' ? 'FOLLOW-UP' : 'TASK'}

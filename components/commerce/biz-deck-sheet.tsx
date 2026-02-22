@@ -10,9 +10,9 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DECK_DOCUMENTS, type DeckDocument } from '@/data/mock-business-home';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
-const ACCENT = '#1D9BF0';
+const ACCENT = MODE_ACCENT.business;
 
 const TYPE_ICONS: Record<DeckDocument['type'], string> = {
   deck: 'doc.richtext.fill',

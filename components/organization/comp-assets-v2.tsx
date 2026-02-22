@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_ASSETS_TABS,
   COMP_ASSETS_SCOPE_CHIPS,
@@ -41,6 +41,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -231,9 +233,9 @@ function DashboardTab({
       <View style={s.quickActionsGrid}>
         {[
           { id: 'qa-1', label: 'Add Asset', icon: 'plus.circle', color: '#22C55E' },
-          { id: 'qa-2', label: 'Run Audit', icon: 'checkmark.shield', color: '#1D9BF0' },
+          { id: 'qa-2', label: 'Run Audit', icon: 'checkmark.shield', color: ACCENT },
           { id: 'qa-3', label: 'Schedule Maintenance', icon: 'hammer', color: '#F59E0B' },
-          { id: 'qa-4', label: 'Upload Digital', icon: 'arrow.up.doc', color: '#1D9BF0' },
+          { id: 'qa-4', label: 'Upload Digital', icon: 'arrow.up.doc', color: ACCENT },
           { id: 'qa-5', label: 'Reorder Inventory', icon: 'shippingbox', color: '#EF4444' },
           { id: 'qa-6', label: 'Export Report', icon: 'square.and.arrow.up', color: '#A1A1AA' },
         ].map((action) => (

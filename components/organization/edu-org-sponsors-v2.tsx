@@ -14,7 +14,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
 import {
@@ -58,6 +58,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'sponsors', label: 'Sponsors' },
@@ -671,7 +673,7 @@ function DeliverablesTab({
             <StatusBadge label={scopeLabel.toUpperCase()} color={scopeColor} />
             <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
             {item.proofRequired && (
-              <StatusBadge label="PROOF REQ" color="#1D9BF0" />
+              <StatusBadge label="PROOF REQ" color={ACCENT} />
             )}
           </View>
           <View style={[s.deliverableMeta, { borderTopColor: colors.border }]}>
@@ -748,7 +750,7 @@ function ProofTab({
         const typeLabel = PROOF_TYPE_LABELS[proof.type];
         const statusColor = PROOF_STATUS_COLORS[proof.status];
         const statusLabel = PROOF_STATUS_LABELS[proof.status];
-        const typeColor = proof.type === 'photo' ? '#1D9BF0' : proof.type === 'video' ? '#1D9BF0' : proof.type === 'pdf' ? '#EF4444' : proof.type === 'screenshot' ? '#22C55E' : '#F59E0B';
+        const typeColor = proof.type === 'photo' ? ACCENT : proof.type === 'video' ? ACCENT : proof.type === 'pdf' ? '#EF4444' : proof.type === 'screenshot' ? '#22C55E' : '#F59E0B';
         return (
           <View
             key={proof.id}
@@ -1110,7 +1112,7 @@ function ReportsTab({
       </ThemedText>
 
       {reports.map((report) => {
-        const typeColor = report.type === 'financial' ? '#22C55E' : report.type === 'compliance' ? '#F59E0B' : report.type === 'strategic' ? '#1D9BF0' : report.type === 'operational' ? '#1D9BF0' : '#1D9BF0';
+        const typeColor = report.type === 'financial' ? '#22C55E' : report.type === 'compliance' ? '#F59E0B' : report.type === 'strategic' ? ACCENT : report.type === 'operational' ? ACCENT : ACCENT;
         return (
           <View
             key={report.id}
@@ -1517,7 +1519,7 @@ function DeliverableDetailSheet({
         <StatusBadge label={scopeLabel.toUpperCase()} color={scopeColor} />
         <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
         {deliverable.proofRequired && (
-          <StatusBadge label="PROOF REQUIRED" color="#1D9BF0" />
+          <StatusBadge label="PROOF REQUIRED" color={ACCENT} />
         )}
       </View>
 

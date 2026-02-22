@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isStaffLevel, isElderLevel } from '@/utils/church-rbac';
 import {
@@ -34,6 +34,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'directory', label: 'Directory' },
   { id: 'org-chart', label: 'Org Chart' },
@@ -733,11 +735,11 @@ function SafeguardsTab({
           {/* Summary Tiles */}
           <View style={s.safeguardTilesRow}>
             <View style={[s.safeguardTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <ThemedText style={[s.safeguardTileValue, { color: '#1D9BF0' }]}>{youthCount}</ThemedText>
+              <ThemedText style={[s.safeguardTileValue, { color: ACCENT }]}>{youthCount}</ThemedText>
               <ThemedText style={[s.safeguardTileLabel, { color: colors.textSecondary }]}>Youth Access</ThemedText>
             </View>
             <View style={[s.safeguardTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <ThemedText style={[s.safeguardTileValue, { color: '#1D9BF0' }]}>{careCount}</ThemedText>
+              <ThemedText style={[s.safeguardTileValue, { color: ACCENT }]}>{careCount}</ThemedText>
               <ThemedText style={[s.safeguardTileLabel, { color: colors.textSecondary }]}>Care Access</ThemedText>
             </View>
             <View style={[s.safeguardTile, { backgroundColor: colors.card, borderColor: colors.border }]}>

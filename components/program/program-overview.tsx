@@ -139,8 +139,8 @@ export function ProgramOverview() {
       <SectionLabel text="TODAY / NEXT" colors={colors} />
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.todayRow}>
-          <View style={[styles.todayIcon, { backgroundColor: '#1D9BF0' + '20' }]}>
-            <IconSymbol name="calendar" size={16} color="#1D9BF0" />
+          <View style={[styles.todayIcon, { backgroundColor: ACCENT + '20' }]}>
+            <IconSymbol name="calendar" size={16} color={ACCENT} />
           </View>
           <View style={styles.todayInfo}>
             <ThemedText style={styles.todayLabel}>Next Event</ThemedText>
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: ACCENT,
     alignItems: 'center',
     justifyContent: 'center',
   },

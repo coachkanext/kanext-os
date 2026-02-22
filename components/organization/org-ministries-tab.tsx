@@ -22,7 +22,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import {
   CATEGORY_CHIPS,
   MINISTRY_SCOPE_CHIPS,
@@ -101,15 +102,15 @@ const RESOURCE_TYPE_ICON: Record<string, string> = {
 /** Event type badge color mapping */
 const EVENT_TYPE_COLOR: Record<string, string> = {
   regular: '#A1A1AA',
-  special: '#1D9BF0',
-  outreach: '#1D9BF0',
+  special: accent,
+  outreach: accent,
   retreat: '#F59E0B',
 };
 
 /** Teaching type badge color mapping */
 const TEACHING_TYPE_COLOR: Record<string, string> = {
-  sermon: '#1D9BF0',
-  lesson: '#1D9BF0',
+  sermon: accent,
+  lesson: accent,
   devotional: '#22C55E',
   training: '#F59E0B',
 };
@@ -117,21 +118,21 @@ const TEACHING_TYPE_COLOR: Record<string, string> = {
 /** Pack status color mapping */
 const PACK_STATUS_COLOR: Record<string, string> = {
   active: '#22C55E',
-  upcoming: '#1D9BF0',
+  upcoming: accent,
   completed: '#A1A1AA',
 };
 
 /** Action status icon mapping */
 const ACTION_STATUS_ICON_COLOR: Record<string, string> = {
   pending: '#F59E0B',
-  'in-progress': '#1D9BF0',
+  'in-progress': accent,
   completed: '#22C55E',
 };
 
 /** Action type badge color */
 const ACTION_TYPE_COLOR: Record<string, string> = {
-  discipleship: '#1D9BF0',
-  volunteer: '#1D9BF0',
+  discipleship: accent,
+  volunteer: accent,
   admin: '#A1A1AA',
 };
 
@@ -155,11 +156,11 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  added: '#1D9BF0',
+  added: accent,
   updated: '#F59E0B',
-  published: '#1D9BF0',
-  scheduled: '#1D9BF0',
-  joined: '#1D9BF0',
+  published: accent,
+  scheduled: accent,
+  joined: accent,
   default: '#A1A1AA',
 };
 

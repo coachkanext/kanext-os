@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isElderLevel, isStaffLevel } from '@/utils/church-rbac';
 import {
@@ -46,6 +46,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'budgets', label: 'Budgets' },
@@ -206,8 +208,8 @@ function OverviewTab({
   const healthTiles = [
     { icon: 'banknote.fill', label: 'Total Funds', value: formatCurrency(totalFunds), color: accentColor },
     { icon: 'lock.fill', label: 'Committed', value: formatCurrency(totalCommitted), color: '#F59E0B' },
-    { icon: 'arrow.up.right', label: 'Spend MTD', value: formatCurrency(totalSpent), color: '#1D9BF0' },
-    { icon: 'heart.fill', label: 'Benevolence', value: String(benevolenceCases), color: '#1D9BF0' },
+    { icon: 'arrow.up.right', label: 'Spend MTD', value: formatCurrency(totalSpent), color: ACCENT },
+    { icon: 'heart.fill', label: 'Benevolence', value: String(benevolenceCases), color: ACCENT },
     { icon: 'exclamationmark.triangle.fill', label: 'Exceptions', value: String(overBudgetWarnings), color: overBudgetWarnings > 0 ? '#EF4444' : '#22C55E' },
     { icon: 'checkmark.shield.fill', label: 'Audit Score', value: `${data.auditTrail.filter((a) => a.evidenceAttached).length}/${data.auditTrail.length}`, color: '#22C55E' },
   ];
@@ -237,7 +239,7 @@ function OverviewTab({
             <ThemedText style={[s.weekItemLabel, { color: colors.textSecondary }]}>Pending Approvals</ThemedText>
           </View>
           <View style={s.weekItem}>
-            <ThemedText style={[s.weekItemValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[s.weekItemValue, { color: ACCENT }]}>
               {data.commitments.filter((c) => c.status === 'scheduled').length}
             </ThemedText>
             <ThemedText style={[s.weekItemLabel, { color: colors.textSecondary }]}>Recurring Due</ThemedText>
@@ -327,7 +329,7 @@ function OverviewTab({
         )}
         {approvedNotReleased > 0 && (
           <View style={s.actionQueueRow}>
-            <View style={[s.actionDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.actionDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.actionQueueText, { color: colors.text }]}>
               {approvedNotReleased} approved awaiting release
             </ThemedText>
@@ -451,7 +453,7 @@ function BudgetsTab({
                 </ThemedText>
                 <View style={s.budgetBadgeRow}>
                   <StatusBadge label={BUDGET_PERIOD_LABELS[budget.period].toUpperCase()} color={accentColor} />
-                  <StatusBadge label={budget.ministry.toUpperCase()} color="#1D9BF0" />
+                  <StatusBadge label={budget.ministry.toUpperCase()} color={ACCENT} />
                 </View>
               </View>
               <View style={s.budgetTotalCol}>
@@ -569,7 +571,7 @@ function FundsTab({
               </ThemedText>
               <View style={s.fundBadgeRow}>
                 <StatusBadge label={FUND_TYPE_LABELS[item.type].toUpperCase()} color={typeColor} />
-                {item.restricted && <StatusBadge label="RESTRICTED" color="#1D9BF0" />}
+                {item.restricted && <StatusBadge label="RESTRICTED" color={ACCENT} />}
                 {item.atRisk && <StatusBadge label="AT RISK" color="#EF4444" />}
               </View>
             </View>
@@ -854,7 +856,7 @@ function ApprovalsTab({
     const fundColor = getFundColor(req.fund);
     const catLabel = EXPENSE_CATEGORY_LABELS[req.category] || req.category;
     const typeLabel = REQUEST_TYPE_LABELS[req.type] || req.type;
-    const indicatorColor = queueType === 'approval' ? '#F59E0B' : '#1D9BF0';
+    const indicatorColor = queueType === 'approval' ? '#F59E0B' : ACCENT;
     const indicatorLabel = queueType === 'approval' ? 'Needs Approval' : 'Needs Release';
 
     return (
@@ -973,7 +975,7 @@ function ReportsTab({
               </ThemedText>
               <View style={s.reportBadgeRow}>
                 <StatusBadge label={report.type.replace(/_/g, ' ').toUpperCase()} color={accentColor} />
-                <StatusBadge label={report.period.toUpperCase()} color="#1D9BF0" />
+                <StatusBadge label={report.period.toUpperCase()} color={ACCENT} />
               </View>
               <View style={s.reportMeta}>
                 <ThemedText style={[s.reportMetaText, { color: colors.textTertiary }]}>
@@ -1122,7 +1124,7 @@ function FundDetailSheet({
       {/* Type & Status */}
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={FUND_TYPE_LABELS[fund.type].toUpperCase()} color={typeColor} />
-        {fund.restricted && <StatusBadge label="RESTRICTED" color="#1D9BF0" />}
+        {fund.restricted && <StatusBadge label="RESTRICTED" color={ACCENT} />}
         {fund.atRisk && <StatusBadge label="AT RISK" color="#EF4444" />}
       </View>
 

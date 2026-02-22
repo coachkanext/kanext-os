@@ -11,7 +11,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import {
   PROGRAM_IDENTITY,
   PROGRAM_SNAPSHOT,
@@ -196,7 +197,7 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
         <View style={[s.leadershipRow, { borderTopColor: colors.divider }]}>
           {leaderStaff.map((staff) => (
             <View key={staff.id} style={s.leaderChip}>
-              <View style={[s.leaderAvatar, { backgroundColor: '#1D9BF0' }]}>
+              <View style={[s.leaderAvatar, { backgroundColor: accent }]}>
                 <ThemedText style={s.leaderInitials}>{staff.initials}</ThemedText>
               </View>
               <View style={s.leaderMeta}>
@@ -347,7 +348,7 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
         {UPCOMING_GAMES.map((game, i) => (
           <View key={game.id}>
             <View style={s.gameRow}>
-              <View style={[s.gameDot, { backgroundColor: game.location === 'Home' ? '#22C55E' : '#1D9BF0' }]} />
+              <View style={[s.gameDot, { backgroundColor: game.location === 'Home' ? '#22C55E' : accent }]} />
               <View style={s.gameInfo}>
                 <ThemedText style={[s.gameName, { color: colors.text }]}>
                   {game.location === 'Home' ? 'vs' : '@'} {game.opponent}
@@ -639,7 +640,7 @@ const s = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: accent,
     alignItems: 'center',
     justifyContent: 'center',
   },

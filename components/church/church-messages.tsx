@@ -26,7 +26,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
 // RBAC
 import type { ChurchRoleLens } from '@/utils/church-rbac';
@@ -35,6 +35,8 @@ import {
   isStaffLevel,
   isMember,
 } from '@/utils/church-rbac';
+
+const ACCENT = MODE_ACCENT.church;
 
 // =============================================================================
 // TYPES
@@ -106,7 +108,7 @@ const MESSAGE_THREADS: MessageThread[] = [
 ];
 
 const PRIORITY_ORDER: Record<ThreadPriority, number> = { emergency: 0, 'schedule-change': 1, standard: 2 };
-const PRIORITY_COLOR: Record<ThreadPriority, string> = { emergency: '#EF4444', 'schedule-change': '#F59E0B', standard: '#1D9BF0' };
+const PRIORITY_COLOR: Record<ThreadPriority, string> = { emergency: '#EF4444', 'schedule-change': '#F59E0B', standard: ACCENT };
 const CATEGORY_ICON: Record<ThreadCategory, string> = {
   announcement: 'megaphone.fill',
   ministry: 'heart.fill',
@@ -181,8 +183,8 @@ const CHAT_ROOMS: ChatRoom[] = [
 
 const SCOPE_COLOR: Record<AudienceScope, string> = {
   Public: '#22C55E',
-  'Church-wide': '#1D9BF0',
-  Ministry: '#1D9BF0',
+  'Church-wide': ACCENT,
+  Ministry: ACCENT,
   Leadership: '#F59E0B',
   Custom: '#A1A1AA',
 };
@@ -226,9 +228,9 @@ const REQUEST_TYPE_ICON: Record<PastoralRequestType, string> = {
 };
 
 const STATUS_COLOR: Record<RequestStatus, string> = {
-  new: '#1D9BF0',
+  new: ACCENT,
   assigned: '#F59E0B',
-  'in-progress': '#1D9BF0',
+  'in-progress': ACCENT,
   closed: '#22C55E',
 };
 
@@ -266,7 +268,7 @@ interface PinnedItem {
 const PIN_SOURCE_COLOR: Record<PinSource, string> = {
   emergency: '#EF4444',
   'service-change': '#F59E0B',
-  manual: '#1D9BF0',
+  manual: ACCENT,
 };
 
 const PIN_SOURCE_LABEL: Record<PinSource, string> = {
@@ -353,7 +355,7 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Church
         <View style={s.moduleContainer}>
           <Card colors={colors}>
             <View style={s.summaryRow}>
-              <IconSymbol name="bell.badge.fill" size={16} color="#1D9BF0" />
+              <IconSymbol name="bell.badge.fill" size={16} color={ACCENT} />
               <ThemedText style={[s.summaryText, { color: colors.text }]}>
                 {totalUnread} unread message{totalUnread !== 1 ? 's' : ''}
               </ThemedText>
@@ -540,8 +542,8 @@ function RoomsView({ colors, role }: { colors: typeof Colors.light; role: Church
           <SectionHeader title="ROOM MANAGEMENT" colors={colors} />
           <Card colors={colors}>
             <Pressable style={s.adminActionRow} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-              <View style={[s.adminActionIcon, { backgroundColor: '#1D9BF020' }]}>
-                <IconSymbol name="plus.circle.fill" size={16} color="#1D9BF0" />
+              <View style={[s.adminActionIcon, { backgroundColor: `${ACCENT}20` }]}>
+                <IconSymbol name="plus.circle.fill" size={16} color={ACCENT} />
               </View>
               <ThemedText style={[s.adminActionText, { color: colors.text }]}>Create New Room</ThemedText>
               <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
@@ -556,8 +558,8 @@ function RoomsView({ colors, role }: { colors: typeof Colors.light; role: Church
             </Pressable>
             <View style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }} />
             <Pressable style={s.adminActionRow} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-              <View style={[s.adminActionIcon, { backgroundColor: '#1D9BF020' }]}>
-                <IconSymbol name="gearshape.fill" size={16} color="#1D9BF0" />
+              <View style={[s.adminActionIcon, { backgroundColor: `${ACCENT}20` }]}>
+                <IconSymbol name="gearshape.fill" size={16} color={ACCENT} />
               </View>
               <ThemedText style={[s.adminActionText, { color: colors.text }]}>Room Settings & Moderation</ThemedText>
               <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
@@ -600,7 +602,7 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
         <Card colors={colors}>
           <View style={s.requestKpiRow}>
             <View style={s.requestKpi}>
-              <ThemedText style={[s.requestKpiValue, { color: '#1D9BF0' }]}>{newCount}</ThemedText>
+              <ThemedText style={[s.requestKpiValue, { color: ACCENT }]}>{newCount}</ThemedText>
               <ThemedText style={[s.requestKpiLabel, { color: colors.textSecondary }]}>New</ThemedText>
             </View>
             <View style={s.requestKpi}>
@@ -610,7 +612,7 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
               <ThemedText style={[s.requestKpiLabel, { color: colors.textSecondary }]}>Assigned</ThemedText>
             </View>
             <View style={s.requestKpi}>
-              <ThemedText style={[s.requestKpiValue, { color: '#1D9BF0' }]}>
+              <ThemedText style={[s.requestKpiValue, { color: ACCENT }]}>
                 {roleFiltered.filter((r) => r.status === 'in-progress').length}
               </ThemedText>
               <ThemedText style={[s.requestKpiLabel, { color: colors.textSecondary }]}>In Progress</ThemedText>
@@ -709,11 +711,11 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
               {canAssign && req.status === 'new' && (
                 <View style={s.reqActions}>
                   <Pressable
-                    style={[s.reqActionBtn, { backgroundColor: '#1D9BF020' }]}
+                    style={[s.reqActionBtn, { backgroundColor: `${ACCENT}20` }]}
                     onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                   >
-                    <IconSymbol name="person.badge.plus" size={12} color="#1D9BF0" />
-                    <ThemedText style={[s.reqActionText, { color: '#1D9BF0' }]}>Assign</ThemedText>
+                    <IconSymbol name="person.badge.plus" size={12} color={ACCENT} />
+                    <ThemedText style={[s.reqActionText, { color: ACCENT }]}>Assign</ThemedText>
                   </Pressable>
                   <Pressable
                     style={[s.reqActionBtn, { backgroundColor: '#22C55E20' }]}
@@ -927,7 +929,7 @@ const s = StyleSheet.create({
   priorityBadge: { paddingHorizontal: 5, paddingVertical: 1, borderRadius: BorderRadius.sm },
   priorityText: { fontSize: 8, fontWeight: '700', letterSpacing: 0.3 },
 
-  unreadBadge: { backgroundColor: '#1D9BF0', minWidth: 20, height: 20, borderRadius: 10, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 5 },
+  unreadBadge: { backgroundColor: ACCENT, minWidth: 20, height: 20, borderRadius: 10, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 5 },
   unreadBadgeText: { color: '#fff', fontSize: 11, fontWeight: '700' },
   mentionDot: { width: 8, height: 8, borderRadius: 4 },
 

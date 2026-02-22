@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 type ViewId = 'budget' | 'revenue' | 'aid';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -56,11 +58,11 @@ interface RevenueSource {
 const REVENUE_TOTAL = 32000000;
 
 const REVENUE_SOURCES: RevenueSource[] = [
-  { id: 'rs1', name: 'Tuition & Fees', amount: 18000000, pct: 56, color: '#1D9BF0' },
-  { id: 'rs2', name: 'Federal/State Funding', amount: 6000000, pct: 19, color: '#1D9BF0' },
+  { id: 'rs1', name: 'Tuition & Fees', amount: 18000000, pct: 56, color: ACCENT },
+  { id: 'rs2', name: 'Federal/State Funding', amount: 6000000, pct: 19, color: ACCENT },
   { id: 'rs3', name: 'Grants', amount: 3000000, pct: 9, color: '#22C55E' },
   { id: 'rs4', name: 'Donations', amount: 2500000, pct: 8, color: '#F59E0B' },
-  { id: 'rs5', name: 'Auxiliary Services', amount: 1500000, pct: 5, color: '#1D9BF0' },
+  { id: 'rs5', name: 'Auxiliary Services', amount: 1500000, pct: 5, color: ACCENT },
   { id: 'rs6', name: 'Athletics', amount: 1000000, pct: 3, color: '#EF4444' },
 ];
 

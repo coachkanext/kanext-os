@@ -9,7 +9,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   SPORTS_LIBRARY_RECORDS,
@@ -35,6 +36,7 @@ const TABS: { key: SportsLibraryTab; label: string }[] = [
 export function SportsLibrary() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const [activeTab, setActiveTab] = useState<SportsLibraryTab>('saved');
 
   const savedRecords = useMemo(() => SPORTS_LIBRARY_RECORDS, []);
@@ -171,7 +173,7 @@ function RecordRow({ record, colors, showDownloadSize }: { record: LibraryRecord
 // =============================================================================
 
 function HistoryRow({ item, colors }: { item: WatchHistoryItem; colors: typeof Colors.dark }) {
-  const typeColor = item.contentType === 'game' ? '#1D9BF0' : item.contentType === 'reel' ? '#1D9BF0' : '#22C55E';
+  const typeColor = item.contentType === 'game' ? accent : item.contentType === 'reel' ? accent : '#22C55E';
   return (
     <Pressable
       style={({ pressed }) => [
@@ -198,7 +200,7 @@ function HistoryRow({ item, colors }: { item: WatchHistoryItem; colors: typeof C
           <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>{item.watchedAt}</ThemedText>
         </View>
         <View style={[styles.progressTrack, { backgroundColor: colors.backgroundTertiary }]}>
-          <View style={[styles.progressFill, { width: `${item.progress}%`, backgroundColor: item.progress === 100 ? '#22C55E' : '#1D9BF0' }]} />
+          <View style={[styles.progressFill, { width: `${item.progress}%`, backgroundColor: item.progress === 100 ? '#22C55E' : accent }]} />
         </View>
       </View>
     </Pressable>

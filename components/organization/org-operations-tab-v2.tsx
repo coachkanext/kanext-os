@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import type { Mode } from '@/types';
 import {
   OPS_TABS,
@@ -137,7 +138,7 @@ const TRAVEL_STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
   planned: { bg: '#A1A1AA20', fg: '#A1A1AA' },
   booked: { bg: '#22C55E20', fg: '#22C55E' },
   'in-transit': { bg: '#F59E0B20', fg: '#F59E0B' },
-  completed: { bg: '#1D9BF020', fg: '#1D9BF0' },
+  completed: { bg: `${accent}20`, fg: accent },
 };
 
 // =============================================================================
@@ -603,8 +604,8 @@ export function OrgOperationsTab({ mode, colors, accentColor }: Props) {
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.listCardRow}>
-              <View style={[s.listIconCircle, { backgroundColor: '#1D9BF015' }]}>
-                <IconSymbol name="airplane" size={16} color="#1D9BF0" />
+              <View style={[s.listIconCircle, { backgroundColor: `${accent}15` }]}>
+                <IconSymbol name="airplane" size={16} color={accent} />
               </View>
               <View style={s.listCardInfo}>
                 <ThemedText style={s.listCardTitle}>{item.title}</ThemedText>
@@ -704,7 +705,7 @@ export function OrgOperationsTab({ mode, colors, accentColor }: Props) {
         renderItem={({ item }) => {
           const auditColor = item.action.includes('issue') ? '#EF4444'
             : item.action.includes('task') ? '#22C55E'
-            : item.action.includes('sop') || item.action.includes('report') ? '#1D9BF0'
+            : item.action.includes('sop') || item.action.includes('report') ? accent
             : item.action.includes('vendor') || item.action.includes('asset') ? '#F59E0B'
             : '#A1A1AA';
           const auditIcon = item.action.includes('issue') ? 'exclamationmark.triangle.fill'

@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_FINANCE_TABS,
   COMP_FINANCE_SCOPE_CHIPS,
@@ -45,6 +45,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -91,7 +93,7 @@ function reportFormatColor(format: FinanceReport['format']): string {
   switch (format) {
     case 'PDF': return '#EF4444';
     case 'CSV': return '#22C55E';
-    case 'XLSX': return '#1D9BF0';
+    case 'XLSX': return ACCENT;
   }
 }
 
@@ -249,10 +251,10 @@ function DashboardTab({
         {[
           { id: 'qa-1', label: 'Add Revenue', icon: 'plus.circle.fill', color: '#22C55E' },
           { id: 'qa-2', label: 'Log Expense', icon: 'minus.circle.fill', color: '#EF4444' },
-          { id: 'qa-3', label: 'New Budget', icon: 'chart.pie.fill', color: '#1D9BF0' },
-          { id: 'qa-4', label: 'Process Payout', icon: 'creditcard.fill', color: '#1D9BF0' },
+          { id: 'qa-3', label: 'New Budget', icon: 'chart.pie.fill', color: ACCENT },
+          { id: 'qa-4', label: 'Process Payout', icon: 'creditcard.fill', color: ACCENT },
           { id: 'qa-5', label: 'Generate Report', icon: 'doc.text.fill', color: '#F59E0B' },
-          { id: 'qa-6', label: 'Add Sponsor', icon: 'star.fill', color: '#1D9BF0' },
+          { id: 'qa-6', label: 'Add Sponsor', icon: 'star.fill', color: ACCENT },
         ].map((action) => (
           <Pressable
             key={action.id}
@@ -658,7 +660,7 @@ function TicketingTab({
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
         const capPct = getCapacityPercentage(item.ticketsSold, item.capacity);
-        const capColor = capPct >= 90 ? '#22C55E' : capPct >= 60 ? '#F59E0B' : '#1D9BF0';
+        const capColor = capPct >= 90 ? '#22C55E' : capPct >= 60 ? '#F59E0B' : ACCENT;
         return (
           <Pressable
             style={[s.ticketCard, { backgroundColor: colors.card, borderColor: colors.border }]}

@@ -11,8 +11,10 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RACE_ROUNDS, type RaceRound } from '@/data/mock-competition-home';
 import { COMP_SEAT_TIERS, buildCompCommerceChain, type CompSeatTier } from '@/data/comp-commerce-data';
 import type { PaymentChain } from '@/data/commerce-data';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
+
+const ACCENT = MODE_ACCENT.competition;
 type Stage = 'browse' | 'confirm' | 'receipt';
 
 interface Props {
@@ -201,7 +203,7 @@ const styles = StyleSheet.create({
   tierRow: { flexDirection: 'row', alignItems: 'center', borderWidth: StyleSheet.hairlineWidth, borderRadius: 14, padding: Spacing.md },
   tierLabel: { fontSize: 14, fontWeight: '700', letterSpacing: -0.3 },
   tierPrice: { fontSize: 12, fontWeight: '800', marginTop: 2, letterSpacing: -0.3 },
-  selectBtn: { backgroundColor: '#1D9BF0', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  selectBtn: { backgroundColor: ACCENT, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
   selectBtnText: { color: '#fff', fontSize: 11, fontWeight: '700', letterSpacing: 0.5 },
 
   confirmCard: { borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, padding: Spacing.md, gap: 12 },

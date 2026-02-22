@@ -8,14 +8,17 @@ import React, { useMemo, useState } from 'react';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import {
   WILDCARD_PIPELINE,
   WILDCARD_STAGE_COLORS,
   WILDCARD_STAGE_LABELS,
+
   type WildcardPipelineStage,
 } from '@/data/mock-competition-home';
 import { openDriverCard } from '@/utils/global-entity-sheets';
+
+const ACCENT = MODE_ACCENT.competition;
 
 interface Props {
   colors: typeof Colors.light;
@@ -79,7 +82,7 @@ export function CompEntriesWildcardsView({ colors, accent }: Props) {
                 </ThemedText>
                 {idx < STAGES.length - 1 && (
                   <ThemedText style={[styles.stageArrow, { color: colors.textSecondary }]}>
-                    ->
+                    {'->'}
                   </ThemedText>
                 )}
               </View>
@@ -165,9 +168,9 @@ export function CompEntriesWildcardsView({ colors, accent }: Props) {
       })}
 
       {/* People's Car section */}
-      <View style={[styles.peoplesCarCard, { backgroundColor: '#1D9BF015', borderColor: '#1D9BF040' }]}>
+      <View style={[styles.peoplesCarCard, { backgroundColor: `${ACCENT}15`, borderColor: `${ACCENT}40` }]}>
         <View style={styles.peoplesCarHeader}>
-          <ThemedText style={[styles.peoplesCarTitle, { color: '#1D9BF0' }]}>
+          <ThemedText style={[styles.peoplesCarTitle, { color: ACCENT }]}>
             People's Car · Fan Vote
           </ThemedText>
         </View>

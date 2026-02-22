@@ -17,7 +17,8 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { PersonDetailHub } from '@/components/people/person-detail-hub';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import {
   PEOPLE_DIRECTORY,
   PEOPLE_SCOPE_CHIPS,
@@ -50,7 +51,7 @@ const STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
   inactive: '#A1A1AA',
   pending: '#F59E0B',
-  away: '#1D9BF0',
+  away: accent,
 };
 
 const STATUS_LABELS: Record<string, string> = {

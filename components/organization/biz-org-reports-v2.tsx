@@ -20,7 +20,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import { BizCard, BizSubTabBar, BizStatusChip, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { isFounder, isBoardLevel, isInvestor } from '@/utils/business-rbac';
@@ -52,6 +52,8 @@ import type {
   ReportTemplate,
 } from '@/data/mock-biz-org-reports';
 
+
+const ACCENT = MODE_ACCENT.business;
 const BP = BusinessPalette;
 
 // =============================================================================
@@ -212,11 +214,11 @@ function OverviewTab({
   reports: ReportItem[];
 }) {
   const statCards: { label: string; value: number; icon: string; color: string }[] = [
-    { label: 'Total Reports', value: stats.totalReports, icon: 'doc.text.fill', color: '#1D9BF0' },
+    { label: 'Total Reports', value: stats.totalReports, icon: 'doc.text.fill', color: ACCENT },
     { label: 'Recently Generated', value: stats.recentlyGenerated, icon: 'checkmark.circle.fill', color: '#22C55E' },
-    { label: 'Scheduled', value: stats.scheduled, icon: 'clock.arrow.2.circlepath', color: '#1D9BF0' },
+    { label: 'Scheduled', value: stats.scheduled, icon: 'clock.arrow.2.circlepath', color: ACCENT },
     { label: 'Data Room Docs', value: stats.dataRoomDocs, icon: 'folder.fill', color: '#F59E0B' },
-    { label: 'Pack Templates', value: stats.packTemplates, icon: 'doc.on.doc.fill', color: '#1D9BF0' },
+    { label: 'Pack Templates', value: stats.packTemplates, icon: 'doc.on.doc.fill', color: ACCENT },
   ];
 
   // Category quick links

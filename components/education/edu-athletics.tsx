@@ -27,7 +27,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import {
   isPresident,
@@ -36,6 +36,8 @@ import {
   isStudent,
   isEnrolled,
 } from '@/utils/education-rbac';
+
+const ACCENT = MODE_ACCENT.education;
 
 // =============================================================================
 // TYPES
@@ -149,9 +151,9 @@ const ACTIVE_SPORTS: ActiveSport[] = [
 
 const SEASON_COLOR: Record<SportSeason, string> = {
   fall: '#F59E0B',
-  winter: '#1D9BF0',
+  winter: ACCENT,
   spring: '#22C55E',
-  'year-round': '#1D9BF0',
+  'year-round': ACCENT,
 };
 
 const STATUS_COLOR: Record<string, string> = {
@@ -309,10 +311,10 @@ const ACADEMIC_SUPPORT_SERVICES: AcademicSupportService[] = [
 ];
 
 const SUPPORT_TYPE_COLOR: Record<string, string> = {
-  tutoring: '#1D9BF0',
-  advising: '#1D9BF0',
+  tutoring: ACCENT,
+  advising: ACCENT,
   'study-hall': '#F59E0B',
-  'mental-health': '#1D9BF0',
+  'mental-health': ACCENT,
   career: '#22C55E',
 };
 
@@ -525,7 +527,7 @@ const FACILITY_INVESTMENTS: FacilityInvestment[] = [
 
 const INVEST_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
-  'in-progress': '#1D9BF0',
+  'in-progress': ACCENT,
   planned: '#F59E0B',
 };
 
@@ -883,14 +885,14 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Educat
                     {game.location}
                   </ThemedText>
                   {game.conferenceGame && (
-                    <View style={[s.confBadge, { backgroundColor: '#1D9BF020' }]}>
-                      <ThemedText style={[s.confBadgeText, { color: '#1D9BF0' }]}>CONF</ThemedText>
+                    <View style={[s.confBadge, { backgroundColor: ACCENT + '20' }]}>
+                      <ThemedText style={[s.confBadgeText, { color: ACCENT }]}>CONF</ThemedText>
                     </View>
                   )}
                 </View>
                 <View style={s.gameBadgeRow}>
-                  <View style={[s.homeAwayBadge, { backgroundColor: game.homeAway === 'Home' ? '#22C55E20' : game.homeAway === 'Away' ? '#1D9BF020' : '#F59E0B20' }]}>
-                    <ThemedText style={[s.homeAwayText, { color: game.homeAway === 'Home' ? '#22C55E' : game.homeAway === 'Away' ? '#1D9BF0' : '#F59E0B' }]}>
+                  <View style={[s.homeAwayBadge, { backgroundColor: game.homeAway === 'Home' ? '#22C55E20' : game.homeAway === 'Away' ? ACCENT + '20' : '#F59E0B20' }]}>
+                    <ThemedText style={[s.homeAwayText, { color: game.homeAway === 'Home' ? '#22C55E' : game.homeAway === 'Away' ? ACCENT : '#F59E0B' }]}>
                       {game.homeAway.toUpperCase()}
                     </ThemedText>
                   </View>
@@ -966,8 +968,8 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Educat
               <View style={s.facilityContent}>
                 <View style={s.facilityNameRow}>
                   <ThemedText style={[s.facilityName, { color: colors.text }]}>{fac.name}</ThemedText>
-                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#1D9BF0') + '20' }]}>
-                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#1D9BF0' }]}>
+                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : ACCENT) + '20' }]}>
+                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : ACCENT }]}>
                       {fac.status.toUpperCase()}
                     </ThemedText>
                   </View>
@@ -1005,10 +1007,10 @@ function AthleteSupportView({ colors, role }: { colors: typeof Colors.light; rol
         <SectionHeader title="ACADEMIC OVERVIEW" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Dept GPA" value={deptGPA} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Dept GPA" value={deptGPA} colors={colors} accent={ACCENT} />
             <KPIBox label="Below 2.5" value={totalBelow} colors={colors} accent={totalBelow > 0 ? '#EF4444' : '#22C55E'} />
             <KPIBox label="Above 3.5" value={totalAbove} colors={colors} accent="#22C55E" />
-            <KPIBox label="Study Hall %" value={`${totalStudyReq > 0 ? Math.round((totalStudyComp / totalStudyReq) * 100) : 100}%`} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Study Hall %" value={`${totalStudyReq > 0 ? Math.round((totalStudyComp / totalStudyReq) * 100) : 100}%`} colors={colors} accent={ACCENT} />
           </View>
         </Card>
       </View>
@@ -1249,8 +1251,8 @@ function ComplianceView({ colors, role }: { colors: typeof Colors.light; role: E
                   <View style={s.scholarshipNameRow}>
                     <ThemedText style={[s.scholarshipSport, { color: colors.text }]}>{sl.sport}</ThemedText>
                     {sl.equivalencyBased && (
-                      <View style={[s.equivBadge, { backgroundColor: '#1D9BF020' }]}>
-                        <ThemedText style={[s.equivText, { color: '#1D9BF0' }]}>EQUIV</ThemedText>
+                      <View style={[s.equivBadge, { backgroundColor: ACCENT + '20' }]}>
+                        <ThemedText style={[s.equivText, { color: ACCENT }]}>EQUIV</ThemedText>
                       </View>
                     )}
                   </View>
@@ -1320,8 +1322,8 @@ function RecruitingView({ colors, role }: { colors: typeof Colors.light; role: E
         <Card colors={colors}>
           <View style={s.kpiRow}>
             <KPIBox label="Commits" value={totalCommits} colors={colors} accent="#22C55E" />
-            <KPIBox label="Offers Out" value={totalOffers} colors={colors} accent="#1D9BF0" />
-            <KPIBox label="Visits" value={totalVisits} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Offers Out" value={totalOffers} colors={colors} accent={ACCENT} />
+            <KPIBox label="Visits" value={totalVisits} colors={colors} accent={ACCENT} />
             <KPIBox label="NLI Signed" value={totalNLI} colors={colors} accent="#F59E0B" />
           </View>
         </Card>
@@ -1354,11 +1356,11 @@ function RecruitingView({ colors, role }: { colors: typeof Colors.light; role: E
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>Commits</ThemedText>
                   </View>
                   <View style={s.recruitStatItem}>
-                    <ThemedText style={[s.recruitStatValue, { color: '#1D9BF0' }]}>{rec.offersOut}</ThemedText>
+                    <ThemedText style={[s.recruitStatValue, { color: ACCENT }]}>{rec.offersOut}</ThemedText>
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>Offers</ThemedText>
                   </View>
                   <View style={s.recruitStatItem}>
-                    <ThemedText style={[s.recruitStatValue, { color: '#1D9BF0' }]}>{rec.visits}</ThemedText>
+                    <ThemedText style={[s.recruitStatValue, { color: ACCENT }]}>{rec.visits}</ThemedText>
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>Visits</ThemedText>
                   </View>
                   <View style={s.recruitStatItem}>
@@ -1398,7 +1400,7 @@ function BudgetView({ colors, role }: { colors: typeof Colors.light; role: Educa
         <SectionHeader title="ATHLETIC BUDGET" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Total Budget" value={ATHLETIC_DEPT.athleticBudget} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Total Budget" value={ATHLETIC_DEPT.athleticBudget} colors={colors} accent={ACCENT} />
             <KPIBox label="Categories" value={BUDGET_CATEGORIES.length} colors={colors} />
             <KPIBox label="Revenue Streams" value={REVENUE_SOURCES.length} colors={colors} />
           </View>
@@ -1456,7 +1458,7 @@ function BudgetView({ colors, role }: { colors: typeof Colors.light; role: Educa
                   <ThemedText style={[s.revenueAmount, { color: colors.textSecondary }]}>
                     {rv.amount} ({rv.percentOfTotal}%)
                   </ThemedText>
-                  <ProgressBar percent={rv.percentOfTotal * 2.5} color="#1D9BF0" colors={colors} />
+                  <ProgressBar percent={rv.percentOfTotal * 2.5} color={ACCENT} colors={colors} />
                 </View>
                 <TrendIndicator trend={rv.trend} colors={colors} />
               </View>
@@ -1545,8 +1547,8 @@ function BudgetView({ colors, role }: { colors: typeof Colors.light; role: Educa
               <View style={s.facilityContent}>
                 <View style={s.facilityNameRow}>
                   <ThemedText style={[s.facilityName, { color: colors.text }]}>{fac.name}</ThemedText>
-                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#1D9BF0') + '20' }]}>
-                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#1D9BF0' }]}>
+                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : ACCENT) + '20' }]}>
+                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : ACCENT }]}>
                       {fac.status.toUpperCase()}
                     </ThemedText>
                   </View>

@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_COMPLIANCE_TABS,
   COMP_COMPLIANCE_SCOPE_CHIPS,
@@ -42,6 +42,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -101,11 +103,11 @@ function ruleCategoryLabel(category: CompRule['category']): string {
 
 function ruleCategoryColor(category: CompRule['category']): string {
   switch (category) {
-    case 'gameplay': return '#1D9BF0';
+    case 'gameplay': return ACCENT;
     case 'conduct': return '#F59E0B';
     case 'eligibility': return '#22C55E';
-    case 'equipment': return '#1D9BF0';
-    case 'venue': return '#1D9BF0';
+    case 'equipment': return ACCENT;
+    case 'venue': return ACCENT;
     case 'media': return '#A1A1AA';
   }
 }
@@ -934,9 +936,9 @@ function CertificationsTab({
       showsVerticalScrollIndicator={false}
       renderItem={({ item: group }) => {
         const typeColor =
-          group.type === 'official' ? '#1D9BF0'
-          : group.type === 'venue' ? '#1D9BF0'
-          : group.type === 'equipment' ? '#1D9BF0'
+          group.type === 'official' ? ACCENT
+          : group.type === 'venue' ? ACCENT
+          : group.type === 'equipment' ? ACCENT
           : '#22C55E';
         return (
           <View style={s.certGroup}>
@@ -1660,9 +1662,9 @@ function CertDetailSheet({
 
   const stColor = CERT_STATUS_COLOR[cert.status];
   const typeColor =
-    cert.type === 'official' ? '#1D9BF0'
-    : cert.type === 'venue' ? '#1D9BF0'
-    : cert.type === 'equipment' ? '#1D9BF0'
+    cert.type === 'official' ? ACCENT
+    : cert.type === 'venue' ? ACCENT
+    : cert.type === 'equipment' ? ACCENT
     : '#22C55E';
 
   return (

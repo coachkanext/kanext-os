@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 type ViewId = 'officials' | 'teams' | 'broadcast';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -25,10 +27,10 @@ const VIEWS: { id: ViewId; label: string }[] = [
 type GridCategory = 'OEM Works' | 'Premier Tuner' | 'League-Owned' | '3SSB Select';
 
 const CATEGORY_COLOR: Record<GridCategory, string> = {
-  'OEM Works': '#1D9BF0',
+  'OEM Works': ACCENT,
   'Premier Tuner': '#F59E0B',
   'League-Owned': '#A1A1AA',
-  '3SSB Select': '#1D9BF0',
+  '3SSB Select': ACCENT,
 };
 
 const OFFICIALS = [

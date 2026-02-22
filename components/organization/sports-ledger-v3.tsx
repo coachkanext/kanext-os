@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable, TextInput } from 'react-native
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 type ViewId = 'transactions' | 'pending' | 'receipts';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -68,8 +70,8 @@ type PendingStatus = 'Pending Approval' | 'Processing' | 'Awaiting Settlement';
 
 const PENDING_STATUS_COLOR: Record<PendingStatus, string> = {
   'Pending Approval': '#F59E0B',
-  Processing: '#1D9BF0',
-  'Awaiting Settlement': '#1D9BF0',
+  Processing: ACCENT,
+  'Awaiting Settlement': ACCENT,
 };
 
 interface PendingItem {

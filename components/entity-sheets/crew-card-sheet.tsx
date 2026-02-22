@@ -7,7 +7,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { CrewCardData } from '@/utils/global-entity-sheets';
 
@@ -19,7 +20,7 @@ function nameToHue(name: string): number {
 
 function getPitScoreColor(score: number): string {
   if (score >= 90) return '#22C55E';
-  if (score >= 75) return '#1D9BF0';
+  if (score >= 75) return accent;
   return '#EF4444';
 }
 
@@ -32,6 +33,7 @@ interface Props {
 export function CrewCardSheet({ visible, onClose, data }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   if (!data) return null;
 

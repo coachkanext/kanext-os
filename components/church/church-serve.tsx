@@ -20,7 +20,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
 // RBAC
 import type { ChurchRoleLens } from '@/utils/church-rbac';
@@ -29,6 +29,8 @@ import {
   isStaffLevel,
   isMember,
 } from '@/utils/church-rbac';
+
+const ACCENT = MODE_ACCENT.church;
 
 // =============================================================================
 // TYPES
@@ -123,9 +125,9 @@ interface PipelineStage {
 
 const VOLUNTEER_PIPELINE: PipelineStage[] = [
   { label: 'Prospects', count: 24, color: '#A1A1AA' },
-  { label: 'Applied', count: 16, color: '#1D9BF0' },
+  { label: 'Applied', count: 16, color: ACCENT },
   { label: 'BGC', count: 8, color: '#F59E0B' },
-  { label: 'Trained', count: 6, color: '#1D9BF0' },
+  { label: 'Trained', count: 6, color: ACCENT },
   { label: 'Active', count: 320, color: '#22C55E' },
 ];
 
@@ -159,13 +161,13 @@ interface ServeTeam {
 const SERVE_TEAMS: ServeTeam[] = [
   { id: 'st-1', name: 'Greeting Team', ministry: 'Hospitality', leader: 'Deacon Martinez', activeMembers: 12, capacity: 12, meetingCadence: 'Monthly', description: 'Welcome guests at all entrance points before and after services. First impression ministry.', health: 'fully-staffed', icon: 'hand.wave.fill', color: '#22C55E', roles: [{ role: 'Lead Greeter', required: 2, filled: 2 }, { role: 'Greeter', required: 8, filled: 8 }, { role: 'Info Desk', required: 2, filled: 2 }] },
   { id: 'st-2', name: 'Parking Team', ministry: 'Hospitality', leader: 'Brother Williams', activeMembers: 5, capacity: 8, meetingCadence: 'Quarterly', description: 'Direct traffic, assist with parking, and welcome guests in the lot. Rain or shine servants.', health: 'understaffed', icon: 'car.fill', color: '#F59E0B', roles: [{ role: 'Lot Captain', required: 1, filled: 1 }, { role: 'Lot Attendant', required: 5, filled: 3 }, { role: 'Shuttle Driver', required: 2, filled: 1 }] },
-  { id: 'st-3', name: 'Children\'s Ministry', ministry: 'Next Gen', leader: 'Sister Angela Davis', activeMembers: 20, capacity: 24, meetingCadence: 'Weekly', description: 'Nursery through 5th grade care and curriculum. Background check required for all volunteers.', health: 'understaffed', icon: 'figure.and.child.holdinghands', color: '#1D9BF0', roles: [{ role: 'Director', required: 1, filled: 1 }, { role: 'Nursery Lead', required: 2, filled: 2 }, { role: 'Nursery Helper', required: 4, filled: 3 }, { role: 'K-2nd Lead', required: 2, filled: 2 }, { role: '3rd-5th Lead', required: 2, filled: 2 }, { role: 'Check-In', required: 3, filled: 2 }] },
-  { id: 'st-4', name: 'Youth Ministry', ministry: 'Next Gen', leader: 'Pastor Alex Kim', activeMembers: 14, capacity: 16, meetingCadence: 'Weekly', description: 'Middle school, high school, and young adult programming. Small group leaders and event support.', health: 'understaffed', icon: 'person.3.fill', color: '#1D9BF0', roles: [{ role: 'Youth Pastor', required: 1, filled: 1 }, { role: 'MS Lead', required: 2, filled: 2 }, { role: 'HS Lead', required: 2, filled: 2 }, { role: 'Young Adult Lead', required: 2, filled: 1 }, { role: 'Small Group Leader', required: 6, filled: 5 }, { role: 'Event Support', required: 3, filled: 3 }] },
-  { id: 'st-5', name: 'Worship Team', ministry: 'Worship & Creative Arts', leader: 'Marcus Johnson', activeMembers: 15, capacity: 15, meetingCadence: 'Weekly', description: 'Praise band, vocalists, choir, and dance ministry. Rehearsals every Thursday 7PM.', health: 'fully-staffed', icon: 'music.note.list', color: '#1D9BF0', roles: [{ role: 'Worship Leader', required: 1, filled: 1 }, { role: 'Vocalist', required: 4, filled: 4 }, { role: 'Keys', required: 2, filled: 2 }, { role: 'Guitar', required: 2, filled: 2 }, { role: 'Bass', required: 1, filled: 1 }, { role: 'Drums', required: 1, filled: 1 }, { role: 'Choir', required: 4, filled: 4 }] },
+  { id: 'st-3', name: 'Children\'s Ministry', ministry: 'Next Gen', leader: 'Sister Angela Davis', activeMembers: 20, capacity: 24, meetingCadence: 'Weekly', description: 'Nursery through 5th grade care and curriculum. Background check required for all volunteers.', health: 'understaffed', icon: 'figure.and.child.holdinghands', color: ACCENT, roles: [{ role: 'Director', required: 1, filled: 1 }, { role: 'Nursery Lead', required: 2, filled: 2 }, { role: 'Nursery Helper', required: 4, filled: 3 }, { role: 'K-2nd Lead', required: 2, filled: 2 }, { role: '3rd-5th Lead', required: 2, filled: 2 }, { role: 'Check-In', required: 3, filled: 2 }] },
+  { id: 'st-4', name: 'Youth Ministry', ministry: 'Next Gen', leader: 'Pastor Alex Kim', activeMembers: 14, capacity: 16, meetingCadence: 'Weekly', description: 'Middle school, high school, and young adult programming. Small group leaders and event support.', health: 'understaffed', icon: 'person.3.fill', color: ACCENT, roles: [{ role: 'Youth Pastor', required: 1, filled: 1 }, { role: 'MS Lead', required: 2, filled: 2 }, { role: 'HS Lead', required: 2, filled: 2 }, { role: 'Young Adult Lead', required: 2, filled: 1 }, { role: 'Small Group Leader', required: 6, filled: 5 }, { role: 'Event Support', required: 3, filled: 3 }] },
+  { id: 'st-5', name: 'Worship Team', ministry: 'Worship & Creative Arts', leader: 'Marcus Johnson', activeMembers: 15, capacity: 15, meetingCadence: 'Weekly', description: 'Praise band, vocalists, choir, and dance ministry. Rehearsals every Thursday 7PM.', health: 'fully-staffed', icon: 'music.note.list', color: ACCENT, roles: [{ role: 'Worship Leader', required: 1, filled: 1 }, { role: 'Vocalist', required: 4, filled: 4 }, { role: 'Keys', required: 2, filled: 2 }, { role: 'Guitar', required: 2, filled: 2 }, { role: 'Bass', required: 1, filled: 1 }, { role: 'Drums', required: 1, filled: 1 }, { role: 'Choir', required: 4, filled: 4 }] },
   { id: 'st-6', name: 'AV/Media', ministry: 'Worship & Creative Arts', leader: 'David Park', activeMembers: 4, capacity: 6, meetingCadence: 'Bi-weekly', description: 'Sound engineering, livestream, cameras, projection, and social media. Technical training provided.', health: 'critical', icon: 'video.fill', color: '#EF4444', roles: [{ role: 'FOH', required: 1, filled: 1 }, { role: 'Livestream', required: 1, filled: 1 }, { role: 'Camera Op', required: 2, filled: 1 }, { role: 'Slides', required: 1, filled: 1 }, { role: 'Tracks', required: 1, filled: 0 }] },
-  { id: 'st-7', name: 'Hospitality/Ushers', ministry: 'Hospitality', leader: 'Elder Thompson', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Seat guests, collect offerings, distribute bulletins, and maintain sanctuary order during services.', health: 'understaffed', icon: 'heart.fill', color: '#1D9BF0', roles: [{ role: 'Head Usher', required: 1, filled: 1 }, { role: 'Usher', required: 6, filled: 5 }, { role: 'Offering Counter', required: 2, filled: 1 }, { role: 'Bulletin Prep', required: 1, filled: 1 }] },
+  { id: 'st-7', name: 'Hospitality/Ushers', ministry: 'Hospitality', leader: 'Elder Thompson', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Seat guests, collect offerings, distribute bulletins, and maintain sanctuary order during services.', health: 'understaffed', icon: 'heart.fill', color: ACCENT, roles: [{ role: 'Head Usher', required: 1, filled: 1 }, { role: 'Usher', required: 6, filled: 5 }, { role: 'Offering Counter', required: 2, filled: 1 }, { role: 'Bulletin Prep', required: 1, filled: 1 }] },
   { id: 'st-8', name: 'Prayer Team', ministry: 'Prayer Ministry', leader: 'Mother Johnson', activeMembers: 8, capacity: 8, meetingCadence: 'Weekly', description: 'Altar call prayer, intercessory prayer meetings, and prayer chain coordination.', health: 'fully-staffed', icon: 'hands.sparkles.fill', color: '#F59E0B', roles: [{ role: 'Prayer Lead', required: 1, filled: 1 }, { role: 'Altar Ministry', required: 3, filled: 3 }, { role: 'Intercessor', required: 3, filled: 3 }, { role: 'Prayer Chain Coord', required: 1, filled: 1 }] },
-  { id: 'st-9', name: 'Outreach', ministry: 'Missions & Outreach', leader: 'Minister Lewis', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Community food pantry, neighborhood outreach, evangelism, and missions trip coordination.', health: 'understaffed', icon: 'globe.americas.fill', color: '#1D9BF0', roles: [{ role: 'Director', required: 1, filled: 1 }, { role: 'Food Pantry', required: 3, filled: 3 }, { role: 'Neighborhood', required: 3, filled: 2 }, { role: 'Missions Coord', required: 1, filled: 1 }, { role: 'Evangelism', required: 2, filled: 1 }] },
+  { id: 'st-9', name: 'Outreach', ministry: 'Missions & Outreach', leader: 'Minister Lewis', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Community food pantry, neighborhood outreach, evangelism, and missions trip coordination.', health: 'understaffed', icon: 'globe.americas.fill', color: ACCENT, roles: [{ role: 'Director', required: 1, filled: 1 }, { role: 'Food Pantry', required: 3, filled: 3 }, { role: 'Neighborhood', required: 3, filled: 2 }, { role: 'Missions Coord', required: 1, filled: 1 }, { role: 'Evangelism', required: 2, filled: 1 }] },
   { id: 'st-10', name: 'Campus Care', ministry: 'Facilities', leader: 'Brother Harris', activeMembers: 3, capacity: 6, meetingCadence: 'As needed', description: 'Building setup/teardown, maintenance requests, grounds keeping, and security coordination.', health: 'critical', icon: 'wrench.fill', color: '#EF4444', roles: [{ role: 'Setup Lead', required: 1, filled: 1 }, { role: 'Teardown', required: 2, filled: 1 }, { role: 'Maintenance', required: 1, filled: 0 }, { role: 'Grounds', required: 1, filled: 1 }, { role: 'Security', required: 1, filled: 0 }] },
 ];
 
@@ -330,8 +332,8 @@ const VOLUNTEERS: Volunteer[] = [
 const VOLUNTEER_STATUS_COLOR: Record<string, string> = {
   active: '#22C55E',
   inactive: '#A1A1AA',
-  new: '#1D9BF0',
-  training: '#1D9BF0',
+  new: ACCENT,
+  training: ACCENT,
 };
 
 // =============================================================================
@@ -402,7 +404,7 @@ const READINESS_COUNTS: ReadinessCount[] = [
 const READINESS_COLOR: Record<ReadinessLevel, string> = {
   ready: '#22C55E',
   'needs-training': '#F59E0B',
-  'in-training': '#1D9BF0',
+  'in-training': ACCENT,
   expired: '#EF4444',
 };
 
@@ -443,9 +445,9 @@ const REQUEST_TYPE_LABEL: Record<RequestType, string> = {
 };
 
 const REQUEST_TYPE_COLOR: Record<RequestType, string> = {
-  swap: '#1D9BF0',
+  swap: ACCENT,
   cover: '#F59E0B',
-  'time-off': '#1D9BF0',
+  'time-off': ACCENT,
 };
 
 const REQUEST_STATUS_COLOR: Record<RequestStatus, string> = {

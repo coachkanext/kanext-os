@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_ROOMS_TABS,
   COMP_ROOMS_SCOPE_CHIPS,
@@ -43,6 +43,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -63,7 +65,7 @@ function fileTypeIcon(type: RoomFile['type']): string {
 
 function fileTypeColor(type: RoomFile['type']): string {
   switch (type) {
-    case 'document': return '#1D9BF0';
+    case 'document': return ACCENT;
     case 'image': return '#22C55E';
     case 'video': return '#EF4444';
     case 'spreadsheet': return '#F59E0B';
@@ -140,8 +142,8 @@ function DashboardTab({
   const breakdownRows: { label: string; count: number; color: string }[] = [
     { label: 'War Rooms', count: data.warRooms.length, color: '#EF4444' },
     { label: 'Broadcast', count: data.broadcastRooms.length, color: '#F59E0B' },
-    { label: 'Officials', count: data.officialRooms.length, color: '#1D9BF0' },
-    { label: 'Media', count: data.mediaRooms.length, color: '#1D9BF0' },
+    { label: 'Officials', count: data.officialRooms.length, color: ACCENT },
+    { label: 'Media', count: data.mediaRooms.length, color: ACCENT },
     { label: 'VIP', count: data.vipRooms.length, color: '#22C55E' },
     { label: 'Operations', count: data.opsRooms.length, color: '#A1A1AA' },
   ];
@@ -449,8 +451,8 @@ function OfficialsTab({
           >
             <View style={s.roomTop}>
               <View style={s.roomInfo}>
-                <View style={[s.roomIcon, { backgroundColor: '#1D9BF020' }]}>
-                  <IconSymbol name="person.badge.shield.checkmark.fill" size={20} color="#1D9BF0" />
+                <View style={[s.roomIcon, { backgroundColor: `${ACCENT}20` }]}>
+                  <IconSymbol name="person.badge.shield.checkmark.fill" size={20} color={ACCENT} />
                 </View>
                 <View style={s.roomMid}>
                   <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={1}>
@@ -538,8 +540,8 @@ function MediaTab({
           >
             <View style={s.roomTop}>
               <View style={s.roomInfo}>
-                <View style={[s.roomIcon, { backgroundColor: '#1D9BF020' }]}>
-                  <IconSymbol name="newspaper.fill" size={20} color="#1D9BF0" />
+                <View style={[s.roomIcon, { backgroundColor: `${ACCENT}20` }]}>
+                  <IconSymbol name="newspaper.fill" size={20} color={ACCENT} />
                 </View>
                 <View style={s.roomMid}>
                   <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={1}>
@@ -547,7 +549,7 @@ function MediaTab({
                   </ThemedText>
                   <View style={s.roomBadges}>
                     <StatusBadge label={item.status.toUpperCase()} color={stColor} />
-                    <StatusBadge label={item.contentType.toUpperCase()} color="#1D9BF0" />
+                    <StatusBadge label={item.contentType.toUpperCase()} color={ACCENT} />
                   </View>
                 </View>
               </View>
@@ -627,8 +629,8 @@ function VIPTab({
           >
             <View style={s.roomTop}>
               <View style={s.roomInfo}>
-                <View style={[s.roomIcon, { backgroundColor: '#1D9BF020' }]}>
-                  <IconSymbol name="star.fill" size={20} color="#1D9BF0" />
+                <View style={[s.roomIcon, { backgroundColor: `${ACCENT}20` }]}>
+                  <IconSymbol name="star.fill" size={20} color={ACCENT} />
                 </View>
                 <View style={s.roomMid}>
                   <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={1}>
@@ -656,7 +658,7 @@ function VIPTab({
                       key={idx}
                       style={[s.chip, { backgroundColor: colors.backgroundTertiary }]}
                     >
-                      <IconSymbol name="person.fill" size={10} color="#1D9BF0" />
+                      <IconSymbol name="person.fill" size={10} color={ACCENT} />
                       <ThemedText
                         style={[s.chipText, { color: colors.textSecondary }]}
                         numberOfLines={1}
@@ -1145,7 +1147,7 @@ function RoomDetailSheet({
           </ThemedText>
           {oRoom.officials.map((official, idx) => (
             <View key={idx} style={s.sheetOffRow}>
-              <View style={[s.sheetOffDot, { backgroundColor: '#1D9BF0' }]} />
+              <View style={[s.sheetOffDot, { backgroundColor: ACCENT }]} />
               <ThemedText style={[s.sheetOffName, { color: colors.textSecondary }]}>
                 {official}
               </ThemedText>

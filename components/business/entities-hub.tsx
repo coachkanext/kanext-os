@@ -17,7 +17,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   ENTITIES,
@@ -30,12 +30,15 @@ import {
   getOpportunitiesForEntity,
   getContactsForEntity,
   getEntitiesByType,
+
   type Entity,
   type EntityProject,
   type EntityTask,
   type EntityOpportunity,
   type EntityContact,
 } from '@/data/mock-entities';
+
+const ACCENT = MODE_ACCENT.business;
 
 // =============================================================================
 // CONSTANTS
@@ -78,9 +81,9 @@ const FILTER_OPTIONS: { id: FilterType; label: string }[] = [
 
 const STAGE_COLORS: Record<EntityOpportunity['stage'], string> = {
   prospect: '#A1A1AA',
-  qualified: '#1D9BF0',
+  qualified: ACCENT,
   proposal: '#F59E0B',
-  negotiation: '#1D9BF0',
+  negotiation: ACCENT,
   'closed-won': '#22C55E',
   'closed-lost': '#EF4444',
 };
@@ -122,7 +125,7 @@ function TypeBadge({ type, colors }: { type: Entity['type']; colors: typeof Colo
     type === 'company'
       ? '#FFFFFF'
       : type === 'department'
-        ? '#1D9BF0'
+        ? ACCENT
         : type === 'team'
           ? '#22C55E'
           : '#F59E0B';
@@ -380,7 +383,7 @@ function ProjectsTab({ entity, colors }: { entity: Entity; colors: typeof Colors
           item.status === 'active'
             ? '#22C55E'
             : item.status === 'completed'
-              ? '#1D9BF0'
+              ? ACCENT
               : item.status === 'on-hold'
                 ? '#F59E0B'
                 : '#A1A1AA';

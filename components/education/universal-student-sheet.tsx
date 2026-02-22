@@ -9,7 +9,9 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
@@ -63,7 +65,7 @@ interface UniversalStudentSheetProps {
 // =============================================================================
 
 const STATUS_COLORS: Record<string, string> = {
-  applicant: '#1D9BF0',
+  applicant: ACCENT,
   enrolled: '#22C55E',
   leave: '#F59E0B',
   withdrawn: '#EF4444',
@@ -80,9 +82,9 @@ const HOLD_COLORS: Record<string, string> = {
 const GRADE_COLORS: Record<string, string> = {
   A: '#22C55E',
   'A-': '#22C55E',
-  'B+': '#1D9BF0',
-  B: '#1D9BF0',
-  'B-': '#1D9BF0',
+  'B+': ACCENT,
+  B: ACCENT,
+  'B-': ACCENT,
   'C+': '#F59E0B',
   C: '#F59E0B',
   'C-': '#F59E0B',
@@ -109,7 +111,7 @@ const TRANSACTION_TYPE_COLORS: Record<string, string> = {
   tuition: '#EF4444',
   payment: '#22C55E',
   fee: '#F59E0B',
-  refund: '#1D9BF0',
+  refund: ACCENT,
   financial_aid: '#22C55E',
   scholarship: '#22C55E',
 };
@@ -118,7 +120,7 @@ const DOCUMENT_STATUS_COLORS: Record<string, string> = {
   completed: '#22C55E',
   pending: '#F59E0B',
   missing: '#EF4444',
-  available: '#1D9BF0',
+  available: ACCENT,
 };
 
 // =============================================================================
@@ -174,7 +176,7 @@ const MOCK_DEGREE_AUDIT = [
 
 const AUDIT_STATUS_COLORS: Record<string, string> = {
   met: '#22C55E',
-  in_progress: '#1D9BF0',
+  in_progress: ACCENT,
   missing: '#EF4444',
 };
 
@@ -202,7 +204,7 @@ const MOCK_ADVISING_NOTES_FULL = [
 ];
 
 const ADVISING_NOTE_TYPE_COLORS: Record<string, string> = {
-  academic: '#1D9BF0',
+  academic: ACCENT,
   financial: '#22C55E',
   career: '#F59E0B',
   personal: '#A1A1AA',
@@ -470,9 +472,9 @@ function StudentHeader({
 
       {/* Quick chips */}
       <View style={styles.quickChipRow}>
-        <View style={[styles.quickChip, { backgroundColor: '#1D9BF022' }]}>
-          <IconSymbol name="book.fill" size={12} color="#1D9BF0" />
-          <ThemedText style={[styles.quickChipText, { color: '#1D9BF0' }]}>
+        <View style={[styles.quickChip, { backgroundColor: ACCENT + '22' }]}>
+          <IconSymbol name="book.fill" size={12} color={ACCENT} />
+          <ThemedText style={[styles.quickChipText, { color: ACCENT }]}>
             {student.creditsCompleted}/{student.creditsRequired} Credits
           </ThemedText>
         </View>
@@ -591,7 +593,7 @@ function OverviewTab({
           <StatBlock
             label="Credits Done"
             value={String(student.creditsCompleted)}
-            color="#1D9BF0"
+            color={ACCENT}
             colors={colors}
           />
           <StatBlock
@@ -612,7 +614,7 @@ function OverviewTab({
             style={[
               styles.progressBarFill,
               {
-                backgroundColor: '#1D9BF0',
+                backgroundColor: ACCENT,
                 width: `${Math.min((student.creditsCompleted / student.creditsRequired) * 100, 100)}%`,
               },
             ]}
@@ -677,8 +679,8 @@ function ScheduleTab({ colors }: { colors: typeof Colors.light }) {
                   key={session.id}
                   style={[styles.listRow, { borderBottomColor: colors.border }]}
                 >
-                  <View style={[styles.sessionTypeBadge, { backgroundColor: session.type === 'lecture' ? '#1D9BF022' : session.type === 'lab' ? '#22C55E22' : '#F59E0B22' }]}>
-                    <ThemedText style={[styles.sessionTypeText, { color: session.type === 'lecture' ? '#1D9BF0' : session.type === 'lab' ? '#22C55E' : '#F59E0B' }]}>
+                  <View style={[styles.sessionTypeBadge, { backgroundColor: session.type === 'lecture' ? ACCENT + '22' : session.type === 'lab' ? '#22C55E22' : '#F59E0B22' }]}>
+                    <ThemedText style={[styles.sessionTypeText, { color: session.type === 'lecture' ? ACCENT : session.type === 'lab' ? '#22C55E' : '#F59E0B' }]}>
                       {session.type.toUpperCase()}
                     </ThemedText>
                   </View>
@@ -780,8 +782,8 @@ function CoursesTab({
               </View>
             )}
             {showGradeSummary && (
-              <View style={[styles.gradeBadge, { backgroundColor: '#1D9BF022' }]}>
-                <ThemedText style={[styles.gradeText, { color: '#1D9BF0' }]}>
+              <View style={[styles.gradeBadge, { backgroundColor: ACCENT + '22' }]}>
+                <ThemedText style={[styles.gradeText, { color: ACCENT }]}>
                   On Track
                 </ThemedText>
               </View>
@@ -852,7 +854,7 @@ function ProgressTab({
       <SectionCard title="Degree Audit" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Met" value={String(metCount)} color="#22C55E" colors={colors} />
-          <StatBlock label="In Progress" value={String(inProgressCount)} color="#1D9BF0" colors={colors} />
+          <StatBlock label="In Progress" value={String(inProgressCount)} color={ACCENT} colors={colors} />
           <StatBlock label="Missing" value={String(missingCount)} color="#EF4444" colors={colors} />
         </View>
       </SectionCard>
@@ -913,7 +915,7 @@ function ProgressTab({
           <StatBlock
             label="Semesters"
             value={`~${semestersNeeded}`}
-            color="#1D9BF0"
+            color={ACCENT}
             colors={colors}
           />
           <StatBlock
@@ -1080,7 +1082,7 @@ function AdvisingTab({
       {/* Next Advising Meeting */}
       <SectionCard title="Next Advising Meeting" colors={colors}>
         <View style={styles.listRow}>
-          <IconSymbol name="calendar" size={16} color="#1D9BF0" />
+          <IconSymbol name="calendar" size={16} color={ACCENT} />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Pre-Registration Advising
@@ -1235,7 +1237,7 @@ function HoldsComplianceTab({
       {/* Accommodations Indicator */}
       <SectionCard title="Accommodations" colors={colors}>
         <View style={styles.listRow}>
-          <IconSymbol name="person.fill.checkmark" size={16} color="#1D9BF0" />
+          <IconSymbol name="person.fill.checkmark" size={16} color={ACCENT} />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Accommodations on File
@@ -1244,8 +1246,8 @@ function HoldsComplianceTab({
               Details restricted to authorized personnel only. Contact Disability Services for specifics.
             </ThemedText>
           </View>
-          <View style={[styles.indicatorBadge, { backgroundColor: '#1D9BF022' }]}>
-            <ThemedText style={[styles.indicatorText, { color: '#1D9BF0' }]}>YES</ThemedText>
+          <View style={[styles.indicatorBadge, { backgroundColor: ACCENT + '22' }]}>
+            <ThemedText style={[styles.indicatorText, { color: ACCENT }]}>YES</ThemedText>
           </View>
         </View>
       </SectionCard>

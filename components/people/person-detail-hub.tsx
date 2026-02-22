@@ -8,7 +8,8 @@ import { View, StyleSheet, ScrollView, Pressable, Switch } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { Person, PersonStatus } from '@/data/mock-people-v2';
 
@@ -28,7 +29,7 @@ const STATUS_COLORS: Record<PersonStatus, string> = {
   active: '#22C55E',
   inactive: '#A1A1AA',
   pending: '#F59E0B',
-  away: '#1D9BF0',
+  away: accent,
 };
 
 const STATUS_LABELS: Record<PersonStatus, string> = {
@@ -343,7 +344,7 @@ function RolesAccessTab({ person, colors }: { person: Person; colors: typeof Col
 const ASSIGNMENT_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
   completed: '#A1A1AA',
-  upcoming: '#1D9BF0',
+  upcoming: accent,
 };
 
 function AssignmentsTab({ colors }: { colors: typeof Colors.dark }) {
@@ -601,6 +602,7 @@ function AuditTab({ person, colors }: { person: Person; colors: typeof Colors.da
 export function PersonDetailHub({ person }: { person: Person }) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const [activeTab, setActiveTab] = useState<Tab>('Overview');
 
   const handleTabPress = useCallback((tab: Tab) => {

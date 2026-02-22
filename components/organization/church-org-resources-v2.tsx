@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isElderLevel, isStaffLevel, isMember } from '@/utils/church-rbac';
 import {
@@ -48,6 +48,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'library', label: 'Library' },
@@ -224,7 +226,7 @@ function OverviewTab({
         contentContainerStyle={s.tileStrip}
       >
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#1D9BF0' }]}>{tiles.newResources7d}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: ACCENT }]}>{tiles.newResources7d}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>New (7d)</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -265,7 +267,7 @@ function OverviewTab({
 
       {isStaffLevel(role) && (
         <View style={[s.startCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <IconSymbol name="doc.text.fill" size={18} color="#1D9BF0" />
+          <IconSymbol name="doc.text.fill" size={18} color={ACCENT} />
           <View style={s.startCardTextCol}>
             <ThemedText style={[s.startCardTitle, { color: colors.text }]}>Browse Resource Library</ThemedText>
             <ThemedText style={[s.startCardSubtitle, { color: colors.textSecondary }]}>
@@ -377,9 +379,9 @@ function getAuditActionLabel(action: string): string {
 function getAuditActionColor(action: string): string {
   const map: Record<string, string> = {
     published: '#22C55E',
-    version_bump: '#1D9BF0',
+    version_bump: ACCENT,
     visibility_changed: '#F59E0B',
-    acknowledged: '#1D9BF0',
+    acknowledged: ACCENT,
   };
   return map[action] || '#A1A1AA';
 }
@@ -524,9 +526,9 @@ function LibraryTab({
 function getVisibilityColor(visibility: string): string {
   const map: Record<string, string> = {
     public: '#22C55E',
-    org: '#1D9BF0',
+    org: ACCENT,
     ministry: '#F59E0B',
-    role_specific: '#1D9BF0',
+    role_specific: ACCENT,
     restricted: '#EF4444',
   };
   return map[visibility] || '#A1A1AA';
@@ -738,7 +740,7 @@ function TrainingTab({
               </ThemedText>
             </View>
             {item.renewalCadence && (
-              <StatusBadge label={item.renewalCadence.toUpperCase()} color="#1D9BF0" />
+              <StatusBadge label={item.renewalCadence.toUpperCase()} color={ACCENT} />
             )}
           </View>
 
@@ -809,7 +811,7 @@ function FormsTab({
                 <StatusBadge label={item.status.toUpperCase()} color={statusColor} />
                 <StatusBadge label={VISIBILITY_LABELS[item.visibility].toUpperCase()} color={getVisibilityColor(item.visibility)} />
                 {item.requiredAttachments && (
-                  <StatusBadge label="ATTACHMENTS" color="#1D9BF0" />
+                  <StatusBadge label="ATTACHMENTS" color={ACCENT} />
                 )}
               </View>
             </View>
@@ -878,11 +880,11 @@ function MediaTab({
 
   const getMediaTypeColor = (type: string): string => {
     const map: Record<string, string> = {
-      logo: '#1D9BF0',
-      slide_template: '#1D9BF0',
+      logo: ACCENT,
+      slide_template: ACCENT,
       lyric_template: '#F59E0B',
       photo_guideline: '#22C55E',
-      announcement_graphic: '#1D9BF0',
+      announcement_graphic: ACCENT,
       audio_reference: '#EF4444',
     };
     return map[type] || '#A1A1AA';

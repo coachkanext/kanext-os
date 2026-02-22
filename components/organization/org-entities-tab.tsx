@@ -19,7 +19,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import {
   ENTITIES_TABS,
   ENTITY_SCOPE_CHIPS,
@@ -103,14 +104,14 @@ function getAuditActionKey(action: string): string {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  status: '#1D9BF0',
-  linked: '#1D9BF0',
+  status: accent,
+  linked: accent,
   moved: '#F59E0B',
-  assigned: '#1D9BF0',
-  attached: '#1D9BF0',
+  assigned: accent,
+  attached: accent,
   updated: '#F59E0B',
   approved: '#22C55E',
-  revised: '#1D9BF0',
+  revised: accent,
   default: '#A1A1AA',
 };
 

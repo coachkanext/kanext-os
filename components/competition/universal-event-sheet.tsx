@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -40,11 +40,14 @@ import {
   OPS_TASKS,
 } from '@/data/mock-competition-v2';
 import {
+
   type CompetitionRoleLens,
   type EventTab,
   getEventSheetTabs,
   isFullAccess,
 } from '@/utils/competition-rbac';
+
+const ACCENT = MODE_ACCENT.competition;
 
 // =============================================================================
 // PROPS
@@ -65,7 +68,7 @@ function getStatusColor(status: 'upcoming' | 'live' | 'completed'): string {
   switch (status) {
     case 'live': return '#22C55E';
     case 'completed': return '#A1A1AA';
-    case 'upcoming': return '#1D9BF0';
+    case 'upcoming': return ACCENT;
   }
 }
 
@@ -96,7 +99,7 @@ function getSessionStatusColor(status: SessionStatus): string {
     case 'delayed': return '#F59E0B';
     case 'red_flag': return '#EF4444';
     case 'complete': return '#A1A1AA';
-    case 'scheduled': return '#1D9BF0';
+    case 'scheduled': return ACCENT;
     default: return '#A1A1AA';
   }
 }
@@ -114,7 +117,7 @@ function getSessionStatusLabel(status: SessionStatus): string {
 
 function getIncidentStatusColor(status: IncidentStatus): string {
   switch (status) {
-    case 'new': return '#1D9BF0';
+    case 'new': return ACCENT;
     case 'assigned': return '#F59E0B';
     case 'under_review': return '#F59E0B';
     case 'decided': return '#22C55E';
@@ -185,15 +188,15 @@ const LIVE_CONTROL_ITEMS = [
 
 const MOCK_RESULTS = [
   { entrantId: 'ent-1', name: 'Apex Racing #1', session: 'Qualifying', position: 1, gap: 'POLE', teamColor: '#EF4444' },
-  { entrantId: 'ent-3', name: 'Velocity Works #3', session: 'Qualifying', position: 2, gap: '+0.234s', teamColor: '#1D9BF0' },
+  { entrantId: 'ent-3', name: 'Velocity Works #3', session: 'Qualifying', position: 2, gap: '+0.234s', teamColor: ACCENT },
   { entrantId: 'ent-5', name: 'Phoenix Motorsport #5', session: 'Qualifying', position: 3, gap: '+0.512s', teamColor: '#F59E0B' },
   { entrantId: 'ent-6', name: 'Zenith Racing #6', session: 'Qualifying', position: 4, gap: '+0.718s', teamColor: '#22C55E' },
   { entrantId: 'ent-2', name: 'Apex Racing #2', session: 'Qualifying', position: 5, gap: '+0.892s', teamColor: '#EF4444' },
-  { entrantId: 'ent-7', name: 'Shadow GP #7', session: 'Qualifying', position: 6, gap: '+1.103s', teamColor: '#1D9BF0' },
-  { entrantId: 'ent-4', name: 'Velocity Works #4', session: 'Qualifying', position: 7, gap: '+1.324s', teamColor: '#1D9BF0' },
-  { entrantId: 'ent-9', name: 'Titan Racing #9', session: 'Qualifying', position: 8, gap: '+1.567s', teamColor: '#1D9BF0' },
-  { entrantId: 'ent-10', name: 'Nova Speed #10', session: 'Qualifying', position: 9, gap: '+1.801s', teamColor: '#1D9BF0' },
-  { entrantId: 'ent-8', name: 'Shadow GP #8', session: 'Qualifying', position: 10, gap: '+2.045s', teamColor: '#1D9BF0' },
+  { entrantId: 'ent-7', name: 'Shadow GP #7', session: 'Qualifying', position: 6, gap: '+1.103s', teamColor: ACCENT },
+  { entrantId: 'ent-4', name: 'Velocity Works #4', session: 'Qualifying', position: 7, gap: '+1.324s', teamColor: ACCENT },
+  { entrantId: 'ent-9', name: 'Titan Racing #9', session: 'Qualifying', position: 8, gap: '+1.567s', teamColor: ACCENT },
+  { entrantId: 'ent-10', name: 'Nova Speed #10', session: 'Qualifying', position: 9, gap: '+1.801s', teamColor: ACCENT },
+  { entrantId: 'ent-8', name: 'Shadow GP #8', session: 'Qualifying', position: 10, gap: '+2.045s', teamColor: ACCENT },
   { entrantId: 'ent-11', name: 'Iron Circuit #11', session: 'Qualifying', position: 11, gap: '+2.312s', teamColor: '#A1A1AA' },
   { entrantId: 'ent-12', name: 'Iron Circuit #12', session: 'Qualifying', position: 12, gap: '+2.798s', teamColor: '#A1A1AA' },
 ];

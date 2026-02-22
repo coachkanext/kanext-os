@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 type ViewId = 'budget' | 'giving' | 'campaigns';
 
 interface Props {
@@ -281,7 +283,7 @@ function GivingView({ colors, accentColor }: { colors: typeof Colors.light; acce
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Weekly Avg</ThemedText>
         </View>
         <View style={[s.tile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#1D9BF0' }]}>{GIVING_SUMMARY.activeGivers}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: ACCENT }]}>{GIVING_SUMMARY.activeGivers}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Active Givers</ThemedText>
         </View>
       </View>

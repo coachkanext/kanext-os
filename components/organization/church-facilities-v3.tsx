@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 type ViewId = 'spaces' | 'bookings' | 'maintenance';
 
 interface Props {
@@ -121,7 +123,7 @@ const EQUIPMENT: Equipment[] = [
 const SPACE_STATUS_COLORS: Record<SpaceStatus, string> = {
   Available: '#22C55E',
   'In Use': '#F59E0B',
-  Reserved: '#1D9BF0',
+  Reserved: ACCENT,
 };
 
 const PRIORITY_COLORS: Record<WorkOrderPriority, string> = {
@@ -132,7 +134,7 @@ const PRIORITY_COLORS: Record<WorkOrderPriority, string> = {
 
 const WO_STATUS_COLORS: Record<WorkOrderStatus, string> = {
   Open: '#EF4444',
-  'In Progress': '#1D9BF0',
+  'In Progress': ACCENT,
   Scheduled: '#22C55E',
 };
 
@@ -213,7 +215,7 @@ function SpacesView({ colors, accentColor }: { colors: typeof Colors.light; acce
           <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Available</ThemedText>
         </View>
         <View style={[s.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.summaryValue, { color: '#1D9BF0' }]}>{totalCapacity}</ThemedText>
+          <ThemedText style={[s.summaryValue, { color: ACCENT }]}>{totalCapacity}</ThemedText>
           <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Total Capacity</ThemedText>
         </View>
       </View>
@@ -270,8 +272,8 @@ function BookingsView({ colors, accentColor }: { colors: typeof Colors.light; ac
               </ThemedText>
               <ThemedText style={[s.bookingMinistry, { color: colors.textTertiary }]}>{booking.ministry}</ThemedText>
             </View>
-            <View style={[s.statusBadge, { backgroundColor: '#1D9BF020' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: '#1D9BF0' }]}>Recurring</ThemedText>
+            <View style={[s.statusBadge, { backgroundColor: `${ACCENT}20` }]}>
+              <ThemedText style={[s.statusBadgeText, { color: ACCENT }]}>Recurring</ThemedText>
             </View>
           </View>
         ))}

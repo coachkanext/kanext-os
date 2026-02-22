@@ -9,7 +9,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { SituationPlay, SituationType } from '../game-plan-types';
 
@@ -31,12 +32,13 @@ const TYPE_COLORS: Record<SituationType, string> = {
   EOH: Brand.warning,
   late: Brand.error,
   press: Brand.success,
-  zone: '#1D9BF0',
+  zone: accent,
 };
 
 export function S06SituationsPackage({ plays: initialPlays, onLayout }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const [plays, setPlays] = useState(initialPlays);
   const [expandedGroup, setExpandedGroup] = useState<SituationType | null>(null);
 

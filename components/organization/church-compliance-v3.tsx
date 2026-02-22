@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 type ViewId = 'governance' | 'legal' | 'safety';
 
 interface Props {
@@ -314,8 +316,8 @@ function GovernanceView({ colors, accentColor }: { colors: typeof Colors.light; 
               </ThemedText>
             </View>
             {term.renewable && (
-              <View style={[s.statusBadge, { backgroundColor: '#1D9BF020' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: '#1D9BF0' }]}>Renewable</ThemedText>
+              <View style={[s.statusBadge, { backgroundColor: `${ACCENT}20` }]}>
+                <ThemedText style={[s.statusBadgeText, { color: ACCENT }]}>Renewable</ThemedText>
               </View>
             )}
           </View>

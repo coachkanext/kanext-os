@@ -36,6 +36,7 @@ import {
 } from '@/utils/recruiting-helpers';
 import { ROSTER } from '@/components/roster-content';
 import type { ClusterType, HeliocentricPosition } from '@/types';
+import { useAccentColor } from '@/hooks/use-accent-color';
 
 const WHITE = '#FFFFFF';
 const GRAY = '#A1A1AA';
@@ -98,11 +99,11 @@ export interface KRTier {
 export type DivisionAnchor = 'high_major' | 'mid_major' | 'low_major' | 'naia' | 'juco';
 
 const TIER_RANGES: { short: string; min: number; max: number; color: string }[] = [
-  { short: 'Elite', min: 86, max: 100, color: '#1D9BF0' },
+  { short: 'Elite', min: 86, max: 100, color: accent },
   { short: 'Franchise', min: 82, max: 85, color: '#22C55E' },
-  { short: 'Impact', min: 78, max: 81, color: '#1D9BF0' },
-  { short: 'Starter', min: 74, max: 77, color: '#1D9BF0' },
-  { short: 'Rotation', min: 71, max: 73, color: '#1D9BF0' },
+  { short: 'Impact', min: 78, max: 81, color: accent },
+  { short: 'Starter', min: 74, max: 77, color: accent },
+  { short: 'Rotation', min: 71, max: 73, color: accent },
   { short: 'Bench', min: 68, max: 70, color: '#F59E0B' },
   { short: 'Depth', min: 65, max: 67, color: '#A1A1AA' },
   { short: 'Project', min: 0, max: 64, color: '#A1A1AA' },
@@ -163,6 +164,7 @@ const TIER_LABELS: Record<DivisionAnchor, string[]> = {
 
 /** Map institution division strings to tier anchors */
 export function getDivisionAnchor(division: string): DivisionAnchor {
+  const accent = useAccentColor();
   const d = division.toUpperCase();
   if (d.includes('D1') || d === 'NCAA_D1') return 'high_major';
   if (d.includes('D2') || d === 'NCAA_D2') return 'mid_major';

@@ -9,7 +9,7 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
@@ -36,6 +36,8 @@ import {
   isMinistryLevel,
 } from '@/utils/church-rbac';
 
+const ACCENT = MODE_ACCENT.church;
+
 // =============================================================================
 // PROPS
 // =============================================================================
@@ -53,7 +55,7 @@ interface UniversalMemberSheetProps {
 
 const MEMBER_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
-  visitor: '#1D9BF0',
+  visitor: ACCENT,
   inactive: '#A1A1AA',
   under_review: '#F59E0B',
 };
@@ -66,14 +68,14 @@ const SAFETY_STATUS_COLORS: Record<string, string> = {
 
 const TASK_STATUS_COLORS: Record<string, string> = {
   open: '#F59E0B',
-  in_progress: '#1D9BF0',
+  in_progress: ACCENT,
   completed: '#22C55E',
 };
 
 const FOLLOW_UP_CATEGORY_COLORS: Record<string, string> = {
-  new_visitor: '#1D9BF0',
+  new_visitor: ACCENT,
   returning: '#22C55E',
-  prayer_request: '#1D9BF0',
+  prayer_request: ACCENT,
   hospital: '#EF4444',
   counseling: '#F59E0B',
   discipline: '#EF4444',
@@ -83,7 +85,7 @@ const FOLLOW_UP_CATEGORY_COLORS: Record<string, string> = {
 const INCIDENT_TYPE_COLORS: Record<string, string> = {
   child_safety: '#EF4444',
   medical: '#F59E0B',
-  conflict: '#1D9BF0',
+  conflict: ACCENT,
   property: '#A1A1AA',
   other: '#A1A1AA',
 };
@@ -424,7 +426,7 @@ function OverviewTab({
           <StatBlock
             label="Ministries"
             value={String(memberMinistries.length)}
-            color="#1D9BF0"
+            color={ACCENT}
             colors={colors}
           />
           <StatBlock
@@ -668,8 +670,8 @@ function CareFollowUpTab({
             </View>
           )}
           {member.status === 'visitor' && (
-            <View style={[styles.careTagPill, { backgroundColor: '#1D9BF022' }]}>
-              <ThemedText style={[styles.careTagText, { color: '#1D9BF0' }]}>
+            <View style={[styles.careTagPill, { backgroundColor: `${ACCENT}22` }]}>
+              <ThemedText style={[styles.careTagText, { color: ACCENT }]}>
                 NEW VISITOR
               </ThemedText>
             </View>
@@ -736,7 +738,7 @@ function CareFollowUpTab({
                 </ThemedText>
               )}
               {fu.nextStep && (
-                <ThemedText style={[styles.captionText, { color: '#1D9BF0', marginTop: 2 }]}>
+                <ThemedText style={[styles.captionText, { color: ACCENT, marginTop: 2 }]}>
                   Next: {fu.nextStep}
                 </ThemedText>
               )}
@@ -836,7 +838,7 @@ function TasksWorkflowTab({
         {MEMBER_WORKFLOW_QUEUE.map((item) => {
           const statusColor =
             item.status === 'completed' ? '#22C55E' :
-            item.status === 'in_progress' ? '#1D9BF0' : '#A1A1AA';
+            item.status === 'in_progress' ? ACCENT : '#A1A1AA';
           return (
             <View
               key={item.id}

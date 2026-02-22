@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 type ViewId = 'transactions' | 'pending' | 'receipts';
 
 interface Props {
@@ -108,17 +110,17 @@ function formatCurrency(amount: number): string {
 
 const CATEGORY_COLORS: Record<TransactionCategory, string> = {
   Tithes: '#22C55E',
-  Offerings: '#1D9BF0',
-  Designated: '#1D9BF0',
+  Offerings: ACCENT,
+  Designated: ACCENT,
   Expense: '#F59E0B',
-  Payroll: '#1D9BF0',
-  Missions: '#1D9BF0',
+  Payroll: ACCENT,
+  Missions: ACCENT,
   Vendor: '#A1A1AA',
 };
 
 const PENDING_STATUS_COLORS: Record<string, string> = {
   'Awaiting Approval': '#F59E0B',
-  Processing: '#1D9BF0',
+  Processing: ACCENT,
   'Awaiting Documentation': '#EF4444',
 };
 

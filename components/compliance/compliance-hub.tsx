@@ -9,7 +9,8 @@ import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import {
@@ -26,6 +27,8 @@ import {
   type ComplianceIncident,
   type ComplianceTraining,
 } from '@/data/mock-compliance';
+
+const accent = useAccentColor();
 
 // =============================================================================
 // CONSTANTS
@@ -46,13 +49,13 @@ const COMPLIANCE_STATUS_COLORS: Record<ComplianceStatus, string> = {
   compliant: '#22C55E',
   warning: '#F59E0B',
   violation: '#EF4444',
-  'pending-review': '#1D9BF0',
+  'pending-review': accent,
 };
 
 const AUDIT_STATUS_COLORS: Record<AuditStatus, string> = {
   passed: '#22C55E',
   failed: '#EF4444',
-  'in-progress': '#1D9BF0',
+  'in-progress': accent,
   scheduled: '#F59E0B',
 };
 
@@ -233,7 +236,7 @@ function HomeView() {
           <ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>Open Incidents</ThemedText>
         </Card>
         <Card style={styles.metricCard}>
-          <ThemedText style={[styles.metricValue, { color: '#1D9BF0' }]}>{snapshot.upcomingAudits}</ThemedText>
+          <ThemedText style={[styles.metricValue, { color: accent }]}>{snapshot.upcomingAudits}</ThemedText>
           <ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>Upcoming Audits</ThemedText>
         </Card>
         <Card style={styles.metricCard}>
@@ -477,7 +480,7 @@ function TrainingView() {
                 {item.title}
               </ThemedText>
               {item.required && (
-                <StatusBadge label="Required" color="#1D9BF0" />
+                <StatusBadge label="Required" color={accent} />
               )}
             </View>
 

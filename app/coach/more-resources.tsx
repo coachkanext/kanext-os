@@ -33,6 +33,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { TabFooter } from '@/components/tab-footer';
 import type {
   RosterSpots,
@@ -396,6 +397,7 @@ function getGroupTotals(uiEmphasis: UIEmphasisProfile): SectionTotals {
 export default function CoachProgramContextScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
@@ -748,13 +750,13 @@ export default function CoachProgramContextScreen() {
                       <Text
                         style={[
                           styles.inlineOptionText,
-                          { color: state.offensiveSystem === system.id ? colors.tint : colors.text },
+                          { color: state.offensiveSystem === system.id ? accent : colors.text },
                         ]}
                       >
                         {system.label}
                       </Text>
                       {state.offensiveSystem === system.id && (
-                        <IconSymbol name="checkmark" size={16} color={colors.tint} />
+                        <IconSymbol name="checkmark" size={16} color={accent} />
                       )}
                     </Pressable>
                   ))
@@ -803,13 +805,13 @@ export default function CoachProgramContextScreen() {
                       <Text
                         style={[
                           styles.inlineOptionText,
-                          { color: state.defensiveSystem === system.id ? colors.tint : colors.text },
+                          { color: state.defensiveSystem === system.id ? accent : colors.text },
                         ]}
                       >
                         {system.label}
                       </Text>
                       {state.defensiveSystem === system.id && (
-                        <IconSymbol name="checkmark" size={16} color={colors.tint} />
+                        <IconSymbol name="checkmark" size={16} color={accent} />
                       )}
                     </Pressable>
                   ))
@@ -861,13 +863,13 @@ export default function CoachProgramContextScreen() {
                     <Text
                       style={[
                         styles.inlineOptionText,
-                        { color: state.tempo === tempo ? colors.tint : colors.text },
+                        { color: state.tempo === tempo ? accent : colors.text },
                       ]}
                     >
                       {tempo}
                     </Text>
                     {state.tempo === tempo && (
-                      <IconSymbol name="checkmark" size={16} color={colors.tint} />
+                      <IconSymbol name="checkmark" size={16} color={accent} />
                     )}
                   </Pressable>
                 ))}
@@ -1488,8 +1490,8 @@ function PresetPreview({
               style={[
                 styles.previewSystemChip,
                 {
-                  backgroundColor: system.id === systemId ? colors.tint : colors.background,
-                  borderColor: system.id === systemId ? colors.tint : colors.border,
+                  backgroundColor: system.id === systemId ? accent : colors.background,
+                  borderColor: system.id === systemId ? accent : colors.border,
                 },
               ]}
               onPress={() => {
@@ -1537,7 +1539,7 @@ function PresetPreview({
                 <Text
                   style={[
                     styles.previewNewValue,
-                    { color: hasChange ? colors.tint : colors.text },
+                    { color: hasChange ? accent : colors.text },
                   ]}
                 >
                   {newVal.toFixed(1)}
@@ -1657,7 +1659,7 @@ function PickerModal({ visible, title, options, selected, onSelect, onClose, col
           }}
         >
           <Text style={[styles.modalOptionText, { color: colors.text }]}>{option.label}</Text>
-          {selected === option.id && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
+          {selected === option.id && <IconSymbol name="checkmark" size={18} color={accent} />}
         </Pressable>
       ))}
     </BottomSheet>

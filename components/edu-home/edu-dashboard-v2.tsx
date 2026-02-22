@@ -12,7 +12,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import {
   EDU_HERO,
   EDU_EVENTS,
@@ -44,7 +46,6 @@ interface Props {
   role?: EducationRoleLens;
 }
 
-const TEAL = '#1D9BF0';
 
 const STATUS_DOT: Record<string, string> = {
   green: '#22C55E',
@@ -126,17 +127,17 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
         {canSee('action_row') && (
           <View style={styles.actionRow}>
             <Pressable style={styles.actionCard} onPress={() => setApplyVisible(true)}>
-              <View style={[styles.actionTopBorder, { backgroundColor: TEAL }]} />
+              <View style={[styles.actionTopBorder, { backgroundColor: ACCENT }]} />
               <ThemedText style={styles.actionTitle}>Apply</ThemedText>
               <ThemedText style={styles.actionSubtitle}>Start your application</ThemedText>
             </Pressable>
             <Pressable style={styles.actionCard} onPress={() => setCatalogVisible(true)}>
-              <View style={[styles.actionTopBorder, { backgroundColor: TEAL }]} />
+              <View style={[styles.actionTopBorder, { backgroundColor: ACCENT }]} />
               <ThemedText style={styles.actionTitle}>Catalog</ThemedText>
               <ThemedText style={styles.actionSubtitle}>Browse programs</ThemedText>
             </Pressable>
             <Pressable style={styles.actionCard} onPress={() => setAidVisible(true)}>
-              <View style={[styles.actionTopBorder, { backgroundColor: TEAL }]} />
+              <View style={[styles.actionTopBorder, { backgroundColor: ACCENT }]} />
               <ThemedText style={styles.actionTitle}>Financial Aid</ThemedText>
               <ThemedText style={styles.actionSubtitle}>Scholarships & tuition</ThemedText>
             </Pressable>
@@ -184,10 +185,10 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
         {/* ── Domain Cards ── */}
         {canSee('student_success') && (
           <View style={styles.domainCard}>
-            <View style={[styles.domainAccent, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[styles.domainAccent, { backgroundColor: ACCENT }]} />
             <View style={styles.domainContent}>
               <View style={styles.domainHeader}>
-                <IconSymbol name="person.fill.checkmark" size={18} color="#1D9BF0" />
+                <IconSymbol name="person.fill.checkmark" size={18} color={ACCENT} />
                 <ThemedText style={styles.domainTitle}>Student Success</ThemedText>
               </View>
               <View style={styles.domainPills}>
@@ -200,14 +201,14 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
 
         {canSee('campus_life') && (
           <View style={styles.domainCard}>
-            <View style={[styles.domainAccent, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[styles.domainAccent, { backgroundColor: ACCENT }]} />
             <View style={styles.domainContent}>
               <View style={styles.domainHeader}>
-                <IconSymbol name="building.2.fill" size={18} color="#1D9BF0" />
+                <IconSymbol name="building.2.fill" size={18} color={ACCENT} />
                 <ThemedText style={styles.domainTitle}>Campus Life</ThemedText>
               </View>
               <View style={styles.domainPills}>
-                <DomainPill label={`${CAMPUS_LIFE_SUMMARY.activeOrgs} Orgs`} color="#1D9BF0" />
+                <DomainPill label={`${CAMPUS_LIFE_SUMMARY.activeOrgs} Orgs`} color={ACCENT} />
               </View>
               <ThemedText style={styles.domainMeta}>{CAMPUS_LIFE_SUMMARY.nextCampusEvent}</ThemedText>
             </View>

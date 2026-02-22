@@ -9,15 +9,17 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { GRID_TEAMS, CATEGORY_LABELS, type GridTeam, type TeamCategory } from '@/data/mock-competition-home';
 import { openTeamCard } from '@/utils/global-entity-sheets';
 
+
+const ACCENT = MODE_ACCENT.competition;
 const CATEGORY_COLORS: Record<TeamCategory, string> = {
   oem_works: '#22C55E',
-  premier_tuner: '#1D9BF0',
+  premier_tuner: ACCENT,
   league_owned: '#F59E0B',
-  kanext_works: '#1D9BF0',
+  kanext_works: ACCENT,
 };
 
 const HOMOLOGATION_COLORS: Record<GridTeam['homologation'], string> = {

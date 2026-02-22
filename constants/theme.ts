@@ -1,15 +1,16 @@
 /**
  * KaNeXT OS — Global Theme (LOCKED)
  *
- * Single dark palette. No light mode. No per-mode colors.
- * One accent: KaNeXT Blue (#1D9BF0).
+ * Single dark palette. No light mode.
+ * Per-org accent colors via MODE_ACCENT / MODE_ACCENT_SECONDARY.
+ * KaNeXT Blue (#1D9BF0) is the system/infrastructure fallback only.
  *
  * Background:      #000000
  * Surface / Cards:  #0B0F14
  * Primary text:     #FFFFFF
  * Secondary text:   #A1A1AA
  * Dividers:         #2F3336
- * Accent:           #1D9BF0
+ * System accent:    #1D9BF0 (login, onboarding, Nexus)
  */
 
 import { Platform } from 'react-native';
@@ -54,15 +55,27 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string; nexu
 };
 
 // =============================================================================
-// MODE ACCENT — Uniform KaNeXT Blue (no per-mode variation)
+// MODE ACCENT — Per-org primary accent colors
 // =============================================================================
 
 export const MODE_ACCENT: Record<Mode, string> = {
-  sports: '#1D9BF0',
-  business: '#1D9BF0',
-  church: '#1D9BF0',
-  education: '#1D9BF0',
-  competition: '#1D9BF0',
+  sports:      '#332A86',   // Carroll Purple
+  business:    '#EA2127',   // Valuetainment Red
+  church:      '#00D0D4',   // 2819 Teal
+  education:   '#003A63',   // Howard Navy
+  competition: '#BFFF00',   // Adidas 3SSB Electric Lime
+};
+
+// =============================================================================
+// MODE ACCENT SECONDARY — Per-org secondary accent colors
+// =============================================================================
+
+export const MODE_ACCENT_SECONDARY: Record<Mode, string> = {
+  sports:      '#E8D3A2',   // Carroll Gold
+  business:    '#34495E',   // Dark Gray
+  church:      '#00D0D4',   // Teal (same)
+  education:   '#E51937',   // Howard Crimson
+  competition: '#000000',   // Black
 };
 
 // =============================================================================
@@ -125,7 +138,7 @@ export const BusinessPalette = {
   graphite: '#2F3336',
   smoke: '#FFFFFF',
   ash: '#A1A1AA',
-  champagneGold: '#1D9BF0',
+  champagneGold: MODE_ACCENT.business,
   platinum: '#A1A1AA',
   emerald: '#22C55E',
   amber: '#F59E0B',

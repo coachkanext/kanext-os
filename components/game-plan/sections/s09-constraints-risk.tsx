@@ -8,7 +8,8 @@ import { View, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { ConstraintsRiskData, ConstraintSource, Severity } from '../game-plan-types';
 
@@ -21,7 +22,7 @@ const SOURCE_COLORS: Record<ConstraintSource, string> = {
   medical: Brand.error,
   foul: Brand.warning,
   matchup: Brand.precision,
-  scheme: '#1D9BF0',
+  scheme: accent,
 };
 
 const SOURCE_LABELS: Record<ConstraintSource, string> = {
@@ -40,6 +41,7 @@ function severityColor(s: Severity): string {
 export function S09ConstraintsRisk({ data, onLayout }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   return (
     <View onLayout={(e) => onLayout?.(e.nativeEvent.layout.y)}>

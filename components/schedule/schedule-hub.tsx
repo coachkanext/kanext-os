@@ -14,7 +14,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme'
+;
 import { LiveGamePanel } from '@/components/live-game-panel';
 import { DepthChartView, DEPTH_CHART_BY_SEASON, CURRENT_SEASON } from '@/components/roster-content';
 import { UnitsView } from '@/components/depth-chart/depth-chart-units';
@@ -541,7 +542,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
 
             const NAIA_POLL = [
               { rank: 1, team: 'Loyola (LA)', record: '22-2', prev: 1 },
-              { rank: 2, team: team: 'College of Idaho', record: '21-3', prev: 2 },
+              { rank: 2, team: 'College of Idaho', record: '21-3', prev: 2 },
               { rank: 3, team: 'Oklahoma City', record: '20-3', prev: 4 },
               { rank: 4, team: 'Life Pacific', record: '20-4', prev: 3 },
               { rank: 5, team: 'Benedictine (KS)', record: '19-4', prev: 8 },
@@ -569,7 +570,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
 
             const KR_NATIONAL = [
               { rank: 1, team: 'Loyola (LA)', kr: 91, trend: 2 },
-              { rank: 2, team: team: 'College of Idaho', kr: 89, trend: 0 },
+              { rank: 2, team: 'College of Idaho', kr: 89, trend: 0 },
               { rank: 3, team: 'Oklahoma City', kr: 88, trend: 1 },
               { rank: 4, team: 'Life Pacific', kr: 87, trend: -1 },
               { rank: 5, team: 'Benedictine (KS)', kr: 86, trend: 3 },
@@ -1298,14 +1299,14 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                         <View style={{ backgroundColor: '#0B0F14', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10 }}>
                           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={{ fontSize: 12, fontWeight: '700', color: atsCover ? '#22C55E' : '#EF4444' }}>ATS: {atsStr}</Text>
-                            <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? '#1D9BF0' : '#1D9BF0' }}>O/U: {ouStr}</Text>
+                            <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? accent : accent }}>O/U: {ouStr}</Text>
                           </View>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
                           <Text style={{ fontSize: 11, color: '#888' }}>Pre Proj: <Text style={{ fontWeight: '700', color: '#ccc' }}>{fmuProj}\u2013{oppProj} ({projMargin > 0 ? '+' : ''}{projMargin})</Text></Text>
                           <Text style={{ fontSize: 11, color: '#888' }}>Actual: <Text style={{ fontWeight: '700', color: isW ? '#22C55E' : '#EF4444' }}>{fmuS}\u2013{oppS} ({actualMargin > 0 ? '+' : ''}{actualMargin})</Text></Text>
                         </View>
-                        <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#22C55E' : Math.abs(miss) <= 7 ? '#1D9BF0' : '#EF4444' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
+                        <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#22C55E' : Math.abs(miss) <= 7 ? accent : '#EF4444' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
                         <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
                           {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'Carroll' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
                         </Text>
@@ -1351,7 +1352,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                             </View>
                             <View style={{ alignItems: 'center' }}>
                               <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>WIN%</Text>
-                              <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#22C55E' : winPct <= 40 ? '#EF4444' : '#1D9BF0' }}>{winPct}%</Text>
+                              <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#22C55E' : winPct <= 40 ? '#EF4444' : accent }}>{winPct}%</Text>
                             </View>
                             <View style={{ alignItems: 'center' }}>
                               <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>TOTAL</Text>
@@ -1359,8 +1360,8 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                             </View>
                             <View style={{ alignItems: 'center' }}>
                               <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>CONF</Text>
-                              <View style={{ backgroundColor: '#1D9BF020', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
-                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#1D9BF0' }}>Sim {simConf}%</Text>
+                              <View style={{ backgroundColor: `${accent}20`, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: accent }}>Sim {simConf}%</Text>
                               </View>
                             </View>
                           </View>

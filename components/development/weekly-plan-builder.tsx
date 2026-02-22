@@ -9,7 +9,8 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { CURRENT_WEEKLY_PLAN, type SessionType } from '@/data/mock-development-v2';
 
@@ -20,7 +21,7 @@ import { CURRENT_WEEKLY_PLAN, type SessionType } from '@/data/mock-development-v
 const SESSION_COLORS: Record<SessionType, string> = {
   practice: Brand.precision,   // #1D9BF0
   lift: Brand.warning,         // #F59E0B
-  film: '#1D9BF0',
+  film: accent,
   individual: Brand.success,   // #22C55E
   rest: '#52525B',
 };
@@ -44,6 +45,7 @@ const SESSION_ICONS: Record<SessionType, string> = {
 export function WeeklyPlanBuilder() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const plan = CURRENT_WEEKLY_PLAN;
 
   return (

@@ -16,11 +16,11 @@ import {
   type VaultDocument,
 } from '@/data/mock-business-home';
 import { canAccessDoc, type BusinessRoleLens, type DocAccessTag } from '@/utils/business-rbac';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
 type Stage = 'folders' | 'documents';
 
-const ACCENT = '#1D9BF0';
+const ACCENT = MODE_ACCENT.business;
 
 const ACCESS_TO_TAG: Record<VaultFolder['accessLevel'], DocAccessTag> = {
   public: 'public',

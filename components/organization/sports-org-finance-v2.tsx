@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
 import {
   FINANCE_SUB_TABS,
@@ -48,6 +48,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 const SUB_TABS = FINANCE_SUB_TABS.map((t) => ({ id: t.id, label: t.label }));
 
 // =============================================================================
@@ -243,7 +245,7 @@ function OverviewTab({
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Flagged</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#1D9BF0' }]} />
+          <View style={[s.statusDot, { backgroundColor: ACCENT }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{formatCurrency(overview.pendingApprovalAmount)}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Pending Amt</ThemedText>
         </View>
@@ -606,13 +608,13 @@ function TravelSpendTab({
           </View>
           <View style={s.costBreakdownRow}>
             {item.lodging > 0 && (
-              <View style={[s.costChip, { backgroundColor: '#1D9BF020' }]}>
-                <ThemedText style={[s.costChipText, { color: '#1D9BF0' }]}>Lodging {formatCurrency(item.lodging)}</ThemedText>
+              <View style={[s.costChip, { backgroundColor: `${ACCENT}20` }]}>
+                <ThemedText style={[s.costChipText, { color: ACCENT }]}>Lodging {formatCurrency(item.lodging)}</ThemedText>
               </View>
             )}
             {item.airfare > 0 && (
-              <View style={[s.costChip, { backgroundColor: '#1D9BF020' }]}>
-                <ThemedText style={[s.costChipText, { color: '#1D9BF0' }]}>Airfare {formatCurrency(item.airfare)}</ThemedText>
+              <View style={[s.costChip, { backgroundColor: `${ACCENT}20` }]}>
+                <ThemedText style={[s.costChipText, { color: ACCENT }]}>Airfare {formatCurrency(item.airfare)}</ThemedText>
               </View>
             )}
             {item.ground > 0 && (

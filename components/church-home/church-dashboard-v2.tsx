@@ -12,7 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
 import {
   CHURCH_HERO,
   CHURCH_SERVICES,
@@ -32,6 +32,8 @@ import { ChurchGiveSheet } from '@/components/commerce/church-give-sheet';
 import { ChurchSermonsSheet } from '@/components/commerce/church-sermons-sheet';
 import { ChurchPrayerSheet } from '@/components/commerce/church-prayer-sheet';
 
+const ACCENT = MODE_ACCENT.church;
+
 // =============================================================================
 // TYPES
 // =============================================================================
@@ -42,7 +44,7 @@ interface Props {
   role?: ChurchRoleLens;
 }
 
-const GOLD = '#1D9BF0';
+const GOLD = ACCENT;
 
 const STATUS_DOT: Record<string, string> = {
   green: '#22C55E',

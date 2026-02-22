@@ -21,7 +21,9 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import {
   isPresident,
@@ -372,7 +374,7 @@ const HOUSING_TIMELINE: TimelineEvent[] = [
 
 const TIMELINE_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
-  current: '#1D9BF0',
+  current: ACCENT,
   upcoming: '#A1A1AA',
 };
 
@@ -431,7 +433,7 @@ const ADMIN_ASSIGNMENTS: AdminAssignment[] = [
 const ASSIGNMENT_STATUS_COLOR: Record<string, string> = {
   confirmed: '#22C55E',
   pending: '#F59E0B',
-  waitlisted: '#1D9BF0',
+  waitlisted: ACCENT,
   cancelled: '#EF4444',
 };
 
@@ -551,7 +553,7 @@ const MOVE_EVENTS: MoveEvent[] = [
 
 const MOVE_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
-  'in-progress': '#1D9BF0',
+  'in-progress': ACCENT,
   scheduled: '#A1A1AA',
 };
 
@@ -606,14 +608,14 @@ const WORK_ORDERS: WorkOrder[] = [
 const PRIORITY_COLOR: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#1D9BF0',
+  medium: ACCENT,
   low: '#A1A1AA',
 };
 
 const WO_STATUS_COLOR: Record<string, string> = {
   open: '#F59E0B',
-  assigned: '#1D9BF0',
-  'in-progress': '#1D9BF0',
+  assigned: ACCENT,
+  'in-progress': ACCENT,
   completed: '#22C55E',
   deferred: '#A1A1AA',
 };
@@ -650,7 +652,7 @@ const INSPECTION_STATUS_COLOR: Record<string, string> = {
   passed: '#22C55E',
   failed: '#EF4444',
   scheduled: '#A1A1AA',
-  'in-progress': '#1D9BF0',
+  'in-progress': ACCENT,
 };
 
 const INSPECTION_TYPE_LABEL: Record<string, string> = {
@@ -714,7 +716,7 @@ const INCIDENT_SEVERITY_COLOR: Record<string, string> = {
 const INCIDENT_STATUS_COLOR: Record<string, string> = {
   resolved: '#22C55E',
   open: '#F59E0B',
-  referred: '#1D9BF0',
+  referred: ACCENT,
 };
 
 interface CounselingReferral {
@@ -734,7 +736,7 @@ const COUNSELING_REFERRALS: CounselingReferral[] = [
 ];
 
 const REFERRAL_STATUS_COLOR: Record<string, string> = {
-  scheduled: '#1D9BF0',
+  scheduled: ACCENT,
   completed: '#22C55E',
   pending: '#F59E0B',
 };
@@ -759,10 +761,10 @@ const RESLIFE_PROGRAMS: ResLifeProgram[] = [
 ];
 
 const PROGRAM_CAT_COLOR: Record<string, string> = {
-  social: '#1D9BF0',
-  educational: '#1D9BF0',
+  social: ACCENT,
+  educational: ACCENT,
   wellness: '#22C55E',
-  diversity: '#1D9BF0',
+  diversity: ACCENT,
   community: '#F59E0B',
 };
 
@@ -968,8 +970,8 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
                 <View style={s.timelineDateRow}>
                   <ThemedText style={[s.timelineDate, { color: colors.text }]}>{event.date}</ThemedText>
                   {event.status === 'current' && (
-                    <View style={[shrd.statusBadge, { backgroundColor: '#1D9BF020' }]}>
-                      <ThemedText style={[shrd.statusText, { color: '#1D9BF0' }]}>CURRENT</ThemedText>
+                    <View style={[shrd.statusBadge, { backgroundColor: ACCENT + '20' }]}>
+                      <ThemedText style={[shrd.statusText, { color: ACCENT }]}>CURRENT</ThemedText>
                     </View>
                   )}
                 </View>
@@ -1409,7 +1411,7 @@ function WorkOrdersView({ colors, role }: { colors: typeof Colors.light; role: E
             <View style={s.kpiGrid}>
               <KPIStat value={String(HOUSING_SUMMARY.maintenanceRequests)} label="Total YTD" colors={colors} />
               <KPIStat value={String(openCount)} label="Open" colors={colors} valueColor="#F59E0B" />
-              <KPIStat value={String(inProgressCount)} label="In Progress" colors={colors} valueColor="#1D9BF0" />
+              <KPIStat value={String(inProgressCount)} label="In Progress" colors={colors} valueColor={ACCENT} />
               <KPIStat value={String(completedCount)} label="Completed" colors={colors} valueColor="#22C55E" />
             </View>
           </Card>

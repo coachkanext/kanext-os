@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 type ViewId = 'identity' | 'teams' | 'operations';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -78,7 +80,7 @@ const TRIPS = [
 const TASK_STATUS_COLOR: Record<TaskStatus, string> = {
   due_tomorrow: '#F59E0B',
   overdue: '#EF4444',
-  in_progress: '#1D9BF0',
+  in_progress: ACCENT,
   upcoming: '#22C55E',
 };
 
@@ -131,10 +133,10 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
       <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>PROGRAM COLORS</ThemedText>
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.colorRow}>
-          <View style={[s.colorSwatch, { backgroundColor: '#1D9BF0' }]} />
+          <View style={[s.colorSwatch, { backgroundColor: ACCENT }]} />
           <View style={s.colorInfo}>
-            <ThemedText style={[s.colorName, { color: colors.text }]}>Royal Blue</ThemedText>
-            <ThemedText style={[s.colorHex, { color: colors.textSecondary }]}>#1D9BF0</ThemedText>
+            <ThemedText style={[s.colorName, { color: colors.text }]}>Carroll Purple</ThemedText>
+            <ThemedText style={[s.colorHex, { color: colors.textSecondary }]}>{ACCENT}</ThemedText>
           </View>
         </View>
         <View style={[s.colorRow, { marginTop: 10 }]}>

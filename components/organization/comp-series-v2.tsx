@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_SERIES_TABS,
   COMP_SERIES_SCOPE_CHIPS,
@@ -38,6 +38,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -767,7 +769,7 @@ function HistoryTab({
 
           <View style={s.historyRow}>
             <View style={s.historyItem}>
-              <IconSymbol name="person.fill" size={14} color="#1D9BF0" />
+              <IconSymbol name="person.fill" size={14} color={ACCENT} />
               <View style={s.historyItemText}>
                 <ThemedText style={[s.historyLabel, { color: colors.textTertiary }]}>
                   MVP

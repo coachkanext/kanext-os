@@ -7,9 +7,11 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable, TextInput } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { CHURCH_SERVICES, type ChurchService } from '@/data/mock-church-home';
 import { openLeaderCard } from '@/utils/global-entity-sheets';
+
+const ACCENT = MODE_ACCENT.church;
 
 interface Props {
   colors: typeof Colors.light;
@@ -18,9 +20,9 @@ interface Props {
 
 function getTypeBadgeColor(type: ChurchService['type']): string {
   switch (type) {
-    case 'sunday_morning': return '#1D9BF0';
-    case 'sunday_evening': return '#1D9BF0';
-    case 'midweek': return '#1D9BF0';
+    case 'sunday_morning': return ACCENT;
+    case 'sunday_evening': return ACCENT;
+    case 'midweek': return ACCENT;
     case 'special': return '#F59E0B';
     default: return '#A1A1AA';
   }
@@ -77,8 +79,8 @@ export function ChurchCalendarServicesView({ colors, accent }: Props) {
             </View>
           )}
           {service.status === 'past' && service.videoId && (
-            <View style={[styles.videoBadge, { backgroundColor: '#1D9BF022' }]}>
-              <ThemedText style={[styles.videoBadgeText, { color: '#1D9BF0' }]}>VIDEO</ThemedText>
+            <View style={[styles.videoBadge, { backgroundColor: `${ACCENT}22` }]}>
+              <ThemedText style={[styles.videoBadgeText, { color: ACCENT }]}>VIDEO</ThemedText>
             </View>
           )}
         </View>

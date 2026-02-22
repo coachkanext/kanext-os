@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.business;
 type ViewMode = 'team' | 'board' | 'contacts';
 type ContactCategory = 'All' | 'Investors' | 'Partners' | 'Clients' | 'Press' | 'Vendors' | 'Legal';
 
@@ -64,22 +66,22 @@ const CONTACTS = [
 const TYPE_COLORS: Record<string, string> = {
   'Full-time': '#22C55E',
   'Contract': '#F59E0B',
-  'Part-time': '#1D9BF0',
+  'Part-time': ACCENT,
 };
 
 const SEAT_COLORS: Record<string, string> = {
-  'Founder Seat': '#1D9BF0',
-  'Investor Seat': '#1D9BF0',
-  'Advisor Seat': '#1D9BF0',
+  'Founder Seat': ACCENT,
+  'Investor Seat': ACCENT,
+  'Advisor Seat': ACCENT,
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  Investors: '#1D9BF0',
-  Partners: '#1D9BF0',
+  Investors: ACCENT,
+  Partners: ACCENT,
   Clients: '#22C55E',
-  Press: '#1D9BF0',
+  Press: ACCENT,
   Vendors: '#F59E0B',
-  Legal: '#1D9BF0',
+  Legal: ACCENT,
 };
 
 // =============================================================================

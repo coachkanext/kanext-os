@@ -7,10 +7,12 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { RECENT_ACTIVITY, type ActivityEntry } from '@/data/mock-business-home';
 import { openPersonCard } from '@/utils/global-entity-sheets';
 
+
+const ACCENT = MODE_ACCENT.business;
 interface Props {
   colors: typeof Colors.light;
   accent: string;
@@ -30,8 +32,8 @@ const FILTER_MAP: Record<string, string> = {
 
 const TYPE_COLORS: Record<string, string> = {
   call: '#22C55E',
-  email: '#1D9BF0',
-  meeting: '#1D9BF0',
+  email: ACCENT,
+  meeting: ACCENT,
   document: '#F59E0B',
   stage_change: '#EF4444',
   note: '#A1A1AA',

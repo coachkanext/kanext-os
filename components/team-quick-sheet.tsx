@@ -14,6 +14,9 @@ import { KaNeXT_GAMES, KaNeXT_RECORD, KaNeXT_STANDINGS } from '@/data/fmu';
 import { coachingStaff } from '@/data/sun-conference/coaching-staff';
 import { PLAYER_CLUSTERS } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
+import { useAccentColor } from '@/hooks/use-accent-color';
+
+const accent = useAccentColor();
 
 // KaNeXT seal
 const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
@@ -406,7 +409,7 @@ export function TeamQuickSheet({
                 <View style={[s.progRow, { borderBottomWidth: 0 }]}>
                   <Text style={s.progLabel}>Colors</Text>
                   <View style={s.colorsRow}>
-                    <View style={[s.colorDot, { backgroundColor: '#1D9BF0' }]} />
+                    <View style={[s.colorDot, { backgroundColor: accent }]} />
                     <View style={[s.colorDot, { backgroundColor: '#F59E0B' }]} />
                     <Text style={s.progValue}>Royal Blue {'\u0026'} Gold</Text>
                   </View>

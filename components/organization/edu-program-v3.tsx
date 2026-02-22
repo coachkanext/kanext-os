@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 type ViewId = 'identity' | 'academics' | 'operations';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -84,7 +86,7 @@ const CALENDAR_MILESTONES = [
 const TASK_STATUS_COLOR: Record<TaskStatus, string> = {
   due_tomorrow: '#F59E0B',
   overdue: '#EF4444',
-  in_progress: '#1D9BF0',
+  in_progress: ACCENT,
   upcoming: '#22C55E',
   completed: '#22C55E',
 };
@@ -120,7 +122,7 @@ function StatusBadge({ label, color }: { label: string; color: string }) {
 }
 
 function AccreditationBadge({ status }: { status: string }) {
-  const color = status === 'Accredited' ? '#22C55E' : status === 'Under Review' ? '#F59E0B' : '#1D9BF0';
+  const color = status === 'Accredited' ? '#22C55E' : status === 'Under Review' ? '#F59E0B' : ACCENT;
   return <StatusBadge label={status.toUpperCase()} color={color} />;
 }
 

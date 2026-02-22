@@ -20,7 +20,9 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import {
   isPresident,
@@ -105,13 +107,13 @@ interface RevenueSource {
 }
 
 const REVENUE_SOURCES: RevenueSource[] = [
-  { id: 'rev-1', source: 'Tuition & Fees', amount: '$128.4M', percentage: 51.6, change: '+4.2%', color: '#1D9BF0' },
+  { id: 'rev-1', source: 'Tuition & Fees', amount: '$128.4M', percentage: 51.6, change: '+4.2%', color: ACCENT },
   { id: 'rev-2', source: 'State Appropriations', amount: '$38.2M', percentage: 15.4, change: '+2.1%', color: '#22C55E' },
-  { id: 'rev-3', source: 'Research Grants', amount: '$32.8M', percentage: 13.2, change: '+12.4%', color: '#1D9BF0' },
+  { id: 'rev-3', source: 'Research Grants', amount: '$32.8M', percentage: 13.2, change: '+12.4%', color: ACCENT },
   { id: 'rev-4', source: 'Auxiliary Services', amount: '$22.6M', percentage: 9.1, change: '+1.8%', color: '#F59E0B' },
-  { id: 'rev-5', source: 'Endowment Income', amount: '$14.2M', percentage: 5.7, change: '+8.4%', color: '#1D9BF0' },
+  { id: 'rev-5', source: 'Endowment Income', amount: '$14.2M', percentage: 5.7, change: '+8.4%', color: ACCENT },
   { id: 'rev-6', source: 'Gifts & Donations', amount: '$8.4M', percentage: 3.4, change: '-2.1%', color: '#F59E0B' },
-  { id: 'rev-7', source: 'Athletics Revenue', amount: '$4.0M', percentage: 1.6, change: '+15.2%', color: '#1D9BF0' },
+  { id: 'rev-7', source: 'Athletics Revenue', amount: '$4.0M', percentage: 1.6, change: '+15.2%', color: ACCENT },
 ];
 
 // --- Expense Categories ---
@@ -127,15 +129,15 @@ interface ExpenseCategory {
 }
 
 const EXPENSE_CATEGORIES: ExpenseCategory[] = [
-  { id: 'exp-1', category: 'Instruction', amount: '$82.4M', percentage: 35.2, budgeted: '$84.0M', variance: '-$1.6M', color: '#1D9BF0' },
-  { id: 'exp-2', category: 'Research', amount: '$28.6M', percentage: 12.2, budgeted: '$27.0M', variance: '+$1.6M', color: '#1D9BF0' },
+  { id: 'exp-1', category: 'Instruction', amount: '$82.4M', percentage: 35.2, budgeted: '$84.0M', variance: '-$1.6M', color: ACCENT },
+  { id: 'exp-2', category: 'Research', amount: '$28.6M', percentage: 12.2, budgeted: '$27.0M', variance: '+$1.6M', color: ACCENT },
   { id: 'exp-3', category: 'Student Services', amount: '$24.8M', percentage: 10.6, budgeted: '$25.0M', variance: '-$0.2M', color: '#22C55E' },
   { id: 'exp-4', category: 'Institutional Support', amount: '$22.2M', percentage: 9.5, budgeted: '$22.5M', variance: '-$0.3M', color: '#F59E0B' },
-  { id: 'exp-5', category: 'Academic Support', amount: '$18.4M', percentage: 7.9, budgeted: '$18.0M', variance: '+$0.4M', color: '#1D9BF0' },
+  { id: 'exp-5', category: 'Academic Support', amount: '$18.4M', percentage: 7.9, budgeted: '$18.0M', variance: '+$0.4M', color: ACCENT },
   { id: 'exp-6', category: 'Athletics', amount: '$18.2M', percentage: 7.8, budgeted: '$18.0M', variance: '+$0.2M', color: '#F59E0B' },
-  { id: 'exp-7', category: 'Facilities & Maintenance', amount: '$16.8M', percentage: 7.2, budgeted: '$16.5M', variance: '+$0.3M', color: '#1D9BF0' },
+  { id: 'exp-7', category: 'Facilities & Maintenance', amount: '$16.8M', percentage: 7.2, budgeted: '$16.5M', variance: '+$0.3M', color: ACCENT },
   { id: 'exp-8', category: 'Financial Aid (Institutional)', amount: '$14.6M', percentage: 6.2, budgeted: '$14.8M', variance: '-$0.2M', color: '#22C55E' },
-  { id: 'exp-9', category: 'Debt Service', amount: '$8.1M', percentage: 3.4, budgeted: '$8.1M', variance: '$0.0M', color: '#1D9BF0' },
+  { id: 'exp-9', category: 'Debt Service', amount: '$8.1M', percentage: 3.4, budgeted: '$8.1M', variance: '$0.0M', color: ACCENT },
 ];
 
 // --- Tuition & Fees Schedule ---
@@ -185,7 +187,7 @@ const AID_DISBURSEMENTS: AidDisbursement[] = [
 const AID_STATUS_COLOR: Record<string, string> = {
   disbursed: '#22C55E',
   pending: '#F59E0B',
-  processing: '#1D9BF0',
+  processing: ACCENT,
 };
 
 // --- Scholarship Fund Status ---
@@ -231,8 +233,8 @@ const AUDIT_LOG: AuditItem[] = [
 
 const AUDIT_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
-  in_progress: '#1D9BF0',
-  scheduled: '#1D9BF0',
+  in_progress: ACCENT,
+  scheduled: ACCENT,
   pending: '#F59E0B',
 };
 
@@ -563,8 +565,8 @@ function ScholarshipFundsBlock({ colors, role }: { colors: typeof Colors.light; 
               <View style={s.fundNameRow}>
                 <ThemedText style={[s.fundName, { color: colors.text }]}>{fund.name}</ThemedText>
                 {fund.endowed && (
-                  <View style={[s.endowedBadge, { backgroundColor: '#1D9BF020' }]}>
-                    <ThemedText style={[s.endowedText, { color: '#1D9BF0' }]}>ENDOWED</ThemedText>
+                  <View style={[s.endowedBadge, { backgroundColor: ACCENT + '20' }]}>
+                    <ThemedText style={[s.endowedText, { color: ACCENT }]}>ENDOWED</ThemedText>
                   </View>
                 )}
               </View>
@@ -821,7 +823,7 @@ function StudentAccountsView({ colors, role }: { colors: typeof Colors.light; ro
           <Card key={plan.id} colors={colors}>
             <View style={s.planHeader}>
               <ThemedText style={[s.planName, { color: colors.text }]}>{plan.name}</ThemedText>
-              <ThemedText style={[s.planFee, { color: '#1D9BF0' }]}>{plan.fee}</ThemedText>
+              <ThemedText style={[s.planFee, { color: ACCENT }]}>{plan.fee}</ThemedText>
             </View>
             <ThemedText style={[s.planDesc, { color: colors.textSecondary }]}>{plan.desc}</ThemedText>
             {isDeanLevel(role) && (

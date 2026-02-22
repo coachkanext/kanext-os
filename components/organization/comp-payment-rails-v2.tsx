@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_RAILS_TABS,
   COMP_RAILS_SCOPE_CHIPS,
@@ -39,6 +39,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -60,10 +62,10 @@ function accountTypeLabel(type: PaymentAccount['type']): string {
 
 function accountTypeColor(type: PaymentAccount['type']): string {
   switch (type) {
-    case 'operating': return '#1D9BF0';
-    case 'escrow': return '#1D9BF0';
+    case 'operating': return ACCENT;
+    case 'escrow': return ACCENT;
     case 'prize-fund': return '#F59E0B';
-    case 'sponsor-holding': return '#1D9BF0';
+    case 'sponsor-holding': return ACCENT;
     case 'petty-cash': return '#22C55E';
   }
 }
@@ -80,8 +82,8 @@ function payoutTypeLabel(type: PayoutBatch['type']): string {
 function payoutTypeColor(type: PayoutBatch['type']): string {
   switch (type) {
     case 'prize': return '#F59E0B';
-    case 'official': return '#1D9BF0';
-    case 'vendor': return '#1D9BF0';
+    case 'official': return ACCENT;
+    case 'vendor': return ACCENT;
     case 'refund': return '#EF4444';
   }
 }
@@ -99,10 +101,10 @@ function feeTypeLabel(type: FeeSchedule['type']): string {
 function feeTypeColor(type: FeeSchedule['type']): string {
   switch (type) {
     case 'entry-fee': return '#22C55E';
-    case 'registration': return '#1D9BF0';
-    case 'licensing': return '#1D9BF0';
+    case 'registration': return ACCENT;
+    case 'licensing': return ACCENT;
     case 'facility': return '#F59E0B';
-    case 'broadcast': return '#1D9BF0';
+    case 'broadcast': return ACCENT;
   }
 }
 
@@ -839,7 +841,7 @@ function ReconciliationTab({
             <ThemedText style={[s.reconSummaryLabel, { color: colors.textTertiary }]}>Pending</ThemedText>
           </View>
           <View style={s.reconSummaryItem}>
-            <View style={[s.reconSummaryDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.reconSummaryDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.reconSummaryValue, { color: colors.text }]}>{formatCurrency(totalVariance)}</ThemedText>
             <ThemedText style={[s.reconSummaryLabel, { color: colors.textTertiary }]}>Total Var.</ThemedText>
           </View>
@@ -952,7 +954,7 @@ function DisputesTab({
               <ThemedText style={[s.disputeSummaryGridLabel, { color: colors.textTertiary }]}>Open</ThemedText>
             </View>
             <View style={s.disputeSummaryGridItem}>
-              <View style={[s.disputeSummaryDot, { backgroundColor: '#1D9BF0' }]} />
+              <View style={[s.disputeSummaryDot, { backgroundColor: ACCENT }]} />
               <ThemedText style={[s.disputeSummaryGridValue, { color: colors.text }]}>{reviewCount}</ThemedText>
               <ThemedText style={[s.disputeSummaryGridLabel, { color: colors.textTertiary }]}>Review</ThemedText>
             </View>

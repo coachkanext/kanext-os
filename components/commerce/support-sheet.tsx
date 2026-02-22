@@ -9,9 +9,6 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { SUPPORT_TIERS, buildCommerceChain, type SupportTier, type PaymentChain } from '@/data/commerce-data';
-
-
-
 type Stage = 'browse' | 'confirm' | 'receipt';
 type Frequency = 'one-time' | 'recurring';
 
@@ -82,7 +79,7 @@ export function SupportSheet({ visible, onClose, colors }: Props) {
                 key={tier.id}
                 style={[
                   styles.tierCard,
-                  { backgroundColor: colors.card, borderColor: isActive ? '#1D9BF0' : colors.border },
+                  { backgroundColor: colors.card, borderColor: isActive ? accent : colors.border },
                   isActive && styles.tierCardActive,
                 ]}
                 onPress={() => handleSelectTier(tier)}
@@ -307,7 +304,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   freqPillActive: {
-    backgroundColor: '#1D9BF0',
+    backgroundColor: accent,
   },
   freqPillText: {
     fontSize: 13,

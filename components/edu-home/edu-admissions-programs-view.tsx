@@ -8,7 +8,9 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import { ACADEMIC_PROGRAMS, type AcademicProgram } from '@/data/mock-education-home';
 
 interface Props {
@@ -40,8 +42,8 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const DEGREE_BADGE_COLOR: Record<string, string> = {
-  'B.A.': '#1D9BF0',
-  'B.S.': '#1D9BF0',
+  'B.A.': ACCENT,
+  'B.S.': ACCENT,
   'M.A.': '#22C55E',
   'M.S.': '#22C55E',
   'M.B.A.': '#F59E0B',

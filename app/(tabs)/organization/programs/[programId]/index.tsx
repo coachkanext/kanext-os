@@ -14,6 +14,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, SymbolViewProps } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useAppContext } from '@/context/app-context';
 import {
   getProgramById,
@@ -47,8 +48,8 @@ function BackButton({ onPress, colors }: BackButtonProps) {
       ]}
       onPress={onPress}
     >
-      <IconSymbol name="chevron.left" size={20} color={colors.tint} />
-      <ThemedText style={[styles.backButtonText, { color: colors.tint }]}>
+      <IconSymbol name="chevron.left" size={20} color={accent} />
+      <ThemedText style={[styles.backButtonText, { color: accent }]}>
         Back
       </ThemedText>
     </Pressable>
@@ -166,6 +167,7 @@ function StaffRow({ staff, colors }: StaffRowProps) {
 export default function ProgramHomeScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();

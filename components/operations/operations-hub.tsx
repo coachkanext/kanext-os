@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import {
@@ -43,17 +44,17 @@ const STATUS_COLORS: Record<string, string> = {
   completed: '#22C55E',
   pending: '#F59E0B',
   overdue: '#EF4444',
-  'in-progress': '#1D9BF0',
+  'in-progress': accent,
 };
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  practice: '#1D9BF0',
+  practice: accent,
   game: '#EF4444',
   meeting: '#F59E0B',
-  travel: '#1D9BF0',
+  travel: accent,
   service: '#22C55E',
-  class: '#1D9BF0',
-  event: '#1D9BF0',
+  class: accent,
+  event: accent,
   deadline: '#EF4444',
 };
 
@@ -83,6 +84,7 @@ const TRAVEL_STATUS_COLORS: Record<string, string> = {
 export function OperationsHub() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const mode = useMode();
 
   const [activeTab, setActiveTab] = useState<TabName>('Home');

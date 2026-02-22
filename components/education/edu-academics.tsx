@@ -20,7 +20,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import {
   isPresident,
@@ -29,6 +29,8 @@ import {
   isStudent,
   isEnrolled,
 } from '@/utils/education-rbac';
+
+const ACCENT = MODE_ACCENT.education;
 
 // =============================================================================
 // TYPES
@@ -373,10 +375,10 @@ function Card({ colors, children }: { colors: typeof Colors.light; children: Rea
 function StatusDot({ status }: { status: string }) {
   const color =
     status === 'active' || status === 'accredited' || status === 'strong' || status === 'good_standing' || status === 'completed' ? '#22C55E' :
-    status === 'proposed' || status === 'pending' || status === 'stable' || status === 'info' ? '#1D9BF0' :
+    status === 'proposed' || status === 'pending' || status === 'stable' || status === 'info' ? ACCENT :
     status === 'under_review' || status === 'conditional' || status === 'watch' || status === 'academic_warning' || status === 'warning' || status === 'scheduled' || status === 'in_progress' ? '#F59E0B' :
     status === 'suspended' || status === 'expired' || status === 'probation' || status === 'critical' || status === 'escalated' || status === 'urgent' ? '#EF4444' :
-    status === 'honors' ? '#1D9BF0' : '#A1A1AA';
+    status === 'honors' ? ACCENT : '#A1A1AA';
   return <View style={[sh.statusDot, { backgroundColor: color }]} />;
 }
 
@@ -873,7 +875,7 @@ function AdvisingView({ colors, role }: { colors: typeof Colors.light; role: Edu
   });
 
   const priorityColor = (p: AdvisingQueueItem['priority']) =>
-    p === 'urgent' ? '#EF4444' : p === 'normal' ? '#F59E0B' : '#1D9BF0';
+    p === 'urgent' ? '#EF4444' : p === 'normal' ? '#F59E0B' : ACCENT;
 
   const statusLabel = (s: AdvisingQueueItem['status']) =>
     s === 'pending' ? 'Pending' : s === 'scheduled' ? 'Scheduled' : 'In Progress';
@@ -1006,7 +1008,7 @@ function RiskView({ colors, role }: { colors: typeof Colors.light; role: Educati
   });
 
   const riskScoreColor = (score: number) =>
-    score >= 80 ? '#EF4444' : score >= 60 ? '#F59E0B' : '#1D9BF0';
+    score >= 80 ? '#EF4444' : score >= 60 ? '#F59E0B' : ACCENT;
 
   const interventionTypeLabel = (type: Intervention['type']) => {
     switch (type) {
@@ -1020,10 +1022,10 @@ function RiskView({ colors, role }: { colors: typeof Colors.light; role: Educati
   };
 
   const interventionStatusColor = (status: Intervention['status']) =>
-    status === 'active' ? '#22C55E' : status === 'completed' ? '#1D9BF0' : status === 'pending' ? '#F59E0B' : '#EF4444';
+    status === 'active' ? '#22C55E' : status === 'completed' ? ACCENT : status === 'pending' ? '#F59E0B' : '#EF4444';
 
   const alertSeverityColor = (sev: EarlyAlert['severity']) =>
-    sev === 'critical' ? '#EF4444' : sev === 'warning' ? '#F59E0B' : '#1D9BF0';
+    sev === 'critical' ? '#EF4444' : sev === 'warning' ? '#F59E0B' : ACCENT;
 
   const alertTypeLabel = (type: EarlyAlert['alertType']) => {
     switch (type) {

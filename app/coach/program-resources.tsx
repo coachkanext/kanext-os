@@ -25,6 +25,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { TabFooter } from '@/components/tab-footer';
 
 // Storage keys
@@ -63,6 +64,7 @@ const DEFAULT_RESOURCES = {
 export default function ProgramResourcesScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
@@ -189,7 +191,7 @@ export default function ProgramResourcesScreen() {
             router.navigate({ pathname: '/(tabs)/index', params: { hubTab: '2' } } as any);
           }}
         >
-          <IconSymbol name="chevron.left" size={24} color={colors.tint} />
+          <IconSymbol name="chevron.left" size={24} color={accent} />
         </Pressable>
         <ThemedText style={styles.headerTitle}>Program Resources</ThemedText>
         <View style={styles.headerSpacer} />
@@ -478,7 +480,7 @@ export default function ProgramResourcesScreen() {
                 <Switch
                   value={resources.dedicatedPracticeGym}
                   onValueChange={(v) => updateResource('dedicatedPracticeGym', v)}
-                  trackColor={{ false: colors.border, true: colors.tint }}
+                  trackColor={{ false: colors.border, true: accent }}
                 />
               </View>
               <View style={styles.toggleRow}>
@@ -486,7 +488,7 @@ export default function ProgramResourcesScreen() {
                 <Switch
                   value={resources.sharedPracticeGym}
                   onValueChange={(v) => updateResource('sharedPracticeGym', v)}
-                  trackColor={{ false: colors.border, true: colors.tint }}
+                  trackColor={{ false: colors.border, true: accent }}
                 />
               </View>
               <View style={styles.toggleRow}>
@@ -494,7 +496,7 @@ export default function ProgramResourcesScreen() {
                 <Switch
                   value={resources.gymAccess247}
                   onValueChange={(v) => updateResource('gymAccess247', v)}
-                  trackColor={{ false: colors.border, true: colors.tint }}
+                  trackColor={{ false: colors.border, true: accent }}
                 />
               </View>
               <View style={styles.toggleRow}>
@@ -502,7 +504,7 @@ export default function ProgramResourcesScreen() {
                 <Switch
                   value={resources.shootingMachines}
                   onValueChange={(v) => updateResource('shootingMachines', v)}
-                  trackColor={{ false: colors.border, true: colors.tint }}
+                  trackColor={{ false: colors.border, true: accent }}
                 />
               </View>
               <View style={styles.toggleRow}>
@@ -510,7 +512,7 @@ export default function ProgramResourcesScreen() {
                 <Switch
                   value={resources.filmRoom}
                   onValueChange={(v) => updateResource('filmRoom', v)}
-                  trackColor={{ false: colors.border, true: colors.tint }}
+                  trackColor={{ false: colors.border, true: accent }}
                 />
               </View>
             </View>
@@ -525,7 +527,7 @@ export default function ProgramResourcesScreen() {
                 <Switch
                   value={resources.weightRoomAccess}
                   onValueChange={(v) => updateResource('weightRoomAccess', v)}
-                  trackColor={{ false: colors.border, true: colors.tint }}
+                  trackColor={{ false: colors.border, true: accent }}
                 />
               </View>
               <View style={styles.toggleRow}>
@@ -533,7 +535,7 @@ export default function ProgramResourcesScreen() {
                 <Switch
                   value={resources.dedicatedStrengthArea}
                   onValueChange={(v) => updateResource('dedicatedStrengthArea', v)}
-                  trackColor={{ false: colors.border, true: colors.tint }}
+                  trackColor={{ false: colors.border, true: accent }}
                 />
               </View>
               <View style={styles.toggleRow}>
@@ -541,7 +543,7 @@ export default function ProgramResourcesScreen() {
                 <Switch
                   value={resources.recoveryTools}
                   onValueChange={(v) => updateResource('recoveryTools', v)}
-                  trackColor={{ false: colors.border, true: colors.tint }}
+                  trackColor={{ false: colors.border, true: accent }}
                 />
               </View>
               <View style={styles.toggleRow}>
@@ -549,7 +551,7 @@ export default function ProgramResourcesScreen() {
                 <Switch
                   value={resources.trainingRoom}
                   onValueChange={(v) => updateResource('trainingRoom', v)}
-                  trackColor={{ false: colors.border, true: colors.tint }}
+                  trackColor={{ false: colors.border, true: accent }}
                 />
               </View>
             </View>
@@ -560,7 +562,7 @@ export default function ProgramResourcesScreen() {
         <Pressable
           style={({ pressed }) => [
             styles.saveButton,
-            { backgroundColor: pressed ? colors.tint + 'DD' : colors.tint },
+            { backgroundColor: pressed ? accent + 'DD' : accent },
           ]}
           onPress={saveAll}
         >

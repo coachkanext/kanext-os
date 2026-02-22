@@ -18,7 +18,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import {
   BizCard,
   BizSubTabBar,
@@ -63,6 +63,8 @@ import type {
   EntitySummary,
 } from '@/data/mock-biz-org-finance';
 
+
+const ACCENT = MODE_ACCENT.business;
 const BP = BusinessPalette;
 
 // =============================================================================
@@ -97,8 +99,8 @@ const URGENCY_COLORS: Record<'high' | 'medium' | 'low', string> = {
 };
 
 const IMPACT_COLORS: Record<'high' | 'medium' | 'low', string> = {
-  high: '#1D9BF0',
-  medium: '#1D9BF0',
+  high: ACCENT,
+  medium: ACCENT,
   low: '#A1A1AA',
 };
 
@@ -567,8 +569,8 @@ function LedgerDetailSheet({
 
       {/* Entity */}
       <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#1D9BF0' + '15' }]}>
-          <IconSymbol name="building.2.fill" size={14} color="#1D9BF0" />
+        <View style={[s.sheetProvenanceIcon, { backgroundColor: ACCENT + '15' }]}>
+          <IconSymbol name="building.2.fill" size={14} color={ACCENT} />
         </View>
         <View style={s.sheetProvenanceMid}>
           <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>Entity</ThemedText>
@@ -578,8 +580,8 @@ function LedgerDetailSheet({
 
       {/* Created By */}
       <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#1D9BF0' + '15' }]}>
-          <IconSymbol name="person.fill" size={14} color="#1D9BF0" />
+        <View style={[s.sheetProvenanceIcon, { backgroundColor: ACCENT + '15' }]}>
+          <IconSymbol name="person.fill" size={14} color={ACCENT} />
         </View>
         <View style={s.sheetProvenanceMid}>
           <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>Created By</ThemedText>
@@ -589,8 +591,8 @@ function LedgerDetailSheet({
 
       {/* Approved By */}
       <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#1D9BF0' + '15' }]}>
-          <IconSymbol name="checkmark.seal.fill" size={14} color="#1D9BF0" />
+        <View style={[s.sheetProvenanceIcon, { backgroundColor: ACCENT + '15' }]}>
+          <IconSymbol name="checkmark.seal.fill" size={14} color={ACCENT} />
         </View>
         <View style={s.sheetProvenanceMid}>
           <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>
@@ -637,8 +639,8 @@ function LedgerDetailSheet({
       {/* Receipt */}
       {entry.receiptId && (
         <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-          <View style={[s.sheetProvenanceIcon, { backgroundColor: '#1D9BF0' + '15' }]}>
-            <IconSymbol name="doc.fill" size={14} color="#1D9BF0" />
+          <View style={[s.sheetProvenanceIcon, { backgroundColor: ACCENT + '15' }]}>
+            <IconSymbol name="doc.fill" size={14} color={ACCENT} />
           </View>
           <View style={s.sheetProvenanceMid}>
             <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>
@@ -877,7 +879,7 @@ const SCENARIO_LABELS: Record<ForecastScenario, string> = {
 };
 
 const SCENARIO_COLORS: Record<ForecastScenario, string> = {
-  base: '#1D9BF0',
+  base: ACCENT,
   bull: '#22C55E',
   bear: '#EF4444',
 };
@@ -1086,7 +1088,7 @@ function ControlsTab({
                 <View style={s.controlBadgeRow}>
                   <StatusBadge label={isActive ? 'ACTIVE' : 'DISABLED'} color={stColor} />
                   {item.dualControl && (
-                    <StatusBadge label="DUAL CONTROL" color="#1D9BF0" />
+                    <StatusBadge label="DUAL CONTROL" color={ACCENT} />
                   )}
                 </View>
               </View>
@@ -1181,7 +1183,7 @@ function AuditTab({
               <View style={s.auditBadgeRow}>
                 <StatusBadge label={item.type.toUpperCase().replace('_', ' ')} color={typeColor} />
                 {item.receiptId && (
-                  <StatusBadge label={'RECEIPT: ' + item.receiptId} color="#1D9BF0" />
+                  <StatusBadge label={'RECEIPT: ' + item.receiptId} color={ACCENT} />
                 )}
               </View>
 

@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isSeniorPastor, isElderLevel, isStaffLevel } from '@/utils/church-rbac';
 import {
@@ -35,6 +35,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'summary', label: 'Summary' },
   { id: 'by-category', label: 'By Category' },
@@ -211,7 +213,7 @@ function SummaryTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Total Items</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#1D9BF0' }]}>{checkedOut}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: ACCENT }]}>{checkedOut}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Checked Out</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -311,7 +313,7 @@ function SummaryTab({
               <ThemedText style={[s.checkoutName, { color: colors.text }]} numberOfLines={1}>
                 {co.resourceName}
               </ThemedText>
-              <StatusBadge label="ACTIVE" color="#1D9BF0" />
+              <StatusBadge label="ACTIVE" color={ACCENT} />
             </View>
             <View style={s.checkoutMeta}>
               <ThemedText style={[s.checkoutMetaText, { color: colors.textSecondary }]}>

@@ -25,6 +25,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import type { Archetype } from '@/data/system-demand-profiles';
 import { Colors, Spacing, BorderRadius, ModeColors, Brand, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useAppContext, useMode, useMembershipId } from '@/context/app-context';
 import type { Mode, OffensiveStyle, DefensiveStyle } from '@/types';
 import { RECRUITING_BOARD } from '@/data/recruitingBoard';
@@ -214,6 +215,7 @@ function parseDNASystems(dna: string[]): { off: OffensiveStyle; def: DefensiveSt
 function SportsHome() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const membershipId = useMembershipId();
@@ -345,8 +347,8 @@ function SportsHome() {
             accessibilityRole="button"
             accessibilityLabel={`Back to Dashboard`}
           >
-            <IconSymbol name="chevron.left" size={18} color={colors.tint} />
-            <Text style={[styles.drillBackText, { color: colors.tint }]}>Dashboard</Text>
+            <IconSymbol name="chevron.left" size={18} color={accent} />
+            <Text style={[styles.drillBackText, { color: accent }]}>Dashboard</Text>
             <Text style={[styles.drillBackTitle, { color: colors.text }]}>{drillLabel}</Text>
           </Pressable>
 
@@ -399,7 +401,7 @@ function SportsHome() {
                     let heroTitle = '';
                     let heroSubtitle = '';
                     let heroBadge = '';
-                    let badgeColor = '#1D9BF0';
+                    let badgeColor = accent;
                     let badgePulse = false;
 
                     if (liveGame) {
@@ -413,7 +415,7 @@ function SportsHome() {
                       const loc = KaNeXT_NEXT_GAME.location === 'Home' ? 'Home' : 'Away';
                       heroSubtitle = `${KaNeXT_NEXT_GAME.date} · ${loc} · Conference Matchup`;
                       heroBadge = 'NEXT';
-                      badgeColor = '#1D9BF0';
+                      badgeColor = accent;
                     } else if (KaNeXT_LAST_GAME) {
                       const wl = KaNeXT_LAST_GAME.result === 'W' ? 'W' : 'L';
                       heroTitle = `Carroll vs ${KaNeXT_LAST_GAME.opponent}`;
@@ -424,7 +426,7 @@ function SportsHome() {
                       heroTitle = 'Practice Film — Defensive Rotations';
                       heroSubtitle = 'Film Room · Season Review';
                       heroBadge = 'FILM';
-                      badgeColor = '#1D9BF0';
+                      badgeColor = accent;
                     }
 
                     return (
@@ -472,8 +474,8 @@ function SportsHome() {
                     const winPct = isTBD ? 0 : Math.min(92, Math.max(28, Math.round(50 + krGap * 0.8)));
                     const winColor = winPct >= 60 ? '#22C55E' : winPct >= 45 ? '#F59E0B' : '#EF4444';
                     const gameTypeLabel = isTBD ? 'TOURNAMENT' : (nextGame?.gameType ?? 'NON-CONF');
-                    const gameTypeColor = isTBD ? '#1D9BF0' : gameTypeLabel === 'CONF' ? '#1D9BF0' : '#A1A1AA';
-                    const gameTypeBg = isTBD ? '#1D9BF022' : gameTypeLabel === 'CONF' ? '#1D9BF022' : '#52525B22';
+                    const gameTypeColor = isTBD ? accent : gameTypeLabel === 'CONF' ? accent : '#A1A1AA';
+                    const gameTypeBg = isTBD ? `${accent}22` : gameTypeLabel === 'CONF' ? `${accent}22` : '#52525B22';
                     const oppRecord = isTBD ? '' : (nextGame?.opponentRecord ?? '');
                     const oppConf = isTBD ? '' : 'Frontier Conference';
                     const dateLine = isTBD
@@ -672,8 +674,8 @@ function SportsHome() {
                             ]}
                           >
                             <View style={styles.domainCardHeader}>
-                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
-                                <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${accent}18` }]}>
+                                <IconSymbol name={card.icon} size={16} color={accent} />
                               </View>
                               <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
                               <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
@@ -715,8 +717,8 @@ function SportsHome() {
                             ]}
                           >
                             <View style={styles.domainCardHeader}>
-                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
-                                <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${accent}18` }]}>
+                                <IconSymbol name={card.icon} size={16} color={accent} />
                               </View>
                               <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
                               <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
@@ -762,8 +764,8 @@ function SportsHome() {
                             ]}
                           >
                             <View style={styles.domainCardHeader}>
-                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
-                                <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${accent}18` }]}>
+                                <IconSymbol name={card.icon} size={16} color={accent} />
                               </View>
                               <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
                               <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
@@ -808,8 +810,8 @@ function SportsHome() {
                           ]}
                         >
                           <View style={styles.domainCardHeader}>
-                            <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
-                              <IconSymbol name={card.icon} size={16} color={colors.tint} />
+                            <View style={[styles.domainCardIconWrap, { backgroundColor: `${accent}18` }]}>
+                              <IconSymbol name={card.icon} size={16} color={accent} />
                             </View>
                             <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
                             <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
@@ -925,14 +927,14 @@ function SportsHome() {
                             <View style={{ backgroundColor: '#0B0F14', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10 }}>
                               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Text style={{ fontSize: 12, fontWeight: '700', color: atsCover ? '#22C55E' : '#EF4444' }}>ATS: {atsStr}</Text>
-                                <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? '#1D9BF0' : '#1D9BF0' }}>O/U: {ouStr}</Text>
+                                <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? accent : accent }}>O/U: {ouStr}</Text>
                               </View>
                             </View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
                               <Text style={{ fontSize: 11, color: '#888' }}>Pre Proj: <Text style={{ fontWeight: '700', color: '#ccc' }}>{fmuProj}–{oppProj} ({projMargin > 0 ? '+' : ''}{projMargin})</Text></Text>
                               <Text style={{ fontSize: 11, color: '#888' }}>Actual: <Text style={{ fontWeight: '700', color: isW ? '#22C55E' : '#EF4444' }}>{fmuS}–{oppS} ({actualMargin > 0 ? '+' : ''}{actualMargin})</Text></Text>
                             </View>
-                            <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#22C55E' : Math.abs(miss) <= 7 ? '#1D9BF0' : '#EF4444' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
+                            <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#22C55E' : Math.abs(miss) <= 7 ? accent : '#EF4444' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
                             <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
                               {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'Carroll' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
                             </Text>
@@ -981,7 +983,7 @@ function SportsHome() {
                               </View>
                               <View style={{ alignItems: 'center' }}>
                                 <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>WIN%</Text>
-                                <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#22C55E' : winPct <= 40 ? '#EF4444' : '#1D9BF0' }}>{winPct}%</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#22C55E' : winPct <= 40 ? '#EF4444' : accent }}>{winPct}%</Text>
                               </View>
                               <View style={{ alignItems: 'center' }}>
                                 <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>TOTAL</Text>
@@ -989,8 +991,8 @@ function SportsHome() {
                               </View>
                               <View style={{ alignItems: 'center' }}>
                                 <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>CONF</Text>
-                                <View style={{ backgroundColor: '#1D9BF020', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
-                                  <Text style={{ fontSize: 13, fontWeight: '800', color: '#1D9BF0' }}>Sim {simConf}%</Text>
+                                <View style={{ backgroundColor: `${accent}20`, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
+                                  <Text style={{ fontSize: 13, fontWeight: '800', color: accent }}>Sim {simConf}%</Text>
                                 </View>
                               </View>
                             </View>
@@ -2016,13 +2018,13 @@ const styles = StyleSheet.create({
   },
   ngBlockAccent: {
     height: 3,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: accent,
   },
   ngBlockBody: {
     padding: 14,
   },
   ngLabel: {
-    color: '#1D9BF0',
+    color: accent,
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 1,
@@ -2124,8 +2126,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   ngActionBtnPrimary: {
-    backgroundColor: '#1D9BF0',
-    borderColor: '#1D9BF0',
+    backgroundColor: accent,
+    borderColor: accent,
   },
 
   // Commerce Row

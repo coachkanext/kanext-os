@@ -23,7 +23,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // RBAC
@@ -39,6 +39,8 @@ import type { BusinessRoleLens, MetricVisibility } from '@/utils/business-rbac';
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.business;
 interface Props {
   colors: typeof Colors.light;
   role?: BusinessRoleLens;
@@ -248,10 +250,10 @@ const ALERT_SEVERITY_COLOR: Record<AlertSeverity, string> = {
   approval: '#F59E0B',
   due_24h: '#F59E0B',
   rails_exception: '#EF4444',
-  compliance: '#1D9BF0',
-  investor_risk: '#1D9BF0',
+  compliance: ACCENT,
+  investor_risk: ACCENT,
   partner_risk: '#F59E0B',
-  people_risk: '#1D9BF0',
+  people_risk: ACCENT,
 };
 
 // --- Block 4: Quick Actions ---

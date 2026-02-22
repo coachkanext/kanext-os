@@ -17,7 +17,8 @@ import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Spacing, BorderRadius, Colors } from '@/constants/theme';
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
 
@@ -155,6 +156,7 @@ export function TeamSheet({
 }: TeamSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const { state } = useAppContext();
 
   const effectiveMembership = membershipId ?? state.activeContext.membership_id;
@@ -405,7 +407,7 @@ export function TeamSheet({
                 p.meta?.status === 'available' ? '#22C55E' :
                 p.meta?.status === 'injured' ? '#EF4444' :
                 p.meta?.status === 'out' ? '#EF4444' :
-                p.meta?.status === 'redshirt' ? '#1D9BF0' : '#A1A1AA';
+                p.meta?.status === 'redshirt' ? accent : '#A1A1AA';
               return (
                 <View key={p.jersey} style={[styles.rosterRow, { borderTopColor: colors.divider }]}>
                   <Text style={[styles.rosterCol, { color: colors.textSecondary }]}>{p.jersey}</Text>

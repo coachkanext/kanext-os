@@ -13,6 +13,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import {
   getPlayerProfile,
   getPositionName,
@@ -40,8 +41,8 @@ function BackButton({ onPress, colors }: BackButtonProps) {
       style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.7 }]}
       onPress={onPress}
     >
-      <IconSymbol name="chevron.left" size={20} color={colors.tint} />
-      <ThemedText style={[styles.backButtonText, { color: colors.tint }]}>
+      <IconSymbol name="chevron.left" size={20} color={accent} />
+      <ThemedText style={[styles.backButtonText, { color: accent }]}>
         Roster
       </ThemedText>
     </Pressable>
@@ -226,6 +227,7 @@ function SeasonRow({
 export default function PlayerProfileScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { programId, playerId } = useLocalSearchParams<{

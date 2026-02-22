@@ -26,7 +26,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
 // RBAC
 import type { ChurchRoleLens } from '@/utils/church-rbac';
@@ -34,6 +34,8 @@ import {
   isElderLevel,
   isStaffLevel,
 } from '@/utils/church-rbac';
+
+const ACCENT = MODE_ACCENT.church;
 
 // =============================================================================
 // TYPES
@@ -189,7 +191,7 @@ const SET_STATUS_LABEL: Record<SetStatus, string> = {
 
 const SET_STATUS_COLOR: Record<SetStatus, string> = {
   draft: '#F59E0B',
-  ready: '#1D9BF0',
+  ready: ACCENT,
   published: '#22C55E',
 };
 
@@ -360,13 +362,13 @@ const WORSHIP_TEAM_MEMBERS: WorshipTeamMember[] = [
 const TEAM_STATUS_COLOR: Record<TeamStatus, string> = {
   active: '#22C55E',
   'on-break': '#F59E0B',
-  training: '#1D9BF0',
+  training: ACCENT,
 };
 
 const SKILL_LEVEL_COLOR: Record<SkillLevel, string> = {
   beginner: '#A1A1AA',
-  intermediate: '#1D9BF0',
-  advanced: '#1D9BF0',
+  intermediate: ACCENT,
+  advanced: ACCENT,
   expert: '#22C55E',
 };
 
@@ -460,10 +462,10 @@ const SONG_LIBRARY: LibrarySong[] = [
 ];
 
 const CATEGORY_COLOR: Record<SongCategory, string> = {
-  'Praise & Worship': '#1D9BF0',
+  'Praise & Worship': ACCENT,
   Hymns: '#F59E0B',
-  Contemporary: '#1D9BF0',
-  Gospel: '#1D9BF0',
+  Contemporary: ACCENT,
+  Gospel: ACCENT,
   Special: '#22C55E',
 };
 
@@ -544,7 +546,7 @@ function SetsView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
           <SectionHeader title="WORSHIP OVERVIEW" colors={colors} />
           <Card colors={colors}>
             <View style={s.kpiRow}>
-              <KPIBox label="Upcoming Sets" value={WORSHIP_SETS.length} colors={colors} accent="#1D9BF0" />
+              <KPIBox label="Upcoming Sets" value={WORSHIP_SETS.length} colors={colors} accent={ACCENT} />
               <KPIBox label="Total Songs" value={totalSongs} colors={colors} />
               <KPIBox label="Avg Duration" value={`${avgDurationMin}m`} colors={colors} />
               <KPIBox
@@ -671,7 +673,7 @@ function SetsView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
               <Pressable
                 style={({ pressed }) => [
                   s.approveButton,
-                  { backgroundColor: ws.status === 'draft' ? '#1D9BF0' : '#22C55E', opacity: pressed ? 0.8 : 1 },
+                  { backgroundColor: ws.status === 'draft' ? ACCENT : '#22C55E', opacity: pressed ? 0.8 : 1 },
                 ]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
               >
@@ -722,7 +724,7 @@ function RehearsalsView({ colors, role }: { colors: typeof Colors.light; role: C
         <SectionHeader title="REHEARSAL OVERVIEW" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Upcoming" value={totalRehearsals} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Upcoming" value={totalRehearsals} colors={colors} accent={ACCENT} />
             <KPIBox label="Confirmed" value={totalConfirmed} colors={colors} accent="#22C55E" />
             <KPIBox label="Pending" value={totalAttendees - totalConfirmed - REHEARSALS.reduce((sum, r) => sum + r.attendees.filter((a) => a.rsvp === 'declined').length, 0)} colors={colors} accent="#F59E0B" />
             <KPIBox label="Avg Size" value={Math.round(totalAttendees / totalRehearsals)} colors={colors} />
@@ -866,10 +868,10 @@ function TeamView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
         <SectionHeader title="TEAM OVERVIEW" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Total" value={WORSHIP_TEAM_MEMBERS.length} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Total" value={WORSHIP_TEAM_MEMBERS.length} colors={colors} accent={ACCENT} />
             <KPIBox label="Active" value={activeCount} colors={colors} accent="#22C55E" />
             <KPIBox label="On Break" value={onBreakCount} colors={colors} accent="#F59E0B" />
-            <KPIBox label="Training" value={trainingCount} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Training" value={trainingCount} colors={colors} accent={ACCENT} />
           </View>
         </Card>
       </View>
@@ -1017,9 +1019,9 @@ function LibraryView({ colors, role }: { colors: typeof Colors.light; role: Chur
         <SectionHeader title="LIBRARY OVERVIEW" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Total Songs" value={totalSongs} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Total Songs" value={totalSongs} colors={colors} accent={ACCENT} />
             <KPIBox label="Categories" value={CATEGORIES_ORDERED.length} colors={colors} />
-            <KPIBox label="Total Plays" value={totalPlays} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Total Plays" value={totalPlays} colors={colors} accent={ACCENT} />
             <KPIBox label="Avg Rating" value={avgRating} colors={colors} accent="#F59E0B" />
           </View>
         </Card>
@@ -1094,8 +1096,8 @@ function LibraryView({ colors, role }: { colors: typeof Colors.light; role: Chur
                     {(song.hasCharts || song.hasLyrics || song.hasStems) && (
                       <View style={s.libraryAssetRow}>
                         {song.hasCharts && (
-                          <View style={[s.libraryAssetBadge, { backgroundColor: '#1D9BF020' }]}>
-                            <ThemedText style={[s.libraryAssetText, { color: '#1D9BF0' }]}>Charts</ThemedText>
+                          <View style={[s.libraryAssetBadge, { backgroundColor: `${ACCENT}20` }]}>
+                            <ThemedText style={[s.libraryAssetText, { color: ACCENT }]}>Charts</ThemedText>
                           </View>
                         )}
                         {song.hasLyrics && (
@@ -1104,8 +1106,8 @@ function LibraryView({ colors, role }: { colors: typeof Colors.light; role: Chur
                           </View>
                         )}
                         {song.hasStems && (
-                          <View style={[s.libraryAssetBadge, { backgroundColor: '#1D9BF020' }]}>
-                            <ThemedText style={[s.libraryAssetText, { color: '#1D9BF0' }]}>Stems</ThemedText>
+                          <View style={[s.libraryAssetBadge, { backgroundColor: `${ACCENT}20` }]}>
+                            <ThemedText style={[s.libraryAssetText, { color: ACCENT }]}>Stems</ThemedText>
                           </View>
                         )}
                       </View>

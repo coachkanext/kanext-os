@@ -22,7 +22,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import {
   BizCard,
   BizSubTabBar,
@@ -91,6 +91,8 @@ import type {
   ComplianceActivity,
 } from '@/data/mock-biz-org-compliance';
 
+
+const ACCENT = MODE_ACCENT.business;
 const BP = BusinessPalette;
 
 // =============================================================================
@@ -652,8 +654,8 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
           </View>
 
           <View style={[st.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={[st.statIconCircle, { backgroundColor: '#1D9BF0' + '15' }]}>
-              <IconSymbol name="checkmark.shield.fill" size={16} color="#1D9BF0" />
+            <View style={[st.statIconCircle, { backgroundColor: ACCENT + '15' }]}>
+              <IconSymbol name="checkmark.shield.fill" size={16} color={ACCENT} />
             </View>
             <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>
               Control Eff.
@@ -688,8 +690,8 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
           </View>
 
           <View style={[st.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={[st.statIconCircle, { backgroundColor: '#1D9BF0' + '15' }]}>
-              <IconSymbol name="doc.badge.gearshape" size={16} color="#1D9BF0" />
+            <View style={[st.statIconCircle, { backgroundColor: ACCENT + '15' }]}>
+              <IconSymbol name="doc.badge.gearshape" size={16} color={ACCENT} />
             </View>
             <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>
               Active Exceptions
@@ -2181,13 +2183,13 @@ function getActivityColor(type: ComplianceActivity['type']): string {
     case 'risk':
       return '#F59E0B';
     case 'control':
-      return '#1D9BF0';
+      return ACCENT;
     case 'audit':
-      return '#1D9BF0';
+      return ACCENT;
     case 'evidence':
       return '#22C55E';
     case 'policy':
-      return '#1D9BF0';
+      return ACCENT;
     case 'exception':
       return '#F59E0B';
     default:

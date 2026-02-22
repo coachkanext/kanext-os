@@ -22,7 +22,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemedText } from '@/components/themed-text';
 import { TabFooter } from '@/components/tab-footer';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useAppContext } from '@/context/app-context';
 import { PLAYER_POOL, type PoolLevel, type PoolPlayer } from '@/data/playerPool';
 import { getPlayerRatings, getPoolPlayerSubclusters, WEEKLY_UPDATE_OPTIONS } from '@/data/playerRatings';
@@ -112,7 +112,7 @@ const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
 const GRAY = '#A1A1AA';
 const DIVIDER = '#0B0F14';
-const ACCENT = '#1D9BF0';
+const ACCENT = MODE_ACCENT.sports;
 
 const PROGRAM_ANCHOR = getDivisionAnchor(INSTITUTION.division);
 const PROGRAM_TIERS = getKRTiersForDivision(PROGRAM_ANCHOR);
@@ -915,8 +915,8 @@ export function PlayerPoolContent() {
                   {[
                     { icon: 'doc.text.fill' as const, label: 'Offer', color: '#22C55E', key: 'offer' as const },
                     { icon: 'dollarsign.circle.fill' as const, label: 'NIL', color: '#F59E0B', key: 'nil' as const },
-                    { icon: 'mappin.and.ellipse' as const, label: 'Visit', color: '#1D9BF0', key: 'visit' as const },
-                    { icon: 'note.text' as const, label: 'Log', color: '#1D9BF0', key: 'log' as const },
+                    { icon: 'mappin.and.ellipse' as const, label: 'Visit', color: ACCENT, key: 'visit' as const },
+                    { icon: 'note.text' as const, label: 'Log', color: ACCENT, key: 'log' as const },
                   ].map((action) => (
                     <Pressable
                       key={action.label}
@@ -1000,8 +1000,8 @@ export function PlayerPoolContent() {
                     <Text style={styles.qaSection}>RELATIONSHIPS</Text>
                     <View style={{ gap: 6 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <View style={[styles.qaRelBadge, { backgroundColor: '#1D9BF025' }]}>
-                          <Text style={{ fontSize: 9, fontWeight: '700', color: '#1D9BF0' }}>PRIMARY</Text>
+                        <View style={[styles.qaRelBadge, { backgroundColor: `${ACCENT}25` }]}>
+                          <Text style={{ fontSize: 9, fontWeight: '700', color: ACCENT }}>PRIMARY</Text>
                         </View>
                         <Text style={styles.qaDetailRow}>{entry.relationships.primaryDecisionMaker.name} ({entry.relationships.primaryDecisionMaker.role})</Text>
                       </View>

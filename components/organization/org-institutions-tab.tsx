@@ -19,7 +19,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import {
   INSTITUTION_SCOPE_CHIPS,
   INSTITUTION_HUB_TABS,
@@ -74,10 +75,10 @@ const STATUS_OPTIONS: InstitutionStatus[] = ['active', 'partner', 'prospect', 'a
 const TYPE_OPTIONS: InstitutionType[] = ['university', 'college', 'academy', 'other'];
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  academic: '#1D9BF0',
+  academic: accent,
   admissions: '#22C55E',
   athletics: '#F59E0B',
-  cultural: '#1D9BF0',
+  cultural: accent,
   administrative: '#A1A1AA',
 };
 
@@ -97,12 +98,12 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  added: '#1D9BF0',
-  department: '#1D9BF0',
-  room: '#1D9BF0',
+  added: accent,
+  department: accent,
+  room: accent,
   updated: '#F59E0B',
-  compliance: '#1D9BF0',
-  partnership: '#1D9BF0',
+  compliance: accent,
+  partnership: accent,
   library: '#A1A1AA',
   enrollment: '#22C55E',
   prospect: '#F59E0B',

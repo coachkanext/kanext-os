@@ -20,7 +20,9 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import {
   isPresident,
@@ -116,7 +118,7 @@ const CAMPUS_ALERTS: { id: string; message: string; severity: 'info' | 'warning'
   { id: 'alert-3', message: 'Tornado drill scheduled for Feb 26 at 10:00 AM', severity: 'info', timestamp: '1d ago' },
 ];
 
-const ALERT_SEVERITY_COLOR: Record<string, string> = { info: '#1D9BF0', warning: '#F59E0B', urgent: '#EF4444' };
+const ALERT_SEVERITY_COLOR: Record<string, string> = { info: ACCENT, warning: '#F59E0B', urgent: '#EF4444' };
 
 // --- Campus Services ---
 
@@ -313,7 +315,7 @@ const BUILDING_TYPE_LABEL: Record<BuildingType, string> = {
   parking: 'Parking',
 };
 
-const BUILDING_STATUS_COLOR: Record<string, string> = { operational: '#22C55E', renovation: '#F59E0B', construction: '#1D9BF0', closed: '#EF4444' };
+const BUILDING_STATUS_COLOR: Record<string, string> = { operational: '#22C55E', renovation: '#F59E0B', construction: ACCENT, closed: '#EF4444' };
 
 const WORK_ORDERS: { id: string; title: string; building: string; priority: 'low' | 'medium' | 'high' | 'critical'; status: 'open' | 'in_progress' | 'pending_parts' | 'completed'; submittedBy: string; submittedDate: string; assignedTo?: string; category: string; estimatedCompletion?: string }[] = [
   { id: 'wo-1', title: 'HVAC unit failure \u2014 Room 302', building: 'Founders Library', priority: 'high', status: 'in_progress', submittedBy: 'Dr. Williams', submittedDate: 'Feb 14', assignedTo: 'Mike Torres', category: 'HVAC', estimatedCompletion: 'Feb 19' },
@@ -326,7 +328,7 @@ const WORK_ORDERS: { id: string; title: string; building: string; priority: 'low
 
 const WORK_ORDER_PRIORITY_COLOR: Record<string, string> = { low: '#A1A1AA', medium: '#F59E0B', high: '#F59E0B', critical: '#EF4444' };
 const WORK_ORDER_STATUS_LABEL: Record<string, string> = { open: 'Open', in_progress: 'In Progress', pending_parts: 'Pending Parts', completed: 'Completed' };
-const WORK_ORDER_STATUS_COLOR: Record<string, string> = { open: '#1D9BF0', in_progress: '#F59E0B', pending_parts: '#1D9BF0', completed: '#22C55E' };
+const WORK_ORDER_STATUS_COLOR: Record<string, string> = { open: ACCENT, in_progress: '#F59E0B', pending_parts: ACCENT, completed: '#22C55E' };
 
 // --- Renovation Tracker ---
 
@@ -337,7 +339,7 @@ const RENOVATIONS = [
 ];
 
 const RENOVATION_STATUS_COLOR: Record<string, string> = {
-  on_track: '#22C55E', delayed: '#EF4444', ahead: '#1D9BF0', completed: '#22C55E',
+  on_track: '#22C55E', delayed: '#EF4444', ahead: ACCENT, completed: '#22C55E',
 };
 
 const SAFETY_STATS = {
@@ -363,7 +365,7 @@ const SAFETY_INCIDENTS: { id: string; type: string; date: string; location: stri
 ];
 
 const INCIDENT_SEVERITY_COLOR: Record<string, string> = { minor: '#F59E0B', moderate: '#F59E0B', major: '#EF4444' };
-const INCIDENT_STATUS_COLOR: Record<string, string> = { resolved: '#22C55E', under_investigation: '#F59E0B', open: '#1D9BF0' };
+const INCIDENT_STATUS_COLOR: Record<string, string> = { resolved: '#22C55E', under_investigation: '#F59E0B', open: ACCENT };
 
 const EMERGENCY_CONTACTS: { id: string; name: string; phone: string; icon: string; available: string }[] = [
   { id: 'em-1', name: 'Campus Police', phone: '(404) 555-9111', icon: 'shield.fill', available: '24/7' },
@@ -403,7 +405,7 @@ const INTRAMURAL_SPORTS: { id: string; name: string; season: string; teams: numb
   { id: 'im-4', name: 'Soccer (Outdoor)', season: 'Spring', teams: 0, participants: 0, registrationDeadline: 'Mar 15', status: 'upcoming' },
 ];
 
-const INTRAMURAL_STATUS_COLOR: Record<string, string> = { active: '#22C55E', registration_open: '#1D9BF0', upcoming: '#1D9BF0', completed: '#A1A1AA' };
+const INTRAMURAL_STATUS_COLOR: Record<string, string> = { active: '#22C55E', registration_open: ACCENT, upcoming: ACCENT, completed: '#A1A1AA' };
 
 const GREEK_ORGS: { id: string; name: string; letters: string; council: string; type: 'fraternity' | 'sorority'; members: number; founded: string; gpa: number; serviceHours: number }[] = [
   { id: 'gk-1', name: 'Alpha Phi Alpha', letters: '\u0391\u03A6\u0391', council: 'NPHC', type: 'fraternity', members: 32, founded: '1906', gpa: 3.24, serviceHours: 480 },

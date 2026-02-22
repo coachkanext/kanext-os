@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { Mode } from '@/types';
 import {
@@ -95,6 +96,7 @@ function ShelfRow<T>({
 }) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   if (data.length === 0) return null;
 
@@ -174,7 +176,7 @@ function GameCard({ game }: { game: VideoGame }) {
 function ClipCard({ clip }: { clip: VideoClip }) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const typeColor = clip.type === 'highlight' ? '#22C55E' : clip.type === 'breakdown' ? '#1D9BF0' : clip.type === 'scout' ? '#F59E0B' : '#1D9BF0';
+  const typeColor = clip.type === 'highlight' ? '#22C55E' : clip.type === 'breakdown' ? accent : clip.type === 'scout' ? '#F59E0B' : accent;
   return (
     <Pressable
       style={[cardStyles.clipCard, { backgroundColor: colors.card, borderColor: colors.border }]}

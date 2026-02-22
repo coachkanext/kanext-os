@@ -9,7 +9,7 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
@@ -35,6 +35,8 @@ import {
   isMinistryLevel,
 } from '@/utils/church-rbac';
 
+const ACCENT = MODE_ACCENT.church;
+
 // =============================================================================
 // PROPS
 // =============================================================================
@@ -52,19 +54,19 @@ interface UniversalMinistrySheetProps {
 
 const MINISTRY_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
-  seasonal: '#1D9BF0',
+  seasonal: ACCENT,
   paused: '#A1A1AA',
 };
 
 const BUDGET_STATUS_COLORS: Record<string, string> = {
   on_track: '#22C55E',
   over_budget: '#EF4444',
-  under_budget: '#1D9BF0',
+  under_budget: ACCENT,
 };
 
 const CONTENT_TYPE_COLORS: Record<string, string> = {
-  lesson_plan: '#1D9BF0',
-  announcement: '#1D9BF0',
+  lesson_plan: ACCENT,
+  announcement: ACCENT,
   media_asset: '#F59E0B',
 };
 
@@ -256,8 +258,8 @@ function MinistryHeader({
 
       {/* Pills: campus + status */}
       <View style={styles.pillRow}>
-        <View style={[styles.campusPill, { backgroundColor: '#1D9BF01A' }]}>
-          <ThemedText style={[styles.campusPillText, { color: '#1D9BF0' }]}>
+        <View style={[styles.campusPill, { backgroundColor: `${ACCENT}1A` }]}>
+          <ThemedText style={[styles.campusPillText, { color: ACCENT }]}>
             {campusLabel}
           </ThemedText>
         </View>
@@ -357,7 +359,7 @@ function OverviewTab({
             key={idx}
             style={[styles.goalRow, { borderBottomColor: colors.border }]}
           >
-            <View style={[styles.goalBullet, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[styles.goalBullet, { backgroundColor: ACCENT }]} />
             <ThemedText style={[styles.bodyText, { color: colors.text, flex: 1 }]}>
               {goal}
             </ThemedText>
@@ -705,13 +707,13 @@ function OperationsTab({
               <View
                 style={[
                   styles.opsTaskBadge,
-                  { backgroundColor: task.status === 'open' ? '#F59E0B22' : '#1D9BF022' },
+                  { backgroundColor: task.status === 'open' ? '#F59E0B22' : `${ACCENT}22` },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.opsTaskBadgeText,
-                    { color: task.status === 'open' ? '#F59E0B' : '#1D9BF0' },
+                    { color: task.status === 'open' ? '#F59E0B' : ACCENT },
                   ]}
                 >
                   {task.status.replace('_', ' ').toUpperCase()}
@@ -889,7 +891,7 @@ function BudgetTab({
             label="Allocated"
             value={`$${(totalAllocated / 1000).toFixed(1)}K`}
             subtitle="Annual budget"
-            color="#1D9BF0"
+            color={ACCENT}
             colors={colors}
           />
           <FinanceCard
@@ -992,7 +994,7 @@ function ContentMediaTab({
               key={asset.id}
               style={[styles.listRow, { borderBottomColor: colors.border }]}
             >
-              <IconSymbol name="doc.text.fill" size={18} color="#1D9BF0" />
+              <IconSymbol name="doc.text.fill" size={18} color={ACCENT} />
               <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                 <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                   {asset.title}
@@ -1015,7 +1017,7 @@ function ContentMediaTab({
               key={asset.id}
               style={[styles.listRow, { borderBottomColor: colors.border }]}
             >
-              <IconSymbol name="megaphone.fill" size={18} color="#1D9BF0" />
+              <IconSymbol name="megaphone.fill" size={18} color={ACCENT} />
               <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                 <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                   {asset.title}

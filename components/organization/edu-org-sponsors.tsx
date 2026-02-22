@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isPresident, isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
 import {
@@ -36,6 +36,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -97,11 +99,11 @@ function OverviewTab({
 
   const kpis = [
     { id: 'raised', label: 'Total Raised', value: formatCurrency(stats.totalRaised), icon: 'dollarsign.circle.fill', color: '#22C55E' },
-    { id: 'goal', label: 'Goal Amount', value: formatCurrency(stats.goalAmount), icon: 'flag.fill', color: '#1D9BF0' },
-    { id: 'donors', label: 'Total Donors', value: `${stats.donorCount}`, icon: 'person.2.fill', color: '#1D9BF0' },
+    { id: 'goal', label: 'Goal Amount', value: formatCurrency(stats.goalAmount), icon: 'flag.fill', color: ACCENT },
+    { id: 'donors', label: 'Total Donors', value: `${stats.donorCount}`, icon: 'person.2.fill', color: ACCENT },
     { id: 'new', label: 'New Donors', value: `${stats.newDonors}`, icon: 'person.badge.plus', color: '#F59E0B' },
-    { id: 'endowment', label: 'Endowment', value: formatCurrency(stats.endowmentTotal), icon: 'building.columns.fill', color: '#1D9BF0' },
-    { id: 'annual', label: 'Annual Fund', value: formatCurrency(stats.annualFundTotal), icon: 'chart.bar.fill', color: '#1D9BF0' },
+    { id: 'endowment', label: 'Endowment', value: formatCurrency(stats.endowmentTotal), icon: 'building.columns.fill', color: ACCENT },
+    { id: 'annual', label: 'Annual Fund', value: formatCurrency(stats.annualFundTotal), icon: 'chart.bar.fill', color: ACCENT },
   ];
 
   return (
@@ -166,7 +168,7 @@ function OverviewTab({
             </ThemedText>
           </View>
           <View style={s.retentionSummaryItem}>
-            <ThemedText style={[s.retentionSummaryValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[s.retentionSummaryValue, { color: ACCENT }]}>
               {stats.donorCount}
             </ThemedText>
             <ThemedText style={[s.retentionSummaryLabel, { color: colors.textTertiary }]}>
@@ -482,13 +484,13 @@ function RetentionTab({
     { tier: 'Platinum', rate: retentionMetrics.platinumRetention, color: '#A1A1AA' },
     { tier: 'Gold', rate: retentionMetrics.goldRetention, color: '#F59E0B' },
     { tier: 'Silver', rate: retentionMetrics.silverRetention, color: '#A1A1AA' },
-    { tier: 'Bronze', rate: retentionMetrics.bronzeRetention, color: '#1D9BF0' },
+    { tier: 'Bronze', rate: retentionMetrics.bronzeRetention, color: ACCENT },
   ];
 
   const channelRetention = [
     { channel: 'Alumni', rate: retentionMetrics.alumniRetention, color: '#F59E0B' },
-    { channel: 'Corporate', rate: retentionMetrics.corporateRetention, color: '#1D9BF0' },
-    { channel: 'First-Time', rate: retentionMetrics.firstTimeRetention, color: '#1D9BF0' },
+    { channel: 'Corporate', rate: retentionMetrics.corporateRetention, color: ACCENT },
+    { channel: 'First-Time', rate: retentionMetrics.firstTimeRetention, color: ACCENT },
   ];
 
   return (
@@ -522,7 +524,7 @@ function RetentionTab({
             </ThemedText>
           </View>
           <View style={s.overallRetentionItem}>
-            <ThemedText style={[s.overallRetentionValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[s.overallRetentionValue, { color: ACCENT }]}>
               +{retentionMetrics.avgGiftGrowth}%
             </ThemedText>
             <ThemedText style={[s.overallRetentionLabel, { color: colors.textTertiary }]}>

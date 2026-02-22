@@ -14,7 +14,7 @@ import {
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // RBAC utilities
 import {
@@ -64,6 +64,8 @@ import type { CEONowItem, HardGate } from '@/data/mock-ceo-competition';
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
 }
@@ -85,12 +87,12 @@ const SEVERITY_ICON: Record<string, string> = {
 const SEVERITY_BADGE_COLOR: Record<string, string> = {
   urgent: '#EF4444',
   important: '#F59E0B',
-  info: '#1D9BF0',
+  info: ACCENT,
 };
 
 const AUDIENCE_COLOR: Record<string, string> = {
-  staff: '#1D9BF0',
-  teams: '#1D9BF0',
+  staff: ACCENT,
+  teams: ACCENT,
   public: '#22C55E',
 };
 
@@ -110,7 +112,7 @@ const DELIVERABLE_STATUS_COLOR: Record<string, string> = {
   on_track: '#22C55E',
   at_risk: '#F59E0B',
   overdue: '#EF4444',
-  delivered: '#1D9BF0',
+  delivered: ACCENT,
 };
 
 // =============================================================================
@@ -835,9 +837,9 @@ function AuditTrailModule({ colors }: { colors: typeof Colors.light }) {
     switch (action) {
       case 'Flagged': return '#EF4444';
       case 'Approved': return '#22C55E';
-      case 'Submitted': return '#1D9BF0';
+      case 'Submitted': return ACCENT;
       case 'Pending': return '#F59E0B';
-      case 'Initiated': return '#1D9BF0';
+      case 'Initiated': return ACCENT;
       default: return '#A1A1AA';
     }
   };

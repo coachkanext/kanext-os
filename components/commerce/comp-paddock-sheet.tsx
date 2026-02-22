@@ -10,8 +10,10 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { PADDOCK_TIERS, buildCompCommerceChain, type CourtsideTier } from '@/data/comp-commerce-data';
 import type { PaymentChain } from '@/data/commerce-data';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
+
+const ACCENT = MODE_ACCENT.competition;
 type Stage = 'browse' | 'confirm' | 'receipt';
 type PricingMode = 'per_race' | 'season';
 
@@ -91,7 +93,7 @@ export function CompPaddockSheet({ visible, onClose, colors }: Props) {
             >
               <Text style={[styles.tierLabel, { color: colors.text }]}>{tier.label}</Text>
               <Text style={[styles.tierDescription, { color: colors.textSecondary }]}>{tier.description}</Text>
-              <Text style={[styles.tierPrice, { color: '#1D9BF0' }]}>
+              <Text style={[styles.tierPrice, { color: ACCENT }]}>
                 ${getPrice(tier).toLocaleString()}
                 {pricingMode === 'per_race' ? ' / race' : ' / season'}
               </Text>
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   togglePill: { flex: 1, paddingVertical: 8, borderRadius: 20, alignItems: 'center' },
-  togglePillActive: { backgroundColor: '#1D9BF0' },
+  togglePillActive: { backgroundColor: ACCENT },
   toggleText: { fontSize: 13, fontWeight: '700', color: '#A1A1AA', letterSpacing: 0.5 },
   toggleTextActive: { color: '#fff' },
 

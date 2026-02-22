@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { Mode } from '@/types';
 import {
@@ -122,7 +123,7 @@ function GameRow({ game, colors }: { game: VideoGame; colors: typeof Colors.ligh
 }
 
 function ClipRow({ clip, colors }: { clip: VideoClip; colors: typeof Colors.light }) {
-  const typeColor = clip.type === 'highlight' ? '#22C55E' : clip.type === 'breakdown' ? '#1D9BF0' : clip.type === 'scout' ? '#F59E0B' : '#1D9BF0';
+  const typeColor = clip.type === 'highlight' ? '#22C55E' : clip.type === 'breakdown' ? accent : clip.type === 'scout' ? '#F59E0B' : accent;
   return (
     <Pressable
       style={({ pressed }) => [
@@ -234,6 +235,7 @@ interface Props {
 export function ModeFilmRoomV2({ mode }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const config = TAB_CONFIG[mode];
   const [activeTab, setActiveTab] = useState<TabKey>(config.tabs[0]?.key ?? 'primary');
 

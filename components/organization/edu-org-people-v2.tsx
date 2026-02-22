@@ -13,7 +13,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isDeanLevel, isFacultyLevel, isStudent, isEnrolled, isPresident } from '@/utils/education-rbac';
 import {
@@ -53,6 +53,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'directory', label: 'Directory' },
@@ -237,12 +239,12 @@ function OverviewTab({
   const isLeaderLevel = isDeanLevel(role);
 
   const tileData = [
-    { label: 'Total People', value: String(tiles.totalPeople), icon: 'person.3.fill', color: '#1D9BF0' },
+    { label: 'Total People', value: String(tiles.totalPeople), icon: 'person.3.fill', color: ACCENT },
     { label: 'Active', value: String(tiles.activePeople), icon: 'checkmark.circle.fill', color: '#22C55E' },
     { label: 'Vacant Critical Seats', value: String(tiles.vacantCriticalSeats), icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
     { label: 'Coverage Score', value: `${tiles.coverageScore}%`, icon: 'chart.bar.fill', color: accentColor },
     { label: 'Pending Invites', value: String(tiles.pendingInvites), icon: 'envelope.fill', color: '#F59E0B' },
-    { label: 'Risk Flags', value: String(tiles.riskFlags), icon: 'exclamationmark.shield.fill', color: '#1D9BF0' },
+    { label: 'Risk Flags', value: String(tiles.riskFlags), icon: 'exclamationmark.shield.fill', color: ACCENT },
   ];
 
   // Top 5 coverage gaps
@@ -851,10 +853,10 @@ function PermissionsTab({
                 {/* Write Scopes */}
                 {pkg.writeScopes.length > 0 && (
                   <View style={s.scopeSection}>
-                    <ThemedText style={[s.scopeTitle, { color: '#1D9BF0' }]}>Write</ThemedText>
+                    <ThemedText style={[s.scopeTitle, { color: ACCENT }]}>Write</ThemedText>
                     {pkg.writeScopes.map((scope, i) => (
                       <View key={`w-${i}`} style={s.scopeItem}>
-                        <View style={[s.scopeDot, { backgroundColor: '#1D9BF0' }]} />
+                        <View style={[s.scopeDot, { backgroundColor: ACCENT }]} />
                         <ThemedText style={[s.scopeText, { color: colors.textSecondary }]}>{scope}</ThemedText>
                       </View>
                     ))}
@@ -877,10 +879,10 @@ function PermissionsTab({
                 {/* Release Scopes */}
                 {pkg.releaseScopes.length > 0 && (
                   <View style={s.scopeSection}>
-                    <ThemedText style={[s.scopeTitle, { color: '#1D9BF0' }]}>Release</ThemedText>
+                    <ThemedText style={[s.scopeTitle, { color: ACCENT }]}>Release</ThemedText>
                     {pkg.releaseScopes.map((scope, i) => (
                       <View key={`rel-${i}`} style={s.scopeItem}>
-                        <View style={[s.scopeDot, { backgroundColor: '#1D9BF0' }]} />
+                        <View style={[s.scopeDot, { backgroundColor: ACCENT }]} />
                         <ThemedText style={[s.scopeText, { color: colors.textSecondary }]}>{scope}</ThemedText>
                       </View>
                     ))}
@@ -1275,8 +1277,8 @@ function ReportsTab({
 }) {
   const reports = [
     { id: 'coverage', title: 'Coverage Report', description: 'Full seat coverage analysis across all domains and institutions.', icon: 'chart.bar.fill', color: '#22C55E' },
-    { id: 'permission-audit', title: 'Permission Audit', description: 'Review of all permission packages, access tiers, and sensitive field exposure.', icon: 'lock.shield.fill', color: '#1D9BF0' },
-    { id: 'seat-utilization', title: 'Seat Utilization', description: 'Filled vs. vacant seats, dual-hat analysis, and succession readiness.', icon: 'person.crop.rectangle.stack.fill', color: '#1D9BF0' },
+    { id: 'permission-audit', title: 'Permission Audit', description: 'Review of all permission packages, access tiers, and sensitive field exposure.', icon: 'lock.shield.fill', color: ACCENT },
+    { id: 'seat-utilization', title: 'Seat Utilization', description: 'Filled vs. vacant seats, dual-hat analysis, and succession readiness.', icon: 'person.crop.rectangle.stack.fill', color: ACCENT },
     { id: 'risk-assessment', title: 'Risk Assessment', description: 'Over-permissioned users, single points of failure, and coverage gaps.', icon: 'exclamationmark.shield.fill', color: '#EF4444' },
   ];
 

@@ -7,7 +7,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { PersonCardData } from '@/utils/global-entity-sheets';
 
@@ -21,7 +22,7 @@ function getStatusColor(status: string): string {
   switch (status.toLowerCase()) {
     case 'active': return '#22C55E';
     case 'inactive': return '#EF4444';
-    case 'pending': return '#1D9BF0';
+    case 'pending': return accent;
     default: return '#A1A1AA';
   }
 }
@@ -35,6 +36,7 @@ interface Props {
 export function PersonCardSheet({ visible, onClose, data }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   if (!data) return null;
 

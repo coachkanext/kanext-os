@@ -9,7 +9,9 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
@@ -53,11 +55,11 @@ const COURSE_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
   completed: '#A1A1AA',
   cancelled: '#EF4444',
-  planned: '#1D9BF0',
+  planned: ACCENT,
 };
 
 const SESSION_TYPE_COLORS: Record<string, string> = {
-  lecture: '#1D9BF0',
+  lecture: ACCENT,
   lab: '#22C55E',
   seminar: '#F59E0B',
   exam: '#EF4444',
@@ -65,24 +67,24 @@ const SESSION_TYPE_COLORS: Record<string, string> = {
 };
 
 const SESSION_STATUS_COLORS: Record<string, string> = {
-  upcoming: '#1D9BF0',
+  upcoming: ACCENT,
   completed: '#22C55E',
   cancelled: '#EF4444',
   in_progress: '#F59E0B',
 };
 
 const ASSIGNMENT_TYPE_COLORS: Record<string, string> = {
-  homework: '#1D9BF0',
+  homework: ACCENT,
   quiz: '#F59E0B',
   exam: '#EF4444',
   project: '#22C55E',
   paper: '#A1A1AA',
-  presentation: '#1D9BF0',
+  presentation: ACCENT,
   lab_report: '#22C55E',
 };
 
 const ASSIGNMENT_STATUS_COLORS: Record<string, string> = {
-  upcoming: '#1D9BF0',
+  upcoming: ACCENT,
   open: '#22C55E',
   closed: '#A1A1AA',
   graded: '#22C55E',
@@ -441,8 +443,8 @@ function CourseHeader({
             {course.status.charAt(0).toUpperCase() + course.status.slice(1)}
           </ThemedText>
         </View>
-        <View style={[styles.creditsPill, { backgroundColor: '#1D9BF01A' }]}>
-          <ThemedText style={[styles.creditsPillText, { color: '#1D9BF0' }]}>
+        <View style={[styles.creditsPill, { backgroundColor: ACCENT + '1A' }]}>
+          <ThemedText style={[styles.creditsPillText, { color: ACCENT }]}>
             {course.credits} Credits
           </ThemedText>
         </View>
@@ -526,13 +528,13 @@ function OverviewTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.prereqBadge,
-                { backgroundColor: prereq.status === 'required' ? '#EF444422' : '#1D9BF022' },
+                { backgroundColor: prereq.status === 'required' ? '#EF444422' : ACCENT + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.prereqText,
-                  { color: prereq.status === 'required' ? '#EF4444' : '#1D9BF0' },
+                  { color: prereq.status === 'required' ? '#EF4444' : ACCENT },
                 ]}
               >
                 {prereq.status.toUpperCase()}
@@ -620,7 +622,7 @@ function SyllabusTab({ colors }: { colors: typeof Colors.light }) {
                 {item.description}
               </ThemedText>
             </View>
-            <ThemedText style={[styles.weightText, { color: '#1D9BF0' }]}>
+            <ThemedText style={[styles.weightText, { color: ACCENT }]}>
               {item.weight}%
             </ThemedText>
           </View>
@@ -952,7 +954,7 @@ function GradesAggregateView({ colors }: { colors: typeof Colors.light }) {
     <View>
       <SectionCard title="Class Statistics" colors={colors}>
         <View style={styles.statRow}>
-          <StatBlock label="Average" value={MOCK_GRADE_DISTRIBUTION.classAverage.toFixed(1)} color="#1D9BF0" colors={colors} />
+          <StatBlock label="Average" value={MOCK_GRADE_DISTRIBUTION.classAverage.toFixed(1)} color={ACCENT} colors={colors} />
           <StatBlock label="Median" value={String(MOCK_GRADE_DISTRIBUTION.median)} color="#22C55E" colors={colors} />
           <StatBlock label="High" value={String(MOCK_GRADE_DISTRIBUTION.high)} color="#22C55E" colors={colors} />
           <StatBlock label="Low" value={String(MOCK_GRADE_DISTRIBUTION.low)} color="#EF4444" colors={colors} />
@@ -970,7 +972,7 @@ function GradesAggregateView({ colors }: { colors: typeof Colors.light }) {
               <View
                 style={[
                   styles.distBar,
-                  { width: `${item.percentage}%`, backgroundColor: '#1D9BF0' },
+                  { width: `${item.percentage}%`, backgroundColor: ACCENT },
                 ]}
               />
             </View>
@@ -1016,7 +1018,7 @@ function GradesOwnView({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Weighted Average" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Current" value="88%" color="#22C55E" colors={colors} />
-          <StatBlock label="Grade" value="B+" color="#1D9BF0" colors={colors} />
+          <StatBlock label="Grade" value="B+" color={ACCENT} colors={colors} />
           <StatBlock label="Rank" value="3/12" color="#F59E0B" colors={colors} />
         </View>
       </SectionCard>
@@ -1119,7 +1121,7 @@ function AttendanceAggregateView({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Class Attendance Overview" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Avg Attendance" value={`${MOCK_ATTENDANCE_AGGREGATE.averageAttendance}%`} color="#22C55E" colors={colors} />
-          <StatBlock label="Sessions" value={String(MOCK_ATTENDANCE_AGGREGATE.totalSessions)} color="#1D9BF0" colors={colors} />
+          <StatBlock label="Sessions" value={String(MOCK_ATTENDANCE_AGGREGATE.totalSessions)} color={ACCENT} colors={colors} />
           <StatBlock label="At Risk" value={String(MOCK_ATTENDANCE_AGGREGATE.atRiskStudents.length)} color="#EF4444" colors={colors} />
         </View>
       </SectionCard>
@@ -1160,7 +1162,7 @@ function AttendanceOwnView({ colors }: { colors: typeof Colors.light }) {
         <View style={styles.statRow}>
           <StatBlock label="Rate" value={`${rate}%`} color={rate >= 85 ? '#22C55E' : '#F59E0B'} colors={colors} />
           <StatBlock label="Present" value={String(presentCount)} color="#22C55E" colors={colors} />
-          <StatBlock label="Total" value={String(total)} color="#1D9BF0" colors={colors} />
+          <StatBlock label="Total" value={String(total)} color={ACCENT} colors={colors} />
         </View>
       </SectionCard>
 
@@ -1326,7 +1328,7 @@ function OperationsTab({ colors }: { colors: typeof Colors.light }) {
                 <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
                   {conflict.issue}
                 </ThemedText>
-                <ThemedText style={[styles.captionText, { color: '#1D9BF0' }]}>
+                <ThemedText style={[styles.captionText, { color: ACCENT }]}>
                   Resolution: {conflict.resolution}
                 </ThemedText>
               </View>
@@ -1348,7 +1350,7 @@ function ComplianceTab({ colors }: { colors: typeof Colors.light }) {
       {/* Accommodations Count */}
       <SectionCard title="Accommodations" colors={colors}>
         <View style={styles.listRow}>
-          <IconSymbol name="person.fill.checkmark" size={16} color="#1D9BF0" />
+          <IconSymbol name="person.fill.checkmark" size={16} color={ACCENT} />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Students with Accommodations
@@ -1357,8 +1359,8 @@ function ComplianceTab({ colors }: { colors: typeof Colors.light }) {
               Details restricted to authorized personnel. Contact Disability Services for specifics.
             </ThemedText>
           </View>
-          <View style={[styles.countBadge, { backgroundColor: '#1D9BF022' }]}>
-            <ThemedText style={[styles.countText, { color: '#1D9BF0' }]}>
+          <View style={[styles.countBadge, { backgroundColor: ACCENT + '22' }]}>
+            <ThemedText style={[styles.countText, { color: ACCENT }]}>
               {MOCK_COMPLIANCE.accommodationsCount}
             </ThemedText>
           </View>
@@ -1414,7 +1416,7 @@ function ComplianceTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: '#1D9BF0' },
+                { color: ACCENT },
               ]}
             >
               {deadline.status.toUpperCase()}
@@ -1508,7 +1510,7 @@ function ActionButton({
 
 const GRADE_COLORS: Record<string, string> = {
   'A': '#22C55E', 'A-': '#22C55E',
-  'B+': '#1D9BF0', 'B': '#1D9BF0', 'B-': '#1D9BF0',
+  'B+': ACCENT, 'B': ACCENT, 'B-': ACCENT,
   'C+': '#F59E0B', 'C': '#F59E0B', 'C-': '#F59E0B',
   'D': '#EF4444', 'F': '#EF4444',
 };

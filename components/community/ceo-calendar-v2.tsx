@@ -16,7 +16,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 import {
   CEO_NOW,
@@ -50,6 +50,8 @@ import type {
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
 }
@@ -319,7 +321,7 @@ function EventsTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText style={[s.seasonStatLabel, { color: colors.textTertiary }]}>Live</ThemedText>
           </View>
           <View style={s.seasonStat}>
-            <ThemedText style={[s.seasonStatValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[s.seasonStatValue, { color: ACCENT }]}>
               {liveOrUpcoming.filter((e) => e.status === 'upcoming').length}
             </ThemedText>
             <ThemedText style={[s.seasonStatLabel, { color: colors.textTertiary }]}>Upcoming</ThemedText>
@@ -505,7 +507,7 @@ function BoardView({ colors }: { colors: typeof Colors.light }) {
       {BOARD_ITEMS.map((item) => {
         const catColor = BOARD_CATEGORY_COLOR[item.category] ?? '#A1A1AA';
         const priColor = BOARD_PRIORITY_COLOR[item.priority] ?? '#A1A1AA';
-        const statusColor = item.status === 'completed' ? '#22C55E' : item.status === 'in_progress' ? '#F59E0B' : item.status === 'deferred' ? '#A1A1AA' : '#1D9BF0';
+        const statusColor = item.status === 'completed' ? '#22C55E' : item.status === 'in_progress' ? '#F59E0B' : item.status === 'deferred' ? '#A1A1AA' : ACCENT;
         return (
           <View key={item.id} style={[s.boardRow, { borderBottomColor: colors.border }]}>
             <StatusDot color={priColor} />

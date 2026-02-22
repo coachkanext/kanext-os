@@ -9,7 +9,8 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, ModeColors } from '@/constants/theme';
+import { Colors, ModeColors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMembershipId } from '@/context/app-context';
 
@@ -45,6 +46,7 @@ import { jerseyArchetypeMap } from '@/data/fmu';
 export function SportsStatsV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const accent = ModeColors.sports.primary;
   const membershipId = useMembershipId();
   const role = getSportsRole(membershipId);
@@ -523,7 +525,7 @@ function KRIntelligenceView({ colors, accent, krVis }: { colors: typeof Colors.l
                   return (
                     <View style={[styles.row, { flexWrap: 'wrap', gap: 6, marginTop: 8 }]}>
                       {badges.map((b, i) => {
-                        const badgeColor = b.level === 'Gold' ? '#1D9BF0' : b.level === 'Silver' ? '#A1A1AA' : '#1D9BF0';
+                        const badgeColor = b.level === 'Gold' ? accent : b.level === 'Silver' ? '#A1A1AA' : accent;
                         return (
                           <View key={i} style={[styles.badgeChip, { borderColor: badgeColor }]}>
                             <ThemedText style={{ fontSize: 10, fontWeight: '700', color: badgeColor }}>{b.level[0]}</ThemedText>

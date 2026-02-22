@@ -21,7 +21,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
 // RBAC
 import type { ChurchRoleLens } from '@/utils/church-rbac';
@@ -31,6 +31,8 @@ import {
   isStaffLevel,
   isMember,
 } from '@/utils/church-rbac';
+
+const ACCENT = MODE_ACCENT.church;
 
 // =============================================================================
 // TYPES
@@ -128,17 +130,17 @@ interface Fund {
 const ACTIVE_FUNDS: Fund[] = [
   {
     id: 'fund-1', name: 'General Tithes & Offering', description: 'Primary operating fund for ministry, staff, and facilities.',
-    goal: null, raised: 842000, ongoing: true, deadline: null, donorCount: 1284, trend: '+6.2%', color: '#1D9BF0', icon: 'dollarsign.circle.fill',
+    goal: null, raised: 842000, ongoing: true, deadline: null, donorCount: 1284, trend: '+6.2%', color: ACCENT, icon: 'dollarsign.circle.fill',
     allowedUses: ['Staff salaries', 'Ministry operations', 'Facility maintenance', 'Utilities'],
   },
   {
     id: 'fund-2', name: 'Building Fund', description: 'Capital campaign for new sanctuary and community center. Phase 2.',
-    goal: 2500000, raised: 1950000, ongoing: false, deadline: 'Dec 2026', donorCount: 842, trend: '+4.8%', color: '#1D9BF0', icon: 'building.2.fill',
+    goal: 2500000, raised: 1950000, ongoing: false, deadline: 'Dec 2026', donorCount: 842, trend: '+4.8%', color: ACCENT, icon: 'building.2.fill',
     allowedUses: ['Construction', 'Architectural fees', 'Permits', 'Furnishings'],
   },
   {
     id: 'fund-3', name: 'Missions Fund', description: 'Supporting 12 missionary families and 3 international partnerships.',
-    goal: 150000, raised: 89000, ongoing: false, deadline: 'Dec 2026', donorCount: 356, trend: '+12.1%', color: '#1D9BF0', icon: 'globe.americas.fill',
+    goal: 150000, raised: 89000, ongoing: false, deadline: 'Dec 2026', donorCount: 356, trend: '+12.1%', color: ACCENT, icon: 'globe.americas.fill',
     allowedUses: ['Missionary support', 'Travel', 'Supplies', 'Partner organizations'],
   },
   {
@@ -151,7 +153,7 @@ const ACTIVE_FUNDS: Fund[] = [
   },
   {
     id: 'fund-6', name: 'Easter Special Offering', description: 'Annual Easter offering supporting local outreach and church planting.',
-    goal: 50000, raised: 0, ongoing: false, deadline: 'Apr 2026', donorCount: 0, trend: 'New', color: '#1D9BF0', icon: 'sparkles',
+    goal: 50000, raised: 0, ongoing: false, deadline: 'Apr 2026', donorCount: 0, trend: 'New', color: ACCENT, icon: 'sparkles',
   },
 ];
 
@@ -209,7 +211,7 @@ const YTD_SUMMARY: YTDSummary = {
 const TX_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
   pending: '#F59E0B',
-  recurring: '#1D9BF0',
+  recurring: ACCENT,
 };
 
 // --- Pledges ---
@@ -232,17 +234,17 @@ const ACTIVE_PLEDGES: Pledge[] = [
   {
     id: 'pledge-1', fund: 'Building Fund', pledgedAmount: '$12,000', fulfilledAmount: '$7,000',
     fulfilledPct: 58, frequency: '$500/mo', startDate: 'Jan 2025', endDate: 'Dec 2026',
-    status: 'on-track', nextPayment: 'Mar 1, 2026', color: '#1D9BF0',
+    status: 'on-track', nextPayment: 'Mar 1, 2026', color: ACCENT,
   },
   {
     id: 'pledge-2', fund: 'Missions Fund', pledgedAmount: '$1,200', fulfilledAmount: '$400',
     fulfilledPct: 33, frequency: '$100/mo', startDate: 'Jan 2026', endDate: 'Dec 2026',
-    status: 'behind', nextPayment: 'Mar 1, 2026', color: '#1D9BF0',
+    status: 'behind', nextPayment: 'Mar 1, 2026', color: ACCENT,
   },
   {
     id: 'pledge-3', fund: 'Annual Tithe Commitment', pledgedAmount: '$26,000', fulfilledAmount: '$6,200',
     fulfilledPct: 24, frequency: '$500/wk', startDate: 'Jan 2026', endDate: 'Dec 2026',
-    status: 'ahead', nextPayment: 'Feb 23, 2026', color: '#1D9BF0',
+    status: 'ahead', nextPayment: 'Feb 23, 2026', color: ACCENT,
   },
   {
     id: 'pledge-4', fund: 'Youth Summer Camp', pledgedAmount: '$500', fulfilledAmount: '$500',
@@ -254,8 +256,8 @@ const ACTIVE_PLEDGES: Pledge[] = [
 const PLEDGE_STATUS_COLOR: Record<string, string> = {
   'on-track': '#22C55E',
   behind: '#EF4444',
-  completed: '#1D9BF0',
-  ahead: '#1D9BF0',
+  completed: ACCENT,
+  ahead: ACCENT,
 };
 
 // --- Finance Console (C1/C2 only) ---
@@ -272,10 +274,10 @@ interface ConsoleKPI {
 
 const CONSOLE_KPIS: ConsoleKPI[] = [
   { id: 'ck-1', label: 'Monthly Giving', value: '$185,200', detail: 'Feb 2026', trend: '+4.2%', trendUp: true, color: '#22C55E' },
-  { id: 'ck-2', label: 'YTD Total', value: '$1.12M', detail: 'vs $1.08M last year', trend: '+3.7%', trendUp: true, color: '#1D9BF0' },
-  { id: 'ck-3', label: 'Average Gift', value: '$142', detail: '1,304 gifts this month', trend: '+$8', trendUp: true, color: '#1D9BF0' },
-  { id: 'ck-4', label: 'Unique Donors', value: '312', detail: 'This month', trend: '+18', trendUp: true, color: '#1D9BF0' },
-  { id: 'ck-5', label: 'Recurring Ratio', value: '68%', detail: 'vs 32% one-time', trend: '+2%', trendUp: true, color: '#1D9BF0' },
+  { id: 'ck-2', label: 'YTD Total', value: '$1.12M', detail: 'vs $1.08M last year', trend: '+3.7%', trendUp: true, color: ACCENT },
+  { id: 'ck-3', label: 'Average Gift', value: '$142', detail: '1,304 gifts this month', trend: '+$8', trendUp: true, color: ACCENT },
+  { id: 'ck-4', label: 'Unique Donors', value: '312', detail: 'This month', trend: '+18', trendUp: true, color: ACCENT },
+  { id: 'ck-5', label: 'Recurring Ratio', value: '68%', detail: 'vs 32% one-time', trend: '+2%', trendUp: true, color: ACCENT },
   { id: 'ck-6', label: 'Donor Retention', value: '84%', detail: '12-month rolling', trend: '+1.2%', trendUp: true, color: '#F59E0B' },
 ];
 
@@ -302,12 +304,12 @@ interface TopFund {
 }
 
 const TOP_FUNDS_BY_VOLUME: TopFund[] = [
-  { id: 'tf-1', name: 'General Tithes & Offering', amount: '$842K', percentage: 62.4, color: '#1D9BF0' },
-  { id: 'tf-2', name: 'Building Fund', amount: '$248K', percentage: 18.4, color: '#1D9BF0' },
-  { id: 'tf-3', name: 'Missions Fund', amount: '$89K', percentage: 6.6, color: '#1D9BF0' },
+  { id: 'tf-1', name: 'General Tithes & Offering', amount: '$842K', percentage: 62.4, color: ACCENT },
+  { id: 'tf-2', name: 'Building Fund', amount: '$248K', percentage: 18.4, color: ACCENT },
+  { id: 'tf-3', name: 'Missions Fund', amount: '$89K', percentage: 6.6, color: ACCENT },
   { id: 'tf-4', name: 'Youth Programs', amount: '$52K', percentage: 3.9, color: '#F59E0B' },
   { id: 'tf-5', name: 'Benevolence', amount: '$38K', percentage: 2.8, color: '#22C55E' },
-  { id: 'tf-6', name: 'Other / Special', amount: '$79K', percentage: 5.9, color: '#1D9BF0' },
+  { id: 'tf-6', name: 'Other / Special', amount: '$79K', percentage: 5.9, color: ACCENT },
 ];
 
 interface BudgetComparison {
@@ -373,9 +375,9 @@ const MANAGED_FUNDS: FundConfig[] = [
 ];
 
 const FUND_TYPE_COLOR: Record<string, string> = {
-  permanent: '#1D9BF0',
+  permanent: ACCENT,
   campaign: '#F59E0B',
-  designated: '#1D9BF0',
+  designated: ACCENT,
 };
 
 interface AuditEntry {
@@ -811,8 +813,8 @@ function FundsView({ colors, role }: { colors: typeof Colors.light; role: Church
                     </ThemedText>
                   </View>
                   <View style={s.fundLeaderItem}>
-                    <IconSymbol name="arrow.up.right" size={10} color={fund.trend === 'New' ? '#1D9BF0' : '#22C55E'} />
-                    <ThemedText style={[s.fundLeaderText, { color: fund.trend === 'New' ? '#1D9BF0' : '#22C55E' }]}>
+                    <IconSymbol name="arrow.up.right" size={10} color={fund.trend === 'New' ? ACCENT : '#22C55E'} />
+                    <ThemedText style={[s.fundLeaderText, { color: fund.trend === 'New' ? ACCENT : '#22C55E' }]}>
                       {fund.trend}
                     </ThemedText>
                   </View>
@@ -1116,7 +1118,7 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
                     ${(m.amount / 1000).toFixed(0)}K
                   </ThemedText>
                   <View style={[s.chartBarTrack, { backgroundColor: colors.backgroundTertiary }]}>
-                    <View style={[s.chartBarFill, { height: `${heightPct}%`, backgroundColor: '#1D9BF0' }]} />
+                    <View style={[s.chartBarFill, { height: `${heightPct}%`, backgroundColor: ACCENT }]} />
                   </View>
                   <ThemedText style={[s.chartBarLabel, { color: colors.textSecondary }]}>{m.month}</ThemedText>
                 </View>
@@ -1176,7 +1178,7 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
                 </View>
                 <View style={s.bvaRight}>
                   <ThemedText style={[s.bvaVariance, { color: varianceColor }]}>{bva.variance}</ThemedText>
-                  <ThemedText style={[s.bvaPct, { color: bva.pct > 105 ? '#F59E0B' : bva.pct < 95 ? '#1D9BF0' : colors.textSecondary }]}>
+                  <ThemedText style={[s.bvaPct, { color: bva.pct > 105 ? '#F59E0B' : bva.pct < 95 ? ACCENT : colors.textSecondary }]}>
                     {bva.pct}%
                   </ThemedText>
                 </View>
@@ -1194,8 +1196,8 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
             <View style={s.donorHealthGrid}>
               {[
                 { v: '84%', l: 'Retention Rate', c: '#22C55E' },
-                { v: '312', l: 'Active Donors', c: '#1D9BF0' },
-                { v: '28', l: 'New This Month', c: '#1D9BF0' },
+                { v: '312', l: 'Active Donors', c: ACCENT },
+                { v: '28', l: 'New This Month', c: ACCENT },
                 { v: '14', l: 'Lapsed (90d)', c: '#F59E0B' },
               ].map(item => (
                 <View key={item.l} style={s.donorHealthCell}>
@@ -1241,7 +1243,7 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
           {[
             { id: 'ex-1', category: 'Failed Payment', reason: 'Insufficient funds — Visa ****8890', action: 'Contact donor', amount: '$250', color: '#EF4444' },
             { id: 'ex-2', category: 'Chargeback', reason: 'Disputed transaction — Jan 28', action: 'Review documentation', amount: '$100', color: '#F59E0B' },
-            { id: 'ex-3', category: 'Refund Request', reason: 'Duplicate gift — Feb 12', action: 'Process refund', amount: '$500', color: '#1D9BF0' },
+            { id: 'ex-3', category: 'Refund Request', reason: 'Duplicate gift — Feb 12', action: 'Process refund', amount: '$500', color: ACCENT },
           ].map((ex, idx) => (
             <View
               key={ex.id}
@@ -1386,7 +1388,7 @@ function SettingsView({ colors, role }: { colors: typeof Colors.light; role: Chu
                 idx < AUDIT_TRAIL.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
               ]}
             >
-              <View style={[s.auditDot, { backgroundColor: '#1D9BF0' }]} />
+              <View style={[s.auditDot, { backgroundColor: ACCENT }]} />
               <View style={s.auditContent}>
                 <View style={s.auditHeaderLine}>
                   <ThemedText style={[s.auditAction, { color: colors.text }]}>{entry.action}</ThemedText>

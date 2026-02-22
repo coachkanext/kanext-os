@@ -17,7 +17,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import { EntityScopeBar } from '@/components/business/entity-scope-bar';
 import {
   BizCard,
@@ -74,6 +74,8 @@ import type {
   TxnState,
 } from '@/data/mock-biz-finance';
 
+
+const ACCENT = MODE_ACCENT.business;
 const BP = BusinessPalette;
 
 // =============================================================================
@@ -124,7 +126,7 @@ function severityDotColor(severity: string): string {
     case 'high':
       return BP.amber;
     case 'medium':
-      return '#1D9BF0';
+      return ACCENT;
     case 'low':
       return BP.ash;
     default:

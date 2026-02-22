@@ -10,7 +10,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
 import {
   getComplianceOverview,
@@ -50,6 +50,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'controls', label: 'Controls' },
@@ -304,7 +306,7 @@ function OverviewTab({
             <ThemedText style={[s.severityLabel, { color: colors.textSecondary }]}>High</ThemedText>
           </View>
           <View style={s.severityItem}>
-            <View style={[s.statusDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.statusDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.severityValue, { color: colors.text }]}>
               {mediumHolds}
             </ThemedText>

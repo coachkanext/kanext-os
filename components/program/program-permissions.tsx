@@ -7,14 +7,15 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { PERMISSION_ROLES, STAFF_MEMBERS } from '@/data/mock-program-v2';
 import type { PermissionTier } from '@/data/mock-program-v2';
 
 const TIER_COLORS: Record<PermissionTier, string> = {
   admin: '#FFFFFF',
-  coach: '#1D9BF0',
+  coach: accent,
   staff: '#F59E0B',
   viewer: '#52525B',
 };
@@ -28,6 +29,7 @@ function SectionLabel({ text, colors }: { text: string; colors: typeof Colors.li
 export function ProgramPermissions() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   return (
     <ScrollView

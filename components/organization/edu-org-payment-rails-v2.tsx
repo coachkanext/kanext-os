@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isDeanLevel } from '@/utils/education-rbac';
 import {
@@ -47,6 +47,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 const SUB_TABS = [
   { id: 'control_tower', label: 'Now' },
   { id: 'wallets', label: 'Wallets' },
@@ -221,8 +223,8 @@ function RailsHealthStrip({
 
       {/* Compact stats */}
       <View style={s.healthStatsRow}>
-        <View style={[s.countBadge, { backgroundColor: '#1D9BF020' }]}>
-          <ThemedText style={[s.countBadgeText, { color: '#1D9BF0' }]}>
+        <View style={[s.countBadge, { backgroundColor: `${ACCENT}20` }]}>
+          <ThemedText style={[s.countBadgeText, { color: ACCENT }]}>
             Approvals {health.pendingApprovals}
           </ThemedText>
         </View>
@@ -374,7 +376,7 @@ function ControlTowerTab({
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
-      {renderLane('Needs Approval', '#1D9BF0', needsApproval, 4)}
+      {renderLane('Needs Approval', ACCENT, needsApproval, 4)}
       {renderLane('Ready to Release', '#22C55E', readyToRelease, 4)}
       {renderLane('In Flight', '#F59E0B', inFlight, 4)}
       {renderLane('Exceptions', '#EF4444', exceptions, 4)}
@@ -444,7 +446,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#1D9BF0' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: ACCENT }]}>
                 {formatCurrency(item.pendingInflows)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -534,7 +536,7 @@ function BatchesTab({
       const typeLabel = EDU_BATCH_TYPE_LABELS[item.type];
       const approvalColor =
         item.approvalStatus === 'approved' ? '#22C55E' :
-        item.approvalStatus === 'partial' ? '#F59E0B' : '#1D9BF0';
+        item.approvalStatus === 'partial' ? '#F59E0B' : ACCENT;
       return (
         <Pressable
           style={[s.batchCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -908,7 +910,7 @@ function ReturnsTab({
   const STAGE_COLORS: Record<EduRailsReturn['stage'], string> = {
     received: '#EF4444',
     evidence_requested: '#F59E0B',
-    submitted: '#1D9BF0',
+    submitted: ACCENT,
     resolved: '#22C55E',
   };
 
@@ -1085,7 +1087,7 @@ function ReceiptsTab({
 
           <View style={s.receiptFooter}>
             {rcp.immutable && (
-              <StatusBadge label="IMMUTABLE" color="#1D9BF0" />
+              <StatusBadge label="IMMUTABLE" color={ACCENT} />
             )}
             <ThemedText style={[s.institutionTag, { color: colors.textTertiary }]} numberOfLines={1}>
               {rcp.institution}
@@ -1318,7 +1320,7 @@ function WalletDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Committed</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: ACCENT }]}>
               {formatCurrency(wallet.pendingInflows)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending In</ThemedText>
@@ -1443,7 +1445,7 @@ function BatchDetailSheet({
   const stateColor = EDU_TRANSACTION_STATE_COLORS[batch.state];
   const approvalColor =
     batch.approvalStatus === 'approved' ? '#22C55E' :
-    batch.approvalStatus === 'partial' ? '#F59E0B' : '#1D9BF0';
+    batch.approvalStatus === 'partial' ? '#F59E0B' : ACCENT;
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={batch.name} useModal>

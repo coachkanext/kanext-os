@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 type ViewId = 'eligibility' | 'academics' | 'immigration';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -27,7 +29,7 @@ type EligibilityStatus = 'Cleared' | 'Hold' | 'Pending' | 'Ineligible';
 const ELIGIBILITY_STATUS_COLOR: Record<EligibilityStatus, string> = {
   Cleared: '#22C55E',
   Hold: '#F59E0B',
-  Pending: '#1D9BF0',
+  Pending: ACCENT,
   Ineligible: '#EF4444',
 };
 

@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isSeniorPastor, isElderLevel, isStaffLevel } from '@/utils/church-rbac';
 import {
@@ -37,6 +37,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'facilities', label: 'Facilities' },
@@ -232,13 +234,13 @@ function OverviewTab({
         </ThemedText>
         <View style={s.capacityBreakdown}>
           <View style={s.capacityItem}>
-            <View style={[s.capacityDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.capacityDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.capacityItemText, { color: colors.textSecondary }]}>
               {inUseCount} In Use
             </ThemedText>
           </View>
           <View style={s.capacityItem}>
-            <View style={[s.capacityDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.capacityDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.capacityItemText, { color: colors.textSecondary }]}>
               {reservedCount} Reserved
             </ThemedText>

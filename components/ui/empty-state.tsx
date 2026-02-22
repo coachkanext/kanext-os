@@ -11,6 +11,7 @@ import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { ThemedText } from '@/components/themed-text';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 
 interface EmptyStateProps {
   icon: IconSymbolName;
@@ -31,7 +32,8 @@ export function EmptyState({
 }: EmptyStateProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accentColor = color ?? colors.tint;
+  const accent = useAccentColor();
+  const accentColor = color ?? accent;
 
   return (
     <View style={styles.container}>

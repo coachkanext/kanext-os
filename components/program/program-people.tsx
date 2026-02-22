@@ -8,7 +8,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { STAFF_MEMBERS, ATHLETE_MEMBERS } from '@/data/mock-program-v2';
 import type { PermissionTier, TeamLevel, AthleteMember } from '@/data/mock-program-v2';
@@ -17,7 +18,7 @@ type PeopleTab = 'staff' | 'athletes';
 
 const TIER_COLORS: Record<PermissionTier, string> = {
   admin: '#FFFFFF',
-  coach: '#1D9BF0',
+  coach: accent,
   staff: '#F59E0B',
   viewer: '#52525B',
 };
@@ -26,7 +27,7 @@ const STATUS_COLORS: Record<AthleteMember['status'], string> = {
   active: '#22C55E',
   injured: '#EF4444',
   redshirt: '#F59E0B',
-  transfer: '#1D9BF0',
+  transfer: accent,
 };
 
 const TEAM_LABELS: Record<TeamLevel, string> = {
@@ -39,6 +40,7 @@ const TEAM_LABELS: Record<TeamLevel, string> = {
 export function ProgramPeople() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const [activeTab, setActiveTab] = useState<PeopleTab>('staff');
 
   const groupedAthletes = useMemo(() => {

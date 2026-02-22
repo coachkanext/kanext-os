@@ -10,10 +10,12 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { GRID_CREW } from '@/data/mock-competition-home';
 import { openCrewCard } from '@/utils/global-entity-sheets';
 
+
+const ACCENT = MODE_ACCENT.competition;
 type SortKey = 'position' | 'pitScore' | 'team';
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'position', label: 'Position' },
@@ -36,7 +38,7 @@ function getInitials(name: string): string {
 
 function getPitScoreColor(score: number): string {
   if (score >= 93) return '#22C55E';
-  if (score >= 88) return '#1D9BF0';
+  if (score >= 88) return ACCENT;
   return '#F59E0B';
 }
 

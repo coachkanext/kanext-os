@@ -8,6 +8,7 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { NexusWorkspace, WorkspaceType } from '@/types/nexus-v2';
 
@@ -37,6 +38,7 @@ interface WorkspaceCardProps {
 export function WorkspaceCard({ workspace, isActive, onPress }: WorkspaceCardProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const iconName = WORKSPACE_ICONS[workspace.workspace_type] || 'folder.fill';
   const threadCount = workspace.thread_ids.length;
 
@@ -52,7 +54,7 @@ export function WorkspaceCard({ workspace, isActive, onPress }: WorkspaceCardPro
       onPress={() => onPress(workspace)}
     >
       <View style={[styles.iconContainer, { backgroundColor: colors.backgroundTertiary }]}>
-        <IconSymbol name={iconName} size={16} color={colors.tint} />
+        <IconSymbol name={iconName} size={16} color={accent} />
       </View>
       <View style={styles.content}>
         <ThemedText style={[styles.title, isActive && { fontWeight: '600' }]} numberOfLines={1}>

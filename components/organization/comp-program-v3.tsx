@@ -8,11 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.competition;
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
+
 
 type ViewId = 'identity' | 'season' | 'operations';
 
@@ -86,7 +89,7 @@ const OPS_TASKS: { id: string; title: string; status: TaskStatus; detail: string
 const TASK_STATUS_COLOR: Record<TaskStatus, string> = {
   due_soon: '#F59E0B',
   overdue: '#EF4444',
-  in_progress: '#1D9BF0',
+  in_progress: ACCENT,
   upcoming: '#22C55E',
   pending: '#F59E0B',
 };
@@ -307,7 +310,7 @@ function SeasonView({ colors, accentColor }: { colors: typeof Colors.light; acce
           </View>
           {race.winner && (
             <View style={s.raceWinnerRow}>
-              <IconSymbol name="crown.fill" size={12} color="#1D9BF0" />
+              <IconSymbol name="crown.fill" size={12} color={ACCENT} />
               <ThemedText style={[s.raceWinner, { color: colors.textSecondary }]}>
                 Winner: {race.winner}
               </ThemedText>
@@ -396,7 +399,7 @@ function OperationsView({ colors, accentColor }: { colors: typeof Colors.light; 
           <ThemedText style={[s.shipRoute, { color: colors.textSecondary }]}>
             {ship.origin} → {ship.dest}
           </ThemedText>
-          <StatusBadge label={ship.status.toUpperCase()} color="#1D9BF0" />
+          <StatusBadge label={ship.status.toUpperCase()} color={ACCENT} />
         </View>
       ))}
 

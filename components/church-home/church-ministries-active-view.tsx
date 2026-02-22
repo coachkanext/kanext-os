@@ -7,9 +7,11 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { CHURCH_MINISTRIES, MINISTRY_CATEGORY_LABELS, type Ministry, type MinistryCategory } from '@/data/mock-church-home';
 import { openMinistryCard } from '@/utils/global-entity-sheets';
+
+const ACCENT = MODE_ACCENT.church;
 
 const CATEGORY_FILTERS: { key: 'all' | MinistryCategory; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -21,17 +23,17 @@ const CATEGORY_FILTERS: { key: 'all' | MinistryCategory; label: string }[] = [
 ];
 
 const CATEGORY_BADGE_COLORS: Record<MinistryCategory, string> = {
-  worship: '#1D9BF0',
+  worship: ACCENT,
   youth: '#F59E0B',
-  fellowship: '#1D9BF0',
-  outreach: '#1D9BF0',
-  service: '#1D9BF0',
+  fellowship: ACCENT,
+  outreach: ACCENT,
+  service: ACCENT,
 };
 
 const STATUS_COLORS: Record<Ministry['status'], string> = {
   active: '#22C55E',
   seasonal: '#F59E0B',
-  launching: '#1D9BF0',
+  launching: ACCENT,
 };
 
 interface Props {

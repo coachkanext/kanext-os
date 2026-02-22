@@ -11,11 +11,13 @@ import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useAppContext } from '@/context/app-context';
 
 export default function LoginScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { setAuthState } = useAppContext();
@@ -58,7 +60,7 @@ export default function LoginScreen() {
         <Pressable
           style={({ pressed }) => [
             styles.loginButton,
-            { backgroundColor: pressed ? colors.tint + 'DD' : colors.tint },
+            { backgroundColor: pressed ? accent + 'DD' : accent },
           ]}
           onPress={handleDemoLogin}
         >

@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_OPS_TABS,
   COMP_OPS_SCOPE_CHIPS,
@@ -41,6 +41,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -96,8 +98,8 @@ function scheduleTypeLabel(type: string): string {
 
 function scheduleTypeColor(type: string): string {
   switch (type) {
-    case 'match': return '#1D9BF0';
-    case 'ceremony': return '#1D9BF0';
+    case 'match': return ACCENT;
+    case 'ceremony': return ACCENT;
     case 'media-day': return '#F59E0B';
     case 'practice': return '#22C55E';
     case 'setup': return '#A1A1AA';
@@ -109,7 +111,7 @@ function reportFormatColor(format: OpsReport['format']): string {
   switch (format) {
     case 'PDF': return '#EF4444';
     case 'CSV': return '#22C55E';
-    case 'XLSX': return '#1D9BF0';
+    case 'XLSX': return ACCENT;
   }
 }
 
@@ -179,12 +181,12 @@ function DashboardTab({
       </ThemedText>
       <View style={s.quickActionsGrid}>
         {[
-          { id: 'qa-1', label: 'New Event', icon: 'plus.circle.fill', color: '#1D9BF0' },
+          { id: 'qa-1', label: 'New Event', icon: 'plus.circle.fill', color: ACCENT },
           { id: 'qa-2', label: 'Log Incident', icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
           { id: 'qa-3', label: 'Add Task', icon: 'checkmark.circle.fill', color: '#22C55E' },
-          { id: 'qa-4', label: 'Book Venue', icon: 'building.2.fill', color: '#1D9BF0' },
+          { id: 'qa-4', label: 'Book Venue', icon: 'building.2.fill', color: ACCENT },
           { id: 'qa-5', label: 'Track Shipment', icon: 'shippingbox.fill', color: '#F59E0B' },
-          { id: 'qa-6', label: 'Run Report', icon: 'chart.bar.fill', color: '#1D9BF0' },
+          { id: 'qa-6', label: 'Run Report', icon: 'chart.bar.fill', color: ACCENT },
         ].map((action) => (
           <Pressable
             key={action.id}

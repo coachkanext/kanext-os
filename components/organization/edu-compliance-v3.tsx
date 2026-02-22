@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 type ViewId = 'accreditation' | 'regulatory' | 'governance';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -106,7 +108,7 @@ const COMPLIANCE_STATUS_COLOR: Record<string, string> = {
   Current: '#22C55E',
   'Under Review': '#F59E0B',
   Complete: '#22C55E',
-  'In Progress': '#1D9BF0',
+  'In Progress': ACCENT,
   Submitted: '#22C55E',
   Upcoming: '#F59E0B',
 };

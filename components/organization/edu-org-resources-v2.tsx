@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isDeanLevel, isFacultyLevel, isPresident } from '@/utils/education-rbac';
 import {
@@ -57,6 +57,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'library', label: 'Library' },
@@ -222,7 +224,7 @@ function OverviewTab({
         contentContainerStyle={s.tileStrip}
       >
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#1D9BF0' }]}>{data.resources.length}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: ACCENT }]}>{data.resources.length}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Resources</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -234,7 +236,7 @@ function OverviewTab({
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Drafts</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#1D9BF0' }]}>{data.sops.length}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: ACCENT }]}>{data.sops.length}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Active SOPs</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -838,9 +840,9 @@ function PoliciesTab({
             return (
               <View
                 key={`recent-${policy.id}`}
-                style={[s.alertCard, { backgroundColor: '#1D9BF010', borderColor: '#1D9BF030' }]}
+                style={[s.alertCard, { backgroundColor: `${ACCENT}10`, borderColor: `${ACCENT}30` }]}
               >
-                <IconSymbol name="arrow.triangle.2.circlepath" size={14} color="#1D9BF0" />
+                <IconSymbol name="arrow.triangle.2.circlepath" size={14} color={ACCENT} />
                 <View style={s.alertTextCol}>
                   <ThemedText style={[s.alertTitle, { color: colors.text }]} numberOfLines={1}>
                     {policy.title}
@@ -947,7 +949,7 @@ function RoleKitsTab({
 
           <View style={s.kitStatsGrid}>
             <View style={s.kitStatItem}>
-              <ThemedText style={[s.kitStatValue, { color: '#1D9BF0' }]}>
+              <ThemedText style={[s.kitStatValue, { color: ACCENT }]}>
                 {item.policies.length}
               </ThemedText>
               <ThemedText style={[s.kitStatLabel, { color: colors.textSecondary }]}>
@@ -955,7 +957,7 @@ function RoleKitsTab({
               </ThemedText>
             </View>
             <View style={s.kitStatItem}>
-              <ThemedText style={[s.kitStatValue, { color: '#1D9BF0' }]}>
+              <ThemedText style={[s.kitStatValue, { color: ACCENT }]}>
                 {item.sops.length}
               </ThemedText>
               <ThemedText style={[s.kitStatLabel, { color: colors.textSecondary }]}>
@@ -1667,7 +1669,7 @@ function RoleKitDetailSheet({
         </ThemedText>
         {kit.policies.map((policy, idx) => (
           <View key={idx} style={s.sheetListRow}>
-            <IconSymbol name="doc.text.fill" size={14} color="#1D9BF0" />
+            <IconSymbol name="doc.text.fill" size={14} color={ACCENT} />
             <View style={s.sheetListTextCol}>
               <ThemedText style={[s.sheetListTitle, { color: colors.text }]} numberOfLines={1}>
                 {policy}
@@ -1684,7 +1686,7 @@ function RoleKitDetailSheet({
         </ThemedText>
         {kit.sops.map((sopName, idx) => (
           <View key={idx} style={s.sheetListRow}>
-            <IconSymbol name="list.bullet.clipboard.fill" size={14} color="#1D9BF0" />
+            <IconSymbol name="list.bullet.clipboard.fill" size={14} color={ACCENT} />
             <View style={s.sheetListTextCol}>
               <ThemedText style={[s.sheetListTitle, { color: colors.text }]} numberOfLines={1}>
                 {sopName}

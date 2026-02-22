@@ -30,6 +30,9 @@ import { getPlayerRatings } from '@/data/playerRatings';
 import { computeFitKR } from '@/utils/fit-kr';
 import { computeConfidence, parseHeightToInches, HEIGHT_RANGES, REGION_OPTIONS, getPlayerRegion } from '@/utils/recruiting-helpers';
 import { ARCHETYPE_OPTIONS } from '@/data/archetype-options';
+import { useAccentColor } from '@/hooks/use-accent-color';
+
+const accent = useAccentColor();
 
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
@@ -986,7 +989,7 @@ const styles = StyleSheet.create({
   subPillText: { fontSize: 12, fontWeight: '600', color: GRAY },
   subPillTextActive: { color: BG },
   activePillsRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginTop: 4, marginBottom: 4 },
-  activePill: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#1D9BF0', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
+  activePill: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: accent, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
   activePillText: { fontSize: 11, fontWeight: '600', color: WHITE },
   clearAllText: { fontSize: 11, fontWeight: '600', color: GRAY, marginLeft: 4 },
   resultCount: { fontSize: 12, fontWeight: '600', color: GRAY, marginBottom: 10, marginTop: 4 },
@@ -1001,7 +1004,7 @@ const styles = StyleSheet.create({
   addPillText: { fontSize: 12, fontWeight: '700', color: GRAY },
   addPillTextActive: { color: BG },
   rankInput: { backgroundColor: CARD_BG, borderWidth: 1, borderColor: DIVIDER, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 14, fontWeight: '600', color: WHITE },
-  confirmBtn: { backgroundColor: '#1D9BF0', paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
+  confirmBtn: { backgroundColor: accent, paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
   confirmBtnText: { fontSize: 15, fontWeight: '700', color: WHITE },
   resetBtn: { borderWidth: 1, borderColor: DIVIDER, paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginTop: 4 },
   resetBtnText: { fontSize: 13, fontWeight: '600', color: GRAY },

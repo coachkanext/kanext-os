@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import type { Mode } from '@/types';
 import {
   PAYRAILS_TABS,
@@ -129,7 +130,7 @@ const ACCOUNT_STATUS_COLOR: Record<PayRailsAccount['status'], string> = {
 
 const TAX_FORM_STATUS_COLOR: Record<PayRailsTaxForm['status'], string> = {
   draft: '#A1A1AA',
-  ready: '#1D9BF0',
+  ready: accent,
   filed: '#22C55E',
   corrected: '#F59E0B',
 };
@@ -140,7 +141,7 @@ const TAX_FORM_STATUS_COLOR: Record<PayRailsTaxForm['status'], string> = {
 
 const DISPUTE_TYPE_COLOR: Record<PayRailsDispute['type'], string> = {
   chargeback: '#F59E0B',
-  inquiry: '#1D9BF0',
+  inquiry: accent,
   'failed-payout': '#EF4444',
 };
 
@@ -149,7 +150,7 @@ const DISPUTE_TYPE_COLOR: Record<PayRailsDispute['type'], string> = {
 // =============================================================================
 
 const EXPORT_FORMAT_COLOR: Record<PayRailsExport['format'], string> = {
-  PDF: '#1D9BF0',
+  PDF: accent,
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };
@@ -176,11 +177,11 @@ function auditColor(action: string): string {
   switch (action) {
     case 'charge_received': return '#22C55E';
     case 'payout_initiated': return '#EF4444';
-    case 'settlement_closed': return '#1D9BF0';
+    case 'settlement_closed': return accent;
     case 'refund_processed': return '#F59E0B';
     case 'control_updated': return '#A1A1AA';
-    case 'account_created': return '#1D9BF0';
-    case 'transfer_completed': return '#1D9BF0';
+    case 'account_created': return accent;
+    case 'transfer_completed': return accent;
     case 'dispute_opened': return '#F59E0B';
     default: return '#A1A1AA';
   }
@@ -339,13 +340,13 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
                 <View
                   style={[
                     s.badge,
-                    { backgroundColor: isPrimary ? '#22C55E20' : '#1D9BF020' },
+                    { backgroundColor: isPrimary ? '#22C55E20' : `${accent}20` },
                   ]}
                 >
                   <ThemedText
                     style={[
                       s.badgeText,
-                      { color: isPrimary ? '#22C55E' : '#1D9BF0' },
+                      { color: isPrimary ? '#22C55E' : accent },
                     ]}
                   >
                     {item.type}

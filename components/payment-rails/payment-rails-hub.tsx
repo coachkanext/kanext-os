@@ -9,7 +9,8 @@ import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import {
@@ -43,10 +44,10 @@ const STATUS_COLORS: Record<string, string> = {
   completed: '#22C55E',
   pending: '#F59E0B',
   failed: '#EF4444',
-  processing: '#1D9BF0',
+  processing: accent,
   refunded: '#A1A1AA',
   settled: '#22C55E',
-  'in-progress': '#1D9BF0',
+  'in-progress': accent,
   approved: '#22C55E',
   denied: '#EF4444',
   processed: '#22C55E',
@@ -78,6 +79,7 @@ function StatusBadge({ status }: { status: string }) {
 function MethodBadge({ method }: { method: PaymentMethod }) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   return (
     <View style={[styles.methodBadge, { backgroundColor: colors.backgroundTertiary }]}>
       <ThemedText style={[styles.methodBadgeText, { color: colors.textSecondary }]}>
@@ -198,7 +200,7 @@ function HomeView() {
     { label: 'Total Collected', value: `$${snapshot.totalCollected.toLocaleString()}`, color: '#22C55E' },
     { label: 'Total Paid Out', value: `$${snapshot.totalPaidOut.toLocaleString()}`, color: '#EF4444' },
     { label: 'Pending', value: String(snapshot.pendingPayments), color: '#F59E0B' },
-    { label: 'Refunds', value: String(snapshot.refundsProcessed), color: '#1D9BF0' },
+    { label: 'Refunds', value: String(snapshot.refundsProcessed), color: accent },
     { label: 'Net Balance', value: `$${snapshot.settlementBalance.toLocaleString()}`, color: '#FFFFFF' },
   ];
 
@@ -502,7 +504,7 @@ function ReconciliationView() {
                     style={[styles.reviewButton, { borderColor: colors.border }]}
                     onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                   >
-                    <ThemedText style={[styles.reviewButtonText, { color: '#1D9BF0' }]}>Review</ThemedText>
+                    <ThemedText style={[styles.reviewButtonText, { color: accent }]}>Review</ThemedText>
                   </Pressable>
                 </View>
               </View>

@@ -13,7 +13,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
 import {
   PAYMENT_RAILS_SUB_TABS,
@@ -57,6 +57,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 const SUB_TABS = PAYMENT_RAILS_SUB_TABS.map((t) => ({ id: t.id, label: t.label }));
 
 // =============================================================================
@@ -201,8 +203,8 @@ function RailsHealthStrip({
               Failed {health.failedCount}
             </ThemedText>
           </View>
-          <View style={[s.countBadge, { backgroundColor: '#1D9BF020' }]}>
-            <ThemedText style={[s.countBadgeText, { color: '#1D9BF0' }]}>
+          <View style={[s.countBadge, { backgroundColor: `${ACCENT}20` }]}>
+            <ThemedText style={[s.countBadgeText, { color: ACCENT }]}>
               Blocked {health.blockedCount}
             </ThemedText>
           </View>

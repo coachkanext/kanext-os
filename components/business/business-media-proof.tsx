@@ -16,7 +16,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import { EntityScopeBar } from '@/components/business/entity-scope-bar';
 import {
   BizCard,
@@ -56,6 +56,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.business;
 const BP = BusinessPalette;
 
 // =============================================================================
@@ -409,7 +411,7 @@ function verificationLabel(v: VerificationLevel): string {
 function verificationColor(v: VerificationLevel): string {
   switch (v) {
     case 'self_reported': return BP.ash;
-    case 'evidence_backed': return '#1D9BF0';
+    case 'evidence_backed': return ACCENT;
     case 'third_party_validated': return BP.emerald;
   }
 }

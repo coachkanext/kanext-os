@@ -1,6 +1,9 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useAccentColor } from '@/hooks/use-accent-color';
+
+const accent = useAccentColor();
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -55,6 +58,6 @@ const styles = StyleSheet.create({
   link: {
     lineHeight: 30,
     fontSize: 16,
-    color: '#1D9BF0',
+    color: accent,
   },
 });

@@ -186,15 +186,15 @@ function KeyDrivers({ drivers, colors }: { drivers: string[]; colors: typeof Col
 function SimTypeBadge({ simType, colors }: { simType: string; colors: typeof Colors.light }) {
   // Map type to display name + color
   const typeMap: Record<string, { label: string; color: string }> = {
-    game: { label: 'Game Sim', color: '#1D9BF0' },
-    segment: { label: 'Segment', color: '#1D9BF0' },
+    game: { label: 'Game Sim', color: ACCENT },
+    segment: { label: 'Segment', color: ACCENT },
     'end-game': { label: 'End-Game', color: '#EF4444' },
     'system-sweep': { label: 'System Sweep', color: '#F59E0B' },
     'lineup-sandbox': { label: 'Lineup Sandbox', color: '#22C55E' },
     season: { label: 'Season', color: '#FFFFFF' },
-    'conference-postseason': { label: 'Conf / Postseason', color: '#1D9BF0' },
-    'counterfactual-roster': { label: 'Counterfactual', color: '#1D9BF0' },
-    'practice-transfer': { label: 'Practice Transfer', color: '#1D9BF0' },
+    'conference-postseason': { label: 'Conf / Postseason', color: ACCENT },
+    'counterfactual-roster': { label: 'Counterfactual', color: ACCENT },
+    'practice-transfer': { label: 'Practice Transfer', color: ACCENT },
   };
 
   const info = typeMap[simType] ?? { label: simType, color: ACCENT };

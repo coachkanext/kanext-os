@@ -7,7 +7,9 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, TextInput } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import { OUTREACH_EVENTS, type OutreachEvent, type OutreachEventType } from '@/data/mock-education-home';
 
 interface Props {
@@ -16,8 +18,8 @@ interface Props {
 }
 
 const TYPE_COLORS: Record<OutreachEventType, string> = {
-  high_school_visit: '#1D9BF0',
-  college_fair: '#1D9BF0',
+  high_school_visit: ACCENT,
+  college_fair: ACCENT,
   open_house: '#22C55E',
   virtual_info_session: '#F59E0B',
   community_event: '#EF4444',

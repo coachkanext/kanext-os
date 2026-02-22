@@ -9,6 +9,9 @@ import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAccentColor } from '@/hooks/use-accent-color';
+
+const accent = useAccentColor();
 
 export type RecruitingViewMode = 'needs' | 'bigboard' | 'crm' | 'database';
 
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: accent,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-messages-v3';
 import type { RoomV3 } from '@/types';
@@ -23,6 +24,7 @@ interface RoomRowV3Props {
 export function RoomRowV3({ room, onPress }: RoomRowV3Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   return (
     <Pressable
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: accent,
     marginTop: 4,
   },
 });

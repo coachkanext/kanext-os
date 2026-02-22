@@ -19,7 +19,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, ModeColors } from '@/constants/theme'
+;
 import { nationalPool, toGlobalPlayerCard, type NationalPlayer } from '@/data/national-pool';
 import { openPlayerCard } from '@/utils/global-entity-sheets';
 import {
@@ -247,7 +248,7 @@ export function RecruitingDatabaseV2({ colors }: Props) {
               {player.fullName}
             </ThemedText>
             {topBadge && (
-              <View style={[styles.badgeDot, { backgroundColor: topBadge.level === 'Gold' ? '#1D9BF0' : '#A1A1AA' }]} />
+              <View style={[styles.badgeDot, { backgroundColor: topBadge.level === 'Gold' ? accent : '#A1A1AA' }]} />
             )}
           </View>
           <ThemedText style={[styles.school, { color: colors.textSecondary }]} numberOfLines={1}>

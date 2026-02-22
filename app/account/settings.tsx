@@ -13,6 +13,7 @@ import Constants from 'expo-constants';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useAppContext } from '@/context/app-context';
 
 const PREFS_KEY = '@kanext_user_prefs';
@@ -36,6 +37,7 @@ const TAB_OPTIONS = ['Home', 'Search', 'Nexus', 'Activity', 'Organization'];
 export default function AccountSettingsScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
@@ -157,7 +159,7 @@ export default function AccountSettingsScreen() {
               <Switch
                 value={prefs.hapticsEnabled}
                 onValueChange={(val) => savePrefs({ ...prefs, hapticsEnabled: val })}
-                trackColor={{ false: colors.backgroundTertiary, true: colors.tint }}
+                trackColor={{ false: colors.backgroundTertiary, true: accent }}
               />
             </View>
             <View style={[styles.divider, { backgroundColor: colors.divider }]} />
@@ -166,7 +168,7 @@ export default function AccountSettingsScreen() {
               <Switch
                 value={prefs.reduceMotion}
                 onValueChange={(val) => savePrefs({ ...prefs, reduceMotion: val })}
-                trackColor={{ false: colors.backgroundTertiary, true: colors.tint }}
+                trackColor={{ false: colors.backgroundTertiary, true: accent }}
               />
             </View>
           </View>
@@ -181,7 +183,7 @@ export default function AccountSettingsScreen() {
               <Switch
                 value={prefs.notificationsEnabled}
                 onValueChange={(val) => savePrefs({ ...prefs, notificationsEnabled: val })}
-                trackColor={{ false: colors.backgroundTertiary, true: colors.tint }}
+                trackColor={{ false: colors.backgroundTertiary, true: accent }}
               />
             </View>
           </View>
@@ -230,7 +232,7 @@ export default function AccountSettingsScreen() {
                 }}
               >
                 <Text style={[styles.pickerOptionText, { color: colors.text }]}>{tab}</Text>
-                {prefs.defaultTab === tab && <IconSymbol name="checkmark" size={18} color={colors.tint} />}
+                {prefs.defaultTab === tab && <IconSymbol name="checkmark" size={18} color={accent} />}
               </Pressable>
             ))}
           </View>

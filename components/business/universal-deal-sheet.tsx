@@ -9,10 +9,11 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
+
   type DealWorkspace,
   type RiskItem,
   RISK_ITEMS,
@@ -25,6 +26,8 @@ import {
   isFounder,
   isBoardLevel,
 } from '@/utils/business-rbac';
+
+const ACCENT = MODE_ACCENT.business;
 
 // =============================================================================
 // PROPS
@@ -41,7 +44,7 @@ interface UniversalDealSheetProps {
 // =============================================================================
 
 const DEAL_STATUS_COLORS: Record<string, string> = {
-  exploring: '#1D9BF0',
+  exploring: ACCENT,
   diligence: '#F59E0B',
   offer: '#22C55E',
   closed: '#A1A1AA',
@@ -57,14 +60,14 @@ const DEAL_STATUS_LABELS: Record<string, string> = {
 const DILIGENCE_STATUS_COLORS: Record<string, string> = {
   complete: '#22C55E',
   in_progress: '#F59E0B',
-  pending: '#1D9BF0',
+  pending: ACCENT,
   blocked: '#EF4444',
 };
 
 const RISK_SEVERITY_COLORS: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#1D9BF0',
+  medium: ACCENT,
   low: '#A1A1AA',
 };
 
@@ -72,7 +75,7 @@ const APPROVAL_STATUS_COLORS: Record<string, string> = {
   approved: '#22C55E',
   pending: '#F59E0B',
   rejected: '#EF4444',
-  in_review: '#1D9BF0',
+  in_review: ACCENT,
 };
 
 const PIPELINE_GATE_COLORS: Record<string, string> = {
@@ -435,7 +438,7 @@ function OverviewTab({ deal, colors }: { deal: DealWorkspace; colors: typeof Col
           {deal.timeline.map((event, idx) => (
             <View key={idx} style={styles.timelineRow}>
               <View style={styles.timelineDotCol}>
-                <View style={[styles.timelineDot, { backgroundColor: idx === 0 ? '#1D9BF0' : colors.textTertiary }]} />
+                <View style={[styles.timelineDot, { backgroundColor: idx === 0 ? ACCENT : colors.textTertiary }]} />
                 {deal.timeline && idx < deal.timeline.length - 1 && (
                   <View style={[styles.timelineLine, { backgroundColor: colors.border }]} />
                 )}
@@ -683,7 +686,7 @@ function FinancialModelTab({ deal, colors }: { deal: DealWorkspace; colors: type
               <ThemedText style={[styles.finTableCell, styles.finCol, { color: '#EF4444' }]}>
                 {row.downside}
               </ThemedText>
-              <ThemedText style={[styles.finTableCell, styles.finCol, { color: '#1D9BF0' }]}>
+              <ThemedText style={[styles.finTableCell, styles.finCol, { color: ACCENT }]}>
                 {row.upside}
               </ThemedText>
             </View>
@@ -709,7 +712,7 @@ function FinancialModelTab({ deal, colors }: { deal: DealWorkspace; colors: type
                   <View
                     style={[
                       styles.costPctBarFill,
-                      { width: `${item.pct}%`, backgroundColor: '#1D9BF0' },
+                      { width: `${item.pct}%`, backgroundColor: ACCENT },
                     ]}
                   />
                 </View>
@@ -741,7 +744,7 @@ function FinancialModelTab({ deal, colors }: { deal: DealWorkspace; colors: type
               }
             </ThemedText>
           </ScenarioCard>
-          <ScenarioCard label="Upside" color="#1D9BF0" colors={colors}>
+          <ScenarioCard label="Upside" color={ACCENT} colors={colors}>
             <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
               {deal.revenueProjections && deal.revenueProjections.length > 0
                 ? `Revenue hits ${deal.revenueProjections[deal.revenueProjections.length - 1].upside}. Strong platform adoption, media partnerships, and talent pipeline activation.`
@@ -1085,7 +1088,7 @@ function AuditLogTab({
 
   const typeColor = (type: string) => {
     switch (type) {
-      case 'access': return '#1D9BF0';
+      case 'access': return ACCENT;
       case 'action': return '#F59E0B';
       case 'document': return '#22C55E';
       default: return '#A1A1AA';

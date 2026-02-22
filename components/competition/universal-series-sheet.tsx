@@ -9,10 +9,11 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
+
   type SeriesObject,
   type TeamStanding,
   type OpsTask,
@@ -40,6 +41,8 @@ import {
   isFullAccess,
 } from '@/utils/competition-rbac';
 
+const ACCENT = MODE_ACCENT.competition;
+
 // =============================================================================
 // PROPS
 // =============================================================================
@@ -57,7 +60,7 @@ interface UniversalSeriesSheetProps {
 // =============================================================================
 
 const FORMAT_COLORS: Record<string, string> = {
-  league: '#1D9BF0',
+  league: ACCENT,
   tournament: '#F59E0B',
 };
 
@@ -65,7 +68,7 @@ const STATUS_COLORS: Record<string, string> = {
   preseason: '#A1A1AA',
   live: '#22C55E',
   completed: '#52525B',
-  upcoming: '#1D9BF0',
+  upcoming: ACCENT,
 };
 
 const OPS_READINESS_ITEMS = [
@@ -81,7 +84,7 @@ const DELIVERABLE_STATUS_COLORS: Record<string, string> = {
   on_track: '#22C55E',
   at_risk: '#F59E0B',
   overdue: '#EF4444',
-  delivered: '#1D9BF0',
+  delivered: ACCENT,
 };
 
 const PAYOUT_STATUS_COLORS: Record<string, string> = {
@@ -99,7 +102,7 @@ const COMPLIANCE_STATUS_COLORS: Record<string, string> = {
 };
 
 const EVENT_STATUS_COLORS: Record<string, string> = {
-  upcoming: '#1D9BF0',
+  upcoming: ACCENT,
   live: '#22C55E',
   completed: '#A1A1AA',
 };
@@ -961,7 +964,7 @@ function FinanceTab({
             label="Sponsorship"
             value="$1.6M"
             subtitle="3 sponsors active"
-            color="#1D9BF0"
+            color={ACCENT}
             colors={colors}
           />
         </View>
@@ -989,7 +992,7 @@ function FinanceTab({
       <SectionCard title="Budget Health" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Net" value="+$600K" color="#22C55E" colors={colors} />
-          <StatBlock label="Runway" value="16 wks" color="#1D9BF0" colors={colors} />
+          <StatBlock label="Runway" value="16 wks" color={ACCENT} colors={colors} />
           <StatBlock
             label="Status"
             value={series.financeReady ? 'Ready' : 'Pending'}
@@ -1260,7 +1263,7 @@ function MediaTab({ colors }: { colors: typeof Colors.light }) {
                 {item.time}
               </ThemedText>
             </View>
-            <ThemedText style={[styles.statusLabel, { color: '#1D9BF0' }]}>
+            <ThemedText style={[styles.statusLabel, { color: ACCENT }]}>
               {item.status.toUpperCase()}
             </ThemedText>
           </View>

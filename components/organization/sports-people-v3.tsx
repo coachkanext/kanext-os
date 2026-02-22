@@ -8,11 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable, TextInput } from 'react-native
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.sports;
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
+
 
 type ViewId = 'staff' | 'contacts' | 'directory';
 
@@ -154,7 +157,7 @@ function ContactsView({ colors, accentColor }: { colors: typeof Colors.light; ac
           <View style={s.contactHeader}>
             <View style={s.contactHeaderInfo}>
               <ThemedText style={[s.contactName, { color: colors.text }]}>{contact.name}</ThemedText>
-              <StatusBadge label={contact.relationship.toUpperCase()} color="#1D9BF0" />
+              <StatusBadge label={contact.relationship.toUpperCase()} color={ACCENT} />
             </View>
           </View>
           <View style={[s.contactMeta, { borderTopColor: colors.border }]}>

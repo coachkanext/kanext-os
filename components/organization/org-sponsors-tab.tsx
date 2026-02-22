@@ -16,7 +16,8 @@ import {
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import {
   SPONSORS_TABS,
   SPONSOR_STATUS_COLOR,
@@ -60,7 +61,7 @@ interface OrgSponsorsTabProps {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<SponsorReport['format'], string> = {
-  PDF: '#1D9BF0',
+  PDF: accent,
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };
@@ -109,9 +110,9 @@ function auditColor(action: string): string {
     case 'sponsor_created':
       return '#22C55E';
     case 'contract_signed':
-      return '#1D9BF0';
+      return accent;
     case 'fulfillment_logged':
-      return '#1D9BF0';
+      return accent;
     case 'fulfillment_verified':
       return '#22C55E';
     case 'invoice_sent':
@@ -119,7 +120,7 @@ function auditColor(action: string): string {
     case 'invoice_overdue':
       return '#EF4444';
     case 'asset_uploaded':
-      return '#1D9BF0';
+      return accent;
     default:
       return '#A1A1AA';
   }
@@ -740,8 +741,8 @@ export function OrgSponsorsTab({ colors, accentColor }: OrgSponsorsTabProps) {
                     Due: {item.dueDate}
                   </ThemedText>
                   {item.proofLinks.length > 0 && (
-                    <View style={[s.badge, { backgroundColor: '#1D9BF0' + '33', alignSelf: 'flex-start' }]}>
-                      <ThemedText style={[s.badgeText, { color: '#1D9BF0' }]}>
+                    <View style={[s.badge, { backgroundColor: accent + '33', alignSelf: 'flex-start' }]}>
+                      <ThemedText style={[s.badgeText, { color: accent }]}>
                         {item.proofLinks.length} proof{item.proofLinks.length > 1 ? 's' : ''}
                       </ThemedText>
                     </View>

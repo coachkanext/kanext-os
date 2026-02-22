@@ -8,16 +8,17 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { PROGRAM_TEAMS } from '@/data/mock-program-v2';
 import type { TeamLevel } from '@/data/mock-program-v2';
 
 const LEVEL_COLORS: Record<TeamLevel, string> = {
   varsity: '#FFFFFF',
-  jv: '#1D9BF0',
+  jv: accent,
   prep: '#F59E0B',
-  dev: '#1D9BF0',
+  dev: accent,
 };
 
 const LEVEL_LABELS: Record<TeamLevel, string> = {
@@ -30,6 +31,7 @@ const LEVEL_LABELS: Record<TeamLevel, string> = {
 export function ProgramTeams() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   return (
     <ScrollView

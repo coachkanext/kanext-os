@@ -11,11 +11,13 @@ import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useAppContext } from '@/context/app-context';
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state, setAuthState, logout } = useAppContext();
@@ -93,8 +95,8 @@ export default function SettingsScreen() {
                 ]}
                 onPress={handleLogin}
               >
-                <IconSymbol name="person.crop.circle.badge.plus" size={20} color={colors.tint} />
-                <Text style={[styles.rowLabel, { color: colors.tint }]}>Log In</Text>
+                <IconSymbol name="person.crop.circle.badge.plus" size={20} color={accent} />
+                <Text style={[styles.rowLabel, { color: accent }]}>Log In</Text>
               </Pressable>
             )}
           </View>

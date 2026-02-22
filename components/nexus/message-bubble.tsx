@@ -18,6 +18,7 @@ import { StructuredBlocks } from './structured-block';
 import { ReceiptBubble } from './receipt-bubble';
 import { ConfirmationBubble } from './confirmation-bubble';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-nexus';
 import { InlinePlayerCard } from './inline-player-card';
@@ -60,6 +61,7 @@ export function MessageBubble({
 }: MessageBubbleProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const isUser = message.role === 'user';
   const v2 = isMessageV2(message) ? message : null;
 
@@ -127,7 +129,7 @@ export function MessageBubble({
               ]}
               onPress={() => onEscalationChoice?.(message.id, opt.action)}
             >
-              <ThemedText style={[styles.escalationOptionNum, { color: colors.tint }]}>
+              <ThemedText style={[styles.escalationOptionNum, { color: accent }]}>
                 {i + 1}
               </ThemedText>
               <ThemedText style={[styles.escalationOptionLabel, { color: colors.text }]}>

@@ -20,7 +20,9 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import {
   isPresident,
@@ -83,13 +85,13 @@ interface AgendaEvent {
 }
 
 const EVENT_TYPE_COLOR: Record<AgendaEventType, string> = {
-  class: '#1D9BF0',
-  meeting: '#1D9BF0',
+  class: ACCENT,
+  meeting: ACCENT,
   event: '#F59E0B',
   deadline: '#EF4444',
   'office-hours': '#22C55E',
-  admin: '#1D9BF0',
-  chapel: '#1D9BF0',
+  admin: ACCENT,
+  chapel: ACCENT,
 };
 
 const EVENT_TYPE_LABEL: Record<AgendaEventType, string> = {
@@ -364,11 +366,11 @@ interface AcademicDeadline {
 }
 
 const DEADLINE_CATEGORY_COLOR: Record<DeadlineCategory, string> = {
-  academic: '#1D9BF0',
-  registration: '#1D9BF0',
+  academic: ACCENT,
+  registration: ACCENT,
   financial: '#22C55E',
   administrative: '#F59E0B',
-  ceremony: '#1D9BF0',
+  ceremony: ACCENT,
 };
 
 const ACADEMIC_DEADLINES: AcademicDeadline[] = [
@@ -411,7 +413,7 @@ function SectionHeader({ title, colors, count, icon }: { title: string; colors: 
 
 function Card({ colors, children, highlight }: { colors: typeof Colors.light; children: React.ReactNode; highlight?: boolean }) {
   return (
-    <View style={[sh.card, { backgroundColor: colors.card, borderColor: highlight ? '#1D9BF0' : colors.border }]}>
+    <View style={[sh.card, { backgroundColor: colors.card, borderColor: highlight ? ACCENT : colors.border }]}>
       {children}
     </View>
   );
@@ -481,8 +483,8 @@ function AgendaDayBlock({ dayLabel, events, colors, role }: { dayLabel: string; 
                 </ThemedText>
               )}
               {ev.adminOnly && (
-                <View style={[s.adminBadge, { backgroundColor: '#1D9BF020' }]}>
-                  <ThemedText style={[s.adminBadgeText, { color: '#1D9BF0' }]}>ADMIN</ThemedText>
+                <View style={[s.adminBadge, { backgroundColor: ACCENT + '20' }]}>
+                  <ThemedText style={[s.adminBadgeText, { color: ACCENT }]}>ADMIN</ThemedText>
                 </View>
               )}
             </View>
@@ -578,7 +580,7 @@ function WeekView({ colors, role }: { colors: typeof Colors.light; role: Educati
               <Card colors={colors} highlight={isToday}>
                 <View style={s.weekDayHeader}>
                   <View style={s.weekDayLeft}>
-                    <View style={[s.weekDayBadge, { backgroundColor: isToday ? '#1D9BF0' : colors.backgroundTertiary }]}>
+                    <View style={[s.weekDayBadge, { backgroundColor: isToday ? ACCENT : colors.backgroundTertiary }]}>
                       <ThemedText style={[s.weekDayShort, { color: isToday ? '#FFFFFF' : colors.text }]}>
                         {day.shortDay}
                       </ThemedText>
@@ -703,7 +705,7 @@ function MonthView({ colors, role }: { colors: typeof Colors.light; role: Educat
                     key={day.date}
                     style={[
                       s.monthDayCell,
-                      day.isToday && { backgroundColor: '#1D9BF020', borderRadius: 8 },
+                      day.isToday && { backgroundColor: ACCENT + '20', borderRadius: 8 },
                       isSelected && !day.isToday && { backgroundColor: colors.backgroundTertiary, borderRadius: 8 },
                     ]}
                     onPress={() => {
@@ -713,7 +715,7 @@ function MonthView({ colors, role }: { colors: typeof Colors.light; role: Educat
                   >
                     <ThemedText style={[
                       s.monthDayNumber,
-                      { color: day.isToday ? '#1D9BF0' : colors.text },
+                      { color: day.isToday ? ACCENT : colors.text },
                       day.isToday && { fontWeight: '800' },
                     ]}>
                       {day.date}
@@ -924,15 +926,15 @@ function RoomsView({ colors, role }: { colors: typeof Colors.light; role: Educat
                   </View>
                   {room.bookable && room.status === 'available' && (isFacultyLevel(role) || (isStudent(role) && (room.type === 'study' || room.type === 'conference'))) && (
                     <Pressable
-                      style={({ pressed }) => [s.bookButton, { borderColor: '#1D9BF0', opacity: pressed ? 0.7 : 1 }]}
+                      style={({ pressed }) => [s.bookButton, { borderColor: ACCENT, opacity: pressed ? 0.7 : 1 }]}
                       onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                     >
-                      <ThemedText style={[s.bookButtonText, { color: '#1D9BF0' }]}>Book</ThemedText>
+                      <ThemedText style={[s.bookButtonText, { color: ACCENT }]}>Book</ThemedText>
                     </Pressable>
                   )}
                   {room.adminOnly && (
-                    <View style={[s.adminRoomBadge, { backgroundColor: '#1D9BF020' }]}>
-                      <ThemedText style={[s.adminRoomText, { color: '#1D9BF0' }]}>ADMIN</ThemedText>
+                    <View style={[s.adminRoomBadge, { backgroundColor: ACCENT + '20' }]}>
+                      <ThemedText style={[s.adminRoomText, { color: ACCENT }]}>ADMIN</ThemedText>
                     </View>
                   )}
                 </View>
@@ -1148,8 +1150,8 @@ function DeadlinesView({ colors, role }: { colors: typeof Colors.light; role: Ed
                       </ThemedText>
                     </View>
                     {dl.adminOnly && (
-                      <View style={[s.adminBadge, { backgroundColor: '#1D9BF020' }]}>
-                        <ThemedText style={[s.adminBadgeText, { color: '#1D9BF0' }]}>ADMIN</ThemedText>
+                      <View style={[s.adminBadge, { backgroundColor: ACCENT + '20' }]}>
+                        <ThemedText style={[s.adminBadgeText, { color: ACCENT }]}>ADMIN</ThemedText>
                       </View>
                     )}
                   </View>

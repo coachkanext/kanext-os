@@ -9,7 +9,9 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
@@ -54,7 +56,7 @@ interface UniversalProgramSheetProps {
 
 const LEVEL_COLORS: Record<string, string> = {
   certificate: '#A1A1AA',
-  associate: '#1D9BF0',
+  associate: ACCENT,
   bachelor: '#22C55E',
   master: '#F59E0B',
   doctoral: '#EF4444',
@@ -67,7 +69,7 @@ const PROGRAM_STATUS_COLORS: Record<string, string> = {
 };
 
 const STUDENT_STATUS_COLORS: Record<string, string> = {
-  applicant: '#1D9BF0',
+  applicant: ACCENT,
   enrolled: '#22C55E',
   leave: '#F59E0B',
   withdrawn: '#EF4444',
@@ -77,7 +79,7 @@ const STUDENT_STATUS_COLORS: Record<string, string> = {
 const COURSE_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
   completed: '#A1A1AA',
-  planned: '#1D9BF0',
+  planned: ACCENT,
   cancelled: '#EF4444',
 };
 
@@ -94,12 +96,12 @@ const RISK_COLORS: Record<string, string> = {
 };
 
 const BUDGET_CATEGORY_COLORS: Record<string, string> = {
-  personnel: '#1D9BF0',
+  personnel: ACCENT,
   facilities: '#F59E0B',
   technology: '#22C55E',
   scholarships: '#EF4444',
   operations: '#A1A1AA',
-  marketing: '#1D9BF0',
+  marketing: ACCENT,
 };
 
 const PAYMENT_STATUS_COLORS: Record<string, string> = {
@@ -113,14 +115,14 @@ const COMPLIANCE_STATUS_COLORS: Record<string, string> = {
   compliant: '#22C55E',
   pending: '#F59E0B',
   non_compliant: '#EF4444',
-  under_review: '#1D9BF0',
+  under_review: ACCENT,
   not_applicable: '#A1A1AA',
 };
 
 const ACCREDITATION_STATUS_COLORS: Record<string, string> = {
   accredited: '#22C55E',
   provisional: '#F59E0B',
-  under_review: '#1D9BF0',
+  under_review: ACCENT,
   revoked: '#EF4444',
 };
 
@@ -153,7 +155,7 @@ const MOCK_KEY_DATES = [
 
 const DATE_STATUS_COLORS: Record<string, string> = {
   passed: '#A1A1AA',
-  upcoming: '#1D9BF0',
+  upcoming: ACCENT,
   today: '#22C55E',
 };
 
@@ -235,7 +237,7 @@ const MOCK_CALENDAR = [
 ];
 
 const CALENDAR_TYPE_COLORS: Record<string, string> = {
-  registration: '#1D9BF0',
+  registration: ACCENT,
   academic: '#22C55E',
   exam: '#EF4444',
   break: '#F59E0B',
@@ -292,12 +294,12 @@ const MOCK_FINANCE = {
   budgetSpent: '$780,000',
   budgetRemaining: '$470,000',
   spendByCategory: [
-    { category: 'Personnel', amount: '$520,000', percentage: 67, color: '#1D9BF0' },
+    { category: 'Personnel', amount: '$520,000', percentage: 67, color: ACCENT },
     { category: 'Facilities', amount: '$95,000', percentage: 12, color: '#F59E0B' },
     { category: 'Technology', amount: '$65,000', percentage: 8, color: '#22C55E' },
     { category: 'Scholarships', amount: '$60,000', percentage: 8, color: '#EF4444' },
     { category: 'Operations', amount: '$25,000', percentage: 3, color: '#A1A1AA' },
-    { category: 'Marketing', amount: '$15,000', percentage: 2, color: '#1D9BF0' },
+    { category: 'Marketing', amount: '$15,000', percentage: 2, color: ACCENT },
   ],
   scholarshipFunds: {
     total: '$200,000',
@@ -333,7 +335,7 @@ const MOCK_PAYMENT_RAILS = {
 
 const REFUND_STATUS_COLORS: Record<string, string> = {
   pending: '#F59E0B',
-  processing: '#1D9BF0',
+  processing: ACCENT,
   completed: '#22C55E',
   denied: '#EF4444',
 };
@@ -369,7 +371,7 @@ const MOCK_COMPLIANCE = {
 };
 
 const AUDIT_STATUS_COLORS: Record<string, string> = {
-  in_progress: '#1D9BF0',
+  in_progress: ACCENT,
   not_started: '#A1A1AA',
   completed: '#22C55E',
   overdue: '#EF4444',
@@ -580,9 +582,9 @@ function ProgramHeader({
       {/* KPIs (gated) */}
       {(fullAccess || programDir) && (
         <View style={styles.quickChipRow}>
-          <View style={[styles.quickChip, { backgroundColor: '#1D9BF022' }]}>
-            <IconSymbol name="person.2.fill" size={12} color="#1D9BF0" />
-            <ThemedText style={[styles.quickChipText, { color: '#1D9BF0' }]}>
+          <View style={[styles.quickChip, { backgroundColor: ACCENT + '22' }]}>
+            <IconSymbol name="person.2.fill" size={12} color={ACCENT} />
+            <ThemedText style={[styles.quickChipText, { color: ACCENT }]}>
               {enrolledCount} Enrolled
             </ThemedText>
           </View>
@@ -864,7 +866,7 @@ function CoursesTab({
                 {course.term}
               </ThemedText>
             </View>
-            <ThemedText style={[styles.statusLabel, { color: '#1D9BF0' }]}>
+            <ThemedText style={[styles.statusLabel, { color: ACCENT }]}>
               PLANNED
             </ThemedText>
           </View>
@@ -1197,7 +1199,7 @@ function FinanceTab({
             label="Allocated"
             value={MOCK_FINANCE.budgetAllocated}
             subtitle="FY 2025-26"
-            color="#1D9BF0"
+            color={ACCENT}
             colors={colors}
           />
           <FinanceCard
@@ -1240,7 +1242,7 @@ function FinanceTab({
       {/* Scholarship Funds */}
       <SectionCard title="Scholarship Funds" colors={colors}>
         <View style={styles.statRow}>
-          <StatBlock label="Total" value={MOCK_FINANCE.scholarshipFunds.total} color="#1D9BF0" colors={colors} />
+          <StatBlock label="Total" value={MOCK_FINANCE.scholarshipFunds.total} color={ACCENT} colors={colors} />
           <StatBlock label="Awarded" value={MOCK_FINANCE.scholarshipFunds.awarded} color="#22C55E" colors={colors} />
           <StatBlock label="Remaining" value={MOCK_FINANCE.scholarshipFunds.remaining} color="#F59E0B" colors={colors} />
         </View>
@@ -1281,7 +1283,7 @@ function PaymentRailsTab({
       {/* Payment Plans Overview */}
       <SectionCard title="Payment Plans Overview" colors={colors}>
         <View style={styles.statRow}>
-          <StatBlock label="Active Plans" value={String(MOCK_PAYMENT_RAILS.activePlans)} color="#1D9BF0" colors={colors} />
+          <StatBlock label="Active Plans" value={String(MOCK_PAYMENT_RAILS.activePlans)} color={ACCENT} colors={colors} />
           <StatBlock label="Current" value={String(MOCK_PAYMENT_RAILS.currentPlans)} color="#22C55E" colors={colors} />
           <StatBlock label="Delinquent" value={String(MOCK_PAYMENT_RAILS.delinquentAccounts)} color="#EF4444" colors={colors} />
         </View>
@@ -1344,7 +1346,7 @@ function PaymentRailsTab({
       <SectionCard title="Financial Aid Summary" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Total Awarded" value={MOCK_PAYMENT_RAILS.financialAid.totalAwarded} color="#22C55E" colors={colors} />
-          <StatBlock label="Recipients" value={String(MOCK_PAYMENT_RAILS.financialAid.studentsReceiving)} color="#1D9BF0" colors={colors} />
+          <StatBlock label="Recipients" value={String(MOCK_PAYMENT_RAILS.financialAid.studentsReceiving)} color={ACCENT} colors={colors} />
         </View>
         {isDetailedView && (
           <View style={{ marginTop: Spacing.sm }}>
@@ -1520,16 +1522,16 @@ function ReportsTab({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Retention Metrics" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="1st → 2nd Year" value={`${MOCK_REPORTS.retentionMetrics.firstToSecondYear}%`} color="#22C55E" colors={colors} />
-          <StatBlock label="Overall" value={`${MOCK_REPORTS.retentionMetrics.overallRetention}%`} color="#1D9BF0" colors={colors} />
+          <StatBlock label="Overall" value={`${MOCK_REPORTS.retentionMetrics.overallRetention}%`} color={ACCENT} colors={colors} />
           <StatBlock label="Attrition" value={`${MOCK_REPORTS.retentionMetrics.attritionRate}%`} color="#EF4444" colors={colors} />
         </View>
       </SectionCard>
 
       {/* Grade Distributions */}
       <SectionCard title="Grade Distributions" colors={colors}>
-        <View style={[styles.gpaHighlight, { backgroundColor: '#1D9BF022', borderColor: '#1D9BF033' }]}>
-          <ThemedText style={[styles.gpaLabel, { color: '#1D9BF0' }]}>Program Average GPA</ThemedText>
-          <ThemedText style={[styles.gpaValue, { color: '#1D9BF0' }]}>{MOCK_REPORTS.gradeDistributions.programGPA.toFixed(2)}</ThemedText>
+        <View style={[styles.gpaHighlight, { backgroundColor: ACCENT + '22', borderColor: ACCENT + '33' }]}>
+          <ThemedText style={[styles.gpaLabel, { color: ACCENT }]}>Program Average GPA</ThemedText>
+          <ThemedText style={[styles.gpaValue, { color: ACCENT }]}>{MOCK_REPORTS.gradeDistributions.programGPA.toFixed(2)}</ThemedText>
         </View>
         {MOCK_REPORTS.gradeDistributions.averageByYear.map((year, index) => (
           <View
@@ -1550,7 +1552,7 @@ function ReportsTab({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Graduation Rates" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="4-Year" value={`${MOCK_REPORTS.graduationRates.fourYear}%`} color="#22C55E" colors={colors} />
-          <StatBlock label="5-Year" value={`${MOCK_REPORTS.graduationRates.fiveYear}%`} color="#1D9BF0" colors={colors} />
+          <StatBlock label="5-Year" value={`${MOCK_REPORTS.graduationRates.fiveYear}%`} color={ACCENT} colors={colors} />
           <StatBlock label="6-Year" value={`${MOCK_REPORTS.graduationRates.sixYear}%`} color="#F59E0B" colors={colors} />
         </View>
         <ThemedText style={[styles.captionText, { color: colors.textSecondary, textAlign: 'center', marginTop: Spacing.sm }]}>

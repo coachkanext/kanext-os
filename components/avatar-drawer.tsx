@@ -35,6 +35,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useAppContext } from '@/context/app-context';
 import { useAuth } from '@/context/auth-context';
 import { getOrgById } from '@/data/mock-memberships';
@@ -72,6 +73,7 @@ interface AvatarDrawerProps {
 export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawerProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state, switchContext, setActiveView } = useAppContext();
@@ -350,7 +352,7 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
                         {view.org_display_name}
                       </Text>
                       {isCurrentView && (
-                        <IconSymbol name="checkmark" size={14} color={colors.tint} />
+                        <IconSymbol name="checkmark" size={14} color={accent} />
                       )}
                     </View>
                     <Text style={[styles.viewRoleTitle, { color: colors.textSecondary }]} numberOfLines={1}>

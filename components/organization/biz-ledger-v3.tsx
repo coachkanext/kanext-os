@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.business;
 type ViewMode = 'transactions' | 'pending' | 'receipts';
 type TxnFilter = 'All' | 'Income' | 'Expense' | 'Payroll' | 'Legal' | 'Infrastructure' | 'Investment';
 
@@ -64,10 +66,10 @@ const RECEIPTS = [
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  Investment: '#1D9BF0',
-  Payroll: '#1D9BF0',
-  Infrastructure: '#1D9BF0',
-  Legal: '#1D9BF0',
+  Investment: ACCENT,
+  Payroll: ACCENT,
+  Infrastructure: ACCENT,
+  Legal: ACCENT,
   Expense: '#F59E0B',
   Income: '#22C55E',
 };

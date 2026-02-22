@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 type ViewId = 'venues' | 'assets' | 'logistics';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -68,7 +70,7 @@ const ASSETS: Asset[] = [
 
 const CONDITION_COLORS: Record<AssetCondition, string> = {
   Excellent: '#22C55E',
-  Good: '#1D9BF0',
+  Good: ACCENT,
   Fair: '#F59E0B',
 };
 
@@ -122,7 +124,7 @@ const TEAM_FREIGHT = [
 ];
 
 const FREIGHT_STATUS_COLOR: Record<string, string> = {
-  Shipped: '#1D9BF0',
+  Shipped: ACCENT,
   'In Transit': '#F59E0B',
   Delivered: '#22C55E',
 };

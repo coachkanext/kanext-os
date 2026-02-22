@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 type ViewId = 'faculty' | 'staff' | 'students';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -92,7 +94,7 @@ const SGA_OFFICERS = [
 
 const TENURE_COLOR: Record<TenureStatus, string> = {
   'Tenured': '#22C55E',
-  'Tenure-Track': '#1D9BF0',
+  'Tenure-Track': ACCENT,
   'Adjunct': '#F59E0B',
 };
 

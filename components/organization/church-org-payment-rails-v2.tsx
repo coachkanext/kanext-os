@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isElderLevel, isStaffLevel } from '@/utils/church-rbac';
 import {
@@ -44,6 +44,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'control_tower', label: 'Now' },
   { id: 'wallets', label: 'Wallets' },
@@ -57,11 +59,11 @@ const SUB_TABS = [
 ];
 
 const FUND_COLORS: Record<FundType, string> = {
-  general: '#1D9BF0',
+  general: ACCENT,
   missions: '#22C55E',
-  benevolence: '#1D9BF0',
+  benevolence: ACCENT,
   building: '#F59E0B',
-  youth: '#1D9BF0',
+  youth: ACCENT,
 };
 
 const FUND_LABELS: Record<FundType, string> = {
@@ -375,7 +377,7 @@ function ControlTowerTab({
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
       {renderLane('Needs Approval', '#F59E0B', needsApproval, 3)}
-      {renderLane('Ready to Release', '#1D9BF0', readyToRelease, 3)}
+      {renderLane('Ready to Release', ACCENT, readyToRelease, 3)}
       {renderLane('In Flight', '#22C55E', inFlight, 3)}
       {renderLane('Exceptions', '#EF4444', exceptions, 3)}
     </ScrollView>
@@ -439,7 +441,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#1D9BF0' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: ACCENT }]}>
                 {formatCurrency(item.pendingInflows)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -877,7 +879,7 @@ function ReturnsTab({
   const STAGE_COLORS: Record<RailsReturn['stage'], string> = {
     received: '#EF4444',
     evidence_requested: '#F59E0B',
-    submitted: '#1D9BF0',
+    submitted: ACCENT,
     resolved: '#22C55E',
   };
 
@@ -1008,7 +1010,7 @@ function ReceiptsTab({
 
           <View style={s.receiptFooter}>
             {rcp.immutable && (
-              <StatusBadge label="IMMUTABLE" color="#1D9BF0" />
+              <StatusBadge label="IMMUTABLE" color={ACCENT} />
             )}
             <View style={[s.receiptExportButton, { borderColor: colors.border }]}>
               <ThemedText style={[s.receiptExportText, { color: colors.textSecondary }]}>
@@ -1142,7 +1144,7 @@ function WalletDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Committed</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: ACCENT }]}>
               {formatCurrency(wallet.pendingInflows)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending In</ThemedText>

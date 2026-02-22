@@ -8,14 +8,15 @@ import { View, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { LinkChipRow } from './link-chip';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { ReceiptPayload, LinkChip } from '@/types/nexus-v2';
 
 const STATUS_CONFIG: Record<string, { icon: IconSymbolName; color: string; label: string }> = {
   done: { icon: 'checkmark.circle.fill', color: '#22C55E', label: 'Done' },
-  created: { icon: 'plus.circle.fill', color: '#1D9BF0', label: 'Created' },
-  posted: { icon: 'paperplane.fill', color: '#1D9BF0', label: 'Posted' },
+  created: { icon: 'plus.circle.fill', color: accent, label: 'Created' },
+  posted: { icon: 'paperplane.fill', color: accent, label: 'Posted' },
   updated: { icon: 'arrow.triangle.2.circlepath', color: '#F59E0B', label: 'Updated' },
   blocked: { icon: 'xmark.circle.fill', color: '#EF4444', label: 'Blocked' },
   escalated: { icon: 'arrow.up.right.circle.fill', color: '#F59E0B', label: 'Escalated' },
@@ -30,6 +31,7 @@ interface Props {
 export function RececeptBubble({ receipt, onChipPress }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const config = STATUS_CONFIG[receipt.status] || STATUS_CONFIG.done;
 
   return (

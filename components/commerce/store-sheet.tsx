@@ -9,9 +9,6 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { STORE_PRODUCTS, buildCommerceChain, type CartItem, type PaymentChain } from '@/data/commerce-data';
-
-
-
 type Stage = 'browse' | 'confirm' | 'receipt';
 
 interface Props {
@@ -252,8 +249,8 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   sizePillActive: {
-    backgroundColor: '#1D9BF0',
-    borderColor: '#1D9BF0',
+    backgroundColor: accent,
+    borderColor: accent,
   },
   sizePillText: {
     fontSize: 11,
@@ -271,7 +268,7 @@ const styles = StyleSheet.create({
 
   // Add to cart
   addBtn: {
-    backgroundColor: '#1D9BF0',
+    backgroundColor: accent,
     paddingVertical: 8,
     borderRadius: 12,
     alignItems: 'center',

@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 type ViewId = 'transactions' | 'pending' | 'receipts';
 
 const VIEWS: { id: ViewId; label: string }[] = [
@@ -85,18 +87,18 @@ const RECEIPTS: Receipt[] = [
 ];
 
 const CATEGORY_COLOR: Record<Exclude<TxCategory, 'All'>, string> = {
-  Tuition: '#1D9BF0',
-  Aid: '#1D9BF0',
-  Payroll: '#1D9BF0',
+  Tuition: ACCENT,
+  Aid: ACCENT,
+  Payroll: ACCENT,
   Grants: '#22C55E',
   Vendors: '#F59E0B',
-  Donations: '#1D9BF0',
+  Donations: ACCENT,
   Athletics: '#EF4444',
 };
 
 const PENDING_STATUS_COLOR: Record<string, string> = {
   'Awaiting Approval': '#F59E0B',
-  Processing: '#1D9BF0',
+  Processing: ACCENT,
   Scheduled: '#22C55E',
 };
 

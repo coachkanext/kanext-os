@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
 import {
@@ -58,6 +58,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'ledger', label: 'Ledger Truth' },
@@ -232,7 +234,7 @@ function OverviewTab({
   const healthTiles = [
     { icon: 'banknote.fill', label: 'Cash Position', value: formatCompactCurrency(truthStrip.cashPosition), color: accentColor },
     { icon: 'lock.fill', label: 'Commitments', value: formatCompactCurrency(truthStrip.commitments), color: '#F59E0B' },
-    { icon: 'arrow.down.circle.fill', label: 'Receivables', value: formatCompactCurrency(truthStrip.receivables), color: '#1D9BF0' },
+    { icon: 'arrow.down.circle.fill', label: 'Receivables', value: formatCompactCurrency(truthStrip.receivables), color: ACCENT },
     { icon: 'arrow.up.circle.fill', label: 'Payables', value: formatCompactCurrency(truthStrip.payables), color: '#EF4444' },
     { icon: 'exclamationmark.triangle.fill', label: 'Holds', value: String(truthStrip.holds), color: '#F59E0B' },
     { icon: 'checkmark.shield.fill', label: 'Audit', value: `${truthStrip.auditCompleteness}%`, color: '#22C55E' },
@@ -241,7 +243,7 @@ function OverviewTab({
   const urgencyColors: Record<string, string> = {
     high: '#EF4444',
     medium: '#F59E0B',
-    low: '#1D9BF0',
+    low: ACCENT,
   };
 
   const getBurnColor = (burn: number): string => {
@@ -311,7 +313,7 @@ function OverviewTab({
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Net Position</ThemedText>
             </View>
             <View style={s.fundSnapshotValueItem}>
-              <ThemedText style={[s.fundSnapshotAmount, { color: '#1D9BF0' }]}>
+              <ThemedText style={[s.fundSnapshotAmount, { color: ACCENT }]}>
                 {formatCompactCurrency(snap.housingRevenue)}
               </ThemedText>
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Housing Rev</ThemedText>
@@ -423,7 +425,7 @@ function OverviewTab({
         const severityColors: Record<string, string> = {
           critical: '#EF4444',
           warning: '#F59E0B',
-          info: '#1D9BF0',
+          info: ACCENT,
         };
         const sevColor = severityColors[risk.severity] || '#A1A1AA';
         return (
@@ -553,7 +555,7 @@ function LedgerTruthTab({
               </ThemedText>
             </View>
             <View style={s.fundMetaItem}>
-              <IconSymbol name="arrow.left.circle.fill" size={11} color="#1D9BF0" />
+              <IconSymbol name="arrow.left.circle.fill" size={11} color={ACCENT} />
               <ThemedText style={[s.fundMetaText, { color: colors.textTertiary }]} numberOfLines={1}>
                 CR: {item.creditAccount}
               </ThemedText>
@@ -672,7 +674,7 @@ function BudgetsTab({
                 </ThemedText>
                 <View style={s.budgetBadgeRow}>
                   <StatusBadge label={budget.institution.split(' ')[0].toUpperCase()} color={accentColor} />
-                  <StatusBadge label={budget.period.toUpperCase()} color="#1D9BF0" />
+                  <StatusBadge label={budget.period.toUpperCase()} color={ACCENT} />
                 </View>
               </View>
               <View style={s.budgetTotalCol}>
@@ -794,7 +796,7 @@ function ReceivablesTab({
 
   const statusColors: Record<string, string> = {
     outstanding: '#F59E0B',
-    partial: '#1D9BF0',
+    partial: ACCENT,
     paid: '#22C55E',
     overdue: '#EF4444',
     waived: '#A1A1AA',
@@ -847,7 +849,7 @@ function ReceivablesTab({
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
               <StatusBadge label={item.institution.split(' ')[0].toUpperCase()} color={accentColor} />
-              <StatusBadge label={TERM_WINDOW_LABELS[item.term].toUpperCase()} color="#1D9BF0" />
+              <StatusBadge label={TERM_WINDOW_LABELS[item.term].toUpperCase()} color={ACCENT} />
             </View>
             {item.holdFlag && item.holdReason && (
               <View style={s.holdWarning}>
@@ -901,7 +903,7 @@ function PayablesTab({
   const statusColors: Record<string, string> = {
     pending: '#F59E0B',
     approved: '#22C55E',
-    scheduled: '#1D9BF0',
+    scheduled: ACCENT,
     paid: '#22C55E',
     held: '#EF4444',
   };
@@ -1064,7 +1066,7 @@ function AidAwardsTab({
               </ThemedText>
               <View style={s.fundBadgeRow}>
                 <StatusBadge label={aidLabel.toUpperCase()} color={aidColor} />
-                <StatusBadge label={TERM_WINDOW_LABELS[item.term].toUpperCase()} color="#1D9BF0" />
+                <StatusBadge label={TERM_WINDOW_LABELS[item.term].toUpperCase()} color={ACCENT} />
               </View>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
@@ -1208,7 +1210,7 @@ function ApprovalsTab({
     const fundLabel = EDU_FUND_TYPE_LABELS[item.fundType];
     const statusColor = APPROVAL_STATUS_COLORS[item.status];
     const statusLabel = APPROVAL_STATUS_LABELS[item.status];
-    const indicatorColor = queueType === 'approval' ? '#F59E0B' : '#1D9BF0';
+    const indicatorColor = queueType === 'approval' ? '#F59E0B' : ACCENT;
     const indicatorLabel = queueType === 'approval' ? 'Needs Approval' : 'Needs Release';
 
     return (
@@ -1525,7 +1527,7 @@ function ReceivableDetailSheet({
 
   const statusColors: Record<string, string> = {
     outstanding: '#F59E0B',
-    partial: '#1D9BF0',
+    partial: ACCENT,
     paid: '#22C55E',
     overdue: '#EF4444',
     waived: '#A1A1AA',
@@ -1546,7 +1548,7 @@ function ReceivableDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={typeLabel.toUpperCase()} color={typeColor} />
         <StatusBadge label={sLabel.toUpperCase()} color={sColor} />
-        <StatusBadge label={TERM_WINDOW_LABELS[receivable.term].toUpperCase()} color="#1D9BF0" />
+        <StatusBadge label={TERM_WINDOW_LABELS[receivable.term].toUpperCase()} color={ACCENT} />
         <StatusBadge label={receivable.institution.split(' ')[0].toUpperCase()} color={accentColor} />
       </View>
 
@@ -1631,7 +1633,7 @@ function PayableDetailSheet({
   const statusColors: Record<string, string> = {
     pending: '#F59E0B',
     approved: '#22C55E',
-    scheduled: '#1D9BF0',
+    scheduled: ACCENT,
     paid: '#22C55E',
     held: '#EF4444',
   };
@@ -1753,7 +1755,7 @@ function AidAwardDetailSheet({
       {/* Badges */}
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={aidLabel.toUpperCase()} color={aidColor} />
-        <StatusBadge label={TERM_WINDOW_LABELS[award.term].toUpperCase()} color="#1D9BF0" />
+        <StatusBadge label={TERM_WINDOW_LABELS[award.term].toUpperCase()} color={ACCENT} />
         <StatusBadge label={award.institution.split(' ')[0].toUpperCase()} color={accentColor} />
       </View>
 

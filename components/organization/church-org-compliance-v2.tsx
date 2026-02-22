@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isElderLevel, isStaffLevel } from '@/utils/church-rbac';
 import {
@@ -55,6 +55,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'policies', label: 'Policies' },
@@ -500,7 +502,7 @@ function ControlsTab({
       const evidenceTypeLabel = EVIDENCE_TYPE_LABELS[item.evidenceType];
       const evidenceStatusColor = EVIDENCE_STATUS_COLORS[item.evidenceStatus];
       const evidenceStatusLabel = EVIDENCE_STATUS_LABELS[item.evidenceStatus];
-      const scopeColor = item.scope === 'whole_church' ? '#1D9BF0' : '#1D9BF0';
+      const scopeColor = item.scope === 'whole_church' ? ACCENT : ACCENT;
       return (
         <Pressable
           style={[s.controlCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -566,7 +568,7 @@ function AuditsTab({
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
       {audits.map((audit) => {
         const isExpanded = expandedAudit === audit.id;
-        const statusColor = audit.status === 'completed' ? '#22C55E' : audit.status === 'in_progress' ? '#F59E0B' : '#1D9BF0';
+        const statusColor = audit.status === 'completed' ? '#22C55E' : audit.status === 'in_progress' ? '#F59E0B' : ACCENT;
         const statusLabel = audit.status === 'completed' ? 'Completed' : audit.status === 'in_progress' ? 'In Progress' : 'Scheduled';
 
         // Finding counts by severity

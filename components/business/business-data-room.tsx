@@ -22,7 +22,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import { EntityScopeBar } from '@/components/business/entity-scope-bar';
 import {
   BizCard,
@@ -60,6 +60,8 @@ import type {
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.business;
 interface Props {
   colors: typeof Colors.light;
   role?: BusinessRoleLens;
@@ -182,7 +184,7 @@ function audienceColor(audience: DataPacket['audience']): string {
     case 'board':
       return BP.amber;
     case 'partner':
-      return '#1D9BF0';
+      return ACCENT;
     case 'acquirer':
       return BP.red;
   }
@@ -232,7 +234,7 @@ function auditActionColor(action: DataRoomAudit['action']): string {
     case 'download':
       return BP.champagneGold;
     case 'share':
-      return '#1D9BF0';
+      return ACCENT;
     case 'upload':
       return BP.emerald;
     case 'version_update':
@@ -446,7 +448,7 @@ const DOC_METADATA: Record<string, DocMetadata> = {
 function sensitivityColor(sensitivity: string): string {
   switch (sensitivity) {
     case 'Public': return BP.emerald;
-    case 'Internal': return '#1D9BF0';
+    case 'Internal': return ACCENT;
     case 'Confidential': return BP.amber;
     case 'Restricted': return BP.red;
     default: return BP.ash;

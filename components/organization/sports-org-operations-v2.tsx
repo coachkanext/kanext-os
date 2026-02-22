@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
 import {
   OPS_SUB_TABS,
@@ -56,6 +56,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 const SUB_TABS = OPS_SUB_TABS;
 
 // Map the mock data sub-tab IDs to user-facing labels used in the spec
@@ -241,7 +243,7 @@ function OverviewTab({
       </ThemedText>
       <View style={s.kpiRow}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#1D9BF0' }]}>{overview.upcomingTrips}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: ACCENT }]}>{overview.upcomingTrips}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Trips</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -860,7 +862,7 @@ function ApprovalsTab({
                 color={
                   item.urgency === 'critical' ? '#EF4444'
                     : item.urgency === 'high' ? '#F59E0B'
-                      : item.urgency === 'medium' ? '#1D9BF0'
+                      : item.urgency === 'medium' ? ACCENT
                         : '#A1A1AA'
                 }
               />
@@ -1162,7 +1164,7 @@ function ApprovalDetailSheet({
             color={
               approval.urgency === 'critical' ? '#EF4444'
                 : approval.urgency === 'high' ? '#F59E0B'
-                  : approval.urgency === 'medium' ? '#1D9BF0'
+                  : approval.urgency === 'medium' ? ACCENT
                     : '#A1A1AA'
             }
           />

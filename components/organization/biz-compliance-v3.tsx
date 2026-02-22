@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.business;
 type ViewMode = 'corporate' | 'legal' | 'ip';
 
 interface Props {
@@ -88,9 +90,9 @@ const STATUS_COLORS: Record<string, string> = {
   upcoming: '#F59E0B',
   executed: '#22C55E',
   approved: '#22C55E',
-  draft: '#1D9BF0',
+  draft: ACCENT,
   pending: '#F59E0B',
-  filed: '#1D9BF0',
+  filed: ACCENT,
   renewal: '#EF4444',
 };
 
@@ -106,12 +108,12 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  NDA: '#1D9BF0',
-  Partnership: '#1D9BF0',
+  NDA: ACCENT,
+  Partnership: ACCENT,
   Vendor: '#F59E0B',
-  Employment: '#1D9BF0',
-  Trademark: '#1D9BF0',
-  'Patent (Utility)': '#1D9BF0',
+  Employment: ACCENT,
+  Trademark: ACCENT,
+  'Patent (Utility)': ACCENT,
 };
 
 // =============================================================================
@@ -318,8 +320,8 @@ export function BizCompliance({ colors, accentColor, role }: Props) {
           <View style={s.ipInfo}>
             <ThemedText style={[s.ipTitle, { color: colors.text }]}>{PATENT.title}</ThemedText>
             <View style={s.ipBadges}>
-              <View style={[s.typeBadge, { backgroundColor: (TYPE_COLORS[PATENT.type] ?? '#1D9BF0') + '20' }]}>
-                <ThemedText style={[s.typeBadgeText, { color: TYPE_COLORS[PATENT.type] ?? '#1D9BF0' }]}>{PATENT.type.toUpperCase()}</ThemedText>
+              <View style={[s.typeBadge, { backgroundColor: (TYPE_COLORS[PATENT.type] ?? ACCENT) + '20' }]}>
+                <ThemedText style={[s.typeBadgeText, { color: TYPE_COLORS[PATENT.type] ?? ACCENT }]}>{PATENT.type.toUpperCase()}</ThemedText>
               </View>
               <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[PATENT.status] + '20' }]}>
                 <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[PATENT.status] }]}>{STATUS_LABELS[PATENT.status]}</ThemedText>

@@ -21,7 +21,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { useBusiness } from '@/context/business-context';
 import {
   BIZ_HERO,
@@ -33,6 +33,7 @@ import {
   PIPELINE_SUMMARY,
   DEALS,
   DEAL_STAGE_LABELS,
+
   type BizActionCardId,
   type BizDomainCardId,
   type BizDealStage,
@@ -50,6 +51,8 @@ import { BizDeckSheet } from '@/components/commerce/biz-deck-sheet';
 import { BizDataRoomSheet } from '@/components/commerce/biz-data-room-sheet';
 import { BizInvestSheet } from '@/components/commerce/biz-invest-sheet';
 
+const ACCENT = MODE_ACCENT.business;
+
 interface Props {
   colors: typeof Colors.light;
   accent: string;
@@ -57,17 +60,17 @@ interface Props {
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
   INVESTOR: '#22C55E',
-  PARTNER: '#1D9BF0',
+  PARTNER: ACCENT,
   INTERNAL: '#A1A1AA',
-  DEMO: '#1D9BF0',
+  DEMO: ACCENT,
 };
 
 const ATTENDEE_ROLE_COLORS: Record<string, string> = {
   founder: '#F59E0B',
   investor: '#22C55E',
-  advisor: '#1D9BF0',
-  board: '#1D9BF0',
-  partner: '#1D9BF0',
+  advisor: ACCENT,
+  board: ACCENT,
+  partner: ACCENT,
   staff: '#A1A1AA',
   press: '#EF4444',
   legal: '#A1A1AA',
@@ -75,11 +78,11 @@ const ATTENDEE_ROLE_COLORS: Record<string, string> = {
 
 const STAGE_COLORS: Record<string, string> = {
   lead: '#A1A1AA',
-  contacted: '#1D9BF0',
-  meeting_set: '#1D9BF0',
+  contacted: ACCENT,
+  meeting_set: ACCENT,
   proposal_sent: '#F59E0B',
   negotiating: '#F59E0B',
-  due_diligence: '#1D9BF0',
+  due_diligence: ACCENT,
   closed_won: '#22C55E',
   closed_lost: '#EF4444',
 };
@@ -220,7 +223,7 @@ export function BizDashboardV2({ colors, accent }: Props) {
               <PipelineMetric
                 label="Raised"
                 value={`$${(FUNDRAISE_METRICS.raised / 1_000).toFixed(0)}K`}
-                color="#1D9BF0"
+                color={ACCENT}
                 metric="raised"
                 role={viewAsRole}
               />

@@ -16,7 +16,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   MINISTRIES_V2,
@@ -34,6 +34,8 @@ import {
   type MinistryResource,
   type MinistryAction,
 } from '@/data/mock-ministries';
+
+const ACCENT = MODE_ACCENT.church;
 
 // =============================================================================
 // DETAIL TABS
@@ -75,7 +77,7 @@ function StatusBadge({ status, colors }: { status: string; colors: typeof Colors
       : status === 'planning' || status === 'in-progress'
         ? '#F59E0B'
         : status === 'seasonal'
-          ? '#1D9BF0'
+          ? ACCENT
           : colors.textTertiary;
 
   return (
@@ -105,7 +107,7 @@ function PriorityBadge({ priority }: { priority: 'high' | 'medium' | 'low' }) {
 // =============================================================================
 
 function EventTypeBadge({ type }: { type: 'regular' | 'special' | 'outreach' }) {
-  const color = type === 'regular' ? '#A1A1AA' : type === 'special' ? '#1D9BF0' : '#1D9BF0';
+  const color = type === 'regular' ? '#A1A1AA' : type === 'special' ? ACCENT : ACCENT;
   return (
     <View style={[s.badge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[s.badgeText, { color }]}>{type.toUpperCase()}</ThemedText>

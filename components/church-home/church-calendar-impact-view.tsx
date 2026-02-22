@@ -8,8 +8,10 @@ import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { ATTENDANCE_DATA, GIVING_DATA, GROWTH_METRICS } from '@/data/mock-church-home';
+
+const ACCENT = MODE_ACCENT.church;
 
 interface Props {
   colors: typeof Colors.light;
@@ -58,7 +60,7 @@ export function ChurchCalendarImpactView({ colors, accent }: Props) {
             <ThemedText style={[styles.barLabel, { color: colors.textSecondary }]}>{m.month}</ThemedText>
             <View style={styles.barTrack}>
               <View style={[styles.barFill, { width: `${inPersonPct}%`, backgroundColor: accent }]} />
-              <View style={[styles.barFill, { width: `${onlinePct}%`, backgroundColor: '#1D9BF0' }]} />
+              <View style={[styles.barFill, { width: `${onlinePct}%`, backgroundColor: ACCENT }]} />
             </View>
             <ThemedText style={[styles.barValue, { color: colors.text }]}>{fmt(m.total)}</ThemedText>
           </View>
@@ -67,7 +69,7 @@ export function ChurchCalendarImpactView({ colors, accent }: Props) {
       <View style={styles.legendRow}>
         <View style={[styles.legendDot, { backgroundColor: accent }]} />
         <ThemedText style={[styles.legendText, { color: colors.textSecondary }]}>In-Person</ThemedText>
-        <View style={[styles.legendDot, { backgroundColor: '#1D9BF0', marginLeft: 12 }]} />
+        <View style={[styles.legendDot, { backgroundColor: ACCENT, marginLeft: 12 }]} />
         <ThemedText style={[styles.legendText, { color: colors.textSecondary }]}>Online</ThemedText>
       </View>
 

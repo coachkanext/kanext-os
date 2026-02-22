@@ -10,7 +10,8 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { KaNeXT_GAMES, type KaNeXTGame } from '@/data/fmu';
 import { SEAT_TIERS, buildCommerceChain, type SeatTier, type PaymentChain } from '@/data/commerce-data';
-import { Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme'
+;
 
 type Stage = 'browse' | 'confirm' | 'receipt';
 
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   selectBtn: {
-    backgroundColor: '#1D9BF0',
+    backgroundColor: accent,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 12,

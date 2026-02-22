@@ -8,18 +8,21 @@ import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { openDriverCard, openTeamCard, openCrewCard } from '@/utils/global-entity-sheets';
 import {
   DRIVER_STANDINGS,
   CONSTRUCTOR_STANDINGS,
   CREW_STANDINGS,
   WILDCARD_CUP_STANDINGS,
+
   type DriverStanding,
   type ConstructorStanding,
   type CrewStanding,
   type WildcardStanding,
 } from '@/data/mock-competition-home';
+
+const ACCENT = MODE_ACCENT.competition;
 
 interface Props {
   colors: typeof Colors.light;
@@ -87,10 +90,10 @@ const CATEGORY_LABELS: Record<ConstructorStanding['category'], string> = {
 };
 
 const CATEGORY_COLORS: Record<ConstructorStanding['category'], string> = {
-  oem_works: '#1D9BF0',
+  oem_works: ACCENT,
   premier_tuner: '#F59E0B',
   league_owned: '#A1A1AA',
-  kanext_works: '#1D9BF0',
+  kanext_works: ACCENT,
 };
 
 function ConstructorTable({ colors, accent }: { colors: typeof Colors.light; accent: string }) {
@@ -173,7 +176,7 @@ function CrewTable({ colors, accent }: { colors: typeof Colors.light; accent: st
 function WildcardTable({ colors, accent }: { colors: typeof Colors.light; accent: string }) {
   const statusColor = (status: string) => {
     if (status === 'qualified') return '#22C55E';
-    if (status === 'active') return '#1D9BF0';
+    if (status === 'active') return ACCENT;
     return '#A1A1AA';
   };
 

@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isPresident, isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
 import {
@@ -35,6 +35,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -102,12 +104,12 @@ function OverviewTab({
   role?: EducationRoleLens;
 }) {
   const kpis = [
-    { id: 'total', label: 'Total Rooms', value: `${overview.totalRooms}`, icon: 'building.2.fill', color: '#1D9BF0' },
+    { id: 'total', label: 'Total Rooms', value: `${overview.totalRooms}`, icon: 'building.2.fill', color: ACCENT },
     { id: 'available', label: 'Available Now', value: `${overview.availableNow}`, icon: 'checkmark.circle.fill', color: '#22C55E' },
     { id: 'booked', label: 'Booked Today', value: `${overview.bookedToday}`, icon: 'calendar', color: '#F59E0B' },
     { id: 'maint', label: 'Maintenance', value: `${overview.underMaintenance}`, icon: 'wrench.and.screwdriver.fill', color: '#EF4444' },
-    { id: 'buildings', label: 'Buildings', value: `${overview.totalBuildings}`, icon: 'building.fill', color: '#1D9BF0' },
-    { id: 'occupancy', label: 'Avg Occupancy', value: `${overview.avgOccupancy}%`, icon: 'chart.bar.fill', color: '#1D9BF0' },
+    { id: 'buildings', label: 'Buildings', value: `${overview.totalBuildings}`, icon: 'building.fill', color: ACCENT },
+    { id: 'occupancy', label: 'Avg Occupancy', value: `${overview.avgOccupancy}%`, icon: 'chart.bar.fill', color: ACCENT },
   ];
 
   // Count by type

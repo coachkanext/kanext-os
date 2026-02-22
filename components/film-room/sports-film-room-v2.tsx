@@ -11,7 +11,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   VIDEO_GAMES_BY_MODE,
@@ -81,11 +82,11 @@ function GameFilmRow({ game, colors }: { game: VideoGame; colors: typeof Colors.
 }
 
 function PracticeFilmRow({ item, colors }: { item: PracticeFilmItem; colors: typeof Colors.light }) {
-  const typeColor = item.practiceType === 'Full Practice' ? '#1D9BF0'
+  const typeColor = item.practiceType === 'Full Practice' ? accent
     : item.practiceType === 'Walkthrough' ? '#22C55E'
     : item.practiceType === 'Shootaround' ? '#F59E0B'
-    : item.practiceType === 'Film Session' ? '#1D9BF0'
-    : '#1D9BF0';
+    : item.practiceType === 'Film Session' ? accent
+    : accent;
   return (
     <Pressable
       style={({ pressed }) => [
@@ -194,6 +195,7 @@ const cardStyles = StyleSheet.create({
 export function SportsFilmRoomV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const [activeTab, setActiveTab] = useState<FilmTab>('game_film');
 
   const games = VIDEO_GAMES_BY_MODE.sports;

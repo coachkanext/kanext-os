@@ -20,7 +20,7 @@ import { Platform, Text, Image, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol, SymbolViewProps } from '@/components/ui/icon-symbol';
-import { Colors, Layout, ModeColors } from '@/constants/theme';
+import { Colors, Layout, ModeColors, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import { openAvatarDrawer } from '@/utils/global-drawer';
@@ -146,7 +146,7 @@ export default function TabLayout() {
     <Tabs
       initialRouteName="index"
       screenOptions={{
-        tabBarActiveTintColor: colors.tabIconSelected,
+        tabBarActiveTintColor: MODE_ACCENT[mode],
         tabBarInactiveTintColor: colors.tabIconDefault,
         tabBarShowLabel: false,
         tabBarStyle: {

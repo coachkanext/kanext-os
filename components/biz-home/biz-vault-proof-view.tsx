@@ -6,17 +6,19 @@ import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { PROOF_INSTITUTIONS, type ProofInstitution } from '@/data/mock-business-home';
 
+
+const ACCENT = MODE_ACCENT.business;
 interface Props {
   colors: typeof Colors.light;
   accent: string;
 }
 
 const MODE_COLORS: Record<string, string> = {
-  sports: '#1D9BF0',
-  church: '#1D9BF0',
+  sports: ACCENT,
+  church: ACCENT,
   education: '#22C55E',
   competition: '#EF4444',
 };
@@ -31,7 +33,7 @@ const MODE_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, string> = {
   live: '#22C55E',
   onboarding: '#F59E0B',
-  signed: '#1D9BF0',
+  signed: ACCENT,
   prospect: '#A1A1AA',
 };
 

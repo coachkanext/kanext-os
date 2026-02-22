@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isPresident, isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
 import {
@@ -37,6 +37,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -82,12 +84,12 @@ function LibraryTab({
   stats: LibraryStats;
 }) {
   const kpis = [
-    { id: 'volumes', label: 'Total Volumes', value: formatNumber(stats.totalVolumes), icon: 'book.fill', color: '#1D9BF0' },
-    { id: 'digital', label: 'Digital Resources', value: formatNumber(stats.digitalResources), icon: 'icloud.fill', color: '#1D9BF0' },
+    { id: 'volumes', label: 'Total Volumes', value: formatNumber(stats.totalVolumes), icon: 'book.fill', color: ACCENT },
+    { id: 'digital', label: 'Digital Resources', value: formatNumber(stats.digitalResources), icon: 'icloud.fill', color: ACCENT },
     { id: 'loans', label: 'Active Loans', value: formatNumber(stats.activeLoans), icon: 'arrow.right.circle.fill', color: '#22C55E' },
     { id: 'overdue', label: 'Overdue Items', value: `${stats.overdueItems}`, icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
     { id: 'visitors', label: 'Daily Visitors', value: `${stats.dailyVisitors}`, icon: 'person.3.fill', color: '#F59E0B' },
-    { id: 'study', label: 'Study Rooms', value: `${stats.studyRoomsAvailable}/${stats.studyRooms}`, icon: 'door.left.hand.open', color: '#1D9BF0' },
+    { id: 'study', label: 'Study Rooms', value: `${stats.studyRoomsAvailable}/${stats.studyRooms}`, icon: 'door.left.hand.open', color: ACCENT },
   ];
 
   return (
@@ -112,7 +114,7 @@ function LibraryTab({
       <View style={[s.collectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.collectionRow}>
           <View style={s.collectionItem}>
-            <View style={[s.collectionDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.collectionDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.collectionLabel, { color: colors.textSecondary }]}>Physical</ThemedText>
           </View>
           <ThemedText style={[s.collectionValue, { color: colors.text }]}>
@@ -121,7 +123,7 @@ function LibraryTab({
         </View>
         <View style={[s.collectionRow, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
           <View style={s.collectionItem}>
-            <View style={[s.collectionDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.collectionDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.collectionLabel, { color: colors.textSecondary }]}>Digital</ThemedText>
           </View>
           <ThemedText style={[s.collectionValue, { color: colors.text }]}>
@@ -174,8 +176,8 @@ function TechnologyTab({
   inventory: TechInventory;
 }) {
   const devices = [
-    { label: 'Laptops', ...inventory.laptops, icon: 'laptopcomputer', color: '#1D9BF0' },
-    { label: 'Tablets', ...inventory.tablets, icon: 'ipad', color: '#1D9BF0' },
+    { label: 'Laptops', ...inventory.laptops, icon: 'laptopcomputer', color: ACCENT },
+    { label: 'Tablets', ...inventory.tablets, icon: 'ipad', color: ACCENT },
     { label: 'Projectors', ...inventory.projectors, icon: 'rectangle.inset.filled', color: '#F59E0B' },
   ];
 
@@ -214,7 +216,7 @@ function TechnologyTab({
                 <ThemedText style={[s.deviceStatLabel, { color: colors.textTertiary }]}>Available</ThemedText>
               </View>
               <View style={s.deviceStatItem}>
-                <ThemedText style={[s.deviceStatValue, { color: '#1D9BF0' }]}>{device.loaned}</ThemedText>
+                <ThemedText style={[s.deviceStatValue, { color: ACCENT }]}>{device.loaned}</ThemedText>
                 <ThemedText style={[s.deviceStatLabel, { color: colors.textTertiary }]}>Loaned</ThemedText>
               </View>
               <View style={s.deviceStatItem}>
@@ -378,7 +380,7 @@ function SoftwareTab({
                 <ThemedText style={[s.licenseStatLabel, { color: colors.textTertiary }]}>Available</ThemedText>
               </View>
               <View style={s.licenseStatItem}>
-                <ThemedText style={[s.licenseStatValue, { color: '#1D9BF0' }]}>
+                <ThemedText style={[s.licenseStatValue, { color: ACCENT }]}>
                   {item.used}
                 </ThemedText>
                 <ThemedText style={[s.licenseStatLabel, { color: colors.textTertiary }]}>In Use</ThemedText>

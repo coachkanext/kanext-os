@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { NexusEscalationV3 } from '@/types';
 
@@ -24,6 +25,7 @@ interface NexusAnswerSheetProps {
 export function NexusAnswerSheet({ escalation, onClose, onAddToNexus, onPrivateReply }: NexusAnswerSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const [answer, setAnswer] = useState('');
 
   const handleAddToNexus = () => {
@@ -57,8 +59,8 @@ export function NexusAnswerSheet({ escalation, onClose, onAddToNexus, onPrivateR
           {/* Question context */}
           <View style={[styles.questionCard, { backgroundColor: colors.backgroundTertiary }]}>
             <View style={styles.askerRow}>
-              <View style={[styles.askerAvatar, { backgroundColor: '#1D9BF020' }]}>
-                <ThemedText style={[styles.askerInitials, { color: '#1D9BF0' }]}>
+              <View style={[styles.askerAvatar, { backgroundColor: `${accent}20` }]}>
+                <ThemedText style={[styles.askerInitials, { color: accent }]}>
                   {escalation.askerInitials}
                 </ThemedText>
               </View>
@@ -97,7 +99,7 @@ export function NexusAnswerSheet({ escalation, onClose, onAddToNexus, onPrivateR
             <Pressable
               style={({ pressed }) => [
                 styles.primaryBtn,
-                { opacity: pressed ? 0.8 : 1, backgroundColor: answer.trim() ? '#1D9BF0' : '#1D9BF040' },
+                { opacity: pressed ? 0.8 : 1, backgroundColor: answer.trim() ? accent : `${accent}40` },
               ]}
               onPress={handleAddToNexus}
               disabled={!answer.trim()}

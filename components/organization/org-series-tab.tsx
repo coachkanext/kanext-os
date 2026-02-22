@@ -19,7 +19,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import {
   SERIES_SCOPE_CHIPS,
   SERIES_HUB_TABS,
@@ -167,12 +168,12 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  added: '#1D9BF0',
+  added: accent,
   seeded: '#F59E0B',
-  published: '#1D9BF0',
-  assigned: '#1D9BF0',
+  published: accent,
+  assigned: accent,
   completed: '#22C55E',
-  filed: '#1D9BF0',
+  filed: accent,
   default: '#A1A1AA',
 };
 
@@ -493,7 +494,7 @@ function ScheduleTab({
 
   const gameStatusColor = (st: SeriesGame['status']): string => {
     switch (st) {
-      case 'scheduled': return '#1D9BF0';
+      case 'scheduled': return accent;
       case 'live': return '#EF4444';
       case 'final': return '#22C55E';
     }

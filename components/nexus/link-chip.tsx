@@ -8,6 +8,7 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { LinkChip as LinkChipType } from '@/types/nexus-v2';
 
@@ -37,6 +38,7 @@ interface LinkChipProps {
 export function LinkChip({ chip, onPress, compact }: LinkChipProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const iconName = (chip.icon as IconSymbolName) || CHIP_ICON_MAP[chip.objectType] || 'link';
 
   return (
@@ -48,9 +50,9 @@ export function LinkChip({ chip, onPress, compact }: LinkChipProps) {
       ]}
       onPress={() => onPress?.(chip)}
     >
-      <IconSymbol name={iconName} size={compact ? 11 : 13} color={colors.tint} />
+      <IconSymbol name={iconName} size={compact ? 11 : 13} color={accent} />
       <ThemedText
-        style={[styles.label, { color: colors.tint }, compact && styles.labelCompact]}
+        style={[styles.label, { color: accent }, compact && styles.labelCompact]}
         numberOfLines={1}
       >
         {chip.label}

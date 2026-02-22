@@ -17,7 +17,7 @@ import {
   type RecurringOption,
 } from '@/data/church-commerce-data';
 import type { PaymentChain } from '@/data/commerce-data';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
 type Stage = 'browse' | 'confirm' | 'receipt';
 
@@ -27,7 +27,7 @@ interface Props {
   colors: Record<string, string>;
 }
 
-const ACCENT = '#1D9BF0';
+const ACCENT = MODE_ACCENT.church;
 
 export function ChurchGiveSheet({ visible, onClose, colors }: Props) {
   const [stage, setStage] = useState<Stage>('browse');

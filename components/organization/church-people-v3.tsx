@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 type ViewId = 'leadership' | 'members' | 'visitors';
 
 interface Props {
@@ -107,10 +109,10 @@ const VISITORS: Visitor[] = [
 
 const STATUS_COLORS: Record<string, string> = {
   Member: '#22C55E',
-  'Regular Attendee': '#1D9BF0',
-  Volunteer: '#1D9BF0',
+  'Regular Attendee': ACCENT,
+  Volunteer: ACCENT,
   Leader: '#F59E0B',
-  Contacted: '#1D9BF0',
+  Contacted: ACCENT,
   'Needs Follow-up': '#EF4444',
   Connected: '#22C55E',
 };

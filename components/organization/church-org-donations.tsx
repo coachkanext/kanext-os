@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isSeniorPastor, isElderLevel, isStaffLevel } from '@/utils/church-rbac';
 import {
@@ -34,6 +34,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'campaigns', label: 'Campaigns' },
@@ -230,7 +232,7 @@ function OverviewTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Recurring</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#1D9BF0' }]}>{stats.totalDonors}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: ACCENT }]}>{stats.totalDonors}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Donors</ThemedText>
         </View>
       </View>
@@ -247,7 +249,7 @@ function OverviewTab({
             </ThemedText>
           </View>
           <View style={s.breakdownItem}>
-            <View style={[s.breakdownDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.breakdownDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.breakdownLabel, { color: colors.textSecondary }]}>One-time</ThemedText>
             <ThemedText style={[s.breakdownPercent, { color: colors.text }]}>
               {Math.round(((stats.totalDonors - stats.recurringDonors) / stats.totalDonors) * 100)}%
@@ -256,7 +258,7 @@ function OverviewTab({
         </View>
         <View style={s.breakdownBarRow}>
           <View style={[s.breakdownBarSegment, { flex: stats.recurringDonors, backgroundColor: '#22C55E', borderTopLeftRadius: 3, borderBottomLeftRadius: 3 }]} />
-          <View style={[s.breakdownBarSegment, { flex: stats.totalDonors - stats.recurringDonors, backgroundColor: '#1D9BF0', borderTopRightRadius: 3, borderBottomRightRadius: 3 }]} />
+          <View style={[s.breakdownBarSegment, { flex: stats.totalDonors - stats.recurringDonors, backgroundColor: ACCENT, borderTopRightRadius: 3, borderBottomRightRadius: 3 }]} />
         </View>
       </View>
 
@@ -266,7 +268,7 @@ function OverviewTab({
       </ThemedText>
       {activeCampaigns.map((campaign) => {
         const pct = campaign.goal > 0 ? (campaign.raised / campaign.goal) * 100 : 0;
-        const barColor = pct >= 100 ? '#22C55E' : pct >= 50 ? '#1D9BF0' : '#F59E0B';
+        const barColor = pct >= 100 ? '#22C55E' : pct >= 50 ? ACCENT : '#F59E0B';
         return (
           <Pressable
             key={campaign.id}
@@ -375,7 +377,7 @@ function OverviewTab({
                 {formatCurrencyFull(don.amount)}
               </ThemedText>
               {don.recurring && (
-                <StatusBadge label="RECURRING" color="#1D9BF0" />
+                <StatusBadge label="RECURRING" color={ACCENT} />
               )}
             </View>
           </View>
@@ -408,7 +410,7 @@ function CampaignsTab({
   const renderItem = useCallback(
     ({ item }: { item: GivingCampaign }) => {
       const pct = item.goal > 0 ? (item.raised / item.goal) * 100 : 0;
-      const barColor = pct >= 100 ? '#22C55E' : pct >= 50 ? '#1D9BF0' : '#F59E0B';
+      const barColor = pct >= 100 ? '#22C55E' : pct >= 50 ? ACCENT : '#F59E0B';
       const sColor = CAMPAIGN_STATUS_COLOR[item.status];
       return (
         <Pressable
@@ -525,7 +527,7 @@ function RecentTab({
           </View>
           <View style={[s.donationDetailFooter, { borderTopColor: colors.border }]}>
             <StatusBadge label={METHOD_LABELS[item.method].toUpperCase()} color={mColor} />
-            {item.recurring && <StatusBadge label="RECURRING" color="#1D9BF0" />}
+            {item.recurring && <StatusBadge label="RECURRING" color={ACCENT} />}
           </View>
         </View>
       );
@@ -592,7 +594,7 @@ function DonorsTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Recurring</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#1D9BF0' }]}>{stats.totalDonors - stats.recurringDonors}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: ACCENT }]}>{stats.totalDonors - stats.recurringDonors}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>One-Time</ThemedText>
         </View>
       </View>
@@ -615,7 +617,7 @@ function DonorsTab({
               <ThemedText style={[s.donorMetaText, { color: colors.textTertiary }]}>
                 {donor.count} gift{donor.count !== 1 ? 's' : ''}
               </ThemedText>
-              {donor.recurring && <StatusBadge label="RECURRING" color="#1D9BF0" />}
+              {donor.recurring && <StatusBadge label="RECURRING" color={ACCENT} />}
             </View>
           </View>
           <ThemedText style={[s.donorTotal, { color: colors.text }]}>
@@ -648,17 +650,17 @@ function FundsTab({
       <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Giving Type Breakdown</ThemedText>
       <View style={[s.givingTypeCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.givingTypeRow}>
-          <View style={[s.givingTypeDot, { backgroundColor: '#1D9BF0' }]} />
+          <View style={[s.givingTypeDot, { backgroundColor: ACCENT }]} />
           <ThemedText style={[s.givingTypeLabel, { color: colors.textSecondary }]}>Tithes</ThemedText>
           <ThemedText style={[s.givingTypeValue, { color: colors.text }]}>{stats.tithesPercent}%</ThemedText>
         </View>
-        <ProgressBar percent={stats.tithesPercent} color="#1D9BF0" />
+        <ProgressBar percent={stats.tithesPercent} color={ACCENT} />
         <View style={s.givingTypeRow}>
-          <View style={[s.givingTypeDot, { backgroundColor: '#1D9BF0' }]} />
+          <View style={[s.givingTypeDot, { backgroundColor: ACCENT }]} />
           <ThemedText style={[s.givingTypeLabel, { color: colors.textSecondary }]}>Offerings</ThemedText>
           <ThemedText style={[s.givingTypeValue, { color: colors.text }]}>{stats.offeringsPercent}%</ThemedText>
         </View>
-        <ProgressBar percent={stats.offeringsPercent} color="#1D9BF0" />
+        <ProgressBar percent={stats.offeringsPercent} color={ACCENT} />
         <View style={s.givingTypeRow}>
           <View style={[s.givingTypeDot, { backgroundColor: '#F59E0B' }]} />
           <ThemedText style={[s.givingTypeLabel, { color: colors.textSecondary }]}>Special</ThemedText>
@@ -793,7 +795,7 @@ function CampaignDetailSheet({
   if (!campaign) return null;
 
   const pct = campaign.goal > 0 ? (campaign.raised / campaign.goal) * 100 : 0;
-  const barColor = pct >= 100 ? '#22C55E' : pct >= 50 ? '#1D9BF0' : '#F59E0B';
+  const barColor = pct >= 100 ? '#22C55E' : pct >= 50 ? ACCENT : '#F59E0B';
   const sColor = CAMPAIGN_STATUS_COLOR[campaign.status];
   const remaining = Math.max(campaign.goal - campaign.raised, 0);
 

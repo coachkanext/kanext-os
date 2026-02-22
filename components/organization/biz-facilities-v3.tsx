@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.business;
 type ViewMode = 'spaces' | 'assets' | 'vendors';
 
 interface Props {
@@ -79,7 +81,7 @@ const VENDORS = [
 
 const CONDITION_COLORS: Record<string, string> = {
   Excellent: '#22C55E',
-  Good: '#1D9BF0',
+  Good: ACCENT,
   Fair: '#F59E0B',
   Poor: '#EF4444',
 };

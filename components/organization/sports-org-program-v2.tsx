@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
 import {
   PROGRAM_SUB_TABS,
@@ -60,6 +60,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 const SUB_TABS = PROGRAM_SUB_TABS;
 
 // =============================================================================
@@ -254,7 +256,7 @@ function OverviewTab({
       </ThemedText>
       <View style={s.metricsStrip}>
         <View style={[s.metricCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.metricValue, { color: overview.upcomingMilestones > 0 ? '#1D9BF0' : '#22C55E' }]}>
+          <ThemedText style={[s.metricValue, { color: overview.upcomingMilestones > 0 ? ACCENT : '#22C55E' }]}>
             {overview.upcomingMilestones}
           </ThemedText>
           <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Upcoming</ThemedText>

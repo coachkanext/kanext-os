@@ -9,7 +9,8 @@ import { View, ScrollView, StyleSheet, Pressable, Text } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, ModeColors } from '@/constants/theme';
+import { Colors, ModeColors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMembershipId } from '@/context/app-context';
 import { getSportsRole, getDevelopmentHubTabs, getKRVisibility, formatKR, type DevelopmentTab } from '@/utils/sports-rbac';
@@ -41,7 +42,7 @@ import { CLUSTER_ORDER } from '@/utils/kr-display';
 // ---------------------------------------------------------------------------
 
 const PROGRESS_COLORS: Record<string, string> = { 'needs-work': '#EF4444', progressing: '#F59E0B', achieved: '#22C55E' };
-const SESSION_COLORS: Record<string, string> = { practice: '#22C55E', lift: '#F59E0B', film: '#1D9BF0', individual: '#1D9BF0', rest: '#A1A1AA' };
+const SESSION_COLORS: Record<string, string> = { practice: '#22C55E', lift: '#F59E0B', film: accent, individual: accent, rest: '#A1A1AA' };
 
 // Mock KR data for players (would come from national pool in production)
 const PLAYER_KR_DATA: Record<string, { kr: number; okr: number; dkr: number; archetype: string; clusters: number[] }> = {
@@ -72,6 +73,7 @@ const PRO_READINESS: Record<string, { proKRProjection: number; draftRange: strin
 export function SportsDevelopmentV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const accent = ModeColors.sports.primary;
   const membershipId = useMembershipId();
   const role = getSportsRole(membershipId);
@@ -175,7 +177,7 @@ function OverviewTab({ colors, accent }: TabProps) {
       {/* Player Alerts */}
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>PLAYER ALERTS</ThemedText>
       {PLAYER_ALERTS.map((alert) => {
-        const alertColor = alert.type === 'regression' ? '#EF4444' : alert.type === 'injury' ? '#F59E0B' : alert.type === 'breakout' ? '#22C55E' : '#1D9BF0';
+        const alertColor = alert.type === 'regression' ? '#EF4444' : alert.type === 'injury' ? '#F59E0B' : alert.type === 'breakout' ? '#22C55E' : accent;
         return (
           <View key={alert.id} style={[styles.alertCard, { backgroundColor: colors.card, borderColor: alertColor + '44' }]}>
             <View style={styles.alertHeader}>
@@ -289,7 +291,7 @@ function KRProfileTab({ player, colors, accent, krVis }: TabProps) {
         {krData.clusters.map((score, i) => {
           if (score < 90) return null;
           const tier = score >= 97 ? 'Gold' : score >= 94 ? 'Silver' : 'Bronze';
-          const tierColor = tier === 'Gold' ? '#1D9BF0' : tier === 'Silver' ? '#A1A1AA' : '#1D9BF0';
+          const tierColor = tier === 'Gold' ? accent : tier === 'Silver' ? '#A1A1AA' : accent;
           return (
             <View key={i} style={[styles.badgeChip, { backgroundColor: tierColor + '22' }]}>
               <ThemedText style={[styles.badgeChipText, { color: tierColor }]}>{tier} · {clusterLabels[i]}</ThemedText>
@@ -630,7 +632,7 @@ function ProReadinessTab({ player, colors, accent, krVis }: TabProps) {
 // ---------------------------------------------------------------------------
 
 function TransferTab({ colors, accent }: TabProps) {
-  const transferColors: Record<string, string> = { positive: '#22C55E', neutral: '#F59E0B', negative: '#EF4444', emerging: '#1D9BF0' };
+  const transferColors: Record<string, string> = { positive: '#22C55E', neutral: '#F59E0B', negative: '#EF4444', emerging: accent };
 
   // Group by transfer label
   const negative = TRANSFER_METRICS.filter((t) => t.transferLabel === 'negative');
@@ -682,7 +684,7 @@ function TransferTab({ colors, accent }: TabProps) {
             <ThemedText style={[styles.transferSummaryLabel, { color: colors.textSecondary }]}>Positive</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.transferSummaryValue, { color: '#1D9BF0' }]}>{emerging.length}</ThemedText>
+            <ThemedText style={[styles.transferSummaryValue, { color: accent }]}>{emerging.length}</ThemedText>
             <ThemedText style={[styles.transferSummaryLabel, { color: colors.textSecondary }]}>Emerging</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
@@ -697,7 +699,7 @@ function TransferTab({ colors, accent }: TabProps) {
       </View>
 
       {renderGroup('Negative', negative, '#EF4444')}
-      {renderGroup('Emerging', emerging, '#1D9BF0')}
+      {renderGroup('Emerging', emerging, accent)}
       {renderGroup('Neutral', neutral, '#F59E0B')}
       {renderGroup('Positive', positive, '#22C55E')}
 

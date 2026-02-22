@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
 import {
   PEOPLE_SUB_TABS,
@@ -54,6 +54,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.sports;
 const SUB_TABS = PEOPLE_SUB_TABS.map((t) => ({ id: t.id, label: t.label }));
 
 // =============================================================================
@@ -263,7 +265,7 @@ function OverviewTab({
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Unavailable</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[s.kpiValue, { color: ACCENT }]}>
               {overview.playersOnHold}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Hold</ThemedText>
@@ -730,7 +732,7 @@ function RolesAccessTab({
           </View>
           <View style={s.listCardBadgeRow}>
             <StatusBadge label={item.role.toUpperCase()} color={accentColor} />
-            <StatusBadge label={`TIER ${item.accessTier}`} color="#1D9BF0" />
+            <StatusBadge label={`TIER ${item.accessTier}`} color={ACCENT} />
           </View>
           <View style={s.listCardMeta}>
             <View style={s.listCardMetaItem}>

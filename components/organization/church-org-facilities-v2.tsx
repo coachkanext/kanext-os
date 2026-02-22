@@ -15,7 +15,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isElderLevel, isStaffLevel, isMember } from '@/utils/church-rbac';
 import {
@@ -66,6 +66,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'spaces', label: 'Spaces' },
@@ -235,9 +237,9 @@ function OverviewTab({
   const healthTiles: { label: string; value: number; color: string; icon: string }[] = [
     { label: 'Open Work Orders', value: tiles.openWorkOrders, color: '#F59E0B', icon: 'wrench.and.screwdriver.fill' },
     { label: 'Critical Issues', value: tiles.criticalIssues, color: '#EF4444', icon: 'exclamationmark.triangle.fill' },
-    { label: 'Inspections Due', value: tiles.upcomingInspections, color: '#1D9BF0', icon: 'checkmark.shield.fill' },
+    { label: 'Inspections Due', value: tiles.upcomingInspections, color: ACCENT, icon: 'checkmark.shield.fill' },
     { label: 'Today Bookings', value: tiles.todayBookings, color: '#22C55E', icon: 'calendar' },
-    { label: 'Conflicts', value: tiles.conflicts, color: '#1D9BF0', icon: 'exclamationmark.2' },
+    { label: 'Conflicts', value: tiles.conflicts, color: ACCENT, icon: 'exclamationmark.2' },
     { label: 'SLA Breaches', value: tiles.vendorSlaBreaches, color: tiles.vendorSlaBreaches > 0 ? '#EF4444' : '#22C55E', icon: 'clock.badge.exclamationmark' },
   ];
 

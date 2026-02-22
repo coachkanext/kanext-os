@@ -8,7 +8,8 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, ModeColors } from '@/constants/theme';
+import { Colors, ModeColors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import {
@@ -45,6 +46,7 @@ type PillTab = (typeof PILLS)[number];
 export function SportsProgramV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const accent = ModeColors.sports.primary;
   const [activeTab, setActiveTab] = useState<PillTab>('Overview');
 
@@ -219,7 +221,7 @@ function TeamsView({ colors, accent }: { colors: typeof Colors.light; accent: st
 }
 
 function SeasonsView({ colors, accent }: { colors: typeof Colors.light; accent: string }) {
-  const statusColors = { active: '#22C55E', completed: '#1D9BF0', archived: '#A1A1AA' };
+  const statusColors = { active: '#22C55E', completed: accent, archived: '#A1A1AA' };
   return (
     <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       {PROGRAM_SEASONS.map((season) => (

@@ -7,15 +7,17 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { RECENT_VISITORS, type RecentVisitor } from '@/data/mock-church-home';
 import { openPersonCard, openLeaderCard } from '@/utils/global-entity-sheets';
+
+const ACCENT = MODE_ACCENT.church;
 
 const FILTERS = ['All', 'Pending', 'Contacted', 'Scheduled', 'Completed'] as const;
 type Filter = (typeof FILTERS)[number];
 
 const STATUS_COLORS: Record<RecentVisitor['followUpStatus'], string> = {
-  pending: '#F59E0B', contacted: '#1D9BF0', scheduled: '#1D9BF0', completed: '#22C55E',
+  pending: '#F59E0B', contacted: ACCENT, scheduled: ACCENT, completed: '#22C55E',
 };
 
 const HOW_HEARD_LABELS: Record<RecentVisitor['howHeard'], string> = {

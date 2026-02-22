@@ -15,7 +15,7 @@ import {
   buildEduCommerceChain,
 } from '@/data/edu-commerce-data';
 import type { PaymentChain } from '@/data/commerce-data';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 
 type Section = 'scholarships' | 'fafsa' | 'tuition';
 type TuitionStage = 'browse' | 'confirm' | 'receipt';
@@ -26,7 +26,7 @@ interface Props {
   colors: Record<string, string>;
 }
 
-const ACCENT = '#1D9BF0';
+const ACCENT = MODE_ACCENT.education;
 const SECTIONS: { id: Section; label: string }[] = [
   { id: 'scholarships', label: 'Scholarships' },
   { id: 'fafsa', label: 'FAFSA' },

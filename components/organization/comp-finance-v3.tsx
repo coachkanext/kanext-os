@@ -8,11 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.competition;
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
+
 
 type ViewId = 'budget' | 'revenue' | 'prize';
 
@@ -220,7 +223,7 @@ function PrizeView({ colors, accentColor }: { colors: typeof Colors.light; accen
       {/* Prize Pool Summary */}
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>TOTAL PRIZE POOL</ThemedText>
-        <ThemedText style={[s.summaryAmount, { color: '#1D9BF0' }]}>{formatCurrency(PRIZE_TOTAL)}</ThemedText>
+        <ThemedText style={[s.summaryAmount, { color: ACCENT }]}>{formatCurrency(PRIZE_TOTAL)}</ThemedText>
         <View style={s.summaryRow}>
           <ThemedText style={[s.summarySpent, { color: accentColor }]}>
             {formatCurrency(PRIZE_PAID)} paid ({paidPct}%)
@@ -229,7 +232,7 @@ function PrizeView({ colors, accentColor }: { colors: typeof Colors.light; accen
             {formatCurrency(PRIZE_TOTAL - PRIZE_PAID)} remaining
           </ThemedText>
         </View>
-        <ProgressBar pct={paidPct} color="#1D9BF0" bgColor={colors.border} />
+        <ProgressBar pct={paidPct} color={ACCENT} bgColor={colors.border} />
       </View>
 
       {/* Per Race Prizes */}
@@ -246,7 +249,7 @@ function PrizeView({ colors, accentColor }: { colors: typeof Colors.light; accen
             <ThemedText style={[s.prizePosition, { color: idx < 3 ? colors.text : colors.textSecondary }]}>
               {prize.position}
             </ThemedText>
-            <ThemedText style={[s.prizeAmount, { color: idx === 0 ? '#1D9BF0' : idx < 3 ? accentColor : colors.textSecondary }]}>
+            <ThemedText style={[s.prizeAmount, { color: idx === 0 ? ACCENT : idx < 3 ? accentColor : colors.textSecondary }]}>
               {prize.amount}
             </ThemedText>
           </View>
@@ -265,10 +268,10 @@ function PrizeView({ colors, accentColor }: { colors: typeof Colors.light; accen
             ]}
           >
             <View style={s.prizeRowLeft}>
-              <IconSymbol name="crown.fill" size={14} color="#1D9BF0" />
+              <IconSymbol name="crown.fill" size={14} color={ACCENT} />
               <ThemedText style={[s.prizeTitle, { color: colors.text }]}>{prize.title}</ThemedText>
             </View>
-            <ThemedText style={[s.prizeAmount, { color: '#1D9BF0' }]}>{prize.amount}</ThemedText>
+            <ThemedText style={[s.prizeAmount, { color: ACCENT }]}>{prize.amount}</ThemedText>
           </View>
         ))}
       </View>

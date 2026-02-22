@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import { isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
 import {
@@ -41,6 +41,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.education;
 const SUB_TABS = [
   { id: 'dashboard', label: 'Ops Dashboard' },
   { id: 'initiatives', label: 'Initiatives' },
@@ -633,7 +635,7 @@ function QueueTab({
           }}
         >
           <View style={s.queueCardTop}>
-            <IconSymbol name="checkmark.seal.fill" size={14} color="#1D9BF0" />
+            <IconSymbol name="checkmark.seal.fill" size={14} color={ACCENT} />
             <ThemedText style={[s.queueCardTitle, { color: colors.text }]} numberOfLines={2}>{g.title}</ThemedText>
           </View>
           <View style={s.badgeRow}>
@@ -786,7 +788,7 @@ function InitiativeDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={domainLabel.toUpperCase()} color={domainColor} />
         <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
-        {initiative.complianceLinked && <StatusBadge label="COMPLIANCE" color="#1D9BF0" />}
+        {initiative.complianceLinked && <StatusBadge label="COMPLIANCE" color={ACCENT} />}
       </View>
 
       {/* Overview */}

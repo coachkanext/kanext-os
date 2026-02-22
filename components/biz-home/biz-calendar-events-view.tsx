@@ -7,14 +7,16 @@ import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable, TextInput } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { BIZ_EVENTS, type BizEvent } from '@/data/mock-business-home';
 import { openPersonCard } from '@/utils/global-entity-sheets';
 
+
+const ACCENT = MODE_ACCENT.business;
 const CATEGORY_COLORS: Record<BizEvent['category'], string> = {
   investor: '#22C55E',
-  board: '#1D9BF0',
-  product: '#1D9BF0',
+  board: ACCENT,
+  product: ACCENT,
   legal: '#A1A1AA',
   media: '#EF4444',
   conference: '#F59E0B',
@@ -99,7 +101,7 @@ function EventCard({ event, colors }: { event: BizEvent; colors: typeof Colors.l
             key={a.name}
             onPress={() => openPersonCard({ name: a.name, role: a.role, status: 'active' })}
           >
-            <ThemedText style={[styles.attendeeName, { color: '#1D9BF0' }]}>{a.name}</ThemedText>
+            <ThemedText style={[styles.attendeeName, { color: ACCENT }]}>{a.name}</ThemedText>
           </Pressable>
         ))}
       </View>

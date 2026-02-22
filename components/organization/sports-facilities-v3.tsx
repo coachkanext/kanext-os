@@ -8,11 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.sports;
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
+
 
 type ViewId = 'spaces' | 'bookings' | 'equipment';
 
@@ -168,7 +171,7 @@ function BookingsView({ colors, accentColor }: { colors: typeof Colors.light; ac
               <ThemedText style={[s.bookingTime, { color: colors.textSecondary }]}>{booking.time}</ThemedText>
             </View>
             {booking.recurring && (
-              <StatusBadge label="RECURRING" color="#1D9BF0" />
+              <StatusBadge label="RECURRING" color={ACCENT} />
             )}
           </View>
           <View style={[s.bookingMeta, { borderTopColor: colors.border }]}>

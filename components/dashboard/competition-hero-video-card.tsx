@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { CompetitionRoleLens } from '@/utils/competition-rbac';
 
@@ -129,7 +130,7 @@ function getStatusConfig(status: BroadcastStatus): { label: string; color: strin
     case 'upcoming':
       return { label: 'UPCOMING', color: '#fff', bgColor: '#F59E0B' };
     case 'replay':
-      return { label: 'REPLAY', color: '#fff', bgColor: '#1D9BF0' };
+      return { label: 'REPLAY', color: '#fff', bgColor: accent };
   }
 }
 
@@ -140,6 +141,7 @@ function getStatusConfig(status: BroadcastStatus): { label: string; color: strin
 export function CompetitionHeroVideoCard({ roleLens, broadcast, onPress }: CompetitionHeroVideoCardProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const bcast = broadcast ?? selectBroadcast();
   const ctaLabel = getBroadcastCTA(roleLens, bcast.status);
   const statusConfig = getStatusConfig(bcast.status);

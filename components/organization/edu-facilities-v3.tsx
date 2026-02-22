@@ -8,11 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 
 // =============================================================================
 // TYPES & MOCK DATA
 // =============================================================================
+
 
 type ViewId = 'campus' | 'bookings' | 'maintenance';
 
@@ -100,19 +103,19 @@ const CONDITION_COLOR: Record<Condition, string> = {
 
 const PRIORITY_COLOR: Record<Priority, string> = {
   Urgent: '#EF4444',
-  Normal: '#1D9BF0',
+  Normal: ACCENT,
   Low: '#22C55E',
 };
 
 const BOOKING_TYPE_COLOR: Record<BookingType, string> = {
-  Recurring: '#1D9BF0',
+  Recurring: ACCENT,
   'One-Time': '#F59E0B',
-  Event: '#1D9BF0',
+  Event: ACCENT,
 };
 
 const STATUS_COLOR: Record<string, string> = {
   Open: '#F59E0B',
-  'In Progress': '#1D9BF0',
+  'In Progress': ACCENT,
   Scheduled: '#22C55E',
 };
 
@@ -245,7 +248,7 @@ function MaintenanceView({ colors, accentColor }: { colors: typeof Colors.light;
               <ThemedText style={[s.cpName, { color: colors.text }]}>{cp.name}</ThemedText>
               <ThemedText style={[s.cpBudget, { color: colors.textSecondary }]}>Budget: {cp.budget}</ThemedText>
             </View>
-            <StatusBadge label={cp.status.toUpperCase()} color="#1D9BF0" />
+            <StatusBadge label={cp.status.toUpperCase()} color={ACCENT} />
           </View>
           <View style={[s.progressContainer, { marginTop: 10 }]}>
             <View style={[s.progressTrack, { backgroundColor: 'rgba(255,255,255,0.04)' }]}>

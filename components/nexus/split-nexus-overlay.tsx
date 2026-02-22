@@ -23,6 +23,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { sendToGPT, type ChatMessage } from '@/utils/openai';
 import { useMode, useAppContext } from '@/context/app-context';
@@ -45,6 +46,7 @@ interface Props {
 export function SplitNexusOverlay({ visible, onClose }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const mode = useMode();
   const { state: appState } = useAppContext();
@@ -230,7 +232,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
             <IconSymbol
               name="arrow.up.circle.fill"
               size={28}
-              color={inputText.trim() ? colors.tint : colors.textTertiary}
+              color={inputText.trim() ? accent : colors.textTertiary}
             />
           </Pressable>
         </View>

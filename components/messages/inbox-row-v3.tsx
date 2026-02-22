@@ -10,7 +10,8 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-messages-v3';
 import type { InboxThreadV3 } from '@/types';
@@ -25,6 +26,7 @@ interface InboxRowV3Props {
 export function InboxRowV3({ thread, onPress, onAccept, onDecline }: InboxRowV3Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   return (
     <Pressable
@@ -174,7 +176,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: accent,
     marginTop: 4,
   },
   requestBadge: {

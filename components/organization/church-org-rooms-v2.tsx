@@ -11,7 +11,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import { isStaffLevel, isElderLevel } from '@/utils/church-rbac';
 import {
@@ -35,6 +35,8 @@ import type {
 // CONSTANTS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 const SUB_TABS = [
   { id: 'directory', label: 'Directory' },
   { id: 'schedule', label: 'Schedule' },
@@ -311,7 +313,7 @@ function DirectoryTab({
             </ThemedText>
           </View>
           <View style={[s.directoryKpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[s.directoryKpiValue, { color: '#1D9BF0' }]}>
+            <ThemedText style={[s.directoryKpiValue, { color: ACCENT }]}>
               {inUseCount}
             </ThemedText>
             <ThemedText style={[s.directoryKpiLabel, { color: colors.textSecondary }]}>
@@ -345,13 +347,13 @@ function DirectoryTab({
             </ThemedText>
           </View>
           <View style={s.directoryLegendItem}>
-            <View style={[s.directoryLegendDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.directoryLegendDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.directoryLegendText, { color: colors.textTertiary }]}>
               In Use ({inUseCount})
             </ThemedText>
           </View>
           <View style={s.directoryLegendItem}>
-            <View style={[s.directoryLegendDot, { backgroundColor: '#1D9BF0' }]} />
+            <View style={[s.directoryLegendDot, { backgroundColor: ACCENT }]} />
             <ThemedText style={[s.directoryLegendText, { color: colors.textTertiary }]}>
               Reserved ({reservedCount})
             </ThemedText>
@@ -803,7 +805,7 @@ function AccessTab({
             </View>
             {entry.canApprove.map((name) => (
               <View key={`approve-${entry.roomId}-${name}`} style={s.accessPersonRow}>
-                <View style={[s.accessPersonDot, { backgroundColor: '#1D9BF0' }]} />
+                <View style={[s.accessPersonDot, { backgroundColor: ACCENT }]} />
                 <ThemedText style={[s.accessPersonName, { color: colors.text }]}>
                   {name}
                 </ThemedText>

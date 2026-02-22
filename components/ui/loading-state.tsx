@@ -9,6 +9,7 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 
 interface LoadingStateProps {
   message?: string;
@@ -18,10 +19,11 @@ interface LoadingStateProps {
 export function LoadingState({ message, size = 'large' }: LoadingStateProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator size={size} color={colors.tint} />
+      <ActivityIndicator size={size} color={accent} />
       {message && (
         <ThemedText style={[styles.message, { color: colors.textSecondary }]}>
           {message}

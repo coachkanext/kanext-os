@@ -10,10 +10,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-messages';
 import type { FeedPost } from '@/data/mock-messages';
+
+const accent = useAccentColor();
 
 const ACCENT_GOLD = '#FFFFFF';
 
@@ -261,7 +264,7 @@ export function FeedCard({ post }: FeedCardProps) {
           {post.type === 'culture' && (
             <View>
               <View style={styles.cultureHeader}>
-                <IconSymbol name="heart.fill" size={13} color="#1D9BF0" />
+                <IconSymbol name="heart.fill" size={13} color={accent} />
                 <ThemedText style={[styles.cultureTitle, { color: colors.text }]}>
                   {post.cultureTitle}
                 </ThemedText>

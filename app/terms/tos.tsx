@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 
 const TOS_POINTS = [
   'KaNeXT is provided "as is" for evaluation and operational use.',
@@ -22,6 +23,7 @@ const TOS_POINTS = [
 export default function TermsOfServiceScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
@@ -44,7 +46,7 @@ export default function TermsOfServiceScreen() {
 
           {TOS_POINTS.map((point, index) => (
             <View key={index} style={styles.bulletRow}>
-              <Text style={[styles.bullet, { color: colors.tint }]}>{'\u2022'}</Text>
+              <Text style={[styles.bullet, { color: accent }]}>{'\u2022'}</Text>
               <Text style={[styles.bulletText, { color: colors.text }]}>{point}</Text>
             </View>
           ))}

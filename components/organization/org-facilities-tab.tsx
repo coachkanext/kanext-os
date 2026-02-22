@@ -21,7 +21,8 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { PagedTabBar } from '@/components/ui/paged-tab-bar';
 import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+;
 import {
   FACILITIES_HUB_TABS,
   FACILITY_SPACES,
@@ -94,14 +95,14 @@ interface OrgFacilitiesTabProps {
 
 const SPACE_STATUS_COLOR: Record<string, string> = {
   open: '#22C55E',
-  booked: '#1D9BF0',
+  booked: accent,
   maintenance: '#F59E0B',
   closed: '#EF4444',
 };
 
 const WORK_ORDER_STATUS_COLOR: Record<string, string> = {
   requested: '#A1A1AA',
-  approved: '#1D9BF0',
+  approved: accent,
   assigned: '#F59E0B',
   in_progress: '#F59E0B',
   completed: '#22C55E',
@@ -111,11 +112,11 @@ const WORK_ORDER_STATUS_COLOR: Record<string, string> = {
 const SEVERITY_COLOR: Record<string, string> = {
   P0: '#EF4444',
   P1: '#F59E0B',
-  P2: '#1D9BF0',
+  P2: accent,
   P3: '#A1A1AA',
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#1D9BF0',
+  medium: accent,
   low: '#A1A1AA',
 };
 
@@ -139,9 +140,9 @@ const CONDITION_COLOR: Record<string, string> = {
 };
 
 const BOOKING_TYPE_COLOR: Record<string, string> = {
-  practice: '#1D9BF0',
+  practice: accent,
   game: '#EF4444',
-  meeting: '#1D9BF0',
+  meeting: accent,
   event: '#F59E0B',
   maintenance: '#F59E0B',
   other: '#A1A1AA',
@@ -181,7 +182,7 @@ function auditIcon(action: string): string {
 function auditColor(action: string): string {
   switch (action) {
     case 'space_booked':
-      return '#1D9BF0';
+      return accent;
     case 'work_order_created':
       return '#F59E0B';
     case 'issue_reported':
@@ -189,11 +190,11 @@ function auditColor(action: string): string {
     case 'issue_resolved':
       return '#22C55E';
     case 'inspection_completed':
-      return '#1D9BF0';
+      return accent;
     case 'asset_updated':
-      return '#1D9BF0';
+      return accent;
     case 'vendor_added':
-      return '#1D9BF0';
+      return accent;
     case 'setting_changed':
       return '#A1A1AA';
     case 'booking_cancelled':

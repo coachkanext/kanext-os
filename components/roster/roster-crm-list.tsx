@@ -17,7 +17,8 @@ import {
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme'
+;
 import { TEAM_COLORS, ROSTER_META, computePortalRisk, getPortalRiskColor } from '@/data/roster-data';
 import { jerseyArchetypeMap } from '@/data/fmu';
 import { getKRColor, getKRTierLabel, getArchetypeDisplay } from '@/utils/kr-display';
@@ -80,7 +81,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   starter: { bg: '#22c55e22', text: '#22c55e' },
-  rotation: { bg: '#1D9BF022', text: '#1D9BF0' },
+  rotation: { bg: `${accent}22`, text: accent },
   bench: { bg: '#0B0F1480', text: '#999' },
   injured: { bg: '#ef444430', text: '#ef4444' },
   redshirt: { bg: '#f59e0b30', text: '#f59e0b' },

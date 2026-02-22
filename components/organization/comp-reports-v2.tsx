@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_REPORTS_TABS,
   COMP_REPORTS_SCOPE_CHIPS,
@@ -40,6 +40,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -101,7 +103,7 @@ function frequencyLabel(freq: ScheduledReport['frequency']): string {
 function utilizationColor(pct: number): string {
   if (pct >= 90) return '#22C55E';
   if (pct >= 70) return '#F59E0B';
-  if (pct >= 50) return '#1D9BF0';
+  if (pct >= 50) return ACCENT;
   return '#EF4444';
 }
 
@@ -198,10 +200,10 @@ function DashboardTab({
       </ThemedText>
       <View style={[s.breakdownCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         {[
-          { label: 'Operational', count: totalOperational, color: '#1D9BF0', icon: 'gearshape.2' },
+          { label: 'Operational', count: totalOperational, color: ACCENT, icon: 'gearshape.2' },
           { label: 'Financial', count: totalFinancial, color: '#22C55E', icon: 'dollarsign.circle' },
           { label: 'Compliance', count: totalCompliance, color: '#F59E0B', icon: 'checkmark.shield' },
-          { label: 'Performance', count: totalPerformance, color: '#1D9BF0', icon: 'chart.line.uptrend.xyaxis' },
+          { label: 'Performance', count: totalPerformance, color: ACCENT, icon: 'chart.line.uptrend.xyaxis' },
         ].map((cat, idx, arr) => (
           <View
             key={cat.label}
@@ -242,7 +244,7 @@ function DashboardTab({
           </ThemedText>
         </View>
         <View style={[s.quickStatCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.quickStatValue, { color: '#1D9BF0' }]}>
+          <ThemedText style={[s.quickStatValue, { color: ACCENT }]}>
             {data.custom.length}
           </ThemedText>
           <ThemedText style={[s.quickStatLabel, { color: colors.textTertiary }]}>
@@ -250,7 +252,7 @@ function DashboardTab({
           </ThemedText>
         </View>
         <View style={[s.quickStatCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.quickStatValue, { color: '#1D9BF0' }]}>
+          <ThemedText style={[s.quickStatValue, { color: ACCENT }]}>
             {data.media.length}
           </ThemedText>
           <ThemedText style={[s.quickStatLabel, { color: colors.textTertiary }]}>

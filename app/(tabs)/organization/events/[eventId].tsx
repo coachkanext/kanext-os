@@ -12,7 +12,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   getTermById,
@@ -52,7 +53,7 @@ function getEventTypeColor(type: AcademicCalendarEvent['type'], modeColor: strin
       return '#EF4444';
     case 'break':
     case 'holiday':
-      return '#1D9BF0';
+      return accent;
     case 'commencement':
       return '#F59E0B';
     case 'registration':
@@ -162,6 +163,7 @@ function TermHeader({ term, colors, modeColor }: TermHeaderProps) {
 export default function EventHubScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { eventId } = useLocalSearchParams<{ eventId: string }>();

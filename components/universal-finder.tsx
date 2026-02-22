@@ -18,17 +18,18 @@ import { useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme'
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { registerFinderHandlers } from '@/utils/global-finder';
 import { MOCK_FINDER_INDEX } from '@/data/mock-finder';
 import type { FinderResult, FinderResultType } from '@/data/mock-finder';
 
 const TYPE_COLORS: Record<FinderResultType, string> = {
-  player: '#1D9BF0',
+  player: accent,
   recruit: '#22C55E',
   team: '#F59E0B',
   game: '#EF4444',
-  clip: '#1D9BF0',
+  clip: accent,
   post: '#A1A1AA',
 };
 
@@ -61,6 +62,7 @@ function ResultRow({ result, onSelect }: { result: FinderResult; onSelect: () =>
 }
 
 export function UniversalFinder() {
+  const accent = useAccentColor();
   const [visible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
   const inputRef = useRef<TextInput>(null);
@@ -192,7 +194,7 @@ const styles = StyleSheet.create({
   closeBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1D9BF0',
+    color: accent,
   },
   resultRow: {
     flexDirection: 'row',

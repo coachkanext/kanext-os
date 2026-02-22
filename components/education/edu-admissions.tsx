@@ -20,7 +20,9 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+
+const ACCENT = MODE_ACCENT.education;
 import type { EducationRoleLens } from '@/utils/education-rbac';
 import {
   isPresident,
@@ -68,7 +70,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'inquiry',
     label: 'Inquiry',
     count: 42850,
-    color: '#1D9BF0',
+    color: ACCENT,
     conversionRate: 43.0,
     weekChange: 384,
     recentActivity: [
@@ -81,7 +83,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'applied',
     label: 'Applied',
     count: 18420,
-    color: '#1D9BF0',
+    color: ACCENT,
     conversionRate: 91.2,
     weekChange: 342,
     recentActivity: [
@@ -94,7 +96,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'review',
     label: 'Review',
     count: 6840,
-    color: '#1D9BF0',
+    color: ACCENT,
     conversionRate: 72.4,
     weekChange: -128,
     recentActivity: [
@@ -212,8 +214,8 @@ const PRIORITY_COLOR: Record<InboxPriority, string> = {
 
 const STATUS_COLOR: Record<InboxStatus, string> = {
   pending: '#A1A1AA',
-  assigned: '#1D9BF0',
-  'in-review': '#1D9BF0',
+  assigned: ACCENT,
+  'in-review': ACCENT,
   'needs-info': '#F59E0B',
   escalated: '#EF4444',
 };
@@ -274,16 +276,16 @@ const COHORTS: Cohort[] = [
     avgSAT: 1280,
     meltRate: 4.8,
     demographics: [
-      { label: 'In-State', value: 58, color: '#1D9BF0' },
-      { label: 'Out-of-State', value: 31, color: '#1D9BF0' },
+      { label: 'In-State', value: 58, color: ACCENT },
+      { label: 'Out-of-State', value: 31, color: ACCENT },
       { label: 'International', value: 11, color: '#22C55E' },
     ],
     diversityTargets: [
       { label: 'First-Generation', target: 35, actual: 34, color: '#F59E0B' },
-      { label: 'Underrepresented Minority', target: 30, actual: 28, color: '#1D9BF0' },
-      { label: 'Pell Eligible', target: 25, actual: 23, color: '#1D9BF0' },
+      { label: 'Underrepresented Minority', target: 30, actual: 28, color: ACCENT },
+      { label: 'Pell Eligible', target: 25, actual: 23, color: ACCENT },
       { label: 'Rural/Underserved', target: 15, actual: 12, color: '#22C55E' },
-      { label: 'STEM Interest', target: 40, actual: 42, color: '#1D9BF0' },
+      { label: 'STEM Interest', target: 40, actual: 42, color: ACCENT },
     ],
     topStates: [
       { state: 'Georgia', count: 1240 },
@@ -309,16 +311,16 @@ const COHORTS: Cohort[] = [
     avgSAT: 0,
     meltRate: 6.2,
     demographics: [
-      { label: 'In-State', value: 72, color: '#1D9BF0' },
-      { label: 'Out-of-State', value: 24, color: '#1D9BF0' },
+      { label: 'In-State', value: 72, color: ACCENT },
+      { label: 'Out-of-State', value: 24, color: ACCENT },
       { label: 'International', value: 4, color: '#22C55E' },
     ],
     diversityTargets: [
       { label: 'First-Generation', target: 40, actual: 38, color: '#F59E0B' },
-      { label: 'Underrepresented Minority', target: 32, actual: 30, color: '#1D9BF0' },
-      { label: 'Pell Eligible', target: 30, actual: 28, color: '#1D9BF0' },
+      { label: 'Underrepresented Minority', target: 32, actual: 30, color: ACCENT },
+      { label: 'Pell Eligible', target: 30, actual: 28, color: ACCENT },
       { label: 'Community College', target: 65, actual: 68, color: '#22C55E' },
-      { label: 'STEM Interest', target: 35, actual: 31, color: '#1D9BF0' },
+      { label: 'STEM Interest', target: 35, actual: 31, color: ACCENT },
     ],
     topStates: [
       { state: 'Georgia', count: 134 },
@@ -351,12 +353,12 @@ const YOY_TRENDS: YoYTrend[] = [
 ];
 
 const GEOGRAPHIC_DISTRIBUTION = [
-  { region: 'Southeast', percentage: 48, count: 8840, color: '#1D9BF0' },
-  { region: 'Northeast', percentage: 18, count: 3316, color: '#1D9BF0' },
+  { region: 'Southeast', percentage: 48, count: 8840, color: ACCENT },
+  { region: 'Northeast', percentage: 18, count: 3316, color: ACCENT },
   { region: 'Midwest', percentage: 12, count: 2210, color: '#22C55E' },
   { region: 'West', percentage: 10, count: 1842, color: '#F59E0B' },
-  { region: 'Southwest', percentage: 6, count: 1105, color: '#1D9BF0' },
-  { region: 'International', percentage: 6, count: 1107, color: '#1D9BF0' },
+  { region: 'Southwest', percentage: 6, count: 1105, color: ACCENT },
+  { region: 'International', percentage: 6, count: 1107, color: ACCENT },
 ];
 
 const TOP_FEEDER_SCHOOLS = [
@@ -479,7 +481,7 @@ function PipelineView({ colors, role }: { colors: typeof Colors.light; role: Edu
         </Card>
 
         <Pressable
-          style={({ pressed }) => [s.ctaButton, { backgroundColor: '#1D9BF0', opacity: pressed ? 0.8 : 1 }]}
+          style={({ pressed }) => [s.ctaButton, { backgroundColor: ACCENT, opacity: pressed ? 0.8 : 1 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
         >
           <IconSymbol name="pencil.and.outline" size={16} color="#FFFFFF" />
@@ -696,7 +698,7 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Educat
                 s.progressBarFill,
                 {
                   width: `${Math.min((INBOX_SUMMARY.reviewedToday / INBOX_SUMMARY.targetReviewsPerDay) * 100, 100)}%`,
-                  backgroundColor: INBOX_SUMMARY.reviewedToday >= INBOX_SUMMARY.targetReviewsPerDay ? '#22C55E' : '#1D9BF0',
+                  backgroundColor: INBOX_SUMMARY.reviewedToday >= INBOX_SUMMARY.targetReviewsPerDay ? '#22C55E' : ACCENT,
                 },
               ]}
             />
@@ -1060,7 +1062,7 @@ function AnalyticsView({ colors, role }: { colors: typeof Colors.light; role: Ed
                   <ThemedText style={[s.monthLabel, { color: colors.textSecondary }]}>{month.month}</ThemedText>
                   <View style={s.monthBarContainer}>
                     <View style={[s.monthBarBg, { backgroundColor: colors.backgroundTertiary }]}>
-                      <View style={[s.monthBarFill, { width: `${barPct}%`, backgroundColor: '#1D9BF0' }]} />
+                      <View style={[s.monthBarFill, { width: `${barPct}%`, backgroundColor: ACCENT }]} />
                     </View>
                   </View>
                   <ThemedText style={[s.monthCount, { color: colors.text }]}>{month.count.toLocaleString()}</ThemedText>
@@ -1206,7 +1208,7 @@ function StudentPortalCTA({ colors }: { colors: typeof Colors.light }) {
             Check your application status, submit documents, and track your admissions journey.
           </ThemedText>
           <Pressable
-            style={({ pressed }) => [s.ctaButton, { backgroundColor: '#1D9BF0', opacity: pressed ? 0.8 : 1 }]}
+            style={({ pressed }) => [s.ctaButton, { backgroundColor: ACCENT, opacity: pressed ? 0.8 : 1 }]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
           >
             <IconSymbol name="arrow.right" size={14} color="#FFFFFF" />

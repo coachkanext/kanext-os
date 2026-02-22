@@ -16,7 +16,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import { useBusiness } from '@/context/business-context';
 import {
   BizCard,
@@ -54,6 +54,8 @@ import type {
   BizOpsV2Data,
 } from '@/data/mock-biz-org-operations';
 
+
+const ACCENT = MODE_ACCENT.business;
 const BP = BusinessPalette;
 
 // =============================================================================
@@ -87,10 +89,10 @@ const OPS_FILTER_CHIPS: Array<{ id: OpsFilterChipId; label: string; icon: string
   { id: 'needs_attention', label: 'Attention', icon: 'exclamationmark.triangle.fill', color: '#F59E0B' },
   { id: 'blocked', label: 'Blocked', icon: 'xmark.octagon.fill', color: '#EF4444' },
   { id: 'decisions_needed', label: 'Decisions', icon: 'hand.raised.fill', color: '#F59E0B' },
-  { id: 'due_7d', label: 'Due <7d', icon: 'clock.fill', color: '#1D9BF0' },
+  { id: 'due_7d', label: 'Due <7d', icon: 'clock.fill', color: ACCENT },
   { id: 'at_risk', label: 'At Risk', icon: 'exclamationmark.circle.fill', color: '#EF4444' },
-  { id: 'by_owner', label: 'By Owner', icon: 'person.fill', color: '#1D9BF0' },
-  { id: 'by_type', label: 'By Type', icon: 'tag.fill', color: '#1D9BF0' },
+  { id: 'by_owner', label: 'By Owner', icon: 'person.fill', color: ACCENT },
+  { id: 'by_type', label: 'By Type', icon: 'tag.fill', color: ACCENT },
   { id: 'completed', label: 'Completed', icon: 'checkmark.circle.fill', color: '#22C55E' },
 ];
 
@@ -129,10 +131,10 @@ function opsFeedTypeIcon(type: OpsFeedItem['type']): string {
 
 function opsFeedTypeColor(type: OpsFeedItem['type']): string {
   switch (type) {
-    case 'initiative_moved': return '#1D9BF0';
+    case 'initiative_moved': return ACCENT;
     case 'blocker_created': return '#EF4444';
     case 'decision_approved': return '#22C55E';
-    case 'deliverable_shipped': return '#1D9BF0';
+    case 'deliverable_shipped': return ACCENT;
   }
 }
 
@@ -165,7 +167,7 @@ interface Props {
 
 function progressColor(progress: number): string {
   if (progress >= 75) return '#22C55E';
-  if (progress >= 40) return '#1D9BF0';
+  if (progress >= 40) return ACCENT;
   if (progress >= 15) return '#F59E0B';
   return '#A1A1AA';
 }
@@ -541,7 +543,7 @@ function TriageTab({
         title="Recently Changed"
         count={recentlyChanged.length}
         icon="arrow.triangle.2.circlepath"
-        color="#1D9BF0"
+        color={ACCENT}
         colors={colors}
       />
       {recentlyChanged.length === 0 ? (
@@ -649,7 +651,7 @@ function InitiativesTab({
           {/* Linked Proof indicator */}
           {(item as any).linkedProof && (
             <View style={s.linkedProofChip}>
-              <IconSymbol name="link.circle.fill" size={11} color="#1D9BF0" />
+              <IconSymbol name="link.circle.fill" size={11} color={ACCENT} />
               <ThemedText style={s.linkedProofText}>Has Proof</ThemedText>
             </View>
           )}
@@ -691,7 +693,7 @@ function InitiativesTab({
             </ThemedText>
             {(item as any).linkedProof && (
               <View style={s.linkedProofChip}>
-                <IconSymbol name="link.circle.fill" size={10} color="#1D9BF0" />
+                <IconSymbol name="link.circle.fill" size={10} color={ACCENT} />
                 <ThemedText style={s.linkedProofText}>Proof</ThemedText>
               </View>
             )}
@@ -747,7 +749,7 @@ function InitiativesTab({
                 <BizStatusChip label={initiativeStatusLabel(item.status)} variant={initiativeStatusVariant(item.status)} />
                 {(item as any).linkedProof && (
                   <View style={s.linkedProofChip}>
-                    <IconSymbol name="link.circle.fill" size={10} color="#1D9BF0" />
+                    <IconSymbol name="link.circle.fill" size={10} color={ACCENT} />
                     <ThemedText style={s.linkedProofText}>Proof</ThemedText>
                   </View>
                 )}
@@ -1321,12 +1323,12 @@ function OpsFeedSection({
     <View style={s.opsFeedSection}>
       {/* Section header */}
       <View style={s.triageLaneHeader}>
-        <View style={[s.triageLaneIconCircle, { backgroundColor: '#1D9BF0' + '18' }]}>
-          <IconSymbol name="list.bullet.rectangle.fill" size={14} color="#1D9BF0" />
+        <View style={[s.triageLaneIconCircle, { backgroundColor: ACCENT + '18' }]}>
+          <IconSymbol name="list.bullet.rectangle.fill" size={14} color={ACCENT} />
         </View>
         <ThemedText style={[s.triageLaneTitle, { color: colors.text }]}>OPS FEED</ThemedText>
-        <View style={[s.triageLaneCount, { backgroundColor: '#1D9BF0' + '20' }]}>
-          <ThemedText style={[s.triageLaneCountText, { color: '#1D9BF0' }]}>
+        <View style={[s.triageLaneCount, { backgroundColor: ACCENT + '20' }]}>
+          <ThemedText style={[s.triageLaneCountText, { color: ACCENT }]}>
             {OPS_FEED_ITEMS.length}
           </ThemedText>
         </View>
@@ -2921,7 +2923,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#1D9BF0' + '15',
+    backgroundColor: ACCENT + '15',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: BorderRadius.full,
@@ -2931,7 +2933,7 @@ const s = StyleSheet.create({
   linkedProofText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#1D9BF0',
+    color: ACCENT,
     letterSpacing: 0.3,
   },
 

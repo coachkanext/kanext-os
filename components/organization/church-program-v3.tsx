@@ -8,12 +8,14 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.church;
 type ViewId = 'identity' | 'ministries' | 'operations';
 
 interface Props {
@@ -147,10 +149,10 @@ const STATUS_COLORS: Record<string, string> = {
   Active: '#22C55E',
   Seasonal: '#F59E0B',
   Pending: '#F59E0B',
-  'In Progress': '#1D9BF0',
+  'In Progress': ACCENT,
   Done: '#22C55E',
   Confirmed: '#22C55E',
-  Planning: '#1D9BF0',
+  Planning: ACCENT,
   Tentative: '#F59E0B',
   Urgent: '#EF4444',
   Normal: '#A1A1AA',

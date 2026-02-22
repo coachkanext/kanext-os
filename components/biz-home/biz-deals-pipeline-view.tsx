@@ -7,14 +7,17 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import {
   DEALS,
   DEAL_STAGES,
   PIPELINE_SUMMARY,
+
   type Deal,
 } from '@/data/mock-business-home';
 import { openPersonCard } from '@/utils/global-entity-sheets';
+
+const ACCENT = MODE_ACCENT.business;
 
 interface Props {
   colors: typeof Colors.light;
@@ -25,8 +28,8 @@ type StageFilter = 'all' | string;
 
 const DEAL_TYPE_COLORS: Record<string, string> = {
   investor: '#22C55E',
-  partner: '#1D9BF0',
-  client: '#1D9BF0',
+  partner: ACCENT,
+  client: ACCENT,
   licensing: '#F59E0B',
 };
 
@@ -79,7 +82,7 @@ export function BizDealsPipelineView({ colors, accent }: Props) {
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Active</ThemedText>
           </View>
           <View style={styles.summaryItem}>
-            <ThemedText style={[styles.summaryValue, { color: '#1D9BF0' }]}>{PIPELINE_SUMMARY.proposalStage}</ThemedText>
+            <ThemedText style={[styles.summaryValue, { color: ACCENT }]}>{PIPELINE_SUMMARY.proposalStage}</ThemedText>
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Proposal</ThemedText>
           </View>
           <View style={styles.summaryItem}>
@@ -203,7 +206,7 @@ export function BizDealsPipelineView({ colors, accent }: Props) {
                     openPersonCard({ name: deal.assignedTo!, role: 'Owner' });
                   }}
                 >
-                  <ThemedText style={[styles.assignedLink, { color: '#1D9BF0' }]}>{deal.assignedTo}</ThemedText>
+                  <ThemedText style={[styles.assignedLink, { color: ACCENT }]}>{deal.assignedTo}</ThemedText>
                 </Pressable>
               </View>
             )}

@@ -10,8 +10,10 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { COMP_STORE_PRODUCTS, buildCompCommerceChain } from '@/data/comp-commerce-data';
 import type { PaymentChain } from '@/data/commerce-data';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 
+
+const ACCENT = MODE_ACCENT.competition;
 type Stage = 'browse' | 'confirm' | 'receipt';
 
 interface CartItem {
@@ -181,7 +183,7 @@ const styles = StyleSheet.create({
   },
   productName: { fontSize: 14, fontWeight: '800', letterSpacing: -0.5 },
   productPrice: { fontSize: 13, fontWeight: '800', letterSpacing: -0.3 },
-  addButton: { backgroundColor: '#1D9BF0', paddingVertical: 8, borderRadius: 12, alignItems: 'center', marginTop: 4 },
+  addButton: { backgroundColor: ACCENT, paddingVertical: 8, borderRadius: 12, alignItems: 'center', marginTop: 4 },
   addButtonText: { color: '#fff', fontSize: 11, fontWeight: '700', letterSpacing: 0.5 },
 
   footerContainer: { paddingHorizontal: Spacing.md, paddingBottom: Spacing.md },

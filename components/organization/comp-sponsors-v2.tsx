@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import {
   COMP_SPONSORS_TABS,
   COMP_SPONSORS_SCOPE_CHIPS,
@@ -38,6 +38,8 @@ import type {
 // PROPS
 // =============================================================================
 
+
+const ACCENT = MODE_ACCENT.competition;
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
@@ -102,16 +104,16 @@ function revenueTypeLabel(type: SponsorRevenue['type']): string {
 function revenueTypeColor(type: SponsorRevenue['type']): string {
   switch (type) {
     case 'cash': return '#22C55E';
-    case 'in-kind': return '#1D9BF0';
+    case 'in-kind': return ACCENT;
     case 'bonus': return '#F59E0B';
-    case 'renewal': return '#1D9BF0';
+    case 'renewal': return ACCENT;
   }
 }
 
 function revenueStatusColor(status: SponsorRevenue['status']): string {
   switch (status) {
     case 'received': return '#22C55E';
-    case 'invoiced': return '#1D9BF0';
+    case 'invoiced': return ACCENT;
     case 'overdue': return '#EF4444';
     case 'projected': return '#A1A1AA';
   }
@@ -377,7 +379,7 @@ function PackagesTab({
           : item.status === 'custom' ? 'CUSTOM'
           : 'AVAILABLE';
         const statusColor = item.status === 'sold-out' ? '#EF4444'
-          : item.status === 'custom' ? '#1D9BF0'
+          : item.status === 'custom' ? ACCENT
           : '#22C55E';
         return (
           <View style={[s.packageCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -773,7 +775,7 @@ function RevenueTab({
                 </ThemedText>
               </View>
               <View style={s.revenueSummaryItem}>
-                <ThemedText style={[s.revenueSummaryValue, { color: '#1D9BF0' }]}>
+                <ThemedText style={[s.revenueSummaryValue, { color: ACCENT }]}>
                   {formatCurrency(totals.invoiced)}
                 </ThemedText>
                 <ThemedText style={[s.revenueSummaryLabel, { color: colors.textTertiary }]}>

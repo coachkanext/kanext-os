@@ -7,10 +7,12 @@ import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { CAP_TABLE, type CapTableEntry } from '@/data/mock-business-home';
 import { openPersonCard } from '@/utils/global-entity-sheets';
 
+
+const ACCENT = MODE_ACCENT.business;
 interface Props {
   colors: typeof Colors.light;
   accent: string;
@@ -18,17 +20,17 @@ interface Props {
 
 const STAKEHOLDER_COLORS: string[] = [
   '#F59E0B', // Founder
-  '#1D9BF0', // Advisors
-  '#1D9BF0', // Employee pool
+  ACCENT, // Advisors
+  ACCENT, // Employee pool
   '#22C55E', // Angel investors
   '#EF4444', // Extra
-  '#1D9BF0',
+  ACCENT,
 ];
 
 const CLASS_COLORS: Record<string, string> = {
   common: '#F59E0B',
   preferred: '#22C55E',
-  options: '#1D9BF0',
+  options: ACCENT,
 };
 
 function formatCurrency(amount: number): string {

@@ -9,15 +9,17 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { Colors , MODE_ACCENT } from '@/constants/theme';
 import { BIZ_NEWS, type BizNewsItem } from '@/data/mock-business-home';
 
+
+const ACCENT = MODE_ACCENT.business;
 const CATEGORY_COLORS: Record<BizNewsItem['category'], string> = {
-  product: '#1D9BF0',
+  product: ACCENT,
   founder: '#F59E0B',
   press: '#EF4444',
   investor: '#22C55E',
-  partnership: '#1D9BF0',
+  partnership: ACCENT,
 };
 
 const CATEGORY_PILLS = ['All', 'Product', 'Founder', 'Press', 'Investor', 'Partnership'] as const;
