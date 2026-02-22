@@ -14,7 +14,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, ModeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { INSTITUTIONAL_METRICS, KaNeXT University_ORGANIZATION } from '@/data/mock-education';
+import { INSTITUTIONAL_METRICS, KANEXT_UNIVERSITY_ORGANIZATION } from '@/data/mock-education';
 
 // =============================================================================
 // COMPONENTS
@@ -116,7 +116,7 @@ export default function MetricsScreen() {
             Institutional Metrics
           </ThemedText>
           <ThemedText style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
-            {KaNeXT University_ORGANIZATION.name}
+            {KANEXT_UNIVERSITY_ORGANIZATION.name}
           </ThemedText>
         </View>
       </View>
@@ -210,19 +210,19 @@ export default function MetricsScreen() {
           INSTITUTION DETAILS
         </ThemedText>
         <View style={[styles.detailCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <MetricRow label="Founded" value={KaNeXT University_ORGANIZATION.founded || 'N/A'} colors={colors} />
+          <MetricRow label="Founded" value={KANEXT_UNIVERSITY_ORGANIZATION.founded || 'N/A'} colors={colors} />
           <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-          <MetricRow label="Type" value={KaNeXT University_ORGANIZATION.institutionType} colors={colors} />
+          <MetricRow label="Type" value={KANEXT_UNIVERSITY_ORGANIZATION.institutionType} colors={colors} />
           <View style={[styles.divider, { backgroundColor: colors.divider }]} />
           <MetricRow
             label="Accreditation"
-            value={KaNeXT University_ORGANIZATION.accreditation || 'N/A'}
+            value={KANEXT_UNIVERSITY_ORGANIZATION.accreditation || 'N/A'}
             colors={colors}
           />
           <View style={[styles.divider, { backgroundColor: colors.divider }]} />
           <MetricRow
             label="Program Formats"
-            value={KaNeXT University_ORGANIZATION.programFormats?.join(', ') || 'N/A'}
+            value={KANEXT_UNIVERSITY_ORGANIZATION.programFormats?.join(', ') || 'N/A'}
             colors={colors}
           />
         </View>

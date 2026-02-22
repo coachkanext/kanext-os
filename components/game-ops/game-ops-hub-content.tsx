@@ -49,9 +49,9 @@ export function GameOpsHubContent() {
   const handleLaunch = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (proximity === 'post' && KaNeXT_NEXT_GAME_ID) {
-      router.push(`/coach/game-detail?gameId=${FMU_NEXT_GAME_ID}&tab=report` as any);
+      router.push(`/coach/game-detail?gameId=${KaNeXT_NEXT_GAME_ID}&tab=report` as any);
     } else {
-      router.push(`/coach/game-ops?gameId=${FMU_NEXT_GAME_ID}` as any);
+      router.push(`/coach/game-ops?gameId=${KaNeXT_NEXT_GAME_ID}` as any);
     }
   };
 
@@ -63,13 +63,13 @@ export function GameOpsHubContent() {
       nestedScrollEnabled
     >
       {/* Next Game Bar */}
-      {FMU_NEXT_GAME && (
+      {KaNeXT_NEXT_GAME && (
         <View style={[styles.nextGameBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={[styles.nextGameDot, { backgroundColor: proximity === 'live' ? Brand.success : ACCENT_GOLD }]} />
           <View style={styles.nextGameInfo}>
-            <ThemedText style={styles.nextGameOpp}>vs {FMU_NEXT_GAME.opponent}</ThemedText>
+            <ThemedText style={styles.nextGameOpp}>vs {KaNeXT_NEXT_GAME.opponent}</ThemedText>
             <ThemedText style={[styles.nextGameDate, { color: colors.textSecondary }]}>
-              {FMU_NEXT_GAME.date} • {FMU_NEXT_GAME.location}
+              {KaNeXT_NEXT_GAME.date} • {KaNeXT_NEXT_GAME.location}
             </ThemedText>
           </View>
           {proximity === 'live' && (

@@ -277,7 +277,7 @@ function computeGameOpsPlayerStats(events: any[]) {
   return stats;
 }
 
-const SEASON_LEADERS = [...FMU_LEADERS].sort((a, b) => b.ppg - a.ppg).slice(0, 3).map((l) => {
+const SEASON_LEADERS = [...KaNeXT_LEADERS].sort((a, b) => b.ppg - a.ppg).slice(0, 3).map((l) => {
   const lastName = l.name.split(' ').pop() || l.name;
   return { name: lastName, line: `${l.ppg} ppg, ${l.rpg} rpg, ${l.apg} apg` };
 });
@@ -656,7 +656,7 @@ export default function GameDetailScreen() {
               <View style={[styles.scoreboardSide, { flexDirection: 'row-reverse' }]}>
                 <View style={{ alignItems: 'flex-end' }}>
                   <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>KXT</Text>
-                  <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{FMU_RECORD.overall}</Text>
+                  <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{KaNeXT_RECORD.overall}</Text>
                 </View>
                 <View style={[styles.scoreboardIcon, { backgroundColor: colors.text + '15' }]}>
                   <Text style={[styles.scoreboardIconText, { color: colors.text }]}>F</Text>

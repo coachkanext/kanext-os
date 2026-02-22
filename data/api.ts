@@ -53,7 +53,7 @@ import {
   type ChurchLeader,
 } from './mock-church';
 import {
-  KaNeXT University_ORGANIZATION,
+  KANEXT_UNIVERSITY_ORGANIZATION,
   ACADEMIC_TERMS,
   ACADEMIC_CALENDAR,
   DEPARTMENTS,
@@ -104,7 +104,7 @@ export async function fetchChurchOrganization() {
 }
 
 export async function fetchEducationOrganization() {
-  return mockFetch(KaNeXT University_ORGANIZATION);
+  return mockFetch(KANEXT_UNIVERSITY_ORGANIZATION);
 }
 
 // =============================================================================

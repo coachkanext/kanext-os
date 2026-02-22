@@ -19,7 +19,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { KaNeXT_RECORD, KaNeXT_LAST_GAME, KaNeXT_LAST_GAME_ID } from '@/data/fmu';
-import { rosterEntries } from '@/data/kx-conference/kx-sports';
+import { rosterEntries } from '@/data/sun-conference/florida-memorial';
 
 // =============================================================================
 // KaNeXT DATA

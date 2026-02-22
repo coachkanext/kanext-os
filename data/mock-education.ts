@@ -32,7 +32,7 @@ export const KaNeXT_ORGANIZATION: EducationOrganization = {
 };
 
 /** @deprecated Use KaNeXT_ORGANIZATION instead */
-export const KaNeXT University_ORGANIZATION = KaNeXT_ORGANIZATION;
+export const KANEXT_UNIVERSITY_ORGANIZATION = KaNeXT_ORGANIZATION;
 
 // =============================================================================
 // ACADEMIC TERMS

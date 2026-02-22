@@ -1,7 +1,7 @@
 /**
  * KaNeXT Data Bridge
  *
- * Transforms normalized KaNeXT data (from data/kx-conference/kx-sports/)
+ * Transforms normalized KaNeXT data (from data/sun-conference/florida-memorial/)
  * into the shapes each app screen expects.
  */
 
@@ -13,7 +13,7 @@ import {
   gameLogs,
   teamGameLogs,
   categoryLeaders,
-} from './kx-conference/kx-sports';
+} from './sun-conference/florida-memorial';
 
 // ── Lookup helpers ──
 
@@ -46,7 +46,7 @@ export interface KaNeXTGame {
 }
 
 // Raw boxscore JSON for venue lookup
-import boxscoresJson from './kx-conference/fmu-mens-basketball-2025-26.json';
+import boxscoresJson from './sun-conference/fmu-mens-basketball-2025-26.json';
 const venueByDate = new Map<string, string>();
 for (const g of boxscoresJson as any[]) {
   if (g.date && g.location) venueByDate.set(g.date, g.location);
@@ -1453,7 +1453,7 @@ export const KaNeXT_SEASON_COMPLETE = nextGameData == null;
 
 // ── 9) Player Bio data ──
 
-import biosJson from './kx-conference/kx-sports/raw/roster-2025-26-bios.json';
+import biosJson from './sun-conference/florida-memorial/raw/roster-2025-26-bios.json';
 
 /** Normalize jersey number: strip leading zeros, '00' → '0' */
 function normalizeJersey(j: string | null): string {
@@ -1723,7 +1723,7 @@ export function getFmuHighlights(jerseyNumber: string): string[] {
   if (gp === 0) return [];
 
   // Leading stat categories
-  const sorted = [...FMU_LEADERS].filter((l) => l.gamesPlayed > 0);
+  const sorted = [...KaNeXT_LEADERS].filter((l) => l.gamesPlayed > 0);
   const ppgRank = sorted.sort((a, b) => b.ppg - a.ppg).findIndex((l) => normalizeJersey(l.number) === j) + 1;
   const rpgRank = sorted.sort((a, b) => b.rpg - a.rpg).findIndex((l) => normalizeJersey(l.number) === j) + 1;
   const apgRank = sorted.sort((a, b) => b.apg - a.apg).findIndex((l) => normalizeJersey(l.number) === j) + 1;

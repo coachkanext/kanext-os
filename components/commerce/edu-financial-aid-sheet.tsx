@@ -108,24 +108,24 @@ export function EduFinancialAidSheet({ visible, onClose, colors }: Props) {
         <View style={styles.container}>
           <View style={[styles.codeCard, { backgroundColor: ACCENT + '15' }]}>
             <Text style={[styles.codeLabel, { color: ACCENT }]}>KaNeXT School Code</Text>
-            <Text style={[styles.codeValue, { color: colors.text }]}>{FMU_FAFSA.schoolCode}</Text>
+            <Text style={[styles.codeValue, { color: colors.text }]}>{KaNeXT_FAFSA.schoolCode}</Text>
           </View>
 
           <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Text style={[styles.sectionLabel, { color: colors.textTertiary }]}>DEADLINES</Text>
             <View style={styles.deadlineRow}>
               <Text style={[styles.cardMeta, { color: colors.textSecondary }]}>Priority</Text>
-              <Text style={[styles.cardMetaBold, { color: colors.text }]}>{FMU_FAFSA.priority}</Text>
+              <Text style={[styles.cardMetaBold, { color: colors.text }]}>{KaNeXT_FAFSA.priority}</Text>
             </View>
             <View style={styles.deadlineRow}>
               <Text style={[styles.cardMeta, { color: colors.textSecondary }]}>Final</Text>
-              <Text style={[styles.cardMetaBold, { color: colors.text }]}>{FMU_FAFSA.final}</Text>
+              <Text style={[styles.cardMetaBold, { color: colors.text }]}>{KaNeXT_FAFSA.final}</Text>
             </View>
           </View>
 
           <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Text style={[styles.sectionLabel, { color: colors.textTertiary }]}>STEPS TO COMPLETE</Text>
-            {FMU_FAFSA.steps.map((step, i) => (
+            {KaNeXT_FAFSA.steps.map((step, i) => (
               <View key={i} style={styles.stepRow}>
                 <View style={[styles.stepNumber, { backgroundColor: ACCENT }]}>
                   <Text style={styles.stepNumberText}>{i + 1}</Text>

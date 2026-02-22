@@ -606,6 +606,6 @@ export function getGamePlanV2(gameId: string): GamePlanV2Packet | null {
 
 /** Convenience: get packet for the next upcoming game */
 export function getNextGamePlan(): GamePlanV2Packet | null {
-  if (!FMU_NEXT_GAME_ID) return null;
+  if (!KaNeXT_NEXT_GAME_ID) return null;
   return getGamePlanV2(KaNeXT_NEXT_GAME_ID);
 }

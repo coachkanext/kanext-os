@@ -1168,19 +1168,19 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
             onLongPress={() => { if (onLogoLongPress) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onLogoLongPress(); } }}
             delayLongPress={300}
           >
-            <Image source={FMU_SEAL} style={styles.headerLogo} resizeMode="contain" />
+            <Image source={KaNeXT_SEAL} style={styles.headerLogo} resizeMode="contain" />
           </Pressable>
           <View style={{ flex: 1 }}>
-            <Text style={styles.teamName}>{FMU_TEAM.name}</Text>
+            <Text style={styles.teamName}>{KaNeXT_TEAM.name}</Text>
             <Text style={styles.teamSubline}>
-              {FMU_TEAM.division} {'\u00B7'} {FMU_TEAM.conference}
+              {KaNeXT_TEAM.division} {'\u00B7'} {KaNeXT_TEAM.conference}
             </Text>
             <View style={styles.teamRecordRow}>
-              <Text style={styles.teamRecord}>{FMU_TEAM.record}</Text>
-              <Text style={styles.teamConfRecord}>({FMU_TEAM.confRecord})</Text>
+              <Text style={styles.teamRecord}>{KaNeXT_TEAM.record}</Text>
+              <Text style={styles.teamConfRecord}>({KaNeXT_TEAM.confRecord})</Text>
               <View style={{ backgroundColor: KaNeXT_TEAM.streak.startsWith('W') ? '#22C55E20' : '#EF444420', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
                 <Text style={{ fontSize: 11, fontWeight: '700', color: KaNeXT_TEAM.streak.startsWith('W') ? '#22C55E' : '#EF4444' }}>
-                  {FMU_TEAM.streak}
+                  {KaNeXT_TEAM.streak}
                 </Text>
               </View>
             </View>

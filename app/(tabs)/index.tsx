@@ -319,11 +319,11 @@ function SportsHome() {
   // Computed card previews
   const previews = useMemo((): Record<DrillDownId, string> => {
     const topScorer = KaNeXT_LEADERS[0];
-    const topReb = [...FMU_LEADERS].sort((a, b) => b.rpg - a.rpg)[0];
+    const topReb = [...KaNeXT_LEADERS].sort((a, b) => b.rpg - a.rpg)[0];
     const nextOpp = KaNeXT_NEXT_GAME?.opponent ?? 'TBD';
-    const nextPre = KaNeXT_NEXT_GAME_ID ? KaNeXT_PREGAME[FMU_NEXT_GAME_ID] : null;
+    const nextPre = KaNeXT_NEXT_GAME_ID ? KaNeXT_PREGAME[KaNeXT_NEXT_GAME_ID] : null;
     return {
-      stats: `${topScorer?.name.split(' ').pop()} ${topScorer?.ppg} PPG · ${topReb?.name.split(' ').pop()} ${topReb?.rpg} RPG · #${FMU_CONF_POSITION} Sun Conf`,
+      stats: `${topScorer?.name.split(' ').pop()} ${topScorer?.ppg} PPG · ${topReb?.name.split(' ').pop()} ${topReb?.rpg} RPG · #${KaNeXT_CONF_POSITION} Sun Conf`,
       'game-plan': `vs ${nextOpp}${nextPre ? ` · KR ${nextPre.oppKR}` : ''}`,
       simulation: 'Season Projection: 22-8 · Tournament: 74% advance',
       development: '2 practice plans · 4 drill assignments · 3 evidence items pending',
@@ -409,15 +409,15 @@ function SportsHome() {
                       badgeColor = '#EF4444';
                       badgePulse = true;
                     } else if (KaNeXT_NEXT_GAME) {
-                      heroTitle = `KaNeXT vs ${FMU_NEXT_GAME.opponent}`;
+                      heroTitle = `KaNeXT vs ${KaNeXT_NEXT_GAME.opponent}`;
                       const loc = KaNeXT_NEXT_GAME.location === 'Home' ? 'Home' : 'Away';
-                      heroSubtitle = `${FMU_NEXT_GAME.date} · ${loc} · Conference Matchup`;
+                      heroSubtitle = `${KaNeXT_NEXT_GAME.date} · ${loc} · Conference Matchup`;
                       heroBadge = 'NEXT';
                       badgeColor = '#1D9BF0';
                     } else if (KaNeXT_LAST_GAME) {
                       const wl = KaNeXT_LAST_GAME.result === 'W' ? 'W' : 'L';
-                      heroTitle = `KaNeXT vs ${FMU_LAST_GAME.opponent}`;
-                      heroSubtitle = `Final · ${wl} ${FMU_LAST_GAME.score} · Full Game Recap`;
+                      heroTitle = `KaNeXT vs ${KaNeXT_LAST_GAME.opponent}`;
+                      heroSubtitle = `Final · ${wl} ${KaNeXT_LAST_GAME.score} · Full Game Recap`;
                       heroBadge = 'RECAP';
                       badgeColor = '#A1A1AA';
                     } else {
@@ -461,12 +461,12 @@ function SportsHome() {
                   {/* ===== BLOCK 2 — NEXT GAME BLOCK (dark card) ===== */}
                   {(() => {
                     // When season is complete, show tournament TBD
-                    const isTBD = !FMU_NEXT_GAME;
-                    const nextGame = (!isTBD && KaNeXT_NEXT_GAME_ID) ? KaNeXT_GAMES_BY_ID[FMU_NEXT_GAME_ID] : null;
+                    const isTBD = !KaNeXT_NEXT_GAME;
+                    const nextGame = (!isTBD && KaNeXT_NEXT_GAME_ID) ? KaNeXT_GAMES_BY_ID[KaNeXT_NEXT_GAME_ID] : null;
                     const oppName = isTBD ? 'TBD' : KaNeXT_NEXT_GAME!.opponent;
                     const oppHue = confHash(oppName) % 360;
                     const oppInitials = isTBD ? '?' : oppName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-                    const pregame = (!isTBD && KaNeXT_NEXT_GAME_ID) ? KaNeXT_PREGAME[FMU_NEXT_GAME_ID] : null;
+                    const pregame = (!isTBD && KaNeXT_NEXT_GAME_ID) ? KaNeXT_PREGAME[KaNeXT_NEXT_GAME_ID] : null;
                     const oppKR = pregame?.oppKR ?? nextGame?.opponentKR ?? 0;
                     const krGap = pregame?.krGap ?? 0;
                     const winPct = isTBD ? 0 : Math.min(92, Math.max(28, Math.round(50 + krGap * 0.8)));
@@ -492,9 +492,9 @@ function SportsHome() {
                           {/* Teams row */}
                           <View style={styles.ngTeamsRow}>
                             <View style={styles.ngTeamSide}>
-                              <Image source={FMU_SEAL} style={styles.ngLogo} />
+                              <Image source={KaNeXT_SEAL} style={styles.ngLogo} />
                               <Text style={styles.ngTeamName} numberOfLines={1}>FL Memorial</Text>
-                              <Text style={styles.ngTeamRecord}>{FMU_RECORD.overall}</Text>
+                              <Text style={styles.ngTeamRecord}>{KaNeXT_RECORD.overall}</Text>
                             </View>
 
                             <Text style={styles.ngVsText}>vs</Text>

@@ -85,7 +85,7 @@ export function buildSportsDashboard(
         ? [{
             id: 'next-game',
             type: 'next' as const,
-            title: `${FMU_NEXT_GAME.location === 'Home' ? 'vs' : '@'} ${FMU_NEXT_GAME.opponent}`,
+            title: `${KaNeXT_NEXT_GAME.location === 'Home' ? 'vs' : '@'} ${KaNeXT_NEXT_GAME.opponent}`,
             subtitle: KaNeXT_NEXT_GAME.date,
             metadata: KaNeXT_NEXT_GAME.location,
           }]
@@ -94,13 +94,13 @@ export function buildSportsDashboard(
         ? [{
             id: 'last-game',
             type: 'today' as const,
-            title: `${FMU_LAST_GAME.location === 'Home' ? 'vs' : '@'} ${FMU_LAST_GAME.opponent}`,
-            subtitle: `${FMU_LAST_GAME.result} ${FMU_LAST_GAME.score}`,
+            title: `${KaNeXT_LAST_GAME.location === 'Home' ? 'vs' : '@'} ${KaNeXT_LAST_GAME.opponent}`,
+            subtitle: `${KaNeXT_LAST_GAME.result} ${KaNeXT_LAST_GAME.score}`,
           }]
         : []),
     ],
     alerts: KaNeXT_SEASON_COMPLETE
-      ? [{ id: 'season-end', severity: 'info', title: 'Season Complete', message: `Final record: ${FMU_RECORD.overall}` }]
+      ? [{ id: 'season-end', severity: 'info', title: 'Season Complete', message: `Final record: ${KaNeXT_RECORD.overall}` }]
       : undefined,
     quickActions: [
       { id: 'qa-schedule', label: 'Schedule', icon: 'calendar' },

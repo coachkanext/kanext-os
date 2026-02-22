@@ -16,7 +16,7 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // Data imports
-import { teamStats } from '@/data/kx-conference/kx-sports/team-stats';
+import { teamStats } from '@/data/sun-conference/florida-memorial/team-stats';
 import { KaNeXT_LEADERS } from '@/data/fmu';
 import {
   PLAYER_CLUSTERS,
@@ -475,7 +475,7 @@ function TeamOverview({
     <>
       {/* A) Team Identity Strip */}
       <View style={st.identityRow}>
-        <Image source={FMU_SEAL} style={st.logo} resizeMode="contain" />
+        <Image source={KaNeXT_SEAL} style={st.logo} resizeMode="contain" />
         <View style={st.identityText}>
           <Text style={st.teamName}>KaNeXT Sports</Text>
           <Text style={st.teamSubline}>NAIA {'\u00B7'} KaNeXT Conference</Text>

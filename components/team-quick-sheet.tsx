@@ -11,7 +11,7 @@ import * as Haptics from 'expo-haptics';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KaNeXT_GAMES, KaNeXT_RECORD, KaNeXT_STANDINGS } from '@/data/fmu';
-import { coachingStaff } from '@/data/kx-conference/coaching-staff';
+import { coachingStaff } from '@/data/sun-conference/coaching-staff';
 import { PLAYER_CLUSTERS } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
 
@@ -183,7 +183,7 @@ export function TeamQuickSheet({
 
           {/* 2.1 Identity row */}
           <View style={s.identityRow}>
-            <Image source={FMU_SEAL} style={s.logo} resizeMode="contain" />
+            <Image source={KaNeXT_SEAL} style={s.logo} resizeMode="contain" />
             <View style={s.identityText}>
               <Text style={s.teamName}>KaNeXT Sports</Text>
               <Text style={s.teamSubline}>NAIA {'\u00B7'} KaNeXT Conference</Text>
@@ -197,16 +197,16 @@ export function TeamQuickSheet({
           {/* 2.3 Season snapshot pills */}
           <View style={s.pillsRow}>
             <View style={s.recordPill}>
-              <Text style={s.recordPillText}>{FMU_RECORD.overall}</Text>
+              <Text style={s.recordPillText}>{KaNeXT_RECORD.overall}</Text>
             </View>
             <View style={s.recordPill}>
-              <Text style={s.recordPillTextMuted}>{FMU_RECORD.conference} conf</Text>
+              <Text style={s.recordPillTextMuted}>{KaNeXT_RECORD.conference} conf</Text>
             </View>
             <View style={[s.recordPill, { backgroundColor: fmuStreak.startsWith('W') ? '#22C55E20' : '#EF444420' }]}>
               <Text style={[s.recordPillText, { color: fmuStreak.startsWith('W') ? '#22C55E' : '#EF4444' }]}>{fmuStreak}</Text>
             </View>
             <View style={s.recordPill}>
-              <Text style={s.recordPillTextMuted}>#{FMU_CONF_POSITION}</Text>
+              <Text style={s.recordPillTextMuted}>#{KaNeXT_CONF_POSITION}</Text>
             </View>
             <View style={[s.recordPill, { backgroundColor: 'rgba(255,209,0,0.12)' }]}>
               <Text style={[s.recordPillText, { color: '#F59E0B', fontSize: 11 }]}>Regional Power</Text>
@@ -280,7 +280,7 @@ export function TeamQuickSheet({
           {activeTab === 'coaches' && (
             <View style={s.tabContent}>
               <Text style={s.sectionLabel}>STAFF</Text>
-              {FMU_COACHES.map((coach) => {
+              {KaNeXT_COACHES.map((coach) => {
                 const isExpanded = expandedCoach === coach.name;
                 return (
                   <View key={coach.name}>

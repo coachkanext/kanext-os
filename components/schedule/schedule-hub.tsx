@@ -154,7 +154,7 @@ function GameCard({
         delayLongPress={400}
         style={s.logoZone}
       >
-        <Image source={FMU_SEAL} style={s.teamLogo} resizeMode="contain" />
+        <Image source={KaNeXT_SEAL} style={s.teamLogo} resizeMode="contain" />
       </Pressable>
 
       {/* Primary tap zone — card body */}
@@ -377,7 +377,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                       </View>
                     </View>
                   </Pressable>
-                  {expandedLive && <LiveGamePanel gameId={game.id} game={FMU_GAMES_BY_ID[game.id]} colors={colors} />}
+                  {expandedLive && <LiveGamePanel gameId={game.id} game={KaNeXT_GAMES_BY_ID[game.id]} colors={colors} />}
                 </View>
               ))}
 
@@ -1155,7 +1155,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
           {/* ── News Tab ── */}
           {activeTab === 'news' && (
             <View style={s.newsFeed}>
-              {FMU_NEWS.length > 0 ? (
+              {KaNeXT_NEWS.length > 0 ? (
                 KaNeXT_NEWS.map((item) => {
                   const isHighlights = item.type === 'Highlights';
                   return (

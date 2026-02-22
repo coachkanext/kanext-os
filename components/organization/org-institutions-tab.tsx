@@ -359,8 +359,8 @@ function InstitutionHub({
               <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Key Metrics</ThemedText>
               <View style={s.statGrid}>
                 <StatCard label="Enrollment" value={institution.peopleCount.toLocaleString()} colors={colors} />
-                <StatCard label="Programs" value={FMU_ACADEMICS.totalPrograms} colors={colors} />
-                <StatCard label="Faculty Ratio" value={FMU_ACADEMICS.studentFacultyRatio} colors={colors} />
+                <StatCard label="Programs" value={KaNeXT_ACADEMICS.totalPrograms} colors={colors} />
+                <StatCard label="Faculty Ratio" value={KaNeXT_ACADEMICS.studentFacultyRatio} colors={colors} />
                 <StatCard label="Grad Rate" value="48%" colors={colors} />
               </View>
             </View>
@@ -412,23 +412,23 @@ function InstitutionHub({
             <View style={[s.hubCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Academic Programs</ThemedText>
               <View style={s.statGrid}>
-                <StatCard label="Total Programs" value={FMU_ACADEMICS.totalPrograms} colors={colors} />
-                <StatCard label="Undergraduate" value={FMU_ACADEMICS.undergrad} colors={colors} />
-                <StatCard label="Graduate" value={FMU_ACADEMICS.graduate} colors={colors} />
-                <StatCard label="Certificates" value={FMU_ACADEMICS.certificates} colors={colors} />
+                <StatCard label="Total Programs" value={KaNeXT_ACADEMICS.totalPrograms} colors={colors} />
+                <StatCard label="Undergraduate" value={KaNeXT_ACADEMICS.undergrad} colors={colors} />
+                <StatCard label="Graduate" value={KaNeXT_ACADEMICS.graduate} colors={colors} />
+                <StatCard label="Certificates" value={KaNeXT_ACADEMICS.certificates} colors={colors} />
               </View>
             </View>
 
             <View style={[s.hubCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Program Formats</ThemedText>
               <View style={s.chipRow}>
-                {FMU_ACADEMICS.programFormats.map((fmt) => (
+                {KaNeXT_ACADEMICS.programFormats.map((fmt) => (
                   <View key={fmt} style={[s.formatChip, { backgroundColor: colors.backgroundTertiary }]}>
                     <ThemedText style={[s.formatChipText, { color: colors.textSecondary }]}>{fmt}</ThemedText>
                   </View>
                 ))}
               </View>
-              <StatRow label="Student-Faculty Ratio" value={FMU_ACADEMICS.studentFacultyRatio} colors={colors} />
+              <StatRow label="Student-Faculty Ratio" value={KaNeXT_ACADEMICS.studentFacultyRatio} colors={colors} />
             </View>
 
             <View style={[s.hubCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -451,11 +451,11 @@ function InstitutionHub({
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.hubScroll}>
             <View style={[s.hubCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Admissions Overview</ThemedText>
-              <StatRow label="Acceptance Rate" value={FMU_ADMISSIONS.acceptanceRate} colors={colors} />
-              <StatRow label="Avg GPA" value={FMU_ADMISSIONS.avgGPA} colors={colors} />
-              <StatRow label="Application Deadline" value={FMU_ADMISSIONS.applicationDeadline} colors={colors} />
-              <StatRow label="Total Enrollment" value={FMU_ADMISSIONS.enrollmentTotal.toLocaleString()} colors={colors} />
-              <StatRow label="New Students" value={FMU_ADMISSIONS.newStudents.toLocaleString()} colors={colors} />
+              <StatRow label="Acceptance Rate" value={KaNeXT_ADMISSIONS.acceptanceRate} colors={colors} />
+              <StatRow label="Avg GPA" value={KaNeXT_ADMISSIONS.avgGPA} colors={colors} />
+              <StatRow label="Application Deadline" value={KaNeXT_ADMISSIONS.applicationDeadline} colors={colors} />
+              <StatRow label="Total Enrollment" value={KaNeXT_ADMISSIONS.enrollmentTotal.toLocaleString()} colors={colors} />
+              <StatRow label="New Students" value={KaNeXT_ADMISSIONS.newStudents.toLocaleString()} colors={colors} />
             </View>
           </ScrollView>
         );
@@ -467,10 +467,10 @@ function InstitutionHub({
             <View style={[s.hubCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Student Life</ThemedText>
               <View style={s.statGrid}>
-                <StatCard label="Clubs" value={FMU_STUDENT_LIFE.clubs} colors={colors} />
-                <StatCard label="Athletics" value={FMU_STUDENT_LIFE.athletics} colors={colors} />
-                <StatCard label="Housing Capacity" value={FMU_STUDENT_LIFE.housingCapacity} colors={colors} />
-                <StatCard label="Dining Plans" value={FMU_STUDENT_LIFE.diningPlans} colors={colors} />
+                <StatCard label="Clubs" value={KaNeXT_STUDENT_LIFE.clubs} colors={colors} />
+                <StatCard label="Athletics" value={KaNeXT_STUDENT_LIFE.athletics} colors={colors} />
+                <StatCard label="Housing Capacity" value={KaNeXT_STUDENT_LIFE.housingCapacity} colors={colors} />
+                <StatCard label="Dining Plans" value={KaNeXT_STUDENT_LIFE.diningPlans} colors={colors} />
               </View>
             </View>
           </ScrollView>

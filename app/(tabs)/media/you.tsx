@@ -168,14 +168,14 @@ function MyTeamContent({ onShare }: { onShare: (title: string) => void }) {
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
       <TeamHeader
         teamName="KaNeXT Sports"
-        teamLogo={FMU_SEAL}
+        teamLogo={KaNeXT_SEAL}
         level="NAIA"
         conference="KaNeXT Conference"
         teamKR={74}
         offKR={74}
         defKR={73}
-        record={FMU_RECORD.overall}
-        confRecord={FMU_RECORD.conference}
+        record={KaNeXT_RECORD.overall}
+        confRecord={KaNeXT_RECORD.conference}
         streak={fmuStreak}
         tier="Regional Power"
         onShare={() => onShare('KaNeXT Team Channel')}

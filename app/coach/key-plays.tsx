@@ -233,7 +233,7 @@ export default function KeyPlaysScreen() {
           <View style={[styles.scoreboardSide, { flexDirection: 'row-reverse' }]}>
             <View style={{ alignItems: 'flex-end' }}>
               <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>KXT</Text>
-              <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{FMU_RECORD.overall}</Text>
+              <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{KaNeXT_RECORD.overall}</Text>
             </View>
             <View style={[styles.scoreboardIcon, { backgroundColor: colors.text + '15' }]}>
               <Text style={[styles.scoreboardIconText, { color: colors.text }]}>F</Text>

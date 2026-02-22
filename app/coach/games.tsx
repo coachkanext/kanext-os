@@ -62,14 +62,14 @@ function topN(sorted: typeof KaNeXT_LEADERS, key: 'ppg' | 'rpg' | 'apg' | 'spg' 
   }));
 }
 
-const fbByPpg = [...FMU_LEADERS].sort((a, b) => b.ppg - a.ppg);
-const fbByRpg = [...FMU_LEADERS].sort((a, b) => b.rpg - a.rpg);
-const fbByApg = [...FMU_LEADERS].sort((a, b) => b.apg - a.apg);
-const fbBySpg = [...FMU_LEADERS].sort((a, b) => b.spg - a.spg);
-const fbByBpg = [...FMU_LEADERS].sort((a, b) => b.bpg - a.bpg);
-const fbByFg = [...FMU_LEADERS].sort((a, b) => b.fgPct - a.fgPct);
-const fbBy3p = [...FMU_LEADERS].filter((p) => p.gamesPlayed >= 4).sort((a, b) => b.threePct - a.threePct);
-const fbByFt = [...FMU_LEADERS].filter((p) => p.gamesPlayed >= 4).sort((a, b) => b.ftPct - a.ftPct);
+const fbByPpg = [...KaNeXT_LEADERS].sort((a, b) => b.ppg - a.ppg);
+const fbByRpg = [...KaNeXT_LEADERS].sort((a, b) => b.rpg - a.rpg);
+const fbByApg = [...KaNeXT_LEADERS].sort((a, b) => b.apg - a.apg);
+const fbBySpg = [...KaNeXT_LEADERS].sort((a, b) => b.spg - a.spg);
+const fbByBpg = [...KaNeXT_LEADERS].sort((a, b) => b.bpg - a.bpg);
+const fbByFg = [...KaNeXT_LEADERS].sort((a, b) => b.fgPct - a.fgPct);
+const fbBy3p = [...KaNeXT_LEADERS].filter((p) => p.gamesPlayed >= 4).sort((a, b) => b.threePct - a.threePct);
+const fbByFt = [...KaNeXT_LEADERS].filter((p) => p.gamesPlayed >= 4).sort((a, b) => b.ftPct - a.ftPct);
 
 const LEADERS: { category: string; top3: LeaderEntry[] }[] = [
   { category: 'PPG', top3: topN(fbByPpg, 'ppg', false) },
@@ -188,7 +188,7 @@ function GameRow({
         <View style={[styles.gameDropdown, { backgroundColor: colors.backgroundTertiary }]}>
           {game.status === 'final' && KaNeXT_GAME_BPR[game.id] ? (
             <>
-              {FMU_GAME_BPR[game.id].slice(0, 8).map((p, i) => (
+              {KaNeXT_GAME_BPR[game.id].slice(0, 8).map((p, i) => (
                 <View key={i} style={styles.bprRow}>
                   <View style={styles.bprLeft}>
                     <Text style={[styles.bprName, { color: colors.text }]}>
@@ -523,7 +523,7 @@ export default function GamesScreen() {
                             {/* Inline BPR Panel */}
                             {expandedGame === game.id && KaNeXT_GAME_BPR[game.id] && (
                               <View style={[styles.bprPanel, { backgroundColor: colors.backgroundTertiary }]}>
-                                {FMU_GAME_BPR[game.id].map((p, i) => (
+                                {KaNeXT_GAME_BPR[game.id].map((p, i) => (
                                   <View key={i} style={styles.bprPanelRow}>
                                     <View style={{ flex: 1 }}>
                                       <Text style={[styles.bprPanelName, { color: colors.text }]}>

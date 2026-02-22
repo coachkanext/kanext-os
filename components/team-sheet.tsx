@@ -206,7 +206,7 @@ export function TeamSheet({
   // Standings position
   const standingsPos = useMemo(() => {
     const fmuEntry = KaNeXT_STANDINGS.find((s: any) => s.school?.includes('KaNeXT Sports'));
-    return fmuEntry ? `${FMU_STANDINGS.indexOf(fmuEntry) + 1}/${FMU_STANDINGS.length}` : '—';
+    return fmuEntry ? `${KaNeXT_STANDINGS.indexOf(fmuEntry) + 1}/${KaNeXT_STANDINGS.length}` : '—';
   }, []);
 
   // Roster summary
@@ -366,11 +366,11 @@ export function TeamSheet({
           </Card>
 
           {/* Recent News */}
-          {FMU_NEWS.length > 0 && (
+          {KaNeXT_NEWS.length > 0 && (
             <>
               <SectionLabel label="RECENT NEWS" colors={colors} />
               <Card colors={colors}>
-                {FMU_NEWS.slice(0, 3).map((item: NewsItem, i: number) => (
+                {KaNeXT_NEWS.slice(0, 3).map((item: NewsItem, i: number) => (
                   <View key={i} style={i > 0 ? { marginTop: 10 } : undefined}>
                     <Text style={[styles.newsTitle, { color: colors.text }]}>{item.headline}</Text>
                     <Text style={[styles.newsSub, { color: colors.textSecondary }]} numberOfLines={2}>
@@ -434,24 +434,24 @@ export function TeamSheet({
         <View style={styles.tabContent}>
           <SectionLabel label="OFFENSIVE SYSTEM" colors={colors} />
           <Card colors={colors}>
-            <Text style={[styles.systemLabel, { color: colors.text }]}>{FMU_SYSTEMS.offensiveSystem.label}</Text>
+            <Text style={[styles.systemLabel, { color: colors.text }]}>{KaNeXT_SYSTEMS.offensiveSystem.label}</Text>
             <Text style={[styles.systemDesc, { color: colors.textSecondary }]}>
-              {FMU_SYSTEMS.offensiveSystem.description}
+              {KaNeXT_SYSTEMS.offensiveSystem.description}
             </Text>
           </Card>
 
           <SectionLabel label="DEFENSIVE SYSTEM" colors={colors} />
           <Card colors={colors}>
-            <Text style={[styles.systemLabel, { color: colors.text }]}>{FMU_SYSTEMS.defensiveSystem.label}</Text>
+            <Text style={[styles.systemLabel, { color: colors.text }]}>{KaNeXT_SYSTEMS.defensiveSystem.label}</Text>
             <Text style={[styles.systemDesc, { color: colors.textSecondary }]}>
-              {FMU_SYSTEMS.defensiveSystem.description}
+              {KaNeXT_SYSTEMS.defensiveSystem.description}
             </Text>
           </Card>
 
           <SectionLabel label="TEMPO" colors={colors} />
           <Card colors={colors}>
-            <StatRow label="Style" value={FMU_SYSTEMS.tempo.label} colors={colors} />
-            <StatRow label="Possessions / Game" value={FMU_SYSTEMS.tempo.possPerGame.toFixed(1)} colors={colors} />
+            <StatRow label="Style" value={KaNeXT_SYSTEMS.tempo.label} colors={colors} />
+            <StatRow label="Possessions / Game" value={KaNeXT_SYSTEMS.tempo.possPerGame.toFixed(1)} colors={colors} />
           </Card>
         </View>
       )}
@@ -485,7 +485,7 @@ export function TeamSheet({
           {/* Top Performers */}
           <SectionLabel label="STATISTICAL LEADERS" colors={colors} />
           <Card colors={colors}>
-            {FMU_LEADERS.slice(0, 5).map((l, i) => (
+            {KaNeXT_LEADERS.slice(0, 5).map((l, i) => (
               <View key={l.number} style={[styles.leaderRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                 <Text style={[styles.leaderName, { color: colors.text }]}>#{l.number} {l.name}</Text>
                 <View style={styles.leaderStats}>
@@ -503,7 +503,7 @@ export function TeamSheet({
       {activeTab === 'lineups' && (
         <View style={styles.tabContent}>
           <SectionLabel label="LINEUP PRESETS" colors={colors} />
-          {FMU_LINEUPS.map((lineup, li) => (
+          {KaNeXT_LINEUPS.map((lineup, li) => (
             <Card key={li} colors={colors}>
               <View style={styles.lineupHeader}>
                 <Text style={[styles.lineupName, { color: colors.text }]}>{lineup.name}</Text>
@@ -571,9 +571,9 @@ export function TeamSheet({
       {/* ─── STAFF ─── */}
       {activeTab === 'staff' && (
         <View style={styles.tabContent}>
-          <SectionLabel label={`STAFF (${FMU_STAFF.length})`} colors={colors} />
+          <SectionLabel label={`STAFF (${KaNeXT_STAFF.length})`} colors={colors} />
           <Card colors={colors}>
-            {FMU_STAFF.map((s, i) => (
+            {KaNeXT_STAFF.map((s, i) => (
               <View key={i} style={[styles.staffRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.staffName, { color: colors.text }]}>{s.name}</Text>
@@ -596,7 +596,7 @@ export function TeamSheet({
           {/* Travel */}
           <SectionLabel label="TRAVEL SCHEDULE" colors={colors} />
           <Card colors={colors}>
-            {FMU_OPERATIONS.travel.map((t, i) => (
+            {KaNeXT_OPERATIONS.travel.map((t, i) => (
               <View key={i} style={[styles.travelRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.travelOpp, { color: colors.text }]}>vs {t.opponent}</Text>
@@ -619,7 +619,7 @@ export function TeamSheet({
           {/* Facilities */}
           <SectionLabel label="FACILITIES" colors={colors} />
           <Card colors={colors}>
-            {FMU_OPERATIONS.facilities.map((f, i) => (
+            {KaNeXT_OPERATIONS.facilities.map((f, i) => (
               <View key={i} style={[styles.facilityRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                 <Text style={[styles.facilityName, { color: colors.text }]}>{f.name}</Text>
                 <View style={[styles.facilityStatus, {
@@ -638,7 +638,7 @@ export function TeamSheet({
           {/* Equipment */}
           <SectionLabel label="EQUIPMENT" colors={colors} />
           <Card colors={colors}>
-            {FMU_OPERATIONS.equipment.map((e, i) => (
+            {KaNeXT_OPERATIONS.equipment.map((e, i) => (
               <View key={i} style={[styles.equipRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.equipItem, { color: colors.text }]}>{e.item}</Text>
@@ -673,7 +673,7 @@ export function TeamSheet({
 
           <SectionLabel label="BUDGET BREAKDOWN" colors={colors} />
           <Card colors={colors}>
-            {FMU_FINANCE.breakdown.map((b, i) => (
+            {KaNeXT_FINANCE.breakdown.map((b, i) => (
               <View key={i} style={[styles.budgetRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                 <Text style={[styles.budgetCat, { color: colors.text }]}>{b.category}</Text>
                 <View style={styles.budgetNums}>
@@ -698,7 +698,7 @@ export function TeamSheet({
         <View style={styles.tabContent}>
           <SectionLabel label="COMPLIANCE CHECKLIST" colors={colors} />
           <Card colors={colors}>
-            {FMU_COMPLIANCE.checklist.map((c, i) => (
+            {KaNeXT_COMPLIANCE.checklist.map((c, i) => (
               <View key={c.id} style={[styles.compRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                 <View style={[styles.compDot, { backgroundColor: getComplianceColor(c.status) }]} />
                 <View style={{ flex: 1 }}>
@@ -710,11 +710,11 @@ export function TeamSheet({
             ))}
           </Card>
 
-          {FMU_COMPLIANCE.incidentLog.length > 0 && (
+          {KaNeXT_COMPLIANCE.incidentLog.length > 0 && (
             <>
               <SectionLabel label="INCIDENT LOG" colors={colors} />
               <Card colors={colors}>
-                {FMU_COMPLIANCE.incidentLog.map((c, i) => (
+                {KaNeXT_COMPLIANCE.incidentLog.map((c, i) => (
                   <View key={c.id} style={[styles.compRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                     <View style={[styles.compDot, { backgroundColor: getComplianceColor(c.status) }]} />
                     <View style={{ flex: 1 }}>

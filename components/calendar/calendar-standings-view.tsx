@@ -98,7 +98,7 @@ export function CalendarStandingsView({ colors, accent }: Props) {
         {/* KaNeXT separator */}
         <View style={styles.separator}>
           <ThemedText style={[styles.separatorText, { color: colors.textSecondary }]}>
-            ··· {FMU_NAIA_POSITION.rank}. {FMU_NAIA_POSITION.team} · {FMU_NAIA_POSITION.record} · KR {FMU_NAIA_POSITION.kr}
+            ··· {KaNeXT_NAIA_POSITION.rank}. {KaNeXT_NAIA_POSITION.team} · {KaNeXT_NAIA_POSITION.record} · KR {KaNeXT_NAIA_POSITION.kr}
           </ThemedText>
         </View>
       </View>
@@ -113,7 +113,7 @@ export function CalendarStandingsView({ colors, accent }: Props) {
         {/* KaNeXT separator */}
         <View style={styles.separator}>
           <ThemedText style={[styles.separatorText, { color: colors.textSecondary }]}>
-            ··· {FMU_NATIONAL_POSITION.rank}. {FMU_NATIONAL_POSITION.team} · {FMU_NATIONAL_POSITION.record} · KR {FMU_NATIONAL_POSITION.kr} · {FMU_NATIONAL_POSITION.level}
+            ··· {KaNeXT_NATIONAL_POSITION.rank}. {KaNeXT_NATIONAL_POSITION.team} · {KaNeXT_NATIONAL_POSITION.record} · KR {KaNeXT_NATIONAL_POSITION.kr} · {KaNeXT_NATIONAL_POSITION.level}
           </ThemedText>
         </View>
       </View>
