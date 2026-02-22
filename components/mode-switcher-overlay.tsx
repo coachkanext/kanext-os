@@ -21,6 +21,8 @@ const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string }[] = [
   { mode: 'sports', icon: 'basketball.fill', label: 'Sports' },
   { mode: 'church', icon: 'building.columns.fill', label: 'Church' },
   { mode: 'business', icon: 'briefcase.fill', label: 'Business' },
+  { mode: 'education', icon: 'graduationcap.fill', label: 'Education' },
+  { mode: 'competition', icon: 'trophy.fill', label: 'Competition' },
 ];
 
 export function ModeSwitcherOverlay() {

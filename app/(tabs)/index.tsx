@@ -61,6 +61,27 @@ import { ChurchProvider } from '@/context/church-context';
 import { EducationProvider } from '@/context/education-context';
 
 // =============================================================================
+// COMING SOON — placeholder for modes not yet launched
+// =============================================================================
+
+function ComingSoonPage({ mode, label }: { mode: Mode; label: string }) {
+  const accent = MODE_ACCENT[mode];
+  const insets = useSafeAreaInsets();
+
+  return (
+    <ThemedView style={[styles.container, { justifyContent: 'center', alignItems: 'center', paddingBottom: insets.bottom + 80 }]}>
+      <View style={[styles.comingSoonBadge, { backgroundColor: accent + '18' }]}>
+        <ThemedText style={[styles.comingSoonLabel, { color: accent }]}>{label}</ThemedText>
+      </View>
+      <ThemedText style={styles.comingSoonTitle}>Coming Soon</ThemedText>
+      <ThemedText style={styles.comingSoonSubtitle}>
+        This mode is under development.{'\n'}Stay tuned for updates.
+      </ThemedText>
+    </ThemedView>
+  );
+}
+
+// =============================================================================
 // SPORTS HOME (v1.1 Spec - Team Hub Home / Coach HQ)
 // Mental model: Video-game hub for a coach.
 // NOT a SaaS dashboard. NOT a chatbot entry point.
@@ -1150,13 +1171,9 @@ export default function HomeScreen() {
     );
   }
 
-  // Competition mode handles its own scroll (hub tabs)
+  // Competition — coming soon
   if (mode === 'competition') {
-    return (
-      <ThemedView style={styles.container}>
-        <CommunityHome />
-      </ThemedView>
-    );
+    return <ComingSoonPage mode="competition" label="Competition" />;
   }
 
   // Business mode handles its own scroll (9-tab pager + RBAC)
@@ -1177,13 +1194,9 @@ export default function HomeScreen() {
     );
   }
 
-  // Education mode handles its own scroll (hub tabs + RBAC)
+  // Education — coming soon
   if (mode === 'education') {
-    return (
-      <EducationProvider>
-        <EducationHomeComponent />
-      </EducationProvider>
-    );
+    return <ComingSoonPage mode="education" label="Education" />;
   }
 
   // Fallback
@@ -2230,6 +2243,32 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     marginTop: 4,
+  },
+
+  // Coming Soon
+  comingSoonBadge: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginBottom: 20,
+  },
+  comingSoonLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  comingSoonTitle: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 12,
+  },
+  comingSoonSubtitle: {
+    fontSize: 15,
+    color: '#A1A1AA',
+    textAlign: 'center',
+    lineHeight: 22,
   },
 
 });

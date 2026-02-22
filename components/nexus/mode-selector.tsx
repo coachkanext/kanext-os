@@ -16,6 +16,8 @@ const MODES: { id: Mode; label: string }[] = [
   { id: 'sports', label: 'Sports' },
   { id: 'church', label: 'Church' },
   { id: 'business', label: 'Business' },
+  { id: 'education', label: 'Education' },
+  { id: 'competition', label: 'Competition' },
 ];
 
 interface ModeSelectorProps {

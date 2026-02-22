@@ -29,7 +29,7 @@ export interface ViewDefinition {
 // DRAWER MODES
 // =============================================================================
 
-export const DRAWER_MODES = ['sports', 'church', 'business'] as const;
+export const DRAWER_MODES = ['sports', 'church', 'business', 'education', 'competition'] as const;
 export type DrawerMode = (typeof DRAWER_MODES)[number];
 
 // =============================================================================
@@ -40,6 +40,8 @@ export const MODE_CHIP_CONFIG: { mode: DrawerMode; label: string; icon: string }
   { mode: 'sports', label: 'Sports', icon: 'basketball.fill' },
   { mode: 'church', label: 'Church', icon: 'building.columns.fill' },
   { mode: 'business', label: 'Business', icon: 'briefcase.fill' },
+  { mode: 'education', label: 'Education', icon: 'graduationcap.fill' },
+  { mode: 'competition', label: 'Competition', icon: 'trophy.fill' },
 ];
 
 // =============================================================================
