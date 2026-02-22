@@ -89,7 +89,7 @@ function formatViews(views: number): string {
 // STORY CIRCLES (Premium gradient rings)
 // =============================================================================
 
-const GRADIENT_COLORS: [string, string, string] = ['#FFFFFF', accent, accent];
+const GRADIENT_COLORS: [string, string, string] = ['#FFFFFF', '#1D9BF0', '#1D9BF0'];
 
 function StoryAvatar({ story, colors }: { story: StoryCircle; colors: typeof Colors.light }) {
   const ringColors: [string, string, ...string[]] = story.hasNew
@@ -213,7 +213,7 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
             <IconSymbol name="play.fill" size={24} color="#fff" />
           </View>
           <View style={[styles.mediaTypeBadge, {
-            backgroundColor: post.media.type === 'reel' ? accent : 'rgba(0,0,0,0.6)',
+            backgroundColor: post.media.type === 'reel' ? '#1D9BF0' : 'rgba(0,0,0,0.6)',
           }]}>
             <ThemedText style={styles.mediaTypeText}>
               {post.media.type.toUpperCase()}
