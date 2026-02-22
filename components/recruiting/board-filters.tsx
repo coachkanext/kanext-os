@@ -164,7 +164,6 @@ const TIER_LABELS: Record<DivisionAnchor, string[]> = {
 
 /** Map institution division strings to tier anchors */
 export function getDivisionAnchor(division: string): DivisionAnchor {
-  const accent = useAccentColor();
   const d = division.toUpperCase();
   if (d.includes('D1') || d === 'NCAA_D1') return 'high_major';
   if (d.includes('D2') || d === 'NCAA_D2') return 'mid_major';
