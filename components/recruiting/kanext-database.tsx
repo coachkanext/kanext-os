@@ -32,8 +32,6 @@ import { computeConfidence, parseHeightToInches, HEIGHT_RANGES, REGION_OPTIONS, 
 import { ARCHETYPE_OPTIONS } from '@/data/archetype-options';
 import { useAccentColor } from '@/hooks/use-accent-color';
 
-const accent = useAccentColor();
-
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
 const GRAY = '#A1A1AA';
@@ -242,6 +240,7 @@ export function KaNeXTDatabase({
   onAddToBoard: (playerId: string, slot?: PositionSlot, tier?: NeedsTier, status?: BoardStatus, bigBoardRank?: number) => void;
   onRemoveFromBoard: (entryId: string) => void;
 }) {
+  const accent = useAccentColor();
   // ── Add sheet state ──
   const [addSheetPlayer, setAddSheetPlayer] = useState<PoolPlayer | null>(null);
   const [addSlot, setAddSlot] = useState<PositionSlot>('W');
@@ -762,7 +761,7 @@ export function KaNeXTDatabase({
       {hasActiveFilters && (
         <View style={styles.activePillsRow}>
           {activeFilterPills.map((pill) => (
-            <Pressable key={pill.key} style={styles.activePill} onPress={pill.clear}>
+            <Pressable key={pill.key} style={[styles.activePill, { backgroundColor: accent }]} onPress={pill.clear}>
               <Text style={styles.activePillText}>{pill.label}</Text>
               <IconSymbol name="xmark" size={8} color={WHITE} />
             </Pressable>
@@ -962,7 +961,7 @@ export function KaNeXTDatabase({
               </>
             )}
 
-            <Pressable style={styles.confirmBtn} onPress={confirmAdd}>
+            <Pressable style={[styles.confirmBtn, { backgroundColor: accent }]} onPress={confirmAdd}>
               <Text style={styles.confirmBtnText}>
                 {addDestination === 'needs' ? 'Add to Needs' : addDestination === 'bigboard' ? 'Add to Big Board' : 'Add to Board'}
               </Text>
@@ -989,7 +988,7 @@ const styles = StyleSheet.create({
   subPillText: { fontSize: 12, fontWeight: '600', color: GRAY },
   subPillTextActive: { color: BG },
   activePillsRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginTop: 4, marginBottom: 4 },
-  activePill: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: accent, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
+  activePill: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
   activePillText: { fontSize: 11, fontWeight: '600', color: WHITE },
   clearAllText: { fontSize: 11, fontWeight: '600', color: GRAY, marginLeft: 4 },
   resultCount: { fontSize: 12, fontWeight: '600', color: GRAY, marginBottom: 10, marginTop: 4 },
@@ -1004,7 +1003,7 @@ const styles = StyleSheet.create({
   addPillText: { fontSize: 12, fontWeight: '700', color: GRAY },
   addPillTextActive: { color: BG },
   rankInput: { backgroundColor: CARD_BG, borderWidth: 1, borderColor: DIVIDER, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 14, fontWeight: '600', color: WHITE },
-  confirmBtn: { backgroundColor: accent, paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
+  confirmBtn: { paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
   confirmBtnText: { fontSize: 15, fontWeight: '700', color: WHITE },
   resetBtn: { borderWidth: 1, borderColor: DIVIDER, paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginTop: 4 },
   resetBtnText: { fontSize: 13, fontWeight: '600', color: GRAY },

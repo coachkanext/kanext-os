@@ -16,8 +16,6 @@ import { PLAYER_CLUSTERS } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
 import { useAccentColor } from '@/hooks/use-accent-color';
 
-const accent = useAccentColor();
-
 // KaNeXT seal
 const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
 
@@ -167,6 +165,7 @@ export function TeamQuickSheet({
   offSystemName,
   defSystemName,
 }: TeamQuickSheetProps) {
+  const accent = useAccentColor();
   const [activeTab, setActiveTab] = useState<BioTab>('team');
   const [expandedCoach, setExpandedCoach] = useState<string | null>(null);
 

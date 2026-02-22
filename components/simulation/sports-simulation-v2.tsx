@@ -37,8 +37,6 @@ import {
   type InteractionTrace,
 } from '@/data/mock-simulation-v2';
 
-const accent = useAccentColor();
-
 // ---------------------------------------------------------------------------
 // Simulation Context — one per available opponent sim
 // ---------------------------------------------------------------------------

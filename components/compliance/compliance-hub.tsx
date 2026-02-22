@@ -28,8 +28,6 @@ import {
   type ComplianceTraining,
 } from '@/data/mock-compliance';
 
-const accent = useAccentColor();
-
 // =============================================================================
 // CONSTANTS
 // =============================================================================
@@ -45,19 +43,19 @@ const HUB_TABS: { id: HubTab; label: string }[] = [
   { id: 'reports', label: 'Reports' },
 ];
 
-const COMPLIANCE_STATUS_COLORS: Record<ComplianceStatus, string> = {
+const getComplianceStatusColors = (accent: string): Record<ComplianceStatus, string> => ({
   compliant: '#22C55E',
   warning: '#F59E0B',
   violation: '#EF4444',
   'pending-review': accent,
-};
+});
 
-const AUDIT_STATUS_COLORS: Record<AuditStatus, string> = {
+const getAuditStatusColors = (accent: string): Record<AuditStatus, string> => ({
   passed: '#22C55E',
   failed: '#EF4444',
   'in-progress': accent,
   scheduled: '#F59E0B',
-};
+});
 
 const SEVERITY_COLORS: Record<string, string> = {
   critical: '#EF4444',
@@ -167,8 +165,10 @@ function EmptyState({ message }: { message: string }) {
 
 function HomeView() {
   const mode = useMode();
+  const accent = useAccentColor();
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const COMPLIANCE_STATUS_COLORS = getComplianceStatusColors(accent);
   const snapshot = COMPLIANCE_SNAPSHOTS[mode];
   const policies = COMPLIANCE_POLICIES[mode];
   const incidents = COMPLIANCE_INCIDENTS[mode];
@@ -293,8 +293,10 @@ function HomeView() {
 
 function PoliciesView() {
   const mode = useMode();
+  const accent = useAccentColor();
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const COMPLIANCE_STATUS_COLORS = getComplianceStatusColors(accent);
   const [filter, setFilter] = useState('All');
   const policies = COMPLIANCE_POLICIES[mode];
 
@@ -355,8 +357,10 @@ function PoliciesView() {
 
 function AuditsView() {
   const mode = useMode();
+  const accent = useAccentColor();
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const AUDIT_STATUS_COLORS = getAuditStatusColors(accent);
   const audits = COMPLIANCE_AUDITS[mode];
 
   return (
@@ -514,8 +518,10 @@ function TrainingView() {
 
 function ReportsView() {
   const mode = useMode();
+  const accent = useAccentColor();
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const COMPLIANCE_STATUS_COLORS = getComplianceStatusColors(accent);
   const snapshot = COMPLIANCE_SNAPSHOTS[mode];
   const policies = COMPLIANCE_POLICIES[mode];
   const training = COMPLIANCE_TRAINING[mode];

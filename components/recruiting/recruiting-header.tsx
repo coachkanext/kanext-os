@@ -11,8 +11,6 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
 
-const accent = useAccentColor();
-
 export type RecruitingViewMode = 'needs' | 'bigboard' | 'crm' | 'database';
 
 const VIEW_LABELS: { id: RecruitingViewMode; label: string }[] = [
@@ -41,6 +39,7 @@ export function RecruitingHeader({
   onSearchChange: (text: string) => void;
   onAddPress: () => void;
 }) {
+  const accent = useAccentColor();
   const [searchVisible, setSearchVisible] = useState(false);
   const searchRef = useRef<TextInput>(null);
 
@@ -69,7 +68,7 @@ export function RecruitingHeader({
         >
           <IconSymbol name="magnifyingglass" size={16} color={searchVisible ? WHITE : GRAY} />
         </Pressable>
-        <Pressable style={styles.addBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onAddPress(); }}>
+        <Pressable style={[styles.addBtn, { backgroundColor: accent }]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onAddPress(); }}>
           <IconSymbol name="plus" size={14} color={WHITE} />
         </Pressable>
       </View>
@@ -156,7 +155,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: accent,
     alignItems: 'center',
     justifyContent: 'center',
   },

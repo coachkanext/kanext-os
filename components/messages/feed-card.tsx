@@ -16,8 +16,6 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-messages';
 import type { FeedPost } from '@/data/mock-messages';
 
-const accent = useAccentColor();
-
 const ACCENT_GOLD = '#FFFFFF';
 
 interface FeedCardProps {
@@ -27,6 +25,7 @@ interface FeedCardProps {
 export function FeedCard({ post }: FeedCardProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(post.saved ?? false);
 
