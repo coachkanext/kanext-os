@@ -14,9 +14,7 @@ import type { Mode } from '@/types';
 
 const MODES: { id: Mode; label: string }[] = [
   { id: 'sports', label: 'Sports' },
-  { id: 'competition', label: 'Competition' },
   { id: 'church', label: 'Church' },
-  { id: 'education', label: 'Education' },
   { id: 'business', label: 'Business' },
 ];
 

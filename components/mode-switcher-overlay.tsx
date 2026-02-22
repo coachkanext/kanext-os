@@ -19,9 +19,7 @@ import type { Mode } from '@/types';
 
 const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string }[] = [
   { mode: 'sports', icon: 'basketball.fill', label: 'Sports' },
-  { mode: 'competition', icon: 'flag.checkered', label: 'Competition' },
   { mode: 'church', icon: 'building.columns.fill', label: 'Church' },
-  { mode: 'education', icon: 'graduationcap.fill', label: 'Education' },
   { mode: 'business', icon: 'briefcase.fill', label: 'Business' },
 ];
 
