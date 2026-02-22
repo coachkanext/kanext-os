@@ -57,7 +57,7 @@ interface SimContext {
 const SIM_CONTEXTS: SimContext[] = [
   {
     id: 'lincoln',
-    label: 'vs Ridgemont (PA)',
+    label: 'vs MSU-Northern (PA)',
     game: MOCK_SINGLE_GAME,
     boxFMU: MOCK_BOX_SCORE_A,
     boxOpp: null,
@@ -70,7 +70,7 @@ const SIM_CONTEXTS: SimContext[] = [
   },
   {
     id: 'keiser',
-    label: 'vs Lakewood University',
+    label: 'vs University of Providence',
     game: MOCK_KEISER_GAME,
     boxFMU: MOCK_BOX_SCORE_KEISER_KaNeXT,
     boxOpp: MOCK_BOX_SCORE_KEISER_OPP,
@@ -202,7 +202,7 @@ function OverviewTab({ ctx, colors, accent, krVis }: TabProps) {
             <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: colors.text }]}>{f.team_a}</ThemedText>
             <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: colors.text }]}>{f.team_b}</ThemedText>
             <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: f.advantage === 'A' ? '#22C55E' : f.advantage === 'B' ? '#EF4444' : '#F59E0B', fontWeight: '700' }]}>
-              {f.advantage === 'A' ? 'KaNeXT' : f.advantage === 'B' ? 'OPP' : 'EVEN'}
+              {f.advantage === 'A' ? 'Carroll' : f.advantage === 'B' ? 'OPP' : 'EVEN'}
             </ThemedText>
           </View>
         ))}
@@ -265,7 +265,7 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       {/* KaNeXT Offense vs Opponent Defense */}
-      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>KaNeXT OFFENSE vs OPP DEFENSE</ThemedText>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>CARROLL OFFENSE vs OPP DEFENSE</ThemedText>
       <View style={[styles.systemCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.systemVsRow}>
           <View style={styles.systemSide}>
@@ -292,7 +292,7 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
       </View>
 
       {/* Opponent Offense vs KaNeXT Defense */}
-      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>OPP OFFENSE vs KaNeXT DEFENSE</ThemedText>
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>OPP OFFENSE vs CARROLL DEFENSE</ThemedText>
       <View style={[styles.systemCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.systemVsRow}>
           <View style={styles.systemSide}>
@@ -322,7 +322,7 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>SYSTEM SWAP TOOL</ThemedText>
       <View style={[styles.swapCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <ThemedText style={[styles.swapDesc, { color: colors.textSecondary }]}>
-          Test alternative KaNeXT systems against the opponent
+          Test alternative Carroll systems against the opponent
         </ThemedText>
         <Pressable
           style={[styles.swapBtn, { backgroundColor: swapSystems ? '#EF4444' + '22' : accent + '22' }]}
@@ -353,8 +353,8 @@ function PossessionTab({ ctx, colors, accent }: TabProps) {
 
   // Mock outcome distribution
   const outcomes = [
-    { label: 'KaNeXT Win (Comfortable)', pct: 32, color: '#22C55E' },
-    { label: 'KaNeXT Win (Close)', pct: 26, color: '#22C55E' },
+    { label: 'Carroll Win (Comfortable)', pct: 32, color: '#22C55E' },
+    { label: 'Carroll Win (Close)', pct: 26, color: '#22C55E' },
     { label: 'Toss-Up', pct: 14, color: '#F59E0B' },
     { label: 'OPP Win (Close)', pct: 18, color: '#EF4444' },
     { label: 'OPP Win (Comfortable)', pct: 10, color: '#EF4444' },
@@ -545,7 +545,7 @@ function MatchupTab({ ctx, colors, accent, krVis }: TabProps) {
 function BoxScoreTab({ ctx, colors, accent }: TabProps) {
   const [showOpp, setShowOpp] = useState(false);
   const boxData = showOpp && ctx.boxOpp ? ctx.boxOpp : ctx.boxFMU;
-  const teamLabel = showOpp ? ctx.game.team_b : 'KaNeXT';
+  const teamLabel = showOpp ? ctx.game.team_b : 'Carroll';
 
   // Compute team totals
   const totals = boxData.reduce(

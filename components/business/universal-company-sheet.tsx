@@ -397,19 +397,19 @@ function OverviewTab({ colors, roleLens }: { colors: typeof Colors.light; roleLe
       <SectionCard title="Why Now" colors={colors}>
         <BulletItem text="Sub-NCAA institutions (1,050+ schools) have zero modern infrastructure. No analytics, no video, no unified platform." colors={colors} />
         <BulletItem text="NIL and transfer portal have created chaos -- institutions need governed intelligence, not more spreadsheets." colors={colors} />
-        <BulletItem text="Video mandate strategy creates a regulatory moat: governing bodies require video, KaNeXT provides it free." colors={colors} />
+        <BulletItem text="Video mandate strategy creates a regulatory moat: governing bodies require video, Valuetainment provides it free." colors={colors} />
       </SectionCard>
 
       <SectionCard title="Current Wedge" colors={colors}>
         <ThemedText style={[styles.bodyText, { color: colors.text }]}>
-          Phase 1: Proof Wedge Deployment -- KaNeXT Athletics (13 sports), KaNeXT Church Church (giving + ministries), KaNeXT Motorsport League (race ops + standings). Three real institutions, three modes, live data.
+          Phase 1: Proof Wedge Deployment -- Carroll Athletics (13 sports), 2819 Church Church (giving + ministries), Valuetainment Media League (race ops + standings). Three real institutions, three modes, live data.
         </ThemedText>
       </SectionCard>
 
       <SectionCard title="This Month Priorities" colors={colors}>
         <BulletItem text="Close PBD Co-Founder SAFE Tranche 1 -- wire target Mar 1, 2026" colors={colors} />
         <BulletItem text="Ship video mandate camera specs to NAIA HQ for Feb 25 meeting" colors={colors} />
-        <BulletItem text="Finalize KaNeXT Classic selection committee and broadcast plan" colors={colors} />
+        <BulletItem text="Finalize Valuetainment Classic selection committee and broadcast plan" colors={colors} />
       </SectionCard>
 
       {showLinks && (
@@ -441,9 +441,9 @@ function ProductTab({ colors }: { colors: typeof Colors.light }) {
     { label: 'Nexus AI -- voice + text conversational intelligence', done: true },
     { label: 'Canonical Engine Library (7 engines)', done: true },
     { label: 'Luxury Control Room UI palette', done: true },
-    { label: 'KaNeXT Sports Mode deployment (13 sports)', done: true },
-    { label: 'KaNeXT Church Church Mode deployment', done: true },
-    { label: 'KaNeXT Competition Mode deployment', done: true },
+    { label: 'Carroll College Mode deployment (13 sports)', done: true },
+    { label: '2819 Church Church Mode deployment', done: true },
+    { label: 'Adidas 3SSB Mode deployment', done: true },
     { label: 'Business Mode data room + governance', done: true },
     { label: 'Settlement rails v1 (Stripe integration)', done: false },
     { label: 'KX-C1 camera hardware deployment', done: false },
@@ -501,7 +501,7 @@ function ProductTab({ colors }: { colors: typeof Colors.light }) {
 
       <SectionCard title="Demo Navigation" colors={colors}>
         <ThemedText style={[styles.bodyText, { color: colors.text }]}>
-          21 views across 5 modes. Start with Sports Mode (KaNeXT) for the deepest proof-of-concept. Switch modes via the mode selector in the top bar. Each mode has its own dashboard, detail sheets, and Nexus context.
+          21 views across 5 modes. Start with Sports Mode (Carroll College) for the deepest proof-of-concept. Switch modes via the mode selector in the top bar. Each mode has its own dashboard, detail sheets, and Nexus context.
         </ThemedText>
         <LinkRow icon="play.rectangle.fill" label="Launch Demo" subtitle="Interactive walkthrough" colors={colors} />
       </SectionCard>
@@ -532,10 +532,10 @@ function TractionTab({
   };
 
   const proofPoints = [
-    'KaNeXT Athletics OS: 13 sports programs actively using KaNeXT',
+    'Carroll Athletics OS: 13 sports programs actively using Valuetainment',
     '7 proof events scheduled for Q1-Q2 2026',
     'ESPN+ broadcast partnerships at $0 cost to institutions',
-    '$53M-$157M projected free media value for KaNeXT Year 1',
+    '$53M-$157M projected free media value for Valuetainment Year 1',
     '14 institutional prospects in active pipeline',
     '18.2M media impressions with 42% MoM growth',
   ];
@@ -645,7 +645,7 @@ function RoadmapTab({ colors, board }: { colors: typeof Colors.light; board: boo
   ];
 
   const milestones6mo = [
-    'Execute KaNeXT Classic (32-team postseason)',
+    'Execute Valuetainment Classic (32-team postseason)',
     'Complete all 5 PBD SAFE tranches ($500K total)',
     'Onboard 10+ partner institutions via mandate',
     'Hire senior engineer + designer',
@@ -1155,13 +1155,13 @@ function CommsTab({
   investor: boolean;
 }) {
   const pressReleases = [
-    { id: 'pr-1', title: 'KaNeXT Announces Mission to Build Institutional OS', date: 'Jan 15, 2026', status: 'published' },
-    { id: 'pr-2', title: 'KaNeXT Athletics Partners with KaNeXT for 13-Sport Deployment', date: 'Feb 1, 2026', status: 'published' },
-    { id: 'pr-3', title: 'KaNeXT Launches Free Camera Program for Sub-NCAA Schools', date: 'Feb 10, 2026', status: 'draft' },
+    { id: 'pr-1', title: 'Valuetainment Announces Mission to Build Institutional OS', date: 'Jan 15, 2026', status: 'published' },
+    { id: 'pr-2', title: 'Carroll Athletics Partners with Valuetainment for 13-Sport Deployment', date: 'Feb 1, 2026', status: 'published' },
+    { id: 'pr-3', title: 'Valuetainment Launches Free Camera Program for Sub-NCAA Schools', date: 'Feb 10, 2026', status: 'draft' },
   ];
 
   const brandAssets = [
-    { id: 'ba-1', title: 'KaNeXT Logo Pack (SVG + PNG)', type: 'Logo', access: 'public' },
+    { id: 'ba-1', title: 'Valuetainment Logo Pack (SVG + PNG)', type: 'Logo', access: 'public' },
     { id: 'ba-2', title: 'Brand Guidelines v2', type: 'Guide', access: 'public' },
     { id: 'ba-3', title: 'Pitch Deck Template', type: 'Template', access: 'retail' },
     { id: 'ba-4', title: 'Press Kit', type: 'Kit', access: 'public' },

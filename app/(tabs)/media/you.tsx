@@ -45,7 +45,7 @@ type YouTab = 'you' | 'film_room';
 
 // KaNeXT identity data for TeamHeader
 const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
-const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—';
+const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'Carroll College')?.streak ?? '—';
 
 // =============================================================================
 // YOU CONTENT
@@ -167,10 +167,10 @@ function MyTeamContent({ onShare }: { onShare: (title: string) => void }) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
       <TeamHeader
-        teamName="KaNeXT Sports"
+        teamName="Carroll College"
         teamLogo={KaNeXT_LOGO}
-        level="NAA"
-        conference="KaNeXT Conference"
+        level="NAIA"
+        conference="Frontier Conference"
         teamKR={74}
         offKR={74}
         defKR={73}
@@ -178,7 +178,7 @@ function MyTeamContent({ onShare }: { onShare: (title: string) => void }) {
         confRecord={KaNeXT_RECORD.conference}
         streak={fmuStreak}
         tier="Regional Power"
-        onShare={() => onShare('KaNeXT Team Channel')}
+        onShare={() => onShare('Carroll Team Channel')}
       />
 
       <ThemedText style={styles.filmSectionTitle}>Recent Games</ThemedText>

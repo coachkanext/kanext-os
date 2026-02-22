@@ -280,7 +280,7 @@ const REQUIREMENTS: EntityRequirement[] = [
 
   // --- KaNeXT IP / Products (7) ---
   { id: 'req-ip-01', entityId: KANEXT_IP, category: 'formation', label: 'IP holding entity formed', completed: true, detail: 'Delaware LLC established to hold all intellectual property assets.' },
-  { id: 'req-ip-02', entityId: KANEXT_IP, category: 'formation', label: 'Trademark registrations filed', completed: true, detail: 'KaNeXT word mark and logo registered in US, EU, and UK.' },
+  { id: 'req-ip-02', entityId: KANEXT_IP, category: 'formation', label: 'Trademark registrations filed', completed: true, detail: 'Valuetainment word mark and logo registered in US, EU, and UK.' },
   { id: 'req-ip-03', entityId: KANEXT_IP, category: 'compliance', label: 'Patent portfolio review', completed: true, detail: 'Annual patent review completed. 3 provisional patents on file.' },
   { id: 'req-ip-04', entityId: KANEXT_IP, category: 'compliance', label: 'IP assignment agreements', completed: false, detail: 'Pending updated assignment for 2 new contractors hired in Q1 2026.' },
   { id: 'req-ip-05', entityId: KANEXT_IP, category: 'finance', label: 'Licensing revenue reconciliation', completed: true, detail: 'All licensing revenue properly allocated between entities.' },

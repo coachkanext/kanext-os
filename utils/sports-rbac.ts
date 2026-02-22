@@ -57,7 +57,7 @@ export const PLAYER_TAB_LABELS: Record<PlayerTab, string> = {
   overview: 'Overview',
   performance: 'Performance',
   film: 'Film',
-  kanext_eval: 'KaNeXT Eval',
+  kanext_eval: 'KR Eval',
   fit_role: 'Fit + Role',
   development: 'Development',
   health: 'Health',

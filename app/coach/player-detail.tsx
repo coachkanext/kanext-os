@@ -82,7 +82,7 @@ export default function PlayerDetailScreen() {
   const helioLabel = helioPos ? HELIO_POSITION_LABELS[helioPos] : player.position;
   const overallKR = ratings?.overall ?? 0;
   const offKR = ratings ? Math.round((ratings.clusters.shooting + ratings.clusters.finishing + ratings.clusters.playmaking) / 3) : 0;
-  const defKR = ratings ? Math.round((ratings.clusters.perimeter_defense + ratings.clusters.interior_defense + ratings.clusters.rebounding + ratings.clusters.frame) / 4) : 0;
+  const defKR = ratings ? Math.round((ratings.clusters.on_ball_defense + ratings.clusters.team_defense + ratings.clusters.rebounding + ratings.clusters.physical) / 4) : 0;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>

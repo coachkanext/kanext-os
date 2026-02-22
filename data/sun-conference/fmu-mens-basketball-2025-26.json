@@ -2,7 +2,7 @@
   {
     "game_id": 3379,
     "date": "10/31/2025",
-    "location": "KaNeXT Athletics Center",
+    "location": "PE Center",
     "is_complete": true,
     "fmu_score": 82,
     "opp_score": 66,
@@ -767,7 +767,7 @@
     "fmu_score": 67,
     "opp_score": 58,
     "fmu_record": "(1-1)",
-    "opponent": "Brookside",
+    "opponent": "NW Nazarene",
     "is_home": false,
     "fmu_players": [
       {
@@ -1468,12 +1468,12 @@
   {
     "game_id": 3383,
     "date": "11/15/2025",
-    "location": "Nashville, TN",
+    "location": "Helena, MT",
     "is_complete": true,
     "fmu_score": 60,
     "opp_score": 65,
     "fmu_record": "3-2, 0-1",
-    "opponent": "Summit",
+    "opponent": "Rocky Mountain",
     "is_home": true,
     "fmu_players": [
       {
@@ -1826,7 +1826,7 @@
     "fmu_score": 97,
     "opp_score": 74,
     "fmu_record": "4-2, 1-1",
-    "opponent": "Clearwater",
+    "opponent": "Bellevue",
     "is_home": false,
     "fmu_players": [
       {
@@ -2255,7 +2255,7 @@
   {
     "game_id": 3385,
     "date": "11/22/2025",
-    "location": "Nashville, TN",
+    "location": "Helena, MT",
     "is_complete": true,
     "fmu_score": 79,
     "opp_score": 92,
@@ -2608,7 +2608,7 @@
   {
     "game_id": 3386,
     "date": "12/1/2025",
-    "location": "Nashville, TN",
+    "location": "Helena, MT",
     "is_complete": true,
     "fmu_score": 63,
     "opp_score": 58,
@@ -4753,7 +4753,7 @@
   {
     "game_id": 3395,
     "date": "1/3/2026",
-    "location": "KaNeXT Athletics Center",
+    "location": "PE Center",
     "is_complete": true,
     "fmu_score": 75,
     "opp_score": 90,
@@ -5052,7 +5052,7 @@
   {
     "game_id": 3396,
     "date": "1/5/2026",
-    "location": "KaNeXT Athletics Center",
+    "location": "PE Center",
     "is_complete": true,
     "fmu_score": 67,
     "opp_score": 77,
@@ -5459,7 +5459,7 @@
   {
     "game_id": 3397,
     "date": "1/7/2026",
-    "location": "Nashville, TN",
+    "location": "Helena, MT",
     "is_complete": true,
     "fmu_score": 83,
     "opp_score": 52,
@@ -6111,12 +6111,12 @@
   {
     "game_id": 3399,
     "date": "1/14/2026",
-    "location": "Nashville, TN",
+    "location": "Helena, MT",
     "is_complete": true,
     "fmu_score": 61,
     "opp_score": 63,
     "fmu_record": "11-7, 4-3",
-    "opponent": "Ridgemont",
+    "opponent": "MSU-Northern",
     "is_home": false,
     "fmu_players": [
       {
@@ -6464,12 +6464,12 @@
   {
     "game_id": 3400,
     "date": "1/17/2026",
-    "location": "Nashville, TN",
+    "location": "Helena, MT",
     "is_complete": true,
     "fmu_score": 65,
     "opp_score": 51,
     "fmu_record": "13-7, 5-3",
-    "opponent": "Lakewood",
+    "opponent": "Providence",
     "is_home": true,
     "fmu_players": [
       {
@@ -6849,7 +6849,7 @@
     "fmu_score": 96,
     "opp_score": 70,
     "fmu_record": "13-7, 6-3",
-    "opponent": "Summit",
+    "opponent": "Rocky Mountain",
     "is_home": false,
     "fmu_players": [
       {
@@ -7170,12 +7170,12 @@
   {
     "game_id": 3403,
     "date": "1/28/2026",
-    "location": "Nashville, TN",
+    "location": "Helena, MT",
     "is_complete": true,
     "fmu_score": 86,
     "opp_score": 66,
     "fmu_record": "15-7, 7-3",
-    "opponent": "Clearwater",
+    "opponent": "Bellevue",
     "is_home": true,
     "fmu_players": [
       {
@@ -7935,7 +7935,7 @@
     "fmu_score": 92,
     "opp_score": 56,
     "fmu_record": "16-7, 8-3",
-    "opponent": "Riverside",
+    "opponent": "Mayville State",
     "is_home": false,
     "fmu_players": [
       {

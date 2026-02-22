@@ -5,7 +5,7 @@
  * ministry objects with leaders, members, events, teachings, packs, actions,
  * resources, and audit log. Used by the Church Mode ministries hub.
  *
- * All names consistent with KaNeXT Church (KaNeXT Church)
+ * All names consistent with 2819 Church (2819 Church)
  * Nigerian/African-diaspora church context.
  */
 
@@ -615,7 +615,7 @@ export const MINISTRIES_FULL: MinistryFull[] = [
     icon: 'heart.fill',
     leaders: [
       { id: 'ldr-bisi', name: 'Sister Bisi Ogunnaike', initials: 'BO', role: 'Lead', avatarColor: '#1D9BF0' },
-      { id: 'ldr-pastor-d', name: 'Pastor James Carter', initials: 'JC', role: 'Pastoral Oversight', avatarColor: '#1D9BF0' },
+      { id: 'ldr-pastor-d', name: 'Pastor Philip Anthony Mitchell', initials: 'JC', role: 'Pastoral Oversight', avatarColor: '#1D9BF0' },
     ],
     members: [
       { id: 'mem-090', name: 'Sister Adetola Fasanya', initials: 'AF', role: 'Visitation Lead', avatarColor: '#1D9BF0', joinedAt: '2023-03-15' },
@@ -1328,7 +1328,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-01',
     ministryId: 'min-discipleship',
     action: 'Created ministry',
-    actor: 'Pastor James Carter',
+    actor: 'Pastor Philip Anthony Mitchell',
     timestamp: '2023-06-15T10:00:00Z',
     timestampMs: 1686826800000,
     description: 'Ministry "Sunday Discipleship Groups" created with room and events calendar.',
@@ -1337,7 +1337,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-02',
     ministryId: 'min-youth',
     action: 'Added leader',
-    actor: 'Pastor James Carter',
+    actor: 'Pastor Philip Anthony Mitchell',
     timestamp: '2023-01-10T14:30:00Z',
     timestampMs: 1673361000000,
     description: 'Brother David Nwachukwu added as Lead of Youth Ministry.',
@@ -1400,7 +1400,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-09',
     ministryId: 'min-care',
     action: 'Added leader',
-    actor: 'Pastor James Carter',
+    actor: 'Pastor Philip Anthony Mitchell',
     timestamp: '2023-01-15T09:30:00Z',
     timestampMs: 1673775000000,
     description: 'Sister Bisi Ogunnaike added as Lead of Care Team.',
@@ -1427,7 +1427,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-12',
     ministryId: 'min-young-adults',
     action: 'Created ministry',
-    actor: 'Pastor James Carter',
+    actor: 'Pastor Philip Anthony Mitchell',
     timestamp: '2024-01-08T10:00:00Z',
     timestampMs: 1704711600000,
     description: 'Ministry "Young Adults Fellowship" created with room and events calendar.',

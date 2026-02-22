@@ -70,7 +70,7 @@ export default function TeamChannelScreen() {
             <ThemedText style={styles.teamLogoText}>KXT</ThemedText>
           </View>
           <View>
-            <ThemedText style={styles.teamName}>KaNeXT</ThemedText>
+            <ThemedText style={styles.teamName}>Carroll</ThemedText>
             <ThemedText style={styles.teamSub}>Team Channel</ThemedText>
           </View>
         </View>
@@ -123,12 +123,12 @@ export default function TeamChannelScreen() {
 
       {activeTab === 'about' && (
         <ScrollView contentContainerStyle={styles.aboutContent}>
-          <ThemedText style={styles.aboutTitle}>KaNeXT Sports</ThemedText>
+          <ThemedText style={styles.aboutTitle}>Carroll College</ThemedText>
           <ThemedText style={styles.aboutText}>
-            KaNeXT Men's Basketball{'\n'}
-            Nashville, TN{'\n'}
+            Carroll Men's Basketball{'\n'}
+            Helena, MT{'\n'}
             Conference: Big South{'\n'}
-            Head Coach: Coach Williams{'\n\n'}
+            Head Coach: Coach Pearson{'\n\n'}
             Season: 2025-26
           </ThemedText>
         </ScrollView>

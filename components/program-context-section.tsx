@@ -617,16 +617,16 @@ export function ProgramContextSection() {
   };
 
   // Update defensive style and apply corresponding cluster weights
-  // Sets: perimeter_defense, interior_defense, rebounding, frame (sum = 47)
+  // Sets: on_ball_defense, team_defense, rebounding, physical (sum = 47)
   const handleDefensiveStyleChange = (style: DefensiveStyle) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const defensiveClusters = DEFENSIVE_STYLE_CLUSTERS[style];
     setContext((prev) => {
       const newWeights = prev.clusterWeights.map((cw) => {
-        if (cw.cluster === 'perimeter_defense') return { ...cw, weight: defensiveClusters.perimeter_defense };
-        if (cw.cluster === 'interior_defense') return { ...cw, weight: defensiveClusters.interior_defense };
+        if (cw.cluster === 'on_ball_defense') return { ...cw, weight: defensiveClusters.on_ball_defense };
+        if (cw.cluster === 'team_defense') return { ...cw, weight: defensiveClusters.team_defense };
         if (cw.cluster === 'rebounding') return { ...cw, weight: defensiveClusters.rebounding };
-        if (cw.cluster === 'frame') return { ...cw, weight: defensiveClusters.frame };
+        if (cw.cluster === 'physical') return { ...cw, weight: defensiveClusters.physical };
         return cw;
       });
       const newContext = { ...prev, defensiveStyle: style, clusterWeights: newWeights };
@@ -699,8 +699,7 @@ export function ProgramContextSection() {
         {!collapsedSections.clusters && (
           <View style={styles.clusterList}>
             {context.clusterWeights.map((cw) => {
-              // Handle migration: 'physical' -> 'frame'
-              const clusterKey = cw.cluster === 'physical' ? 'frame' : cw.cluster;
+              const clusterKey = cw.cluster;
               const clusterLabel = CLUSTER_LABELS[clusterKey as ClusterType];
               if (!clusterLabel) return null;
               return (

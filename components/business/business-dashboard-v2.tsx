@@ -455,7 +455,7 @@ function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: B
         {/* Bottom overlay */}
         <View style={s.bottomOverlay}>
           <ThemedText style={s.heroTitle} numberOfLines={2}>
-            KaNeXT OS v2 {'\u2014'} Live Demo Walkthrough
+            Valuetainment OS v2 {'\u2014'} Live Demo Walkthrough
           </ThemedText>
           <ThemedText style={s.heroSubtitle} numberOfLines={1}>
             Pinned by CEO {'\u00B7'} Updated Feb 17 {'\u00B7'} 3:42

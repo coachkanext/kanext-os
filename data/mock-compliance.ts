@@ -1,6 +1,6 @@
 /**
  * Compliance v2 — Mock Data
- * Mode-aware compliance policies, audits, incidents, and training for all 5 KaNeXT modes.
+ * Mode-aware compliance policies, audits, incidents, and training for all 5 modes.
  */
 
 import type { Mode } from '@/types';
@@ -61,7 +61,7 @@ export interface ComplianceSnapshot {
 }
 
 // =============================================================================
-// SPORTS MODE — KaNeXT Basketball (NAIA)
+// SPORTS MODE — Carroll College Basketball (NAIA)
 // =============================================================================
 
 const sportsPolicies: CompliancePolicy[] = [
@@ -75,7 +75,7 @@ const sportsPolicies: CompliancePolicy[] = [
 
 const sportsAudits: ComplianceAudit[] = [
   { id: 'sp-aud-001', title: 'NAIA Eligibility Review — Spring 2026', auditor: 'NAIA Compliance Office', date: '2026-03-15', status: 'scheduled', findings: 0, criticalFindings: 0 },
-  { id: 'sp-aud-002', title: 'Title IX Program Review', auditor: 'KaNeXT Office of Equity', date: '2026-01-20', status: 'passed', findings: 2, criticalFindings: 0 },
+  { id: 'sp-aud-002', title: 'Title IX Program Review', auditor: 'Carroll College Office of Equity', date: '2026-01-20', status: 'passed', findings: 2, criticalFindings: 0 },
   { id: 'sp-aud-003', title: 'Financial Aid Audit — FY2025', auditor: 'External Auditor — Deloitte', date: '2025-12-10', status: 'passed', findings: 1, criticalFindings: 0 },
 ];
 
@@ -100,7 +100,7 @@ const sportsSnapshot: ComplianceSnapshot = {
 };
 
 // =============================================================================
-// CHURCH MODE — KaNeXT Church
+// CHURCH MODE — 2819 Church
 // =============================================================================
 
 const churchPolicies: CompliancePolicy[] = [
@@ -135,7 +135,7 @@ const churchSnapshot: ComplianceSnapshot = {
 };
 
 // =============================================================================
-// EDUCATION MODE — KaNeXT University
+// EDUCATION MODE — Howard University
 // =============================================================================
 
 const educationPolicies: CompliancePolicy[] = [
@@ -177,14 +177,14 @@ const educationSnapshot: ComplianceSnapshot = {
 };
 
 // =============================================================================
-// BUSINESS MODE — KaNeXT
+// BUSINESS MODE — Valuetainment
 // =============================================================================
 
 const businessPolicies: CompliancePolicy[] = [
   { id: 'en-pol-001', title: 'SOC 2 Type II Controls', category: 'privacy', status: 'compliant', lastReviewed: '2026-01-20', nextReview: '2026-07-20', description: 'Service Organization Control 2 compliance for security, availability, processing integrity, confidentiality, and privacy trust services criteria.' },
   { id: 'en-pol-002', title: 'GDPR Data Processing', category: 'privacy', status: 'compliant', lastReviewed: '2026-02-01', nextReview: '2026-08-01', description: 'General Data Protection Regulation compliance for EU data subjects including consent management, data portability, and right to erasure.' },
   { id: 'en-pol-003', title: 'Employment Law — Multi-State', category: 'conduct', status: 'compliant', lastReviewed: '2025-12-15', nextReview: '2026-06-15', description: 'Federal and state employment law compliance including FLSA, FMLA, at-will employment, contractor classification, and remote work policies.' },
-  { id: 'en-pol-004', title: 'Intellectual Property Protection', category: 'governance', status: 'compliant', lastReviewed: '2026-01-10', nextReview: '2026-07-10', description: 'IP assignment agreements, trade secret protocols, patent strategy, and open-source license compliance for all KaNeXT proprietary systems.' },
+  { id: 'en-pol-004', title: 'Intellectual Property Protection', category: 'governance', status: 'compliant', lastReviewed: '2026-01-10', nextReview: '2026-07-10', description: 'IP assignment agreements, trade secret protocols, patent strategy, and open-source license compliance for all Valuetainment proprietary systems.' },
   { id: 'en-pol-005', title: 'Financial Reporting — GAAP', category: 'financial', status: 'compliant', lastReviewed: '2026-01-25', nextReview: '2026-07-25', description: 'Generally Accepted Accounting Principles compliance for financial statements, revenue recognition, and investor reporting obligations.' },
   { id: 'en-pol-006', title: 'Anti-Harassment & DEI Policy', category: 'conduct', status: 'compliant', lastReviewed: '2025-11-20', nextReview: '2026-05-20', description: 'Workplace anti-harassment policy, reporting procedures, investigation protocols, and diversity/equity/inclusion commitments.' },
 ];
@@ -196,7 +196,7 @@ const businessAudits: ComplianceAudit[] = [
 ];
 
 const businessIncidents: ComplianceIncident[] = [
-  { id: 'en-inc-001', title: 'Third-Party Data Processor Breach Notification', severity: 'major', status: 'investigating', reportedDate: '2026-02-05', assignee: 'CTO', description: 'Third-party analytics provider reported a potential data exposure. No KaNeXT customer data confirmed affected. Vendor audit initiated.' },
+  { id: 'en-inc-001', title: 'Third-Party Data Processor Breach Notification', severity: 'major', status: 'investigating', reportedDate: '2026-02-05', assignee: 'CTO', description: 'Third-party analytics provider reported a potential data exposure. No Valuetainment customer data confirmed affected. Vendor audit initiated.' },
   { id: 'en-inc-002', title: 'Employee Laptop Lost — Encrypted', severity: 'minor', status: 'closed', reportedDate: '2026-01-22', assignee: 'IT Security Lead', description: 'Employee laptop reported lost during travel. Device was fully encrypted with remote wipe capability. Wipe executed within 4 hours.' },
 ];
 
@@ -216,7 +216,7 @@ const businessSnapshot: ComplianceSnapshot = {
 };
 
 // =============================================================================
-// COMMUNITY MODE — KaNeXT Motorsport League
+// COMMUNITY MODE — Valuetainment Media League
 // =============================================================================
 
 const communityPolicies: CompliancePolicy[] = [
@@ -228,7 +228,7 @@ const communityPolicies: CompliancePolicy[] = [
 ];
 
 const communityAudits: ComplianceAudit[] = [
-  { id: 'cm-aud-001', title: 'Annual Safety Inspection — All Venues', auditor: 'KaNeXT Safety Commission', date: '2026-04-01', status: 'scheduled', findings: 0, criticalFindings: 0 },
+  { id: 'cm-aud-001', title: 'Annual Safety Inspection — All Venues', auditor: '3SSB Safety Commission', date: '2026-04-01', status: 'scheduled', findings: 0, criticalFindings: 0 },
   { id: 'cm-aud-002', title: 'Insurance Coverage Review', auditor: 'Marsh McLennan', date: '2026-01-10', status: 'passed', findings: 0, criticalFindings: 0 },
 ];
 

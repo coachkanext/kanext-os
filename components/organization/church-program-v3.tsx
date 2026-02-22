@@ -1,5 +1,5 @@
 /**
- * Church Program V3 — KaNeXT Church · Senior Pastor
+ * Church Program V3 — 2819 Church · Senior Pastor
  * ViewBar: Identity | Ministries | Operations
  * Self-contained with inline mock data.
  */
@@ -37,13 +37,13 @@ const VIEWS: { id: ViewId; label: string }[] = [
 // =============================================================================
 
 const CHURCH_IDENTITY = {
-  name: 'KaNeXT Church',
-  abbreviation: 'KaNeXT Church',
+  name: '2819 Church',
+  abbreviation: '2819 Church',
   mission: 'Raising a generation of leaders who will transform the world for Christ',
   denomination: 'Non-denominational',
   founded: '2015',
-  location: 'Nashville, TN',
-  seniorPastor: 'Pastor James Carter',
+  location: 'Atlanta, GA',
+  seniorPastor: 'Pastor Philip Anthony Mitchell',
   services: [
     { day: 'Sunday', time: '10:00 AM', type: 'Morning Service' },
     { day: 'Sunday', time: '6:00 PM', type: 'Evening Service' },
@@ -65,14 +65,14 @@ interface Ministry {
 
 const MINISTRIES: Ministry[] = [
   { id: 'm1', name: 'Catalyst', category: 'Young Adults', memberCount: 45, leader: 'Bro. Michael Scott', schedule: 'Fridays 7:00 PM', status: 'Active', description: 'Young adult fellowship and discipleship' },
-  { id: 'm2', name: 'KaNeXT Kids', category: 'Children', memberCount: 30, leader: 'Sis. Angela Davis', schedule: 'Sundays 10:00 AM', status: 'Active', description: 'Children\'s church and education' },
+  { id: 'm2', name: '2819 Kids', category: 'Children', memberCount: 30, leader: 'Sis. Angela Davis', schedule: 'Sundays 10:00 AM', status: 'Active', description: 'Children\'s church and education' },
   { id: 'm3', name: 'Ignite Youth', category: 'Teens', memberCount: 25, leader: 'Pastor Ryan Mitchell', schedule: 'Fridays 6:00 PM', status: 'Active', description: 'Teen youth group and mentorship' },
   { id: 'm4', name: 'Rooted', category: 'Discipleship', memberCount: 60, leader: 'Elder Mary Thompson', schedule: 'Wednesdays', status: 'Active', description: 'Foundational discipleship program' },
-  { id: 'm5', name: 'Connect Groups', category: 'Small Groups', memberCount: 8, leader: 'Pastor Grace Carter', schedule: 'Various', status: 'Active', description: '8 home-based small groups across LA' },
+  { id: 'm5', name: 'Connect Groups', category: 'Small Groups', memberCount: 8, leader: 'Tatjuana Phillips', schedule: 'Various', status: 'Active', description: '8 home-based small groups across LA' },
   { id: 'm6', name: 'Worship Team', category: 'Music/Worship', memberCount: 20, leader: 'Min. Lisa Brooks', schedule: 'Sundays & Rehearsals', status: 'Active', description: 'Worship team and choir' },
   { id: 'm7', name: 'Single & Purposeful', category: 'Singles', memberCount: 35, leader: 'Deacon Robert Davis', schedule: 'Monthly gatherings', status: 'Active', description: 'Singles fellowship and service' },
   { id: 'm8', name: 'Community Outreach', category: 'Evangelism', memberCount: 15, leader: 'Bro. Michael Scott', schedule: 'Saturdays', status: 'Seasonal', description: 'Street evangelism and community outreach' },
-  { id: 'm9', name: 'Morning Prayer Line', category: 'Radio', memberCount: 0, leader: 'Pastor James Carter', schedule: 'Weekly broadcast', status: 'Active', description: 'Radio ministry and podcast' },
+  { id: 'm9', name: 'Morning Prayer Line', category: 'Radio', memberCount: 0, leader: 'Pastor Philip Anthony Mitchell', schedule: 'Weekly broadcast', status: 'Active', description: 'Radio ministry and podcast' },
 ];
 
 interface Task {
@@ -127,7 +127,7 @@ interface VolunteerGap {
 }
 
 const VOLUNTEER_GAPS: VolunteerGap[] = [
-  { id: 'v1', role: 'Children\'s Church Teacher', ministry: 'KaNeXT Kids', urgency: 'Urgent' },
+  { id: 'v1', role: 'Children\'s Church Teacher', ministry: '2819 Kids', urgency: 'Urgent' },
   { id: 'v2', role: 'Sound Technician', ministry: 'Worship', urgency: 'Urgent' },
   { id: 'v3', role: 'Parking Lot Attendant', ministry: 'Operations', urgency: 'Normal' },
   { id: 'v4', role: 'Greeter (Sunday PM)', ministry: 'Hospitality', urgency: 'Normal' },

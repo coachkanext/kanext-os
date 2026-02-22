@@ -109,13 +109,13 @@ const EVENT_TYPE_LABEL: Record<AgendaEventType, string> = {
 };
 
 const TODAY_AGENDA: AgendaEvent[] = [
-  { id: 'ca-1', time: '6:00 AM', endTime: '6:45 AM', title: 'Pastoral Prayer Walk', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Carter', leaderOnly: true },
+  { id: 'ca-1', time: '6:00 AM', endTime: '6:45 AM', title: 'Pastoral Prayer Walk', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Philip Anthony Mitchell', leaderOnly: true },
   { id: 'ca-2', time: '7:00 AM', endTime: '7:30 AM', title: 'AV System Check & Sound Test', type: 'facility', location: 'Main Sanctuary', assignedTo: 'Media Team', staffOnly: true, isBlocked: true },
   { id: 'ca-3', time: '7:30 AM', endTime: '8:00 AM', title: 'Worship Team Rehearsal (Early)', type: 'volunteer', location: 'Main Sanctuary', assignedTo: 'Worship Team' },
-  { id: 'ca-4', time: '8:00 AM', endTime: '9:15 AM', title: 'Sunday Early Service', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Carter', notes: 'Communion Sunday' },
+  { id: 'ca-4', time: '8:00 AM', endTime: '9:15 AM', title: 'Sunday Early Service', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Philip Anthony Mitchell', notes: 'Communion Sunday' },
   { id: 'ca-5', time: '9:15 AM', endTime: '9:45 AM', title: 'Greeter & Usher Setup', type: 'volunteer', location: 'Lobby / Entrance', assignedTo: 'Hospitality Team' },
   { id: 'ca-6', time: '9:30 AM', endTime: '9:50 AM', title: "Children's Ministry Room Prep", type: 'facility', location: 'Children\'s Wing', assignedTo: 'Kids Ministry Lead' },
-  { id: 'ca-7', time: '10:00 AM', endTime: '11:30 AM', title: 'Sunday Main Worship', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Carter', notes: 'Sermon: "Walking by Faith" — Hebrews 11' },
+  { id: 'ca-7', time: '10:00 AM', endTime: '11:30 AM', title: 'Sunday Main Worship', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Philip Anthony Mitchell', notes: 'Sermon: "Walking by Faith" — Hebrews 11' },
   { id: 'ca-8', time: '10:00 AM', endTime: '11:30 AM', title: "Children's Church", type: 'ministry', location: 'Children\'s Wing', assignedTo: 'Sis. Adeola Johnson' },
   { id: 'ca-9', time: '11:30 AM', endTime: '12:00 PM', title: 'New Members Meet & Greet', type: 'ministry', location: 'Fellowship Hall', assignedTo: 'Assimilation Team' },
   { id: 'ca-10', time: '12:00 PM', endTime: '12:00 PM', title: 'Bulletin Submission Deadline', type: 'deadline', notes: 'All announcements for next Sunday due by noon today', staffOnly: true, dueWithin24h: true },
@@ -124,7 +124,7 @@ const TODAY_AGENDA: AgendaEvent[] = [
 ];
 
 const TOMORROW_AGENDA: AgendaEvent[] = [
-  { id: 'ca-t1', time: '6:00 PM', endTime: '7:30 PM', title: "Men's Bible Study", type: 'class', location: 'Room 103', assignedTo: 'Bro. Marcus Williams', notes: 'Book of James — Chapter 3' },
+  { id: 'ca-t1', time: '6:00 PM', endTime: '7:30 PM', title: "Men's Bible Study", type: 'class', location: 'Room 103', assignedTo: 'Bro. Dan Pearson', notes: 'Book of James — Chapter 3' },
   { id: 'ca-t2', time: '7:00 PM', endTime: '8:30 PM', title: 'Worship Team Practice', type: 'volunteer', location: 'Main Sanctuary', assignedTo: 'Worship Director' },
   { id: 'ca-t3', time: '7:00 PM', endTime: '8:00 PM', title: 'Elder Board Financial Review', type: 'deadline', location: 'Board Room', assignedTo: 'Finance Committee', leaderOnly: true, notes: 'Monthly financial statements review', decisionRequired: true },
 ];
@@ -132,7 +132,7 @@ const TOMORROW_AGENDA: AgendaEvent[] = [
 const THIS_WEEK_AGENDA: AgendaEvent[] = [
   { id: 'ca-w1', time: '10:00 AM', endTime: '11:30 AM', title: "Women's Prayer Circle", type: 'ministry', location: 'Prayer Room', assignedTo: 'Sis. Grace Adeyemi', notes: 'Tuesday' },
   { id: 'ca-w2', time: '7:00 PM', endTime: '8:30 PM', title: 'Choir Rehearsal', type: 'volunteer', location: 'Music Room', assignedTo: 'Choir Director', notes: 'Tuesday' },
-  { id: 'ca-w3', time: '7:00 PM', endTime: '8:30 PM', title: 'Midweek Bible Study & Prayer', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Carter', notes: 'Wednesday — "Spiritual Warfare" series' },
+  { id: 'ca-w3', time: '7:00 PM', endTime: '8:30 PM', title: 'Midweek Bible Study & Prayer', type: 'service', location: 'Main Sanctuary', assignedTo: 'Pastor Philip Anthony Mitchell', notes: 'Wednesday — "Spiritual Warfare" series' },
   { id: 'ca-w4', time: '6:30 PM', endTime: '8:00 PM', title: 'Youth Group Night', type: 'ministry', location: 'Youth Center', assignedTo: 'Youth Pastor T. Banks', notes: 'Thursday' },
   { id: 'ca-w5', time: '5:00 PM', endTime: '5:00 PM', title: 'Easter Planning Docs Due', type: 'deadline', notes: 'Thursday — All ministry heads submit Easter event proposals', staffOnly: true, dueWithin24h: true, decisionRequired: true },
   { id: 'ca-w6', time: '7:00 PM', endTime: '9:00 PM', title: 'Friday Night Worship', type: 'service', location: 'Main Sanctuary', assignedTo: 'Worship Director', notes: 'Friday' },
@@ -144,7 +144,7 @@ const NEXT_WEEK_AGENDA: AgendaEvent[] = [
   { id: 'ca-n1', time: '8:00 AM', endTime: '9:15 AM', title: 'Sunday Early Service', type: 'service', location: 'Main Sanctuary', notes: 'Next Sunday' },
   { id: 'ca-n2', time: '10:00 AM', endTime: '11:30 AM', title: 'Sunday Main Worship', type: 'service', location: 'Main Sanctuary', notes: 'Next Sunday — Guest Speaker: Bishop Carter' },
   { id: 'ca-n3', time: '6:00 PM', endTime: '8:00 PM', title: 'Singles Ministry Mixer', type: 'ministry', location: 'Fellowship Hall', notes: 'Next Friday' },
-  { id: 'ca-n4', time: '9:00 AM', endTime: '3:00 PM', title: 'Leadership Retreat (Staff)', type: 'class', location: 'Conference Center', assignedTo: 'Pastor Carter', notes: 'Next Saturday', staffOnly: true },
+  { id: 'ca-n4', time: '9:00 AM', endTime: '3:00 PM', title: 'Leadership Retreat (Staff)', type: 'class', location: 'Conference Center', assignedTo: 'Pastor Philip Anthony Mitchell', notes: 'Next Saturday', staffOnly: true },
 ];
 
 // =============================================================================
@@ -190,7 +190,7 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
     expectedAttendance: 180,
     readinessScore: 82,
     worshipLeader: 'Min. Sarah Owens',
-    pastor: 'Pastor Carter',
+    pastor: 'Pastor Philip Anthony Mitchell',
     teams: [
       { name: 'Worship', status: 'confirmed', lead: 'Min. Sarah Owens' },
       { name: 'AV / Media', status: 'confirmed', lead: 'Bro. James Obi' },
@@ -214,7 +214,7 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
     expectedAttendance: 450,
     readinessScore: 74,
     worshipLeader: 'Min. Sarah Owens',
-    pastor: 'Pastor Carter',
+    pastor: 'Pastor Philip Anthony Mitchell',
     teams: [
       { name: 'Worship', status: 'confirmed', lead: 'Min. Sarah Owens' },
       { name: 'AV / Media', status: 'confirmed', lead: 'Bro. James Obi' },
@@ -262,7 +262,7 @@ const WEEKLY_SERVICES: ServiceEntry[] = [
     expectedAttendance: 200,
     readinessScore: 95,
     worshipLeader: 'Min. Sarah Owens',
-    pastor: 'Pastor Carter',
+    pastor: 'Pastor Philip Anthony Mitchell',
     teams: [
       { name: 'Worship', status: 'confirmed', lead: 'Min. Sarah Owens' },
       { name: 'AV / Media', status: 'confirmed', lead: 'Bro. James Obi' },
@@ -335,7 +335,7 @@ const CHURCH_NEWS: NewsItem[] = [
     id: 'nw-1',
     title: 'Easter 2026 Planning — All Hands Meeting',
     date: 'Feb 18, 2026',
-    author: 'Pastor Carter',
+    author: 'Pastor Philip Anthony Mitchell',
     authorRole: 'Senior Pastor',
     preview: 'All ministry leaders, please mark your calendars for our Easter planning meeting this Saturday at 10 AM. We will finalize service times, volunteer assignments, outreach events, and the Easter production schedule.',
     category: 'announcement',
@@ -400,14 +400,14 @@ const CHURCH_NEWS: NewsItem[] = [
     date: 'Feb 12, 2026',
     author: 'Sis. Angela Parks',
     authorRole: 'Women\'s Ministry Director',
-    preview: 'Save the date! March 7-8 in the Main Sanctuary. Keynote speaker: Pastor Lisa Thompson from Grace Community Church. Breakout sessions, worship, and fellowship. Registration: $35.',
+    preview: 'Save the date! March 7-8 in the Main Sanctuary. Keynote speaker: Lena Mitchell from 2819 Church. Breakout sessions, worship, and fellowship. Registration: $35.',
     category: 'event',
   },
   {
     id: 'nw-8',
     title: "Men's Retreat — Iron Sharpens Iron",
     date: 'Feb 10, 2026',
-    author: 'Bro. Marcus Williams',
+    author: 'Bro. Dan Pearson',
     authorRole: "Men's Ministry Leader",
     preview: 'Join us April 17-19 at Mountain Lodge for a weekend of worship, teaching, and brotherhood. Speaker: Coach Robert James. Activities include hiking, basketball, and fireside devotions. Cost: $150.',
     category: 'event',
@@ -416,7 +416,7 @@ const CHURCH_NEWS: NewsItem[] = [
     id: 'nw-9',
     title: 'Volunteer Appreciation Sunday — Thank You!',
     date: 'Feb 9, 2026',
-    author: 'Pastor Carter',
+    author: 'Pastor Philip Anthony Mitchell',
     authorRole: 'Senior Pastor',
     preview: 'Last Sunday we honored over 120 volunteers who faithfully serve across 15 ministries. Your dedication to the body of Christ does not go unnoticed. You are the hands and feet of Jesus in our community.',
     category: 'testimony',

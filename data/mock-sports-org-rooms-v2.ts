@@ -2,7 +2,7 @@
  * Sports Organization Rooms V2 — Mock Data & Types
  * Official rooms, announcements, unit rooms, and escalations
  * for Sports Mode organizations.
- * Seeded with KaNeXT Men's Basketball 2025-26 season data.
+ * Seeded with Carroll College Fighting Saints Men's Basketball 2025-26 season data.
  */
 
 // =============================================================================
@@ -171,7 +171,7 @@ export const ROOMS_SUB_TABS: RoomsSubTab[] = [
 ];
 
 // =============================================================================
-// SEEDED DATA — KaNeXT Men's Basketball 2025-26
+// SEEDED DATA — Carroll College Men's Basketball 2025-26
 // =============================================================================
 
 export const OFFICIAL_ROOMS: OfficialRoom[] = [
@@ -186,10 +186,10 @@ export const OFFICIAL_ROOMS: OfficialRoom[] = [
     requiredReadPending: 1,
     memberCount: 3,
     recentMessages: [
-      { id: 'cm-1', sender: 'Alex Morgan', text: 'Film session at 6 PM tonight — bring your Lakewood scouting notes.', timestamp: '2026-02-18T10:30:00Z' },
+      { id: 'cm-1', sender: 'Alex Morgan', text: 'Film session at 6 PM tonight — bring your Providence scouting notes.', timestamp: '2026-02-18T10:30:00Z' },
       { id: 'cm-2', sender: 'Coach Marcus Davis', text: 'Got it. I\'ll have the recruiting call list prepped for after film.', timestamp: '2026-02-18T10:22:00Z' },
       { id: 'cm-3', sender: 'Coach Andre Williams', text: 'Moratinos is still day-to-day. Patterson says MRI is tomorrow morning.', timestamp: '2026-02-18T09:45:00Z' },
-      { id: 'cm-4', sender: 'Alex Morgan', text: 'Let\'s plan to run the Lakewood press-break sets in practice at 3 PM.', timestamp: '2026-02-18T08:15:00Z' },
+      { id: 'cm-4', sender: 'Alex Morgan', text: 'Let\'s plan to run the Providence press-break sets in practice at 3 PM.', timestamp: '2026-02-18T08:15:00Z' },
       { id: 'cm-5', sender: 'Coach Marcus Davis', text: 'Trey Williams hasn\'t responded to our offer — might need a call from you, Coach.', timestamp: '2026-02-17T16:00:00Z' },
     ],
     data_source: 'demo_seed',
@@ -322,7 +322,7 @@ export const UNIT_ROOMS: UnitRoom[] = [
     unit: 'coaching',
     purpose: 'Weekly offensive scheme prep, play design, and scouting breakdowns.',
     memberCount: 3,
-    lastMessage: 'Updated Lakewood press-break sets — film link attached',
+    lastMessage: 'Updated Providence press-break sets — film link attached',
     lastMessageDate: '2026-02-18T10:00:00Z',
     data_source: 'demo_seed',
   },
@@ -332,7 +332,7 @@ export const UNIT_ROOMS: UnitRoom[] = [
     unit: 'coaching',
     purpose: 'Defensive scouting, matchup assignments, and adjustment packages.',
     memberCount: 3,
-    lastMessage: 'Lakewood personnel report — key actions on #24 and #3',
+    lastMessage: 'Providence personnel report — key actions on #24 and #3',
     lastMessageDate: '2026-02-17T15:30:00Z',
     data_source: 'demo_seed',
   },
@@ -342,7 +342,7 @@ export const UNIT_ROOMS: UnitRoom[] = [
     unit: 'ops',
     purpose: 'Trip coordination, bus schedules, hotel confirmations, meal orders.',
     memberCount: 4,
-    lastMessage: 'Lakewood trip hotel confirmed — Hampton Inn West Palm, 9 rooms',
+    lastMessage: 'Providence trip hotel confirmed — Hampton Inn West Palm, 9 rooms',
     lastMessageDate: '2026-02-16T11:00:00Z',
     data_source: 'demo_seed',
   },
@@ -362,7 +362,7 @@ export const UNIT_ROOMS: UnitRoom[] = [
     unit: 'analytics',
     purpose: 'Film tagging, stat breakdowns, and opponent tendency reports.',
     memberCount: 4,
-    lastMessage: 'Uploaded Westfield game film — tagged possessions ready',
+    lastMessage: 'Uploaded Montana Tech game film — tagged possessions ready',
     lastMessageDate: '2026-02-16T08:30:00Z',
     data_source: 'demo_seed',
   },
@@ -401,7 +401,7 @@ export const UNIT_ROOMS: UnitRoom[] = [
 export const ESCALATIONS: Escalation[] = [
   {
     id: 'esc-1',
-    message: 'Lakewood away game travel budget requires AD approval — deadline Feb 20',
+    message: 'Providence away game travel budget requires AD approval — deadline Feb 20',
     type: 'decision',
     sourceName: 'Tyler Brooks',
     sourceRoom: 'Ops Room',
@@ -431,7 +431,7 @@ export const ESCALATIONS: Escalation[] = [
   },
   {
     id: 'esc-4',
-    message: 'Charter One invoice overdue — bus service may be suspended for Lakewood away trip',
+    message: 'Charter One invoice overdue — bus service may be suspended for Providence away trip',
     type: 'travel',
     sourceName: 'Tyler Brooks',
     sourceRoom: 'Travel & Logistics',
@@ -441,7 +441,7 @@ export const ESCALATIONS: Escalation[] = [
   },
   {
     id: 'esc-5',
-    message: 'Trey Williams (recruit) considering competing offer from Lakewood — need call from HC by Feb 19',
+    message: 'Trey Williams (recruit) considering competing offer from Providence — need call from HC by Feb 19',
     type: 'decision',
     sourceName: 'Coach Marcus Davis',
     sourceRoom: 'Recruiting Room',

@@ -248,7 +248,7 @@ function DataRoomHeader({
       <View style={styles.headerTopRow}>
         <View style={{ flex: 1 }}>
           <ThemedText style={[styles.roomTitle, { color: colors.text }]}>
-            KaNeXT Data Room
+            Valuetainment Data Room
           </ThemedText>
         </View>
         <Pressable onPress={onClose} hitSlop={12}>
@@ -326,7 +326,7 @@ function ActionIcon({
 
 function StartHereTab({ colors }: { colors: typeof Colors.light }) {
   const evaluationBullets = [
-    'Start with the Pitch Deck for a 10-minute overview of the KaNeXT thesis.',
+    'Start with the Pitch Deck for a 10-minute overview of the Valuetainment thesis.',
     'Read the Two-Page Memo for a concise investment thesis summary.',
     'Walk through the Product Demo to experience the 5-mode OS firsthand.',
     'Review Financials for revenue model, burn, and runway (access level dependent).',
@@ -342,16 +342,16 @@ function StartHereTab({ colors }: { colors: typeof Colors.light }) {
   ];
 
   const faqs = [
-    { q: 'What is KaNeXT?', a: 'An operating system for institutions that move culture -- sports programs, churches, leagues, schools, and businesses. Five domain modes, one platform.' },
+    { q: 'What is Valuetainment?', a: 'An operating system for institutions that move culture -- sports programs, churches, leagues, schools, and businesses. Five domain modes, one platform.' },
     { q: 'What stage is the company?', a: 'Pre-seed. Phase 1 (Proof Wedge Deployment) is active with 3 institutional partners generating real operational data.' },
-    { q: 'How does the video mandate strategy work?', a: 'Governing bodies (NAIA, NJCAA) require schools to provide game video. KaNeXT provides free cameras (KX-C1) and becomes the default platform -- 1,050+ schools at $0 CAC.' },
+    { q: 'How does the video mandate strategy work?', a: 'Governing bodies (NAIA, NJCAA) require schools to provide game video. Valuetainment provides free cameras (KX-C1) and becomes the default platform -- 1,050+ schools at $0 CAC.' },
     { q: 'What is the revenue model?', a: 'Institutional SaaS ($18K-$36K ARR per school), event settlement fees (1.5-3%), and media distribution revenue share.' },
     { q: 'Who is the target customer?', a: 'Sub-NCAA institutions (NAIA, NJCAA, CCCAA, USCAA, NCCAA) -- 1,050+ schools currently underserved by existing platforms.' },
   ];
 
   return (
     <View>
-      <SectionCard title="How to Evaluate KaNeXT" colors={colors}>
+      <SectionCard title="How to Evaluate Valuetainment" colors={colors}>
         {evaluationBullets.map((bullet, idx) => (
           <View key={idx} style={styles.numberRow}>
             <ThemedText style={[styles.numberBadge, { color: '#1D9BF0' }]}>{idx + 1}</ThemedText>
@@ -413,7 +413,7 @@ function PitchPackTab({
   const demos = accessibleDocs.filter((d) => d.type === 'demo');
 
   const marketMap = [
-    { segment: 'NAA', schools: '250+', status: 'Primary target' },
+    { segment: 'NAIA', schools: '250+', status: 'Primary target' },
     { segment: 'NJCAA', schools: '500+', status: 'Secondary target' },
     { segment: 'CCCAA', schools: '110+', status: 'Tertiary target' },
     { segment: 'USCAA', schools: '80+', status: 'Expansion' },
@@ -421,9 +421,9 @@ function PitchPackTab({
   ];
 
   const caseStudies = [
-    { name: 'KaNeXT Athletics', mode: 'Sports', status: 'Active deployment', detail: '13 sports programs, 2,340 app installs, ESPN+ broadcasts' },
-    { name: 'KaNeXT Church', mode: 'Church', status: 'Active deployment', detail: 'Giving rails, connect groups, pastoral care intelligence' },
-    { name: 'KaNeXT Motorsport', mode: 'Competition', status: 'Active deployment', detail: 'Race ops, standings, cap enforcement, broadcast integration' },
+    { name: 'Carroll Athletics', mode: 'Sports', status: 'Active deployment', detail: '13 sports programs, 2,340 app installs, ESPN+ broadcasts' },
+    { name: '2819 Church', mode: 'Church', status: 'Active deployment', detail: 'Giving rails, connect groups, pastoral care intelligence' },
+    { name: 'Valuetainment Media', mode: 'Competition', status: 'Active deployment', detail: 'Race ops, standings, cap enforcement, broadcast integration' },
   ];
 
   return (
@@ -518,10 +518,10 @@ function PitchPackTab({
 function ProductDemoTab({ colors }: { colors: typeof Colors.light }) {
   const demoScript = [
     { step: 1, title: 'Mode Selector', desc: 'Tap the mode icon in the top bar to switch between Sports, Church, Competition, Business, and Education modes.' },
-    { step: 2, title: 'Sports Mode (KaNeXT)', desc: 'Explore the dashboard, roster builder, film room, and game-day operations for KaNeXT Sports athletics.' },
+    { step: 2, title: 'Sports Mode (Valuetainment)', desc: 'Explore the dashboard, roster builder, film room, and game-day operations for Carroll College athletics.' },
     { step: 3, title: 'Nexus AI', desc: 'Long-press the Nexus tab or tap the microphone to activate voice/text AI. Ask about roster, schedule, or strategy.' },
-    { step: 4, title: 'Church Mode (KaNeXT Church)', desc: 'View giving dashboards, connect groups, ministry operations, and the "Morning Prayer Line" pastoral care interface.' },
-    { step: 5, title: 'Competition Mode (KaNeXT)', desc: 'Explore race operations, team standings, driver rosters, and the steward decision audit trail.' },
+    { step: 4, title: 'Church Mode (2819 Church)', desc: 'View giving dashboards, connect groups, ministry operations, and the "Morning Prayer Line" pastoral care interface.' },
+    { step: 5, title: 'Competition Mode (Valuetainment)', desc: 'Explore race operations, team standings, driver rosters, and the steward decision audit trail.' },
     { step: 6, title: 'Business Mode', desc: 'Navigate the founder OS: company overview, data room, deal workspaces, and governance dashboards.' },
   ];
 
@@ -782,19 +782,19 @@ function LegalTab({
 
   const entityStructure = [
     { entity: 'OSK Group LLC', type: 'Holding Company', jurisdiction: 'Delaware', status: 'Active' },
-    { entity: 'KaNeXT Operations LLC', type: 'Operating Subsidiary', jurisdiction: 'Delaware', status: 'Active' },
+    { entity: 'Valuetainment Operations LLC', type: 'Operating Subsidiary', jurisdiction: 'Delaware', status: 'Active' },
   ];
 
   const ipChecklist = [
     { item: 'IP Assignment -- Founder to Entity', status: 'complete' },
-    { item: 'Trademark Filing -- KaNeXT', status: 'complete' },
+    { item: 'Trademark Filing -- Valuetainment', status: 'complete' },
     { item: 'Trademark Filing -- Nexus', status: 'in_progress' },
     { item: 'Patent -- Canonical Engine Architecture', status: 'planned' },
     { item: 'Patent -- Video Mandate Camera System', status: 'planned' },
   ];
 
   const keyAgreements = [
-    { name: 'KaNeXT Partnership Agreement', type: 'Partnership', status: 'Active', detail: 'Athletics OS deployment for 13 sports programs' },
+    { name: 'Valuetainment Partnership Agreement', type: 'Partnership', status: 'Active', detail: 'Athletics OS deployment for 13 sports programs' },
     { name: 'PBD Co-Founder Distribution LOI', type: 'Letter of Intent', status: 'Signed', detail: 'Media distribution and co-branded event rights' },
     { name: 'SAFE Agreement -- Family Round', type: 'Investment', status: 'Template Ready', detail: 'Standard SAFE for friends and family investors' },
     { name: 'SAFE Agreement -- PBD Co-Founder', type: 'Investment', status: 'Board Approved', detail: '5-tranche SAFE with board seat activation' },
@@ -850,8 +850,8 @@ function LegalTab({
       <SectionCard title="Trademarks + Patents" colors={colors}>
         <ThemedText style={[styles.bodyText, { color: colors.text }]}>
           {board
-            ? 'KaNeXT trademark filed (USPTO). Nexus trademark in progress. Patent applications planned for Canonical Engine Architecture and Video Mandate Camera System. Full IP portfolio review scheduled Q2 2026.'
-            : 'KaNeXT trademark filed. Additional IP filings in progress. Summaries available at current access level.'
+            ? 'Valuetainment trademark filed (USPTO). Nexus trademark in progress. Patent applications planned for Canonical Engine Architecture and Video Mandate Camera System. Full IP portfolio review scheduled Q2 2026.'
+            : 'Valuetainment trademark filed. Additional IP filings in progress. Summaries available at current access level.'
           }
         </ThemedText>
       </SectionCard>

@@ -1,7 +1,7 @@
 /**
  * Edu Program V3 — 3-pill ViewBar (Identity | Academics | Operations)
- * KaNeXT Sports · President perspective
- * Private University · Founded 2020 · Nashville, TN · Regionally Accredited
+ * Carroll College · President perspective
+ * Private University · Founded 1867 · Washington, DC · Regionally Accredited
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
@@ -23,9 +23,9 @@ const VIEWS: { id: ViewId; label: string }[] = [
 ];
 
 const INSTITUTION = {
-  name: 'KaNeXT Sports',
+  name: 'Carroll College',
   founded: 1879,
-  location: 'Nashville, TN',
+  location: 'Washington, DC',
   type: 'University',
   accreditation: 'SACSCOC',
   motto: 'Truth, Service, Excellence',
@@ -35,7 +35,7 @@ const INSTITUTION = {
     undergrad: 1050,
     grad: 150,
   },
-  strategicPlan: 'KaNeXT 2030: Elevating Excellence — Focus areas include student success, institutional sustainability, research growth, and community engagement. 70% of strategic initiatives underway.',
+  strategicPlan: 'Howard Forward 2030: Elevating Excellence — Focus areas include student success, institutional sustainability, research growth, and community engagement. 70% of strategic initiatives underway.',
 };
 
 interface Department {

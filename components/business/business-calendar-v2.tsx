@@ -1452,7 +1452,7 @@ export function BusinessCalendarV2({ colors, role = 'B1' }: Props) {
       {/* Entity Scope Bar */}
       <EntityScopeBar
         entityId="kanext-holdco"
-        entityName="KaNeXT HoldCo"
+        entityName="Valuetainment HoldCo"
         entityType="HoldCo"
         status="active"
         colors={colors}

@@ -68,7 +68,7 @@ const STATUS_OPTIONS: EntityStatus[] = [
   'archived',
 ];
 
-const COMPANY_OPTIONS = ['KaNeXT', 'KaNeXT Events LLC'];
+const COMPANY_OPTIONS = ['Valuetainment', 'Valuetainment Events LLC'];
 
 const DEPARTMENT_OPTIONS = ['Product', 'Engineering', 'Sales', 'Marketing'];
 

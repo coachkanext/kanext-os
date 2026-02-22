@@ -55,43 +55,43 @@ interface ExtendedAppState extends AppContextState {
 const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
   sports: {
     id: 'sports_kx',
-    name: 'KaNeXT Sports',
+    name: 'Carroll College',
     mode: 'sports',
     type: 'college_athletics',
-    location: 'Nashville, TN',
-    description: 'KaNeXT Sports — Athletic Programs',
+    location: 'Helena, MT',
+    description: 'Carroll College — Fighting Saints Athletics',
   },
   business: {
     id: 'biz_kx',
-    name: 'KaNeXT Business',
+    name: 'Valuetainment',
     mode: 'business',
     type: 'platform',
-    location: 'Nashville, TN',
-    description: 'KaNeXT Business — Institutional OS Platform',
+    location: 'Fort Lauderdale, FL',
+    description: 'Valuetainment — Media & Education',
   },
   church: {
     id: 'church_kx',
-    name: 'KaNeXT Church',
+    name: '2819 Church',
     mode: 'church',
     type: 'faith',
-    location: 'Nashville, TN',
-    description: 'KaNeXT Church — Faith Community',
+    location: 'Atlanta, GA',
+    description: '2819 Church — Faith Community',
   },
   education: {
     id: 'edu_kx',
-    name: 'KaNeXT Education',
+    name: 'Howard University',
     mode: 'education',
     type: 'university',
-    location: 'Nashville, TN',
-    description: 'KaNeXT Education — Academic Institution',
+    location: 'Washington, DC',
+    description: 'Howard University — Academic Institution',
   },
   competition: {
     id: 'comp_kx',
-    name: 'KaNeXT Competition',
+    name: 'Adidas 3SSB',
     mode: 'competition',
-    type: 'motorsport_league',
-    location: 'Global',
-    description: 'KaNeXT Competition — Championship Series',
+    type: 'grassroots_basketball',
+    location: 'Rock Hill, SC',
+    description: 'Adidas 3SSB — 3 Stripes Select Basketball',
   },
 };
 
@@ -164,13 +164,13 @@ const SPORTS_SEASONS: Record<string, Cycle> = {
 
 // Organizations for sports mode (static for now)
 const SPORTS_ORGANIZATIONS: Record<string, Organization> = {
-  'KaNeXT Sports': {
+  'Carroll College': {
     id: 'sports_kx',
-    name: 'KaNeXT Sports',
+    name: 'Carroll College',
     mode: 'sports',
     type: 'college_athletics',
-    location: 'Nashville, TN',
-    description: 'KaNeXT Sports — Athletic Programs',
+    location: 'Helena, MT',
+    description: 'Carroll College — Fighting Saints Athletics',
   },
 };
 

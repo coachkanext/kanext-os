@@ -1,8 +1,8 @@
 /**
- * KaNeXT Sports Men's Basketball
+ * Carroll College Men's Basketball
  * Normalized Database — Full Stats Stack
  *
- * Scope: NAA → The KaNeXT Conference → KaNeXT Sports → Men's Basketball
+ * Scope: NAA → The Frontier Conference → Carroll College → Men's Basketball
  * Seasons: 2022-23 through 2025-26
  * Per: Claude Global Database Ingest Contract v1
  *

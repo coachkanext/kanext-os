@@ -96,7 +96,7 @@ export interface SystemsData {
 
 export const KaNeXT_STAFF: StaffMember[] = [
   { name: 'Alex Morgan', title: 'Head Coach / GM', role: 'head_coach', email: 'skalejaiye@kanext.edu', phone: '(305) 555-0100' },
-  { name: 'Marcus Williams', title: 'Associate Head Coach', role: 'assistant', email: 'mwilliams@kanext.edu', phone: '(305) 555-0101' },
+  { name: 'Dan Pearson', title: 'Associate Head Coach', role: 'assistant', email: 'mwilliams@kanext.edu', phone: '(305) 555-0101' },
   { name: 'James Robinson', title: 'Assistant Coach — Defense', role: 'assistant', email: 'jrobinson@kanext.edu', phone: '(305) 555-0102' },
   { name: 'David Thompson', title: 'Assistant Coach — Player Development', role: 'assistant', email: 'dthompson@kanext.edu', phone: '(305) 555-0103' },
   { name: 'Alex Rivera', title: 'Recruiting Coordinator', role: 'assistant', email: 'arivera@kanext.edu', phone: '(305) 555-0104' },
@@ -113,9 +113,9 @@ export const KaNeXT_STAFF: StaffMember[] = [
 
 export const KaNeXT_OPERATIONS: OperationsData = {
   travel: [
-    { date: '2026-02-21', opponent: 'Pinecrest University', departure: '8:00 AM', arrival: '11:30 AM', hotel: 'Holiday Inn Babson Park', status: 'confirmed' },
-    { date: '2026-02-25', opponent: 'Westfield', departure: '7:00 AM', arrival: '9:30 AM', status: 'confirmed' },
-    { date: '2026-03-01', opponent: 'Clearwater', departure: '10:00 AM', arrival: '2:00 PM', hotel: 'Comfort Inn Lake Wales', status: 'pending' },
+    { date: '2026-02-21', opponent: 'Dakota State University', departure: '8:00 AM', arrival: '11:30 AM', hotel: 'Holiday Inn Babson Park', status: 'confirmed' },
+    { date: '2026-02-25', opponent: 'Montana Tech', departure: '7:00 AM', arrival: '9:30 AM', status: 'confirmed' },
+    { date: '2026-03-01', opponent: 'Bellevue', departure: '10:00 AM', arrival: '2:00 PM', hotel: 'Comfort Inn Lake Wales', status: 'pending' },
   ],
   facilities: [
     { name: 'Main Court — Pratt Whitney Center', status: 'available' },

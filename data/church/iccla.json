@@ -1,210 +1,261 @@
 {
   "church_profile": {
-    "name": "KaNeXT Community Church",
-    "shortName": "KCC",
-    "denomination": "Non-denominational",
-    "description": "A vibrant, welcoming community of faith dedicated to worship, growth, and service",
-    "vision": "To build a thriving community of believers who impact the world through faith, love, and service",
-    "theme2026": "Year of New Beginnings",
-    "website": "https://church.kanext.io",
-    "serviceTime": "Sundays at 10:00 AM",
+    "name": "2819 Church",
+    "shortName": "2819",
+    "denomination": "Nondenominational",
+    "nameOrigin": "Matthew 28:19 — \"Go and make disciples of all the nations\"",
+    "description": "An uncompromising church in Atlanta confronting culture with biblical truth, Spirit-led worship, and authentic discipleship",
+    "vision": "Until All Have Heard",
+    "theme2026": "Cross to Commission",
+    "website": "https://2819church.org",
+    "address": "3350 Greenbriar Pkwy SW, Atlanta, GA 30331",
+    "serviceTimes": [
+      { "day": "Sunday", "time": "8:00 AM", "type": "in-person + livestream" },
+      { "day": "Sunday", "time": "10:30 AM", "type": "in-person + livestream" },
+      { "day": "Sunday", "time": "1:00 PM", "type": "in-person + livestream" }
+    ],
+    "weeklyAttendance": 6000,
+    "onlineWeeklyViewers": 75000,
     "social": {
-      "instagram": "https://www.instagram.com/kanextchurch/",
-      "facebook": "https://www.facebook.com/kanextchurch/",
-      "youtube": "https://www.youtube.com/@kanextchurch",
-      "twitter": "https://twitter.com/kanextchurch",
-      "tiktok": "https://www.tiktok.com/@kanextchurch"
+      "instagram": "https://www.instagram.com/2819church/",
+      "facebook": "https://www.facebook.com/philipanthonymitchell/",
+      "youtube": "https://www.youtube.com/user/victorychurchatl",
+      "twitter": "https://x.com/2819Church",
+      "threads": "https://threads.net/@2819church",
+      "podcast": "https://podcasts.apple.com/us/podcast/2819-church/id1788235375"
+    },
+    "hashtags": ["#WeAre2819Church", "#UntilAllHaveHeard"],
+    "branding": {
+      "primaryRed": "#D3121A",
+      "darkBackground": "#1E1E1E",
+      "white": "#FFFFFF",
+      "visualTone": "Urban, high-contrast, streetwear-influenced. Black backgrounds, bold typography."
     }
   },
   "leadership": [
     {
-      "id": "pastor-james",
-      "name": "Pastor James Carter",
-      "title": "Lead Pastor",
+      "id": "pastor-philip",
+      "name": "Philip Anthony Mitchell",
+      "title": "Founder & Lead Pastor",
       "role": "senior_pastor",
-      "bio": "Pastor James Carter is the founding lead pastor of KaNeXT Community Church. With over 20 years of ministry experience, he has a passion for building authentic community and developing servant leaders.",
-      "credentials": "M.Div."
+      "bio": "Philip Anthony Mitchell is the founder and lead pastor of 2819 Church. Born in Queens, New York, he is an honors graduate of North Carolina Central University and holds a degree in Pastoral and Church Leadership from Valor Christian College. His bold, unscripted preaching style has drawn thousands of young adults to faith. Married to Lena since 2004, they have four children.",
+      "hometown": "Queens, New York",
+      "instagram": "@philipamitchell",
+      "website": "https://www.philipanthonymitchell.com"
     },
     {
-      "id": "pastor-grace",
-      "name": "Pastor Grace Carter",
-      "title": "Executive Pastor",
-      "role": "co_pastor",
-      "bio": "Pastor Grace Carter serves as the executive pastor of KaNeXT Community Church. She oversees ministry operations, women's ministry, and community outreach programs.",
-      "credentials": "M.A. Counseling"
+      "id": "staff-tatjuana",
+      "name": "Tatjuana Phillips",
+      "title": "Ministries Director",
+      "role": "ministries_director",
+      "bio": "Tatjuana Phillips oversees ministry operations at 2819 Church, coordinating Formation Kids, Squads, Serve Teams, and community outreach initiatives."
+    },
+    {
+      "id": "staff-arik",
+      "name": "Arik Hayes",
+      "title": "Teaching Pastor",
+      "role": "teaching_pastor",
+      "bio": "Arik Hayes serves as a Teaching Pastor and Guest Communicator at 2819 Church, regularly contributing to the Sunday sermon rotation."
+    },
+    {
+      "id": "staff-lonnell",
+      "name": "Lonnell Williams",
+      "title": "Teaching Pastor",
+      "role": "teaching_pastor",
+      "bio": "Lonnell Williams holds an M.Div. and serves as a Teaching Pastor at 2819 Church, delivering sermons and leading discipleship initiatives."
     }
   ],
   "ministries": [
     {
-      "id": "mens-fellowship",
-      "name": "Men's Fellowship",
-      "type": "mens",
-      "description": "A ministry for men to grow in faith, leadership, and accountability.",
-      "status": "active"
-    },
-    {
-      "id": "womens-fellowship",
-      "name": "Women's Fellowship",
-      "type": "womens",
-      "description": "A community for women to connect, grow, and serve together.",
-      "status": "active"
-    },
-    {
-      "id": "young-adults",
-      "name": "Next Gen",
-      "type": "young_adults",
-      "description": "Young adults ministry for ages 18-30. Contemporary worship, life groups, and community events.",
-      "status": "active"
-    },
-    {
-      "id": "kids-church",
-      "name": "KaNeXT Kids",
+      "id": "formation-kids",
+      "name": "Formation Kids",
       "type": "childrens",
-      "description": "Children's ministry with engaging, age-appropriate Bible lessons, worship, and activities. Nursery available for infants and toddlers.",
+      "description": "Children's ministry for ages 6 months through 5th grade. Fun, safe discipleship environment with age-appropriate Bible lessons and activities.",
       "status": "active"
     },
     {
       "id": "youth-ministry",
-      "name": "Ignite Youth",
+      "name": "Youth Ministry",
       "type": "youth",
-      "description": "Teen ministry with weekly gatherings, retreats, and service projects for students in grades 6-12.",
+      "description": "Youth-focused ministry reaching the next generation with biblical truth and authentic community.",
       "status": "active"
     },
     {
-      "id": "life-groups",
-      "name": "Life Groups",
-      "type": "discipleship",
-      "description": "Small group gatherings in homes and on campus for Bible study, prayer, and authentic community. Open to everyone.",
-      "status": "active"
-    },
-    {
-      "id": "connect-groups",
-      "name": "Connect Groups",
+      "id": "squads",
+      "name": "Squads",
       "type": "small_groups",
-      "description": "Interest-based groups that meet regularly for fellowship, discussion, and shared activities. A great way to meet new people.",
+      "description": "Small groups with ~1,700 active participants. Discussion, accountability, sermon processing, and friendship-building in intimate settings.",
       "status": "active"
     },
     {
-      "id": "worship-team",
-      "name": "Worship Team",
-      "type": "worship",
-      "description": "Music and worship ministry including vocalists, instrumentalists, and production team. Serves in weekly services and special events.",
-      "leader": "Minister David Brooks",
+      "id": "serve-teams",
+      "name": "Serve Teams",
+      "type": "volunteer",
+      "description": "Volunteer servant leaders who pray over seats before services, usher, greet, and serve the church community each Sunday.",
       "status": "active"
     },
     {
-      "id": "singles-ministry",
-      "name": "Single & Purposeful",
-      "type": "singles",
-      "description": "A ministry for single adults to grow spiritually, build meaningful relationships, and serve the community.",
+      "id": "digital-discipleship",
+      "name": "Digital Discipleship",
+      "type": "digital",
+      "description": "Online engagement arm reaching ~75,000 weekly viewers through livestream, social media, and digital content.",
       "status": "active"
     },
     {
-      "id": "outreach",
-      "name": "Community Outreach",
+      "id": "2819-institute",
+      "name": "2819 Institute",
+      "type": "education",
+      "description": "Training and education arm for equipping disciples with deep biblical knowledge and leadership skills.",
+      "status": "active"
+    },
+    {
+      "id": "2819-ministries",
+      "name": "2819 Ministries",
       "type": "outreach",
-      "description": "Serving the local community through food drives, mentoring programs, and partnership with local organizations.",
+      "description": "Outreach and missions arm. International mission trips including annual Belize missions and community impact initiatives.",
+      "status": "active"
+    },
+    {
+      "id": "access",
+      "name": "ACCESS",
+      "type": "events",
+      "description": "Large-scale prayer events. The 2025 ACCESS gathering at State Farm Arena drew ~40,000 attendees with free admission.",
+      "status": "active"
+    },
+    {
+      "id": "worship",
+      "name": "Worship",
+      "type": "worship",
+      "description": "Contemporary Christian music and worship experience described as \"a block party atmosphere\" — Spirit-led, high-energy, and transformative.",
+      "status": "active"
+    },
+    {
+      "id": "podcast-media",
+      "name": "2819 Church Podcast",
+      "type": "media",
+      "description": "117+ episodes across Apple Podcasts, Spotify, iHeart, and Amazon Music. 4.9-star rating with 1,912+ reviews.",
       "status": "active"
     }
   ],
   "giving": {
-    "philosophy": "We believe in the joy of generosity. Every gift supports our mission to build community, serve others, and share hope.",
-    "categories": ["Tithes", "Offerings", "Missions"],
+    "philosophy": "We believe in the joy of generosity. Every gift supports our mission to reach the nations with the gospel of Jesus Christ.",
+    "categories": ["Tithes", "Offerings", "Missions", "Building Fund"],
     "methods": [
       {
         "type": "text_to_give",
         "label": "Text to Give",
-        "instructions": "Text GIVE to (615) 555-0200"
+        "instructions": "Text GIVE to (404) 596-2819"
       },
       {
         "type": "online",
         "label": "Online Giving",
-        "instructions": "Secure online giving at church.kanext.io/give",
-        "url": "https://church.kanext.io/give"
+        "instructions": "Secure online giving at 2819church.org/give",
+        "url": "https://2819church.org/give"
       },
       {
         "type": "app",
-        "label": "KaNeXT App",
-        "instructions": "Give through the KaNeXT app under Church > Giving"
+        "label": "2819 Church App",
+        "instructions": "Give through the 2819 Church app (iOS & Android)"
       }
     ]
   },
+  "sermonSeries": [
+    { "name": "Cross to Commission", "scripture": "Matthew 26-27+", "status": "current" },
+    { "name": "Kingdom Gems", "scripture": "Matthew 5-7 (Sermon on the Mount)", "status": "completed" },
+    { "name": "God of Miracles", "scripture": "Matthew 28:18-20", "status": "completed" },
+    { "name": "Hell's Best Kept Secret", "scripture": null, "status": "completed" },
+    { "name": "Unscripted", "scripture": null, "status": "completed" },
+    { "name": "The Art of Stewardship", "scripture": null, "status": "completed" }
+  ],
   "events": [
     {
-      "id": "evt-prayer-2026",
-      "title": "21 Days of Prayer & Fasting",
-      "date": "2026-01-05",
-      "description": "Annual prayer and fasting initiative to start the new year. Led by Pastor Grace Carter.",
+      "id": "evt-access-2026",
+      "title": "ACCESS 2026",
+      "date": "2026-10-10",
+      "description": "Annual citywide prayer gathering. Last year at State Farm Arena, ~40,000 attendees. Free admission.",
       "type": "prayer"
     },
     {
       "id": "evt-worship-night",
       "title": "Night of Worship",
-      "date": "2026-02-15",
-      "description": "An evening of extended worship and prayer.",
+      "date": "2026-03-15",
+      "description": "An evening of extended worship, prayer, and encounter at 2819 Church.",
       "type": "worship"
     },
     {
-      "id": "evt-community-day",
-      "title": "Community Impact Day",
-      "date": "2026-03-14",
-      "description": "Churchwide service day partnering with local organizations to serve our neighbors.",
+      "id": "evt-belize-missions",
+      "title": "Belize Mission Trip",
+      "date": "2026-06-15",
+      "description": "Annual international mission trip through 2819 Ministries. Serve communities in Belize.",
       "type": "outreach"
     }
   ],
   "messages": [
     {
       "id": "msg-01",
-      "title": "Walking in Purpose",
-      "date": "2026-02-09",
-      "speaker": "Pastor James Carter"
+      "title": "The King They Mocked",
+      "date": "2026-02-16",
+      "speaker": "Philip Anthony Mitchell",
+      "scripture": "Matthew 27:27-31",
+      "series": "Cross to Commission"
     },
     {
       "id": "msg-02",
-      "title": "The Power of Community",
-      "date": "2026-02-02",
-      "speaker": "Pastor James Carter"
+      "title": "Choose Christ",
+      "date": "2026-01-19",
+      "speaker": "Philip Anthony Mitchell",
+      "scripture": "Matthew 27:15-26",
+      "series": "Cross to Commission"
     },
     {
       "id": "msg-03",
-      "title": "Faith for the Journey",
-      "date": "2026-01-26",
-      "speaker": "Pastor Grace Carter"
+      "title": "A Power In Silence",
+      "date": "2026-01-12",
+      "speaker": "Philip Anthony Mitchell",
+      "scripture": "Matthew 27:11-14",
+      "series": "Cross to Commission"
     },
     {
       "id": "msg-04",
-      "title": "Building on the Rock",
-      "date": "2026-01-19",
-      "speaker": "Pastor James Carter"
+      "title": "And When You Fast",
+      "date": "2026-01-05",
+      "speaker": "Philip Anthony Mitchell",
+      "scripture": "Ezra 8:21-23",
+      "series": "Cross to Commission"
     },
     {
       "id": "msg-05",
-      "title": "New Beginnings",
-      "date": "2026-01-12",
-      "speaker": "Pastor James Carter"
+      "title": "Mercy For The Villain",
+      "date": "2025-12-23",
+      "speaker": "Philip Anthony Mitchell",
+      "scripture": "Matthew 27:2-10",
+      "series": "Cross to Commission"
     },
     {
       "id": "msg-06",
-      "title": "Vision for 2026",
-      "date": "2026-01-05",
-      "speaker": "Pastor James Carter"
+      "title": "The Idol Called Anxiety",
+      "date": "2025-12-16",
+      "speaker": "Lonnell Williams",
+      "scripture": "Exodus 32:1-3",
+      "series": null
     }
   ],
   "programs": {
     "morningPrayer": {
-      "name": "Morning Prayer Line",
+      "name": "Weekly Prayer",
       "type": "prayer",
-      "description": "Daily morning prayer ministry open to all. A time to start the day in prayer and worship together.",
-      "schedule": "Monday - Friday at 6:30 AM",
-      "access": "Join via the KaNeXT Church app or call the prayer line"
+      "description": "Corporate prayer gathering. A time to seek God together as a church body.",
+      "access": "Join in-person or via the 2819 Church app"
     }
   },
   "metadata": {
     "generated_at": "2026-02-22",
-    "type": "demo_data",
+    "type": "real_org_data",
+    "notes": "Real 2819 Church branding, ministry structure, sermon series, and public data. Giving amounts, member records, and financial data are mock.",
     "counts": {
-      "leadership": 2,
+      "leadership": 4,
       "ministries": 10,
+      "sermonSeries": 6,
       "events": 3,
       "messages": 6,
       "giving_methods": 3

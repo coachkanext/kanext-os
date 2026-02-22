@@ -60,7 +60,7 @@ import {
 
 const ALL_CLUSTER_KEYS: (keyof ClusterRatings)[] = [
   'shooting', 'finishing', 'playmaking',
-  'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
+  'on_ball_defense', 'team_defense', 'rebounding', 'physical',
 ];
 
 const HIGH_USAGE_ARCHETYPES = new Set<Archetype>([

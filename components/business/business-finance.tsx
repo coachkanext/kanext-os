@@ -1,5 +1,5 @@
 /**
- * Business Finance — 14-sub-tab Finance hub for KaNeXT Business Mode.
+ * Business Finance — 14-sub-tab Finance hub for Valuetainment Mode.
  * Overview | Ledger Truth | Budgets | Commitments | Receivables | Payables |
  * Approvals | Splits | Revenue | Costs/Burn | Entities | Risk/Controls |
  * Audit | Board Pack Builder

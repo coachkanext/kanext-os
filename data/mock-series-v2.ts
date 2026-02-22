@@ -250,13 +250,13 @@ export const SERIES_LIST: SeriesFull[] = [
   {
     id: 'series-fmu-conference',
     competitionOrgId: 'org-kx-conference',
-    name: 'KaNeXT Conference League',
-    shortName: 'KaNeXT Conf',
+    name: 'Frontier Conference League',
+    shortName: '3SSB Conf',
     type: 'league',
     level: 'college',
     status: 'in-progress',
     seasonWindow: { start: '2025-11-01', end: '2026-03-07' },
-    description: 'KaNeXT Conference regular season league play. 10 teams compete in a round-robin format for conference tournament seeding.',
+    description: 'Frontier Conference regular season league play. 10 teams compete in a round-robin format for conference tournament seeding.',
     currentStageLine: 'Week 12 \u00B7 Standings live',
     opsDirector: SERIES_STAFF[4],
     staffCount: 5,
@@ -273,13 +273,13 @@ export const SERIES_LIST: SeriesFull[] = [
   {
     id: 'series-sfp-showcase',
     competitionOrgId: 'org-south-florida-hoops',
-    name: 'South Ridgemont Prep Showcase',
+    name: 'South MSU-Northern Prep Showcase',
     shortName: 'SFL Prep',
     type: 'showcase',
     level: 'prep',
     status: 'upcoming',
     seasonWindow: { start: '2026-03-14', end: '2026-03-15' },
-    description: 'Two-day showcase event for South Ridgemont high school programs. College scouts and media in attendance. 24 team slots available.',
+    description: 'Two-day showcase event for South MSU-Northern high school programs. College scouts and media in attendance. 24 team slots available.',
     currentStageLine: 'Registration open \u00B7 24 slots',
     opsDirector: SERIES_STAFF[0],
     staffCount: 4,
@@ -340,19 +340,19 @@ export const SERIES_LIST: SeriesFull[] = [
 ];
 
 // =============================================================================
-// SERIES PARTICIPANTS (KaNeXT Conference League)
+// SERIES PARTICIPANTS (Frontier Conference League)
 // =============================================================================
 
 export const SERIES_PARTICIPANTS: SeriesParticipant[] = [
-  { id: 'part-fmu', seriesId: 'series-fmu-conference', name: 'KaNeXT Sports Wolves', shortName: 'KaNeXT', seed: 3, wins: 8, losses: 4, avatarColor: '#1D9BF0' },
+  { id: 'part-fmu', seriesId: 'series-fmu-conference', name: 'Carroll College Fighting Saints', shortName: '3SSB', seed: 3, wins: 8, losses: 4, avatarColor: '#1D9BF0' },
   { id: 'part-bcu', seriesId: 'series-fmu-conference', name: 'Bethune-Cookman Wildcats', shortName: 'BCU', seed: 1, wins: 10, losses: 2, avatarColor: '#EF4444' },
   { id: 'part-ewc', seriesId: 'series-fmu-conference', name: 'Evergreen Tigers', shortName: 'EWC', seed: 5, wins: 6, losses: 6, avatarColor: '#1D9BF0' },
-  { id: 'part-warner', seriesId: 'series-fmu-conference', name: 'Clearwater Royals', shortName: 'WRN', seed: 4, wins: 7, losses: 5, avatarColor: '#22C55E' },
-  { id: 'part-ave', seriesId: 'series-fmu-conference', name: 'Westfield Gyrenes', shortName: 'AVE', seed: 6, wins: 5, losses: 7, avatarColor: '#F59E0B' },
-  { id: 'part-webber', seriesId: 'series-fmu-conference', name: 'Pinecrest Warriors', shortName: 'WEB', seed: 7, wins: 4, losses: 8, avatarColor: '#EF4444' },
+  { id: 'part-warner', seriesId: 'series-fmu-conference', name: 'Bellevue Royals', shortName: 'WRN', seed: 4, wins: 7, losses: 5, avatarColor: '#22C55E' },
+  { id: 'part-ave', seriesId: 'series-fmu-conference', name: 'Montana Tech Gyrenes', shortName: 'AVE', seed: 6, wins: 5, losses: 7, avatarColor: '#F59E0B' },
+  { id: 'part-webber', seriesId: 'series-fmu-conference', name: 'Dakota State Warriors', shortName: 'WEB', seed: 7, wins: 4, losses: 8, avatarColor: '#EF4444' },
   { id: 'part-seu', seriesId: 'series-fmu-conference', name: 'Southeastern Fire', shortName: 'SEU', seed: 2, wins: 9, losses: 3, avatarColor: '#1D9BF0' },
-  { id: 'part-keiser', seriesId: 'series-fmu-conference', name: 'Lakewood Seahawks', shortName: 'KSR', seed: 8, wins: 3, losses: 9, avatarColor: '#1D9BF0' },
-  { id: 'part-thomas', seriesId: 'series-fmu-conference', name: 'Magnolia University Night Hawks', shortName: 'TNU', seed: 9, wins: 2, losses: 10, avatarColor: '#A1A1AA' },
+  { id: 'part-keiser', seriesId: 'series-fmu-conference', name: 'Providence Seahawks', shortName: 'KSR', seed: 8, wins: 3, losses: 9, avatarColor: '#1D9BF0' },
+  { id: 'part-thomas', seriesId: 'series-fmu-conference', name: 'Multnomah Night Hawks', shortName: 'TNU', seed: 9, wins: 2, losses: 10, avatarColor: '#A1A1AA' },
   { id: 'part-johnson', seriesId: 'series-fmu-conference', name: 'Johnson University Royals', shortName: 'JHN', seed: 10, wins: 1, losses: 11, avatarColor: '#1D9BF0' },
 ];
 
@@ -362,19 +362,19 @@ export const SERIES_PARTICIPANTS: SeriesParticipant[] = [
 
 export const SERIES_GAMES: SeriesGame[] = [
   // MLK Classic — tournament bracket
-  { id: 'game-mlk-1', seriesId: 'series-mlk-classic', homeTeam: 'KaNeXT', awayTeam: 'Clearwater Royals', date: '2026-01-18', time: '12:00 PM', venue: 'KaNeXT Gymnasium', court: 'Main Court', stage: 'Quarterfinal', status: 'final', homeScore: 78, awayScore: 65 },
-  { id: 'game-mlk-2', seriesId: 'series-mlk-classic', homeTeam: 'BCU Wildcats', awayTeam: 'Lakewood Seahawks', date: '2026-01-18', time: '2:30 PM', venue: 'KaNeXT Gymnasium', court: 'Main Court', stage: 'Quarterfinal', status: 'final', homeScore: 82, awayScore: 70 },
-  { id: 'game-mlk-3', seriesId: 'series-mlk-classic', homeTeam: 'SEU Fire', awayTeam: 'Westfield Gyrenes', date: '2026-01-18', time: '5:00 PM', venue: 'KaNeXT Gymnasium', court: 'Main Court', stage: 'Quarterfinal', status: 'final', homeScore: 74, awayScore: 68 },
-  { id: 'game-mlk-4', seriesId: 'series-mlk-classic', homeTeam: 'EWC Tigers', awayTeam: 'Pinecrest Warriors', date: '2026-01-18', time: '7:30 PM', venue: 'KaNeXT Gymnasium', court: 'Main Court', stage: 'Quarterfinal', status: 'final', homeScore: 71, awayScore: 66 },
-  { id: 'game-mlk-5', seriesId: 'series-mlk-classic', homeTeam: 'KaNeXT', awayTeam: 'BCU Wildcats', date: '2026-01-19', time: '3:00 PM', venue: 'KaNeXT Gymnasium', court: 'Main Court', stage: 'Semifinal', status: 'live', homeScore: 38, awayScore: 35 },
-  { id: 'game-mlk-6', seriesId: 'series-mlk-classic', homeTeam: 'SEU Fire', awayTeam: 'EWC Tigers', date: '2026-01-19', time: '5:30 PM', venue: 'KaNeXT Gymnasium', court: 'Main Court', stage: 'Semifinal', status: 'scheduled' },
+  { id: 'game-mlk-1', seriesId: 'series-mlk-classic', homeTeam: '3SSB', awayTeam: 'Bellevue Royals', date: '2026-01-18', time: '12:00 PM', venue: '3SSB Gymnasium', court: 'Main Court', stage: 'Quarterfinal', status: 'final', homeScore: 78, awayScore: 65 },
+  { id: 'game-mlk-2', seriesId: 'series-mlk-classic', homeTeam: 'BCU Wildcats', awayTeam: 'Providence Seahawks', date: '2026-01-18', time: '2:30 PM', venue: '3SSB Gymnasium', court: 'Main Court', stage: 'Quarterfinal', status: 'final', homeScore: 82, awayScore: 70 },
+  { id: 'game-mlk-3', seriesId: 'series-mlk-classic', homeTeam: 'SEU Fire', awayTeam: 'Montana Tech Gyrenes', date: '2026-01-18', time: '5:00 PM', venue: '3SSB Gymnasium', court: 'Main Court', stage: 'Quarterfinal', status: 'final', homeScore: 74, awayScore: 68 },
+  { id: 'game-mlk-4', seriesId: 'series-mlk-classic', homeTeam: 'EWC Tigers', awayTeam: 'Dakota State Warriors', date: '2026-01-18', time: '7:30 PM', venue: '3SSB Gymnasium', court: 'Main Court', stage: 'Quarterfinal', status: 'final', homeScore: 71, awayScore: 66 },
+  { id: 'game-mlk-5', seriesId: 'series-mlk-classic', homeTeam: '3SSB', awayTeam: 'BCU Wildcats', date: '2026-01-19', time: '3:00 PM', venue: '3SSB Gymnasium', court: 'Main Court', stage: 'Semifinal', status: 'live', homeScore: 38, awayScore: 35 },
+  { id: 'game-mlk-6', seriesId: 'series-mlk-classic', homeTeam: 'SEU Fire', awayTeam: 'EWC Tigers', date: '2026-01-19', time: '5:30 PM', venue: '3SSB Gymnasium', court: 'Main Court', stage: 'Semifinal', status: 'scheduled' },
 
-  // KaNeXT Conference League — regular season
-  { id: 'game-conf-1', seriesId: 'series-fmu-conference', homeTeam: 'KaNeXT', awayTeam: 'Pinecrest Warriors', date: '2026-02-18', time: '7:00 PM', venue: 'KaNeXT Gymnasium', stage: 'Week 12', status: 'scheduled' },
+  // Frontier Conference League — regular season
+  { id: 'game-conf-1', seriesId: 'series-fmu-conference', homeTeam: '3SSB', awayTeam: 'Dakota State Warriors', date: '2026-02-18', time: '7:00 PM', venue: '3SSB Gymnasium', stage: 'Week 12', status: 'scheduled' },
   { id: 'game-conf-2', seriesId: 'series-fmu-conference', homeTeam: 'BCU Wildcats', awayTeam: 'SEU Fire', date: '2026-02-18', time: '7:30 PM', venue: 'Moore Gymnasium', stage: 'Week 12', status: 'scheduled' },
-  { id: 'game-conf-3', seriesId: 'series-fmu-conference', homeTeam: 'KaNeXT', awayTeam: 'Westfield Gyrenes', date: '2026-02-11', time: '7:00 PM', venue: 'KaNeXT Gymnasium', stage: 'Week 11', status: 'final', homeScore: 85, awayScore: 72 },
-  { id: 'game-conf-4', seriesId: 'series-fmu-conference', homeTeam: 'Clearwater Royals', awayTeam: 'KaNeXT', date: '2026-02-04', time: '7:00 PM', venue: 'Clearwater Arena', stage: 'Week 10', status: 'final', homeScore: 69, awayScore: 74 },
-  { id: 'game-conf-5', seriesId: 'series-fmu-conference', homeTeam: 'EWC Tigers', awayTeam: 'Lakewood Seahawks', date: '2026-02-18', time: '6:00 PM', venue: 'EWC Athletic Center', stage: 'Week 12', status: 'scheduled' },
+  { id: 'game-conf-3', seriesId: 'series-fmu-conference', homeTeam: '3SSB', awayTeam: 'Montana Tech Gyrenes', date: '2026-02-11', time: '7:00 PM', venue: '3SSB Gymnasium', stage: 'Week 11', status: 'final', homeScore: 85, awayScore: 72 },
+  { id: 'game-conf-4', seriesId: 'series-fmu-conference', homeTeam: 'Bellevue Royals', awayTeam: '3SSB', date: '2026-02-04', time: '7:00 PM', venue: 'Bellevue Arena', stage: 'Week 10', status: 'final', homeScore: 69, awayScore: 74 },
+  { id: 'game-conf-5', seriesId: 'series-fmu-conference', homeTeam: 'EWC Tigers', awayTeam: 'Providence Seahawks', date: '2026-02-18', time: '6:00 PM', venue: 'EWC Athletic Center', stage: 'Week 12', status: 'scheduled' },
 
   // Southeast Circuit Tour
   { id: 'game-cir-1', seriesId: 'series-se-circuit', homeTeam: 'ATL Hawks AAU', awayTeam: 'Miami Heat Elite', date: '2026-02-15', time: '10:00 AM', venue: 'Georgia World Congress Center', court: 'Court 3', stage: 'Stop #3', status: 'final', homeScore: 62, awayScore: 58 },
@@ -388,11 +388,11 @@ export const SERIES_GAMES: SeriesGame[] = [
 // =============================================================================
 
 export const SERIES_VENUES: SeriesVenue[] = [
-  { id: 'venue-fmu-gym', seriesId: 'series-mlk-classic', name: 'KaNeXT Gymnasium', location: 'Nashville, TN', courts: 1, capacity: 2500 },
+  { id: 'venue-fmu-gym', seriesId: 'series-mlk-classic', name: '3SSB Gymnasium', location: 'Helena, MT', courts: 1, capacity: 2500 },
   { id: 'venue-moore', seriesId: 'series-fmu-conference', name: 'Moore Gymnasium', location: 'Daytona Beach, FL', courts: 1, capacity: 3000 },
   { id: 'venue-ewc', seriesId: 'series-fmu-conference', name: 'EWC Athletic Center', location: 'Jacksonville, FL', courts: 2, capacity: 1800 },
-  { id: 'venue-warner', seriesId: 'series-fmu-conference', name: 'Clearwater Arena', location: 'Lake Wales, FL', courts: 1, capacity: 1500 },
-  { id: 'venue-gwcc', seriesId: 'series-se-circuit', name: 'Georgia World Congress Center', location: 'Nashville, TN', courts: 6, capacity: 8000 },
+  { id: 'venue-warner', seriesId: 'series-fmu-conference', name: 'Bellevue Arena', location: 'Lake Wales, FL', courts: 1, capacity: 1500 },
+  { id: 'venue-gwcc', seriesId: 'series-se-circuit', name: 'Georgia World Congress Center', location: 'Helena, MT', courts: 6, capacity: 8000 },
   { id: 'venue-sfp', seriesId: 'series-sfp-showcase', name: 'Watsco Center', location: 'Coral Gables, FL', courts: 1, capacity: 7972 },
 ];
 
@@ -408,7 +408,7 @@ export const SERIES_ROOMS: SeriesRoom[] = [
   { id: 'room-mlk-teams', seriesId: 'series-mlk-classic', title: 'Team Reps Room', icon: 'person.3.fill', memberCount: 8, unreadCount: 5 },
   { id: 'room-mlk-venue', seriesId: 'series-mlk-classic', title: 'Venue Ops Room', icon: 'building.2.fill', memberCount: 3, unreadCount: 0 },
 
-  // KaNeXT Conference rooms
+  // Frontier Conference rooms
   { id: 'room-conf-ops', seriesId: 'series-fmu-conference', title: 'Ops Room', icon: 'gearshape.fill', memberCount: 10, unreadCount: 7 },
   { id: 'room-conf-officials', seriesId: 'series-fmu-conference', title: 'Officials Room', icon: 'person.badge.shield.checkmark.fill', memberCount: 12, unreadCount: 2 },
   { id: 'room-conf-media', seriesId: 'series-fmu-conference', title: 'Media Room', icon: 'camera.fill', memberCount: 6, unreadCount: 0 },
@@ -422,7 +422,7 @@ export const SERIES_ROOMS: SeriesRoom[] = [
   { id: 'room-cir-teams', seriesId: 'series-se-circuit', title: 'Team Reps Room', icon: 'person.3.fill', memberCount: 16, unreadCount: 9 },
   { id: 'room-cir-venue', seriesId: 'series-se-circuit', title: 'Venue Ops Room', icon: 'building.2.fill', memberCount: 4, unreadCount: 1 },
 
-  // South Ridgemont Prep Showcase rooms
+  // South MSU-Northern Prep Showcase rooms
   { id: 'room-sfp-ops', seriesId: 'series-sfp-showcase', title: 'Ops Room', icon: 'gearshape.fill', memberCount: 4, unreadCount: 6 },
   { id: 'room-sfp-officials', seriesId: 'series-sfp-showcase', title: 'Officials Room', icon: 'person.badge.shield.checkmark.fill', memberCount: 5, unreadCount: 0 },
   { id: 'room-sfp-teams', seriesId: 'series-sfp-showcase', title: 'Team Reps Room', icon: 'person.3.fill', memberCount: 24, unreadCount: 12 },
@@ -436,20 +436,20 @@ export const SERIES_ROOMS: SeriesRoom[] = [
 export const SERIES_AUDIT: SeriesAuditEntry[] = [
   // MLK Classic
   { id: 'audit-1', seriesId: 'series-mlk-classic', action: 'Series created', actor: 'Marcus Langford', timestamp: '2025-10-15T09:00:00Z', timestampMs: 1728982800000, description: 'MLK Classic 2026 tournament created with 8 team slots.' },
-  { id: 'audit-2', seriesId: 'series-mlk-classic', action: 'Team added', actor: 'Marcus Langford', timestamp: '2025-11-01T14:20:00Z', timestampMs: 1730470800000, description: 'KaNeXT confirmed as participating team.' },
-  { id: 'audit-3', seriesId: 'series-mlk-classic', action: 'Bracket seeded', actor: 'Marcus Langford', timestamp: '2026-01-10T11:00:00Z', timestampMs: 1736506800000, description: 'Tournament bracket seeded. KaNeXT assigned 2-seed.' },
+  { id: 'audit-2', seriesId: 'series-mlk-classic', action: 'Team added', actor: 'Marcus Langford', timestamp: '2025-11-01T14:20:00Z', timestampMs: 1730470800000, description: '3SSB confirmed as participating team.' },
+  { id: 'audit-3', seriesId: 'series-mlk-classic', action: 'Bracket seeded', actor: 'Marcus Langford', timestamp: '2026-01-10T11:00:00Z', timestampMs: 1736506800000, description: 'Tournament bracket seeded. 3SSB assigned 2-seed.' },
   { id: 'audit-4', seriesId: 'series-mlk-classic', action: 'Media room created', actor: 'Carlos Rivera', timestamp: '2026-01-12T09:30:00Z', timestampMs: 1736674200000, description: 'Media room opened for credentialed press and broadcast partners.' },
-  { id: 'audit-5', seriesId: 'series-mlk-classic', action: 'Game completed', actor: 'System', timestamp: '2026-01-18T14:15:00Z', timestampMs: 1737212100000, description: 'QF-1: KaNeXT 78, Clearwater Royals 65. KaNeXT advances to semifinals.' },
+  { id: 'audit-5', seriesId: 'series-mlk-classic', action: 'Game completed', actor: 'System', timestamp: '2026-01-18T14:15:00Z', timestampMs: 1737212100000, description: 'QF-1: 3SSB 78, Bellevue Royals 65. 3SSB advances to semifinals.' },
 
-  // KaNeXT Conference League
-  { id: 'audit-6', seriesId: 'series-fmu-conference', action: 'Series created', actor: 'Jerome Wallace', timestamp: '2025-08-20T12:00:00Z', timestampMs: 1724155200000, description: 'KaNeXT Conference League created for 2025-26 season. Round-robin format, 10 teams.' },
+  // Frontier Conference League
+  { id: 'audit-6', seriesId: 'series-fmu-conference', action: 'Series created', actor: 'Jerome Wallace', timestamp: '2025-08-20T12:00:00Z', timestampMs: 1724155200000, description: 'Frontier Conference League created for 2025-26 season. Round-robin format, 10 teams.' },
   { id: 'audit-7', seriesId: 'series-fmu-conference', action: 'Schedule published', actor: 'Jerome Wallace', timestamp: '2025-09-15T10:00:00Z', timestampMs: 1726394400000, description: 'Full 45-game regular season schedule published and distributed to team reps.' },
   { id: 'audit-8', seriesId: 'series-fmu-conference', action: 'Staff assigned', actor: 'Jerome Wallace', timestamp: '2025-10-01T08:00:00Z', timestampMs: 1727769600000, description: 'Denise Brooks assigned as Head Official for conference games.' },
   { id: 'audit-9', seriesId: 'series-fmu-conference', action: 'Compliance report filed', actor: 'Lisa Chen', timestamp: '2026-02-01T16:00:00Z', timestampMs: 1738425600000, description: 'Mid-season compliance report filed. 92% upload rate across all teams.' },
-  { id: 'audit-10', seriesId: 'series-fmu-conference', action: 'Game completed', actor: 'System', timestamp: '2026-02-11T21:30:00Z', timestampMs: 1739310600000, description: 'Week 11: KaNeXT 85, Westfield Gyrenes 72.' },
+  { id: 'audit-10', seriesId: 'series-fmu-conference', action: 'Game completed', actor: 'System', timestamp: '2026-02-11T21:30:00Z', timestampMs: 1739310600000, description: 'Week 11: 3SSB 85, Montana Tech Gyrenes 72.' },
 
-  // South Ridgemont Prep Showcase
-  { id: 'audit-11', seriesId: 'series-sfp-showcase', action: 'Series created', actor: 'Marcus Langford', timestamp: '2025-12-01T10:00:00Z', timestampMs: 1733050800000, description: 'South Ridgemont Prep Showcase created. 24 team slots, registration open.' },
+  // South MSU-Northern Prep Showcase
+  { id: 'audit-11', seriesId: 'series-sfp-showcase', action: 'Series created', actor: 'Marcus Langford', timestamp: '2025-12-01T10:00:00Z', timestampMs: 1733050800000, description: 'South MSU-Northern Prep Showcase created. 24 team slots, registration open.' },
   { id: 'audit-12', seriesId: 'series-sfp-showcase', action: 'Team added', actor: 'Aisha Mitchell', timestamp: '2026-01-20T09:00:00Z', timestampMs: 1737363600000, description: 'Miami Northwestern Bulls registered as showcase participant.' },
 
   // Southeast Circuit Tour

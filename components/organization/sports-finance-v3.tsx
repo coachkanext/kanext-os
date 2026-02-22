@@ -1,6 +1,6 @@
 /**
  * Sports Finance V3 — 3-pill ViewBar (Budget | Scholarships | NIL)
- * KaNeXT Men's Basketball · NAA KaNeXT Conference
+ * Carroll Men's Basketball · NAIA Frontier Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback } from 'react';
@@ -51,7 +51,7 @@ const EXPENSE_ITEMS = [
 const SPONSORS = [
   { id: 'sp1', name: 'Sun Coast Auto', amount: 15000 },
   { id: 'sp2', name: 'Blue Wave Sports', amount: 8000 },
-  { id: 'sp3', name: 'Nashville Chamber', amount: 5000 },
+  { id: 'sp3', name: 'Helena Chamber', amount: 5000 },
 ];
 
 // -- Scholarship data --
@@ -99,8 +99,8 @@ interface NILDeal {
 const NIL_DEALS: NILDeal[] = [
   { id: 'nil1', player: 'Jaylen Thompson', sponsor: 'Sun Coast Auto', value: 15000, term: '12 months', status: 'Active' },
   { id: 'nil2', player: 'DeShawn Carter', sponsor: 'Blue Wave Sports', value: 12000, term: '6 months', status: 'Active' },
-  { id: 'nil3', player: 'Marcus Lane', sponsor: 'KaNeXT Barbershop', value: 8000, term: '12 months', status: 'Active' },
-  { id: 'nil4', player: 'Terrell Davis', sponsor: 'Nashville Chamber', value: 7000, term: '8 months', status: 'Active' },
+  { id: 'nil3', player: 'Marcus Lane', sponsor: 'Helena Barbershop', value: 8000, term: '12 months', status: 'Active' },
+  { id: 'nil4', player: 'Terrell Davis', sponsor: 'Helena Chamber', value: 7000, term: '8 months', status: 'Active' },
 ];
 
 // =============================================================================

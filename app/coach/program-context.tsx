@@ -71,11 +71,11 @@ const UI_SLIDERS = {
     { id: 'onBallDefense', label: 'On-Ball' },
     { id: 'teamDefense', label: 'Team' },
     { id: 'rebounding', label: 'Rebounding' },
-    { id: 'frame', label: 'Physical' },
+    { id: 'physical', label: 'Physical' },
   ],
 } as const;
 
-type UIEmphasisId = 'shooting' | 'finishing' | 'playmaking' | 'onBallDefense' | 'teamDefense' | 'rebounding' | 'frame';
+type UIEmphasisId = 'shooting' | 'finishing' | 'playmaking' | 'onBallDefense' | 'teamDefense' | 'rebounding' | 'physical';
 
 // Default section totals (locked at 53/47)
 const DEFAULT_SECTION_TOTALS = {
@@ -100,15 +100,15 @@ const OFFENSIVE_SYSTEMS = [
 
 // Defensive System presets (sum = 47)
 const DEFENSIVE_SYSTEMS = [
-  { id: 'containment', label: 'Containment Man', weights: { onBallDefense: 18, teamDefense: 15, rebounding: 8, frame: 6 } },
-  { id: 'pack-line', label: 'Pack Line', weights: { onBallDefense: 12, teamDefense: 18, rebounding: 10, frame: 7 } },
-  { id: 'pressure-man', label: 'Pressure Man (Denial)', weights: { onBallDefense: 20, teamDefense: 15, rebounding: 5, frame: 7 } },
-  { id: 'switch', label: 'Switch Everything', weights: { onBallDefense: 16, teamDefense: 15, rebounding: 7, frame: 9 } },
-  { id: 'ice', label: 'ICE / No-Middle', weights: { onBallDefense: 17, teamDefense: 16, rebounding: 7, frame: 7 } },
-  { id: 'zone', label: 'Zone (Structured)', weights: { onBallDefense: 10, teamDefense: 20, rebounding: 10, frame: 7 } },
-  { id: 'matchup-zone', label: 'Matchup Zone / Hybrid', weights: { onBallDefense: 13, teamDefense: 19, rebounding: 8, frame: 7 } },
-  { id: 'press', label: 'Press', weights: { onBallDefense: 19, teamDefense: 16, rebounding: 5, frame: 7 } },
-  { id: 'junk-special', label: 'Junk / Special', weights: { onBallDefense: 14, teamDefense: 18, rebounding: 8, frame: 7 } },
+  { id: 'containment', label: 'Containment Man', weights: { onBallDefense: 18, teamDefense: 15, rebounding: 8, physical: 6 } },
+  { id: 'pack-line', label: 'Pack Line', weights: { onBallDefense: 12, teamDefense: 18, rebounding: 10, physical: 7 } },
+  { id: 'pressure-man', label: 'Pressure Man (Denial)', weights: { onBallDefense: 20, teamDefense: 15, rebounding: 5, physical: 7 } },
+  { id: 'switch', label: 'Switch Everything', weights: { onBallDefense: 16, teamDefense: 15, rebounding: 7, physical: 9 } },
+  { id: 'ice', label: 'ICE / No-Middle', weights: { onBallDefense: 17, teamDefense: 16, rebounding: 7, physical: 7 } },
+  { id: 'zone', label: 'Zone (Structured)', weights: { onBallDefense: 10, teamDefense: 20, rebounding: 10, physical: 7 } },
+  { id: 'matchup-zone', label: 'Matchup Zone / Hybrid', weights: { onBallDefense: 13, teamDefense: 19, rebounding: 8, physical: 7 } },
+  { id: 'press', label: 'Press', weights: { onBallDefense: 19, teamDefense: 16, rebounding: 5, physical: 7 } },
+  { id: 'junk-special', label: 'Junk / Special', weights: { onBallDefense: 14, teamDefense: 18, rebounding: 8, physical: 7 } },
 ];
 
 const TEMPO_OPTIONS = ['Slow', 'Medium', 'Fast'];
@@ -126,7 +126,7 @@ interface EmphasisProfile {
   onBallDefense: number;
   teamDefense: number;
   rebounding: number;
-  frame: number;
+  physical: number;
 }
 
 // UI display format (same as backend - 7 sliders)
@@ -137,7 +137,7 @@ interface UIEmphasisProfile {
   onBallDefense: number;
   teamDefense: number;
   rebounding: number;
-  frame: number;
+  physical: number;
 }
 
 // Section totals (locked at 53/47)
@@ -188,7 +188,7 @@ function applyOffensePreset(
     onBallDefense: currentUIEmphasis.onBallDefense,
     teamDefense: currentUIEmphasis.teamDefense,
     rebounding: currentUIEmphasis.rebounding,
-    frame: currentUIEmphasis.frame,
+    physical: currentUIEmphasis.physical,
   };
 
   return {
@@ -224,7 +224,7 @@ function applyDefensePreset(
     onBallDefense: weights.onBallDefense,
     teamDefense: weights.teamDefense,
     rebounding: weights.rebounding,
-    frame: weights.frame,
+    physical: weights.physical,
   };
 
   return {
@@ -248,7 +248,7 @@ function redistributeWithinSection(
 
   // Determine which section this slider belongs to
   const offenseSliders: UIEmphasisId[] = ['shooting', 'finishing', 'playmaking'];
-  const defenseSliders: UIEmphasisId[] = ['onBallDefense', 'teamDefense', 'rebounding', 'frame'];
+  const defenseSliders: UIEmphasisId[] = ['onBallDefense', 'teamDefense', 'rebounding', 'physical'];
 
   let sectionSliders: UIEmphasisId[];
   let sectionTotal: number;
@@ -315,7 +315,7 @@ function getDefaultEmphasis(): EmphasisProfile {
     onBallDefense: 18,
     teamDefense: 15,
     rebounding: 8,
-    frame: 6,
+    physical: 6,
   };
 }
 
@@ -361,7 +361,7 @@ function uiToBackend(uiEmphasis: UIEmphasisProfile): EmphasisProfile {
 function getGroupTotals(uiEmphasis: UIEmphasisProfile): SectionTotals {
   return {
     offense: Math.round((uiEmphasis.shooting + uiEmphasis.finishing + uiEmphasis.playmaking) * 10) / 10,
-    defense: Math.round((uiEmphasis.onBallDefense + uiEmphasis.teamDefense + uiEmphasis.rebounding + uiEmphasis.frame) * 10) / 10,
+    defense: Math.round((uiEmphasis.onBallDefense + uiEmphasis.teamDefense + uiEmphasis.rebounding + uiEmphasis.physical) * 10) / 10,
   };
 }
 
@@ -1068,7 +1068,7 @@ function PresetPreview({
           { id: 'onBallDefense' as const, label: 'On-Ball' },
           { id: 'teamDefense' as const, label: 'Team' },
           { id: 'rebounding' as const, label: 'Rebounding' },
-          { id: 'frame' as const, label: 'Physical' },
+          { id: 'physical' as const, label: 'Physical' },
         ];
 
   // Calculate totals (always 100 for both)

@@ -1,7 +1,7 @@
 /**
  * Sports Organization Finance V2 — Mock Data & Types
  * 10-tab Finance Hub for Sports Mode organizations.
- * Seeded with KaNeXT Men's Basketball 2025-26 season data.
+ * Seeded with Carroll College Fighting Saints Men's Basketball 2025-26 season data.
  * Total program budget ~$250K across 8 buckets (realistic NAIA).
  */
 
@@ -213,7 +213,7 @@ export const FINANCE_SUB_TABS: FinanceSubTab[] = [
 ];
 
 // =============================================================================
-// SEEDED DATA — KaNeXT Men's Basketball 2025-26
+// SEEDED DATA — Carroll College Men's Basketball 2025-26
 // =============================================================================
 
 export const BUDGET_BUCKETS: BudgetBucket[] = [
@@ -278,7 +278,7 @@ export const BUDGET_BUCKETS: BudgetBucket[] = [
 export const SPEND_TRANSACTIONS: SpendTransaction[] = [
   {
     id: 'st-1',
-    description: 'Charter bus — Westfield away game',
+    description: 'Charter bus — Montana Tech away game',
     amount: 1850,
     category: 'Travel',
     date: '2026-02-14',
@@ -287,7 +287,7 @@ export const SPEND_TRANSACTIONS: SpendTransaction[] = [
   },
   {
     id: 'st-2',
-    description: 'Hotel block — Clearwater University trip (9 rooms)',
+    description: 'Hotel block — Bellevue University trip (9 rooms)',
     amount: 2340,
     category: 'Travel',
     date: '2026-02-16',
@@ -345,13 +345,13 @@ export const SPEND_TRANSACTIONS: SpendTransaction[] = [
     amount: 2500,
     category: 'Operations',
     date: '2026-02-15',
-    vendor: 'KaNeXT Conference',
+    vendor: 'Frontier Conference',
     status: 'flagged',
   },
   // ── demo_seed transactions ──────────────────────────────────────────────
   {
     id: 'st-9',
-    description: 'Bus charter — away @ Lakewood University',
+    description: 'Bus charter — away @ University of Providence',
     amount: 3200,
     category: 'Travel',
     date: '2026-02-10',
@@ -361,7 +361,7 @@ export const SPEND_TRANSACTIONS: SpendTransaction[] = [
   },
   {
     id: 'st-10',
-    description: 'Pre-game meals — Magnolia University home game',
+    description: 'Pre-game meals — Multnomah home game',
     amount: 540,
     category: 'Game Day',
     date: '2026-02-12',
@@ -381,7 +381,7 @@ export const SPEND_TRANSACTIONS: SpendTransaction[] = [
   },
   {
     id: 'st-12',
-    description: 'Hotel block — Summit University trip (6 rooms)',
+    description: 'Hotel block — Rocky Mountain College trip (6 rooms)',
     amount: 1680,
     category: 'Travel',
     date: '2026-02-17',
@@ -449,7 +449,7 @@ export const FINANCE_APPROVALS: FinanceApproval[] = [
   // ── demo_seed approvals ─────────────────────────────────────────────────
   {
     id: 'fa-5',
-    title: 'Bus Charter — Away Game @ Pinecrest University',
+    title: 'Bus Charter — Away Game @ Dakota State University',
     amount: 3200,
     category: 'Travel',
     requestedBy: 'Alicia Washington',
@@ -536,7 +536,7 @@ export const VENDOR_COMMITMENTS: VendorCommitment[] = [
 export const TRIP_COSTS: TripCost[] = [
   {
     id: 'tc-1',
-    tripName: 'Westfield University — Feb 15',
+    tripName: 'Montana Tech — Feb 15',
     totalCost: 1950,
     lodging: 0,
     airfare: 0,
@@ -546,7 +546,7 @@ export const TRIP_COSTS: TripCost[] = [
   },
   {
     id: 'tc-2',
-    tripName: 'Clearwater University — Feb 21-22',
+    tripName: 'Bellevue University — Feb 21-22',
     totalCost: 3100,
     lodging: 1200,
     airfare: 0,
@@ -556,7 +556,7 @@ export const TRIP_COSTS: TripCost[] = [
   },
   {
     id: 'tc-3',
-    tripName: 'KaNeXT Conference Tournament — Feb 26-Mar 2',
+    tripName: 'Frontier Conference Tournament — Feb 26-Mar 2',
     totalCost: 7800,
     lodging: 3200,
     airfare: 0,
@@ -566,7 +566,7 @@ export const TRIP_COSTS: TripCost[] = [
   },
   {
     id: 'tc-4',
-    tripName: 'Lakewood University — Feb 10',
+    tripName: 'University of Providence — Feb 10',
     totalCost: 3200,
     lodging: 0,
     airfare: 0,
@@ -576,7 +576,7 @@ export const TRIP_COSTS: TripCost[] = [
   },
   {
     id: 'tc-5',
-    tripName: 'Summit University — Feb 17-18',
+    tripName: 'Rocky Mountain College — Feb 17-18',
     totalCost: 2880,
     lodging: 1200,
     airfare: 0,

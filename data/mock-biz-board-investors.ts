@@ -1,7 +1,7 @@
 /**
  * Mock Business Board & Investors Data — Complete data layer for the Board/Investors tab.
  * 6 sub-tabs: Board, Investors, Updates, Dataroom, Resolutions, Distributions.
- * All data references KaNeXT entities: Alex Morgan, PBD, Tom Ellsworth, SAFE notes.
+ * All data references Valuetainment entities: Alex Morgan, PBD, Tom Ellsworth, SAFE notes.
  */
 
 // =============================================================================
@@ -41,7 +41,7 @@ export const BOARD_SEATS: BoardSeat[] = [
     status: 'active',
     appointedDate: '2024-01-15',
     description:
-      'Founding board seat with full voting authority. Responsible for corporate strategy, fundraising, and executive decisions across all KaNeXT entities.',
+      'Founding board seat with full voting authority. Responsible for corporate strategy, fundraising, and executive decisions across all Valuetainment entities.',
     votingRights: true,
   },
   {
@@ -156,7 +156,7 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     status: 'sent',
     recipients: 'All Investors (4)',
     summary:
-      'Closed Q4 with $142K cash on hand, 7.2 months runway. KaNeXT OS v2 shipped with Business Mode, Competition Mode, and Nexus AI. KaNeXT proof wedge generating $53M+ projected media value Y1. Next milestone: Series A prep with updated financial model.',
+      'Closed Q4 with $142K cash on hand, 7.2 months runway. Valuetainment OS v2 shipped with Business Mode, Competition Mode, and Nexus AI. Valuetainment proof wedge generating $53M+ projected media value Y1. Next milestone: Series A prep with updated financial model.',
     tier: 'all',
   },
   {
@@ -166,7 +166,7 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     status: 'sent',
     recipients: 'Board & Strategic (3)',
     summary:
-      'Board pack covering runway extension strategy, KaNeXT partnership expansion, KaNeXT Church campus rollout plan, and preliminary Series A term sheet review. Action items: approve budget reallocation, vote on advisory seat conversion.',
+      'Board pack covering runway extension strategy, Valuetainment partnership expansion, 2819 Church campus rollout plan, and preliminary Series A term sheet review. Action items: approve budget reallocation, vote on advisory seat conversion.',
     tier: 'board',
   },
   {
@@ -176,7 +176,7 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     status: 'scheduled',
     recipients: 'All Investors (4)',
     summary:
-      'Upcoming update covering: Series A fundraise progress, KaNeXT OS v2.1 release, new proof wedge onboarding (KaNeXT Racing), and updated financial projections through Q2 2026.',
+      'Upcoming update covering: Series A fundraise progress, Valuetainment OS v2.1 release, new proof wedge onboarding (PBD Podcast), and updated financial projections through Q2 2026.',
     tier: 'all',
   },
   {
@@ -208,7 +208,7 @@ export interface DataroomDoc {
 export const DATAROOM_DOCS: DataroomDoc[] = [
   {
     id: 'dr-1',
-    title: 'KaNeXT Inc. \u2014 Pitch Deck v3',
+    title: 'Valuetainment Media LLC \u2014 Pitch Deck v3',
     category: 'Pitch',
     version: '3.0',
     updatedAt: '2026-02-05',
@@ -244,7 +244,7 @@ export const DATAROOM_DOCS: DataroomDoc[] = [
   },
   {
     id: 'dr-5',
-    title: 'SAFE Agreement Template \u2014 KaNeXT',
+    title: 'SAFE Agreement Template \u2014 Valuetainment',
     category: 'Legal',
     version: '2.0',
     updatedAt: '2025-09-20',
@@ -253,7 +253,7 @@ export const DATAROOM_DOCS: DataroomDoc[] = [
   },
   {
     id: 'dr-6',
-    title: 'Product Demo \u2014 KaNeXT OS v2',
+    title: 'Product Demo \u2014 Valuetainment OS v2',
     category: 'Product',
     version: '2.0',
     updatedAt: '2026-02-14',
@@ -271,7 +271,7 @@ export const DATAROOM_DOCS: DataroomDoc[] = [
   },
   {
     id: 'dr-8',
-    title: 'KaNeXT Brand Guidelines',
+    title: 'Valuetainment Brand Guidelines',
     category: 'Brand',
     version: '1.2',
     updatedAt: '2025-11-10',
@@ -303,7 +303,7 @@ export const RESOLUTIONS: Resolution[] = [
     outcome: 'approved',
     proposer: 'Alex Morgan',
     summary:
-      'Reallocate $18,000 from marketing to engineering for KaNeXT OS v2.1 sprint. Approved unanimously with condition to revisit marketing spend at Q2 board meeting.',
+      'Reallocate $18,000 from marketing to engineering for Valuetainment OS v2.1 sprint. Approved unanimously with condition to revisit marketing spend at Q2 board meeting.',
   },
   {
     id: 'res-2',
@@ -337,13 +337,13 @@ export const RESOLUTIONS: Resolution[] = [
   },
   {
     id: 'res-5',
-    title: 'Approve KaNeXT Partnership Extension',
+    title: 'Approve Valuetainment Partnership Extension',
     date: '2025-12-15',
     type: 'advisory',
     outcome: 'approved',
     proposer: 'Tom Ellsworth',
     summary:
-      'Advisory resolution recommending extension of the KaNeXT partnership through 2027 season with expanded media rights scope. Non-binding advisory approved.',
+      'Advisory resolution recommending extension of the Valuetainment partnership through 2027 season with expanded media rights scope. Non-binding advisory approved.',
   },
 ];
 
@@ -373,7 +373,7 @@ export const DISTRIBUTIONS: Distribution[] = [
   },
   {
     id: 'dist-2',
-    title: 'KaNeXT Media LLC \u2014 Creator Revenue Share',
+    title: 'Valuetainment Digital LLC \u2014 Creator Revenue Share',
     amount: '$4,200',
     date: '2026-02-15',
     type: 'profit_share',
@@ -391,7 +391,7 @@ export const DISTRIBUTIONS: Distribution[] = [
   },
   {
     id: 'dist-4',
-    title: 'KaNeXT Inc. \u2014 Founder Capital Return',
+    title: 'Valuetainment Media LLC \u2014 Founder Capital Return',
     amount: '$25,000',
     date: '2026-06-01',
     type: 'return_of_capital',

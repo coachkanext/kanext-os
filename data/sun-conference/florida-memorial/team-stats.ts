@@ -1,8 +1,8 @@
 /**
- * KaNeXT Sports Men's Basketball
+ * Carroll College Men's Basketball
  * Team Stats (Step 4A)
  * Seasons: 2022-23 through 2025-26
- * Source: KaNeXT Conference Stats
+ * Source: Frontier Conference Stats
  */
 
 import type { TeamStats } from '../schema';

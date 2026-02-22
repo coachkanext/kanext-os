@@ -65,10 +65,10 @@ interface HeroVideoInfo {
 }
 
 const HERO_VIDEO: HeroVideoInfo = {
-  title: 'Westfield University — Spring 2026 Welcome',
+  title: 'Montana Tech — Spring 2026 Welcome',
   subtitle: 'Campus life · Athletics · Academics · Chapel',
   duration: '4:18',
-  orgName: 'Westfield University',
+  orgName: 'Montana Tech',
   term: 'Spring 2026',
   todayDate: 'Tuesday, Feb 18',
   tickerItems: [
@@ -336,7 +336,7 @@ interface HousingHall {
 
 const HOUSING_HALLS_QUICK: HousingHall[] = [
   { name: 'Eagle Village', occupancy: 720, capacity: 780, status: 'operational' },
-  { name: 'Heritage Suites', occupancy: 420, capacity: 450, status: 'operational' },
+  { name: 'Drew Hall', occupancy: 420, capacity: 450, status: 'operational' },
   { name: 'Robinson Hall', occupancy: 308, capacity: 320, status: 'operational' },
   { name: 'University Apts', occupancy: 548, capacity: 600, status: 'operational' },
   { name: 'Whitaker Hall', occupancy: 0, capacity: 240, status: 'renovation' },

@@ -83,7 +83,7 @@ const CATEGORY_LABELS: Record<ConstructorStanding['category'], string> = {
   oem_works: 'OEM',
   premier_tuner: 'Tuner',
   league_owned: 'League',
-  kanext_works: 'KaNeXT',
+  kanext_works: '3SSB',
 };
 
 const CATEGORY_COLORS: Record<ConstructorStanding['category'], string> = {
@@ -116,7 +116,7 @@ function ConstructorTable({ colors, accent }: { colors: typeof Colors.light; acc
             </ThemedText>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 1 }}>
               <ThemedText style={[styles.teamLabel, { color: colors.textSecondary }]}>
-                {c.drivers.join(' · ')}
+                {c.players.join(' · ')}
               </ThemedText>
               <View style={[styles.categoryBadge, { backgroundColor: CATEGORY_COLORS[c.category] + '22' }]}>
                 <ThemedText style={[styles.categoryText, { color: CATEGORY_COLORS[c.category] }]}>

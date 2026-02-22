@@ -9,7 +9,7 @@
  *   Requests — inbound document access requests
  *   Audit — access/download/share/upload event log
  *
- * All data references KaNeXT entities: Alex, Jordan, Taylor, Jordan, potential investors.
+ * All data references Valuetainment entities: Alex, Jordan, Taylor, Jordan, potential investors.
  */
 
 // =============================================================================
@@ -160,7 +160,7 @@ export const DATA_ROOM_DOCUMENTS: DataRoomDocument[] = [
   // Pitch (2)
   {
     id: 'doc-001',
-    title: 'KaNeXT Deck v3.1',
+    title: 'Valuetainment Deck v3.1',
     category: 'pitch',
     version: '3.1',
     status: 'current',
@@ -296,7 +296,7 @@ export const DATA_ROOM_DOCUMENTS: DataRoomDocument[] = [
   // Proof (2)
   {
     id: 'doc-011',
-    title: 'KaNeXT Case Study',
+    title: 'Valuetainment Case Study',
     category: 'proof',
     version: '1.2',
     status: 'current',
@@ -340,12 +340,12 @@ export const VERSION_HISTORY: VersionEntry[] = [
   {
     id: 'ver-002',
     docId: 'doc-001',
-    docTitle: 'KaNeXT Deck v3.1',
+    docTitle: 'Valuetainment Deck v3.1',
     version: '3.1',
     changedBy: 'Alex Morgan',
     changedAt: 'Feb 12, 2026',
     changeType: 'minor',
-    summary: 'Refreshed traction slide with KaNeXT media value data and updated team slide.',
+    summary: 'Refreshed traction slide with Valuetainment media value data and updated team slide.',
   },
   {
     id: 'ver-003',
@@ -355,7 +355,7 @@ export const VERSION_HISTORY: VersionEntry[] = [
     changedBy: 'Jordan Hayes',
     changedAt: 'Feb 11, 2026',
     changeType: 'patch',
-    summary: 'Corrected DE registration date and added KaNeXT Church data handling addendum.',
+    summary: 'Corrected DE registration date and added 2819 Church data handling addendum.',
   },
   {
     id: 'ver-004',
@@ -400,7 +400,7 @@ export const VERSION_HISTORY: VersionEntry[] = [
   {
     id: 'ver-008',
     docId: 'doc-011',
-    docTitle: 'KaNeXT Case Study',
+    docTitle: 'Valuetainment Case Study',
     version: '1.2',
     changedBy: 'Jordan Hayes',
     changedAt: 'Jan 30, 2026',
@@ -417,7 +417,7 @@ export const DATA_PACKETS: DataPacket[] = [
   {
     id: 'pkt-001',
     title: 'Retail Investor Pack',
-    description: 'Curated bundle for angel and retail investors — pitch deck, 2-page memo, product demo, KaNeXT case study, team bios, and SAFE template.',
+    description: 'Curated bundle for angel and retail investors — pitch deck, 2-page memo, product demo, Valuetainment case study, team bios, and SAFE template.',
     docCount: 6,
     audience: 'retail',
     status: 'active',
@@ -486,7 +486,7 @@ export const DATA_REQUESTS: DataRequest[] = [
     id: 'req-003',
     requesterName: 'Mia Torres',
     requesterType: 'Angel Investor',
-    requestedDocs: 'KaNeXT Deck v3.1, Financial Model',
+    requestedDocs: 'Valuetainment Deck v3.1, Financial Model',
     status: 'pending',
     submittedAt: 'Feb 13, 2026',
     notes: 'Referred via Valuetainment network. Wants to review before call.',
@@ -529,7 +529,7 @@ export const DATA_ROOM_AUDIT_LOG: DataRoomAudit[] = [
     id: 'aud-002',
     action: 'version_update',
     actor: 'Alex Morgan',
-    docTitle: 'KaNeXT Deck v3.1',
+    docTitle: 'Valuetainment Deck v3.1',
     timestamp: 'Feb 12, 2026 — 11:30 AM',
   },
   {
@@ -551,7 +551,7 @@ export const DATA_ROOM_AUDIT_LOG: DataRoomAudit[] = [
     id: 'aud-005',
     action: 'share',
     actor: 'Jordan Hayes',
-    docTitle: 'KaNeXT Deck v3.1',
+    docTitle: 'Valuetainment Deck v3.1',
     timestamp: 'Feb 10, 2026 — 10:05 AM',
     ipHint: '172.16.x.x',
   },
@@ -581,7 +581,7 @@ export const DATA_ROOM_AUDIT_LOG: DataRoomAudit[] = [
     id: 'aud-009',
     action: 'upload',
     actor: 'Jordan Hayes',
-    docTitle: 'KaNeXT Case Study',
+    docTitle: 'Valuetainment Case Study',
     timestamp: 'Jan 30, 2026 — 5:45 PM',
   },
   {

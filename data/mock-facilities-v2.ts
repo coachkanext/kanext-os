@@ -326,7 +326,7 @@ export const FACILITY_BOOKINGS: Booking[] = [
     title: 'AM Lift — Guards',
     start: minsFromNow(150),
     end: minsFromNow(210),
-    owner: 'Coach Williams',
+    owner: 'Coach Pearson',
     attendees: ['PG group', 'SG group'],
   },
   {
@@ -369,7 +369,7 @@ export const FACILITY_BOOKINGS: Booking[] = [
     spaceId: 'sp-home-venue',
     spaceName: 'Monarch Arena',
     type: 'game',
-    title: 'KaNeXT vs. Hampton — KaNeXT Church Conference',
+    title: 'Carroll College vs. Hampton — Frontier Conference',
     start: daysFromNow(2),
     end: new Date(daysFromNow(2).getTime() + 150 * 60000),
     owner: 'Game Operations',
@@ -395,7 +395,7 @@ export const FACILITY_BOOKINGS: Booking[] = [
     title: 'PM Lift — Bigs',
     start: minsFromNow(600),
     end: minsFromNow(660),
-    owner: 'Coach Williams',
+    owner: 'Coach Pearson',
     attendees: ['PF/C group'],
   },
   {
@@ -452,7 +452,7 @@ export const FACILITY_WORK_ORDERS: WorkOrder[] = [
     title: 'Cable machine — frayed cable on lat pulldown',
     description:
       'Right-side lat pulldown cable showing visible fraying near the upper pulley. Machine locked out and tagged until replacement arrives.',
-    requester: 'Coach Williams',
+    requester: 'Coach Pearson',
     assignee: 'Hampton Roads Fitness Supply',
     vendor: 'Hampton Roads Fitness Supply',
     status: 'assigned',
@@ -588,7 +588,7 @@ export const FACILITY_ISSUES: FacilityIssue[] = [
     spaceName: 'Monarch Weight Room',
     severity: 'high',
     title: 'Lat pulldown cable fraying — machine locked out',
-    owner: 'Coach Williams',
+    owner: 'Coach Pearson',
     status: 'open',
     lastUpdate: 'Replacement cable ordered, ETA 3 business days.',
     createdAt: minsFromNow(-2880),
@@ -881,7 +881,7 @@ export const SAFETY_INSPECTIONS: SafetyInspection[] = [
     status: 'due_soon',
     lastCompleted: minsFromNow(-8640),
     nextDue: daysFromNow(1),
-    completedBy: 'Coach Williams',
+    completedBy: 'Coach Pearson',
     notes: 'Cable machine flagged and locked out during last check.',
   },
   {
@@ -976,7 +976,7 @@ export const FACILITY_AUDIT_LOG: FacilityAuditEntry[] = [
   {
     id: 'aud-005',
     action: 'Asset marked out of service',
-    actor: 'Coach Williams',
+    actor: 'Coach Pearson',
     target: 'Cable Machine — Dual Adjustable Pulley (Weight Room)',
     timestamp: minsFromNow(-2880),
   },

@@ -51,7 +51,7 @@ function extractYoutubeUrls(html: string): string[] {
 }
 
 async function main() {
-  console.log('KaNeXT Church Scraper — https://iccla.com');
+  console.log('2819 Church Scraper — https://iccla.com');
   console.log('Checking robots.txt compliance...');
 
   const robotsRes = await fetch(`${BASE}/robots.txt`);
@@ -90,8 +90,8 @@ async function main() {
   // Build output JSON structure
   const output = {
     church_profile: {
-      name: 'KaNeXT Church | Los Angeles',
-      shortName: 'KaNeXT Church',
+      name: '2819 Church | Atlanta',
+      shortName: '2819 Church',
       denomination: 'Inter-denominational Pentecostal',
       description: 'A Multicultural Christian Haven for Worshipping Jesus Christ',
       website: BASE,

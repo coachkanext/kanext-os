@@ -336,9 +336,9 @@ const HEALTH_DOTS: RailsHealthDot[] = [
 const WALLETS: RailsWallet[] = [
   {
     id: 'wal-holdco-ops',
-    name: 'KaNeXT HoldCo Operating',
+    name: 'Valuetainment HoldCo Operating',
     entityId: KANEXT_HOLDCO,
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
     type: 'operating',
     provider: 'Mercury',
     balance: 2_450_000,
@@ -347,9 +347,9 @@ const WALLETS: RailsWallet[] = [
   },
   {
     id: 'wal-opsco-ops',
-    name: 'KaNeXT OpsCo Operating',
+    name: 'Valuetainment OpsCo Operating',
     entityId: KANEXT_OPSCO,
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     type: 'operating',
     provider: 'Mercury',
     balance: 870_000,
@@ -360,7 +360,7 @@ const WALLETS: RailsWallet[] = [
     id: 'wal-holdco-reserve',
     name: 'HoldCo Reserve Fund',
     entityId: KANEXT_HOLDCO,
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
     type: 'reserve',
     provider: 'Mercury',
     balance: 1_200_000,
@@ -393,7 +393,7 @@ const WALLETS: RailsWallet[] = [
     id: 'wal-opsco-savings',
     name: 'OpsCo Savings',
     entityId: KANEXT_OPSCO,
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     type: 'savings',
     provider: 'Mercury',
     balance: 620_000,
@@ -465,7 +465,7 @@ const BATCHES: RailsBatch[] = [
     totalAmount: 163_000,
     createdBy: 'Sam Carter',
     createdDate: '2026-01-28',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     items: BATCH_ITEMS_PAYROLL,
   },
   {
@@ -476,7 +476,7 @@ const BATCHES: RailsBatch[] = [
     totalAmount: 29_800,
     createdBy: 'Finance Team',
     createdDate: '2026-02-01',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     items: BATCH_ITEMS_VENDOR_Q1,
   },
   {
@@ -487,7 +487,7 @@ const BATCHES: RailsBatch[] = [
     totalAmount: 150_000,
     createdBy: 'Sam Carter',
     createdDate: '2026-01-15',
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
     items: BATCH_ITEMS_INVESTOR,
   },
   {
@@ -498,7 +498,7 @@ const BATCHES: RailsBatch[] = [
     totalAmount: 2_575_000,
     createdBy: 'Sam Carter',
     createdDate: '2026-02-05',
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
     items: BATCH_ITEMS_ESCROW,
   },
   {
@@ -509,7 +509,7 @@ const BATCHES: RailsBatch[] = [
     totalAmount: 55_000,
     createdBy: 'Marketing Lead',
     createdDate: '2026-02-12',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     items: BATCH_ITEMS_MARKETING,
   },
   {
@@ -520,7 +520,7 @@ const BATCHES: RailsBatch[] = [
     totalAmount: 8_590,
     createdBy: 'Finance Team',
     createdDate: '2026-02-10',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     items: BATCH_ITEMS_REIMBURSEMENT,
   },
   {
@@ -531,7 +531,7 @@ const BATCHES: RailsBatch[] = [
     totalAmount: 107_000,
     createdBy: 'Tax Advisor',
     createdDate: '2026-01-20',
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
     items: BATCH_ITEMS_TAX,
   },
   {
@@ -542,7 +542,7 @@ const BATCHES: RailsBatch[] = [
     totalAmount: 40_200,
     createdBy: 'IT Admin',
     createdDate: '2026-02-08',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     items: BATCH_ITEMS_SUBSCRIPTION,
   },
 ];
@@ -560,7 +560,7 @@ const APPROVALS: RailsApproval[] = [
     requestedBy: 'Marketing Lead',
     requestDate: '2026-02-12',
     urgency: 'normal',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
   },
   {
     id: 'appr-002',
@@ -570,7 +570,7 @@ const APPROVALS: RailsApproval[] = [
     requestedBy: 'Finance Team',
     requestDate: '2026-02-10',
     urgency: 'high',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
   },
   {
     id: 'appr-003',
@@ -580,7 +580,7 @@ const APPROVALS: RailsApproval[] = [
     requestedBy: 'Tax Advisor',
     requestDate: '2026-02-16',
     urgency: 'critical',
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
   },
   {
     id: 'appr-004',
@@ -590,7 +590,7 @@ const APPROVALS: RailsApproval[] = [
     requestedBy: 'Sam Carter',
     requestDate: '2026-01-15',
     urgency: 'high',
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
   },
 ];
 
@@ -606,7 +606,7 @@ const RELEASE_QUEUE: RailsReleaseItem[] = [
     amount: 150_000,
     authorizedBy: 'Sam Carter',
     authorizedDate: '2026-02-14',
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
   },
   {
     id: 'rel-002',
@@ -615,7 +615,7 @@ const RELEASE_QUEUE: RailsReleaseItem[] = [
     amount: 2_575_000,
     authorizedBy: 'Sam Carter',
     authorizedDate: '2026-02-13',
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
   },
   {
     id: 'rel-003',
@@ -624,7 +624,7 @@ const RELEASE_QUEUE: RailsReleaseItem[] = [
     amount: 40_200,
     authorizedBy: 'Finance Team',
     authorizedDate: '2026-02-15',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
   },
 ];
 
@@ -642,7 +642,7 @@ const EXCEPTIONS: RailsException[] = [
     amount: 85_000,
     date: '2026-02-14',
     resolution: null,
-    entityName: 'KaNeXT HoldCo',
+    entityName: 'Valuetainment HoldCo',
     rootCauseCategory: 'Technical',
     failingRule: 'IRS EFTPS gateway rejected — invalid EIN format on submission',
     nextSteps: [
@@ -660,7 +660,7 @@ const EXCEPTIONS: RailsException[] = [
     amount: 12_400,
     date: '2026-02-11',
     resolution: null,
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     rootCauseCategory: 'Budget',
     failingRule: 'Vendor invoice exceeds contracted tier ceiling by $4,200',
     nextSteps: [
@@ -678,7 +678,7 @@ const EXCEPTIONS: RailsException[] = [
     amount: 4_800,
     date: '2026-02-09',
     resolution: 'Re-submitted with corrected routing — awaiting confirmation',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     rootCauseCategory: 'Technical',
     failingRule: 'ACH return code R03 — no account / unable to locate account',
     nextSteps: [
@@ -695,7 +695,7 @@ const EXCEPTIONS: RailsException[] = [
     amount: 3_500,
     date: '2026-02-13',
     resolution: null,
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     rootCauseCategory: 'Compliance',
     failingRule: 'Single equipment reimbursement exceeds $3,000 policy cap',
     nextSteps: [
@@ -717,7 +717,7 @@ const DISPUTES: RailsDispute[] = [
     amount: 4_200,
     status: 'investigating',
     filedDate: '2026-02-11',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     timeline: [
       { date: '2026-02-11', action: 'Dispute filed with AWS support' },
       { date: '2026-02-12', action: 'AWS acknowledged — case ID #AWC-88291' },
@@ -733,7 +733,7 @@ const DISPUTES: RailsDispute[] = [
     amount: 12_000,
     status: 'open',
     filedDate: '2026-02-15',
-    entityName: 'KaNeXT OpsCo',
+    entityName: 'Valuetainment OpsCo',
     timeline: [
       { date: '2026-02-15', action: 'Duplicate charge identified during reconciliation' },
       { date: '2026-02-16', action: 'Dispute notice sent to Creative Agency AP team' },

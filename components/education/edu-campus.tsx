@@ -93,7 +93,7 @@ interface CampusInfo {
 const CAMPUS: CampusInfo = {
   name: 'Main Campus',
   location: '1200 University Boulevard',
-  city: 'Westfield',
+  city: 'Howard',
   state: 'Georgia',
   zipCode: '30301',
   acreage: 342,
@@ -275,7 +275,7 @@ interface Building {
 }
 
 const BUILDINGS: Building[] = [
-  { id: 'bld-1', name: 'Founders Hall', type: 'academic', yearBuilt: 1891, sqFt: '85,000', floors: 4, status: 'operational', ada: true, notable: 'Historic landmark \u2014 original campus building', lastInspection: 'Jan 2026', nextMaintenance: 'Jun 2026' },
+  { id: 'bld-1', name: 'Founders Library', type: 'academic', yearBuilt: 1891, sqFt: '85,000', floors: 4, status: 'operational', ada: true, notable: 'Historic landmark \u2014 original campus building', lastInspection: 'Jan 2026', nextMaintenance: 'Jun 2026' },
   { id: 'bld-2', name: 'Morrison Science Center', type: 'research', yearBuilt: 2018, sqFt: '120,000', floors: 5, status: 'operational', ada: true, notable: 'LEED Platinum certified', lastInspection: 'Dec 2025', nextMaintenance: 'Jul 2026' },
   { id: 'bld-3', name: 'Henderson Library', type: 'library', yearBuilt: 1968, sqFt: '95,000', floors: 4, status: 'renovation', ada: true, notable: 'Phase 2 renovation in progress', lastInspection: 'Nov 2025', nextMaintenance: 'Ongoing' },
   { id: 'bld-4', name: 'Carter Student Center', type: 'student_center', yearBuilt: 2005, sqFt: '78,000', floors: 3, status: 'operational', ada: true, notable: 'Student government offices, clubs, dining', lastInspection: 'Jan 2026', nextMaintenance: 'Aug 2026' },
@@ -316,7 +316,7 @@ const BUILDING_TYPE_LABEL: Record<BuildingType, string> = {
 const BUILDING_STATUS_COLOR: Record<string, string> = { operational: '#22C55E', renovation: '#F59E0B', construction: '#1D9BF0', closed: '#EF4444' };
 
 const WORK_ORDERS: { id: string; title: string; building: string; priority: 'low' | 'medium' | 'high' | 'critical'; status: 'open' | 'in_progress' | 'pending_parts' | 'completed'; submittedBy: string; submittedDate: string; assignedTo?: string; category: string; estimatedCompletion?: string }[] = [
-  { id: 'wo-1', title: 'HVAC unit failure \u2014 Room 302', building: 'Founders Hall', priority: 'high', status: 'in_progress', submittedBy: 'Dr. Williams', submittedDate: 'Feb 14', assignedTo: 'Mike Torres', category: 'HVAC', estimatedCompletion: 'Feb 19' },
+  { id: 'wo-1', title: 'HVAC unit failure \u2014 Room 302', building: 'Founders Library', priority: 'high', status: 'in_progress', submittedBy: 'Dr. Williams', submittedDate: 'Feb 14', assignedTo: 'Mike Torres', category: 'HVAC', estimatedCompletion: 'Feb 19' },
   { id: 'wo-2', title: 'Elevator inspection overdue', building: 'Administration Building', priority: 'critical', status: 'open', submittedBy: 'Facilities Ops', submittedDate: 'Feb 16', category: 'Elevator', estimatedCompletion: 'Feb 20' },
   { id: 'wo-3', title: 'Parking lot B lighting replacement', building: 'West Parking Deck', priority: 'medium', status: 'pending_parts', submittedBy: 'Campus Police', submittedDate: 'Feb 10', assignedTo: 'James Carter', category: 'Electrical', estimatedCompletion: 'Feb 25' },
   { id: 'wo-4', title: 'Restroom plumbing leak \u2014 2nd floor', building: 'Carter Student Center', priority: 'high', status: 'in_progress', submittedBy: 'Student Report', submittedDate: 'Feb 15', assignedTo: 'Lisa Chen', category: 'Plumbing', estimatedCompletion: 'Feb 18' },
@@ -392,7 +392,7 @@ const CLUB_EVENTS: { id: string; title: string; org: string; date: string; time:
   { id: 'ce-1', title: 'Spring Career Fair', org: 'Career Services / SGA', date: 'Feb 25', time: '10AM\u20133PM', location: 'Peach State Arena', attendees: 420, free: true },
   { id: 'ce-2', title: 'Black History Month Gala', org: 'Campus Activities Board', date: 'Feb 28', time: '7PM\u201310PM', location: 'Carter Student Center', attendees: 180, free: false },
   { id: 'ce-3', title: 'NSBE Regional Conference Prep', org: 'NSBE Chapter', date: 'Mar 2', time: '2PM\u20135PM', location: 'Williams Engineering Complex', attendees: 40, free: true },
-  { id: 'ce-4', title: 'Service Saturday: Park Cleanup', org: 'Community Service Corps', date: 'Mar 8', time: '9AM\u201312PM', location: 'Westfield City Park', attendees: 55, free: true },
+  { id: 'ce-4', title: 'Service Saturday: Park Cleanup', org: 'Community Service Corps', date: 'Mar 8', time: '9AM\u201312PM', location: 'Howard City Park', attendees: 55, free: true },
   { id: 'ce-5', title: 'Spring Fling Festival', org: 'Campus Activities Board', date: 'Mar 15', time: '12PM\u20138PM', location: 'University Green', attendees: 0, free: true },
 ];
 

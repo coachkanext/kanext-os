@@ -107,7 +107,7 @@ export function EduFinancialAidSheet({ visible, onClose, colors }: Props) {
       {section === 'fafsa' && (
         <View style={styles.container}>
           <View style={[styles.codeCard, { backgroundColor: ACCENT + '15' }]}>
-            <Text style={[styles.codeLabel, { color: ACCENT }]}>KaNeXT School Code</Text>
+            <Text style={[styles.codeLabel, { color: ACCENT }]}>Howard School Code</Text>
             <Text style={[styles.codeValue, { color: colors.text }]}>{KaNeXT_FAFSA.schoolCode}</Text>
           </View>
 

@@ -45,7 +45,7 @@ interface CompetitionHeroVideoCardProps {
 
 const LIVE_BROADCAST: BroadcastHero = {
   id: 'bcast-live',
-  title: 'KaNeXT League — Round 2 LIVE',
+  title: '3SSB Circuit — Round 2 LIVE',
   subtitle: 'Portland International Raceway · Main Race',
   thumbnailColor: '#0B0F14',
   status: 'live',
@@ -54,7 +54,7 @@ const LIVE_BROADCAST: BroadcastHero = {
 
 const UPCOMING_BROADCAST: BroadcastHero = {
   id: 'bcast-upcoming',
-  title: 'KaNeXT League — Round 2',
+  title: '3SSB Circuit — Round 2',
   subtitle: 'Portland International Raceway',
   thumbnailColor: '#0B0F14',
   status: 'upcoming',
@@ -65,7 +65,7 @@ const UPCOMING_BROADCAST: BroadcastHero = {
 
 const REPLAY_BROADCAST: BroadcastHero = {
   id: 'bcast-replay',
-  title: 'KaNeXT Round 1 — Austin Replay',
+  title: '3SSB Session I — Austin Replay',
   subtitle: 'Circuit of the Americas · Main Race',
   thumbnailColor: '#0B0F14',
   status: 'replay',

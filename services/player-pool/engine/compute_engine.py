@@ -786,7 +786,12 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
             """, (kr_id, badge["name"], badge["cluster"], badge["tier"], badge["effect"]))
 
         # Compute and store derived defense lenses
-        lenses = compute_derived_lenses(clusters, trait_diagnostics)
+        lenses = compute_derived_lenses(
+            clusters, trait_diagnostics,
+            blk_pg=_f(r["blk_pg"]),
+            n_games=gp_val,
+            level_key=level_key,
+        )
         conn.execute("""
             INSERT INTO player_kr_clusters (player_kr_id, cluster, score, weight_in_off_kr, weight_in_def_kr, score_league_internal)
             VALUES (%s, 'perimeter_defense_lens', %s, 0, 0, %s),
@@ -1582,7 +1587,7 @@ SUBMETRIC_WEIGHTS = {
     "finishing": {"two_pt_pct": 0.55, "two_fga_pg": 0.25, "foul_draw_rate": 0.20},
     "playmaking": {"ast_pg": 0.50, "tov_per_usage": 0.20, "ast_to_ratio": 0.30},
     "on_ball_defense": {"stl_per_100": 0.65, "pf_per_100": 0.35},
-    "team_defense": {"pf_per_100": 0.30, "stl_per_100": 0.20, "blk_per_100": 0.20, "minutes_pg": 0.20, "start_rate": 0.10},
+    "team_defense": {"pf_per_100": 0.35, "stl_per_100": 0.25, "minutes_pg": 0.25, "start_rate": 0.15},
     "rebounding": {"dreb_pg": 0.55, "oreb_pg": 0.45},
     "physical": {"minutes_pg": 1.0},
     "physical_phys": {"height": 0.30, "weight": 0.25, "minutes_pg": 0.35},

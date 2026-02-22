@@ -1,6 +1,6 @@
 /**
  * Sports Compliance V3 — 3-pill ViewBar (Eligibility | Academics | Immigration)
- * KaNeXT Men's Basketball · NAA KaNeXT Conference
+ * Carroll Men's Basketball · NAIA Frontier Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback } from 'react';

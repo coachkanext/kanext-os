@@ -363,7 +363,7 @@ const SPORTS_ROOMS: Room[] = [
     mode: 'sports',
     room_type: 'game',
     scope_object: 'season',
-    title: 'Game Day — vs Ridgemont',
+    title: 'Game Day — vs MSU-Northern',
     context_line: 'Feb 18 home game operations',
     members: [
       { id: 'm1', name: 'Alex Morgan', initials: 'AM', role: 'Head Coach' },
@@ -677,7 +677,7 @@ const CHURCH_ROOMS: Room[] = [
     title: 'Pastoral Team',
     context_line: 'Senior leadership',
     members: [
-      { id: 'c1', name: 'Pastor James Carter', initials: 'JC', role: 'Senior Pastor' },
+      { id: 'c1', name: 'Pastor Philip Anthony Mitchell', initials: 'JC', role: 'Senior Pastor' },
       { id: 'c2', name: 'Pastor Lisa Brooks', initials: 'SO', role: 'Associate Pastor' },
       { id: 'c3', name: 'Elder James Wright', initials: 'JW', role: 'Elder' },
     ],
@@ -695,8 +695,8 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'ql2', label: 'Budget', url: '#', icon: 'chart.bar.fill' },
     ],
     audit_log: [
-      { id: 'a1', action: 'room_created', actor: 'Pastor James Carter', detail: 'Created room', timestamp: 'Jan 1, 2025', timestamp_ms: 1704067200000 },
-      { id: 'a2', action: 'member_added', actor: 'Pastor James Carter', detail: 'Added pastoral team', timestamp: 'Jan 1, 2025', timestamp_ms: 1704070800000 },
+      { id: 'a1', action: 'room_created', actor: 'Pastor Philip Anthony Mitchell', detail: 'Created room', timestamp: 'Jan 1, 2025', timestamp_ms: 1704067200000 },
+      { id: 'a2', action: 'member_added', actor: 'Pastor Philip Anthony Mitchell', detail: 'Added pastoral team', timestamp: 'Jan 1, 2025', timestamp_ms: 1704070800000 },
     ],
     avatarColor: '#1D9BF0',
     lastMessage: 'Lenten series outline is attached — review by Wednesday',
@@ -709,7 +709,7 @@ const CHURCH_ROOMS: Room[] = [
     title: 'Prayer Requests',
     context_line: 'Congregation prayer needs',
     members: [
-      { id: 'c1', name: 'Pastor James Carter', initials: 'JC', role: 'Pastor' },
+      { id: 'c1', name: 'Pastor Philip Anthony Mitchell', initials: 'JC', role: 'Pastor' },
       { id: 'c4', name: 'Deacon Mary Thompson', initials: 'RA', role: 'Prayer Lead' },
       { id: 'c5', name: 'Sister Grace Wilson', initials: 'GN', role: 'Intercessor' },
     ],
@@ -756,7 +756,7 @@ const CHURCH_ROOMS: Room[] = [
     ],
     audit_log: [
       { id: 'a4', action: 'room_created', actor: 'Pastor Lisa Brooks', detail: 'Created room', timestamp: 'Feb 1, 2025', timestamp_ms: 1706745600000 },
-      { id: 'a5', action: 'permission_changed', actor: 'Pastor James Carter', detail: 'Set visibility to private', timestamp: 'Feb 2, 2025', timestamp_ms: 1706832000000 },
+      { id: 'a5', action: 'permission_changed', actor: 'Pastor Philip Anthony Mitchell', detail: 'Set visibility to private', timestamp: 'Feb 2, 2025', timestamp_ms: 1706832000000 },
     ],
     avatarColor: '#EF4444',
     lastMessage: 'Hospital visit scheduled for Brother Taiwo — Room 412',
@@ -877,7 +877,7 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'a10', action: 'room_created', actor: 'Pastor Lisa Brooks', detail: 'Created room', timestamp: 'Jun 1, 2025', timestamp_ms: 1717200000000 },
     ],
     avatarColor: '#1D9BF0',
-    lastMessage: 'Welcome to KaNeXT Church! Next orientation is Sunday March 1 after service.',
+    lastMessage: 'Welcome to 2819 Church! Next orientation is Sunday March 1 after service.',
   },
 ];
 
@@ -1106,7 +1106,7 @@ const COMMUNITY_ROOMS: Room[] = [
     mode: 'competition',
     room_type: 'competition-ops',
     scope_object: 'competition',
-    title: 'KaNeXT Race Ops',
+    title: '3SSB Race Ops',
     context_line: 'Competition-wide operations',
     members: [
       { id: 'x1', name: 'Director Marcus Hall', initials: 'MH', role: 'Race Director' },

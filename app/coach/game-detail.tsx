@@ -99,7 +99,7 @@ type PbpCategory = 'scoring' | 'foul' | 'sub' | 'timeout' | 'other';
 
 interface PlayByPlayEvent {
   id: string;
-  team: 'KaNeXT' | string;
+  team: 'Carroll' | string;
   text: string;
   scoreAt: string; // running score at time of event
   category: PbpCategory;
@@ -119,7 +119,7 @@ const PLAY_BY_PLAY: Record<string, PlayByPlayEvent[]> = {
     { id: 'pbp-20', team: 'LU', text: 'Carter Made 3PT', scoreAt: '29-22', category: 'scoring' },
     { id: 'pbp-19', team: 'CSEB', text: 'CSEB — Made 3PT', scoreAt: '26-22', category: 'scoring' },
     { id: 'pbp-18', team: 'LU', text: 'Quinn Made 2PT (Floater)', scoreAt: '26-19', category: 'scoring' },
-    { id: 'pbp-17', team: 'LU', text: 'TIMEOUT — Ridgemont', scoreAt: '24-19', category: 'timeout' },
+    { id: 'pbp-17', team: 'LU', text: 'TIMEOUT — MSU-Northern', scoreAt: '24-19', category: 'timeout' },
     { id: 'pbp-16', team: 'CSEB', text: 'CSEB — Made 2PT (Layup)', scoreAt: '24-19', category: 'scoring' },
     { id: 'pbp-15', team: 'LU', text: 'McKesey Made 3PT', scoreAt: '24-17', category: 'scoring' },
     { id: 'pbp-14', team: 'CSEB', text: 'CSEB — Made FT (1 of 2)', scoreAt: '21-17', category: 'scoring' },
@@ -215,7 +215,7 @@ function convertGameOpsToPlayByPlay(events: any[], opponentAbbr: string): PlayBy
     else oppScore += pts;
     pbp.push({
       id: evt.id,
-      team: evt.team === 'LU' ? 'KaNeXT' : opponentAbbr,
+      team: evt.team === 'LU' ? 'Carroll' : opponentAbbr,
       text: gameOpsEventToText(evt),
       scoreAt: `${luScore}-${oppScore}`,
       category: gameOpsEventCategory(evt.type),
@@ -558,7 +558,7 @@ export default function GameDetailScreen() {
         const liveEntries = game.status === 'live' ? entries.slice(0, Math.floor(entries.length * 0.65)) : entries;
         return liveEntries.reverse().map((e, i): PlayByPlayEvent => ({
           id: `mock-${i}`,
-          team: e.team === 'fmu' ? 'KaNeXT' : opponentAbbr,
+          team: e.team === 'fmu' ? 'Carroll' : opponentAbbr,
           text: e.text,
           scoreAt: e.score,
           category: e.text.includes('makes') || e.text.includes('misses') || e.text.includes('dunk') || e.text.includes('free throw')
@@ -585,7 +585,7 @@ export default function GameDetailScreen() {
   const effectiveHasReport = hasGameOps || ((game.status === 'live' || game.status === 'final') && !!game.score);
   const realBoxScore = hasGameOps ? computeGameOpsBoxScore(gameOpsEvents) : (BOX_SCORE[gameId ?? ''] ?? []);
   const KaNeXT_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
-  const effectiveBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('KaNeXT Sports', parseInt(effectiveLuScore) || 0, KaNeXT_MOCK_NAMES);
+  const effectiveBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('Carroll College', parseInt(effectiveLuScore) || 0, KaNeXT_MOCK_NAMES);
   const effectiveGameFlow = hasGameOps ? computeGameOpsGameFlow(gameOpsEvents, gameOpsData?.periodFormat ?? 'halves') : (GAME_FLOW[gameId ?? ''] ?? []);
   const oppBoxScore = mockBoxScore(game.opponent, parseInt(effectiveOppScore) || 0);
   const isFinalNoOps = game.status === 'final' && !hasGameOps;
@@ -668,7 +668,7 @@ export default function GameDetailScreen() {
             {/* ESPN-style pills */}
             <View style={[styles.espnTabRow, { borderTopColor: colors.divider }]}>
               {([
-                { key: 'gamecast', label: 'KaNeXTCast' },
+                { key: 'gamecast', label: 'SaintsCast' },
                 { key: 'boxscore', label: 'Box Score' },
                 { key: 'pbp', label: 'Play-by-Play' },
                 { key: 'teamstats', label: 'Team Stats' },
@@ -828,7 +828,7 @@ export default function GameDetailScreen() {
                     </View>
                   </View>
 
-                  {/* KaNeXT Video button */}
+                  {/* Carroll Video button */}
                   <Pressable
                     style={({ pressed }) => [styles.kanextVideoBtn, pressed && { opacity: 0.8 }]}
                     onPress={() => {
@@ -836,7 +836,7 @@ export default function GameDetailScreen() {
                     }}
                   >
                     <IconSymbol name="play.fill" size={14} color="#fff" />
-                    <Text style={styles.kanextVideoBtnText}>KaNeXT Video</Text>
+                    <Text style={styles.kanextVideoBtnText}>Carroll Video</Text>
                   </Pressable>
                 </View>
               );
@@ -1015,14 +1015,14 @@ export default function GameDetailScreen() {
               {filteredPbp.length > 0 ? (
                 <View style={[styles.pbpCard, { backgroundColor: colors.backgroundSecondary }]}>
                   {filteredPbp.map((event, index) => {
-                    const isLU = event.team === 'KaNeXT';
+                    const isLU = event.team === 'Carroll';
                     return (
                       <View key={event.id}>
                         {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
                         <View style={styles.pbpRow}>
                           <View style={[styles.pbpTeamBadge, { backgroundColor: isLU ? colors.text + '15' : colors.backgroundTertiary }]}>
                             <Text style={[styles.pbpTeamText, { color: isLU ? colors.text : colors.textSecondary }]}>
-                              {event.team === 'KaNeXT' ? 'KaNeXT' : opponentAbbr}
+                              {event.team === 'Carroll' ? 'Carroll' : opponentAbbr}
                             </Text>
                           </View>
                           <Text style={[styles.pbpAction, { color: colors.text }]} numberOfLines={2}>{event.text}</Text>
@@ -1046,7 +1046,7 @@ export default function GameDetailScreen() {
             {/* ═══ BOX TAB ═══ */}
             {liveSubTab === 'box' && (() => {
               const boxLines = liveBoxTeam === 'fmu' ? effectiveBoxScore : oppBoxScore;
-              const teamLabel = liveBoxTeam === 'fmu' ? 'KaNeXT' : opponentAbbr;
+              const teamLabel = liveBoxTeam === 'fmu' ? 'Carroll' : opponentAbbr;
               const BOX_COMPACT_COLS: { key: string; label: string; width: number }[] = [
                 { key: 'name', label: 'PLAYER', width: 80 },
                 { key: 'min', label: 'MIN', width: 36 },
@@ -1081,7 +1081,7 @@ export default function GameDetailScreen() {
                           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setLiveBoxTeam(t); }}
                         >
                           <Text style={[styles.liveBoxTeamText, { color: active ? colors.background : colors.textSecondary }]}>
-                            {t === 'fmu' ? 'KaNeXT' : opponentAbbr}
+                            {t === 'fmu' ? 'Carroll' : opponentAbbr}
                           </Text>
                         </Pressable>
                       );
@@ -1131,7 +1131,7 @@ export default function GameDetailScreen() {
             {liveSubTab === 'team' && (() => {
               const fmuPts = parseInt(effectiveLuScore) || 0;
               const oppPts = parseInt(effectiveOppScore) || 0;
-              // Parse KaNeXT stats
+              // Parse Carroll stats
               const parseStat = (s: string) => {
                 const m = s.match(/^(\d+)-(\d+)\s*\((\d+\.?\d*)%\)$/);
                 if (!m) return null;
@@ -1218,7 +1218,7 @@ export default function GameDetailScreen() {
                     <View key={cat.key} style={{ marginBottom: Spacing.md }}>
                       <Text style={[styles.liveLeaderCatLabel, { color: colors.textTertiary }]}>{cat.label}</Text>
                       <View style={styles.liveLeaderSplit}>
-                        {/* KaNeXT side */}
+                        {/* Carroll side */}
                         <View style={[styles.liveLeaderCol, { backgroundColor: colors.backgroundSecondary }]}>
                           <Text style={[styles.liveLeaderTeamLabel, { color: colors.textTertiary }]}>KXT</Text>
                           {topN(fmuBox, cat.key).map((p, i) => (
@@ -1287,7 +1287,7 @@ export default function GameDetailScreen() {
                     </View>
                     <View style={styles.videoInfo}>
                       <Text style={[styles.videoTitle, { color: colors.text }]} numberOfLines={2}>
-                        KaNeXT {isWin ? 'defeats' : 'falls to'} {game.opponent} {effectiveLuScore}-{effectiveOppScore}
+                        Carroll {isWin ? 'defeats' : 'falls to'} {game.opponent} {effectiveLuScore}-{effectiveOppScore}
                       </Text>
                       <Text style={[styles.videoSource, { color: colors.textTertiary }]}>
                         Highlights · {game.date}
@@ -1341,13 +1341,13 @@ export default function GameDetailScreen() {
                       <Text style={[styles.halfTableVal, { color: colors.text, fontWeight: '700' }]}>{effectiveOppScore}</Text>
                     </View>
                     <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                    {/* KaNeXT row */}
+                    {/* Carroll row */}
                     <View style={styles.halfTableRow}>
                       <View style={styles.halfTableTeamCol}>
                         <View style={[styles.halfTableIcon, { backgroundColor: colors.text + '15' }]}>
                           <Text style={[styles.halfTableIconText, { color: colors.text }]}>F</Text>
                         </View>
-                        <Text style={[styles.halfTableTeamName, { color: colors.text }]}>KaNeXT Sports</Text>
+                        <Text style={[styles.halfTableTeamName, { color: colors.text }]}>Carroll College</Text>
                       </View>
                       {effectiveGameFlow.map((s, i) => {
                         const prev = i > 0 ? effectiveGameFlow[i - 1].fmu : 0;
@@ -1506,7 +1506,7 @@ export default function GameDetailScreen() {
                   };
 
                   let fmuSeed = 0;
-                  for (let i = 0; i < 'KaNeXT'.length; i++) fmuSeed = ((fmuSeed << 5) - fmuSeed + 'KaNeXT'.charCodeAt(i)) | 0;
+                  for (let i = 0; i < 'Carroll'.length; i++) fmuSeed = ((fmuSeed << 5) - fmuSeed + 'Carroll'.charCodeAt(i)) | 0;
                   let oppSeed = 0;
                   for (let i = 0; i < game.opponent.length; i++) oppSeed = ((oppSeed << 5) - oppSeed + game.opponent.charCodeAt(i)) | 0;
 
@@ -1632,7 +1632,7 @@ export default function GameDetailScreen() {
                 <View onLayout={(e) => { sectionRefs.current['teamstats'] = e.nativeEvent.layout.y; }} />
                 {(<>
                 {stats && (() => {
-                  // Parse KaNeXT stats
+                  // Parse Carroll stats
                   const parseStat = (s: string) => {
                     const m = s.match(/^(\d+)-(\d+)\s*\((\d+\.?\d*)%\)$/);
                     if (!m) return null;
@@ -1955,7 +1955,7 @@ export default function GameDetailScreen() {
                           onPress={() => setShotPlayerTeam(t)}
                         >
                           <Text style={[styles.filterTeamPillText, { color: active ? colors.background : colors.textSecondary }]}>
-                            {t === 'fmu' ? 'KaNeXT' : opponentAbbr}
+                            {t === 'fmu' ? 'Carroll' : opponentAbbr}
                           </Text>
                         </Pressable>
                       );
@@ -2044,7 +2044,7 @@ function GameFlowChart({ snapshots, colors }: { snapshots: ScoreSnapshot[]; colo
           <View key={i} style={styles.flowPeriodRow}>
             <Text style={[styles.flowPeriodLabel, { color: colors.textTertiary }]}>{snap.label}</Text>
             <View style={styles.flowBarContainer}>
-              {/* KaNeXT bar */}
+              {/* Carroll bar */}
               <View style={styles.flowBarRow}>
                 <View
                   style={[

@@ -31,7 +31,7 @@ function MemberCard({ member, colors }: { member: BoardMember; colors: typeof Co
         <ThemedText style={styles.memberName}>{member.name}</ThemedText>
         <ThemedText style={[styles.memberRole, { color: colors.textSecondary }]}>
           {member.role}
-          {member.company && member.company !== 'KaNeXT' ? ` — ${member.company}` : ''}
+          {member.company && member.company !== 'Valuetainment' ? ` — ${member.company}` : ''}
         </ThemedText>
       </View>
     </View>
@@ -41,7 +41,7 @@ function MemberCard({ member, colors }: { member: BoardMember; colors: typeof Co
 const POLICIES = [
   { title: 'IP Assignment', description: 'All IP assigned to operating entity' },
   { title: 'Open Source Posture', description: 'Proprietary core with selective OSS contributions' },
-  { title: 'Data Rights', description: 'Customer data owned by customer; aggregated insights by KaNeXT' },
+  { title: 'Data Rights', description: 'Customer data owned by customer; aggregated insights by Valuetainment' },
 ];
 
 export function GovernanceContent() {
@@ -117,7 +117,7 @@ export function GovernanceContent() {
             <View>
               <ThemedText style={styles.structureChildName}>KaNeXT Operations LLC</ThemedText>
               <ThemedText style={[styles.structureLabel, { color: colors.textTertiary }]}>
-                Operating Entity (DBA "KaNeXT")
+                Operating Entity (DBA "Valuetainment")
               </ThemedText>
             </View>
           </View>

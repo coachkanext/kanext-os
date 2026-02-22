@@ -297,10 +297,10 @@ function OverviewContent({ role }: { role: BusinessRoleLens }) {
   // Recent activity feed
   const recentActivity = [
     { id: 'ra-1', text: 'Investor Demo link viewed 12 times this week', time: '2h ago' },
-    { id: 'ra-2', text: 'KaNeXT Highlight Reel playlist updated with 3 new clips', time: '4h ago' },
-    { id: 'ra-3', text: 'Case Study "KaNeXT Athletics" published', time: '1d ago' },
+    { id: 'ra-2', text: 'Valuetainment Highlight Reel playlist updated with 3 new clips', time: '4h ago' },
+    { id: 'ra-3', text: 'Case Study "Carroll Athletics" published', time: '1d ago' },
     { id: 'ra-4', text: 'Board Pack Media link shared with PBD/Tom', time: '2d ago' },
-    { id: 'ra-5', text: 'KaNeXT Race footage uploaded by Adriana Ruiz', time: '3d ago' },
+    { id: 'ra-5', text: 'Valuetainment Race footage uploaded by Adriana Ruiz', time: '3d ago' },
   ];
 
   // B3 sees fewer activity items
@@ -497,18 +497,18 @@ function LibraryContent() {
 const PROOF_PACK_SECTIONS: Record<string, { narrative: string; sections: string[] }> = {
   'pp-1': {
     narrative: 'This pack demonstrates product-market fit and early traction through live deployments, user engagement metrics, and investor-grade financial projections.',
-    sections: ['Product Demo Recording', 'KaNeXT Traction Metrics Deck', 'Financial Summary Slide', 'Founder Walkthrough Video'],
+    sections: ['Product Demo Recording', 'Valuetainment Traction Metrics Deck', 'Financial Summary Slide', 'Founder Walkthrough Video'],
   },
   'pp-2': {
     narrative: 'Board-ready evidence package covering quarterly performance, compliance posture, and partnership health across all proof wedges.',
-    sections: ['KPI Dashboard Export', 'KaNeXT Partnership Summary', 'KaNeXT Church Pilot Results', 'Compliance Score Card'],
+    sections: ['KPI Dashboard Export', 'Valuetainment Partnership Summary', '2819 Church Pilot Results', 'Compliance Score Card'],
   },
   'pp-3': {
     narrative: 'Onboarding materials for integration partners including API documentation and proof-of-concept recordings.',
     sections: ['API Documentation', 'Brand Guidelines PDF', 'Demo Recording', 'Case Study One-Pager'],
   },
   'pp-4': {
-    narrative: 'Public-facing compilation showcasing the KaNeXT story, founder vision, and product capabilities for general audiences.',
+    narrative: 'Public-facing compilation showcasing the Valuetainment story, founder vision, and product capabilities for general audiences.',
     sections: ['Founder Interview Clips', 'Product Overview Video', 'Press Highlights Reel', 'Brand Sizzle Reel'],
   },
 };
@@ -610,7 +610,7 @@ function ProofPacksContent({ role }: { role: BusinessRoleLens }) {
 
 /** Mock playlist items for sequential display */
 const PLAYLIST_ITEMS: Record<string, string[]> = {
-  'pl-1': ['KaNeXT vs Heritage — Top Plays', 'KaNeXT vs Howard — Broadcast Clip', 'Conference Semifinal Highlights', 'Post-Game Interviews Compilation'],
+  'pl-1': ['Carroll vs Heritage — Top Plays', 'Carroll vs Howard — Broadcast Clip', 'Conference Semifinal Highlights', 'Post-Game Interviews Compilation'],
   'pl-2': ['MVP Demo — Aug 2025', 'V1 Launch Recording', 'V1.5 Feature Walkthrough', 'OS v2 Full Demo'],
   'pl-3': ['Round 1 Recap + Telemetry', 'Round 2 Highlights', 'Round 3 Driver Interview', 'Round 5 Race Analysis'],
   'pl-4': ['Jan 5 Sunday Service', 'Jan 12 Campus Event', 'Jan 19 Sunday Service', 'Special Program — MLK Day'],
@@ -742,9 +742,9 @@ function CaseStudiesContent({ role }: { role: BusinessRoleLens }) {
 
 /** Mock outbound press releases */
 const OUTBOUND_PRESS: { id: string; title: string; date: string; status: 'Draft' | 'Published' }[] = [
-  { id: 'opr-1', title: 'KaNeXT Announces KaNeXT Partnership Expansion for 2026-27', date: 'Feb 15, 2026', status: 'Draft' },
-  { id: 'opr-2', title: 'KaNeXT OS v2 Launches with Multi-Mode Architecture', date: 'Feb 1, 2026', status: 'Published' },
-  { id: 'opr-3', title: 'KaNeXT Raises Pre-Seed Round Led by Valuetainment', date: 'Jan 15, 2026', status: 'Published' },
+  { id: 'opr-1', title: 'Valuetainment Announces Partnership Expansion for 2026-27', date: 'Feb 15, 2026', status: 'Draft' },
+  { id: 'opr-2', title: 'Valuetainment OS v2 Launches with Multi-Mode Architecture', date: 'Feb 1, 2026', status: 'Published' },
+  { id: 'opr-3', title: 'Valuetainment Raises Pre-Seed Round Led by Valuetainment', date: 'Jan 15, 2026', status: 'Published' },
 ];
 
 function PressContent() {
@@ -824,10 +824,10 @@ function PressContent() {
 
 /** Source attribution per rights item */
 const RIGHTS_SOURCE: Record<string, string> = {
-  'ri-1': 'KaNeXT Athletics Department — Athletic Director office',
-  'ri-2': 'KaNeXT Church Senior Pastor — Media Ministry agreement',
-  'ri-3': 'KaNeXT Racing Series — Partnership contract, Exhibit B',
-  'ri-4': 'KaNeXT Inc. internal — Brand Guidelines v2.0',
+  'ri-1': 'Carroll Athletics Department — Athletic Director office',
+  'ri-2': '2819 Church Senior Pastor — Media Ministry agreement',
+  'ri-3': 'PBD Podcast Series — Partnership contract, Exhibit B',
+  'ri-4': 'Valuetainment internal — Brand Guidelines v2.0',
 };
 
 function RightsContent() {

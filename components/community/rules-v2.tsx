@@ -1,5 +1,5 @@
 /**
- * Rules V2 — 5-tab rules hub for KaNeXT Competition mode (CEO/Commissioner level).
+ * Rules V2 — 5-tab rules hub for Adidas 3SSB mode (CEO/Commissioner level).
  * Tabs: Rulebook | Penalties | Directives | Case Law | Points
  */
 
@@ -513,7 +513,7 @@ function RulesHeader({ colors }: { colors: typeof Colors.light }) {
   return (
     <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, marginHorizontal: Spacing.md, marginTop: Spacing.sm }]}>
       <ThemedText style={[styles.rulesHeaderTitle, { color: colors.text }]}>
-        KaNeXT League Regulations
+        3SSB Circuit Regulations
       </ThemedText>
       <View style={styles.rulesHeaderMeta}>
         <ThemedText style={[styles.rulesHeaderMetaText, { color: colors.textSecondary }]}>

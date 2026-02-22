@@ -19,15 +19,15 @@ export type ClusterRatings = {
   shooting: number;
   finishing: number;
   playmaking: number;
-  perimeter_defense: number;
-  interior_defense: number;
+  on_ball_defense: number;
+  team_defense: number;
   rebounding: number;
-  frame: number;
+  physical: number;
 };
 
 const ALL_CLUSTERS: (keyof ClusterRatings)[] = [
   'shooting', 'finishing', 'playmaking',
-  'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
+  'on_ball_defense', 'team_defense', 'rebounding', 'physical',
 ];
 
 // ── Position Trait Weighting (College Level) ──
@@ -35,11 +35,11 @@ const ALL_CLUSTERS: (keyof ClusterRatings)[] = [
 // Derived from spec: OKR/DKR/TKR splits × sub-cluster percentages, normalized.
 
 const POSITION_WEIGHTS: Record<string, Record<keyof ClusterRatings, number>> = {
-  PG: { shooting: 18, finishing: 9,  playmaking: 27, perimeter_defense: 26, interior_defense: 6,  rebounding: 8,  frame: 6  },
-  CG: { shooting: 21, finishing: 12, playmaking: 21, perimeter_defense: 20, interior_defense: 8,  rebounding: 9,  frame: 9  },
-  W:  { shooting: 16, finishing: 13, playmaking: 11, perimeter_defense: 18, interior_defense: 10, rebounding: 12, frame: 20 },
-  F:  { shooting: 11, finishing: 16, playmaking: 9,  perimeter_defense: 12, interior_defense: 16, rebounding: 14, frame: 22 },
-  B:  { shooting: 5,  finishing: 21, playmaking: 4,  perimeter_defense: 7,  interior_defense: 25, rebounding: 14, frame: 24 },
+  PG: { shooting: 18, finishing: 9,  playmaking: 27, on_ball_defense: 29, team_defense: 3,  rebounding: 8,  physical: 6  },
+  CG: { shooting: 21, finishing: 12, playmaking: 21, on_ball_defense: 24, team_defense: 3,  rebounding: 9,  physical: 10 },
+  W:  { shooting: 16, finishing: 13, playmaking: 11, on_ball_defense: 23, team_defense: 5,  rebounding: 12, physical: 20 },
+  F:  { shooting: 11, finishing: 16, playmaking: 9,  on_ball_defense: 19, team_defense: 7,  rebounding: 14, physical: 24 },
+  B:  { shooting: 5,  finishing: 21, playmaking: 4,  on_ball_defense: 12, team_defense: 15, rebounding: 14, physical: 29 },
 };
 
 // ── Position-Based Archetype Derivation ──
@@ -56,30 +56,30 @@ const POSITION_ARCHETYPES: Record<string, { archetype: Archetype; requires: Part
     { archetype: 'spot_up_specialist', requires: { shooting: 75 } },
     { archetype: 'secondary_creator_wing', requires: { playmaking: 65, shooting: 60 } },
     { archetype: 'off_ball_shooter', requires: { shooting: 70 } },
-    { archetype: 'three_and_d_wing', requires: { shooting: 68, perimeter_defense: 65 } },
+    { archetype: 'three_and_d_wing', requires: { shooting: 68, on_ball_defense: 65 } },
   ],
   W: [
-    { archetype: 'two_way_wing', requires: { shooting: 65, perimeter_defense: 65 } },
+    { archetype: 'two_way_wing', requires: { shooting: 65, on_ball_defense: 65 } },
     { archetype: 'slasher_rim_pressure_wing', requires: { finishing: 70 } },
-    { archetype: 'three_and_d_wing', requires: { shooting: 70, perimeter_defense: 60 } },
-    { archetype: 'switchable_defender_wing', requires: { perimeter_defense: 70, frame: 60 } },
+    { archetype: 'three_and_d_wing', requires: { shooting: 70, on_ball_defense: 60 } },
+    { archetype: 'switchable_defender_wing', requires: { on_ball_defense: 70, physical: 60 } },
   ],
   F: [
-    { archetype: 'stretch_big', requires: { shooting: 65, frame: 60 } },
-    { archetype: 'small_ball_big', requires: { perimeter_defense: 60, frame: 65 } },
+    { archetype: 'stretch_big', requires: { shooting: 65, physical: 60 } },
+    { archetype: 'small_ball_big', requires: { on_ball_defense: 60, physical: 65 } },
     { archetype: 'connector_guard_wing', requires: { playmaking: 60, shooting: 55 } },
-    { archetype: 'rebounding_interior_enforcer', requires: { rebounding: 70, frame: 65 } },
+    { archetype: 'rebounding_interior_enforcer', requires: { rebounding: 70, physical: 65 } },
   ],
   B: [
-    { archetype: 'rim_protector_anchor', requires: { interior_defense: 70, frame: 65 } },
+    { archetype: 'rim_protector_anchor', requires: { team_defense: 70, physical: 65 } },
     { archetype: 'post_hub_facilitator_big', requires: { finishing: 65, playmaking: 55 } },
-    { archetype: 'vertical_spacer', requires: { finishing: 70, frame: 60 } },
-    { archetype: 'rebounding_interior_enforcer', requires: { rebounding: 70, interior_defense: 60 } },
+    { archetype: 'vertical_spacer', requires: { finishing: 70, physical: 60 } },
+    { archetype: 'rebounding_interior_enforcer', requires: { rebounding: 70, team_defense: 60 } },
   ],
 };
 
 const OFF_CLUSTERS: (keyof ClusterRatings)[] = ['shooting', 'finishing', 'playmaking'];
-const DEF_CLUSTERS: (keyof ClusterRatings)[] = ['perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
+const DEF_CLUSTERS: (keyof ClusterRatings)[] = ['on_ball_defense', 'team_defense', 'rebounding', 'physical'];
 
 /**
  * Compute a player's Fit KR for a given offensive + defensive system.
@@ -99,10 +99,10 @@ export function computeFitKR(
     clusters.playmaking * ow.playmaking;
 
   const defScore =
-    clusters.perimeter_defense * dw.perimeter_defense +
-    clusters.interior_defense * dw.interior_defense +
+    clusters.on_ball_defense * dw.on_ball_defense +
+    clusters.team_defense * dw.team_defense +
     clusters.rebounding * dw.rebounding +
-    clusters.frame * dw.frame;
+    clusters.physical * dw.physical;
 
   return Math.round((offScore + defScore) / 100);
 }
@@ -187,10 +187,10 @@ export function computeLineupRating(
     const playerOff =
       (c.shooting * ow.shooting + c.finishing * ow.finishing + c.playmaking * ow.playmaking) / 53;
     const playerDef =
-      (c.perimeter_defense * dw.perimeter_defense +
-        c.interior_defense * dw.interior_defense +
+      (c.on_ball_defense * dw.on_ball_defense +
+        c.team_defense * dw.team_defense +
         c.rebounding * dw.rebounding +
-        c.frame * dw.frame) / 47;
+        c.physical * dw.physical) / 47;
 
     offSum += w * playerOff;
     defSum += w * playerDef;
@@ -239,16 +239,16 @@ export function computeOffDefKR(
   const dw = DEFENSIVE_STYLE_CLUSTERS[defStyle];
 
   const baseOff = Math.round((clusters.shooting + clusters.finishing + clusters.playmaking) / 3);
-  const baseDef = Math.round((clusters.perimeter_defense + clusters.interior_defense + clusters.rebounding + clusters.frame) / 4);
+  const baseDef = Math.round((clusters.on_ball_defense + clusters.team_defense + clusters.rebounding + clusters.physical) / 4);
 
   const fitOff = Math.round(
     (clusters.shooting * ow.shooting + clusters.finishing * ow.finishing + clusters.playmaking * ow.playmaking) / 53,
   );
   const fitDef = Math.round(
-    (clusters.perimeter_defense * dw.perimeter_defense +
-      clusters.interior_defense * dw.interior_defense +
+    (clusters.on_ball_defense * dw.on_ball_defense +
+      clusters.team_defense * dw.team_defense +
       clusters.rebounding * dw.rebounding +
-      clusters.frame * dw.frame) / 47,
+      clusters.physical * dw.physical) / 47,
   );
 
   return { baseOff, baseDef, fitOff, fitDef };
@@ -259,10 +259,10 @@ const CLUSTER_DRIVER_LABELS: Record<keyof ClusterRatings, string> = {
   shooting: 'Shooting',
   finishing: 'Finishing',
   playmaking: 'Playmaking',
-  perimeter_defense: 'OB Defense',
-  interior_defense: 'Team Defense',
+  on_ball_defense: 'OB Defense',
+  team_defense: 'Team Defense',
   rebounding: 'Rebounding',
-  frame: 'Physical',
+  physical: 'Physical',
 };
 
 // System-specific reason templates keyed by cluster + positive/negative
@@ -270,10 +270,10 @@ const REASON_TEMPLATES: Record<string, { pos: string; neg: string }> = {
   shooting: { pos: 'spacing fuels system shot creation', neg: 'limited spacing pressures offensive flow' },
   finishing: { pos: 'rim pressure complements system design', neg: 'lack of rim finishing limits paint scoring' },
   playmaking: { pos: 'vision and passing accelerate ball movement', neg: 'playmaking gap slows offensive reads' },
-  perimeter_defense: { pos: 'perimeter containment anchors scheme', neg: 'perimeter liability exposes defensive gaps' },
-  interior_defense: { pos: 'rim protection supports defensive structure', neg: 'interior softness weakens paint defense' },
+  on_ball_defense: { pos: 'perimeter containment anchors scheme', neg: 'perimeter liability exposes defensive gaps' },
+  team_defense: { pos: 'rim protection supports defensive structure', neg: 'interior softness weakens paint defense' },
   rebounding: { pos: 'boards fuel transition and second chances', neg: 'rebounding deficit costs extra possessions' },
-  frame: { pos: 'size and strength fit positional demands', neg: 'physical profile limits defensive versatility' },
+  physical: { pos: 'size and strength fit positional demands', neg: 'physical profile limits defensive versatility' },
 };
 
 export interface FitReason {

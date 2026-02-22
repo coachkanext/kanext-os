@@ -104,8 +104,8 @@ export interface SimRun {
 
 export const MOCK_SINGLE_GAME: SingleGameOutput = {
   run_id: 'sim-sg-001',
-  team_a: 'KaNeXT Sports',
-  team_b: 'Ridgemont (PA)',
+  team_a: 'Carroll College',
+  team_b: 'MSU-Northern (PA)',
   environment: 'home',
   sim_version: 'V2',
   sim_confidence_pct: 82,
@@ -120,11 +120,11 @@ export const MOCK_SINGLE_GAME: SingleGameOutput = {
     { factor: 'Opp eFG%', team_a: 44.2, team_b: 49.6, advantage: 'A' },
   ],
   top_drivers: [
-    'KaNeXT pack line limits Ridgemont PnR efficiency (-4.2 PPP adjustment)',
-    'KaNeXT transition offense creates 6.3 additional fast break points',
+    'Carroll pack line limits MSU-Northern PnR efficiency (-4.2 PPP adjustment)',
+    'Carroll transition offense creates 6.3 additional fast break points',
     'Carter rim protection forces 14% more contested shots at rim',
-    'Williams PnR reads exploit Ridgemont drop coverage (1.12 PPP projected)',
-    'Ridgemont 3PT variance is high \u2014 could swing margin by +/- 5 points',
+    'Williams PnR reads exploit MSU-Northern drop coverage (1.12 PPP projected)',
+    'MSU-Northern 3PT variance is high \u2014 could swing margin by +/- 5 points',
   ],
 };
 
@@ -140,11 +140,11 @@ export const MOCK_BOX_SCORE_A: BoxScorePlayerLine[] = [
 ];
 
 export const MOCK_DRIVERS: SimDriver[] = [
-  { rank: 1, driver: 'Pack Line Paint Protection', explanation: 'KaNeXT pack line forces Ridgemont to take 62% of shots from mid-range and perimeter, where they shoot 38.2% combined.', impact_direction: 'positive' },
-  { rank: 2, driver: 'Transition Offense Advantage', explanation: 'KaNeXT averages 14.8 fast break points vs Ridgemont allowing 16.2. Projected +6.3 transition margin.', impact_direction: 'positive' },
-  { rank: 3, driver: 'Carter Rim Presence', explanation: 'Carter alters 4.2 shots/game at the rim. Ridgemont relies on rim attacks for 38% of scoring.', impact_direction: 'positive' },
-  { rank: 4, driver: 'Harris Isolation Scoring', explanation: 'Ridgemont PG Harris scores 22.4 PPG and can create against pack line hedges. If Harris scores 25+, KaNeXT win% drops to 58%.', impact_direction: 'negative' },
-  { rank: 5, driver: 'KaNeXT 3PT Variance', explanation: 'KaNeXT 3PT% has 6.8% standard deviation game-to-game. A cold night shrinks margin to +2.', impact_direction: 'negative' },
+  { rank: 1, driver: 'Pack Line Paint Protection', explanation: 'Carroll pack line forces MSU-Northern to take 62% of shots from mid-range and perimeter, where they shoot 38.2% combined.', impact_direction: 'positive' },
+  { rank: 2, driver: 'Transition Offense Advantage', explanation: 'Carroll averages 14.8 fast break points vs MSU-Northern allowing 16.2. Projected +6.3 transition margin.', impact_direction: 'positive' },
+  { rank: 3, driver: 'Carter Rim Presence', explanation: 'Carter alters 4.2 shots/game at the rim. MSU-Northern relies on rim attacks for 38% of scoring.', impact_direction: 'positive' },
+  { rank: 4, driver: 'Harris Isolation Scoring', explanation: 'MSU-Northern PG Harris scores 22.4 PPG and can create against pack line hedges. If Harris scores 25+, Carroll win% drops to 58%.', impact_direction: 'negative' },
+  { rank: 5, driver: 'Carroll 3PT Variance', explanation: 'Carroll 3PT% has 6.8% standard deviation game-to-game. A cold night shrinks margin to +2.', impact_direction: 'negative' },
 ];
 
 export const MOCK_TRACES: InteractionTrace[] = [
@@ -156,9 +156,9 @@ export const MOCK_TRACES: InteractionTrace[] = [
 ];
 
 export const SAVED_SIM_RUNS: SimRun[] = [
-  { id: 'sim-sg-001', type: 'single_game', label: 'KaNeXT vs Ridgemont \u2014 Single Game', team_a: 'KaNeXT Sports', team_b: 'Ridgemont (PA)', environment: 'home', version: 'V2', confidence: 82, win_pct: 71, margin: 7, created: 'Feb 16, 2026', locked: false },
-  { id: 'sim-bs-001', type: 'box_score_projection', label: 'KaNeXT vs Ridgemont \u2014 Box Score', team_a: 'KaNeXT Sports', team_b: 'Ridgemont (PA)', environment: 'home', version: 'V2', confidence: 78, win_pct: 71, margin: 7, created: 'Feb 16, 2026', locked: false },
-  { id: 'sim-lt-001', type: 'line_translation', label: 'KaNeXT vs Ridgemont \u2014 Lines', team_a: 'KaNeXT Sports', team_b: 'Ridgemont (PA)', environment: 'home', version: 'V2', confidence: 82, win_pct: 71, margin: 7, created: 'Feb 16, 2026', locked: true },
+  { id: 'sim-sg-001', type: 'single_game', label: 'Carroll College vs MSU-Northern \u2014 Single Game', team_a: 'Carroll College', team_b: 'MSU-Northern (PA)', environment: 'home', version: 'V2', confidence: 82, win_pct: 71, margin: 7, created: 'Feb 16, 2026', locked: false },
+  { id: 'sim-bs-001', type: 'box_score_projection', label: 'Carroll College vs MSU-Northern \u2014 Box Score', team_a: 'Carroll College', team_b: 'MSU-Northern (PA)', environment: 'home', version: 'V2', confidence: 78, win_pct: 71, margin: 7, created: 'Feb 16, 2026', locked: false },
+  { id: 'sim-lt-001', type: 'line_translation', label: 'Carroll College vs MSU-Northern \u2014 Lines', team_a: 'Carroll College', team_b: 'MSU-Northern (PA)', environment: 'home', version: 'V2', confidence: 82, win_pct: 71, margin: 7, created: 'Feb 16, 2026', locked: true },
 ];
 
 // =============================================================================
@@ -181,26 +181,26 @@ export interface SeasonProjectionOutput {
 
 export const MOCK_SEASON_PROJECTION: SeasonProjectionOutput = {
   run_id: 'sim-season-001',
-  team: 'KaNeXT Sports',
+  team: 'Carroll College',
   current_record: { wins: 18, losses: 6 },
   projected_record: { wins: 22, losses: 8 },
   remaining_games: [
-    { opponent: 'Lakewood University', date: 'Feb 19', environment: 'away', win_pct: 64, projected_result: 'W' },
-    { opponent: 'Pinecrest University', date: 'Feb 21', environment: 'away', win_pct: 72, projected_result: 'W' },
-    { opponent: 'Summit University', date: 'Feb 22', environment: 'home', win_pct: 58, projected_result: 'W' },
-    { opponent: 'Westfield University', date: 'Feb 26', environment: 'home', win_pct: 81, projected_result: 'W' },
-    { opponent: 'Clearwater University', date: 'Mar 1', environment: 'away', win_pct: 55, projected_result: 'L' },
-    { opponent: 'Magnolia University', date: 'Mar 4', environment: 'home', win_pct: 74, projected_result: 'W' },
+    { opponent: 'University of Providence', date: 'Feb 19', environment: 'away', win_pct: 64, projected_result: 'W' },
+    { opponent: 'Dakota State University', date: 'Feb 21', environment: 'away', win_pct: 72, projected_result: 'W' },
+    { opponent: 'Rocky Mountain College', date: 'Feb 22', environment: 'home', win_pct: 58, projected_result: 'W' },
+    { opponent: 'Montana Tech', date: 'Feb 26', environment: 'home', win_pct: 81, projected_result: 'W' },
+    { opponent: 'Bellevue University', date: 'Mar 1', environment: 'away', win_pct: 55, projected_result: 'L' },
+    { opponent: 'Multnomah', date: 'Mar 4', environment: 'home', win_pct: 74, projected_result: 'W' },
   ],
   tournament_probability: 68,
   conference_finish: { projected_seed: 3, range: '2-4' },
   sim_version: 'V2',
   sim_confidence_pct: 74,
   top_drivers: [
-    'KaNeXT home record (11-1) anchors projected wins at Wellness Center',
-    'Pack line defense ranks top-3 in KaNeXT Conference — sustains low-scoring opponents',
+    'Carroll home record (11-1) anchors projected wins at Wellness Center',
+    'Pack line defense ranks top-3 in Frontier Conference — sustains low-scoring opponents',
     'Williams + Carter two-man game is conference-best PnR combo (1.14 PPP)',
-    'Road games at Clearwater and Lakewood are swing games — both projected within 3 pts',
+    'Road games at Bellevue and Providence are swing games — both projected within 3 pts',
     '3PT% regression risk: if team drops below 33% from deep, projected record falls to 20-10',
     'Bench depth (Blake ankle, Collins slump) is key vulnerability for late-season fatigue',
   ],
@@ -208,21 +208,21 @@ export const MOCK_SEASON_PROJECTION: SeasonProjectionOutput = {
 };
 
 export const SEASON_PROJECTION_DRIVERS: SimDriver[] = [
-  { rank: 1, driver: 'Home Court Advantage', explanation: 'KaNeXT is 11-1 at home. Wellness Center provides a 4.8-point home boost per game. 3 of 6 remaining games are at home.', impact_direction: 'positive' },
-  { rank: 2, driver: 'Pack Line Defense Consistency', explanation: 'KaNeXT defensive rating has been below 95 in 7 of last 10 games. Sustained defensive effort projects well for remaining schedule.', impact_direction: 'positive' },
-  { rank: 3, driver: 'Carter Foul Trouble Risk', explanation: 'Carter has 4+ fouls in 6 games this season. In those games, KaNeXT is 3-3. If foul trouble continues, projected wins drop.', impact_direction: 'negative' },
-  { rank: 4, driver: 'Road Schedule Difficulty', explanation: 'Three road games remain including Lakewood and Clearwater — both projected within 3 points. Road record is 7-5.', impact_direction: 'negative' },
-  { rank: 5, driver: 'Conference Tournament Seeding', explanation: 'A 3-seed or better guarantees home-court in first round. KaNeXT needs 3 more wins to clinch no worse than 3-seed.', impact_direction: 'positive' },
+  { rank: 1, driver: 'Home Court Advantage', explanation: 'Carroll is 11-1 at home. Wellness Center provides a 4.8-point home boost per game. 3 of 6 remaining games are at home.', impact_direction: 'positive' },
+  { rank: 2, driver: 'Pack Line Defense Consistency', explanation: 'Carroll defensive rating has been below 95 in 7 of last 10 games. Sustained defensive effort projects well for remaining schedule.', impact_direction: 'positive' },
+  { rank: 3, driver: 'Carter Foul Trouble Risk', explanation: 'Carter has 4+ fouls in 6 games this season. In those games, Carroll is 3-3. If foul trouble continues, projected wins drop.', impact_direction: 'negative' },
+  { rank: 4, driver: 'Road Schedule Difficulty', explanation: 'Three road games remain including Providence and Bellevue — both projected within 3 points. Road record is 7-5.', impact_direction: 'negative' },
+  { rank: 5, driver: 'Conference Tournament Seeding', explanation: 'A 3-seed or better guarantees home-court in first round. Carroll needs 3 more wins to clinch no worse than 3-seed.', impact_direction: 'positive' },
 ];
 
 // =============================================================================
-// SIMULATION 3: Next Game vs Lakewood — Single Game Deep Dive
+// SIMULATION 3: Next Game vs Providence — Single Game Deep Dive
 // =============================================================================
 
 export const MOCK_KEISER_GAME: SingleGameOutput = {
   run_id: 'sim-sg-keiser-001',
-  team_a: 'KaNeXT Sports',
-  team_b: 'Lakewood University',
+  team_a: 'Carroll College',
+  team_b: 'University of Providence',
   environment: 'away',
   sim_version: 'V2',
   sim_confidence_pct: 78,
@@ -237,11 +237,11 @@ export const MOCK_KEISER_GAME: SingleGameOutput = {
     { factor: 'Opp eFG%', team_a: 45.6, team_b: 48.2, advantage: 'A' },
   ],
   top_drivers: [
-    'Lakewood drops on PnR — Williams pull-up at nail is projected 48% (1.12 PPP)',
-    'KaNeXT transition offense vs Lakewood transition D creates +5.8 fast break point margin',
-    'Lakewood OREB% (31.4%) is their biggest edge — Carter crashes hard, must box out',
-    'Away environment reduces KaNeXT win% by ~4.8% based on season road splits',
-    'If Williams held under 14 pts, KaNeXT win% drops to 51% — he must be the engine',
+    'Providence drops on PnR — Williams pull-up at nail is projected 48% (1.12 PPP)',
+    'Carroll transition offense vs Providence transition D creates +5.8 fast break point margin',
+    'Providence OREB% (31.4%) is their biggest edge — Carter crashes hard, must box out',
+    'Away environment reduces Carroll win% by ~4.8% based on season road splits',
+    'If Williams held under 14 pts, Carroll win% drops to 51% — he must be the engine',
   ],
 };
 
@@ -268,17 +268,17 @@ export const MOCK_BOX_SCORE_KEISER_OPP: BoxScorePlayerLine[] = [
 ];
 
 export const MOCK_KEISER_DRIVERS: SimDriver[] = [
-  { rank: 1, driver: 'Williams PnR Exploitation', explanation: 'Lakewood drops on PnR 74% of possessions. Williams pull-up from nail is projected at 48% (1.12 PPP). This is KaNeXT\'s primary advantage.', impact_direction: 'positive' },
-  { rank: 2, driver: 'Transition Offense Edge', explanation: 'Lakewood ranks 142nd nationally in transition D. KaNeXT projected for 16.2 fast break points. This is the biggest single-factor edge.', impact_direction: 'positive' },
-  { rank: 3, driver: 'Carter Rim Protection', explanation: 'Carter projects for 3 blocks and 14% additional contested shots at the rim. This suppresses Lakewood\'s paint scoring.', impact_direction: 'positive' },
-  { rank: 4, driver: 'Lakewood OREB Crashing', explanation: 'Carter grabs 4.2 OREB/game. Lakewood is top-20 nationally in OREB%. Projected second-chance points: 11.4 (KaNeXT avg allows 8.2).', impact_direction: 'negative' },
-  { rank: 5, driver: 'Away Court Factor', explanation: 'KaNeXT road record is 7-5 this season. Away environment projected to reduce KaNeXT efficiency by 2.1% on both ends.', impact_direction: 'negative' },
-  { rank: 6, driver: 'Harris ISO Ability', explanation: 'Harris scores 22.4 PPG and can create against pack line hedges. If Harris exceeds 25 pts, KaNeXT win probability drops to 52%.', impact_direction: 'negative' },
+  { rank: 1, driver: 'Williams PnR Exploitation', explanation: 'Providence drops on PnR 74% of possessions. Williams pull-up from nail is projected at 48% (1.12 PPP). This is Carroll\'s primary advantage.', impact_direction: 'positive' },
+  { rank: 2, driver: 'Transition Offense Edge', explanation: 'Providence ranks 142nd nationally in transition D. Carroll projected for 16.2 fast break points. This is the biggest single-factor edge.', impact_direction: 'positive' },
+  { rank: 3, driver: 'Carter Rim Protection', explanation: 'Carter projects for 3 blocks and 14% additional contested shots at the rim. This suppresses Providence\'s paint scoring.', impact_direction: 'positive' },
+  { rank: 4, driver: 'Providence OREB Crashing', explanation: 'Carter grabs 4.2 OREB/game. Providence is top-20 nationally in OREB%. Projected second-chance points: 11.4 (Carroll avg allows 8.2).', impact_direction: 'negative' },
+  { rank: 5, driver: 'Away Court Factor', explanation: 'Carroll road record is 7-5 this season. Away environment projected to reduce Carroll efficiency by 2.1% on both ends.', impact_direction: 'negative' },
+  { rank: 6, driver: 'Harris ISO Ability', explanation: 'Harris scores 22.4 PPG and can create against pack line hedges. If Harris exceeds 25 pts, Carroll win probability drops to 52%.', impact_direction: 'negative' },
 ];
 
 export const MOCK_KEISER_TRACES: InteractionTrace[] = [
   { id: 'tr-k-1', source_doc: 'Motion Read & React vs Drop PnR Coverage', key: 'Williams pull-up at nail', targets_modified: ['eFG%', 'pnr_ppp', 'ast_rate'], raw_delta: 4.2, bounded_delta: 3.6, step_order: 1 },
-  { id: 'tr-k-2', source_doc: 'Pack Line vs Spread Pick & Roll (Lakewood)', key: 'Paint protection vs Harris drives', targets_modified: ['rim_fg%', 'ft_rate', 'opp_paint_pts'], raw_delta: -2.8, bounded_delta: -2.4, step_order: 2 },
+  { id: 'tr-k-2', source_doc: 'Pack Line vs Spread Pick & Roll (Providence)', key: 'Paint protection vs Harris drives', targets_modified: ['rim_fg%', 'ft_rate', 'opp_paint_pts'], raw_delta: -2.8, bounded_delta: -2.4, step_order: 2 },
   { id: 'tr-k-3', source_doc: 'Transition Offense vs Slow Transition D', key: 'Fast break advantage', targets_modified: ['fast_break_pts', 'pace_factor'], raw_delta: 5.8, bounded_delta: 4.9, step_order: 3 },
   { id: 'tr-k-4', source_doc: 'Rim Protector vs Interior Attack', key: 'Carter contests', targets_modified: ['opp_rim_fg%', 'block_rate', 'opp_paint_pts'], raw_delta: -3.6, bounded_delta: -3.1, step_order: 4 },
   { id: 'tr-k-5', source_doc: 'Offensive Rebounding Rate', key: 'Carter crash OREB', targets_modified: ['opp_oreb%', 'second_chance_pts'], raw_delta: 3.2, bounded_delta: 2.8, step_order: 5 },
@@ -321,7 +321,7 @@ export interface TransferPortalImpactOutput {
 
 export const MOCK_TRANSFER_PORTAL_IMPACT: TransferPortalImpactOutput = {
   run_id: 'sim-portal-001',
-  team: 'KaNeXT Sports',
+  team: 'Carroll College',
   portal_player: {
     name: 'Jaylen Cross',
     position: 'Wing (SF/SG)',
@@ -350,7 +350,7 @@ export const MOCK_TRANSFER_PORTAL_IMPACT: TransferPortalImpactOutput = {
   sim_version: 'V2',
   sim_confidence_pct: 68,
   top_drivers: [
-    'Cross 3PT% (39.2%) directly addresses KaNeXT top team priority: perimeter shooting consistency',
+    'Cross 3PT% (39.2%) directly addresses Carroll top team priority: perimeter shooting consistency',
     'Adding a KR 82 wing raises closing lineup rating from 72.8 to 76.2 — significant for crunch time',
     'Cross wing defense (1.4 STL) allows Hernandez to stay as specialist rather than primary wing defender',
     'Projected lineup versatility: can run Cross at SG in "big" lineups or SF in "small" lineups',
@@ -360,7 +360,7 @@ export const MOCK_TRANSFER_PORTAL_IMPACT: TransferPortalImpactOutput = {
 };
 
 export const MOCK_PORTAL_DRIVERS: SimDriver[] = [
-  { rank: 1, driver: '3PT Shooting Upgrade', explanation: 'Cross shoots 39.2% from 3 on 5.4 attempts/game. KaNeXT team 3PT% projects from 34.1% to 36.8%, directly addressing top priority.', impact_direction: 'positive' },
+  { rank: 1, driver: '3PT Shooting Upgrade', explanation: 'Cross shoots 39.2% from 3 on 5.4 attempts/game. Carroll team 3PT% projects from 34.1% to 36.8%, directly addressing top priority.', impact_direction: 'positive' },
   { rank: 2, driver: 'Closing Lineup Improvement', explanation: 'Cross in closing lineup (Williams, Plantey, Cross, Diomande, Carter) rates 76.2 KR vs 72.8 current. +3.4 rating swing.', impact_direction: 'positive' },
   { rank: 3, driver: 'Defensive Versatility', explanation: 'Cross can guard 1-3 at 6\'5" with 6\'9" wingspan. Allows more switching schemes and reduces reliance on Hernandez.', impact_direction: 'positive' },
   { rank: 4, driver: 'System Learning Curve', explanation: 'Motion Read & React requires 4-6 weeks of practice reps for full integration. Cross would be limited initially.', impact_direction: 'negative' },
@@ -381,8 +381,8 @@ export const SAVED_SIM_RUNS_ALL: SimRun[] = [
   {
     id: 'sim-season-001',
     type: 'season',
-    label: 'KaNeXT 2025-26 Season Projection',
-    team_a: 'KaNeXT Sports',
+    label: 'Carroll College 2025-26 Season Projection',
+    team_a: 'Carroll College',
     team_b: '(remaining schedule)',
     environment: 'neutral',
     version: 'V2',
@@ -395,9 +395,9 @@ export const SAVED_SIM_RUNS_ALL: SimRun[] = [
   {
     id: 'sim-sg-keiser-001',
     type: 'single_game',
-    label: 'KaNeXT vs Lakewood — Feb 19 Preview',
-    team_a: 'KaNeXT Sports',
-    team_b: 'Lakewood University',
+    label: 'Carroll College vs Providence — Feb 19 Preview',
+    team_a: 'Carroll College',
+    team_b: 'University of Providence',
     environment: 'away',
     version: 'V2',
     confidence: 78,
@@ -410,8 +410,8 @@ export const SAVED_SIM_RUNS_ALL: SimRun[] = [
     id: 'sim-portal-001',
     type: 'box_score_projection',
     label: 'Transfer Portal: Jaylen Cross (KR 82 Wing)',
-    team_a: 'KaNeXT Sports',
-    team_b: 'KaNeXT Sports + Cross',
+    team_a: 'Carroll College',
+    team_b: 'Carroll College + Cross',
     environment: 'neutral',
     version: 'V2',
     confidence: 68,

@@ -100,7 +100,7 @@ export function EventDetailSheet({ visible, onClose, event, colors, router }: Ev
           >
             <IconSymbol name="sportscourt.fill" size={16} color={colors.text} />
             <ThemedText style={[styles.routeBtnText, { color: colors.text }]}>
-              {event.gameStatus === 'final' ? 'Open KaNeXTCast' : 'Open in Games'}
+              {event.gameStatus === 'final' ? 'Open SaintsCast' : 'Open in Games'}
             </ThemedText>
             <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
           </Pressable>

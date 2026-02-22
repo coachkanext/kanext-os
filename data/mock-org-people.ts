@@ -32,7 +32,7 @@ function sportsAdapter(): OrgPerson[] {
     { id: 'sp-s2', name: 'Antoine Brooks', title: 'Director of Player Development', section: 'staff', status: 'active' },
     { id: 'sp-s3', name: 'Keisha Thompson', title: 'Athletic Trainer', section: 'staff', status: 'active' },
     { id: 'sp-m1', name: 'Daniel Lewis', title: 'Team Captain', section: 'members', status: 'active' },
-    { id: 'sp-m2', name: 'Marcus Williams', title: 'Student-Athlete', section: 'members', status: 'active' },
+    { id: 'sp-m2', name: 'Dan Pearson', title: 'Student-Athlete', section: 'members', status: 'active' },
   ];
 }
 

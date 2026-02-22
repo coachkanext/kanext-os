@@ -750,7 +750,7 @@ export default function GamesScreen() {
                 <Text style={[styles.standingsColHeader, { color: colors.textTertiary }]}>STK</Text>
               </View>
               {STANDINGS.map((row, index) => {
-                const isUs = row.team === 'KaNeXT Sports';
+                const isUs = row.team === 'Carroll College';
                 return (
                   <View key={row.team}>
                     {index > 0 && (

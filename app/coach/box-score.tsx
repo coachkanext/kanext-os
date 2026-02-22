@@ -175,7 +175,7 @@ export default function BoxScoreScreen() {
   const BOX_SCORE = KaNeXT_BOX_SCORES as Record<string, BoxScoreLine[]>;
   const KaNeXT_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
   const realBoxScore = BOX_SCORE[gameId ?? ''] ?? [];
-  const fmuBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('KaNeXT Sports', fmuScore, KaNeXT_MOCK_NAMES);
+  const fmuBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('Carroll College', fmuScore, KaNeXT_MOCK_NAMES);
   const oppBoxScore = mockBoxScore(game.opponent, oppScore);
 
   return (
@@ -223,7 +223,7 @@ export default function BoxScoreScreen() {
 
         <View style={[styles.espnTabRow, { borderTopColor: colors.divider }]}>
           {([
-            { key: 'gamecast', label: 'KaNeXTCast' },
+            { key: 'gamecast', label: 'SaintsCast' },
             { key: 'boxscore', label: 'Box Score' },
             { key: 'pbp', label: 'Play-by-Play' },
             { key: 'teamstats', label: 'Team Stats' },
@@ -265,7 +265,7 @@ export default function BoxScoreScreen() {
         showsVerticalScrollIndicator={false}
       >
         {[
-          { label: 'KaNeXT', lines: fmuBoxScore },
+          { label: 'Carroll', lines: fmuBoxScore },
           { label: opponentAbbr, lines: oppBoxScore },
         ].map((team) => {
           const starters = team.lines.slice(0, 5);
@@ -278,8 +278,8 @@ export default function BoxScoreScreen() {
             <View key={team.label} style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
               {/* Team name header + All Stats toggle */}
               <View style={styles.teamHeader}>
-                <View style={[styles.teamHeaderIcon, { backgroundColor: team.label === 'KaNeXT' ? colors.text + '15' : colors.backgroundTertiary }]}>
-                  <Text style={[styles.teamHeaderIconText, { color: team.label === 'KaNeXT' ? colors.text : colors.textSecondary }]}>
+                <View style={[styles.teamHeaderIcon, { backgroundColor: team.label === 'Carroll' ? colors.text + '15' : colors.backgroundTertiary }]}>
+                  <Text style={[styles.teamHeaderIconText, { color: team.label === 'Carroll' ? colors.text : colors.textSecondary }]}>
                     {team.label.charAt(0)}
                   </Text>
                 </View>

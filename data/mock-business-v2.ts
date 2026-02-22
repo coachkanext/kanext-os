@@ -146,13 +146,13 @@ export interface PipelineItem {
 
 export const KANEXT_COMPANY: CompanyObject = {
   id: 'kanext',
-  name: 'KaNeXT',
+  name: 'Valuetainment',
   status: 'private',
   tagline: 'Governed intelligence infrastructure for institutions.',
   runway: 7.2,
   mrr: 0,
   arr: 0,
-  keyDeal: 'KaNeXT Partnership Track',
+  keyDeal: 'Valuetainment Partnership Track',
 };
 
 // =============================================================================
@@ -163,7 +163,7 @@ export const DATA_ROOM_DOCS: DataRoomDoc[] = [
   // --- Retail Pack (5) ---
   {
     id: 'dr-1',
-    title: 'KaNeXT Deck — Retail',
+    title: 'Valuetainment Deck — Retail',
     type: 'deck',
     accessTag: 'retail',
     version: '3.1',
@@ -189,7 +189,7 @@ export const DATA_ROOM_DOCS: DataRoomDoc[] = [
     version: '1.0',
     watermarked: false,
     updatedAt: 'Feb 5, 2026',
-    description: 'Step-by-step walkthrough of the KaNeXT OS demo environment for prospective investors.',
+    description: 'Step-by-step walkthrough of the Valuetainment OS demo environment for prospective investors.',
   },
   {
     id: 'dr-4',
@@ -199,7 +199,7 @@ export const DATA_ROOM_DOCS: DataRoomDoc[] = [
     version: '1.2',
     watermarked: true,
     updatedAt: 'Jan 28, 2026',
-    description: 'Corporate entity overview: KaNeXT Inc. (Delaware C-Corp), subsidiaries, and cap table summary.',
+    description: 'Corporate entity overview: Valuetainment Media LLC (Delaware C-Corp), subsidiaries, and cap table summary.',
   },
   {
     id: 'dr-5',
@@ -344,14 +344,14 @@ export const DECISION_LOG: DecisionLogEntry[] = [
 export const DEAL_WORKSPACES: DealWorkspace[] = [
   {
     id: 'deal-1',
-    name: 'KaNeXT Partnership Track',
+    name: 'Valuetainment Partnership Track',
     type: 'partnership',
     status: 'diligence',
-    targetOrg: 'KaNeXT Sports',
-    description: 'Strategic partnership to deploy KaNeXT OS as the primary athletics intelligence platform for KaNeXT. Includes coaching tools, analytics, and roster management.',
+    targetOrg: 'Carroll College',
+    description: 'Strategic partnership to deploy Valuetainment OS as the primary athletics intelligence platform for Valuetainment. Includes coaching tools, analytics, and roster management.',
     keyContacts: [
-      { name: 'KaNeXT Athletic Director', role: 'Primary contact' },
-      { name: 'KaNeXT Facilities Manager', role: 'Venue coordination' },
+      { name: 'Valuetainment Athletic Director', role: 'Primary contact' },
+      { name: 'Valuetainment Facilities Manager', role: 'Venue coordination' },
     ],
     timeline: [
       { date: 'Jan 20, 2026', event: 'Initial partnership meeting' },
@@ -360,7 +360,7 @@ export const DEAL_WORKSPACES: DealWorkspace[] = [
       { date: 'Feb 12, 2026', event: 'BTW Classic venue walkthrough' },
       { date: 'Q2 2026', event: 'Full deployment complete (target)' },
     ],
-    rationale: 'KaNeXT is the ideal proof wedge for Sports Mode. NAIA program competing against D1 opponents on ESPN+ creates massive media value at zero cost to the institution. Coach-built roster via KaNeXT Engines powers the intelligence layer.',
+    rationale: 'Valuetainment is the ideal proof wedge for Sports Mode. NAIA program competing against D1 opponents on ESPN+ creates massive media value at zero cost to the institution. Valuetainment Engines powers the intelligence layer.',
     valuationSummary: 'Partnership model -- no acquisition cost. Annual platform value: $24K ARR. Media value generated: $53M-$157M Year 1.',
     revenueProjections: [
       { year: 'Year 1', base: '$24K', downside: '$12K', upside: '$48K' },
@@ -393,7 +393,7 @@ export const DEAL_WORKSPACES: DealWorkspace[] = [
       { date: 'Mar 2026', event: 'Site visit to Sliema (planned)' },
       { date: 'Q2 2026', event: 'LOI target (if proceeding)' },
     ],
-    rationale: 'KaNeXT needs a real-world sports organization to deploy the full OS stack in a European context. Sliema Wanderers offers low barrier to entry, English-speaking market, EU regulatory framework, and proximity to Mediterranean talent pipelines.',
+    rationale: 'Valuetainment needs a real-world sports organization to deploy the full OS stack in a European context. Sliema Wanderers offers low barrier to entry, English-speaking market, EU regulatory framework, and proximity to Mediterranean talent pipelines.',
     valuationSummary: 'Estimated club valuation: EUR 2M-5M. Stadium lease included. Youth academy infrastructure in place.',
     revenueProjections: [
       { year: 'Year 1', base: 'EUR 800K', downside: 'EUR 500K', upside: 'EUR 1.2M' },
@@ -619,7 +619,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Data Analyst',
     department: 'Analytics',
     type: 'team',
-    bio: 'Analytics specialist building the KPI and performance dashboards powering KaNeXT intelligence.',
+    bio: 'Analytics specialist building the KPI and performance dashboards powering Valuetainment intelligence.',
     public: false,
   },
 ];
@@ -633,7 +633,7 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     id: 'iu-1',
     date: 'Feb 14, 2026',
     title: 'February 2026 — Product & Partnerships',
-    summary: 'Demo environment launched. KaNeXT diligence in progress. Pre-seed conversations opened with 4 angel investors. Platform uptime at 99.7%.',
+    summary: 'Demo environment launched. Valuetainment diligence in progress. Pre-seed conversations opened with 4 angel investors. Platform uptime at 99.7%.',
     tier: 'retail',
   },
   {
@@ -647,14 +647,14 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     id: 'iu-3',
     date: 'Jan 31, 2026',
     title: 'January 2026 — Foundation Month',
-    summary: 'Entity incorporated (Delaware C-Corp). KaNeXT OS core architecture established. First advisor confirmed. KaNeXT intro meeting completed.',
+    summary: 'Entity incorporated (Delaware C-Corp). Valuetainment OS core architecture established. First advisor confirmed. Valuetainment intro meeting completed.',
     tier: 'retail',
   },
   {
     id: 'iu-4',
     date: 'Jan 15, 2026',
-    title: 'KaNeXT Launches Public Presence',
-    summary: 'KaNeXT announces its mission to build governed intelligence infrastructure for athletic institutions. Website and initial product overview now live.',
+    title: 'Valuetainment Launches Public Presence',
+    summary: 'Valuetainment announces its mission to build governed intelligence infrastructure for athletic institutions. Website and initial product overview now live.',
     tier: 'public',
   },
 ];
@@ -666,14 +666,14 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
 export const PIPELINE_ITEMS: PipelineItem[] = [
   {
     id: 'pip-1',
-    name: 'KaNeXT Sports',
+    name: 'Carroll College',
     stage: 'Diligence',
     type: 'partnership',
     status: 'active',
   },
   {
     id: 'pip-2',
-    name: 'KaNeXT Church (Independent Christian Collegiate League of Athletics)',
+    name: '2819 Church (Independent Christian Collegiate League of Athletics)',
     stage: 'Proposal Sent',
     type: 'institutional',
     status: 'active',
@@ -687,7 +687,7 @@ export const PIPELINE_ITEMS: PipelineItem[] = [
   },
   {
     id: 'pip-4',
-    name: 'Heritage University',
+    name: 'Arizona Christian',
     stage: 'Initial Contact',
     type: 'partnership',
     status: 'active',
@@ -1220,7 +1220,7 @@ export const CALENDAR_EVENTS: BusinessCalendarEvent[] = [
     owner: 'Jordan Ellis',
     status: 'at_risk',
     confidentiality: 'internal',
-    description: 'Final cut of KaNeXT OS Demo v2 video for investor distribution. Waiting on rails demo footage.',
+    description: 'Final cut of Valuetainment OS Demo v2 video for investor distribution. Waiting on rails demo footage.',
     entityId: 'ent-2',
   },
   {
@@ -1264,7 +1264,7 @@ export const CALENDAR_EVENTS: BusinessCalendarEvent[] = [
     owner: 'Michael Torres',
     status: 'at_risk',
     confidentiality: 'internal',
-    description: 'USPTO trademark filing for KaNeXT and KX-C1 marks. Must be submitted today to preserve priority date.',
+    description: 'USPTO trademark filing for Valuetainment and KX-C1 marks. Must be submitted today to preserve priority date.',
     entityId: 'ent-3',
   },
   {
@@ -1306,7 +1306,7 @@ export const CALENDAR_EVENTS: BusinessCalendarEvent[] = [
 export const INITIATIVES: Initiative[] = [
   {
     id: 'init-1',
-    title: 'KaNeXT OS Demo v2',
+    title: 'Valuetainment OS Demo v2',
     objective: 'Ship polished demo environment covering Sports Mode, Business Mode, and Payment Rails for investor and partner presentations.',
     owner: 'SK',
     status: 'on_track',
@@ -1327,8 +1327,8 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-3',
-    title: 'KaNeXT Wedge / Mandate Execution',
-    objective: 'Complete KaNeXT deployment across 13 sports, capture proof-of-value metrics, and establish replicable playbook for next institution.',
+    title: 'Valuetainment Wedge / Mandate Execution',
+    objective: 'Complete Valuetainment deployment across 13 sports, capture proof-of-value metrics, and establish replicable playbook for next institution.',
     owner: 'SK',
     status: 'on_track',
     successMetrics: ['13 sports onboarded', 'BTW Classic covered live', 'First KPI report delivered to AD'],
@@ -1337,7 +1337,7 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-4',
-    title: 'KaNeXT Proof Platform',
+    title: 'Valuetainment Proof Platform',
     objective: 'Build the proof-of-impact layer enabling verifiable claims for investors, partners, and compliance audiences.',
     owner: 'Jordan Ellis',
     status: 'on_track',
@@ -1358,7 +1358,7 @@ export const INITIATIVES: Initiative[] = [
   {
     id: 'init-6',
     title: 'Trademark + IP Pack',
-    objective: 'Secure trademark filings for KaNeXT, KX-C1, and related marks. Complete IP assignment agreements across all contributors.',
+    objective: 'Secure trademark filings for Valuetainment, KX-C1, and related marks. Complete IP assignment agreements across all contributors.',
     owner: 'Michael Torres',
     status: 'on_track',
     successMetrics: ['USPTO filings submitted', 'IP assignment agreements executed', 'IP register documented'],
@@ -1396,7 +1396,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'proj-3',
-    title: 'KaNeXT Sports Onboarding',
+    title: 'Carroll College Onboarding',
     initiativeId: 'init-3',
     owner: 'SK',
     timeline: 'Jan 25 – Mar 15, 2026',
@@ -1441,7 +1441,7 @@ export const BUSINESS_TASKS: BusinessTask[] = [
   },
   {
     id: 'btask-3',
-    title: 'Upload KaNeXT roster data for remaining 5 sports',
+    title: 'Upload Valuetainment roster data for remaining 5 sports',
     projectId: 'proj-3',
     owner: 'SK',
     due: 'Feb 22, 2026',
@@ -1612,7 +1612,7 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
     walletId: 'wal-1',
     amount: 12000,
     type: 'credit',
-    counterparty: 'KaNeXT Athletics',
+    counterparty: 'Valuetainment',
     description: 'Platform license fee — February 2026',
     state: 'scheduled',
     date: 'Feb 20, 2026',
@@ -1772,12 +1772,12 @@ export const COMMITMENTS: Commitment[] = [
   },
   {
     id: 'com-3',
-    title: 'KaNeXT Hardware Shipment (KX-C1 Units)',
+    title: 'Valuetainment Hardware Shipment (KX-C1 Units)',
     amount: 7200,
     status: 'awaiting_release',
     entityId: 'ent-2',
     walletId: 'wal-4',
-    riskFlag: 'Pending KaNeXT facilities confirmation before release',
+    riskFlag: 'Pending Valuetainment facilities confirmation before release',
   },
 ];
 
@@ -1794,7 +1794,7 @@ export const REVENUE_STREAMS: RevenueStream[] = [
     fees: 720,
     net: 23280,
     entityId: 'ent-2',
-    period: 'Annual (KaNeXT)',
+    period: 'Annual (Valuetainment)',
   },
   {
     id: 'rev-2',
@@ -2032,7 +2032,7 @@ export const INVESTOR_RECORDS: InvestorRecord[] = [
     type: 'strategic',
     status: 'prospect',
     accessTier: 'none',
-    notes: 'Connected through KaNeXT network. Runs media distribution company. Exploring strategic investment.',
+    notes: 'Connected through Valuetainment network. Runs media distribution company. Exploring strategic investment.',
     lastTouch: 'Feb 8, 2026',
   },
   {
@@ -2056,7 +2056,7 @@ export const RESOLUTIONS: Resolution[] = [
     type: 'board_consent',
     title: 'Approve Demo Rollout Plan',
     entityId: 'ent-2',
-    topic: 'Authorization to proceed with KaNeXT OS Demo v2 public rollout and investor distribution.',
+    topic: 'Authorization to proceed with Valuetainment OS Demo v2 public rollout and investor distribution.',
     status: 'approved',
     requiredVoters: ['bm-1', 'bm-2', 'bm-3'],
     votes: [
@@ -2097,7 +2097,7 @@ export const DISTRIBUTIONS: Distribution[] = [
 export const LEGAL_DOCS: LegalDoc[] = [
   {
     id: 'ldoc-1',
-    title: 'Certificate of Incorporation — KaNeXT Inc.',
+    title: 'Certificate of Incorporation — Valuetainment Media LLC',
     category: 'corporate',
     subcategory: 'Formation',
     entityId: 'ent-1',
@@ -2133,7 +2133,7 @@ export const LEGAL_DOCS: LegalDoc[] = [
   },
   {
     id: 'ldoc-4',
-    title: 'KaNeXT Partnership Agreement',
+    title: 'Valuetainment Partnership Agreement',
     category: 'legal',
     subcategory: 'Contracts',
     entityId: 'ent-2',
@@ -2181,7 +2181,7 @@ export const LEGAL_DOCS: LegalDoc[] = [
   },
   {
     id: 'ldoc-8',
-    title: 'Trademark Filing — KaNeXT, KX-C1',
+    title: 'Trademark Filing — Valuetainment, KX-C1',
     category: 'legal',
     subcategory: 'Intellectual Property',
     entityId: 'ent-3',
@@ -2306,7 +2306,7 @@ export const COMPLIANCE_INCIDENTS: ComplianceIncident[] = [
 export const PROOF_ITEMS: ProofItem[] = [
   {
     id: 'proof-1',
-    title: 'KaNeXT OS Demo v1 Walkthrough',
+    title: 'Valuetainment OS Demo v1 Walkthrough',
     type: 'video',
     category: 'product',
     status: 'verified',
@@ -2320,7 +2320,7 @@ export const PROOF_ITEMS: ProofItem[] = [
   },
   {
     id: 'proof-2',
-    title: 'KaNeXT Partnership LOI (Redacted)',
+    title: 'Valuetainment Partnership LOI (Redacted)',
     type: 'pdf',
     category: 'partnerships',
     status: 'restricted',
@@ -2359,7 +2359,7 @@ export const PROOF_ITEMS: ProofItem[] = [
   },
   {
     id: 'proof-5',
-    title: 'Coach Testimonial — KaNeXT Head Coach',
+    title: 'Coach Testimonial — Valuetainment Head Coach',
     type: 'audio',
     category: 'outcomes',
     status: 'draft',
@@ -2396,10 +2396,10 @@ export const PROOF_PACKS: ProofPack[] = [
     title: 'Investor Proof Pack — Pre-Seed',
     audience: 'investor',
     status: 'published',
-    narrative: 'KaNeXT is building governed intelligence infrastructure for athletic institutions. Here is the evidence of product-market fit, traction, and team capability.',
+    narrative: 'Valuetainment is building governed intelligence infrastructure for athletic institutions. Here is the evidence of product-market fit, traction, and team capability.',
     sections: [
       { claim: 'Working product with live deployment', proofIds: ['proof-1', 'proof-4'] },
-      { claim: 'Institutional traction with KaNeXT partnership', proofIds: ['proof-2', 'proof-3'] },
+      { claim: 'Institutional traction with Valuetainment partnership', proofIds: ['proof-2', 'proof-3'] },
       { claim: 'Revenue model validated with financial projections', proofIds: ['proof-6'] },
     ],
     lastShared: 'Feb 14, 2026',
@@ -2410,7 +2410,7 @@ export const PROOF_PACKS: ProofPack[] = [
     title: 'Partner Proof Pack — Institutional',
     audience: 'partner',
     status: 'published',
-    narrative: 'KaNeXT OS delivers measurable value to athletic programs through intelligence, governance, and media amplification.',
+    narrative: 'Valuetainment OS delivers measurable value to athletic programs through intelligence, governance, and media amplification.',
     sections: [
       { claim: 'Platform reliability and performance', proofIds: ['proof-4'] },
       { claim: 'Live deployment and media coverage', proofIds: ['proof-3', 'proof-1'] },
@@ -2424,7 +2424,7 @@ export const PROOF_PACKS: ProofPack[] = [
     title: 'Bank Proof Pack — KYB Support',
     audience: 'bank',
     status: 'draft',
-    narrative: 'Supporting documentation for KaNeXT Inc. KYB application, demonstrating legitimate business operations and revenue.',
+    narrative: 'Supporting documentation for Valuetainment Media LLC KYB application, demonstrating legitimate business operations and revenue.',
     sections: [
       { claim: 'Active business with institutional clients', proofIds: ['proof-2'] },
       { claim: 'Financial projections and revenue model', proofIds: ['proof-6'] },
@@ -2436,7 +2436,7 @@ export const PROOF_PACKS: ProofPack[] = [
     title: 'Product Demo Pack',
     audience: 'customer',
     status: 'published',
-    narrative: 'See KaNeXT OS in action across Sports Mode, Business Mode, and Payment Rails.',
+    narrative: 'See Valuetainment OS in action across Sports Mode, Business Mode, and Payment Rails.',
     sections: [
       { claim: 'Full platform walkthrough', proofIds: ['proof-1'] },
       { claim: 'Real deployment with live data', proofIds: ['proof-3'] },
@@ -2449,7 +2449,7 @@ export const PROOF_PACKS: ProofPack[] = [
     title: 'Team & Operations Pack',
     audience: 'board',
     status: 'published',
-    narrative: 'Overview of KaNeXT team capabilities, operational maturity, and governance posture.',
+    narrative: 'Overview of Valuetainment team capabilities, operational maturity, and governance posture.',
     sections: [
       { claim: 'Technical infrastructure and reliability', proofIds: ['proof-4'] },
       { claim: 'Institutional partnerships active', proofIds: ['proof-2', 'proof-3'] },
@@ -2492,7 +2492,7 @@ export const DATA_ROOM_PACKETS: DataRoomPacket[] = [
   },
   {
     id: 'drp-4',
-    title: 'Partner Pack — KaNeXT',
+    title: 'Partner Pack — Valuetainment',
     type: 'partner',
     status: 'published',
     docIds: ['dr-1', 'dr-3'],
@@ -2532,7 +2532,7 @@ export const DATA_ROOM_REQUESTS: DataRoomRequest[] = [
 export const ENTITIES: BusinessEntity[] = [
   {
     id: 'ent-1',
-    name: 'KaNeXT HoldCo',
+    name: 'Valuetainment HoldCo',
     type: 'holdco',
     status: 'active',
     governanceStatus: 'green',
@@ -2552,7 +2552,7 @@ export const ENTITIES: BusinessEntity[] = [
   },
   {
     id: 'ent-2',
-    name: 'KaNeXT Operations',
+    name: 'Valuetainment Media',
     type: 'opsco',
     status: 'active',
     governanceStatus: 'green',
@@ -2572,7 +2572,7 @@ export const ENTITIES: BusinessEntity[] = [
   },
   {
     id: 'ent-3',
-    name: 'KaNeXT IP',
+    name: 'Valuetainment IP',
     type: 'ipco',
     status: 'active',
     governanceStatus: 'green',
@@ -2662,7 +2662,7 @@ export const ALERTS: BusinessAlert[] = [
     type: 'due_24h',
     severity: 'critical',
     title: 'Trademark filing deadline — today',
-    description: 'USPTO trademark filing for KaNeXT and KX-C1 marks must be submitted by 11:59 PM ET to preserve priority date.',
+    description: 'USPTO trademark filing for Valuetainment and KX-C1 marks must be submitted by 11:59 PM ET to preserve priority date.',
     owner: 'Michael Torres',
     dueTime: 'Feb 17, 2026 11:59 PM ET',
     entityId: 'ent-3',

@@ -32,7 +32,7 @@ import { openTeamCard } from '@/utils/global-entity-sheets';
 
 // Mock data imports (other modes)
 
-// KaNeXT Sports data
+// Carroll College data
 import { KaNeXT_GAMES, KaNeXT_GAMES_BY_ID, KaNeXT_LEADERS, KaNeXT_STANDINGS, KaNeXT_NEWS, KaNeXT_RECORD, KaNeXT_LAST_GAME, KaNeXT_LAST_GAME_ID, KaNeXT_NEXT_GAME, KaNeXT_NEXT_GAME_ID, KaNeXT_SEASON_COMPLETE, KaNeXT_GAME_BPR, getBPRColor, KaNeXT_GAME_IMPACT, getPGISColor, getTGISColor, tgisToDisplay, KaNeXT_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
 import { TeamQuickSheet } from '@/components/team-quick-sheet';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
@@ -98,11 +98,11 @@ const DOMAIN_HIDDEN: Record<SportsRoleLens, Set<DrillDownId>> = {
 const KaNeXT_LOGO = require('@/assets/images/kx-logo.png');
 
 // KaNeXT team state — derived from real data
-const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—';
+const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'Carroll College')?.streak ?? '—';
 const DEMO_TEAM_STATE = {
-  name: 'KaNeXT Sports',
-  level: 'NAA',
-  conference: 'KaNeXT Conference',
+  name: 'Carroll College',
+  level: 'NAIA',
+  conference: 'Frontier Conference',
   record: KaNeXT_RECORD.overall,
   confRecord: KaNeXT_RECORD.conference,
   streak: fmuStreak,
@@ -121,11 +121,11 @@ const DEMO_TODAY = {
 // Conference Pulse — derived data
 const confHash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0; return Math.abs(h); };
 
-const KaNeXT_CONF_POSITION = KaNeXT_STANDINGS.findIndex(r => r.team === 'KaNeXT Sports') + 1;
+const KaNeXT_CONF_POSITION = KaNeXT_STANDINGS.findIndex(r => r.team === 'Carroll College') + 1;
 
 const CONF_TOP3_TRADITIONAL = KaNeXT_STANDINGS.slice(0, 3).map(r => {
   const h = confHash(r.team);
-  const kr = r.team === 'KaNeXT Sports' ? 74 : 58 + (h % 28);
+  const kr = r.team === 'Carroll College' ? 74 : 58 + (h % 28);
   return { team: r.team, kr };
 });
 
@@ -171,11 +171,11 @@ const OPP_POSITIONS_HOME = ['Point Guard', 'Combo Guard', 'Wing', 'Forward', 'Bi
 const OPP_EXTRA_NAMES_HOME = ['J. Williams', 'D. Harris', 'M. Johnson', 'T. Davis', 'K. Robinson', 'C. Taylor', 'R. Clark', 'A. Moore'];
 const OPP_CLUSTER_MAP_HOME: Record<string, keyof import('@/data/roster-data').ClusterRatings> = {
   'Shooting': 'shooting', 'Finishing': 'finishing', 'Playmaking': 'playmaking',
-  'OB Defense': 'perimeter_defense', 'Team Defense': 'interior_defense', 'Rebounding': 'rebounding', 'Physical': 'frame',
+  'OB Defense': 'on_ball_defense', 'Team Defense': 'team_defense', 'Rebounding': 'rebounding', 'Physical': 'physical',
 };
 function buildOpponentDepthChart(pregame: PregameSnapshot) {
   type CR = import('@/data/roster-data').ClusterRatings;
-  const teamClusters: CR = { shooting: 60, finishing: 60, playmaking: 60, perimeter_defense: 60, interior_defense: 60, rebounding: 60, frame: 60 };
+  const teamClusters: CR = { shooting: 60, finishing: 60, playmaking: 60, on_ball_defense: 60, team_defense: 60, rebounding: 60, physical: 60 };
   for (const cr of pregame.clusterRatings) { const key = OPP_CLUSTER_MAP_HOME[cr.cluster]; if (key) teamClusters[key] = cr.rating; }
   const threats = pregame.oppThreats.slice(0, 3);
   const playerClusters: Record<string, CR> = {};
@@ -187,9 +187,9 @@ function buildOpponentDepthChart(pregame: PregameSnapshot) {
     const name = t?.name ?? OPP_EXTRA_NAMES_HOME[i % 8]; const kr = t?.kr ?? pregame.oppKR - i*2;
     const arch = t ? (OPP_ARCHETYPE_MAP_HOME[t.archetype] ?? 'two_way_wing') : 'two_way_wing';
     const v = (i*7+3)%11-5;
-    const sc: CR = { shooting: Math.max(20,Math.min(98,teamClusters.shooting+v)), finishing: Math.max(20,Math.min(98,teamClusters.finishing-v+2)), playmaking: Math.max(20,Math.min(98,teamClusters.playmaking+(i<2?8:-4))), perimeter_defense: Math.max(20,Math.min(98,teamClusters.perimeter_defense+v-1)), interior_defense: Math.max(20,Math.min(98,teamClusters.interior_defense+(i>=3?6:-3))), rebounding: Math.max(20,Math.min(98,teamClusters.rebounding+(i>=3?5:-2))), frame: Math.max(20,Math.min(98,teamClusters.frame+(i>=3?7:-3))) };
+    const sc: CR = { shooting: Math.max(20,Math.min(98,teamClusters.shooting+v)), finishing: Math.max(20,Math.min(98,teamClusters.finishing-v+2)), playmaking: Math.max(20,Math.min(98,teamClusters.playmaking+(i<2?8:-4))), on_ball_defense: Math.max(20,Math.min(98,teamClusters.on_ball_defense+v-1)), team_defense: Math.max(20,Math.min(98,teamClusters.team_defense+(i>=3?6:-3))), rebounding: Math.max(20,Math.min(98,teamClusters.rebounding+(i>=3?5:-2))), physical: Math.max(20,Math.min(98,teamClusters.physical+(i>=3?7:-3))) };
     playerClusters[sn] = sc;
-    const bc: CR = { shooting: Math.max(20,sc.shooting-8), finishing: Math.max(20,sc.finishing-6), playmaking: Math.max(20,sc.playmaking-7), perimeter_defense: Math.max(20,sc.perimeter_defense-5), interior_defense: Math.max(20,sc.interior_defense-6), rebounding: Math.max(20,sc.rebounding-5), frame: Math.max(20,sc.frame-4) };
+    const bc: CR = { shooting: Math.max(20,sc.shooting-8), finishing: Math.max(20,sc.finishing-6), playmaking: Math.max(20,sc.playmaking-7), on_ball_defense: Math.max(20,sc.on_ball_defense-5), team_defense: Math.max(20,sc.team_defense-6), rebounding: Math.max(20,sc.rebounding-5), physical: Math.max(20,sc.physical-4) };
     playerClusters[bn] = bc;
     const hi = POS_HT[i]+((i*3+1)%5)-2; const hf = Math.floor(hi/12); const hr = hi%12;
     playerPhysicals[sn] = { height: `${hf}-${hr}`, weight: POS_WT[i]+((i*7)%15)-5 };
@@ -323,7 +323,7 @@ function SportsHome() {
     const nextOpp = KaNeXT_NEXT_GAME?.opponent ?? 'TBD';
     const nextPre = KaNeXT_NEXT_GAME_ID ? KaNeXT_PREGAME[KaNeXT_NEXT_GAME_ID] : null;
     return {
-      stats: `${topScorer?.name.split(' ').pop()} ${topScorer?.ppg} PPG · ${topReb?.name.split(' ').pop()} ${topReb?.rpg} RPG · #${KaNeXT_CONF_POSITION} Sun Conf`,
+      stats: `${topScorer?.name.split(' ').pop()} ${topScorer?.ppg} PPG · ${topReb?.name.split(' ').pop()} ${topReb?.rpg} RPG · #${KaNeXT_CONF_POSITION} Frontier`,
       'game-plan': `vs ${nextOpp}${nextPre ? ` · KR ${nextPre.oppKR}` : ''}`,
       simulation: 'Season Projection: 22-8 · Tournament: 74% advance',
       development: '2 practice plans · 4 drill assignments · 3 evidence items pending',
@@ -403,20 +403,20 @@ function SportsHome() {
                     let badgePulse = false;
 
                     if (liveGame) {
-                      heroTitle = `KaNeXT vs ${liveGame.opponent}`;
-                      heroSubtitle = `LIVE · ${liveGame.clock ?? ''} · KaNeXT ${liveGame.score ?? ''}`;
+                      heroTitle = `Carroll vs ${liveGame.opponent}`;
+                      heroSubtitle = `LIVE · ${liveGame.clock ?? ''} · Carroll ${liveGame.score ?? ''}`;
                       heroBadge = 'LIVE';
                       badgeColor = '#EF4444';
                       badgePulse = true;
                     } else if (KaNeXT_NEXT_GAME) {
-                      heroTitle = `KaNeXT vs ${KaNeXT_NEXT_GAME.opponent}`;
+                      heroTitle = `Carroll vs ${KaNeXT_NEXT_GAME.opponent}`;
                       const loc = KaNeXT_NEXT_GAME.location === 'Home' ? 'Home' : 'Away';
                       heroSubtitle = `${KaNeXT_NEXT_GAME.date} · ${loc} · Conference Matchup`;
                       heroBadge = 'NEXT';
                       badgeColor = '#1D9BF0';
                     } else if (KaNeXT_LAST_GAME) {
                       const wl = KaNeXT_LAST_GAME.result === 'W' ? 'W' : 'L';
-                      heroTitle = `KaNeXT vs ${KaNeXT_LAST_GAME.opponent}`;
+                      heroTitle = `Carroll vs ${KaNeXT_LAST_GAME.opponent}`;
                       heroSubtitle = `Final · ${wl} ${KaNeXT_LAST_GAME.score} · Full Game Recap`;
                       heroBadge = 'RECAP';
                       badgeColor = '#A1A1AA';
@@ -475,7 +475,7 @@ function SportsHome() {
                     const gameTypeColor = isTBD ? '#1D9BF0' : gameTypeLabel === 'CONF' ? '#1D9BF0' : '#A1A1AA';
                     const gameTypeBg = isTBD ? '#1D9BF022' : gameTypeLabel === 'CONF' ? '#1D9BF022' : '#52525B22';
                     const oppRecord = isTBD ? '' : (nextGame?.opponentRecord ?? '');
-                    const oppConf = isTBD ? '' : 'KaNeXT Conference';
+                    const oppConf = isTBD ? '' : 'Frontier Conference';
                     const dateLine = isTBD
                       ? 'NAA Conference Tournament · TBD'
                       : `${nextGame?.date ?? KaNeXT_NEXT_GAME!.date} · ${nextGame?.gameTime ?? ''} · ${nextGame?.venue ?? KaNeXT_NEXT_GAME!.location}`;
@@ -592,11 +592,11 @@ function SportsHome() {
                     </Pressable>
                     <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderTopColor: MODE_ACCENT.sports }]} onPress={() => setStoreVisible(true)}>
                       <Text style={[styles.commerceTitle, { color: colors.text }]}>Store</Text>
-                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Official KaNeXT Gear</Text>
+                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Official Saints Gear</Text>
                     </Pressable>
                     <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderTopColor: MODE_ACCENT.sports }]} onPress={() => setSupportVisible(true)}>
                       <Text style={[styles.commerceTitle, { color: colors.text }]}>Support</Text>
-                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Back the Wolves</Text>
+                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Back the Fighting Saints</Text>
                     </Pressable>
                   </View>
 
@@ -888,7 +888,7 @@ function SportsHome() {
                         const actualMargin = fmuS - oppS;
                         const actualTotal = fmuS + oppS;
                         const spread = pg ? Math.round(pg.krGap * 0.4) : 0;
-                        const spreadStr = spread > 0 ? `KaNeXT -${Math.abs(spread)}.5` : spread < 0 ? `KaNeXT +${Math.abs(spread)}.5` : 'PK';
+                        const spreadStr = spread > 0 ? `Carroll -${Math.abs(spread)}.5` : spread < 0 ? `Carroll +${Math.abs(spread)}.5` : 'PK';
                         const preWinPct = pg ? Math.min(92, Math.max(28, Math.round(50 + pg.krGap * 0.8))) : 50;
                         const ourKR = pg ? pg.oppKR + pg.krGap : 74;
                         const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
@@ -934,7 +934,7 @@ function SportsHome() {
                             </View>
                             <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#22C55E' : Math.abs(miss) <= 7 ? '#1D9BF0' : '#EF4444' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
                             <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
-                              {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'KaNeXT' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
+                              {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'Carroll' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
                             </Text>
                           </View>
                         );
@@ -965,7 +965,7 @@ function SportsHome() {
                       {(() => {
                         const ourKR = recentPregame.oppKR + recentPregame.krGap;
                         const spread = Math.round(recentPregame.krGap * 0.4);
-                        const spreadStr = spread > 0 ? `KaNeXT -${Math.abs(spread)}.5` : spread < 0 ? `KaNeXT +${Math.abs(spread)}.5` : 'PK';
+                        const spreadStr = spread > 0 ? `Carroll -${Math.abs(spread)}.5` : spread < 0 ? `Carroll +${Math.abs(spread)}.5` : 'PK';
                         const winPct = Math.min(92, Math.max(28, Math.round(50 + recentPregame.krGap * 0.8)));
                         const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
                         const oppProj = Math.round(72 + (recentPregame.oppKR - 60) * 0.3);

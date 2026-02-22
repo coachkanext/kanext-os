@@ -1,5 +1,5 @@
 /**
- * Church Ledger V3 — KaNeXT Church · Senior Pastor
+ * Church Ledger V3 — 2819 Church · Senior Pastor
  * ViewBar: Transactions | Pending | Receipts
  * Self-contained with inline mock data.
  */

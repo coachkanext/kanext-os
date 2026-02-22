@@ -25,7 +25,7 @@ type PbpCategory = 'scoring' | 'foul' | 'sub' | 'timeout' | 'other';
 
 interface PlayByPlayEvent {
   id: string;
-  team: 'KaNeXT' | string;
+  team: 'Carroll' | string;
   text: string;
   scoreAt: string;
   category: PbpCategory;
@@ -111,7 +111,7 @@ function convertGameOpsToPlayByPlay(events: any[], opponentAbbr: string): PlayBy
     else oppScore += pts;
     pbp.push({
       id: evt.id,
-      team: evt.team === 'LU' ? 'KaNeXT' : opponentAbbr,
+      team: evt.team === 'LU' ? 'Carroll' : opponentAbbr,
       text: gameOpsEventToText(evt),
       scoreAt: `${luScore}-${oppScore}`,
       category: gameOpsEventCategory(evt.type),
@@ -322,7 +322,7 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
         const liveEntries = game.status === 'live' ? entries.slice(0, Math.floor(entries.length * 0.65)) : entries;
         return liveEntries.reverse().map((e, i): PlayByPlayEvent => ({
           id: `mock-${i}`,
-          team: e.team === 'fmu' ? 'KaNeXT' : opponentAbbr,
+          team: e.team === 'fmu' ? 'Carroll' : opponentAbbr,
           text: e.text,
           scoreAt: e.score,
           category: e.text.includes('makes') || e.text.includes('misses') || e.text.includes('dunk') || e.text.includes('free throw')
@@ -336,7 +336,7 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
 
   const realBoxScore = hasGameOps ? computeGameOpsBoxScore(gameOpsEvents) : (KaNeXT_BOX_SCORES[gameId] ?? []);
   const KaNeXT_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
-  const effectiveBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('KaNeXT Sports', parseInt(effectiveLuScore) || 0, KaNeXT_MOCK_NAMES);
+  const effectiveBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('Carroll College', parseInt(effectiveLuScore) || 0, KaNeXT_MOCK_NAMES);
   const oppBoxScore = mockBoxScore(game.opponent, parseInt(effectiveOppScore) || 0);
 
   return (
@@ -404,14 +404,14 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
         {filteredPbp.length > 0 ? (
           <View style={[s.pbpCard, { backgroundColor: colors.backgroundSecondary }]}>
             {filteredPbp.map((event, index) => {
-              const isLU = event.team === 'KaNeXT';
+              const isLU = event.team === 'Carroll';
               return (
                 <View key={event.id}>
                   {index > 0 && <View style={[s.divider, { backgroundColor: colors.divider }]} />}
                   <View style={s.pbpRow}>
                     <View style={[s.pbpTeamBadge, { backgroundColor: isLU ? colors.text + '15' : colors.backgroundTertiary }]}>
                       <Text style={[s.pbpTeamText, { color: isLU ? colors.text : colors.textSecondary }]}>
-                        {event.team === 'KaNeXT' ? 'KaNeXT' : opponentAbbr}
+                        {event.team === 'Carroll' ? 'Carroll' : opponentAbbr}
                       </Text>
                     </View>
                     <Text style={[s.pbpAction, { color: colors.text }]} numberOfLines={2}>{event.text}</Text>
@@ -469,7 +469,7 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
                     onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setLiveBoxTeam(t); }}
                   >
                     <Text style={[s.liveBoxTeamText, { color: active ? colors.background : colors.textSecondary }]}>
-                      {t === 'fmu' ? 'KaNeXT' : opponentAbbr}
+                      {t === 'fmu' ? 'Carroll' : opponentAbbr}
                     </Text>
                   </Pressable>
                 );

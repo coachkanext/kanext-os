@@ -51,7 +51,7 @@ const SOURCE_OPTIONS: { key: SourceKey; label: string }[] = [
 ];
 
 const COLLEGE_POOL_LEVELS: ReadonlySet<string> = new Set([
-  'NCAA', 'NCAA D1', 'NCAA D2', 'NCAA D3', 'NAA',
+  'NCAA', 'NCAA D1', 'NCAA D2', 'NCAA D3', 'NAIA',
   'JUCO', 'JUCO D1', 'JUCO D2', 'JUCO D3',
   'USCAA', 'NCCAA', 'NCCAA D1', 'NCCAA D2', '3C2A',
 ]);
@@ -84,7 +84,7 @@ const FOUR_YEAR_LEVELS: LevelDef[] = [
   { label: 'NCAA D1', match: (p) => p.level === 'NCAA D1' || p.level === 'NCAA' },
   { label: 'NCAA D2', match: (p) => p.level === 'NCAA D2' },
   { label: 'NCAA D3', match: (p) => p.level === 'NCAA D3' },
-  { label: 'NAA', match: (p) => p.level === 'NAA' },
+  { label: 'NAIA', match: (p) => p.level === 'NAIA' },
   { label: 'USCAA', match: (p) => p.level === 'USCAA' },
   { label: 'NCCAA D1', match: (p) => p.level === 'NCCAA D1' || p.level === 'NCCAA' },
   { label: 'NCCAA D2', match: (p) => p.level === 'NCCAA D2' },

@@ -1,7 +1,7 @@
 /**
  * Sports Organization Payment Rails V2 — Mock Data & Types
  * 8-tab Payment Rails Hub for Sports Mode organizations.
- * Seeded with KaNeXT Men's Basketball 2025-26 season data.
+ * Seeded with Carroll College Fighting Saints Men's Basketball 2025-26 season data.
  * Money-movement execution surface — what's pending, failed, blocked.
  * Full payment chain: Event → Rules → Auth → Payment → Settlement → Ledger → Receipt.
  */
@@ -405,7 +405,7 @@ export const ACTION_QUEUE: PaymentAction[] = [
     type: 'approval',
     title: 'Hotel block — @ Virginia Tech tournament',
     amount: 12_400,
-    owner: 'Coach Williams',
+    owner: 'Coach Pearson',
     reason: 'Exceeds $10K single-trip threshold',
     dueDate: '2025-12-17',
     priority: 'critical',
@@ -474,7 +474,7 @@ export const ACTION_QUEUE: PaymentAction[] = [
   {
     id: 'pa-008',
     type: 'approval',
-    title: 'Bus charter — away @ Pinecrest University',
+    title: 'Bus charter — away @ Dakota State University',
     amount: 3_200,
     owner: 'Alicia Washington',
     reason: 'Awaiting Head Coach approval',
@@ -589,7 +589,7 @@ export const PAYMENT_STREAMS: PaymentStream[] = [
     lastPayment: '2026-02-12',
     nextPayment: '2026-02-19',
     amount: 850,
-    recipient: 'KaNeXT Conference Officials Pool',
+    recipient: 'Frontier Conference Officials Pool',
     method: 'ach',
   },
   {
@@ -625,7 +625,7 @@ export const PAYMENT_STREAMS: PaymentStream[] = [
     lastPayment: '2026-02-01',
     nextPayment: '2026-03-01',
     amount: 5_000,
-    recipient: 'KaNeXT Financial Aid Office',
+    recipient: 'Carroll College Financial Aid Office',
     method: 'ach',
   },
 ];
@@ -639,7 +639,7 @@ export const PAYMENT_APPROVALS: PaymentApproval[] = [
     id: 'ap-001',
     title: 'Hotel block — Virginia Tech tournament',
     amount: 12_400,
-    requestedBy: 'Coach Williams',
+    requestedBy: 'Coach Pearson',
     requestDate: '2025-12-11',
     dueDate: '2025-12-17',
     priority: 'critical',
@@ -722,7 +722,7 @@ export const PAYMENT_APPROVALS: PaymentApproval[] = [
   // ── demo_seed approvals — Feb 2026 ──────────────────────────────────────
   {
     id: 'ap-008',
-    title: 'Bus charter — away @ Pinecrest University',
+    title: 'Bus charter — away @ Dakota State University',
     amount: 3_200,
     requestedBy: 'Alicia Washington',
     requestDate: '2026-02-14',
@@ -860,7 +860,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
     action: 'initiated',
     description: 'Hotel block request — Virginia Tech',
     amount: 12_400,
-    initiatedBy: 'Coach Williams',
+    initiatedBy: 'Coach Pearson',
     timestamp: '2025-12-11T11:30:00',
     reference: 'PAY-2025-0852',
   },
@@ -927,7 +927,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
   {
     id: 'au-011',
     action: 'released',
-    description: 'Bus charter — away @ Lakewood University',
+    description: 'Bus charter — away @ University of Providence',
     amount: 3_200,
     initiatedBy: 'Alicia Washington',
     approvedBy: 'Alex Morgan',
@@ -957,7 +957,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
   {
     id: 'au-014',
     action: 'released',
-    description: 'Game day meals — Magnolia University home game',
+    description: 'Game day meals — Multnomah home game',
     amount: 540,
     initiatedBy: 'Alicia Washington',
     approvedBy: 'Alex Morgan',
@@ -967,7 +967,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
   {
     id: 'au-015',
     action: 'released',
-    description: 'Hotel block — Summit University trip',
+    description: 'Hotel block — Rocky Mountain College trip',
     amount: 1_680,
     initiatedBy: 'Alicia Washington',
     approvedBy: 'Alex Morgan',
@@ -1065,7 +1065,7 @@ export const DISBURSEMENTS: Disbursement[] = [
   {
     id: 'db-009',
     type: 'per-diem',
-    description: 'Per diem — @ Lakewood University (Feb 10)',
+    description: 'Per diem — @ University of Providence (Feb 10)',
     amount: 50,
     status: 'paid',
     date: '2026-02-10',
@@ -1095,7 +1095,7 @@ export const DISBURSEMENTS: Disbursement[] = [
   {
     id: 'db-012',
     type: 'per-diem',
-    description: 'Per diem — @ Summit University (Feb 17)',
+    description: 'Per diem — @ Rocky Mountain College (Feb 17)',
     amount: 50,
     status: 'pending',
     date: '2026-02-17',
@@ -1146,10 +1146,10 @@ export const CONNECTED_RAILS: ConnectedRail[] = ['ACH', 'Internal'];
 // =============================================================================
 
 export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
-  // ── Transaction 1: Bus charter — away @ Lakewood ─────────────────────────
+  // ── Transaction 1: Bus charter — away @ Providence ─────────────────────────
   {
     id: 'stx-001',
-    description: 'Bus charter — away @ Lakewood University',
+    description: 'Bus charter — away @ University of Providence',
     amount: 3_200,
     walletId: 'w-002',
     data_source: 'demo_seed',
@@ -1158,7 +1158,7 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
         type: 'travel_expense',
         amount: 3_200,
         date: '2026-02-10',
-        description: 'Bus charter — away @ Lakewood University',
+        description: 'Bus charter — away @ University of Providence',
       },
       rules: {
         policy: 'NAIA Travel Policy',
@@ -1235,7 +1235,7 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
       ledger: {
         entryId: 'LE-2026-0038',
         debitAccount: 'Scholarships',
-        creditAccount: 'KaNeXT Financial Aid — Student Accounts',
+        creditAccount: 'Carroll College Financial Aid — Student Accounts',
         postDate: '2026-02-01',
       },
       receipt: {
@@ -1296,10 +1296,10 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
     },
   },
 
-  // ── Transaction 4: Game day meals — Magnolia University home game ────────
+  // ── Transaction 4: Game day meals — Multnomah home game ────────
   {
     id: 'stx-004',
-    description: 'Pre-game meals — Magnolia University home game',
+    description: 'Pre-game meals — Multnomah home game',
     amount: 540,
     walletId: 'w-001',
     data_source: 'demo_seed',
@@ -1308,7 +1308,7 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
         type: 'gameday_expense',
         amount: 540,
         date: '2026-02-12',
-        description: 'Pre-game catering — home vs Magnolia University',
+        description: 'Pre-game catering — home vs Multnomah',
       },
       rules: {
         policy: 'Game Day Ops Policy',
@@ -1346,10 +1346,10 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
     },
   },
 
-  // ── Transaction 5: Hotel block — Summit University trip ──────────
+  // ── Transaction 5: Hotel block — Rocky Mountain College trip ──────────
   {
     id: 'stx-005',
-    description: 'Hotel block — Summit University trip (6 rooms, 1 night)',
+    description: 'Hotel block — Rocky Mountain College trip (6 rooms, 1 night)',
     amount: 1_680,
     walletId: 'w-002',
     data_source: 'demo_seed',

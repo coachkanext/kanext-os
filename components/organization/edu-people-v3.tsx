@@ -1,7 +1,7 @@
 /**
  * Edu People V3 — 3-pill ViewBar (Faculty | Staff | Students)
- * KaNeXT Sports · President perspective
- * Private University · Founded 2020 · Nashville, TN · Regionally Accredited
+ * Carroll College · President perspective
+ * Private University · Founded 1867 · Washington, DC · Regionally Accredited
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';

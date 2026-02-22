@@ -1,6 +1,6 @@
 /**
  * Video Screen
- * KaNeXT Video hub placeholder.
+ * Carroll Video hub placeholder.
  */
 
 import React from 'react';
@@ -34,7 +34,7 @@ export default function VideoScreen() {
         <View style={[styles.iconContainer, { backgroundColor: colors.backgroundTertiary }]}>
           <IconSymbol name="play.rectangle.fill" size={48} color={colors.icon} />
         </View>
-        <Text style={[styles.title, { color: colors.text }]}>KaNeXT Video</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Carroll Video</Text>
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
           Game film, practice clips, and highlight reels — all in one place.
         </Text>

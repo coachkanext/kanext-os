@@ -3,7 +3,7 @@
  *
  * Canonical institution objects, directory data, and hub metadata
  * for the Education Mode institutions workspace.
- * Primary institution: KaNeXT Sports (KaNeXT).
+ * Primary institution: Howard University.
  */
 
 // =============================================================================
@@ -208,19 +208,19 @@ export const INSTITUTIONS: InstitutionFull[] = [
   {
     id: 'inst-fmu',
     educationOrgId: 'fmu-001',
-    name: 'KaNeXT Sports',
-    shortName: 'KaNeXT',
-    location: 'Nashville, TN',
+    name: 'Howard University',
+    shortName: 'Howard',
+    location: 'Washington, DC',
     type: 'university',
     status: 'active',
     description:
-      'KaNeXT Sports is a private historically Black university founded in 1879. KaNeXT offers undergraduate and graduate programs rooted in academic excellence, leadership development, and community service. A member of the UNCF and accredited by SACSCOC.',
+      'Howard University is a private, federally chartered historically Black university founded on March 2, 1867. A premier R1 research institution, Howard offers over 140 programs across 14 schools and colleges. Accredited by MSCHE, with the motto "Veritas et Utilitas" — Truth and Service.',
     admins: [
       {
         id: 'admin-fmu-1',
-        name: 'Dr. Jaffus Hardrick',
-        initials: 'JH',
-        title: 'President',
+        name: 'Dr. Wayne A.I. Frederick',
+        initials: 'WF',
+        title: 'Interim President',
         avatarColor: '#1D9BF0',
       },
       {
@@ -238,9 +238,9 @@ export const INSTITUTIONS: InstitutionFull[] = [
         avatarColor: '#1D9BF0',
       },
     ],
-    peopleCount: 1200,
-    founded: '1879',
-    accreditation: 'SACSCOC',
+    peopleCount: 14500,
+    founded: '1867',
+    accreditation: 'MSCHE',
     avatarColor: '#1D9BF0',
     nextKeyDate: { label: 'Admissions deadline', date: 'Mar 1' },
     hasRooms: true,
@@ -253,13 +253,13 @@ export const INSTITUTIONS: InstitutionFull[] = [
   {
     id: 'inst-sfat',
     educationOrgId: 'sfat-001',
-    name: 'South Ridgemont Academy of Technology',
+    name: 'South MSU-Northern Academy of Technology',
     shortName: 'SFAT',
     location: 'Beacon, FL',
     type: 'academy',
     status: 'prospect',
     description:
-      'South Ridgemont Academy of Technology is a career-focused technical academy offering accelerated certificate and associate degree programs in software engineering, cybersecurity, data analytics, and digital media.',
+      'South MSU-Northern Academy of Technology is a career-focused technical academy offering accelerated certificate and associate degree programs in software engineering, cybersecurity, data analytics, and digital media.',
     admins: [
       {
         id: 'admin-sfat-1',
@@ -283,39 +283,39 @@ export const INSTITUTIONS: InstitutionFull[] = [
 ];
 
 // =============================================================================
-// KaNeXT ACADEMICS
+// HOWARD UNIVERSITY ACADEMICS
 // =============================================================================
 
 export const KaNeXT_ACADEMICS: InstitutionAcademics = {
-  totalPrograms: 42,
-  undergrad: 34,
-  graduate: 6,
-  certificates: 2,
+  totalPrograms: 140,
+  undergrad: 80,
+  graduate: 48,
+  certificates: 12,
   programFormats: ['In-Person', 'Hybrid', 'Online'],
-  studentFacultyRatio: '12:1',
+  studentFacultyRatio: '10:1',
 };
 
 // =============================================================================
-// KaNeXT ADMISSIONS
+// HOWARD UNIVERSITY ADMISSIONS
 // =============================================================================
 
 export const KaNeXT_ADMISSIONS: InstitutionAdmissions = {
-  acceptanceRate: '42%',
-  avgGPA: '3.1',
-  applicationDeadline: 'March 1, 2026',
-  enrollmentTotal: 1050,
-  newStudents: 320,
+  acceptanceRate: '36%',
+  avgGPA: '3.5',
+  applicationDeadline: 'February 1, 2026',
+  enrollmentTotal: 14500,
+  newStudents: 2400,
 };
 
 // =============================================================================
-// KaNeXT STUDENT LIFE
+// HOWARD UNIVERSITY STUDENT LIFE
 // =============================================================================
 
 export const KaNeXT_STUDENT_LIFE: InstitutionStudentLife = {
-  clubs: 45,
-  athletics: 14,
-  housingCapacity: 600,
-  diningPlans: 3,
+  clubs: 200,
+  athletics: 21,
+  housingCapacity: 5400,
+  diningPlans: 5,
 };
 
 // =============================================================================
@@ -326,50 +326,50 @@ export const INSTITUTION_DEPARTMENTS: InstitutionDepartment[] = [
   {
     id: 'dept-fmu-arts',
     institutionId: 'inst-fmu',
-    name: 'School of Arts & Sciences',
+    name: 'College of Arts & Sciences',
     chairperson: 'Dr. Michelle Carter',
-    programCount: 12,
-    facultyCount: 28,
+    programCount: 24,
+    facultyCount: 120,
   },
   {
     id: 'dept-fmu-business',
     institutionId: 'inst-fmu',
     name: 'School of Business',
     chairperson: 'Dr. Kenneth Rolle',
-    programCount: 8,
-    facultyCount: 18,
+    programCount: 12,
+    facultyCount: 45,
   },
   {
     id: 'dept-fmu-education',
     institutionId: 'inst-fmu',
     name: 'School of Education',
     chairperson: 'Dr. Beverly Grant',
-    programCount: 6,
-    facultyCount: 14,
+    programCount: 10,
+    facultyCount: 30,
   },
   {
-    id: 'dept-fmu-math-sci',
+    id: 'dept-fmu-engineering',
     institutionId: 'inst-fmu',
-    name: 'Division of Mathematics & Natural Sciences',
+    name: 'College of Engineering & Architecture',
     chairperson: 'Dr. Raymond Lewis',
-    programCount: 7,
-    facultyCount: 20,
+    programCount: 14,
+    facultyCount: 55,
   },
   {
     id: 'dept-fmu-nursing',
     institutionId: 'inst-fmu',
-    name: 'School of Nursing',
+    name: 'College of Nursing & Allied Health Sciences',
     chairperson: 'Dr. Gloria Simmons',
-    programCount: 4,
-    facultyCount: 12,
+    programCount: 8,
+    facultyCount: 35,
   },
   {
-    id: 'dept-fmu-social-sci',
+    id: 'dept-fmu-communications',
     institutionId: 'inst-fmu',
-    name: 'Division of Social Sciences & Humanities',
+    name: 'Cathy Hughes School of Communications',
     chairperson: 'Dr. Harold Baptiste',
-    programCount: 5,
-    facultyCount: 16,
+    programCount: 6,
+    facultyCount: 28,
   },
 ];
 
@@ -394,7 +394,7 @@ export const INSTITUTION_EVENTS: InstitutionEvent[] = [
     date: '2026-02-20',
     time: '10:00 AM',
     type: 'cultural',
-    location: 'KaNeXT Auditorium',
+    location: 'Howard Auditorium',
   },
   {
     id: 'evt-fmu-3',
@@ -434,7 +434,7 @@ export const INSTITUTION_EVENTS: InstitutionEvent[] = [
   {
     id: 'evt-fmu-7',
     institutionId: 'inst-fmu',
-    title: 'SIAC Basketball Tournament',
+    title: 'MEAC Basketball Tournament',
     date: '2026-03-05',
     time: '6:00 PM',
     type: 'athletics',
@@ -465,12 +465,12 @@ export const INSTITUTION_EVENTS: InstitutionEvent[] = [
     date: '2026-04-03',
     time: '11:00 AM',
     type: 'cultural',
-    location: 'KaNeXT Auditorium',
+    location: 'Howard Auditorium',
   },
   {
     id: 'evt-fmu-11',
     institutionId: 'inst-fmu',
-    title: 'SACSCOC Compliance Review',
+    title: 'MSCHE Compliance Review',
     date: '2026-04-10',
     time: '9:00 AM',
     type: 'administrative',
@@ -483,7 +483,7 @@ export const INSTITUTION_EVENTS: InstitutionEvent[] = [
     date: '2026-05-09',
     time: '10:00 AM',
     type: 'academic',
-    location: 'KaNeXT Stadium',
+    location: 'Greene Stadium',
   },
   {
     id: 'evt-fmu-13',
@@ -501,7 +501,7 @@ export const INSTITUTION_EVENTS: InstitutionEvent[] = [
     date: '2026-03-28',
     time: '1:00 PM',
     type: 'athletics',
-    location: 'KaNeXT Track Complex',
+    location: 'Howard Track Complex',
   },
   {
     id: 'evt-fmu-15',
@@ -581,7 +581,7 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     actor: 'System',
     timestamp: '2024-08-15T10:00:00Z',
     timestampMs: 1723716000000,
-    description: 'KaNeXT Sports was added to the platform.',
+    description: 'Howard University was added to the platform.',
   },
   {
     id: 'audit-fmu-2',
@@ -590,13 +590,13 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     actor: 'System',
     timestamp: '2024-08-15T10:05:00Z',
     timestampMs: 1723716300000,
-    description: 'Dr. Jaffus Hardrick added as President.',
+    description: 'Dr. Wayne A.I. Frederick added as Interim President.',
   },
   {
     id: 'audit-fmu-3',
     institutionId: 'inst-fmu',
     action: 'Admin added',
-    actor: 'Dr. Jaffus Hardrick',
+    actor: 'Dr. Wayne A.I. Frederick',
     timestamp: '2024-08-16T14:30:00Z',
     timestampMs: 1723818600000,
     description: 'Dr. Patricia Williams added as Provost & VP Academic Affairs.',
@@ -623,7 +623,7 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     id: 'audit-fmu-6',
     institutionId: 'inst-fmu',
     action: 'Room created',
-    actor: 'Dr. Jaffus Hardrick',
+    actor: 'Dr. Wayne A.I. Frederick',
     timestamp: '2024-08-22T11:00:00Z',
     timestampMs: 1724324400000,
     description: 'Leadership room created with 8 initial members.',
@@ -632,7 +632,7 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     id: 'audit-fmu-7',
     institutionId: 'inst-fmu',
     action: 'Admin added',
-    actor: 'Dr. Jaffus Hardrick',
+    actor: 'Dr. Wayne A.I. Frederick',
     timestamp: '2024-09-05T16:00:00Z',
     timestampMs: 1725552000000,
     description: 'Dr. Angela Thomas added as VP Student Affairs.',
@@ -653,16 +653,16 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     actor: 'Dr. Patricia Williams',
     timestamp: '2025-01-15T14:00:00Z',
     timestampMs: 1736949600000,
-    description: 'Annual SACSCOC compliance self-assessment submitted.',
+    description: 'Annual MSCHE compliance self-assessment submitted.',
   },
   {
     id: 'audit-fmu-10',
     institutionId: 'inst-fmu',
     action: 'Partnership established',
-    actor: 'Dr. Jaffus Hardrick',
+    actor: 'Dr. Wayne A.I. Frederick',
     timestamp: '2025-03-10T14:00:00Z',
     timestampMs: 1741618800000,
-    description: 'Partnership agreement signed with South Ridgemont Academy of Technology.',
+    description: 'Partnership agreement signed with South MSU-Northern Academy of Technology.',
   },
   {
     id: 'audit-fmu-11',
@@ -689,7 +689,7 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     actor: 'System',
     timestamp: '2025-09-02T12:00:00Z',
     timestampMs: 1756900800000,
-    description: 'Fall 2025 enrollment reached 1,050 students — 8% increase YoY.',
+    description: 'Fall 2025 enrollment reached 14,500 students — 5% increase YoY.',
   },
   {
     id: 'audit-fmu-14',
@@ -704,10 +704,10 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     id: 'audit-fmu-15',
     institutionId: 'inst-fmu',
     action: 'Prospect added',
-    actor: 'Dr. Jaffus Hardrick',
+    actor: 'Dr. Wayne A.I. Frederick',
     timestamp: '2025-11-20T11:30:00Z',
     timestampMs: 1763734200000,
-    description: 'South Ridgemont Academy of Technology added as prospect institution.',
+    description: 'South MSU-Northern Academy of Technology added as prospect institution.',
   },
 ];
 

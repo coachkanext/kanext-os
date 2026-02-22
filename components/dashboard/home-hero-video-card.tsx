@@ -40,7 +40,7 @@ interface HomeHeroVideoCardProps {
 
 const PINNED_HERO: HeroVideo = {
   id: 'hero-pinned',
-  title: 'Lakewood Scout Breakdown — Transition Defense',
+  title: 'Providence Scout Breakdown — Transition Defense',
   subtitle: 'Staff Film · Uploaded 2h ago',
   thumbnailColor: '#1D9BF0',
   duration: '8:42',
@@ -51,7 +51,7 @@ const PINNED_HERO: HeroVideo = {
 const COACH_SHARED_HERO: HeroVideo = {
   id: 'hero-shared',
   title: 'Tuesday Practice — Half-Court Sets',
-  subtitle: 'KaNeXT Film · 5h ago',
+  subtitle: 'Carroll Film · 5h ago',
   thumbnailColor: '#0B0F14',
   duration: '14:20',
   source: 'coach_shared',

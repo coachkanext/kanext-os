@@ -1,5 +1,5 @@
 /**
- * Mock Education Home Data — KaNeXT (KaNeXT Sports)
+ * Mock Education Home Data — Howard University
  * Feeds Dashboard, Calendar, Events, Metrics, and News views.
  */
 
@@ -77,7 +77,7 @@ export const EDU_EVENTS: EduEvent[] = [
     title: 'Baseball vs Evergreen',
     date: 'Mar 1, 2026',
     time: '2:00 PM',
-    location: 'KaNeXT Baseball Complex',
+    location: 'Howard Baseball Complex',
     category: 'athletics',
     status: 'upcoming',
   },
@@ -126,7 +126,7 @@ export const EDU_EVENTS: EduEvent[] = [
   },
   {
     id: 'evt-09',
-    title: 'KaNeXT Football vs Pinecrest',
+    title: 'Howard Football vs Dakota State',
     date: 'Nov 8, 2025',
     time: '6:00 PM',
     location: 'Nathaniel "Traz" Powell Stadium',
@@ -206,11 +206,11 @@ export const EDU_NEWS_CATEGORY_COLORS: Record<EduNewsCategoryTag, string> = {
 export const EDU_NEWS: EduNewsItem[] = [
   {
     id: 'news-01',
-    headline: 'KaNeXT Receives $2.5M Grant for STEM Building Expansion',
+    headline: 'Howard Receives $2.5M Grant for STEM Building Expansion',
     date: 'Feb 15, 2026',
     category: 'institutional',
     type: 'article',
-    summary: 'The Department of Education has awarded KaNeXT Sports a $2.5 million grant for the construction of a new STEM wing.',
+    summary: 'The Department of Education has awarded Howard University a $2.5 million grant for the construction of a new STEM wing.',
   },
   {
     id: 'news-02',
@@ -232,12 +232,12 @@ export const EDU_NEWS: EduNewsItem[] = [
   },
   {
     id: 'news-04',
-    headline: 'KaNeXT Baseball Opens Season with Win Streak',
+    headline: 'Howard Baseball Opens Season with Win Streak',
     date: 'Feb 8, 2026',
     category: 'athletics',
     type: 'video',
     duration: '4:15',
-    summary: 'The Wolves baseball team started the 2026 season with three consecutive wins, highlighted by a no-hitter from freshman pitcher Darius Cole.',
+    summary: 'The Fighting Saints baseball team started the 2026 season with three consecutive wins, highlighted by a no-hitter from freshman pitcher Darius Cole.',
   },
   {
     id: 'news-05',
@@ -245,7 +245,7 @@ export const EDU_NEWS: EduNewsItem[] = [
     date: 'Feb 5, 2026',
     category: 'alumni',
     type: 'article',
-    summary: 'KaNeXT alumna Keisha Thompson (Class of 2015) has raised a $10M Series A for her EdTech startup, crediting her KaNeXT education.',
+    summary: 'Howard alumna Keisha Thompson (Class of 2015) has raised a $10M Series A for her EdTech startup, crediting her Howard education.',
   },
   {
     id: 'news-06',
@@ -253,7 +253,7 @@ export const EDU_NEWS: EduNewsItem[] = [
     date: 'Feb 3, 2026',
     category: 'campus',
     type: 'article',
-    summary: 'KaNeXT has completed installation of 24 new emergency call stations and upgraded campus-wide lighting.',
+    summary: 'Howard has completed installation of 24 new emergency call stations and upgraded campus-wide lighting.',
   },
   {
     id: 'news-07',
@@ -271,7 +271,7 @@ export const EDU_NEWS: EduNewsItem[] = [
     category: 'faculty',
     type: 'article',
     speaker: 'Dr. Raymond Fields',
-    summary: 'Dr. Fields and his team published a groundbreaking study on urban heat islands in South Ridgemont HBCUs.',
+    summary: 'Dr. Fields and his team published a groundbreaking study on urban heat islands in South MSU-Northern HBCUs.',
   },
 ];
 
@@ -361,7 +361,7 @@ export interface EduHero {
 }
 
 export const EDU_HERO: EduHero = {
-  title: 'KaNeXT Spring 2026 Convocation',
+  title: 'Howard Spring 2026 Convocation',
   subtitle: 'Lou Rawls Performing Arts Center',
   isLive: false,
   instructor: 'President Jaffus Hardrick',
@@ -515,7 +515,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'education',
     tenureStatus: 'tenured',
     status: 'active',
-    email: 'a.morris@kanext.edu',
+    email: 'a.morris@howard.edu',
     officeHours: 'Mon/Wed 2:00-4:00 PM',
     specialization: 'Curriculum & Instruction',
   },
@@ -527,7 +527,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'business',
     tenureStatus: 'tenure_track',
     status: 'active',
-    email: 'd.osei@kanext.edu',
+    email: 'd.osei@howard.edu',
     officeHours: 'Tue/Thu 10:00 AM-12:00 PM',
     specialization: 'Sports Management',
   },
@@ -539,7 +539,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'professional',
     tenureStatus: 'tenure_track',
     status: 'active',
-    email: 'l.reyes@kanext.edu',
+    email: 'l.reyes@howard.edu',
     officeHours: 'Mon/Wed 1:00-3:00 PM',
     specialization: 'Biomechanics',
   },
@@ -551,7 +551,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'arts_sciences',
     tenureStatus: 'tenured',
     status: 'active',
-    email: 'j.whitfield@kanext.edu',
+    email: 'j.whitfield@howard.edu',
     officeHours: 'Tue/Thu 3:00-5:00 PM',
     specialization: 'Molecular Biology',
   },
@@ -563,7 +563,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'arts_sciences',
     tenureStatus: 'tenured',
     status: 'active',
-    email: 'p.nkomo@kanext.edu',
+    email: 'p.nkomo@howard.edu',
     officeHours: 'Mon/Fri 10:00 AM-12:00 PM',
     specialization: 'African-American Literature',
   },
@@ -575,7 +575,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'arts_sciences',
     tenureStatus: 'adjunct',
     status: 'adjunct',
-    email: 'c.rivera@kanext.edu',
+    email: 'c.rivera@howard.edu',
     specialization: 'Applied Statistics',
   },
   {
@@ -586,7 +586,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'professional',
     tenureStatus: 'tenured',
     status: 'active',
-    email: 'e.harper@kanext.edu',
+    email: 'e.harper@howard.edu',
     officeHours: 'Wed/Fri 9:00-11:00 AM',
     specialization: 'Community Health Nursing',
   },
@@ -598,7 +598,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'professional',
     tenureStatus: 'tenure_track',
     status: 'active',
-    email: 'm.bell@kanext.edu',
+    email: 'm.bell@howard.edu',
     officeHours: 'Tue/Thu 1:00-3:00 PM',
     specialization: 'Forensic Psychology',
   },
@@ -610,7 +610,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'education',
     tenureStatus: 'staff',
     status: 'active',
-    email: 'k.mitchell@kanext.edu',
+    email: 'k.mitchell@howard.edu',
   },
   {
     id: 'fac-10',
@@ -620,7 +620,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'business',
     tenureStatus: 'tenured',
     status: 'sabbatical',
-    email: 'r.chambers@kanext.edu',
+    email: 'r.chambers@howard.edu',
     specialization: 'Forensic Accounting',
   },
   {
@@ -631,7 +631,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'arts_sciences',
     tenureStatus: 'tenure_track',
     status: 'active',
-    email: 'y.grant@kanext.edu',
+    email: 'y.grant@howard.edu',
     officeHours: 'Mon/Wed 11:00 AM-1:00 PM',
     specialization: 'Developmental Psychology',
   },
@@ -643,7 +643,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'arts_sciences',
     tenureStatus: 'adjunct',
     status: 'adjunct',
-    email: 's.adeyemi@kanext.edu',
+    email: 's.adeyemi@howard.edu',
     specialization: 'Cybersecurity',
   },
   {
@@ -654,7 +654,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'professional',
     tenureStatus: 'tenured',
     status: 'on_leave',
-    email: 'd.foster@kanext.edu',
+    email: 'd.foster@howard.edu',
     specialization: 'Family Therapy',
   },
   {
@@ -665,7 +665,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'education',
     tenureStatus: 'tenured',
     status: 'active',
-    email: 't.jackson@kanext.edu',
+    email: 't.jackson@howard.edu',
     officeHours: 'By appointment',
     specialization: 'Educational Leadership',
   },
@@ -677,7 +677,7 @@ export const FACULTY_MEMBERS: FacultyMember[] = [
     departmentCategory: 'arts_sciences',
     tenureStatus: 'adjunct',
     status: 'adjunct',
-    email: 'a.collins@kanext.edu',
+    email: 'a.collins@howard.edu',
     specialization: 'Music Theory & Performance',
   },
 ];
@@ -880,8 +880,8 @@ export const ACADEMIC_PROGRAMS: AcademicProgram[] = [
 
 export const OUTREACH_EVENTS: OutreachEvent[] = [
   { id: 'out-01', name: 'Central Prep HS Visit', date: '2026-02-24', type: 'high_school_visit', targetAudience: 'Juniors & Seniors', recruiterName: 'Tamika Johnson', status: 'scheduled' },
-  { id: 'out-02', name: 'South Ridgemont College Fair', date: '2026-03-05', type: 'college_fair', targetAudience: 'High School Students', recruiterName: 'Derek Williams', status: 'scheduled' },
-  { id: 'out-03', name: 'KaNeXT Spring Open House', date: '2026-03-15', type: 'open_house', targetAudience: 'Prospective Students & Families', recruiterName: 'Tamika Johnson', status: 'scheduled' },
+  { id: 'out-02', name: 'South MSU-Northern College Fair', date: '2026-03-05', type: 'college_fair', targetAudience: 'High School Students', recruiterName: 'Derek Williams', status: 'scheduled' },
+  { id: 'out-03', name: 'Howard Spring Open House', date: '2026-03-15', type: 'open_house', targetAudience: 'Prospective Students & Families', recruiterName: 'Tamika Johnson', status: 'scheduled' },
   { id: 'out-04', name: 'Virtual Info Session — Nursing Program', date: '2026-02-28', type: 'virtual_info_session', targetAudience: 'Pre-Nursing Students', recruiterName: 'Alicia Green', status: 'scheduled' },
   { id: 'out-05', name: 'Overtown Community Day', date: '2026-03-22', type: 'community_event', targetAudience: 'Community Members & Adult Learners', recruiterName: 'Marcus Reid', status: 'scheduled' },
   { id: 'out-06', name: 'Northview Prep HS Visit', date: '2026-02-10', type: 'high_school_visit', targetAudience: 'Seniors', leadsGenerated: 18, recruiterName: 'Derek Williams', status: 'completed' },

@@ -1,5 +1,5 @@
 /**
- * Competition Dashboard V2 — 14 RBAC-gated modules for the KaNeXT Competition Mode.
+ * Competition Dashboard V2 — 14 RBAC-gated modules for the Adidas 3SSB Mode.
  * Modules are conditionally rendered based on CompetitionRoleLens (C1–C4).
  * Default demo role: league_admin (C1) — full access.
  */
@@ -201,7 +201,7 @@ function CompetitionHeader({ colors }: { colors: typeof Colors.light }) {
         </View>
         <View style={s.headerTextBlock}>
           <ThemedText style={[s.headerTitle, { color: colors.text }]}>
-            {series?.name ?? 'KaNeXT League'}
+            {series?.name ?? '3 Stripes Select Basketball'}
           </ThemedText>
           <ThemedText style={[s.headerSubtitle, { color: colors.textSecondary }]}>
             League {'\u00B7'} Motorsport {'\u00B7'} International

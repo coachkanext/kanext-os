@@ -1,5 +1,5 @@
 /**
- * Church Finance V3 — KaNeXT Church · Senior Pastor
+ * Church Finance V3 — 2819 Church · Senior Pastor
  * ViewBar: Budget | Giving | Campaigns
  * Self-contained with inline mock data.
  */

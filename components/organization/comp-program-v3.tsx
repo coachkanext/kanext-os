@@ -1,6 +1,6 @@
 /**
  * Competition Program V3 — 3-pill ViewBar (Identity | Season | Operations)
- * KaNeXT Motorsport League · Commissioner perspective
+ * Valuetainment Media League · Commissioner perspective
  * Road-legal supercar/hypercar racing, $10M cap, no prototypes, no BoP.
  */
 import React, { useState, useCallback } from 'react';
@@ -24,7 +24,7 @@ const VIEWS: { id: ViewId; label: string }[] = [
 
 const CHAMPIONSHIPS = [
   { id: 'c1', title: 'Driver Championship', leader: 'Carter', points: 156 },
-  { id: 'c2', title: 'Constructor Championship', leader: 'KaNeXT Works', points: 248 },
+  { id: 'c2', title: 'Constructor Championship', leader: '3SSB Select', points: 248 },
   { id: 'c3', title: 'Crew Championship', leader: 'Team Carter', points: 89 },
   { id: 'c4', title: 'Wildcard Cup', leader: 'TBD', points: 0 },
 ];
@@ -57,8 +57,8 @@ const RACE_STATUS_LABEL: Record<RaceStatus, string> = {
 const GRID_CATEGORIES = [
   { id: 'g1', label: 'OEM Works', desc: 'Factory-backed manufacturer teams' },
   { id: 'g2', label: 'Premier Tuner', desc: 'Elite aftermarket and tuning houses' },
-  { id: 'g3', label: 'League-Owned', desc: 'Operated by KaNeXT Motorsport League' },
-  { id: 'g4', label: 'KaNeXT Works', desc: 'Commissioner flagship entry' },
+  { id: 'g3', label: 'League-Owned', desc: 'Operated by Valuetainment Media League' },
+  { id: 'g4', label: '3SSB Select', desc: 'Commissioner flagship entry' },
 ];
 
 const WEEKEND_FORMAT = [
@@ -156,7 +156,7 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
       {/* League Card */}
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.brandName, { color: colors.text }]}>KaNeXT Motorsport League</ThemedText>
+        <ThemedText style={[s.brandName, { color: colors.text }]}>Valuetainment Media League</ThemedText>
         <ThemedText style={[s.brandTagline, { color: colors.textSecondary }]}>
           "The pinnacle of road-legal motorsport"
         </ThemedText>

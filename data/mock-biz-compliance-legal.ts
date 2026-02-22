@@ -1,7 +1,7 @@
 /**
  * Mock Business Compliance/Legal Data — 9 sub-tabs for the Compliance & Legal tab.
- * All data references KaNeXT entities: Delaware C-Corp filings, trademark filings,
- * SAFE note compliance, KYC/AML for payment rails, KaNeXT partnership agreement,
+ * All data references Valuetainment entities: Delaware C-Corp filings, trademark filings,
+ * SAFE note compliance, KYC/AML for payment rails, Valuetainment partnership agreement,
  * data privacy policies, Alex/Tom/PBD references.
  */
 
@@ -74,17 +74,17 @@ export const LEGAL_DOCS: LegalDoc[] = [
     type: 'filing',
     status: 'active',
     effectiveDate: '2024-09-12',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
   },
   {
     id: 'ld-2',
-    title: 'KaNeXT Partnership & Licensing Agreement',
+    title: 'Valuetainment Partnership & Licensing Agreement',
     type: 'agreement',
     status: 'active',
     effectiveDate: '2025-06-01',
     expiryDate: '2027-05-31',
-    entity: 'KaNeXT Inc.',
-    counterparty: 'KaNeXT Sports',
+    entity: 'Valuetainment Media LLC',
+    counterparty: 'Carroll College',
   },
   {
     id: 'ld-3',
@@ -92,16 +92,16 @@ export const LEGAL_DOCS: LegalDoc[] = [
     type: 'contract',
     status: 'active',
     effectiveDate: '2025-03-20',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
     counterparty: 'Patrick Bet-David (Valuetainment)',
   },
   {
     id: 'ld-4',
-    title: 'KaNeXT Trademark Application (USPTO)',
+    title: 'Valuetainment Trademark Application (USPTO)',
     type: 'registration',
     status: 'pending',
     effectiveDate: '2025-11-14',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
   },
   {
     id: 'ld-5',
@@ -110,7 +110,7 @@ export const LEGAL_DOCS: LegalDoc[] = [
     status: 'active',
     effectiveDate: '2025-04-01',
     expiryDate: '2027-03-31',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
     counterparty: 'Tom Ellsworth',
   },
   {
@@ -119,7 +119,7 @@ export const LEGAL_DOCS: LegalDoc[] = [
     type: 'certificate',
     status: 'active',
     effectiveDate: '2024-09-15',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
   },
 ];
 
@@ -248,12 +248,12 @@ export const RISK_REGISTER: RiskRegisterItem[] = [
   },
   {
     id: 'rr-5',
-    title: 'KaNeXT Agreement Renewal Risk',
+    title: 'Valuetainment Agreement Renewal Risk',
     category: 'Partnership',
     severity: 'medium',
     likelihood: 'low',
     impact: 'Loss of flagship proof wedge and media value pipeline',
-    mitigation: 'Quarterly check-in with KaNeXT AD; relationship health tracking',
+    mitigation: 'Quarterly check-in with Valuetainment AD; relationship health tracking',
     owner: 'Jordan Hayes',
     status: 'accepted',
   },
@@ -450,13 +450,13 @@ export interface ExceptionItem {
 export const COMPLIANCE_EXCEPTIONS: ExceptionItem[] = [
   {
     id: 'exc-1',
-    title: 'Temporary KYC Bypass for KaNeXT Pilot Payments',
+    title: 'Temporary KYC Bypass for Valuetainment Pilot Payments',
     type: 'Payment Rails',
     requestedBy: 'Alex Morgan',
     approvedBy: 'Tom Ellsworth',
     status: 'approved',
     validUntil: '2026-03-31',
-    reason: 'KaNeXT pilot requires immediate payment flow; full KYC to follow within 45 days',
+    reason: 'Valuetainment pilot requires immediate payment flow; full KYC to follow within 45 days',
   },
   {
     id: 'exc-2',

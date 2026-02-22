@@ -72,7 +72,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     conversionRate: 43.0,
     weekChange: 384,
     recentActivity: [
-      { name: 'Marcus Williams', action: 'Submitted info request', time: '12 min ago' },
+      { name: 'Dan Pearson', action: 'Submitted info request', time: '12 min ago' },
       { name: 'Priya Gupta', action: 'Attended virtual tour', time: '28 min ago' },
       { name: 'Jordan Hayes', action: 'Downloaded viewbook', time: '45 min ago' },
     ],
@@ -360,7 +360,7 @@ const GEOGRAPHIC_DISTRIBUTION = [
 ];
 
 const TOP_FEEDER_SCHOOLS = [
-  { id: 'fs-1', name: 'Westlake High School', city: 'Nashville, TN', applicants: 42, admitted: 28, enrolled: 18 },
+  { id: 'fs-1', name: 'Westlake High School', city: 'Washington, DC', applicants: 42, admitted: 28, enrolled: 18 },
   { id: 'fs-2', name: 'North Gwinnett High School', city: 'Suwanee, GA', applicants: 38, admitted: 22, enrolled: 14 },
   { id: 'fs-3', name: 'Brookwood High School', city: 'Snellville, GA', applicants: 35, admitted: 20, enrolled: 12 },
   { id: 'fs-4', name: 'Peachtree Ridge High School', city: 'Suwanee, GA', applicants: 32, admitted: 18, enrolled: 11 },

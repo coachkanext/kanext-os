@@ -19,30 +19,30 @@ export type ClusterRatings = {
   shooting: number;
   finishing: number;
   playmaking: number;
-  perimeter_defense: number;
-  interior_defense: number;
+  on_ball_defense: number;
+  team_defense: number;
   rebounding: number;
-  frame: number;
+  physical: number;
 };
 
 export const PLAYER_CLUSTERS: Record<string, ClusterRatings> = {
-  '0':  { shooting: 58, finishing: 62, playmaking: 55, perimeter_defense: 72, interior_defense: 64, rebounding: 70, frame: 74 },   // Thomas
-  '1':  { shooting: 48, finishing: 65, playmaking: 42, perimeter_defense: 60, interior_defense: 78, rebounding: 80, frame: 76 },   // Asceric
-  '2':  { shooting: 50, finishing: 52, playmaking: 44, perimeter_defense: 58, interior_defense: 52, rebounding: 56, frame: 62 },   // Lewis
-  '3':  { shooting: 52, finishing: 48, playmaking: 54, perimeter_defense: 56, interior_defense: 50, rebounding: 48, frame: 60 },   // Thompson
-  '4':  { shooting: 82, finishing: 90, playmaking: 84, perimeter_defense: 78, interior_defense: 72, rebounding: 76, frame: 86 },   // Carter
-  '5':  { shooting: 66, finishing: 80, playmaking: 78, perimeter_defense: 76, interior_defense: 88, rebounding: 86, frame: 84 },   // Selden
-  '7':  { shooting: 56, finishing: 72, playmaking: 50, perimeter_defense: 66, interior_defense: 76, rebounding: 74, frame: 78 },   // Moratinos
-  '9':  { shooting: 54, finishing: 50, playmaking: 62, perimeter_defense: 58, interior_defense: 48, rebounding: 52, frame: 56 },   // Benbo
-  '10': { shooting: 48, finishing: 56, playmaking: 46, perimeter_defense: 54, interior_defense: 58, rebounding: 60, frame: 64 },   // Morris
-  '11': { shooting: 74, finishing: 70, playmaking: 86, perimeter_defense: 78, interior_defense: 68, rebounding: 72, frame: 76 },   // Mentor
-  '12': { shooting: 46, finishing: 50, playmaking: 42, perimeter_defense: 54, interior_defense: 50, rebounding: 52, frame: 60 },   // Turner
-  '13': { shooting: 86, finishing: 76, playmaking: 74, perimeter_defense: 72, interior_defense: 64, rebounding: 68, frame: 70 },   // Noel
-  '15': { shooting: 60, finishing: 58, playmaking: 68, perimeter_defense: 64, interior_defense: 56, rebounding: 62, frame: 66 },   // Morgan
-  '20': { shooting: 42, finishing: 52, playmaking: 40, perimeter_defense: 48, interior_defense: 54, rebounding: 56, frame: 58 },   // Dues
-  '22': { shooting: 50, finishing: 46, playmaking: 52, perimeter_defense: 54, interior_defense: 48, rebounding: 50, frame: 56 },   // Laird
-  '41': { shooting: 78, finishing: 80, playmaking: 66, perimeter_defense: 72, interior_defense: 76, rebounding: 82, frame: 80 },   // Brewer
-  '55': { shooting: 66, finishing: 72, playmaking: 64, perimeter_defense: 70, interior_defense: 66, rebounding: 74, frame: 72 },   // Munir-Jones
+  '0':  { shooting: 58, finishing: 62, playmaking: 55, on_ball_defense: 72, team_defense: 64, rebounding: 70, physical: 74 },   // Thomas
+  '1':  { shooting: 48, finishing: 65, playmaking: 42, on_ball_defense: 60, team_defense: 78, rebounding: 80, physical: 76 },   // Asceric
+  '2':  { shooting: 50, finishing: 52, playmaking: 44, on_ball_defense: 58, team_defense: 52, rebounding: 56, physical: 62 },   // Lewis
+  '3':  { shooting: 52, finishing: 48, playmaking: 54, on_ball_defense: 56, team_defense: 50, rebounding: 48, physical: 60 },   // Thompson
+  '4':  { shooting: 82, finishing: 90, playmaking: 84, on_ball_defense: 78, team_defense: 72, rebounding: 76, physical: 86 },   // Carter
+  '5':  { shooting: 66, finishing: 80, playmaking: 78, on_ball_defense: 76, team_defense: 88, rebounding: 86, physical: 84 },   // Selden
+  '7':  { shooting: 56, finishing: 72, playmaking: 50, on_ball_defense: 66, team_defense: 76, rebounding: 74, physical: 78 },   // Moratinos
+  '9':  { shooting: 54, finishing: 50, playmaking: 62, on_ball_defense: 58, team_defense: 48, rebounding: 52, physical: 56 },   // Benbo
+  '10': { shooting: 48, finishing: 56, playmaking: 46, on_ball_defense: 54, team_defense: 58, rebounding: 60, physical: 64 },   // Morris
+  '11': { shooting: 74, finishing: 70, playmaking: 86, on_ball_defense: 78, team_defense: 68, rebounding: 72, physical: 76 },   // Mentor
+  '12': { shooting: 46, finishing: 50, playmaking: 42, on_ball_defense: 54, team_defense: 50, rebounding: 52, physical: 60 },   // Turner
+  '13': { shooting: 86, finishing: 76, playmaking: 74, on_ball_defense: 72, team_defense: 64, rebounding: 68, physical: 70 },   // Noel
+  '15': { shooting: 60, finishing: 58, playmaking: 68, on_ball_defense: 64, team_defense: 56, rebounding: 62, physical: 66 },   // Morgan
+  '20': { shooting: 42, finishing: 52, playmaking: 40, on_ball_defense: 48, team_defense: 54, rebounding: 56, physical: 58 },   // Dues
+  '22': { shooting: 50, finishing: 46, playmaking: 52, on_ball_defense: 54, team_defense: 48, rebounding: 50, physical: 56 },   // Laird
+  '41': { shooting: 78, finishing: 80, playmaking: 66, on_ball_defense: 72, team_defense: 76, rebounding: 82, physical: 80 },   // Brewer
+  '55': { shooting: 66, finishing: 72, playmaking: 64, on_ball_defense: 70, team_defense: 66, rebounding: 74, physical: 72 },   // Munir-Jones
 };
 
 // Per-player height + weight (keyed by jersey number, 2025-26 roster)
@@ -72,7 +72,7 @@ export function computeOffKR(c: ClusterRatings): number {
 }
 
 export function computeDefKR(c: ClusterRatings): number {
-  return Math.round((c.perimeter_defense + c.interior_defense + c.rebounding + c.frame) / 4);
+  return Math.round((c.on_ball_defense + c.team_defense + c.rebounding + c.physical) / 4);
 }
 
 // ── Canonical subclusters per cluster ──
@@ -108,7 +108,7 @@ export const CLUSTER_SUBCLUSTERS: Record<keyof ClusterRatings, string[]> = {
     'Screen Assist Creation',
     'Hockey Assist Creation',
   ],
-  perimeter_defense: [
+  on_ball_defense: [
     'On-Ball Containment',
     'Ball Pressure',
     'Screen Navigation',
@@ -118,7 +118,7 @@ export const CLUSTER_SUBCLUSTERS: Record<keyof ClusterRatings, string[]> = {
     'Perimeter Disruption',
     'Perimeter Foul Discipline',
   ],
-  interior_defense: [
+  team_defense: [
     'Block',
     'Rim Deterrence',
     'Vertical Contest Effectiveness',
@@ -137,7 +137,7 @@ export const CLUSTER_SUBCLUSTERS: Record<keyof ClusterRatings, string[]> = {
     'Rebound Range & Tracking',
     'Rebound-to-Playmaking (Outlet Impact)',
   ],
-  frame: [
+  physical: [
     'Speed — With Ball',
     'Speed — Without Ball',
     'Acceleration (Burst)',

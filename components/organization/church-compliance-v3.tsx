@@ -1,5 +1,5 @@
 /**
- * Church Compliance V3 — KaNeXT Church · Senior Pastor
+ * Church Compliance V3 — 2819 Church · Senior Pastor
  * ViewBar: Governance | Legal | Safety
  * Self-contained with inline mock data.
  */
@@ -104,7 +104,7 @@ interface EmploymentAgreement {
 }
 
 const EMPLOYMENT_AGREEMENTS: EmploymentAgreement[] = [
-  { id: 'ea1', name: 'Pastor James Carter', position: 'Senior Pastor', startDate: 'Jan 2015', status: 'Active' },
+  { id: 'ea1', name: 'Pastor Philip Anthony Mitchell', position: 'Senior Pastor', startDate: 'Jan 2015', status: 'Active' },
   { id: 'ea2', name: 'Pastor Ryan Mitchell', position: 'Youth Pastor', startDate: 'Aug 2020', status: 'Active' },
 ];
 
@@ -118,7 +118,7 @@ interface BackgroundCheck {
 
 const BACKGROUND_CHECKS: BackgroundCheck[] = [
   { id: 'bg1', name: 'Pastor Ryan Mitchell', role: 'Youth Pastor', status: 'Cleared', lastChecked: 'Oct 2024' },
-  { id: 'bg2', name: 'Sister Angela Davis', role: 'KaNeXT Kids Director', status: 'Cleared', lastChecked: 'Nov 2024' },
+  { id: 'bg2', name: 'Sister Angela Davis', role: '2819 Kids Director', status: 'Cleared', lastChecked: 'Nov 2024' },
   { id: 'bg3', name: 'Bro. Michael Scott', role: 'Catalyst Leader', status: 'Cleared', lastChecked: 'Sep 2024' },
   { id: 'bg4', name: 'Chioma Eze', role: 'Children\'s Volunteer', status: 'Cleared', lastChecked: 'Oct 2024' },
   { id: 'bg5', name: 'Henry Okafor', role: 'Youth Volunteer', status: 'Cleared', lastChecked: 'Nov 2024' },
@@ -225,7 +225,7 @@ function GovernanceView({ colors, accentColor }: { colors: typeof Colors.light; 
         <View style={s.bylawsRow}>
           <IconSymbol name="doc.text.fill" size={20} color={accentColor} />
           <View style={{ flex: 1 }}>
-            <ThemedText style={[s.bylawsTitle, { color: colors.text }]}>KaNeXT Church Bylaws & Constitution</ThemedText>
+            <ThemedText style={[s.bylawsTitle, { color: colors.text }]}>2819 Church Bylaws & Constitution</ThemedText>
             <ThemedText style={[s.bylawsDate, { color: colors.textSecondary }]}>Last updated: 2023</ThemedText>
           </View>
           <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>

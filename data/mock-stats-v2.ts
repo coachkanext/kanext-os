@@ -19,7 +19,7 @@ export interface TeamIdentity {
   teamKR: number;
   offKR: number;
   defKR: number;
-  coverageBadge: 'Synergy' | 'KaNeXT' | 'Manual';
+  coverageBadge: 'Synergy' | 'Carroll' | 'Manual';
   lastUpdated: string;
 }
 
@@ -169,9 +169,9 @@ export interface Last5Entry {
 // =============================================================================
 
 export const TEAM_IDENTITY: TeamIdentity = {
-  name: 'KaNeXT Sports',
-  level: 'NAA',
-  conference: 'KaNeXT Conference',
+  name: 'Carroll College',
+  level: 'NAIA',
+  conference: 'Frontier Conference',
   record: '22-8',
   confRecord: '14-4',
   streak: 'W3',
@@ -236,16 +236,16 @@ export const PLAY_TYPE_SUMMARY: PlayTypeEntry[] = [
 ];
 
 export const GAME_LOG: GameLogEntry[] = [
-  { id: 'gl-1', opponent: 'Pinecrest University', date: 'Feb 15', result: 'W', score: '84-72', pace: 72.4, offRtg: 112.8, defRtg: 96.4, eFG: 54.2, toPct: 15.6, swingFactor: 'Transition dominance' },
-  { id: 'gl-2', opponent: 'Clearwater', date: 'Feb 11', result: 'W', score: '78-68', pace: 68.2, offRtg: 108.4, defRtg: 94.8, eFG: 52.6, toPct: 16.8, swingFactor: 'Free throw edge +14' },
-  { id: 'gl-3', opponent: 'Westfield', date: 'Feb 8', result: 'W', score: '92-84', pace: 76.8, offRtg: 116.4, defRtg: 106.2, eFG: 56.8, toPct: 18.4, swingFactor: '3PT barrage (14/28)' },
+  { id: 'gl-1', opponent: 'Dakota State University', date: 'Feb 15', result: 'W', score: '84-72', pace: 72.4, offRtg: 112.8, defRtg: 96.4, eFG: 54.2, toPct: 15.6, swingFactor: 'Transition dominance' },
+  { id: 'gl-2', opponent: 'Bellevue', date: 'Feb 11', result: 'W', score: '78-68', pace: 68.2, offRtg: 108.4, defRtg: 94.8, eFG: 52.6, toPct: 16.8, swingFactor: 'Free throw edge +14' },
+  { id: 'gl-3', opponent: 'Montana Tech', date: 'Feb 8', result: 'W', score: '92-84', pace: 76.8, offRtg: 116.4, defRtg: 106.2, eFG: 56.8, toPct: 18.4, swingFactor: '3PT barrage (14/28)' },
   { id: 'gl-4', opponent: 'Magnolia', date: 'Feb 4', result: 'L', score: '66-74', pace: 64.8, offRtg: 96.2, defRtg: 108.4, eFG: 42.4, toPct: 22.6, swingFactor: 'Turnovers 19 (season high)' },
-  { id: 'gl-5', opponent: 'Summit', date: 'Feb 1', result: 'W', score: '81-76', pace: 70.6, offRtg: 110.2, defRtg: 104.8, eFG: 50.8, toPct: 17.2, swingFactor: 'OREB dominance +8' },
-  { id: 'gl-6', opponent: 'Lakewood', date: 'Jan 28', result: 'L', score: '70-78', pace: 74.2, offRtg: 98.6, defRtg: 110.4, eFG: 44.2, toPct: 20.8, swingFactor: 'PNR coverage breakdowns' },
-  { id: 'gl-7', opponent: 'Ridgemont', date: 'Jan 25', result: 'W', score: '88-80', pace: 72.8, offRtg: 114.6, defRtg: 104.2, eFG: 55.4, toPct: 14.8, swingFactor: 'Cole 28pts carry' },
+  { id: 'gl-5', opponent: 'Rocky Mountain', date: 'Feb 1', result: 'W', score: '81-76', pace: 70.6, offRtg: 110.2, defRtg: 104.8, eFG: 50.8, toPct: 17.2, swingFactor: 'OREB dominance +8' },
+  { id: 'gl-6', opponent: 'Providence', date: 'Jan 28', result: 'L', score: '70-78', pace: 74.2, offRtg: 98.6, defRtg: 110.4, eFG: 44.2, toPct: 20.8, swingFactor: 'PNR coverage breakdowns' },
+  { id: 'gl-7', opponent: 'MSU-Northern', date: 'Jan 25', result: 'W', score: '88-80', pace: 72.8, offRtg: 114.6, defRtg: 104.2, eFG: 55.4, toPct: 14.8, swingFactor: 'Cole 28pts carry' },
   { id: 'gl-8', opponent: 'Johnson & Wales', date: 'Jan 21', result: 'W', score: '96-62', pace: 78.4, offRtg: 122.8, defRtg: 79.4, eFG: 58.6, toPct: 12.4, swingFactor: 'Blowout \u2014 bench minutes' },
-  { id: 'gl-9', opponent: 'South Ridgemont State', date: 'Jan 18', result: 'W', score: '76-72', pace: 66.4, offRtg: 106.2, defRtg: 100.8, eFG: 48.8, toPct: 19.2, swingFactor: 'Clutch FTs down stretch' },
-  { id: 'gl-10', opponent: 'Ridgemont National', date: 'Jan 14', result: 'W', score: '82-68', pace: 70.2, offRtg: 112.4, defRtg: 92.6, eFG: 54.4, toPct: 16.4, swingFactor: 'Defensive intensity' },
+  { id: 'gl-9', opponent: 'South MSU-Northern State', date: 'Jan 18', result: 'W', score: '76-72', pace: 66.4, offRtg: 106.2, defRtg: 100.8, eFG: 48.8, toPct: 19.2, swingFactor: 'Clutch FTs down stretch' },
+  { id: 'gl-10', opponent: 'MSU-Northern National', date: 'Jan 14', result: 'W', score: '82-68', pace: 70.2, offRtg: 112.4, defRtg: 92.6, eFG: 54.4, toPct: 16.4, swingFactor: 'Defensive intensity' },
 ];
 
 export const PLAYER_LEADERBOARD: PlayerStatRow[] = [

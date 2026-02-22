@@ -2,8 +2,8 @@
  * Mock Business Payment Rails — Data layer for the Payment Rails tab.
  * 9 scroll sections: Now, Wallets, Batches, Approvals, Release Queue, Exceptions,
  * Disputes & Returns, Receipts, Admin.
- * All data references KaNeXT entities: Mercury Bank, Stripe, KaNeXT Inc, OSK Group,
- * KaNeXT partnership payments, KaNeXT Church donations.
+ * All data references Valuetainment entities: Mercury Bank, Stripe, Valuetainment Media LLC, OSK Group,
+ * Valuetainment partnership payments, 2819 Church donations.
  */
 
 // =============================================================================
@@ -155,10 +155,10 @@ export const RAILS_HEALTH: RailsHealthMetric[] = [
 export const NOW_ITEMS: NowItem[] = [
   {
     id: 'now-1',
-    title: 'KaNeXT Partnership Q1 Payment',
+    title: 'Valuetainment Partnership Q1 Payment',
     amount: '$24,500.00',
     status: 'processing',
-    counterparty: 'KaNeXT Sports',
+    counterparty: 'Carroll College',
     rail: 'ACH',
     eta: 'Settles Feb 19',
   },
@@ -173,7 +173,7 @@ export const NOW_ITEMS: NowItem[] = [
   },
   {
     id: 'now-3',
-    title: 'KaNeXT Church Donation Disbursement',
+    title: '2819 Church Donation Disbursement',
     amount: '$12,000.00',
     status: 'pending_approval',
     counterparty: "Int'l Church of Christ LA",
@@ -216,7 +216,7 @@ export const NOW_ITEMS: NowItem[] = [
 export const WALLET_ACCOUNTS: WalletAccount[] = [
   {
     id: 'wa-1',
-    name: 'KaNeXT Inc. Operating',
+    name: 'Valuetainment Media LLC Operating',
     institution: 'Mercury Bank',
     type: 'checking',
     balance: '$142,400.00',
@@ -225,7 +225,7 @@ export const WALLET_ACCOUNTS: WalletAccount[] = [
   },
   {
     id: 'wa-2',
-    name: 'KaNeXT Inc. Reserve',
+    name: 'Valuetainment Media LLC Reserve',
     institution: 'Mercury Bank',
     type: 'treasury',
     balance: '$85,000.00',
@@ -243,7 +243,7 @@ export const WALLET_ACCOUNTS: WalletAccount[] = [
   },
   {
     id: 'wa-4',
-    name: 'KaNeXT Crypto Wallet',
+    name: 'Valuetainment Crypto Wallet',
     institution: 'Coinbase',
     type: 'crypto',
     balance: '$4,120.00',
@@ -268,7 +268,7 @@ export const PAYOUT_BATCHES: PayoutBatch[] = [
   },
   {
     id: 'pb-2',
-    label: 'KaNeXT Q1 Partnership Bundle',
+    label: 'Valuetainment Q1 Partnership Bundle',
     totalAmount: '$24,500.00',
     itemCount: 1,
     status: 'processing',
@@ -277,7 +277,7 @@ export const PAYOUT_BATCHES: PayoutBatch[] = [
   },
   {
     id: 'pb-3',
-    label: 'KaNeXT Church Community Disbursement',
+    label: '2819 Church Community Disbursement',
     totalAmount: '$12,000.00',
     itemCount: 3,
     status: 'approved',
@@ -320,7 +320,7 @@ export const RAILS_APPROVALS: RailsApproval[] = [
   },
   {
     id: 'ra-2',
-    title: 'KaNeXT Church Donation Disbursement',
+    title: '2819 Church Donation Disbursement',
     amount: '$12,000.00',
     requester: 'Jordan Hayes',
     type: 'transfer',
@@ -372,7 +372,7 @@ export const EXCEPTIONS: ExceptionItem[] = [
   },
   {
     id: 'ex-2',
-    title: 'NSF — KaNeXT Racing Sponsorship',
+    title: 'NSF — PBD Podcast Sponsorship',
     type: 'nsf',
     amount: '$2,500.00',
     date: 'Feb 14, 2026',
@@ -462,7 +462,7 @@ export const RECEIPTS: ReceiptItem[] = [
     amount: '$25.00',
     date: 'Feb 17, 2026',
     category: 'Banking',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
     receiptUrl: 'https://mercury.com/receipts/2026-02-17-001',
   },
   {
@@ -471,20 +471,20 @@ export const RECEIPTS: ReceiptItem[] = [
     amount: '$412.80',
     date: 'Feb 1, 2026',
     category: 'Payment Processing',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
     receiptUrl: 'https://stripe.com/receipts/2026-02-01-inv',
   },
   {
     id: 'rc-3',
-    description: 'KaNeXT Partnership — Q1 Disbursement',
+    description: 'Valuetainment Partnership — Q1 Disbursement',
     amount: '$24,500.00',
     date: 'Feb 15, 2026',
     category: 'Partnership',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
   },
   {
     id: 'rc-4',
-    description: 'KaNeXT Church Donation Processing Fee',
+    description: '2819 Church Donation Processing Fee',
     amount: '$180.00',
     date: 'Feb 14, 2026',
     category: 'Donations',
@@ -496,7 +496,7 @@ export const RECEIPTS: ReceiptItem[] = [
     amount: '$3,210.44',
     date: 'Jan 31, 2026',
     category: 'Infrastructure',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
     receiptUrl: 'https://aws.amazon.com/invoices/2026-01-31',
   },
   {
@@ -505,7 +505,7 @@ export const RECEIPTS: ReceiptItem[] = [
     amount: '$8.50',
     date: 'Feb 12, 2026',
     category: 'Crypto',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
     receiptUrl: 'https://coinbase.com/receipts/2026-02-12',
   },
 ];
@@ -546,7 +546,7 @@ export const ADMIN_SETTINGS: AdminSetting[] = [
   {
     id: 'as-5',
     label: 'Default Settlement Account',
-    value: 'Mercury — KaNeXT Inc. Operating',
+    value: 'Mercury — Valuetainment Media LLC Operating',
     type: 'text',
     category: 'Defaults',
   },

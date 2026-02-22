@@ -1,8 +1,8 @@
 /**
- * KaNeXT Sports Men's Basketball
+ * Carroll College Men's Basketball
  * Player Identity Table (Step 3)
  * Seasons: 2022-23 through 2025-26
- * Source: KaNeXT Conference Stats
+ * Source: Frontier Conference Stats
  */
 
 import type { Player } from '../schema';

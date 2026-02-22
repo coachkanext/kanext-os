@@ -1,6 +1,6 @@
 /**
  * Education Organization Institutions V2 — Mock Data & Types
- * KaNeXT Church-realistic institution portfolio: KaNeXT, Morris Brown, Evergreen, Paul Quinn.
+ * 2819 Church-realistic institution portfolio: Howard, Morris Brown, Evergreen, Paul Quinn.
  */
 
 // =============================================================================
@@ -193,9 +193,9 @@ export const TODAY_PRIORITY_COLORS: Record<TodayItem['priority'], string> = {
 const INSTITUTIONS: EduInstitution[] = [
   {
     id: 'inst-001',
-    name: 'KaNeXT Sports',
-    shortName: 'KaNeXT',
-    location: 'Nashville, TN',
+    name: 'Howard University',
+    shortName: 'Howard',
+    location: 'Washington, DC',
     type: 'university',
     status: 'active',
     priority: 'highest',
@@ -236,7 +236,7 @@ const INSTITUTIONS: EduInstitution[] = [
     id: 'inst-003',
     name: 'Morris Brown College',
     shortName: 'MBC',
-    location: 'Nashville, TN',
+    location: 'Washington, DC',
     type: 'college',
     status: 'pipeline',
     pipelineStage: 'review',
@@ -275,7 +275,7 @@ const INSTITUTIONS: EduInstitution[] = [
   },
   {
     id: 'inst-004',
-    name: 'Evergreen University',
+    name: 'Blue Mountain CC',
     shortName: 'EWU',
     location: 'Jacksonville, FL',
     type: 'university',
@@ -363,7 +363,7 @@ const TODAY_ITEMS: TodayItem[] = [
   {
     id: 'today-001',
     title: 'SACSCOC interim report deadline',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
     type: 'deadline',
     priority: 'urgent',
     due: '2026-03-15',
@@ -371,7 +371,7 @@ const TODAY_ITEMS: TodayItem[] = [
   {
     id: 'today-002',
     title: 'Housing fire inspection — Building C',
-    institution: 'Evergreen University',
+    institution: 'Blue Mountain CC',
     type: 'inspection',
     priority: 'high',
     due: '2026-02-20',
@@ -401,8 +401,8 @@ const TODAY_ITEMS: TodayItem[] = [
 const NEXT_MILESTONES: NextMilestone[] = [
   {
     id: 'ms-001',
-    title: 'KaNeXT SACSCOC interim report submission',
-    institution: 'KaNeXT Sports',
+    title: 'Howard SACSCOC interim report submission',
+    institution: 'Howard University',
     date: '2026-03-15',
     category: 'Compliance',
   },
@@ -416,7 +416,7 @@ const NEXT_MILESTONES: NextMilestone[] = [
   {
     id: 'ms-004',
     title: 'EWU Title III grant report',
-    institution: 'Evergreen University',
+    institution: 'Blue Mountain CC',
     date: '2026-04-01',
     category: 'Financial',
   },
@@ -429,8 +429,8 @@ const NEXT_MILESTONES: NextMilestone[] = [
   },
   {
     id: 'ms-006',
-    title: 'KaNeXT housing renovation Phase 2 completion',
-    institution: 'KaNeXT Sports',
+    title: 'Howard housing renovation Phase 2 completion',
+    institution: 'Howard University',
     date: '2026-04-01',
     category: 'Facilities',
   },
@@ -453,7 +453,7 @@ const OVERVIEW_TILES: OverviewTiles = {
   agingRisk: '$1.4M 90+ days',
   complianceAlerts: 10,
   deadlines: [
-    { title: 'SACSCOC interim report', date: '2026-03-15', institution: 'KaNeXT' },
+    { title: 'SACSCOC interim report', date: '2026-03-15', institution: 'Howard' },
     { title: 'Accreditation self-study', date: '2026-04-15', institution: 'MBC' },
     { title: 'Title III grant report', date: '2026-04-01', institution: 'EWU' },
   ],

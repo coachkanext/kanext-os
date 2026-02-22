@@ -1,7 +1,7 @@
 /**
  * Business Organization Ledger Tab -- V3
  * 3-pill ViewBar: Transactions | Pending | Receipts
- * KaNeXT founder view. All data inline.
+ * Valuetainment founder view. All data inline.
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
@@ -37,13 +37,13 @@ const TXN_FILTERS: TxnFilter[] = ['All', 'Income', 'Expense', 'Payroll', 'Legal'
 
 const TRANSACTIONS = [
   { id: 'tx1', description: 'Velocity Ventures - SAFE Wire', amount: 350_000, type: 'income' as const, category: 'Investment' as TxnFilter, date: 'Jan 15, 2025', entity: 'OSK Group LLC' },
-  { id: 'tx2', description: 'January Payroll', amount: 28_000, type: 'expense' as const, category: 'Payroll' as TxnFilter, date: 'Jan 31, 2025', entity: 'KaNeXT Operations LLC' },
-  { id: 'tx3', description: 'AWS Infrastructure - January', amount: 1_200, type: 'expense' as const, category: 'Infrastructure' as TxnFilter, date: 'Feb 1, 2025', entity: 'KaNeXT Operations LLC' },
-  { id: 'tx4', description: 'Mitchell & Associates - IP Filing', amount: 3_500, type: 'expense' as const, category: 'Legal' as TxnFilter, date: 'Feb 5, 2025', entity: 'KaNeXT IP Holdings LLC' },
+  { id: 'tx2', description: 'January Payroll', amount: 28_000, type: 'expense' as const, category: 'Payroll' as TxnFilter, date: 'Jan 31, 2025', entity: 'Valuetainment Operations LLC' },
+  { id: 'tx3', description: 'AWS Infrastructure - January', amount: 1_200, type: 'expense' as const, category: 'Infrastructure' as TxnFilter, date: 'Feb 1, 2025', entity: 'Valuetainment Operations LLC' },
+  { id: 'tx4', description: 'Mitchell & Associates - IP Filing', amount: 3_500, type: 'expense' as const, category: 'Legal' as TxnFilter, date: 'Feb 5, 2025', entity: 'Valuetainment IP Holdings LLC' },
   { id: 'tx5', description: 'Dr. Patricia Moore - SAFE Wire', amount: 250_000, type: 'income' as const, category: 'Investment' as TxnFilter, date: 'Jun 20, 2024', entity: 'OSK Group LLC' },
-  { id: 'tx6', description: 'February Payroll', amount: 28_000, type: 'expense' as const, category: 'Payroll' as TxnFilter, date: 'Feb 28, 2025', entity: 'KaNeXT Operations LLC' },
-  { id: 'tx7', description: 'WeWork Miami - February', amount: 800, type: 'expense' as const, category: 'Expense' as TxnFilter, date: 'Feb 1, 2025', entity: 'KaNeXT Operations LLC' },
-  { id: 'tx8', description: 'OpenAI API - February', amount: 200, type: 'expense' as const, category: 'Infrastructure' as TxnFilter, date: 'Feb 3, 2025', entity: 'KaNeXT Operations LLC' },
+  { id: 'tx6', description: 'February Payroll', amount: 28_000, type: 'expense' as const, category: 'Payroll' as TxnFilter, date: 'Feb 28, 2025', entity: 'Valuetainment Operations LLC' },
+  { id: 'tx7', description: 'WeWork Miami - February', amount: 800, type: 'expense' as const, category: 'Expense' as TxnFilter, date: 'Feb 1, 2025', entity: 'Valuetainment Operations LLC' },
+  { id: 'tx8', description: 'OpenAI API - February', amount: 200, type: 'expense' as const, category: 'Infrastructure' as TxnFilter, date: 'Feb 3, 2025', entity: 'Valuetainment Operations LLC' },
 ];
 
 const PENDING = [

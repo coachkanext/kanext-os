@@ -326,15 +326,15 @@ export const CLUSTER_LABELS: Record<string, { label: string; icon: string }> = {
   shooting: { label: 'Shooting', icon: 'scope' },
   finishing: { label: 'Finishing', icon: 'flame' },
   playmaking: { label: 'Playmaking', icon: 'arrow.triangle.branch' },
-  perimeter_defense: { label: 'Perimeter D', icon: 'shield.lefthalf.filled' },
-  interior_defense: { label: 'Interior D', icon: 'shield.righthalf.filled' },
+  on_ball_defense: { label: 'On-Ball D', icon: 'shield.lefthalf.filled' },
+  team_defense: { label: 'Team D', icon: 'shield.righthalf.filled' },
   rebounding: { label: 'Rebounding', icon: 'arrow.up.arrow.down' },
-  frame: { label: 'Physical', icon: 'figure.strengthtraining.traditional' },
+  physical: { label: 'Physical', icon: 'figure.strengthtraining.traditional' },
 };
 
 export const CLUSTER_ORDER = [
   'shooting', 'finishing', 'playmaking',
-  'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
+  'on_ball_defense', 'team_defense', 'rebounding', 'physical',
 ] as const;
 
 // =============================================================================

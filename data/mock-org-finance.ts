@@ -79,7 +79,7 @@ const BUSINESS_FINANCE: OrgFinanceData = {
     { id: 'el-5', description: 'Pilot fee — Gamma Labs', amount: 8000, type: 'revenue', date: 'Feb 8', category: 'Pilots' },
     { id: 'el-6', description: 'Legal — terms of service review', amount: -2800, type: 'expense', date: 'Feb 5', category: 'Legal' },
     { id: 'el-7', description: 'SaaS subscription — Delta Co', amount: 4800, type: 'revenue', date: 'Feb 3', category: 'Subscriptions' },
-    { id: 'el-8', description: 'Team offsite — Nashville', amount: -4200, type: 'expense', date: 'Feb 1', category: 'Operations' },
+    { id: 'el-8', description: 'Team offsite — Helena', amount: -4200, type: 'expense', date: 'Feb 1', category: 'Operations' },
   ],
 };
 

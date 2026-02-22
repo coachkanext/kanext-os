@@ -80,12 +80,12 @@ const OPP_POSITIONS = ['Point Guard', 'Combo Guard', 'Wing', 'Forward', 'Big'] a
 const OPP_EXTRA_NAMES = ['J. Williams', 'D. Harris', 'M. Johnson', 'T. Davis', 'K. Robinson', 'C. Taylor', 'R. Clark', 'A. Moore'];
 const OPP_CLUSTER_MAP: Record<string, keyof import('@/data/roster-data').ClusterRatings> = {
   'Shooting': 'shooting', 'Finishing': 'finishing', 'Playmaking': 'playmaking',
-  'OB Defense': 'perimeter_defense', 'Team Defense': 'interior_defense', 'Rebounding': 'rebounding', 'Physical': 'frame',
+  'OB Defense': 'on_ball_defense', 'Team Defense': 'team_defense', 'Rebounding': 'rebounding', 'Physical': 'physical',
 };
 
 function buildOpponentDepthChart(pregame: PregameSnapshot) {
   type CR = import('@/data/roster-data').ClusterRatings;
-  const teamClusters: CR = { shooting: 60, finishing: 60, playmaking: 60, perimeter_defense: 60, interior_defense: 60, rebounding: 60, frame: 60 };
+  const teamClusters: CR = { shooting: 60, finishing: 60, playmaking: 60, on_ball_defense: 60, team_defense: 60, rebounding: 60, physical: 60 };
   for (const cr of pregame.clusterRatings) { const key = OPP_CLUSTER_MAP[cr.cluster]; if (key) teamClusters[key] = cr.rating; }
   const threats = pregame.oppThreats.slice(0, 3);
   const playerClusters: Record<string, CR> = {};
@@ -97,9 +97,9 @@ function buildOpponentDepthChart(pregame: PregameSnapshot) {
     const name = t?.name ?? OPP_EXTRA_NAMES[i % 8]; const kr = t?.kr ?? pregame.oppKR - i*2;
     const arch = t ? (OPP_ARCHETYPE_MAP[t.archetype] ?? 'two_way_wing') : 'two_way_wing';
     const v = (i*7+3)%11-5;
-    const sc: CR = { shooting: Math.max(20,Math.min(98,teamClusters.shooting+v)), finishing: Math.max(20,Math.min(98,teamClusters.finishing-v+2)), playmaking: Math.max(20,Math.min(98,teamClusters.playmaking+(i<2?8:-4))), perimeter_defense: Math.max(20,Math.min(98,teamClusters.perimeter_defense+v-1)), interior_defense: Math.max(20,Math.min(98,teamClusters.interior_defense+(i>=3?6:-3))), rebounding: Math.max(20,Math.min(98,teamClusters.rebounding+(i>=3?5:-2))), frame: Math.max(20,Math.min(98,teamClusters.frame+(i>=3?7:-3))) };
+    const sc: CR = { shooting: Math.max(20,Math.min(98,teamClusters.shooting+v)), finishing: Math.max(20,Math.min(98,teamClusters.finishing-v+2)), playmaking: Math.max(20,Math.min(98,teamClusters.playmaking+(i<2?8:-4))), on_ball_defense: Math.max(20,Math.min(98,teamClusters.on_ball_defense+v-1)), team_defense: Math.max(20,Math.min(98,teamClusters.team_defense+(i>=3?6:-3))), rebounding: Math.max(20,Math.min(98,teamClusters.rebounding+(i>=3?5:-2))), physical: Math.max(20,Math.min(98,teamClusters.physical+(i>=3?7:-3))) };
     playerClusters[sn] = sc;
-    const bc: CR = { shooting: Math.max(20,sc.shooting-8), finishing: Math.max(20,sc.finishing-6), playmaking: Math.max(20,sc.playmaking-7), perimeter_defense: Math.max(20,sc.perimeter_defense-5), interior_defense: Math.max(20,sc.interior_defense-6), rebounding: Math.max(20,sc.rebounding-5), frame: Math.max(20,sc.frame-4) };
+    const bc: CR = { shooting: Math.max(20,sc.shooting-8), finishing: Math.max(20,sc.finishing-6), playmaking: Math.max(20,sc.playmaking-7), on_ball_defense: Math.max(20,sc.on_ball_defense-5), team_defense: Math.max(20,sc.team_defense-6), rebounding: Math.max(20,sc.rebounding-5), physical: Math.max(20,sc.physical-4) };
     playerClusters[bn] = bc;
     const hi = POS_HT[i]+((i*3+1)%5)-2; const hf = Math.floor(hi/12); const hr = hi%12;
     playerPhysicals[sn] = { height: `${hf}-${hr}`, weight: POS_WT[i]+((i*7)%15)-5 };
@@ -518,8 +518,8 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
             // ── Mock data ──
 
             const MOCK_TEAM_NAMES = [
-              'Northfield', 'Crestview', 'Ridgemont', 'Lakewood', 'Harborside',
-              'Westbridge', 'Irondale', 'Clearwater', 'Stonehill', 'Ashford',
+              'Montana Tech', 'MSU-Northern', 'Montana Tech', 'Providence', 'Valley City',
+              'Rocky Mtn', 'Dakota St', 'Bellevue', 'Dickinson', 'Mayville St',
               'Riverside', 'Summit Valley', 'Pinehurst', 'Oakdale', 'Brookfield',
             ];
 
@@ -541,7 +541,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
 
             const NAIA_POLL = [
               { rank: 1, team: 'Loyola (LA)', record: '22-2', prev: 1 },
-              { rank: 2, team: 'Heartland', record: '21-3', prev: 2 },
+              { rank: 2, team: team: 'College of Idaho', record: '21-3', prev: 2 },
               { rank: 3, team: 'Oklahoma City', record: '20-3', prev: 4 },
               { rank: 4, team: 'Life Pacific', record: '20-4', prev: 3 },
               { rank: 5, team: 'Benedictine (KS)', record: '19-4', prev: 8 },
@@ -569,7 +569,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
 
             const KR_NATIONAL = [
               { rank: 1, team: 'Loyola (LA)', kr: 91, trend: 2 },
-              { rank: 2, team: 'Heartland', kr: 89, trend: 0 },
+              { rank: 2, team: team: 'College of Idaho', kr: 89, trend: 0 },
               { rank: 3, team: 'Oklahoma City', kr: 88, trend: 1 },
               { rank: 4, team: 'Life Pacific', kr: 87, trend: -1 },
               { rank: 5, team: 'Benedictine (KS)', kr: 86, trend: 3 },
@@ -593,13 +593,13 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
               { rank: 23, team: 'Vanguard', kr: 76, trend: 1 },
               { rank: 24, team: 'Cornerstone', kr: 75, trend: 0 },
               { rank: 25, team: 'Grace (IN)', kr: 75, trend: -1 },
-              { rank: 38, team: 'KaNeXT Sports', kr: 74, trend: 3 },
+              { rank: 38, team: 'Carroll College', kr: 74, trend: 3 },
             ];
 
             const KR_CONF = KaNeXT_STANDINGS.map((row) => {
               const h = hashStr(row.team);
-              const kr = row.team === 'KaNeXT Sports' ? 74 : 58 + (h % 28);
-              const trend = row.team === 'KaNeXT Sports' ? 3 : h % 5 === 0 ? (1 + ((h >> 4) % 4)) : h % 3 === 0 ? -(1 + ((h >> 4) % 3)) : 0;
+              const kr = row.team === 'Carroll College' ? 74 : 58 + (h % 28);
+              const trend = row.team === 'Carroll College' ? 3 : h % 5 === 0 ? (1 + ((h >> 4) % 4)) : h % 3 === 0 ? -(1 + ((h >> 4) % 3)) : 0;
               return { rank: 0, team: row.team, kr, trend };
             }).sort((a, b) => b.kr - a.kr).map((r, i) => ({ ...r, rank: i + 1 }));
 
@@ -658,7 +658,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
             const generateCountryKR = (countryCode: string) => {
               const names = [
                 'United FC', 'Metro Stars', 'Capital BC', 'Northern Tigers', 'Coastal Eagles',
-                'Southern Hawks', 'Valley Kings', 'Highlands', 'Central Blazers', 'Eastern Force',
+                'Southern Hawks', 'Valley Kings', 'Embry-Riddles', 'Central Blazers', 'Eastern Force',
               ];
               return names.map((team) => {
                 const h = hashStr(countryCode + team);
@@ -713,7 +713,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
             const sectionLabel = standingsView === 'conference'
               ? 'SUN CONFERENCE'
               : standingsView === 'national'
-                ? 'NAA'
+                ? 'NAIA'
                 : selectedDivisions.length > 0
                   ? selectedDivisions.map(id => (divisionChips.find((c) => c.id === id)?.label ?? '').toUpperCase()).join('  /  ')
                   : '';
@@ -737,7 +737,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                   <ThemedText style={[s.standingsColHeader, { color: colors.textTertiary }]}>TREND</ThemedText>
                 </View>
                 {krData.map((row, index) => {
-                  const isFmu = row.team === 'KaNeXT Sports';
+                  const isFmu = row.team === 'Carroll College';
                   const showGap = showFmuGap && index === krData.length - 1 && row.rank > 10;
                   const td = trendDisplay(row.trend);
                   const isExpanded = expandedKRTeam === row.team;
@@ -789,7 +789,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                   <ThemedText style={[s.standingsColHeader, { color: colors.textTertiary }]}>STK</ThemedText>
                 </View>
                 {rows.map((row, index) => {
-                  const isFmu = row.team === 'KaNeXT Sports';
+                  const isFmu = row.team === 'Carroll College';
                   return (
                     <View key={`${index}-${row.team}`}>
                       {index > 0 && <View style={[s.divider, { backgroundColor: colors.divider }]} />}
@@ -865,7 +865,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                         onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setStandingsMode(m); setExpandedKRTeam(null); }}
                       >
                         <ThemedText style={[s.standingsToggleText, { color: active ? colors.background : colors.textSecondary }]}>
-                          {m === 'traditional' ? 'Traditional' : 'KaNeXT (KR)'}
+                          {m === 'traditional' ? 'Traditional' : 'KR Rating'}
                         </ThemedText>
                       </Pressable>
                     );
@@ -1261,7 +1261,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                     const actualMargin = fmuS - oppS;
                     const actualTotal = fmuS + oppS;
                     const spread = pg ? Math.round(pg.krGap * 0.4) : 0;
-                    const spreadStr = spread > 0 ? `KaNeXT -${Math.abs(spread)}.5` : spread < 0 ? `KaNeXT +${Math.abs(spread)}.5` : 'PK';
+                    const spreadStr = spread > 0 ? `Carroll -${Math.abs(spread)}.5` : spread < 0 ? `Carroll +${Math.abs(spread)}.5` : 'PK';
                     const preWinPct = pg ? Math.min(92, Math.max(28, Math.round(50 + pg.krGap * 0.8))) : 50;
                     const ourKR = pg ? pg.oppKR + pg.krGap : 74;
                     const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
@@ -1307,7 +1307,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                         </View>
                         <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#22C55E' : Math.abs(miss) <= 7 ? '#1D9BF0' : '#EF4444' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
                         <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
-                          {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'KaNeXT' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
+                          {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'Carroll' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
                         </Text>
                       </View>
                     );
@@ -1336,7 +1336,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                     {(() => {
                       const ourKR = pregame.oppKR + pregame.krGap;
                       const spread = Math.round(pregame.krGap * 0.4);
-                      const spreadStr = spread > 0 ? `KaNeXT -${Math.abs(spread)}.5` : spread < 0 ? `KaNeXT +${Math.abs(spread)}.5` : 'PK';
+                      const spreadStr = spread > 0 ? `Carroll -${Math.abs(spread)}.5` : spread < 0 ? `Carroll +${Math.abs(spread)}.5` : 'PK';
                       const winPct = Math.min(92, Math.max(28, Math.round(50 + pregame.krGap * 0.8)));
                       const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
                       const oppProj = Math.round(72 + (pregame.oppKR - 60) * 0.3);

@@ -1,6 +1,6 @@
 /**
  * Competition People V3 — 3-pill ViewBar (Officials | Teams | Broadcast)
- * KaNeXT Motorsport League · Commissioner perspective
+ * Valuetainment Media League · Commissioner perspective
  * League officials, grid teams, and broadcast crew.
  */
 import React, { useState, useCallback } from 'react';
@@ -22,13 +22,13 @@ const VIEWS: { id: ViewId; label: string }[] = [
   { id: 'broadcast', label: 'Broadcast' },
 ];
 
-type GridCategory = 'OEM Works' | 'Premier Tuner' | 'League-Owned' | 'KaNeXT Works';
+type GridCategory = 'OEM Works' | 'Premier Tuner' | 'League-Owned' | '3SSB Select';
 
 const CATEGORY_COLOR: Record<GridCategory, string> = {
   'OEM Works': '#1D9BF0',
   'Premier Tuner': '#F59E0B',
   'League-Owned': '#A1A1AA',
-  'KaNeXT Works': '#1D9BF0',
+  '3SSB Select': '#1D9BF0',
 };
 
 const OFFICIALS = [
@@ -64,9 +64,9 @@ interface TeamEntry {
 const TEAMS: TeamEntry[] = [
   {
     id: 't1',
-    name: 'KaNeXT Works Alpha',
-    category: 'KaNeXT Works',
-    constructor: 'KaNeXT Works',
+    name: '3SSB Select Alpha',
+    category: '3SSB Select',
+    constructor: '3SSB Select',
     drivers: ['Carter', 'Oluwadara'],
     crewChief: 'Marco Rossi',
     capStatus: 'Compliant',
@@ -116,7 +116,7 @@ const TEAMS: TeamEntry[] = [
     id: 't6',
     name: 'Grid One Racing',
     category: 'League-Owned',
-    constructor: 'KaNeXT Motorsport League',
+    constructor: 'Valuetainment Media League',
     drivers: ['Russell', 'Bearman'],
     crewChief: 'David Sanchez',
     capStatus: 'Compliant',
@@ -321,7 +321,7 @@ function BroadcastView({ colors, accentColor }: { colors: typeof Colors.light; a
         </View>
         <View style={[s.pressPoolDetail, { borderTopColor: colors.border }]}>
           <ThemedText style={[s.pressDetailText, { color: colors.textSecondary }]}>
-            Full press credentials issued for the 2024-25 KaNeXT Motorsport League season. Includes trackside access, paddock entry, and post-race conference attendance.
+            Full press credentials issued for the 2024-25 Valuetainment Media League season. Includes trackside access, paddock entry, and post-race conference attendance.
           </ThemedText>
         </View>
       </View>

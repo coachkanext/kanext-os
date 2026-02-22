@@ -205,7 +205,7 @@ export function TeamSheet({
 
   // Standings position
   const standingsPos = useMemo(() => {
-    const fmuEntry = KaNeXT_STANDINGS.find((s: any) => s.school?.includes('KaNeXT Sports'));
+    const fmuEntry = KaNeXT_STANDINGS.find((s: any) => s.school?.includes('Carroll College'));
     return fmuEntry ? `${KaNeXT_STANDINGS.indexOf(fmuEntry) + 1}/${KaNeXT_STANDINGS.length}` : '—';
   }, []);
 
@@ -252,10 +252,10 @@ export function TeamSheet({
         <View style={styles.headerTop}>
           <View style={{ flex: 1 }}>
             <Text style={[styles.teamName, { color: colors.text }]}>
-              KaNeXT Sports Wolves
+              Carroll College Fighting Saints
             </Text>
             <Text style={[styles.teamSub, { color: colors.textSecondary }]}>
-              NAIA · KaNeXT Conference · Men's Basketball
+              NAIA · Frontier Conference · Men's Basketball
             </Text>
           </View>
           <Pressable onPress={onClose} hitSlop={8}>

@@ -127,13 +127,13 @@ export interface PinnedIntel {
 // =============================================================================
 
 export const PROGRAM_IDENTITY: ProgramIdentity = {
-  name: 'KaNeXT Sports',
-  initials: 'KaNeXT',
-  organization: 'KaNeXT Sports Athletics',
-  level: 'NAA',
-  conference: 'KaNeXT Conference',
-  governingBody: 'NAA',
-  location: 'Nashville, TN',
+  name: 'Carroll College',
+  initials: 'CC',
+  organization: 'Carroll College Athletics',
+  level: 'NAIA',
+  conference: 'Frontier Conference',
+  governingBody: 'NAIA',
+  location: 'Helena, MT',
   founded: '1879',
   colors: ['#1D9BF0', '#FFFFFF'],
 };
@@ -168,9 +168,9 @@ export const QUICK_ACTIONS: QuickAction[] = [
 export const TODAY_NEXT: TodayNext = {
   nextEvent: 'Full Practice',
   nextEventTime: 'Tomorrow, 2:00 PM',
-  nextGame: 'vs Pinecrest University',
+  nextGame: 'vs Dakota State University',
   nextGameDate: 'Sat, Feb 21',
-  lastResult: 'W 82-74 vs Magnolia University',
+  lastResult: 'W 82-74 vs Multnomah',
 };
 
 // =============================================================================
@@ -188,8 +188,8 @@ export const PROGRAM_HEALTH: ProgramHealth = {
 // =============================================================================
 
 export const PINNED_INTEL: PinnedIntel[] = [
-  { id: 'pi-1', type: 'sim', title: 'KaNeXT vs Pinecrest — 64% Win Prob', date: 'Feb 18' },
-  { id: 'pi-2', type: 'game-plan', title: 'Pinecrest Game Plan — Motion Offense Focus', date: 'Feb 17' },
+  { id: 'pi-1', type: 'sim', title: 'Carroll College vs Dakota State — 64% Win Prob', date: 'Feb 18' },
+  { id: 'pi-2', type: 'game-plan', title: 'Dakota State Game Plan — Motion Offense Focus', date: 'Feb 17' },
   { id: 'pi-3', type: 'dev-plan', title: 'Week 22 Development Plan', date: 'Feb 17' },
 ];
 
@@ -265,7 +265,7 @@ export const PERMISSION_ROLES: PermissionRole[] = [
 // =============================================================================
 
 export const AUDIT_LOG: AuditEntry[] = [
-  { id: 'aud-1', action: 'game_plan_edit', actor: 'Alex Morgan', description: 'Updated Pinecrest game plan — offensive adjustments', timestamp: 'Feb 16, 2026 4:32 PM' },
+  { id: 'aud-1', action: 'game_plan_edit', actor: 'Alex Morgan', description: 'Updated Dakota State game plan — offensive adjustments', timestamp: 'Feb 16, 2026 4:32 PM' },
   { id: 'aud-2', action: 'roster_change', actor: 'Marcus Johnson', description: 'Updated Jalen Washington status: rotation eligible', timestamp: 'Feb 15, 2026 3:15 PM' },
   { id: 'aud-3', action: 'system_update', actor: 'Alex Morgan', description: 'Changed OSIE to Motion Offense (was Flex Cuts)', timestamp: 'Feb 14, 2026 11:22 AM' },
   { id: 'aud-4', action: 'recruitment_update', actor: 'David Chen', description: 'Added 3 new prospects to recruiting board', timestamp: 'Feb 13, 2026 9:45 AM' },
@@ -273,7 +273,7 @@ export const AUDIT_LOG: AuditEntry[] = [
   { id: 'aud-6', action: 'permission_change', actor: 'Alex Morgan', description: 'Granted coach permissions to Aisha Williams', timestamp: 'Feb 10, 2026 10:30 AM' },
   { id: 'aud-7', action: 'season_lock', actor: 'System', description: '2024-25 season data locked automatically', timestamp: 'Apr 1, 2025 12:00 AM' },
   { id: 'aud-8', action: 'roster_change', actor: 'Marcus Johnson', description: 'Added Trevor Hayes, Devon Mitchell to JV roster', timestamp: 'Feb 8, 2026 1:45 PM' },
-  { id: 'aud-9', action: 'game_plan_edit', actor: 'David Chen', description: 'Created Magnolia University scouting report', timestamp: 'Feb 7, 2026 4:00 PM' },
+  { id: 'aud-9', action: 'game_plan_edit', actor: 'David Chen', description: 'Created Multnomah scouting report', timestamp: 'Feb 7, 2026 4:00 PM' },
   { id: 'aud-10', action: 'system_update', actor: 'Alex Morgan', description: 'Updated DSIE to Switching Man (was Pack Line)', timestamp: 'Feb 5, 2026 3:20 PM' },
 ];
 
@@ -342,9 +342,9 @@ export interface UpcomingGame {
 }
 
 export const UPCOMING_GAMES: UpcomingGame[] = [
-  { id: 'ug-1', opponent: 'Pinecrest University', date: 'Sat, Feb 21', location: 'Home', time: '7:00 PM' },
-  { id: 'ug-2', opponent: 'Westfield', date: 'Wed, Feb 25', location: 'Away', time: '6:00 PM' },
-  { id: 'ug-3', opponent: 'Clearwater', date: 'Sat, Feb 28', location: 'Home', time: '4:00 PM' },
+  { id: 'ug-1', opponent: 'Dakota State University', date: 'Sat, Feb 21', location: 'Home', time: '7:00 PM' },
+  { id: 'ug-2', opponent: 'Montana Tech', date: 'Wed, Feb 25', location: 'Away', time: '6:00 PM' },
+  { id: 'ug-3', opponent: 'Bellevue', date: 'Sat, Feb 28', location: 'Home', time: '4:00 PM' },
 ];
 
 // =============================================================================
@@ -361,7 +361,7 @@ export interface OperationsPulse {
 export const OPS_PULSE: OperationsPulse = {
   openTasksP0: 1,
   openTasksP1: 4,
-  nextTrip: 'Westfield — Feb 25 (bus departs 11 AM)',
+  nextTrip: 'Montana Tech — Feb 25 (bus departs 11 AM)',
   facilityIssues: 0,
 };
 

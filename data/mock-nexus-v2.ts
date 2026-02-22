@@ -25,7 +25,7 @@ import type {
 const KaNeXT_MBB_CONTEXT: NexusContext = {
   mode: 'sports',
   org_id: 'fmu-lions',
-  org_name: 'KaNeXT',
+  org_name: 'Carroll College',
   scope_type: 'program',
   scope_id: 'fmu-mbb',
   scope_name: 'Men\'s Basketball',
@@ -36,7 +36,7 @@ const KaNeXT_MBB_CONTEXT: NexusContext = {
 const KaNeXT_ATH_CONTEXT: NexusContext = {
   mode: 'sports',
   org_id: 'fmu-lions',
-  org_name: 'KaNeXT',
+  org_name: 'Carroll College',
   scope_type: 'org',
   season_id: '2025-26',
   season_label: '2025–26',
@@ -50,7 +50,7 @@ const OWNER_HC: Owner = { owner_type: 'user', owner_id: 'sammy', owner_label: 'H
 const OWNER_OPS: Owner = { owner_type: 'role', owner_id: 'ops-lead', owner_label: 'Ops Lead' };
 const OWNER_COMPLIANCE: Owner = { owner_type: 'role', owner_id: 'compliance-officer', owner_label: 'Compliance Officer' };
 const OWNER_VIDEO: Owner = { owner_type: 'role', owner_id: 'video-coord', owner_label: 'Video Coordinator' };
-const OWNER_AC: Owner = { owner_type: 'user', owner_id: 'ac-williams', owner_label: 'Coach Williams' };
+const OWNER_AC: Owner = { owner_type: 'user', owner_id: 'ac-williams', owner_label: 'Coach Pearson' };
 const OWNER_RECRUITING: Owner = { owner_type: 'role', owner_id: 'recruiting-coord', owner_label: 'Recruiting Coordinator' };
 const OWNER_FINANCE: Owner = { owner_type: 'role', owner_id: 'finance-lead', owner_label: 'Finance Lead' };
 
@@ -286,7 +286,7 @@ export const MOCK_NEXUS_REQUESTS: NexusRequest[] = [
 export const MOCK_NEXUS_WORKSPACES: NexusWorkspace[] = [
   {
     id: 'nw-001',
-    title: 'KaNeXT MBB — Game Week: vs Summit',
+    title: 'Carroll MBB — Game Week: vs Summit',
     description: 'All preparation for the February 22 road game.',
     context: KaNeXT_MBB_CONTEXT,
     workspace_type: 'game_week',
@@ -306,7 +306,7 @@ export const MOCK_NEXUS_WORKSPACES: NexusWorkspace[] = [
   },
   {
     id: 'nw-002',
-    title: 'KaNeXT MBB — Recruiting Board (2026 Class)',
+    title: 'Carroll MBB — Recruiting Board (2026 Class)',
     description: 'Pipeline tracking for the 2026 recruiting class.',
     context: KaNeXT_MBB_CONTEXT,
     workspace_type: 'recruiting_board',
@@ -356,12 +356,12 @@ export const MOCK_NEXUS_PACKETS: NexusPacket[] = [
 export const MOCK_NEXUS_ROOMS: NexusRoom[] = [
   { id: 'rm-staff', name: 'MBB Staff Room', context: KaNeXT_MBB_CONTEXT, room_type: 'staff', visibility: 'scoped', owners: [OWNER_HC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
   { id: 'rm-ops', name: 'Ops Command — MBB', context: KaNeXT_MBB_CONTEXT, room_type: 'ops_command', visibility: 'scoped', owners: [OWNER_OPS], active_blockers_count: 2, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
-  { id: 'rm-compliance', name: 'Compliance Desk — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'compliance_desk', visibility: 'restricted', owners: [OWNER_COMPLIANCE], active_blockers_count: 1, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T08:00:00Z' },
-  { id: 'rm-finance', name: 'Finance Desk — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'finance_desk', visibility: 'restricted', owners: [OWNER_FINANCE], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-16T15:00:00Z' },
+  { id: 'rm-compliance', name: 'Compliance Desk — Carroll', context: KaNeXT_ATH_CONTEXT, room_type: 'compliance_desk', visibility: 'restricted', owners: [OWNER_COMPLIANCE], active_blockers_count: 1, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T08:00:00Z' },
+  { id: 'rm-finance', name: 'Finance Desk — Carroll', context: KaNeXT_ATH_CONTEXT, room_type: 'finance_desk', visibility: 'restricted', owners: [OWNER_FINANCE], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-16T15:00:00Z' },
   { id: 'rm-recruiting', name: 'Recruiting War Room — MBB', context: KaNeXT_MBB_CONTEXT, room_type: 'recruiting', visibility: 'scoped', owners: [OWNER_HC, OWNER_RECRUITING], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T11:00:00Z' },
   { id: 'rm-film', name: 'Film Room Q&A — MBB', context: KaNeXT_MBB_CONTEXT, room_type: 'film_qa', visibility: 'scoped', owners: [OWNER_VIDEO], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T09:30:00Z' },
-  { id: 'rm-media', name: 'Media Ops — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'media_ops', visibility: 'scoped', owners: [{ owner_type: 'role', owner_id: 'media-lead', owner_label: 'Media Lead' }], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
-  { id: 'rm-ad', name: 'AD Command — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'ad_command', visibility: 'restricted', owners: [OWNER_HC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T07:00:00Z' },
+  { id: 'rm-media', name: 'Media Ops — Carroll', context: KaNeXT_ATH_CONTEXT, room_type: 'media_ops', visibility: 'scoped', owners: [{ owner_type: 'role', owner_id: 'media-lead', owner_label: 'Media Lead' }], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
+  { id: 'rm-ad', name: 'AD Command — Carroll', context: KaNeXT_ATH_CONTEXT, room_type: 'ad_command', visibility: 'restricted', owners: [OWNER_HC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T07:00:00Z' },
   { id: 'rm-player-support', name: 'Player Support — MBB', context: KaNeXT_MBB_CONTEXT, room_type: 'player_support', visibility: 'scoped', owners: [OWNER_AC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
   { id: 'rm-game-cmd', name: 'Game Command — vs Summit', context: KaNeXT_MBB_CONTEXT, room_type: 'game_command', visibility: 'scoped', owners: [OWNER_HC, OWNER_OPS], next_deadline_at: '2025-02-22T19:00:00Z', created_at: '2025-02-17T07:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
   { id: 'rm-dev', name: 'Player Dev — Guards', context: KaNeXT_MBB_CONTEXT, room_type: 'dev_unit', visibility: 'scoped', owners: [OWNER_AC], created_at: '2025-01-15T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
@@ -374,7 +374,7 @@ export const MOCK_NEXUS_ROOMS: NexusRoom[] = [
 export const MOCK_NEXUS_THREADS: NexusThread[] = [
   {
     id: 'demo-thread-main',
-    title: 'KaNeXT MBB — This Context',
+    title: 'Carroll MBB — This Context',
     context: KaNeXT_MBB_CONTEXT,
     scope_mode: 'this_context',
     pinned_link_chips: [CHIP_GAME_NEXT, CHIP_STAFF_ROOM],
@@ -499,8 +499,8 @@ export const DEMO_V2_MESSAGES: MessageV2[] = [
     messageType: 'confirmation',
     confirmation: {
       state: 'pending',
-      action_summary: 'Post update to Compliance Desk — KaNeXT',
-      target_context: 'Sports · KaNeXT · Athletics · 2025–26',
+      action_summary: 'Post update to Compliance Desk — Carroll',
+      target_context: 'Sports · Carroll College · Athletics · 2025–26',
       impact_line: 'This will notify the Compliance Officer about the Carter eligibility status.',
       requires_audit_note: false,
     },
@@ -526,7 +526,7 @@ export const DEMO_V2_MESSAGES: MessageV2[] = [
       status: 'posted',
       action_type: 'post_room',
       summary: 'Posted to Compliance Desk: "Update on Carter eligibility — registrar follow-up task created, due Feb 18 5 PM. Missing enrollment verification form."',
-      target_room: 'Compliance Desk — KaNeXT',
+      target_room: 'Compliance Desk — Carroll',
       objects: [CHIP_COMPLIANCE_DESK, CHIP_PLAYER_CARTER],
     },
   },

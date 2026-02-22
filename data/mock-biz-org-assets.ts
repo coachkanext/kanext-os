@@ -46,9 +46,9 @@ export const BIZ_ASSETS_TABS: { id: BizAssetsTabId; label: string; icon: string 
 
 export const BIZ_ASSETS_SCOPE_CHIPS = [
   'All Entities',
-  'KaNeXT HoldCo',
-  'KaNeXT OpsCo',
-  'KaNeXT IP',
+  'Valuetainment HoldCo',
+  'Valuetainment OpsCo',
+  'Valuetainment IP',
 ];
 
 // =============================================================================
@@ -386,7 +386,7 @@ const ASSETS: AssetItem[] = [
     value: 85_000,
     depreciation: '5-yr straight line',
     acquiredDate: 'Nov 2025',
-    description: 'Primary compute rack hosting KaNeXT OS workloads — Data Center Rack A.',
+    description: 'Primary compute rack hosting Valuetainment OS workloads — Data Center Rack A.',
     healthStrip: { maintenance: 'yellow', insurance: 'green', compliance: 'green', payments: 'green' },
   },
   {
@@ -404,7 +404,7 @@ const ASSETS: AssetItem[] = [
   },
   {
     id: 'ast-7',
-    name: 'KaNeXT OS Platform (Software IP)',
+    name: 'Valuetainment OS Platform (Software IP)',
     type: 'digital',
     entityId: KANEXT_IP,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_IP],
@@ -464,7 +464,7 @@ const LOCATIONS: AssetLocation[] = [
   {
     id: 'loc-1',
     name: 'LA Headquarters',
-    address: '2049 Century Park E, Suite 2100, Nashville, TN 90067',
+    address: '2049 Century Park E, Suite 2100, Fort Lauderdale, FL 90067',
     assignedAssets: 28,
     occupancy: '85%',
     leaseStatus: 'leased',
@@ -491,7 +491,7 @@ const LOCATIONS: AssetLocation[] = [
   {
     id: 'loc-4',
     name: 'Data Center (Colocation)',
-    address: 'Equinix LA1, 750 E 2nd St, Nashville, TN 90012',
+    address: 'Equinix LA1, 750 E 2nd St, Fort Lauderdale, FL 90012',
     assignedAssets: 3,
     occupancy: '100%',
     leaseStatus: 'leased',

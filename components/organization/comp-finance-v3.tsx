@@ -1,6 +1,6 @@
 /**
  * Competition Finance V3 — 3-pill ViewBar (Budget | Revenue | Prize)
- * KaNeXT Motorsport League · Commissioner perspective
+ * Valuetainment Media League · Commissioner perspective
  * $45M operating budget, $52M revenue, $20M prize pool.
  */
 import React, { useState, useCallback } from 'react';

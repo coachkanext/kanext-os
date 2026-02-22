@@ -343,7 +343,7 @@ function TraditionalView({ colors, accent }: { colors: typeof Colors.light; acce
 // Team averages row at top, archetype badges, system fit %
 // =============================================================================
 
-type KRSortKey = 'kr' | 'offKR' | 'defKR' | 'name' | 'fitPct' | 'shooting' | 'finishing' | 'playmaking' | 'perimeter_defense' | 'interior_defense' | 'rebounding' | 'frame';
+type KRSortKey = 'kr' | 'offKR' | 'defKR' | 'name' | 'fitPct' | 'shooting' | 'finishing' | 'playmaking' | 'on_ball_defense' | 'team_defense' | 'rebounding' | 'physical';
 
 // Mock system fit % per player (based on KR + position alignment)
 function getSystemFitPct(kr: number, position: string): number {

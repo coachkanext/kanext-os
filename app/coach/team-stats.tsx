@@ -23,7 +23,7 @@ import {
 
 type GameStatus = 'upcoming' | 'live' | 'final';
 
-// Generate deterministic opponent stats from KaNeXT stats + opponent name
+// Generate deterministic opponent stats from Carroll stats + opponent name
 function generateOppStats(fmu: FullGameStats, opponent: string): FullGameStats {
   let h = 0;
   for (let i = 0; i < opponent.length; i++) h = ((h << 5) - h + opponent.charCodeAt(i)) | 0;
@@ -159,7 +159,7 @@ export default function TeamStatsScreen() {
 
         <View style={[styles.espnTabRow, { borderTopColor: colors.divider }]}>
           {([
-            { key: 'gamecast', label: 'KaNeXTCast' },
+            { key: 'gamecast', label: 'SaintsCast' },
             { key: 'boxscore', label: 'Box Score' },
             { key: 'pbp', label: 'Play-by-Play' },
             { key: 'teamstats', label: 'Team Stats' },

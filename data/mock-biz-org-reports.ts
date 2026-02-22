@@ -569,7 +569,7 @@ const DASHBOARD_TILES: DashboardTile[] = [
 const DATA_ROOM: DataRoomDocument[] = [
   {
     id: 'dr-01',
-    name: 'KaNeXT Investor Pitch Deck — Feb 2025',
+    name: 'Valuetainment Investor Pitch Deck — Feb 2025',
     section: 'Fundraising',
     version: 'v3.2',
     lastUpdated: '2025-02-12',
@@ -649,7 +649,7 @@ const DATA_ROOM: DataRoomDocument[] = [
   },
   {
     id: 'dr-09',
-    name: 'Articles of Incorporation — KaNeXT HoldCo',
+    name: 'Articles of Incorporation — Valuetainment HoldCo',
     section: 'Governance',
     version: 'v1.0',
     lastUpdated: '2023-06-15',

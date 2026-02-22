@@ -104,7 +104,7 @@ const UPCOMING_EVENTS: UpcomingEvent[] = [
     opponent: 'State University',
     date: 'Feb 15',
     time: '7:00 PM',
-    venue: 'KaNeXT Arena',
+    venue: 'PE Center',
     sport: 'Basketball',
     ticketsAvailable: true,
     priceRange: { min: 15, max: 35 },
@@ -115,7 +115,7 @@ const UPCOMING_EVENTS: UpcomingEvent[] = [
     opponent: 'Central College',
     date: 'Feb 17',
     time: '5:00 PM',
-    venue: 'KaNeXT Arena',
+    venue: 'PE Center',
     sport: 'Basketball',
     ticketsAvailable: true,
     priceRange: { min: 10, max: 25 },
@@ -126,7 +126,7 @@ const UPCOMING_EVENTS: UpcomingEvent[] = [
     opponent: 'Northern University',
     date: 'Mar 1',
     time: '2:00 PM',
-    venue: 'Wolves Field',
+    venue: 'Fighting Saints Field',
     sport: 'Baseball',
     ticketsAvailable: true,
     priceRange: { min: 8, max: 20 },
@@ -137,7 +137,7 @@ const UPCOMING_EVENTS: UpcomingEvent[] = [
     opponent: 'Metro State',
     date: 'Mar 5',
     time: '7:30 PM',
-    venue: 'KaNeXT Arena',
+    venue: 'PE Center',
     sport: 'Basketball',
     ticketsAvailable: false,
     priceRange: { min: 20, max: 45 },
@@ -358,7 +358,7 @@ export default function TicketsScreen() {
             Tickets
           </ThemedText>
           <ThemedText style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
-            KaNeXT Athletics
+            Carroll Athletics
           </ThemedText>
         </View>
       </View>
@@ -439,7 +439,7 @@ export default function TicketsScreen() {
           <View style={styles.infoRow}>
             <IconSymbol name="envelope.fill" size={16} color={colors.textTertiary} />
             <ThemedText style={[styles.infoValue, { color: colors.textSecondary }]}>
-              tickets@kanext.edu
+              tickets@carroll.edu
             </ThemedText>
           </View>
         </View>

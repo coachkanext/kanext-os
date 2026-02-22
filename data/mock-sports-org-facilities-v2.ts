@@ -1,6 +1,6 @@
 /**
  * Sports Organization Facilities V2 — Mock Data & Types
- * KaNeXT Men's Basketball program facility management: spaces, scheduling,
+ * Carroll College Fighting Saints Men's Basketball program facility management: spaces, scheduling,
  * work orders, game-day readiness, and access control.
  */
 
@@ -215,7 +215,7 @@ export const GAME_DAY_STATUS_COLOR: Record<GameDayItemStatus, string> = {
 const facilities: Facility[] = [
   {
     id: 'fac-001',
-    name: 'Main Gymnasium — KaNeXT Wellness Center',
+    name: 'Main Gymnasium — PE Center',
     type: 'court',
     capacity: 2500,
     accessOwner: 'Alex Morgan',
@@ -273,10 +273,10 @@ const scheduleItems: FacilityScheduleItem[] = [
   {
     id: 'sched-001',
     facilityId: 'fac-001',
-    facilityName: 'Main Gymnasium — KaNeXT Wellness Center',
+    facilityName: 'Main Gymnasium — PE Center',
     date: '2026-02-18',
     timeSlot: '3:00 PM – 5:00 PM',
-    purpose: 'Team Practice — Press-Break Sets vs. Lakewood',
+    purpose: 'Team Practice — Press-Break Sets vs. Providence',
     conflict: false,
     team: 'MBB',
     data_source: 'demo_seed',
@@ -284,7 +284,7 @@ const scheduleItems: FacilityScheduleItem[] = [
   {
     id: 'sched-002',
     facilityId: 'fac-001',
-    facilityName: 'Main Gymnasium — KaNeXT Wellness Center',
+    facilityName: 'Main Gymnasium — PE Center',
     date: '2026-02-18',
     timeSlot: '5:00 PM – 7:00 PM',
     purpose: 'Women\'s Basketball Practice',
@@ -309,7 +309,7 @@ const scheduleItems: FacilityScheduleItem[] = [
     facilityName: 'Film Room / Meeting Room',
     date: '2026-02-18',
     timeSlot: '6:00 PM – 7:30 PM',
-    purpose: 'Film Session — Lakewood Scouting Report',
+    purpose: 'Film Session — Providence Scouting Report',
     conflict: false,
     team: 'MBB',
     data_source: 'demo_seed',
@@ -361,10 +361,10 @@ const scheduleItems: FacilityScheduleItem[] = [
   {
     id: 'sched-009',
     facilityId: 'fac-001',
-    facilityName: 'Main Gymnasium — KaNeXT Wellness Center',
+    facilityName: 'Main Gymnasium — PE Center',
     date: '2026-02-20',
     timeSlot: '7:00 PM – 9:30 PM',
-    purpose: 'KaNeXT vs. Magnolia University — KaNeXT Conference Game',
+    purpose: 'Carroll College vs. Multnomah — Frontier Conference Game',
     conflict: false,
     team: 'MBB',
     data_source: 'demo_seed',
@@ -391,7 +391,7 @@ const workOrders: WorkOrder[] = [
     id: 'wo-001',
     issueType: 'Scoreboard malfunction — display flickering, clock not syncing',
     severity: 'urgent',
-    location: 'Main Gymnasium — KaNeXT Wellness Center',
+    location: 'Main Gymnasium — PE Center',
     reporter: 'Alex Morgan',
     reportDate: '2026-02-16',
     owner: 'Daktronics Service',
@@ -406,7 +406,7 @@ const workOrders: WorkOrder[] = [
     location: 'Weight Room',
     reporter: 'Mike Reeves',
     reportDate: '2026-02-10',
-    owner: 'South Ridgemont Fitness Supply',
+    owner: 'South MSU-Northern Fitness Supply',
     slaDate: '2026-02-24',
     status: 'new',
     data_source: 'demo_seed',
@@ -418,7 +418,7 @@ const workOrders: WorkOrder[] = [
     location: 'Training Room',
     reporter: 'Dr. Nicole Patterson',
     reportDate: '2026-02-14',
-    owner: 'KaNeXT Facilities Management',
+    owner: 'Carroll College Facilities Management',
     slaDate: '2026-02-25',
     status: 'new',
     data_source: 'demo_seed',
@@ -427,10 +427,10 @@ const workOrders: WorkOrder[] = [
     id: 'wo-004',
     issueType: 'Overhead light bank out — Section B',
     severity: 'high',
-    location: 'Main Gymnasium — KaNeXT Wellness Center',
+    location: 'Main Gymnasium — PE Center',
     reporter: 'Jordan Mitchell',
     reportDate: '2026-02-08',
-    owner: 'KaNeXT Facilities Management',
+    owner: 'Carroll College Facilities Management',
     slaDate: '2026-02-19',
     status: 'complete',
     data_source: 'demo_seed',
@@ -555,7 +555,7 @@ const accessRecords: AccessRecord[] = [
   {
     id: 'acc-004',
     person: 'Daktronics Service',
-    facilityName: 'Main Gymnasium — KaNeXT Wellness Center',
+    facilityName: 'Main Gymnasium — PE Center',
     accessWindow: 'Feb 18–19, 7:00 AM – 5:00 PM',
     highRisk: true,
     lastChanged: '2026-02-17',
@@ -572,7 +572,7 @@ const accessRecords: AccessRecord[] = [
   },
   {
     id: 'acc-006',
-    person: 'South Ridgemont Fitness Supply',
+    person: 'South MSU-Northern Fitness Supply',
     facilityName: 'Weight Room',
     accessWindow: 'Feb 24, 9:00 AM – 12:00 PM',
     highRisk: true,

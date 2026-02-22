@@ -103,9 +103,9 @@ const RUN_OF_SHOW = [
   { id: 'ros-5', order: 5, segment: 'Tithes & Offering', owner: 'Dea. Robert Simmons', duration: '8 min', mediaLink: null, lyricsLink: null, slidesLink: null },
   { id: 'ros-6', order: 6, segment: 'Special Music / Choir', owner: 'Choir Director', duration: '5 min', mediaLink: null, lyricsLink: 'lyrics/special-feb23', slidesLink: null },
   { id: 'ros-7', order: 7, segment: 'Scripture Reading', owner: 'Elder Reader', duration: '3 min', mediaLink: null, lyricsLink: null, slidesLink: null },
-  { id: 'ros-8', order: 8, segment: 'Sermon: "Walking in Faith Pt. 3"', owner: 'Pastor James Carter', duration: '40 min', mediaLink: null, lyricsLink: null, slidesLink: 'slides/sermon-feb23' },
+  { id: 'ros-8', order: 8, segment: 'Sermon: "Walking in Faith Pt. 3"', owner: 'Pastor Philip Anthony Mitchell', duration: '40 min', mediaLink: null, lyricsLink: null, slidesLink: 'slides/sermon-feb23' },
   { id: 'ros-9', order: 9, segment: 'Altar Call & Ministry Time', owner: 'Prayer Team', duration: '12 min', mediaLink: null, lyricsLink: null, slidesLink: null },
-  { id: 'ros-10', order: 10, segment: 'Benediction & Dismissal', owner: 'Pastor James Carter', duration: '2 min', mediaLink: null, lyricsLink: null, slidesLink: null },
+  { id: 'ros-10', order: 10, segment: 'Benediction & Dismissal', owner: 'Pastor Philip Anthony Mitchell', duration: '2 min', mediaLink: null, lyricsLink: null, slidesLink: null },
 ];
 
 const SERVICE_ROLES_NEEDED = [
@@ -144,7 +144,7 @@ const SERVICE_RECAP_DATA = {
     { id: 'ag-1', type: 'follow_up', description: 'Follow up with 8 new visitors within 48 hours', owner: 'Pastor Lisa Grant', status: 'open' },
     { id: 'ag-2', type: 'task', description: 'Post AV tech volunteer position to church bulletin', owner: 'Admin Team', status: 'open' },
     { id: 'ag-3', type: 'follow_up', description: 'Check on Sola Ogunleye — 3 weeks absent', owner: 'Dea. Robert Simmons', status: 'open' },
-    { id: 'ag-4', type: 'task', description: 'Review worship set timing with Min. David Park', owner: 'Pastor James Carter', status: 'open' },
+    { id: 'ag-4', type: 'task', description: 'Review worship set timing with Min. David Park', owner: 'Pastor Philip Anthony Mitchell', status: 'open' },
   ],
   nextServiceAdjustments: [
     'Shorten worship set by 3 minutes (25 min to 22 min) to stay on schedule',
@@ -261,7 +261,7 @@ function ServiceHeader({
   seniorPastor: boolean;
   onClose: () => void;
 }) {
-  const campusLabel = 'KaNeXT Church';
+  const campusLabel = '2819 Church';
   const owner = CHURCH_MEMBERS.find((m) => m.id === service.owner);
   const staffingMissing = service.staffingNeeded - service.staffingFilled;
 

@@ -1,7 +1,7 @@
 /**
  * Business Organization Program Tab -- V3
  * 3-pill ViewBar: Identity | Entities | Operations
- * KaNeXT founder view. All data inline.
+ * Valuetainment founder view. All data inline.
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
@@ -33,9 +33,9 @@ const VIEWS: { id: ViewMode; label: string }[] = [
 ];
 
 const PROOF_INSTITUTIONS = [
-  { name: 'KaNeXT', type: 'Sports' },
-  { name: 'KaNeXT Church', type: 'Church' },
-  { name: 'KaNeXT', type: 'Competition' },
+  { name: 'Valuetainment', type: 'Sports' },
+  { name: '2819 Church', type: 'Church' },
+  { name: 'Valuetainment', type: 'Competition' },
 ];
 
 const MILESTONES = [
@@ -52,19 +52,19 @@ const ENTITIES = [
     type: 'Holding Company',
     state: 'Delaware',
     status: 'Active',
-    purpose: 'Parent holding entity for all KaNeXT operating and IP subsidiaries. Delaware formation for investor-friendly governance.',
+    purpose: 'Parent holding entity for all Valuetainment operating and IP subsidiaries. Delaware formation for investor-friendly governance.',
   },
   {
     id: 'e2',
-    name: 'KaNeXT Operations LLC',
+    name: 'Valuetainment Operations LLC',
     type: 'Operating Company',
     state: 'Tennessee',
     status: 'Active',
-    purpose: 'Day-to-day operations, employment, revenue collection, and customer contracts. Ridgemont formation for operational base.',
+    purpose: 'Day-to-day operations, employment, revenue collection, and customer contracts. Delaware formation for operational base.',
   },
   {
     id: 'e3',
-    name: 'KaNeXT IP Holdings LLC',
+    name: 'Valuetainment IP Holdings LLC',
     type: 'IP Protection',
     state: 'Delaware',
     status: 'Active',
@@ -75,7 +75,7 @@ const ENTITIES = [
 const TASKS = [
   { id: 't1', label: 'Finalize pitch deck for pre-seed', priority: 'high' as const, assignee: 'Alex M.' },
   { id: 't2', label: 'Complete NAA player pool scrape', priority: 'high' as const, assignee: 'Engineering' },
-  { id: 't3', label: 'File KaNeXT trademark', priority: 'medium' as const, assignee: 'Legal' },
+  { id: 't3', label: 'File Valuetainment trademark', priority: 'medium' as const, assignee: 'Legal' },
   { id: 't4', label: 'Onboard 2 beta partners', priority: 'medium' as const, assignee: 'Alex M.' },
   { id: 't5', label: 'Set up CI/CD pipeline', priority: 'low' as const, assignee: 'Engineering' },
 ];
@@ -148,7 +148,7 @@ export function BizProgram({ colors, accentColor, role }: Props) {
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
       {/* Brand Card */}
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.brandName, { color: colors.text }]}>KaNeXT</ThemedText>
+        <ThemedText style={[s.brandName, { color: colors.text }]}>Valuetainment</ThemedText>
         <ThemedText style={[s.brandTagline, { color: colors.textSecondary }]}>
           The institutional operating system
         </ThemedText>
@@ -167,7 +167,7 @@ export function BizProgram({ colors, accentColor, role }: Props) {
       {/* Product */}
       <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>PRODUCT</ThemedText>
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.cardTitle, { color: colors.text }]}>KaNeXT OS</ThemedText>
+        <ThemedText style={[s.cardTitle, { color: colors.text }]}>Valuetainment OS</ThemedText>
         <ThemedText style={[s.cardSubtitle, { color: colors.textSecondary }]}>
           Cross-platform mobile application with 5 institutional modes
         </ThemedText>

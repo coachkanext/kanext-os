@@ -1,7 +1,7 @@
 /**
  * Sports Organization Operations V2 — Mock Data & Types
  * 10-tab Operations Hub for Sports Mode organizations.
- * Seeded with KaNeXT Men's Basketball 2025-26 season data.
+ * Seeded with Carroll College Fighting Saints Men's Basketball 2025-26 season data.
  */
 
 // =============================================================================
@@ -257,13 +257,13 @@ export const OPS_SUB_TABS: OpsSubTab[] = [
 ];
 
 // =============================================================================
-// SEEDED DATA — KaNeXT Men's Basketball 2025-26
+// SEEDED DATA — Carroll College Men's Basketball 2025-26
 // =============================================================================
 
 export const OPS_TASKS: OpsTask[] = [
   {
     id: 'ot-1',
-    title: 'Book travel for Lakewood away game (bus, hotel, meals)',
+    title: 'Book travel for Providence away game (bus, hotel, meals)',
     category: 'Travel',
     priority: 'critical',
     owner: 'Tyler Brooks',
@@ -293,7 +293,7 @@ export const OPS_TASKS: OpsTask[] = [
   },
   {
     id: 'ot-4',
-    title: 'Submit updated roster to KaNeXT Conference office',
+    title: 'Submit updated roster to Frontier Conference office',
     category: 'Compliance',
     priority: 'high',
     owner: 'Lisa Chen',
@@ -303,7 +303,7 @@ export const OPS_TASKS: OpsTask[] = [
   },
   {
     id: 'ot-5',
-    title: 'Coordinate team meal plan for Lakewood trip',
+    title: 'Coordinate team meal plan for Providence trip',
     category: 'Player Services',
     priority: 'high',
     owner: 'Tyler Brooks',
@@ -326,7 +326,7 @@ export const OPS_TASKS: OpsTask[] = [
 export const TRAVEL_TRIPS: TravelTrip[] = [
   {
     id: 'tt-1',
-    destination: 'Lakewood University — West Palm Beach, FL',
+    destination: 'University of Providence — West Palm Beach, FL',
     departure: '2026-02-22',
     returnDate: '2026-02-22',
     teamSize: 20,
@@ -334,7 +334,7 @@ export const TRAVEL_TRIPS: TravelTrip[] = [
     missingDocs: 1,
     budget: 3800,
     spent: 2900,
-    departureTime: '10:30 AM from KaNeXT Wellness Center parking lot',
+    departureTime: '10:30 AM from PE Center parking lot',
     busInfo: 'Charter One — 45-passenger coach, Driver: Carlos Mendez, Bus #CO-214',
     hotel: 'N/A — same-day return trip',
     mealArrangements: 'Pre-game meal at Bonefish Grill, West Palm Beach (reserved 2:00 PM, 20 pax). Post-game snack bags on bus.',
@@ -343,7 +343,7 @@ export const TRAVEL_TRIPS: TravelTrip[] = [
   },
   {
     id: 'tt-2',
-    destination: 'KaNeXT Conference Tournament — Clearwater, FL',
+    destination: 'Frontier Conference Tournament — Bellevue, FL',
     departure: '2026-02-26',
     returnDate: '2026-03-02',
     teamSize: 20,
@@ -355,7 +355,7 @@ export const TRAVEL_TRIPS: TravelTrip[] = [
   },
   {
     id: 'tt-3',
-    destination: 'Westfield University — Westfield, FL',
+    destination: 'Montana Tech — Montana Tech, FL',
     departure: '2026-02-15',
     returnDate: '2026-02-15',
     teamSize: 20,
@@ -370,10 +370,10 @@ export const TRAVEL_TRIPS: TravelTrip[] = [
 export const FACILITY_BOOKINGS: FacilityBooking[] = [
   {
     id: 'fb-1',
-    facility: 'Main Gymnasium — KaNeXT Wellness Center',
+    facility: 'Main Gymnasium — PE Center',
     date: '2026-02-18',
     timeSlot: '3:00 PM – 5:00 PM',
-    purpose: 'Team Practice — Lakewood prep',
+    purpose: 'Team Practice — Providence prep',
     conflict: false,
     data_source: 'demo_seed',
   },
@@ -382,7 +382,7 @@ export const FACILITY_BOOKINGS: FacilityBooking[] = [
     facility: 'Film Room / Meeting Room',
     date: '2026-02-18',
     timeSlot: '6:00 PM – 7:30 PM',
-    purpose: 'Film Session — Lakewood scouting report',
+    purpose: 'Film Session — Providence scouting report',
     conflict: false,
     data_source: 'demo_seed',
   },
@@ -406,10 +406,10 @@ export const FACILITY_BOOKINGS: FacilityBooking[] = [
   },
   {
     id: 'fb-5',
-    facility: 'Main Gymnasium — KaNeXT Wellness Center',
+    facility: 'Main Gymnasium — PE Center',
     date: '2026-02-20',
     timeSlot: '7:00 PM – 9:30 PM',
-    purpose: 'Home Game vs. Magnolia University',
+    purpose: 'Home Game vs. Multnomah',
     conflict: false,
     data_source: 'demo_seed',
   },
@@ -590,7 +590,7 @@ export const PLAYER_SERVICE_TICKETS: PlayerServiceTicket[] = [
 export const OPS_ANNOUNCEMENTS: OpsAnnouncement[] = [
   {
     id: 'oa-1',
-    title: 'Travel itinerary posted for Saturday\'s away game at Lakewood',
+    title: 'Travel itinerary posted for Saturday\'s away game at Providence',
     audience: 'all',
     requiredRead: true,
     confirmationRate: 0.8,
@@ -620,7 +620,7 @@ export const OPS_ANNOUNCEMENTS: OpsAnnouncement[] = [
 export const OPS_APPROVALS: OpsApproval[] = [
   {
     id: 'oap-1',
-    title: 'Lakewood Away Game — Travel Expense Reimbursement',
+    title: 'Providence Away Game — Travel Expense Reimbursement',
     type: 'Travel',
     amount: 3800,
     requestedBy: 'Tyler Brooks',

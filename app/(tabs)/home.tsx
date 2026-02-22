@@ -28,13 +28,13 @@ import { rosterEntries } from '@/data/sun-conference/florida-memorial';
 const rosterCount = rosterEntries.filter((r) => r.season === '2025-26').length;
 
 const TEAM_DATA = {
-  name: 'KaNeXT',
+  name: 'Carroll',
   season: '2025–26',
   kr: 84,
   record: {
     overall: KaNeXT_RECORD.overall,
     conference: KaNeXT_RECORD.conference,
-    standing: 'KaNeXT Conference',
+    standing: 'Frontier Conference',
   },
 };
 

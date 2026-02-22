@@ -48,11 +48,11 @@ const KaNeXT_COACHES: CoachProfile[] = [
     hue: nameToHue(fmuStaff?.head_coach_name ?? 'TBD'),
     isHC: true,
     yearsWithProgram: 4,
-    bio: 'Veteran head coach who has rebuilt the KaNeXT program into a competitive KaNeXT Conference contender. Known for developing JUCO transfers into impact players and running a high-tempo, guard-driven system.',
+    bio: 'Veteran head coach who has rebuilt the Carroll program into a competitive Frontier Conference contender. Known for developing JUCO transfers into impact players and running a high-tempo, guard-driven system.',
     priorStops: ['Miami Dade College (Asst)', 'Riverside Community College (Asst)', 'Stranahan HS (HC)'],
     highlights: [
-      'Led KaNeXT to first winning conference record in 5 years',
-      '2x KaNeXT Conference Coach of the Month',
+      'Led Carroll to first winning conference record in 5 years',
+      '2x Frontier Conference Coach of the Month',
       'Developed 3 All-Conference selections',
     ],
   },
@@ -75,11 +75,11 @@ const KaNeXT_COACHES: CoachProfile[] = [
 ];
 
 // ── Conference position / streak ──
-const KaNeXT_CONF_POSITION = KaNeXT_STANDINGS.findIndex((r) => r.team === 'KaNeXT Sports') + 1;
-const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—';
+const KaNeXT_CONF_POSITION = KaNeXT_STANDINGS.findIndex((r) => r.team === 'Carroll College') + 1;
+const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'Carroll College')?.streak ?? '—';
 
 // ── Team cluster averages for DNA ──
-const clusterKeys: (keyof ClusterRatings)[] = ['shooting', 'finishing', 'playmaking', 'perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
+const clusterKeys: (keyof ClusterRatings)[] = ['shooting', 'finishing', 'playmaking', 'on_ball_defense', 'team_defense', 'rebounding', 'physical'];
 const playerEntries = Object.values(PLAYER_CLUSTERS);
 const teamClusterAvg: Record<keyof ClusterRatings, number> = {} as any;
 for (const key of clusterKeys) {
@@ -90,7 +90,7 @@ for (const key of clusterKeys) {
 // Derive Team DNA chips from cluster data
 function deriveTeamDNA(): { label: string; value: string }[] {
   const offAvg = Math.round((teamClusterAvg.shooting + teamClusterAvg.finishing + teamClusterAvg.playmaking) / 3);
-  const defAvg = Math.round((teamClusterAvg.perimeter_defense + teamClusterAvg.interior_defense + teamClusterAvg.rebounding + teamClusterAvg.frame) / 4);
+  const defAvg = Math.round((teamClusterAvg.on_ball_defense + teamClusterAvg.team_defense + teamClusterAvg.rebounding + teamClusterAvg.physical) / 4);
 
   const dna: { label: string; value: string }[] = [];
   dna.push({ label: 'Pace', value: offAvg >= 70 ? 'Fast' : offAvg >= 60 ? 'Moderate' : 'Slow' });
@@ -132,7 +132,7 @@ const PROGRAM_HISTORY = [
   { season: '2021–22', record: '14–12', finish: 'Conf Quarterfinals' },
 ];
 
-const RIVALS = ['Westfield', 'Lakewood', 'Pinecrest University'];
+const RIVALS = ['Montana Tech', 'Providence', 'Dakota State University'];
 
 // ── Tab types ──
 type BioTab = 'team' | 'coaches' | 'system' | 'history';
@@ -185,8 +185,8 @@ export function TeamQuickSheet({
           <View style={s.identityRow}>
             <Image source={KaNeXT_LOGO} style={s.logo} resizeMode="contain" />
             <View style={s.identityText}>
-              <Text style={s.teamName}>KaNeXT Sports</Text>
-              <Text style={s.teamSubline}>NAA {'\u00B7'} KaNeXT Conference</Text>
+              <Text style={s.teamName}>Carroll College</Text>
+              <Text style={s.teamSubline}>NAA {'\u00B7'} Frontier Conference</Text>
             </View>
             <View style={s.krBadge}>
               <Text style={s.krValue}>{teamKR}</Text>
@@ -393,15 +393,15 @@ export function TeamQuickSheet({
                 </View>
                 <View style={s.progRow}>
                   <Text style={s.progLabel}>Location</Text>
-                  <Text style={s.progValue}>Nashville, TN</Text>
+                  <Text style={s.progValue}>Helena, MT</Text>
                 </View>
                 <View style={s.progRow}>
                   <Text style={s.progLabel}>Nickname</Text>
-                  <Text style={s.progValue}>Wolves</Text>
+                  <Text style={s.progValue}>Fighting Saints</Text>
                 </View>
                 <View style={s.progRow}>
                   <Text style={s.progLabel}>Venue</Text>
-                  <Text style={s.progValue}>KaNeXT Wellness Center</Text>
+                  <Text style={s.progValue}>PE Center</Text>
                 </View>
                 <View style={[s.progRow, { borderBottomWidth: 0 }]}>
                   <Text style={s.progLabel}>Colors</Text>

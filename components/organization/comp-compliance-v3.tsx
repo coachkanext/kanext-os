@@ -1,6 +1,6 @@
 /**
  * Competition Compliance V3 — 3-pill ViewBar (Technical | Safety | Regulatory)
- * KaNeXT Motorsport League · Commissioner perspective
+ * Valuetainment Media League · Commissioner perspective
  * $10M cap compliance, safety inspections, regulatory status.
  */
 import React, { useState, useCallback } from 'react';
@@ -38,7 +38,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const CAP_COMPLIANCE = [
-  { id: 'cc1', team: 'KaNeXT Works Alpha', status: 'Compliant' as ComplianceStatus },
+  { id: 'cc1', team: '3SSB Works Alpha', status: 'Compliant' as ComplianceStatus },
   { id: 'cc2', team: 'Porsche Motorsport', status: 'Compliant' as ComplianceStatus },
   { id: 'cc3', team: 'McLaren Racing', status: 'Compliant' as ComplianceStatus },
   { id: 'cc4', team: 'RUF Performance', status: 'Compliant' as ComplianceStatus },
@@ -47,7 +47,7 @@ const CAP_COMPLIANCE = [
 ];
 
 const HOMOLOGATION = [
-  { id: 'h1', team: 'KaNeXT Works Alpha', car: 'KW-X1', status: 'Approved' as ComplianceStatus },
+  { id: 'h1', team: '3SSB Works Alpha', car: 'KW-X1', status: 'Approved' as ComplianceStatus },
   { id: 'h2', team: 'Porsche Motorsport', car: '911 GT-K', status: 'Approved' as ComplianceStatus },
   { id: 'h3', team: 'McLaren Racing', car: '750S-K', status: 'Approved' as ComplianceStatus },
   { id: 'h4', team: 'RUF Performance', car: 'CTR-K', status: 'Approved' as ComplianceStatus },
@@ -124,9 +124,9 @@ const GOV_PERMITS = [
 ];
 
 const TRADEMARKS = [
-  { id: 'tm1', mark: 'KaNeXT', status: 'Registered' as ComplianceStatus },
-  { id: 'tm2', mark: 'KaNeXT Motorsport League', status: 'Registered' as ComplianceStatus },
-  { id: 'tm3', mark: 'KaNeXT Grand Prix', status: 'Registered' as ComplianceStatus },
+  { id: 'tm1', mark: '3SSB', status: 'Registered' as ComplianceStatus },
+  { id: 'tm2', mark: 'Valuetainment Media League', status: 'Registered' as ComplianceStatus },
+  { id: 'tm3', mark: '3SSB Grand Prix', status: 'Registered' as ComplianceStatus },
 ];
 
 // =============================================================================

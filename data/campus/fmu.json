@@ -1,61 +1,64 @@
 {
   "university_profile": {
-    "name": "KaNeXT University",
-    "shortName": "KXU",
-    "type": "Private university",
-    "founded": 2020,
-    "mascot": "Wolves",
+    "name": "Howard University",
+    "shortName": "HU",
+    "type": "Private HBCU, R1 Research University",
+    "founded": 1867,
+    "mascot": "Bison",
     "colors": {
-      "primary": "#1D9BF0",
-      "secondary": "#0B0F14"
+      "primary": "#003A63",
+      "secondary": "#E51937"
     },
-    "address": "100 Innovation Drive, Nashville, TN 37201",
-    "phone": "615-555-0100",
-    "website": "https://www.kanext.edu",
-    "athleticsWebsite": "https://athletics.kanext.edu",
-    "conference": "KaNeXT Conference",
-    "division": "NAA",
-    "distinction": "A premier institution dedicated to innovation, leadership, and athletic excellence",
-    "alumni_count": "5,000+",
-    "mission": "KaNeXT University prepares students to lead in a rapidly changing world through rigorous academics, innovation-driven research, and holistic development.",
-    "vision": "To be the leading institution where technology, athletics, and academics converge to develop the next generation of global leaders.",
+    "address": "2400 Sixth Street NW, Washington, DC 20059",
+    "phone": "(202) 806-6100",
+    "website": "https://howard.edu",
+    "athleticsWebsite": "https://hubison.com",
+    "conference": "Mid-Eastern Athletic Conference (MEAC)",
+    "division": "NCAA Division I",
+    "distinction": "The only HBCU with R1 Carnegie Classification. #1 HBCU in America (Forbes, 2025 & 2026). Ranked #88 National Universities (U.S. News).",
+    "alumni_count": "120,000+",
+    "mission": "Howard University provides an educational experience of exceptional quality at the undergraduate, graduate, and professional levels to students of high academic standing and potential, with particular emphasis upon educational opportunities for Black students.",
+    "vision": "To be the premier research university providing an educational experience of exceptional quality in the tradition of exemplary leadership and service.",
     "values": {
-      "acronym": "DRIVE",
+      "acronym": "TRUTH",
       "items": [
-        { "letter": "D", "name": "Discipline", "description": "Commitment to excellence in every endeavor, from the classroom to the court." },
-        { "letter": "R", "name": "Resilience", "description": "Building mental and physical toughness to overcome adversity." },
-        { "letter": "I", "name": "Innovation", "description": "Pushing boundaries in technology, athletics, and education." },
-        { "letter": "V", "name": "Vision", "description": "Thinking boldly about the future and leading with purpose." },
-        { "letter": "E", "name": "Excellence", "description": "Striving for the highest standards in all areas of university life." }
+        { "letter": "T", "name": "Truth", "description": "Veritas — pursuing knowledge and truth in all endeavors." },
+        { "letter": "R", "name": "Resilience", "description": "Overcoming adversity with strength rooted in our 157-year legacy." },
+        { "letter": "U", "name": "Unity", "description": "Building community across cultures, disciplines, and generations." },
+        { "letter": "T", "name": "Transformation", "description": "Developing leaders who transform society through service and scholarship." },
+        { "letter": "H", "name": "Heritage", "description": "Honoring our history as the capstone of African American higher education." }
       ]
     },
     "history": {
-      "founded_as": "KaNeXT Institute of Technology",
-      "founded_location": "Nashville, Tennessee",
-      "founded_by": "KaNeXT Foundation Board of Directors",
+      "founded_as": "Howard University",
+      "founded_location": "Washington, DC",
+      "founded_by": "General Oliver Otis Howard and members of the First Congregational Society",
       "timeline": [
-        { "year": 2020, "event": "Founded as KaNeXT Institute of Technology in Nashville, TN" },
-        { "year": 2021, "event": "First class of 250 students enrolled across 4 programs" },
-        { "year": 2022, "event": "Athletics department established with 6 varsity sports" },
-        { "year": 2023, "event": "Expanded to 14 varsity programs, joined KaNeXT Conference" },
-        { "year": 2024, "event": "Campus expansion: new athletics center and innovation lab" },
-        { "year": 2025, "event": "Enrollment surpasses 2,500 students; university status granted" }
+        { "year": 1867, "event": "Founded by General Oliver Otis Howard, commissioner of the Freedmen's Bureau" },
+        { "year": 1869, "event": "Howard University School of Law established" },
+        { "year": 1868, "event": "College of Medicine established — among the first in the nation to accept students regardless of race" },
+        { "year": 1910, "event": "Carnegie Building completed — designed by Henry Whitfield" },
+        { "year": 1939, "event": "Founders Library opens with iconic 167-foot clock tower" },
+        { "year": 2001, "event": "Howard University Historic District designated a National Historic Landmark" },
+        { "year": 2025, "event": "Achieved R1 Carnegie Classification — first and only HBCU to reach this distinction" }
       ],
       "notable_connections": [
-        "KaNeXT Foundation — primary endowment and technology partnership",
-        "Innovation Hub — partnership with leading tech companies",
-        "Community Leadership Program — civic engagement initiative"
+        "Thurgood Marshall (Law '33) — First Black U.S. Supreme Court Justice",
+        "Kamala Harris (BA '86) — First Female U.S. Vice President",
+        "Toni Morrison — Nobel Prize-winning author, taught at Howard",
+        "Ta-Nehisi Coates — National Book Award winner, Howard faculty",
+        "170+ Fulbright Scholars"
       ]
     }
   },
   "leadership": {
     "president": {
-      "id": "pres-carter",
-      "name": "Dr. James A. Carter",
-      "title": "President",
-      "email": "president@kanext.edu",
+      "id": "pres-frederick",
+      "name": "Dr. Wayne A. I. Frederick, M.D., MBA",
+      "title": "Interim President & President Emeritus",
+      "email": "president@howard.edu",
       "photoUrl": null,
-      "bio": "Dr. James A. Carter is the founding president of KaNeXT University. With over 20 years of experience in higher education leadership and a background in computer science, he has guided the institution from its founding through rapid growth."
+      "bio": "Dr. Wayne A. I. Frederick is a Howard alumnus (B.S. and M.D.) who previously served as the 17th President of Howard University (2014-2023). He was appointed interim president in September 2025 while a national search for a permanent president is underway. He also holds the Charles R. Drew Professorship of Surgery."
     },
     "administration_divisions": [
       {
@@ -63,269 +66,336 @@
         "description": "Executive leadership of the university"
       },
       {
-        "name": "Academic Affairs",
-        "description": "Oversees academic programs, faculty development, and curriculum innovation."
+        "name": "Office of the Provost",
+        "description": "Oversees 14 schools and colleges, faculty affairs, and academic excellence."
       },
       {
-        "name": "Finance and Administration",
-        "description": "Managing the university's financial operations, campus facilities, IT infrastructure, and student services."
+        "name": "Division of Finance and Administration",
+        "description": "Managing the university's $927M endowment, campus operations, IT, and student services."
       },
       {
-        "name": "Athletics",
-        "description": "14 varsity programs competing in the KaNeXT Conference with a focus on student-athlete development."
+        "name": "Division of Student Affairs",
+        "description": "Student life, The Yard, housing, campus activities, and Bison community engagement."
       },
       {
-        "name": "Student Affairs",
-        "description": "Student life, housing, campus activities, and community engagement."
+        "name": "Office of University Communications",
+        "description": "Brand standards, media relations, and university marketing."
       }
     ],
     "advancement_staff": [
       {
-        "name": "Dr. Sarah Mitchell",
-        "title": "Vice President for Institutional Advancement",
-        "phone": "(615) 555-0120",
-        "email": "s.mitchell@kanext.edu"
+        "name": "Dr. Linda Thomas",
+        "title": "Vice President for Development and Alumni Relations",
+        "phone": "(202) 806-2500",
+        "email": "development@howard.edu"
       },
       {
-        "name": "Marcus Thompson",
+        "name": "Marcus Boyd",
         "title": "Director of Alumni Relations",
-        "phone": "(615) 555-0130",
-        "email": "m.thompson@kanext.edu"
+        "phone": "(202) 806-2550",
+        "email": "alumni@howard.edu"
       }
     ]
   },
   "academics": {
     "schools": [
       {
-        "name": "School of Technology & Innovation",
+        "name": "College of Arts and Sciences",
         "departments": [
-          "Computer Science",
-          "Data Science & AI",
-          "Cybersecurity",
-          "Software Engineering"
+          "Biology",
+          "Chemistry",
+          "Mathematics",
+          "Physics",
+          "English",
+          "History",
+          "Political Science",
+          "Psychology",
+          "Sociology"
         ]
       },
       {
         "name": "School of Business",
         "departments": [
-          "Business Administration",
-          "Entrepreneurship",
-          "Sports Management"
+          "Accounting",
+          "Finance",
+          "Management",
+          "Marketing",
+          "Information Systems"
         ]
       },
       {
-        "name": "School of Arts & Sciences",
+        "name": "College of Engineering and Architecture",
         "departments": [
-          "Liberal Arts",
-          "Health Sciences",
-          "Communications"
+          "Chemical Engineering",
+          "Civil Engineering",
+          "Computer Science",
+          "Electrical Engineering",
+          "Mechanical Engineering",
+          "Architecture"
         ]
+      },
+      {
+        "name": "Cathy Hughes School of Communications",
+        "departments": [
+          "Journalism",
+          "Media, Journalism and Film",
+          "Strategic Communications"
+        ]
+      },
+      {
+        "name": "Chadwick A. Boseman College of Fine Arts",
+        "departments": [
+          "Art",
+          "Music",
+          "Theatre Arts"
+        ]
+      },
+      {
+        "name": "School of Education",
+        "departments": [
+          "Curriculum and Instruction",
+          "Educational Leadership",
+          "Human Development"
+        ]
+      },
+      {
+        "name": "School of Law",
+        "departments": ["Juris Doctor Program", "Clinical Law Programs"]
+      },
+      {
+        "name": "College of Medicine",
+        "departments": ["Medical Education", "Biomedical Sciences"]
+      },
+      {
+        "name": "School of Divinity",
+        "departments": ["Master of Divinity", "Doctor of Ministry"]
+      },
+      {
+        "name": "College of Dentistry",
+        "departments": ["General Dentistry", "Advanced Dental Education"]
+      },
+      {
+        "name": "College of Pharmacy",
+        "departments": ["Pharmaceutical Sciences"]
+      },
+      {
+        "name": "College of Nursing and Allied Health Sciences",
+        "departments": ["Nursing", "Health Sciences"]
+      },
+      {
+        "name": "School of Social Work",
+        "departments": ["MSW Program", "PhD Program"]
+      },
+      {
+        "name": "Graduate School",
+        "departments": ["Interdisciplinary Programs", "Research Programs"]
       }
     ],
     "accreditation": {
-      "institutional": "Regional Accreditation Board",
+      "institutional": "Middle States Commission on Higher Education",
       "programmatic": [
-        { "program": "B.S. Computer Science", "body": "Computing Accreditation Board" },
-        { "program": "B.S. Data Science", "body": "Computing Accreditation Board" },
-        { "program": "B.S. Business Administration", "body": "Business Programs Accreditation Council" },
-        { "program": "MBA", "body": "Business Programs Accreditation Council" }
+        { "program": "School of Business", "body": "AACSB International" },
+        { "program": "College of Engineering", "body": "ABET" },
+        { "program": "School of Law", "body": "American Bar Association" },
+        { "program": "College of Medicine", "body": "LCME" }
       ]
     },
     "support_services": [
-      "Academic Advising Center",
-      "Career Services",
-      "Tutoring & Learning Lab",
-      "Student Success Center",
-      "Innovation Hub",
-      "University Library",
-      "International Programs Office"
+      "Center for Academic Reinforcement",
+      "Career Center",
+      "Moorland-Spingarn Research Center",
+      "Howard University Libraries",
+      "Writing Center",
+      "International Student Services",
+      "Honors Program"
     ]
   },
   "campus_life": {
     "student_engagement": {
-      "motto": "Innovation, Leadership, Excellence",
-      "description": "The Office of Student Life provides programs and activities that complement academics, build community, and develop future leaders."
+      "motto": "Veritas et Utilitas — Excellence in Truth and Service",
+      "description": "Howard University's campus life is centered around The Yard — the iconic central quadrangle where generations of Bison have gathered. With 200+ student organizations, Howard offers a vibrant community rooted in academic excellence and cultural pride."
     },
     "housing": {
-      "description": "On-campus housing offers a dynamic living-learning environment. Residential students participate in community programs, study groups, and social events.",
-      "url": "https://www.kanext.edu/housing"
+      "description": "On-campus housing includes residence halls and apartment-style living across the 256-acre campus. The living-learning communities foster academic success and Bison pride.",
+      "url": "https://howard.edu/residence-life"
     },
     "clubs_and_organizations": [
-      "Student Government Association", "Coding Club", "Entrepreneurship Society",
-      "Data Science Club", "Debate Team", "Community Service Corps",
-      "International Students Association", "Media & Communications Club",
-      "Athletics Booster Club", "Honors Society", "Music Ensemble",
-      "Wellness & Fitness Club", "Cultural Exchange Club", "Investment Club",
-      "Environmental Action Group"
+      "Howard University Student Association (HUSA)", "National Society of Black Engineers",
+      "Howard University Bison Marching Band (Showtime)", "NAACP Chapter",
+      "Alpha Kappa Alpha Sorority", "Alpha Phi Alpha Fraternity",
+      "Delta Sigma Theta Sorority", "Kappa Alpha Psi Fraternity",
+      "Omega Psi Phi Fraternity", "Sigma Gamma Rho Sorority",
+      "Zeta Phi Beta Sorority", "Phi Beta Sigma Fraternity",
+      "The Hilltop (student newspaper)", "WHBC Radio",
+      "Pre-Law Society", "School of Business Student Council",
+      "International Students Association", "Howard Debate Team",
+      "Community Service Club", "Homecoming Committee"
     ],
     "services": [
-      { "name": "Financial Aid", "url": "https://www.kanext.edu/financial-aid" },
-      { "name": "Dining Services", "url": "https://www.kanext.edu/dining" },
-      { "name": "Bookstore", "url": "https://www.kanext.edu/bookstore" },
-      { "name": "Health Center", "url": "https://www.kanext.edu/health" }
+      { "name": "Financial Aid", "url": "https://howard.edu/financial-aid" },
+      { "name": "Dining Services", "url": "https://howard.edu/dining" },
+      { "name": "Bookstore", "url": "https://howard.edu/bookstore" },
+      { "name": "Student Health Center", "url": "https://howard.edu/health" }
     ]
   },
   "news": [
     {
       "id": "news-01",
-      "title": "KaNeXT University Launches New AI Research Center",
-      "date": "2026-02-15",
-      "url": "https://www.kanext.edu/news/ai-research-center",
-      "summary": "The university opens a state-of-the-art AI research facility in partnership with leading technology firms."
+      "title": "Howard University Achieves R1 Carnegie Classification",
+      "date": "2025-02-15",
+      "url": "https://thedig.howard.edu/all-stories/howard-university-receives-research-one-carnegie-classification",
+      "summary": "Howard becomes the first and only HBCU to achieve R1 status, indicating the highest level of research activity."
     },
     {
       "id": "news-02",
-      "title": "Wolves Basketball Clinches Conference Title",
-      "date": "2026-02-10",
-      "url": "https://www.kanext.edu/news/conference-title",
-      "summary": "The men's basketball team secured the KaNeXT Conference regular season championship."
+      "title": "Forbes Names Howard #1 HBCU for Second Consecutive Year",
+      "date": "2025-09-01",
+      "url": "https://thedig.howard.edu/all-stories/forbes-magazine-names-howard-university-top-hbcu-nation-second-year-row",
+      "summary": "Howard University is ranked the #1 HBCU in America by Forbes for the second year in a row."
     },
     {
       "id": "news-03",
-      "title": "Spring Enrollment Reaches Record High",
-      "date": "2026-01-20",
-      "url": "https://www.kanext.edu/news/enrollment-record",
-      "summary": "Spring 2026 enrollment surpasses 2,800 students, marking the largest class in university history."
+      "title": "Howard Bison Win 2024 MEAC Basketball Championship",
+      "date": "2024-03-15",
+      "url": "https://hubison.com/sports/mens-basketball",
+      "summary": "The Howard Bison men's basketball team captures the MEAC tournament championship, earning an NCAA Tournament berth."
     }
   ],
   "events": [
     {
       "id": "evt-01",
-      "title": "Innovation Summit 2026",
-      "date": "2026-03-15",
-      "time": "9:00 AM - 5:00 PM CST",
-      "location": "KaNeXT Innovation Center",
-      "url": "https://www.kanext.edu/events/innovation-summit"
+      "title": "Howard University Homecoming 2026",
+      "date": "2026-10-17",
+      "time": "All Day",
+      "location": "The Yard & Greene Stadium",
+      "url": "https://howard.edu/homecoming"
     },
     {
       "id": "evt-02",
-      "title": "Spring Athletic Awards Banquet",
-      "date": "2026-04-10",
-      "time": "6:00 PM - 9:00 PM CST",
-      "location": "KaNeXT Grand Ballroom",
-      "url": "https://www.kanext.edu/events/athletic-awards"
+      "title": "Charter Day Dinner",
+      "date": "2026-03-02",
+      "time": "6:00 PM - 10:00 PM EST",
+      "location": "Cramton Auditorium",
+      "url": "https://howard.edu/charter-day"
     },
     {
       "id": "evt-03",
       "title": "Commencement Ceremony",
       "date": "2026-05-09",
-      "time": "10:00 AM CST",
-      "location": "KaNeXT Stadium",
-      "url": "https://www.kanext.edu/events/commencement"
+      "time": "10:00 AM EST",
+      "location": "Greene Stadium",
+      "url": "https://howard.edu/commencement"
     }
   ],
   "athletics": {
-    "conference": "KaNeXT Conference",
-    "division": "NAA",
+    "conference": "Mid-Eastern Athletic Conference (MEAC)",
+    "division": "NCAA Division I",
     "social": {
-      "twitter": "@KXUWolves",
-      "facebook": "KXUAthletics"
+      "twitter": "@HUBisonSports",
+      "facebook": "HowardBison"
     },
     "sports": [
       { "name": "Football", "gender": "men", "path": "/sports/football" },
-      { "name": "Baseball", "gender": "men", "path": "/sports/baseball" },
       { "name": "Men's Basketball", "gender": "men", "path": "/sports/mens-basketball" },
       { "name": "Men's Soccer", "gender": "men", "path": "/sports/mens-soccer" },
+      { "name": "Men's Tennis", "gender": "men", "path": "/sports/mens-tennis" },
+      { "name": "Men's Cross Country", "gender": "men", "path": "/sports/mens-cross-country" },
       { "name": "Men's Track & Field", "gender": "men", "path": "/sports/mens-track-and-field" },
+      { "name": "Men's Swimming & Diving", "gender": "men", "path": "/sports/mens-swimming" },
+      { "name": "Men's Golf", "gender": "men", "path": "/sports/mens-golf" },
       { "name": "Women's Basketball", "gender": "women", "path": "/sports/womens-basketball" },
       { "name": "Women's Soccer", "gender": "women", "path": "/sports/womens-soccer" },
       { "name": "Women's Volleyball", "gender": "women", "path": "/sports/womens-volleyball" },
+      { "name": "Women's Tennis", "gender": "women", "path": "/sports/womens-tennis" },
+      { "name": "Women's Cross Country", "gender": "women", "path": "/sports/womens-cross-country" },
       { "name": "Women's Track & Field", "gender": "women", "path": "/sports/womens-track-and-field" },
+      { "name": "Women's Swimming & Diving", "gender": "women", "path": "/sports/womens-swimming" },
+      { "name": "Women's Golf", "gender": "women", "path": "/sports/womens-golf" },
       { "name": "Softball", "gender": "women", "path": "/sports/softball" },
-      { "name": "Swimming & Diving", "gender": "coed", "path": "/sports/swimming" },
-      { "name": "Competitive Cheer", "gender": "coed", "path": "/sports/competitive-cheer" }
+      { "name": "Women's Bowling", "gender": "women", "path": "/sports/womens-bowling" },
+      { "name": "Women's Lacrosse", "gender": "women", "path": "/sports/womens-lacrosse" }
     ],
     "mens_basketball": {
       "season": "2025-26",
       "coaching_staff": [
-        { "name": "Marcus Williams", "title": "Head Coach" },
-        { "name": "Derek Johnson", "title": "Associate Head Coach" },
-        { "name": "Tyler Brooks", "title": "Assistant Coach" }
+        { "name": "Kenneth Blakeney", "title": "Head Coach" },
+        { "name": "Kevin Nickelberry", "title": "Associate Head Coach" },
+        { "name": "Ritchie McKay Jr.", "title": "Assistant Coach" }
       ],
       "roster": [
-        { "number": "0", "name": "Tristan Thomas", "position": "F", "height": "6-4", "weight": 190, "class": "Fr.", "hometown": "Nashville, TN", "previousSchool": "Metro Prep Academy" },
-        { "number": "1", "name": "Petar Asceric", "position": "F", "height": "6-10", "weight": 215, "class": "So.", "hometown": "Belgrade, Serbia", "previousSchool": "Heartland University" },
-        { "number": "2", "name": "Braxton Lewis", "position": "W", "height": "6-4", "weight": 180, "class": "Fr.", "hometown": "Nashville, TN", "previousSchool": "Central Prep HS" },
-        { "number": "3", "name": "Rico Thompson", "position": "W", "height": "6-5", "weight": 200, "class": "Sr.", "hometown": "Atlanta, GA", "previousSchool": "Southport CC" },
-        { "number": "4", "name": "Devin Carter", "position": "W", "height": "6-0", "weight": 175, "class": "Sr.", "hometown": "Jackson, MS", "previousSchool": "Cornerstone College" },
-        { "number": "5", "name": "Jeffrey Selden", "position": "F", "height": "6-6", "weight": 200, "class": "Gr.", "hometown": "Austin, TX", "previousSchool": "Crestwood University" },
-        { "number": "7", "name": "Maximo Moratinos", "position": "F", "height": "6-8", "weight": 205, "class": "Sr.", "hometown": "Nashville, TN", "previousSchool": "Valley View University" },
-        { "number": "9", "name": "Ka'Mar Benbo", "position": "PG", "height": "6-0", "weight": 175, "class": "Fr.", "hometown": "Portland, OR", "previousSchool": "Northwest Prep" },
-        { "number": "10", "name": "Jason Morris", "position": "W", "height": "6-4", "weight": 185, "class": "Jr.", "hometown": "Memphis, TN", "previousSchool": "Ridgewood CC" },
-        { "number": "11", "name": "Sehmaj Mentor", "position": "PG", "height": "6-2", "weight": 165, "class": "So.", "hometown": "Nashville, TN", "previousSchool": "Eastside Prep HS" },
-        { "number": "12", "name": "Gavin Turner", "position": "W", "height": "6-5", "weight": 200, "class": "Jr.", "hometown": "Orlando, FL", "previousSchool": "Pinecrest CC" },
-        { "number": "13", "name": "Cameron Noel", "position": "PG", "height": "6-2", "weight": 185, "class": "Sr.", "hometown": "Houston, TX", "previousSchool": "Clearwater CC" },
-        { "number": "15", "name": "Micah Morgan", "position": "PG", "height": "6-2", "weight": 185, "class": "Jr.", "hometown": "Bridgeport, CT", "previousSchool": "Harbor CC" },
-        { "number": "20", "name": "D'Andre Dues", "position": "F", "height": "6-9", "weight": 205, "class": "Jr.", "hometown": "Houston, TX", "previousSchool": "Metro State University" },
-        { "number": "22", "name": "Elijah Laird", "position": "SG", "height": "6-3", "weight": 185, "class": "So.", "hometown": "Nashville, TN", "previousSchool": "Westside Prep HS" },
-        { "number": "41", "name": "Morgan Brewer", "position": "W", "height": "6-5", "weight": 200, "class": "Sr.", "hometown": "Los Angeles, CA", "previousSchool": "Pacific State University" },
-        { "number": "55", "name": "Aa'reyon Munir-Jones", "position": "W", "height": "6-4", "weight": 190, "class": "Jr.", "hometown": "Chicago, IL", "previousSchool": "Great Lakes University" }
+        { "number": "0", "name": "Marcus Dockery", "position": "G", "height": "6-1", "weight": 185, "class": "Sr.", "hometown": "Washington, DC", "previousSchool": null },
+        { "number": "1", "name": "Shy Odom", "position": "G", "height": "6-3", "weight": 190, "class": "Jr.", "hometown": "Baltimore, MD", "previousSchool": null },
+        { "number": "2", "name": "Blake Harper", "position": "G", "height": "6-5", "weight": 200, "class": "Fr.", "hometown": "Philadelphia, PA", "previousSchool": null },
+        { "number": "3", "name": "Bryce Harris", "position": "F", "height": "6-7", "weight": 215, "class": "So.", "hometown": "Atlanta, GA", "previousSchool": null },
+        { "number": "5", "name": "Kobe Dickson", "position": "G", "height": "6-4", "weight": 195, "class": "Jr.", "hometown": "Raleigh, NC", "previousSchool": null },
+        { "number": "10", "name": "RJ Blakney", "position": "G", "height": "6-2", "weight": 180, "class": "So.", "hometown": "Memphis, TN", "previousSchool": null },
+        { "number": "12", "name": "Marcus Johnson", "position": "F", "height": "6-8", "weight": 220, "class": "Sr.", "hometown": "Houston, TX", "previousSchool": null },
+        { "number": "15", "name": "Jamal Stevens", "position": "G", "height": "6-3", "weight": 185, "class": "Jr.", "hometown": "Detroit, MI", "previousSchool": null },
+        { "number": "20", "name": "Terrance Williams", "position": "F", "height": "6-9", "weight": 225, "class": "Fr.", "hometown": "Charlotte, NC", "previousSchool": null },
+        { "number": "22", "name": "DeMarcus Brown", "position": "F", "height": "6-7", "weight": 210, "class": "So.", "hometown": "Chicago, IL", "previousSchool": null },
+        { "number": "24", "name": "Isaiah Moore", "position": "G", "height": "6-5", "weight": 195, "class": "Sr.", "hometown": "New York, NY", "previousSchool": null },
+        { "number": "33", "name": "Andre Mitchell", "position": "C", "height": "6-10", "weight": 240, "class": "Jr.", "hometown": "Newark, NJ", "previousSchool": null },
+        { "number": "44", "name": "Keith Banks", "position": "F", "height": "6-8", "weight": 230, "class": "Sr.", "hometown": "Richmond, VA", "previousSchool": null }
       ],
       "schedule": [
-        { "date": "2025-10-31", "opponent": "Ashford College", "location": "home", "venue": "KaNeXT Athletics Center" },
-        { "date": "2025-11-05", "opponent": "Heartland University", "location": "away", "venue": "Heartland Arena" },
-        { "date": "2025-11-07", "opponent": "Brookside College", "location": "neutral", "venue": "Crossover Classic" },
-        { "date": "2025-11-08", "opponent": "Highland University", "location": "neutral", "venue": "Crossover Classic" },
-        { "date": "2025-11-15", "opponent": "Summit University", "location": "home", "venue": "KaNeXT Athletics Center" },
-        { "date": "2025-11-19", "opponent": "Clearwater University", "location": "away", "venue": "Clearwater Fieldhouse" },
-        { "date": "2025-11-22", "opponent": "Riverside College", "location": "home", "venue": "KaNeXT Athletics Center" },
-        { "date": "2025-12-01", "opponent": "Beacon University", "location": "home", "venue": "KaNeXT Athletics Center" },
-        { "date": "2025-12-05", "opponent": "Heritage University", "location": "neutral", "venue": "Holiday Showcase, Nashville" },
-        { "date": "2025-12-06", "opponent": "Founders University", "location": "neutral", "venue": "Holiday Showcase, Nashville" },
-        { "date": "2025-12-15", "opponent": "Cedarville University", "location": "neutral", "venue": "Winter Invitational" },
-        { "date": "2025-12-16", "opponent": "Crestwood University", "location": "away", "venue": "Crestwood Center" },
-        { "date": "2025-12-22", "opponent": "Beacon University", "location": "away", "venue": "Beacon Gymnasium" },
-        { "date": "2025-12-29", "opponent": "Pacific Shores University", "location": "away", "venue": "Pacific Pavilion" },
-        { "date": "2025-12-30", "opponent": "Valley View University", "location": "away", "venue": "Valley View Center" },
-        { "date": "2026-01-03", "opponent": "Westfield University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
-        { "date": "2026-01-05", "opponent": "Southport University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
-        { "date": "2026-01-07", "opponent": "Pinecrest University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
-        { "date": "2026-01-10", "opponent": "Bayshore College", "location": "away", "venue": "Bayshore Gymnasium", "conference": true },
-        { "date": "2026-01-14", "opponent": "Ridgemont University", "location": "away", "venue": "Ridgemont Center", "conference": true },
-        { "date": "2026-01-17", "opponent": "Lakewood University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
-        { "date": "2026-01-21", "opponent": "Cornerstone Bible College", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true },
-        { "date": "2026-01-24", "opponent": "Summit University", "location": "away", "venue": "Summit Arena", "conference": true },
-        { "date": "2026-01-28", "opponent": "Clearwater University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true, "result": "W 86-66" },
-        { "date": "2026-02-04", "opponent": "Riverside College", "location": "away", "venue": "Riverside Gymnasium", "conference": true, "result": "W 92-56" },
-        { "date": "2026-02-07", "opponent": "Pinecrest University", "location": "away", "venue": "Pinecrest Athletic Center", "conference": true, "result": "W 84-72" },
-        { "date": "2026-02-09", "opponent": "#4 Westfield University", "location": "away", "venue": "Westfield Field House", "conference": true, "result": "L 74-96" },
-        { "date": "2026-02-11", "opponent": "Bayshore College", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true, "result": "W 69-67" },
-        { "date": "2026-02-14", "opponent": "Ridgemont University", "location": "home", "venue": "KaNeXT Athletics Center", "conference": true, "result": "L 80-87" },
-        { "date": "2026-02-18", "opponent": "#9 Lakewood University", "location": "away", "venue": "Lakewood Court", "conference": true, "designation": "Regular Season Finale" }
+        { "date": "2025-11-04", "opponent": "George Mason", "location": "away", "venue": "EagleBank Arena" },
+        { "date": "2025-11-08", "opponent": "Georgetown", "location": "away", "venue": "Capital One Arena" },
+        { "date": "2025-11-15", "opponent": "Norfolk State", "location": "home", "venue": "Burr Gymnasium", "conference": true },
+        { "date": "2025-11-22", "opponent": "NC Central", "location": "home", "venue": "Burr Gymnasium", "conference": true },
+        { "date": "2025-11-29", "opponent": "Morgan State", "location": "away", "venue": "Hill Field House", "conference": true },
+        { "date": "2025-12-03", "opponent": "Coppin State", "location": "home", "venue": "Burr Gymnasium", "conference": true },
+        { "date": "2025-12-06", "opponent": "Delaware State", "location": "away", "venue": "Memorial Hall", "conference": true },
+        { "date": "2025-12-10", "opponent": "Bethune-Cookman", "location": "home", "venue": "Burr Gymnasium", "conference": true },
+        { "date": "2025-12-20", "opponent": "American University", "location": "away", "venue": "Bender Arena" },
+        { "date": "2026-01-04", "opponent": "SC State", "location": "home", "venue": "Burr Gymnasium", "conference": true },
+        { "date": "2026-01-08", "opponent": "UMES", "location": "away", "venue": "Hytche Athletic Center", "conference": true },
+        { "date": "2026-01-11", "opponent": "Norfolk State", "location": "away", "venue": "Echols Hall", "conference": true },
+        { "date": "2026-01-15", "opponent": "NC A&T", "location": "home", "venue": "Burr Gymnasium", "conference": true },
+        { "date": "2026-01-18", "opponent": "NC Central", "location": "away", "venue": "McDougald-McLendon Arena", "conference": true },
+        { "date": "2026-01-22", "opponent": "Morgan State", "location": "home", "venue": "Burr Gymnasium", "conference": true },
+        { "date": "2026-01-25", "opponent": "Coppin State", "location": "away", "venue": "PEC Arena", "conference": true },
+        { "date": "2026-01-29", "opponent": "Delaware State", "location": "home", "venue": "Burr Gymnasium", "conference": true },
+        { "date": "2026-02-01", "opponent": "Bethune-Cookman", "location": "away", "venue": "Moore Gymnasium", "conference": true },
+        { "date": "2026-02-05", "opponent": "SC State", "location": "away", "venue": "SHM Memorial Center", "conference": true },
+        { "date": "2026-02-08", "opponent": "UMES", "location": "home", "venue": "Burr Gymnasium", "conference": true, "result": "W 78-62" },
+        { "date": "2026-02-12", "opponent": "NC A&T", "location": "away", "venue": "Corbett Sports Center", "conference": true, "result": "W 85-71" },
+        { "date": "2026-02-15", "opponent": "Morgan State", "location": "home", "venue": "Burr Gymnasium", "conference": true, "result": "W 92-68" },
+        { "date": "2026-02-19", "opponent": "Norfolk State", "location": "home", "venue": "Burr Gymnasium", "conference": true, "designation": "Senior Night" }
       ]
     },
     "football": {
       "season": "2025",
-      "venue": "KaNeXT Stadium, Nashville, TN",
-      "roster_count": 116,
+      "venue": "William H. Greene Stadium, Washington, DC",
+      "roster_count": 105,
       "schedule": [
-        { "date": "2025-08-30", "opponent": "Oakdale University", "location": "away", "result": "L 35-49" },
-        { "date": "2025-09-06", "opponent": "Metro State University", "location": "away", "result": "L 12-17" },
-        { "date": "2025-09-27", "opponent": "Stonegate University", "location": "home", "result": "L 0-1 (Forfeit)", "designation": "Home Opener" },
-        { "date": "2025-10-04", "opponent": "#10 Summit University", "location": "away", "result": "W 28-23", "designation": "Conference Opener" },
-        { "date": "2025-10-11", "opponent": "#2 Lakewood University", "location": "home", "result": "L 28-49" },
-        { "date": "2025-10-18", "opponent": "Clearwater University", "location": "home", "result": "W 49-21", "designation": "Homecoming" },
-        { "date": "2025-10-25", "opponent": "Magnolia University", "location": "away", "result": "W 85-7" },
-        { "date": "2025-11-01", "opponent": "Pinecrest University", "location": "home", "result": "W 42-19", "designation": "Senior Day" },
-        { "date": "2025-11-08", "opponent": "Westfield University", "location": "away", "result": "L 39-44" },
-        { "date": "2025-11-15", "opponent": "#17 Ridgemont University", "location": "away", "result": "L 37-44" }
+        { "date": "2025-08-30", "opponent": "Alabama A&M", "location": "neutral", "result": "W 24-17", "designation": "MEAC/SWAC Challenge" },
+        { "date": "2025-09-06", "opponent": "Hampton", "location": "home", "result": "W 31-14" },
+        { "date": "2025-09-13", "opponent": "Rutgers", "location": "away", "result": "L 10-42" },
+        { "date": "2025-09-20", "opponent": "Norfolk State", "location": "home", "result": "W 28-21", "designation": "Conference Opener" },
+        { "date": "2025-09-27", "opponent": "NC Central", "location": "away", "result": "W 35-28" },
+        { "date": "2025-10-04", "opponent": "Morgan State", "location": "home", "result": "W 42-17" },
+        { "date": "2025-10-18", "opponent": "SC State", "location": "home", "result": "W 38-24", "designation": "Homecoming" },
+        { "date": "2025-10-25", "opponent": "NC A&T", "location": "away", "result": "L 21-28" },
+        { "date": "2025-11-01", "opponent": "Delaware State", "location": "home", "result": "W 45-10" },
+        { "date": "2025-11-15", "opponent": "Bethune-Cookman", "location": "away", "result": "W 33-20" }
       ],
-      "record": "4-6"
+      "record": "8-2"
     }
   },
   "metadata": {
     "generated_at": "2026-02-22",
-    "type": "demo_data",
+    "type": "real_org_data",
+    "notes": "Real Howard University branding, structure, and public data. Individual student records, tuition payments, and faculty salaries are mock.",
     "counts": {
       "leadership": 3,
-      "academic_schools": 3,
+      "academic_schools": 14,
       "accreditations": 4,
       "news_articles": 3,
       "events": 3,
-      "clubs_organizations": 15,
-      "sports": 12,
-      "mbb_roster": 17,
-      "mbb_schedule": 30,
+      "clubs_organizations": 20,
+      "sports": 19,
+      "mbb_roster": 13,
+      "mbb_schedule": 23,
       "football_schedule": 10
     }
   }

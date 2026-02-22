@@ -101,7 +101,7 @@ export function buildCommerceChain(type: string, amount: number, description: st
       { stage: 'Rules', detail: 'Payment rules validated (amount, limits, method)', timestamp: ts(200) },
       { stage: 'Auth', detail: 'Card authorized — ending •••• 4242', timestamp: ts(800) },
       { stage: 'Payment', detail: `$${amount.toFixed(2)} captured`, timestamp: ts(1200) },
-      { stage: 'Settlement', detail: 'Funds settled to KaNeXT Athletics', timestamp: ts(1800) },
+      { stage: 'Settlement', detail: 'Funds settled to Carroll Athletics', timestamp: ts(1800) },
       { stage: 'Ledger', detail: `Ledger entry recorded — ${transactionId}`, timestamp: ts(2000) },
       { stage: 'Receipt', detail: 'Digital receipt generated', timestamp: ts(2200) },
     ],

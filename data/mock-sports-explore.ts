@@ -88,12 +88,12 @@ export type ExploreSort = 'Trending' | 'Recent' | 'Top Rated';
 
 export const HERO_FEATURE: HeroFeature = {
   id: 'hero-1',
-  homeTeam: 'KaNeXT Sports',
-  homeInitials: 'KaNeXT',
-  awayTeam: 'Pinecrest University',
+  homeTeam: 'Carroll College',
+  homeInitials: 'CC',
+  awayTeam: 'Dakota State University',
   awayInitials: 'WIU',
-  league: 'KaNeXT Conference',
-  hookText: 'Wolves look to clinch home court — must-win conference showdown',
+  league: 'Frontier Conference',
+  hookText: 'Fighting Saints look to clinch home court — must-win conference showdown',
   date: 'Sat, Feb 21',
   badgeText: 'FEATURED',
   thumbnailColor: '#1D9BF0',
@@ -104,11 +104,11 @@ export const HERO_FEATURE: HeroFeature = {
 // =============================================================================
 
 export const CONTINUE_WATCHING: ContinueWatchingItem[] = [
-  { id: 'cw-1', title: 'KaNeXT vs Magnolia University', subtitle: 'Full Game Replay', duration: '1:48:32', progress: 0.65, thumbnailColor: '#1D9BF0' },
+  { id: 'cw-1', title: 'Carroll College vs Multnomah', subtitle: 'Full Game Replay', duration: '1:48:32', progress: 0.65, thumbnailColor: '#1D9BF0' },
   { id: 'cw-2', title: 'Marcus Reed Highlights', subtitle: '2025-26 Season Mix', duration: '8:44', progress: 0.3, thumbnailColor: '#FFFFFF' },
-  { id: 'cw-3', title: 'KaNeXT Conference Weekly', subtitle: 'Episode 18 — Race Heats Up', duration: '22:15', progress: 0.82, thumbnailColor: '#22C55E' },
+  { id: 'cw-3', title: 'Frontier Conference Weekly', subtitle: 'Episode 18 — Race Heats Up', duration: '22:15', progress: 0.82, thumbnailColor: '#22C55E' },
   { id: 'cw-4', title: 'Defensive Film Study', subtitle: 'Zone Press Breakdown', duration: '14:20', progress: 0.45, thumbnailColor: '#1D9BF0' },
-  { id: 'cw-5', title: 'KaNeXT vs Clearwater University', subtitle: 'Full Game Replay', duration: '1:52:10', progress: 0.12, thumbnailColor: '#EF4444' },
+  { id: 'cw-5', title: 'Carroll College vs Bellevue University', subtitle: 'Full Game Replay', duration: '1:52:10', progress: 0.12, thumbnailColor: '#EF4444' },
 ];
 
 // =============================================================================
@@ -116,14 +116,14 @@ export const CONTINUE_WATCHING: ContinueWatchingItem[] = [
 // =============================================================================
 
 export const TOP_GAMES: GameCard[] = [
-  { id: 'tg-1', homeTeam: 'KaNeXT Sports', homeInitials: 'KaNeXT', awayTeam: 'Pinecrest', awayInitials: 'WIU', date: 'Feb 21', badge: 'UPCOMING', duration: 'TBD', thumbnailColor: '#1D9BF0' },
-  { id: 'tg-2', homeTeam: 'Clearwater', homeInitials: 'WAR', awayTeam: 'Westfield', awayInitials: 'AVE', date: 'Feb 20', badge: 'UPCOMING', duration: 'TBD', thumbnailColor: '#1D9BF0' },
-  { id: 'tg-3', homeTeam: 'KaNeXT Sports', homeInitials: 'KaNeXT', awayTeam: 'Thomas Univ', awayInitials: 'THO', score: '82-74', date: 'Feb 15', duration: '1:48:32', thumbnailColor: '#1D9BF0' },
-  { id: 'tg-4', homeTeam: 'Summit', homeInitials: 'SEU', awayTeam: 'Lakewood', awayInitials: 'KEI', score: '91-88', date: 'Feb 15', badge: 'OT', duration: '2:05:10', thumbnailColor: '#F59E0B' },
-  { id: 'tg-5', homeTeam: 'Ridgemont', homeInitials: 'STU', awayTeam: 'Pinecrest', awayInitials: 'WIU', score: '67-71', date: 'Feb 13', duration: '1:44:20', thumbnailColor: '#1D9BF0' },
-  { id: 'tg-6', homeTeam: 'Westfield', homeInitials: 'AVE', awayTeam: 'Johnson', awayInitials: 'JU', score: '79-65', date: 'Feb 13', duration: '1:46:55', thumbnailColor: '#22C55E' },
-  { id: 'tg-7', homeTeam: 'KaNeXT Sports', homeInitials: 'KaNeXT', awayTeam: 'Clearwater', awayInitials: 'WAR', score: '88-76', date: 'Feb 11', duration: '1:52:10', thumbnailColor: '#1D9BF0' },
-  { id: 'tg-8', homeTeam: 'Lakewood', homeInitials: 'KEI', awayTeam: 'Summit', awayInitials: 'SEU', score: '73-80', date: 'Feb 11', duration: '1:50:00', thumbnailColor: '#EF4444' },
+  { id: 'tg-1', homeTeam: 'Carroll College', homeInitials: 'CC', awayTeam: 'Dakota State', awayInitials: 'WIU', date: 'Feb 21', badge: 'UPCOMING', duration: 'TBD', thumbnailColor: '#1D9BF0' },
+  { id: 'tg-2', homeTeam: 'Bellevue', homeInitials: 'WAR', awayTeam: 'Montana Tech', awayInitials: 'AVE', date: 'Feb 20', badge: 'UPCOMING', duration: 'TBD', thumbnailColor: '#1D9BF0' },
+  { id: 'tg-3', homeTeam: 'Carroll College', homeInitials: 'CC', awayTeam: 'Thomas Univ', awayInitials: 'THO', score: '82-74', date: 'Feb 15', duration: '1:48:32', thumbnailColor: '#1D9BF0' },
+  { id: 'tg-4', homeTeam: 'Rocky Mountain', homeInitials: 'SEU', awayTeam: 'Providence', awayInitials: 'KEI', score: '91-88', date: 'Feb 15', badge: 'OT', duration: '2:05:10', thumbnailColor: '#F59E0B' },
+  { id: 'tg-5', homeTeam: 'MSU-Northern', homeInitials: 'STU', awayTeam: 'Dakota State', awayInitials: 'WIU', score: '67-71', date: 'Feb 13', duration: '1:44:20', thumbnailColor: '#1D9BF0' },
+  { id: 'tg-6', homeTeam: 'Montana Tech', homeInitials: 'AVE', awayTeam: 'Johnson', awayInitials: 'JU', score: '79-65', date: 'Feb 13', duration: '1:46:55', thumbnailColor: '#22C55E' },
+  { id: 'tg-7', homeTeam: 'Carroll College', homeInitials: 'CC', awayTeam: 'Bellevue', awayInitials: 'WAR', score: '88-76', date: 'Feb 11', duration: '1:52:10', thumbnailColor: '#1D9BF0' },
+  { id: 'tg-8', homeTeam: 'Providence', homeInitials: 'KEI', awayTeam: 'Rocky Mountain', awayInitials: 'SEU', score: '73-80', date: 'Feb 11', duration: '1:50:00', thumbnailColor: '#EF4444' },
 ];
 
 // =============================================================================
@@ -131,12 +131,12 @@ export const TOP_GAMES: GameCard[] = [
 // =============================================================================
 
 export const NEW_UPLOADS: GameCard[] = [
-  { id: 'nu-1', homeTeam: 'KaNeXT', homeInitials: 'KaNeXT', awayTeam: 'Thomas', awayInitials: 'THO', score: '82-74', date: '2h ago', duration: '1:48:32', thumbnailColor: '#1D9BF0' },
-  { id: 'nu-2', homeTeam: 'SEU', homeInitials: 'SEU', awayTeam: 'Lakewood', awayInitials: 'KEI', score: '91-88', date: '5h ago', badge: 'OT', duration: '2:05:10', thumbnailColor: '#F59E0B' },
-  { id: 'nu-3', homeTeam: 'Clearwater', homeInitials: 'WAR', awayTeam: 'Ridgemont', awayInitials: 'STU', score: '85-79', date: '8h ago', duration: '1:50:22', thumbnailColor: '#1D9BF0' },
-  { id: 'nu-4', homeTeam: 'Westfield', homeInitials: 'AVE', awayTeam: 'Johnson', awayInitials: 'JU', score: '79-65', date: '1d ago', duration: '1:46:55', thumbnailColor: '#22C55E' },
-  { id: 'nu-5', homeTeam: 'KaNeXT', homeInitials: 'KaNeXT', awayTeam: 'Clearwater', awayInitials: 'WAR', score: '88-76', date: '3d ago', duration: '1:52:10', thumbnailColor: '#1D9BF0' },
-  { id: 'nu-6', homeTeam: 'Pinecrest', homeInitials: 'WIU', awayTeam: 'Summit', awayInitials: 'SEU', score: '70-68', date: '3d ago', duration: '1:42:18', thumbnailColor: '#1D9BF0' },
+  { id: 'nu-1', homeTeam: 'Carroll College', homeInitials: 'CC', awayTeam: 'Thomas', awayInitials: 'THO', score: '82-74', date: '2h ago', duration: '1:48:32', thumbnailColor: '#1D9BF0' },
+  { id: 'nu-2', homeTeam: 'SEU', homeInitials: 'SEU', awayTeam: 'Providence', awayInitials: 'KEI', score: '91-88', date: '5h ago', badge: 'OT', duration: '2:05:10', thumbnailColor: '#F59E0B' },
+  { id: 'nu-3', homeTeam: 'Bellevue', homeInitials: 'WAR', awayTeam: 'MSU-Northern', awayInitials: 'STU', score: '85-79', date: '8h ago', duration: '1:50:22', thumbnailColor: '#1D9BF0' },
+  { id: 'nu-4', homeTeam: 'Montana Tech', homeInitials: 'AVE', awayTeam: 'Johnson', awayInitials: 'JU', score: '79-65', date: '1d ago', duration: '1:46:55', thumbnailColor: '#22C55E' },
+  { id: 'nu-5', homeTeam: 'Carroll College', homeInitials: 'CC', awayTeam: 'Bellevue', awayInitials: 'WAR', score: '88-76', date: '3d ago', duration: '1:52:10', thumbnailColor: '#1D9BF0' },
+  { id: 'nu-6', homeTeam: 'Dakota State', homeInitials: 'WIU', awayTeam: 'Rocky Mountain', awayInitials: 'SEU', score: '70-68', date: '3d ago', duration: '1:42:18', thumbnailColor: '#1D9BF0' },
 ];
 
 // =============================================================================
@@ -144,14 +144,14 @@ export const NEW_UPLOADS: GameCard[] = [
 // =============================================================================
 
 export const TRENDING_PROGRAMS: ProgramTile[] = [
-  { id: 'tp-1', name: 'KaNeXT Sports', initials: 'KaNeXT', conference: 'KaNeXT Conference', record: '18-8', thumbnailColor: '#1D9BF0' },
-  { id: 'tp-2', name: 'Summit', initials: 'SEU', conference: 'KaNeXT Conference', record: '20-6', thumbnailColor: '#1D9BF0' },
-  { id: 'tp-3', name: 'Lakewood', initials: 'KEI', conference: 'KaNeXT Conference', record: '17-9', thumbnailColor: '#EF4444' },
-  { id: 'tp-4', name: 'Clearwater', initials: 'WAR', conference: 'KaNeXT Conference', record: '15-11', thumbnailColor: '#F59E0B' },
-  { id: 'tp-5', name: 'Westfield', initials: 'AVE', conference: 'KaNeXT Conference', record: '14-12', thumbnailColor: '#22C55E' },
-  { id: 'tp-6', name: 'Pinecrest University', initials: 'WIU', conference: 'KaNeXT Conference', record: '16-10', thumbnailColor: '#1D9BF0' },
-  { id: 'tp-7', name: 'Ridgemont', initials: 'STU', conference: 'KaNeXT Conference', record: '13-13', thumbnailColor: '#1D9BF0' },
-  { id: 'tp-8', name: 'Magnolia University', initials: 'THO', conference: 'KaNeXT Conference', record: '11-15', thumbnailColor: '#52525B' },
+  { id: 'tp-1', name: 'Carroll College', initials: 'CC', conference: 'Frontier Conference', record: '18-8', thumbnailColor: '#1D9BF0' },
+  { id: 'tp-2', name: 'Rocky Mountain', initials: 'SEU', conference: 'Frontier Conference', record: '20-6', thumbnailColor: '#1D9BF0' },
+  { id: 'tp-3', name: 'Providence', initials: 'KEI', conference: 'Frontier Conference', record: '17-9', thumbnailColor: '#EF4444' },
+  { id: 'tp-4', name: 'Bellevue', initials: 'WAR', conference: 'Frontier Conference', record: '15-11', thumbnailColor: '#F59E0B' },
+  { id: 'tp-5', name: 'Montana Tech', initials: 'AVE', conference: 'Frontier Conference', record: '14-12', thumbnailColor: '#22C55E' },
+  { id: 'tp-6', name: 'Dakota State University', initials: 'WIU', conference: 'Frontier Conference', record: '16-10', thumbnailColor: '#1D9BF0' },
+  { id: 'tp-7', name: 'MSU-Northern', initials: 'STU', conference: 'Frontier Conference', record: '13-13', thumbnailColor: '#1D9BF0' },
+  { id: 'tp-8', name: 'Multnomah', initials: 'THO', conference: 'Frontier Conference', record: '11-15', thumbnailColor: '#52525B' },
 ];
 
 // =============================================================================
@@ -159,14 +159,14 @@ export const TRENDING_PROGRAMS: ProgramTile[] = [
 // =============================================================================
 
 export const PLAYERS_TO_WATCH: PlayerSpotlight[] = [
-  { id: 'pw-1', name: 'Marcus Reed', position: 'PG', team: 'KaNeXT Sports', stat: '18.5 PPG / 7.1 APG', thumbnailColor: '#1D9BF0' },
-  { id: 'pw-2', name: 'Devon Carter', position: 'B', team: 'KaNeXT Sports', stat: '14.0 PPG / 10.2 RPG', thumbnailColor: '#1D9BF0' },
-  { id: 'pw-3', name: 'Paul Diomande', position: 'F', team: 'KaNeXT Sports', stat: '15.5 PPG / 8.0 RPG', thumbnailColor: '#1D9BF0' },
-  { id: 'pw-4', name: 'Alex Morgan', position: 'CG', team: 'Summit', stat: '22.3 PPG / 4.1 APG', thumbnailColor: '#1D9BF0' },
-  { id: 'pw-5', name: 'DeShawn Carter', position: 'F', team: 'Lakewood', stat: '16.8 PPG / 9.4 RPG', thumbnailColor: '#EF4444' },
-  { id: 'pw-6', name: 'Jaylen Mitchell', position: 'CG', team: 'Clearwater', stat: '19.2 PPG / 3.8 SPG', thumbnailColor: '#F59E0B' },
-  { id: 'pw-7', name: 'Tyrell Adams', position: 'PG', team: 'Westfield', stat: '14.6 PPG / 8.2 APG', thumbnailColor: '#22C55E' },
-  { id: 'pw-8', name: 'Chris Patterson', position: 'B', team: 'Pinecrest', stat: '12.4 PPG / 11.0 RPG', thumbnailColor: '#1D9BF0' },
+  { id: 'pw-1', name: 'Marcus Reed', position: 'PG', team: 'Carroll College', stat: '18.5 PPG / 7.1 APG', thumbnailColor: '#1D9BF0' },
+  { id: 'pw-2', name: 'Devon Carter', position: 'B', team: 'Carroll College', stat: '14.0 PPG / 10.2 RPG', thumbnailColor: '#1D9BF0' },
+  { id: 'pw-3', name: 'Paul Diomande', position: 'F', team: 'Carroll College', stat: '15.5 PPG / 8.0 RPG', thumbnailColor: '#1D9BF0' },
+  { id: 'pw-4', name: 'Alex Morgan', position: 'CG', team: 'Rocky Mountain', stat: '22.3 PPG / 4.1 APG', thumbnailColor: '#1D9BF0' },
+  { id: 'pw-5', name: 'DeShawn Carter', position: 'F', team: 'Providence', stat: '16.8 PPG / 9.4 RPG', thumbnailColor: '#EF4444' },
+  { id: 'pw-6', name: 'Jaylen Mitchell', position: 'CG', team: 'Bellevue', stat: '19.2 PPG / 3.8 SPG', thumbnailColor: '#F59E0B' },
+  { id: 'pw-7', name: 'Tyrell Adams', position: 'PG', team: 'Montana Tech', stat: '14.6 PPG / 8.2 APG', thumbnailColor: '#22C55E' },
+  { id: 'pw-8', name: 'Chris Patterson', position: 'B', team: 'Dakota State', stat: '12.4 PPG / 11.0 RPG', thumbnailColor: '#1D9BF0' },
 ];
 
 // =============================================================================
@@ -174,11 +174,11 @@ export const PLAYERS_TO_WATCH: PlayerSpotlight[] = [
 // =============================================================================
 
 export const EVENTS_SHOWCASES: EventCard[] = [
-  { id: 'ev-1', title: 'KaNeXT Conference Tournament', date: 'Mar 1-4', location: 'Lakeland, FL', type: 'tournament', thumbnailColor: '#F59E0B' },
-  { id: 'ev-2', title: 'NAA National Championship', date: 'Mar 18-24', location: 'Kansas City, MO', type: 'tournament', thumbnailColor: '#22C55E' },
+  { id: 'ev-1', title: 'Frontier Conference Tournament', date: 'Mar 1-4', location: 'Lakeland, FL', type: 'tournament', thumbnailColor: '#F59E0B' },
+  { id: 'ev-2', title: 'NAIA National Championship', date: 'Mar 18-24', location: 'Kansas City, MO', type: 'tournament', thumbnailColor: '#22C55E' },
   { id: 'ev-3', title: 'MLK Truth Classic', date: 'Jan 2027', location: 'Miami, FL', type: 'showcase', thumbnailColor: '#FFFFFF' },
-  { id: 'ev-4', title: 'South Ridgemont Prep Showcase', date: 'Apr 12-14', location: 'Beacon, FL', type: 'showcase', thumbnailColor: '#1D9BF0' },
-  { id: 'ev-5', title: 'NAIA Combine', date: 'May 8-10', location: 'Nashville, TN', type: 'combine', thumbnailColor: '#1D9BF0' },
+  { id: 'ev-4', title: 'South MSU-Northern Prep Showcase', date: 'Apr 12-14', location: 'Beacon, FL', type: 'showcase', thumbnailColor: '#1D9BF0' },
+  { id: 'ev-5', title: 'NAIA Combine', date: 'May 8-10', location: 'Helena, MT', type: 'combine', thumbnailColor: '#1D9BF0' },
   { id: 'ev-6', title: 'Elite Camp Series', date: 'Jun 15-20', location: 'Orlando, FL', type: 'camp', thumbnailColor: '#EF4444' },
 ];
 
@@ -187,7 +187,7 @@ export const EVENTS_SHOWCASES: EventCard[] = [
 // =============================================================================
 
 export const COACH_PICKS: CoachPick[] = [
-  { id: 'cp-1', title: 'Zone Press Breakdown', subtitle: 'How KaNeXT dismantled Thomas\'s zone — film session', authorName: 'Coach K', thumbnailColor: '#1D9BF0', duration: '14:32' },
+  { id: 'cp-1', title: 'Zone Press Breakdown', subtitle: 'How Carroll dismantled Thomas\'s zone — film session', authorName: 'Coach K', thumbnailColor: '#1D9BF0', duration: '14:32' },
   { id: 'cp-2', title: 'PnR Decision-Making Masterclass', subtitle: 'Marcus Reed reads vs traps and switches', authorName: 'Coach K', thumbnailColor: '#FFFFFF', duration: '11:15' },
   { id: 'cp-3', title: 'Transition Defense Principles', subtitle: 'Getting back, matching up, protecting the paint', authorName: 'Coach K', thumbnailColor: '#22C55E', duration: '18:44' },
   { id: 'cp-4', title: 'NAIA Scouting: Top 10 Guards', subtitle: 'Who to watch in the conference tournament', authorName: 'Scout Team', thumbnailColor: '#1D9BF0', duration: '22:08' },

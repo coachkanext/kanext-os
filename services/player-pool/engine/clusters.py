@@ -9,8 +9,8 @@ Each cluster = weighted composite of sub-trait SkillKR scores.
 v2.0 changes:
   - Consolidated from 8 → 7 canonical clusters
   - Renamed: perimeter_defense → on_ball_defense, frame → physical
-  - Removed interior_defense as standalone cluster (absorbed into lenses)
-  - Added blk_per_100 to team_defense as 5th sub-trait
+  - Removed interior_defense as standalone cluster (sub-traits in lenses only)
+  - Team Defense unchanged: foul discipline, disruption, minutes trust, start trust
   - Added 2 derived defense lenses (read-only, don't modify KR):
     PerimeterDefenseLens, InteriorDefenseLens
   - 7 clusters total: shooting, finishing, playmaking, on_ball_defense,
@@ -390,18 +390,15 @@ def score_physical(
 def score_team_defense(
     pf_pg: float,
     stl_pg: float,
-    blk_pg: float,
     minutes_pg: float,
     start_rate: float,
     level_key: str,
     n_games: int,
 ) -> tuple[float, float, list[dict]]:
     """
-    Team Defense cluster v2.0 — pure defensive box-score proxies.
-    v2.0: added blk_per_100 (shot blocking) as 5th sub-trait from removed interior_defense.
-
-    Composite: 0.30 * foul_discipline + 0.20 * disruption + 0.20 * shot_blocking
-             + 0.20 * minutes_trust + 0.10 * start_trust
+    Team Defense cluster — scheme, discipline, and trust.
+    Composite: 0.35 * foul_discipline + 0.25 * disruption
+             + 0.25 * minutes_trust + 0.15 * start_trust
     """
     # Foul discipline: pf per 100 possessions (lower is better)
     pf_per_100 = pf_pg * (100 / 70)
@@ -412,10 +409,6 @@ def score_team_defense(
     stl_per_100 = stl_pg * (100 / 70)
     stl_kr = compute_skillkr(stl_per_100, n_games, level_key, "stl_per_100")
 
-    # Shot blocking: blocks per 100 possessions (higher is better)
-    blk_per_100 = blk_pg * (100 / 70)
-    blk_kr = compute_skillkr(blk_per_100, n_games, level_key, "blk_per_100")
-
     # Minutes trust (coach plays trusted defenders more)
     min_kr = compute_skillkr(minutes_pg, n_games, level_key, "minutes_pg")
 
@@ -423,19 +416,17 @@ def score_team_defense(
     start_kr = compute_skillkr(start_rate, n_games, level_key, "start_rate")
 
     # Cross-level composite
-    raw = (0.30 * foul_kr["skill_kr"]
-         + 0.20 * stl_kr["skill_kr"]
-         + 0.20 * blk_kr["skill_kr"]
-         + 0.20 * min_kr["skill_kr"]
-         + 0.10 * start_kr["skill_kr"])
+    raw = (0.35 * foul_kr["skill_kr"]
+         + 0.25 * stl_kr["skill_kr"]
+         + 0.25 * min_kr["skill_kr"]
+         + 0.15 * start_kr["skill_kr"])
     score = max(0, min(100, round(raw, 1)))
 
     # League-internal composite
-    raw_l = (0.30 * foul_kr["skill_kr_league"]
-           + 0.20 * stl_kr["skill_kr_league"]
-           + 0.20 * blk_kr["skill_kr_league"]
-           + 0.20 * min_kr["skill_kr_league"]
-           + 0.10 * start_kr["skill_kr_league"])
+    raw_l = (0.35 * foul_kr["skill_kr_league"]
+           + 0.25 * stl_kr["skill_kr_league"]
+           + 0.25 * min_kr["skill_kr_league"]
+           + 0.15 * start_kr["skill_kr_league"])
     score_league = max(0, min(100, round(raw_l, 1)))
 
     traits = [
@@ -443,8 +434,6 @@ def score_team_defense(
          "v": n_games, "n_desc": "GP (foul discipline)", **foul_kr},
         {"cluster": "team_defense", "trait_key": "stl_per_100",
          "v": n_games, "n_desc": "GP (disruption activity)", **stl_kr},
-        {"cluster": "team_defense", "trait_key": "blk_per_100",
-         "v": n_games, "n_desc": "GP (shot blocking)", **blk_kr},
         {"cluster": "team_defense", "trait_key": "minutes_pg",
          "v": n_games, "n_desc": "GP (minutes trust)", **min_kr},
         {"cluster": "team_defense", "trait_key": "start_rate",
@@ -469,15 +458,23 @@ def _find_trait_kr(trait_diagnostics: list[dict], cluster: str, trait_key: str) 
 def compute_derived_lenses(
     clusters: dict[str, float],
     trait_diagnostics: list[dict],
+    blk_pg: float,
+    n_games: int,
+    level_key: str,
 ) -> dict[str, float]:
     """
     Derived defense lenses — read-only, do NOT modify KR.
     PerimeterDefenseLens = 0.55*on_ball_defense + 0.20*team_defense + 0.15*stl_skill + 0.10*pf_skill_inv
     InteriorDefenseLens = 0.45*team_defense + 0.25*rebounding + 0.20*physical + 0.10*blk_skill
+
+    blk_per_100 is computed directly here (not part of any cluster).
     """
     stl_skill = _find_trait_kr(trait_diagnostics, "on_ball_defense", "stl_per_100")
     pf_skill_inv = _find_trait_kr(trait_diagnostics, "on_ball_defense", "pf_per_100")
-    blk_skill = _find_trait_kr(trait_diagnostics, "team_defense", "blk_per_100")
+    # blk_per_100 is not in any cluster — compute standalone for this lens
+    blk_per_100 = blk_pg * (100 / 70)
+    blk_result = compute_skillkr(blk_per_100, n_games, level_key, "blk_per_100")
+    blk_skill = blk_result["skill_kr"]
 
     perimeter_lens = (0.55 * clusters.get("on_ball_defense", 50)
                     + 0.20 * clusters.get("team_defense", 50)
@@ -578,7 +575,6 @@ def compute_all_clusters(
     team_defense, team_defense_l, td_traits = score_team_defense(
         pf_pg=stats.get("pf_pg", 0),
         stl_pg=stats.get("stl_pg", 0),
-        blk_pg=stats.get("blk_pg", 0),
         minutes_pg=stats.get("minutes_pg", 0),
         start_rate=stats.get("start_rate", 0.5),
         level_key=level_key,

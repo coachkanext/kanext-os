@@ -50,10 +50,10 @@ export function BoardCard({ entry, onPress, onLongPress, fullWidth }: BoardCardP
     : null;
   const defKR = ratings
     ? Math.round(
-        (ratings.clusters.perimeter_defense +
-          ratings.clusters.interior_defense +
+        (ratings.clusters.on_ball_defense +
+          ratings.clusters.team_defense +
           ratings.clusters.rebounding +
-          ratings.clusters.frame) / 4,
+          ratings.clusters.physical) / 4,
       )
     : null;
 

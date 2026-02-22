@@ -163,7 +163,7 @@ export default function PlayByPlayScreen() {
   const KaNeXT_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
   const BOX_SCORE = KaNeXT_BOX_SCORES as Record<string, BoxScoreLine[]>;
   const realBoxScore = BOX_SCORE[gameId ?? ''] ?? [];
-  const fmuBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('KaNeXT Sports', fmuScore, KaNeXT_MOCK_NAMES);
+  const fmuBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('Carroll College', fmuScore, KaNeXT_MOCK_NAMES);
   const oppBoxScoreData = mockBoxScore(game.opponent, oppScore);
 
   // Shot chart filter state
@@ -208,7 +208,7 @@ export default function PlayByPlayScreen() {
   };
 
   let fmuSeed = 0;
-  for (let i = 0; i < 'KaNeXT'.length; i++) fmuSeed = ((fmuSeed << 5) - fmuSeed + 'KaNeXT'.charCodeAt(i)) | 0;
+  for (let i = 0; i < 'Carroll'.length; i++) fmuSeed = ((fmuSeed << 5) - fmuSeed + 'Carroll'.charCodeAt(i)) | 0;
   let oppSeed = 0;
   for (let i = 0; i < game.opponent.length; i++) oppSeed = ((oppSeed << 5) - oppSeed + game.opponent.charCodeAt(i)) | 0;
 
@@ -283,7 +283,7 @@ export default function PlayByPlayScreen() {
 
         <View style={[styles.espnTabRow, { borderTopColor: colors.divider }]}>
           {([
-            { key: 'gamecast', label: 'KaNeXTCast' },
+            { key: 'gamecast', label: 'SaintsCast' },
             { key: 'boxscore', label: 'Box Score' },
             { key: 'pbp', label: 'Play-by-Play' },
             { key: 'teamstats', label: 'Team Stats' },
@@ -530,7 +530,7 @@ export default function PlayByPlayScreen() {
                           onPress={() => setShotPlayerTeam(t)}
                         >
                           <Text style={[styles.filterTeamPillText, { color: active ? colors.background : colors.textSecondary }]}>
-                            {t === 'fmu' ? 'KaNeXT' : opponentAbbr}
+                            {t === 'fmu' ? 'Carroll' : opponentAbbr}
                           </Text>
                         </Pressable>
                       );

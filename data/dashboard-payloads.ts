@@ -71,7 +71,7 @@ export function buildSportsDashboard(
 
   return {
     heroVideo: {
-      title: 'KaNeXT 2025-26 Season Highlights',
+      title: 'Carroll College 2025-26 Season Highlights',
       subtitle: 'Top plays and moments from this season',
       liveBadge: liveGame ? 'LIVE' : undefined,
     },
@@ -134,7 +134,7 @@ export function buildChurchDashboard(): DashboardTruthPayload {
   return {
     heroVideo: {
       title: 'Sunday Worship Service',
-      subtitle: 'Watch the latest message from Pastor James Carter',
+      subtitle: 'Watch the latest message from Pastor Philip Anthony Mitchell',
     },
     contextSnapshot: [
       { id: 'campuses', label: 'Campuses', value: CAMPUSES.length },
@@ -190,8 +190,8 @@ export function buildEducationDashboard(): DashboardTruthPayload {
 
   return {
     heroVideo: {
-      title: 'KaNeXT Campus Life 2025-26',
-      subtitle: 'Welcome to KaNeXT Sports',
+      title: 'Howard University Campus Life 2025-26',
+      subtitle: 'Welcome to Carroll College',
     },
     contextSnapshot: [
       { id: 'enrolled', label: 'Enrolled', value: INSTITUTIONAL_METRICS.enrollment.total },
@@ -250,7 +250,7 @@ export function buildBusinessDashboard(
 
   return {
     heroVideo: {
-      title: 'KaNeXT Investor Preview',
+      title: 'Valuetainment Investor Preview',
       subtitle: 'Investor Preview — FY 2026',
     },
     contextSnapshot: [
@@ -303,7 +303,7 @@ export function buildBusinessDashboard(
 }
 
 // =============================================================================
-// COMPETITION (KaNeXT)
+// COMPETITION (3SSB)
 // =============================================================================
 
 export function buildCompetitionDashboard(): DashboardTruthPayload {
@@ -312,7 +312,7 @@ export function buildCompetitionDashboard(): DashboardTruthPayload {
 
   return {
     heroVideo: {
-      title: 'KaNeXT Season 1 Race Highlights',
+      title: '3SSB Session I Highlights',
       subtitle: 'Top moments from the 2026 championship',
     },
     contextSnapshot: [
@@ -380,7 +380,7 @@ export function buildCompetitionDashboard(): DashboardTruthPayload {
       viewAllLabel: 'View full executive history',
     },
     pinnedShelf: [
-      { id: 'pin-1', type: 'doc_link', title: 'KaNeXT Rulebook v1.2', subtitle: '15 articles · Last updated Jun 28' },
+      { id: 'pin-1', type: 'doc_link', title: '3SSB Rulebook v1.2', subtitle: '15 articles · Last updated Jun 28' },
       { id: 'pin-2', type: 'doc_link', title: 'Season 1 Budget Summary', subtitle: '$4.8M of $6.2M target (77%)' },
       { id: 'pin-3', type: 'doc_link', title: 'Championship Scenarios', subtitle: '3 races remaining · Vasquez leads by 22 pts' },
     ],

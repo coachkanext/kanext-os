@@ -317,9 +317,9 @@ const HEALTH_STRIP: EduRailsHealthStrip = {
 const WALLETS: EduRailsWallet[] = [
   {
     id: 'edu-wal-001',
-    name: 'KaNeXT Operating',
+    name: 'Howard Operating',
     walletType: 'operating',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
     available: 2180000,
     committed: 340000,
     pendingInflows: 125000,
@@ -330,9 +330,9 @@ const WALLETS: EduRailsWallet[] = [
   },
   {
     id: 'edu-wal-003',
-    name: 'KaNeXT Tuition Receipts',
+    name: 'Howard Tuition Receipts',
     walletType: 'tuition_receipts',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
     available: 1450000,
     committed: 0,
     pendingInflows: 280000,
@@ -343,9 +343,9 @@ const WALLETS: EduRailsWallet[] = [
   },
   {
     id: 'edu-wal-005',
-    name: 'KaNeXT Aid Disbursement',
+    name: 'Howard Aid Disbursement',
     walletType: 'aid_disbursement',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
     available: 1850000,
     committed: 820000,
     pendingInflows: 0,
@@ -356,9 +356,9 @@ const WALLETS: EduRailsWallet[] = [
   },
   {
     id: 'edu-wal-007',
-    name: 'KaNeXT Restricted Funds',
+    name: 'Howard Restricted Funds',
     walletType: 'restricted_funds',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
     available: 2400000,
     committed: 180000,
     pendingInflows: 0,
@@ -389,7 +389,7 @@ const TRANSACTIONS: EduRailsTransaction[] = [
     createdAt: '2026-02-16',
     deadline: '2026-03-01',
     batchId: 'edu-bat-001',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   {
     id: 'edu-txn-003',
@@ -403,7 +403,7 @@ const TRANSACTIONS: EduRailsTransaction[] = [
     impact: 'SACS-COC conference travel and per diem reimbursements',
     nextOwner: 'Provost Office',
     createdAt: '2026-02-14',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   // --- Ready to Release (2) ---
   {
@@ -419,7 +419,7 @@ const TRANSACTIONS: EduRailsTransaction[] = [
     nextOwner: 'VP Finance',
     createdAt: '2026-02-12',
     deadline: '2026-02-20',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   // --- In Flight (1) ---
   {
@@ -434,7 +434,7 @@ const TRANSACTIONS: EduRailsTransaction[] = [
     impact: 'Payroll processing fees — February cycle',
     nextOwner: 'ACH Processor',
     createdAt: '2026-02-17',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   // --- Exceptions (2) ---
   {
@@ -450,7 +450,7 @@ const TRANSACTIONS: EduRailsTransaction[] = [
     nextOwner: 'Bursar Office',
     createdAt: '2026-02-15',
     failReason: 'ACH R03 — No Account/Unable to Locate Account',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   {
     id: 'edu-txn-010',
@@ -465,7 +465,7 @@ const TRANSACTIONS: EduRailsTransaction[] = [
     nextOwner: 'Procurement Office',
     createdAt: '2026-02-14',
     holdReason: 'IRS §6109 — W-9 required before payment release',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
 ];
 
@@ -484,7 +484,7 @@ const BATCHES: EduRailsBatch[] = [
     approvalStatus: 'pending',
     exceptionsCount: 2,
     scheduledWindow: 'Mar 1',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   {
     id: 'edu-bat-003',
@@ -496,7 +496,7 @@ const BATCHES: EduRailsBatch[] = [
     approvalStatus: 'approved',
     exceptionsCount: 1,
     scheduledWindow: 'Today 4:00 PM',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
 ];
 
@@ -515,7 +515,7 @@ const APPROVALS_QUEUE: EduRailsApprovalItem[] = [
     approverSeat: 'Director of Financial Aid',
     missingRequirements: ['SAP batch certification', 'Title IV compliance sign-off'],
     auditNote: 'Spring 2026 Pell disbursement — 412 eligible students verified',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   {
     id: 'edu-appr-003',
@@ -527,7 +527,7 @@ const APPROVALS_QUEUE: EduRailsApprovalItem[] = [
     approverSeat: 'Provost',
     missingRequirements: ['Itemized receipts for 2 of 4 travelers'],
     auditNote: 'SACS-COC accreditation conference — required institutional representation',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   {
     id: 'edu-appr-004',
@@ -539,7 +539,7 @@ const APPROVALS_QUEUE: EduRailsApprovalItem[] = [
     approverSeat: 'VP Research & Compliance',
     missingRequirements: ['Federal expenditure report attachment', 'PI certification'],
     auditNote: 'NSF grant #2026-KX-0412 — lab equipment procurement per approved budget',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
 ];
 
@@ -557,7 +557,7 @@ const RELEASE_QUEUE: EduRailsReleaseItem[] = [
     approvedBy: 'VP Finance & Controller',
     scheduledTime: 'Today 4:00 PM EST',
     requiresSecondApprover: false,
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   {
     id: 'edu-rel-003',
@@ -568,7 +568,7 @@ const RELEASE_QUEUE: EduRailsReleaseItem[] = [
     approvedBy: 'Controller',
     scheduledTime: 'Today 4:00 PM EST',
     requiresSecondApprover: true,
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
 ];
 
@@ -590,7 +590,7 @@ const EXCEPTIONS: EduRailsException[] = [
     evidence: ['ACH return notice', 'Original disbursement confirmation', 'Student account record'],
     amount: 1250,
     walletType: 'tuition_receipts',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
     createdAt: '2026-02-15',
   },
   {
@@ -606,7 +606,7 @@ const EXCEPTIONS: EduRailsException[] = [
     evidence: ['Vendor file — no W-9 on record', 'Purchase order #PO-2026-0218'],
     amount: 22400,
     walletType: 'operating',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
     createdAt: '2026-02-14',
   },
 ];
@@ -623,7 +623,7 @@ const RETURNS: EduRailsReturn[] = [
     stage: 'evidence_requested',
     aging: 3,
     description: 'Student refund ACH return — invalid account on file. Awaiting corrected banking details from student.',
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
     createdAt: '2026-02-15',
   },
 ];
@@ -645,7 +645,7 @@ const RECEIPTS: EduRailsReceipt[] = [
     amount: 1380000,
     settledDate: '2026-01-15',
     immutable: true,
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
   {
     id: 'edu-rcp-003',
@@ -659,7 +659,7 @@ const RECEIPTS: EduRailsReceipt[] = [
     amount: 45200,
     settledDate: '2026-02-05',
     immutable: true,
-    institution: 'KaNeXT Sports',
+    institution: 'Howard University',
   },
 ];
 

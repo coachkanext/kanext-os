@@ -144,10 +144,10 @@ export type ClusterType =
   | 'shooting'
   | 'finishing'
   | 'playmaking'
-  | 'perimeter_defense'
-  | 'interior_defense'
+  | 'on_ball_defense'
+  | 'team_defense'
   | 'rebounding'
-  | 'frame';
+  | 'physical';
 
 export interface ClusterWeight {
   cluster: ClusterType;

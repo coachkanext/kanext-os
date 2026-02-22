@@ -44,15 +44,15 @@ LEVEL_MAP = {
     "professional": "Pro",
 }
 
-# DB cluster name -> app cluster name
+# DB cluster name -> app cluster name (canonical — identity mapping)
 CLUSTER_MAP = {
     "shooting": "shooting",
     "finishing": "finishing",
     "playmaking": "playmaking",
-    "on_ball_defense": "perimeter_defense",
-    "team_defense": "interior_defense",
+    "on_ball_defense": "on_ball_defense",
+    "team_defense": "team_defense",
     "rebounding": "rebounding",
-    "physical": "frame",
+    "physical": "physical",
 }
 
 
@@ -332,9 +332,15 @@ def export_clusters(conn) -> dict[str, dict[str, float]]:
         if pid not in clusters:
             clusters[pid] = {
                 "shooting": 50, "finishing": 50, "playmaking": 50,
-                "perimeter_defense": 50, "interior_defense": 50,
-                "rebounding": 50, "frame": 50,
+                "on_ball_defense": 50, "team_defense": 50,
+                "rebounding": 50, "physical": 50,
+                "perimeter_defense_lens": 50, "interior_defense_lens": 50,
             }
+        # Derived lenses stored as virtual cluster rows
+        if cluster in ("perimeter_defense_lens", "interior_defense_lens"):
+            if score is not None:
+                clusters[pid][cluster] = round(float(score))
+            continue
         mapped = CLUSTER_MAP.get(cluster)
         if mapped and score is not None:
             clusters[pid][mapped] = round(float(score))
@@ -478,8 +484,9 @@ def main():
         pid = p["id"]
         p["clusters"] = clusters.get(pid, {
             "shooting": 50, "finishing": 50, "playmaking": 50,
-            "perimeter_defense": 50, "interior_defense": 50,
-            "rebounding": 50, "frame": 50,
+            "on_ball_defense": 50, "team_defense": 50,
+            "rebounding": 50, "physical": 50,
+            "perimeter_defense_lens": 50, "interior_defense_lens": 50,
         })
         p["badges"] = badges.get(pid, [])
         sna = scholarship.get(pid)

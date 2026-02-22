@@ -1,7 +1,7 @@
 /**
  * Business Organization Finance Tab -- V3
  * 3-pill ViewBar: Budget | Cap Table | Fundraise
- * KaNeXT founder view. All data inline.
+ * Valuetainment founder view. All data inline.
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';

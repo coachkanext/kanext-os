@@ -1,7 +1,7 @@
 /**
  * Competition Grid — Teams View
  * Team cards with color bar, category tag, constructor, car model, drivers with
- * individual points, cap compliance, homologation badge, and KaNeXT Works highlight.
+ * individual points, cap compliance, homologation badge, and 3SSB Select highlight.
  * Filter pills + sort by constructor points / team name / category.
  */
 
@@ -165,7 +165,7 @@ export function CompGridTeamsView({ colors, accent }: Props) {
                 <View style={styles.detailRow}>
                   <ThemedText style={[styles.detailLabel, { color: colors.textSecondary }]}>Drivers</ThemedText>
                   <View style={styles.driversList}>
-                    {team.drivers.map((driver, idx) => (
+                    {team.players.map((driver, idx) => (
                       <ThemedText key={idx} style={[styles.detailValue, { color: colors.text }]}>
                         {driver.name} · {driver.points} pts
                       </ThemedText>

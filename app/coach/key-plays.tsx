@@ -1,5 +1,5 @@
 /**
- * KaNeXT Key Plays Page
+ * Carroll Key Plays Page
  * Curated highlight plays from the game with context and impact.
  */
 
@@ -53,7 +53,7 @@ function generateKeyPlays(opponent: string, fmuScore: number, oppScore: number):
     const isFmu = seed() % 2 === 0;
     const names = isFmu ? KaNeXT_NAMES : OPP_NAMES;
     const name = names[seed() % names.length];
-    const teamLabel = isFmu ? 'KaNeXT' : oppAbbr;
+    const teamLabel = isFmu ? 'Carroll' : oppAbbr;
 
     const playType = seed() % 6;
     let headline: string;
@@ -115,7 +115,7 @@ function generateKeyPlays(opponent: string, fmuScore: number, oppScore: number):
     const isFmu = seed() % 2 === 0;
     const names = isFmu ? KaNeXT_NAMES : OPP_NAMES;
     const name = names[seed() % names.length];
-    const teamLabel = isFmu ? 'KaNeXT' : oppAbbr;
+    const teamLabel = isFmu ? 'Carroll' : oppAbbr;
 
     const playType = seed() % 7;
     let headline: string;
@@ -244,7 +244,7 @@ export default function KeyPlaysScreen() {
 
         <View style={[styles.espnTabRow, { borderTopColor: colors.divider }]}>
           {([
-            { key: 'gamecast', label: 'KaNeXTCast' },
+            { key: 'gamecast', label: 'SaintsCast' },
             { key: 'boxscore', label: 'Box Score' },
             { key: 'pbp', label: 'Play-by-Play' },
             { key: 'teamstats', label: 'Team Stats' },
@@ -291,7 +291,7 @@ export default function KeyPlaysScreen() {
           <Text style={[styles.playTypePillText, { color: colors.textSecondary }]}>All Plays</Text>
         </Pressable>
         <Pressable style={[styles.playTypePill, { backgroundColor: colors.text + 'E0' }]}>
-          <Text style={[styles.playTypePillText, { color: colors.background }]}>KaNeXT Key Plays</Text>
+          <Text style={[styles.playTypePillText, { color: colors.background }]}>Carroll Key Plays</Text>
         </Pressable>
       </View>
 
@@ -317,7 +317,7 @@ export default function KeyPlaysScreen() {
                 </View>
               )}
               <View style={[styles.keyPlayCard, { backgroundColor: colors.backgroundSecondary }]}>
-                {/* Top row: dot + headline + KaNeXT Tube logo */}
+                {/* Top row: dot + headline + Carroll Video logo */}
                 <View style={styles.keyPlayTopRow}>
                   <View style={[styles.keyPlayDot, { backgroundColor: dotColor }]} />
                   <Text style={[styles.keyPlayHeadline, { color: colors.text }]} numberOfLines={1}>

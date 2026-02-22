@@ -27,7 +27,7 @@ export function GameTeamContextSheet({ visible, onClose, game, team, colors, rou
   if (!game) return <BottomSheet visible={false} onClose={onClose} useModal><View /></BottomSheet>;
 
   const isFmu = team === 'fmu';
-  const teamName = isFmu ? 'KaNeXT Sports' : game.opponent;
+  const teamName = isFmu ? 'Carroll College' : game.opponent;
   const teamKR = isFmu ? 74 : (game.opponentKR ?? 0);
   const teamRecord = isFmu ? '' : (game.opponentRecord ?? '');
   const isCompleted = game.status === 'final';
@@ -74,7 +74,7 @@ export function GameTeamContextSheet({ visible, onClose, game, team, colors, rou
           {isCompleted ? (
             <>
               {game.score && (
-                <BulletItem colors={colors} text={`KaNeXT ${game.score.startsWith('W') ? 'won' : 'lost'} ${game.score.replace(/^[WL] /, '').replace('-', '–')}`} />
+                <BulletItem colors={colors} text={`Carroll ${game.score.startsWith('W') ? 'won' : 'lost'} ${game.score.replace(/^[WL] /, '').replace('-', '–')}`} />
               )}
               {impact && (() => {
                 const top = [...impact.starters, ...impact.bench].sort((a, b) => b.pgis - a.pgis).slice(0, 2);
@@ -105,7 +105,7 @@ export function GameTeamContextSheet({ visible, onClose, game, team, colors, rou
             <>
               <RouteButton
                 colors={colors}
-                label="Open KaNeXTCast"
+                label="Open SaintsCast"
                 icon="play.rectangle.fill"
                 onPress={() => navigate({ pathname: '/coach/game-detail', params: { gameId: game.id, tab: 'report', espnTab: 'gamecast' } })}
               />

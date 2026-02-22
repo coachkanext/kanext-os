@@ -198,14 +198,14 @@ export const SPORTS_INBOX_THREADS: SportsInboxThread[] = [
     unreadCount: 5, rbacSection: 'inbox_blockers',
   },
   {
-    id: 'si-3', title: 'Travel Roster — Ridgemont Christian', sender: 'Coach Carter',
+    id: 'si-3', title: 'Travel Roster — MSU-Northern Christian', sender: 'Coach Carter',
     senderInitials: 'SK', preview: 'Please review and approve the 15-man travel roster for Feb 21 game.',
     time: '1h', priority: 'approval', labels: ['Roster', 'Approval', 'Travel'],
     unreadCount: 1, rbacSection: 'inbox_approvals',
   },
   {
     id: 'si-4', title: 'Scouting Packet Due — LC', sender: 'Coach Avery',
-    senderInitials: 'CL', preview: 'Scout packet for Ridgemont Christian due by EOD tomorrow. 3 game films reviewed, 2 remaining.',
+    senderInitials: 'CL', preview: 'Scout packet for MSU-Northern Christian due by EOD tomorrow. 3 game films reviewed, 2 remaining.',
     time: '2h', priority: 'due_24h', labels: ['Scouting', 'Film', 'Deadline'],
     unreadCount: 0, rbacSection: 'inbox_blockers',
   },
@@ -496,7 +496,7 @@ const dmThread1Messages: SportsMessage[] = [
   {
     id: 'dm-1-1', threadId: 'dmt-1', sender: 'Coach Davis', senderInitials: 'CD',
     direction: 'received',
-    body: 'Coach, I finished the scout report on Ridgemont. Their starting five is solid but they turn it over on full-court pressure. We forced 18 turnovers against Clearwater with the same look.',
+    body: 'Coach, I finished the scout report on MSU-Northern. Their starting five is solid but they turn it over on full-court pressure. We forced 18 turnovers against Bellevue with the same look.',
     timestamp: '2026-02-16T09:15:00', read: true, data_source: 'demo_seed',
   },
   {
@@ -508,7 +508,7 @@ const dmThread1Messages: SportsMessage[] = [
   {
     id: 'dm-1-3', threadId: 'dmt-1', sender: 'Coach Davis', senderInitials: 'CD',
     direction: 'received',
-    body: '1.4 to 1 — nothing special. He struggles going left. I clipped 6 possessions from their Clearwater game showing it. Want me to drop those in the film room for tomorrow\'s walk-through?',
+    body: '1.4 to 1 — nothing special. He struggles going left. I clipped 6 possessions from their Bellevue game showing it. Want me to drop those in the film room for tomorrow\'s walk-through?',
     timestamp: '2026-02-16T09:35:00', read: true, data_source: 'demo_seed',
   },
   {
@@ -536,7 +536,7 @@ const dmThread2Messages: SportsMessage[] = [
   {
     id: 'dm-2-2', threadId: 'dmt-2', sender: 'Jordan Hayes', senderInitials: 'JH',
     direction: 'received',
-    body: 'Coach Carter, thank you so much. My family and I really felt at home when we visited KaNeXT. The campus, the team culture, and the academics are everything I\'m looking for.',
+    body: 'Coach Carter, thank you so much. My family and I really felt at home when we visited Carroll College. The campus, the team culture, and the academics are everything I\'m looking for.',
     timestamp: '2026-02-14T14:22:00', read: true, data_source: 'demo_seed',
   },
   {
@@ -560,7 +560,7 @@ const dmThread2Messages: SportsMessage[] = [
   {
     id: 'dm-2-6', threadId: 'dmt-2', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
-    body: 'Sounds great, Jordan. We\'re excited about the possibility of you joining the Wolves family. Let me know if your parents have any questions — happy to hop on a call.',
+    body: 'Sounds great, Jordan. We\'re excited about the possibility of you joining the Fighting Saints family. Let me know if your parents have any questions — happy to hop on a call.',
     timestamp: '2026-02-15T09:02:00', read: true, data_source: 'demo_seed',
   },
 ];
@@ -576,7 +576,7 @@ const dmThread3Messages: SportsMessage[] = [
   {
     id: 'dm-3-2', threadId: 'dmt-3', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
-    body: 'That\'s a relief. What\'s the timeline looking like? Can he go Saturday against Ridgemont?',
+    body: 'That\'s a relief. What\'s the timeline looking like? Can he go Saturday against MSU-Northern?',
     timestamp: '2026-02-17T08:45:00', read: true, data_source: 'demo_seed',
   },
   {
@@ -662,7 +662,7 @@ const dmThread5Messages: SportsMessage[] = [
   {
     id: 'dm-5-5', threadId: 'dmt-5', sender: 'Mrs. Denise Moore', senderInitials: 'DM',
     direction: 'received',
-    body: 'This is so thorough. Thank you for taking the time, Coach. We\'re looking forward to seeing everything KaNeXT has to offer. See you next weekend!',
+    body: 'This is so thorough. Thank you for taking the time, Coach. We\'re looking forward to seeing everything Carroll College has to offer. See you next weekend!',
     timestamp: '2026-02-15T09:20:00', read: true, data_source: 'demo_seed',
   },
 ];
@@ -672,19 +672,19 @@ const dmThread6Messages: SportsMessage[] = [
   {
     id: 'dm-6-1', threadId: 'dmt-6', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
-    body: 'Mr. Williams, I submitted the travel budget request for the Feb 21-22 road trip to Westfield and Southeast. The total is $4,200 — bus charter, hotel (2 nights), and per diem for 18 travelers.',
+    body: 'Mr. Williams, I submitted the travel budget request for the Feb 21-22 road trip to Montana Tech and Southeast. The total is $4,200 — bus charter, hotel (2 nights), and per diem for 18 travelers.',
     timestamp: '2026-02-14T10:30:00', read: true, data_source: 'demo_seed',
   },
   {
     id: 'dm-6-2', threadId: 'dmt-6', sender: 'AD Robert Williams', senderInitials: 'RW',
     direction: 'received',
-    body: 'Got it, Coach. The request is in the queue. Quick question — can we cut costs by doing a day trip to Westfield and only overnighting for the Southeast game?',
+    body: 'Got it, Coach. The request is in the queue. Quick question — can we cut costs by doing a day trip to Montana Tech and only overnighting for the Southeast game?',
     timestamp: '2026-02-14T13:00:00', read: true, data_source: 'demo_seed',
   },
   {
     id: 'dm-6-3', threadId: 'dmt-6', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
-    body: 'Westfield is a 3-hour drive. With a 7 PM tipoff, a day trip means the guys are on the bus all day. I\'d rather have them rested. We can look at a more affordable hotel option if that helps.',
+    body: 'Montana Tech is a 3-hour drive. With a 7 PM tipoff, a day trip means the guys are on the bus all day. I\'d rather have them rested. We can look at a more affordable hotel option if that helps.',
     timestamp: '2026-02-14T13:20:00', read: true, data_source: 'demo_seed',
   },
   {
@@ -712,13 +712,13 @@ const dmThread7Messages: SportsMessage[] = [
   {
     id: 'dm-7-1', threadId: 'dmt-7', sender: 'Coach Mike Patterson', senderInitials: 'MP',
     direction: 'received',
-    body: 'Hey Alex, Mike Patterson from Bayshore. Our gym has a scheduling conflict for the Feb 22 game. Any chance we can move tipoff from 4 PM to 2 PM? Facility crew needs extra time for a community event that evening.',
+    body: 'Hey Alex, Mike Patterson from UM Western. Our gym has a scheduling conflict for the Feb 22 game. Any chance we can move tipoff from 4 PM to 2 PM? Facility crew needs extra time for a community event that evening.',
     timestamp: '2026-02-13T11:00:00', read: true, data_source: 'demo_seed',
   },
   {
     id: 'dm-7-2', threadId: 'dmt-7', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
-    body: 'Mike, let me check with my ops team. We\'re coming from the Westfield game the night before so a 2 PM tip might be tight depending on travel. Give me until tomorrow.',
+    body: 'Mike, let me check with my ops team. We\'re coming from the Montana Tech game the night before so a 2 PM tip might be tight depending on travel. Give me until tomorrow.',
     timestamp: '2026-02-13T11:30:00', read: true, data_source: 'demo_seed',
   },
   {
@@ -786,7 +786,7 @@ const dmThread8Messages: SportsMessage[] = [
 export const SPORTS_DM_THREADS: SportsDMThread[] = [
   {
     id: 'dmt-1',
-    title: 'Game Prep — Ridgemont',
+    title: 'Game Prep — MSU-Northern',
     participantName: 'Coach Davis',
     participantInitials: 'CD',
     participantRole: 'Assistant Coach',
@@ -838,7 +838,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantName: 'Mrs. Denise Moore',
     participantInitials: 'DM',
     participantRole: 'Parent of Recruit',
-    lastMessagePreview: 'We\'re looking forward to seeing everything KaNeXT has to offer.',
+    lastMessagePreview: 'We\'re looking forward to seeing everything Carroll College has to offer.',
     lastMessageTime: 'Feb 15',
     unreadCount: 0,
     messages: dmThread5Messages,
@@ -858,10 +858,10 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
   },
   {
     id: 'dmt-7',
-    title: 'Schedule Change — Bayshore',
+    title: 'Schedule Change — UM Western',
     participantName: 'Coach Mike Patterson',
     participantInitials: 'MP',
-    participantRole: 'Head Coach, Bayshore',
+    participantRole: 'Head Coach, UM Western',
     lastMessagePreview: '3 PM it is. See you on the 22nd.',
     lastMessageTime: 'Feb 14',
     unreadCount: 1,

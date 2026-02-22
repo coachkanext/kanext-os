@@ -1,11 +1,11 @@
 /**
- * Mock Business Operations Data — KaNeXT OS Business Mode "Operations" tab.
+ * Mock Business Operations Data — Valuetainment Business Mode "Operations" tab.
  *
  * Provides typed mock data for: Blockers, Initiatives, Projects,
  * Decision Queue, and Ops Feed.
  *
- * All data references KaNeXT entities:
- *   Alex Morgan, KaNeXT, KaNeXT Church, KaNeXT, PBD/Tom,
+ * All data references Valuetainment entities:
+ *   Alex Morgan, Valuetainment, 2819 Church, Valuetainment, PBD/Tom,
  *   Adriana Ruiz, Marcus Chen, Jordan Hayes, Lisa Park, David Okonkwo.
  */
 
@@ -81,7 +81,7 @@ export const TOP_BLOCKERS: Blocker[] = [
     category: 'Engineering',
     daysBlocked: 6,
     impact:
-      'Delays KaNeXT highlight-reel ingestion; demo footage for PBD board meeting unavailable until resolved.',
+      'Delays Valuetainment highlight-reel ingestion; demo footage for PBD board meeting unavailable until resolved.',
   },
   {
     id: 'blk-2',
@@ -91,17 +91,17 @@ export const TOP_BLOCKERS: Blocker[] = [
     category: 'Finance / Ops',
     daysBlocked: 4,
     impact:
-      'KaNeXT Church pilot launch cannot collect campus donations; blocks $12K MRR milestone for Q2 board deck.',
+      '2819 Church pilot launch cannot collect campus donations; blocks $12K MRR milestone for Q2 board deck.',
   },
   {
     id: 'blk-3',
-    title: 'KaNeXT API auth token rotation failing in staging',
+    title: 'Valuetainment API auth token rotation failing in staging',
     owner: 'Adriana Ruiz',
     severity: 'high',
     category: 'Engineering',
     daysBlocked: 3,
     impact:
-      'KaNeXT integration sprint cannot proceed to QA; race-day telemetry feed blocked for demo.',
+      'Valuetainment integration sprint cannot proceed to QA; race-day telemetry feed blocked for demo.',
   },
   {
     id: 'blk-4',
@@ -111,7 +111,7 @@ export const TOP_BLOCKERS: Blocker[] = [
     category: 'Legal / Compliance',
     daysBlocked: 8,
     impact:
-      'KaNeXT wordmark registration stalls if not filed by Mar 1; affects brand assets in data room.',
+      'Valuetainment wordmark registration stalls if not filed by Mar 1; affects brand assets in data room.',
   },
   {
     id: 'blk-5',
@@ -132,7 +132,7 @@ export const TOP_BLOCKERS: Blocker[] = [
 export const INITIATIVES: Initiative[] = [
   {
     id: 'init-1',
-    name: 'KaNeXT OS v2 Launch',
+    name: 'Valuetainment OS v2 Launch',
     status: 'active',
     progress: 62,
     owner: 'Marcus Chen',
@@ -142,7 +142,7 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-2',
-    name: 'KaNeXT Partnership Activation',
+    name: 'Valuetainment Partnership Activation',
     status: 'active',
     progress: 45,
     owner: 'Jordan Hayes',
@@ -152,7 +152,7 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-3',
-    name: 'KaNeXT Church Pilot Rollout',
+    name: '2819 Church Pilot Rollout',
     status: 'blocked',
     progress: 28,
     owner: 'David Okonkwo',
@@ -162,7 +162,7 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-4',
-    name: 'KaNeXT Racing Integration',
+    name: 'PBD Podcast Integration',
     status: 'active',
     progress: 37,
     owner: 'Adriana Ruiz',
@@ -200,7 +200,7 @@ export const PROJECTS: Project[] = [
   {
     id: 'proj-1',
     name: 'Video Pipeline — GPU Transcoding',
-    initiative: 'KaNeXT OS v2 Launch',
+    initiative: 'Valuetainment OS v2 Launch',
     status: 'blocked',
     progress: 40,
     owner: 'Adriana Ruiz',
@@ -211,7 +211,7 @@ export const PROJECTS: Project[] = [
   {
     id: 'proj-2',
     name: 'Payment Rails — Stripe Connect',
-    initiative: 'KaNeXT Church Pilot Rollout',
+    initiative: '2819 Church Pilot Rollout',
     status: 'blocked',
     progress: 55,
     owner: 'David Okonkwo',
@@ -222,7 +222,7 @@ export const PROJECTS: Project[] = [
   {
     id: 'proj-3',
     name: 'Nexus Chat v2 — RBAC + Workspaces',
-    initiative: 'KaNeXT OS v2 Launch',
+    initiative: 'Valuetainment OS v2 Launch',
     status: 'active',
     progress: 78,
     owner: 'Marcus Chen',
@@ -232,8 +232,8 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'proj-4',
-    name: 'KaNeXT Media Value Dashboard',
-    initiative: 'KaNeXT Partnership Activation',
+    name: 'Valuetainment Media Value Dashboard',
+    initiative: 'Valuetainment Partnership Activation',
     status: 'active',
     progress: 33,
     owner: 'Lisa Park',
@@ -267,7 +267,7 @@ export const DECISION_QUEUE: DecisionItem[] = [
     deadline: 'Feb 20',
     status: 'pending',
     impact:
-      'Unlocks video pipeline blocker; required for KaNeXT demo reel and KaNeXT telemetry feed.',
+      'Unlocks video pipeline blocker; required for Valuetainment demo reel and Valuetainment telemetry feed.',
   },
   {
     id: 'dec-2',
@@ -281,7 +281,7 @@ export const DECISION_QUEUE: DecisionItem[] = [
   },
   {
     id: 'dec-3',
-    title: 'KaNeXT Church pilot pricing — tiered vs flat rate',
+    title: '2819 Church pilot pricing — tiered vs flat rate',
     type: 'escalation',
     requester: 'Jordan Hayes',
     deadline: 'Feb 24',
@@ -301,13 +301,13 @@ export const DECISION_QUEUE: DecisionItem[] = [
   },
   {
     id: 'dec-5',
-    title: 'KaNeXT data partnership NDA terms review',
+    title: 'Valuetainment data partnership NDA terms review',
     type: 'review',
     requester: 'Jordan Hayes',
     deadline: 'Feb 26',
     status: 'pending',
     impact:
-      'NDA must be executed before KaNeXT shares live telemetry API credentials.',
+      'NDA must be executed before Valuetainment shares live telemetry API credentials.',
   },
 ];
 
@@ -318,7 +318,7 @@ export const DECISION_QUEUE: DecisionItem[] = [
 export const OPS_FEED: OpsFeedItem[] = [
   {
     id: 'feed-1',
-    text: 'Adriana Ruiz resolved blocker: KaNeXT staging auth token rotation — patched retry logic.',
+    text: 'Adriana Ruiz resolved blocker: Valuetainment staging auth token rotation — patched retry logic.',
     timestamp: '12 min ago',
     category: 'blocker_resolved',
   },
@@ -336,13 +336,13 @@ export const OPS_FEED: OpsFeedItem[] = [
   },
   {
     id: 'feed-4',
-    text: 'Decision APPROVED: Extend KaNeXT media partnership term to 3 years (Alex Morgan).',
+    text: 'Decision APPROVED: Extend Valuetainment media partnership term to 3 years (Alex Morgan).',
     timestamp: '3 hr ago',
     category: 'decision_made',
   },
   {
     id: 'feed-5',
-    text: 'ALERT: Stripe Connect onboarding rejection — KaNeXT Church pilot launch date at risk.',
+    text: 'ALERT: Stripe Connect onboarding rejection — 2819 Church pilot launch date at risk.',
     timestamp: '4 hr ago',
     category: 'alert',
   },
@@ -360,7 +360,7 @@ export const OPS_FEED: OpsFeedItem[] = [
   },
   {
     id: 'feed-8',
-    text: 'Jordan Hayes scheduled KaNeXT Church pricing escalation meeting for Feb 24.',
+    text: 'Jordan Hayes scheduled 2819 Church pricing escalation meeting for Feb 24.',
     timestamp: '8 hr ago',
     category: 'decision_made',
   },

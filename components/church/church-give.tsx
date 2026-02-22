@@ -387,7 +387,7 @@ interface AuditEntry {
 }
 
 const AUDIT_TRAIL: AuditEntry[] = [
-  { id: 'at-1', action: 'Fund Created', user: 'Pastor James', date: 'Feb 10, 2026', detail: 'Easter Special Offering fund opened' },
+  { id: 'at-1', action: 'Fund Created', user: 'Pastor Philip Anthony Mitchell', date: 'Feb 10, 2026', detail: 'Easter Special Offering fund opened' },
   { id: 'at-2', action: 'Policy Updated', user: 'Elder Thompson', date: 'Feb 5, 2026', detail: 'Reserve Fund Policy sent for review' },
   { id: 'at-3', action: 'Threshold Met', user: 'System', date: 'Jan 28, 2026', detail: 'Building Fund crossed $1.9M (78% of goal)' },
   { id: 'at-4', action: 'Fund Archived', user: 'Treasurer Davis', date: 'Jan 15, 2026', detail: 'Christmas Offering 2025 closed and archived' },
@@ -405,7 +405,7 @@ interface TaxConfig {
 const TAX_CONFIG: TaxConfig = {
   ein: '82-1234567',
   orgName: 'Grace Community Church',
-  address: '1200 Faith Avenue, Nashville, TN 30301',
+  address: '3350 Greenbriar Pkwy SW, Atlanta, GA 30331',
   receiptFooter: 'Grace Community Church is a 501(c)(3) tax-exempt organization. No goods or services were provided in exchange for your contribution.',
 };
 
@@ -469,7 +469,7 @@ function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: Chur
   const fundLabel = GIVING_FUNDS_QUICK.find(f => f.id === selectedFund)?.name ?? 'General';
 
   if (showConfirmation) {
-    const receiptId = `KaNeXT Church-2026-${Math.floor(Math.random() * 90000 + 10000)}`;
+    const receiptId = `2819 Church-2026-${Math.floor(Math.random() * 90000 + 10000)}`;
     const timestamp = new Date().toLocaleString();
     return (
       <View>

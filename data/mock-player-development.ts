@@ -72,7 +72,7 @@ const PLANS: Record<string, DevelopmentPlan> = {
     ],
     sixWeekGoals: [
       { label: 'Add face-up 15-footer to live repertoire', status: 'pending', cluster: 'shooting' },
-      { label: 'Average 2+ blocks per game over 6 game stretch', status: 'in_progress', cluster: 'interior_defense' },
+      { label: 'Average 2+ blocks per game over 6 game stretch', status: 'in_progress', cluster: 'team_defense' },
     ],
     twelveWeekGoals: [
       { label: 'Raise shooting cluster KR to 70+', status: 'pending', cluster: 'shooting' },
@@ -95,7 +95,7 @@ const PLANS: Record<string, DevelopmentPlan> = {
     ],
     sixWeekGoals: [
       { label: 'Cut live-ball turnovers by 30%', status: 'in_progress', cluster: 'playmaking' },
-      { label: 'Improve off-ball screen navigation', status: 'pending', cluster: 'perimeter_defense' },
+      { label: 'Improve off-ball screen navigation', status: 'pending', cluster: 'on_ball_defense' },
     ],
     twelveWeekGoals: [
       { label: 'Consistent 8+ AST games in conference play', status: 'pending', cluster: 'playmaking' },
@@ -112,7 +112,7 @@ const PLANS: Record<string, DevelopmentPlan> = {
   '13': {
     twoWeekGoals: [
       { label: 'Catch-and-shoot 3 at 40%+', status: 'complete', cluster: 'shooting' },
-      { label: 'Closeout discipline: no fouls on pump fakes', status: 'in_progress', cluster: 'perimeter_defense' },
+      { label: 'Closeout discipline: no fouls on pump fakes', status: 'in_progress', cluster: 'on_ball_defense' },
     ],
     sixWeekGoals: [
       { label: 'Add one dribble pull-up to shot diet', status: 'pending', cluster: 'shooting' },

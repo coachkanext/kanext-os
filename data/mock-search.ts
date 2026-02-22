@@ -13,7 +13,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   // Organization
   {
     id: 'sports_kx',
-    title: 'KaNeXT Sports',
+    title: 'Carroll College',
     subtitle: 'Athletic Programs',
     category: 'organization',
     mode: 'sports',
@@ -130,7 +130,7 @@ const BUSINESS_RESULTS: SearchResult[] = [
   // Organization
   {
     id: 'biz_kx',
-    title: 'KaNeXT Business',
+    title: 'Valuetainment',
     subtitle: 'Institutional OS + Governed Intelligence',
     category: 'organization',
     mode: 'business',
@@ -198,8 +198,8 @@ const CHURCH_RESULTS: SearchResult[] = [
   // Organization
   {
     id: 'church_kx',
-    title: 'KaNeXT Church',
-    subtitle: 'Nashville, TN',
+    title: '2819 Church',
+    subtitle: 'Helena, MT',
     category: 'organization',
     mode: 'church',
     route: '/organization',
@@ -224,8 +224,8 @@ const CHURCH_RESULTS: SearchResult[] = [
   // Campuses
   {
     id: 'church_kx_main',
-    title: 'KaNeXT Church — Main Campus',
-    subtitle: 'Nashville, TN',
+    title: '2819 Church — Main Campus',
+    subtitle: 'Helena, MT',
     category: 'organization',
     mode: 'church',
     route: '/organization/campuses/church_kx_main',
@@ -292,7 +292,7 @@ const EDUCATION_RESULTS: SearchResult[] = [
   // Organization
   {
     id: 'edu_kx',
-    title: 'KaNeXT Education',
+    title: 'Howard University',
     subtitle: 'Academic Institution',
     category: 'organization',
     mode: 'education',

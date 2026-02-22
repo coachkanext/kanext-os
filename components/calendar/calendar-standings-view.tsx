@@ -1,6 +1,6 @@
 /**
  * Calendar Standings View — 3-tier standings
- * Tier 1: Conference (KaNeXT Conference)
+ * Tier 1: Conference (Frontier Conference)
  * Tier 2: NAIA Top 25
  * Tier 3: KaNeXT National Rankings (cross-level by KR)
  */
@@ -77,7 +77,7 @@ export function CalendarStandingsView({ colors, accent }: Props) {
             style={[styles.confRow, row.isUs && { backgroundColor: accent + '18' }]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              openTeamCard({ name: row.team, conference: 'KaNeXT Conference', record: `${row.overallW}-${row.overallL}`, kr: 0 });
+              openTeamCard({ name: row.team, conference: 'Frontier Conference', record: `${row.overallW}-${row.overallL}`, kr: 0 });
             }}
           >
             <ThemedText style={[styles.srText, { flex: 0.08, color: colors.text }]}>{row.rank}</ThemedText>

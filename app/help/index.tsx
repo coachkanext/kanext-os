@@ -45,7 +45,7 @@ export default function HelpScreen() {
 
   const handleEmailSupport = () => {
     const email = 'support@kanext.com';
-    const subject = encodeURIComponent('KaNeXT Support');
+    const subject = encodeURIComponent('Support Request');
     Linking.openURL(`mailto:${email}?subject=${subject}`);
   };
 

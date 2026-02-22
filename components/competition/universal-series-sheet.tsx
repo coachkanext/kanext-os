@@ -1213,7 +1213,7 @@ function SponsorsTab({ colors }: { colors: typeof Colors.light }) {
 
 function MediaTab({ colors }: { colors: typeof Colors.light }) {
   const broadcastInfo = [
-    { id: 'br-1', label: 'Primary Broadcast', value: 'KaNeXT Racing Live Stream' },
+    { id: 'br-1', label: 'Primary Broadcast', value: 'PBD Podcast Live Stream' },
     { id: 'br-2', label: 'Secondary', value: 'YouTube · K1Racing Channel' },
     { id: 'br-3', label: 'Commentary Team', value: 'Alex Turner, Maria Rodriguez' },
     { id: 'br-4', label: 'Production', value: 'In-house · 6 cameras + drone' },

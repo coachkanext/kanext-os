@@ -1,5 +1,5 @@
 /**
- * KaNeXT Sports Men's Basketball
+ * Carroll College Men's Basketball
  * Category Leaders (Step 4E)
  * Seasons: 2022-23 through 2025-26
  * Source: Derived from conference stats individual data (top 3 per category)

@@ -163,7 +163,7 @@ const RESIDENCE_HALLS: ResidenceHall[] = [
   },
   {
     id: 'hall-3',
-    name: 'Heritage Suites',
+    name: 'Drew Hall',
     capacity: 450,
     occupancy: 420,
     type: 'suite',
@@ -290,7 +290,7 @@ interface RoomAssignment {
 }
 
 const STUDENT_ROOM: RoomAssignment = {
-  hall: 'Heritage Suites',
+  hall: 'Drew Hall',
   room: 'Suite 312B',
   type: 'Double Suite',
   floor: 3,
@@ -301,7 +301,7 @@ const STUDENT_ROOM: RoomAssignment = {
   status: 'confirmed',
   raName: 'Jordan Lewis',
   raPhone: '(404) 555-6001',
-  raEmail: 'jlewis@westfield.edu',
+  raEmail: 'jlewis@howard.edu',
 };
 
 // --- Meal Plans ---
@@ -389,14 +389,14 @@ interface RAContact {
 }
 
 const RA_CONTACTS: RAContact[] = [
-  { id: 'ra-1', name: 'Jordan Lewis', hall: 'Heritage Suites', floor: '3rd Floor', phone: '(404) 555-6001', email: 'jlewis@westfield.edu', officeHours: 'Sun\u2013Thu 8PM\u201311PM' },
-  { id: 'ra-2', name: 'Maya Patel', hall: 'Robinson Hall', floor: '1st\u20132nd Floor', phone: '(404) 555-6002', email: 'mpatel@westfield.edu', officeHours: 'Sun\u2013Thu 8PM\u201311PM' },
-  { id: 'ra-3', name: 'Chris Thompson', hall: 'Robinson Hall', floor: '3rd\u20134th Floor', phone: '(404) 555-6003', email: 'cthompson@westfield.edu', officeHours: 'Sun\u2013Thu 7PM\u201310PM' },
-  { id: 'ra-4', name: 'Ashley Kim', hall: 'Scholars Hall', floor: 'All Floors', phone: '(404) 555-6004', email: 'akim@westfield.edu', officeHours: 'Sun\u2013Thu 8PM\u201311PM' },
-  { id: 'ra-5', name: 'Marcus Brown', hall: 'Eagle Village', floor: 'Building A\u2013B', phone: '(404) 555-6005', email: 'mbrown@westfield.edu', officeHours: 'Mon\u2013Fri 7PM\u201310PM' },
-  { id: 'ra-6', name: 'Sofia Garcia', hall: 'Campbell Hall', floor: '1st\u20133rd Floor', phone: '(404) 555-6006', email: 'sgarcia@westfield.edu', officeHours: 'Sun\u2013Thu 8PM\u201311PM' },
-  { id: 'ra-7', name: 'Derek Washington', hall: 'Morrison Residence', floor: 'All Floors', phone: '(404) 555-6007', email: 'dwashington@westfield.edu', officeHours: 'Sun\u2013Thu 7PM\u201311PM' },
-  { id: 'ra-8', name: 'Emily Chen', hall: 'University Apartments', floor: 'All Buildings', phone: '(404) 555-6008', email: 'echen@westfield.edu', officeHours: 'Mon\u2013Thu 6PM\u20139PM' },
+  { id: 'ra-1', name: 'Jordan Lewis', hall: 'Drew Hall', floor: '3rd Floor', phone: '(404) 555-6001', email: 'jlewis@howard.edu', officeHours: 'Sun\u2013Thu 8PM\u201311PM' },
+  { id: 'ra-2', name: 'Maya Patel', hall: 'Robinson Hall', floor: '1st\u20132nd Floor', phone: '(404) 555-6002', email: 'mpatel@howard.edu', officeHours: 'Sun\u2013Thu 8PM\u201311PM' },
+  { id: 'ra-3', name: 'Chris Thompson', hall: 'Robinson Hall', floor: '3rd\u20134th Floor', phone: '(404) 555-6003', email: 'cthompson@howard.edu', officeHours: 'Sun\u2013Thu 7PM\u201310PM' },
+  { id: 'ra-4', name: 'Ashley Kim', hall: 'Scholars Hall', floor: 'All Floors', phone: '(404) 555-6004', email: 'akim@howard.edu', officeHours: 'Sun\u2013Thu 8PM\u201311PM' },
+  { id: 'ra-5', name: 'Marcus Brown', hall: 'Eagle Village', floor: 'Building A\u2013B', phone: '(404) 555-6005', email: 'mbrown@howard.edu', officeHours: 'Mon\u2013Fri 7PM\u201310PM' },
+  { id: 'ra-6', name: 'Sofia Garcia', hall: 'Campbell Hall', floor: '1st\u20133rd Floor', phone: '(404) 555-6006', email: 'sgarcia@howard.edu', officeHours: 'Sun\u2013Thu 8PM\u201311PM' },
+  { id: 'ra-7', name: 'Derek Washington', hall: 'Morrison Residence', floor: 'All Floors', phone: '(404) 555-6007', email: 'dwashington@howard.edu', officeHours: 'Sun\u2013Thu 7PM\u201311PM' },
+  { id: 'ra-8', name: 'Emily Chen', hall: 'University Apartments', floor: 'All Buildings', phone: '(404) 555-6008', email: 'echen@howard.edu', officeHours: 'Mon\u2013Thu 6PM\u20139PM' },
 ];
 
 // =============================================================================
@@ -419,11 +419,11 @@ interface AdminAssignment {
 
 const ADMIN_ASSIGNMENTS: AdminAssignment[] = [
   { id: 'asgn-1', studentName: 'Marcus Johnson', studentId: 'W20230112', hall: 'Robinson Hall', room: '204A', type: 'Double', roommates: ['Tyler Brooks'], status: 'confirmed', moveInDate: 'Jan 11, 2026', moveOutDate: 'May 9, 2026', matchScore: 87 },
-  { id: 'asgn-2', studentName: 'Aisha Williams', studentId: 'W20230245', hall: 'Heritage Suites', room: 'Suite 415A', type: 'Suite Double', roommates: ['Nina Patel'], status: 'confirmed', moveInDate: 'Jan 11, 2026', moveOutDate: 'May 9, 2026', matchScore: 92 },
+  { id: 'asgn-2', studentName: 'Aisha Williams', studentId: 'W20230245', hall: 'Drew Hall', room: 'Suite 415A', type: 'Suite Double', roommates: ['Nina Patel'], status: 'confirmed', moveInDate: 'Jan 11, 2026', moveOutDate: 'May 9, 2026', matchScore: 92 },
   { id: 'asgn-3', studentName: 'David Chen', studentId: 'W20240089', hall: 'Scholars Hall', room: '108', type: 'Single', roommates: [], status: 'confirmed', moveInDate: 'Jan 11, 2026', moveOutDate: 'May 9, 2026' },
   { id: 'asgn-4', studentName: 'Taylor Morgan', studentId: 'W20240321', hall: 'Eagle Village', room: 'Apt 7C', type: 'Apartment Single', roommates: ['Jamie Lee', 'Sam Torres'], status: 'confirmed', moveInDate: 'Jan 11, 2026', moveOutDate: 'May 9, 2026', matchScore: 78 },
   { id: 'asgn-5', studentName: 'Jordan Pierce', studentId: 'W20250044', hall: 'Robinson Hall', room: 'TBD', type: 'Double', roommates: [], status: 'pending', moveInDate: 'Aug 15, 2026', moveOutDate: 'Dec 12, 2026' },
-  { id: 'asgn-6', studentName: 'Olivia Ramirez', studentId: 'W20250102', hall: 'Heritage Suites', room: 'TBD', type: 'Suite Double', roommates: [], status: 'waitlisted', moveInDate: 'Aug 15, 2026', moveOutDate: 'Dec 12, 2026' },
+  { id: 'asgn-6', studentName: 'Olivia Ramirez', studentId: 'W20250102', hall: 'Drew Hall', room: 'TBD', type: 'Suite Double', roommates: [], status: 'waitlisted', moveInDate: 'Aug 15, 2026', moveOutDate: 'Dec 12, 2026' },
   { id: 'asgn-7', studentName: 'Ethan Park', studentId: 'W20230410', hall: 'University Apartments', room: 'Apt 12B', type: 'Apartment Double', roommates: ['Ryan Clark'], status: 'confirmed', moveInDate: 'Jan 11, 2026', moveOutDate: 'May 9, 2026', matchScore: 84 },
   { id: 'asgn-8', studentName: 'Mia Robinson', studentId: 'W20250200', hall: 'Campbell Hall', room: 'TBD', type: 'Double', roommates: [], status: 'pending', moveInDate: 'Aug 15, 2026', moveOutDate: 'Dec 12, 2026' },
 ];
@@ -456,7 +456,7 @@ interface HallInventory {
 const HALL_INVENTORY: HallInventory[] = [
   { hallId: 'hall-1', hallName: 'Robinson Hall', singleBeds: 40, doubleBeds: 280, suiteBeds: 0, adaRooms: 8, desks: 320, dressers: 320, mattresses: 320, needsReplacement: 12, amenities: ['Laundry (3 rooms)', 'Study lounge (2)', 'Kitchen', 'Computer lab', 'Game room'] },
   { hallId: 'hall-2', hallName: 'Campbell Hall', singleBeds: 30, doubleBeds: 250, suiteBeds: 0, adaRooms: 6, desks: 280, dressers: 280, mattresses: 280, needsReplacement: 18, amenities: ['Laundry (2 rooms)', 'Study lounge', 'Kitchen', 'Fitness area'] },
-  { hallId: 'hall-3', hallName: 'Heritage Suites', singleBeds: 0, doubleBeds: 0, suiteBeds: 450, adaRooms: 10, desks: 450, dressers: 450, mattresses: 450, needsReplacement: 4, amenities: ['Suite living rooms', 'Laundry (4 rooms)', 'Study lounge (3)', 'Kitchen', 'Rooftop terrace'] },
+  { hallId: 'hall-3', hallName: 'Drew Hall', singleBeds: 0, doubleBeds: 0, suiteBeds: 450, adaRooms: 10, desks: 450, dressers: 450, mattresses: 450, needsReplacement: 4, amenities: ['Suite living rooms', 'Laundry (4 rooms)', 'Study lounge (3)', 'Kitchen', 'Rooftop terrace'] },
   { hallId: 'hall-4', hallName: 'University Apartments', singleBeds: 120, doubleBeds: 480, suiteBeds: 0, adaRooms: 14, desks: 600, dressers: 600, mattresses: 600, needsReplacement: 8, amenities: ['Full kitchens', 'In-unit laundry', 'Parking (420 spots)', 'Pool', 'Clubhouse'] },
   { hallId: 'hall-5', hallName: 'Scholars Hall', singleBeds: 60, doubleBeds: 120, suiteBeds: 0, adaRooms: 4, desks: 180, dressers: 180, mattresses: 180, needsReplacement: 2, amenities: ['Suite living rooms', 'Seminar room', 'Library', 'Kitchen', 'Faculty-in-residence apt'] },
   { hallId: 'hall-6', hallName: 'Morrison Residence', singleBeds: 0, doubleBeds: 0, suiteBeds: 350, adaRooms: 8, desks: 350, dressers: 350, mattresses: 350, needsReplacement: 14, amenities: ['Laundry (3 rooms)', 'Study lounge (2)', 'Kitchen', 'Bike storage (60)', 'Courtyard'] },
@@ -496,7 +496,7 @@ const HALL_OCCUPANCY: HallOccupancy[] = [
       { floor: 6, capacity: 48, occupied: 46, emptyBeds: 2 },
     ],
   },
-  { hallId: 'hall-3', hallName: 'Heritage Suites', totalCapacity: 450, totalOccupied: 420, utilizationTrend: 'flat', trendPct: '+0.0%',
+  { hallId: 'hall-3', hallName: 'Drew Hall', totalCapacity: 450, totalOccupied: 420, utilizationTrend: 'flat', trendPct: '+0.0%',
     floors: [
       { floor: 1, capacity: 110, occupied: 104, emptyBeds: 6 },
       { floor: 2, capacity: 120, occupied: 114, emptyBeds: 6 },
@@ -541,10 +541,10 @@ interface MoveEvent {
 
 const MOVE_EVENTS: MoveEvent[] = [
   { id: 'mv-1', type: 'move-in', date: 'Jan 11, 2026', timeSlot: '8AM\u201312PM', hall: 'Robinson Hall', studentCount: 148, status: 'completed', keysIssued: 148, checklistItems: 8, checklistCompleted: 8 },
-  { id: 'mv-2', type: 'move-in', date: 'Jan 11, 2026', timeSlot: '12PM\u20134PM', hall: 'Heritage Suites', studentCount: 210, status: 'completed', keysIssued: 210, checklistItems: 8, checklistCompleted: 8 },
+  { id: 'mv-2', type: 'move-in', date: 'Jan 11, 2026', timeSlot: '12PM\u20134PM', hall: 'Drew Hall', studentCount: 210, status: 'completed', keysIssued: 210, checklistItems: 8, checklistCompleted: 8 },
   { id: 'mv-3', type: 'move-in', date: 'Jan 11, 2026', timeSlot: '8AM\u20134PM', hall: 'Eagle Village', studentCount: 360, status: 'completed', keysIssued: 358, checklistItems: 8, checklistCompleted: 7 },
   { id: 'mv-4', type: 'move-out', date: 'May 9, 2026', timeSlot: '8AM\u201312PM', hall: 'Robinson Hall', studentCount: 308, status: 'scheduled', keysReturned: 0, checklistItems: 10, checklistCompleted: 0 },
-  { id: 'mv-5', type: 'move-out', date: 'May 9, 2026', timeSlot: '8AM\u20134PM', hall: 'Heritage Suites', studentCount: 420, status: 'scheduled', keysReturned: 0, checklistItems: 10, checklistCompleted: 0 },
+  { id: 'mv-5', type: 'move-out', date: 'May 9, 2026', timeSlot: '8AM\u20134PM', hall: 'Drew Hall', studentCount: 420, status: 'scheduled', keysReturned: 0, checklistItems: 10, checklistCompleted: 0 },
   { id: 'mv-6', type: 'move-out', date: 'May 9, 2026', timeSlot: '8AM\u20134PM', hall: 'Eagle Village', studentCount: 720, status: 'scheduled', keysReturned: 0, checklistItems: 10, checklistCompleted: 0 },
   { id: 'mv-7', type: 'move-in', date: 'Aug 15, 2026', timeSlot: '7AM\u20136PM', hall: 'All Halls', studentCount: 2400, status: 'scheduled', checklistItems: 8, checklistCompleted: 0 },
 ];
@@ -566,7 +566,7 @@ interface KeyTracking {
 
 const KEY_TRACKING: KeyTracking[] = [
   { hall: 'Robinson Hall', totalKeys: 340, issued: 310, returned: 0, lost: 2, replacements: 4 },
-  { hall: 'Heritage Suites', totalKeys: 460, issued: 422, returned: 0, lost: 1, replacements: 3 },
+  { hall: 'Drew Hall', totalKeys: 460, issued: 422, returned: 0, lost: 1, replacements: 3 },
   { hall: 'Eagle Village', totalKeys: 800, issued: 724, returned: 0, lost: 4, replacements: 6 },
   { hall: 'University Apartments', totalKeys: 620, issued: 550, returned: 0, lost: 3, replacements: 5 },
   { hall: 'Scholars Hall', totalKeys: 190, issued: 180, returned: 0, lost: 0, replacements: 1 },
@@ -594,8 +594,8 @@ interface WorkOrder {
 const WORK_ORDERS: WorkOrder[] = [
   { id: 'wo-1', title: 'Broken radiator valve', hall: 'Campbell Hall', room: '302', category: 'hvac', priority: 'critical', status: 'in-progress', submittedBy: 'RA Sofia Garcia', submittedDate: 'Feb 14', assignedTo: 'Tony Martinez', description: 'Radiator valve leaking hot water. Room evacuated to temp room.' },
   { id: 'wo-2', title: 'Shower drain clogged', hall: 'Robinson Hall', room: '2nd Floor Bath', category: 'plumbing', priority: 'high', status: 'assigned', submittedBy: 'RA Maya Patel', submittedDate: 'Feb 15', assignedTo: 'Jim Cooper', description: 'Shared bathroom shower drain backing up. Affecting 4 rooms.' },
-  { id: 'wo-3', title: 'Light fixture flickering', hall: 'Heritage Suites', room: 'Suite 208', category: 'electrical', priority: 'medium', status: 'open', submittedBy: 'Student', submittedDate: 'Feb 16', description: 'Overhead light in common area flickers intermittently.' },
-  { id: 'wo-4', title: 'Desk drawer stuck', hall: 'Heritage Suites', room: 'Suite 312B', category: 'furniture', priority: 'low', status: 'open', submittedBy: 'Student', submittedDate: 'Feb 16', description: 'Right drawer on desk will not open. Appears jammed.' },
+  { id: 'wo-3', title: 'Light fixture flickering', hall: 'Drew Hall', room: 'Suite 208', category: 'electrical', priority: 'medium', status: 'open', submittedBy: 'Student', submittedDate: 'Feb 16', description: 'Overhead light in common area flickers intermittently.' },
+  { id: 'wo-4', title: 'Desk drawer stuck', hall: 'Drew Hall', room: 'Suite 312B', category: 'furniture', priority: 'low', status: 'open', submittedBy: 'Student', submittedDate: 'Feb 16', description: 'Right drawer on desk will not open. Appears jammed.' },
   { id: 'wo-5', title: 'HVAC not cooling', hall: 'Eagle Village', room: 'Apt 14A', category: 'hvac', priority: 'high', status: 'assigned', submittedBy: 'Student', submittedDate: 'Feb 13', assignedTo: 'Tony Martinez', description: 'AC unit not producing cold air. Thermostat set to 68F but room at 78F.' },
   { id: 'wo-6', title: 'Lock malfunction', hall: 'Morrison Residence', room: '412', category: 'lock', priority: 'high', status: 'completed', submittedBy: 'RA Derek Washington', submittedDate: 'Feb 10', assignedTo: 'Campus Locksmith', resolvedDate: 'Feb 10', description: 'Card reader not recognizing student ID. Emergency lockout.' },
   { id: 'wo-7', title: 'Pest control \u2014 ants', hall: 'Campbell Hall', room: '118', category: 'pest', priority: 'medium', status: 'assigned', submittedBy: 'Student', submittedDate: 'Feb 12', assignedTo: 'Exterminators Inc.', description: 'Ant infestation near window area. Trail visible from outside wall.' },
@@ -637,7 +637,7 @@ interface Inspection {
 
 const INSPECTIONS: Inspection[] = [
   { id: 'insp-1', hall: 'Robinson Hall', room: 'All Rooms', type: 'health-safety', scheduledDate: 'Feb 20, 2026', inspector: 'Housing Staff', status: 'scheduled', violations: [] },
-  { id: 'insp-2', hall: 'Heritage Suites', room: 'Suite 415A', type: 'routine', scheduledDate: 'Feb 10, 2026', completedDate: 'Feb 10, 2026', inspector: 'RA Jordan Lewis', status: 'passed', violations: [], notes: 'Room in excellent condition.' },
+  { id: 'insp-2', hall: 'Drew Hall', room: 'Suite 415A', type: 'routine', scheduledDate: 'Feb 10, 2026', completedDate: 'Feb 10, 2026', inspector: 'RA Jordan Lewis', status: 'passed', violations: [], notes: 'Room in excellent condition.' },
   { id: 'insp-3', hall: 'Campbell Hall', room: '118', type: 'health-safety', scheduledDate: 'Feb 12, 2026', completedDate: 'Feb 12, 2026', inspector: 'Housing Staff', status: 'failed', violations: ['Blocked fire exit path', 'Food waste near window attracting pests'], notes: 'Student given 48hr to remediate. Follow-up scheduled Feb 14.' },
   { id: 'insp-4', hall: 'Eagle Village', room: 'Apt 7C', type: 'routine', scheduledDate: 'Feb 5, 2026', completedDate: 'Feb 5, 2026', inspector: 'RA Marcus Brown', status: 'passed', violations: [] },
   { id: 'insp-5', hall: 'All Halls', room: 'Common Areas', type: 'fire-safety', scheduledDate: 'Mar 1, 2026', inspector: 'Fire Marshal', status: 'scheduled', violations: [] },
@@ -674,7 +674,7 @@ interface DutySchedule {
 }
 
 const DUTY_SCHEDULE: DutySchedule[] = [
-  { id: 'ds-1', raName: 'Jordan Lewis', hall: 'Heritage Suites', date: 'Feb 18', shift: '8PM\u20138AM', type: 'on-duty' },
+  { id: 'ds-1', raName: 'Jordan Lewis', hall: 'Drew Hall', date: 'Feb 18', shift: '8PM\u20138AM', type: 'on-duty' },
   { id: 'ds-2', raName: 'Maya Patel', hall: 'Robinson Hall', date: 'Feb 18', shift: '8PM\u20138AM', type: 'on-duty' },
   { id: 'ds-3', raName: 'Marcus Brown', hall: 'Eagle Village', date: 'Feb 18', shift: '8PM\u20138AM', type: 'on-duty' },
   { id: 'ds-4', raName: 'Chris Thompson', hall: 'Robinson Hall', date: 'Feb 19', shift: '8PM\u20138AM', type: 'on-duty' },
@@ -700,7 +700,7 @@ interface IncidentLog {
 const INCIDENT_LOG: IncidentLog[] = [
   { id: 'inc-1', date: 'Feb 17', time: '11:42 PM', hall: 'Robinson Hall', type: 'noise', severity: 'low', reportedBy: 'RA Maya Patel', description: 'Excessive noise from room 305 after quiet hours.', resolution: 'Verbal warning issued. Residents complied.', status: 'resolved' },
   { id: 'inc-2', date: 'Feb 16', time: '2:15 AM', hall: 'Eagle Village', type: 'medical', severity: 'high', reportedBy: 'RA Marcus Brown', description: 'Student reported severe allergic reaction in Apt 9B.', resolution: 'EMS called. Student transported to hospital. Family notified.', status: 'referred' },
-  { id: 'inc-3', date: 'Feb 15', time: '9:30 PM', hall: 'Heritage Suites', type: 'policy-violation', severity: 'medium', reportedBy: 'RA Jordan Lewis', description: 'Prohibited cooking appliance found during routine check in Suite 201.', resolution: 'Item confiscated. Written warning documented.', status: 'resolved' },
+  { id: 'inc-3', date: 'Feb 15', time: '9:30 PM', hall: 'Drew Hall', type: 'policy-violation', severity: 'medium', reportedBy: 'RA Jordan Lewis', description: 'Prohibited cooking appliance found during routine check in Suite 201.', resolution: 'Item confiscated. Written warning documented.', status: 'resolved' },
   { id: 'inc-4', date: 'Feb 14', time: '6:00 PM', hall: 'Campbell Hall', type: 'conflict', severity: 'medium', reportedBy: 'RA Sofia Garcia', description: 'Roommate dispute in room 215. Students requesting room change.', resolution: 'Mediation session scheduled for Feb 19.', status: 'open' },
   { id: 'inc-5', date: 'Feb 13', time: '3:45 PM', hall: 'Morrison Residence', type: 'safety', severity: 'medium', reportedBy: 'RA Derek Washington', description: 'Exit door propped open repeatedly on 3rd floor.', resolution: 'Door alarm activated. Reminder sent to floor residents.', status: 'resolved' },
 ];
@@ -730,7 +730,7 @@ const COUNSELING_REFERRALS: CounselingReferral[] = [
   { id: 'cr-1', date: 'Feb 17', hall: 'Eagle Village', reason: 'Follow-up after medical incident', referredTo: 'Counseling & Wellness Center', status: 'scheduled' },
   { id: 'cr-2', date: 'Feb 15', hall: 'Campbell Hall', reason: 'Roommate conflict mediation', referredTo: 'Residence Life Coordinator', status: 'pending' },
   { id: 'cr-3', date: 'Feb 12', hall: 'Robinson Hall', reason: 'Academic stress reported by RA', referredTo: 'Counseling & Wellness Center', status: 'completed' },
-  { id: 'cr-4', date: 'Feb 10', hall: 'Heritage Suites', reason: 'Homesickness / adjustment', referredTo: 'Peer Mentor Program', status: 'completed' },
+  { id: 'cr-4', date: 'Feb 10', hall: 'Drew Hall', reason: 'Homesickness / adjustment', referredTo: 'Peer Mentor Program', status: 'completed' },
 ];
 
 const REFERRAL_STATUS_COLOR: Record<string, string> = {
@@ -752,7 +752,7 @@ interface ResLifeProgram {
 
 const RESLIFE_PROGRAMS: ResLifeProgram[] = [
   { id: 'rlp-1', title: 'Study Skills Workshop', date: 'Feb 20', time: '7PM', hall: 'Robinson Hall', ra: 'Maya Patel', category: 'educational', attendance: 0 },
-  { id: 'rlp-2', title: 'Movie Night: Black History Month', date: 'Feb 21', time: '8PM', hall: 'Heritage Suites', ra: 'Jordan Lewis', category: 'diversity', attendance: 0 },
+  { id: 'rlp-2', title: 'Movie Night: Black History Month', date: 'Feb 21', time: '8PM', hall: 'Drew Hall', ra: 'Jordan Lewis', category: 'diversity', attendance: 0 },
   { id: 'rlp-3', title: 'Stress Relief Yoga', date: 'Feb 22', time: '6PM', hall: 'Eagle Village', ra: 'Marcus Brown', category: 'wellness' },
   { id: 'rlp-4', title: 'Floor Game Night', date: 'Feb 23', time: '7PM', hall: 'Campbell Hall', ra: 'Sofia Garcia', category: 'social' },
   { id: 'rlp-5', title: 'Fire Safety Q&A', date: 'Feb 25', time: '5PM', hall: 'Morrison Residence', ra: 'Derek Washington', category: 'community' },

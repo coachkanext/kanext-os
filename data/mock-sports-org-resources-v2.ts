@@ -1,6 +1,6 @@
 /**
  * Sports Organization Resources V2 — Mock Data & Types
- * KaNeXT Men's Basketball program resource management: packs, role kits,
+ * Carroll College Fighting Saints Men's Basketball program resource management: packs, role kits,
  * templates, knowledge base, and review flags.
  */
 
@@ -201,7 +201,7 @@ const resourcePacks: ResourcePack[] = [
     id: 'rp-001',
     name: 'Program SOP Pack',
     description:
-      'Master standard-operating-procedures for KaNeXT MBB — practice structure, player conduct, facility usage, equipment checkout, and staff communication protocols.',
+      'Master standard-operating-procedures for Carroll College MBB — practice structure, player conduct, facility usage, equipment checkout, and staff communication protocols.',
     icon: 'doc.text.fill',
     owner: 'Alex Morgan',
     lastUpdated: '2026-02-12',
@@ -215,7 +215,7 @@ const resourcePacks: ResourcePack[] = [
     id: 'rp-002',
     name: 'Travel Pack',
     description:
-      'Road-trip playbook: charter bus logistics, hotel rooming lists, meal-per-diem guidelines, travel-day itinerary template, and emergency contacts for KaNeXT Conference away games.',
+      'Road-trip playbook: charter bus logistics, hotel rooming lists, meal-per-diem guidelines, travel-day itinerary template, and emergency contacts for Frontier Conference away games.',
     icon: 'bus.fill',
     owner: 'Marcus Reed',
     lastUpdated: '2026-02-10',
@@ -257,7 +257,7 @@ const resourcePacks: ResourcePack[] = [
     id: 'rp-005',
     name: 'Compliance Pack',
     description:
-      'NAIA and KaNeXT Conference compliance quick-reference — eligibility rules, academic progress checks, financial-aid reporting, scholarship renewal guidelines, and transfer-portal procedures.',
+      'NAIA and Frontier Conference compliance quick-reference — eligibility rules, academic progress checks, financial-aid reporting, scholarship renewal guidelines, and transfer-portal procedures.',
     icon: 'checkmark.shield.fill',
     owner: 'Alex Morgan',
     lastUpdated: '2026-01-28',
@@ -497,7 +497,7 @@ const knowledgeBase: KnowledgeBaseItem[] = [
     id: 'kb-008',
     title: 'Weight Room Safety & Emergency Procedures',
     category: 'medical',
-    owner: 'Coach Williams',
+    owner: 'Coach Pearson',
     lastUpdated: '2025-12-10',
     requiredRead: true,
     viewCount: 20,

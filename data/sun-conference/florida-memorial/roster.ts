@@ -1,8 +1,8 @@
 /**
- * KaNeXT Sports Men's Basketball
+ * Carroll College Men's Basketball
  * Roster Entries (Step 3)
  * Seasons: 2022-23 through 2025-26
- * Source: KaNeXT Conference Stats + KaNeXT Athletics (athletics.kanext.edu)
+ * Source: Frontier Conference Stats + KaNeXT Athletics (athletics.kanext.edu)
  * Bio fields (height, weight, hometown, previous_school) available for 2025-26 only
  */
 

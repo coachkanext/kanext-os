@@ -19,7 +19,7 @@ function daysAgo(d: number): Date {
 }
 
 // =============================================================================
-// SPORTS — KaNeXT Head Coach / GM
+// SPORTS — Carroll College Head Coach
 // =============================================================================
 
 const SPORTS_INBOX: InboxThreadV3[] = [
@@ -28,7 +28,7 @@ const SPORTS_INBOX: InboxThreadV3[] = [
   { id: 'si3', mode: 'sports', name: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', preview: 'Coach, can we talk about my minutes situation?', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
   { id: 'si4', mode: 'sports', name: 'Alex Chen', initials: 'AC', role: 'Recruit', preview: 'Thank you for the offer! I have some questions about the program.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
   { id: 'si5', mode: 'sports', name: 'Patricia Moore', initials: 'PM', role: 'Parent', preview: 'Hi Coach, wanted to discuss Jaylen\'s academic support options.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
-  { id: 'si6', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Transfer Portal', preview: 'Interested in KaNeXT. Can we set up a visit?', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
+  { id: 'si6', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Transfer Portal', preview: 'Interested in Carroll College. Can we set up a visit?', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
   { id: 'si7', mode: 'sports', name: 'Athletic Director', initials: 'AD', role: 'Administration', preview: 'Budget meeting moved to Thursday 2pm.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
   { id: 'si8', mode: 'sports', name: 'Sports Medicine', initials: 'SM', role: 'Medical Staff', preview: 'Injury report updated for this week.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
 ];
@@ -45,11 +45,11 @@ const SPORTS_ROOMS: RoomV3[] = [
 const SPORTS_NEXUS: NexusEscalationV3[] = [
   { id: 'sn1', mode: 'sports', askerName: 'Marcus Webb', askerInitials: 'MW', askerRole: 'Assistant Coach', question: 'What\'s the optimal rotation if we rest Thomas in the first half?', viewingContext: 'Game Plan vs Bethel', timestamp: hoursAgo(1), status: 'unanswered' },
   { id: 'sn2', mode: 'sports', askerName: 'Jaylen Thomas', askerInitials: 'JT', askerRole: 'Student Athlete', question: 'How do I improve my defensive KR rating?', viewingContext: 'Player Card', timestamp: hoursAgo(4), status: 'unanswered' },
-  { id: 'sn3', mode: 'sports', askerName: 'Patricia Moore', askerInitials: 'PM', askerRole: 'Parent', question: 'What academic support resources are available for student athletes?', viewingContext: 'Program Overview', timestamp: daysAgo(1), status: 'answered', answer: 'KaNeXT provides tutoring, study hall, and academic counseling for all student athletes.' },
+  { id: 'sn3', mode: 'sports', askerName: 'Patricia Moore', askerInitials: 'PM', askerRole: 'Parent', question: 'What academic support resources are available for student athletes?', viewingContext: 'Program Overview', timestamp: daysAgo(1), status: 'answered', answer: 'Carroll College provides tutoring, study hall, and academic counseling for all student athletes.' },
 ];
 
 // =============================================================================
-// CHURCH — KaNeXT Church Senior Pastor
+// CHURCH — 2819 Church Senior Pastor
 // =============================================================================
 
 const CHURCH_INBOX: InboxThreadV3[] = [
@@ -79,7 +79,7 @@ const CHURCH_NEXUS: NexusEscalationV3[] = [
 ];
 
 // =============================================================================
-// BUSINESS — KaNeXT Founder
+// BUSINESS — Valuetainment Founder
 // =============================================================================
 
 const BUSINESS_INBOX: InboxThreadV3[] = [
@@ -109,7 +109,7 @@ const BUSINESS_NEXUS: NexusEscalationV3[] = [
 ];
 
 // =============================================================================
-// EDUCATION — KaNeXT President
+// EDUCATION — Howard University President
 // =============================================================================
 
 const EDUCATION_INBOX: InboxThreadV3[] = [
@@ -139,7 +139,7 @@ const EDUCATION_NEXUS: NexusEscalationV3[] = [
 ];
 
 // =============================================================================
-// COMPETITION — KaNeXT Commissioner
+// COMPETITION — 3SSB Commissioner
 // =============================================================================
 
 const COMPETITION_INBOX: InboxThreadV3[] = [
@@ -148,7 +148,7 @@ const COMPETITION_INBOX: InboxThreadV3[] = [
   { id: 'ki3', mode: 'competition', name: 'Takeshi Yamamoto', initials: 'TY', role: 'Team Principal', preview: 'Requesting clarification on the new aero regulations.', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
   { id: 'ki4', mode: 'competition', name: 'Marco Rossi', initials: 'MR', role: 'Chief Steward', preview: 'Steward panel recommendations for Round 4 incidents.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
   { id: 'ki5', mode: 'competition', name: 'Sophie Laurent', initials: 'SL', role: 'Media Director', preview: 'Broadcast partner wants to discuss camera placement for Monaco.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
-  { id: 'ki6', mode: 'competition', name: 'Carlos Vega', initials: 'CV', role: 'New Team Entry', preview: 'Applying for KaNeXT grid expansion. Documentation attached.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
+  { id: 'ki6', mode: 'competition', name: 'Carlos Vega', initials: 'CV', role: 'New Team Entry', preview: 'Applying for 3SSB grid expansion. Documentation attached.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
   { id: 'ki7', mode: 'competition', name: 'Medical Team', initials: 'MT', role: 'Medical', preview: 'All medical stations confirmed operational for Round 5.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
   { id: 'ki8', mode: 'competition', name: 'Logistics', initials: 'LG', role: 'Operations', preview: 'Freight schedule confirmed for the European leg.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
 ];

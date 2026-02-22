@@ -1,6 +1,6 @@
 /**
  * Sports Program V3 — 3-pill ViewBar (Identity | Teams | Operations)
- * KaNeXT Men's Basketball · NAA KaNeXT Conference
+ * Carroll Men's Basketball · NAIA Frontier Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback } from 'react';
@@ -31,7 +31,7 @@ const TEAMS = [
   {
     id: 't1',
     name: 'Varsity',
-    coach: 'Coach Marcus Brooks',
+    coach: 'Coach Dan Pearson',
     players: 18,
     record: '12-8',
     icon: 'sportscourt.fill' as const,
@@ -123,7 +123,7 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <ThemedText style={[s.cardTitle, { color: colors.text }]}>KaNeXT Men's Basketball</ThemedText>
         <ThemedText style={[s.cardSub, { color: colors.textSecondary }]}>
-          KaNeXT Sports
+          Carroll College
         </ThemedText>
       </View>
 
@@ -159,7 +159,7 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.detailRow}>
           <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Conference</ThemedText>
-          <ThemedText style={[s.detailValue, { color: colors.text }]}>NAIA · KaNeXT Conference</ThemedText>
+          <ThemedText style={[s.detailValue, { color: colors.text }]}>NAIA · Frontier Conference</ThemedText>
         </View>
         <View style={[s.detailRow, { borderBottomWidth: 0 }]}>
           <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Governing Body</ThemedText>

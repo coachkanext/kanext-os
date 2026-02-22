@@ -54,10 +54,10 @@ const CLUSTER_ABBREVS: Record<string, string> = {
   shooting: 'SHT',
   finishing: 'FIN',
   playmaking: 'PLY',
-  perimeter_defense: 'OBD',
-  interior_defense: 'TMD',
+  on_ball_defense: 'OBD',
+  team_defense: 'TMD',
   rebounding: 'REB',
-  frame: 'PHY',
+  physical: 'PHY',
 };
 
 // Season-average PGIS per jersey (computed once at module level)
@@ -66,7 +66,7 @@ const SEASON_PGIS = getPlayerSeasonPGIS();
 // ── Lineup Lens Types & Constants ──
 
 type LensKey = 'overall' | 'offense' | 'defense' | 'shooting' | 'finishing' | 'playmaking'
-             | 'perimeter_defense' | 'interior_defense' | 'rebounding' | 'frame' | 'pgis';
+             | 'on_ball_defense' | 'team_defense' | 'rebounding' | 'physical' | 'pgis';
 
 const LENS_ITEMS: { key: LensKey; label: string; section: string }[] = [
   { key: 'overall',           label: 'Overall (KR)',     section: 'Core' },
@@ -75,24 +75,24 @@ const LENS_ITEMS: { key: LensKey; label: string; section: string }[] = [
   { key: 'shooting',          label: 'Shooting',         section: 'Clusters' },
   { key: 'finishing',         label: 'Finishing',         section: 'Clusters' },
   { key: 'playmaking',        label: 'Playmaking',       section: 'Clusters' },
-  { key: 'perimeter_defense', label: 'On-Ball Defense',  section: 'Clusters' },
-  { key: 'interior_defense',  label: 'Team Defense',     section: 'Clusters' },
+  { key: 'on_ball_defense',    label: 'On-Ball Defense',  section: 'Clusters' },
+  { key: 'team_defense',       label: 'Team Defense',     section: 'Clusters' },
   { key: 'rebounding',        label: 'Rebounding',       section: 'Clusters' },
-  { key: 'frame',             label: 'Physical (Frame)', section: 'Clusters' },
+  { key: 'physical',          label: 'Physical',         section: 'Clusters' },
   { key: 'pgis',              label: 'PGIS (Impact)',    section: 'Impact' },
 ];
 
 const WHY_TAG_CONFIG: Record<LensKey, { positive: string[]; negative: { tag: string; cluster: keyof ClusterRatings }[] }> = {
-  overall:            { positive: ['+Best 5 KR', '+Balance'],   negative: [{ tag: '-Size', cluster: 'frame' }, { tag: '-Shooting', cluster: 'shooting' }] },
-  offense:            { positive: ['+Creation', '+Spacing'],    negative: [{ tag: '-Stops', cluster: 'perimeter_defense' }] },
+  overall:            { positive: ['+Best 5 KR', '+Balance'],   negative: [{ tag: '-Size', cluster: 'physical' }, { tag: '-Shooting', cluster: 'shooting' }] },
+  offense:            { positive: ['+Creation', '+Spacing'],    negative: [{ tag: '-Stops', cluster: 'on_ball_defense' }] },
   defense:            { positive: ['+Stops', '+Rim'],           negative: [{ tag: '-Shooting', cluster: 'shooting' }] },
-  shooting:           { positive: ['+Spacing', '+3PT'],         negative: [{ tag: '-Rim', cluster: 'interior_defense' }] },
+  shooting:           { positive: ['+Spacing', '+3PT'],         negative: [{ tag: '-Rim', cluster: 'team_defense' }] },
   finishing:          { positive: ['+RimPress', '+Paint'],      negative: [{ tag: '-Spacing', cluster: 'shooting' }] },
-  playmaking:         { positive: ['+Creation', '+AST/TO'],     negative: [{ tag: '-Size', cluster: 'frame' }] },
-  perimeter_defense:  { positive: ['+POA', '+Contain'],         negative: [{ tag: '-Spacing', cluster: 'shooting' }] },
-  interior_defense:   { positive: ['+Rotations', '+IQ'],        negative: [{ tag: '-Creation', cluster: 'playmaking' }] },
-  rebounding:         { positive: ['+Boards', '+2ndCh'],        negative: [{ tag: '-Speed', cluster: 'perimeter_defense' }] },
-  frame:              { positive: ['+Strength', '+Size'],       negative: [{ tag: '-Spacing', cluster: 'shooting' }] },
+  playmaking:         { positive: ['+Creation', '+AST/TO'],     negative: [{ tag: '-Size', cluster: 'physical' }] },
+  on_ball_defense:    { positive: ['+POA', '+Contain'],         negative: [{ tag: '-Spacing', cluster: 'shooting' }] },
+  team_defense:       { positive: ['+Rotations', '+IQ'],        negative: [{ tag: '-Creation', cluster: 'playmaking' }] },
+  rebounding:         { positive: ['+Boards', '+2ndCh'],        negative: [{ tag: '-Speed', cluster: 'on_ball_defense' }] },
+  physical:           { positive: ['+Strength', '+Size'],       negative: [{ tag: '-Spacing', cluster: 'shooting' }] },
   pgis:               { positive: ['+Impact', '+Production'],   negative: [{ tag: '-Consistency', cluster: 'shooting' }] },
 };
 
@@ -564,10 +564,10 @@ export function UnitsView({
         if (cw.cluster === 'shooting') return { ...cw, weight: oClusters.shooting };
         if (cw.cluster === 'finishing') return { ...cw, weight: oClusters.finishing };
         if (cw.cluster === 'playmaking') return { ...cw, weight: oClusters.playmaking };
-        if (cw.cluster === 'perimeter_defense') return { ...cw, weight: dClusters.perimeter_defense };
-        if (cw.cluster === 'interior_defense') return { ...cw, weight: dClusters.interior_defense };
+        if (cw.cluster === 'on_ball_defense') return { ...cw, weight: dClusters.on_ball_defense };
+        if (cw.cluster === 'team_defense') return { ...cw, weight: dClusters.team_defense };
         if (cw.cluster === 'rebounding') return { ...cw, weight: dClusters.rebounding };
-        if (cw.cluster === 'frame') return { ...cw, weight: dClusters.frame };
+        if (cw.cluster === 'physical') return { ...cw, weight: dClusters.physical };
         return cw;
       });
 
@@ -716,7 +716,7 @@ export function UnitsView({
     if (!cl) return teamDrivers;
     const ALL_CLUSTERS: (keyof ClusterRatings)[] = [
       'shooting', 'finishing', 'playmaking',
-      'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
+      'on_ball_defense', 'team_defense', 'rebounding', 'physical',
     ];
     return ALL_CLUSTERS
       .map((key) => ({ cluster: key, label: CLUSTER_ABBREVS[key] ?? key, value: cl[key] }))
@@ -805,8 +805,8 @@ export function UnitsView({
       position: tradPos,
       height: '',
       classYear: '',
-      currentSchool: 'KaNeXT Sports',
-      level: 'NAA' as const,
+      currentSchool: 'Carroll College',
+      level: 'NAIA' as const,
       conference: '',
       state: 'FL',
       keyStatLine: '',

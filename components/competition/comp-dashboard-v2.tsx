@@ -111,7 +111,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
                 Sat {nextRound.weekendDates.sat} {'\u00B7'} Wildcard Heats + Finals
               </ThemedText>
               <ThemedText style={[styles.weekendRow, { color: colors.textSecondary }]}>
-                Sun {nextRound.weekendDates.sun} {'\u00B7'} KaNeXT Grand Prix
+                Sun {nextRound.weekendDates.sun} {'\u00B7'} 3SSB Grand Prix
               </ThemedText>
             </View>
 
@@ -154,7 +154,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
           >
             <ThemedText style={[styles.commerceCardTitle, { color: colors.text }]}>Store</ThemedText>
             <ThemedText style={[styles.commerceCardSub, { color: colors.textSecondary }]} numberOfLines={1}>
-              Official KaNeXT Racing Gear
+              Official PBD Podcast Gear
             </ThemedText>
           </Pressable>
 
@@ -217,7 +217,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
           {topTeams.map((t, i) => {
             const teamColor = getTeamColor(t.name);
             const bestDriverPos = Math.min(
-              ...DRIVER_STANDINGS.filter((d) => t.drivers.includes(d.name)).map((d) => d.position),
+              ...DRIVER_STANDINGS.filter((d) => t.players.includes(d.name)).map((d) => d.position),
             );
             return (
               <Pressable
@@ -239,7 +239,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
                     {t.name}
                   </ThemedText>
                   <ThemedText style={[styles.standingsTeam, { color: colors.textSecondary }]}>
-                    {t.drivers.length} drivers {'\u00B7'} best P{bestDriverPos}
+                    {t.players.length} players {'\u00B7'} best P{bestDriverPos}
                   </ThemedText>
                 </View>
                 <ThemedText style={[styles.standingsPoints, { color: colors.text }]}>{t.points} pts</ThemedText>

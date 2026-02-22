@@ -51,13 +51,13 @@ const OFFENSIVE_BADGES: BadgeDef[] = [
 ];
 
 const DEFENSIVE_BADGES: BadgeDef[] = [
-  { name: 'Point-of-Attack', component: 'perimeter_defense', traits: ['Containment'] },
-  { name: 'Ball Pressure', component: 'perimeter_defense', traits: ['Ball Pressure'] },
-  { name: 'Lockdown Perimeter', component: 'perimeter_defense', traits: ['Containment', 'Off-Ball Denial'] },
-  { name: 'Rim Protector', component: 'interior_defense', traits: ['Block', 'Rim Deterrence'] },
-  { name: 'Paint Anchor', component: 'interior_defense', traits: ['Post Defense', 'Vertical Contest'] },
-  { name: 'Help Defender', component: 'interior_defense', traits: ['Help Defense'] },
-  { name: 'Passing Lane Disruptor', component: 'perimeter_defense', traits: ['Steal', 'Disruption'] },
+  { name: 'Point-of-Attack', component: 'on_ball_defense', traits: ['Containment'] },
+  { name: 'Ball Pressure', component: 'on_ball_defense', traits: ['Ball Pressure'] },
+  { name: 'Lockdown Perimeter', component: 'on_ball_defense', traits: ['Containment', 'Off-Ball Denial'] },
+  { name: 'Rim Protector', component: 'team_defense', traits: ['Block', 'Rim Deterrence'] },
+  { name: 'Paint Anchor', component: 'team_defense', traits: ['Post Defense', 'Vertical Contest'] },
+  { name: 'Help Defender', component: 'team_defense', traits: ['Help Defense'] },
+  { name: 'Passing Lane Disruptor', component: 'on_ball_defense', traits: ['Steal', 'Disruption'] },
   { name: 'Defensive Rebounder', component: 'rebounding', traits: ['Defensive', 'Box-Out'] },
   { name: 'Physical Rebounder', component: 'rebounding', traits: ['Offensive'] },
 ];

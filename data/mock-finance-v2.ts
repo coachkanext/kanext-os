@@ -291,7 +291,7 @@ const SPORTS_BUDGETS: FinanceBudget[] = [
 // =============================================================================
 
 const SPORTS_LEDGER: FinanceLedgerEntry[] = [
-  { id: 'sl-1', date: 'Feb 15, 2026', description: 'Team bus charter — Magnolia University', type: 'expense', category: 'Travel', amount: 2400, scope: 'Program' },
+  { id: 'sl-1', date: 'Feb 15, 2026', description: 'Team bus charter — Multnomah', type: 'expense', category: 'Travel', amount: 2400, scope: 'Program' },
   { id: 'sl-2', date: 'Feb 14, 2026', description: 'Nike equipment order — spring uniforms', type: 'expense', category: 'Equipment', amount: 4800, scope: 'Program', evidence: 'PO-2026-014' },
   { id: 'sl-3', date: 'Feb 12, 2026', description: 'Booster donation — Williams Family', type: 'income', category: 'Donations', amount: 5000, scope: 'Organization' },
   { id: 'sl-4', date: 'Feb 10, 2026', description: 'Game guarantee — Homecoming', type: 'income', category: 'Revenue', amount: 15000, scope: 'Program' },
@@ -322,7 +322,7 @@ const SPORTS_APPROVALS: FinanceApproval[] = [
 
 const SPORTS_PAYABLES: FinancePayable[] = [
   { id: 'sp-1', vendor: 'Nike Team Sports', description: 'Spring uniform order — 20 sets', amount: 4800, dueDate: 'Mar 5, 2026', category: 'Equipment', status: 'pending', invoiceRef: 'NTS-44821' },
-  { id: 'sp-2', vendor: 'Charter Express', description: 'Bus charter — Magnolia University away game', amount: 2400, dueDate: 'Feb 28, 2026', category: 'Travel', status: 'approved' },
+  { id: 'sp-2', vendor: 'Charter Express', description: 'Bus charter — Multnomah away game', amount: 2400, dueDate: 'Feb 28, 2026', category: 'Travel', status: 'approved' },
   { id: 'sp-3', vendor: 'Sodexo Dining', description: 'Pre-game meal service — February', amount: 1450, dueDate: 'Mar 1, 2026', category: 'Nutrition', status: 'pending', invoiceRef: 'SOD-8821' },
   { id: 'sp-4', vendor: 'BSN Sports', description: 'Practice pinnies and cones restock', amount: 680, dueDate: 'Feb 22, 2026', category: 'Equipment', status: 'paid' },
   { id: 'sp-5', vendor: 'SportsMed Pro', description: 'Athletic trainer retainer — March', amount: 3200, dueDate: 'Mar 1, 2026', category: 'Medical', status: 'pending' },
@@ -657,7 +657,7 @@ const CHURCH_PAYABLES: FinancePayable[] = [
   { id: 'chp-1', vendor: 'Pro Audio Supply', description: 'Sound board equipment upgrade', amount: 4500, dueDate: 'Mar 1, 2026', category: 'Worship & Media', status: 'pending', invoiceRef: 'PAS-2210' },
   { id: 'chp-2', vendor: 'HVAC Solutions', description: 'Sanctuary HVAC maintenance contract', amount: 6800, dueDate: 'Feb 25, 2026', category: 'Facilities', status: 'pending' },
   { id: 'chp-3', vendor: 'Lifeway Christian', description: 'Youth ministry curriculum — spring quarter', amount: 680, dueDate: 'Feb 20, 2026', category: 'Ministry Programs', status: 'paid' },
-  { id: 'chp-4', vendor: 'FPL (Ridgemont Power)', description: 'Main campus utility bill — February', amount: 3800, dueDate: 'Mar 5, 2026', category: 'Facilities', status: 'pending' },
+  { id: 'chp-4', vendor: 'FPL (MSU-Northern Power)', description: 'Main campus utility bill — February', amount: 3800, dueDate: 'Mar 5, 2026', category: 'Facilities', status: 'pending' },
   { id: 'chp-5', vendor: 'Mission Depot', description: 'Haiti missions trip supplies', amount: 2200, dueDate: 'Feb 18, 2026', category: 'Outreach', status: 'paid' },
 ];
 
@@ -698,7 +698,7 @@ const CHURCH_PURCHASING: FinancePurchaseRequest[] = [
 // =============================================================================
 
 const CHURCH_PAYROLL: FinancePayrollItem[] = [
-  { id: 'chpy-1', payee: 'Pastor James Carter', payeeInitials: 'DK', period: 'Feb 2026', amount: 6500, type: 'salary', status: 'paid' },
+  { id: 'chpy-1', payee: 'Pastor Philip Anthony Mitchell', payeeInitials: 'DK', period: 'Feb 2026', amount: 6500, type: 'salary', status: 'paid' },
   { id: 'chpy-2', payee: 'Admin Pastor Thomas', payeeInitials: 'AT', period: 'Feb 2026', amount: 4800, type: 'salary', status: 'paid' },
   { id: 'chpy-3', payee: 'Worship Director', payeeInitials: 'WD', period: 'Feb 2026', amount: 3500, type: 'salary', status: 'paid' },
   { id: 'chpy-4', payee: 'Musicians (4)', payeeInitials: 'MU', period: 'Feb 2026', amount: 2400, type: 'contractor', status: 'pending' },
@@ -798,7 +798,7 @@ const BUSINESS_LEDGER: FinanceLedgerEntry[] = [
   { id: 'enl-5', date: 'Feb 8, 2026', description: 'Pilot fee — Gamma Labs', type: 'income', category: 'Revenue', amount: 8000, scope: 'Entity' },
   { id: 'enl-6', date: 'Feb 5, 2026', description: 'Legal review — terms of service update', type: 'expense', category: 'Legal', amount: 2800, scope: 'Organization' },
   { id: 'enl-7', date: 'Feb 3, 2026', description: 'SaaS subscription — Delta Co', type: 'income', category: 'Revenue', amount: 4800, scope: 'Entity' },
-  { id: 'enl-8', date: 'Feb 1, 2026', description: 'Team offsite — Nashville planning session', type: 'expense', category: 'Travel', amount: 4200, scope: 'Organization' },
+  { id: 'enl-8', date: 'Feb 1, 2026', description: 'Team offsite — Helena planning session', type: 'expense', category: 'Travel', amount: 4200, scope: 'Organization' },
   { id: 'enl-9', date: 'Jan 30, 2026', description: 'Google + Meta ad spend — January', type: 'expense', category: 'Marketing', amount: 6500, scope: 'Department' },
   { id: 'enl-10', date: 'Jan 28, 2026', description: 'Enterprise license — Omega Corp', type: 'income', category: 'Revenue', amount: 12000, scope: 'Entity' },
   { id: 'enl-11', date: 'Jan 25, 2026', description: 'Co-working space rent — February', type: 'expense', category: 'Facilities', amount: 2800, scope: 'Organization' },
@@ -879,7 +879,7 @@ const BUSINESS_PAYROLL: FinancePayrollItem[] = [
 
 const BUSINESS_REIMBURSEMENTS: FinanceReimbursement[] = [
   { id: 'enrm-1', claimant: 'Devon Okafor', claimantInitials: 'DO', description: 'Client dinner — Omega Corp renewal', amount: 285, receipts: 1, status: 'approved', submittedAt: 'Feb 11, 2026' },
-  { id: 'enrm-2', claimant: 'Priya Desai', claimantInitials: 'PD', description: 'Uber / meals — Nashville offsite', amount: 340, receipts: 6, status: 'pending', submittedAt: 'Feb 3, 2026' },
+  { id: 'enrm-2', claimant: 'Priya Desai', claimantInitials: 'PD', description: 'Uber / meals — Helena offsite', amount: 340, receipts: 6, status: 'pending', submittedAt: 'Feb 3, 2026' },
   { id: 'enrm-3', claimant: 'VP Engineering', claimantInitials: 'VE', description: 'Monitor adapter + cables — home office', amount: 95, receipts: 2, status: 'paid', submittedAt: 'Jan 28, 2026' },
 ];
 
@@ -917,7 +917,7 @@ const BUSINESS_AUDIT: FinanceAuditEntry[] = [
   { id: 'enau-4', action: 'Approval Granted', actor: 'CFO', timestamp: 'Feb 10, 2026 11:00 AM', timestampMs: 1739195400000, description: 'Q2 Marketing Campaign — $5,000 approved' },
   { id: 'enau-5', action: 'Contractor Payment', actor: 'Finance', timestamp: 'Feb 10, 2026 3:00 PM', timestampMs: 1739210400000, description: 'Studio Nine — $5,500 for February deliverables' },
   { id: 'enau-6', action: 'Payroll Run', actor: 'HR / Finance', timestamp: 'Feb 1, 2026 8:00 AM', timestampMs: 1738396800000, description: 'February payroll processed — 12 FTE, $148,000' },
-  { id: 'enau-7', action: 'Reimbursement Filed', actor: 'Priya Desai', timestamp: 'Feb 3, 2026 5:00 PM', timestampMs: 1738602000000, description: 'Nashville offsite expenses — $340 (6 receipts)' },
+  { id: 'enau-7', action: 'Reimbursement Filed', actor: 'Priya Desai', timestamp: 'Feb 3, 2026 5:00 PM', timestampMs: 1738602000000, description: 'Helena offsite expenses — $340 (6 receipts)' },
   { id: 'enau-8', action: 'Contract Review', actor: 'CFO', timestamp: 'Feb 5, 2026 10:00 AM', timestampMs: 1738753200000, description: 'WeWork lease renewal flagged — expiring Jul 31' },
   { id: 'enau-9', action: 'Budget Transfer', actor: 'CFO', timestamp: 'Jan 28, 2026 3:00 PM', timestampMs: 1738090800000, description: 'Moved $3K from Travel to Contractors for Q1' },
   { id: 'enau-10', action: 'Report Generated', actor: 'CFO', timestamp: 'Feb 5, 2026 11:30 AM', timestampMs: 1738758600000, description: 'Monthly P&L — January 2026' },

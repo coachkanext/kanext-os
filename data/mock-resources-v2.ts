@@ -393,7 +393,7 @@ const collections: LibraryCollection[] = [
 const libraryItems: ResourceItem[] = [
   {
     id: 'res-001',
-    title: 'KaNeXT MBB Coaching Philosophy',
+    title: 'Carroll MBB Coaching Philosophy',
     type: 'doc',
     category: 'library',
     scope: 'program',
@@ -987,7 +987,7 @@ const scoutingItems: ResourceScoutingItem[] = [
     id: 'scout-005',
     title: 'Opponent Pack: SFAT',
     type: 'opponent-pack',
-    description: 'Full scouting package for South Ridgemont A&T.',
+    description: 'Full scouting package for South MSU-Northern A&T.',
     lastUpdated: 'Jan 30, 2026',
     owner: 'Marcus Reed',
     ownerInitials: 'MR',
@@ -1171,9 +1171,9 @@ const nexusSnapshots: ResourceNexusSnapshot[] = [
   },
   {
     id: 'snap-005',
-    title: 'Postgame Report — vs Ridgemont',
+    title: 'Postgame Report — vs MSU-Northern',
     snapshotType: 'postgame-packet',
-    context: 'vs Ridgemont — Jan 25, 2026',
+    context: 'vs MSU-Northern — Jan 25, 2026',
     createdBy: 'Alex Morgan',
     createdByInitials: 'SK',
     createdAt: 'Jan 25, 2026',
@@ -1188,7 +1188,7 @@ const nexusSnapshots: ResourceNexusSnapshot[] = [
 const links: ResourceLink[] = [
   {
     id: 'link-001',
-    title: 'KaNeXT MBB Synergy Portal',
+    title: 'Carroll MBB Synergy Portal',
     url: 'https://synergy.kanext.edu/mbb',
     platform: 'synergy',
     pinned: true,
@@ -1210,7 +1210,7 @@ const links: ResourceLink[] = [
   },
   {
     id: 'link-003',
-    title: 'KaNeXT MBB Film Playlist',
+    title: 'Carroll MBB Film Playlist',
     url: 'https://youtube.com/playlist?list=fmu-mbb-film',
     platform: 'youtube',
     pinned: true,
@@ -1221,7 +1221,7 @@ const links: ResourceLink[] = [
   },
   {
     id: 'link-004',
-    title: 'KaNeXT Athletics Website',
+    title: 'Carroll Athletics Website',
     url: 'https://athletics.kanext.edu',
     platform: 'website',
     pinned: false,
@@ -1361,9 +1361,9 @@ const audit: ResourceAuditEntry[] = [
     action: 'snapshot_saved',
     actor: 'Alex Morgan',
     actorInitials: 'SK',
-    target: 'Postgame Report — vs Ridgemont',
+    target: 'Postgame Report — vs MSU-Northern',
     timestamp: 'Jan 25, 2026 — 10:45 PM',
-    detail: 'Saved Nexus postgame packet after Ridgemont game.',
+    detail: 'Saved Nexus postgame packet after MSU-Northern game.',
   },
   {
     id: 'aud-008',

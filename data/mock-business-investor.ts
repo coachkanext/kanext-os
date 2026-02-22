@@ -1,6 +1,6 @@
 /**
  * Mock Business Investor Data
- * KaNeXT company information for Business mode.
+ * Valuetainment company information for Business mode.
  */
 
 import type {
@@ -18,12 +18,12 @@ import type {
 
 export const KANEXT_ORGANIZATION: BusinessOrganization = {
   id: 'kanext-001',
-  name: 'KaNeXT',
+  name: 'Valuetainment',
   mode: 'business',
   type: 'Technology Company',
-  location: 'Nashville, TN',
+  location: 'Fort Lauderdale, FL',
   description:
-    'KaNeXT builds intelligent operating systems for organizations. Our platform provides unified interfaces for sports programs, churches, educational institutions, and enterprises to manage operations, engage stakeholders, and make data-driven decisions.',
+    'Valuetainment builds intelligent operating systems for organizations. Our platform provides unified interfaces for sports programs, churches, educational institutions, and enterprises to manage operations, engage stakeholders, and make data-driven decisions.',
   legalStructure: 'Delaware C-Corporation',
   stateOfFormation: 'Delaware',
   status: 'Active - Seed Stage',
@@ -40,7 +40,7 @@ export const BOARD_MEMBERS: BoardMember[] = [
     name: 'Alex Morgan',
     role: 'Founder & CEO',
     title: 'Chief Executive Officer',
-    company: 'KaNeXT',
+    company: 'Valuetainment',
     bio: 'Former Division I athletic director with 15 years of experience in sports technology.',
   },
   {
@@ -64,7 +64,7 @@ export const BOARD_MEMBERS: BoardMember[] = [
     name: 'Rev. David Reeves',
     role: 'Advisor',
     title: 'Senior Pastor',
-    company: 'KaNeXT Church',
+    company: '2819 Church',
     bio: 'Leads a multi-campus ministry and advises on church technology solutions.',
   },
 ];
@@ -129,11 +129,11 @@ export const DOCUMENTS: Document[] = [
   {
     id: 'doc-4',
     title: 'Product Demo Video',
-    description: 'KaNeXT OS walkthrough for investors',
+    description: 'Valuetainment OS walkthrough for investors',
     category: 'investor_materials',
     visibility: 'investor',
     fileType: 'link',
-    url: 'https://kanext.io/demo',
+    url: 'https://valuetainment.com/demo',
     createdAt: new Date('2026-01-10'),
     updatedAt: new Date('2026-01-10'),
   },
@@ -184,7 +184,7 @@ export const DOCUMENTS: Document[] = [
   {
     id: 'doc-9',
     title: 'Company Overview',
-    description: 'KaNeXT at a glance',
+    description: 'Valuetainment at a glance',
     category: 'institutional_brief',
     visibility: 'public',
     fileType: 'pdf',

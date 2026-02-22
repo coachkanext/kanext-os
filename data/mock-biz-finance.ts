@@ -4,8 +4,8 @@
  * Receivables, Payables, Approvals, Splits, Revenue, Costs/Burn,
  * Entities, Risk/Controls, Audit, Board Pack Builder.
  *
- * All data references KaNeXT entities: Alex M, PBD, Tom, KaNeXT, KaNeXT Church,
- * KaNeXT, KaNeXT Inc, KaNeXT Media LLC, KaNeXT Sports LLC, OSK Group.
+ * All data references Valuetainment entities: Patrick Bet-David, Tom, Valuetainment, 2819 Church,
+ * Valuetainment Media LLC, Valuetainment Digital LLC, Carroll College LLC, OSK Group.
  */
 
 // =============================================================================
@@ -241,12 +241,12 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
   {
     id: 'le-1',
     date: '2026-02-17',
-    description: 'Mercury ACH deposit \u2014 KaNeXT partnership advance',
+    description: 'Mercury ACH deposit \u2014 Valuetainment partnership advance',
     category: 'Revenue',
     debit: 0,
     credit: 25000,
     balance: 142400,
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
   },
   {
     id: 'le-2',
@@ -256,7 +256,7 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
     debit: 3200,
     credit: 0,
     balance: 117400,
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
   },
   {
     id: 'le-3',
@@ -266,7 +266,7 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
     debit: 8500,
     credit: 0,
     balance: 120600,
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
   },
   {
     id: 'le-4',
@@ -281,12 +281,12 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
   {
     id: 'le-5',
     date: '2026-02-10',
-    description: 'KaNeXT Church consulting retainer \u2014 Q1 invoice',
+    description: '2819 Church consulting retainer \u2014 Q1 invoice',
     category: 'Revenue',
     debit: 0,
     credit: 12000,
     balance: 134100,
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
   },
   {
     id: 'le-6',
@@ -296,27 +296,27 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
     debit: 0,
     credit: 4800,
     balance: 122100,
-    entity: 'KaNeXT Media LLC',
+    entity: 'Valuetainment Digital LLC',
   },
   {
     id: 'le-7',
     date: '2026-02-06',
-    description: 'Legal retainer \u2014 trademark filing (KaNeXT Sports)',
+    description: 'Legal retainer \u2014 trademark filing (Carroll College)',
     category: 'Legal',
     debit: 2500,
     credit: 0,
     balance: 117300,
-    entity: 'KaNeXT Sports LLC',
+    entity: 'Carroll College LLC',
   },
   {
     id: 'le-8',
     date: '2026-02-04',
-    description: 'KaNeXT Racing Series sponsorship payment received',
+    description: 'PBD Podcast Series sponsorship payment received',
     category: 'Revenue',
     debit: 0,
     credit: 15000,
     balance: 119800,
-    entity: 'KaNeXT Sports LLC',
+    entity: 'Carroll College LLC',
   },
 ];
 
@@ -382,8 +382,8 @@ export const BUDGET_ITEMS: BudgetItem[] = [
 export const COMMITMENTS: CommitmentItem[] = [
   {
     id: 'cm-1',
-    title: 'KaNeXT Athletics Technology Partnership',
-    counterparty: 'KaNeXT Sports',
+    title: 'Valuetainment Technology Partnership',
+    counterparty: 'Carroll College',
     amount: '$150,000',
     dueDate: '2026-08-01',
     status: 'active',
@@ -391,7 +391,7 @@ export const COMMITMENTS: CommitmentItem[] = [
   },
   {
     id: 'cm-2',
-    title: 'KaNeXT Church Digital Platform Build-Out',
+    title: '2819 Church Digital Platform Build-Out',
     counterparty: 'Int\u2019l Church of Christ LA',
     amount: '$48,000',
     dueDate: '2026-06-30',
@@ -400,8 +400,8 @@ export const COMMITMENTS: CommitmentItem[] = [
   },
   {
     id: 'cm-3',
-    title: 'KaNeXT Racing Series Season Integration',
-    counterparty: 'KaNeXT Racing',
+    title: 'PBD Podcast Series Season Integration',
+    counterparty: 'PBD Podcast',
     amount: '$22,500',
     dueDate: '2026-09-15',
     status: 'pending',
@@ -434,7 +434,7 @@ export const COMMITMENTS: CommitmentItem[] = [
 export const RECEIVABLES: ReceivableItem[] = [
   {
     id: 'rv-1',
-    from: 'KaNeXT Sports',
+    from: 'Carroll College',
     amount: '$25,000',
     invoiceDate: '2026-01-15',
     dueDate: '2026-02-15',
@@ -451,7 +451,7 @@ export const RECEIVABLES: ReceivableItem[] = [
   },
   {
     id: 'rv-3',
-    from: 'KaNeXT Racing Series',
+    from: 'PBD Podcast Series',
     amount: '$5,000',
     invoiceDate: '2026-02-10',
     dueDate: '2026-03-10',
@@ -514,7 +514,7 @@ export const PAYABLES: PayableItem[] = [
   },
   {
     id: 'pa-5',
-    to: 'KaNeXT Media LLC (inter-entity)',
+    to: 'Valuetainment Digital LLC (inter-entity)',
     amount: '$5,000',
     dueDate: '2026-03-01',
     status: 'scheduled',
@@ -576,7 +576,7 @@ export const APPROVALS: ApprovalItem[] = [
 export const SPLITS: SplitItem[] = [
   {
     id: 'sp-1',
-    entity: 'KaNeXT Inc.',
+    entity: 'Valuetainment Media LLC',
     percentage: 55,
     amount: '$78,320',
     category: 'Core Platform & Engineering',
@@ -590,14 +590,14 @@ export const SPLITS: SplitItem[] = [
   },
   {
     id: 'sp-3',
-    entity: 'KaNeXT Media LLC',
+    entity: 'Valuetainment Digital LLC',
     percentage: 15,
     amount: '$21,360',
     category: 'Media & Content Production',
   },
   {
     id: 'sp-4',
-    entity: 'KaNeXT Sports LLC',
+    entity: 'Carroll College LLC',
     percentage: 10,
     amount: '$14,240',
     category: 'Sports Partnerships & Licensing',
@@ -611,7 +611,7 @@ export const SPLITS: SplitItem[] = [
 export const REVENUE_ITEMS: RevenueItem[] = [
   {
     id: 're-1',
-    source: 'KaNeXT Athletics Technology Partnership',
+    source: 'Valuetainment Technology Partnership',
     amount: '$12,500/mo',
     period: 'Monthly (24-mo term)',
     type: 'partnership',
@@ -619,7 +619,7 @@ export const REVENUE_ITEMS: RevenueItem[] = [
   },
   {
     id: 're-2',
-    source: 'KaNeXT Church Digital Platform Retainer',
+    source: '2819 Church Digital Platform Retainer',
     amount: '$4,000/mo',
     period: 'Monthly (12-mo term)',
     type: 'service',
@@ -635,7 +635,7 @@ export const REVENUE_ITEMS: RevenueItem[] = [
   },
   {
     id: 're-4',
-    source: 'KaNeXT Racing Integration License',
+    source: 'PBD Podcast Integration License',
     amount: '$22,500',
     period: 'Annual (projected Y1)',
     type: 'partnership',
@@ -713,7 +713,7 @@ export const COST_ITEMS: CostItem[] = [
 export const ENTITY_FINANCES: EntityFinance[] = [
   {
     id: 'ef-1',
-    name: 'KaNeXT Inc.',
+    name: 'Valuetainment Media LLC',
     type: 'C-Corp',
     cashBalance: '$89,200',
     monthlyBurn: '$12,400',
@@ -729,7 +729,7 @@ export const ENTITY_FINANCES: EntityFinance[] = [
   },
   {
     id: 'ef-3',
-    name: 'KaNeXT Media LLC',
+    name: 'Valuetainment Digital LLC',
     type: 'LLC',
     cashBalance: '$16,400',
     monthlyBurn: '$2,200',
@@ -737,7 +737,7 @@ export const ENTITY_FINANCES: EntityFinance[] = [
   },
   {
     id: 'ef-4',
-    name: 'KaNeXT Sports LLC',
+    name: 'Carroll College LLC',
     type: 'LLC',
     cashBalance: '$5,200',
     monthlyBurn: '$1,400',
@@ -770,10 +770,10 @@ export const RISK_CONTROLS: RiskControl[] = [
   },
   {
     id: 'rc-3',
-    title: 'KaNeXT contract renewal uncertainty',
+    title: 'Valuetainment contract renewal uncertainty',
     severity: 'medium',
     category: 'Revenue',
-    mitigation: 'Quarterly check-ins with KaNeXT athletic director; performance reports',
+    mitigation: 'Quarterly check-ins with Valuetainment athletic director; performance reports',
     owner: 'Jordan Hayes',
     status: 'mitigated',
   },
@@ -788,7 +788,7 @@ export const RISK_CONTROLS: RiskControl[] = [
   },
   {
     id: 'rc-5',
-    title: 'KaNeXT Sports LLC formation incomplete',
+    title: 'Carroll College LLC formation incomplete',
     severity: 'low',
     category: 'Corporate',
     mitigation: 'File operating agreement and EIN application by March 1',
@@ -824,7 +824,7 @@ export const AUDIT_LOG: AuditEntry[] = [
     action: 'Invoice generated',
     actor: 'Alex Morgan',
     category: 'Receivables',
-    detail: 'Invoice INV-2026-018 sent to KaNeXT for $25,000 partnership advance',
+    detail: 'Invoice INV-2026-018 sent to Valuetainment for $25,000 partnership advance',
   },
   {
     id: 'au-4',
@@ -840,7 +840,7 @@ export const AUDIT_LOG: AuditEntry[] = [
     action: 'Inter-entity transfer executed',
     actor: 'David Okonkwo',
     category: 'Treasury',
-    detail: '$5,000 transferred from KaNeXT Inc. to OSK Group LLC for media production',
+    detail: '$5,000 transferred from Valuetainment Media LLC to OSK Group LLC for media production',
   },
   {
     id: 'au-6',
@@ -848,7 +848,7 @@ export const AUDIT_LOG: AuditEntry[] = [
     action: 'Risk item flagged',
     actor: 'Tom Ellsworth',
     category: 'Risk',
-    detail: 'KaNeXT Sports LLC formation incomplete \u2014 accepted risk until March',
+    detail: 'Carroll College LLC formation incomplete \u2014 accepted risk until March',
   },
   {
     id: 'au-7',
@@ -864,7 +864,7 @@ export const AUDIT_LOG: AuditEntry[] = [
     action: 'Commitment recorded',
     actor: 'Jordan Hayes',
     category: 'Commitments',
-    detail: 'KaNeXT Racing Series integration partnership \u2014 $22,500 pending countersign',
+    detail: 'PBD Podcast Series integration partnership \u2014 $22,500 pending countersign',
   },
 ];
 
@@ -962,8 +962,8 @@ export interface EarmarkItem {
 }
 
 export const EARMARKS: EarmarkItem[] = [
-  { id: 'em-1', label: 'Series A Legal Reserve', amount: '$25,000', entity: 'KaNeXT Inc.', purpose: 'Legal fees for Series A close', expiresAt: 'Mar 31' },
-  { id: 'em-2', label: 'Q2 Marketing Budget', amount: '$15,000', entity: 'KaNeXT Inc.', purpose: 'Earmarked for Q2 campaign spend', expiresAt: 'Jun 30' },
+  { id: 'em-1', label: 'Series A Legal Reserve', amount: '$25,000', entity: 'Valuetainment Media LLC', purpose: 'Legal fees for Series A close', expiresAt: 'Mar 31' },
+  { id: 'em-2', label: 'Q2 Marketing Budget', amount: '$15,000', entity: 'Valuetainment Media LLC', purpose: 'Earmarked for Q2 campaign spend', expiresAt: 'Jun 30' },
 ];
 
 // =============================================================================

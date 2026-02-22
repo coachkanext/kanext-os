@@ -1,6 +1,6 @@
 /**
  * Mock data for simulation results — v2.
- * Expanded to cover 9 sim types with KaNeXT data.
+ * Expanded to cover 9 sim types with Carroll College data.
  * All original exports preserved for backward compatibility.
  */
 
@@ -13,7 +13,7 @@ import type {
 import type { SimType, SimTypeCard, SimRun, ConfidenceGate } from '@/components/simulation/simulation-types';
 
 // =============================================================================
-// PLAYER IMPACT DATA (KaNeXT roster)
+// PLAYER IMPACT DATA (Carroll College roster)
 // =============================================================================
 
 const VARSITY_PLAYERS: PlayerImpact[] = [
@@ -70,16 +70,16 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
 ];
 
 // =============================================================================
-// SAMPLE SIMULATIONS (KaNeXT data)
+// SAMPLE SIMULATIONS (Carroll College data)
 // =============================================================================
 
 export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-1',
     type: 'single_game',
-    matchupText: 'KaNeXT vs Pinecrest University',
-    homeTeam: 'KaNeXT Sports',
-    awayTeam: 'Pinecrest University',
+    matchupText: 'Carroll College vs Dakota State University',
+    homeTeam: 'Carroll College',
+    awayTeam: 'Dakota State University',
     rosterUsed: 'official',
     timestamp: new Date('2026-02-19T14:30:00'),
     winProbability: 64,
@@ -90,9 +90,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     volatility: 'medium',
     drivers: [
       'Home court advantage (+3.2 pts expected)',
-      'KaNeXT superior in perimeter shooting (41% vs 35%)',
-      'Pinecrest strength in paint scoring could narrow gap',
-      'KaNeXT 8-2 in last 10 home games',
+      'Carroll superior in perimeter shooting (41% vs 35%)',
+      'Dakota State strength in paint scoring could narrow gap',
+      'Carroll 8-2 in last 10 home games',
     ],
     playerImpact: VARSITY_PLAYERS,
     boxScoreProjection: {
@@ -113,9 +113,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-2',
     type: 'single_game',
-    matchupText: 'KaNeXT @ Southeastern',
-    homeTeam: 'Summit University',
-    awayTeam: 'KaNeXT Sports',
+    matchupText: 'Carroll College @ Southeastern',
+    homeTeam: 'Rocky Mountain College',
+    awayTeam: 'Carroll College',
     rosterUsed: 'official',
     timestamp: new Date('2026-02-19T15:00:00'),
     winProbability: 48,
@@ -127,7 +127,7 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     drivers: [
       'Road game disadvantage (-3.8 pts expected)',
       'Southeastern on 5-game home win streak',
-      'KaNeXT depth advantage could be factor in 2nd half',
+      'Carroll depth advantage could be factor in 2nd half',
       'Matchup concerns at the 4 position',
     ],
     playerImpact: VARSITY_PLAYERS.map((p) => ({
@@ -139,9 +139,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-3',
     type: 'single_game',
-    matchupText: 'KaNeXT vs Clearwater',
-    homeTeam: 'KaNeXT Sports',
-    awayTeam: 'Clearwater University',
+    matchupText: 'Carroll College vs Bellevue',
+    homeTeam: 'Carroll College',
+    awayTeam: 'Bellevue University',
     rosterUsed: 'sandbox',
     timestamp: new Date('2026-02-19T15:30:00'),
     winProbability: 71,
@@ -153,8 +153,8 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     drivers: [
       'Sandbox roster includes Jaylen Brooks (projected +5.2 pts)',
       'Enhanced perimeter defense with lineup change',
-      'Clearwater struggles on the road (4-6 away)',
-      'KaNeXT motion offense matches well against zone',
+      'Bellevue struggles on the road (4-6 away)',
+      'Carroll motion offense matches well against zone',
     ],
     playerImpact: [
       {
@@ -181,13 +181,13 @@ export const SAVED_SIMULATIONS: SavedSimulation[] = [
     ...SAMPLE_SIMULATIONS[0],
     threadId: 'thread-sim-1',
     savedAt: new Date('2026-02-18T18:45:00'),
-    title: 'Pinecrest Preview — Base',
+    title: 'Dakota State Preview — Base',
   },
   {
     ...SAMPLE_SIMULATIONS[2],
     threadId: 'thread-sim-3',
     savedAt: new Date('2026-02-18T19:00:00'),
-    title: 'Clearwater Preview — Sandbox',
+    title: 'Bellevue Preview — Sandbox',
   },
 ];
 
@@ -215,7 +215,7 @@ export const RECENT_SIM_RUNS: SimRun[] = [
   {
     id: 'run-1',
     simType: 'game',
-    title: 'KaNeXT vs Pinecrest — Base',
+    title: 'Carroll College vs Dakota State — Base',
     timestamp: new Date('2026-02-18T18:45:00'),
     winProbability: 64,
     projectedScore: { home: 78, away: 72 },
@@ -237,7 +237,7 @@ export const RECENT_SIM_RUNS: SimRun[] = [
   {
     id: 'run-2',
     simType: 'game',
-    title: 'KaNeXT @ Southeastern',
+    title: 'Carroll College @ Southeastern',
     timestamp: new Date('2026-02-18T19:10:00'),
     winProbability: 48,
     projectedScore: { home: 74, away: 71 },
@@ -253,7 +253,7 @@ export const RECENT_SIM_RUNS: SimRun[] = [
         { name: 'Depth factor', impact: 'positive', weight: 0.25 },
       ],
     },
-    drivers: ['Road disadvantage -3.8', 'SEU home streak', 'KaNeXT depth 2nd half'],
+    drivers: ['Road disadvantage -3.8', 'SEU home streak', 'Carroll depth 2nd half'],
     isSaved: true,
   },
   {
@@ -307,9 +307,9 @@ export const RECENT_SIM_RUNS: SimRun[] = [
 // =============================================================================
 
 export const SUN_CONFERENCE_OPPONENTS = [
-  'Pinecrest University', 'Summit', 'Lakewood', 'Clearwater',
-  'Westfield', 'Ridgemont', 'Magnolia University', 'Johnson University',
-  'Bayshore', 'Point University',
+  'Dakota State University', 'Rocky Mountain', 'Providence', 'Bellevue',
+  'Montana Tech', 'MSU-Northern', 'Multnomah', 'Johnson University',
+  'UM Western', 'Point University',
 ];
 
 // =============================================================================
@@ -323,7 +323,7 @@ export const SEASON_SIM = {
   gamesRemaining: 2,
   playoffProbability: 88,
   confTournamentSeed: 3,
-  mustWinGames: ['vs Pinecrest University'],
+  mustWinGames: ['vs Dakota State University'],
   finishDistribution: [
     { wins: 18, probability: 8 },
     { wins: 19, probability: 22 },
@@ -342,9 +342,9 @@ export const CONFERENCE_POSTSEASON = {
   semiFinalOdds: 42,
   quarterFinalOdds: 88,
   bracketPaths: [
-    { round: 'Quarterfinal', opponent: 'Magnolia University', winProb: 78, seed: '3 vs 6' },
-    { round: 'Semifinal', opponent: 'Lakewood / Clearwater', winProb: 55, seed: '3 vs 2/7' },
-    { round: 'Championship', opponent: 'Summit', winProb: 42, seed: '3 vs 1' },
+    { round: 'Quarterfinal', opponent: 'Multnomah', winProb: 78, seed: '3 vs 6' },
+    { round: 'Semifinal', opponent: 'Providence / Bellevue', winProb: 55, seed: '3 vs 2/7' },
+    { round: 'Championship', opponent: 'Rocky Mountain', winProb: 42, seed: '3 vs 1' },
   ],
 };
 

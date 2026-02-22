@@ -58,7 +58,7 @@ const SPORTS_BUDGETS: BudgetCategory[] = [
 ];
 
 const SPORTS_TRANSACTIONS: Transaction[] = [
-  { id: 'stx-1', description: 'Team bus charter — Magnolia University', amount: 2400, type: 'expense', category: 'Travel', date: 'Feb 15, 2026', vendor: 'Charter Express', status: 'completed' },
+  { id: 'stx-1', description: 'Team bus charter — Multnomah', amount: 2400, type: 'expense', category: 'Travel', date: 'Feb 15, 2026', vendor: 'Charter Express', status: 'completed' },
   { id: 'stx-2', description: 'Nike equipment order — uniforms', amount: 4800, type: 'expense', category: 'Equipment', date: 'Feb 14, 2026', vendor: 'Nike Team Sports', status: 'completed' },
   { id: 'stx-3', description: 'Booster donation — Williams Family', amount: 5000, type: 'income', category: 'Donations', date: 'Feb 12, 2026', status: 'completed' },
   { id: 'stx-4', description: 'Game guarantee — Homecoming', amount: 15000, type: 'income', category: 'Revenue', date: 'Feb 10, 2026', status: 'completed' },
@@ -71,7 +71,7 @@ const SPORTS_TRANSACTIONS: Transaction[] = [
 ];
 
 const SPORTS_INVOICES: Invoice[] = [
-  { id: 'si-1', recipient: 'Charter Express', amount: 2400, dueDate: 'Feb 28, 2026', status: 'pending', description: 'Bus charter — Magnolia University trip' },
+  { id: 'si-1', recipient: 'Charter Express', amount: 2400, dueDate: 'Feb 28, 2026', status: 'pending', description: 'Bus charter — Multnomah trip' },
   { id: 'si-2', recipient: 'Nike Team Sports', amount: 4800, dueDate: 'Mar 5, 2026', status: 'pending', description: 'Spring equipment order' },
   { id: 'si-3', recipient: 'Conference Office', amount: 1500, dueDate: 'Feb 15, 2026', status: 'paid', description: 'Conference tournament entry fee' },
   { id: 'si-4', recipient: 'SportsMed Pro', amount: 3200, dueDate: 'Mar 1, 2026', status: 'pending', description: 'Athletic trainer — March contract' },
@@ -183,7 +183,7 @@ const BUSINESS_TRANSACTIONS: Transaction[] = [
   { id: 'btx-5', description: 'Pilot fee — Gamma Labs', amount: 8000, type: 'income', category: 'Revenue', date: 'Feb 8, 2026', status: 'completed' },
   { id: 'btx-6', description: 'Legal review — terms of service', amount: 2800, type: 'expense', category: 'Legal', date: 'Feb 5, 2026', vendor: 'Wilson & Associates', status: 'completed' },
   { id: 'btx-7', description: 'SaaS subscription — Delta Co', amount: 4800, type: 'income', category: 'Revenue', date: 'Feb 3, 2026', status: 'completed' },
-  { id: 'btx-8', description: 'Team offsite — Nashville', amount: 4200, type: 'expense', category: 'Operations', date: 'Feb 1, 2026', vendor: 'Various', status: 'completed' },
+  { id: 'btx-8', description: 'Team offsite — Helena', amount: 4200, type: 'expense', category: 'Operations', date: 'Feb 1, 2026', vendor: 'Various', status: 'completed' },
   { id: 'btx-9', description: 'Ad spend — Google/Meta', amount: 6500, type: 'expense', category: 'Marketing', date: 'Jan 30, 2026', vendor: 'Google Ads', status: 'completed' },
   { id: 'btx-10', description: 'Enterprise license — Omega Corp', amount: 12000, type: 'income', category: 'Revenue', date: 'Jan 28, 2026', status: 'completed' },
 ];

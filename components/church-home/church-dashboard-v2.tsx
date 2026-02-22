@@ -1,5 +1,5 @@
 /**
- * Church Dashboard V2 — KaNeXT Church
+ * Church Dashboard V2 — 2819 Church
  *
  * Layout: Video Hero → Next Service → Commerce Row (3 text-stack cards) →
  * Ministry Health → Growth Metrics (2×2) → 3 Bottom Sheets.

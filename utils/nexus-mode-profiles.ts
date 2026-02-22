@@ -24,7 +24,7 @@ const MODE_VOCAB: Record<string, Record<string, string>> = {
     'participant': 'Player / Student-Athlete',
     'evaluation': 'Player Eval',
     'packet': 'Scouting Brief / Game Plan Packet',
-    'governing_body': 'Governing Body (KaNeXT Church, KaNeXT, NCAA)',
+    'governing_body': 'Governing Body (NAIA, Frontier Conference, NCAA)',
   },
   competition: {
     'user': 'Team Owner / Race Director',

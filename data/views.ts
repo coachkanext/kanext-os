@@ -49,7 +49,7 @@ export const MODE_CHIP_CONFIG: { mode: DrawerMode; label: string; icon: string }
 // =============================================================================
 
 export const CANONICAL_VIEWS: ViewDefinition[] = [
-  // ── SPORTS (1 view) ──
+  // ── SPORTS: Carroll College Fighting Saints ──
   {
     view_id: 'v_sports_kx',
     mode: 'sports',
@@ -58,14 +58,14 @@ export const CANONICAL_VIEWS: ViewDefinition[] = [
     season_id: 'kx_2025_26',
     membership_id: 'mem_sports_kx',
     derived_role_badge: 'System Owner',
-    org_display_name: 'KaNeXT Sports',
+    org_display_name: 'Carroll College',
     role_title: 'System Owner',
     scope_line: 'Full Access',
     rbca_tier: 5,
     season_chip: '2025\u201326',
   },
 
-  // ── BUSINESS (1 view) ──
+  // ── BUSINESS: Valuetainment ──
   {
     view_id: 'v_biz_kx',
     mode: 'business',
@@ -74,14 +74,14 @@ export const CANONICAL_VIEWS: ViewDefinition[] = [
     season_id: 'biz_kx_fy2026',
     membership_id: 'mem_biz_kx',
     derived_role_badge: 'System Owner',
-    org_display_name: 'KaNeXT Business',
+    org_display_name: 'Valuetainment',
     role_title: 'System Owner',
     scope_line: 'Full Access',
     rbca_tier: 5,
     season_chip: 'FY2026',
   },
 
-  // ── CHURCH (1 view) ──
+  // ── CHURCH: 2819 Church ──
   {
     view_id: 'v_church_kx',
     mode: 'church',
@@ -90,14 +90,14 @@ export const CANONICAL_VIEWS: ViewDefinition[] = [
     season_id: 'church_kx_2026',
     membership_id: 'mem_church_kx',
     derived_role_badge: 'System Owner',
-    org_display_name: 'KaNeXT Church',
+    org_display_name: '2819 Church',
     role_title: 'System Owner',
     scope_line: 'Full Access',
     rbca_tier: 5,
     season_chip: 'This Week',
   },
 
-  // ── EDUCATION (1 view) ──
+  // ── EDUCATION: Howard University ──
   {
     view_id: 'v_edu_kx',
     mode: 'education',
@@ -106,14 +106,14 @@ export const CANONICAL_VIEWS: ViewDefinition[] = [
     season_id: 'edu_kx_2025_26',
     membership_id: 'mem_edu_kx',
     derived_role_badge: 'System Owner',
-    org_display_name: 'KaNeXT Education',
+    org_display_name: 'Howard University',
     role_title: 'System Owner',
     scope_line: 'Full Access',
     rbca_tier: 5,
     season_chip: '2025\u201326',
   },
 
-  // ── COMPETITION (1 view) ──
+  // ── COMPETITION: Adidas 3SSB ──
   {
     view_id: 'v_comp_kx',
     mode: 'competition',
@@ -122,11 +122,11 @@ export const CANONICAL_VIEWS: ViewDefinition[] = [
     season_id: 'comp_kx_s1_2026',
     membership_id: 'mem_comp_kx',
     derived_role_badge: 'System Owner',
-    org_display_name: 'KaNeXT Competition',
+    org_display_name: 'Adidas 3SSB',
     role_title: 'System Owner',
     scope_line: 'Full Access',
     rbca_tier: 5,
-    season_chip: '2026',
+    season_chip: '2025\u201326',
   },
 ];
 

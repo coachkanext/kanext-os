@@ -18,19 +18,19 @@ import type {
 
 export const V2_ORGANIZATIONS: V2Organization[] = [
   // ── Sports ──
-  { org_id: 'sports_kx', org_name: 'KaNeXT Sports', mode: 'sports', location: 'Nashville, TN', org_type: 'college_athletics' },
+  { org_id: 'sports_kx', org_name: 'Carroll College', mode: 'sports', location: 'Helena, MT', org_type: 'college_athletics' },
 
   // ── Business ──
-  { org_id: 'biz_kx', org_name: 'KaNeXT Business', mode: 'business', location: 'Nashville, TN', org_type: 'platform', view_variant: 'Founder' },
+  { org_id: 'biz_kx', org_name: 'Valuetainment', mode: 'business', location: 'Fort Lauderdale, FL', org_type: 'platform', view_variant: 'Founder' },
 
   // ── Church ──
-  { org_id: 'church_kx', org_name: 'KaNeXT Church', mode: 'church', location: 'Nashville, TN', org_type: 'faith' },
+  { org_id: 'church_kx', org_name: '2819 Church', mode: 'church', location: 'Atlanta, GA', org_type: 'faith' },
 
   // ── Education ──
-  { org_id: 'edu_kx', org_name: 'KaNeXT Education', mode: 'education', location: 'Nashville, TN', org_type: 'university' },
+  { org_id: 'edu_kx', org_name: 'Howard University', mode: 'education', location: 'Washington, DC', org_type: 'university' },
 
   // ── Competition ──
-  { org_id: 'comp_kx', org_name: 'KaNeXT Competition', mode: 'competition', location: 'Global', org_type: 'motorsport' },
+  { org_id: 'comp_kx', org_name: 'Adidas 3SSB', mode: 'competition', location: 'Rock Hill, SC', org_type: 'grassroots_basketball' },
 ];
 
 // =============================================================================
@@ -94,43 +94,44 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
 // =============================================================================
 
 export const V2_PROGRAMS: V2Program[] = [
-  // ── KaNeXT Sports (12 varsity + 2 dev = 14) ──
+  // ── Carroll College Fighting Saints (NAIA — 17 varsity sports) ──
   { program_id: 'kx_mbb', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Basketball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
   { program_id: 'kx_wbb', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Basketball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
   { program_id: 'kx_football', org_id: 'sports_kx', mode: 'sports', program_name: 'Football', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_baseball', org_id: 'sports_kx', mode: 'sports', program_name: 'Baseball', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_softball', org_id: 'sports_kx', mode: 'sports', program_name: 'Softball', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
   { program_id: 'kx_msoc', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Soccer", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
   { program_id: 'kx_wsoc', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Soccer", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
   { program_id: 'kx_wvb', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Volleyball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
   { program_id: 'kx_mtf', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Track & Field", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
   { program_id: 'kx_wtf', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Track & Field", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_swim', org_id: 'sports_kx', mode: 'sports', program_name: 'Swimming & Diving', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_mgolf', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Golf", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_wgolf', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Golf", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_softball', org_id: 'sports_kx', mode: 'sports', program_name: 'Softball', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_swim', org_id: 'sports_kx', mode: 'sports', program_name: 'Swimming', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
   { program_id: 'kx_cheer', org_id: 'sports_kx', mode: 'sports', program_name: 'Competitive Cheer', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_dev1', org_id: 'sports_kx', mode: 'sports', program_name: 'Basketball Development Team 1', program_type: 'Development', source_tag: 'KX_OPERATED', status: 'Active' },
-  { program_id: 'kx_dev2', org_id: 'sports_kx', mode: 'sports', program_name: 'Basketball Development Team 2', program_type: 'Development', source_tag: 'KX_OPERATED', status: 'Active' },
+  { program_id: 'kx_esports', org_id: 'sports_kx', mode: 'sports', program_name: 'Esports', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
 
-  // ── KaNeXT Business (3 programs) ──
-  { program_id: 'biz_kx_ops', org_id: 'biz_kx', mode: 'business', program_name: 'KaNeXT Operations', program_type: 'Platform', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'biz_kx_product', org_id: 'biz_kx', mode: 'business', program_name: 'Product Development', program_type: 'Engineering', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'biz_kx_growth', org_id: 'biz_kx', mode: 'business', program_name: 'Growth & Marketing', program_type: 'Revenue', source_tag: 'OFFICIAL', status: 'Active' },
+  // ── Valuetainment (3 programs) ──
+  { program_id: 'biz_kx_ops', org_id: 'biz_kx', mode: 'business', program_name: 'Valuetainment Media', program_type: 'Platform', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'biz_kx_product', org_id: 'biz_kx', mode: 'business', program_name: 'Bet-David Consulting', program_type: 'Consulting', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'biz_kx_growth', org_id: 'biz_kx', mode: 'business', program_name: 'Minnect', program_type: 'Technology', source_tag: 'OFFICIAL', status: 'Active' },
 
-  // ── KaNeXT Church (5 programs) ──
+  // ── 2819 Church (5 programs) ──
   { program_id: 'church_kx_main', org_id: 'church_kx', mode: 'church', program_name: 'Sunday Worship', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
   { program_id: 'church_kx_youth', org_id: 'church_kx', mode: 'church', program_name: 'Youth Ministry', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'church_kx_kids', org_id: 'church_kx', mode: 'church', program_name: "Children's Ministry", program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'church_kx_groups', org_id: 'church_kx', mode: 'church', program_name: 'Small Groups', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'church_kx_outreach', org_id: 'church_kx', mode: 'church', program_name: 'Community Outreach', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'church_kx_kids', org_id: 'church_kx', mode: 'church', program_name: 'Formation Kids', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'church_kx_groups', org_id: 'church_kx', mode: 'church', program_name: 'Squads', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'church_kx_outreach', org_id: 'church_kx', mode: 'church', program_name: '2819 Ministries', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
 
-  // ── KaNeXT Education (4 programs) ──
+  // ── Howard University (4 programs) ──
   { program_id: 'edu_kx_main', org_id: 'edu_kx', mode: 'education', program_name: 'Academic Programs', program_type: 'Institution', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'edu_kx_stem', org_id: 'edu_kx', mode: 'education', program_name: 'STEM Division', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'edu_kx_arts', org_id: 'edu_kx', mode: 'education', program_name: 'Arts & Humanities', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'edu_kx_stem', org_id: 'edu_kx', mode: 'education', program_name: 'College of Engineering & Architecture', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'edu_kx_arts', org_id: 'edu_kx', mode: 'education', program_name: 'College of Arts & Sciences', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
   { program_id: 'edu_kx_business', org_id: 'edu_kx', mode: 'education', program_name: 'School of Business', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
 
-  // ── KaNeXT Competition (2 programs) ──
-  { program_id: 'comp_kx_main', org_id: 'comp_kx', mode: 'competition', program_name: 'KaNeXT Championship Series', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'comp_kx_qualifier', org_id: 'comp_kx', mode: 'competition', program_name: 'Regional Qualifiers', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
+  // ── Adidas 3SSB (3 programs) ──
+  { program_id: 'comp_kx_main', org_id: 'comp_kx', mode: 'competition', program_name: '3SSB Championship Circuit', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'comp_kx_qualifier', org_id: 'comp_kx', mode: 'competition', program_name: 'Jr. 3SSB', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'comp_kx_dev', org_id: 'comp_kx', mode: 'competition', program_name: '3SGB (3Stripes Gold)', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
 ];
 
 // =============================================================================
@@ -138,21 +139,21 @@ export const V2_PROGRAMS: V2Program[] = [
 // =============================================================================
 
 export const V2_SEASONS: V2Season[] = [
-  // Sports
+  // Carroll College Fighting Saints
   { season_id: 'kx_2025_26', org_id: 'sports_kx', mode: 'sports', season_name: '2025\u201326', start_date: '2025-10-01', end_date: '2026-04-01', is_current: true },
   { season_id: 'kx_2024_25', org_id: 'sports_kx', mode: 'sports', season_name: '2024\u201325', start_date: '2024-10-01', end_date: '2025-04-01', is_current: false },
 
-  // Business
+  // Valuetainment
   { season_id: 'biz_kx_fy2026', org_id: 'biz_kx', mode: 'business', season_name: 'FY 2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
-  // Church
+  // 2819 Church
   { season_id: 'church_kx_2026', org_id: 'church_kx', mode: 'church', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
-  // Education
+  // Howard University
   { season_id: 'edu_kx_2025_26', org_id: 'edu_kx', mode: 'education', season_name: '2025\u201326 Academic Year', start_date: '2025-08-18', end_date: '2026-05-10', is_current: true },
 
-  // Competition
-  { season_id: 'comp_kx_s1_2026', org_id: 'comp_kx', mode: 'competition', season_name: 'Season 1 \u00B7 2026', start_date: '2026-03-01', end_date: '2026-11-30', is_current: true },
+  // Adidas 3SSB
+  { season_id: 'comp_kx_s1_2026', org_id: 'comp_kx', mode: 'competition', season_name: '2025\u201326 Circuit', start_date: '2025-10-01', end_date: '2026-07-31', is_current: true },
 ];
 
 // =============================================================================

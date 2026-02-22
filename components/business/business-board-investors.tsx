@@ -220,7 +220,7 @@ function BoardContent({ colors, role }: { colors: typeof Colors.light; role: Bus
         <BizCard>
           <BizCardTitle text="GOVERNANCE NOTES" />
           <ThemedText style={[s.governanceText, { color: BP.ash }]}>
-            KaNeXT Inc. operates with a single-class common stock structure. The
+            Valuetainment Inc. operates with a single-class common stock structure. The
             founder holds majority voting control. Advisory and observer seats do
             not carry voting rights unless explicitly converted by board vote.
             All board resolutions require simple majority of voting seats.

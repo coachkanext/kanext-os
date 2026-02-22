@@ -6,7 +6,7 @@
  * Key features:
  * - Controls can BLOCK Payment Rails release if failed
  * - Incidents become immutable once closed
- * - Entity-scoped data tied to KaNeXT entities + Sliema Wanderers FC
+ * - Entity-scoped data tied to Valuetainment entities + Sliema Wanderers FC
  * - Compliance score with circular progress indicator
  */
 import React, { useState, useMemo, useCallback } from 'react';

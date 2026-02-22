@@ -1,7 +1,7 @@
 /**
  * Stats Page — Full Team Stats Hub
  * Multi-tab workspace: Team (Overview/Offense/Defense/Lineups/Shot) + Players
- * Synergy = truth layer (what happened). KaNeXT = interpretation layer (what it means).
+ * Synergy = truth layer (what happened). Carroll = interpretation layer (what it means).
  */
 
 import React, { useState, useMemo } from 'react';
@@ -94,17 +94,17 @@ const SPLITS: { id: Split; label: string }[] = [
 
 const CLUSTER_KEYS: (keyof ClusterRatings)[] = [
   'shooting', 'finishing', 'playmaking',
-  'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
+  'on_ball_defense', 'team_defense', 'rebounding', 'physical',
 ];
 
 const CLUSTER_LABEL_MAP: Record<keyof ClusterRatings, string> = {
   shooting: 'Shooting',
   finishing: 'Finishing',
   playmaking: 'Playmaking',
-  perimeter_defense: 'On-Ball Defense',
-  interior_defense: 'Team Defense',
+  on_ball_defense: 'On-Ball Defense',
+  team_defense: 'Team Defense',
   rebounding: 'Rebounding',
-  frame: 'Physical',
+  physical: 'Physical',
 };
 
 // ── Computed stats from team-stats.ts ──
@@ -445,7 +445,7 @@ function GlobalControls({ split, onSplitChange }: { split: Split; onSplitChange:
         <Text style={st.badgeText}>Synergy</Text>
       </View>
       <View style={[st.chip, st.badgeChip]}>
-        <Text style={st.badgeText}>KaNeXT</Text>
+        <Text style={st.badgeText}>Carroll</Text>
       </View>
     </ScrollView>
   );
@@ -464,7 +464,7 @@ function TeamOverview({
   defensiveStyle,
 }: {
   offWeights: { shooting: number; finishing: number; playmaking: number };
-  defWeights: { perimeter_defense: number; interior_defense: number; rebounding: number; frame: number };
+  defWeights: { on_ball_defense: number; team_defense: number; rebounding: number; physical: number };
   expandedCluster: keyof ClusterRatings | null;
   onToggleCluster: (k: keyof ClusterRatings) => void;
   offensiveStyle: string;
@@ -477,8 +477,8 @@ function TeamOverview({
       <View style={st.identityRow}>
         <Image source={KaNeXT_LOGO} style={st.logo} resizeMode="contain" />
         <View style={st.identityText}>
-          <Text style={st.teamName}>KaNeXT Sports</Text>
-          <Text style={st.teamSubline}>NAA {'\u00B7'} KaNeXT Conference</Text>
+          <Text style={st.teamName}>Carroll College</Text>
+          <Text style={st.teamSubline}>NAA {'\u00B7'} Frontier Conference</Text>
         </View>
         <View style={st.krBadge}>
           <Text style={st.krValue}>{teamKR}</Text>
@@ -502,7 +502,7 @@ function TeamOverview({
 
       {/* B) Projection Row */}
       <View style={st.card}>
-        <Text style={st.sectionLabel}>KaNeXT PROJECTIONS</Text>
+        <Text style={st.sectionLabel}>CARROLL PROJECTIONS</Text>
         <View style={st.statFourCol}>
           <StatCell label="Proj W" value={`${SEASON_PROJECTION.line}`} />
           <StatCell label="Win%" value={`${shi(SEASON_PROJECTION.winPct, sp, 1)}%`} />
@@ -560,9 +560,9 @@ function TeamOverview({
         </View>
       </View>
 
-      {/* E) KaNeXT Overlay */}
+      {/* E) Carroll Overlay */}
       <View style={st.card}>
-        <Text style={st.sectionLabel}>KaNeXT CLUSTER RATINGS</Text>
+        <Text style={st.sectionLabel}>CARROLL CLUSTER RATINGS</Text>
         <ClusterBars
           expandedCluster={expandedCluster}
           onToggleCluster={onToggleCluster}
@@ -644,7 +644,7 @@ function TeamOffense({
       </View>
 
       <View style={st.card}>
-        <Text style={st.sectionLabel}>KaNeXT OFFENSE</Text>
+        <Text style={st.sectionLabel}>CARROLL OFFENSE</Text>
         <View style={st.krInlineRow}>
           <Text style={st.krInlineLabel}>OFF KR</Text>
           <Text style={[st.krInlineValue, { color: barColor(teamOffKR) }]}>{teamOffKR}</Text>
@@ -673,7 +673,7 @@ function TeamDefense({
   onToggleCluster: (k: keyof ClusterRatings) => void;
 }) {
   const sp = useSplit();
-  const defKeys: (keyof ClusterRatings)[] = ['perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
+  const defKeys: (keyof ClusterRatings)[] = ['on_ball_defense', 'team_defense', 'rebounding', 'physical'];
   const defAvgs: Record<keyof ClusterRatings, number> = {} as any;
   const defSubAvgs: Record<keyof ClusterRatings, { name: string; rating: number }[]> = {} as any;
   for (const k of defKeys) {
@@ -721,7 +721,7 @@ function TeamDefense({
       </View>
 
       <View style={st.card}>
-        <Text style={st.sectionLabel}>KaNeXT DEFENSE</Text>
+        <Text style={st.sectionLabel}>CARROLL DEFENSE</Text>
         <View style={st.krInlineRow}>
           <Text style={st.krInlineLabel}>DEF KR</Text>
           <Text style={[st.krInlineValue, { color: barColor(teamDefKR) }]}>{teamDefKR}</Text>
@@ -989,7 +989,7 @@ function PlayersDefense() {
 
   return (
     <>
-      <Text style={st.sectionLabel}>PLAYER DEFENSE (KaNeXT)</Text>
+      <Text style={st.sectionLabel}>PLAYER DEFENSE (CARROLL)</Text>
       {players.map((p) => {
         const clusters = PLAYER_CLUSTERS[p.number];
         return (
@@ -1005,11 +1005,11 @@ function PlayersDefense() {
             {clusters && (
               <>
                 <View style={st.playerStatCol}>
-                  <Text style={st.playerStatVal}>{clusters.perimeter_defense}</Text>
+                  <Text style={st.playerStatVal}>{clusters.on_ball_defense}</Text>
                   <Text style={st.playerStatLabel}>OB</Text>
                 </View>
                 <View style={st.playerStatCol}>
-                  <Text style={st.playerStatVal}>{clusters.interior_defense}</Text>
+                  <Text style={st.playerStatVal}>{clusters.team_defense}</Text>
                   <Text style={st.playerStatLabel}>Team</Text>
                 </View>
                 <View style={st.playerStatCol}>
@@ -1133,7 +1133,7 @@ function PlayerDetailContent({
   const tabs: { id: typeof activeTab; label: string }[] = [
     { id: 'summary', label: 'Summary' },
     { id: 'synergy', label: 'Synergy' },
-    { id: 'kanext', label: 'KaNeXT' },
+    { id: 'kanext', label: 'Carroll' },
     { id: 'shot', label: 'Shot' },
   ];
 

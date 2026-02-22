@@ -1,6 +1,6 @@
 /**
  * Mock data for Sports mode.
- * KaNeXT Men's Basketball
+ * Carroll College Fighting Saints Men's Basketball
  */
 
 // =============================================================================
@@ -155,17 +155,17 @@ export interface ProgramData {
 
 export const INSTITUTION = {
   id: 'fmu',
-  name: 'KaNeXT Sports',
-  nickname: 'Wolves',
-  location: 'Nashville, TN',
-  conference: 'KaNeXT Conference',
-  division: 'NAA',
-  founded: 1879,
+  name: 'Carroll College',
+  nickname: 'Fighting Saints',
+  location: 'Helena, MT',
+  conference: 'Frontier Conference',
+  division: 'NAIA',
+  founded: 1909,
   colors: {
-    primary: '#1D9BF0',
-    secondary: '#F59E0B',
+    primary: '#332A86',
+    secondary: '#E8D3A2',
   },
-  description: 'KaNeXT Sports is a private university located in Nashville, Tennessee. The basketball program competes in the NAA KaNeXT Conference.',
+  description: 'Carroll College is a private Catholic university located in Helena, Montana. The Fighting Saints men\'s basketball program competes in the NAIA Frontier Conference.',
 };
 
 // =============================================================================
@@ -175,10 +175,10 @@ export const INSTITUTION = {
 export const INSTITUTION_LEADERSHIP: Staff[] = [
   {
     id: 'ad-wilson',
-    name: 'Dr. Marcus Wilson',
+    name: 'Charlie Gross',
     title: 'Athletic Director',
     role: 'director',
-    bio: 'Dr. Wilson has served as Athletic Director since 2019, overseeing all 14 varsity sports programs.',
+    bio: 'Charlie Gross serves as Athletic Director, overseeing all varsity sports programs at Carroll College.',
   },
   {
     id: 'assoc-ad-jones',
@@ -203,11 +203,11 @@ export const PROGRAMS: ProgramData[] = [
     staff: [
       {
         id: 'coach-davis',
-        name: 'Ray Bennett',
+        name: 'Dan Pearson',
         title: 'Head Coach',
         role: 'head_coach',
         programId: 'varsity',
-        bio: 'Coach Davis enters his 8th season leading the Blue Tigers, compiling a 142-78 record.',
+        bio: 'Dan Pearson is the 29th head coach in Carroll College men\'s basketball history. A Carroll alum (\'13), he was hired in May 2024.',
       },
       {
         id: 'coach-mitchell',
@@ -699,7 +699,7 @@ export function formatPercentage(value: number): string {
 // RECRUITING TYPES
 // =============================================================================
 
-export type Division = 'NCAA_D1' | 'NCAA_D2' | 'NCAA_D3' | 'NAA' | 'NJCAA' | 'CCCAA';
+export type Division = 'NCAA_D1' | 'NCAA_D2' | 'NCAA_D3' | 'NAIA' | 'NJCAA' | 'CCCAA';
 
 export interface NationalPlayer {
   id: string;
@@ -750,7 +750,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
     weight: '175 lbs',
     classYear: 'JR',
     currentTeam: 'Central Methodist',
-    currentDivision: 'NAA',
+    currentDivision: 'NAIA',
     hometown: 'Kansas City, MO',
     transferStatus: 'available',
     stats: { gp: 28, gs: 28, mpg: 32.5, ppg: 18.4, rpg: 3.2, apg: 6.8, spg: 1.9, bpg: 0.1, fgPct: 44.2, threePct: 38.1, ftPct: 82.3 },
@@ -877,7 +877,7 @@ export const NATIONAL_PLAYERS: NationalPlayer[] = [
     weight: '180 lbs',
     classYear: 'JR',
     currentTeam: 'Evangel',
-    currentDivision: 'NAA',
+    currentDivision: 'NAIA',
     hometown: 'Springfield, MO',
     transferStatus: 'exploring',
     stats: { gp: 29, gs: 29, mpg: 33.8, ppg: 16.9, rpg: 3.5, apg: 7.2, spg: 1.6, bpg: 0.1, fgPct: 43.5, threePct: 37.2, ftPct: 80.6 },
@@ -930,7 +930,7 @@ export const RECRUITING_TARGETS: RecruitingTarget[] = [
     notes: 'Proven scorer at D2 level. Great 3-point shooting would stretch the floor.',
     nextStep: 'Follow up call',
     nextStepDate: new Date('2026-02-10'),
-    recruiter: 'Coach Williams',
+    recruiter: 'Coach Pearson',
     plannedScholarship: 75,
     plannedNil: 12000,
     lastUpdated: new Date('2026-02-01'),
@@ -975,7 +975,7 @@ export const RECRUITING_TARGETS: RecruitingTarget[] = [
     notes: 'Pure scorer from JUCO. Needs to improve defense but offensive upside is significant.',
     nextStep: 'In-home visit',
     nextStepDate: new Date('2026-02-12'),
-    recruiter: 'Coach Williams',
+    recruiter: 'Coach Pearson',
     plannedScholarship: 100,
     plannedNil: 10000,
     lastUpdated: new Date('2026-02-02'),
@@ -1048,7 +1048,7 @@ export function getDivisionLabel(division: Division): string {
     NCAA_D1: 'NCAA D1',
     NCAA_D2: 'NCAA D2',
     NCAA_D3: 'NCAA D3',
-    NAIA: 'NAA',
+    NAIA: 'NAIA',
     NJCAA: 'JUCO',
     CCCAA: 'CCCAA',
   };

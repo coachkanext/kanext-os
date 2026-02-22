@@ -33,7 +33,7 @@ import type { ClusterType } from '@/types';
 
 const CLUSTER_KEYS: (keyof ClusterRatings)[] = [
   'shooting', 'finishing', 'playmaking',
-  'perimeter_defense', 'interior_defense', 'rebounding', 'frame',
+  'on_ball_defense', 'team_defense', 'rebounding', 'physical',
 ];
 
 // ─── Design tokens ───────────────────────────────────────────────────────────
@@ -169,7 +169,7 @@ export default function PlayerBioScreen() {
             <Text style={styles.playerMeta}>
               #{bio.number} · {bio.position} · {bio.classYear}
             </Text>
-            <Text style={styles.teamLink}>KaNeXT Sports</Text>
+            <Text style={styles.teamLink}>Carroll College</Text>
           </View>
         </View>
 
@@ -549,7 +549,7 @@ export default function PlayerBioScreen() {
         <View style={styles.socialsRow}>
           <View style={styles.socialPill}>
             <Text style={styles.socialIcon}>{'\uD835\uDD4F'}</Text>
-            <Text style={styles.socialHandle}>KaNeXT</Text>
+            <Text style={styles.socialHandle}> Carroll</Text>
           </View>
           <View style={styles.socialPill}>
             <Text style={styles.socialIcon}>{'\uD83D\uDCF7'}</Text>
@@ -557,7 +557,7 @@ export default function PlayerBioScreen() {
           </View>
           <View style={styles.socialPill}>
             <Text style={styles.socialIcon}>{'\uD83C\uDFC0'}</Text>
-            <Text style={styles.socialHandle}>KaNeXT Athletics</Text>
+            <Text style={styles.socialHandle}>Carroll Athletics</Text>
           </View>
         </View>
       </ScrollView>

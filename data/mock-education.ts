@@ -1,6 +1,6 @@
 /**
  * Mock Education Data
- * KaNeXT Sports (KaNeXT) information for Education mode.
+ * Howard University information for Education mode.
  */
 
 import type {
@@ -19,16 +19,16 @@ import type {
 
 export const KaNeXT_ORGANIZATION: EducationOrganization = {
   id: 'fmu-001',
-  name: 'KaNeXT Sports',
+  name: 'Howard University',
   mode: 'education',
   type: 'Private HBCU',
-  location: 'Nashville, TN',
+  location: 'Washington, DC',
   description:
-    'KaNeXT Sports is a private university located in Nashville, Tennessee. Founded in 2020, KaNeXT offers undergraduate and graduate programs rooted in academic excellence, leadership development, and community service.',
+    'Howard University is a private, federally chartered research university located in Washington, DC. Founded on March 2, 1867, Howard is classified as an R1 research university and a premier HBCU, offering undergraduate and graduate programs across 14 schools and colleges rooted in the motto "Veritas et Utilitas" — Truth and Service.',
   institutionType: 'HBCU',
   programFormats: ['On-Campus', 'Online', 'Hybrid'],
-  accreditation: 'SACSCOC (Southern Association of Colleges and Schools Commission on Colleges)',
-  founded: 1879,
+  accreditation: 'Middle States Commission on Higher Education (MSCHE)',
+  founded: 1867,
 };
 
 /** @deprecated Use KaNeXT_ORGANIZATION instead */
@@ -238,30 +238,30 @@ export const DEPARTMENTS: Department[] = [
   },
   {
     id: 'dept-arts',
-    name: 'School of Arts & Sciences',
+    name: 'College of Arts & Sciences',
     shortName: 'Arts & Sciences',
     description: 'Liberal arts foundation with emphasis on critical thinking and innovation.',
     programCount: 8,
   },
   {
-    id: 'dept-aviation',
-    name: 'School of Aviation',
-    shortName: 'Aviation',
-    description: 'One of the few HBCU aviation programs in the nation.',
-    programCount: 3,
-  },
-  {
-    id: 'dept-social-sciences',
-    name: 'Department of Social Sciences',
-    shortName: 'Social Sciences',
-    description: 'Psychology, criminal justice, and social work programs.',
+    id: 'dept-engineering',
+    name: 'College of Engineering & Architecture',
+    shortName: 'Engineering',
+    description: 'Engineering, architecture, and computer science programs advancing technology and design.',
     programCount: 5,
   },
   {
-    id: 'dept-stem',
-    name: 'Department of STEM',
-    shortName: 'STEM',
-    description: 'Biology, mathematics, computer science, and technology programs.',
+    id: 'dept-communications',
+    name: 'Cathy Hughes School of Communications',
+    shortName: 'Communications',
+    description: 'Journalism, media, film, and communications programs.',
+    programCount: 4,
+  },
+  {
+    id: 'dept-fine-arts',
+    name: 'Chadwick A. Boseman College of Fine Arts',
+    shortName: 'Fine Arts',
+    description: 'Music, theatre, art, and design programs nurturing creative excellence.',
     programCount: 4,
   },
 ];
@@ -273,17 +273,17 @@ export const DEPARTMENTS: Department[] = [
 export const FACULTY_LEADERSHIP: FacultyMember[] = [
   {
     id: 'faculty-president',
-    name: 'Dr. Jaffus Hardrick',
-    title: 'President',
+    name: 'Dr. Wayne A.I. Frederick',
+    title: 'Interim President',
     role: 'president',
-    bio: 'Dr. Hardrick serves as President of KaNeXT Sports, driving the institution\'s mission of academic excellence and community impact.',
+    bio: 'Dr. Frederick serves as Interim President of Howard University, driving the institution\'s mission of academic excellence and community impact.',
   },
   {
     id: 'faculty-provost',
     name: 'Dr. Angela Nixon',
     title: 'Provost & VP of Academic Affairs',
     role: 'provost',
-    bio: 'Dr. Nixon oversees all academic programs, faculty development, and institutional effectiveness at KaNeXT.',
+    bio: 'Dr. Nixon oversees all academic programs, faculty development, and institutional effectiveness at Howard University.',
   },
   {
     id: 'faculty-dean-business',
@@ -299,7 +299,7 @@ export const FACULTY_LEADERSHIP: FacultyMember[] = [
     title: 'Dean, School of Education',
     role: 'dean',
     departmentId: 'dept-education',
-    bio: 'Dr. Williams brings extensive KaNeXT2 and higher education leadership experience.',
+    bio: 'Dr. Williams brings extensive higher education leadership experience.',
   },
   {
     id: 'faculty-dean-aviation',
@@ -338,20 +338,20 @@ export const FACULTY_LEADERSHIP: FacultyMember[] = [
 
 export const INSTITUTIONAL_METRICS: InstitutionalMetrics = {
   enrollment: {
-    total: 892,
-    undergraduate: 724,
-    graduate: 168,
-    yearOverYearChange: 3.2,
+    total: 14500,
+    undergraduate: 10200,
+    graduate: 4300,
+    yearOverYearChange: 2.8,
   },
   academics: {
-    programs: 25,
-    facultyCount: 48,
-    studentFacultyRatio: '14:1',
+    programs: 140,
+    facultyCount: 1100,
+    studentFacultyRatio: '10:1',
   },
   outcomes: {
-    graduationRate: 54,
-    retentionRate: 68,
-    employmentRate: 89,
+    graduationRate: 63,
+    retentionRate: 87,
+    employmentRate: 92,
   },
 };
 

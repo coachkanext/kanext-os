@@ -132,8 +132,8 @@ async function main() {
 
   const output = {
     university_profile: {
-      name: 'KaNeXT Sports',
-      shortName: 'KaNeXT',
+      name: 'Carroll College Athletics',
+      shortName: 'Carroll',
       website: FMU_BASE,
       athleticsWebsite: ATH_BASE,
     },

@@ -1,5 +1,5 @@
 /**
- * Mock Business Home Data — KaNeXT OS Business Mode
+ * Mock Business Home Data — Valuetainment Business Mode
  * Startup fundraising, product milestones, CRM, data room, cap table
  */
 
@@ -66,7 +66,7 @@ export const BIZ_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
     title: 'HBCU Innovation Summit — Panel',
     startDatetime: new Date('2026-03-05T13:00:00'),
     endDatetime: new Date('2026-03-05T14:30:00'),
-    location: 'Nashville, TN',
+    location: 'Fort Lauderdale, FL',
     description: 'Founder panel: "Building tech for underserved institutions"',
     visibilityScope: 'all_program',
   },
@@ -93,10 +93,10 @@ export const BIZ_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
   {
     id: 'bce-9',
     type: 'meeting',
-    title: 'Product Demo — KaNeXT Athletics Staff',
+    title: 'Product Demo — Valuetainment Media Staff',
     startDatetime: new Date('2026-03-12T15:00:00'),
     endDatetime: new Date('2026-03-12T16:00:00'),
-    location: 'KaNeXT Campus, Nashville',
+    location: 'Valuetainment HQ, Fort Lauderdale',
     description: 'Live walkthrough of Sports Mode v2 with coaching staff',
     visibilityScope: 'all_program',
   },
@@ -157,7 +157,7 @@ export const BIZ_CALENDAR_EVENTS: ProgramCalendarEvent[] = [
     startDatetime: new Date('2026-04-20T09:00:00'),
     endDatetime: new Date('2026-04-20T11:00:00'),
     location: 'Virtual',
-    description: 'Sprint 18: Competition Mode architecture + KaNeXT integration spec',
+    description: 'Sprint 18: Competition Mode architecture + Valuetainment integration spec',
     visibilityScope: 'all_program',
   },
   {
@@ -261,7 +261,7 @@ export const BIZ_EVENTS: BizEvent[] = [
     title: 'HBCU Innovation Summit — Panel',
     date: '2026-03-05',
     time: '1:00 PM',
-    location: 'Nashville, TN',
+    location: 'Fort Lauderdale, FL',
     category: 'conference',
     status: 'upcoming',
     eventType: 'PARTNER',
@@ -330,10 +330,10 @@ export const BIZ_EVENTS: BizEvent[] = [
   // ─── Completed (4) ───
   {
     id: 'be-9',
-    title: 'KaNeXT Athletics — Product Demo',
+    title: 'Valuetainment — Product Demo',
     date: '2026-02-10',
     time: '3:00 PM',
-    location: 'KaNeXT Campus, Nashville',
+    location: 'Valuetainment HQ, Fort Lauderdale',
     category: 'product',
     status: 'completed',
     eventType: 'DEMO',
@@ -346,7 +346,7 @@ export const BIZ_EVENTS: BizEvent[] = [
   },
   {
     id: 'be-10',
-    title: 'KaNeXT Church — Church Mode Walkthrough',
+    title: '2819 Church — Church Mode Walkthrough',
     date: '2026-02-05',
     time: '10:00 AM',
     location: 'Virtual',
@@ -410,7 +410,7 @@ export const PRODUCT_MILESTONES: ProductMilestone[] = [
     name: 'Stage 1 Demo Seed',
     status: 'completed',
     date: '2026-01-15',
-    description: 'Initial data seeding for KaNeXT — 20 recruits, 3 game plans, 8 DM threads, full finance + payment rails',
+    description: 'Initial data seeding for Valuetainment — 20 recruits, 3 game plans, 8 DM threads, full finance + payment rails',
   },
   {
     id: 'pm-2',
@@ -438,21 +438,21 @@ export const PRODUCT_MILESTONES: ProductMilestone[] = [
     name: 'Church Mode Live',
     status: 'upcoming',
     date: '2026-03-30',
-    description: 'KaNeXT Church onboarding complete — member management, giving, groups, event calendar, pastoral tools',
+    description: '2819 Church onboarding complete — member management, giving, groups, event calendar, pastoral tools',
   },
   {
     id: 'pm-6',
     name: 'Education Mode Live',
     status: 'upcoming',
     date: '2026-04-15',
-    description: 'KaNeXT integration — academic tracking, department org, student services, compliance',
+    description: 'Valuetainment integration — academic tracking, department org, student services, compliance',
   },
   {
     id: 'pm-7',
     name: 'Competition Mode Live',
     status: 'upcoming',
     date: '2026-05-01',
-    description: 'KaNeXT Grand Prix integration — event management, fighter profiles, bracket engine, broadcast tools',
+    description: 'VT Media integration — event management, fighter profiles, bracket engine, broadcast tools',
   },
   {
     id: 'pm-8',
@@ -505,7 +505,7 @@ export interface TractionMetrics {
 
 export const TRACTION_METRICS: TractionMetrics = {
   institutions: 3,
-  institutionNames: ['KaNeXT', 'KaNeXT Church', 'KaNeXT Grand Prix'],
+  institutionNames: ['Valuetainment', '2819 Church', 'VT Media'],
   activeViews: 5,
   ipDocs: 6,
   enginesBuilt: 5,
@@ -532,7 +532,7 @@ export const BIZ_NEWS: BizNewsItem[] = [
   {
     id: 'bn-1',
     type: 'video',
-    headline: 'KaNeXT Demo Day — Sports Mode v2 Walkthrough',
+    headline: 'Valuetainment Demo Day — Sports Mode v2 Walkthrough',
     date: '2026-02-12',
     category: 'product',
     speaker: 'Alex',
@@ -549,7 +549,7 @@ export const BIZ_NEWS: BizNewsItem[] = [
   {
     id: 'bn-3',
     type: 'video',
-    headline: 'Founder Story — Building KaNeXT from Miami',
+    headline: 'Founder Story — Building Valuetainment from Fort Lauderdale',
     date: '2026-01-28',
     category: 'founder',
     speaker: 'Alex',
@@ -566,7 +566,7 @@ export const BIZ_NEWS: BizNewsItem[] = [
   {
     id: 'bn-5',
     type: 'video',
-    headline: 'KaNeXT Player Pool — National Recruiting Database',
+    headline: 'Valuetainment Player Pool — National Recruiting Database',
     date: '2026-02-15',
     category: 'product',
     speaker: 'Alex',
@@ -583,7 +583,7 @@ export const BIZ_NEWS: BizNewsItem[] = [
   {
     id: 'bn-7',
     type: 'article',
-    headline: 'KaNeXT Go Digital — KaNeXT Partnership Announced',
+    headline: 'Valuetainment Go Digital — Valuetainment Partnership Announced',
     date: '2026-02-11',
     category: 'partnership',
   },
@@ -655,7 +655,7 @@ export const VAULT_DOCUMENTS: VaultDocument[] = [
   { id: 'vd-9', folderId: 'vf-4', name: 'Advisor Agreement Template', type: 'doc', uploadDate: '2026-01-20', lastModified: '2026-01-20', size: '156 KB', accessLevel: 'founder_only', version: '1.0', tags: ['legal', 'contract'] },
   // IP
   { id: 'vd-10', folderId: 'vf-5', name: 'Provisional Patent — Unified Institutional OS', type: 'pdf', uploadDate: '2026-02-08', lastModified: '2026-02-10', size: '1.8 MB', accessLevel: 'board', version: '1.0', tags: ['legal'] },
-  { id: 'vd-11', folderId: 'vf-5', name: 'Trademark Application — KaNeXT', type: 'pdf', uploadDate: '2026-01-22', lastModified: '2026-01-25', size: '420 KB', accessLevel: 'board', version: '1.0', tags: ['legal'] },
+  { id: 'vd-11', folderId: 'vf-5', name: 'Trademark Application — Valuetainment', type: 'pdf', uploadDate: '2026-01-22', lastModified: '2026-01-25', size: '420 KB', accessLevel: 'board', version: '1.0', tags: ['legal'] },
   // Team
   { id: 'vd-12', folderId: 'vf-6', name: 'Org Chart + Hiring Plan', type: 'spreadsheet', uploadDate: '2026-01-28', lastModified: '2026-02-05', size: '680 KB', accessLevel: 'founder_only', version: '1.3' },
 ];
@@ -724,7 +724,7 @@ export interface ProofInstitution {
 export const PROOF_INSTITUTIONS: ProofInstitution[] = [
   {
     id: 'pi-1',
-    name: 'KaNeXT',
+    name: 'Valuetainment',
     mode: 'sports',
     status: 'live',
     activeViews: 22,
@@ -733,7 +733,7 @@ export const PROOF_INSTITUTIONS: ProofInstitution[] = [
   },
   {
     id: 'pi-2',
-    name: 'KaNeXT Church',
+    name: '2819 Church',
     mode: 'church',
     status: 'onboarding',
     activeViews: 8,
@@ -742,7 +742,7 @@ export const PROOF_INSTITUTIONS: ProofInstitution[] = [
   },
   {
     id: 'pi-4',
-    name: 'KaNeXT Grand Prix',
+    name: 'VT Media',
     mode: 'competition',
     status: 'signed',
     activeViews: 3,
@@ -863,7 +863,7 @@ export const DEALS: Deal[] = [
   {
     id: 'd-6',
     contactName: 'Jerome Williams',
-    company: 'KaNeXT Athletics',
+    company: 'Valuetainment',
     dealType: 'client',
     stage: 'closed_won',
     value: 24_000,
@@ -877,7 +877,7 @@ export const DEALS: Deal[] = [
   {
     id: 'd-7',
     contactName: 'Pastor David Richards',
-    company: 'KaNeXT Church',
+    company: '2819 Church',
     dealType: 'client',
     stage: 'negotiating',
     value: 18_000,
@@ -891,7 +891,7 @@ export const DEALS: Deal[] = [
   {
     id: 'd-8',
     contactName: 'Marcus Chen',
-    company: 'KaNeXT Global Holdings',
+    company: 'Valuetainment Investments Group',
     dealType: 'partner',
     stage: 'due_diligence',
     value: 50_000,
@@ -940,9 +940,9 @@ export const BIZ_CONTACTS: BizContact[] = [
   { id: 'bc-3', name: 'Arlan Hamilton', company: 'Backstage Capital', role: 'Founder & GP', relationshipType: 'investor', status: 'active', lastContact: '2026-02-03', activeDealId: 'd-3' },
   { id: 'bc-4', name: 'Ulili Onovakpuri', company: 'Kapor Capital', role: 'Managing Partner', relationshipType: 'investor', status: 'active', lastContact: '2026-02-12', activeDealId: 'd-4' },
   { id: 'bc-5', name: 'Henri Pierre-Jacques', company: 'Harlem Capital', role: 'Co-Founder & GP', relationshipType: 'investor', status: 'prospect', lastContact: '2026-02-08', activeDealId: 'd-5' },
-  { id: 'bc-6', name: 'Jerome Williams', company: 'KaNeXT Athletics', role: 'Athletic Director', relationshipType: 'client', status: 'active', lastContact: '2026-02-10', activeDealId: 'd-6' },
-  { id: 'bc-7', name: 'Pastor David Richards', company: 'KaNeXT Church', role: 'Senior Pastor', relationshipType: 'client', status: 'active', lastContact: '2026-02-05', activeDealId: 'd-7' },
-  { id: 'bc-8', name: 'Marcus Chen', company: 'KaNeXT Global Holdings', role: 'VP of Technology', relationshipType: 'partner', status: 'active', lastContact: '2026-02-10', activeDealId: 'd-8' },
+  { id: 'bc-6', name: 'Jerome Williams', company: 'Valuetainment', role: 'Athletic Director', relationshipType: 'client', status: 'active', lastContact: '2026-02-10', activeDealId: 'd-6' },
+  { id: 'bc-7', name: 'Pastor David Richards', company: '2819 Church', role: 'Senior Pastor', relationshipType: 'client', status: 'active', lastContact: '2026-02-05', activeDealId: 'd-7' },
+  { id: 'bc-8', name: 'Marcus Chen', company: 'Valuetainment Investments Group', role: 'VP of Technology', relationshipType: 'partner', status: 'active', lastContact: '2026-02-10', activeDealId: 'd-8' },
   { id: 'bc-9', name: 'Jordan Taylor', company: 'Wilson Sonsini', role: 'Startup Counsel', relationshipType: 'vendor', status: 'active', lastContact: '2026-01-20' },
   { id: 'bc-10', name: 'Kendra Brooks', company: 'TechCrunch', role: 'Senior Reporter', relationshipType: 'press', status: 'prospect', lastContact: '2026-02-15' },
 ];
@@ -1003,7 +1003,7 @@ export const RECENT_ACTIVITY: ActivityEntry[] = [
     id: 'ra-6',
     timestamp: '2026-02-14T10:00:00',
     type: 'meeting',
-    description: 'Product demo with KaNeXT coaching staff — Sports Mode v2 approved',
+    description: 'Product demo with Valuetainment coaching staff — Sports Mode v2 approved',
     dealId: 'd-6',
     contactName: 'Jerome Williams',
   },
@@ -1011,7 +1011,7 @@ export const RECENT_ACTIVITY: ActivityEntry[] = [
     id: 'ra-7',
     timestamp: '2026-02-13T09:30:00',
     type: 'note',
-    description: 'KaNeXT integration spec: need bracket engine API by March 15',
+    description: 'Valuetainment integration spec: need bracket engine API by March 15',
     dealId: 'd-8',
     contactName: 'Marcus Chen',
   },
@@ -1027,7 +1027,7 @@ export const RECENT_ACTIVITY: ActivityEntry[] = [
     id: 'ra-9',
     timestamp: '2026-02-10T13:00:00',
     type: 'meeting',
-    description: 'KaNeXT Church Church Mode walkthrough — onboarding confirmed for March',
+    description: '2819 Church Church Mode walkthrough — onboarding confirmed for March',
     dealId: 'd-7',
     contactName: 'Pastor David Richards',
   },
@@ -1041,7 +1041,7 @@ export const RECENT_ACTIVITY: ActivityEntry[] = [
     id: 'ra-11',
     timestamp: '2026-02-05T14:00:00',
     type: 'call',
-    description: 'IP counsel review — trademark application for KaNeXT submitted',
+    description: 'IP counsel review — trademark application for Valuetainment submitted',
     contactName: 'Jordan Taylor',
   },
   {
@@ -1065,8 +1065,8 @@ export interface BizHeroData {
 }
 
 export const BIZ_HERO: BizHeroData = {
-  title: 'KaNeXT OS',
-  subtitle: 'The operating system for institutions',
+  title: 'Valuetainment',
+  subtitle: 'The future belongs to the educated',
   isLive: true,
 };
 
@@ -1116,7 +1116,7 @@ export interface BizActionCard {
 export const BIZ_ACTION_ROW: BizActionCard[] = [
   { id: 'deck', title: 'Deck', detail: 'Pitch Deck & Overview', icon: 'doc.richtext.fill', color: '#1D9BF0' },
   { id: 'data_room', title: 'Data Room', detail: 'Due Diligence & Proof', icon: 'folder.fill', color: '#1D9BF0' },
-  { id: 'invest', title: 'Invest', detail: 'Back KaNeXT', icon: 'dollarsign.circle.fill', color: '#22C55E' },
+  { id: 'invest', title: 'Invest', detail: 'Back Valuetainment', icon: 'dollarsign.circle.fill', color: '#22C55E' },
 ];
 
 // =============================================================================

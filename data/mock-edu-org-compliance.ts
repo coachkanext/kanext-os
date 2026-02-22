@@ -1,7 +1,7 @@
 /**
  * Education Organization Compliance — Mock Data & Types
  * Policies, controls, evidence, audits, risks, incidents, exceptions, export packets.
- * HBCU-themed: KaNeXT = KaNeXT Sports.
+ * HBCU-themed: Howard University.
  */
 
 // =============================================================================

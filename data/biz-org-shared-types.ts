@@ -214,9 +214,9 @@ export const SLIEMA_WANDERERS = 'ent-sliema-wanderers';
 export const TARGET_BANK = 'ent-target-bank';
 
 export const SEEDED_ENTITY_NAMES: Record<string, string> = {
-  [KANEXT_HOLDCO]: 'KaNeXT HoldCo',
-  [KANEXT_OPSCO]: 'KaNeXT OpsCo',
-  [KANEXT_IP]: 'KaNeXT IP / Products',
+  [KANEXT_HOLDCO]: 'Valuetainment HoldCo',
+  [KANEXT_OPSCO]: 'Valuetainment OpsCo',
+  [KANEXT_IP]: 'Valuetainment IP / Products',
   [SPONSOR_BANK]: 'Sponsor Bank',
   [PAYMENT_PROCESSOR]: 'Payment Processor',
   [VALUETAINMENT]: 'Valuetainment',

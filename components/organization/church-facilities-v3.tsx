@@ -1,5 +1,5 @@
 /**
- * Church Facilities V3 — KaNeXT Church · Senior Pastor
+ * Church Facilities V3 — 2819 Church · Senior Pastor
  * ViewBar: Spaces | Bookings | Maintenance
  * Self-contained with inline mock data.
  */

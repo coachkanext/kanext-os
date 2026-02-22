@@ -1,6 +1,6 @@
 /**
  * Sports Organization Sponsors V2 — Mock Data & Types
- * KaNeXT Men's Basketball program sponsor management: sponsors, pipeline,
+ * Carroll College Fighting Saints Men's Basketball program sponsor management: sponsors, pipeline,
  * deliverables, proof tracking, invoicing, and renewals.
  *
  * $178K total committed, $119.25K collected across 9 sponsors.
@@ -387,10 +387,10 @@ const sponsors: Sponsor[] = [
     committedAmount: 30000,
     collectedAmount: 10000,
   },
-  // ── KaNeXT Demo Seed Sponsors ────────────────────────────────────────
+  // ── Carroll College Demo Seed Sponsors ────────────────────────────────────────
   {
     id: 'sp-007',
-    name: 'Nashville Auto Group',
+    name: 'Helena Auto Group',
     tier: 'title',
     primaryContact: 'Raymond Desmond',
     ownerInProgram: 'Alex Morgan',
@@ -504,10 +504,10 @@ const pipelineItems: SponsorPipelineItem[] = [
     daysInStage: 45,
     priority: 'low',
   },
-  // ── KaNeXT Demo Seed Pipeline ──────────────────────────────────────
+  // ── Carroll College Demo Seed Pipeline ──────────────────────────────────────
   {
     id: 'pl-011',
-    name: 'Nashville Auto Group',
+    name: 'Helena Auto Group',
     stage: 'active',
     daysInStage: 170,
     priority: 'high',
@@ -550,7 +550,7 @@ const deliverables: Deliverable[] = [
     sponsorName: 'MidState Credit Union',
     type: 'signage',
     dueDate: '2026-02-20',
-    eventLink: 'KaNeXT vs. Hampton — KaNeXT Church Conference',
+    eventLink: 'Carroll College vs. Hampton — Frontier Conference',
     owner: 'Marcus Reed',
     proofRequired: true,
     status: 'in-progress',
@@ -572,7 +572,7 @@ const deliverables: Deliverable[] = [
     sponsorName: 'QuickFuel Gas & Convenience',
     type: 'signage',
     dueDate: '2026-02-20',
-    eventLink: 'KaNeXT vs. Hampton — KaNeXT Church Conference',
+    eventLink: 'Carroll College vs. Hampton — Frontier Conference',
     owner: 'Marcus Reed',
     proofRequired: true,
     status: 'blocked',
@@ -583,7 +583,7 @@ const deliverables: Deliverable[] = [
     sponsorName: 'QuickFuel Gas & Convenience',
     type: 'in-game-read',
     dueDate: '2026-02-20',
-    eventLink: 'KaNeXT vs. Hampton — KaNeXT Church Conference',
+    eventLink: 'Carroll College vs. Hampton — Frontier Conference',
     owner: 'Game Operations',
     proofRequired: false,
     status: 'not-started',
@@ -621,14 +621,14 @@ const deliverables: Deliverable[] = [
     proofRequired: true,
     status: 'not-started',
   },
-  // ── Nashville Auto Group — 3 deliverables ─────────────────────────
+  // ── Helena Auto Group — 3 deliverables ─────────────────────────
   {
     id: 'del-009',
     sponsorId: 'sp-007',
-    sponsorName: 'Nashville Auto Group',
+    sponsorName: 'Helena Auto Group',
     type: 'signage',
     dueDate: '2025-11-15',
-    eventLink: 'KaNeXT vs. Pinecrest University — Home Opener',
+    eventLink: 'Carroll College vs. Dakota State University — Home Opener',
     owner: 'Marcus Reed',
     proofRequired: true,
     status: 'complete',
@@ -636,7 +636,7 @@ const deliverables: Deliverable[] = [
   {
     id: 'del-010',
     sponsorId: 'sp-007',
-    sponsorName: 'Nashville Auto Group',
+    sponsorName: 'Helena Auto Group',
     type: 'content',
     dueDate: '2025-12-01',
     eventLink: null,
@@ -647,7 +647,7 @@ const deliverables: Deliverable[] = [
   {
     id: 'del-011',
     sponsorId: 'sp-007',
-    sponsorName: 'Nashville Auto Group',
+    sponsorName: 'Helena Auto Group',
     type: 'social-post',
     dueDate: '2026-03-01',
     eventLink: null,
@@ -662,7 +662,7 @@ const deliverables: Deliverable[] = [
     sponsorName: 'James & Patricia Wilson Foundation',
     type: 'event-activation',
     dueDate: '2025-10-20',
-    eventLink: 'KaNeXT Scholar-Athlete Award Ceremony',
+    eventLink: 'Carroll College Scholar-Athlete Award Ceremony',
     owner: 'Alex Morgan',
     proofRequired: true,
     status: 'complete',
@@ -762,12 +762,12 @@ const proofItems: ProofItem[] = [
     reviewer: null,
     status: 'missing',
   },
-  // ── Nashville Auto Group proof ────────────────────────────────────
+  // ── Helena Auto Group proof ────────────────────────────────────
   {
     id: 'prf-007',
     deliverableId: 'del-009',
     type: 'photo',
-    deliverableName: 'Courtside Banner — Nashville Auto Group',
+    deliverableName: 'Courtside Banner — Helena Auto Group',
     timestamp: '2025-11-15',
     reviewer: 'Alex Morgan',
     status: 'accepted',
@@ -776,7 +776,7 @@ const proofItems: ProofItem[] = [
     id: 'prf-008',
     deliverableId: 'del-010',
     type: 'link',
-    deliverableName: 'Program Ad — Nashville Auto Group',
+    deliverableName: 'Program Ad — Helena Auto Group',
     timestamp: '2025-12-02',
     reviewer: 'Alex Morgan',
     status: 'accepted',
@@ -858,11 +858,11 @@ const invoices: SponsorInvoice[] = [
     status: 'blocked',
     blockedReason: 'Awaiting signed in-kind agreement addendum',
   },
-  // ── Nashville Auto Group — on schedule ────────────────────────────
+  // ── Helena Auto Group — on schedule ────────────────────────────
   {
     id: 'inv-006',
     sponsorId: 'sp-007',
-    sponsorName: 'Nashville Auto Group',
+    sponsorName: 'Helena Auto Group',
     amount: 3750,
     issueDate: '2025-09-15',
     dueDate: '2025-10-15',
@@ -872,7 +872,7 @@ const invoices: SponsorInvoice[] = [
   {
     id: 'inv-007',
     sponsorId: 'sp-007',
-    sponsorName: 'Nashville Auto Group',
+    sponsorName: 'Helena Auto Group',
     amount: 3750,
     issueDate: '2025-12-15',
     dueDate: '2026-01-15',
@@ -882,7 +882,7 @@ const invoices: SponsorInvoice[] = [
   {
     id: 'inv-008',
     sponsorId: 'sp-007',
-    sponsorName: 'Nashville Auto Group',
+    sponsorName: 'Helena Auto Group',
     amount: 3750,
     issueDate: '2026-01-15',
     dueDate: '2026-02-15',
@@ -892,7 +892,7 @@ const invoices: SponsorInvoice[] = [
   {
     id: 'inv-009',
     sponsorId: 'sp-007',
-    sponsorName: 'Nashville Auto Group',
+    sponsorName: 'Helena Auto Group',
     amount: 3750,
     issueDate: '2026-04-15',
     dueDate: '2026-05-15',
@@ -968,11 +968,11 @@ const renewalItems: RenewalItem[] = [
     riskLevel: 'medium',
     recommendedAction: 'Propose upgrade to Silver tier with additional social media deliverables.',
   },
-  // ── KaNeXT Demo Seed Renewals ──────────────────────────────────────
+  // ── Carroll College Demo Seed Renewals ──────────────────────────────────────
   {
     id: 'ren-005',
     sponsorId: 'sp-007',
-    sponsorName: 'Nashville Auto Group',
+    sponsorName: 'Helena Auto Group',
     tier: 'Title',
     contractEnd: '2026-08-31',
     daysUntilRenewal: 194,

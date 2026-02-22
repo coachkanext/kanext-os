@@ -112,8 +112,8 @@ const CHURCH_INBOX_THREADS: VideoInboxThread[] = [
   },
   {
     id: 'cvt-2',
-    title: 'Pastor James Carter',
-    participants: ['Pastor James Carter'],
+    title: 'Pastor Philip Anthony Mitchell',
+    participants: ['Pastor Philip Anthony Mitchell'],
     lastMessage: 'Sermon clip for social media is ready. Let me know if the intro needs trimming.',
     timestamp: ago(120),
     unread: 1,
@@ -186,13 +186,13 @@ const EDUCATION_INBOX_THREADS: VideoInboxThread[] = [
   },
   {
     id: 'evt-3',
-    title: 'KaNeXT Athletics',
-    participants: ['KaNeXT Athletics'],
+    title: 'Howard Athletics',
+    participants: ['Howard Athletics'],
     lastMessage: 'Season recap video is ready for review. Need approval before posting.',
     timestamp: ago(480),
     unread: 0,
     avatarInitials: 'FA',
-    mediaAttachment: { type: 'clip', id: 'ewt-3', title: 'Wolves Season Recap — Draft' },
+    mediaAttachment: { type: 'clip', id: 'ewt-3', title: 'Fighting Saints Season Recap — Draft' },
   },
   {
     id: 'evt-4',
@@ -236,7 +236,7 @@ const BUSINESS_INBOX_THREADS: VideoInboxThread[] = [
     timestamp: ago(45),
     unread: 2,
     avatarInitials: 'PT',
-    mediaAttachment: { type: 'clip', id: 'bwt-1', title: 'KaNeXT V2 Demo — Final Cut' },
+    mediaAttachment: { type: 'clip', id: 'bwt-1', title: 'Valuetainment V2 Demo — Final Cut' },
   },
   {
     id: 'bvt-2',
@@ -262,11 +262,11 @@ const BUSINESS_INBOX_THREADS: VideoInboxThread[] = [
     id: 'bvt-4',
     title: 'Customer Success',
     participants: ['Customer Success'],
-    lastMessage: 'KaNeXT testimonial video is approved. Posting to website tomorrow.',
+    lastMessage: 'Valuetainment testimonial video is approved. Posting to website tomorrow.',
     timestamp: ago(720),
     unread: 0,
     avatarInitials: 'CS',
-    mediaAttachment: { type: 'clip', id: 'bwt-4', title: 'KaNeXT Testimonial — Final' },
+    mediaAttachment: { type: 'clip', id: 'bwt-4', title: 'Valuetainment Testimonial — Final' },
   },
   {
     id: 'bvt-5',
@@ -288,7 +288,7 @@ const COMMUNITY_QUICK_SHARE_TARGETS: QuickShareTarget[] = [
   { id: 'kqs-2', name: 'Apex Racing', initials: 'AR', role: 'Team' },
   { id: 'kqs-3', name: 'M. Kane', initials: 'MK', role: 'Driver' },
   { id: 'kqs-4', name: 'Pit Crew', initials: 'PC', role: 'Group' },
-  { id: 'kqs-5', name: 'KaNeXT Media', initials: 'K1', role: 'Broadcast' },
+  { id: 'kqs-5', name: '3SSB Media', initials: 'K1', role: 'Broadcast' },
 ];
 
 const COMMUNITY_INBOX_THREADS: VideoInboxThread[] = [
@@ -324,8 +324,8 @@ const COMMUNITY_INBOX_THREADS: VideoInboxThread[] = [
   },
   {
     id: 'kvt-4',
-    title: 'KaNeXT Media',
-    participants: ['KaNeXT Media'],
+    title: '3SSB Media',
+    participants: ['3SSB Media'],
     lastMessage: 'Post-race interview clips are ready for social. Kane and Reeves sound bites included.',
     timestamp: ago(600),
     unread: 0,

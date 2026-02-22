@@ -87,9 +87,9 @@ export interface ScoutNote {
 
 export const GAME_PLAN_HEADER: GamePlanHeader = {
   id: 'gp-001',
-  opponent: 'Lakewood University',
+  opponent: 'University of Providence',
   date: 'Wed, Feb 19 \u2014 7:30 PM',
-  location: 'Lakewood (Away)',
+  location: 'Providence (Away)',
   status: 'in-review',
   version: 3,
   lastEditedBy: 'Coach Carter',
@@ -105,14 +105,14 @@ export const OFFENSIVE_PLAN: OffensiveSystemPlan = {
   tempoTarget: 'Push',
   paceTarget: 72,
   emphasisPlays: [
-    { id: 'ep-1', name: 'Horns PnR (Williams)', priority: 'primary', notes: 'Lakewood drops on PnR \u2014 Williams pull-up at elbow is money' },
-    { id: 'ep-2', name: 'Pin-Down to Plantey 3', priority: 'primary', notes: 'Lakewood switches late on pin-downs \u2014 Plantey open on curl' },
+    { id: 'ep-1', name: 'Horns PnR (Williams)', priority: 'primary', notes: 'Providence drops on PnR \u2014 Williams pull-up at elbow is money' },
+    { id: 'ep-2', name: 'Pin-Down to Plantey 3', priority: 'primary', notes: 'Providence switches late on pin-downs \u2014 Plantey open on curl' },
     { id: 'ep-3', name: 'High-Low Post Feed', priority: 'secondary', notes: 'Diomande elbow to Carter block if zone shows' },
-    { id: 'ep-4', name: 'Transition Push (4-on-3)', priority: 'primary', notes: 'Lakewood slow in transition \u2014 push every dead ball turnover' },
+    { id: 'ep-4', name: 'Transition Push (4-on-3)', priority: 'primary', notes: 'Providence slow in transition \u2014 push every dead ball turnover' },
     { id: 'ep-5', name: 'Delay Lob', priority: 'situational', notes: 'End-of-clock action \u2014 Carter slip to rim off delay' },
   ],
   adjustments: [
-    'If Lakewood switches to zone \u2192 overload strong side, post Diomande high',
+    'If Providence switches to zone \u2192 overload strong side, post Diomande high',
     'If Williams in foul trouble \u2192 Blake runs same PnR sets, slower pace',
     'If leading by 10+ \u2192 bleed clock, motion only, no forced shots',
   ],
@@ -133,7 +133,7 @@ export const DEFENSIVE_PLAN: DefensiveSystemPlan = {
   ],
   adjustments: [
     'If Harris is cooking 1-on-1 \u2192 face-guard with Hernandez',
-    'If Lakewood hits 3 threes in a row \u2192 extend pack line to 3PT arc',
+    'If Providence hits 3 threes in a row \u2192 extend pack line to 3PT arc',
     'If foul trouble on Carter \u2192 Moore at 5, zone for 2 possessions',
   ],
 };
@@ -158,28 +158,28 @@ export const ROTATION_PLAN: RotationSlot[] = [
 
 export const SCOUT_NOTES: ScoutNote[] = [
   { id: 'sn-1', category: 'key-player', title: 'D. Harris (PG #3)', detail: '22.4 PPG, 5.8 APG. Goes right 68% of the time. Pull-up jumper from left elbow is go-to. Below-average 3PT shooter (29.4%) but lethal in paint.', source: 'Synergy + Film', confidence: 'high' },
-  { id: 'sn-2', category: 'tendency', title: 'Lakewood PnR Coverage', detail: 'Drop coverage 74% of possessions. Big sits at the nail. Ball handler has space for pull-up. Only switch on wings.', source: 'Synergy', confidence: 'high' },
-  { id: 'sn-3', category: 'weakness', title: 'Transition Defense', detail: 'Lakewood ranks 142nd in transition defense. They give up 14.8 fast break PPG. Our biggest advantage.', source: 'KaNeXT Analytics', confidence: 'high' },
-  { id: 'sn-4', category: 'strength', title: 'Offensive Rebounding', detail: 'Carter grabs 4.2 OREB/game. Lakewood as a team is top-20 in OREB%. Must box out every shot.', source: 'Synergy', confidence: 'medium' },
+  { id: 'sn-2', category: 'tendency', title: 'Providence PnR Coverage', detail: 'Drop coverage 74% of possessions. Big sits at the nail. Ball handler has space for pull-up. Only switch on wings.', source: 'Synergy', confidence: 'high' },
+  { id: 'sn-3', category: 'weakness', title: 'Transition Defense', detail: 'Providence ranks 142nd in transition defense. They give up 14.8 fast break PPG. Our biggest advantage.', source: 'Carroll Analytics', confidence: 'high' },
+  { id: 'sn-4', category: 'strength', title: 'Offensive Rebounding', detail: 'Carter grabs 4.2 OREB/game. Providence as a team is top-20 in OREB%. Must box out every shot.', source: 'Synergy', confidence: 'medium' },
   { id: 'sn-5', category: 'situational', title: 'Late-Clock Sets', detail: 'When shot clock is under 8 seconds, Harris ISO left wing is their go-to. He shoots 38% in these spots.', source: 'Film', confidence: 'medium' },
 ];
 
 export const STAFF_ASSIGNMENTS: StaffAssignment[] = [
   { id: 'sa-1', staffName: 'Coach Carter', role: 'HC', responsibility: 'Overall game plan execution, timeout decisions, lineup changes', pregameTask: 'Final scout review with team', inGameTask: 'Bench management, in-ear to assistants' },
-  { id: 'sa-2', staffName: 'Coach Williams', role: 'Assistant (Offense)', responsibility: 'Offensive adjustments, play calls from bench', pregameTask: 'Walk-through emphasis plays', inGameTask: 'Relay play calls, track shot chart' },
+  { id: 'sa-2', staffName: 'Coach Pearson', role: 'Assistant (Offense)', responsibility: 'Offensive adjustments, play calls from bench', pregameTask: 'Walk-through emphasis plays', inGameTask: 'Relay play calls, track shot chart' },
   { id: 'sa-3', staffName: 'Coach Davis', role: 'Assistant (Defense)', responsibility: 'Defensive matchups, PnR coverage calls', pregameTask: 'Defensive emphasis walkthrough', inGameTask: 'Monitor matchup data, call coverage adjustments' },
   { id: 'sa-4', staffName: 'Marcus Reed', role: 'Director of Ops', responsibility: 'Logistics, film coordination', pregameTask: 'Confirm travel, film setup', inGameTask: 'Live film tagging, stat tracking' },
 ];
 
 // =============================================================================
-// GAME PLAN 2: Ridgemont University (ARCHIVED — KaNeXT Won 72-65)
+// GAME PLAN 2: MSU-Northern (ARCHIVED — Carroll Won 72-65)
 // =============================================================================
 
 export const GAME_PLAN_HEADER_STT: GamePlanHeader = {
   id: 'gp-002',
-  opponent: 'Ridgemont University',
+  opponent: 'MSU-Northern',
   date: 'Sat, Feb 15 — 4:00 PM',
-  location: 'KaNeXT Wellness Center (Home)',
+  location: 'PE Center (Home)',
   status: 'archived',
   version: 5,
   lastEditedBy: 'Coach Carter',
@@ -204,7 +204,7 @@ export const OFFENSIVE_PLAN_STT: OffensiveSystemPlan = {
     { id: 'ep-stt-1', name: 'Horns PnR (Williams)', priority: 'primary', notes: 'STT switches 1-4 — Williams pull-up at nail when big hesitates' },
     { id: 'ep-stt-2', name: 'Post Feed to Carter', priority: 'primary', notes: 'STT undersized at the 5 — Carter deep seal was automatic' },
     { id: 'ep-stt-3', name: 'Corner Pin-Down (Plantey)', priority: 'secondary', notes: 'Plantey hit 3 corner 3s off pin-downs in the 1st half' },
-    { id: 'ep-stt-4', name: 'Transition Push', priority: 'primary', notes: 'STT slow getting back — 14 fast break points for KaNeXT' },
+    { id: 'ep-stt-4', name: 'Transition Push', priority: 'primary', notes: 'STT slow getting back — 14 fast break points for Carroll' },
     { id: 'ep-stt-5', name: 'ATO Lob (Carter)', priority: 'situational', notes: 'Used twice in 4Q — Carter lob finish sealed the game' },
   ],
   adjustments: [
@@ -256,30 +256,30 @@ export const ROTATION_PLAN_STT: RotationSlot[] = [
 export const SCOUT_NOTES_STT: ScoutNote[] = [
   { id: 'sn-stt-1', category: 'key-player', title: 'J. Rivera (SG #2)', detail: '19.8 PPG, 4.2 APG. Wing ISO is bread and butter. Scored 22 but on inefficient 8-19. Mid-range game is dangerous.', source: 'Synergy + Film', confidence: 'high' },
   { id: 'sn-stt-2', category: 'tendency', title: 'STT Off-Ball Screens', detail: 'STT runs 12+ off-ball screens per game. Must switch cleanly 1-3. No getting caught on screens.', source: 'Synergy', confidence: 'high' },
-  { id: 'sn-stt-3', category: 'weakness', title: 'Interior Defense', detail: 'STT allows 42.6 pts in the paint. Carter feasted — 18 pts inside. Repeat this approach.', source: 'KaNeXT Analytics', confidence: 'high' },
-  { id: 'sn-stt-4', category: 'weakness', title: 'Transition Defense', detail: 'STT ranks bottom-10 in KaNeXT Conference in transition D. KaNeXT scored 14 fast break points.', source: 'KaNeXT Analytics', confidence: 'high' },
+  { id: 'sn-stt-3', category: 'weakness', title: 'Interior Defense', detail: 'STT allows 42.6 pts in the paint. Carter feasted — 18 pts inside. Repeat this approach.', source: 'Carroll Analytics', confidence: 'high' },
+  { id: 'sn-stt-4', category: 'weakness', title: 'Transition Defense', detail: 'STT ranks bottom-10 in Frontier Conference in transition D. Carroll scored 14 fast break points.', source: 'Carroll Analytics', confidence: 'high' },
   { id: 'sn-stt-5', category: 'situational', title: 'End-of-Half Plays', detail: 'STT ran ATO side PnR for Rivera at end of both halves. Scored on 1 of 3 attempts. Manageable.', source: 'Film', confidence: 'medium' },
 ];
 
 export const STAFF_ASSIGNMENTS_STT: StaffAssignment[] = [
   { id: 'sa-stt-1', staffName: 'Coach Carter', role: 'HC', responsibility: 'Overall game plan execution, postgame film breakdown', pregameTask: 'Final scout review', inGameTask: 'Bench management — key 4Q timeout at 62-60 led to ATO lob' },
-  { id: 'sa-stt-2', staffName: 'Coach Williams', role: 'Assistant (Offense)', responsibility: 'Offensive adjustments, in-game play calls', pregameTask: 'Walk-through emphasis plays', inGameTask: 'Called Horns PnR at 5:30 4Q — led to Williams pull-up bucket' },
+  { id: 'sa-stt-2', staffName: 'Coach Pearson', role: 'Assistant (Offense)', responsibility: 'Offensive adjustments, in-game play calls', pregameTask: 'Walk-through emphasis plays', inGameTask: 'Called Horns PnR at 5:30 4Q — led to Williams pull-up bucket' },
   { id: 'sa-stt-3', staffName: 'Coach Davis', role: 'Assistant (Defense)', responsibility: 'Defensive matchups, Rivera containment', pregameTask: 'Defensive walkthrough — Rivera deny', inGameTask: 'Switched Hernandez onto Rivera in 4Q — Rivera 0-3 from that point' },
   { id: 'sa-stt-4', staffName: 'Marcus Reed', role: 'Director of Ops', responsibility: 'Postgame film tagging, stat reconciliation', pregameTask: 'Film setup, travel logistics', inGameTask: 'Live film tagging — tagged 14 key possessions for review' },
 ];
 
 // =============================================================================
-// GAME PLAN 3: Summit University (DRAFT — Upcoming Feb 22)
+// GAME PLAN 3: Rocky Mountain College (DRAFT — Upcoming Feb 22)
 // =============================================================================
 
 export const GAME_PLAN_HEADER_SEU: GamePlanHeader = {
   id: 'gp-003',
-  opponent: 'Summit University',
+  opponent: 'Rocky Mountain College',
   date: 'Sat, Feb 22 — 2:00 PM',
-  location: 'KaNeXT Wellness Center (Home)',
+  location: 'PE Center (Home)',
   status: 'draft',
   version: 1,
-  lastEditedBy: 'Coach Williams',
+  lastEditedBy: 'Coach Pearson',
   lastEditedAt: 'Feb 18, 2026 · 3:45 PM',
   simWinPct: 58,
   simMargin: 2,
@@ -355,15 +355,15 @@ export const SCOUT_NOTES_SEU: ScoutNote[] = [
   { id: 'sn-seu-1', category: 'key-player', title: 'T. Robinson (PG #1)', detail: '20.1 PPG, 5.4 APG. Goes right 71% of possessions. Pull-up from right wing and free throw line extended are go-to spots. 34.8% from 3 but 48% from mid-range.', source: 'Synergy + Film', confidence: 'high' },
   { id: 'sn-seu-2', category: 'key-player', title: 'K. Anderson (SF #22)', detail: '12.6 PPG, 7.8 RPG. Crashes offensive glass hard — 3.4 OREB/game. Limited outside shot but finishes in transition.', source: 'Synergy', confidence: 'high' },
   { id: 'sn-seu-3', category: 'tendency', title: 'SEU PnR Coverage', detail: 'SEU hedges hard on ball screens (82% of PnR possessions). Roller is often open if handler rejects screen. Pop coverage is weaker — big drops back on pop.', source: 'Synergy', confidence: 'high' },
-  { id: 'sn-seu-4', category: 'weakness', title: 'Transition Defense', detail: 'SEU ranks 9th in KaNeXT Conference in transition defense. They give up 13.4 fast break PPG. Attackable if we push pace.', source: 'KaNeXT Analytics', confidence: 'medium' },
-  { id: 'sn-seu-5', category: 'strength', title: 'Corner 3PT Shooting', detail: 'SEU shoots 39.2% from corners — best in conference. D. Okafor and J. Hayes are primary corner threats. Must close out.', source: 'KaNeXT Analytics', confidence: 'high' },
-  { id: 'sn-seu-6', category: 'weakness', title: 'Interior Defense', detail: 'SEU allows 40.8 pts in paint. Jefferson is their only rim protector. When he sits, paint is open. Feed Carter/Diomande.', source: 'KaNeXT Analytics', confidence: 'high' },
+  { id: 'sn-seu-4', category: 'weakness', title: 'Transition Defense', detail: 'SEU ranks 9th in Frontier Conference in transition defense. They give up 13.4 fast break PPG. Attackable if we push pace.', source: 'Carroll Analytics', confidence: 'medium' },
+  { id: 'sn-seu-5', category: 'strength', title: 'Corner 3PT Shooting', detail: 'SEU shoots 39.2% from corners — best in conference. D. Okafor and J. Hayes are primary corner threats. Must close out.', source: 'Carroll Analytics', confidence: 'high' },
+  { id: 'sn-seu-6', category: 'weakness', title: 'Interior Defense', detail: 'SEU allows 40.8 pts in paint. Jefferson is their only rim protector. When he sits, paint is open. Feed Carter/Diomande.', source: 'Carroll Analytics', confidence: 'high' },
   { id: 'sn-seu-7', category: 'situational', title: 'Press After Makes', detail: 'SEU presses full-court after made baskets in the 2nd half (happened in 4 of last 6 games). Be ready with press break.', source: 'Film', confidence: 'medium' },
 ];
 
 export const STAFF_ASSIGNMENTS_SEU: StaffAssignment[] = [
   { id: 'sa-seu-1', staffName: 'Coach Carter', role: 'HC', responsibility: 'Overall game plan execution, Robinson containment strategy', pregameTask: 'Final scout review with team — emphasize corner 3 closeouts', inGameTask: 'Bench management, timeout strategy, Hernandez rotation timing' },
-  { id: 'sa-seu-2', staffName: 'Coach Williams', role: 'Assistant (Offense)', responsibility: 'Offensive adjustments, PnR play calls', pregameTask: 'Walk-through: Horns PnR reject, stagger screens', inGameTask: 'Relay play calls, track shot selection data' },
+  { id: 'sa-seu-2', staffName: 'Coach Pearson', role: 'Assistant (Offense)', responsibility: 'Offensive adjustments, PnR play calls', pregameTask: 'Walk-through: Horns PnR reject, stagger screens', inGameTask: 'Relay play calls, track shot selection data' },
   { id: 'sa-seu-3', staffName: 'Coach Davis', role: 'Assistant (Defense)', responsibility: 'Defensive matchups, Robinson force-left emphasis', pregameTask: 'Defensive emphasis walkthrough — corner closeouts', inGameTask: 'Monitor Robinson shooting splits, call coverage switches' },
   { id: 'sa-seu-4', staffName: 'Marcus Reed', role: 'Director of Ops', responsibility: 'Home game logistics, film coordination', pregameTask: 'Gym setup, film angles confirmed', inGameTask: 'Live film tagging, stat tracking, halftime quick-hits' },
 ];
@@ -383,7 +383,7 @@ export interface FullGamePlan {
   data_source?: string;
 }
 
-/** All game plans indexed — gp-001 Lakewood (in-review), gp-002 STT (archived), gp-003 SEU (draft) */
+/** All game plans indexed — gp-001 Providence (in-review), gp-002 STT (archived), gp-003 SEU (draft) */
 export const GAME_PLANS: FullGamePlan[] = [
   {
     header: GAME_PLAN_HEADER,

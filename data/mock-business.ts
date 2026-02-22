@@ -1,5 +1,5 @@
 /**
- * Mock Business Mode Data ("KaNeXT Business Mode")
+ * Mock Business Mode Data ("Valuetainment Mode")
  * Founder OS — proof wedges, mandates, media, settlement rails.
  * Everything mock by default. Only publicly safe identity facts allowed.
  */
@@ -186,10 +186,10 @@ export const BUSINESS_HUB_TABS: { id: BusinessTab; label: string }[] = [
 
 export const BUSINESS_STATUS = {
   mode: 'Business',
-  org: 'KaNeXT',
+  org: 'Valuetainment',
   cycle: 'FY 2026',
   build: 'v2',
-  proofWedges: ['KaNeXT', 'KaNeXT Church', 'KaNeXT'],
+  proofWedges: ['Valuetainment', '2819 Church', 'Valuetainment'],
 };
 
 export const POWER_METRICS: PowerMetric[] = [
@@ -203,7 +203,7 @@ export const POWER_METRICS: PowerMetric[] = [
 
 export const TODAY_NEXT: TodayNextItem[] = [
   { id: 'tn-1', type: 'meeting', title: 'PBD Tranche Review Call', time: '2:00 PM', status: 'upcoming' },
-  { id: 'tn-2', type: 'deliverable', title: 'KaNeXT Media Value Deck — Final', time: 'EOD', status: 'in_progress' },
+  { id: 'tn-2', type: 'deliverable', title: 'Valuetainment Media Value Deck — Final', time: 'EOD', status: 'in_progress' },
   { id: 'tn-3', type: 'proof', title: 'BTW Classic Venue Walkthrough', time: 'Tomorrow 10 AM', status: 'upcoming' },
 ];
 
@@ -229,7 +229,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
       'Canonical Engine Library (7 engines)',
       'Luxury Control Room UI palette',
     ],
-    proofArtifacts: ['KaNeXT OS v2', 'Nexus conversation logs'],
+    proofArtifacts: ['Valuetainment OS v2', 'Nexus conversation logs'],
     risks: ['Scope creep across 5 modes', 'Single-developer bottleneck'],
     successLooksLike: 'A working app that switches between 5 modes with AI-powered intelligence in each.',
     status: 'completed',
@@ -238,21 +238,21 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     id: 'rp-1',
     phase: 1,
     title: 'Proof Wedge Deployment',
-    objective: 'Deploy KaNeXT at 3 real institutions (KaNeXT / KaNeXT Church / KaNeXT) to prove the platform works.',
+    objective: 'Deploy Valuetainment platform at 3 real institutions to prove the platform works.',
     deliverables: [
-      'KaNeXT Athletics OS — full deployment (13 sports)',
-      'KaNeXT Church Church OS — giving, ministries, connect groups',
-      'KaNeXT Competition — teams, drivers, standings, race ops',
-      'Proof event calendar (BTW Classic, MLK Classic, Valuetainment Classic)',
+      'Valuetainment OS — full deployment (13 sports)',
+      '2819 Church Church OS — giving, ministries, connect groups',
+      'Adidas 3SSB — teams, drivers, standings, race ops',
+      'Proof event calendar (Sales Leadership Summit, The Vault Conference, CXO Forum)',
     ],
     proofArtifacts: [
-      'KaNeXT Free Media Value Analysis',
+      'Valuetainment Free Media Value Analysis',
       'BTW Classic tournament plan',
       'MLK Truth Classic tournament plan',
       'Valuetainment Classic tournament plan',
     ],
     risks: ['Institutional adoption friction', 'Budget constraints at proof sites'],
-    successLooksLike: '3 institutions actively using KaNeXT, generating measurable media value and operational data.',
+    successLooksLike: '3 institutions generating measurable media value and operational data.',
     status: 'active',
   },
   {
@@ -261,7 +261,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     title: 'Mandate Formation',
     objective: 'Turn video mandate strategy into governing body adoption. Institutional lock-in via free cameras + platform.',
     deliverables: [
-      'KaNeXT Video Mandate Strategy execution',
+      'Valuetainment Video Mandate Strategy execution',
       'NAIA video mandate partnership',
       '1,050+ institutions onboarded via mandate',
       'KX-C1 camera deployment at scale',
@@ -284,7 +284,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     ],
     proofArtifacts: ['Settlement audit logs', 'Transaction volume reports'],
     risks: ['Payment processor compliance', 'Multi-entity settlement complexity'],
-    successLooksLike: 'Real money flowing through KaNeXT rails at 3+ institutions with full audit trail.',
+    successLooksLike: 'Real money flowing through Valuetainment rails at 3+ institutions with full audit trail.',
     status: 'upcoming',
   },
   {
@@ -312,11 +312,11 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
 export const WEDGES: WedgeData[] = [
   {
     id: 'w-fmu',
-    name: 'KaNeXT',
-    orgName: 'KaNeXT Sports',
+    name: 'Valuetainment',
+    orgName: 'Valuetainment Media',
     icon: 'sportscourt.fill',
     color: '#FFFFFF',
-    summary: 'Athletics OS wedge — 13-sport NAIA program competing against D1 opponents on ESPN+. Coach-built roster via KaNeXT Engines 01, 02, 06. Projected $53M-$157M in free media value Year 1.',
+    summary: 'Athletics OS wedge — 13-sport NAIA program competing against D1 opponents on ESPN+. Coach-built roster via Valuetainment Engines 01, 02, 06. Projected $53M-$157M in free media value Year 1.',
     proofEvents: [
       'BTW Memorial Classic (Season Opener)',
       'Maui Invitational (3 games)',
@@ -326,15 +326,15 @@ export const WEDGES: WedgeData[] = [
     advantages: [
       'Intelligence — 7 canonical engines powering every decision',
       'Scheduling — D1 opponents create narrative leverage',
-      'Media — ESPN+ broadcasts at $0 cost to KaNeXT',
+      'Media — ESPN+ broadcasts at $0 cost to Valuetainment',
       'Settlement — full ticket/payout rails across all events',
     ],
-    proofArtifact: { title: 'KaNeXT Free Media Value Analysis', docId: 'pa-media-1' },
+    proofArtifact: { title: 'Valuetainment Free Media Value Analysis', docId: 'pa-media-1' },
   },
   {
     id: 'w-iccla',
-    name: 'KaNeXT Church',
-    orgName: 'KaNeXT Church',
+    name: '2819 Church',
+    orgName: '2819 Church',
     icon: 'heart.fill',
     color: '#A1A1AA',
     summary: 'Church OS wedge — multi-campus ministry operations with giving, connect groups, and ministry intelligence. "Morning Prayer Line" concept: AI-powered pastoral care surface.',
@@ -352,8 +352,8 @@ export const WEDGES: WedgeData[] = [
   },
   {
     id: 'w-k1',
-    name: 'KaNeXT',
-    orgName: 'KaNeXT Motorsport League',
+    name: 'Valuetainment',
+    orgName: 'Valuetainment Media League',
     icon: 'flag.checkered',
     color: '#EF4444',
     summary: 'LeagueOS wedge — full motorsport league management with teams, drivers, standings, race operations, and cap enforcement. Decision audit concept for governed competition.',
@@ -380,7 +380,7 @@ export const PROOF_ARTIFACTS: ProofArtifact[] = [
   // Media + Narrative
   {
     id: 'pa-media-1',
-    title: 'KaNeXT Free Media Value Analysis',
+    title: 'Valuetainment Free Media Value Analysis',
     subtitle: '$53M–$157M projected Year 1 media exposure',
     category: 'media',
     section: 'Proof: Media + Narrative',
@@ -391,12 +391,12 @@ export const PROOF_ARTIFACTS: ProofArtifact[] = [
       'Projected 10-12 D1 wins in Year 1',
       'All 13 sports: $53M-$157M total media value',
       '40-60 ESPN+ broadcasts across all sports',
-      '$0 cost to KaNeXT — fully subsidized by KaNeXT',
+      '$0 cost to partners — fully subsidized by Valuetainment',
     ],
   },
   {
     id: 'pa-media-2',
-    title: 'KaNeXT Video Mandate Strategy',
+    title: 'Valuetainment Video Mandate Strategy',
     subtitle: '1,050+ institutions via governing body mandates',
     category: 'strategy',
     section: 'Proof: Media + Narrative',
@@ -439,22 +439,22 @@ export const PROOF_ARTIFACTS: ProofArtifact[] = [
       '16 teams across D1/D2/D3/NAIA · cross-division matchups',
       'MLK Truth Summit: speaker event on economic self-determination',
       'Year 1 revenue: $3M-$11M · Year 5: $25M-$50M+',
-      'KaNeXT Engine 02 Team KR drives seeding (not division labels)',
-      'Nashville, TN · ESPN+ / Valuetainment broadcast',
+      'Valuetainment Engine 02 Team KR drives seeding (not division labels)',
+      'Fort Lauderdale, FL · ESPN+ / Valuetainment broadcast',
     ],
   },
   {
     id: 'pa-post-3',
     title: 'Central Prep Memorial Classic',
-    subtitle: '8-team HBCU season opener + KaNeXT vs Heritage football',
+    subtitle: '8-team HBCU season opener + Valuetainment vs Heritage football',
     category: 'postseason',
     section: 'Proof: Postseason Products',
     visibility: ['founder', 'investor', 'public'],
     lastUpdated: 'Feb 15, 2026',
     highlights: [
-      '8 university basketball teams + football (KaNeXT vs Heritage)',
-      '11 total games across 4 days at KaNeXT campus',
-      'Landmark announcement: free KaNeXT for all HBCUs',
+      '8 university basketball teams + football (Valuetainment vs Heritage)',
+      '11 total games across 4 days at Valuetainment campus',
+      'Landmark announcement: free Valuetainment for all HBCUs',
       'Year 1 revenue: $1.5M-$5.3M (proof event)',
       'PBD co-presenter at halftime announcement',
     ],
@@ -596,15 +596,15 @@ export const GOVERNANCE_AUDIT_PRINCIPLE = 'Every governance decision = Decision 
 export const DATA_ROOM_DOCS: DataRoomDoc[] = [
   // Legal
   { id: 'dr-1', title: 'OSK Group LLC — Operating Agreement', category: 'legal', visibility: ['founder'], lastUpdated: 'Jan 15, 2026', fileType: 'pdf' },
-  { id: 'dr-2', title: 'KaNeXT Operations LLC — Operating Agreement', category: 'legal', visibility: ['founder'], lastUpdated: 'Jan 15, 2026', fileType: 'pdf' },
+  { id: 'dr-2', title: 'Valuetainment Media LLC — Operating Agreement', category: 'legal', visibility: ['founder'], lastUpdated: 'Jan 15, 2026', fileType: 'pdf' },
   { id: 'dr-3', title: 'SAFE Template — Family Round', category: 'legal', visibility: ['founder', 'investor'], lastUpdated: 'Feb 1, 2026', fileType: 'pdf' },
   { id: 'dr-4', title: 'SAFE Template — Co-Founder (PBD)', category: 'legal', visibility: ['founder', 'investor'], lastUpdated: 'Feb 10, 2026', fileType: 'pdf' },
   // Product
-  { id: 'dr-5', title: 'KaNeXT OS v2 — Product Specification', category: 'product', visibility: ['founder', 'investor'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
+  { id: 'dr-5', title: 'Valuetainment OS v2 — Product Specification', category: 'product', visibility: ['founder', 'investor'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
   { id: 'dr-6', title: 'Canonical Engine Library — Technical Spec', category: 'product', visibility: ['founder', 'investor'], lastUpdated: 'Feb 12, 2026', fileType: 'docx' },
-  { id: 'dr-7', title: 'KaNeXT Video Mandate Strategy', category: 'product', visibility: ['founder', 'investor'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
+  { id: 'dr-7', title: 'Valuetainment Video Mandate Strategy', category: 'product', visibility: ['founder', 'investor'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
   // Proof
-  { id: 'dr-8', title: 'KaNeXT Free Media Value Analysis', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
+  { id: 'dr-8', title: 'Valuetainment Free Media Value Analysis', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
   { id: 'dr-9', title: 'BTW Memorial Classic — Tournament Plan', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
   { id: 'dr-10', title: 'MLK Truth Classic — Tournament Plan', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
   { id: 'dr-11', title: 'Valuetainment Classic — Tournament Plan', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
@@ -634,14 +634,14 @@ export const RAILS_FLOW_STEPS = [
 ];
 
 export const MOCK_TRANSACTIONS: MockTransaction[] = [
-  { id: 'mt-1', type: 'ticket', description: 'BTW Classic — Courtside (2x)', amount: 450, status: 'settled', date: 'Feb 14', org: 'KaNeXT' },
-  { id: 'mt-2', type: 'donation', description: 'KaNeXT Church — Sunday Giving (online)', amount: 2500, status: 'settled', date: 'Feb 12', org: 'KaNeXT Church' },
-  { id: 'mt-3', type: 'payout', description: 'KaNeXT Race Prize — Round 11 Winner', amount: -5000, status: 'settled', date: 'Feb 10', org: 'KaNeXT' },
-  { id: 'mt-4', type: 'ticket', description: 'KaNeXT vs Howard — GA (50x)', amount: 1250, status: 'pending', date: 'Feb 15', org: 'KaNeXT' },
-  { id: 'mt-5', type: 'fine', description: 'KaNeXT — Avoidable Contact Penalty', amount: -500, status: 'settled', date: 'Feb 9', org: 'KaNeXT' },
-  { id: 'mt-6', type: 'subscription', description: 'KaNeXT Pro — Annual (HBCU pilot)', amount: 2400, status: 'settled', date: 'Feb 8', org: 'KaNeXT' },
-  { id: 'mt-7', type: 'donation', description: 'KaNeXT Scholarship Fund — Alumni', amount: 10000, status: 'settled', date: 'Feb 6', org: 'KaNeXT' },
-  { id: 'mt-8', type: 'payout', description: 'MLK Classic — Appearance Guarantee', amount: -150000, status: 'pending', date: 'Feb 5', org: 'KaNeXT' },
+  { id: 'mt-1', type: 'ticket', description: 'BTW Classic — Courtside (2x)', amount: 450, status: 'settled', date: 'Feb 14', org: 'Valuetainment' },
+  { id: 'mt-2', type: 'donation', description: '2819 Church — Sunday Giving (online)', amount: 2500, status: 'settled', date: 'Feb 12', org: '2819 Church' },
+  { id: 'mt-3', type: 'payout', description: 'Valuetainment Race Prize — Round 11 Winner', amount: -5000, status: 'settled', date: 'Feb 10', org: 'Valuetainment' },
+  { id: 'mt-4', type: 'ticket', description: 'Valuetainment vs Howard — GA (50x)', amount: 1250, status: 'pending', date: 'Feb 15', org: 'Valuetainment' },
+  { id: 'mt-5', type: 'fine', description: 'Valuetainment — Avoidable Contact Penalty', amount: -500, status: 'settled', date: 'Feb 9', org: 'Valuetainment' },
+  { id: 'mt-6', type: 'subscription', description: 'Valuetainment Pro — Annual (HBCU pilot)', amount: 2400, status: 'settled', date: 'Feb 8', org: 'Valuetainment' },
+  { id: 'mt-7', type: 'donation', description: 'Valuetainment Scholarship Fund — Alumni', amount: 10000, status: 'settled', date: 'Feb 6', org: 'Valuetainment' },
+  { id: 'mt-8', type: 'payout', description: 'MLK Classic — Appearance Guarantee', amount: -150000, status: 'pending', date: 'Feb 5', org: 'Valuetainment' },
 ];
 
 // =============================================================================
@@ -651,9 +651,9 @@ export const MOCK_TRANSACTIONS: MockTransaction[] = [
 export const DIRECTORY: DirectoryEntry[] = [
   { id: 'dir-1', name: 'Oluwadara Carter', role: 'Founder & CEO', department: 'Executive', status: 'active' },
   { id: 'dir-2', name: 'Patrick Bet-David', role: 'Co-Founder (Pending)', department: 'Strategic', status: 'pending' },
-  { id: 'dir-3', name: 'KaNeXT Athletics Staff', role: 'Proof Wedge — Sports', department: 'Operations', status: 'active' },
-  { id: 'dir-4', name: 'KaNeXT Church Ministry Team', role: 'Proof Wedge — Church', department: 'Operations', status: 'active' },
-  { id: 'dir-5', name: 'KaNeXT League Operations', role: 'Proof Wedge — Competition', department: 'Operations', status: 'active' },
+  { id: 'dir-3', name: 'Valuetainment Media Staff', role: 'Proof Wedge — Sports', department: 'Operations', status: 'active' },
+  { id: 'dir-4', name: '2819 Church Ministry Team', role: 'Proof Wedge — Church', department: 'Operations', status: 'active' },
+  { id: 'dir-5', name: 'Valuetainment League Operations', role: 'Proof Wedge — Competition', department: 'Operations', status: 'active' },
   { id: 'dir-6', name: 'Legal Counsel', role: 'Outside Counsel', department: 'Legal', status: 'advisor' },
 ];
 
@@ -667,9 +667,9 @@ export const WORKSTREAMS: Workstream[] = [
 
 export const MEETINGS: MeetingItem[] = [
   { id: 'mtg-1', title: 'PBD Strategy Sync', date: 'Feb 18, 2026 · 2:00 PM', attendees: ['Alex M', 'PBD'], decisions: 0, status: 'scheduled' },
-  { id: 'mtg-2', title: 'KaNeXT Athletics Review', date: 'Feb 20, 2026 · 10:00 AM', attendees: ['Alex M', 'KaNeXT Staff'], decisions: 0, status: 'scheduled' },
+  { id: 'mtg-2', title: 'Valuetainment Review', date: 'Feb 20, 2026 · 10:00 AM', attendees: ['Alex M', 'Valuetainment Staff'], decisions: 0, status: 'scheduled' },
   { id: 'mtg-3', title: 'NAIA Video Mandate Discussion', date: 'Feb 25, 2026 · 1:00 PM', attendees: ['Alex M', 'NAIA HQ'], decisions: 0, status: 'scheduled' },
-  { id: 'mtg-4', title: 'BTW Classic Venue Planning', date: 'Feb 12, 2026 · 11:00 AM', attendees: ['Alex M', 'KaNeXT Facilities'], decisions: 3, status: 'completed' },
+  { id: 'mtg-4', title: 'BTW Classic Venue Planning', date: 'Feb 12, 2026 · 11:00 AM', attendees: ['Alex M', 'Valuetainment Facilities'], decisions: 3, status: 'completed' },
 ];
 
 // =============================================================================

@@ -240,7 +240,7 @@ export function getEduFacilitiesData(_scope: string) {
       purpose: 'CS 301 — Data Structures Lab Session', status: 'confirmed',
     },
     {
-      id: 'bk-3', facilityId: 'fac-6', bookedBy: 'Coach Williams', department: 'Athletics',
+      id: 'bk-3', facilityId: 'fac-6', bookedBy: 'Coach Pearson', department: 'Athletics',
       date: 'Feb 19, 2026', startTime: '4:00 PM', endTime: '7:00 PM',
       purpose: 'Varsity Basketball — Practice', status: 'confirmed',
     },
@@ -304,7 +304,7 @@ export function getEduFacilitiesData(_scope: string) {
       id: 'mr-5', facilityId: 'fac-6', facilityName: 'Gymnasium',
       issue: 'Floor board warping near east entrance — safety concern',
       priority: 'high', status: 'open',
-      reportedBy: 'Coach Williams', reportedDate: 'Feb 18, 2026',
+      reportedBy: 'Coach Pearson', reportedDate: 'Feb 18, 2026',
       estimatedCompletion: 'Feb 25, 2026',
     },
     {

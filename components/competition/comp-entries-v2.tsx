@@ -1,6 +1,6 @@
 /**
  * Competition Entries V2 — Orchestrator with 3 sub-pills: Confirmed | Wildcards | Compliance
- * Entry management for the KaNeXT Racing League.
+ * Entry management for the PBD Podcast League.
  */
 
 import React, { useState } from 'react';

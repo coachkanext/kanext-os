@@ -153,7 +153,7 @@ export default function GivingScreen() {
               <View style={styles.otherContent}>
                 <ThemedText style={styles.otherTitle}>Mail a Check</ThemedText>
                 <ThemedText style={[styles.otherDesc, { color: colors.textSecondary }]}>
-                  100 KaNeXT Blvd, Nashville, TN 90043
+                  3350 Greenbriar Pkwy SW, Atlanta, GA 30331
                 </ThemedText>
               </View>
             </View>

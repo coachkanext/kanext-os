@@ -276,8 +276,8 @@ const DASHBOARD_BLOCKS: ReportsDashboardBlock[] = [
 // === Operational Reports ===
 
 const OPERATIONAL_REPORTS: OperationalReport[] = [
-  { id: 'op-1', name: 'KaNeXT Church Season Operational Summary', series: 'KaNeXT Church', period: '2025-26 Season', status: 'published', generatedDate: 'Feb 14, 2026', author: 'Tom Bradley', format: 'PDF', pageCount: 42, downloads: 156 },
-  { id: 'op-2', name: 'KaNeXT Invitational Operations Review', series: 'KaNeXT Invitational', period: 'Feb 2026', status: 'published', generatedDate: 'Feb 12, 2026', author: 'Alex Morgan', format: 'PDF', pageCount: 28, downloads: 89 },
+  { id: 'op-1', name: '2819 Church Season Operational Summary', series: '2819 Church', period: '2025-26 Season', status: 'published', generatedDate: 'Feb 14, 2026', author: 'Tom Bradley', format: 'PDF', pageCount: 42, downloads: 156 },
+  { id: 'op-2', name: '3SSB Invitational Operations Review', series: '3SSB Invitational', period: 'Feb 2026', status: 'published', generatedDate: 'Feb 12, 2026', author: 'Alex Morgan', format: 'PDF', pageCount: 28, downloads: 89 },
   { id: 'op-3', name: 'Conference Tournament Logistics Plan', series: 'Conference Tournament', period: 'Mar 2026', status: 'draft', generatedDate: 'Feb 15, 2026', author: 'Rachel Kim', format: 'PDF', pageCount: 36, downloads: 0 },
   { id: 'op-4', name: 'Facility Usage Report — Arena Complex', series: 'Facilities', period: 'Jan 2026', status: 'published', generatedDate: 'Feb 3, 2026', author: 'James Wright', format: 'XLSX', pageCount: 0, downloads: 67 },
   { id: 'op-5', name: 'Official Assignment Efficiency Report', series: 'Officiating', period: 'Q1 2026', status: 'published', generatedDate: 'Feb 10, 2026', author: 'David Chen', format: 'Dashboard', pageCount: 0, downloads: 112 },
@@ -300,7 +300,7 @@ const FINANCIAL_REPORTS: FinancialReport[] = [
   { id: 'fi-2', name: 'Conference Tournament Budget Variance', type: 'budget-variance', period: 'Mar 2026', amount: 185000, status: 'draft', generatedDate: 'Feb 15, 2026', format: 'XLSX' },
   { id: 'fi-3', name: 'Annual Balance Sheet — FY2025', type: 'balance-sheet', period: 'FY2025', amount: 8750000, status: 'final', generatedDate: 'Jan 20, 2026', format: 'PDF' },
   { id: 'fi-4', name: 'January Cash Flow Analysis', type: 'cash-flow', period: 'Jan 2026', amount: 342000, status: 'final', generatedDate: 'Feb 5, 2026', format: 'PDF' },
-  { id: 'fi-5', name: 'KaNeXT Invitational Revenue Breakdown', type: 'revenue-breakdown', period: 'Feb 2026', amount: 127500, status: 'final', generatedDate: 'Feb 13, 2026', format: 'Dashboard' },
+  { id: 'fi-5', name: '3SSB Invitational Revenue Breakdown', type: 'revenue-breakdown', period: 'Feb 2026', amount: 127500, status: 'final', generatedDate: 'Feb 13, 2026', format: 'Dashboard' },
   { id: 'fi-6', name: 'Sponsorship Revenue Report', type: 'revenue-breakdown', period: 'Q1 2026', amount: 475000, status: 'pending-review', generatedDate: 'Feb 14, 2026', format: 'PDF' },
   { id: 'fi-7', name: 'Officials Pay Disbursement Summary', type: 'cash-flow', period: 'Jan 2026', amount: 68400, status: 'final', generatedDate: 'Feb 3, 2026', format: 'CSV' },
   { id: 'fi-8', name: 'Facility Rental Income Report', type: 'revenue-breakdown', period: 'Q4 2025', amount: 213000, status: 'final', generatedDate: 'Jan 15, 2026', format: 'PDF' },
@@ -324,7 +324,7 @@ const COMPLIANCE_REPORTS: ComplianceReport[] = [
   { id: 'co-6', name: 'Transfer Eligibility Audit — MBB', type: 'eligibility-audit', period: 'Spring 2026', findings: 0, status: 'pending', generatedDate: 'Feb 15, 2026' },
   { id: 'co-7', name: 'Facility Safety Compliance Report', type: 'rules-review', period: 'Q1 2026', findings: 1, status: 'issues-found', generatedDate: 'Feb 8, 2026' },
   { id: 'co-8', name: 'Random Drug Testing — January', type: 'drug-test-summary', period: 'Jan 2026', findings: 0, status: 'clean', generatedDate: 'Feb 1, 2026' },
-  { id: 'co-9', name: 'Game Day Incident Report — KaNeXT', type: 'incident-log', period: 'Feb 7-9, 2026', findings: 1, status: 'issues-found', generatedDate: 'Feb 11, 2026' },
+  { id: 'co-9', name: 'Game Day Incident Report — 3SSB', type: 'incident-log', period: 'Feb 7-9, 2026', findings: 1, status: 'issues-found', generatedDate: 'Feb 11, 2026' },
   { id: 'co-10', name: 'Volunteer Background Check Audit', type: 'certification-status', period: 'Q1 2026', findings: 0, status: 'clean', generatedDate: 'Feb 6, 2026' },
   { id: 'co-11', name: 'Title IX Compliance Review', type: 'rules-review', period: 'FY2025', findings: 0, status: 'clean', generatedDate: 'Jan 25, 2026' },
   { id: 'co-12', name: 'Medical Staff Certification Audit', type: 'certification-status', period: 'Feb 2026', findings: 0, status: 'pending', generatedDate: 'Feb 14, 2026' },
@@ -336,17 +336,17 @@ const COMPLIANCE_REPORTS: ComplianceReport[] = [
 // === Performance Reports ===
 
 const PERFORMANCE_REPORTS: PerformanceReport[] = [
-  { id: 'pe-1', name: 'KaNeXT Invitational Statistics Pack', series: 'KaNeXT Invitational', type: 'statistics', period: 'Feb 2026', generatedDate: 'Feb 12, 2026', format: 'PDF' },
-  { id: 'pe-2', name: 'KaNeXT Church Conference Standings Report', series: 'KaNeXT Church', type: 'standings', period: 'Week 12', generatedDate: 'Feb 14, 2026', format: 'Dashboard' },
-  { id: 'pe-3', name: 'MBB Player Rankings — Conference', series: 'KaNeXT Church', type: 'player-rankings', period: 'Feb 2026', generatedDate: 'Feb 13, 2026', format: 'PDF' },
-  { id: 'pe-4', name: 'Team Analytics — KaNeXT Basketball', series: 'KaNeXT Church', type: 'team-analytics', period: '2025-26 Season', generatedDate: 'Feb 11, 2026', format: 'Dashboard' },
+  { id: 'pe-1', name: '3SSB Invitational Statistics Pack', series: '3SSB Invitational', type: 'statistics', period: 'Feb 2026', generatedDate: 'Feb 12, 2026', format: 'PDF' },
+  { id: 'pe-2', name: '2819 Church Conference Standings Report', series: '2819 Church', type: 'standings', period: 'Week 12', generatedDate: 'Feb 14, 2026', format: 'Dashboard' },
+  { id: 'pe-3', name: 'MBB Player Rankings — Conference', series: '2819 Church', type: 'player-rankings', period: 'Feb 2026', generatedDate: 'Feb 13, 2026', format: 'PDF' },
+  { id: 'pe-4', name: 'Team Analytics — 3SSB Basketball', series: '2819 Church', type: 'team-analytics', period: '2025-26 Season', generatedDate: 'Feb 11, 2026', format: 'Dashboard' },
   { id: 'pe-5', name: 'Historical Win-Loss Trends (5yr)', series: 'Conference History', type: 'historical-trends', period: '2021-2026', generatedDate: 'Feb 10, 2026', format: 'PDF' },
   { id: 'pe-6', name: 'Soccer Invitational Stats Summary', series: 'Soccer Invitational', type: 'statistics', period: 'Mar 2026', generatedDate: 'Feb 15, 2026', format: 'XLSX' },
   { id: 'pe-7', name: 'Volleyball Classic Team Rankings', series: 'Volleyball Classic', type: 'standings', period: 'Mar 2026', generatedDate: 'Feb 14, 2026', format: 'PDF' },
-  { id: 'pe-8', name: 'Conference Player of the Week Log', series: 'KaNeXT Church', type: 'player-rankings', period: 'Season-to-Date', generatedDate: 'Feb 14, 2026', format: 'CSV' },
+  { id: 'pe-8', name: 'Conference Player of the Week Log', series: '2819 Church', type: 'player-rankings', period: 'Season-to-Date', generatedDate: 'Feb 14, 2026', format: 'CSV' },
   { id: 'pe-9', name: 'Swimming & Diving Meet Results', series: 'Aquatics', type: 'statistics', period: 'Jan 2026', generatedDate: 'Feb 2, 2026', format: 'PDF' },
   { id: 'pe-10', name: 'Track & Field Performance Index', series: 'Track & Field', type: 'team-analytics', period: 'Indoor Season 2026', generatedDate: 'Feb 8, 2026', format: 'Dashboard' },
-  { id: 'pe-11', name: 'Conference RPI Calculator Export', series: 'KaNeXT Church', type: 'standings', period: 'Feb 14, 2026', generatedDate: 'Feb 14, 2026', format: 'XLSX' },
+  { id: 'pe-11', name: 'Conference RPI Calculator Export', series: '2819 Church', type: 'standings', period: 'Feb 14, 2026', generatedDate: 'Feb 14, 2026', format: 'XLSX' },
   { id: 'pe-12', name: 'Softball Spring Preview Stats', series: 'Softball', type: 'historical-trends', period: '2023-2026', generatedDate: 'Feb 6, 2026', format: 'PDF' },
   { id: 'pe-13', name: 'Cross-Sport Strength of Schedule', series: 'All Sports', type: 'team-analytics', period: '2025-26 Season', generatedDate: 'Feb 9, 2026', format: 'Dashboard' },
   { id: 'pe-14', name: 'Tennis Doubles Rankings Update', series: 'Tennis', type: 'player-rankings', period: 'Spring 2026', generatedDate: 'Feb 7, 2026', format: 'PDF' },
@@ -356,29 +356,29 @@ const PERFORMANCE_REPORTS: PerformanceReport[] = [
 // === Attendance Reports ===
 
 const ATTENDANCE_REPORTS: AttendanceReport[] = [
-  { id: 'at-1', event: 'KaNeXT vs Gulf Coast State — MBB', venue: 'Arena Complex', date: 'Feb 14, 2026', attendance: 4850, capacity: 5200, utilization: 93, revenue: 72500, notes: 'Near sellout — rivalry game' },
-  { id: 'at-2', event: 'KaNeXT Invitational — Day 1', venue: 'Arena Complex', date: 'Feb 7, 2026', attendance: 3200, capacity: 5200, utilization: 62, revenue: 38400, notes: 'First day, building momentum' },
-  { id: 'at-3', event: 'KaNeXT Invitational — Day 2', venue: 'Arena Complex', date: 'Feb 8, 2026', attendance: 4100, capacity: 5200, utilization: 79, revenue: 49200, notes: 'Strong Saturday turnout' },
-  { id: 'at-4', event: 'KaNeXT Invitational — Championship', venue: 'Arena Complex', date: 'Feb 9, 2026', attendance: 5050, capacity: 5200, utilization: 97, revenue: 75750, notes: 'Near capacity — championship atmosphere' },
-  { id: 'at-5', event: 'KaNeXT vs Naples University — MBB', venue: 'Arena Complex', date: 'Feb 1, 2026', attendance: 3800, capacity: 5200, utilization: 73, revenue: 57000, notes: '' },
-  { id: 'at-6', event: 'KaNeXT vs SW Ridgemont Tech — WBB', venue: 'Arena Complex', date: 'Feb 12, 2026', attendance: 1850, capacity: 5200, utilization: 36, revenue: 18500, notes: 'Weekday game' },
-  { id: 'at-7', event: 'KaNeXT Baseball vs Cape Coral', venue: 'Diamond Field', date: 'Feb 10, 2026', attendance: 1200, capacity: 2500, utilization: 48, revenue: 9600, notes: '' },
+  { id: 'at-1', event: '3SSB vs Gulf Coast State — MBB', venue: 'Arena Complex', date: 'Feb 14, 2026', attendance: 4850, capacity: 5200, utilization: 93, revenue: 72500, notes: 'Near sellout — rivalry game' },
+  { id: 'at-2', event: '3SSB Invitational — Day 1', venue: 'Arena Complex', date: 'Feb 7, 2026', attendance: 3200, capacity: 5200, utilization: 62, revenue: 38400, notes: 'First day, building momentum' },
+  { id: 'at-3', event: '3SSB Invitational — Day 2', venue: 'Arena Complex', date: 'Feb 8, 2026', attendance: 4100, capacity: 5200, utilization: 79, revenue: 49200, notes: 'Strong Saturday turnout' },
+  { id: 'at-4', event: '3SSB Invitational — Championship', venue: 'Arena Complex', date: 'Feb 9, 2026', attendance: 5050, capacity: 5200, utilization: 97, revenue: 75750, notes: 'Near capacity — championship atmosphere' },
+  { id: 'at-5', event: '3SSB vs Naples University — MBB', venue: 'Arena Complex', date: 'Feb 1, 2026', attendance: 3800, capacity: 5200, utilization: 73, revenue: 57000, notes: '' },
+  { id: 'at-6', event: '3SSB vs SW MSU-Northern Tech — WBB', venue: 'Arena Complex', date: 'Feb 12, 2026', attendance: 1850, capacity: 5200, utilization: 36, revenue: 18500, notes: 'Weekday game' },
+  { id: 'at-7', event: '3SSB Baseball vs Cape Coral', venue: 'Diamond Field', date: 'Feb 10, 2026', attendance: 1200, capacity: 2500, utilization: 48, revenue: 9600, notes: '' },
   { id: 'at-8', event: 'Swim & Dive Dual Meet', venue: 'Aquatic Center', date: 'Jan 28, 2026', attendance: 380, capacity: 600, utilization: 63, revenue: 2280, notes: 'Good turnout for swim' },
-  { id: 'at-9', event: 'KaNeXT vs Sarasota State — MBB', venue: 'Arena Complex', date: 'Jan 25, 2026', attendance: 4200, capacity: 5200, utilization: 81, revenue: 63000, notes: 'Conference matchup' },
+  { id: 'at-9', event: '3SSB vs Sarasota State — MBB', venue: 'Arena Complex', date: 'Jan 25, 2026', attendance: 4200, capacity: 5200, utilization: 81, revenue: 63000, notes: 'Conference matchup' },
   { id: 'at-10', event: 'Indoor Track & Field Invitational', venue: 'Field House', date: 'Jan 22, 2026', attendance: 650, capacity: 1200, utilization: 54, revenue: 3900, notes: '' },
-  { id: 'at-11', event: 'KaNeXT Volleyball vs Tampa Bay', venue: 'Arena Complex', date: 'Jan 18, 2026', attendance: 2100, capacity: 3500, utilization: 60, revenue: 15750, notes: 'Volleyball config' },
-  { id: 'at-12', event: 'KaNeXT Soccer vs Orlando Tech', venue: 'Stadium Field', date: 'Jan 15, 2026', attendance: 1450, capacity: 3000, utilization: 48, revenue: 10150, notes: '' },
-  { id: 'at-13', event: 'KaNeXT vs Lakeland University — MBB', venue: 'Arena Complex', date: 'Jan 11, 2026', attendance: 3600, capacity: 5200, utilization: 69, revenue: 54000, notes: '' },
+  { id: 'at-11', event: '3SSB Volleyball vs Tampa Bay', venue: 'Arena Complex', date: 'Jan 18, 2026', attendance: 2100, capacity: 3500, utilization: 60, revenue: 15750, notes: 'Volleyball config' },
+  { id: 'at-12', event: '3SSB Soccer vs Orlando Tech', venue: 'Stadium Field', date: 'Jan 15, 2026', attendance: 1450, capacity: 3000, utilization: 48, revenue: 10150, notes: '' },
+  { id: 'at-13', event: '3SSB vs Lakeland University — MBB', venue: 'Arena Complex', date: 'Jan 11, 2026', attendance: 3600, capacity: 5200, utilization: 69, revenue: 54000, notes: '' },
   { id: 'at-14', event: 'Tennis Home Opener', venue: 'Tennis Complex', date: 'Jan 20, 2026', attendance: 280, capacity: 500, utilization: 56, revenue: 1680, notes: '' },
-  { id: 'at-15', event: 'KaNeXT vs Jacksonville Academy — MBB', venue: 'Arena Complex', date: 'Jan 4, 2026', attendance: 4500, capacity: 5200, utilization: 87, revenue: 67500, notes: 'Season opener sellout push' },
+  { id: 'at-15', event: '3SSB vs Jacksonville Academy — MBB', venue: 'Arena Complex', date: 'Jan 4, 2026', attendance: 4500, capacity: 5200, utilization: 87, revenue: 67500, notes: 'Season opener sellout push' },
 ];
 
 // === Media Reports ===
 
 const MEDIA_REPORTS: MediaReport[] = [
-  { id: 'me-1', name: 'KaNeXT Invitational Broadcast Reach', type: 'broadcast-reach', period: 'Feb 7-9, 2026', metric: 'Total Viewers', value: '128,400', change: 34 },
+  { id: 'me-1', name: '3SSB Invitational Broadcast Reach', type: 'broadcast-reach', period: 'Feb 7-9, 2026', metric: 'Total Viewers', value: '128,400', change: 34 },
   { id: 'me-2', name: 'Conference MBB Social Engagement', type: 'social-engagement', period: 'Feb 2026', metric: 'Engagements', value: '45,200', change: 18 },
-  { id: 'me-3', name: 'KaNeXT Church Press Coverage Index', type: 'press-coverage', period: 'Jan 2026', metric: 'Articles', value: '87', change: 12 },
+  { id: 'me-3', name: '2819 Church Press Coverage Index', type: 'press-coverage', period: 'Jan 2026', metric: 'Articles', value: '87', change: 12 },
   { id: 'me-4', name: 'Instagram Content Performance', type: 'content-performance', period: 'Feb 2026', metric: 'Reach', value: '312K', change: 22 },
   { id: 'me-5', name: 'Live Stream Viewership — MBB', type: 'broadcast-reach', period: 'Season-to-Date', metric: 'Avg Concurrent', value: '4,820', change: 15 },
   { id: 'me-6', name: 'X/Twitter Engagement Report', type: 'social-engagement', period: 'Feb 2026', metric: 'Impressions', value: '890K', change: -5 },
@@ -390,7 +390,7 @@ const MEDIA_REPORTS: MediaReport[] = [
   { id: 'me-12', name: 'Podcast Listenership Metrics', type: 'content-performance', period: 'Feb 2026', metric: 'Downloads', value: '6,100', change: 19 },
   { id: 'me-13', name: 'Game Day Hashtag Performance', type: 'social-engagement', period: 'Feb 14, 2026', metric: 'Uses', value: '2,890', change: 31 },
   { id: 'me-14', name: 'Conference Newsletter Open Rate', type: 'content-performance', period: 'Feb 2026', metric: 'Open Rate', value: '34.2%', change: -2 },
-  { id: 'me-15', name: 'Photo Gallery Engagement — KaNeXT', type: 'content-performance', period: 'Feb 2026', metric: 'Views', value: '18,400', change: 45 },
+  { id: 'me-15', name: 'Photo Gallery Engagement — 3SSB', type: 'content-performance', period: 'Feb 2026', metric: 'Views', value: '18,400', change: 45 },
 ];
 
 // === Custom Reports ===

@@ -172,7 +172,7 @@ export function CompEntriesWildcardsView({ colors, accent }: Props) {
           </ThemedText>
         </View>
         <ThemedText style={[styles.peoplesCarBody, { color: colors.textSecondary }]}>
-          The People's Car slot is open for Nashville. Fan voting opens Aug 1.
+          The People's Car slot is open for Rock Hill. Fan voting opens Aug 1.
         </ThemedText>
       </View>
 

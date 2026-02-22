@@ -235,7 +235,7 @@ const ACADEMIC_POLICIES: LibraryPolicy[] = [
     keyPoints: [
       'Minimum 128 credits for bachelor\'s degree',
       'Minimum cumulative GPA of 2.0',
-      'Minimum 32 credits in residency at Westfield',
+      'Minimum 32 credits in residency at Howard',
       'Graduation application due one semester before expected completion',
     ],
     appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
@@ -497,7 +497,7 @@ const HR_POLICIES: LibraryPolicy[] = [
     effectiveDate: 'Aug 15, 2025',
     version: '5.0',
     status: 'active',
-    summary: 'Westfield University is an equal opportunity employer committed to diversity and non-discrimination in all employment practices.',
+    summary: 'Montana Tech is an equal opportunity employer committed to diversity and non-discrimination in all employment practices.',
     keyPoints: [
       'Non-discrimination in hiring, promotion, compensation, and termination',
       'Affirmative action plan reviewed annually',
@@ -540,8 +540,8 @@ const TITLE_IX: TitleIXInfo = {
   coordinator: 'Dr. Angela Williams',
   office: 'Administration Building, Suite 150',
   phone: '(404) 555-9200',
-  email: 'titleix@westfield.edu',
-  reportingUrl: 'westfield.edu/title-ix/report',
+  email: 'titleix@howard.edu',
+  reportingUrl: 'howard.edu/title-ix/report',
   trainingDeadline: 'Mar 31, 2026',
   casesPending: 4,
   casesResolved: 18,

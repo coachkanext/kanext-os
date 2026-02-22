@@ -1,11 +1,11 @@
 /**
- * Mock Business Media/Proof Data — KaNeXT OS Business Mode "Media/Proof" tab.
+ * Mock Business Media/Proof Data — Valuetainment Business Mode "Media/Proof" tab.
  *
  * 8 sub-tabs: Overview, Library, Proof Packs, Playlists, Case Studies,
  * Press, Rights, Share Links.
  *
- * All data references KaNeXT entities:
- *   Alex Morgan, KaNeXT, KaNeXT Church, KaNeXT Racing,
+ * All data references Valuetainment entities:
+ *   Patrick Bet-David, Valuetainment, 2819 Church, PBD Podcast,
  *   Investor demos, brand assets, PBD/Valuetainment mentions.
  */
 
@@ -138,37 +138,37 @@ export const MEDIA_OVERVIEW: MediaOverviewStats = {
 export const MEDIA_LIBRARY: MediaAsset[] = [
   {
     id: 'ma-1',
-    title: 'KaNeXT vs Heritage — Full Game Broadcast',
+    title: 'Valuetainment vs Heritage — Full Game Broadcast',
     type: 'video',
     category: 'Game Footage',
     size: '4.2 GB',
     uploadedAt: 'Feb 12, 2026',
     uploadedBy: 'Alex Morgan',
-    tags: ['KaNeXT', 'basketball', 'broadcast', 'proof'],
+    tags: ['Valuetainment', 'basketball', 'broadcast', 'proof'],
   },
   {
     id: 'ma-2',
-    title: 'KaNeXT Church Sunday Worship — Multi-Cam Capture',
+    title: '2819 Church Sunday Worship — Multi-Cam Capture',
     type: 'video',
     category: 'Worship Content',
     size: '3.8 GB',
     uploadedAt: 'Feb 9, 2026',
     uploadedBy: 'David Okonkwo',
-    tags: ['KaNeXT Church', 'worship', 'multi-cam', 'live'],
+    tags: ['2819 Church', 'worship', 'multi-cam', 'live'],
   },
   {
     id: 'ma-3',
-    title: 'KaNeXT Race Day Telemetry Overlay — Round 5',
+    title: 'Valuetainment Race Day Telemetry Overlay — Round 5',
     type: 'video',
     category: 'Race Footage',
     size: '1.7 GB',
     uploadedAt: 'Feb 8, 2026',
     uploadedBy: 'Adriana Ruiz',
-    tags: ['KaNeXT', 'telemetry', 'overlay', 'race'],
+    tags: ['Valuetainment', 'telemetry', 'overlay', 'race'],
   },
   {
     id: 'ma-4',
-    title: 'KaNeXT OS v2 Investor Demo Recording',
+    title: 'Valuetainment OS v2 Investor Demo Recording',
     type: 'video',
     category: 'Investor Materials',
     size: '890 MB',
@@ -178,7 +178,7 @@ export const MEDIA_LIBRARY: MediaAsset[] = [
   },
   {
     id: 'ma-5',
-    title: 'KaNeXT Brand Kit — Logos, Marks, Guidelines',
+    title: 'Valuetainment Brand Kit — Logos, Marks, Guidelines',
     type: 'deck',
     category: 'Brand Assets',
     size: '24 MB',
@@ -198,17 +198,17 @@ export const MEDIA_LIBRARY: MediaAsset[] = [
   },
   {
     id: 'ma-7',
-    title: 'KaNeXT Player Headshots — 2025-26 Roster',
+    title: 'Valuetainment Player Headshots — 2025-26 Roster',
     type: 'image',
     category: 'Game Footage',
     size: '156 MB',
     uploadedAt: 'Jan 15, 2026',
     uploadedBy: 'Marcus Chen',
-    tags: ['KaNeXT', 'headshots', 'roster', 'photo'],
+    tags: ['Valuetainment', 'headshots', 'roster', 'photo'],
   },
   {
     id: 'ma-8',
-    title: 'KaNeXT OS Product Requirements Document',
+    title: 'Valuetainment OS Product Requirements Document',
     type: 'document',
     category: 'Internal Docs',
     size: '4.5 MB',
@@ -227,7 +227,7 @@ export const PROOF_PACKS: ProofPack[] = [
     id: 'pp-1',
     title: 'Investor Proof Pack — Q1 2026',
     description:
-      'Curated media bundle for investor meetings: product demo, KaNeXT highlights, traction metrics deck, and founder walkthrough video.',
+      'Curated media bundle for investor meetings: product demo, Valuetainment highlights, traction metrics deck, and founder walkthrough video.',
     assetCount: 12,
     status: 'published',
     createdAt: 'Feb 3, 2026',
@@ -237,7 +237,7 @@ export const PROOF_PACKS: ProofPack[] = [
     id: 'pp-2',
     title: 'Board Meeting Media Pack',
     description:
-      'Board-ready evidence pack: quarterly KPIs, KaNeXT partnership proof, KaNeXT Church pilot footage, and compliance summary slides.',
+      'Board-ready evidence pack: quarterly KPIs, Valuetainment partnership proof, 2819 Church pilot footage, and compliance summary slides.',
     assetCount: 8,
     status: 'published',
     createdAt: 'Jan 22, 2026',
@@ -255,7 +255,7 @@ export const PROOF_PACKS: ProofPack[] = [
   },
   {
     id: 'pp-4',
-    title: 'Public Showcase — KaNeXT Story',
+    title: 'Public Showcase — Valuetainment Story',
     description:
       'Public-facing media compilation: founder interview clips, product overview video, press highlights, and brand sizzle reel.',
     assetCount: 9,
@@ -272,9 +272,9 @@ export const PROOF_PACKS: ProofPack[] = [
 export const PLAYLISTS: Playlist[] = [
   {
     id: 'pl-1',
-    title: 'KaNeXT Season Highlights 2025-26',
+    title: 'Valuetainment Season Highlights 2025-26',
     description:
-      'Complete season highlight package — top plays, broadcast clips, and post-game interviews from every KaNeXT conference game.',
+      'Complete season highlight package — top plays, broadcast clips, and post-game interviews from every Valuetainment conference game.',
     itemCount: 22,
     duration: '1h 14m',
     category: 'Sports',
@@ -282,7 +282,7 @@ export const PLAYLISTS: Playlist[] = [
   },
   {
     id: 'pl-2',
-    title: 'KaNeXT Product Demos — Internal',
+    title: 'Valuetainment Product Demos — Internal',
     description:
       'Chronological collection of all internal product demo recordings, from MVP through OS v2 launch.',
     itemCount: 8,
@@ -292,9 +292,9 @@ export const PLAYLISTS: Playlist[] = [
   },
   {
     id: 'pl-3',
-    title: 'KaNeXT Race Day Recaps',
+    title: 'Valuetainment Race Day Recaps',
     description:
-      'Race-day recap videos with telemetry overlay, post-race analysis, and driver interviews for each KaNeXT round.',
+      'Race-day recap videos with telemetry overlay, post-race analysis, and driver interviews for each Valuetainment round.',
     itemCount: 14,
     duration: '2h 6m',
     category: 'Racing',
@@ -302,9 +302,9 @@ export const PLAYLISTS: Playlist[] = [
   },
   {
     id: 'pl-4',
-    title: 'KaNeXT Church Worship Archives',
+    title: '2819 Church Worship Archives',
     description:
-      'Multi-cam worship recordings from KaNeXT Church Sunday services, campus events, and special programs.',
+      'Multi-cam worship recordings from 2819 Church Sunday services, campus events, and special programs.',
     itemCount: 18,
     duration: '3h 30m',
     category: 'Church',
@@ -319,13 +319,13 @@ export const PLAYLISTS: Playlist[] = [
 export const CASE_STUDIES: CaseStudy[] = [
   {
     id: 'cs-1',
-    title: 'KaNeXT Athletics — Transforming HBCU Game Day',
-    client: 'KaNeXT Sports',
+    title: 'Valuetainment — Transforming HBCU Game Day',
+    client: 'Carroll College',
     category: 'Sports',
     status: 'published',
     publishedAt: 'Jan 30, 2026',
     summary:
-      'How KaNeXT OS powered KaNeXT basketball with real-time analytics, automated highlight generation, and fan engagement tools — delivering measurable media value growth in the first season.',
+      'How Valuetainment OS powered Valuetainment basketball with real-time analytics, automated highlight generation, and fan engagement tools — delivering measurable media value growth in the first season.',
     metrics: [
       { label: 'Media Value Y1', value: '$53M\u2013$157M' },
       { label: 'Highlight Clips Generated', value: '1,240+' },
@@ -334,13 +334,13 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: 'cs-2',
-    title: 'KaNeXT Church Campus — Multi-Site Worship Technology',
+    title: '2819 Church Campus — Multi-Site Worship Technology',
     client: 'Int\u2019l Church of Christ LA',
     category: 'Church',
     status: 'published',
     publishedAt: 'Feb 5, 2026',
     summary:
-      'Deploying KaNeXT OS across 3 KaNeXT Church campuses for unified multi-cam worship capture, sermon archival, and congregation engagement — reducing production overhead by 60%.',
+      'Deploying Valuetainment OS across 3 2819 Church campuses for unified multi-cam worship capture, sermon archival, and congregation engagement — reducing production overhead by 60%.',
     metrics: [
       { label: 'Campuses Connected', value: '3' },
       { label: 'Production Cost Savings', value: '60%' },
@@ -349,12 +349,12 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: 'cs-3',
-    title: 'KaNeXT Racing — Data-Driven Race Day',
-    client: 'KaNeXT Racing Series',
+    title: 'PBD Podcast — Data-Driven Race Day',
+    client: 'PBD Podcast Series',
     category: 'Racing',
     status: 'draft',
     summary:
-      'Integrating live telemetry feeds, race-day overlay graphics, and post-race analysis into the KaNeXT OS platform for KaNeXT — enabling data-driven storytelling and fan-facing race recaps.',
+      'Integrating live telemetry feeds, race-day overlay graphics, and post-race analysis into the Valuetainment OS platform — enabling data-driven storytelling and fan-facing race recaps.',
     metrics: [
       { label: 'Races Covered', value: '14' },
       { label: 'Telemetry Data Points / Race', value: '48K+' },
@@ -370,11 +370,11 @@ export const CASE_STUDIES: CaseStudy[] = [
 export const PRESS_ITEMS: PressItem[] = [
   {
     id: 'pr-1',
-    title: 'KaNeXT Raises Pre-Seed to Power HBCU Sports Tech',
+    title: 'Valuetainment Raises Pre-Seed to Power HBCU Sports Tech',
     outlet: 'TechCrunch',
     date: 'Jan 15, 2026',
     type: 'article',
-    url: 'https://techcrunch.com/kanext-pre-seed',
+    url: 'https://techcrunch.com/valuetainment-pre-seed',
     sentiment: 'positive',
   },
   {
@@ -383,12 +383,12 @@ export const PRESS_ITEMS: PressItem[] = [
     outlet: 'Valuetainment',
     date: 'Feb 2, 2026',
     type: 'podcast',
-    url: 'https://valuetainment.com/kanext',
+    url: 'https://valuetainment.com/about',
     sentiment: 'positive',
   },
   {
     id: 'pr-3',
-    title: 'PBD Names KaNeXT Among Top 10 Startups to Watch',
+    title: 'PBD Names Valuetainment Among Top 10 Startups to Watch',
     outlet: 'PBD Podcast',
     date: 'Jan 28, 2026',
     type: 'mention',
@@ -397,7 +397,7 @@ export const PRESS_ITEMS: PressItem[] = [
   },
   {
     id: 'pr-4',
-    title: 'KaNeXT Partners with KaNeXT for 2025-26 Basketball Season',
+    title: 'Valuetainment Partners with Carroll College for 2025-26 Basketball Season',
     outlet: 'HBCU Gameday',
     date: 'Dec 12, 2025',
     type: 'article',
@@ -409,7 +409,7 @@ export const PRESS_ITEMS: PressItem[] = [
     outlet: 'The Hustle Daily',
     date: 'Feb 10, 2026',
     type: 'interview',
-    url: 'https://thehustle.co/kanext-interview',
+    url: 'https://thehustle.co/valuetainment-interview',
     sentiment: 'neutral',
   },
 ];
@@ -421,16 +421,16 @@ export const PRESS_ITEMS: PressItem[] = [
 export const RIGHTS_ITEMS: RightsItem[] = [
   {
     id: 'ri-1',
-    assetTitle: 'KaNeXT Game Broadcast Footage — 2025-26 Season',
+    assetTitle: 'Valuetainment Game Broadcast Footage — 2025-26 Season',
     licenseType: 'Exclusive Media Rights',
-    holder: 'KaNeXT Sports',
+    holder: 'Carroll College',
     expiryDate: 'Aug 31, 2026',
     status: 'active',
     territory: 'United States',
   },
   {
     id: 'ri-2',
-    assetTitle: 'KaNeXT Church Worship Recordings — All Campuses',
+    assetTitle: '2819 Church Worship Recordings — All Campuses',
     licenseType: 'Non-Exclusive License',
     holder: 'Int\u2019l Church of Christ LA',
     expiryDate: 'Dec 31, 2026',
@@ -439,18 +439,18 @@ export const RIGHTS_ITEMS: RightsItem[] = [
   },
   {
     id: 'ri-3',
-    assetTitle: 'KaNeXT Race Telemetry & Overlay Graphics',
+    assetTitle: 'Valuetainment Race Telemetry & Overlay Graphics',
     licenseType: 'Partnership License',
-    holder: 'KaNeXT Racing Series',
+    holder: 'PBD Podcast Series',
     expiryDate: 'Mar 15, 2026',
     status: 'expiring_soon',
     territory: 'North America',
   },
   {
     id: 'ri-4',
-    assetTitle: 'KaNeXT Brand Kit — Third-Party Usage',
+    assetTitle: 'Valuetainment Brand Kit — Third-Party Usage',
     licenseType: 'Trademark License',
-    holder: 'KaNeXT Inc.',
+    holder: 'Valuetainment Media LLC',
     expiryDate: 'Jan 1, 2025',
     status: 'expired',
     territory: 'Worldwide',
@@ -465,7 +465,7 @@ export const SHARE_LINKS: ShareLink[] = [
   {
     id: 'sl-1',
     title: 'Investor Demo — February 2026',
-    url: 'https://share.kanext.io/inv-demo-feb26',
+    url: 'https://share.valuetainment.com/inv-demo-feb26',
     targetAudience: 'Investors',
     expiresAt: 'Mar 15, 2026',
     views: 47,
@@ -474,8 +474,8 @@ export const SHARE_LINKS: ShareLink[] = [
   },
   {
     id: 'sl-2',
-    title: 'KaNeXT Highlight Reel — Public',
-    url: 'https://share.kanext.io/fmu-highlights',
+    title: 'Valuetainment Highlight Reel — Public',
+    url: 'https://share.valuetainment.com/fmu-highlights',
     targetAudience: 'Public',
     expiresAt: 'Jun 30, 2026',
     views: 312,
@@ -485,7 +485,7 @@ export const SHARE_LINKS: ShareLink[] = [
   {
     id: 'sl-3',
     title: 'Board Pack Media Attachments',
-    url: 'https://share.kanext.io/board-media-q1',
+    url: 'https://share.valuetainment.com/board-media-q1',
     targetAudience: 'Board Members',
     expiresAt: 'Feb 28, 2026',
     views: 8,
@@ -495,7 +495,7 @@ export const SHARE_LINKS: ShareLink[] = [
   {
     id: 'sl-4',
     title: 'Partner API Demo Recording',
-    url: 'https://share.kanext.io/partner-api-demo',
+    url: 'https://share.valuetainment.com/partner-api-demo',
     targetAudience: 'Partners',
     expiresAt: 'Apr 1, 2026',
     views: 23,
@@ -505,7 +505,7 @@ export const SHARE_LINKS: ShareLink[] = [
   {
     id: 'sl-5',
     title: 'Pitch Deck — December 2025',
-    url: 'https://share.kanext.io/pitch-dec25',
+    url: 'https://share.valuetainment.com/pitch-dec25',
     targetAudience: 'Investors',
     expiresAt: 'Jan 31, 2026',
     views: 89,

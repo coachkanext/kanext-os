@@ -29,7 +29,7 @@ export const GOVERNING_BODIES: GoverningBodyDef[] = [
   },
   {
     id: 'naia',
-    label: 'NAA',
+    label: 'NAIA',
     divisions: null,
   },
   {
@@ -64,7 +64,7 @@ export const GOVERNING_BODIES: GoverningBodyDef[] = [
 /** Get the PoolLevel for a governing body without divisions */
 export function getGoverningBodyPoolLevel(govId: string): PoolLevel | null {
   switch (govId) {
-    case 'naia': return 'NAA';
+    case 'naia': return 'NAIA';
     case 'nccaa': return 'NCAA D3'; // map to closest existing level
     case 'uscaa': return 'NCAA D3'; // map to closest existing level
     default: return null;

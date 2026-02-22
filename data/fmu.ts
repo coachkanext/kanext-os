@@ -75,10 +75,11 @@ export function parseGameDate(dateStr: string | null): Date | null {
 const NOW = new Date();
 const TODAY_START = new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate());
 
-// KaNeXT Conference opponents (used for CONF/NON-CONF tagging + standings)
+// Frontier Conference opponents (used for CONF/NON-CONF tagging + standings)
 const sunConfTeams = [
-  'Westfield', 'Bayshore', 'Lakewood', 'Summit',
-  'Ridgemont', 'Clearwater', 'Pinecrest University', 'Lakeview College',
+  'Montana Tech', 'UM Western', 'Providence', 'Rocky Mountain',
+  'MSU-Northern', 'Bellevue', 'Dakota State', 'Dickinson State',
+  'Mayville State', 'Valley City State', 'Bismarck State',
 ];
 
 export function isConfGame(opp: string | null): boolean {
@@ -109,35 +110,30 @@ const TODAY_END = new Date(TODAY_START.getTime() + 86400000); // midnight tonigh
 
 // Opponent → away venue name fallback (for games without boxscore venue data)
 const OPPONENT_VENUES: Record<string, string> = {
-  'Westfield': 'Westfield Field House',
-  'Bayshore': 'Bayshore Gymnasium',
-  'Lakewood': 'Lakewood Court',
-  'Summit': 'Summit Arena',
-  'Ridgemont': 'Ridgemont Center',
-  'Clearwater': 'Clearwater Fieldhouse',
-  'Pinecrest': 'Pinecrest Athletic Center',
-  'Riverside': 'Riverside Gymnasium',
-  'Heartland': 'Heartland Arena',
-  'Highland': 'Highland Gymnasium',
-  'Brookside': 'Brookside Gymnasium',
-  'Pacific Shores': 'Pacific Pavilion',
-  'Southport': 'Southport Gymnasium',
-  'Ashford': 'Ashford Gymnasium',
-  'Fieldstone': 'Fieldstone Gymnasium',
-  'Crestwood': 'Crestwood Center',
-  'Beacon': 'Beacon Gymnasium',
-  'Lakeview': 'Lakeview Gymnasium',
-  'Cedarville': 'Cedarville Center',
-  'Crescent': 'Crescent Court',
-  'Southern Pines': 'Southern Pines Arena',
-  'Ironwood': 'Ironwood Gymnasium',
-  'Prairie': 'Prairie Center',
-  'Valley View': 'Valley View Center',
+  'Montana Tech': 'HPER Complex, Butte MT',
+  'UM Western': 'Straugh Gym, Dillon MT',
+  'Providence': 'McLaughlin Center, Great Falls MT',
+  'Rocky Mountain': 'Fortin Center, Billings MT',
+  'MSU-Northern': 'Armory Gymnasium, Havre MT',
+  'Bellevue': 'Lied Activity Center, Bellevue NE',
+  'Dakota State': 'Trojan Center, Madison SD',
+  'Mayville State': 'Lewy Lee Fieldhouse, Mayville ND',
+  'Valley City State': 'W.E. Osmon Fieldhouse, Valley City ND',
+  'Dickinson State': 'Scott Gymnasium, Dickinson ND',
+  'Bismarck State': 'Armory, Bismarck ND',
+  'College of Idaho': 'J.A. Albertson Activities Center, Caldwell ID',
+  'NW Nazarene': 'Johnson Sports Center, Nampa ID',
+  'Embry-Riddle': 'Activity Center, Prescott AZ',
+  'Arizona Christian': 'ACU Arena, Glendale AZ',
+  'Benedictine Mesa': 'Benedictine Gym, Mesa AZ',
+  'St. Thomas': 'Fernandez Center, Miami FL',
+  'Lewis-Clark State': 'Activity Center, Lewiston ID',
+  'Corban': 'C.E. Jeffers Sports Center, Salem OR',
 };
 
 function getVenueName(opp: string | null, homeAway: string | null, dateVenue: string | undefined): string {
-  if (homeAway === 'H') return 'KaNeXT Athletics Center';
-  if (dateVenue && dateVenue !== 'Nashville, TN') return dateVenue;
+  if (homeAway === 'H') return 'PE Center';
+  if (dateVenue && dateVenue !== 'Helena, MT') return dateVenue;
   if (!opp) return 'Away';
   // Match against OPPONENT_VENUES using partial match
   for (const [key, venue] of Object.entries(OPPONENT_VENUES)) {
@@ -154,7 +150,7 @@ export const KaNeXT_GAMES: KaNeXTGame[] = tgl2526.map((g, i) => {
   const isLive = isToday && !hasResult;
   const dateVenue = d ? venueByDate.get(`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`) ?? undefined : undefined;
   // Placeholder live game for demo — toggle to false for non-game-day view
-  const isHeritageLive = false; // g.opponent === 'Heritage';
+  const isHeritageLive = false; // g.opponent === 'Arizona Christian';
   const effectiveLive = isHeritageLive;
   return {
     id: `fmu-2526-${String(i).padStart(2, '0')}`,
@@ -1276,10 +1272,10 @@ export interface NewsItem {
 // Curated highlights keyed by opponent name → inserted after the matching recap
 const HIGHLIGHTS: Record<string, { headline: string }> = {
   'Ashford (MS)': { headline: 'Devin Carter Drops Career-High 38 Points in Season-Opening Blowout' },
-  'Westfield': { headline: 'Jeffery Selden Records First Triple-Double in KaNeXT History' },
-  'Pinecrest University (FL)': { headline: 'Cameron Noel\'s Buzzer-Beating Three Caps 15-0 Run to Stun Pinecrest' },
-  'Bayshore': { headline: 'KaNeXT Defense Holds Bayshore to Season-Low 48 Points' },
-  'Summit': { headline: 'Devin Carter & Cameron Noel Combine for 52 in Road Win at Southeastern' },
+  'Montana Tech': { headline: 'Jeffery Selden Records First Triple-Double in Carroll History' },
+  'Dakota State University (FL)': { headline: 'Cameron Noel\'s Buzzer-Beating Three Caps 15-0 Run to Stun Dakota State' },
+  'UM Western': { headline: 'Carroll Defense Holds UM Western to Season-Low 48 Points' },
+  'Rocky Mountain': { headline: 'Devin Carter & Cameron Noel Combine for 52 in Road Win at Southeastern' },
 };
 
 const recaps: NewsItem[] = tgl2526
@@ -1287,8 +1283,8 @@ const recaps: NewsItem[] = tgl2526
   .flatMap((g, i) => {
     const isWin = g.result === 'W';
     const headline = isWin
-      ? `KaNeXT Defeats ${g.opponent} ${g.fmu_score}-${g.opp_score}`
-      : `KaNeXT Falls to ${g.opponent} ${g.fmu_score}-${g.opp_score}`;
+      ? `Carroll Defeats ${g.opponent} ${g.fmu_score}-${g.opp_score}`
+      : `Carroll Falls to ${g.opponent} ${g.fmu_score}-${g.opp_score}`;
     const items: NewsItem[] = [
       { id: `news-${i}`, headline, date: g.game_date ?? '', type: 'Recap' },
     ];
@@ -1301,7 +1297,7 @@ const recaps: NewsItem[] = tgl2526
 
 export const KaNeXT_NEWS: NewsItem[] = recaps.reverse(); // Most recent first
 
-// ── 7) Standings (KaNeXT Conference — KaNeXT record) ──
+// ── 7) Standings (Frontier Conference — KaNeXT record) ──
 
 const confGames = tgl2526.filter((g) => isConfGame(g.opponent));
 const confW = confGames.filter((g) => g.result === 'W').length;
@@ -1325,9 +1321,9 @@ if (gamesWithResults.length > 0) {
   streak = `${lastResult}${streakCount}`;
 }
 
-// Generate placeholder standings for all KaNeXT Conference teams
+// Generate placeholder standings for all Frontier Conference teams
 const allStandings = [
-  { team: 'KaNeXT Sports', confW, confL, overallW, overallL, streak },
+  { team: 'Carroll College', confW, confL, overallW, overallL, streak },
   ...sunConfTeams.map((t) => {
     let h = 0;
     for (let i = 0; i < t.length; i++) h = ((h << 5) - h + t.charCodeAt(i)) | 0;
@@ -1391,10 +1387,10 @@ const DEFAULT_KEYS: [string, string, string] = [
 for (const [opp, rec] of opponentResults) {
   const notes: string[] = [];
   if (rec.w + rec.l > 1) {
-    notes.push(`KaNeXT is ${rec.w}-${rec.l} against ${opp} this season.`);
+    notes.push(`Carroll is ${rec.w}-${rec.l} against ${opp} this season.`);
   }
   if (rec.w > 0) {
-    notes.push(`KaNeXT won the last meeting ${rec.lastScore}.`);
+    notes.push(`Carroll won the last meeting ${rec.lastScore}.`);
   } else {
     notes.push(`${opp} won the last meeting ${rec.lastScore}.`);
   }
@@ -1608,8 +1604,8 @@ const PRIOR_SEASON_YEARS = ['2024-25', '2023-24', '2022-23', '2021-22'];
 function generatePriorSeasons(jersey: string, numPrior: number, currentKR: number): FmuCareerSeason[] {
   if (numPrior <= 0) return [];
   const bio = KaNeXT_PLAYER_BIOS[jersey];
-  const school = bio?.previousSchool ?? 'KaNeXT Sports';
-  const division = bio?.previousSchool ? 'NCAA' : 'NAA';
+  const school = bio?.previousSchool ?? 'Carroll College';
+  const division = bio?.previousSchool ? 'NCAA' : 'NAIA';
 
   // Simple hash for stable variation
   let h = 0;
@@ -1631,8 +1627,8 @@ function generatePriorSeasons(jersey: string, numPrior: number, currentKR: numbe
 
     seasons.push({
       year: PRIOR_SEASON_YEARS[yearIdx],
-      school: yearIdx >= numPrior - 1 && numPrior >= 3 ? school : 'KaNeXT Sports',
-      division: yearIdx >= numPrior - 1 && numPrior >= 3 ? division : 'NAA',
+      school: yearIdx >= numPrior - 1 && numPrior >= 3 ? school : 'Carroll College',
+      division: yearIdx >= numPrior - 1 && numPrior >= 3 ? division : 'NAIA',
       current: false,
       kr,
       gp, gs, mpg, ppg, rpg, apg,
@@ -1658,8 +1654,8 @@ export function getFmuCareer(jerseyNumber: string): FmuCareerSeason[] {
       const gp = s.games_played ?? 0;
       currentSeasons.push({
         year: s.season,
-        school: 'KaNeXT Sports',
-        division: 'NAA',
+        school: 'Carroll College',
+        division: 'NAIA',
         current: s.season === '2025-26',
         kr: ROSTER_KR[jersey],
         gp,
@@ -1691,21 +1687,21 @@ export function getFmuCareer(jerseyNumber: string): FmuCareerSeason[] {
 /** Short about paragraph per player, keyed by jersey */
 export const KaNeXT_PLAYER_ABOUT: Record<string, string> = {
   '0':  'Tristan Thomas is a versatile forward who brings energy on both ends of the floor. A Miami native, he uses his length and athleticism to contribute on the boards and provides a spark off the bench with his defensive intensity.',
-  '1':  'Petar Asceric is a 6\'10" center from Belgrade, Serbia who anchors the paint for the Wolves. His size and footwork make him an effective interior presence, and he continues to develop as a rim protector and finisher around the basket.',
+  '1':  'Petar Asceric is a 6\'10" center from Belgrade, Serbia who anchors the paint for the Fighting Saints. His size and footwork make him an effective interior presence, and he continues to develop as a rim protector and finisher around the basket.',
   '2':  'Braxton Lewis is a long, athletic wing from Miami who is working to establish himself in the rotation. A freshman, he brings physicality and defensive potential as he learns the system.',
   '3':  'Rico Thompson is a veteran wing from Tallahassee who provides depth and experience on the perimeter. A senior, he brings leadership and toughness to the locker room.',
-  '4':  'Devin Carter is the Wolves\' go-to scorer and most dynamic offensive player. A junior from Jackson, Mississippi, he creates in isolation, finishes in transition, and can score from all three levels. He leads the team in scoring and rebounds.',
+  '4':  'Devin Carter is the Fighting Saints\' go-to scorer and most dynamic offensive player. A junior from Jackson, Mississippi, he creates in isolation, finishes in transition, and can score from all three levels. He leads the team in scoring and rebounds.',
   '5':  'Jeffrey Selden is a graduate student and one of the most experienced players on the roster. The Austin, Texas native is a versatile forward who contributes across the stat sheet — scoring, rebounding, and facilitating. He anchors the starting lineup.',
   '7':  'Maximo Moratinos is a skilled power forward from Miami who provides size and scoring touch in the frontcourt. A sophomore, he stretches the floor and contributes as a reliable rotation piece.',
-  '9':  'Ka\'Mar Benbo is a freshman point guard from Portland, Oregon who is developing his game in the KaNeXT system. He brings quickness and court vision as he works to earn minutes.',
+  '9':  'Ka\'Mar Benbo is a freshman point guard from Portland, Oregon who is developing his game in the Carroll system. He brings quickness and court vision as he works to earn minutes.',
   '10': 'Jason Morris is a wing from Pompano Beach who provides depth and defensive versatility. A junior, he continues to develop his offensive game while contributing to the team\'s defensive identity.',
-  '11': 'Sehmaj Mentor is the Wolves\' floor general and a key starter at point guard. The Hollywood, Ridgemont native controls tempo, runs the offense, and is a reliable scorer from mid-range. He brings leadership and poise to every game.',
-  '12': 'Gavin Turner is a lengthy wing from Orlando who is in his first year with the Wolves. He provides size on the perimeter and is working to carve out a larger role as he gains experience.',
-  '13': 'Cameron Noel is a dynamic scoring guard and one of the Wolves\' most consistent offensive weapons. The Houston native creates off the dribble, knocks down perimeter shots, and has a knack for coming up big in key moments.',
+  '11': 'Sehmaj Mentor is the Fighting Saints\' floor general and a key starter at point guard. The Hollywood, MSU-Northern native controls tempo, runs the offense, and is a reliable scorer from mid-range. He brings leadership and poise to every game.',
+  '12': 'Gavin Turner is a lengthy wing from Orlando who is in his first year with the Fighting Saints. He provides size on the perimeter and is working to carve out a larger role as he gains experience.',
+  '13': 'Cameron Noel is a dynamic scoring guard and one of the Fighting Saints\' most consistent offensive weapons. The Houston native creates off the dribble, knocks down perimeter shots, and has a knack for coming up big in key moments.',
   '15': 'Micah Morgan is a junior point guard from Bridgeport, Connecticut who provides solid minutes as a backup ball handler. He pushes tempo, competes on defense, and is a steady presence when he\'s on the floor.',
   '20': 'D\'Andre Dues is a long, athletic forward from Houston who brings size and upside to the frontcourt. A freshman, he is developing his game and working to contribute as he adjusts to the college level.',
-  '22': 'Elijah Laird is a sophomore shooting guard from Deltona, Ridgemont who provides depth on the wing. He is working to earn consistent minutes with his perimeter shooting and defensive effort.',
-  '41': 'Morgan Brewer is a tough, physical forward from Inglewood, California and a key starter for the Wolves. He impacts the game on both ends with his rebounding, scoring, and defensive presence in the frontcourt.',
+  '22': 'Elijah Laird is a sophomore shooting guard from Deltona, MSU-Northern who provides depth on the wing. He is working to earn consistent minutes with his perimeter shooting and defensive effort.',
+  '41': 'Morgan Brewer is a tough, physical forward from Inglewood, California and a key starter for the Fighting Saints. He impacts the game on both ends with his rebounding, scoring, and defensive presence in the frontcourt.',
   '55': 'Aa\'reyon Munir-Jones is an athletic, two-way guard from Chicago who contributes across the stat sheet. He rebounds well above his size, provides scoring punch off the bench, and is one of the team\'s most versatile players.',
 };
 
@@ -1780,17 +1776,17 @@ const AWARDS_DATA: Record<string, PlayerAward[]> = {
     { year: 'HS 2022', title: 'Tallahassee Democrat All-Big Bend First Team' },
   ],
   '4': [
-    { year: '2025-26', title: 'KaNeXT Conference Player of the Week (Jan 20)' },
-    { year: '2025-26', title: 'KaNeXT Conference Preseason All-Conference' },
-    { year: '2024-25', title: 'KaNeXT Conference All-Conference Second Team' },
-    { year: '2024-25', title: 'KaNeXT Conference Player of the Week (Feb 3)' },
+    { year: '2025-26', title: 'Frontier Conference Player of the Week (Jan 20)' },
+    { year: '2025-26', title: 'Frontier Conference Preseason All-Conference' },
+    { year: '2024-25', title: 'Frontier Conference All-Conference Second Team' },
+    { year: '2024-25', title: 'Frontier Conference Player of the Week (Feb 3)' },
     { year: 'HS 2022', title: 'Mississippi 4A All-State Second Team' },
   ],
   '5': [
-    { year: '2025-26', title: 'KaNeXT Conference Preseason All-Conference' },
-    { year: '2024-25', title: 'KaNeXT Conference All-Conference First Team' },
+    { year: '2025-26', title: 'Frontier Conference Preseason All-Conference' },
+    { year: '2024-25', title: 'Frontier Conference All-Conference First Team' },
     { year: '2024-25', title: 'NAIA Scholar-Athlete' },
-    { year: '2023-24', title: 'KaNeXT Conference All-Conference Second Team' },
+    { year: '2023-24', title: 'Frontier Conference All-Conference Second Team' },
     { year: 'HS 2020', title: 'Texas UIL 5A All-District First Team' },
   ],
   '7': [
@@ -1803,17 +1799,17 @@ const AWARDS_DATA: Record<string, PlayerAward[]> = {
     { year: 'HS 2023', title: 'Broward County All-County Honorable Mention' },
   ],
   '11': [
-    { year: '2025-26', title: 'KaNeXT Conference Player of the Week (Dec 9)' },
-    { year: '2024-25', title: 'KaNeXT Conference All-Freshman Team' },
+    { year: '2025-26', title: 'Frontier Conference Player of the Week (Dec 9)' },
+    { year: '2024-25', title: 'Frontier Conference All-Freshman Team' },
     { year: 'HS 2024', title: 'Broward County All-County First Team' },
     { year: 'HS 2024', title: 'Sun Sentinel All-Broward Honorable Mention' },
   ],
   '12': [
-    { year: 'HS 2023', title: 'Orlando Sentinel All-Central Ridgemont Honorable Mention' },
+    { year: 'HS 2023', title: 'Orlando Sentinel All-Central MSU-Northern Honorable Mention' },
   ],
   '13': [
-    { year: '2025-26', title: 'KaNeXT Conference Player of the Week (Jan 6)' },
-    { year: '2024-25', title: 'KaNeXT Conference All-Conference Honorable Mention' },
+    { year: '2025-26', title: 'Frontier Conference Player of the Week (Jan 6)' },
+    { year: '2024-25', title: 'Frontier Conference All-Conference Honorable Mention' },
     { year: '2023-24', title: 'NJCAA Region 8 All-Conference' },
     { year: '2023-24', title: 'Miami Dade College Athlete of the Year' },
     { year: 'HS 2022', title: 'Houston Chronicle All-Greater Houston Second Team' },
@@ -1828,13 +1824,13 @@ const AWARDS_DATA: Record<string, PlayerAward[]> = {
     { year: 'HS 2024', title: 'FHSAA 6A District Tournament MVP' },
   ],
   '41': [
-    { year: '2025-26', title: 'KaNeXT Conference Player of the Week (Feb 3)' },
-    { year: '2024-25', title: 'KaNeXT Conference All-Conference Second Team' },
+    { year: '2025-26', title: 'Frontier Conference Player of the Week (Feb 3)' },
+    { year: '2024-25', title: 'Frontier Conference All-Conference Second Team' },
     { year: 'HS 2022', title: 'CIF Southern Section Division 2AA All-League' },
     { year: 'HS 2022', title: 'LA Daily News All-Area Honorable Mention' },
   ],
   '55': [
-    { year: '2024-25', title: 'KaNeXT Conference All-Conference Honorable Mention' },
+    { year: '2024-25', title: 'Frontier Conference All-Conference Honorable Mention' },
     { year: 'HS 2023', title: 'Chicago Sun-Times All-Area Second Team' },
     { year: 'HS 2023', title: 'IHSA 3A All-Sectional Team' },
   ],

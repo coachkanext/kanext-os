@@ -16,8 +16,8 @@ export interface CompSeries {
 }
 
 const DEFAULT_SERIES: CompSeries[] = [
-  { id: 'ser-kcc-24', name: 'KaNeXT Church Season 2024-25', shortName: 'KaNeXT Church', format: 'League', status: 'live' },
-  { id: 'ser-kx-24', name: 'KaNeXT Invitational 2024', shortName: 'KaNeXT', format: 'Tournament', status: 'completed' },
+  { id: 'ser-kcc-24', name: '3SSB Select League 2024-25', shortName: '3SSB League', format: 'League', status: 'live' },
+  { id: 'ser-kx-24', name: '3SSB Invitational 2024', shortName: '3SSB', format: 'Tournament', status: 'completed' },
   { id: 'ser-pbdcup-25', name: 'PBD Cup 2025', shortName: 'PBD Cup', format: 'Cup', status: 'upcoming' },
 ];
 

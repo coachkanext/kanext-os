@@ -84,7 +84,7 @@ const ROSTER_TEMPLATES: Omit<CommsEntry, 'id'>[] = [
   {
     type: 'message',
     timestamp: daysAgo(3),
-    author: 'Coach Williams',
+    author: 'Coach Pearson',
     body: 'Film session scheduled for Thursday 2pm. We\'ll review transition defense from last game.',
   },
   {
@@ -109,7 +109,7 @@ const ROSTER_TEMPLATES: Omit<CommsEntry, 'id'>[] = [
   {
     type: 'note',
     timestamp: daysAgo(9),
-    author: 'Coach Williams',
+    author: 'Coach Pearson',
     body: 'Conditioning numbers trending up. On track for target by conference play.',
   },
   // Mention
@@ -123,7 +123,7 @@ const ROSTER_TEMPLATES: Omit<CommsEntry, 'id'>[] = [
   {
     type: 'film_share',
     timestamp: daysAgo(5),
-    author: 'Coach Williams',
+    author: 'Coach Pearson',
     body: 'Shared 3 clips from last game showing defensive rotation assignments.',
     clipTitle: 'Defensive Rotations vs. Tech',
   },
@@ -173,7 +173,7 @@ const RECRUIT_SHARED: Omit<CommsEntry, 'id'>[] = [
   {
     type: 'message',
     timestamp: daysAgo(8),
-    author: 'Coach Williams',
+    author: 'Coach Pearson',
     body: 'Your highlight tape looked great. The pull-up game off screens is exactly what we need.',
   },
   {
@@ -199,7 +199,7 @@ const RECRUIT_SHARED: Omit<CommsEntry, 'id'>[] = [
   {
     type: 'film_share',
     timestamp: daysAgo(6),
-    author: 'Coach Williams',
+    author: 'Coach Pearson',
     body: 'Shared system film showing how his skillset would be used in our offense.',
     clipTitle: 'Offensive Role Projection',
   },
@@ -230,7 +230,7 @@ const RECRUIT_TOUCHES: Omit<CommsEntry, 'id'>[] = [
   {
     type: 'touch',
     timestamp: daysAgo(5),
-    author: 'Coach Williams',
+    author: 'Coach Pearson',
     body: 'Sent game recap and personal note after Friday night win.',
     touchMethod: 'Text',
   },

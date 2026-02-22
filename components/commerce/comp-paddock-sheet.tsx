@@ -8,7 +8,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { PADDOCK_TIERS, buildCompCommerceChain, type PaddockTier } from '@/data/comp-commerce-data';
+import { PADDOCK_TIERS, buildCompCommerceChain, type CourtsideTier } from '@/data/comp-commerce-data';
 import type { PaymentChain } from '@/data/commerce-data';
 import { Spacing, BorderRadius } from '@/constants/theme';
 
@@ -24,11 +24,11 @@ interface Props {
 export function CompPaddockSheet({ visible, onClose, colors }: Props) {
   const [stage, setStage] = useState<Stage>('browse');
   const [pricingMode, setPricingMode] = useState<PricingMode>('per_race');
-  const [selectedTier, setSelectedTier] = useState<PaddockTier | null>(null);
+  const [selectedTier, setSelectedTier] = useState<CourtsideTier | null>(null);
   const [chain, setChain] = useState<PaymentChain | null>(null);
 
-  const getPrice = (tier: PaddockTier) =>
-    pricingMode === 'per_race' ? tier.perRacePrice : tier.seasonPrice;
+  const getPrice = (tier: CourtsideTier) =>
+    pricingMode === 'per_race' ? tier.perGamePrice : tier.seasonPrice;
 
   const handleClose = useCallback(() => {
     setStage('browse');
@@ -38,7 +38,7 @@ export function CompPaddockSheet({ visible, onClose, colors }: Props) {
     onClose();
   }, [onClose]);
 
-  const handleSelect = useCallback((tier: PaddockTier) => {
+  const handleSelect = useCallback((tier: CourtsideTier) => {
     setSelectedTier(tier);
     setStage('confirm');
   }, []);

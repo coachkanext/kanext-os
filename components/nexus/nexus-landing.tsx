@@ -30,7 +30,7 @@ const MODE_QUOTES: Record<Mode, { text: string; attribution: string }> = {
   },
   competition: {
     text: 'Why can\u2019t you do it? Do they have two heads?',
-    attribution: '\u2014 Pastor James Carter',
+    attribution: '\u2014 Pastor Philip Anthony Mitchell',
   },
 };
 

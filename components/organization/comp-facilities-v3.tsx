@@ -1,6 +1,6 @@
 /**
  * Competition Facilities V3 — 3-pill ViewBar (Venues | Assets | Logistics)
- * KaNeXT Motorsport League · Commissioner perspective
+ * Valuetainment Media League · Commissioner perspective
  * 8 race venues, league assets, and per-race logistics planning.
  */
 import React, { useState, useCallback } from 'react';
@@ -113,7 +113,7 @@ const OFFICIAL_TRAVEL: OfficialTravel[] = [
 ];
 
 const TEAM_FREIGHT = [
-  { id: 'tf1', team: 'KaNeXT Works Alpha', status: 'Shipped', eta: 'Apr 8' },
+  { id: 'tf1', team: '3SSB Works Alpha', status: 'Shipped', eta: 'Apr 8' },
   { id: 'tf2', team: 'Porsche Motorsport', status: 'Shipped', eta: 'Apr 7' },
   { id: 'tf3', team: 'McLaren Racing', status: 'In Transit', eta: 'Apr 9' },
   { id: 'tf4', team: 'RUF Performance', status: 'In Transit', eta: 'Apr 9' },

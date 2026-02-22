@@ -1,5 +1,5 @@
 /**
- * Church People V3 — KaNeXT Church · Senior Pastor
+ * Church People V3 — 2819 Church · Senior Pastor
  * ViewBar: Leadership | Members | Visitors
  * Self-contained with inline mock data.
  */
@@ -46,14 +46,14 @@ interface Leader {
 }
 
 const LEADERSHIP: Leader[] = [
-  { id: 'l1', name: 'Pastor James Carter', title: 'Senior Pastor', phone: '(310) 555-0101', email: 'pastor@kanextchurch.org', ministries: ['All Ministries', 'Morning Prayer Line'] },
-  { id: 'l2', name: 'Pastor Grace Carter', title: 'Associate Pastor', phone: '(310) 555-0102', email: 'grace@kanextchurch.org', ministries: ['Connect Groups', 'Women\'s Ministry'] },
-  { id: 'l3', name: 'Pastor Ryan Mitchell', title: 'Youth Pastor', phone: '(310) 555-0103', email: 'david@kanextchurch.org', ministries: ['Ignite Youth', 'Catalyst'] },
-  { id: 'l4', name: 'Minister Lisa Brooks', title: 'Worship Leader', phone: '(310) 555-0104', email: 'sarah@kanextchurch.org', ministries: ['Worship Team'] },
-  { id: 'l5', name: 'Deacon Robert Davis', title: 'Deacon Board Chair', phone: '(310) 555-0105', email: 'james@kanextchurch.org', ministries: ['Single & Purposeful', 'Operations'] },
-  { id: 'l6', name: 'Elder Mary Thompson', title: 'Elder', phone: '(310) 555-0106', email: 'ruth@kanextchurch.org', ministries: ['Rooted', 'Pastoral Care'] },
-  { id: 'l7', name: 'Brother Michael Scott', title: 'Catalyst Leader', phone: '(310) 555-0107', email: 'michael@kanextchurch.org', ministries: ['Catalyst', 'Community Outreach'] },
-  { id: 'l8', name: 'Sister Angela Davis', title: 'KaNeXT Kids Director', phone: '(310) 555-0108', email: 'funke@kanextchurch.org', ministries: ['KaNeXT Kids'] },
+  { id: 'l1', name: 'Pastor Philip Anthony Mitchell', title: 'Senior Pastor', phone: '(310) 555-0101', email: 'pastor@2819church.org', ministries: ['All Ministries', 'Morning Prayer Line'] },
+  { id: 'l2', name: 'Tatjuana Phillips', title: 'Associate Pastor', phone: '(310) 555-0102', email: 'grace@2819church.org', ministries: ['Connect Groups', 'Women\'s Ministry'] },
+  { id: 'l3', name: 'Pastor Ryan Mitchell', title: 'Youth Pastor', phone: '(310) 555-0103', email: 'david@2819church.org', ministries: ['Ignite Youth', 'Catalyst'] },
+  { id: 'l4', name: 'Minister Lisa Brooks', title: 'Worship Leader', phone: '(310) 555-0104', email: 'sarah@2819church.org', ministries: ['Worship Team'] },
+  { id: 'l5', name: 'Deacon Robert Davis', title: 'Deacon Board Chair', phone: '(310) 555-0105', email: 'james@2819church.org', ministries: ['Single & Purposeful', 'Operations'] },
+  { id: 'l6', name: 'Elder Mary Thompson', title: 'Elder', phone: '(310) 555-0106', email: 'ruth@2819church.org', ministries: ['Rooted', 'Pastoral Care'] },
+  { id: 'l7', name: 'Brother Michael Scott', title: 'Catalyst Leader', phone: '(310) 555-0107', email: 'michael@2819church.org', ministries: ['Catalyst', 'Community Outreach'] },
+  { id: 'l8', name: 'Sister Angela Davis', title: '2819 Kids Director', phone: '(310) 555-0108', email: 'funke@2819church.org', ministries: ['2819 Kids'] },
 ];
 
 type MemberStatus = 'Member' | 'Regular Attendee' | 'Volunteer' | 'Leader';
@@ -68,7 +68,7 @@ interface ChurchMember {
 
 const MEMBERS: ChurchMember[] = [
   { id: 'cm1', name: 'Adebayo Oluwaseun', status: 'Member', ministries: ['Catalyst', 'Worship Team'], joinDate: 'Jan 2020' },
-  { id: 'cm2', name: 'Chioma Eze', status: 'Volunteer', ministries: ['KaNeXT Kids'], joinDate: 'Mar 2021' },
+  { id: 'cm2', name: 'Chioma Eze', status: 'Volunteer', ministries: ['2819 Kids'], joinDate: 'Mar 2021' },
   { id: 'cm3', name: 'Daniel Kwame', status: 'Member', ministries: ['Connect Groups'], joinDate: 'Sep 2019' },
   { id: 'cm4', name: 'Esther Nwankwo', status: 'Leader', ministries: ['Rooted', 'Connect Groups'], joinDate: 'Jun 2018' },
   { id: 'cm5', name: 'Francis Adjei', status: 'Member', ministries: ['Community Outreach'], joinDate: 'Feb 2022' },

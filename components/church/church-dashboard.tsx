@@ -78,7 +78,7 @@ const HERO_VIDEO: HeroVideoInfo = {
   subtitle: 'Sunday Morning Worship Experience',
   duration: '1:12:34',
   badge: 'REPLAY',
-  contentField: 'Pastor Johnson explores Hebrews 11:32–40 — faith through fire',
+  contentField: 'Pastor Philip Anthony Mitchell explores Hebrews 11:32–40 — faith through fire',
   tickerItems: [
     'Baptism class begins this Saturday \u2014 10 AM Fellowship Hall',
     'Women\'s Conference registration closes Friday',
@@ -258,7 +258,7 @@ const SERVICE_TIMES = [
   { id: 'st-3', label: 'Sunday 6:00 PM', campus: 'West Campus', type: 'Evening' },
 ];
 
-const LIVESTREAM_URL = 'https://church.kanext.io/live';
+const LIVESTREAM_URL = 'https://2819church.org/live';
 
 // --- Block 4: Ministry Pulse ---
 
@@ -394,7 +394,7 @@ interface FeedPost {
 }
 
 const FEED_POSTS: FeedPost[] = [
-  { id: 'fp-1', title: 'New Sermon Series: Unshakeable Faith — starting Sunday', author: 'Pastor Johnson', date: '1h ago', type: 'announcement', visibility: 'all' },
+  { id: 'fp-1', title: 'New Sermon Series: Unshakeable Faith — starting Sunday', author: 'Pastor Philip Anthony Mitchell', date: '1h ago', type: 'announcement', visibility: 'all' },
   { id: 'fp-2', title: 'Morning Devotional — Feb 18', author: 'Devotional Team', date: '4h ago', type: 'devotional', visibility: 'all' },
   { id: 'fp-3', title: 'Building Fund Update — $780K of $1M raised', author: 'Finance Team', date: '8h ago', type: 'update', visibility: 'all' },
   { id: 'fp-4', title: 'Community Food Drive: 2,400 lbs collected, 180 families served', author: 'Outreach Ministry', date: '1d ago', type: 'announcement', visibility: 'all' },
@@ -979,7 +979,7 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
         <SectionHeader title="GET CONNECTED" colors={colors} />
         <Card colors={colors}>
           <ThemedText style={[s.connectedText, { color: colors.text }]}>
-            Discover ministries, small groups, and ways to get involved at KaNeXT Church.
+            Discover ministries, small groups, and ways to get involved at 2819 Church.
           </ThemedText>
         </Card>
         <Pressable

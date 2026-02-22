@@ -76,7 +76,7 @@ export type BusinessScope = 'All' | 'Companies' | 'Training' | 'News' | 'Events'
 // =============================================================================
 
 export const FEATURED_CONTENT: FeaturedContent = {
-  title: 'KaNeXT V2 Demo Day',
+  title: 'Valuetainment V2 Demo Day',
   subtitle: 'Product Launch',
   hookText: 'Full walkthrough of the next-gen platform powering sports operations',
   badgeText: 'PREMIERE',
@@ -89,7 +89,7 @@ export const FEATURED_CONTENT: FeaturedContent = {
 // =============================================================================
 
 export const TRENDING_COMPANIES: TrendingCompany[] = [
-  { id: 'tc-1', name: 'KaNeXT Inc.', industry: 'Sports Tech', thumbnailColor: '#FFFFFF', employeeCount: 24 },
+  { id: 'tc-1', name: 'Valuetainment Media LLC', industry: 'Sports Tech', thumbnailColor: '#FFFFFF', employeeCount: 24 },
   { id: 'tc-2', name: 'Apex Analytics', industry: 'Data Science', thumbnailColor: '#1D9BF0', employeeCount: 85 },
   { id: 'tc-3', name: 'CourtVision AI', industry: 'Computer Vision', thumbnailColor: '#22C55E', employeeCount: 42 },
   { id: 'tc-4', name: 'ScoutPro', industry: 'Recruiting Tech', thumbnailColor: '#EF4444', employeeCount: 30 },
@@ -104,7 +104,7 @@ export const TRENDING_COMPANIES: TrendingCompany[] = [
 // =============================================================================
 
 export const LATEST_PRESENTATIONS: Presentation[] = [
-  { id: 'lp-1', title: 'KaNeXT V2 Platform Demo', presenter: 'Alex Morgan', company: 'KaNeXT Inc.', date: 'Feb 15', duration: '32:00', thumbnailColor: '#FFFFFF' },
+  { id: 'lp-1', title: 'Valuetainment V2 Platform Demo', presenter: 'Patrick Bet-David', company: 'Valuetainment Media LLC', date: 'Feb 15', duration: '32:00', thumbnailColor: '#EA2127' },
   { id: 'lp-2', title: 'AI Scouting Pipeline', presenter: 'Aisha Chen', company: 'Apex Analytics', date: 'Feb 12', duration: '24:30', thumbnailColor: '#1D9BF0' },
   { id: 'lp-3', title: 'Real-Time Shot Tracking', presenter: 'Marcus Webb', company: 'CourtVision AI', date: 'Feb 8', duration: '18:45', thumbnailColor: '#22C55E' },
   { id: 'lp-4', title: 'NIL Marketplace Overview', presenter: 'Jordan Fields', company: 'TransferHub', date: 'Feb 5', duration: '28:10', thumbnailColor: '#1D9BF0' },
@@ -117,7 +117,7 @@ export const LATEST_PRESENTATIONS: Presentation[] = [
 // =============================================================================
 
 export const TRAINING_MODULES: TrainingModule[] = [
-  { id: 'tm-1', title: 'Onboarding: KaNeXT Platform', category: 'Getting Started', duration: '45:00', thumbnailColor: '#FFFFFF', completionRate: 0.82 },
+  { id: 'tm-1', title: 'Onboarding: Valuetainment Platform', category: 'Getting Started', duration: '45:00', thumbnailColor: '#EA2127', completionRate: 0.82 },
   { id: 'tm-2', title: 'Advanced Film Tagging', category: 'Video Tools', duration: '30:00', thumbnailColor: '#1D9BF0', completionRate: 0.54 },
   { id: 'tm-3', title: 'Recruiting Database Mastery', category: 'Recruiting', duration: '35:00', thumbnailColor: '#22C55E', completionRate: 0.68 },
   { id: 'tm-4', title: 'Analytics Dashboard Deep Dive', category: 'Analytics', duration: '25:00', thumbnailColor: '#F59E0B', completionRate: 0.41 },
@@ -130,7 +130,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
 // =============================================================================
 
 export const INVESTOR_UPDATES: InvestorUpdate[] = [
-  { id: 'iu-1', title: 'KaNeXT Q4 2025 Update', company: 'KaNeXT Inc.', quarter: 'Q4 2025', date: 'Jan 15', thumbnailColor: '#FFFFFF' },
+  { id: 'iu-1', title: 'Valuetainment Q4 2025 Update', company: 'Valuetainment Media LLC', quarter: 'Q4 2025', date: 'Jan 15', thumbnailColor: '#EA2127' },
   { id: 'iu-2', title: 'Apex Analytics Series A', company: 'Apex Analytics', quarter: 'Q1 2026', date: 'Feb 1', thumbnailColor: '#1D9BF0' },
   { id: 'iu-3', title: 'CourtVision Seed Round', company: 'CourtVision AI', quarter: 'Q4 2025', date: 'Dec 20', thumbnailColor: '#22C55E' },
   { id: 'iu-4', title: 'AthletIQ Growth Metrics', company: 'AthletIQ', quarter: 'Q1 2026', date: 'Feb 10', thumbnailColor: '#1D9BF0' },
@@ -155,7 +155,7 @@ export const INDUSTRY_NEWS: IndustryNewsItem[] = [
 
 export const WEBINARS_EVENTS: WebinarEvent[] = [
   { id: 'we-1', title: 'Sports Tech Summit 2026', date: 'Mar 12', speaker: 'Multiple Speakers', thumbnailColor: '#FFFFFF', status: 'Upcoming' },
-  { id: 'we-2', title: 'Building with KaNeXT API', date: 'Feb 28', speaker: 'Alex Morgan', thumbnailColor: '#1D9BF0', status: 'Registration Open' },
+  { id: 'we-2', title: 'Building with Valuetainment API', date: 'Feb 28', speaker: 'Patrick Bet-David', thumbnailColor: '#EA2127', status: 'Registration Open' },
   { id: 'we-3', title: 'AI in Collegiate Athletics', date: 'Feb 20', speaker: 'Aisha Chen', thumbnailColor: '#22C55E', status: 'Live' },
   { id: 'we-4', title: 'Fundraising for Sports Startups', date: 'Jan 18', speaker: 'Jordan Fields', thumbnailColor: '#F59E0B', status: 'Recorded' },
 ];

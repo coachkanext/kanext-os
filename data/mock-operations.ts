@@ -69,17 +69,17 @@ export interface OperationsSnapshot {
 
 const SPORTS_EVENTS: CalendarEvent[] = [
   { id: 'se-1', title: 'Morning Shootaround', date: 'Feb 17, 2026', time: '8:00 AM', type: 'practice', location: 'Wellness Center Gym', status: 'confirmed' },
-  { id: 'se-2', title: 'Film Review — Pinecrest', date: 'Feb 17, 2026', time: '11:00 AM', type: 'meeting', location: 'Film Room', status: 'confirmed' },
-  { id: 'se-3', title: 'vs. Pinecrest University', date: 'Feb 18, 2026', time: '7:00 PM', type: 'game', location: 'Wellness Center', status: 'confirmed' },
-  { id: 'se-4', title: 'Travel Day — Magnolia University', date: 'Feb 20, 2026', time: '10:00 AM', type: 'travel', location: 'Thomasville, GA', status: 'confirmed' },
-  { id: 'se-5', title: 'at Magnolia University', date: 'Feb 21, 2026', time: '4:00 PM', type: 'game', location: 'Magnolia University Arena', status: 'confirmed' },
+  { id: 'se-2', title: 'Film Review — Dakota State', date: 'Feb 17, 2026', time: '11:00 AM', type: 'meeting', location: 'Film Room', status: 'confirmed' },
+  { id: 'se-3', title: 'vs. Dakota State University', date: 'Feb 18, 2026', time: '7:00 PM', type: 'game', location: 'Wellness Center', status: 'confirmed' },
+  { id: 'se-4', title: 'Travel Day — Multnomah', date: 'Feb 20, 2026', time: '10:00 AM', type: 'travel', location: 'Thomasville, GA', status: 'confirmed' },
+  { id: 'se-5', title: 'at Multnomah', date: 'Feb 21, 2026', time: '4:00 PM', type: 'game', location: 'Multnomah Arena', status: 'confirmed' },
   { id: 'se-6', title: 'Weights & Conditioning', date: 'Feb 19, 2026', time: '6:30 AM', type: 'practice', location: 'Weight Room', status: 'confirmed' },
   { id: 'se-7', title: 'Recruiting Staff Meeting', date: 'Feb 19, 2026', time: '2:00 PM', type: 'meeting', location: 'Coaches Office', status: 'tentative' },
   { id: 'se-8', title: 'Conference Tournament Departure', date: 'Feb 28, 2026', time: '8:00 AM', type: 'travel', location: 'TBD', status: 'tentative' },
 ];
 
 const SPORTS_TASKS: Task[] = [
-  { id: 'st-1', title: 'Game prep packet — Pinecrest', assignee: 'Coach Harris', dueDate: 'Feb 17', priority: 'high', status: 'in-progress', category: 'Game Prep' },
+  { id: 'st-1', title: 'Game prep packet — Dakota State', assignee: 'Coach Harris', dueDate: 'Feb 17', priority: 'high', status: 'in-progress', category: 'Game Prep' },
   { id: 'st-2', title: 'Equipment check — away game bags', assignee: 'Antoine Brooks', dueDate: 'Feb 19', priority: 'high', status: 'pending', category: 'Equipment' },
   { id: 'st-3', title: 'Book team hotel — Thomas', assignee: 'Ops Coordinator', dueDate: 'Feb 18', priority: 'high', status: 'completed', category: 'Travel' },
   { id: 'st-4', title: 'Submit eligibility forms', assignee: 'Alex Morgan', dueDate: 'Feb 20', priority: 'medium', status: 'pending', category: 'Compliance' },
@@ -103,8 +103,8 @@ const SPORTS_EQUIPMENT: Equipment[] = [
 ];
 
 const SPORTS_TRAVEL: TravelPlan[] = [
-  { id: 'str-1', destination: 'Pinecrest University — Babson Park, FL', date: 'Feb 18, 2026', returnDate: 'Feb 18, 2026', partySize: 18, status: 'booked', budget: 1200 },
-  { id: 'str-2', destination: 'Magnolia University — Thomasville, GA', date: 'Feb 20, 2026', returnDate: 'Feb 22, 2026', partySize: 18, status: 'booked', budget: 4800 },
+  { id: 'str-1', destination: 'Dakota State University — Babson Park, FL', date: 'Feb 18, 2026', returnDate: 'Feb 18, 2026', partySize: 18, status: 'booked', budget: 1200 },
+  { id: 'str-2', destination: 'Multnomah — Thomasville, GA', date: 'Feb 20, 2026', returnDate: 'Feb 22, 2026', partySize: 18, status: 'booked', budget: 4800 },
   { id: 'str-3', destination: 'Conference Tournament — TBD', date: 'Feb 28, 2026', returnDate: 'Mar 3, 2026', partySize: 20, status: 'planned', budget: 8500 },
 ];
 
@@ -200,7 +200,7 @@ const EDUCATION_EQUIPMENT: Equipment[] = [
 ];
 
 const EDUCATION_TRAVEL: TravelPlan[] = [
-  { id: 'etr-1', destination: 'Accreditation Conference — Nashville, TN', date: 'Mar 10, 2026', returnDate: 'Mar 12, 2026', partySize: 4, status: 'booked', budget: 3200 },
+  { id: 'etr-1', destination: 'Accreditation Conference — Helena, MT', date: 'Mar 10, 2026', returnDate: 'Mar 12, 2026', partySize: 4, status: 'booked', budget: 3200 },
   { id: 'etr-2', destination: 'Faculty Development Workshop — Orlando, FL', date: 'Mar 20, 2026', returnDate: 'Mar 22, 2026', partySize: 6, status: 'planned', budget: 4500 },
 ];
 

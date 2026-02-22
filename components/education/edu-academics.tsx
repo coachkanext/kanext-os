@@ -191,7 +191,7 @@ interface StudentRecord {
 
 const STUDENT_DIRECTORY: StudentRecord[] = [
   { id: 'stu-1', name: 'Amara Johnson', studentId: '900412', major: 'Computer Science', department: 'SCS', year: 'Junior', gpa: 3.78, creditsEarned: 86, creditsRequired: 128, status: 'honors', advisor: 'Dr. Kim', atRisk: false },
-  { id: 'stu-2', name: 'Marcus Williams', studentId: '900287', major: 'Mechanical Engineering', department: 'COE', year: 'Senior', gpa: 2.94, creditsEarned: 112, creditsRequired: 132, status: 'good_standing', advisor: 'Dr. Chen', atRisk: false },
+  { id: 'stu-2', name: 'Dan Pearson', studentId: '900287', major: 'Mechanical Engineering', department: 'COE', year: 'Senior', gpa: 2.94, creditsEarned: 112, creditsRequired: 132, status: 'good_standing', advisor: 'Dr. Chen', atRisk: false },
   { id: 'stu-3', name: 'Sofia Chen', studentId: '900631', major: 'Nursing', department: 'CHS', year: 'Junior', gpa: 3.52, creditsEarned: 78, creditsRequired: 124, status: 'good_standing', advisor: 'Dr. Hassan', atRisk: false },
   { id: 'stu-4', name: 'Jaylen Thomas', studentId: '900148', major: 'Business Administration', department: 'SOB', year: 'Sophomore', gpa: 1.82, creditsEarned: 32, creditsRequired: 120, status: 'probation', advisor: 'Prof. Adams', atRisk: true },
   { id: 'stu-5', name: 'Priya Patel', studentId: '900509', major: 'Psychology', department: 'CAS', year: 'Senior', gpa: 3.91, creditsEarned: 108, creditsRequired: 120, status: 'honors', advisor: 'Dr. Lopez', atRisk: false },
@@ -238,7 +238,7 @@ const ADVISING_QUEUE: AdvisingQueueItem[] = [
   { id: 'aq-3', studentName: 'DeShawn Carter', studentId: '900773', reason: 'Academic warning follow-up', priority: 'urgent', status: 'in_progress', requestedDate: 'Feb 12', advisor: 'Dr. Kim' },
   { id: 'aq-4', studentName: 'Kaitlyn Murphy', studentId: '900662', reason: 'Tutoring referral', priority: 'normal', status: 'pending', requestedDate: 'Feb 15', advisor: 'Dr. Nguyen' },
   { id: 'aq-5', studentName: 'Amara Johnson', studentId: '900412', reason: 'Grad school advising', priority: 'low', status: 'scheduled', requestedDate: 'Feb 18', advisor: 'Dr. Kim' },
-  { id: 'aq-6', studentName: 'Marcus Williams', studentId: '900287', reason: 'Senior capstone selection', priority: 'normal', status: 'pending', requestedDate: 'Feb 16', advisor: 'Dr. Chen' },
+  { id: 'aq-6', studentName: 'Dan Pearson', studentId: '900287', reason: 'Senior capstone selection', priority: 'normal', status: 'pending', requestedDate: 'Feb 16', advisor: 'Dr. Chen' },
   { id: 'aq-7', studentName: 'Emma Rodriguez', studentId: '900324', reason: 'Study abroad clearance', priority: 'low', status: 'scheduled', requestedDate: 'Feb 19', advisor: 'Dr. Patel' },
 ];
 

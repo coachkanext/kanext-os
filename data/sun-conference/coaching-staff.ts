@@ -1,104 +1,127 @@
 /**
- * KaNeXT Conference — Men's Basketball
+ * Frontier Conference — Men's Basketball
  * Coaching Staff (Program Context)
- * 9 programs — demo coaching staff
+ * 12 programs — real head coach for Carroll, mock assistants where needed
  */
 
 import type { CoachingStaff } from './schema';
 
 export const coachingStaff: CoachingStaff[] = [
   {
-    program_id: 'ave-maria',
-    head_coach_name: 'Kevin Morris',
-    head_coach_title: 'Head Men\'s Basketball Coach',
-    assistant_coaches: [
-      { name: 'Brian Palmer', role: null },
-      { name: 'Chris Henderson', role: null },
-      { name: 'Paul Matthews', role: null },
-    ],
-    staff_page_url: 'https://westfield.edu/athletics/sports/mens-basketball/coaches',
-  },
-  {
-    program_id: 'coastal-georgia',
-    head_coach_name: 'Tim Parker',
-    head_coach_title: 'Head Coach',
-    assistant_coaches: [
-      { name: 'Keith Oliver', role: 'Assistant Coach' },
-      { name: 'Charles Banks', role: 'Assistant Coach' },
-    ],
-    staff_page_url: 'https://bayshore.edu/athletics/sports/mens-basketball/coaches',
-  },
-  {
     program_id: 'kx-sports',
-    head_coach_name: 'Marcus Williams',
+    head_coach_name: 'Dan Pearson',
     head_coach_title: 'Head Men\'s Basketball Coach',
     assistant_coaches: [
-      { name: 'Derek Johnson', role: 'Associate Head Coach' },
-      { name: 'Tyler Brooks', role: 'Assistant Coach' },
+      { name: 'Marc Lenneman', role: 'Assistant Coach' },
+      { name: 'Brad Schmit', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://athletics.kanext.edu/sports/mens-basketball/coaches',
+    staff_page_url: 'https://carrollathletics.com/sports/mbball/coaches',
   },
   {
-    program_id: 'keiser',
-    head_coach_name: 'Andre Bryant',
-    head_coach_title: 'Head Men\'s Basketball Coach',
-    assistant_coaches: [
-      { name: 'Max Spencer', role: 'Assistant Coach / Recruiting Coordinator' },
-      { name: 'Jason Price', role: 'Assistant Coach / Player Development' },
-      { name: 'Matt Walker', role: 'Assistant Coach / Development Team' },
-    ],
-    staff_page_url: 'https://lakewood.edu/athletics/sports/mens-basketball/coaches',
-  },
-  {
-    program_id: 'new-college-florida',
-    head_coach_name: 'Andrew Green',
-    head_coach_title: 'Head Men\'s Basketball Coach',
-    assistant_coaches: [
-      { name: 'Ty Brooks', role: 'Assistant Coach' },
-      { name: 'Scott Taylor', role: 'Assistant Coach / Development Team' },
-      { name: 'Alex Summers', role: 'Assistant Coach' },
-    ],
-    staff_page_url: 'https://riverside.edu/athletics/sports/mens-basketball/coaches',
-  },
-  {
-    program_id: 'southeastern',
-    head_coach_name: 'Randy Lewis',
+    program_id: 'montana-tech',
+    head_coach_name: 'Adam Hiatt',
     head_coach_title: 'Head Coach',
     assistant_coaches: [
-      { name: 'Brandon May', role: 'Assistant Coach' },
-      { name: 'Tyler Stevens', role: 'Assistant Coach' },
-      { name: 'Tanner Rogers', role: 'Assistant Coach' },
+      { name: 'Ryan Mitchell', role: 'Assistant Coach' },
+      { name: 'Jake Thornton', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://summit.edu/athletics/sports/mens-basketball/coaches',
+    staff_page_url: 'https://www.montanatechathletics.com/sports/mbball/coaches',
   },
   {
-    program_id: 'st-thomas',
-    head_coach_name: 'Zach Morrison',
-    head_coach_title: 'Head Men\'s Basketball Coach',
+    program_id: 'um-western',
+    head_coach_name: 'Clay Scott',
+    head_coach_title: 'Head Coach',
     assistant_coaches: [
-      { name: 'Jacob Shaw', role: 'Associate Head Coach' },
-      { name: 'Lorel Beck', role: 'Assistant Coach' },
+      { name: 'Tyler Benson', role: 'Assistant Coach' },
+      { name: 'Drew Marshall', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://ridgemont.edu/athletics/sports/mens-basketball/coaches',
+    staff_page_url: 'https://www.umwbulldogs.com/sports/mbball/coaches',
   },
   {
-    program_id: 'warner',
-    head_coach_name: 'Matt Warren',
-    head_coach_title: 'Head Men\'s Basketball Coach',
+    program_id: 'msu-northern',
+    head_coach_name: 'Shane Welti',
+    head_coach_title: 'Head Coach',
     assistant_coaches: [
-      { name: 'Donnie Archer', role: 'Assistant Coach' },
-      { name: 'Dylan Harper', role: 'Assistant Coach' },
+      { name: 'Chris Davies', role: 'Assistant Coach' },
+      { name: 'Sean Park', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://clearwater.edu/athletics/sports/mens-basketball/coaches',
+    staff_page_url: 'https://msubillings.com/sports/mbball/coaches',
   },
   {
-    program_id: 'webber-international',
-    head_coach_name: 'Gabriel Rhodes',
-    head_coach_title: 'Head Men\'s Basketball Coach',
+    program_id: 'providence',
+    head_coach_name: 'Steve Keller',
+    head_coach_title: 'Head Coach',
     assistant_coaches: [
-      { name: 'Johnson Mercer', role: 'Assistant Coach' },
-      { name: 'Jordan Collins', role: 'Assistant Coach' },
+      { name: 'Jordan Hayes', role: 'Assistant Coach' },
+      { name: 'Marcus Dunn', role: 'Assistant Coach' },
     ],
-    staff_page_url: 'https://pinecrest.edu/athletics/sports/mens-basketball/coaches',
+    staff_page_url: 'https://upargos.com/sports/mbball/coaches',
+  },
+  {
+    program_id: 'rocky-mountain',
+    head_coach_name: 'Bill Ames',
+    head_coach_title: 'Head Coach',
+    assistant_coaches: [
+      { name: 'Kevin Nash', role: 'Assistant Coach' },
+      { name: 'Brett Collins', role: 'Assistant Coach' },
+    ],
+    staff_page_url: 'https://www.gobattlinbears.com/sports/mbball/coaches',
+  },
+  {
+    program_id: 'bellevue',
+    head_coach_name: 'Nick Baumgart',
+    head_coach_title: 'Head Coach',
+    assistant_coaches: [
+      { name: 'Derek Wilson', role: 'Assistant Coach' },
+      { name: 'Matt King', role: 'Assistant Coach' },
+    ],
+    staff_page_url: 'https://www.bellevuebruins.com/sports/mbball/coaches',
+  },
+  {
+    program_id: 'dakota-state',
+    head_coach_name: 'Gary Garner',
+    head_coach_title: 'Head Coach',
+    assistant_coaches: [
+      { name: 'Josh Peters', role: 'Assistant Coach' },
+      { name: 'Kyle Reed', role: 'Assistant Coach' },
+    ],
+    staff_page_url: 'https://www.dsutrojans.com/sports/mbball/coaches',
+  },
+  {
+    program_id: 'dickinson-state',
+    head_coach_name: 'Seth Pedersen',
+    head_coach_title: 'Head Coach',
+    assistant_coaches: [
+      { name: 'Aaron Grant', role: 'Assistant Coach' },
+    ],
+    staff_page_url: 'https://www.dickinsonstateblue.com/sports/mbball/coaches',
+  },
+  {
+    program_id: 'mayville-state',
+    head_coach_name: 'Dan Keffeler',
+    head_coach_title: 'Head Coach',
+    assistant_coaches: [
+      { name: 'Logan Price', role: 'Assistant Coach' },
+      { name: 'Travis Ward', role: 'Assistant Coach' },
+    ],
+    staff_page_url: 'https://www.msubcomets.com/sports/mbball/coaches',
+  },
+  {
+    program_id: 'valley-city-state',
+    head_coach_name: 'Ryan Montgomery',
+    head_coach_title: 'Head Coach',
+    assistant_coaches: [
+      { name: 'Tanner Fox', role: 'Assistant Coach' },
+    ],
+    staff_page_url: 'https://www.vcsuvikings.com/sports/mbball/coaches',
+  },
+  {
+    program_id: 'bismarck-state',
+    head_coach_name: 'Buster Gilliss',
+    head_coach_title: 'Head Coach',
+    assistant_coaches: [
+      { name: 'Cody Barnes', role: 'Assistant Coach' },
+    ],
+    staff_page_url: 'https://www.bismarckstate.edu/athletics/mbball/coaches',
   },
 ];

@@ -103,7 +103,7 @@ interface AthleticDeptInfo {
 }
 
 const ATHLETIC_DEPT: AthleticDeptInfo = {
-  conference: 'KaNeXT Athletic Conference',
+  conference: 'Mid-Eastern Athletic Conference',
   division: 'NCAA Division I',
   mascot: 'Eagles',
   schoolColors: 'Navy & Gold',
@@ -176,12 +176,12 @@ interface UpcomingGame {
 }
 
 const UPCOMING_GAMES: UpcomingGame[] = [
-  { id: 'ug-1', sport: 'Men\'s Basketball', opponent: 'Riverside University', date: 'Mar 1', time: '7:00 PM', location: 'Peach State Arena', homeAway: 'Home', broadcast: 'ESPN+', ticketsAvailable: true, conferenceGame: true },
+  { id: 'ug-1', sport: 'Men\'s Basketball', opponent: 'Mayville State', date: 'Mar 1', time: '7:00 PM', location: 'Peach State Arena', homeAway: 'Home', broadcast: 'ESPN+', ticketsAvailable: true, conferenceGame: true },
   { id: 'ug-2', sport: 'Women\'s Basketball', opponent: 'Mountain State', date: 'Mar 2', time: '2:00 PM', location: 'Peach State Arena', homeAway: 'Home', broadcast: 'SEC Network', ticketsAvailable: true, conferenceGame: true },
   { id: 'ug-3', sport: 'Baseball', opponent: 'Coastal College', date: 'Mar 4', time: '3:00 PM', location: 'Eagle Diamond', homeAway: 'Home', ticketsAvailable: true, conferenceGame: false },
   { id: 'ug-4', sport: 'Softball', opponent: 'State Tech', date: 'Mar 5', time: '4:00 PM', location: 'Eagle Softball Complex', homeAway: 'Home', conferenceGame: false },
   { id: 'ug-5', sport: 'Men\'s Basketball', opponent: 'Capital University', date: 'Mar 8', time: '8:00 PM', location: 'Capital Arena', homeAway: 'Away', broadcast: 'ESPN2', conferenceGame: true },
-  { id: 'ug-6', sport: 'Swimming', opponent: 'Conference Championship', date: 'Mar 10\u201312', time: 'All Day', location: 'Aquatic Center, Nashville', homeAway: 'Neutral', conferenceGame: true },
+  { id: 'ug-6', sport: 'Swimming', opponent: 'Conference Championship', date: 'Mar 10\u201312', time: 'All Day', location: 'Aquatic Center, Washington', homeAway: 'Neutral', conferenceGame: true },
   { id: 'ug-7', sport: 'Track & Field', opponent: 'Spring Invitational', date: 'Mar 15', time: '10:00 AM', location: 'Eagle Track', homeAway: 'Home', conferenceGame: false },
   { id: 'ug-8', sport: 'Tennis', opponent: 'Valley State', date: 'Mar 18', time: '2:00 PM', location: 'Tennis Complex', homeAway: 'Home', conferenceGame: true },
 ];
@@ -207,7 +207,7 @@ const RECENT_RESULTS: GameResult[] = [
   { id: 'gr-5', sport: 'Baseball', opponent: 'Pine State', date: 'Feb 21', score: '8-3', result: 'W', highlights: 'Season opener win; Davis 2 HR' },
   { id: 'gr-6', sport: 'Softball', opponent: 'River City', date: 'Feb 21', score: '3-4', result: 'L', highlights: 'Extra innings' },
   { id: 'gr-7', sport: 'Swimming', opponent: 'Dual Meet vs. State U', date: 'Feb 18', score: '168-132', result: 'W', highlights: '3 pool records broken' },
-  { id: 'gr-8', sport: 'Tennis', opponent: 'Heritage College', date: 'Feb 15', score: '5-2', result: 'W', highlights: 'Season opener' },
+  { id: 'gr-8', sport: 'Tennis', opponent: 'Arizona Christian', date: 'Feb 15', score: '5-2', result: 'W', highlights: 'Season opener' },
 ];
 
 const RESULT_COLOR: Record<string, string> = {
@@ -232,12 +232,12 @@ interface StudentAthlete {
 }
 
 const ATHLETE_SPOTLIGHTS: StudentAthlete[] = [
-  { id: 'sa-1', name: 'Darius Johnson', sport: 'Men\'s Basketball', position: 'Guard', year: 'Senior', major: 'Business Administration', gpa: 3.45, hometown: 'Nashville, TN', achievement: 'Conference Player of the Year candidate', stats: '22.4 PPG, 5.2 APG' },
+  { id: 'sa-1', name: 'Darius Johnson', sport: 'Men\'s Basketball', position: 'Guard', year: 'Senior', major: 'Business Administration', gpa: 3.45, hometown: 'Washington, DC', achievement: 'Conference Player of the Year candidate', stats: '22.4 PPG, 5.2 APG' },
   { id: 'sa-2', name: 'Maya Thomas', sport: 'Women\'s Basketball', position: 'Forward', year: 'Junior', major: 'Kinesiology', gpa: 3.72, hometown: 'Charlotte, NC', achievement: 'All-Conference First Team', stats: '18.8 PPG, 9.4 RPG' },
   { id: 'sa-3', name: 'Carlos Rodriguez', sport: 'Baseball', position: 'Pitcher', year: 'Sophomore', major: 'Engineering', gpa: 3.88, hometown: 'Miami, FL', achievement: 'Freshman All-American (2025)', stats: 'ERA 2.14, 98 K' },
   { id: 'sa-4', name: 'Mia Torres', sport: 'Swimming', position: '100m Butterfly', year: 'Senior', major: 'Biology', gpa: 3.95, hometown: 'Denver, CO', achievement: '3x All-American, school record holder' },
   { id: 'sa-5', name: 'Jordan Taylor', sport: 'Football', position: 'Wide Receiver', year: 'Senior', major: 'Kinesiology', gpa: 3.42, hometown: 'Houston, TX', achievement: 'All-Conference, 1,200 rec yards', stats: '78 rec, 1,204 yds, 11 TD' },
-  { id: 'sa-6', name: 'Emma Davis', sport: 'Volleyball', position: 'Outside Hitter', year: 'Junior', major: 'Communications', gpa: 3.61, hometown: 'Nashville, TN', achievement: 'Conference kills leader' },
+  { id: 'sa-6', name: 'Emma Davis', sport: 'Volleyball', position: 'Outside Hitter', year: 'Junior', major: 'Communications', gpa: 3.61, hometown: 'Washington, DC', achievement: 'Conference kills leader' },
 ];
 
 // --- Athletic Facilities ---
@@ -621,7 +621,7 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
         <Card colors={colors}>
           <View style={s.deptHeader}>
             <IconSymbol name="sportscourt.fill" size={20} color={colors.text} />
-            <ThemedText style={[s.deptTitle, { color: colors.text }]}>Westfield Eagles</ThemedText>
+            <ThemedText style={[s.deptTitle, { color: colors.text }]}>Howard Eagles</ThemedText>
           </View>
           <ThemedText style={[s.deptSubtitle, { color: colors.textSecondary }]}>
             {ATHLETIC_DEPT.conference} {'\u00B7'} {ATHLETIC_DEPT.division}

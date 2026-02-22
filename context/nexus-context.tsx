@@ -1,5 +1,5 @@
 /**
- * KaNeXT OS Nexus Context
+ * Carroll College OS Nexus Context
  * State management for the Nexus conversation interface.
  */
 
@@ -739,7 +739,7 @@ export function NexusProvider({ children }: NexusProviderProps) {
 
     if (simIntent.isSimulation) {
       const simulation = generateMockSimulation(
-        'KaNeXT',
+        'Carroll',
         simIntent.opponent || 'Opponent'
       );
       dispatch({ type: 'ADD_SIMULATION', payload: simulation });

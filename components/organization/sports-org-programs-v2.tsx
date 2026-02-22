@@ -1,5 +1,5 @@
 /**
- * Sports Org Programs V2 — 14 KaNeXT Athletic Programs Grid
+ * Sports Org Programs V2 — 14 Carroll College Athletic Programs Grid
  * Summary row, attention alerts, program cards, cross-program health.
  */
 

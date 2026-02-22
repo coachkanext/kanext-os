@@ -1,7 +1,7 @@
 /**
  * Sports Organization Program V2 — Mock Data & Types
  * 10-tab Program Hub for Sports Mode organizations.
- * Seeded with KaNeXT Men's Basketball 2025-26 season data.
+ * Seeded with Carroll College Fighting Saints Men's Basketball 2025-26 season data.
  */
 
 // =============================================================================
@@ -292,14 +292,14 @@ export const PROGRAM_SUB_TABS: ProgramSubTab[] = [
 ];
 
 // =============================================================================
-// SEEDED DATA — KaNeXT Men's Basketball 2025-26
+// SEEDED DATA — Carroll College Men's Basketball 2025-26
 // =============================================================================
 
 export const PROGRAM_IDENTITY: ProgramIdentity = {
-  programName: 'KaNeXT Men\'s Basketball',
-  orgName: 'KaNeXT Sports',
+  programName: 'Carroll College Men\'s Basketball',
+  orgName: 'Carroll College',
   level: 'NAIA Division II',
-  conference: 'KaNeXT Conference',
+  conference: 'Frontier Conference',
   season: '2025-26',
   colors: { primary: '#1D9BF0', secondary: '#F59E0B' },
   logoUrl: 'https://fmusports.com/images/logos/fmu-athletics.png',
@@ -311,7 +311,7 @@ export const LEADERSHIP_SEATS: LeadershipSeat[] = [
     id: 'ls-hc',
     title: 'Head Coach',
     name: 'Coach Terrance Williams',
-    email: 'twilliams@kanext.edu',
+    email: 'twilliams@carroll.edu',
     phone: '(305) 626-3161',
     coverage: 'filled',
     backupName: 'Marcus Davis',
@@ -321,7 +321,7 @@ export const LEADERSHIP_SEATS: LeadershipSeat[] = [
     id: 'ls-ac1',
     title: 'Associate Head Coach',
     name: 'Marcus Davis',
-    email: 'mdavis@kanext.edu',
+    email: 'mdavis@carroll.edu',
     phone: '(305) 626-3162',
     coverage: 'filled',
     backupName: null,
@@ -331,7 +331,7 @@ export const LEADERSHIP_SEATS: LeadershipSeat[] = [
     id: 'ls-ac2',
     title: 'Assistant Coach — Offense',
     name: 'Jerome Patterson',
-    email: 'jpatterson@kanext.edu',
+    email: 'jpatterson@carroll.edu',
     phone: '(305) 626-3163',
     coverage: 'filled',
     backupName: null,
@@ -341,7 +341,7 @@ export const LEADERSHIP_SEATS: LeadershipSeat[] = [
     id: 'ls-ac3',
     title: 'Assistant Coach — Defense / Recruiting',
     name: null,
-    email: 'recruiting@kanext.edu',
+    email: 'recruiting@carroll.edu',
     phone: '(305) 626-3164',
     coverage: 'vacant',
     backupName: null,
@@ -351,7 +351,7 @@ export const LEADERSHIP_SEATS: LeadershipSeat[] = [
     id: 'ls-dops',
     title: 'Director of Basketball Operations',
     name: 'Alicia Washington',
-    email: 'awashington@kanext.edu',
+    email: 'awashington@carroll.edu',
     phone: '(305) 626-3170',
     coverage: 'overloaded',
     backupName: 'Jerome Patterson',
@@ -361,7 +361,7 @@ export const LEADERSHIP_SEATS: LeadershipSeat[] = [
     id: 'ls-trainer',
     title: 'Athletic Trainer',
     name: 'David Chen',
-    email: 'dchen@kanext.edu',
+    email: 'dchen@carroll.edu',
     phone: '(305) 626-3175',
     coverage: 'filled',
     backupName: 'Dr. Maria Santos',
@@ -371,7 +371,7 @@ export const LEADERSHIP_SEATS: LeadershipSeat[] = [
     id: 'ls-sc',
     title: 'Strength & Conditioning Coach',
     name: 'Robert Jackson',
-    email: 'rjackson@kanext.edu',
+    email: 'rjackson@carroll.edu',
     phone: '(305) 626-3180',
     coverage: 'filled',
     backupName: null,
@@ -381,7 +381,7 @@ export const LEADERSHIP_SEATS: LeadershipSeat[] = [
     id: 'ls-vc',
     title: 'Video Coordinator',
     name: 'Kayla Thompson',
-    email: 'kthompson@kanext.edu',
+    email: 'kthompson@carroll.edu',
     phone: '(305) 626-3185',
     coverage: 'filled',
     backupName: null,
@@ -417,7 +417,7 @@ export const PROGRAM_CONTEXT_ITEMS: ProgramContext[] = [
   {
     id: 'ctx-4',
     key: 'Film Platform',
-    value: 'Hudl — team code KaNeXT-MBB-2526',
+    value: 'Hudl — team code CC-MBB-2526',
     category: 'system',
     description: 'All game and practice film uploaded to Hudl within 24 hours of session.',
     lastUpdated: '2025-08-20',
@@ -433,9 +433,9 @@ export const PROGRAM_CONTEXT_ITEMS: ProgramContext[] = [
   {
     id: 'ctx-6',
     key: 'Communication Tool',
-    value: 'GroupMe + KaNeXT Rooms for official comms',
+    value: 'GroupMe + Carroll Rooms for official comms',
     category: 'system',
-    description: 'GroupMe for quick informal updates; KaNeXT Rooms for documented decisions and approvals.',
+    description: 'GroupMe for quick informal updates; Carroll Rooms for documented decisions and approvals.',
     lastUpdated: '2025-10-01',
   },
 ];
@@ -504,19 +504,19 @@ export const CALENDAR_MILESTONES: CalendarMilestone[] = [
     date: '2025-10-01',
     type: 'season',
     status: 'completed',
-    owner: 'Coach Williams',
+    owner: 'Coach Pearson',
   },
   {
     id: 'cm-2',
-    title: 'Season Opener vs. Pinecrest University',
+    title: 'Season Opener vs. Dakota State University',
     date: '2025-11-01',
     type: 'season',
     status: 'completed',
-    owner: 'Coach Williams',
+    owner: 'Coach Pearson',
   },
   {
     id: 'cm-3',
-    title: 'KaNeXT Conference Schedule Release',
+    title: 'Frontier Conference Schedule Release',
     date: '2025-10-15',
     type: 'compliance',
     status: 'completed',
@@ -540,11 +540,11 @@ export const CALENDAR_MILESTONES: CalendarMilestone[] = [
   },
   {
     id: 'cm-6',
-    title: 'KaNeXT Conference Tournament',
+    title: 'Frontier Conference Tournament',
     date: '2026-02-27',
     type: 'season',
     status: 'upcoming',
-    owner: 'Coach Williams',
+    owner: 'Coach Pearson',
   },
   {
     id: 'cm-7',
@@ -568,7 +568,7 @@ export const PENDING_DECISIONS: PendingDecision[] = [
   {
     id: 'pd-1',
     title: 'Approve Conference Tournament Travel Budget',
-    description: 'Lodging and meals for 18-person travel party to Clearwater for KaNeXT Conference Tournament. Estimated $12,400.',
+    description: 'Lodging and meals for 18-person travel party to Bellevue for Frontier Conference Tournament. Estimated $12,400.',
     category: 'budget',
     urgency: 'critical',
     requestedBy: 'Alicia Washington',
@@ -581,7 +581,7 @@ export const PENDING_DECISIONS: PendingDecision[] = [
     description: 'Fill vacant Assistant Coach — Defense / Recruiting position before spring signing period.',
     category: 'personnel',
     urgency: 'high',
-    requestedBy: 'Coach Williams',
+    requestedBy: 'Coach Pearson',
     requestDate: '2026-01-25',
     requiredApprovers: ['Athletic Director', 'HR Director'],
   },

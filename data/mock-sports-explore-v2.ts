@@ -73,9 +73,9 @@ export interface TrendingItem {
 }
 
 export const SPORTS_TRENDING: TrendingItem[] = [
-  { id: 'st-1', title: 'KaNeXT vs Ridgemont Christian — Full Highlights', subtitle: 'Season Opener · KaNeXT Conference', thumbnailColor: '#1D9BF0', viewCount: 5200, badge: 'featured', duration: '8:42' },
+  { id: 'st-1', title: 'Carroll College vs MSU-Northern Christian — Full Highlights', subtitle: 'Season Opener · Frontier Conference', thumbnailColor: '#1D9BF0', viewCount: 5200, badge: 'featured', duration: '8:42' },
   { id: 'st-2', title: 'Jaylen Carter 32-Point Explosion', subtitle: 'Career High · Feb 14', thumbnailColor: '#0B0F14', viewCount: 3800, badge: 'trending', duration: '4:15' },
-  { id: 'st-3', title: 'Dunk of the Week: Carter Poster', subtitle: 'KaNeXT Conference Honors', thumbnailColor: '#0B0F14', viewCount: 7100, badge: 'trending', duration: '0:48' },
+  { id: 'st-3', title: 'Dunk of the Week: Carter Poster', subtitle: 'Frontier Conference Honors', thumbnailColor: '#0B0F14', viewCount: 7100, badge: 'trending', duration: '0:48' },
 ];
 
 // =============================================================================
@@ -89,12 +89,12 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     title: 'Official Releases',
     rbacSection: 'explore_official_releases',
     items: [
-      { id: 'or-1', title: 'KaNeXT Season Opener Highlights', subtitle: 'vs Ridgemont Christian', thumbnailColor: '#1D9BF0', duration: '4:32', badge: 'NEW', date: 'Feb 14', viewCount: 2840, source: 'KaNeXT Athletics' },
-      { id: 'or-2', title: 'Media Day 2025-26', subtitle: 'Men\'s Basketball', thumbnailColor: '#0B0F14', duration: '12:15', date: 'Oct 3', viewCount: 1520, source: 'KaNeXT Athletics' },
-      { id: 'or-3', title: 'Press Conference: Coach Carter', subtitle: 'Postseason Update', thumbnailColor: '#0B0F14', duration: '18:42', date: 'Feb 10', viewCount: 890, source: 'KaNeXT Media' },
-      { id: 'or-4', title: 'Senior Night Ceremony', subtitle: 'Honoring the Class of 2026', thumbnailColor: '#0B0F14', duration: '8:55', date: 'Feb 8', viewCount: 3200, source: 'KaNeXT Athletics' },
-      { id: 'or-5', title: 'Dunk of the Week: Carter', subtitle: 'Transition Slam vs SW Assemblies', thumbnailColor: '#0B0F14', duration: '0:48', badge: 'TRENDING', date: 'Feb 12', viewCount: 5100, source: 'KaNeXT Conference' },
-      { id: 'or-6', title: 'KaNeXT Hype Video 2025-26', subtitle: 'Rise Together', thumbnailColor: '#0B0F14', duration: '2:15', date: 'Nov 1', viewCount: 7800, source: 'KaNeXT Athletics' },
+      { id: 'or-1', title: 'Carroll College Season Opener Highlights', subtitle: 'vs MSU-Northern Christian', thumbnailColor: '#1D9BF0', duration: '4:32', badge: 'NEW', date: 'Feb 14', viewCount: 2840, source: 'Carroll Athletics' },
+      { id: 'or-2', title: 'Media Day 2025-26', subtitle: 'Men\'s Basketball', thumbnailColor: '#0B0F14', duration: '12:15', date: 'Oct 3', viewCount: 1520, source: 'Carroll Athletics' },
+      { id: 'or-3', title: 'Press Conference: Coach Carter', subtitle: 'Postseason Update', thumbnailColor: '#0B0F14', duration: '18:42', date: 'Feb 10', viewCount: 890, source: 'Carroll Media' },
+      { id: 'or-4', title: 'Senior Night Ceremony', subtitle: 'Honoring the Class of 2026', thumbnailColor: '#0B0F14', duration: '8:55', date: 'Feb 8', viewCount: 3200, source: 'Carroll Athletics' },
+      { id: 'or-5', title: 'Dunk of the Week: Carter', subtitle: 'Transition Slam vs SW Assemblies', thumbnailColor: '#0B0F14', duration: '0:48', badge: 'TRENDING', date: 'Feb 12', viewCount: 5100, source: 'Frontier Conference' },
+      { id: 'or-6', title: 'Carroll College Hype Video 2025-26', subtitle: 'Rise Together', thumbnailColor: '#0B0F14', duration: '2:15', date: 'Nov 1', viewCount: 7800, source: 'Carroll Athletics' },
     ],
   },
 
@@ -104,11 +104,11 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     title: 'Game Center',
     rbacSection: 'explore_game_center',
     items: [
-      { id: 'gc-1', title: 'KaNeXT vs Ridgemont Christian', subtitle: 'KaNeXT Conference', thumbnailColor: '#1D9BF0', duration: '1:48:22', badge: 'FULL GAME', date: 'Feb 14', viewCount: 420, source: 'Game Film' },
-      { id: 'gc-2', title: 'KaNeXT vs SW Assemblies', subtitle: 'KaNeXT Conference', thumbnailColor: '#0B0F14', duration: '1:52:10', date: 'Feb 8', viewCount: 380, source: 'Game Film' },
-      { id: 'gc-3', title: 'KaNeXT vs Mid-America Nazarene', subtitle: 'KaNeXT Conference', thumbnailColor: '#0B0F14', duration: '1:45:33', date: 'Feb 1', viewCount: 310, source: 'Game Film' },
-      { id: 'gc-4', title: 'KaNeXT vs Oklahoma Panhandle', subtitle: 'Non-Conference', thumbnailColor: '#0B0F14', duration: '1:50:08', date: 'Jan 25', viewCount: 290, source: 'Game Film' },
-      { id: 'gc-5', title: 'KaNeXT vs Central Christian', subtitle: 'KaNeXT Conference', thumbnailColor: '#0B0F14', duration: '1:47:15', date: 'Jan 18', viewCount: 340, source: 'Game Film' },
+      { id: 'gc-1', title: 'Carroll College vs MSU-Northern Christian', subtitle: 'Frontier Conference', thumbnailColor: '#1D9BF0', duration: '1:48:22', badge: 'FULL GAME', date: 'Feb 14', viewCount: 420, source: 'Game Film' },
+      { id: 'gc-2', title: 'Carroll College vs SW Assemblies', subtitle: 'Frontier Conference', thumbnailColor: '#0B0F14', duration: '1:52:10', date: 'Feb 8', viewCount: 380, source: 'Game Film' },
+      { id: 'gc-3', title: 'Carroll College vs Mid-America Nazarene', subtitle: 'Frontier Conference', thumbnailColor: '#0B0F14', duration: '1:45:33', date: 'Feb 1', viewCount: 310, source: 'Game Film' },
+      { id: 'gc-4', title: 'Carroll College vs Oklahoma Panhandle', subtitle: 'Non-Conference', thumbnailColor: '#0B0F14', duration: '1:50:08', date: 'Jan 25', viewCount: 290, source: 'Game Film' },
+      { id: 'gc-5', title: 'Carroll College vs Central Christian', subtitle: 'Frontier Conference', thumbnailColor: '#0B0F14', duration: '1:47:15', date: 'Jan 18', viewCount: 340, source: 'Game Film' },
     ],
   },
 
@@ -147,11 +147,11 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     title: 'Scouting / Opponent',
     rbacSection: 'explore_scouting_opponent',
     items: [
-      { id: 'so-1', title: 'Ridgemont Christian Scout Report', subtitle: 'Next Opponent — Feb 21', thumbnailColor: '#0B0F14', duration: '28:15', badge: 'PRIORITY', date: 'Feb 13', viewCount: 8, source: 'Scout Team' },
+      { id: 'so-1', title: 'MSU-Northern Christian Scout Report', subtitle: 'Next Opponent — Feb 21', thumbnailColor: '#0B0F14', duration: '28:15', badge: 'PRIORITY', date: 'Feb 13', viewCount: 8, source: 'Scout Team' },
       { id: 'so-2', title: 'LC Tendencies: Half-Court O', subtitle: 'Top 5 Sets + Triggers', thumbnailColor: '#0B0F14', duration: '14:30', date: 'Feb 12', viewCount: 6, source: 'Scout Team' },
       { id: 'so-3', title: 'LC Key Players: #3 Davis, #11 Hill', subtitle: 'Usage + Shooting Zones', thumbnailColor: '#1D9BF0', duration: '12:18', date: 'Feb 11', viewCount: 5, source: 'Scout Team' },
       { id: 'so-4', title: 'SW Assemblies Post-Mortem', subtitle: 'What Worked + Adjustments', thumbnailColor: '#0B0F14', duration: '20:45', date: 'Feb 9', viewCount: 11, source: 'Coaching Staff' },
-      { id: 'so-5', title: 'Conference Opponent Overview', subtitle: 'KaNeXT Conference Top 5 Teams', thumbnailColor: '#0B0F14', duration: '35:20', date: 'Feb 1', viewCount: 22, source: 'Scout Team' },
+      { id: 'so-5', title: 'Conference Opponent Overview', subtitle: 'Frontier Conference Top 5 Teams', thumbnailColor: '#0B0F14', duration: '35:20', date: 'Feb 1', viewCount: 22, source: 'Scout Team' },
     ],
   },
 
@@ -189,12 +189,12 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     title: 'Conference / League',
     rbacSection: 'explore_conference_league',
     items: [
-      { id: 'cl-1', title: 'KaNeXT Conference Week 14 Recap', subtitle: 'Standings + Top Plays', thumbnailColor: '#0B0F14', duration: '8:30', badge: 'NEW', date: 'Feb 14', viewCount: 1800, source: 'KaNeXT Conference' },
-      { id: 'cl-2', title: 'NAIA Top 25 Poll Update', subtitle: 'KaNeXT Moves to #8', thumbnailColor: '#1D9BF0', duration: '5:15', date: 'Feb 12', viewCount: 2400, source: 'NAA' },
-      { id: 'cl-3', title: 'Player of the Week: J. Carter', subtitle: 'KaNeXT Conference Honors', thumbnailColor: '#0B0F14', duration: '2:45', date: 'Feb 10', viewCount: 3100, source: 'KaNeXT Conference' },
-      { id: 'cl-4', title: 'Conference Tournament Preview', subtitle: 'Bracket Projections', thumbnailColor: '#0B0F14', duration: '12:20', date: 'Feb 8', viewCount: 1500, source: 'KaNeXT Conference' },
-      { id: 'cl-5', title: 'NAA Conference Tournament Info', subtitle: 'Qualifying + Format', thumbnailColor: '#0B0F14', duration: '6:45', date: 'Feb 1', viewCount: 4200, source: 'NAA' },
-      { id: 'cl-6', title: 'KaNeXT Conference All-Star Selections', subtitle: 'Mid-Season Honors', thumbnailColor: '#0B0F14', duration: '3:10', date: 'Jan 25', viewCount: 2800, source: 'KaNeXT Conference' },
+      { id: 'cl-1', title: 'Frontier Conference Week 14 Recap', subtitle: 'Standings + Top Plays', thumbnailColor: '#0B0F14', duration: '8:30', badge: 'NEW', date: 'Feb 14', viewCount: 1800, source: 'Frontier Conference' },
+      { id: 'cl-2', title: 'NAIA Top 25 Poll Update', subtitle: 'Carroll College Moves to #8', thumbnailColor: '#1D9BF0', duration: '5:15', date: 'Feb 12', viewCount: 2400, source: 'NAIA' },
+      { id: 'cl-3', title: 'Player of the Week: J. Carter', subtitle: 'Frontier Conference Honors', thumbnailColor: '#0B0F14', duration: '2:45', date: 'Feb 10', viewCount: 3100, source: 'Frontier Conference' },
+      { id: 'cl-4', title: 'Conference Tournament Preview', subtitle: 'Bracket Projections', thumbnailColor: '#0B0F14', duration: '12:20', date: 'Feb 8', viewCount: 1500, source: 'Frontier Conference' },
+      { id: 'cl-5', title: 'NAA Conference Tournament Info', subtitle: 'Qualifying + Format', thumbnailColor: '#0B0F14', duration: '6:45', date: 'Feb 1', viewCount: 4200, source: 'NAIA' },
+      { id: 'cl-6', title: 'Frontier Conference All-Star Selections', subtitle: 'Mid-Season Honors', thumbnailColor: '#0B0F14', duration: '3:10', date: 'Jan 25', viewCount: 2800, source: 'Frontier Conference' },
     ],
   },
 ];

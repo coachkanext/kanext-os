@@ -286,7 +286,7 @@ export function buildPoolAwarenessPrompt(): string {
   return [
     `\n## National Player Pool Intelligence`,
     `You have access to a real national player database with ${counts.players.toLocaleString()} players across these levels: ${levels}.`,
-    `- ${counts.withKR.toLocaleString()} players have computed KaNeXT Ratings (KR, 0-100 scale)`,
+    `- ${counts.withKR.toLocaleString()} players have computed KR Ratings (0-100 scale)`,
     `- ${counts.withStats.toLocaleString()} have season statistics`,
     `- ${counts.withScholarship.toLocaleString()} have scholarship & NIL allocation recommendations`,
     `- ${counts.teamSystems} teams have OSIE/DSIE system identity profiles`,

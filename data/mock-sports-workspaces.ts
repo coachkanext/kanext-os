@@ -134,7 +134,7 @@ export const MOCK_WORKSPACES: Workspace[] = [
       { initials: 'LC', color: '#0B0F14' },
       { initials: 'DW', color: '#0B0F14' },
     ],
-    linkedObjects: ['Ridgemont Christian', 'Feb 21 Game'],
+    linkedObjects: ['MSU-Northern Christian', 'Feb 21 Game'],
     clipCount: 34,
     lastActivity: '2h ago',
     colorStrip: '#EF4444',
@@ -342,7 +342,7 @@ export const MOCK_CUTUP_TEMPLATES: CutupTemplate[] = [
 export const MOCK_FILM_ASSIGNMENTS: FilmAssignment[] = [
   {
     id: 'fa-1',
-    title: 'Watch Ridgemont Christian — Last 3 Games',
+    title: 'Watch MSU-Northern Christian — Last 3 Games',
     assignedTo: [
       { name: 'Jaylen Carter', initials: 'JC', color: '#0B0F14' },
       { name: 'Alex Morgan', initials: 'MT', color: '#0B0F14' },
@@ -554,7 +554,7 @@ export interface PracticeFilmItem {
 
 export const MOCK_PRACTICE_FILM: PracticeFilmItem[] = [
   { id: 'pf-1', date: 'Feb 18, 2026', practiceType: 'Full Practice', duration: '1:45:00', thumbnailColor: '#0B0F14', notes: 'Transition defense focus' },
-  { id: 'pf-2', date: 'Feb 17, 2026', practiceType: 'Shootaround', duration: '0:45:00', thumbnailColor: '#0B0F14', notes: 'Pre-game prep vs Ridgemont Christian' },
+  { id: 'pf-2', date: 'Feb 17, 2026', practiceType: 'Shootaround', duration: '0:45:00', thumbnailColor: '#0B0F14', notes: 'Pre-game prep vs MSU-Northern Christian' },
   { id: 'pf-3', date: 'Feb 15, 2026', practiceType: 'Full Practice', duration: '2:00:00', thumbnailColor: '#1D9BF0', notes: '5-on-5 scrimmage + press break install' },
   { id: 'pf-4', date: 'Feb 13, 2026', practiceType: 'Walkthrough', duration: '0:55:00', thumbnailColor: '#0B0F14', notes: 'Motion offense v2 walkthrough' },
   { id: 'pf-5', date: 'Feb 12, 2026', practiceType: 'Individual', duration: '1:10:00', thumbnailColor: '#0B0F14', notes: 'Carter finishing drills + Thompson shooting' },

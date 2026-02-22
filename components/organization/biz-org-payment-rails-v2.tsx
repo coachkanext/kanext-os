@@ -1709,9 +1709,9 @@ function NewBatchSheet({
   colors: typeof Colors.light;
 }) {
   const [batchName, setBatchName] = useState('');
-  const [batchEntity, setBatchEntity] = useState('KaNeXT OpsCo');
+  const [batchEntity, setBatchEntity] = useState('Valuetainment OpsCo');
 
-  const entities = ['KaNeXT HoldCo', 'KaNeXT OpsCo', 'Sponsor Bank'];
+  const entities = ['Valuetainment HoldCo', 'Valuetainment OpsCo', 'Sponsor Bank'];
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title="New Batch" useModal>

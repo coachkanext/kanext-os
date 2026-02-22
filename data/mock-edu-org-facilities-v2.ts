@@ -1,6 +1,6 @@
 /**
  * Education Organization Facilities V2 — Mock Data & Types
- * Campus facility management for HBCU-themed institutions (KaNeXT).
+ * Campus facility management for HBCU-themed institutions (Howard University).
  * Covers: Buildings, Rooms, Assets, Work Orders, Maintenance, Inspections,
  * Vendors, Safety Zones, Access Groups, and Capital Projects.
  */
@@ -578,7 +578,7 @@ const TODAY_IMPACT: TodayImpact[] = [
     buildingId: 'bld-002',
     severity: 'critical',
     description:
-      'HVAC system in KaNeXT Science Building showing intermittent failures. Lab temperatures rising above safe thresholds for chemical storage. Vendor dispatched.',
+      'HVAC system in Howard Science Building showing intermittent failures. Lab temperatures rising above safe thresholds for chemical storage. Vendor dispatched.',
   },
   {
     id: 'ti-002',
@@ -597,9 +597,9 @@ const TODAY_IMPACT: TodayImpact[] = [
 const BUILDINGS: Building[] = [
   {
     id: 'bld-001',
-    name: 'KaNeXT Adams Hall',
+    name: 'Howard Adams Hall',
     type: 'dorm',
-    campus: 'KaNeXT Sports',
+    campus: 'Howard University',
     status: 'good',
     condition: 82,
     systems: [
@@ -615,9 +615,9 @@ const BUILDINGS: Building[] = [
   },
   {
     id: 'bld-002',
-    name: 'KaNeXT Science Building',
+    name: 'Howard Science Building',
     type: 'academic',
-    campus: 'KaNeXT Sports',
+    campus: 'Howard University',
     status: 'watch',
     condition: 68,
     systems: [
@@ -700,7 +700,7 @@ const ASSETS: FacilityAsset[] = [
     name: 'Carrier Rooftop HVAC Unit — Science Bldg',
     category: 'hvac_unit',
     buildingId: 'bld-002',
-    location: 'KaNeXT Science Building — Roof',
+    location: 'Howard Science Building — Roof',
     condition: 'watch',
     warrantyExpiry: '2025-08-01',
     maintenanceCadence: 'Quarterly',
@@ -712,7 +712,7 @@ const ASSETS: FacilityAsset[] = [
     name: 'Speed Queen Commercial Laundry System',
     category: 'laundry',
     buildingId: 'bld-001',
-    location: 'KaNeXT Adams Hall — Basement',
+    location: 'Howard Adams Hall — Basement',
     condition: 'ok',
     warrantyExpiry: '2027-01-10',
     maintenanceCadence: 'Monthly',
@@ -724,7 +724,7 @@ const ASSETS: FacilityAsset[] = [
     name: 'Thermo Fisher Spectrophotometer',
     category: 'lab_equipment',
     buildingId: 'bld-002',
-    location: 'KaNeXT Science Building — Chemistry Lab 201',
+    location: 'Howard Science Building — Chemistry Lab 201',
     condition: 'watch',
     warrantyExpiry: '2026-06-01',
     maintenanceCadence: 'Semi-Annual',

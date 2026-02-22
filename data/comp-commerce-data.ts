@@ -1,6 +1,6 @@
 /**
- * Competition Commerce Data — KaNeXT Racing Series
- * Tickets (seat tiers), Store (racing gear), Paddock (VIP hospitality)
+ * Competition Commerce Data — PBD Podcast Series
+ * Tickets (seat tiers), Store (3SSB gear), Courtside (VIP hospitality)
  */
 
 import { buildCommerceChain, type PaymentChain } from './commerce-data';
@@ -19,11 +19,11 @@ export const COMP_SEAT_TIERS: CompSeatTier[] = [
   { id: 'ga', label: 'General Admission', price: 75 },
   { id: 'grandstand', label: 'Grandstand', price: 200 },
   { id: 'pit-straight', label: 'Pit Straight', price: 450 },
-  { id: 'paddock-club', label: 'Paddock Club', price: 1200 },
+  { id: 'courtside-club', label: 'Courtside Club', price: 1200 },
 ];
 
 // =============================================================================
-// STORE PRODUCTS (Racing Gear)
+// STORE PRODUCTS (Basketball Gear)
 // =============================================================================
 
 export interface CompStoreProduct {
@@ -34,7 +34,7 @@ export interface CompStoreProduct {
 
 export const COMP_STORE_PRODUCTS: CompStoreProduct[] = [
   { id: 'team-cap', name: 'Team Cap', price: 49.99 },
-  { id: 'race-suit', name: 'Race Suit Replica', price: 249.99 },
+  { id: 'game-suit', name: 'Game Suit Replica', price: 249.99 },
   { id: 'pit-jacket', name: 'Pit Crew Jacket', price: 189.99 },
   { id: 'visor', name: 'Visor', price: 34.99 },
 ];
@@ -43,18 +43,18 @@ export const COMP_STORE_PRODUCTS: CompStoreProduct[] = [
 // PADDOCK TIERS (VIP Hospitality)
 // =============================================================================
 
-export interface PaddockTier {
+export interface CourtsideTier {
   id: string;
   label: string;
-  perRacePrice: number;
+  perGamePrice: number;
   seasonPrice: number;
   description: string;
 }
 
-export const PADDOCK_TIERS: PaddockTier[] = [
-  { id: 'grid-walk', label: 'Grid Walk', perRacePrice: 500, seasonPrice: 4000, description: 'Pre-race grid access + paddock entry' },
-  { id: 'paddock-club', label: 'Paddock Club', perRacePrice: 1500, seasonPrice: 12000, description: 'Premium hospitality lounge + pit lane viewing' },
-  { id: 'owners-suite', label: "Owner's Suite", perRacePrice: 5000, seasonPrice: 40000, description: 'Private suite + team radio + post-race meet & greet' },
+export const PADDOCK_TIERS: CourtsideTier[] = [
+  { id: 'grid-walk', label: 'Grid Walk', perGamePrice: 500, seasonPrice: 4000, description: 'Pre-game grid access + courtside entry' },
+  { id: 'courtside-club', label: 'Courtside Club', perGamePrice: 1500, seasonPrice: 12000, description: 'Premium hospitality lounge + pit lane viewing' },
+  { id: 'owners-suite', label: "Owner's Suite", perGamePrice: 5000, seasonPrice: 40000, description: 'Private suite + team radio + post-game meet & greet' },
 ];
 
 // =============================================================================
@@ -68,10 +68,10 @@ export function buildCompCommerceChain(
   prefix: string,
 ): PaymentChain {
   const chain = buildCommerceChain(type, amount, description, prefix);
-  // Patch settlement destination for KaNeXT Racing
+  // Patch settlement destination for PBD Podcast
   const settlement = chain.chain.find((s) => s.stage === 'Settlement');
   if (settlement) {
-    settlement.detail = `Funds settled to KaNeXT Racing Series`;
+    settlement.detail = `Funds settled to PBD Podcast Series`;
   }
   return chain;
 }

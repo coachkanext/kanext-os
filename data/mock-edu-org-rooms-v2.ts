@@ -1,7 +1,7 @@
 /**
  * Education Organization Rooms V2 — Mock Data & Types
  * Operational / governance / incident / project / committee rooms across
- * the KaNeXT Church education portfolio (org-wide + KaNeXT).
+ * the 2819 Church education portfolio (org-wide + Howard).
  */
 
 // =============================================================================
@@ -22,7 +22,7 @@ export interface EduOrgRoom {
   status: RoomStatus;
   access: RoomAccess;
   scope: RoomScope;
-  institution?: string;        // e.g. 'KaNeXT' — undefined for org-level
+  institution?: string;        // e.g. 'Howard' — undefined for org-level
   department?: string;
   owner: string;
   memberCount: number;
@@ -209,7 +209,7 @@ const ROOMS: EduOrgRoom[] = [
     governance: { nextMeeting: '2026-02-24', pendingDecisions: 2, pendingApprovals: 4, documentsCount: 15 },
   },
 
-  // --- KaNeXT (KaNeXT Sports) ---
+  // --- Howard University ---
   {
     id: 'er-fmu-admissions',
     name: 'Admissions Ops',
@@ -218,10 +218,10 @@ const ROOMS: EduOrgRoom[] = [
     status: 'active',
     access: 'restricted',
     scope: 'institution',
-    institution: 'KaNeXT',
+    institution: 'Howard',
     owner: 'Dir. Admissions',
     memberCount: 14,
-    description: 'KaNeXT admissions funnel — applications, reviews, yield campaigns, deposit tracking.',
+    description: 'Howard admissions funnel — applications, reviews, yield campaigns, deposit tracking.',
     lastActivity: '2026-02-18T10:45:00Z',
     pendingItems: 22,
     urgentItems: 5,
@@ -234,7 +234,7 @@ const ROOMS: EduOrgRoom[] = [
     status: 'active',
     access: 'restricted',
     scope: 'institution',
-    institution: 'KaNeXT',
+    institution: 'Howard',
     owner: 'Registrar',
     memberCount: 8,
     description: 'Course registration, schedule building, transcript processing, degree audits.',
@@ -250,7 +250,7 @@ const ROOMS: EduOrgRoom[] = [
     status: 'active',
     access: 'open',
     scope: 'institution',
-    institution: 'KaNeXT',
+    institution: 'Howard',
     owner: 'Dir. Residential Life',
     memberCount: 11,
     description: 'Housing assignments, RA coordination, maintenance, occupancy tracking.',
@@ -266,8 +266,8 @@ const ROOMS: EduOrgRoom[] = [
     status: 'active',
     access: 'confidential',
     scope: 'institution',
-    institution: 'KaNeXT',
-    owner: 'CFO – KaNeXT',
+    institution: 'Howard',
+    owner: 'CFO – Howard',
     memberCount: 6,
     description: 'Budget requests, PO approvals, variance tracking, fiscal-year close.',
     lastActivity: '2026-02-17T15:30:00Z',
@@ -282,7 +282,7 @@ const ROOMS: EduOrgRoom[] = [
     status: 'active',
     access: 'restricted',
     scope: 'institution',
-    institution: 'KaNeXT',
+    institution: 'Howard',
     owner: 'Dean of Students',
     memberCount: 10,
     description: 'Retention interventions, early-alert triage, academic advising queue.',
@@ -298,10 +298,10 @@ const ROOMS: EduOrgRoom[] = [
     status: 'active',
     access: 'confidential',
     scope: 'institution',
-    institution: 'KaNeXT',
+    institution: 'Howard',
     owner: 'Compliance Officer',
     memberCount: 7,
-    description: 'KaNeXT-specific compliance — Title IV status, Clery, FERPA, accreditation prep.',
+    description: 'Howard-specific compliance — Title IV status, Clery, FERPA, accreditation prep.',
     lastActivity: '2026-02-17T13:00:00Z',
     pendingItems: 5,
     urgentItems: 1,
@@ -315,7 +315,7 @@ const ROOMS: EduOrgRoom[] = [
     status: 'active',
     access: 'restricted',
     scope: 'institution',
-    institution: 'KaNeXT',
+    institution: 'Howard',
     owner: 'Provost',
     memberCount: 15,
     description: 'Curriculum decisions, program reviews, faculty affairs, accreditation responses.',
@@ -332,10 +332,10 @@ const ROOMS: EduOrgRoom[] = [
     status: 'active',
     access: 'confidential',
     scope: 'institution',
-    institution: 'KaNeXT',
+    institution: 'Howard',
     owner: 'VP Enrollment',
     memberCount: 6,
-    description: 'Active incident — KaNeXT Fall 2026 deposits 22% below target. War-room triage.',
+    description: 'Active incident — Howard Fall 2026 deposits 22% below target. War-room triage.',
     lastActivity: '2026-02-18T11:15:00Z',
     pendingItems: 12,
     urgentItems: 8,

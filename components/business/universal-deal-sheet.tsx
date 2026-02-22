@@ -145,7 +145,7 @@ const SLIEMA_DILIGENCE: DiligenceCategory[] = [
       { id: 'di-9', title: 'Youth academy assessment', status: 'pending', assignee: 'Alex M', notes: 'Current infrastructure and player pipeline' },
       { id: 'di-10', title: 'Staff and personnel review', status: 'pending', assignee: 'Alex M', notes: 'Coaching, admin, medical, grounds staff' },
       { id: 'di-11', title: 'Facility condition report', status: 'pending', assignee: 'Alex M', notes: 'Training ground, equipment, medical facilities' },
-      { id: 'di-12', title: 'Technology infrastructure audit', status: 'pending', assignee: 'Alex M', notes: 'Opportunity to deploy KaNeXT Sports Mode' },
+      { id: 'di-12', title: 'Technology infrastructure audit', status: 'pending', assignee: 'Alex M', notes: 'Opportunity to deploy Carroll College Mode' },
     ],
   },
   {
@@ -172,8 +172,8 @@ const DEAL_RISKS: Record<string, { id: string; title: string; severity: 'critica
 
 const DEAL_APPROVALS: Record<string, ApprovalItem[]> = {
   'deal-1': [
-    { id: 'ap-1', title: 'KaNeXT Athletics Department Sign-Off', status: 'approved', approver: 'KaNeXT AD', date: 'Jan 25, 2026', notes: 'Full athletics deployment approved for 13 sports' },
-    { id: 'ap-2', title: 'KaNeXT Board Approval', status: 'approved', approver: 'Alex M', date: 'Jan 30, 2026', notes: 'Partnership terms approved under $50K threshold' },
+    { id: 'ap-1', title: 'Carroll Athletics Department Sign-Off', status: 'approved', approver: 'Carroll AD', date: 'Jan 25, 2026', notes: 'Full athletics deployment approved for 13 sports' },
+    { id: 'ap-2', title: 'Valuetainment Board Approval', status: 'approved', approver: 'Alex M', date: 'Jan 30, 2026', notes: 'Partnership terms approved under $50K threshold' },
   ],
   'deal-2': [
     { id: 'ap-3', title: 'Acquisition Exploration Authorization', status: 'approved', approver: 'Alex M', date: 'Jan 15, 2026', notes: 'Authorized initial outreach and exploration budget ($5K)' },
@@ -186,10 +186,10 @@ const DEAL_APPROVALS: Record<string, ApprovalItem[]> = {
 const AUDIT_LOGS: Record<string, AuditLogItem[]> = {
   'deal-1': [
     { id: 'al-1', timestamp: 'Feb 14, 2026 2:15 PM', action: 'Deal status updated', actor: 'Alex M', detail: 'Status changed from Exploring to Diligence', type: 'action' },
-    { id: 'al-2', timestamp: 'Feb 12, 2026 10:30 AM', action: 'Document uploaded', actor: 'Alex M', detail: 'KaNeXT Athletics Partnership Agreement v2.pdf', type: 'document' },
-    { id: 'al-3', timestamp: 'Feb 5, 2026 3:45 PM', action: 'Contact added', actor: 'Alex M', detail: 'Added KaNeXT Athletic Director as key contact', type: 'action' },
-    { id: 'al-4', timestamp: 'Jan 25, 2026 11:00 AM', action: 'Approval granted', actor: 'KaNeXT AD', detail: 'KaNeXT Athletics Department sign-off approved', type: 'action' },
-    { id: 'al-5', timestamp: 'Jan 20, 2026 9:15 AM', action: 'Workspace created', actor: 'Alex M', detail: 'Deal workspace initialized: KaNeXT Partnership Track', type: 'action' },
+    { id: 'al-2', timestamp: 'Feb 12, 2026 10:30 AM', action: 'Document uploaded', actor: 'Alex M', detail: 'Carroll Athletics Partnership Agreement v2.pdf', type: 'document' },
+    { id: 'al-3', timestamp: 'Feb 5, 2026 3:45 PM', action: 'Contact added', actor: 'Alex M', detail: 'Added Carroll Athletic Director as key contact', type: 'action' },
+    { id: 'al-4', timestamp: 'Jan 25, 2026 11:00 AM', action: 'Approval granted', actor: 'Carroll AD', detail: 'Carroll Athletics Department sign-off approved', type: 'action' },
+    { id: 'al-5', timestamp: 'Jan 20, 2026 9:15 AM', action: 'Workspace created', actor: 'Alex M', detail: 'Deal workspace initialized: Valuetainment Partnership Track', type: 'action' },
   ],
   'deal-2': [
     { id: 'al-6', timestamp: 'Feb 18, 2026 4:00 PM', action: 'Financial package requested', actor: 'Alex M', detail: 'Sent formal request for club financial statements to Mario Camilleri', type: 'action' },
@@ -728,7 +728,7 @@ function FinancialModelTab({ deal, colors }: { deal: DealWorkspace; colors: type
           <ScenarioCard label="Base" color="#22C55E" colors={colors}>
             <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
               {deal.revenueProjections && deal.revenueProjections.length > 0
-                ? `Revenue reaches ${deal.revenueProjections[deal.revenueProjections.length - 1].base} by ${deal.revenueProjections[deal.revenueProjections.length - 1].year}. Steady operational improvement with KaNeXT platform integration.`
+                ? `Revenue reaches ${deal.revenueProjections[deal.revenueProjections.length - 1].base} by ${deal.revenueProjections[deal.revenueProjections.length - 1].year}. Steady operational improvement with Valuetainment platform integration.`
                 : 'Moderate growth trajectory with steady platform adoption and operational efficiency gains.'
               }
             </ThemedText>
@@ -914,7 +914,7 @@ function OfferTermsTab({ deal, colors }: { deal: DealWorkspace; colors: typeof C
             <BulletItem text="League Association ownership approval (fit and proper person test)" colors={colors} />
             <BulletItem text="UEFA club licensing compliance confirmation" colors={colors} />
             <BulletItem text="Confirmation of stadium lease transferability" colors={colors} />
-            <BulletItem text="KaNeXT board approval of final acquisition terms" colors={colors} />
+            <BulletItem text="Valuetainment board approval of final acquisition terms" colors={colors} />
           </View>
         ) : (
           <View>
@@ -945,7 +945,7 @@ function OfferTermsTab({ deal, colors }: { deal: DealWorkspace; colors: typeof C
       <SectionCard title="Negotiation Notes" colors={colors}>
         <ThemedText style={[styles.bodyText, { color: colors.text }]}>
           {isSliema
-            ? 'Early-stage exploration. No formal negotiations commenced. Club president receptive to conversation. Key focus areas: valuation methodology, management transition plan, and KaNeXT platform integration timeline. Next step: request financial package and schedule site visit.'
+            ? 'Early-stage exploration. No formal negotiations commenced. Club president receptive to conversation. Key focus areas: valuation methodology, management transition plan, and Valuetainment platform integration timeline. Next step: request financial package and schedule site visit.'
             : 'Terms substantially agreed. SAFE structure finalized and board-approved Feb 14, 2026. Remaining items: final legal review of SAFE document, wire instructions for Tranche 1, and distribution rights agreement scope. Target: Tranche 1 wire by Mar 1, 2026.'
           }
         </ThemedText>

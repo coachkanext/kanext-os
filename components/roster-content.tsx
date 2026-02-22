@@ -76,18 +76,18 @@ const LAST_3_GAMES: Record<string, { opponent: string; pts: number; reb: number;
 // PLAYER_CLUSTERS, ClusterRatings, computeOffKR, computeDefKR now live in @/data/roster-data
 
 // KR sort options
-type KrSortKey = 'kr' | 'offKR' | 'defKR' | 'shooting' | 'finishing' | 'playmaking' | 'perimeter_defense' | 'interior_defense' | 'rebounding' | 'frame' | 'pgis';
+type KrSortKey = 'kr' | 'offKR' | 'defKR' | 'shooting' | 'finishing' | 'playmaking' | 'on_ball_defense' | 'team_defense' | 'rebounding' | 'physical' | 'pgis';
 const KR_SORT_OPTIONS: { key: KrSortKey; label: string }[] = [
-  { key: 'kr', label: 'KaNeXT' },
+  { key: 'kr', label: 'Carroll' },
   { key: 'offKR', label: 'O KR' },
   { key: 'defKR', label: 'D KR' },
   { key: 'shooting', label: 'SHT' },
   { key: 'finishing', label: 'FIN' },
   { key: 'playmaking', label: 'PLY' },
-  { key: 'perimeter_defense', label: 'OBD' },
-  { key: 'interior_defense', label: 'TMD' },
+  { key: 'on_ball_defense', label: 'OBD' },
+  { key: 'team_defense', label: 'TMD' },
   { key: 'rebounding', label: 'REB' },
-  { key: 'frame', label: 'PHY' },
+  { key: 'physical', label: 'PHY' },
 ];
 
 // Cluster segments for the segmented picker
@@ -97,10 +97,10 @@ const CLUSTER_SEGMENTS: { key: keyof ClusterRatings | 'offKR' | 'defKR' | 'pgis'
   { key: 'shooting', label: 'SHT', sortKey: 'shooting' },
   { key: 'finishing', label: 'FIN', sortKey: 'finishing' },
   { key: 'playmaking', label: 'PLY', sortKey: 'playmaking' },
-  { key: 'perimeter_defense', label: 'OBD', sortKey: 'perimeter_defense' },
-  { key: 'interior_defense', label: 'TMD', sortKey: 'interior_defense' },
+  { key: 'on_ball_defense', label: 'OBD', sortKey: 'on_ball_defense' },
+  { key: 'team_defense', label: 'TMD', sortKey: 'team_defense' },
   { key: 'rebounding', label: 'REB', sortKey: 'rebounding' },
-  { key: 'frame', label: 'PHY', sortKey: 'frame' },
+  { key: 'physical', label: 'PHY', sortKey: 'physical' },
   { key: 'pgis', label: 'PGIS', sortKey: 'pgis' },
 ];
 
@@ -126,7 +126,7 @@ export const ROSTER = [
   { id: '5',  number: '4',  firstName: 'Devin',      lastName: 'Carter',        position: 'Wing', listPos: 'W', height: '6\'0"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Jackson, MS', formerSchool: 'Hinds CC', ppg: 18.3, rpg: 6.1, apg: 3.4, kr: 82, usage: 28.4, minutes: 32, role: 'starter' as PlayerRole },
   { id: '6',  number: '5',  firstName: 'Jeffrey',    lastName: 'Selden',        position: 'Big',           listPos: 'B',  height: '6\'6"',  weight: 210, classYear: 'Senior',    scholarship: 0, nil: '—', notes: 'Pembroke Pines, FL', formerSchool: 'Riverside Community College', ppg: 11.2, rpg: 5.9, apg: 3.0, kr: 80, usage: 22.1, minutes: 28, role: 'starter' as PlayerRole },
   { id: '7',  number: '7',  firstName: 'Maximo',     lastName: 'Moratinos',     position: 'Forward', listPos: 'F', height: '6\'8"',  weight: 205, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Marbella, Spain', formerSchool: 'CB Marbella (Spain)', ppg: 6.6, rpg: 2.6, apg: 0, kr: 70, usage: 15.2, minutes: 18, role: 'rotation' as PlayerRole },
-  { id: '8',  number: '9',  firstName: "Ka'Mar",     lastName: 'Benbo',         position: 'Point Guard',   listPos: 'PG', height: '6\'0"',  weight: 170, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Nashville, TN', formerSchool: 'Northview Prep HS', ppg: 0, rpg: 0, apg: 0, kr: 58, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '8',  number: '9',  firstName: "Ka'Mar",     lastName: 'Benbo',         position: 'Point Guard',   listPos: 'PG', height: '6\'0"',  weight: 170, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Helena, MT', formerSchool: 'Northview Prep HS', ppg: 0, rpg: 0, apg: 0, kr: 58, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
   { id: '9',  number: '10', firstName: 'Jason',      lastName: 'Morris',        position: 'Forward', listPos: 'F', height: '6\'4"',  weight: 200, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Miami, FL', formerSchool: 'Northwestern HS', ppg: 0, rpg: 0, apg: 0, kr: 56, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
   { id: '10', number: '11', firstName: 'Sehmaj',     lastName: 'Mentor',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Orlando, FL', formerSchool: 'Indian River State', ppg: 9.2, rpg: 3.5, apg: 2.4, kr: 78, usage: 20.3, minutes: 30, role: 'starter' as PlayerRole },
   { id: '11', number: '12', firstName: 'Gavin',      lastName: 'Turner',        position: 'Wing', listPos: 'W', height: '6\'5"',  weight: 195, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Beacon, FL', formerSchool: 'Dillard HS', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
@@ -183,12 +183,12 @@ const DEPTH_CHART = [
 
 // KaNeXT Team Info (for thin header)
 const KaNeXT_TEAM = {
-  name: 'KaNeXT Sports',
-  conference: 'KaNeXT Conference',
-  division: 'NAA',
+  name: 'Carroll College',
+  conference: 'Frontier Conference',
+  division: 'NAIA',
   record: KaNeXT_RECORD.overall,
   confRecord: KaNeXT_RECORD.conference,
-  streak: KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—',
+  streak: KaNeXT_STANDINGS.find((r) => r.team === 'Carroll College')?.streak ?? '—',
 };
 
 // ── Season-keyed data ──
@@ -1148,8 +1148,8 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
       position: tradPos,
       height: p.height,
       classYear: p.classYear,
-      currentSchool: 'KaNeXT Sports',
-      level: 'NAA' as const,
+      currentSchool: 'Carroll College',
+      level: 'NAIA' as const,
       conference: '',
       state: 'FL',
       keyStatLine: '',

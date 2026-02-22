@@ -1,7 +1,7 @@
 /**
  * Mock Business V3 — Shared data layer for the 9-tab Business Home.
  * Entity definitions, shared types, and cross-tab references.
- * All data references KaNeXT entities: Alex, KaNeXT, KaNeXT Church, KaNeXT, PBD/Tom.
+ * All data references Valuetainment entities: Alex, Valuetainment, 2819 Church, PBD/Tom.
  */
 
 import type { BusinessRoleLens } from '@/utils/business-rbac';
@@ -19,10 +19,10 @@ export interface BizEntity {
 }
 
 export const BIZ_ENTITIES: BizEntity[] = [
-  { id: 'ent-kanext', name: 'KaNeXT Inc.', type: 'C-Corp', status: 'active' },
+  { id: 'ent-kanext', name: 'Valuetainment Media LLC', type: 'C-Corp', status: 'active' },
   { id: 'ent-osk', name: 'OSK Group LLC', type: 'LLC', status: 'active' },
-  { id: 'ent-kanext-media', name: 'KaNeXT Media LLC', type: 'LLC', status: 'active' },
-  { id: 'ent-kanext-sports', name: 'KaNeXT Sports LLC', type: 'LLC', status: 'pending' },
+  { id: 'ent-kanext-media', name: 'Valuetainment Digital LLC', type: 'LLC', status: 'active' },
+  { id: 'ent-kanext-sports', name: 'Carroll College LLC', type: 'LLC', status: 'pending' },
 ];
 
 export const DEFAULT_ENTITY = BIZ_ENTITIES[0];
@@ -65,9 +65,9 @@ export interface ProofWedge {
 }
 
 export const PROOF_WEDGES: ProofWedge[] = [
-  { id: 'w-fmu', name: 'KaNeXT', orgName: 'KaNeXT Sports', icon: 'sportscourt.fill', color: '#FFFFFF', stat: '$53M–$157M', statLabel: 'Media Value Y1' },
-  { id: 'w-iccla', name: 'KaNeXT Church', orgName: "Int'l Church of Christ LA", icon: 'heart.fill', color: '#A1A1AA', stat: '3', statLabel: 'Campuses' },
-  { id: 'w-k1', name: 'KaNeXT', orgName: 'KaNeXT Racing Series', icon: 'flag.checkered', color: '#EF4444', stat: '14', statLabel: 'Race Season' },
+  { id: 'w-fmu', name: 'Valuetainment', orgName: 'Valuetainment Media', icon: 'sportscourt.fill', color: '#FFFFFF', stat: '$53M–$157M', statLabel: 'Media Value Y1' },
+  { id: 'w-iccla', name: '2819 Church', orgName: "Int'l Church of Christ LA", icon: 'heart.fill', color: '#A1A1AA', stat: '3', statLabel: 'Campuses' },
+  { id: 'w-k1', name: 'Valuetainment', orgName: 'PBD Podcast', icon: 'flag.checkered', color: '#EF4444', stat: '14', statLabel: 'Race Season' },
 ];
 
 // =============================================================================

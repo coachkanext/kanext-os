@@ -217,7 +217,7 @@ export function GameSheet({
         <View style={styles.headerTop}>
           <View style={{ flex: 1 }}>
             <Text style={[styles.matchup, { color: colors.text }]}>
-              KaNeXT vs {game.opponent}
+              Carroll vs {game.opponent}
             </Text>
             <Text style={[styles.headerSub, { color: colors.textSecondary }]}>
               {game.date} · {game.location}

@@ -2,7 +2,7 @@
  * Competition Organization Payment Rails — Mock Data
  * 10-tab Payment Rails Hub for competition org management.
  * Accounts, transactions, payouts, invoices, fees, reconciliation,
- * disputes, reports, settings — all scoped to KaNeXT Church competition org.
+ * disputes, reports, settings — all scoped to 2819 Church competition org.
  */
 
 // =============================================================================
@@ -236,7 +236,7 @@ const DASHBOARD_BLOCKS: RailsDashboardBlock[] = [
 const ACCOUNTS: PaymentAccount[] = [
   {
     id: 'cr-acct-1',
-    name: 'KaNeXT Church Operating Account',
+    name: '2819 Church Operating Account',
     type: 'operating',
     bank: 'JPMorgan Chase',
     accountLast4: '4892',
@@ -326,12 +326,12 @@ const TRANSACTIONS: Transaction[] = [
   {
     id: 'cr-txn-3',
     date: 'Feb 14, 2026',
-    description: 'KaNeXT Arena Facility Rental — Championship Weekend',
+    description: '3SSB Arena Facility Rental — Championship Weekend',
     amount: 32000.00,
     type: 'debit',
     category: 'Facility',
-    account: 'KaNeXT Church Operating Account',
-    reference: 'KaNeXT-FAC-2026-008',
+    account: '2819 Church Operating Account',
+    reference: '3SSB-FAC-2026-008',
     status: 'completed',
   },
   {
@@ -341,7 +341,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 18500.00,
     type: 'debit',
     category: 'Officials',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'OFF-R3T-2026-004',
     status: 'completed',
   },
@@ -352,7 +352,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 72000.00,
     type: 'credit',
     category: 'Entry Fees',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'ENT-SS-2026-024',
     status: 'completed',
   },
@@ -363,7 +363,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 85000.00,
     type: 'credit',
     category: 'Broadcast',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'ESPN-FEB-2026-001',
     status: 'completed',
   },
@@ -374,7 +374,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 14200.00,
     type: 'debit',
     category: 'Production',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'AV-LS-2026-007',
     status: 'completed',
   },
@@ -407,7 +407,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 8750.00,
     type: 'debit',
     category: 'Hospitality',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'CAT-ASW-2026-001',
     status: 'completed',
   },
@@ -418,7 +418,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 22000.00,
     type: 'debit',
     category: 'Insurance',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'INS-ELC-2026-Q1',
     status: 'completed',
   },
@@ -429,7 +429,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 67800.00,
     type: 'credit',
     category: 'Ticketing',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'TKT-RW-2026-003',
     status: 'completed',
   },
@@ -440,7 +440,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 4350.00,
     type: 'debit',
     category: 'Travel',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'TRV-CS-2026-FEB',
     status: 'failed',
   },
@@ -451,7 +451,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 24000.00,
     type: 'credit',
     category: 'Membership',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'MEM-CA-2026-008',
     status: 'completed',
   },
@@ -462,7 +462,7 @@ const TRANSACTIONS: Transaction[] = [
     amount: 15000.00,
     type: 'debit',
     category: 'Refund',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     reference: 'REF-EXH-2026-001',
     status: 'reversed',
   },
@@ -529,7 +529,7 @@ const PAYOUTS: PayoutBatch[] = [
   },
   {
     id: 'cr-po-7',
-    name: 'Facility Vendor — KaNeXT Arena Services',
+    name: 'Facility Vendor — 3SSB Arena Services',
     date: 'Feb 15, 2026',
     totalAmount: 32000.00,
     recipientCount: 1,
@@ -627,7 +627,7 @@ const INVOICES: Invoice[] = [
   {
     id: 'cr-inv-5',
     number: 'INV-2026-0205',
-    recipient: 'KaNeXT Arena Management',
+    recipient: '3SSB Arena Management',
     amount: 32000.00,
     dueDate: 'Feb 14, 2026',
     status: 'paid',
@@ -844,7 +844,7 @@ const RECONCILIATION: ReconciliationEntry[] = [
   {
     id: 'cr-rec-1',
     date: 'Feb 15, 2026',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     expectedBalance: 1200000.00,
     actualBalance: 1200000.00,
     variance: 0,
@@ -898,7 +898,7 @@ const RECONCILIATION: ReconciliationEntry[] = [
   {
     id: 'cr-rec-7',
     date: 'Feb 8, 2026',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     expectedBalance: 1145200.00,
     actualBalance: 1145200.00,
     variance: 0,
@@ -925,7 +925,7 @@ const RECONCILIATION: ReconciliationEntry[] = [
   {
     id: 'cr-rec-10',
     date: 'Feb 1, 2026',
-    account: 'KaNeXT Church Operating Account',
+    account: '2819 Church Operating Account',
     expectedBalance: 1082400.00,
     actualBalance: 1082400.00,
     variance: 0,
@@ -999,7 +999,7 @@ const DISPUTES: Dispute[] = [
     amount: 1200.00,
     reason: 'Catering shortfall — 20% of order not delivered',
     status: 'under-review',
-    claimant: 'KaNeXT Church Hospitality Dept',
+    claimant: '2819 Church Hospitality Dept',
   },
   {
     id: 'cr-dsp-6',
@@ -1008,16 +1008,16 @@ const DISPUTES: Dispute[] = [
     amount: 3500.00,
     reason: 'Livestream quality issues — 2 events had significant downtime',
     status: 'open',
-    claimant: 'KaNeXT Church Broadcast Division',
+    claimant: '2819 Church Broadcast Division',
   },
   {
     id: 'cr-dsp-7',
     date: 'Feb 1, 2026',
-    transaction: 'KaNeXT-FAC-2026-008',
+    transaction: '3SSB-FAC-2026-008',
     amount: 5000.00,
     reason: 'Facility damage deposit not returned — claims no damage occurred',
     status: 'under-review',
-    claimant: 'KaNeXT Arena Management',
+    claimant: '3SSB Arena Management',
   },
   {
     id: 'cr-dsp-8',
@@ -1035,7 +1035,7 @@ const DISPUTES: Dispute[] = [
     amount: 8000.00,
     reason: 'Equipment shipment incomplete — missing items from grant order',
     status: 'open',
-    claimant: 'KaNeXT Church Equipment Manager',
+    claimant: '2819 Church Equipment Manager',
   },
   {
     id: 'cr-dsp-10',
@@ -1044,7 +1044,7 @@ const DISPUTES: Dispute[] = [
     amount: 4400.00,
     reason: 'Premium overcharge — rate increase not agreed upon',
     status: 'escalated',
-    claimant: 'KaNeXT Church Finance Office',
+    claimant: '2819 Church Finance Office',
   },
   {
     id: 'cr-dsp-11',

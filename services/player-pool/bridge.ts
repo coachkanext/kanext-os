@@ -32,8 +32,8 @@ export type PoolPosition = 'PG' | 'CG' | 'W' | 'F' | 'B';
 
 export type ClusterType =
   | 'shooting' | 'finishing' | 'playmaking'
-  | 'perimeter_defense' | 'interior_defense'
-  | 'rebounding' | 'frame';
+  | 'on_ball_defense' | 'team_defense'
+  | 'rebounding' | 'physical';
 
 // ─── Interface definitions (matching mock data shapes exactly) ───
 
@@ -234,24 +234,25 @@ const LEVEL_KEY_TO_POOL_LEVEL: Record<string, PoolLevel> = {
 
 // ─── DB cluster name -> app ClusterType mapping ───
 
+// Canonical names — identity mapping (no translation needed)
 const DB_CLUSTER_TO_APP: Record<string, ClusterType> = {
   shooting: 'shooting',
   finishing: 'finishing',
   playmaking: 'playmaking',
-  on_ball_defense: 'perimeter_defense',
-  team_defense: 'interior_defense',
+  on_ball_defense: 'on_ball_defense',
+  team_defense: 'team_defense',
   rebounding: 'rebounding',
-  physical: 'frame',
+  physical: 'physical',
 };
 
 const APP_CLUSTER_TO_DB: Record<ClusterType, string> = {
   shooting: 'shooting',
   finishing: 'finishing',
   playmaking: 'playmaking',
-  perimeter_defense: 'on_ball_defense',
-  interior_defense: 'team_defense',
+  on_ball_defense: 'on_ball_defense',
+  team_defense: 'team_defense',
   rebounding: 'rebounding',
-  frame: 'physical',
+  physical: 'physical',
 };
 
 // ─── Position mapping (declared_positions[0] -> traditional) ───
@@ -294,8 +295,8 @@ function buildKeyStatLine(stats: {
 
 const DEFAULT_CLUSTERS: Record<ClusterType, number> = {
   shooting: 50, finishing: 50, playmaking: 50,
-  perimeter_defense: 50, interior_defense: 50,
-  rebounding: 50, frame: 50,
+  on_ball_defense: 50, team_defense: 50,
+  rebounding: 50, physical: 50,
 };
 
 // ─── Bridge API ───
@@ -671,8 +672,8 @@ export const bridge = {
     const clusterSums: Record<ClusterType, number> = { ...DEFAULT_CLUSTERS };
     const clusterCounts: Record<ClusterType, number> = {
       shooting: 0, finishing: 0, playmaking: 0,
-      perimeter_defense: 0, interior_defense: 0,
-      rebounding: 0, frame: 0,
+      on_ball_defense: 0, team_defense: 0,
+      rebounding: 0, physical: 0,
     };
     const overallValues: number[] = [];
     const offKRValues: number[] = [];

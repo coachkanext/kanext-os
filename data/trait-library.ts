@@ -37,7 +37,7 @@ export const TRAIT_LIBRARY: Record<ClusterType, SubTrait[]> = {
     { id: 'screen_assist', label: 'Screen Assist' },
     { id: 'hockey_assist', label: 'Hockey Assist' },
   ],
-  perimeter_defense: [
+  on_ball_defense: [
     { id: 'containment', label: 'Containment' },
     { id: 'ball_pressure', label: 'Ball Pressure' },
     { id: 'screen_nav', label: 'Screen Nav' },
@@ -47,7 +47,7 @@ export const TRAIT_LIBRARY: Record<ClusterType, SubTrait[]> = {
     { id: 'disruption_obd', label: 'Disruption' },
     { id: 'foul_discipline_obd', label: 'Foul Discipline' },
   ],
-  interior_defense: [
+  team_defense: [
     { id: 'block', label: 'Block' },
     { id: 'rim_deterrence', label: 'Rim Deterrence' },
     { id: 'vertical_contest', label: 'Vertical Contest' },
@@ -66,7 +66,7 @@ export const TRAIT_LIBRARY: Record<ClusterType, SubTrait[]> = {
     { id: 'range_tracking', label: 'Range & Tracking' },
     { id: 'outlet', label: 'Outlet' },
   ],
-  frame: [
+  physical: [
     { id: 'speed_w_ball', label: 'Speed w/ Ball' },
     { id: 'speed_wo_ball', label: 'Speed w/o Ball' },
     { id: 'acceleration', label: 'Acceleration' },
@@ -82,15 +82,15 @@ export const TRAIT_LIBRARY: Record<ClusterType, SubTrait[]> = {
   ],
 };
 
-/** Display labels for clusters in the sort panel (frame → "Physical") */
+/** Display labels for clusters in the sort panel */
 export const SORT_CLUSTER_LABELS: Record<ClusterType, string> = {
   shooting: 'Shooting',
   finishing: 'Finishing',
   playmaking: 'Playmaking',
-  perimeter_defense: 'OB Defense',
-  interior_defense: 'Team Defense',
+  on_ball_defense: 'OB Defense',
+  team_defense: 'Team Defense',
   rebounding: 'Rebounding',
-  frame: 'Physical',
+  physical: 'Physical',
 };
 
 /** All cluster types in display order */
@@ -98,8 +98,8 @@ export const CLUSTER_ORDER: ClusterType[] = [
   'shooting',
   'finishing',
   'playmaking',
-  'perimeter_defense',
-  'interior_defense',
+  'on_ball_defense',
+  'team_defense',
   'rebounding',
-  'frame',
+  'physical',
 ];
