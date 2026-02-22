@@ -1,7 +1,7 @@
 /**
  * Sports Organization Payment Rails V2 — Mock Data & Types
  * 8-tab Payment Rails Hub for Sports Mode organizations.
- * Seeded with FMU Men's Basketball 2025-26 season data.
+ * Seeded with KaNeXT Men's Basketball 2025-26 season data.
  * Money-movement execution surface — what's pending, failed, blocked.
  * Full payment chain: Event → Rules → Auth → Payment → Settlement → Ledger → Receipt.
  */
@@ -589,7 +589,7 @@ export const PAYMENT_STREAMS: PaymentStream[] = [
     lastPayment: '2026-02-12',
     nextPayment: '2026-02-19',
     amount: 850,
-    recipient: 'Sun Conference Officials Pool',
+    recipient: 'KaNeXT Conference Officials Pool',
     method: 'ach',
   },
   {
@@ -625,7 +625,7 @@ export const PAYMENT_STREAMS: PaymentStream[] = [
     lastPayment: '2026-02-01',
     nextPayment: '2026-03-01',
     amount: 5_000,
-    recipient: 'FMU Financial Aid Office',
+    recipient: 'KaNeXT Financial Aid Office',
     method: 'ach',
   },
 ];
@@ -930,7 +930,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
     description: 'Bus charter — away @ Keiser University',
     amount: 3_200,
     initiatedBy: 'Alicia Washington',
-    approvedBy: 'Sammy Kalejaiye',
+    approvedBy: 'Alex Morgan',
     timestamp: '2026-02-11T09:00:00',
     reference: 'PAY-2026-0042',
   },
@@ -950,7 +950,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
     description: 'Select Physical Therapy — February retainer',
     amount: 700,
     initiatedBy: 'System (auto-pay)',
-    approvedBy: 'Sammy Kalejaiye',
+    approvedBy: 'Alex Morgan',
     timestamp: '2026-02-01T08:15:00',
     reference: 'PAY-2026-0039',
   },
@@ -960,7 +960,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
     description: 'Game day meals — Thomas University home game',
     amount: 540,
     initiatedBy: 'Alicia Washington',
-    approvedBy: 'Sammy Kalejaiye',
+    approvedBy: 'Alex Morgan',
     timestamp: '2026-02-12T16:30:00',
     reference: 'PAY-2026-0045',
   },
@@ -970,7 +970,7 @@ export const AUDIT_ENTRIES: AuditEntry[] = [
     description: 'Hotel block — Southeastern University trip',
     amount: 1_680,
     initiatedBy: 'Alicia Washington',
-    approvedBy: 'Sammy Kalejaiye',
+    approvedBy: 'Alex Morgan',
     timestamp: '2026-02-15T14:30:00',
     reference: 'PAY-2026-0048',
   },
@@ -1167,7 +1167,7 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
         flagged: false,
       },
       auth: {
-        approver: 'Sammy Kalejaiye',
+        approver: 'Alex Morgan',
         approvedAt: '2026-02-10T14:30:00Z',
         method: 'digital',
       },
@@ -1235,7 +1235,7 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
       ledger: {
         entryId: 'LE-2026-0038',
         debitAccount: 'Scholarships',
-        creditAccount: 'FMU Financial Aid — Student Accounts',
+        creditAccount: 'KaNeXT Financial Aid — Student Accounts',
         postDate: '2026-02-01',
       },
       receipt: {
@@ -1317,7 +1317,7 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
         flagged: false,
       },
       auth: {
-        approver: 'Sammy Kalejaiye',
+        approver: 'Alex Morgan',
         approvedAt: '2026-02-12T12:00:00Z',
         method: 'digital',
       },
@@ -1367,7 +1367,7 @@ export const SETTLED_TRANSACTIONS: SettledTransaction[] = [
         flagged: false,
       },
       auth: {
-        approver: 'Sammy Kalejaiye',
+        approver: 'Alex Morgan',
         approvedAt: '2026-02-15T10:00:00Z',
         method: 'digital',
       },

@@ -13,7 +13,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DepthChartView, DEPTH_CHART_BY_SEASON, CURRENT_SEASON } from '@/components/roster-content';
 import { Colors, Spacing, BorderRadius, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE } from '@/data/fmu';
+import { KaNeXT_NEXT_GAME, KaNeXT_NEXT_GAME_ID, KaNeXT_SEASON_COMPLETE } from '@/data/fmu';
 
 const ACCENT_GOLD = '#FFFFFF';
 
@@ -22,7 +22,7 @@ type GameProximity = 'pre-far' | 'pre-near' | 'live' | 'post';
 function getGameProximity(): GameProximity {
   // In a real app this would check actual game time
   // Demo: always show "pre-near" when a next game exists, "post" when season is done
-  if (FMU_SEASON_COMPLETE) return 'post';
+  if (KaNeXT_SEASON_COMPLETE) return 'post';
   return 'pre-near';
 }
 
@@ -48,7 +48,7 @@ export function GameOpsHubContent() {
 
   const handleLaunch = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    if (proximity === 'post' && FMU_NEXT_GAME_ID) {
+    if (proximity === 'post' && KaNeXT_NEXT_GAME_ID) {
       router.push(`/coach/game-detail?gameId=${FMU_NEXT_GAME_ID}&tab=report` as any);
     } else {
       router.push(`/coach/game-ops?gameId=${FMU_NEXT_GAME_ID}` as any);

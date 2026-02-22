@@ -512,7 +512,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
       influencers: [
         { role: 'JUCO Coach', name: 'Terrence Walker', commPref: 'call', staffOwner: 'Coach Davis' },
       ],
-      trustNotes: ['Self-directed decision', 'Wants to play in South Florida close to family in Ft. Lauderdale'],
+      trustNotes: ['Self-directed decision', 'Wants to play in South Ridgemont close to family in Ft. Lauderdale'],
     },
     log: [
       { id: 'log-11-1', type: 'Call', timestamp: daysAgo(40), author: 'Coach Davis', summary: 'Initial call. Wants a program that runs through guards.', who: 'Player' },
@@ -537,7 +537,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
       influencers: [
         { role: 'Father', name: 'Emmanuel Okafor', commPref: 'call', staffOwner: 'Coach Williams' },
       ],
-      trustNotes: ['Father played professionally in Nigeria', 'Wants son to develop NBA-level physicality', 'Chose FMU for playing time and culture'],
+      trustNotes: ['Father played professionally in Nigeria', 'Wants son to develop NBA-level physicality', 'Chose KaNeXT for playing time and culture'],
     },
     log: [
       { id: 'log-12-1', type: 'Call', timestamp: daysAgo(38), author: 'Coach Williams', summary: 'Portal outreach. Wants a bigger role and more minutes.', who: 'Player' },
@@ -561,11 +561,11 @@ export const RECRUITING_BOARD: BoardEntry[] = [
       influencers: [
         { role: 'HS Coach', name: 'Andre Thomas', commPref: 'text', staffOwner: 'Coach Davis' },
       ],
-      trustNotes: ['Mother wants him close to home', 'HS coach is FMU alum — strong connection', 'Chose FMU over two D2 offers'],
+      trustNotes: ['Mother wants him close to home', 'HS coach is KaNeXT alum — strong connection', 'Chose KaNeXT over two D2 offers'],
     },
     log: [
       { id: 'log-13-1', type: 'Visit', timestamp: daysAgo(50), author: 'Coach Davis', summary: 'Watched 2 HS games. Elite vision and court leadership.', outcome: 'Needs to get stronger physically.' },
-      { id: 'log-13-2', type: 'Call', timestamp: daysAgo(42), author: 'Coach Davis', summary: 'Spoke with mother. Very interested in FMU academics and location.', who: 'Mother' },
+      { id: 'log-13-2', type: 'Call', timestamp: daysAgo(42), author: 'Coach Davis', summary: 'Spoke with mother. Very interested in KaNeXT academics and location.', who: 'Mother' },
       { id: 'log-13-3', type: 'Campus Visit', timestamp: daysAgo(30), author: 'Coach Davis', summary: 'Unofficial visit. Toured dorms and academic center.', outcome: 'Mother loved the campus.' },
       { id: 'log-13-4', type: 'Offer', timestamp: daysAgo(25), author: 'Coach Davis', summary: '65% scholarship offer extended.' },
       { id: 'log-13-5', type: 'Status', timestamp: daysAgo(21), author: 'System', summary: 'Committed Jan 28. Signed LOI.', isPinned: true },
@@ -576,7 +576,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
   {
     id: 'be-14', playerId: 'pp-33', status: 'Evaluating', priority: 'B', rank: 2, position: 'W', classYear: '2025',
     tier: 'Secondary', slot: 'W', bigBoardRank: 22, interest: 'Med',
-    tags: ['Versatile', 'Athletic'], shortNotes: 'Long wing from College of Central Florida, two-way potential',
+    tags: ['Versatile', 'Athletic'], shortNotes: 'Long wing from College of Central Ridgemont, two-way potential',
     longNotes: 'JUCO wing at CF. 6-7 with 6-10 wingspan. 11.4 PPG, 5.2 RPG. Raw offensively but elite defender. Film shows switchability 1-4. Need more eval on shooting consistency. data_source: demo_seed',
     nextStep: 'Attend Feb 25 game vs Santa Fe', dueDate: '2026-02-25', recruiter: 'Coach Williams', updated: '2026-02-12',
     temperature: 'Warm', riskLevel: 'Low', riskFlags: [],
@@ -631,7 +631,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
     id: 'be-17', playerId: 'pp-36', status: 'Offer Out', priority: 'A', rank: 1, position: 'W', classYear: '2025',
     tier: 'Must Get', slot: 'W', bigBoardRank: 7, interest: 'High',
     tags: ['Athletic', 'Versatile', 'Immediate Impact'], shortNotes: 'Portal wing from Webber, top target at the 3', fitScore: 89, motivations: ['Playing Time', 'Culture'], portalEntryDate: '2026-01-05', eligibilityRemaining: 2,
-    longNotes: 'Transfer from Webber International (NAIA). 15.8 PPG, 6.3 RPG, 2.1 APG. Long, athletic wing who can score at all three levels. Knows our conference. Multiple Sun Conference programs pursuing. Need to close fast. data_source: demo_seed',
+    longNotes: 'Transfer from Webber International (NAIA). 15.8 PPG, 6.3 RPG, 2.1 APG. Long, athletic wing who can score at all three levels. Knows our conference. Multiple KaNeXT Conference programs pursuing. Need to close fast. data_source: demo_seed',
     nextStep: 'Host official visit Feb 28', dueDate: '2026-02-28', recruiter: 'Coach Davis', updated: '2026-02-14',
     temperature: 'Hot', riskLevel: 'Medium', riskFlags: ['Transfer / Portal Volatility'],
     dueDiligence: makeDueDiligence([0, 1, 2, 3, 4], 'Coach Davis'),
@@ -675,7 +675,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
     log: [
       { id: 'log-18-1', type: 'Call', timestamp: daysAgo(25), author: 'Coach Williams', summary: 'Initial call. Very interested in our up-tempo system.', who: 'Player' },
       { id: 'log-18-2', type: 'Call', timestamp: daysAgo(18), author: 'Coach Williams', summary: 'Spoke with father. Wants strong academic support and a graduation path.', who: 'Father' },
-      { id: 'log-18-3', type: 'Campus Visit', timestamp: daysAgo(10), author: 'Coach Williams', summary: 'Official visit Feb 8. Toured campus, practiced with team, dinner with coaches.', outcome: 'Very positive. Said FMU felt like home.' },
+      { id: 'log-18-3', type: 'Campus Visit', timestamp: daysAgo(10), author: 'Coach Williams', summary: 'Official visit Feb 8. Toured campus, practiced with team, dinner with coaches.', outcome: 'Very positive. Said KaNeXT felt like home.' },
       { id: 'log-18-4', type: 'Call', timestamp: daysAgo(4), author: 'Coach Williams', summary: 'Follow-up. Father says they are waiting on our scholarship number.', who: 'Father', nextStep: 'Get offer approved by AD' },
     ],
   },
@@ -691,7 +691,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
     dueDiligence: makeDueDiligence([0, 1, 3], 'Coach Davis'),
     log: [
       { id: 'log-19-1', type: 'Call', timestamp: daysAgo(45), author: 'Coach Davis', summary: 'Initial outreach. Very interested, loves our style of play.', who: 'Player' },
-      { id: 'log-19-2', type: 'Campus Visit', timestamp: daysAgo(30), author: 'Coach Davis', summary: 'Unofficial visit. Toured campus, watched practice.', outcome: 'Liked FMU but said distance from family was a concern.' },
+      { id: 'log-19-2', type: 'Campus Visit', timestamp: daysAgo(30), author: 'Coach Davis', summary: 'Unofficial visit. Toured campus, watched practice.', outcome: 'Liked KaNeXT but said distance from family was a concern.' },
       { id: 'log-19-3', type: 'Call', timestamp: daysAgo(20), author: 'Coach Davis', summary: 'Spoke with mother. She prefers him closer to Lakeland.', who: 'Mother' },
       { id: 'log-19-4', type: 'Status', timestamp: daysAgo(15), author: 'System', summary: 'Committed to Southeastern University. Closed.', isPinned: true },
     ],
@@ -700,7 +700,7 @@ export const RECRUITING_BOARD: BoardEntry[] = [
     id: 'be-20', playerId: 'pp-39', status: 'Missed', priority: 'A', rank: 1, position: 'B', classYear: '2025',
     tier: 'Must Get', slot: 'B', bigBoardRank: 11, interest: 'Low',
     tags: ['Rim Protector', 'Immediate Impact'], shortNotes: 'Lost to Warner — NIL gap too large',
-    longNotes: 'Portal big from South Florida State College. 6-11, 245. 10.2 PPG, 8.8 RPG, 3.5 BPG. Was our top center target. Visited campus Jan 20 and loved it, but Warner offered significantly more NIL through their collective. Could not match. data_source: demo_seed',
+    longNotes: 'Portal big from South Ridgemont State College. 6-11, 245. 10.2 PPG, 8.8 RPG, 3.5 BPG. Was our top center target. Visited campus Jan 20 and loved it, but Warner offered significantly more NIL through their collective. Could not match. data_source: demo_seed',
     nextStep: '', dueDate: '', recruiter: 'Coach Williams', updated: '2026-02-07',
     temperature: 'Ice', riskLevel: 'Low', riskFlags: ['NIL Expectations Mismatch'],
     dueDiligence: makeDueDiligence([0, 1, 2, 3, 4], 'Coach Williams'),

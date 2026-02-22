@@ -104,7 +104,7 @@ export const TRENDING_COMPANIES: TrendingCompany[] = [
 // =============================================================================
 
 export const LATEST_PRESENTATIONS: Presentation[] = [
-  { id: 'lp-1', title: 'KaNeXT V2 Platform Demo', presenter: 'Sammy Kalejaiye', company: 'KaNeXT Inc.', date: 'Feb 15', duration: '32:00', thumbnailColor: '#FFFFFF' },
+  { id: 'lp-1', title: 'KaNeXT V2 Platform Demo', presenter: 'Alex Morgan', company: 'KaNeXT Inc.', date: 'Feb 15', duration: '32:00', thumbnailColor: '#FFFFFF' },
   { id: 'lp-2', title: 'AI Scouting Pipeline', presenter: 'Aisha Chen', company: 'Apex Analytics', date: 'Feb 12', duration: '24:30', thumbnailColor: '#7A5CFF' },
   { id: 'lp-3', title: 'Real-Time Shot Tracking', presenter: 'Marcus Webb', company: 'CourtVision AI', date: 'Feb 8', duration: '18:45', thumbnailColor: '#22C55E' },
   { id: 'lp-4', title: 'NIL Marketplace Overview', presenter: 'Jordan Fields', company: 'TransferHub', date: 'Feb 5', duration: '28:10', thumbnailColor: '#1B4F8A' },
@@ -155,7 +155,7 @@ export const INDUSTRY_NEWS: IndustryNewsItem[] = [
 
 export const WEBINARS_EVENTS: WebinarEvent[] = [
   { id: 'we-1', title: 'Sports Tech Summit 2026', date: 'Mar 12', speaker: 'Multiple Speakers', thumbnailColor: '#FFFFFF', status: 'Upcoming' },
-  { id: 'we-2', title: 'Building with KaNeXT API', date: 'Feb 28', speaker: 'Sammy Kalejaiye', thumbnailColor: '#7A5CFF', status: 'Registration Open' },
+  { id: 'we-2', title: 'Building with KaNeXT API', date: 'Feb 28', speaker: 'Alex Morgan', thumbnailColor: '#7A5CFF', status: 'Registration Open' },
   { id: 'we-3', title: 'AI in Collegiate Athletics', date: 'Feb 20', speaker: 'Aisha Chen', thumbnailColor: '#22C55E', status: 'Live' },
   { id: 'we-4', title: 'Fundraising for Sports Startups', date: 'Jan 18', speaker: 'Jordan Fields', thumbnailColor: '#F59E0B', status: 'Recorded' },
 ];

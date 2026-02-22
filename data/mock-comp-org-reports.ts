@@ -276,8 +276,8 @@ const DASHBOARD_BLOCKS: ReportsDashboardBlock[] = [
 // === Operational Reports ===
 
 const OPERATIONAL_REPORTS: OperationalReport[] = [
-  { id: 'op-1', name: 'ICCLA Season Operational Summary', series: 'ICCLA', period: '2025-26 Season', status: 'published', generatedDate: 'Feb 14, 2026', author: 'Tom Bradley', format: 'PDF', pageCount: 42, downloads: 156 },
-  { id: 'op-2', name: 'K-1 Invitational Operations Review', series: 'K-1 Invitational', period: 'Feb 2026', status: 'published', generatedDate: 'Feb 12, 2026', author: 'Sammy Kalejaiye', format: 'PDF', pageCount: 28, downloads: 89 },
+  { id: 'op-1', name: 'KaNeXT Church Season Operational Summary', series: 'KaNeXT Church', period: '2025-26 Season', status: 'published', generatedDate: 'Feb 14, 2026', author: 'Tom Bradley', format: 'PDF', pageCount: 42, downloads: 156 },
+  { id: 'op-2', name: 'K-1 Invitational Operations Review', series: 'K-1 Invitational', period: 'Feb 2026', status: 'published', generatedDate: 'Feb 12, 2026', author: 'Alex Morgan', format: 'PDF', pageCount: 28, downloads: 89 },
   { id: 'op-3', name: 'Conference Tournament Logistics Plan', series: 'Conference Tournament', period: 'Mar 2026', status: 'draft', generatedDate: 'Feb 15, 2026', author: 'Rachel Kim', format: 'PDF', pageCount: 36, downloads: 0 },
   { id: 'op-4', name: 'Facility Usage Report — Arena Complex', series: 'Facilities', period: 'Jan 2026', status: 'published', generatedDate: 'Feb 3, 2026', author: 'James Wright', format: 'XLSX', pageCount: 0, downloads: 67 },
   { id: 'op-5', name: 'Official Assignment Efficiency Report', series: 'Officiating', period: 'Q1 2026', status: 'published', generatedDate: 'Feb 10, 2026', author: 'David Chen', format: 'Dashboard', pageCount: 0, downloads: 112 },
@@ -289,7 +289,7 @@ const OPERATIONAL_REPORTS: OperationalReport[] = [
   { id: 'op-11', name: 'Conference Championship Ops Plan', series: 'Conference Tournament', period: 'Mar 2026', status: 'generating', generatedDate: '', author: 'Tom Bradley', format: 'PDF', pageCount: 0, downloads: 0 },
   { id: 'op-12', name: 'Vendor Performance Scorecard', series: 'Vendor Mgmt', period: 'Q4 2025', status: 'published', generatedDate: 'Jan 22, 2026', author: 'Angela Torres', format: 'Dashboard', pageCount: 0, downloads: 78 },
   { id: 'op-13', name: 'Swim & Dive Invitational Ops Brief', series: 'Aquatics', period: 'Mar 2026', status: 'draft', generatedDate: 'Feb 14, 2026', author: 'Rachel Kim', format: 'PDF', pageCount: 14, downloads: 0 },
-  { id: 'op-14', name: 'Annual Operations Dashboard Export', series: 'Annual Review', period: '2025', status: 'failed', generatedDate: 'Feb 11, 2026', author: 'Sammy Kalejaiye', format: 'Dashboard', pageCount: 0, downloads: 0 },
+  { id: 'op-14', name: 'Annual Operations Dashboard Export', series: 'Annual Review', period: '2025', status: 'failed', generatedDate: 'Feb 11, 2026', author: 'Alex Morgan', format: 'Dashboard', pageCount: 0, downloads: 0 },
   { id: 'op-15', name: 'Spring Season Scheduling Matrix', series: 'Scheduling', period: 'Spring 2026', status: 'draft', generatedDate: 'Feb 13, 2026', author: 'Patricia Wilson', format: 'XLSX', pageCount: 0, downloads: 0 },
 ];
 
@@ -337,16 +337,16 @@ const COMPLIANCE_REPORTS: ComplianceReport[] = [
 
 const PERFORMANCE_REPORTS: PerformanceReport[] = [
   { id: 'pe-1', name: 'K-1 Invitational Statistics Pack', series: 'K-1 Invitational', type: 'statistics', period: 'Feb 2026', generatedDate: 'Feb 12, 2026', format: 'PDF' },
-  { id: 'pe-2', name: 'ICCLA Conference Standings Report', series: 'ICCLA', type: 'standings', period: 'Week 12', generatedDate: 'Feb 14, 2026', format: 'Dashboard' },
-  { id: 'pe-3', name: 'MBB Player Rankings — Conference', series: 'ICCLA', type: 'player-rankings', period: 'Feb 2026', generatedDate: 'Feb 13, 2026', format: 'PDF' },
-  { id: 'pe-4', name: 'Team Analytics — FMU Basketball', series: 'ICCLA', type: 'team-analytics', period: '2025-26 Season', generatedDate: 'Feb 11, 2026', format: 'Dashboard' },
+  { id: 'pe-2', name: 'KaNeXT Church Conference Standings Report', series: 'KaNeXT Church', type: 'standings', period: 'Week 12', generatedDate: 'Feb 14, 2026', format: 'Dashboard' },
+  { id: 'pe-3', name: 'MBB Player Rankings — Conference', series: 'KaNeXT Church', type: 'player-rankings', period: 'Feb 2026', generatedDate: 'Feb 13, 2026', format: 'PDF' },
+  { id: 'pe-4', name: 'Team Analytics — KaNeXT Basketball', series: 'KaNeXT Church', type: 'team-analytics', period: '2025-26 Season', generatedDate: 'Feb 11, 2026', format: 'Dashboard' },
   { id: 'pe-5', name: 'Historical Win-Loss Trends (5yr)', series: 'Conference History', type: 'historical-trends', period: '2021-2026', generatedDate: 'Feb 10, 2026', format: 'PDF' },
   { id: 'pe-6', name: 'Soccer Invitational Stats Summary', series: 'Soccer Invitational', type: 'statistics', period: 'Mar 2026', generatedDate: 'Feb 15, 2026', format: 'XLSX' },
   { id: 'pe-7', name: 'Volleyball Classic Team Rankings', series: 'Volleyball Classic', type: 'standings', period: 'Mar 2026', generatedDate: 'Feb 14, 2026', format: 'PDF' },
-  { id: 'pe-8', name: 'Conference Player of the Week Log', series: 'ICCLA', type: 'player-rankings', period: 'Season-to-Date', generatedDate: 'Feb 14, 2026', format: 'CSV' },
+  { id: 'pe-8', name: 'Conference Player of the Week Log', series: 'KaNeXT Church', type: 'player-rankings', period: 'Season-to-Date', generatedDate: 'Feb 14, 2026', format: 'CSV' },
   { id: 'pe-9', name: 'Swimming & Diving Meet Results', series: 'Aquatics', type: 'statistics', period: 'Jan 2026', generatedDate: 'Feb 2, 2026', format: 'PDF' },
   { id: 'pe-10', name: 'Track & Field Performance Index', series: 'Track & Field', type: 'team-analytics', period: 'Indoor Season 2026', generatedDate: 'Feb 8, 2026', format: 'Dashboard' },
-  { id: 'pe-11', name: 'Conference RPI Calculator Export', series: 'ICCLA', type: 'standings', period: 'Feb 14, 2026', generatedDate: 'Feb 14, 2026', format: 'XLSX' },
+  { id: 'pe-11', name: 'Conference RPI Calculator Export', series: 'KaNeXT Church', type: 'standings', period: 'Feb 14, 2026', generatedDate: 'Feb 14, 2026', format: 'XLSX' },
   { id: 'pe-12', name: 'Softball Spring Preview Stats', series: 'Softball', type: 'historical-trends', period: '2023-2026', generatedDate: 'Feb 6, 2026', format: 'PDF' },
   { id: 'pe-13', name: 'Cross-Sport Strength of Schedule', series: 'All Sports', type: 'team-analytics', period: '2025-26 Season', generatedDate: 'Feb 9, 2026', format: 'Dashboard' },
   { id: 'pe-14', name: 'Tennis Doubles Rankings Update', series: 'Tennis', type: 'player-rankings', period: 'Spring 2026', generatedDate: 'Feb 7, 2026', format: 'PDF' },
@@ -356,21 +356,21 @@ const PERFORMANCE_REPORTS: PerformanceReport[] = [
 // === Attendance Reports ===
 
 const ATTENDANCE_REPORTS: AttendanceReport[] = [
-  { id: 'at-1', event: 'FMU vs Gulf Coast State — MBB', venue: 'Arena Complex', date: 'Feb 14, 2026', attendance: 4850, capacity: 5200, utilization: 93, revenue: 72500, notes: 'Near sellout — rivalry game' },
+  { id: 'at-1', event: 'KaNeXT vs Gulf Coast State — MBB', venue: 'Arena Complex', date: 'Feb 14, 2026', attendance: 4850, capacity: 5200, utilization: 93, revenue: 72500, notes: 'Near sellout — rivalry game' },
   { id: 'at-2', event: 'K-1 Invitational — Day 1', venue: 'Arena Complex', date: 'Feb 7, 2026', attendance: 3200, capacity: 5200, utilization: 62, revenue: 38400, notes: 'First day, building momentum' },
   { id: 'at-3', event: 'K-1 Invitational — Day 2', venue: 'Arena Complex', date: 'Feb 8, 2026', attendance: 4100, capacity: 5200, utilization: 79, revenue: 49200, notes: 'Strong Saturday turnout' },
   { id: 'at-4', event: 'K-1 Invitational — Championship', venue: 'Arena Complex', date: 'Feb 9, 2026', attendance: 5050, capacity: 5200, utilization: 97, revenue: 75750, notes: 'Near capacity — championship atmosphere' },
-  { id: 'at-5', event: 'FMU vs Naples University — MBB', venue: 'Arena Complex', date: 'Feb 1, 2026', attendance: 3800, capacity: 5200, utilization: 73, revenue: 57000, notes: '' },
-  { id: 'at-6', event: 'FMU vs SW Florida Tech — WBB', venue: 'Arena Complex', date: 'Feb 12, 2026', attendance: 1850, capacity: 5200, utilization: 36, revenue: 18500, notes: 'Weekday game' },
-  { id: 'at-7', event: 'FMU Baseball vs Cape Coral', venue: 'Diamond Field', date: 'Feb 10, 2026', attendance: 1200, capacity: 2500, utilization: 48, revenue: 9600, notes: '' },
+  { id: 'at-5', event: 'KaNeXT vs Naples University — MBB', venue: 'Arena Complex', date: 'Feb 1, 2026', attendance: 3800, capacity: 5200, utilization: 73, revenue: 57000, notes: '' },
+  { id: 'at-6', event: 'KaNeXT vs SW Ridgemont Tech — WBB', venue: 'Arena Complex', date: 'Feb 12, 2026', attendance: 1850, capacity: 5200, utilization: 36, revenue: 18500, notes: 'Weekday game' },
+  { id: 'at-7', event: 'KaNeXT Baseball vs Cape Coral', venue: 'Diamond Field', date: 'Feb 10, 2026', attendance: 1200, capacity: 2500, utilization: 48, revenue: 9600, notes: '' },
   { id: 'at-8', event: 'Swim & Dive Dual Meet', venue: 'Aquatic Center', date: 'Jan 28, 2026', attendance: 380, capacity: 600, utilization: 63, revenue: 2280, notes: 'Good turnout for swim' },
-  { id: 'at-9', event: 'FMU vs Sarasota State — MBB', venue: 'Arena Complex', date: 'Jan 25, 2026', attendance: 4200, capacity: 5200, utilization: 81, revenue: 63000, notes: 'Conference matchup' },
+  { id: 'at-9', event: 'KaNeXT vs Sarasota State — MBB', venue: 'Arena Complex', date: 'Jan 25, 2026', attendance: 4200, capacity: 5200, utilization: 81, revenue: 63000, notes: 'Conference matchup' },
   { id: 'at-10', event: 'Indoor Track & Field Invitational', venue: 'Field House', date: 'Jan 22, 2026', attendance: 650, capacity: 1200, utilization: 54, revenue: 3900, notes: '' },
-  { id: 'at-11', event: 'FMU Volleyball vs Tampa Bay', venue: 'Arena Complex', date: 'Jan 18, 2026', attendance: 2100, capacity: 3500, utilization: 60, revenue: 15750, notes: 'Volleyball config' },
-  { id: 'at-12', event: 'FMU Soccer vs Orlando Tech', venue: 'Stadium Field', date: 'Jan 15, 2026', attendance: 1450, capacity: 3000, utilization: 48, revenue: 10150, notes: '' },
-  { id: 'at-13', event: 'FMU vs Lakeland University — MBB', venue: 'Arena Complex', date: 'Jan 11, 2026', attendance: 3600, capacity: 5200, utilization: 69, revenue: 54000, notes: '' },
+  { id: 'at-11', event: 'KaNeXT Volleyball vs Tampa Bay', venue: 'Arena Complex', date: 'Jan 18, 2026', attendance: 2100, capacity: 3500, utilization: 60, revenue: 15750, notes: 'Volleyball config' },
+  { id: 'at-12', event: 'KaNeXT Soccer vs Orlando Tech', venue: 'Stadium Field', date: 'Jan 15, 2026', attendance: 1450, capacity: 3000, utilization: 48, revenue: 10150, notes: '' },
+  { id: 'at-13', event: 'KaNeXT vs Lakeland University — MBB', venue: 'Arena Complex', date: 'Jan 11, 2026', attendance: 3600, capacity: 5200, utilization: 69, revenue: 54000, notes: '' },
   { id: 'at-14', event: 'Tennis Home Opener', venue: 'Tennis Complex', date: 'Jan 20, 2026', attendance: 280, capacity: 500, utilization: 56, revenue: 1680, notes: '' },
-  { id: 'at-15', event: 'FMU vs Jacksonville Academy — MBB', venue: 'Arena Complex', date: 'Jan 4, 2026', attendance: 4500, capacity: 5200, utilization: 87, revenue: 67500, notes: 'Season opener sellout push' },
+  { id: 'at-15', event: 'KaNeXT vs Jacksonville Academy — MBB', venue: 'Arena Complex', date: 'Jan 4, 2026', attendance: 4500, capacity: 5200, utilization: 87, revenue: 67500, notes: 'Season opener sellout push' },
 ];
 
 // === Media Reports ===
@@ -378,7 +378,7 @@ const ATTENDANCE_REPORTS: AttendanceReport[] = [
 const MEDIA_REPORTS: MediaReport[] = [
   { id: 'me-1', name: 'K-1 Invitational Broadcast Reach', type: 'broadcast-reach', period: 'Feb 7-9, 2026', metric: 'Total Viewers', value: '128,400', change: 34 },
   { id: 'me-2', name: 'Conference MBB Social Engagement', type: 'social-engagement', period: 'Feb 2026', metric: 'Engagements', value: '45,200', change: 18 },
-  { id: 'me-3', name: 'ICCLA Press Coverage Index', type: 'press-coverage', period: 'Jan 2026', metric: 'Articles', value: '87', change: 12 },
+  { id: 'me-3', name: 'KaNeXT Church Press Coverage Index', type: 'press-coverage', period: 'Jan 2026', metric: 'Articles', value: '87', change: 12 },
   { id: 'me-4', name: 'Instagram Content Performance', type: 'content-performance', period: 'Feb 2026', metric: 'Reach', value: '312K', change: 22 },
   { id: 'me-5', name: 'Live Stream Viewership — MBB', type: 'broadcast-reach', period: 'Season-to-Date', metric: 'Avg Concurrent', value: '4,820', change: 15 },
   { id: 'me-6', name: 'X/Twitter Engagement Report', type: 'social-engagement', period: 'Feb 2026', metric: 'Impressions', value: '890K', change: -5 },
@@ -396,13 +396,13 @@ const MEDIA_REPORTS: MediaReport[] = [
 // === Custom Reports ===
 
 const CUSTOM_REPORTS: CustomReport[] = [
-  { id: 'cu-1', name: 'Commissioner Dashboard — Weekly', creator: 'Sammy Kalejaiye', dataSources: ['Operations', 'Finance', 'Compliance'], filters: ['Conference games only'], lastRun: 'Feb 14, 2026', schedule: 'Every Monday', format: 'Dashboard' },
+  { id: 'cu-1', name: 'Commissioner Dashboard — Weekly', creator: 'Alex Morgan', dataSources: ['Operations', 'Finance', 'Compliance'], filters: ['Conference games only'], lastRun: 'Feb 14, 2026', schedule: 'Every Monday', format: 'Dashboard' },
   { id: 'cu-2', name: 'Officiating Cost Analysis', creator: 'Sandra Lopez', dataSources: ['Finance', 'Assignments'], filters: ['Officials only', 'Last 90 days'], lastRun: 'Feb 12, 2026', schedule: 'Monthly', format: 'XLSX' },
   { id: 'cu-3', name: 'Multi-Sport Attendance Trends', creator: 'Tom Bradley', dataSources: ['Attendance', 'Events'], filters: ['Home events', 'Revenue > $1K'], lastRun: 'Feb 10, 2026', schedule: 'Bi-weekly', format: 'PDF' },
   { id: 'cu-4', name: 'Credential Expiration Watchlist', creator: 'Angela Torres', dataSources: ['Credentials', 'People'], filters: ['Expiring within 90 days'], lastRun: 'Feb 14, 2026', schedule: 'Weekly', format: 'CSV' },
   { id: 'cu-5', name: 'Sponsorship ROI Tracker', creator: 'Rachel Kim', dataSources: ['Finance', 'Media', 'Attendance'], filters: ['Active sponsors'], lastRun: 'Feb 8, 2026', schedule: 'Monthly', format: 'Dashboard' },
   { id: 'cu-6', name: 'Game Day Safety Scorecard', creator: 'Michael Brown', dataSources: ['Compliance', 'Incidents', 'Facilities'], filters: ['Last 30 days'], lastRun: 'Feb 13, 2026', schedule: 'Weekly', format: 'PDF' },
-  { id: 'cu-7', name: 'Recruiting Pipeline Summary', creator: 'Sammy Kalejaiye', dataSources: ['Recruiting', 'Performance', 'Compliance'], filters: ['Active prospects', 'Eligible only'], lastRun: 'Feb 11, 2026', schedule: 'Bi-weekly', format: 'PDF' },
+  { id: 'cu-7', name: 'Recruiting Pipeline Summary', creator: 'Alex Morgan', dataSources: ['Recruiting', 'Performance', 'Compliance'], filters: ['Active prospects', 'Eligible only'], lastRun: 'Feb 11, 2026', schedule: 'Bi-weekly', format: 'PDF' },
   { id: 'cu-8', name: 'Venue Maintenance Log', creator: 'James Wright', dataSources: ['Facilities', 'Work Orders'], filters: ['Open items'], lastRun: 'Feb 14, 2026', schedule: 'Daily', format: 'CSV' },
   { id: 'cu-9', name: 'Social Media Competitor Analysis', creator: 'Robert Garcia', dataSources: ['Media', 'External APIs'], filters: ['Peer conferences'], lastRun: 'Feb 7, 2026', schedule: 'Monthly', format: 'Dashboard' },
   { id: 'cu-10', name: 'Student-Athlete Academic Tracker', creator: 'Rachel Kim', dataSources: ['Compliance', 'Eligibility'], filters: ['Below 2.5 GPA threshold'], lastRun: 'Feb 6, 2026', schedule: 'Weekly', format: 'PDF' },
@@ -413,11 +413,11 @@ const CUSTOM_REPORTS: CustomReport[] = [
 // === Scheduled Reports ===
 
 const SCHEDULED_REPORTS: ScheduledReport[] = [
-  { id: 'sc-1', name: 'Daily Operations Digest', frequency: 'daily', nextRun: 'Feb 18, 2026 — 6:00 AM', recipients: ['Sammy Kalejaiye', 'Tom Bradley', 'Rachel Kim'], format: 'PDF', enabled: true },
-  { id: 'sc-2', name: 'Weekly Finance Summary', frequency: 'weekly', nextRun: 'Feb 23, 2026 — 8:00 AM', recipients: ['Sandra Lopez', 'Sammy Kalejaiye'], format: 'XLSX', enabled: true },
+  { id: 'sc-1', name: 'Daily Operations Digest', frequency: 'daily', nextRun: 'Feb 18, 2026 — 6:00 AM', recipients: ['Alex Morgan', 'Tom Bradley', 'Rachel Kim'], format: 'PDF', enabled: true },
+  { id: 'sc-2', name: 'Weekly Finance Summary', frequency: 'weekly', nextRun: 'Feb 23, 2026 — 8:00 AM', recipients: ['Sandra Lopez', 'Alex Morgan'], format: 'XLSX', enabled: true },
   { id: 'sc-3', name: 'Bi-Weekly Compliance Digest', frequency: 'bi-weekly', nextRun: 'Feb 28, 2026 — 9:00 AM', recipients: ['Michael Brown', 'Rachel Kim', 'David Chen'], format: 'PDF', enabled: true },
-  { id: 'sc-4', name: 'Monthly Attendance Report', frequency: 'monthly', nextRun: 'Mar 1, 2026 — 7:00 AM', recipients: ['Tom Bradley', 'Sammy Kalejaiye', 'Sandra Lopez'], format: 'PDF', enabled: true },
-  { id: 'sc-5', name: 'Quarterly Board Report Package', frequency: 'quarterly', nextRun: 'Apr 1, 2026 — 8:00 AM', recipients: ['Sammy Kalejaiye', 'Board of Directors'], format: 'PDF', enabled: true },
+  { id: 'sc-4', name: 'Monthly Attendance Report', frequency: 'monthly', nextRun: 'Mar 1, 2026 — 7:00 AM', recipients: ['Tom Bradley', 'Alex Morgan', 'Sandra Lopez'], format: 'PDF', enabled: true },
+  { id: 'sc-5', name: 'Quarterly Board Report Package', frequency: 'quarterly', nextRun: 'Apr 1, 2026 — 8:00 AM', recipients: ['Alex Morgan', 'Board of Directors'], format: 'PDF', enabled: true },
   { id: 'sc-6', name: 'Weekly Media Metrics', frequency: 'weekly', nextRun: 'Feb 23, 2026 — 10:00 AM', recipients: ['Robert Garcia', 'Linda Nguyen'], format: 'Dashboard', enabled: true },
   { id: 'sc-7', name: 'Daily Credential Alerts', frequency: 'daily', nextRun: 'Feb 18, 2026 — 7:00 AM', recipients: ['Angela Torres'], format: 'CSV', enabled: true },
   { id: 'sc-8', name: 'Weekly Official Assignments', frequency: 'weekly', nextRun: 'Feb 24, 2026 — 6:00 AM', recipients: ['David Chen', 'Officials Pool'], format: 'PDF', enabled: true },

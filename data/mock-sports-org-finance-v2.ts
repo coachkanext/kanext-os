@@ -1,7 +1,7 @@
 /**
  * Sports Organization Finance V2 — Mock Data & Types
  * 10-tab Finance Hub for Sports Mode organizations.
- * Seeded with FMU Men's Basketball 2025-26 season data.
+ * Seeded with KaNeXT Men's Basketball 2025-26 season data.
  * Total program budget ~$250K across 8 buckets (realistic NAIA).
  */
 
@@ -213,7 +213,7 @@ export const FINANCE_SUB_TABS: FinanceSubTab[] = [
 ];
 
 // =============================================================================
-// SEEDED DATA — FMU Men's Basketball 2025-26
+// SEEDED DATA — KaNeXT Men's Basketball 2025-26
 // =============================================================================
 
 export const BUDGET_BUCKETS: BudgetBucket[] = [
@@ -345,7 +345,7 @@ export const SPEND_TRANSACTIONS: SpendTransaction[] = [
     amount: 2500,
     category: 'Operations',
     date: '2026-02-15',
-    vendor: 'Sun Conference',
+    vendor: 'KaNeXT Conference',
     status: 'flagged',
   },
   // ── demo_seed transactions ──────────────────────────────────────────────
@@ -556,7 +556,7 @@ export const TRIP_COSTS: TripCost[] = [
   },
   {
     id: 'tc-3',
-    tripName: 'Sun Conference Tournament — Feb 26-Mar 2',
+    tripName: 'KaNeXT Conference Tournament — Feb 26-Mar 2',
     totalCost: 7800,
     lodging: 3200,
     airfare: 0,

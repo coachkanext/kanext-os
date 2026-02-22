@@ -235,7 +235,7 @@ function MinistryHeader({
   seniorPastor: boolean;
   onClose: () => void;
 }) {
-  const campusLabel = 'ICCLA';
+  const campusLabel = 'KaNeXT Church';
 
   return (
     <View style={[styles.header, { borderBottomColor: colors.border }]}>

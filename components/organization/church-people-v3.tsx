@@ -1,5 +1,5 @@
 /**
- * Church People V3 — ICCLA · Senior Pastor
+ * Church People V3 — KaNeXT Church · Senior Pastor
  * ViewBar: Leadership | Members | Visitors
  * Self-contained with inline mock data.
  */
@@ -46,8 +46,8 @@ interface Leader {
 }
 
 const LEADERSHIP: Leader[] = [
-  { id: 'l1', name: 'Dr. Oladipo Kalejaiye', title: 'Senior Pastor', phone: '(310) 555-0101', email: 'pastor@iccla.org', ministries: ['All Ministries', 'Hotline to Heaven'] },
-  { id: 'l2', name: 'Pastor Grace Kalejaiye', title: 'Associate Pastor', phone: '(310) 555-0102', email: 'grace@iccla.org', ministries: ['Connect Groups', 'Women\'s Ministry'] },
+  { id: 'l1', name: 'Dr. Oladipo Carter', title: 'Senior Pastor', phone: '(310) 555-0101', email: 'pastor@iccla.org', ministries: ['All Ministries', 'Hotline to Heaven'] },
+  { id: 'l2', name: 'Pastor Grace Carter', title: 'Associate Pastor', phone: '(310) 555-0102', email: 'grace@iccla.org', ministries: ['Connect Groups', 'Women\'s Ministry'] },
   { id: 'l3', name: 'Pastor David Akinola', title: 'Youth Pastor', phone: '(310) 555-0103', email: 'david@iccla.org', ministries: ['Fresh Fire', 'T.O.R.C.H.'] },
   { id: 'l4', name: 'Minister Sarah Okonkwo', title: 'Worship Leader', phone: '(310) 555-0104', email: 'sarah@iccla.org', ministries: ['Vineyard Voices'] },
   { id: 'l5', name: 'Deacon James Mensah', title: 'Deacon Board Chair', phone: '(310) 555-0105', email: 'james@iccla.org', ministries: ['Single Saved Serving', 'Operations'] },

@@ -18,19 +18,19 @@ import type {
 
 export const V2_ORGANIZATIONS: V2Organization[] = [
   // ── Sports ──
-  { org_id: 'sports_fmu', org_name: 'Florida Memorial University', mode: 'sports', location: 'Miami Gardens, FL', org_type: 'college_athletics' },
-
-  // ── Competition ──
-  { org_id: 'comp_k1_hypercar', org_name: 'K-1 Hypercar Championship', mode: 'competition', location: 'Global' },
-
-  // ── Church ──
-  { org_id: 'church_iccla_la', org_name: 'ICCLA \u2014 Los Angeles', mode: 'church', location: 'Los Angeles, CA' },
+  { org_id: 'sports_kx', org_name: 'KaNeXT Sports', mode: 'sports', location: 'Nashville, TN', org_type: 'college_athletics' },
 
   // ── Business ──
-  { org_id: 'biz_kanext_founder', org_name: 'KaNeXT', mode: 'business', view_variant: 'Founder' },
+  { org_id: 'biz_kx', org_name: 'KaNeXT Business', mode: 'business', location: 'Nashville, TN', org_type: 'platform', view_variant: 'Founder' },
+
+  // ── Church ──
+  { org_id: 'church_kx', org_name: 'KaNeXT Church', mode: 'church', location: 'Nashville, TN', org_type: 'faith' },
 
   // ── Education ──
-  { org_id: 'edu_fmu', org_name: 'Florida Memorial University', mode: 'education', location: 'Miami Gardens, FL', org_type: 'university' },
+  { org_id: 'edu_kx', org_name: 'KaNeXT Education', mode: 'education', location: 'Nashville, TN', org_type: 'university' },
+
+  // ── Competition ──
+  { org_id: 'comp_kx', org_name: 'KaNeXT Competition', mode: 'competition', location: 'Global', org_type: 'motorsport' },
 ];
 
 // =============================================================================
@@ -40,51 +40,51 @@ export const V2_ORGANIZATIONS: V2Organization[] = [
 export const V2_MEMBERSHIPS: V2Membership[] = [
   // ── Sports ──
   {
-    membership_id: 'mem_sports_fmu_admin',
+    membership_id: 'mem_sports_kx',
     mode: 'sports',
-    org_id: 'sports_fmu',
-    role_titles: ['Athletic Director', "Men's Basketball Head Coach", "Men's Basketball GM"],
-    permission_tier: 'Admin',
-    program_scopes: ['*'],
-  },
-
-  // ── Competition ──
-  {
-    membership_id: 'mem_comp_k1_owner_commish',
-    mode: 'competition',
-    org_id: 'comp_k1_hypercar',
-    role_titles: ['League Owner', 'Commissioner'],
-    permission_tier: 'Full',
-    program_scopes: ['*'],
-  },
-
-  // ── Church ──
-  {
-    membership_id: 'mem_church_iccla',
-    mode: 'church',
-    org_id: 'church_iccla_la',
-    role_titles: ['Senior Pastor'],
+    org_id: 'sports_kx',
+    role_titles: ['System Owner'],
     permission_tier: 'Admin',
     program_scopes: ['*'],
   },
 
   // ── Business ──
   {
-    membership_id: 'mem_biz_kanext_founder',
+    membership_id: 'mem_biz_kx',
     mode: 'business',
-    org_id: 'biz_kanext_founder',
-    role_titles: ['Founder', 'CEO'],
+    org_id: 'biz_kx',
+    role_titles: ['System Owner'],
     permission_tier: 'Full',
+    program_scopes: ['*'],
+  },
+
+  // ── Church ──
+  {
+    membership_id: 'mem_church_kx',
+    mode: 'church',
+    org_id: 'church_kx',
+    role_titles: ['System Owner'],
+    permission_tier: 'Admin',
     program_scopes: ['*'],
   },
 
   // ── Education ──
   {
-    membership_id: 'mem_edu_fmu_president',
+    membership_id: 'mem_edu_kx',
     mode: 'education',
-    org_id: 'edu_fmu',
-    role_titles: ['President'],
+    org_id: 'edu_kx',
+    role_titles: ['System Owner'],
     permission_tier: 'Admin',
+    program_scopes: ['*'],
+  },
+
+  // ── Competition ──
+  {
+    membership_id: 'mem_comp_kx',
+    mode: 'competition',
+    org_id: 'comp_kx',
+    role_titles: ['System Owner'],
+    permission_tier: 'Full',
     program_scopes: ['*'],
   },
 ];
@@ -94,37 +94,43 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
 // =============================================================================
 
 export const V2_PROGRAMS: V2Program[] = [
-  // ── FMU Sports (13 varsity + 2 dev = 15) ──
-  { program_id: 'fmu_baseball', org_id: 'sports_fmu', mode: 'sports', program_name: 'Baseball (Men)', program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_mbb', org_id: 'sports_fmu', mode: 'sports', program_name: "Men's Basketball", program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_football', org_id: 'sports_fmu', mode: 'sports', program_name: 'Football', program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_msoc', org_id: 'sports_fmu', mode: 'sports', program_name: "Men's Soccer", program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_mtf', org_id: 'sports_fmu', mode: 'sports', program_name: "Men's Track & Field", program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_wbb', org_id: 'sports_fmu', mode: 'sports', program_name: "Women's Basketball", program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_beachvb', org_id: 'sports_fmu', mode: 'sports', program_name: 'Beach Volleyball', program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_wflag', org_id: 'sports_fmu', mode: 'sports', program_name: "Women's Flag Football", program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_wsoc', org_id: 'sports_fmu', mode: 'sports', program_name: "Women's Soccer", program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_softball', org_id: 'sports_fmu', mode: 'sports', program_name: 'Softball', program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_wtf', org_id: 'sports_fmu', mode: 'sports', program_name: "Women's Track & Field", program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_wvb', org_id: 'sports_fmu', mode: 'sports', program_name: "Women's Volleyball", program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_cheer', org_id: 'sports_fmu', mode: 'sports', program_name: 'Competitive Cheer', program_type: 'Varsity', source_tag: 'FMU_OFFICIAL', status: 'Active' },
-  { program_id: 'fmu_dev1', org_id: 'sports_fmu', mode: 'sports', program_name: 'Basketball Development Team 1', program_type: 'Development', source_tag: 'KANEXT_OPERATED', status: 'Active' },
-  { program_id: 'fmu_dev2', org_id: 'sports_fmu', mode: 'sports', program_name: 'Basketball Development Team 2', program_type: 'Development', source_tag: 'KANEXT_OPERATED', status: 'Active' },
+  // ── KaNeXT Sports (12 varsity + 2 dev = 14) ──
+  { program_id: 'kx_mbb', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Basketball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_wbb', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Basketball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_football', org_id: 'sports_kx', mode: 'sports', program_name: 'Football', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_baseball', org_id: 'sports_kx', mode: 'sports', program_name: 'Baseball', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_softball', org_id: 'sports_kx', mode: 'sports', program_name: 'Softball', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_msoc', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Soccer", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_wsoc', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Soccer", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_wvb', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Volleyball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_mtf', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Track & Field", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_wtf', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Track & Field", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_swim', org_id: 'sports_kx', mode: 'sports', program_name: 'Swimming & Diving', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_cheer', org_id: 'sports_kx', mode: 'sports', program_name: 'Competitive Cheer', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
+  { program_id: 'kx_dev1', org_id: 'sports_kx', mode: 'sports', program_name: 'Basketball Development Team 1', program_type: 'Development', source_tag: 'KX_OPERATED', status: 'Active' },
+  { program_id: 'kx_dev2', org_id: 'sports_kx', mode: 'sports', program_name: 'Basketball Development Team 2', program_type: 'Development', source_tag: 'KX_OPERATED', status: 'Active' },
 
-  // ── Competition ──
-  { program_id: 'k1_main', org_id: 'comp_k1_hypercar', mode: 'competition', program_name: 'K-1 Championship', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
+  // ── KaNeXT Business (3 programs) ──
+  { program_id: 'biz_kx_ops', org_id: 'biz_kx', mode: 'business', program_name: 'KaNeXT Operations', program_type: 'Platform', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'biz_kx_product', org_id: 'biz_kx', mode: 'business', program_name: 'Product Development', program_type: 'Engineering', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'biz_kx_growth', org_id: 'biz_kx', mode: 'business', program_name: 'Growth & Marketing', program_type: 'Revenue', source_tag: 'OFFICIAL', status: 'Active' },
 
-  // ── Church (ICCLA — 4 programs) ──
-  { program_id: 'iccla_la_main', org_id: 'church_iccla_la', mode: 'church', program_name: 'Sunday Service / Main Church', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'iccla_la_kids', org_id: 'church_iccla_la', mode: 'church', program_name: "Children's Church", program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'iccla_la_freshfire', org_id: 'church_iccla_la', mode: 'church', program_name: 'Fresh Fire Youth Ministry', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'iccla_la_singles', org_id: 'church_iccla_la', mode: 'church', program_name: 'Singles Ministry', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
+  // ── KaNeXT Church (5 programs) ──
+  { program_id: 'church_kx_main', org_id: 'church_kx', mode: 'church', program_name: 'Sunday Worship', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'church_kx_youth', org_id: 'church_kx', mode: 'church', program_name: 'Youth Ministry', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'church_kx_kids', org_id: 'church_kx', mode: 'church', program_name: "Children's Ministry", program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'church_kx_groups', org_id: 'church_kx', mode: 'church', program_name: 'Small Groups', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'church_kx_outreach', org_id: 'church_kx', mode: 'church', program_name: 'Community Outreach', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
 
-  // ── Business ──
-  { program_id: 'biz_kanext_ops', org_id: 'biz_kanext_founder', mode: 'business', program_name: 'KaNeXT Operations', program_type: 'Platform', source_tag: 'OFFICIAL', status: 'Active' },
+  // ── KaNeXT Education (4 programs) ──
+  { program_id: 'edu_kx_main', org_id: 'edu_kx', mode: 'education', program_name: 'Academic Programs', program_type: 'Institution', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'edu_kx_stem', org_id: 'edu_kx', mode: 'education', program_name: 'STEM Division', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'edu_kx_arts', org_id: 'edu_kx', mode: 'education', program_name: 'Arts & Humanities', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'edu_kx_business', org_id: 'edu_kx', mode: 'education', program_name: 'School of Business', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
 
-  // ── Education ──
-  { program_id: 'edu_fmu_main', org_id: 'edu_fmu', mode: 'education', program_name: 'FMU Academic Programs', program_type: 'Institution', source_tag: 'OFFICIAL', status: 'Active' },
+  // ── KaNeXT Competition (2 programs) ──
+  { program_id: 'comp_kx_main', org_id: 'comp_kx', mode: 'competition', program_name: 'KaNeXT Championship Series', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'comp_kx_qualifier', org_id: 'comp_kx', mode: 'competition', program_name: 'Regional Qualifiers', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
 ];
 
 // =============================================================================
@@ -133,20 +139,20 @@ export const V2_PROGRAMS: V2Program[] = [
 
 export const V2_SEASONS: V2Season[] = [
   // Sports
-  { season_id: 'fmu_2025_26', org_id: 'sports_fmu', mode: 'sports', season_name: '2025\u201326', start_date: '2025-10-01', end_date: '2026-04-01', is_current: true },
-  { season_id: 'fmu_2024_25', org_id: 'sports_fmu', mode: 'sports', season_name: '2024\u201325', start_date: '2024-10-01', end_date: '2025-04-01', is_current: false },
-
-  // Competition
-  { season_id: 'k1_s1_2026', org_id: 'comp_k1_hypercar', mode: 'competition', season_name: 'Season 1 · 2026', start_date: '2026-03-01', end_date: '2026-11-30', is_current: true },
-
-  // Church
-  { season_id: 'iccla_2026', org_id: 'church_iccla_la', mode: 'church', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
+  { season_id: 'kx_2025_26', org_id: 'sports_kx', mode: 'sports', season_name: '2025\u201326', start_date: '2025-10-01', end_date: '2026-04-01', is_current: true },
+  { season_id: 'kx_2024_25', org_id: 'sports_kx', mode: 'sports', season_name: '2024\u201325', start_date: '2024-10-01', end_date: '2025-04-01', is_current: false },
 
   // Business
-  { season_id: 'biz_fy2026', org_id: 'biz_kanext_founder', mode: 'business', season_name: 'FY 2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
+  { season_id: 'biz_kx_fy2026', org_id: 'biz_kx', mode: 'business', season_name: 'FY 2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
+
+  // Church
+  { season_id: 'church_kx_2026', org_id: 'church_kx', mode: 'church', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
   // Education
-  { season_id: 'edu_fmu_2025_26', org_id: 'edu_fmu', mode: 'education', season_name: 'Fall 2026', start_date: '2025-08-18', end_date: '2026-05-10', is_current: true },
+  { season_id: 'edu_kx_2025_26', org_id: 'edu_kx', mode: 'education', season_name: '2025\u201326 Academic Year', start_date: '2025-08-18', end_date: '2026-05-10', is_current: true },
+
+  // Competition
+  { season_id: 'comp_kx_s1_2026', org_id: 'comp_kx', mode: 'competition', season_name: 'Season 1 \u00B7 2026', start_date: '2026-03-01', end_date: '2026-11-30', is_current: true },
 ];
 
 // =============================================================================
@@ -155,11 +161,11 @@ export const V2_SEASONS: V2Season[] = [
 
 export const DEFAULT_ACTIVE_CONTEXT: ActiveContext = {
   mode: 'sports',
-  org_id: 'sports_fmu',
-  program_id: 'fmu_mbb',
-  season_id: 'fmu_2025_26',
-  membership_id: 'mem_sports_fmu_admin',
-  derived_role_badge: 'AD · Head Coach · GM',
+  org_id: 'sports_kx',
+  program_id: 'kx_mbb',
+  season_id: 'kx_2025_26',
+  membership_id: 'mem_sports_kx',
+  derived_role_badge: 'System Owner',
 };
 
 // =============================================================================
@@ -168,24 +174,24 @@ export const DEFAULT_ACTIVE_CONTEXT: ActiveContext = {
 
 export const SEEDED_RECENT_CONTEXTS: RecentContext[] = [
   {
-    mode: 'sports', org_id: 'sports_fmu', program_id: 'fmu_mbb', season_id: 'fmu_2025_26',
-    membership_id: 'mem_sports_fmu_admin', derived_role_badge: 'AD · Head Coach · GM', timestamp: Date.now() - 1000,
+    mode: 'sports', org_id: 'sports_kx', program_id: 'kx_mbb', season_id: 'kx_2025_26',
+    membership_id: 'mem_sports_kx', derived_role_badge: 'System Owner', timestamp: Date.now() - 1000,
   },
   {
-    mode: 'church', org_id: 'church_iccla_la', program_id: 'iccla_la_main', season_id: 'iccla_2026',
-    membership_id: 'mem_church_iccla', derived_role_badge: 'Senior Pastor', timestamp: Date.now() - 2000,
+    mode: 'business', org_id: 'biz_kx', program_id: 'biz_kx_ops', season_id: 'biz_kx_fy2026',
+    membership_id: 'mem_biz_kx', derived_role_badge: 'System Owner', timestamp: Date.now() - 2000,
   },
   {
-    mode: 'competition', org_id: 'comp_k1_hypercar', program_id: 'k1_main', season_id: 'k1_s1_2026',
-    membership_id: 'mem_comp_k1_owner_commish', derived_role_badge: 'League Owner · Commissioner', timestamp: Date.now() - 3000,
+    mode: 'church', org_id: 'church_kx', program_id: 'church_kx_main', season_id: 'church_kx_2026',
+    membership_id: 'mem_church_kx', derived_role_badge: 'System Owner', timestamp: Date.now() - 3000,
   },
   {
-    mode: 'business', org_id: 'biz_kanext_founder', program_id: 'biz_kanext_ops', season_id: 'biz_fy2026',
-    membership_id: 'mem_biz_kanext_founder', derived_role_badge: 'Founder/CEO', timestamp: Date.now() - 4000,
+    mode: 'education', org_id: 'edu_kx', program_id: 'edu_kx_main', season_id: 'edu_kx_2025_26',
+    membership_id: 'mem_edu_kx', derived_role_badge: 'System Owner', timestamp: Date.now() - 4000,
   },
   {
-    mode: 'education', org_id: 'edu_fmu', program_id: 'edu_fmu_main', season_id: 'edu_fmu_2025_26',
-    membership_id: 'mem_edu_fmu_president', derived_role_badge: 'President', timestamp: Date.now() - 5000,
+    mode: 'competition', org_id: 'comp_kx', program_id: 'comp_kx_main', season_id: 'comp_kx_s1_2026',
+    membership_id: 'mem_comp_kx', derived_role_badge: 'System Owner', timestamp: Date.now() - 5000,
   },
 ];
 
@@ -261,7 +267,7 @@ export function getDefaultContextForMode(mode: Mode): ActiveContext | null {
   const membership = memberships[0];
 
   // Import deriveRoleBadge lazily to avoid circular deps
-  const badge = membership.role_titles.join(' · ');
+  const badge = membership.role_titles.join(' \u00B7 ');
 
   return {
     mode,

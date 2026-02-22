@@ -7,13 +7,13 @@
 import type { DashboardTruthPayload } from '@/types/dashboard';
 
 import {
-  FMU_GAMES,
-  FMU_RECORD,
-  FMU_NEXT_GAME,
-  FMU_LAST_GAME,
-  FMU_SEASON_COMPLETE,
-  FMU_NEWS,
-  FMU_STANDINGS,
+  KaNeXT_GAMES,
+  KaNeXT_RECORD,
+  KaNeXT_NEXT_GAME,
+  KaNeXT_LAST_GAME,
+  KaNeXT_SEASON_COMPLETE,
+  KaNeXT_NEWS,
+  KaNeXT_STANDINGS,
 } from '@/data/fmu';
 
 import {
@@ -26,7 +26,7 @@ import {
 } from '@/data/mock-church';
 
 import {
-  FMU_ORGANIZATION,
+  KaNeXT_ORGANIZATION,
   INSTITUTIONAL_METRICS,
   getCurrentTerm,
   getUpcomingEvents,
@@ -65,13 +65,13 @@ export function buildSportsDashboard(
   liveOffKR: number,
   liveDefKR: number,
 ): DashboardTruthPayload {
-  const liveGame = FMU_GAMES.find((g) => g.status === 'live');
-  const upcomingGames = FMU_GAMES.filter((g) => g.status === 'upcoming').slice(0, 2);
-  const recentGames = FMU_GAMES.filter((g) => g.status === 'final' && g.score).slice(-3).reverse();
+  const liveGame = KaNeXT_GAMES.find((g) => g.status === 'live');
+  const upcomingGames = KaNeXT_GAMES.filter((g) => g.status === 'upcoming').slice(0, 2);
+  const recentGames = KaNeXT_GAMES.filter((g) => g.status === 'final' && g.score).slice(-3).reverse();
 
   return {
     heroVideo: {
-      title: 'FMU Lions 2025-26 Season Highlights',
+      title: 'KaNeXT 2025-26 Season Highlights',
       subtitle: 'Top plays and moments from this season',
       liveBadge: liveGame ? 'LIVE' : undefined,
     },
@@ -81,16 +81,16 @@ export function buildSportsDashboard(
       { id: 'kr-def', label: 'Defense', value: liveDefKR, sublabel: 'Def KR' },
     ],
     todayNext: [
-      ...(FMU_NEXT_GAME
+      ...(KaNeXT_NEXT_GAME
         ? [{
             id: 'next-game',
             type: 'next' as const,
             title: `${FMU_NEXT_GAME.location === 'Home' ? 'vs' : '@'} ${FMU_NEXT_GAME.opponent}`,
-            subtitle: FMU_NEXT_GAME.date,
-            metadata: FMU_NEXT_GAME.location,
+            subtitle: KaNeXT_NEXT_GAME.date,
+            metadata: KaNeXT_NEXT_GAME.location,
           }]
         : []),
-      ...(FMU_LAST_GAME
+      ...(KaNeXT_LAST_GAME
         ? [{
             id: 'last-game',
             type: 'today' as const,
@@ -99,7 +99,7 @@ export function buildSportsDashboard(
           }]
         : []),
     ],
-    alerts: FMU_SEASON_COMPLETE
+    alerts: KaNeXT_SEASON_COMPLETE
       ? [{ id: 'season-end', severity: 'info', title: 'Season Complete', message: `Final record: ${FMU_RECORD.overall}` }]
       : undefined,
     quickActions: [
@@ -134,7 +134,7 @@ export function buildChurchDashboard(): DashboardTruthPayload {
   return {
     heroVideo: {
       title: 'Sunday Worship Service',
-      subtitle: 'Watch the latest message from Pastor Dipo Kalejaiye',
+      subtitle: 'Watch the latest message from Pastor Dipo Carter',
     },
     contextSnapshot: [
       { id: 'campuses', label: 'Campuses', value: CAMPUSES.length },
@@ -190,8 +190,8 @@ export function buildEducationDashboard(): DashboardTruthPayload {
 
   return {
     heroVideo: {
-      title: 'FMU Campus Life 2025-26',
-      subtitle: 'Welcome to Florida Memorial University',
+      title: 'KaNeXT Campus Life 2025-26',
+      subtitle: 'Welcome to KaNeXT Sports',
     },
     contextSnapshot: [
       { id: 'enrolled', label: 'Enrolled', value: INSTITUTIONAL_METRICS.enrollment.total },

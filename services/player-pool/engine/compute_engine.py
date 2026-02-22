@@ -43,6 +43,7 @@ from klvn import compute_confidence, get_lambda, klvn_translate
 from impact_scores import compute_pgis, compute_tgis, compute_season_pgis
 from scholarship_nil import run_allocation, SCHOLARSHIP_CAPS
 from context_engine import apply_context_adjustments
+from context_layer import compute_context
 from conference_map import resolve_d1_conference, assign_d1_tier
 
 # Level keys that use Pro KR mode (higher thresholds, different weights)
@@ -469,6 +470,11 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
         ("level_offset", "REAL DEFAULT 0"),
         ("confidence_penalty", "REAL DEFAULT 0"),
         ("schedule_adjustment", "REAL DEFAULT 0"),
+        ("context_delta", "REAL DEFAULT 0"),
+        ("context_kr", "REAL DEFAULT 0"),
+        ("context_flags", "TEXT[] DEFAULT '{}'"),
+        ("context_explain", "TEXT[] DEFAULT '{}'"),
+        ("context_cap_hit", "BOOLEAN DEFAULT FALSE"),
     ]:
         conn.execute(f"""
             DO $$ BEGIN
@@ -597,6 +603,9 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
             "games_started": gs_val,
             "start_rate": gs_val / gp_val if gp_val > 0 else 0.5,
             "minutes_coverage_pct": min_cov,
+            "usage_rate": ((_f(r["fga_pg"]) + 0.44 * _f(r["fta_pg"]) + _f(r["to_pg"]))
+                           / (_f(r["minutes_pg"]) / 40.0 * 70.0) * 100)
+                          if _f(r["minutes_pg"]) > 5 else 0.0,
         }
 
         # Compute clusters (returns tuple: clusters_cross, clusters_league, traits_list)
@@ -652,6 +661,15 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
         confidence_penalty = 0.0  # placeholder
         schedule_adj = 0.0        # placeholder
 
+        # Step 5: Context Layer — post-KLVN bounded overlay (does NOT modify final_kr)
+        ctx_result = compute_context(
+            final_kr=final_overall_kr,
+            stats=stats,
+            clusters=clusters,
+            level_key=level_key,
+            position=position,
+        )
+
         # Participation %: total minutes / team total minutes
         total_min = r.get("total_minutes", 0) or 0
         participation = 0.0  # computed later at team level
@@ -685,6 +703,14 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
             print(f"  kr_pre_translation:    {round(league_final_overall, 1)}")
             print(f"  kr_post_translation:   {round(final_overall_kr, 1)}  (KLVN, \u03bb={get_lambda(level_key)})")
             print(f"  level_offset:          {level_offset}")
+            print(f"  ── Context Layer ──")
+            print(f"  context_delta:         {ctx_result['context_delta']}")
+            print(f"  context_kr:            {ctx_result['context_kr']}")
+            print(f"  context_cap_hit:       {ctx_result['context_cap_hit']}")
+            for exp in ctx_result["context_explain"]:
+                print(f"    → {exp}")
+            if not ctx_result["context_flags"]:
+                print(f"    (no context rules fired)")
             print(f"  Badges: {len(badge_result['badges'])} (based on league-internal clusters)")
             print(f"  Confidence: {confidence}% \u2192 {kr_status}")
             print(f"{'=' * 60}\n")
@@ -699,11 +725,13 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
                 primary_archetype, secondary_archetypes,
                 participation_pct, klvn_level, computed_at,
                 kr_league_internal, off_kr_league_internal, def_kr_league_internal,
-                level_offset, confidence_penalty, schedule_adjustment
+                level_offset, confidence_penalty, schedule_adjustment,
+                context_delta, context_kr, context_flags, context_explain, context_cap_hit
             ) VALUES (
                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                 %s, 'boxscore', %s, %s, %s, %s, %s, %s, now(),
-                %s, %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s,
+                %s, %s, %s, %s, %s
             ) RETURNING id
         """, (
             pts_id, round(base_off_kr, 1), round(base_def_kr, 1), round(base_overall_kr, 1),
@@ -716,6 +744,9 @@ def compute_all_player_kr(conn, season_data: list[dict], debug_name: str | None 
             round(kr_league["base_off_kr"], 1),
             round(kr_league["base_def_kr"], 1),
             level_offset, confidence_penalty, schedule_adj,
+            ctx_result["context_delta"], ctx_result["context_kr"],
+            ctx_result["context_flags"], ctx_result["context_explain"],
+            ctx_result["context_cap_hit"],
         )).fetchone()
 
         kr_id = str(kr_row["id"])
@@ -1270,6 +1301,9 @@ def _compute_player_debug(row: dict) -> dict:
         "games_started": gs,
         "start_rate": gs / gp if gp > 0 else 0.5,
         "minutes_coverage_pct": min_cov,
+        "usage_rate": ((_f(row.get("fga_per_game")) + 0.44 * _f(row.get("fta_per_game")) + _f(row.get("to_per_game")))
+                       / (_f(row.get("minutes_per_game")) / 40.0 * 70.0) * 100)
+                      if _f(row.get("minutes_per_game")) > 5 else 0.0,
     }
 
     clusters, clusters_league, trait_diagnostics = compute_all_clusters(
@@ -1305,6 +1339,15 @@ def _compute_player_debug(row: dict) -> dict:
     final_def_kr = klvn_translate(league_final_def, level_key, confidence_pct=confidence, coverage_pct=min_cov)
     final_overall_kr = klvn_translate(league_final_overall, level_key, confidence_pct=confidence, coverage_pct=min_cov)
 
+    # Context Layer — post-KLVN
+    ctx_result = compute_context(
+        final_kr=final_overall_kr,
+        stats=stats,
+        clusters=clusters,
+        level_key=level_key,
+        position=position,
+    )
+
     level_offset = round(final_overall_kr - league_final_overall, 2)
 
     return {
@@ -1315,6 +1358,7 @@ def _compute_player_debug(row: dict) -> dict:
         "kr_league": kr_league,
         "badges": badge_result,
         "context": ctx,
+        "context_layer": ctx_result,
         "confidence": confidence,
         "kr_status": kr_status,
         "league_final_off": round(league_final_off, 1),
@@ -1457,6 +1501,54 @@ def run_debug_compare(conn, name1: str, name2: str):
         print(f"  {tk:<20} {formula}")
 
     print(f"\n{'=' * 80}")
+    print("DONE.")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# DEBUG CONTEXT — Print context layer diagnostics for one player
+# ═══════════════════════════════════════════════════════════════════════════
+
+def run_debug_context(conn, name: str):
+    """Fast-path: look up player, recompute KR, print context layer details."""
+    row = _lookup_player(conn, name)
+    if not row:
+        print(f"ERROR: No player found matching '{name}' with >= 3 GP and >= 5 MPG")
+        return
+
+    d = _compute_player_debug(row)
+    ctx = d["context_layer"]
+
+    print("=" * 70)
+    print("CONTEXT LAYER v1 — POST-KLVN DIAGNOSTICS")
+    print("=" * 70)
+
+    print(f"\n  Player:       {row['full_name']}")
+    print(f"  Level:        {d['level_key']}")
+    print(f"  Position:     {d['position']}")
+    print(f"  GP / MPG:     {d['stats']['games_played']} / {d['stats']['minutes_pg']:.1f}")
+    print(f"  Min Coverage: {d['stats']['minutes_coverage_pct']:.1%}")
+    print(f"  Usage Rate:   {d['stats']['usage_rate']:.1f}%")
+
+    print(f"\n  Final KR (post-KLVN, pre-context): {d['final_overall_kr']}")
+    print(f"  OKR: {d['final_off_kr']}  |  DKR: {d['final_def_kr']}")
+
+    print(f"\n{'─'*2} RULES {'─'*61}")
+    for rule in ctx["rules"]:
+        status = "FIRED" if rule["fired"] else "---"
+        print(f"  [{status:>5}]  {rule['rule']:<25}  delta={rule['delta']:+.2f}")
+        if rule["fired"]:
+            print(f"           {rule['explain']}")
+
+    print(f"\n{'─'*2} TOTALS {'─'*60}")
+    print(f"  Unclamped delta:  {ctx['unclamped_delta']:+.2f}")
+    print(f"  Clamped delta:    {ctx['context_delta']:+.2f}  (cap ±3.0)")
+    print(f"  Cap hit:          {ctx['context_cap_hit']}")
+
+    print(f"\n  Final KR:         {d['final_overall_kr']}")
+    print(f"  Context KR:       {ctx['context_kr']}")
+    print(f"  Net adjustment:   {ctx['context_delta']:+.2f}")
+
+    print(f"\n{'=' * 70}")
     print("DONE.")
 
 
@@ -1986,6 +2078,8 @@ def main():
                         help="Side-by-side trait diagnostic for two players (fast-path, no full engine run)")
     parser.add_argument("--audit_packet", action="store_true",
                         help="Generate kr_audit_packet.json for Shannon + Dybantsa (fast-path)")
+    parser.add_argument("--debug-context", metavar="NAME",
+                        help="Print context layer diagnostics for a player (fast-path, no full engine run)")
     args = parser.parse_args()
 
     conn = get_conn()
@@ -1999,6 +2093,12 @@ def main():
     # Fast-path: audit packet exits immediately
     if args.audit_packet:
         run_audit_packet(conn)
+        conn.close()
+        return
+
+    # Fast-path: debug context layer for one player
+    if args.debug_context:
+        run_debug_context(conn, args.debug_context)
         conn.close()
         return
 

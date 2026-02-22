@@ -108,7 +108,7 @@ interface OpsFeedItem {
 }
 
 const OPS_FEED_ITEMS: OpsFeedItem[] = [
-  { id: 'of-1', type: 'initiative_moved', title: 'Payment Rails Launch moved to "In Progress"', actor: 'Sammy Kalejaiye', timestamp: '2026-02-17 09:30', entityId: 'ent-kanext-holdco' },
+  { id: 'of-1', type: 'initiative_moved', title: 'Payment Rails Launch moved to "In Progress"', actor: 'Alex Morgan', timestamp: '2026-02-17 09:30', entityId: 'ent-kanext-holdco' },
   { id: 'of-2', type: 'blocker_created', title: 'PCI-DSS recertification blocker created', actor: 'Maya Rodriguez', timestamp: '2026-02-16 14:00', entityId: 'ent-payment-processor' },
   { id: 'of-3', type: 'decision_approved', title: 'Board approved Q1 budget allocation', actor: 'Jordan Blake', timestamp: '2026-02-15 11:00', entityId: 'ent-kanext-opsco' },
   { id: 'of-4', type: 'deliverable_shipped', title: 'Investor deck v3 published to data room', actor: 'Liam Chen', timestamp: '2026-02-14 16:30', entityId: 'ent-kanext-holdco' },

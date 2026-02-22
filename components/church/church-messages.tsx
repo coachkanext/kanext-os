@@ -240,7 +240,7 @@ const PRIVACY_LABEL: Record<PrivacyRouting, string> = {
 
 const PASTORAL_REQUESTS: PastoralRequest[] = [
   { id: 'req-1', from: 'Maria Santos', type: 'counseling', subject: 'Family counseling request — confidential', submittedDate: 'Feb 17, 2026', status: 'new', privacy: 'pastor-only', slaHours: 48, elapsedHours: 12 },
-  { id: 'req-2', from: 'James Wilson', type: 'baptism-membership', subject: 'Interested in baptism — new believer', submittedDate: 'Feb 16, 2026', status: 'assigned', privacy: 'staff', assignedTo: 'Pastor Sarah', slaHours: 48, elapsedHours: 28 },
+  { id: 'req-2', from: 'Andrew Palmer', type: 'baptism-membership', subject: 'Interested in baptism — new believer', submittedDate: 'Feb 16, 2026', status: 'assigned', privacy: 'staff', assignedTo: 'Pastor Sarah', slaHours: 48, elapsedHours: 28 },
   { id: 'req-3', from: 'Sarah Kim', type: 'volunteer-interest', subject: 'Want to serve in Children\'s Ministry', submittedDate: 'Feb 15, 2026', status: 'in-progress', privacy: 'staff', assignedTo: 'Lisa Matthews', slaHours: 48, elapsedHours: 52, notes: 'Background check in progress.' },
   { id: 'req-4', from: 'David & Ruth Chen', type: 'pastoral-meeting', subject: 'Marriage enrichment discussion', submittedDate: 'Feb 14, 2026', status: 'assigned', privacy: 'pastor-only', assignedTo: 'Pastor Williams', slaHours: 48, elapsedHours: 72 },
   { id: 'req-5', from: 'Marcus Johnson', type: 'facility-room', subject: 'Reserve fellowship hall for youth event Mar 7', submittedDate: 'Feb 13, 2026', status: 'in-progress', privacy: 'staff', assignedTo: 'Mark Thompson', slaHours: 48, elapsedHours: 96 },

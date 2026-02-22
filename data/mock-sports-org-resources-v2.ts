@@ -1,6 +1,6 @@
 /**
  * Sports Organization Resources V2 — Mock Data & Types
- * FMU Men's Basketball program resource management: packs, role kits,
+ * KaNeXT Men's Basketball program resource management: packs, role kits,
  * templates, knowledge base, and review flags.
  */
 
@@ -201,9 +201,9 @@ const resourcePacks: ResourcePack[] = [
     id: 'rp-001',
     name: 'Program SOP Pack',
     description:
-      'Master standard-operating-procedures for FMU Lions MBB — practice structure, player conduct, facility usage, equipment checkout, and staff communication protocols.',
+      'Master standard-operating-procedures for KaNeXT MBB — practice structure, player conduct, facility usage, equipment checkout, and staff communication protocols.',
     icon: 'doc.text.fill',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     lastUpdated: '2026-02-12',
     requiredRead: true,
     category: 'sop',
@@ -215,7 +215,7 @@ const resourcePacks: ResourcePack[] = [
     id: 'rp-002',
     name: 'Travel Pack',
     description:
-      'Road-trip playbook: charter bus logistics, hotel rooming lists, meal-per-diem guidelines, travel-day itinerary template, and emergency contacts for Sun Conference away games.',
+      'Road-trip playbook: charter bus logistics, hotel rooming lists, meal-per-diem guidelines, travel-day itinerary template, and emergency contacts for KaNeXT Conference away games.',
     icon: 'bus.fill',
     owner: 'Marcus Reed',
     lastUpdated: '2026-02-10',
@@ -231,7 +231,7 @@ const resourcePacks: ResourcePack[] = [
     description:
       'Spring evaluation-period recruiting SOPs — prospect evaluation rubrics, contact-log templates, official-visit checklists, NAIA eligibility requirements, and scholarship offer workflows.',
     icon: 'person.badge.plus',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     lastUpdated: '2026-02-05',
     requiredRead: true,
     category: 'recruiting',
@@ -257,9 +257,9 @@ const resourcePacks: ResourcePack[] = [
     id: 'rp-005',
     name: 'Compliance Pack',
     description:
-      'NAIA and Sun Conference compliance quick-reference — eligibility rules, academic progress checks, financial-aid reporting, scholarship renewal guidelines, and transfer-portal procedures.',
+      'NAIA and KaNeXT Conference compliance quick-reference — eligibility rules, academic progress checks, financial-aid reporting, scholarship renewal guidelines, and transfer-portal procedures.',
     icon: 'checkmark.shield.fill',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     lastUpdated: '2026-01-28',
     requiredRead: true,
     category: 'compliance',
@@ -381,7 +381,7 @@ const templates: ResourceTemplate[] = [
     category: 'Practice',
     lastUsed: '2026-02-14',
     usageCount: 42,
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
   },
   {
     id: 'tmpl-002',
@@ -413,7 +413,7 @@ const templates: ResourceTemplate[] = [
     category: 'Game Plan',
     lastUsed: '2026-02-08',
     usageCount: 15,
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
   },
   {
     id: 'tmpl-006',
@@ -434,7 +434,7 @@ const knowledgeBase: KnowledgeBaseItem[] = [
     id: 'kb-001',
     title: 'NCCAA Eligibility Rules — Quick Reference',
     category: 'compliance',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     lastUpdated: '2026-01-15',
     requiredRead: true,
     viewCount: 34,
@@ -443,7 +443,7 @@ const knowledgeBase: KnowledgeBaseItem[] = [
     id: 'kb-002',
     title: 'Transfer Portal Process & Timeline',
     category: 'recruiting',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     lastUpdated: '2026-02-01',
     requiredRead: true,
     viewCount: 22,
@@ -506,7 +506,7 @@ const knowledgeBase: KnowledgeBaseItem[] = [
     id: 'kb-009',
     title: 'Media Interview Protocol for Coaches',
     category: 'ops',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     lastUpdated: '2026-01-08',
     requiredRead: false,
     viewCount: 9,

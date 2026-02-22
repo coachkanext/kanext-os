@@ -7,30 +7,17 @@ import { getMembershipById } from '@/data/mock-memberships';
 
 // Specific overrides keyed by membership_id
 const BADGE_OVERRIDES: Record<string, Record<string, string> | string> = {
-  // ── Sports / FMU ──
-  mem_sports_fmu_admin: {
-    fmu_mbb: 'AD · Head Coach · GM',
-    fmu_dev1: 'Head of Basketball Ops · Head Coach · GM',
-    fmu_dev2: 'Head of Basketball Ops · Head Coach · GM',
-    _default: 'Athletic Director',
-  },
-
-  // ── Church / ICCLA LA ──
-  mem_church_iccla: 'Senior Pastor',
-
-  // ── Business ──
-  mem_biz_kanext_founder: 'Founder/CEO',
-
-  // ── Competition ──
-  mem_comp_k1_owner_commish: 'League Owner · Commissioner',
-
-  // ── Education ──
-  mem_edu_fmu_president: 'President',
+  // ── Founder (all modes) — SYSTEM_OWNER identity ──
+  mem_sports_kx: 'System Owner',
+  mem_biz_kx: 'System Owner',
+  mem_church_kx: 'System Owner',
+  mem_edu_kx: 'System Owner',
+  mem_comp_kx: 'System Owner',
 };
 
 /**
  * Derives the role badge string for a given membership + program combination.
- * Returns a human-readable string like "AD · Head Coach · GM".
+ * Returns a human-readable string like "System Owner".
  */
 export function deriveRoleBadge(membership_id: string, program_id: string): string {
   const override = BADGE_OVERRIDES[membership_id];
@@ -51,7 +38,7 @@ export function deriveRoleBadge(membership_id: string, program_id: string): stri
   // Fallback: join role_titles from membership
   const membership = getMembershipById(membership_id);
   if (membership) {
-    return membership.role_titles.join(' · ');
+    return membership.role_titles.join(' \u00B7 ');
   }
 
   return 'Member';

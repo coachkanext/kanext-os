@@ -2,7 +2,7 @@
  * Schedule Hub
  * Extracted from app/(tabs)/index.tsx.
  * Contains: Games feed, Calendar, Standings (Traditional + KR), News.
- * Game cards use 3-zone tap model: FMU logo | card body | opponent logo.
+ * Game cards use 3-zone tap model: KaNeXT logo | card body | opponent logo.
  */
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
@@ -25,11 +25,11 @@ import { GOVERNING_BODIES } from '@/data/governing-bodies';
 import type { Archetype } from '@/data/system-demand-profiles';
 import type { OffensiveStyle, DefensiveStyle } from '@/types';
 import {
-  FMU_GAMES, FMU_GAMES_BY_ID, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS,
-  FMU_GAME_IMPACT, FMU_PREGAME, ROSTER_KR,
+  KaNeXT_GAMES, KaNeXT_GAMES_BY_ID, KaNeXT_LEADERS, KaNeXT_STANDINGS, KaNeXT_NEWS,
+  KaNeXT_GAME_IMPACT, KaNeXT_PREGAME, ROSTER_KR,
   getPGISColor, getTGISColor, tgisToDisplay,
   POSITIVE_IMPACT, NEGATIVE_IMPACT,
-  type PregameSnapshot, type ClusterRating, type FMUGame,
+  type PregameSnapshot, type ClusterRating, type KaNeXTGame,
 } from '@/data/fmu';
 
 // =============================================================================
@@ -54,8 +54,8 @@ const confHash = (s: string) => {
   return Math.abs(h);
 };
 
-// FMU seal logo
-const FMU_SEAL = require('@/assets/images/fmu-seal.png');
+// KaNeXT seal logo
+const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
 
 // Opponent depth chart helpers
 const OPP_ARCHETYPE_MAP: Record<string, Archetype> = {
@@ -134,7 +134,7 @@ function GameCard({
   onLogoLongPress,
   children,
 }: {
-  game: FMUGame;
+  game: KaNeXTGame;
   colors: typeof Colors.light;
   onPrimaryPress: () => void;
   onLogoPress: (team: 'fmu' | 'opponent') => void;
@@ -147,7 +147,7 @@ function GameCard({
 
   return (
     <View style={s.gameCardRow}>
-      {/* FMU logo zone */}
+      {/* KaNeXT logo zone */}
       <Pressable
         onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onLogoPress('fmu'); }}
         onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onLogoLongPress('fmu'); }}
@@ -238,7 +238,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
   const [expandedLive, setExpandedLive] = useState(false);
 
   // Game Team Context Sheet state
-  const [contextSheet, setContextSheet] = useState<{ game: FMUGame; team: 'fmu' | 'opponent' } | null>(null);
+  const [contextSheet, setContextSheet] = useState<{ game: KaNeXTGame; team: 'fmu' | 'opponent' } | null>(null);
 
   // Old opponent KR sheet (for legacy bottom-sheet content inside games)
   const [oppKRSheet, setOppKRSheet] = useState<{ opponent: string; kr: number; record: string; gameId?: string; gameStatus?: string; score?: string } | null>(null);
@@ -272,11 +272,11 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
 
   const q = search.trim().toLowerCase();
   const filtered = q
-    ? FMU_GAMES.filter((g) =>
+    ? KaNeXT_GAMES.filter((g) =>
         g.opponent.toLowerCase().includes(q) ||
         g.date.toLowerCase().includes(q) ||
         g.location.toLowerCase().includes(q))
-    : FMU_GAMES;
+    : KaNeXT_GAMES;
 
   // Sort: live games first, then original order
   const sortedGames = [...filtered].sort((a, b) => {
@@ -286,7 +286,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
   });
 
   // 3-zone tap handlers
-  const handlePrimaryPress = useCallback((game: FMUGame) => {
+  const handlePrimaryPress = useCallback((game: KaNeXTGame) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (game.status === 'final') {
       router.push({ pathname: '/coach/game-detail', params: { gameId: game.id, tab: 'report', espnTab: 'gamecast' } } as any);
@@ -295,11 +295,11 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
     }
   }, [router]);
 
-  const handleLogoPress = useCallback((game: FMUGame, team: 'fmu' | 'opponent') => {
+  const handleLogoPress = useCallback((game: KaNeXTGame, team: 'fmu' | 'opponent') => {
     setContextSheet({ game, team });
   }, []);
 
-  const handleLogoLongPress = useCallback((game: FMUGame, team: 'fmu' | 'opponent') => {
+  const handleLogoLongPress = useCallback((game: KaNeXTGame, team: 'fmu' | 'opponent') => {
     if (team === 'fmu') {
       openTeamSheet();
     } else {
@@ -593,13 +593,13 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
               { rank: 23, team: 'Vanguard', kr: 76, trend: 1 },
               { rank: 24, team: 'Cornerstone', kr: 75, trend: 0 },
               { rank: 25, team: 'Grace (IN)', kr: 75, trend: -1 },
-              { rank: 38, team: 'Florida Memorial', kr: 74, trend: 3 },
+              { rank: 38, team: 'KaNeXT Sports', kr: 74, trend: 3 },
             ];
 
-            const KR_CONF = FMU_STANDINGS.map((row) => {
+            const KR_CONF = KaNeXT_STANDINGS.map((row) => {
               const h = hashStr(row.team);
-              const kr = row.team === 'Florida Memorial' ? 74 : 58 + (h % 28);
-              const trend = row.team === 'Florida Memorial' ? 3 : h % 5 === 0 ? (1 + ((h >> 4) % 4)) : h % 3 === 0 ? -(1 + ((h >> 4) % 3)) : 0;
+              const kr = row.team === 'KaNeXT Sports' ? 74 : 58 + (h % 28);
+              const trend = row.team === 'KaNeXT Sports' ? 3 : h % 5 === 0 ? (1 + ((h >> 4) % 4)) : h % 3 === 0 ? -(1 + ((h >> 4) % 3)) : 0;
               return { rank: 0, team: row.team, kr, trend };
             }).sort((a, b) => b.kr - a.kr).map((r, i) => ({ ...r, rank: i + 1 }));
 
@@ -737,7 +737,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                   <ThemedText style={[s.standingsColHeader, { color: colors.textTertiary }]}>TREND</ThemedText>
                 </View>
                 {krData.map((row, index) => {
-                  const isFmu = row.team === 'Florida Memorial';
+                  const isFmu = row.team === 'KaNeXT Sports';
                   const showGap = showFmuGap && index === krData.length - 1 && row.rank > 10;
                   const td = trendDisplay(row.trend);
                   const isExpanded = expandedKRTeam === row.team;
@@ -789,7 +789,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                   <ThemedText style={[s.standingsColHeader, { color: colors.textTertiary }]}>STK</ThemedText>
                 </View>
                 {rows.map((row, index) => {
-                  const isFmu = row.team === 'Florida Memorial';
+                  const isFmu = row.team === 'KaNeXT Sports';
                   return (
                     <View key={`${index}-${row.team}`}>
                       {index > 0 && <View style={[s.divider, { backgroundColor: colors.divider }]} />}
@@ -955,7 +955,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
 
                         {standingsMode === 'traditional' && (
                           <>
-                            {standingsView === 'conference' && renderTraditionalConfTable(FMU_STANDINGS)}
+                            {standingsView === 'conference' && renderTraditionalConfTable(KaNeXT_STANDINGS)}
                             {standingsView === 'division' && selectedDivisions.length > 0 && renderTraditionalConfTable(divStandings)}
                             {standingsView === 'national' && renderPollTable(NAIA_POLL)}
                           </>
@@ -1156,7 +1156,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
           {activeTab === 'news' && (
             <View style={s.newsFeed}>
               {FMU_NEWS.length > 0 ? (
-                FMU_NEWS.map((item) => {
+                KaNeXT_NEWS.map((item) => {
                   const isHighlights = item.type === 'Highlights';
                   return (
                     <View
@@ -1228,13 +1228,13 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
         {oppKRSheet && (() => {
           const opp = oppKRSheet.opponent;
           const sheetGameId = oppKRSheet.gameId ?? '';
-          const impact = oppKRSheet.gameStatus === 'final' && sheetGameId ? FMU_GAME_IMPACT[sheetGameId] : null;
-          const pregame = oppKRSheet.gameStatus === 'upcoming' && sheetGameId ? FMU_PREGAME[sheetGameId] : null;
+          const impact = oppKRSheet.gameStatus === 'final' && sheetGameId ? KaNeXT_GAME_IMPACT[sheetGameId] : null;
+          const pregame = oppKRSheet.gameStatus === 'upcoming' && sheetGameId ? KaNeXT_PREGAME[sheetGameId] : null;
 
           return (
             <>
               {(() => {
-                const sheetGame = sheetGameId ? FMU_GAMES.find((g) => g.id === sheetGameId) : null;
+                const sheetGame = sheetGameId ? KaNeXT_GAMES.find((g) => g.id === sheetGameId) : null;
                 return (
                   <View style={{ alignItems: 'center', marginBottom: Spacing.md }}>
                     <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>
@@ -1253,7 +1253,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
               {impact ? (
                 <>
                   {(() => {
-                    const pg = sheetGameId ? FMU_PREGAME[sheetGameId] : null;
+                    const pg = sheetGameId ? KaNeXT_PREGAME[sheetGameId] : null;
                     const sm = oppKRSheet.score?.match(/(\d+)-(\d+)/);
                     const fmuS = sm ? parseInt(sm[1]) : 0;
                     const oppS = sm ? parseInt(sm[2]) : 0;
@@ -1261,7 +1261,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                     const actualMargin = fmuS - oppS;
                     const actualTotal = fmuS + oppS;
                     const spread = pg ? Math.round(pg.krGap * 0.4) : 0;
-                    const spreadStr = spread > 0 ? `FMU -${Math.abs(spread)}.5` : spread < 0 ? `FMU +${Math.abs(spread)}.5` : 'PK';
+                    const spreadStr = spread > 0 ? `KaNeXT -${Math.abs(spread)}.5` : spread < 0 ? `KaNeXT +${Math.abs(spread)}.5` : 'PK';
                     const preWinPct = pg ? Math.min(92, Math.max(28, Math.round(50 + pg.krGap * 0.8))) : 50;
                     const ourKR = pg ? pg.oppKR + pg.krGap : 74;
                     const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
@@ -1307,7 +1307,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                         </View>
                         <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#4ade80' : Math.abs(miss) <= 7 ? '#fbbf24' : '#f87171' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
                         <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
-                          {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'FMU' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
+                          {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'KaNeXT' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
                         </Text>
                       </View>
                     );
@@ -1336,7 +1336,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                     {(() => {
                       const ourKR = pregame.oppKR + pregame.krGap;
                       const spread = Math.round(pregame.krGap * 0.4);
-                      const spreadStr = spread > 0 ? `FMU -${Math.abs(spread)}.5` : spread < 0 ? `FMU +${Math.abs(spread)}.5` : 'PK';
+                      const spreadStr = spread > 0 ? `KaNeXT -${Math.abs(spread)}.5` : spread < 0 ? `KaNeXT +${Math.abs(spread)}.5` : 'PK';
                       const winPct = Math.min(92, Math.max(28, Math.round(50 + pregame.krGap * 0.8)));
                       const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
                       const oppProj = Math.round(72 + (pregame.oppKR - 60) * 0.3);

@@ -88,7 +88,7 @@ export type CommunityHubTab =
 
 export const K1_TEAMS: K1Team[] = [
   { id: 't-1', name: 'Apex Racing', abbreviation: 'APX', primaryColor: '#EF4444', owner: 'Marcus Kane', homeTrack: 'Circuit of the Americas', driverCount: 2, wins: 4, points: 312 },
-  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#3B82F6', owner: 'Sarah Chen', homeTrack: 'Laguna Seca', driverCount: 2, wins: 3, points: 287 },
+  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#3B82F6', owner: 'Lisa Grant', homeTrack: 'Laguna Seca', driverCount: 2, wins: 3, points: 287 },
   { id: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#F59E0B', owner: 'David Okafor', homeTrack: 'Road Atlanta', driverCount: 2, wins: 2, points: 256 },
   { id: 't-4', name: 'Zenith Racing', abbreviation: 'ZEN', primaryColor: '#22C55E', owner: 'Anna Petrov', homeTrack: 'Watkins Glen', driverCount: 2, wins: 2, points: 241 },
   { id: 't-5', name: 'Shadow GP', abbreviation: 'SHD', primaryColor: '#7C3AED', owner: 'James Wright', homeTrack: 'Barber Motorsports', driverCount: 2, wins: 1, points: 198 },
@@ -134,7 +134,7 @@ export const K1_EVENTS: K1Event[] = [
   { id: 'e-7', name: 'Sebring Sprint', track: 'Sebring', location: 'Sebring, FL', date: 'May 31, 2026', status: 'completed', laps: 52, winner: 'Nadia Patel', winnerTeam: 'Velocity Works' },
   { id: 'e-8', name: 'Virginia Classic', track: 'VIR', location: 'Alton, VA', date: 'Jun 14, 2026', status: 'completed', laps: 44, winner: 'Leo Vasquez', winnerTeam: 'Apex Racing' },
   { id: 'e-9', name: 'Summer Showdown', track: 'Road America', location: 'Elkhart Lake, WI', date: 'Jun 28, 2026', status: 'completed', laps: 48, winner: 'Yuki Tanaka', winnerTeam: 'Phoenix Motorsport' },
-  { id: 'e-10', name: 'Independence GP', track: 'Indianapolis', location: 'Indianapolis, IN', date: 'Jul 4, 2026', status: 'completed', laps: 55, winner: 'Jake Morrison', winnerTeam: 'Apex Racing' },
+  { id: 'e-10', name: 'Independence GP', track: 'Indianapolis', location: 'Nashville, TN', date: 'Jul 4, 2026', status: 'completed', laps: 55, winner: 'Jake Morrison', winnerTeam: 'Apex Racing' },
   { id: 'e-11', name: 'Mountain Circuit', track: 'Sonoma', location: 'Sonoma, CA', date: 'Jul 18, 2026', status: 'completed', laps: 43, winner: 'Sofia Torres', winnerTeam: 'Zenith Racing' },
   { id: 'e-12', name: 'Thunder Classic', track: 'Portland', location: 'Portland, OR', date: 'Aug 1, 2026', status: 'upcoming', laps: 46, weather: 'Partly Cloudy · 72°F' },
   { id: 'e-13', name: 'Lonestar Grand Prix', track: 'COTA', location: 'Austin, TX', date: 'Aug 15, 2026', status: 'upcoming', laps: 45 },
@@ -260,8 +260,8 @@ export const K1_FAN_EVENTS: K1FanEvent[] = [
   { id: 'fe-2', name: 'Media Day — Laguna Seca', type: 'media_day', location: 'Monterey, CA', date: 'Mar 21, 2026', time: '9:00 AM', description: 'Pre-race media availability with all 16 drivers and team principals at Laguna Seca.', status: 'completed', attendance: 320, linkedRace: 'e-2' },
   { id: 'fe-3', name: 'K-1 x Nike Activation', type: 'sponsor_activation', location: 'Lexington, OH', date: 'May 2, 2026', time: '11:00 AM', description: 'Nike pop-up experience with limited-edition K-1 racing gear and athlete meet-and-greet.', status: 'completed', attendance: 1800, linkedRace: 'e-5' },
   { id: 'fe-4', name: 'Driver Meet & Greet — Road Atlanta', type: 'fan_event', location: 'Braselton, GA', date: 'Apr 4, 2026', time: '2:00 PM', description: 'Exclusive paddock access and driver signing session at Road Atlanta.', status: 'completed', attendance: 2600, linkedRace: 'e-3' },
-  { id: 'fe-5', name: 'Charity Kart Race', type: 'community', location: 'Indianapolis, IN', date: 'Jul 3, 2026', time: '3:00 PM', description: 'K-1 drivers race rental karts to raise funds for youth STEM programs.', status: 'completed', attendance: 1500 },
-  { id: 'fe-6', name: 'Season Awards Gala', type: 'awards', location: 'Los Angeles, CA', date: 'Sep 20, 2026', time: '7:00 PM', description: 'Black-tie season-ending awards ceremony honoring top drivers, teams, and crew.', status: 'upcoming' },
+  { id: 'fe-5', name: 'Charity Kart Race', type: 'community', location: 'Nashville, TN', date: 'Jul 3, 2026', time: '3:00 PM', description: 'K-1 drivers race rental karts to raise funds for youth STEM programs.', status: 'completed', attendance: 1500 },
+  { id: 'fe-6', name: 'Season Awards Gala', type: 'awards', location: 'Nashville, TN', date: 'Sep 20, 2026', time: '7:00 PM', description: 'Black-tie season-ending awards ceremony honoring top drivers, teams, and crew.', status: 'upcoming' },
   { id: 'fe-7', name: 'Thunder Classic Fan Zone', type: 'fan_event', location: 'Portland, OR', date: 'Jul 31, 2026', time: '10:00 AM', description: 'Fan zone with simulators, merch, food trucks, and pre-race entertainment at Portland.', status: 'upcoming', linkedRace: 'e-12' },
   { id: 'fe-8', name: 'Pre-Race Concert — Portland', type: 'promo', location: 'Portland, OR', date: 'Jul 31, 2026', time: '7:00 PM', description: 'Live concert featuring regional artists the evening before the Thunder Classic.', status: 'upcoming', linkedRace: 'e-12' },
   { id: 'fe-9', name: 'Lonestar Fan Fest', type: 'fan_event', location: 'Austin, TX', date: 'Aug 14, 2026', time: '10:00 AM', description: 'Texas-sized fan festival with BBQ, live demos, and driver Q&A at COTA.', status: 'upcoming', linkedRace: 'e-13' },

@@ -240,7 +240,7 @@ export default function ConnectScreen() {
           </ThemedText>
           <View style={styles.contactRow}>
             <IconSymbol name="phone.fill" size={16} color={modeColors.primary} />
-            <ThemedText style={styles.contactText}>(800) ICC-INFO</ThemedText>
+            <ThemedText style={styles.contactText}>(800) 555-0100</ThemedText>
           </View>
           <View style={styles.contactRow}>
             <IconSymbol name="envelope.fill" size={16} color={modeColors.primary} />

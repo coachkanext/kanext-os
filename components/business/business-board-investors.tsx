@@ -793,7 +793,7 @@ interface MemberVote {
 const RESOLUTION_VOTES: Record<string, { members: MemberVote[]; quorumNeeded: number }> = {
   'res-1': {
     members: [
-      { name: 'Sammy Kalejaiye', vote: 'For' },
+      { name: 'Alex Morgan', vote: 'For' },
       { name: 'Patrick Bet-David', vote: 'For' },
       { name: 'Tom Ellsworth', vote: 'For' },
     ],
@@ -801,7 +801,7 @@ const RESOLUTION_VOTES: Record<string, { members: MemberVote[]; quorumNeeded: nu
   },
   'res-2': {
     members: [
-      { name: 'Sammy Kalejaiye', vote: 'For' },
+      { name: 'Alex Morgan', vote: 'For' },
       { name: 'Patrick Bet-David', vote: 'Pending' },
       { name: 'Tom Ellsworth', vote: 'Abstain' },
     ],
@@ -809,7 +809,7 @@ const RESOLUTION_VOTES: Record<string, { members: MemberVote[]; quorumNeeded: nu
   },
   'res-3': {
     members: [
-      { name: 'Sammy Kalejaiye', vote: 'For' },
+      { name: 'Alex Morgan', vote: 'For' },
       { name: 'Patrick Bet-David', vote: 'For' },
       { name: 'Tom Ellsworth', vote: 'For' },
     ],
@@ -817,7 +817,7 @@ const RESOLUTION_VOTES: Record<string, { members: MemberVote[]; quorumNeeded: nu
   },
   'res-4': {
     members: [
-      { name: 'Sammy Kalejaiye', vote: 'Pending' },
+      { name: 'Alex Morgan', vote: 'Pending' },
       { name: 'Patrick Bet-David', vote: 'Pending' },
       { name: 'Tom Ellsworth', vote: 'Pending' },
     ],
@@ -825,7 +825,7 @@ const RESOLUTION_VOTES: Record<string, { members: MemberVote[]; quorumNeeded: nu
   },
   'res-5': {
     members: [
-      { name: 'Sammy Kalejaiye', vote: 'For' },
+      { name: 'Alex Morgan', vote: 'For' },
       { name: 'Tom Ellsworth', vote: 'For' },
     ],
     quorumNeeded: 1,

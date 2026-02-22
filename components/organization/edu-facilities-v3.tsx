@@ -1,7 +1,7 @@
 /**
  * Edu Facilities V3 — 3-pill ViewBar (Campus | Bookings | Maintenance)
- * Florida Memorial University · President perspective
- * HBCU · Founded 1879 · Miami Gardens, FL · SACSCOC Accredited
+ * KaNeXT Sports · President perspective
+ * HBCU · Founded 1879 · Nashville, TN · SACSCOC Accredited
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';

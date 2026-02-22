@@ -1,6 +1,8 @@
 /**
  * Media Screen — Universal across all modes (v1 LOCKED)
- * 4 swipeable top tabs: Feed | Explore | Room (mode-specific) | Library
+ * 4 swipeable top tabs: Feed | Explore | Rooms | Library
+ * Labels are canonical and never change by mode. Content inside each
+ * tab (especially Rooms) varies by mode internally.
  * Same PagerView pattern as Home hub tabs.
  */
 
@@ -41,26 +43,16 @@ import { LibraryHub } from '@/components/library/library-hub';
 const ACCENT_GOLD = '#FFFFFF';
 
 // =============================================================================
-// MEDIA TOP TABS (v1 LOCKED)
-// 4 swipeable pages — Feed | Explore | Room (mode-specific) | Library
+// MEDIA TOP TABS (v1 LOCKED — canonical labels, never change by mode)
+// 4 swipeable pages — Feed | Explore | Rooms | Library
 // =============================================================================
 
-const ROOM_LABEL: Record<Mode, string> = {
-  sports: 'Film Room',
-  church: 'Ministry Rooms',
-  education: 'Classrooms',
-  business: 'Workspaces',
-  competition: 'Paddock',
-};
-
-function getMediaTabs(mode: Mode) {
-  return [
-    { id: 'feed', label: 'Feed' },
-    { id: 'explore', label: 'Explore' },
-    { id: 'room', label: ROOM_LABEL[mode] ?? 'Room' },
-    { id: 'library', label: 'Library' },
-  ];
-}
+const MEDIA_TABS = [
+  { id: 'feed', label: 'Feed' },
+  { id: 'explore', label: 'Explore' },
+  { id: 'rooms', label: 'Rooms' },
+  { id: 'library', label: 'Library' },
+];
 
 // =============================================================================
 // MODE-SPECIFIC VIDEO DATA
@@ -320,7 +312,7 @@ function ExplorePage({ colors, mode }: { colors: typeof Colors.light; mode: Mode
   return <ModeExplorePageV2 mode={mode} />;
 }
 
-function RoomPage({ colors, label, mode }: { colors: typeof Colors.light; label: string; mode: Mode }) {
+function RoomPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
   if (mode === 'sports') return <SportsFilmRoomV2 />;
   return <ModeFilmRoomV2 mode={mode} />;
 }
@@ -340,8 +332,7 @@ export default function VideoHomeScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
 
-  const tabs = getMediaTabs(mode);
-  const roomLabel = ROOM_LABEL[mode] ?? 'Room';
+  const tabs = MEDIA_TABS;
 
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
@@ -367,7 +358,7 @@ export default function VideoHomeScreen() {
             <ExplorePage colors={colors} mode={mode} />
           </View>
           <View key="room" style={{ flex: 1 }}>
-            <RoomPage colors={colors} label={roomLabel} mode={mode} />
+            <RoomPage colors={colors} mode={mode} />
           </View>
           <View key="library" style={{ flex: 1 }}>
             <LibraryPage />

@@ -1,6 +1,6 @@
 #!/usr/bin/env npx tsx
 /**
- * ICCLA Scraper — scrapes public data from https://iccla.com
+ * KaNeXT Church Scraper — scrapes public data from https://iccla.com
  * Outputs structured JSON to data/church/iccla.json
  *
  * Usage: npx tsx scripts/scrape_iccla.ts
@@ -51,7 +51,7 @@ function extractYoutubeUrls(html: string): string[] {
 }
 
 async function main() {
-  console.log('ICCLA Scraper — https://iccla.com');
+  console.log('KaNeXT Church Scraper — https://iccla.com');
   console.log('Checking robots.txt compliance...');
 
   const robotsRes = await fetch(`${BASE}/robots.txt`);
@@ -90,8 +90,8 @@ async function main() {
   // Build output JSON structure
   const output = {
     church_profile: {
-      name: 'International Christian Center | Los Angeles',
-      shortName: 'ICCLA',
+      name: 'KaNeXT Church | Los Angeles',
+      shortName: 'KaNeXT Church',
       denomination: 'Inter-denominational Pentecostal',
       description: 'A Multicultural Christian Haven for Worshipping Jesus Christ',
       website: BASE,

@@ -34,15 +34,15 @@ import {
 
 // Data
 import {
-  FMU_GAMES,
-  FMU_RECORD,
-  FMU_STANDINGS,
-  FMU_KR,
-  FMU_NEWS,
-  FMU_LEADERS,
-  FMU_PLAYER_BIOS,
-  FMU_GAME_STATS,
-  type FMUGame,
+  KaNeXT_GAMES,
+  KaNeXT_RECORD,
+  KaNeXT_STANDINGS,
+  KaNeXT_KR,
+  KaNeXT_NEWS,
+  KaNeXT_LEADERS,
+  KaNeXT_PLAYER_BIOS,
+  KaNeXT_GAME_STATS,
+  type KaNeXTGame,
   type NewsItem,
 } from '@/data/fmu';
 import {
@@ -54,12 +54,12 @@ import {
 } from '@/data/roster-data';
 import { OFFENSIVE_STYLES, DEFENSIVE_STYLES } from '@/data/mock-program-context';
 import {
-  FMU_STAFF,
-  FMU_OPERATIONS,
-  FMU_FINANCE,
-  FMU_COMPLIANCE,
-  FMU_LINEUPS,
-  FMU_SYSTEMS,
+  KaNeXT_STAFF,
+  KaNeXT_OPERATIONS,
+  KaNeXT_FINANCE,
+  KaNeXT_COMPLIANCE,
+  KaNeXT_LINEUPS,
+  KaNeXT_SYSTEMS,
   type StaffMember,
   type LineupPreset,
   type BudgetLine,
@@ -174,8 +174,8 @@ export function TeamSheet({
   }, [visible, tabs]);
 
   // Team data
-  const record = FMU_RECORD;
-  const teamKR = FMU_KR;
+  const record = KaNeXT_RECORD;
+  const teamKR = KaNeXT_KR;
   const offKRs = Object.values(PLAYER_CLUSTERS).map(computeOffKR);
   const defKRs = Object.values(PLAYER_CLUSTERS).map(computeDefKR);
   const avgOffKR = Math.round(offKRs.reduce((a, b) => a + b, 0) / offKRs.length);
@@ -183,7 +183,7 @@ export function TeamSheet({
 
   // Streak
   const streak = useMemo(() => {
-    const finalGames = FMU_GAMES.filter((g) => g.status === 'final' && g.score);
+    const finalGames = KaNeXT_GAMES.filter((g) => g.status === 'final' && g.score);
     if (finalGames.length === 0) return 'N/A';
     let count = 0;
     let type: 'W' | 'L' | null = null;
@@ -200,18 +200,18 @@ export function TeamSheet({
 
   // Next game
   const nextGame = useMemo(() => {
-    return FMU_GAMES.find((g) => g.status === 'upcoming') ?? null;
+    return KaNeXT_GAMES.find((g) => g.status === 'upcoming') ?? null;
   }, []);
 
   // Standings position
   const standingsPos = useMemo(() => {
-    const fmuEntry = FMU_STANDINGS.find((s: any) => s.school?.includes('Florida Memorial'));
+    const fmuEntry = KaNeXT_STANDINGS.find((s: any) => s.school?.includes('KaNeXT Sports'));
     return fmuEntry ? `${FMU_STANDINGS.indexOf(fmuEntry) + 1}/${FMU_STANDINGS.length}` : '—';
   }, []);
 
   // Roster summary
   const rosterPlayers = useMemo(() => {
-    return Object.entries(FMU_PLAYER_BIOS).map(([jersey, bio]) => {
+    return Object.entries(KaNeXT_PLAYER_BIOS).map(([jersey, bio]) => {
       const clusters = PLAYER_CLUSTERS[jersey];
       const meta = ROSTER_META[jersey];
       const kr = clusters
@@ -223,11 +223,11 @@ export function TeamSheet({
 
   // Team averages from leaders
   const teamAvgs = useMemo(() => {
-    if (FMU_LEADERS.length === 0) return null;
-    const count = FMU_LEADERS.length;
-    const ppg = FMU_LEADERS.reduce((s, l) => s + l.ppg, 0) / count;
-    const rpg = FMU_LEADERS.reduce((s, l) => s + l.rpg, 0) / count;
-    const apg = FMU_LEADERS.reduce((s, l) => s + l.apg, 0) / count;
+    if (KaNeXT_LEADERS.length === 0) return null;
+    const count = KaNeXT_LEADERS.length;
+    const ppg = KaNeXT_LEADERS.reduce((s, l) => s + l.ppg, 0) / count;
+    const rpg = KaNeXT_LEADERS.reduce((s, l) => s + l.rpg, 0) / count;
+    const apg = KaNeXT_LEADERS.reduce((s, l) => s + l.apg, 0) / count;
     return {
       ppg: ppg.toFixed(1),
       rpg: rpg.toFixed(1),
@@ -237,12 +237,12 @@ export function TeamSheet({
 
   // Upcoming schedule
   const upcomingGames = useMemo(() => {
-    return FMU_GAMES.filter((g) => g.status === 'upcoming').slice(0, 5);
+    return KaNeXT_GAMES.filter((g) => g.status === 'upcoming').slice(0, 5);
   }, []);
 
   // Recent results
   const recentResults = useMemo(() => {
-    return FMU_GAMES.filter((g) => g.status === 'final').slice(-5).reverse();
+    return KaNeXT_GAMES.filter((g) => g.status === 'final').slice(-5).reverse();
   }, []);
 
   return (
@@ -252,10 +252,10 @@ export function TeamSheet({
         <View style={styles.headerTop}>
           <View style={{ flex: 1 }}>
             <Text style={[styles.teamName, { color: colors.text }]}>
-              Florida Memorial Lions
+              KaNeXT Sports Lions
             </Text>
             <Text style={[styles.teamSub, { color: colors.textSecondary }]}>
-              NAIA · Sun Conference · Men's Basketball
+              NAIA · KaNeXT Conference · Men's Basketball
             </Text>
           </View>
           <Pressable onPress={onClose} hitSlop={8}>
@@ -664,11 +664,11 @@ export function TeamSheet({
         <View style={styles.tabContent}>
           <SectionLabel label="BUDGET OVERVIEW" colors={colors} />
           <Card colors={colors}>
-            <StatRow label="Total Budget" value={formatCurrency(FMU_FINANCE.totalBudget)} colors={colors} />
-            <StatRow label="Total Spent" value={formatCurrency(FMU_FINANCE.breakdown.reduce((s, b) => s + b.spent, 0))} colors={colors} />
-            <StatRow label="Scholarship Allocation" value={formatCurrency(FMU_FINANCE.scholarshipTotal)} colors={colors} />
-            <StatRow label="NIL Pool" value={formatCurrency(FMU_FINANCE.nilPoolTotal)} colors={colors} />
-            <StatRow label="Revenue YTD" value={formatCurrency(FMU_FINANCE.revenueYTD)} colors={colors} valueColor="#22C55E" />
+            <StatRow label="Total Budget" value={formatCurrency(KaNeXT_FINANCE.totalBudget)} colors={colors} />
+            <StatRow label="Total Spent" value={formatCurrency(KaNeXT_FINANCE.breakdown.reduce((s, b) => s + b.spent, 0))} colors={colors} />
+            <StatRow label="Scholarship Allocation" value={formatCurrency(KaNeXT_FINANCE.scholarshipTotal)} colors={colors} />
+            <StatRow label="NIL Pool" value={formatCurrency(KaNeXT_FINANCE.nilPoolTotal)} colors={colors} />
+            <StatRow label="Revenue YTD" value={formatCurrency(KaNeXT_FINANCE.revenueYTD)} colors={colors} valueColor="#22C55E" />
           </Card>
 
           <SectionLabel label="BUDGET BREAKDOWN" colors={colors} />

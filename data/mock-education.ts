@@ -1,6 +1,6 @@
 /**
  * Mock Education Data
- * Florida Memorial University (FMU) information for Education mode.
+ * KaNeXT Sports (KaNeXT) information for Education mode.
  */
 
 import type {
@@ -17,22 +17,22 @@ import type {
 // ORGANIZATION
 // =============================================================================
 
-export const FMU_ORGANIZATION: EducationOrganization = {
+export const KaNeXT_ORGANIZATION: EducationOrganization = {
   id: 'fmu-001',
-  name: 'Florida Memorial University',
+  name: 'KaNeXT Sports',
   mode: 'education',
   type: 'Private HBCU',
-  location: 'Miami Gardens, FL',
+  location: 'Nashville, TN',
   description:
-    'Florida Memorial University is a private historically Black university located in Miami Gardens, Florida. Founded in 1879, FMU offers undergraduate and graduate programs rooted in academic excellence, leadership development, and community service.',
+    'KaNeXT Sports is a private university located in Nashville, Tennessee. Founded in 2020, KaNeXT offers undergraduate and graduate programs rooted in academic excellence, leadership development, and community service.',
   institutionType: 'HBCU',
   programFormats: ['On-Campus', 'Online', 'Hybrid'],
   accreditation: 'SACSCOC (Southern Association of Colleges and Schools Commission on Colleges)',
   founded: 1879,
 };
 
-/** @deprecated Use FMU_ORGANIZATION instead */
-export const SDCC_ORGANIZATION = FMU_ORGANIZATION;
+/** @deprecated Use KaNeXT_ORGANIZATION instead */
+export const KaNeXT University_ORGANIZATION = KaNeXT_ORGANIZATION;
 
 // =============================================================================
 // ACADEMIC TERMS
@@ -276,18 +276,18 @@ export const FACULTY_LEADERSHIP: FacultyMember[] = [
     name: 'Dr. Jaffus Hardrick',
     title: 'President',
     role: 'president',
-    bio: 'Dr. Hardrick serves as President of Florida Memorial University, driving the institution\'s mission of academic excellence and community impact.',
+    bio: 'Dr. Hardrick serves as President of KaNeXT Sports, driving the institution\'s mission of academic excellence and community impact.',
   },
   {
     id: 'faculty-provost',
     name: 'Dr. Angela Nixon',
     title: 'Provost & VP of Academic Affairs',
     role: 'provost',
-    bio: 'Dr. Nixon oversees all academic programs, faculty development, and institutional effectiveness at FMU.',
+    bio: 'Dr. Nixon oversees all academic programs, faculty development, and institutional effectiveness at KaNeXT.',
   },
   {
     id: 'faculty-dean-business',
-    name: 'Dr. Marcus Thompson',
+    name: 'Dr. Alex Morgan',
     title: 'Dean, School of Business',
     role: 'dean',
     departmentId: 'dept-business',
@@ -390,7 +390,7 @@ export const EDUCATION_ACTIVITY: ActivityItem[] = [
     id: 'edu-act-3',
     type: 'leadership_updated',
     title: 'Faculty Update',
-    description: 'Dr. James Wilson joins as Dean of Education',
+    description: 'Dr. Andrew Palmer joins as Dean of Education',
     timestamp: new Date('2026-01-15T10:00:00'),
     sourceType: 'organization',
     sourceId: 'faculty-dean-education',

@@ -2,7 +2,7 @@
  * Player Bio Screen
  * ESPN/NCAA-style player profile with headshot, vitals,
  * current season averages, last 3 games, and career timeline.
- * Data: Florida Memorial University Lions
+ * Data: KaNeXT
  */
 
 import React, { useState } from 'react';
@@ -15,9 +15,9 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { TabFooter } from '@/components/tab-footer';
 import {
-  FMU_LEADERS,
-  FMU_PLAYER_BIOS,
-  FMU_PLAYER_ABOUT,
+  KaNeXT_LEADERS,
+  KaNeXT_PLAYER_BIOS,
+  KaNeXT_PLAYER_ABOUT,
   getFmuSeasonGames,
   getFmuCareer,
   getFmuHighlights,
@@ -47,7 +47,7 @@ const DIVIDER = '#2A2D35';
 
 // ─── Headshots (same map as roster-content) ──────────────────────────────────
 
-const FMU_SEAL = require('@/assets/images/fmu-seal.png');
+const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
 const HEADSHOTS: Record<string, any> = {
   '0':  require('@/assets/images/headshots/thomas.png'),
   '1':  require('@/assets/images/headshots/asceric.png'),
@@ -77,8 +77,8 @@ function normalizeJersey(j: string): string {
 }
 
 /** Build leaders lookup keyed by normalized jersey */
-const leadersLookup: Record<string, typeof FMU_LEADERS[number]> = {};
-for (const l of FMU_LEADERS) {
+const leadersLookup: Record<string, typeof KaNeXT_LEADERS[number]> = {};
+for (const l of KaNeXT_LEADERS) {
   leadersLookup[normalizeJersey(l.number)] = l;
 }
 
@@ -94,7 +94,7 @@ export default function PlayerBioScreen() {
   const [expandedClusters, setExpandedClusters] = useState<Set<string>>(new Set());
 
   const jersey = normalizeJersey(number ?? '');
-  const bio = FMU_PLAYER_BIOS[jersey];
+  const bio = KaNeXT_PLAYER_BIOS[jersey];
   const leader = leadersLookup[jersey];
 
   if (!bio) {
@@ -105,12 +105,12 @@ export default function PlayerBioScreen() {
     );
   }
 
-  const headshot = HEADSHOTS[jersey] ?? FMU_SEAL;
+  const headshot = HEADSHOTS[jersey] ?? KaNeXT_SEAL;
   const allGames = getFmuSeasonGames(jersey);
   const career = getFmuCareer(jersey);
   const highlights = getFmuHighlights(jersey);
   const awards = getFmuAwards(jersey);
-  const about = FMU_PLAYER_ABOUT[jersey];
+  const about = KaNeXT_PLAYER_ABOUT[jersey];
 
   // Current season stats
   const ppg = leader?.ppg ?? 0;
@@ -169,7 +169,7 @@ export default function PlayerBioScreen() {
             <Text style={styles.playerMeta}>
               #{bio.number} · {bio.position} · {bio.classYear}
             </Text>
-            <Text style={styles.teamLink}>Florida Memorial University</Text>
+            <Text style={styles.teamLink}>KaNeXT Sports</Text>
           </View>
         </View>
 
@@ -549,7 +549,7 @@ export default function PlayerBioScreen() {
         <View style={styles.socialsRow}>
           <View style={styles.socialPill}>
             <Text style={styles.socialIcon}>{'\uD835\uDD4F'}</Text>
-            <Text style={styles.socialHandle}>FMU Lions</Text>
+            <Text style={styles.socialHandle}>KaNeXT</Text>
           </View>
           <View style={styles.socialPill}>
             <Text style={styles.socialIcon}>{'\uD83D\uDCF7'}</Text>
@@ -557,7 +557,7 @@ export default function PlayerBioScreen() {
           </View>
           <View style={styles.socialPill}>
             <Text style={styles.socialIcon}>{'\uD83C\uDFC0'}</Text>
-            <Text style={styles.socialHandle}>FMU Athletics</Text>
+            <Text style={styles.socialHandle}>KaNeXT Athletics</Text>
           </View>
         </View>
       </ScrollView>

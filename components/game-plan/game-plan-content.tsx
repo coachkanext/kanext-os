@@ -10,7 +10,7 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { FMU_NEXT_GAME_ID } from '@/data/fmu';
+import { KaNeXT_NEXT_GAME_ID } from '@/data/fmu';
 import { getGamePlanV2 } from '@/data/game-plan-v2';
 
 import { GamePlanHeader } from './game-plan-header';
@@ -44,7 +44,7 @@ export function GamePlanContent() {
   const scrollRef = useRef<ScrollView>(null);
   const sectionYs = useRef<Record<number, number>>({});
 
-  const packet = FMU_NEXT_GAME_ID ? getGamePlanV2(FMU_NEXT_GAME_ID) : null;
+  const packet = KaNeXT_NEXT_GAME_ID ? getGamePlanV2(KaNeXT_NEXT_GAME_ID) : null;
 
   const registerSection = useCallback((section: number, y: number) => {
     sectionYs.current[section] = y;

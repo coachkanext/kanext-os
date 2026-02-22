@@ -22,10 +22,10 @@ import type {
 // SHARED CONTEXT
 // =============================================================================
 
-const FMU_MBB_CONTEXT: NexusContext = {
+const KaNeXT_MBB_CONTEXT: NexusContext = {
   mode: 'sports',
   org_id: 'fmu-lions',
-  org_name: 'FMU Lions',
+  org_name: 'KaNeXT',
   scope_type: 'program',
   scope_id: 'fmu-mbb',
   scope_name: 'Men\'s Basketball',
@@ -33,10 +33,10 @@ const FMU_MBB_CONTEXT: NexusContext = {
   season_label: '2025–26',
 };
 
-const FMU_ATH_CONTEXT: NexusContext = {
+const KaNeXT_ATH_CONTEXT: NexusContext = {
   mode: 'sports',
   org_id: 'fmu-lions',
-  org_name: 'FMU Lions',
+  org_name: 'KaNeXT',
   scope_type: 'org',
   season_id: '2025-26',
   season_label: '2025–26',
@@ -46,7 +46,7 @@ const FMU_ATH_CONTEXT: NexusContext = {
 // OWNERS
 // =============================================================================
 
-const OWNER_HC: Owner = { owner_type: 'user', owner_id: 'sammy', owner_label: 'Head Coach Kalejaiye' };
+const OWNER_HC: Owner = { owner_type: 'user', owner_id: 'sammy', owner_label: 'Head Coach Carter' };
 const OWNER_OPS: Owner = { owner_type: 'role', owner_id: 'ops-lead', owner_label: 'Ops Lead' };
 const OWNER_COMPLIANCE: Owner = { owner_type: 'role', owner_id: 'compliance-officer', owner_label: 'Compliance Officer' };
 const OWNER_VIDEO: Owner = { owner_type: 'role', owner_id: 'video-coord', owner_label: 'Video Coordinator' };
@@ -96,7 +96,7 @@ export const MOCK_NEXUS_TASKS: NexusTask[] = [
   {
     id: 'nt-001',
     title: 'Confirm travel bus for Southeastern road trip',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     owner: OWNER_OPS,
     priority: 'blocker',
     status: 'open',
@@ -111,7 +111,7 @@ export const MOCK_NEXUS_TASKS: NexusTask[] = [
   {
     id: 'nt-002',
     title: 'Upload scout packet clips for Southeastern',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     owner: OWNER_VIDEO,
     priority: 'high',
     status: 'in_progress',
@@ -125,7 +125,7 @@ export const MOCK_NEXUS_TASKS: NexusTask[] = [
   {
     id: 'nt-003',
     title: 'Review Carter eligibility docs',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     owner: OWNER_COMPLIANCE,
     priority: 'blocker',
     status: 'open',
@@ -140,7 +140,7 @@ export const MOCK_NEXUS_TASKS: NexusTask[] = [
   {
     id: 'nt-004',
     title: 'Lock game plan for Southeastern',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     owner: OWNER_HC,
     priority: 'high',
     status: 'open',
@@ -154,7 +154,7 @@ export const MOCK_NEXUS_TASKS: NexusTask[] = [
   {
     id: 'nt-005',
     title: 'Complete player development film assignments',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     owner: OWNER_AC,
     priority: 'normal',
     status: 'in_progress',
@@ -168,7 +168,7 @@ export const MOCK_NEXUS_TASKS: NexusTask[] = [
   {
     id: 'nt-006',
     title: 'Schedule campus visit for Darius Thompson',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     owner: OWNER_RECRUITING,
     priority: 'high',
     status: 'waiting',
@@ -192,7 +192,7 @@ export const MOCK_NEXUS_REQUESTS: NexusRequest[] = [
     short_id: 'REQ-1042',
     request_type: 'compliance_exception',
     title: 'Eligibility review — Marcus Carter enrollment docs',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     submitted_by: 'sammy',
     assigned_owner: OWNER_COMPLIANCE,
     status: 'under_review',
@@ -205,7 +205,7 @@ export const MOCK_NEXUS_REQUESTS: NexusRequest[] = [
       { id: 'att-001', attachment_type: 'link', label: 'Partial enrollment form', url: '#', created_at: '2025-02-15T11:00:00Z' },
     ],
     audit_notes: [
-      { id: 'an-001', context: FMU_MBB_CONTEXT, actor_user_id: 'sammy', actor_label: 'HC Kalejaiye', note_text: 'Initiated eligibility review for Carter. Missing enrollment verification.', created_at: '2025-02-15T11:00:00Z' },
+      { id: 'an-001', context: KaNeXT_MBB_CONTEXT, actor_user_id: 'sammy', actor_label: 'HC Carter', note_text: 'Initiated eligibility review for Carter. Missing enrollment verification.', created_at: '2025-02-15T11:00:00Z' },
     ],
     linked_objects: [CHIP_PLAYER_CARTER, CHIP_COMPLIANCE_DESK],
     created_at: '2025-02-15T11:00:00Z',
@@ -216,7 +216,7 @@ export const MOCK_NEXUS_REQUESTS: NexusRequest[] = [
     short_id: 'REQ-1043',
     request_type: 'approval',
     title: 'Travel expense approval — Southeastern road trip',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     submitted_by: 'ops-lead',
     assigned_owner: OWNER_HC,
     status: 'new',
@@ -238,7 +238,7 @@ export const MOCK_NEXUS_REQUESTS: NexusRequest[] = [
     short_id: 'REQ-1044',
     request_type: 'payment_release',
     title: 'NIL disbursement — February cycle',
-    context: FMU_ATH_CONTEXT,
+    context: KaNeXT_ATH_CONTEXT,
     submitted_by: 'finance-lead',
     assigned_owner: OWNER_HC,
     status: 'awaiting_info',
@@ -249,7 +249,7 @@ export const MOCK_NEXUS_REQUESTS: NexusRequest[] = [
     },
     evidence: [],
     audit_notes: [
-      { id: 'an-002', context: FMU_ATH_CONTEXT, actor_user_id: 'finance-lead', actor_label: 'Finance Lead', note_text: 'Pending 2 player NIL disclosure forms before release.', created_at: '2025-02-16T15:00:00Z' },
+      { id: 'an-002', context: KaNeXT_ATH_CONTEXT, actor_user_id: 'finance-lead', actor_label: 'Finance Lead', note_text: 'Pending 2 player NIL disclosure forms before release.', created_at: '2025-02-16T15:00:00Z' },
     ],
     linked_objects: [
       { id: 'lc-fin', objectType: 'finance_event', objectId: 'fe-nil-feb', label: 'NIL Feb Cycle', icon: 'dollarsign.circle' },
@@ -263,7 +263,7 @@ export const MOCK_NEXUS_REQUESTS: NexusRequest[] = [
     short_id: 'REQ-1045',
     request_type: 'schedule_change',
     title: 'Move Wednesday practice to 3:00 PM (facility conflict)',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     submitted_by: 'ops-lead',
     assigned_owner: OWNER_HC,
     status: 'new',
@@ -286,9 +286,9 @@ export const MOCK_NEXUS_REQUESTS: NexusRequest[] = [
 export const MOCK_NEXUS_WORKSPACES: NexusWorkspace[] = [
   {
     id: 'nw-001',
-    title: 'FMU MBB — Game Week: vs Southeastern',
+    title: 'KaNeXT MBB — Game Week: vs Southeastern',
     description: 'All preparation for the February 22 road game.',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     workspace_type: 'game_week',
     visibility: 'scoped',
     owners: [OWNER_HC],
@@ -306,9 +306,9 @@ export const MOCK_NEXUS_WORKSPACES: NexusWorkspace[] = [
   },
   {
     id: 'nw-002',
-    title: 'FMU MBB — Recruiting Board (2026 Class)',
+    title: 'KaNeXT MBB — Recruiting Board (2026 Class)',
     description: 'Pipeline tracking for the 2026 recruiting class.',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     workspace_type: 'recruiting_board',
     visibility: 'scoped',
     owners: [OWNER_HC, OWNER_RECRUITING],
@@ -333,7 +333,7 @@ export const MOCK_NEXUS_PACKETS: NexusPacket[] = [
   {
     id: 'np-001',
     title: 'Scouting Brief — Southeastern',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     workspace_id: 'nw-001',
     packet_type: 'scouting_brief',
     inputs: [CHIP_GAME_NEXT],
@@ -354,17 +354,17 @@ export const MOCK_NEXUS_PACKETS: NexusPacket[] = [
 // =============================================================================
 
 export const MOCK_NEXUS_ROOMS: NexusRoom[] = [
-  { id: 'rm-staff', name: 'MBB Staff Room', context: FMU_MBB_CONTEXT, room_type: 'staff', visibility: 'scoped', owners: [OWNER_HC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
-  { id: 'rm-ops', name: 'Ops Command — MBB', context: FMU_MBB_CONTEXT, room_type: 'ops_command', visibility: 'scoped', owners: [OWNER_OPS], active_blockers_count: 2, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
-  { id: 'rm-compliance', name: 'Compliance Desk — FMU', context: FMU_ATH_CONTEXT, room_type: 'compliance_desk', visibility: 'restricted', owners: [OWNER_COMPLIANCE], active_blockers_count: 1, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T08:00:00Z' },
-  { id: 'rm-finance', name: 'Finance Desk — FMU', context: FMU_ATH_CONTEXT, room_type: 'finance_desk', visibility: 'restricted', owners: [OWNER_FINANCE], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-16T15:00:00Z' },
-  { id: 'rm-recruiting', name: 'Recruiting War Room — MBB', context: FMU_MBB_CONTEXT, room_type: 'recruiting', visibility: 'scoped', owners: [OWNER_HC, OWNER_RECRUITING], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T11:00:00Z' },
-  { id: 'rm-film', name: 'Film Room Q&A — MBB', context: FMU_MBB_CONTEXT, room_type: 'film_qa', visibility: 'scoped', owners: [OWNER_VIDEO], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T09:30:00Z' },
-  { id: 'rm-media', name: 'Media Ops — FMU', context: FMU_ATH_CONTEXT, room_type: 'media_ops', visibility: 'scoped', owners: [{ owner_type: 'role', owner_id: 'media-lead', owner_label: 'Media Lead' }], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
-  { id: 'rm-ad', name: 'AD Command — FMU', context: FMU_ATH_CONTEXT, room_type: 'ad_command', visibility: 'restricted', owners: [OWNER_HC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T07:00:00Z' },
-  { id: 'rm-player-support', name: 'Player Support — MBB', context: FMU_MBB_CONTEXT, room_type: 'player_support', visibility: 'scoped', owners: [OWNER_AC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
-  { id: 'rm-game-cmd', name: 'Game Command — vs Southeastern', context: FMU_MBB_CONTEXT, room_type: 'game_command', visibility: 'scoped', owners: [OWNER_HC, OWNER_OPS], next_deadline_at: '2025-02-22T19:00:00Z', created_at: '2025-02-17T07:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
-  { id: 'rm-dev', name: 'Player Dev — Guards', context: FMU_MBB_CONTEXT, room_type: 'dev_unit', visibility: 'scoped', owners: [OWNER_AC], created_at: '2025-01-15T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
+  { id: 'rm-staff', name: 'MBB Staff Room', context: KaNeXT_MBB_CONTEXT, room_type: 'staff', visibility: 'scoped', owners: [OWNER_HC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
+  { id: 'rm-ops', name: 'Ops Command — MBB', context: KaNeXT_MBB_CONTEXT, room_type: 'ops_command', visibility: 'scoped', owners: [OWNER_OPS], active_blockers_count: 2, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
+  { id: 'rm-compliance', name: 'Compliance Desk — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'compliance_desk', visibility: 'restricted', owners: [OWNER_COMPLIANCE], active_blockers_count: 1, created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T08:00:00Z' },
+  { id: 'rm-finance', name: 'Finance Desk — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'finance_desk', visibility: 'restricted', owners: [OWNER_FINANCE], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-16T15:00:00Z' },
+  { id: 'rm-recruiting', name: 'Recruiting War Room — MBB', context: KaNeXT_MBB_CONTEXT, room_type: 'recruiting', visibility: 'scoped', owners: [OWNER_HC, OWNER_RECRUITING], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T11:00:00Z' },
+  { id: 'rm-film', name: 'Film Room Q&A — MBB', context: KaNeXT_MBB_CONTEXT, room_type: 'film_qa', visibility: 'scoped', owners: [OWNER_VIDEO], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T09:30:00Z' },
+  { id: 'rm-media', name: 'Media Ops — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'media_ops', visibility: 'scoped', owners: [{ owner_type: 'role', owner_id: 'media-lead', owner_label: 'Media Lead' }], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
+  { id: 'rm-ad', name: 'AD Command — KaNeXT', context: KaNeXT_ATH_CONTEXT, room_type: 'ad_command', visibility: 'restricted', owners: [OWNER_HC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T07:00:00Z' },
+  { id: 'rm-player-support', name: 'Player Support — MBB', context: KaNeXT_MBB_CONTEXT, room_type: 'player_support', visibility: 'scoped', owners: [OWNER_AC], created_at: '2025-01-01T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
+  { id: 'rm-game-cmd', name: 'Game Command — vs Southeastern', context: KaNeXT_MBB_CONTEXT, room_type: 'game_command', visibility: 'scoped', owners: [OWNER_HC, OWNER_OPS], next_deadline_at: '2025-02-22T19:00:00Z', created_at: '2025-02-17T07:00:00Z', updated_at: '2025-02-17T14:00:00Z' },
+  { id: 'rm-dev', name: 'Player Dev — Guards', context: KaNeXT_MBB_CONTEXT, room_type: 'dev_unit', visibility: 'scoped', owners: [OWNER_AC], created_at: '2025-01-15T00:00:00Z', updated_at: '2025-02-17T10:00:00Z' },
 ];
 
 // =============================================================================
@@ -374,8 +374,8 @@ export const MOCK_NEXUS_ROOMS: NexusRoom[] = [
 export const MOCK_NEXUS_THREADS: NexusThread[] = [
   {
     id: 'demo-thread-main',
-    title: 'FMU MBB — This Context',
-    context: FMU_MBB_CONTEXT,
+    title: 'KaNeXT MBB — This Context',
+    context: KaNeXT_MBB_CONTEXT,
     scope_mode: 'this_context',
     pinned_link_chips: [CHIP_GAME_NEXT, CHIP_STAFF_ROOM],
     last_activity_at: '2025-02-17T14:30:00Z',
@@ -383,7 +383,7 @@ export const MOCK_NEXUS_THREADS: NexusThread[] = [
   {
     id: 'demo-thread-gameweek',
     title: 'Game Week: vs Southeastern',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     workspace_id: 'nw-001',
     scope_mode: 'this_context',
     pinned_link_chips: [CHIP_GAME_NEXT, CHIP_OPS_COMMAND],
@@ -392,7 +392,7 @@ export const MOCK_NEXUS_THREADS: NexusThread[] = [
   {
     id: 'demo-thread-recruiting',
     title: 'Recruiting Board — 2026 Class',
-    context: FMU_MBB_CONTEXT,
+    context: KaNeXT_MBB_CONTEXT,
     workspace_id: 'nw-002',
     scope_mode: 'this_context',
     pinned_link_chips: [CHIP_RECRUITING_WAR],
@@ -499,8 +499,8 @@ export const DEMO_V2_MESSAGES: MessageV2[] = [
     messageType: 'confirmation',
     confirmation: {
       state: 'pending',
-      action_summary: 'Post update to Compliance Desk — FMU',
-      target_context: 'Sports · FMU · Athletics · 2025–26',
+      action_summary: 'Post update to Compliance Desk — KaNeXT',
+      target_context: 'Sports · KaNeXT · Athletics · 2025–26',
       impact_line: 'This will notify the Compliance Officer about the Carter eligibility status.',
       requires_audit_note: false,
     },
@@ -526,7 +526,7 @@ export const DEMO_V2_MESSAGES: MessageV2[] = [
       status: 'posted',
       action_type: 'post_room',
       summary: 'Posted to Compliance Desk: "Update on Carter eligibility — registrar follow-up task created, due Feb 18 5 PM. Missing enrollment verification form."',
-      target_room: 'Compliance Desk — FMU',
+      target_room: 'Compliance Desk — KaNeXT',
       objects: [CHIP_COMPLIANCE_DESK, CHIP_PLAYER_CARTER],
     },
   },
@@ -569,7 +569,7 @@ export const DEMO_V2_CONVERSATION = {
   id: CONV_ID,
   title: 'Game Week Prep — Southeastern',
   participants: [
-    { id: 'sammy', name: 'Sammy', role: 'owner' as const },
+    { id: 'sammy', name: 'Alex', role: 'owner' as const },
     { id: 'nexus', name: 'Nexus', role: 'member' as const },
   ],
   updatedAt: new Date('2025-02-17T14:03:03Z'),

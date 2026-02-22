@@ -127,13 +127,13 @@ export interface PinnedIntel {
 // =============================================================================
 
 export const PROGRAM_IDENTITY: ProgramIdentity = {
-  name: 'Florida Memorial University',
-  initials: 'FMU',
-  organization: 'Florida Memorial University Athletics',
+  name: 'KaNeXT Sports',
+  initials: 'KaNeXT',
+  organization: 'KaNeXT Sports Athletics',
   level: 'NAIA',
-  conference: 'Sun Conference',
+  conference: 'KaNeXT Conference',
   governingBody: 'NAIA',
-  location: 'Miami Gardens, FL',
+  location: 'Nashville, TN',
   founded: '1879',
   colors: ['#1B4F8A', '#FFFFFF'],
 };
@@ -188,7 +188,7 @@ export const PROGRAM_HEALTH: ProgramHealth = {
 // =============================================================================
 
 export const PINNED_INTEL: PinnedIntel[] = [
-  { id: 'pi-1', type: 'sim', title: 'FMU vs Webber — 64% Win Prob', date: 'Feb 18' },
+  { id: 'pi-1', type: 'sim', title: 'KaNeXT vs Webber — 64% Win Prob', date: 'Feb 18' },
   { id: 'pi-2', type: 'game-plan', title: 'Webber Game Plan — Motion Offense Focus', date: 'Feb 17' },
   { id: 'pi-3', type: 'dev-plan', title: 'Week 22 Development Plan', date: 'Feb 17' },
 ];
@@ -198,7 +198,7 @@ export const PINNED_INTEL: PinnedIntel[] = [
 // =============================================================================
 
 export const STAFF_MEMBERS: StaffMember[] = [
-  { id: 'staff-1', name: 'Sammy Kalejaiye', initials: 'SK', role: 'Head Coach', teamAssignment: 'Varsity', permissionTier: 'admin', email: 'skalejaiye@fmu.edu' },
+  { id: 'staff-1', name: 'Alex Morgan', initials: 'AM', role: 'Head Coach', teamAssignment: 'Varsity', permissionTier: 'admin', email: 'skalejaiye@fmu.edu' },
   { id: 'staff-2', name: 'Marcus Johnson', initials: 'MJ', role: 'Assistant Coach', teamAssignment: 'Varsity', permissionTier: 'coach', email: 'mjohnson@fmu.edu' },
   { id: 'staff-3', name: 'David Chen', initials: 'DC', role: 'Assistant Coach', teamAssignment: 'Varsity', permissionTier: 'coach', email: 'dchen@fmu.edu' },
   { id: 'staff-4', name: 'Sarah Thompson', initials: 'ST', role: 'Director of Ops', teamAssignment: 'All Teams', permissionTier: 'staff', email: 'sthompson@fmu.edu' },
@@ -213,14 +213,14 @@ export const STAFF_MEMBERS: StaffMember[] = [
 // =============================================================================
 
 export const ATHLETE_MEMBERS: AthleteMember[] = [
-  { id: '1', name: 'Brandon Williams', number: '1', position: 'PG', classYear: 'SR', team: 'varsity', status: 'active' },
+  { id: '1', name: 'Marcus Reed', number: '1', position: 'PG', classYear: 'SR', team: 'varsity', status: 'active' },
   { id: '2', name: 'Chris Plantey', number: '2', position: 'CG', classYear: 'JR', team: 'varsity', status: 'active' },
   { id: '3', name: 'Paul Diomande', number: '3', position: 'F', classYear: 'SO', team: 'varsity', status: 'active' },
-  { id: '4', name: 'Nathan Chtelan', number: '4', position: 'W', classYear: 'JR', team: 'varsity', status: 'active' },
-  { id: '5', name: 'Laolu Kalejaiye', number: '5', position: 'B', classYear: 'SO', team: 'varsity', status: 'active' },
+  { id: '4', name: 'Tyler Quinn', number: '4', position: 'W', classYear: 'JR', team: 'varsity', status: 'active' },
+  { id: '5', name: 'Devon Carter', number: '5', position: 'B', classYear: 'SO', team: 'varsity', status: 'active' },
   { id: '6', name: 'David Blake', number: '6', position: 'PG', classYear: 'SR', team: 'varsity', status: 'active' },
   { id: '7', name: 'Marcus Collins', number: '7', position: 'CG', classYear: 'FR', team: 'varsity', status: 'active' },
-  { id: '8', name: 'Adrian Hernandez', number: '8', position: 'W', classYear: 'JR', team: 'varsity', status: 'active' },
+  { id: '8', name: 'Jordan Blake', number: '8', position: 'W', classYear: 'JR', team: 'varsity', status: 'active' },
   { id: '9', name: 'Jaylen Moore', number: '9', position: 'F', classYear: 'SO', team: 'varsity', status: 'active' },
   { id: '10', name: 'Jalen Washington', number: '10', position: 'B', classYear: 'FR', team: 'varsity', status: 'active' },
   { id: '11', name: 'Trevor Hayes', number: '11', position: 'PG', classYear: 'FR', team: 'jv', status: 'active' },
@@ -235,7 +235,7 @@ export const ATHLETE_MEMBERS: AthleteMember[] = [
 // =============================================================================
 
 export const PROGRAM_TEAMS: ProgramTeam[] = [
-  { id: 'team-varsity', name: 'Varsity', level: 'varsity', rosterCount: 10, record: '18-8', headCoach: 'Sammy Kalejaiye', season: '2025-26', status: 'active' },
+  { id: 'team-varsity', name: 'Varsity', level: 'varsity', rosterCount: 10, record: '18-8', headCoach: 'Alex Morgan', season: '2025-26', status: 'active' },
   { id: 'team-jv', name: 'JV', level: 'jv', rosterCount: 5, record: '12-4', headCoach: 'Aisha Williams', season: '2025-26', status: 'active' },
 ];
 
@@ -265,16 +265,16 @@ export const PERMISSION_ROLES: PermissionRole[] = [
 // =============================================================================
 
 export const AUDIT_LOG: AuditEntry[] = [
-  { id: 'aud-1', action: 'game_plan_edit', actor: 'Sammy Kalejaiye', description: 'Updated Webber game plan — offensive adjustments', timestamp: 'Feb 16, 2026 4:32 PM' },
+  { id: 'aud-1', action: 'game_plan_edit', actor: 'Alex Morgan', description: 'Updated Webber game plan — offensive adjustments', timestamp: 'Feb 16, 2026 4:32 PM' },
   { id: 'aud-2', action: 'roster_change', actor: 'Marcus Johnson', description: 'Updated Jalen Washington status: rotation eligible', timestamp: 'Feb 15, 2026 3:15 PM' },
-  { id: 'aud-3', action: 'system_update', actor: 'Sammy Kalejaiye', description: 'Changed OSIE to Motion Offense (was Flex Cuts)', timestamp: 'Feb 14, 2026 11:22 AM' },
+  { id: 'aud-3', action: 'system_update', actor: 'Alex Morgan', description: 'Changed OSIE to Motion Offense (was Flex Cuts)', timestamp: 'Feb 14, 2026 11:22 AM' },
   { id: 'aud-4', action: 'recruitment_update', actor: 'David Chen', description: 'Added 3 new prospects to recruiting board', timestamp: 'Feb 13, 2026 9:45 AM' },
-  { id: 'aud-5', action: 'setting_change', actor: 'Sammy Kalejaiye', description: 'Updated cluster weights — Shooting priority increased', timestamp: 'Feb 12, 2026 2:10 PM' },
-  { id: 'aud-6', action: 'permission_change', actor: 'Sammy Kalejaiye', description: 'Granted coach permissions to Aisha Williams', timestamp: 'Feb 10, 2026 10:30 AM' },
+  { id: 'aud-5', action: 'setting_change', actor: 'Alex Morgan', description: 'Updated cluster weights — Shooting priority increased', timestamp: 'Feb 12, 2026 2:10 PM' },
+  { id: 'aud-6', action: 'permission_change', actor: 'Alex Morgan', description: 'Granted coach permissions to Aisha Williams', timestamp: 'Feb 10, 2026 10:30 AM' },
   { id: 'aud-7', action: 'season_lock', actor: 'System', description: '2024-25 season data locked automatically', timestamp: 'Apr 1, 2025 12:00 AM' },
   { id: 'aud-8', action: 'roster_change', actor: 'Marcus Johnson', description: 'Added Trevor Hayes, Devon Mitchell to JV roster', timestamp: 'Feb 8, 2026 1:45 PM' },
   { id: 'aud-9', action: 'game_plan_edit', actor: 'David Chen', description: 'Created Thomas University scouting report', timestamp: 'Feb 7, 2026 4:00 PM' },
-  { id: 'aud-10', action: 'system_update', actor: 'Sammy Kalejaiye', description: 'Updated DSIE to Switching Man (was Pack Line)', timestamp: 'Feb 5, 2026 3:20 PM' },
+  { id: 'aud-10', action: 'system_update', actor: 'Alex Morgan', description: 'Updated DSIE to Switching Man (was Pack Line)', timestamp: 'Feb 5, 2026 3:20 PM' },
 ];
 
 // =============================================================================

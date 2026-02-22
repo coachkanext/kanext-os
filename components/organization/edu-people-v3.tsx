@@ -1,7 +1,7 @@
 /**
  * Edu People V3 — 3-pill ViewBar (Faculty | Staff | Students)
- * Florida Memorial University · President perspective
- * HBCU · Founded 1879 · Miami Gardens, FL · SACSCOC Accredited
+ * KaNeXT Sports · President perspective
+ * HBCU · Founded 1879 · Nashville, TN · SACSCOC Accredited
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
@@ -43,7 +43,7 @@ const FACULTY: FacultyMember[] = [
   { id: 'f3', name: 'Dr. Robert Johnson', title: 'Associate Professor', department: 'Arts & Sciences', tenure: 'Tenured', rank: 'Associate Professor', hireDate: '2012' },
   { id: 'f4', name: 'Dr. Karen Williams', title: 'Associate Professor', department: 'Computer Science', tenure: 'Tenure-Track', rank: 'Associate Professor', hireDate: '2018' },
   { id: 'f5', name: 'Capt. James Wright', title: 'Associate Professor', department: 'Aviation', tenure: 'Tenured', rank: 'Associate Professor', hireDate: '2010' },
-  { id: 'f6', name: 'Dr. Marcus Thompson', title: 'Assistant Professor', department: 'Criminal Justice', tenure: 'Tenure-Track', rank: 'Assistant Professor', hireDate: '2021' },
+  { id: 'f6', name: 'Dr. Alex Morgan', title: 'Assistant Professor', department: 'Criminal Justice', tenure: 'Tenure-Track', rank: 'Assistant Professor', hireDate: '2021' },
   { id: 'f7', name: 'Dr. Lisa Chen', title: 'Assistant Professor', department: 'Arts & Sciences', tenure: 'Tenure-Track', rank: 'Assistant Professor', hireDate: '2022' },
   { id: 'f8', name: 'Prof. David Brown', title: 'Adjunct Professor', department: 'Business', tenure: 'Adjunct', rank: 'Adjunct', hireDate: '2023' },
 ];

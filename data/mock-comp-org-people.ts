@@ -280,7 +280,7 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
 // === Staff ===
 
 const STAFF_MEMBERS: StaffMember[] = [
-  { id: 'st-1', name: 'Sammy Kalejaiye', role: 'Commissioner', department: 'Executive', email: 'sammy@fmuathletics.org', phone: '(555) 100-0001', status: 'active', avatar: 'SK', hireDate: '2021-01-15' },
+  { id: 'st-1', name: 'Alex Morgan', role: 'Commissioner', department: 'Executive', email: 'sammy@fmuathletics.org', phone: '(555) 100-0001', status: 'active', avatar: 'SK', hireDate: '2021-01-15' },
   { id: 'st-2', name: 'Tom Bradley', role: 'Tournament Director', department: 'Operations', email: 'tom.bradley@fmuathletics.org', phone: '(555) 100-0002', status: 'active', avatar: 'TB', hireDate: '2021-03-22' },
   { id: 'st-3', name: 'Rachel Kim', role: 'Deputy Commissioner', department: 'Executive', email: 'rachel.kim@fmuathletics.org', phone: '(555) 100-0003', status: 'active', avatar: 'RK', hireDate: '2021-06-10' },
   { id: 'st-4', name: 'David Chen', role: 'Director of Officiating', department: 'Officiating', email: 'david.chen@fmuathletics.org', phone: '(555) 100-0004', status: 'active', avatar: 'DC', hireDate: '2022-01-08' },
@@ -343,7 +343,7 @@ const VOLUNTEERS: Volunteer[] = [
 const ENTRANT_ROSTERS: EntrantRoster[] = [
   { id: 'er-1', entrantName: 'Fort Myers University', playerCount: 15, coachCount: 4, staffCount: 3, lastUpdated: 'Feb 14, 2026' },
   { id: 'er-2', entrantName: 'Gulf Coast State College', playerCount: 14, coachCount: 3, staffCount: 2, lastUpdated: 'Feb 13, 2026' },
-  { id: 'er-3', entrantName: 'Southwest Florida Tech', playerCount: 16, coachCount: 4, staffCount: 3, lastUpdated: 'Feb 12, 2026' },
+  { id: 'er-3', entrantName: 'Southwest Ridgemont Tech', playerCount: 16, coachCount: 4, staffCount: 3, lastUpdated: 'Feb 12, 2026' },
   { id: 'er-4', entrantName: 'Naples University', playerCount: 13, coachCount: 3, staffCount: 2, lastUpdated: 'Feb 14, 2026' },
   { id: 'er-5', entrantName: 'Cape Coral College', playerCount: 15, coachCount: 3, staffCount: 2, lastUpdated: 'Feb 11, 2026' },
   { id: 'er-6', entrantName: 'Sarasota State', playerCount: 14, coachCount: 4, staffCount: 3, lastUpdated: 'Feb 13, 2026' },
@@ -364,7 +364,7 @@ const CREDENTIALS: Credential[] = [
   { id: 'cr-1', person: 'Marcus Johnson', type: 'certification', status: 'active', issueDate: 'Jan 10, 2025', expiryDate: 'Jan 10, 2027' },
   { id: 'cr-2', person: 'Teresa Williams', type: 'certification', status: 'active', issueDate: 'Mar 5, 2025', expiryDate: 'Mar 5, 2027' },
   { id: 'cr-3', person: 'Tom Bradley', type: 'badge', status: 'active', issueDate: 'Jan 1, 2026', expiryDate: 'Dec 31, 2026' },
-  { id: 'cr-4', person: 'Sammy Kalejaiye', type: 'badge', status: 'active', issueDate: 'Jan 1, 2026', expiryDate: 'Dec 31, 2026' },
+  { id: 'cr-4', person: 'Alex Morgan', type: 'badge', status: 'active', issueDate: 'Jan 1, 2026', expiryDate: 'Dec 31, 2026' },
   { id: 'cr-5', person: 'David Chen', type: 'license', status: 'active', issueDate: 'Feb 1, 2025', expiryDate: 'Feb 1, 2027' },
   { id: 'cr-6', person: 'Walter King', type: 'certification', status: 'revoked', issueDate: 'Jun 15, 2024', expiryDate: 'Jun 15, 2026' },
   { id: 'cr-7', person: 'Harold Adams', type: 'certification', status: 'expired', issueDate: 'Apr 1, 2023', expiryDate: 'Apr 1, 2025' },

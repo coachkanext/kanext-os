@@ -185,14 +185,14 @@ export const UNIT_OPTIONS: Record<Mode, string[]> = {
 };
 
 // =============================================================================
-// SPORTS MODE — Florida Memorial University
+// SPORTS MODE — KaNeXT Sports
 // =============================================================================
 
 const SPORTS_PEOPLE: Person[] = [
   {
     id: 'sp-001',
-    name: 'Sammy Kalejaiye',
-    initials: 'SK',
+    name: 'Alex Morgan',
+    initials: 'AM',
     role: 'Head Coach',
     department: 'Staff',
     unit: "Men's Basketball",
@@ -201,7 +201,7 @@ const SPORTS_PEOPLE: Person[] = [
     status: 'active',
     avatarColor: '#6366F1',
     joinDate: '2024-06-15',
-    bio: 'Head Coach and General Manager of FMU Lions Men\'s Basketball. Builder of programs, developer of student-athletes.',
+    bio: 'Head Coach and General Manager of KaNeXT Men\'s Basketball. Builder of programs, developer of student-athletes.',
     tags: ['Leadership', 'Recruiting', 'Game Strategy'],
     quickFilter: 'leaders',
   },
@@ -318,7 +318,7 @@ const SPORTS_PEOPLE: Person[] = [
   },
   {
     id: 'sp-009',
-    name: 'Brandon Williams',
+    name: 'Marcus Reed',
     initials: 'BW',
     role: 'PG',
     department: 'Athletes',
@@ -363,7 +363,7 @@ const SPORTS_PEOPLE: Person[] = [
   },
   {
     id: 'sp-012',
-    name: 'Nathan Chtelan',
+    name: 'Tyler Quinn',
     initials: 'NC',
     role: 'W',
     department: 'Athletes',
@@ -378,7 +378,7 @@ const SPORTS_PEOPLE: Person[] = [
   },
   {
     id: 'sp-013',
-    name: 'Laolu Kalejaiye',
+    name: 'Devon Carter',
     initials: 'LK',
     role: 'B',
     department: 'Athletes',
@@ -459,13 +459,13 @@ const SPORTS_GROUPS: PersonGroup[] = [
 ];
 
 // =============================================================================
-// CHURCH MODE — International Christian Center
+// CHURCH MODE — KaNeXT Church
 // =============================================================================
 
 const CHURCH_PEOPLE: Person[] = [
   {
     id: 'ch-001',
-    name: 'Pastor Dipo Kalejaiye',
+    name: 'Pastor Dipo Carter',
     initials: 'DK',
     role: 'Senior Pastor',
     department: 'Pastoral',
@@ -475,7 +475,7 @@ const CHURCH_PEOPLE: Person[] = [
     status: 'active',
     avatarColor: '#6366F1',
     joinDate: '1995-01-01',
-    bio: 'Senior Pastor and founding leader of International Christian Center. Shepherd of the congregation with decades of ministerial service.',
+    bio: 'Senior Pastor and founding leader of KaNeXT Church. Shepherd of the congregation with decades of ministerial service.',
     tags: ['Leadership', 'Preaching', 'Pastoral Care'],
     quickFilter: 'leaders',
   },
@@ -687,7 +687,7 @@ const CHURCH_GROUPS: PersonGroup[] = [
 ];
 
 // =============================================================================
-// EDUCATION MODE — San Diego Christian College
+// EDUCATION MODE — KaNeXT University
 // =============================================================================
 
 const EDUCATION_PEOPLE: Person[] = [
@@ -697,13 +697,13 @@ const EDUCATION_PEOPLE: Person[] = [
     initials: 'RC',
     role: 'President',
     department: 'Administration',
-    unit: 'SDCC',
+    unit: 'KaNeXT University',
     email: 'rclark@sdcc.edu',
     phone: '(619) 555-0301',
     status: 'active',
     avatarColor: '#6366F1',
     joinDate: '2018-07-01',
-    bio: 'President of San Diego Christian College leading institutional vision and strategic growth.',
+    bio: 'President of KaNeXT University leading institutional vision and strategic growth.',
     tags: ['Leadership', 'Strategy', 'Accreditation'],
     quickFilter: 'leaders',
   },
@@ -713,7 +713,7 @@ const EDUCATION_PEOPLE: Person[] = [
     initials: 'MW',
     role: 'Provost',
     department: 'Administration',
-    unit: 'SDCC',
+    unit: 'KaNeXT University',
     email: 'mwhitfield@sdcc.edu',
     phone: '(619) 555-0302',
     status: 'active',
@@ -729,7 +729,7 @@ const EDUCATION_PEOPLE: Person[] = [
     initials: 'SW',
     role: 'Dean of Students',
     department: 'Administration',
-    unit: 'SDCC',
+    unit: 'KaNeXT University',
     email: 'swilliams@sdcc.edu',
     phone: '(619) 555-0303',
     status: 'active',
@@ -805,7 +805,7 @@ const EDUCATION_PEOPLE: Person[] = [
     initials: 'SJ',
     role: 'Admissions Dir',
     department: 'Support Staff',
-    unit: 'SDCC',
+    unit: 'KaNeXT University',
     email: 'sjohnson@sdcc.edu',
     phone: '(619) 555-0308',
     status: 'active',
@@ -821,7 +821,7 @@ const EDUCATION_PEOPLE: Person[] = [
     initials: 'MD',
     role: 'Financial Aid',
     department: 'Support Staff',
-    unit: 'SDCC',
+    unit: 'KaNeXT University',
     email: 'mdavis@sdcc.edu',
     phone: '(619) 555-0309',
     status: 'active',
@@ -837,7 +837,7 @@ const EDUCATION_PEOPLE: Person[] = [
     initials: 'LC',
     role: 'Registrar',
     department: 'Support Staff',
-    unit: 'SDCC',
+    unit: 'KaNeXT University',
     email: 'lchen@sdcc.edu',
     phone: '(619) 555-0310',
     status: 'active',
@@ -853,7 +853,7 @@ const EDUCATION_PEOPLE: Person[] = [
     initials: 'RW',
     role: 'Athletics Dir',
     department: 'Support Staff',
-    unit: 'SDCC',
+    unit: 'KaNeXT University',
     email: 'rwilliams@sdcc.edu',
     phone: '(619) 555-0311',
     status: 'active',
@@ -869,7 +869,7 @@ const EDUCATION_PEOPLE: Person[] = [
     initials: 'JMo',
     role: 'Career Services',
     department: 'Support Staff',
-    unit: 'SDCC',
+    unit: 'KaNeXT University',
     email: 'jmoore@sdcc.edu',
     phone: '(619) 555-0312',
     status: 'active',
@@ -924,8 +924,8 @@ const EDUCATION_GROUPS: PersonGroup[] = [
 const BUSINESS_PEOPLE: Person[] = [
   {
     id: 'bz-001',
-    name: 'Sammy Kalejaiye',
-    initials: 'SK',
+    name: 'Alex Morgan',
+    initials: 'AM',
     role: 'Founder/CEO',
     department: 'Executive',
     unit: 'Executive',

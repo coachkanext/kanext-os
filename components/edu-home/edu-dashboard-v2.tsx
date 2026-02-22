@@ -1,5 +1,5 @@
 /**
- * Education Dashboard V2 — FMU
+ * Education Dashboard V2 — KaNeXT
  *
  * Full dashboard: Video Hero → Next Event → Action Row (3 text-stack cards) →
  * Institutional Metrics (2×3 grid) → Academic Health (school summaries) →

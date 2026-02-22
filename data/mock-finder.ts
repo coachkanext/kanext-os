@@ -24,9 +24,9 @@ export const MOCK_FINDER_INDEX: FinderResult[] = [
   { id: 'f-5', label: 'Jaylen Carter', subtitle: '2026 · SF · Official Visit Scheduled', type: 'recruit', icon: 'person.badge.plus', route: '/coach/recruiting' },
   { id: 'f-6', label: 'Devon Williams', subtitle: '2026 · PG · Offer Extended', type: 'recruit', icon: 'person.badge.plus', route: '/coach/recruiting' },
   // Games
-  { id: 'f-7', label: 'FMU vs Coastal Carolina', subtitle: 'Final · W 81-74', type: 'game', icon: 'sportscourt.fill', route: '/(tabs)/index' },
-  { id: 'f-8', label: 'FMU vs Campbell', subtitle: 'Upcoming · Feb 15', type: 'game', icon: 'sportscourt.fill', route: '/(tabs)/index' },
-  { id: 'f-9', label: 'FMU vs UNC Asheville', subtitle: 'Final · L 69-72', type: 'game', icon: 'sportscourt.fill', route: '/(tabs)/index' },
+  { id: 'f-7', label: 'KaNeXT vs Coastal Carolina', subtitle: 'Final · W 81-74', type: 'game', icon: 'sportscourt.fill', route: '/(tabs)/index' },
+  { id: 'f-8', label: 'KaNeXT vs Campbell', subtitle: 'Upcoming · Feb 15', type: 'game', icon: 'sportscourt.fill', route: '/(tabs)/index' },
+  { id: 'f-9', label: 'KaNeXT vs UNC Asheville', subtitle: 'Final · L 69-72', type: 'game', icon: 'sportscourt.fill', route: '/(tabs)/index' },
   // Clips
   { id: 'f-10', label: 'Transition Defense Breakdown', subtitle: 'Clip · Coastal Carolina', type: 'clip', icon: 'play.rectangle.fill', route: '/(tabs)/media' },
   { id: 'f-11', label: 'Mid-Range Package Highlights', subtitle: 'Clip · Marcus Johnson', type: 'clip', icon: 'play.rectangle.fill', route: '/(tabs)/media' },

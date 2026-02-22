@@ -35,7 +35,7 @@ import { computeFitKR, computeOffDefKR, getFitReasons } from '@/utils/fit-kr';
 import { OFFENSIVE_STYLES, DEFENSIVE_STYLES } from '@/data/mock-program-context';
 import { type PoolPlayer, PLAYER_POOL, POOL_PLAYER_AWARDS } from '@/data/playerPool';
 import {
-  FMU_PLAYER_BIOS, FMU_PLAYER_ABOUT, FMU_LEADERS,
+  KaNeXT_PLAYER_BIOS, KaNeXT_PLAYER_ABOUT, KaNeXT_LEADERS,
   getFmuCareer, getFmuAwards, getFmuHighlights, getFmuTS, getFmuSeasonGames,
 } from '@/data/fmu';
 import { getPlayerComms, getRecruitComms, COMMS_TYPE_META, type CommsEntry } from '@/data/mock-comms';
@@ -278,9 +278,9 @@ export function PlayerSheet({
   const offDef = useMemo(() => clusters ? computeOffDefKR(clusters, offStyle, defStyle) : { baseOff: 0, baseDef: 0, fitOff: 0, fitDef: 0 }, [clusters, offStyle, defStyle]);
   const seasons = useMemo(() => player ? getPlayerSeasons(player.id) : [], [player?.id]);
 
-  // FMU data
-  const bio = jerseyNumber ? FMU_PLAYER_BIOS[jerseyNumber] ?? null : null;
-  const about = jerseyNumber ? FMU_PLAYER_ABOUT[jerseyNumber] ?? null : null;
+  // KaNeXT data
+  const bio = jerseyNumber ? KaNeXT_PLAYER_BIOS[jerseyNumber] ?? null : null;
+  const about = jerseyNumber ? KaNeXT_PLAYER_ABOUT[jerseyNumber] ?? null : null;
   const awards = useMemo(() => {
     if (jerseyNumber) return [...getFmuAwards(jerseyNumber)].sort((a, b) => b.year.localeCompare(a.year));
     return (player ? (POOL_PLAYER_AWARDS[player.id] ?? []) : []).map((title) => ({ title, year: '' }));
@@ -293,7 +293,7 @@ export function PlayerSheet({
   const leaderStats = useMemo(() => {
     if (!jerseyNumber) return null;
     const jStr = String(parseInt(jerseyNumber, 10));
-    return FMU_LEADERS.find((l) => String(parseInt(l.number, 10)) === jStr) ?? null;
+    return KaNeXT_LEADERS.find((l) => String(parseInt(l.number, 10)) === jStr) ?? null;
   }, [jerseyNumber]);
 
   // Badges

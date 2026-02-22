@@ -1,5 +1,5 @@
 /**
- * Mock Player Health & Availability — keyed by FMU jersey number
+ * Mock Player Health & Availability — keyed by KaNeXT jersey number
  */
 
 // =============================================================================

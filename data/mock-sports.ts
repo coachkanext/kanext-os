@@ -1,6 +1,6 @@
 /**
  * Mock data for Sports mode.
- * FMU Men's Basketball
+ * KaNeXT Men's Basketball
  */
 
 // =============================================================================
@@ -155,17 +155,17 @@ export interface ProgramData {
 
 export const INSTITUTION = {
   id: 'fmu',
-  name: 'Florida Memorial University',
+  name: 'KaNeXT Sports',
   nickname: 'Lions',
-  location: 'Miami Gardens, FL',
-  conference: 'Sun Conference',
+  location: 'Nashville, TN',
+  conference: 'KaNeXT Conference',
   division: 'NAIA',
   founded: 1879,
   colors: {
     primary: '#003DA5',
     secondary: '#FFB81C',
   },
-  description: 'Florida Memorial University is a private HBCU located in Miami Gardens, Florida. The basketball program competes in the NAIA Sun Conference.',
+  description: 'KaNeXT Sports is a private university located in Nashville, Tennessee. The basketball program competes in the NAIA KaNeXT Conference.',
 };
 
 // =============================================================================
@@ -203,7 +203,7 @@ export const PROGRAMS: ProgramData[] = [
     staff: [
       {
         id: 'coach-davis',
-        name: 'James Davis',
+        name: 'Ray Bennett',
         title: 'Head Coach',
         role: 'head_coach',
         programId: 'varsity',
@@ -211,7 +211,7 @@ export const PROGRAMS: ProgramData[] = [
       },
       {
         id: 'coach-mitchell',
-        name: 'Sarah Mitchell',
+        name: 'Mia Torres',
         title: 'Associate Head Coach',
         role: 'assistant_coach',
         programId: 'varsity',
@@ -230,7 +230,7 @@ export const PROGRAMS: ProgramData[] = [
       {
         player: {
           id: 'player-bwilliams',
-          name: 'Brandon Williams',
+          name: 'Marcus Reed',
           number: '1',
           position: 'PG',
           height: '5\'10"',
@@ -305,7 +305,7 @@ export const PROGRAMS: ProgramData[] = [
       {
         player: {
           id: 'player-hernandez',
-          name: 'Adrian Hernandez',
+          name: 'Jordan Blake',
           number: '10',
           position: 'CG',
           height: '6\'1"',
@@ -320,7 +320,7 @@ export const PROGRAMS: ProgramData[] = [
       {
         player: {
           id: 'player-kalejaiye',
-          name: 'Laolu Kalejaiye',
+          name: 'Devon Carter',
           number: '11',
           position: 'CG',
           height: '6\'4"',
@@ -335,7 +335,7 @@ export const PROGRAMS: ProgramData[] = [
       {
         player: {
           id: 'player-chtelan',
-          name: 'Nathan Chtelan',
+          name: 'Tyler Quinn',
           number: '15',
           position: 'W',
           height: '6\'5"',
@@ -456,7 +456,7 @@ export const PROGRAMS: ProgramData[] = [
 export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
   'player-bwilliams': {
     id: 'player-bwilliams',
-    name: 'Brandon Williams',
+    name: 'Marcus Reed',
     number: '1',
     position: 'PG',
     height: '5\'10"',
@@ -516,7 +516,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
   },
   'player-hernandez': {
     id: 'player-hernandez',
-    name: 'Adrian Hernandez',
+    name: 'Jordan Blake',
     number: '10',
     position: 'CG',
     height: '6\'1"',
@@ -528,7 +528,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
   },
   'player-kalejaiye': {
     id: 'player-kalejaiye',
-    name: 'Laolu Kalejaiye',
+    name: 'Devon Carter',
     number: '11',
     position: 'CG',
     height: '6\'4"',
@@ -540,7 +540,7 @@ export const PLAYER_PROFILES: Record<string, PlayerProfile> = {
   },
   'player-chtelan': {
     id: 'player-chtelan',
-    name: 'Nathan Chtelan',
+    name: 'Tyler Quinn',
     number: '15',
     position: 'W',
     height: '6\'5"',

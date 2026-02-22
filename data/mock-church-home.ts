@@ -1,5 +1,5 @@
 /**
- * Mock data for Church Home — ICCLA (International Christian Center of Los Angeles)
+ * Mock data for Church Home — KaNeXT Church (KaNeXT Church of Los Angeles)
  * A large, vibrant Black church in Los Angeles.
  *
  * Supports 4 main pills: Dashboard · Calendar · Ministries · Connect
@@ -725,7 +725,7 @@ export const CHURCH_LEADERS: ChurchLeader[] = [
     name: 'Pastor Isaiah Carter',
     title: 'Senior Pastor',
     ministries: ['Kingdom Builders', 'Rooted'],
-    bio: 'Founder and senior pastor of ICCLA for over 18 years. A prophetic voice in the city, Pastor Isaiah is known for bold, uncompromising preaching and a deep love for the community.',
+    bio: 'Founder and senior pastor of KaNeXT Church for over 18 years. A prophetic voice in the city, Pastor Isaiah is known for bold, uncompromising preaching and a deep love for the community.',
     yearsServing: 18,
     email: 'pastor.isaiah@iccla.org',
     status: 'active',
@@ -735,7 +735,7 @@ export const CHURCH_LEADERS: ChurchLeader[] = [
     name: 'Lady Monique Carter',
     title: 'Co-Pastor',
     ministries: ['Single Saved Serving', 'Connect Groups'],
-    bio: 'Co-pastor and co-founder of ICCLA. Lady Monique oversees women\'s initiatives and counseling ministry, bringing warmth and wisdom to every area she touches.',
+    bio: 'Co-pastor and co-founder of KaNeXT Church. Lady Monique oversees women\'s initiatives and counseling ministry, bringing warmth and wisdom to every area she touches.',
     yearsServing: 18,
     email: 'lady.monique@iccla.org',
     status: 'active',
@@ -805,7 +805,7 @@ export const CHURCH_LEADERS: ChurchLeader[] = [
     name: 'Mother Estelle Jacobs',
     title: 'Prayer Ministry Director',
     ministries: ['Hotline to Heaven'],
-    bio: 'The spiritual anchor of ICCLA. Mother Estelle has been a prayer warrior for 40+ years and leads the intercessory team with authority and grace.',
+    bio: 'The spiritual anchor of KaNeXT Church. Mother Estelle has been a prayer warrior for 40+ years and leads the intercessory team with authority and grace.',
     yearsServing: 15,
     email: 'mother.estelle@iccla.org',
     status: 'active',

@@ -1,7 +1,7 @@
 /**
  * Sports Organization Operations V2 — Mock Data & Types
  * 10-tab Operations Hub for Sports Mode organizations.
- * Seeded with FMU Men's Basketball 2025-26 season data.
+ * Seeded with KaNeXT Men's Basketball 2025-26 season data.
  */
 
 // =============================================================================
@@ -257,7 +257,7 @@ export const OPS_SUB_TABS: OpsSubTab[] = [
 ];
 
 // =============================================================================
-// SEEDED DATA — FMU Men's Basketball 2025-26
+// SEEDED DATA — KaNeXT Men's Basketball 2025-26
 // =============================================================================
 
 export const OPS_TASKS: OpsTask[] = [
@@ -293,7 +293,7 @@ export const OPS_TASKS: OpsTask[] = [
   },
   {
     id: 'ot-4',
-    title: 'Submit updated roster to Sun Conference office',
+    title: 'Submit updated roster to KaNeXT Conference office',
     category: 'Compliance',
     priority: 'high',
     owner: 'Lisa Chen',
@@ -334,7 +334,7 @@ export const TRAVEL_TRIPS: TravelTrip[] = [
     missingDocs: 1,
     budget: 3800,
     spent: 2900,
-    departureTime: '10:30 AM from FMU Wellness Center parking lot',
+    departureTime: '10:30 AM from KaNeXT Wellness Center parking lot',
     busInfo: 'Charter One — 45-passenger coach, Driver: Carlos Mendez, Bus #CO-214',
     hotel: 'N/A — same-day return trip',
     mealArrangements: 'Pre-game meal at Bonefish Grill, West Palm Beach (reserved 2:00 PM, 20 pax). Post-game snack bags on bus.',
@@ -343,7 +343,7 @@ export const TRAVEL_TRIPS: TravelTrip[] = [
   },
   {
     id: 'tt-2',
-    destination: 'Sun Conference Tournament — Clearwater, FL',
+    destination: 'KaNeXT Conference Tournament — Clearwater, FL',
     departure: '2026-02-26',
     returnDate: '2026-03-02',
     teamSize: 20,
@@ -370,7 +370,7 @@ export const TRAVEL_TRIPS: TravelTrip[] = [
 export const FACILITY_BOOKINGS: FacilityBooking[] = [
   {
     id: 'fb-1',
-    facility: 'Main Gymnasium — FMU Wellness Center',
+    facility: 'Main Gymnasium — KaNeXT Wellness Center',
     date: '2026-02-18',
     timeSlot: '3:00 PM – 5:00 PM',
     purpose: 'Team Practice — Keiser prep',
@@ -406,7 +406,7 @@ export const FACILITY_BOOKINGS: FacilityBooking[] = [
   },
   {
     id: 'fb-5',
-    facility: 'Main Gymnasium — FMU Wellness Center',
+    facility: 'Main Gymnasium — KaNeXT Wellness Center',
     date: '2026-02-20',
     timeSlot: '7:00 PM – 9:30 PM',
     purpose: 'Home Game vs. Thomas University',
@@ -490,7 +490,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
   },
   {
     id: 'eq-8',
-    name: 'Team Van Keys (Unit #FMU-VAN-3)',
+    name: 'Team Van Keys (Unit #KX-VAN-3)',
     category: 'Transport',
     status: 'available',
     assignedTo: null,

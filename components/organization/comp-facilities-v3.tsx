@@ -99,7 +99,7 @@ interface OfficialTravel {
 
 const OFFICIAL_TRAVEL: OfficialTravel[] = [
   { id: 'ot1', name: 'Jean-Pierre Moreau', status: 'Confirmed' },
-  { id: 'ot2', name: 'Dr. Sarah Chen', status: 'Confirmed' },
+  { id: 'ot2', name: 'Dr. Lisa Grant', status: 'Confirmed' },
   { id: 'ot3', name: 'Hans Mueller', status: 'Confirmed' },
   { id: 'ot4', name: 'Dr. Amara Obi', status: 'Confirmed' },
   { id: 'ot5', name: 'Carlos Mendez', status: 'Confirmed' },

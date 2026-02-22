@@ -1,5 +1,5 @@
 /**
- * Mock Education Home Data — FMU (Florida Memorial University)
+ * Mock Education Home Data — KaNeXT (KaNeXT Sports)
  * Feeds Dashboard, Calendar, Events, Metrics, and News views.
  */
 
@@ -77,7 +77,7 @@ export const EDU_EVENTS: EduEvent[] = [
     title: 'Baseball vs Edward Waters',
     date: 'Mar 1, 2026',
     time: '2:00 PM',
-    location: 'FMU Baseball Complex',
+    location: 'KaNeXT Baseball Complex',
     category: 'athletics',
     status: 'upcoming',
   },
@@ -126,7 +126,7 @@ export const EDU_EVENTS: EduEvent[] = [
   },
   {
     id: 'evt-09',
-    title: 'FMU Lions Football vs Webber Intl',
+    title: 'KaNeXT Football vs Webber Intl',
     date: 'Nov 8, 2025',
     time: '6:00 PM',
     location: 'Nathaniel "Traz" Powell Stadium',
@@ -206,11 +206,11 @@ export const EDU_NEWS_CATEGORY_COLORS: Record<EduNewsCategoryTag, string> = {
 export const EDU_NEWS: EduNewsItem[] = [
   {
     id: 'news-01',
-    headline: 'FMU Receives $2.5M Grant for STEM Building Expansion',
+    headline: 'KaNeXT Receives $2.5M Grant for STEM Building Expansion',
     date: 'Feb 15, 2026',
     category: 'institutional',
     type: 'article',
-    summary: 'The Department of Education has awarded Florida Memorial University a $2.5 million grant for the construction of a new STEM wing.',
+    summary: 'The Department of Education has awarded KaNeXT Sports a $2.5 million grant for the construction of a new STEM wing.',
   },
   {
     id: 'news-02',
@@ -232,7 +232,7 @@ export const EDU_NEWS: EduNewsItem[] = [
   },
   {
     id: 'news-04',
-    headline: 'FMU Baseball Opens Season with Win Streak',
+    headline: 'KaNeXT Baseball Opens Season with Win Streak',
     date: 'Feb 8, 2026',
     category: 'athletics',
     type: 'video',
@@ -245,7 +245,7 @@ export const EDU_NEWS: EduNewsItem[] = [
     date: 'Feb 5, 2026',
     category: 'alumni',
     type: 'article',
-    summary: 'FMU alumna Keisha Thompson (Class of 2015) has raised a $10M Series A for her EdTech startup, crediting her FMU education.',
+    summary: 'KaNeXT alumna Keisha Thompson (Class of 2015) has raised a $10M Series A for her EdTech startup, crediting her KaNeXT education.',
   },
   {
     id: 'news-06',
@@ -253,7 +253,7 @@ export const EDU_NEWS: EduNewsItem[] = [
     date: 'Feb 3, 2026',
     category: 'campus',
     type: 'article',
-    summary: 'FMU has completed installation of 24 new emergency call stations and upgraded campus-wide lighting.',
+    summary: 'KaNeXT has completed installation of 24 new emergency call stations and upgraded campus-wide lighting.',
   },
   {
     id: 'news-07',
@@ -271,7 +271,7 @@ export const EDU_NEWS: EduNewsItem[] = [
     category: 'faculty',
     type: 'article',
     speaker: 'Dr. Raymond Fields',
-    summary: 'Dr. Fields and his team published a groundbreaking study on urban heat islands in South Florida HBCUs.',
+    summary: 'Dr. Fields and his team published a groundbreaking study on urban heat islands in South Ridgemont HBCUs.',
   },
 ];
 
@@ -361,7 +361,7 @@ export interface EduHero {
 }
 
 export const EDU_HERO: EduHero = {
-  title: 'FMU Spring 2026 Convocation',
+  title: 'KaNeXT Spring 2026 Convocation',
   subtitle: 'Lou Rawls Performing Arts Center',
   isLive: false,
   instructor: 'President Jaffus Hardrick',
@@ -842,7 +842,7 @@ export const ADMISSIONS_PIPELINE: AdmissionsPipelineEntry[] = [
   { id: 'adm-03', name: 'Jasmine Lee', stage: 'Deposited', programOfInterest: 'Biology', previousInstitution: 'Palm Beach Atlantic HS', gpa: 3.88, applicationDate: '2025-09-20', financialAidStatus: 'pending' },
   { id: 'adm-04', name: 'Xavier Green', stage: 'Accepted', programOfInterest: 'Sports Management', previousInstitution: 'Miami Northwestern HS', gpa: 3.15, applicationDate: '2025-12-01', financialAidStatus: 'approved' },
   { id: 'adm-05', name: 'Brianna Sanchez', stage: 'Accepted', programOfInterest: 'Psychology', previousInstitution: 'Hialeah-Miami Lakes HS', gpa: 3.62, applicationDate: '2025-11-18', financialAidStatus: 'pending' },
-  { id: 'adm-06', name: 'Marcus Thompson', stage: 'Applied', programOfInterest: 'Criminal Justice', previousInstitution: 'Carol City HS', gpa: 2.95, applicationDate: '2026-01-08', financialAidStatus: 'not_applied' },
+  { id: 'adm-06', name: 'Alex Morgan', stage: 'Applied', programOfInterest: 'Criminal Justice', previousInstitution: 'Carol City HS', gpa: 2.95, applicationDate: '2026-01-08', financialAidStatus: 'not_applied' },
   { id: 'adm-07', name: 'Aaliyah Jenkins', stage: 'Applied', programOfInterest: 'Elementary Education', previousInstitution: 'North Miami Beach HS', gpa: 3.38, applicationDate: '2026-01-15', financialAidStatus: 'pending' },
   { id: 'adm-08', name: 'DeShawn Harris', stage: 'Applied', programOfInterest: 'Computer Science', previousInstitution: 'South Broward HS', gpa: 3.50, applicationDate: '2026-01-22', financialAidStatus: 'not_applied' },
   { id: 'adm-09', name: 'Imani Davis', stage: 'Inquiry', programOfInterest: 'Nursing', previousInstitution: 'Miramar HS', gpa: 3.20, applicationDate: '2026-02-01', financialAidStatus: 'not_applied' },
@@ -880,8 +880,8 @@ export const ACADEMIC_PROGRAMS: AcademicProgram[] = [
 
 export const OUTREACH_EVENTS: OutreachEvent[] = [
   { id: 'out-01', name: 'Miami Northwestern HS Visit', date: '2026-02-24', type: 'high_school_visit', targetAudience: 'Juniors & Seniors', recruiterName: 'Tamika Johnson', status: 'scheduled' },
-  { id: 'out-02', name: 'South Florida College Fair', date: '2026-03-05', type: 'college_fair', targetAudience: 'High School Students', recruiterName: 'Derek Williams', status: 'scheduled' },
-  { id: 'out-03', name: 'FMU Spring Open House', date: '2026-03-15', type: 'open_house', targetAudience: 'Prospective Students & Families', recruiterName: 'Tamika Johnson', status: 'scheduled' },
+  { id: 'out-02', name: 'South Ridgemont College Fair', date: '2026-03-05', type: 'college_fair', targetAudience: 'High School Students', recruiterName: 'Derek Williams', status: 'scheduled' },
+  { id: 'out-03', name: 'KaNeXT Spring Open House', date: '2026-03-15', type: 'open_house', targetAudience: 'Prospective Students & Families', recruiterName: 'Tamika Johnson', status: 'scheduled' },
   { id: 'out-04', name: 'Virtual Info Session — Nursing Program', date: '2026-02-28', type: 'virtual_info_session', targetAudience: 'Pre-Nursing Students', recruiterName: 'Alicia Green', status: 'scheduled' },
   { id: 'out-05', name: 'Overtown Community Day', date: '2026-03-22', type: 'community_event', targetAudience: 'Community Members & Adult Learners', recruiterName: 'Marcus Reid', status: 'scheduled' },
   { id: 'out-06', name: 'Carol City HS Visit', date: '2026-02-10', type: 'high_school_visit', targetAudience: 'Seniors', leadsGenerated: 18, recruiterName: 'Derek Williams', status: 'completed' },

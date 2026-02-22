@@ -1,7 +1,7 @@
 /**
  * Sports Calendar V2 — 4 pill tabs: Agenda, Games, Standings, News
  * - Agenda: CalendarHub (Day/Week/Month) with existing ~140 mock events
- * - Games: Upcoming/Completed from FMU_GAMES
+ * - Games: Upcoming/Completed from KaNeXT_GAMES
  * - Standings: 3-tier (Conference, NAIA Top 25, KaNeXT National)
  * - News: Video-first vertical scroll with category tags
  */

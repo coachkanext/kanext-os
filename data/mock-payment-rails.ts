@@ -53,20 +53,20 @@ export interface PaymentSnapshot {
 }
 
 // =============================================================================
-// SPORTS MODE — FMU Basketball
+// SPORTS MODE — KaNeXT Basketball
 // =============================================================================
 
 const sportsPayments: Payment[] = [
   { id: 'sp-001', description: 'Game Officials Fee — vs Webber Int\'l', amount: 1800, type: 'payout', method: 'check', status: 'completed', date: '2026-02-14', counterparty: 'NAIA Officials Association', reference: 'OFF-2026-041' },
-  { id: 'sp-002', description: 'Travel Reimbursement — Savannah State Trip', amount: 4200, type: 'payout', method: 'bank', status: 'completed', date: '2026-02-12', counterparty: 'FMU Travel Services', reference: 'TRV-2026-018' },
+  { id: 'sp-002', description: 'Travel Reimbursement — Savannah State Trip', amount: 4200, type: 'payout', method: 'bank', status: 'completed', date: '2026-02-12', counterparty: 'KaNeXT Travel Services', reference: 'TRV-2026-018' },
   { id: 'sp-003', description: 'Equipment Purchase — Practice Balls', amount: 1250, type: 'payout', method: 'card', status: 'completed', date: '2026-02-10', counterparty: 'Wilson Sporting Goods', reference: 'EQ-2026-009' },
-  { id: 'sp-004', description: 'Recruiting Visit — Marcus Thompson', amount: 650, type: 'payout', method: 'card', status: 'pending', date: '2026-02-15', counterparty: 'Marriott Hotels', reference: 'REC-2026-022' },
-  { id: 'sp-005', description: 'Gate Revenue — Home vs Edward Waters', amount: 3200, type: 'collect', method: 'digital', status: 'completed', date: '2026-02-08', counterparty: 'FMU Athletics Box Office' },
-  { id: 'sp-006', description: 'Booster Club Donation', amount: 5000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-06', counterparty: 'FMU Lions Booster Club' },
+  { id: 'sp-004', description: 'Recruiting Visit — Alex Morgan', amount: 650, type: 'payout', method: 'card', status: 'pending', date: '2026-02-15', counterparty: 'Marriott Hotels', reference: 'REC-2026-022' },
+  { id: 'sp-005', description: 'Gate Revenue — Home vs Edward Waters', amount: 3200, type: 'collect', method: 'digital', status: 'completed', date: '2026-02-08', counterparty: 'KaNeXT Athletics Box Office' },
+  { id: 'sp-006', description: 'Booster Club Donation', amount: 5000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-06', counterparty: 'KaNeXT Booster Club' },
   { id: 'sp-007', description: 'NIL Collective Distribution — January', amount: 8500, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'Lions NIL Collective' },
   { id: 'sp-008', description: 'Game Officials Fee — vs Warner', amount: 1800, type: 'payout', method: 'check', status: 'pending', date: '2026-02-16', counterparty: 'NAIA Officials Association', reference: 'OFF-2026-042' },
   { id: 'sp-009', description: 'Athletic Trainer Services — February', amount: 3500, type: 'payout', method: 'bank', status: 'processing', date: '2026-02-03', counterparty: 'Premier Sports Medicine', reference: 'MED-2026-002' },
-  { id: 'sp-010', description: 'Tournament Entry Fee — Sun Conference', amount: 2500, type: 'collect', method: 'bank', status: 'pending', date: '2026-02-15', counterparty: 'Sun Conference Office', reference: 'CONF-2026-005' },
+  { id: 'sp-010', description: 'Tournament Entry Fee — KaNeXT Conference', amount: 2500, type: 'collect', method: 'bank', status: 'pending', date: '2026-02-15', counterparty: 'KaNeXT Conference Office', reference: 'CONF-2026-005' },
 ];
 
 const sportsSettlements: Settlement[] = [
@@ -89,7 +89,7 @@ const sportsSnapshot: PaymentSnapshot = {
 };
 
 // =============================================================================
-// CHURCH MODE — International Christian Center
+// CHURCH MODE — KaNeXT Church
 // =============================================================================
 
 const churchPayments: Payment[] = [
@@ -121,7 +121,7 @@ const churchSnapshot: PaymentSnapshot = {
 };
 
 // =============================================================================
-// EDUCATION MODE — San Diego Christian College
+// EDUCATION MODE — KaNeXT University
 // =============================================================================
 
 const educationPayments: Payment[] = [
@@ -129,7 +129,7 @@ const educationPayments: Payment[] = [
   { id: 'ep-002', description: 'Room & Board — Spring 2026 (Batch)', amount: 142000, type: 'collect', method: 'bank', status: 'completed', date: '2026-01-15', counterparty: 'Student Accounts Receivable' },
   { id: 'ep-003', description: 'Student Activity Fees — Spring', amount: 38000, type: 'collect', method: 'bank', status: 'completed', date: '2026-01-20', counterparty: 'Student Accounts Receivable' },
   { id: 'ep-004', description: 'Financial Aid Disbursement — Federal', amount: 186000, type: 'payout', method: 'bank', status: 'completed', date: '2026-01-22', counterparty: 'Federal Student Aid Office', reference: 'FA-2026-SPR-001' },
-  { id: 'ep-005', description: 'Financial Aid Disbursement — Institutional', amount: 92000, type: 'payout', method: 'bank', status: 'completed', date: '2026-01-22', counterparty: 'SDCC Financial Aid', reference: 'FA-2026-SPR-002' },
+  { id: 'ep-005', description: 'Financial Aid Disbursement — Institutional', amount: 92000, type: 'payout', method: 'bank', status: 'completed', date: '2026-01-22', counterparty: 'KaNeXT University Financial Aid', reference: 'FA-2026-SPR-002' },
   { id: 'ep-006', description: 'Vendor — Sodexo Food Services', amount: 45000, type: 'payout', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'Sodexo', reference: 'VND-2026-012' },
   { id: 'ep-007', description: 'Lab Equipment — Science Dept', amount: 12800, type: 'payout', method: 'card', status: 'processing', date: '2026-02-10', counterparty: 'Fisher Scientific', reference: 'EQ-2026-004' },
   { id: 'ep-008', description: 'Late Tuition Payment — Individual', amount: 8500, type: 'collect', method: 'card', status: 'pending', date: '2026-02-14', counterparty: 'Student — J. Martinez' },
@@ -161,15 +161,15 @@ const educationSnapshot: PaymentSnapshot = {
 // =============================================================================
 
 const businessPayments: Payment[] = [
-  { id: 'bp-001', description: 'Client Invoice — FMU Platform License', amount: 24000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'Florida Memorial University', reference: 'INV-2026-001' },
-  { id: 'bp-002', description: 'Client Invoice — ICCLA Platform License', amount: 18000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'International Christian Center', reference: 'INV-2026-002' },
+  { id: 'bp-001', description: 'Client Invoice — KaNeXT Platform License', amount: 24000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'KaNeXT Sports', reference: 'INV-2026-001' },
+  { id: 'bp-002', description: 'Client Invoice — KaNeXT Church Platform License', amount: 18000, type: 'collect', method: 'bank', status: 'completed', date: '2026-02-01', counterparty: 'KaNeXT Church', reference: 'INV-2026-002' },
   { id: 'bp-003', description: 'SaaS Subscription — AWS Infrastructure', amount: 8200, type: 'payout', method: 'card', status: 'completed', date: '2026-02-03', counterparty: 'Amazon Web Services', reference: 'SUB-2026-002' },
   { id: 'bp-004', description: 'Contractor — Mobile Development', amount: 12000, type: 'payout', method: 'bank', status: 'completed', date: '2026-02-05', counterparty: 'Apex Dev Studio', reference: 'CTR-2026-004' },
   { id: 'bp-005', description: 'Client Invoice — K-1 Speed League', amount: 15000, type: 'collect', method: 'bank', status: 'pending', date: '2026-02-10', counterparty: 'K-1 Speed', reference: 'INV-2026-003' },
   { id: 'bp-006', description: 'Vendor Payment — Legal Counsel', amount: 6500, type: 'payout', method: 'bank', status: 'completed', date: '2026-02-07', counterparty: 'Morrison & Associates', reference: 'LGL-2026-001' },
   { id: 'bp-007', description: 'Payroll — February Cycle 1', amount: 42000, type: 'payout', method: 'bank', status: 'processing', date: '2026-02-15', counterparty: 'KaNeXT Payroll', reference: 'PAY-2026-003' },
   { id: 'bp-008', description: 'SaaS Subscription — Vercel Hosting', amount: 1200, type: 'payout', method: 'card', status: 'completed', date: '2026-02-01', counterparty: 'Vercel Inc.', reference: 'SUB-2026-003' },
-  { id: 'bp-009', description: 'Client Invoice — SDCC Pilot License', amount: 9500, type: 'collect', method: 'bank', status: 'pending', date: '2026-02-12', counterparty: 'San Diego Christian College', reference: 'INV-2026-004' },
+  { id: 'bp-009', description: 'Client Invoice — KaNeXT University Pilot License', amount: 9500, type: 'collect', method: 'bank', status: 'pending', date: '2026-02-12', counterparty: 'KaNeXT University', reference: 'INV-2026-004' },
   { id: 'bp-010', description: 'Contractor — AI/ML Pipeline', amount: 18500, type: 'payout', method: 'bank', status: 'pending', date: '2026-02-16', counterparty: 'Tensor Works LLC', reference: 'CTR-2026-005' },
 ];
 

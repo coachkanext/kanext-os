@@ -132,8 +132,8 @@ async function main() {
 
   const output = {
     university_profile: {
-      name: 'Florida Memorial University',
-      shortName: 'FMU',
+      name: 'KaNeXT Sports',
+      shortName: 'KaNeXT',
       website: FMU_BASE,
       athleticsWebsite: ATH_BASE,
     },

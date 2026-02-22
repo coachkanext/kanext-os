@@ -44,7 +44,7 @@ const ago = (minutes: number) => new Date(now.getTime() - minutes * 60000);
 // =============================================================================
 
 export const STORY_CIRCLES: StoryCircle[] = [
-  { id: 'st-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
+  { id: 'st-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
   { id: 'st-1', name: 'Coach Miller', initials: 'CM', hasNew: true, ringColor: '#E1306C' },
   { id: 'st-2', name: 'Coach Brooks', initials: 'CB', hasNew: true, ringColor: '#6AA9FF' },
   { id: 'st-3', name: 'E. Carter', initials: 'EC', hasNew: true, ringColor: '#22C55E' },
@@ -96,7 +96,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
     authorInitials: 'KX',
     authorRole: 'System',
     timestamp: ago(180),
-    caption: 'FINAL — FMU 81, Coastal Carolina 74. FG: 48.3% | REB: 38 | AST: 19 | TO: 11. Full game highlights available.',
+    caption: 'FINAL — KaNeXT 81, Coastal Carolina 74. FG: 48.3% | REB: 38 | AST: 19 | TO: 11. Full game highlights available.',
     media: { type: 'clip', title: 'Game Highlights — vs Coastal Carolina', thumbnailColor: '#38261B', duration: '8:22', views: 3420 },
     likes: 31,
     comments: 9,
@@ -142,7 +142,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
 // =============================================================================
 
 const CHURCH_STORY_CIRCLES: StoryCircle[] = [
-  { id: 'cs-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
+  { id: 'cs-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
   { id: 'cs-1', name: 'Pastor Dipo', initials: 'DK', hasNew: true, ringColor: '#7C3AED' },
   { id: 'cs-2', name: 'Worship Team', initials: 'WT', hasNew: true, ringColor: '#E1306C' },
   { id: 'cs-3', name: 'Youth Dir.', initials: 'YD', hasNew: true, ringColor: '#22C55E' },
@@ -150,13 +150,13 @@ const CHURCH_STORY_CIRCLES: StoryCircle[] = [
   { id: 'cs-5', name: 'Outreach', initials: 'OR', hasNew: true, ringColor: '#F59E0B' },
   { id: 'cs-6', name: 'Women Min.', initials: 'WM', hasNew: true, ringColor: '#EC4899' },
   { id: 'cs-7', name: 'Media Team', initials: 'MT', hasNew: false },
-  { id: 'cs-8', name: 'ICCLA Live', initials: 'IC', hasNew: true, ringColor: '#6AA9FF' },
+  { id: 'cs-8', name: 'KaNeXT Church Live', initials: 'IC', hasNew: true, ringColor: '#6AA9FF' },
 ];
 
 const CHURCH_FEED_POSTS: VideoFeedPost[] = [
   {
     id: 'cfp-1',
-    authorName: 'Pastor Dipo Kalejaiye',
+    authorName: 'Pastor Dipo Carter',
     authorInitials: 'DK',
     authorRole: 'Senior Pastor',
     timestamp: ago(30),
@@ -179,7 +179,7 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
   },
   {
     id: 'cfp-3',
-    authorName: 'ICCLA Youth',
+    authorName: 'KaNeXT Church Youth',
     authorInitials: 'YD',
     authorRole: 'Youth Ministry',
     timestamp: ago(240),
@@ -240,11 +240,11 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
 // =============================================================================
 
 const EDUCATION_STORY_CIRCLES: StoryCircle[] = [
-  { id: 'es-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
+  { id: 'es-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
   { id: 'es-1', name: 'Dean Morris', initials: 'DM', hasNew: true, ringColor: '#3B82F6' },
   { id: 'es-2', name: 'Prof. Adebayo', initials: 'PA', hasNew: true, ringColor: '#22C55E' },
   { id: 'es-3', name: 'Student Gov', initials: 'SG', hasNew: true, ringColor: '#F59E0B' },
-  { id: 'es-4', name: 'FMU Athletics', initials: 'FA', hasNew: true, ringColor: '#EF4444' },
+  { id: 'es-4', name: 'KaNeXT Athletics', initials: 'FA', hasNew: true, ringColor: '#EF4444' },
   { id: 'es-5', name: 'Campus Life', initials: 'CL', hasNew: false },
   { id: 'es-6', name: 'Library', initials: 'LB', hasNew: false },
   { id: 'es-7', name: 'Aviation Dept', initials: 'AV', hasNew: true, ringColor: '#06B6D4' },
@@ -254,23 +254,23 @@ const EDUCATION_STORY_CIRCLES: StoryCircle[] = [
 const EDUCATION_FEED_POSTS: VideoFeedPost[] = [
   {
     id: 'efp-1',
-    authorName: 'FMU Athletics',
+    authorName: 'KaNeXT Athletics',
     authorInitials: 'FA',
     authorRole: 'Athletics Department',
     timestamp: ago(20),
-    caption: 'Lions basketball season highlights — 16-8, Sun Conference contenders. This team is built different.',
+    caption: 'Lions basketball season highlights — 16-8, KaNeXT Conference contenders. This team is built different.',
     media: { type: 'clip', title: 'Lions 2025-26 Season Highlights', thumbnailColor: '#1A1A2A', duration: '6:15', views: 4120 },
     likes: 312,
     comments: 47,
   },
   {
     id: 'efp-2',
-    authorName: 'FMU Campus',
+    authorName: 'KaNeXT Campus',
     authorInitials: 'FC',
     authorRole: 'University',
     timestamp: ago(150),
     caption: 'Spring 2026 campus tour — explore our Miami Gardens campus. New science building looking amazing.',
-    media: { type: 'clip', title: 'FMU Campus Tour — Spring 2026', thumbnailColor: '#0A2A2A', duration: '3:48', views: 2890 },
+    media: { type: 'clip', title: 'KaNeXT Campus Tour — Spring 2026', thumbnailColor: '#0A2A2A', duration: '3:48', views: 2890 },
     likes: 145,
     comments: 18,
   },
@@ -303,7 +303,7 @@ const EDUCATION_FEED_POSTS: VideoFeedPost[] = [
     authorInitials: 'SG',
     authorRole: 'Student Council',
     timestamp: ago(540),
-    caption: 'Homecoming 2026 highlight reel is HERE. What a week. FMU, we showed out.',
+    caption: 'Homecoming 2026 highlight reel is HERE. What a week. KaNeXT, we showed out.',
     media: { type: 'reel', title: 'Homecoming 2026 — Best Moments', thumbnailColor: '#2A2A0A', duration: '4:45', views: 8340 },
     likes: 623,
     comments: 91,
@@ -339,8 +339,8 @@ const EDUCATION_FEED_POSTS: VideoFeedPost[] = [
 // =============================================================================
 
 const BUSINESS_STORY_CIRCLES: StoryCircle[] = [
-  { id: 'bs-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
-  { id: 'bs-1', name: 'Sammy K.', initials: 'SK', hasNew: true, ringColor: '#6AA9FF' },
+  { id: 'bs-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
+  { id: 'bs-1', name: 'Alex M.', initials: 'AM', hasNew: true, ringColor: '#6AA9FF' },
   { id: 'bs-2', name: 'Product', initials: 'PR', hasNew: true, ringColor: '#22C55E' },
   { id: 'bs-3', name: 'Demo Day', initials: 'DD', hasNew: true, ringColor: '#F59E0B' },
   { id: 'bs-4', name: 'Engineering', initials: 'EN', hasNew: true, ringColor: '#7C3AED' },
@@ -364,7 +364,7 @@ const BUSINESS_FEED_POSTS: VideoFeedPost[] = [
   },
   {
     id: 'bfp-2',
-    authorName: 'Sammy Kalejaiye',
+    authorName: 'Alex Morgan',
     authorInitials: 'SK',
     authorRole: 'Founder & CEO',
     timestamp: ago(180),
@@ -402,8 +402,8 @@ const BUSINESS_FEED_POSTS: VideoFeedPost[] = [
     authorInitials: 'CS',
     authorRole: 'Partnerships',
     timestamp: ago(600),
-    caption: 'Florida Memorial testimonial — hear how Coach K uses KaNeXT OS to manage recruiting, film, and game planning.',
-    media: { type: 'clip', title: 'Customer Story — FMU Lions', thumbnailColor: '#2A0A1A', duration: '4:48', views: 2340 },
+    caption: 'KaNeXT Sports testimonial — hear how Coach K uses KaNeXT OS to manage recruiting, film, and game planning.',
+    media: { type: 'clip', title: 'Customer Story — KaNeXT', thumbnailColor: '#2A0A1A', duration: '4:48', views: 2340 },
     likes: 112,
     comments: 19,
     saved: true,
@@ -437,7 +437,7 @@ const BUSINESS_FEED_POSTS: VideoFeedPost[] = [
 // =============================================================================
 
 const COMMUNITY_STORY_CIRCLES: StoryCircle[] = [
-  { id: 'ks-you', name: 'Your Story', initials: 'SK', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
+  { id: 'ks-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
   { id: 'ks-1', name: 'Race Dir.', initials: 'RD', hasNew: true, ringColor: '#EF4444' },
   { id: 'ks-2', name: 'M. Kane', initials: 'MK', hasNew: true, ringColor: '#F59E0B' },
   { id: 'ks-3', name: 'Apex Racing', initials: 'AR', hasNew: true, ringColor: '#22C55E' },

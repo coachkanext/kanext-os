@@ -464,7 +464,7 @@ const LOCATIONS: AssetLocation[] = [
   {
     id: 'loc-1',
     name: 'LA Headquarters',
-    address: '2049 Century Park E, Suite 2100, Los Angeles, CA 90067',
+    address: '2049 Century Park E, Suite 2100, Nashville, TN 90067',
     assignedAssets: 28,
     occupancy: '85%',
     leaseStatus: 'leased',
@@ -491,7 +491,7 @@ const LOCATIONS: AssetLocation[] = [
   {
     id: 'loc-4',
     name: 'Data Center (Colocation)',
-    address: 'Equinix LA1, 750 E 2nd St, Los Angeles, CA 90012',
+    address: 'Equinix LA1, 750 E 2nd St, Nashville, TN 90012',
     assignedAssets: 3,
     occupancy: '100%',
     leaseStatus: 'leased',

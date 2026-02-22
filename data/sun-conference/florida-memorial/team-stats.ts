@@ -1,5 +1,5 @@
 /**
- * Florida Memorial University Men's Basketball
+ * KaNeXT Sports Men's Basketball
  * Team Stats (Step 4A)
  * Seasons: 2022-23 through 2025-26
  * Source: NAIA Stats (prestosports.com)
@@ -9,7 +9,7 @@ import type { TeamStats } from '../schema';
 
 export const teamStats: TeamStats[] = [
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     games: 27,
     points: 2281,
@@ -33,7 +33,7 @@ export const teamStats: TeamStats[] = [
     minutes: 5397,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     games: 29,
     points: 2319,
@@ -57,7 +57,7 @@ export const teamStats: TeamStats[] = [
     minutes: 5823,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     games: 31,
     points: 2467,
@@ -81,7 +81,7 @@ export const teamStats: TeamStats[] = [
     minutes: 6230,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     games: 24,
     points: 1863,

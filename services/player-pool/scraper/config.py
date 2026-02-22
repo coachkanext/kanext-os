@@ -64,7 +64,7 @@ NCAA_BASE_URL = "https://stats.ncaa.org"
 NCAA_SPORT_CODE = "MBB"
 NCAA_ACADEMIC_YEAR = "2026.0"  # 2025-26 season
 NCAA_DIV_TO_LEVEL_KEY = {
-    "1": "ncaa_d1_mid_major",   # Default D1 to mid-major; refine HM/LM later by conference
+    "1": "ncaa_d1",
     "2": "ncaa_d2",
     "3": "ncaa_d3",
 }

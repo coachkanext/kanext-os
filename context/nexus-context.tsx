@@ -739,7 +739,7 @@ export function NexusProvider({ children }: NexusProviderProps) {
 
     if (simIntent.isSimulation) {
       const simulation = generateMockSimulation(
-        'FMU Lions',
+        'KaNeXT',
         simIntent.opponent || 'Opponent'
       );
       dispatch({ type: 'ADD_SIMULATION', payload: simulation });

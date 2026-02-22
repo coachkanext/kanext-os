@@ -1,6 +1,6 @@
 /**
  * Sports Facilities V3 — 3-pill ViewBar (Spaces | Bookings | Equipment)
- * FMU Lions Men's Basketball · NAIA Sun Conference
+ * KaNeXT Men's Basketball · NAIA KaNeXT Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback } from 'react';
@@ -39,7 +39,7 @@ interface Facility {
 }
 
 const FACILITIES: Facility[] = [
-  { id: 'f1', name: 'FMU Wellness Center', status: 'Open', capacity: 2000, icon: 'building.2.fill' },
+  { id: 'f1', name: 'KaNeXT Wellness Center', status: 'Open', capacity: 2000, icon: 'building.2.fill' },
   { id: 'f2', name: 'Weight Room', status: 'In Use', capacity: 30, icon: 'figure.mind.and.body' },
   { id: 'f3', name: 'Film Room', status: 'Open', capacity: 25, icon: 'play.rectangle.fill' },
   { id: 'f4', name: 'Practice Court', status: 'Open', capacity: 50, icon: 'sportscourt.fill' },

@@ -411,6 +411,56 @@ def scrape_team(conn, team_info: dict, division: str):
             db.upsert_player_season_stats(conn, pts_id, season_dict)
             season_stats_count += 1
 
+            # Also create N synthetic player_game_stats (one per game played)
+            # so the KR engine can compute BPR with proper confidence.
+            s = p.get("stats_stats", {})
+            total_min = safe_float(s.get("minutes_played", 0))
+            total_pts = safe_int(s.get("points_scored", 0))
+            total_fgm = safe_int(s.get("field_goals_made", 0))
+            total_fga = safe_int(s.get("field_goals_attempted", 0))
+            total_tpm = safe_int(s.get("three_points_made", 0))
+            total_tpa = safe_int(s.get("three_points_attempted", 0))
+            total_ftm = safe_int(s.get("free_throws_made", 0))
+            total_fta = safe_int(s.get("free_throws_attempted", 0))
+            total_oreb = safe_int(s.get("offensive_rebounds", 0))
+            total_dreb = safe_int(s.get("defensive_rebounds", 0))
+            total_reb = safe_int(s.get("total_rebounds", 0))
+            total_ast = safe_int(s.get("assists", 0))
+            total_stl = safe_int(s.get("steals", 0))
+            total_blk = safe_int(s.get("blocked_shots", 0))
+            total_to = safe_int(s.get("turnovers", 0))
+            total_pf = safe_int(s.get("personal_fouls", 0))
+
+            avg_stats = {
+                "started": safe_int(p.get("games_started", 0)) > 0,
+                "minutes": round(total_min / gp, 1),
+                "pts": round(total_pts / gp, 1),
+                "fgm": round(total_fgm / gp, 1),
+                "fga": round(total_fga / gp, 1),
+                "three_pm": round(total_tpm / gp, 1),
+                "three_pa": round(total_tpa / gp, 1),
+                "ftm": round(total_ftm / gp, 1),
+                "fta": round(total_fta / gp, 1),
+                "oreb": round(total_oreb / gp, 1),
+                "dreb": round(total_dreb / gp, 1),
+                "reb": round(total_reb / gp, 1),
+                "ast": round(total_ast / gp, 1),
+                "stl": round(total_stl / gp, 1),
+                "blk": round(total_blk / gp, 1),
+                "turnovers": round(total_to / gp, 1),
+                "pf": round(total_pf / gp, 1),
+            }
+
+            for g_idx in range(gp):
+                syn_game_id = f"nccaa-syn-{sidearm_id}-{raw_name}-g{g_idx+1:02d}"
+                syn_game_db_id = db.upsert_game(
+                    conn, syn_game_id, SEASON, None,
+                    team_season_id, None,
+                    None, None,
+                    game_type="SEASON_AVG",
+                )
+                db.upsert_player_game_stats(conn, syn_game_db_id, pts_id, avg_stats)
+
     conn.commit()
     log.info(f"  Roster: {roster_count} players, {season_stats_count} with season stats")
 

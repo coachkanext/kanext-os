@@ -127,14 +127,14 @@ export const MOCK_WORKSPACES: Workspace[] = [
     id: 'ws-1',
     title: 'Next Opponent Scout',
     status: 'active',
-    owner: 'Coach Kalejaiye',
+    owner: 'Coach Carter',
     ownerInitials: 'SK',
     participants: [
-      { initials: 'SK', color: '#1E3A5F' },
+      { initials: 'AM', color: '#1E3A5F' },
       { initials: 'LC', color: '#2D1B69' },
       { initials: 'DW', color: '#3D1A1A' },
     ],
-    linkedObjects: ['Lincoln Christian', 'Feb 21 Game'],
+    linkedObjects: ['Ridgemont Christian', 'Feb 21 Game'],
     clipCount: 34,
     lastActivity: '2h ago',
     colorStrip: '#EF4444',
@@ -144,10 +144,10 @@ export const MOCK_WORKSPACES: Workspace[] = [
     id: 'ws-2',
     title: 'Last Game Review',
     status: 'active',
-    owner: 'Coach Kalejaiye',
+    owner: 'Coach Carter',
     ownerInitials: 'SK',
     participants: [
-      { initials: 'SK', color: '#1E3A5F' },
+      { initials: 'AM', color: '#1E3A5F' },
       { initials: 'MT', color: '#1A3D2A' },
       { initials: 'JC', color: '#3D2A1A' },
     ],
@@ -161,11 +161,11 @@ export const MOCK_WORKSPACES: Workspace[] = [
     id: 'ws-3',
     title: 'Install: Offense',
     status: 'active',
-    owner: 'Coach Lincoln',
+    owner: 'Coach Avery',
     ownerInitials: 'CL',
     participants: [
       { initials: 'CL', color: '#2D1B69' },
-      { initials: 'SK', color: '#1E3A5F' },
+      { initials: 'AM', color: '#1E3A5F' },
     ],
     linkedObjects: ['Motion v2', 'Horns Entry'],
     clipCount: 22,
@@ -181,7 +181,7 @@ export const MOCK_WORKSPACES: Workspace[] = [
     ownerInitials: 'CD',
     participants: [
       { initials: 'CD', color: '#3D1A1A' },
-      { initials: 'SK', color: '#1E3A5F' },
+      { initials: 'AM', color: '#1E3A5F' },
       { initials: 'CL', color: '#2D1B69' },
     ],
     linkedObjects: ['2-3 Zone', 'Switch Rules'],
@@ -194,7 +194,7 @@ export const MOCK_WORKSPACES: Workspace[] = [
     id: 'ws-5',
     title: 'Player: Carter Development',
     status: 'active',
-    owner: 'Coach Lincoln',
+    owner: 'Coach Avery',
     ownerInitials: 'CL',
     participants: [
       { initials: 'CL', color: '#2D1B69' },
@@ -210,10 +210,10 @@ export const MOCK_WORKSPACES: Workspace[] = [
     id: 'ws-6',
     title: 'Transition Package',
     status: 'draft',
-    owner: 'Coach Kalejaiye',
+    owner: 'Coach Carter',
     ownerInitials: 'SK',
     participants: [
-      { initials: 'SK', color: '#1E3A5F' },
+      { initials: 'AM', color: '#1E3A5F' },
     ],
     linkedObjects: ['Fast Break', 'Secondary Break'],
     clipCount: 8,
@@ -229,7 +229,7 @@ export const MOCK_WORKSPACES: Workspace[] = [
     ownerInitials: 'CD',
     participants: [
       { initials: 'CD', color: '#3D1A1A' },
-      { initials: 'SK', color: '#1E3A5F' },
+      { initials: 'AM', color: '#1E3A5F' },
     ],
     linkedObjects: ['2-2-1 Break', '1-2-2 Break'],
     clipCount: 12,
@@ -241,10 +241,10 @@ export const MOCK_WORKSPACES: Workspace[] = [
     id: 'ws-8',
     title: 'End of Game Situations',
     status: 'archived',
-    owner: 'Coach Kalejaiye',
+    owner: 'Coach Carter',
     ownerInitials: 'SK',
     participants: [
-      { initials: 'SK', color: '#1E3A5F' },
+      { initials: 'AM', color: '#1E3A5F' },
       { initials: 'CL', color: '#2D1B69' },
       { initials: 'CD', color: '#3D1A1A' },
     ],
@@ -342,10 +342,10 @@ export const MOCK_CUTUP_TEMPLATES: CutupTemplate[] = [
 export const MOCK_FILM_ASSIGNMENTS: FilmAssignment[] = [
   {
     id: 'fa-1',
-    title: 'Watch Lincoln Christian — Last 3 Games',
+    title: 'Watch Ridgemont Christian — Last 3 Games',
     assignedTo: [
       { name: 'Jaylen Carter', initials: 'JC', color: '#3D2A1A' },
-      { name: 'Marcus Thompson', initials: 'MT', color: '#1A3D2A' },
+      { name: 'Alex Morgan', initials: 'MT', color: '#1A3D2A' },
     ],
     dueDate: 'Feb 19',
     isOverdue: false,
@@ -386,7 +386,7 @@ export const MOCK_FILM_ASSIGNMENTS: FilmAssignment[] = [
     id: 'fa-4',
     title: 'PNR Coverage Study — ICE vs Drop',
     assignedTo: [
-      { name: 'Marcus Thompson', initials: 'MT', color: '#1A3D2A' },
+      { name: 'Alex Morgan', initials: 'MT', color: '#1A3D2A' },
       { name: 'Devon Williams', initials: 'DW', color: '#1E3A5F' },
     ],
     dueDate: 'Feb 20',
@@ -413,7 +413,7 @@ export const MOCK_FILM_ASSIGNMENTS: FilmAssignment[] = [
     id: 'fa-6',
     title: 'Scout LC #3 Davis — Tendencies',
     assignedTo: [
-      { name: 'Coach Lincoln', initials: 'CL', color: '#2D1B69' },
+      { name: 'Coach Avery', initials: 'CL', color: '#2D1B69' },
     ],
     dueDate: 'Feb 19',
     isOverdue: false,
@@ -431,7 +431,7 @@ export const MOCK_FILM_ASSIGNMENTS: FilmAssignment[] = [
 export const MOCK_FILM_NOTES: FilmNote[] = [
   {
     id: 'fn-1',
-    author: 'Coach Kalejaiye',
+    author: 'Coach Carter',
     authorInitials: 'SK',
     content: 'LC runs 1-4 flat action after every timeout in Q4. Need to scout ATO package — minimum 3 sets identified.',
     type: 'series',
@@ -441,7 +441,7 @@ export const MOCK_FILM_NOTES: FilmNote[] = [
   },
   {
     id: 'fn-2',
-    author: 'Coach Lincoln',
+    author: 'Coach Avery',
     authorInitials: 'CL',
     content: 'Carter needs to finish through contact on the left side — 4/11 in last 3 games. Drill: Mikan + contact pad.',
     type: 'clip',
@@ -463,7 +463,7 @@ export const MOCK_FILM_NOTES: FilmNote[] = [
   },
   {
     id: 'fn-4',
-    author: 'Coach Kalejaiye',
+    author: 'Coach Carter',
     authorInitials: 'SK',
     content: 'Transition D: we\'re giving up 14 fast break points per game. Need to sprint back before anything else.',
     type: 'series',
@@ -473,7 +473,7 @@ export const MOCK_FILM_NOTES: FilmNote[] = [
   },
   {
     id: 'fn-5',
-    author: 'Coach Lincoln',
+    author: 'Coach Avery',
     authorInitials: 'CL',
     content: 'Thompson\'s catch-and-shoot is much better when he gets his feet set. 52% set vs 28% off-balance.',
     type: 'clip',
@@ -484,7 +484,7 @@ export const MOCK_FILM_NOTES: FilmNote[] = [
   },
   {
     id: 'fn-6',
-    author: 'Coach Kalejaiye',
+    author: 'Coach Carter',
     authorInitials: 'SK',
     content: 'Press break: Anderson needs to be the primary ball handler. Thompson as safety valve. Do NOT let the 5 touch it.',
     type: 'series',
@@ -505,7 +505,7 @@ export const MOCK_FILM_NOTES: FilmNote[] = [
   },
   {
     id: 'fn-8',
-    author: 'Coach Lincoln',
+    author: 'Coach Avery',
     authorInitials: 'CL',
     content: 'Zone offense: overload to the short corner is our best action. 8/12 when we swing to the corner 3.',
     type: 'series',
@@ -515,7 +515,7 @@ export const MOCK_FILM_NOTES: FilmNote[] = [
   },
   {
     id: 'fn-9',
-    author: 'Coach Kalejaiye',
+    author: 'Coach Carter',
     authorInitials: 'SK',
     content: 'End of game: need a lob play for Carter when they switch. He\'s 6/8 on lobs this season.',
     type: 'clip',
@@ -554,7 +554,7 @@ export interface PracticeFilmItem {
 
 export const MOCK_PRACTICE_FILM: PracticeFilmItem[] = [
   { id: 'pf-1', date: 'Feb 18, 2026', practiceType: 'Full Practice', duration: '1:45:00', thumbnailColor: '#1A3D1A', notes: 'Transition defense focus' },
-  { id: 'pf-2', date: 'Feb 17, 2026', practiceType: 'Shootaround', duration: '0:45:00', thumbnailColor: '#2D1B69', notes: 'Pre-game prep vs Lincoln Christian' },
+  { id: 'pf-2', date: 'Feb 17, 2026', practiceType: 'Shootaround', duration: '0:45:00', thumbnailColor: '#2D1B69', notes: 'Pre-game prep vs Ridgemont Christian' },
   { id: 'pf-3', date: 'Feb 15, 2026', practiceType: 'Full Practice', duration: '2:00:00', thumbnailColor: '#1E3A5F', notes: '5-on-5 scrimmage + press break install' },
   { id: 'pf-4', date: 'Feb 13, 2026', practiceType: 'Walkthrough', duration: '0:55:00', thumbnailColor: '#3D1A1A', notes: 'Motion offense v2 walkthrough' },
   { id: 'pf-5', date: 'Feb 12, 2026', practiceType: 'Individual', duration: '1:10:00', thumbnailColor: '#1A1A3D', notes: 'Carter finishing drills + Thompson shooting' },

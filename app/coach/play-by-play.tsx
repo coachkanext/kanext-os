@@ -13,9 +13,9 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
-  FMU_GAMES_BY_ID,
-  FMU_BOX_SCORES,
-  FMU_RECORD,
+  KaNeXT_GAMES_BY_ID,
+  KaNeXT_BOX_SCORES,
+  KaNeXT_RECORD,
   placeholderRecord,
   isConfGame,
   type BoxScoreLine,
@@ -36,7 +36,7 @@ function generateMockPbp(opponent: string, fmuScore: number, oppScore: number): 
   for (let i = 0; i < opponent.length; i++) h = ((h << 5) - h + opponent.charCodeAt(i)) | 0;
   const seed = () => { h = ((h << 5) - h + 0x5bd1e995) | 0; return Math.abs(h) % 1000; };
 
-  const FMU_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas'];
+  const KaNeXT_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas'];
   const OPP_NAMES = ['Johnson', 'Williams', 'Davis', 'Brown', 'Wilson', 'Anderson', 'Taylor'];
 
   const playTemplates = [
@@ -72,7 +72,7 @@ function generateMockPbp(opponent: string, fmuScore: number, oppScore: number): 
 
     const isFmu = seed() % 2 === 0;
     const team: 'fmu' | 'opp' = isFmu ? 'fmu' : 'opp';
-    const names = isFmu ? FMU_NAMES : OPP_NAMES;
+    const names = isFmu ? KaNeXT_NAMES : OPP_NAMES;
     const name = names[seed() % names.length];
     const template = playTemplates[seed() % playTemplates.length];
 
@@ -144,7 +144,7 @@ export default function PlayByPlayScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
 
-  const game = (FMU_GAMES_BY_ID as Record<string, { opponent: string; date: string; location: string; status: GameStatus; score?: string }>)[gameId ?? '']
+  const game = (KaNeXT_GAMES_BY_ID as Record<string, { opponent: string; date: string; location: string; status: GameStatus; score?: string }>)[gameId ?? '']
     ?? { opponent: 'Unknown', date: '—', location: '—', status: 'upcoming' as GameStatus };
 
   const opponentAbbr = game.opponent.substring(0, 3).toUpperCase();
@@ -160,10 +160,10 @@ export default function PlayByPlayScreen() {
   const entries = generateMockPbp(game.opponent, fmuScore, oppScore);
 
   // Box score data (for shot chart)
-  const FMU_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
-  const BOX_SCORE = FMU_BOX_SCORES as Record<string, BoxScoreLine[]>;
+  const KaNeXT_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
+  const BOX_SCORE = KaNeXT_BOX_SCORES as Record<string, BoxScoreLine[]>;
   const realBoxScore = BOX_SCORE[gameId ?? ''] ?? [];
-  const fmuBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('Florida Memorial', fmuScore, FMU_MOCK_NAMES);
+  const fmuBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('KaNeXT Sports', fmuScore, KaNeXT_MOCK_NAMES);
   const oppBoxScoreData = mockBoxScore(game.opponent, oppScore);
 
   // Shot chart filter state
@@ -208,7 +208,7 @@ export default function PlayByPlayScreen() {
   };
 
   let fmuSeed = 0;
-  for (let i = 0; i < 'FMU'.length; i++) fmuSeed = ((fmuSeed << 5) - fmuSeed + 'FMU'.charCodeAt(i)) | 0;
+  for (let i = 0; i < 'KaNeXT'.length; i++) fmuSeed = ((fmuSeed << 5) - fmuSeed + 'KaNeXT'.charCodeAt(i)) | 0;
   let oppSeed = 0;
   for (let i = 0; i < game.opponent.length; i++) oppSeed = ((oppSeed << 5) - oppSeed + game.opponent.charCodeAt(i)) | 0;
 
@@ -235,7 +235,7 @@ export default function PlayByPlayScreen() {
 
   const COURT_COLOR = '#D2B48C';
   const LINE_COLOR = '#B8976A';
-  const FMU_COLOR = colors.text;
+  const KaNeXT_COLOR = colors.text;
   const OPP_COLOR = '#6B8E6B';
 
   return (
@@ -271,7 +271,7 @@ export default function PlayByPlayScreen() {
           </View>
           <View style={[styles.scoreboardSide, { flexDirection: 'row-reverse' }]}>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>FMU</Text>
+              <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>KXT</Text>
               <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{FMU_RECORD.overall}</Text>
             </View>
             <View style={[styles.scoreboardIcon, { backgroundColor: colors.text + '15' }]}>
@@ -382,8 +382,8 @@ export default function PlayByPlayScreen() {
               <View style={[styles.shotTeamBadge, { backgroundColor: OPP_COLOR + '30' }]}>
                 <Text style={[styles.shotTeamBadgeText, { color: OPP_COLOR }]}>{opponentAbbr.charAt(0)}</Text>
               </View>
-              <View style={[styles.shotTeamBadge, { backgroundColor: FMU_COLOR + '15' }]}>
-                <Text style={[styles.shotTeamBadgeText, { color: FMU_COLOR }]}>F</Text>
+              <View style={[styles.shotTeamBadge, { backgroundColor: KaNeXT_COLOR + '15' }]}>
+                <Text style={[styles.shotTeamBadgeText, { color: KaNeXT_COLOR }]}>F</Text>
               </View>
             </View>
 
@@ -391,7 +391,7 @@ export default function PlayByPlayScreen() {
               <View key={`o${i}`} style={[styles.shotDot, { left: `${s.x * 50}%`, top: `${s.y * 100}%`, backgroundColor: s.made ? OPP_COLOR : 'transparent', borderColor: OPP_COLOR }]} />
             ))}
             {fmuShots.map((s, i) => (
-              <View key={`f${i}`} style={[styles.shotDot, { right: `${s.x * 50}%`, top: `${s.y * 100}%`, backgroundColor: s.made ? FMU_COLOR : 'transparent', borderColor: FMU_COLOR }]} />
+              <View key={`f${i}`} style={[styles.shotDot, { right: `${s.x * 50}%`, top: `${s.y * 100}%`, backgroundColor: s.made ? KaNeXT_COLOR : 'transparent', borderColor: KaNeXT_COLOR }]} />
             ))}
           </View>
 
@@ -405,9 +405,9 @@ export default function PlayByPlayScreen() {
             </View>
             <View style={[styles.shotLegendDivider, { backgroundColor: colors.divider }]} />
             <View style={styles.shotLegendSide}>
-              <View style={[styles.shotLegendDot, { backgroundColor: FMU_COLOR, borderColor: FMU_COLOR }]} />
+              <View style={[styles.shotLegendDot, { backgroundColor: KaNeXT_COLOR, borderColor: KaNeXT_COLOR }]} />
               <Text style={[styles.shotLegendLabel, { color: colors.textSecondary }]}>Shot Made</Text>
-              <View style={[styles.shotLegendDot, { backgroundColor: 'transparent', borderColor: FMU_COLOR, marginLeft: 8 }]} />
+              <View style={[styles.shotLegendDot, { backgroundColor: 'transparent', borderColor: KaNeXT_COLOR, marginLeft: 8 }]} />
               <Text style={[styles.shotLegendLabel, { color: colors.textSecondary }]}>Shot Missed</Text>
             </View>
           </View>
@@ -530,7 +530,7 @@ export default function PlayByPlayScreen() {
                           onPress={() => setShotPlayerTeam(t)}
                         >
                           <Text style={[styles.filterTeamPillText, { color: active ? colors.background : colors.textSecondary }]}>
-                            {t === 'fmu' ? 'FMU' : opponentAbbr}
+                            {t === 'fmu' ? 'KaNeXT' : opponentAbbr}
                           </Text>
                         </Pressable>
                       );

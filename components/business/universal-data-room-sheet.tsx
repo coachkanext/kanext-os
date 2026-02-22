@@ -421,8 +421,8 @@ function PitchPackTab({
   ];
 
   const caseStudies = [
-    { name: 'FMU Athletics', mode: 'Sports', status: 'Active deployment', detail: '13 sports programs, 2,340 app installs, ESPN+ broadcasts' },
-    { name: 'ICCLA', mode: 'Church', status: 'Active deployment', detail: 'Giving rails, connect groups, pastoral care intelligence' },
+    { name: 'KaNeXT Athletics', mode: 'Sports', status: 'Active deployment', detail: '13 sports programs, 2,340 app installs, ESPN+ broadcasts' },
+    { name: 'KaNeXT Church', mode: 'Church', status: 'Active deployment', detail: 'Giving rails, connect groups, pastoral care intelligence' },
     { name: 'K-1 Speed', mode: 'Competition', status: 'Active deployment', detail: 'Race ops, standings, cap enforcement, broadcast integration' },
   ];
 
@@ -518,9 +518,9 @@ function PitchPackTab({
 function ProductDemoTab({ colors }: { colors: typeof Colors.light }) {
   const demoScript = [
     { step: 1, title: 'Mode Selector', desc: 'Tap the mode icon in the top bar to switch between Sports, Church, Competition, Business, and Education modes.' },
-    { step: 2, title: 'Sports Mode (FMU)', desc: 'Explore the dashboard, roster builder, film room, and game-day operations for Florida Memorial University athletics.' },
+    { step: 2, title: 'Sports Mode (KaNeXT)', desc: 'Explore the dashboard, roster builder, film room, and game-day operations for KaNeXT Sports athletics.' },
     { step: 3, title: 'Nexus AI', desc: 'Long-press the Nexus tab or tap the microphone to activate voice/text AI. Ask about roster, schedule, or strategy.' },
-    { step: 4, title: 'Church Mode (ICCLA)', desc: 'View giving dashboards, connect groups, ministry operations, and the "Hotline to Heaven" pastoral care interface.' },
+    { step: 4, title: 'Church Mode (KaNeXT Church)', desc: 'View giving dashboards, connect groups, ministry operations, and the "Hotline to Heaven" pastoral care interface.' },
     { step: 5, title: 'Competition Mode (K-1)', desc: 'Explore race operations, team standings, driver rosters, and the steward decision audit trail.' },
     { step: 6, title: 'Business Mode', desc: 'Navigate the founder OS: company overview, data room, deal workspaces, and governance dashboards.' },
   ];
@@ -794,7 +794,7 @@ function LegalTab({
   ];
 
   const keyAgreements = [
-    { name: 'FMU Partnership Agreement', type: 'Partnership', status: 'Active', detail: 'Athletics OS deployment for 13 sports programs' },
+    { name: 'KaNeXT Partnership Agreement', type: 'Partnership', status: 'Active', detail: 'Athletics OS deployment for 13 sports programs' },
     { name: 'PBD Co-Founder Distribution LOI', type: 'Letter of Intent', status: 'Signed', detail: 'Media distribution and co-branded event rights' },
     { name: 'SAFE Agreement -- Family Round', type: 'Investment', status: 'Template Ready', detail: 'Standard SAFE for friends and family investors' },
     { name: 'SAFE Agreement -- PBD Co-Founder', type: 'Investment', status: 'Board Approved', detail: '5-tranche SAFE with board seat activation' },

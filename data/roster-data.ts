@@ -3,10 +3,10 @@
  * Extracted to break circular dependencies.
  */
 
-// Florida Memorial University Lions colors
+// KaNeXT colors
 export const TEAM_COLORS = {
-  primary: '#003DA5',    // FMU Royal Blue
-  secondary: '#FFD100',  // FMU Gold
+  primary: '#003DA5',    // KaNeXT Royal Blue
+  secondary: '#FFD100',  // KaNeXT Gold
   accent: '#ffffff',
   background: '#000000',
   cardBg: '#0a0a0a',

@@ -380,7 +380,7 @@ export function ConversationsPanel({
           <View style={[styles.avatarButton, { backgroundColor: colors.backgroundTertiary }]}>
             <IconSymbol name="person.fill" size={18} color={colors.icon} />
           </View>
-          <ThemedText style={styles.userName}>Sammy Kalejaiye</ThemedText>
+          <ThemedText style={styles.userName}>Alex Morgan</ThemedText>
         </Pressable>
       </View>
 

@@ -187,7 +187,7 @@ export const ORG_LEVEL_COLOR: Record<OrgChartLevel, string> = {
 const PEOPLE: BizPerson[] = [
   {
     id: 'ppl-001',
-    name: 'Sammy Kalejaiye',
+    name: 'Alex Morgan',
     title: 'CEO / Founder',
     department: 'Executive',
     email: 'sammy@kanext.io',
@@ -449,7 +449,7 @@ const ROLE_SEATS: RoleSeat[] = [
     entityId: KANEXT_HOLDCO,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
     holder: 'ppl-001',
-    holderName: 'Sammy Kalejaiye',
+    holderName: 'Alex Morgan',
     requiredPermissions: ['full_access', 'signature_both', 'board_actions'],
     signatureAuthority: 'both',
     critical: true,
@@ -724,7 +724,7 @@ const ORG_CHART_NODES: OrgChartNode[] = [
   // C-Suite
   {
     personId: 'ppl-001',
-    name: 'Sammy Kalejaiye',
+    name: 'Alex Morgan',
     title: 'CEO / Founder',
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
     level: 'C-Suite',

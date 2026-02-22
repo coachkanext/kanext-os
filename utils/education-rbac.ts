@@ -15,6 +15,8 @@
  * E13: Board of Trustees
  */
 
+import { isSystemOwner } from '@/utils/system-rbac';
+
 // =============================================================================
 // ROLE LEVELS
 // =============================================================================
@@ -275,22 +277,22 @@ export function canViewGrades(role: EducationRoleLens): boolean {
 // =============================================================================
 
 const EDUCATION_MEMBERSHIP_MAP: Record<string, EducationRoleLens> = {
-  mem_edu_fmu_president: 'E1',
-  mem_edu_fmu_provost: 'E2',
-  mem_edu_fmu_chair: 'E3',
-  mem_edu_fmu_student_services: 'E4',
-  mem_edu_fmu_registrar: 'E5',
-  mem_edu_fmu_facilities: 'E6',
-  mem_edu_fmu_student: 'E7',
-  mem_edu_fmu_parent: 'E8',
-  mem_edu_fmu_alumnus: 'E9',
-  mem_edu_fmu_prospect: 'E10',
-  mem_edu_fmu_donor: 'E11',
-  mem_edu_fmu_accreditor: 'E12',
-  mem_edu_fmu_trustee: 'E13',
+  mem_edu_kx_provost: 'E2',
+  mem_edu_kx_chair: 'E3',
+  mem_edu_kx_student_services: 'E4',
+  mem_edu_kx_registrar: 'E5',
+  mem_edu_kx_facilities: 'E6',
+  mem_edu_kx_student: 'E7',
+  mem_edu_kx_parent: 'E8',
+  mem_edu_kx_alumnus: 'E9',
+  mem_edu_kx_prospect: 'E10',
+  mem_edu_kx_donor: 'E11',
+  mem_edu_kx_accreditor: 'E12',
+  mem_edu_kx_trustee: 'E13',
 };
 
 export function getEducationRole(membershipId: string): EducationRoleLens {
+  if (isSystemOwner(membershipId)) return 'E1';
   return EDUCATION_MEMBERSHIP_MAP[membershipId] ?? 'E10';
 }
 

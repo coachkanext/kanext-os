@@ -16,6 +16,8 @@
  * Privilege order: C1 > C6 > C2 > C7 > C3 > C8 > C9 > C4 > C11 > C10 > C5
  */
 
+import { isSystemOwner } from '@/utils/system-rbac';
+
 // =============================================================================
 // ROLE LEVELS
 // =============================================================================
@@ -310,11 +312,10 @@ export function isMinistryLevel(role: ChurchRoleLens): boolean {
 // MEMBERSHIP → LENS (direct membership_id mapping for ActiveView)
 // =============================================================================
 
-const CHURCH_MEMBERSHIP_MAP: Record<string, ChurchRoleLens> = {
-  mem_church_iccla: 'C1',
-};
+const CHURCH_MEMBERSHIP_MAP: Record<string, ChurchRoleLens> = {};
 
 export function getChurchRole(membershipId: string): ChurchRoleLens {
+  if (isSystemOwner(membershipId)) return 'C1';
   return CHURCH_MEMBERSHIP_MAP[membershipId] ?? 'C1';
 }
 

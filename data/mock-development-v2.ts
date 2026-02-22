@@ -171,7 +171,7 @@ export const TEAM_PRIORITIES: TeamPriority[] = [
   { id: 'tp-2', rank: 2, title: 'Transition Defense', description: 'Giving up 14.2 fast break points/game (conference avg: 10.8).', progress: 55, coverageTier: 'adequate', cluster: 'Team Defense' },
   { id: 'tp-3', rank: 3, title: 'Free Throw Improvement', description: 'Team FT% at 68.4% — below conference average of 72%.', progress: 60, coverageTier: 'adequate', cluster: 'Shooting' },
   { id: 'tp-4', rank: 4, title: 'Ball Security in Half Court', description: 'Turnover rate in half-court sets: 16.2% (target: <13%).', progress: 48, coverageTier: 'weak', cluster: 'Playmaking' },
-  { id: 'tp-5', rank: 5, title: 'Post Entry Passing', description: 'Developing guard-to-post entry packages for Kalejaiye/Diomande.', progress: 72, coverageTier: 'strong', cluster: 'Playmaking' },
+  { id: 'tp-5', rank: 5, title: 'Post Entry Passing', description: 'Developing guard-to-post entry packages for Carter/Diomande.', progress: 72, coverageTier: 'strong', cluster: 'Playmaking' },
 ];
 
 // =============================================================================
@@ -272,7 +272,7 @@ export const CURRENT_WEEKLY_PLAN: WeeklyPlan = {
 
 export const PLAYER_PLANS: PlayerPlan[] = [
   {
-    playerId: '1', playerName: 'Brandon Williams', number: '1', position: 'PG',
+    playerId: '1', playerName: 'Marcus Reed', number: '1', position: 'PG',
     roleTarget: 'Primary Ball Handler / Floor General',
     topGaps: ['Late-clock turnover rate', 'Transition D effort', 'Free throw consistency'],
     planBlocks: [
@@ -335,7 +335,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'needs-work',
   },
   {
-    playerId: '5', playerName: 'Laolu Kalejaiye', number: '5', position: 'B',
+    playerId: '5', playerName: 'Devon Carter', number: '5', position: 'B',
     roleTarget: 'Defensive Anchor / Rim Protector',
     topGaps: ['FT shooting', 'Passing out of doubles', 'Perimeter closeouts'],
     planBlocks: [
@@ -357,7 +357,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'achieved',
   },
   {
-    playerId: '4', playerName: 'Nathan Chtelan', number: '4', position: 'W',
+    playerId: '4', playerName: 'Tyler Quinn', number: '4', position: 'W',
     roleTarget: 'Versatile Wing / Defensive Stopper',
     topGaps: ['Rim protection positioning', 'Pick-and-pop 3s', 'Weakside help'],
     planBlocks: [
@@ -416,7 +416,7 @@ export const PLAYER_PLANS: PlayerPlan[] = [
     progress: 'needs-work',
   },
   {
-    playerId: '8', playerName: 'Adrian Hernandez', number: '8', position: 'W',
+    playerId: '8', playerName: 'Jordan Blake', number: '8', position: 'W',
     roleTarget: 'Defensive Stopper / Transition Spark',
     topGaps: ['On-ball D technique', 'Rebounding positioning', 'Transition finishing'],
     planBlocks: [
@@ -507,11 +507,11 @@ export const DRILL_LIBRARY: DrillTemplate[] = [
 // =============================================================================
 
 export const EVIDENCE_QUEUE: EvidenceItem[] = [
-  { id: 'ev-1', playerId: '1', playerName: 'Brandon Williams', planItemTitle: 'PnR Decision-Making', type: 'clip', status: 'pending', date: 'Feb 15', description: 'Thomas game: 3 consecutive correct PnR reads in 2nd half' },
+  { id: 'ev-1', playerId: '1', playerName: 'Marcus Reed', planItemTitle: 'PnR Decision-Making', type: 'clip', status: 'pending', date: 'Feb 15', description: 'Thomas game: 3 consecutive correct PnR reads in 2nd half' },
   { id: 'ev-2', playerId: '3', playerName: 'Paul Diomande', planItemTitle: 'Post Footwork', type: 'clip', status: 'pending', date: 'Feb 15', description: 'Drop step + up-and-under sequence for bucket' },
-  { id: 'ev-3', playerId: '5', playerName: 'Laolu Kalejaiye', planItemTitle: 'FT Improvement', type: 'stat', status: 'reviewed', date: 'Feb 14', description: 'Last 5 games: 78.6% FT (up from 68%)' },
+  { id: 'ev-3', playerId: '5', playerName: 'Devon Carter', planItemTitle: 'FT Improvement', type: 'stat', status: 'reviewed', date: 'Feb 14', description: 'Last 5 games: 78.6% FT (up from 68%)' },
   { id: 'ev-4', playerId: '7', playerName: 'Marcus Collins', planItemTitle: 'Pull-Up 3s', type: 'note', status: 'flagged', date: 'Feb 14', description: 'Mechanics breakdown on pull-up 3s — elbow flying out' },
-  { id: 'ev-5', playerId: '8', playerName: 'Adrian Hernandez', planItemTitle: 'On-Ball Defense', type: 'clip', status: 'pending', date: 'Feb 15', description: '4 steals in Thomas game — active hands in passing lanes' },
+  { id: 'ev-5', playerId: '8', playerName: 'Jordan Blake', planItemTitle: 'On-Ball Defense', type: 'clip', status: 'pending', date: 'Feb 15', description: '4 steals in Thomas game — active hands in passing lanes' },
   { id: 'ev-6', playerId: '2', playerName: 'Chris Plantey', planItemTitle: 'Off-Screen Movement', type: 'clip', status: 'pending', date: 'Feb 13', description: 'Perfect curl-to-corner read for open 3' },
   { id: 'ev-7', playerId: '9', playerName: 'Jaylen Moore', planItemTitle: 'Post Move Expansion', type: 'stat', status: 'pending', date: 'Feb 12', description: 'Post-up efficiency: 1.08 PPP (last 3 games)' },
   { id: 'ev-8', playerId: '10', playerName: 'Jalen Washington', planItemTitle: 'Conditioning', type: 'note', status: 'reviewed', date: 'Feb 12', description: 'Passed all 5 conditioning benchmarks' },
@@ -522,13 +522,13 @@ export const EVIDENCE_QUEUE: EvidenceItem[] = [
 // =============================================================================
 
 export const TRANSFER_METRICS: TransferMetric[] = [
-  { id: 'tm-1', playerId: '1', playerName: 'Brandon Williams', skillArea: 'PnR Decision-Making', practiceScore: 82, gameScore: 74, transferLabel: 'positive', delta: -8 },
-  { id: 'tm-2', playerId: '1', playerName: 'Brandon Williams', skillArea: 'Free Throws', practiceScore: 84, gameScore: 74, transferLabel: 'neutral', delta: -10 },
+  { id: 'tm-1', playerId: '1', playerName: 'Marcus Reed', skillArea: 'PnR Decision-Making', practiceScore: 82, gameScore: 74, transferLabel: 'positive', delta: -8 },
+  { id: 'tm-2', playerId: '1', playerName: 'Marcus Reed', skillArea: 'Free Throws', practiceScore: 84, gameScore: 74, transferLabel: 'neutral', delta: -10 },
   { id: 'tm-3', playerId: '2', playerName: 'Chris Plantey', skillArea: 'Catch-and-Shoot', practiceScore: 78, gameScore: 72, transferLabel: 'positive', delta: -6 },
   { id: 'tm-4', playerId: '3', playerName: 'Paul Diomande', skillArea: '3PT Shooting', practiceScore: 68, gameScore: 48, transferLabel: 'negative', delta: -20 },
-  { id: 'tm-5', playerId: '5', playerName: 'Laolu Kalejaiye', skillArea: 'Rim Finishing', practiceScore: 88, gameScore: 85, transferLabel: 'positive', delta: -3 },
+  { id: 'tm-5', playerId: '5', playerName: 'Devon Carter', skillArea: 'Rim Finishing', practiceScore: 88, gameScore: 85, transferLabel: 'positive', delta: -3 },
   { id: 'tm-6', playerId: '7', playerName: 'Marcus Collins', skillArea: 'Pull-Up 3s', practiceScore: 55, gameScore: 38, transferLabel: 'negative', delta: -17 },
-  { id: 'tm-7', playerId: '8', playerName: 'Adrian Hernandez', skillArea: 'On-Ball D', practiceScore: 85, gameScore: 88, transferLabel: 'positive', delta: 3 },
+  { id: 'tm-7', playerId: '8', playerName: 'Jordan Blake', skillArea: 'On-Ball D', practiceScore: 85, gameScore: 88, transferLabel: 'positive', delta: 3 },
   { id: 'tm-8', playerId: '9', playerName: 'Jaylen Moore', skillArea: 'Post Moves', practiceScore: 72, gameScore: 65, transferLabel: 'emerging', delta: -7 },
   { id: 'tm-9', playerId: '10', playerName: 'Jalen Washington', skillArea: 'Defensive Positioning', practiceScore: 60, gameScore: 42, transferLabel: 'negative', delta: -18 },
 ];
@@ -597,7 +597,7 @@ export const LAST_WEEKLY_PLAN: WeeklyPlan = {
       date: 'Feb 14',
       sessions: [
         { id: 'w21-f1', type: 'rest', title: 'Game Day — Recovery', time: '10:00 AM', duration: '1 hr', notes: 'Light shooting, stretching, mental prep' },
-        { id: 'w21-f2', type: 'practice', title: 'Game vs Thomas University', time: '7:00 PM', duration: '2 hr', focus: 'GAME DAY — FMU W, final score 78-62' },
+        { id: 'w21-f2', type: 'practice', title: 'Game vs Thomas University', time: '7:00 PM', duration: '2 hr', focus: 'GAME DAY — KaNeXT W, final score 78-62' },
       ],
     },
     {
@@ -605,14 +605,14 @@ export const LAST_WEEKLY_PLAN: WeeklyPlan = {
       date: 'Feb 15',
       sessions: [
         { id: 'w21-s1', type: 'rest', title: 'Recovery Day', time: '—', duration: '—', notes: 'Active recovery — pool, stretch, no live contact' },
-        { id: 'w21-s2', type: 'film', title: 'Quick-Hits Film: STT Scout', time: '4:00 PM', duration: '30 min', focus: 'Initial scout look at St. Thomas — Sun Conference rival game tomorrow' },
+        { id: 'w21-s2', type: 'film', title: 'Quick-Hits Film: STT Scout', time: '4:00 PM', duration: '30 min', focus: 'Initial scout look at St. Thomas — KaNeXT Conference rival game tomorrow' },
       ],
     },
     {
       day: 'Sunday',
       date: 'Feb 16',
       sessions: [
-        { id: 'w21-su1', type: 'practice', title: 'Game vs St. Thomas University', time: '4:00 PM', duration: '2 hr', focus: 'GAME DAY — FMU W 72-65. Kalejaiye 18-11-3. Plantey 14 pts (5-9 3PT).' },
+        { id: 'w21-su1', type: 'practice', title: 'Game vs St. Thomas University', time: '4:00 PM', duration: '2 hr', focus: 'GAME DAY — KaNeXT W 72-65. Carter 18-11-3. Plantey 14 pts (5-9 3PT).' },
         { id: 'w21-su2', type: 'film', title: 'Post-Game Quick Review', time: '7:00 PM', duration: '30 min', focus: 'STT game — defensive adjustments that worked in 2nd half', notes: 'Coach Davis noted Rivera containment effective after Hernandez switch' },
       ],
     },

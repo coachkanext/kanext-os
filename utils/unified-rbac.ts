@@ -9,6 +9,7 @@ import { getChurchRole, type ChurchRoleLens } from '@/utils/church-rbac';
 import { getBusinessRole, type BusinessRoleLens } from '@/utils/business-rbac';
 import { getEducationRole, type EducationRoleLens } from '@/utils/education-rbac';
 import { getCompetitionRole, type CompetitionRoleLens } from '@/utils/competition-rbac';
+import { isSystemOwner, getSystemOwnerLensForMode } from '@/utils/system-rbac';
 
 export type AnyRoleLens =
   | { mode: 'sports'; lens: SportsRoleLens }
@@ -21,6 +22,11 @@ export type AnyRoleLens =
  * Resolve a membership_id to its mode-specific role lens.
  */
 export function resolveRoleLens(membershipId: string, mode: Mode): AnyRoleLens {
+  // SYSTEM_OWNER bypass — founder gets highest-privilege lens in every mode
+  if (isSystemOwner(membershipId)) {
+    return getSystemOwnerLensForMode(mode);
+  }
+
   switch (mode) {
     case 'sports':
       return { mode, lens: getSportsRole(membershipId) };

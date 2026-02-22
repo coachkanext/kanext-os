@@ -197,7 +197,7 @@ const PEOPLE_DIRECTORY: PersonEntry[] = [
   { id: 'p-1', name: 'Pastor David Chen', role: 'Senior Pastor', ministry: 'Pastoral', campus: 'Downtown', memberSince: 'Jan 2008', category: 'leader', email: 'dchen@gracechurch.org', phone: '(213) 555-0101', notes: 'Founding pastor. Leads vision and teaching.' },
   { id: 'p-2', name: 'Elder Robert Thompson', role: 'Elder / Board Chair', ministry: 'Governance', campus: 'Downtown', memberSince: 'Mar 2010', category: 'leader', email: 'rthompson@gracechurch.org', phone: '(213) 555-0102', notes: 'Oversees elder board meetings and church discipline.' },
   { id: 'p-3', name: 'Pastor Maria Santos', role: 'Campus Pastor', ministry: 'Pastoral', campus: 'Westside', memberSince: 'Jun 2014', category: 'leader', email: 'msantos@gracechurch.org', phone: '(310) 555-0201', notes: 'Leads Westside campus operations and teaching rotation.' },
-  { id: 'p-4', name: 'Deaconess Sarah Mitchell', role: 'Deaconess / Care Lead', ministry: 'Care & Counseling', campus: 'Downtown', memberSince: 'Sep 2011', category: 'leader', email: 'smitchell@gracechurch.org', phone: '(213) 555-0103' },
+  { id: 'p-4', name: 'Deaconess Mia Torres', role: 'Deaconess / Care Lead', ministry: 'Care & Counseling', campus: 'Downtown', memberSince: 'Sep 2011', category: 'leader', email: 'smitchell@gracechurch.org', phone: '(213) 555-0103' },
   // Staff
   { id: 'p-5', name: 'Alex Kim', role: 'Young Adults Director', ministry: 'Young Adults', campus: 'Westside', memberSince: 'Aug 2018', category: 'staff', email: 'akim@gracechurch.org', phone: '(310) 555-0202' },
   { id: 'p-6', name: 'Jessica Williams', role: 'Worship Director', ministry: 'Worship', campus: 'Downtown', memberSince: 'Feb 2016', category: 'staff', email: 'jwilliams@gracechurch.org', phone: '(213) 555-0104' },
@@ -269,7 +269,7 @@ const GROUP_HEALTH_LABEL: Record<GroupHealth, string> = {
 
 const GROUPS: SmallGroup[] = [
   { id: 'g-1', name: 'Men of Purpose', leader: 'Elder Robert Thompson', dayTime: 'Tue 7:00 PM', location: 'Downtown \u2014 Room 204', type: 'Men\'s', currentMembers: 12, capacity: 15, status: 'open', campus: 'Downtown', avgAttendance: 88, trend: 'up', health: 'healthy' },
-  { id: 'g-2', name: 'Women of Grace', leader: 'Deaconess Sarah Mitchell', dayTime: 'Wed 10:00 AM', location: 'Downtown \u2014 Fellowship Hall', type: 'Women\'s', currentMembers: 18, capacity: 20, status: 'open', campus: 'Downtown', avgAttendance: 92, trend: 'stable', health: 'healthy' },
+  { id: 'g-2', name: 'Women of Grace', leader: 'Deaconess Mia Torres', dayTime: 'Wed 10:00 AM', location: 'Downtown \u2014 Fellowship Hall', type: 'Women\'s', currentMembers: 18, capacity: 20, status: 'open', campus: 'Downtown', avgAttendance: 92, trend: 'stable', health: 'healthy' },
   { id: 'g-3', name: 'Young Adults Connect', leader: 'Pastor Alex Kim', dayTime: 'Thu 7:30 PM', location: 'Westside \u2014 Lounge', type: 'Young Adults', currentMembers: 25, capacity: 30, status: 'open', campus: 'Westside', avgAttendance: 78, trend: 'up', health: 'healthy' },
   { id: 'g-4', name: 'Marriage Enrichment', leader: 'Pastor & Mrs. Williams', dayTime: 'Fri 7:00 PM', location: 'Downtown \u2014 Room 110', type: 'Couples', currentMembers: 8, capacity: 10, status: 'open', campus: 'Downtown', avgAttendance: 95, trend: 'stable', health: 'healthy' },
   { id: 'g-5', name: 'Grief & Hope', leader: 'Chaplain Davis', dayTime: 'Sat 10:00 AM', location: 'Downtown \u2014 Chapel', type: 'Support', currentMembers: 6, capacity: 12, status: 'open', campus: 'Downtown', avgAttendance: 82, trend: 'up', health: 'healthy' },
@@ -318,7 +318,7 @@ interface CareCase {
 }
 
 const CARE_CASES: CareCase[] = [
-  { id: 'cc-1', personName: 'Sister Dorothy Mae Harris', type: 'homebound', typeLabel: 'Homebound Visit', assignedTo: 'Deaconess Sarah Mitchell', status: 'active', lastContact: 'Feb 15, 2026', priority: 'high', notes: 'Weekly visits. Needs communion and prayer.' },
+  { id: 'cc-1', personName: 'Sister Dorothy Mae Harris', type: 'homebound', typeLabel: 'Homebound Visit', assignedTo: 'Deaconess Mia Torres', status: 'active', lastContact: 'Feb 15, 2026', priority: 'high', notes: 'Weekly visits. Needs communion and prayer.' },
   { id: 'cc-2', personName: 'Brother Thomas Reed', type: 'hospital', typeLabel: 'Hospital Visit', assignedTo: 'Chaplain Davis', status: 'active', lastContact: 'Feb 16, 2026', priority: 'high', notes: 'Admitted to Cedars-Sinai. Heart surgery scheduled Feb 20.' },
   { id: 'cc-3', personName: 'Karen Thompson', type: 'grief', typeLabel: 'Grief Support', assignedTo: 'Chaplain Davis', status: 'active', lastContact: 'Feb 12, 2026', priority: 'medium', notes: 'Lost her mother last month. Connected to Grief & Hope group.' },
   { id: 'cc-4', personName: 'James & Kathy Lee', type: 'new-member-followup', typeLabel: 'New Member Follow-up', assignedTo: 'Pastor Maria Santos', status: 'active', lastContact: 'Feb 10, 2026', priority: 'medium', notes: 'Joined in January. Exploring small groups and children\'s ministry.' },
@@ -326,7 +326,7 @@ const CARE_CASES: CareCase[] = [
   { id: 'cc-6', personName: 'Anonymous Request #47', type: 'prayer-request', typeLabel: 'Prayer Request', assignedTo: 'Intercessory Prayer Team', status: 'active', lastContact: 'Feb 14, 2026', priority: 'low', notes: 'Requesting prayer for family restoration.' },
   { id: 'cc-7', personName: 'Michael Torres', type: 'counseling', typeLabel: 'Pastoral Counseling', assignedTo: 'Chaplain Davis', status: 'active', lastContact: 'Feb 13, 2026', priority: 'medium', notes: 'First-time visitor seeking spiritual guidance. Session 2 of 6.' },
   { id: 'cc-8', personName: 'Devon Washington', type: 'crisis', typeLabel: 'Crisis Intervention', assignedTo: 'Pastor David Chen', status: 'active', lastContact: 'Feb 17, 2026', priority: 'high', notes: 'Job loss and housing instability. Connected to benevolence fund.' },
-  { id: 'cc-9', personName: 'Elder Marcus Brown', type: 'hospital', typeLabel: 'Hospital Visit', assignedTo: 'Deaconess Sarah Mitchell', status: 'resolved', lastContact: 'Feb 8, 2026', priority: 'low', notes: 'Knee replacement. Discharged and recovering well.' },
+  { id: 'cc-9', personName: 'Elder Marcus Brown', type: 'hospital', typeLabel: 'Hospital Visit', assignedTo: 'Deaconess Mia Torres', status: 'resolved', lastContact: 'Feb 8, 2026', priority: 'low', notes: 'Knee replacement. Discharged and recovering well.' },
   { id: 'cc-10', personName: 'Crystal Washington', type: 'new-member-followup', typeLabel: 'New Member Follow-up', assignedTo: 'Marcus Rivera', status: 'pending', lastContact: 'Feb 3, 2026', priority: 'low', notes: 'Interested in children\'s ministry volunteering. Needs follow-up call.' },
 ];
 

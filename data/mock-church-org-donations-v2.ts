@@ -466,7 +466,7 @@ const CAMPAIGN_UPDATES: CampaignUpdate[] = [
 const DONORS: DonorProfile[] = [
   {
     id: 'dnr-001',
-    name: 'James & Sarah Mitchell',
+    name: 'James & Mia Torres',
     status: 'active',
     lifetimeGivingBand: '$10K+',
     recurringStatus: true,
@@ -606,7 +606,7 @@ const RECURRING_GIFTS: RecurringGift[] = [
   {
     id: 'rec-001',
     donorId: 'dnr-001',
-    donorName: 'James & Sarah Mitchell',
+    donorName: 'James & Mia Torres',
     amount: 1200,
     frequency: 'monthly',
     designation: 'general',
@@ -690,7 +690,7 @@ const RECURRING_GIFTS: RecurringGift[] = [
   {
     id: 'rec-008',
     donorId: 'dnr-001',
-    donorName: 'James & Sarah Mitchell',
+    donorName: 'James & Mia Torres',
     amount: 250,
     frequency: 'monthly',
     designation: 'building',
@@ -709,7 +709,7 @@ const RECEIPTS: GivingReceipt[] = [
   {
     id: 'rcpt-001',
     donorId: 'dnr-001',
-    donorName: 'James & Sarah Mitchell',
+    donorName: 'James & Mia Torres',
     amount: 1200,
     designation: 'general',
     fundName: 'General Fund',
@@ -826,7 +826,7 @@ const RECEIPTS: GivingReceipt[] = [
   {
     id: 'rcpt-010',
     donorId: 'dnr-001',
-    donorName: 'James & Sarah Mitchell',
+    donorName: 'James & Mia Torres',
     amount: 250,
     designation: 'building',
     fundName: 'Building Fund',
@@ -846,7 +846,7 @@ const STATEMENTS: GivingStatement[] = [
   {
     id: 'stmt-001',
     donorId: 'dnr-001',
-    donorName: 'James & Sarah Mitchell',
+    donorName: 'James & Mia Torres',
     period: 'January 2026',
     totalAmount: 2900,
     giftCount: 3,
@@ -857,7 +857,7 @@ const STATEMENTS: GivingStatement[] = [
   {
     id: 'stmt-002',
     donorId: 'dnr-001',
-    donorName: 'James & Sarah Mitchell',
+    donorName: 'James & Mia Torres',
     period: 'February 2026',
     totalAmount: 1900,
     giftCount: 2,

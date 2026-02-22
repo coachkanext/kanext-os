@@ -23,16 +23,16 @@ const VIEWS: { id: ViewId; label: string }[] = [
 ];
 
 const CHAMPIONSHIPS = [
-  { id: 'c1', title: 'Driver Championship', leader: 'Kalejaiye', points: 156 },
+  { id: 'c1', title: 'Driver Championship', leader: 'Carter', points: 156 },
   { id: 'c2', title: 'Constructor Championship', leader: 'KaNeXT Works', points: 248 },
-  { id: 'c3', title: 'Crew Championship', leader: 'Team Kalejaiye', points: 89 },
+  { id: 'c3', title: 'Crew Championship', leader: 'Team Carter', points: 89 },
   { id: 'c4', title: 'Wildcard Cup', leader: 'TBD', points: 0 },
 ];
 
 type RaceStatus = 'completed' | 'next' | 'upcoming';
 
 const RACE_CARDS: { id: string; round: string; venue: string; status: RaceStatus; winner?: string }[] = [
-  { id: 'r1', round: 'R1', venue: 'Miami', status: 'completed', winner: 'Kalejaiye' },
+  { id: 'r1', round: 'R1', venue: 'Miami', status: 'completed', winner: 'Carter' },
   { id: 'r2', round: 'R2', venue: 'Austin', status: 'completed', winner: 'Verstappen' },
   { id: 'r3', round: 'R3', venue: 'Monza', status: 'completed', winner: 'Hamilton' },
   { id: 'r4', round: 'R4', venue: 'Suzuka', status: 'next' },

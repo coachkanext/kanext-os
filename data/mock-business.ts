@@ -189,7 +189,7 @@ export const BUSINESS_STATUS = {
   org: 'KaNeXT',
   cycle: 'FY 2026',
   build: 'v2',
-  proofWedges: ['FMU', 'ICCLA', 'K-1'],
+  proofWedges: ['KaNeXT', 'KaNeXT Church', 'K-1'],
 };
 
 export const POWER_METRICS: PowerMetric[] = [
@@ -203,7 +203,7 @@ export const POWER_METRICS: PowerMetric[] = [
 
 export const TODAY_NEXT: TodayNextItem[] = [
   { id: 'tn-1', type: 'meeting', title: 'PBD Tranche Review Call', time: '2:00 PM', status: 'upcoming' },
-  { id: 'tn-2', type: 'deliverable', title: 'FMU Media Value Deck — Final', time: 'EOD', status: 'in_progress' },
+  { id: 'tn-2', type: 'deliverable', title: 'KaNeXT Media Value Deck — Final', time: 'EOD', status: 'in_progress' },
   { id: 'tn-3', type: 'proof', title: 'BTW Classic Venue Walkthrough', time: 'Tomorrow 10 AM', status: 'upcoming' },
 ];
 
@@ -238,15 +238,15 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     id: 'rp-1',
     phase: 1,
     title: 'Proof Wedge Deployment',
-    objective: 'Deploy KaNeXT at 3 real institutions (FMU / ICCLA / K-1) to prove the platform works.',
+    objective: 'Deploy KaNeXT at 3 real institutions (KaNeXT / KaNeXT Church / K-1) to prove the platform works.',
     deliverables: [
-      'FMU Athletics OS — full deployment (13 sports)',
-      'ICCLA Church OS — giving, ministries, connect groups',
+      'KaNeXT Athletics OS — full deployment (13 sports)',
+      'KaNeXT Church Church OS — giving, ministries, connect groups',
       'K-1 Competition — teams, drivers, standings, race ops',
       'Proof event calendar (BTW Classic, MLK Classic, Valuetainment Classic)',
     ],
     proofArtifacts: [
-      'FMU Free Media Value Analysis',
+      'KaNeXT Free Media Value Analysis',
       'BTW Classic tournament plan',
       'MLK Truth Classic tournament plan',
       'Valuetainment Classic tournament plan',
@@ -312,8 +312,8 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
 export const WEDGES: WedgeData[] = [
   {
     id: 'w-fmu',
-    name: 'FMU',
-    orgName: 'Florida Memorial University',
+    name: 'KaNeXT',
+    orgName: 'KaNeXT Sports',
     icon: 'sportscourt.fill',
     color: '#FFFFFF',
     summary: 'Athletics OS wedge — 13-sport NAIA program competing against D1 opponents on ESPN+. Coach-built roster via KaNeXT Engines 01, 02, 06. Projected $53M-$157M in free media value Year 1.',
@@ -326,15 +326,15 @@ export const WEDGES: WedgeData[] = [
     advantages: [
       'Intelligence — 7 canonical engines powering every decision',
       'Scheduling — D1 opponents create narrative leverage',
-      'Media — ESPN+ broadcasts at $0 cost to FMU',
+      'Media — ESPN+ broadcasts at $0 cost to KaNeXT',
       'Settlement — full ticket/payout rails across all events',
     ],
-    proofArtifact: { title: 'FMU Free Media Value Analysis', docId: 'pa-media-1' },
+    proofArtifact: { title: 'KaNeXT Free Media Value Analysis', docId: 'pa-media-1' },
   },
   {
     id: 'w-iccla',
-    name: 'ICCLA',
-    orgName: 'International Christian Church of Los Angeles',
+    name: 'KaNeXT Church',
+    orgName: 'KaNeXT Church',
     icon: 'heart.fill',
     color: '#B8C0CC',
     summary: 'Church OS wedge — multi-campus ministry operations with giving, connect groups, and ministry intelligence. "Hotline to Heaven" concept: AI-powered pastoral care surface.',
@@ -380,7 +380,7 @@ export const PROOF_ARTIFACTS: ProofArtifact[] = [
   // Media + Narrative
   {
     id: 'pa-media-1',
-    title: 'FMU Free Media Value Analysis',
+    title: 'KaNeXT Free Media Value Analysis',
     subtitle: '$53M–$157M projected Year 1 media exposure',
     category: 'media',
     section: 'Proof: Media + Narrative',
@@ -391,7 +391,7 @@ export const PROOF_ARTIFACTS: ProofArtifact[] = [
       'Projected 10-12 D1 wins in Year 1',
       'All 13 sports: $53M-$157M total media value',
       '40-60 ESPN+ broadcasts across all sports',
-      '$0 cost to FMU — fully subsidized by KaNeXT',
+      '$0 cost to KaNeXT — fully subsidized by KaNeXT',
     ],
   },
   {
@@ -440,20 +440,20 @@ export const PROOF_ARTIFACTS: ProofArtifact[] = [
       'MLK Truth Summit: speaker event on economic self-determination',
       'Year 1 revenue: $3M-$11M · Year 5: $25M-$50M+',
       'KaNeXT Engine 02 Team KR drives seeding (not division labels)',
-      'Miami Gardens, FL · ESPN+ / Valuetainment broadcast',
+      'Nashville, TN · ESPN+ / Valuetainment broadcast',
     ],
   },
   {
     id: 'pa-post-3',
     title: 'Booker T. Washington Memorial Classic',
-    subtitle: '8-team HBCU season opener + FMU vs Tuskegee football',
+    subtitle: '8-team HBCU season opener + KaNeXT vs Tuskegee football',
     category: 'postseason',
     section: 'Proof: Postseason Products',
     visibility: ['founder', 'investor', 'public'],
     lastUpdated: 'Feb 15, 2026',
     highlights: [
-      '8 HBCU basketball teams + football (FMU vs Tuskegee)',
-      '11 total games across 4 days at FMU campus',
+      '8 HBCU basketball teams + football (KaNeXT vs Tuskegee)',
+      '11 total games across 4 days at KaNeXT campus',
       'Landmark announcement: free KaNeXT for all HBCUs',
       'Year 1 revenue: $1.5M-$5.3M (proof event)',
       'PBD co-presenter at halftime announcement',
@@ -575,7 +575,7 @@ export const USE_OF_FUNDS: UseOfFunds[] = [
 // =============================================================================
 
 export const BOARD_SEATS: BoardSeat[] = [
-  { id: 'bs-1', title: 'Seat 1 — Founder', holder: 'Oluwadara (Sammy) Kalejaiye', status: 'active', description: 'Permanent founder seat. Full control over product, engineering, and operational decisions.' },
+  { id: 'bs-1', title: 'Seat 1 — Founder', holder: 'Oluwadara (Alex) Carter', status: 'active', description: 'Permanent founder seat. Full control over product, engineering, and operational decisions.' },
   { id: 'bs-2', title: 'Seat 2 — Co-Founder / Strategic', holder: 'Patrick Bet-David', status: 'pending', description: 'Activates at tranche threshold. Distribution, media strategy, and strategic partnership oversight.' },
   { id: 'bs-3', title: 'Seat 3 — Independent', holder: 'TBD', status: 'future', description: 'Independent board member. Activated at institutional round. Governance, audit, and fiduciary oversight.' },
 ];
@@ -604,7 +604,7 @@ export const DATA_ROOM_DOCS: DataRoomDoc[] = [
   { id: 'dr-6', title: 'Canonical Engine Library — Technical Spec', category: 'product', visibility: ['founder', 'investor'], lastUpdated: 'Feb 12, 2026', fileType: 'docx' },
   { id: 'dr-7', title: 'KaNeXT Video Mandate Strategy', category: 'product', visibility: ['founder', 'investor'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
   // Proof
-  { id: 'dr-8', title: 'FMU Free Media Value Analysis', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
+  { id: 'dr-8', title: 'KaNeXT Free Media Value Analysis', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
   { id: 'dr-9', title: 'BTW Memorial Classic — Tournament Plan', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
   { id: 'dr-10', title: 'MLK Truth Classic — Tournament Plan', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
   { id: 'dr-11', title: 'Valuetainment Classic — Tournament Plan', category: 'proof', visibility: ['founder', 'investor', 'public'], lastUpdated: 'Feb 15, 2026', fileType: 'docx' },
@@ -634,14 +634,14 @@ export const RAILS_FLOW_STEPS = [
 ];
 
 export const MOCK_TRANSACTIONS: MockTransaction[] = [
-  { id: 'mt-1', type: 'ticket', description: 'BTW Classic — Courtside (2x)', amount: 450, status: 'settled', date: 'Feb 14', org: 'FMU' },
-  { id: 'mt-2', type: 'donation', description: 'ICCLA — Sunday Giving (online)', amount: 2500, status: 'settled', date: 'Feb 12', org: 'ICCLA' },
+  { id: 'mt-1', type: 'ticket', description: 'BTW Classic — Courtside (2x)', amount: 450, status: 'settled', date: 'Feb 14', org: 'KaNeXT' },
+  { id: 'mt-2', type: 'donation', description: 'KaNeXT Church — Sunday Giving (online)', amount: 2500, status: 'settled', date: 'Feb 12', org: 'KaNeXT Church' },
   { id: 'mt-3', type: 'payout', description: 'K-1 Race Prize — Round 11 Winner', amount: -5000, status: 'settled', date: 'Feb 10', org: 'K-1' },
-  { id: 'mt-4', type: 'ticket', description: 'FMU vs Howard — GA (50x)', amount: 1250, status: 'pending', date: 'Feb 15', org: 'FMU' },
+  { id: 'mt-4', type: 'ticket', description: 'KaNeXT vs Howard — GA (50x)', amount: 1250, status: 'pending', date: 'Feb 15', org: 'KaNeXT' },
   { id: 'mt-5', type: 'fine', description: 'K-1 — Avoidable Contact Penalty', amount: -500, status: 'settled', date: 'Feb 9', org: 'K-1' },
   { id: 'mt-6', type: 'subscription', description: 'KaNeXT Pro — Annual (HBCU pilot)', amount: 2400, status: 'settled', date: 'Feb 8', org: 'KaNeXT' },
-  { id: 'mt-7', type: 'donation', description: 'FMU Scholarship Fund — Alumni', amount: 10000, status: 'settled', date: 'Feb 6', org: 'FMU' },
-  { id: 'mt-8', type: 'payout', description: 'MLK Classic — Appearance Guarantee', amount: -150000, status: 'pending', date: 'Feb 5', org: 'FMU' },
+  { id: 'mt-7', type: 'donation', description: 'KaNeXT Scholarship Fund — Alumni', amount: 10000, status: 'settled', date: 'Feb 6', org: 'KaNeXT' },
+  { id: 'mt-8', type: 'payout', description: 'MLK Classic — Appearance Guarantee', amount: -150000, status: 'pending', date: 'Feb 5', org: 'KaNeXT' },
 ];
 
 // =============================================================================
@@ -649,27 +649,27 @@ export const MOCK_TRANSACTIONS: MockTransaction[] = [
 // =============================================================================
 
 export const DIRECTORY: DirectoryEntry[] = [
-  { id: 'dir-1', name: 'Oluwadara Kalejaiye', role: 'Founder & CEO', department: 'Executive', status: 'active' },
+  { id: 'dir-1', name: 'Oluwadara Carter', role: 'Founder & CEO', department: 'Executive', status: 'active' },
   { id: 'dir-2', name: 'Patrick Bet-David', role: 'Co-Founder (Pending)', department: 'Strategic', status: 'pending' },
-  { id: 'dir-3', name: 'FMU Athletics Staff', role: 'Proof Wedge — Sports', department: 'Operations', status: 'active' },
-  { id: 'dir-4', name: 'ICCLA Ministry Team', role: 'Proof Wedge — Church', department: 'Operations', status: 'active' },
+  { id: 'dir-3', name: 'KaNeXT Athletics Staff', role: 'Proof Wedge — Sports', department: 'Operations', status: 'active' },
+  { id: 'dir-4', name: 'KaNeXT Church Ministry Team', role: 'Proof Wedge — Church', department: 'Operations', status: 'active' },
   { id: 'dir-5', name: 'K-1 League Operations', role: 'Proof Wedge — Competition', department: 'Operations', status: 'active' },
   { id: 'dir-6', name: 'Legal Counsel', role: 'Outside Counsel', department: 'Legal', status: 'advisor' },
 ];
 
 export const WORKSTREAMS: Workstream[] = [
-  { id: 'ws-1', name: 'Platform Engineering', lead: 'Sammy K', status: 'active', items: 24, progress: 68 },
-  { id: 'ws-2', name: 'Proof Event Ops', lead: 'Sammy K', status: 'active', items: 12, progress: 42 },
-  { id: 'ws-3', name: 'Video Mandate Execution', lead: 'Sammy K', status: 'active', items: 8, progress: 15 },
-  { id: 'ws-4', name: 'Fundraising & Capital', lead: 'Sammy K', status: 'active', items: 6, progress: 30 },
-  { id: 'ws-5', name: 'Legal & Governance', lead: 'Sammy K', status: 'active', items: 5, progress: 55 },
+  { id: 'ws-1', name: 'Platform Engineering', lead: 'Alex M', status: 'active', items: 24, progress: 68 },
+  { id: 'ws-2', name: 'Proof Event Ops', lead: 'Alex M', status: 'active', items: 12, progress: 42 },
+  { id: 'ws-3', name: 'Video Mandate Execution', lead: 'Alex M', status: 'active', items: 8, progress: 15 },
+  { id: 'ws-4', name: 'Fundraising & Capital', lead: 'Alex M', status: 'active', items: 6, progress: 30 },
+  { id: 'ws-5', name: 'Legal & Governance', lead: 'Alex M', status: 'active', items: 5, progress: 55 },
 ];
 
 export const MEETINGS: MeetingItem[] = [
-  { id: 'mtg-1', title: 'PBD Strategy Sync', date: 'Feb 18, 2026 · 2:00 PM', attendees: ['Sammy K', 'PBD'], decisions: 0, status: 'scheduled' },
-  { id: 'mtg-2', title: 'FMU Athletics Review', date: 'Feb 20, 2026 · 10:00 AM', attendees: ['Sammy K', 'FMU Staff'], decisions: 0, status: 'scheduled' },
-  { id: 'mtg-3', title: 'NAIA Video Mandate Discussion', date: 'Feb 25, 2026 · 1:00 PM', attendees: ['Sammy K', 'NAIA HQ'], decisions: 0, status: 'scheduled' },
-  { id: 'mtg-4', title: 'BTW Classic Venue Planning', date: 'Feb 12, 2026 · 11:00 AM', attendees: ['Sammy K', 'FMU Facilities'], decisions: 3, status: 'completed' },
+  { id: 'mtg-1', title: 'PBD Strategy Sync', date: 'Feb 18, 2026 · 2:00 PM', attendees: ['Alex M', 'PBD'], decisions: 0, status: 'scheduled' },
+  { id: 'mtg-2', title: 'KaNeXT Athletics Review', date: 'Feb 20, 2026 · 10:00 AM', attendees: ['Alex M', 'KaNeXT Staff'], decisions: 0, status: 'scheduled' },
+  { id: 'mtg-3', title: 'NAIA Video Mandate Discussion', date: 'Feb 25, 2026 · 1:00 PM', attendees: ['Alex M', 'NAIA HQ'], decisions: 0, status: 'scheduled' },
+  { id: 'mtg-4', title: 'BTW Classic Venue Planning', date: 'Feb 12, 2026 · 11:00 AM', attendees: ['Alex M', 'KaNeXT Facilities'], decisions: 3, status: 'completed' },
 ];
 
 // =============================================================================

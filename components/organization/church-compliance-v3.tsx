@@ -1,5 +1,5 @@
 /**
- * Church Compliance V3 — ICCLA · Senior Pastor
+ * Church Compliance V3 — KaNeXT Church · Senior Pastor
  * ViewBar: Governance | Legal | Safety
  * Self-contained with inline mock data.
  */
@@ -104,7 +104,7 @@ interface EmploymentAgreement {
 }
 
 const EMPLOYMENT_AGREEMENTS: EmploymentAgreement[] = [
-  { id: 'ea1', name: 'Dr. Oladipo Kalejaiye', position: 'Senior Pastor', startDate: 'Jan 2015', status: 'Active' },
+  { id: 'ea1', name: 'Dr. Oladipo Carter', position: 'Senior Pastor', startDate: 'Jan 2015', status: 'Active' },
   { id: 'ea2', name: 'Pastor David Akinola', position: 'Youth Pastor', startDate: 'Aug 2020', status: 'Active' },
 ];
 
@@ -225,7 +225,7 @@ function GovernanceView({ colors, accentColor }: { colors: typeof Colors.light; 
         <View style={s.bylawsRow}>
           <IconSymbol name="doc.text.fill" size={20} color={accentColor} />
           <View style={{ flex: 1 }}>
-            <ThemedText style={[s.bylawsTitle, { color: colors.text }]}>ICCLA Bylaws & Constitution</ThemedText>
+            <ThemedText style={[s.bylawsTitle, { color: colors.text }]}>KaNeXT Church Bylaws & Constitution</ThemedText>
             <ThemedText style={[s.bylawsDate, { color: colors.textSecondary }]}>Last updated: 2023</ThemedText>
           </View>
           <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>

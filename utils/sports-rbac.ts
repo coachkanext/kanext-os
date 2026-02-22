@@ -8,6 +8,8 @@
  * declarative: tabs/sections hide/show based on the active sports role lens.
  */
 
+import { isSystemOwner } from '@/utils/system-rbac';
+
 // =============================================================================
 // ROLE LENS
 // =============================================================================
@@ -21,11 +23,10 @@ export type SportsRoleLens = 'R1' | 'R2' | 'R3' | 'R4' | 'R5';
  * R4 = Scout / Analyst (Limited eval)
  * R5 = Fan (Public only)
  */
-const SPORTS_ROLE_MAP: Record<string, SportsRoleLens> = {
-  mem_sports_fmu_admin: 'R1',
-};
+const SPORTS_ROLE_MAP: Record<string, SportsRoleLens> = {};
 
 export function getSportsRole(membershipId: string): SportsRoleLens {
+  if (isSystemOwner(membershipId)) return 'R1';
   return SPORTS_ROLE_MAP[membershipId] ?? 'R1';
 }
 

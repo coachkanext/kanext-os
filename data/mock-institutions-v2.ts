@@ -3,7 +3,7 @@
  *
  * Canonical institution objects, directory data, and hub metadata
  * for the Education Mode institutions workspace.
- * Primary institution: Florida Memorial University (FMU).
+ * Primary institution: KaNeXT Sports (KaNeXT).
  */
 
 // =============================================================================
@@ -208,13 +208,13 @@ export const INSTITUTIONS: InstitutionFull[] = [
   {
     id: 'inst-fmu',
     educationOrgId: 'fmu-001',
-    name: 'Florida Memorial University',
-    shortName: 'FMU',
-    location: 'Miami Gardens, FL',
+    name: 'KaNeXT Sports',
+    shortName: 'KaNeXT',
+    location: 'Nashville, TN',
     type: 'university',
     status: 'active',
     description:
-      'Florida Memorial University is a private historically Black university founded in 1879. FMU offers undergraduate and graduate programs rooted in academic excellence, leadership development, and community service. A member of the UNCF and accredited by SACSCOC.',
+      'KaNeXT Sports is a private historically Black university founded in 1879. KaNeXT offers undergraduate and graduate programs rooted in academic excellence, leadership development, and community service. A member of the UNCF and accredited by SACSCOC.',
     admins: [
       {
         id: 'admin-fmu-1',
@@ -253,13 +253,13 @@ export const INSTITUTIONS: InstitutionFull[] = [
   {
     id: 'inst-sfat',
     educationOrgId: 'sfat-001',
-    name: 'South Florida Academy of Technology',
+    name: 'South Ridgemont Academy of Technology',
     shortName: 'SFAT',
     location: 'Fort Lauderdale, FL',
     type: 'academy',
     status: 'prospect',
     description:
-      'South Florida Academy of Technology is a career-focused technical academy offering accelerated certificate and associate degree programs in software engineering, cybersecurity, data analytics, and digital media.',
+      'South Ridgemont Academy of Technology is a career-focused technical academy offering accelerated certificate and associate degree programs in software engineering, cybersecurity, data analytics, and digital media.',
     admins: [
       {
         id: 'admin-sfat-1',
@@ -283,10 +283,10 @@ export const INSTITUTIONS: InstitutionFull[] = [
 ];
 
 // =============================================================================
-// FMU ACADEMICS
+// KaNeXT ACADEMICS
 // =============================================================================
 
-export const FMU_ACADEMICS: InstitutionAcademics = {
+export const KaNeXT_ACADEMICS: InstitutionAcademics = {
   totalPrograms: 42,
   undergrad: 34,
   graduate: 6,
@@ -296,10 +296,10 @@ export const FMU_ACADEMICS: InstitutionAcademics = {
 };
 
 // =============================================================================
-// FMU ADMISSIONS
+// KaNeXT ADMISSIONS
 // =============================================================================
 
-export const FMU_ADMISSIONS: InstitutionAdmissions = {
+export const KaNeXT_ADMISSIONS: InstitutionAdmissions = {
   acceptanceRate: '42%',
   avgGPA: '3.1',
   applicationDeadline: 'March 1, 2026',
@@ -308,10 +308,10 @@ export const FMU_ADMISSIONS: InstitutionAdmissions = {
 };
 
 // =============================================================================
-// FMU STUDENT LIFE
+// KaNeXT STUDENT LIFE
 // =============================================================================
 
-export const FMU_STUDENT_LIFE: InstitutionStudentLife = {
+export const KaNeXT_STUDENT_LIFE: InstitutionStudentLife = {
   clubs: 45,
   athletics: 14,
   housingCapacity: 600,
@@ -394,7 +394,7 @@ export const INSTITUTION_EVENTS: InstitutionEvent[] = [
     date: '2026-02-20',
     time: '10:00 AM',
     type: 'cultural',
-    location: 'FMU Auditorium',
+    location: 'KaNeXT Auditorium',
   },
   {
     id: 'evt-fmu-3',
@@ -465,7 +465,7 @@ export const INSTITUTION_EVENTS: InstitutionEvent[] = [
     date: '2026-04-03',
     time: '11:00 AM',
     type: 'cultural',
-    location: 'FMU Auditorium',
+    location: 'KaNeXT Auditorium',
   },
   {
     id: 'evt-fmu-11',
@@ -483,7 +483,7 @@ export const INSTITUTION_EVENTS: InstitutionEvent[] = [
     date: '2026-05-09',
     time: '10:00 AM',
     type: 'academic',
-    location: 'FMU Stadium',
+    location: 'KaNeXT Stadium',
   },
   {
     id: 'evt-fmu-13',
@@ -501,7 +501,7 @@ export const INSTITUTION_EVENTS: InstitutionEvent[] = [
     date: '2026-03-28',
     time: '1:00 PM',
     type: 'athletics',
-    location: 'FMU Track Complex',
+    location: 'KaNeXT Track Complex',
   },
   {
     id: 'evt-fmu-15',
@@ -581,7 +581,7 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     actor: 'System',
     timestamp: '2024-08-15T10:00:00Z',
     timestampMs: 1723716000000,
-    description: 'Florida Memorial University was added to the platform.',
+    description: 'KaNeXT Sports was added to the platform.',
   },
   {
     id: 'audit-fmu-2',
@@ -662,7 +662,7 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     actor: 'Dr. Jaffus Hardrick',
     timestamp: '2025-03-10T14:00:00Z',
     timestampMs: 1741618800000,
-    description: 'Partnership agreement signed with South Florida Academy of Technology.',
+    description: 'Partnership agreement signed with South Ridgemont Academy of Technology.',
   },
   {
     id: 'audit-fmu-11',
@@ -707,7 +707,7 @@ export const INSTITUTION_AUDIT: InstitutionAuditEntry[] = [
     actor: 'Dr. Jaffus Hardrick',
     timestamp: '2025-11-20T11:30:00Z',
     timestampMs: 1763734200000,
-    description: 'South Florida Academy of Technology added as prospect institution.',
+    description: 'South Ridgemont Academy of Technology added as prospect institution.',
   },
 ];
 

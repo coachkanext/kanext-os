@@ -141,7 +141,7 @@ function OverviewTab({ plan, colors, accent, krVis }: TabProps) {
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.matchupHeader}>
           <View style={{ alignItems: 'center', flex: 1 }}>
-            <Text style={[styles.teamName, { color: colors.text }]}>FMU Lions</Text>
+            <Text style={[styles.teamName, { color: colors.text }]}>KaNeXT</Text>
             <Text style={[styles.teamRecord, { color: colors.textSecondary }]}>22-8</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
@@ -239,7 +239,7 @@ function OffenseTab({ plan, colors, accent }: TabProps) {
       <View style={[styles.card, { backgroundColor: '#1a1a2e', borderColor: accent + '33' }]}>
         <Text style={[styles.sectionLabel, { color: accent }]}>SYSTEM × SYSTEM</Text>
         <Text style={[styles.interactionText, { color: '#ccc' }]}>
-          {off.primarySystem} vs {oppSys.def}: Ball pressure disrupts entry timing but increases foul risk once the screen is used. FMU pull-up midrange opens at the nail.
+          {off.primarySystem} vs {oppSys.def}: Ball pressure disrupts entry timing but increases foul risk once the screen is used. KaNeXT pull-up midrange opens at the nail.
         </Text>
       </View>
 
@@ -350,7 +350,7 @@ function MatchupsTab({ plan, colors, accent, krVis }: TabProps) {
     <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       {/* Matrix hint */}
       <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginBottom: 12 }]}>
-        FMU starters vs {plan.header.opponent} — tap for details
+        KaNeXT starters vs {plan.header.opponent} — tap for details
       </Text>
 
       {plan.matchups.map((m) => {

@@ -122,10 +122,10 @@ const SLIEMA_DILIGENCE: DiligenceCategory[] = [
     id: 'dc-fin',
     category: 'Financial',
     items: [
-      { id: 'di-1', title: 'Club financial statements (3 years)', status: 'pending', assignee: 'Sammy K', notes: 'Requested from club president Feb 18' },
-      { id: 'di-2', title: 'Revenue breakdown by source', status: 'pending', assignee: 'Sammy K', notes: 'Match day, sponsorship, media rights, merchandise' },
-      { id: 'di-3', title: 'Player wage bill analysis', status: 'pending', assignee: 'Sammy K', notes: 'Squad size: 25 players' },
-      { id: 'di-4', title: 'Stadium lease terms', status: 'pending', assignee: 'Sammy K', notes: 'Ta\' Qali National Stadium arrangement' },
+      { id: 'di-1', title: 'Club financial statements (3 years)', status: 'pending', assignee: 'Alex M', notes: 'Requested from club president Feb 18' },
+      { id: 'di-2', title: 'Revenue breakdown by source', status: 'pending', assignee: 'Alex M', notes: 'Match day, sponsorship, media rights, merchandise' },
+      { id: 'di-3', title: 'Player wage bill analysis', status: 'pending', assignee: 'Alex M', notes: 'Squad size: 25 players' },
+      { id: 'di-4', title: 'Stadium lease terms', status: 'pending', assignee: 'Alex M', notes: 'Ta\' Qali National Stadium arrangement' },
     ],
   },
   {
@@ -133,7 +133,7 @@ const SLIEMA_DILIGENCE: DiligenceCategory[] = [
     category: 'Legal',
     items: [
       { id: 'di-5', title: 'Club constitution and bylaws', status: 'pending', assignee: 'Legal Counsel', notes: 'Maltese company law requirements' },
-      { id: 'di-6', title: 'MFA (Malta Football Association) licensing', status: 'in_progress', assignee: 'Sammy K', notes: 'James Borg facilitating introduction' },
+      { id: 'di-6', title: 'League Association licensing', status: 'in_progress', assignee: 'Alex M', notes: 'Taylor Reed facilitating introduction' },
       { id: 'di-7', title: 'UEFA club licensing compliance', status: 'pending', assignee: 'Legal Counsel', notes: 'Financial fair play requirements' },
       { id: 'di-8', title: 'Existing contracts and obligations', status: 'pending', assignee: 'Legal Counsel', notes: 'Player contracts, sponsor agreements, supplier contracts' },
     ],
@@ -142,10 +142,10 @@ const SLIEMA_DILIGENCE: DiligenceCategory[] = [
     id: 'dc-ops',
     category: 'Operational',
     items: [
-      { id: 'di-9', title: 'Youth academy assessment', status: 'pending', assignee: 'Sammy K', notes: 'Current infrastructure and player pipeline' },
-      { id: 'di-10', title: 'Staff and personnel review', status: 'pending', assignee: 'Sammy K', notes: 'Coaching, admin, medical, grounds staff' },
-      { id: 'di-11', title: 'Facility condition report', status: 'pending', assignee: 'Sammy K', notes: 'Training ground, equipment, medical facilities' },
-      { id: 'di-12', title: 'Technology infrastructure audit', status: 'pending', assignee: 'Sammy K', notes: 'Opportunity to deploy KaNeXT Sports Mode' },
+      { id: 'di-9', title: 'Youth academy assessment', status: 'pending', assignee: 'Alex M', notes: 'Current infrastructure and player pipeline' },
+      { id: 'di-10', title: 'Staff and personnel review', status: 'pending', assignee: 'Alex M', notes: 'Coaching, admin, medical, grounds staff' },
+      { id: 'di-11', title: 'Facility condition report', status: 'pending', assignee: 'Alex M', notes: 'Training ground, equipment, medical facilities' },
+      { id: 'di-12', title: 'Technology infrastructure audit', status: 'pending', assignee: 'Alex M', notes: 'Opportunity to deploy KaNeXT Sports Mode' },
     ],
   },
   {
@@ -162,22 +162,22 @@ const SLIEMA_DILIGENCE: DiligenceCategory[] = [
 const DEAL_RISKS: Record<string, { id: string; title: string; severity: 'critical' | 'high' | 'medium' | 'low'; mitigation: string; owner: string }[]> = {
   'deal-1': [],
   'deal-2': [
-    { id: 'dr-1', title: 'Club financial instability', severity: 'high', mitigation: 'Full financial audit before LOI. Escrow structure for acquisition funds.', owner: 'Sammy K' },
-    { id: 'dr-2', title: 'MFA ownership approval delay', severity: 'medium', mitigation: 'Early engagement with MFA via James Borg. Parallel documentation preparation.', owner: 'Legal Counsel' },
+    { id: 'dr-1', title: 'Club financial instability', severity: 'high', mitigation: 'Full financial audit before LOI. Escrow structure for acquisition funds.', owner: 'Alex M' },
+    { id: 'dr-2', title: 'MFA ownership approval delay', severity: 'medium', mitigation: 'Early engagement with MFA via Taylor Reed. Parallel documentation preparation.', owner: 'Legal Counsel' },
     { id: 'dr-3', title: 'EU regulatory complexity', severity: 'medium', mitigation: 'Engage Malta-based corporate counsel. Standard EU foreign ownership process.', owner: 'Legal Counsel' },
-    { id: 'dr-4', title: 'Stadium lease renegotiation risk', severity: 'low', mitigation: 'Review existing lease terms. Budget for potential renegotiation costs.', owner: 'Sammy K' },
-    { id: 'dr-5', title: 'Player retention during transition', severity: 'medium', mitigation: 'Communicate stability plan to squad. Honor existing contracts.', owner: 'Sammy K' },
+    { id: 'dr-4', title: 'Stadium lease renegotiation risk', severity: 'low', mitigation: 'Review existing lease terms. Budget for potential renegotiation costs.', owner: 'Alex M' },
+    { id: 'dr-5', title: 'Player retention during transition', severity: 'medium', mitigation: 'Communicate stability plan to squad. Honor existing contracts.', owner: 'Alex M' },
   ],
 };
 
 const DEAL_APPROVALS: Record<string, ApprovalItem[]> = {
   'deal-1': [
-    { id: 'ap-1', title: 'FMU Athletics Department Sign-Off', status: 'approved', approver: 'FMU AD', date: 'Jan 25, 2026', notes: 'Full athletics deployment approved for 13 sports' },
-    { id: 'ap-2', title: 'KaNeXT Board Approval', status: 'approved', approver: 'Sammy K', date: 'Jan 30, 2026', notes: 'Partnership terms approved under $50K threshold' },
+    { id: 'ap-1', title: 'KaNeXT Athletics Department Sign-Off', status: 'approved', approver: 'KaNeXT AD', date: 'Jan 25, 2026', notes: 'Full athletics deployment approved for 13 sports' },
+    { id: 'ap-2', title: 'KaNeXT Board Approval', status: 'approved', approver: 'Alex M', date: 'Jan 30, 2026', notes: 'Partnership terms approved under $50K threshold' },
   ],
   'deal-2': [
-    { id: 'ap-3', title: 'Acquisition Exploration Authorization', status: 'approved', approver: 'Sammy K', date: 'Jan 15, 2026', notes: 'Authorized initial outreach and exploration budget ($5K)' },
-    { id: 'ap-4', title: 'Legal Counsel Engagement', status: 'approved', approver: 'Sammy K', date: 'Feb 5, 2026', notes: 'Engaged Malta-based counsel Dr. Anne Vassallo' },
+    { id: 'ap-3', title: 'Acquisition Exploration Authorization', status: 'approved', approver: 'Alex M', date: 'Jan 15, 2026', notes: 'Authorized initial outreach and exploration budget ($5K)' },
+    { id: 'ap-4', title: 'Legal Counsel Engagement', status: 'approved', approver: 'Alex M', date: 'Feb 5, 2026', notes: 'Engaged Malta-based counsel Dr. Anne Vassallo' },
     { id: 'ap-5', title: 'Site Visit Budget Approval', status: 'pending', approver: 'Board', date: 'Pending', notes: 'Request: $3K travel budget for Malta site visit Q1 2026' },
     { id: 'ap-6', title: 'LOI Authorization', status: 'pending', approver: 'Board', date: 'Pending', notes: 'Requires board approval before LOI submission. Target Q2 2026.' },
   ],
@@ -185,19 +185,19 @@ const DEAL_APPROVALS: Record<string, ApprovalItem[]> = {
 
 const AUDIT_LOGS: Record<string, AuditLogItem[]> = {
   'deal-1': [
-    { id: 'al-1', timestamp: 'Feb 14, 2026 2:15 PM', action: 'Deal status updated', actor: 'Sammy K', detail: 'Status changed from Exploring to Diligence', type: 'action' },
-    { id: 'al-2', timestamp: 'Feb 12, 2026 10:30 AM', action: 'Document uploaded', actor: 'Sammy K', detail: 'FMU Athletics Partnership Agreement v2.pdf', type: 'document' },
-    { id: 'al-3', timestamp: 'Feb 5, 2026 3:45 PM', action: 'Contact added', actor: 'Sammy K', detail: 'Added FMU Athletic Director as key contact', type: 'action' },
-    { id: 'al-4', timestamp: 'Jan 25, 2026 11:00 AM', action: 'Approval granted', actor: 'FMU AD', detail: 'FMU Athletics Department sign-off approved', type: 'action' },
-    { id: 'al-5', timestamp: 'Jan 20, 2026 9:15 AM', action: 'Workspace created', actor: 'Sammy K', detail: 'Deal workspace initialized: FMU Partnership Track', type: 'action' },
+    { id: 'al-1', timestamp: 'Feb 14, 2026 2:15 PM', action: 'Deal status updated', actor: 'Alex M', detail: 'Status changed from Exploring to Diligence', type: 'action' },
+    { id: 'al-2', timestamp: 'Feb 12, 2026 10:30 AM', action: 'Document uploaded', actor: 'Alex M', detail: 'KaNeXT Athletics Partnership Agreement v2.pdf', type: 'document' },
+    { id: 'al-3', timestamp: 'Feb 5, 2026 3:45 PM', action: 'Contact added', actor: 'Alex M', detail: 'Added KaNeXT Athletic Director as key contact', type: 'action' },
+    { id: 'al-4', timestamp: 'Jan 25, 2026 11:00 AM', action: 'Approval granted', actor: 'KaNeXT AD', detail: 'KaNeXT Athletics Department sign-off approved', type: 'action' },
+    { id: 'al-5', timestamp: 'Jan 20, 2026 9:15 AM', action: 'Workspace created', actor: 'Alex M', detail: 'Deal workspace initialized: KaNeXT Partnership Track', type: 'action' },
   ],
   'deal-2': [
-    { id: 'al-6', timestamp: 'Feb 18, 2026 4:00 PM', action: 'Financial package requested', actor: 'Sammy K', detail: 'Sent formal request for club financial statements to Mario Camilleri', type: 'action' },
-    { id: 'al-7', timestamp: 'Feb 5, 2026 2:30 PM', action: 'Introductory call completed', actor: 'Sammy K', detail: 'Call with club president Mario Camilleri. Positive reception.', type: 'action' },
-    { id: 'al-8', timestamp: 'Feb 5, 2026 2:00 PM', action: 'Contact added', actor: 'Sammy K', detail: 'Added Dr. Anne Vassallo (Legal Counsel, Malta)', type: 'action' },
-    { id: 'al-9', timestamp: 'Jan 20, 2026 10:00 AM', action: 'Initial outreach sent', actor: 'Sammy K', detail: 'Outreach via Maltese FA connection (James Borg)', type: 'action' },
-    { id: 'al-10', timestamp: 'Jan 15, 2026 3:30 PM', action: 'Workspace created', actor: 'Sammy K', detail: 'Deal workspace initialized: Sliema Wanderers FC Acquisition', type: 'action' },
-    { id: 'al-11', timestamp: 'Jan 15, 2026 3:30 PM', action: 'Workspace accessed', actor: 'Sammy K', detail: 'First access to deal workspace', type: 'access' },
+    { id: 'al-6', timestamp: 'Feb 18, 2026 4:00 PM', action: 'Financial package requested', actor: 'Alex M', detail: 'Sent formal request for club financial statements to Mario Camilleri', type: 'action' },
+    { id: 'al-7', timestamp: 'Feb 5, 2026 2:30 PM', action: 'Introductory call completed', actor: 'Alex M', detail: 'Call with club president Mario Camilleri. Positive reception.', type: 'action' },
+    { id: 'al-8', timestamp: 'Feb 5, 2026 2:00 PM', action: 'Contact added', actor: 'Alex M', detail: 'Added Dr. Anne Vassallo (Legal Counsel, Malta)', type: 'action' },
+    { id: 'al-9', timestamp: 'Jan 20, 2026 10:00 AM', action: 'Initial outreach sent', actor: 'Alex M', detail: 'Outreach via Maltese FA connection (Taylor Reed)', type: 'action' },
+    { id: 'al-10', timestamp: 'Jan 15, 2026 3:30 PM', action: 'Workspace created', actor: 'Alex M', detail: 'Deal workspace initialized: Sliema Wanderers FC Acquisition', type: 'action' },
+    { id: 'al-11', timestamp: 'Jan 15, 2026 3:30 PM', action: 'Workspace accessed', actor: 'Alex M', detail: 'First access to deal workspace', type: 'access' },
   ],
 };
 
@@ -911,7 +911,7 @@ function OfferTermsTab({ deal, colors }: { deal: DealWorkspace; colors: typeof C
         {isSliema ? (
           <View>
             <BulletItem text="Satisfactory completion of financial, legal, operational, and regulatory due diligence" colors={colors} />
-            <BulletItem text="Malta Football Association ownership approval (fit and proper person test)" colors={colors} />
+            <BulletItem text="League Association ownership approval (fit and proper person test)" colors={colors} />
             <BulletItem text="UEFA club licensing compliance confirmation" colors={colors} />
             <BulletItem text="Confirmation of stadium lease transferability" colors={colors} />
             <BulletItem text="KaNeXT board approval of final acquisition terms" colors={colors} />
@@ -1012,7 +1012,7 @@ function ApprovalsTab({
             <ThemedText style={[styles.contactInitial, { color: colors.textSecondary }]}>S</ThemedText>
           </View>
           <View style={{ flex: 1 }}>
-            <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>Sammy Kalejaiye</ThemedText>
+            <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>Alex Morgan</ThemedText>
             <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>Founder / CEO -- All decisions</ThemedText>
           </View>
         </View>

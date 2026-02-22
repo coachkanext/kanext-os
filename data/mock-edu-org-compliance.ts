@@ -1,7 +1,7 @@
 /**
  * Education Organization Compliance — Mock Data & Types
  * Policies, controls, evidence, audits, risks, incidents, exceptions, export packets.
- * HBCU-themed: FMU = Florida Memorial University.
+ * HBCU-themed: KaNeXT = KaNeXT Sports.
  */
 
 // =============================================================================
@@ -685,7 +685,7 @@ const ATTESTATIONS: PolicyAttestation[] = [
   {
     id: 'att-002',
     policyId: 'pol-001',
-    employeeName: 'Marcus Thompson',
+    employeeName: 'Alex Morgan',
     completedDate: '',
     dueDate: '2026-01-15',
     status: 'overdue',

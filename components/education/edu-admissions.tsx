@@ -189,7 +189,7 @@ const INBOX_APPLICATIONS: InboxApplication[] = [
   { id: 'app-006', name: 'Amir Patel', email: 'a.patel@email.com', submittedDate: 'Feb 15', daysInQueue: 3, priority: 'medium', status: 'pending', assignedReviewer: null, type: 'freshman', gpa: 3.71, testScore: 'ACT 29', flagNotes: 'First-generation, strong community service', documentsComplete: true, slaBreached: false },
   { id: 'app-007', name: 'Destiny Brown', email: 'd.brown@email.com', submittedDate: 'Feb 9', daysInQueue: 9, priority: 'high', status: 'in-review', assignedReviewer: 'Jenna Park', type: 'freshman', gpa: 4.0, testScore: 'SAT 1520', flagNotes: 'Valedictorian, full scholarship consideration', documentsComplete: true, slaBreached: true },
   { id: 'app-008', name: 'Lucas Kim', email: 'l.kim@email.com', submittedDate: 'Feb 16', daysInQueue: 2, priority: 'low', status: 'pending', assignedReviewer: null, type: 'graduate', gpa: 3.58, testScore: 'GRE 318', flagNotes: 'MS Computer Science applicant', documentsComplete: true, slaBreached: false },
-  { id: 'app-009', name: 'Sarah Mitchell', email: 's.mitchell@email.com', submittedDate: 'Feb 8', daysInQueue: 10, priority: 'high', status: 'escalated', assignedReviewer: 'Mark Stevens', type: 'freshman', gpa: 3.85, testScore: 'ACT 31', flagNotes: 'SLA breached — expedited review needed', documentsComplete: true, slaBreached: true },
+  { id: 'app-009', name: 'Mia Torres', email: 's.mitchell@email.com', submittedDate: 'Feb 8', daysInQueue: 10, priority: 'high', status: 'escalated', assignedReviewer: 'Mark Stevens', type: 'freshman', gpa: 3.85, testScore: 'ACT 31', flagNotes: 'SLA breached — expedited review needed', documentsComplete: true, slaBreached: true },
   { id: 'app-010', name: 'Wei Zhang', email: 'w.zhang@email.com', submittedDate: 'Feb 14', daysInQueue: 4, priority: 'medium', status: 'assigned', assignedReviewer: 'David Okafor', type: 'international', gpa: 3.78, testScore: 'SAT 1360', flagNotes: 'International — TOEFL 108, financial docs pending', documentsComplete: false, slaBreached: false },
 ];
 
@@ -287,7 +287,7 @@ const COHORTS: Cohort[] = [
     ],
     topStates: [
       { state: 'Georgia', count: 1240 },
-      { state: 'Florida', count: 380 },
+      { state: 'Tennessee', count: 380 },
       { state: 'North Carolina', count: 290 },
       { state: 'South Carolina', count: 245 },
       { state: 'Texas', count: 210 },
@@ -323,7 +323,7 @@ const COHORTS: Cohort[] = [
     topStates: [
       { state: 'Georgia', count: 134 },
       { state: 'Alabama', count: 18 },
-      { state: 'Florida', count: 12 },
+      { state: 'Tennessee', count: 12 },
       { state: 'Tennessee', count: 8 },
     ],
   },
@@ -360,7 +360,7 @@ const GEOGRAPHIC_DISTRIBUTION = [
 ];
 
 const TOP_FEEDER_SCHOOLS = [
-  { id: 'fs-1', name: 'Westlake High School', city: 'Atlanta, GA', applicants: 42, admitted: 28, enrolled: 18 },
+  { id: 'fs-1', name: 'Westlake High School', city: 'Nashville, TN', applicants: 42, admitted: 28, enrolled: 18 },
   { id: 'fs-2', name: 'North Gwinnett High School', city: 'Suwanee, GA', applicants: 38, admitted: 22, enrolled: 14 },
   { id: 'fs-3', name: 'Brookwood High School', city: 'Snellville, GA', applicants: 35, admitted: 20, enrolled: 12 },
   { id: 'fs-4', name: 'Peachtree Ridge High School', city: 'Suwanee, GA', applicants: 32, admitted: 18, enrolled: 11 },

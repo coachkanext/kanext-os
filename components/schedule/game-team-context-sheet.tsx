@@ -12,12 +12,12 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
-import { FMU_PREGAME, FMU_GAME_IMPACT, type FMUGame } from '@/data/fmu';
+import { KaNeXT_PREGAME, KaNeXT_GAME_IMPACT, type KaNeXTGame } from '@/data/fmu';
 
 interface GameTeamContextSheetProps {
   visible: boolean;
   onClose: () => void;
-  game: FMUGame | null;
+  game: KaNeXTGame | null;
   team: 'fmu' | 'opponent';
   colors: typeof Colors.light;
   router: any;
@@ -27,12 +27,12 @@ export function GameTeamContextSheet({ visible, onClose, game, team, colors, rou
   if (!game) return <BottomSheet visible={false} onClose={onClose} useModal><View /></BottomSheet>;
 
   const isFmu = team === 'fmu';
-  const teamName = isFmu ? 'Florida Memorial' : game.opponent;
+  const teamName = isFmu ? 'KaNeXT Sports' : game.opponent;
   const teamKR = isFmu ? 74 : (game.opponentKR ?? 0);
   const teamRecord = isFmu ? '' : (game.opponentRecord ?? '');
   const isCompleted = game.status === 'final';
-  const pregame = game.id ? FMU_PREGAME[game.id] : null;
-  const impact = isCompleted && game.id ? FMU_GAME_IMPACT[game.id] : null;
+  const pregame = game.id ? KaNeXT_PREGAME[game.id] : null;
+  const impact = isCompleted && game.id ? KaNeXT_GAME_IMPACT[game.id] : null;
 
   const navigate = (params: any) => {
     onClose();
@@ -74,7 +74,7 @@ export function GameTeamContextSheet({ visible, onClose, game, team, colors, rou
           {isCompleted ? (
             <>
               {game.score && (
-                <BulletItem colors={colors} text={`FMU ${game.score.startsWith('W') ? 'won' : 'lost'} ${game.score.replace(/^[WL] /, '').replace('-', '–')}`} />
+                <BulletItem colors={colors} text={`KaNeXT ${game.score.startsWith('W') ? 'won' : 'lost'} ${game.score.replace(/^[WL] /, '').replace('-', '–')}`} />
               )}
               {impact && (() => {
                 const top = [...impact.starters, ...impact.bench].sort((a, b) => b.pgis - a.pgis).slice(0, 2);

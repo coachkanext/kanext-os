@@ -272,13 +272,13 @@ const DASHBOARD_BLOCKS: FinanceDashboardBlock[] = [
 ];
 
 const REVENUE_ITEMS: RevenueItem[] = [
-  { id: 'rev-1', source: 'ICCLA Championship Gate', category: 'ticketing', amount: 185000, date: 'Jan 18, 2026', series: 'ICCLA Championship', status: 'received' },
+  { id: 'rev-1', source: 'KaNeXT Church Championship Gate', category: 'ticketing', amount: 185000, date: 'Jan 18, 2026', series: 'KaNeXT Church Championship', status: 'received' },
   { id: 'rev-2', source: 'KaNeXT Title Sponsorship Q1', category: 'sponsorship', amount: 62500, date: 'Jan 1, 2026', series: 'All Series', status: 'received' },
   { id: 'rev-3', source: 'ESPN+ Broadcast Rights — K-1 Invitational', category: 'broadcast', amount: 120000, date: 'Feb 5, 2026', series: 'K-1 Invitational', status: 'received' },
   { id: 'rev-4', source: 'Nike Apparel Sponsorship Q1', category: 'sponsorship', amount: 45000, date: 'Jan 15, 2026', series: 'All Series', status: 'received' },
   { id: 'rev-5', source: 'Gatorade Hydration Partner Q1', category: 'sponsorship', amount: 23750, date: 'Jan 15, 2026', series: 'All Series', status: 'received' },
   { id: 'rev-6', source: 'Team Entry Fees — K-1 Invitational', category: 'entry-fees', amount: 48000, date: 'Dec 20, 2025', series: 'K-1 Invitational', status: 'received' },
-  { id: 'rev-7', source: 'Merchandise Sales — ICCLA Championship', category: 'merchandise', amount: 34200, date: 'Jan 19, 2026', series: 'ICCLA Championship', status: 'received' },
+  { id: 'rev-7', source: 'Merchandise Sales — KaNeXT Church Championship', category: 'merchandise', amount: 34200, date: 'Jan 19, 2026', series: 'KaNeXT Church Championship', status: 'received' },
   { id: 'rev-8', source: 'Logo Licensing — Regional Partners', category: 'licensing', amount: 28000, date: 'Feb 1, 2026', series: 'All Series', status: 'received' },
   { id: 'rev-9', source: 'Spring Series Gate Revenue', category: 'ticketing', amount: 145000, date: 'Mar 8, 2026', series: 'Spring Series', status: 'pending' },
   { id: 'rev-10', source: 'KaNeXT Title Sponsorship Q2', category: 'sponsorship', amount: 62500, date: 'Apr 1, 2026', series: 'All Series', status: 'projected' },
@@ -293,31 +293,31 @@ const REVENUE_ITEMS: RevenueItem[] = [
 ];
 
 const EXPENSE_ITEMS: ExpenseItem[] = [
-  { id: 'exp-1', description: 'Barclays Center Venue Rental — ICCLA Championship', category: 'venue', amount: 145000, date: 'Jan 10, 2026', vendor: 'BSE Global', status: 'paid', series: 'ICCLA Championship' },
-  { id: 'exp-2', description: 'Event Staff & Security — ICCLA Championship', category: 'staff', amount: 38500, date: 'Jan 17, 2026', vendor: 'Allied Universal', status: 'paid', series: 'ICCLA Championship' },
+  { id: 'exp-1', description: 'Barclays Center Venue Rental — KaNeXT Church Championship', category: 'venue', amount: 145000, date: 'Jan 10, 2026', vendor: 'BSE Global', status: 'paid', series: 'KaNeXT Church Championship' },
+  { id: 'exp-2', description: 'Event Staff & Security — KaNeXT Church Championship', category: 'staff', amount: 38500, date: 'Jan 17, 2026', vendor: 'Allied Universal', status: 'paid', series: 'KaNeXT Church Championship' },
   { id: 'exp-3', description: 'Referee & Official Fees — K-1 Invitational', category: 'officials', amount: 24000, date: 'Feb 4, 2026', vendor: 'IAABO Officials Bureau', status: 'paid', series: 'K-1 Invitational' },
-  { id: 'exp-4', description: 'Court Equipment & Scoreboard Rental', category: 'equipment', amount: 18700, date: 'Jan 8, 2026', vendor: 'Daktronics', status: 'paid', series: 'ICCLA Championship' },
+  { id: 'exp-4', description: 'Court Equipment & Scoreboard Rental', category: 'equipment', amount: 18700, date: 'Jan 8, 2026', vendor: 'Daktronics', status: 'paid', series: 'KaNeXT Church Championship' },
   { id: 'exp-5', description: 'Team Travel Subsidies — K-1 Invitational', category: 'travel', amount: 62000, date: 'Feb 1, 2026', vendor: 'Multiple Teams', status: 'paid', series: 'K-1 Invitational' },
   { id: 'exp-6', description: 'Digital Marketing Campaign — Spring Series', category: 'marketing', amount: 28500, date: 'Feb 15, 2026', vendor: 'Overtime Media', status: 'approved', series: 'Spring Series' },
   { id: 'exp-7', description: 'Event Insurance — All 2026 Series', category: 'insurance', amount: 47000, date: 'Jan 5, 2026', vendor: 'K&K Insurance Group', status: 'paid', series: 'All Series' },
-  { id: 'exp-8', description: 'Prize Purse Distribution — ICCLA Championship', category: 'prizes', amount: 175000, date: 'Jan 22, 2026', vendor: 'Prize Pool Fund', status: 'paid', series: 'ICCLA Championship' },
+  { id: 'exp-8', description: 'Prize Purse Distribution — KaNeXT Church Championship', category: 'prizes', amount: 175000, date: 'Jan 22, 2026', vendor: 'Prize Pool Fund', status: 'paid', series: 'KaNeXT Church Championship' },
   { id: 'exp-9', description: 'Spring Series Venue Deposit — T-Mobile Arena', category: 'venue', amount: 75000, date: 'Feb 20, 2026', vendor: 'MGM Resorts', status: 'pending', series: 'Spring Series' },
   { id: 'exp-10', description: 'Social Media & PR Agency Retainer', category: 'marketing', amount: 15000, date: 'Feb 1, 2026', vendor: 'Klutch Sports PR', status: 'paid', series: 'All Series' },
   { id: 'exp-11', description: 'Referee & Official Fees — Spring Series', category: 'officials', amount: 18000, date: 'Mar 5, 2026', vendor: 'IAABO Officials Bureau', status: 'approved', series: 'Spring Series' },
   { id: 'exp-12', description: 'Medical Staff & Athletic Trainers', category: 'staff', amount: 22000, date: 'Feb 3, 2026', vendor: 'Select Medical', status: 'paid', series: 'K-1 Invitational' },
-  { id: 'exp-13', description: 'Audio/Visual Production Equipment', category: 'equipment', amount: 35000, date: 'Jan 12, 2026', vendor: 'PRG Lighting', status: 'paid', series: 'ICCLA Championship' },
+  { id: 'exp-13', description: 'Audio/Visual Production Equipment', category: 'equipment', amount: 35000, date: 'Jan 12, 2026', vendor: 'PRG Lighting', status: 'paid', series: 'KaNeXT Church Championship' },
   { id: 'exp-14', description: 'Summer Showcase Venue Hold — Chase Center', category: 'venue', amount: 180000, date: 'Mar 15, 2026', vendor: 'Chase Center Events', status: 'pending', series: 'Summer Showcase' },
   { id: 'exp-15', description: 'Team Travel Subsidies — Spring Series', category: 'travel', amount: 48000, date: 'Mar 1, 2026', vendor: 'Multiple Teams', status: 'approved', series: 'Spring Series' },
   { id: 'exp-16', description: 'Print & Signage — K-1 Invitational', category: 'marketing', amount: 12500, date: 'Jan 28, 2026', vendor: 'FedEx Office', status: 'paid', series: 'K-1 Invitational' },
-  { id: 'exp-17', description: 'Championship Trophies & Awards', category: 'equipment', amount: 8500, date: 'Jan 5, 2026', vendor: 'Crown Trophy', status: 'paid', series: 'ICCLA Championship' },
-  { id: 'exp-18', description: 'Overdue Invoice — Broadcast Equipment Rental', category: 'equipment', amount: 22000, date: 'Dec 15, 2025', vendor: 'NEP Group', status: 'overdue', series: 'ICCLA Championship' },
+  { id: 'exp-17', description: 'Championship Trophies & Awards', category: 'equipment', amount: 8500, date: 'Jan 5, 2026', vendor: 'Crown Trophy', status: 'paid', series: 'KaNeXT Church Championship' },
+  { id: 'exp-18', description: 'Overdue Invoice — Broadcast Equipment Rental', category: 'equipment', amount: 22000, date: 'Dec 15, 2025', vendor: 'NEP Group', status: 'overdue', series: 'KaNeXT Church Championship' },
 ];
 
 const PRIZE_ALLOCATIONS: PrizeAllocation[] = [
-  { id: 'prz-1', series: 'ICCLA Championship', position: '1st Place', entrant: 'FMU Rattlers', amount: 100000, status: 'paid', date: 'Jan 22, 2026' },
-  { id: 'prz-2', series: 'ICCLA Championship', position: '2nd Place', entrant: 'Howard Bison', amount: 50000, status: 'paid', date: 'Jan 22, 2026' },
-  { id: 'prz-3', series: 'ICCLA Championship', position: '3rd Place', entrant: 'Hampton Pirates', amount: 25000, status: 'paid', date: 'Jan 23, 2026' },
-  { id: 'prz-4', series: 'ICCLA Championship', position: 'MVP Award', entrant: 'Marcus Thompson', amount: 10000, status: 'paid', date: 'Jan 22, 2026' },
+  { id: 'prz-1', series: 'KaNeXT Church Championship', position: '1st Place', entrant: 'KaNeXT Rattlers', amount: 100000, status: 'paid', date: 'Jan 22, 2026' },
+  { id: 'prz-2', series: 'KaNeXT Church Championship', position: '2nd Place', entrant: 'Howard Bison', amount: 50000, status: 'paid', date: 'Jan 22, 2026' },
+  { id: 'prz-3', series: 'KaNeXT Church Championship', position: '3rd Place', entrant: 'Hampton Pirates', amount: 25000, status: 'paid', date: 'Jan 23, 2026' },
+  { id: 'prz-4', series: 'KaNeXT Church Championship', position: 'MVP Award', entrant: 'Alex Morgan', amount: 10000, status: 'paid', date: 'Jan 22, 2026' },
   { id: 'prz-5', series: 'K-1 Invitational', position: '1st Place', entrant: 'Duke Blue Devils', amount: 75000, status: 'paid', date: 'Feb 8, 2026' },
   { id: 'prz-6', series: 'K-1 Invitational', position: '2nd Place', entrant: 'Kentucky Wildcats', amount: 40000, status: 'paid', date: 'Feb 8, 2026' },
   { id: 'prz-7', series: 'K-1 Invitational', position: '3rd Place', entrant: 'Gonzaga Bulldogs', amount: 20000, status: 'paid', date: 'Feb 9, 2026' },
@@ -341,21 +341,21 @@ const SPONSORSHIP_ITEMS: SponsorshipRevenue[] = [
   { id: 'spon-6', sponsor: 'Chick-fil-A', package: 'Concessions Partner', amount: 35000, period: '2026 Season', status: 'active', paymentSchedule: 'Per Event ($8.75K)' },
   { id: 'spon-7', sponsor: 'AT&T', package: 'Connectivity Partner', amount: 55000, period: '2026 Season', status: 'pending', paymentSchedule: 'Quarterly ($13.75K)' },
   { id: 'spon-8', sponsor: 'Toyota', package: 'Transportation Sponsor', amount: 40000, period: 'Spring Series', status: 'pending', paymentSchedule: 'One-time' },
-  { id: 'spon-9', sponsor: 'Coca-Cola', package: 'Beverage Partner', amount: 30000, period: 'ICCLA Championship', status: 'active', paymentSchedule: 'One-time' },
+  { id: 'spon-9', sponsor: 'Coca-Cola', package: 'Beverage Partner', amount: 30000, period: 'KaNeXT Church Championship', status: 'active', paymentSchedule: 'One-time' },
   { id: 'spon-10', sponsor: 'Under Armour', package: 'Training Gear Sponsor', amount: 25000, period: 'Summer Showcase', status: 'pending', paymentSchedule: 'One-time' },
   { id: 'spon-11', sponsor: 'Spalding', package: 'Official Ball Partner', amount: 20000, period: '2025 Season', status: 'expired', paymentSchedule: 'Annual' },
   { id: 'spon-12', sponsor: 'SeatGeek', package: 'Ticketing Platform Partner', amount: 18000, period: '2026 Season', status: 'active', paymentSchedule: 'Monthly ($1.5K)' },
 ];
 
 const TICKETING_RECORDS: TicketingRecord[] = [
-  { id: 'tix-1', event: 'ICCLA Championship — Final', venue: 'Barclays Center', ticketsSold: 14800, capacity: 17732, revenue: 118000, avgPrice: 79.73, date: 'Jan 18, 2026' },
-  { id: 'tix-2', event: 'ICCLA Championship — Semifinal 1', venue: 'Barclays Center', ticketsSold: 11200, capacity: 17732, revenue: 67200, avgPrice: 60.00, date: 'Jan 17, 2026' },
-  { id: 'tix-3', event: 'ICCLA Championship — Semifinal 2', venue: 'Barclays Center', ticketsSold: 10500, capacity: 17732, revenue: 63000, avgPrice: 60.00, date: 'Jan 17, 2026' },
+  { id: 'tix-1', event: 'KaNeXT Church Championship — Final', venue: 'Barclays Center', ticketsSold: 14800, capacity: 17732, revenue: 118000, avgPrice: 79.73, date: 'Jan 18, 2026' },
+  { id: 'tix-2', event: 'KaNeXT Church Championship — Semifinal 1', venue: 'Barclays Center', ticketsSold: 11200, capacity: 17732, revenue: 67200, avgPrice: 60.00, date: 'Jan 17, 2026' },
+  { id: 'tix-3', event: 'KaNeXT Church Championship — Semifinal 2', venue: 'Barclays Center', ticketsSold: 10500, capacity: 17732, revenue: 63000, avgPrice: 60.00, date: 'Jan 17, 2026' },
   { id: 'tix-4', event: 'K-1 Invitational — Championship', venue: 'Madison Square Garden', ticketsSold: 18200, capacity: 19812, revenue: 164000, avgPrice: 90.11, date: 'Feb 7, 2026' },
   { id: 'tix-5', event: 'K-1 Invitational — Semifinal 1', venue: 'Madison Square Garden', ticketsSold: 15400, capacity: 19812, revenue: 108000, avgPrice: 70.13, date: 'Feb 6, 2026' },
   { id: 'tix-6', event: 'K-1 Invitational — Semifinal 2', venue: 'Madison Square Garden', ticketsSold: 14900, capacity: 19812, revenue: 104000, avgPrice: 69.80, date: 'Feb 6, 2026' },
   { id: 'tix-7', event: 'K-1 Invitational — Quarterfinals', venue: 'Madison Square Garden', ticketsSold: 12000, capacity: 19812, revenue: 72000, avgPrice: 60.00, date: 'Feb 5, 2026' },
-  { id: 'tix-8', event: 'ICCLA VIP Experience', venue: 'Barclays Center — Club Level', ticketsSold: 320, capacity: 500, revenue: 52000, avgPrice: 162.50, date: 'Jan 18, 2026' },
+  { id: 'tix-8', event: 'KaNeXT Church VIP Experience', venue: 'Barclays Center — Club Level', ticketsSold: 320, capacity: 500, revenue: 52000, avgPrice: 162.50, date: 'Jan 18, 2026' },
   { id: 'tix-9', event: 'Spring Series — Round 1 (Day 1)', venue: 'T-Mobile Arena', ticketsSold: 8500, capacity: 20000, revenue: 51000, avgPrice: 60.00, date: 'Mar 6, 2026' },
   { id: 'tix-10', event: 'Spring Series — Round 1 (Day 2)', venue: 'T-Mobile Arena', ticketsSold: 9200, capacity: 20000, revenue: 55200, avgPrice: 60.00, date: 'Mar 7, 2026' },
   { id: 'tix-11', event: 'Spring Series — Championship', venue: 'T-Mobile Arena', ticketsSold: 0, capacity: 20000, revenue: 0, avgPrice: 75.00, date: 'Mar 8, 2026' },
@@ -363,7 +363,7 @@ const TICKETING_RECORDS: TicketingRecord[] = [
 ];
 
 const BUDGET_ITEMS: Budget[] = [
-  { id: 'bgt-1', name: 'ICCLA Championship — Total', series: 'ICCLA Championship', allocated: 450000, spent: 420700, remaining: 29300, status: 'on-track', category: 'Event' },
+  { id: 'bgt-1', name: 'KaNeXT Church Championship — Total', series: 'KaNeXT Church Championship', allocated: 450000, spent: 420700, remaining: 29300, status: 'on-track', category: 'Event' },
   { id: 'bgt-2', name: 'K-1 Invitational — Total', series: 'K-1 Invitational', allocated: 380000, spent: 298200, remaining: 81800, status: 'on-track', category: 'Event' },
   { id: 'bgt-3', name: 'Spring Series — Total', series: 'Spring Series', allocated: 350000, spent: 118500, remaining: 231500, status: 'on-track', category: 'Event' },
   { id: 'bgt-4', name: 'Summer Showcase — Total', series: 'Summer Showcase', allocated: 420000, spent: 180000, remaining: 240000, status: 'on-track', category: 'Event' },
@@ -380,7 +380,7 @@ const BUDGET_ITEMS: Budget[] = [
 ];
 
 const PAYOUT_RECORDS: PayoutRecord[] = [
-  { id: 'pay-1', recipient: 'FMU Rattlers', amount: 100000, type: 'prize', status: 'completed', date: 'Jan 22, 2026', reference: 'PRZ-2026-001' },
+  { id: 'pay-1', recipient: 'KaNeXT Rattlers', amount: 100000, type: 'prize', status: 'completed', date: 'Jan 22, 2026', reference: 'PRZ-2026-001' },
   { id: 'pay-2', recipient: 'Howard Bison', amount: 50000, type: 'prize', status: 'completed', date: 'Jan 22, 2026', reference: 'PRZ-2026-002' },
   { id: 'pay-3', recipient: 'Hampton Pirates', amount: 25000, type: 'prize', status: 'completed', date: 'Jan 23, 2026', reference: 'PRZ-2026-003' },
   { id: 'pay-4', recipient: 'Duke Blue Devils', amount: 75000, type: 'prize', status: 'completed', date: 'Feb 8, 2026', reference: 'PRZ-2026-004' },
@@ -397,11 +397,11 @@ const PAYOUT_RECORDS: PayoutRecord[] = [
   { id: 'pay-15', recipient: 'Select Medical (Trainers)', amount: 22000, type: 'vendor', status: 'completed', date: 'Feb 10, 2026', reference: 'VND-2026-006' },
   { id: 'pay-16', recipient: 'NEP Group (Broadcast Equip)', amount: 22000, type: 'vendor', status: 'failed', date: 'Feb 15, 2026', reference: 'VND-2026-007' },
   { id: 'pay-17', recipient: 'Gonzaga Bulldogs', amount: 20000, type: 'prize', status: 'completed', date: 'Feb 9, 2026', reference: 'PRZ-2026-006' },
-  { id: 'pay-18', recipient: 'Marcus Thompson (MVP)', amount: 10000, type: 'prize', status: 'completed', date: 'Jan 24, 2026', reference: 'PRZ-2026-007' },
+  { id: 'pay-18', recipient: 'Alex Morgan (MVP)', amount: 10000, type: 'prize', status: 'completed', date: 'Jan 24, 2026', reference: 'PRZ-2026-007' },
 ];
 
 const REPORT_ITEMS: FinanceReport[] = [
-  { id: 'rpt-1', name: 'ICCLA Championship — P&L Summary', type: 'Profit & Loss', period: 'Jan 2026', format: 'PDF', generatedDate: 'Jan 25, 2026' },
+  { id: 'rpt-1', name: 'KaNeXT Church Championship — P&L Summary', type: 'Profit & Loss', period: 'Jan 2026', format: 'PDF', generatedDate: 'Jan 25, 2026' },
   { id: 'rpt-2', name: 'K-1 Invitational — P&L Summary', type: 'Profit & Loss', period: 'Feb 2026', format: 'PDF', generatedDate: 'Feb 12, 2026' },
   { id: 'rpt-3', name: 'Monthly Revenue Report — January', type: 'Revenue', period: 'Jan 2026', format: 'XLSX', generatedDate: 'Feb 1, 2026' },
   { id: 'rpt-4', name: 'Monthly Revenue Report — February', type: 'Revenue', period: 'Feb 2026', format: 'XLSX', generatedDate: 'Mar 1, 2026' },

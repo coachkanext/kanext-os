@@ -17,7 +17,7 @@ import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/core';
-import { FMU_GAMES, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_GAME_BPR, getBPRColor, type PlayerBPR } from '@/data/fmu';
+import { KaNeXT_GAMES, KaNeXT_LEADERS, KaNeXT_STANDINGS, KaNeXT_NEWS, KaNeXT_GAME_BPR, getBPRColor, type PlayerBPR } from '@/data/fmu';
 
 // Same hub tabs as SportsHome — keeps navigation consistent across coach screens
 const HUB_TABS = [
@@ -50,12 +50,12 @@ interface Game {
   venue?: string;
 }
 
-const ALL_GAMES: Game[] = FMU_GAMES;
+const ALL_GAMES: Game[] = KaNeXT_GAMES;
 
 // Derive leaders from Firebase canonical data
 type LeaderEntry = { name: string; value: string };
 
-function topN(sorted: typeof FMU_LEADERS, key: 'ppg' | 'rpg' | 'apg' | 'spg' | 'bpg' | 'fgPct' | 'threePct' | 'ftPct', isPct: boolean, n = 3): LeaderEntry[] {
+function topN(sorted: typeof KaNeXT_LEADERS, key: 'ppg' | 'rpg' | 'apg' | 'spg' | 'bpg' | 'fgPct' | 'threePct' | 'ftPct', isPct: boolean, n = 3): LeaderEntry[] {
   return sorted.slice(0, n).map((p) => ({
     name: p.name,
     value: isPct ? `${p[key].toFixed(1)}%` : p[key].toFixed(1),
@@ -82,7 +82,7 @@ const LEADERS: { category: string; top3: LeaderEntry[] }[] = [
   { category: 'FT%', top3: topN(fbByFt, 'ftPct', true) },
 ];
 
-const NEWS_ITEMS = FMU_NEWS;
+const NEWS_ITEMS = KaNeXT_NEWS;
 
 // ── Types ──
 
@@ -97,7 +97,7 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 
 // Demo standings data
-const STANDINGS = FMU_STANDINGS;
+const STANDINGS = KaNeXT_STANDINGS;
 
 const STATUS_COLORS: Record<GameStatus, string> = {
   upcoming: '#6e6e6e',
@@ -186,7 +186,7 @@ function GameRow({
 
       {expanded && (
         <View style={[styles.gameDropdown, { backgroundColor: colors.backgroundTertiary }]}>
-          {game.status === 'final' && FMU_GAME_BPR[game.id] ? (
+          {game.status === 'final' && KaNeXT_GAME_BPR[game.id] ? (
             <>
               {FMU_GAME_BPR[game.id].slice(0, 8).map((p, i) => (
                 <View key={i} style={styles.bprRow}>
@@ -521,7 +521,7 @@ export default function GamesScreen() {
                             </View>
 
                             {/* Inline BPR Panel */}
-                            {expandedGame === game.id && FMU_GAME_BPR[game.id] && (
+                            {expandedGame === game.id && KaNeXT_GAME_BPR[game.id] && (
                               <View style={[styles.bprPanel, { backgroundColor: colors.backgroundTertiary }]}>
                                 {FMU_GAME_BPR[game.id].map((p, i) => (
                                   <View key={i} style={styles.bprPanelRow}>
@@ -750,7 +750,7 @@ export default function GamesScreen() {
                 <Text style={[styles.standingsColHeader, { color: colors.textTertiary }]}>STK</Text>
               </View>
               {STANDINGS.map((row, index) => {
-                const isUs = row.team === 'Florida Memorial';
+                const isUs = row.team === 'KaNeXT Sports';
                 return (
                   <View key={row.team}>
                     {index > 0 && (

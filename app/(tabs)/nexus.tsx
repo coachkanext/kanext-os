@@ -295,7 +295,7 @@ function NexusScreenContent() {
             {isGameOps && gameOpsConfig && (
               <View style={[styles.gameOpsSubHeader, { borderBottomColor: colors.divider }]}>
                 <Text style={[styles.gameOpsSubHeaderText, { color: colors.textSecondary }]}>
-                  FMU vs {gameOpsConfig.opponent}
+                  KaNeXT vs {gameOpsConfig.opponent}
                 </Text>
               </View>
             )}

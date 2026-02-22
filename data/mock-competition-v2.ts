@@ -354,8 +354,8 @@ export const LEVERAGE_BATTLES: LeverageBattle[] = [
 
 export const TEAMS_V2: TeamV2[] = [
   { id: 't-1', name: 'Apex Racing', abbreviation: 'APX', primaryColor: '#EF4444', owner: 'Marcus Kane', homeTrack: 'COTA', wins: 4, points: 312, founded: 2019, budget: '$2.4M', championships: 2, principal: 'Marcus Kane', headquarters: 'Austin, TX' },
-  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#3B82F6', owner: 'Sarah Chen', homeTrack: 'Laguna Seca', wins: 3, points: 287, founded: 2020, budget: '$2.1M', championships: 1, principal: 'Sarah Chen', headquarters: 'Monterey, CA' },
-  { id: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#F59E0B', owner: 'David Okafor', homeTrack: 'Road Atlanta', wins: 2, points: 256, founded: 2018, budget: '$1.9M', championships: 1, principal: 'David Okafor', headquarters: 'Atlanta, GA' },
+  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#3B82F6', owner: 'Lisa Grant', homeTrack: 'Laguna Seca', wins: 3, points: 287, founded: 2020, budget: '$2.1M', championships: 1, principal: 'Lisa Grant', headquarters: 'Monterey, CA' },
+  { id: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#F59E0B', owner: 'David Okafor', homeTrack: 'Road Atlanta', wins: 2, points: 256, founded: 2018, budget: '$1.9M', championships: 1, principal: 'David Okafor', headquarters: 'Nashville, TN' },
   { id: 't-4', name: 'Zenith Racing', abbreviation: 'ZEN', primaryColor: '#22C55E', owner: 'Anna Petrov', homeTrack: 'Watkins Glen', wins: 2, points: 241, founded: 2021, budget: '$1.8M', championships: 0, principal: 'Anna Petrov', headquarters: 'Ithaca, NY' },
   { id: 't-5', name: 'Shadow GP', abbreviation: 'SHD', primaryColor: '#7C3AED', owner: 'James Wright', homeTrack: 'Barber Motorsports', wins: 1, points: 198, founded: 2020, budget: '$1.6M', championships: 0, principal: 'James Wright', headquarters: 'Birmingham, AL' },
   { id: 't-6', name: 'Titan Racing', abbreviation: 'TTN', primaryColor: '#EC4899', owner: 'Lisa Rodriguez', homeTrack: 'Mid-Ohio', wins: 0, points: 167, founded: 2022, budget: '$1.4M', championships: 0, principal: 'Lisa Rodriguez', headquarters: 'Columbus, OH' },
@@ -850,7 +850,7 @@ export interface StaffMember {
 export const SERIES_LIST: SeriesObject[] = [
   {
     id: 'series-k1',
-    name: 'K-1 Hypercar Championship',
+    name: 'KaNeXT League',
     format: 'league',
     season: '2026 Season',
     status: 'live',

@@ -83,7 +83,7 @@ const VENUE_INSPECTIONS = [
 ];
 
 const DRIVER_MEDICALS = [
-  { id: 'dm1', name: 'Kalejaiye', status: 'Current' as ComplianceStatus },
+  { id: 'dm1', name: 'Carter', status: 'Current' as ComplianceStatus },
   { id: 'dm2', name: 'Oluwadara', status: 'Current' as ComplianceStatus },
   { id: 'dm3', name: 'Verstappen', status: 'Current' as ComplianceStatus },
   { id: 'dm4', name: 'Leclerc', status: 'Current' as ComplianceStatus },

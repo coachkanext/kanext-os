@@ -10,16 +10,16 @@ import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { FMU_GAMES, FMU_RECORD, FMU_STANDINGS } from '@/data/fmu';
-import { coachingStaff } from '@/data/sun-conference/coaching-staff';
+import { KaNeXT_GAMES, KaNeXT_RECORD, KaNeXT_STANDINGS } from '@/data/fmu';
+import { coachingStaff } from '@/data/kx-conference/coaching-staff';
 import { PLAYER_CLUSTERS } from '@/data/roster-data';
 import type { ClusterRatings } from '@/data/roster-data';
 
-// FMU seal
-const FMU_SEAL = require('@/assets/images/fmu-seal.png');
+// KaNeXT seal
+const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
 
 // ── Staff data ──
-const fmuStaff = coachingStaff.find((s) => s.program_id === 'florida-memorial');
+const fmuStaff = coachingStaff.find((s) => s.program_id === 'kx-sports');
 
 function nameToHue(name: string): number {
   let h = 0;
@@ -40,7 +40,7 @@ interface CoachProfile {
 }
 
 // Build coach profiles with placeholder data for bios/stops
-const FMU_COACHES: CoachProfile[] = [
+const KaNeXT_COACHES: CoachProfile[] = [
   {
     name: fmuStaff?.head_coach_name ?? 'TBD',
     initials: (fmuStaff?.head_coach_name ?? 'TB').split(' ').map((w) => w[0]).join(''),
@@ -48,11 +48,11 @@ const FMU_COACHES: CoachProfile[] = [
     hue: nameToHue(fmuStaff?.head_coach_name ?? 'TBD'),
     isHC: true,
     yearsWithProgram: 4,
-    bio: 'Veteran head coach who has rebuilt the FMU program into a competitive Sun Conference contender. Known for developing JUCO transfers into impact players and running a high-tempo, guard-driven system.',
+    bio: 'Veteran head coach who has rebuilt the KaNeXT program into a competitive KaNeXT Conference contender. Known for developing JUCO transfers into impact players and running a high-tempo, guard-driven system.',
     priorStops: ['Miami Dade College (Asst)', 'Broward College (Asst)', 'Stranahan HS (HC)'],
     highlights: [
-      'Led FMU to first winning conference record in 5 years',
-      '2x Sun Conference Coach of the Month',
+      'Led KaNeXT to first winning conference record in 5 years',
+      '2x KaNeXT Conference Coach of the Month',
       'Developed 3 All-Conference selections',
     ],
   },
@@ -75,8 +75,8 @@ const FMU_COACHES: CoachProfile[] = [
 ];
 
 // ── Conference position / streak ──
-const FMU_CONF_POSITION = FMU_STANDINGS.findIndex((r) => r.team === 'Florida Memorial') + 1;
-const fmuStreak = FMU_STANDINGS.find((r) => r.team === 'Florida Memorial')?.streak ?? '—';
+const KaNeXT_CONF_POSITION = KaNeXT_STANDINGS.findIndex((r) => r.team === 'KaNeXT Sports') + 1;
+const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—';
 
 // ── Team cluster averages for DNA ──
 const clusterKeys: (keyof ClusterRatings)[] = ['shooting', 'finishing', 'playmaking', 'perimeter_defense', 'interior_defense', 'rebounding', 'frame'];
@@ -104,7 +104,7 @@ function deriveTeamDNA(): { label: string; value: string }[] {
 const TEAM_DNA = deriveTeamDNA();
 
 // ── Signature Wins ──
-const signatureWins = FMU_GAMES
+const signatureWins = KaNeXT_GAMES
   .filter((g) => g.status === 'final' && g.score?.startsWith('W') && (g.opponentKR ?? 0) >= 70)
   .slice(0, 3)
   .map((g) => `W vs ${g.opponent} (${g.score?.replace(/^W\s*/, '')})`);
@@ -185,8 +185,8 @@ export function TeamQuickSheet({
           <View style={s.identityRow}>
             <Image source={FMU_SEAL} style={s.logo} resizeMode="contain" />
             <View style={s.identityText}>
-              <Text style={s.teamName}>Florida Memorial</Text>
-              <Text style={s.teamSubline}>NAIA {'\u00B7'} Sun Conference</Text>
+              <Text style={s.teamName}>KaNeXT Sports</Text>
+              <Text style={s.teamSubline}>NAIA {'\u00B7'} KaNeXT Conference</Text>
             </View>
             <View style={s.krBadge}>
               <Text style={s.krValue}>{teamKR}</Text>
@@ -393,7 +393,7 @@ export function TeamQuickSheet({
                 </View>
                 <View style={s.progRow}>
                   <Text style={s.progLabel}>Location</Text>
-                  <Text style={s.progValue}>Miami Gardens, FL</Text>
+                  <Text style={s.progValue}>Nashville, TN</Text>
                 </View>
                 <View style={s.progRow}>
                   <Text style={s.progLabel}>Nickname</Text>
@@ -401,7 +401,7 @@ export function TeamQuickSheet({
                 </View>
                 <View style={s.progRow}>
                   <Text style={s.progLabel}>Venue</Text>
-                  <Text style={s.progValue}>FMU Wellness Center</Text>
+                  <Text style={s.progValue}>KaNeXT Wellness Center</Text>
                 </View>
                 <View style={[s.progRow, { borderBottomWidth: 0 }]}>
                   <Text style={s.progLabel}>Colors</Text>

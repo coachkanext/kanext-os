@@ -3,7 +3,7 @@
  * 9 scroll sections: Now, Wallets, Batches, Approvals, Release Queue, Exceptions,
  * Disputes & Returns, Receipts, Admin.
  * All data references KaNeXT entities: Mercury Bank, Stripe, KaNeXT Inc, OSK Group,
- * FMU partnership payments, ICCLA donations.
+ * KaNeXT partnership payments, KaNeXT Church donations.
  */
 
 // =============================================================================
@@ -155,10 +155,10 @@ export const RAILS_HEALTH: RailsHealthMetric[] = [
 export const NOW_ITEMS: NowItem[] = [
   {
     id: 'now-1',
-    title: 'FMU Partnership Q1 Payment',
+    title: 'KaNeXT Partnership Q1 Payment',
     amount: '$24,500.00',
     status: 'processing',
-    counterparty: 'Florida Memorial University',
+    counterparty: 'KaNeXT Sports',
     rail: 'ACH',
     eta: 'Settles Feb 19',
   },
@@ -173,7 +173,7 @@ export const NOW_ITEMS: NowItem[] = [
   },
   {
     id: 'now-3',
-    title: 'ICCLA Donation Disbursement',
+    title: 'KaNeXT Church Donation Disbursement',
     amount: '$12,000.00',
     status: 'pending_approval',
     counterparty: "Int'l Church of Christ LA",
@@ -268,16 +268,16 @@ export const PAYOUT_BATCHES: PayoutBatch[] = [
   },
   {
     id: 'pb-2',
-    label: 'FMU Q1 Partnership Bundle',
+    label: 'KaNeXT Q1 Partnership Bundle',
     totalAmount: '$24,500.00',
     itemCount: 1,
     status: 'processing',
-    createdBy: 'Sammy Kalejaiye',
+    createdBy: 'Alex Morgan',
     createdAt: 'Feb 15, 2026',
   },
   {
     id: 'pb-3',
-    label: 'ICCLA Community Disbursement',
+    label: 'KaNeXT Church Community Disbursement',
     totalAmount: '$12,000.00',
     itemCount: 3,
     status: 'approved',
@@ -299,7 +299,7 @@ export const PAYOUT_BATCHES: PayoutBatch[] = [
     totalAmount: '$50,000.00',
     itemCount: 1,
     status: 'draft',
-    createdBy: 'Sammy Kalejaiye',
+    createdBy: 'Alex Morgan',
     createdAt: 'Feb 17, 2026',
   },
 ];
@@ -320,7 +320,7 @@ export const RAILS_APPROVALS: RailsApproval[] = [
   },
   {
     id: 'ra-2',
-    title: 'ICCLA Donation Disbursement',
+    title: 'KaNeXT Church Donation Disbursement',
     amount: '$12,000.00',
     requester: 'Jordan Hayes',
     type: 'transfer',
@@ -331,7 +331,7 @@ export const RAILS_APPROVALS: RailsApproval[] = [
     id: 'ra-3',
     title: 'OSK Group Capital Call Wire',
     amount: '$50,000.00',
-    requester: 'Sammy Kalejaiye',
+    requester: 'Alex Morgan',
     type: 'transfer',
     status: 'pending',
     submittedAt: 'Feb 17, 9:15 AM',
@@ -476,7 +476,7 @@ export const RECEIPTS: ReceiptItem[] = [
   },
   {
     id: 'rc-3',
-    description: 'FMU Partnership — Q1 Disbursement',
+    description: 'KaNeXT Partnership — Q1 Disbursement',
     amount: '$24,500.00',
     date: 'Feb 15, 2026',
     category: 'Partnership',
@@ -484,7 +484,7 @@ export const RECEIPTS: ReceiptItem[] = [
   },
   {
     id: 'rc-4',
-    description: 'ICCLA Donation Processing Fee',
+    description: 'KaNeXT Church Donation Processing Fee',
     amount: '$180.00',
     date: 'Feb 14, 2026',
     category: 'Donations',
@@ -636,8 +636,8 @@ export interface ReleaseQueueItem {
 }
 
 export const RELEASE_QUEUE_ITEMS: ReleaseQueueItem[] = [
-  { id: 'rlq-1', title: 'Vendor payout — Design agency', amount: '$12,500', approvedBy: 'Sammy K.', approvedAt: 'Feb 15', releaseAuthority: 'Treasury', auditNote: '', rail: 'ACH', status: 'awaiting_release' },
-  { id: 'rlq-2', title: 'Contractor sprint payment', amount: '$8,200', approvedBy: 'Sammy K.', approvedAt: 'Feb 14', releaseAuthority: 'Treasury', auditNote: '', rail: 'ACH', status: 'awaiting_release' },
+  { id: 'rlq-1', title: 'Vendor payout — Design agency', amount: '$12,500', approvedBy: 'Alex M.', approvedAt: 'Feb 15', releaseAuthority: 'Treasury', auditNote: '', rail: 'ACH', status: 'awaiting_release' },
+  { id: 'rlq-2', title: 'Contractor sprint payment', amount: '$8,200', approvedBy: 'Alex M.', approvedAt: 'Feb 14', releaseAuthority: 'Treasury', auditNote: '', rail: 'ACH', status: 'awaiting_release' },
   { id: 'rlq-3', title: 'Annual SaaS renewal', amount: '$4,800', approvedBy: 'Finance', approvedAt: 'Feb 13', releaseAuthority: 'Ops', auditNote: 'Pre-approved in budget', rail: 'Card', status: 'released' },
 ];
 

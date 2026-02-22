@@ -320,7 +320,7 @@ export const MINISTRY_TEACHINGS: MinistryTeaching[] = [
     id: 'mt-7',
     ministryId: 'min-youth',
     title: 'Navigating Social Media as a Believer',
-    speaker: 'Pastor Sarah Chen',
+    speaker: 'Pastor Lisa Grant',
     date: '2026-02-07',
     duration: '25 min',
     series: 'Who Am I?',

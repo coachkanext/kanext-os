@@ -10,7 +10,7 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import {
   SCHOLARSHIPS,
-  FMU_FAFSA,
+  KaNeXT_FAFSA,
   TUITION_RATES,
   buildEduCommerceChain,
 } from '@/data/edu-commerce-data';
@@ -107,7 +107,7 @@ export function EduFinancialAidSheet({ visible, onClose, colors }: Props) {
       {section === 'fafsa' && (
         <View style={styles.container}>
           <View style={[styles.codeCard, { backgroundColor: ACCENT + '15' }]}>
-            <Text style={[styles.codeLabel, { color: ACCENT }]}>FMU School Code</Text>
+            <Text style={[styles.codeLabel, { color: ACCENT }]}>KaNeXT School Code</Text>
             <Text style={[styles.codeValue, { color: colors.text }]}>{FMU_FAFSA.schoolCode}</Text>
           </View>
 

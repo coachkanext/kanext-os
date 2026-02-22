@@ -71,7 +71,7 @@ export function SupportSheet({ visible, onClose, colors }: Props) {
   }, []);
 
   return (
-    <BottomSheet visible={visible} onClose={handleClose} title="Support FMU Lions" useModal>
+    <BottomSheet visible={visible} onClose={handleClose} title="Support KaNeXT" useModal>
       {stage === 'browse' && (
         <View style={styles.container}>
           {/* Tiers */}

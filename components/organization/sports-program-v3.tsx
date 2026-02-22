@@ -1,6 +1,6 @@
 /**
  * Sports Program V3 — 3-pill ViewBar (Identity | Teams | Operations)
- * FMU Lions Men's Basketball · NAIA Sun Conference
+ * KaNeXT Men's Basketball · NAIA KaNeXT Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback } from 'react';
@@ -121,9 +121,9 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
       {/* Program Info */}
       <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>PROGRAM</ThemedText>
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.cardTitle, { color: colors.text }]}>FMU Lions Men's Basketball</ThemedText>
+        <ThemedText style={[s.cardTitle, { color: colors.text }]}>KaNeXT Men's Basketball</ThemedText>
         <ThemedText style={[s.cardSub, { color: colors.textSecondary }]}>
-          Florida Memorial University
+          KaNeXT Sports
         </ThemedText>
       </View>
 
@@ -159,7 +159,7 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.detailRow}>
           <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Conference</ThemedText>
-          <ThemedText style={[s.detailValue, { color: colors.text }]}>NAIA · Sun Conference</ThemedText>
+          <ThemedText style={[s.detailValue, { color: colors.text }]}>NAIA · KaNeXT Conference</ThemedText>
         </View>
         <View style={[s.detailRow, { borderBottomWidth: 0 }]}>
           <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Governing Body</ThemedText>

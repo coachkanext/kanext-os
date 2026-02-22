@@ -1,7 +1,7 @@
 /**
  * Mock Business V3 — Shared data layer for the 9-tab Business Home.
  * Entity definitions, shared types, and cross-tab references.
- * All data references KaNeXT entities: Sammy, FMU, ICCLA, K-1, PBD/Tom.
+ * All data references KaNeXT entities: Alex, KaNeXT, KaNeXT Church, K-1, PBD/Tom.
  */
 
 import type { BusinessRoleLens } from '@/utils/business-rbac';
@@ -39,7 +39,7 @@ export interface BizPerson {
 }
 
 export const PEOPLE: Record<string, BizPerson> = {
-  sammy: { id: 'p-1', name: 'Sammy Kalejaiye', role: 'Founder / CEO', initials: 'SK' },
+  sammy: { id: 'p-1', name: 'Alex Morgan', role: 'Founder / CEO', initials: 'AM' },
   pbd: { id: 'p-2', name: 'Patrick Bet-David', role: 'Strategic Advisor', initials: 'PB' },
   tom: { id: 'p-3', name: 'Tom Ellsworth', role: 'Board Observer', initials: 'TE' },
   adriana: { id: 'p-4', name: 'Adriana Ruiz', role: 'VP Engineering', initials: 'AR' },
@@ -65,8 +65,8 @@ export interface ProofWedge {
 }
 
 export const PROOF_WEDGES: ProofWedge[] = [
-  { id: 'w-fmu', name: 'FMU', orgName: 'Florida Memorial University', icon: 'sportscourt.fill', color: '#FFFFFF', stat: '$53M–$157M', statLabel: 'Media Value Y1' },
-  { id: 'w-iccla', name: 'ICCLA', orgName: "Int'l Church of Christ LA", icon: 'heart.fill', color: '#B8C0CC', stat: '3', statLabel: 'Campuses' },
+  { id: 'w-fmu', name: 'KaNeXT', orgName: 'KaNeXT Sports', icon: 'sportscourt.fill', color: '#FFFFFF', stat: '$53M–$157M', statLabel: 'Media Value Y1' },
+  { id: 'w-iccla', name: 'KaNeXT Church', orgName: "Int'l Church of Christ LA", icon: 'heart.fill', color: '#B8C0CC', stat: '3', statLabel: 'Campuses' },
   { id: 'w-k1', name: 'K-1', orgName: 'K-1 Racing Series', icon: 'flag.checkered', color: '#FF4D4D', stat: '14', statLabel: 'Race Season' },
 ];
 

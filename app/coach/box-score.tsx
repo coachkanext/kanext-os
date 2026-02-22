@@ -13,9 +13,9 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
-  FMU_GAMES_BY_ID,
-  FMU_BOX_SCORES,
-  FMU_RECORD,
+  KaNeXT_GAMES_BY_ID,
+  KaNeXT_BOX_SCORES,
+  KaNeXT_RECORD,
   placeholderRecord,
   isConfGame,
   type BoxScoreLine,
@@ -155,7 +155,7 @@ export default function BoxScoreScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
 
-  const game = (FMU_GAMES_BY_ID as Record<string, { opponent: string; date: string; location: string; status: GameStatus; score?: string }>)[gameId ?? '']
+  const game = (KaNeXT_GAMES_BY_ID as Record<string, { opponent: string; date: string; location: string; status: GameStatus; score?: string }>)[gameId ?? '']
     ?? { opponent: 'Unknown', date: '—', location: '—', status: 'upcoming' as GameStatus };
 
   const opponentAbbr = game.opponent.substring(0, 3).toUpperCase();
@@ -172,10 +172,10 @@ export default function BoxScoreScreen() {
   const [showAllStats, setShowAllStats] = useState(false);
   const STAT_COLS = showAllStats ? FULL_COLS : COMPACT_COLS;
 
-  const BOX_SCORE = FMU_BOX_SCORES as Record<string, BoxScoreLine[]>;
-  const FMU_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
+  const BOX_SCORE = KaNeXT_BOX_SCORES as Record<string, BoxScoreLine[]>;
+  const KaNeXT_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
   const realBoxScore = BOX_SCORE[gameId ?? ''] ?? [];
-  const fmuBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('Florida Memorial', fmuScore, FMU_MOCK_NAMES);
+  const fmuBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('KaNeXT Sports', fmuScore, KaNeXT_MOCK_NAMES);
   const oppBoxScore = mockBoxScore(game.opponent, oppScore);
 
   return (
@@ -211,7 +211,7 @@ export default function BoxScoreScreen() {
           </View>
           <View style={[styles.scoreboardSide, { flexDirection: 'row-reverse' }]}>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>FMU</Text>
+              <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>KXT</Text>
               <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{FMU_RECORD.overall}</Text>
             </View>
             <View style={[styles.scoreboardIcon, { backgroundColor: colors.text + '15' }]}>
@@ -265,7 +265,7 @@ export default function BoxScoreScreen() {
         showsVerticalScrollIndicator={false}
       >
         {[
-          { label: 'FMU', lines: fmuBoxScore },
+          { label: 'KaNeXT', lines: fmuBoxScore },
           { label: opponentAbbr, lines: oppBoxScore },
         ].map((team) => {
           const starters = team.lines.slice(0, 5);
@@ -278,8 +278,8 @@ export default function BoxScoreScreen() {
             <View key={team.label} style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
               {/* Team name header + All Stats toggle */}
               <View style={styles.teamHeader}>
-                <View style={[styles.teamHeaderIcon, { backgroundColor: team.label === 'FMU' ? colors.text + '15' : colors.backgroundTertiary }]}>
-                  <Text style={[styles.teamHeaderIconText, { color: team.label === 'FMU' ? colors.text : colors.textSecondary }]}>
+                <View style={[styles.teamHeaderIcon, { backgroundColor: team.label === 'KaNeXT' ? colors.text + '15' : colors.backgroundTertiary }]}>
+                  <Text style={[styles.teamHeaderIconText, { color: team.label === 'KaNeXT' ? colors.text : colors.textSecondary }]}>
                     {team.label.charAt(0)}
                   </Text>
                 </View>

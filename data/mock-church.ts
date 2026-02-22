@@ -1,6 +1,6 @@
 /**
  * Mock Church Data
- * International Christian Center (ICC) information for Church mode.
+ * KaNeXT Church (KaNeXT Church) information for Church mode.
  */
 
 import type {
@@ -19,12 +19,12 @@ import type {
 
 export const ICC_ORGANIZATION: ChurchOrganization = {
   id: 'icc-001',
-  name: 'International Christian Center',
+  name: 'KaNeXT Church',
   mode: 'church',
   type: 'Church',
-  location: 'Los Angeles, CA',
+  location: 'Nashville, TN',
   description:
-    'International Christian Center is a vibrant, multicultural church committed to reaching the nations with the love of Christ. Founded in 1985, ICC has grown to serve communities across Los Angeles and internationally through our campuses and outreach ministries.',
+    'KaNeXT Church is a vibrant, multicultural church committed to reaching the nations with the love of Christ. Founded in 1985, KaNeXT Church has grown to serve communities across Los Angeles and internationally through our campuses and outreach ministries.',
   denomination: 'Non-Denominational',
   campuses: [],
 };
@@ -36,10 +36,10 @@ export const ICC_ORGANIZATION: ChurchOrganization = {
 export const CAMPUSES: Campus[] = [
   {
     id: 'iccla',
-    name: 'ICC Los Angeles',
-    shortName: 'ICCLA',
-    location: 'Los Angeles, CA',
-    address: '2361 W. 76th Street, Los Angeles, CA 90043',
+    name: 'KaNeXT Church',
+    shortName: 'KaNeXT Church',
+    location: 'Nashville, TN',
+    address: '100 KaNeXT Blvd, Nashville, TN 90043',
     description: 'Our flagship campus in the heart of Los Angeles, serving the community since 1985.',
     serviceTimes: [
       { day: 'Sunday', time: '8:00 AM', service: 'Early Morning Service', campusId: 'iccla' },
@@ -82,7 +82,7 @@ export const MINISTRIES: Ministry[] = [
     type: 'prayer',
     icon: 'phone.fill',
     accessMethods: [
-      'Call: (800) ICC-PRAY',
+      'Call: (800) 555-0300',
       'Text: PRAY to 55555',
       'Online: icc.org/prayer',
       'In-Person: Prayer Room open daily',
@@ -119,7 +119,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-1',
     title: 'Walking in Faith',
-    speaker: 'Pastor Dipo Kalejaiye',
+    speaker: 'Pastor Dipo Carter',
     date: new Date('2026-02-02'),
     mediaType: 'video',
     seriesName: 'Faith Forward',
@@ -128,7 +128,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-2',
     title: 'The Power of Prayer',
-    speaker: 'Pastor Dipo Kalejaiye',
+    speaker: 'Pastor Dipo Carter',
     date: new Date('2026-01-26'),
     mediaType: 'video',
     seriesName: 'Faith Forward',
@@ -137,7 +137,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-3',
     title: 'Living with Purpose',
-    speaker: 'Pastor Sarah Chen',
+    speaker: 'Pastor Lisa Grant',
     date: new Date('2026-01-19'),
     mediaType: 'video',
     seriesName: 'New Year, New You',
@@ -146,7 +146,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-4',
     title: 'Fresh Start',
-    speaker: 'Pastor Dipo Kalejaiye',
+    speaker: 'Pastor Dipo Carter',
     date: new Date('2026-01-12'),
     mediaType: 'video',
     seriesName: 'New Year, New You',
@@ -155,7 +155,7 @@ export const MESSAGES: ChurchMessage[] = [
   {
     id: 'msg-5',
     title: 'Year in Review',
-    speaker: 'Pastor Dipo Kalejaiye',
+    speaker: 'Pastor Dipo Carter',
     date: new Date('2025-12-29'),
     mediaType: 'video',
     duration: '38:45',
@@ -213,14 +213,14 @@ export interface ChurchLeader {
 export const CHURCH_LEADERSHIP: ChurchLeader[] = [
   {
     id: 'leader-1',
-    name: 'Pastor Dipo Kalejaiye',
+    name: 'Pastor Dipo Carter',
     title: 'Senior Pastor',
     role: 'senior_pastor',
-    bio: 'Pastor Michael has led ICC since 1995 with a heart for the nations.',
+    bio: 'Pastor David has led KaNeXT Church since 1995 with a heart for the nations.',
   },
   {
     id: 'leader-2',
-    name: 'Pastor Sarah Chen',
+    name: 'Pastor Lisa Grant',
     title: 'Associate Pastor',
     role: 'associate_pastor',
     bio: 'Pastor Sarah oversees discipleship and small groups ministry.',

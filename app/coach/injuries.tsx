@@ -44,8 +44,8 @@ const DEMO_INJURIES = [
 ];
 
 const HEALTHY_PLAYERS = [
-  'Brandon Williams',
-  'Laolu Kalejaiye',
+  'Marcus Reed',
+  'Devon Carter',
   'Jaylen Carter',
   'Terrance Brooks',
   'Andre Mitchell',

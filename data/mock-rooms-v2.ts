@@ -241,7 +241,7 @@ const SPORTS_ROOMS: Room[] = [
     title: 'MBB Coaching Staff',
     context_line: "Men's Basketball coaching staff",
     members: [
-      { id: 'm1', name: 'Sammy Kalejaiye', initials: 'SK', role: 'Head Coach' },
+      { id: 'm1', name: 'Alex Morgan', initials: 'AM', role: 'Head Coach' },
       { id: 'm2', name: 'Marcus Johnson', initials: 'MJ', role: 'Associate HC' },
       { id: 'm3', name: 'Chris Williams', initials: 'CW', role: 'Assistant Coach' },
     ],
@@ -259,9 +259,9 @@ const SPORTS_ROOMS: Room[] = [
       { id: 'ql2', label: 'Roster', url: '#', icon: 'person.3.fill' },
     ],
     audit_log: [
-      { id: 'a1', action: 'room_created', actor: 'Sammy Kalejaiye', detail: 'Created room', timestamp: 'Aug 15, 2025', timestamp_ms: 1723708800000 },
-      { id: 'a2', action: 'member_added', actor: 'Sammy Kalejaiye', detail: 'Added Marcus Johnson', timestamp: 'Aug 15, 2025', timestamp_ms: 1723712400000 },
-      { id: 'a3', action: 'member_added', actor: 'Sammy Kalejaiye', detail: 'Added Chris Williams', timestamp: 'Aug 16, 2025', timestamp_ms: 1723795200000 },
+      { id: 'a1', action: 'room_created', actor: 'Alex Morgan', detail: 'Created room', timestamp: 'Aug 15, 2025', timestamp_ms: 1723708800000 },
+      { id: 'a2', action: 'member_added', actor: 'Alex Morgan', detail: 'Added Marcus Johnson', timestamp: 'Aug 15, 2025', timestamp_ms: 1723712400000 },
+      { id: 'a3', action: 'member_added', actor: 'Alex Morgan', detail: 'Added Chris Williams', timestamp: 'Aug 16, 2025', timestamp_ms: 1723795200000 },
     ],
     avatarColor: '#3B82F6',
     lastMessage: 'Updated the rotation for tomorrow\'s practice',
@@ -274,7 +274,7 @@ const SPORTS_ROOMS: Room[] = [
     title: 'MBB Team',
     context_line: 'Full team channel',
     members: [
-      { id: 'm1', name: 'Sammy Kalejaiye', initials: 'SK', role: 'Head Coach' },
+      { id: 'm1', name: 'Alex Morgan', initials: 'AM', role: 'Head Coach' },
       { id: 'm4', name: 'Jaylen Carter', initials: 'JC', role: 'Player' },
       { id: 'm5', name: 'Darius Thompson', initials: 'DT', role: 'Player' },
       { id: 'm6', name: 'Andre Mitchell', initials: 'AM', role: 'Player' },
@@ -294,7 +294,7 @@ const SPORTS_ROOMS: Room[] = [
       { id: 'ql5', label: 'Strength & Conditioning', url: '#', icon: 'figure.strengthtraining.traditional' },
     ],
     audit_log: [
-      { id: 'a4', action: 'room_created', actor: 'Sammy Kalejaiye', detail: 'Created room', timestamp: 'Aug 15, 2025', timestamp_ms: 1723708800000 },
+      { id: 'a4', action: 'room_created', actor: 'Alex Morgan', detail: 'Created room', timestamp: 'Aug 15, 2025', timestamp_ms: 1723708800000 },
       { id: 'a5', action: 'member_added', actor: 'System', detail: 'Auto-enrolled 14 team members', timestamp: 'Aug 15, 2025', timestamp_ms: 1723712400000 },
     ],
     avatarColor: '#8B5CF6',
@@ -308,7 +308,7 @@ const SPORTS_ROOMS: Room[] = [
     title: 'MBB Recruiting',
     context_line: 'Recruiting pipeline & eval',
     members: [
-      { id: 'm1', name: 'Sammy Kalejaiye', initials: 'SK', role: 'Head Coach' },
+      { id: 'm1', name: 'Alex Morgan', initials: 'AM', role: 'Head Coach' },
       { id: 'm2', name: 'Marcus Johnson', initials: 'MJ', role: 'Associate HC' },
     ],
     visibility: 'private',
@@ -324,7 +324,7 @@ const SPORTS_ROOMS: Room[] = [
       { id: 'ql6', label: 'Board', url: '#', icon: 'rectangle.grid.1x2.fill' },
     ],
     audit_log: [
-      { id: 'a6', action: 'room_created', actor: 'Sammy Kalejaiye', detail: 'Created room', timestamp: 'Sep 1, 2025', timestamp_ms: 1725148800000 },
+      { id: 'a6', action: 'room_created', actor: 'Alex Morgan', detail: 'Created room', timestamp: 'Sep 1, 2025', timestamp_ms: 1725148800000 },
       { id: 'a7', action: 'share_link', actor: 'Marcus Johnson', detail: 'Shared scouting report link', timestamp: 'Feb 14, 2026', timestamp_ms: Date.now() - 172800000 },
     ],
     avatarColor: '#10B981',
@@ -363,10 +363,10 @@ const SPORTS_ROOMS: Room[] = [
     mode: 'sports',
     room_type: 'game',
     scope_object: 'season',
-    title: 'Game Day — vs Lincoln',
+    title: 'Game Day — vs Ridgemont',
     context_line: 'Feb 18 home game operations',
     members: [
-      { id: 'm1', name: 'Sammy Kalejaiye', initials: 'SK', role: 'Head Coach' },
+      { id: 'm1', name: 'Alex Morgan', initials: 'AM', role: 'Head Coach' },
       { id: 'm7', name: 'Dana Brooks', initials: 'DB', role: 'Ops Director' },
       { id: 'm8', name: 'Ray Nguyen', initials: 'RN', role: 'Trainer' },
     ],
@@ -398,7 +398,7 @@ const SPORTS_ROOMS: Room[] = [
     title: 'MBB Film Room',
     context_line: 'Film review & clip tagging',
     members: [
-      { id: 'm1', name: 'Sammy Kalejaiye', initials: 'SK', role: 'Head Coach' },
+      { id: 'm1', name: 'Alex Morgan', initials: 'AM', role: 'Head Coach' },
       { id: 'm3', name: 'Chris Williams', initials: 'CW', role: 'Video Coordinator' },
     ],
     visibility: 'private',
@@ -415,7 +415,7 @@ const SPORTS_ROOMS: Room[] = [
     ],
     audit_log: [
       { id: 'a11', action: 'room_created', actor: 'Chris Williams', detail: 'Created room', timestamp: 'Sep 5, 2025', timestamp_ms: 1725494400000 },
-      { id: 'a12', action: 'permission_changed', actor: 'Sammy Kalejaiye', detail: 'Set posting to everyone', timestamp: 'Sep 6, 2025', timestamp_ms: 1725580800000 },
+      { id: 'a12', action: 'permission_changed', actor: 'Alex Morgan', detail: 'Set posting to everyone', timestamp: 'Sep 6, 2025', timestamp_ms: 1725580800000 },
     ],
     avatarColor: '#6366F1',
     lastMessage: 'Tagged 12 clips from last night — check the PnR set',
@@ -677,7 +677,7 @@ const CHURCH_ROOMS: Room[] = [
     title: 'Pastoral Team',
     context_line: 'Senior leadership',
     members: [
-      { id: 'c1', name: 'Pastor Dipo Kalejaiye', initials: 'DK', role: 'Senior Pastor' },
+      { id: 'c1', name: 'Pastor Dipo Carter', initials: 'DK', role: 'Senior Pastor' },
       { id: 'c2', name: 'Pastor Sarah Okonkwo', initials: 'SO', role: 'Associate Pastor' },
       { id: 'c3', name: 'Elder James Wright', initials: 'JW', role: 'Elder' },
     ],
@@ -695,8 +695,8 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'ql2', label: 'Budget', url: '#', icon: 'chart.bar.fill' },
     ],
     audit_log: [
-      { id: 'a1', action: 'room_created', actor: 'Pastor Dipo Kalejaiye', detail: 'Created room', timestamp: 'Jan 1, 2025', timestamp_ms: 1704067200000 },
-      { id: 'a2', action: 'member_added', actor: 'Pastor Dipo Kalejaiye', detail: 'Added pastoral team', timestamp: 'Jan 1, 2025', timestamp_ms: 1704070800000 },
+      { id: 'a1', action: 'room_created', actor: 'Pastor Dipo Carter', detail: 'Created room', timestamp: 'Jan 1, 2025', timestamp_ms: 1704067200000 },
+      { id: 'a2', action: 'member_added', actor: 'Pastor Dipo Carter', detail: 'Added pastoral team', timestamp: 'Jan 1, 2025', timestamp_ms: 1704070800000 },
     ],
     avatarColor: '#7C3AED',
     lastMessage: 'Lenten series outline is attached — review by Wednesday',
@@ -709,7 +709,7 @@ const CHURCH_ROOMS: Room[] = [
     title: 'Prayer Requests',
     context_line: 'Congregation prayer needs',
     members: [
-      { id: 'c1', name: 'Pastor Dipo Kalejaiye', initials: 'DK', role: 'Pastor' },
+      { id: 'c1', name: 'Pastor Dipo Carter', initials: 'DK', role: 'Pastor' },
       { id: 'c4', name: 'Deacon Ruth Adeyemi', initials: 'RA', role: 'Prayer Lead' },
       { id: 'c5', name: 'Sister Grace Nwosu', initials: 'GN', role: 'Intercessor' },
     ],
@@ -756,7 +756,7 @@ const CHURCH_ROOMS: Room[] = [
     ],
     audit_log: [
       { id: 'a4', action: 'room_created', actor: 'Pastor Sarah Okonkwo', detail: 'Created room', timestamp: 'Feb 1, 2025', timestamp_ms: 1706745600000 },
-      { id: 'a5', action: 'permission_changed', actor: 'Pastor Dipo Kalejaiye', detail: 'Set visibility to private', timestamp: 'Feb 2, 2025', timestamp_ms: 1706832000000 },
+      { id: 'a5', action: 'permission_changed', actor: 'Pastor Dipo Carter', detail: 'Set visibility to private', timestamp: 'Feb 2, 2025', timestamp_ms: 1706832000000 },
     ],
     avatarColor: '#EF4444',
     lastMessage: 'Hospital visit scheduled for Brother Taiwo — Room 412',
@@ -877,7 +877,7 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'a10', action: 'room_created', actor: 'Pastor Sarah Okonkwo', detail: 'Created room', timestamp: 'Jun 1, 2025', timestamp_ms: 1717200000000 },
     ],
     avatarColor: '#14B8A6',
-    lastMessage: 'Welcome to ICC! Next orientation is Sunday March 1 after service.',
+    lastMessage: 'Welcome to KaNeXT Church! Next orientation is Sunday March 1 after service.',
   },
 ];
 

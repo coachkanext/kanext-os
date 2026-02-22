@@ -82,7 +82,7 @@ const SPORTS_TASKS: Task[] = [
   { id: 'st-1', title: 'Game prep packet — Webber Intl', assignee: 'Coach Harris', dueDate: 'Feb 17', priority: 'high', status: 'in-progress', category: 'Game Prep' },
   { id: 'st-2', title: 'Equipment check — away game bags', assignee: 'Antoine Brooks', dueDate: 'Feb 19', priority: 'high', status: 'pending', category: 'Equipment' },
   { id: 'st-3', title: 'Book team hotel — Thomas', assignee: 'Ops Coordinator', dueDate: 'Feb 18', priority: 'high', status: 'completed', category: 'Travel' },
-  { id: 'st-4', title: 'Submit eligibility forms', assignee: 'Sammy Kalejaiye', dueDate: 'Feb 20', priority: 'medium', status: 'pending', category: 'Compliance' },
+  { id: 'st-4', title: 'Submit eligibility forms', assignee: 'Alex Morgan', dueDate: 'Feb 20', priority: 'medium', status: 'pending', category: 'Compliance' },
   { id: 'st-5', title: 'Update depth chart for conference play', assignee: 'Coach Harris', dueDate: 'Feb 22', priority: 'medium', status: 'pending', category: 'Roster' },
   { id: 'st-6', title: 'Trainer room restock', assignee: 'Medical Staff', dueDate: 'Feb 16', priority: 'low', status: 'overdue', category: 'Medical' },
 ];
@@ -200,7 +200,7 @@ const EDUCATION_EQUIPMENT: Equipment[] = [
 ];
 
 const EDUCATION_TRAVEL: TravelPlan[] = [
-  { id: 'etr-1', destination: 'Accreditation Conference — Atlanta, GA', date: 'Mar 10, 2026', returnDate: 'Mar 12, 2026', partySize: 4, status: 'booked', budget: 3200 },
+  { id: 'etr-1', destination: 'Accreditation Conference — Nashville, TN', date: 'Mar 10, 2026', returnDate: 'Mar 12, 2026', partySize: 4, status: 'booked', budget: 3200 },
   { id: 'etr-2', destination: 'Faculty Development Workshop — Orlando, FL', date: 'Mar 20, 2026', returnDate: 'Mar 22, 2026', partySize: 6, status: 'planned', budget: 4500 },
 ];
 

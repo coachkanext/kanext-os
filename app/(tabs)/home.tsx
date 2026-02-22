@@ -18,23 +18,23 @@ import { AvatarDrawer } from '@/components/avatar-drawer';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID } from '@/data/fmu';
-import { rosterEntries } from '@/data/sun-conference/florida-memorial';
+import { KaNeXT_RECORD, KaNeXT_LAST_GAME, KaNeXT_LAST_GAME_ID } from '@/data/fmu';
+import { rosterEntries } from '@/data/kx-conference/kx-sports';
 
 // =============================================================================
-// FMU DATA
+// KaNeXT DATA
 // =============================================================================
 
 const rosterCount = rosterEntries.filter((r) => r.season === '2025-26').length;
 
 const TEAM_DATA = {
-  name: 'FMU Lions',
+  name: 'KaNeXT',
   season: '2025–26',
   kr: 84,
   record: {
-    overall: FMU_RECORD.overall,
-    conference: FMU_RECORD.conference,
-    standing: 'Sun Conference',
+    overall: KaNeXT_RECORD.overall,
+    conference: KaNeXT_RECORD.conference,
+    standing: 'KaNeXT Conference',
   },
 };
 
@@ -45,8 +45,8 @@ const CURRENT_STATUS = {
     time: '—',
     location: '—',
   },
-  lastGame: FMU_LAST_GAME
-    ? { result: FMU_LAST_GAME.result, score: FMU_LAST_GAME.score, opponent: FMU_LAST_GAME.opponent }
+  lastGame: KaNeXT_LAST_GAME
+    ? { result: KaNeXT_LAST_GAME.result, score: KaNeXT_LAST_GAME.score, opponent: KaNeXT_LAST_GAME.opponent }
     : { result: '—', score: '—', opponent: '—' },
   today: 'No events scheduled',
   availability: {
@@ -142,7 +142,7 @@ export default function HomeScreen() {
           ]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            router.push({ pathname: '/coach/game-detail', params: { gameId: FMU_LAST_GAME_ID } } as never);
+            router.push({ pathname: '/coach/game-detail', params: { gameId: KaNeXT_LAST_GAME_ID } } as never);
           }}
         >
           <View style={styles.gameDayTop}>

@@ -176,8 +176,8 @@ export interface OpsChecklist {
 export const CHURCH_ORGS: ChurchOrg[] = [
   {
     id: 'iccla',
-    name: 'ICCLA',
-    abbreviation: 'ICCLA',
+    name: 'KaNeXT Church',
+    abbreviation: 'KaNeXT Church',
     campus: 'Los Angeles',
     city: 'Los Angeles',
     state: 'CA',

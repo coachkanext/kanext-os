@@ -1,7 +1,7 @@
 /**
  * Sports Organization People V2 — Mock Data & Types
  * 10-tab People Hub for Sports Mode organizations.
- * Seeded with FMU Men's Basketball 2025-26 season data.
+ * Seeded with KaNeXT Men's Basketball 2025-26 season data.
  * Directory, staff seats, player availability, recruits, medical,
  * role assignments, onboarding, and external contacts.
  */
@@ -256,12 +256,12 @@ export const PEOPLE_SUB_TABS: PeopleSubTab[] = [
 ];
 
 // =============================================================================
-// SEEDED DATA — FMU Men's Basketball 2025-26
+// SEEDED DATA — KaNeXT Men's Basketball 2025-26
 // =============================================================================
 
 export const DIRECTORY: PersonRecord[] = [
-  // Staff — FMU Lions MBB 2025-26 (9 staff + 1 admin)
-  { id: 'p-1', name: 'Sammy Kalejaiye', type: 'staff', role: 'Head Coach / GM / AD', email: 'skalejaiye@fmu.edu', phone: '(305) 626-3161', status: 'active', avatarColor: '#003DA5', data_source: 'demo_seed' },
+  // Staff — KaNeXT MBB 2025-26 (9 staff + 1 admin)
+  { id: 'p-1', name: 'Alex Morgan', type: 'staff', role: 'Head Coach / GM / AD', email: 'skalejaiye@fmu.edu', phone: '(305) 626-3161', status: 'active', avatarColor: '#003DA5', data_source: 'demo_seed' },
   { id: 'p-2', name: 'Coach Marcus Davis', type: 'staff', role: 'Assistant Coach — Recruiting Coordinator', email: 'mdavis@fmu.edu', phone: '(305) 626-3162', status: 'active', avatarColor: '#1E40AF', data_source: 'demo_seed' },
   { id: 'p-3', name: 'Coach Andre Williams', type: 'staff', role: 'Assistant Coach — Player Development', email: 'awilliams@fmu.edu', phone: '(305) 626-3163', status: 'active', avatarColor: '#1D4ED8', data_source: 'demo_seed' },
   { id: 'p-4', name: 'Tyler Brooks', type: 'staff', role: 'Graduate Assistant', email: 'tbrooks@fmu.edu', phone: '(305) 626-3164', status: 'active', avatarColor: '#2563EB', data_source: 'demo_seed' },
@@ -270,9 +270,9 @@ export const DIRECTORY: PersonRecord[] = [
   { id: 'p-7', name: 'Jordan Mitchell', type: 'staff', role: 'Video Coordinator / Analyst', email: 'jmitchell@fmu.edu', phone: '(305) 626-3185', status: 'active', avatarColor: '#93C5FD', data_source: 'demo_seed' },
   { id: 'p-8', name: 'Lisa Chen', type: 'staff', role: 'Compliance Liaison', email: 'lchen@fmu.edu', phone: '(305) 626-3190', status: 'active', avatarColor: '#818CF8', data_source: 'demo_seed' },
   { id: 'p-9', name: 'Dr. Robert Hayes', type: 'staff', role: 'Academic Advisor (University-shared)', email: 'rhayes@fmu.edu', phone: '(305) 626-3200', status: 'active', avatarColor: '#A78BFA', data_source: 'demo_seed' },
-  { id: 'p-10', name: 'Sammy Kalejaiye', type: 'admin', role: 'Athletic Director', email: 'skalejaiye@fmu.edu', phone: '(305) 626-3100', status: 'active', avatarColor: '#8B5CF6', data_source: 'demo_seed' },
+  { id: 'p-10', name: 'Alex Morgan', type: 'admin', role: 'Athletic Director', email: 'skalejaiye@fmu.edu', phone: '(305) 626-3100', status: 'active', avatarColor: '#8B5CF6', data_source: 'demo_seed' },
 
-  // Players — FMU Lions MBB 2025-26 Roster (17)
+  // Players — KaNeXT MBB 2025-26 Roster (17)
   { id: 'p-11', name: 'Jalen Carter', type: 'player', role: 'Guard — #1', email: 'jcarter@fmu.edu', phone: '(305) 555-0101', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
   { id: 'p-12', name: 'Kadyn Selden', type: 'player', role: 'Guard — #2', email: 'kselden@fmu.edu', phone: '(305) 555-0102', status: 'active', avatarColor: '#16A34A', data_source: 'demo_seed' },
   { id: 'p-13', name: 'Jean Mentor', type: 'player', role: 'Guard — #3', email: 'jmentor@fmu.edu', phone: '(305) 555-0103', status: 'active', avatarColor: '#15803D', data_source: 'demo_seed' },
@@ -296,7 +296,7 @@ export const STAFF_SEATS: StaffSeat[] = [
   {
     id: 'ss-1',
     title: 'Head Coach / GM / AD',
-    name: 'Sammy Kalejaiye',
+    name: 'Alex Morgan',
     department: 'Coaching / Administration',
     backup: 'Coach Marcus Davis',
     workload: 'heavy',
@@ -524,7 +524,7 @@ export const MEDICAL_ENTRIES: MedicalEntry[] = [
 ];
 
 export const ROLE_ASSIGNMENTS: RoleAssignment[] = [
-  { id: 'ra-1', person: 'Sammy Kalejaiye', role: 'Head Coach / GM / AD', accessTier: 5, overPermissioned: false, lastReviewed: '2025-09-01', data_source: 'demo_seed' },
+  { id: 'ra-1', person: 'Alex Morgan', role: 'Head Coach / GM / AD', accessTier: 5, overPermissioned: false, lastReviewed: '2025-09-01', data_source: 'demo_seed' },
   { id: 'ra-2', person: 'Coach Marcus Davis', role: 'Asst Coach — Recruiting', accessTier: 4, overPermissioned: false, lastReviewed: '2025-09-01', data_source: 'demo_seed' },
   { id: 'ra-3', person: 'Coach Andre Williams', role: 'Asst Coach — Player Dev', accessTier: 4, overPermissioned: false, lastReviewed: '2025-09-01', data_source: 'demo_seed' },
   { id: 'ra-4', person: 'Tyler Brooks', role: 'Graduate Assistant', accessTier: 2, overPermissioned: false, lastReviewed: '2025-09-01', data_source: 'demo_seed' },
@@ -572,12 +572,12 @@ export const ONBOARDING_CASES: OnboardingCase[] = [
 
 export const EXTERNAL_CONTACTS: ContactRecord[] = [
   { id: 'ec-1', name: 'Dr. Maria Santos', role: 'Team Physician', organization: 'Select Physical Therapy', phone: '(305) 555-0142', email: 'msantos@selectpt.com', lastVerified: '2026-02-01', isStale: false, data_source: 'demo_seed' },
-  { id: 'ec-2', name: 'James Howard', role: 'Sun Conference Commissioner', organization: 'Sun Conference', phone: '(863) 555-0200', email: 'jhoward@sunconference.org', lastVerified: '2026-01-15', isStale: false, data_source: 'demo_seed' },
+  { id: 'ec-2', name: 'James Howard', role: 'KaNeXT Conference Commissioner', organization: 'KaNeXT Conference', phone: '(863) 555-0200', email: 'jhoward@sunconference.org', lastVerified: '2026-01-15', isStale: false, data_source: 'demo_seed' },
   { id: 'ec-3', name: 'Rachel Thompson', role: 'NAIA Eligibility Center Rep', organization: 'NAIA', phone: '(816) 555-0300', email: 'rthompson@naia.org', lastVerified: '2025-11-10', isStale: true, data_source: 'demo_seed' },
   { id: 'ec-4', name: 'Tony Sanders', role: 'Skills Development Trainer', organization: 'Independent', phone: '(305) 555-0180', email: 'tsanders@gmail.com', lastVerified: '2026-02-10', isStale: false, data_source: 'demo_seed' },
-  { id: 'ec-5', name: 'Patricia Wells', role: 'FMU Registrar', organization: 'Florida Memorial University', phone: '(305) 626-3200', email: 'pwells@fmu.edu', lastVerified: '2026-02-15', isStale: false, data_source: 'demo_seed' },
+  { id: 'ec-5', name: 'Patricia Wells', role: 'KaNeXT Registrar', organization: 'KaNeXT Sports', phone: '(305) 626-3200', email: 'pwells@fmu.edu', lastVerified: '2026-02-15', isStale: false, data_source: 'demo_seed' },
   { id: 'ec-6', name: 'Michael Rivera', role: 'Charter One Account Manager', organization: 'Charter One Transport', phone: '(954) 555-0350', email: 'mrivera@charterone.com', lastVerified: '2026-01-20', isStale: false, data_source: 'demo_seed' },
-  { id: 'ec-7', name: 'Sandra King', role: 'Compliance Officer', organization: 'Florida Memorial University', phone: '(305) 626-3250', email: 'sking@fmu.edu', lastVerified: '2026-02-05', isStale: false, data_source: 'demo_seed' },
+  { id: 'ec-7', name: 'Sandra King', role: 'Compliance Officer', organization: 'KaNeXT Sports', phone: '(305) 626-3250', email: 'sking@fmu.edu', lastVerified: '2026-02-05', isStale: false, data_source: 'demo_seed' },
   { id: 'ec-8', name: 'Derek Foster', role: 'NIL Collective Director', organization: '305 Lions NIL', phone: '(305) 555-0400', email: 'dfoster@305lions.com', lastVerified: '2025-12-01', isStale: true, data_source: 'demo_seed' },
 ];
 

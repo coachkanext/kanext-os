@@ -12,9 +12,9 @@ import type { SearchResult, Mode } from '@/types';
 const SPORTS_RESULTS: SearchResult[] = [
   // Organization
   {
-    id: 'fmu-basketball',
-    title: 'Florida Memorial University',
-    subtitle: 'Lions Men\'s Basketball',
+    id: 'sports_kx',
+    title: 'KaNeXT Sports',
+    subtitle: 'Athletic Programs',
     category: 'organization',
     mode: 'sports',
     route: '/organization',
@@ -22,7 +22,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   // Members (Players) - route to program players
   {
     id: 'player-johnson',
-    title: 'Brandon Williams',
+    title: 'Marcus Reed',
     subtitle: 'PG • #1 • Senior',
     category: 'member',
     mode: 'sports',
@@ -30,7 +30,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   },
   {
     id: 'player-williams',
-    title: 'Laolu Kalejaiye',
+    title: 'Devon Carter',
     subtitle: 'C • #32 • Junior',
     category: 'member',
     mode: 'sports',
@@ -38,7 +38,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   },
   {
     id: 'player-garcia',
-    title: 'Adrian Hernandez',
+    title: 'Jordan Blake',
     subtitle: 'SG • #24 • Sophomore',
     category: 'member',
     mode: 'sports',
@@ -46,7 +46,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   },
   {
     id: 'player-thompson',
-    title: 'Nathan Chtelan',
+    title: 'Tyler Quinn',
     subtitle: 'SF • #15 • Freshman',
     category: 'member',
     mode: 'sports',
@@ -55,7 +55,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   // Members (Staff) - route to program staff
   {
     id: 'coach-davis',
-    title: 'Coach James Davis',
+    title: 'Coach Ray Bennett',
     subtitle: 'Head Coach',
     category: 'member',
     mode: 'sports',
@@ -63,7 +63,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   },
   {
     id: 'coach-mitchell',
-    title: 'Coach Sarah Mitchell',
+    title: 'Coach Mia Torres',
     subtitle: 'Assistant Coach',
     category: 'member',
     mode: 'sports',
@@ -72,7 +72,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   // Events - route to program events
   {
     id: 'game-simpson',
-    title: 'vs Simpson University',
+    title: 'vs Westlake College',
     subtitle: 'Feb 8, 2026 • Home',
     category: 'event',
     mode: 'sports',
@@ -80,7 +80,7 @@ const SPORTS_RESULTS: SearchResult[] = [
   },
   {
     id: 'game-central',
-    title: 'vs Cal Maritime',
+    title: 'vs Eastridge Tech',
     subtitle: 'Feb 15, 2026 • Away',
     category: 'event',
     mode: 'sports',
@@ -129,8 +129,8 @@ const SPORTS_RESULTS: SearchResult[] = [
 const BUSINESS_RESULTS: SearchResult[] = [
   // Organization
   {
-    id: 'kanext',
-    title: 'KaNeXT',
+    id: 'biz_kx',
+    title: 'KaNeXT Business',
     subtitle: 'Institutional OS + Governed Intelligence',
     category: 'organization',
     mode: 'business',
@@ -139,7 +139,7 @@ const BUSINESS_RESULTS: SearchResult[] = [
   // Members - route to leadership
   {
     id: 'board-1',
-    title: 'Marcus Thompson',
+    title: 'Alex Morgan',
     subtitle: 'Founder & CEO',
     category: 'member',
     mode: 'business',
@@ -147,8 +147,8 @@ const BUSINESS_RESULTS: SearchResult[] = [
   },
   {
     id: 'board-2',
-    title: 'Dr. Sarah Chen',
-    subtitle: 'Board Member • Horizon Ventures',
+    title: 'Dr. Lisa Grant',
+    subtitle: 'Board Member • KX Ventures',
     category: 'member',
     mode: 'business',
     route: '/organization/governance',
@@ -197,9 +197,9 @@ const BUSINESS_RESULTS: SearchResult[] = [
 const CHURCH_RESULTS: SearchResult[] = [
   // Organization
   {
-    id: 'icc',
-    title: 'International Christian Center',
-    subtitle: 'Los Angeles',
+    id: 'church_kx',
+    title: 'KaNeXT Church',
+    subtitle: 'Nashville, TN',
     category: 'organization',
     mode: 'church',
     route: '/organization',
@@ -207,7 +207,7 @@ const CHURCH_RESULTS: SearchResult[] = [
   // Members (Leadership)
   {
     id: 'leader-1',
-    title: 'Pastor Michael Johnson',
+    title: 'Pastor David Reeves',
     subtitle: 'Senior Pastor',
     category: 'member',
     mode: 'church',
@@ -215,7 +215,7 @@ const CHURCH_RESULTS: SearchResult[] = [
   },
   {
     id: 'leader-2',
-    title: 'Pastor Sarah Chen',
+    title: 'Pastor Lisa Grant',
     subtitle: 'Associate Pastor',
     category: 'member',
     mode: 'church',
@@ -223,12 +223,12 @@ const CHURCH_RESULTS: SearchResult[] = [
   },
   // Campuses
   {
-    id: 'iccla',
-    title: 'ICC Los Angeles',
-    subtitle: '2361 W. 76th Street',
+    id: 'church_kx_main',
+    title: 'KaNeXT Church — Main Campus',
+    subtitle: 'Nashville, TN',
     category: 'organization',
     mode: 'church',
-    route: '/organization/campuses/iccla',
+    route: '/organization/campuses/church_kx_main',
   },
   // Ministries
   {
@@ -291,9 +291,9 @@ const CHURCH_RESULTS: SearchResult[] = [
 const EDUCATION_RESULTS: SearchResult[] = [
   // Organization
   {
-    id: 'sdcc',
-    title: 'San Diego Christian College',
-    subtitle: 'Private Christian Liberal Arts',
+    id: 'edu_kx',
+    title: 'KaNeXT Education',
+    subtitle: 'Academic Institution',
     category: 'organization',
     mode: 'education',
     route: '/organization',
@@ -301,7 +301,7 @@ const EDUCATION_RESULTS: SearchResult[] = [
   // Members (Faculty)
   {
     id: 'faculty-1',
-    title: 'Dr. Elizabeth Hart',
+    title: 'Dr. Nicole Harris',
     subtitle: 'President',
     category: 'member',
     mode: 'education',
@@ -309,7 +309,7 @@ const EDUCATION_RESULTS: SearchResult[] = [
   },
   {
     id: 'faculty-2',
-    title: 'Dr. Michael Chen',
+    title: 'Dr. Robert Kim',
     subtitle: 'Provost & VP Academic Affairs',
     category: 'member',
     mode: 'education',
@@ -317,7 +317,7 @@ const EDUCATION_RESULTS: SearchResult[] = [
   },
   {
     id: 'faculty-3',
-    title: 'Dr. Sarah Williams',
+    title: 'Dr. Rachel Brooks',
     subtitle: 'Dean of Students',
     category: 'member',
     mode: 'education',

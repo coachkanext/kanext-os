@@ -135,7 +135,7 @@ const WORSHIP_SETS: WorshipSet[] = [
     auditTrail: [
       { action: 'Set created', by: 'Marcus Johnson', date: 'Feb 10' },
       { action: 'Songs finalized', by: 'Marcus Johnson', date: 'Feb 14' },
-      { action: 'Approved & published', by: 'Pastor Kalejaiye', date: 'Feb 18' },
+      { action: 'Approved & published', by: 'Pastor Carter', date: 'Feb 18' },
     ],
   },
   {
@@ -234,7 +234,7 @@ const REHEARSALS: Rehearsal[] = [
     songsToRehearse: ['Great Are You Lord', 'Build My Life', 'Way Maker', 'Goodness of God', 'What A Beautiful Name'],
     attendees: [
       { name: 'Marcus Johnson', role: 'Worship Leader', rsvp: 'confirmed' },
-      { name: 'Sarah Mitchell', role: 'Vocalist', rsvp: 'confirmed' },
+      { name: 'Mia Torres', role: 'Vocalist', rsvp: 'confirmed' },
       { name: 'David Park', role: 'Keys', rsvp: 'confirmed' },
       { name: 'James Okafor', role: 'Drums', rsvp: 'pending' },
       { name: 'Maria Gonzalez', role: 'Bass', rsvp: 'confirmed' },
@@ -253,7 +253,7 @@ const REHEARSALS: Rehearsal[] = [
     songsToRehearse: ['Great Are You Lord', 'Way Maker', 'What A Beautiful Name'],
     attendees: [
       { name: 'Marcus Johnson', role: 'Worship Leader', rsvp: 'confirmed' },
-      { name: 'Sarah Mitchell', role: 'Vocalist', rsvp: 'confirmed' },
+      { name: 'Mia Torres', role: 'Vocalist', rsvp: 'confirmed' },
       { name: 'David Park', role: 'Keys', rsvp: 'confirmed' },
       { name: 'James Okafor', role: 'Drums', rsvp: 'confirmed' },
       { name: 'Maria Gonzalez', role: 'Bass', rsvp: 'declined' },
@@ -289,7 +289,7 @@ const REHEARSALS: Rehearsal[] = [
     songsToRehearse: ['O Come to the Altar', 'Reckless Love', 'Firm Foundation', 'Amazing Grace (My Chains Are Gone)', 'Raise a Hallelujah'],
     attendees: [
       { name: 'Marcus Johnson', role: 'Worship Leader', rsvp: 'confirmed' },
-      { name: 'Sarah Mitchell', role: 'Vocalist', rsvp: 'pending' },
+      { name: 'Mia Torres', role: 'Vocalist', rsvp: 'pending' },
       { name: 'Rachel Kim', role: 'Vocalist', rsvp: 'confirmed' },
       { name: 'David Park', role: 'Keys', rsvp: 'confirmed' },
       { name: 'James Okafor', role: 'Drums', rsvp: 'confirmed' },
@@ -309,7 +309,7 @@ const REHEARSALS: Rehearsal[] = [
     songsToRehearse: ['Holy Spirit', 'How Great Thou Art'],
     attendees: [
       { name: 'Lisa Chen', role: 'Worship Leader', rsvp: 'confirmed' },
-      { name: 'Sarah Mitchell', role: 'Vocalist', rsvp: 'confirmed' },
+      { name: 'Mia Torres', role: 'Vocalist', rsvp: 'confirmed' },
       { name: 'Rachel Kim', role: 'Vocalist', rsvp: 'confirmed' },
       { name: 'Kevin Adeyemi', role: 'Vocalist', rsvp: 'pending' },
     ],
@@ -342,7 +342,7 @@ interface WorshipTeamMember {
 const WORSHIP_TEAM_MEMBERS: WorshipTeamMember[] = [
   { id: 'wtm-1', name: 'Marcus Johnson', roles: ['Worship Leader', 'Vocalist', 'Guitar'], status: 'active', availability: 'Every Sunday', skillLevel: 'expert', joinedYear: 2018 },
   { id: 'wtm-2', name: 'Lisa Chen', roles: ['Worship Leader', 'Vocalist', 'Keys'], status: 'active', availability: 'Every Sunday (Westside)', skillLevel: 'expert', joinedYear: 2022 },
-  { id: 'wtm-3', name: 'Sarah Mitchell', roles: ['Vocalist'], status: 'active', availability: '1st & 3rd Sundays', skillLevel: 'advanced', joinedYear: 2021 },
+  { id: 'wtm-3', name: 'Mia Torres', roles: ['Vocalist'], status: 'active', availability: '1st & 3rd Sundays', skillLevel: 'advanced', joinedYear: 2021 },
   { id: 'wtm-4', name: 'Rachel Kim', roles: ['Vocalist'], status: 'active', availability: '2nd & 4th Sundays', skillLevel: 'advanced', joinedYear: 2023 },
   { id: 'wtm-5', name: 'Kevin Adeyemi', roles: ['Vocalist'], status: 'training', availability: 'As scheduled', skillLevel: 'intermediate', joinedYear: 2025 },
   { id: 'wtm-6', name: 'Tyler Brooks', roles: ['Lead Guitar'], status: 'active', availability: 'Every Sunday', skillLevel: 'expert', joinedYear: 2019 },
@@ -984,7 +984,7 @@ function TeamView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
           <Card colors={colors}>
             <View style={s.rotationRow}>
               <ThemedText style={[s.rotationLabel, { color: colors.textSecondary }]}>1st & 3rd Sundays</ThemedText>
-              <ThemedText style={[s.rotationValue, { color: colors.text }]}>Marcus Johnson (Lead), Sarah Mitchell, Tyler Brooks, Amy Richards</ThemedText>
+              <ThemedText style={[s.rotationValue, { color: colors.text }]}>Marcus Johnson (Lead), Mia Torres, Tyler Brooks, Amy Richards</ThemedText>
             </View>
             <View style={[s.rotationRow, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
               <ThemedText style={[s.rotationLabel, { color: colors.textSecondary }]}>2nd & 4th Sundays</ThemedText>

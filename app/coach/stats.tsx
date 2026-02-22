@@ -16,8 +16,8 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // Data imports
-import { teamStats } from '@/data/sun-conference/florida-memorial/team-stats';
-import { FMU_LEADERS } from '@/data/fmu';
+import { teamStats } from '@/data/kx-conference/kx-sports/team-stats';
+import { KaNeXT_LEADERS } from '@/data/fmu';
 import {
   PLAYER_CLUSTERS,
   CLUSTER_SUBCLUSTERS,
@@ -60,7 +60,7 @@ import type { LineupRow } from '@/data/stats/lineup-data';
 
 // ── Constants ──
 
-const FMU_SEAL = require('@/assets/images/fmu-seal.png');
+const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
 
 type TopTab = 'team' | 'players';
 type TeamSubTab = 'overview' | 'offense' | 'defense' | 'lineups' | 'shot';
@@ -477,8 +477,8 @@ function TeamOverview({
       <View style={st.identityRow}>
         <Image source={FMU_SEAL} style={st.logo} resizeMode="contain" />
         <View style={st.identityText}>
-          <Text style={st.teamName}>Florida Memorial</Text>
-          <Text style={st.teamSubline}>NAIA {'\u00B7'} Sun Conference</Text>
+          <Text style={st.teamName}>KaNeXT Sports</Text>
+          <Text style={st.teamSubline}>NAIA {'\u00B7'} KaNeXT Conference</Text>
         </View>
         <View style={st.krBadge}>
           <Text style={st.krValue}>{teamKR}</Text>
@@ -1119,7 +1119,7 @@ function PlayerDetailContent({
   onTabChange: (t: 'summary' | 'synergy' | 'kanext' | 'shot') => void;
 }) {
   const player = PLAYER_SYNERGY.find((p) => p.playerId === playerId);
-  const leader = FMU_LEADERS.find((l) => l.number === player?.number);
+  const leader = KaNeXT_LEADERS.find((l) => l.number === player?.number);
   const clusters = player ? PLAYER_CLUSTERS[player.number] : null;
   const profile = PLAYER_SHOT_PROFILES[playerId];
   const [expandedCluster, setExpandedCluster] = useState<keyof ClusterRatings | null>(null);
@@ -1464,8 +1464,8 @@ const st = StyleSheet.create({
   },
   segmentRow: {
     flexDirection: 'row',
-    backgroundColor: '#1a1a1a',
-    borderRadius: 10,
+    backgroundColor: '#181616',
+    borderRadius: 12,
     padding: 3,
     marginBottom: 10,
   },
@@ -1476,7 +1476,7 @@ const st = StyleSheet.create({
     borderRadius: 8,
   },
   segmentBtnActive: {
-    backgroundColor: '#333',
+    backgroundColor: '#252525',
   },
   segmentText: {
     fontSize: 14,
@@ -1496,7 +1496,7 @@ const st = StyleSheet.create({
     borderRadius: 8,
   },
   subTabActive: {
-    backgroundColor: '#333',
+    backgroundColor: '#252525',
   },
   subTabText: {
     fontSize: 13,
@@ -1573,9 +1573,10 @@ const st = StyleSheet.create({
     flex: 1,
   },
   teamName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '800',
     color: '#fff',
+    letterSpacing: -0.5,
   },
   teamSubline: {
     fontSize: 12,
@@ -1584,16 +1585,18 @@ const st = StyleSheet.create({
   },
   krBadge: {
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#1E1C1C',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   krValue: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '800',
     color: '#fff',
-    lineHeight: 26,
+    lineHeight: 28,
   },
   krSubRow: {
     flexDirection: 'row',
@@ -1613,18 +1616,23 @@ const st = StyleSheet.create({
 
   // Cards
   card: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#181616',
     borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
     padding: 14,
     marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   sectionLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
-    letterSpacing: 1.0,
-    color: '#6e6e6e',
+    letterSpacing: 1.2,
+    color: '#8F8F8F',
     marginBottom: 8,
   },
   subLabel: {
@@ -1654,19 +1662,20 @@ const st = StyleSheet.create({
     minWidth: 60,
   },
   statCellValue: {
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: '#fff',
+    letterSpacing: -0.5,
   },
   statCellLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#888',
+    color: '#8F8F8F',
     marginTop: 2,
   },
   statCellSub: {
     fontSize: 10,
-    color: '#555',
+    color: '#666',
     marginTop: 1,
   },
 
@@ -1681,7 +1690,7 @@ const st = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 1.0,
-    color: '#6e6e6e',
+    color: '#8F8F8F',
     marginBottom: 8,
   },
   ffDivider: {
@@ -1725,18 +1734,18 @@ const st = StyleSheet.create({
   },
   clusterBarBg: {
     flex: 1,
-    height: 8,
-    backgroundColor: '#2a2a2a',
-    borderRadius: 4,
+    height: 10,
+    backgroundColor: '#222',
+    borderRadius: 5,
     marginHorizontal: 8,
     overflow: 'hidden',
   },
   clusterBarFill: {
-    height: 8,
-    borderRadius: 4,
+    height: 10,
+    borderRadius: 5,
   },
   clusterValue: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '700',
     width: 28,
     textAlign: 'right',
@@ -1788,9 +1797,9 @@ const st = StyleSheet.create({
     marginBottom: 4,
   },
   ptHeaderText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
-    color: '#6e6e6e',
+    color: '#8F8F8F',
     letterSpacing: 0.5,
     width: 54,
     textAlign: 'right',
@@ -1799,6 +1808,8 @@ const st = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 7,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255,255,255,0.04)',
   },
   ptName: {
     fontSize: 12,
@@ -1827,15 +1838,15 @@ const st = StyleSheet.create({
   },
   shotBarBg: {
     flex: 1,
-    height: 10,
-    backgroundColor: '#2a2a2a',
-    borderRadius: 5,
+    height: 12,
+    backgroundColor: '#222',
+    borderRadius: 6,
     marginHorizontal: 8,
     overflow: 'hidden',
   },
   shotBarFill: {
-    height: 10,
-    borderRadius: 5,
+    height: 12,
+    borderRadius: 6,
     backgroundColor: '#4ade80',
   },
   shotBarFreq: {
@@ -1989,12 +2000,17 @@ const st = StyleSheet.create({
 
   // Lineups
   lineupCard: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#181616',
     borderRadius: 14,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
     padding: 12,
     marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.28,
+    shadowRadius: 7,
+    elevation: 5,
   },
   lineupHeader: {
     flexDirection: 'row',
@@ -2002,9 +2018,9 @@ const st = StyleSheet.create({
     marginBottom: 8,
   },
   lineupRank: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '800',
-    color: '#888',
+    color: '#4ade80',
     width: 28,
   },
   lineupPlayers: {
@@ -2132,19 +2148,24 @@ const st = StyleSheet.create({
   playerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#181616',
     borderRadius: 12,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
-    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    padding: 14,
     marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 4,
   },
   playerLeft: {
     flex: 1,
   },
   playerName: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#fff',
   },
   playerSub: {
@@ -2155,10 +2176,12 @@ const st = StyleSheet.create({
   playerKRGroup: {
     alignItems: 'center',
     marginRight: 12,
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: 'rgba(255,255,255,0.06)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
   },
   playerKR: {
     fontSize: 16,
@@ -2205,12 +2228,17 @@ const st = StyleSheet.create({
   playerShotCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#181616',
     borderRadius: 12,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
-    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    padding: 14,
     marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 4,
   },
   playerShotBars: {
     flexDirection: 'row',

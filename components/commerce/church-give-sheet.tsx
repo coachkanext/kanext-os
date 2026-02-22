@@ -237,7 +237,7 @@ export function ChurchGiveSheet({ visible, onClose, colors }: Props) {
           {/* Tax Note */}
           <View style={[styles.taxNote, { backgroundColor: ACCENT + '15' }]}>
             <Text style={[styles.taxNoteText, { color: ACCENT }]}>
-              Tax-deductible contribution. ICCLA EIN: {CHURCH_EIN}
+              Tax-deductible contribution. KaNeXT Church EIN: {CHURCH_EIN}
             </Text>
           </View>
 

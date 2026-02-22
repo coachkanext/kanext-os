@@ -60,12 +60,12 @@ const SPACES = [
 
 // Assets
 const ASSETS = [
-  { id: 'a1', name: 'MacBook Pro M3 Max', assignedTo: 'Sammy Kalejaiye', purchaseDate: 'Jan 2024', condition: 'Excellent', value: '$3,499' },
+  { id: 'a1', name: 'MacBook Pro M3 Max', assignedTo: 'Alex Morgan', purchaseDate: 'Jan 2024', condition: 'Excellent', value: '$3,499' },
   { id: 'a2', name: 'MacBook Pro M2 Pro', assignedTo: 'Marcus Chen', purchaseDate: 'Jun 2024', condition: 'Excellent', value: '$2,499' },
-  { id: 'a3', name: 'LG UltraFine 5K Display', assignedTo: 'Sammy Kalejaiye', purchaseDate: 'Jan 2024', condition: 'Good', value: '$1,299' },
+  { id: 'a3', name: 'LG UltraFine 5K Display', assignedTo: 'Alex Morgan', purchaseDate: 'Jan 2024', condition: 'Good', value: '$1,299' },
   { id: 'a4', name: 'Dell U2723QE Monitor', assignedTo: 'Marcus Chen', purchaseDate: 'Jun 2024', condition: 'Good', value: '$619' },
   { id: 'a5', name: 'iPad Pro 12.9" M2', assignedTo: 'Aisha Williams', purchaseDate: 'Aug 2024', condition: 'Excellent', value: '$1,099' },
-  { id: 'a6', name: 'iPhone 15 Pro', assignedTo: 'Sammy Kalejaiye', purchaseDate: 'Sep 2024', condition: 'Excellent', value: '$999' },
+  { id: 'a6', name: 'iPhone 15 Pro', assignedTo: 'Alex Morgan', purchaseDate: 'Sep 2024', condition: 'Excellent', value: '$999' },
 ];
 
 // Vendors

@@ -9,6 +9,8 @@
  * CO11: Sponsor — same as Fan + health metrics
  */
 
+import { isSystemOwner } from '@/utils/system-rbac';
+
 // =============================================================================
 // ROLE LEVELS
 // =============================================================================
@@ -242,16 +244,16 @@ export function getQuickActions(role: CompetitionRoleLens): QuickAction[] {
 // =============================================================================
 
 const COMPETITION_MEMBERSHIP_MAP: Record<string, CompetitionRoleLens> = {
-  mem_comp_k1_owner_commish: 'CO1',
-  mem_comp_k1_race_director: 'CO2',
-  mem_comp_k1_team_principal: 'CO3',
-  mem_comp_k1_driver: 'CO4',
-  mem_comp_k1_crew: 'CO5',
-  mem_comp_k1_fan: 'CO10',
-  mem_comp_k1_sponsor: 'CO11',
+  mem_comp_kx_race_director: 'CO2',
+  mem_comp_kx_team_principal: 'CO3',
+  mem_comp_kx_driver: 'CO4',
+  mem_comp_kx_crew: 'CO5',
+  mem_comp_kx_fan: 'CO10',
+  mem_comp_kx_sponsor: 'CO11',
 };
 
 export function getCompetitionRole(membershipId: string): CompetitionRoleLens {
+  if (isSystemOwner(membershipId)) return 'CO1';
   return COMPETITION_MEMBERSHIP_MAP[membershipId] ?? 'CO10';
 }
 

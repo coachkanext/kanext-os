@@ -316,13 +316,13 @@ const SPORTS_OVERVIEW: PayRailsOverviewBlock[] = [
 ];
 
 const SPORTS_ACCOUNTS: PayRailsAccount[] = [
-  { id: 'sp-acct-1', name: 'FMU Athletics Operating', type: 'primary', scope: 'Organization', balance: 48215.63, currency: 'USD', status: 'active', lastActivity: 'Feb 14, 2026' },
+  { id: 'sp-acct-1', name: 'KaNeXT Athletics Operating', type: 'primary', scope: 'Organization', balance: 48215.63, currency: 'USD', status: 'active', lastActivity: 'Feb 14, 2026' },
   { id: 'sp-acct-2', name: 'MBB Program', type: 'subaccount', scope: 'Program', balance: 12340.88, currency: 'USD', status: 'active', lastActivity: 'Feb 13, 2026' },
   { id: 'sp-acct-3', name: 'Recruiting', type: 'subaccount', scope: 'Program', balance: 3078.42, currency: 'USD', status: 'active', lastActivity: 'Feb 10, 2026' },
 ];
 
 const SPORTS_CHARGES: PayRailsCharge[] = [
-  { id: 'sp-chg-1', description: 'MLK Camp registration — Session A', amount: 275.00, fee: 8.25, net: 266.75, payer: 'Marcus Thompson', payerInitials: 'MT', product: 'Camp Registration', status: 'succeeded', date: 'Feb 14, 2026', scope: 'Program', receiptRef: 'RCP-20260214-001' },
+  { id: 'sp-chg-1', description: 'MLK Camp registration — Session A', amount: 275.00, fee: 8.25, net: 266.75, payer: 'Alex Morgan', payerInitials: 'MT', product: 'Camp Registration', status: 'succeeded', date: 'Feb 14, 2026', scope: 'Program', receiptRef: 'RCP-20260214-001' },
   { id: 'sp-chg-2', description: 'MLK Camp registration — Session B', amount: 275.00, fee: 8.25, net: 266.75, payer: 'Jayla Robinson', payerInitials: 'JR', product: 'Camp Registration', status: 'succeeded', date: 'Feb 14, 2026', scope: 'Program', receiptRef: 'RCP-20260214-002' },
   { id: 'sp-chg-3', description: 'Homecoming tickets (4x GA)', amount: 100.00, fee: 3.00, net: 97.00, payer: 'Derrick Williams', payerInitials: 'DW', product: 'Ticketing', status: 'succeeded', date: 'Feb 12, 2026', scope: 'Season' },
   { id: 'sp-chg-4', description: 'Booster Club donation', amount: 500.00, fee: 15.00, net: 485.00, payer: 'Williams Family Foundation', payerInitials: 'WF', product: 'Donation', status: 'succeeded', date: 'Feb 10, 2026', scope: 'Organization', receiptRef: 'RCP-20260210-001' },
@@ -339,9 +339,9 @@ const SPORTS_PAYOUTS: PayRailsPayout[] = [
 ];
 
 const SPORTS_TRANSFERS: PayRailsTransfer[] = [
-  { id: 'sp-xfr-1', fromAccount: 'MBB Program', toAccount: 'Recruiting', amount: 1500.00, description: 'Program → Recruiting allocation (Feb)', status: 'succeeded', date: 'Feb 3, 2026', initiator: 'Sammy Kalejaiye' },
-  { id: 'sp-xfr-2', fromAccount: 'FMU Athletics Operating', toAccount: 'MBB Program', amount: 8000.00, description: 'Operating → Program season funding (Spring)', status: 'succeeded', date: 'Jan 28, 2026', initiator: 'Sammy Kalejaiye' },
-  { id: 'sp-xfr-3', fromAccount: 'MBB Program', toAccount: 'FMU Athletics Operating', amount: 2150.00, description: 'Camp revenue → Operating sweep', status: 'succeeded', date: 'Jan 22, 2026', initiator: 'Sammy Kalejaiye' },
+  { id: 'sp-xfr-1', fromAccount: 'MBB Program', toAccount: 'Recruiting', amount: 1500.00, description: 'Program → Recruiting allocation (Feb)', status: 'succeeded', date: 'Feb 3, 2026', initiator: 'Alex Morgan' },
+  { id: 'sp-xfr-2', fromAccount: 'KaNeXT Athletics Operating', toAccount: 'MBB Program', amount: 8000.00, description: 'Operating → Program season funding (Spring)', status: 'succeeded', date: 'Jan 28, 2026', initiator: 'Alex Morgan' },
+  { id: 'sp-xfr-3', fromAccount: 'MBB Program', toAccount: 'KaNeXT Athletics Operating', amount: 2150.00, description: 'Camp revenue → Operating sweep', status: 'succeeded', date: 'Jan 22, 2026', initiator: 'Alex Morgan' },
 ];
 
 const SPORTS_SETTLEMENTS: PayRailsSettlement[] = [
@@ -351,7 +351,7 @@ const SPORTS_SETTLEMENTS: PayRailsSettlement[] = [
 ];
 
 const SPORTS_REFUNDS: PayRailsRefund[] = [
-  { id: 'sp-rfd-1', originalChargeId: 'sp-chg-1', originalDescription: 'MLK Camp registration — Session A', amount: 137.50, reason: 'Participant injury — partial refund (half session)', type: 'partial', status: 'succeeded', requestedDate: 'Jan 25, 2026', processedDate: 'Jan 27, 2026', requestedBy: 'Marcus Thompson' },
+  { id: 'sp-rfd-1', originalChargeId: 'sp-chg-1', originalDescription: 'MLK Camp registration — Session A', amount: 137.50, reason: 'Participant injury — partial refund (half session)', type: 'partial', status: 'succeeded', requestedDate: 'Jan 25, 2026', processedDate: 'Jan 27, 2026', requestedBy: 'Alex Morgan' },
   { id: 'sp-rfd-2', originalChargeId: 'sp-chg-5', originalDescription: 'Team store — shooting shirt (XL)', amount: 42.50, reason: 'Wrong size — full return', type: 'full', status: 'pending', requestedDate: 'Feb 11, 2026', requestedBy: 'Andre Carter' },
 ];
 
@@ -361,7 +361,7 @@ const SPORTS_RECONCILIATIONS: PayRailsReconciliation[] = [
 ];
 
 const SPORTS_DISPUTES: PayRailsDispute[] = [
-  { id: 'sp-dsp-1', chargeId: 'sp-chg-1', chargeDescription: 'MLK Camp registration — Session A', amount: 275.00, type: 'chargeback', status: 'open', filedDate: 'Feb 6, 2026', respondBy: 'Feb 20, 2026', disputant: 'Marcus Thompson' },
+  { id: 'sp-dsp-1', chargeId: 'sp-chg-1', chargeDescription: 'MLK Camp registration — Session A', amount: 275.00, type: 'chargeback', status: 'open', filedDate: 'Feb 6, 2026', respondBy: 'Feb 20, 2026', disputant: 'Alex Morgan' },
   { id: 'sp-dsp-2', chargeId: 'sp-po-3', chargeDescription: 'Practice gear restock — mid-season order', amount: 952.75, type: 'failed-payout', status: 'under-review', filedDate: 'Feb 12, 2026', disputant: 'BSN Sports' },
 ];
 
@@ -386,12 +386,12 @@ const SPORTS_CONTROLS: PayRailsControl[] = [
 
 const SPORTS_AUDIT: PayRailsAuditEntry[] = [
   { id: 'sp-aud-1', action: 'charge_received', actor: 'System', actorInitials: 'SY', target: 'MLK Camp registration — Session A ($275.00)', timestamp: 'Feb 14, 2026 09:12 AM' },
-  { id: 'sp-aud-2', action: 'payout_initiated', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Charter Express — bus charter ($2,400.00)', timestamp: 'Feb 14, 2026 08:45 AM' },
+  { id: 'sp-aud-2', action: 'payout_initiated', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Charter Express — bus charter ($2,400.00)', timestamp: 'Feb 14, 2026 08:45 AM' },
   { id: 'sp-aud-3', action: 'settlement_closed', actor: 'System', actorInitials: 'SY', target: 'MLK Camp Settlement — 25 items ($6,668.75 net)', timestamp: 'Jan 24, 2026 04:00 PM' },
-  { id: 'sp-aud-4', action: 'refund_processed', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Marcus Thompson — partial camp refund ($137.50)', timestamp: 'Jan 27, 2026 11:30 AM' },
-  { id: 'sp-aud-5', action: 'control_updated', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Payout Approval Threshold set to $500', timestamp: 'Jan 15, 2026 02:10 PM' },
-  { id: 'sp-aud-6', action: 'account_created', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Subaccount "Recruiting" created under MBB Program', timestamp: 'Jan 10, 2026 10:00 AM' },
-  { id: 'sp-aud-7', action: 'transfer_completed', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Operating → MBB Program ($8,000.00)', timestamp: 'Jan 28, 2026 09:00 AM' },
+  { id: 'sp-aud-4', action: 'refund_processed', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Alex Morgan — partial camp refund ($137.50)', timestamp: 'Jan 27, 2026 11:30 AM' },
+  { id: 'sp-aud-5', action: 'control_updated', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Payout Approval Threshold set to $500', timestamp: 'Jan 15, 2026 02:10 PM' },
+  { id: 'sp-aud-6', action: 'account_created', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Subaccount "Recruiting" created under MBB Program', timestamp: 'Jan 10, 2026 10:00 AM' },
+  { id: 'sp-aud-7', action: 'transfer_completed', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Operating → MBB Program ($8,000.00)', timestamp: 'Jan 28, 2026 09:00 AM' },
   { id: 'sp-aud-8', action: 'dispute_opened', actor: 'System', actorInitials: 'SY', target: 'Chargeback filed — MLK Camp reg ($275.00)', timestamp: 'Feb 6, 2026 03:22 PM' },
 ];
 
@@ -416,7 +416,7 @@ const EDUCATION_OVERVIEW: PayRailsOverviewBlock[] = [
 ];
 
 const EDUCATION_ACCOUNTS: PayRailsAccount[] = [
-  { id: 'ed-acct-1', name: 'FMU General Operating', type: 'primary', scope: 'Institution', balance: 421680.45, currency: 'USD', status: 'active', lastActivity: 'Feb 15, 2026' },
+  { id: 'ed-acct-1', name: 'KaNeXT General Operating', type: 'primary', scope: 'Institution', balance: 421680.45, currency: 'USD', status: 'active', lastActivity: 'Feb 15, 2026' },
   { id: 'ed-acct-2', name: 'Financial Aid Disbursement', type: 'subaccount', scope: 'Institution', balance: 85320.18, currency: 'USD', status: 'active', lastActivity: 'Feb 14, 2026' },
   { id: 'ed-acct-3', name: 'Facilities', type: 'subaccount', scope: 'Department', balance: 15480.92, currency: 'USD', status: 'active', lastActivity: 'Feb 10, 2026' },
 ];
@@ -438,9 +438,9 @@ const EDUCATION_PAYOUTS: PayRailsPayout[] = [
 ];
 
 const EDUCATION_TRANSFERS: PayRailsTransfer[] = [
-  { id: 'ed-xfr-1', fromAccount: 'FMU General Operating', toAccount: 'Financial Aid Disbursement', amount: 35000.00, description: 'Operating → Financial Aid spring allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'VP Finance' },
-  { id: 'ed-xfr-2', fromAccount: 'FMU General Operating', toAccount: 'Facilities', amount: 12000.00, description: 'Operating → Facilities Q1 maintenance budget', status: 'succeeded', date: 'Jan 15, 2026', initiator: 'VP Finance' },
-  { id: 'ed-xfr-3', fromAccount: 'FMU General Operating', toAccount: 'Financial Aid Disbursement', amount: 5000.00, description: 'Alumni donation → Scholarship Fund transfer', status: 'succeeded', date: 'Feb 5, 2026', initiator: 'VP Finance' },
+  { id: 'ed-xfr-1', fromAccount: 'KaNeXT General Operating', toAccount: 'Financial Aid Disbursement', amount: 35000.00, description: 'Operating → Financial Aid spring allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'VP Finance' },
+  { id: 'ed-xfr-2', fromAccount: 'KaNeXT General Operating', toAccount: 'Facilities', amount: 12000.00, description: 'Operating → Facilities Q1 maintenance budget', status: 'succeeded', date: 'Jan 15, 2026', initiator: 'VP Finance' },
+  { id: 'ed-xfr-3', fromAccount: 'KaNeXT General Operating', toAccount: 'Financial Aid Disbursement', amount: 5000.00, description: 'Alumni donation → Scholarship Fund transfer', status: 'succeeded', date: 'Feb 5, 2026', initiator: 'VP Finance' },
 ];
 
 const EDUCATION_SETTLEMENTS: PayRailsSettlement[] = [
@@ -491,7 +491,7 @@ const EDUCATION_AUDIT: PayRailsAuditEntry[] = [
   { id: 'ed-aud-5', action: 'transfer_completed', actor: 'VP Finance', actorInitials: 'VF', target: 'Operating → Financial Aid ($35,000.00)', timestamp: 'Feb 1, 2026 08:00 AM' },
   { id: 'ed-aud-6', action: 'dispute_opened', actor: 'System', actorInitials: 'SY', target: 'Chargeback — Amara Okafor tuition ($8,500.00)', timestamp: 'Feb 13, 2026 03:45 PM' },
   { id: 'ed-aud-7', action: 'control_updated', actor: 'VP Finance', actorInitials: 'VF', target: 'Refund Approval Threshold set to $1,000', timestamp: 'Jan 12, 2026 11:00 AM' },
-  { id: 'ed-aud-8', action: 'account_created', actor: 'VP Finance', actorInitials: 'VF', target: 'Subaccount "Facilities" created under FMU General', timestamp: 'Jan 5, 2026 09:15 AM' },
+  { id: 'ed-aud-8', action: 'account_created', actor: 'VP Finance', actorInitials: 'VF', target: 'Subaccount "Facilities" created under KaNeXT General', timestamp: 'Jan 5, 2026 09:15 AM' },
 ];
 
 const EDUCATION_SETTINGS: PayRailsSettingToggle[] = [
@@ -515,7 +515,7 @@ const CHURCH_OVERVIEW: PayRailsOverviewBlock[] = [
 ];
 
 const CHURCH_ACCOUNTS: PayRailsAccount[] = [
-  { id: 'ch-acct-1', name: 'ICCLA General Fund', type: 'primary', scope: 'Campus', balance: 62418.75, currency: 'USD', status: 'active', lastActivity: 'Feb 15, 2026' },
+  { id: 'ch-acct-1', name: 'KaNeXT Church General Fund', type: 'primary', scope: 'Campus', balance: 62418.75, currency: 'USD', status: 'active', lastActivity: 'Feb 15, 2026' },
   { id: 'ch-acct-2', name: 'Building Fund', type: 'subaccount', scope: 'Campus', balance: 28340.20, currency: 'USD', status: 'active', lastActivity: 'Feb 9, 2026' },
   { id: 'ch-acct-3', name: 'Benevolence Fund', type: 'subaccount', scope: 'Ministry', balance: 8125.50, currency: 'USD', status: 'active', lastActivity: 'Feb 11, 2026' },
 ];
@@ -537,9 +537,9 @@ const CHURCH_PAYOUTS: PayRailsPayout[] = [
 ];
 
 const CHURCH_TRANSFERS: PayRailsTransfer[] = [
-  { id: 'ch-xfr-1', fromAccount: 'ICCLA General Fund', toAccount: 'Building Fund', amount: 5000.00, description: 'General → Building Fund monthly allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'Pastor Dipo Kalejaiye' },
-  { id: 'ch-xfr-2', fromAccount: 'ICCLA General Fund', toAccount: 'Benevolence Fund', amount: 2000.00, description: 'General → Benevolence monthly allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'Pastor Dipo Kalejaiye' },
-  { id: 'ch-xfr-3', fromAccount: 'ICCLA General Fund', toAccount: 'ICCLA General Fund', amount: 1425.00, description: 'Men\'s Retreat revenue → Ministry budget', status: 'succeeded', date: 'Feb 10, 2026', initiator: 'Church Administrator' },
+  { id: 'ch-xfr-1', fromAccount: 'KaNeXT Church General Fund', toAccount: 'Building Fund', amount: 5000.00, description: 'General → Building Fund monthly allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'Pastor Dipo Carter' },
+  { id: 'ch-xfr-2', fromAccount: 'KaNeXT Church General Fund', toAccount: 'Benevolence Fund', amount: 2000.00, description: 'General → Benevolence monthly allocation', status: 'succeeded', date: 'Feb 1, 2026', initiator: 'Pastor Dipo Carter' },
+  { id: 'ch-xfr-3', fromAccount: 'KaNeXT Church General Fund', toAccount: 'KaNeXT Church General Fund', amount: 1425.00, description: 'Men\'s Retreat revenue → Ministry budget', status: 'succeeded', date: 'Feb 10, 2026', initiator: 'Church Administrator' },
 ];
 
 const CHURCH_SETTLEMENTS: PayRailsSettlement[] = [
@@ -584,13 +584,13 @@ const CHURCH_CONTROLS: PayRailsControl[] = [
 
 const CHURCH_AUDIT: PayRailsAuditEntry[] = [
   { id: 'ch-aud-1', action: 'charge_received', actor: 'System', actorInitials: 'SY', target: 'Tithe — Emmanuel Okonkwo ($2,000.00)', timestamp: 'Feb 9, 2026 10:30 AM' },
-  { id: 'ch-aud-2', action: 'payout_initiated', actor: 'Pastor Dipo Kalejaiye', actorInitials: 'DK', target: 'Metro HVAC — sanctuary repair ($3,200.00)', timestamp: 'Feb 11, 2026 09:00 AM' },
+  { id: 'ch-aud-2', action: 'payout_initiated', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Metro HVAC — sanctuary repair ($3,200.00)', timestamp: 'Feb 11, 2026 09:00 AM' },
   { id: 'ch-aud-3', action: 'settlement_closed', actor: 'System', actorInitials: 'SY', target: 'Weekly Giving Batch — 48 items ($12,454.80 net)', timestamp: 'Feb 11, 2026 06:00 PM' },
   { id: 'ch-aud-4', action: 'refund_processed', actor: 'Church Administrator', actorInitials: 'CA', target: 'James Owusu — retreat registration ($75.00)', timestamp: 'Feb 7, 2026 11:45 AM' },
-  { id: 'ch-aud-5', action: 'transfer_completed', actor: 'Pastor Dipo Kalejaiye', actorInitials: 'DK', target: 'General → Building Fund ($5,000.00)', timestamp: 'Feb 1, 2026 08:15 AM' },
-  { id: 'ch-aud-6', action: 'payout_initiated', actor: 'Pastor Dipo Kalejaiye', actorInitials: 'DK', target: 'Benevolence — Janet Osei rent assistance ($1,500.00)', timestamp: 'Feb 11, 2026 10:00 AM' },
+  { id: 'ch-aud-5', action: 'transfer_completed', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'General → Building Fund ($5,000.00)', timestamp: 'Feb 1, 2026 08:15 AM' },
+  { id: 'ch-aud-6', action: 'payout_initiated', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Benevolence — Janet Osei rent assistance ($1,500.00)', timestamp: 'Feb 11, 2026 10:00 AM' },
   { id: 'ch-aud-7', action: 'dispute_opened', actor: 'System', actorInitials: 'SY', target: 'Chargeback — Okonkwo tithe ($2,000.00)', timestamp: 'Feb 14, 2026 02:30 PM' },
-  { id: 'ch-aud-8', action: 'control_updated', actor: 'Pastor Dipo Kalejaiye', actorInitials: 'DK', target: 'Giving Refund Threshold set to $200', timestamp: 'Jan 20, 2026 03:00 PM' },
+  { id: 'ch-aud-8', action: 'control_updated', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Giving Refund Threshold set to $200', timestamp: 'Jan 20, 2026 03:00 PM' },
 ];
 
 const CHURCH_SETTINGS: PayRailsSettingToggle[] = [
@@ -620,7 +620,7 @@ const BUSINESS_ACCOUNTS: PayRailsAccount[] = [
 ];
 
 const BUSINESS_CHARGES: PayRailsCharge[] = [
-  { id: 'en-chg-1', description: 'Customer invoice — FMU license (annual)', amount: 8500.00, fee: 255.00, net: 8245.00, payer: 'Florida Memorial University', payerInitials: 'FM', product: 'Enterprise License', status: 'succeeded', date: 'Feb 14, 2026', scope: 'Organization', receiptRef: 'INV-KX-2026-0042' },
+  { id: 'en-chg-1', description: 'Customer invoice — KaNeXT license (annual)', amount: 8500.00, fee: 255.00, net: 8245.00, payer: 'KaNeXT Sports', payerInitials: 'FM', product: 'Enterprise License', status: 'succeeded', date: 'Feb 14, 2026', scope: 'Organization', receiptRef: 'INV-KX-2026-0042' },
   { id: 'en-chg-2', description: 'Subscription — Pro tier (monthly)', amount: 299.00, fee: 8.97, net: 290.03, payer: 'Acme Sports Group', payerInitials: 'AS', product: 'Subscription', status: 'succeeded', date: 'Feb 12, 2026', scope: 'Entity', receiptRef: 'SUB-20260212-PRO' },
   { id: 'en-chg-3', description: 'Deposit — pilot engagement', amount: 5000.00, fee: 150.00, net: 4850.00, payer: 'Beta Athletics Inc', payerInitials: 'BA', product: 'Deposit/Retainer', status: 'succeeded', date: 'Feb 10, 2026', scope: 'Organization', receiptRef: 'DEP-KX-2026-008' },
   { id: 'en-chg-4', description: 'Customer invoice — integration pilot', amount: 3200.00, fee: 96.00, net: 3104.00, payer: 'Gamma Labs', payerInitials: 'GL', product: 'Pilot', status: 'pending', date: 'Feb 8, 2026', scope: 'Entity' },
@@ -632,13 +632,13 @@ const BUSINESS_PAYOUTS: PayRailsPayout[] = [
   { id: 'en-po-1', recipient: 'Amazon Web Services', recipientInitials: 'AW', description: 'Cloud infrastructure — January invoice', amount: 2418.62, purpose: 'Vendor invoice', category: 'Infrastructure', status: 'succeeded', dueDate: 'Feb 5, 2026', paidDate: 'Feb 4, 2026', scope: 'Entity', evidence: 'INV-AWS-2026-01' },
   { id: 'en-po-2', recipient: 'Studio Nine', recipientInitials: 'SN', description: 'Design contractor — Jan deliverables', amount: 4800.00, purpose: 'Contractor payout', category: 'Contractor', status: 'succeeded', dueDate: 'Feb 10, 2026', paidDate: 'Feb 9, 2026', scope: 'Entity', evidence: 'CTR-SN-JAN26' },
   { id: 'en-po-3', recipient: 'Gusto Payroll', recipientInitials: 'GP', description: 'Payroll link — February first half', amount: 12000.00, purpose: 'Payroll', category: 'Payroll', status: 'succeeded', dueDate: 'Feb 14, 2026', paidDate: 'Feb 14, 2026', scope: 'Organization', evidence: 'PAY-GUSTO-FEB1' },
-  { id: 'en-po-4', recipient: 'Sammy Kalejaiye', recipientInitials: 'SK', description: 'Conference travel reimbursement — AfroTech', amount: 285.40, purpose: 'Reimbursement', category: 'Reimbursement', status: 'succeeded', dueDate: 'Feb 7, 2026', paidDate: 'Feb 6, 2026', scope: 'Organization', evidence: 'RCPT-SK-0203' },
+  { id: 'en-po-4', recipient: 'Alex Morgan', recipientInitials: 'SK', description: 'Conference travel reimbursement — AfroTech', amount: 285.40, purpose: 'Reimbursement', category: 'Reimbursement', status: 'succeeded', dueDate: 'Feb 7, 2026', paidDate: 'Feb 6, 2026', scope: 'Organization', evidence: 'RCPT-SK-0203' },
 ];
 
 const BUSINESS_TRANSFERS: PayRailsTransfer[] = [
-  { id: 'en-xfr-1', fromAccount: 'KaNeXT Operating', toAccount: 'Product', amount: 15000.00, description: 'Operating → Product Q1 allocation', status: 'succeeded', date: 'Jan 31, 2026', initiator: 'Sammy Kalejaiye' },
-  { id: 'en-xfr-2', fromAccount: 'Sales', toAccount: 'KaNeXT Operating', amount: 4200.00, description: 'Sales commission sweep → Operating', status: 'succeeded', date: 'Feb 3, 2026', initiator: 'Sammy Kalejaiye' },
-  { id: 'en-xfr-3', fromAccount: 'KaNeXT Operating', toAccount: 'KaNeXT Operating', amount: 10000.00, description: 'Revenue → Savings reserve transfer', status: 'succeeded', date: 'Feb 10, 2026', initiator: 'Sammy Kalejaiye' },
+  { id: 'en-xfr-1', fromAccount: 'KaNeXT Operating', toAccount: 'Product', amount: 15000.00, description: 'Operating → Product Q1 allocation', status: 'succeeded', date: 'Jan 31, 2026', initiator: 'Alex Morgan' },
+  { id: 'en-xfr-2', fromAccount: 'Sales', toAccount: 'KaNeXT Operating', amount: 4200.00, description: 'Sales commission sweep → Operating', status: 'succeeded', date: 'Feb 3, 2026', initiator: 'Alex Morgan' },
+  { id: 'en-xfr-3', fromAccount: 'KaNeXT Operating', toAccount: 'KaNeXT Operating', amount: 10000.00, description: 'Revenue → Savings reserve transfer', status: 'succeeded', date: 'Feb 10, 2026', initiator: 'Alex Morgan' },
 ];
 
 const BUSINESS_SETTLEMENTS: PayRailsSettlement[] = [
@@ -658,7 +658,7 @@ const BUSINESS_RECONCILIATIONS: PayRailsReconciliation[] = [
 ];
 
 const BUSINESS_DISPUTES: PayRailsDispute[] = [
-  { id: 'en-dsp-1', chargeId: 'en-chg-1', chargeDescription: 'Customer invoice — FMU license (annual)', amount: 8500.00, type: 'chargeback', status: 'open', filedDate: 'Feb 15, 2026', respondBy: 'Mar 1, 2026', disputant: 'Florida Memorial University' },
+  { id: 'en-dsp-1', chargeId: 'en-chg-1', chargeDescription: 'Customer invoice — KaNeXT license (annual)', amount: 8500.00, type: 'chargeback', status: 'open', filedDate: 'Feb 15, 2026', respondBy: 'Mar 1, 2026', disputant: 'KaNeXT Sports' },
   { id: 'en-dsp-2', chargeId: 'en-po-2', chargeDescription: 'Design contractor — Jan deliverables', amount: 4800.00, type: 'failed-payout', status: 'under-review', filedDate: 'Feb 11, 2026', disputant: 'Studio Nine' },
 ];
 
@@ -682,14 +682,14 @@ const BUSINESS_CONTROLS: PayRailsControl[] = [
 ];
 
 const BUSINESS_AUDIT: PayRailsAuditEntry[] = [
-  { id: 'en-aud-1', action: 'charge_received', actor: 'System', actorInitials: 'SY', target: 'FMU license invoice ($8,500.00)', timestamp: 'Feb 14, 2026 11:20 AM' },
-  { id: 'en-aud-2', action: 'payout_initiated', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Amazon Web Services — cloud infra ($2,418.62)', timestamp: 'Feb 4, 2026 09:15 AM' },
+  { id: 'en-aud-1', action: 'charge_received', actor: 'System', actorInitials: 'SY', target: 'KaNeXT license invoice ($8,500.00)', timestamp: 'Feb 14, 2026 11:20 AM' },
+  { id: 'en-aud-2', action: 'payout_initiated', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Amazon Web Services — cloud infra ($2,418.62)', timestamp: 'Feb 4, 2026 09:15 AM' },
   { id: 'en-aud-3', action: 'settlement_closed', actor: 'System', actorInitials: 'SY', target: 'January Monthly Close — 28 items ($41,530.55 net)', timestamp: 'Feb 5, 2026 06:00 PM' },
-  { id: 'en-aud-4', action: 'refund_processed', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Acme Sports — subscription downgrade ($149.50)', timestamp: 'Feb 9, 2026 10:30 AM' },
-  { id: 'en-aud-5', action: 'transfer_completed', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Operating → Product ($15,000.00)', timestamp: 'Jan 31, 2026 08:00 AM' },
-  { id: 'en-aud-6', action: 'dispute_opened', actor: 'System', actorInitials: 'SY', target: 'Chargeback — FMU license ($8,500.00)', timestamp: 'Feb 15, 2026 02:00 PM' },
-  { id: 'en-aud-7', action: 'control_updated', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Invoice Approval Threshold set to $10,000', timestamp: 'Jan 8, 2026 04:00 PM' },
-  { id: 'en-aud-8', action: 'account_created', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Subaccount "Sales" created under KaNeXT Operating', timestamp: 'Jan 2, 2026 10:30 AM' },
+  { id: 'en-aud-4', action: 'refund_processed', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Acme Sports — subscription downgrade ($149.50)', timestamp: 'Feb 9, 2026 10:30 AM' },
+  { id: 'en-aud-5', action: 'transfer_completed', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Operating → Product ($15,000.00)', timestamp: 'Jan 31, 2026 08:00 AM' },
+  { id: 'en-aud-6', action: 'dispute_opened', actor: 'System', actorInitials: 'SY', target: 'Chargeback — KaNeXT license ($8,500.00)', timestamp: 'Feb 15, 2026 02:00 PM' },
+  { id: 'en-aud-7', action: 'control_updated', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Invoice Approval Threshold set to $10,000', timestamp: 'Jan 8, 2026 04:00 PM' },
+  { id: 'en-aud-8', action: 'account_created', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Subaccount "Sales" created under KaNeXT Operating', timestamp: 'Jan 2, 2026 10:30 AM' },
 ];
 
 const BUSINESS_SETTINGS: PayRailsSettingToggle[] = [

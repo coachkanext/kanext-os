@@ -4,7 +4,7 @@
  * Receivables, Payables, Approvals, Splits, Revenue, Costs/Burn,
  * Entities, Risk/Controls, Audit, Board Pack Builder.
  *
- * All data references KaNeXT entities: Sammy K, PBD, Tom, FMU, ICCLA,
+ * All data references KaNeXT entities: Alex M, PBD, Tom, KaNeXT, KaNeXT Church,
  * K-1, KaNeXT Inc, KaNeXT Media LLC, KaNeXT Sports LLC, OSK Group.
  */
 
@@ -241,7 +241,7 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
   {
     id: 'le-1',
     date: '2026-02-17',
-    description: 'Mercury ACH deposit \u2014 FMU partnership advance',
+    description: 'Mercury ACH deposit \u2014 KaNeXT partnership advance',
     category: 'Revenue',
     debit: 0,
     credit: 25000,
@@ -281,7 +281,7 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
   {
     id: 'le-5',
     date: '2026-02-10',
-    description: 'ICCLA consulting retainer \u2014 Q1 invoice',
+    description: 'KaNeXT Church consulting retainer \u2014 Q1 invoice',
     category: 'Revenue',
     debit: 0,
     credit: 12000,
@@ -382,8 +382,8 @@ export const BUDGET_ITEMS: BudgetItem[] = [
 export const COMMITMENTS: CommitmentItem[] = [
   {
     id: 'cm-1',
-    title: 'FMU Athletics Technology Partnership',
-    counterparty: 'Florida Memorial University',
+    title: 'KaNeXT Athletics Technology Partnership',
+    counterparty: 'KaNeXT Sports',
     amount: '$150,000',
     dueDate: '2026-08-01',
     status: 'active',
@@ -391,7 +391,7 @@ export const COMMITMENTS: CommitmentItem[] = [
   },
   {
     id: 'cm-2',
-    title: 'ICCLA Digital Platform Build-Out',
+    title: 'KaNeXT Church Digital Platform Build-Out',
     counterparty: 'Int\u2019l Church of Christ LA',
     amount: '$48,000',
     dueDate: '2026-06-30',
@@ -434,7 +434,7 @@ export const COMMITMENTS: CommitmentItem[] = [
 export const RECEIVABLES: ReceivableItem[] = [
   {
     id: 'rv-1',
-    from: 'Florida Memorial University',
+    from: 'KaNeXT Sports',
     amount: '$25,000',
     invoiceDate: '2026-01-15',
     dueDate: '2026-02-15',
@@ -467,7 +467,7 @@ export const RECEIVABLES: ReceivableItem[] = [
   },
   {
     id: 'rv-5',
-    from: 'Sammy Kalejaiye (founder loan repayment)',
+    from: 'Alex Morgan (founder loan repayment)',
     amount: '$1,500',
     invoiceDate: '2025-12-01',
     dueDate: '2026-01-31',
@@ -563,7 +563,7 @@ export const APPROVALS: ApprovalItem[] = [
     id: 'ap-5',
     title: 'Travel expense \u2014 PBD meeting (Miami)',
     amount: '$1,200',
-    requester: 'Sammy Kalejaiye',
+    requester: 'Alex Morgan',
     type: 'expense',
     status: 'rejected',
   },
@@ -611,7 +611,7 @@ export const SPLITS: SplitItem[] = [
 export const REVENUE_ITEMS: RevenueItem[] = [
   {
     id: 're-1',
-    source: 'FMU Athletics Technology Partnership',
+    source: 'KaNeXT Athletics Technology Partnership',
     amount: '$12,500/mo',
     period: 'Monthly (24-mo term)',
     type: 'partnership',
@@ -619,7 +619,7 @@ export const REVENUE_ITEMS: RevenueItem[] = [
   },
   {
     id: 're-2',
-    source: 'ICCLA Digital Platform Retainer',
+    source: 'KaNeXT Church Digital Platform Retainer',
     amount: '$4,000/mo',
     period: 'Monthly (12-mo term)',
     type: 'service',
@@ -765,15 +765,15 @@ export const RISK_CONTROLS: RiskControl[] = [
     severity: 'high',
     category: 'Treasury',
     mitigation: 'Diversify across entities; maintain 3-month reserves per entity',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     status: 'open',
   },
   {
     id: 'rc-3',
-    title: 'FMU contract renewal uncertainty',
+    title: 'KaNeXT contract renewal uncertainty',
     severity: 'medium',
     category: 'Revenue',
-    mitigation: 'Quarterly check-ins with FMU athletic director; performance reports',
+    mitigation: 'Quarterly check-ins with KaNeXT athletic director; performance reports',
     owner: 'Jordan Hayes',
     status: 'mitigated',
   },
@@ -783,7 +783,7 @@ export const RISK_CONTROLS: RiskControl[] = [
     severity: 'high',
     category: 'Legal',
     mitigation: 'Engage employment counsel for 1099 vs W-2 review',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     status: 'open',
   },
   {
@@ -816,21 +816,21 @@ export const AUDIT_LOG: AuditEntry[] = [
     action: 'Vendor payout batch created',
     actor: 'David Okonkwo',
     category: 'Payables',
-    detail: 'February contractor batch $48,200 created \u2014 pending Sammy K. approval',
+    detail: 'February contractor batch $48,200 created \u2014 pending Alex M. approval',
   },
   {
     id: 'au-3',
     date: '2026-02-15 11:03',
     action: 'Invoice generated',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     category: 'Receivables',
-    detail: 'Invoice INV-2026-018 sent to FMU for $25,000 partnership advance',
+    detail: 'Invoice INV-2026-018 sent to KaNeXT for $25,000 partnership advance',
   },
   {
     id: 'au-4',
     date: '2026-02-14 14:20',
     action: 'Expense approved',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     category: 'Approvals',
     detail: 'Figma Enterprise vendor onboarding $2,400/yr approved for Lisa Park',
   },
@@ -854,7 +854,7 @@ export const AUDIT_LOG: AuditEntry[] = [
     id: 'au-7',
     date: '2026-02-08 15:18',
     action: 'Board pack section completed',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     category: 'Board Pack',
     detail: 'Financial Summary section marked complete for Q1 board meeting',
   },
@@ -877,7 +877,7 @@ export const BOARD_PACK_SECTIONS: BoardPackSection[] = [
     id: 'bp-1',
     title: 'Financial Summary & Cash Position',
     status: 'complete',
-    assignee: 'Sammy Kalejaiye',
+    assignee: 'Alex Morgan',
     dueDate: '2026-02-18',
   },
   {
@@ -912,7 +912,7 @@ export const BOARD_PACK_SECTIONS: BoardPackSection[] = [
     id: 'bp-6',
     title: 'Media/Proof Wedge Performance Deck',
     status: 'not_started',
-    assignee: 'Sammy Kalejaiye',
+    assignee: 'Alex Morgan',
     dueDate: '2026-02-20',
   },
 ];
@@ -943,8 +943,8 @@ export interface ReleaseQueueItem {
 }
 
 export const RELEASE_QUEUE: ReleaseQueueItem[] = [
-  { id: 'rq-1', title: 'Vendor payout — Design agency', amount: '$12,500', approvedBy: 'Sammy K.', approvedAt: 'Feb 15', releaseAuthority: 'Treasury', status: 'awaiting_release' },
-  { id: 'rq-2', title: 'Contractor payment — Q1 sprint', amount: '$8,200', approvedBy: 'Sammy K.', approvedAt: 'Feb 14', releaseAuthority: 'Treasury', status: 'awaiting_release' },
+  { id: 'rq-1', title: 'Vendor payout — Design agency', amount: '$12,500', approvedBy: 'Alex M.', approvedAt: 'Feb 15', releaseAuthority: 'Treasury', status: 'awaiting_release' },
+  { id: 'rq-2', title: 'Contractor payment — Q1 sprint', amount: '$8,200', approvedBy: 'Alex M.', approvedAt: 'Feb 14', releaseAuthority: 'Treasury', status: 'awaiting_release' },
   { id: 'rq-3', title: 'SaaS subscription — Annual', amount: '$4,800', approvedBy: 'Finance', approvedAt: 'Feb 13', releaseAuthority: 'Ops', status: 'released' },
 ];
 

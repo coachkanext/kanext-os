@@ -177,9 +177,9 @@ export function RosterCRMList({ roster, onPlayerTap }: Props) {
 
     // Universal KR display
     const krColor = getKRColor(player.kr);
-    const krTier = getKRTierLabel(player.kr, 'naia'); // FMU is NAIA
+    const krTier = getKRTierLabel(player.kr, 'naia'); // KaNeXT is NAIA
 
-    // Archetype from FMU data
+    // Archetype from KaNeXT data
     const archetypeKey = jerseyArchetypeMap.get(player.number);
     const archetypeLabel = archetypeKey ? getArchetypeDisplay(archetypeKey) : null;
 

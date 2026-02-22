@@ -295,21 +295,21 @@ const DASHBOARD_BLOCKS: AssetsDashboardBlock[] = [
 // === Physical Assets ===
 
 const PHYSICAL_ASSETS: PhysicalAsset[] = [
-  { id: 'pa-1', name: 'ICCLA Championship Trophy', category: 'trophy', location: 'Commissioner\'s Office', condition: 'excellent', value: 28000, acquiredDate: 'Sep 2019', assignedTo: 'Executive Office' },
+  { id: 'pa-1', name: 'KaNeXT Church Championship Trophy', category: 'trophy', location: 'Commissioner\'s Office', condition: 'excellent', value: 28000, acquiredDate: 'Sep 2019', assignedTo: 'Executive Office' },
   { id: 'pa-2', name: 'Conference Regular Season Trophy', category: 'trophy', location: 'Trophy Case — Main Lobby', condition: 'excellent', value: 12000, acquiredDate: 'Aug 2020', assignedTo: 'Operations' },
   { id: 'pa-3', name: 'Tournament MVP Award', category: 'trophy', location: 'Awards Room', condition: 'good', value: 4500, acquiredDate: 'Feb 2023', assignedTo: 'Operations' },
-  { id: 'pa-4', name: 'Commissioner\'s Podium', category: 'podium', location: 'FMU Arena — Press Room', condition: 'excellent', value: 8500, acquiredDate: 'Jan 2021', assignedTo: 'Communications' },
-  { id: 'pa-5', name: 'Main Lobby Entrance Signage', category: 'signage', location: 'FMU Arena Entrance', condition: 'good', value: 15000, acquiredDate: 'Mar 2020', assignedTo: 'Facilities' },
-  { id: 'pa-6', name: 'Conference Banner Set (16)', category: 'display', location: 'FMU Arena — Rafters', condition: 'good', value: 22000, acquiredDate: 'Nov 2021', assignedTo: 'Operations' },
+  { id: 'pa-4', name: 'Commissioner\'s Podium', category: 'podium', location: 'KaNeXT Arena — Press Room', condition: 'excellent', value: 8500, acquiredDate: 'Jan 2021', assignedTo: 'Communications' },
+  { id: 'pa-5', name: 'Main Lobby Entrance Signage', category: 'signage', location: 'KaNeXT Arena Entrance', condition: 'good', value: 15000, acquiredDate: 'Mar 2020', assignedTo: 'Facilities' },
+  { id: 'pa-6', name: 'Conference Banner Set (16)', category: 'display', location: 'KaNeXT Arena — Rafters', condition: 'good', value: 22000, acquiredDate: 'Nov 2021', assignedTo: 'Operations' },
   { id: 'pa-7', name: 'Press Conference Backdrop', category: 'display', location: 'Storage Room B', condition: 'fair', value: 3200, acquiredDate: 'Jun 2022', assignedTo: 'Communications' },
-  { id: 'pa-8', name: 'VIP Lounge Furniture Set', category: 'furniture', location: 'FMU Arena — VIP Suite', condition: 'good', value: 18500, acquiredDate: 'Jul 2021', assignedTo: 'Hospitality' },
+  { id: 'pa-8', name: 'VIP Lounge Furniture Set', category: 'furniture', location: 'KaNeXT Arena — VIP Suite', condition: 'good', value: 18500, acquiredDate: 'Jul 2021', assignedTo: 'Hospitality' },
   { id: 'pa-9', name: 'Event Crowd Barriers (50)', category: 'barrier', location: 'Equipment Warehouse', condition: 'fair', value: 7500, acquiredDate: 'Apr 2020', assignedTo: 'Security' },
   { id: 'pa-10', name: 'Awards Ceremony Stage Platform', category: 'podium', location: 'Equipment Warehouse', condition: 'good', value: 12000, acquiredDate: 'Aug 2022', assignedTo: 'Operations' },
   { id: 'pa-11', name: 'Outdoor Wayfinding Signage (12)', category: 'signage', location: 'Arena Campus', condition: 'needs-repair', value: 9600, acquiredDate: 'May 2019', assignedTo: 'Facilities' },
-  { id: 'pa-12', name: 'Hall of Champions Display Cases', category: 'display', location: 'FMU Arena — Main Concourse', condition: 'excellent', value: 14000, acquiredDate: 'Oct 2021', assignedTo: 'Operations' },
+  { id: 'pa-12', name: 'Hall of Champions Display Cases', category: 'display', location: 'KaNeXT Arena — Main Concourse', condition: 'excellent', value: 14000, acquiredDate: 'Oct 2021', assignedTo: 'Operations' },
   { id: 'pa-13', name: 'Portable Registration Desks (8)', category: 'furniture', location: 'Equipment Warehouse', condition: 'good', value: 4800, acquiredDate: 'Jan 2023', assignedTo: 'Event Services' },
   { id: 'pa-14', name: 'Scholar-Athlete Award Plaque Collection', category: 'trophy', location: 'Trophy Case — Hall B', condition: 'good', value: 6200, acquiredDate: 'Mar 2022', assignedTo: 'Compliance' },
-  { id: 'pa-15', name: 'Retired Championship Banners (6)', category: 'display', location: 'FMU Arena — Rafters', condition: 'retired', value: 3600, acquiredDate: 'Feb 2018', assignedTo: 'Heritage' },
+  { id: 'pa-15', name: 'Retired Championship Banners (6)', category: 'display', location: 'KaNeXT Arena — Rafters', condition: 'retired', value: 3600, acquiredDate: 'Feb 2018', assignedTo: 'Heritage' },
 ];
 
 // === Digital Assets ===
@@ -335,18 +335,18 @@ const DIGITAL_ASSETS: DigitalAsset[] = [
 // === Equipment Assets ===
 
 const EQUIPMENT_ASSETS: EquipmentAsset[] = [
-  { id: 'eq-1', name: 'K-1 Timing System (Swiss Timing)', category: 'timing', serialNumber: 'ST-2024-00482', condition: 'excellent', location: 'FMU Arena — Control Room', lastServiced: 'Jan 8, 2026', nextService: 'Jul 8, 2026' },
-  { id: 'eq-2', name: 'FMU Arena LED Scoreboard', category: 'scoring', serialNumber: 'DAK-2022-11947', condition: 'excellent', location: 'FMU Arena — Center Court', lastServiced: 'Dec 15, 2025', nextService: 'Jun 15, 2026' },
-  { id: 'eq-3', name: 'Daktronics Shot Clock System (4)', category: 'scoring', serialNumber: 'DAK-SC-0042', condition: 'good', location: 'FMU Arena — Court Level', lastServiced: 'Nov 20, 2025', nextService: 'May 20, 2026' },
+  { id: 'eq-1', name: 'K-1 Timing System (Swiss Timing)', category: 'timing', serialNumber: 'ST-2024-00482', condition: 'excellent', location: 'KaNeXT Arena — Control Room', lastServiced: 'Jan 8, 2026', nextService: 'Jul 8, 2026' },
+  { id: 'eq-2', name: 'KaNeXT Arena LED Scoreboard', category: 'scoring', serialNumber: 'DAK-2022-11947', condition: 'excellent', location: 'KaNeXT Arena — Center Court', lastServiced: 'Dec 15, 2025', nextService: 'Jun 15, 2026' },
+  { id: 'eq-3', name: 'Daktronics Shot Clock System (4)', category: 'scoring', serialNumber: 'DAK-SC-0042', condition: 'good', location: 'KaNeXT Arena — Court Level', lastServiced: 'Nov 20, 2025', nextService: 'May 20, 2026' },
   { id: 'eq-4', name: 'LiveU Solo+ Broadcast Kit', category: 'broadcast', serialNumber: 'LU-SOLO-8837', condition: 'good', location: 'Broadcast Equipment Room', lastServiced: 'Oct 5, 2025', nextService: 'Apr 5, 2026' },
-  { id: 'eq-5', name: 'PTZ Camera System (6-cam)', category: 'broadcast', serialNumber: 'PTZ-CAM-0061', condition: 'good', location: 'FMU Arena — Camera Bays', lastServiced: 'Jan 22, 2026', nextService: 'Jul 22, 2026' },
+  { id: 'eq-5', name: 'PTZ Camera System (6-cam)', category: 'broadcast', serialNumber: 'PTZ-CAM-0061', condition: 'good', location: 'KaNeXT Arena — Camera Bays', lastServiced: 'Jan 22, 2026', nextService: 'Jul 22, 2026' },
   { id: 'eq-6', name: 'Portable PA System (QSC)', category: 'av', serialNumber: 'QSC-PA-3310', condition: 'fair', location: 'Equipment Warehouse', lastServiced: 'Sep 10, 2025', nextService: 'Mar 10, 2026' },
   { id: 'eq-7', name: 'AED Units (8)', category: 'medical', serialNumber: 'AED-ZOLL-0080', condition: 'excellent', location: 'Distributed — All Venues', lastServiced: 'Feb 1, 2026', nextService: 'Aug 1, 2026' },
   { id: 'eq-8', name: 'Metal Detector Wands (20)', category: 'safety', serialNumber: 'MD-GARRETT-0200', condition: 'good', location: 'Security Office', lastServiced: 'Dec 1, 2025', nextService: 'Jun 1, 2026' },
-  { id: 'eq-9', name: 'Wireless Microphone System (Shure)', category: 'av', serialNumber: 'SHURE-ULX-4421', condition: 'excellent', location: 'FMU Arena — Press Room', lastServiced: 'Jan 15, 2026', nextService: 'Jul 15, 2026' },
+  { id: 'eq-9', name: 'Wireless Microphone System (Shure)', category: 'av', serialNumber: 'SHURE-ULX-4421', condition: 'excellent', location: 'KaNeXT Arena — Press Room', lastServiced: 'Jan 15, 2026', nextService: 'Jul 15, 2026' },
   { id: 'eq-10', name: 'Portable Athletic Training Kit (4)', category: 'medical', serialNumber: 'ATK-MED-0040', condition: 'good', location: 'Athletic Training Room', lastServiced: 'Nov 1, 2025', nextService: 'May 1, 2026' },
-  { id: 'eq-11', name: 'LED Court Projection System', category: 'av', serialNumber: 'PROJ-EPSON-7720', condition: 'needs-repair', location: 'FMU Arena — Catwalk', lastServiced: 'Aug 20, 2025', nextService: 'OVERDUE' },
-  { id: 'eq-12', name: 'Instant Replay System (Hawk-Eye)', category: 'scoring', serialNumber: 'HE-REPLAY-0012', condition: 'excellent', location: 'FMU Arena — Replay Booth', lastServiced: 'Feb 5, 2026', nextService: 'Aug 5, 2026' },
+  { id: 'eq-11', name: 'LED Court Projection System', category: 'av', serialNumber: 'PROJ-EPSON-7720', condition: 'needs-repair', location: 'KaNeXT Arena — Catwalk', lastServiced: 'Aug 20, 2025', nextService: 'OVERDUE' },
+  { id: 'eq-12', name: 'Instant Replay System (Hawk-Eye)', category: 'scoring', serialNumber: 'HE-REPLAY-0012', condition: 'excellent', location: 'KaNeXT Arena — Replay Booth', lastServiced: 'Feb 5, 2026', nextService: 'Aug 5, 2026' },
   { id: 'eq-13', name: 'Weather Monitoring Station', category: 'safety', serialNumber: 'WMS-DAVIS-5501', condition: 'good', location: 'Outdoor Facilities Hub', lastServiced: 'Oct 15, 2025', nextService: 'Apr 15, 2026' },
   { id: 'eq-14', name: 'X-Ray Mobile Unit', category: 'medical', serialNumber: 'XRAY-MOB-0001', condition: 'fair', location: 'Medical Bay', lastServiced: 'Jul 30, 2025', nextService: 'Jan 30, 2026' },
   { id: 'eq-15', name: 'Sideline Headset Communication System', category: 'broadcast', serialNumber: 'COM-CLEAR-0815', condition: 'good', location: 'Equipment Warehouse', lastServiced: 'Dec 20, 2025', nextService: 'Jun 20, 2026' },
@@ -355,13 +355,13 @@ const EQUIPMENT_ASSETS: EquipmentAsset[] = [
 // === Venue Assets ===
 
 const VENUE_ASSETS: VenueAsset[] = [
-  { id: 've-1', name: 'FMU Arena', type: 'arena', capacity: 8500, address: '10501 FGCU Blvd, Fort Myers, FL 33965', ownedOrLeased: 'partnership', leaseExpiry: 'Jun 30, 2032', annualCost: 420000 },
+  { id: 've-1', name: 'KaNeXT Arena', type: 'arena', capacity: 8500, address: '10501 FGCU Blvd, Fort Myers, FL 33965', ownedOrLeased: 'partnership', leaseExpiry: 'Jun 30, 2032', annualCost: 420000 },
   { id: 've-2', name: 'Eagles Field Stadium', type: 'stadium', capacity: 12000, address: '10501 FGCU Blvd, Fort Myers, FL 33965', ownedOrLeased: 'partnership', leaseExpiry: 'Jun 30, 2032', annualCost: 580000 },
-  { id: 've-3', name: 'ICCLA Championship Court', type: 'court', capacity: 4200, address: '2000 Main St, Sarasota, FL 34236', ownedOrLeased: 'leased', leaseExpiry: 'Mar 31, 2027', annualCost: 165000 },
+  { id: 've-3', name: 'KaNeXT Church Championship Court', type: 'court', capacity: 4200, address: '2000 Main St, Sarasota, FL 34236', ownedOrLeased: 'leased', leaseExpiry: 'Mar 31, 2027', annualCost: 165000 },
   { id: 've-4', name: 'Southwest Practice Facility', type: 'training-facility', capacity: 500, address: '4600 Training Way, Cape Coral, FL 33904', ownedOrLeased: 'leased', leaseExpiry: 'Dec 31, 2026', annualCost: 96000 },
   { id: 've-5', name: 'Gulf Coast Athletic Complex', type: 'field', capacity: 6000, address: '8100 College Pkwy, Fort Myers, FL 33919', ownedOrLeased: 'owned', leaseExpiry: 'N/A', annualCost: 210000 },
   { id: 've-6', name: 'Naples Community Field', type: 'field', capacity: 3500, address: '7000 Golden Gate Pkwy, Naples, FL 34105', ownedOrLeased: 'leased', leaseExpiry: 'Aug 31, 2027', annualCost: 78000 },
-  { id: 've-7', name: 'ICCLA Indoor Training Center', type: 'training-facility', capacity: 300, address: '10501 FGCU Blvd, Fort Myers, FL 33965', ownedOrLeased: 'owned', leaseExpiry: 'N/A', annualCost: 145000 },
+  { id: 've-7', name: 'KaNeXT Church Indoor Training Center', type: 'training-facility', capacity: 300, address: '10501 FGCU Blvd, Fort Myers, FL 33965', ownedOrLeased: 'owned', leaseExpiry: 'N/A', annualCost: 145000 },
   { id: 've-8', name: 'Lakeland Events Arena', type: 'arena', capacity: 5800, address: '701 W Lime St, Lakeland, FL 33815', ownedOrLeased: 'leased', leaseExpiry: 'May 31, 2028', annualCost: 240000 },
   { id: 've-9', name: 'Tampa Bay Tournament Hall', type: 'arena', capacity: 7200, address: '4100 George J Bean Pkwy, Tampa, FL 33607', ownedOrLeased: 'partnership', leaseExpiry: 'Dec 31, 2029', annualCost: 350000 },
   { id: 've-10', name: 'Orlando Sports Complex', type: 'stadium', capacity: 10000, address: '1 Citrus Bowl Pl, Orlando, FL 32805', ownedOrLeased: 'leased', leaseExpiry: 'Sep 30, 2027', annualCost: 480000 },
@@ -393,14 +393,14 @@ const INVENTORY_ITEMS: InventoryItem[] = [
 
 const MAINTENANCE_RECORDS: MaintenanceRecord[] = [
   { id: 'mt-1', assetId: 'eq-1', assetName: 'K-1 Timing System (Swiss Timing)', type: 'scheduled', date: 'Jan 8, 2026', cost: 2800, status: 'completed', technician: 'Swiss Timing Service' },
-  { id: 'mt-2', assetId: 'eq-2', assetName: 'FMU Arena LED Scoreboard', type: 'inspection', date: 'Dec 15, 2025', cost: 450, status: 'completed', technician: 'Daktronics Certified Tech' },
+  { id: 'mt-2', assetId: 'eq-2', assetName: 'KaNeXT Arena LED Scoreboard', type: 'inspection', date: 'Dec 15, 2025', cost: 450, status: 'completed', technician: 'Daktronics Certified Tech' },
   { id: 'mt-3', assetId: 'eq-11', assetName: 'LED Court Projection System', type: 'repair', date: 'Feb 20, 2026', cost: 4200, status: 'scheduled', technician: 'Epson Pro Services' },
   { id: 'mt-4', assetId: 'pa-11', assetName: 'Outdoor Wayfinding Signage (12)', type: 'repair', date: 'Jan 25, 2026', cost: 3800, status: 'overdue', technician: 'SignCraft LLC' },
   { id: 'mt-5', assetId: 'eq-6', assetName: 'Portable PA System (QSC)', type: 'repair', date: 'Feb 15, 2026', cost: 1200, status: 'in-progress', technician: 'AudioPro Solutions' },
-  { id: 'mt-6', assetId: 've-1', assetName: 'FMU Arena', type: 'inspection', date: 'Feb 28, 2026', cost: 5500, status: 'scheduled', technician: 'Arena Services Group' },
+  { id: 'mt-6', assetId: 've-1', assetName: 'KaNeXT Arena', type: 'inspection', date: 'Feb 28, 2026', cost: 5500, status: 'scheduled', technician: 'Arena Services Group' },
   { id: 'mt-7', assetId: 'eq-14', assetName: 'X-Ray Mobile Unit', type: 'scheduled', date: 'Jan 30, 2026', cost: 1800, status: 'overdue', technician: 'MedEquip Services' },
   { id: 'mt-8', assetId: 'eq-7', assetName: 'AED Units (8)', type: 'inspection', date: 'Feb 1, 2026', cost: 600, status: 'completed', technician: 'ZOLL Medical' },
-  { id: 'mt-9', assetId: 've-3', assetName: 'ICCLA Championship Court', type: 'upgrade', date: 'Mar 1, 2026', cost: 45000, status: 'scheduled', technician: 'CourtTech Pro' },
+  { id: 'mt-9', assetId: 've-3', assetName: 'KaNeXT Church Championship Court', type: 'upgrade', date: 'Mar 1, 2026', cost: 45000, status: 'scheduled', technician: 'CourtTech Pro' },
   { id: 'mt-10', assetId: 'eq-12', assetName: 'Instant Replay System (Hawk-Eye)', type: 'scheduled', date: 'Feb 5, 2026', cost: 3200, status: 'completed', technician: 'Hawk-Eye Innovations' },
   { id: 'mt-11', assetId: 'pa-7', assetName: 'Press Conference Backdrop', type: 'repair', date: 'Feb 18, 2026', cost: 950, status: 'in-progress', technician: 'DisplayWorks' },
   { id: 'mt-12', assetId: 'eq-9', assetName: 'Wireless Microphone System (Shure)', type: 'scheduled', date: 'Jan 15, 2026', cost: 380, status: 'completed', technician: 'Shure Authorized Dealer' },
@@ -412,18 +412,18 @@ const MAINTENANCE_RECORDS: MaintenanceRecord[] = [
 // === Insurance Policies ===
 
 const INSURANCE_POLICIES: InsurancePolicy[] = [
-  { id: 'ip-1', name: 'General Liability — All Venues', provider: 'Hartford Financial', coverage: 5000000, premium: 48000, startDate: 'Jul 1, 2025', endDate: 'Jun 30, 2026', status: 'active', assets: ['FMU Arena', 'Eagles Field Stadium', 'ICCLA Championship Court'] },
+  { id: 'ip-1', name: 'General Liability — All Venues', provider: 'Hartford Financial', coverage: 5000000, premium: 48000, startDate: 'Jul 1, 2025', endDate: 'Jun 30, 2026', status: 'active', assets: ['KaNeXT Arena', 'Eagles Field Stadium', 'KaNeXT Church Championship Court'] },
   { id: 'ip-2', name: 'Equipment Floater — Electronics', provider: 'Chubb Insurance', coverage: 2000000, premium: 18000, startDate: 'Jan 1, 2026', endDate: 'Dec 31, 2026', status: 'active', assets: ['K-1 Timing System', 'LED Scoreboard', 'Hawk-Eye Replay', 'PTZ Camera System'] },
   { id: 'ip-3', name: 'Event Cancellation Coverage', provider: 'Lloyd\'s of London', coverage: 3000000, premium: 32000, startDate: 'Sep 1, 2025', endDate: 'Aug 31, 2026', status: 'active', assets: ['Conference Tournament', 'Championship Events'] },
   { id: 'ip-4', name: 'Workers Compensation — Event Staff', provider: 'State Farm', coverage: 1000000, premium: 22000, startDate: 'Jan 1, 2026', endDate: 'Dec 31, 2026', status: 'active', assets: ['All Staff', 'Volunteers'] },
-  { id: 'ip-5', name: 'Property Insurance — Owned Assets', provider: 'Hartford Financial', coverage: 4500000, premium: 36000, startDate: 'Jul 1, 2025', endDate: 'Jun 30, 2026', status: 'expiring-soon', assets: ['Gulf Coast Athletic Complex', 'ICCLA Indoor Training Center', 'Trophies', 'Display Cases'] },
+  { id: 'ip-5', name: 'Property Insurance — Owned Assets', provider: 'Hartford Financial', coverage: 4500000, premium: 36000, startDate: 'Jul 1, 2025', endDate: 'Jun 30, 2026', status: 'expiring-soon', assets: ['Gulf Coast Athletic Complex', 'KaNeXT Church Indoor Training Center', 'Trophies', 'Display Cases'] },
   { id: 'ip-6', name: 'Cyber Liability — Digital Assets', provider: 'AIG', coverage: 1500000, premium: 12000, startDate: 'Mar 1, 2025', endDate: 'Feb 28, 2026', status: 'expired', assets: ['Digital Asset Library', 'Brand Files', 'Database Systems'] },
   { id: 'ip-7', name: 'Directors & Officers Liability', provider: 'Zurich Insurance', coverage: 3000000, premium: 28000, startDate: 'Jan 1, 2026', endDate: 'Dec 31, 2026', status: 'active', assets: ['Commissioner', 'Board Members', 'Executive Team'] },
   { id: 'ip-8', name: 'Participant Accident Coverage', provider: 'Markel Insurance', coverage: 2000000, premium: 15000, startDate: 'Aug 1, 2025', endDate: 'Jul 31, 2026', status: 'active', assets: ['All Competitive Events', 'Training Sessions'] },
   { id: 'ip-9', name: 'Vehicle Fleet Coverage', provider: 'Progressive Commercial', coverage: 500000, premium: 8500, startDate: 'Apr 1, 2025', endDate: 'Mar 31, 2026', status: 'pending-renewal', assets: ['Equipment Van (3)', 'Staff Shuttle (2)'] },
   { id: 'ip-10', name: 'Broadcast Equipment Rider', provider: 'Chubb Insurance', coverage: 800000, premium: 6200, startDate: 'Jan 1, 2026', endDate: 'Dec 31, 2026', status: 'active', assets: ['LiveU Kit', 'PTZ Cameras', 'Headset System', 'PA System'] },
   { id: 'ip-11', name: 'Medical Equipment Liability', provider: 'Berkshire Hathaway', coverage: 1200000, premium: 9800, startDate: 'Nov 1, 2025', endDate: 'Oct 31, 2026', status: 'active', assets: ['AED Units', 'X-Ray Unit', 'Training Kits'] },
-  { id: 'ip-12', name: 'Trophy & Awards Coverage', provider: 'Lloyd\'s of London', coverage: 250000, premium: 4200, startDate: 'Sep 1, 2025', endDate: 'Aug 31, 2026', status: 'active', assets: ['ICCLA Championship Trophy', 'All Award Items'] },
+  { id: 'ip-12', name: 'Trophy & Awards Coverage', provider: 'Lloyd\'s of London', coverage: 250000, premium: 4200, startDate: 'Sep 1, 2025', endDate: 'Aug 31, 2026', status: 'active', assets: ['KaNeXT Church Championship Trophy', 'All Award Items'] },
 ];
 
 // === Reports ===

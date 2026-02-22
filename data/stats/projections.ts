@@ -21,6 +21,6 @@ export const SEASON_PROJECTION: SeasonProjection = {
   simConfidence: 82,
   currentRecord: '16-8',
   gamesRemaining: 4,
-  projectedSeed: '#3 Sun Conference',
+  projectedSeed: '#3 KaNeXT Conference',
   playoffProbability: 88,
 };

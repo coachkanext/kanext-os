@@ -1,5 +1,5 @@
 /**
- * Florida Memorial University Men's Basketball
+ * KaNeXT Sports Men's Basketball
  * Individual Game Logs (Step 4C)
  * Season: 2025-26
  * Source: Parsed from box score data (fmu-mens-basketball-2025-26.json)
@@ -4219,7 +4219,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 16,
@@ -4241,7 +4241,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 26,
@@ -4263,7 +4263,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 30,
@@ -4285,7 +4285,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 14,
@@ -4307,7 +4307,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 24,
@@ -4329,7 +4329,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 18,
@@ -4351,7 +4351,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 11,
@@ -4373,7 +4373,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 11,
@@ -4395,7 +4395,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 27,
@@ -4417,7 +4417,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 15,
@@ -4439,7 +4439,7 @@ export const gameLogs: GameLog[] = [
     game_id: '3405',
     season: '2025-26',
     game_date: '2/4/2026',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     minutes: 9,
@@ -4758,7 +4758,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2022-23',
     game_date: 'Nov 8',
-    opponent: 'Florida National',
+    opponent: 'Ridgemont National',
     home_away: 'A',
     result: 'L',
     fmu_score: 90,
@@ -5118,7 +5118,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2022-23',
     game_date: 'Jan 18',
-    opponent: 'Florida National',
+    opponent: 'Ridgemont National',
     home_away: 'H',
     result: 'L',
     fmu_score: 73,
@@ -5454,7 +5454,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2023-24',
     game_date: 'Nov 20',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'H',
     result: 'W',
     fmu_score: 98,
@@ -5574,7 +5574,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2023-24',
     game_date: 'Dec 16',
-    opponent: 'Florida National',
+    opponent: 'Ridgemont National',
     home_away: 'A',
     result: 'W',
     fmu_score: 115,
@@ -5622,7 +5622,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2023-24',
     game_date: 'Dec 22',
-    opponent: 'Florida Gulf Coast University',
+    opponent: 'Ridgemont Gulf Coast University',
     home_away: 'A',
     result: null,
     fmu_score: null,
@@ -5838,7 +5838,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2023-24',
     game_date: 'Feb 1',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     fmu_score: 88,
@@ -6150,7 +6150,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2024-25',
     game_date: 'Oct 29',
-    opponent: 'Florida National',
+    opponent: 'Ridgemont National',
     home_away: 'A',
     result: 'W',
     fmu_score: 99,
@@ -6174,7 +6174,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2024-25',
     game_date: 'Nov 1',
-    opponent: 'Florida College (FL)',
+    opponent: 'Ridgemont College (FL)',
     home_away: 'A',
     result: 'W',
     fmu_score: 93,
@@ -6270,7 +6270,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2024-25',
     game_date: 'Nov 23',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'H',
     result: 'W',
     fmu_score: 89,
@@ -6510,7 +6510,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2024-25',
     game_date: 'Jan 21',
-    opponent: 'Florida College (FL)',
+    opponent: 'Ridgemont College (FL)',
     home_away: 'H',
     result: 'W',
     fmu_score: 86,
@@ -6630,7 +6630,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2024-25',
     game_date: 'Feb 5',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     fmu_score: 73,
@@ -6678,7 +6678,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2024-25',
     game_date: 'Feb 10',
-    opponent: 'Florida National',
+    opponent: 'Ridgemont National',
     home_away: 'A',
     result: 'W',
     fmu_score: 89,
@@ -6990,7 +6990,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2025-26',
     game_date: 'Nov 22',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'A',
     result: 'W',
     fmu_score: 92,
@@ -7206,7 +7206,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2025-26',
     game_date: 'Jan 5',
-    opponent: 'Florida National',
+    opponent: 'Ridgemont National',
     home_away: 'A',
     result: 'W',
     fmu_score: 77,
@@ -7326,7 +7326,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2025-26',
     game_date: 'Jan 21',
-    opponent: 'South Florida Bible College',
+    opponent: 'South Ridgemont Bible College',
     home_away: 'A',
     result: null,
     fmu_score: null,
@@ -7398,7 +7398,7 @@ export const teamGameLogs: TeamGameLog[] = [
   {
     season: '2025-26',
     game_date: 'Feb 4',
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     home_away: 'H',
     result: 'W',
     fmu_score: 92,

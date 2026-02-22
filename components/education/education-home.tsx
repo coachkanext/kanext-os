@@ -1,5 +1,5 @@
 /**
- * Education Home — FMU 4-tab PagerView layout
+ * Education Home — KaNeXT 4-tab PagerView layout
  * Dashboard | Calendar | Faculty | Admissions
  *
  * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.

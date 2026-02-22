@@ -1,6 +1,6 @@
 /**
  * Calendar Standings View — 3-tier standings
- * Tier 1: Conference (Sun Conference)
+ * Tier 1: Conference (KaNeXT Conference)
  * Tier 2: NAIA Top 25
  * Tier 3: KaNeXT National Rankings (cross-level by KR)
  */
@@ -14,9 +14,9 @@ import { Colors } from '@/constants/theme';
 import {
   getStandings,
   NAIA_TOP_25,
-  FMU_NAIA_POSITION,
+  KaNeXT_NAIA_POSITION,
   KANEXT_NATIONAL_TOP_50,
-  FMU_NATIONAL_POSITION,
+  KaNeXT_NATIONAL_POSITION,
   type RankingRow,
 } from '@/data/mock-calendar-v2';
 import { openTeamCard } from '@/utils/global-entity-sheets';
@@ -77,7 +77,7 @@ export function CalendarStandingsView({ colors, accent }: Props) {
             style={[styles.confRow, row.isUs && { backgroundColor: accent + '18' }]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              openTeamCard({ name: row.team, conference: 'Sun Conference', record: `${row.overallW}-${row.overallL}`, kr: 0 });
+              openTeamCard({ name: row.team, conference: 'KaNeXT Conference', record: `${row.overallW}-${row.overallL}`, kr: 0 });
             }}
           >
             <ThemedText style={[styles.srText, { flex: 0.08, color: colors.text }]}>{row.rank}</ThemedText>
@@ -95,7 +95,7 @@ export function CalendarStandingsView({ colors, accent }: Props) {
         {NAIA_TOP_25.map((row) => (
           <TeamRow key={row.rank} row={row} colors={colors} accent={accent} />
         ))}
-        {/* FMU separator */}
+        {/* KaNeXT separator */}
         <View style={styles.separator}>
           <ThemedText style={[styles.separatorText, { color: colors.textSecondary }]}>
             ··· {FMU_NAIA_POSITION.rank}. {FMU_NAIA_POSITION.team} · {FMU_NAIA_POSITION.record} · KR {FMU_NAIA_POSITION.kr}
@@ -110,7 +110,7 @@ export function CalendarStandingsView({ colors, accent }: Props) {
         {KANEXT_NATIONAL_TOP_50.map((row) => (
           <TeamRow key={row.rank} row={row} colors={colors} accent={accent} />
         ))}
-        {/* FMU separator */}
+        {/* KaNeXT separator */}
         <View style={styles.separator}>
           <ThemedText style={[styles.separatorText, { color: colors.textSecondary }]}>
             ··· {FMU_NATIONAL_POSITION.rank}. {FMU_NATIONAL_POSITION.team} · {FMU_NATIONAL_POSITION.record} · KR {FMU_NATIONAL_POSITION.kr} · {FMU_NATIONAL_POSITION.level}

@@ -3,7 +3,7 @@
  * Date helpers and game-to-event mapper for the Program Calendar.
  */
 
-import type { FMUGame } from './fmu';
+import type { KaNeXTGame } from './fmu';
 import type { ProgramCalendarEvent, ProgramCalendarEventType } from '@/types';
 
 // ── Event type badge colors ──
@@ -148,7 +148,7 @@ function parseGameDateLocal(dateStr: string | null): Date | null {
 
 // ── Game-to-Calendar event mapper (Spec 3) ──
 
-export function gamesToCalendarEvents(games: FMUGame[]): ProgramCalendarEvent[] {
+export function gamesToCalendarEvents(games: KaNeXTGame[]): ProgramCalendarEvent[] {
   return games.map((game) => {
     const parsedDate = parseGameDateLocal(game.date);
     if (!parsedDate) return null;

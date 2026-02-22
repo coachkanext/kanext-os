@@ -152,7 +152,7 @@ export const KANEXT_COMPANY: CompanyObject = {
   runway: 7.2,
   mrr: 0,
   arr: 0,
-  keyDeal: 'FMU Partnership Track',
+  keyDeal: 'KaNeXT Partnership Track',
 };
 
 // =============================================================================
@@ -344,14 +344,14 @@ export const DECISION_LOG: DecisionLogEntry[] = [
 export const DEAL_WORKSPACES: DealWorkspace[] = [
   {
     id: 'deal-1',
-    name: 'FMU Partnership Track',
+    name: 'KaNeXT Partnership Track',
     type: 'partnership',
     status: 'diligence',
-    targetOrg: 'Florida Memorial University',
-    description: 'Strategic partnership to deploy KaNeXT OS as the primary athletics intelligence platform for FMU. Includes coaching tools, analytics, and roster management.',
+    targetOrg: 'KaNeXT Sports',
+    description: 'Strategic partnership to deploy KaNeXT OS as the primary athletics intelligence platform for KaNeXT. Includes coaching tools, analytics, and roster management.',
     keyContacts: [
-      { name: 'FMU Athletic Director', role: 'Primary contact' },
-      { name: 'FMU Facilities Manager', role: 'Venue coordination' },
+      { name: 'KaNeXT Athletic Director', role: 'Primary contact' },
+      { name: 'KaNeXT Facilities Manager', role: 'Venue coordination' },
     ],
     timeline: [
       { date: 'Jan 20, 2026', event: 'Initial partnership meeting' },
@@ -360,7 +360,7 @@ export const DEAL_WORKSPACES: DealWorkspace[] = [
       { date: 'Feb 12, 2026', event: 'BTW Classic venue walkthrough' },
       { date: 'Q2 2026', event: 'Full deployment complete (target)' },
     ],
-    rationale: 'FMU is the ideal proof wedge for Sports Mode. NAIA program competing against D1 opponents on ESPN+ creates massive media value at zero cost to the institution. Coach-built roster via KaNeXT Engines powers the intelligence layer.',
+    rationale: 'KaNeXT is the ideal proof wedge for Sports Mode. NAIA program competing against D1 opponents on ESPN+ creates massive media value at zero cost to the institution. Coach-built roster via KaNeXT Engines powers the intelligence layer.',
     valuationSummary: 'Partnership model -- no acquisition cost. Annual platform value: $24K ARR. Media value generated: $53M-$157M Year 1.',
     revenueProjections: [
       { year: 'Year 1', base: '$24K', downside: '$12K', upside: '$48K' },
@@ -380,11 +380,11 @@ export const DEAL_WORKSPACES: DealWorkspace[] = [
     type: 'acquisition',
     status: 'exploring',
     targetOrg: 'Sliema Wanderers FC',
-    description: 'Potential acquisition of Maltese Premier League club. Exploring governance structure, valuation, and regulatory requirements with the Malta Football Association.',
+    description: 'Potential acquisition of Maltese Premier League club. Exploring governance structure, valuation, and regulatory requirements with the League Association.',
     keyContacts: [
       { name: 'Mario Camilleri', role: 'Club President' },
       { name: 'Dr. Anne Vassallo', role: 'Legal Counsel (Malta)' },
-      { name: 'James Borg', role: 'Maltese FA Liaison' },
+      { name: 'Taylor Reed', role: 'Maltese FA Liaison' },
     ],
     timeline: [
       { date: 'Jan 20, 2026', event: 'Initial outreach via Maltese FA connection' },
@@ -570,7 +570,7 @@ export const FUNDING_PLAN: FundingPlan = {
 export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'tm-1',
-    name: 'Sammy Kalejaiye',
+    name: 'Alex Morgan',
     role: 'Founder / CEO',
     department: 'Executive',
     type: 'leadership',
@@ -579,7 +579,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: 'tm-2',
-    name: 'Dipo Kalejaiye',
+    name: 'Dipo Carter',
     role: 'Advisor — Pastoral & Culture',
     department: 'Advisory Board',
     type: 'advisor',
@@ -633,7 +633,7 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     id: 'iu-1',
     date: 'Feb 14, 2026',
     title: 'February 2026 — Product & Partnerships',
-    summary: 'Demo environment launched. FMU diligence in progress. Pre-seed conversations opened with 4 angel investors. Platform uptime at 99.7%.',
+    summary: 'Demo environment launched. KaNeXT diligence in progress. Pre-seed conversations opened with 4 angel investors. Platform uptime at 99.7%.',
     tier: 'retail',
   },
   {
@@ -647,7 +647,7 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     id: 'iu-3',
     date: 'Jan 31, 2026',
     title: 'January 2026 — Foundation Month',
-    summary: 'Entity incorporated (Delaware C-Corp). KaNeXT OS core architecture established. First advisor confirmed. FMU intro meeting completed.',
+    summary: 'Entity incorporated (Delaware C-Corp). KaNeXT OS core architecture established. First advisor confirmed. KaNeXT intro meeting completed.',
     tier: 'retail',
   },
   {
@@ -666,14 +666,14 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
 export const PIPELINE_ITEMS: PipelineItem[] = [
   {
     id: 'pip-1',
-    name: 'Florida Memorial University',
+    name: 'KaNeXT Sports',
     stage: 'Diligence',
     type: 'partnership',
     status: 'active',
   },
   {
     id: 'pip-2',
-    name: 'ICCLA (Independent Christian Collegiate League of Athletics)',
+    name: 'KaNeXT Church (Independent Christian Collegiate League of Athletics)',
     stage: 'Proposal Sent',
     type: 'institutional',
     status: 'active',
@@ -1327,8 +1327,8 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-3',
-    title: 'FMU Wedge / Mandate Execution',
-    objective: 'Complete FMU deployment across 13 sports, capture proof-of-value metrics, and establish replicable playbook for next institution.',
+    title: 'KaNeXT Wedge / Mandate Execution',
+    objective: 'Complete KaNeXT deployment across 13 sports, capture proof-of-value metrics, and establish replicable playbook for next institution.',
     owner: 'SK',
     status: 'on_track',
     successMetrics: ['13 sports onboarded', 'BTW Classic covered live', 'First KPI report delivered to AD'],
@@ -1396,7 +1396,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'proj-3',
-    title: 'FMU Sports Onboarding',
+    title: 'KaNeXT Sports Onboarding',
     initiativeId: 'init-3',
     owner: 'SK',
     timeline: 'Jan 25 – Mar 15, 2026',
@@ -1441,7 +1441,7 @@ export const BUSINESS_TASKS: BusinessTask[] = [
   },
   {
     id: 'btask-3',
-    title: 'Upload FMU roster data for remaining 5 sports',
+    title: 'Upload KaNeXT roster data for remaining 5 sports',
     projectId: 'proj-3',
     owner: 'SK',
     due: 'Feb 22, 2026',
@@ -1612,7 +1612,7 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
     walletId: 'wal-1',
     amount: 12000,
     type: 'credit',
-    counterparty: 'FMU Athletics',
+    counterparty: 'KaNeXT Athletics',
     description: 'Platform license fee — February 2026',
     state: 'scheduled',
     date: 'Feb 20, 2026',
@@ -1772,12 +1772,12 @@ export const COMMITMENTS: Commitment[] = [
   },
   {
     id: 'com-3',
-    title: 'FMU Hardware Shipment (KX-C1 Units)',
+    title: 'KaNeXT Hardware Shipment (KX-C1 Units)',
     amount: 7200,
     status: 'awaiting_release',
     entityId: 'ent-2',
     walletId: 'wal-4',
-    riskFlag: 'Pending FMU facilities confirmation before release',
+    riskFlag: 'Pending KaNeXT facilities confirmation before release',
   },
 ];
 
@@ -1794,7 +1794,7 @@ export const REVENUE_STREAMS: RevenueStream[] = [
     fees: 720,
     net: 23280,
     entityId: 'ent-2',
-    period: 'Annual (FMU)',
+    period: 'Annual (KaNeXT)',
   },
   {
     id: 'rev-2',
@@ -1978,7 +1978,7 @@ export const RAILS_EXCEPTIONS: RailsException[] = [
 export const BOARD_MEMBERS: BoardMember[] = [
   {
     id: 'bm-1',
-    name: 'Sammy Kalejaiye',
+    name: 'Alex Morgan',
     role: 'chair',
     entityAccess: ['ent-1', 'ent-2', 'ent-3', 'ent-4', 'ent-5'],
     signatureAuthority: 'release_funds',
@@ -2032,7 +2032,7 @@ export const INVESTOR_RECORDS: InvestorRecord[] = [
     type: 'strategic',
     status: 'prospect',
     accessTier: 'none',
-    notes: 'Connected through FMU network. Runs media distribution company. Exploring strategic investment.',
+    notes: 'Connected through KaNeXT network. Runs media distribution company. Exploring strategic investment.',
     lastTouch: 'Feb 8, 2026',
   },
   {
@@ -2041,7 +2041,7 @@ export const INVESTOR_RECORDS: InvestorRecord[] = [
     type: 'family_office',
     status: 'prospect',
     accessTier: 'none',
-    notes: 'Family office with HBCU portfolio. Intro through Dipo Kalejaiye. Pending initial meeting.',
+    notes: 'Family office with HBCU portfolio. Intro through Dipo Carter. Pending initial meeting.',
     lastTouch: 'Feb 5, 2026',
   },
 ];
@@ -2133,7 +2133,7 @@ export const LEGAL_DOCS: LegalDoc[] = [
   },
   {
     id: 'ldoc-4',
-    title: 'FMU Partnership Agreement',
+    title: 'KaNeXT Partnership Agreement',
     category: 'legal',
     subcategory: 'Contracts',
     entityId: 'ent-2',
@@ -2320,7 +2320,7 @@ export const PROOF_ITEMS: ProofItem[] = [
   },
   {
     id: 'proof-2',
-    title: 'FMU Partnership LOI (Redacted)',
+    title: 'KaNeXT Partnership LOI (Redacted)',
     type: 'pdf',
     category: 'partnerships',
     status: 'restricted',
@@ -2359,7 +2359,7 @@ export const PROOF_ITEMS: ProofItem[] = [
   },
   {
     id: 'proof-5',
-    title: 'Coach Testimonial — FMU Head Coach',
+    title: 'Coach Testimonial — KaNeXT Head Coach',
     type: 'audio',
     category: 'outcomes',
     status: 'draft',
@@ -2399,7 +2399,7 @@ export const PROOF_PACKS: ProofPack[] = [
     narrative: 'KaNeXT is building governed intelligence infrastructure for athletic institutions. Here is the evidence of product-market fit, traction, and team capability.',
     sections: [
       { claim: 'Working product with live deployment', proofIds: ['proof-1', 'proof-4'] },
-      { claim: 'Institutional traction with FMU partnership', proofIds: ['proof-2', 'proof-3'] },
+      { claim: 'Institutional traction with KaNeXT partnership', proofIds: ['proof-2', 'proof-3'] },
       { claim: 'Revenue model validated with financial projections', proofIds: ['proof-6'] },
     ],
     lastShared: 'Feb 14, 2026',
@@ -2492,7 +2492,7 @@ export const DATA_ROOM_PACKETS: DataRoomPacket[] = [
   },
   {
     id: 'drp-4',
-    title: 'Partner Pack — FMU',
+    title: 'Partner Pack — KaNeXT',
     type: 'partner',
     status: 'published',
     docIds: ['dr-1', 'dr-3'],

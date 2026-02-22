@@ -230,7 +230,7 @@ export function getEduFacilitiesData(_scope: string) {
 
   const bookings: RoomBooking[] = [
     {
-      id: 'bk-1', facilityId: 'fac-1', bookedBy: 'Dr. Sarah Mitchell', department: 'Biology',
+      id: 'bk-1', facilityId: 'fac-1', bookedBy: 'Dr. Mia Torres', department: 'Biology',
       date: 'Feb 18, 2026', startTime: '9:00 AM', endTime: '10:30 AM',
       purpose: 'BIO 201 — Cellular Biology Lecture', status: 'confirmed',
     },

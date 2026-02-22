@@ -273,7 +273,7 @@ export default function DonationsScreen() {
         </Pressable>
         <View style={styles.headerContent}>
           <ThemedText type="title" style={styles.headerTitle}>
-            Support FMU Athletics
+            Support KaNeXT Athletics
           </ThemedText>
           <ThemedText style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
             Join our booster community

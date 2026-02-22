@@ -1,8 +1,8 @@
 /**
- * Florida Memorial University Men's Basketball
+ * KaNeXT Sports Men's Basketball
  * Roster Entries (Step 3)
  * Seasons: 2022-23 through 2025-26
- * Source: NAIA Stats (prestosports.com) + FMU Athletics (fmuathletics.com)
+ * Source: NAIA Stats (prestosports.com) + KaNeXT Athletics (fmuathletics.com)
  * Bio fields (height, weight, hometown, previous_school) available for 2025-26 only
  */
 
@@ -11,7 +11,7 @@ import type { RosterEntry } from '../schema';
 export const rosterEntries: RosterEntry[] = [
   {
     player_id: 'dat494mxnj5hvm7y',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '96',
     position: 'G',
@@ -24,7 +24,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'ehzpg1gz3zdscbda',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '03',
     position: 'G',
@@ -37,7 +37,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'r1qvnu7n2kpzrmq3',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '30',
     position: 'G',
@@ -50,7 +50,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'ahuv84vjg2o58vmw',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '33',
     position: 'F',
@@ -63,7 +63,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '95bo5ekn5vkrh3zp',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '24',
     position: 'F',
@@ -76,7 +76,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '2cu0bx9mjfqcgsn0',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '15',
     position: 'G',
@@ -89,7 +89,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'ufge0heql69de9ca',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '10',
     position: 'G',
@@ -102,7 +102,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'jyr5u80vpdw31m9k',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '04',
     position: 'G',
@@ -115,7 +115,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'dnxnred75l1ho2ih',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '11',
     position: 'G',
@@ -128,7 +128,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'qms9makhuugkfknr',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '14',
     position: '',
@@ -141,7 +141,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'eyekidcbx4dlhpu7',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '1',
     position: 'G',
@@ -154,7 +154,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'fqhd1xpfmv9c7lrz',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '99',
     position: 'F',
@@ -167,7 +167,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'nl2hr2j0llhq4ulz',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '98',
     position: 'F',
@@ -180,7 +180,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'jkhycy7dl1jrr613',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '25',
     position: '',
@@ -193,7 +193,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '2d61pj6g2py1gkb9',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '97',
     position: 'F',
@@ -206,7 +206,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'w4z1njkrdx9ecmdu',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '02',
     position: 'G',
@@ -219,7 +219,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'qfrqg6kb6ek60peb',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '20',
     position: 'G',
@@ -232,7 +232,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'khrey0lw9hd4bsja',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '05',
     position: 'F',
@@ -245,7 +245,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'yeh2k9cpnko6obx6',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '13',
     position: 'G',
@@ -258,7 +258,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'fcqjzqembbvk3kgn',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '21',
     position: 'B',
@@ -271,7 +271,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'sqpzt526i1ojtpvh',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '32',
     position: 'G',
@@ -284,7 +284,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'wk9272rpsiznyc45',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '23',
     position: 'F',
@@ -297,7 +297,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '454flo3blckcao8b',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '44',
     position: 'F',
@@ -310,7 +310,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'kbz4yl1989ssh56e',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     jersey_number: '12',
     position: 'F',
@@ -323,7 +323,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'rp12qz4on4ffawel',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '03',
     position: 'W',
@@ -336,7 +336,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'pwo7wb4pos9wtgam',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '15',
     position: 'W',
@@ -349,7 +349,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '3mnxln84ysjso52o',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '05',
     position: 'PG',
@@ -362,7 +362,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'etxf3ucywijcdt41',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '12',
     position: 'W',
@@ -375,7 +375,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'qzq1gz1klu46uwex',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '04',
     position: 'W',
@@ -388,7 +388,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '8hggfzkaalo64ik0',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '02',
     position: 'W',
@@ -401,7 +401,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '5uahn5xf8suh8fn9',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '35',
     position: 'W',
@@ -414,7 +414,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '6b9io5cdzxln02hr',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '24',
     position: 'PG',
@@ -427,7 +427,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '9q6zm17uop33rari',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '14',
     position: 'W',
@@ -440,7 +440,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'fsi1s03w8d3dahw4',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '25',
     position: 'F',
@@ -453,7 +453,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'eml0jlwpb7wg8tmn',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '32',
     position: 'F',
@@ -466,7 +466,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'c1u1ufogqcn5duw8',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '33',
     position: 'F',
@@ -479,7 +479,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '0eywy4kyq22bkq3z',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '10',
     position: 'W',
@@ -492,7 +492,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '043eai6iz0ux126a',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '21',
     position: 'F',
@@ -505,7 +505,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'j73u5gpeuj8q5b2b',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '22',
     position: 'G',
@@ -518,7 +518,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '7r42x8wig5p5pibb',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '20',
     position: 'W',
@@ -531,7 +531,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '0pxemu7su340xv66',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '13',
     position: 'F',
@@ -544,7 +544,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '5flmrvttgj9tr0ws',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     jersey_number: '01',
     position: 'PG',
@@ -557,7 +557,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'pkl6xuxtobjngnph',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '01',
     position: 'PG',
@@ -570,7 +570,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'ca6zjwihz5zjykm5',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '23',
     position: 'W',
@@ -583,7 +583,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'zqxqajfoqmdvaudj',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '44',
     position: 'F',
@@ -596,7 +596,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '11dgwy5ncyd3ovao',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '11',
     position: 'W',
@@ -609,7 +609,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'v9qrm36lxqbal2ej',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '02',
     position: 'PG',
@@ -622,7 +622,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'xlhyxoucr6crn7wn',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '10',
     position: 'F',
@@ -635,7 +635,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '7xpduw36muywyzkp',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '21',
     position: 'W',
@@ -648,7 +648,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '89iho2ilj6jvgll6',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '12',
     position: 'W',
@@ -661,7 +661,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'd52wg92lgtv49umn',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '14',
     position: 'W',
@@ -674,7 +674,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'amqfgzqh1jn899b0',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '22',
     position: 'PG',
@@ -687,7 +687,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'gbkbvinp9fscw776',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '25',
     position: 'F',
@@ -700,7 +700,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'jbqkwwibg3msm1ac',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '30',
     position: 'F',
@@ -713,7 +713,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '4km7lkf5y8i1q0lk',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '20',
     position: 'PG',
@@ -726,7 +726,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'vdracvku2usz8iyc',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '05',
     position: 'W',
@@ -739,7 +739,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'wvc0wn55kc9pe1ky',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '32',
     position: 'W',
@@ -752,7 +752,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'utwiiu1gxdzpl4z8',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '04',
     position: 'W',
@@ -765,7 +765,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'omv4mcurknuvpwda',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '24',
     position: 'W',
@@ -778,7 +778,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'zwbv0hsocywubx0i',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '13',
     position: 'F',
@@ -791,7 +791,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '4gl11pz3gws1gl4d',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     jersey_number: '15',
     position: 'W',
@@ -804,7 +804,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'u8lc9kufy0lgddb6',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '01',
     position: 'F',
@@ -817,7 +817,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'kviux4jgkkq8dkz1',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '09',
     position: 'PG',
@@ -830,7 +830,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'eji3q5b4cwdv1uar',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '41',
     position: 'W',
@@ -843,7 +843,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'mqr628859kskbk9g',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '04',
     position: 'W',
@@ -856,7 +856,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'rnz0zmlozsxndu4k',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '20',
     position: 'F',
@@ -869,7 +869,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '0rf840w4dnjxjy4c',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '22',
     position: 'CG',
@@ -882,7 +882,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'nij9a75w5rwls3pq',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '02',
     position: 'W',
@@ -895,7 +895,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'ts0ado47fll844p1',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '11',
     position: 'PG',
@@ -908,7 +908,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'bx8jozbhesobkhyq',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '07',
     position: 'F',
@@ -921,7 +921,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'lqub09hn86ifocc2',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '15',
     position: 'PG',
@@ -934,7 +934,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'e1f6a2s3lgntlqh9',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '10',
     position: 'W',
@@ -947,7 +947,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '4soc3c2n8aeup5m6',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '55',
     position: 'W',
@@ -960,7 +960,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: '78ue77rxih6q60m0',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '13',
     position: 'PG',
@@ -973,7 +973,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'lkrjjck20w228biq',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '05',
     position: 'F',
@@ -986,7 +986,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'qaw97eb2xmvn2hwo',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '00',
     position: 'F',
@@ -999,7 +999,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'n32bjhw03zaajlpk',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '03',
     position: 'W',
@@ -1012,7 +1012,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 'mxuhnci29qm8bns1',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '12',
     position: 'W',
@@ -1025,7 +1025,7 @@ export const rosterEntries: RosterEntry[] = [
   },
   {
     player_id: 't6raih5obb1lbbcm',
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     jersey_number: '14',
     position: null,

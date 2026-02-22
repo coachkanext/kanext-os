@@ -292,7 +292,7 @@ export const DASHBOARD_STATUS_COLOR: Record<ComplianceDashboardBlock['status'], 
 };
 
 // =============================================================================
-// SPORTS MODE — FMU Basketball
+// SPORTS MODE — KaNeXT Basketball
 // =============================================================================
 
 const sportsDashboard: ComplianceDashboardBlock[] = [
@@ -306,25 +306,25 @@ const sportsDashboard: ComplianceDashboardBlock[] = [
 ];
 
 const sportsRequirements: ComplianceRequirement[] = [
-  { id: 'sr-01', title: 'Player Eligibility Documentation', description: 'All active roster players must have current eligibility verification on file with the conference office.', category: 'Eligibility', cadence: 'Annual', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', severity: 'critical', status: 'compliant', dueDate: 'Feb 28, 2026', lastVerified: 'Jan 15, 2026', scope: 'Program' },
+  { id: 'sr-01', title: 'Player Eligibility Documentation', description: 'All active roster players must have current eligibility verification on file with the conference office.', category: 'Eligibility', cadence: 'Annual', owner: 'Alex Morgan', ownerInitials: 'SK', severity: 'critical', status: 'compliant', dueDate: 'Feb 28, 2026', lastVerified: 'Jan 15, 2026', scope: 'Program' },
   { id: 'sr-02', title: 'Medical Clearance & Physicals', description: 'Pre-participation physicals required for all student-athletes before competition.', category: 'Medical', cadence: 'Annual', owner: 'Marcus Reed', ownerInitials: 'MR', severity: 'critical', status: 'due-soon', dueDate: 'Mar 15, 2026', lastVerified: 'Jan 10, 2026', scope: 'Program' },
   { id: 'sr-03', title: 'Travel Waivers Per Trip', description: 'Signed travel waivers required for all student-athletes and staff prior to each away trip.', category: 'Travel', cadence: 'Per Trip', owner: 'Devin Thomas', ownerInitials: 'DT', severity: 'high', status: 'compliant', dueDate: 'Mar 1, 2026', lastVerified: 'Feb 8, 2026', scope: 'Season' },
-  { id: 'sr-04', title: 'Staff Training Completion', description: 'All coaching and support staff must complete required annual training modules.', category: 'Training', cadence: 'Annual', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', severity: 'high', status: 'due-soon', dueDate: 'Apr 30, 2026', scope: 'Organization' },
-  { id: 'sr-05', title: 'Recruiting Process Evidence', description: 'Contact logs, visit reports, and communication records for all recruiting interactions.', category: 'Recruiting', cadence: 'Per Cycle', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', severity: 'medium', status: 'compliant', dueDate: 'May 31, 2026', lastVerified: 'Feb 14, 2026', scope: 'Program' },
+  { id: 'sr-04', title: 'Staff Training Completion', description: 'All coaching and support staff must complete required annual training modules.', category: 'Training', cadence: 'Annual', owner: 'Alex Morgan', ownerInitials: 'SK', severity: 'high', status: 'due-soon', dueDate: 'Apr 30, 2026', scope: 'Organization' },
+  { id: 'sr-05', title: 'Recruiting Process Evidence', description: 'Contact logs, visit reports, and communication records for all recruiting interactions.', category: 'Recruiting', cadence: 'Per Cycle', owner: 'Alex Morgan', ownerInitials: 'SK', severity: 'medium', status: 'compliant', dueDate: 'May 31, 2026', lastVerified: 'Feb 14, 2026', scope: 'Program' },
 ];
 
 const sportsChecklists: ComplianceChecklist[] = [
   { id: 'sc-01', title: 'Spring Trip Compliance', description: 'All travel documentation, waivers, and insurance for the March spring trip.', requirementCount: 6, completedCount: 4, owner: 'Devin Thomas', ownerInitials: 'DT', dueDate: 'Mar 1, 2026', status: 'in-progress', scope: 'Season' },
-  { id: 'sc-02', title: 'Season Eligibility', description: 'Full eligibility verification for all rostered student-athletes.', requirementCount: 8, completedCount: 8, owner: 'Sammy Kalejaiye', ownerInitials: 'SK', dueDate: 'Jan 15, 2026', status: 'complete', scope: 'Program' },
-  { id: 'sc-03', title: 'Annual Staff Training', description: 'Required training modules for all coaching and support staff.', requirementCount: 5, completedCount: 4, owner: 'Sammy Kalejaiye', ownerInitials: 'SK', dueDate: 'Apr 30, 2026', status: 'in-progress', scope: 'Organization' },
+  { id: 'sc-02', title: 'Season Eligibility', description: 'Full eligibility verification for all rostered student-athletes.', requirementCount: 8, completedCount: 8, owner: 'Alex Morgan', ownerInitials: 'SK', dueDate: 'Jan 15, 2026', status: 'complete', scope: 'Program' },
+  { id: 'sc-03', title: 'Annual Staff Training', description: 'Required training modules for all coaching and support staff.', requirementCount: 5, completedCount: 4, owner: 'Alex Morgan', ownerInitials: 'SK', dueDate: 'Apr 30, 2026', status: 'in-progress', scope: 'Organization' },
 ];
 
 const sportsEvidence: ComplianceEvidence[] = [
-  { id: 'se-01', title: 'Player Eligibility Packet — Full Roster', requirementId: 'sr-01', requirementTitle: 'Player Eligibility Documentation', type: 'document', submittedBy: 'Sammy Kalejaiye', submittedByInitials: 'SK', submittedDate: 'Jan 15, 2026', status: 'verified', verifiedBy: 'Conference Office', verifiedDate: 'Jan 18, 2026' },
+  { id: 'se-01', title: 'Player Eligibility Packet — Full Roster', requirementId: 'sr-01', requirementTitle: 'Player Eligibility Documentation', type: 'document', submittedBy: 'Alex Morgan', submittedByInitials: 'SK', submittedDate: 'Jan 15, 2026', status: 'verified', verifiedBy: 'Conference Office', verifiedDate: 'Jan 18, 2026' },
   { id: 'se-02', title: 'Medical Clearance — Player #23', requirementId: 'sr-02', requirementTitle: 'Medical Clearance & Physicals', type: 'attestation', submittedBy: 'Marcus Reed', submittedByInitials: 'MR', submittedDate: 'Feb 12, 2026', status: 'pending' },
   { id: 'se-03', title: 'Trip Waiver — Spring Trip', requirementId: 'sr-03', requirementTitle: 'Travel Waivers Per Trip', type: 'document', submittedBy: 'Devin Thomas', submittedByInitials: 'DT', submittedDate: 'Feb 10, 2026', status: 'submitted' },
   { id: 'se-04', title: 'Staff Training Cert — Coach Reed', requirementId: 'sr-04', requirementTitle: 'Staff Training Completion', type: 'certificate', submittedBy: 'Marcus Reed', submittedByInitials: 'MR', submittedDate: 'Jan 22, 2026', status: 'verified', verifiedBy: 'HR Office', verifiedDate: 'Jan 25, 2026', expiresDate: 'Jan 22, 2027' },
-  { id: 'se-05', title: 'Recruiting Contact Log — Feb', requirementId: 'sr-05', requirementTitle: 'Recruiting Process Evidence', type: 'link', submittedBy: 'Sammy Kalejaiye', submittedByInitials: 'SK', submittedDate: 'Feb 14, 2026', status: 'submitted' },
+  { id: 'se-05', title: 'Recruiting Contact Log — Feb', requirementId: 'sr-05', requirementTitle: 'Recruiting Process Evidence', type: 'link', submittedBy: 'Alex Morgan', submittedByInitials: 'SK', submittedDate: 'Feb 14, 2026', status: 'submitted' },
 ];
 
 const sportsIncidents: ComplianceIncident[] = [
@@ -335,28 +335,28 @@ const sportsIncidents: ComplianceIncident[] = [
 
 const sportsActions: ComplianceAction[] = [
   { id: 'sa-01', title: 'Schedule Physical for Player #23', description: 'Coordinate with athletics trainer to schedule pre-participation physical before next competition date.', incidentId: 'si-01', incidentTitle: 'Player Medical Hold — Missed Physical', assignee: 'Marcus Reed', assigneeInitials: 'MR', dueDate: 'Feb 20, 2026', status: 'in-progress', priority: 'high' },
-  { id: 'sa-02', title: 'Update Travel Manifest Template', description: 'Revise travel manifest template to include automated head-count verification.', incidentId: 'si-02', incidentTitle: 'Travel Manifest Discrepancy — Jan Trip', assignee: 'Devin Thomas', assigneeInitials: 'DT', dueDate: 'Feb 15, 2026', status: 'completed', priority: 'medium', verifiedBy: 'Sammy Kalejaiye', verifiedDate: 'Feb 16, 2026' },
+  { id: 'sa-02', title: 'Update Travel Manifest Template', description: 'Revise travel manifest template to include automated head-count verification.', incidentId: 'si-02', incidentTitle: 'Travel Manifest Discrepancy — Jan Trip', assignee: 'Devin Thomas', assigneeInitials: 'DT', dueDate: 'Feb 15, 2026', status: 'completed', priority: 'medium', verifiedBy: 'Alex Morgan', verifiedDate: 'Feb 16, 2026' },
   { id: 'sa-03', title: 'Inspect Weight Room Equipment', description: 'Full inspection of all cable machines in the weight room. Replace frayed cable on lat pulldown.', incidentId: 'si-03', incidentTitle: 'Equipment Safety Concern — Weight Room', assignee: 'Tony Wallace', assigneeInitials: 'TW', dueDate: 'Feb 18, 2026', status: 'pending', priority: 'high' },
 ];
 
 const sportsTraining: ComplianceTraining[] = [
   { id: 'st-01', title: 'NCCAA Compliance Training', description: 'Annual compliance training required by the National Christian College Athletic Association.', assignee: 'All Staff', assigneeInitials: 'AS', module: 'NCCAA Annual Compliance', dueDate: 'Apr 30, 2026', status: 'in-progress', score: 80 },
-  { id: 'st-02', title: 'Recruiting Rules Refresher', description: 'Annual update on recruiting rules, contact periods, and permissible activities.', assignee: 'Sammy Kalejaiye', assigneeInitials: 'SK', module: 'Recruiting Rules 2026', dueDate: 'Mar 31, 2026', completedDate: 'Feb 5, 2026', status: 'completed', score: 95 },
+  { id: 'st-02', title: 'Recruiting Rules Refresher', description: 'Annual update on recruiting rules, contact periods, and permissible activities.', assignee: 'Alex Morgan', assigneeInitials: 'SK', module: 'Recruiting Rules 2026', dueDate: 'Mar 31, 2026', completedDate: 'Feb 5, 2026', status: 'completed', score: 95 },
   { id: 'st-03', title: 'First Aid Certification', description: 'Current first aid and CPR certification required for all coaching staff.', assignee: 'Marcus Reed', assigneeInitials: 'MR', module: 'First Aid & CPR', dueDate: 'Jan 31, 2026', status: 'overdue' },
   { id: 'st-04', title: 'Title IX Awareness', description: 'Mandatory Title IX training for all athletic department staff.', assignee: 'All Staff', assigneeInitials: 'AS', module: 'Title IX Awareness 2026', dueDate: 'Apr 30, 2026', status: 'in-progress', score: 60 },
 ];
 
 const sportsPolicies: CompliancePolicy[] = [
-  { id: 'sp-01', title: 'Athletic Eligibility Policy', description: 'Defines eligibility requirements, verification processes, and consequences for non-compliance.', version: 'v2.1', effectiveDate: 'Aug 1, 2025', reviewDate: 'Aug 1, 2026', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'active', acknowledgedCount: 12, totalCount: 13 },
+  { id: 'sp-01', title: 'Athletic Eligibility Policy', description: 'Defines eligibility requirements, verification processes, and consequences for non-compliance.', version: 'v2.1', effectiveDate: 'Aug 1, 2025', reviewDate: 'Aug 1, 2026', owner: 'Alex Morgan', ownerInitials: 'SK', status: 'active', acknowledgedCount: 12, totalCount: 13 },
   { id: 'sp-02', title: 'Travel & Conduct Policy', description: 'Travel procedures, conduct expectations, and waiver requirements for all program travel.', version: 'v1.3', effectiveDate: 'Sep 1, 2025', reviewDate: 'Sep 1, 2026', owner: 'Devin Thomas', ownerInitials: 'DT', status: 'active', acknowledgedCount: 13, totalCount: 13 },
-  { id: 'sp-03', title: 'Recruiting Contact Policy', description: 'Guidelines for permissible recruiting contacts, communication methods, and documentation.', version: 'v1.0', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'under-review', acknowledgedCount: 3, totalCount: 5 },
+  { id: 'sp-03', title: 'Recruiting Contact Policy', description: 'Guidelines for permissible recruiting contacts, communication methods, and documentation.', version: 'v1.0', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Alex Morgan', ownerInitials: 'SK', status: 'under-review', acknowledgedCount: 3, totalCount: 5 },
 ];
 
 const sportsDeadlines: ComplianceDeadline[] = [
-  { id: 'sdl-01', title: 'Spring Eligibility Verification', description: 'Submit verified eligibility documentation for all rostered student-athletes to the conference office.', dueDate: 'Feb 28, 2026', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'due-soon', proofRequired: true, proofSubmitted: false, scope: 'Program' },
+  { id: 'sdl-01', title: 'Spring Eligibility Verification', description: 'Submit verified eligibility documentation for all rostered student-athletes to the conference office.', dueDate: 'Feb 28, 2026', owner: 'Alex Morgan', ownerInitials: 'SK', status: 'due-soon', proofRequired: true, proofSubmitted: false, scope: 'Program' },
   { id: 'sdl-02', title: 'Medical Clearance Renewals', description: 'Ensure all student-athletes have current pre-participation physicals on file.', dueDate: 'Mar 15, 2026', owner: 'Marcus Reed', ownerInitials: 'MR', status: 'upcoming', proofRequired: true, proofSubmitted: false, scope: 'Program' },
   { id: 'sdl-03', title: 'Travel Compliance Packet — Spring Trip', description: 'Complete travel waivers, insurance verification, and manifest for the spring trip.', dueDate: 'Mar 1, 2026', owner: 'Devin Thomas', ownerInitials: 'DT', status: 'due-soon', proofRequired: true, proofSubmitted: false, scope: 'Season' },
-  { id: 'sdl-04', title: 'Annual Staff Training Completion', description: 'All coaching and support staff must complete required training modules.', dueDate: 'Apr 30, 2026', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'upcoming', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
+  { id: 'sdl-04', title: 'Annual Staff Training Completion', description: 'All coaching and support staff must complete required training modules.', dueDate: 'Apr 30, 2026', owner: 'Alex Morgan', ownerInitials: 'SK', status: 'upcoming', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
 ];
 
 const sportsReports: ComplianceReport[] = [
@@ -369,11 +369,11 @@ const sportsAudit: ComplianceAuditEntry[] = [
   { id: 'sau-01', action: 'requirement_verified', actor: 'Conference Office', actorInitials: 'CO', target: 'Player Eligibility Documentation', timestamp: 'Feb 14, 2026 10:30 AM', detail: 'Full roster eligibility verified for spring competition' },
   { id: 'sau-02', action: 'evidence_submitted', actor: 'Marcus Reed', actorInitials: 'MR', target: 'Medical Clearance — Player #23', timestamp: 'Feb 12, 2026 3:15 PM', detail: 'Attestation submitted, awaiting verification' },
   { id: 'sau-03', action: 'incident_opened', actor: 'Tony Wallace', actorInitials: 'TW', target: 'Equipment Safety Concern — Weight Room', timestamp: 'Feb 13, 2026 9:00 AM', detail: 'Frayed cable on lat pulldown machine reported' },
-  { id: 'sau-04', action: 'checklist_completed', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Season Eligibility', timestamp: 'Jan 15, 2026 4:45 PM', detail: 'All 8 items verified and complete' },
-  { id: 'sau-05', action: 'policy_updated', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Recruiting Contact Policy', timestamp: 'Jan 5, 2026 11:00 AM', detail: 'New policy v1.0 published for review' },
-  { id: 'sau-06', action: 'training_completed', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Recruiting Rules Refresher', timestamp: 'Feb 5, 2026 2:30 PM', detail: 'Scored 95% on module assessment' },
-  { id: 'sau-07', action: 'deadline_met', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Preseason Eligibility Filing', timestamp: 'Jan 15, 2026 5:00 PM', detail: 'All documents submitted before deadline' },
-  { id: 'sau-08', action: 'action_verified', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Update Travel Manifest Template', timestamp: 'Feb 16, 2026 8:00 AM', detail: 'Revised template approved and distributed' },
+  { id: 'sau-04', action: 'checklist_completed', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Season Eligibility', timestamp: 'Jan 15, 2026 4:45 PM', detail: 'All 8 items verified and complete' },
+  { id: 'sau-05', action: 'policy_updated', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Recruiting Contact Policy', timestamp: 'Jan 5, 2026 11:00 AM', detail: 'New policy v1.0 published for review' },
+  { id: 'sau-06', action: 'training_completed', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Recruiting Rules Refresher', timestamp: 'Feb 5, 2026 2:30 PM', detail: 'Scored 95% on module assessment' },
+  { id: 'sau-07', action: 'deadline_met', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Preseason Eligibility Filing', timestamp: 'Jan 15, 2026 5:00 PM', detail: 'All documents submitted before deadline' },
+  { id: 'sau-08', action: 'action_verified', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Update Travel Manifest Template', timestamp: 'Feb 16, 2026 8:00 AM', detail: 'Revised template approved and distributed' },
 ];
 
 const sportsSettings: ComplianceSettingToggle[] = [
@@ -384,7 +384,7 @@ const sportsSettings: ComplianceSettingToggle[] = [
 ];
 
 // =============================================================================
-// EDUCATION MODE — San Diego Christian College
+// EDUCATION MODE — KaNeXT University
 // =============================================================================
 
 const educationDashboard: ComplianceDashboardBlock[] = [
@@ -476,7 +476,7 @@ const educationSettings: ComplianceSettingToggle[] = [
 ];
 
 // =============================================================================
-// CHURCH MODE — International Christian Center (ICCLA)
+// CHURCH MODE — KaNeXT Church (KaNeXT Church)
 // =============================================================================
 
 const churchDashboard: ComplianceDashboardBlock[] = [
@@ -493,8 +493,8 @@ const churchRequirements: ComplianceRequirement[] = [
   { id: 'cr-01', title: 'Background Check Cadence', description: 'All youth and children\'s ministry workers must have a current background check on file, renewed annually.', category: 'Safety', cadence: 'Annual', owner: 'Sister Keisha Williams', ownerInitials: 'KW', severity: 'critical', status: 'compliant', dueDate: 'Mar 15, 2026', lastVerified: 'Jan 20, 2026', scope: 'Ministry' },
   { id: 'cr-02', title: 'Youth Protection Training', description: 'Annual child safety and youth protection training required for all youth ministry leaders and volunteers.', category: 'Training', cadence: 'Annual', owner: 'Sister Keisha Williams', ownerInitials: 'KW', severity: 'critical', status: 'due-soon', dueDate: 'Mar 1, 2026', lastVerified: 'Feb 1, 2026', scope: 'Ministry' },
   { id: 'cr-03', title: 'Facility Safety Inspection', description: 'Annual safety inspection of all campus buildings, classrooms, and gathering spaces.', category: 'Facilities', cadence: 'Annual', owner: 'Deacon Charles Obi', ownerInitials: 'CO', severity: 'high', status: 'compliant', dueDate: 'Jun 1, 2026', lastVerified: 'Dec 10, 2025', scope: 'Campus' },
-  { id: 'cr-04', title: 'Incident Reporting SLA', description: 'All safety incidents must be reported within 24 hours and investigated within 72 hours.', category: 'Incidents', cadence: 'Per Incident', owner: 'Pastor Dipo Kalejaiye', ownerInitials: 'DK', severity: 'high', status: 'compliant', dueDate: 'Ongoing', lastVerified: 'Feb 5, 2026', scope: 'Organization' },
-  { id: 'cr-05', title: 'Sensitive-Case Access Policy Ack', description: 'All authorized leaders must acknowledge the sensitive matters handling policy annually.', category: 'Privacy', cadence: 'Annual', owner: 'Pastor Dipo Kalejaiye', ownerInitials: 'DK', severity: 'medium', status: 'compliant', dueDate: 'Jun 30, 2026', lastVerified: 'Jan 8, 2026', scope: 'Organization' },
+  { id: 'cr-04', title: 'Incident Reporting SLA', description: 'All safety incidents must be reported within 24 hours and investigated within 72 hours.', category: 'Incidents', cadence: 'Per Incident', owner: 'Pastor Dipo Carter', ownerInitials: 'DK', severity: 'high', status: 'compliant', dueDate: 'Ongoing', lastVerified: 'Feb 5, 2026', scope: 'Organization' },
+  { id: 'cr-05', title: 'Sensitive-Case Access Policy Ack', description: 'All authorized leaders must acknowledge the sensitive matters handling policy annually.', category: 'Privacy', cadence: 'Annual', owner: 'Pastor Dipo Carter', ownerInitials: 'DK', severity: 'medium', status: 'compliant', dueDate: 'Jun 30, 2026', lastVerified: 'Jan 8, 2026', scope: 'Organization' },
 ];
 
 const churchChecklists: ComplianceChecklist[] = [
@@ -508,7 +508,7 @@ const churchEvidence: ComplianceEvidence[] = [
   { id: 'ce-02', title: 'Youth Protection Training Cert — Sister Keisha', requirementId: 'cr-02', requirementTitle: 'Youth Protection Training', type: 'certificate', submittedBy: 'Sister Keisha Williams', submittedByInitials: 'KW', submittedDate: 'Feb 1, 2026', status: 'verified', verifiedBy: 'Church Administration', verifiedDate: 'Feb 3, 2026', expiresDate: 'Feb 1, 2027' },
   { id: 'ce-03', title: 'Facility Inspection Report — Dec 2025', requirementId: 'cr-03', requirementTitle: 'Facility Safety Inspection', type: 'document', submittedBy: 'Deacon Charles Obi', submittedByInitials: 'CO', submittedDate: 'Dec 10, 2025', status: 'verified', verifiedBy: 'Safety Committee', verifiedDate: 'Dec 14, 2025' },
   { id: 'ce-04', title: 'Volunteer Application — New Member', requirementId: 'cr-01', requirementTitle: 'Background Check Cadence', type: 'attestation', submittedBy: 'Deacon Charles Obi', submittedByInitials: 'CO', submittedDate: 'Feb 10, 2026', status: 'pending' },
-  { id: 'ce-05', title: 'Incident Response Training Cert', requirementId: 'cr-04', requirementTitle: 'Incident Reporting SLA', type: 'certificate', submittedBy: 'Pastor Dipo Kalejaiye', submittedByInitials: 'DK', submittedDate: 'Jan 15, 2026', status: 'submitted' },
+  { id: 'ce-05', title: 'Incident Response Training Cert', requirementId: 'cr-04', requirementTitle: 'Incident Reporting SLA', type: 'certificate', submittedBy: 'Pastor Dipo Carter', submittedByInitials: 'DK', submittedDate: 'Jan 15, 2026', status: 'submitted' },
 ];
 
 const churchIncidents: ComplianceIncident[] = [
@@ -520,7 +520,7 @@ const churchIncidents: ComplianceIncident[] = [
 const churchActions: ComplianceAction[] = [
   { id: 'ca-01', title: 'Follow Up on 2 Pending Background Checks', description: 'Contact screening vendor to expedite processing for the 2 new volunteer background checks.', incidentId: 'ci-03', incidentTitle: 'Volunteer Screening Delay', assignee: 'Deacon Charles Obi', assigneeInitials: 'CO', dueDate: 'Feb 18, 2026', status: 'in-progress', priority: 'high' },
   { id: 'ca-02', title: 'Submit Parking Lot Lighting Repair Request', description: 'File maintenance request for additional lighting in the west parking lot area.', incidentId: 'ci-02', incidentTitle: 'Parking Lot Lighting Concern', assignee: 'Deacon Charles Obi', assigneeInitials: 'CO', dueDate: 'Feb 22, 2026', status: 'pending', priority: 'medium' },
-  { id: 'ca-03', title: 'Complete Volunteer Screening Process', description: 'Finalize onboarding for volunteers whose background checks have been cleared.', incidentId: 'ci-03', incidentTitle: 'Volunteer Screening Delay', assignee: 'Deacon Charles Obi', assigneeInitials: 'CO', dueDate: 'Feb 15, 2026', status: 'completed', priority: 'medium', verifiedBy: 'Pastor Dipo Kalejaiye', verifiedDate: 'Feb 16, 2026' },
+  { id: 'ca-03', title: 'Complete Volunteer Screening Process', description: 'Finalize onboarding for volunteers whose background checks have been cleared.', incidentId: 'ci-03', incidentTitle: 'Volunteer Screening Delay', assignee: 'Deacon Charles Obi', assigneeInitials: 'CO', dueDate: 'Feb 15, 2026', status: 'completed', priority: 'medium', verifiedBy: 'Pastor Dipo Carter', verifiedDate: 'Feb 16, 2026' },
 ];
 
 const churchTraining: ComplianceTraining[] = [
@@ -531,9 +531,9 @@ const churchTraining: ComplianceTraining[] = [
 ];
 
 const churchPolicies: CompliancePolicy[] = [
-  { id: 'cp-01', title: 'Child & Youth Protection Policy', description: 'Comprehensive policy for the protection of children and youth in all church programs and activities.', version: 'v2.0', effectiveDate: 'Jul 1, 2025', reviewDate: 'Jul 1, 2026', owner: 'Pastor Dipo Kalejaiye', ownerInitials: 'DK', status: 'active', acknowledgedCount: 20, totalCount: 20 },
+  { id: 'cp-01', title: 'Child & Youth Protection Policy', description: 'Comprehensive policy for the protection of children and youth in all church programs and activities.', version: 'v2.0', effectiveDate: 'Jul 1, 2025', reviewDate: 'Jul 1, 2026', owner: 'Pastor Dipo Carter', ownerInitials: 'DK', status: 'active', acknowledgedCount: 20, totalCount: 20 },
   { id: 'cp-02', title: 'Volunteer Screening Policy', description: 'Requirements and procedures for screening all volunteers who work with minors or vulnerable populations.', version: 'v1.2', effectiveDate: 'Sep 1, 2025', reviewDate: 'Sep 1, 2026', owner: 'Deacon Charles Obi', ownerInitials: 'CO', status: 'active', acknowledgedCount: 18, totalCount: 20 },
-  { id: 'cp-03', title: 'Sensitive Matters Handling Policy', description: 'Procedures for handling sensitive pastoral care matters with appropriate confidentiality and authorization.', version: 'v1.0', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Pastor Dipo Kalejaiye', ownerInitials: 'DK', status: 'active', acknowledgedCount: 5, totalCount: 5 },
+  { id: 'cp-03', title: 'Sensitive Matters Handling Policy', description: 'Procedures for handling sensitive pastoral care matters with appropriate confidentiality and authorization.', version: 'v1.0', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Pastor Dipo Carter', ownerInitials: 'DK', status: 'active', acknowledgedCount: 5, totalCount: 5 },
 ];
 
 const churchDeadlines: ComplianceDeadline[] = [
@@ -553,10 +553,10 @@ const churchAudit: ComplianceAuditEntry[] = [
   { id: 'cau-02', action: 'evidence_submitted', actor: 'Sister Keisha Williams', actorInitials: 'KW', target: 'Youth Protection Training Cert', timestamp: 'Feb 1, 2026 1:30 PM', detail: 'Training certificate submitted for renewal' },
   { id: 'cau-03', action: 'incident_opened', actor: 'Deacon Charles Obi', actorInitials: 'CO', target: 'Parking Lot Lighting Concern', timestamp: 'Feb 9, 2026 8:45 PM', detail: 'Reported after Sunday evening service' },
   { id: 'cau-04', action: 'checklist_completed', actor: 'Sister Keisha Williams', actorInitials: 'KW', target: 'Youth Ministry Safety', timestamp: 'Jan 31, 2026 3:00 PM', detail: 'All 8 items verified and marked complete' },
-  { id: 'cau-05', action: 'policy_updated', actor: 'Pastor Dipo Kalejaiye', actorInitials: 'DK', target: 'Sensitive Matters Handling Policy', timestamp: 'Jan 2, 2026 11:00 AM', detail: 'New policy v1.0 published and distributed to authorized leaders' },
+  { id: 'cau-05', action: 'policy_updated', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Sensitive Matters Handling Policy', timestamp: 'Jan 2, 2026 11:00 AM', detail: 'New policy v1.0 published and distributed to authorized leaders' },
   { id: 'cau-06', action: 'training_completed', actor: 'All Staff', actorInitials: 'AS', target: 'Mandatory Reporter Training', timestamp: 'Feb 5, 2026 4:00 PM', detail: 'All staff completed mandatory reporter module' },
   { id: 'cau-07', action: 'deadline_met', actor: 'Sister Keisha Williams', actorInitials: 'KW', target: 'Youth Ministry Safety Checklist', timestamp: 'Jan 31, 2026 3:00 PM', detail: 'Completed ahead of deadline' },
-  { id: 'cau-08', action: 'action_verified', actor: 'Pastor Dipo Kalejaiye', actorInitials: 'DK', target: 'Complete Volunteer Screening Process', timestamp: 'Feb 16, 2026 9:00 AM', detail: 'Volunteer onboarding finalized for cleared applicants' },
+  { id: 'cau-08', action: 'action_verified', actor: 'Pastor Dipo Carter', actorInitials: 'DK', target: 'Complete Volunteer Screening Process', timestamp: 'Feb 16, 2026 9:00 AM', detail: 'Volunteer onboarding finalized for cleared applicants' },
 ];
 
 const churchSettings: ComplianceSettingToggle[] = [
@@ -581,37 +581,37 @@ const businessDashboard: ComplianceDashboardBlock[] = [
 ];
 
 const businessRequirements: ComplianceRequirement[] = [
-  { id: 'br-01', title: 'Annual Policy Acknowledgements', description: 'All employees and contractors must acknowledge updated company policies annually.', category: 'Policy', cadence: 'Annual', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', severity: 'critical', status: 'due-soon', dueDate: 'Mar 31, 2026', lastVerified: 'Jan 2, 2026', scope: 'Organization' },
+  { id: 'br-01', title: 'Annual Policy Acknowledgements', description: 'All employees and contractors must acknowledge updated company policies annually.', category: 'Policy', cadence: 'Annual', owner: 'Alex Morgan', ownerInitials: 'SK', severity: 'critical', status: 'due-soon', dueDate: 'Mar 31, 2026', lastVerified: 'Jan 2, 2026', scope: 'Organization' },
   { id: 'br-02', title: 'Quarterly Access Reviews', description: 'Review and verify all system access permissions quarterly to ensure principle of least privilege.', category: 'Security', cadence: 'Quarterly', owner: 'Jordan Kim', ownerInitials: 'JK', severity: 'high', status: 'compliant', dueDate: 'Mar 31, 2026', lastVerified: 'Dec 31, 2025', scope: 'Organization' },
   { id: 'br-03', title: 'Vendor Compliance Docs', description: 'Maintain current insurance certificates, compliance attestations, and contract documentation for all active vendors.', category: 'Vendor', cadence: 'Per Vendor', owner: 'Nkechi Adamu', ownerInitials: 'NA', severity: 'high', status: 'due-soon', dueDate: 'Feb 28, 2026', lastVerified: 'Jan 15, 2026', scope: 'Entity' },
-  { id: 'br-04', title: 'Annual Training Completion', description: 'All employees must complete required annual training modules including security awareness and anti-harassment.', category: 'Training', cadence: 'Annual', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', severity: 'high', status: 'compliant', dueDate: 'Apr 30, 2026', lastVerified: 'Feb 1, 2026', scope: 'Organization' },
+  { id: 'br-04', title: 'Annual Training Completion', description: 'All employees must complete required annual training modules including security awareness and anti-harassment.', category: 'Training', cadence: 'Annual', owner: 'Alex Morgan', ownerInitials: 'SK', severity: 'high', status: 'compliant', dueDate: 'Apr 30, 2026', lastVerified: 'Feb 1, 2026', scope: 'Organization' },
   { id: 'br-05', title: 'Incident Response Playbook Adherence', description: 'All security and operational incidents must be handled per the documented incident response playbook.', category: 'Security', cadence: 'Per Incident', owner: 'Jordan Kim', ownerInitials: 'JK', severity: 'medium', status: 'compliant', dueDate: 'Ongoing', lastVerified: 'Feb 10, 2026', scope: 'Organization' },
 ];
 
 const businessChecklists: ComplianceChecklist[] = [
-  { id: 'bc-01', title: 'Q1 2026 Compliance Review', description: 'Quarterly compliance review covering policy updates, access reviews, and training status.', requirementCount: 8, completedCount: 6, owner: 'Sammy Kalejaiye', ownerInitials: 'SK', dueDate: 'Mar 31, 2026', status: 'in-progress', scope: 'Organization' },
+  { id: 'bc-01', title: 'Q1 2026 Compliance Review', description: 'Quarterly compliance review covering policy updates, access reviews, and training status.', requirementCount: 8, completedCount: 6, owner: 'Alex Morgan', ownerInitials: 'SK', dueDate: 'Mar 31, 2026', status: 'in-progress', scope: 'Organization' },
   { id: 'bc-02', title: 'Vendor Onboarding', description: 'Compliance checklist for onboarding new vendors including documentation and background verification.', requirementCount: 5, completedCount: 5, owner: 'Nkechi Adamu', ownerInitials: 'NA', dueDate: 'Jan 31, 2026', status: 'complete', scope: 'Entity' },
   { id: 'bc-03', title: 'SOC 2 Prep', description: 'Preparation checklist for SOC 2 Type II audit readiness milestone.', requirementCount: 12, completedCount: 8, owner: 'Jordan Kim', ownerInitials: 'JK', dueDate: 'Mar 15, 2026', status: 'in-progress', scope: 'Organization' },
 ];
 
 const businessEvidence: ComplianceEvidence[] = [
-  { id: 'be-01', title: 'Policy Acknowledgement Batch', requirementId: 'br-01', requirementTitle: 'Annual Policy Acknowledgements', type: 'attestation', submittedBy: 'Sammy Kalejaiye', submittedByInitials: 'SK', submittedDate: 'Jan 15, 2026', status: 'verified', verifiedBy: 'HR', verifiedDate: 'Jan 18, 2026' },
-  { id: 'be-02', title: 'Access Review Log — Q4 2025', requirementId: 'br-02', requirementTitle: 'Quarterly Access Reviews', type: 'document', submittedBy: 'Jordan Kim', submittedByInitials: 'JK', submittedDate: 'Dec 31, 2025', status: 'verified', verifiedBy: 'Sammy Kalejaiye', verifiedDate: 'Jan 3, 2026' },
+  { id: 'be-01', title: 'Policy Acknowledgement Batch', requirementId: 'br-01', requirementTitle: 'Annual Policy Acknowledgements', type: 'attestation', submittedBy: 'Alex Morgan', submittedByInitials: 'SK', submittedDate: 'Jan 15, 2026', status: 'verified', verifiedBy: 'HR', verifiedDate: 'Jan 18, 2026' },
+  { id: 'be-02', title: 'Access Review Log — Q4 2025', requirementId: 'br-02', requirementTitle: 'Quarterly Access Reviews', type: 'document', submittedBy: 'Jordan Kim', submittedByInitials: 'JK', submittedDate: 'Dec 31, 2025', status: 'verified', verifiedBy: 'Alex Morgan', verifiedDate: 'Jan 3, 2026' },
   { id: 'be-03', title: 'Vendor Insurance Cert — Studio Nine', requirementId: 'br-03', requirementTitle: 'Vendor Compliance Docs', type: 'certificate', submittedBy: 'Nkechi Adamu', submittedByInitials: 'NA', submittedDate: 'Jan 15, 2026', status: 'submitted', expiresDate: 'Feb 28, 2026' },
-  { id: 'be-04', title: 'Training Completion Report', requirementId: 'br-04', requirementTitle: 'Annual Training Completion', type: 'document', submittedBy: 'Sammy Kalejaiye', submittedByInitials: 'SK', submittedDate: 'Feb 1, 2026', status: 'verified', verifiedBy: 'HR', verifiedDate: 'Feb 3, 2026' },
+  { id: 'be-04', title: 'Training Completion Report', requirementId: 'br-04', requirementTitle: 'Annual Training Completion', type: 'document', submittedBy: 'Alex Morgan', submittedByInitials: 'SK', submittedDate: 'Feb 1, 2026', status: 'verified', verifiedBy: 'HR', verifiedDate: 'Feb 3, 2026' },
   { id: 'be-05', title: 'Incident Response Drill Log', requirementId: 'br-05', requirementTitle: 'Incident Response Playbook Adherence', type: 'link', submittedBy: 'Jordan Kim', submittedByInitials: 'JK', submittedDate: 'Feb 10, 2026', status: 'pending' },
 ];
 
 const businessIncidents: ComplianceIncident[] = [
   { id: 'bi-01', title: 'Unauthorized Access Attempt — Staging Env', description: 'Anomalous login attempt detected on staging environment from unrecognized IP. Credentials locked and investigation underway.', severity: 'high', status: 'investigating', reportedBy: 'Jordan Kim', reportedByInitials: 'JK', reportedDate: 'Feb 12, 2026', assignedTo: 'Jordan Kim', assignedToInitials: 'JK', scope: 'Organization' },
   { id: 'bi-02', title: 'Vendor SLA Breach — Response Time', description: 'Apex Dev Studio missed the 24-hour response time SLA on a critical bug report by 18 hours.', severity: 'medium', status: 'open', reportedBy: 'Nkechi Adamu', reportedByInitials: 'NA', reportedDate: 'Feb 10, 2026', scope: 'Entity' },
-  { id: 'bi-03', title: 'Employee Policy Violation — Remote Work', description: 'An employee accessed production systems from an unsecured public network in violation of remote work policy.', severity: 'low', status: 'resolved', reportedBy: 'Jordan Kim', reportedByInitials: 'JK', reportedDate: 'Feb 3, 2026', assignedTo: 'Sammy Kalejaiye', assignedToInitials: 'SK', resolvedDate: 'Feb 6, 2026', scope: 'Organization' },
+  { id: 'bi-03', title: 'Employee Policy Violation — Remote Work', description: 'An employee accessed production systems from an unsecured public network in violation of remote work policy.', severity: 'low', status: 'resolved', reportedBy: 'Jordan Kim', reportedByInitials: 'JK', reportedDate: 'Feb 3, 2026', assignedTo: 'Alex Morgan', assignedToInitials: 'SK', resolvedDate: 'Feb 6, 2026', scope: 'Organization' },
 ];
 
 const businessActions: ComplianceAction[] = [
   { id: 'ba-01', title: 'Investigate Staging Access Attempt', description: 'Perform full investigation of the unauthorized staging environment access attempt, review logs, and update access controls.', incidentId: 'bi-01', incidentTitle: 'Unauthorized Access Attempt — Staging Env', assignee: 'Jordan Kim', assigneeInitials: 'JK', dueDate: 'Feb 18, 2026', status: 'in-progress', priority: 'critical' },
   { id: 'ba-02', title: 'Follow Up with Vendor on SLA', description: 'Schedule a call with Apex Dev Studio to discuss the SLA breach and establish corrective measures.', incidentId: 'bi-02', incidentTitle: 'Vendor SLA Breach — Response Time', assignee: 'Nkechi Adamu', assigneeInitials: 'NA', dueDate: 'Feb 20, 2026', status: 'pending', priority: 'high' },
-  { id: 'ba-03', title: 'Update Remote Work Policy Acknowledgement', description: 'Re-issue remote work policy for employee acknowledgement and add VPN requirement enforcement.', incidentId: 'bi-03', incidentTitle: 'Employee Policy Violation — Remote Work', assignee: 'Sammy Kalejaiye', assigneeInitials: 'SK', dueDate: 'Feb 10, 2026', status: 'completed', priority: 'medium', verifiedBy: 'Jordan Kim', verifiedDate: 'Feb 11, 2026' },
+  { id: 'ba-03', title: 'Update Remote Work Policy Acknowledgement', description: 'Re-issue remote work policy for employee acknowledgement and add VPN requirement enforcement.', incidentId: 'bi-03', incidentTitle: 'Employee Policy Violation — Remote Work', assignee: 'Alex Morgan', assigneeInitials: 'SK', dueDate: 'Feb 10, 2026', status: 'completed', priority: 'medium', verifiedBy: 'Jordan Kim', verifiedDate: 'Feb 11, 2026' },
 ];
 
 const businessTraining: ComplianceTraining[] = [
@@ -623,15 +623,15 @@ const businessTraining: ComplianceTraining[] = [
 
 const businessPolicies: CompliancePolicy[] = [
   { id: 'bp-01', title: 'Information Security Policy', description: 'Comprehensive information security policy covering access control, data protection, and incident response.', version: 'v3.1', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Jordan Kim', ownerInitials: 'JK', status: 'active', acknowledgedCount: 11, totalCount: 12 },
-  { id: 'bp-02', title: 'Employee Code of Conduct', description: 'Standards of professional conduct, ethics, and behavior for all KaNeXT employees and contractors.', version: 'v2.0', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'active', acknowledgedCount: 12, totalCount: 12 },
+  { id: 'bp-02', title: 'Employee Code of Conduct', description: 'Standards of professional conduct, ethics, and behavior for all KaNeXT employees and contractors.', version: 'v2.0', effectiveDate: 'Jan 1, 2026', reviewDate: 'Jan 1, 2027', owner: 'Alex Morgan', ownerInitials: 'SK', status: 'active', acknowledgedCount: 12, totalCount: 12 },
   { id: 'bp-03', title: 'Vendor Management Policy', description: 'Guidelines for vendor selection, onboarding, compliance monitoring, and offboarding.', version: 'v1.1', effectiveDate: 'Nov 1, 2025', reviewDate: 'Nov 1, 2026', owner: 'Nkechi Adamu', ownerInitials: 'NA', status: 'under-review', acknowledgedCount: 8, totalCount: 12 },
 ];
 
 const businessDeadlines: ComplianceDeadline[] = [
-  { id: 'bdl-01', title: 'Q1 Policy Acknowledgement Deadline', description: 'All employees must acknowledge updated policies for Q1 2026.', dueDate: 'Mar 31, 2026', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'upcoming', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
+  { id: 'bdl-01', title: 'Q1 Policy Acknowledgement Deadline', description: 'All employees must acknowledge updated policies for Q1 2026.', dueDate: 'Mar 31, 2026', owner: 'Alex Morgan', ownerInitials: 'SK', status: 'upcoming', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
   { id: 'bdl-02', title: 'Vendor Cert Renewal — Studio Nine', description: 'Insurance certificate for Studio Nine expires. Renewal required before expiry.', dueDate: 'Feb 28, 2026', owner: 'Nkechi Adamu', ownerInitials: 'NA', status: 'due-soon', proofRequired: true, proofSubmitted: false, scope: 'Entity' },
   { id: 'bdl-03', title: 'SOC 2 Readiness Milestone', description: 'Complete all SOC 2 preparation items and generate audit-ready evidence packet.', dueDate: 'Mar 15, 2026', owner: 'Jordan Kim', ownerInitials: 'JK', status: 'due-soon', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
-  { id: 'bdl-04', title: 'Annual Security Training Completion', description: 'All employees and contractors must complete security awareness training.', dueDate: 'Apr 30, 2026', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', status: 'upcoming', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
+  { id: 'bdl-04', title: 'Annual Security Training Completion', description: 'All employees and contractors must complete security awareness training.', dueDate: 'Apr 30, 2026', owner: 'Alex Morgan', ownerInitials: 'SK', status: 'upcoming', proofRequired: true, proofSubmitted: false, scope: 'Organization' },
 ];
 
 const businessReports: ComplianceReport[] = [
@@ -646,7 +646,7 @@ const businessAudit: ComplianceAuditEntry[] = [
   { id: 'bau-03', action: 'incident_opened', actor: 'Jordan Kim', actorInitials: 'JK', target: 'Unauthorized Access Attempt — Staging Env', timestamp: 'Feb 12, 2026 2:15 PM', detail: 'Anomalous login detected and credentials locked' },
   { id: 'bau-04', action: 'training_completed', actor: 'All Employees', actorInitials: 'AE', target: 'Anti-Harassment Training', timestamp: 'Jan 28, 2026 4:00 PM', detail: 'All employees completed module with 100% pass rate' },
   { id: 'bau-05', action: 'checklist_completed', actor: 'Nkechi Adamu', actorInitials: 'NA', target: 'Vendor Onboarding', timestamp: 'Jan 31, 2026 11:00 AM', detail: 'All 5 items completed for new vendor onboarding' },
-  { id: 'bau-06', action: 'requirement_verified', actor: 'Sammy Kalejaiye', actorInitials: 'SK', target: 'Annual Training Completion', timestamp: 'Feb 3, 2026 10:00 AM', detail: 'Training completion report verified by HR' },
+  { id: 'bau-06', action: 'requirement_verified', actor: 'Alex Morgan', actorInitials: 'SK', target: 'Annual Training Completion', timestamp: 'Feb 3, 2026 10:00 AM', detail: 'Training completion report verified by HR' },
   { id: 'bau-07', action: 'deadline_met', actor: 'Nkechi Adamu', actorInitials: 'NA', target: 'Vendor Onboarding Checklist', timestamp: 'Jan 31, 2026 11:00 AM', detail: 'All vendor documentation collected before deadline' },
   { id: 'bau-08', action: 'action_verified', actor: 'Jordan Kim', actorInitials: 'JK', target: 'Update Remote Work Policy Acknowledgement', timestamp: 'Feb 11, 2026 3:00 PM', detail: 'Policy re-issued and VPN enforcement confirmed' },
 ];

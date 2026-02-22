@@ -45,7 +45,7 @@ interface CompetitionHeroVideoCardProps {
 
 const LIVE_BROADCAST: BroadcastHero = {
   id: 'bcast-live',
-  title: 'K-1 Hypercar Championship — Round 2 LIVE',
+  title: 'KaNeXT League — Round 2 LIVE',
   subtitle: 'Portland International Raceway · Main Race',
   thumbnailColor: '#1a1a2e',
   status: 'live',
@@ -54,7 +54,7 @@ const LIVE_BROADCAST: BroadcastHero = {
 
 const UPCOMING_BROADCAST: BroadcastHero = {
   id: 'bcast-upcoming',
-  title: 'K-1 Hypercar Championship — Round 2',
+  title: 'KaNeXT League — Round 2',
   subtitle: 'Portland International Raceway',
   thumbnailColor: '#1a2a3a',
   status: 'upcoming',

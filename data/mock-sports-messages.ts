@@ -198,14 +198,14 @@ export const SPORTS_INBOX_THREADS: SportsInboxThread[] = [
     unreadCount: 5, rbacSection: 'inbox_blockers',
   },
   {
-    id: 'si-3', title: 'Travel Roster — Lincoln Christian', sender: 'Coach Kalejaiye',
+    id: 'si-3', title: 'Travel Roster — Ridgemont Christian', sender: 'Coach Carter',
     senderInitials: 'SK', preview: 'Please review and approve the 15-man travel roster for Feb 21 game.',
     time: '1h', priority: 'approval', labels: ['Roster', 'Approval', 'Travel'],
     unreadCount: 1, rbacSection: 'inbox_approvals',
   },
   {
-    id: 'si-4', title: 'Scouting Packet Due — LC', sender: 'Coach Lincoln',
-    senderInitials: 'CL', preview: 'Scout packet for Lincoln Christian due by EOD tomorrow. 3 game films reviewed, 2 remaining.',
+    id: 'si-4', title: 'Scouting Packet Due — LC', sender: 'Coach Avery',
+    senderInitials: 'CL', preview: 'Scout packet for Ridgemont Christian due by EOD tomorrow. 3 game films reviewed, 2 remaining.',
     time: '2h', priority: 'due_24h', labels: ['Scouting', 'Film', 'Deadline'],
     unreadCount: 0, rbacSection: 'inbox_blockers',
   },
@@ -257,7 +257,7 @@ export const SPORTS_ROOMS: SportsRoom[] = [
   {
     id: 'sr-3', title: 'Coaching Staff', category: 'staff',
     avatarInitials: 'CS', avatarColor: '#3D1A1A',
-    lastMessage: 'Scout packet deadline tomorrow EOD. Lincoln and Davis, please finalize.',
+    lastMessage: 'Scout packet deadline tomorrow EOD. Quinn and Blake, please finalize.',
     lastMessageTime: '2h', unreadCount: 3, hasBlocker: false, hasDeadline: true,
     memberCount: 5, rbacSection: 'rooms_staff',
   },
@@ -326,19 +326,19 @@ export const SPORTS_ROOMS: SportsRoom[] = [
 export const SPORTS_REQUESTS: SportsRequest[] = [
   {
     id: 'rq-1', type: 'approval', title: 'Approve Travel Roster — LC Game',
-    submitter: 'Coach Kalejaiye', submitterInitials: 'SK', dueDate: 'Feb 18', isOverdue: false,
+    submitter: 'Coach Carter', submitterInitials: 'SK', dueDate: 'Feb 18', isOverdue: false,
     impactFlags: ['blocks_travel', 'blocks_game'], status: 'pending',
     auditTrail: [
-      { action: 'Submitted', by: 'Coach Kalejaiye', date: 'Feb 15, 9:00 AM' },
+      { action: 'Submitted', by: 'Coach Carter', date: 'Feb 15, 9:00 AM' },
     ],
     rbacSection: 'requests_approval',
   },
   {
     id: 'rq-2', type: 'roster', title: 'Add Walk-On: Tyler James',
-    submitter: 'Coach Lincoln', submitterInitials: 'CL', dueDate: 'Feb 20', isOverdue: false,
+    submitter: 'Coach Avery', submitterInitials: 'CL', dueDate: 'Feb 20', isOverdue: false,
     impactFlags: ['blocks_eligibility'], status: 'pending',
     auditTrail: [
-      { action: 'Submitted', by: 'Coach Lincoln', date: 'Feb 14, 2:00 PM' },
+      { action: 'Submitted', by: 'Coach Avery', date: 'Feb 14, 2:00 PM' },
     ],
     rbacSection: 'requests_roster',
   },
@@ -400,20 +400,20 @@ export const SPORTS_REQUESTS: SportsRequest[] = [
   },
   {
     id: 'rq-9', type: 'schedule', title: 'Gym Reservation — Extra Shooting Session',
-    submitter: 'Coach Lincoln', submitterInitials: 'CL', dueDate: 'Feb 18', isOverdue: false,
+    submitter: 'Coach Avery', submitterInitials: 'CL', dueDate: 'Feb 18', isOverdue: false,
     impactFlags: [], status: 'approved',
     auditTrail: [
-      { action: 'Submitted', by: 'Coach Lincoln', date: 'Feb 13, 9:00 AM' },
+      { action: 'Submitted', by: 'Coach Avery', date: 'Feb 13, 9:00 AM' },
       { action: 'Approved', by: 'Facilities', date: 'Feb 13, 11:00 AM' },
     ],
     rbacSection: 'requests_schedule',
   },
   {
     id: 'rq-10', type: 'recruiting', title: 'Scholarship Offer Letter — Jordan Hayes',
-    submitter: 'Coach Kalejaiye', submitterInitials: 'SK', dueDate: 'Feb 22', isOverdue: false,
+    submitter: 'Coach Carter', submitterInitials: 'SK', dueDate: 'Feb 22', isOverdue: false,
     impactFlags: [], status: 'pending',
     auditTrail: [
-      { action: 'Submitted', by: 'Coach Kalejaiye', date: 'Feb 15, 8:00 AM' },
+      { action: 'Submitted', by: 'Coach Carter', date: 'Feb 15, 8:00 AM' },
     ],
     rbacSection: 'requests_recruiting',
   },
@@ -500,7 +500,7 @@ const dmThread1Messages: SportsMessage[] = [
     timestamp: '2026-02-16T09:15:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-1-2', threadId: 'dmt-1', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-1-2', threadId: 'dmt-1', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Good find. Let\'s start in our 1-2-2 press and force them to make decisions with the ball. What\'s their PG\'s assist-to-turnover ratio look like?',
     timestamp: '2026-02-16T09:28:00', read: true, data_source: 'demo_seed',
@@ -512,7 +512,7 @@ const dmThread1Messages: SportsMessage[] = [
     timestamp: '2026-02-16T09:35:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-1-4', threadId: 'dmt-1', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-1-4', threadId: 'dmt-1', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Yes, tag them for the guards specifically. Also pull their zone offense — they ran a 2-3 in the second half last two games. I want our bigs prepared.',
     timestamp: '2026-02-16T09:42:00', read: true, data_source: 'demo_seed',
@@ -528,7 +528,7 @@ const dmThread1Messages: SportsMessage[] = [
 // ── Thread 2: Recruit responding to offer ───────────────────────────────
 const dmThread2Messages: SportsMessage[] = [
   {
-    id: 'dm-2-1', threadId: 'dmt-2', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-2-1', threadId: 'dmt-2', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Jordan, thanks for visiting campus last weekend. The staff and I were really impressed with your game and your character. We\'d like to officially extend a scholarship offer to you for the 2026-27 season.',
     timestamp: '2026-02-14T10:00:00', read: true, data_source: 'demo_seed',
@@ -536,7 +536,7 @@ const dmThread2Messages: SportsMessage[] = [
   {
     id: 'dm-2-2', threadId: 'dmt-2', sender: 'Jordan Hayes', senderInitials: 'JH',
     direction: 'received',
-    body: 'Coach Kalejaiye, thank you so much. My family and I really felt at home when we visited FMU. The campus, the team culture, and the academics are everything I\'m looking for.',
+    body: 'Coach Carter, thank you so much. My family and I really felt at home when we visited KaNeXT. The campus, the team culture, and the academics are everything I\'m looking for.',
     timestamp: '2026-02-14T14:22:00', read: true, data_source: 'demo_seed',
   },
   {
@@ -546,7 +546,7 @@ const dmThread2Messages: SportsMessage[] = [
     timestamp: '2026-02-14T14:25:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-2-4', threadId: 'dmt-2', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-2-4', threadId: 'dmt-2', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Absolutely. We have a dedicated academic advisor for student-athletes and mandatory study hall. Several of our guys are Business majors — we\'ll connect you. Take your time with the decision. No pressure.',
     timestamp: '2026-02-14T16:10:00', read: true, data_source: 'demo_seed',
@@ -558,7 +558,7 @@ const dmThread2Messages: SportsMessage[] = [
     timestamp: '2026-02-15T08:45:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-2-6', threadId: 'dmt-2', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-2-6', threadId: 'dmt-2', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Sounds great, Jordan. We\'re excited about the possibility of you joining the Lions family. Let me know if your parents have any questions — happy to hop on a call.',
     timestamp: '2026-02-15T09:02:00', read: true, data_source: 'demo_seed',
@@ -574,7 +574,7 @@ const dmThread3Messages: SportsMessage[] = [
     timestamp: '2026-02-17T08:30:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-3-2', threadId: 'dmt-3', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-3-2', threadId: 'dmt-3', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'That\'s a relief. What\'s the timeline looking like? Can he go Saturday against St. Thomas?',
     timestamp: '2026-02-17T08:45:00', read: true, data_source: 'demo_seed',
@@ -586,7 +586,7 @@ const dmThread3Messages: SportsMessage[] = [
     timestamp: '2026-02-17T09:00:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-3-4', threadId: 'dmt-3', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-3-4', threadId: 'dmt-3', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Perfect. Let\'s not rush it — if there\'s any doubt on Thursday, we hold him. We need him healthy for the conference tournament push.',
     timestamp: '2026-02-17T09:12:00', read: true, data_source: 'demo_seed',
@@ -604,11 +604,11 @@ const dmThread4Messages: SportsMessage[] = [
   {
     id: 'dm-4-1', threadId: 'dmt-4', sender: 'Lisa Moreno', senderInitials: 'LM',
     direction: 'received',
-    body: 'Coach Kalejaiye, I\'m following up on Jaylen Carter\'s eligibility file. We\'re still waiting on his updated transcript from his previous institution. NAIA requires it before he can be certified.',
+    body: 'Coach Carter, I\'m following up on Jaylen Carter\'s eligibility file. We\'re still waiting on his updated transcript from his previous institution. NAIA requires it before he can be certified.',
     timestamp: '2026-02-16T11:00:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-4-2', threadId: 'dmt-4', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-4-2', threadId: 'dmt-4', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Lisa, thanks for staying on this. Do we have a contact at his previous school we can push? He\'s been out of the lineup for two weeks and we need him for the stretch run.',
     timestamp: '2026-02-16T11:15:00', read: true, data_source: 'demo_seed',
@@ -620,7 +620,7 @@ const dmThread4Messages: SportsMessage[] = [
     timestamp: '2026-02-16T13:30:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-4-4', threadId: 'dmt-4', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-4-4', threadId: 'dmt-4', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Good. The moment you have it, can you fast-track the certification? If we get it by Thursday, is there any chance he\'s cleared for Saturday\'s game?',
     timestamp: '2026-02-16T13:45:00', read: true, data_source: 'demo_seed',
@@ -638,11 +638,11 @@ const dmThread5Messages: SportsMessage[] = [
   {
     id: 'dm-5-1', threadId: 'dmt-5', sender: 'Mrs. Denise Moore', senderInitials: 'DM',
     direction: 'received',
-    body: 'Good morning Coach Kalejaiye. I\'m Elijah Moore\'s mother. He\'s very excited about the official visit next week. I wanted to ask — will there be time to meet with an academic advisor? Academics are our top priority.',
+    body: 'Good morning Coach Carter. I\'m Elijah Moore\'s mother. He\'s very excited about the official visit next week. I wanted to ask — will there be time to meet with an academic advisor? Academics are our top priority.',
     timestamp: '2026-02-15T07:30:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-5-2', threadId: 'dmt-5', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-5-2', threadId: 'dmt-5', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Good morning Mrs. Moore! Absolutely — we have a meeting with our academic support coordinator on the itinerary for Saturday morning. She\'ll walk you through tutoring, study hall, and degree planning.',
     timestamp: '2026-02-15T08:15:00', read: true, data_source: 'demo_seed',
@@ -654,7 +654,7 @@ const dmThread5Messages: SportsMessage[] = [
     timestamp: '2026-02-15T08:42:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-5-4', threadId: 'dmt-5', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-5-4', threadId: 'dmt-5', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'We\'ll have a hotel arranged for you — our ops coordinator will send the details by Wednesday. And yes, Elijah will tour the Wellness Center, watch practice, and sit in on a team film session. Full experience.',
     timestamp: '2026-02-15T09:00:00', read: true, data_source: 'demo_seed',
@@ -662,7 +662,7 @@ const dmThread5Messages: SportsMessage[] = [
   {
     id: 'dm-5-5', threadId: 'dmt-5', sender: 'Mrs. Denise Moore', senderInitials: 'DM',
     direction: 'received',
-    body: 'This is so thorough. Thank you for taking the time, Coach. We\'re looking forward to seeing everything FMU has to offer. See you next weekend!',
+    body: 'This is so thorough. Thank you for taking the time, Coach. We\'re looking forward to seeing everything KaNeXT has to offer. See you next weekend!',
     timestamp: '2026-02-15T09:20:00', read: true, data_source: 'demo_seed',
   },
 ];
@@ -670,7 +670,7 @@ const dmThread5Messages: SportsMessage[] = [
 // ── Thread 6: AD office — budget approval ───────────────────────────────
 const dmThread6Messages: SportsMessage[] = [
   {
-    id: 'dm-6-1', threadId: 'dmt-6', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-6-1', threadId: 'dmt-6', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Mr. Williams, I submitted the travel budget request for the Feb 21-22 road trip to Ave Maria and Southeast. The total is $4,200 — bus charter, hotel (2 nights), and per diem for 18 travelers.',
     timestamp: '2026-02-14T10:30:00', read: true, data_source: 'demo_seed',
@@ -682,7 +682,7 @@ const dmThread6Messages: SportsMessage[] = [
     timestamp: '2026-02-14T13:00:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-6-3', threadId: 'dmt-6', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-6-3', threadId: 'dmt-6', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Ave Maria is a 3-hour drive. With a 7 PM tipoff, a day trip means the guys are on the bus all day. I\'d rather have them rested. We can look at a more affordable hotel option if that helps.',
     timestamp: '2026-02-14T13:20:00', read: true, data_source: 'demo_seed',
@@ -694,7 +694,7 @@ const dmThread6Messages: SportsMessage[] = [
     timestamp: '2026-02-14T14:45:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-6-5', threadId: 'dmt-6', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-6-5', threadId: 'dmt-6', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Will do. Appreciate the quick turnaround. Marcus will have the itinerary finalized by tomorrow.',
     timestamp: '2026-02-14T15:00:00', read: true, data_source: 'demo_seed',
@@ -712,11 +712,11 @@ const dmThread7Messages: SportsMessage[] = [
   {
     id: 'dm-7-1', threadId: 'dmt-7', sender: 'Coach Mike Patterson', senderInitials: 'MP',
     direction: 'received',
-    body: 'Hey Sammy, Mike Patterson from Coastal Georgia. Our gym has a scheduling conflict for the Feb 22 game. Any chance we can move tipoff from 4 PM to 2 PM? Facility crew needs extra time for a community event that evening.',
+    body: 'Hey Alex, Mike Patterson from Coastal Georgia. Our gym has a scheduling conflict for the Feb 22 game. Any chance we can move tipoff from 4 PM to 2 PM? Facility crew needs extra time for a community event that evening.',
     timestamp: '2026-02-13T11:00:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-7-2', threadId: 'dmt-7', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-7-2', threadId: 'dmt-7', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Mike, let me check with my ops team. We\'re coming from the Ave Maria game the night before so a 2 PM tip might be tight depending on travel. Give me until tomorrow.',
     timestamp: '2026-02-13T11:30:00', read: true, data_source: 'demo_seed',
@@ -728,7 +728,7 @@ const dmThread7Messages: SportsMessage[] = [
     timestamp: '2026-02-13T12:15:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-7-4', threadId: 'dmt-7', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-7-4', threadId: 'dmt-7', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Talked to my travel coordinator. 3 PM works for us — gives the guys enough time for shootaround and a proper pre-game meal. Let\'s lock it in at 3 PM.',
     timestamp: '2026-02-14T09:00:00', read: true, data_source: 'demo_seed',
@@ -736,7 +736,7 @@ const dmThread7Messages: SportsMessage[] = [
   {
     id: 'dm-7-5', threadId: 'dmt-7', sender: 'Coach Mike Patterson', senderInitials: 'MP',
     direction: 'received',
-    body: 'Perfect. 3 PM it is. I\'ll update our SID and conference office. Appreciate the flexibility, Sammy. See you on the 22nd.',
+    body: 'Perfect. 3 PM it is. I\'ll update our SID and conference office. Appreciate the flexibility, Alex. See you on the 22nd.',
     timestamp: '2026-02-14T09:20:00', read: false, data_source: 'demo_seed',
   },
 ];
@@ -746,11 +746,11 @@ const dmThread8Messages: SportsMessage[] = [
   {
     id: 'dm-8-1', threadId: 'dmt-8', sender: 'Prof. Karen Mitchell', senderInitials: 'KM',
     direction: 'received',
-    body: 'Coach Kalejaiye, I wanted to flag a concern. Two of your players — Marcus Brown and Tyler James — have midterm grades below 2.0 in their core courses. Per NAIA rules, they need to be above 2.0 to maintain eligibility.',
+    body: 'Coach Carter, I wanted to flag a concern. Two of your players — Marcus Brown and Tyler James — have midterm grades below 2.0 in their core courses. Per NAIA rules, they need to be above 2.0 to maintain eligibility.',
     timestamp: '2026-02-17T10:00:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-8-2', threadId: 'dmt-8', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-8-2', threadId: 'dmt-8', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Thanks for the heads-up, Professor Mitchell. Which courses specifically? I want to make sure we get them the right tutoring support immediately.',
     timestamp: '2026-02-17T10:20:00', read: true, data_source: 'demo_seed',
@@ -762,7 +762,7 @@ const dmThread8Messages: SportsMessage[] = [
     timestamp: '2026-02-17T10:45:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-8-4', threadId: 'dmt-8', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-8-4', threadId: 'dmt-8', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'I\'ll sit both of them down today. We\'ll increase their mandatory study hall hours and pair them with tutors this week. Can I get a list of the missing or upcoming assignments so we can create a plan?',
     timestamp: '2026-02-17T11:00:00', read: true, data_source: 'demo_seed',
@@ -774,7 +774,7 @@ const dmThread8Messages: SportsMessage[] = [
     timestamp: '2026-02-17T11:15:00', read: true, data_source: 'demo_seed',
   },
   {
-    id: 'dm-8-6', threadId: 'dmt-8', sender: 'Sammy Kalejaiye', senderInitials: 'SK',
+    id: 'dm-8-6', threadId: 'dmt-8', sender: 'Alex Morgan', senderInitials: 'SK',
     direction: 'sent',
     body: 'Appreciate you working with us on this. Education comes first — we\'ll make sure they get it done. I\'ll follow up with you next Monday on their progress.',
     timestamp: '2026-02-17T11:30:00', read: true, data_source: 'demo_seed',
@@ -838,7 +838,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantName: 'Mrs. Denise Moore',
     participantInitials: 'DM',
     participantRole: 'Parent of Recruit',
-    lastMessagePreview: 'We\'re looking forward to seeing everything FMU has to offer.',
+    lastMessagePreview: 'We\'re looking forward to seeing everything KaNeXT has to offer.',
     lastMessageTime: 'Feb 15',
     unreadCount: 0,
     messages: dmThread5Messages,

@@ -13,9 +13,9 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
-  FMU_GAMES_BY_ID,
-  FMU_FULL_GAME_STATS,
-  FMU_RECORD,
+  KaNeXT_GAMES_BY_ID,
+  KaNeXT_FULL_GAME_STATS,
+  KaNeXT_RECORD,
   placeholderRecord,
   isConfGame,
   type FullGameStats,
@@ -23,7 +23,7 @@ import {
 
 type GameStatus = 'upcoming' | 'live' | 'final';
 
-// Generate deterministic opponent stats from FMU stats + opponent name
+// Generate deterministic opponent stats from KaNeXT stats + opponent name
 function generateOppStats(fmu: FullGameStats, opponent: string): FullGameStats {
   let h = 0;
   for (let i = 0; i < opponent.length; i++) h = ((h << 5) - h + opponent.charCodeAt(i)) | 0;
@@ -71,7 +71,7 @@ export default function TeamStatsScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
 
-  const game = (FMU_GAMES_BY_ID as Record<string, { opponent: string; date: string; location: string; status: GameStatus; score?: string }>)[gameId ?? '']
+  const game = (KaNeXT_GAMES_BY_ID as Record<string, { opponent: string; date: string; location: string; status: GameStatus; score?: string }>)[gameId ?? '']
     ?? { opponent: 'Unknown', date: '—', location: '—', status: 'upcoming' as GameStatus };
 
   const opponentAbbr = game.opponent.substring(0, 3).toUpperCase();
@@ -82,7 +82,7 @@ export default function TeamStatsScreen() {
   const oppScore = parseInt(scoreParts[1]) || 0;
   const isWin = fmuScore > oppScore;
 
-  const fmuStats = FMU_FULL_GAME_STATS[gameId ?? ''];
+  const fmuStats = KaNeXT_FULL_GAME_STATS[gameId ?? ''];
   const oppStats = fmuStats ? generateOppStats(fmuStats, game.opponent) : null;
 
   // Build stat rows
@@ -147,7 +147,7 @@ export default function TeamStatsScreen() {
           </View>
           <View style={[styles.scoreboardSide, { flexDirection: 'row-reverse' }]}>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>FMU</Text>
+              <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>KXT</Text>
               <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{FMU_RECORD.overall}</Text>
             </View>
             <View style={[styles.scoreboardIcon, { backgroundColor: colors.text + '15' }]}>

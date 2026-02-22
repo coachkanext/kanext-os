@@ -1,5 +1,5 @@
 /**
- * Florida Memorial University Men's Basketball
+ * KaNeXT Sports Men's Basketball
  * Game Highs (Step 4D)
  * Season: 2025-26
  * Source: Derived from box score data (fmu-mens-basketball-2025-26.json)
@@ -217,7 +217,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'REB',
     value: 10,
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     date: '2/4/2026',
   },
   {
@@ -241,7 +241,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'BLK',
     value: 1,
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     date: '2/4/2026',
   },
   {
@@ -297,7 +297,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: '3PT',
     value: 1,
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     date: '2/4/2026',
   },
   {
@@ -353,7 +353,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 4,
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     date: '2/4/2026',
   },
   {
@@ -369,7 +369,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'AST',
     value: 2,
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     date: '2/4/2026',
   },
   {
@@ -377,7 +377,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'STL',
     value: 1,
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     date: '2/4/2026',
   },
   {
@@ -681,7 +681,7 @@ export const gameHighs: GameHigh[] = [
     season: '2025-26',
     stat_category: 'PTS',
     value: 2,
-    opponent: 'New College of Florida',
+    opponent: 'Lakeview College',
     date: '2/4/2026',
   },
   {

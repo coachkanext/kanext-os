@@ -775,7 +775,7 @@ export const CEO_TEAM_CARDS: CEOTeamCard[] = [
   },
   {
     teamId: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#3B82F6', teamType: 'Tuner',
-    owner: 'Sarah Chen', principal: 'Sarah Chen', headquarters: 'Monterey, CA', founded: 2020, championships: 1,
+    owner: 'Lisa Grant', principal: 'Lisa Grant', headquarters: 'Monterey, CA', founded: 2020, championships: 1,
     points: 287, wins: 3, budget: '$2.1M', budgetUtilization: 55, homeTrack: 'Laguna Seca',
     readiness: { tech: 95, compliance: 92, ops: 94, media: 90 },
     business: { sponsorHealth: 'green', financialStatus: 'current', sponsorCount: 3, sponsorRevenue: '$520K' },
@@ -809,7 +809,7 @@ export const CEO_TEAM_CARDS: CEOTeamCard[] = [
   },
   {
     teamId: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#F59E0B', teamType: 'Independent',
-    owner: 'David Okafor', principal: 'David Okafor', headquarters: 'Atlanta, GA', founded: 2018, championships: 1,
+    owner: 'David Okafor', principal: 'David Okafor', headquarters: 'Nashville, TN', founded: 2018, championships: 1,
     points: 256, wins: 2, budget: '$1.9M', budgetUtilization: 58, homeTrack: 'Road Atlanta',
     readiness: { tech: 96, compliance: 100, ops: 95, media: 88 },
     business: { sponsorHealth: 'green', financialStatus: 'current', sponsorCount: 3, sponsorRevenue: '$440K' },

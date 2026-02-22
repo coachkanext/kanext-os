@@ -704,10 +704,11 @@ def load_player_stats(conn, merged_stats: dict[str, dict],
                       team_map: dict[str, dict]) -> dict:
     """
     Load merged player season stats into the database.
-    Creates player_season_stats records computed from ranking page totals.
+    Creates N synthetic per-game records (one per game played) so the KR engine
+    sees realistic game counts and assigns proper confidence scores.
     Returns counts dict.
     """
-    counts = {"players": 0, "matched": 0, "unmatched": 0}
+    counts = {"players": 0, "matched": 0, "unmatched": 0, "pgs_created": 0}
 
     for key, record in merged_stats.items():
         full_name = record.get("full_name")
@@ -735,15 +736,13 @@ def load_player_stats(conn, merged_stats: dict[str, dict],
             roster_status="active",
         )
 
-        # Compute season aggregate stats and insert as a synthetic "season" game
-        # We use a special game_id format: "ncaa-season-{team_id}-{season}"
         games = record.get("games", 0)
         if games <= 0:
             counts["matched"] += 1
             counts["players"] += 1
             continue
 
-        # Parse raw stat values
+        # Parse raw stat values (season totals from ranking pages)
         fgm = _safe_int(record.get("fgm_raw", "0"))
         fga = _safe_int(record.get("fga_raw", "0"))
         three_pm = _safe_int(record.get("three_pm_raw", "0"))
@@ -759,48 +758,68 @@ def load_player_stats(conn, merged_stats: dict[str, dict],
         blk = _safe_int(record.get("blk_raw", "0"))
         turnovers = _safe_int(record.get("to_raw", "0"))
 
-        # Compute per-game averages and insert one synthetic game per game played
-        # This allows the existing KR engine to compute per-game BPR
-        # Strategy: Store season totals as player_season_stats,
-        #           and create per-game averages as a single aggregate record
-
-        # Insert a synthetic aggregate game for the season
-        season_game_id = f"ncaa-season-{team_info['team_id']}-{SEASON}"
-        game_id = db.upsert_game(
-            conn, season_game_id, SEASON, None,
-            team_season_id, None,
-            None, None,
-            game_type="SEASON_AGG",
-        )
+        # If FGA is missing but we have FGM, estimate: FGA ≈ FGM / 0.44
+        if fga == 0 and fgm > 0:
+            fga = round(fgm / 0.44)
+        # If 3PA missing but we have 3PM, estimate: 3PA ≈ 3PM / 0.34
+        if three_pa == 0 and three_pm > 0:
+            three_pa = round(three_pm / 0.34)
+        # If FTA missing but we have FTM, estimate: FTA ≈ FTM / 0.73
+        if fta == 0 and ftm > 0:
+            fta = round(ftm / 0.73)
+        # If PTS missing but we have components, compute: PTS = 2*(FGM-3PM) + 3*3PM + FTM
+        if pts == 0 and fgm > 0:
+            pts = 2 * (fgm - three_pm) + 3 * three_pm + ftm
+        # If REB missing but we have OREB+DREB
+        if reb == 0 and (oreb > 0 or dreb > 0):
+            reb = oreb + dreb
 
         # Compute per-game averages
+        mpg = _parse_minutes(record.get("mpg_raw", "0")) if record.get("mpg_raw") else 0
+        if mpg == 0 and pts > 0 and games > 0:
+            # Estimate MPG from usage: ~1.2 min per point is a reasonable heuristic
+            mpg = min(round(pts / games * 1.2, 1), 40.0)
+
         avg_stats = {
             "started": True,
-            "minutes": _parse_minutes(record.get("mpg_raw", "0")) if record.get("mpg_raw") else round(pts / games * 1.2, 1) if games > 0 else 0,
-            "fgm": round(fgm / games, 1) if games > 0 else 0,
-            "fga": round(fga / games, 1) if games > 0 else 0,
-            "three_pm": round(three_pm / games, 1) if games > 0 else 0,
-            "three_pa": round(three_pa / games, 1) if games > 0 else 0,
-            "ftm": round(ftm / games, 1) if games > 0 else 0,
-            "fta": round(fta / games, 1) if games > 0 else 0,
-            "oreb": round(oreb / games, 1) if games > 0 else 0,
-            "dreb": round(dreb / games, 1) if games > 0 else 0,
-            "reb": round(reb / games, 1) if games > 0 else 0,
-            "ast": round(ast / games, 1) if games > 0 else 0,
-            "stl": round(stl / games, 1) if games > 0 else 0,
-            "blk": round(blk / games, 1) if games > 0 else 0,
-            "turnovers": round(turnovers / games, 1) if games > 0 else 0,
-            "pf": 0,
-            "pts": round(pts / games, 1) if games > 0 else 0,
+            "minutes": mpg,
+            "fgm": round(fgm / games, 1),
+            "fga": round(fga / games, 1),
+            "three_pm": round(three_pm / games, 1),
+            "three_pa": round(three_pa / games, 1),
+            "ftm": round(ftm / games, 1),
+            "fta": round(fta / games, 1),
+            "oreb": round(oreb / games, 1),
+            "dreb": round(dreb / games, 1),
+            "reb": round(reb / games, 1),
+            "ast": round(ast / games, 1),
+            "stl": round(stl / games, 1),
+            "blk": round(blk / games, 1),
+            "turnovers": round(turnovers / games, 1),
+            "pf": round(2.0, 1),  # NCAA avg ~2.0 PF/game; no ranking page for PF
+            "pts": round(pts / games, 1),
         }
 
-        db.upsert_player_game_stats(conn, game_id, pts_id, avg_stats)
+        # Create N synthetic games (one per game played) with identical per-game
+        # averages. The KR engine computes BPR per game, so N records gives proper
+        # confidence scores and avoids the single-game low-confidence trap.
+        for g_idx in range(games):
+            syn_game_id = f"ncaa-syn-{team_info['team_id']}-{SEASON}-g{g_idx+1:02d}"
+            game_id = db.upsert_game(
+                conn, syn_game_id, SEASON, None,
+                team_season_id, None,
+                None, None,
+                game_type="SEASON_AVG",
+            )
+            db.upsert_player_game_stats(conn, game_id, pts_id, avg_stats)
+            counts["pgs_created"] += 1
 
         counts["matched"] += 1
         counts["players"] += 1
 
     conn.commit()
-    log.info(f"Loaded {counts['matched']} players ({counts['unmatched']} unmatched to teams)")
+    log.info(f"Loaded {counts['matched']} players, {counts['pgs_created']} synthetic game rows "
+             f"({counts['unmatched']} unmatched to teams)")
     return counts
 
 

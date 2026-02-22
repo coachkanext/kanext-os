@@ -1,7 +1,7 @@
 /**
  * Mock Business Board & Investors Data — Complete data layer for the Board/Investors tab.
  * 6 sub-tabs: Board, Investors, Updates, Dataroom, Resolutions, Distributions.
- * All data references KaNeXT entities: Sammy Kalejaiye, PBD, Tom Ellsworth, SAFE notes.
+ * All data references KaNeXT entities: Alex Morgan, PBD, Tom Ellsworth, SAFE notes.
  */
 
 // =============================================================================
@@ -37,7 +37,7 @@ export const BOARD_SEATS: BoardSeat[] = [
   {
     id: 'bs-1',
     title: 'Founder & CEO',
-    holder: 'Sammy Kalejaiye',
+    holder: 'Alex Morgan',
     status: 'active',
     appointedDate: '2024-01-15',
     description:
@@ -114,7 +114,7 @@ export const INVESTOR_RECORDS: InvestorRecord[] = [
   },
   {
     id: 'inv-4',
-    name: 'Kalejaiye Family Office',
+    name: 'Carter Family Office',
     type: 'family_office',
     invested: '$75,000',
     equity: '1.2%',
@@ -156,7 +156,7 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     status: 'sent',
     recipients: 'All Investors (4)',
     summary:
-      'Closed Q4 with $142K cash on hand, 7.2 months runway. KaNeXT OS v2 shipped with Business Mode, Competition Mode, and Nexus AI. FMU proof wedge generating $53M+ projected media value Y1. Next milestone: Series A prep with updated financial model.',
+      'Closed Q4 with $142K cash on hand, 7.2 months runway. KaNeXT OS v2 shipped with Business Mode, Competition Mode, and Nexus AI. KaNeXT proof wedge generating $53M+ projected media value Y1. Next milestone: Series A prep with updated financial model.',
     tier: 'all',
   },
   {
@@ -166,7 +166,7 @@ export const INVESTOR_UPDATES: InvestorUpdate[] = [
     status: 'sent',
     recipients: 'Board & Strategic (3)',
     summary:
-      'Board pack covering runway extension strategy, FMU partnership expansion, ICCLA campus rollout plan, and preliminary Series A term sheet review. Action items: approve budget reallocation, vote on advisory seat conversion.',
+      'Board pack covering runway extension strategy, KaNeXT partnership expansion, KaNeXT Church campus rollout plan, and preliminary Series A term sheet review. Action items: approve budget reallocation, vote on advisory seat conversion.',
     tier: 'board',
   },
   {
@@ -301,7 +301,7 @@ export const RESOLUTIONS: Resolution[] = [
     date: '2026-02-10',
     type: 'board_vote',
     outcome: 'approved',
-    proposer: 'Sammy Kalejaiye',
+    proposer: 'Alex Morgan',
     summary:
       'Reallocate $18,000 from marketing to engineering for KaNeXT OS v2.1 sprint. Approved unanimously with condition to revisit marketing spend at Q2 board meeting.',
   },
@@ -311,7 +311,7 @@ export const RESOLUTIONS: Resolution[] = [
     date: '2026-02-10',
     type: 'board_vote',
     outcome: 'deferred',
-    proposer: 'Sammy Kalejaiye',
+    proposer: 'Alex Morgan',
     summary:
       'Motion to convert Patrick Bet-David advisory role to formal board seat with voting rights upon SAFE conversion. Deferred pending legal review of governance implications.',
   },
@@ -321,7 +321,7 @@ export const RESOLUTIONS: Resolution[] = [
     date: '2026-01-20',
     type: 'written_consent',
     outcome: 'approved',
-    proposer: 'Sammy Kalejaiye',
+    proposer: 'Alex Morgan',
     summary:
       'Written consent authorizing the company to pursue Series A fundraise targeting $2M\u2013$5M at $15M\u2013$25M pre-money valuation. Approved by all voting members.',
   },
@@ -331,19 +331,19 @@ export const RESOLUTIONS: Resolution[] = [
     date: '2026-03-01',
     type: 'board_vote',
     outcome: 'pending',
-    proposer: 'Sammy Kalejaiye',
+    proposer: 'Alex Morgan',
     summary:
       'Proposed adoption of updated ESOP with 10% option pool reserve for Series A. Includes new vesting schedule and cliff terms. Pending discussion at March board meeting.',
   },
   {
     id: 'res-5',
-    title: 'Approve FMU Partnership Extension',
+    title: 'Approve KaNeXT Partnership Extension',
     date: '2025-12-15',
     type: 'advisory',
     outcome: 'approved',
     proposer: 'Tom Ellsworth',
     summary:
-      'Advisory resolution recommending extension of the FMU partnership through 2027 season with expanded media rights scope. Non-binding advisory approved.',
+      'Advisory resolution recommending extension of the KaNeXT partnership through 2027 season with expanded media rights scope. Non-binding advisory approved.',
   },
 ];
 
@@ -396,7 +396,7 @@ export const DISTRIBUTIONS: Distribution[] = [
     date: '2026-06-01',
     type: 'return_of_capital',
     status: 'pending_approval',
-    recipients: 'Sammy Kalejaiye',
+    recipients: 'Alex Morgan',
   },
 ];
 

@@ -25,17 +25,17 @@ export const COMPANIES: Company[] = [
     id: 'co-osk',
     displayName: 'OSK Group',
     legalName: 'OSK Group LLC',
-    jurisdiction: 'Florida',
+    jurisdiction: 'Tennessee',
     entityType: 'LLC',
     addressBlock: [
-      'Oluwadara Kalejaiye',
+      'Oluwadara Carter',
       '4300 Biscayne Blvd',
       'Suite 203 #1001',
       'Miami, FL 33137',
       'United States',
     ],
     primaryContact: {
-      name: 'Oluwadara Kalejaiye',
+      name: 'Oluwadara Carter',
       email: 'dara@oskgroup.io',
       role: 'Managing Member',
     },
@@ -49,17 +49,17 @@ export const COMPANIES: Company[] = [
     displayName: 'KaNeXT',
     legalName: 'KaNeXT Operations LLC',
     dbaName: 'KaNeXT',
-    jurisdiction: 'Florida',
+    jurisdiction: 'Tennessee',
     entityType: 'LLC',
     addressBlock: [
-      'Oluwadara Kalejaiye',
+      'Oluwadara Carter',
       '4300 Biscayne Blvd',
       'Suite 203 #1001',
       'Miami, FL 33137',
       'United States',
     ],
     primaryContact: {
-      name: 'Oluwadara Kalejaiye',
+      name: 'Oluwadara Carter',
       email: 'dara@kanext.io',
       role: 'Founder & CEO',
     },
@@ -78,10 +78,10 @@ export const PROOF_EVENTS: ProofEvent[] = [
   {
     id: 'pe-fmu',
     companyId: 'co-kanext',
-    name: 'FMU Men\'s Basketball \u2014 Live Proof',
+    name: 'KaNeXT Men\'s Basketball \u2014 Live Proof',
     stage: 'active',
     overview:
-      'Deploying KaNeXT OS as the primary operational intelligence layer for the Florida Memorial University men\'s basketball program. This proof event validates the Sports domain end-to-end: recruiting, game operations, player evaluation, team analytics, and coaching intelligence \u2014 all in a live D2 program.',
+      'Deploying KaNeXT OS as the primary operational intelligence layer for the KaNeXT Sports men\'s basketball program. This proof event validates the Sports domain end-to-end: recruiting, game operations, player evaluation, team analytics, and coaching intelligence \u2014 all in a live D2 program.',
     kpis: [
       { id: 'kpi-1', label: 'Roster Players', value: '15', target: '15', trend: 'flat' },
       { id: 'kpi-2', label: 'Games Tracked', value: '24', target: '30', trend: 'up' },
@@ -243,14 +243,14 @@ export const DOCUMENTS_V2: DocumentV2[] = [
   {
     id: 'doc-v2-5',
     title: 'Certificate of Formation',
-    description: 'Florida LLC formation documents',
+    description: 'Ridgemont LLC formation documents',
     category: 'governance',
     visibility: 'founder',
     fileType: 'pdf',
     createdAt: new Date('2024-03-15'),
     updatedAt: new Date('2024-03-15'),
     tags: ['formation', 'legal', 'florida'],
-    summary: 'Official certificate of formation for KaNeXT Operations LLC filed with the Florida Division of Corporations.',
+    summary: 'Official certificate of formation for KaNeXT Operations LLC filed with the Ridgemont Division of Corporations.',
     attachments: [],
   },
   {
@@ -349,7 +349,7 @@ export const DOCUMENTS_V2: DocumentV2[] = [
   // New v2 docs
   {
     id: 'doc-v2-13',
-    title: 'FMU Proof Event Report',
+    title: 'KaNeXT Proof Event Report',
     description: 'Live proof event progress and findings',
     category: 'proof',
     visibility: 'investor',
@@ -358,7 +358,7 @@ export const DOCUMENTS_V2: DocumentV2[] = [
     updatedAt: new Date('2026-02-10'),
     tags: ['proof', 'fmu', 'sports', 'traction'],
     proofEventId: 'pe-fmu',
-    summary: 'Detailed report on the FMU men\'s basketball proof event \u2014 KPIs, milestones achieved, product validation findings, and next steps.',
+    summary: 'Detailed report on the KaNeXT men\'s basketball proof event \u2014 KPIs, milestones achieved, product validation findings, and next steps.',
     attachments: ['fmu-kpi-dashboard.png', 'game-ops-screenshots.pdf'],
   },
   {
@@ -539,7 +539,7 @@ export const RECENT_UPDATES: RecentUpdate[] = [
   {
     id: 'update-1',
     title: 'Proof Event KPIs Updated',
-    description: 'FMU proof event metrics refreshed \u2014 24 games tracked, 78% sim accuracy.',
+    description: 'KaNeXT proof event metrics refreshed \u2014 24 games tracked, 78% sim accuracy.',
     timestamp: new Date('2026-02-14'),
     type: 'metric',
   },

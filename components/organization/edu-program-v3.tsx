@@ -1,7 +1,7 @@
 /**
  * Edu Program V3 — 3-pill ViewBar (Identity | Academics | Operations)
- * Florida Memorial University · President perspective
- * HBCU · Founded 1879 · Miami Gardens, FL · SACSCOC Accredited
+ * KaNeXT Sports · President perspective
+ * HBCU · Founded 1879 · Nashville, TN · SACSCOC Accredited
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
@@ -23,9 +23,9 @@ const VIEWS: { id: ViewId; label: string }[] = [
 ];
 
 const INSTITUTION = {
-  name: 'Florida Memorial University',
+  name: 'KaNeXT Sports',
   founded: 1879,
-  location: 'Miami Gardens, FL',
+  location: 'Nashville, TN',
   type: 'HBCU',
   accreditation: 'SACSCOC',
   motto: 'Truth, Service, Excellence',
@@ -35,7 +35,7 @@ const INSTITUTION = {
     undergrad: 1050,
     grad: 150,
   },
-  strategicPlan: 'FMU 2030: Elevating Excellence — Focus areas include student success, institutional sustainability, research growth, and community engagement. 70% of strategic initiatives underway.',
+  strategicPlan: 'KaNeXT 2030: Elevating Excellence — Focus areas include student success, institutional sustainability, research growth, and community engagement. 70% of strategic initiatives underway.',
 };
 
 interface Department {
@@ -55,7 +55,7 @@ const DEPARTMENTS: Department[] = [
   { id: 'd3', name: 'Arts & Sciences', programs: 'BA, BS', faculty: 8, students: 320, chair: 'Dr. Robert Johnson', accreditationStatus: 'Accredited', icon: 'globe' },
   { id: 'd4', name: 'School of Aviation', programs: 'BS Aviation', faculty: 3, students: 85, chair: 'Capt. James Wright', accreditationStatus: 'Accredited', icon: 'airplane' },
   { id: 'd5', name: 'Computer Science', programs: 'BS CS', faculty: 3, students: 120, chair: 'Dr. Karen Williams', accreditationStatus: 'Accredited', icon: 'chevron.left.forwardslash.chevron.right' },
-  { id: 'd6', name: 'Criminal Justice', programs: 'BS CJ', faculty: 3, students: 95, chair: 'Dr. Marcus Thompson', accreditationStatus: 'Accredited', icon: 'shield.fill' },
+  { id: 'd6', name: 'Criminal Justice', programs: 'BS CJ', faculty: 3, students: 95, chair: 'Dr. Alex Morgan', accreditationStatus: 'Accredited', icon: 'shield.fill' },
 ];
 
 type TaskStatus = 'due_tomorrow' | 'overdue' | 'in_progress' | 'upcoming' | 'completed';

@@ -239,9 +239,9 @@ interface EarlyAlert {
 }
 
 const EARLY_ALERTS: EarlyAlert[] = [
-  { id: 'ea-1', student: 'Marcus Thompson', issue: 'Missed 4 consecutive classes', severity: 'high', course: 'BIO 201', flaggedBy: 'Dr. Patel', daysAgo: 1 },
+  { id: 'ea-1', student: 'Alex Morgan', issue: 'Missed 4 consecutive classes', severity: 'high', course: 'BIO 201', flaggedBy: 'Dr. Patel', daysAgo: 1 },
   { id: 'ea-2', student: 'Sarah Kim', issue: 'GPA dropped below 2.0', severity: 'high', course: 'Overall', flaggedBy: 'Academic Advising', daysAgo: 2 },
-  { id: 'ea-3', student: 'James Wilson', issue: 'Missing 3 assignments', severity: 'medium', course: 'ENG 302', flaggedBy: 'Prof. Johnson', daysAgo: 3 },
+  { id: 'ea-3', student: 'Andrew Palmer', issue: 'Missing 3 assignments', severity: 'medium', course: 'ENG 302', flaggedBy: 'Prof. Johnson', daysAgo: 3 },
   { id: 'ea-4', student: 'Emily Chen', issue: 'Financial hold — payment overdue', severity: 'high', course: 'N/A', flaggedBy: 'Bursar', daysAgo: 5 },
 ];
 

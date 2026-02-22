@@ -15,8 +15,8 @@ import type { PlayerEvalConfig, PlayerEvalRole } from '@/types';
 
 // Mock players for demo
 const MOCK_PLAYERS = [
-  { id: 'p1', name: 'Brandon Williams' },
-  { id: 'p2', name: 'Laolu Kalejaiye' },
+  { id: 'p1', name: 'Marcus Reed' },
+  { id: 'p2', name: 'Devon Carter' },
   { id: 'p3', name: 'Tyler Rodriguez' },
   { id: 'p4', name: 'Jamal Thompson' },
   { id: 'p5', name: 'Chris Anderson' },

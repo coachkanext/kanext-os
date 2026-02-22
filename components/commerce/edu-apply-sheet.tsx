@@ -60,7 +60,7 @@ export function EduApplySheet({ visible, onClose, colors }: Props) {
   }, []);
 
   return (
-    <BottomSheet visible={visible} onClose={handleClose} title="Apply to FMU" useModal>
+    <BottomSheet visible={visible} onClose={handleClose} title="Apply to KaNeXT" useModal>
       {stage === 'browse' && (
         <View style={styles.container}>
           {APPLICATION_TYPES.map((app) => (

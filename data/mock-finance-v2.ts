@@ -276,11 +276,11 @@ const SPORTS_DASHBOARD: FinanceDashboardBlock[] = [
 // =============================================================================
 
 const SPORTS_BUDGETS: FinanceBudget[] = [
-  { id: 'sb-1', category: 'Travel', period: '2025-26 Season', budgeted: 22000, actual: 18000, owner: 'Coach Kalejaiye', status: 'at-risk' },
-  { id: 'sb-2', category: 'Recruiting', period: '2025-26 Season', budgeted: 15000, actual: 12000, owner: 'Coach Kalejaiye', status: 'on-track' },
+  { id: 'sb-1', category: 'Travel', period: '2025-26 Season', budgeted: 22000, actual: 18000, owner: 'Coach Carter', status: 'at-risk' },
+  { id: 'sb-2', category: 'Recruiting', period: '2025-26 Season', budgeted: 15000, actual: 12000, owner: 'Coach Carter', status: 'on-track' },
   { id: 'sb-3', category: 'Equipment', period: '2025-26 Season', budgeted: 8000, actual: 6500, owner: 'Equipment Manager', status: 'on-track' },
   { id: 'sb-4', category: 'Nutrition', period: '2025-26 Season', budgeted: 5000, actual: 3200, owner: 'S&C Staff', status: 'on-track' },
-  { id: 'sb-5', category: 'Staff Development', period: '2025-26 Season', budgeted: 4000, actual: 1800, owner: 'Coach Kalejaiye', status: 'on-track' },
+  { id: 'sb-5', category: 'Staff Development', period: '2025-26 Season', budgeted: 4000, actual: 1800, owner: 'Coach Carter', status: 'on-track' },
   { id: 'sb-6', category: 'Medical', period: '2025-26 Season', budgeted: 6000, actual: 4000, owner: 'Athletic Trainer', status: 'on-track' },
   { id: 'sb-7', category: 'Game Day', period: '2025-26 Season', budgeted: 3000, actual: 2100, owner: 'Operations', status: 'on-track' },
   { id: 'sb-8', category: 'Media', period: '2025-26 Season', budgeted: 4000, actual: 2800, owner: 'Media Dir.', status: 'on-track' },
@@ -310,10 +310,10 @@ const SPORTS_LEDGER: FinanceLedgerEntry[] = [
 // =============================================================================
 
 const SPORTS_APPROVALS: FinanceApproval[] = [
-  { id: 'sa-1', title: 'Conference Tournament Travel Package', amount: 4800, purpose: 'Bus + hotel for NCCAA National Tournament', requestedBy: 'Sammy Kalejaiye', requestedByInitials: 'SK', approvers: ['AD Office', 'VP Finance'], status: 'pending', submittedAt: 'Feb 14, 2026', evidence: 'Quote-CT-2026' },
-  { id: 'sa-2', title: 'Spring Recruiting Budget Increase', amount: 2000, purpose: 'Additional campus visits for 2027 class', requestedBy: 'Sammy Kalejaiye', requestedByInitials: 'SK', approvers: ['AD Office'], status: 'approved', submittedAt: 'Feb 10, 2026' },
-  { id: 'sa-3', title: 'Video Equipment Upgrade', amount: 1200, purpose: 'Hudl camera system replacement', requestedBy: 'Marcus Reed', requestedByInitials: 'MR', approvers: ['Coach Kalejaiye', 'AD Office'], status: 'pending', submittedAt: 'Feb 8, 2026' },
-  { id: 'sa-4', title: 'End-of-Season Banquet Catering', amount: 1800, purpose: 'Annual awards banquet for 65 guests', requestedBy: 'Tanya Brooks', requestedByInitials: 'TB', approvers: ['Coach Kalejaiye'], status: 'draft', submittedAt: 'Feb 6, 2026' },
+  { id: 'sa-1', title: 'Conference Tournament Travel Package', amount: 4800, purpose: 'Bus + hotel for NCCAA National Tournament', requestedBy: 'Alex Morgan', requestedByInitials: 'SK', approvers: ['AD Office', 'VP Finance'], status: 'pending', submittedAt: 'Feb 14, 2026', evidence: 'Quote-CT-2026' },
+  { id: 'sa-2', title: 'Spring Recruiting Budget Increase', amount: 2000, purpose: 'Additional campus visits for 2027 class', requestedBy: 'Alex Morgan', requestedByInitials: 'SK', approvers: ['AD Office'], status: 'approved', submittedAt: 'Feb 10, 2026' },
+  { id: 'sa-3', title: 'Video Equipment Upgrade', amount: 1200, purpose: 'Hudl camera system replacement', requestedBy: 'Marcus Reed', requestedByInitials: 'MR', approvers: ['Coach Carter', 'AD Office'], status: 'pending', submittedAt: 'Feb 8, 2026' },
+  { id: 'sa-4', title: 'End-of-Season Banquet Catering', amount: 1800, purpose: 'Annual awards banquet for 65 guests', requestedBy: 'Tanya Brooks', requestedByInitials: 'TB', approvers: ['Coach Carter'], status: 'draft', submittedAt: 'Feb 6, 2026' },
 ];
 
 // =============================================================================
@@ -355,7 +355,7 @@ const SPORTS_CONTRACTS: FinanceContract[] = [
 // =============================================================================
 
 const SPORTS_PURCHASING: FinancePurchaseRequest[] = [
-  { id: 'spr-1', title: 'Shooting Machine — Dr. Dish', requestedBy: 'Sammy Kalejaiye', requestedByInitials: 'SK', amount: 6500, category: 'Equipment', status: 'pending', submittedAt: 'Feb 13, 2026' },
+  { id: 'spr-1', title: 'Shooting Machine — Dr. Dish', requestedBy: 'Alex Morgan', requestedByInitials: 'SK', amount: 6500, category: 'Equipment', status: 'pending', submittedAt: 'Feb 13, 2026' },
   { id: 'spr-2', title: 'Road Trip Per Diem — March', requestedBy: 'Tanya Brooks', requestedByInitials: 'TB', amount: 1200, category: 'Travel', status: 'approved', submittedAt: 'Feb 12, 2026' },
   { id: 'spr-3', title: 'Film Room Monitor Upgrade', requestedBy: 'Marcus Reed', requestedByInitials: 'MR', amount: 2400, category: 'Media', status: 'pending', submittedAt: 'Feb 10, 2026' },
   { id: 'spr-4', title: 'Resistance Bands & Recovery Tools', requestedBy: 'Devin Carter', requestedByInitials: 'DC', amount: 450, category: 'Medical', status: 'approved', submittedAt: 'Feb 8, 2026' },
@@ -366,7 +366,7 @@ const SPORTS_PURCHASING: FinancePurchaseRequest[] = [
 // =============================================================================
 
 const SPORTS_PAYROLL: FinancePayrollItem[] = [
-  { id: 'spy-1', payee: 'Sammy Kalejaiye', payeeInitials: 'SK', period: 'Feb 2026', amount: 4200, type: 'salary', status: 'paid' },
+  { id: 'spy-1', payee: 'Alex Morgan', payeeInitials: 'SK', period: 'Feb 2026', amount: 4200, type: 'salary', status: 'paid' },
   { id: 'spy-2', payee: 'Marcus Reed', payeeInitials: 'MR', period: 'Feb 2026', amount: 2800, type: 'stipend', status: 'paid' },
   { id: 'spy-3', payee: 'Tanya Brooks', payeeInitials: 'TB', period: 'Feb 2026', amount: 2400, type: 'stipend', status: 'paid' },
   { id: 'spy-4', payee: 'Devin Carter', payeeInitials: 'DC', period: 'Feb 2026', amount: 1800, type: 'stipend', status: 'pending' },
@@ -378,7 +378,7 @@ const SPORTS_PAYROLL: FinancePayrollItem[] = [
 // =============================================================================
 
 const SPORTS_REIMBURSEMENTS: FinanceReimbursement[] = [
-  { id: 'srm-1', claimant: 'Sammy Kalejaiye', claimantInitials: 'SK', description: 'Recruiting dinner — 2 prospects', amount: 185, receipts: 2, status: 'approved', submittedAt: 'Feb 12, 2026' },
+  { id: 'srm-1', claimant: 'Alex Morgan', claimantInitials: 'SK', description: 'Recruiting dinner — 2 prospects', amount: 185, receipts: 2, status: 'approved', submittedAt: 'Feb 12, 2026' },
   { id: 'srm-2', claimant: 'Marcus Reed', claimantInitials: 'MR', description: 'Film software subscription — personal card', amount: 49, receipts: 1, status: 'pending', submittedAt: 'Feb 10, 2026' },
   { id: 'srm-3', claimant: 'Tanya Brooks', claimantInitials: 'TB', description: 'Office supplies for game-day operations', amount: 112, receipts: 3, status: 'pending', submittedAt: 'Feb 8, 2026' },
 ];
@@ -389,7 +389,7 @@ const SPORTS_REIMBURSEMENTS: FinanceReimbursement[] = [
 
 const SPORTS_REPORTS: FinanceReport[] = [
   { id: 'srp-1', title: 'Monthly Budget vs Actuals — January 2026', type: 'Budget Report', period: 'Jan 2026', generatedAt: 'Feb 3, 2026', owner: 'Finance Office' },
-  { id: 'srp-2', title: 'Season-to-Date Travel Spend', type: 'Category Report', period: '2025-26 Season', generatedAt: 'Feb 10, 2026', owner: 'Coach Kalejaiye' },
+  { id: 'srp-2', title: 'Season-to-Date Travel Spend', type: 'Category Report', period: '2025-26 Season', generatedAt: 'Feb 10, 2026', owner: 'Coach Carter' },
   { id: 'srp-3', title: 'Recruiting Cost-per-Signee Analysis', type: 'ROI Report', period: '2024-25 Cycle', generatedAt: 'Jan 28, 2026', owner: 'AD Office' },
   { id: 'srp-4', title: 'Quarterly Compliance Filing', type: 'Compliance Report', period: 'Q3 FY26', generatedAt: 'Jan 15, 2026', owner: 'Compliance' },
 ];
@@ -411,12 +411,12 @@ const SPORTS_CONTROLS: FinanceControl[] = [
 // =============================================================================
 
 const SPORTS_AUDIT: FinanceAuditEntry[] = [
-  { id: 'sau-1', action: 'Approval Submitted', actor: 'Sammy Kalejaiye', timestamp: 'Feb 14, 2026 3:22 PM', timestampMs: 1739557320000, description: 'Conference Tournament Travel Package — $4,800' },
+  { id: 'sau-1', action: 'Approval Submitted', actor: 'Alex Morgan', timestamp: 'Feb 14, 2026 3:22 PM', timestampMs: 1739557320000, description: 'Conference Tournament Travel Package — $4,800' },
   { id: 'sau-2', action: 'Payment Processed', actor: 'Finance Office', timestamp: 'Feb 14, 2026 11:05 AM', timestampMs: 1739541900000, description: 'Nike equipment order paid — PO-2026-014' },
   { id: 'sau-3', action: 'Budget Transfer', actor: 'AD Office', timestamp: 'Feb 12, 2026 2:30 PM', timestampMs: 1739381400000, description: 'Moved $1,000 from Staff Dev to Recruiting' },
   { id: 'sau-4', action: 'Approval Granted', actor: 'AD Office', timestamp: 'Feb 10, 2026 10:15 AM', timestampMs: 1739192100000, description: 'Spring Recruiting Budget Increase — $2,000 approved' },
   { id: 'sau-5', action: 'Invoice Received', actor: 'System', timestamp: 'Feb 8, 2026 9:00 AM', timestampMs: 1739015600000, description: 'Sodexo Dining invoice SOD-8821 — $1,450' },
-  { id: 'sau-6', action: 'Reimbursement Filed', actor: 'Sammy Kalejaiye', timestamp: 'Feb 12, 2026 5:45 PM', timestampMs: 1739393100000, description: 'Recruiting dinner claim — $185 (2 receipts)' },
+  { id: 'sau-6', action: 'Reimbursement Filed', actor: 'Alex Morgan', timestamp: 'Feb 12, 2026 5:45 PM', timestampMs: 1739393100000, description: 'Recruiting dinner claim — $185 (2 receipts)' },
   { id: 'sau-7', action: 'Contract Renewed', actor: 'AD Office', timestamp: 'Feb 5, 2026 1:00 PM', timestampMs: 1738764000000, description: 'Charter Express transportation contract extended' },
   { id: 'sau-8', action: 'Payroll Run', actor: 'Finance Office', timestamp: 'Feb 1, 2026 8:00 AM', timestampMs: 1738396800000, description: 'February stipends processed — 5 recipients, $12,400' },
   { id: 'sau-9', action: 'Control Updated', actor: 'VP Finance', timestamp: 'Jan 28, 2026 4:00 PM', timestampMs: 1738094400000, description: 'Recruiting meal cap raised from $50 to $75' },
@@ -646,7 +646,7 @@ const CHURCH_APPROVALS: FinanceApproval[] = [
   { id: 'cha-1', title: 'Sanctuary HVAC Maintenance', amount: 6800, purpose: 'Annual HVAC system inspection and filter replacement', requestedBy: 'Deacon Williams', requestedByInitials: 'DW', approvers: ['Admin Pastor', 'Finance Committee'], status: 'pending', submittedAt: 'Feb 13, 2026' },
   { id: 'cha-2', title: 'Easter Production Budget', amount: 3200, purpose: 'Stage design, lighting, and media for Easter services', requestedBy: 'Worship Dir.', requestedByInitials: 'WD', approvers: ['Admin Pastor'], status: 'approved', submittedAt: 'Feb 10, 2026' },
   { id: 'cha-3', title: 'Missions Trip Airfare — Haiti Team', amount: 4800, purpose: 'Round-trip flights for 4-person missions team', requestedBy: 'Pastor Adewale', requestedByInitials: 'PA', approvers: ['Admin Pastor', 'Finance Committee'], status: 'pending', submittedAt: 'Feb 7, 2026' },
-  { id: 'cha-4', title: 'Benevolence Emergency Assistance', amount: 1500, purpose: 'Rent assistance for member family in crisis', requestedBy: 'Benevolence Team', requestedByInitials: 'BT', approvers: ['Pastor Kalejaiye'], status: 'approved', submittedAt: 'Feb 5, 2026' },
+  { id: 'cha-4', title: 'Benevolence Emergency Assistance', amount: 1500, purpose: 'Rent assistance for member family in crisis', requestedBy: 'Benevolence Team', requestedByInitials: 'BT', approvers: ['Pastor Carter'], status: 'approved', submittedAt: 'Feb 5, 2026' },
 ];
 
 // =============================================================================
@@ -657,7 +657,7 @@ const CHURCH_PAYABLES: FinancePayable[] = [
   { id: 'chp-1', vendor: 'Pro Audio Supply', description: 'Sound board equipment upgrade', amount: 4500, dueDate: 'Mar 1, 2026', category: 'Worship & Media', status: 'pending', invoiceRef: 'PAS-2210' },
   { id: 'chp-2', vendor: 'HVAC Solutions', description: 'Sanctuary HVAC maintenance contract', amount: 6800, dueDate: 'Feb 25, 2026', category: 'Facilities', status: 'pending' },
   { id: 'chp-3', vendor: 'Lifeway Christian', description: 'Youth ministry curriculum — spring quarter', amount: 680, dueDate: 'Feb 20, 2026', category: 'Ministry Programs', status: 'paid' },
-  { id: 'chp-4', vendor: 'FPL (Florida Power)', description: 'Main campus utility bill — February', amount: 3800, dueDate: 'Mar 5, 2026', category: 'Facilities', status: 'pending' },
+  { id: 'chp-4', vendor: 'FPL (Ridgemont Power)', description: 'Main campus utility bill — February', amount: 3800, dueDate: 'Mar 5, 2026', category: 'Facilities', status: 'pending' },
   { id: 'chp-5', vendor: 'Mission Depot', description: 'Haiti missions trip supplies', amount: 2200, dueDate: 'Feb 18, 2026', category: 'Outreach', status: 'paid' },
 ];
 
@@ -698,7 +698,7 @@ const CHURCH_PURCHASING: FinancePurchaseRequest[] = [
 // =============================================================================
 
 const CHURCH_PAYROLL: FinancePayrollItem[] = [
-  { id: 'chpy-1', payee: 'Pastor Dipo Kalejaiye', payeeInitials: 'DK', period: 'Feb 2026', amount: 6500, type: 'salary', status: 'paid' },
+  { id: 'chpy-1', payee: 'Pastor Dipo Carter', payeeInitials: 'DK', period: 'Feb 2026', amount: 6500, type: 'salary', status: 'paid' },
   { id: 'chpy-2', payee: 'Admin Pastor Thomas', payeeInitials: 'AT', period: 'Feb 2026', amount: 4800, type: 'salary', status: 'paid' },
   { id: 'chpy-3', payee: 'Worship Director', payeeInitials: 'WD', period: 'Feb 2026', amount: 3500, type: 'salary', status: 'paid' },
   { id: 'chpy-4', payee: 'Musicians (4)', payeeInitials: 'MU', period: 'Feb 2026', amount: 2400, type: 'contractor', status: 'pending' },

@@ -39,7 +39,7 @@ LEVEL_MAP = {
     "ncaa_d3": "NCAA D3",
     "ncaa_d2": "NCAA D2",
     "ncaa_d1_low_major": "NCAA D1 LM",
-    "ncaa_d1_mid_major": "NCAA D1 MM",
+    "ncaa_d1": "NCAA D1",
     "ncaa_d1_high_major": "NCAA D1 HM",
     "professional": "Pro",
 }
@@ -177,6 +177,12 @@ def export_players(conn) -> list[dict]:
             kr.overall_kr,
             kr.base_off_kr,
             kr.base_def_kr,
+            kr.final_overall_kr,
+            kr.final_off_kr,
+            kr.final_def_kr,
+            kr.off_badge_boost,
+            kr.def_badge_boost,
+            kr.overall_badge_boost,
             kr.primary_archetype,
             kr.secondary_archetypes,
             kr.confidence_pct,
@@ -219,7 +225,10 @@ def export_players(conn) -> list[dict]:
             pid, full_name, height_in, weight, positions, state, country, city,
             high_school, class_year, jersey, portal_date,
             team, conference, level_key, level_display,
-            kr, off_kr, def_kr, archetype, sec_archetypes, confidence,
+            kr, off_kr, def_kr,
+            final_kr, final_off, final_def,
+            off_badge_boost, def_badge_boost, overall_badge_boost,
+            archetype, sec_archetypes, confidence,
             gp, gs, mpg, ppg, rpg, apg, spg, bpg, topg,
             fg_pct, three_pct, ft_pct, oreb, dreb, fga, threepa, fta, pf,
             usage, bpr_avg, bpr_trend
@@ -261,9 +270,15 @@ def export_players(conn) -> list[dict]:
             "city": city or "",
             "highSchool": high_school or "",
             "portalEntryDate": str(portal_date) if portal_date else None,
-            "kr": _f(kr),
-            "offKR": _f(off_kr),
-            "defKR": _f(def_kr),
+            "kr": _f(final_kr) or _f(kr),
+            "offKR": _f(final_off) or _f(off_kr),
+            "defKR": _f(final_def) or _f(def_kr),
+            "baseKR": _f(kr),
+            "baseOffKR": _f(off_kr),
+            "baseDefKR": _f(def_kr),
+            "offBadgeBoost": _f(off_badge_boost),
+            "defBadgeBoost": _f(def_badge_boost),
+            "overallBadgeBoost": _f(overall_badge_boost),
             "archetype": archetype or "",
             "secondaryArchetypes": sec_archetypes or [],
             "confidence": _f(confidence),
@@ -375,6 +390,42 @@ def export_scholarship_nil(conn) -> dict[str, dict]:
     return result
 
 
+def export_badges(conn) -> dict[str, list[dict]]:
+    """Export player badges keyed by player ID."""
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT
+            p.id AS player_id,
+            pb.badge_name,
+            pb.cluster,
+            pb.tier,
+            pb.effect
+        FROM player_badges pb
+        JOIN player_kr pk ON pb.player_kr_id = pk.id
+        JOIN player_team_seasons pts ON pk.player_team_season_id = pts.id
+        JOIN players p ON pts.player_id = p.id
+        JOIN team_seasons ts ON pts.team_season_id = ts.id
+        WHERE ts.season = '2025-26'
+        ORDER BY p.id, pb.tier DESC, pb.badge_name
+    """)
+
+    badges: dict[str, list[dict]] = {}
+    for pid, name, cluster, tier, effect in cur.fetchall():
+        pid = str(pid)
+        if pid not in badges:
+            badges[pid] = []
+        badges[pid].append({
+            "name": name,
+            "cluster": cluster,
+            "tier": tier,
+            "effect": _f(effect),
+        })
+
+    total = sum(len(v) for v in badges.values())
+    print(f"  Badge records: {total} across {len(badges)} players")
+    return badges
+
+
 def export_team_systems(conn) -> dict[str, dict]:
     """Export OSIE/DSIE team system identities."""
     cur = conn.cursor()
@@ -418,10 +469,11 @@ def main():
     print("Exporting data...")
     players = export_players(conn)
     clusters = export_clusters(conn)
+    badges = export_badges(conn)
     scholarship = export_scholarship_nil(conn)
     team_systems = export_team_systems(conn)
 
-    # Merge clusters into players for a single file
+    # Merge clusters, badges, scholarship into players for a single file
     for p in players:
         pid = p["id"]
         p["clusters"] = clusters.get(pid, {
@@ -429,6 +481,7 @@ def main():
             "perimeter_defense": 50, "interior_defense": 50,
             "rebounding": 50, "frame": 50,
         })
+        p["badges"] = badges.get(pid, [])
         sna = scholarship.get(pid)
         if sna:
             p["scholarship"] = sna
@@ -445,6 +498,7 @@ def main():
                 "players": len(players),
                 "withKR": sum(1 for p in players if p["kr"] is not None),
                 "withStats": sum(1 for p in players if p["gp"] is not None),
+                "withBadges": sum(1 for p in players if len(p.get("badges", [])) > 0),
                 "withScholarship": len(scholarship),
                 "teamSystems": len(team_systems),
             },

@@ -35,7 +35,7 @@ const VIEWS: { id: ViewMode; label: string }[] = [
 // Corporate
 const ANNUAL_FILINGS = [
   { id: 'af1', entity: 'OSK Group LLC', state: 'Delaware', dueDate: 'Jun 1, 2025', status: 'upcoming' as const },
-  { id: 'af2', entity: 'KaNeXT Operations LLC', state: 'Florida', dueDate: 'May 1, 2025', status: 'upcoming' as const },
+  { id: 'af2', entity: 'KaNeXT Operations LLC', state: 'Tennessee', dueDate: 'May 1, 2025', status: 'upcoming' as const },
   { id: 'af3', entity: 'KaNeXT IP Holdings LLC', state: 'Delaware', dueDate: 'Jun 1, 2025', status: 'upcoming' as const },
 ];
 

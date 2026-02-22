@@ -67,10 +67,10 @@ export default function TeamChannelScreen() {
         </Pressable>
         <View style={styles.headerInfo}>
           <View style={styles.teamLogo}>
-            <ThemedText style={styles.teamLogoText}>FMU</ThemedText>
+            <ThemedText style={styles.teamLogoText}>KXT</ThemedText>
           </View>
           <View>
-            <ThemedText style={styles.teamName}>FMU Lions</ThemedText>
+            <ThemedText style={styles.teamName}>KaNeXT</ThemedText>
             <ThemedText style={styles.teamSub}>Team Channel</ThemedText>
           </View>
         </View>
@@ -123,10 +123,10 @@ export default function TeamChannelScreen() {
 
       {activeTab === 'about' && (
         <ScrollView contentContainerStyle={styles.aboutContent}>
-          <ThemedText style={styles.aboutTitle}>Florida Memorial University</ThemedText>
+          <ThemedText style={styles.aboutTitle}>KaNeXT Sports</ThemedText>
           <ThemedText style={styles.aboutText}>
-            FMU Lions Men's Basketball{'\n'}
-            Miami Gardens, FL{'\n'}
+            KaNeXT Men's Basketball{'\n'}
+            Nashville, TN{'\n'}
             Conference: Big South{'\n'}
             Head Coach: Coach Williams{'\n\n'}
             Season: 2025-26

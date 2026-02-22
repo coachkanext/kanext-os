@@ -32,8 +32,8 @@ import { openTeamCard } from '@/utils/global-entity-sheets';
 
 // Mock data imports (other modes)
 
-// FMU data
-import { FMU_GAMES, FMU_GAMES_BY_ID, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getPGISColor, getTGISColor, tgisToDisplay, FMU_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
+// KaNeXT Sports data
+import { KaNeXT_GAMES, KaNeXT_GAMES_BY_ID, KaNeXT_LEADERS, KaNeXT_STANDINGS, KaNeXT_NEWS, KaNeXT_RECORD, KaNeXT_LAST_GAME, KaNeXT_LAST_GAME_ID, KaNeXT_NEXT_GAME, KaNeXT_NEXT_GAME_ID, KaNeXT_SEASON_COMPLETE, KaNeXT_GAME_BPR, getBPRColor, KaNeXT_GAME_IMPACT, getPGISColor, getTGISColor, tgisToDisplay, KaNeXT_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
 import { TeamQuickSheet } from '@/components/team-quick-sheet';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 import { getSportsRole, type SportsRoleLens } from '@/utils/sports-rbac';
@@ -94,47 +94,47 @@ const DOMAIN_HIDDEN: Record<SportsRoleLens, Set<DrillDownId>> = {
   R5: new Set(['game-plan', 'simulation', 'development']),
 };
 
-// FMU seal logo
-const FMU_SEAL = require('@/assets/images/fmu-seal.png');
+// KaNeXT logo
+const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
 
-// FMU team state — derived from real data
-const fmuStreak = FMU_STANDINGS.find((r) => r.team === 'Florida Memorial')?.streak ?? '—';
+// KaNeXT team state — derived from real data
+const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—';
 const DEMO_TEAM_STATE = {
-  name: 'Florida Memorial',
+  name: 'KaNeXT Sports',
   level: 'NAIA',
-  conference: 'Sun Conference',
-  record: FMU_RECORD.overall,
-  confRecord: FMU_RECORD.conference,
+  conference: 'KaNeXT Conference',
+  record: KaNeXT_RECORD.overall,
+  confRecord: KaNeXT_RECORD.conference,
   streak: fmuStreak,
 };
 
 const DEMO_TODAY = {
-  activity: FMU_SEASON_COMPLETE ? 'Off-Season' : 'In-Season',
-  lastGame: FMU_LAST_GAME
-    ? { opponent: FMU_LAST_GAME.opponent, result: FMU_LAST_GAME.result, score: FMU_LAST_GAME.score, location: FMU_LAST_GAME.location }
+  activity: KaNeXT_SEASON_COMPLETE ? 'Off-Season' : 'In-Season',
+  lastGame: KaNeXT_LAST_GAME
+    ? { opponent: KaNeXT_LAST_GAME.opponent, result: KaNeXT_LAST_GAME.result, score: KaNeXT_LAST_GAME.score, location: KaNeXT_LAST_GAME.location }
     : { opponent: 'Unknown', result: '—', score: '—', location: 'Home' },
-  nextGame: FMU_NEXT_GAME
-    ? { opponent: FMU_NEXT_GAME.opponent, date: FMU_NEXT_GAME.date, location: FMU_NEXT_GAME.location }
+  nextGame: KaNeXT_NEXT_GAME
+    ? { opponent: KaNeXT_NEXT_GAME.opponent, date: KaNeXT_NEXT_GAME.date, location: KaNeXT_NEXT_GAME.location }
     : null,
 };
 
 // Conference Pulse — derived data
 const confHash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0; return Math.abs(h); };
 
-const FMU_CONF_POSITION = FMU_STANDINGS.findIndex(r => r.team === 'Florida Memorial') + 1;
+const KaNeXT_CONF_POSITION = KaNeXT_STANDINGS.findIndex(r => r.team === 'KaNeXT Sports') + 1;
 
-const CONF_TOP3_TRADITIONAL = FMU_STANDINGS.slice(0, 3).map(r => {
+const CONF_TOP3_TRADITIONAL = KaNeXT_STANDINGS.slice(0, 3).map(r => {
   const h = confHash(r.team);
-  const kr = r.team === 'Florida Memorial' ? 74 : 58 + (h % 28);
+  const kr = r.team === 'KaNeXT Sports' ? 74 : 58 + (h % 28);
   return { team: r.team, kr };
 });
 
-const NEXT_CONF_GAMES = FMU_SEASON_COMPLETE
+const NEXT_CONF_GAMES = KaNeXT_SEASON_COMPLETE
   ? []
-  : FMU_GAMES.filter(g => (g.status === 'upcoming' || g.status === 'live') && g.gameType === 'CONF').slice(0, 3);
+  : KaNeXT_GAMES.filter(g => (g.status === 'upcoming' || g.status === 'live') && g.gameType === 'CONF').slice(0, 3);
 
 // Game IDs for routing
-const LAST_GAME_ID = FMU_LAST_GAME_ID;
+const LAST_GAME_ID = KaNeXT_LAST_GAME_ID;
 
 // =============================================================================
 // OPPONENT HELPERS (used by Recent BPR bottom sheet)
@@ -293,7 +293,7 @@ function SportsHome() {
   const [supportVisible, setSupportVisible] = useState(false);
 
   // Upcoming home games (for tickets card)
-  const upcomingHomeGames = useMemo(() => FMU_GAMES.filter(g => g.location === 'Home' && g.status === 'upcoming'), []);
+  const upcomingHomeGames = useMemo(() => KaNeXT_GAMES.filter(g => g.location === 'Home' && g.status === 'upcoming'), []);
   const nextHomeGame = upcomingHomeGames[0];
 
   // Team system selection state
@@ -318,10 +318,10 @@ function SportsHome() {
 
   // Computed card previews
   const previews = useMemo((): Record<DrillDownId, string> => {
-    const topScorer = FMU_LEADERS[0];
+    const topScorer = KaNeXT_LEADERS[0];
     const topReb = [...FMU_LEADERS].sort((a, b) => b.rpg - a.rpg)[0];
-    const nextOpp = FMU_NEXT_GAME?.opponent ?? 'TBD';
-    const nextPre = FMU_NEXT_GAME_ID ? FMU_PREGAME[FMU_NEXT_GAME_ID] : null;
+    const nextOpp = KaNeXT_NEXT_GAME?.opponent ?? 'TBD';
+    const nextPre = KaNeXT_NEXT_GAME_ID ? KaNeXT_PREGAME[FMU_NEXT_GAME_ID] : null;
     return {
       stats: `${topScorer?.name.split(' ').pop()} ${topScorer?.ppg} PPG · ${topReb?.name.split(' ').pop()} ${topReb?.rpg} RPG · #${FMU_CONF_POSITION} Sun Conf`,
       'game-plan': `vs ${nextOpp}${nextPre ? ` · KR ${nextPre.oppKR}` : ''}`,
@@ -394,7 +394,7 @@ function SportsHome() {
                 <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
                   {/* ===== BLOCK 1 — VIDEO HERO ===== */}
                   {(() => {
-                    const liveGame = FMU_GAMES.find(g => g.status === 'live');
+                    const liveGame = KaNeXT_GAMES.find(g => g.status === 'live');
                     // Determine hero context: live → upcoming (within 3 days) → last game recap → film fallback
                     let heroTitle = '';
                     let heroSubtitle = '';
@@ -403,20 +403,20 @@ function SportsHome() {
                     let badgePulse = false;
 
                     if (liveGame) {
-                      heroTitle = `FMU Lions vs ${liveGame.opponent}`;
-                      heroSubtitle = `LIVE · ${liveGame.clock ?? ''} · FMU ${liveGame.score ?? ''}`;
+                      heroTitle = `KaNeXT vs ${liveGame.opponent}`;
+                      heroSubtitle = `LIVE · ${liveGame.clock ?? ''} · KaNeXT ${liveGame.score ?? ''}`;
                       heroBadge = 'LIVE';
                       badgeColor = '#EF4444';
                       badgePulse = true;
-                    } else if (FMU_NEXT_GAME) {
-                      heroTitle = `FMU Lions vs ${FMU_NEXT_GAME.opponent}`;
-                      const loc = FMU_NEXT_GAME.location === 'Home' ? 'Home' : 'Away';
+                    } else if (KaNeXT_NEXT_GAME) {
+                      heroTitle = `KaNeXT vs ${FMU_NEXT_GAME.opponent}`;
+                      const loc = KaNeXT_NEXT_GAME.location === 'Home' ? 'Home' : 'Away';
                       heroSubtitle = `${FMU_NEXT_GAME.date} · ${loc} · Conference Matchup`;
                       heroBadge = 'NEXT';
                       badgeColor = '#1E40AF';
-                    } else if (FMU_LAST_GAME) {
-                      const wl = FMU_LAST_GAME.result === 'W' ? 'W' : 'L';
-                      heroTitle = `FMU Lions vs ${FMU_LAST_GAME.opponent}`;
+                    } else if (KaNeXT_LAST_GAME) {
+                      const wl = KaNeXT_LAST_GAME.result === 'W' ? 'W' : 'L';
+                      heroTitle = `KaNeXT vs ${FMU_LAST_GAME.opponent}`;
                       heroSubtitle = `Final · ${wl} ${FMU_LAST_GAME.score} · Full Game Recap`;
                       heroBadge = 'RECAP';
                       badgeColor = '#6B7280';
@@ -462,11 +462,11 @@ function SportsHome() {
                   {(() => {
                     // When season is complete, show tournament TBD
                     const isTBD = !FMU_NEXT_GAME;
-                    const nextGame = (!isTBD && FMU_NEXT_GAME_ID) ? FMU_GAMES_BY_ID[FMU_NEXT_GAME_ID] : null;
-                    const oppName = isTBD ? 'TBD' : FMU_NEXT_GAME!.opponent;
+                    const nextGame = (!isTBD && KaNeXT_NEXT_GAME_ID) ? KaNeXT_GAMES_BY_ID[FMU_NEXT_GAME_ID] : null;
+                    const oppName = isTBD ? 'TBD' : KaNeXT_NEXT_GAME!.opponent;
                     const oppHue = confHash(oppName) % 360;
                     const oppInitials = isTBD ? '?' : oppName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-                    const pregame = (!isTBD && FMU_NEXT_GAME_ID) ? FMU_PREGAME[FMU_NEXT_GAME_ID] : null;
+                    const pregame = (!isTBD && KaNeXT_NEXT_GAME_ID) ? KaNeXT_PREGAME[FMU_NEXT_GAME_ID] : null;
                     const oppKR = pregame?.oppKR ?? nextGame?.opponentKR ?? 0;
                     const krGap = pregame?.krGap ?? 0;
                     const winPct = isTBD ? 0 : Math.min(92, Math.max(28, Math.round(50 + krGap * 0.8)));
@@ -475,10 +475,10 @@ function SportsHome() {
                     const gameTypeColor = isTBD ? '#c084fc' : gameTypeLabel === 'CONF' ? '#60a5fa' : '#a1a1aa';
                     const gameTypeBg = isTBD ? '#7c3aed22' : gameTypeLabel === 'CONF' ? '#2563eb22' : '#71717a22';
                     const oppRecord = isTBD ? '' : (nextGame?.opponentRecord ?? '');
-                    const oppConf = isTBD ? '' : 'Sun Conference';
+                    const oppConf = isTBD ? '' : 'KaNeXT Conference';
                     const dateLine = isTBD
                       ? 'NAIA National Tournament · TBD'
-                      : `${nextGame?.date ?? FMU_NEXT_GAME!.date} · ${nextGame?.gameTime ?? ''} · ${nextGame?.venue ?? FMU_NEXT_GAME!.location}`;
+                      : `${nextGame?.date ?? KaNeXT_NEXT_GAME!.date} · ${nextGame?.gameTime ?? ''} · ${nextGame?.venue ?? KaNeXT_NEXT_GAME!.location}`;
                     return (
                       <Pressable
                         onPress={() => { setDrillDown('game-plan'); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
@@ -592,7 +592,7 @@ function SportsHome() {
                     </Pressable>
                     <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderTopColor: MODE_ACCENT.sports }]} onPress={() => setStoreVisible(true)}>
                       <Text style={[styles.commerceTitle, { color: colors.text }]}>Store</Text>
-                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Official FMU Lions Gear</Text>
+                      <Text style={[styles.commerceDetail, { color: colors.textSecondary }]} numberOfLines={1}>Official KaNeXT Gear</Text>
                     </Pressable>
                     <Pressable style={[styles.commerceCard, { backgroundColor: colors.card, borderTopColor: MODE_ACCENT.sports }]} onPress={() => setSupportVisible(true)}>
                       <Text style={[styles.commerceTitle, { color: colors.text }]}>Support</Text>
@@ -617,9 +617,6 @@ function SportsHome() {
                             ]}
                           >
                             <View style={styles.domainCardHeader}>
-                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${colors.tint}18` }]}>
-                                <IconSymbol name={card.icon} size={16} color={colors.tint} />
-                              </View>
                               <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
                               <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
                             </View>
@@ -829,9 +826,7 @@ function SportsHome() {
 
               {/* Roster */}
               <View key="roster" style={{ flex: 1 }}>
-                <ScrollView style={styles.sportsScrollView} contentContainerStyle={styles.rosterScrollContent} showsVerticalScrollIndicator={false} nestedScrollEnabled>
-                  <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { setActiveIndex(0); pagerRef.current?.setPage(0); setDrillDown('stats'); }} onKRPress={() => setKrSheetVisible(true)} />
-                </ScrollView>
+                <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { setActiveIndex(0); pagerRef.current?.setPage(0); setDrillDown('stats'); }} onKRPress={() => setKrSheetVisible(true)} />
               </View>
 
               {/* Calendar */}
@@ -858,13 +853,13 @@ function SportsHome() {
       <BottomSheet visible={!!recentSheet} onClose={closeRecentSheet} >
         {recentSheet && (() => {
           const opp = recentSheet.opponent;
-          const recentImpact = recentSheet.gameStatus === 'final' && recentSheet.gameId ? FMU_GAME_IMPACT[recentSheet.gameId] : null;
-          const recentPregame = recentSheet.gameStatus === 'upcoming' && recentSheet.gameId ? FMU_PREGAME[recentSheet.gameId] : null;
+          const recentImpact = recentSheet.gameStatus === 'final' && recentSheet.gameId ? KaNeXT_GAME_IMPACT[recentSheet.gameId] : null;
+          const recentPregame = recentSheet.gameStatus === 'upcoming' && recentSheet.gameId ? KaNeXT_PREGAME[recentSheet.gameId] : null;
           return (
             <>
                 {/* Header */}
                 {(() => {
-                  const recentGame = recentSheet.gameId ? FMU_GAMES.find((g) => g.id === recentSheet.gameId) : null;
+                  const recentGame = recentSheet.gameId ? KaNeXT_GAMES.find((g) => g.id === recentSheet.gameId) : null;
                   return (
                     <View style={{ alignItems: 'center', marginBottom: Spacing.md }}>
                       <ThemedText style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>
@@ -885,7 +880,7 @@ function SportsHome() {
                     <>
                       {/* Postgame Gambling Block */}
                       {(() => {
-                        const pg = recentSheet.gameId ? FMU_PREGAME[recentSheet.gameId] : null;
+                        const pg = recentSheet.gameId ? KaNeXT_PREGAME[recentSheet.gameId] : null;
                         const sm = recentSheet.score?.match(/(\d+)-(\d+)/);
                         const fmuS = sm ? parseInt(sm[1]) : 0;
                         const oppS = sm ? parseInt(sm[2]) : 0;
@@ -893,7 +888,7 @@ function SportsHome() {
                         const actualMargin = fmuS - oppS;
                         const actualTotal = fmuS + oppS;
                         const spread = pg ? Math.round(pg.krGap * 0.4) : 0;
-                        const spreadStr = spread > 0 ? `FMU -${Math.abs(spread)}.5` : spread < 0 ? `FMU +${Math.abs(spread)}.5` : 'PK';
+                        const spreadStr = spread > 0 ? `KaNeXT -${Math.abs(spread)}.5` : spread < 0 ? `KaNeXT +${Math.abs(spread)}.5` : 'PK';
                         const preWinPct = pg ? Math.min(92, Math.max(28, Math.round(50 + pg.krGap * 0.8))) : 50;
                         const ourKR = pg ? pg.oppKR + pg.krGap : 74;
                         const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
@@ -939,7 +934,7 @@ function SportsHome() {
                             </View>
                             <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#4ade80' : Math.abs(miss) <= 7 ? '#fbbf24' : '#f87171' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
                             <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
-                              {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'FMU' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
+                              {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'KaNeXT' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
                             </Text>
                           </View>
                         );
@@ -970,7 +965,7 @@ function SportsHome() {
                       {(() => {
                         const ourKR = recentPregame.oppKR + recentPregame.krGap;
                         const spread = Math.round(recentPregame.krGap * 0.4);
-                        const spreadStr = spread > 0 ? `FMU -${Math.abs(spread)}.5` : spread < 0 ? `FMU +${Math.abs(spread)}.5` : 'PK';
+                        const spreadStr = spread > 0 ? `KaNeXT -${Math.abs(spread)}.5` : spread < 0 ? `KaNeXT +${Math.abs(spread)}.5` : 'PK';
                         const winPct = Math.min(92, Math.max(28, Math.round(50 + recentPregame.krGap * 0.8)));
                         const fmuProj = Math.round(72 + (ourKR - 60) * 0.3);
                         const oppProj = Math.round(72 + (recentPregame.oppKR - 60) * 0.3);

@@ -16,7 +16,7 @@ export interface CompSeries {
 }
 
 const DEFAULT_SERIES: CompSeries[] = [
-  { id: 'ser-iccla-24', name: 'ICCLA Season 2024-25', shortName: 'ICCLA', format: 'League', status: 'live' },
+  { id: 'ser-iccla-24', name: 'KaNeXT Church Season 2024-25', shortName: 'KaNeXT Church', format: 'League', status: 'live' },
   { id: 'ser-k1-24', name: 'K-1 Invitational 2024', shortName: 'K-1', format: 'Tournament', status: 'completed' },
   { id: 'ser-pbdcup-25', name: 'PBD Cup 2025', shortName: 'PBD Cup', format: 'Cup', status: 'upcoming' },
 ];

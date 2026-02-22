@@ -125,7 +125,7 @@ export default function AccountSettingsScreen() {
           <View style={[styles.card, { backgroundColor: colors.card }]}>
             <View style={styles.row}>
               <Text style={[styles.rowLabel, { color: colors.textSecondary }]}>Name</Text>
-              <Text style={[styles.rowValue, { color: colors.text }]}>Sammy Kalejaiye</Text>
+              <Text style={[styles.rowValue, { color: colors.text }]}>Alex Morgan</Text>
             </View>
             <View style={[styles.divider, { backgroundColor: colors.divider }]} />
             <View style={styles.row}>

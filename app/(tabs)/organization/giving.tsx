@@ -153,7 +153,7 @@ export default function GivingScreen() {
               <View style={styles.otherContent}>
                 <ThemedText style={styles.otherTitle}>Mail a Check</ThemedText>
                 <ThemedText style={[styles.otherDesc, { color: colors.textSecondary }]}>
-                  2361 W. 76th Street, Los Angeles, CA 90043
+                  100 KaNeXT Blvd, Nashville, TN 90043
                 </ThemedText>
               </View>
             </View>
@@ -173,7 +173,7 @@ export default function GivingScreen() {
               <View style={styles.otherContent}>
                 <ThemedText style={styles.otherTitle}>Give by Phone</ThemedText>
                 <ThemedText style={[styles.otherDesc, { color: colors.textSecondary }]}>
-                  Call (800) ICC-GIVE
+                  Call (800) 555-0200
                 </ThemedText>
               </View>
             </View>

@@ -158,7 +158,7 @@ export const BG_CHECK_COLORS: Record<BackgroundCheckStatus, string> = {
 };
 
 // =============================================================================
-// SEEDED PEOPLE (17 ICCLA-style)
+// SEEDED PEOPLE (17 KaNeXT Church-style)
 // =============================================================================
 
 const CHURCH_PEOPLE: ChurchPerson[] = [
@@ -243,7 +243,7 @@ const CHURCH_PEOPLE: ChurchPerson[] = [
   },
   {
     id: 'cp-005',
-    name: 'Marcus Thompson',
+    name: 'Alex Morgan',
     role: "Children's Ministry Director",
     email: 'marcus.thompson@iccla.org',
     phone: '+1 (310) 555-0105',
@@ -512,7 +512,7 @@ const CHURCH_PEOPLE: ChurchPerson[] = [
 //   │   │   └── David Park (Bookkeeper)
 //   │   └── (Finance reports through Elder)
 //   ├── Sarah Johnson (Worship Director)
-//   ├── Marcus Thompson (Children's Ministry Director)
+//   ├── Alex Morgan (Children's Ministry Director)
 //   │   └── Emily Watson (Sunday School Teacher)
 //   ├── Priya Patel (Youth Pastor)
 //   │   └── Jessica Rivera (Volunteer Coordinator)
@@ -564,7 +564,7 @@ const ORG_CHART_NODES: OrgChartNode[] = [
   },
   {
     personId: 'cp-005',
-    name: 'Marcus Thompson',
+    name: 'Alex Morgan',
     role: "Children's Ministry Director",
     lane: 'ministry_leadership',
     seats: ['seat-m-002'],
@@ -984,7 +984,7 @@ const SAFEGUARD_ENTRIES: SafeguardEntry[] = [
   },
   {
     personId: 'cp-005',
-    name: 'Marcus Thompson',
+    name: 'Alex Morgan',
     role: "Children's Ministry Director",
     youthAccess: true,
     careAccess: false,

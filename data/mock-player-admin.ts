@@ -1,5 +1,5 @@
 /**
- * Mock Player Admin / Eligibility — keyed by FMU jersey number
+ * Mock Player Admin / Eligibility — keyed by KaNeXT jersey number
  */
 
 // =============================================================================

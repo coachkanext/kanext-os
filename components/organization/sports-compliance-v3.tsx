@@ -1,6 +1,6 @@
 /**
  * Sports Compliance V3 — 3-pill ViewBar (Eligibility | Academics | Immigration)
- * FMU Lions Men's Basketball · NAIA Sun Conference
+ * KaNeXT Men's Basketball · NAIA KaNeXT Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback } from 'react';

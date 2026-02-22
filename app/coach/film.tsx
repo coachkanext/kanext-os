@@ -36,7 +36,7 @@ const DEMO_FILMS = [
   },
   {
     id: '2',
-    title: 'vs. Simpson University',
+    title: 'vs. Westlake College',
     date: 'Jan 22, 2026',
     type: 'game',
     duration: '1:38:15',
@@ -50,7 +50,7 @@ const DEMO_FILMS = [
   },
   {
     id: '4',
-    title: 'vs. Ohlone',
+    title: 'vs. Crestview',
     date: 'Jan 18, 2026',
     type: 'game',
     duration: '1:42:08',
@@ -64,7 +64,7 @@ const DEMO_FILMS = [
   },
   {
     id: '6',
-    title: 'vs. Cal Maritime',
+    title: 'vs. Eastridge Tech',
     date: 'Jan 15, 2026',
     type: 'game',
     duration: '1:40:55',

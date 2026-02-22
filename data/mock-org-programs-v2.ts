@@ -1,5 +1,5 @@
 /**
- * Organization Programs v2 \u2014 14 FMU athletic programs
+ * Organization Programs v2 \u2014 14 KaNeXT athletic programs
  * Grid/list data for Programs Index tab (Organization \u2192 Programs).
  */
 
@@ -46,11 +46,11 @@ export interface CrossProgramAlert {
 }
 
 // =============================================================================
-// 14 FMU PROGRAMS
+// 14 KaNeXT PROGRAMS
 // =============================================================================
 
 export const ORG_PROGRAMS: OrgProgram[] = [
-  { id: 'prog-mbb', sport: 'Basketball', name: "Men's Basketball", shortName: 'MBB', headCoach: 'Sammy Kalejaiye', headCoachInitials: 'SK', record: '14-8', rosterCount: 15, staffCount: 7, status: 'active-season', availabilityAlerts: 2, recruitingHotCount: 6, opsBlockers: 1, complianceFlags: 'clear', complianceFlagCount: 0, nextEvent: 'vs Webber International', nextEventDate: 'Feb 19', budgetUtilization: 68, avatarColor: '#1B4F8A', gender: 'M' },
+  { id: 'prog-mbb', sport: 'Basketball', name: "Men's Basketball", shortName: 'MBB', headCoach: 'Alex Morgan', headCoachInitials: 'SK', record: '14-8', rosterCount: 15, staffCount: 7, status: 'active-season', availabilityAlerts: 2, recruitingHotCount: 6, opsBlockers: 1, complianceFlags: 'clear', complianceFlagCount: 0, nextEvent: 'vs Webber International', nextEventDate: 'Feb 19', budgetUtilization: 68, avatarColor: '#1B4F8A', gender: 'M' },
   { id: 'prog-wbb', sport: 'Basketball', name: "Women's Basketball", shortName: 'WBB', headCoach: 'Tanya Richards', headCoachInitials: 'TR', record: '11-11', rosterCount: 14, staffCount: 6, status: 'active-season', availabilityAlerts: 1, recruitingHotCount: 4, opsBlockers: 0, complianceFlags: 'clear', complianceFlagCount: 0, nextEvent: 'vs Warner University', nextEventDate: 'Feb 20', budgetUtilization: 62, avatarColor: '#9B2335', gender: 'W' },
   { id: 'prog-base', sport: 'Baseball', name: 'Baseball', shortName: 'BASE', headCoach: 'Darnell Washington', headCoachInitials: 'DW', record: '8-4', rosterCount: 30, staffCount: 5, status: 'active-season', availabilityAlerts: 3, recruitingHotCount: 8, opsBlockers: 2, complianceFlags: 'warning', complianceFlagCount: 1, nextEvent: 'vs Ave Maria', nextEventDate: 'Feb 21', budgetUtilization: 74, avatarColor: '#2D5F2D', gender: 'M' },
   { id: 'prog-soft', sport: 'Softball', name: 'Softball', shortName: 'SB', headCoach: 'Crystal Monroe', headCoachInitials: 'CM', record: '10-6', rosterCount: 22, staffCount: 4, status: 'active-season', availabilityAlerts: 1, recruitingHotCount: 5, opsBlockers: 0, complianceFlags: 'clear', complianceFlagCount: 0, nextEvent: 'vs Thomas University', nextEventDate: 'Feb 22', budgetUtilization: 58, avatarColor: '#8B4513', gender: 'W' },

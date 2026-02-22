@@ -1,7 +1,7 @@
 /**
- * FMU Data Bridge
+ * KaNeXT Data Bridge
  *
- * Transforms normalized FMU data (from data/sun-conference/florida-memorial/)
+ * Transforms normalized KaNeXT data (from data/kx-conference/kx-sports/)
  * into the shapes each app screen expects.
  */
 
@@ -13,7 +13,7 @@ import {
   gameLogs,
   teamGameLogs,
   categoryLeaders,
-} from './sun-conference/florida-memorial';
+} from './kx-conference/kx-sports';
 
 // ── Lookup helpers ──
 
@@ -30,7 +30,7 @@ export type GameStatus = 'upcoming' | 'live' | 'final';
 
 export type GameType = 'CONF' | 'NON-CONF' | 'TOURN';
 
-export interface FMUGame {
+export interface KaNeXTGame {
   id: string;
   opponent: string;
   date: string;
@@ -46,7 +46,7 @@ export interface FMUGame {
 }
 
 // Raw boxscore JSON for venue lookup
-import boxscoresJson from './sun-conference/fmu-mens-basketball-2025-26.json';
+import boxscoresJson from './kx-conference/fmu-mens-basketball-2025-26.json';
 const venueByDate = new Map<string, string>();
 for (const g of boxscoresJson as any[]) {
   if (g.date && g.location) venueByDate.set(g.date, g.location);
@@ -75,10 +75,10 @@ export function parseGameDate(dateStr: string | null): Date | null {
 const NOW = new Date();
 const TODAY_START = new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate());
 
-// Sun Conference opponents (used for CONF/NON-CONF tagging + standings)
+// KaNeXT Conference opponents (used for CONF/NON-CONF tagging + standings)
 const sunConfTeams = [
   'Ave Maria', 'Coastal Georgia', 'Keiser', 'Southeastern',
-  'St. Thomas', 'Warner', 'Webber International', 'New College of Florida',
+  'St. Thomas', 'Warner', 'Webber International', 'Lakeview College',
 ];
 
 export function isConfGame(opp: string | null): boolean {
@@ -116,17 +116,17 @@ const OPPONENT_VENUES: Record<string, string> = {
   'St. Thomas': 'Bobcat Arena',
   'Warner': 'Turner Athletic Center',
   'Webber International': 'Grace & Roger Babson Arena',
-  'New College of Florida': 'Caples Fine Arts Complex',
+  'Lakeview College': 'Caples Fine Arts Complex',
   'Indiana Wesleyan': 'Luckey Arena',
   'Pikeville': 'Platt Arena',
   'Spartanburg Methodist': 'Platt Arena',
   'Hope International': 'Darling Pavilion',
-  'Florida National': 'FNU Gym',
+  'Ridgemont National': 'FNU Gym',
   'Tougaloo': 'Kroger Gymnasium',
   'Baker': 'Baker Gymnasium',
   'Faulkner': 'Tine Davis Gymnasium',
   'Fort Lauderdale': 'FTL Athletic Center',
-  'Florida College': 'Badcock Gymnasium',
+  'Ridgemont College': 'Badcock Gymnasium',
   'Brewton-Parker': 'Fountain-Herndon Gym',
   'LSU Shreveport': 'The Dock',
   'Loyola': 'The Den',
@@ -138,7 +138,7 @@ const OPPONENT_VENUES: Record<string, string> = {
 };
 
 function getVenueName(opp: string | null, homeAway: string | null, dateVenue: string | undefined): string {
-  if (homeAway === 'H') return 'FMU Wellness Center';
+  if (homeAway === 'H') return 'KaNeXT Wellness Center';
   if (dateVenue && dateVenue !== 'Miami Gardens, Fla.') return dateVenue;
   if (!opp) return 'Away';
   // Match against OPPONENT_VENUES using partial match
@@ -148,7 +148,7 @@ function getVenueName(opp: string | null, homeAway: string | null, dateVenue: st
   return 'Away';
 }
 
-export const FMU_GAMES: FMUGame[] = tgl2526.map((g, i) => {
+export const KaNeXT_GAMES: KaNeXTGame[] = tgl2526.map((g, i) => {
   const d = parseGameDate(g.game_date);
   const hasResult = g.result != null;
   const isFuture = d != null && d >= TODAY_START && !hasResult;
@@ -185,10 +185,10 @@ export const FMU_GAMES: FMUGame[] = tgl2526.map((g, i) => {
 });
 
 // Also keyed by ID for game-detail
-export const FMU_GAMES_BY_ID: Record<
+export const KaNeXT_GAMES_BY_ID: Record<
   string,
   { opponent: string; date: string; location: string; status: GameStatus; score?: string; clock?: string }
-> = Object.fromEntries(FMU_GAMES.map((g) => [g.id, g]));
+> = Object.fromEntries(KaNeXT_GAMES.map((g) => [g.id, g]));
 
 // ── 2) Leaders (from individual season stats, 2025-26) ──
 
@@ -214,7 +214,7 @@ const stats2526 = individualSeasonStats.filter(
   (s) => s.season === '2025-26' && s.games_played != null && s.games_played > 0,
 );
 
-export const FMU_LEADERS: SeasonLeader[] = stats2526.map((s) => {
+export const KaNeXT_LEADERS: SeasonLeader[] = stats2526.map((s) => {
   const player = playerMap.get(s.player_id);
   const roster = rosterMap2526.get(s.player_id);
   const gp = s.games_played ?? 0;
@@ -254,7 +254,7 @@ export interface BoxScoreLine {
   pf: number;
 }
 
-// Map gameLogs game_ids to FMU_GAMES ids
+// Map gameLogs game_ids to KaNeXT_GAMES ids
 // gameLogs use raw game_ids like "3379", team game logs use date+opponent
 // Build a mapping: for each team game log index → game_id from individual game logs
 const gameIdToFmuId = new Map<string, string>();
@@ -326,7 +326,7 @@ for (const [, lines] of boxScoresByGame) {
   lines.sort((a, b) => b.pts - a.pts);
 }
 
-export const FMU_BOX_SCORES: Record<string, BoxScoreLine[]> = Object.fromEntries(boxScoresByGame);
+export const KaNeXT_BOX_SCORES: Record<string, BoxScoreLine[]> = Object.fromEntries(boxScoresByGame);
 
 // ── 3b) BPR (Basketball Performance Rating) per player per game ──
 
@@ -460,7 +460,7 @@ for (const [, entries] of bprByGame) {
   entries.sort((a, b) => b.bpr - a.bpr);
 }
 
-export const FMU_GAME_BPR: Record<string, PlayerBPR[]> = Object.fromEntries(bprByGame);
+export const KaNeXT_GAME_BPR: Record<string, PlayerBPR[]> = Object.fromEntries(bprByGame);
 
 // ── 3b) TGIS (Team Game Impact Score) + PGIS (Player Game Impact Score) ──
 
@@ -747,14 +747,14 @@ for (let i = 0; i < tgl2526.length; i++) {
   gameImpactMap.set(fmuId, { tgis, tgisLabel: getTGISLabel(tgis), drivers, starters, bench });
 }
 
-export const FMU_GAME_IMPACT: Record<string, TeamGameImpact> = Object.fromEntries(gameImpactMap);
+export const KaNeXT_GAME_IMPACT: Record<string, TeamGameImpact> = Object.fromEntries(gameImpactMap);
 
 // ── 3b-ii) Season-average PGIS per player (jersey → avg PGIS) ──
 
 /** Average each player's per-game PGIS across all completed games. Returns Record<jersey, avgPgis>. */
 export function getPlayerSeasonPGIS(): Record<string, number> {
   const totals = new Map<string, { sum: number; count: number }>();
-  for (const impact of Object.values(FMU_GAME_IMPACT)) {
+  for (const impact of Object.values(KaNeXT_GAME_IMPACT)) {
     for (const p of [...impact.starters, ...impact.bench]) {
       // Map full name → player_id → jersey
       const pid = [...playerMap.entries()].find(([, v]) => v.full_name === p.name)?.[0];
@@ -777,7 +777,7 @@ export function getPlayerSeasonPGIS(): Record<string, number> {
 
 // ── 3c) Pregame Snapshot (for upcoming games) ──
 
-const FMU_KR_PREGAME = 74; // approximate; real FMU_KR computed later from win%
+const KaNeXT_KR_PREGAME = 74; // approximate; real KaNeXT_KR computed later from win%
 
 // ── Pregame Snapshot v2 ──
 
@@ -1010,11 +1010,11 @@ const ROLE_TAG_POOL = [
 // Build pregame snapshots for upcoming games
 const pregameMap = new Map<string, PregameSnapshot>();
 
-for (const game of FMU_GAMES) {
+for (const game of KaNeXT_GAMES) {
   if (game.status === 'live') continue;
   const opp = game.opponent;
   const oppKR = game.opponentKR ?? getOpponentKR(opp);
-  const krGap = FMU_KR_PREGAME - oppKR;
+  const krGap = KaNeXT_KR_PREGAME - oppKR;
   const expectation: PregameSnapshot['expectation'] = krGap >= 5 ? 'FAVORED' : krGap <= -5 ? 'UNDERDOG' : "PICK'EM";
 
   const h = stableHash(opp);
@@ -1167,7 +1167,7 @@ for (const game of FMU_GAMES) {
   pregameMap.set(game.id, { expectation, krGap, oppKR, clusterRatings, theirDNA, ourEdge, swingPlayers, oppThreats, assignments, modelNotes });
 }
 
-export const FMU_PREGAME: Record<string, PregameSnapshot> = Object.fromEntries(pregameMap);
+export const KaNeXT_PREGAME: Record<string, PregameSnapshot> = Object.fromEntries(pregameMap);
 
 // ── 4) Team game stats (from team game logs) ──
 
@@ -1176,7 +1176,7 @@ function fmtPct(made: number | null, att: number | null): string {
   return `${made}-${att} (${((made / att) * 100).toFixed(1)}%)`;
 }
 
-export const FMU_GAME_STATS: Record<
+export const KaNeXT_GAME_STATS: Record<
   string,
   { teamFG: string; team3P: string; teamFT: string; teamReb: string; teamTO: string }
 > = Object.fromEntries(
@@ -1213,7 +1213,7 @@ export interface FullGameStats {
   opp_score: number;
 }
 
-export const FMU_FULL_GAME_STATS: Record<string, FullGameStats> = Object.fromEntries(
+export const KaNeXT_FULL_GAME_STATS: Record<string, FullGameStats> = Object.fromEntries(
   tgl2526.map((g, i) => {
     const id = `fmu-2526-${String(i).padStart(2, '0')}`;
     return [
@@ -1248,7 +1248,7 @@ interface ScoreSnapshot {
   opp: number;
 }
 
-export const FMU_GAME_FLOW: Record<string, ScoreSnapshot[]> = Object.fromEntries(
+export const KaNeXT_GAME_FLOW: Record<string, ScoreSnapshot[]> = Object.fromEntries(
   tgl2526.map((g, i) => {
     const id = `fmu-2526-${String(i).padStart(2, '0')}`;
     const fmuFinal = g.fmu_score ?? 0;
@@ -1278,9 +1278,9 @@ export interface NewsItem {
 // Curated highlights keyed by opponent name → inserted after the matching recap
 const HIGHLIGHTS: Record<string, { headline: string }> = {
   'Tougaloo (MS)': { headline: 'Devin Carter Drops Career-High 38 Points in Season-Opening Blowout' },
-  'Ave Maria': { headline: 'Jeffery Selden Records First Triple-Double in FMU History' },
+  'Ave Maria': { headline: 'Jeffery Selden Records First Triple-Double in KaNeXT History' },
   'Webber International (FL)': { headline: 'Cameron Noel\'s Buzzer-Beating Three Caps 15-0 Run to Stun Webber' },
-  'Coastal Georgia': { headline: 'FMU Defense Holds Coastal Georgia to Season-Low 48 Points' },
+  'Coastal Georgia': { headline: 'KaNeXT Defense Holds Coastal Georgia to Season-Low 48 Points' },
   'Southeastern': { headline: 'Devin Carter & Cameron Noel Combine for 52 in Road Win at Southeastern' },
 };
 
@@ -1289,8 +1289,8 @@ const recaps: NewsItem[] = tgl2526
   .flatMap((g, i) => {
     const isWin = g.result === 'W';
     const headline = isWin
-      ? `FMU Defeats ${g.opponent} ${g.fmu_score}-${g.opp_score}`
-      : `FMU Falls to ${g.opponent} ${g.fmu_score}-${g.opp_score}`;
+      ? `KaNeXT Defeats ${g.opponent} ${g.fmu_score}-${g.opp_score}`
+      : `KaNeXT Falls to ${g.opponent} ${g.fmu_score}-${g.opp_score}`;
     const items: NewsItem[] = [
       { id: `news-${i}`, headline, date: g.game_date ?? '', type: 'Recap' },
     ];
@@ -1301,9 +1301,9 @@ const recaps: NewsItem[] = tgl2526
     return items;
   });
 
-export const FMU_NEWS: NewsItem[] = recaps.reverse(); // Most recent first
+export const KaNeXT_NEWS: NewsItem[] = recaps.reverse(); // Most recent first
 
-// ── 7) Standings (Sun Conference — FMU record) ──
+// ── 7) Standings (KaNeXT Conference — KaNeXT record) ──
 
 const confGames = tgl2526.filter((g) => isConfGame(g.opponent));
 const confW = confGames.filter((g) => g.result === 'W').length;
@@ -1327,9 +1327,9 @@ if (gamesWithResults.length > 0) {
   streak = `${lastResult}${streakCount}`;
 }
 
-// Generate placeholder standings for all Sun Conference teams
+// Generate placeholder standings for all KaNeXT Conference teams
 const allStandings = [
-  { team: 'Florida Memorial', confW, confL, overallW, overallL, streak },
+  { team: 'KaNeXT Sports', confW, confL, overallW, overallL, streak },
   ...sunConfTeams.map((t) => {
     let h = 0;
     for (let i = 0; i < t.length; i++) h = ((h << 5) - h + t.charCodeAt(i)) | 0;
@@ -1347,18 +1347,18 @@ const allStandings = [
   return bWinPct - aWinPct;
 });
 
-export const FMU_STANDINGS = allStandings;
+export const KaNeXT_STANDINGS = allStandings;
 
 // Computed record string
-export const FMU_RECORD = {
+export const KaNeXT_RECORD = {
   overall: `${overallW}–${overallL}`,
   conference: `${confW}–${confL}`,
 };
 
-// FMU's own KR rating (derived from win%)
+// KaNeXT's own KR rating (derived from win%)
 const totalGamesPlayed = overallW + overallL;
 const fmuWinPct = totalGamesPlayed > 0 ? overallW / totalGamesPlayed : 0.5;
-export const FMU_KR = Math.round(60 + fmuWinPct * 35);
+export const KaNeXT_KR = Math.round(60 + fmuWinPct * 35);
 
 /** Simulated KR impact for a completed game result */
 export function getKRImpact(fmuKR: number, oppKR: number, won: boolean): number {
@@ -1382,8 +1382,8 @@ for (const g of tgl2526) {
   opponentResults.set(g.opponent, existing);
 }
 
-export const FMU_SCOUTING_NOTES: Record<string, string[]> = {};
-export const FMU_KEYS_TO_GAME: Record<string, [string, string, string]> = {};
+export const KaNeXT_SCOUTING_NOTES: Record<string, string[]> = {};
+export const KaNeXT_KEYS_TO_GAME: Record<string, [string, string, string]> = {};
 const DEFAULT_KEYS: [string, string, string] = [
   'Control the tempo and limit turnovers',
   'Win the rebounding battle',
@@ -1393,16 +1393,16 @@ const DEFAULT_KEYS: [string, string, string] = [
 for (const [opp, rec] of opponentResults) {
   const notes: string[] = [];
   if (rec.w + rec.l > 1) {
-    notes.push(`FMU is ${rec.w}-${rec.l} against ${opp} this season.`);
+    notes.push(`KaNeXT is ${rec.w}-${rec.l} against ${opp} this season.`);
   }
   if (rec.w > 0) {
-    notes.push(`FMU won the last meeting ${rec.lastScore}.`);
+    notes.push(`KaNeXT won the last meeting ${rec.lastScore}.`);
   } else {
     notes.push(`${opp} won the last meeting ${rec.lastScore}.`);
   }
   notes.push('Detailed scouting notes available as game day approaches.');
-  FMU_SCOUTING_NOTES[opp] = notes;
-  FMU_KEYS_TO_GAME[opp] = DEFAULT_KEYS;
+  KaNeXT_SCOUTING_NOTES[opp] = notes;
+  KaNeXT_KEYS_TO_GAME[opp] = DEFAULT_KEYS;
 }
 
 // Next game: earliest game with date >= today (schedule truth)
@@ -1425,7 +1425,7 @@ const lastPlayedIdx = (() => {
 })();
 const lastGame = lastPlayedIdx >= 0 ? tgl2526[lastPlayedIdx] : null;
 
-export const FMU_LAST_GAME = lastGame
+export const KaNeXT_LAST_GAME = lastGame
   ? {
       result: lastGame.result ?? '—',
       score: `${lastGame.fmu_score}–${lastGame.opp_score}`,
@@ -1433,27 +1433,27 @@ export const FMU_LAST_GAME = lastGame
       location: lastGame.home_away === 'H' ? 'Home' : 'Away',
     }
   : null;
-export const FMU_LAST_GAME_ID = lastPlayedIdx >= 0
+export const KaNeXT_LAST_GAME_ID = lastPlayedIdx >= 0
   ? `fmu-2526-${String(lastPlayedIdx).padStart(2, '0')}`
   : '';
 
-export const FMU_NEXT_GAME = nextGameData
+export const KaNeXT_NEXT_GAME = nextGameData
   ? {
       opponent: nextGameData.opponent ?? 'Unknown',
       date: nextGameData.game_date ?? '',
       location: nextGameData.home_away === 'H' ? 'Home' : 'Away',
     }
   : null;
-export const FMU_NEXT_GAME_ID = nextGameIdx >= 0
+export const KaNeXT_NEXT_GAME_ID = nextGameIdx >= 0
   ? `fmu-2526-${String(nextGameIdx).padStart(2, '0')}`
   : '';
 
 // Is the season complete? (no upcoming games left)
-export const FMU_SEASON_COMPLETE = nextGameData == null;
+export const KaNeXT_SEASON_COMPLETE = nextGameData == null;
 
 // ── 9) Player Bio data ──
 
-import biosJson from './sun-conference/florida-memorial/raw/roster-2025-26-bios.json';
+import biosJson from './kx-conference/kx-sports/raw/roster-2025-26-bios.json';
 
 /** Normalize jersey number: strip leading zeros, '00' → '0' */
 function normalizeJersey(j: string | null): string {
@@ -1475,7 +1475,7 @@ export interface FmuPlayerBio {
   previousSchool: string | null;
 }
 
-export const FMU_PLAYER_BIOS: Record<string, FmuPlayerBio> = Object.fromEntries(
+export const KaNeXT_PLAYER_BIOS: Record<string, FmuPlayerBio> = Object.fromEntries(
   biosJson.map((b: any) => {
     const parts = b.name.split(' ');
     const firstName = parts[0];
@@ -1609,8 +1609,8 @@ const PRIOR_SEASON_YEARS = ['2024-25', '2023-24', '2022-23', '2021-22'];
 /** Generate hash-stable placeholder prior seasons for a player */
 function generatePriorSeasons(jersey: string, numPrior: number, currentKR: number): FmuCareerSeason[] {
   if (numPrior <= 0) return [];
-  const bio = FMU_PLAYER_BIOS[jersey];
-  const school = bio?.previousSchool ?? 'Florida Memorial';
+  const bio = KaNeXT_PLAYER_BIOS[jersey];
+  const school = bio?.previousSchool ?? 'KaNeXT Sports';
   const division = bio?.previousSchool ? 'NCAA' : 'NAIA';
 
   // Simple hash for stable variation
@@ -1633,7 +1633,7 @@ function generatePriorSeasons(jersey: string, numPrior: number, currentKR: numbe
 
     seasons.push({
       year: PRIOR_SEASON_YEARS[yearIdx],
-      school: yearIdx >= numPrior - 1 && numPrior >= 3 ? school : 'Florida Memorial',
+      school: yearIdx >= numPrior - 1 && numPrior >= 3 ? school : 'KaNeXT Sports',
       division: yearIdx >= numPrior - 1 && numPrior >= 3 ? division : 'NAIA',
       current: false,
       kr,
@@ -1660,7 +1660,7 @@ export function getFmuCareer(jerseyNumber: string): FmuCareerSeason[] {
       const gp = s.games_played ?? 0;
       currentSeasons.push({
         year: s.season,
-        school: 'Florida Memorial',
+        school: 'KaNeXT Sports',
         division: 'NAIA',
         current: s.season === '2025-26',
         kr: ROSTER_KR[jersey],
@@ -1691,7 +1691,7 @@ export function getFmuCareer(jerseyNumber: string): FmuCareerSeason[] {
 // ── 10) Player About & Season Highlights ──
 
 /** Short about paragraph per player, keyed by jersey */
-export const FMU_PLAYER_ABOUT: Record<string, string> = {
+export const KaNeXT_PLAYER_ABOUT: Record<string, string> = {
   '0':  'Tristan Thomas is a versatile forward who brings energy on both ends of the floor. A Miami native, he uses his length and athleticism to contribute on the boards and provides a spark off the bench with his defensive intensity.',
   '1':  'Petar Asceric is a 6\'10" center from Belgrade, Serbia who anchors the paint for the Lions. His size and footwork make him an effective interior presence, and he continues to develop as a rim protector and finisher around the basket.',
   '2':  'Braxton Lewis is a long, athletic wing from Miami who is working to establish himself in the rotation. A freshman, he brings physicality and defensive potential as he learns the system.',
@@ -1699,14 +1699,14 @@ export const FMU_PLAYER_ABOUT: Record<string, string> = {
   '4':  'Devin Carter is the Lions\' go-to scorer and most dynamic offensive player. A junior from Jackson, Mississippi, he creates in isolation, finishes in transition, and can score from all three levels. He leads the team in scoring and rebounds.',
   '5':  'Jeffrey Selden is a graduate student and one of the most experienced players on the roster. The Austin, Texas native is a versatile forward who contributes across the stat sheet — scoring, rebounding, and facilitating. He anchors the starting lineup.',
   '7':  'Maximo Moratinos is a skilled power forward from Miami who provides size and scoring touch in the frontcourt. A sophomore, he stretches the floor and contributes as a reliable rotation piece.',
-  '9':  'Ka\'Mar Benbo is a freshman point guard from Portland, Oregon who is developing his game in the FMU system. He brings quickness and court vision as he works to earn minutes.',
+  '9':  'Ka\'Mar Benbo is a freshman point guard from Portland, Oregon who is developing his game in the KaNeXT system. He brings quickness and court vision as he works to earn minutes.',
   '10': 'Jason Morris is a wing from Pompano Beach who provides depth and defensive versatility. A junior, he continues to develop his offensive game while contributing to the team\'s defensive identity.',
-  '11': 'Sehmaj Mentor is the Lions\' floor general and a key starter at point guard. The Hollywood, Florida native controls tempo, runs the offense, and is a reliable scorer from mid-range. He brings leadership and poise to every game.',
+  '11': 'Sehmaj Mentor is the Lions\' floor general and a key starter at point guard. The Hollywood, Ridgemont native controls tempo, runs the offense, and is a reliable scorer from mid-range. He brings leadership and poise to every game.',
   '12': 'Gavin Turner is a lengthy wing from Orlando who is in his first year with the Lions. He provides size on the perimeter and is working to carve out a larger role as he gains experience.',
   '13': 'Cameron Noel is a dynamic scoring guard and one of the Lions\' most consistent offensive weapons. The Houston native creates off the dribble, knocks down perimeter shots, and has a knack for coming up big in key moments.',
   '15': 'Micah Morgan is a junior point guard from Bridgeport, Connecticut who provides solid minutes as a backup ball handler. He pushes tempo, competes on defense, and is a steady presence when he\'s on the floor.',
   '20': 'D\'Andre Dues is a long, athletic forward from Houston who brings size and upside to the frontcourt. A freshman, he is developing his game and working to contribute as he adjusts to the college level.',
-  '22': 'Elijah Laird is a sophomore shooting guard from Deltona, Florida who provides depth on the wing. He is working to earn consistent minutes with his perimeter shooting and defensive effort.',
+  '22': 'Elijah Laird is a sophomore shooting guard from Deltona, Ridgemont who provides depth on the wing. He is working to earn consistent minutes with his perimeter shooting and defensive effort.',
   '41': 'Morgan Brewer is a tough, physical forward from Inglewood, California and a key starter for the Lions. He impacts the game on both ends with his rebounding, scoring, and defensive presence in the frontcourt.',
   '55': 'Aa\'reyon Munir-Jones is an athletic, two-way guard from Chicago who contributes across the stat sheet. He rebounds well above his size, provides scoring punch off the bench, and is one of the team\'s most versatile players.',
 };
@@ -1714,8 +1714,8 @@ export const FMU_PLAYER_ABOUT: Record<string, string> = {
 /** Season highlights per player, keyed by jersey. Auto-generated from stats where possible. */
 export function getFmuHighlights(jerseyNumber: string): string[] {
   const j = normalizeJersey(jerseyNumber);
-  const leader = FMU_LEADERS.find((l) => normalizeJersey(l.number) === j);
-  const bio = FMU_PLAYER_BIOS[j];
+  const leader = KaNeXT_LEADERS.find((l) => normalizeJersey(l.number) === j);
+  const bio = KaNeXT_PLAYER_BIOS[j];
   if (!leader || !bio) return [];
 
   const highlights: string[] = [];
@@ -1782,17 +1782,17 @@ const AWARDS_DATA: Record<string, PlayerAward[]> = {
     { year: 'HS 2022', title: 'Tallahassee Democrat All-Big Bend First Team' },
   ],
   '4': [
-    { year: '2025-26', title: 'Sun Conference Player of the Week (Jan 20)' },
-    { year: '2025-26', title: 'Sun Conference Preseason All-Conference' },
-    { year: '2024-25', title: 'Sun Conference All-Conference Second Team' },
-    { year: '2024-25', title: 'Sun Conference Player of the Week (Feb 3)' },
+    { year: '2025-26', title: 'KaNeXT Conference Player of the Week (Jan 20)' },
+    { year: '2025-26', title: 'KaNeXT Conference Preseason All-Conference' },
+    { year: '2024-25', title: 'KaNeXT Conference All-Conference Second Team' },
+    { year: '2024-25', title: 'KaNeXT Conference Player of the Week (Feb 3)' },
     { year: 'HS 2022', title: 'Mississippi 4A All-State Second Team' },
   ],
   '5': [
-    { year: '2025-26', title: 'Sun Conference Preseason All-Conference' },
-    { year: '2024-25', title: 'Sun Conference All-Conference First Team' },
+    { year: '2025-26', title: 'KaNeXT Conference Preseason All-Conference' },
+    { year: '2024-25', title: 'KaNeXT Conference All-Conference First Team' },
     { year: '2024-25', title: 'NAIA Scholar-Athlete' },
-    { year: '2023-24', title: 'Sun Conference All-Conference Second Team' },
+    { year: '2023-24', title: 'KaNeXT Conference All-Conference Second Team' },
     { year: 'HS 2020', title: 'Texas UIL 5A All-District First Team' },
   ],
   '7': [
@@ -1805,17 +1805,17 @@ const AWARDS_DATA: Record<string, PlayerAward[]> = {
     { year: 'HS 2023', title: 'Broward County All-County Honorable Mention' },
   ],
   '11': [
-    { year: '2025-26', title: 'Sun Conference Player of the Week (Dec 9)' },
-    { year: '2024-25', title: 'Sun Conference All-Freshman Team' },
+    { year: '2025-26', title: 'KaNeXT Conference Player of the Week (Dec 9)' },
+    { year: '2024-25', title: 'KaNeXT Conference All-Freshman Team' },
     { year: 'HS 2024', title: 'Broward County All-County First Team' },
     { year: 'HS 2024', title: 'Sun Sentinel All-Broward Honorable Mention' },
   ],
   '12': [
-    { year: 'HS 2023', title: 'Orlando Sentinel All-Central Florida Honorable Mention' },
+    { year: 'HS 2023', title: 'Orlando Sentinel All-Central Ridgemont Honorable Mention' },
   ],
   '13': [
-    { year: '2025-26', title: 'Sun Conference Player of the Week (Jan 6)' },
-    { year: '2024-25', title: 'Sun Conference All-Conference Honorable Mention' },
+    { year: '2025-26', title: 'KaNeXT Conference Player of the Week (Jan 6)' },
+    { year: '2024-25', title: 'KaNeXT Conference All-Conference Honorable Mention' },
     { year: '2023-24', title: 'NJCAA Region 8 All-Conference' },
     { year: '2023-24', title: 'Miami Dade College Athlete of the Year' },
     { year: 'HS 2022', title: 'Houston Chronicle All-Greater Houston Second Team' },
@@ -1830,13 +1830,13 @@ const AWARDS_DATA: Record<string, PlayerAward[]> = {
     { year: 'HS 2024', title: 'FHSAA 6A District Tournament MVP' },
   ],
   '41': [
-    { year: '2025-26', title: 'Sun Conference Player of the Week (Feb 3)' },
-    { year: '2024-25', title: 'Sun Conference All-Conference Second Team' },
+    { year: '2025-26', title: 'KaNeXT Conference Player of the Week (Feb 3)' },
+    { year: '2024-25', title: 'KaNeXT Conference All-Conference Second Team' },
     { year: 'HS 2022', title: 'CIF Southern Section Division 2AA All-League' },
     { year: 'HS 2022', title: 'LA Daily News All-Area Honorable Mention' },
   ],
   '55': [
-    { year: '2024-25', title: 'Sun Conference All-Conference Honorable Mention' },
+    { year: '2024-25', title: 'KaNeXT Conference All-Conference Honorable Mention' },
     { year: 'HS 2023', title: 'Chicago Sun-Times All-Area Second Team' },
     { year: 'HS 2023', title: 'IHSA 3A All-Sectional Team' },
   ],

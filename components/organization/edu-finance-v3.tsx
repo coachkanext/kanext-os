@@ -1,7 +1,7 @@
 /**
  * Edu Finance V3 — 3-pill ViewBar (Budget | Revenue | Aid)
- * Florida Memorial University · President perspective
- * HBCU · Founded 1879 · Miami Gardens, FL · SACSCOC Accredited
+ * KaNeXT Sports · President perspective
+ * HBCU · Founded 1879 · Nashville, TN · SACSCOC Accredited
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
@@ -87,7 +87,7 @@ const AID = {
 const AID_CATEGORIES: AidCategory[] = [
   { id: 'ac1', name: 'Federal Aid', amount: 8000000, types: 'Pell Grants, Direct Loans, Work-Study' },
   { id: 'ac2', name: 'Institutional Aid', amount: 4000000, types: 'Merit Scholarships, Need-Based Grants' },
-  { id: 'ac3', name: 'State Aid', amount: 1500000, types: 'Bright Futures, Florida Student Assistance' },
+  { id: 'ac3', name: 'State Aid', amount: 1500000, types: 'Bright Futures, Ridgemont Student Assistance' },
   { id: 'ac4', name: 'Private Aid', amount: 500000, types: 'External Scholarships, Donor-Funded' },
 ];
 

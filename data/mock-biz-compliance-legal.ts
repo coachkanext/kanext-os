@@ -1,8 +1,8 @@
 /**
  * Mock Business Compliance/Legal Data — 9 sub-tabs for the Compliance & Legal tab.
  * All data references KaNeXT entities: Delaware C-Corp filings, trademark filings,
- * SAFE note compliance, KYC/AML for payment rails, FMU partnership agreement,
- * data privacy policies, Sammy/Tom/PBD references.
+ * SAFE note compliance, KYC/AML for payment rails, KaNeXT partnership agreement,
+ * data privacy policies, Alex/Tom/PBD references.
  */
 
 // =============================================================================
@@ -78,13 +78,13 @@ export const LEGAL_DOCS: LegalDoc[] = [
   },
   {
     id: 'ld-2',
-    title: 'FMU Partnership & Licensing Agreement',
+    title: 'KaNeXT Partnership & Licensing Agreement',
     type: 'agreement',
     status: 'active',
     effectiveDate: '2025-06-01',
     expiryDate: '2027-05-31',
     entity: 'KaNeXT Inc.',
-    counterparty: 'Florida Memorial University',
+    counterparty: 'KaNeXT Sports',
   },
   {
     id: 'ld-3',
@@ -145,7 +145,7 @@ export const POLICIES: PolicyItem[] = [
     version: '2.1',
     status: 'active',
     lastReviewed: '2026-01-10',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
   },
   {
     id: 'pol-2',
@@ -172,7 +172,7 @@ export const POLICIES: PolicyItem[] = [
     version: '1.1',
     status: 'active',
     lastReviewed: '2025-12-15',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
   },
   {
     id: 'pol-5',
@@ -221,7 +221,7 @@ export const RISK_REGISTER: RiskRegisterItem[] = [
     likelihood: 'medium',
     impact: 'Potential brand confusion; limited enforcement options',
     mitigation: 'Filed supplemental evidence; monitoring TSDR portal',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     status: 'open',
   },
   {
@@ -232,7 +232,7 @@ export const RISK_REGISTER: RiskRegisterItem[] = [
     likelihood: 'low',
     impact: 'Unplanned dilution if valuation cap hit before Series A',
     mitigation: 'Legal review with counsel; quarterly cap table audit',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     status: 'mitigated',
   },
   {
@@ -248,12 +248,12 @@ export const RISK_REGISTER: RiskRegisterItem[] = [
   },
   {
     id: 'rr-5',
-    title: 'FMU Agreement Renewal Risk',
+    title: 'KaNeXT Agreement Renewal Risk',
     category: 'Partnership',
     severity: 'medium',
     likelihood: 'low',
     impact: 'Loss of flagship proof wedge and media value pipeline',
-    mitigation: 'Quarterly check-in with FMU AD; relationship health tracking',
+    mitigation: 'Quarterly check-in with KaNeXT AD; relationship health tracking',
     owner: 'Jordan Hayes',
     status: 'accepted',
   },
@@ -281,7 +281,7 @@ export const CONTROLS: ControlItem[] = [
     frequency: 'Quarterly',
     status: 'effective',
     lastTested: '2026-01-02',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
   },
   {
     id: 'ctrl-2',
@@ -299,7 +299,7 @@ export const CONTROLS: ControlItem[] = [
     frequency: 'Per Resolution',
     status: 'effective',
     lastTested: '2026-01-15',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
   },
   {
     id: 'ctrl-4',
@@ -345,7 +345,7 @@ export const AUDIT_RECORDS: AuditRecord[] = [
     status: 'completed',
     findings: 5,
     criticalFindings: 1,
-    auditor: 'Sammy Kalejaiye',
+    auditor: 'Alex Morgan',
   },
   {
     id: 'aud-2',
@@ -419,7 +419,7 @@ export const INCIDENTS: IncidentRecord[] = [
     date: '2026-01-28',
     status: 'closed',
     category: 'Tax & Filing',
-    assignee: 'Sammy Kalejaiye',
+    assignee: 'Alex Morgan',
   },
   {
     id: 'inc-4',
@@ -428,7 +428,7 @@ export const INCIDENTS: IncidentRecord[] = [
     date: '2026-02-08',
     status: 'open',
     category: 'Governance',
-    assignee: 'Sammy Kalejaiye',
+    assignee: 'Alex Morgan',
   },
 ];
 
@@ -450,19 +450,19 @@ export interface ExceptionItem {
 export const COMPLIANCE_EXCEPTIONS: ExceptionItem[] = [
   {
     id: 'exc-1',
-    title: 'Temporary KYC Bypass for FMU Pilot Payments',
+    title: 'Temporary KYC Bypass for KaNeXT Pilot Payments',
     type: 'Payment Rails',
-    requestedBy: 'Sammy Kalejaiye',
+    requestedBy: 'Alex Morgan',
     approvedBy: 'Tom Ellsworth',
     status: 'approved',
     validUntil: '2026-03-31',
-    reason: 'FMU pilot requires immediate payment flow; full KYC to follow within 45 days',
+    reason: 'KaNeXT pilot requires immediate payment flow; full KYC to follow within 45 days',
   },
   {
     id: 'exc-2',
     title: 'Extended Trademark Filing Deadline',
     type: 'IP / Legal',
-    requestedBy: 'Sammy Kalejaiye',
+    requestedBy: 'Alex Morgan',
     status: 'pending',
     validUntil: '2026-04-15',
     reason: 'USPTO office action response requires additional evidence compilation',
@@ -471,7 +471,7 @@ export const COMPLIANCE_EXCEPTIONS: ExceptionItem[] = [
     id: 'exc-3',
     title: 'Board Meeting Quorum Exception (Q1)',
     type: 'Governance',
-    requestedBy: 'Sammy Kalejaiye',
+    requestedBy: 'Alex Morgan',
     approvedBy: 'Patrick Bet-David',
     status: 'approved',
     validUntil: '2026-03-01',

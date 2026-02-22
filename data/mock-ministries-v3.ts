@@ -5,7 +5,7 @@
  * ministry objects with leaders, members, events, teachings, packs, actions,
  * resources, and audit log. Used by the Church Mode ministries hub.
  *
- * All names consistent with ICCLA (International Christian Center Los Angeles)
+ * All names consistent with KaNeXT Church (KaNeXT Church)
  * Nigerian/African-diaspora church context.
  */
 
@@ -514,7 +514,7 @@ export const MINISTRIES_FULL: MinistryFull[] = [
       'Leading the congregation in Spirit-filled worship through music, song, and creative arts every service. Vocalists, instrumentalists, and choir members.',
     icon: 'music.note.list',
     leaders: [
-      { id: 'ldr-abimbola', name: 'Sister Abimbola Kalejaiye', initials: 'AK', role: 'Lead', avatarColor: '#7A5CFF' },
+      { id: 'ldr-abimbola', name: 'Sister Abimbola Carter', initials: 'AK', role: 'Lead', avatarColor: '#7A5CFF' },
       { id: 'ldr-femi-w', name: 'Brother Femi Adegoke', initials: 'FA', role: 'Music Director', avatarColor: '#6D28D9' },
     ],
     members: [
@@ -582,7 +582,7 @@ export const MINISTRIES_FULL: MinistryFull[] = [
     icon: 'hands.sparkles.fill',
     leaders: [
       { id: 'ldr-solomon', name: 'Brother Solomon Igwe', initials: 'SI', role: 'Lead', avatarColor: '#EF4444' },
-      { id: 'ldr-mama', name: 'Mother Esther Kalejaiye', initials: 'EK', role: 'Co-Lead', avatarColor: '#DC2626' },
+      { id: 'ldr-mama', name: 'Mother Esther Carter', initials: 'EK', role: 'Co-Lead', avatarColor: '#DC2626' },
     ],
     members: [
       { id: 'mem-080', name: 'Sister Blessing Okonkwo', initials: 'BO', role: 'Prayer Chain Lead', avatarColor: '#B91C1C', joinedAt: '2023-06-01' },
@@ -615,7 +615,7 @@ export const MINISTRIES_FULL: MinistryFull[] = [
     icon: 'heart.fill',
     leaders: [
       { id: 'ldr-bisi', name: 'Sister Bisi Ogunnaike', initials: 'BO', role: 'Lead', avatarColor: '#EC4899' },
-      { id: 'ldr-pastor-d', name: 'Pastor Dipo Kalejaiye', initials: 'DK', role: 'Pastoral Oversight', avatarColor: '#DB2777' },
+      { id: 'ldr-pastor-d', name: 'Pastor Dipo Carter', initials: 'DK', role: 'Pastoral Oversight', avatarColor: '#DB2777' },
     ],
     members: [
       { id: 'mem-090', name: 'Sister Adetola Fasanya', initials: 'AF', role: 'Visitation Lead', avatarColor: '#BE185D', joinedAt: '2023-03-15' },
@@ -968,7 +968,7 @@ export const MINISTRY_TEACHINGS_V3: MinistryTeachingV3[] = [
     id: 'mt3-07',
     ministryId: 'min-worship',
     title: 'Worship Leader Foundations',
-    speaker: 'Sister Abimbola Kalejaiye',
+    speaker: 'Sister Abimbola Carter',
     date: '2026-02-16',
     duration: '45 min',
     series: 'Heart of Worship',
@@ -978,7 +978,7 @@ export const MINISTRY_TEACHINGS_V3: MinistryTeachingV3[] = [
     id: 'mt3-08',
     ministryId: 'min-worship',
     title: 'Vocal Technique & Scripture Meditation',
-    speaker: 'Sister Abimbola Kalejaiye',
+    speaker: 'Sister Abimbola Carter',
     date: '2026-02-09',
     duration: '55 min',
     series: 'Heart of Worship',
@@ -1112,7 +1112,7 @@ export const MINISTRY_ACTIONS_V3: MinistryActionV3[] = [
     id: 'ma3-01',
     ministryId: 'min-worship',
     title: 'Recruit 2 additional vocalists for Easter',
-    assignee: 'Sister Abimbola Kalejaiye',
+    assignee: 'Sister Abimbola Carter',
     assigneeInitials: 'AK',
     dueDate: '2026-03-15',
     status: 'in-progress',
@@ -1328,7 +1328,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-01',
     ministryId: 'min-discipleship',
     action: 'Created ministry',
-    actor: 'Pastor Dipo Kalejaiye',
+    actor: 'Pastor Dipo Carter',
     timestamp: '2023-06-15T10:00:00Z',
     timestampMs: 1686826800000,
     description: 'Ministry "Sunday Discipleship Groups" created with room and events calendar.',
@@ -1337,7 +1337,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-02',
     ministryId: 'min-youth',
     action: 'Added leader',
-    actor: 'Pastor Dipo Kalejaiye',
+    actor: 'Pastor Dipo Carter',
     timestamp: '2023-01-10T14:30:00Z',
     timestampMs: 1673361000000,
     description: 'Brother David Nwachukwu added as Lead of Youth Ministry.',
@@ -1355,7 +1355,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-04',
     ministryId: 'min-worship',
     action: 'Updated meeting time',
-    actor: 'Sister Abimbola Kalejaiye',
+    actor: 'Sister Abimbola Carter',
     timestamp: '2025-09-01T08:00:00Z',
     timestampMs: 1725177600000,
     description: 'Rehearsal time changed from 7:30 AM to 8:00 AM.',
@@ -1400,7 +1400,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-09',
     ministryId: 'min-care',
     action: 'Added leader',
-    actor: 'Pastor Dipo Kalejaiye',
+    actor: 'Pastor Dipo Carter',
     timestamp: '2023-01-15T09:30:00Z',
     timestampMs: 1673775000000,
     description: 'Sister Bisi Ogunnaike added as Lead of Care Team.',
@@ -1427,7 +1427,7 @@ export const MINISTRY_AUDIT_V3: MinistryAuditEntry[] = [
     id: 'aud-12',
     ministryId: 'min-young-adults',
     action: 'Created ministry',
-    actor: 'Pastor Dipo Kalejaiye',
+    actor: 'Pastor Dipo Carter',
     timestamp: '2024-01-08T10:00:00Z',
     timestampMs: 1704711600000,
     description: 'Ministry "Young Adults Fellowship" created with room and events calendar.',
@@ -1524,7 +1524,7 @@ export function filterMinistries(
     if (scope === 'leadership') {
       // For mock purposes, show ministries where user leads
       // (using a placeholder check — in production this uses the auth context)
-      return m.leaders.some((l) => l.name.includes('Kalejaiye'));
+      return m.leaders.some((l) => l.name.includes('Carter'));
     }
 
     return true;

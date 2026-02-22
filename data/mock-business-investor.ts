@@ -21,7 +21,7 @@ export const KANEXT_ORGANIZATION: BusinessOrganization = {
   name: 'KaNeXT',
   mode: 'business',
   type: 'Technology Company',
-  location: 'San Diego, CA',
+  location: 'Nashville, TN',
   description:
     'KaNeXT builds intelligent operating systems for organizations. Our platform provides unified interfaces for sports programs, churches, educational institutions, and enterprises to manage operations, engage stakeholders, and make data-driven decisions.',
   legalStructure: 'Delaware C-Corporation',
@@ -37,7 +37,7 @@ export const KANEXT_ORGANIZATION: BusinessOrganization = {
 export const BOARD_MEMBERS: BoardMember[] = [
   {
     id: 'board-1',
-    name: 'Marcus Thompson',
+    name: 'Alex Morgan',
     role: 'Founder & CEO',
     title: 'Chief Executive Officer',
     company: 'KaNeXT',
@@ -45,10 +45,10 @@ export const BOARD_MEMBERS: BoardMember[] = [
   },
   {
     id: 'board-2',
-    name: 'Dr. Sarah Chen',
+    name: 'Dr. Lisa Grant',
     role: 'Board Member',
     title: 'Partner',
-    company: 'Horizon Ventures',
+    company: 'KX Ventures',
     bio: 'Led investments in enterprise SaaS and sports technology companies.',
   },
   {
@@ -61,10 +61,10 @@ export const BOARD_MEMBERS: BoardMember[] = [
   },
   {
     id: 'board-4',
-    name: 'Rev. Michael Johnson',
+    name: 'Rev. David Reeves',
     role: 'Advisor',
     title: 'Senior Pastor',
-    company: 'International Christian Center',
+    company: 'KaNeXT Church',
     bio: 'Leads a multi-campus ministry and advises on church technology solutions.',
   },
 ];
@@ -72,7 +72,7 @@ export const BOARD_MEMBERS: BoardMember[] = [
 export const LEADERSHIP_TEAM: BoardMember[] = [
   {
     id: 'exec-1',
-    name: 'Marcus Thompson',
+    name: 'Alex Morgan',
     role: 'Founder & CEO',
     bio: 'Vision and strategy',
   },

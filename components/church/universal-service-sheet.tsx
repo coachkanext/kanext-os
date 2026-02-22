@@ -96,16 +96,16 @@ const INCIDENT_STATUS_COLORS: Record<string, string> = {
 // =============================================================================
 
 const RUN_OF_SHOW = [
-  { id: 'ros-1', order: 1, segment: 'Welcome & Call to Worship', owner: 'Pastor Sarah Chen', duration: '3 min', mediaLink: null, lyricsLink: null, slidesLink: 'slides/welcome-feb23' },
+  { id: 'ros-1', order: 1, segment: 'Welcome & Call to Worship', owner: 'Pastor Lisa Grant', duration: '3 min', mediaLink: null, lyricsLink: null, slidesLink: 'slides/welcome-feb23' },
   { id: 'ros-2', order: 2, segment: 'Opening Prayer', owner: 'Mother Evelyn Grant', duration: '2 min', mediaLink: null, lyricsLink: null, slidesLink: null },
   { id: 'ros-3', order: 3, segment: 'Worship Set (4 songs)', owner: 'Min. David Park', duration: '25 min', mediaLink: null, lyricsLink: 'lyrics/set-feb23', slidesLink: 'slides/worship-feb23' },
-  { id: 'ros-4', order: 4, segment: 'Announcements', owner: 'Pastor Sarah Chen', duration: '5 min', mediaLink: null, lyricsLink: null, slidesLink: 'slides/announcements-feb23' },
+  { id: 'ros-4', order: 4, segment: 'Announcements', owner: 'Pastor Lisa Grant', duration: '5 min', mediaLink: null, lyricsLink: null, slidesLink: 'slides/announcements-feb23' },
   { id: 'ros-5', order: 5, segment: 'Tithes & Offering', owner: 'Dea. Robert Simmons', duration: '8 min', mediaLink: null, lyricsLink: null, slidesLink: null },
   { id: 'ros-6', order: 6, segment: 'Special Music / Choir', owner: 'Choir Director', duration: '5 min', mediaLink: null, lyricsLink: 'lyrics/special-feb23', slidesLink: null },
   { id: 'ros-7', order: 7, segment: 'Scripture Reading', owner: 'Elder Reader', duration: '3 min', mediaLink: null, lyricsLink: null, slidesLink: null },
-  { id: 'ros-8', order: 8, segment: 'Sermon: "Walking in Faith Pt. 3"', owner: 'Pastor Dipo Kalejaiye', duration: '40 min', mediaLink: null, lyricsLink: null, slidesLink: 'slides/sermon-feb23' },
+  { id: 'ros-8', order: 8, segment: 'Sermon: "Walking in Faith Pt. 3"', owner: 'Pastor Dipo Carter', duration: '40 min', mediaLink: null, lyricsLink: null, slidesLink: 'slides/sermon-feb23' },
   { id: 'ros-9', order: 9, segment: 'Altar Call & Ministry Time', owner: 'Prayer Team', duration: '12 min', mediaLink: null, lyricsLink: null, slidesLink: null },
-  { id: 'ros-10', order: 10, segment: 'Benediction & Dismissal', owner: 'Pastor Dipo Kalejaiye', duration: '2 min', mediaLink: null, lyricsLink: null, slidesLink: null },
+  { id: 'ros-10', order: 10, segment: 'Benediction & Dismissal', owner: 'Pastor Dipo Carter', duration: '2 min', mediaLink: null, lyricsLink: null, slidesLink: null },
 ];
 
 const SERVICE_ROLES_NEEDED = [
@@ -116,7 +116,7 @@ const SERVICE_ROLES_NEEDED = [
   { id: 'rn-5', role: 'Prayer Team Lead', assigned: 'Mother Evelyn Grant', filled: true },
   { id: 'rn-6', role: 'AV / Sound Tech', assigned: null, filled: false },
   { id: 'rn-7', role: 'Greeter (Entrance A)', assigned: null, filled: false },
-  { id: 'rn-8', role: 'Associate Minister', assigned: 'Pastor Sarah Chen', filled: true },
+  { id: 'rn-8', role: 'Associate Minister', assigned: 'Pastor Lisa Grant', filled: true },
   { id: 'rn-9', role: 'Parking Team', assigned: 'Emeka Chukwu', filled: true },
   { id: 'rn-10', role: 'Nursery Volunteer', assigned: 'Amara Diallo', filled: true },
 ];
@@ -141,10 +141,10 @@ const SERVICE_RECAP_DATA = {
     '8 new visitors. All received welcome packets and info cards.',
   ],
   actionsGenerated: [
-    { id: 'ag-1', type: 'follow_up', description: 'Follow up with 8 new visitors within 48 hours', owner: 'Pastor Sarah Chen', status: 'open' },
+    { id: 'ag-1', type: 'follow_up', description: 'Follow up with 8 new visitors within 48 hours', owner: 'Pastor Lisa Grant', status: 'open' },
     { id: 'ag-2', type: 'task', description: 'Post AV tech volunteer position to church bulletin', owner: 'Admin Team', status: 'open' },
     { id: 'ag-3', type: 'follow_up', description: 'Check on Sola Ogunleye — 3 weeks absent', owner: 'Dea. Robert Simmons', status: 'open' },
-    { id: 'ag-4', type: 'task', description: 'Review worship set timing with Min. David Park', owner: 'Pastor Dipo Kalejaiye', status: 'open' },
+    { id: 'ag-4', type: 'task', description: 'Review worship set timing with Min. David Park', owner: 'Pastor Dipo Carter', status: 'open' },
   ],
   nextServiceAdjustments: [
     'Shorten worship set by 3 minutes (25 min to 22 min) to stay on schedule',
@@ -261,7 +261,7 @@ function ServiceHeader({
   seniorPastor: boolean;
   onClose: () => void;
 }) {
-  const campusLabel = 'ICCLA';
+  const campusLabel = 'KaNeXT Church';
   const owner = CHURCH_MEMBERS.find((m) => m.id === service.owner);
   const staffingMissing = service.staffingNeeded - service.staffingFilled;
 

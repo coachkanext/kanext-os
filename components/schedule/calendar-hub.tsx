@@ -19,7 +19,7 @@ import {
   getWeekDates, formatDateRange, formatDate, formatMonthYear,
   gamesToCalendarEvents, isSameDay,
 } from '@/data/calendar-utils';
-import { FMU_GAMES } from '@/data/fmu';
+import { KaNeXT_GAMES } from '@/data/fmu';
 import { MOCK_CALENDAR_EVENTS } from '@/data/mock-calendar-events';
 import type { ProgramCalendarEvent, ProgramCalendarEventType, CalendarVisibilityScope } from '@/types';
 
@@ -45,7 +45,7 @@ export function CalendarHub({ colors, router, events }: CalendarHubProps) {
   // When external events prop is provided, use those instead of internal merge.
   const allEvents = useMemo(() => {
     if (events) return events;
-    const gameEvents = gamesToCalendarEvents(FMU_GAMES);
+    const gameEvents = gamesToCalendarEvents(KaNeXT_GAMES);
     return [...gameEvents, ...MOCK_CALENDAR_EVENTS];
   }, [events]);
 

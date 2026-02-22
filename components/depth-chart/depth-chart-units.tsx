@@ -805,7 +805,7 @@ export function UnitsView({
       position: tradPos,
       height: '',
       classYear: '',
-      currentSchool: 'Florida Memorial',
+      currentSchool: 'KaNeXT Sports',
       level: 'NAIA' as const,
       conference: '',
       state: 'FL',

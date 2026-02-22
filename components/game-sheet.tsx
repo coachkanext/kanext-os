@@ -34,14 +34,14 @@ import {
 
 // Data
 import {
-  FMU_GAMES,
-  FMU_PREGAME,
-  FMU_BOX_SCORES,
-  FMU_GAME_STATS,
-  FMU_GAME_IMPACT,
-  FMU_GAME_FLOW,
-  FMU_GAME_BPR,
-  FMU_KR,
+  KaNeXT_GAMES,
+  KaNeXT_PREGAME,
+  KaNeXT_BOX_SCORES,
+  KaNeXT_GAME_STATS,
+  KaNeXT_GAME_IMPACT,
+  KaNeXT_GAME_FLOW,
+  KaNeXT_GAME_BPR,
+  KaNeXT_KR,
   getOpponentKR,
   getPGISColor,
   getTGISColor,
@@ -162,7 +162,7 @@ export function GameSheet({
   const tabs = useMemo(() => getGameSheetTabs(role), [role]);
 
   // Auto-select appropriate default tab based on game status
-  const game = FMU_GAMES.find(g => g.id === gameId) ?? null;
+  const game = KaNeXT_GAMES.find(g => g.id === gameId) ?? null;
   const defaultTab = useMemo((): GameTab => {
     if (!game) return 'pregame';
     switch (game.status) {
@@ -182,22 +182,22 @@ export function GameSheet({
   }, [visible, defaultTab]);
 
   // Pregame data
-  const pregame: PregameSnapshot | null = FMU_PREGAME[gameId] ?? null;
+  const pregame: PregameSnapshot | null = KaNeXT_PREGAME[gameId] ?? null;
 
   // Box score
-  const boxScore: BoxScoreLine[] = FMU_BOX_SCORES[gameId] ?? [];
+  const boxScore: BoxScoreLine[] = KaNeXT_BOX_SCORES[gameId] ?? [];
 
   // Game stats
-  const gameStats = FMU_GAME_STATS[gameId] ?? null;
+  const gameStats = KaNeXT_GAME_STATS[gameId] ?? null;
 
   // Game impact
-  const gameImpact = FMU_GAME_IMPACT[gameId] ?? null;
+  const gameImpact = KaNeXT_GAME_IMPACT[gameId] ?? null;
 
   // Game flow
-  const gameFlow = FMU_GAME_FLOW[gameId] ?? [];
+  const gameFlow = KaNeXT_GAME_FLOW[gameId] ?? [];
 
   // BPR
-  const gameBPR = FMU_GAME_BPR[gameId] ?? [];
+  const gameBPR = KaNeXT_GAME_BPR[gameId] ?? [];
 
   // Revenue (AD Overlay)
   const revenue = useMemo(() => getGameDayRevenue(gameId), [gameId]);
@@ -217,7 +217,7 @@ export function GameSheet({
         <View style={styles.headerTop}>
           <View style={{ flex: 1 }}>
             <Text style={[styles.matchup, { color: colors.text }]}>
-              FMU vs {game.opponent}
+              KaNeXT vs {game.opponent}
             </Text>
             <Text style={[styles.headerSub, { color: colors.textSecondary }]}>
               {game.date} · {game.location}
@@ -251,8 +251,8 @@ export function GameSheet({
         {krVisibility !== 'hidden' && (
           <View style={styles.krStrip}>
             <View style={styles.krBlock}>
-              <Text style={[styles.krLabel, { color: colors.textTertiary }]}>FMU KR</Text>
-              <Text style={[styles.krNum, { color: colors.text }]}>{formatKR(FMU_KR, krVisibility)}</Text>
+              <Text style={[styles.krLabel, { color: colors.textTertiary }]}>KaNeXT KR</Text>
+              <Text style={[styles.krNum, { color: colors.text }]}>{formatKR(KaNeXT_KR, krVisibility)}</Text>
             </View>
             <Text style={[styles.krVs, { color: colors.textTertiary }]}>vs</Text>
             <View style={styles.krBlock}>

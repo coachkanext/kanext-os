@@ -1,5 +1,5 @@
 /**
- * Florida Memorial University Men's Basketball
+ * KaNeXT Sports Men's Basketball
  * Category Leaders (Step 4E)
  * Seasons: 2022-23 through 2025-26
  * Source: Derived from NAIA Stats individual data (top 3 per category)
@@ -9,7 +9,7 @@ import type { CategoryLeader } from '../schema';
 
 export const categoryLeaders: CategoryLeader[] = [
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'PPG',
     player_name: 'Teonta McKeithen',
@@ -17,7 +17,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'PPG',
     player_name: 'Tavin Pierre-Philippe',
@@ -25,7 +25,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'PPG',
     player_name: 'Cam\'Ron Wilson',
@@ -33,7 +33,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'RPG',
     player_name: 'Emmanuel Umoffia',
@@ -41,7 +41,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'RPG',
     player_name: 'Cam\'Ron Wilson',
@@ -49,7 +49,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'RPG',
     player_name: 'Jacobi Gordon',
@@ -57,7 +57,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'APG',
     player_name: 'Rod Boggan',
@@ -65,7 +65,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'APG',
     player_name: 'Tavin Pierre-Philippe',
@@ -73,7 +73,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'APG',
     player_name: 'Alex Doane',
@@ -81,7 +81,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'SPG',
     player_name: 'Teonta McKeithen',
@@ -89,7 +89,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'SPG',
     player_name: 'Tavin Pierre-Philippe',
@@ -97,7 +97,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'SPG',
     player_name: 'Rod Boggan',
@@ -105,7 +105,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'BPG',
     player_name: 'Emmanuel Umoffia',
@@ -113,7 +113,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'BPG',
     player_name: 'Cam\'Ron Wilson',
@@ -121,7 +121,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'BPG',
     player_name: 'Jose Lopez',
@@ -129,7 +129,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'FG_PCT',
     player_name: 'Miles-Jordan Smartt',
@@ -137,7 +137,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'FG_PCT',
     player_name: 'Jordan Watkins',
@@ -145,7 +145,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'FG_PCT',
     player_name: 'Christain Taylor',
@@ -153,7 +153,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Alex Doane',
@@ -161,7 +161,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Miles-Jordan Smartt',
@@ -169,7 +169,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Tariq Humes',
@@ -177,7 +177,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'FT_PCT',
     player_name: 'Rodney Guillory',
@@ -185,7 +185,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'FT_PCT',
     player_name: 'Rod Boggan',
@@ -193,7 +193,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2022-23',
     stat_category: 'FT_PCT',
     player_name: 'Tavin Pierre-Philippe',
@@ -201,7 +201,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'PPG',
     player_name: 'Latavious Mitchell',
@@ -209,7 +209,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'PPG',
     player_name: 'Derrius Ward',
@@ -217,7 +217,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'PPG',
     player_name: 'Evan Busby',
@@ -225,7 +225,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'RPG',
     player_name: 'Latavious Mitchell',
@@ -233,7 +233,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'RPG',
     player_name: 'Felix Uadiale',
@@ -241,7 +241,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'RPG',
     player_name: 'Evan Busby',
@@ -249,7 +249,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'APG',
     player_name: 'Chanze Cruesoe',
@@ -257,7 +257,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'APG',
     player_name: 'Derrius Ward',
@@ -265,7 +265,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'APG',
     player_name: 'Latavious Mitchell',
@@ -273,7 +273,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'SPG',
     player_name: 'Chanze Cruesoe',
@@ -281,7 +281,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'SPG',
     player_name: 'Derrius Ward',
@@ -289,7 +289,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'SPG',
     player_name: 'Latavious Mitchell',
@@ -297,7 +297,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'BPG',
     player_name: 'Latavious Mitchell',
@@ -305,7 +305,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'BPG',
     player_name: 'Azubuike Nwankwo',
@@ -313,7 +313,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'BPG',
     player_name: 'Nathaniel Powell',
@@ -321,7 +321,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'FG_PCT',
     player_name: 'Felix Uadiale',
@@ -329,7 +329,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'FG_PCT',
     player_name: 'Latavious Mitchell',
@@ -337,7 +337,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'FG_PCT',
     player_name: 'Nick Frazier',
@@ -345,7 +345,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Calvin Payton',
@@ -353,7 +353,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Nick Frazier',
@@ -361,7 +361,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Jaiden Guice',
@@ -369,7 +369,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'FT_PCT',
     player_name: 'Calvin Payton',
@@ -377,7 +377,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'FT_PCT',
     player_name: 'Evan Busby',
@@ -385,7 +385,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2023-24',
     stat_category: 'FT_PCT',
     player_name: 'Jaiden Guice',
@@ -393,7 +393,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'PPG',
     player_name: 'Latavious Mitchell',
@@ -401,7 +401,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'PPG',
     player_name: 'Calvin Payton',
@@ -409,7 +409,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'PPG',
     player_name: 'Terrin Hamilton',
@@ -417,7 +417,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'RPG',
     player_name: 'Latavious Mitchell',
@@ -425,7 +425,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'RPG',
     player_name: 'Felix Uadiale',
@@ -433,7 +433,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'RPG',
     player_name: 'Mohamad Diallo',
@@ -441,7 +441,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'APG',
     player_name: 'Jason Danso',
@@ -449,7 +449,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'APG',
     player_name: 'Latavious Mitchell',
@@ -457,7 +457,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'APG',
     player_name: 'Dahmir Bishop',
@@ -465,7 +465,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'SPG',
     player_name: 'Latavious Mitchell',
@@ -473,7 +473,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'SPG',
     player_name: 'Calvin Payton',
@@ -481,7 +481,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'SPG',
     player_name: 'Terrin Hamilton',
@@ -489,7 +489,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'BPG',
     player_name: 'Mohamad Diallo',
@@ -497,7 +497,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'BPG',
     player_name: 'Latavious Mitchell',
@@ -505,7 +505,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'BPG',
     player_name: 'Dahmir Bishop',
@@ -513,7 +513,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'FG_PCT',
     player_name: 'Mohamad Diallo',
@@ -521,7 +521,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'FG_PCT',
     player_name: 'Felix Uadiale',
@@ -529,7 +529,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'FG_PCT',
     player_name: 'Latavious Mitchell',
@@ -537,7 +537,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Mohamad Diallo',
@@ -545,7 +545,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Calvin Payton',
@@ -553,7 +553,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Terrin Hamilton',
@@ -561,7 +561,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'FT_PCT',
     player_name: 'Sehmaj Mentor',
@@ -569,7 +569,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'FT_PCT',
     player_name: 'Terrin Hamilton',
@@ -577,7 +577,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2024-25',
     stat_category: 'FT_PCT',
     player_name: 'Calvin Payton',
@@ -585,7 +585,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'PPG',
     player_name: 'Devin Carter',
@@ -593,7 +593,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'PPG',
     player_name: 'Jeffery Selden',
@@ -601,7 +601,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'PPG',
     player_name: 'Cameron Noel',
@@ -609,7 +609,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'RPG',
     player_name: 'Jeffery Selden',
@@ -617,7 +617,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'RPG',
     player_name: 'Morgan Brewer',
@@ -625,7 +625,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'RPG',
     player_name: 'Devin Carter',
@@ -633,7 +633,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'APG',
     player_name: 'Jeffery Selden',
@@ -641,7 +641,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'APG',
     player_name: 'Sehmaj Mentor',
@@ -649,7 +649,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'APG',
     player_name: 'Devin Carter',
@@ -657,7 +657,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'SPG',
     player_name: 'Sehmaj Mentor',
@@ -665,7 +665,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'SPG',
     player_name: 'Aa\'reyon Munir-Jones',
@@ -673,7 +673,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'SPG',
     player_name: 'Devin Carter',
@@ -681,7 +681,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'BPG',
     player_name: 'Jeffery Selden',
@@ -689,7 +689,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'BPG',
     player_name: 'Morgan Brewer',
@@ -697,7 +697,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'BPG',
     player_name: 'Peter Asceric',
@@ -705,7 +705,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'FG_PCT',
     player_name: 'Morgan Brewer',
@@ -713,7 +713,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'FG_PCT',
     player_name: 'Peter Asceric',
@@ -721,7 +721,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'FG_PCT',
     player_name: 'Elijah Laird',
@@ -729,7 +729,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Micah Morgan',
@@ -737,7 +737,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Cameron Noel',
@@ -745,7 +745,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'THREE_PT_PCT',
     player_name: 'Peter Asceric',
@@ -753,7 +753,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 3,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'FT_PCT',
     player_name: 'Maximo Moratinos',
@@ -761,7 +761,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 1,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'FT_PCT',
     player_name: 'Devin Carter',
@@ -769,7 +769,7 @@ export const categoryLeaders: CategoryLeader[] = [
     rank: 2,
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     season: '2025-26',
     stat_category: 'FT_PCT',
     player_name: 'Tristan Thomas',

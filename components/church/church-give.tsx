@@ -405,7 +405,7 @@ interface TaxConfig {
 const TAX_CONFIG: TaxConfig = {
   ein: '82-1234567',
   orgName: 'Grace Community Church',
-  address: '1200 Faith Avenue, Atlanta, GA 30301',
+  address: '1200 Faith Avenue, Nashville, TN 30301',
   receiptFooter: 'Grace Community Church is a 501(c)(3) tax-exempt organization. No goods or services were provided in exchange for your contribution.',
 };
 
@@ -469,7 +469,7 @@ function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: Chur
   const fundLabel = GIVING_FUNDS_QUICK.find(f => f.id === selectedFund)?.name ?? 'General';
 
   if (showConfirmation) {
-    const receiptId = `ICCLA-2026-${Math.floor(Math.random() * 90000 + 10000)}`;
+    const receiptId = `KaNeXT Church-2026-${Math.floor(Math.random() * 90000 + 10000)}`;
     const timestamp = new Date().toLocaleString();
     return (
       <View>

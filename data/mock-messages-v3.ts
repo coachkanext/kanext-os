@@ -19,7 +19,7 @@ function daysAgo(d: number): Date {
 }
 
 // =============================================================================
-// SPORTS — FMU Head Coach / GM
+// SPORTS — KaNeXT Head Coach / GM
 // =============================================================================
 
 const SPORTS_INBOX: InboxThreadV3[] = [
@@ -28,7 +28,7 @@ const SPORTS_INBOX: InboxThreadV3[] = [
   { id: 'si3', mode: 'sports', name: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', preview: 'Coach, can we talk about my minutes situation?', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
   { id: 'si4', mode: 'sports', name: 'Alex Chen', initials: 'AC', role: 'Recruit', preview: 'Thank you for the offer! I have some questions about the program.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
   { id: 'si5', mode: 'sports', name: 'Patricia Moore', initials: 'PM', role: 'Parent', preview: 'Hi Coach, wanted to discuss Jaylen\'s academic support options.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
-  { id: 'si6', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Transfer Portal', preview: 'Interested in FMU. Can we set up a visit?', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
+  { id: 'si6', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Transfer Portal', preview: 'Interested in KaNeXT. Can we set up a visit?', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
   { id: 'si7', mode: 'sports', name: 'Athletic Director', initials: 'AD', role: 'Administration', preview: 'Budget meeting moved to Thursday 2pm.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
   { id: 'si8', mode: 'sports', name: 'Sports Medicine', initials: 'SM', role: 'Medical Staff', preview: 'Injury report updated for this week.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
 ];
@@ -45,11 +45,11 @@ const SPORTS_ROOMS: RoomV3[] = [
 const SPORTS_NEXUS: NexusEscalationV3[] = [
   { id: 'sn1', mode: 'sports', askerName: 'Marcus Webb', askerInitials: 'MW', askerRole: 'Assistant Coach', question: 'What\'s the optimal rotation if we rest Thomas in the first half?', viewingContext: 'Game Plan vs Bethel', timestamp: hoursAgo(1), status: 'unanswered' },
   { id: 'sn2', mode: 'sports', askerName: 'Jaylen Thomas', askerInitials: 'JT', askerRole: 'Student Athlete', question: 'How do I improve my defensive KR rating?', viewingContext: 'Player Card', timestamp: hoursAgo(4), status: 'unanswered' },
-  { id: 'sn3', mode: 'sports', askerName: 'Patricia Moore', askerInitials: 'PM', askerRole: 'Parent', question: 'What academic support resources are available for student athletes?', viewingContext: 'Program Overview', timestamp: daysAgo(1), status: 'answered', answer: 'FMU provides tutoring, study hall, and academic counseling for all student athletes.' },
+  { id: 'sn3', mode: 'sports', askerName: 'Patricia Moore', askerInitials: 'PM', askerRole: 'Parent', question: 'What academic support resources are available for student athletes?', viewingContext: 'Program Overview', timestamp: daysAgo(1), status: 'answered', answer: 'KaNeXT provides tutoring, study hall, and academic counseling for all student athletes.' },
 ];
 
 // =============================================================================
-// CHURCH — ICCLA Senior Pastor
+// CHURCH — KaNeXT Church Senior Pastor
 // =============================================================================
 
 const CHURCH_INBOX: InboxThreadV3[] = [
@@ -85,7 +85,7 @@ const CHURCH_NEXUS: NexusEscalationV3[] = [
 const BUSINESS_INBOX: InboxThreadV3[] = [
   { id: 'bi1', mode: 'business', name: 'Kofi Achebe', initials: 'KA', role: 'CTO', preview: 'API latency down 40% after the CDN migration. Metrics attached.', timestamp: hoursAgo(1), unread: true, pinned: true, isRequest: false },
   { id: 'bi2', mode: 'business', name: 'Patrick Bet-David', initials: 'PB', role: 'Advisor', preview: 'Let\'s sync on the Series A timeline this week.', timestamp: hoursAgo(3), unread: false, pinned: true, isRequest: false },
-  { id: 'bi3', mode: 'business', name: 'Sarah Kim', initials: 'SK', role: 'Product Lead', preview: 'V3 Messages spec is ready for review.', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
+  { id: 'bi3', mode: 'business', name: 'Sarah Kim', initials: 'AM', role: 'Product Lead', preview: 'V3 Messages spec is ready for review.', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
   { id: 'bi4', mode: 'business', name: 'James Park', initials: 'JP', role: 'Design Lead', preview: 'Updated the design system tokens — check Figma.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
   { id: 'bi5', mode: 'business', name: 'Marcus Webb', initials: 'MW', role: 'BD Lead', preview: 'Partnership meeting with NAIA confirmed for next week.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
   { id: 'bi6', mode: 'business', name: 'Jordan Ellis', initials: 'JE', role: 'Intern Applicant', preview: 'Applied for the engineering intern position. Portfolio attached.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
@@ -109,7 +109,7 @@ const BUSINESS_NEXUS: NexusEscalationV3[] = [
 ];
 
 // =============================================================================
-// EDUCATION — FMU President
+// EDUCATION — KaNeXT President
 // =============================================================================
 
 const EDUCATION_INBOX: InboxThreadV3[] = [

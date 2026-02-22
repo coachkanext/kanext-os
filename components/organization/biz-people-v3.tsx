@@ -34,7 +34,7 @@ const VIEWS: { id: ViewMode; label: string }[] = [
 ];
 
 const TEAM = [
-  { id: 'p1', name: 'Sammy Kalejaiye', role: 'Founder & CEO', type: 'Full-time', reportsTo: null, level: 0, initials: 'SK' },
+  { id: 'p1', name: 'Alex Morgan', role: 'Founder & CEO', type: 'Full-time', reportsTo: null, level: 0, initials: 'AM' },
   { id: 'p2', name: 'Marcus Chen', role: 'CTO', type: 'Full-time', reportsTo: 'p1', level: 1, initials: 'MC' },
   { id: 'p3', name: 'Aisha Williams', role: 'Head of Product', type: 'Full-time', reportsTo: 'p1', level: 1, initials: 'AW' },
   { id: 'p4', name: 'David Park', role: 'Lead Engineer', type: 'Full-time', reportsTo: 'p2', level: 2, initials: 'DP' },
@@ -43,7 +43,7 @@ const TEAM = [
 ];
 
 const BOARD = [
-  { id: 'b1', name: 'Sammy Kalejaiye', title: 'Founder & CEO', seat: 'Founder Seat', term: 'Permanent' },
+  { id: 'b1', name: 'Alex Morgan', title: 'Founder & CEO', seat: 'Founder Seat', term: 'Permanent' },
   { id: 'b2', name: 'Dr. Patricia Moore', title: 'Angel Investor & Advisor', seat: 'Investor Seat', term: '2024-2027' },
   { id: 'b3', name: 'James Bradford', title: 'Industry Advisor, ex-VP Google', seat: 'Advisor Seat', term: '2024-2026' },
 ];

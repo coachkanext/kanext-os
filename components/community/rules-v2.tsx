@@ -513,7 +513,7 @@ function RulesHeader({ colors }: { colors: typeof Colors.light }) {
   return (
     <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, marginHorizontal: Spacing.md, marginTop: Spacing.sm }]}>
       <ThemedText style={[styles.rulesHeaderTitle, { color: colors.text }]}>
-        K-1 Hypercar Championship Regulations
+        KaNeXT League Regulations
       </ThemedText>
       <View style={styles.rulesHeaderMeta}>
         <ThemedText style={[styles.rulesHeaderMetaText, { color: colors.textSecondary }]}>

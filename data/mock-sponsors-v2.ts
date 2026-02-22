@@ -831,7 +831,7 @@ const fulfillment: FulfillmentItem[] = [
     ownerInitials: 'MR',
     status: 'delivered',
     proofLinks: ['Photo \u2014 Game 12 signage'],
-    verifiedBy: 'Sammy Kalejaiye',
+    verifiedBy: 'Alex Morgan',
   },
   {
     id: 'ful-002',
@@ -884,7 +884,7 @@ const fulfillment: FulfillmentItem[] = [
     ownerInitials: 'MR',
     status: 'verified',
     proofLinks: ['Screenshot \u2014 stream overlay'],
-    verifiedBy: 'Sammy Kalejaiye',
+    verifiedBy: 'Alex Morgan',
   },
   {
     id: 'ful-006',
@@ -1152,7 +1152,7 @@ const audit: SponsorAuditEntry[] = [
   {
     id: 'aud-001',
     action: 'sponsor_created',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     actorInitials: 'SK',
     target: 'MidState Credit Union',
     timestamp: 'Jul 15, 2025',
@@ -1161,7 +1161,7 @@ const audit: SponsorAuditEntry[] = [
   {
     id: 'aud-002',
     action: 'contract_signed',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     actorInitials: 'SK',
     target: 'MidState CU \u2014 Title Sponsor',
     timestamp: 'Aug 1, 2025',
@@ -1170,7 +1170,7 @@ const audit: SponsorAuditEntry[] = [
   {
     id: 'aud-003',
     action: 'contract_signed',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     actorInitials: 'SK',
     target: 'Palmetto Health \u2014 Platinum',
     timestamp: 'Aug 15, 2025',
@@ -1188,7 +1188,7 @@ const audit: SponsorAuditEntry[] = [
   {
     id: 'aud-005',
     action: 'fulfillment_verified',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     actorInitials: 'SK',
     target: 'Stream Overlay \u2014 Palmetto Health',
     timestamp: 'Feb 15, 2026',

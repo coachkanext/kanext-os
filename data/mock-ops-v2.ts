@@ -287,8 +287,8 @@ const SPORTS_TASKS: OpsTask[] = [
   { id: 'sp-t-3', title: 'Book charter bus — Thomas University trip', owner: 'Ops Coordinator', ownerInitials: 'OC', dueDate: '2026-02-18', priority: 'P1', status: 'complete', unit: 'Season' },
   { id: 'sp-t-4', title: 'Equipment check — away game bags & med kits', owner: 'Antoine Brooks', ownerInitials: 'AB', dueDate: '2026-02-19', priority: 'P1', status: 'draft', unit: 'Program' },
   { id: 'sp-t-5', title: 'Game day prep — PA script & roster cards', owner: 'Media Coordinator', ownerInitials: 'MC', dueDate: '2026-02-18', priority: 'P2', status: 'active', unit: 'Season' },
-  { id: 'sp-t-6', title: 'Recruiting follow-up — top 5 portal targets', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', dueDate: '2026-02-20', priority: 'P1', status: 'active', unit: 'Program' },
-  { id: 'sp-t-7', title: 'Submit eligibility verification forms', owner: 'Sammy Kalejaiye', ownerInitials: 'SK', dueDate: '2026-02-21', priority: 'P0', status: 'draft', unit: 'Organization' },
+  { id: 'sp-t-6', title: 'Recruiting follow-up — top 5 portal targets', owner: 'Alex Morgan', ownerInitials: 'SK', dueDate: '2026-02-20', priority: 'P1', status: 'active', unit: 'Program' },
+  { id: 'sp-t-7', title: 'Submit eligibility verification forms', owner: 'Alex Morgan', ownerInitials: 'SK', dueDate: '2026-02-21', priority: 'P0', status: 'draft', unit: 'Organization' },
   { id: 'sp-t-8', title: 'Strength & conditioning plan — conference prep', owner: 'S&C Coach', ownerInitials: 'SC', dueDate: '2026-02-22', priority: 'P2', status: 'active', unit: 'Program' },
 ];
 
@@ -338,20 +338,20 @@ const SPORTS_SOPS: OpsSOP[] = [
   { id: 'sp-sop-2', title: 'Travel Day Protocol', category: 'Travel', steps: 12, lastUpdated: '2026-01-20', owner: 'Ops Coordinator' },
   { id: 'sp-sop-3', title: 'Equipment Inventory & Check Procedure', category: 'Equipment', steps: 8, lastUpdated: '2025-12-10', owner: 'Antoine Brooks' },
   { id: 'sp-sop-4', title: 'Film Upload & Tagging Workflow', category: 'Film', steps: 10, lastUpdated: '2026-02-01', owner: 'Media Coordinator' },
-  { id: 'sp-sop-5', title: 'Recruiting Visit Hosting Guide', category: 'Recruiting', steps: 14, lastUpdated: '2026-01-05', owner: 'Sammy Kalejaiye' },
+  { id: 'sp-sop-5', title: 'Recruiting Visit Hosting Guide', category: 'Recruiting', steps: 14, lastUpdated: '2026-01-05', owner: 'Alex Morgan' },
 ];
 
 const SPORTS_REPORTS: OpsReport[] = [
   { id: 'sp-r-1', title: 'Weekly Operations Snapshot — W7', type: 'Weekly Snapshot', generatedAt: '2026-02-14', owner: 'Ops Coordinator' },
-  { id: 'sp-r-2', title: 'January Travel Expense Report', type: 'Monthly Summary', generatedAt: '2026-02-01', owner: 'Sammy Kalejaiye' },
+  { id: 'sp-r-2', title: 'January Travel Expense Report', type: 'Monthly Summary', generatedAt: '2026-02-01', owner: 'Alex Morgan' },
   { id: 'sp-r-3', title: 'Home Game Report — vs. Johnson University', type: 'Event Report', generatedAt: '2026-02-12', owner: 'Media Coordinator' },
 ];
 
 const SPORTS_CADENCE: OpsCadenceMeeting[] = [
-  { id: 'sp-c-1', title: 'Daily Coaches Huddle', frequency: 'Daily', nextDate: '2026-02-17', time: '7:30 AM', attendees: ['Sammy Kalejaiye', 'Coach Harris', 'S&C Coach'], agenda: 'Practice plan review, injury updates, schedule adjustments' },
-  { id: 'sp-c-2', title: 'Weekly Staff Meeting', frequency: 'Weekly', nextDate: '2026-02-19', time: '2:00 PM', attendees: ['Sammy Kalejaiye', 'Coach Harris', 'Ops Coordinator', 'Antoine Brooks', 'Media Coordinator'], agenda: 'Week review, upcoming schedule, open issues' },
-  { id: 'sp-c-3', title: 'Recruiting Sync', frequency: 'Bi-weekly', nextDate: '2026-02-19', time: '4:00 PM', attendees: ['Sammy Kalejaiye', 'Coach Harris'], agenda: 'Portal updates, visit schedules, offer board' },
-  { id: 'sp-c-4', title: 'Monthly Operations Review', frequency: 'Monthly', nextDate: '2026-03-01', time: '10:00 AM', attendees: ['Sammy Kalejaiye', 'Ops Coordinator', 'AD'], agenda: 'Budget review, facilities updates, vendor contracts, compliance' },
+  { id: 'sp-c-1', title: 'Daily Coaches Huddle', frequency: 'Daily', nextDate: '2026-02-17', time: '7:30 AM', attendees: ['Alex Morgan', 'Coach Harris', 'S&C Coach'], agenda: 'Practice plan review, injury updates, schedule adjustments' },
+  { id: 'sp-c-2', title: 'Weekly Staff Meeting', frequency: 'Weekly', nextDate: '2026-02-19', time: '2:00 PM', attendees: ['Alex Morgan', 'Coach Harris', 'Ops Coordinator', 'Antoine Brooks', 'Media Coordinator'], agenda: 'Week review, upcoming schedule, open issues' },
+  { id: 'sp-c-3', title: 'Recruiting Sync', frequency: 'Bi-weekly', nextDate: '2026-02-19', time: '4:00 PM', attendees: ['Alex Morgan', 'Coach Harris'], agenda: 'Portal updates, visit schedules, offer board' },
+  { id: 'sp-c-4', title: 'Monthly Operations Review', frequency: 'Monthly', nextDate: '2026-03-01', time: '10:00 AM', attendees: ['Alex Morgan', 'Ops Coordinator', 'AD'], agenda: 'Budget review, facilities updates, vendor contracts, compliance' },
 ];
 
 const SPORTS_DASHBOARD: DashboardBlock[] = [
@@ -366,7 +366,7 @@ const SPORTS_DASHBOARD: DashboardBlock[] = [
 ];
 
 const SPORTS_AUDIT: OpsAuditEntry[] = [
-  { id: 'sp-au-1', action: 'task.created', actor: 'Sammy Kalejaiye', timestamp: '2026-02-16T14:22:00Z', timestampMs: 1739714520000, description: 'Created task "Recruiting follow-up — top 5 portal targets"' },
+  { id: 'sp-au-1', action: 'task.created', actor: 'Alex Morgan', timestamp: '2026-02-16T14:22:00Z', timestampMs: 1739714520000, description: 'Created task "Recruiting follow-up — top 5 portal targets"' },
   { id: 'sp-au-2', action: 'work-order.status', actor: 'Facilities Mgr', timestamp: '2026-02-16T11:05:00Z', timestampMs: 1739703900000, description: 'Work order "Repair shot clock" moved to Active' },
   { id: 'sp-au-3', action: 'issue.reported', actor: 'Ops Coordinator', timestamp: '2026-02-15T16:30:00Z', timestampMs: 1739637000000, description: 'Reported issue "Bus company double-booked on Feb 20"' },
   { id: 'sp-au-4', action: 'travel.booked', actor: 'Ops Coordinator', timestamp: '2026-02-15T10:15:00Z', timestampMs: 1739614500000, description: 'Booked travel "Away Game — Thomas University"' },
@@ -429,7 +429,7 @@ const EDUCATION_FACILITIES: OpsFacility[] = [
 ];
 
 const EDUCATION_TRAVEL: OpsTravelItem[] = [
-  { id: 'ed-tr-1', title: 'Accreditation Conference', destination: 'Atlanta, GA', departDate: '2026-03-10', returnDate: '2026-03-12', travelers: 4, status: 'booked' },
+  { id: 'ed-tr-1', title: 'Accreditation Conference', destination: 'Nashville, TN', departDate: '2026-03-10', returnDate: '2026-03-12', travelers: 4, status: 'booked' },
   { id: 'ed-tr-2', title: 'Faculty Development Workshop', destination: 'Orlando, FL', departDate: '2026-03-20', returnDate: '2026-03-22', travelers: 6, status: 'planned' },
 ];
 
@@ -483,7 +483,7 @@ const EDUCATION_AUDIT: OpsAuditEntry[] = [
 // =============================================================================
 
 const CHURCH_TASKS: OpsTask[] = [
-  { id: 'ch-t-1', title: 'Sunday service prep — sermon notes & slides', owner: 'Pastor Kalejaiye', ownerInitials: 'PK', dueDate: '2026-02-21', priority: 'P0', status: 'active', unit: 'Campus' },
+  { id: 'ch-t-1', title: 'Sunday service prep — sermon notes & slides', owner: 'Pastor Carter', ownerInitials: 'PK', dueDate: '2026-02-21', priority: 'P0', status: 'active', unit: 'Campus' },
   { id: 'ch-t-2', title: 'Volunteer scheduling — ushers & greeters rotation', owner: 'Min. Davis', ownerInitials: 'MD', dueDate: '2026-02-19', priority: 'P1', status: 'active', unit: 'Campus' },
   { id: 'ch-t-3', title: 'Youth ministry event setup — Friday night', owner: 'Youth Director', ownerInitials: 'YD', dueDate: '2026-02-20', priority: 'P1', status: 'draft', unit: 'Ministry' },
   { id: 'ch-t-4', title: 'Care team follow-up — hospital visit list', owner: 'Deacon Board', ownerInitials: 'DB', dueDate: '2026-02-19', priority: 'P1', status: 'active', unit: 'Ministry' },
@@ -545,8 +545,8 @@ const CHURCH_REPORTS: OpsReport[] = [
 ];
 
 const CHURCH_CADENCE: OpsCadenceMeeting[] = [
-  { id: 'ch-c-1', title: 'Worship Planning Meeting', frequency: 'Weekly', nextDate: '2026-02-18', time: '10:00 AM', attendees: ['Pastor Kalejaiye', 'Worship Director', 'Media Team', 'Tech Team Lead'], agenda: 'Song selection, sermon flow, media assets, AV needs' },
-  { id: 'ch-c-2', title: 'Elder Board Meeting', frequency: 'Monthly', nextDate: '2026-03-05', time: '6:30 PM', attendees: ['Pastor Kalejaiye', 'Elder Board', 'Admin Office'], agenda: 'Ministry updates, budget review, governance, pastoral care' },
+  { id: 'ch-c-1', title: 'Worship Planning Meeting', frequency: 'Weekly', nextDate: '2026-02-18', time: '10:00 AM', attendees: ['Pastor Carter', 'Worship Director', 'Media Team', 'Tech Team Lead'], agenda: 'Song selection, sermon flow, media assets, AV needs' },
+  { id: 'ch-c-2', title: 'Elder Board Meeting', frequency: 'Monthly', nextDate: '2026-03-05', time: '6:30 PM', attendees: ['Pastor Carter', 'Elder Board', 'Admin Office'], agenda: 'Ministry updates, budget review, governance, pastoral care' },
   { id: 'ch-c-3', title: 'Volunteer Coordinators Sync', frequency: 'Bi-weekly', nextDate: '2026-02-20', time: '7:00 PM', attendees: ['Min. Davis', 'Ministry Leaders', 'Youth Director'], agenda: 'Volunteer needs, scheduling gaps, new recruit onboarding' },
   { id: 'ch-c-4', title: 'Missions & Outreach Committee', frequency: 'Monthly', nextDate: '2026-03-10', time: '12:00 PM', attendees: ['Outreach Coord', 'Missions Chair', 'Deacon Board'], agenda: 'Missions trip prep, local outreach calendar, partnerships' },
 ];

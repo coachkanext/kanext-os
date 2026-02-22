@@ -571,15 +571,15 @@ const GAME_OPPONENTS: Record<string, string> = {
   '-OgbmTnXpz994rOErPEo': 'Loyola Marymount',
   '-OgbzyEnODgmhH7yyXSJ': 'Pepperdine',
   '-OgcD9jAtLd0IFGX7lwI': 'UC Irvine',
-  '-Ogd2OxdplE_N1hzwR_W': 'Cal Maritime',
-  '-OgdZ7wZowES0FYO8FYE': 'Ohlone',
-  '-OgjOc5JGIhECeCvETY6': 'Simpson University',
-  '-Oi5tiQ8LDRW9FEUs_gf': 'Cal Maritime',
+  '-Ogd2OxdplE_N1hzwR_W': 'Eastridge Tech',
+  '-OgdZ7wZowES0FYO8FYE': 'Crestview',
+  '-OgjOc5JGIhECeCvETY6': 'Westlake College',
+  '-Oi5tiQ8LDRW9FEUs_gf': 'Eastridge Tech',
   '-OjE19psxjUfBfqrHZnB': 'Cal Miramar',
   '-OjOHCO32yY5URlwq6su': 'Cal Miramar',
-  '-Ojn37CBTNgN9KpQQ22V': 'Cal Prestige Tigers',
-  '-OkM7ZQIrwSjI9U37UGd': 'Bethesda',
-  '-OitEKyFF5d9L8N0TgJR': 'Cal State East Bay',
+  '-Ojn37CBTNgN9KpQQ22V': 'Valley Hawks',
+  '-OkM7ZQIrwSjI9U37UGd': 'Northfield',
+  '-OitEKyFF5d9L8N0TgJR': 'Summit State',
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════

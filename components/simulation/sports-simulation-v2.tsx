@@ -24,7 +24,7 @@ import {
   SAVED_SIM_RUNS_ALL,
   MOCK_CONSTRAINTS,
   MOCK_KEISER_GAME,
-  MOCK_BOX_SCORE_KEISER_FMU,
+  MOCK_BOX_SCORE_KEISER_KaNeXT,
   MOCK_BOX_SCORE_KEISER_OPP,
   MOCK_KEISER_DRIVERS,
   MOCK_KEISER_TRACES,
@@ -57,7 +57,7 @@ interface SimContext {
 const SIM_CONTEXTS: SimContext[] = [
   {
     id: 'lincoln',
-    label: 'vs Lincoln (PA)',
+    label: 'vs Ridgemont (PA)',
     game: MOCK_SINGLE_GAME,
     boxFMU: MOCK_BOX_SCORE_A,
     boxOpp: null,
@@ -72,7 +72,7 @@ const SIM_CONTEXTS: SimContext[] = [
     id: 'keiser',
     label: 'vs Keiser University',
     game: MOCK_KEISER_GAME,
-    boxFMU: MOCK_BOX_SCORE_KEISER_FMU,
+    boxFMU: MOCK_BOX_SCORE_KEISER_KaNeXT,
     boxOpp: MOCK_BOX_SCORE_KEISER_OPP,
     drivers: MOCK_KEISER_DRIVERS,
     traces: MOCK_KEISER_TRACES,
@@ -192,7 +192,7 @@ function OverviewTab({ ctx, colors, accent, krVis }: TabProps) {
       <View style={[styles.tableCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.tableHeader}>
           <ThemedText style={[styles.thText, { flex: 0.4, color: colors.textSecondary }]}>Factor</ThemedText>
-          <ThemedText style={[styles.thText, { flex: 0.2, textAlign: 'center', color: colors.textSecondary }]}>FMU</ThemedText>
+          <ThemedText style={[styles.thText, { flex: 0.2, textAlign: 'center', color: colors.textSecondary }]}>KXT</ThemedText>
           <ThemedText style={[styles.thText, { flex: 0.2, textAlign: 'center', color: colors.textSecondary }]}>OPP</ThemedText>
           <ThemedText style={[styles.thText, { flex: 0.2, textAlign: 'center', color: colors.textSecondary }]}>Adv</ThemedText>
         </View>
@@ -202,7 +202,7 @@ function OverviewTab({ ctx, colors, accent, krVis }: TabProps) {
             <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: colors.text }]}>{f.team_a}</ThemedText>
             <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: colors.text }]}>{f.team_b}</ThemedText>
             <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: f.advantage === 'A' ? '#22C55E' : f.advantage === 'B' ? '#EF4444' : '#F59E0B', fontWeight: '700' }]}>
-              {f.advantage === 'A' ? 'FMU' : f.advantage === 'B' ? 'OPP' : 'EVEN'}
+              {f.advantage === 'A' ? 'KaNeXT' : f.advantage === 'B' ? 'OPP' : 'EVEN'}
             </ThemedText>
           </View>
         ))}
@@ -264,12 +264,12 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-      {/* FMU Offense vs Opponent Defense */}
-      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>FMU OFFENSE vs OPP DEFENSE</ThemedText>
+      {/* KaNeXT Offense vs Opponent Defense */}
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>KaNeXT OFFENSE vs OPP DEFENSE</ThemedText>
       <View style={[styles.systemCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.systemVsRow}>
           <View style={styles.systemSide}>
-            <ThemedText style={[styles.systemTeam, { color: accent }]}>FMU</ThemedText>
+            <ThemedText style={[styles.systemTeam, { color: accent }]}>KXT</ThemedText>
             <ThemedText style={[styles.systemLabel, { color: colors.text }]}>{fmuOff}</ThemedText>
           </View>
           <ThemedText style={[styles.vsText, { color: colors.textSecondary }]}>vs</ThemedText>
@@ -291,8 +291,8 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
         ))}
       </View>
 
-      {/* Opponent Offense vs FMU Defense */}
-      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>OPP OFFENSE vs FMU DEFENSE</ThemedText>
+      {/* Opponent Offense vs KaNeXT Defense */}
+      <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>OPP OFFENSE vs KaNeXT DEFENSE</ThemedText>
       <View style={[styles.systemCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.systemVsRow}>
           <View style={styles.systemSide}>
@@ -301,7 +301,7 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
           </View>
           <ThemedText style={[styles.vsText, { color: colors.textSecondary }]}>vs</ThemedText>
           <View style={styles.systemSide}>
-            <ThemedText style={[styles.systemTeam, { color: accent }]}>FMU</ThemedText>
+            <ThemedText style={[styles.systemTeam, { color: accent }]}>KXT</ThemedText>
             <ThemedText style={[styles.systemLabel, { color: colors.text }]}>{fmuDef}</ThemedText>
           </View>
         </View>
@@ -322,7 +322,7 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>SYSTEM SWAP TOOL</ThemedText>
       <View style={[styles.swapCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <ThemedText style={[styles.swapDesc, { color: colors.textSecondary }]}>
-          Test alternative FMU systems against the opponent
+          Test alternative KaNeXT systems against the opponent
         </ThemedText>
         <Pressable
           style={[styles.swapBtn, { backgroundColor: swapSystems ? '#EF4444' + '22' : accent + '22' }]}
@@ -353,8 +353,8 @@ function PossessionTab({ ctx, colors, accent }: TabProps) {
 
   // Mock outcome distribution
   const outcomes = [
-    { label: 'FMU Win (Comfortable)', pct: 32, color: '#22C55E' },
-    { label: 'FMU Win (Close)', pct: 26, color: '#86EFAC' },
+    { label: 'KaNeXT Win (Comfortable)', pct: 32, color: '#22C55E' },
+    { label: 'KaNeXT Win (Close)', pct: 26, color: '#86EFAC' },
     { label: 'Toss-Up', pct: 14, color: '#F59E0B' },
     { label: 'OPP Win (Close)', pct: 18, color: '#FECACA' },
     { label: 'OPP Win (Comfortable)', pct: 10, color: '#EF4444' },
@@ -364,9 +364,9 @@ function PossessionTab({ ctx, colors, accent }: TabProps) {
   const possessions = [
     { id: 'p1', action: 'PnR (Williams)', result: 'Pull-up mid-range — Make', pts: 2, ppp: 1.12 },
     { id: 'p2', action: 'Spot-up 3 (Plantey)', result: 'Catch-and-shoot 3 — Miss', pts: 0, ppp: 0.0 },
-    { id: 'p3', action: 'Post-up (Kalejaiye)', result: 'Hook shot — Make + And-1', pts: 3, ppp: 1.5 },
+    { id: 'p3', action: 'Post-up (Carter)', result: 'Hook shot — Make + And-1', pts: 3, ppp: 1.5 },
     { id: 'p4', action: 'Transition', result: 'Fast break layup — Make', pts: 2, ppp: 1.33 },
-    { id: 'p5', action: 'PnR (Williams)', result: 'Kick to Chtelan corner 3 — Make', pts: 3, ppp: 1.28 },
+    { id: 'p5', action: 'PnR (Williams)', result: 'Kick to Quinn corner 3 — Make', pts: 3, ppp: 1.28 },
   ];
 
   return (
@@ -450,21 +450,21 @@ function PossessionTab({ ctx, colors, accent }: TabProps) {
 
 function MatchupTab({ ctx, colors, accent, krVis }: TabProps) {
   // Derive player matchup impact from box score data
-  const players = ctx.boxFMU.slice(0, 5); // starters
+  const players = ctx.boxKaNeXT.slice(0, 5); // starters
 
   // Mock archetype interactions
   const offArchetypes = [
     { archetype: 'Primary Ball Handler', system: ctx.fmuOffense, netImpact: 4.2, player: 'Williams' },
     { archetype: '3-and-D Wing', system: ctx.fmuOffense, netImpact: 2.1, player: 'Plantey' },
-    { archetype: 'Rim Protector', system: ctx.fmuDefense, netImpact: 3.6, player: 'Kalejaiye' },
+    { archetype: 'Rim Protector', system: ctx.fmuDefense, netImpact: 3.6, player: 'Carter' },
     { archetype: 'Stretch 4', system: ctx.fmuOffense, netImpact: 1.4, player: 'Diomande' },
-    { archetype: 'Versatile Wing', system: ctx.fmuOffense, netImpact: 0.8, player: 'Chtelan' },
+    { archetype: 'Versatile Wing', system: ctx.fmuOffense, netImpact: 0.8, player: 'Quinn' },
   ];
 
   const defArchetypes = [
-    { archetype: 'Pack Line Anchor', system: ctx.fmuDefense, netImpact: -3.8, player: 'Kalejaiye' },
+    { archetype: 'Pack Line Anchor', system: ctx.fmuDefense, netImpact: -3.8, player: 'Carter' },
     { archetype: 'Perimeter Pest', system: ctx.fmuDefense, netImpact: -2.4, player: 'Plantey' },
-    { archetype: 'Help Defender', system: ctx.fmuDefense, netImpact: -1.9, player: 'Chtelan' },
+    { archetype: 'Help Defender', system: ctx.fmuDefense, netImpact: -1.9, player: 'Quinn' },
     { archetype: 'PnR Navigator', system: ctx.fmuDefense, netImpact: -1.2, player: 'Williams' },
     { archetype: 'Post Defender', system: ctx.fmuDefense, netImpact: -0.8, player: 'Diomande' },
   ];
@@ -545,7 +545,7 @@ function MatchupTab({ ctx, colors, accent, krVis }: TabProps) {
 function BoxScoreTab({ ctx, colors, accent }: TabProps) {
   const [showOpp, setShowOpp] = useState(false);
   const boxData = showOpp && ctx.boxOpp ? ctx.boxOpp : ctx.boxFMU;
-  const teamLabel = showOpp ? ctx.game.team_b : 'FMU';
+  const teamLabel = showOpp ? ctx.game.team_b : 'KaNeXT';
 
   // Compute team totals
   const totals = boxData.reduce(
@@ -570,7 +570,7 @@ function BoxScoreTab({ ctx, colors, accent }: TabProps) {
             style={[styles.toggleBtn, !showOpp && { backgroundColor: accent }]}
             onPress={() => setShowOpp(false)}
           >
-            <Text style={[styles.toggleBtnText, { color: !showOpp ? '#000' : colors.textSecondary }]}>FMU</Text>
+            <Text style={[styles.toggleBtnText, { color: !showOpp ? '#000' : colors.textSecondary }]}>KXT</Text>
           </Pressable>
           <Pressable
             style={[styles.toggleBtn, showOpp && { backgroundColor: accent }]}

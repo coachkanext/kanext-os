@@ -13,8 +13,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
-  FMU_GAMES_BY_ID,
-  FMU_RECORD,
+  KaNeXT_GAMES_BY_ID,
+  KaNeXT_RECORD,
   placeholderRecord,
   isConfGame,
 } from '@/data/fmu';
@@ -36,7 +36,7 @@ function generateKeyPlays(opponent: string, fmuScore: number, oppScore: number):
   for (let i = 0; i < opponent.length; i++) h = ((h << 5) - h + opponent.charCodeAt(i)) | 0;
   const seed = () => { h = ((h << 5) - h + 0x5bd1e995) | 0; return Math.abs(h) % 1000; };
 
-  const FMU_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas'];
+  const KaNeXT_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas'];
   const OPP_NAMES = ['Johnson', 'Williams', 'Davis', 'Brown', 'Wilson', 'Anderson', 'Taylor'];
   const oppAbbr = opponent.substring(0, 3).toUpperCase();
 
@@ -51,9 +51,9 @@ function generateKeyPlays(opponent: string, fmuScore: number, oppScore: number):
     const seconds = seed() % 60;
     const time = `${minutesLeft}:${seconds.toString().padStart(2, '0')}`;
     const isFmu = seed() % 2 === 0;
-    const names = isFmu ? FMU_NAMES : OPP_NAMES;
+    const names = isFmu ? KaNeXT_NAMES : OPP_NAMES;
     const name = names[seed() % names.length];
-    const teamLabel = isFmu ? 'FMU' : oppAbbr;
+    const teamLabel = isFmu ? 'KaNeXT' : oppAbbr;
 
     const playType = seed() % 6;
     let headline: string;
@@ -113,9 +113,9 @@ function generateKeyPlays(opponent: string, fmuScore: number, oppScore: number):
     const seconds = seed() % 60;
     const time = `${minutesLeft}:${seconds.toString().padStart(2, '0')}`;
     const isFmu = seed() % 2 === 0;
-    const names = isFmu ? FMU_NAMES : OPP_NAMES;
+    const names = isFmu ? KaNeXT_NAMES : OPP_NAMES;
     const name = names[seed() % names.length];
-    const teamLabel = isFmu ? 'FMU' : oppAbbr;
+    const teamLabel = isFmu ? 'KaNeXT' : oppAbbr;
 
     const playType = seed() % 7;
     let headline: string;
@@ -185,7 +185,7 @@ export default function KeyPlaysScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
 
-  const game = (FMU_GAMES_BY_ID as Record<string, { opponent: string; date: string; location: string; status: GameStatus; score?: string }>)[gameId ?? '']
+  const game = (KaNeXT_GAMES_BY_ID as Record<string, { opponent: string; date: string; location: string; status: GameStatus; score?: string }>)[gameId ?? '']
     ?? { opponent: 'Unknown', date: '—', location: '—', status: 'upcoming' as GameStatus };
 
   const opponentAbbr = game.opponent.substring(0, 3).toUpperCase();
@@ -232,7 +232,7 @@ export default function KeyPlaysScreen() {
           </View>
           <View style={[styles.scoreboardSide, { flexDirection: 'row-reverse' }]}>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>FMU</Text>
+              <Text style={[styles.scoreboardAbbr, { color: colors.text }]}>KXT</Text>
               <Text style={[styles.scoreboardRecord, { color: colors.textTertiary }]}>{FMU_RECORD.overall}</Text>
             </View>
             <View style={[styles.scoreboardIcon, { backgroundColor: colors.text + '15' }]}>

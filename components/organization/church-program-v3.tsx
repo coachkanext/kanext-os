@@ -1,5 +1,5 @@
 /**
- * Church Program V3 — ICCLA · Senior Pastor
+ * Church Program V3 — KaNeXT Church · Senior Pastor
  * ViewBar: Identity | Ministries | Operations
  * Self-contained with inline mock data.
  */
@@ -37,13 +37,13 @@ const VIEWS: { id: ViewId; label: string }[] = [
 // =============================================================================
 
 const CHURCH_IDENTITY = {
-  name: 'International Christian Center Los Angeles',
-  abbreviation: 'ICCLA',
+  name: 'KaNeXT Church',
+  abbreviation: 'KaNeXT Church',
   mission: 'Raising a generation of leaders who will transform the world for Christ',
   denomination: 'Non-denominational',
   founded: '2015',
-  location: 'Los Angeles, CA',
-  seniorPastor: 'Dr. Oladipo Kalejaiye',
+  location: 'Nashville, TN',
+  seniorPastor: 'Dr. Oladipo Carter',
   services: [
     { day: 'Sunday', time: '10:00 AM', type: 'Morning Service' },
     { day: 'Sunday', time: '6:00 PM', type: 'Evening Service' },
@@ -68,11 +68,11 @@ const MINISTRIES: Ministry[] = [
   { id: 'm2', name: 'Sheepfold', category: 'Children', memberCount: 30, leader: 'Sis. Funke Balogun', schedule: 'Sundays 10:00 AM', status: 'Active', description: 'Children\'s church and education' },
   { id: 'm3', name: 'Fresh Fire', category: 'Teens', memberCount: 25, leader: 'Pastor David Akinola', schedule: 'Fridays 6:00 PM', status: 'Active', description: 'Teen youth group and mentorship' },
   { id: 'm4', name: 'Rooted', category: 'Discipleship', memberCount: 60, leader: 'Elder Ruth Adeyemi', schedule: 'Wednesdays', status: 'Active', description: 'Foundational discipleship program' },
-  { id: 'm5', name: 'Connect Groups', category: 'Small Groups', memberCount: 8, leader: 'Pastor Grace Kalejaiye', schedule: 'Various', status: 'Active', description: '8 home-based small groups across LA' },
+  { id: 'm5', name: 'Connect Groups', category: 'Small Groups', memberCount: 8, leader: 'Pastor Grace Carter', schedule: 'Various', status: 'Active', description: '8 home-based small groups across LA' },
   { id: 'm6', name: 'Vineyard Voices', category: 'Music/Worship', memberCount: 20, leader: 'Min. Sarah Okonkwo', schedule: 'Sundays & Rehearsals', status: 'Active', description: 'Worship team and choir' },
   { id: 'm7', name: 'Single Saved Serving', category: 'Singles', memberCount: 35, leader: 'Deacon James Mensah', schedule: 'Monthly gatherings', status: 'Active', description: 'Singles fellowship and service' },
   { id: 'm8', name: 'The Harvesters', category: 'Evangelism', memberCount: 15, leader: 'Bro. Michael Osei', schedule: 'Saturdays', status: 'Seasonal', description: 'Street evangelism and community outreach' },
-  { id: 'm9', name: 'Hotline to Heaven', category: 'Radio', memberCount: 0, leader: 'Dr. Oladipo Kalejaiye', schedule: 'Weekly broadcast', status: 'Active', description: 'Radio ministry and podcast' },
+  { id: 'm9', name: 'Hotline to Heaven', category: 'Radio', memberCount: 0, leader: 'Dr. Oladipo Carter', schedule: 'Weekly broadcast', status: 'Active', description: 'Radio ministry and podcast' },
 ];
 
 interface Task {

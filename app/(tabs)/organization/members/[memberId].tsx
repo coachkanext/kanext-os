@@ -18,7 +18,7 @@ import {
   getFacultyById,
   getDepartmentById,
   getFacultyRoleLabel,
-  SDCC_ORGANIZATION,
+  KaNeXT University_ORGANIZATION,
 } from '@/data/mock-education';
 import type { FacultyMember, Department } from '@/types';
 
@@ -163,7 +163,7 @@ export default function MemberProfileScreen() {
           <InfoCard
             icon="building.2.fill"
             label="Institution"
-            value={SDCC_ORGANIZATION.name}
+            value={KaNeXT University_ORGANIZATION.name}
             colors={colors}
             modeColor={modeColor}
           />

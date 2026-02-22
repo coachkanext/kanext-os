@@ -61,7 +61,7 @@ export interface ComplianceSnapshot {
 }
 
 // =============================================================================
-// SPORTS MODE — FMU Basketball (NAIA)
+// SPORTS MODE — KaNeXT Basketball (NAIA)
 // =============================================================================
 
 const sportsPolicies: CompliancePolicy[] = [
@@ -75,7 +75,7 @@ const sportsPolicies: CompliancePolicy[] = [
 
 const sportsAudits: ComplianceAudit[] = [
   { id: 'sp-aud-001', title: 'NAIA Eligibility Review — Spring 2026', auditor: 'NAIA Compliance Office', date: '2026-03-15', status: 'scheduled', findings: 0, criticalFindings: 0 },
-  { id: 'sp-aud-002', title: 'Title IX Program Review', auditor: 'FMU Office of Equity', date: '2026-01-20', status: 'passed', findings: 2, criticalFindings: 0 },
+  { id: 'sp-aud-002', title: 'Title IX Program Review', auditor: 'KaNeXT Office of Equity', date: '2026-01-20', status: 'passed', findings: 2, criticalFindings: 0 },
   { id: 'sp-aud-003', title: 'Financial Aid Audit — FY2025', auditor: 'External Auditor — Deloitte', date: '2025-12-10', status: 'passed', findings: 1, criticalFindings: 0 },
 ];
 
@@ -100,7 +100,7 @@ const sportsSnapshot: ComplianceSnapshot = {
 };
 
 // =============================================================================
-// CHURCH MODE — International Christian Center
+// CHURCH MODE — KaNeXT Church
 // =============================================================================
 
 const churchPolicies: CompliancePolicy[] = [
@@ -135,7 +135,7 @@ const churchSnapshot: ComplianceSnapshot = {
 };
 
 // =============================================================================
-// EDUCATION MODE — San Diego Christian College
+// EDUCATION MODE — KaNeXT University
 // =============================================================================
 
 const educationPolicies: CompliancePolicy[] = [

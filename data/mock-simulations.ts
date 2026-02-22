@@ -1,6 +1,6 @@
 /**
  * Mock data for simulation results — v2.
- * Expanded to cover 9 sim types with FMU data.
+ * Expanded to cover 9 sim types with KaNeXT data.
  * All original exports preserved for backward compatibility.
  */
 
@@ -13,13 +13,13 @@ import type {
 import type { SimType, SimTypeCard, SimRun, ConfidenceGate } from '@/components/simulation/simulation-types';
 
 // =============================================================================
-// PLAYER IMPACT DATA (FMU roster)
+// PLAYER IMPACT DATA (KaNeXT roster)
 // =============================================================================
 
 const VARSITY_PLAYERS: PlayerImpact[] = [
   {
     playerId: 'player-williams',
-    playerName: 'Brandon Williams',
+    playerName: 'Marcus Reed',
     position: 'PG',
     projectedPoints: 18.5,
     projectedRebounds: 3.2,
@@ -29,7 +29,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   },
   {
     playerId: 'player-kalejaiye',
-    playerName: 'Laolu Kalejaiye',
+    playerName: 'Devon Carter',
     position: 'B',
     projectedPoints: 14.0,
     projectedRebounds: 10.2,
@@ -49,7 +49,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   },
   {
     playerId: 'player-hernandez',
-    playerName: 'Adrian Hernandez',
+    playerName: 'Jordan Blake',
     position: 'CG',
     projectedPoints: 13.2,
     projectedRebounds: 3.5,
@@ -59,7 +59,7 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
   },
   {
     playerId: 'player-chtelan',
-    playerName: 'Nathan Chtelan',
+    playerName: 'Tyler Quinn',
     position: 'W',
     projectedPoints: 8.0,
     projectedRebounds: 4.5,
@@ -70,15 +70,15 @@ const VARSITY_PLAYERS: PlayerImpact[] = [
 ];
 
 // =============================================================================
-// SAMPLE SIMULATIONS (FMU data)
+// SAMPLE SIMULATIONS (KaNeXT data)
 // =============================================================================
 
 export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-1',
     type: 'single_game',
-    matchupText: 'FMU vs Webber International',
-    homeTeam: 'Florida Memorial',
+    matchupText: 'KaNeXT vs Webber International',
+    homeTeam: 'KaNeXT Sports',
     awayTeam: 'Webber International',
     rosterUsed: 'official',
     timestamp: new Date('2026-02-19T14:30:00'),
@@ -90,9 +90,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     volatility: 'medium',
     drivers: [
       'Home court advantage (+3.2 pts expected)',
-      'FMU superior in perimeter shooting (41% vs 35%)',
+      'KaNeXT superior in perimeter shooting (41% vs 35%)',
       'Webber strength in paint scoring could narrow gap',
-      'FMU 8-2 in last 10 home games',
+      'KaNeXT 8-2 in last 10 home games',
     ],
     playerImpact: VARSITY_PLAYERS,
     boxScoreProjection: {
@@ -113,9 +113,9 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-2',
     type: 'single_game',
-    matchupText: 'FMU @ Southeastern',
+    matchupText: 'KaNeXT @ Southeastern',
     homeTeam: 'Southeastern University',
-    awayTeam: 'Florida Memorial',
+    awayTeam: 'KaNeXT Sports',
     rosterUsed: 'official',
     timestamp: new Date('2026-02-19T15:00:00'),
     winProbability: 48,
@@ -127,7 +127,7 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
     drivers: [
       'Road game disadvantage (-3.8 pts expected)',
       'Southeastern on 5-game home win streak',
-      'FMU depth advantage could be factor in 2nd half',
+      'KaNeXT depth advantage could be factor in 2nd half',
       'Matchup concerns at the 4 position',
     ],
     playerImpact: VARSITY_PLAYERS.map((p) => ({
@@ -139,8 +139,8 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
   {
     id: 'sim-3',
     type: 'single_game',
-    matchupText: 'FMU vs Warner',
-    homeTeam: 'Florida Memorial',
+    matchupText: 'KaNeXT vs Warner',
+    homeTeam: 'KaNeXT Sports',
     awayTeam: 'Warner University',
     rosterUsed: 'sandbox',
     timestamp: new Date('2026-02-19T15:30:00'),
@@ -154,7 +154,7 @@ export const SAMPLE_SIMULATIONS: SimulationResult[] = [
       'Sandbox roster includes Jaylen Brooks (projected +5.2 pts)',
       'Enhanced perimeter defense with lineup change',
       'Warner struggles on the road (4-6 away)',
-      'FMU motion offense matches well against zone',
+      'KaNeXT motion offense matches well against zone',
     ],
     playerImpact: [
       {
@@ -215,7 +215,7 @@ export const RECENT_SIM_RUNS: SimRun[] = [
   {
     id: 'run-1',
     simType: 'game',
-    title: 'FMU vs Webber — Base',
+    title: 'KaNeXT vs Webber — Base',
     timestamp: new Date('2026-02-18T18:45:00'),
     winProbability: 64,
     projectedScore: { home: 78, away: 72 },
@@ -237,7 +237,7 @@ export const RECENT_SIM_RUNS: SimRun[] = [
   {
     id: 'run-2',
     simType: 'game',
-    title: 'FMU @ Southeastern',
+    title: 'KaNeXT @ Southeastern',
     timestamp: new Date('2026-02-18T19:10:00'),
     winProbability: 48,
     projectedScore: { home: 74, away: 71 },
@@ -253,7 +253,7 @@ export const RECENT_SIM_RUNS: SimRun[] = [
         { name: 'Depth factor', impact: 'positive', weight: 0.25 },
       ],
     },
-    drivers: ['Road disadvantage -3.8', 'SEU home streak', 'FMU depth 2nd half'],
+    drivers: ['Road disadvantage -3.8', 'SEU home streak', 'KaNeXT depth 2nd half'],
     isSaved: true,
   },
   {

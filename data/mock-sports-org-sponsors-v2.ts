@@ -1,6 +1,6 @@
 /**
  * Sports Organization Sponsors V2 — Mock Data & Types
- * FMU Men's Basketball program sponsor management: sponsors, pipeline,
+ * KaNeXT Men's Basketball program sponsor management: sponsors, pipeline,
  * deliverables, proof tracking, invoicing, and renewals.
  *
  * $178K total committed, $119.25K collected across 9 sponsors.
@@ -320,7 +320,7 @@ const sponsors: Sponsor[] = [
     name: 'MidState Credit Union',
     tier: 'title',
     primaryContact: 'David Reynolds',
-    ownerInProgram: 'Sammy Kalejaiye',
+    ownerInProgram: 'Alex Morgan',
     contractStart: '2025-08-01',
     contractEnd: '2026-05-31',
     status: 'healthy',
@@ -332,7 +332,7 @@ const sponsors: Sponsor[] = [
     name: 'Palmetto Health Systems',
     tier: 'gold',
     primaryContact: 'Dr. Lisa Chen',
-    ownerInProgram: 'Sammy Kalejaiye',
+    ownerInProgram: 'Alex Morgan',
     contractStart: '2025-08-01',
     contractEnd: '2026-05-31',
     status: 'healthy',
@@ -387,13 +387,13 @@ const sponsors: Sponsor[] = [
     committedAmount: 30000,
     collectedAmount: 10000,
   },
-  // ── FMU Lions Demo Seed Sponsors ────────────────────────────────────────
+  // ── KaNeXT Demo Seed Sponsors ────────────────────────────────────────
   {
     id: 'sp-007',
     name: 'Miami Gardens Auto Group',
     tier: 'title',
     primaryContact: 'Raymond Desmond',
-    ownerInProgram: 'Sammy Kalejaiye',
+    ownerInProgram: 'Alex Morgan',
     contractStart: '2025-09-01',
     contractEnd: '2026-08-31',
     status: 'healthy',
@@ -406,7 +406,7 @@ const sponsors: Sponsor[] = [
     name: 'James & Patricia Wilson Foundation',
     tier: 'gold',
     primaryContact: 'Patricia Wilson',
-    ownerInProgram: 'Sammy Kalejaiye',
+    ownerInProgram: 'Alex Morgan',
     contractStart: '2025-07-01',
     contractEnd: '2026-06-30',
     status: 'healthy',
@@ -504,7 +504,7 @@ const pipelineItems: SponsorPipelineItem[] = [
     daysInStage: 45,
     priority: 'low',
   },
-  // ── FMU Lions Demo Seed Pipeline ──────────────────────────────────────
+  // ── KaNeXT Demo Seed Pipeline ──────────────────────────────────────
   {
     id: 'pl-011',
     name: 'Miami Gardens Auto Group',
@@ -550,7 +550,7 @@ const deliverables: Deliverable[] = [
     sponsorName: 'MidState Credit Union',
     type: 'signage',
     dueDate: '2026-02-20',
-    eventLink: 'FMU vs. Hampton — ICCLA Conference',
+    eventLink: 'KaNeXT vs. Hampton — KaNeXT Church Conference',
     owner: 'Marcus Reed',
     proofRequired: true,
     status: 'in-progress',
@@ -572,7 +572,7 @@ const deliverables: Deliverable[] = [
     sponsorName: 'QuickFuel Gas & Convenience',
     type: 'signage',
     dueDate: '2026-02-20',
-    eventLink: 'FMU vs. Hampton — ICCLA Conference',
+    eventLink: 'KaNeXT vs. Hampton — KaNeXT Church Conference',
     owner: 'Marcus Reed',
     proofRequired: true,
     status: 'blocked',
@@ -583,7 +583,7 @@ const deliverables: Deliverable[] = [
     sponsorName: 'QuickFuel Gas & Convenience',
     type: 'in-game-read',
     dueDate: '2026-02-20',
-    eventLink: 'FMU vs. Hampton — ICCLA Conference',
+    eventLink: 'KaNeXT vs. Hampton — KaNeXT Church Conference',
     owner: 'Game Operations',
     proofRequired: false,
     status: 'not-started',
@@ -628,7 +628,7 @@ const deliverables: Deliverable[] = [
     sponsorName: 'Miami Gardens Auto Group',
     type: 'signage',
     dueDate: '2025-11-15',
-    eventLink: 'FMU vs. Webber International — Home Opener',
+    eventLink: 'KaNeXT vs. Webber International — Home Opener',
     owner: 'Marcus Reed',
     proofRequired: true,
     status: 'complete',
@@ -662,8 +662,8 @@ const deliverables: Deliverable[] = [
     sponsorName: 'James & Patricia Wilson Foundation',
     type: 'event-activation',
     dueDate: '2025-10-20',
-    eventLink: 'FMU Scholar-Athlete Award Ceremony',
-    owner: 'Sammy Kalejaiye',
+    eventLink: 'KaNeXT Scholar-Athlete Award Ceremony',
+    owner: 'Alex Morgan',
     proofRequired: true,
     status: 'complete',
   },
@@ -714,7 +714,7 @@ const proofItems: ProofItem[] = [
     type: 'photo',
     deliverableName: 'Jersey Patch — MidState Credit Union',
     timestamp: '2025-10-15',
-    reviewer: 'Sammy Kalejaiye',
+    reviewer: 'Alex Morgan',
     status: 'accepted',
   },
   {
@@ -769,7 +769,7 @@ const proofItems: ProofItem[] = [
     type: 'photo',
     deliverableName: 'Courtside Banner — Miami Gardens Auto Group',
     timestamp: '2025-11-15',
-    reviewer: 'Sammy Kalejaiye',
+    reviewer: 'Alex Morgan',
     status: 'accepted',
   },
   {
@@ -778,7 +778,7 @@ const proofItems: ProofItem[] = [
     type: 'link',
     deliverableName: 'Program Ad — Miami Gardens Auto Group',
     timestamp: '2025-12-02',
-    reviewer: 'Sammy Kalejaiye',
+    reviewer: 'Alex Morgan',
     status: 'accepted',
   },
   // ── Wilson Foundation proof ───────────────────────────────────────────
@@ -788,7 +788,7 @@ const proofItems: ProofItem[] = [
     type: 'photo',
     deliverableName: 'Scholarship Award Ceremony — Wilson Foundation',
     timestamp: '2025-10-20',
-    reviewer: 'Sammy Kalejaiye',
+    reviewer: 'Alex Morgan',
     status: 'accepted',
   },
   // ── ProShot Athletics proof ───────────────────────────────────────────
@@ -968,7 +968,7 @@ const renewalItems: RenewalItem[] = [
     riskLevel: 'medium',
     recommendedAction: 'Propose upgrade to Silver tier with additional social media deliverables.',
   },
-  // ── FMU Lions Demo Seed Renewals ──────────────────────────────────────
+  // ── KaNeXT Demo Seed Renewals ──────────────────────────────────────
   {
     id: 'ren-005',
     sponsorId: 'sp-007',

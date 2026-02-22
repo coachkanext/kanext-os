@@ -587,7 +587,7 @@ const OPS_TEAMS: OpsTeam[] = [
         teamId: 'team-002',
         role: 'Drummer',
         serviceId: 'svc-002',
-        assignee: 'Marcus Thompson',
+        assignee: 'Alex Morgan',
         status: 'filled',
         critical: false,
       },

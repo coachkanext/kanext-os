@@ -8,7 +8,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { FMU_GAMES, type FMUGame } from '@/data/fmu';
+import { KaNeXT_GAMES, type KaNeXTGame } from '@/data/fmu';
 import { SEAT_TIERS, buildCommerceChain, type SeatTier, type PaymentChain } from '@/data/commerce-data';
 import { Spacing } from '@/constants/theme';
 
@@ -27,7 +27,7 @@ export function TicketsSheet({ visible, onClose, colors }: Props) {
   const [selectedTier, setSelectedTier] = useState<SeatTier | null>(null);
   const [chain, setChain] = useState<PaymentChain | null>(null);
 
-  const upcomingHomeGames = FMU_GAMES.filter(g => g.location === 'Home' && g.status === 'upcoming');
+  const upcomingHomeGames = KaNeXT_GAMES.filter(g => g.location === 'Home' && g.status === 'upcoming');
 
   const handleClose = useCallback(() => {
     setStage('browse');
@@ -38,7 +38,7 @@ export function TicketsSheet({ visible, onClose, colors }: Props) {
     onClose();
   }, [onClose]);
 
-  const handleSelectTier = useCallback((game: FMUGame, tier: SeatTier) => {
+  const handleSelectTier = useCallback((game: KaNeXTGame, tier: SeatTier) => {
     setSelectedGame(game);
     setSelectedTier(tier);
     setStage('confirm');

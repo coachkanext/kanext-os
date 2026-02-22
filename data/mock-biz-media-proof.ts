@@ -5,7 +5,7 @@
  * Press, Rights, Share Links.
  *
  * All data references KaNeXT entities:
- *   Sammy Kalejaiye, FMU, ICCLA, K-1 Racing,
+ *   Alex Morgan, KaNeXT, KaNeXT Church, K-1 Racing,
  *   Investor demos, brand assets, PBD/Valuetainment mentions.
  */
 
@@ -138,23 +138,23 @@ export const MEDIA_OVERVIEW: MediaOverviewStats = {
 export const MEDIA_LIBRARY: MediaAsset[] = [
   {
     id: 'ma-1',
-    title: 'FMU vs Tuskegee — Full Game Broadcast',
+    title: 'KaNeXT vs Tuskegee — Full Game Broadcast',
     type: 'video',
     category: 'Game Footage',
     size: '4.2 GB',
     uploadedAt: 'Feb 12, 2026',
-    uploadedBy: 'Sammy Kalejaiye',
-    tags: ['FMU', 'basketball', 'broadcast', 'proof'],
+    uploadedBy: 'Alex Morgan',
+    tags: ['KaNeXT', 'basketball', 'broadcast', 'proof'],
   },
   {
     id: 'ma-2',
-    title: 'ICCLA Sunday Worship — Multi-Cam Capture',
+    title: 'KaNeXT Church Sunday Worship — Multi-Cam Capture',
     type: 'video',
     category: 'Worship Content',
     size: '3.8 GB',
     uploadedAt: 'Feb 9, 2026',
     uploadedBy: 'David Okonkwo',
-    tags: ['ICCLA', 'worship', 'multi-cam', 'live'],
+    tags: ['KaNeXT Church', 'worship', 'multi-cam', 'live'],
   },
   {
     id: 'ma-3',
@@ -173,7 +173,7 @@ export const MEDIA_LIBRARY: MediaAsset[] = [
     category: 'Investor Materials',
     size: '890 MB',
     uploadedAt: 'Feb 6, 2026',
-    uploadedBy: 'Sammy Kalejaiye',
+    uploadedBy: 'Alex Morgan',
     tags: ['demo', 'investor', 'product', 'walkthrough'],
   },
   {
@@ -193,18 +193,18 @@ export const MEDIA_LIBRARY: MediaAsset[] = [
     category: 'Investor Materials',
     size: '18 MB',
     uploadedAt: 'Feb 1, 2026',
-    uploadedBy: 'Sammy Kalejaiye',
+    uploadedBy: 'Alex Morgan',
     tags: ['pitch', 'investor', 'Series A', 'deck'],
   },
   {
     id: 'ma-7',
-    title: 'FMU Player Headshots — 2025-26 Roster',
+    title: 'KaNeXT Player Headshots — 2025-26 Roster',
     type: 'image',
     category: 'Game Footage',
     size: '156 MB',
     uploadedAt: 'Jan 15, 2026',
     uploadedBy: 'Marcus Chen',
-    tags: ['FMU', 'headshots', 'roster', 'photo'],
+    tags: ['KaNeXT', 'headshots', 'roster', 'photo'],
   },
   {
     id: 'ma-8',
@@ -227,7 +227,7 @@ export const PROOF_PACKS: ProofPack[] = [
     id: 'pp-1',
     title: 'Investor Proof Pack — Q1 2026',
     description:
-      'Curated media bundle for investor meetings: product demo, FMU highlights, traction metrics deck, and founder walkthrough video.',
+      'Curated media bundle for investor meetings: product demo, KaNeXT highlights, traction metrics deck, and founder walkthrough video.',
     assetCount: 12,
     status: 'published',
     createdAt: 'Feb 3, 2026',
@@ -237,7 +237,7 @@ export const PROOF_PACKS: ProofPack[] = [
     id: 'pp-2',
     title: 'Board Meeting Media Pack',
     description:
-      'Board-ready evidence pack: quarterly KPIs, FMU partnership proof, ICCLA pilot footage, and compliance summary slides.',
+      'Board-ready evidence pack: quarterly KPIs, KaNeXT partnership proof, KaNeXT Church pilot footage, and compliance summary slides.',
     assetCount: 8,
     status: 'published',
     createdAt: 'Jan 22, 2026',
@@ -272,9 +272,9 @@ export const PROOF_PACKS: ProofPack[] = [
 export const PLAYLISTS: Playlist[] = [
   {
     id: 'pl-1',
-    title: 'FMU Season Highlights 2025-26',
+    title: 'KaNeXT Season Highlights 2025-26',
     description:
-      'Complete season highlight package — top plays, broadcast clips, and post-game interviews from every FMU conference game.',
+      'Complete season highlight package — top plays, broadcast clips, and post-game interviews from every KaNeXT conference game.',
     itemCount: 22,
     duration: '1h 14m',
     category: 'Sports',
@@ -302,9 +302,9 @@ export const PLAYLISTS: Playlist[] = [
   },
   {
     id: 'pl-4',
-    title: 'ICCLA Worship Archives',
+    title: 'KaNeXT Church Worship Archives',
     description:
-      'Multi-cam worship recordings from ICCLA Sunday services, campus events, and special programs.',
+      'Multi-cam worship recordings from KaNeXT Church Sunday services, campus events, and special programs.',
     itemCount: 18,
     duration: '3h 30m',
     category: 'Church',
@@ -319,13 +319,13 @@ export const PLAYLISTS: Playlist[] = [
 export const CASE_STUDIES: CaseStudy[] = [
   {
     id: 'cs-1',
-    title: 'FMU Athletics — Transforming HBCU Game Day',
-    client: 'Florida Memorial University',
+    title: 'KaNeXT Athletics — Transforming HBCU Game Day',
+    client: 'KaNeXT Sports',
     category: 'Sports',
     status: 'published',
     publishedAt: 'Jan 30, 2026',
     summary:
-      'How KaNeXT OS powered FMU basketball with real-time analytics, automated highlight generation, and fan engagement tools — delivering measurable media value growth in the first season.',
+      'How KaNeXT OS powered KaNeXT basketball with real-time analytics, automated highlight generation, and fan engagement tools — delivering measurable media value growth in the first season.',
     metrics: [
       { label: 'Media Value Y1', value: '$53M\u2013$157M' },
       { label: 'Highlight Clips Generated', value: '1,240+' },
@@ -334,13 +334,13 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: 'cs-2',
-    title: 'ICCLA Campus — Multi-Site Worship Technology',
+    title: 'KaNeXT Church Campus — Multi-Site Worship Technology',
     client: 'Int\u2019l Church of Christ LA',
     category: 'Church',
     status: 'published',
     publishedAt: 'Feb 5, 2026',
     summary:
-      'Deploying KaNeXT OS across 3 ICCLA campuses for unified multi-cam worship capture, sermon archival, and congregation engagement — reducing production overhead by 60%.',
+      'Deploying KaNeXT OS across 3 KaNeXT Church campuses for unified multi-cam worship capture, sermon archival, and congregation engagement — reducing production overhead by 60%.',
     metrics: [
       { label: 'Campuses Connected', value: '3' },
       { label: 'Production Cost Savings', value: '60%' },
@@ -379,7 +379,7 @@ export const PRESS_ITEMS: PressItem[] = [
   },
   {
     id: 'pr-2',
-    title: 'Sammy Kalejaiye on Building an OS for Organizations',
+    title: 'Alex Morgan on Building an OS for Organizations',
     outlet: 'Valuetainment',
     date: 'Feb 2, 2026',
     type: 'podcast',
@@ -397,7 +397,7 @@ export const PRESS_ITEMS: PressItem[] = [
   },
   {
     id: 'pr-4',
-    title: 'FMU Partners with KaNeXT for 2025-26 Basketball Season',
+    title: 'KaNeXT Partners with KaNeXT for 2025-26 Basketball Season',
     outlet: 'HBCU Gameday',
     date: 'Dec 12, 2025',
     type: 'article',
@@ -405,7 +405,7 @@ export const PRESS_ITEMS: PressItem[] = [
   },
   {
     id: 'pr-5',
-    title: 'Sammy Kalejaiye Interview — Founder Story & Vision',
+    title: 'Alex Morgan Interview — Founder Story & Vision',
     outlet: 'The Hustle Daily',
     date: 'Feb 10, 2026',
     type: 'interview',
@@ -421,16 +421,16 @@ export const PRESS_ITEMS: PressItem[] = [
 export const RIGHTS_ITEMS: RightsItem[] = [
   {
     id: 'ri-1',
-    assetTitle: 'FMU Game Broadcast Footage — 2025-26 Season',
+    assetTitle: 'KaNeXT Game Broadcast Footage — 2025-26 Season',
     licenseType: 'Exclusive Media Rights',
-    holder: 'Florida Memorial University',
+    holder: 'KaNeXT Sports',
     expiryDate: 'Aug 31, 2026',
     status: 'active',
     territory: 'United States',
   },
   {
     id: 'ri-2',
-    assetTitle: 'ICCLA Worship Recordings — All Campuses',
+    assetTitle: 'KaNeXT Church Worship Recordings — All Campuses',
     licenseType: 'Non-Exclusive License',
     holder: 'Int\u2019l Church of Christ LA',
     expiryDate: 'Dec 31, 2026',
@@ -474,7 +474,7 @@ export const SHARE_LINKS: ShareLink[] = [
   },
   {
     id: 'sl-2',
-    title: 'FMU Highlight Reel — Public',
+    title: 'KaNeXT Highlight Reel — Public',
     url: 'https://share.kanext.io/fmu-highlights',
     targetAudience: 'Public',
     expiresAt: 'Jun 30, 2026',

@@ -78,7 +78,7 @@ export const FILM_TAGS: FilmTag[] = [
 ];
 
 export const GAME_FILMS: GameFilm[] = [
-  // ── FMU Lions — Feb 2026 Sun Conference games ─────────────────────────
+  // ── KaNeXT — Feb 2026 KaNeXT Conference games ─────────────────────────
   {
     id: 'gf-1',
     title: 'vs St. Thomas',
@@ -334,13 +334,13 @@ export interface StoryItem {
 export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
   {
     id: 'vfp-1',
-    title: 'Lions Win! FMU 81, St. Thomas 73',
+    title: 'Lions Win! KaNeXT 81, St. Thomas 73',
     caption: 'Highlights from tonight\'s conference win at Lehman Center. The Lions forced 22 turnovers and shot 48% from the field. #FMULions #SunConference',
     date: '2026-02-15',
     duration: 145,
     thumbnailColor: '#1E3A5F',
     category: 'highlight',
-    author: 'FMU Athletics',
+    author: 'KaNeXT Athletics',
     viewCount: 1240,
     likeCount: 187,
     data_source: 'demo_seed',
@@ -348,12 +348,12 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
   {
     id: 'vfp-2',
     title: 'Practice Intensity — Conference Tournament Prep',
-    caption: 'The Lions are locked in. Coach Kalejaiye running the squad through defensive rotations ahead of the tournament push. #WorkHard #FMUBasketball',
+    caption: 'The Lions are locked in. Coach Carter running the squad through defensive rotations ahead of the tournament push. #WorkHard #FMUBasketball',
     date: '2026-02-13',
     duration: 92,
     thumbnailColor: '#2E4A2E',
     category: 'practice',
-    author: 'FMU Basketball',
+    author: 'KaNeXT Basketball',
     viewCount: 680,
     likeCount: 94,
     data_source: 'demo_seed',
@@ -361,12 +361,12 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
   {
     id: 'vfp-3',
     title: 'Team Meal — Bonding Off the Court',
-    caption: 'FMU MBB team dinner in Miami Gardens before the homestretch. These moments matter as much as the game reps. #FMUFamily #LionPride',
+    caption: 'KaNeXT MBB team dinner in Miami Gardens before the homestretch. These moments matter as much as the game reps. #FMUFamily #LionPride',
     date: '2026-02-10',
     duration: 65,
     thumbnailColor: '#F59E0B',
     category: 'team-content',
-    author: 'FMU Basketball',
+    author: 'KaNeXT Basketball',
     viewCount: 520,
     likeCount: 112,
     data_source: 'demo_seed',
@@ -454,7 +454,7 @@ export const SERMON_RECORDINGS: SermonRecording[] = [
   {
     id: 'sr-1',
     title: 'Walking in Purpose',
-    speaker: 'Pastor Dipo Kalejaiye',
+    speaker: 'Pastor Dipo Carter',
     date: '2025-02-09',
     duration: 3600,
     thumbnailColor: '#5B2C6F',
@@ -466,7 +466,7 @@ export const SERMON_RECORDINGS: SermonRecording[] = [
   {
     id: 'sr-2',
     title: 'The Power of Agreement',
-    speaker: 'Pastor Dipo Kalejaiye',
+    speaker: 'Pastor Dipo Carter',
     date: '2025-02-02',
     duration: 3300,
     thumbnailColor: '#1A5276',
@@ -478,7 +478,7 @@ export const SERMON_RECORDINGS: SermonRecording[] = [
   {
     id: 'sr-3',
     title: 'Positioned for Breakthrough',
-    speaker: 'Pastor Dipo Kalejaiye',
+    speaker: 'Pastor Dipo Carter',
     date: '2025-01-26',
     duration: 3900,
     thumbnailColor: '#7B241C',
@@ -490,7 +490,7 @@ export const SERMON_RECORDINGS: SermonRecording[] = [
   {
     id: 'sr-4',
     title: 'Renewing Your Mind',
-    speaker: 'Pastor Dipo Kalejaiye',
+    speaker: 'Pastor Dipo Carter',
     date: '2025-01-19',
     duration: 3450,
     thumbnailColor: '#196F3D',
@@ -502,7 +502,7 @@ export const SERMON_RECORDINGS: SermonRecording[] = [
   {
     id: 'sr-5',
     title: 'Generational Blessings',
-    speaker: 'Pastor Dipo Kalejaiye',
+    speaker: 'Pastor Dipo Carter',
     date: '2025-01-12',
     duration: 3150,
     thumbnailColor: '#7D6608',
@@ -541,7 +541,7 @@ export const TEACHING_SESSIONS: TeachingSession[] = [
   {
     id: 'ts-3',
     title: 'Leadership Development',
-    facilitator: 'Pastor Dipo Kalejaiye',
+    facilitator: 'Pastor Dipo Carter',
     date: '2025-01-22',
     duration: 2400,
     thumbnailColor: '#1E8449',
@@ -553,7 +553,7 @@ export const TEACHING_SESSIONS: TeachingSession[] = [
   {
     id: 'ts-4',
     title: 'Marriage Enrichment Session',
-    facilitator: 'Pastor & Mrs. Kalejaiye',
+    facilitator: 'Pastor & Mrs. Carter',
     date: '2025-01-15',
     duration: 3600,
     thumbnailColor: '#922B21',
@@ -675,7 +675,7 @@ export const LECTURE_RECORDINGS: LectureRecording[] = [
     id: 'lr-4',
     title: 'Principles of Marketing',
     courseCode: 'BUS 240',
-    professor: 'Dr. Marcus Thompson',
+    professor: 'Dr. Alex Morgan',
     date: '2025-02-03',
     duration: 3900,
     thumbnailColor: '#CA6F1E',

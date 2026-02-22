@@ -429,18 +429,18 @@ interface DocMetadata {
 }
 
 const DOC_METADATA: Record<string, DocMetadata> = {
-  'doc-001': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Confidential', audienceAllowed: 'Retail + Board', expirationDate: 'Jun 30, 2026', verificationStatus: 'Verified', notes: 'Latest investor deck, refreshed quarterly', isCanonical: true },
-  'doc-002': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Public', audienceAllowed: 'All', verificationStatus: 'Verified', isCanonical: true },
-  'doc-003': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Restricted', audienceAllowed: 'Board Only', verificationStatus: 'Verified', notes: 'Updated monthly with actuals', isCanonical: true },
-  'doc-004': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Restricted', audienceAllowed: 'Founder Only', verificationStatus: 'Verified', isCanonical: true },
-  'doc-005': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Confidential', audienceAllowed: 'Board + Legal', verificationStatus: 'Verified', isCanonical: false },
-  'doc-006': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Internal', audienceAllowed: 'Retail + Board', verificationStatus: 'Verified', isCanonical: false },
+  'doc-001': { entityScope: 'KaNeXT Inc.', owner: 'Alex Morgan', sensitivity: 'Confidential', audienceAllowed: 'Retail + Board', expirationDate: 'Jun 30, 2026', verificationStatus: 'Verified', notes: 'Latest investor deck, refreshed quarterly', isCanonical: true },
+  'doc-002': { entityScope: 'KaNeXT Inc.', owner: 'Alex Morgan', sensitivity: 'Public', audienceAllowed: 'All', verificationStatus: 'Verified', isCanonical: true },
+  'doc-003': { entityScope: 'KaNeXT Inc.', owner: 'Alex Morgan', sensitivity: 'Restricted', audienceAllowed: 'Board Only', verificationStatus: 'Verified', notes: 'Updated monthly with actuals', isCanonical: true },
+  'doc-004': { entityScope: 'KaNeXT Inc.', owner: 'Alex Morgan', sensitivity: 'Restricted', audienceAllowed: 'Founder Only', verificationStatus: 'Verified', isCanonical: true },
+  'doc-005': { entityScope: 'KaNeXT Inc.', owner: 'Alex Morgan', sensitivity: 'Confidential', audienceAllowed: 'Board + Legal', verificationStatus: 'Verified', isCanonical: false },
+  'doc-006': { entityScope: 'KaNeXT Inc.', owner: 'Alex Morgan', sensitivity: 'Internal', audienceAllowed: 'Retail + Board', verificationStatus: 'Verified', isCanonical: false },
   'doc-007': { entityScope: 'KaNeXT Inc.', owner: 'Marcus Chen', sensitivity: 'Internal', audienceAllowed: 'Retail + Partners', verificationStatus: 'Verified', isCanonical: false },
-  'doc-008': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Confidential', audienceAllowed: 'Board Only', verificationStatus: 'Verified', isCanonical: true },
+  'doc-008': { entityScope: 'KaNeXT Inc.', owner: 'Alex Morgan', sensitivity: 'Confidential', audienceAllowed: 'Board Only', verificationStatus: 'Verified', isCanonical: true },
   'doc-009': { entityScope: 'KaNeXT Inc.', owner: 'Jordan Hayes', sensitivity: 'Restricted', audienceAllowed: 'Founder Only', verificationStatus: 'Draft', isCanonical: false },
-  'doc-010': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Public', audienceAllowed: 'All', verificationStatus: 'Verified', isCanonical: true },
-  'doc-011': { entityScope: 'FMU Partnership', owner: 'Jordan Hayes', sensitivity: 'Internal', audienceAllowed: 'Retail + Partners', verificationStatus: 'Verified', isCanonical: false },
-  'doc-012': { entityScope: 'KaNeXT Inc.', owner: 'Sammy Kalejaiye', sensitivity: 'Confidential', audienceAllowed: 'Board Only', verificationStatus: 'Outdated', isCanonical: false },
+  'doc-010': { entityScope: 'KaNeXT Inc.', owner: 'Alex Morgan', sensitivity: 'Public', audienceAllowed: 'All', verificationStatus: 'Verified', isCanonical: true },
+  'doc-011': { entityScope: 'KaNeXT Partnership', owner: 'Jordan Hayes', sensitivity: 'Internal', audienceAllowed: 'Retail + Partners', verificationStatus: 'Verified', isCanonical: false },
+  'doc-012': { entityScope: 'KaNeXT Inc.', owner: 'Alex Morgan', sensitivity: 'Confidential', audienceAllowed: 'Board Only', verificationStatus: 'Outdated', isCanonical: false },
 };
 
 function sensitivityColor(sensitivity: string): string {

@@ -192,77 +192,90 @@ def extract_game_log(conn, team_slug: str, division: str | None, *, base_url: st
     soup = BeautifulSoup(r.text, "lxml")
     games = []
 
-    # Find the first table with Date, Opponent, Result/Score columns
+    # Find the table with the MOST box-score links (not the first match,
+    # which on PrestoSports is often a 10-game "recent results" widget).
+    best_table = None
+    best_count = 0
     for table in soup.find_all("table"):
         headers = [th.get_text(strip=True).lower() for th in table.find_all("th")]
         if "date" in headers and "opponent" in headers:
-            for row in table.find_all("tr")[1:]:
-                cells = row.find_all(["td", "th"])
-                if len(cells) < 3:
-                    continue
+            rows = table.find_all("tr")[1:]
+            box_count = sum(
+                1 for row in rows
+                if any('.xml' in a.get('href', '')
+                       for a in row.find_all('a', href=True))
+            )
+            if box_count > best_count:
+                best_count = box_count
+                best_table = table
 
-                cell_texts = [c.get_text(strip=True) for c in cells]
-                date_str = cell_texts[0]
-                opponent_raw = cell_texts[1]
-                result_str = cell_texts[2] if len(cell_texts) > 2 else ""
+    if best_table:
+        for row in best_table.find_all("tr")[1:]:
+            cells = row.find_all(["td", "th"])
+            if len(cells) < 3:
+                continue
 
-                # Skip unplayed games (no result)
-                if not result_str or result_str == "-":
-                    continue
+            cell_texts = [c.get_text(strip=True) for c in cells]
+            date_str = cell_texts[0]
+            opponent_raw = cell_texts[1]
+            result_str = cell_texts[2] if len(cell_texts) > 2 else ""
 
-                # Extract box score link
-                box_link = None
-                for a in row.find_all("a", href=True):
-                    h = a["href"]
-                    if "boxscore" in h.lower() or h.endswith(".xml"):
-                        box_link = h
-                        break
+            # Skip unplayed games (no result)
+            if not result_str or result_str == "-":
+                continue
 
-                if not box_link:
-                    continue
+            # Extract box score link
+            box_link = None
+            for a in row.find_all("a", href=True):
+                h = a["href"]
+                if "boxscore" in h.lower() or h.endswith(".xml"):
+                    box_link = h
+                    break
 
-                # Parse location from opponent text
-                opponent_clean = opponent_raw.strip()
-                if opponent_clean.startswith("at"):
-                    location = "away"
-                    opponent_name = opponent_clean[2:].strip()
-                elif opponent_clean.startswith("vs."):
-                    location = "neutral"
-                    opponent_name = opponent_clean[3:].strip()
-                else:
-                    location = "home"
-                    opponent_name = opponent_clean
+            if not box_link:
+                continue
 
-                # Parse score from result (e.g., "W, 121-81" or "L, 95-94")
-                score_match = re.search(r"(\d+)-(\d+)", result_str)
-                if not score_match:
-                    continue
+            # Parse location from opponent text
+            opponent_clean = opponent_raw.strip()
+            if opponent_clean.startswith("at"):
+                location = "away"
+                opponent_name = opponent_clean[2:].strip()
+            elif opponent_clean.startswith("vs."):
+                location = "neutral"
+                opponent_name = opponent_clean[3:].strip()
+            else:
+                location = "home"
+                opponent_name = opponent_clean
 
-                team_score = int(score_match.group(1))
-                opp_score = int(score_match.group(2))
-                won = result_str.strip().startswith("W")
+            # Parse score from result (e.g., "W, 121-81" or "L, 95-94")
+            score_match = re.search(r"(\d+)-(\d+)", result_str)
+            if not score_match:
+                continue
 
-                # Parse game date
-                game_date = parse_game_date(date_str)
+            team_score = int(score_match.group(1))
+            opp_score = int(score_match.group(2))
+            won = result_str.strip().startswith("W")
 
-                # Build box score URL — relative links like ../boxscores/ID.xml
-                box_url = urljoin(page_url, box_link)
+            # Parse game date
+            game_date = parse_game_date(date_str)
 
-                # Extract game_id from box score filename
-                game_id_match = re.search(r"/boxscores/(.+?)\.xml", box_url)
-                game_id = game_id_match.group(1) if game_id_match else box_link
+            # Build box score URL — relative links like ../boxscores/ID.xml
+            box_url = urljoin(page_url, box_link)
 
-                games.append({
-                    "date": game_date,
-                    "opponent": opponent_name,
-                    "location": location,
-                    "team_score": team_score,
-                    "opp_score": opp_score,
-                    "won": won,
-                    "box_url": box_url,
-                    "game_id": game_id,
-                })
-            break  # Use first matching table
+            # Extract game_id from box score filename
+            game_id_match = re.search(r"/boxscores/(.+?)\.xml", box_url)
+            game_id = game_id_match.group(1) if game_id_match else box_link
+
+            games.append({
+                "date": game_date,
+                "opponent": opponent_name,
+                "location": location,
+                "team_score": team_score,
+                "opp_score": opp_score,
+                "won": won,
+                "box_url": box_url,
+                "game_id": game_id,
+            })
 
     return games
 

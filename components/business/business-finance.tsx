@@ -1390,7 +1390,7 @@ export function BusinessFinance({ colors, role = 'B1' }: Props) {
               {[
                 { step: 'Source', detail: `${explainEntry.category} — ${explainEntry.entity}`, done: true },
                 { step: 'Rule Check', detail: 'Policy engine passed — no exceptions', done: true },
-                { step: 'Authorization', detail: 'Approved by Sammy K. (Founder)', done: true },
+                { step: 'Authorization', detail: 'Approved by Alex M. (Founder)', done: true },
                 { step: 'Settlement', detail: explainEntry.credit > 0 ? 'Deposited via Mercury ACH' : 'Disbursed via Mercury ACH', done: explainEntry.balance > 0 },
               ].map((node, idx) => (
                 <View key={idx} style={s.provenanceNode}>

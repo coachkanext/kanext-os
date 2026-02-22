@@ -25,7 +25,7 @@ export default function SettingsScreen() {
   const handleLogin = () => {
     // Demo login - in production this would open auth flow
     setAuthState('owner');
-    Alert.alert('Logged In', 'You are now logged in as Sammy Kalejaiye.');
+    Alert.alert('Logged In', 'You are now logged in as Alex Morgan.');
   };
 
   const handleLogout = () => {
@@ -69,7 +69,7 @@ export default function SettingsScreen() {
               <>
                 <SettingsRow
                   icon="person.circle"
-                  label="Sammy Kalejaiye"
+                  label="Alex Morgan"
                   subtitle="sammy@kanext.com"
                   colors={colors}
                 />

@@ -5,7 +5,7 @@
  * Decision Queue, and Ops Feed.
  *
  * All data references KaNeXT entities:
- *   Sammy Kalejaiye, FMU, ICCLA, K-1, PBD/Tom,
+ *   Alex Morgan, KaNeXT, KaNeXT Church, K-1, PBD/Tom,
  *   Adriana Ruiz, Marcus Chen, Jordan Hayes, Lisa Park, David Okonkwo.
  */
 
@@ -81,7 +81,7 @@ export const TOP_BLOCKERS: Blocker[] = [
     category: 'Engineering',
     daysBlocked: 6,
     impact:
-      'Delays FMU highlight-reel ingestion; demo footage for PBD board meeting unavailable until resolved.',
+      'Delays KaNeXT highlight-reel ingestion; demo footage for PBD board meeting unavailable until resolved.',
   },
   {
     id: 'blk-2',
@@ -91,7 +91,7 @@ export const TOP_BLOCKERS: Blocker[] = [
     category: 'Finance / Ops',
     daysBlocked: 4,
     impact:
-      'ICCLA pilot launch cannot collect campus donations; blocks $12K MRR milestone for Q2 board deck.',
+      'KaNeXT Church pilot launch cannot collect campus donations; blocks $12K MRR milestone for Q2 board deck.',
   },
   {
     id: 'blk-3',
@@ -106,7 +106,7 @@ export const TOP_BLOCKERS: Blocker[] = [
   {
     id: 'blk-4',
     title: 'Trademark filing — response required from external counsel',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     severity: 'high',
     category: 'Legal / Compliance',
     daysBlocked: 8,
@@ -142,7 +142,7 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-2',
-    name: 'FMU Partnership Activation',
+    name: 'KaNeXT Partnership Activation',
     status: 'active',
     progress: 45,
     owner: 'Jordan Hayes',
@@ -152,7 +152,7 @@ export const INITIATIVES: Initiative[] = [
   },
   {
     id: 'init-3',
-    name: 'ICCLA Pilot Rollout',
+    name: 'KaNeXT Church Pilot Rollout',
     status: 'blocked',
     progress: 28,
     owner: 'David Okonkwo',
@@ -175,7 +175,7 @@ export const INITIATIVES: Initiative[] = [
     name: 'Board Prep & Data Room Refresh',
     status: 'active',
     progress: 70,
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     items: 9,
     dueLabel: 'Feb 28',
     priority: 'critical',
@@ -211,7 +211,7 @@ export const PROJECTS: Project[] = [
   {
     id: 'proj-2',
     name: 'Payment Rails — Stripe Connect',
-    initiative: 'ICCLA Pilot Rollout',
+    initiative: 'KaNeXT Church Pilot Rollout',
     status: 'blocked',
     progress: 55,
     owner: 'David Okonkwo',
@@ -232,8 +232,8 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'proj-4',
-    name: 'FMU Media Value Dashboard',
-    initiative: 'FMU Partnership Activation',
+    name: 'KaNeXT Media Value Dashboard',
+    initiative: 'KaNeXT Partnership Activation',
     status: 'active',
     progress: 33,
     owner: 'Lisa Park',
@@ -247,7 +247,7 @@ export const PROJECTS: Project[] = [
     initiative: 'Board Prep & Data Room Refresh',
     status: 'active',
     progress: 60,
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     items: 5,
     dueLabel: 'Mar 1',
     priority: 'high',
@@ -267,7 +267,7 @@ export const DECISION_QUEUE: DecisionItem[] = [
     deadline: 'Feb 20',
     status: 'pending',
     impact:
-      'Unlocks video pipeline blocker; required for FMU demo reel and K-1 telemetry feed.',
+      'Unlocks video pipeline blocker; required for KaNeXT demo reel and K-1 telemetry feed.',
   },
   {
     id: 'dec-2',
@@ -281,7 +281,7 @@ export const DECISION_QUEUE: DecisionItem[] = [
   },
   {
     id: 'dec-3',
-    title: 'ICCLA pilot pricing — tiered vs flat rate',
+    title: 'KaNeXT Church pilot pricing — tiered vs flat rate',
     type: 'escalation',
     requester: 'Jordan Hayes',
     deadline: 'Feb 24',
@@ -293,7 +293,7 @@ export const DECISION_QUEUE: DecisionItem[] = [
     id: 'dec-4',
     title: 'Trademark filing — approve external counsel invoice',
     type: 'approval',
-    requester: 'Sammy Kalejaiye',
+    requester: 'Alex Morgan',
     deadline: 'Feb 19',
     status: 'pending',
     impact:
@@ -336,13 +336,13 @@ export const OPS_FEED: OpsFeedItem[] = [
   },
   {
     id: 'feed-4',
-    text: 'Decision APPROVED: Extend FMU media partnership term to 3 years (Sammy Kalejaiye).',
+    text: 'Decision APPROVED: Extend KaNeXT media partnership term to 3 years (Alex Morgan).',
     timestamp: '3 hr ago',
     category: 'decision_made',
   },
   {
     id: 'feed-5',
-    text: 'ALERT: Stripe Connect onboarding rejection — ICCLA pilot launch date at risk.',
+    text: 'ALERT: Stripe Connect onboarding rejection — KaNeXT Church pilot launch date at risk.',
     timestamp: '4 hr ago',
     category: 'alert',
   },
@@ -360,7 +360,7 @@ export const OPS_FEED: OpsFeedItem[] = [
   },
   {
     id: 'feed-8',
-    text: 'Jordan Hayes scheduled ICCLA pricing escalation meeting for Feb 24.',
+    text: 'Jordan Hayes scheduled KaNeXT Church pricing escalation meeting for Feb 24.',
     timestamp: '8 hr ago',
     category: 'decision_made',
   },

@@ -517,7 +517,7 @@ const LEGAL_DOCS: LegalDocument[] = [
     owner: 'Board of Elders',
     lastUpdated: '2025-11-15',
     linkedPolicies: ['pol-010', 'pol-006'],
-    description: 'Governing bylaws of ICCLA defining organizational structure, officer roles, membership, voting procedures, and amendment process.',
+    description: 'Governing bylaws of KaNeXT Church defining organizational structure, officer roles, membership, voting procedures, and amendment process.',
   },
   {
     id: 'ldoc-002',

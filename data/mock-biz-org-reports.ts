@@ -749,7 +749,7 @@ const EXPORT_LOG: ExportLogEntry[] = [
   {
     id: 'exp-01',
     reportTitle: 'Q4 2024 Profit & Loss Statement',
-    exportedBy: 'Sammy Kalejaiye',
+    exportedBy: 'Alex Morgan',
     timestamp: '2025-02-14 09:22 AM',
     format: 'PDF',
     accessedBy: ['CFO — Morgan Blake', 'Board of Directors'],
@@ -757,7 +757,7 @@ const EXPORT_LOG: ExportLogEntry[] = [
   {
     id: 'exp-02',
     reportTitle: 'Board Pack — Q4 2024',
-    exportedBy: 'Sammy Kalejaiye',
+    exportedBy: 'Alex Morgan',
     timestamp: '2025-02-12 03:45 PM',
     format: 'PDF',
     accessedBy: ['Board of Directors (7)', 'Legal Counsel'],
@@ -792,7 +792,7 @@ const EXPORT_LOG: ExportLogEntry[] = [
     exportedBy: 'VP People — Dana Torres',
     timestamp: '2025-02-03 08:45 AM',
     format: 'PDF',
-    accessedBy: ['Sammy Kalejaiye', 'Hiring Managers'],
+    accessedBy: ['Alex Morgan', 'Hiring Managers'],
   },
   {
     id: 'exp-07',
@@ -800,7 +800,7 @@ const EXPORT_LOG: ExportLogEntry[] = [
     exportedBy: 'General Counsel — Taylor Brooks',
     timestamp: '2025-01-25 04:20 PM',
     format: 'PDF',
-    accessedBy: ['Sammy Kalejaiye', 'CFO — Morgan Blake'],
+    accessedBy: ['Alex Morgan', 'CFO — Morgan Blake'],
   },
   {
     id: 'exp-08',
@@ -954,7 +954,7 @@ const AUDIT_LOG: ReportAuditLogEntry[] = [
   {
     id: 'al-01',
     action: 'ran',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     timestamp: '2026-02-17T14:30:00Z',
     reportId: 'rpt-f-01',
   },
@@ -968,7 +968,7 @@ const AUDIT_LOG: ReportAuditLogEntry[] = [
   {
     id: 'al-03',
     action: 'published',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     timestamp: '2026-02-15T09:00:00Z',
     reportId: 'rpt-cl-01',
   },

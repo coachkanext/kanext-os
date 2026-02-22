@@ -30,7 +30,7 @@ import { RecruitClipCard } from '@/components/media/recruit-clip-card';
 import { OpponentScoutRow } from '@/components/media/opponent-scout-row';
 import { ShareSheet } from '@/components/media/share-sheet';
 import { Spacing, BorderRadius } from '@/constants/theme';
-import { FMU_RECORD, FMU_STANDINGS } from '@/data/fmu';
+import { KaNeXT_RECORD, KaNeXT_STANDINGS } from '@/data/fmu';
 import {
   MOCK_REELS,
   MOCK_VIDEO_CLIPS,
@@ -43,9 +43,9 @@ import type { VideoClip } from '@/data/mock-video';
 
 type YouTab = 'you' | 'film_room';
 
-// FMU identity data for TeamHeader
-const FMU_SEAL = require('@/assets/images/fmu-seal.png');
-const fmuStreak = FMU_STANDINGS.find((r) => r.team === 'Florida Memorial')?.streak ?? '—';
+// KaNeXT identity data for TeamHeader
+const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
+const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—';
 
 // =============================================================================
 // YOU CONTENT
@@ -167,10 +167,10 @@ function MyTeamContent({ onShare }: { onShare: (title: string) => void }) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
       <TeamHeader
-        teamName="Florida Memorial"
+        teamName="KaNeXT Sports"
         teamLogo={FMU_SEAL}
         level="NAIA"
-        conference="Sun Conference"
+        conference="KaNeXT Conference"
         teamKR={74}
         offKR={74}
         defKR={73}
@@ -178,7 +178,7 @@ function MyTeamContent({ onShare }: { onShare: (title: string) => void }) {
         confRecord={FMU_RECORD.conference}
         streak={fmuStreak}
         tier="Regional Power"
-        onShare={() => onShare('FMU Lions Team Channel')}
+        onShare={() => onShare('KaNeXT Team Channel')}
       />
 
       <ThemedText style={styles.filmSectionTitle}>Recent Games</ThemedText>

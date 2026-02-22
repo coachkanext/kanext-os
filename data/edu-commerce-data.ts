@@ -22,7 +22,7 @@ export const APPLICATION_TYPES: ApplicationType[] = [
   { id: 'transfer', label: 'Transfer', fee: 25, description: 'Students from another institution', deadline: 'Jun 1, 2026', requirements: 'College transcripts, min 2.0 GPA' },
   { id: 'graduate', label: 'Graduate', fee: 35, description: 'Master\'s and doctoral programs', deadline: 'Apr 15, 2026', requirements: 'Bachelor\'s degree, GRE/GMAT, letters of rec' },
   { id: 'international', label: 'International', fee: 50, description: 'Students outside the U.S.', deadline: 'Mar 15, 2026', requirements: 'TOEFL/IELTS, credential evaluation, I-20 docs' },
-  { id: 'readmission', label: 'Readmission', fee: 15, description: 'Returning after absence', deadline: 'Rolling', requirements: 'Previous FMU transcripts, good standing letter' },
+  { id: 'readmission', label: 'Readmission', fee: 15, description: 'Returning after absence', deadline: 'Rolling', requirements: 'Previous KaNeXT transcripts, good standing letter' },
 ];
 
 // =============================================================================
@@ -65,14 +65,14 @@ export const SCHOLARSHIPS: Scholarship[] = [
 // FAFSA
 // =============================================================================
 
-export const FMU_FAFSA = {
+export const KaNeXT_FAFSA = {
   schoolCode: '001486',
   priority: 'Mar 1, 2026',
   final: 'Jun 30, 2026',
   steps: [
     'Create FSA ID at studentaid.gov',
     'Complete FAFSA at fafsa.gov',
-    'Enter FMU school code: 001486',
+    'Enter KaNeXT school code: 001486',
     'Submit tax documents if selected for verification',
     'Review and accept award letter',
   ],
@@ -102,6 +102,6 @@ export const TUITION_RATES = {
 export function buildEduCommerceChain(type: string, amount: number, description: string, prefix: string): PaymentChain {
   const chain = buildCommerceChain(type, amount, description, prefix);
   const settlement = chain.chain.find((s) => s.stage === 'Settlement');
-  if (settlement) settlement.detail = 'Funds settled to FMU Finance Office';
+  if (settlement) settlement.detail = 'Funds settled to KaNeXT Finance Office';
   return chain;
 }

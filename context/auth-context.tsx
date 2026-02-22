@@ -160,7 +160,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const session: AuthSession = {
       userId: `user-${Date.now()}`,
-      displayName: provider === 'apple' ? 'Sammy K.' : provider === 'google' ? 'Sammy Kalejaiye' : 'Sammy',
+      displayName: provider === 'apple' ? 'Alex M.' : provider === 'google' ? 'Alex Morgan' : 'Alex',
       email,
       provider,
       token: `mock-token-${Date.now()}`,

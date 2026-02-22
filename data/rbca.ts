@@ -70,43 +70,43 @@ export interface FastAction {
 
 export const FAST_ACTIONS: Record<string, FastAction[]> = {
   // ── Sports ──
-  mem_sports_fmu_admin: [
+  mem_sports_kx: [
     { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
     { icon: 'person.3.fill', label: 'Roster', route: '/coach/roster' },
     { icon: 'sportscourt.fill', label: 'Schedule', route: '/(tabs)' },
     { icon: 'person.badge.plus', label: 'Recruiting', route: '/coach/recruiting' },
   ],
 
-  // ── Church ──
-  mem_church_iccla: [
-    { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
-    { icon: 'calendar', label: 'Calendar', route: '/(tabs)' },
-    { icon: 'person.3.fill', label: 'Members', route: '/(tabs)' },
-    { icon: 'dollarsign.circle.fill', label: 'Finance', route: '/(tabs)/organization' },
-  ],
-
-  // ── Competition ──
-  mem_comp_k1_owner_commish: [
-    { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
-    { icon: 'calendar', label: 'Race Cal', route: '/(tabs)' },
-    { icon: 'person.3.fill', label: 'Teams', route: '/(tabs)' },
-    { icon: 'chart.bar.fill', label: 'Standings', route: '/(tabs)' },
-  ],
-
   // ── Business ──
-  mem_biz_kanext_founder: [
+  mem_biz_kx: [
     { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
     { icon: 'chart.bar.fill', label: 'Dashboard', route: '/(tabs)' },
     { icon: 'doc.fill', label: 'Documents', route: '/(tabs)/media' },
     { icon: 'dollarsign.circle.fill', label: 'Finance', route: '/(tabs)/organization' },
   ],
 
+  // ── Church ──
+  mem_church_kx: [
+    { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
+    { icon: 'calendar', label: 'Calendar', route: '/(tabs)' },
+    { icon: 'person.3.fill', label: 'Members', route: '/(tabs)' },
+    { icon: 'dollarsign.circle.fill', label: 'Finance', route: '/(tabs)/organization' },
+  ],
+
   // ── Education ──
-  mem_edu_fmu_president: [
+  mem_edu_kx: [
     { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
     { icon: 'person.3.fill', label: 'Students', route: '/(tabs)' },
     { icon: 'doc.fill', label: 'Reports', route: '/(tabs)/organization' },
     { icon: 'calendar', label: 'Calendar', route: '/(tabs)' },
+  ],
+
+  // ── Competition ──
+  mem_comp_kx: [
+    { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
+    { icon: 'calendar', label: 'Race Cal', route: '/(tabs)' },
+    { icon: 'person.3.fill', label: 'Teams', route: '/(tabs)' },
+    { icon: 'chart.bar.fill', label: 'Standings', route: '/(tabs)' },
   ],
 };
 
@@ -116,7 +116,7 @@ export const FAST_ACTIONS: Record<string, FastAction[]> = {
 
 export const PERMISSION_BULLETS: Record<string, string[]> = {
   // ── Sports ──
-  mem_sports_fmu_admin: [
+  mem_sports_kx: [
     'Full roster management and scholarship allocation',
     'Game operations, scheduling, and opponent scouting',
     'Recruiting board with offer management',
@@ -125,28 +125,8 @@ export const PERMISSION_BULLETS: Record<string, string[]> = {
     'Nexus AI with full institutional context',
   ],
 
-  // ── Church ──
-  mem_church_iccla: [
-    'Full church administration and oversight',
-    'Member management and pastoral care records',
-    'Financial oversight and budget management',
-    'Ministry leadership assignments',
-    'Calendar and event management',
-    'Nexus AI with full pastoral context',
-  ],
-
-  // ── Competition ──
-  mem_comp_k1_owner_commish: [
-    'Full league governance and rule management',
-    'Team ownership and franchise operations',
-    'Race calendar and venue management',
-    'Financial oversight and revenue sharing',
-    'Broadcast and media rights management',
-    'Nexus AI with commissioner context',
-  ],
-
   // ── Business ──
-  mem_biz_kanext_founder: [
+  mem_biz_kx: [
     'Full platform administration and governance',
     'Financial dashboards and revenue tracking',
     'Document management and data rooms',
@@ -155,13 +135,33 @@ export const PERMISSION_BULLETS: Record<string, string[]> = {
     'Nexus AI with full executive context',
   ],
 
+  // ── Church ──
+  mem_church_kx: [
+    'Full church administration and oversight',
+    'Member management and pastoral care records',
+    'Financial oversight and budget management',
+    'Ministry leadership assignments',
+    'Calendar and event management',
+    'Nexus AI with full pastoral context',
+  ],
+
   // ── Education ──
-  mem_edu_fmu_president: [
+  mem_edu_kx: [
     'Full institutional administration and governance',
     'Student enrollment and progress tracking',
     'Faculty coordination and scheduling',
     'Budget oversight and financial management',
     'Compliance and accreditation oversight',
     'Nexus AI with presidential context',
+  ],
+
+  // ── Competition ──
+  mem_comp_kx: [
+    'Full league governance and rule management',
+    'Team ownership and franchise operations',
+    'Race calendar and venue management',
+    'Financial oversight and revenue sharing',
+    'Broadcast and media rights management',
+    'Nexus AI with commissioner context',
   ],
 };

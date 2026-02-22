@@ -32,9 +32,9 @@ const CATEGORY_COLOR: Record<GridCategory, string> = {
 };
 
 const OFFICIALS = [
-  { id: 'o1', name: 'Kalejaiye', title: 'Commissioner', icon: 'crown.fill' as const },
+  { id: 'o1', name: 'Carter', title: 'Commissioner', icon: 'crown.fill' as const },
   { id: 'o2', name: 'Jean-Pierre Moreau', title: 'Race Director', icon: 'flag.fill' as const },
-  { id: 'o3', name: 'Dr. Sarah Chen', title: 'Technical Director', icon: 'gearshape.fill' as const },
+  { id: 'o3', name: 'Dr. Lisa Grant', title: 'Technical Director', icon: 'gearshape.fill' as const },
   { id: 'o4', name: 'Hans Mueller', title: 'Chief Steward', icon: 'shield.fill' as const },
   { id: 'o5', name: 'Dr. Amara Obi', title: 'Medical Delegate', icon: 'heart.fill' as const },
   { id: 'o6', name: 'Carlos Mendez', title: 'Safety Delegate', icon: 'exclamationmark.triangle.fill' as const },
@@ -67,7 +67,7 @@ const TEAMS: TeamEntry[] = [
     name: 'KaNeXT Works Alpha',
     category: 'KaNeXT Works',
     constructor: 'KaNeXT Works',
-    drivers: ['Kalejaiye', 'Oluwadara'],
+    drivers: ['Carter', 'Oluwadara'],
     crewChief: 'Marco Rossi',
     capStatus: 'Compliant',
     homologation: 'Approved',

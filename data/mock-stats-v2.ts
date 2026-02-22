@@ -169,9 +169,9 @@ export interface Last5Entry {
 // =============================================================================
 
 export const TEAM_IDENTITY: TeamIdentity = {
-  name: 'Florida Memorial',
+  name: 'KaNeXT Sports',
   level: 'NAIA',
-  conference: 'Sun Conference',
+  conference: 'KaNeXT Conference',
   record: '22-8',
   confRecord: '14-4',
   streak: 'W3',
@@ -244,8 +244,8 @@ export const GAME_LOG: GameLogEntry[] = [
   { id: 'gl-6', opponent: 'Keiser', date: 'Jan 28', result: 'L', score: '70-78', pace: 74.2, offRtg: 98.6, defRtg: 110.4, eFG: 44.2, toPct: 20.8, swingFactor: 'PNR coverage breakdowns' },
   { id: 'gl-7', opponent: 'St. Thomas', date: 'Jan 25', result: 'W', score: '88-80', pace: 72.8, offRtg: 114.6, defRtg: 104.2, eFG: 55.4, toPct: 14.8, swingFactor: 'Cole 28pts carry' },
   { id: 'gl-8', opponent: 'Johnson & Wales', date: 'Jan 21', result: 'W', score: '96-62', pace: 78.4, offRtg: 122.8, defRtg: 79.4, eFG: 58.6, toPct: 12.4, swingFactor: 'Blowout \u2014 bench minutes' },
-  { id: 'gl-9', opponent: 'South Florida State', date: 'Jan 18', result: 'W', score: '76-72', pace: 66.4, offRtg: 106.2, defRtg: 100.8, eFG: 48.8, toPct: 19.2, swingFactor: 'Clutch FTs down stretch' },
-  { id: 'gl-10', opponent: 'Florida National', date: 'Jan 14', result: 'W', score: '82-68', pace: 70.2, offRtg: 112.4, defRtg: 92.6, eFG: 54.4, toPct: 16.4, swingFactor: 'Defensive intensity' },
+  { id: 'gl-9', opponent: 'South Ridgemont State', date: 'Jan 18', result: 'W', score: '76-72', pace: 66.4, offRtg: 106.2, defRtg: 100.8, eFG: 48.8, toPct: 19.2, swingFactor: 'Clutch FTs down stretch' },
+  { id: 'gl-10', opponent: 'Ridgemont National', date: 'Jan 14', result: 'W', score: '82-68', pace: 70.2, offRtg: 112.4, defRtg: 92.6, eFG: 54.4, toPct: 16.4, swingFactor: 'Defensive intensity' },
 ];
 
 export const PLAYER_LEADERBOARD: PlayerStatRow[] = [

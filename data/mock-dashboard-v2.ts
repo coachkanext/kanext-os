@@ -5,13 +5,13 @@
  */
 
 import {
-  FMU_GAMES,
-  FMU_RECORD,
-  FMU_NEXT_GAME,
-  FMU_LAST_GAME,
-  FMU_SEASON_COMPLETE,
-  FMU_STANDINGS,
-  FMU_KR,
+  KaNeXT_GAMES,
+  KaNeXT_RECORD,
+  KaNeXT_NEXT_GAME,
+  KaNeXT_LAST_GAME,
+  KaNeXT_SEASON_COMPLETE,
+  KaNeXT_STANDINGS,
+  KaNeXT_KR,
 } from '@/data/fmu';
 
 // =============================================================================
@@ -39,9 +39,9 @@ export interface VideoStripCard {
 
 export const VIDEO_STRIP_CARDS: VideoStripCard[] = [
   { id: 'vs-1', title: 'Keiser Scout Breakdown', tag: 'SCOUT', timestamp: '2h ago', duration: '8:42', sourceBadge: 'Staff', thumbnailColor: '#1a3a5c', rbac: 'R5' },
-  { id: 'vs-2', title: 'Tuesday Practice \u2014 Half-Court Sets', tag: 'PRACTICE', timestamp: '5h ago', duration: '14:20', sourceBadge: 'FMU Film', thumbnailColor: '#2d1b3d', rbac: 'R5' },
+  { id: 'vs-2', title: 'Tuesday Practice \u2014 Half-Court Sets', tag: 'PRACTICE', timestamp: '5h ago', duration: '14:20', sourceBadge: 'KaNeXT Film', thumbnailColor: '#2d1b3d', rbac: 'R5' },
   { id: 'vs-3', title: 'Carter Development \u2014 Pull-Up 3s', tag: 'DEV', timestamp: '1d ago', duration: '6:15', sourceBadge: 'Dev Lab', thumbnailColor: '#1b3d2d', rbac: 'R5' },
-  { id: 'vs-4', title: FMU_LAST_GAME ? `vs ${FMU_LAST_GAME.opponent} \u2014 Full Game` : 'Season Highlights \u2014 Full Game', tag: 'GAME', timestamp: '3d ago', duration: '1:42:08', sourceBadge: 'FMU Film', thumbnailColor: '#3d2d1b', rbac: 'R4' },
+  { id: 'vs-4', title: KaNeXT_LAST_GAME ? `vs ${FMU_LAST_GAME.opponent} \u2014 Full Game` : 'Season Highlights \u2014 Full Game', tag: 'GAME', timestamp: '3d ago', duration: '1:42:08', sourceBadge: 'KaNeXT Film', thumbnailColor: '#3d2d1b', rbac: 'R4' },
   { id: 'vs-5', title: 'Coach K Pregame \u2014 Weekly Presser', tag: 'CONNECTCAST', timestamp: '4d ago', duration: '22:35', sourceBadge: 'ConnectCast', thumbnailColor: '#1b2d3d', rbac: 'R1' },
   { id: 'vs-6', title: 'Lions Gameday Hype \u2014 Social Cut', tag: 'MEDIA', timestamp: '5d ago', duration: '1:12', sourceBadge: 'Media Dept', thumbnailColor: '#3d1b2d', rbac: 'R1' },
   { id: 'vs-7', title: 'Southeastern Film \u2014 Transition D', tag: 'SCOUT', timestamp: '6d ago', duration: '11:05', sourceBadge: 'Staff', thumbnailColor: '#1a3a5c', rbac: 'R5' },
@@ -67,22 +67,22 @@ export interface TeamTruthHeader {
   rbac: RBACRole;
 }
 
-const fmuStreak = FMU_STANDINGS.find((r) => r.team === 'Florida Memorial')?.streak ?? '--';
+const fmuStreak = KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '--';
 
 export const TEAM_TRUTH_HEADER: TeamTruthHeader = {
-  programName: 'FMU Lions MBB',
+  programName: 'KaNeXT MBB',
   sportCode: 'MBB',
   season: '2025-26',
   level: 'NAIA',
-  conference: 'Sun Conference',
-  record: FMU_RECORD.overall,
-  confRecord: FMU_RECORD.conference,
+  conference: 'KaNeXT Conference',
+  record: KaNeXT_RECORD.overall,
+  confRecord: KaNeXT_RECORD.conference,
   streak: fmuStreak,
-  teamKR: FMU_KR,
+  teamKR: KaNeXT_KR,
   availability: { available: 13, injured: 1, out: 1, redshirt: 2 },
-  nextGameSummary: FMU_NEXT_GAME
+  nextGameSummary: KaNeXT_NEXT_GAME
     ? `Next: ${FMU_NEXT_GAME.location === 'Home' ? 'vs' : '@'} ${FMU_NEXT_GAME.opponent} · ${FMU_NEXT_GAME.date}`
-    : FMU_SEASON_COMPLETE ? 'Season Complete' : null,
+    : KaNeXT_SEASON_COMPLETE ? 'Season Complete' : null,
   rbac: 'R1',
 };
 
@@ -116,10 +116,10 @@ export interface NextGameCardData {
   rbac: RBACRole;
 }
 
-export const TODAY_SCHEDULE: TodayItem[] = FMU_SEASON_COMPLETE
+export const TODAY_SCHEDULE: TodayItem[] = KaNeXT_SEASON_COMPLETE
   ? [{ id: 'td-1', type: 'Off', time: 'All Day', location: '--', rbac: 'R4' }]
   : [
-      { id: 'td-1', type: 'Lift', time: '7:00 AM', location: 'FMU Weight Room', rbac: 'R4' },
+      { id: 'td-1', type: 'Lift', time: '7:00 AM', location: 'KaNeXT Weight Room', rbac: 'R4' },
       { id: 'td-2', type: 'Film', time: '10:00 AM', location: 'Film Room A', rbac: 'R5' },
       { id: 'td-3', type: 'Practice', time: '2:00 PM', location: 'Wellness Center', rbac: 'R4' },
     ];
@@ -130,11 +130,11 @@ export const MUST_DO_TASKS: MustDoTask[] = [
   { id: 'md-3', title: 'Confirm travel roster', done: false, rbac: 'R5' },
 ];
 
-export const NEXT_GAME_CARD: NextGameCardData | null = FMU_NEXT_GAME
+export const NEXT_GAME_CARD: NextGameCardData | null = KaNeXT_NEXT_GAME
   ? {
-      opponent: FMU_NEXT_GAME.opponent,
-      date: FMU_NEXT_GAME.date,
-      location: FMU_NEXT_GAME.location,
+      opponent: KaNeXT_NEXT_GAME.opponent,
+      date: KaNeXT_NEXT_GAME.date,
+      location: KaNeXT_NEXT_GAME.location,
       countdownDays: Math.max(0, Math.ceil((new Date(2026, 1, 20).getTime() - Date.now()) / 86400000)),
       statusChips: [
         { label: 'Game Plan', status: 'in-progress' },
@@ -163,9 +163,9 @@ export interface CommandTile {
 export const COMMAND_TILES: CommandTile[] = [
   { id: 'ct-recruiting', label: 'Recruiting', icon: 'person.badge.plus', count: 42, statusChip: '3 new evals', statusColor: 'yellow', targetTab: 3, rbac: 'R5' },
   { id: 'ct-roster', label: 'Roster', icon: 'person.3.fill', count: 17, statusChip: 'Active', statusColor: 'green', targetTab: 2, rbac: 'R4' },
-  { id: 'ct-gameplan', label: 'Game Plan', icon: 'doc.on.clipboard', count: FMU_NEXT_GAME ? 1 : 0, statusChip: FMU_NEXT_GAME ? 'In Progress' : 'Off-Season', statusColor: FMU_NEXT_GAME ? 'yellow' : 'neutral', targetTab: 5, rbac: 'R5' },
+  { id: 'ct-gameplan', label: 'Game Plan', icon: 'doc.on.clipboard', count: KaNeXT_NEXT_GAME ? 1 : 0, statusChip: KaNeXT_NEXT_GAME ? 'In Progress' : 'Off-Season', statusColor: KaNeXT_NEXT_GAME ? 'yellow' : 'neutral', targetTab: 5, rbac: 'R5' },
   { id: 'ct-simulation', label: 'Simulation', icon: 'play.rectangle.fill', count: 8, statusChip: 'Latest: 72%', statusColor: 'green', targetTab: 6, rbac: 'R5' },
-  { id: 'ct-stats', label: 'Stats Pulse', icon: 'chart.bar.fill', count: FMU_RECORD.overall, statusChip: 'Updated', statusColor: 'green', targetTab: 4, rbac: 'R4' },
+  { id: 'ct-stats', label: 'Stats Pulse', icon: 'chart.bar.fill', count: KaNeXT_RECORD.overall, statusChip: 'Updated', statusColor: 'green', targetTab: 4, rbac: 'R4' },
   { id: 'ct-compliance', label: 'Compliance', icon: 'checkmark.seal.fill', count: 2, statusChip: '2 pending', statusColor: 'yellow', rbac: 'R6' },
   { id: 'ct-media', label: 'Media', icon: 'camera.fill', count: 5, statusChip: '2 scheduled', statusColor: 'neutral', rbac: 'R4' },
   { id: 'ct-development', label: 'Development', icon: 'arrow.up.right', count: 6, statusChip: '3 active plans', statusColor: 'green', targetTab: 7, rbac: 'R5' },
@@ -184,13 +184,13 @@ export interface ConferencePulseRow {
   isUs: boolean;
 }
 
-export const CONFERENCE_PULSE_STANDINGS: ConferencePulseRow[] = FMU_STANDINGS.map((r, i) => ({
+export const CONFERENCE_PULSE_STANDINGS: ConferencePulseRow[] = KaNeXT_STANDINGS.map((r, i) => ({
   rank: i + 1,
   team: r.team,
   confRecord: `${r.confW}-${r.confL}`,
   overallRecord: `${r.overallW}-${r.overallL}`,
   streak: r.streak,
-  isUs: r.team === 'Florida Memorial',
+  isUs: r.team === 'KaNeXT Sports',
 }));
 
 // =============================================================================
@@ -204,12 +204,12 @@ export interface GameOpsChip {
   rbac: RBACRole;
 }
 
-export const GAME_OPS_READINESS: GameOpsChip[] = FMU_NEXT_GAME
+export const GAME_OPS_READINESS: GameOpsChip[] = KaNeXT_NEXT_GAME
   ? [
       { id: 'go-scout', label: 'Scout Packet', ready: true, rbac: 'R5' },
       { id: 'go-gameplan', label: 'Game Plan Locked', ready: false, rbac: 'R5' },
       { id: 'go-sim', label: 'Simulation Run', ready: true, rbac: 'R5' },
-      { id: 'go-travel', label: 'Travel Confirmed', ready: FMU_NEXT_GAME.location === 'Home', rbac: 'R4' },
+      { id: 'go-travel', label: 'Travel Confirmed', ready: KaNeXT_NEXT_GAME.location === 'Home', rbac: 'R4' },
       { id: 'go-media', label: 'Media Plan Confirmed', ready: true, rbac: 'R4' },
     ]
   : [];
@@ -233,21 +233,21 @@ export interface WorkQueueItem {
 }
 
 export const MY_WORK_QUEUE: WorkQueueItem[] = [
-  { id: 'wq-1', title: 'Eval: Marcus Thompson (PG, 6-2, Class of 2026)', type: 'recruiting', dueDate: 'Today', owner: 'Coach Kalejaiye', priority: 'high', linkedObject: 'Recruiting Board', rbac: 'R5' },
-  { id: 'wq-2', title: 'Review opponent tendencies \u2014 Keiser pick-and-roll', type: 'film', dueDate: 'Today', owner: 'Coach Kalejaiye', priority: 'high', linkedObject: 'Film Room', rbac: 'R5' },
+  { id: 'wq-1', title: 'Eval: Alex Morgan (PG, 6-2, Class of 2026)', type: 'recruiting', dueDate: 'Today', owner: 'Coach Carter', priority: 'high', linkedObject: 'Recruiting Board', rbac: 'R5' },
+  { id: 'wq-2', title: 'Review opponent tendencies \u2014 Keiser pick-and-roll', type: 'film', dueDate: 'Today', owner: 'Coach Carter', priority: 'high', linkedObject: 'Film Room', rbac: 'R5' },
   { id: 'wq-3', title: 'Approve travel itinerary for away series', type: 'ops', dueDate: 'Tomorrow', owner: 'Ops Staff', priority: 'high', linkedObject: 'Travel Plan', rbac: 'R6' },
   { id: 'wq-4', title: 'Schedule postgame press conference', type: 'media', dueDate: 'Fri, Feb 21', owner: 'Media Dept', priority: 'medium', linkedObject: 'Media Calendar', rbac: 'R4' },
   { id: 'wq-5', title: 'Submit eligibility verification \u2014 3 transfers', type: 'compliance', dueDate: 'Fri, Feb 21', owner: 'Compliance', priority: 'high', linkedObject: 'Compliance Center', rbac: 'R6' },
   { id: 'wq-6', title: 'Dev plan update \u2014 Carter shooting drills', type: 'development', dueDate: 'Sat, Feb 22', owner: 'Coach Williams', priority: 'medium', linkedObject: 'Development', rbac: 'R5' },
-  { id: 'wq-7', title: 'Contact AAU coach for J. Rivera eval', type: 'recruiting', dueDate: 'Mon, Feb 24', owner: 'Coach Kalejaiye', priority: 'medium', linkedObject: 'Recruiting Board', rbac: 'R5' },
-  { id: 'wq-8', title: 'Lock starters for next game plan', type: 'game-plan', dueDate: 'Tue, Feb 25', owner: 'Coach Kalejaiye', priority: 'high', linkedObject: 'Game Plan', rbac: 'R6' },
+  { id: 'wq-7', title: 'Contact AAU coach for J. Rivera eval', type: 'recruiting', dueDate: 'Mon, Feb 24', owner: 'Coach Carter', priority: 'medium', linkedObject: 'Recruiting Board', rbac: 'R5' },
+  { id: 'wq-8', title: 'Lock starters for next game plan', type: 'game-plan', dueDate: 'Tue, Feb 25', owner: 'Coach Carter', priority: 'high', linkedObject: 'Game Plan', rbac: 'R6' },
   { id: 'wq-9', title: 'Gameday content \u2014 hype video edit', type: 'media', dueDate: 'Wed, Feb 26', owner: 'Media Dept', priority: 'low', linkedObject: 'Media', rbac: 'R4' },
   { id: 'wq-10', title: 'Facility reservation \u2014 practice court 2', type: 'ops', dueDate: 'Thu, Feb 27', owner: 'Ops Staff', priority: 'low', linkedObject: 'Facilities', rbac: 'R4' },
   { id: 'wq-11', title: 'Upload practice film \u2014 Tuesday session', type: 'film', dueDate: 'Today', owner: 'Film Coordinator', priority: 'medium', linkedObject: 'Film Room', rbac: 'R4' },
   { id: 'wq-12', title: 'Dev plan update \u2014 Morgan post moves', type: 'development', dueDate: 'Fri, Feb 28', owner: 'Coach Davis', priority: 'medium', linkedObject: 'Development', rbac: 'R5' },
-  { id: 'wq-13', title: 'Eval: Jaylen Brooks (SG, 6-4, Class of 2027)', type: 'recruiting', dueDate: 'Sat, Mar 1', owner: 'Coach Kalejaiye', priority: 'medium', linkedObject: 'Recruiting Board', rbac: 'R5' },
+  { id: 'wq-13', title: 'Eval: Jaylen Brooks (SG, 6-4, Class of 2027)', type: 'recruiting', dueDate: 'Sat, Mar 1', owner: 'Coach Carter', priority: 'medium', linkedObject: 'Recruiting Board', rbac: 'R5' },
   { id: 'wq-14', title: 'NAIA compliance form \u2014 financial aid audit', type: 'compliance', dueDate: 'Mon, Mar 3', owner: 'Compliance', priority: 'high', linkedObject: 'Compliance Center', rbac: 'R6' },
-  { id: 'wq-15', title: 'Agenda: Team dinner \u2014 end of regular season', type: 'agenda', dueDate: 'Fri, Mar 7', owner: 'Coach Kalejaiye', priority: 'low', linkedObject: 'Calendar', rbac: 'R5' },
+  { id: 'wq-15', title: 'Agenda: Team dinner \u2014 end of regular season', type: 'agenda', dueDate: 'Fri, Mar 7', owner: 'Coach Carter', priority: 'low', linkedObject: 'Calendar', rbac: 'R5' },
 ];
 
 // =============================================================================

@@ -161,7 +161,7 @@ export function ChatThread({ messages, isLoading = false, conversation, mode }: 
       return (
         <View style={styles.emptyContainer}>
           <ThemedText style={[styles.quote, { color: colors.textSecondary }]}>
-            FMU{'\n'}vs{conversation.gameOpsConfig.opponent}
+            KaNeXT{'\n'}vs{conversation.gameOpsConfig.opponent}
           </ThemedText>
           <ThemedText style={[styles.attribution, { color: colors.textTertiary }]}>
             {dateStr}
@@ -211,7 +211,7 @@ export function ChatThread({ messages, isLoading = false, conversation, mode }: 
     return (
       <View style={styles.gameOpsMatchup}>
         <ThemedText style={[styles.quote, { color: colors.textSecondary }]}>
-          FMU{'\n'}vs{conversation.gameOpsConfig.opponent}
+          KaNeXT{'\n'}vs{conversation.gameOpsConfig.opponent}
         </ThemedText>
         <ThemedText style={[styles.attribution, { color: colors.textTertiary }]}>
           {dateStr}

@@ -1,6 +1,6 @@
 /**
  * Sports Finance V3 — 3-pill ViewBar (Budget | Scholarships | NIL)
- * FMU Lions Men's Basketball · NAIA Sun Conference
+ * KaNeXT Men's Basketball · NAIA KaNeXT Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback } from 'react';
@@ -99,7 +99,7 @@ interface NILDeal {
 const NIL_DEALS: NILDeal[] = [
   { id: 'nil1', player: 'Jaylen Thompson', sponsor: 'Sun Coast Auto', value: 15000, term: '12 months', status: 'Active' },
   { id: 'nil2', player: 'DeShawn Carter', sponsor: 'Blue Wave Sports', value: 12000, term: '6 months', status: 'Active' },
-  { id: 'nil3', player: 'Marcus Lane', sponsor: 'FMU Barbershop', value: 8000, term: '12 months', status: 'Active' },
+  { id: 'nil3', player: 'Marcus Lane', sponsor: 'KaNeXT Barbershop', value: 8000, term: '12 months', status: 'Active' },
   { id: 'nil4', player: 'Terrell Davis', sponsor: 'Miami Gardens Chamber', value: 7000, term: '8 months', status: 'Active' },
 ];
 

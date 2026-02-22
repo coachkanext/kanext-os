@@ -63,6 +63,6 @@ export function buildChurchCommerceChain(
 ): PaymentChain {
   const chain = buildCommerceChain(type, amount, description, prefix);
   const settlement = chain.chain.find((s) => s.stage === 'Settlement');
-  if (settlement) settlement.detail = 'Funds settled to ICCLA Finance';
+  if (settlement) settlement.detail = 'Funds settled to KaNeXT Church Finance';
   return chain;
 }

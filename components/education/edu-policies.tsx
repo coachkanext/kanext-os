@@ -945,7 +945,7 @@ const ENFORCEMENT_ACTIONS: EnforcementAction[] = [
     sanction: 'Zero on assignment + academic integrity workshop',
     respondentType: 'student',
     description: 'Plagiarism detected via Turnitin in ENGL 201 research paper. First offense.',
-    investigator: 'Dr. Sarah Mitchell',
+    investigator: 'Dr. Mia Torres',
   },
   {
     id: 'enf-2',
@@ -983,7 +983,7 @@ const ENFORCEMENT_ACTIONS: EnforcementAction[] = [
     sanction: 'Course failure + academic record notation',
     respondentType: 'student',
     description: 'Second academic integrity offense. Student appealing course failure sanction to Dean.',
-    investigator: 'Dr. Sarah Mitchell',
+    investigator: 'Dr. Mia Torres',
   },
   {
     id: 'enf-5',

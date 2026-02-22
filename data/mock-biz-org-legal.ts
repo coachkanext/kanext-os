@@ -383,7 +383,7 @@ const AGREEMENTS: LegalAgreement[] = [
 const SIGNATURE_AUTHORITIES: SignatureAuthority[] = [
   {
     id: 'sig-001',
-    personName: 'Sammy Kalejaiye',
+    personName: 'Alex Morgan',
     personTitle: 'CEO / Founder',
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
     maxAmount: 'Unlimited',
@@ -589,7 +589,7 @@ const REQUESTS: LegalRequest[] = [
     title: 'Review Target Bank acquisition term sheet amendments',
     type: 'review',
     priority: 'urgent',
-    requestedBy: 'Sammy Kalejaiye',
+    requestedBy: 'Alex Morgan',
     assignee: 'David Park',
     status: 'in_progress',
     createdDate: '2026-02-14',

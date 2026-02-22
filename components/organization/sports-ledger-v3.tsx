@@ -1,6 +1,6 @@
 /**
  * Sports Ledger V3 — 3-pill ViewBar (Transactions | Pending | Receipts)
- * FMU Lions Men's Basketball · NAIA Sun Conference
+ * KaNeXT Men's Basketball · NAIA KaNeXT Conference
  * Head Coach / GM perspective. Inline mock data, no DrillMode.
  */
 import React, { useState, useCallback, useMemo } from 'react';
@@ -52,14 +52,14 @@ interface Transaction {
 }
 
 const TRANSACTIONS: Transaction[] = [
-  { id: 'tx1', date: 'Jan 15, 2025', description: 'Season ticket sales — January block', amount: 8500, type: 'Income', category: 'tickets', from: 'Box Office', to: 'FMU Athletics', status: 'Settled' },
-  { id: 'tx2', date: 'Jan 14, 2025', description: 'Road trip fuel — Savannah', amount: 420, type: 'Expense', category: 'expense', from: 'FMU Athletics', to: 'Shell Gas', status: 'Settled' },
+  { id: 'tx1', date: 'Jan 15, 2025', description: 'Season ticket sales — January block', amount: 8500, type: 'Income', category: 'tickets', from: 'Box Office', to: 'KaNeXT Athletics', status: 'Settled' },
+  { id: 'tx2', date: 'Jan 14, 2025', description: 'Road trip fuel — Savannah', amount: 420, type: 'Expense', category: 'expense', from: 'KaNeXT Athletics', to: 'Shell Gas', status: 'Settled' },
   { id: 'tx3', date: 'Jan 12, 2025', description: 'Jaylen Thompson scholarship — Spring', amount: 9000, type: 'Expense', category: 'scholarship', from: 'Scholarship Fund', to: 'Jaylen Thompson', status: 'Settled' },
   { id: 'tx4', date: 'Jan 10, 2025', description: 'Sun Coast Auto NIL payment — Q1', amount: 3750, type: 'Income', category: 'nil', from: 'Sun Coast Auto', to: 'Jaylen Thompson', status: 'Settled' },
-  { id: 'tx5', date: 'Jan 8, 2025', description: 'Jersey merchandise — online store', amount: 2800, type: 'Income', category: 'merch', from: 'FMU Store', to: 'FMU Athletics', status: 'Settled' },
-  { id: 'tx6', date: 'Jan 5, 2025', description: 'Alumni donation — Williams family', amount: 5000, type: 'Income', category: 'donations', from: 'Williams Family Trust', to: 'FMU Athletics', status: 'Settled' },
-  { id: 'tx7', date: 'Jan 3, 2025', description: 'Equipment purchase — practice balls', amount: 640, type: 'Expense', category: 'expense', from: 'FMU Athletics', to: 'Wilson Sporting Goods', status: 'Settled' },
-  { id: 'tx8', date: 'Jan 2, 2025', description: 'Holiday Inn booking — Tampa trip', amount: 1200, type: 'Expense', category: 'expense', from: 'FMU Athletics', to: 'Holiday Inn Express', status: 'Settled' },
+  { id: 'tx5', date: 'Jan 8, 2025', description: 'Jersey merchandise — online store', amount: 2800, type: 'Income', category: 'merch', from: 'KaNeXT Store', to: 'KaNeXT Athletics', status: 'Settled' },
+  { id: 'tx6', date: 'Jan 5, 2025', description: 'Alumni donation — Williams family', amount: 5000, type: 'Income', category: 'donations', from: 'Williams Family Trust', to: 'KaNeXT Athletics', status: 'Settled' },
+  { id: 'tx7', date: 'Jan 3, 2025', description: 'Equipment purchase — practice balls', amount: 640, type: 'Expense', category: 'expense', from: 'KaNeXT Athletics', to: 'Wilson Sporting Goods', status: 'Settled' },
+  { id: 'tx8', date: 'Jan 2, 2025', description: 'Holiday Inn booking — Tampa trip', amount: 1200, type: 'Expense', category: 'expense', from: 'KaNeXT Athletics', to: 'Holiday Inn Express', status: 'Settled' },
 ];
 
 // -- Pending items --

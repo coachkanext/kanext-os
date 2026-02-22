@@ -49,7 +49,7 @@ const EXPENSES = [
 
 // Cap Table
 const CAP_TABLE = [
-  { id: 'cap1', holder: 'Founder (Sammy Kalejaiye)', percent: 85, color: '#8B5CF6' },
+  { id: 'cap1', holder: 'Founder (Alex Morgan)', percent: 85, color: '#8B5CF6' },
   { id: 'cap2', holder: 'Angel Investors', percent: 8, color: '#3B82F6' },
   { id: 'cap3', holder: 'ESOP Pool', percent: 5, color: '#22C55E' },
   { id: 'cap4', holder: 'Advisors', percent: 2, color: '#F59E0B' },

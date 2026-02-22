@@ -76,8 +76,8 @@ export type ChurchScope = 'All' | 'Sermons' | 'Worship' | 'Bible Study' | 'Youth
 
 export const FEATURED_MINISTRY: FeaturedMinistry = {
   title: 'Faith Forward Series',
-  subtitle: 'ICCLA Sunday Service',
-  hookText: 'Pastor Dipo Kalejaiye shares a powerful message on walking in faith',
+  subtitle: 'KaNeXT Church Sunday Service',
+  hookText: 'Pastor Dipo Carter shares a powerful message on walking in faith',
   badgeText: 'FEATURED',
   ctaLabel: 'Watch Now',
   thumbnailColor: '#1B4F8A',
@@ -88,14 +88,14 @@ export const FEATURED_MINISTRY: FeaturedMinistry = {
 // =============================================================================
 
 export const RECENT_SERMONS: Sermon[] = [
-  { id: 'ser-1', title: 'Walking in Faith', speaker: 'Pastor Dipo Kalejaiye', date: 'Feb 16', duration: '42:15', thumbnailColor: '#1B4F8A', series: 'Faith Forward' },
-  { id: 'ser-2', title: 'The Power of Prayer', speaker: 'Pastor Dipo Kalejaiye', date: 'Feb 9', duration: '38:20', thumbnailColor: '#7A5CFF', series: 'Faith Forward' },
+  { id: 'ser-1', title: 'Walking in Faith', speaker: 'Pastor Dipo Carter', date: 'Feb 16', duration: '42:15', thumbnailColor: '#1B4F8A', series: 'Faith Forward' },
+  { id: 'ser-2', title: 'The Power of Prayer', speaker: 'Pastor Dipo Carter', date: 'Feb 9', duration: '38:20', thumbnailColor: '#7A5CFF', series: 'Faith Forward' },
   { id: 'ser-3', title: 'Grace Under Pressure', speaker: 'Minister Johnson', date: 'Feb 2', duration: '35:45', thumbnailColor: '#22C55E', series: 'Resilience' },
-  { id: 'ser-4', title: 'Love Your Neighbor', speaker: 'Pastor Dipo Kalejaiye', date: 'Jan 26', duration: '40:10', thumbnailColor: '#F59E0B', series: 'Community' },
+  { id: 'ser-4', title: 'Love Your Neighbor', speaker: 'Pastor Dipo Carter', date: 'Jan 26', duration: '40:10', thumbnailColor: '#F59E0B', series: 'Community' },
   { id: 'ser-5', title: 'Strength in Surrender', speaker: 'Minister Adebayo', date: 'Jan 19', duration: '36:30', thumbnailColor: '#EF4444', series: 'Resilience' },
-  { id: 'ser-6', title: 'Building on the Rock', speaker: 'Pastor Dipo Kalejaiye', date: 'Jan 12', duration: '44:00', thumbnailColor: '#6AA9FF', series: 'Foundations' },
+  { id: 'ser-6', title: 'Building on the Rock', speaker: 'Pastor Dipo Carter', date: 'Jan 12', duration: '44:00', thumbnailColor: '#6AA9FF', series: 'Foundations' },
   { id: 'ser-7', title: 'The Shepherd\'s Voice', speaker: 'Elder Williams', date: 'Jan 5', duration: '33:50', thumbnailColor: '#C2185B', series: 'Listening' },
-  { id: 'ser-8', title: 'New Year, New Purpose', speaker: 'Pastor Dipo Kalejaiye', date: 'Dec 29', duration: '41:25', thumbnailColor: '#FFFFFF', series: 'Purpose' },
+  { id: 'ser-8', title: 'New Year, New Purpose', speaker: 'Pastor Dipo Carter', date: 'Dec 29', duration: '41:25', thumbnailColor: '#FFFFFF', series: 'Purpose' },
 ];
 
 // =============================================================================
@@ -143,7 +143,7 @@ export const YOUTH_CONTENT: YouthContent[] = [
 export const BIBLE_STUDIES: BibleStudy[] = [
   { id: 'bs-1', title: 'Book of James', facilitator: 'Elder Williams', book: 'James', thumbnailColor: '#1B4F8A' },
   { id: 'bs-2', title: 'Psalms of David', facilitator: 'Minister Adebayo', book: 'Psalms', thumbnailColor: '#22C55E' },
-  { id: 'bs-3', title: 'Romans Deep Dive', facilitator: 'Pastor Dipo Kalejaiye', book: 'Romans', thumbnailColor: '#7A5CFF' },
+  { id: 'bs-3', title: 'Romans Deep Dive', facilitator: 'Pastor Dipo Carter', book: 'Romans', thumbnailColor: '#7A5CFF' },
   { id: 'bs-4', title: 'Proverbs for Living', facilitator: 'Deacon Harris', book: 'Proverbs', thumbnailColor: '#F59E0B' },
   { id: 'bs-5', title: 'Gospel of John', facilitator: 'Minister Johnson', book: 'John', thumbnailColor: '#C2185B' },
 ];

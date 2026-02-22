@@ -979,7 +979,7 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
         <SectionHeader title="GET CONNECTED" colors={colors} />
         <Card colors={colors}>
           <ThemedText style={[s.connectedText, { color: colors.text }]}>
-            Discover ministries, small groups, and ways to get involved at ICCLA.
+            Discover ministries, small groups, and ways to get involved at KaNeXT Church.
           </ThemedText>
         </Card>
         <Pressable

@@ -1,7 +1,7 @@
 /**
  * Sports Organization Program V2 — Mock Data & Types
  * 10-tab Program Hub for Sports Mode organizations.
- * Seeded with FMU Men's Basketball 2025-26 season data.
+ * Seeded with KaNeXT Men's Basketball 2025-26 season data.
  */
 
 // =============================================================================
@@ -292,14 +292,14 @@ export const PROGRAM_SUB_TABS: ProgramSubTab[] = [
 ];
 
 // =============================================================================
-// SEEDED DATA — FMU Men's Basketball 2025-26
+// SEEDED DATA — KaNeXT Men's Basketball 2025-26
 // =============================================================================
 
 export const PROGRAM_IDENTITY: ProgramIdentity = {
-  programName: 'FMU Lions Men\'s Basketball',
-  orgName: 'Florida Memorial University',
+  programName: 'KaNeXT Men\'s Basketball',
+  orgName: 'KaNeXT Sports',
   level: 'NAIA Division II',
-  conference: 'Sun Conference',
+  conference: 'KaNeXT Conference',
   season: '2025-26',
   colors: { primary: '#003DA5', secondary: '#FFB81C' },
   logoUrl: 'https://fmusports.com/images/logos/fmu-athletics.png',
@@ -417,7 +417,7 @@ export const PROGRAM_CONTEXT_ITEMS: ProgramContext[] = [
   {
     id: 'ctx-4',
     key: 'Film Platform',
-    value: 'Hudl — team code FMU-MBB-2526',
+    value: 'Hudl — team code KaNeXT-MBB-2526',
     category: 'system',
     description: 'All game and practice film uploaded to Hudl within 24 hours of session.',
     lastUpdated: '2025-08-20',
@@ -516,7 +516,7 @@ export const CALENDAR_MILESTONES: CalendarMilestone[] = [
   },
   {
     id: 'cm-3',
-    title: 'Sun Conference Schedule Release',
+    title: 'KaNeXT Conference Schedule Release',
     date: '2025-10-15',
     type: 'compliance',
     status: 'completed',
@@ -540,7 +540,7 @@ export const CALENDAR_MILESTONES: CalendarMilestone[] = [
   },
   {
     id: 'cm-6',
-    title: 'Sun Conference Tournament',
+    title: 'KaNeXT Conference Tournament',
     date: '2026-02-27',
     type: 'season',
     status: 'upcoming',
@@ -568,7 +568,7 @@ export const PENDING_DECISIONS: PendingDecision[] = [
   {
     id: 'pd-1',
     title: 'Approve Conference Tournament Travel Budget',
-    description: 'Lodging and meals for 18-person travel party to Clearwater for Sun Conference Tournament. Estimated $12,400.',
+    description: 'Lodging and meals for 18-person travel party to Clearwater for KaNeXT Conference Tournament. Estimated $12,400.',
     category: 'budget',
     urgency: 'critical',
     requestedBy: 'Alicia Washington',

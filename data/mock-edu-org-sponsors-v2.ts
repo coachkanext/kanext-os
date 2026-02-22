@@ -1038,7 +1038,7 @@ const CONTACTS: SponsorContact[] = [
   {
     id: 'con-001',
     sponsorId: 'spon-001',
-    name: 'Marcus Thompson',
+    name: 'Alex Morgan',
     role: 'Regional Partnerships Manager',
     email: 'mthompson@nike.com',
     phone: '(503) 555-0142',

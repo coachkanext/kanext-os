@@ -4,13 +4,13 @@
  */
 
 import {
-  FMU_GAMES_BY_ID,
-  FMU_NEXT_GAME_ID,
-  FMU_PREGAME,
-  FMU_LEADERS,
+  KaNeXT_GAMES_BY_ID,
+  KaNeXT_NEXT_GAME_ID,
+  KaNeXT_PREGAME,
+  KaNeXT_LEADERS,
   ROSTER_KR,
   jerseyArchetypeMap,
-  FMU_PLAYER_BIOS,
+  KaNeXT_PLAYER_BIOS,
   DNA_OFFENSE_POOL,
   DNA_DEFENSE_POOL,
   DNA_TEMPO_POOL,
@@ -377,12 +377,12 @@ function getPositionGroup(position: string): PositionGroup {
 // ── Main Generator ──
 
 export function getGamePlanV2(gameId: string): GamePlanV2Packet | null {
-  const game = FMU_GAMES_BY_ID[gameId];
+  const game = KaNeXT_GAMES_BY_ID[gameId];
   if (!game) return null;
 
   const opp = game.opponent;
   const h = stableHash(opp);
-  const pregame = FMU_PREGAME[gameId];
+  const pregame = KaNeXT_PREGAME[gameId];
 
   // ── Staff Assignments ──
   const statusPool: AssignmentStatus[] = ['not_started', 'in_progress', 'ready', 'approved'];
@@ -477,7 +477,7 @@ export function getGamePlanV2(gameId: string): GamePlanV2Packet | null {
   teamZones.forEach((z) => { z.attemptsPct = Math.round((z.attemptsPct / totalAttempts) * 100); });
 
   // Player permissions from roster
-  const bios = Object.entries(FMU_PLAYER_BIOS);
+  const bios = Object.entries(KaNeXT_PLAYER_BIOS);
   const playerPermissions: PlayerPermission[] = bios.slice(0, 8).map(([jersey, bio]) => {
     const permPool: ShotPermission[] = ['green', 'yellow', 'red'];
     return {
@@ -607,5 +607,5 @@ export function getGamePlanV2(gameId: string): GamePlanV2Packet | null {
 /** Convenience: get packet for the next upcoming game */
 export function getNextGamePlan(): GamePlanV2Packet | null {
   if (!FMU_NEXT_GAME_ID) return null;
-  return getGamePlanV2(FMU_NEXT_GAME_ID);
+  return getGamePlanV2(KaNeXT_NEXT_GAME_ID);
 }

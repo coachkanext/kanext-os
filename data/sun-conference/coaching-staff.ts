@@ -1,5 +1,5 @@
 /**
- * Sun Conference — NAIA Men's Basketball
+ * KaNeXT Conference — NAIA Men's Basketball
  * STEP 2: Coaching Staff (Program Context)
  *
  * Source: Official athletics websites + web search verification
@@ -31,7 +31,7 @@ export const coachingStaff: CoachingStaff[] = [
     staff_page_url: 'https://coastalgeorgiasports.com/sports/mens-basketball/coaches',
   },
   {
-    program_id: 'florida-memorial',
+    program_id: 'kx-sports',
     head_coach_name: 'Delano Thomas',
     head_coach_title: 'Head Men\'s Basketball Coach',
     assistant_coaches: [

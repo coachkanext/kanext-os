@@ -232,10 +232,10 @@ interface StudentAthlete {
 }
 
 const ATHLETE_SPOTLIGHTS: StudentAthlete[] = [
-  { id: 'sa-1', name: 'Darius Johnson', sport: 'Men\'s Basketball', position: 'Guard', year: 'Senior', major: 'Business Administration', gpa: 3.45, hometown: 'Atlanta, GA', achievement: 'Conference Player of the Year candidate', stats: '22.4 PPG, 5.2 APG' },
+  { id: 'sa-1', name: 'Darius Johnson', sport: 'Men\'s Basketball', position: 'Guard', year: 'Senior', major: 'Business Administration', gpa: 3.45, hometown: 'Nashville, TN', achievement: 'Conference Player of the Year candidate', stats: '22.4 PPG, 5.2 APG' },
   { id: 'sa-2', name: 'Maya Thomas', sport: 'Women\'s Basketball', position: 'Forward', year: 'Junior', major: 'Kinesiology', gpa: 3.72, hometown: 'Charlotte, NC', achievement: 'All-Conference First Team', stats: '18.8 PPG, 9.4 RPG' },
   { id: 'sa-3', name: 'Carlos Rodriguez', sport: 'Baseball', position: 'Pitcher', year: 'Sophomore', major: 'Engineering', gpa: 3.88, hometown: 'Miami, FL', achievement: 'Freshman All-American (2025)', stats: 'ERA 2.14, 98 K' },
-  { id: 'sa-4', name: 'Sarah Mitchell', sport: 'Swimming', position: '100m Butterfly', year: 'Senior', major: 'Biology', gpa: 3.95, hometown: 'Denver, CO', achievement: '3x All-American, school record holder' },
+  { id: 'sa-4', name: 'Mia Torres', sport: 'Swimming', position: '100m Butterfly', year: 'Senior', major: 'Biology', gpa: 3.95, hometown: 'Denver, CO', achievement: '3x All-American, school record holder' },
   { id: 'sa-5', name: 'Jordan Taylor', sport: 'Football', position: 'Wide Receiver', year: 'Senior', major: 'Kinesiology', gpa: 3.42, hometown: 'Houston, TX', achievement: 'All-Conference, 1,200 rec yards', stats: '78 rec, 1,204 yds, 11 TD' },
   { id: 'sa-6', name: 'Emma Davis', sport: 'Volleyball', position: 'Outside Hitter', year: 'Junior', major: 'Communications', gpa: 3.61, hometown: 'Nashville, TN', achievement: 'Conference kills leader' },
 ];

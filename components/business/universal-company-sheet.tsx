@@ -402,7 +402,7 @@ function OverviewTab({ colors, roleLens }: { colors: typeof Colors.light; roleLe
 
       <SectionCard title="Current Wedge" colors={colors}>
         <ThemedText style={[styles.bodyText, { color: colors.text }]}>
-          Phase 1: Proof Wedge Deployment -- FMU Athletics (13 sports), ICCLA Church (giving + ministries), K-1 Speed Motorsport League (race ops + standings). Three real institutions, three modes, live data.
+          Phase 1: Proof Wedge Deployment -- KaNeXT Athletics (13 sports), KaNeXT Church Church (giving + ministries), K-1 Speed Motorsport League (race ops + standings). Three real institutions, three modes, live data.
         </ThemedText>
       </SectionCard>
 
@@ -441,8 +441,8 @@ function ProductTab({ colors }: { colors: typeof Colors.light }) {
     { label: 'Nexus AI -- voice + text conversational intelligence', done: true },
     { label: 'Canonical Engine Library (7 engines)', done: true },
     { label: 'Luxury Control Room UI palette', done: true },
-    { label: 'FMU Sports Mode deployment (13 sports)', done: true },
-    { label: 'ICCLA Church Mode deployment', done: true },
+    { label: 'KaNeXT Sports Mode deployment (13 sports)', done: true },
+    { label: 'KaNeXT Church Church Mode deployment', done: true },
     { label: 'K-1 Competition Mode deployment', done: true },
     { label: 'Business Mode data room + governance', done: true },
     { label: 'Settlement rails v1 (Stripe integration)', done: false },
@@ -501,7 +501,7 @@ function ProductTab({ colors }: { colors: typeof Colors.light }) {
 
       <SectionCard title="Demo Navigation" colors={colors}>
         <ThemedText style={[styles.bodyText, { color: colors.text }]}>
-          21 views across 5 modes. Start with Sports Mode (FMU) for the deepest proof-of-concept. Switch modes via the mode selector in the top bar. Each mode has its own dashboard, detail sheets, and Nexus context.
+          21 views across 5 modes. Start with Sports Mode (KaNeXT) for the deepest proof-of-concept. Switch modes via the mode selector in the top bar. Each mode has its own dashboard, detail sheets, and Nexus context.
         </ThemedText>
         <LinkRow icon="play.rectangle.fill" label="Launch Demo" subtitle="Interactive walkthrough" colors={colors} />
       </SectionCard>
@@ -532,10 +532,10 @@ function TractionTab({
   };
 
   const proofPoints = [
-    'FMU Athletics OS: 13 sports programs actively using KaNeXT',
+    'KaNeXT Athletics OS: 13 sports programs actively using KaNeXT',
     '7 proof events scheduled for Q1-Q2 2026',
     'ESPN+ broadcast partnerships at $0 cost to institutions',
-    '$53M-$157M projected free media value for FMU Year 1',
+    '$53M-$157M projected free media value for KaNeXT Year 1',
     '14 institutional prospects in active pipeline',
     '18.2M media impressions with 42% MoM growth',
   ];
@@ -1000,7 +1000,7 @@ function GovernanceTab({
       <SectionCard title="Cap Table Summary" colors={colors}>
         {founder ? (
           <View>
-            <CapTableRow label="Founder (Sammy Kalejaiye)" value="100%" note="Pre-dilution" colors={colors} />
+            <CapTableRow label="Founder (Alex Morgan)" value="100%" note="Pre-dilution" colors={colors} />
             <CapTableRow label="PBD Co-Founder SAFE" value="Up to 10%" note="5-tranche, pending" colors={colors} />
             <CapTableRow label="Family SAFE" value="TBD" note="Active round" colors={colors} />
             <CapTableRow label="Option Pool (Reserved)" value="10%" note="For future hires" colors={colors} />
@@ -1156,7 +1156,7 @@ function CommsTab({
 }) {
   const pressReleases = [
     { id: 'pr-1', title: 'KaNeXT Announces Mission to Build Institutional OS', date: 'Jan 15, 2026', status: 'published' },
-    { id: 'pr-2', title: 'FMU Athletics Partners with KaNeXT for 13-Sport Deployment', date: 'Feb 1, 2026', status: 'published' },
+    { id: 'pr-2', title: 'KaNeXT Athletics Partners with KaNeXT for 13-Sport Deployment', date: 'Feb 1, 2026', status: 'published' },
     { id: 'pr-3', title: 'KaNeXT Launches Free Camera Program for Sub-NCAA Schools', date: 'Feb 10, 2026', status: 'draft' },
   ];
 

@@ -1,5 +1,5 @@
 /**
- * Church Home — ICCLA 4-tab PagerView layout
+ * Church Home — KaNeXT Church 4-tab PagerView layout
  * Dashboard | Calendar | Ministries | Connect
  *
  * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.

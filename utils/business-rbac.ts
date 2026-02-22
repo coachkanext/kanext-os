@@ -10,6 +10,8 @@
  * B13: Holding Company / Parent
  */
 
+import { isSystemOwner } from '@/utils/system-rbac';
+
 // =============================================================================
 // ROLE LEVELS
 // =============================================================================
@@ -184,11 +186,10 @@ export function canAccessDoc(tag: DocAccessTag, role: BusinessRoleLens, tier?: I
 // MEMBERSHIP → LENS (direct membership_id mapping for ActiveView)
 // =============================================================================
 
-const BUSINESS_MEMBERSHIP_MAP: Record<string, BusinessRoleLens> = {
-  mem_biz_kanext_founder: 'B1',
-};
+const BUSINESS_MEMBERSHIP_MAP: Record<string, BusinessRoleLens> = {};
 
 export function getBusinessRole(membershipId: string): BusinessRoleLens {
+  if (isSystemOwner(membershipId)) return 'B1';
   return BUSINESS_MEMBERSHIP_MAP[membershipId] ?? 'B1';
 }
 

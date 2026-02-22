@@ -38,7 +38,7 @@ export function ReelItem({ reel, height, onShare }: ReelItemProps) {
     setPaused(!paused);
   };
 
-  const creatorName = reel.playerTag?.name ?? 'FMU Lions';
+  const creatorName = reel.playerTag?.name ?? 'KaNeXT';
   const creatorInitials = reel.playerTag
     ? reel.playerTag.name.split(' ').map((w) => w[0]).join('')
     : 'FL';

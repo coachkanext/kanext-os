@@ -97,7 +97,7 @@ const DASHBOARDS_READINESS = [
 ];
 
 const AUDIT_LOG = [
-  { id: 'al-1', action: 'exported' as const, actor: 'Sammy Kalejaiye', timestamp: 'Feb 17 09:30', reportLabel: 'CEO Dashboard' },
+  { id: 'al-1', action: 'exported' as const, actor: 'Alex Morgan', timestamp: 'Feb 17 09:30', reportLabel: 'CEO Dashboard' },
   { id: 'al-2', action: 'published' as const, actor: 'Jordan Blake', timestamp: 'Feb 15 16:00', reportLabel: 'Q1 Board Pack' },
   { id: 'al-3', action: 'accessed' as const, actor: 'Rachel Kim', timestamp: 'Feb 14 11:00', reportLabel: 'Compliance Summary' },
   { id: 'al-4', action: 'ran' as const, actor: 'Tom Bradley', timestamp: 'Feb 13 14:30', reportLabel: 'Financial Health Report' },

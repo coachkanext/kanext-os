@@ -51,7 +51,7 @@ const PINNED_HERO: HeroVideo = {
 const COACH_SHARED_HERO: HeroVideo = {
   id: 'hero-shared',
   title: 'Tuesday Practice — Half-Court Sets',
-  subtitle: 'FMU Film · 5h ago',
+  subtitle: 'KaNeXT Film · 5h ago',
   thumbnailColor: '#2d1b3d',
   duration: '14:20',
   source: 'coach_shared',

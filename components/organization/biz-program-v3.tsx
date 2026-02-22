@@ -33,8 +33,8 @@ const VIEWS: { id: ViewMode; label: string }[] = [
 ];
 
 const PROOF_INSTITUTIONS = [
-  { name: 'FMU', type: 'Sports' },
-  { name: 'ICCLA', type: 'Church' },
+  { name: 'KaNeXT', type: 'Sports' },
+  { name: 'KaNeXT Church', type: 'Church' },
   { name: 'K-1', type: 'Competition' },
 ];
 
@@ -58,9 +58,9 @@ const ENTITIES = [
     id: 'e2',
     name: 'KaNeXT Operations LLC',
     type: 'Operating Company',
-    state: 'Florida',
+    state: 'Tennessee',
     status: 'Active',
-    purpose: 'Day-to-day operations, employment, revenue collection, and customer contracts. Florida formation for operational base.',
+    purpose: 'Day-to-day operations, employment, revenue collection, and customer contracts. Ridgemont formation for operational base.',
   },
   {
     id: 'e3',
@@ -73,10 +73,10 @@ const ENTITIES = [
 ];
 
 const TASKS = [
-  { id: 't1', label: 'Finalize pitch deck for pre-seed', priority: 'high' as const, assignee: 'Sammy K.' },
+  { id: 't1', label: 'Finalize pitch deck for pre-seed', priority: 'high' as const, assignee: 'Alex M.' },
   { id: 't2', label: 'Complete NAIA player pool scrape', priority: 'high' as const, assignee: 'Engineering' },
   { id: 't3', label: 'File KaNeXT trademark', priority: 'medium' as const, assignee: 'Legal' },
-  { id: 't4', label: 'Onboard 2 beta partners', priority: 'medium' as const, assignee: 'Sammy K.' },
+  { id: 't4', label: 'Onboard 2 beta partners', priority: 'medium' as const, assignee: 'Alex M.' },
   { id: 't5', label: 'Set up CI/CD pipeline', priority: 'low' as const, assignee: 'Engineering' },
 ];
 

@@ -12,9 +12,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import {
-  FMU_GAME_STATS,
-  FMU_BOX_SCORES,
-  FMU_LEADERS,
+  KaNeXT_GAME_STATS,
+  KaNeXT_BOX_SCORES,
+  KaNeXT_LEADERS,
   type BoxScoreLine,
 } from '@/data/fmu';
 import { MOCK_ROSTER } from '@/data/mock-roster';
@@ -25,13 +25,13 @@ type PbpCategory = 'scoring' | 'foul' | 'sub' | 'timeout' | 'other';
 
 interface PlayByPlayEvent {
   id: string;
-  team: 'FMU' | string;
+  team: 'KaNeXT' | string;
   text: string;
   scoreAt: string;
   category: PbpCategory;
 }
 
-interface FMUGame {
+interface KaNeXTGame {
   opponent: string;
   date: string;
   location: string;
@@ -111,7 +111,7 @@ function convertGameOpsToPlayByPlay(events: any[], opponentAbbr: string): PlayBy
     else oppScore += pts;
     pbp.push({
       id: evt.id,
-      team: evt.team === 'LU' ? 'FMU' : opponentAbbr,
+      team: evt.team === 'LU' ? 'KaNeXT' : opponentAbbr,
       text: gameOpsEventToText(evt),
       scoreAt: `${luScore}-${oppScore}`,
       category: gameOpsEventCategory(evt.type),
@@ -233,7 +233,7 @@ function generateMockPbp(opponent: string, fmuScore: number, oppScore: number) {
   let h = 0;
   for (let i = 0; i < opponent.length; i++) h = ((h << 5) - h + opponent.charCodeAt(i)) | 0;
   const seed = () => { h = ((h << 5) - h + 0x5bd1e995) | 0; return Math.abs(h) % 1000; };
-  const FMU_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas'];
+  const KaNeXT_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas'];
   const OPP_NAMES = ['Johnson', 'Williams', 'Davis', 'Brown', 'Wilson', 'Anderson', 'Taylor'];
   const plays = [
     (n: string) => `${n} makes a layup`, (n: string) => `${n} makes a 3-pointer`,
@@ -252,7 +252,7 @@ function generateMockPbp(opponent: string, fmuScore: number, oppScore: number) {
     const minLeft = i < mid ? 20 - Math.floor((i / mid) * 20) : 20 - Math.floor(((i - mid) / (total - mid)) * 20);
     const sec = seed() % 60;
     const isFmu = seed() % 2 === 0;
-    const names = isFmu ? FMU_NAMES : OPP_NAMES;
+    const names = isFmu ? KaNeXT_NAMES : OPP_NAMES;
     const name = names[seed() % names.length];
     const tpl = plays[seed() % plays.length];
     const pIdx = seed() % plays.length;
@@ -269,7 +269,7 @@ function generateMockPbp(opponent: string, fmuScore: number, oppScore: number) {
 
 interface LiveGamePanelProps {
   gameId: string;
-  game: FMUGame;
+  game: KaNeXTGame;
   colors: typeof Colors.light;
 }
 
@@ -306,7 +306,7 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
   const hasGameOps = !!gameOpsData;
   const gameOpsEvents = hasGameOps ? (gameOpsData.events ?? []) : [];
 
-  const mockStats = FMU_GAME_STATS[gameId];
+  const mockStats = KaNeXT_GAME_STATS[gameId];
   const stats = hasGameOps ? computeGameOpsTeamStats(gameOpsEvents) : mockStats;
 
   const effectiveLuScore = hasGameOps ? String(gameOpsData.luScore) : (game.score ? game.score.replace(/[WL]\s?/, '').split('-')[0] : '0');
@@ -322,7 +322,7 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
         const liveEntries = game.status === 'live' ? entries.slice(0, Math.floor(entries.length * 0.65)) : entries;
         return liveEntries.reverse().map((e, i): PlayByPlayEvent => ({
           id: `mock-${i}`,
-          team: e.team === 'fmu' ? 'FMU' : opponentAbbr,
+          team: e.team === 'fmu' ? 'KaNeXT' : opponentAbbr,
           text: e.text,
           scoreAt: e.score,
           category: e.text.includes('makes') || e.text.includes('misses') || e.text.includes('dunk') || e.text.includes('free throw')
@@ -334,9 +334,9 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
 
   const filteredPbp = pbpFilter === 'all' ? pbpEvents : pbpEvents.filter((e) => e.category === pbpFilter);
 
-  const realBoxScore = hasGameOps ? computeGameOpsBoxScore(gameOpsEvents) : (FMU_BOX_SCORES[gameId] ?? []);
-  const FMU_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
-  const effectiveBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('Florida Memorial', parseInt(effectiveLuScore) || 0, FMU_MOCK_NAMES);
+  const realBoxScore = hasGameOps ? computeGameOpsBoxScore(gameOpsEvents) : (KaNeXT_BOX_SCORES[gameId] ?? []);
+  const KaNeXT_MOCK_NAMES = ['Selden', 'Morgan', 'Turner', 'Lewis', 'Carter', 'Noel', 'Thomas', 'Brewer', 'Morris', 'Thompson'];
+  const effectiveBoxScore = realBoxScore.length > 0 ? realBoxScore : mockBoxScore('KaNeXT Sports', parseInt(effectiveLuScore) || 0, KaNeXT_MOCK_NAMES);
   const oppBoxScore = mockBoxScore(game.opponent, parseInt(effectiveOppScore) || 0);
 
   return (
@@ -404,14 +404,14 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
         {filteredPbp.length > 0 ? (
           <View style={[s.pbpCard, { backgroundColor: colors.backgroundSecondary }]}>
             {filteredPbp.map((event, index) => {
-              const isLU = event.team === 'FMU';
+              const isLU = event.team === 'KaNeXT';
               return (
                 <View key={event.id}>
                   {index > 0 && <View style={[s.divider, { backgroundColor: colors.divider }]} />}
                   <View style={s.pbpRow}>
                     <View style={[s.pbpTeamBadge, { backgroundColor: isLU ? colors.text + '15' : colors.backgroundTertiary }]}>
                       <Text style={[s.pbpTeamText, { color: isLU ? colors.text : colors.textSecondary }]}>
-                        {event.team === 'FMU' ? 'FMU' : opponentAbbr}
+                        {event.team === 'KaNeXT' ? 'KaNeXT' : opponentAbbr}
                       </Text>
                     </View>
                     <Text style={[s.pbpAction, { color: colors.text }]} numberOfLines={2}>{event.text}</Text>
@@ -469,7 +469,7 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
                     onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setLiveBoxTeam(t); }}
                   >
                     <Text style={[s.liveBoxTeamText, { color: active ? colors.background : colors.textSecondary }]}>
-                      {t === 'fmu' ? 'FMU' : opponentAbbr}
+                      {t === 'fmu' ? 'KaNeXT' : opponentAbbr}
                     </Text>
                   </Pressable>
                 );
@@ -564,7 +564,7 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
         return (
           <View style={[s.liveTeamCard, { backgroundColor: colors.backgroundSecondary }]}>
             <View style={s.liveTeamHeader}>
-              <Text style={[s.liveTeamHeaderName, { color: colors.text }]}>FMU</Text>
+              <Text style={[s.liveTeamHeaderName, { color: colors.text }]}>KXT</Text>
               <Text style={[s.liveTeamHeaderName, { color: colors.text }]}>{opponentAbbr}</Text>
             </View>
             {rows.map((row, i) => {
@@ -603,9 +603,9 @@ export function LiveGamePanel({ gameId, game, colors }: LiveGamePanelProps) {
               <View key={cat.key} style={{ marginBottom: Spacing.md }}>
                 <Text style={[s.liveLeaderCatLabel, { color: colors.textTertiary }]}>{cat.label}</Text>
                 <View style={s.liveLeaderSplit}>
-                  {/* FMU side */}
+                  {/* KaNeXT side */}
                   <View style={[s.liveLeaderCol, { backgroundColor: colors.backgroundSecondary }]}>
-                    <Text style={[s.liveLeaderTeamLabel, { color: colors.textTertiary }]}>FMU</Text>
+                    <Text style={[s.liveLeaderTeamLabel, { color: colors.textTertiary }]}>KXT</Text>
                     {topN(fmuBox, cat.key).map((p, i) => (
                       <View key={i} style={s.liveLeaderRow}>
                         <Text style={[s.liveLeaderName, { color: colors.text }]}>{p.name}</Text>

@@ -1,6 +1,6 @@
 /**
  * Calendar Games View
- * Upcoming and Completed sections from FMU_GAMES.
+ * Upcoming and Completed sections from KaNeXT_GAMES.
  */
 
 import React from 'react';
@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { Colors, Spacing } from '@/constants/theme';
-import { FMU_GAMES, parseGameDate } from '@/data/fmu';
+import { KaNeXT_GAMES, parseGameDate } from '@/data/fmu';
 import { openTeamCard } from '@/utils/global-entity-sheets';
 
 interface Props {
@@ -21,14 +21,14 @@ export function CalendarGamesView({ colors, accent }: Props) {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const upcoming = FMU_GAMES.filter((g) => g.status === 'upcoming' || g.status === 'live')
+  const upcoming = KaNeXT_GAMES.filter((g) => g.status === 'upcoming' || g.status === 'live')
     .sort((a, b) => {
       const da = parseGameDate(a.date)?.getTime() ?? 0;
       const db = parseGameDate(b.date)?.getTime() ?? 0;
       return da - db;
     });
 
-  const completed = FMU_GAMES.filter((g) => g.status === 'final')
+  const completed = KaNeXT_GAMES.filter((g) => g.status === 'final')
     .sort((a, b) => {
       const da = parseGameDate(a.date)?.getTime() ?? 0;
       const db = parseGameDate(b.date)?.getTime() ?? 0;

@@ -54,79 +54,79 @@ interface ExtendedAppState extends AppContextState {
 
 const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
   sports: {
-    id: 'fmu-basketball',
-    name: 'Florida Memorial University',
+    id: 'sports_kx',
+    name: 'KaNeXT Sports',
     mode: 'sports',
-    type: 'college_basketball',
-    location: 'Miami Gardens, FL',
-    description: 'Florida Memorial University Lions Men\'s Basketball',
-  },
-  church: {
-    id: 'icc',
-    name: 'International Christian Center',
-    mode: 'church',
-    type: 'church',
-    location: 'Los Angeles, CA',
-    description: 'Inter-denominational, Pentecostal',
-  },
-  education: {
-    id: 'sdcc',
-    name: 'San Diego Christian College',
-    mode: 'education',
-    type: 'college',
-    location: 'San Diego County, CA',
-    description: 'Private Christian Liberal Arts College',
+    type: 'college_athletics',
+    location: 'Nashville, TN',
+    description: 'KaNeXT Sports — Athletic Programs',
   },
   business: {
-    id: 'kanext-biz',
-    name: 'KaNeXT',
+    id: 'biz_kx',
+    name: 'KaNeXT Business',
     mode: 'business',
     type: 'platform',
-    location: 'Tennessee',
-    description: 'KaNeXT Institutional OS Platform',
+    location: 'Nashville, TN',
+    description: 'KaNeXT Business — Institutional OS Platform',
+  },
+  church: {
+    id: 'church_kx',
+    name: 'KaNeXT Church',
+    mode: 'church',
+    type: 'faith',
+    location: 'Nashville, TN',
+    description: 'KaNeXT Church — Faith Community',
+  },
+  education: {
+    id: 'edu_kx',
+    name: 'KaNeXT Education',
+    mode: 'education',
+    type: 'university',
+    location: 'Nashville, TN',
+    description: 'KaNeXT Education — Academic Institution',
   },
   competition: {
-    id: 'k1-league',
-    name: 'K-1 Hypercar Championship',
+    id: 'comp_kx',
+    name: 'KaNeXT Competition',
     mode: 'competition',
     type: 'motorsport_league',
     location: 'Global',
-    description: 'K-1 Hypercar Championship',
+    description: 'KaNeXT Competition — Championship Series',
   },
 };
 
 const DEMO_CYCLES: Record<Mode, Cycle> = {
   sports: {
-    id: '2025-26',
+    id: 'kx_2025_26',
     name: '2025-26',
     startDate: new Date('2025-10-01'),
     endDate: new Date('2026-04-01'),
     isCurrent: true,
   },
-  church: {
-    id: '2025',
-    name: '2025',
-    startDate: new Date('2025-01-01'),
-    endDate: new Date('2025-12-31'),
-    isCurrent: true,
-  },
-  education: {
-    id: '2025-26-academic',
-    name: '2025-2026 Academic Year',
-    startDate: new Date('2025-08-25'),
-    endDate: new Date('2026-05-15'),
-    isCurrent: true,
-  },
   business: {
-    id: 'fy2026',
+    id: 'biz_kx_fy2026',
     name: 'FY 2026',
     startDate: new Date('2026-01-01'),
     endDate: new Date('2026-12-31'),
     isCurrent: true,
   },
+  church: {
+    id: 'church_kx_2026',
+    name: '2026',
+    startDate: new Date('2026-01-01'),
+    endDate: new Date('2026-12-31'),
+    isCurrent: true,
+  },
+  education: {
+    id: 'edu_kx_2025_26',
+    name: '2025-26 Academic Year',
+    startDate: new Date('2025-08-18'),
+    endDate: new Date('2026-05-10'),
+    isCurrent: true,
+  },
   competition: {
-    id: 'k1-s1-2026',
-    name: 'Season 1 · 2026',
+    id: 'comp_kx_s1_2026',
+    name: 'Season 1 \u00B7 2026',
     startDate: new Date('2026-03-01'),
     endDate: new Date('2026-11-30'),
     isCurrent: true,
@@ -142,51 +142,35 @@ const DEMO_ROLES: Record<Mode, Role> = {
 };
 
 const DEMO_PROGRAM: Program = {
-  id: 'varsity',
-  name: 'Varsity',
+  id: 'kx_mbb',
+  name: "Men's Basketball",
   level: 'varsity',
 };
 
 // Programs for sports mode
 const SPORTS_PROGRAMS: Record<string, Program> = {
-  'Varsity': { id: 'varsity', name: 'Varsity', level: 'varsity' },
-  'Development I': { id: 'dev-1', name: 'Development I', level: 'development_1' },
-  'Development II': { id: 'dev-2', name: 'Development II', level: 'development_2' },
-  'Postgrad': { id: 'postgrad', name: 'Postgrad', level: 'postgrad' },
+  "Men's Basketball": { id: 'kx_mbb', name: "Men's Basketball", level: 'varsity' },
+  "Women's Basketball": { id: 'kx_wbb', name: "Women's Basketball", level: 'varsity' },
+  'Football': { id: 'kx_football', name: 'Football', level: 'varsity' },
+  'Development I': { id: 'kx_dev1', name: 'Development I', level: 'development_1' },
+  'Development II': { id: 'kx_dev2', name: 'Development II', level: 'development_2' },
 };
 
 // Seasons for sports mode
 const SPORTS_SEASONS: Record<string, Cycle> = {
-  '2025-26': { id: '2025-26', name: '2025-26', startDate: new Date('2025-10-01'), endDate: new Date('2026-04-01'), isCurrent: true },
-  '2024-25': { id: '2024-25', name: '2024-25', startDate: new Date('2024-10-01'), endDate: new Date('2025-04-01'), isCurrent: false },
-  '2023-24': { id: '2023-24', name: '2023-24', startDate: new Date('2023-10-01'), endDate: new Date('2024-04-01'), isCurrent: false },
+  '2025-26': { id: 'kx_2025_26', name: '2025-26', startDate: new Date('2025-10-01'), endDate: new Date('2026-04-01'), isCurrent: true },
+  '2024-25': { id: 'kx_2024_25', name: '2024-25', startDate: new Date('2024-10-01'), endDate: new Date('2025-04-01'), isCurrent: false },
 };
 
 // Organizations for sports mode (static for now)
 const SPORTS_ORGANIZATIONS: Record<string, Organization> = {
-  'Florida Memorial University': {
-    id: 'fmu-basketball',
-    name: 'Florida Memorial University',
+  'KaNeXT Sports': {
+    id: 'sports_kx',
+    name: 'KaNeXT Sports',
     mode: 'sports',
-    type: 'college_basketball',
-    location: 'Miami Gardens, FL',
-    description: 'Florida Memorial University Lions Men\'s Basketball',
-  },
-  'Middlebrooks Academy': {
-    id: 'middlebrooks-academy',
-    name: 'Middlebrooks Academy',
-    mode: 'sports',
-    type: 'prep_school',
-    location: 'Atlanta, GA',
-    description: 'Elite Prep Basketball Program',
-  },
-  'Cathedral HS': {
-    id: 'cathedral-hs',
-    name: 'Cathedral HS',
-    mode: 'sports',
-    type: 'high_school',
-    location: 'Indianapolis, IN',
-    description: 'Cathedral High School Basketball',
+    type: 'college_athletics',
+    location: 'Nashville, TN',
+    description: 'KaNeXT Sports — Athletic Programs',
   },
 };
 

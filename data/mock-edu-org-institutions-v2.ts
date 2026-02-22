@@ -1,6 +1,6 @@
 /**
  * Education Organization Institutions V2 — Mock Data & Types
- * ICCLA-realistic institution portfolio: FMU, Morris Brown, Edward Waters, Paul Quinn.
+ * KaNeXT Church-realistic institution portfolio: KaNeXT, Morris Brown, Edward Waters, Paul Quinn.
  */
 
 // =============================================================================
@@ -193,9 +193,9 @@ export const TODAY_PRIORITY_COLORS: Record<TodayItem['priority'], string> = {
 const INSTITUTIONS: EduInstitution[] = [
   {
     id: 'inst-001',
-    name: 'Florida Memorial University',
-    shortName: 'FMU',
-    location: 'Miami Gardens, FL',
+    name: 'KaNeXT Sports',
+    shortName: 'KaNeXT',
+    location: 'Nashville, TN',
     type: 'university',
     status: 'active',
     priority: 'highest',
@@ -236,7 +236,7 @@ const INSTITUTIONS: EduInstitution[] = [
     id: 'inst-003',
     name: 'Morris Brown College',
     shortName: 'MBC',
-    location: 'Atlanta, GA',
+    location: 'Nashville, TN',
     type: 'college',
     status: 'pipeline',
     pipelineStage: 'review',
@@ -363,7 +363,7 @@ const TODAY_ITEMS: TodayItem[] = [
   {
     id: 'today-001',
     title: 'SACSCOC interim report deadline',
-    institution: 'Florida Memorial University',
+    institution: 'KaNeXT Sports',
     type: 'deadline',
     priority: 'urgent',
     due: '2026-03-15',
@@ -401,8 +401,8 @@ const TODAY_ITEMS: TodayItem[] = [
 const NEXT_MILESTONES: NextMilestone[] = [
   {
     id: 'ms-001',
-    title: 'FMU SACSCOC interim report submission',
-    institution: 'Florida Memorial University',
+    title: 'KaNeXT SACSCOC interim report submission',
+    institution: 'KaNeXT Sports',
     date: '2026-03-15',
     category: 'Compliance',
   },
@@ -429,8 +429,8 @@ const NEXT_MILESTONES: NextMilestone[] = [
   },
   {
     id: 'ms-006',
-    title: 'FMU housing renovation Phase 2 completion',
-    institution: 'Florida Memorial University',
+    title: 'KaNeXT housing renovation Phase 2 completion',
+    institution: 'KaNeXT Sports',
     date: '2026-04-01',
     category: 'Facilities',
   },
@@ -453,7 +453,7 @@ const OVERVIEW_TILES: OverviewTiles = {
   agingRisk: '$1.4M 90+ days',
   complianceAlerts: 10,
   deadlines: [
-    { title: 'SACSCOC interim report', date: '2026-03-15', institution: 'FMU' },
+    { title: 'SACSCOC interim report', date: '2026-03-15', institution: 'KaNeXT' },
     { title: 'Accreditation self-study', date: '2026-04-15', institution: 'MBC' },
     { title: 'Title III grant report', date: '2026-04-01', institution: 'EWU' },
   ],

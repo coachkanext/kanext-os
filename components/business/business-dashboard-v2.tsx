@@ -126,7 +126,7 @@ const TODAY_ITEMS: TodayItem[] = [
     id: 'td-1',
     title: 'Board Pack Review Prep',
     badge: 'DECISION',
-    owner: 'Sammy K.',
+    owner: 'Alex M.',
     time: '10:00 AM',
   },
   {
@@ -140,7 +140,7 @@ const TODAY_ITEMS: TodayItem[] = [
     id: 'td-3',
     title: 'Investor Update Draft Due',
     badge: 'INVESTOR',
-    owner: 'Sammy K.',
+    owner: 'Alex M.',
     time: '3:00 PM',
   },
 ];
@@ -222,7 +222,7 @@ const ALERTS: AlertItem[] = [
     severity: 'investor_risk',
     type: 'INVESTOR',
     title: 'PBD follow-up call prep incomplete',
-    owner: 'Sammy K.',
+    owner: 'Alex M.',
     time: 'Tomorrow',
   },
   {

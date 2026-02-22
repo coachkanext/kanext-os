@@ -1,5 +1,5 @@
 /**
- * Mock Player Development Plans — keyed by FMU jersey number
+ * Mock Player Development Plans — keyed by KaNeXT jersey number
  * Development plans with 2-week, 6-week, 12-week goals + skill priorities + check-ins
  */
 

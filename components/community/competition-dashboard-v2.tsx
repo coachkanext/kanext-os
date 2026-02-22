@@ -201,7 +201,7 @@ function CompetitionHeader({ colors }: { colors: typeof Colors.light }) {
         </View>
         <View style={s.headerTextBlock}>
           <ThemedText style={[s.headerTitle, { color: colors.text }]}>
-            {series?.name ?? 'K-1 Hypercar Championship'}
+            {series?.name ?? 'KaNeXT League'}
           </ThemedText>
           <ThemedText style={[s.headerSubtitle, { color: colors.textSecondary }]}>
             League {'\u00B7'} Motorsport {'\u00B7'} International

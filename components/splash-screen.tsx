@@ -11,7 +11,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Image, StyleSheet, Animated, Easing } from 'react-native';
 
-const KX_LOGO = require('@/assets/images/k1-logo.png');
+const KX_LOGO = require('@/assets/images/kx-logo.png');
 
 /**
  * Module-level guard: prevents animation from running more than once per session.
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 120,
+    width: 160,
     height: 120,
   },
   bottomTag: {

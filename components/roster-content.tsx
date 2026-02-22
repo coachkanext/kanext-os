@@ -1,6 +1,6 @@
 /**
  * Roster Content Component
- * NBA.com-style roster view for Florida Memorial University Lions
+ * NBA.com-style roster view for KaNeXT
  * Full-bleed hero-image layout — each player is an immersive section.
  */
 
@@ -21,7 +21,7 @@ import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { useAppContext } from '@/context/app-context';
-import { FMU_RECORD, FMU_STANDINGS, ROSTER_KR, getPlayerSeasonPGIS, getPGISColor } from '@/data/fmu';
+import { KaNeXT_RECORD, KaNeXT_STANDINGS, ROSTER_KR, getPlayerSeasonPGIS, getPGISColor } from '@/data/fmu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ARCHETYPE_LABELS, type Archetype } from '@/data/system-demand-profiles';
 import { UnitsView } from '@/components/depth-chart/depth-chart-units';
@@ -34,8 +34,8 @@ import { RosterCRMList } from '@/components/roster/roster-crm-list';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// FMU seal used as fallback when no headshot available
-const FMU_SEAL = require('@/assets/images/fmu-seal.png');
+// KaNeXT seal used as fallback when no headshot available
+const KaNeXT_SEAL = require('@/assets/images/fmu-seal.png');
 
 // Player headshots (keyed by jersey number)
 const HEADSHOTS: Record<string, any> = {
@@ -70,7 +70,7 @@ const SEASONS = ['2024-25', '2025-26', '2026-27'] as const;
 type Season = typeof SEASONS[number];
 export const CURRENT_SEASON: Season = '2025-26';
 
-// FMU placeholder last-3-games (no Firebase dependency)
+// KaNeXT placeholder last-3-games (no Firebase dependency)
 const LAST_3_GAMES: Record<string, { opponent: string; pts: number; reb: number; ast: number }[]> = {};
 
 // PLAYER_CLUSTERS, ClusterRatings, computeOffKR, computeDefKR now live in @/data/roster-data
@@ -117,7 +117,7 @@ function getPlayerKrSortValue(player: { number: string; kr: number }, key: KrSor
 
 type PlayerRole = 'starter' | 'rotation' | 'bench' | 'redshirt' | 'injured' | 'out';
 
-// Florida Memorial University Lions — 2025-26 Roster
+// KaNeXT — 2025-26 Roster
 export const ROSTER = [
   { id: '1',  number: '0',  firstName: 'Tristan',   lastName: 'Thomas',        position: 'Wing', listPos: 'W', height: '6\'4"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Tampa, FL', formerSchool: 'Hillsborough CC', ppg: 3.4, rpg: 3.1, apg: 0, kr: 66, usage: 12.5, minutes: 16, role: 'rotation' as PlayerRole },
   { id: '2',  number: '1',  firstName: 'Petar',      lastName: 'Asceric',       position: 'Big',           listPos: 'B',  height: '6\'10"', weight: 230, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Belgrade, Serbia', formerSchool: 'KK Zemun (Serbia)', ppg: 6.1, rpg: 2.4, apg: 0, kr: 68, usage: 14.8, minutes: 16, role: 'rotation' as PlayerRole },
@@ -126,7 +126,7 @@ export const ROSTER = [
   { id: '5',  number: '4',  firstName: 'Devin',      lastName: 'Carter',        position: 'Wing', listPos: 'W', height: '6\'0"',  weight: 175, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Jackson, MS', formerSchool: 'Hinds CC', ppg: 18.3, rpg: 6.1, apg: 3.4, kr: 82, usage: 28.4, minutes: 32, role: 'starter' as PlayerRole },
   { id: '6',  number: '5',  firstName: 'Jeffrey',    lastName: 'Selden',        position: 'Big',           listPos: 'B',  height: '6\'6"',  weight: 210, classYear: 'Senior',    scholarship: 0, nil: '—', notes: 'Pembroke Pines, FL', formerSchool: 'Broward College', ppg: 11.2, rpg: 5.9, apg: 3.0, kr: 80, usage: 22.1, minutes: 28, role: 'starter' as PlayerRole },
   { id: '7',  number: '7',  firstName: 'Maximo',     lastName: 'Moratinos',     position: 'Forward', listPos: 'F', height: '6\'8"',  weight: 205, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Marbella, Spain', formerSchool: 'CB Marbella (Spain)', ppg: 6.6, rpg: 2.6, apg: 0, kr: 70, usage: 15.2, minutes: 18, role: 'rotation' as PlayerRole },
-  { id: '8',  number: '9',  firstName: "Ka'Mar",     lastName: 'Benbo',         position: 'Point Guard',   listPos: 'PG', height: '6\'0"',  weight: 170, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Miami Gardens, FL', formerSchool: 'Carol City HS', ppg: 0, rpg: 0, apg: 0, kr: 58, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
+  { id: '8',  number: '9',  firstName: "Ka'Mar",     lastName: 'Benbo',         position: 'Point Guard',   listPos: 'PG', height: '6\'0"',  weight: 170, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Nashville, TN', formerSchool: 'Carol City HS', ppg: 0, rpg: 0, apg: 0, kr: 58, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
   { id: '9',  number: '10', firstName: 'Jason',      lastName: 'Morris',        position: 'Forward', listPos: 'F', height: '6\'4"',  weight: 200, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Miami, FL', formerSchool: 'Northwestern HS', ppg: 0, rpg: 0, apg: 0, kr: 56, usage: 0, minutes: 4, role: 'bench' as PlayerRole },
   { id: '10', number: '11', firstName: 'Sehmaj',     lastName: 'Mentor',        position: 'Point Guard',   listPos: 'PG', height: '6\'2"',  weight: 185, classYear: 'Junior',    scholarship: 0, nil: '—', notes: 'Orlando, FL', formerSchool: 'Indian River State', ppg: 9.2, rpg: 3.5, apg: 2.4, kr: 78, usage: 20.3, minutes: 30, role: 'starter' as PlayerRole },
   { id: '11', number: '12', firstName: 'Gavin',      lastName: 'Turner',        position: 'Wing', listPos: 'W', height: '6\'5"',  weight: 195, classYear: 'Freshman',  scholarship: 0, nil: '—', notes: 'Fort Lauderdale, FL', formerSchool: 'Dillard HS', ppg: 0, rpg: 0, apg: 0, kr: 52, usage: 0, minutes: 2, role: 'bench' as PlayerRole },
@@ -138,7 +138,7 @@ export const ROSTER = [
   { id: '17', number: '55', firstName: "Aa'Reyon",   lastName: 'Munir-Jones',   position: 'Combo Guard', listPos: 'CG', height: '6\'4"', weight: 185, classYear: 'Sophomore', scholarship: 0, nil: '—', notes: 'Miramar, FL', formerSchool: 'Miramar HS', ppg: 7.2, rpg: 4.2, apg: 1.4, kr: 72, usage: 16.9, minutes: 20, role: 'rotation' as PlayerRole },
 ];
 
-// FMU Depth Chart — 5 position groups
+// KaNeXT Depth Chart — 5 position groups
 const DEPTH_CHART = [
   {
     position: 'Point Guard',
@@ -181,14 +181,14 @@ const DEPTH_CHART = [
   },
 ];
 
-// FMU Team Info (for thin header)
-const FMU_TEAM = {
-  name: 'Florida Memorial',
-  conference: 'Sun Conference',
+// KaNeXT Team Info (for thin header)
+const KaNeXT_TEAM = {
+  name: 'KaNeXT Sports',
+  conference: 'KaNeXT Conference',
   division: 'NAIA',
-  record: FMU_RECORD.overall,
-  confRecord: FMU_RECORD.conference,
-  streak: FMU_STANDINGS.find((r) => r.team === 'Florida Memorial')?.streak ?? '—',
+  record: KaNeXT_RECORD.overall,
+  confRecord: KaNeXT_RECORD.conference,
+  streak: KaNeXT_STANDINGS.find((r) => r.team === 'KaNeXT Sports')?.streak ?? '—',
 };
 
 // ── Season-keyed data ──
@@ -275,7 +275,7 @@ function PlayerSection({
         </View>
       </View>
 
-      {/* ── Hero Photo (headshot or FMU Seal fallback) — tappable → bio ── */}
+      {/* ── Hero Photo (headshot or KaNeXT Seal fallback) — tappable → bio ── */}
       <Pressable
         style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}
         onPress={() => {
@@ -286,7 +286,7 @@ function PlayerSection({
         <View style={styles.photoArea}>
           <View style={hasHeadshot ? styles.headshotWrapper : styles.photoWrapper}>
             <Image
-              source={HEADSHOTS[player.number] ?? FMU_SEAL}
+              source={HEADSHOTS[player.number] ?? KaNeXT_SEAL}
               style={hasHeadshot ? styles.headshot : styles.sealImage}
               resizeMode="contain"
             />
@@ -1148,7 +1148,7 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
       position: tradPos,
       height: p.height,
       classYear: p.classYear,
-      currentSchool: 'Florida Memorial',
+      currentSchool: 'KaNeXT Sports',
       level: 'NAIA' as const,
       conference: '',
       state: 'FL',
@@ -1178,8 +1178,8 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
             <View style={styles.teamRecordRow}>
               <Text style={styles.teamRecord}>{FMU_TEAM.record}</Text>
               <Text style={styles.teamConfRecord}>({FMU_TEAM.confRecord})</Text>
-              <View style={{ backgroundColor: FMU_TEAM.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: FMU_TEAM.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
+              <View style={{ backgroundColor: KaNeXT_TEAM.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: KaNeXT_TEAM.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
                   {FMU_TEAM.streak}
                 </Text>
               </View>

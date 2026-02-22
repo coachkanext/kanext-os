@@ -112,7 +112,7 @@ export interface ReceiptPayload {
 export interface ConfirmationPayload {
   state: ConfirmationState;
   action_summary: string;
-  target_context: string; // e.g. "Sports · FMU · Men's Basketball · 2025–26"
+  target_context: string; // e.g. "Sports · KaNeXT · Men's Basketball · 2025–26"
   impact_line: string;
   requires_audit_note: boolean;
 }

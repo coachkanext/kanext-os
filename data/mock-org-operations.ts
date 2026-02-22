@@ -49,12 +49,12 @@ const SPORTS_OPS: OrgOperationsData = {
     { id: 'sw-1', name: 'Recruiting Pipeline', lead: 'Coach Harris', status: 'active', items: 18, progress: 45 },
     { id: 'sw-2', name: 'Strength & Conditioning', lead: 'Antoine Brooks', status: 'active', items: 12, progress: 72 },
     { id: 'sw-3', name: 'Facility Upgrades', lead: 'Dr. Marcus Wilson', status: 'blocked', items: 6, progress: 30 },
-    { id: 'sw-4', name: 'NIL Program Setup', lead: 'Sammy Kalejaiye', status: 'active', items: 9, progress: 55 },
+    { id: 'sw-4', name: 'NIL Program Setup', lead: 'Alex Morgan', status: 'active', items: 9, progress: 55 },
   ],
   meetings: [
-    { id: 'sm-1', title: 'Coaching Staff Huddle', date: 'Feb 18, 2026 · 9:00 AM', attendees: ['Sammy K', 'Harris', 'Brooks'], status: 'scheduled' },
-    { id: 'sm-2', title: 'Athletic Director Check-in', date: 'Feb 20, 2026 · 2:00 PM', attendees: ['Sammy K', 'Dr. Wilson'], status: 'scheduled' },
-    { id: 'sm-3', title: 'Recruiting Review', date: 'Feb 14, 2026 · 3:00 PM', attendees: ['Sammy K', 'Harris'], status: 'completed' },
+    { id: 'sm-1', title: 'Coaching Staff Huddle', date: 'Feb 18, 2026 · 9:00 AM', attendees: ['Alex M', 'Harris', 'Brooks'], status: 'scheduled' },
+    { id: 'sm-2', title: 'Athletic Director Check-in', date: 'Feb 20, 2026 · 2:00 PM', attendees: ['Alex M', 'Dr. Wilson'], status: 'scheduled' },
+    { id: 'sm-3', title: 'Recruiting Review', date: 'Feb 14, 2026 · 3:00 PM', attendees: ['Alex M', 'Harris'], status: 'completed' },
   ],
   rules: [
     { id: 'sr-1', title: 'NAIA Eligibility Standards', category: 'Eligibility', summary: 'Student-athletes must maintain 2.0 GPA and 12 credit hours per term.' },
@@ -108,7 +108,7 @@ const CHURCH_OPS: OrgOperationsData = {
     { id: 'cw-3', name: 'Building Expansion Phase 2', lead: 'Deacon Harris', status: 'blocked', items: 8, progress: 65 },
   ],
   meetings: [
-    { id: 'cm-1', title: 'Elder Board Meeting', date: 'Feb 22, 2026 · 6:30 PM', attendees: ['Pastor Dipo Kalejaiye', 'Elder Davis', 'Elder Brown'], status: 'scheduled' },
+    { id: 'cm-1', title: 'Elder Board Meeting', date: 'Feb 22, 2026 · 6:30 PM', attendees: ['Pastor Dipo Carter', 'Elder Davis', 'Elder Brown'], status: 'scheduled' },
     { id: 'cm-2', title: 'Worship Team Rehearsal', date: 'Feb 19, 2026 · 7:00 PM', attendees: ['Min. Lee', 'Worship Team'], status: 'scheduled' },
     { id: 'cm-3', title: 'Deacon Board Review', date: 'Feb 10, 2026 · 6:00 PM', attendees: ['Deacons'], status: 'completed' },
   ],

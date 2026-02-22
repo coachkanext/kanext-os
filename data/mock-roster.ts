@@ -20,7 +20,7 @@ export interface RosterPlayer {
 export const MOCK_ROSTER: RosterPlayer[] = [
   {
     id: '1',
-    name: 'Brandon Williams',
+    name: 'Marcus Reed',
     number: '1',
     position: 'PG',
     primaryArchetype: 'pick_and_roll_operator',
@@ -65,7 +65,7 @@ export const MOCK_ROSTER: RosterPlayer[] = [
   },
   {
     id: '5',
-    name: 'Adrian Hernandez',
+    name: 'Jordan Blake',
     number: '10',
     position: 'B',
     primaryArchetype: 'rim_protector_anchor',
@@ -74,7 +74,7 @@ export const MOCK_ROSTER: RosterPlayer[] = [
   },
   {
     id: '6',
-    name: 'Laolu Kalejaiye',
+    name: 'Devon Carter',
     number: '11',
     position: 'PG',
     primaryArchetype: 'poa_defender_guard',
@@ -83,7 +83,7 @@ export const MOCK_ROSTER: RosterPlayer[] = [
   },
   {
     id: '7',
-    name: 'Nathan Chtelan',
+    name: 'Tyler Quinn',
     number: '15',
     position: 'CG',
     primaryArchetype: 'spot_up_specialist',

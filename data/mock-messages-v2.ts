@@ -388,7 +388,7 @@ const SPORTS_ROOMS: MsgRoom[] = [
 const CHURCH_MESSAGES: MsgItem[] = [
   {
     id: 'cm-1',
-    senderName: 'Pastor Dipo Kalejaiye',
+    senderName: 'Pastor Dipo Carter',
     senderInitials: 'DK',
     preview: 'Sunday sermon notes are posted. Please review before Wednesday study.',
     timestamp: '1h ago',
@@ -399,7 +399,7 @@ const CHURCH_MESSAGES: MsgItem[] = [
   },
   {
     id: 'cm-2',
-    senderName: 'Sarah Mitchell',
+    senderName: 'Mia Torres',
     senderInitials: 'SM',
     preview: 'The worship setlist for next Sunday is ready for review.',
     timestamp: '4h ago',
@@ -537,7 +537,7 @@ const CHURCH_MESSAGES: MsgItem[] = [
   },
   {
     id: 'cm-15',
-    senderName: 'Pastor Dipo Kalejaiye',
+    senderName: 'Pastor Dipo Carter',
     senderInitials: 'DK',
     preview: 'New sermon series "Unshakeable" starts next Sunday. Promo graphics in the drive.',
     timestamp: '2d ago',

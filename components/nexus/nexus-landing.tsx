@@ -30,7 +30,7 @@ const MODE_QUOTES: Record<Mode, { text: string; attribution: string }> = {
   },
   competition: {
     text: 'Why can\u2019t you do it? Do they have two heads?',
-    attribution: '\u2014 Dr. Oladipo Kalejaiye',
+    attribution: '\u2014 Dr. Oladipo Carter',
   },
 };
 

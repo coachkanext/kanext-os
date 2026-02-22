@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// KaNeXT OS — Facilities Hub  (Sports Mode · FMU Monarchs)
+// KaNeXT OS — Facilities Hub  (Sports Mode · KaNeXT Monarchs)
 // Mock types + data for the basketball-program facilities management module
 // ---------------------------------------------------------------------------
 
@@ -314,7 +314,7 @@ export const FACILITY_BOOKINGS: Booking[] = [
     title: 'Team Practice — Half-Court Sets',
     start: minsFromNow(-30),
     end: minsFromNow(90),
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     attendees: ['Coaching Staff', 'All Players'],
     notes: 'Focus on motion offense and late-clock execution.',
   },
@@ -360,7 +360,7 @@ export const FACILITY_BOOKINGS: Booking[] = [
     title: 'Recruiting Strategy — Spring Targets',
     start: minsFromNow(300),
     end: minsFromNow(360),
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     attendees: ['Full Coaching Staff'],
     notes: 'Review spring visit list and scholarship allocation.',
   },
@@ -369,7 +369,7 @@ export const FACILITY_BOOKINGS: Booking[] = [
     spaceId: 'sp-home-venue',
     spaceName: 'Monarch Arena',
     type: 'game',
-    title: 'FMU vs. Hampton — ICCLA Conference',
+    title: 'KaNeXT vs. Hampton — KaNeXT Church Conference',
     start: daysFromNow(2),
     end: new Date(daysFromNow(2).getTime() + 150 * 60000),
     owner: 'Game Operations',
@@ -435,7 +435,7 @@ export const FACILITY_WORK_ORDERS: WorkOrder[] = [
     title: 'Dead spot near free-throw line (south end)',
     description:
       'Players reporting a soft/bouncy dead spot approximately 2 feet left of the south free-throw line. Subfloor may need repair or replacement. Area marked with tape.',
-    requester: 'Sammy Kalejaiye',
+    requester: 'Alex Morgan',
     assignee: 'Regional Flooring Pros',
     vendor: 'Regional Flooring Pros',
     status: 'in_progress',
@@ -549,7 +549,7 @@ export const FACILITY_WORK_ORDERS: WorkOrder[] = [
     title: 'Install second display for video conferencing',
     description:
       'Request to add a secondary 55" display on the east wall for split-screen video conferencing during recruiting calls. Mount, display, and cabling needed.',
-    requester: 'Sammy Kalejaiye',
+    requester: 'Alex Morgan',
     status: 'approved',
     costEstimate: 1800,
     createdAt: minsFromNow(-7200),
@@ -566,7 +566,7 @@ export const FACILITY_ISSUES: FacilityIssue[] = [
     spaceName: 'Main Gym — Monarch Court',
     severity: 'critical',
     title: 'Dead spot on court surface — south free-throw area',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     status: 'investigating',
     lastUpdate: 'Flooring vendor on-site Thursday for subfloor assessment.',
     createdAt: minsFromNow(-4320),
@@ -948,14 +948,14 @@ export const FACILITY_AUDIT_LOG: FacilityAuditEntry[] = [
   {
     id: 'aud-001',
     action: 'Booking created',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     target: 'Team Practice — Half-Court Sets (Main Gym)',
     timestamp: minsFromNow(-180),
   },
   {
     id: 'aud-002',
     action: 'Work order escalated to critical',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     target: 'WO-001: Dead spot near free-throw line',
     timestamp: minsFromNow(-240),
   },
@@ -990,7 +990,7 @@ export const FACILITY_AUDIT_LOG: FacilityAuditEntry[] = [
   {
     id: 'aud-007',
     action: 'Setting updated',
-    actor: 'Sammy Kalejaiye',
+    actor: 'Alex Morgan',
     target: 'Work order auto-approval threshold changed to $500',
     timestamp: minsFromNow(-4320),
   },

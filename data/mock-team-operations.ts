@@ -94,8 +94,8 @@ export interface SystemsData {
 // STAFF
 // =============================================================================
 
-export const FMU_STAFF: StaffMember[] = [
-  { name: 'Sammy Kalejaiye', title: 'Head Coach / GM', role: 'head_coach', email: 'skalejaiye@fmu.edu', phone: '(305) 555-0100' },
+export const KaNeXT_STAFF: StaffMember[] = [
+  { name: 'Alex Morgan', title: 'Head Coach / GM', role: 'head_coach', email: 'skalejaiye@fmu.edu', phone: '(305) 555-0100' },
   { name: 'Marcus Williams', title: 'Associate Head Coach', role: 'assistant', email: 'mwilliams@fmu.edu', phone: '(305) 555-0101' },
   { name: 'James Robinson', title: 'Assistant Coach — Defense', role: 'assistant', email: 'jrobinson@fmu.edu', phone: '(305) 555-0102' },
   { name: 'David Thompson', title: 'Assistant Coach — Player Development', role: 'assistant', email: 'dthompson@fmu.edu', phone: '(305) 555-0103' },
@@ -111,7 +111,7 @@ export const FMU_STAFF: StaffMember[] = [
 // OPERATIONS
 // =============================================================================
 
-export const FMU_OPERATIONS: OperationsData = {
+export const KaNeXT_OPERATIONS: OperationsData = {
   travel: [
     { date: '2026-02-21', opponent: 'Webber International', departure: '8:00 AM', arrival: '11:30 AM', hotel: 'Holiday Inn Babson Park', status: 'confirmed' },
     { date: '2026-02-25', opponent: 'Ave Maria', departure: '7:00 AM', arrival: '9:30 AM', status: 'confirmed' },
@@ -140,7 +140,7 @@ export const FMU_OPERATIONS: OperationsData = {
 // FINANCE
 // =============================================================================
 
-export const FMU_FINANCE: FinanceData = {
+export const KaNeXT_FINANCE: FinanceData = {
   totalBudget: 485000,
   breakdown: [
     { category: 'Scholarships & Aid', allocated: 180000, spent: 162000 },
@@ -161,7 +161,7 @@ export const FMU_FINANCE: FinanceData = {
 // COMPLIANCE
 // =============================================================================
 
-export const FMU_COMPLIANCE: ComplianceData = {
+export const KaNeXT_COMPLIANCE: ComplianceData = {
   checklist: [
     { id: 'c1', label: 'APR Report Filed', status: 'clear', date: '2026-01-15' },
     { id: 'c2', label: 'EADA Report Filed', status: 'clear', date: '2025-10-15' },
@@ -180,7 +180,7 @@ export const FMU_COMPLIANCE: ComplianceData = {
 // LINEUPS
 // =============================================================================
 
-export const FMU_LINEUPS: LineupPreset[] = [
+export const KaNeXT_LINEUPS: LineupPreset[] = [
   {
     name: 'Starting Five',
     players: [
@@ -235,7 +235,7 @@ export const FMU_LINEUPS: LineupPreset[] = [
 // SYSTEMS
 // =============================================================================
 
-export const FMU_SYSTEMS: SystemsData = {
+export const KaNeXT_SYSTEMS: SystemsData = {
   offensiveSystem: {
     label: 'Motion Flow',
     description: 'Read-and-react motion offense with PnR triggers. Emphasizes ball movement, back cuts, and DHO actions. Primary ball handler initiates; 4-out-1-in spacing.',

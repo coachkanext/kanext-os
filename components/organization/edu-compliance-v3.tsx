@@ -1,7 +1,7 @@
 /**
  * Edu Compliance V3 — 3-pill ViewBar (Accreditation | Regulatory | Governance)
- * Florida Memorial University · President perspective
- * HBCU · Founded 1879 · Miami Gardens, FL · SACSCOC Accredited
+ * KaNeXT Sports · President perspective
+ * HBCU · Founded 1879 · Nashville, TN · SACSCOC Accredited
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
@@ -349,7 +349,7 @@ function GovernanceView({ colors, accentColor }: { colors: typeof Colors.light; 
       {/* Strategic Plan */}
       <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>STRATEGIC PLAN</ThemedText>
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.qepTitle, { color: colors.text }]}>FMU 2030: Elevating Excellence</ThemedText>
+        <ThemedText style={[s.qepTitle, { color: colors.text }]}>KaNeXT 2030: Elevating Excellence</ThemedText>
         <View style={[s.progressContainer, { marginTop: 10 }]}>
           <View style={[s.progressTrack, { backgroundColor: 'rgba(255,255,255,0.04)' }]}>
             <View

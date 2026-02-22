@@ -2,7 +2,7 @@
  * Sports Organization Rooms V2 — Mock Data & Types
  * Official rooms, announcements, unit rooms, and escalations
  * for Sports Mode organizations.
- * Seeded with FMU Men's Basketball 2025-26 season data.
+ * Seeded with KaNeXT Men's Basketball 2025-26 season data.
  */
 
 // =============================================================================
@@ -171,7 +171,7 @@ export const ROOMS_SUB_TABS: RoomsSubTab[] = [
 ];
 
 // =============================================================================
-// SEEDED DATA — FMU Men's Basketball 2025-26
+// SEEDED DATA — KaNeXT Men's Basketball 2025-26
 // =============================================================================
 
 export const OFFICIAL_ROOMS: OfficialRoom[] = [
@@ -179,17 +179,17 @@ export const OFFICIAL_ROOMS: OfficialRoom[] = [
     id: 'or-1',
     name: 'Coaches Room',
     type: 'coaches',
-    owner: 'Sammy Kalejaiye',
-    members: ['Sammy Kalejaiye', 'Coach Marcus Davis', 'Coach Andre Williams'],
+    owner: 'Alex Morgan',
+    members: ['Alex Morgan', 'Coach Marcus Davis', 'Coach Andre Williams'],
     lastActivity: '2026-02-18T10:30:00Z',
     unread: 4,
     requiredReadPending: 1,
     memberCount: 3,
     recentMessages: [
-      { id: 'cm-1', sender: 'Sammy Kalejaiye', text: 'Film session at 6 PM tonight — bring your Keiser scouting notes.', timestamp: '2026-02-18T10:30:00Z' },
+      { id: 'cm-1', sender: 'Alex Morgan', text: 'Film session at 6 PM tonight — bring your Keiser scouting notes.', timestamp: '2026-02-18T10:30:00Z' },
       { id: 'cm-2', sender: 'Coach Marcus Davis', text: 'Got it. I\'ll have the recruiting call list prepped for after film.', timestamp: '2026-02-18T10:22:00Z' },
       { id: 'cm-3', sender: 'Coach Andre Williams', text: 'Moratinos is still day-to-day. Patterson says MRI is tomorrow morning.', timestamp: '2026-02-18T09:45:00Z' },
-      { id: 'cm-4', sender: 'Sammy Kalejaiye', text: 'Let\'s plan to run the Keiser press-break sets in practice at 3 PM.', timestamp: '2026-02-18T08:15:00Z' },
+      { id: 'cm-4', sender: 'Alex Morgan', text: 'Let\'s plan to run the Keiser press-break sets in practice at 3 PM.', timestamp: '2026-02-18T08:15:00Z' },
       { id: 'cm-5', sender: 'Coach Marcus Davis', text: 'Trey Williams hasn\'t responded to our offer — might need a call from you, Coach.', timestamp: '2026-02-17T16:00:00Z' },
     ],
     data_source: 'demo_seed',
@@ -198,8 +198,8 @@ export const OFFICIAL_ROOMS: OfficialRoom[] = [
     id: 'or-2',
     name: 'Ops Room',
     type: 'ops',
-    owner: 'Sammy Kalejaiye',
-    members: ['Sammy Kalejaiye', 'Jordan Mitchell', 'Tyler Brooks', 'Mike Reeves'],
+    owner: 'Alex Morgan',
+    members: ['Alex Morgan', 'Jordan Mitchell', 'Tyler Brooks', 'Mike Reeves'],
     lastActivity: '2026-02-18T09:15:00Z',
     unread: 5,
     requiredReadPending: 1,
@@ -211,7 +211,7 @@ export const OFFICIAL_ROOMS: OfficialRoom[] = [
     name: 'Recruiting Room',
     type: 'recruiting',
     owner: 'Coach Marcus Davis',
-    members: ['Sammy Kalejaiye', 'Coach Marcus Davis', 'Coach Andre Williams'],
+    members: ['Alex Morgan', 'Coach Marcus Davis', 'Coach Andre Williams'],
     lastActivity: '2026-02-18T08:00:00Z',
     unread: 3,
     requiredReadPending: 0,
@@ -222,7 +222,7 @@ export const OFFICIAL_ROOMS: OfficialRoom[] = [
     id: 'or-4',
     name: 'Players Room',
     type: 'players',
-    owner: 'Sammy Kalejaiye',
+    owner: 'Alex Morgan',
     members: [
       'Jalen Carter', 'Kadyn Selden', 'Jean Mentor', 'Woody Noel', 'Terrence Brewer',
       'Kaleb Munir-Jones', 'Jaylen Thomas', 'Amar Asceric', 'Brandon Lewis',
@@ -239,8 +239,8 @@ export const OFFICIAL_ROOMS: OfficialRoom[] = [
     id: 'or-5',
     name: 'Leadership Room',
     type: 'leadership',
-    owner: 'Sammy Kalejaiye',
-    members: ['Sammy Kalejaiye', 'AD Office'],
+    owner: 'Alex Morgan',
+    members: ['Alex Morgan', 'AD Office'],
     lastActivity: '2026-02-17T14:30:00Z',
     unread: 1,
     requiredReadPending: 1,
@@ -253,7 +253,7 @@ export const OFFICIAL_ROOMS: OfficialRoom[] = [
     name: 'Medical / Performance Room',
     type: 'medical',
     owner: 'Dr. Nicole Patterson',
-    members: ['Dr. Nicole Patterson', 'Mike Reeves', 'Sammy Kalejaiye'],
+    members: ['Dr. Nicole Patterson', 'Mike Reeves', 'Alex Morgan'],
     lastActivity: '2026-02-17T16:45:00Z',
     unread: 2,
     requiredReadPending: 0,
@@ -272,7 +272,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
     confirmationRate: 0.8,
     totalRecipients: 15,
     confirmedCount: 12,
-    postedBy: 'Sammy Kalejaiye',
+    postedBy: 'Alex Morgan',
     postedDate: '2026-02-16',
     requiredRead: true,
     data_source: 'demo_seed',
@@ -285,7 +285,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
     confirmationRate: 0.53,
     totalRecipients: 15,
     confirmedCount: 8,
-    postedBy: 'Sammy Kalejaiye',
+    postedBy: 'Alex Morgan',
     postedDate: '2026-02-17',
     data_source: 'demo_seed',
   },
@@ -309,7 +309,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
     confirmationRate: 1.0,
     totalRecipients: 7,
     confirmedCount: 7,
-    postedBy: 'Sammy Kalejaiye',
+    postedBy: 'Alex Morgan',
     postedDate: '2026-02-12',
     data_source: 'demo_seed',
   },
