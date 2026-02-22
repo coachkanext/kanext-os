@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   selectBtn: {
-    backgroundColor: accent,
+    backgroundColor: '#1D9BF0',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 12,

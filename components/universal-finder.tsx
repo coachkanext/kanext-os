@@ -25,11 +25,11 @@ import { MOCK_FINDER_INDEX } from '@/data/mock-finder';
 import type { FinderResult, FinderResultType } from '@/data/mock-finder';
 
 const TYPE_COLORS: Record<FinderResultType, string> = {
-  player: accent,
+  player: '#1D9BF0',
   recruit: '#22C55E',
   team: '#F59E0B',
   game: '#EF4444',
-  clip: accent,
+  clip: '#1D9BF0',
   post: '#A1A1AA',
 };
 
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   closeBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: accent,
+    color: '#1D9BF0',
   },
   resultRow: {
     flexDirection: 'row',

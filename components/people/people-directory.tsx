@@ -23,7 +23,7 @@ const STATUS_COLORS: Record<PersonStatus, string> = {
   active: '#22C55E',
   inactive: '#A1A1AA',
   pending: '#F59E0B',
-  away: accent,
+  away: '#1D9BF0',
 };
 
 const STATUS_LABELS: Record<PersonStatus, string> = {

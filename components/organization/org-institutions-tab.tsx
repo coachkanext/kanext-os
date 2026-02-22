@@ -75,10 +75,10 @@ const STATUS_OPTIONS: InstitutionStatus[] = ['active', 'partner', 'prospect', 'a
 const TYPE_OPTIONS: InstitutionType[] = ['university', 'college', 'academy', 'other'];
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  academic: accent,
+  academic: '#1D9BF0',
   admissions: '#22C55E',
   athletics: '#F59E0B',
-  cultural: accent,
+  cultural: '#1D9BF0',
   administrative: '#A1A1AA',
 };
 
@@ -98,12 +98,12 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  added: accent,
-  department: accent,
-  room: accent,
+  added: '#1D9BF0',
+  department: '#1D9BF0',
+  room: '#1D9BF0',
   updated: '#F59E0B',
-  compliance: accent,
-  partnership: accent,
+  compliance: '#1D9BF0',
+  partnership: '#1D9BF0',
   library: '#A1A1AA',
   enrollment: '#22C55E',
   prospect: '#F59E0B',

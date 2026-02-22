@@ -125,9 +125,9 @@ const MODE_LABELS: Record<Mode, string> = {
 
 const ACTION_STATUS_COLOR: Record<ComplianceAction['status'], string> = {
   pending: '#F59E0B',
-  'in-progress': accent,
+  'in-progress': '#1D9BF0',
   completed: '#22C55E',
-  verified: accent,
+  verified: '#1D9BF0',
 };
 
 // =============================================================================
@@ -136,7 +136,7 @@ const ACTION_STATUS_COLOR: Record<ComplianceAction['status'], string> = {
 
 const TRAINING_STATUS_COLOR: Record<ComplianceTraining['status'], string> = {
   assigned: '#A1A1AA',
-  'in-progress': accent,
+  'in-progress': '#1D9BF0',
   completed: '#22C55E',
   overdue: '#EF4444',
 };
@@ -168,7 +168,7 @@ const DEADLINE_STATUS_COLOR: Record<ComplianceDeadline['status'], string> = {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<ComplianceReport['format'], string> = {
-  PDF: accent,
+  PDF: '#1D9BF0',
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };
@@ -193,14 +193,14 @@ function auditIcon(action: string): string {
 
 function auditColor(action: string): string {
   switch (action) {
-    case 'requirement_verified': return accent;
-    case 'evidence_submitted': return accent;
+    case 'requirement_verified': return '#1D9BF0';
+    case 'evidence_submitted': return '#1D9BF0';
     case 'incident_opened': return '#EF4444';
     case 'checklist_completed': return '#22C55E';
     case 'policy_updated': return '#F59E0B';
-    case 'training_completed': return accent;
+    case 'training_completed': return '#1D9BF0';
     case 'deadline_met': return '#22C55E';
-    case 'action_verified': return accent;
+    case 'action_verified': return '#1D9BF0';
     default: return '#A1A1AA';
   }
 }
@@ -433,10 +433,10 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
       ListEmptyComponent={<EmptyState icon="doc.fill" text="No evidence" colors={colors} />}
       renderItem={({ item }) => {
         const typeColor =
-          item.type === 'document' ? accent :
-          item.type === 'link' ? accent :
+          item.type === 'document' ? accentColor :
+          item.type === 'link' ? accentColor :
           item.type === 'attestation' ? '#F59E0B' :
-          accent; // certificate
+          accentColor; // certificate
         const expiresDateSoon = item.expiresDate != null && new Date(item.expiresDate).getTime() - Date.now() < 60 * 86400000;
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>

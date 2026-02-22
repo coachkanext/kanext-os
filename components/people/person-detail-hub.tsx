@@ -29,7 +29,7 @@ const STATUS_COLORS: Record<PersonStatus, string> = {
   active: '#22C55E',
   inactive: '#A1A1AA',
   pending: '#F59E0B',
-  away: accent,
+  away: '#1D9BF0',
 };
 
 const STATUS_LABELS: Record<PersonStatus, string> = {
@@ -344,7 +344,7 @@ function RolesAccessTab({ person, colors }: { person: Person; colors: typeof Col
 const ASSIGNMENT_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
   completed: '#A1A1AA',
-  upcoming: accent,
+  upcoming: '#1D9BF0',
 };
 
 function AssignmentsTab({ colors }: { colors: typeof Colors.dark }) {

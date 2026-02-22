@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   freqPillActive: {
-    backgroundColor: accent,
+    backgroundColor: '#1D9BF0',
   },
   freqPillText: {
     fontSize: 13,

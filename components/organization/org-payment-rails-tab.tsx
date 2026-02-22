@@ -130,7 +130,7 @@ const ACCOUNT_STATUS_COLOR: Record<PayRailsAccount['status'], string> = {
 
 const TAX_FORM_STATUS_COLOR: Record<PayRailsTaxForm['status'], string> = {
   draft: '#A1A1AA',
-  ready: accent,
+  ready: '#1D9BF0',
   filed: '#22C55E',
   corrected: '#F59E0B',
 };
@@ -141,7 +141,7 @@ const TAX_FORM_STATUS_COLOR: Record<PayRailsTaxForm['status'], string> = {
 
 const DISPUTE_TYPE_COLOR: Record<PayRailsDispute['type'], string> = {
   chargeback: '#F59E0B',
-  inquiry: accent,
+  inquiry: '#1D9BF0',
   'failed-payout': '#EF4444',
 };
 
@@ -150,7 +150,7 @@ const DISPUTE_TYPE_COLOR: Record<PayRailsDispute['type'], string> = {
 // =============================================================================
 
 const EXPORT_FORMAT_COLOR: Record<PayRailsExport['format'], string> = {
-  PDF: accent,
+  PDF: '#1D9BF0',
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };

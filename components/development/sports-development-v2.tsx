@@ -42,7 +42,7 @@ import { CLUSTER_ORDER } from '@/utils/kr-display';
 // ---------------------------------------------------------------------------
 
 const PROGRESS_COLORS: Record<string, string> = { 'needs-work': '#EF4444', progressing: '#F59E0B', achieved: '#22C55E' };
-const SESSION_COLORS: Record<string, string> = { practice: '#22C55E', lift: '#F59E0B', film: accent, individual: accent, rest: '#A1A1AA' };
+const SESSION_COLORS: Record<string, string> = { practice: '#22C55E', lift: '#F59E0B', film: '#1D9BF0', individual: '#1D9BF0', rest: '#A1A1AA' };
 
 // Mock KR data for players (would come from national pool in production)
 const PLAYER_KR_DATA: Record<string, { kr: number; okr: number; dkr: number; archetype: string; clusters: number[] }> = {

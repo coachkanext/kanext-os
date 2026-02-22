@@ -59,7 +59,7 @@ interface OrgResourcesTabProps {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<ResourceReport['format'], string> = {
-  PDF: accent,
+  PDF: '#1D9BF0',
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };

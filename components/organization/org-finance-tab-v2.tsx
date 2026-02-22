@@ -135,10 +135,10 @@ const MODE_LABELS: Record<Mode, string> = {
 // =============================================================================
 
 const PAYROLL_TYPE_COLOR: Record<string, string> = {
-  salary: accent,
+  salary: '#1D9BF0',
   stipend: '#22C55E',
   contractor: '#F59E0B',
-  honorarium: accent,
+  honorarium: '#1D9BF0',
 };
 
 // =============================================================================

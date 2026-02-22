@@ -102,15 +102,15 @@ const RESOURCE_TYPE_ICON: Record<string, string> = {
 /** Event type badge color mapping */
 const EVENT_TYPE_COLOR: Record<string, string> = {
   regular: '#A1A1AA',
-  special: accent,
-  outreach: accent,
+  special: '#1D9BF0',
+  outreach: '#1D9BF0',
   retreat: '#F59E0B',
 };
 
 /** Teaching type badge color mapping */
 const TEACHING_TYPE_COLOR: Record<string, string> = {
-  sermon: accent,
-  lesson: accent,
+  sermon: '#1D9BF0',
+  lesson: '#1D9BF0',
   devotional: '#22C55E',
   training: '#F59E0B',
 };
@@ -118,21 +118,21 @@ const TEACHING_TYPE_COLOR: Record<string, string> = {
 /** Pack status color mapping */
 const PACK_STATUS_COLOR: Record<string, string> = {
   active: '#22C55E',
-  upcoming: accent,
+  upcoming: '#1D9BF0',
   completed: '#A1A1AA',
 };
 
 /** Action status icon mapping */
 const ACTION_STATUS_ICON_COLOR: Record<string, string> = {
   pending: '#F59E0B',
-  'in-progress': accent,
+  'in-progress': '#1D9BF0',
   completed: '#22C55E',
 };
 
 /** Action type badge color */
 const ACTION_TYPE_COLOR: Record<string, string> = {
-  discipleship: accent,
-  volunteer: accent,
+  discipleship: '#1D9BF0',
+  volunteer: '#1D9BF0',
   admin: '#A1A1AA',
 };
 
@@ -156,11 +156,11 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  added: accent,
+  added: '#1D9BF0',
   updated: '#F59E0B',
-  published: accent,
-  scheduled: accent,
-  joined: accent,
+  published: '#1D9BF0',
+  scheduled: '#1D9BF0',
+  joined: '#1D9BF0',
   default: '#A1A1AA',
 };
 

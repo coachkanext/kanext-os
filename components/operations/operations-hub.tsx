@@ -44,17 +44,17 @@ const STATUS_COLORS: Record<string, string> = {
   completed: '#22C55E',
   pending: '#F59E0B',
   overdue: '#EF4444',
-  'in-progress': accent,
+  'in-progress': '#1D9BF0',
 };
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  practice: accent,
+  practice: '#1D9BF0',
   game: '#EF4444',
   meeting: '#F59E0B',
-  travel: accent,
+  travel: '#1D9BF0',
   service: '#22C55E',
-  class: accent,
-  event: accent,
+  class: '#1D9BF0',
+  event: '#1D9BF0',
   deadline: '#EF4444',
 };
 

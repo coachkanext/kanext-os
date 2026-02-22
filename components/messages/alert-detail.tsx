@@ -329,6 +329,6 @@ const styles = StyleSheet.create({
   deepLinkText: {
     fontSize: 13,
     fontWeight: '500',
-    color: accent,
+    color: '#1D9BF0',
   },
 });

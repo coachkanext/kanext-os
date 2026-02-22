@@ -95,14 +95,14 @@ interface OrgFacilitiesTabProps {
 
 const SPACE_STATUS_COLOR: Record<string, string> = {
   open: '#22C55E',
-  booked: accent,
+  booked: '#1D9BF0',
   maintenance: '#F59E0B',
   closed: '#EF4444',
 };
 
 const WORK_ORDER_STATUS_COLOR: Record<string, string> = {
   requested: '#A1A1AA',
-  approved: accent,
+  approved: '#1D9BF0',
   assigned: '#F59E0B',
   in_progress: '#F59E0B',
   completed: '#22C55E',
@@ -112,11 +112,11 @@ const WORK_ORDER_STATUS_COLOR: Record<string, string> = {
 const SEVERITY_COLOR: Record<string, string> = {
   P0: '#EF4444',
   P1: '#F59E0B',
-  P2: accent,
+  P2: '#1D9BF0',
   P3: '#A1A1AA',
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: accent,
+  medium: '#1D9BF0',
   low: '#A1A1AA',
 };
 
@@ -140,9 +140,9 @@ const CONDITION_COLOR: Record<string, string> = {
 };
 
 const BOOKING_TYPE_COLOR: Record<string, string> = {
-  practice: accent,
+  practice: '#1D9BF0',
   game: '#EF4444',
-  meeting: accent,
+  meeting: '#1D9BF0',
   event: '#F59E0B',
   maintenance: '#F59E0B',
   other: '#A1A1AA',
@@ -182,7 +182,7 @@ function auditIcon(action: string): string {
 function auditColor(action: string): string {
   switch (action) {
     case 'space_booked':
-      return accent;
+      return '#1D9BF0';
     case 'work_order_created':
       return '#F59E0B';
     case 'issue_reported':
@@ -190,11 +190,11 @@ function auditColor(action: string): string {
     case 'issue_resolved':
       return '#22C55E';
     case 'inspection_completed':
-      return accent;
+      return '#1D9BF0';
     case 'asset_updated':
-      return accent;
+      return '#1D9BF0';
     case 'vendor_added':
-      return accent;
+      return '#1D9BF0';
     case 'setting_changed':
       return '#A1A1AA';
     case 'booking_cancelled':

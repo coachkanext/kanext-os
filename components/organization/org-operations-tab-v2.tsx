@@ -138,7 +138,7 @@ const TRAVEL_STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
   planned: { bg: '#A1A1AA20', fg: '#A1A1AA' },
   booked: { bg: '#22C55E20', fg: '#22C55E' },
   'in-transit': { bg: '#F59E0B20', fg: '#F59E0B' },
-  completed: { bg: `${accent}20`, fg: accent },
+  completed: { bg: '#1D9BF020', fg: '#1D9BF0' },
 };
 
 // =============================================================================

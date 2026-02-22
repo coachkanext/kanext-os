@@ -16,9 +16,9 @@ import type { TeamLevel } from '@/data/mock-program-v2';
 
 const LEVEL_COLORS: Record<TeamLevel, string> = {
   varsity: '#FFFFFF',
-  jv: accent,
+  jv: '#1D9BF0',
   prep: '#F59E0B',
-  dev: accent,
+  dev: '#1D9BF0',
 };
 
 const LEVEL_LABELS: Record<TeamLevel, string> = {

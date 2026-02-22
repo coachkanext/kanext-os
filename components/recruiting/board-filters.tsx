@@ -99,11 +99,11 @@ export interface KRTier {
 export type DivisionAnchor = 'high_major' | 'mid_major' | 'low_major' | 'naia' | 'juco';
 
 const TIER_RANGES: { short: string; min: number; max: number; color: string }[] = [
-  { short: 'Elite', min: 86, max: 100, color: accent },
+  { short: 'Elite', min: 86, max: 100, color: '#1D9BF0' },
   { short: 'Franchise', min: 82, max: 85, color: '#22C55E' },
-  { short: 'Impact', min: 78, max: 81, color: accent },
-  { short: 'Starter', min: 74, max: 77, color: accent },
-  { short: 'Rotation', min: 71, max: 73, color: accent },
+  { short: 'Impact', min: 78, max: 81, color: '#1D9BF0' },
+  { short: 'Starter', min: 74, max: 77, color: '#1D9BF0' },
+  { short: 'Rotation', min: 71, max: 73, color: '#1D9BF0' },
   { short: 'Bench', min: 68, max: 70, color: '#F59E0B' },
   { short: 'Depth', min: 65, max: 67, color: '#A1A1AA' },
   { short: 'Project', min: 0, max: 64, color: '#A1A1AA' },

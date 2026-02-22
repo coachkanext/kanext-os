@@ -249,8 +249,8 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   sizePillActive: {
-    backgroundColor: accent,
-    borderColor: accent,
+    backgroundColor: '#1D9BF0',
+    borderColor: '#1D9BF0',
   },
   sizePillText: {
     fontSize: 11,
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
 
   // Add to cart
   addBtn: {
-    backgroundColor: accent,
+    backgroundColor: '#1D9BF0',
     paddingVertical: 8,
     borderRadius: 12,
     alignItems: 'center',

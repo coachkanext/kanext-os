@@ -2018,13 +2018,13 @@ const styles = StyleSheet.create({
   },
   ngBlockAccent: {
     height: 3,
-    backgroundColor: accent,
+    backgroundColor: '#1D9BF0',
   },
   ngBlockBody: {
     padding: 14,
   },
   ngLabel: {
-    color: accent,
+    color: '#1D9BF0',
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 1,
@@ -2126,8 +2126,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   ngActionBtnPrimary: {
-    backgroundColor: accent,
-    borderColor: accent,
+    backgroundColor: '#1D9BF0',
+    borderColor: '#1D9BF0',
   },
 
   // Commerce Row

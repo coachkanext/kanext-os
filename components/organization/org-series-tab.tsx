@@ -168,12 +168,12 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  added: accent,
+  added: '#1D9BF0',
   seeded: '#F59E0B',
-  published: accent,
-  assigned: accent,
+  published: '#1D9BF0',
+  assigned: '#1D9BF0',
   completed: '#22C55E',
-  filed: accent,
+  filed: '#1D9BF0',
   default: '#A1A1AA',
 };
 

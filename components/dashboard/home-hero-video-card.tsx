@@ -43,7 +43,7 @@ const PINNED_HERO: HeroVideo = {
   id: 'hero-pinned',
   title: 'Providence Scout Breakdown — Transition Defense',
   subtitle: 'Staff Film · Uploaded 2h ago',
-  thumbnailColor: accent,
+  thumbnailColor: '#1D9BF0',
   duration: '8:42',
   isPinned: true,
   source: 'pinned',

@@ -104,14 +104,14 @@ function getAuditActionKey(action: string): string {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  status: accent,
-  linked: accent,
+  status: '#1D9BF0',
+  linked: '#1D9BF0',
   moved: '#F59E0B',
-  assigned: accent,
-  attached: accent,
+  assigned: '#1D9BF0',
+  attached: '#1D9BF0',
   updated: '#F59E0B',
   approved: '#22C55E',
-  revised: accent,
+  revised: '#1D9BF0',
   default: '#A1A1AA',
 };
 
