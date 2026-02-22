@@ -87,10 +87,10 @@ const CATEGORY_LABELS: Record<ConstructorStanding['category'], string> = {
 };
 
 const CATEGORY_COLORS: Record<ConstructorStanding['category'], string> = {
-  oem_works: '#3B82F6',
+  oem_works: '#1D9BF0',
   premier_tuner: '#F59E0B',
-  league_owned: '#6B7280',
-  kanext_works: '#8B5CF6',
+  league_owned: '#A1A1AA',
+  kanext_works: '#1D9BF0',
 };
 
 function ConstructorTable({ colors, accent }: { colors: typeof Colors.light; accent: string }) {
@@ -173,8 +173,8 @@ function CrewTable({ colors, accent }: { colors: typeof Colors.light; accent: st
 function WildcardTable({ colors, accent }: { colors: typeof Colors.light; accent: string }) {
   const statusColor = (status: string) => {
     if (status === 'qualified') return '#22C55E';
-    if (status === 'active') return '#3B82F6';
-    return '#6B7280';
+    if (status === 'active') return '#1D9BF0';
+    return '#A1A1AA';
   };
 
   return (
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
   },
   toggleText: { fontSize: 12, fontWeight: '600' },
   table: { borderRadius: 12, borderWidth: 1, overflow: 'hidden' },

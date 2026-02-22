@@ -42,7 +42,7 @@ interface Props {
   role?: ChurchRoleLens;
 }
 
-const GOLD = '#FBBF24';
+const GOLD = '#1D9BF0';
 
 const STATUS_DOT: Record<string, string> = {
   green: '#22C55E',
@@ -87,7 +87,7 @@ export function ChurchDashboardV2({ colors, accent, role = 'C1' }: Props) {
         {canSee('video_hero') && (
           <View style={styles.heroContainer}>
             <LinearGradient
-              colors={['#1a1030', '#0d0d1a', '#000']}
+              colors={['#0B0F14', '#0B0F14', '#000']}
               style={styles.heroGradient}
             >
               <Pressable style={styles.playButton}>
@@ -192,11 +192,11 @@ export function ChurchDashboardV2({ colors, accent, role = 'C1' }: Props) {
                       <IconSymbol
                         name={TREND_DIR_ICON[m.trendDir] as any}
                         size={10}
-                        color={m.trendDir === 'up' ? '#22C55E' : m.trendDir === 'down' ? '#EF4444' : '#6B7280'}
+                        color={m.trendDir === 'up' ? '#22C55E' : m.trendDir === 'down' ? '#EF4444' : '#A1A1AA'}
                       />
                       <ThemedText style={[
                         styles.trendText,
-                        { color: m.trendDir === 'up' ? '#22C55E' : m.trendDir === 'down' ? '#EF4444' : '#6B7280' },
+                        { color: m.trendDir === 'up' ? '#22C55E' : m.trendDir === 'down' ? '#EF4444' : '#A1A1AA' },
                       ]}>
                         {m.trend}
                       </ThemedText>
@@ -234,7 +234,7 @@ export function ChurchDashboardV2({ colors, accent, role = 'C1' }: Props) {
                   <View key={metric.label} style={styles.metricCell}>
                     <ThemedText style={styles.metricValue}>{metric.value}</ThemedText>
                     <View style={styles.metricLabelRow}>
-                      <View style={[styles.statusDot, { backgroundColor: STATUS_DOT[metric.status] ?? '#6B7280' }]} />
+                      <View style={[styles.statusDot, { backgroundColor: STATUS_DOT[metric.status] ?? '#A1A1AA' }]} />
                       <ThemedText style={styles.metricLabel}>{metric.label}</ThemedText>
                     </View>
                     <ThemedText style={styles.metricDetail}>{metric.detail}</ThemedText>
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   // Commerce Row (text-stack)
   commerceRow: { flexDirection: 'row', gap: 10, marginBottom: 16 },
   commerceCard: {
-    flex: 1, backgroundColor: '#181616', borderRadius: 14, padding: 14,
+    flex: 1, backgroundColor: '#0B0F14', borderRadius: 14, padding: 14,
     overflow: 'hidden',
   },
   commerceTopBorder: { position: 'absolute', top: 0, left: 0, right: 0, height: 3 },
@@ -295,27 +295,27 @@ const styles = StyleSheet.create({
 
   // Dark card (Ministry Health, Growth Metrics)
   darkCard: {
-    backgroundColor: '#181616', borderRadius: 14, overflow: 'hidden', marginBottom: 16,
+    backgroundColor: '#0B0F14', borderRadius: 14, overflow: 'hidden', marginBottom: 16,
   },
   darkCardAccent: { height: 3 },
   darkCardContent: { padding: 16 },
 
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   sectionTitle: { color: '#fff', fontSize: 13, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1 },
-  sectionBadge: { color: 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: '700', letterSpacing: 0.5, backgroundColor: 'rgba(255,255,255,0.06)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, overflow: 'hidden' },
+  sectionBadge: { color: 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: '700', letterSpacing: 0.5, backgroundColor: '#2F3336', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, overflow: 'hidden' },
 
   // Ministry Health rows
   ministryRow: {
     flexDirection: 'row', alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
+    borderBottomColor: '#2F3336',
   },
   ministryName: { color: '#fff', fontSize: 13, fontWeight: '700', letterSpacing: -0.2 },
   ministryLeader: { color: 'rgba(255,255,255,0.4)', fontSize: 10, letterSpacing: 0.3, marginTop: 1 },
   ministryStats: { alignItems: 'flex-end', gap: 3 },
   ministryMembers: { color: '#fff', fontSize: 16, fontWeight: '800', letterSpacing: -0.3 },
-  trendPill: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: 'rgba(255,255,255,0.06)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
+  trendPill: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: '#2F3336', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   trendText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
 
   // Flagged alerts

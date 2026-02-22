@@ -116,8 +116,8 @@ interface SpiritualHabit {
 }
 
 const SPIRITUAL_HABITS: SpiritualHabit[] = [
-  { id: 'sh-1', label: 'Bible Reading Streak', value: '14 days', icon: 'book.fill', color: '#3B82F6' },
-  { id: 'sh-2', label: 'Prayer Journal', value: '8 entries this month', icon: 'hands.sparkles.fill', color: '#8B5CF6' },
+  { id: 'sh-1', label: 'Bible Reading Streak', value: '14 days', icon: 'book.fill', color: '#1D9BF0' },
+  { id: 'sh-2', label: 'Prayer Journal', value: '8 entries this month', icon: 'hands.sparkles.fill', color: '#1D9BF0' },
   { id: 'sh-3', label: 'Scripture Memory', value: '3 verses', icon: 'text.book.closed.fill', color: '#22C55E' },
   { id: 'sh-4', label: 'Service Hours', value: '6h this month', icon: 'heart.fill', color: '#F59E0B' },
 ];
@@ -159,12 +159,12 @@ interface JourneyStageInfo {
 }
 
 const JOURNEY_STAGES: JourneyStageInfo[] = [
-  { id: 'explore', label: 'Explore', icon: 'magnifyingglass', color: '#8F8F8F' },
-  { id: 'foundations', label: 'Foundations', icon: 'book.fill', color: '#3B82F6' },
-  { id: 'practices', label: 'Practices', icon: 'hands.sparkles.fill', color: '#8B5CF6' },
+  { id: 'explore', label: 'Explore', icon: 'magnifyingglass', color: '#A1A1AA' },
+  { id: 'foundations', label: 'Foundations', icon: 'book.fill', color: '#1D9BF0' },
+  { id: 'practices', label: 'Practices', icon: 'hands.sparkles.fill', color: '#1D9BF0' },
   { id: 'community', label: 'Community', icon: 'person.2.fill', color: '#22C55E' },
   { id: 'serve', label: 'Serve', icon: 'heart.fill', color: '#F59E0B' },
-  { id: 'lead', label: 'Lead', icon: 'star.fill', color: '#EC4899' },
+  { id: 'lead', label: 'Lead', icon: 'star.fill', color: '#1D9BF0' },
 ];
 
 // Derived from milestones: completed Foundations + Joined Group + Started Serving = stage 4 (serve)
@@ -198,7 +198,7 @@ const ENROLLMENT_TYPE_LABELS: Record<EnrollmentType, string> = {
 const ENROLLMENT_TYPE_COLORS: Record<EnrollmentType, string> = {
   open: '#22C55E',
   approval: '#F59E0B',
-  'invite-only': '#8B5CF6',
+  'invite-only': '#1D9BF0',
 };
 
 const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
@@ -278,15 +278,15 @@ const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
 
 const PATHWAY_TYPE_COLORS: Record<string, string> = {
   foundations: '#22C55E',
-  growth: '#3B82F6',
-  leadership: '#8B5CF6',
+  growth: '#1D9BF0',
+  leadership: '#1D9BF0',
   specialized: '#F59E0B',
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
   beginner: '#22C55E',
-  intermediate: '#3B82F6',
-  advanced: '#8B5CF6',
+  intermediate: '#1D9BF0',
+  advanced: '#1D9BF0',
 };
 
 // =============================================================================
@@ -319,7 +319,7 @@ const JOIN_TYPE_LABELS: Record<GroupJoinType, string> = {
 const JOIN_TYPE_COLORS: Record<GroupJoinType, string> = {
   open: '#22C55E',
   request: '#F59E0B',
-  'invite-only': '#8B5CF6',
+  'invite-only': '#1D9BF0',
 };
 
 const DISCIPLESHIP_GROUPS: DiscipleshipGroup[] = [
@@ -338,11 +338,11 @@ const DISCIPLESHIP_GROUPS: DiscipleshipGroup[] = [
 ];
 
 const GROUP_TYPE_COLORS: Record<string, string> = {
-  'Bible Study': '#3B82F6',
-  'Book Study': '#8B5CF6',
+  'Bible Study': '#1D9BF0',
+  'Book Study': '#1D9BF0',
   'Mentoring': '#22C55E',
   'Accountability': '#F59E0B',
-  'Discussion': '#06B6D4',
+  'Discussion': '#1D9BF0',
 };
 
 // =============================================================================
@@ -388,12 +388,12 @@ const DISCIPLESHIP_RESOURCES: DiscipleshipResource[] = [
 ];
 
 const RESOURCE_TYPE_COLORS: Record<string, string> = {
-  'Book': '#3B82F6',
+  'Book': '#1D9BF0',
   'Video Series': '#EF4444',
   'Study Guide': '#22C55E',
-  'Devotional': '#8B5CF6',
+  'Devotional': '#1D9BF0',
   'Worksheet': '#F59E0B',
-  'External Link': '#06B6D4',
+  'External Link': '#1D9BF0',
 };
 
 const RESOURCE_CATEGORIES = ['All', 'Book', 'Video Series', 'Study Guide', 'Devotional', 'Worksheet', 'External Link'];
@@ -457,7 +457,7 @@ const LEADER_PIPELINE: LeaderPipelineItem[] = [
 
 const PIPELINE_STATUS_COLORS: Record<string, string> = {
   'in-training': '#F59E0B',
-  'ready': '#3B82F6',
+  'ready': '#1D9BF0',
   'leading': '#22C55E',
 };
 
@@ -513,7 +513,7 @@ const COHORTS: Cohort[] = [
 ];
 
 const COHORT_STATUS_COLORS: Record<string, string> = {
-  active: '#3B82F6',
+  active: '#1D9BF0',
   upcoming: '#F59E0B',
   completed: '#22C55E',
 };
@@ -570,9 +570,9 @@ function Card({ colors, children }: { colors: typeof Colors.light; children: Rea
 function StatusDot({ status }: { status: string }) {
   const color =
     status === 'active' || status === 'completed' || status === 'open' || status === 'leading' ? '#22C55E' :
-    status === 'ready' || status === 'in-progress' ? '#3B82F6' :
+    status === 'ready' || status === 'in-progress' ? '#1D9BF0' :
     status === 'in-training' || status === 'paused' || status === 'closed' ? '#F59E0B' :
-    '#8F8F8F';
+    '#A1A1AA';
   return <View style={[sh.statusDot, { backgroundColor: color }]} />;
 }
 
@@ -673,8 +673,8 @@ function MyPathView({ colors, role }: { colors: typeof Colors.light; role: Churc
                 Step {MY_PATHWAY_PROGRESS.currentStep} of {MY_PATHWAY_PROGRESS.totalSteps}
               </ThemedText>
             </View>
-            <View style={[s.pathwayPercentBadge, { backgroundColor: '#3B82F620' }]}>
-              <ThemedText style={[s.pathwayPercentText, { color: '#3B82F6' }]}>
+            <View style={[s.pathwayPercentBadge, { backgroundColor: '#1D9BF020' }]}>
+              <ThemedText style={[s.pathwayPercentText, { color: '#1D9BF0' }]}>
                 {MY_PATHWAY_PROGRESS.progress}%
               </ThemedText>
             </View>
@@ -718,7 +718,7 @@ function MyPathView({ colors, role }: { colors: typeof Colors.light; role: Churc
                 </ThemedText>
               </View>
               <View style={s.studyRight}>
-                <ThemedText style={[s.studyPercent, { color: '#3B82F6' }]}>
+                <ThemedText style={[s.studyPercent, { color: '#1D9BF0' }]}>
                   {study.progress}%
                 </ThemedText>
                 <View style={s.studyProgressBar}>
@@ -778,8 +778,8 @@ function MyPathView({ colors, role }: { colors: typeof Colors.light; role: Churc
                 {milestone.label}
               </ThemedText>
               {!milestone.completed && (
-                <View style={[s.milestoneInProgressBadge, { backgroundColor: '#3B82F620' }]}>
-                  <ThemedText style={[s.milestoneInProgressText, { color: '#3B82F6' }]}>IN PROGRESS</ThemedText>
+                <View style={[s.milestoneInProgressBadge, { backgroundColor: '#1D9BF020' }]}>
+                  <ThemedText style={[s.milestoneInProgressText, { color: '#1D9BF0' }]}>IN PROGRESS</ThemedText>
                 </View>
               )}
             </View>
@@ -795,14 +795,14 @@ function MyPathView({ colors, role }: { colors: typeof Colors.light; role: Churc
         >
           <Card colors={colors}>
             <View style={s.nextStepHeader}>
-              <IconSymbol name="arrow.right.circle.fill" size={20} color="#8B5CF6" />
+              <IconSymbol name="arrow.right.circle.fill" size={20} color="#1D9BF0" />
               <ThemedText style={[s.nextStepTitle, { color: colors.text }]}>{NEXT_STEP.title}</ThemedText>
             </View>
             <ThemedText style={[s.nextStepDesc, { color: colors.textSecondary }]}>
               {NEXT_STEP.description}
             </ThemedText>
-            <View style={[s.nextStepCTA, { borderColor: '#8B5CF640' }]}>
-              <ThemedText style={[s.nextStepCTAText, { color: '#8B5CF6' }]}>{NEXT_STEP.cta}</ThemedText>
+            <View style={[s.nextStepCTA, { borderColor: '#1D9BF040' }]}>
+              <ThemedText style={[s.nextStepCTAText, { color: '#1D9BF0' }]}>{NEXT_STEP.cta}</ThemedText>
             </View>
           </Card>
         </Pressable>
@@ -823,8 +823,8 @@ function PathwaysView({ colors, role }: { colors: typeof Colors.light; role: Chu
       <View style={s.moduleContainer}>
         <SectionHeader title="DISCIPLESHIP PATHWAYS" colors={colors} count={DISCIPLESHIP_PATHWAYS.length} />
         {DISCIPLESHIP_PATHWAYS.map((pathway) => {
-          const typeColor = PATHWAY_TYPE_COLORS[pathway.type] ?? '#8F8F8F';
-          const diffColor = DIFFICULTY_COLORS[pathway.difficulty] ?? '#8F8F8F';
+          const typeColor = PATHWAY_TYPE_COLORS[pathway.type] ?? '#A1A1AA';
+          const diffColor = DIFFICULTY_COLORS[pathway.difficulty] ?? '#A1A1AA';
 
           return (
             <Pressable
@@ -979,7 +979,7 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
       <View style={s.moduleContainer}>
         <SectionHeader title="DISCIPLESHIP GROUPS" colors={colors} count={filtered.length} />
         {filtered.map((group) => {
-          const typeColor = GROUP_TYPE_COLORS[group.type] ?? '#8F8F8F';
+          const typeColor = GROUP_TYPE_COLORS[group.type] ?? '#A1A1AA';
           const fillPct = Math.round((group.currentMembers / group.capacity) * 100);
           const isFull = group.currentMembers >= group.capacity;
 
@@ -1045,7 +1045,7 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
                       <ThemedText style={[s.groupHealthText, { color: colors.textTertiary }]}>
                         Att: {group.avgAttendance}%
                       </ThemedText>
-                      <ThemedText style={[s.groupHealthText, { color: group.engagementScore >= 90 ? '#22C55E' : group.engagementScore >= 80 ? '#3B82F6' : '#F59E0B' }]}>
+                      <ThemedText style={[s.groupHealthText, { color: group.engagementScore >= 90 ? '#22C55E' : group.engagementScore >= 80 ? '#1D9BF0' : '#F59E0B' }]}>
                         Eng: {group.engagementScore}
                       </ThemedText>
                     </View>
@@ -1120,7 +1120,7 @@ function ResourcesView({ colors, role }: { colors: typeof Colors.light; role: Ch
         <View style={s.moduleContainer}>
           <SectionHeader title="FEATURED" colors={colors} />
           {featured.map((res) => {
-            const typeColor = RESOURCE_TYPE_COLORS[res.type] ?? '#8F8F8F';
+            const typeColor = RESOURCE_TYPE_COLORS[res.type] ?? '#A1A1AA';
             return (
               <Pressable
                 key={res.id}
@@ -1219,8 +1219,8 @@ function ResourcesView({ colors, role }: { colors: typeof Colors.light; role: Ch
         <SectionHeader title="RESOURCE LIBRARY" colors={colors} count={filtered.length} />
         <Card colors={colors}>
           {filtered.map((res, idx) => {
-            const typeColor = RESOURCE_TYPE_COLORS[res.type] ?? '#8F8F8F';
-            const diffColor = DIFFICULTY_COLORS[res.difficulty] ?? '#8F8F8F';
+            const typeColor = RESOURCE_TYPE_COLORS[res.type] ?? '#A1A1AA';
+            const diffColor = DIFFICULTY_COLORS[res.difficulty] ?? '#A1A1AA';
 
             return (
               <Pressable
@@ -1353,9 +1353,9 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
             <ThemedText style={[s.pipelineSummaryValue, { color: '#F59E0B' }]}>{inTraining}</ThemedText>
             <ThemedText style={[s.pipelineSummaryLabel, { color: '#F59E0B' }]}>In Training</ThemedText>
           </View>
-          <View style={[s.pipelineSummaryItem, { backgroundColor: '#3B82F620' }]}>
-            <ThemedText style={[s.pipelineSummaryValue, { color: '#3B82F6' }]}>{ready}</ThemedText>
-            <ThemedText style={[s.pipelineSummaryLabel, { color: '#3B82F6' }]}>Ready to Lead</ThemedText>
+          <View style={[s.pipelineSummaryItem, { backgroundColor: '#1D9BF020' }]}>
+            <ThemedText style={[s.pipelineSummaryValue, { color: '#1D9BF0' }]}>{ready}</ThemedText>
+            <ThemedText style={[s.pipelineSummaryLabel, { color: '#1D9BF0' }]}>Ready to Lead</ThemedText>
           </View>
           <View style={[s.pipelineSummaryItem, { backgroundColor: '#22C55E20' }]}>
             <ThemedText style={[s.pipelineSummaryValue, { color: '#22C55E' }]}>{leading}</ThemedText>
@@ -1365,7 +1365,7 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
 
         <Card colors={colors}>
           {LEADER_PIPELINE.map((leader, idx) => {
-            const statusColor = PIPELINE_STATUS_COLORS[leader.status] ?? '#8F8F8F';
+            const statusColor = PIPELINE_STATUS_COLORS[leader.status] ?? '#A1A1AA';
             const progress = Math.round((leader.completedModules / leader.totalModules) * 100);
 
             return (
@@ -1415,7 +1415,7 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
         <SectionHeader title="PLACEMENT QUEUE" colors={colors} count={UNPLACED_MEMBERS.filter((m) => m.status !== 'placed').length} />
         <Card colors={colors}>
           {UNPLACED_MEMBERS.map((member, idx) => {
-            const statusColor = member.status === 'awaiting' ? '#F59E0B' : member.status === 'contacted' ? '#3B82F6' : '#22C55E';
+            const statusColor = member.status === 'awaiting' ? '#F59E0B' : member.status === 'contacted' ? '#1D9BF0' : '#22C55E';
             return (
               <View
                 key={member.id}
@@ -1471,7 +1471,7 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
       <View style={s.moduleContainer}>
         <SectionHeader title="COHORT MANAGEMENT" colors={colors} count={COHORTS.length} />
         {COHORTS.map((cohort) => {
-          const statusColor = COHORT_STATUS_COLORS[cohort.status] ?? '#8F8F8F';
+          const statusColor = COHORT_STATUS_COLORS[cohort.status] ?? '#A1A1AA';
           return (
             <Card key={cohort.id} colors={colors}>
               <View style={s.cohortHeader}>
@@ -1518,7 +1518,7 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
               ]}
             >
               <ThemedText style={[s.trendTableMonth, { color: colors.text }]}>{trend.month}</ThemedText>
-              <ThemedText style={[s.trendTableStat, { color: '#3B82F6' }]}>{trend.newEnrollments}</ThemedText>
+              <ThemedText style={[s.trendTableStat, { color: '#1D9BF0' }]}>{trend.newEnrollments}</ThemedText>
               <ThemedText style={[s.trendTableStat, { color: '#22C55E' }]}>{trend.completions}</ThemedText>
               <ThemedText style={[s.trendTableStat, { color: trend.engagement >= 80 ? '#22C55E' : trend.engagement >= 75 ? '#F59E0B' : '#EF4444' }]}>
                 {trend.engagement}%
@@ -1534,22 +1534,22 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
           <Pressable
             style={({ pressed }) => [
               s.leaderActionBtn,
-              { backgroundColor: colors.card, borderColor: '#8B5CF640', opacity: pressed ? 0.7 : 1 },
+              { backgroundColor: colors.card, borderColor: '#1D9BF040', opacity: pressed ? 0.7 : 1 },
             ]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
-            <IconSymbol name="plus.circle.fill" size={18} color="#8B5CF6" />
-            <ThemedText style={[s.leaderActionBtnText, { color: '#8B5CF6' }]}>Create Pathway</ThemedText>
+            <IconSymbol name="plus.circle.fill" size={18} color="#1D9BF0" />
+            <ThemedText style={[s.leaderActionBtnText, { color: '#1D9BF0' }]}>Create Pathway</ThemedText>
           </Pressable>
           <Pressable
             style={({ pressed }) => [
               s.leaderActionBtn,
-              { backgroundColor: colors.card, borderColor: '#3B82F640', opacity: pressed ? 0.7 : 1 },
+              { backgroundColor: colors.card, borderColor: '#1D9BF040', opacity: pressed ? 0.7 : 1 },
             ]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
-            <IconSymbol name="plus.circle.fill" size={18} color="#3B82F6" />
-            <ThemedText style={[s.leaderActionBtnText, { color: '#3B82F6' }]}>Create Resource</ThemedText>
+            <IconSymbol name="plus.circle.fill" size={18} color="#1D9BF0" />
+            <ThemedText style={[s.leaderActionBtnText, { color: '#1D9BF0' }]}>Create Resource</ThemedText>
           </Pressable>
         </View>
       </View>
@@ -1677,8 +1677,8 @@ const s = StyleSheet.create({
   pathwayPercentBadge: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: BorderRadius.md },
   pathwayPercentText: { fontSize: 16, fontWeight: '800' },
   pathwayProgressRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: Spacing.sm },
-  pathwayProgressTrack: { flex: 1, height: 6, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 3, overflow: 'hidden' },
-  pathwayProgressFill: { height: '100%', backgroundColor: '#3B82F6', borderRadius: 3 },
+  pathwayProgressTrack: { flex: 1, height: 6, backgroundColor: '#2F3336', borderRadius: 3, overflow: 'hidden' },
+  pathwayProgressFill: { height: '100%', backgroundColor: '#1D9BF0', borderRadius: 3 },
   pathwayMilestone: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: Spacing.sm, borderRadius: BorderRadius.md },
   pathwayMilestoneText: { fontSize: 12, flex: 1 },
 
@@ -1690,8 +1690,8 @@ const s = StyleSheet.create({
   studyNext: { fontSize: 10 },
   studyRight: { alignItems: 'flex-end', gap: 3, minWidth: 50 },
   studyPercent: { fontSize: 14, fontWeight: '700' },
-  studyProgressBar: { width: 50, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.08)', overflow: 'hidden' },
-  studyProgressFill: { height: '100%', borderRadius: 2, backgroundColor: '#3B82F6' },
+  studyProgressBar: { width: 50, height: 4, borderRadius: 2, backgroundColor: '#2F3336', overflow: 'hidden' },
+  studyProgressFill: { height: '100%', borderRadius: 2, backgroundColor: '#1D9BF0' },
 
   // ---- MY PATH: Spiritual Habits ----
   habitsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
@@ -1775,7 +1775,7 @@ const s = StyleSheet.create({
   groupDetailText: { fontSize: 11 },
   groupBottomRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   groupCapacity: { flex: 1 },
-  groupCapacityBar: { width: 80, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.08)', overflow: 'hidden', marginBottom: 3 },
+  groupCapacityBar: { width: 80, height: 4, borderRadius: 2, backgroundColor: '#2F3336', overflow: 'hidden', marginBottom: 3 },
   groupCapacityFill: { height: '100%', borderRadius: 2 },
   groupCapacityText: { fontSize: 10 },
   groupHealth: { flexDirection: 'row', gap: Spacing.sm },
@@ -1842,7 +1842,7 @@ const s = StyleSheet.create({
   pipelineStatusText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
   pipelineMinistry: { fontSize: 11, marginLeft: 12 },
   pipelineRight: { alignItems: 'flex-end', gap: 3, minWidth: 50 },
-  pipelineProgressBar: { width: 50, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.08)', overflow: 'hidden' },
+  pipelineProgressBar: { width: 50, height: 4, borderRadius: 2, backgroundColor: '#2F3336', overflow: 'hidden' },
   pipelineProgressFill: { height: '100%', borderRadius: 2 },
   pipelineProgressText: { fontSize: 9 },
 

@@ -27,7 +27,7 @@ interface Props {
   colors: Record<string, string>;
 }
 
-const ACCENT = '#FBBF24';
+const ACCENT = '#1D9BF0';
 
 export function ChurchGiveSheet({ visible, onClose, colors }: Props) {
   const [stage, setStage] = useState<Stage>('browse');

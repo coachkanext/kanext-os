@@ -44,7 +44,7 @@ interface Props {
   role?: EducationRoleLens;
 }
 
-const TEAL = '#14B8A6';
+const TEAL = '#1D9BF0';
 
 const STATUS_DOT: Record<string, string> = {
   green: '#22C55E',
@@ -78,7 +78,7 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
         {canSee('video_hero') && (
           <Pressable style={styles.heroContainer}>
             <LinearGradient
-              colors={['#0a2e1a', '#0d1a0f', '#000']}
+              colors={['#0B0F14', '#0B0F14', '#000']}
               style={styles.heroGradient}
             >
               <View style={styles.playButton}>
@@ -184,10 +184,10 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
         {/* ── Domain Cards ── */}
         {canSee('student_success') && (
           <View style={styles.domainCard}>
-            <View style={[styles.domainAccent, { backgroundColor: '#3B82F6' }]} />
+            <View style={[styles.domainAccent, { backgroundColor: '#1D9BF0' }]} />
             <View style={styles.domainContent}>
               <View style={styles.domainHeader}>
-                <IconSymbol name="person.fill.checkmark" size={18} color="#3B82F6" />
+                <IconSymbol name="person.fill.checkmark" size={18} color="#1D9BF0" />
                 <ThemedText style={styles.domainTitle}>Student Success</ThemedText>
               </View>
               <View style={styles.domainPills}>
@@ -200,14 +200,14 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
 
         {canSee('campus_life') && (
           <View style={styles.domainCard}>
-            <View style={[styles.domainAccent, { backgroundColor: '#8B5CF6' }]} />
+            <View style={[styles.domainAccent, { backgroundColor: '#1D9BF0' }]} />
             <View style={styles.domainContent}>
               <View style={styles.domainHeader}>
-                <IconSymbol name="building.2.fill" size={18} color="#8B5CF6" />
+                <IconSymbol name="building.2.fill" size={18} color="#1D9BF0" />
                 <ThemedText style={styles.domainTitle}>Campus Life</ThemedText>
               </View>
               <View style={styles.domainPills}>
-                <DomainPill label={`${CAMPUS_LIFE_SUMMARY.activeOrgs} Orgs`} color="#8B5CF6" />
+                <DomainPill label={`${CAMPUS_LIFE_SUMMARY.activeOrgs} Orgs`} color="#1D9BF0" />
               </View>
               <ThemedText style={styles.domainMeta}>{CAMPUS_LIFE_SUMMARY.nextCampusEvent}</ThemedText>
             </View>
@@ -232,10 +232,10 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
 
         {canSee('accreditation') && (
           <View style={styles.domainCard}>
-            <View style={[styles.domainAccent, { backgroundColor: '#10B981' }]} />
+            <View style={[styles.domainAccent, { backgroundColor: '#22C55E' }]} />
             <View style={styles.domainContent}>
               <View style={styles.domainHeader}>
-                <IconSymbol name="checkmark.seal.fill" size={18} color="#10B981" />
+                <IconSymbol name="checkmark.seal.fill" size={18} color="#22C55E" />
                 <ThemedText style={styles.domainTitle}>Accreditation</ThemedText>
               </View>
               <ThemedText style={styles.domainStatus}>{ACCREDITATION_SUMMARY.status}</ThemedText>
@@ -267,7 +267,7 @@ function MetricCell({ label, value, trend, status }: { label: string; value: str
         {trend && <ThemedText style={styles.metricTrend}>{trend}</ThemedText>}
       </View>
       <View style={styles.metricLabelRow}>
-        <View style={[styles.statusDot, { backgroundColor: STATUS_DOT[status] ?? '#6B7280' }]} />
+        <View style={[styles.statusDot, { backgroundColor: STATUS_DOT[status] ?? '#A1A1AA' }]} />
         <ThemedText style={styles.metricLabel}>{label}</ThemedText>
       </View>
     </View>
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   // Action Row
   actionRow: { flexDirection: 'row', gap: 10, marginBottom: 16 },
   actionCard: {
-    flex: 1, backgroundColor: '#181616', borderRadius: 14, padding: 16,
+    flex: 1, backgroundColor: '#0B0F14', borderRadius: 14, padding: 16,
     overflow: 'hidden',
   },
   actionTopBorder: { position: 'absolute', top: 0, left: 0, right: 0, height: 3 },
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
 
   // Institutional Metrics
   metricsCard: {
-    backgroundColor: '#181616', borderRadius: 14, padding: 16, marginBottom: 16,
+    backgroundColor: '#0B0F14', borderRadius: 14, padding: 16, marginBottom: 16,
   },
   sectionTitle: { color: '#fff', fontSize: 13, fontWeight: '800', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 },
   metricsGrid: { flexDirection: 'row', flexWrap: 'wrap' },
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
 
   // Academic Health
   healthCard: {
-    backgroundColor: '#181616', borderRadius: 14, padding: 16, marginBottom: 16,
+    backgroundColor: '#0B0F14', borderRadius: 14, padding: 16, marginBottom: 16,
   },
   schoolRow: { marginBottom: 12 },
   schoolHeader: { marginBottom: 4 },
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
 
   // Domain Cards
   domainCard: {
-    backgroundColor: '#181616', borderRadius: 14, overflow: 'hidden', marginBottom: 12,
+    backgroundColor: '#0B0F14', borderRadius: 14, overflow: 'hidden', marginBottom: 12,
   },
   domainAccent: { height: 3 },
   domainContent: { padding: 16 },

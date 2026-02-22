@@ -53,8 +53,8 @@ interface UniversalMemberSheetProps {
 
 const MEMBER_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
-  visitor: '#6AA9FF',
-  inactive: '#8F8F8F',
+  visitor: '#1D9BF0',
+  inactive: '#A1A1AA',
   under_review: '#F59E0B',
 };
 
@@ -66,26 +66,26 @@ const SAFETY_STATUS_COLORS: Record<string, string> = {
 
 const TASK_STATUS_COLORS: Record<string, string> = {
   open: '#F59E0B',
-  in_progress: '#6AA9FF',
+  in_progress: '#1D9BF0',
   completed: '#22C55E',
 };
 
 const FOLLOW_UP_CATEGORY_COLORS: Record<string, string> = {
-  new_visitor: '#6AA9FF',
+  new_visitor: '#1D9BF0',
   returning: '#22C55E',
-  prayer_request: '#A78BFA',
+  prayer_request: '#1D9BF0',
   hospital: '#EF4444',
   counseling: '#F59E0B',
   discipline: '#EF4444',
-  other: '#8F8F8F',
+  other: '#A1A1AA',
 };
 
 const INCIDENT_TYPE_COLORS: Record<string, string> = {
   child_safety: '#EF4444',
   medical: '#F59E0B',
-  conflict: '#A78BFA',
-  property: '#8F8F8F',
-  other: '#8F8F8F',
+  conflict: '#1D9BF0',
+  property: '#A1A1AA',
+  other: '#A1A1AA',
 };
 
 const SENSITIVITY_COLORS: Record<string, string> = {
@@ -306,19 +306,19 @@ function MemberHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (MEMBER_STATUS_COLORS[member.status] ?? '#8F8F8F') + '1A' },
+            { backgroundColor: (MEMBER_STATUS_COLORS[member.status] ?? '#A1A1AA') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: MEMBER_STATUS_COLORS[member.status] ?? '#8F8F8F' },
+              { backgroundColor: MEMBER_STATUS_COLORS[member.status] ?? '#A1A1AA' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: MEMBER_STATUS_COLORS[member.status] ?? '#8F8F8F' },
+              { color: MEMBER_STATUS_COLORS[member.status] ?? '#A1A1AA' },
             ]}
           >
             {member.status.replace('_', ' ').toUpperCase()}
@@ -341,18 +341,18 @@ function MemberHeader({
           <View
             style={[
               styles.safetyPill,
-              { backgroundColor: (SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#8F8F8F') + '1A' },
+              { backgroundColor: (SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#A1A1AA') + '1A' },
             ]}
           >
             <IconSymbol
               name="shield.fill"
               size={10}
-              color={SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#8F8F8F'}
+              color={SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#A1A1AA'}
             />
             <ThemedText
               style={[
                 styles.safetyPillText,
-                { color: SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#8F8F8F' },
+                { color: SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#A1A1AA' },
               ]}
             >
               {member.safetyClearance.toUpperCase()}
@@ -417,14 +417,14 @@ function OverviewTab({
           <StatBlock
             label="Last Attended"
             value={member.lastAttendance ?? 'N/A'}
-            color="#DDDDDD"
+            color="#FFFFFF"
             colors={colors}
             small
           />
           <StatBlock
             label="Ministries"
             value={String(memberMinistries.length)}
-            color="#6AA9FF"
+            color="#1D9BF0"
             colors={colors}
           />
           <StatBlock
@@ -668,8 +668,8 @@ function CareFollowUpTab({
             </View>
           )}
           {member.status === 'visitor' && (
-            <View style={[styles.careTagPill, { backgroundColor: '#6AA9FF22' }]}>
-              <ThemedText style={[styles.careTagText, { color: '#6AA9FF' }]}>
+            <View style={[styles.careTagPill, { backgroundColor: '#1D9BF022' }]}>
+              <ThemedText style={[styles.careTagText, { color: '#1D9BF0' }]}>
                 NEW VISITOR
               </ThemedText>
             </View>
@@ -708,13 +708,13 @@ function CareFollowUpTab({
                 <View
                   style={[
                     styles.followUpCategoryBadge,
-                    { backgroundColor: (FOLLOW_UP_CATEGORY_COLORS[fu.category] ?? '#8F8F8F') + '22' },
+                    { backgroundColor: (FOLLOW_UP_CATEGORY_COLORS[fu.category] ?? '#A1A1AA') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.followUpCategoryText,
-                      { color: FOLLOW_UP_CATEGORY_COLORS[fu.category] ?? '#8F8F8F' },
+                      { color: FOLLOW_UP_CATEGORY_COLORS[fu.category] ?? '#A1A1AA' },
                     ]}
                   >
                     {fu.category.replace('_', ' ').toUpperCase()}
@@ -736,7 +736,7 @@ function CareFollowUpTab({
                 </ThemedText>
               )}
               {fu.nextStep && (
-                <ThemedText style={[styles.captionText, { color: '#6AA9FF', marginTop: 2 }]}>
+                <ThemedText style={[styles.captionText, { color: '#1D9BF0', marginTop: 2 }]}>
                   Next: {fu.nextStep}
                 </ThemedText>
               )}
@@ -807,13 +807,13 @@ function TasksWorkflowTab({
             <View
               style={[
                 styles.taskStatusBadge,
-                { backgroundColor: (TASK_STATUS_COLORS[task.status] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (TASK_STATUS_COLORS[task.status] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.taskStatusText,
-                  { color: TASK_STATUS_COLORS[task.status] ?? '#8F8F8F' },
+                  { color: TASK_STATUS_COLORS[task.status] ?? '#A1A1AA' },
                 ]}
               >
                 {task.status.replace('_', ' ').toUpperCase()}
@@ -836,7 +836,7 @@ function TasksWorkflowTab({
         {MEMBER_WORKFLOW_QUEUE.map((item) => {
           const statusColor =
             item.status === 'completed' ? '#22C55E' :
-            item.status === 'in_progress' ? '#6AA9FF' : '#8F8F8F';
+            item.status === 'in_progress' ? '#1D9BF0' : '#A1A1AA';
           return (
             <View
               key={item.id}
@@ -956,7 +956,7 @@ function SafetyComplianceTab({
           <StatBlock
             label="Status"
             value={member.safetyClearance.charAt(0).toUpperCase() + member.safetyClearance.slice(1)}
-            color={SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#8F8F8F'}
+            color={SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#A1A1AA'}
             colors={colors}
           />
           <StatBlock
@@ -1016,13 +1016,13 @@ function SafetyComplianceTab({
               <View
                 style={[
                   styles.incidentTypeBadge,
-                  { backgroundColor: (INCIDENT_TYPE_COLORS[inc.type] ?? '#8F8F8F') + '22' },
+                  { backgroundColor: (INCIDENT_TYPE_COLORS[inc.type] ?? '#A1A1AA') + '22' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.incidentTypeText,
-                    { color: INCIDENT_TYPE_COLORS[inc.type] ?? '#8F8F8F' },
+                    { color: INCIDENT_TYPE_COLORS[inc.type] ?? '#A1A1AA' },
                   ]}
                 >
                   {inc.type.replace('_', ' ').toUpperCase()}
@@ -1103,8 +1103,8 @@ function AdminTab({
               Authorized individuals for child release
             </ThemedText>
           </View>
-          <View style={[styles.consentBadge, { backgroundColor: member.type === 'visitor' ? '#8F8F8F22' : '#F59E0B22' }]}>
-            <ThemedText style={[styles.consentBadgeText, { color: member.type === 'visitor' ? '#8F8F8F' : '#F59E0B' }]}>
+          <View style={[styles.consentBadge, { backgroundColor: member.type === 'visitor' ? '#A1A1AA22' : '#F59E0B22' }]}>
+            <ThemedText style={[styles.consentBadgeText, { color: member.type === 'visitor' ? '#A1A1AA' : '#F59E0B' }]}>
               {member.type === 'visitor' ? 'N/A' : 'PENDING'}
             </ThemedText>
           </View>

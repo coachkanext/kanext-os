@@ -61,8 +61,8 @@ export function CalendarGamesView({ colors, accent }: Props) {
               </ThemedText>
             </View>
             <View style={styles.badgeRow}>
-              <View style={[styles.locationBadge, { backgroundColor: game.location === 'Home' ? '#22c55e22' : '#3b82f622' }]}>
-                <ThemedText style={[styles.locationBadgeText, { color: game.location === 'Home' ? '#22c55e' : '#3b82f6' }]}>
+              <View style={[styles.locationBadge, { backgroundColor: game.location === 'Home' ? '#22c55e22' : '#1D9BF022' }]}>
+                <ThemedText style={[styles.locationBadgeText, { color: game.location === 'Home' ? '#22c55e' : '#1D9BF0' }]}>
                   {game.location === 'Home' ? 'HOME' : 'AWAY'}
                 </ThemedText>
               </View>

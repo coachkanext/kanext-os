@@ -60,10 +60,10 @@ function accountTypeLabel(type: PaymentAccount['type']): string {
 
 function accountTypeColor(type: PaymentAccount['type']): string {
   switch (type) {
-    case 'operating': return '#3B82F6';
-    case 'escrow': return '#8B5CF6';
+    case 'operating': return '#1D9BF0';
+    case 'escrow': return '#1D9BF0';
     case 'prize-fund': return '#F59E0B';
-    case 'sponsor-holding': return '#06B6D4';
+    case 'sponsor-holding': return '#1D9BF0';
     case 'petty-cash': return '#22C55E';
   }
 }
@@ -80,8 +80,8 @@ function payoutTypeLabel(type: PayoutBatch['type']): string {
 function payoutTypeColor(type: PayoutBatch['type']): string {
   switch (type) {
     case 'prize': return '#F59E0B';
-    case 'official': return '#3B82F6';
-    case 'vendor': return '#8B5CF6';
+    case 'official': return '#1D9BF0';
+    case 'vendor': return '#1D9BF0';
     case 'refund': return '#EF4444';
   }
 }
@@ -99,10 +99,10 @@ function feeTypeLabel(type: FeeSchedule['type']): string {
 function feeTypeColor(type: FeeSchedule['type']): string {
   switch (type) {
     case 'entry-fee': return '#22C55E';
-    case 'registration': return '#3B82F6';
-    case 'licensing': return '#8B5CF6';
+    case 'registration': return '#1D9BF0';
+    case 'licensing': return '#1D9BF0';
     case 'facility': return '#F59E0B';
-    case 'broadcast': return '#06B6D4';
+    case 'broadcast': return '#1D9BF0';
   }
 }
 
@@ -839,7 +839,7 @@ function ReconciliationTab({
             <ThemedText style={[s.reconSummaryLabel, { color: colors.textTertiary }]}>Pending</ThemedText>
           </View>
           <View style={s.reconSummaryItem}>
-            <View style={[s.reconSummaryDot, { backgroundColor: '#8B5CF6' }]} />
+            <View style={[s.reconSummaryDot, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[s.reconSummaryValue, { color: colors.text }]}>{formatCurrency(totalVariance)}</ThemedText>
             <ThemedText style={[s.reconSummaryLabel, { color: colors.textTertiary }]}>Total Var.</ThemedText>
           </View>
@@ -952,7 +952,7 @@ function DisputesTab({
               <ThemedText style={[s.disputeSummaryGridLabel, { color: colors.textTertiary }]}>Open</ThemedText>
             </View>
             <View style={s.disputeSummaryGridItem}>
-              <View style={[s.disputeSummaryDot, { backgroundColor: '#3B82F6' }]} />
+              <View style={[s.disputeSummaryDot, { backgroundColor: '#1D9BF0' }]} />
               <ThemedText style={[s.disputeSummaryGridValue, { color: colors.text }]}>{reviewCount}</ThemedText>
               <ThemedText style={[s.disputeSummaryGridLabel, { color: colors.textTertiary }]}>Review</ThemedText>
             </View>

@@ -153,23 +153,23 @@ export const COMP_SERIES_SCOPE_CHIPS = [
 // =============================================================================
 
 export const SERIES_STATUS_COLOR: Record<ActiveSeries['status'], string> = {
-  upcoming: '#3B82F6',
+  upcoming: '#1D9BF0',
   live: '#22C55E',
-  completed: '#6B7280',
+  completed: '#A1A1AA',
 };
 
 export const ENTRANT_STATUS_COLOR: Record<SeriesEntrant['status'], string> = {
   active: '#22C55E',
   eliminated: '#EF4444',
-  withdrawn: '#9CA3AF',
-  qualified: '#8B5CF6',
+  withdrawn: '#A1A1AA',
+  qualified: '#1D9BF0',
 };
 
 export const SEASON_STATUS_COLOR: Record<Season['status'], string> = {
   planning: '#F59E0B',
   active: '#22C55E',
-  completed: '#6B7280',
-  archived: '#9CA3AF',
+  completed: '#A1A1AA',
+  archived: '#A1A1AA',
 };
 
 export const FORMAT_TYPE_LABEL: Record<SeriesFormat['type'], string> = {
@@ -182,15 +182,15 @@ export const FORMAT_TYPE_LABEL: Record<SeriesFormat['type'], string> = {
 };
 
 export const CALENDAR_EVENT_COLOR: Record<CalendarEvent['type'], string> = {
-  match: '#3B82F6',
+  match: '#1D9BF0',
   ceremony: '#F59E0B',
   deadline: '#EF4444',
-  media: '#8B5CF6',
-  'rest-day': '#6B7280',
+  media: '#1D9BF0',
+  'rest-day': '#A1A1AA',
 };
 
 export const AWARD_CATEGORY_COLOR: Record<Award['category'], string> = {
-  individual: '#6AA9FF',
+  individual: '#1D9BF0',
   team: '#22C55E',
   special: '#F59E0B',
 };
@@ -202,21 +202,21 @@ export const AWARD_CATEGORY_COLOR: Record<Award['category'], string> = {
 export function getCompSeriesData(_scope: string) {
   // ── Dashboard ──
   const dashboard: SeriesDashboardBlock[] = [
-    { id: 'ds-1', label: 'Total Series', value: '12', delta: '+2 this quarter', icon: 'sportscourt.fill', color: '#6AA9FF' },
+    { id: 'ds-1', label: 'Total Series', value: '12', delta: '+2 this quarter', icon: 'sportscourt.fill', color: '#1D9BF0' },
     { id: 'ds-2', label: 'Active Entrants', value: '148', delta: '+18 from last season', icon: 'person.3.fill', color: '#22C55E' },
     { id: 'ds-3', label: 'Upcoming Matches', value: '37', delta: '12 this week', icon: 'calendar', color: '#F59E0B' },
-    { id: 'ds-4', label: 'Prize Pool', value: '$425K', delta: '+$50K vs last year', icon: 'crown.fill', color: '#8B5CF6' },
+    { id: 'ds-4', label: 'Prize Pool', value: '$425K', delta: '+$50K vs last year', icon: 'crown.fill', color: '#1D9BF0' },
     { id: 'ds-5', label: 'Live Series', value: '4', delta: '2 in semifinals', icon: 'play.circle.fill', color: '#EF4444' },
-    { id: 'ds-6', label: 'Venues Booked', value: '9', delta: '3 pending confirmation', icon: 'mappin.and.ellipse', color: '#14B8A6' },
+    { id: 'ds-6', label: 'Venues Booked', value: '9', delta: '3 pending confirmation', icon: 'mappin.and.ellipse', color: '#1D9BF0' },
   ];
 
   const quickActions = [
-    { id: 'qa-1', label: 'New Series', icon: 'plus.circle.fill', color: '#6AA9FF' },
+    { id: 'qa-1', label: 'New Series', icon: 'plus.circle.fill', color: '#1D9BF0' },
     { id: 'qa-2', label: 'Schedule Match', icon: 'calendar.badge.plus', color: '#22C55E' },
     { id: 'qa-3', label: 'Add Entrant', icon: 'person.badge.plus', color: '#F59E0B' },
-    { id: 'qa-4', label: 'Run Report', icon: 'chart.bar.fill', color: '#8B5CF6' },
+    { id: 'qa-4', label: 'Run Report', icon: 'chart.bar.fill', color: '#1D9BF0' },
     { id: 'qa-5', label: 'Manage Awards', icon: 'crown.fill', color: '#EF4444' },
-    { id: 'qa-6', label: 'Broadcast Setup', icon: 'video.fill', color: '#14B8A6' },
+    { id: 'qa-6', label: 'Broadcast Setup', icon: 'video.fill', color: '#1D9BF0' },
   ];
 
   const recentActivity = [

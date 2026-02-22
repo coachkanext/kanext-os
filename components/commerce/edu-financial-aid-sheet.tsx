@@ -26,7 +26,7 @@ interface Props {
   colors: Record<string, string>;
 }
 
-const ACCENT = '#14B8A6';
+const ACCENT = '#1D9BF0';
 const SECTIONS: { id: Section; label: string }[] = [
   { id: 'scholarships', label: 'Scholarships' },
   { id: 'fafsa', label: 'FAFSA' },

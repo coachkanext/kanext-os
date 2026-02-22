@@ -35,8 +35,8 @@ export function NexusEscalationRowV3({ escalation, onPress }: NexusEscalationRow
       }}
     >
       {/* Avatar */}
-      <View style={[styles.avatar, { backgroundColor: isUnanswered ? '#1E40AF20' : colors.backgroundTertiary }]}>
-        <ThemedText style={[styles.avatarText, { color: isUnanswered ? '#1E40AF' : colors.textSecondary }]}>
+      <View style={[styles.avatar, { backgroundColor: isUnanswered ? '#1D9BF020' : colors.backgroundTertiary }]}>
+        <ThemedText style={[styles.avatarText, { color: isUnanswered ? '#1D9BF0' : colors.textSecondary }]}>
           {escalation.askerInitials}
         </ThemedText>
       </View>
@@ -67,8 +67,8 @@ export function NexusEscalationRowV3({ escalation, onPress }: NexusEscalationRow
           <ThemedText style={[styles.context, { color: colors.textTertiary }]} numberOfLines={1}>
             {escalation.viewingContext}
           </ThemedText>
-          <View style={[styles.statusChip, { backgroundColor: isUnanswered ? '#D9770620' : '#22C55E20' }]}>
-            <ThemedText style={[styles.statusText, { color: isUnanswered ? '#D97706' : '#22C55E' }]}>
+          <View style={[styles.statusChip, { backgroundColor: isUnanswered ? '#F59E0B20' : '#22C55E20' }]}>
+            <ThemedText style={[styles.statusText, { color: isUnanswered ? '#F59E0B' : '#22C55E' }]}>
               {isUnanswered ? 'Unanswered' : 'Answered'}
             </ThemedText>
           </View>

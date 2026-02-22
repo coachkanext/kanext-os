@@ -170,46 +170,46 @@ export const COMP_SPONSORS_SCOPE_CHIPS = [
 
 export const TIER_COLOR: Record<CompSponsor['tier'], string> = {
   title: '#F59E0B',
-  gold: '#EAB308',
-  silver: '#9CA3AF',
-  bronze: '#CD7F32',
-  'in-kind': '#8B5CF6',
+  gold: '#F59E0B',
+  silver: '#A1A1AA',
+  bronze: '#1D9BF0',
+  'in-kind': '#1D9BF0',
 };
 
 export const SPONSOR_STATUS_COLOR: Record<CompSponsor['status'], string> = {
   active: '#22C55E',
   pending: '#F59E0B',
   expired: '#EF4444',
-  paused: '#6B7280',
+  paused: '#A1A1AA',
 };
 
 export const ACTIVATION_STATUS_COLOR: Record<Activation['status'], string> = {
   active: '#22C55E',
-  scheduled: '#3B82F6',
-  completed: '#6B7280',
-  draft: '#9CA3AF',
+  scheduled: '#1D9BF0',
+  completed: '#A1A1AA',
+  draft: '#A1A1AA',
 };
 
 export const CONTRACT_STATUS_COLOR: Record<SponsorContract['status'], string> = {
   active: '#22C55E',
   negotiation: '#F59E0B',
   expired: '#EF4444',
-  'pending-renewal': '#3B82F6',
+  'pending-renewal': '#1D9BF0',
 };
 
 export const FULFILLMENT_STATUS_COLOR: Record<FulfillmentItem['status'], string> = {
   completed: '#22C55E',
-  'in-progress': '#3B82F6',
+  'in-progress': '#1D9BF0',
   overdue: '#EF4444',
   upcoming: '#F59E0B',
 };
 
 export const PROSPECT_STAGE_COLOR: Record<Prospect['stage'], string> = {
-  lead: '#9CA3AF',
-  outreach: '#3B82F6',
+  lead: '#A1A1AA',
+  outreach: '#1D9BF0',
   meeting: '#F59E0B',
-  proposal: '#8B5CF6',
-  negotiation: '#EF8C44',
+  proposal: '#1D9BF0',
+  negotiation: '#F59E0B',
   'closed-won': '#22C55E',
   'closed-lost': '#EF4444',
 };
@@ -221,21 +221,21 @@ export const PROSPECT_STAGE_COLOR: Record<Prospect['stage'], string> = {
 export function getCompSponsorsData(_scope: string) {
   // ── Dashboard ──
   const dashboard: SponsorsDashboardBlock[] = [
-    { id: 'ds-1', label: 'Total Sponsors', value: '5', delta: '+1 this quarter', icon: 'building.2.fill', color: '#6AA9FF' },
+    { id: 'ds-1', label: 'Total Sponsors', value: '5', delta: '+1 this quarter', icon: 'building.2.fill', color: '#1D9BF0' },
     { id: 'ds-2', label: 'Annual Revenue', value: '$720K', delta: '+$95K vs last year', icon: 'dollarsign.circle.fill', color: '#22C55E' },
     { id: 'ds-3', label: 'Active Activations', value: '18', delta: '6 launching this month', icon: 'bolt.fill', color: '#F59E0B' },
-    { id: 'ds-4', label: 'Fulfillment Rate', value: '87%', delta: '+4% from last quarter', icon: 'checkmark.seal.fill', color: '#8B5CF6' },
+    { id: 'ds-4', label: 'Fulfillment Rate', value: '87%', delta: '+4% from last quarter', icon: 'checkmark.seal.fill', color: '#1D9BF0' },
     { id: 'ds-5', label: 'Pipeline Value', value: '$340K', delta: '3 proposals pending', icon: 'binoculars.fill', color: '#EF4444' },
-    { id: 'ds-6', label: 'Assets Delivered', value: '42', delta: '8 pending approval', icon: 'photo.stack.fill', color: '#14B8A6' },
+    { id: 'ds-6', label: 'Assets Delivered', value: '42', delta: '8 pending approval', icon: 'photo.stack.fill', color: '#1D9BF0' },
   ];
 
   const quickActions = [
-    { id: 'qa-1', label: 'Add Sponsor', icon: 'plus.circle.fill', color: '#6AA9FF' },
+    { id: 'qa-1', label: 'Add Sponsor', icon: 'plus.circle.fill', color: '#1D9BF0' },
     { id: 'qa-2', label: 'New Package', icon: 'shippingbox.fill', color: '#22C55E' },
     { id: 'qa-3', label: 'Create Activation', icon: 'bolt.fill', color: '#F59E0B' },
-    { id: 'qa-4', label: 'Revenue Report', icon: 'chart.bar.fill', color: '#8B5CF6' },
+    { id: 'qa-4', label: 'Revenue Report', icon: 'chart.bar.fill', color: '#1D9BF0' },
     { id: 'qa-5', label: 'Send Invoice', icon: 'paperplane.fill', color: '#EF4444' },
-    { id: 'qa-6', label: 'Upload Asset', icon: 'arrow.up.doc.fill', color: '#14B8A6' },
+    { id: 'qa-6', label: 'Upload Asset', icon: 'arrow.up.doc.fill', color: '#1D9BF0' },
   ];
 
   const recentActivity = [

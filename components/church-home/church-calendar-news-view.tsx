@@ -24,13 +24,13 @@ type CategoryFilter = (typeof CATEGORIES)[number];
 
 function getCategoryColor(cat: ChurchNewsItem['category']): string {
   switch (cat) {
-    case 'sermon': return '#8B5CF6';
+    case 'sermon': return '#1D9BF0';
     case 'testimony': return '#22C55E';
-    case 'ministry_highlight': return '#3B82F6';
+    case 'ministry_highlight': return '#1D9BF0';
     case 'announcement': return '#F59E0B';
-    case 'outreach': return '#EC4899';
-    case 'worship': return '#A855F7';
-    default: return '#8F8F8F';
+    case 'outreach': return '#1D9BF0';
+    case 'worship': return '#1D9BF0';
+    default: return '#A1A1AA';
   }
 }
 
@@ -71,7 +71,7 @@ export function ChurchCalendarNewsView({ colors, accent }: Props) {
               styles.catPill,
               activeCat === cat
                 ? { backgroundColor: accent }
-                : { backgroundColor: 'rgba(255,255,255,0.06)' },
+                : { backgroundColor: '#2F3336' },
             ]}
             onPress={() => setActiveCat(cat)}
           >
@@ -98,7 +98,7 @@ export function ChurchCalendarNewsView({ colors, accent }: Props) {
             {/* Thumbnail */}
             {post.isVideo ? (
               <View style={styles.thumbnail}>
-                <LinearGradient colors={['#1a1a2e', '#16213e']} style={styles.thumbnailGradient}>
+                <LinearGradient colors={['#0B0F14', '#0B0F14']} style={styles.thumbnailGradient}>
                   <IconSymbol name="play.circle.fill" size={40} color="rgba(255,255,255,0.5)" />
                 </LinearGradient>
                 {post.duration && (
@@ -109,7 +109,7 @@ export function ChurchCalendarNewsView({ colors, accent }: Props) {
               </View>
             ) : (
               <View style={styles.thumbnailPlaceholder}>
-                <LinearGradient colors={['#1e1b2e', '#252040']} style={styles.thumbnailGradient}>
+                <LinearGradient colors={['#0B0F14', '#0B0F14']} style={styles.thumbnailGradient}>
                   <IconSymbol name="doc.text.fill" size={28} color="rgba(255,255,255,0.3)" />
                 </LinearGradient>
               </View>

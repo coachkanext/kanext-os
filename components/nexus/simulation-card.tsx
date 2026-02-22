@@ -104,7 +104,7 @@ export function SimulationCard({ simulation, onViewFull, onRerun }: SimulationCa
               backgroundColor:
                 simulation.rosterUsed === 'official'
                   ? modeColors.primary + '20'
-                  : '#6e6e6e' + '20',
+                  : '#A1A1AA' + '20',
             },
           ]}
         >
@@ -113,7 +113,7 @@ export function SimulationCard({ simulation, onViewFull, onRerun }: SimulationCa
               styles.rosterBadgeText,
               {
                 color:
-                  simulation.rosterUsed === 'official' ? modeColors.primary : '#6e6e6e',
+                  simulation.rosterUsed === 'official' ? modeColors.primary : '#A1A1AA',
               },
             ]}
           >
@@ -141,7 +141,7 @@ export function SimulationCard({ simulation, onViewFull, onRerun }: SimulationCa
         <StatBox
           label="Margin"
           value={formatMargin(simulation.projectedMargin)}
-          valueColor={isWinning ? '#f5f5f5' : '#6e6e6e'}
+          valueColor={isWinning ? '#FFFFFF' : '#A1A1AA'}
           colors={colors}
         />
         <StatBox

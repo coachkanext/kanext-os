@@ -33,6 +33,9 @@ export function isSystemOwner(membershipId: string): boolean {
   return SYSTEM_OWNER_MEMBERSHIP_IDS.has(membershipId);
 }
 
+/** Returns true if the email belongs to a system owner. Re-export for convenience. */
+export { isSystemOwnerEmail } from '@/config/access';
+
 // =============================================================================
 // SYSTEM_OWNER CAPABILITIES
 // =============================================================================

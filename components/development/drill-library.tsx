@@ -38,11 +38,11 @@ const DIFFICULTY_COLORS: Record<DrillDifficulty, string> = {
 const CLUSTER_BADGE_COLORS: Record<string, string> = {
   Shooting: Brand.precision,
   Finishing: Brand.warning,
-  Playmaking: '#7A5CFF',
+  Playmaking: '#1D9BF0',
   'On-Ball Defense': Brand.error,
-  'Team Defense': '#FF6B6B',
-  Rebounding: '#FF9800',
-  Physical: '#8F8F8F',
+  'Team Defense': '#EF4444',
+  Rebounding: '#F59E0B',
+  Physical: '#A1A1AA',
 };
 
 // =============================================================================

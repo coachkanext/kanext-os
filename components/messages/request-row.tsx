@@ -37,7 +37,7 @@ export function RequestRow({ request, onPress, onApprove, onIgnore }: RequestRow
     <Pressable
       style={({ pressed }) => [
         styles.row,
-        { backgroundColor: pressed ? '#191919' : 'transparent' },
+        { backgroundColor: pressed ? '#0B0F14' : 'transparent' },
       ]}
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -95,13 +95,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
   },
   avatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: Spacing.sm + 4,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   content: {
     flex: 1,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   typeBadge: {
     paddingHorizontal: 6,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   context: {
     fontSize: 13,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: 4,
   },
   message: {
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   approveBtn: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: BorderRadius.full,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   ignoreBtn: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: BorderRadius.full,
@@ -169,10 +169,10 @@ const styles = StyleSheet.create({
   ignoreBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   approvedBadge: {
-    backgroundColor: '#4CAF5020',
+    backgroundColor: '#22C55E20',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: BorderRadius.full,
@@ -180,6 +180,6 @@ const styles = StyleSheet.create({
   approvedText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: '#22C55E',
   },
 });

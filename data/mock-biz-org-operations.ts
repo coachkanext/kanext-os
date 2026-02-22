@@ -133,34 +133,34 @@ export const OPS_SUB_TABS: OpsSubTab[] = [
 export const INITIATIVE_STATUS_COLOR: Record<OpsInitiative['status'], string> = {
   active: '#22C55E',
   paused: '#F59E0B',
-  completed: '#6B7280',
+  completed: '#A1A1AA',
 };
 
 export const PROJECT_STATUS_COLOR: Record<OpsProject['status'], string> = {
   active: '#22C55E',
   at_risk: '#F59E0B',
   blocked: '#EF4444',
-  completed: '#6B7280',
+  completed: '#A1A1AA',
 };
 
 export const TASK_PRIORITY_COLOR: Record<OpsTask['priority'], string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#3B82F6',
-  low: '#6B7280',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 export const TASK_STATUS_COLOR: Record<OpsTask['status'], string> = {
-  todo: '#6B7280',
-  in_progress: '#3B82F6',
-  review: '#8B5CF6',
+  todo: '#A1A1AA',
+  in_progress: '#1D9BF0',
+  review: '#1D9BF0',
   done: '#22C55E',
 };
 
 export const BLOCKER_SEVERITY_COLOR: Record<OpsBlocker['severity'], string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#3B82F6',
+  medium: '#1D9BF0',
 };
 
 export const BLOCKER_STATUS_COLOR: Record<OpsBlocker['status'], string> = {
@@ -170,7 +170,7 @@ export const BLOCKER_STATUS_COLOR: Record<OpsBlocker['status'], string> = {
 };
 
 export const DECISION_STATUS_COLOR: Record<OpsDecision['status'], string> = {
-  draft: '#6B7280',
+  draft: '#A1A1AA',
   open: '#F59E0B',
   approved: '#22C55E',
   rejected: '#EF4444',
@@ -186,14 +186,14 @@ const MOCK_SUMMARY_TILES: OpsSummaryTile[] = [
     label: 'Active Initiatives',
     value: '4',
     icon: 'flag.fill',
-    color: '#3B82F6',
+    color: '#1D9BF0',
   },
   {
     id: 'tile-open-projects',
     label: 'Open Projects',
     value: '8',
     icon: 'folder.fill',
-    color: '#8B5CF6',
+    color: '#1D9BF0',
   },
   {
     id: 'tile-pending-tasks',
@@ -221,7 +221,7 @@ const MOCK_SUMMARY_TILES: OpsSummaryTile[] = [
     label: 'Due Soon',
     value: '5',
     icon: 'clock.fill',
-    color: '#F97316',
+    color: '#F59E0B',
   },
 ];
 

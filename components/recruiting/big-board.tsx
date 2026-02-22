@@ -21,11 +21,11 @@ import {
 import { computeFitKR } from '@/utils/fit-kr';
 import type { OffensiveStyle, DefensiveStyle } from '@/types';
 
-const BG = '#0F1115';
-const CARD_BG = '#1A1D23';
+const BG = '#0B0F14';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
 type SortKey = 'kr' | 'fit' | 'rank';
 
@@ -223,7 +223,7 @@ function BigBoardRow({
           {entry.slot ?? player.position} {'\u00B7'} {player.height} {'\u00B7'} {player.classYear} {'\u00B7'} {player.currentSchool}
         </Text>
       </View>
-      <Text style={[styles.rowKR, { color: kr >= 75 ? '#4CAF50' : kr >= 60 ? '#FF9800' : GRAY }]}>
+      <Text style={[styles.rowKR, { color: kr >= 75 ? '#22C55E' : kr >= 60 ? '#F59E0B' : GRAY }]}>
         {kr}
       </Text>
       {interest && (

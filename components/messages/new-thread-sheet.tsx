@@ -37,12 +37,12 @@ export function NewThreadSheet({ onClose }: NewThreadSheetProps) {
           key={template.key}
           style={({ pressed }) => [
             styles.templateRow,
-            { backgroundColor: pressed ? '#191919' : 'transparent' },
+            { backgroundColor: pressed ? '#0B0F14' : 'transparent' },
           ]}
           onPress={() => handleSelect(template.label)}
         >
           <View style={styles.iconCircle}>
-            <IconSymbol name={template.icon as any} size={20} color="#f5f5f5" />
+            <IconSymbol name={template.icon as any} size={20} color="#FFFFFF" />
           </View>
           <View style={styles.templateContent}>
             <ThemedText style={styles.templateLabel}>{template.label}</ThemedText>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: Spacing.md,
   },
   templateRow: {
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -92,12 +92,12 @@ const styles = StyleSheet.create({
   templateLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   templateDesc: {
     fontSize: 13,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   emptyText: {
     fontSize: 15,

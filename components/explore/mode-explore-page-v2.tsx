@@ -174,7 +174,7 @@ function GameCard({ game }: { game: VideoGame }) {
 function ClipCard({ clip }: { clip: VideoClip }) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const typeColor = clip.type === 'highlight' ? '#22C55E' : clip.type === 'breakdown' ? '#3B82F6' : clip.type === 'scout' ? '#F59E0B' : '#8B5CF6';
+  const typeColor = clip.type === 'highlight' ? '#22C55E' : clip.type === 'breakdown' ? '#1D9BF0' : clip.type === 'scout' ? '#F59E0B' : '#1D9BF0';
   return (
     <Pressable
       style={[cardStyles.clipCard, { backgroundColor: colors.card, borderColor: colors.border }]}

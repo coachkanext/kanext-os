@@ -1532,10 +1532,10 @@ export default function GameDetailScreen() {
                   const fmuShots = filterShots(allFmuShots);
                   const oppShots = filterShots(allOppShots);
 
-                  const COURT_COLOR = '#D2B48C';
-                  const LINE_COLOR = '#B8976A';
+                  const COURT_COLOR = '#A1A1AA';
+                  const LINE_COLOR = '#A1A1AA';
                   const KaNeXT_COLOR = colors.text;
-                  const OPP_COLOR = '#6B8E6B';
+                  const OPP_COLOR = '#A1A1AA';
 
                   return (
                     <>
@@ -1621,7 +1621,7 @@ export default function GameDetailScreen() {
                             router.navigate({ pathname: '/coach/play-by-play' as any, params: { gameId: gameId ?? '' } });
                           }}
                         >
-                          <Text style={[styles.glFullLinkText, { color: '#c8102e' }]}>Full Play-By-Play</Text>
+                          <Text style={[styles.glFullLinkText, { color: '#EF4444' }]}>Full Play-By-Play</Text>
                         </Pressable>
                       </View>
                     </>
@@ -1741,7 +1741,7 @@ export default function GameDetailScreen() {
                             router.navigate({ pathname: '/coach/team-stats' as any, params: { gameId: gameId ?? '' } });
                           }}
                         >
-                          <Text style={[styles.compFullLinkText, { color: '#c8102e' }]}>Full Team Stats</Text>
+                          <Text style={[styles.compFullLinkText, { color: '#EF4444' }]}>Full Team Stats</Text>
                         </Pressable>
                       </View>
                     </>
@@ -2068,7 +2068,7 @@ function GameFlowChart({ snapshots, colors }: { snapshots: ScoreSnapshot[]; colo
             <Text
               style={[
                 styles.flowMargin,
-                { color: margin > 0 ? '#f5f5f5' : margin < 0 ? '#EF4444' : colors.textTertiary },
+                { color: margin > 0 ? '#FFFFFF' : margin < 0 ? '#EF4444' : colors.textTertiary },
               ]}
             >
               {margin > 0 ? `+${margin}` : margin === 0 ? 'TIE' : `${margin}`}
@@ -2513,7 +2513,7 @@ const styles = StyleSheet.create({
   },
   espnTabActive: {
     borderBottomWidth: 2,
-    borderBottomColor: '#c8102e',
+    borderBottomColor: '#EF4444',
   },
   espnTabText: {
     fontSize: 13,
@@ -3238,7 +3238,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#c8102e',
+    backgroundColor: '#EF4444',
     marginHorizontal: Spacing.md,
     marginBottom: Spacing.md,
     paddingVertical: 12,
@@ -3264,7 +3264,7 @@ const styles = StyleSheet.create({
   },
   liveTabActive: {
     borderBottomWidth: 2,
-    borderBottomColor: '#c8102e',
+    borderBottomColor: '#EF4444',
   },
   liveTabText: {
     fontSize: 13,

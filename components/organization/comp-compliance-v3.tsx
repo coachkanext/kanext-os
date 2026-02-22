@@ -152,7 +152,7 @@ function StatusBadge({ label, color }: { label: string; color: string }) {
 }
 
 function ComplianceBadge({ status }: { status: ComplianceStatus }) {
-  const color = STATUS_COLORS[status] || '#6B7280';
+  const color = STATUS_COLORS[status] || '#A1A1AA';
   return <StatusBadge label={status.toUpperCase()} color={color} />;
 }
 
@@ -490,7 +490,7 @@ export function CompCompliance({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >

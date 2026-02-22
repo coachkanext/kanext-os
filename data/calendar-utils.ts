@@ -11,11 +11,11 @@ export const EVENT_TYPE_COLORS: Record<ProgramCalendarEventType, string> = {
   game: '#EF4444',
   practice: '#22C55E',
   lift: '#F59E0B',
-  travel: '#6AA9FF',
-  meeting: '#A78BFA',
-  recruiting: '#FB923C',
-  academic: '#14B8A6',
-  admin_deadline: '#8F8F8F',
+  travel: '#1D9BF0',
+  meeting: '#1D9BF0',
+  recruiting: '#F59E0B',
+  academic: '#1D9BF0',
+  admin_deadline: '#A1A1AA',
 };
 
 export const EVENT_TYPE_LABELS: Record<ProgramCalendarEventType, string> = {

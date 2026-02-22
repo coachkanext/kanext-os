@@ -85,12 +85,12 @@ const SEVERITY_ICON: Record<string, string> = {
 const SEVERITY_BADGE_COLOR: Record<string, string> = {
   urgent: '#EF4444',
   important: '#F59E0B',
-  info: '#3B82F6',
+  info: '#1D9BF0',
 };
 
 const AUDIENCE_COLOR: Record<string, string> = {
-  staff: '#8B5CF6',
-  teams: '#3B82F6',
+  staff: '#1D9BF0',
+  teams: '#1D9BF0',
   public: '#22C55E',
 };
 
@@ -110,7 +110,7 @@ const DELIVERABLE_STATUS_COLOR: Record<string, string> = {
   on_track: '#22C55E',
   at_risk: '#F59E0B',
   overdue: '#EF4444',
-  delivered: '#3B82F6',
+  delivered: '#1D9BF0',
 };
 
 // =============================================================================
@@ -835,10 +835,10 @@ function AuditTrailModule({ colors }: { colors: typeof Colors.light }) {
     switch (action) {
       case 'Flagged': return '#EF4444';
       case 'Approved': return '#22C55E';
-      case 'Submitted': return '#3B82F6';
+      case 'Submitted': return '#1D9BF0';
       case 'Pending': return '#F59E0B';
-      case 'Initiated': return '#8B5CF6';
-      default: return '#6B7280';
+      case 'Initiated': return '#1D9BF0';
+      default: return '#A1A1AA';
     }
   };
 
@@ -1223,7 +1223,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: Spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
     marginBottom: Spacing.xs,
   },
   standingsRow: {

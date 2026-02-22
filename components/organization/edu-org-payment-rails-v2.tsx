@@ -221,8 +221,8 @@ function RailsHealthStrip({
 
       {/* Compact stats */}
       <View style={s.healthStatsRow}>
-        <View style={[s.countBadge, { backgroundColor: '#8B5CF620' }]}>
-          <ThemedText style={[s.countBadgeText, { color: '#8B5CF6' }]}>
+        <View style={[s.countBadge, { backgroundColor: '#1D9BF020' }]}>
+          <ThemedText style={[s.countBadgeText, { color: '#1D9BF0' }]}>
             Approvals {health.pendingApprovals}
           </ThemedText>
         </View>
@@ -374,7 +374,7 @@ function ControlTowerTab({
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
-      {renderLane('Needs Approval', '#8B5CF6', needsApproval, 4)}
+      {renderLane('Needs Approval', '#1D9BF0', needsApproval, 4)}
       {renderLane('Ready to Release', '#22C55E', readyToRelease, 4)}
       {renderLane('In Flight', '#F59E0B', inFlight, 4)}
       {renderLane('Exceptions', '#EF4444', exceptions, 4)}
@@ -444,7 +444,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#3B82F6' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#1D9BF0' }]}>
                 {formatCurrency(item.pendingInflows)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -452,7 +452,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#F97316' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#F59E0B' }]}>
                 {formatCurrency(item.pendingOutflows)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -534,7 +534,7 @@ function BatchesTab({
       const typeLabel = EDU_BATCH_TYPE_LABELS[item.type];
       const approvalColor =
         item.approvalStatus === 'approved' ? '#22C55E' :
-        item.approvalStatus === 'partial' ? '#F59E0B' : '#8B5CF6';
+        item.approvalStatus === 'partial' ? '#F59E0B' : '#1D9BF0';
       return (
         <Pressable
           style={[s.batchCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -908,7 +908,7 @@ function ReturnsTab({
   const STAGE_COLORS: Record<EduRailsReturn['stage'], string> = {
     received: '#EF4444',
     evidence_requested: '#F59E0B',
-    submitted: '#3B82F6',
+    submitted: '#1D9BF0',
     resolved: '#22C55E',
   };
 
@@ -1085,7 +1085,7 @@ function ReceiptsTab({
 
           <View style={s.receiptFooter}>
             {rcp.immutable && (
-              <StatusBadge label="IMMUTABLE" color="#8B5CF6" />
+              <StatusBadge label="IMMUTABLE" color="#1D9BF0" />
             )}
             <ThemedText style={[s.institutionTag, { color: colors.textTertiary }]} numberOfLines={1}>
               {rcp.institution}
@@ -1318,13 +1318,13 @@ function WalletDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Committed</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#3B82F6' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#1D9BF0' }]}>
               {formatCurrency(wallet.pendingInflows)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending In</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#F97316' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#F59E0B' }]}>
               {formatCurrency(wallet.pendingOutflows)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending Out</ThemedText>
@@ -1443,7 +1443,7 @@ function BatchDetailSheet({
   const stateColor = EDU_TRANSACTION_STATE_COLORS[batch.state];
   const approvalColor =
     batch.approvalStatus === 'approved' ? '#22C55E' :
-    batch.approvalStatus === 'partial' ? '#F59E0B' : '#8B5CF6';
+    batch.approvalStatus === 'partial' ? '#F59E0B' : '#1D9BF0';
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={batch.name} useModal>
@@ -2113,7 +2113,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

@@ -86,8 +86,8 @@ export function getPriorityColor(priority: ThreadPriority): string {
   switch (priority) {
     case 'blocker': return '#EF4444';
     case 'approval': return '#F59E0B';
-    case 'due_24h': return '#FBBF24';
-    case 'normal': return '#6B7280';
+    case 'due_24h': return '#1D9BF0';
+    case 'normal': return '#A1A1AA';
   }
 }
 
@@ -104,8 +104,8 @@ export function getUrgencyColor(urgency: ThreadUrgency): string {
   switch (urgency) {
     case 'critical': return '#EF4444';
     case 'high': return '#F59E0B';
-    case 'medium': return '#3B82F6';
-    case 'low': return '#6B7280';
+    case 'medium': return '#1D9BF0';
+    case 'low': return '#A1A1AA';
   }
 }
 
@@ -124,9 +124,9 @@ export function getRequestTypeLabel(type: RequestType): string {
 export function getRequestTypeColor(type: RequestType): string {
   switch (type) {
     case 'approval': return '#F59E0B';
-    case 'roster': return '#3B82F6';
-    case 'schedule': return '#8B5CF6';
-    case 'recruiting': return '#EC4899';
+    case 'roster': return '#1D9BF0';
+    case 'schedule': return '#1D9BF0';
+    case 'recruiting': return '#1D9BF0';
     case 'eligibility': return '#EF4444';
     case 'finance': return '#22C55E';
     case 'incident': return '#EF4444';
@@ -138,7 +138,7 @@ export function getRequestStatusColor(status: RequestStatus): string {
     case 'pending': return '#F59E0B';
     case 'approved': return '#22C55E';
     case 'denied': return '#EF4444';
-    case 'escalated': return '#8B5CF6';
+    case 'escalated': return '#1D9BF0';
   }
 }
 
@@ -242,49 +242,49 @@ export const SPORTS_INBOX_THREADS: SportsInboxThread[] = [
 export const SPORTS_ROOMS: SportsRoom[] = [
   {
     id: 'sr-1', title: 'Program Command', category: 'command',
-    avatarInitials: 'PC', avatarColor: '#1E3A5F',
+    avatarInitials: 'PC', avatarColor: '#1D9BF0',
     lastMessage: 'Bus delay confirmed. Updated departure at 1:30 PM.',
     lastMessageTime: '25m', unreadCount: 8, hasBlocker: true, hasDeadline: false,
     memberCount: 4, rbacSection: 'rooms_command',
   },
   {
     id: 'sr-2', title: 'MBB Command', category: 'command',
-    avatarInitials: 'MC', avatarColor: '#2D1B69',
+    avatarInitials: 'MC', avatarColor: '#0B0F14',
     lastMessage: 'Carter eligibility update — transcript pending.',
     lastMessageTime: '1h', unreadCount: 5, hasBlocker: true, hasDeadline: false,
     memberCount: 3, rbacSection: 'rooms_command',
   },
   {
     id: 'sr-3', title: 'Coaching Staff', category: 'staff',
-    avatarInitials: 'CS', avatarColor: '#3D1A1A',
+    avatarInitials: 'CS', avatarColor: '#0B0F14',
     lastMessage: 'Scout packet deadline tomorrow EOD. Quinn and Blake, please finalize.',
     lastMessageTime: '2h', unreadCount: 3, hasBlocker: false, hasDeadline: true,
     memberCount: 5, rbacSection: 'rooms_staff',
   },
   {
     id: 'sr-4', title: 'Player Leadership Council', category: 'player',
-    avatarInitials: 'PL', avatarColor: '#1A3D2A',
+    avatarInitials: 'PL', avatarColor: '#0B0F14',
     lastMessage: 'Team dinner location vote — reply by 5 PM.',
     lastMessageTime: '3h', unreadCount: 2, hasBlocker: false, hasDeadline: true,
     memberCount: 5, rbacSection: 'rooms_player',
   },
   {
     id: 'sr-5', title: 'Team Room', category: 'player',
-    avatarInitials: 'TR', avatarColor: '#3D2A1A',
+    avatarInitials: 'TR', avatarColor: '#0B0F14',
     lastMessage: 'Great win tonight! Film session tomorrow at 2 PM.',
     lastMessageTime: '4h', unreadCount: 0, hasBlocker: false, hasDeadline: false,
     memberCount: 18, rbacSection: 'rooms_player',
   },
   {
     id: 'sr-6', title: 'Recruiting War Room', category: 'recruiting',
-    avatarInitials: 'RW', avatarColor: '#EC4899',
+    avatarInitials: 'RW', avatarColor: '#1D9BF0',
     lastMessage: 'Elijah Moore visit locked in for Feb 22. Full itinerary attached.',
     lastMessageTime: '4h', unreadCount: 4, hasBlocker: false, hasDeadline: true,
     memberCount: 4, rbacSection: 'rooms_recruiting',
   },
   {
     id: 'sr-7', title: 'Visit Ops', category: 'ops_travel',
-    avatarInitials: 'VO', avatarColor: '#8B5CF6',
+    avatarInitials: 'VO', avatarColor: '#1D9BF0',
     lastMessage: 'Hotel reservation confirmed for Moore visit.',
     lastMessageTime: '5h', unreadCount: 1, hasBlocker: false, hasDeadline: false,
     memberCount: 3, rbacSection: 'rooms_ops_travel',
@@ -305,7 +305,7 @@ export const SPORTS_ROOMS: SportsRoom[] = [
   },
   {
     id: 'sr-10', title: 'Media Ops', category: 'media',
-    avatarInitials: 'MO', avatarColor: '#3B82F6',
+    avatarInitials: 'MO', avatarColor: '#1D9BF0',
     lastMessage: 'Highlight reel draft uploaded. Awaiting coach review.',
     lastMessageTime: '6h', unreadCount: 1, hasBlocker: false, hasDeadline: true,
     memberCount: 4, rbacSection: 'rooms_media',

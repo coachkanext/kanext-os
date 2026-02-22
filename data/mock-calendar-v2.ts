@@ -67,10 +67,10 @@ export const AGENDA_ITEMS: AgendaItem[] = [
 
 export function getAgendaTypeColor(type: AgendaType): string {
   const colors: Record<AgendaType, string> = {
-    Practice: '#8b5cf6', Game: '#ef4444', Film: '#3b82f6', Meeting: '#f59e0b',
-    Lift: '#22c55e', Travel: '#06b6d4', Off: '#6b7280', Event: '#ec4899', Recruiting: '#f97316',
+    Practice: '#1D9BF0', Game: '#ef4444', Film: '#1D9BF0', Meeting: '#f59e0b',
+    Lift: '#22c55e', Travel: '#1D9BF0', Off: '#A1A1AA', Event: '#1D9BF0', Recruiting: '#F59E0B',
   };
-  return colors[type] ?? '#6b7280';
+  return colors[type] ?? '#A1A1AA';
 }
 
 // =============================================================================
@@ -162,7 +162,7 @@ export const NEWS_POSTS: NewsPost[] = [
 ];
 
 export function getNewsBadgeColor(badge: NewsBadge): string {
-  const colors: Record<NewsBadge, string> = { 'action-required': '#ef4444', info: '#3b82f6', alert: '#f59e0b', none: 'transparent' };
+  const colors: Record<NewsBadge, string> = { 'action-required': '#ef4444', info: '#1D9BF0', alert: '#f59e0b', none: 'transparent' };
   return colors[badge];
 }
 
@@ -245,10 +245,10 @@ export const KaNeXT_NATIONAL_POSITION: RankingRow = {
 
 export function getNewsCategoryColor(category: NewsCategoryTag): string {
   const colors: Record<NewsCategoryTag, string> = {
-    Recap: '#3b82f6',
+    Recap: '#1D9BF0',
     Announcement: '#f59e0b',
-    Recruiting: '#f97316',
-    Program: '#8b5cf6',
+    Recruiting: '#F59E0B',
+    Program: '#1D9BF0',
   };
   return colors[category];
 }

@@ -69,7 +69,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
         {/* ─── Video Hero ──────────────────────────────────────────── */}
         <View style={styles.heroWrapper}>
           <LinearGradient
-            colors={['#1a0a0a', '#0d0d0d', '#000']}
+            colors={['#0B0F14', '#0B0F14', '#000']}
             style={styles.heroGradient}
           >
             <Pressable style={styles.playButton}>
@@ -329,7 +329,7 @@ export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
 
 function getTeamColor(teamName: string): string {
   const team = GRID_TEAMS.find((t) => t.name === teamName);
-  return team?.color ?? '#6B7280';
+  return team?.color ?? '#A1A1AA';
 }
 
 function LastRaceBadge({ result }: { result: number | 'DNF' | 'DNS' }) {
@@ -339,19 +339,19 @@ function LastRaceBadge({ result }: { result: number | 'DNF' | 'DNS' }) {
     bg = '#EF4444';
     label = 'DNF';
   } else if (result === 'DNS') {
-    bg = '#6B7280';
+    bg = '#A1A1AA';
     label = 'DNS';
   } else if (result === 1) {
-    bg = '#FFD700';
+    bg = '#1D9BF0';
     label = 'P1';
   } else if (result === 2) {
-    bg = '#C0C0C0';
+    bg = '#A1A1AA';
     label = 'P2';
   } else if (result === 3) {
-    bg = '#CD7F32';
+    bg = '#1D9BF0';
     label = 'P3';
   } else {
-    bg = 'rgba(255,255,255,0.08)';
+    bg = '#2F3336';
     label = `P${result}`;
   }
   return (
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.08)',
+    borderTopColor: '#2F3336',
   },
   defendingLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.5, textTransform: 'uppercase' as const },
   defendingName: { fontSize: 12, fontWeight: '700', letterSpacing: -0.2 },
@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
 
   // Domain Cards
   domainCard: {
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderTopWidth: 2,
     borderRadius: 14,
     padding: 16,

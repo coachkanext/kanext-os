@@ -17,7 +17,7 @@ interface Props {
   colors: Record<string, string>;
 }
 
-const ACCENT = '#FBBF24';
+const ACCENT = '#1D9BF0';
 
 export function ChurchSermonsSheet({ visible, onClose, colors }: Props) {
   return (
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   container: { gap: 12 },
 
   seriesCard: {
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: 10,

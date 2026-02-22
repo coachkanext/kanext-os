@@ -18,9 +18,9 @@ function nameToHue(name: string): number {
 }
 
 function getPitScoreColor(score: number): string {
-  if (score >= 90) return '#4ade80';
-  if (score >= 75) return '#fbbf24';
-  return '#f87171';
+  if (score >= 90) return '#22C55E';
+  if (score >= 75) return '#1D9BF0';
+  return '#EF4444';
 }
 
 interface Props {

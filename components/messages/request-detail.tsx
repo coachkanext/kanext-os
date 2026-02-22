@@ -113,14 +113,14 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   headerInfo: {
     flex: 1,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   typeBadge: {
     paddingHorizontal: 8,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   context: {
     fontSize: 14,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: Spacing.md,
   },
   messageBox: {
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 15,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     lineHeight: 22,
   },
   timestamp: {
@@ -169,13 +169,13 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   actionBtn: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: BorderRadius.full,
   },
   approveBtn: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
   },
   approveBtnText: {
     fontSize: 14,
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   actionBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   dangerBtn: {
     backgroundColor: '#EF444420',
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   approvedBadge: {
-    backgroundColor: '#4CAF5020',
+    backgroundColor: '#22C55E20',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: BorderRadius.full,
@@ -208,6 +208,6 @@ const styles = StyleSheet.create({
   approvedText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: '#22C55E',
   },
 });

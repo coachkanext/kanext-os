@@ -82,7 +82,7 @@ export function SupportSheet({ visible, onClose, colors }: Props) {
                 key={tier.id}
                 style={[
                   styles.tierCard,
-                  { backgroundColor: colors.card, borderColor: isActive ? '#1E40AF' : colors.border },
+                  { backgroundColor: colors.card, borderColor: isActive ? '#1D9BF0' : colors.border },
                   isActive && styles.tierCardActive,
                 ]}
                 onPress={() => handleSelectTier(tier)}
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   freqPillActive: {
-    backgroundColor: '#1E40AF',
+    backgroundColor: '#1D9BF0',
   },
   freqPillText: {
     fontSize: 13,

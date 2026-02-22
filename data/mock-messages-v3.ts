@@ -34,12 +34,12 @@ const SPORTS_INBOX: InboxThreadV3[] = [
 ];
 
 const SPORTS_ROOMS: RoomV3[] = [
-  { id: 'sr1', mode: 'sports', name: 'Leadership Council', initials: 'LC', color: '#1E40AF', memberCount: 8, lastMessage: 'Meeting agenda posted for Friday.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'sr2', mode: 'sports', name: 'Medical & Training', initials: 'MT', color: '#DC2626', memberCount: 6, lastMessage: 'Updated return-to-play protocol attached.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'sr3', mode: 'sports', name: 'Practice 4pm Today', initials: 'PR', color: '#059669', memberCount: 25, lastMessage: 'Bring your playbooks. Full walkthrough.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 2, totalCount: 3 },
-  { id: 'sr4', mode: 'sports', name: 'Compliance Friday', initials: 'CF', color: '#7C3AED', memberCount: 15, lastMessage: 'All forms must be submitted before the deadline.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 11, totalCount: 15 },
-  { id: 'sr5', mode: 'sports', name: 'Recruiting War Room', initials: 'RW', color: '#D97706', memberCount: 5, lastMessage: 'New eval on Mitchell posted.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'sr6', mode: 'sports', name: 'Game Day Ops', initials: 'GD', color: '#0891B2', memberCount: 12, lastMessage: 'Bus departs at 1pm sharp Saturday.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'sr1', mode: 'sports', name: 'Leadership Council', initials: 'LC', color: '#1D9BF0', memberCount: 8, lastMessage: 'Meeting agenda posted for Friday.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
+  { id: 'sr2', mode: 'sports', name: 'Medical & Training', initials: 'MT', color: '#EF4444', memberCount: 6, lastMessage: 'Updated return-to-play protocol attached.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: true, isAnnouncement: false },
+  { id: 'sr3', mode: 'sports', name: 'Practice 4pm Today', initials: 'PR', color: '#22C55E', memberCount: 25, lastMessage: 'Bring your playbooks. Full walkthrough.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 2, totalCount: 3 },
+  { id: 'sr4', mode: 'sports', name: 'Compliance Friday', initials: 'CF', color: '#1D9BF0', memberCount: 15, lastMessage: 'All forms must be submitted before the deadline.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 11, totalCount: 15 },
+  { id: 'sr5', mode: 'sports', name: 'Recruiting War Room', initials: 'RW', color: '#F59E0B', memberCount: 5, lastMessage: 'New eval on Mitchell posted.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'sr6', mode: 'sports', name: 'Game Day Ops', initials: 'GD', color: '#1D9BF0', memberCount: 12, lastMessage: 'Bus departs at 1pm sharp Saturday.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
 ];
 
 const SPORTS_NEXUS: NexusEscalationV3[] = [
@@ -64,12 +64,12 @@ const CHURCH_INBOX: InboxThreadV3[] = [
 ];
 
 const CHURCH_ROOMS: RoomV3[] = [
-  { id: 'cr1', mode: 'church', name: 'Elder Board', initials: 'EB', color: '#FBBF24', memberCount: 7, lastMessage: 'Strategic planning session confirmed for next Tuesday.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'cr2', mode: 'church', name: 'Pastoral Team', initials: 'PT', color: '#7C3AED', memberCount: 5, lastMessage: 'Visitation schedule updated.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'cr3', mode: 'church', name: 'Good Friday Service', initials: 'GF', color: '#DC2626', memberCount: 120, lastMessage: 'Service times: 12pm and 7pm. All volunteers report at 11am.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 3, totalCount: 4 },
-  { id: 'cr4', mode: 'church', name: 'Volunteer Dinner', initials: 'VD', color: '#059669', memberCount: 45, lastMessage: 'RSVP deadline extended to Sunday.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 14, totalCount: 20 },
-  { id: 'cr5', mode: 'church', name: 'Worship Team', initials: 'WT', color: '#0891B2', memberCount: 15, lastMessage: 'Rehearsal moved to Thursday 6pm.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'cr6', mode: 'church', name: 'Youth Ministry', initials: 'YM', color: '#D97706', memberCount: 20, lastMessage: 'Retreat itinerary finalized.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'cr1', mode: 'church', name: 'Elder Board', initials: 'EB', color: '#1D9BF0', memberCount: 7, lastMessage: 'Strategic planning session confirmed for next Tuesday.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
+  { id: 'cr2', mode: 'church', name: 'Pastoral Team', initials: 'PT', color: '#1D9BF0', memberCount: 5, lastMessage: 'Visitation schedule updated.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'cr3', mode: 'church', name: 'Good Friday Service', initials: 'GF', color: '#EF4444', memberCount: 120, lastMessage: 'Service times: 12pm and 7pm. All volunteers report at 11am.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 3, totalCount: 4 },
+  { id: 'cr4', mode: 'church', name: 'Volunteer Dinner', initials: 'VD', color: '#22C55E', memberCount: 45, lastMessage: 'RSVP deadline extended to Sunday.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 14, totalCount: 20 },
+  { id: 'cr5', mode: 'church', name: 'Worship Team', initials: 'WT', color: '#1D9BF0', memberCount: 15, lastMessage: 'Rehearsal moved to Thursday 6pm.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'cr6', mode: 'church', name: 'Youth Ministry', initials: 'YM', color: '#F59E0B', memberCount: 20, lastMessage: 'Retreat itinerary finalized.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
 ];
 
 const CHURCH_NEXUS: NexusEscalationV3[] = [
@@ -94,12 +94,12 @@ const BUSINESS_INBOX: InboxThreadV3[] = [
 ];
 
 const BUSINESS_ROOMS: RoomV3[] = [
-  { id: 'br1', mode: 'business', name: 'Fundraise Room', initials: 'FR', color: '#7C3AED', memberCount: 4, lastMessage: 'Term sheet from Valley Capital under review.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'br2', mode: 'business', name: 'Engineering', initials: 'EN', color: '#1E40AF', memberCount: 8, lastMessage: 'Sprint retro notes posted.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'br3', mode: 'business', name: 'Demo Day Prep', initials: 'DD', color: '#059669', memberCount: 12, lastMessage: 'Dry run scheduled for Thursday. Everyone present.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 2, totalCount: 3 },
-  { id: 'br4', mode: 'business', name: 'Design System', initials: 'DS', color: '#D97706', memberCount: 6, lastMessage: 'New tokens pushed to the repo. Review needed.', timestamp: hoursAgo(3), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 3, totalCount: 4 },
-  { id: 'br5', mode: 'business', name: 'Product', initials: 'PD', color: '#0891B2', memberCount: 5, lastMessage: 'Roadmap update for Q2 attached.', timestamp: hoursAgo(6), unread: true, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'br6', mode: 'business', name: 'All Hands', initials: 'AH', color: '#DC2626', memberCount: 20, lastMessage: 'Town hall recording available.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'br1', mode: 'business', name: 'Fundraise Room', initials: 'FR', color: '#1D9BF0', memberCount: 4, lastMessage: 'Term sheet from Valley Capital under review.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
+  { id: 'br2', mode: 'business', name: 'Engineering', initials: 'EN', color: '#1D9BF0', memberCount: 8, lastMessage: 'Sprint retro notes posted.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'br3', mode: 'business', name: 'Demo Day Prep', initials: 'DD', color: '#22C55E', memberCount: 12, lastMessage: 'Dry run scheduled for Thursday. Everyone present.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 2, totalCount: 3 },
+  { id: 'br4', mode: 'business', name: 'Design System', initials: 'DS', color: '#F59E0B', memberCount: 6, lastMessage: 'New tokens pushed to the repo. Review needed.', timestamp: hoursAgo(3), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 3, totalCount: 4 },
+  { id: 'br5', mode: 'business', name: 'Product', initials: 'PD', color: '#1D9BF0', memberCount: 5, lastMessage: 'Roadmap update for Q2 attached.', timestamp: hoursAgo(6), unread: true, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'br6', mode: 'business', name: 'All Hands', initials: 'AH', color: '#EF4444', memberCount: 20, lastMessage: 'Town hall recording available.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
 ];
 
 const BUSINESS_NEXUS: NexusEscalationV3[] = [
@@ -124,12 +124,12 @@ const EDUCATION_INBOX: InboxThreadV3[] = [
 ];
 
 const EDUCATION_ROOMS: RoomV3[] = [
-  { id: 'er1', mode: 'education', name: 'Finance Committee', initials: 'FC', color: '#14B8A6', memberCount: 6, lastMessage: 'Budget hearing scheduled for March 1st.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'er2', mode: 'education', name: 'Academic Council', initials: 'AC', color: '#1E40AF', memberCount: 12, lastMessage: 'Curriculum review complete for 8 programs.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'er3', mode: 'education', name: 'Leadership Retreat', initials: 'LR', color: '#7C3AED', memberCount: 15, lastMessage: 'Retreat agenda and logistics confirmed. Pack layers.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 4, totalCount: 5 },
-  { id: 'er4', mode: 'education', name: 'Evidence Portfolio', initials: 'EP', color: '#D97706', memberCount: 10, lastMessage: 'All departments submit evidence by March 10.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 4, totalCount: 6 },
-  { id: 'er5', mode: 'education', name: 'Faculty Development', initials: 'FD', color: '#059669', memberCount: 20, lastMessage: 'Teaching excellence workshop recordings available.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'er6', mode: 'education', name: 'Student Affairs', initials: 'SA', color: '#DC2626', memberCount: 8, lastMessage: 'Spring orientation planning underway.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'er1', mode: 'education', name: 'Finance Committee', initials: 'FC', color: '#1D9BF0', memberCount: 6, lastMessage: 'Budget hearing scheduled for March 1st.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
+  { id: 'er2', mode: 'education', name: 'Academic Council', initials: 'AC', color: '#1D9BF0', memberCount: 12, lastMessage: 'Curriculum review complete for 8 programs.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'er3', mode: 'education', name: 'Leadership Retreat', initials: 'LR', color: '#1D9BF0', memberCount: 15, lastMessage: 'Retreat agenda and logistics confirmed. Pack layers.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 4, totalCount: 5 },
+  { id: 'er4', mode: 'education', name: 'Evidence Portfolio', initials: 'EP', color: '#F59E0B', memberCount: 10, lastMessage: 'All departments submit evidence by March 10.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 4, totalCount: 6 },
+  { id: 'er5', mode: 'education', name: 'Faculty Development', initials: 'FD', color: '#22C55E', memberCount: 20, lastMessage: 'Teaching excellence workshop recordings available.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'er6', mode: 'education', name: 'Student Affairs', initials: 'SA', color: '#EF4444', memberCount: 8, lastMessage: 'Spring orientation planning underway.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
 ];
 
 const EDUCATION_NEXUS: NexusEscalationV3[] = [
@@ -154,12 +154,12 @@ const COMPETITION_INBOX: InboxThreadV3[] = [
 ];
 
 const COMPETITION_ROOMS: RoomV3[] = [
-  { id: 'kr1', mode: 'competition', name: 'Technical Committee', initials: 'TC', color: '#FF5555', memberCount: 8, lastMessage: 'Engine formula review meeting next Wednesday.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'kr2', mode: 'competition', name: 'Stewards Panel', initials: 'SP', color: '#1E40AF', memberCount: 5, lastMessage: 'Incident review procedures updated.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'kr3', mode: 'competition', name: 'Pre-Race Briefing', initials: 'RB', color: '#059669', memberCount: 30, lastMessage: 'All teams mandatory attendance. 9am Saturday.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 3, totalCount: 4 },
-  { id: 'kr4', mode: 'competition', name: 'Entry Fee Notice', initials: 'EF', color: '#D97706', memberCount: 20, lastMessage: 'Round 6-8 entry fees due by March 15.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 5, totalCount: 6 },
-  { id: 'kr5', mode: 'competition', name: 'Safety Commission', initials: 'SC', color: '#DC2626', memberCount: 10, lastMessage: 'New barrier specifications distributed.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'kr6', mode: 'competition', name: 'Broadcast Ops', initials: 'BO', color: '#0891B2', memberCount: 15, lastMessage: 'Camera rig positions confirmed for Round 5.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'kr1', mode: 'competition', name: 'Technical Committee', initials: 'TC', color: '#1D9BF0', memberCount: 8, lastMessage: 'Engine formula review meeting next Wednesday.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
+  { id: 'kr2', mode: 'competition', name: 'Stewards Panel', initials: 'SP', color: '#1D9BF0', memberCount: 5, lastMessage: 'Incident review procedures updated.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: true, isAnnouncement: false },
+  { id: 'kr3', mode: 'competition', name: 'Pre-Race Briefing', initials: 'RB', color: '#22C55E', memberCount: 30, lastMessage: 'All teams mandatory attendance. 9am Saturday.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 3, totalCount: 4 },
+  { id: 'kr4', mode: 'competition', name: 'Entry Fee Notice', initials: 'EF', color: '#F59E0B', memberCount: 20, lastMessage: 'Round 6-8 entry fees due by March 15.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 5, totalCount: 6 },
+  { id: 'kr5', mode: 'competition', name: 'Safety Commission', initials: 'SC', color: '#EF4444', memberCount: 10, lastMessage: 'New barrier specifications distributed.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
+  { id: 'kr6', mode: 'competition', name: 'Broadcast Ops', initials: 'BO', color: '#1D9BF0', memberCount: 15, lastMessage: 'Camera rig positions confirmed for Round 5.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
 ];
 
 const COMPETITION_NEXUS: NexusEscalationV3[] = [

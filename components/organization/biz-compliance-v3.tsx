@@ -88,9 +88,9 @@ const STATUS_COLORS: Record<string, string> = {
   upcoming: '#F59E0B',
   executed: '#22C55E',
   approved: '#22C55E',
-  draft: '#3B82F6',
+  draft: '#1D9BF0',
   pending: '#F59E0B',
-  filed: '#3B82F6',
+  filed: '#1D9BF0',
   renewal: '#EF4444',
 };
 
@@ -106,12 +106,12 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  NDA: '#8B5CF6',
-  Partnership: '#3B82F6',
+  NDA: '#1D9BF0',
+  Partnership: '#1D9BF0',
   Vendor: '#F59E0B',
-  Employment: '#14B8A6',
-  Trademark: '#EC4899',
-  'Patent (Utility)': '#6366F1',
+  Employment: '#1D9BF0',
+  Trademark: '#1D9BF0',
+  'Patent (Utility)': '#1D9BF0',
 };
 
 // =============================================================================
@@ -318,8 +318,8 @@ export function BizCompliance({ colors, accentColor, role }: Props) {
           <View style={s.ipInfo}>
             <ThemedText style={[s.ipTitle, { color: colors.text }]}>{PATENT.title}</ThemedText>
             <View style={s.ipBadges}>
-              <View style={[s.typeBadge, { backgroundColor: (TYPE_COLORS[PATENT.type] ?? '#6366F1') + '20' }]}>
-                <ThemedText style={[s.typeBadgeText, { color: TYPE_COLORS[PATENT.type] ?? '#6366F1' }]}>{PATENT.type.toUpperCase()}</ThemedText>
+              <View style={[s.typeBadge, { backgroundColor: (TYPE_COLORS[PATENT.type] ?? '#1D9BF0') + '20' }]}>
+                <ThemedText style={[s.typeBadgeText, { color: TYPE_COLORS[PATENT.type] ?? '#1D9BF0' }]}>{PATENT.type.toUpperCase()}</ThemedText>
               </View>
               <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[PATENT.status] + '20' }]}>
                 <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[PATENT.status] }]}>{STATUS_LABELS[PATENT.status]}</ThemedText>
@@ -388,7 +388,7 @@ export function BizCompliance({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.viewPill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handleViewPress(v.id)}
             >

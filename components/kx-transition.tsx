@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 9999,
-    backgroundColor: '#0f0f0f',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -20,7 +20,7 @@ import { Spacing, BorderRadius } from '@/constants/theme';
 
 type Stage = 'folders' | 'documents';
 
-const ACCENT = '#3B82F6';
+const ACCENT = '#1D9BF0';
 
 const ACCESS_TO_TAG: Record<VaultFolder['accessLevel'], DocAccessTag> = {
   public: 'public',

@@ -71,7 +71,7 @@ export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
           value={url}
           onChangeText={setUrl}
           placeholder="https://..."
-          placeholderTextColor="#4A4D55"
+          placeholderTextColor="#52525B"
           autoCapitalize="none"
           keyboardType="url"
         />
@@ -85,7 +85,7 @@ export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
           value={title}
           onChangeText={setTitle}
           placeholder="Video or article title"
-          placeholderTextColor="#4A4D55"
+          placeholderTextColor="#52525B"
         />
       </View>
 
@@ -97,7 +97,7 @@ export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
           value={timestamp}
           onChangeText={setTimestamp}
           placeholder="e.g. 2:30"
-          placeholderTextColor="#4A4D55"
+          placeholderTextColor="#52525B"
           keyboardType="numbers-and-punctuation"
         />
       </View>
@@ -110,7 +110,7 @@ export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
           value={notes}
           onChangeText={setNotes}
           placeholder="Add context or teaching points..."
-          placeholderTextColor="#4A4D55"
+          placeholderTextColor="#52525B"
           multiline
         />
       </View>
@@ -200,17 +200,17 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 9,
     fontWeight: '700',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     letterSpacing: 0.5,
     marginBottom: 6,
   },
   input: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: BorderRadius.md,
     paddingHorizontal: Spacing.sm,
     paddingVertical: 10,
     fontSize: 14,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   textArea: {
     minHeight: 60,
@@ -225,28 +225,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 12,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
   },
   chipActive: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
   },
   chipText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   chipTextActive: {
     color: '#111',
   },
   saveBtn: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     paddingVertical: 14,
     borderRadius: BorderRadius.md,
     alignItems: 'center',
     marginTop: 8,
   },
   saveBtnDisabled: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
   },
   saveText: {
     fontSize: 15,

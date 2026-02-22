@@ -372,8 +372,8 @@ const HOUSING_TIMELINE: TimelineEvent[] = [
 
 const TIMELINE_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
-  current: '#3B82F6',
-  upcoming: '#8F8F8F',
+  current: '#1D9BF0',
+  upcoming: '#A1A1AA',
 };
 
 // --- RA Contacts ---
@@ -431,7 +431,7 @@ const ADMIN_ASSIGNMENTS: AdminAssignment[] = [
 const ASSIGNMENT_STATUS_COLOR: Record<string, string> = {
   confirmed: '#22C55E',
   pending: '#F59E0B',
-  waitlisted: '#3B82F6',
+  waitlisted: '#1D9BF0',
   cancelled: '#EF4444',
 };
 
@@ -551,8 +551,8 @@ const MOVE_EVENTS: MoveEvent[] = [
 
 const MOVE_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
-  'in-progress': '#3B82F6',
-  scheduled: '#8F8F8F',
+  'in-progress': '#1D9BF0',
+  scheduled: '#A1A1AA',
 };
 
 interface KeyTracking {
@@ -606,16 +606,16 @@ const WORK_ORDERS: WorkOrder[] = [
 const PRIORITY_COLOR: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#3B82F6',
-  low: '#8F8F8F',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 const WO_STATUS_COLOR: Record<string, string> = {
   open: '#F59E0B',
-  assigned: '#3B82F6',
-  'in-progress': '#8B5CF6',
+  assigned: '#1D9BF0',
+  'in-progress': '#1D9BF0',
   completed: '#22C55E',
-  deferred: '#8F8F8F',
+  deferred: '#A1A1AA',
 };
 
 // =============================================================================
@@ -649,8 +649,8 @@ const INSPECTIONS: Inspection[] = [
 const INSPECTION_STATUS_COLOR: Record<string, string> = {
   passed: '#22C55E',
   failed: '#EF4444',
-  scheduled: '#8F8F8F',
-  'in-progress': '#3B82F6',
+  scheduled: '#A1A1AA',
+  'in-progress': '#1D9BF0',
 };
 
 const INSPECTION_TYPE_LABEL: Record<string, string> = {
@@ -714,7 +714,7 @@ const INCIDENT_SEVERITY_COLOR: Record<string, string> = {
 const INCIDENT_STATUS_COLOR: Record<string, string> = {
   resolved: '#22C55E',
   open: '#F59E0B',
-  referred: '#8B5CF6',
+  referred: '#1D9BF0',
 };
 
 interface CounselingReferral {
@@ -734,7 +734,7 @@ const COUNSELING_REFERRALS: CounselingReferral[] = [
 ];
 
 const REFERRAL_STATUS_COLOR: Record<string, string> = {
-  scheduled: '#3B82F6',
+  scheduled: '#1D9BF0',
   completed: '#22C55E',
   pending: '#F59E0B',
 };
@@ -759,11 +759,11 @@ const RESLIFE_PROGRAMS: ResLifeProgram[] = [
 ];
 
 const PROGRAM_CAT_COLOR: Record<string, string> = {
-  social: '#EC4899',
-  educational: '#3B82F6',
+  social: '#1D9BF0',
+  educational: '#1D9BF0',
   wellness: '#22C55E',
-  diversity: '#8B5CF6',
-  community: '#F97316',
+  diversity: '#1D9BF0',
+  community: '#F59E0B',
 };
 
 // =============================================================================
@@ -968,8 +968,8 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
                 <View style={s.timelineDateRow}>
                   <ThemedText style={[s.timelineDate, { color: colors.text }]}>{event.date}</ThemedText>
                   {event.status === 'current' && (
-                    <View style={[shrd.statusBadge, { backgroundColor: '#3B82F620' }]}>
-                      <ThemedText style={[shrd.statusText, { color: '#3B82F6' }]}>CURRENT</ThemedText>
+                    <View style={[shrd.statusBadge, { backgroundColor: '#1D9BF020' }]}>
+                      <ThemedText style={[shrd.statusText, { color: '#1D9BF0' }]}>CURRENT</ThemedText>
                     </View>
                   )}
                 </View>
@@ -1227,7 +1227,7 @@ function OccupancyView({ colors }: { colors: typeof Colors.light }) {
         <SectionHeader title="BY HALL (FLOOR DETAIL)" colors={colors} count={HALL_OCCUPANCY.length} />
         {HALL_OCCUPANCY.map((ho) => {
           const pct = Math.round((ho.totalOccupied / ho.totalCapacity) * 100);
-          const trendColor = ho.utilizationTrend === 'up' ? '#22C55E' : ho.utilizationTrend === 'down' ? '#EF4444' : '#8F8F8F';
+          const trendColor = ho.utilizationTrend === 'up' ? '#22C55E' : ho.utilizationTrend === 'down' ? '#EF4444' : '#A1A1AA';
           return (
             <Card key={ho.hallId} colors={colors}>
               <View style={s.hallHeader}>
@@ -1409,7 +1409,7 @@ function WorkOrdersView({ colors, role }: { colors: typeof Colors.light; role: E
             <View style={s.kpiGrid}>
               <KPIStat value={String(HOUSING_SUMMARY.maintenanceRequests)} label="Total YTD" colors={colors} />
               <KPIStat value={String(openCount)} label="Open" colors={colors} valueColor="#F59E0B" />
-              <KPIStat value={String(inProgressCount)} label="In Progress" colors={colors} valueColor="#3B82F6" />
+              <KPIStat value={String(inProgressCount)} label="In Progress" colors={colors} valueColor="#1D9BF0" />
               <KPIStat value={String(completedCount)} label="Completed" colors={colors} valueColor="#22C55E" />
             </View>
           </Card>
@@ -1501,7 +1501,7 @@ function InspectionsView({ colors }: { colors: typeof Colors.light }) {
             <KPIStat value={String(INSPECTIONS.length)} label="Total" colors={colors} />
             <KPIStat value={String(passCount)} label="Passed" colors={colors} valueColor="#22C55E" />
             <KPIStat value={String(failCount)} label="Failed" colors={colors} valueColor="#EF4444" />
-            <KPIStat value={String(schedCount)} label="Scheduled" colors={colors} valueColor="#8F8F8F" />
+            <KPIStat value={String(schedCount)} label="Scheduled" colors={colors} valueColor="#A1A1AA" />
           </View>
         </Card>
       </View>

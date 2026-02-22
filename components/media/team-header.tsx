@@ -78,13 +78,13 @@ export function TeamHeader({
         <View
           style={[
             styles.streakChip,
-            { backgroundColor: isWinStreak ? '#4CAF5020' : '#EF444420' },
+            { backgroundColor: isWinStreak ? '#22C55E20' : '#EF444420' },
           ]}
         >
           <ThemedText
             style={[
               styles.streakText,
-              { color: isWinStreak ? '#4CAF50' : '#EF4444' },
+              { color: isWinStreak ? '#22C55E' : '#EF4444' },
             ]}
           >
             {streak}
@@ -107,7 +107,7 @@ export function TeamHeader({
               onShare?.();
             }}
           >
-            <IconSymbol name="square.and.arrow.up" size={16} color="#6e6e6e" />
+            <IconSymbol name="square.and.arrow.up" size={16} color="#A1A1AA" />
           </Pressable>
           <Pressable
             style={styles.actionBtn}
@@ -116,7 +116,7 @@ export function TeamHeader({
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             }}
           >
-            <IconSymbol name="person.badge.plus" size={16} color="#6e6e6e" />
+            <IconSymbol name="person.badge.plus" size={16} color="#A1A1AA" />
           </Pressable>
         </View>
       </View>
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     letterSpacing: -0.5,
   },
   subtitle: {
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   krNumber: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     lineHeight: 30,
   },
   krSplit: {
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   record: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   confRecord: {
     fontSize: 14,
@@ -222,14 +222,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#1a1a1a',
+    borderTopColor: '#0B0F14',
     paddingTop: 10,
   },
   channelLabel: {
     flex: 1,
     fontSize: 13,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   actions: {
     flexDirection: 'row',
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },

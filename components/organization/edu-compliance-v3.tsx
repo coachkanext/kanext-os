@@ -106,7 +106,7 @@ const COMPLIANCE_STATUS_COLOR: Record<string, string> = {
   Current: '#22C55E',
   'Under Review': '#F59E0B',
   Complete: '#22C55E',
-  'In Progress': '#6AA9FF',
+  'In Progress': '#1D9BF0',
   Submitted: '#22C55E',
   Upcoming: '#F59E0B',
 };
@@ -409,7 +409,7 @@ export function EduCompliance({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >
@@ -508,7 +508,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   detailLabel: {
     fontSize: 13,

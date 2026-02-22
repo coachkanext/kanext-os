@@ -483,7 +483,7 @@ export function RosterOverlay({ visible, onClose }: RosterOverlayProps) {
                   styles.resourceProgressFill,
                   {
                     width: `${(usedNil / totalNil) * 100}%`,
-                    backgroundColor: '#f5f5f5',
+                    backgroundColor: '#FFFFFF',
                   },
                 ]}
               />

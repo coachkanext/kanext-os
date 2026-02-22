@@ -41,7 +41,7 @@ import { CLUSTER_ORDER } from '@/utils/kr-display';
 // ---------------------------------------------------------------------------
 
 const PROGRESS_COLORS: Record<string, string> = { 'needs-work': '#EF4444', progressing: '#F59E0B', achieved: '#22C55E' };
-const SESSION_COLORS: Record<string, string> = { practice: '#22C55E', lift: '#F59E0B', film: '#6AA9FF', individual: '#8B5CF6', rest: '#8F8F8F' };
+const SESSION_COLORS: Record<string, string> = { practice: '#22C55E', lift: '#F59E0B', film: '#1D9BF0', individual: '#1D9BF0', rest: '#A1A1AA' };
 
 // Mock KR data for players (would come from national pool in production)
 const PLAYER_KR_DATA: Record<string, { kr: number; okr: number; dkr: number; archetype: string; clusters: number[] }> = {
@@ -175,7 +175,7 @@ function OverviewTab({ colors, accent }: TabProps) {
       {/* Player Alerts */}
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>PLAYER ALERTS</ThemedText>
       {PLAYER_ALERTS.map((alert) => {
-        const alertColor = alert.type === 'regression' ? '#EF4444' : alert.type === 'injury' ? '#FF6B35' : alert.type === 'breakout' ? '#22C55E' : '#6AA9FF';
+        const alertColor = alert.type === 'regression' ? '#EF4444' : alert.type === 'injury' ? '#F59E0B' : alert.type === 'breakout' ? '#22C55E' : '#1D9BF0';
         return (
           <View key={alert.id} style={[styles.alertCard, { backgroundColor: colors.card, borderColor: alertColor + '44' }]}>
             <View style={styles.alertHeader}>
@@ -289,7 +289,7 @@ function KRProfileTab({ player, colors, accent, krVis }: TabProps) {
         {krData.clusters.map((score, i) => {
           if (score < 90) return null;
           const tier = score >= 97 ? 'Gold' : score >= 94 ? 'Silver' : 'Bronze';
-          const tierColor = tier === 'Gold' ? '#FFD700' : tier === 'Silver' ? '#C0C0C0' : '#CD7F32';
+          const tierColor = tier === 'Gold' ? '#1D9BF0' : tier === 'Silver' ? '#A1A1AA' : '#1D9BF0';
           return (
             <View key={i} style={[styles.badgeChip, { backgroundColor: tierColor + '22' }]}>
               <ThemedText style={[styles.badgeChipText, { color: tierColor }]}>{tier} · {clusterLabels[i]}</ThemedText>
@@ -448,7 +448,7 @@ function WeeklyPlanTab({ colors, accent }: TabProps) {
           {day.sessions.map((session) => (
             <View key={session.id} style={[styles.sessionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <View style={styles.sessionHeader}>
-                <View style={[styles.sessionDot, { backgroundColor: SESSION_COLORS[session.type] ?? '#8F8F8F' }]} />
+                <View style={[styles.sessionDot, { backgroundColor: SESSION_COLORS[session.type] ?? '#A1A1AA' }]} />
                 <ThemedText style={[styles.sessionTitle, { color: colors.text }]}>{session.title}</ThemedText>
                 <ThemedText style={[styles.sessionTime, { color: colors.textSecondary }]}>{session.time}</ThemedText>
               </View>
@@ -461,7 +461,7 @@ function WeeklyPlanTab({ colors, accent }: TabProps) {
       {/* Drill Assignments */}
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>DRILL ASSIGNMENTS</ThemedText>
       {DRILL_ASSIGNMENTS.slice(0, 5).map((da) => {
-        const statusColor = da.status === 'completed' ? '#22C55E' : da.status === 'in-progress' ? '#F59E0B' : '#8F8F8F';
+        const statusColor = da.status === 'completed' ? '#22C55E' : da.status === 'in-progress' ? '#F59E0B' : '#A1A1AA';
         return (
           <View key={da.id} style={[styles.drillAssignCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.drillAssignHeader}>
@@ -630,7 +630,7 @@ function ProReadinessTab({ player, colors, accent, krVis }: TabProps) {
 // ---------------------------------------------------------------------------
 
 function TransferTab({ colors, accent }: TabProps) {
-  const transferColors: Record<string, string> = { positive: '#22C55E', neutral: '#F59E0B', negative: '#EF4444', emerging: '#6AA9FF' };
+  const transferColors: Record<string, string> = { positive: '#22C55E', neutral: '#F59E0B', negative: '#EF4444', emerging: '#1D9BF0' };
 
   // Group by transfer label
   const negative = TRANSFER_METRICS.filter((t) => t.transferLabel === 'negative');
@@ -682,7 +682,7 @@ function TransferTab({ colors, accent }: TabProps) {
             <ThemedText style={[styles.transferSummaryLabel, { color: colors.textSecondary }]}>Positive</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.transferSummaryValue, { color: '#6AA9FF' }]}>{emerging.length}</ThemedText>
+            <ThemedText style={[styles.transferSummaryValue, { color: '#1D9BF0' }]}>{emerging.length}</ThemedText>
             <ThemedText style={[styles.transferSummaryLabel, { color: colors.textSecondary }]}>Emerging</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
@@ -697,7 +697,7 @@ function TransferTab({ colors, accent }: TabProps) {
       </View>
 
       {renderGroup('Negative', negative, '#EF4444')}
-      {renderGroup('Emerging', emerging, '#6AA9FF')}
+      {renderGroup('Emerging', emerging, '#1D9BF0')}
       {renderGroup('Neutral', neutral, '#F59E0B')}
       {renderGroup('Positive', positive, '#22C55E')}
 
@@ -727,7 +727,7 @@ const styles = StyleSheet.create({
 
   // Pills
   pillBar: { paddingHorizontal: 16, paddingVertical: 10, gap: 8 },
-  pill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
+  pill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#2F3336' },
   pillText: { fontSize: 13, fontWeight: '600' },
 
   // Section
@@ -755,7 +755,7 @@ const styles = StyleSheet.create({
   rankText: { fontSize: 12, fontWeight: '800' },
   priorityTitle: { fontSize: 14, fontWeight: '700', flex: 1 },
   priorityDesc: { fontSize: 12, marginTop: 4 },
-  progressBarBg: { height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.08)', marginTop: 8 },
+  progressBarBg: { height: 6, borderRadius: 3, backgroundColor: '#2F3336', marginTop: 8 },
   progressBarFill: { height: 6, borderRadius: 3 },
 
   posGroupRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
@@ -777,7 +777,7 @@ const styles = StyleSheet.create({
   tableCard: { borderRadius: 12, borderWidth: 1, overflow: 'hidden' },
   clusterRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 8, gap: 8 },
   clusterLabel: { fontSize: 12, fontWeight: '600', width: 100 },
-  clusterBarBg: { flex: 1, height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.06)' },
+  clusterBarBg: { flex: 1, height: 8, borderRadius: 4, backgroundColor: '#2F3336' },
   clusterBarFill: { height: 8, borderRadius: 4 },
   clusterScore: { fontSize: 13, fontWeight: '800', width: 30, textAlign: 'right' },
 
@@ -806,7 +806,7 @@ const styles = StyleSheet.create({
   planBlockMeta: { fontSize: 10, marginTop: 1 },
   statusChip: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
   statusChipText: { fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
-  planBlockExpanded: { marginTop: 10, paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
+  planBlockExpanded: { marginTop: 10, paddingTop: 8, borderTopWidth: 1, borderTopColor: '#2F3336' },
   expandedLabel: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', marginBottom: 4 },
   expandedDrill: { fontSize: 11, lineHeight: 18 },
 
@@ -826,7 +826,7 @@ const styles = StyleSheet.create({
 
   // Weekly Plan
   weekSelector: { flexDirection: 'row', gap: 8, marginBottom: 8 },
-  weekBtn: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
+  weekBtn: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#2F3336' },
   weekBtnText: { fontSize: 13, fontWeight: '600' },
   weekLabel: { fontSize: 16, fontWeight: '800', marginTop: 4 },
   dayHeader: { fontSize: 14, fontWeight: '700', marginTop: 16, marginBottom: 6, textTransform: 'uppercase' },
@@ -899,7 +899,7 @@ const styles = StyleSheet.create({
   transferScore: { fontSize: 12 },
   transferDelta: { fontSize: 12, fontWeight: '700' },
   transferBarContainer: { marginTop: 8 },
-  transferBarBg: { height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.08)' },
+  transferBarBg: { height: 6, borderRadius: 3, backgroundColor: '#2F3336' },
   transferBarFill: { height: 6, borderRadius: 3 },
   transferBarLabel: { fontSize: 10, marginTop: 2 },
 });

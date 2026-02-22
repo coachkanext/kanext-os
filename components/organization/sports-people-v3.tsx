@@ -154,7 +154,7 @@ function ContactsView({ colors, accentColor }: { colors: typeof Colors.light; ac
           <View style={s.contactHeader}>
             <View style={s.contactHeaderInfo}>
               <ThemedText style={[s.contactName, { color: colors.text }]}>{contact.name}</ThemedText>
-              <StatusBadge label={contact.relationship.toUpperCase()} color="#6AA9FF" />
+              <StatusBadge label={contact.relationship.toUpperCase()} color="#1D9BF0" />
             </View>
           </View>
           <View style={[s.contactMeta, { borderTopColor: colors.border }]}>
@@ -243,7 +243,7 @@ function DirectoryView({ colors, accentColor }: { colors: typeof Colors.light; a
               key={f.id}
               style={[
                 s.filterPill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => {
                 Haptics.selectionAsync();
@@ -321,7 +321,7 @@ export function SportsPeople({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >

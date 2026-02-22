@@ -232,7 +232,7 @@ export const STREAM_STATUS_COLORS: Record<StreamStatus, string> = {
   active: '#22C55E',
   paused: '#F59E0B',
   failed: '#EF4444',
-  'pending-setup': '#6B7280',
+  'pending-setup': '#A1A1AA',
 };
 
 export const STREAM_CATEGORY_LABELS: Record<StreamCategory, string> = {
@@ -243,10 +243,10 @@ export const STREAM_CATEGORY_LABELS: Record<StreamCategory, string> = {
 };
 
 export const STREAM_CATEGORY_COLORS: Record<StreamCategory, string> = {
-  vendor: '#8B5CF6',
-  travel: '#3B82F6',
-  'player-services': '#EC4899',
-  'misc-ops': '#6B7280',
+  vendor: '#1D9BF0',
+  travel: '#1D9BF0',
+  'player-services': '#1D9BF0',
+  'misc-ops': '#A1A1AA',
 };
 
 export const METHOD_LABELS: Record<PaymentMethod, string> = {
@@ -273,8 +273,8 @@ export const PRIORITY_LABELS: Record<ActionPriority, string> = {
 export const PRIORITY_COLORS: Record<ActionPriority, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#3B82F6',
-  low: '#6B7280',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 export const APPROVAL_STATUS_LABELS: Record<ApprovalStatus, string> = {
@@ -301,8 +301,8 @@ export const EXCEPTION_TYPE_COLORS: Record<ExceptionType, string> = {
   compliance: '#EF4444',
   receipt: '#F59E0B',
   document: '#F59E0B',
-  limit: '#8B5CF6',
-  account: '#6B7280',
+  limit: '#1D9BF0',
+  account: '#A1A1AA',
 };
 
 export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
@@ -315,10 +315,10 @@ export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
 };
 
 export const AUDIT_ACTION_COLORS: Record<AuditAction, string> = {
-  initiated: '#3B82F6',
+  initiated: '#1D9BF0',
   approved: '#22C55E',
   rejected: '#EF4444',
-  released: '#8B5CF6',
+  released: '#1D9BF0',
   failed: '#EF4444',
   reversed: '#F59E0B',
 };
@@ -333,7 +333,7 @@ export const DISBURSEMENT_STATUS_LABELS: Record<DisbursementStatus, string> = {
 export const DISBURSEMENT_STATUS_COLORS: Record<DisbursementStatus, string> = {
   paid: '#22C55E',
   pending: '#F59E0B',
-  processing: '#3B82F6',
+  processing: '#1D9BF0',
   failed: '#EF4444',
 };
 

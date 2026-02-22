@@ -112,7 +112,7 @@ export function UploadForm() {
           <ThemedText style={styles.primaryText}>Upload Video</ThemedText>
         </Pressable>
         <Pressable style={styles.secondaryBtn} onPress={handleCreateReel}>
-          <IconSymbol name="play.rectangle.fill" size={16} color="#f5f5f5" />
+          <IconSymbol name="play.rectangle.fill" size={16} color="#FFFFFF" />
           <ThemedText style={styles.secondaryText}>Create Reel</ThemedText>
         </Pressable>
       </View>
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 15,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     backgroundColor: '#111',
     borderRadius: BorderRadius.lg,
     paddingHorizontal: Spacing.sm + 4,
@@ -169,11 +169,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#111',
     borderWidth: 1,
-    borderColor: '#1a1a1a',
+    borderColor: '#0B0F14',
   },
   tagText: {
     fontSize: 13,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     fontWeight: '500',
   },
   toggleRow: {
@@ -186,16 +186,16 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#111',
     borderWidth: 1,
-    borderColor: '#1a1a1a',
+    borderColor: '#0B0F14',
   },
   toggleActive: {
-    backgroundColor: '#f5f5f5',
-    borderColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
   },
   toggleText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   toggleActiveText: {
     color: '#000',
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     paddingVertical: 14,
     borderRadius: BorderRadius.lg,
   },
@@ -223,13 +223,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingVertical: 14,
     borderRadius: BorderRadius.lg,
   },
   secondaryText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 });

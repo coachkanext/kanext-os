@@ -117,11 +117,11 @@ export const ACCESS_TIER_LABELS: Record<AccessTier, string> = {
 };
 
 export const ACCESS_TIER_COLORS: Record<AccessTier, string> = {
-  founder: '#8B5CF6',
-  board: '#6AA9FF',
-  executive: '#EC4899',
+  founder: '#1D9BF0',
+  board: '#1D9BF0',
+  executive: '#1D9BF0',
   operator: '#F59E0B',
-  viewer: '#8F8F8F',
+  viewer: '#A1A1AA',
 };
 
 export const DOMAIN_LABELS: Record<Domain, string> = {
@@ -134,10 +134,10 @@ export const DOMAIN_LABELS: Record<Domain, string> = {
 };
 
 export const DOMAIN_COLORS: Record<Domain, string> = {
-  admissions: '#6AA9FF',
-  academics: '#8B5CF6',
+  admissions: '#1D9BF0',
+  academics: '#1D9BF0',
   housing: '#22C55E',
-  athletics: '#F97316',
+  athletics: '#F59E0B',
   finance: '#F59E0B',
   compliance: '#EF4444',
 };
@@ -191,10 +191,10 @@ export const AUTHORITY_LABELS: Record<AuthorityLevel, string> = {
 };
 
 export const AUTHORITY_COLORS: Record<AuthorityLevel, string> = {
-  approve: '#6AA9FF',
+  approve: '#1D9BF0',
   release: '#22C55E',
-  admin: '#8B5CF6',
-  none: '#8F8F8F',
+  admin: '#1D9BF0',
+  none: '#A1A1AA',
 };
 
 export const SENSITIVE_ACCESS_LABELS: Record<SensitiveAccess, string> = {
@@ -219,8 +219,8 @@ export const RISK_FLAG_LABELS: Record<RiskFlag, string> = {
 export const RISK_FLAG_COLORS: Record<RiskFlag, string> = {
   over_permissioned: '#F59E0B',
   missing_coverage: '#EF4444',
-  single_point_failure: '#EC4899',
-  privileged_inactive: '#8B5CF6',
+  single_point_failure: '#1D9BF0',
+  privileged_inactive: '#1D9BF0',
 };
 
 export const PERMISSION_SCOPE_LABELS: Record<PermissionScope, string> = {
@@ -238,8 +238,8 @@ export const AUDIT_CATEGORY_LABELS: Record<AuditEntry['category'], string> = {
 };
 
 export const AUDIT_CATEGORY_COLORS: Record<AuditEntry['category'], string> = {
-  seat_assignment: '#6AA9FF',
-  permission_change: '#8B5CF6',
+  seat_assignment: '#1D9BF0',
+  permission_change: '#1D9BF0',
   invite: '#22C55E',
   release_authority: '#F59E0B',
 };

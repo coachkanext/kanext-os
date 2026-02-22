@@ -237,12 +237,12 @@ function OverviewTab({
   const isLeaderLevel = isDeanLevel(role);
 
   const tileData = [
-    { label: 'Total People', value: String(tiles.totalPeople), icon: 'person.3.fill', color: '#6AA9FF' },
+    { label: 'Total People', value: String(tiles.totalPeople), icon: 'person.3.fill', color: '#1D9BF0' },
     { label: 'Active', value: String(tiles.activePeople), icon: 'checkmark.circle.fill', color: '#22C55E' },
     { label: 'Vacant Critical Seats', value: String(tiles.vacantCriticalSeats), icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
     { label: 'Coverage Score', value: `${tiles.coverageScore}%`, icon: 'chart.bar.fill', color: accentColor },
     { label: 'Pending Invites', value: String(tiles.pendingInvites), icon: 'envelope.fill', color: '#F59E0B' },
-    { label: 'Risk Flags', value: String(tiles.riskFlags), icon: 'exclamationmark.shield.fill', color: '#EC4899' },
+    { label: 'Risk Flags', value: String(tiles.riskFlags), icon: 'exclamationmark.shield.fill', color: '#1D9BF0' },
   ];
 
   // Top 5 coverage gaps
@@ -851,10 +851,10 @@ function PermissionsTab({
                 {/* Write Scopes */}
                 {pkg.writeScopes.length > 0 && (
                   <View style={s.scopeSection}>
-                    <ThemedText style={[s.scopeTitle, { color: '#6AA9FF' }]}>Write</ThemedText>
+                    <ThemedText style={[s.scopeTitle, { color: '#1D9BF0' }]}>Write</ThemedText>
                     {pkg.writeScopes.map((scope, i) => (
                       <View key={`w-${i}`} style={s.scopeItem}>
-                        <View style={[s.scopeDot, { backgroundColor: '#6AA9FF' }]} />
+                        <View style={[s.scopeDot, { backgroundColor: '#1D9BF0' }]} />
                         <ThemedText style={[s.scopeText, { color: colors.textSecondary }]}>{scope}</ThemedText>
                       </View>
                     ))}
@@ -877,10 +877,10 @@ function PermissionsTab({
                 {/* Release Scopes */}
                 {pkg.releaseScopes.length > 0 && (
                   <View style={s.scopeSection}>
-                    <ThemedText style={[s.scopeTitle, { color: '#EC4899' }]}>Release</ThemedText>
+                    <ThemedText style={[s.scopeTitle, { color: '#1D9BF0' }]}>Release</ThemedText>
                     {pkg.releaseScopes.map((scope, i) => (
                       <View key={`rel-${i}`} style={s.scopeItem}>
-                        <View style={[s.scopeDot, { backgroundColor: '#EC4899' }]} />
+                        <View style={[s.scopeDot, { backgroundColor: '#1D9BF0' }]} />
                         <ThemedText style={[s.scopeText, { color: colors.textSecondary }]}>{scope}</ThemedText>
                       </View>
                     ))}
@@ -1275,8 +1275,8 @@ function ReportsTab({
 }) {
   const reports = [
     { id: 'coverage', title: 'Coverage Report', description: 'Full seat coverage analysis across all domains and institutions.', icon: 'chart.bar.fill', color: '#22C55E' },
-    { id: 'permission-audit', title: 'Permission Audit', description: 'Review of all permission packages, access tiers, and sensitive field exposure.', icon: 'lock.shield.fill', color: '#8B5CF6' },
-    { id: 'seat-utilization', title: 'Seat Utilization', description: 'Filled vs. vacant seats, dual-hat analysis, and succession readiness.', icon: 'person.crop.rectangle.stack.fill', color: '#6AA9FF' },
+    { id: 'permission-audit', title: 'Permission Audit', description: 'Review of all permission packages, access tiers, and sensitive field exposure.', icon: 'lock.shield.fill', color: '#1D9BF0' },
+    { id: 'seat-utilization', title: 'Seat Utilization', description: 'Filled vs. vacant seats, dual-hat analysis, and succession readiness.', icon: 'person.crop.rectangle.stack.fill', color: '#1D9BF0' },
     { id: 'risk-assessment', title: 'Risk Assessment', description: 'Over-permissioned users, single points of failure, and coverage gaps.', icon: 'exclamationmark.shield.fill', color: '#EF4444' },
   ];
 
@@ -1815,7 +1815,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

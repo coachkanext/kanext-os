@@ -304,14 +304,14 @@ function OverviewTab({
             <ThemedText style={[s.severityLabel, { color: colors.textSecondary }]}>High</ThemedText>
           </View>
           <View style={s.severityItem}>
-            <View style={[s.statusDot, { backgroundColor: '#3b82f6' }]} />
+            <View style={[s.statusDot, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[s.severityValue, { color: colors.text }]}>
               {mediumHolds}
             </ThemedText>
             <ThemedText style={[s.severityLabel, { color: colors.textSecondary }]}>Medium</ThemedText>
           </View>
           <View style={s.severityItem}>
-            <View style={[s.statusDot, { backgroundColor: '#6b7280' }]} />
+            <View style={[s.statusDot, { backgroundColor: '#A1A1AA' }]} />
             <ThemedText style={[s.severityValue, { color: colors.text }]}>
               {lowHolds}
             </ThemedText>
@@ -1451,7 +1451,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

@@ -90,21 +90,21 @@ export const FACILITY_TYPE_ICONS: Record<FacilityType, string> = {
 };
 
 export const FACILITY_TYPE_COLORS: Record<FacilityType, string> = {
-  sanctuary: '#8B5CF6',
-  fellowship_hall: '#6AA9FF',
+  sanctuary: '#1D9BF0',
+  fellowship_hall: '#1D9BF0',
   classroom: '#22C55E',
   office: '#F59E0B',
   gym: '#EF4444',
-  kitchen: '#EC4899',
-  parking: '#8F8F8F',
-  outdoor: '#10B981',
+  kitchen: '#1D9BF0',
+  parking: '#A1A1AA',
+  outdoor: '#22C55E',
 };
 
 export const FACILITY_STATUS_COLOR: Record<FacilityStatus, string> = {
   available: '#22C55E',
-  in_use: '#6AA9FF',
+  in_use: '#1D9BF0',
   maintenance: '#F59E0B',
-  reserved: '#8B5CF6',
+  reserved: '#1D9BF0',
 };
 
 export const FACILITY_STATUS_LABELS: Record<FacilityStatus, string> = {
@@ -118,12 +118,12 @@ export const PRIORITY_COLOR: Record<MaintenancePriority, string> = {
   low: '#22C55E',
   medium: '#F59E0B',
   high: '#EF4444',
-  urgent: '#DC2626',
+  urgent: '#EF4444',
 };
 
 export const MAINTENANCE_STATUS_COLOR: Record<MaintenanceStatus, string> = {
   open: '#F59E0B',
-  in_progress: '#6AA9FF',
+  in_progress: '#1D9BF0',
   completed: '#22C55E',
 };
 

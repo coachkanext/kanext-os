@@ -18,7 +18,7 @@ interface Props {
 const STATUS_ICON: Record<string, { symbol: string; color: string }> = {
   completed: { symbol: '\u2713', color: '#22C55E' },
   in_progress: { symbol: '\u25CB', color: '#F59E0B' },
-  upcoming: { symbol: '\u25CB', color: '#6B7280' },
+  upcoming: { symbol: '\u25CB', color: '#A1A1AA' },
 };
 
 export function BizCalendarMilestonesView({ colors, accent }: Props) {

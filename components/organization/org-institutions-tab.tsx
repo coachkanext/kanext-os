@@ -74,11 +74,11 @@ const STATUS_OPTIONS: InstitutionStatus[] = ['active', 'partner', 'prospect', 'a
 const TYPE_OPTIONS: InstitutionType[] = ['university', 'college', 'academy', 'other'];
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  academic: '#6AA9FF',
+  academic: '#1D9BF0',
   admissions: '#22C55E',
   athletics: '#F59E0B',
-  cultural: '#A78BFA',
-  administrative: '#8F8F8F',
+  cultural: '#1D9BF0',
+  administrative: '#A1A1AA',
 };
 
 const AUDIT_ACTION_ICON: Record<string, string> = {
@@ -97,16 +97,16 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  added: '#6AA9FF',
-  department: '#A78BFA',
-  room: '#14B8A6',
+  added: '#1D9BF0',
+  department: '#1D9BF0',
+  room: '#1D9BF0',
   updated: '#F59E0B',
-  compliance: '#F472B6',
-  partnership: '#7A5CFF',
-  library: '#D4A574',
+  compliance: '#1D9BF0',
+  partnership: '#1D9BF0',
+  library: '#A1A1AA',
   enrollment: '#22C55E',
   prospect: '#F59E0B',
-  default: '#8F8F8F',
+  default: '#A1A1AA',
 };
 
 function getAuditActionKey(action: string): string {
@@ -554,7 +554,7 @@ function InstitutionHub({
               const d = new Date(item.date);
               const month = d.toLocaleString('en-US', { month: 'short' }).toUpperCase();
               const day = d.getDate();
-              const typeColor = EVENT_TYPE_COLORS[item.type] ?? '#8F8F8F';
+              const typeColor = EVENT_TYPE_COLORS[item.type] ?? '#A1A1AA';
               return (
                 <View style={[s.eventRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   {/* Date box */}
@@ -1576,7 +1576,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#181616',
+    borderColor: '#0B0F14',
   },
   adminInitials: {
     fontSize: 9,

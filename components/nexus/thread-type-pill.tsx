@@ -16,10 +16,10 @@ interface ThreadTypePillProps {
 }
 
 const TYPE_CONFIG: Record<ConversationType, { label: string; color: string }> = {
-  chat: { label: 'Chat', color: '#f5f5f5' },
-  eval: { label: 'Eval', color: '#f5f5f5' },
-  sim: { label: 'Sim', color: '#f5f5f5' },
-  'game-ops': { label: 'Game Ops', color: '#6e6e6e' },
+  chat: { label: 'Chat', color: '#FFFFFF' },
+  eval: { label: 'Eval', color: '#FFFFFF' },
+  sim: { label: 'Sim', color: '#FFFFFF' },
+  'game-ops': { label: 'Game Ops', color: '#A1A1AA' },
 };
 
 export function ThreadTypePill({ type, size = 'default' }: ThreadTypePillProps) {

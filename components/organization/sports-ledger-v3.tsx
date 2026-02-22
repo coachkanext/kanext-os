@@ -68,8 +68,8 @@ type PendingStatus = 'Pending Approval' | 'Processing' | 'Awaiting Settlement';
 
 const PENDING_STATUS_COLOR: Record<PendingStatus, string> = {
   'Pending Approval': '#F59E0B',
-  Processing: '#6AA9FF',
-  'Awaiting Settlement': '#A78BFA',
+  Processing: '#1D9BF0',
+  'Awaiting Settlement': '#1D9BF0',
 };
 
 interface PendingItem {
@@ -190,7 +190,7 @@ function TransactionsView({ colors, accentColor }: { colors: typeof Colors.light
               key={f.id}
               style={[
                 s.filterPill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => {
                 Haptics.selectionAsync();
@@ -396,7 +396,7 @@ export function SportsLedger({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >

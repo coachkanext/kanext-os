@@ -902,8 +902,8 @@ const POLICY_UPDATES: PolicyUpdate[] = [
 const CHANGE_TYPE_COLOR: Record<string, string> = {
   new: '#22C55E',
   major_revision: '#F59E0B',
-  minor_update: '#3B82F6',
-  review_scheduled: '#8B5CF6',
+  minor_update: '#1D9BF0',
+  review_scheduled: '#1D9BF0',
 };
 
 const CHANGE_TYPE_LABEL: Record<string, string> = {
@@ -1028,14 +1028,14 @@ const ENFORCEMENT_ACTIONS: EnforcementAction[] = [
 const ENFORCEMENT_STATUS_COLOR: Record<string, string> = {
   active: '#F59E0B',
   resolved: '#22C55E',
-  appeal_pending: '#3B82F6',
+  appeal_pending: '#1D9BF0',
   under_investigation: '#EF4444',
 };
 
 const ENFORCEMENT_SEVERITY_COLOR: Record<string, string> = {
-  low: '#8F8F8F',
+  low: '#A1A1AA',
   moderate: '#F59E0B',
-  high: '#F97316',
+  high: '#F59E0B',
   critical: '#EF4444',
 };
 
@@ -1154,7 +1154,7 @@ const COMPLIANCE_STATUS_COLOR: Record<string, string> = {
   compliant: '#22C55E',
   at_risk: '#F59E0B',
   non_compliant: '#EF4444',
-  under_review: '#3B82F6',
+  under_review: '#1D9BF0',
 };
 
 interface AuditItem {
@@ -1177,8 +1177,8 @@ const AUDIT_SCHEDULE: AuditItem[] = [
 
 const AUDIT_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
-  in_progress: '#3B82F6',
-  scheduled: '#8F8F8F',
+  in_progress: '#1D9BF0',
+  scheduled: '#A1A1AA',
   overdue: '#EF4444',
 };
 
@@ -1299,30 +1299,30 @@ const POLICY_CATEGORY_LABEL: Record<string, string> = {
 };
 
 const POLICY_CATEGORY_COLOR: Record<string, string> = {
-  academic: '#3B82F6',
-  conduct: '#F97316',
+  academic: '#1D9BF0',
+  conduct: '#F59E0B',
   safety: '#EF4444',
-  hr: '#8B5CF6',
-  it: '#06B6D4',
+  hr: '#1D9BF0',
+  it: '#1D9BF0',
   financial: '#22C55E',
 };
 
 const POLICY_STATUS_COLOR: Record<string, string> = {
   active: '#22C55E',
-  draft: '#3B82F6',
+  draft: '#1D9BF0',
   under_review: '#F59E0B',
-  archived: '#8F8F8F',
+  archived: '#A1A1AA',
 };
 
 const SEVERITY_COLOR: Record<string, string> = {
   minor: '#F59E0B',
-  major: '#F97316',
+  major: '#F59E0B',
   critical: '#EF4444',
 };
 
 const DOC_STATUS_COLOR: Record<string, string> = {
   published: '#22C55E',
-  draft: '#3B82F6',
+  draft: '#1D9BF0',
   internal: '#F59E0B',
 };
 
@@ -1478,8 +1478,8 @@ function PolicyLibraryView({ colors, role }: { colors: typeof Colors.light; role
                       {policy.title}
                     </ThemedText>
                     <View style={s.policyBadgeRow}>
-                      <View style={[s.categoryBadge, { backgroundColor: (POLICY_CATEGORY_COLOR[policy.category] || '#8F8F8F') + '20' }]}>
-                        <ThemedText style={[s.categoryText, { color: POLICY_CATEGORY_COLOR[policy.category] || '#8F8F8F' }]}>
+                      <View style={[s.categoryBadge, { backgroundColor: (POLICY_CATEGORY_COLOR[policy.category] || '#A1A1AA') + '20' }]}>
+                        <ThemedText style={[s.categoryText, { color: POLICY_CATEGORY_COLOR[policy.category] || '#A1A1AA' }]}>
                           {POLICY_CATEGORY_LABEL[policy.category] || policy.category}
                         </ThemedText>
                       </View>
@@ -1664,7 +1664,7 @@ function PolicyUpdatesView({ colors, role }: { colors: typeof Colors.light; role
 
       {POLICY_UPDATES.map((update) => {
         const isExpanded = expandedId === update.id;
-        const typeColor = CHANGE_TYPE_COLOR[update.changeType] || '#8F8F8F';
+        const typeColor = CHANGE_TYPE_COLOR[update.changeType] || '#A1A1AA';
 
         return (
           <Pressable
@@ -1748,7 +1748,7 @@ function EnforcementView({ colors, role }: { colors: typeof Colors.light; role: 
       <Card colors={colors}>
         <View style={s.statsRow}>
           <StatBox label="Active" value={String(totalActive)} colors={colors} valueColor="#F59E0B" />
-          <StatBox label="Appeals" value={String(totalAppeals)} colors={colors} valueColor="#3B82F6" />
+          <StatBox label="Appeals" value={String(totalAppeals)} colors={colors} valueColor="#1D9BF0" />
           <StatBox label="Resolved" value={String(totalResolved)} colors={colors} valueColor="#22C55E" />
           <StatBox label="Critical" value={String(totalCritical)} colors={colors} valueColor="#EF4444" />
         </View>
@@ -1781,8 +1781,8 @@ function EnforcementView({ colors, role }: { colors: typeof Colors.light; role: 
       <SectionHeader title="ENFORCEMENT ACTIONS" colors={colors} count={filtered.length} />
 
       {filtered.map((action) => {
-        const statusColor = ENFORCEMENT_STATUS_COLOR[action.status] || '#8F8F8F';
-        const sevColor = ENFORCEMENT_SEVERITY_COLOR[action.severity] || '#8F8F8F';
+        const statusColor = ENFORCEMENT_STATUS_COLOR[action.status] || '#A1A1AA';
+        const sevColor = ENFORCEMENT_SEVERITY_COLOR[action.severity] || '#A1A1AA';
 
         return (
           <Card key={action.id} colors={colors}>
@@ -1861,7 +1861,7 @@ function ComplianceDashboardView({ colors, role }: { colors: typeof Colors.light
 
       {COMPLIANCE_AREAS.map((area) => {
         const isExpanded = expandedId === area.id;
-        const statusColor = COMPLIANCE_STATUS_COLOR[area.status] || '#8F8F8F';
+        const statusColor = COMPLIANCE_STATUS_COLOR[area.status] || '#A1A1AA';
 
         return (
           <Pressable
@@ -1936,7 +1936,7 @@ function ComplianceDashboardView({ colors, role }: { colors: typeof Colors.light
           <SectionHeader title="AUDIT SCHEDULE" colors={colors} count={AUDIT_SCHEDULE.length} />
           <Card colors={colors}>
             {AUDIT_SCHEDULE.map((audit, idx) => {
-              const auditColor = AUDIT_STATUS_COLOR[audit.status] || '#8F8F8F';
+              const auditColor = AUDIT_STATUS_COLOR[audit.status] || '#A1A1AA';
               return (
                 <View
                   key={audit.id}
@@ -2025,7 +2025,7 @@ function PolicyPacksView({ colors, role }: { colors: typeof Colors.light; role: 
                 <View style={s.packExpanded}>
                   <ThemedText style={[s.packReadingsLabel, { color: colors.text }]}>Required Readings:</ThemedText>
                   {pack.requiredReadings.map((reading) => {
-                    const catColor = POLICY_CATEGORY_COLOR[reading.category] || '#8F8F8F';
+                    const catColor = POLICY_CATEGORY_COLOR[reading.category] || '#A1A1AA';
                     return (
                       <View key={reading.id} style={s.readingRow}>
                         <IconSymbol

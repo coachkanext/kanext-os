@@ -85,7 +85,7 @@ const COVERAGE_CATEGORY_LABELS: Record<string, string> = {
 };
 
 function getCoverageColor(filled: number, total: number): string {
-  if (total === 0) return '#9CA3AF';
+  if (total === 0) return '#A1A1AA';
   const pct = (filled / total) * 100;
   if (pct >= 80) return '#22C55E';
   if (pct >= 50) return '#F59E0B';
@@ -95,7 +95,7 @@ function getCoverageColor(filled: number, total: number): string {
 const SENSITIVE_ACCESS_COLOR: Record<string, string> = {
   full: '#EF4444',
   partial: '#F59E0B',
-  none: '#9CA3AF',
+  none: '#A1A1AA',
 };
 
 // =============================================================================
@@ -540,7 +540,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
                     </View>
                     <View style={[s.authoritySep, { backgroundColor: colors.divider }]} />
                     <View style={s.authorityItem}>
-                      <View style={[s.authorityDot, { backgroundColor: item.canRelease ? '#F59E0B' : '#9CA3AF' }]} />
+                      <View style={[s.authorityDot, { backgroundColor: item.canRelease ? '#F59E0B' : '#A1A1AA' }]} />
                       <ThemedText style={[s.authorityLabel, { color: item.canRelease ? '#F59E0B' : colors.textTertiary }]}>
                         Release: {item.canRelease ? '\u2713' : '\u2717'}
                       </ThemedText>
@@ -1792,7 +1792,7 @@ const s = StyleSheet.create({
     marginTop: Spacing.sm,
     gap: Spacing.sm,
     borderLeftWidth: 2,
-    borderLeftColor: 'rgba(255,255,255,0.06)',
+    borderLeftColor: '#2F3336',
     paddingLeft: Spacing.sm,
   },
   directReportCard: {
@@ -2106,7 +2106,7 @@ const s = StyleSheet.create({
     marginTop: 6,
     paddingTop: 6,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
     gap: 6,
   },
   authorityItem: {

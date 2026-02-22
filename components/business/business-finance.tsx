@@ -124,7 +124,7 @@ function severityDotColor(severity: string): string {
     case 'high':
       return BP.amber;
     case 'medium':
-      return '#6AA9FF';
+      return '#1D9BF0';
     case 'low':
       return BP.ash;
     default:
@@ -2329,7 +2329,7 @@ const s = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   explainSheet: {
-    backgroundColor: '#1C1C1E',
+    backgroundColor: '#0B0F14',
     borderTopLeftRadius: BorderRadius.lg,
     borderTopRightRadius: BorderRadius.lg,
     paddingHorizontal: Spacing.md,

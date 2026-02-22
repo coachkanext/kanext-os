@@ -56,11 +56,11 @@ interface RevenueSource {
 const REVENUE_TOTAL = 32000000;
 
 const REVENUE_SOURCES: RevenueSource[] = [
-  { id: 'rs1', name: 'Tuition & Fees', amount: 18000000, pct: 56, color: '#14B8A6' },
-  { id: 'rs2', name: 'Federal/State Funding', amount: 6000000, pct: 19, color: '#6AA9FF' },
+  { id: 'rs1', name: 'Tuition & Fees', amount: 18000000, pct: 56, color: '#1D9BF0' },
+  { id: 'rs2', name: 'Federal/State Funding', amount: 6000000, pct: 19, color: '#1D9BF0' },
   { id: 'rs3', name: 'Grants', amount: 3000000, pct: 9, color: '#22C55E' },
   { id: 'rs4', name: 'Donations', amount: 2500000, pct: 8, color: '#F59E0B' },
-  { id: 'rs5', name: 'Auxiliary Services', amount: 1500000, pct: 5, color: '#A78BFA' },
+  { id: 'rs5', name: 'Auxiliary Services', amount: 1500000, pct: 5, color: '#1D9BF0' },
   { id: 'rs6', name: 'Athletics', amount: 1000000, pct: 3, color: '#EF4444' },
 ];
 
@@ -348,7 +348,7 @@ export function EduFinance({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >
@@ -487,7 +487,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   detailLabel: {
     fontSize: 13,

@@ -59,7 +59,7 @@ interface UniversalCompanySheetProps {
 // =============================================================================
 
 const STATUS_COLORS: Record<string, string> = {
-  private: '#8F8F8F',
+  private: '#A1A1AA',
   public: '#22C55E',
   in_discussion: '#F59E0B',
 };
@@ -79,14 +79,14 @@ const KPI_STATUS_COLORS: Record<string, string> = {
 const RISK_SEVERITY_COLORS: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#6AA9FF',
-  low: '#8F8F8F',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 const BUDGET_STATUS_COLORS: Record<string, string> = {
   on_track: '#22C55E',
   over: '#EF4444',
-  under: '#6AA9FF',
+  under: '#1D9BF0',
   at_risk: '#F59E0B',
 };
 
@@ -94,8 +94,8 @@ const FUNDING_STATUS_COLORS: Record<string, string> = {
   closed: '#22C55E',
   active: '#F59E0B',
   open: '#F59E0B',
-  closing: '#6AA9FF',
-  planned: '#8F8F8F',
+  closing: '#1D9BF0',
+  planned: '#A1A1AA',
 };
 
 const DECISION_OUTCOME_COLORS: Record<string, string> = {
@@ -103,14 +103,14 @@ const DECISION_OUTCOME_COLORS: Record<string, string> = {
   rejected: '#EF4444',
   deferred: '#F59E0B',
   tabled: '#F59E0B',
-  pending: '#6AA9FF',
+  pending: '#1D9BF0',
 };
 
 const PIPELINE_STAGE_COLORS: Record<string, string> = {
-  lead: '#8F8F8F',
-  'Initial Contact': '#8F8F8F',
-  contacted: '#6AA9FF',
-  'Proposal Sent': '#6AA9FF',
+  lead: '#A1A1AA',
+  'Initial Contact': '#A1A1AA',
+  contacted: '#1D9BF0',
+  'Proposal Sent': '#1D9BF0',
   meeting: '#F59E0B',
   Diligence: '#F59E0B',
   diligence: '#F59E0B',
@@ -266,19 +266,19 @@ function CompanyHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (STATUS_COLORS[company.status] ?? '#8F8F8F') + '1A' },
+            { backgroundColor: (STATUS_COLORS[company.status] ?? '#A1A1AA') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: STATUS_COLORS[company.status] ?? '#8F8F8F' },
+              { backgroundColor: STATUS_COLORS[company.status] ?? '#A1A1AA' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: STATUS_COLORS[company.status] ?? '#8F8F8F' },
+              { color: STATUS_COLORS[company.status] ?? '#A1A1AA' },
             ]}
           >
             {STATUS_LABELS[company.status] ?? company.status}
@@ -291,17 +291,17 @@ function CompanyHeader({
         <View style={styles.quickChipRow}>
           {/* Runway: founder + board exact, retail banded */}
           {(founder || board) && company.runway != null && (
-            <View style={[styles.quickChip, { backgroundColor: '#6AA9FF22' }]}>
-              <IconSymbol name="clock.fill" size={12} color="#6AA9FF" />
-              <ThemedText style={[styles.quickChipText, { color: '#6AA9FF' }]}>
+            <View style={[styles.quickChip, { backgroundColor: '#1D9BF022' }]}>
+              <IconSymbol name="clock.fill" size={12} color="#1D9BF0" />
+              <ThemedText style={[styles.quickChipText, { color: '#1D9BF0' }]}>
                 {company.runway} mo runway
               </ThemedText>
             </View>
           )}
           {investor && company.runway != null && (
-            <View style={[styles.quickChip, { backgroundColor: '#6AA9FF22' }]}>
-              <IconSymbol name="clock.fill" size={12} color="#6AA9FF" />
-              <ThemedText style={[styles.quickChipText, { color: '#6AA9FF' }]}>
+            <View style={[styles.quickChip, { backgroundColor: '#1D9BF022' }]}>
+              <IconSymbol name="clock.fill" size={12} color="#1D9BF0" />
+              <ThemedText style={[styles.quickChipText, { color: '#1D9BF0' }]}>
                 6-12 mo runway
               </ThemedText>
             </View>
@@ -478,7 +478,7 @@ function ProductTab({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="What's Built Now" colors={colors}>
         {builtNow.map((item) => (
           <View key={item.label} style={styles.checklistRow}>
-            <ThemedText style={{ fontSize: 14, color: item.done ? '#22C55E' : '#8F8F8F' }}>
+            <ThemedText style={{ fontSize: 14, color: item.done ? '#22C55E' : '#A1A1AA' }}>
               {item.done ? '\u2713' : '\u25CB'}
             </ThemedText>
             <ThemedText
@@ -547,8 +547,8 @@ function TractionTab({
         {investor ? (
           <View>
             <View style={styles.statRow}>
-              <StatBlock label="Leads" value={String(pipelineCounts.lead)} color="#8F8F8F" colors={colors} />
-              <StatBlock label="Active" value={String(pipelineCounts.contacted)} color="#6AA9FF" colors={colors} />
+              <StatBlock label="Leads" value={String(pipelineCounts.lead)} color="#A1A1AA" colors={colors} />
+              <StatBlock label="Active" value={String(pipelineCounts.contacted)} color="#1D9BF0" colors={colors} />
               <StatBlock label="Advanced" value={String(pipelineCounts.meeting + pipelineCounts.advanced)} color="#22C55E" colors={colors} />
             </View>
             <ThemedText style={[styles.captionText, { color: colors.textTertiary, marginTop: Spacing.sm, textAlign: 'center' }]}>
@@ -561,13 +561,13 @@ function TractionTab({
               <View
                 style={[
                   styles.pipelineStageBadge,
-                  { backgroundColor: (PIPELINE_STAGE_COLORS[item.stage] ?? '#8F8F8F') + '22' },
+                  { backgroundColor: (PIPELINE_STAGE_COLORS[item.stage] ?? '#A1A1AA') + '22' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.pipelineStageText,
-                    { color: PIPELINE_STAGE_COLORS[item.stage] ?? '#8F8F8F' },
+                    { color: PIPELINE_STAGE_COLORS[item.stage] ?? '#A1A1AA' },
                   ]}
                 >
                   {item.stage.toUpperCase()}
@@ -598,22 +598,22 @@ function TractionTab({
         {board ? (
           <View>
             <View style={styles.statRow}>
-              <StatBlock label="App Installs" value="2,340" color="#6AA9FF" colors={colors} />
+              <StatBlock label="App Installs" value="2,340" color="#1D9BF0" colors={colors} />
               <StatBlock label="Avg Session" value="8.2 min" color="#22C55E" colors={colors} />
-              <StatBlock label="Uptime" value="99.7%" color="#DDDDDD" colors={colors} />
+              <StatBlock label="Uptime" value="99.7%" color="#FFFFFF" colors={colors} />
             </View>
             <View style={[styles.statRow, { marginTop: Spacing.md }]}>
               <StatBlock label="Media Reach" value="18.2M" color="#F59E0B" colors={colors} />
               <StatBlock label="Proof Sites" value="3" color="#22C55E" colors={colors} />
-              <StatBlock label="Events" value="7" color="#6AA9FF" colors={colors} />
+              <StatBlock label="Events" value="7" color="#1D9BF0" colors={colors} />
             </View>
           </View>
         ) : investor ? (
           <View>
             <View style={styles.statRow}>
-              <StatBlock label="App Installs" value="1K-5K" color="#6AA9FF" colors={colors} />
+              <StatBlock label="App Installs" value="1K-5K" color="#1D9BF0" colors={colors} />
               <StatBlock label="Avg Session" value="5-10 min" color="#22C55E" colors={colors} />
-              <StatBlock label="Uptime" value=">99%" color="#DDDDDD" colors={colors} />
+              <StatBlock label="Uptime" value=">99%" color="#FFFFFF" colors={colors} />
             </View>
             <ThemedText style={[styles.captionText, { color: colors.textTertiary, marginTop: Spacing.sm, textAlign: 'center' }]}>
               Banded metrics -- exact figures at Board tier
@@ -622,8 +622,8 @@ function TractionTab({
         ) : (
           <View style={styles.statRow}>
             <StatBlock label="Proof Sites" value="3" color="#22C55E" colors={colors} />
-            <StatBlock label="Events" value="7" color="#6AA9FF" colors={colors} />
-            <StatBlock label="Modes" value="5" color="#DDDDDD" colors={colors} />
+            <StatBlock label="Events" value="7" color="#1D9BF0" colors={colors} />
+            <StatBlock label="Modes" value="5" color="#FFFFFF" colors={colors} />
           </View>
         )}
       </SectionCard>
@@ -730,7 +730,7 @@ function RoadmapTab({ colors, board }: { colors: typeof Colors.light; board: boo
                   {
                     backgroundColor:
                       item.priority === 'Critical' ? '#EF444422' :
-                      item.priority === 'High' ? '#F59E0B22' : '#8F8F8F22',
+                      item.priority === 'High' ? '#F59E0B22' : '#A1A1AA22',
                   },
                 ]}
               >
@@ -740,7 +740,7 @@ function RoadmapTab({ colors, board }: { colors: typeof Colors.light; board: boo
                     {
                       color:
                         item.priority === 'Critical' ? '#EF4444' :
-                        item.priority === 'High' ? '#F59E0B' : '#8F8F8F',
+                        item.priority === 'High' ? '#F59E0B' : '#A1A1AA',
                     },
                   ]}
                 >
@@ -787,13 +787,13 @@ function FinanceTab({
         {metricVis === 'exact' ? (
           <View style={styles.statRow}>
             <StatBlock label="Monthly Burn" value="$35K" color="#EF4444" colors={colors} />
-            <StatBlock label="Runway" value="14 mo" color="#6AA9FF" colors={colors} />
+            <StatBlock label="Runway" value="14 mo" color="#1D9BF0" colors={colors} />
             <StatBlock label="Cash" value="$490K" color="#22C55E" colors={colors} />
           </View>
         ) : (
           <View style={styles.statRow}>
             <StatBlock label="Monthly Burn" value="$25-$50K" color="#EF4444" colors={colors} />
-            <StatBlock label="Runway" value="12-18 mo" color="#6AA9FF" colors={colors} />
+            <StatBlock label="Runway" value="12-18 mo" color="#1D9BF0" colors={colors} />
             <StatBlock label="Cash" value="$300-$600K" color="#22C55E" colors={colors} />
           </View>
         )}
@@ -842,13 +842,13 @@ function FinanceTab({
           <View
             style={[
               styles.fundingStatusBadge,
-              { backgroundColor: (FUNDING_STATUS_COLORS[FUNDING_PLAN.status] ?? '#8F8F8F') + '22' },
+              { backgroundColor: (FUNDING_STATUS_COLORS[FUNDING_PLAN.status] ?? '#A1A1AA') + '22' },
             ]}
           >
             <ThemedText
               style={[
                 styles.fundingStatusText,
-                { color: FUNDING_STATUS_COLORS[FUNDING_PLAN.status] ?? '#8F8F8F' },
+                { color: FUNDING_STATUS_COLORS[FUNDING_PLAN.status] ?? '#A1A1AA' },
               ]}
             >
               {FUNDING_PLAN.status.toUpperCase()}
@@ -903,13 +903,13 @@ function GovernanceTab({
             <View
               style={[
                 styles.decisionOutcomeBadge,
-                { backgroundColor: (DECISION_OUTCOME_COLORS[entry.outcome] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (DECISION_OUTCOME_COLORS[entry.outcome] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.decisionOutcomeText,
-                  { color: DECISION_OUTCOME_COLORS[entry.outcome] ?? '#8F8F8F' },
+                  { color: DECISION_OUTCOME_COLORS[entry.outcome] ?? '#A1A1AA' },
                 ]}
               >
                 {entry.outcome.toUpperCase()}
@@ -937,7 +937,7 @@ function GovernanceTab({
             <View
               style={[
                 styles.kpiStatusDot,
-                { backgroundColor: KPI_STATUS_COLORS[kpi.status] ?? '#8F8F8F' },
+                { backgroundColor: KPI_STATUS_COLORS[kpi.status] ?? '#A1A1AA' },
               ]}
             />
             <View style={{ flex: 1 }}>
@@ -951,7 +951,7 @@ function GovernanceTab({
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: KPI_STATUS_COLORS[kpi.status] ?? '#8F8F8F' },
+                { color: KPI_STATUS_COLORS[kpi.status] ?? '#A1A1AA' },
               ]}
             >
               {kpi.status.replace('_', ' ').toUpperCase()}
@@ -968,13 +968,13 @@ function GovernanceTab({
               <View
                 style={[
                   styles.severityBadge,
-                  { backgroundColor: (RISK_SEVERITY_COLORS[risk.severity] ?? '#8F8F8F') + '22' },
+                  { backgroundColor: (RISK_SEVERITY_COLORS[risk.severity] ?? '#A1A1AA') + '22' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.severityText,
-                    { color: RISK_SEVERITY_COLORS[risk.severity] ?? '#8F8F8F' },
+                    { color: RISK_SEVERITY_COLORS[risk.severity] ?? '#A1A1AA' },
                   ]}
                 >
                   {risk.severity.toUpperCase()}
@@ -1185,7 +1185,7 @@ function CommsTab({
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: pr.status === 'published' ? '#22C55E' : '#8F8F8F' },
+                { color: pr.status === 'published' ? '#22C55E' : '#A1A1AA' },
               ]}
             >
               {pr.status.toUpperCase()}
@@ -1311,16 +1311,16 @@ function LinkRow({
 }) {
   return (
     <Pressable style={[styles.listRow, { borderBottomColor: colors.border }]}>
-      <IconSymbol name={icon as any} size={18} color="#6AA9FF" />
+      <IconSymbol name={icon as any} size={18} color="#1D9BF0" />
       <View style={{ flex: 1, marginLeft: Spacing.sm }}>
-        <ThemedText style={[styles.listRowTitle, { color: '#6AA9FF' }]}>
+        <ThemedText style={[styles.listRowTitle, { color: '#1D9BF0' }]}>
           {label}
         </ThemedText>
         <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
           {subtitle}
         </ThemedText>
       </View>
-      <IconSymbol name="arrow.up.right" size={14} color="#6AA9FF" />
+      <IconSymbol name="arrow.up.right" size={14} color="#1D9BF0" />
     </Pressable>
   );
 }

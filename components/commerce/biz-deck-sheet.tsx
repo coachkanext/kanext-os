@@ -12,7 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DECK_DOCUMENTS, type DeckDocument } from '@/data/mock-business-home';
 import { Spacing, BorderRadius } from '@/constants/theme';
 
-const ACCENT = '#8B5CF6';
+const ACCENT = '#1D9BF0';
 
 const TYPE_ICONS: Record<DeckDocument['type'], string> = {
   deck: 'doc.richtext.fill',

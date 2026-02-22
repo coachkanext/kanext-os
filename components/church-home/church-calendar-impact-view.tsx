@@ -58,7 +58,7 @@ export function ChurchCalendarImpactView({ colors, accent }: Props) {
             <ThemedText style={[styles.barLabel, { color: colors.textSecondary }]}>{m.month}</ThemedText>
             <View style={styles.barTrack}>
               <View style={[styles.barFill, { width: `${inPersonPct}%`, backgroundColor: accent }]} />
-              <View style={[styles.barFill, { width: `${onlinePct}%`, backgroundColor: '#3B82F6' }]} />
+              <View style={[styles.barFill, { width: `${onlinePct}%`, backgroundColor: '#1D9BF0' }]} />
             </View>
             <ThemedText style={[styles.barValue, { color: colors.text }]}>{fmt(m.total)}</ThemedText>
           </View>
@@ -67,7 +67,7 @@ export function ChurchCalendarImpactView({ colors, accent }: Props) {
       <View style={styles.legendRow}>
         <View style={[styles.legendDot, { backgroundColor: accent }]} />
         <ThemedText style={[styles.legendText, { color: colors.textSecondary }]}>In-Person</ThemedText>
-        <View style={[styles.legendDot, { backgroundColor: '#3B82F6', marginLeft: 12 }]} />
+        <View style={[styles.legendDot, { backgroundColor: '#1D9BF0', marginLeft: 12 }]} />
         <ThemedText style={[styles.legendText, { color: colors.textSecondary }]}>Online</ThemedText>
       </View>
 

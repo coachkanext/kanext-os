@@ -23,7 +23,7 @@ interface Props {
 
 type TabId = 'submit' | 'requests';
 
-const ACCENT = '#FBBF24';
+const ACCENT = '#1D9BF0';
 const CATEGORIES = Object.keys(PRAYER_CATEGORY_LABELS) as PrayerCategory[];
 const PRIVACY_OPTIONS = [
   { id: 'public' as const, label: 'Share with Church' },

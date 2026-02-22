@@ -220,7 +220,7 @@ function PrizeView({ colors, accentColor }: { colors: typeof Colors.light; accen
       {/* Prize Pool Summary */}
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>TOTAL PRIZE POOL</ThemedText>
-        <ThemedText style={[s.summaryAmount, { color: '#FFD700' }]}>{formatCurrency(PRIZE_TOTAL)}</ThemedText>
+        <ThemedText style={[s.summaryAmount, { color: '#1D9BF0' }]}>{formatCurrency(PRIZE_TOTAL)}</ThemedText>
         <View style={s.summaryRow}>
           <ThemedText style={[s.summarySpent, { color: accentColor }]}>
             {formatCurrency(PRIZE_PAID)} paid ({paidPct}%)
@@ -229,7 +229,7 @@ function PrizeView({ colors, accentColor }: { colors: typeof Colors.light; accen
             {formatCurrency(PRIZE_TOTAL - PRIZE_PAID)} remaining
           </ThemedText>
         </View>
-        <ProgressBar pct={paidPct} color="#FFD700" bgColor={colors.border} />
+        <ProgressBar pct={paidPct} color="#1D9BF0" bgColor={colors.border} />
       </View>
 
       {/* Per Race Prizes */}
@@ -246,7 +246,7 @@ function PrizeView({ colors, accentColor }: { colors: typeof Colors.light; accen
             <ThemedText style={[s.prizePosition, { color: idx < 3 ? colors.text : colors.textSecondary }]}>
               {prize.position}
             </ThemedText>
-            <ThemedText style={[s.prizeAmount, { color: idx === 0 ? '#FFD700' : idx < 3 ? accentColor : colors.textSecondary }]}>
+            <ThemedText style={[s.prizeAmount, { color: idx === 0 ? '#1D9BF0' : idx < 3 ? accentColor : colors.textSecondary }]}>
               {prize.amount}
             </ThemedText>
           </View>
@@ -265,10 +265,10 @@ function PrizeView({ colors, accentColor }: { colors: typeof Colors.light; accen
             ]}
           >
             <View style={s.prizeRowLeft}>
-              <IconSymbol name="crown.fill" size={14} color="#FFD700" />
+              <IconSymbol name="crown.fill" size={14} color="#1D9BF0" />
               <ThemedText style={[s.prizeTitle, { color: colors.text }]}>{prize.title}</ThemedText>
             </View>
-            <ThemedText style={[s.prizeAmount, { color: '#FFD700' }]}>{prize.amount}</ThemedText>
+            <ThemedText style={[s.prizeAmount, { color: '#1D9BF0' }]}>{prize.amount}</ThemedText>
           </View>
         ))}
       </View>
@@ -327,7 +327,7 @@ export function CompFinance({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >

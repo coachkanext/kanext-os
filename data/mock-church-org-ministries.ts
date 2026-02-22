@@ -70,9 +70,9 @@ export const MINISTRY_STATUS_LABELS: Record<MinistryStatus, string> = {
 
 export const MINISTRY_STATUS_COLORS: Record<MinistryStatus, string> = {
   active: '#22C55E',
-  growing: '#3B82F6',
+  growing: '#1D9BF0',
   needs_attention: '#F59E0B',
-  on_hold: '#6B7280',
+  on_hold: '#A1A1AA',
 };
 
 export const SEAT_STATUS_LABELS: Record<SeatStatus, string> = {

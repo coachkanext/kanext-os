@@ -64,8 +64,8 @@ interface UniversalEventSheetProps {
 function getStatusColor(status: 'upcoming' | 'live' | 'completed'): string {
   switch (status) {
     case 'live': return '#22C55E';
-    case 'completed': return '#8F8F8F';
-    case 'upcoming': return '#6AA9FF';
+    case 'completed': return '#A1A1AA';
+    case 'upcoming': return '#1D9BF0';
   }
 }
 
@@ -95,9 +95,9 @@ function getSessionStatusColor(status: SessionStatus): string {
     case 'live': return '#22C55E';
     case 'delayed': return '#F59E0B';
     case 'red_flag': return '#EF4444';
-    case 'complete': return '#8F8F8F';
-    case 'scheduled': return '#6AA9FF';
-    default: return '#8F8F8F';
+    case 'complete': return '#A1A1AA';
+    case 'scheduled': return '#1D9BF0';
+    default: return '#A1A1AA';
   }
 }
 
@@ -114,12 +114,12 @@ function getSessionStatusLabel(status: SessionStatus): string {
 
 function getIncidentStatusColor(status: IncidentStatus): string {
   switch (status) {
-    case 'new': return '#6AA9FF';
+    case 'new': return '#1D9BF0';
     case 'assigned': return '#F59E0B';
     case 'under_review': return '#F59E0B';
     case 'decided': return '#22C55E';
-    case 'closed': return '#8F8F8F';
-    default: return '#8F8F8F';
+    case 'closed': return '#A1A1AA';
+    default: return '#A1A1AA';
   }
 }
 
@@ -128,8 +128,8 @@ function getPayoutStatusColor(status: PayoutStatus): string {
     case 'released': return '#22C55E';
     case 'hold': return '#EF4444';
     case 'pending': return '#F59E0B';
-    case 'locked': return '#8F8F8F';
-    default: return '#8F8F8F';
+    case 'locked': return '#A1A1AA';
+    default: return '#A1A1AA';
   }
 }
 
@@ -138,8 +138,8 @@ function getDeliverableStatusColor(status: DeliverableStatus): string {
     case 'on_track': return '#22C55E';
     case 'at_risk': return '#F59E0B';
     case 'overdue': return '#EF4444';
-    case 'delivered': return '#8F8F8F';
-    default: return '#8F8F8F';
+    case 'delivered': return '#A1A1AA';
+    default: return '#A1A1AA';
   }
 }
 
@@ -185,17 +185,17 @@ const LIVE_CONTROL_ITEMS = [
 
 const MOCK_RESULTS = [
   { entrantId: 'ent-1', name: 'Apex Racing #1', session: 'Qualifying', position: 1, gap: 'POLE', teamColor: '#EF4444' },
-  { entrantId: 'ent-3', name: 'Velocity Works #3', session: 'Qualifying', position: 2, gap: '+0.234s', teamColor: '#3B82F6' },
+  { entrantId: 'ent-3', name: 'Velocity Works #3', session: 'Qualifying', position: 2, gap: '+0.234s', teamColor: '#1D9BF0' },
   { entrantId: 'ent-5', name: 'Phoenix Motorsport #5', session: 'Qualifying', position: 3, gap: '+0.512s', teamColor: '#F59E0B' },
   { entrantId: 'ent-6', name: 'Zenith Racing #6', session: 'Qualifying', position: 4, gap: '+0.718s', teamColor: '#22C55E' },
   { entrantId: 'ent-2', name: 'Apex Racing #2', session: 'Qualifying', position: 5, gap: '+0.892s', teamColor: '#EF4444' },
-  { entrantId: 'ent-7', name: 'Shadow GP #7', session: 'Qualifying', position: 6, gap: '+1.103s', teamColor: '#7C3AED' },
-  { entrantId: 'ent-4', name: 'Velocity Works #4', session: 'Qualifying', position: 7, gap: '+1.324s', teamColor: '#3B82F6' },
-  { entrantId: 'ent-9', name: 'Titan Racing #9', session: 'Qualifying', position: 8, gap: '+1.567s', teamColor: '#EC4899' },
-  { entrantId: 'ent-10', name: 'Nova Speed #10', session: 'Qualifying', position: 9, gap: '+1.801s', teamColor: '#06B6D4' },
-  { entrantId: 'ent-8', name: 'Shadow GP #8', session: 'Qualifying', position: 10, gap: '+2.045s', teamColor: '#7C3AED' },
-  { entrantId: 'ent-11', name: 'Iron Circuit #11', session: 'Qualifying', position: 11, gap: '+2.312s', teamColor: '#6B7280' },
-  { entrantId: 'ent-12', name: 'Iron Circuit #12', session: 'Qualifying', position: 12, gap: '+2.798s', teamColor: '#6B7280' },
+  { entrantId: 'ent-7', name: 'Shadow GP #7', session: 'Qualifying', position: 6, gap: '+1.103s', teamColor: '#1D9BF0' },
+  { entrantId: 'ent-4', name: 'Velocity Works #4', session: 'Qualifying', position: 7, gap: '+1.324s', teamColor: '#1D9BF0' },
+  { entrantId: 'ent-9', name: 'Titan Racing #9', session: 'Qualifying', position: 8, gap: '+1.567s', teamColor: '#1D9BF0' },
+  { entrantId: 'ent-10', name: 'Nova Speed #10', session: 'Qualifying', position: 9, gap: '+1.801s', teamColor: '#1D9BF0' },
+  { entrantId: 'ent-8', name: 'Shadow GP #8', session: 'Qualifying', position: 10, gap: '+2.045s', teamColor: '#1D9BF0' },
+  { entrantId: 'ent-11', name: 'Iron Circuit #11', session: 'Qualifying', position: 11, gap: '+2.312s', teamColor: '#A1A1AA' },
+  { entrantId: 'ent-12', name: 'Iron Circuit #12', session: 'Qualifying', position: 12, gap: '+2.798s', teamColor: '#A1A1AA' },
 ];
 
 // =============================================================================

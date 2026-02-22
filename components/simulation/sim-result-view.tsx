@@ -36,7 +36,7 @@ function getImpactIcon(impact: 'positive' | 'neutral' | 'negative'): string {
 function getImpactColor(impact: 'positive' | 'neutral' | 'negative'): string {
   if (impact === 'positive') return Brand.success;
   if (impact === 'negative') return Brand.error;
-  return '#8F8F8F';
+  return '#A1A1AA';
 }
 
 // ---------------------------------------------------------------------------
@@ -186,15 +186,15 @@ function KeyDrivers({ drivers, colors }: { drivers: string[]; colors: typeof Col
 function SimTypeBadge({ simType, colors }: { simType: string; colors: typeof Colors.light }) {
   // Map type to display name + color
   const typeMap: Record<string, { label: string; color: string }> = {
-    game: { label: 'Game Sim', color: '#6AA9FF' },
-    segment: { label: 'Segment', color: '#7A5CFF' },
+    game: { label: 'Game Sim', color: '#1D9BF0' },
+    segment: { label: 'Segment', color: '#1D9BF0' },
     'end-game': { label: 'End-Game', color: '#EF4444' },
     'system-sweep': { label: 'System Sweep', color: '#F59E0B' },
     'lineup-sandbox': { label: 'Lineup Sandbox', color: '#22C55E' },
     season: { label: 'Season', color: '#FFFFFF' },
-    'conference-postseason': { label: 'Conf / Postseason', color: '#06B6D4' },
-    'counterfactual-roster': { label: 'Counterfactual', color: '#C2185B' },
-    'practice-transfer': { label: 'Practice Transfer', color: '#8B5CF6' },
+    'conference-postseason': { label: 'Conf / Postseason', color: '#1D9BF0' },
+    'counterfactual-roster': { label: 'Counterfactual', color: '#1D9BF0' },
+    'practice-transfer': { label: 'Practice Transfer', color: '#1D9BF0' },
   };
 
   const info = typeMap[simType] ?? { label: simType, color: ACCENT };

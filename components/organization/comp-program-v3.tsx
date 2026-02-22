@@ -45,7 +45,7 @@ const RACE_CARDS: { id: string; round: string; venue: string; status: RaceStatus
 const RACE_STATUS_COLOR: Record<RaceStatus, string> = {
   completed: '#22C55E',
   next: '#F59E0B',
-  upcoming: '#6B7280',
+  upcoming: '#A1A1AA',
 };
 
 const RACE_STATUS_LABEL: Record<RaceStatus, string> = {
@@ -86,7 +86,7 @@ const OPS_TASKS: { id: string; title: string; status: TaskStatus; detail: string
 const TASK_STATUS_COLOR: Record<TaskStatus, string> = {
   due_soon: '#F59E0B',
   overdue: '#EF4444',
-  in_progress: '#6AA9FF',
+  in_progress: '#1D9BF0',
   upcoming: '#22C55E',
   pending: '#F59E0B',
 };
@@ -307,7 +307,7 @@ function SeasonView({ colors, accentColor }: { colors: typeof Colors.light; acce
           </View>
           {race.winner && (
             <View style={s.raceWinnerRow}>
-              <IconSymbol name="crown.fill" size={12} color="#FFD700" />
+              <IconSymbol name="crown.fill" size={12} color="#1D9BF0" />
               <ThemedText style={[s.raceWinner, { color: colors.textSecondary }]}>
                 Winner: {race.winner}
               </ThemedText>
@@ -396,7 +396,7 @@ function OperationsView({ colors, accentColor }: { colors: typeof Colors.light; 
           <ThemedText style={[s.shipRoute, { color: colors.textSecondary }]}>
             {ship.origin} → {ship.dest}
           </ThemedText>
-          <StatusBadge label={ship.status.toUpperCase()} color="#6AA9FF" />
+          <StatusBadge label={ship.status.toUpperCase()} color="#1D9BF0" />
         </View>
       ))}
 
@@ -459,7 +459,7 @@ export function CompProgram({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >
@@ -573,7 +573,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   detailLabel: {
     fontSize: 13,

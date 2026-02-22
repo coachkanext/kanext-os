@@ -107,10 +107,10 @@ const VISITORS: Visitor[] = [
 
 const STATUS_COLORS: Record<string, string> = {
   Member: '#22C55E',
-  'Regular Attendee': '#6AA9FF',
-  Volunteer: '#A78BFA',
+  'Regular Attendee': '#1D9BF0',
+  Volunteer: '#1D9BF0',
   Leader: '#F59E0B',
-  Contacted: '#6AA9FF',
+  Contacted: '#1D9BF0',
   'Needs Follow-up': '#EF4444',
   Connected: '#22C55E',
 };
@@ -148,7 +148,7 @@ function ViewBar({
             style={[
               s.viewPill,
               {
-                backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)',
+                backgroundColor: isActive ? accentColor : '#2F3336',
               },
             ]}
             onPress={() => {
@@ -206,7 +206,7 @@ function LeadershipView({ colors, accentColor }: { colors: typeof Colors.light; 
           {leader.ministries.length > 0 && (
             <View style={s.ministriesRow}>
               {leader.ministries.map((m) => (
-                <View key={m} style={[s.ministryChip, { backgroundColor: 'rgba(255,255,255,0.06)' }]}>
+                <View key={m} style={[s.ministryChip, { backgroundColor: '#2F3336' }]}>
                   <ThemedText style={[s.ministryChipText, { color: colors.textSecondary }]}>{m}</ThemedText>
                 </View>
               ))}
@@ -248,7 +248,7 @@ function MembersView({ colors, accentColor }: { colors: typeof Colors.light; acc
               style={[
                 s.filterPill,
                 {
-                  backgroundColor: isActive ? accentColor + '20' : 'rgba(255,255,255,0.06)',
+                  backgroundColor: isActive ? accentColor + '20' : '#2F3336',
                   borderColor: isActive ? accentColor + '40' : colors.border,
                 },
               ]}
@@ -609,7 +609,7 @@ const s = StyleSheet.create({
     marginTop: Spacing.sm,
     paddingTop: Spacing.sm,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
   },
   pipelineStage: {
     flex: 1,

@@ -21,17 +21,17 @@ const CATEGORY_FILTERS: { key: 'all' | MinistryCategory; label: string }[] = [
 ];
 
 const CATEGORY_BADGE_COLORS: Record<MinistryCategory, string> = {
-  worship: '#A855F7',
-  youth: '#F97316',
-  fellowship: '#3B82F6',
-  outreach: '#14B8A6',
-  service: '#6366F1',
+  worship: '#1D9BF0',
+  youth: '#F59E0B',
+  fellowship: '#1D9BF0',
+  outreach: '#1D9BF0',
+  service: '#1D9BF0',
 };
 
 const STATUS_COLORS: Record<Ministry['status'], string> = {
   active: '#22C55E',
   seasonal: '#F59E0B',
-  launching: '#3B82F6',
+  launching: '#1D9BF0',
 };
 
 interface Props {
@@ -93,8 +93,8 @@ export function ChurchMinistriesActiveView({ colors, accent }: Props) {
               </ThemedText>
               <View style={styles.badgeRow}>
                 {/* Category Badge */}
-                <View style={[styles.categoryBadge, { backgroundColor: (CATEGORY_BADGE_COLORS[m.category] ?? '#8F8F8F') + '22' }]}>
-                  <ThemedText style={[styles.categoryBadgeText, { color: CATEGORY_BADGE_COLORS[m.category] ?? '#8F8F8F' }]}>
+                <View style={[styles.categoryBadge, { backgroundColor: (CATEGORY_BADGE_COLORS[m.category] ?? '#A1A1AA') + '22' }]}>
+                  <ThemedText style={[styles.categoryBadgeText, { color: CATEGORY_BADGE_COLORS[m.category] ?? '#A1A1AA' }]}>
                     {MINISTRY_CATEGORY_LABELS[m.category]}
                   </ThemedText>
                 </View>

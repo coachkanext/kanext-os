@@ -78,7 +78,7 @@ const TRIPS = [
 const TASK_STATUS_COLOR: Record<TaskStatus, string> = {
   due_tomorrow: '#F59E0B',
   overdue: '#EF4444',
-  in_progress: '#6AA9FF',
+  in_progress: '#1D9BF0',
   upcoming: '#22C55E',
 };
 
@@ -131,17 +131,17 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
       <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>PROGRAM COLORS</ThemedText>
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.colorRow}>
-          <View style={[s.colorSwatch, { backgroundColor: '#003DA5' }]} />
+          <View style={[s.colorSwatch, { backgroundColor: '#1D9BF0' }]} />
           <View style={s.colorInfo}>
             <ThemedText style={[s.colorName, { color: colors.text }]}>Royal Blue</ThemedText>
-            <ThemedText style={[s.colorHex, { color: colors.textSecondary }]}>#003DA5</ThemedText>
+            <ThemedText style={[s.colorHex, { color: colors.textSecondary }]}>#1D9BF0</ThemedText>
           </View>
         </View>
         <View style={[s.colorRow, { marginTop: 10 }]}>
-          <View style={[s.colorSwatch, { backgroundColor: '#FFD200' }]} />
+          <View style={[s.colorSwatch, { backgroundColor: '#F59E0B' }]} />
           <View style={s.colorInfo}>
             <ThemedText style={[s.colorName, { color: colors.text }]}>Gold</ThemedText>
-            <ThemedText style={[s.colorHex, { color: colors.textSecondary }]}>#FFD200</ThemedText>
+            <ThemedText style={[s.colorHex, { color: colors.textSecondary }]}>#F59E0B</ThemedText>
           </View>
         </View>
       </View>
@@ -338,7 +338,7 @@ export function SportsProgram({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >
@@ -404,8 +404,8 @@ const s = StyleSheet.create({
 
   // -- Card --
   card: {
-    backgroundColor: '#181616',
-    borderColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#0B0F14',
+    borderColor: '#2F3336',
     borderWidth: 1,
     borderRadius: 12,
     padding: 14,
@@ -457,7 +457,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   detailLabel: {
     fontSize: 13,

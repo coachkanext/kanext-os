@@ -48,9 +48,9 @@ interface Props {
 
 const STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
-  inactive: '#8F8F8F',
+  inactive: '#A1A1AA',
   pending: '#F59E0B',
-  away: '#3B82F6',
+  away: '#1D9BF0',
 };
 
 const STATUS_LABELS: Record<string, string> = {

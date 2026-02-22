@@ -96,7 +96,7 @@ function getComplianceColor(status: string): string {
     case 'clear': return '#22C55E';
     case 'pending': return '#F59E0B';
     case 'violation': return '#EF4444';
-    default: return '#8F8F8F';
+    default: return '#A1A1AA';
   }
 }
 
@@ -405,7 +405,7 @@ export function TeamSheet({
                 p.meta?.status === 'available' ? '#22C55E' :
                 p.meta?.status === 'injured' ? '#EF4444' :
                 p.meta?.status === 'out' ? '#EF4444' :
-                p.meta?.status === 'redshirt' ? '#6AA9FF' : '#8F8F8F';
+                p.meta?.status === 'redshirt' ? '#1D9BF0' : '#A1A1AA';
               return (
                 <View key={p.jersey} style={[styles.rosterRow, { borderTopColor: colors.divider }]}>
                   <Text style={[styles.rosterCol, { color: colors.textSecondary }]}>{p.jersey}</Text>
@@ -1132,7 +1132,7 @@ const styles = StyleSheet.create({
   budgetBar: {
     flex: 1,
     height: 6,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 3,
     overflow: 'hidden',
   },

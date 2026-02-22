@@ -97,11 +97,11 @@ function OverviewTab({
 
   const kpis = [
     { id: 'raised', label: 'Total Raised', value: formatCurrency(stats.totalRaised), icon: 'dollarsign.circle.fill', color: '#22C55E' },
-    { id: 'goal', label: 'Goal Amount', value: formatCurrency(stats.goalAmount), icon: 'flag.fill', color: '#3B82F6' },
-    { id: 'donors', label: 'Total Donors', value: `${stats.donorCount}`, icon: 'person.2.fill', color: '#8B5CF6' },
+    { id: 'goal', label: 'Goal Amount', value: formatCurrency(stats.goalAmount), icon: 'flag.fill', color: '#1D9BF0' },
+    { id: 'donors', label: 'Total Donors', value: `${stats.donorCount}`, icon: 'person.2.fill', color: '#1D9BF0' },
     { id: 'new', label: 'New Donors', value: `${stats.newDonors}`, icon: 'person.badge.plus', color: '#F59E0B' },
-    { id: 'endowment', label: 'Endowment', value: formatCurrency(stats.endowmentTotal), icon: 'building.columns.fill', color: '#14B8A6' },
-    { id: 'annual', label: 'Annual Fund', value: formatCurrency(stats.annualFundTotal), icon: 'chart.bar.fill', color: '#EC4899' },
+    { id: 'endowment', label: 'Endowment', value: formatCurrency(stats.endowmentTotal), icon: 'building.columns.fill', color: '#1D9BF0' },
+    { id: 'annual', label: 'Annual Fund', value: formatCurrency(stats.annualFundTotal), icon: 'chart.bar.fill', color: '#1D9BF0' },
   ];
 
   return (
@@ -166,7 +166,7 @@ function OverviewTab({
             </ThemedText>
           </View>
           <View style={s.retentionSummaryItem}>
-            <ThemedText style={[s.retentionSummaryValue, { color: '#3B82F6' }]}>
+            <ThemedText style={[s.retentionSummaryValue, { color: '#1D9BF0' }]}>
               {stats.donorCount}
             </ThemedText>
             <ThemedText style={[s.retentionSummaryLabel, { color: colors.textTertiary }]}>
@@ -479,16 +479,16 @@ function RetentionTab({
   }
 
   const tierRetention = [
-    { tier: 'Platinum', rate: retentionMetrics.platinumRetention, color: '#E5E4E2' },
-    { tier: 'Gold', rate: retentionMetrics.goldRetention, color: '#EAB308' },
-    { tier: 'Silver', rate: retentionMetrics.silverRetention, color: '#9CA3AF' },
-    { tier: 'Bronze', rate: retentionMetrics.bronzeRetention, color: '#CD7F32' },
+    { tier: 'Platinum', rate: retentionMetrics.platinumRetention, color: '#A1A1AA' },
+    { tier: 'Gold', rate: retentionMetrics.goldRetention, color: '#F59E0B' },
+    { tier: 'Silver', rate: retentionMetrics.silverRetention, color: '#A1A1AA' },
+    { tier: 'Bronze', rate: retentionMetrics.bronzeRetention, color: '#1D9BF0' },
   ];
 
   const channelRetention = [
     { channel: 'Alumni', rate: retentionMetrics.alumniRetention, color: '#F59E0B' },
-    { channel: 'Corporate', rate: retentionMetrics.corporateRetention, color: '#8B5CF6' },
-    { channel: 'First-Time', rate: retentionMetrics.firstTimeRetention, color: '#3B82F6' },
+    { channel: 'Corporate', rate: retentionMetrics.corporateRetention, color: '#1D9BF0' },
+    { channel: 'First-Time', rate: retentionMetrics.firstTimeRetention, color: '#1D9BF0' },
   ];
 
   return (
@@ -522,7 +522,7 @@ function RetentionTab({
             </ThemedText>
           </View>
           <View style={s.overallRetentionItem}>
-            <ThemedText style={[s.overallRetentionValue, { color: '#3B82F6' }]}>
+            <ThemedText style={[s.overallRetentionValue, { color: '#1D9BF0' }]}>
               +{retentionMetrics.avgGiftGrowth}%
             </ThemedText>
             <ThemedText style={[s.overallRetentionLabel, { color: colors.textTertiary }]}>
@@ -1274,7 +1274,7 @@ const s = StyleSheet.create({
     flex: 1,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#A1A1AA',
     overflow: 'hidden',
   },
   progressBarFill: {
@@ -1532,7 +1532,7 @@ const s = StyleSheet.create({
   campaignProgressBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#A1A1AA',
     marginBottom: 4,
     overflow: 'hidden',
   },
@@ -1606,7 +1606,7 @@ const s = StyleSheet.create({
     flex: 1,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#A1A1AA',
     overflow: 'hidden',
   },
   retentionTierBarFill: {
@@ -1645,7 +1645,7 @@ const s = StyleSheet.create({
   trendBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#A1A1AA',
     overflow: 'hidden',
   },
   trendBarFill: {

@@ -125,11 +125,11 @@ export const WALLET_TYPE_LABELS: Record<WalletType, string> = {
 };
 
 export const WALLET_TYPE_COLORS: Record<WalletType, string> = {
-  checking: '#3B82F6',
+  checking: '#1D9BF0',
   savings: '#22C55E',
-  operating: '#8B5CF6',
+  operating: '#1D9BF0',
   reserve: '#F59E0B',
-  escrow: '#EC4899',
+  escrow: '#1D9BF0',
 };
 
 export const WALLET_STATUS_COLORS: Record<WalletStatus, string> = {
@@ -182,7 +182,7 @@ export interface RailsApproval {
 export const URGENCY_COLORS: Record<ApprovalUrgency, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  normal: '#3B82F6',
+  normal: '#1D9BF0',
 };
 
 export const URGENCY_LABELS: Record<ApprovalUrgency, string> = {
@@ -229,7 +229,7 @@ export interface RailsException {
 export const EXCEPTION_TYPE_COLORS: Record<ExceptionType, string> = {
   failed: '#EF4444',
   disputed: '#F59E0B',
-  returned: '#F97316',
+  returned: '#F59E0B',
 };
 
 export const EXCEPTION_TYPE_LABELS: Record<ExceptionType, string> = {
@@ -267,7 +267,7 @@ export const DISPUTE_STATUS_COLORS: Record<DisputeStatus, string> = {
   open: '#EF4444',
   investigating: '#F59E0B',
   resolved: '#22C55E',
-  closed: '#6B7280',
+  closed: '#A1A1AA',
 };
 
 export const DISPUTE_STATUS_LABELS: Record<DisputeStatus, string> = {
@@ -292,10 +292,10 @@ export interface RailsAdminConfig {
 }
 
 export const ADMIN_CATEGORY_COLORS: Record<AdminConfigCategory, string> = {
-  provider: '#8B5CF6',
-  webhook: '#3B82F6',
+  provider: '#1D9BF0',
+  webhook: '#1D9BF0',
   limit: '#F59E0B',
-  general: '#6B7280',
+  general: '#A1A1AA',
 };
 
 export const ADMIN_CATEGORY_LABELS: Record<AdminConfigCategory, string> = {
@@ -911,7 +911,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     label: 'In-Flight Total',
     value: '$70,000',
     icon: 'paperplane.fill',
-    color: '#0EA5E9',
+    color: '#1D9BF0',
     delta: '2 batches',
     impactTag: 'Blocks Vendor',
   },
@@ -946,7 +946,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     label: 'Total Wallet Balance',
     value: '$10.48M',
     icon: 'banknote.fill',
-    color: '#8B5CF6',
+    color: '#1D9BF0',
     delta: '6 wallets',
   },
   {
@@ -954,7 +954,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     label: 'Awaiting Release',
     value: '$2.77M',
     icon: 'arrow.up.circle.fill',
-    color: '#6366F1',
+    color: '#1D9BF0',
     delta: '3 batches',
     impactTag: 'Blocks Vendor',
   },
@@ -1012,11 +1012,11 @@ export const RECEIPT_TYPE_LABELS: Record<BizReceipt['type'], string> = {
 
 export const RECEIPT_TYPE_COLORS: Record<BizReceipt['type'], string> = {
   approval: '#22C55E',
-  release: '#14B8A6',
+  release: '#1D9BF0',
   decision: '#F59E0B',
-  signature: '#8B5CF6',
-  transfer: '#0EA5E9',
-  creation: '#3B82F6',
-  amendment: '#F97316',
-  compliance: '#6366F1',
+  signature: '#1D9BF0',
+  transfer: '#1D9BF0',
+  creation: '#1D9BF0',
+  amendment: '#F59E0B',
+  compliance: '#1D9BF0',
 };

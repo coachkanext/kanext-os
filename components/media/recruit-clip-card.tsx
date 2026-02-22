@@ -55,7 +55,7 @@ export function RecruitClipCard({ clip }: RecruitClipCardProps) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           }}
         >
-          <IconSymbol name="play.fill" size={12} color="#6e6e6e" />
+          <IconSymbol name="play.fill" size={12} color="#A1A1AA" />
           <ThemedText style={styles.actionLabel}>Watch</ThemedText>
         </Pressable>
         <Pressable
@@ -65,7 +65,7 @@ export function RecruitClipCard({ clip }: RecruitClipCardProps) {
             router.push(`/coach/player-detail?id=${clip.recruitId}` as any);
           }}
         >
-          <IconSymbol name="person.fill" size={12} color="#6e6e6e" />
+          <IconSymbol name="person.fill" size={12} color="#A1A1AA" />
           <ThemedText style={styles.actionLabel}>Profile</ThemedText>
         </Pressable>
         <Pressable
@@ -75,7 +75,7 @@ export function RecruitClipCard({ clip }: RecruitClipCardProps) {
             Alert.alert('Saved', `${clip.recruitName} saved to board`);
           }}
         >
-          <IconSymbol name="bookmark.fill" size={12} color="#6e6e6e" />
+          <IconSymbol name="bookmark.fill" size={12} color="#A1A1AA" />
           <ThemedText style={styles.actionLabel}>Save</ThemedText>
         </Pressable>
         <Pressable
@@ -85,7 +85,7 @@ export function RecruitClipCard({ clip }: RecruitClipCardProps) {
             Alert.alert('Coming Soon', 'Thread messaging coming soon');
           }}
         >
-          <IconSymbol name="bubble.left.fill" size={12} color="#6e6e6e" />
+          <IconSymbol name="bubble.left.fill" size={12} color="#A1A1AA" />
           <ThemedText style={styles.actionLabel}>Thread</ThemedText>
         </Pressable>
       </View>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm + 2,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
     gap: 10,
   },
   thumb: {
@@ -140,18 +140,18 @@ const styles = StyleSheet.create({
   recruitName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   meta: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: 2,
   },
   kr: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   clipTitle: {
@@ -175,6 +175,6 @@ const styles = StyleSheet.create({
   actionLabel: {
     fontSize: 10,
     fontWeight: '500',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
 });

@@ -63,7 +63,7 @@ export default function TeamChannelScreen() {
             router.back();
           }}
         >
-          <IconSymbol name="chevron.left" size={20} color="#f5f5f5" />
+          <IconSymbol name="chevron.left" size={20} color="#FFFFFF" />
         </Pressable>
         <View style={styles.headerInfo}>
           <View style={styles.teamLogo}>
@@ -90,7 +90,7 @@ export default function TeamChannelScreen() {
               }}
             >
               <ThemedText
-                style={[styles.tabLabel, { color: isActive ? '#f5f5f5' : '#6e6e6e' }]}
+                style={[styles.tabLabel, { color: isActive ? '#FFFFFF' : '#A1A1AA' }]}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </ThemedText>
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#1a472a',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -179,18 +179,18 @@ const styles = StyleSheet.create({
   teamName: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   teamSub: {
     fontSize: 13,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
 
   // Tabs
   tabBar: {
     flexDirection: 'row',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
     marginBottom: Spacing.sm,
   },
   tabItem: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   tabItemActive: {
     borderBottomWidth: 2,
-    borderBottomColor: '#f5f5f5',
+    borderBottomColor: '#FFFFFF',
   },
   tabLabel: {
     fontSize: 14,
@@ -222,12 +222,12 @@ const styles = StyleSheet.create({
   aboutTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: Spacing.sm,
   },
   aboutText: {
     fontSize: 14,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     lineHeight: 22,
   },
 });

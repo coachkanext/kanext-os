@@ -1084,7 +1084,7 @@ const s = StyleSheet.create({
   emptyText: { fontSize: 14, marginTop: Spacing.sm, textAlign: 'center' },
   badge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: BorderRadius.full },
   badgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
-  progressTrack: { height: 4, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
+  progressTrack: { height: 4, backgroundColor: '#2F3336', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
   progressFill: { height: 4, borderRadius: 2 },
   kpiCard: { borderRadius: BorderRadius.lg, borderWidth: 1, padding: Spacing.md, marginBottom: Spacing.md },
   kpiCardTitle: { fontSize: 15, fontWeight: '700', marginBottom: Spacing.md },

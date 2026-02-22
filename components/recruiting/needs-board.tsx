@@ -24,11 +24,11 @@ import { getLastTouch, computeMomentum, getMomentumLabel, getMomentumColor } fro
 import { getRecruitComms } from '@/data/mock-comms';
 import { TARGET_DEPTH, type PositionNeed } from '@/data/team-needs';
 
-const BG = '#0F1115';
-const CARD_BG = '#1A1D23';
+const BG = '#0B0F14';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
 export function NeedsBoard({
   entries,
@@ -196,7 +196,7 @@ function NeedsBoardRow({
       </View>
 
       {/* KR */}
-      <Text style={[styles.rowKR, { color: kr >= 75 ? '#4CAF50' : kr >= 60 ? '#FF9800' : GRAY }]}>
+      <Text style={[styles.rowKR, { color: kr >= 75 ? '#22C55E' : kr >= 60 ? '#F59E0B' : GRAY }]}>
         {kr}
       </Text>
 
@@ -273,21 +273,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   needBadge: {
-    backgroundColor: '#FF980020',
+    backgroundColor: '#F59E0B20',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
   },
   needBadgeSatisfied: {
-    backgroundColor: '#4CAF5020',
+    backgroundColor: '#22C55E20',
   },
   needBadgeText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#FF9800',
+    color: '#F59E0B',
   },
   needBadgeTextSatisfied: {
-    color: '#4CAF50',
+    color: '#22C55E',
   },
   tierSection: {
     marginLeft: 12,
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   tagChip: {
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderRadius: 4,

@@ -139,8 +139,8 @@ export function ProgramOverview() {
       <SectionLabel text="TODAY / NEXT" colors={colors} />
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.todayRow}>
-          <View style={[styles.todayIcon, { backgroundColor: '#6AA9FF' + '20' }]}>
-            <IconSymbol name="calendar" size={16} color="#6AA9FF" />
+          <View style={[styles.todayIcon, { backgroundColor: '#1D9BF0' + '20' }]}>
+            <IconSymbol name="calendar" size={16} color="#1D9BF0" />
           </View>
           <View style={styles.todayInfo}>
             <ThemedText style={styles.todayLabel}>Next Event</ThemedText>
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#1B4F8A',
+    backgroundColor: '#1D9BF0',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: 0.3,
-    color: '#8F8F8F',
+    color: '#A1A1AA',
   },
   todayValue: {
     fontSize: 14,
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
   barTrack: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     overflow: 'hidden',
   },
   barFill: {

@@ -30,7 +30,7 @@ export function ReelCard({ reel, onPress, variant = 'horizontal' }: ReelCardProp
       <Pressable
         style={({ pressed }) => [
           styles.gridCard,
-          { backgroundColor: pressed ? '#191919' : '#111' },
+          { backgroundColor: pressed ? '#0B0F14' : '#111' },
         ]}
         onPress={handlePress}
       >
@@ -54,7 +54,7 @@ export function ReelCard({ reel, onPress, variant = 'horizontal' }: ReelCardProp
     <Pressable
       style={({ pressed }) => [
         styles.card,
-        { backgroundColor: pressed ? '#191919' : '#111' },
+        { backgroundColor: pressed ? '#0B0F14' : '#111' },
       ]}
       onPress={handlePress}
     >
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   caption: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   tagRow: {
@@ -147,14 +147,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   tag: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
   },
   tagText: {
     fontSize: 10,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     fontWeight: '500',
   },
   statsRow: {
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   gridCaption: {
     fontSize: 11,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     paddingHorizontal: 6,
     paddingTop: 6,
     lineHeight: 15,
@@ -197,6 +197,6 @@ const styles = StyleSheet.create({
   },
   gridLikes: {
     fontSize: 10,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
 });

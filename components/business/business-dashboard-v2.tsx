@@ -248,10 +248,10 @@ const ALERT_SEVERITY_COLOR: Record<AlertSeverity, string> = {
   approval: '#F59E0B',
   due_24h: '#F59E0B',
   rails_exception: '#EF4444',
-  compliance: '#3B82F6',
-  investor_risk: '#8B5CF6',
-  partner_risk: '#F97316',
-  people_risk: '#EC4899',
+  compliance: '#1D9BF0',
+  investor_risk: '#1D9BF0',
+  partner_risk: '#F59E0B',
+  people_risk: '#1D9BF0',
 };
 
 // --- Block 4: Quick Actions ---
@@ -430,7 +430,7 @@ function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: B
       <Pressable
         style={({ pressed }) => [
           s.heroCard,
-          { backgroundColor: '#1a1a2e', opacity: pressed ? 0.9 : 1 },
+          { backgroundColor: '#0B0F14', opacity: pressed ? 0.9 : 1 },
         ]}
         onPress={handlePress}
       >

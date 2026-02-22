@@ -36,7 +36,7 @@ export function AlertRow({ alert, onCta, onPress }: AlertRowProps) {
     <Pressable
       style={({ pressed }) => [
         styles.row,
-        { backgroundColor: pressed ? '#191919' : 'transparent' },
+        { backgroundColor: pressed ? '#0B0F14' : 'transparent' },
         alert.resolved && styles.resolved,
       ]}
       onPress={handlePress}
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
   },
   resolved: {
     opacity: 0.5,
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 15,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   metaRow: {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sourceTag: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: BorderRadius.sm,
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   sourceText: {
     fontSize: 11,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     fontWeight: '500',
   },
   assignedText: {
@@ -130,10 +130,10 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   ctaPill: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: BorderRadius.full,
@@ -141,6 +141,6 @@ const styles = StyleSheet.create({
   ctaText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 });

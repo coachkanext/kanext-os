@@ -238,11 +238,11 @@ function OverviewTab({
   // Health tiles
   const healthTiles: { label: string; value: number; color: string; icon: string }[] = [
     { label: 'Critical WOs', value: posture.criticalWorkOrders, color: '#EF4444', icon: 'exclamationmark.triangle.fill' },
-    { label: 'Inspections Due', value: posture.inspectionsDue, color: '#6AA9FF', icon: 'checkmark.shield.fill' },
-    { label: 'Areas Down', value: posture.areasDown, color: '#DC2626', icon: 'nosign' },
+    { label: 'Inspections Due', value: posture.inspectionsDue, color: '#1D9BF0', icon: 'checkmark.shield.fill' },
+    { label: 'Areas Down', value: posture.areasDown, color: '#EF4444', icon: 'nosign' },
     { label: 'Buildings', value: data.buildings.length, color: '#22C55E', icon: 'building.2.fill' },
     { label: 'Open WOs', value: data.workOrders.filter((w) => w.status !== 'complete' && w.status !== 'closed').length, color: '#F59E0B', icon: 'wrench.and.screwdriver.fill' },
-    { label: 'Vendors', value: data.vendors.length, color: '#A78BFA', icon: 'person.2.fill' },
+    { label: 'Vendors', value: data.vendors.length, color: '#1D9BF0', icon: 'person.2.fill' },
   ];
 
   // Today's Impact
@@ -1080,7 +1080,7 @@ function SafetyAccessTab({
 
       {safetyZones.map((zone) => {
         const buildingName = getBuildingName(zone.buildingId, buildings);
-        const typeColor = zone.type === 'hazmat' ? '#EF4444' : zone.type === 'secured' ? '#A78BFA' : '#F59E0B';
+        const typeColor = zone.type === 'hazmat' ? '#EF4444' : zone.type === 'secured' ? '#1D9BF0' : '#F59E0B';
         return (
           <View
             key={zone.id}
@@ -2123,7 +2123,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

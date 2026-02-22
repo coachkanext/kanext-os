@@ -57,7 +57,7 @@ export function ChatComposer({ value, onChangeText, onSend }: ChatComposerProps)
           <IconSymbol
             name="arrow.up.circle.fill"
             size={28}
-            color={value.trim() ? '#f5f5f5' : '#333'}
+            color={value.trim() ? '#FFFFFF' : '#333'}
           />
         </Pressable>
       </View>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 15,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     paddingVertical: 4,
   },
   sendBtn: {

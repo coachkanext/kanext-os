@@ -81,9 +81,9 @@ export const INSTITUTION_STATUS_LABELS: Record<InstitutionStatus, string> = {
 
 export const INSTITUTION_STATUS_COLORS: Record<InstitutionStatus, string> = {
   active: '#22C55E',
-  partner: '#6AA9FF',
+  partner: '#1D9BF0',
   pipeline: '#F59E0B',
-  archived: '#8F8F8F',
+  archived: '#A1A1AA',
 };
 
 export const INSTITUTION_TYPE_LABELS: Record<InstitutionType, string> = {
@@ -134,9 +134,9 @@ export const PIPELINE_STAGE_LABELS: Record<PipelineStage, string> = {
 };
 
 export const PIPELINE_STAGE_COLORS: Record<PipelineStage, string> = {
-  discovery: '#8F8F8F',
+  discovery: '#A1A1AA',
   review: '#F59E0B',
-  loi: '#6AA9FF',
+  loi: '#1D9BF0',
   active: '#22C55E',
 };
 
@@ -175,8 +175,8 @@ export const TODAY_TYPE_LABELS: Record<TodayItem['type'], string> = {
 export const TODAY_TYPE_COLORS: Record<TodayItem['type'], string> = {
   deadline: '#EF4444',
   inspection: '#F59E0B',
-  batch: '#6AA9FF',
-  meeting: '#8B5CF6',
+  batch: '#1D9BF0',
+  meeting: '#1D9BF0',
   review: '#22C55E',
 };
 

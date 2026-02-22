@@ -68,7 +68,7 @@ const ASSETS: Asset[] = [
 
 const CONDITION_COLORS: Record<AssetCondition, string> = {
   Excellent: '#22C55E',
-  Good: '#3B82F6',
+  Good: '#1D9BF0',
   Fair: '#F59E0B',
 };
 
@@ -122,7 +122,7 @@ const TEAM_FREIGHT = [
 ];
 
 const FREIGHT_STATUS_COLOR: Record<string, string> = {
-  Shipped: '#3B82F6',
+  Shipped: '#1D9BF0',
   'In Transit': '#F59E0B',
   Delivered: '#22C55E',
 };
@@ -325,7 +325,7 @@ function LogisticsView({ colors, accentColor }: { colors: typeof Colors.light; a
               <ThemedText style={[s.freightTeam, { color: colors.text }]}>{tf.team}</ThemedText>
               <ThemedText style={[s.freightEta, { color: colors.textSecondary }]}>ETA: {tf.eta}</ThemedText>
             </View>
-            <StatusBadge label={tf.status.toUpperCase()} color={FREIGHT_STATUS_COLOR[tf.status] || '#6B7280'} />
+            <StatusBadge label={tf.status.toUpperCase()} color={FREIGHT_STATUS_COLOR[tf.status] || '#A1A1AA'} />
           </View>
         ))}
       </View>
@@ -384,7 +384,7 @@ export function CompFacilities({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >

@@ -121,18 +121,18 @@ const EQUIPMENT: Equipment[] = [
 const SPACE_STATUS_COLORS: Record<SpaceStatus, string> = {
   Available: '#22C55E',
   'In Use': '#F59E0B',
-  Reserved: '#6AA9FF',
+  Reserved: '#1D9BF0',
 };
 
 const PRIORITY_COLORS: Record<WorkOrderPriority, string> = {
   Urgent: '#EF4444',
   Normal: '#F59E0B',
-  Low: '#8F8F8F',
+  Low: '#A1A1AA',
 };
 
 const WO_STATUS_COLORS: Record<WorkOrderStatus, string> = {
   Open: '#EF4444',
-  'In Progress': '#6AA9FF',
+  'In Progress': '#1D9BF0',
   Scheduled: '#22C55E',
 };
 
@@ -169,7 +169,7 @@ function ViewBar({
             style={[
               s.viewPill,
               {
-                backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)',
+                backgroundColor: isActive ? accentColor : '#2F3336',
               },
             ]}
             onPress={() => {
@@ -213,7 +213,7 @@ function SpacesView({ colors, accentColor }: { colors: typeof Colors.light; acce
           <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Available</ThemedText>
         </View>
         <View style={[s.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.summaryValue, { color: '#6AA9FF' }]}>{totalCapacity}</ThemedText>
+          <ThemedText style={[s.summaryValue, { color: '#1D9BF0' }]}>{totalCapacity}</ThemedText>
           <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Total Capacity</ThemedText>
         </View>
       </View>
@@ -270,8 +270,8 @@ function BookingsView({ colors, accentColor }: { colors: typeof Colors.light; ac
               </ThemedText>
               <ThemedText style={[s.bookingMinistry, { color: colors.textTertiary }]}>{booking.ministry}</ThemedText>
             </View>
-            <View style={[s.statusBadge, { backgroundColor: '#6AA9FF20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: '#6AA9FF' }]}>Recurring</ThemedText>
+            <View style={[s.statusBadge, { backgroundColor: '#1D9BF020' }]}>
+              <ThemedText style={[s.statusBadgeText, { color: '#1D9BF0' }]}>Recurring</ThemedText>
             </View>
           </View>
         ))}

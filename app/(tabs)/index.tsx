@@ -399,7 +399,7 @@ function SportsHome() {
                     let heroTitle = '';
                     let heroSubtitle = '';
                     let heroBadge = '';
-                    let badgeColor = '#1E40AF';
+                    let badgeColor = '#1D9BF0';
                     let badgePulse = false;
 
                     if (liveGame) {
@@ -413,24 +413,24 @@ function SportsHome() {
                       const loc = KaNeXT_NEXT_GAME.location === 'Home' ? 'Home' : 'Away';
                       heroSubtitle = `${FMU_NEXT_GAME.date} · ${loc} · Conference Matchup`;
                       heroBadge = 'NEXT';
-                      badgeColor = '#1E40AF';
+                      badgeColor = '#1D9BF0';
                     } else if (KaNeXT_LAST_GAME) {
                       const wl = KaNeXT_LAST_GAME.result === 'W' ? 'W' : 'L';
                       heroTitle = `KaNeXT vs ${FMU_LAST_GAME.opponent}`;
                       heroSubtitle = `Final · ${wl} ${FMU_LAST_GAME.score} · Full Game Recap`;
                       heroBadge = 'RECAP';
-                      badgeColor = '#6B7280';
+                      badgeColor = '#A1A1AA';
                     } else {
                       heroTitle = 'Practice Film — Defensive Rotations';
                       heroSubtitle = 'Film Room · Season Review';
                       heroBadge = 'FILM';
-                      badgeColor = '#7C3AED';
+                      badgeColor = '#1D9BF0';
                     }
 
                     return (
                       <View style={styles.videoHero}>
                         <LinearGradient
-                          colors={['#0a1628', '#162a4a', '#0a1628']}
+                          colors={['#0B0F14', '#0B0F14', '#0B0F14']}
                           style={styles.heroGradient}
                         >
                           {/* Play Button */}
@@ -472,8 +472,8 @@ function SportsHome() {
                     const winPct = isTBD ? 0 : Math.min(92, Math.max(28, Math.round(50 + krGap * 0.8)));
                     const winColor = winPct >= 60 ? '#22C55E' : winPct >= 45 ? '#F59E0B' : '#EF4444';
                     const gameTypeLabel = isTBD ? 'TOURNAMENT' : (nextGame?.gameType ?? 'NON-CONF');
-                    const gameTypeColor = isTBD ? '#c084fc' : gameTypeLabel === 'CONF' ? '#60a5fa' : '#a1a1aa';
-                    const gameTypeBg = isTBD ? '#7c3aed22' : gameTypeLabel === 'CONF' ? '#2563eb22' : '#71717a22';
+                    const gameTypeColor = isTBD ? '#1D9BF0' : gameTypeLabel === 'CONF' ? '#1D9BF0' : '#A1A1AA';
+                    const gameTypeBg = isTBD ? '#1D9BF022' : gameTypeLabel === 'CONF' ? '#1D9BF022' : '#52525B22';
                     const oppRecord = isTBD ? '' : (nextGame?.opponentRecord ?? '');
                     const oppConf = isTBD ? '' : 'KaNeXT Conference';
                     const dateLine = isTBD
@@ -612,7 +612,7 @@ function SportsHome() {
                             onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
                             style={({ pressed }) => [
                               styles.domainCard,
-                              { backgroundColor: '#181616', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
+                              { backgroundColor: '#0B0F14', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
                               pressed && { opacity: 0.7 },
                             ]}
                           >
@@ -667,7 +667,7 @@ function SportsHome() {
                             onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
                             style={({ pressed }) => [
                               styles.domainCard,
-                              { backgroundColor: '#181616', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
+                              { backgroundColor: '#0B0F14', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
                               pressed && { opacity: 0.7 },
                             ]}
                           >
@@ -710,7 +710,7 @@ function SportsHome() {
                             onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
                             style={({ pressed }) => [
                               styles.domainCard,
-                              { backgroundColor: '#181616', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
+                              { backgroundColor: '#0B0F14', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
                               pressed && { opacity: 0.7 },
                             ]}
                           >
@@ -757,7 +757,7 @@ function SportsHome() {
                             onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
                             style={({ pressed }) => [
                               styles.domainCard,
-                              { backgroundColor: '#181616', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
+                              { backgroundColor: '#0B0F14', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
                               pressed && { opacity: 0.7 },
                             ]}
                           >
@@ -903,7 +903,7 @@ function SportsHome() {
                         const ouDiff = actualTotal - (preTotal + 0.5);
                         const ouStr = `${actualTotal > preTotal + 0.5 ? 'Over' : 'Under'} (${ouDiff > 0 ? '+' : ''}${ouDiff.toFixed(1)})`;
                         return (
-                          <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#1a1a1a', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
+                          <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#0B0F14', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                               <View style={{ alignItems: 'center' }}>
                                 <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>LINE</Text>
@@ -922,17 +922,17 @@ function SportsHome() {
                                 <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>Sim {simConf}%</Text>
                               </View>
                             </View>
-                            <View style={{ backgroundColor: '#2a2a2a', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10 }}>
+                            <View style={{ backgroundColor: '#0B0F14', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10 }}>
                               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Text style={{ fontSize: 12, fontWeight: '700', color: atsCover ? '#4ade80' : '#f87171' }}>ATS: {atsStr}</Text>
-                                <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? '#fbbf24' : '#60a5fa' }}>O/U: {ouStr}</Text>
+                                <Text style={{ fontSize: 12, fontWeight: '700', color: atsCover ? '#22C55E' : '#EF4444' }}>ATS: {atsStr}</Text>
+                                <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? '#1D9BF0' : '#1D9BF0' }}>O/U: {ouStr}</Text>
                               </View>
                             </View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
                               <Text style={{ fontSize: 11, color: '#888' }}>Pre Proj: <Text style={{ fontWeight: '700', color: '#ccc' }}>{fmuProj}–{oppProj} ({projMargin > 0 ? '+' : ''}{projMargin})</Text></Text>
-                              <Text style={{ fontSize: 11, color: '#888' }}>Actual: <Text style={{ fontWeight: '700', color: isW ? '#4ade80' : '#f87171' }}>{fmuS}–{oppS} ({actualMargin > 0 ? '+' : ''}{actualMargin})</Text></Text>
+                              <Text style={{ fontSize: 11, color: '#888' }}>Actual: <Text style={{ fontWeight: '700', color: isW ? '#22C55E' : '#EF4444' }}>{fmuS}–{oppS} ({actualMargin > 0 ? '+' : ''}{actualMargin})</Text></Text>
                             </View>
-                            <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#4ade80' : Math.abs(miss) <= 7 ? '#fbbf24' : '#f87171' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
+                            <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#22C55E' : Math.abs(miss) <= 7 ? '#1D9BF0' : '#EF4444' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
                             <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
                               {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'KaNeXT' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
                             </Text>
@@ -972,31 +972,31 @@ function SportsHome() {
                         const simConf = Math.min(95, Math.max(55, Math.round(70 + Math.abs(recentPregame.krGap) * 0.6)));
                         const keys = (recentPregame.ourEdge ?? []).slice(0, 3);
                         return (
-                          <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#1a1a1a', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
+                          <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#0B0F14', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
                             {/* Gambling-level metrics row */}
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                               <View style={{ alignItems: 'center' }}>
                                 <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>LINE</Text>
-                                <Text style={{ fontSize: 14, fontWeight: '800', color: '#f5f5f5' }}>{spreadStr}</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: '#FFFFFF' }}>{spreadStr}</Text>
                               </View>
                               <View style={{ alignItems: 'center' }}>
                                 <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>WIN%</Text>
-                                <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#4ade80' : winPct <= 40 ? '#f87171' : '#fbbf24' }}>{winPct}%</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#22C55E' : winPct <= 40 ? '#EF4444' : '#1D9BF0' }}>{winPct}%</Text>
                               </View>
                               <View style={{ alignItems: 'center' }}>
                                 <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>TOTAL</Text>
-                                <Text style={{ fontSize: 14, fontWeight: '800', color: '#f5f5f5' }}>{fmuProj + oppProj}.5</Text>
+                                <Text style={{ fontSize: 14, fontWeight: '800', color: '#FFFFFF' }}>{fmuProj + oppProj}.5</Text>
                               </View>
                               <View style={{ alignItems: 'center' }}>
                                 <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>CONF</Text>
-                                <View style={{ backgroundColor: '#2563eb20', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
-                                  <Text style={{ fontSize: 13, fontWeight: '800', color: '#60a5fa' }}>Sim {simConf}%</Text>
+                                <View style={{ backgroundColor: '#1D9BF020', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
+                                  <Text style={{ fontSize: 13, fontWeight: '800', color: '#1D9BF0' }}>Sim {simConf}%</Text>
                                 </View>
                               </View>
                             </View>
                             {/* Projection strip */}
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#2a2a2a', borderRadius: 8, paddingVertical: 6, marginBottom: 10 }}>
-                              <Text style={{ fontSize: 15, fontWeight: '800', color: fmuProj >= oppProj ? '#4ade80' : '#f87171' }}>{fmuProj >= oppProj ? 'W' : 'L'} {fmuProj}–{oppProj}</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#0B0F14', borderRadius: 8, paddingVertical: 6, marginBottom: 10 }}>
+                              <Text style={{ fontSize: 15, fontWeight: '800', color: fmuProj >= oppProj ? '#22C55E' : '#EF4444' }}>{fmuProj >= oppProj ? 'W' : 'L'} {fmuProj}–{oppProj}</Text>
                             </View>
                             {/* Keys (mini) */}
                             {keys.length > 0 && keys.map((key: string, i: number) => (
@@ -1221,7 +1221,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
   },
 
   // Mode Dropdown
@@ -1265,7 +1265,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
   },
 
   scrollView: {
@@ -1656,7 +1656,7 @@ const styles = StyleSheet.create({
   },
 
   // Conference Pulse
-  pulseChip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  pulseChip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1, borderColor: '#2F3336' },
   pulseChipText: { fontSize: 12, fontWeight: '600' },
   pulseChipRow: { flexDirection: 'row', gap: 8, flexWrap: 'wrap', marginTop: 6 },
   pulseGameRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
@@ -1678,7 +1678,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
     gap: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
   },
   pregamePacketText: {
     flex: 1,
@@ -2008,7 +2008,7 @@ const styles = StyleSheet.create({
 
   // Next Game Block (dark card)
   ngBlock: {
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     overflow: 'hidden' as const,
     marginHorizontal: Spacing.md,
@@ -2016,13 +2016,13 @@ const styles = StyleSheet.create({
   },
   ngBlockAccent: {
     height: 3,
-    backgroundColor: '#1E40AF',
+    backgroundColor: '#1D9BF0',
   },
   ngBlockBody: {
     padding: 14,
   },
   ngLabel: {
-    color: '#1E40AF',
+    color: '#1D9BF0',
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 1,
@@ -2124,8 +2124,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   ngActionBtnPrimary: {
-    backgroundColor: '#1E40AF',
-    borderColor: '#1E40AF',
+    backgroundColor: '#1D9BF0',
+    borderColor: '#1D9BF0',
   },
 
   // Commerce Row
@@ -2176,7 +2176,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     alignItems: 'center',
   },
   statsPreviewPillLabel: {

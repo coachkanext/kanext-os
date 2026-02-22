@@ -19,10 +19,10 @@ function nameToHue(name: string): number {
 
 function getStatusColor(status: string): string {
   switch (status.toLowerCase()) {
-    case 'active': return '#4ade80';
-    case 'inactive': return '#f87171';
-    case 'pending': return '#fbbf24';
-    default: return '#94a3b8';
+    case 'active': return '#22C55E';
+    case 'inactive': return '#EF4444';
+    case 'pending': return '#1D9BF0';
+    default: return '#A1A1AA';
   }
 }
 

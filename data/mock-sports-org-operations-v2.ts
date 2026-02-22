@@ -131,8 +131,8 @@ export const TASK_PRIORITY_LABELS: Record<OpsTask['priority'], string> = {
 export const TASK_PRIORITY_COLORS: Record<OpsTask['priority'], string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#6AA9FF',
-  low: '#8F8F8F',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 export const TASK_STATUS_LABELS: Record<OpsTask['status'], string> = {
@@ -143,8 +143,8 @@ export const TASK_STATUS_LABELS: Record<OpsTask['status'], string> = {
 };
 
 export const TASK_STATUS_COLORS: Record<OpsTask['status'], string> = {
-  open: '#8F8F8F',
-  'in-progress': '#6AA9FF',
+  open: '#A1A1AA',
+  'in-progress': '#1D9BF0',
   blocked: '#EF4444',
   done: '#22C55E',
 };
@@ -158,8 +158,8 @@ export const TRIP_STATUS_LABELS: Record<TravelTrip['status'], string> = {
 
 export const TRIP_STATUS_COLORS: Record<TravelTrip['status'], string> = {
   planning: '#F59E0B',
-  booked: '#6AA9FF',
-  'in-transit': '#A78BFA',
+  booked: '#1D9BF0',
+  'in-transit': '#1D9BF0',
   completed: '#22C55E',
 };
 
@@ -172,7 +172,7 @@ export const EQUIPMENT_STATUS_LABELS: Record<EquipmentItem['status'], string> = 
 
 export const EQUIPMENT_STATUS_COLORS: Record<EquipmentItem['status'], string> = {
   available: '#22C55E',
-  'checked-out': '#6AA9FF',
+  'checked-out': '#1D9BF0',
   maintenance: '#F59E0B',
   lost: '#EF4444',
 };
@@ -197,7 +197,7 @@ export const TICKET_STATUS_LABELS: Record<PlayerServiceTicket['status'], string>
 
 export const TICKET_STATUS_COLORS: Record<PlayerServiceTicket['status'], string> = {
   open: '#F59E0B',
-  'in-progress': '#6AA9FF',
+  'in-progress': '#1D9BF0',
   resolved: '#22C55E',
 };
 
@@ -209,9 +209,9 @@ export const TICKET_TYPE_LABELS: Record<PlayerServiceTicket['type'], string> = {
 };
 
 export const TICKET_TYPE_COLORS: Record<PlayerServiceTicket['type'], string> = {
-  housing: '#A78BFA',
+  housing: '#1D9BF0',
   meals: '#22C55E',
-  transport: '#6AA9FF',
+  transport: '#1D9BF0',
   'id-passport': '#F59E0B',
 };
 
@@ -222,8 +222,8 @@ export const ANNOUNCEMENT_AUDIENCE_LABELS: Record<OpsAnnouncement['audience'], s
 };
 
 export const ANNOUNCEMENT_AUDIENCE_COLORS: Record<OpsAnnouncement['audience'], string> = {
-  all: '#8B5CF6',
-  staff: '#6AA9FF',
+  all: '#1D9BF0',
+  staff: '#1D9BF0',
   players: '#22C55E',
 };
 

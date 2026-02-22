@@ -43,7 +43,7 @@ export default function CoachRosterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#0B0F14',
   },
   scrollView: {
     flex: 1,

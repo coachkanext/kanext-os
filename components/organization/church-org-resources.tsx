@@ -211,7 +211,7 @@ function SummaryTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Total Items</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#6AA9FF' }]}>{checkedOut}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#1D9BF0' }]}>{checkedOut}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Checked Out</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -311,7 +311,7 @@ function SummaryTab({
               <ThemedText style={[s.checkoutName, { color: colors.text }]} numberOfLines={1}>
                 {co.resourceName}
               </ThemedText>
-              <StatusBadge label="ACTIVE" color="#6AA9FF" />
+              <StatusBadge label="ACTIVE" color="#1D9BF0" />
             </View>
             <View style={s.checkoutMeta}>
               <ThemedText style={[s.checkoutMetaText, { color: colors.textSecondary }]}>
@@ -1124,7 +1124,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

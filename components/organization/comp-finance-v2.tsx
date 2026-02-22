@@ -91,7 +91,7 @@ function reportFormatColor(format: FinanceReport['format']): string {
   switch (format) {
     case 'PDF': return '#EF4444';
     case 'CSV': return '#22C55E';
-    case 'XLSX': return '#3B82F6';
+    case 'XLSX': return '#1D9BF0';
   }
 }
 
@@ -249,10 +249,10 @@ function DashboardTab({
         {[
           { id: 'qa-1', label: 'Add Revenue', icon: 'plus.circle.fill', color: '#22C55E' },
           { id: 'qa-2', label: 'Log Expense', icon: 'minus.circle.fill', color: '#EF4444' },
-          { id: 'qa-3', label: 'New Budget', icon: 'chart.pie.fill', color: '#3B82F6' },
-          { id: 'qa-4', label: 'Process Payout', icon: 'creditcard.fill', color: '#8B5CF6' },
+          { id: 'qa-3', label: 'New Budget', icon: 'chart.pie.fill', color: '#1D9BF0' },
+          { id: 'qa-4', label: 'Process Payout', icon: 'creditcard.fill', color: '#1D9BF0' },
           { id: 'qa-5', label: 'Generate Report', icon: 'doc.text.fill', color: '#F59E0B' },
-          { id: 'qa-6', label: 'Add Sponsor', icon: 'star.fill', color: '#6AA9FF' },
+          { id: 'qa-6', label: 'Add Sponsor', icon: 'star.fill', color: '#1D9BF0' },
         ].map((action) => (
           <Pressable
             key={action.id}
@@ -658,7 +658,7 @@ function TicketingTab({
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
         const capPct = getCapacityPercentage(item.ticketsSold, item.capacity);
-        const capColor = capPct >= 90 ? '#22C55E' : capPct >= 60 ? '#F59E0B' : '#3B82F6';
+        const capColor = capPct >= 90 ? '#22C55E' : capPct >= 60 ? '#F59E0B' : '#1D9BF0';
         return (
           <Pressable
             style={[s.ticketCard, { backgroundColor: colors.card, borderColor: colors.border }]}

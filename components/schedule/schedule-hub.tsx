@@ -415,7 +415,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                                 {game.date}{game.gameTime ? ` · ${game.gameTime}` : ''}
                               </ThemedText>
                               {(() => { const sw = 50 + (confHash(game.opponent ?? '') % 30); return (
-                                <Text style={{ fontSize: 11, fontWeight: '600', color: sw >= 50 ? '#4CAF50' : '#EF4444', marginTop: 2 }}>Sim {sw}%</Text>
+                                <Text style={{ fontSize: 11, fontWeight: '600', color: sw >= 50 ? '#22C55E' : '#EF4444', marginTop: 2 }}>Sim {sw}%</Text>
                               ); })()}
                             </View>
                           </GameCard>
@@ -452,8 +452,8 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                     <View style={s.recentHeader}>
                       <ThemedText style={[s.sectionLabel, { color: colors.textSecondary, marginBottom: 0 }]}>COMPLETED</ThemedText>
                       {streakBadge && (
-                        <View style={[s.miniStreakBadge, { backgroundColor: allWin ? '#4CAF5018' : '#EF444418' }]}>
-                          <ThemedText style={[s.miniStreakText, { color: allWin ? '#4CAF50' : '#EF4444' }]}>
+                        <View style={[s.miniStreakBadge, { backgroundColor: allWin ? '#22C55E18' : '#EF444418' }]}>
+                          <ThemedText style={[s.miniStreakText, { color: allWin ? '#22C55E' : '#EF4444' }]}>
                             {streakBadge}
                           </ThemedText>
                         </View>
@@ -488,14 +488,14 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                                     {game.date} · {game.gameType ?? 'NON-CONF'} · {game.venue ?? game.location}
                                   </ThemedText>
                                   {(() => { const sw = 50 + (confHash(game.opponent ?? '') % 30); return (
-                                    <Text style={{ fontSize: 11, fontWeight: '600', color: sw >= 50 ? '#4CAF50' : '#EF4444', marginTop: 2 }}>Sim {sw}%</Text>
+                                    <Text style={{ fontSize: 11, fontWeight: '600', color: sw >= 50 ? '#22C55E' : '#EF4444', marginTop: 2 }}>Sim {sw}%</Text>
                                   ); })()}
                                 </View>
                                 <View style={s.recentRight}>
-                                  <View style={[s.recentPill, { backgroundColor: '#f5f5f518' }]}>
-                                    <ThemedText style={[s.recentPillText, { color: '#f5f5f5' }]}>FINAL</ThemedText>
+                                  <View style={[s.recentPill, { backgroundColor: '#FFFFFF18' }]}>
+                                    <ThemedText style={[s.recentPillText, { color: '#FFFFFF' }]}>FINAL</ThemedText>
                                   </View>
-                                  <ThemedText style={[s.recentScore, { color: isWin ? '#f5f5f5' : isLoss ? '#EF4444' : colors.text }]}>
+                                  <ThemedText style={[s.recentScore, { color: isWin ? '#FFFFFF' : isLoss ? '#EF4444' : colors.text }]}>
                                     {scoreDisplay}
                                   </ThemedText>
                                 </View>
@@ -694,7 +694,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
             // ── Helpers ──
 
             const trendDisplay = (t: number) => {
-              if (t > 0) return { text: `\u25B2 ${t}`, color: '#66BB6A' };
+              if (t > 0) return { text: `\u25B2 ${t}`, color: '#22C55E' };
               if (t < 0) return { text: `\u25BC ${Math.abs(t)}`, color: '#EF4444' };
               return { text: '\u2014', color: colors.textTertiary };
             };
@@ -800,7 +800,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                         </View>
                         <ThemedText style={[s.standingsRecord, { color: colors.text }]}>{row.confW}-{row.confL}</ThemedText>
                         <ThemedText style={[s.standingsRecord, { color: colors.textSecondary }]}>{row.overallW}-{row.overallL}</ThemedText>
-                        <ThemedText style={[s.standingsStreak, { color: row.streak.startsWith('W') ? '#66BB6A' : '#EF4444' }]}>{row.streak}</ThemedText>
+                        <ThemedText style={[s.standingsStreak, { color: row.streak.startsWith('W') ? '#22C55E' : '#EF4444' }]}>{row.streak}</ThemedText>
                       </View>
                     </View>
                   );
@@ -1276,7 +1276,7 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                     const ouDiff = actualTotal - (preTotal + 0.5);
                     const ouStr = `${actualTotal > preTotal + 0.5 ? 'Over' : 'Under'} (${ouDiff > 0 ? '+' : ''}${ouDiff.toFixed(1)})`;
                     return (
-                      <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#1a1a1a', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
+                      <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#0B0F14', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                           <View style={{ alignItems: 'center' }}>
                             <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>LINE</Text>
@@ -1295,17 +1295,17 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                             <Text style={{ fontSize: 13, fontWeight: '800', color: '#aaa' }}>Sim {simConf}%</Text>
                           </View>
                         </View>
-                        <View style={{ backgroundColor: '#2a2a2a', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10 }}>
+                        <View style={{ backgroundColor: '#0B0F14', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10 }}>
                           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={{ fontSize: 12, fontWeight: '700', color: atsCover ? '#4ade80' : '#f87171' }}>ATS: {atsStr}</Text>
-                            <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? '#fbbf24' : '#60a5fa' }}>O/U: {ouStr}</Text>
+                            <Text style={{ fontSize: 12, fontWeight: '700', color: atsCover ? '#22C55E' : '#EF4444' }}>ATS: {atsStr}</Text>
+                            <Text style={{ fontSize: 12, fontWeight: '700', color: actualTotal > preTotal + 0.5 ? '#1D9BF0' : '#1D9BF0' }}>O/U: {ouStr}</Text>
                           </View>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
                           <Text style={{ fontSize: 11, color: '#888' }}>Pre Proj: <Text style={{ fontWeight: '700', color: '#ccc' }}>{fmuProj}\u2013{oppProj} ({projMargin > 0 ? '+' : ''}{projMargin})</Text></Text>
-                          <Text style={{ fontSize: 11, color: '#888' }}>Actual: <Text style={{ fontWeight: '700', color: isW ? '#4ade80' : '#f87171' }}>{fmuS}\u2013{oppS} ({actualMargin > 0 ? '+' : ''}{actualMargin})</Text></Text>
+                          <Text style={{ fontSize: 11, color: '#888' }}>Actual: <Text style={{ fontWeight: '700', color: isW ? '#22C55E' : '#EF4444' }}>{fmuS}\u2013{oppS} ({actualMargin > 0 ? '+' : ''}{actualMargin})</Text></Text>
                         </View>
-                        <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#4ade80' : Math.abs(miss) <= 7 ? '#fbbf24' : '#f87171' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
+                        <Text style={{ fontSize: 11, color: '#888' }}>Miss: <Text style={{ fontWeight: '700', color: Math.abs(miss) <= 3 ? '#22C55E' : Math.abs(miss) <= 7 ? '#1D9BF0' : '#EF4444' }}>{miss > 0 ? '+' : ''}{miss} pts</Text></Text>
                         <Text style={{ fontSize: 10, color: '#666', marginTop: 6, lineHeight: 14 }}>
                           {isW === (projMargin > 0) ? 'Model called it correctly' : `Model favored ${projMargin > 0 ? 'KaNeXT' : 'opponent'}`}; missed by {Math.abs(miss)} pts.
                         </Text>
@@ -1343,29 +1343,29 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                       const simConf = Math.min(95, Math.max(55, Math.round(70 + Math.abs(pregame.krGap) * 0.6)));
                       const keys = (pregame.ourEdge ?? []).slice(0, 3);
                       return (
-                        <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#1a1a1a', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
+                        <View style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md, backgroundColor: '#0B0F14', borderRadius: BorderRadius.lg, padding: Spacing.md }}>
                           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                             <View style={{ alignItems: 'center' }}>
                               <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>LINE</Text>
-                              <Text style={{ fontSize: 14, fontWeight: '800', color: '#f5f5f5' }}>{spreadStr}</Text>
+                              <Text style={{ fontSize: 14, fontWeight: '800', color: '#FFFFFF' }}>{spreadStr}</Text>
                             </View>
                             <View style={{ alignItems: 'center' }}>
                               <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>WIN%</Text>
-                              <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#4ade80' : winPct <= 40 ? '#f87171' : '#fbbf24' }}>{winPct}%</Text>
+                              <Text style={{ fontSize: 14, fontWeight: '800', color: winPct >= 60 ? '#22C55E' : winPct <= 40 ? '#EF4444' : '#1D9BF0' }}>{winPct}%</Text>
                             </View>
                             <View style={{ alignItems: 'center' }}>
                               <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>TOTAL</Text>
-                              <Text style={{ fontSize: 14, fontWeight: '800', color: '#f5f5f5' }}>{fmuProj + oppProj}.5</Text>
+                              <Text style={{ fontSize: 14, fontWeight: '800', color: '#FFFFFF' }}>{fmuProj + oppProj}.5</Text>
                             </View>
                             <View style={{ alignItems: 'center' }}>
                               <Text style={{ fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 0.5, marginBottom: 2 }}>CONF</Text>
-                              <View style={{ backgroundColor: '#2563eb20', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
-                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#60a5fa' }}>Sim {simConf}%</Text>
+                              <View style={{ backgroundColor: '#1D9BF020', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
+                                <Text style={{ fontSize: 13, fontWeight: '800', color: '#1D9BF0' }}>Sim {simConf}%</Text>
                               </View>
                             </View>
                           </View>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#2a2a2a', borderRadius: 8, paddingVertical: 6, marginBottom: 10 }}>
-                            <Text style={{ fontSize: 15, fontWeight: '800', color: fmuProj >= oppProj ? '#4ade80' : '#f87171' }}>{fmuProj >= oppProj ? 'W' : 'L'} {fmuProj}\u2013{oppProj}</Text>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#0B0F14', borderRadius: 8, paddingVertical: 6, marginBottom: 10 }}>
+                            <Text style={{ fontSize: 15, fontWeight: '800', color: fmuProj >= oppProj ? '#22C55E' : '#EF4444' }}>{fmuProj >= oppProj ? 'W' : 'L'} {fmuProj}\u2013{oppProj}</Text>
                           </View>
                           {keys.length > 0 && keys.map((key: string, i: number) => (
                             <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: i < keys.length - 1 ? 6 : 0 }}>

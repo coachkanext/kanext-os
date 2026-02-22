@@ -26,14 +26,14 @@ export function LibraryBucket({ icon, label, count, children }: LibraryBucketPro
       <Pressable
         style={({ pressed }) => [
           styles.row,
-          { backgroundColor: pressed ? '#191919' : 'transparent' },
+          { backgroundColor: pressed ? '#0B0F14' : 'transparent' },
         ]}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setExpanded(!expanded);
         }}
       >
-        <IconSymbol name={icon} size={20} color="#6e6e6e" />
+        <IconSymbol name={icon} size={20} color="#A1A1AA" />
         <ThemedText style={styles.label}>{label}</ThemedText>
         <View style={styles.countBadge}>
           <ThemedText style={styles.countText}>{count}</ThemedText>
@@ -58,17 +58,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
     gap: 12,
   },
   label: {
     flex: 1,
     fontSize: 15,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   countBadge: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
@@ -77,10 +77,10 @@ const styles = StyleSheet.create({
   countText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   expandedContent: {
     paddingLeft: Spacing.md,
-    backgroundColor: '#0a0a0a',
+    backgroundColor: '#0B0F14',
   },
 });

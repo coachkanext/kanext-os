@@ -103,7 +103,7 @@ function TrainingCard({ item }: { item: TrainingVideo }) {
   const colors = Colors[colorScheme];
 
   const progressColor =
-    item.completionPct >= 100 ? '#22C55E' : item.completionPct > 0 ? '#F59E0B' : '#424242';
+    item.completionPct >= 100 ? '#22C55E' : item.completionPct > 0 ? '#F59E0B' : '#52525B';
 
   return (
     <Pressable
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     width: 3,
     height: 3,
     borderRadius: 1.5,
-    backgroundColor: '#424242',
+    backgroundColor: '#52525B',
   },
   actionRow: {
     flexDirection: 'row',

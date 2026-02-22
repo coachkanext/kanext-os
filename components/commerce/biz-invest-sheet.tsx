@@ -20,7 +20,7 @@ import { Spacing, BorderRadius } from '@/constants/theme';
 
 type Stage = 'overview' | 'tier_select' | 'confirm' | 'receipt';
 
-const ACCENT = '#10B981';
+const ACCENT = '#22C55E';
 
 interface Props {
   visible: boolean;

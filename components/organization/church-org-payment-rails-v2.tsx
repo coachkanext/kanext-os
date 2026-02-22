@@ -57,11 +57,11 @@ const SUB_TABS = [
 ];
 
 const FUND_COLORS: Record<FundType, string> = {
-  general: '#3B82F6',
+  general: '#1D9BF0',
   missions: '#22C55E',
-  benevolence: '#EC4899',
+  benevolence: '#1D9BF0',
   building: '#F59E0B',
-  youth: '#8B5CF6',
+  youth: '#1D9BF0',
 };
 
 const FUND_LABELS: Record<FundType, string> = {
@@ -375,7 +375,7 @@ function ControlTowerTab({
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
       {renderLane('Needs Approval', '#F59E0B', needsApproval, 3)}
-      {renderLane('Ready to Release', '#3B82F6', readyToRelease, 3)}
+      {renderLane('Ready to Release', '#1D9BF0', readyToRelease, 3)}
       {renderLane('In Flight', '#22C55E', inFlight, 3)}
       {renderLane('Exceptions', '#EF4444', exceptions, 3)}
     </ScrollView>
@@ -439,7 +439,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#3B82F6' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#1D9BF0' }]}>
                 {formatCurrency(item.pendingInflows)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -447,7 +447,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#F97316' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#F59E0B' }]}>
                 {formatCurrency(item.pendingOutflows)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -877,7 +877,7 @@ function ReturnsTab({
   const STAGE_COLORS: Record<RailsReturn['stage'], string> = {
     received: '#EF4444',
     evidence_requested: '#F59E0B',
-    submitted: '#3B82F6',
+    submitted: '#1D9BF0',
     resolved: '#22C55E',
   };
 
@@ -1008,7 +1008,7 @@ function ReceiptsTab({
 
           <View style={s.receiptFooter}>
             {rcp.immutable && (
-              <StatusBadge label="IMMUTABLE" color="#8B5CF6" />
+              <StatusBadge label="IMMUTABLE" color="#1D9BF0" />
             )}
             <View style={[s.receiptExportButton, { borderColor: colors.border }]}>
               <ThemedText style={[s.receiptExportText, { color: colors.textSecondary }]}>
@@ -1142,13 +1142,13 @@ function WalletDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Committed</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#3B82F6' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#1D9BF0' }]}>
               {formatCurrency(wallet.pendingInflows)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending In</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#F97316' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#F59E0B' }]}>
               {formatCurrency(wallet.pendingOutflows)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending Out</ThemedText>
@@ -1864,7 +1864,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

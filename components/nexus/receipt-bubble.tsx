@@ -13,9 +13,9 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { ReceiptPayload, LinkChip } from '@/types/nexus-v2';
 
 const STATUS_CONFIG: Record<string, { icon: IconSymbolName; color: string; label: string }> = {
-  done: { icon: 'checkmark.circle.fill', color: '#10B981', label: 'Done' },
-  created: { icon: 'plus.circle.fill', color: '#3B82F6', label: 'Created' },
-  posted: { icon: 'paperplane.fill', color: '#3B82F6', label: 'Posted' },
+  done: { icon: 'checkmark.circle.fill', color: '#22C55E', label: 'Done' },
+  created: { icon: 'plus.circle.fill', color: '#1D9BF0', label: 'Created' },
+  posted: { icon: 'paperplane.fill', color: '#1D9BF0', label: 'Posted' },
   updated: { icon: 'arrow.triangle.2.circlepath', color: '#F59E0B', label: 'Updated' },
   blocked: { icon: 'xmark.circle.fill', color: '#EF4444', label: 'Blocked' },
   escalated: { icon: 'arrow.up.right.circle.fill', color: '#F59E0B', label: 'Escalated' },

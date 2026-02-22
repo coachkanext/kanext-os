@@ -228,15 +228,15 @@ export function getClusterLabel(cluster: ClusterType): string {
 export function getImportanceColor(importance: string): string {
   switch (importance) {
     case 'critical':
-      return '#f5f5f5';
+      return '#FFFFFF';
     case 'high':
-      return '#d4d4d4';
+      return '#A1A1AA';
     case 'medium':
-      return '#6e6e6e';
+      return '#A1A1AA';
     case 'low':
-      return '#555555';
+      return '#52525B';
     default:
-      return '#555555';
+      return '#52525B';
   }
 }
 

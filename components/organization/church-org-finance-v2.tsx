@@ -206,8 +206,8 @@ function OverviewTab({
   const healthTiles = [
     { icon: 'banknote.fill', label: 'Total Funds', value: formatCurrency(totalFunds), color: accentColor },
     { icon: 'lock.fill', label: 'Committed', value: formatCurrency(totalCommitted), color: '#F59E0B' },
-    { icon: 'arrow.up.right', label: 'Spend MTD', value: formatCurrency(totalSpent), color: '#6AA9FF' },
-    { icon: 'heart.fill', label: 'Benevolence', value: String(benevolenceCases), color: '#A78BFA' },
+    { icon: 'arrow.up.right', label: 'Spend MTD', value: formatCurrency(totalSpent), color: '#1D9BF0' },
+    { icon: 'heart.fill', label: 'Benevolence', value: String(benevolenceCases), color: '#1D9BF0' },
     { icon: 'exclamationmark.triangle.fill', label: 'Exceptions', value: String(overBudgetWarnings), color: overBudgetWarnings > 0 ? '#EF4444' : '#22C55E' },
     { icon: 'checkmark.shield.fill', label: 'Audit Score', value: `${data.auditTrail.filter((a) => a.evidenceAttached).length}/${data.auditTrail.length}`, color: '#22C55E' },
   ];
@@ -237,7 +237,7 @@ function OverviewTab({
             <ThemedText style={[s.weekItemLabel, { color: colors.textSecondary }]}>Pending Approvals</ThemedText>
           </View>
           <View style={s.weekItem}>
-            <ThemedText style={[s.weekItemValue, { color: '#6AA9FF' }]}>
+            <ThemedText style={[s.weekItemValue, { color: '#1D9BF0' }]}>
               {data.commitments.filter((c) => c.status === 'scheduled').length}
             </ThemedText>
             <ThemedText style={[s.weekItemLabel, { color: colors.textSecondary }]}>Recurring Due</ThemedText>
@@ -327,7 +327,7 @@ function OverviewTab({
         )}
         {approvedNotReleased > 0 && (
           <View style={s.actionQueueRow}>
-            <View style={[s.actionDot, { backgroundColor: '#6AA9FF' }]} />
+            <View style={[s.actionDot, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[s.actionQueueText, { color: colors.text }]}>
               {approvedNotReleased} approved awaiting release
             </ThemedText>
@@ -451,7 +451,7 @@ function BudgetsTab({
                 </ThemedText>
                 <View style={s.budgetBadgeRow}>
                   <StatusBadge label={BUDGET_PERIOD_LABELS[budget.period].toUpperCase()} color={accentColor} />
-                  <StatusBadge label={budget.ministry.toUpperCase()} color="#6AA9FF" />
+                  <StatusBadge label={budget.ministry.toUpperCase()} color="#1D9BF0" />
                 </View>
               </View>
               <View style={s.budgetTotalCol}>
@@ -569,7 +569,7 @@ function FundsTab({
               </ThemedText>
               <View style={s.fundBadgeRow}>
                 <StatusBadge label={FUND_TYPE_LABELS[item.type].toUpperCase()} color={typeColor} />
-                {item.restricted && <StatusBadge label="RESTRICTED" color="#A78BFA" />}
+                {item.restricted && <StatusBadge label="RESTRICTED" color="#1D9BF0" />}
                 {item.atRisk && <StatusBadge label="AT RISK" color="#EF4444" />}
               </View>
             </View>
@@ -663,7 +663,7 @@ function CommitmentsTab({
   };
 
   const getFundColor = (fundType: string): string => {
-    return FUND_TYPE_COLORS[fundType as FundType] || '#8F8F8F';
+    return FUND_TYPE_COLORS[fundType as FundType] || '#A1A1AA';
   };
 
   return (
@@ -760,14 +760,14 @@ function ExpensesTab({
   };
 
   const getFundColor = (fundType: string): string => {
-    return FUND_TYPE_COLORS[fundType as FundType] || '#8F8F8F';
+    return FUND_TYPE_COLORS[fundType as FundType] || '#A1A1AA';
   };
 
   const renderItem = useCallback(
     ({ item }: { item: ExpenseEntry }) => {
       const catIcon = EXPENSE_CATEGORY_ICONS[item.category] || 'dollarsign.circle.fill';
       const catLabel = EXPENSE_CATEGORY_LABELS[item.category] || item.category;
-      const statusColor = REQUEST_STATUS_COLORS[item.status as RequestStatus] || '#8F8F8F';
+      const statusColor = REQUEST_STATUS_COLORS[item.status as RequestStatus] || '#A1A1AA';
       const statusLabel = REQUEST_STATUS_LABELS[item.status as RequestStatus] || item.status;
       const fundColor = getFundColor(item.fund);
 
@@ -847,14 +847,14 @@ function ApprovalsTab({
   };
 
   const getFundColor = (fundType: string): string => {
-    return FUND_TYPE_COLORS[fundType as FundType] || '#8F8F8F';
+    return FUND_TYPE_COLORS[fundType as FundType] || '#A1A1AA';
   };
 
   const renderRequestItem = (req: FinanceRequest, queueType: 'approval' | 'release') => {
     const fundColor = getFundColor(req.fund);
     const catLabel = EXPENSE_CATEGORY_LABELS[req.category] || req.category;
     const typeLabel = REQUEST_TYPE_LABELS[req.type] || req.type;
-    const indicatorColor = queueType === 'approval' ? '#F59E0B' : '#6AA9FF';
+    const indicatorColor = queueType === 'approval' ? '#F59E0B' : '#1D9BF0';
     const indicatorLabel = queueType === 'approval' ? 'Needs Approval' : 'Needs Release';
 
     return (
@@ -870,7 +870,7 @@ function ApprovalsTab({
         </View>
         <View style={s.approvalBadgeRow}>
           <StatusBadge label={getFundName(req.fund).toUpperCase()} color={fundColor} />
-          <StatusBadge label={catLabel.toUpperCase()} color="#8F8F8F" />
+          <StatusBadge label={catLabel.toUpperCase()} color="#A1A1AA" />
           <StatusBadge label={typeLabel.toUpperCase()} color={accentColor} />
         </View>
         <View style={s.approvalMeta}>
@@ -973,7 +973,7 @@ function ReportsTab({
               </ThemedText>
               <View style={s.reportBadgeRow}>
                 <StatusBadge label={report.type.replace(/_/g, ' ').toUpperCase()} color={accentColor} />
-                <StatusBadge label={report.period.toUpperCase()} color="#6AA9FF" />
+                <StatusBadge label={report.period.toUpperCase()} color="#1D9BF0" />
               </View>
               <View style={s.reportMeta}>
                 <ThemedText style={[s.reportMetaText, { color: colors.textTertiary }]}>
@@ -1122,7 +1122,7 @@ function FundDetailSheet({
       {/* Type & Status */}
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={FUND_TYPE_LABELS[fund.type].toUpperCase()} color={typeColor} />
-        {fund.restricted && <StatusBadge label="RESTRICTED" color="#A78BFA" />}
+        {fund.restricted && <StatusBadge label="RESTRICTED" color="#1D9BF0" />}
         {fund.atRisk && <StatusBadge label="AT RISK" color="#EF4444" />}
       </View>
 
@@ -1263,8 +1263,8 @@ function ExpenseDetailSheet({
   const catIcon = EXPENSE_CATEGORY_ICONS[expense.category] || 'dollarsign.circle.fill';
   const fund = funds.find((f) => f.type === expense.fund);
   const fundName = fund ? fund.name : FUND_TYPE_LABELS[expense.fund] || expense.fund;
-  const fundColor = fund ? FUND_TYPE_COLORS[fund.type] : '#8F8F8F';
-  const statusColor = REQUEST_STATUS_COLORS[expense.status as RequestStatus] || '#8F8F8F';
+  const fundColor = fund ? FUND_TYPE_COLORS[fund.type] : '#A1A1AA';
+  const statusColor = REQUEST_STATUS_COLORS[expense.status as RequestStatus] || '#A1A1AA';
   const statusLabel = REQUEST_STATUS_LABELS[expense.status as RequestStatus] || expense.status;
 
   return (
@@ -1632,7 +1632,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,
@@ -1868,7 +1868,7 @@ const s = StyleSheet.create({
     marginTop: Spacing.sm,
     paddingTop: Spacing.sm,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
   },
   varianceNoteText: {
     fontSize: 11,

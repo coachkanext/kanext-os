@@ -75,7 +75,7 @@ function StatusBadge({ status, colors }: { status: string; colors: typeof Colors
       : status === 'planning' || status === 'in-progress'
         ? '#F59E0B'
         : status === 'seasonal'
-          ? '#6AA9FF'
+          ? '#1D9BF0'
           : colors.textTertiary;
 
   return (
@@ -92,7 +92,7 @@ function StatusBadge({ status, colors }: { status: string; colors: typeof Colors
 // =============================================================================
 
 function PriorityBadge({ priority }: { priority: 'high' | 'medium' | 'low' }) {
-  const color = priority === 'high' ? '#EF4444' : priority === 'medium' ? '#F59E0B' : '#8F8F8F';
+  const color = priority === 'high' ? '#EF4444' : priority === 'medium' ? '#F59E0B' : '#A1A1AA';
   return (
     <View style={[s.badge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[s.badgeText, { color }]}>{priority.toUpperCase()}</ThemedText>
@@ -105,7 +105,7 @@ function PriorityBadge({ priority }: { priority: 'high' | 'medium' | 'low' }) {
 // =============================================================================
 
 function EventTypeBadge({ type }: { type: 'regular' | 'special' | 'outreach' }) {
-  const color = type === 'regular' ? '#8F8F8F' : type === 'special' ? '#7A5CFF' : '#14B8A6';
+  const color = type === 'regular' ? '#A1A1AA' : type === 'special' ? '#1D9BF0' : '#1D9BF0';
   return (
     <View style={[s.badge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[s.badgeText, { color }]}>{type.toUpperCase()}</ThemedText>

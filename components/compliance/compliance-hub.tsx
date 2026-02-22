@@ -46,27 +46,27 @@ const COMPLIANCE_STATUS_COLORS: Record<ComplianceStatus, string> = {
   compliant: '#22C55E',
   warning: '#F59E0B',
   violation: '#EF4444',
-  'pending-review': '#6AA9FF',
+  'pending-review': '#1D9BF0',
 };
 
 const AUDIT_STATUS_COLORS: Record<AuditStatus, string> = {
   passed: '#22C55E',
   failed: '#EF4444',
-  'in-progress': '#6AA9FF',
+  'in-progress': '#1D9BF0',
   scheduled: '#F59E0B',
 };
 
 const SEVERITY_COLORS: Record<string, string> = {
   critical: '#EF4444',
   major: '#F59E0B',
-  minor: '#F5D90B',
+  minor: '#F59E0B',
 };
 
 const INCIDENT_STATUS_COLORS: Record<string, string> = {
   open: '#EF4444',
   investigating: '#F59E0B',
   resolved: '#22C55E',
-  closed: '#8F8F8F',
+  closed: '#A1A1AA',
 };
 
 const CATEGORY_LABELS: Record<PolicyCategory, string> = {
@@ -233,7 +233,7 @@ function HomeView() {
           <ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>Open Incidents</ThemedText>
         </Card>
         <Card style={styles.metricCard}>
-          <ThemedText style={[styles.metricValue, { color: '#6AA9FF' }]}>{snapshot.upcomingAudits}</ThemedText>
+          <ThemedText style={[styles.metricValue, { color: '#1D9BF0' }]}>{snapshot.upcomingAudits}</ThemedText>
           <ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>Upcoming Audits</ThemedText>
         </Card>
         <Card style={styles.metricCard}>
@@ -424,7 +424,7 @@ function IncidentsView() {
       ) : (
         filteredIncidents.map((incident) => {
           const sevColor = SEVERITY_COLORS[incident.severity] ?? '#F59E0B';
-          const incStatusColor = INCIDENT_STATUS_COLORS[incident.status] ?? '#8F8F8F';
+          const incStatusColor = INCIDENT_STATUS_COLORS[incident.status] ?? '#A1A1AA';
           return (
             <Card key={incident.id}>
               <View style={styles.incidentHeader}>
@@ -477,7 +477,7 @@ function TrainingView() {
                 {item.title}
               </ThemedText>
               {item.required && (
-                <StatusBadge label="Required" color="#6AA9FF" />
+                <StatusBadge label="Required" color="#1D9BF0" />
               )}
             </View>
 

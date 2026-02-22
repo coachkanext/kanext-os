@@ -15,9 +15,9 @@ import type { TeamLevel } from '@/data/mock-program-v2';
 
 const LEVEL_COLORS: Record<TeamLevel, string> = {
   varsity: '#FFFFFF',
-  jv: '#6AA9FF',
+  jv: '#1D9BF0',
   prep: '#F59E0B',
-  dev: '#7A5CFF',
+  dev: '#1D9BF0',
 };
 
 const LEVEL_LABELS: Record<TeamLevel, string> = {
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: Spacing.sm,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
   },
   footerText: {
     fontSize: 12,

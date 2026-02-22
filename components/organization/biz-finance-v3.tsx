@@ -41,16 +41,16 @@ const REVENUE = 0;
 const EXPENSES = [
   { id: 'ex1', label: 'Payroll', amount: 28_000, color: '#EF4444' },
   { id: 'ex2', label: 'Contractors', amount: 6_000, color: '#F59E0B' },
-  { id: 'ex3', label: 'Legal', amount: 3_000, color: '#8B5CF6' },
-  { id: 'ex4', label: 'Infrastructure', amount: 2_500, color: '#3B82F6' },
-  { id: 'ex5', label: 'Marketing', amount: 1_500, color: '#EC4899' },
-  { id: 'ex6', label: 'Travel', amount: 1_000, color: '#14B8A6' },
+  { id: 'ex3', label: 'Legal', amount: 3_000, color: '#1D9BF0' },
+  { id: 'ex4', label: 'Infrastructure', amount: 2_500, color: '#1D9BF0' },
+  { id: 'ex5', label: 'Marketing', amount: 1_500, color: '#1D9BF0' },
+  { id: 'ex6', label: 'Travel', amount: 1_000, color: '#1D9BF0' },
 ];
 
 // Cap Table
 const CAP_TABLE = [
-  { id: 'cap1', holder: 'Founder (Alex Morgan)', percent: 85, color: '#8B5CF6' },
-  { id: 'cap2', holder: 'Angel Investors', percent: 8, color: '#3B82F6' },
+  { id: 'cap1', holder: 'Founder (Alex Morgan)', percent: 85, color: '#1D9BF0' },
+  { id: 'cap2', holder: 'Angel Investors', percent: 8, color: '#1D9BF0' },
   { id: 'cap3', holder: 'ESOP Pool', percent: 5, color: '#22C55E' },
   { id: 'cap4', holder: 'Advisors', percent: 2, color: '#F59E0B' },
 ];
@@ -67,9 +67,9 @@ const CURRENT_ROUND = {
 
 const INVESTOR_PIPELINE = [
   { id: 'ip1', name: 'Velocity Ventures', stage: 'Closed', amount: '$350K', color: '#22C55E' },
-  { id: 'ip2', name: 'Horizon Capital', stage: 'Term Sheet', amount: '$200K', color: '#3B82F6' },
+  { id: 'ip2', name: 'Horizon Capital', stage: 'Term Sheet', amount: '$200K', color: '#1D9BF0' },
   { id: 'ip3', name: 'Meridian Partners', stage: 'Meeting', amount: '$150K', color: '#F59E0B' },
-  { id: 'ip4', name: 'Atlas Fund', stage: 'Intro', amount: '$100K', color: '#6B7280' },
+  { id: 'ip4', name: 'Atlas Fund', stage: 'Intro', amount: '$100K', color: '#A1A1AA' },
 ];
 
 const PREVIOUS_SAFES = [
@@ -326,7 +326,7 @@ export function BizFinance({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.viewPill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handleViewPress(v.id)}
             >

@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   productName: { fontSize: 14, fontWeight: '800', letterSpacing: -0.5 },
   productPrice: { fontSize: 13, fontWeight: '800', letterSpacing: -0.3 },
-  addButton: { backgroundColor: '#FF5555', paddingVertical: 8, borderRadius: 12, alignItems: 'center', marginTop: 4 },
+  addButton: { backgroundColor: '#1D9BF0', paddingVertical: 8, borderRadius: 12, alignItems: 'center', marginTop: 4 },
   addButtonText: { color: '#fff', fontSize: 11, fontWeight: '700', letterSpacing: 0.5 },
 
   footerContainer: { paddingHorizontal: Spacing.md, paddingBottom: Spacing.md },

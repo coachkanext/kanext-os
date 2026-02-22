@@ -100,16 +100,16 @@ const RESOURCE_TYPE_ICON: Record<string, string> = {
 
 /** Event type badge color mapping */
 const EVENT_TYPE_COLOR: Record<string, string> = {
-  regular: '#8F8F8F',
-  special: '#7A5CFF',
-  outreach: '#14B8A6',
+  regular: '#A1A1AA',
+  special: '#1D9BF0',
+  outreach: '#1D9BF0',
   retreat: '#F59E0B',
 };
 
 /** Teaching type badge color mapping */
 const TEACHING_TYPE_COLOR: Record<string, string> = {
-  sermon: '#6366F1',
-  lesson: '#6AA9FF',
+  sermon: '#1D9BF0',
+  lesson: '#1D9BF0',
   devotional: '#22C55E',
   training: '#F59E0B',
 };
@@ -117,29 +117,29 @@ const TEACHING_TYPE_COLOR: Record<string, string> = {
 /** Pack status color mapping */
 const PACK_STATUS_COLOR: Record<string, string> = {
   active: '#22C55E',
-  upcoming: '#6AA9FF',
-  completed: '#8F8F8F',
+  upcoming: '#1D9BF0',
+  completed: '#A1A1AA',
 };
 
 /** Action status icon mapping */
 const ACTION_STATUS_ICON_COLOR: Record<string, string> = {
   pending: '#F59E0B',
-  'in-progress': '#6AA9FF',
+  'in-progress': '#1D9BF0',
   completed: '#22C55E',
 };
 
 /** Action type badge color */
 const ACTION_TYPE_COLOR: Record<string, string> = {
-  discipleship: '#6366F1',
-  volunteer: '#14B8A6',
-  admin: '#8F8F8F',
+  discipleship: '#1D9BF0',
+  volunteer: '#1D9BF0',
+  admin: '#A1A1AA',
 };
 
 /** Priority badge color */
 const PRIORITY_COLOR: Record<string, string> = {
   high: '#EF4444',
   medium: '#F59E0B',
-  low: '#8F8F8F',
+  low: '#A1A1AA',
 };
 
 /** Audit action icon mapping */
@@ -155,12 +155,12 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  added: '#6AA9FF',
+  added: '#1D9BF0',
   updated: '#F59E0B',
-  published: '#7A5CFF',
-  scheduled: '#14B8A6',
-  joined: '#6366F1',
-  default: '#8F8F8F',
+  published: '#1D9BF0',
+  scheduled: '#1D9BF0',
+  joined: '#1D9BF0',
+  default: '#A1A1AA',
 };
 
 function getAuditActionKey(action: string): string {
@@ -493,7 +493,7 @@ function EventsTab({
       contentContainerStyle={s.tabScroll}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
-        const typeColor = EVENT_TYPE_COLOR[item.type] ?? '#8F8F8F';
+        const typeColor = EVENT_TYPE_COLOR[item.type] ?? '#A1A1AA';
         const dateParts = item.date.split('-');
         const month = new Date(item.date + 'T00:00:00').toLocaleString('en-US', { month: 'short' });
         const day = dateParts[2];
@@ -558,7 +558,7 @@ function TeachingsTab({
       contentContainerStyle={s.tabScroll}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
-        const typeColor = TEACHING_TYPE_COLOR[item.type] ?? '#8F8F8F';
+        const typeColor = TEACHING_TYPE_COLOR[item.type] ?? '#A1A1AA';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.teachingRow}>
@@ -626,7 +626,7 @@ function PacksTab({
       contentContainerStyle={s.tabScroll}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
-        const statusColor = PACK_STATUS_COLOR[item.status] ?? '#8F8F8F';
+        const statusColor = PACK_STATUS_COLOR[item.status] ?? '#A1A1AA';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.packRow}>
@@ -688,9 +688,9 @@ function ActionsTab({
       contentContainerStyle={s.tabScroll}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
-        const statusIconColor = ACTION_STATUS_ICON_COLOR[item.status] ?? '#8F8F8F';
-        const priorityColor = PRIORITY_COLOR[item.priority] ?? '#8F8F8F';
-        const typeColor = ACTION_TYPE_COLOR[item.type] ?? '#8F8F8F';
+        const statusIconColor = ACTION_STATUS_ICON_COLOR[item.status] ?? '#A1A1AA';
+        const priorityColor = PRIORITY_COLOR[item.priority] ?? '#A1A1AA';
+        const typeColor = ACTION_TYPE_COLOR[item.type] ?? '#A1A1AA';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.actionRow}>

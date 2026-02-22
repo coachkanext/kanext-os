@@ -202,14 +202,14 @@ export function TeamQuickSheet({
             <View style={s.recordPill}>
               <Text style={s.recordPillTextMuted}>{FMU_RECORD.conference} conf</Text>
             </View>
-            <View style={[s.recordPill, { backgroundColor: fmuStreak.startsWith('W') ? '#4CAF5020' : '#EF444420' }]}>
-              <Text style={[s.recordPillText, { color: fmuStreak.startsWith('W') ? '#4ade80' : '#f87171' }]}>{fmuStreak}</Text>
+            <View style={[s.recordPill, { backgroundColor: fmuStreak.startsWith('W') ? '#22C55E20' : '#EF444420' }]}>
+              <Text style={[s.recordPillText, { color: fmuStreak.startsWith('W') ? '#22C55E' : '#EF4444' }]}>{fmuStreak}</Text>
             </View>
             <View style={s.recordPill}>
               <Text style={s.recordPillTextMuted}>#{FMU_CONF_POSITION}</Text>
             </View>
             <View style={[s.recordPill, { backgroundColor: 'rgba(255,209,0,0.12)' }]}>
-              <Text style={[s.recordPillText, { color: '#FFD100', fontSize: 11 }]}>Regional Power</Text>
+              <Text style={[s.recordPillText, { color: '#F59E0B', fontSize: 11 }]}>Regional Power</Text>
             </View>
           </View>
 
@@ -406,8 +406,8 @@ export function TeamQuickSheet({
                 <View style={[s.progRow, { borderBottomWidth: 0 }]}>
                   <Text style={s.progLabel}>Colors</Text>
                   <View style={s.colorsRow}>
-                    <View style={[s.colorDot, { backgroundColor: '#003DA5' }]} />
-                    <View style={[s.colorDot, { backgroundColor: '#FFD100' }]} />
+                    <View style={[s.colorDot, { backgroundColor: '#1D9BF0' }]} />
+                    <View style={[s.colorDot, { backgroundColor: '#F59E0B' }]} />
                     <Text style={s.progValue}>Royal Blue {'\u0026'} Gold</Text>
                   </View>
                 </View>
@@ -472,7 +472,7 @@ const s = StyleSheet.create({
   },
   krBadge: {
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
@@ -498,7 +498,7 @@ const s = StyleSheet.create({
     marginBottom: 16,
   },
   recordPill: {
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -519,7 +519,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     gap: 4,
     marginBottom: 16,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 10,
     padding: 3,
   },
@@ -551,17 +551,17 @@ const s = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1.0,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: 8,
     marginTop: 4,
   },
 
   // Card
   card: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
     padding: 14,
     marginBottom: 14,
   },
@@ -579,9 +579,9 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: '#2F3336',
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 6,
@@ -614,7 +614,7 @@ const s = StyleSheet.create({
   },
   winBullet: {
     fontSize: 13,
-    color: '#4ade80',
+    color: '#22C55E',
     lineHeight: 18,
   },
   listItemText: {
@@ -635,10 +635,10 @@ const s = StyleSheet.create({
   coachRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
     padding: 12,
     marginBottom: 2,
     gap: 12,
@@ -677,7 +677,7 @@ const s = StyleSheet.create({
   hcBadgeText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#FFD100',
+    color: '#F59E0B',
   },
   coachRole: {
     fontSize: 12,
@@ -692,10 +692,10 @@ const s = StyleSheet.create({
     marginTop: 1,
   },
   coachDetail: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
     padding: 14,
     marginBottom: 10,
     marginTop: 2,
@@ -711,7 +711,7 @@ const s = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.8,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: 6,
     marginTop: 8,
   },
@@ -731,7 +731,7 @@ const s = StyleSheet.create({
     alignItems: 'baseline',
     paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   systemLabel: {
     fontSize: 12,
@@ -750,7 +750,7 @@ const s = StyleSheet.create({
     alignItems: 'flex-start',
     paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
     gap: 12,
   },
   historySeasonText: {
@@ -778,10 +778,10 @@ const s = StyleSheet.create({
   },
   tendencyCard: {
     width: '47%' as any,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
     padding: 12,
     alignItems: 'center',
   },
@@ -805,7 +805,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 7,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   progLabel: {
     fontSize: 12,
@@ -834,7 +834,7 @@ const s = StyleSheet.create({
     alignItems: 'baseline',
     paddingVertical: 7,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
     gap: 8,
   },
   seasonHistYear: {

@@ -54,28 +54,28 @@ interface UniversalServiceSheetProps {
 // =============================================================================
 
 const SERVICE_STATUS_COLORS: Record<string, string> = {
-  upcoming: '#6AA9FF',
+  upcoming: '#1D9BF0',
   live: '#22C55E',
-  completed: '#8F8F8F',
+  completed: '#A1A1AA',
 };
 
 const AGENDA_TYPE_COLORS: Record<string, string> = {
-  setup: '#8F8F8F',
-  doors: '#6AA9FF',
-  worship: '#A78BFA',
+  setup: '#A1A1AA',
+  doors: '#1D9BF0',
+  worship: '#1D9BF0',
   teaching: '#F59E0B',
   small_groups: '#22C55E',
-  teardown: '#8F8F8F',
+  teardown: '#A1A1AA',
   offering: '#F59E0B',
-  announcements: '#6AA9FF',
+  announcements: '#1D9BF0',
 };
 
 const INCIDENT_TYPE_COLORS: Record<string, string> = {
   child_safety: '#EF4444',
   medical: '#F59E0B',
-  conflict: '#A78BFA',
-  property: '#8F8F8F',
-  other: '#8F8F8F',
+  conflict: '#1D9BF0',
+  property: '#A1A1AA',
+  other: '#A1A1AA',
 };
 
 const SENSITIVITY_COLORS: Record<string, string> = {
@@ -88,7 +88,7 @@ const INCIDENT_STATUS_COLORS: Record<string, string> = {
   open: '#EF4444',
   investigating: '#F59E0B',
   resolved: '#22C55E',
-  closed: '#8F8F8F',
+  closed: '#A1A1AA',
 };
 
 // =============================================================================
@@ -293,7 +293,7 @@ function ServiceHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (SERVICE_STATUS_COLORS[service.status] ?? '#8F8F8F') + '1A' },
+            { backgroundColor: (SERVICE_STATUS_COLORS[service.status] ?? '#A1A1AA') + '1A' },
           ]}
         >
           {service.status === 'live' && (
@@ -305,14 +305,14 @@ function ServiceHeader({
             <View
               style={[
                 styles.statusDot,
-                { backgroundColor: SERVICE_STATUS_COLORS[service.status] ?? '#8F8F8F' },
+                { backgroundColor: SERVICE_STATUS_COLORS[service.status] ?? '#A1A1AA' },
               ]}
             />
           )}
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: SERVICE_STATUS_COLORS[service.status] ?? '#8F8F8F' },
+              { color: SERVICE_STATUS_COLORS[service.status] ?? '#A1A1AA' },
             ]}
           >
             {service.status.charAt(0).toUpperCase() + service.status.slice(1)}
@@ -398,7 +398,7 @@ function AgendaTab({
               <View
                 style={[
                   styles.agendaTimelineBar,
-                  { backgroundColor: AGENDA_TYPE_COLORS[block.type] ?? '#8F8F8F' },
+                  { backgroundColor: AGENDA_TYPE_COLORS[block.type] ?? '#A1A1AA' },
                 ]}
               />
               <View style={[styles.agendaTimeCol]}>
@@ -490,7 +490,7 @@ function AssignmentsTab({
           <StatBlock
             label="Total Roles"
             value={String(SERVICE_ROLES_NEEDED.length)}
-            color="#DDDDDD"
+            color="#FFFFFF"
             colors={colors}
           />
           <StatBlock
@@ -552,17 +552,17 @@ function RunOfShowTab({
               {/* Media links */}
               <View style={styles.mediaLinkRow}>
                 {segment.slidesLink && (
-                  <View style={[styles.mediaLinkChip, { backgroundColor: '#6AA9FF22' }]}>
-                    <IconSymbol name="doc.fill" size={10} color="#6AA9FF" />
-                    <ThemedText style={[styles.mediaLinkText, { color: '#6AA9FF' }]}>
+                  <View style={[styles.mediaLinkChip, { backgroundColor: '#1D9BF022' }]}>
+                    <IconSymbol name="doc.fill" size={10} color="#1D9BF0" />
+                    <ThemedText style={[styles.mediaLinkText, { color: '#1D9BF0' }]}>
                       Slides
                     </ThemedText>
                   </View>
                 )}
                 {segment.lyricsLink && (
-                  <View style={[styles.mediaLinkChip, { backgroundColor: '#A78BFA22' }]}>
-                    <IconSymbol name="music.note" size={10} color="#A78BFA" />
-                    <ThemedText style={[styles.mediaLinkText, { color: '#A78BFA' }]}>
+                  <View style={[styles.mediaLinkChip, { backgroundColor: '#1D9BF022' }]}>
+                    <IconSymbol name="music.note" size={10} color="#1D9BF0" />
+                    <ThemedText style={[styles.mediaLinkText, { color: '#1D9BF0' }]}>
                       Lyrics
                     </ThemedText>
                   </View>
@@ -697,13 +697,13 @@ function AttendanceTab({
           <StatBlock
             label="Total Check-Ins"
             value={String(data.checkInCount)}
-            color="#DDDDDD"
+            color="#FFFFFF"
             colors={colors}
           />
           <StatBlock
             label="New Visitors"
             value={String(data.newVisitors)}
-            color="#6AA9FF"
+            color="#1D9BF0"
             colors={colors}
           />
         </View>
@@ -786,13 +786,13 @@ function IncidentsTab({
                 <View
                   style={[
                     styles.incidentTypeBadge,
-                    { backgroundColor: (INCIDENT_TYPE_COLORS[inc.type] ?? '#8F8F8F') + '22' },
+                    { backgroundColor: (INCIDENT_TYPE_COLORS[inc.type] ?? '#A1A1AA') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.incidentTypeText,
-                      { color: INCIDENT_TYPE_COLORS[inc.type] ?? '#8F8F8F' },
+                      { color: INCIDENT_TYPE_COLORS[inc.type] ?? '#A1A1AA' },
                     ]}
                   >
                     {inc.type.replace('_', ' ').toUpperCase()}
@@ -801,13 +801,13 @@ function IncidentsTab({
                 <View
                   style={[
                     styles.sensitivityBadge,
-                    { backgroundColor: (SENSITIVITY_COLORS[inc.sensitivity] ?? '#8F8F8F') + '22' },
+                    { backgroundColor: (SENSITIVITY_COLORS[inc.sensitivity] ?? '#A1A1AA') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.sensitivityText,
-                      { color: SENSITIVITY_COLORS[inc.sensitivity] ?? '#8F8F8F' },
+                      { color: SENSITIVITY_COLORS[inc.sensitivity] ?? '#A1A1AA' },
                     ]}
                   >
                     {inc.sensitivity.toUpperCase()}
@@ -831,13 +831,13 @@ function IncidentsTab({
                 <View
                   style={[
                     styles.incidentStatusBadge,
-                    { backgroundColor: (INCIDENT_STATUS_COLORS[inc.status] ?? '#8F8F8F') + '22' },
+                    { backgroundColor: (INCIDENT_STATUS_COLORS[inc.status] ?? '#A1A1AA') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.incidentStatusText,
-                      { color: INCIDENT_STATUS_COLORS[inc.status] ?? '#8F8F8F' },
+                      { color: INCIDENT_STATUS_COLORS[inc.status] ?? '#A1A1AA' },
                     ]}
                   >
                     {inc.status.toUpperCase()}
@@ -883,7 +883,7 @@ function RecapFollowUpTab({
             key={idx}
             style={[styles.recapNoteRow, { borderBottomColor: colors.border }]}
           >
-            <View style={[styles.recapBullet, { backgroundColor: '#6AA9FF' }]} />
+            <View style={[styles.recapBullet, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[styles.bodyText, { color: colors.text, flex: 1 }]}>
               {note}
             </ThemedText>
@@ -901,13 +901,13 @@ function RecapFollowUpTab({
             <View
               style={[
                 styles.actionTypeBadge,
-                { backgroundColor: action.type === 'follow_up' ? '#6AA9FF22' : '#F59E0B22' },
+                { backgroundColor: action.type === 'follow_up' ? '#1D9BF022' : '#F59E0B22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.actionTypeText,
-                  { color: action.type === 'follow_up' ? '#6AA9FF' : '#F59E0B' },
+                  { color: action.type === 'follow_up' ? '#1D9BF0' : '#F59E0B' },
                 ]}
               >
                 {action.type === 'follow_up' ? 'FOLLOW-UP' : 'TASK'}

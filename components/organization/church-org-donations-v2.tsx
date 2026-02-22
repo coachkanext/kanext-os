@@ -227,10 +227,10 @@ function OverviewTab({
 
   const tileData = [
     { label: 'Total Giving MTD', value: tiles.totalGivingMTD, icon: 'dollarsign.circle.fill', color: '#22C55E' },
-    { label: 'Total Giving YTD', value: tiles.totalGivingYTD, icon: 'chart.line.uptrend.xyaxis', color: '#6AA9FF' },
-    { label: 'Active Recurring', value: String(tiles.activeRecurring), icon: 'arrow.triangle.2.circlepath', color: '#8B5CF6' },
+    { label: 'Total Giving YTD', value: tiles.totalGivingYTD, icon: 'chart.line.uptrend.xyaxis', color: '#1D9BF0' },
+    { label: 'Active Recurring', value: String(tiles.activeRecurring), icon: 'arrow.triangle.2.circlepath', color: '#1D9BF0' },
     { label: 'Fund Balances', value: isFinanceLevel ? formatCurrency(data.funds.reduce((s, f) => s + f.balance, 0)) : '---', icon: 'banknote.fill', color: '#F59E0B' },
-    { label: 'Campaign Progress', value: `${data.campaigns.filter((c) => c.status === 'active').length} Active`, icon: 'flag.fill', color: '#EC4899' },
+    { label: 'Campaign Progress', value: `${data.campaigns.filter((c) => c.status === 'active').length} Active`, icon: 'flag.fill', color: '#1D9BF0' },
     { label: 'Exception Flags', value: String(tiles.exceptionFlags), icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
   ];
 
@@ -580,8 +580,8 @@ function FundsTab({
               </ThemedText>
               <View style={s.fundBadgeRow}>
                 <StatusBadge label={FUND_TYPE_LABELS[item.type].toUpperCase()} color={typeColor} />
-                <StatusBadge label={FUND_RESTRICTION_LABELS[item.restriction].toUpperCase()} color={item.restriction === 'unrestricted' ? '#22C55E' : item.restriction === 'designated' ? '#6AA9FF' : '#F59E0B'} />
-                <StatusBadge label={FUND_STATUS_LABELS[item.status].toUpperCase()} color={item.status === 'active' ? '#22C55E' : '#8F8F8F'} />
+                <StatusBadge label={FUND_RESTRICTION_LABELS[item.restriction].toUpperCase()} color={item.restriction === 'unrestricted' ? '#22C55E' : item.restriction === 'designated' ? '#1D9BF0' : '#F59E0B'} />
+                <StatusBadge label={FUND_STATUS_LABELS[item.status].toUpperCase()} color={item.status === 'active' ? '#22C55E' : '#A1A1AA'} />
               </View>
             </View>
           </View>
@@ -786,7 +786,7 @@ function DonorsTab({
                 <StatusBadge label={item.lifetimeGivingBand} color={accentColor} />
                 <StatusBadge label={DONOR_STATUS_LABELS[item.status].toUpperCase()} color={statusColor} />
                 {item.recurringStatus && (
-                  <StatusBadge label="RECURRING" color="#8B5CF6" />
+                  <StatusBadge label="RECURRING" color="#1D9BF0" />
                 )}
               </View>
             </View>
@@ -896,7 +896,7 @@ function RecurringTab({
       </ThemedText>
 
       {visibleGifts.map((gift) => {
-        const statusColor = gift.status === 'active' ? '#22C55E' : gift.status === 'paused' ? '#F59E0B' : gift.status === 'failed' ? '#EF4444' : '#8F8F8F';
+        const statusColor = gift.status === 'active' ? '#22C55E' : gift.status === 'paused' ? '#F59E0B' : gift.status === 'failed' ? '#EF4444' : '#A1A1AA';
         return (
           <View
             key={gift.id}
@@ -1158,7 +1158,7 @@ function ReconciliationTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Failed</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#8B5CF6' }]}>{returnedCount}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#1D9BF0' }]}>{returnedCount}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Returned</ThemedText>
         </View>
       </View>
@@ -1299,8 +1299,8 @@ function FundDetailSheet({
       {/* Status Row */}
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={FUND_TYPE_LABELS[fund.type].toUpperCase()} color={typeColor} />
-        <StatusBadge label={FUND_RESTRICTION_LABELS[fund.restriction].toUpperCase()} color={fund.restriction === 'unrestricted' ? '#22C55E' : fund.restriction === 'designated' ? '#6AA9FF' : '#F59E0B'} />
-        <StatusBadge label={FUND_STATUS_LABELS[fund.status].toUpperCase()} color={fund.status === 'active' ? '#22C55E' : '#8F8F8F'} />
+        <StatusBadge label={FUND_RESTRICTION_LABELS[fund.restriction].toUpperCase()} color={fund.restriction === 'unrestricted' ? '#22C55E' : fund.restriction === 'designated' ? '#1D9BF0' : '#F59E0B'} />
+        <StatusBadge label={FUND_STATUS_LABELS[fund.status].toUpperCase()} color={fund.status === 'active' ? '#22C55E' : '#A1A1AA'} />
       </View>
 
       {/* Balance */}
@@ -1586,7 +1586,7 @@ function DonorDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={donor.lifetimeGivingBand} color={accentColor} />
         <StatusBadge label={DONOR_STATUS_LABELS[donor.status].toUpperCase()} color={statusColor} />
-        {donor.recurringStatus && <StatusBadge label="RECURRING" color="#8B5CF6" />}
+        {donor.recurringStatus && <StatusBadge label="RECURRING" color="#1D9BF0" />}
       </View>
 
       {/* Quick Stats */}
@@ -2011,7 +2011,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

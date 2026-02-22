@@ -56,7 +56,7 @@ export function ComposeSheetV2({ onClose }: ComposeSheetV2Props) {
           return (
             <Pressable
               key={pt.key}
-              style={[styles.pill, { backgroundColor: isActive ? '#f5f5f5' : '#191919' }]}
+              style={[styles.pill, { backgroundColor: isActive ? '#FFFFFF' : '#0B0F14' }]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setPostType(pt.key);
@@ -65,9 +65,9 @@ export function ComposeSheetV2({ onClose }: ComposeSheetV2Props) {
               <IconSymbol
                 name={pt.icon as any}
                 size={14}
-                color={isActive ? '#000' : '#6e6e6e'}
+                color={isActive ? '#000' : '#A1A1AA'}
               />
-              <ThemedText style={[styles.pillText, { color: isActive ? '#000' : '#6e6e6e' }]}>
+              <ThemedText style={[styles.pillText, { color: isActive ? '#000' : '#A1A1AA' }]}>
                 {pt.label}
               </ThemedText>
             </Pressable>
@@ -99,13 +99,13 @@ export function ComposeSheetV2({ onClose }: ComposeSheetV2Props) {
           return (
             <Pressable
               key={a.key}
-              style={[styles.pill, { backgroundColor: isActive ? '#f5f5f5' : '#191919' }]}
+              style={[styles.pill, { backgroundColor: isActive ? '#FFFFFF' : '#0B0F14' }]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setAudience(a.key);
               }}
             >
-              <ThemedText style={[styles.pillText, { color: isActive ? '#000' : '#6e6e6e' }]}>
+              <ThemedText style={[styles.pillText, { color: isActive ? '#000' : '#A1A1AA' }]}>
                 {a.label}
               </ThemedText>
             </Pressable>
@@ -117,7 +117,7 @@ export function ComposeSheetV2({ onClose }: ComposeSheetV2Props) {
       <Pressable
         style={({ pressed }) => [
           styles.postBtn,
-          { opacity: pressed ? 0.7 : 1, backgroundColor: text.trim() ? '#f5f5f5' : '#333' },
+          { opacity: pressed ? 0.7 : 1, backgroundColor: text.trim() ? '#FFFFFF' : '#333' },
         ]}
         onPress={handlePost}
         disabled={!text.trim()}
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: Spacing.xs,
   },
   pillScroll: {
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
     padding: Spacing.md,
     fontSize: 15,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     minHeight: 100,
     marginBottom: Spacing.md,
   },

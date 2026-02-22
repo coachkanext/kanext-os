@@ -162,8 +162,8 @@ export const INSTITUTION = {
   division: 'NAIA',
   founded: 1879,
   colors: {
-    primary: '#003DA5',
-    secondary: '#FFB81C',
+    primary: '#1D9BF0',
+    secondary: '#F59E0B',
   },
   description: 'KaNeXT Sports is a private university located in Nashville, Tennessee. The basketball program competes in the NAIA KaNeXT Conference.',
 };
@@ -1069,12 +1069,12 @@ export function getRecruitingStatusLabel(status: RecruitingStatus): string {
 
 export function getRecruitingStatusColor(status: RecruitingStatus): string {
   const colors: Record<RecruitingStatus, string> = {
-    watching: '#555555',
-    priority: '#6e6e6e',
-    contacted: '#d4d4d4',
+    watching: '#52525B',
+    priority: '#A1A1AA',
+    contacted: '#A1A1AA',
     offered: '#ffffff',
-    committed: '#f5f5f5',
-    archived: '#555555',
+    committed: '#FFFFFF',
+    archived: '#52525B',
   };
   return colors[status];
 }

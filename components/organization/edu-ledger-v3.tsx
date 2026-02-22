@@ -85,18 +85,18 @@ const RECEIPTS: Receipt[] = [
 ];
 
 const CATEGORY_COLOR: Record<Exclude<TxCategory, 'All'>, string> = {
-  Tuition: '#14B8A6',
-  Aid: '#6AA9FF',
-  Payroll: '#A78BFA',
+  Tuition: '#1D9BF0',
+  Aid: '#1D9BF0',
+  Payroll: '#1D9BF0',
   Grants: '#22C55E',
   Vendors: '#F59E0B',
-  Donations: '#EC4899',
+  Donations: '#1D9BF0',
   Athletics: '#EF4444',
 };
 
 const PENDING_STATUS_COLOR: Record<string, string> = {
   'Awaiting Approval': '#F59E0B',
-  Processing: '#6AA9FF',
+  Processing: '#1D9BF0',
   Scheduled: '#22C55E',
 };
 
@@ -146,7 +146,7 @@ function TransactionsView({ colors, accentColor }: { colors: typeof Colors.light
           return (
             <Pressable
               key={cat}
-              style={[s.filterPill, { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' }]}
+              style={[s.filterPill, { backgroundColor: isActive ? accentColor : '#2F3336' }]}
               onPress={() => { Haptics.selectionAsync(); setFilter(cat); }}
             >
               <ThemedText style={[s.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
@@ -357,7 +357,7 @@ export function EduLedger({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >

@@ -140,20 +140,20 @@ const VOLUNTEER_GAPS: VolunteerGap[] = [
 const PRIORITY_COLORS: Record<string, string> = {
   High: '#EF4444',
   Normal: '#F59E0B',
-  Low: '#8F8F8F',
+  Low: '#A1A1AA',
 };
 
 const STATUS_COLORS: Record<string, string> = {
   Active: '#22C55E',
   Seasonal: '#F59E0B',
   Pending: '#F59E0B',
-  'In Progress': '#6AA9FF',
+  'In Progress': '#1D9BF0',
   Done: '#22C55E',
   Confirmed: '#22C55E',
-  Planning: '#6AA9FF',
+  Planning: '#1D9BF0',
   Tentative: '#F59E0B',
   Urgent: '#EF4444',
-  Normal: '#8F8F8F',
+  Normal: '#A1A1AA',
 };
 
 // =============================================================================
@@ -183,7 +183,7 @@ function ViewBar({
             style={[
               s.viewPill,
               {
-                backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)',
+                backgroundColor: isActive ? accentColor : '#2F3336',
               },
             ]}
             onPress={() => {

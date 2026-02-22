@@ -112,13 +112,13 @@ const OPS_MILESTONES = [
 const PRIORITY_COLORS: Record<string, string> = {
   high: '#EF4444',
   medium: '#F59E0B',
-  low: '#6B7280',
+  low: '#A1A1AA',
 };
 
 const STATUS_COLORS: Record<string, string> = {
   complete: '#22C55E',
-  in_progress: '#3B82F6',
-  planned: '#6B7280',
+  in_progress: '#1D9BF0',
+  planned: '#A1A1AA',
   done: '#22C55E',
 };
 
@@ -386,7 +386,7 @@ export function BizProgram({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.viewPill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handleViewPress(v.id)}
             >

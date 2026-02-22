@@ -75,7 +75,7 @@ export function EduCalendarNewsView({ colors, accent }: Props) {
             {/* Thumbnail (16:9) */}
             <View style={styles.thumbnail}>
               <LinearGradient
-                colors={['#0a2e1a', '#0d1a0f']}
+                colors={['#0B0F14', '#0B0F14']}
                 style={styles.thumbnailGradient}
               >
                 {item.type === 'video' && (
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
   },
   categoryPillText: { fontSize: 12, fontWeight: '600' },
   card: { borderRadius: 12, borderWidth: 1, marginBottom: 12, overflow: 'hidden' },

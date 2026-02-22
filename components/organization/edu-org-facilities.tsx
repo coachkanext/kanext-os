@@ -102,12 +102,12 @@ function OverviewTab({
   role?: EducationRoleLens;
 }) {
   const kpis = [
-    { id: 'total', label: 'Total Rooms', value: `${overview.totalRooms}`, icon: 'building.2.fill', color: '#3B82F6' },
+    { id: 'total', label: 'Total Rooms', value: `${overview.totalRooms}`, icon: 'building.2.fill', color: '#1D9BF0' },
     { id: 'available', label: 'Available Now', value: `${overview.availableNow}`, icon: 'checkmark.circle.fill', color: '#22C55E' },
     { id: 'booked', label: 'Booked Today', value: `${overview.bookedToday}`, icon: 'calendar', color: '#F59E0B' },
     { id: 'maint', label: 'Maintenance', value: `${overview.underMaintenance}`, icon: 'wrench.and.screwdriver.fill', color: '#EF4444' },
-    { id: 'buildings', label: 'Buildings', value: `${overview.totalBuildings}`, icon: 'building.fill', color: '#8B5CF6' },
-    { id: 'occupancy', label: 'Avg Occupancy', value: `${overview.avgOccupancy}%`, icon: 'chart.bar.fill', color: '#14B8A6' },
+    { id: 'buildings', label: 'Buildings', value: `${overview.totalBuildings}`, icon: 'building.fill', color: '#1D9BF0' },
+    { id: 'occupancy', label: 'Avg Occupancy', value: `${overview.avgOccupancy}%`, icon: 'chart.bar.fill', color: '#1D9BF0' },
   ];
 
   // Count by type
@@ -1562,7 +1562,7 @@ const s = StyleSheet.create({
   complianceBar: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#A1A1AA',
     overflow: 'hidden',
   },
   complianceBarFill: {

@@ -44,7 +44,7 @@ const INVOICE_STATUS_COLORS: Record<string, string> = {
   paid: '#22C55E',
   pending: '#F59E0B',
   overdue: '#EF4444',
-  draft: '#8F8F8F',
+  draft: '#A1A1AA',
 };
 
 const TX_STATUS_COLORS: Record<string, string> = {

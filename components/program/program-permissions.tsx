@@ -14,9 +14,9 @@ import type { PermissionTier } from '@/data/mock-program-v2';
 
 const TIER_COLORS: Record<PermissionTier, string> = {
   admin: '#FFFFFF',
-  coach: '#6AA9FF',
+  coach: '#1D9BF0',
   staff: '#F59E0B',
-  viewer: '#424242',
+  viewer: '#52525B',
 };
 
 function SectionLabel({ text, colors }: { text: string; colors: typeof Colors.light }) {

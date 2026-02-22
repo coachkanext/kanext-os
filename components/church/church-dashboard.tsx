@@ -131,21 +131,21 @@ interface TodayItem {
 }
 
 const TODAY_STAFF: TodayItem[] = [
-  { id: 'ts-1', title: 'Staff Prayer Meeting', badge: 'DAILY', badgeColor: '#8B5CF6', owner: 'Pastoral Team', time: '8:00 AM', location: 'Room 201' },
-  { id: 'ts-2', title: 'Worship Rehearsal', badge: 'REHEARSAL', badgeColor: '#3B82F6', owner: 'Praise Team', time: '4:00 PM', location: 'Sanctuary', prepRequired: true, volunteerGaps: 1 },
+  { id: 'ts-1', title: 'Staff Prayer Meeting', badge: 'DAILY', badgeColor: '#1D9BF0', owner: 'Pastoral Team', time: '8:00 AM', location: 'Room 201' },
+  { id: 'ts-2', title: 'Worship Rehearsal', badge: 'REHEARSAL', badgeColor: '#1D9BF0', owner: 'Praise Team', time: '4:00 PM', location: 'Sanctuary', prepRequired: true, volunteerGaps: 1 },
   { id: 'ts-3', title: 'Facilities Setup', badgeColor: '#F59E0B', owner: 'Operations', time: '5:00 PM', location: 'Main Campus' },
-  { id: 'ts-4', title: 'Marriage Counseling \u2014 Jones Family', badge: 'PASTORAL', badgeColor: '#EC4899', owner: 'Pastor Williams', time: '6:00 PM', location: 'Office 104' },
+  { id: 'ts-4', title: 'Marriage Counseling \u2014 Jones Family', badge: 'PASTORAL', badgeColor: '#1D9BF0', owner: 'Pastor Williams', time: '6:00 PM', location: 'Office 104' },
   { id: 'ts-5', title: 'Elder Board Call', badge: 'LEADERSHIP', badgeColor: '#EF4444', owner: 'Elder Board', time: '7:00 PM', location: 'Zoom' },
 ];
 
 const TODAY_MEMBER: TodayItem[] = [
   { id: 'tm-1', title: 'Small Group \u2014 West Side', badge: 'GROUP', badgeColor: '#22C55E', owner: 'Michael Chen', time: '7:00 PM', location: 'Chen Home' },
-  { id: 'tm-2', title: 'Serve: Parking Team', badge: 'SERVE', badgeColor: '#3B82F6', owner: 'Operations Ministry', time: 'Sunday 9:00 AM', location: 'Lot B' },
-  { id: 'tm-3', title: 'Youth Bible Study', badge: 'WEEKLY', badgeColor: '#8B5CF6', owner: 'Youth Ministry', time: '6:30 PM', location: 'Youth Room' },
+  { id: 'tm-2', title: 'Serve: Parking Team', badge: 'SERVE', badgeColor: '#1D9BF0', owner: 'Operations Ministry', time: 'Sunday 9:00 AM', location: 'Lot B' },
+  { id: 'tm-3', title: 'Youth Bible Study', badge: 'WEEKLY', badgeColor: '#1D9BF0', owner: 'Youth Ministry', time: '6:30 PM', location: 'Youth Room' },
 ];
 
 const TODAY_VISITOR: TodayItem[] = [
-  { id: 'tv-1', title: 'Sunday Morning Worship', badge: 'SERVICE', badgeColor: '#3B82F6', owner: 'All Campuses', time: 'Sunday 10:00 AM', location: 'Main Sanctuary' },
+  { id: 'tv-1', title: 'Sunday Morning Worship', badge: 'SERVICE', badgeColor: '#1D9BF0', owner: 'All Campuses', time: 'Sunday 10:00 AM', location: 'Main Sanctuary' },
 ];
 
 interface NextEvent {
@@ -185,7 +185,7 @@ const NEXT_EVENT_VISITOR: NextEvent = {
   countdown: '4 days',
   countdownHours: 96,
   readiness: 'Open',
-  readinessColor: '#3B82F6',
+  readinessColor: '#1D9BF0',
 };
 
 // --- Block 3: Service Readiness ---
@@ -348,7 +348,7 @@ function sortAlerts(alerts: AlertItem[]): AlertItem[] {
 const ALERT_LEVEL_COLOR: Record<AlertLevel, string> = {
   red: '#EF4444',
   amber: '#F59E0B',
-  blue: '#3B82F6',
+  blue: '#1D9BF0',
 };
 
 // --- Block 6: Quick Actions ---
@@ -409,12 +409,12 @@ const FEED_POSTS: FeedPost[] = [
 ];
 
 const FEED_TYPE_COLOR: Record<string, string> = {
-  announcement: '#3B82F6',
-  devotional: '#8B5CF6',
+  announcement: '#1D9BF0',
+  devotional: '#1D9BF0',
   update: '#22C55E',
   ministry: '#F59E0B',
-  prayer: '#EC4899',
-  event: '#06B6D4',
+  prayer: '#1D9BF0',
+  event: '#1D9BF0',
 };
 
 function filterFeedByRole(posts: FeedPost[], role: ChurchRoleLens): FeedPost[] {
@@ -463,13 +463,13 @@ function sortPinned(items: PinnedItem[]): PinnedItem[] {
 }
 
 const PINNED_TYPE_COLOR: Record<PinnedType, string> = {
-  'ministry': '#8B5CF6',
-  'service-plan': '#3B82F6',
+  'ministry': '#1D9BF0',
+  'service-plan': '#1D9BF0',
   'worship-plan': '#F59E0B',
   'kids-curriculum': '#22C55E',
-  'volunteer-roster': '#06B6D4',
+  'volunteer-roster': '#1D9BF0',
   'facility-checklist': '#EF4444',
-  'prayer-list': '#EC4899',
+  'prayer-list': '#1D9BF0',
 };
 
 // =============================================================================
@@ -512,7 +512,7 @@ const sh = StyleSheet.create({
 const HERO_BADGE_COLOR: Record<HeroBadge, string> = {
   LIVE: '#EF4444',
   NEW: '#22C55E',
-  REPLAY: '#8B5CF6',
+  REPLAY: '#1D9BF0',
 };
 
 function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
@@ -535,7 +535,7 @@ function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: C
       <Pressable
         style={({ pressed }) => [
           s.heroCard,
-          { backgroundColor: '#1a1a2e', opacity: pressed ? 0.9 : 1 },
+          { backgroundColor: '#0B0F14', opacity: pressed ? 0.9 : 1 },
         ]}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
       >
@@ -622,7 +622,7 @@ function WeeklyThemeBlock({ colors }: { colors: typeof Colors.light }) {
       <Card colors={colors}>
         {/* Sermon series */}
         <View style={s.seriesHeader}>
-          <IconSymbol name="book.fill" size={16} color="#8B5CF6" />
+          <IconSymbol name="book.fill" size={16} color="#1D9BF0" />
           <ThemedText style={[s.seriesName, { color: colors.text }]}>
             {SERMON_SERIES.name}
           </ThemedText>
@@ -638,7 +638,7 @@ function WeeklyThemeBlock({ colors }: { colors: typeof Colors.light }) {
             Week {SERMON_SERIES.currentWeek} of {SERMON_SERIES.totalWeeks}
           </ThemedText>
           <View style={[s.progressBarBg, { backgroundColor: colors.backgroundTertiary }]}>
-            <View style={[s.progressBarFill, { width: `${Math.round(progress * 100)}%`, backgroundColor: '#8B5CF6' }]} />
+            <View style={[s.progressBarFill, { width: `${Math.round(progress * 100)}%`, backgroundColor: '#1D9BF0' }]} />
           </View>
         </View>
 
@@ -663,7 +663,7 @@ function WeeklyThemeBlock({ colors }: { colors: typeof Colors.light }) {
 
         {/* Prayer focus — with "This week we're praying for:" prefix */}
         <View style={s.prayerContainer}>
-          <IconSymbol name="hands.sparkles.fill" size={14} color="#EC4899" />
+          <IconSymbol name="hands.sparkles.fill" size={14} color="#1D9BF0" />
           <View style={s.prayerTextBlock}>
             <ThemedText style={[s.prayerLabel, { color: colors.textSecondary }]}>
               PRAYER FOCUS THIS WEEK
@@ -727,8 +727,8 @@ function TodayNextBlock({ colors, role }: { colors: typeof Colors.light; role: C
                   {item.title}
                 </ThemedText>
                 {item.badge && (
-                  <View style={[s.todayBadge, { backgroundColor: (item.badgeColor ?? '#3B82F6') + '20' }]}>
-                    <ThemedText style={[s.todayBadgeText, { color: item.badgeColor ?? '#3B82F6' }]}>
+                  <View style={[s.todayBadge, { backgroundColor: (item.badgeColor ?? '#1D9BF0') + '20' }]}>
+                    <ThemedText style={[s.todayBadgeText, { color: item.badgeColor ?? '#1D9BF0' }]}>
                       {item.badge}
                     </ThemedText>
                   </View>
@@ -824,7 +824,7 @@ function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; 
           style={({ pressed }) => [s.devoCTA, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
         >
-          <IconSymbol name="video.fill" size={16} color="#3B82F6" />
+          <IconSymbol name="video.fill" size={16} color="#1D9BF0" />
           <ThemedText style={[s.devoCTAText, { color: colors.text }]}>Watch Livestream</ThemedText>
           <IconSymbol name="chevron.right" size={12} color={colors.textSecondary} />
         </Pressable>
@@ -1280,7 +1280,7 @@ function FeedPreviewBlock({ colors, role }: { colors: typeof Colors.light; role:
             ]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
-            <View style={[s.feedDot, { backgroundColor: FEED_TYPE_COLOR[post.type] ?? '#3B82F6' }]} />
+            <View style={[s.feedDot, { backgroundColor: FEED_TYPE_COLOR[post.type] ?? '#1D9BF0' }]} />
             <ThemedText style={[s.feedTitleCompact, { color: colors.text }]} numberOfLines={1}>
               {post.title}
             </ThemedText>
@@ -1310,7 +1310,7 @@ function PinnedShelfBlock({ colors }: { colors: typeof Colors.light }) {
         contentContainerStyle={s.pinnedScroll}
       >
         {sorted.map((item) => {
-          const typeColor = PINNED_TYPE_COLOR[item.type] ?? '#3B82F6';
+          const typeColor = PINNED_TYPE_COLOR[item.type] ?? '#1D9BF0';
           return (
             <Pressable
               key={item.id}

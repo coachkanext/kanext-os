@@ -103,7 +103,7 @@ function AgendaTab({ colors }: { colors: typeof Colors.light }) {
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <SectionHeader title="CEO NOW" colors={colors} />
         {CEO_NOW.map((item) => {
-          const urgencyColor = SEVERITY_COLOR[item.urgency] ?? '#6B7280';
+          const urgencyColor = SEVERITY_COLOR[item.urgency] ?? '#A1A1AA';
           return (
             <View key={item.id} style={[s.nowRow, { borderBottomColor: colors.border }]}>
               <StatusDot color={urgencyColor} />
@@ -163,8 +163,8 @@ function AgendaTab({ colors }: { colors: typeof Colors.light }) {
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <SectionHeader title="Approvals Due" count={CEO_APPROVALS.filter((a) => a.status === 'pending').length} colors={colors} />
         {CEO_APPROVALS.filter((a) => a.status === 'pending').map((approval) => {
-          const catColor = APPROVAL_CATEGORY_COLOR[approval.category] ?? '#6B7280';
-          const urgencyColor = SEVERITY_COLOR[approval.urgency] ?? '#6B7280';
+          const catColor = APPROVAL_CATEGORY_COLOR[approval.category] ?? '#A1A1AA';
+          const urgencyColor = SEVERITY_COLOR[approval.urgency] ?? '#A1A1AA';
           return (
             <View key={approval.id} style={[s.approvalRow, { borderBottomColor: colors.border }]}>
               <StatusDot color={urgencyColor} />
@@ -189,7 +189,7 @@ function AgendaTab({ colors }: { colors: typeof Colors.light }) {
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <SectionHeader title="Risk Watch" count={RISK_WATCH.length} colors={colors} />
         {RISK_WATCH.map((risk) => {
-          const riskColor = SEVERITY_COLOR[risk.riskLevel] ?? '#6B7280';
+          const riskColor = SEVERITY_COLOR[risk.riskLevel] ?? '#A1A1AA';
           return (
             <View key={risk.id} style={[s.riskRow, { borderBottomColor: colors.border }]}>
               <View style={s.riskHeader}>
@@ -319,7 +319,7 @@ function EventsTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText style={[s.seasonStatLabel, { color: colors.textTertiary }]}>Live</ThemedText>
           </View>
           <View style={s.seasonStat}>
-            <ThemedText style={[s.seasonStatValue, { color: '#3B82F6' }]}>
+            <ThemedText style={[s.seasonStatValue, { color: '#1D9BF0' }]}>
               {liveOrUpcoming.filter((e) => e.status === 'upcoming').length}
             </ThemedText>
             <ThemedText style={[s.seasonStatLabel, { color: colors.textTertiary }]}>Upcoming</ThemedText>
@@ -503,9 +503,9 @@ function BoardView({ colors }: { colors: typeof Colors.light }) {
     <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <SectionHeader title="Executive Board" count={BOARD_ITEMS.length} colors={colors} />
       {BOARD_ITEMS.map((item) => {
-        const catColor = BOARD_CATEGORY_COLOR[item.category] ?? '#6B7280';
-        const priColor = BOARD_PRIORITY_COLOR[item.priority] ?? '#6B7280';
-        const statusColor = item.status === 'completed' ? '#22C55E' : item.status === 'in_progress' ? '#F59E0B' : item.status === 'deferred' ? '#6B7280' : '#3B82F6';
+        const catColor = BOARD_CATEGORY_COLOR[item.category] ?? '#A1A1AA';
+        const priColor = BOARD_PRIORITY_COLOR[item.priority] ?? '#A1A1AA';
+        const statusColor = item.status === 'completed' ? '#22C55E' : item.status === 'in_progress' ? '#F59E0B' : item.status === 'deferred' ? '#A1A1AA' : '#1D9BF0';
         return (
           <View key={item.id} style={[s.boardRow, { borderBottomColor: colors.border }]}>
             <StatusDot color={priColor} />
@@ -535,7 +535,7 @@ function ApprovalsView({ colors }: { colors: typeof Colors.light }) {
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <SectionHeader title="Pending Approvals" count={pending.length} colors={colors} />
         {pending.map((item) => {
-          const catColor = APPROVAL_CATEGORY_COLOR[item.category] ?? '#6B7280';
+          const catColor = APPROVAL_CATEGORY_COLOR[item.category] ?? '#A1A1AA';
           return (
             <View key={item.id} style={[s.opsApprovalRow, { borderBottomColor: colors.border }]}>
               <View style={s.flex1}>
@@ -569,7 +569,7 @@ function ApprovalsView({ colors }: { colors: typeof Colors.light }) {
         <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <SectionHeader title="Recently Resolved" count={resolved.length} colors={colors} />
           {resolved.map((item) => {
-            const catColor = APPROVAL_CATEGORY_COLOR[item.category] ?? '#6B7280';
+            const catColor = APPROVAL_CATEGORY_COLOR[item.category] ?? '#A1A1AA';
             return (
               <View key={item.id} style={[s.opsApprovalRow, { borderBottomColor: colors.border }]}>
                 <View style={s.flex1}>
@@ -602,7 +602,7 @@ function LiveLogView({ colors }: { colors: typeof Colors.light }) {
         </View>
       )}
       {LIVE_LOG.map((entry) => {
-        const sevColor = SEVERITY_COLOR[entry.severity] ?? '#6B7280';
+        const sevColor = SEVERITY_COLOR[entry.severity] ?? '#A1A1AA';
         return (
           <View
             key={entry.id}

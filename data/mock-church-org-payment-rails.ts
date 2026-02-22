@@ -233,19 +233,19 @@ export const TRANSACTION_STATE_LABELS: Record<TransactionState, string> = {
 };
 
 export const TRANSACTION_STATE_COLORS: Record<TransactionState, string> = {
-  draft: '#8F8F8F',
-  proposed: '#8B5CF6',
-  rule_checked: '#6AA9FF',
+  draft: '#A1A1AA',
+  proposed: '#1D9BF0',
+  rule_checked: '#1D9BF0',
   authorized: '#22C55E',
-  scheduled: '#6AA9FF',
-  released: '#10B981',
+  scheduled: '#1D9BF0',
+  released: '#22C55E',
   in_flight: '#F59E0B',
   settled: '#22C55E',
   held: '#F59E0B',
   failed: '#EF4444',
   returned: '#EF4444',
-  disputed: '#DC2626',
-  refunded: '#8B5CF6',
+  disputed: '#EF4444',
+  refunded: '#1D9BF0',
 };
 
 export const BATCH_TYPE_LABELS: Record<BatchType, string> = {
@@ -270,8 +270,8 @@ export const EXCEPTION_TYPE_COLORS: Record<ExceptionType, string> = {
   held: '#F59E0B',
   failed: '#EF4444',
   returned: '#EF4444',
-  disputed: '#DC2626',
-  reversal: '#8B5CF6',
+  disputed: '#EF4444',
+  reversal: '#1D9BF0',
 };
 
 export const EXCEPTION_CAUSE_LABELS: Record<ExceptionCause, string> = {
@@ -954,7 +954,7 @@ const RECEIPTS: RailsReceipt[] = [
     rulesApplied: 'Amount < $5,000 — single approval; General Fund budget check passed',
     approvalChain: 'Worship Director (requestor) → Church Treasurer (approved)',
     releaseAuth: 'Finance Secretary released via ACH batch',
-    settlementRecord: 'ACH settled 2026-02-10 — Trace #820261400012345',
+    settlementRecord: 'ACH settled 2026-02-10 — Trace #1D9BF0400012345',
     ledgerPostings: 'DR General Fund — Worship Expenses $1,450; CR Operating Cash $1,450',
     amount: 1450,
     settledDate: '2026-02-10',
@@ -980,7 +980,7 @@ const RECEIPTS: RailsReceipt[] = [
     rulesApplied: 'Youth Fund budget check passed; event cap $2,000 — within limit',
     approvalChain: 'Youth Pastor Davis (requestor) → Church Treasurer (approved)',
     releaseAuth: 'Finance Secretary released via card payment',
-    settlementRecord: 'Card settled 2026-02-12 — Auth #CC98712',
+    settlementRecord: 'Card settled 2026-02-12 — Auth #A1A1AA2',
     ledgerPostings: 'DR Youth Fund — Event Expenses $1,680; CR Youth Operating Cash $1,680',
     amount: 1680,
     settledDate: '2026-02-12',

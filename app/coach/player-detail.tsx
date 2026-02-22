@@ -25,11 +25,11 @@ import { TRADITIONAL_TO_HELIO, HELIO_POSITION_LABELS } from '@/data/position-map
 import { SORT_CLUSTER_LABELS, CLUSTER_ORDER } from '@/data/trait-library';
 import type { ClusterType } from '@/types';
 
-const BG = '#0F1115';
-const CARD_BG = '#1A1D23';
+const BG = '#0B0F14';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
 export default function PlayerDetailScreen() {
   const router = useRouter();
@@ -181,7 +181,7 @@ export default function PlayerDetailScreen() {
             const isExpanded = expandedCluster === cluster;
             const clusterVal = ratings?.clusters[cluster];
             const valColor = clusterVal != null
-              ? (clusterVal >= 70 ? '#4CAF50' : clusterVal >= 55 ? '#FF9800' : '#EF4444')
+              ? (clusterVal >= 70 ? '#22C55E' : clusterVal >= 55 ? '#F59E0B' : '#EF4444')
               : GRAY;
             const subclusters = isExpanded && ratings
               ? getPoolPlayerSubclusters(player.id, cluster, clusterVal!)
@@ -212,7 +212,7 @@ export default function PlayerDetailScreen() {
                 {isExpanded && (
                   <View style={styles.subTraitList}>
                     {subclusters.map((sc) => {
-                      const scColor = sc.rating >= 70 ? '#4CAF50' : sc.rating >= 55 ? '#FF9800' : '#EF4444';
+                      const scColor = sc.rating >= 70 ? '#22C55E' : sc.rating >= 55 ? '#F59E0B' : '#EF4444';
                       return (
                         <View key={sc.name} style={styles.subTraitRow}>
                           <ThemedText style={styles.subTraitLabel}>{sc.name}</ThemedText>

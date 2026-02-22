@@ -43,10 +43,10 @@ const STATUS_COLORS: Record<string, string> = {
   completed: '#22C55E',
   pending: '#F59E0B',
   failed: '#EF4444',
-  processing: '#6AA9FF',
-  refunded: '#8F8F8F',
+  processing: '#1D9BF0',
+  refunded: '#A1A1AA',
   settled: '#22C55E',
-  'in-progress': '#6AA9FF',
+  'in-progress': '#1D9BF0',
   approved: '#22C55E',
   denied: '#EF4444',
   processed: '#22C55E',
@@ -65,7 +65,7 @@ const METHOD_LABELS: Record<PaymentMethod, string> = {
 // =============================================================================
 
 function StatusBadge({ status }: { status: string }) {
-  const color = STATUS_COLORS[status] ?? '#8F8F8F';
+  const color = STATUS_COLORS[status] ?? '#A1A1AA';
   return (
     <View style={[styles.statusBadge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[styles.statusBadgeText, { color }]}>
@@ -198,7 +198,7 @@ function HomeView() {
     { label: 'Total Collected', value: `$${snapshot.totalCollected.toLocaleString()}`, color: '#22C55E' },
     { label: 'Total Paid Out', value: `$${snapshot.totalPaidOut.toLocaleString()}`, color: '#EF4444' },
     { label: 'Pending', value: String(snapshot.pendingPayments), color: '#F59E0B' },
-    { label: 'Refunds', value: String(snapshot.refundsProcessed), color: '#6AA9FF' },
+    { label: 'Refunds', value: String(snapshot.refundsProcessed), color: '#1D9BF0' },
     { label: 'Net Balance', value: `$${snapshot.settlementBalance.toLocaleString()}`, color: '#FFFFFF' },
   ];
 
@@ -502,7 +502,7 @@ function ReconciliationView() {
                     style={[styles.reviewButton, { borderColor: colors.border }]}
                     onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                   >
-                    <ThemedText style={[styles.reviewButtonText, { color: '#6AA9FF' }]}>Review</ThemedText>
+                    <ThemedText style={[styles.reviewButtonText, { color: '#1D9BF0' }]}>Review</ThemedText>
                   </Pressable>
                 </View>
               </View>

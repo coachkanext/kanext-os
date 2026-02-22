@@ -20,8 +20,8 @@ interface Props {
 
 const CATEGORY_COLORS: Record<CompNewsItem['category'], string> = {
   race_recap: '#EF4444',
-  onboard: '#3B82F6',
-  interview: '#8B5CF6',
+  onboard: '#1D9BF0',
+  interview: '#1D9BF0',
   technical: '#F59E0B',
   wildcard: '#22C55E',
 };
@@ -75,7 +75,7 @@ export function CompCalendarNewsView({ colors, accent }: Props) {
             {/* Thumbnail placeholder (16:9) */}
             <View style={styles.thumbnail}>
               <LinearGradient
-                colors={['#1a1a2e', '#16213e']}
+                colors={['#0B0F14', '#0B0F14']}
                 style={styles.thumbnailGradient}
               >
                 {post.isVideo && (
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
   },
   filterText: { fontSize: 11, fontWeight: '600' },
   card: { borderRadius: 12, borderWidth: 1, marginBottom: 12, overflow: 'hidden' },

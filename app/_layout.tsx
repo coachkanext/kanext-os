@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    backgroundColor: '#0f0f0f', // Prevents seeing through during animation
+    backgroundColor: '#0B0F14', // Prevents seeing through during animation
   },
   stackContainer: {
     flex: 1,

@@ -52,7 +52,7 @@ export function ContentTabRow({ activeTab, onTabChange, mode }: ContentTabRowPro
             key={tab}
             style={[
               styles.pill,
-              { backgroundColor: isActive ? '#f5f5f5' : '#111' },
+              { backgroundColor: isActive ? '#FFFFFF' : '#111' },
             ]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -62,7 +62,7 @@ export function ContentTabRow({ activeTab, onTabChange, mode }: ContentTabRowPro
             <ThemedText
               style={[
                 styles.pillText,
-                { color: isActive ? '#000' : '#6e6e6e' },
+                { color: isActive ? '#000' : '#A1A1AA' },
               ]}
             >
               {labels[tab]}

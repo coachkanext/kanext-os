@@ -188,7 +188,7 @@ function ViewBar({
             style={[
               s.viewPill,
               {
-                backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)',
+                backgroundColor: isActive ? accentColor : '#2F3336',
               },
             ]}
             onPress={() => {
@@ -314,8 +314,8 @@ function GovernanceView({ colors, accentColor }: { colors: typeof Colors.light; 
               </ThemedText>
             </View>
             {term.renewable && (
-              <View style={[s.statusBadge, { backgroundColor: '#6AA9FF20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: '#6AA9FF' }]}>Renewable</ThemedText>
+              <View style={[s.statusBadge, { backgroundColor: '#1D9BF020' }]}>
+                <ThemedText style={[s.statusBadgeText, { color: '#1D9BF0' }]}>Renewable</ThemedText>
               </View>
             )}
           </View>

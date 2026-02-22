@@ -18,11 +18,11 @@ interface Props {
 
 function getTypeBadgeColor(type: ChurchService['type']): string {
   switch (type) {
-    case 'sunday_morning': return '#8B5CF6';
-    case 'sunday_evening': return '#7C3AED';
-    case 'midweek': return '#3B82F6';
+    case 'sunday_morning': return '#1D9BF0';
+    case 'sunday_evening': return '#1D9BF0';
+    case 'midweek': return '#1D9BF0';
     case 'special': return '#F59E0B';
-    default: return '#8F8F8F';
+    default: return '#A1A1AA';
   }
 }
 
@@ -77,8 +77,8 @@ export function ChurchCalendarServicesView({ colors, accent }: Props) {
             </View>
           )}
           {service.status === 'past' && service.videoId && (
-            <View style={[styles.videoBadge, { backgroundColor: '#3B82F622' }]}>
-              <ThemedText style={[styles.videoBadgeText, { color: '#3B82F6' }]}>VIDEO</ThemedText>
+            <View style={[styles.videoBadge, { backgroundColor: '#1D9BF022' }]}>
+              <ThemedText style={[styles.videoBadgeText, { color: '#1D9BF0' }]}>VIDEO</ThemedText>
             </View>
           )}
         </View>

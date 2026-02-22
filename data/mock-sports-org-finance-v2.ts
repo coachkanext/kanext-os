@@ -119,16 +119,16 @@ export const BUDGET_CATEGORY_LABELS: Record<BudgetBucket['category'], string> = 
 };
 
 export const BUDGET_CATEGORY_COLORS: Record<BudgetBucket['category'], string> = {
-  travel: '#A78BFA',
-  staffing: '#6AA9FF',
+  travel: '#1D9BF0',
+  staffing: '#1D9BF0',
   recruiting: '#22C55E',
   gear: '#F59E0B',
-  facilities: '#8B5CF6',
+  facilities: '#1D9BF0',
   medical: '#EF4444',
-  ops: '#EC4899',
-  scholarships: '#14B8A6',
-  gameday: '#F97316',
-  misc: '#6B7280',
+  ops: '#1D9BF0',
+  scholarships: '#1D9BF0',
+  gameday: '#F59E0B',
+  misc: '#A1A1AA',
 };
 
 export const SPEND_STATUS_LABELS: Record<SpendTransaction['status'], string> = {
@@ -153,8 +153,8 @@ export const FINANCE_APPROVAL_URGENCY_LABELS: Record<FinanceApproval['urgency'],
 export const FINANCE_APPROVAL_URGENCY_COLORS: Record<FinanceApproval['urgency'], string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#6AA9FF',
-  low: '#8F8F8F',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 export const FINANCE_APPROVAL_STATUS_LABELS: Record<FinanceApproval['status'], string> = {
@@ -190,7 +190,7 @@ export const PURCHASE_STATUS_LABELS: Record<PurchaseRequest['status'], string> =
 
 export const PURCHASE_STATUS_COLORS: Record<PurchaseRequest['status'], string> = {
   submitted: '#F59E0B',
-  approved: '#6AA9FF',
+  approved: '#1D9BF0',
   reimbursed: '#22C55E',
   denied: '#EF4444',
 };

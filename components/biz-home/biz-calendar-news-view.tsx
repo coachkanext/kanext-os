@@ -13,11 +13,11 @@ import { Colors } from '@/constants/theme';
 import { BIZ_NEWS, type BizNewsItem } from '@/data/mock-business-home';
 
 const CATEGORY_COLORS: Record<BizNewsItem['category'], string> = {
-  product: '#8B5CF6',
+  product: '#1D9BF0',
   founder: '#F59E0B',
   press: '#EF4444',
   investor: '#22C55E',
-  partnership: '#3B82F6',
+  partnership: '#1D9BF0',
 };
 
 const CATEGORY_PILLS = ['All', 'Product', 'Founder', 'Press', 'Investor', 'Partnership'] as const;
@@ -65,7 +65,7 @@ export function BizCalendarNewsView({ colors, accent }: Props) {
             {/* Thumbnail (16:9) */}
             <View style={styles.thumbnail}>
               <LinearGradient
-                colors={[item.thumbnailColor ?? '#1a1a2e', '#16213e']}
+                colors={[item.thumbnailColor ?? '#0B0F14', '#0B0F14']}
                 style={styles.thumbnailGradient}
               >
                 {isVideo && (
@@ -102,7 +102,7 @@ export function BizCalendarNewsView({ colors, accent }: Props) {
 const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
   filterRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 },
-  filterPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.08)' },
+  filterPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: '#2F3336' },
   filterText: { fontSize: 12, fontWeight: '600' },
   card: { borderRadius: 12, borderWidth: 1, marginBottom: 12, overflow: 'hidden' },
   thumbnail: { width: '100%', aspectRatio: 16 / 9 },

@@ -249,7 +249,7 @@ function OverviewTab({
             <ThemedText style={[s.postureKpiLabel, { color: colors.textSecondary }]}>Open Findings</ThemedText>
           </View>
           <View style={s.postureKpiItem}>
-            <ThemedText style={[s.postureKpiValue, { color: posture.activeExceptions > 0 ? '#6AA9FF' : '#22C55E' }]}>
+            <ThemedText style={[s.postureKpiValue, { color: posture.activeExceptions > 0 ? '#1D9BF0' : '#22C55E' }]}>
               {posture.activeExceptions}
             </ThemedText>
             <ThemedText style={[s.postureKpiLabel, { color: colors.textSecondary }]}>Active Exceptions</ThemedText>
@@ -482,7 +482,7 @@ function ControlsTab({
       const freqLabel = CONTROL_FREQUENCY_LABELS[item.frequency];
       const statusColor = CONTROL_STATUS_COLORS[item.status];
       const statusLabel = CONTROL_STATUS_LABELS[item.status];
-      const scopeColor = item.scope === 'finance' || item.scope === 'data_privacy' ? '#3B82F6' : '#8B5CF6';
+      const scopeColor = item.scope === 'finance' || item.scope === 'data_privacy' ? '#1D9BF0' : '#1D9BF0';
       const scopeLabel = COMPLIANCE_DOMAIN_LABELS[item.scope] || item.scope;
       return (
         <Pressable
@@ -1015,9 +1015,9 @@ function IncidentsTab({
               <View style={s.incidentBadgeRow}>
                 <StatusBadge label={typeLabel.toUpperCase()} color={accentColor} />
                 <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
-                {isClosed && <StatusBadge label="IMMUTABLE" color="#9CA3AF" />}
+                {isClosed && <StatusBadge label="IMMUTABLE" color="#A1A1AA" />}
                 {hasAddenda && (
-                  <StatusBadge label={`${incident.addenda!.length} ADDENDA`} color="#A78BFA" />
+                  <StatusBadge label={`${incident.addenda!.length} ADDENDA`} color="#1D9BF0" />
                 )}
               </View>
               <View style={s.incidentMetaRow}>
@@ -1445,7 +1445,7 @@ function ControlDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={freqLabel.toUpperCase()} color={accentColor} />
         <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
-        <StatusBadge label={scopeLabel.toUpperCase()} color="#3B82F6" />
+        <StatusBadge label={scopeLabel.toUpperCase()} color="#1D9BF0" />
       </View>
 
       {/* Linked Policy */}
@@ -2105,7 +2105,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

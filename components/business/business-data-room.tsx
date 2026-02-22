@@ -182,7 +182,7 @@ function audienceColor(audience: DataPacket['audience']): string {
     case 'board':
       return BP.amber;
     case 'partner':
-      return '#6AA9FF';
+      return '#1D9BF0';
     case 'acquirer':
       return BP.red;
   }
@@ -232,7 +232,7 @@ function auditActionColor(action: DataRoomAudit['action']): string {
     case 'download':
       return BP.champagneGold;
     case 'share':
-      return '#6AA9FF';
+      return '#1D9BF0';
     case 'upload':
       return BP.emerald;
     case 'version_update':
@@ -446,7 +446,7 @@ const DOC_METADATA: Record<string, DocMetadata> = {
 function sensitivityColor(sensitivity: string): string {
   switch (sensitivity) {
     case 'Public': return BP.emerald;
-    case 'Internal': return '#6AA9FF';
+    case 'Internal': return '#1D9BF0';
     case 'Confidential': return BP.amber;
     case 'Restricted': return BP.red;
     default: return BP.ash;

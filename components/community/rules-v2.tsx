@@ -40,16 +40,16 @@ const TAB_PILLS: { key: RulesTab; label: string }[] = [
 ];
 
 const CATEGORY_COLORS: Record<RuleArticle['category'], string> = {
-  race: '#3B82F6',
-  technical: '#8B5CF6',
+  race: '#1D9BF0',
+  technical: '#1D9BF0',
   safety: '#EF4444',
   sporting: '#22C55E',
 };
 
 const MEDAL_COLORS: Record<number, string> = {
   1: '#F59E0B', // Gold
-  2: '#94A3B8', // Silver
-  3: '#B45309', // Bronze
+  2: '#A1A1AA', // Silver
+  3: '#F59E0B', // Bronze
 };
 
 const FACTOR_COLORS: Record<PenaltyFactor['type'], string> = {
@@ -284,7 +284,7 @@ function DirectivesTab({ colors }: { colors: typeof Colors.light }) {
   return (
     <>
       {TECHNICAL_DIRECTIVES.map((td) => {
-        const catColor = TD_CATEGORY_COLOR[td.category] ?? '#6B7280';
+        const catColor = TD_CATEGORY_COLOR[td.category] ?? '#A1A1AA';
         const allAcknowledged = td.acknowledged >= td.totalTeams;
         const ackPct = td.totalTeams > 0 ? (td.acknowledged / td.totalTeams) * 100 : 0;
 
@@ -527,11 +527,11 @@ function RulesHeader({ colors }: { colors: typeof Colors.light }) {
         <View style={[styles.trustBadge, { backgroundColor: '#22C55E20' }]}>
           <ThemedText style={[styles.trustBadgeText, { color: '#22C55E' }]}>RATIFIED</ThemedText>
         </View>
-        <View style={[styles.trustBadge, { backgroundColor: '#3B82F620' }]}>
-          <ThemedText style={[styles.trustBadgeText, { color: '#3B82F6' }]}>PUBLISHED</ThemedText>
+        <View style={[styles.trustBadge, { backgroundColor: '#1D9BF020' }]}>
+          <ThemedText style={[styles.trustBadgeText, { color: '#1D9BF0' }]}>PUBLISHED</ThemedText>
         </View>
-        <View style={[styles.trustBadge, { backgroundColor: '#8B5CF620' }]}>
-          <ThemedText style={[styles.trustBadgeText, { color: '#8B5CF6' }]}>
+        <View style={[styles.trustBadge, { backgroundColor: '#1D9BF020' }]}>
+          <ThemedText style={[styles.trustBadgeText, { color: '#1D9BF0' }]}>
             {RULE_CHANGE_LOG.length} CHANGES
           </ThemedText>
         </View>
@@ -588,7 +588,7 @@ function ActiveDirectivesSection({ colors }: { colors: typeof Colors.light }) {
   const DIRECTIVE_STATUS_COLOR: Record<string, string> = {
     draft: '#F59E0B',
     published: '#22C55E',
-    expired: '#9CA3AF',
+    expired: '#A1A1AA',
   };
 
   return (
@@ -597,7 +597,7 @@ function ActiveDirectivesSection({ colors }: { colors: typeof Colors.light }) {
         Active Directives
       </ThemedText>
       {ACTIVE_DIRECTIVES.map((dir: ActiveDirective) => {
-        const statusColor = DIRECTIVE_STATUS_COLOR[dir.status] ?? '#9CA3AF';
+        const statusColor = DIRECTIVE_STATUS_COLOR[dir.status] ?? '#A1A1AA';
         return (
           <View key={dir.id} style={[styles.directiveRow, { borderBottomColor: colors.border }]}>
             <View style={styles.directiveInfo}>
@@ -676,9 +676,9 @@ function InterpretationsSection({ colors }: { colors: typeof Colors.light }) {
 // =============================================================================
 
 const CHANGE_TYPE_COLOR: Record<string, string> = {
-  amendment: '#3B82F6',
+  amendment: '#1D9BF0',
   bulletin: '#F59E0B',
-  interpretation: '#8B5CF6',
+  interpretation: '#1D9BF0',
   directive: '#22C55E',
 };
 
@@ -691,7 +691,7 @@ function ChangeLogSection({ colors }: { colors: typeof Colors.light }) {
         Change Log
       </ThemedText>
       {RULE_CHANGE_LOG.map((entry: RuleChangeLog) => {
-        const typeColor = CHANGE_TYPE_COLOR[entry.type] ?? '#9CA3AF';
+        const typeColor = CHANGE_TYPE_COLOR[entry.type] ?? '#A1A1AA';
         return (
           <View key={entry.id} style={[styles.changeLogRow, { borderBottomColor: colors.border }]}>
             <View style={styles.changeLogInfo}>
@@ -731,10 +731,10 @@ function ProposeChangeButton({ colors }: { colors: typeof Colors.light }) {
 
   return (
     <Pressable
-      style={[styles.proposeButton, { backgroundColor: '#8B5CF615', borderColor: '#8B5CF630' }]}
+      style={[styles.proposeButton, { backgroundColor: '#1D9BF015', borderColor: '#1D9BF030' }]}
       onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
     >
-      <IconSymbol name="plus.circle.fill" size={18} color="#8B5CF6" />
+      <IconSymbol name="plus.circle.fill" size={18} color="#1D9BF0" />
       <ThemedText style={styles.proposeButtonText}>Propose a Change</ThemedText>
     </Pressable>
   );
@@ -1385,6 +1385,6 @@ const styles = StyleSheet.create({
   proposeButtonText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#8B5CF6',
+    color: '#1D9BF0',
   },
 });

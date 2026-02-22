@@ -13,13 +13,30 @@
 export type AccessTier = 'founder' | 'cofounder' | 'investor' | 'public';
 
 /**
+ * Emails that resolve to SYSTEM_OWNER (founder tier + full RBAC bypass).
+ * Case-insensitive matching.
+ */
+export const SYSTEM_OWNER_EMAILS: string[] = [
+  'coachk@kanext.io',
+];
+
+/**
  * Emails that automatically resolve to FOUNDER tier.
+ * Includes all SYSTEM_OWNER emails.
  * Case-insensitive matching.
  */
 export const FOUNDER_ALLOWLIST: string[] = [
-  'sammy@kanext.com',
-  'sammy@osk.group',
+  ...SYSTEM_OWNER_EMAILS,
 ];
+
+/**
+ * Returns true if the email belongs to a system owner.
+ * Case-insensitive.
+ */
+export function isSystemOwnerEmail(email: string): boolean {
+  const normalized = email.toLowerCase().trim();
+  return SYSTEM_OWNER_EMAILS.some((e) => e.toLowerCase() === normalized);
+}
 
 /**
  * Emails that automatically resolve to COFOUNDER tier.

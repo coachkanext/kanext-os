@@ -31,7 +31,7 @@ export function ForYouToggle({ activeMode, onModeChange }: ForYouToggleProps) {
               key={tab.key}
               style={[
                 styles.tab,
-                { backgroundColor: isActive ? '#2a2a2a' : 'transparent' },
+                { backgroundColor: isActive ? '#0B0F14' : 'transparent' },
               ]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -39,7 +39,7 @@ export function ForYouToggle({ activeMode, onModeChange }: ForYouToggleProps) {
               }}
             >
               <ThemedText
-                style={[styles.tabText, { color: isActive ? '#f5f5f5' : '#6e6e6e' }]}
+                style={[styles.tabText, { color: isActive ? '#FFFFFF' : '#A1A1AA' }]}
               >
                 {tab.label}
               </ThemedText>

@@ -235,9 +235,9 @@ function OverviewTab({
   const healthTiles: { label: string; value: number; color: string; icon: string }[] = [
     { label: 'Open Work Orders', value: tiles.openWorkOrders, color: '#F59E0B', icon: 'wrench.and.screwdriver.fill' },
     { label: 'Critical Issues', value: tiles.criticalIssues, color: '#EF4444', icon: 'exclamationmark.triangle.fill' },
-    { label: 'Inspections Due', value: tiles.upcomingInspections, color: '#6AA9FF', icon: 'checkmark.shield.fill' },
+    { label: 'Inspections Due', value: tiles.upcomingInspections, color: '#1D9BF0', icon: 'checkmark.shield.fill' },
     { label: 'Today Bookings', value: tiles.todayBookings, color: '#22C55E', icon: 'calendar' },
-    { label: 'Conflicts', value: tiles.conflicts, color: '#8B5CF6', icon: 'exclamationmark.2' },
+    { label: 'Conflicts', value: tiles.conflicts, color: '#1D9BF0', icon: 'exclamationmark.2' },
     { label: 'SLA Breaches', value: tiles.vendorSlaBreaches, color: tiles.vendorSlaBreaches > 0 ? '#EF4444' : '#22C55E', icon: 'clock.badge.exclamationmark' },
   ];
 
@@ -312,7 +312,7 @@ function OverviewTab({
             </View>
             <StatusBadge
               label={BOOKING_STATUS_LABELS[booking.status]?.toUpperCase() ?? booking.status.toUpperCase()}
-              color={BOOKING_STATUS_COLORS[booking.status] ?? '#8F8F8F'}
+              color={BOOKING_STATUS_COLORS[booking.status] ?? '#A1A1AA'}
             />
           </View>
         ))
@@ -333,8 +333,8 @@ function OverviewTab({
               key={req.id}
               style={[s.triageCard, { backgroundColor: colors.card, borderColor: colors.border }]}
             >
-              <View style={[s.requestTypeIcon, { backgroundColor: (REQUEST_TYPE_COLORS[req.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#8F8F8F') + '18' }]}>
-                <IconSymbol name="doc.text.fill" size={16} color={REQUEST_TYPE_COLORS[req.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#8F8F8F'} />
+              <View style={[s.requestTypeIcon, { backgroundColor: (REQUEST_TYPE_COLORS[req.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#A1A1AA') + '18' }]}>
+                <IconSymbol name="doc.text.fill" size={16} color={REQUEST_TYPE_COLORS[req.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#A1A1AA'} />
               </View>
               <View style={s.triageContent}>
                 <ThemedText style={[s.triageTitle, { color: colors.text }]} numberOfLines={1}>
@@ -346,7 +346,7 @@ function OverviewTab({
               </View>
               <StatusBadge
                 label={REQUEST_STATUS_LABELS[req.status as keyof typeof REQUEST_STATUS_LABELS]?.toUpperCase() ?? req.status.toUpperCase()}
-                color={REQUEST_STATUS_COLORS[req.status as keyof typeof REQUEST_STATUS_COLORS] ?? '#8F8F8F'}
+                color={REQUEST_STATUS_COLORS[req.status as keyof typeof REQUEST_STATUS_COLORS] ?? '#A1A1AA'}
               />
             </View>
           ))}
@@ -371,7 +371,7 @@ function OverviewTab({
                   {wo.spaceName} — SLA: {formatDate(wo.slaTargetDate)}
                 </ThemedText>
               </View>
-              <StatusBadge label="CRITICAL" color="#DC2626" />
+              <StatusBadge label="CRITICAL" color="#EF4444" />
             </View>
           ))}
         </>
@@ -600,7 +600,7 @@ function SchedulingTab({
                     </ThemedText>
                     <StatusBadge
                       label={BOOKING_STATUS_LABELS[booking.status]?.toUpperCase() ?? booking.status.toUpperCase()}
-                      color={BOOKING_STATUS_COLORS[booking.status] ?? '#8F8F8F'}
+                      color={BOOKING_STATUS_COLORS[booking.status] ?? '#A1A1AA'}
                     />
                   </View>
                   {booking.riskFlags.length > 0 && (
@@ -646,8 +646,8 @@ function RequestsTab({
 }) {
   const renderItem = useCallback(
     ({ item }: { item: FacilityRequest }) => {
-      const typeColor = REQUEST_TYPE_COLORS[item.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#8F8F8F';
-      const statusColor = REQUEST_STATUS_COLORS[item.status as keyof typeof REQUEST_STATUS_COLORS] ?? '#8F8F8F';
+      const typeColor = REQUEST_TYPE_COLORS[item.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#A1A1AA';
+      const statusColor = REQUEST_STATUS_COLORS[item.status as keyof typeof REQUEST_STATUS_COLORS] ?? '#A1A1AA';
       return (
         <View style={[s.requestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.requestCardHeader}>
@@ -727,7 +727,7 @@ function WorkOrdersTab({
     ({ item }: { item: WorkOrder }) => {
       const sevColor = WORK_ORDER_SEVERITY_COLORS[item.severity];
       const statusColor = WORK_ORDER_STATUS_COLORS[item.status];
-      const catColor = WO_CATEGORY_COLORS[item.category] ?? '#8F8F8F';
+      const catColor = WO_CATEGORY_COLORS[item.category] ?? '#A1A1AA';
       return (
         <View style={[s.woCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           {/* Severity bar */}
@@ -909,7 +909,7 @@ function SafetyTab({
       </ThemedText>
 
       {sorted.map((insp) => {
-        const statusColor = INSPECTION_STATUS_COLORS[insp.status] ?? '#8F8F8F';
+        const statusColor = INSPECTION_STATUS_COLORS[insp.status] ?? '#A1A1AA';
         return (
           <View
             key={insp.id}
@@ -974,7 +974,7 @@ function AssetsTab({
   const renderItem = useCallback(
     ({ item }: { item: FacilityAsset }) => {
       const condColor = ASSET_CONDITION_COLORS[item.condition];
-      const catColor = ASSET_CATEGORY_COLORS[item.category as keyof typeof ASSET_CATEGORY_COLORS] ?? '#8F8F8F';
+      const catColor = ASSET_CATEGORY_COLORS[item.category as keyof typeof ASSET_CATEGORY_COLORS] ?? '#A1A1AA';
       return (
         <View style={[s.assetCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.assetHeader}>
@@ -1719,7 +1719,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

@@ -5,13 +5,13 @@
 
 // KaNeXT colors
 export const TEAM_COLORS = {
-  primary: '#003DA5',    // KaNeXT Royal Blue
-  secondary: '#FFD100',  // KaNeXT Gold
+  primary: '#1D9BF0',    // KaNeXT Royal Blue
+  secondary: '#F59E0B',  // KaNeXT Gold
   accent: '#ffffff',
   background: '#000000',
-  cardBg: '#0a0a0a',
-  white: '#f5f5f5',
-  gray: '#6e6e6e',
+  cardBg: '#0B0F14',
+  white: '#FFFFFF',
+  gray: '#A1A1AA',
 };
 
 // ── Per-player cluster ratings (keyed by jersey number) ──
@@ -225,7 +225,7 @@ import type { PortalRiskLevel } from '@/types';
 export function getKRBadgeColor(kr: number): string {
   if (kr >= 80) return '#22c55e';
   if (kr >= 70) return '#f59e0b';
-  if (kr >= 60) return '#f97316';
+  if (kr >= 60) return '#F59E0B';
   return '#ef4444';
 }
 
@@ -250,7 +250,7 @@ export function getPortalRiskColor(risk: PortalRiskLevel): string {
   const map: Record<PortalRiskLevel, string> = {
     green: '#22c55e',
     yellow: '#f59e0b',
-    orange: '#f97316',
+    orange: '#F59E0B',
     red: '#ef4444',
   };
   return map[risk];

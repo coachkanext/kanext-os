@@ -26,9 +26,9 @@ const TABS: Tab[] = ['Overview', 'Roles & Access', 'Assignments', 'Rooms', 'Evid
 
 const STATUS_COLORS: Record<PersonStatus, string> = {
   active: '#22C55E',
-  inactive: '#8F8F8F',
+  inactive: '#A1A1AA',
   pending: '#F59E0B',
-  away: '#3B82F6',
+  away: '#1D9BF0',
 };
 
 const STATUS_LABELS: Record<PersonStatus, string> = {
@@ -342,8 +342,8 @@ function RolesAccessTab({ person, colors }: { person: Person; colors: typeof Col
 
 const ASSIGNMENT_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
-  completed: '#8F8F8F',
-  upcoming: '#3B82F6',
+  completed: '#A1A1AA',
+  upcoming: '#1D9BF0',
 };
 
 function AssignmentsTab({ colors }: { colors: typeof Colors.dark }) {

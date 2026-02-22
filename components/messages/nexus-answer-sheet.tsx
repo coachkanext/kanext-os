@@ -57,8 +57,8 @@ export function NexusAnswerSheet({ escalation, onClose, onAddToNexus, onPrivateR
           {/* Question context */}
           <View style={[styles.questionCard, { backgroundColor: colors.backgroundTertiary }]}>
             <View style={styles.askerRow}>
-              <View style={[styles.askerAvatar, { backgroundColor: '#1E40AF20' }]}>
-                <ThemedText style={[styles.askerInitials, { color: '#1E40AF' }]}>
+              <View style={[styles.askerAvatar, { backgroundColor: '#1D9BF020' }]}>
+                <ThemedText style={[styles.askerInitials, { color: '#1D9BF0' }]}>
                   {escalation.askerInitials}
                 </ThemedText>
               </View>
@@ -97,7 +97,7 @@ export function NexusAnswerSheet({ escalation, onClose, onAddToNexus, onPrivateR
             <Pressable
               style={({ pressed }) => [
                 styles.primaryBtn,
-                { opacity: pressed ? 0.8 : 1, backgroundColor: answer.trim() ? '#1E40AF' : '#1E40AF40' },
+                { opacity: pressed ? 0.8 : 1, backgroundColor: answer.trim() ? '#1D9BF0' : '#1D9BF040' },
               ]}
               onPress={handleAddToNexus}
               disabled={!answer.trim()}

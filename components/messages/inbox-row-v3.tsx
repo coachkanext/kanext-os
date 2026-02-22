@@ -58,7 +58,7 @@ export function InboxRowV3({ thread, onPress, onAccept, onDecline }: InboxRowV3P
               <IconSymbol name="pin.fill" size={12} color={colors.textTertiary} />
             )}
             {thread.isRequest && (
-              <View style={[styles.requestBadge, { backgroundColor: '#D97706' }]}>
+              <View style={[styles.requestBadge, { backgroundColor: '#F59E0B' }]}>
                 <ThemedText style={styles.requestBadgeText}>Request</ThemedText>
               </View>
             )}
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#1E40AF',
+    backgroundColor: '#1D9BF0',
     marginTop: 4,
   },
   requestBadge: {

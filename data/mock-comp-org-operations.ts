@@ -167,45 +167,45 @@ export const COMP_OPS_SCOPE_CHIPS = ['All Ops', 'Events', 'Logistics', 'Venues',
 // =============================================================================
 
 export const EVENT_STATUS_COLOR: Record<CompEvent['status'], string> = {
-  scheduled: '#3B82F6',
+  scheduled: '#1D9BF0',
   setup: '#F59E0B',
   live: '#22C55E',
-  completed: '#6B7280',
+  completed: '#A1A1AA',
   cancelled: '#EF4444',
 };
 
 export const LOGISTICS_STATUS_COLOR: Record<LogisticsItem['status'], string> = {
   pending: '#F59E0B',
   confirmed: '#22C55E',
-  'in-transit': '#3B82F6',
-  delivered: '#6B7280',
+  'in-transit': '#1D9BF0',
+  delivered: '#A1A1AA',
   issue: '#EF4444',
 };
 
 export const VENUE_STATUS_COLOR: Record<CompVenue['status'], string> = {
   available: '#22C55E',
-  booked: '#3B82F6',
+  booked: '#1D9BF0',
   maintenance: '#F59E0B',
   unavailable: '#EF4444',
 };
 
 export const TASK_PRIORITY_COLOR: Record<OpsTask['priority'], string> = {
-  low: '#6B7280',
-  medium: '#3B82F6',
+  low: '#A1A1AA',
+  medium: '#1D9BF0',
   high: '#F59E0B',
   urgent: '#EF4444',
 };
 
 export const INCIDENT_SEVERITY_COLOR: Record<Incident['severity'], string> = {
-  low: '#6B7280',
+  low: '#A1A1AA',
   medium: '#F59E0B',
   high: '#EF4444',
-  critical: '#DC2626',
+  critical: '#EF4444',
 };
 
 export const TASK_STATUS_COLOR: Record<OpsTask['status'], string> = {
-  todo: '#6B7280',
-  'in-progress': '#3B82F6',
+  todo: '#A1A1AA',
+  'in-progress': '#1D9BF0',
   done: '#22C55E',
   blocked: '#EF4444',
 };
@@ -214,12 +214,12 @@ export const INCIDENT_STATUS_COLOR: Record<Incident['status'], string> = {
   open: '#EF4444',
   investigating: '#F59E0B',
   resolved: '#22C55E',
-  closed: '#6B7280',
+  closed: '#A1A1AA',
 };
 
 export const EQUIPMENT_CONDITION_COLOR: Record<Equipment['condition'], string> = {
   excellent: '#22C55E',
-  good: '#3B82F6',
+  good: '#1D9BF0',
   fair: '#F59E0B',
   'needs-repair': '#EF4444',
 };
@@ -229,11 +229,11 @@ export const EQUIPMENT_CONDITION_COLOR: Record<Equipment['condition'], string> =
 // =============================================================================
 
 const MOCK_DASHBOARD: OpsDashboardBlock[] = [
-  { id: 'dash-1', label: 'Upcoming Events', value: 8, delta: '+2 this week', icon: 'calendar.badge.clock', color: '#3B82F6' },
+  { id: 'dash-1', label: 'Upcoming Events', value: 8, delta: '+2 this week', icon: 'calendar.badge.clock', color: '#1D9BF0' },
   { id: 'dash-2', label: 'Active Logistics', value: 14, delta: '3 in-transit', icon: 'shippingbox.fill', color: '#F59E0B' },
   { id: 'dash-3', label: 'Venue Utilization', value: '82%', delta: '+6% vs last month', icon: 'building.2.fill', color: '#22C55E' },
   { id: 'dash-4', label: 'Open Incidents', value: 3, delta: '1 critical', icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
-  { id: 'dash-5', label: 'Tasks Due Today', value: 5, delta: '2 urgent', icon: 'checkmark.circle.fill', color: '#8B5CF6' },
+  { id: 'dash-5', label: 'Tasks Due Today', value: 5, delta: '2 urgent', icon: 'checkmark.circle.fill', color: '#1D9BF0' },
   { id: 'dash-6', label: 'Equipment Health', value: '94%', delta: '2 need repair', icon: 'wrench.and.screwdriver.fill', color: '#22C55E' },
 ];
 
@@ -403,12 +403,12 @@ export interface ActivityFeedItem {
 
 const MOCK_ACTIVITY_FEED: ActivityFeedItem[] = [
   { id: 'af-1', description: 'Replay server crash reported at KaNeXT Center', timestamp: '12 min ago', icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
-  { id: 'af-2', description: 'Scoreboard transport crate shipped — ETA Mar 11', timestamp: '34 min ago', icon: 'shippingbox.fill', color: '#3B82F6' },
+  { id: 'af-2', description: 'Scoreboard transport crate shipped — ETA Mar 11', timestamp: '34 min ago', icon: 'shippingbox.fill', color: '#1D9BF0' },
   { id: 'af-3', description: 'Hawk-Eye system calibration test completed', timestamp: '1h ago', icon: 'checkmark.circle.fill', color: '#22C55E' },
-  { id: 'af-4', description: 'Hotel block rooming list verified (148 rooms)', timestamp: '2h ago', icon: 'building.2.fill', color: '#8B5CF6' },
+  { id: 'af-4', description: 'Hotel block rooming list verified (148 rooms)', timestamp: '2h ago', icon: 'building.2.fill', color: '#1D9BF0' },
   { id: 'af-5', description: 'K-1 Invitational Opening Ceremony marked complete', timestamp: '3h ago', icon: 'calendar.badge.clock', color: '#22C55E' },
   { id: 'af-6', description: 'Security detail for KaNeXT Church finals still pending approval', timestamp: '4h ago', icon: 'shield.fill', color: '#F59E0B' },
-  { id: 'af-7', description: 'Awards & trophies shipment now in transit', timestamp: '5h ago', icon: 'shippingbox.fill', color: '#3B82F6' },
+  { id: 'af-7', description: 'Awards & trophies shipment now in transit', timestamp: '5h ago', icon: 'shippingbox.fill', color: '#1D9BF0' },
   { id: 'af-8', description: 'AED inspection completed across all venues', timestamp: '6h ago', icon: 'checkmark.circle.fill', color: '#22C55E' },
 ];
 

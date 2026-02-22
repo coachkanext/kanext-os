@@ -89,7 +89,7 @@ function ChecklistStatusBadge({ status }: { status: ComplianceChecklist['status'
 }
 
 function SeverityBadge({ severity }: { severity: string }) {
-  const fg = SEVERITY_COLOR[severity] ?? '#6B7280';
+  const fg = SEVERITY_COLOR[severity] ?? '#A1A1AA';
   return (
     <View style={[s.badge, { backgroundColor: fg + '33' }]}>
       <ThemedText style={[s.badgeText, { color: fg }]}>{severity}</ThemedText>
@@ -124,9 +124,9 @@ const MODE_LABELS: Record<Mode, string> = {
 
 const ACTION_STATUS_COLOR: Record<ComplianceAction['status'], string> = {
   pending: '#F59E0B',
-  'in-progress': '#3B82F6',
+  'in-progress': '#1D9BF0',
   completed: '#22C55E',
-  verified: '#8B5CF6',
+  verified: '#1D9BF0',
 };
 
 // =============================================================================
@@ -134,8 +134,8 @@ const ACTION_STATUS_COLOR: Record<ComplianceAction['status'], string> = {
 // =============================================================================
 
 const TRAINING_STATUS_COLOR: Record<ComplianceTraining['status'], string> = {
-  assigned: '#9CA3AF',
-  'in-progress': '#3B82F6',
+  assigned: '#A1A1AA',
+  'in-progress': '#1D9BF0',
   completed: '#22C55E',
   overdue: '#EF4444',
 };
@@ -147,8 +147,8 @@ const TRAINING_STATUS_COLOR: Record<ComplianceTraining['status'], string> = {
 const POLICY_STATUS_COLOR: Record<CompliancePolicy['status'], string> = {
   active: '#22C55E',
   'under-review': '#F59E0B',
-  draft: '#9CA3AF',
-  archived: '#9CA3AF',
+  draft: '#A1A1AA',
+  archived: '#A1A1AA',
 };
 
 // =============================================================================
@@ -159,7 +159,7 @@ const DEADLINE_STATUS_COLOR: Record<ComplianceDeadline['status'], string> = {
   upcoming: '#22C55E',
   'due-soon': '#F59E0B',
   overdue: '#EF4444',
-  completed: '#9CA3AF',
+  completed: '#A1A1AA',
 };
 
 // =============================================================================
@@ -167,7 +167,7 @@ const DEADLINE_STATUS_COLOR: Record<ComplianceDeadline['status'], string> = {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<ComplianceReport['format'], string> = {
-  PDF: '#3B82F6',
+  PDF: '#1D9BF0',
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };
@@ -192,15 +192,15 @@ function auditIcon(action: string): string {
 
 function auditColor(action: string): string {
   switch (action) {
-    case 'requirement_verified': return '#6366F1';
-    case 'evidence_submitted': return '#3B82F6';
+    case 'requirement_verified': return '#1D9BF0';
+    case 'evidence_submitted': return '#1D9BF0';
     case 'incident_opened': return '#EF4444';
     case 'checklist_completed': return '#22C55E';
     case 'policy_updated': return '#F59E0B';
-    case 'training_completed': return '#8B5CF6';
+    case 'training_completed': return '#1D9BF0';
     case 'deadline_met': return '#22C55E';
-    case 'action_verified': return '#6AA9FF';
-    default: return '#8F8F8F';
+    case 'action_verified': return '#1D9BF0';
+    default: return '#A1A1AA';
   }
 }
 
@@ -432,10 +432,10 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
       ListEmptyComponent={<EmptyState icon="doc.fill" text="No evidence" colors={colors} />}
       renderItem={({ item }) => {
         const typeColor =
-          item.type === 'document' ? '#3B82F6' :
-          item.type === 'link' ? '#6AA9FF' :
+          item.type === 'document' ? '#1D9BF0' :
+          item.type === 'link' ? '#1D9BF0' :
           item.type === 'attestation' ? '#F59E0B' :
-          '#8B5CF6'; // certificate
+          '#1D9BF0'; // certificate
         const expiresDateSoon = item.expiresDate != null && new Date(item.expiresDate).getTime() - Date.now() < 60 * 86400000;
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -537,7 +537,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
       ListEmptyComponent={<EmptyState icon="bolt.fill" text="No actions" colors={colors} />}
       renderItem={({ item }) => {
         const statusColor = ACTION_STATUS_COLOR[item.status];
-        const priorityColor = SEVERITY_COLOR[item.priority] ?? '#6B7280';
+        const priorityColor = SEVERITY_COLOR[item.priority] ?? '#A1A1AA';
         const isOverdue = (item.status === 'pending' || item.status === 'in-progress') && new Date(item.dueDate) < new Date();
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -958,7 +958,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
           <ThemedText style={[s.filterSectionTitle, { color: colors.textSecondary }]}>Status</ThemedText>
           <View style={s.filterChipsWrap}>
             {(['due-soon', 'overdue', 'compliant', 'waived']).map((st) => {
-              const fg = REQUIREMENT_STATUS_COLOR[st as keyof typeof REQUIREMENT_STATUS_COLOR] ?? '#6B7280';
+              const fg = REQUIREMENT_STATUS_COLOR[st as keyof typeof REQUIREMENT_STATUS_COLOR] ?? '#A1A1AA';
               const selected = filterStatuses.includes(st);
               return (
                 <Pressable
@@ -988,7 +988,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
           <ThemedText style={[s.filterSectionTitle, { color: colors.textSecondary }]}>Severity</ThemedText>
           <View style={s.filterChipsWrap}>
             {(['critical', 'high', 'medium', 'low']).map((sev) => {
-              const fg = SEVERITY_COLOR[sev] ?? '#6B7280';
+              const fg = SEVERITY_COLOR[sev] ?? '#A1A1AA';
               const selected = filterSeverities.includes(sev);
               return (
                 <Pressable

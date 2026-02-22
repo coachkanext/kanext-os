@@ -83,13 +83,13 @@ interface AgendaEvent {
 }
 
 const EVENT_TYPE_COLOR: Record<AgendaEventType, string> = {
-  class: '#3B82F6',
-  meeting: '#8B5CF6',
+  class: '#1D9BF0',
+  meeting: '#1D9BF0',
   event: '#F59E0B',
   deadline: '#EF4444',
   'office-hours': '#22C55E',
-  admin: '#EC4899',
-  chapel: '#6366F1',
+  admin: '#1D9BF0',
+  chapel: '#1D9BF0',
 };
 
 const EVENT_TYPE_LABEL: Record<AgendaEventType, string> = {
@@ -297,7 +297,7 @@ const ROOM_STATUS_COLOR: Record<RoomStatus, string> = {
   available: '#22C55E',
   occupied: '#EF4444',
   reserved: '#F59E0B',
-  maintenance: '#8F8F8F',
+  maintenance: '#A1A1AA',
 };
 
 const CAMPUS_ROOMS: CampusRoom[] = [
@@ -364,11 +364,11 @@ interface AcademicDeadline {
 }
 
 const DEADLINE_CATEGORY_COLOR: Record<DeadlineCategory, string> = {
-  academic: '#3B82F6',
-  registration: '#8B5CF6',
+  academic: '#1D9BF0',
+  registration: '#1D9BF0',
   financial: '#22C55E',
-  administrative: '#F97316',
-  ceremony: '#EC4899',
+  administrative: '#F59E0B',
+  ceremony: '#1D9BF0',
 };
 
 const ACADEMIC_DEADLINES: AcademicDeadline[] = [
@@ -411,7 +411,7 @@ function SectionHeader({ title, colors, count, icon }: { title: string; colors: 
 
 function Card({ colors, children, highlight }: { colors: typeof Colors.light; children: React.ReactNode; highlight?: boolean }) {
   return (
-    <View style={[sh.card, { backgroundColor: colors.card, borderColor: highlight ? '#3B82F6' : colors.border }]}>
+    <View style={[sh.card, { backgroundColor: colors.card, borderColor: highlight ? '#1D9BF0' : colors.border }]}>
       {children}
     </View>
   );
@@ -481,8 +481,8 @@ function AgendaDayBlock({ dayLabel, events, colors, role }: { dayLabel: string; 
                 </ThemedText>
               )}
               {ev.adminOnly && (
-                <View style={[s.adminBadge, { backgroundColor: '#EC489920' }]}>
-                  <ThemedText style={[s.adminBadgeText, { color: '#EC4899' }]}>ADMIN</ThemedText>
+                <View style={[s.adminBadge, { backgroundColor: '#1D9BF020' }]}>
+                  <ThemedText style={[s.adminBadgeText, { color: '#1D9BF0' }]}>ADMIN</ThemedText>
                 </View>
               )}
             </View>
@@ -578,7 +578,7 @@ function WeekView({ colors, role }: { colors: typeof Colors.light; role: Educati
               <Card colors={colors} highlight={isToday}>
                 <View style={s.weekDayHeader}>
                   <View style={s.weekDayLeft}>
-                    <View style={[s.weekDayBadge, { backgroundColor: isToday ? '#3B82F6' : colors.backgroundTertiary }]}>
+                    <View style={[s.weekDayBadge, { backgroundColor: isToday ? '#1D9BF0' : colors.backgroundTertiary }]}>
                       <ThemedText style={[s.weekDayShort, { color: isToday ? '#FFFFFF' : colors.text }]}>
                         {day.shortDay}
                       </ThemedText>
@@ -703,7 +703,7 @@ function MonthView({ colors, role }: { colors: typeof Colors.light; role: Educat
                     key={day.date}
                     style={[
                       s.monthDayCell,
-                      day.isToday && { backgroundColor: '#3B82F620', borderRadius: 8 },
+                      day.isToday && { backgroundColor: '#1D9BF020', borderRadius: 8 },
                       isSelected && !day.isToday && { backgroundColor: colors.backgroundTertiary, borderRadius: 8 },
                     ]}
                     onPress={() => {
@@ -713,7 +713,7 @@ function MonthView({ colors, role }: { colors: typeof Colors.light; role: Educat
                   >
                     <ThemedText style={[
                       s.monthDayNumber,
-                      { color: day.isToday ? '#3B82F6' : colors.text },
+                      { color: day.isToday ? '#1D9BF0' : colors.text },
                       day.isToday && { fontWeight: '800' },
                     ]}>
                       {day.date}
@@ -924,15 +924,15 @@ function RoomsView({ colors, role }: { colors: typeof Colors.light; role: Educat
                   </View>
                   {room.bookable && room.status === 'available' && (isFacultyLevel(role) || (isStudent(role) && (room.type === 'study' || room.type === 'conference'))) && (
                     <Pressable
-                      style={({ pressed }) => [s.bookButton, { borderColor: '#3B82F6', opacity: pressed ? 0.7 : 1 }]}
+                      style={({ pressed }) => [s.bookButton, { borderColor: '#1D9BF0', opacity: pressed ? 0.7 : 1 }]}
                       onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                     >
-                      <ThemedText style={[s.bookButtonText, { color: '#3B82F6' }]}>Book</ThemedText>
+                      <ThemedText style={[s.bookButtonText, { color: '#1D9BF0' }]}>Book</ThemedText>
                     </Pressable>
                   )}
                   {room.adminOnly && (
-                    <View style={[s.adminRoomBadge, { backgroundColor: '#EC489920' }]}>
-                      <ThemedText style={[s.adminRoomText, { color: '#EC4899' }]}>ADMIN</ThemedText>
+                    <View style={[s.adminRoomBadge, { backgroundColor: '#1D9BF020' }]}>
+                      <ThemedText style={[s.adminRoomText, { color: '#1D9BF0' }]}>ADMIN</ThemedText>
                     </View>
                   )}
                 </View>
@@ -1148,8 +1148,8 @@ function DeadlinesView({ colors, role }: { colors: typeof Colors.light; role: Ed
                       </ThemedText>
                     </View>
                     {dl.adminOnly && (
-                      <View style={[s.adminBadge, { backgroundColor: '#EC489920' }]}>
-                        <ThemedText style={[s.adminBadgeText, { color: '#EC4899' }]}>ADMIN</ThemedText>
+                      <View style={[s.adminBadge, { backgroundColor: '#1D9BF020' }]}>
+                        <ThemedText style={[s.adminBadgeText, { color: '#1D9BF0' }]}>ADMIN</ThemedText>
                       </View>
                     )}
                   </View>

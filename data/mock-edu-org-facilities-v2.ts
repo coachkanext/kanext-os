@@ -367,39 +367,39 @@ export const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
 // =============================================================================
 
 export const BUILDING_TYPE_COLORS: Record<BuildingType, string> = {
-  dorm: '#A78BFA',
-  academic: '#3B82F6',
+  dorm: '#1D9BF0',
+  academic: '#1D9BF0',
   athletics: '#EF4444',
   admin: '#F59E0B',
   dining: '#22C55E',
-  worship: '#8F8F8F',
-  multipurpose: '#6AA9FF',
-  maintenance: '#8F8F8F',
+  worship: '#A1A1AA',
+  multipurpose: '#1D9BF0',
+  maintenance: '#A1A1AA',
 };
 
 export const BUILDING_STATUS_COLORS: Record<BuildingStatus, string> = {
   good: '#22C55E',
   watch: '#F59E0B',
   at_risk: '#EF4444',
-  down: '#DC2626',
+  down: '#EF4444',
 };
 
 export const SYSTEM_TYPE_COLORS: Record<SystemType, string> = {
-  hvac: '#6AA9FF',
+  hvac: '#1D9BF0',
   electrical: '#F59E0B',
   plumbing: '#22C55E',
-  internet: '#3B82F6',
+  internet: '#1D9BF0',
   fire: '#EF4444',
-  security: '#A78BFA',
+  security: '#1D9BF0',
 };
 
 export const ROOM_TYPE_COLORS: Record<RoomType, string> = {
-  classroom: '#3B82F6',
-  lab: '#A78BFA',
+  classroom: '#1D9BF0',
+  lab: '#1D9BF0',
   office: '#F59E0B',
   gym: '#EF4444',
-  dorm_floor: '#6AA9FF',
-  chapel: '#8F8F8F',
+  dorm_floor: '#1D9BF0',
+  chapel: '#A1A1AA',
   auditorium: '#22C55E',
   dining: '#22C55E',
   conference: '#F59E0B',
@@ -418,14 +418,14 @@ export const ACCESS_LEVEL_COLORS: Record<AccessLevel, string> = {
 };
 
 export const ASSET_CATEGORY_COLORS: Record<AssetCategory, string> = {
-  hvac_unit: '#6AA9FF',
+  hvac_unit: '#1D9BF0',
   scoreboard: '#EF4444',
   bus: '#F59E0B',
-  laundry: '#A78BFA',
-  security_camera: '#3B82F6',
+  laundry: '#1D9BF0',
+  security_camera: '#1D9BF0',
   kitchen_equipment: '#22C55E',
-  lab_equipment: '#A78BFA',
-  av_system: '#8F8F8F',
+  lab_equipment: '#1D9BF0',
+  av_system: '#A1A1AA',
 };
 
 export const ASSET_CONDITION_COLORS: Record<AssetCondition, string> = {
@@ -438,44 +438,44 @@ export const WORK_ORDER_CATEGORY_COLORS: Record<WorkOrderCategory, string> = {
   safety: '#EF4444',
   electrical: '#F59E0B',
   plumbing: '#22C55E',
-  hvac: '#6AA9FF',
-  it: '#3B82F6',
-  general: '#8F8F8F',
+  hvac: '#1D9BF0',
+  it: '#1D9BF0',
+  general: '#A1A1AA',
 };
 
 export const WORK_ORDER_PRIORITY_COLORS: Record<WorkOrderPriority, string> = {
-  critical: '#DC2626',
+  critical: '#EF4444',
   high: '#EF4444',
   normal: '#F59E0B',
 };
 
 export const WORK_ORDER_STATUS_COLORS: Record<WorkOrderStatus, string> = {
   new: '#F59E0B',
-  assigned: '#6AA9FF',
-  in_progress: '#A78BFA',
+  assigned: '#1D9BF0',
+  in_progress: '#1D9BF0',
   waiting: '#F59E0B',
   complete: '#22C55E',
-  closed: '#8F8F8F',
+  closed: '#A1A1AA',
 };
 
 export const MAINTENANCE_STATUS_COLORS: Record<MaintenanceStatus, string> = {
-  scheduled: '#6AA9FF',
+  scheduled: '#1D9BF0',
   done: '#22C55E',
   missed: '#EF4444',
 };
 
 export const INSPECTION_TYPE_COLORS: Record<InspectionType, string> = {
   fire: '#EF4444',
-  housing: '#A78BFA',
+  housing: '#1D9BF0',
   health: '#22C55E',
-  ada: '#3B82F6',
+  ada: '#1D9BF0',
   athletics: '#F59E0B',
-  insurance: '#8F8F8F',
+  insurance: '#A1A1AA',
 };
 
 export const INSPECTION_STATUS_COLORS: Record<InspectionStatus, string> = {
   due: '#F59E0B',
-  scheduled: '#6AA9FF',
+  scheduled: '#1D9BF0',
   completed: '#22C55E',
   failed: '#EF4444',
 };
@@ -488,7 +488,7 @@ export const VENDOR_STATUS_COLORS: Record<VendorStatus, string> = {
 
 export const PROJECT_STATUS_COLORS: Record<ProjectStatus, string> = {
   planned: '#F59E0B',
-  in_progress: '#6AA9FF',
+  in_progress: '#1D9BF0',
   at_risk: '#EF4444',
   complete: '#22C55E',
 };

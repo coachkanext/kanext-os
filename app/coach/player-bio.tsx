@@ -39,11 +39,11 @@ const CLUSTER_KEYS: (keyof ClusterRatings)[] = [
 // ─── Design tokens ───────────────────────────────────────────────────────────
 
 const TEAL = '#ffffff';
-const BG = '#0F1115';
-const CARD_BG = '#1A1D23';
+const BG = '#0B0F14';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
 // ─── Headshots (same map as roster-content) ──────────────────────────────────
 
@@ -136,7 +136,7 @@ export default function PlayerBioScreen() {
             router.back();
           }}
         >
-          <IconSymbol name="chevron.left" size={14} color="#f5f5f5" />
+          <IconSymbol name="chevron.left" size={14} color="#FFFFFF" />
           <Text style={styles.backLabel}>Roster</Text>
         </Pressable>
       </View>
@@ -464,7 +464,7 @@ export default function PlayerBioScreen() {
                               const clusters = PLAYER_CLUSTERS[jersey];
                               const value = clusters?.[key] ?? 0;
                               const label = CLUSTER_LABELS[key as ClusterType]?.label ?? key;
-                              const barColor = value >= 70 ? '#4CAF50' : value >= 55 ? '#FF9800' : '#EF4444';
+                              const barColor = value >= 70 ? '#22C55E' : value >= 55 ? '#F59E0B' : '#EF4444';
                               const pct = Math.min(value, 100);
                               const clusterExpanded = expandedClusters.has(key);
                               const subclusters = clusterExpanded ? getPlayerSubclusters(jersey, key as keyof ClusterRatings) : [];
@@ -491,7 +491,7 @@ export default function PlayerBioScreen() {
                                     <Text style={styles.clusterChevron}>{clusterExpanded ? '▾' : '›'}</Text>
                                   </Pressable>
                                   {clusterExpanded && subclusters.map((sc) => {
-                                    const scColor = sc.rating >= 70 ? '#4CAF50' : sc.rating >= 55 ? '#FF9800' : '#EF4444';
+                                    const scColor = sc.rating >= 70 ? '#22C55E' : sc.rating >= 55 ? '#F59E0B' : '#EF4444';
                                     const scPct = Math.min(sc.rating, 100);
                                     return (
                                       <View key={sc.name} style={styles.subclusterRow}>
@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    backgroundColor: '#1A1D23',
+    backgroundColor: '#0B0F14',
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 20,
@@ -618,7 +618,7 @@ const styles = StyleSheet.create({
   backLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 
   scrollView: {
@@ -758,7 +758,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 16,
-    backgroundColor: '#252830',
+    backgroundColor: '#0B0F14',
   },
   filterPillActive: {
     backgroundColor: WHITE,
@@ -769,7 +769,7 @@ const styles = StyleSheet.create({
     color: GRAY,
   },
   filterPillTextActive: {
-    color: '#0F1115',
+    color: '#0B0F14',
   },
   emptyText: {
     fontSize: 13,
@@ -899,7 +899,7 @@ const styles = StyleSheet.create({
   heroStatRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#252830',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     paddingVertical: 14,
     marginBottom: 12,
@@ -935,7 +935,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#1E2127',
+    backgroundColor: '#0B0F14',
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
@@ -1042,7 +1042,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#252830',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1087,12 +1087,12 @@ const styles = StyleSheet.create({
     width: 72,
     fontSize: 11,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   clusterBarTrack: {
     flex: 1,
     height: 8,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 4,
     overflow: 'hidden',
     marginHorizontal: 8,
@@ -1109,7 +1109,7 @@ const styles = StyleSheet.create({
   },
   clusterChevron: {
     fontSize: 11,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     width: 16,
     textAlign: 'center',
     marginLeft: 2,

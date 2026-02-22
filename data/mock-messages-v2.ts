@@ -337,7 +337,7 @@ const SPORTS_ROOMS: MsgRoom[] = [
     lastMessage: 'Film session moved to 3:30 PM.',
     lastActivity: '2h ago',
     unreadCount: 2,
-    avatarColor: '#DDDDDD',
+    avatarColor: '#FFFFFF',
   },
   {
     id: 'sr-2',
@@ -347,7 +347,7 @@ const SPORTS_ROOMS: MsgRoom[] = [
     lastMessage: 'See everyone at 3:30 for film.',
     lastActivity: '3h ago',
     unreadCount: 5,
-    avatarColor: '#6AA9FF',
+    avatarColor: '#1D9BF0',
   },
   {
     id: 'sr-3',
@@ -578,7 +578,7 @@ const CHURCH_ROOMS: MsgRoom[] = [
     lastMessage: 'Board meeting agenda shared for Saturday.',
     lastActivity: '1h ago',
     unreadCount: 2,
-    avatarColor: '#DDDDDD',
+    avatarColor: '#FFFFFF',
   },
   {
     id: 'cr-2',
@@ -588,7 +588,7 @@ const CHURCH_ROOMS: MsgRoom[] = [
     lastMessage: 'Setlist for Sunday locked in.',
     lastActivity: '4h ago',
     unreadCount: 1,
-    avatarColor: '#A78BFA',
+    avatarColor: '#1D9BF0',
   },
   {
     id: 'cr-3',
@@ -819,7 +819,7 @@ const EDUCATION_ROOMS: MsgRoom[] = [
     lastMessage: 'Spring semester grade deadline: May 10.',
     lastActivity: '1d ago',
     unreadCount: 1,
-    avatarColor: '#DDDDDD',
+    avatarColor: '#FFFFFF',
   },
   {
     id: 'er-2',
@@ -829,7 +829,7 @@ const EDUCATION_ROOMS: MsgRoom[] = [
     lastMessage: 'Research paper outline due Friday.',
     lastActivity: '2h ago',
     unreadCount: 4,
-    avatarColor: '#6AA9FF',
+    avatarColor: '#1D9BF0',
   },
   {
     id: 'er-3',
@@ -1065,7 +1065,7 @@ const BUSINESS_ROOMS: MsgRoom[] = [
     lastMessage: 'Q1 board deck draft is ready for review.',
     lastActivity: '2h ago',
     unreadCount: 1,
-    avatarColor: '#DDDDDD',
+    avatarColor: '#FFFFFF',
   },
   {
     id: 'br-2',
@@ -1075,7 +1075,7 @@ const BUSINESS_ROOMS: MsgRoom[] = [
     lastMessage: 'V2 sprint review at 2 PM today.',
     lastActivity: '1h ago',
     unreadCount: 3,
-    avatarColor: '#6AA9FF',
+    avatarColor: '#1D9BF0',
   },
   {
     id: 'br-3',
@@ -1105,7 +1105,7 @@ const BUSINESS_ROOMS: MsgRoom[] = [
     lastMessage: 'Monthly all-hands meeting notes posted.',
     lastActivity: '3d ago',
     unreadCount: 0,
-    avatarColor: '#A78BFA',
+    avatarColor: '#1D9BF0',
   },
 ];
 
@@ -1319,7 +1319,7 @@ const COMMUNITY_ROOMS: MsgRoom[] = [
     lastMessage: 'Kart 7 passed tech inspection.',
     lastActivity: '4h ago',
     unreadCount: 1,
-    avatarColor: '#6AA9FF',
+    avatarColor: '#1D9BF0',
   },
   {
     id: 'kr-3',

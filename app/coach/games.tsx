@@ -100,9 +100,9 @@ const TABS: { key: Tab; label: string }[] = [
 const STANDINGS = KaNeXT_STANDINGS;
 
 const STATUS_COLORS: Record<GameStatus, string> = {
-  upcoming: '#6e6e6e',
+  upcoming: '#A1A1AA',
   live: '#EF4444',
-  final: '#f5f5f5',
+  final: '#FFFFFF',
 };
 
 const STATUS_LABELS: Record<GameStatus, string> = {
@@ -164,7 +164,7 @@ function GameRow({
                 styles.scoreText,
                 {
                   color: game.status === 'final'
-                    ? game.score.startsWith('W') ? '#f5f5f5' : game.score.startsWith('L') ? '#EF4444' : colors.text
+                    ? game.score.startsWith('W') ? '#FFFFFF' : game.score.startsWith('L') ? '#EF4444' : colors.text
                     : colors.text,
                 },
               ]}
@@ -509,12 +509,12 @@ export default function GamesScreen() {
                                 style={({ pressed }) => [styles.recentRight, pressed && { opacity: 0.7 }]}
                                 onPress={() => navigateToGame(game.id)}
                               >
-                                <View style={[styles.recentPill, { backgroundColor: '#f5f5f518' }]}>
-                                  <Text style={[styles.recentPillText, { color: '#f5f5f5' }]}>
+                                <View style={[styles.recentPill, { backgroundColor: '#FFFFFF18' }]}>
+                                  <Text style={[styles.recentPillText, { color: '#FFFFFF' }]}>
                                     FINAL
                                   </Text>
                                 </View>
-                                <Text style={[styles.recentScore, { color: isWin ? '#f5f5f5' : isLoss ? '#EF4444' : colors.text }]}>
+                                <Text style={[styles.recentScore, { color: isWin ? '#FFFFFF' : isLoss ? '#EF4444' : colors.text }]}>
                                   {scoreDisplay}
                                 </Text>
                               </Pressable>
@@ -669,7 +669,7 @@ export default function GamesScreen() {
                               {game.opponent}
                             </Text>
                           </View>
-                          <Text style={[styles.recentScore, { color: game.score?.startsWith('W') ? '#f5f5f5' : game.score?.startsWith('L') ? '#EF4444' : colors.text }]}>
+                          <Text style={[styles.recentScore, { color: game.score?.startsWith('W') ? '#FFFFFF' : game.score?.startsWith('L') ? '#EF4444' : colors.text }]}>
                             {game.score?.replace('-', '–') ?? ''}
                           </Text>
                           <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} style={{ marginLeft: 8 }} />
@@ -769,7 +769,7 @@ export default function GamesScreen() {
                       <Text style={[styles.standingsRecord, { color: colors.textSecondary }]}>
                         {row.overallW}-{row.overallL}
                       </Text>
-                      <Text style={[styles.standingsStreak, { color: row.streak.startsWith('W') ? '#f5f5f5' : '#EF4444' }]}>
+                      <Text style={[styles.standingsStreak, { color: row.streak.startsWith('W') ? '#FFFFFF' : '#EF4444' }]}>
                         {row.streak}
                       </Text>
                     </View>

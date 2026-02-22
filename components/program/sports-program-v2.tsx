@@ -113,7 +113,7 @@ function OverviewView({ colors, accent }: { colors: typeof Colors.light; accent:
       <View style={styles.healthRow}>
         <SnapChip label="Available" value={String(ROSTER_AVAILABILITY.available)} color="#22C55E" colors={colors} />
         <SnapChip label="Injured" value={String(ROSTER_AVAILABILITY.injured)} color="#EF4444" colors={colors} />
-        <SnapChip label="Redshirt" value={String(ROSTER_AVAILABILITY.redshirt)} color="#8F8F8F" colors={colors} />
+        <SnapChip label="Redshirt" value={String(ROSTER_AVAILABILITY.redshirt)} color="#A1A1AA" colors={colors} />
       </View>
 
       {/* Today/Next */}
@@ -176,8 +176,8 @@ function PeopleView({ colors, accent }: { colors: typeof Colors.light; accent: s
             <ThemedText style={[styles.personName, { color: colors.text }]}>{s.name}</ThemedText>
             <ThemedText style={[styles.personRole, { color: colors.textSecondary }]}>{s.role} · {s.teamAssignment}</ThemedText>
           </View>
-          <View style={[styles.tierBadge, { backgroundColor: s.permissionTier === 'admin' ? '#EF444422' : s.permissionTier === 'coach' ? accent + '22' : '#8F8F8F22' }]}>
-            <ThemedText style={[styles.tierText, { color: s.permissionTier === 'admin' ? '#EF4444' : s.permissionTier === 'coach' ? accent : '#8F8F8F' }]}>{s.permissionTier}</ThemedText>
+          <View style={[styles.tierBadge, { backgroundColor: s.permissionTier === 'admin' ? '#EF444422' : s.permissionTier === 'coach' ? accent + '22' : '#A1A1AA22' }]}>
+            <ThemedText style={[styles.tierText, { color: s.permissionTier === 'admin' ? '#EF4444' : s.permissionTier === 'coach' ? accent : '#A1A1AA' }]}>{s.permissionTier}</ThemedText>
           </View>
         </View>
       ))}
@@ -206,8 +206,8 @@ function TeamsView({ colors, accent }: { colors: typeof Colors.light; accent: st
         <View key={team.id} style={[styles.teamCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.teamHeader}>
             <ThemedText style={[styles.teamName, { color: colors.text }]}>{team.name}</ThemedText>
-            <View style={[styles.statusBadge, { backgroundColor: team.status === 'active' ? '#22C55E22' : '#8F8F8F22' }]}>
-              <ThemedText style={[styles.statusText, { color: team.status === 'active' ? '#22C55E' : '#8F8F8F' }]}>{team.status}</ThemedText>
+            <View style={[styles.statusBadge, { backgroundColor: team.status === 'active' ? '#22C55E22' : '#A1A1AA22' }]}>
+              <ThemedText style={[styles.statusText, { color: team.status === 'active' ? '#22C55E' : '#A1A1AA' }]}>{team.status}</ThemedText>
             </View>
           </View>
           <ThemedText style={[styles.teamMeta, { color: colors.textSecondary }]}>HC: {team.headCoach} · Record: {team.record} · Roster: {team.rosterCount}</ThemedText>
@@ -219,7 +219,7 @@ function TeamsView({ colors, accent }: { colors: typeof Colors.light; accent: st
 }
 
 function SeasonsView({ colors, accent }: { colors: typeof Colors.light; accent: string }) {
-  const statusColors = { active: '#22C55E', completed: '#6AA9FF', archived: '#8F8F8F' };
+  const statusColors = { active: '#22C55E', completed: '#1D9BF0', archived: '#A1A1AA' };
   return (
     <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       {PROGRAM_SEASONS.map((season) => (
@@ -302,7 +302,7 @@ function SettingsView({ colors, accent }: { colors: typeof Colors.light; accent:
                 <ThemedText style={[styles.settingDesc, { color: colors.textSecondary }]}>{setting.description}</ThemedText>
               </View>
               {setting.type === 'toggle' && (
-                <View style={[styles.toggleIndicator, { backgroundColor: setting.enabled ? '#22C55E' : '#8F8F8F' }]}>
+                <View style={[styles.toggleIndicator, { backgroundColor: setting.enabled ? '#22C55E' : '#A1A1AA' }]}>
                   <ThemedText style={styles.toggleText}>{setting.enabled ? 'ON' : 'OFF'}</ThemedText>
                 </View>
               )}
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
   pillBar: { paddingHorizontal: 16, paddingVertical: 10, gap: 8 },
-  pill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
+  pill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#2F3336' },
   pillText: { fontSize: 13, fontWeight: '600' },
   sectionTitle: { fontSize: 13, fontWeight: '700', marginTop: 16, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
 

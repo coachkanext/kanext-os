@@ -97,6 +97,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 interface AuthContextValue {
   state: AuthState;
   signIn: (provider: AuthProviderType) => Promise<void>;
+  signInAsInvestor: () => Promise<void>;
   signOut: () => Promise<void>;
   completeOnboarding: () => Promise<void>;
 }
@@ -147,7 +148,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const signIn = useCallback(async (provider: AuthProviderType) => {
-    const email = 'sammy@kanext.com';
+    const email = 'coachk@kanext.io';
 
     // Resolve access tier (strict priority: founder → investor → public)
     const pendingInviteCode = await AsyncStorage.getItem(INVITE_CODE_KEY);
@@ -160,9 +161,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const session: AuthSession = {
       userId: `user-${Date.now()}`,
-      displayName: provider === 'apple' ? 'Alex M.' : provider === 'google' ? 'Alex Morgan' : 'Alex',
+      displayName: provider === 'apple' ? 'Coach K.' : provider === 'google' ? 'Coach K' : 'Coach K',
       email,
       provider,
+      token: `mock-token-${Date.now()}`,
+      createdAt: new Date(),
+      tier,
+    };
+
+    await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    await AsyncStorage.setItem(TIER_KEY, tier);
+    dispatch({ type: 'SIGN_IN', payload: session });
+  }, []);
+
+  const signInAsInvestor = useCallback(async () => {
+    const email = 'investor@demo.kanext.io';
+    const tier = resolveTier(email, 'KX-INVESTOR-2026', INVITE_CODES);
+
+    const session: AuthSession = {
+      userId: `user-${Date.now()}`,
+      displayName: 'Investor Demo',
+      email,
+      provider: 'email',
       token: `mock-token-${Date.now()}`,
       createdAt: new Date(),
       tier,
@@ -183,7 +203,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     dispatch({ type: 'COMPLETE_ONBOARDING' });
   }, []);
 
-  const value: AuthContextValue = { state, signIn, signOut, completeOnboarding };
+  const value: AuthContextValue = { state, signIn, signInAsInvestor, signOut, completeOnboarding };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

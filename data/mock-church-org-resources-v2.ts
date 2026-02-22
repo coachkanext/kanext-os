@@ -229,10 +229,10 @@ export const RESOURCE_STATUS_LABELS: Record<ResourceStatus, string> = {
 };
 
 export const RESOURCE_STATUS_COLORS: Record<ResourceStatus, string> = {
-  draft: '#8F8F8F',
+  draft: '#A1A1AA',
   in_review: '#F59E0B',
   published: '#22C55E',
-  archived: '#6B7280',
+  archived: '#A1A1AA',
 };
 
 export const VISIBILITY_LABELS: Record<ResourceVisibility, string> = {
@@ -264,15 +264,15 @@ export const MINISTRY_TAG_LABELS: Record<MinistryTag, string> = {
 };
 
 export const MINISTRY_TAG_COLORS: Record<MinistryTag, string> = {
-  worship: '#8B5CF6',
+  worship: '#1D9BF0',
   kids: '#F59E0B',
   youth: '#EF4444',
   outreach: '#22C55E',
-  admin: '#6AA9FF',
-  facilities: '#8F8F8F',
-  prayer: '#EC4899',
-  discipleship: '#10B981',
-  general: '#6B7280',
+  admin: '#1D9BF0',
+  facilities: '#A1A1AA',
+  prayer: '#1D9BF0',
+  discipleship: '#22C55E',
+  general: '#A1A1AA',
 };
 
 export const TRAINING_STATUS_LABELS: Record<TrainingStatus, string> = {
@@ -283,8 +283,8 @@ export const TRAINING_STATUS_LABELS: Record<TrainingStatus, string> = {
 };
 
 export const TRAINING_STATUS_COLORS: Record<TrainingStatus, string> = {
-  not_started: '#8F8F8F',
-  in_progress: '#6AA9FF',
+  not_started: '#A1A1AA',
+  in_progress: '#1D9BF0',
   completed: '#22C55E',
   expired: '#EF4444',
 };
@@ -298,7 +298,7 @@ export const PACK_STATUS_LABELS: Record<PackStatus, string> = {
 export const PACK_STATUS_COLORS: Record<PackStatus, string> = {
   published: '#22C55E',
   needs_review: '#F59E0B',
-  draft: '#8F8F8F',
+  draft: '#A1A1AA',
 };
 
 export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
@@ -310,16 +310,16 @@ export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
 };
 
 export const REQUEST_STATUS_COLORS: Record<RequestStatus, string> = {
-  new: '#6AA9FF',
+  new: '#1D9BF0',
   under_review: '#F59E0B',
-  in_progress: '#8B5CF6',
+  in_progress: '#1D9BF0',
   delivered: '#22C55E',
-  closed: '#6B7280',
+  closed: '#A1A1AA',
 };
 
 export const REQUEST_PRIORITY_COLORS: Record<RequestPriority, string> = {
   low: '#22C55E',
-  normal: '#6AA9FF',
+  normal: '#1D9BF0',
   high: '#F59E0B',
   urgent: '#EF4444',
 };

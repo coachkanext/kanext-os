@@ -20,11 +20,11 @@ import { EVAL_SNAPSHOTS } from '@/data/evalSnapshots';
 import { TabFooter } from '@/components/tab-footer';
 
 const STATUS_COLORS: Record<string, string> = {
-  Watching: '#6e6e6e',
-  Contacted: '#d4d4d4',
+  Watching: '#A1A1AA',
+  Contacted: '#A1A1AA',
   Offered: '#ffffff',
-  Committed: '#f5f5f5',
-  Archived: '#555555',
+  Committed: '#FFFFFF',
+  Archived: '#52525B',
 };
 
 export default function PlayerProfileScreen() {
@@ -101,7 +101,7 @@ export default function PlayerProfileScreen() {
             <IconSymbol name="mappin" size={12} color={colors.textTertiary} />
             <Text style={[styles.locationText, { color: colors.textTertiary }]}>{player.state}</Text>
             {player.hasFilm && (
-              <View style={[styles.filmBadge, { backgroundColor: '#f5f5f520' }]}>
+              <View style={[styles.filmBadge, { backgroundColor: '#FFFFFF20' }]}>
                 <Text style={styles.filmBadgeText}>Film Available</Text>
               </View>
             )}
@@ -125,8 +125,8 @@ export default function PlayerProfileScreen() {
             <Text style={[styles.actionBtnText, { color: '#ffffff' }]}>Open in Nexus</Text>
           </Pressable>
           {evals.length > 0 && (
-            <Pressable style={[styles.actionBtn, { backgroundColor: '#d4d4d420' }]}>
-              <Text style={[styles.actionBtnText, { color: '#d4d4d4' }]}>{evals.length} Evaluation{evals.length > 1 ? 's' : ''}</Text>
+            <Pressable style={[styles.actionBtn, { backgroundColor: '#A1A1AA20' }]}>
+              <Text style={[styles.actionBtnText, { color: '#A1A1AA' }]}>{evals.length} Evaluation{evals.length > 1 ? 's' : ''}</Text>
             </Pressable>
           )}
         </View>
@@ -193,7 +193,7 @@ export default function PlayerProfileScreen() {
               { label: 'Game Film (Hudl)', icon: 'play.rectangle.fill' as const, color: '#EF4444' },
               { label: 'Highlights (YouTube)', icon: 'play.fill' as const, color: '#EF4444' },
               { label: 'School Bio', icon: 'person.fill' as const, color: '#ffffff' },
-              { label: 'Social Media', icon: 'bubble.left.fill' as const, color: '#d4d4d4' },
+              { label: 'Social Media', icon: 'bubble.left.fill' as const, color: '#A1A1AA' },
             ].map((link, idx) => (
               <View key={link.label}>
                 {idx > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   locationRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   locationText: { fontSize: 13 },
   filmBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, marginLeft: 8 },
-  filmBadgeText: { fontSize: 11, fontWeight: '600', color: '#f5f5f5' },
+  filmBadgeText: { fontSize: 11, fontWeight: '600', color: '#FFFFFF' },
 
   // Actions
   actionsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: Spacing.lg },

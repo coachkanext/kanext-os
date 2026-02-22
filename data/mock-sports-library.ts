@@ -54,7 +54,7 @@ export interface LibrarySectionConfig {
 export function getAccessLevelColor(level: AccessLevel): string {
   switch (level) {
     case 'public': return '#22C55E';
-    case 'team': return '#3B82F6';
+    case 'team': return '#1D9BF0';
     case 'staff': return '#F59E0B';
     case 'ad_only': return '#EF4444';
   }
@@ -102,51 +102,51 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     id: 'lr-1', title: 'KaNeXT vs Ridgemont Christian — Full Game', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'KaNeXT Athletics', date: 'Feb 14', opponent: 'Ridgemont Christian',
     tags: ['KaNeXT Conference', 'Home', 'Win'], clipCount: 1, duration: '1:48:22',
-    thumbnailColor: '#1E3A5F', workspaceRef: 'Last Game Review', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#1D9BF0', workspaceRef: 'Last Game Review', exportable: true, rbacSection: 'library_official_games',
     downloaded: true, downloadSize: '1.8 GB',
   },
   {
     id: 'lr-2', title: 'KaNeXT vs SW Assemblies — Full Game', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'KaNeXT Athletics', date: 'Feb 8', opponent: 'SW Assemblies',
     tags: ['KaNeXT Conference', 'Away', 'Win'], clipCount: 1, duration: '1:52:10',
-    thumbnailColor: '#3D2A1A', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#0B0F14', exportable: true, rbacSection: 'library_official_games',
     downloaded: true, downloadSize: '1.9 GB',
   },
   {
     id: 'lr-3', title: 'KaNeXT vs Mid-America Nazarene', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'KaNeXT Athletics', date: 'Feb 1', opponent: 'Mid-America Nazarene',
     tags: ['KaNeXT Conference', 'Home', 'Win'], clipCount: 1, duration: '1:45:33',
-    thumbnailColor: '#1A3D1A', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#0B0F14', exportable: true, rbacSection: 'library_official_games',
   },
   {
     id: 'lr-4', title: 'KaNeXT vs Oklahoma Panhandle', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'KaNeXT Athletics', date: 'Jan 25', opponent: 'Oklahoma Panhandle',
     tags: ['Non-Conference', 'Home', 'Win'], clipCount: 1, duration: '1:50:08',
-    thumbnailColor: '#3D1A3D', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#0B0F14', exportable: true, rbacSection: 'library_official_games',
   },
   {
     id: 'lr-5', title: 'KaNeXT vs Central Christian', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'KaNeXT Athletics', date: 'Jan 18', opponent: 'Central Christian',
     tags: ['KaNeXT Conference', 'Away', 'Loss'], clipCount: 1, duration: '1:47:15',
-    thumbnailColor: '#2A3D1A', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#0B0F14', exportable: true, rbacSection: 'library_official_games',
   },
   {
     id: 'lr-6', title: 'KaNeXT vs John Brown — Full Game', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'KaNeXT Athletics', date: 'Jan 11', opponent: 'John Brown',
     tags: ['KaNeXT Conference', 'Home', 'Win'], clipCount: 1, duration: '1:44:50',
-    thumbnailColor: '#1E3A5F', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#1D9BF0', exportable: true, rbacSection: 'library_official_games',
   },
   {
     id: 'lr-7', title: 'KaNeXT vs Wayland Baptist', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'KaNeXT Athletics', date: 'Jan 4', opponent: 'Wayland Baptist',
     tags: ['KaNeXT Conference', 'Away', 'Win'], clipCount: 1, duration: '1:49:22',
-    thumbnailColor: '#2D1B69', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#0B0F14', exportable: true, rbacSection: 'library_official_games',
   },
   {
     id: 'lr-8', title: 'KaNeXT vs Science & Arts', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'KaNeXT Athletics', date: 'Dec 14', opponent: 'Science & Arts',
     tags: ['Non-Conference', 'Home', 'Win'], clipCount: 1, duration: '1:46:18',
-    thumbnailColor: '#3D1A1A', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#0B0F14', exportable: true, rbacSection: 'library_official_games',
   },
 
   // Practices + Install (4)
@@ -154,26 +154,26 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     id: 'lr-9', title: 'Practice — Feb 13: Transition D', section: 'practices_install', type: 'practice',
     accessLevel: 'staff', owner: 'Coach Carter', date: 'Feb 13',
     tags: ['Practice', 'Defense', 'Transition'], clipCount: 1, duration: '45:20',
-    thumbnailColor: '#1A3D1A', exportable: false, rbacSection: 'library_practices_install',
+    thumbnailColor: '#0B0F14', exportable: false, rbacSection: 'library_practices_install',
     downloaded: true, downloadSize: '420 MB',
   },
   {
     id: 'lr-10', title: 'Install: Motion Offense v2', section: 'practices_install', type: 'install',
     accessLevel: 'staff', owner: 'Coach Avery', date: 'Feb 11',
     tags: ['Install', 'Offense', 'Motion'], clipCount: 6, duration: '22:15',
-    thumbnailColor: '#2D1B69', workspaceRef: 'Install: Offense', exportable: false, rbacSection: 'library_practices_install',
+    thumbnailColor: '#0B0F14', workspaceRef: 'Install: Offense', exportable: false, rbacSection: 'library_practices_install',
   },
   {
     id: 'lr-11', title: 'Install: Press Break vs 2-2-1', section: 'practices_install', type: 'install',
     accessLevel: 'staff', owner: 'Coach Davis', date: 'Feb 9',
     tags: ['Install', 'Press Break', 'Pressure'], clipCount: 4, duration: '15:42',
-    thumbnailColor: '#3D1A1A', workspaceRef: 'Press Break Install', exportable: false, rbacSection: 'library_practices_install',
+    thumbnailColor: '#0B0F14', workspaceRef: 'Press Break Install', exportable: false, rbacSection: 'library_practices_install',
   },
   {
     id: 'lr-12', title: 'Practice — Feb 6: Shooting Drills', section: 'practices_install', type: 'practice',
     accessLevel: 'staff', owner: 'Coach Avery', date: 'Feb 6',
     tags: ['Practice', 'Shooting', 'Drills'], clipCount: 1, duration: '38:10',
-    thumbnailColor: '#1E3A5F', exportable: false, rbacSection: 'library_practices_install',
+    thumbnailColor: '#1D9BF0', exportable: false, rbacSection: 'library_practices_install',
   },
 
   // Player Development (4)
@@ -181,25 +181,25 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     id: 'lr-13', title: 'Carter: Finishing Through Contact', section: 'player_development', type: 'dev_clip',
     accessLevel: 'staff', owner: 'Coach Avery', date: 'Feb 12',
     tags: ['Development', 'Finishing', 'Carter'], clipCount: 8, duration: '4:18',
-    thumbnailColor: '#1A3D1A', workspaceRef: 'Player: Carter Development', exportable: false, rbacSection: 'library_player_development',
+    thumbnailColor: '#0B0F14', workspaceRef: 'Player: Carter Development', exportable: false, rbacSection: 'library_player_development',
   },
   {
     id: 'lr-14', title: 'Thompson: Catch-and-Shoot Mechanics', section: 'player_development', type: 'dev_clip',
     accessLevel: 'staff', owner: 'Coach Avery', date: 'Feb 9',
     tags: ['Development', 'Shooting', 'Thompson'], clipCount: 6, duration: '3:45',
-    thumbnailColor: '#1E3A5F', exportable: false, rbacSection: 'library_player_development',
+    thumbnailColor: '#1D9BF0', exportable: false, rbacSection: 'library_player_development',
   },
   {
     id: 'lr-15', title: 'Williams: Closeout Technique', section: 'player_development', type: 'dev_clip',
     accessLevel: 'staff', owner: 'Coach Davis', date: 'Feb 6',
     tags: ['Development', 'Defense', 'Williams'], clipCount: 5, duration: '5:10',
-    thumbnailColor: '#2D1B69', exportable: false, rbacSection: 'library_player_development',
+    thumbnailColor: '#0B0F14', exportable: false, rbacSection: 'library_player_development',
   },
   {
     id: 'lr-16', title: 'Anderson: Ball Screen Reads', section: 'player_development', type: 'dev_clip',
     accessLevel: 'staff', owner: 'Coach Avery', date: 'Feb 3',
     tags: ['Development', 'Playmaking', 'Anderson'], clipCount: 7, duration: '6:22',
-    thumbnailColor: '#3D1A1A', exportable: false, rbacSection: 'library_player_development',
+    thumbnailColor: '#0B0F14', exportable: false, rbacSection: 'library_player_development',
   },
 
   // Public Media (4)
@@ -207,24 +207,24 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     id: 'lr-17', title: 'Season Opener Highlights', section: 'public_media', type: 'highlight',
     accessLevel: 'public', owner: 'KaNeXT Athletics', date: 'Feb 14',
     tags: ['Highlights', 'Public', 'Social'], clipCount: 1, duration: '4:32',
-    thumbnailColor: '#1E3A5F', exportable: true, rbacSection: 'library_public_media',
+    thumbnailColor: '#1D9BF0', exportable: true, rbacSection: 'library_public_media',
   },
   {
     id: 'lr-18', title: 'Media Day 2025-26 — Behind the Scenes', section: 'public_media', type: 'interview',
     accessLevel: 'public', owner: 'KaNeXT Media', date: 'Oct 3',
     tags: ['Media Day', 'Public', 'BTS'], clipCount: 1, duration: '12:15',
-    thumbnailColor: '#2D1B69', exportable: true, rbacSection: 'library_public_media',
+    thumbnailColor: '#0B0F14', exportable: true, rbacSection: 'library_public_media',
   },
   {
     id: 'lr-19', title: 'Dunk of the Week: Carter', section: 'public_media', type: 'highlight',
     accessLevel: 'public', owner: 'KaNeXT Conference', date: 'Feb 12',
     tags: ['Highlights', 'Public', 'Award'], clipCount: 1, duration: '0:48',
-    thumbnailColor: '#3D2A1A', exportable: true, rbacSection: 'library_public_media',
+    thumbnailColor: '#0B0F14', exportable: true, rbacSection: 'library_public_media',
   },
   {
     id: 'lr-20', title: 'Postgame Interview: Coach Carter', section: 'public_media', type: 'interview',
     accessLevel: 'public', owner: 'KaNeXT Media', date: 'Feb 8',
     tags: ['Interview', 'Public', 'Postgame'], clipCount: 1, duration: '6:30',
-    thumbnailColor: '#1A3D2A', exportable: true, rbacSection: 'library_public_media',
+    thumbnailColor: '#0B0F14', exportable: true, rbacSection: 'library_public_media',
   },
 ];

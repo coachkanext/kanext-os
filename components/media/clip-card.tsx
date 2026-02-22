@@ -28,7 +28,7 @@ export function ClipCard({ clip, variant = 'row' }: ClipCardProps) {
       <Pressable
         style={({ pressed }) => [
           styles.gridCard,
-          { backgroundColor: pressed ? '#191919' : '#111' },
+          { backgroundColor: pressed ? '#0B0F14' : '#111' },
         ]}
         onPress={handlePress}
       >
@@ -50,7 +50,7 @@ export function ClipCard({ clip, variant = 'row' }: ClipCardProps) {
     <Pressable
       style={({ pressed }) => [
         styles.rowCard,
-        { backgroundColor: pressed ? '#191919' : 'transparent' },
+        { backgroundColor: pressed ? '#0B0F14' : 'transparent' },
       ]}
       onPress={handlePress}
     >
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm + 2,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
   },
   rowThumb: {
     width: 48,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   rowTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 3,
   },
   rowMeta: {
@@ -113,28 +113,28 @@ const styles = StyleSheet.create({
   },
   rowDuration: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   sourceBadge: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderRadius: 4,
   },
   sourceText: {
     fontSize: 10,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     fontWeight: '500',
   },
   typeBadge: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: BorderRadius.sm,
   },
   typeText: {
     fontSize: 11,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     fontWeight: '500',
     textTransform: 'capitalize',
   },
@@ -178,14 +178,14 @@ const styles = StyleSheet.create({
   gridTitle: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     paddingHorizontal: 6,
     paddingTop: 6,
     lineHeight: 16,
   },
   gridSource: {
     fontSize: 10,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     paddingHorizontal: 6,
     paddingBottom: 6,
     paddingTop: 2,

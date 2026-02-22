@@ -19,11 +19,11 @@ const VIEW_LABELS: { id: RecruitingViewMode; label: string }[] = [
   { id: 'database', label: 'Database' },
 ];
 
-const BG = '#0F1115';
-const CARD_BG = '#1A1D23';
+const BG = '#0B0F14';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
 export function RecruitingHeader({
   viewMode,
@@ -74,19 +74,19 @@ export function RecruitingHeader({
       {/* Search bar (conditional) */}
       {searchVisible && (
         <View style={styles.searchBar}>
-          <IconSymbol name="magnifyingglass" size={14} color="#6B7080" />
+          <IconSymbol name="magnifyingglass" size={14} color="#A1A1AA" />
           <TextInput
             ref={searchRef}
             style={styles.searchInput}
             placeholder="Search player, team, tag..."
-            placeholderTextColor="#6B7080"
+            placeholderTextColor="#A1A1AA"
             value={search}
             onChangeText={onSearchChange}
             autoFocus
           />
           {search.length > 0 && (
             <Pressable hitSlop={16} onPress={() => onSearchChange('')} style={{ padding: 8 }}>
-              <IconSymbol name="xmark.circle.fill" size={18} color="#6B7080" />
+              <IconSymbol name="xmark.circle.fill" size={18} color="#A1A1AA" />
             </Pressable>
           )}
         </View>
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#1D9BF0',
     alignItems: 'center',
     justifyContent: 'center',
   },

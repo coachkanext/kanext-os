@@ -63,11 +63,11 @@ interface UniversalStudentSheetProps {
 // =============================================================================
 
 const STATUS_COLORS: Record<string, string> = {
-  applicant: '#6AA9FF',
+  applicant: '#1D9BF0',
   enrolled: '#22C55E',
   leave: '#F59E0B',
   withdrawn: '#EF4444',
-  alumni: '#8F8F8F',
+  alumni: '#A1A1AA',
 };
 
 const HOLD_COLORS: Record<string, string> = {
@@ -80,23 +80,23 @@ const HOLD_COLORS: Record<string, string> = {
 const GRADE_COLORS: Record<string, string> = {
   A: '#22C55E',
   'A-': '#22C55E',
-  'B+': '#6AA9FF',
-  B: '#6AA9FF',
-  'B-': '#6AA9FF',
+  'B+': '#1D9BF0',
+  B: '#1D9BF0',
+  'B-': '#1D9BF0',
   'C+': '#F59E0B',
   C: '#F59E0B',
   'C-': '#F59E0B',
   D: '#EF4444',
   F: '#EF4444',
-  IP: '#8F8F8F',
-  W: '#8F8F8F',
+  IP: '#A1A1AA',
+  W: '#A1A1AA',
 };
 
 const ATTENDANCE_COLORS: Record<string, string> = {
   present: '#22C55E',
   absent: '#EF4444',
   late: '#F59E0B',
-  excused: '#8F8F8F',
+  excused: '#A1A1AA',
 };
 
 const HOLD_STATUS_COLORS: Record<string, string> = {
@@ -109,7 +109,7 @@ const TRANSACTION_TYPE_COLORS: Record<string, string> = {
   tuition: '#EF4444',
   payment: '#22C55E',
   fee: '#F59E0B',
-  refund: '#6AA9FF',
+  refund: '#1D9BF0',
   financial_aid: '#22C55E',
   scholarship: '#22C55E',
 };
@@ -118,7 +118,7 @@ const DOCUMENT_STATUS_COLORS: Record<string, string> = {
   completed: '#22C55E',
   pending: '#F59E0B',
   missing: '#EF4444',
-  available: '#6AA9FF',
+  available: '#1D9BF0',
 };
 
 // =============================================================================
@@ -174,7 +174,7 @@ const MOCK_DEGREE_AUDIT = [
 
 const AUDIT_STATUS_COLORS: Record<string, string> = {
   met: '#22C55E',
-  in_progress: '#6AA9FF',
+  in_progress: '#1D9BF0',
   missing: '#EF4444',
 };
 
@@ -202,10 +202,10 @@ const MOCK_ADVISING_NOTES_FULL = [
 ];
 
 const ADVISING_NOTE_TYPE_COLORS: Record<string, string> = {
-  academic: '#6AA9FF',
+  academic: '#1D9BF0',
   financial: '#22C55E',
   career: '#F59E0B',
-  personal: '#8F8F8F',
+  personal: '#A1A1AA',
 };
 
 const MOCK_HOLDS = [
@@ -430,19 +430,19 @@ function StudentHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (STATUS_COLORS[student.status] ?? '#8F8F8F') + '1A' },
+            { backgroundColor: (STATUS_COLORS[student.status] ?? '#A1A1AA') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: STATUS_COLORS[student.status] ?? '#8F8F8F' },
+              { backgroundColor: STATUS_COLORS[student.status] ?? '#A1A1AA' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: STATUS_COLORS[student.status] ?? '#8F8F8F' },
+              { color: STATUS_COLORS[student.status] ?? '#A1A1AA' },
             ]}
           >
             {student.status.charAt(0).toUpperCase() + student.status.slice(1)}
@@ -453,13 +453,13 @@ function StudentHeader({
           <View
             style={[
               styles.holdPill,
-              { backgroundColor: (HOLD_COLORS[holdType] ?? '#8F8F8F') + '1A' },
+              { backgroundColor: (HOLD_COLORS[holdType] ?? '#A1A1AA') + '1A' },
             ]}
           >
             <ThemedText
               style={[
                 styles.holdPillText,
-                { color: HOLD_COLORS[holdType] ?? '#8F8F8F' },
+                { color: HOLD_COLORS[holdType] ?? '#A1A1AA' },
               ]}
             >
               {holdType === 'none' ? 'No Holds' : `${holdType.charAt(0).toUpperCase() + holdType.slice(1)} Hold`}
@@ -470,9 +470,9 @@ function StudentHeader({
 
       {/* Quick chips */}
       <View style={styles.quickChipRow}>
-        <View style={[styles.quickChip, { backgroundColor: '#6AA9FF22' }]}>
-          <IconSymbol name="book.fill" size={12} color="#6AA9FF" />
-          <ThemedText style={[styles.quickChipText, { color: '#6AA9FF' }]}>
+        <View style={[styles.quickChip, { backgroundColor: '#1D9BF022' }]}>
+          <IconSymbol name="book.fill" size={12} color="#1D9BF0" />
+          <ThemedText style={[styles.quickChipText, { color: '#1D9BF0' }]}>
             {student.creditsCompleted}/{student.creditsRequired} Credits
           </ThemedText>
         </View>
@@ -591,13 +591,13 @@ function OverviewTab({
           <StatBlock
             label="Credits Done"
             value={String(student.creditsCompleted)}
-            color="#6AA9FF"
+            color="#1D9BF0"
             colors={colors}
           />
           <StatBlock
             label="Credits Req"
             value={String(student.creditsRequired)}
-            color="#DDDDDD"
+            color="#FFFFFF"
             colors={colors}
           />
           <StatBlock
@@ -612,7 +612,7 @@ function OverviewTab({
             style={[
               styles.progressBarFill,
               {
-                backgroundColor: '#6AA9FF',
+                backgroundColor: '#1D9BF0',
                 width: `${Math.min((student.creditsCompleted / student.creditsRequired) * 100, 100)}%`,
               },
             ]}
@@ -634,7 +634,7 @@ function OverviewTab({
               <View
                 style={[
                   styles.noteTypeDot,
-                  { backgroundColor: ADVISING_NOTE_TYPE_COLORS[note.type] ?? '#8F8F8F' },
+                  { backgroundColor: ADVISING_NOTE_TYPE_COLORS[note.type] ?? '#A1A1AA' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -677,8 +677,8 @@ function ScheduleTab({ colors }: { colors: typeof Colors.light }) {
                   key={session.id}
                   style={[styles.listRow, { borderBottomColor: colors.border }]}
                 >
-                  <View style={[styles.sessionTypeBadge, { backgroundColor: session.type === 'lecture' ? '#6AA9FF22' : session.type === 'lab' ? '#22C55E22' : '#F59E0B22' }]}>
-                    <ThemedText style={[styles.sessionTypeText, { color: session.type === 'lecture' ? '#6AA9FF' : session.type === 'lab' ? '#22C55E' : '#F59E0B' }]}>
+                  <View style={[styles.sessionTypeBadge, { backgroundColor: session.type === 'lecture' ? '#1D9BF022' : session.type === 'lab' ? '#22C55E22' : '#F59E0B22' }]}>
+                    <ThemedText style={[styles.sessionTypeText, { color: session.type === 'lecture' ? '#1D9BF0' : session.type === 'lab' ? '#22C55E' : '#F59E0B' }]}>
                       {session.type.toUpperCase()}
                     </ThemedText>
                   </View>
@@ -773,15 +773,15 @@ function CoursesTab({
               </ThemedText>
             </View>
             {showGrades && (
-              <View style={[styles.gradeBadge, { backgroundColor: (GRADE_COLORS[course.grade] ?? '#8F8F8F') + '22' }]}>
-                <ThemedText style={[styles.gradeText, { color: GRADE_COLORS[course.grade] ?? '#8F8F8F' }]}>
+              <View style={[styles.gradeBadge, { backgroundColor: (GRADE_COLORS[course.grade] ?? '#A1A1AA') + '22' }]}>
+                <ThemedText style={[styles.gradeText, { color: GRADE_COLORS[course.grade] ?? '#A1A1AA' }]}>
                   {course.grade}
                 </ThemedText>
               </View>
             )}
             {showGradeSummary && (
-              <View style={[styles.gradeBadge, { backgroundColor: '#6AA9FF22' }]}>
-                <ThemedText style={[styles.gradeText, { color: '#6AA9FF' }]}>
+              <View style={[styles.gradeBadge, { backgroundColor: '#1D9BF022' }]}>
+                <ThemedText style={[styles.gradeText, { color: '#1D9BF0' }]}>
                   On Track
                 </ThemedText>
               </View>
@@ -808,8 +808,8 @@ function CoursesTab({
               </ThemedText>
             </View>
             {showGrades && (
-              <View style={[styles.gradeBadge, { backgroundColor: (GRADE_COLORS[course.grade] ?? '#8F8F8F') + '22' }]}>
-                <ThemedText style={[styles.gradeText, { color: GRADE_COLORS[course.grade] ?? '#8F8F8F' }]}>
+              <View style={[styles.gradeBadge, { backgroundColor: (GRADE_COLORS[course.grade] ?? '#A1A1AA') + '22' }]}>
+                <ThemedText style={[styles.gradeText, { color: GRADE_COLORS[course.grade] ?? '#A1A1AA' }]}>
                   {course.grade}
                 </ThemedText>
               </View>
@@ -852,7 +852,7 @@ function ProgressTab({
       <SectionCard title="Degree Audit" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Met" value={String(metCount)} color="#22C55E" colors={colors} />
-          <StatBlock label="In Progress" value={String(inProgressCount)} color="#6AA9FF" colors={colors} />
+          <StatBlock label="In Progress" value={String(inProgressCount)} color="#1D9BF0" colors={colors} />
           <StatBlock label="Missing" value={String(missingCount)} color="#EF4444" colors={colors} />
         </View>
       </SectionCard>
@@ -866,7 +866,7 @@ function ProgressTab({
             <View
               style={[
                 styles.auditStatusIcon,
-                { backgroundColor: (AUDIT_STATUS_COLORS[req.status] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (AUDIT_STATUS_COLORS[req.status] ?? '#A1A1AA') + '22' },
               ]}
             >
               <IconSymbol
@@ -878,7 +878,7 @@ function ProgressTab({
                     : 'xmark.circle.fill'
                 }
                 size={14}
-                color={AUDIT_STATUS_COLORS[req.status] ?? '#8F8F8F'}
+                color={AUDIT_STATUS_COLORS[req.status] ?? '#A1A1AA'}
               />
             </View>
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
@@ -892,7 +892,7 @@ function ProgressTab({
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: AUDIT_STATUS_COLORS[req.status] ?? '#8F8F8F' },
+                { color: AUDIT_STATUS_COLORS[req.status] ?? '#A1A1AA' },
               ]}
             >
               {req.status === 'met' ? 'MET' : req.status === 'in_progress' ? 'IN PROGRESS' : 'MISSING'}
@@ -913,7 +913,7 @@ function ProgressTab({
           <StatBlock
             label="Semesters"
             value={`~${semestersNeeded}`}
-            color="#6AA9FF"
+            color="#1D9BF0"
             colors={colors}
           />
           <StatBlock
@@ -973,7 +973,7 @@ function AttendanceTab({
             <View
               style={[
                 styles.attendanceDot,
-                { backgroundColor: ATTENDANCE_COLORS[record.status] ?? '#8F8F8F' },
+                { backgroundColor: ATTENDANCE_COLORS[record.status] ?? '#A1A1AA' },
               ]}
             />
             <View style={{ flex: 1 }}>
@@ -987,7 +987,7 @@ function AttendanceTab({
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: ATTENDANCE_COLORS[record.status] ?? '#8F8F8F' },
+                { color: ATTENDANCE_COLORS[record.status] ?? '#A1A1AA' },
               ]}
             >
               {record.status.toUpperCase()}
@@ -1080,7 +1080,7 @@ function AdvisingTab({
       {/* Next Advising Meeting */}
       <SectionCard title="Next Advising Meeting" colors={colors}>
         <View style={styles.listRow}>
-          <IconSymbol name="calendar" size={16} color="#6AA9FF" />
+          <IconSymbol name="calendar" size={16} color="#1D9BF0" />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Pre-Registration Advising
@@ -1112,13 +1112,13 @@ function AdvisingTab({
               <View
                 style={[
                   styles.noteTypeBadge,
-                  { backgroundColor: (ADVISING_NOTE_TYPE_COLORS[note.type] ?? '#8F8F8F') + '22' },
+                  { backgroundColor: (ADVISING_NOTE_TYPE_COLORS[note.type] ?? '#A1A1AA') + '22' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.noteTypeText,
-                    { color: ADVISING_NOTE_TYPE_COLORS[note.type] ?? '#8F8F8F' },
+                    { color: ADVISING_NOTE_TYPE_COLORS[note.type] ?? '#A1A1AA' },
                   ]}
                 >
                   {note.type.toUpperCase()}
@@ -1173,13 +1173,13 @@ function HoldsComplianceTab({
               <View
                 style={[
                   styles.holdStatusBadge,
-                  { backgroundColor: (HOLD_STATUS_COLORS[hold.status] ?? '#8F8F8F') + '22' },
+                  { backgroundColor: (HOLD_STATUS_COLORS[hold.status] ?? '#A1A1AA') + '22' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.holdStatusText,
-                    { color: HOLD_STATUS_COLORS[hold.status] ?? '#8F8F8F' },
+                    { color: HOLD_STATUS_COLORS[hold.status] ?? '#A1A1AA' },
                   ]}
                 >
                   {hold.status.toUpperCase()}
@@ -1235,7 +1235,7 @@ function HoldsComplianceTab({
       {/* Accommodations Indicator */}
       <SectionCard title="Accommodations" colors={colors}>
         <View style={styles.listRow}>
-          <IconSymbol name="person.fill.checkmark" size={16} color="#6AA9FF" />
+          <IconSymbol name="person.fill.checkmark" size={16} color="#1D9BF0" />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Accommodations on File
@@ -1244,8 +1244,8 @@ function HoldsComplianceTab({
               Details restricted to authorized personnel only. Contact Disability Services for specifics.
             </ThemedText>
           </View>
-          <View style={[styles.indicatorBadge, { backgroundColor: '#6AA9FF22' }]}>
-            <ThemedText style={[styles.indicatorText, { color: '#6AA9FF' }]}>YES</ThemedText>
+          <View style={[styles.indicatorBadge, { backgroundColor: '#1D9BF022' }]}>
+            <ThemedText style={[styles.indicatorText, { color: '#1D9BF0' }]}>YES</ThemedText>
           </View>
         </View>
       </SectionCard>
@@ -1328,7 +1328,7 @@ function BillingTab({
             <View
               style={[
                 styles.installmentDot,
-                { backgroundColor: PAYMENT_INSTALLMENT_COLORS[inst.status] ?? '#8F8F8F' },
+                { backgroundColor: PAYMENT_INSTALLMENT_COLORS[inst.status] ?? '#A1A1AA' },
               ]}
             />
             <View style={{ flex: 1 }}>
@@ -1339,7 +1339,7 @@ function BillingTab({
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: PAYMENT_INSTALLMENT_COLORS[inst.status] ?? '#8F8F8F' },
+                { color: PAYMENT_INSTALLMENT_COLORS[inst.status] ?? '#A1A1AA' },
               ]}
             >
               {inst.status.toUpperCase()}
@@ -1359,7 +1359,7 @@ function BillingTab({
               <View
                 style={[
                   styles.transactionTypeDot,
-                  { backgroundColor: TRANSACTION_TYPE_COLORS[txn.type] ?? '#8F8F8F' },
+                  { backgroundColor: TRANSACTION_TYPE_COLORS[txn.type] ?? '#A1A1AA' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -1489,7 +1489,7 @@ function DocumentRow({
   doc: { id: string; title: string; type: string; status: string; date: string | null };
   colors: typeof Colors.light;
 }) {
-  const statusColor = DOCUMENT_STATUS_COLORS[doc.status] ?? '#8F8F8F';
+  const statusColor = DOCUMENT_STATUS_COLORS[doc.status] ?? '#A1A1AA';
 
   return (
     <View style={[styles.listRow, { borderBottomColor: colors.border }]}>

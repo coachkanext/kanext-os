@@ -26,11 +26,11 @@ import { getLastTouch } from '@/utils/recruiting-helpers';
 import { getRecruitComms } from '@/data/mock-comms';
 import type { PositionNeed } from '@/data/team-needs';
 
-const CARD_BG = '#1A1D23';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
-const BG = '#0F1115';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
+const BG = '#0B0F14';
 
 const TIER_ORDER: Record<NeedsTier, number> = { 'Must Get': 0, Primary: 1, Secondary: 2, Watch: 3 };
 
@@ -183,7 +183,7 @@ function CRMRow({
       <Text style={[styles.cell, styles.cellSmall]}>{entry.slot ?? player.position}</Text>
       <Text style={[styles.cell, styles.cellSmall]}>{player.height}</Text>
       <Text style={[styles.cell, styles.cellSmall]}>{player.classYear}</Text>
-      <Text style={[styles.cell, styles.cellKR, { color: kr >= 75 ? '#4CAF50' : kr >= 60 ? '#FF9800' : GRAY, fontWeight: '800' }]}>
+      <Text style={[styles.cell, styles.cellKR, { color: kr >= 75 ? '#22C55E' : kr >= 60 ? '#F59E0B' : GRAY, fontWeight: '800' }]}>
         {kr}
       </Text>
       <View style={[styles.cellTier, { justifyContent: 'center' }]}>

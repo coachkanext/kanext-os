@@ -388,9 +388,9 @@ export function getBPRLabel(bpr: number): string {
 /** BPR sign color */
 export function getBPRColor(bpr: number): string {
   if (bpr >= 6)  return '#22C55E'; // green
-  if (bpr >= 3)  return '#4ADE80'; // light green
-  if (bpr >= -2) return '#A3A3A3'; // neutral gray
-  if (bpr >= -5) return '#F97316'; // orange
+  if (bpr >= 3)  return '#22C55E'; // light green
+  if (bpr >= -2) return '#A1A1AA'; // neutral gray
+  if (bpr >= -5) return '#F59E0B'; // orange
   return '#EF4444';                // red
 }
 
@@ -477,10 +477,10 @@ export function getPGISLabel(pgis: number): string {
 /** PGIS color */
 export function getPGISColor(pgis: number): string {
   if (pgis >= 8)  return '#22C55E';
-  if (pgis >= 4)  return '#4ADE80';
-  if (pgis >= 1)  return '#A3E635';
-  if (pgis >= -1) return '#A3A3A3';
-  if (pgis >= -4) return '#F97316';
+  if (pgis >= 4)  return '#22C55E';
+  if (pgis >= 1)  return '#22C55E';
+  if (pgis >= -1) return '#A1A1AA';
+  if (pgis >= -4) return '#F59E0B';
   return '#EF4444';
 }
 
@@ -505,11 +505,11 @@ export function getTGISLabel(tgis: number): string {
 export function getTGISColor(tgis: number): string {
   const score = tgisToDisplay(tgis);
   if (score >= 9.0) return '#22C55E';
-  if (score >= 8.0) return '#4ADE80';
-  if (score >= 7.0) return '#A3E635';
-  if (score >= 6.0) return '#FACC15';
-  if (score >= 5.0) return '#A3A3A3';
-  if (score >= 4.0) return '#F97316';
+  if (score >= 8.0) return '#22C55E';
+  if (score >= 7.0) return '#22C55E';
+  if (score >= 6.0) return '#F59E0B';
+  if (score >= 5.0) return '#A1A1AA';
+  if (score >= 4.0) return '#F59E0B';
   return '#EF4444';
 }
 

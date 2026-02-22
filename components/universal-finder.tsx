@@ -24,12 +24,12 @@ import { MOCK_FINDER_INDEX } from '@/data/mock-finder';
 import type { FinderResult, FinderResultType } from '@/data/mock-finder';
 
 const TYPE_COLORS: Record<FinderResultType, string> = {
-  player: '#2196F3',
-  recruit: '#4CAF50',
-  team: '#FFA500',
+  player: '#1D9BF0',
+  recruit: '#22C55E',
+  team: '#F59E0B',
   game: '#EF4444',
-  clip: '#9C27B0',
-  post: '#6e6e6e',
+  clip: '#1D9BF0',
+  post: '#A1A1AA',
 };
 
 function TypeBadge({ type }: { type: FinderResultType }) {
@@ -117,7 +117,7 @@ export function UniversalFinder() {
         >
           {/* Search Bar */}
           <View style={styles.searchBar}>
-            <IconSymbol name="magnifyingglass" size={18} color="#6e6e6e" />
+            <IconSymbol name="magnifyingglass" size={18} color="#A1A1AA" />
             <TextInput
               ref={inputRef}
               style={styles.searchInput}
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     paddingVertical: 0,
   },
   closeBtn: {
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   closeBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2196F3',
+    color: '#1D9BF0',
   },
   resultRow: {
     flexDirection: 'row',
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -217,11 +217,11 @@ const styles = StyleSheet.create({
   resultLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   resultSubtitle: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginTop: 1,
   },
   typeBadge: {

@@ -30,12 +30,12 @@ export interface CoachCollection {
 // ── Source colors ──
 
 export const SOURCE_COLORS: Record<LinkSource, string> = {
-  YouTube: '#FF0000',
-  Hudl: '#0D73F2',
+  YouTube: '#EF4444',
+  Hudl: '#1D9BF0',
   Synergy: '#FFFFFF',
-  Article: '#6E7687',
-  X: '#F2F4F8',
-  Other: '#6E7687',
+  Article: '#A1A1AA',
+  X: '#FFFFFF',
+  Other: '#A1A1AA',
 };
 
 // ── Mock Collections ──

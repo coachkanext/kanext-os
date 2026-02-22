@@ -163,11 +163,11 @@ export const SERIES_HUB_TABS: SeriesHubTab[] = [
 ];
 
 export const STATUS_COLOR_MAP: Record<SeriesStatus, string> = {
-  upcoming: '#6AA9FF',
+  upcoming: '#1D9BF0',
   live: '#EF4444',
   'in-progress': '#22C55E',
-  completed: '#8F8F8F',
-  archived: '#64748B',
+  completed: '#A1A1AA',
+  archived: '#A1A1AA',
 };
 
 export const TYPE_ICON_MAP: Record<SeriesType, string> = {
@@ -180,16 +180,16 @@ export const TYPE_ICON_MAP: Record<SeriesType, string> = {
 export const TYPE_COLOR_MAP: Record<SeriesType, string> = {
   league: '#F59E0B',
   tournament: '#EF4444',
-  showcase: '#7A5CFF',
-  circuit: '#14B8A6',
+  showcase: '#1D9BF0',
+  circuit: '#1D9BF0',
 };
 
 export const LEVEL_COLOR_MAP: Record<SeriesLevel, string> = {
-  prep: '#6AA9FF',
+  prep: '#1D9BF0',
   college: '#22C55E',
   international: '#F59E0B',
   pro: '#EF4444',
-  mixed: '#8F8F8F',
+  mixed: '#A1A1AA',
 };
 
 export const CREATE_DEFAULTS: CreateSeriesDefaults = {
@@ -207,15 +207,15 @@ export const CREATE_DEFAULTS: CreateSeriesDefaults = {
 // =============================================================================
 
 export const SERIES_STAFF: SeriesStaff[] = [
-  { id: 'staff-1', name: 'Marcus Langford', initials: 'ML', role: 'Ops Director', avatarColor: '#1B4F8A' },
+  { id: 'staff-1', name: 'Marcus Langford', initials: 'ML', role: 'Ops Director', avatarColor: '#1D9BF0' },
   { id: 'staff-2', name: 'Denise Brooks', initials: 'DB', role: 'Head Official', avatarColor: '#EF4444' },
-  { id: 'staff-3', name: 'Carlos Rivera', initials: 'CR', role: 'Media Coordinator', avatarColor: '#7A5CFF' },
+  { id: 'staff-3', name: 'Carlos Rivera', initials: 'CR', role: 'Media Coordinator', avatarColor: '#1D9BF0' },
   { id: 'staff-4', name: 'Tanya Osei', initials: 'TO', role: 'Venue Rep', avatarColor: '#22C55E' },
   { id: 'staff-5', name: 'Jerome Wallace', initials: 'JW', role: 'Ops Director', avatarColor: '#F59E0B' },
-  { id: 'staff-6', name: 'Lisa Chen', initials: 'LC', role: 'Team Rep', avatarColor: '#14B8A6' },
-  { id: 'staff-7', name: 'David Okonkwo', initials: 'DO', role: 'Head Official', avatarColor: '#C2185B' },
-  { id: 'staff-8', name: 'Kendra Phillips', initials: 'KP', role: 'Media Coordinator', avatarColor: '#6AA9FF' },
-  { id: 'staff-9', name: 'Ray Santana', initials: 'RS', role: 'Venue Rep', avatarColor: '#8B5CF6' },
+  { id: 'staff-6', name: 'Lisa Chen', initials: 'LC', role: 'Team Rep', avatarColor: '#1D9BF0' },
+  { id: 'staff-7', name: 'David Okonkwo', initials: 'DO', role: 'Head Official', avatarColor: '#1D9BF0' },
+  { id: 'staff-8', name: 'Kendra Phillips', initials: 'KP', role: 'Media Coordinator', avatarColor: '#1D9BF0' },
+  { id: 'staff-9', name: 'Ray Santana', initials: 'RS', role: 'Venue Rep', avatarColor: '#1D9BF0' },
   { id: 'staff-10', name: 'Aisha Mitchell', initials: 'AM', role: 'Team Rep', avatarColor: '#F59E0B' },
 ];
 
@@ -262,7 +262,7 @@ export const SERIES_LIST: SeriesFull[] = [
     staffCount: 5,
     teamCount: 10,
     gameCount: 45,
-    avatarColor: '#1B4F8A',
+    avatarColor: '#1D9BF0',
     compliancePulse: 'Uploads: 92% on-time',
     hasOpsRoom: true,
     hasMediaRoom: true,
@@ -285,7 +285,7 @@ export const SERIES_LIST: SeriesFull[] = [
     staffCount: 4,
     teamCount: 24,
     gameCount: 36,
-    avatarColor: '#7A5CFF',
+    avatarColor: '#1D9BF0',
     hasOpsRoom: true,
     hasMediaRoom: false,
     createdAt: '2025-12-01T10:00:00Z',
@@ -307,7 +307,7 @@ export const SERIES_LIST: SeriesFull[] = [
     staffCount: 3,
     teamCount: 16,
     gameCount: 30,
-    avatarColor: '#14B8A6',
+    avatarColor: '#1D9BF0',
     compliancePulse: 'Uploads: 88% on-time',
     hasOpsRoom: true,
     hasMediaRoom: true,
@@ -344,16 +344,16 @@ export const SERIES_LIST: SeriesFull[] = [
 // =============================================================================
 
 export const SERIES_PARTICIPANTS: SeriesParticipant[] = [
-  { id: 'part-fmu', seriesId: 'series-fmu-conference', name: 'KaNeXT Sports Lions', shortName: 'KaNeXT', seed: 3, wins: 8, losses: 4, avatarColor: '#1B4F8A' },
-  { id: 'part-bcu', seriesId: 'series-fmu-conference', name: 'Bethune-Cookman Wildcats', shortName: 'BCU', seed: 1, wins: 10, losses: 2, avatarColor: '#8B0000' },
-  { id: 'part-ewc', seriesId: 'series-fmu-conference', name: 'Edward Waters Tigers', shortName: 'EWC', seed: 5, wins: 6, losses: 6, avatarColor: '#7A5CFF' },
+  { id: 'part-fmu', seriesId: 'series-fmu-conference', name: 'KaNeXT Sports Lions', shortName: 'KaNeXT', seed: 3, wins: 8, losses: 4, avatarColor: '#1D9BF0' },
+  { id: 'part-bcu', seriesId: 'series-fmu-conference', name: 'Bethune-Cookman Wildcats', shortName: 'BCU', seed: 1, wins: 10, losses: 2, avatarColor: '#EF4444' },
+  { id: 'part-ewc', seriesId: 'series-fmu-conference', name: 'Edward Waters Tigers', shortName: 'EWC', seed: 5, wins: 6, losses: 6, avatarColor: '#1D9BF0' },
   { id: 'part-warner', seriesId: 'series-fmu-conference', name: 'Warner Royals', shortName: 'WRN', seed: 4, wins: 7, losses: 5, avatarColor: '#22C55E' },
   { id: 'part-ave', seriesId: 'series-fmu-conference', name: 'Ave Maria Gyrenes', shortName: 'AVE', seed: 6, wins: 5, losses: 7, avatarColor: '#F59E0B' },
   { id: 'part-webber', seriesId: 'series-fmu-conference', name: 'Webber Warriors', shortName: 'WEB', seed: 7, wins: 4, losses: 8, avatarColor: '#EF4444' },
-  { id: 'part-seu', seriesId: 'series-fmu-conference', name: 'Southeastern Fire', shortName: 'SEU', seed: 2, wins: 9, losses: 3, avatarColor: '#C2185B' },
-  { id: 'part-keiser', seriesId: 'series-fmu-conference', name: 'Keiser Seahawks', shortName: 'KSR', seed: 8, wins: 3, losses: 9, avatarColor: '#14B8A6' },
-  { id: 'part-thomas', seriesId: 'series-fmu-conference', name: 'Thomas University Night Hawks', shortName: 'TNU', seed: 9, wins: 2, losses: 10, avatarColor: '#64748B' },
-  { id: 'part-johnson', seriesId: 'series-fmu-conference', name: 'Johnson University Royals', shortName: 'JHN', seed: 10, wins: 1, losses: 11, avatarColor: '#6AA9FF' },
+  { id: 'part-seu', seriesId: 'series-fmu-conference', name: 'Southeastern Fire', shortName: 'SEU', seed: 2, wins: 9, losses: 3, avatarColor: '#1D9BF0' },
+  { id: 'part-keiser', seriesId: 'series-fmu-conference', name: 'Keiser Seahawks', shortName: 'KSR', seed: 8, wins: 3, losses: 9, avatarColor: '#1D9BF0' },
+  { id: 'part-thomas', seriesId: 'series-fmu-conference', name: 'Thomas University Night Hawks', shortName: 'TNU', seed: 9, wins: 2, losses: 10, avatarColor: '#A1A1AA' },
+  { id: 'part-johnson', seriesId: 'series-fmu-conference', name: 'Johnson University Royals', shortName: 'JHN', seed: 10, wins: 1, losses: 11, avatarColor: '#1D9BF0' },
 ];
 
 // =============================================================================

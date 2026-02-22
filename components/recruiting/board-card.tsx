@@ -15,15 +15,15 @@ import { TRADITIONAL_TO_HELIO } from '@/data/position-mapping';
 import { BOARD_COLUMN_COLORS, type BoardEntry, type BoardStatus } from '@/data/recruitingBoard';
 import type { ClusterType } from '@/types';
 
-const CARD_BG = '#1A1D23';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
 const PRIORITY_COLORS: Record<string, string> = {
-  A: '#4CAF50',
-  B: '#FF9800',
-  C: '#8A8F98',
+  A: '#22C55E',
+  B: '#F59E0B',
+  C: '#A1A1AA',
 };
 
 export interface BoardCardProps {
@@ -106,12 +106,12 @@ export function BoardCard({ entry, onPress, onLongPress, fullWidth }: BoardCardP
       {/* Row 3: OFF/DEF chips */}
       <View style={styles.chipRow}>
         {offKR !== null && (
-          <View style={[styles.odChip, { backgroundColor: '#1B2A1B' }]}>
-            <Text style={[styles.odChipText, { color: '#4CAF50' }]}>OFF {offKR}</Text>
+          <View style={[styles.odChip, { backgroundColor: '#0B0F14' }]}>
+            <Text style={[styles.odChipText, { color: '#22C55E' }]}>OFF {offKR}</Text>
           </View>
         )}
         {defKR !== null && (
-          <View style={[styles.odChip, { backgroundColor: '#2A1B1B' }]}>
+          <View style={[styles.odChip, { backgroundColor: '#0B0F14' }]}>
             <Text style={[styles.odChipText, { color: '#EF4444' }]}>DEF {defKR}</Text>
           </View>
         )}
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   tag: {
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 4,
@@ -231,6 +231,6 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 10,
-    color: '#6B7080',
+    color: '#A1A1AA',
   },
 });

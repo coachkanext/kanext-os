@@ -167,13 +167,13 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  added: '#6AA9FF',
+  added: '#1D9BF0',
   seeded: '#F59E0B',
-  published: '#A78BFA',
-  assigned: '#7A5CFF',
+  published: '#1D9BF0',
+  assigned: '#1D9BF0',
   completed: '#22C55E',
-  filed: '#14B8A6',
-  default: '#8F8F8F',
+  filed: '#1D9BF0',
+  default: '#A1A1AA',
 };
 
 function getAuditActionKey(action: string): string {
@@ -493,7 +493,7 @@ function ScheduleTab({
 
   const gameStatusColor = (st: SeriesGame['status']): string => {
     switch (st) {
-      case 'scheduled': return '#6AA9FF';
+      case 'scheduled': return '#1D9BF0';
       case 'live': return '#EF4444';
       case 'final': return '#22C55E';
     }

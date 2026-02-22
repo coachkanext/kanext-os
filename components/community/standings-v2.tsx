@@ -149,7 +149,7 @@ function FormBadges({ form }: { form: string[] }) {
   return (
     <View style={styles.formRow}>
       {form.slice(-5).map((result, idx) => {
-        const bg = FORM_COLOR[result] ?? '#6B7280';
+        const bg = FORM_COLOR[result] ?? '#A1A1AA';
         return (
           <View key={idx} style={[styles.formSquare, { backgroundColor: bg }]}>
             <ThemedText style={styles.formSquareText}>
@@ -365,7 +365,7 @@ function DriversMoneyView({ colors }: { colors: typeof Colors.light }) {
           Payout Standings
         </ThemedText>
         {sorted.map((entry: CEODriverStanding, idx: number) => {
-          const tierColor = PAYOUT_TIER_COLOR[entry.payoutTier] ?? '#6B7280';
+          const tierColor = PAYOUT_TIER_COLOR[entry.payoutTier] ?? '#A1A1AA';
           return (
             <View key={entry.driverId} style={styles.standingRow}>
               <ThemedText
@@ -416,7 +416,7 @@ function DriversMoneyView({ colors }: { colors: typeof Colors.light }) {
             <ThemedText style={[styles.summaryLabel, { color: colors.textTertiary }]}>
               Funded
             </ThemedText>
-            <ThemedText style={[styles.summaryValue, { color: '#3B82F6' }]}>
+            <ThemedText style={[styles.summaryValue, { color: '#1D9BF0' }]}>
               77%
             </ThemedText>
           </View>
@@ -792,7 +792,7 @@ const GATE_STATE_COLOR: Record<string, string> = {
 
 const STANDINGS_STATE_COLOR: Record<StandingsState, string> = {
   provisional: '#F59E0B',
-  under_review: '#3B82F6',
+  under_review: '#1D9BF0',
   official: '#22C55E',
 };
 
@@ -856,9 +856,9 @@ function GovernedControls({ colors }: { colors: typeof Colors.light }) {
 
   const actions = [
     { label: 'Lock Results', color: '#22C55E' },
-    { label: 'Mark Under Review', color: '#3B82F6' },
+    { label: 'Mark Under Review', color: '#1D9BF0' },
     { label: 'Finalize Official', color: '#F59E0B' },
-    { label: 'Initiate Payout Release', color: '#8B5CF6' },
+    { label: 'Initiate Payout Release', color: '#1D9BF0' },
   ];
 
   return (
@@ -901,7 +901,7 @@ function GatesPanel({ colors }: { colors: typeof Colors.light }) {
         </ThemedText>
       </View>
       {STANDINGS_GATES.map((gate: StandingsGate) => {
-        const gateColor = GATE_STATE_COLOR[gate.status] ?? '#9CA3AF';
+        const gateColor = GATE_STATE_COLOR[gate.status] ?? '#A1A1AA';
         return (
           <View key={gate.id} style={[styles.gateRow, { borderBottomColor: colors.border }]}>
             <View style={[styles.gateDot, { backgroundColor: gateColor }]} />

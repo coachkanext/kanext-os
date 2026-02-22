@@ -652,8 +652,8 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
           </View>
 
           <View style={[st.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={[st.statIconCircle, { backgroundColor: '#3B82F6' + '15' }]}>
-              <IconSymbol name="checkmark.shield.fill" size={16} color="#3B82F6" />
+            <View style={[st.statIconCircle, { backgroundColor: '#1D9BF0' + '15' }]}>
+              <IconSymbol name="checkmark.shield.fill" size={16} color="#1D9BF0" />
             </View>
             <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>
               Control Eff.
@@ -676,8 +676,8 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
           </View>
 
           <View style={[st.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={[st.statIconCircle, { backgroundColor: '#DC2626' + '15' }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#DC2626" />
+            <View style={[st.statIconCircle, { backgroundColor: '#EF4444' + '15' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
             </View>
             <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>
               Recent Incidents
@@ -688,8 +688,8 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
           </View>
 
           <View style={[st.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={[st.statIconCircle, { backgroundColor: '#8B5CF6' + '15' }]}>
-              <IconSymbol name="doc.badge.gearshape" size={16} color="#8B5CF6" />
+            <View style={[st.statIconCircle, { backgroundColor: '#1D9BF0' + '15' }]}>
+              <IconSymbol name="doc.badge.gearshape" size={16} color="#1D9BF0" />
             </View>
             <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>
               Active Exceptions
@@ -1252,9 +1252,9 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                     </ThemedText>
                   </View>
                   {isClosed && item.immutableOnceClosed && (
-                    <View style={[st.immutableBadge, { backgroundColor: '#9CA3AF' + '20' }]}>
-                      <IconSymbol name="lock.fill" size={10} color="#9CA3AF" />
-                      <ThemedText style={[st.immutableText, { color: '#9CA3AF' }]}>
+                    <View style={[st.immutableBadge, { backgroundColor: '#A1A1AA' + '20' }]}>
+                      <IconSymbol name="lock.fill" size={10} color="#A1A1AA" />
+                      <ThemedText style={[st.immutableText, { color: '#A1A1AA' }]}>
                         IMMUTABLE
                       </ThemedText>
                     </View>
@@ -1355,7 +1355,7 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                       style={[
                         st.cardStatText,
                         {
-                          color: item.status === 'expired' ? '#9CA3AF' : colors.textSecondary,
+                          color: item.status === 'expired' ? '#A1A1AA' : colors.textSecondary,
                         },
                       ]}
                     >
@@ -1992,9 +1992,9 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                 color={INCIDENT_STATUS_COLOR[selectedIncident.status]}
               />
               {selectedIncident.status === 'closed' && selectedIncident.immutableOnceClosed && (
-                <View style={[st.immutableBadge, { backgroundColor: '#9CA3AF' + '20' }]}>
-                  <IconSymbol name="lock.fill" size={10} color="#9CA3AF" />
-                  <ThemedText style={[st.immutableText, { color: '#9CA3AF' }]}>IMMUTABLE</ThemedText>
+                <View style={[st.immutableBadge, { backgroundColor: '#A1A1AA' + '20' }]}>
+                  <IconSymbol name="lock.fill" size={10} color="#A1A1AA" />
+                  <ThemedText style={[st.immutableText, { color: '#A1A1AA' }]}>IMMUTABLE</ThemedText>
                 </View>
               )}
             </View>
@@ -2116,7 +2116,7 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                 style={[
                   st.detailValue,
                   {
-                    color: selectedException.status === 'expired' ? '#9CA3AF' : colors.text,
+                    color: selectedException.status === 'expired' ? '#A1A1AA' : colors.text,
                   },
                 ]}
               >
@@ -2181,17 +2181,17 @@ function getActivityColor(type: ComplianceActivity['type']): string {
     case 'risk':
       return '#F59E0B';
     case 'control':
-      return '#3B82F6';
+      return '#1D9BF0';
     case 'audit':
-      return '#8B5CF6';
+      return '#1D9BF0';
     case 'evidence':
       return '#22C55E';
     case 'policy':
-      return '#06B6D4';
+      return '#1D9BF0';
     case 'exception':
-      return '#F97316';
+      return '#F59E0B';
     default:
-      return '#9CA3AF';
+      return '#A1A1AA';
   }
 }
 
@@ -2766,7 +2766,7 @@ const st = StyleSheet.create({
     marginTop: 6,
     paddingTop: 6,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
   },
   attestationLabel: {
     fontSize: 11,

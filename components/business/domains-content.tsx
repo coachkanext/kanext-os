@@ -97,8 +97,8 @@ function getStatusColor(status: string): string {
   switch (status) {
     case 'live': return '#22C55E';
     case 'read-only': return '#F59E0B';
-    case 'v2': return '#6e6e6e';
-    default: return '#6e6e6e';
+    case 'v2': return '#A1A1AA';
+    default: return '#A1A1AA';
   }
 }
 

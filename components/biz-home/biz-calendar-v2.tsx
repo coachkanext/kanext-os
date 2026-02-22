@@ -57,6 +57,6 @@ export function BizCalendarV2({ colors, accent }: Props) {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   pillBar: { flexDirection: 'row', paddingHorizontal: 16, paddingTop: 2, paddingBottom: 10, gap: 8 },
-  pill: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
+  pill: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#2F3336' },
   pillText: { fontSize: 13, fontWeight: '600' },
 });

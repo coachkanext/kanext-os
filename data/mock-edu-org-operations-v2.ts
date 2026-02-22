@@ -96,8 +96,8 @@ export const INITIATIVE_STATUS_COLORS: Record<InitiativeStatus, string> = {
   on_track: '#22C55E',
   at_risk: '#F59E0B',
   blocked: '#EF4444',
-  completed: '#6AA9FF',
-  paused: '#8F8F8F',
+  completed: '#1D9BF0',
+  paused: '#A1A1AA',
 };
 
 export const WORKFLOW_STATUS_LABELS: Record<WorkflowStatus, string> = {
@@ -109,9 +109,9 @@ export const WORKFLOW_STATUS_LABELS: Record<WorkflowStatus, string> = {
 
 export const WORKFLOW_STATUS_COLORS: Record<WorkflowStatus, string> = {
   active: '#22C55E',
-  idle: '#8F8F8F',
+  idle: '#A1A1AA',
   bottleneck: '#EF4444',
-  completed: '#6AA9FF',
+  completed: '#1D9BF0',
 };
 
 export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
@@ -123,8 +123,8 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
 };
 
 export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
-  pending: '#8F8F8F',
-  in_progress: '#6AA9FF',
+  pending: '#A1A1AA',
+  in_progress: '#1D9BF0',
   blocked: '#EF4444',
   completed: '#22C55E',
   overdue: '#F59E0B',
@@ -140,8 +140,8 @@ export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
 export const TASK_PRIORITY_COLORS: Record<TaskPriority, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  normal: '#6AA9FF',
-  low: '#8F8F8F',
+  normal: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 export const GATE_STATUS_LABELS: Record<GateStatus, string> = {
@@ -155,7 +155,7 @@ export const GATE_STATUS_COLORS: Record<GateStatus, string> = {
   pending: '#F59E0B',
   approved: '#22C55E',
   rejected: '#EF4444',
-  escalated: '#A78BFA',
+  escalated: '#1D9BF0',
 };
 
 export const OPS_DOMAIN_LABELS: Record<OpsDomain, string> = {
@@ -168,12 +168,12 @@ export const OPS_DOMAIN_LABELS: Record<OpsDomain, string> = {
 };
 
 export const OPS_DOMAIN_COLORS: Record<OpsDomain, string> = {
-  admissions: '#6AA9FF',
-  academics: '#A78BFA',
+  admissions: '#1D9BF0',
+  academics: '#1D9BF0',
   campus: '#22C55E',
   athletics: '#F59E0B',
   financial: '#EF4444',
-  policies: '#8B5CF6',
+  policies: '#1D9BF0',
 };
 
 export const OPS_DOMAIN_ICONS: Record<OpsDomain, string> = {

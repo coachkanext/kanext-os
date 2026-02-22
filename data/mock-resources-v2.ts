@@ -261,38 +261,38 @@ export const RESOURCES_SCOPE_CHIPS: ResourcesScopeChip[] = [
 
 export const DRILL_CATEGORY_COLOR: Record<ResourceDrill['category'], string> = {
   shooting: '#EF4444',
-  finishing: '#F97316',
+  finishing: '#F59E0B',
   'ball-handling': '#F59E0B',
-  defense: '#3B82F6',
+  defense: '#1D9BF0',
   rebounding: '#22C55E',
-  conditioning: '#8B5CF6',
+  conditioning: '#1D9BF0',
 };
 
 export const PLAY_STATUS_COLOR: Record<ResourcePlay['status'], string> = {
   active: '#22C55E',
-  shelved: '#9CA3AF',
+  shelved: '#A1A1AA',
 };
 
 export const TEMPLATE_STATUS_COLOR: Record<ResourceTemplate['status'], string> = {
   active: '#22C55E',
   draft: '#F59E0B',
-  archived: '#9CA3AF',
+  archived: '#A1A1AA',
 };
 
 export const VISIBILITY_COLOR: Record<ResourceVisibility, string> = {
   'staff-only': '#EF4444',
   'coaches-only': '#F59E0B',
-  'players-visible': '#3B82F6',
+  'players-visible': '#1D9BF0',
   'public-read': '#22C55E',
 };
 
 export const LINK_PLATFORM_COLOR: Record<ResourceLink['platform'], string> = {
-  synergy: '#FF6B00',
-  drive: '#4285F4',
-  youtube: '#FF0000',
+  synergy: '#F59E0B',
+  drive: '#1D9BF0',
+  youtube: '#EF4444',
   website: '#22C55E',
-  docs: '#4285F4',
-  other: '#9CA3AF',
+  docs: '#1D9BF0',
+  other: '#A1A1AA',
 };
 
 // =============================================================================

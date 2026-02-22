@@ -113,7 +113,7 @@ const TRUTH_STATUS_COLOR: Record<string, string> = {
 const SEVERITY_BORDER_COLOR: Record<string, string> = {
   high: '#EF4444',
   medium: '#F59E0B',
-  low: '#9CA3AF',
+  low: '#A1A1AA',
 };
 
 const AUDIT_ACTION_ICON: Record<string, string> = {
@@ -212,11 +212,11 @@ function OverviewTab({
   reports: ReportItem[];
 }) {
   const statCards: { label: string; value: number; icon: string; color: string }[] = [
-    { label: 'Total Reports', value: stats.totalReports, icon: 'doc.text.fill', color: '#6AA9FF' },
+    { label: 'Total Reports', value: stats.totalReports, icon: 'doc.text.fill', color: '#1D9BF0' },
     { label: 'Recently Generated', value: stats.recentlyGenerated, icon: 'checkmark.circle.fill', color: '#22C55E' },
-    { label: 'Scheduled', value: stats.scheduled, icon: 'clock.arrow.2.circlepath', color: '#6366F1' },
+    { label: 'Scheduled', value: stats.scheduled, icon: 'clock.arrow.2.circlepath', color: '#1D9BF0' },
     { label: 'Data Room Docs', value: stats.dataRoomDocs, icon: 'folder.fill', color: '#F59E0B' },
-    { label: 'Pack Templates', value: stats.packTemplates, icon: 'doc.on.doc.fill', color: '#8B5CF6' },
+    { label: 'Pack Templates', value: stats.packTemplates, icon: 'doc.on.doc.fill', color: '#1D9BF0' },
   ];
 
   // Category quick links

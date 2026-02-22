@@ -114,11 +114,11 @@ export const LANE_LABELS: Record<OrgChartLane, string> = {
 };
 
 export const LANE_COLORS: Record<OrgChartLane, string> = {
-  clergy: '#8B5CF6',
-  ministry_leadership: '#3B82F6',
+  clergy: '#1D9BF0',
+  ministry_leadership: '#1D9BF0',
   operations: '#F59E0B',
   finance: '#22C55E',
-  volunteers: '#EC4899',
+  volunteers: '#1D9BF0',
 };
 
 // =============================================================================
@@ -133,10 +133,10 @@ export const AUTHORITY_LABELS: Record<AuthorityLevel, string> = {
 };
 
 export const AUTHORITY_COLORS: Record<AuthorityLevel, string> = {
-  lead: '#8B5CF6',
-  approve: '#3B82F6',
+  lead: '#1D9BF0',
+  approve: '#1D9BF0',
   sensitive: '#EF4444',
-  view: '#6B7280',
+  view: '#A1A1AA',
 };
 
 // =============================================================================
@@ -154,7 +154,7 @@ export const BG_CHECK_COLORS: Record<BackgroundCheckStatus, string> = {
   cleared: '#22C55E',
   pending: '#F59E0B',
   expired: '#EF4444',
-  not_required: '#6B7280',
+  not_required: '#A1A1AA',
 };
 
 // =============================================================================

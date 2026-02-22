@@ -120,7 +120,7 @@ function getOpsKPIs(): OpsKPI[] {
     { id: 'kpi-1', label: 'Top 3 Priorities', value: String(topPriorities), color: BP.champagneGold },
     { id: 'kpi-2', label: 'Open Blockers', value: String(openBlockers), color: BP.red },
     { id: 'kpi-3', label: 'At Risk Initiatives', value: String(atRisk), color: BP.amber },
-    { id: 'kpi-4', label: 'Decision Queue', value: String(decisionQueue), color: '#6AA9FF' },
+    { id: 'kpi-4', label: 'Decision Queue', value: String(decisionQueue), color: '#1D9BF0' },
     { id: 'kpi-5', label: 'Due <7d', value: String(dueSoon), color: BP.amber },
     { id: 'kpi-6', label: 'Last Updated', value: 'Today', color: BP.emerald },
   ];
@@ -223,7 +223,7 @@ function feedCategoryColor(category: OpsFeedItem['category']): string {
     case 'initiative_update':
       return BP.champagneGold;
     case 'project_milestone':
-      return '#6AA9FF'; // precision blue
+      return '#1D9BF0'; // precision blue
     case 'decision_made':
       return BP.amber;
     case 'alert':

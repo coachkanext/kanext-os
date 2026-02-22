@@ -12,10 +12,10 @@ import { CONNECT_GROUPS, type ConnectGroup } from '@/data/mock-church-home';
 import { openLeaderCard } from '@/utils/global-entity-sheets';
 
 const CATEGORY_COLORS: Record<ConnectGroup['category'], string> = {
-  young_adults: '#8B5CF6',
-  married: '#EC4899',
-  men: '#3B82F6',
-  women: '#F472B6',
+  young_adults: '#1D9BF0',
+  married: '#1D9BF0',
+  men: '#1D9BF0',
+  women: '#1D9BF0',
   mixed: '#22C55E',
   seniors: '#F59E0B',
 };

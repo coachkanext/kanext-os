@@ -390,7 +390,7 @@ export const GRID_TEAMS: GridTeam[] = [
   {
     id: 'gt-1', name: 'KaNeXT Works Racing', constructor: 'KaNeXT Motorsport', carModel: 'KX-1 Shifter',
     category: 'kanext_works', drivers: [{ name: 'Marco Alvarez', points: 156 }, { name: 'Elena Cruz', points: 76 }],
-    crewChief: 'Tony Marchetti', points: 232, capCompliance: 'green', homologation: 'approved', color: '#6366F1',
+    crewChief: 'Tony Marchetti', points: 232, capCompliance: 'green', homologation: 'approved', color: '#1D9BF0',
   },
   {
     id: 'gt-2', name: 'Apex Motorsport', constructor: 'Apex Racing Technologies', carModel: 'ART-R1 Evo',
@@ -400,7 +400,7 @@ export const GRID_TEAMS: GridTeam[] = [
   {
     id: 'gt-3', name: 'Velocity Racing', constructor: 'Toyota Gazoo Racing', carModel: 'TGR-K25',
     category: 'oem_works', drivers: [{ name: 'Darius Okonkwo', points: 124 }, { name: 'Amir Khalil', points: 97 }],
-    crewChief: 'Priya Naidoo', points: 221, capCompliance: 'green', homologation: 'approved', color: '#14B8A6',
+    crewChief: 'Priya Naidoo', points: 221, capCompliance: 'green', homologation: 'approved', color: '#1D9BF0',
   },
   {
     id: 'gt-4', name: 'Summit Engineering', constructor: 'Summit Kart Works', carModel: 'SK-V2 Pro',
@@ -410,12 +410,12 @@ export const GRID_TEAMS: GridTeam[] = [
   {
     id: 'gt-5', name: 'Titan Performance', constructor: 'K-1 League Karts', carModel: 'K1-Standard',
     category: 'league_owned', drivers: [{ name: 'Kwame Asante', points: 89 }, { name: 'Nia Jackson', points: 54 }],
-    crewChief: 'Mikhail Volkov', points: 143, capCompliance: 'green', homologation: 'approved', color: '#8B5CF6',
+    crewChief: 'Mikhail Volkov', points: 143, capCompliance: 'green', homologation: 'approved', color: '#1D9BF0',
   },
   {
     id: 'gt-6', name: 'Grid Iron Motors', constructor: 'Honda Performance Dev.', carModel: 'HPD-KZ1',
     category: 'oem_works', drivers: [{ name: 'Jake Morrison', points: 82 }, { name: 'Cody Bergmann', points: 41 }],
-    crewChief: 'Sarah-Jane Obi', points: 123, capCompliance: 'green', homologation: 'approved', color: '#64748B',
+    crewChief: 'Sarah-Jane Obi', points: 123, capCompliance: 'green', homologation: 'approved', color: '#A1A1AA',
   },
 ];
 
@@ -442,23 +442,23 @@ export interface GridDriver {
 
 export const GRID_DRIVERS: GridDriver[] = [
   // Permanent drivers (12)
-  { id: 'gd-1', name: 'Marco Alvarez', number: '01', team: 'KaNeXT Works Racing', teamColor: '#6366F1', car: 'KX-1 Shifter', type: 'permanent', position: 1, points: 156, wins: 3, podiums: 5, poles: 2, nationality: 'Spain', status: 'active' },
-  { id: 'gd-2', name: 'Elena Cruz', number: '02', team: 'KaNeXT Works Racing', teamColor: '#6366F1', car: 'KX-1 Shifter', type: 'permanent', position: 9, points: 76, wins: 0, podiums: 1, poles: 0, nationality: 'Mexico', status: 'active' },
+  { id: 'gd-1', name: 'Marco Alvarez', number: '01', team: 'KaNeXT Works Racing', teamColor: '#1D9BF0', car: 'KX-1 Shifter', type: 'permanent', position: 1, points: 156, wins: 3, podiums: 5, poles: 2, nationality: 'Spain', status: 'active' },
+  { id: 'gd-2', name: 'Elena Cruz', number: '02', team: 'KaNeXT Works Racing', teamColor: '#1D9BF0', car: 'KX-1 Shifter', type: 'permanent', position: 9, points: 76, wins: 0, podiums: 1, poles: 0, nationality: 'Mexico', status: 'active' },
   { id: 'gd-3', name: 'Lena Hoffmann', number: '07', team: 'Apex Motorsport', teamColor: '#EF4444', car: 'ART-R1 Evo', type: 'permanent', position: 2, points: 138, wins: 1, podiums: 5, poles: 2, nationality: 'Germany', status: 'active' },
   { id: 'gd-4', name: 'Sofia Petrov', number: '08', team: 'Apex Motorsport', teamColor: '#EF4444', car: 'ART-R1 Evo', type: 'permanent', position: 5, points: 104, wins: 0, podiums: 3, poles: 0, nationality: 'Bulgaria', status: 'active' },
-  { id: 'gd-5', name: 'Darius Okonkwo', number: '14', team: 'Velocity Racing', teamColor: '#14B8A6', car: 'TGR-K25', type: 'permanent', position: 3, points: 124, wins: 1, podiums: 4, poles: 1, nationality: 'Nigeria', status: 'active' },
-  { id: 'gd-6', name: 'Amir Khalil', number: '15', team: 'Velocity Racing', teamColor: '#14B8A6', car: 'TGR-K25', type: 'permanent', position: 6, points: 97, wins: 0, podiums: 2, poles: 0, nationality: 'Lebanon', status: 'active' },
+  { id: 'gd-5', name: 'Darius Okonkwo', number: '14', team: 'Velocity Racing', teamColor: '#1D9BF0', car: 'TGR-K25', type: 'permanent', position: 3, points: 124, wins: 1, podiums: 4, poles: 1, nationality: 'Nigeria', status: 'active' },
+  { id: 'gd-6', name: 'Amir Khalil', number: '15', team: 'Velocity Racing', teamColor: '#1D9BF0', car: 'TGR-K25', type: 'permanent', position: 6, points: 97, wins: 0, podiums: 2, poles: 0, nationality: 'Lebanon', status: 'active' },
   { id: 'gd-7', name: 'Yuki Tanaka', number: '22', team: 'Summit Engineering', teamColor: '#F59E0B', car: 'SK-V2 Pro', type: 'permanent', position: 4, points: 118, wins: 1, podiums: 4, poles: 1, nationality: 'Japan', status: 'active' },
   { id: 'gd-8', name: 'Ravi Sharma', number: '23', team: 'Summit Engineering', teamColor: '#F59E0B', car: 'SK-V2 Pro', type: 'permanent', position: 10, points: 68, wins: 0, podiums: 1, poles: 0, nationality: 'India', status: 'active' },
-  { id: 'gd-9', name: 'Kwame Asante', number: '33', team: 'Titan Performance', teamColor: '#8B5CF6', car: 'K1-Standard', type: 'permanent', position: 7, points: 89, wins: 0, podiums: 2, poles: 0, nationality: 'Ghana', status: 'active' },
-  { id: 'gd-10', name: 'Nia Jackson', number: '34', team: 'Titan Performance', teamColor: '#8B5CF6', car: 'K1-Standard', type: 'permanent', position: 11, points: 54, wins: 0, podiums: 0, poles: 0, nationality: 'USA', status: 'active' },
-  { id: 'gd-11', name: 'Jake Morrison', number: '44', team: 'Grid Iron Motors', teamColor: '#64748B', car: 'HPD-KZ1', type: 'permanent', position: 8, points: 82, wins: 0, podiums: 1, poles: 0, nationality: 'USA', status: 'active' },
-  { id: 'gd-12', name: 'Cody Bergmann', number: '45', team: 'Grid Iron Motors', teamColor: '#64748B', car: 'HPD-KZ1', type: 'permanent', position: 12, points: 41, wins: 0, podiums: 0, poles: 0, nationality: 'Australia', status: 'active' },
+  { id: 'gd-9', name: 'Kwame Asante', number: '33', team: 'Titan Performance', teamColor: '#1D9BF0', car: 'K1-Standard', type: 'permanent', position: 7, points: 89, wins: 0, podiums: 2, poles: 0, nationality: 'Ghana', status: 'active' },
+  { id: 'gd-10', name: 'Nia Jackson', number: '34', team: 'Titan Performance', teamColor: '#1D9BF0', car: 'K1-Standard', type: 'permanent', position: 11, points: 54, wins: 0, podiums: 0, poles: 0, nationality: 'USA', status: 'active' },
+  { id: 'gd-11', name: 'Jake Morrison', number: '44', team: 'Grid Iron Motors', teamColor: '#A1A1AA', car: 'HPD-KZ1', type: 'permanent', position: 8, points: 82, wins: 0, podiums: 1, poles: 0, nationality: 'USA', status: 'active' },
+  { id: 'gd-12', name: 'Cody Bergmann', number: '45', team: 'Grid Iron Motors', teamColor: '#A1A1AA', car: 'HPD-KZ1', type: 'permanent', position: 12, points: 41, wins: 0, podiums: 0, poles: 0, nationality: 'Australia', status: 'active' },
   // Wildcard drivers (4)
-  { id: 'gd-w1', name: 'Omar Diallo', number: '77', team: 'Wildcard', teamColor: '#9CA3AF', car: 'KZ Shifter Kart', type: 'wildcard', position: 13, points: 38, wins: 0, podiums: 0, poles: 0, nationality: 'Senegal', status: 'active' },
-  { id: 'gd-w2', name: 'Anya Voronova', number: '78', team: 'Wildcard', teamColor: '#9CA3AF', car: 'Rotax Max', type: 'wildcard', position: 14, points: 34, wins: 0, podiums: 0, poles: 0, nationality: 'Russia', status: 'active' },
-  { id: 'gd-w3', name: 'Tomasz Krawczyk', number: '79', team: 'Wildcard', teamColor: '#9CA3AF', car: 'KRT Academy Kart', type: 'wildcard', position: 15, points: 28, wins: 0, podiums: 0, poles: 0, nationality: 'Poland', status: 'active' },
-  { id: 'gd-w4', name: 'Kenji Murakami', number: '80', team: 'Wildcard', teamColor: '#9CA3AF', car: 'Birel ART', type: 'wildcard', position: 16, points: 24, wins: 0, podiums: 0, poles: 0, nationality: 'Japan', status: 'active' },
+  { id: 'gd-w1', name: 'Omar Diallo', number: '77', team: 'Wildcard', teamColor: '#A1A1AA', car: 'KZ Shifter Kart', type: 'wildcard', position: 13, points: 38, wins: 0, podiums: 0, poles: 0, nationality: 'Senegal', status: 'active' },
+  { id: 'gd-w2', name: 'Anya Voronova', number: '78', team: 'Wildcard', teamColor: '#A1A1AA', car: 'Rotax Max', type: 'wildcard', position: 14, points: 34, wins: 0, podiums: 0, poles: 0, nationality: 'Russia', status: 'active' },
+  { id: 'gd-w3', name: 'Tomasz Krawczyk', number: '79', team: 'Wildcard', teamColor: '#A1A1AA', car: 'KRT Academy Kart', type: 'wildcard', position: 15, points: 28, wins: 0, podiums: 0, poles: 0, nationality: 'Poland', status: 'active' },
+  { id: 'gd-w4', name: 'Kenji Murakami', number: '80', team: 'Wildcard', teamColor: '#A1A1AA', car: 'Birel ART', type: 'wildcard', position: 16, points: 24, wins: 0, podiums: 0, poles: 0, nationality: 'Japan', status: 'active' },
 ];
 
 // =============================================================================
@@ -574,10 +574,10 @@ export const WILDCARD_PIPELINE: WildcardEntry[] = [
 ];
 
 export const WILDCARD_STAGE_COLORS: Record<WildcardPipelineStage, string> = {
-  applied: '#6B7280',
+  applied: '#A1A1AA',
   scrutineering: '#F59E0B',
-  heats: '#3B82F6',
-  final: '#8B5CF6',
+  heats: '#1D9BF0',
+  final: '#1D9BF0',
   confirmed: '#22C55E',
 };
 
@@ -660,6 +660,6 @@ export interface CompCommerceCard {
 
 export const COMP_COMMERCE: CompCommerceCard[] = [
   { id: 'tickets', title: 'Tickets', icon: 'ticket.fill', color: '#F59E0B' },
-  { id: 'watch', title: 'Watch Live', icon: 'play.rectangle.fill', color: '#3B82F6' },
-  { id: 'wildcard', title: 'Wildcard Entry', icon: 'star.fill', color: '#8B5CF6' },
+  { id: 'watch', title: 'Watch Live', icon: 'play.rectangle.fill', color: '#1D9BF0' },
+  { id: 'wildcard', title: 'Wildcard Entry', icon: 'star.fill', color: '#1D9BF0' },
 ];

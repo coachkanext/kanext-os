@@ -923,7 +923,7 @@ export default function CoachProgramContextScreen() {
                           step={1}
                           value={uiEmphasis[slider.id as UIEmphasisId]}
                           onValueChange={(value) => handleSliderChange(slider.id as UIEmphasisId, value)}
-                          minimumTrackTintColor={colorScheme === 'dark' ? '#ffffff' : '#1A1A1A'}
+                          minimumTrackTintColor={colorScheme === 'dark' ? '#ffffff' : '#0B0F14'}
                           maximumTrackTintColor={colors.border}
                           thumbTintColor="#ffffff"
                         />
@@ -964,7 +964,7 @@ export default function CoachProgramContextScreen() {
                           step={1}
                           value={uiEmphasis[slider.id as UIEmphasisId]}
                           onValueChange={(value) => handleSliderChange(slider.id as UIEmphasisId, value)}
-                          minimumTrackTintColor={colorScheme === 'dark' ? '#ffffff' : '#1A1A1A'}
+                          minimumTrackTintColor={colorScheme === 'dark' ? '#ffffff' : '#0B0F14'}
                           maximumTrackTintColor={colors.border}
                           thumbTintColor="#ffffff"
                         />
@@ -994,13 +994,13 @@ export default function CoachProgramContextScreen() {
             styles.saveButton,
             {
               backgroundColor: colorScheme === 'dark'
-                ? pressed ? '#d4d4d4' : '#ffffff'
-                : pressed ? '#2A2A2A' : '#1A1A1A',
+                ? pressed ? '#A1A1AA' : '#ffffff'
+                : pressed ? '#0B0F14' : '#0B0F14',
             },
           ]}
           onPress={handleSave}
         >
-          <Text style={[styles.saveButtonText, { color: colorScheme === 'dark' ? '#1A1A1A' : '#FFFFFF' }]}>
+          <Text style={[styles.saveButtonText, { color: colorScheme === 'dark' ? '#0B0F14' : '#FFFFFF' }]}>
             Save
           </Text>
         </Pressable>
@@ -1107,7 +1107,7 @@ function PresetPreview({
               <Text
                 style={[
                   styles.previewSystemChipText,
-                  { color: system.id === systemId ? '#1A1A1A' : colors.text },
+                  { color: system.id === systemId ? '#0B0F14' : colors.text },
                 ]}
                 numberOfLines={1}
               >
@@ -1152,7 +1152,7 @@ function PresetPreview({
                   <Text
                     style={[
                       styles.previewDelta,
-                      { color: delta >= 0 ? '#f5f5f5' : '#6e6e6e' },
+                      { color: delta >= 0 ? '#FFFFFF' : '#A1A1AA' },
                     ]}
                   >
                     {' '}({deltaSign}{delta.toFixed(1)})
@@ -1321,7 +1321,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     backgroundColor: '#ffffff',
   },
-  normalizeButtonText: { fontSize: 13, fontWeight: '600', color: '#1A1A1A' },
+  normalizeButtonText: { fontSize: 13, fontWeight: '600', color: '#0B0F14' },
 
   // Normalize row (inline within groups card)
   normalizeRow: {
@@ -1511,7 +1511,7 @@ const styles = StyleSheet.create({
   previewButtonApplyText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#1A1A1A',
+    color: '#0B0F14',
   },
 
   // Toast styles

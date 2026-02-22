@@ -270,20 +270,20 @@ export const PAYRAILS_STATUS_COLOR: Record<PayRailsStatus, string> = {
   pending: '#F59E0B',
   succeeded: '#22C55E',
   failed: '#EF4444',
-  disputed: '#F97316',
-  reconciled: '#6366F1',
+  disputed: '#F59E0B',
+  reconciled: '#1D9BF0',
 };
 
 export const SETTLEMENT_STATUS_COLOR: Record<PayRailsSettlement['status'], string> = {
   open: '#F59E0B',
-  processing: '#3B82F6',
+  processing: '#1D9BF0',
   settled: '#22C55E',
   exception: '#EF4444',
 };
 
 export const DISPUTE_STATUS_COLOR: Record<PayRailsDispute['status'], string> = {
   open: '#F59E0B',
-  'under-review': '#3B82F6',
+  'under-review': '#1D9BF0',
   won: '#22C55E',
   lost: '#EF4444',
 };
@@ -291,7 +291,7 @@ export const DISPUTE_STATUS_COLOR: Record<PayRailsDispute['status'], string> = {
 export const RECON_STATUS_COLOR: Record<PayRailsReconciliation['status'], string> = {
   matched: '#22C55E',
   variance: '#F59E0B',
-  pending: '#9CA3AF',
+  pending: '#A1A1AA',
 };
 
 // =============================================================================

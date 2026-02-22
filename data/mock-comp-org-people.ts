@@ -145,26 +145,26 @@ export interface PeopleSettingToggle {
 export const STAFF_STATUS_COLOR: Record<StaffMember['status'], string> = {
   active: '#22C55E',
   'on-leave': '#F59E0B',
-  inactive: '#9CA3AF',
+  inactive: '#A1A1AA',
 };
 
 export const OFFICIAL_STATUS_COLOR: Record<Official['status'], string> = {
   active: '#22C55E',
   suspended: '#EF4444',
-  retired: '#9CA3AF',
+  retired: '#A1A1AA',
 };
 
 export const VOLUNTEER_STATUS_COLOR: Record<Volunteer['status'], string> = {
   active: '#22C55E',
   pending: '#F59E0B',
-  inactive: '#9CA3AF',
+  inactive: '#A1A1AA',
 };
 
 export const CREDENTIAL_STATUS_COLOR: Record<Credential['status'], string> = {
   active: '#22C55E',
   expired: '#EF4444',
   pending: '#F59E0B',
-  revoked: '#9CA3AF',
+  revoked: '#A1A1AA',
 };
 
 export const ASSIGNMENT_STATUS_COLOR: Record<Assignment['status'], string> = {
@@ -180,29 +180,29 @@ export const COMM_STATUS_COLOR: Record<Communication['status'], string> = {
 };
 
 export const COMM_TYPE_COLOR: Record<Communication['type'], string> = {
-  email: '#6AA9FF',
+  email: '#1D9BF0',
   sms: '#22C55E',
   push: '#F59E0B',
-  'in-app': '#8B5CF6',
+  'in-app': '#1D9BF0',
 };
 
 export const CREDENTIAL_TYPE_COLOR: Record<Credential['type'], string> = {
-  badge: '#6AA9FF',
+  badge: '#1D9BF0',
   pass: '#22C55E',
   certification: '#F59E0B',
-  license: '#8B5CF6',
+  license: '#1D9BF0',
 };
 
 export const REPORT_FORMAT_COLOR: Record<PeopleReport['format'], string> = {
   PDF: '#EF4444',
   CSV: '#22C55E',
-  XLSX: '#6AA9FF',
+  XLSX: '#1D9BF0',
 };
 
 export const OFFICIAL_LEVEL_COLOR: Record<Official['level'], string> = {
-  national: '#6AA9FF',
+  national: '#1D9BF0',
   regional: '#F59E0B',
-  local: '#9CA3AF',
+  local: '#A1A1AA',
 };
 
 // =============================================================================
@@ -233,7 +233,7 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
     value: '347',
     delta: '+12 this week',
     icon: 'person.3',
-    color: '#6AA9FF',
+    color: '#1D9BF0',
   },
   {
     id: 'db-2',
@@ -257,7 +257,7 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
     value: '97%',
     delta: '8 expiring soon',
     icon: 'checkmark.shield',
-    color: '#8B5CF6',
+    color: '#1D9BF0',
   },
   {
     id: 'db-5',

@@ -79,9 +79,9 @@ function formatCurrency(n: number): string {
 function getStatusColor(status: string): string {
   switch (status) {
     case 'live': return '#22C55E';
-    case 'final': return '#8F8F8F';
-    case 'upcoming': return '#6AA9FF';
-    default: return '#8F8F8F';
+    case 'final': return '#A1A1AA';
+    case 'upcoming': return '#1D9BF0';
+    default: return '#A1A1AA';
   }
 }
 
@@ -99,7 +99,7 @@ function getSeverityColor(severity: string): string {
     case 'high': return '#EF4444';
     case 'medium': return '#F59E0B';
     case 'low': return '#22C55E';
-    default: return '#8F8F8F';
+    default: return '#A1A1AA';
   }
 }
 
@@ -362,7 +362,7 @@ export function GameSheet({
                   <SectionLabel label="CLUSTER RATINGS" colors={colors} />
                   <Card colors={colors}>
                     {pregame.clusterRatings.map((cr, i) => {
-                      const barColor = cr.rating >= 70 ? '#4CAF50' : cr.rating >= 55 ? '#FF9800' : '#EF4444';
+                      const barColor = cr.rating >= 70 ? '#22C55E' : cr.rating >= 55 ? '#F59E0B' : '#EF4444';
                       const pct = Math.min(cr.rating, 100);
                       return (
                         <View key={i} style={styles.clusterRow}>
@@ -889,7 +889,7 @@ const styles = StyleSheet.create({
   clusterBarTrack: {
     flex: 1,
     height: 8,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 4,
     overflow: 'hidden',
     marginHorizontal: 8,

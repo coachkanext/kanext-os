@@ -222,22 +222,22 @@ export const SPACE_TYPE_ICONS: Record<SpaceType, string> = {
 };
 
 export const SPACE_TYPE_COLORS: Record<SpaceType, string> = {
-  worship_hall: '#8B5CF6',
+  worship_hall: '#1D9BF0',
   classroom: '#22C55E',
   office: '#F59E0B',
-  nursery: '#EC4899',
-  kitchen: '#F97316',
+  nursery: '#1D9BF0',
+  kitchen: '#F59E0B',
   gym: '#EF4444',
-  outdoor: '#10B981',
-  fellowship_hall: '#6AA9FF',
-  parking: '#8F8F8F',
-  storage: '#78716C',
+  outdoor: '#22C55E',
+  fellowship_hall: '#1D9BF0',
+  parking: '#A1A1AA',
+  storage: '#A1A1AA',
 };
 
 export const SPACE_STATUS_COLORS: Record<SpaceStatus, string> = {
   available: '#22C55E',
-  booked: '#6AA9FF',
-  closed: '#8F8F8F',
+  booked: '#1D9BF0',
+  closed: '#A1A1AA',
   under_repair: '#F59E0B',
 };
 
@@ -251,13 +251,13 @@ export const SPACE_STATUS_LABELS: Record<SpaceStatus, string> = {
 export const BOOKING_STATUS_COLORS: Record<BookingStatus, string> = {
   requested: '#F59E0B',
   approved: '#22C55E',
-  scheduled: '#6AA9FF',
-  completed: '#8F8F8F',
+  scheduled: '#1D9BF0',
+  completed: '#A1A1AA',
   cancelled: '#EF4444',
 };
 
 export const WORK_ORDER_SEVERITY_COLORS: Record<WorkOrderSeverity, string> = {
-  critical: '#DC2626',
+  critical: '#EF4444',
   high: '#EF4444',
   normal: '#F59E0B',
   low: '#22C55E',
@@ -265,11 +265,11 @@ export const WORK_ORDER_SEVERITY_COLORS: Record<WorkOrderSeverity, string> = {
 
 export const WORK_ORDER_STATUS_COLORS: Record<WorkOrderStatus, string> = {
   new: '#F59E0B',
-  assigned: '#6AA9FF',
-  in_progress: '#8B5CF6',
-  waiting: '#F97316',
+  assigned: '#1D9BF0',
+  in_progress: '#1D9BF0',
+  waiting: '#F59E0B',
   completed: '#22C55E',
-  closed: '#8F8F8F',
+  closed: '#A1A1AA',
 };
 
 export const VENDOR_STATUS_COLORS: Record<VendorStatus, string> = {
@@ -279,24 +279,24 @@ export const VENDOR_STATUS_COLORS: Record<VendorStatus, string> = {
 };
 
 export const INSPECTION_STATUS_COLORS: Record<string, string> = {
-  scheduled: '#6AA9FF',
+  scheduled: '#1D9BF0',
   passed: '#22C55E',
   failed: '#EF4444',
-  overdue: '#DC2626',
+  overdue: '#EF4444',
 };
 
 export const ASSET_CONDITION_COLORS: Record<AssetCondition, string> = {
   excellent: '#22C55E',
-  good: '#6AA9FF',
+  good: '#1D9BF0',
   fair: '#F59E0B',
   poor: '#EF4444',
-  needs_replacement: '#DC2626',
+  needs_replacement: '#EF4444',
 };
 
 export const PROJECT_STATUS_COLORS: Record<ProjectStatus, string> = {
   planning: '#F59E0B',
-  approved: '#6AA9FF',
-  in_progress: '#8B5CF6',
+  approved: '#1D9BF0',
+  in_progress: '#1D9BF0',
   complete: '#22C55E',
 };
 
@@ -308,7 +308,7 @@ export const ACCESS_LEVEL_LABELS: Record<AccessLevel, string> = {
 
 export const ACCESS_LEVEL_COLORS: Record<AccessLevel, string> = {
   public: '#22C55E',
-  staff: '#6AA9FF',
+  staff: '#1D9BF0',
   restricted: '#EF4444',
 };
 
@@ -329,11 +329,11 @@ export const REQUEST_TYPE_LABELS: Record<string, string> = {
 };
 
 export const REQUEST_TYPE_COLORS: Record<string, string> = {
-  booking: '#6AA9FF',
+  booking: '#1D9BF0',
   maintenance: '#F59E0B',
-  setup: '#8B5CF6',
-  access: '#EC4899',
-  equipment: '#F97316',
+  setup: '#1D9BF0',
+  access: '#1D9BF0',
+  equipment: '#F59E0B',
 };
 
 export const REQUEST_STATUS_LABELS: Record<string, string> = {
@@ -347,7 +347,7 @@ export const REQUEST_STATUS_COLORS: Record<string, string> = {
   pending: '#F59E0B',
   approved: '#22C55E',
   denied: '#EF4444',
-  completed: '#8F8F8F',
+  completed: '#A1A1AA',
 };
 
 export const WO_CATEGORY_LABELS: Record<WorkOrderCategory, string> = {
@@ -361,13 +361,13 @@ export const WO_CATEGORY_LABELS: Record<WorkOrderCategory, string> = {
 };
 
 export const WO_CATEGORY_COLORS: Record<WorkOrderCategory, string> = {
-  hvac: '#6AA9FF',
+  hvac: '#1D9BF0',
   electrical: '#F59E0B',
   plumbing: '#22C55E',
-  cleaning: '#8B5CF6',
+  cleaning: '#1D9BF0',
   security: '#EF4444',
-  av: '#EC4899',
-  general: '#8F8F8F',
+  av: '#1D9BF0',
+  general: '#A1A1AA',
 };
 
 export const WO_SEVERITY_LABELS: Record<WorkOrderSeverity, string> = {
@@ -416,10 +416,10 @@ export const ASSET_CATEGORY_LABELS: Record<AssetCategory, string> = {
 };
 
 export const ASSET_CATEGORY_COLORS: Record<AssetCategory, string> = {
-  av_gear: '#8B5CF6',
+  av_gear: '#1D9BF0',
   furniture: '#F59E0B',
-  keys_access: '#EC4899',
-  maintenance_equipment: '#6AA9FF',
+  keys_access: '#1D9BF0',
+  maintenance_equipment: '#1D9BF0',
   vehicle: '#22C55E',
 };
 

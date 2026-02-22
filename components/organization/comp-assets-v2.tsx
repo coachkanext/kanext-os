@@ -231,11 +231,11 @@ function DashboardTab({
       <View style={s.quickActionsGrid}>
         {[
           { id: 'qa-1', label: 'Add Asset', icon: 'plus.circle', color: '#22C55E' },
-          { id: 'qa-2', label: 'Run Audit', icon: 'checkmark.shield', color: '#6AA9FF' },
+          { id: 'qa-2', label: 'Run Audit', icon: 'checkmark.shield', color: '#1D9BF0' },
           { id: 'qa-3', label: 'Schedule Maintenance', icon: 'hammer', color: '#F59E0B' },
-          { id: 'qa-4', label: 'Upload Digital', icon: 'arrow.up.doc', color: '#8B5CF6' },
+          { id: 'qa-4', label: 'Upload Digital', icon: 'arrow.up.doc', color: '#1D9BF0' },
           { id: 'qa-5', label: 'Reorder Inventory', icon: 'shippingbox', color: '#EF4444' },
-          { id: 'qa-6', label: 'Export Report', icon: 'square.and.arrow.up', color: '#8F8F8F' },
+          { id: 'qa-6', label: 'Export Report', icon: 'square.and.arrow.up', color: '#A1A1AA' },
         ].map((action) => (
           <Pressable
             key={action.id}

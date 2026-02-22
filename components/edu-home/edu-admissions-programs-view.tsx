@@ -40,13 +40,13 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const DEGREE_BADGE_COLOR: Record<string, string> = {
-  'B.A.': '#3B82F6',
-  'B.S.': '#8B5CF6',
-  'M.A.': '#10B981',
-  'M.S.': '#10B981',
+  'B.A.': '#1D9BF0',
+  'B.S.': '#1D9BF0',
+  'M.A.': '#22C55E',
+  'M.S.': '#22C55E',
   'M.B.A.': '#F59E0B',
   'Ed.D.': '#EF4444',
-  Certificate: '#6B7280',
+  Certificate: '#A1A1AA',
 };
 
 export function EduAdmissionsProgramsView({ colors, accent }: Props) {
@@ -93,9 +93,9 @@ export function EduAdmissionsProgramsView({ colors, accent }: Props) {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {filtered.map((prog) => {
           const enrollStatus = prog.enrollmentStatus ?? prog.status;
-          const statusColor = STATUS_COLORS[enrollStatus] ?? '#6B7280';
+          const statusColor = STATUS_COLORS[enrollStatus] ?? '#A1A1AA';
           const statusLabel = STATUS_LABELS[enrollStatus] ?? enrollStatus;
-          const degreeColor = DEGREE_BADGE_COLOR[prog.degreeType] ?? '#6B7280';
+          const degreeColor = DEGREE_BADGE_COLOR[prog.degreeType] ?? '#A1A1AA';
 
           return (
             <View

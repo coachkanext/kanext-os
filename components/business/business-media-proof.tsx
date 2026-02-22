@@ -409,7 +409,7 @@ function verificationLabel(v: VerificationLevel): string {
 function verificationColor(v: VerificationLevel): string {
   switch (v) {
     case 'self_reported': return BP.ash;
-    case 'evidence_backed': return '#6AA9FF';
+    case 'evidence_backed': return '#1D9BF0';
     case 'third_party_validated': return BP.emerald;
   }
 }

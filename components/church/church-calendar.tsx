@@ -91,12 +91,12 @@ function sortAgendaByPriority(events: AgendaEvent[]): AgendaEvent[] {
 }
 
 const EVENT_TYPE_COLOR: Record<AgendaEventType, string> = {
-  service: '#8B5CF6',
-  ministry: '#3B82F6',
+  service: '#1D9BF0',
+  ministry: '#1D9BF0',
   class: '#22C55E',
-  volunteer: '#F97316',
+  volunteer: '#F59E0B',
   deadline: '#EF4444',
-  facility: '#8F8F8F',
+  facility: '#A1A1AA',
 };
 
 const EVENT_TYPE_LABEL: Record<AgendaEventType, string> = {
@@ -317,8 +317,8 @@ interface NewsItem {
 }
 
 const NEWS_CATEGORY_COLOR: Record<NewsCategory, string> = {
-  announcement: '#3B82F6',
-  event: '#8B5CF6',
+  announcement: '#1D9BF0',
+  event: '#1D9BF0',
   testimony: '#F59E0B',
   update: '#22C55E',
 };
@@ -511,7 +511,7 @@ function SectionHeader({ title, colors, count, icon }: { title: string; colors: 
 
 function Card({ colors, children, highlight }: { colors: typeof Colors.light; children: React.ReactNode; highlight?: boolean }) {
   return (
-    <View style={[sh.card, { backgroundColor: colors.card, borderColor: highlight ? '#8B5CF6' : colors.border }]}>
+    <View style={[sh.card, { backgroundColor: colors.card, borderColor: highlight ? '#1D9BF0' : colors.border }]}>
       {children}
     </View>
   );
@@ -583,8 +583,8 @@ function AgendaDayBlock({ dayLabel, events, colors, role }: { dayLabel: string; 
                 </ThemedText>
               )}
               {ev.staffOnly && (
-                <View style={[s.staffBadge, { backgroundColor: '#EC489920' }]}>
-                  <ThemedText style={[s.staffBadgeText, { color: '#EC4899' }]}>STAFF</ThemedText>
+                <View style={[s.staffBadge, { backgroundColor: '#1D9BF020' }]}>
+                  <ThemedText style={[s.staffBadgeText, { color: '#1D9BF0' }]}>STAFF</ThemedText>
                 </View>
               )}
               {ev.leaderOnly && (
@@ -645,13 +645,13 @@ function AgendaView({ colors, role }: { colors: typeof Colors.light; role: Churc
               <ThemedText style={[s.agendaSummaryLabel, { color: colors.textSecondary }]}>Today</ThemedText>
             </View>
             <View style={s.agendaSummaryStat}>
-              <ThemedText style={[s.agendaSummaryValue, { color: '#8B5CF6' }]}>
+              <ThemedText style={[s.agendaSummaryValue, { color: '#1D9BF0' }]}>
                 {serviceCount}
               </ThemedText>
               <ThemedText style={[s.agendaSummaryLabel, { color: colors.textSecondary }]}>Services</ThemedText>
             </View>
             <View style={s.agendaSummaryStat}>
-              <ThemedText style={[s.agendaSummaryValue, { color: '#F97316' }]}>
+              <ThemedText style={[s.agendaSummaryValue, { color: '#F59E0B' }]}>
                 {volunteerCount}
               </ThemedText>
               <ThemedText style={[s.agendaSummaryLabel, { color: colors.textSecondary }]}>Volunteer</ThemedText>
@@ -1038,7 +1038,7 @@ function CalendarGridView({ colors, role }: { colors: typeof Colors.light; role:
                     key={day.date}
                     style={[
                       s.monthDayCell,
-                      day.isToday && { backgroundColor: '#8B5CF620', borderRadius: 8 },
+                      day.isToday && { backgroundColor: '#1D9BF020', borderRadius: 8 },
                       isSelected && !day.isToday && { backgroundColor: colors.backgroundTertiary, borderRadius: 8 },
                     ]}
                     onPress={() => {
@@ -1048,7 +1048,7 @@ function CalendarGridView({ colors, role }: { colors: typeof Colors.light; role:
                   >
                     <ThemedText style={[
                       s.monthDayNumber,
-                      { color: day.isToday ? '#8B5CF6' : colors.text },
+                      { color: day.isToday ? '#1D9BF0' : colors.text },
                       day.isToday && { fontWeight: '800' },
                     ]}>
                       {day.date}

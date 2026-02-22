@@ -81,11 +81,11 @@ function GameFilmRow({ game, colors }: { game: VideoGame; colors: typeof Colors.
 }
 
 function PracticeFilmRow({ item, colors }: { item: PracticeFilmItem; colors: typeof Colors.light }) {
-  const typeColor = item.practiceType === 'Full Practice' ? '#3B82F6'
+  const typeColor = item.practiceType === 'Full Practice' ? '#1D9BF0'
     : item.practiceType === 'Walkthrough' ? '#22C55E'
     : item.practiceType === 'Shootaround' ? '#F59E0B'
-    : item.practiceType === 'Film Session' ? '#8B5CF6'
-    : '#EC4899';
+    : item.practiceType === 'Film Session' ? '#1D9BF0'
+    : '#1D9BF0';
   return (
     <Pressable
       style={({ pressed }) => [
@@ -180,7 +180,7 @@ const cardStyles = StyleSheet.create({
   typeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   metaText: { fontSize: 12 },
-  metaDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#424242' },
+  metaDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#52525B' },
   tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 2 },
   tagChip: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
   tagText: { fontSize: 10, fontWeight: '500' },

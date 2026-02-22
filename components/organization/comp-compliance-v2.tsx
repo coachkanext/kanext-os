@@ -101,12 +101,12 @@ function ruleCategoryLabel(category: CompRule['category']): string {
 
 function ruleCategoryColor(category: CompRule['category']): string {
   switch (category) {
-    case 'gameplay': return '#3B82F6';
+    case 'gameplay': return '#1D9BF0';
     case 'conduct': return '#F59E0B';
     case 'eligibility': return '#22C55E';
-    case 'equipment': return '#8B5CF6';
-    case 'venue': return '#EC4899';
-    case 'media': return '#6B7280';
+    case 'equipment': return '#1D9BF0';
+    case 'venue': return '#1D9BF0';
+    case 'media': return '#A1A1AA';
   }
 }
 
@@ -934,9 +934,9 @@ function CertificationsTab({
       showsVerticalScrollIndicator={false}
       renderItem={({ item: group }) => {
         const typeColor =
-          group.type === 'official' ? '#3B82F6'
-          : group.type === 'venue' ? '#EC4899'
-          : group.type === 'equipment' ? '#8B5CF6'
+          group.type === 'official' ? '#1D9BF0'
+          : group.type === 'venue' ? '#1D9BF0'
+          : group.type === 'equipment' ? '#1D9BF0'
           : '#22C55E';
         return (
           <View style={s.certGroup}>
@@ -1660,9 +1660,9 @@ function CertDetailSheet({
 
   const stColor = CERT_STATUS_COLOR[cert.status];
   const typeColor =
-    cert.type === 'official' ? '#3B82F6'
-    : cert.type === 'venue' ? '#EC4899'
-    : cert.type === 'equipment' ? '#8B5CF6'
+    cert.type === 'official' ? '#1D9BF0'
+    : cert.type === 'venue' ? '#1D9BF0'
+    : cert.type === 'equipment' ? '#1D9BF0'
     : '#22C55E';
 
   return (

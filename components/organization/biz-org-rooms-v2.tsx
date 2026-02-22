@@ -125,8 +125,8 @@ function artifactIconColor(type: string): string {
   switch (type) {
     case 'spreadsheet': return '#22C55E';
     case 'presentation': return '#F59E0B';
-    case 'document': return '#3B82F6';
-    case 'video': return '#EC4899';
+    case 'document': return '#1D9BF0';
+    case 'video': return '#1D9BF0';
     default: return BP.ash;
   }
 }
@@ -134,7 +134,7 @@ function artifactIconColor(type: string): string {
 function decisionStatusColor(status: RoomDecision['status']): string {
   switch (status) {
     case 'approved': return '#22C55E';
-    case 'open': return '#3B82F6';
+    case 'open': return '#1D9BF0';
     case 'draft': return '#F59E0B';
     case 'rejected': return '#EF4444';
   }
@@ -166,13 +166,13 @@ function receiptTypeIcon(type: BizReceipt['type']): string {
 function receiptTypeColor(type: BizReceipt['type']): string {
   switch (type) {
     case 'approval': return '#22C55E';
-    case 'release': return '#3B82F6';
-    case 'decision': return '#8B5CF6';
+    case 'release': return '#1D9BF0';
+    case 'decision': return '#1D9BF0';
     case 'signature': return '#F59E0B';
-    case 'transfer': return '#14B8A6';
-    case 'creation': return '#6366F1';
-    case 'amendment': return '#F97316';
-    case 'compliance': return '#EC4899';
+    case 'transfer': return '#1D9BF0';
+    case 'creation': return '#1D9BF0';
+    case 'amendment': return '#F59E0B';
+    case 'compliance': return '#1D9BF0';
     default: return BP.ash;
   }
 }
@@ -205,9 +205,9 @@ function visibilityLabel(v?: BizRoom['visibility']): string {
 
 function visibilityColor(v?: BizRoom['visibility']): string {
   switch (v) {
-    case 'board': return '#8B5CF6';
-    case 'investor': return '#14B8A6';
-    case 'public': return '#3B82F6';
+    case 'board': return '#1D9BF0';
+    case 'investor': return '#1D9BF0';
+    case 'public': return '#1D9BF0';
     case 'internal':
     default:
       return BP.ash;
@@ -294,8 +294,8 @@ function RoomHealthStrip({ room }: { room: BizRoom }) {
   const items: { icon: string; label: string; value: number; color: string }[] = [
     { icon: 'checklist', label: 'Tasks', value: tasks > 0 ? done : 0, color: '#22C55E' },
     { icon: 'exclamationmark.triangle.fill', label: 'Blockers', value: blockers, color: blockers > 0 ? '#F59E0B' : BP.ash },
-    { icon: 'list.bullet.clipboard.fill', label: 'Decisions', value: decisions, color: '#8B5CF6' },
-    { icon: 'bell.fill', label: 'Updates', value: updates, color: '#3B82F6' },
+    { icon: 'list.bullet.clipboard.fill', label: 'Decisions', value: decisions, color: '#1D9BF0' },
+    { icon: 'bell.fill', label: 'Updates', value: updates, color: '#1D9BF0' },
   ];
 
   return (
@@ -710,7 +710,7 @@ function DetailWork({ room }: { room: BizRoom }) {
       </View>
 
       {placeholderTasks.map((task, index) => {
-        const taskColor = task.status === 'in_progress' ? '#3B82F6' : BP.ash;
+        const taskColor = task.status === 'in_progress' ? '#1D9BF0' : BP.ash;
         const taskStatusLabel = task.status === 'in_progress' ? 'In Progress' : 'To Do';
         return (
           <View

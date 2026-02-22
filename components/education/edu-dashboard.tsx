@@ -91,18 +91,18 @@ interface TodayStripItem {
 }
 
 const TODAY_STRIP_ADMIN: TodayStripItem[] = [
-  { id: 'ts-1', title: 'Board of Trustees Meeting', badge: 'MEETING', badgeColor: '#3B82F6', owner: 'President\'s Office', time: '9:00 AM', type: 'meeting' },
+  { id: 'ts-1', title: 'Board of Trustees Meeting', badge: 'MEETING', badgeColor: '#1D9BF0', owner: 'President\'s Office', time: '9:00 AM', type: 'meeting' },
   { id: 'ts-2', title: 'Spring Registration Deadline', badge: 'DEADLINE', badgeColor: '#EF4444', owner: 'Registrar', time: '5:00 PM', type: 'deadline' },
-  { id: 'ts-3', title: 'Faculty Senate Session', badge: 'EVENT', badgeColor: '#8B5CF6', owner: 'Provost', time: '2:00 PM', type: 'meeting' },
+  { id: 'ts-3', title: 'Faculty Senate Session', badge: 'EVENT', badgeColor: '#1D9BF0', owner: 'Provost', time: '2:00 PM', type: 'meeting' },
   { id: 'ts-4', title: 'Accreditation Self-Study Review', badge: 'DUE TODAY', badgeColor: '#F59E0B', owner: 'Academic Affairs', time: '4:00 PM', type: 'deadline' },
   { id: 'ts-5', title: 'Financial Aid Batch Approval', badge: 'DECISION', badgeColor: '#22C55E', owner: 'Financial Aid', time: '11:00 AM', type: 'decision' },
 ];
 
 const TODAY_STRIP_STUDENT: TodayStripItem[] = [
-  { id: 'ts-s1', title: 'Organic Chemistry II', badge: 'CLASS', badgeColor: '#3B82F6', owner: 'Dr. Chen · Sci 204', time: '10:00 AM', type: 'class' },
+  { id: 'ts-s1', title: 'Organic Chemistry II', badge: 'CLASS', badgeColor: '#1D9BF0', owner: 'Dr. Chen · Sci 204', time: '10:00 AM', type: 'class' },
   { id: 'ts-s2', title: 'Research Paper Due', badge: 'DEADLINE', badgeColor: '#EF4444', owner: 'ENG 302', time: '11:59 PM', type: 'deadline' },
   { id: 'ts-s3', title: 'Study Group — Linear Algebra', badge: 'EVENT', badgeColor: '#22C55E', owner: 'Library 204', time: '3:00 PM', type: 'event' },
-  { id: 'ts-s4', title: 'Advising Appointment', badge: 'MEETING', badgeColor: '#8B5CF6', owner: 'Dr. Williams', time: '1:00 PM', type: 'meeting' },
+  { id: 'ts-s4', title: 'Advising Appointment', badge: 'MEETING', badgeColor: '#1D9BF0', owner: 'Dr. Williams', time: '1:00 PM', type: 'meeting' },
 ];
 
 interface NextEvent {
@@ -201,11 +201,11 @@ interface FunnelStage {
 }
 
 const ENROLLMENT_FUNNEL: FunnelStage[] = [
-  { id: 'fn-1', label: 'Inquiries', count: 24800, conversionPct: 100, color: '#3B82F6' },
-  { id: 'fn-2', label: 'Applications', count: 14200, conversionPct: 57, color: '#8B5CF6' },
+  { id: 'fn-1', label: 'Inquiries', count: 24800, conversionPct: 100, color: '#1D9BF0' },
+  { id: 'fn-2', label: 'Applications', count: 14200, conversionPct: 57, color: '#1D9BF0' },
   { id: 'fn-3', label: 'Admits', count: 8400, conversionPct: 59, color: '#22C55E' },
   { id: 'fn-4', label: 'Deposits', count: 3200, conversionPct: 38, color: '#F59E0B' },
-  { id: 'fn-5', label: 'Enrolled', count: 2840, conversionPct: 89, color: '#EC4899' },
+  { id: 'fn-5', label: 'Enrolled', count: 2840, conversionPct: 89, color: '#1D9BF0' },
 ];
 
 // --- Block 4: Student Success Radar ---
@@ -223,9 +223,9 @@ const SUCCESS_METRICS: SuccessMetric[] = [
   { id: 'sm-1', label: 'At-Risk Students', value: '284', icon: 'exclamationmark.triangle.fill', color: '#EF4444', trend: '-12 from last term' },
   { id: 'sm-2', label: 'On Probation', value: '142', icon: 'exclamationmark.circle.fill', color: '#F59E0B', trend: '-8 from last term' },
   { id: 'sm-3', label: 'Dean\'s List', value: '1,847', icon: 'star.fill', color: '#22C55E', trend: '+124 from last term' },
-  { id: 'sm-4', label: 'Avg Credits/Student', value: '14.8', icon: 'book.fill', color: '#3B82F6' },
-  { id: 'sm-5', label: 'Advising Completion', value: '84%', icon: 'checkmark.circle.fill', color: '#8B5CF6', trend: '+6% from last term' },
-  { id: 'sm-6', label: 'Course Completion', value: '94.2%', icon: 'graduationcap.fill', color: '#06B6D4' },
+  { id: 'sm-4', label: 'Avg Credits/Student', value: '14.8', icon: 'book.fill', color: '#1D9BF0' },
+  { id: 'sm-5', label: 'Advising Completion', value: '84%', icon: 'checkmark.circle.fill', color: '#1D9BF0', trend: '+6% from last term' },
+  { id: 'sm-6', label: 'Course Completion', value: '94.2%', icon: 'graduationcap.fill', color: '#1D9BF0' },
 ];
 
 interface EarlyAlert {
@@ -289,7 +289,7 @@ const SAFETY_STATS: SafetyStat[] = [
   { label: 'Open Work Orders', value: '32', color: '#F59E0B' },
   { label: 'Active Incidents', value: '3', color: '#EF4444' },
   { label: 'Days Without Incident', value: '14', color: '#22C55E' },
-  { label: 'Safety Score', value: '94', color: '#3B82F6' },
+  { label: 'Safety Score', value: '94', color: '#1D9BF0' },
 ];
 
 // --- Block 6: Financial Snapshot ---
@@ -321,7 +321,7 @@ interface HousingMetric {
 }
 
 const HOUSING_METRICS: HousingMetric[] = [
-  { label: 'Total Beds', value: '3,200', color: '#3B82F6' },
+  { label: 'Total Beds', value: '3,200', color: '#1D9BF0' },
   { label: 'Occupancy', value: '93.1%', color: '#22C55E' },
   { label: 'Waitlist', value: '142', color: '#F59E0B' },
   { label: 'Open Maint.', value: '32', color: '#EF4444' },
@@ -352,9 +352,9 @@ interface CoverageMetric {
 }
 
 const PEOPLE_COVERAGE: CoverageMetric[] = [
-  { label: 'Faculty Seats', filled: 486, total: 520, color: '#3B82F6' },
+  { label: 'Faculty Seats', filled: 486, total: 520, color: '#1D9BF0' },
   { label: 'Staff Positions', filled: 842, total: 880, color: '#22C55E' },
-  { label: 'RA Positions', filled: 54, total: 58, color: '#8B5CF6' },
+  { label: 'RA Positions', filled: 54, total: 58, color: '#1D9BF0' },
   { label: 'Admin Roles', filled: 124, total: 130, color: '#F59E0B' },
 ];
 
@@ -473,7 +473,7 @@ function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: E
       <Pressable
         style={({ pressed }) => [
           s.heroCard,
-          { backgroundColor: '#1a2744', opacity: pressed ? 0.9 : 1 },
+          { backgroundColor: '#0B0F14', opacity: pressed ? 0.9 : 1 },
         ]}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
       >

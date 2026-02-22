@@ -77,10 +77,10 @@ const FILTER_OPTIONS: { id: FilterType; label: string }[] = [
 ];
 
 const STAGE_COLORS: Record<EntityOpportunity['stage'], string> = {
-  prospect: '#8F8F8F',
-  qualified: '#6AA9FF',
+  prospect: '#A1A1AA',
+  qualified: '#1D9BF0',
   proposal: '#F59E0B',
-  negotiation: '#7A5CFF',
+  negotiation: '#1D9BF0',
   'closed-won': '#22C55E',
   'closed-lost': '#EF4444',
 };
@@ -109,7 +109,7 @@ function StatusBadge({ status, colors }: { status: string; colors: typeof Colors
 }
 
 function PriorityBadge({ priority }: { priority: 'high' | 'medium' | 'low' }) {
-  const color = priority === 'high' ? '#EF4444' : priority === 'medium' ? '#F59E0B' : '#8F8F8F';
+  const color = priority === 'high' ? '#EF4444' : priority === 'medium' ? '#F59E0B' : '#A1A1AA';
   return (
     <View style={[s.badge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[s.badgeText, { color }]}>{priority.toUpperCase()}</ThemedText>
@@ -122,7 +122,7 @@ function TypeBadge({ type, colors }: { type: Entity['type']; colors: typeof Colo
     type === 'company'
       ? '#FFFFFF'
       : type === 'department'
-        ? '#6AA9FF'
+        ? '#1D9BF0'
         : type === 'team'
           ? '#22C55E'
           : '#F59E0B';
@@ -380,10 +380,10 @@ function ProjectsTab({ entity, colors }: { entity: Entity; colors: typeof Colors
           item.status === 'active'
             ? '#22C55E'
             : item.status === 'completed'
-              ? '#6AA9FF'
+              ? '#1D9BF0'
               : item.status === 'on-hold'
                 ? '#F59E0B'
-                : '#8F8F8F';
+                : '#A1A1AA';
 
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -922,7 +922,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   detailLabel: {
     fontSize: 13,

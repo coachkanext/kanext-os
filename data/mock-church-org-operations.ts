@@ -126,9 +126,9 @@ export interface OpsIncident {
 // =============================================================================
 
 export const SERVICE_STATUS_COLORS: Record<ServiceStatus, string> = {
-  upcoming: '#3B82F6',
+  upcoming: '#1D9BF0',
   in_progress: '#22C55E',
-  completed: '#6B7280',
+  completed: '#A1A1AA',
 };
 
 export const READINESS_COLORS: Record<ReadinessLevel, string> = {
@@ -138,15 +138,15 @@ export const READINESS_COLORS: Record<ReadinessLevel, string> = {
 };
 
 export const TASK_PRIORITY_COLORS: Record<TaskPriority, string> = {
-  low: '#6B7280',
-  medium: '#3B82F6',
+  low: '#A1A1AA',
+  medium: '#1D9BF0',
   high: '#F59E0B',
   urgent: '#EF4444',
 };
 
 export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
   pending: '#F59E0B',
-  in_progress: '#3B82F6',
+  in_progress: '#1D9BF0',
   done: '#22C55E',
 };
 
@@ -157,10 +157,10 @@ export const SLOT_STATUS_COLORS: Record<TeamSlotStatus, string> = {
 };
 
 export const INCIDENT_SEVERITY_COLORS: Record<IncidentSeverity, string> = {
-  minor: '#6B7280',
+  minor: '#A1A1AA',
   moderate: '#F59E0B',
   major: '#EF4444',
-  critical: '#991B1B',
+  critical: '#EF4444',
 };
 
 export const INCIDENT_STATUS_COLORS: Record<IncidentStatus, string> = {
@@ -181,14 +181,14 @@ export const SEGMENT_TYPE_LABELS: Record<SegmentType, string> = {
 };
 
 export const SEGMENT_TYPE_COLORS: Record<SegmentType, string> = {
-  pre_service: '#6B7280',
-  welcome: '#3B82F6',
-  worship: '#8B5CF6',
+  pre_service: '#A1A1AA',
+  welcome: '#1D9BF0',
+  worship: '#1D9BF0',
   offering: '#22C55E',
   sermon: '#F59E0B',
-  altar_call: '#EC4899',
-  benediction: '#8B5CF6',
-  post_service: '#6B7280',
+  altar_call: '#1D9BF0',
+  benediction: '#1D9BF0',
+  post_service: '#A1A1AA',
 };
 
 // =============================================================================
@@ -508,7 +508,7 @@ const OPS_TEAMS: OpsTeam[] = [
     id: 'team-001',
     name: 'AV',
     icon: 'video.fill',
-    color: '#3B82F6',
+    color: '#1D9BF0',
     slots: [
       {
         id: 'ts-001',
@@ -553,7 +553,7 @@ const OPS_TEAMS: OpsTeam[] = [
     id: 'team-002',
     name: 'Worship',
     icon: 'music.note.list',
-    color: '#8B5CF6',
+    color: '#1D9BF0',
     slots: [
       {
         id: 'ts-005',
@@ -652,7 +652,7 @@ const OPS_TEAMS: OpsTeam[] = [
     id: 'team-004',
     name: 'Kids Ministry',
     icon: 'figure.and.child.holdinghands',
-    color: '#EC4899',
+    color: '#1D9BF0',
     slots: [
       {
         id: 'ts-014',
@@ -1193,11 +1193,11 @@ export const TASK_CATEGORIES = [
 export type TaskCategory = (typeof TASK_CATEGORIES)[number];
 
 export const TASK_CATEGORY_COLORS: Record<string, string> = {
-  AV: '#3B82F6',
+  AV: '#1D9BF0',
   Facilities: '#22C55E',
-  Worship: '#8B5CF6',
+  Worship: '#1D9BF0',
   Security: '#EF4444',
-  Kids: '#EC4899',
+  Kids: '#1D9BF0',
   Parking: '#F59E0B',
 };
 
@@ -1301,7 +1301,7 @@ function buildCommandTiles(): CommandTile[] {
       label: 'Next Service',
       value: nextService.name,
       icon: 'clock.fill',
-      color: '#3B82F6',
+      color: '#1D9BF0',
     },
     {
       id: 'ct-open-tasks',
@@ -1322,7 +1322,7 @@ function buildCommandTiles(): CommandTile[] {
       label: 'Checklists',
       value: `${checklistProgress.done}/${checklistProgress.total}`,
       icon: 'checkmark.square.fill',
-      color: '#8B5CF6',
+      color: '#1D9BF0',
     },
     {
       id: 'ct-incidents',

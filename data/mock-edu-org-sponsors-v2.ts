@@ -160,9 +160,9 @@ export const SPONSOR_TYPE_LABELS: Record<SponsorType, string> = {
 };
 
 export const SPONSOR_TYPE_COLORS: Record<SponsorType, string> = {
-  sponsor: '#3B82F6',
-  partner: '#A78BFA',
-  donor: '#10B981',
+  sponsor: '#1D9BF0',
+  partner: '#1D9BF0',
+  donor: '#22C55E',
   vendor_partner: '#F59E0B',
 };
 
@@ -180,9 +180,9 @@ export const SPONSOR_SCOPE_LABELS: Record<SponsorScope, string> = {
 
 export const SPONSOR_SCOPE_COLORS: Record<SponsorScope, string> = {
   athletics: '#EF4444',
-  admissions: '#3B82F6',
-  campus: '#A78BFA',
-  institution: '#10B981',
+  admissions: '#1D9BF0',
+  campus: '#1D9BF0',
+  institution: '#22C55E',
   housing: '#F59E0B',
 };
 
@@ -200,8 +200,8 @@ export const SPONSOR_STATUS_LABELS: Record<SponsorStatus, string> = {
 export const SPONSOR_STATUS_COLORS: Record<SponsorStatus, string> = {
   active: '#22C55E',
   negotiating: '#F59E0B',
-  ended: '#8F8F8F',
-  paused: '#6AA9FF',
+  ended: '#A1A1AA',
+  paused: '#1D9BF0',
 };
 
 // =============================================================================
@@ -219,12 +219,12 @@ export const PIPELINE_STAGE_LABELS: Record<PipelineStage, string> = {
 };
 
 export const PIPELINE_STAGE_COLORS: Record<PipelineStage, string> = {
-  prospect: '#8F8F8F',
-  contacted: '#6AA9FF',
-  proposal_sent: '#3B82F6',
+  prospect: '#A1A1AA',
+  contacted: '#1D9BF0',
+  proposal_sent: '#1D9BF0',
   negotiating: '#F59E0B',
-  verbal: '#A78BFA',
-  contract_ready: '#10B981',
+  verbal: '#1D9BF0',
+  contract_ready: '#22C55E',
   signed: '#22C55E',
 };
 
@@ -249,11 +249,11 @@ export const AGREEMENT_STATUS_LABELS: Record<AgreementStatus, string> = {
 };
 
 export const AGREEMENT_STATUS_COLORS: Record<AgreementStatus, string> = {
-  draft: '#8F8F8F',
+  draft: '#A1A1AA',
   in_review: '#F59E0B',
   executed: '#22C55E',
   expiring: '#EF4444',
-  archived: '#A78BFA',
+  archived: '#1D9BF0',
 };
 
 // =============================================================================
@@ -269,10 +269,10 @@ export const DELIVERABLE_STATUS_LABELS: Record<DeliverableStatus, string> = {
 };
 
 export const DELIVERABLE_STATUS_COLORS: Record<DeliverableStatus, string> = {
-  planned: '#8F8F8F',
-  in_progress: '#6AA9FF',
+  planned: '#A1A1AA',
+  in_progress: '#1D9BF0',
   submitted: '#F59E0B',
-  verified: '#10B981',
+  verified: '#22C55E',
   completed: '#22C55E',
 };
 
@@ -296,8 +296,8 @@ export const PROOF_STATUS_LABELS: Record<ProofStatus, string> = {
 };
 
 export const PROOF_STATUS_COLORS: Record<ProofStatus, string> = {
-  draft: '#8F8F8F',
-  submitted: '#6AA9FF',
+  draft: '#A1A1AA',
+  submitted: '#1D9BF0',
   verified: '#22C55E',
   rejected: '#EF4444',
 };
@@ -315,11 +315,11 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentExpectationStatus, string> = {
 };
 
 export const PAYMENT_STATUS_COLORS: Record<PaymentExpectationStatus, string> = {
-  expected: '#8F8F8F',
-  invoiced: '#6AA9FF',
+  expected: '#A1A1AA',
+  invoiced: '#1D9BF0',
   received: '#22C55E',
   late: '#EF4444',
-  disputed: '#DC2626',
+  disputed: '#EF4444',
 };
 
 // =============================================================================
@@ -347,7 +347,7 @@ export const RISK_STATUS_COLORS: Record<RiskStatus, string> = {
 };
 
 export const RISK_SEVERITY_COLORS: Record<'critical' | 'high' | 'medium' | 'low', string> = {
-  critical: '#DC2626',
+  critical: '#EF4444',
   high: '#EF4444',
   medium: '#F59E0B',
   low: '#22C55E',

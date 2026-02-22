@@ -500,7 +500,7 @@ function ControlsTab({
       const evidenceTypeLabel = EVIDENCE_TYPE_LABELS[item.evidenceType];
       const evidenceStatusColor = EVIDENCE_STATUS_COLORS[item.evidenceStatus];
       const evidenceStatusLabel = EVIDENCE_STATUS_LABELS[item.evidenceStatus];
-      const scopeColor = item.scope === 'whole_church' ? '#3B82F6' : '#8B5CF6';
+      const scopeColor = item.scope === 'whole_church' ? '#1D9BF0' : '#1D9BF0';
       return (
         <Pressable
           style={[s.controlCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -566,7 +566,7 @@ function AuditsTab({
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
       {audits.map((audit) => {
         const isExpanded = expandedAudit === audit.id;
-        const statusColor = audit.status === 'completed' ? '#22C55E' : audit.status === 'in_progress' ? '#F59E0B' : '#3B82F6';
+        const statusColor = audit.status === 'completed' ? '#22C55E' : audit.status === 'in_progress' ? '#F59E0B' : '#1D9BF0';
         const statusLabel = audit.status === 'completed' ? 'Completed' : audit.status === 'in_progress' ? 'In Progress' : 'Scheduled';
 
         // Finding counts by severity
@@ -605,7 +605,7 @@ function AuditsTab({
               </View>
               {audit.findings.length > 0 && (
                 <View style={s.findingsCountRow}>
-                  {critCount > 0 && <StatusBadge label={`${critCount} CRIT`} color="#DC2626" />}
+                  {critCount > 0 && <StatusBadge label={`${critCount} CRIT`} color="#EF4444" />}
                   {highCount > 0 && <StatusBadge label={`${highCount} HIGH`} color="#EF4444" />}
                   {medCount > 0 && <StatusBadge label={`${medCount} MED`} color="#F59E0B" />}
                   {lowCount > 0 && <StatusBadge label={`${lowCount} LOW`} color="#22C55E" />}
@@ -788,7 +788,7 @@ function IncidentsTab({
               <View style={s.incidentBadgeRow}>
                 <StatusBadge label={typeLabel.toUpperCase()} color={accentColor} />
                 <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
-                {isClosed && <StatusBadge label="IMMUTABLE" color="#9CA3AF" />}
+                {isClosed && <StatusBadge label="IMMUTABLE" color="#A1A1AA" />}
               </View>
               <View style={s.incidentMetaRow}>
                 <View style={s.incidentMetaItem}>
@@ -1470,7 +1470,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

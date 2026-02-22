@@ -41,10 +41,10 @@ interface UniversalDealSheetProps {
 // =============================================================================
 
 const DEAL_STATUS_COLORS: Record<string, string> = {
-  exploring: '#6AA9FF',
+  exploring: '#1D9BF0',
   diligence: '#F59E0B',
   offer: '#22C55E',
-  closed: '#8F8F8F',
+  closed: '#A1A1AA',
 };
 
 const DEAL_STATUS_LABELS: Record<string, string> = {
@@ -57,28 +57,28 @@ const DEAL_STATUS_LABELS: Record<string, string> = {
 const DILIGENCE_STATUS_COLORS: Record<string, string> = {
   complete: '#22C55E',
   in_progress: '#F59E0B',
-  pending: '#6AA9FF',
+  pending: '#1D9BF0',
   blocked: '#EF4444',
 };
 
 const RISK_SEVERITY_COLORS: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#6AA9FF',
-  low: '#8F8F8F',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 const APPROVAL_STATUS_COLORS: Record<string, string> = {
   approved: '#22C55E',
   pending: '#F59E0B',
   rejected: '#EF4444',
-  in_review: '#6AA9FF',
+  in_review: '#1D9BF0',
 };
 
 const PIPELINE_GATE_COLORS: Record<string, string> = {
   passed: '#22C55E',
   active: '#F59E0B',
-  upcoming: '#8F8F8F',
+  upcoming: '#A1A1AA',
 };
 
 // =============================================================================
@@ -325,19 +325,19 @@ function DealHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (DEAL_STATUS_COLORS[deal.status] ?? '#8F8F8F') + '1A' },
+            { backgroundColor: (DEAL_STATUS_COLORS[deal.status] ?? '#A1A1AA') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: DEAL_STATUS_COLORS[deal.status] ?? '#8F8F8F' },
+              { backgroundColor: DEAL_STATUS_COLORS[deal.status] ?? '#A1A1AA' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: DEAL_STATUS_COLORS[deal.status] ?? '#8F8F8F' },
+              { color: DEAL_STATUS_COLORS[deal.status] ?? '#A1A1AA' },
             ]}
           >
             {DEAL_STATUS_LABELS[deal.status] ?? deal.status}
@@ -435,7 +435,7 @@ function OverviewTab({ deal, colors }: { deal: DealWorkspace; colors: typeof Col
           {deal.timeline.map((event, idx) => (
             <View key={idx} style={styles.timelineRow}>
               <View style={styles.timelineDotCol}>
-                <View style={[styles.timelineDot, { backgroundColor: idx === 0 ? '#6AA9FF' : colors.textTertiary }]} />
+                <View style={[styles.timelineDot, { backgroundColor: idx === 0 ? '#1D9BF0' : colors.textTertiary }]} />
                 {deal.timeline && idx < deal.timeline.length - 1 && (
                   <View style={[styles.timelineLine, { backgroundColor: colors.border }]} />
                 )}
@@ -494,7 +494,7 @@ function PipelineTab({ deal, colors }: { deal: DealWorkspace; colors: typeof Col
             const isCurrent = stage === deal.status;
             const isPast = idx < currentIdx;
             const stageColor = isCurrent
-              ? DEAL_STATUS_COLORS[stage] ?? '#8F8F8F'
+              ? DEAL_STATUS_COLORS[stage] ?? '#A1A1AA'
               : isPast ? '#22C55E' : colors.textTertiary;
 
             return (
@@ -559,7 +559,7 @@ function PipelineTab({ deal, colors }: { deal: DealWorkspace; colors: typeof Col
             <View
               style={[
                 styles.gateDot,
-                { backgroundColor: PIPELINE_GATE_COLORS[gate.status] ?? '#8F8F8F' },
+                { backgroundColor: PIPELINE_GATE_COLORS[gate.status] ?? '#A1A1AA' },
               ]}
             />
             <ThemedText
@@ -573,7 +573,7 @@ function PipelineTab({ deal, colors }: { deal: DealWorkspace; colors: typeof Col
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: PIPELINE_GATE_COLORS[gate.status] ?? '#8F8F8F' },
+                { color: PIPELINE_GATE_COLORS[gate.status] ?? '#A1A1AA' },
               ]}
             >
               {gate.status.toUpperCase()}
@@ -609,13 +609,13 @@ function DiligenceTab({
                 <View
                   style={[
                     styles.diligenceStatusBadge,
-                    { backgroundColor: (DILIGENCE_STATUS_COLORS[item.status] ?? '#8F8F8F') + '22' },
+                    { backgroundColor: (DILIGENCE_STATUS_COLORS[item.status] ?? '#A1A1AA') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.diligenceStatusText,
-                      { color: DILIGENCE_STATUS_COLORS[item.status] ?? '#8F8F8F' },
+                      { color: DILIGENCE_STATUS_COLORS[item.status] ?? '#A1A1AA' },
                     ]}
                   >
                     {item.status === 'in_progress' ? 'IN PROG' : item.status.toUpperCase()}
@@ -683,7 +683,7 @@ function FinancialModelTab({ deal, colors }: { deal: DealWorkspace; colors: type
               <ThemedText style={[styles.finTableCell, styles.finCol, { color: '#EF4444' }]}>
                 {row.downside}
               </ThemedText>
-              <ThemedText style={[styles.finTableCell, styles.finCol, { color: '#6AA9FF' }]}>
+              <ThemedText style={[styles.finTableCell, styles.finCol, { color: '#1D9BF0' }]}>
                 {row.upside}
               </ThemedText>
             </View>
@@ -709,7 +709,7 @@ function FinancialModelTab({ deal, colors }: { deal: DealWorkspace; colors: type
                   <View
                     style={[
                       styles.costPctBarFill,
-                      { width: `${item.pct}%`, backgroundColor: '#6AA9FF' },
+                      { width: `${item.pct}%`, backgroundColor: '#1D9BF0' },
                     ]}
                   />
                 </View>
@@ -741,7 +741,7 @@ function FinancialModelTab({ deal, colors }: { deal: DealWorkspace; colors: type
               }
             </ThemedText>
           </ScenarioCard>
-          <ScenarioCard label="Upside" color="#6AA9FF" colors={colors}>
+          <ScenarioCard label="Upside" color="#1D9BF0" colors={colors}>
             <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
               {deal.revenueProjections && deal.revenueProjections.length > 0
                 ? `Revenue hits ${deal.revenueProjections[deal.revenueProjections.length - 1].upside}. Strong platform adoption, media partnerships, and talent pipeline activation.`
@@ -781,13 +781,13 @@ function RisksTab({
               <View
                 style={[
                   styles.severityBadge,
-                  { backgroundColor: (RISK_SEVERITY_COLORS[risk.severity] ?? '#8F8F8F') + '22' },
+                  { backgroundColor: (RISK_SEVERITY_COLORS[risk.severity] ?? '#A1A1AA') + '22' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.severityText,
-                    { color: RISK_SEVERITY_COLORS[risk.severity] ?? '#8F8F8F' },
+                    { color: RISK_SEVERITY_COLORS[risk.severity] ?? '#A1A1AA' },
                   ]}
                 >
                   {risk.severity.toUpperCase()}
@@ -819,13 +819,13 @@ function RisksTab({
             <View
               style={[
                 styles.severityBadge,
-                { backgroundColor: (RISK_SEVERITY_COLORS[risk.severity] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (RISK_SEVERITY_COLORS[risk.severity] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.severityText,
-                  { color: RISK_SEVERITY_COLORS[risk.severity] ?? '#8F8F8F' },
+                  { color: RISK_SEVERITY_COLORS[risk.severity] ?? '#A1A1AA' },
                 ]}
               >
                 {risk.severity.toUpperCase()}
@@ -979,13 +979,13 @@ function ApprovalsTab({
                 <View
                   style={[
                     styles.approvalStatusBadge,
-                    { backgroundColor: (APPROVAL_STATUS_COLORS[approval.status] ?? '#8F8F8F') + '22' },
+                    { backgroundColor: (APPROVAL_STATUS_COLORS[approval.status] ?? '#A1A1AA') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.approvalStatusText,
-                      { color: APPROVAL_STATUS_COLORS[approval.status] ?? '#8F8F8F' },
+                      { color: APPROVAL_STATUS_COLORS[approval.status] ?? '#A1A1AA' },
                     ]}
                   >
                     {approval.status === 'in_review' ? 'IN REVIEW' : approval.status.toUpperCase()}
@@ -1042,7 +1042,7 @@ function ApprovalsTab({
             <IconSymbol
               name={approval.status === 'approved' ? 'checkmark.seal.fill' : approval.status === 'pending' ? 'clock.fill' : 'xmark.seal.fill'}
               size={16}
-              color={APPROVAL_STATUS_COLORS[approval.status] ?? '#8F8F8F'}
+              color={APPROVAL_STATUS_COLORS[approval.status] ?? '#A1A1AA'}
             />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
               <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
@@ -1085,10 +1085,10 @@ function AuditLogTab({
 
   const typeColor = (type: string) => {
     switch (type) {
-      case 'access': return '#6AA9FF';
+      case 'access': return '#1D9BF0';
       case 'action': return '#F59E0B';
       case 'document': return '#22C55E';
-      default: return '#8F8F8F';
+      default: return '#A1A1AA';
     }
   };
 

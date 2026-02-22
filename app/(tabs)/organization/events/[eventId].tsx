@@ -49,12 +49,12 @@ function getEventTypeColor(type: AcademicCalendarEvent['type'], modeColor: strin
   switch (type) {
     case 'finals':
     case 'midterms':
-      return '#E63946';
+      return '#EF4444';
     case 'break':
     case 'holiday':
-      return '#2A9D8F';
+      return '#1D9BF0';
     case 'commencement':
-      return '#F4A261';
+      return '#F59E0B';
     case 'registration':
       return modeColor;
     default:

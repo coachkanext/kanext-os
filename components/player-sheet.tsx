@@ -134,20 +134,20 @@ function getStatusColor(status: string): string {
     case 'available': return '#22C55E';
     case 'questionable': case 'day_to_day': return '#F59E0B';
     case 'injured': case 'out': case 'doubtful': return '#EF4444';
-    case 'redshirt': return '#6AA9FF';
-    default: return '#8F8F8F';
+    case 'redshirt': return '#1D9BF0';
+    default: return '#A1A1AA';
   }
 }
 
 function getEligibilityColor(s: string): string {
-  switch (s) { case 'clear': return '#22C55E'; case 'pending': return '#F59E0B'; case 'hold': case 'expired': return '#EF4444'; default: return '#8F8F8F'; }
+  switch (s) { case 'clear': return '#22C55E'; case 'pending': return '#F59E0B'; case 'hold': case 'expired': return '#EF4444'; default: return '#A1A1AA'; }
 }
 
 function getGoalIcon(s: string): string {
   switch (s) { case 'complete': return '✓'; case 'in_progress': return '◉'; default: return '○'; }
 }
 function getGoalColor(s: string): string {
-  switch (s) { case 'complete': return '#22C55E'; case 'in_progress': return '#F59E0B'; default: return '#8F8F8F'; }
+  switch (s) { case 'complete': return '#22C55E'; case 'in_progress': return '#F59E0B'; default: return '#A1A1AA'; }
 }
 
 // =============================================================================
@@ -159,7 +159,7 @@ function ClusterBar({ clusterKey, value, playerId, jerseyNumber, expanded, onTog
   jerseyNumber?: string; expanded: boolean; onToggle: () => void;
 }) {
   const label = CLUSTER_LABELS[clusterKey as ClusterType]?.label ?? clusterKey;
-  const barColor = value >= 70 ? '#4CAF50' : value >= 55 ? '#FF9800' : '#EF4444';
+  const barColor = value >= 70 ? '#22C55E' : value >= 55 ? '#F59E0B' : '#EF4444';
   const pct = Math.min(value, 100);
   const subclusters = expanded
     ? jerseyNumber ? getPlayerSubclusters(jerseyNumber, clusterKey) : getPoolPlayerSubclusters(playerId, clusterKey, value)
@@ -173,7 +173,7 @@ function ClusterBar({ clusterKey, value, playerId, jerseyNumber, expanded, onTog
         <Text style={barStyles.chevron}>{expanded ? '\u25BE' : '\u203A'}</Text>
       </Pressable>
       {expanded && subclusters.map((sc) => {
-        const scColor = sc.rating >= 70 ? '#4CAF50' : sc.rating >= 55 ? '#FF9800' : '#EF4444';
+        const scColor = sc.rating >= 70 ? '#22C55E' : sc.rating >= 55 ? '#F59E0B' : '#EF4444';
         return (
           <View key={sc.name} style={barStyles.subRow}>
             <Text style={barStyles.subLabel}>{sc.name}</Text>
@@ -189,11 +189,11 @@ function ClusterBar({ clusterKey, value, playerId, jerseyNumber, expanded, onTog
 const barStyles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', marginBottom: 8, paddingVertical: 2 },
   labelCol: { width: 72 },
-  label: { fontSize: 11, fontWeight: '600', color: '#f5f5f5' },
-  barTrack: { flex: 1, height: 8, backgroundColor: '#2a2a2a', borderRadius: 4, overflow: 'hidden', marginHorizontal: 8 },
+  label: { fontSize: 11, fontWeight: '600', color: '#FFFFFF' },
+  barTrack: { flex: 1, height: 8, backgroundColor: '#0B0F14', borderRadius: 4, overflow: 'hidden', marginHorizontal: 8 },
   barFill: { height: '100%', borderRadius: 4 },
   value: { fontSize: 13, fontWeight: '700', width: 28, textAlign: 'right' },
-  chevron: { fontSize: 11, color: '#6e6e6e', width: 16, textAlign: 'center', marginLeft: 2 },
+  chevron: { fontSize: 11, color: '#A1A1AA', width: 16, textAlign: 'center', marginLeft: 2 },
   subRow: { flexDirection: 'row', alignItems: 'center', paddingLeft: 20, marginBottom: 6 },
   subLabel: { fontSize: 10, color: '#999', width: 100 },
   subBarTrack: { flex: 1, height: 5, backgroundColor: '#222', borderRadius: 3, overflow: 'hidden', marginHorizontal: 6 },
@@ -320,7 +320,7 @@ export function PlayerSheet({
 
   const baseKR = baseKROverride ?? ratings?.overall ?? 0;
   const delta = fitKR - baseKR;
-  const deltaColor = delta > 0 ? '#4CAF50' : delta < 0 ? '#EF4444' : '#6e6e6e';
+  const deltaColor = delta > 0 ? '#22C55E' : delta < 0 ? '#EF4444' : '#A1A1AA';
   const deltaText = delta > 0 ? `+${delta}` : `${delta}`;
   const helioPos = TRADITIONAL_TO_HELIO[player.position];
   const posLabel = HELIO_POSITION_LABELS[helioPos] ?? player.position;
@@ -495,7 +495,7 @@ export function PlayerSheet({
             <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Defense</Text><Text style={[s.statValue, { color: colors.text }]}>{defStyleLabel}</Text></View>
             {krVisibility !== 'hidden' && (<><View style={[s.divider, { backgroundColor: colors.divider }]} /><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Base KR</Text><Text style={[s.statValue, { color: colors.text }]}>{formatKR(baseKR, krVisibility)}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Fit KR</Text><Text style={[s.statValue, { color: deltaColor }]}>{formatKR(fitKR, krVisibility)}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Delta</Text><Text style={[s.statValue, { color: deltaColor }]}>{deltaText}</Text></View></>)}
           </View>
-          {drivers.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT DRIVERS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{drivers.map((d, i) => (<View key={i} style={s.driverRow}><Text style={{ color: '#4CAF50', fontSize: 12 }}>▲</Text><Text style={[s.driverText, { color: colors.text }]}>{d.reason}</Text><Text style={{ color: '#4CAF50', fontSize: 13, fontWeight: '700' }}>+{d.delta}</Text></View>))}</View></>)}
+          {drivers.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT DRIVERS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{drivers.map((d, i) => (<View key={i} style={s.driverRow}><Text style={{ color: '#22C55E', fontSize: 12 }}>▲</Text><Text style={[s.driverText, { color: colors.text }]}>{d.reason}</Text><Text style={{ color: '#22C55E', fontSize: 13, fontWeight: '700' }}>+{d.delta}</Text></View>))}</View></>)}
           {risks.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT RISKS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{risks.map((r, i) => (<View key={i} style={s.driverRow}><Text style={{ color: '#EF4444', fontSize: 12 }}>▼</Text><Text style={[s.driverText, { color: colors.text }]}>{r.reason}</Text><Text style={{ color: '#EF4444', fontSize: 13, fontWeight: '700' }}>{r.delta}</Text></View>))}</View></>)}
           <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>USAGE + ROLE</Text>
           <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
@@ -540,7 +540,7 @@ export function PlayerSheet({
           <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
             <View style={s.practiceRow}>
               {health.practiceAvailability.map((d, i) => {
-                const pColor = d.status === 'full' ? '#22C55E' : d.status === 'limited' ? '#F59E0B' : d.status === 'rest' ? '#6AA9FF' : '#EF4444';
+                const pColor = d.status === 'full' ? '#22C55E' : d.status === 'limited' ? '#F59E0B' : d.status === 'rest' ? '#1D9BF0' : '#EF4444';
                 return (<View key={i} style={s.practiceDay}><Text style={[s.practiceDayLabel, { color: colors.textTertiary }]}>{d.day}</Text><View style={[s.practiceDot, { backgroundColor: pColor }]} /><Text style={[s.practiceDayStatus, { color: pColor }]}>{d.status}</Text></View>);
               })}
             </View>
@@ -573,7 +573,7 @@ export function PlayerSheet({
                 {PIPELINE_STAGES.map((stage, i) => {
                   const isActive = boardEntry.status === stage;
                   const isPast = PIPELINE_STAGES.indexOf(boardEntry.status) > i;
-                  const color = isActive ? (BOARD_COLUMN_COLORS as any)[stage] ?? '#FFF' : isPast ? '#4CAF50' : '#333';
+                  const color = isActive ? (BOARD_COLUMN_COLORS as any)[stage] ?? '#FFF' : isPast ? '#22C55E' : '#333';
                   return (<View key={stage} style={s.pipelineStage}><View style={[s.pipelineDot, { backgroundColor: color }]} /><Text style={[s.pipelineLabel, { color: isActive ? '#FFF' : '#666' }]}>{stage}</Text></View>);
                 })}
               </ScrollView>
@@ -587,7 +587,7 @@ export function PlayerSheet({
               {boardEntry.nextStep && <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Next Step</Text><Text style={[s.statValue, { color: colors.text }]}>{boardEntry.nextStep}</Text></View>}
             </View>
             {boardEntry.shortNotes ? <><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>NOTES</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><Text style={[s.aboutText, { color: colors.textSecondary }]}>{boardEntry.shortNotes}</Text></View></> : null}
-            {commsEntries.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COMMS TIMELINE</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{commsEntries.slice(0, 5).map((c, i) => { const meta = COMMS_TYPE_META[c.type]; return (<View key={i} style={[s.commsRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.commsDot, { backgroundColor: meta?.color ?? '#8F8F8F' }]} /><View style={{ flex: 1 }}><Text style={[s.commsMethod, { color: colors.text }]}>{c.type.replace(/_/g, ' ')}</Text><Text style={[s.commsNote, { color: colors.textSecondary }]} numberOfLines={2}>{c.body}</Text></View><Text style={[s.commsDate, { color: colors.textTertiary }]}>{c.timestamp.toLocaleDateString()}</Text></View>); })}</View></>)}
+            {commsEntries.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COMMS TIMELINE</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{commsEntries.slice(0, 5).map((c, i) => { const meta = COMMS_TYPE_META[c.type]; return (<View key={i} style={[s.commsRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.commsDot, { backgroundColor: meta?.color ?? '#A1A1AA' }]} /><View style={{ flex: 1 }}><Text style={[s.commsMethod, { color: colors.text }]}>{c.type.replace(/_/g, ' ')}</Text><Text style={[s.commsNote, { color: colors.textSecondary }]} numberOfLines={2}>{c.body}</Text></View><Text style={[s.commsDate, { color: colors.textTertiary }]}>{c.timestamp.toLocaleDateString()}</Text></View>); })}</View></>)}
             {adminActions && onMoveOnBoard && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>BOARD ACTIONS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.boardActionRow}>{BOARD_COLUMNS.filter((st) => st !== boardEntry.status).slice(0, 4).map((st) => (<Pressable key={st} style={[s.boardActionPill, { borderColor: (BOARD_COLUMN_COLORS as any)[st] ?? colors.border }]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onMoveOnBoard(boardEntry.id, st); }}><Text style={[s.boardActionText, { color: (BOARD_COLUMN_COLORS as any)[st] ?? colors.text }]}>{st}</Text></Pressable>))}</ScrollView>{onRemoveFromBoard && (<Pressable style={s.removeBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); onRemoveFromBoard(boardEntry.id); }}><Text style={s.removeBtnText}>Remove from Board</Text></Pressable>)}</View></>)}
           </>) : (<View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><Text style={[s.emptyText, { color: colors.textSecondary }]}>Not on recruiting board.</Text></View>)}
           {coachActions && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COACH NOTE</Text><TextInput style={[s.noteInput, { backgroundColor: colors.backgroundSecondary, color: colors.text, borderColor: colors.border }]} value={coachNote} onChangeText={onCoachNoteChange} placeholder="Add recruiting notes..." placeholderTextColor={colors.textTertiary} multiline /></>)}
@@ -618,8 +618,8 @@ const s = StyleSheet.create({
   deltaBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: BorderRadius.full },
   deltaText: { fontSize: 13, fontWeight: '700' },
   badgeStrip: { flexDirection: 'row', gap: 6, marginTop: 8, flexWrap: 'wrap' },
-  badgeStripPill: { borderLeftWidth: 3, paddingLeft: 8, paddingVertical: 3, backgroundColor: '#1a1a1a', borderRadius: 6, paddingRight: 10 },
-  badgeStripName: { fontSize: 11, fontWeight: '600', color: '#e0e0e0' },
+  badgeStripPill: { borderLeftWidth: 3, paddingLeft: 8, paddingVertical: 3, backgroundColor: '#0B0F14', borderRadius: 6, paddingRight: 10 },
+  badgeStripName: { fontSize: 11, fontWeight: '600', color: '#A1A1AA' },
   badgeStripOverflow: { paddingHorizontal: 8, paddingVertical: 3, backgroundColor: '#222', borderRadius: 6 },
   badgeStripOverflowText: { fontSize: 11, fontWeight: '600', color: '#888' },
   quickActions: { flexDirection: 'row', gap: 8, marginTop: 10 },
@@ -670,7 +670,7 @@ const s = StyleSheet.create({
   priorityRow: { paddingVertical: 8 },
   priorityCluster: { fontSize: 13, fontWeight: '600' },
   priorityDesc: { fontSize: 12, marginTop: 2 },
-  priorityDelta: { fontSize: 12, fontWeight: '600', marginTop: 2, color: '#4CAF50' },
+  priorityDelta: { fontSize: 12, fontWeight: '600', marginTop: 2, color: '#22C55E' },
   checkinRow: { paddingVertical: 8 },
   checkinDate: { fontSize: 11, marginBottom: 2 },
   checkinNote: { fontSize: 13, lineHeight: 19 },
@@ -701,7 +701,7 @@ const s = StyleSheet.create({
   commsNote: { fontSize: 12, marginTop: 1 },
   commsDate: { fontSize: 11 },
   boardActionRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
-  boardActionPill: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, backgroundColor: '#1a1a1a' },
+  boardActionPill: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, backgroundColor: '#0B0F14' },
   boardActionText: { fontSize: 12, fontWeight: '600' },
   removeBtn: { alignItems: 'center', paddingVertical: 10, borderRadius: 10, backgroundColor: '#EF444415' },
   removeBtnText: { fontSize: 13, fontWeight: '600', color: '#EF4444' },

@@ -86,7 +86,7 @@ function ContractStatusBadge({ status }: { status: FinanceContract['status'] }) 
 function AmountText({ amount, type }: { amount: number; type: 'income' | 'expense' | 'receivable' | 'payable' | 'neutral' }) {
   const isPositive = type === 'income' || type === 'receivable';
   const isNegative = type === 'expense' || type === 'payable';
-  const color = isPositive ? '#22C55E' : isNegative ? '#EF4444' : '#DDDDDD';
+  const color = isPositive ? '#22C55E' : isNegative ? '#EF4444' : '#FFFFFF';
   const prefix = isPositive ? '+' : isNegative ? '-' : '';
   return (
     <ThemedText style={[s.amountText, { color }]}>
@@ -134,10 +134,10 @@ const MODE_LABELS: Record<Mode, string> = {
 // =============================================================================
 
 const PAYROLL_TYPE_COLOR: Record<string, string> = {
-  salary: '#6AA9FF',
+  salary: '#1D9BF0',
   stipend: '#22C55E',
   contractor: '#F59E0B',
-  honorarium: '#8B5CF6',
+  honorarium: '#1D9BF0',
 };
 
 // =============================================================================
@@ -145,13 +145,13 @@ const PAYROLL_TYPE_COLOR: Record<string, string> = {
 // =============================================================================
 
 function auditEntryColor(action: string): string {
-  if (action.includes('payment') || action.includes('payroll')) return '#6AA9FF';
+  if (action.includes('payment') || action.includes('payroll')) return '#1D9BF0';
   if (action.includes('revenue') || action.includes('giving') || action.includes('tuition') || action.includes('grant') || action.includes('sponsorship')) return '#22C55E';
   if (action.includes('alert') || action.includes('overdue')) return '#EF4444';
   if (action.includes('approval') || action.includes('reimbursement')) return '#F59E0B';
-  if (action.includes('contract') || action.includes('insurance')) return '#8B5CF6';
-  if (action.includes('control')) return '#8F8F8F';
-  return '#8F8F8F';
+  if (action.includes('contract') || action.includes('insurance')) return '#1D9BF0';
+  if (action.includes('control')) return '#A1A1AA';
+  return '#A1A1AA';
 }
 
 function auditEntryIcon(action: string): string {
@@ -610,7 +610,7 @@ export function OrgFinanceTab({ mode, colors, accentColor }: Props) {
       contentContainerStyle={s.listContent}
       ListEmptyComponent={<EmptyState icon="person.2" text="No payroll items" colors={colors} />}
       renderItem={({ item }) => {
-        const typeColor = PAYROLL_TYPE_COLOR[item.type] ?? '#8F8F8F';
+        const typeColor = PAYROLL_TYPE_COLOR[item.type] ?? '#A1A1AA';
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.listCardRow}>

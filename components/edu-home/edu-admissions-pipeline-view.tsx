@@ -31,7 +31,7 @@ type FilterKey = 'all' | AdmissionsStage;
 const AID_STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   approved: { bg: '#22C55E22', text: '#22C55E' },
   pending: { bg: '#F59E0B22', text: '#F59E0B' },
-  not_applied: { bg: '#6B728022', text: '#6B7280' },
+  not_applied: { bg: '#A1A1AA22', text: '#A1A1AA' },
   denied: { bg: '#EF444422', text: '#EF4444' },
 };
 

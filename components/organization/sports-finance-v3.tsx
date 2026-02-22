@@ -288,7 +288,7 @@ function ScholarshipsView({ colors, accentColor }: { colors: typeof Colors.light
             <View style={s.listRowBadges}>
               <StatusBadge
                 label={row.type.toUpperCase()}
-                color={row.type === 'Full' ? '#22C55E' : row.type === 'Partial' ? '#6AA9FF' : '#8F8F8F'}
+                color={row.type === 'Full' ? '#22C55E' : row.type === 'Partial' ? '#1D9BF0' : '#A1A1AA'}
               />
               <StatusBadge label="ACTIVE" color="#22C55E" />
             </View>
@@ -388,7 +388,7 @@ export function SportsFinance({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >
@@ -475,7 +475,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginTop: 8,

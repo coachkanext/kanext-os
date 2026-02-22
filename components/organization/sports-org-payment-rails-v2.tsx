@@ -201,8 +201,8 @@ function RailsHealthStrip({
               Failed {health.failedCount}
             </ThemedText>
           </View>
-          <View style={[s.countBadge, { backgroundColor: '#8B5CF620' }]}>
-            <ThemedText style={[s.countBadgeText, { color: '#8B5CF6' }]}>
+          <View style={[s.countBadge, { backgroundColor: '#1D9BF020' }]}>
+            <ThemedText style={[s.countBadgeText, { color: '#1D9BF0' }]}>
               Blocked {health.blockedCount}
             </ThemedText>
           </View>
@@ -730,7 +730,7 @@ function PaymentOverviewTab({
       <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: 20 }]}>Key Metrics</ThemedText>
       <View style={s.kpiGrid}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: activeStreams > 0 ? accentColor : '#8F8F8F' }]}>
+          <ThemedText style={[s.kpiValue, { color: activeStreams > 0 ? accentColor : '#A1A1AA' }]}>
             {activeStreams}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Active Streams</ThemedText>

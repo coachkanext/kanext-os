@@ -242,11 +242,11 @@ const styles = StyleSheet.create({
   pillCount: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#8F8F8F',
+    color: '#A1A1AA',
     marginTop: 1,
   },
   pillCountActive: {
-    color: '#424242',
+    color: '#52525B',
   },
 
   // Group info bar

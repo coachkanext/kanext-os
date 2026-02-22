@@ -31,7 +31,7 @@ const TYPE_COLORS: Record<SituationType, string> = {
   EOH: Brand.warning,
   late: Brand.error,
   press: Brand.success,
-  zone: '#A78BFA',
+  zone: '#1D9BF0',
 };
 
 export function S06SituationsPackage({ plays: initialPlays, onLayout }: Props) {

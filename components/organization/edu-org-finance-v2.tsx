@@ -232,7 +232,7 @@ function OverviewTab({
   const healthTiles = [
     { icon: 'banknote.fill', label: 'Cash Position', value: formatCompactCurrency(truthStrip.cashPosition), color: accentColor },
     { icon: 'lock.fill', label: 'Commitments', value: formatCompactCurrency(truthStrip.commitments), color: '#F59E0B' },
-    { icon: 'arrow.down.circle.fill', label: 'Receivables', value: formatCompactCurrency(truthStrip.receivables), color: '#6AA9FF' },
+    { icon: 'arrow.down.circle.fill', label: 'Receivables', value: formatCompactCurrency(truthStrip.receivables), color: '#1D9BF0' },
     { icon: 'arrow.up.circle.fill', label: 'Payables', value: formatCompactCurrency(truthStrip.payables), color: '#EF4444' },
     { icon: 'exclamationmark.triangle.fill', label: 'Holds', value: String(truthStrip.holds), color: '#F59E0B' },
     { icon: 'checkmark.shield.fill', label: 'Audit', value: `${truthStrip.auditCompleteness}%`, color: '#22C55E' },
@@ -241,7 +241,7 @@ function OverviewTab({
   const urgencyColors: Record<string, string> = {
     high: '#EF4444',
     medium: '#F59E0B',
-    low: '#6AA9FF',
+    low: '#1D9BF0',
   };
 
   const getBurnColor = (burn: number): string => {
@@ -311,7 +311,7 @@ function OverviewTab({
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Net Position</ThemedText>
             </View>
             <View style={s.fundSnapshotValueItem}>
-              <ThemedText style={[s.fundSnapshotAmount, { color: '#8B5CF6' }]}>
+              <ThemedText style={[s.fundSnapshotAmount, { color: '#1D9BF0' }]}>
                 {formatCompactCurrency(snap.housingRevenue)}
               </ThemedText>
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Housing Rev</ThemedText>
@@ -335,7 +335,7 @@ function OverviewTab({
       </ThemedText>
 
       {needsDecision.map((item) => {
-        const dotColor = urgencyColors[item.urgency] || '#8F8F8F';
+        const dotColor = urgencyColors[item.urgency] || '#A1A1AA';
         return (
           <View
             key={item.id}
@@ -423,9 +423,9 @@ function OverviewTab({
         const severityColors: Record<string, string> = {
           critical: '#EF4444',
           warning: '#F59E0B',
-          info: '#6AA9FF',
+          info: '#1D9BF0',
         };
-        const sevColor = severityColors[risk.severity] || '#8F8F8F';
+        const sevColor = severityColors[risk.severity] || '#A1A1AA';
         return (
           <View
             key={risk.id}
@@ -553,7 +553,7 @@ function LedgerTruthTab({
               </ThemedText>
             </View>
             <View style={s.fundMetaItem}>
-              <IconSymbol name="arrow.left.circle.fill" size={11} color="#6AA9FF" />
+              <IconSymbol name="arrow.left.circle.fill" size={11} color="#1D9BF0" />
               <ThemedText style={[s.fundMetaText, { color: colors.textTertiary }]} numberOfLines={1}>
                 CR: {item.creditAccount}
               </ThemedText>
@@ -672,7 +672,7 @@ function BudgetsTab({
                 </ThemedText>
                 <View style={s.budgetBadgeRow}>
                   <StatusBadge label={budget.institution.split(' ')[0].toUpperCase()} color={accentColor} />
-                  <StatusBadge label={budget.period.toUpperCase()} color="#6AA9FF" />
+                  <StatusBadge label={budget.period.toUpperCase()} color="#1D9BF0" />
                 </View>
               </View>
               <View style={s.budgetTotalCol}>
@@ -794,10 +794,10 @@ function ReceivablesTab({
 
   const statusColors: Record<string, string> = {
     outstanding: '#F59E0B',
-    partial: '#6AA9FF',
+    partial: '#1D9BF0',
     paid: '#22C55E',
     overdue: '#EF4444',
-    waived: '#8F8F8F',
+    waived: '#A1A1AA',
   };
 
   const statusLabels: Record<string, string> = {
@@ -812,7 +812,7 @@ function ReceivablesTab({
     ({ item }: { item: Receivable }) => {
       const typeColor = RECEIVABLE_TYPE_COLORS[item.type];
       const typeLabel = RECEIVABLE_TYPE_LABELS[item.type];
-      const sColor = statusColors[item.status] || '#8F8F8F';
+      const sColor = statusColors[item.status] || '#A1A1AA';
       const sLabel = statusLabels[item.status] || item.status;
 
       return (
@@ -847,7 +847,7 @@ function ReceivablesTab({
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
               <StatusBadge label={item.institution.split(' ')[0].toUpperCase()} color={accentColor} />
-              <StatusBadge label={TERM_WINDOW_LABELS[item.term].toUpperCase()} color="#6AA9FF" />
+              <StatusBadge label={TERM_WINDOW_LABELS[item.term].toUpperCase()} color="#1D9BF0" />
             </View>
             {item.holdFlag && item.holdReason && (
               <View style={s.holdWarning}>
@@ -901,7 +901,7 @@ function PayablesTab({
   const statusColors: Record<string, string> = {
     pending: '#F59E0B',
     approved: '#22C55E',
-    scheduled: '#6AA9FF',
+    scheduled: '#1D9BF0',
     paid: '#22C55E',
     held: '#EF4444',
   };
@@ -920,7 +920,7 @@ function PayablesTab({
       const typeLabel = PAYABLE_TYPE_LABELS[item.type];
       const fundColor = EDU_FUND_TYPE_COLORS[item.fundType];
       const fundLabel = EDU_FUND_TYPE_LABELS[item.fundType];
-      const sColor = statusColors[item.status] || '#8F8F8F';
+      const sColor = statusColors[item.status] || '#A1A1AA';
       const sLabel = statusLabels[item.status] || item.status;
       const docsPct = item.docsRequired > 0 ? (item.docsComplete / item.docsRequired) * 100 : 0;
       const docsColor = docsPct >= 100 ? '#22C55E' : docsPct >= 60 ? '#F59E0B' : '#EF4444';
@@ -1064,7 +1064,7 @@ function AidAwardsTab({
               </ThemedText>
               <View style={s.fundBadgeRow}>
                 <StatusBadge label={aidLabel.toUpperCase()} color={aidColor} />
-                <StatusBadge label={TERM_WINDOW_LABELS[item.term].toUpperCase()} color="#6AA9FF" />
+                <StatusBadge label={TERM_WINDOW_LABELS[item.term].toUpperCase()} color="#1D9BF0" />
               </View>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
@@ -1208,7 +1208,7 @@ function ApprovalsTab({
     const fundLabel = EDU_FUND_TYPE_LABELS[item.fundType];
     const statusColor = APPROVAL_STATUS_COLORS[item.status];
     const statusLabel = APPROVAL_STATUS_LABELS[item.status];
-    const indicatorColor = queueType === 'approval' ? '#F59E0B' : '#6AA9FF';
+    const indicatorColor = queueType === 'approval' ? '#F59E0B' : '#1D9BF0';
     const indicatorLabel = queueType === 'approval' ? 'Needs Approval' : 'Needs Release';
 
     return (
@@ -1525,10 +1525,10 @@ function ReceivableDetailSheet({
 
   const statusColors: Record<string, string> = {
     outstanding: '#F59E0B',
-    partial: '#6AA9FF',
+    partial: '#1D9BF0',
     paid: '#22C55E',
     overdue: '#EF4444',
-    waived: '#8F8F8F',
+    waived: '#A1A1AA',
   };
   const statusLabels: Record<string, string> = {
     outstanding: 'Outstanding',
@@ -1537,7 +1537,7 @@ function ReceivableDetailSheet({
     overdue: 'Overdue',
     waived: 'Waived',
   };
-  const sColor = statusColors[receivable.status] || '#8F8F8F';
+  const sColor = statusColors[receivable.status] || '#A1A1AA';
   const sLabel = statusLabels[receivable.status] || receivable.status;
 
   return (
@@ -1546,7 +1546,7 @@ function ReceivableDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={typeLabel.toUpperCase()} color={typeColor} />
         <StatusBadge label={sLabel.toUpperCase()} color={sColor} />
-        <StatusBadge label={TERM_WINDOW_LABELS[receivable.term].toUpperCase()} color="#6AA9FF" />
+        <StatusBadge label={TERM_WINDOW_LABELS[receivable.term].toUpperCase()} color="#1D9BF0" />
         <StatusBadge label={receivable.institution.split(' ')[0].toUpperCase()} color={accentColor} />
       </View>
 
@@ -1631,7 +1631,7 @@ function PayableDetailSheet({
   const statusColors: Record<string, string> = {
     pending: '#F59E0B',
     approved: '#22C55E',
-    scheduled: '#6AA9FF',
+    scheduled: '#1D9BF0',
     paid: '#22C55E',
     held: '#EF4444',
   };
@@ -1642,7 +1642,7 @@ function PayableDetailSheet({
     paid: 'Paid',
     held: 'Held',
   };
-  const sColor = statusColors[payable.status] || '#8F8F8F';
+  const sColor = statusColors[payable.status] || '#A1A1AA';
   const sLabel = statusLabels[payable.status] || payable.status;
 
   const docsPct = payable.docsRequired > 0 ? (payable.docsComplete / payable.docsRequired) * 100 : 0;
@@ -1753,7 +1753,7 @@ function AidAwardDetailSheet({
       {/* Badges */}
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={aidLabel.toUpperCase()} color={aidColor} />
-        <StatusBadge label={TERM_WINDOW_LABELS[award.term].toUpperCase()} color="#6AA9FF" />
+        <StatusBadge label={TERM_WINDOW_LABELS[award.term].toUpperCase()} color="#1D9BF0" />
         <StatusBadge label={award.institution.split(' ')[0].toUpperCase()} color={accentColor} />
       </View>
 
@@ -2135,7 +2135,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,
@@ -2371,7 +2371,7 @@ const s = StyleSheet.create({
     marginTop: Spacing.sm,
     paddingTop: Spacing.sm,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
   },
   varianceNoteText: {
     fontSize: 11,

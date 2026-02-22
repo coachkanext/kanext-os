@@ -336,7 +336,7 @@ export const WEDGES: WedgeData[] = [
     name: 'KaNeXT Church',
     orgName: 'KaNeXT Church',
     icon: 'heart.fill',
-    color: '#B8C0CC',
+    color: '#A1A1AA',
     summary: 'Church OS wedge — multi-campus ministry operations with giving, connect groups, and ministry intelligence. "Hotline to Heaven" concept: AI-powered pastoral care surface.',
     proofEvents: [
       '40 Days Prayer & Fasting Intelligence',
@@ -355,7 +355,7 @@ export const WEDGES: WedgeData[] = [
     name: 'K-1',
     orgName: 'K-1 Speed Motorsport League',
     icon: 'flag.checkered',
-    color: '#FF4D4D',
+    color: '#EF4444',
     summary: 'LeagueOS wedge — full motorsport league management with teams, drivers, standings, race operations, and cap enforcement. Decision audit concept for governed competition.',
     proofEvents: [
       'Season 1 Race Calendar (14 events)',

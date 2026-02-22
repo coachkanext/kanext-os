@@ -88,7 +88,7 @@ export const ENTITIES: Entity[] = [
     lead: 'Jessica Chen',
     leadInitials: 'JC',
     status: 'active',
-    color: '#6AA9FF',
+    color: '#1D9BF0',
   },
   {
     id: 'ent-engineering',
@@ -121,7 +121,7 @@ export const ENTITIES: Entity[] = [
     lead: 'Sarah Okafor',
     leadInitials: 'SO',
     status: 'active',
-    color: '#F472B6',
+    color: '#1D9BF0',
   },
   {
     id: 'ent-mlk-classic',
@@ -143,7 +143,7 @@ export const ENTITIES: Entity[] = [
     lead: 'Adewale Ogundimu',
     leadInitials: 'AO',
     status: 'active',
-    color: '#7A5CFF',
+    color: '#1D9BF0',
   },
   {
     id: 'ent-investor-relations',
@@ -154,7 +154,7 @@ export const ENTITIES: Entity[] = [
     lead: 'Nicole Torres',
     leadInitials: 'NT',
     status: 'active',
-    color: '#14B8A6',
+    color: '#1D9BF0',
   },
 ];
 

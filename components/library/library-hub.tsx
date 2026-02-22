@@ -217,7 +217,7 @@ function DownloadRow({ item, colors }: ItemRowProps) {
 // =============================================================================
 
 function HistoryRow({ item, colors }: { item: WatchHistoryItem; colors: typeof Colors.dark }) {
-  const typeColor = item.contentType === 'game' ? '#3B82F6' : item.contentType === 'reel' ? '#8B5CF6' : '#22C55E';
+  const typeColor = item.contentType === 'game' ? '#1D9BF0' : item.contentType === 'reel' ? '#1D9BF0' : '#22C55E';
   return (
     <Pressable
       style={({ pressed }) => [
@@ -247,7 +247,7 @@ function HistoryRow({ item, colors }: { item: WatchHistoryItem; colors: typeof C
           </ThemedText>
         </View>
         <View style={[styles.progressTrack, { backgroundColor: colors.backgroundTertiary }]}>
-          <View style={[styles.progressFill, { width: `${item.progress}%`, backgroundColor: item.progress === 100 ? '#22C55E' : '#3B82F6' }]} />
+          <View style={[styles.progressFill, { width: `${item.progress}%`, backgroundColor: item.progress === 100 ? '#22C55E' : '#1D9BF0' }]} />
         </View>
       </View>
     </Pressable>
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   pillScroll: {
     flexGrow: 0,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   pillRow: {
     flexDirection: 'row',

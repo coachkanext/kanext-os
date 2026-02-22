@@ -138,7 +138,7 @@ function ViewBar({
             style={[
               s.viewPill,
               {
-                backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)',
+                backgroundColor: isActive ? accentColor : '#2F3336',
               },
             ]}
             onPress={() => {
@@ -281,7 +281,7 @@ function GivingView({ colors, accentColor }: { colors: typeof Colors.light; acce
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Weekly Avg</ThemedText>
         </View>
         <View style={[s.tile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#6AA9FF' }]}>{GIVING_SUMMARY.activeGivers}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: '#1D9BF0' }]}>{GIVING_SUMMARY.activeGivers}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Active Givers</ThemedText>
         </View>
       </View>
@@ -387,8 +387,8 @@ function CampaignsView({ colors, accentColor }: { colors: typeof Colors.light; a
             >
               <View style={s.campaignHeader}>
                 <ThemedText style={[s.campaignName, { color: colors.text }]}>{campaign.name}</ThemedText>
-                <View style={[s.statusBadge, { backgroundColor: '#8F8F8F20' }]}>
-                  <ThemedText style={[s.statusBadgeText, { color: '#8F8F8F' }]}>Completed</ThemedText>
+                <View style={[s.statusBadge, { backgroundColor: '#A1A1AA20' }]}>
+                  <ThemedText style={[s.statusBadgeText, { color: '#A1A1AA' }]}>Completed</ThemedText>
                 </View>
               </View>
               <ThemedText style={[s.campaignDesc, { color: colors.textSecondary }]}>{campaign.description}</ThemedText>
@@ -508,7 +508,7 @@ const s = StyleSheet.create({
   // -- Progress Bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginVertical: 4,

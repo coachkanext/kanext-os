@@ -66,8 +66,8 @@ export interface ProofWedge {
 
 export const PROOF_WEDGES: ProofWedge[] = [
   { id: 'w-fmu', name: 'KaNeXT', orgName: 'KaNeXT Sports', icon: 'sportscourt.fill', color: '#FFFFFF', stat: '$53M–$157M', statLabel: 'Media Value Y1' },
-  { id: 'w-iccla', name: 'KaNeXT Church', orgName: "Int'l Church of Christ LA", icon: 'heart.fill', color: '#B8C0CC', stat: '3', statLabel: 'Campuses' },
-  { id: 'w-k1', name: 'K-1', orgName: 'K-1 Racing Series', icon: 'flag.checkered', color: '#FF4D4D', stat: '14', statLabel: 'Race Season' },
+  { id: 'w-iccla', name: 'KaNeXT Church', orgName: "Int'l Church of Christ LA", icon: 'heart.fill', color: '#A1A1AA', stat: '3', statLabel: 'Campuses' },
+  { id: 'w-k1', name: 'K-1', orgName: 'K-1 Racing Series', icon: 'flag.checkered', color: '#EF4444', stat: '14', statLabel: 'Race Season' },
 ];
 
 // =============================================================================

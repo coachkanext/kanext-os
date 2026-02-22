@@ -24,7 +24,7 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ visible }: AuthModalProps) {
-  const { signIn } = useAuth();
+  const { signIn, signInAsInvestor } = useAuth();
   const insets = useSafeAreaInsets();
   const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -113,8 +113,8 @@ export function AuthModal({ visible }: AuthModalProps) {
             ]}
             onPress={() => handleSignIn('google')}
           >
-            <IconSymbol name="globe" size={20} color="#1F1F1F" />
-            <Text style={[styles.authButtonText, { color: '#1F1F1F' }]}>
+            <IconSymbol name="globe" size={20} color="#0B0F14" />
+            <Text style={[styles.authButtonText, { color: '#0B0F14' }]}>
               Continue with Google
             </Text>
           </Pressable>
@@ -131,6 +131,19 @@ export function AuthModal({ visible }: AuthModalProps) {
             <IconSymbol name="envelope.fill" size={20} color="#FFFFFF" />
             <Text style={[styles.authButtonText, { color: '#FFFFFF' }]}>
               Continue with Email
+            </Text>
+          </Pressable>
+
+          {/* Investor Demo */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.investorButton,
+              pressed && { opacity: 0.6 },
+            ]}
+            onPress={signInAsInvestor}
+          >
+            <Text style={styles.investorButtonText}>
+              Investor Demo
             </Text>
           </Pressable>
         </View>
@@ -186,7 +199,7 @@ const styles = StyleSheet.create({
   appleButton: {
     backgroundColor: '#000000',
     borderWidth: 1,
-    borderColor: '#2a2a2a',
+    borderColor: '#0B0F14',
   },
   googleButton: {
     backgroundColor: '#FFFFFF',
@@ -199,5 +212,17 @@ const styles = StyleSheet.create({
   authButtonText: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  investorButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    marginTop: 4,
+  },
+  investorButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.45)',
+    textDecorationLine: 'underline',
   },
 });

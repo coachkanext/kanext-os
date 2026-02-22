@@ -821,7 +821,7 @@ const s = StyleSheet.create({
   badgeText: { fontSize: 11, fontWeight: '600' },
 
   // Progress bar
-  progressTrack: { height: 4, backgroundColor: '#E5E7EB', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
+  progressTrack: { height: 4, backgroundColor: '#A1A1AA', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
   progressFill: { height: 4, borderRadius: 2 },
 
   // Scope strip

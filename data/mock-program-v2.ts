@@ -135,7 +135,7 @@ export const PROGRAM_IDENTITY: ProgramIdentity = {
   governingBody: 'NAIA',
   location: 'Nashville, TN',
   founded: '1879',
-  colors: ['#1B4F8A', '#FFFFFF'],
+  colors: ['#1D9BF0', '#FFFFFF'],
 };
 
 // =============================================================================
@@ -282,13 +282,13 @@ export const AUDIT_LOG: AuditEntry[] = [
 // =============================================================================
 
 export const AUDIT_ACTION_META: Record<AuditAction, { label: string; icon: string; color: string }> = {
-  roster_change: { label: 'Roster', icon: 'person.3.fill', color: '#6AA9FF' },
+  roster_change: { label: 'Roster', icon: 'person.3.fill', color: '#1D9BF0' },
   system_update: { label: 'System', icon: 'gearshape.fill', color: '#F59E0B' },
-  permission_change: { label: 'Permissions', icon: 'lock.fill', color: '#7A5CFF' },
+  permission_change: { label: 'Permissions', icon: 'lock.fill', color: '#1D9BF0' },
   season_lock: { label: 'Season', icon: 'lock.shield.fill', color: '#22C55E' },
   game_plan_edit: { label: 'Game Plan', icon: 'doc.text.fill', color: '#FFFFFF' },
-  recruitment_update: { label: 'Recruiting', icon: 'person.badge.plus', color: '#06B6D4' },
-  setting_change: { label: 'Settings', icon: 'slider.horizontal.3', color: '#8F8F8F' },
+  recruitment_update: { label: 'Recruiting', icon: 'person.badge.plus', color: '#1D9BF0' },
+  setting_change: { label: 'Settings', icon: 'slider.horizontal.3', color: '#A1A1AA' },
 };
 
 // =============================================================================

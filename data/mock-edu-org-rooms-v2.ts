@@ -57,8 +57,8 @@ export const ROOM_TYPE_LABELS: Record<EduRoomType, string> = {
 };
 
 export const ROOM_TYPE_COLORS: Record<EduRoomType, string> = {
-  ops: '#6AA9FF',
-  governance: '#A78BFA',
+  ops: '#1D9BF0',
+  governance: '#1D9BF0',
   incident: '#EF4444',
   project: '#F59E0B',
   committee: '#22C55E',
@@ -74,12 +74,12 @@ export const ROOM_DOMAIN_LABELS: Record<RoomDomain, string> = {
 };
 
 export const ROOM_DOMAIN_COLORS: Record<RoomDomain, string> = {
-  admissions: '#6AA9FF',
-  academics: '#A78BFA',
+  admissions: '#1D9BF0',
+  academics: '#1D9BF0',
   campus: '#22C55E',
   athletics: '#F59E0B',
   financial: '#EF4444',
-  policies: '#8B5CF6',
+  policies: '#1D9BF0',
 };
 
 export const ROOM_DOMAIN_ICONS: Record<RoomDomain, string> = {
@@ -100,7 +100,7 @@ export const ROOM_STATUS_LABELS: Record<RoomStatus, string> = {
 export const ROOM_STATUS_COLORS: Record<RoomStatus, string> = {
   active: '#22C55E',
   quiet: '#F59E0B',
-  archived: '#8F8F8F',
+  archived: '#A1A1AA',
 };
 
 export const ROOM_ACCESS_LABELS: Record<RoomAccess, string> = {
@@ -122,15 +122,15 @@ export const ROOM_SCOPE_LABELS: Record<RoomScope, string> = {
 };
 
 export const ROOM_SCOPE_COLORS: Record<RoomScope, string> = {
-  organization: '#8B5CF6',
-  institution: '#6AA9FF',
+  organization: '#1D9BF0',
+  institution: '#1D9BF0',
   department: '#22C55E',
 };
 
 export const INCIDENT_SEVERITY_COLORS: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#6AA9FF',
+  medium: '#1D9BF0',
 };
 
 export const INCIDENT_SEVERITY_LABELS: Record<string, string> = {

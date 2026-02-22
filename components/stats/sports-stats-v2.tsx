@@ -523,7 +523,7 @@ function KRIntelligenceView({ colors, accent, krVis }: { colors: typeof Colors.l
                   return (
                     <View style={[styles.row, { flexWrap: 'wrap', gap: 6, marginTop: 8 }]}>
                       {badges.map((b, i) => {
-                        const badgeColor = b.level === 'Gold' ? '#FFD700' : b.level === 'Silver' ? '#A8A9AD' : '#CD7F32';
+                        const badgeColor = b.level === 'Gold' ? '#1D9BF0' : b.level === 'Silver' ? '#A1A1AA' : '#1D9BF0';
                         return (
                           <View key={i} style={[styles.badgeChip, { borderColor: badgeColor }]}>
                             <ThemedText style={{ fontSize: 10, fontWeight: '700', color: badgeColor }}>{b.level[0]}</ThemedText>
@@ -645,7 +645,7 @@ function ClustersView({ colors, accent }: { colors: typeof Colors.light; accent:
 
             {/* Expanded: every player's score, sorted high→low */}
             {isExpanded && (
-              <View style={{ marginTop: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.06)', paddingTop: 8 }}>
+              <View style={{ marginTop: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#2F3336', paddingTop: 8 }}>
                 {sub.playerScores.map((ps) => (
                   <View key={ps.number} style={[styles.row, { justifyContent: 'space-between', paddingVertical: 4 }]}>
                     <ThemedText style={{ fontSize: 12, color: colors.text }}>{ps.name}</ThemedText>
@@ -950,7 +950,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
   pillBar: { flexDirection: 'row' as const, flexWrap: 'wrap' as const, paddingHorizontal: 16, paddingVertical: 10, gap: 8 },
-  pill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
+  pill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: '#2F3336' },
   pillText: { fontSize: 12, fontWeight: '600' },
 
   card: { padding: 14, borderRadius: 12, borderWidth: 1, marginBottom: 12 },
@@ -968,7 +968,7 @@ const styles = StyleSheet.create({
   metricValue: { fontSize: 15, fontWeight: '700', marginTop: 1 },
 
   // Four Factors / Tables
-  ffHeader: { flexDirection: 'row', paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
+  ffHeader: { flexDirection: 'row', paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: '#2F3336' },
   ffLabel: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase' },
   ffRow: { flexDirection: 'row', paddingVertical: 6 },
   ffCell: { fontSize: 13 },
@@ -993,18 +993,18 @@ const styles = StyleSheet.create({
   glScore: { fontSize: 14, fontWeight: '700' },
   glDate: { fontSize: 11, marginTop: 4 },
   glSwing: { fontSize: 12, fontWeight: '600', marginTop: 4 },
-  glExpanded: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.06)', marginTop: 8, paddingTop: 4 },
+  glExpanded: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#2F3336', marginTop: 8, paddingTop: 4 },
 
   // Players
   playerName: { fontSize: 15, fontWeight: '700', flex: 1 },
   playerPos: { fontSize: 13, fontWeight: '600' },
 
   // Sort Pills
-  sortPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.08)' },
+  sortPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: '#2F3336' },
   sortPillText: { fontSize: 11, fontWeight: '600' },
 
   // Cluster Bars
-  clusterBarBg: { height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.06)', marginTop: 3 },
+  clusterBarBg: { height: 6, borderRadius: 3, backgroundColor: '#2F3336', marginTop: 3 },
   clusterBarFill: { height: 6, borderRadius: 3 },
 
   // Badge Chips

@@ -633,7 +633,7 @@ function QueueTab({
           }}
         >
           <View style={s.queueCardTop}>
-            <IconSymbol name="checkmark.seal.fill" size={14} color="#A78BFA" />
+            <IconSymbol name="checkmark.seal.fill" size={14} color="#1D9BF0" />
             <ThemedText style={[s.queueCardTitle, { color: colors.text }]} numberOfLines={2}>{g.title}</ThemedText>
           </View>
           <View style={s.badgeRow}>
@@ -733,7 +733,7 @@ function ScorecardsTab({
               const pct = kpi.target !== 0 ? Math.round((kpi.current / Math.abs(kpi.target)) * 100) : 100;
               const clampedPct = Math.min(Math.max(pct, 0), 100);
               const trendIcon = kpi.trend === 'up' ? 'arrow.up' : kpi.trend === 'down' ? 'arrow.down' : 'arrow.right';
-              const trendColor = kpi.trend === 'up' ? '#22C55E' : kpi.trend === 'down' ? '#EF4444' : '#8F8F8F';
+              const trendColor = kpi.trend === 'up' ? '#22C55E' : kpi.trend === 'down' ? '#EF4444' : '#A1A1AA';
               return (
                 <View key={`${sc.domain}-kpi-${i}`} style={s.scorecardKpiRow}>
                   <View style={s.scorecardKpiHeader}>
@@ -786,7 +786,7 @@ function InitiativeDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={domainLabel.toUpperCase()} color={domainColor} />
         <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
-        {initiative.complianceLinked && <StatusBadge label="COMPLIANCE" color="#8B5CF6" />}
+        {initiative.complianceLinked && <StatusBadge label="COMPLIANCE" color="#1D9BF0" />}
       </View>
 
       {/* Overview */}
@@ -1370,7 +1370,7 @@ const s = StyleSheet.create({
   badgeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: Spacing.sm },
 
   // Progress bar
-  progressTrack: { height: 4, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
+  progressTrack: { height: 4, backgroundColor: '#2F3336', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
   progressFill: { height: 4, borderRadius: 2 },
 
   // KPI

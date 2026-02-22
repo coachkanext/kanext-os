@@ -241,7 +241,7 @@ function OverviewTab({
       </ThemedText>
       <View style={s.kpiRow}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#6AA9FF' }]}>{overview.upcomingTrips}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#1D9BF0' }]}>{overview.upcomingTrips}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Trips</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -860,8 +860,8 @@ function ApprovalsTab({
                 color={
                   item.urgency === 'critical' ? '#EF4444'
                     : item.urgency === 'high' ? '#F59E0B'
-                      : item.urgency === 'medium' ? '#6AA9FF'
-                        : '#8F8F8F'
+                      : item.urgency === 'medium' ? '#1D9BF0'
+                        : '#A1A1AA'
                 }
               />
             )}
@@ -1162,8 +1162,8 @@ function ApprovalDetailSheet({
             color={
               approval.urgency === 'critical' ? '#EF4444'
                 : approval.urgency === 'high' ? '#F59E0B'
-                  : approval.urgency === 'medium' ? '#6AA9FF'
-                    : '#8F8F8F'
+                  : approval.urgency === 'medium' ? '#1D9BF0'
+                    : '#A1A1AA'
             }
           />
         )}
@@ -1542,7 +1542,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

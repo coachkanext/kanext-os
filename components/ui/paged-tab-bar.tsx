@@ -86,7 +86,7 @@ export function PagedTabBar({ tabs, activeIndex, onTabPress, accentColor, tabWid
                 <ThemedText
                   style={[
                     styles.accentTabLabel,
-                    { color: isActive ? accentColor : '#888888' },
+                    { color: isActive ? accentColor : '#A1A1AA' },
                     isActive && styles.accentTabLabelActive,
                   ]}
                   numberOfLines={1}

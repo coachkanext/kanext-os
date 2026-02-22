@@ -34,8 +34,8 @@ interface Props {
 
 const ACCESS_COLORS: Record<string, string> = {
   public: '#22C55E',
-  investor: '#3B82F6',
-  board: '#8B5CF6',
+  investor: '#1D9BF0',
+  board: '#1D9BF0',
   founder_only: '#EF4444',
 };
 
@@ -112,7 +112,7 @@ export function BizVaultFoldersView({ colors, accent }: Props) {
       {VAULT_FOLDERS.filter((f) => activeFolderIds.has(f.id)).map((folder: VaultFolder) => {
         const isExpanded = expandedId === folder.id;
         const docs = filteredDocs.filter((d: VaultDocument) => d.folderId === folder.id);
-        const accessColor = ACCESS_COLORS[folder.accessLevel] ?? '#6B7280';
+        const accessColor = ACCESS_COLORS[folder.accessLevel] ?? '#A1A1AA';
 
         return (
           <View key={folder.id}>
@@ -142,7 +142,7 @@ export function BizVaultFoldersView({ colors, accent }: Props) {
 
             {/* Expanded document list */}
             {isExpanded && docs.map((doc: VaultDocument) => {
-              const docAccessColor = ACCESS_COLORS[doc.accessLevel] ?? '#6B7280';
+              const docAccessColor = ACCESS_COLORS[doc.accessLevel] ?? '#A1A1AA';
               return (
                 <Pressable
                   key={doc.id}
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   categoryRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 },
-  categoryPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.08)' },
+  categoryPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: '#2F3336' },
   categoryPillText: { fontSize: 12, fontWeight: '600' },
   folderCard: {
     borderRadius: 12,

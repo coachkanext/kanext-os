@@ -373,10 +373,10 @@ function Card({ colors, children }: { colors: typeof Colors.light; children: Rea
 function StatusDot({ status }: { status: string }) {
   const color =
     status === 'active' || status === 'accredited' || status === 'strong' || status === 'good_standing' || status === 'completed' ? '#22C55E' :
-    status === 'proposed' || status === 'pending' || status === 'stable' || status === 'info' ? '#3B82F6' :
+    status === 'proposed' || status === 'pending' || status === 'stable' || status === 'info' ? '#1D9BF0' :
     status === 'under_review' || status === 'conditional' || status === 'watch' || status === 'academic_warning' || status === 'warning' || status === 'scheduled' || status === 'in_progress' ? '#F59E0B' :
     status === 'suspended' || status === 'expired' || status === 'probation' || status === 'critical' || status === 'escalated' || status === 'urgent' ? '#EF4444' :
-    status === 'honors' ? '#A855F7' : '#8F8F8F';
+    status === 'honors' ? '#1D9BF0' : '#A1A1AA';
   return <View style={[sh.statusDot, { backgroundColor: color }]} />;
 }
 
@@ -873,7 +873,7 @@ function AdvisingView({ colors, role }: { colors: typeof Colors.light; role: Edu
   });
 
   const priorityColor = (p: AdvisingQueueItem['priority']) =>
-    p === 'urgent' ? '#EF4444' : p === 'normal' ? '#F59E0B' : '#3B82F6';
+    p === 'urgent' ? '#EF4444' : p === 'normal' ? '#F59E0B' : '#1D9BF0';
 
   const statusLabel = (s: AdvisingQueueItem['status']) =>
     s === 'pending' ? 'Pending' : s === 'scheduled' ? 'Scheduled' : 'In Progress';
@@ -1006,7 +1006,7 @@ function RiskView({ colors, role }: { colors: typeof Colors.light; role: Educati
   });
 
   const riskScoreColor = (score: number) =>
-    score >= 80 ? '#EF4444' : score >= 60 ? '#F59E0B' : '#3B82F6';
+    score >= 80 ? '#EF4444' : score >= 60 ? '#F59E0B' : '#1D9BF0';
 
   const interventionTypeLabel = (type: Intervention['type']) => {
     switch (type) {
@@ -1020,10 +1020,10 @@ function RiskView({ colors, role }: { colors: typeof Colors.light; role: Educati
   };
 
   const interventionStatusColor = (status: Intervention['status']) =>
-    status === 'active' ? '#22C55E' : status === 'completed' ? '#3B82F6' : status === 'pending' ? '#F59E0B' : '#EF4444';
+    status === 'active' ? '#22C55E' : status === 'completed' ? '#1D9BF0' : status === 'pending' ? '#F59E0B' : '#EF4444';
 
   const alertSeverityColor = (sev: EarlyAlert['severity']) =>
-    sev === 'critical' ? '#EF4444' : sev === 'warning' ? '#F59E0B' : '#3B82F6';
+    sev === 'critical' ? '#EF4444' : sev === 'warning' ? '#F59E0B' : '#1D9BF0';
 
   const alertTypeLabel = (type: EarlyAlert['alertType']) => {
     switch (type) {

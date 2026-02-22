@@ -688,7 +688,7 @@ function DirectoryView({ colors, role }: { colors: typeof Colors.light; role: Ed
             const isExpanded = expandedId === person.id;
             const initials = person.name.split(' ').map((n) => n[0]).join('').slice(0, 2);
             const categoryColor =
-              person.category === 'faculty' ? '#6AA9FF' :
+              person.category === 'faculty' ? '#1D9BF0' :
               person.category === 'staff' ? '#F59E0B' : '#22C55E';
 
             return (
@@ -819,7 +819,7 @@ function OrgNodeRow({ node, colors, role, depth, expandedIds, onToggle }: {
 }) {
   const isExpanded = expandedIds.has(node.id);
   const hasChildren = (node.children?.length ?? 0) > 0;
-  const levelColor = node.level === 'president' ? '#EF4444' : node.level === 'provost' ? '#F59E0B' : node.level === 'dean' ? '#6AA9FF' : '#22C55E';
+  const levelColor = node.level === 'president' ? '#EF4444' : node.level === 'provost' ? '#F59E0B' : node.level === 'dean' ? '#1D9BF0' : '#22C55E';
   const levelLabel = node.level === 'president' ? 'PRES' : node.level === 'provost' ? 'VP' : node.level === 'dean' ? 'DEAN' : 'CHAIR';
 
   return (
@@ -894,7 +894,7 @@ function OrgStructureView({ colors, role }: { colors: typeof Colors.light; role:
 
       {/* Legend + Expand/Collapse */}
       <View style={[s.legendRow, { marginBottom: Spacing.sm }]}>
-        {[{ label: 'President', color: '#EF4444' }, { label: 'VP', color: '#F59E0B' }, { label: 'Dean', color: '#6AA9FF' }, { label: 'Chair', color: '#22C55E' }].map((item) => (
+        {[{ label: 'President', color: '#EF4444' }, { label: 'VP', color: '#F59E0B' }, { label: 'Dean', color: '#1D9BF0' }, { label: 'Chair', color: '#22C55E' }].map((item) => (
           <View key={item.label} style={s.legendItem}>
             <View style={[s.legendDot, { backgroundColor: item.color }]} />
             <ThemedText style={[s.legendText, { color: colors.textSecondary }]}>{item.label}</ThemedText>
@@ -1090,7 +1090,7 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
           const levelColor =
             pkg.level === 'E1' ? '#EF4444' :
             pkg.level === 'E2' ? '#F59E0B' :
-            pkg.level === 'E3' ? '#6AA9FF' :
+            pkg.level === 'E3' ? '#1D9BF0' :
             pkg.level === 'E4' ? '#22C55E' : colors.textTertiary;
 
           return (

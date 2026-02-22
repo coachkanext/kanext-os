@@ -59,16 +59,16 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#111',
     borderWidth: 1,
-    borderColor: '#1a1a1a',
+    borderColor: '#0B0F14',
   },
   activePill: {
-    backgroundColor: '#f5f5f5',
-    borderColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
   },
   label: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   activeLabel: {
     color: '#000',

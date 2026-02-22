@@ -202,7 +202,7 @@ function txnStateBadgeColor(state: RailsTxnState): string {
     case 'Proposed': return BP.platinum;
     case 'Rule-Checked': return BP.platinum;
     case 'Authorized': return BP.champagneGold;
-    case 'Scheduled': return '#6AA9FF';
+    case 'Scheduled': return '#1D9BF0';
     case 'Released': return BP.emerald;
     case 'In Flight': return BP.amber;
     case 'Settled': return BP.emerald;
@@ -242,7 +242,7 @@ function railBadgeColor(rail: NowItem['rail']): string {
     case 'ACH': return BP.emerald;
     case 'Wire': return BP.champagneGold;
     case 'Card': return BP.amber;
-    case 'Crypto': return '#8B5CF6';
+    case 'Crypto': return '#1D9BF0';
     default: return BP.ash;
   }
 }
@@ -252,7 +252,7 @@ function approvalTypeBadgeColor(type: RailsApproval['type']): string {
     case 'payout': return BP.champagneGold;
     case 'vendor': return BP.emerald;
     case 'refund': return BP.amber;
-    case 'transfer': return '#6AA9FF';
+    case 'transfer': return '#1D9BF0';
     default: return BP.ash;
   }
 }

@@ -31,11 +31,11 @@ import { computeFitKR } from '@/utils/fit-kr';
 import { computeConfidence, parseHeightToInches, HEIGHT_RANGES, REGION_OPTIONS, getPlayerRegion } from '@/utils/recruiting-helpers';
 import { ARCHETYPE_OPTIONS } from '@/data/archetype-options';
 
-const CARD_BG = '#1A1D23';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
-const BG = '#0F1115';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
+const BG = '#0B0F14';
 
 // ─── Source Taxonomy ───
 
@@ -782,7 +782,7 @@ export function KaNeXTDatabase({
             <PlayerRatingCard player={player} offStyle={offStyle} defStyle={defStyle} onPress={() => onPlayerPress(player)} />
             {!alreadyOnBoard ? (
               <Pressable style={styles.addToBoardBtn} onPress={() => openAddSheet(player)}>
-                <IconSymbol name="plus.circle.fill" size={24} color="#4CAF50" />
+                <IconSymbol name="plus.circle.fill" size={24} color="#22C55E" />
               </Pressable>
             ) : (
               <Pressable style={styles.addToBoardBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onRemoveFromBoard(existingEntry.id); }}>
@@ -974,9 +974,9 @@ export function KaNeXTDatabase({
 const styles = StyleSheet.create({
   sliceBarScroll: { marginBottom: 4 },
   sliceBarContent: { flexDirection: 'row', gap: 6, paddingVertical: 4 },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#2A2D35', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 16 },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#0B0F14', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 16 },
   chipActive: { backgroundColor: WHITE },
-  chipExpanded: { borderWidth: 1.5, borderColor: '#4A4D55' },
+  chipExpanded: { borderWidth: 1.5, borderColor: '#52525B' },
   chipText: { fontSize: 12, fontWeight: '600', color: GRAY },
   chipTextActive: { color: BG },
   subRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, paddingVertical: 8, paddingHorizontal: 2, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: DIVIDER },
@@ -986,7 +986,7 @@ const styles = StyleSheet.create({
   subPillText: { fontSize: 12, fontWeight: '600', color: GRAY },
   subPillTextActive: { color: BG },
   activePillsRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginTop: 4, marginBottom: 4 },
-  activePill: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#3B82F6', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
+  activePill: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#1D9BF0', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
   activePillText: { fontSize: 11, fontWeight: '600', color: WHITE },
   clearAllText: { fontSize: 11, fontWeight: '600', color: GRAY, marginLeft: 4 },
   resultCount: { fontSize: 12, fontWeight: '600', color: GRAY, marginBottom: 10, marginTop: 4 },
@@ -1001,7 +1001,7 @@ const styles = StyleSheet.create({
   addPillText: { fontSize: 12, fontWeight: '700', color: GRAY },
   addPillTextActive: { color: BG },
   rankInput: { backgroundColor: CARD_BG, borderWidth: 1, borderColor: DIVIDER, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 14, fontWeight: '600', color: WHITE },
-  confirmBtn: { backgroundColor: '#3B82F6', paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
+  confirmBtn: { backgroundColor: '#1D9BF0', paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
   confirmBtnText: { fontSize: 15, fontWeight: '700', color: WHITE },
   resetBtn: { borderWidth: 1, borderColor: DIVIDER, paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginTop: 4 },
   resetBtnText: { fontSize: 13, fontWeight: '600', color: GRAY },

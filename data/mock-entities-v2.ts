@@ -163,11 +163,11 @@ export const CREATE_ENTITY_TEMPLATES: CreateEntityTemplate[] = [
 // =============================================================================
 
 export const STATUS_COLOR_MAP: Record<EntityStatus, string> = {
-  proposed: '#8F8F8F',
+  proposed: '#A1A1AA',
   active: '#22C55E',
   blocked: '#EF4444',
-  complete: '#6AA9FF',
-  archived: '#64748B',
+  complete: '#1D9BF0',
+  archived: '#A1A1AA',
 };
 
 export const TYPE_ICON_MAP: Record<EntityType, string> = {
@@ -185,15 +185,15 @@ export const TYPE_ICON_MAP: Record<EntityType, string> = {
 
 export const TYPE_COLOR_MAP: Record<EntityType, string> = {
   company: '#FFFFFF',
-  department: '#6AA9FF',
-  project: '#7A5CFF',
+  department: '#1D9BF0',
+  project: '#1D9BF0',
   task: '#F59E0B',
   opportunity: '#22C55E',
-  'client-partner': '#14B8A6',
-  resource: '#F472B6',
+  'client-partner': '#1D9BF0',
+  resource: '#1D9BF0',
   decision: '#EF4444',
-  policy: '#64748B',
-  evidence: '#A78BFA',
+  policy: '#A1A1AA',
+  evidence: '#1D9BF0',
 };
 
 // =============================================================================
@@ -247,7 +247,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '45m ago',
     lastActivityMs: Date.now() - 45 * 60 * 1000,
     createdAt: '2024-06-01',
-    avatarColor: '#6AA9FF',
+    avatarColor: '#1D9BF0',
     contextField: '5 people · 3 active projects',
     hasRoom: true,
     roomId: 'room-product',
@@ -295,7 +295,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '3h ago',
     lastActivityMs: Date.now() - 3 * 60 * 60 * 1000,
     createdAt: '2024-10-01',
-    avatarColor: '#F472B6',
+    avatarColor: '#1D9BF0',
     contextField: '2 people · 1 active project',
     hasRoom: true,
     roomId: 'room-marketing',
@@ -313,7 +313,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '30m ago',
     lastActivityMs: Date.now() - 30 * 60 * 1000,
     createdAt: '2025-09-01',
-    avatarColor: '#7A5CFF',
+    avatarColor: '#1D9BF0',
     contextField: 'Next milestone: Jun 30',
     hasRoom: true,
     roomId: 'room-v2-launch',
@@ -360,7 +360,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '6h ago',
     lastActivityMs: Date.now() - 6 * 60 * 60 * 1000,
     createdAt: '2025-11-15',
-    avatarColor: '#F472B6',
+    avatarColor: '#1D9BF0',
     contextField: 'Next milestone: May 1',
     hasRoom: true,
     roomId: 'room-rebrand',
@@ -408,7 +408,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '2h ago',
     lastActivityMs: Date.now() - 2 * 60 * 60 * 1000,
     createdAt: '2026-01-20',
-    avatarColor: '#6AA9FF',
+    avatarColor: '#1D9BF0',
     contextField: 'Due: Feb 28',
   },
   {
@@ -450,7 +450,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '8h ago',
     lastActivityMs: Date.now() - 8 * 60 * 60 * 1000,
     createdAt: '2026-02-05',
-    avatarColor: '#F472B6',
+    avatarColor: '#1D9BF0',
     contextField: 'Due: Feb 25',
   },
   {
@@ -464,7 +464,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '12h ago',
     lastActivityMs: Date.now() - 12 * 60 * 60 * 1000,
     createdAt: '2026-02-10',
-    avatarColor: '#6AA9FF',
+    avatarColor: '#1D9BF0',
     contextField: 'Due: Mar 15',
   },
 
@@ -525,7 +525,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '4d ago',
     lastActivityMs: Date.now() - 4 * 24 * 60 * 60 * 1000,
     createdAt: '2026-01-20',
-    avatarColor: '#8F8F8F',
+    avatarColor: '#A1A1AA',
     contextField: 'Stage: Prospect',
     value: 200000,
   },
@@ -542,7 +542,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '6h ago',
     lastActivityMs: Date.now() - 6 * 60 * 60 * 1000,
     createdAt: '2025-08-15',
-    avatarColor: '#14B8A6',
+    avatarColor: '#1D9BF0',
     contextField: 'Proof wedge partner · Active since Aug 2025',
     hasRoom: true,
     roomId: 'room-fmu-partner',
@@ -558,7 +558,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '1d ago',
     lastActivityMs: Date.now() - 24 * 60 * 60 * 1000,
     createdAt: '2025-10-01',
-    avatarColor: '#14B8A6',
+    avatarColor: '#1D9BF0',
     contextField: 'Institutional pilot in progress',
     hasRoom: true,
     roomId: 'room-naia-partner',
@@ -574,7 +574,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '5d ago',
     lastActivityMs: Date.now() - 5 * 24 * 60 * 60 * 1000,
     createdAt: '2026-01-18',
-    avatarColor: '#8F8F8F',
+    avatarColor: '#A1A1AA',
     contextField: 'Initial conversation · Church mode demo scheduled',
   },
 
@@ -590,7 +590,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '2d ago',
     lastActivityMs: Date.now() - 2 * 24 * 60 * 60 * 1000,
     createdAt: '2025-06-01',
-    avatarColor: '#F472B6',
+    avatarColor: '#1D9BF0',
     contextField: 'Template · Last revised Feb 2026',
   },
   {
@@ -604,7 +604,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '3d ago',
     lastActivityMs: Date.now() - 3 * 24 * 60 * 60 * 1000,
     createdAt: '2025-07-15',
-    avatarColor: '#F472B6',
+    avatarColor: '#1D9BF0',
     contextField: 'Playbook · V3 in review',
   },
   {
@@ -618,7 +618,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '5d ago',
     lastActivityMs: Date.now() - 5 * 24 * 60 * 60 * 1000,
     createdAt: '2025-11-01',
-    avatarColor: '#F472B6',
+    avatarColor: '#1D9BF0',
     contextField: 'Guidelines · Covers logo, type, color system',
   },
 
@@ -648,7 +648,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '6d ago',
     lastActivityMs: Date.now() - 6 * 24 * 60 * 60 * 1000,
     createdAt: '2025-12-01',
-    avatarColor: '#6AA9FF',
+    avatarColor: '#1D9BF0',
     contextField: 'Approval: Approved',
   },
   {
@@ -662,7 +662,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '3d ago',
     lastActivityMs: Date.now() - 3 * 24 * 60 * 60 * 1000,
     createdAt: '2026-02-01',
-    avatarColor: '#8F8F8F',
+    avatarColor: '#A1A1AA',
     contextField: 'Approval: Under Review',
   },
 
@@ -678,7 +678,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '7d ago',
     lastActivityMs: Date.now() - 7 * 24 * 60 * 60 * 1000,
     createdAt: '2025-03-01',
-    avatarColor: '#64748B',
+    avatarColor: '#A1A1AA',
     contextField: 'Effective since Mar 2025 · All departments',
   },
   {
@@ -692,7 +692,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '10d ago',
     lastActivityMs: Date.now() - 10 * 24 * 60 * 60 * 1000,
     createdAt: '2025-05-01',
-    avatarColor: '#64748B',
+    avatarColor: '#A1A1AA',
     contextField: 'Effective since May 2025 · Engineering + Product',
   },
 
@@ -708,7 +708,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '6d ago',
     lastActivityMs: Date.now() - 6 * 24 * 60 * 60 * 1000,
     createdAt: '2026-02-10',
-    avatarColor: '#A78BFA',
+    avatarColor: '#1D9BF0',
     contextField: 'Recorded: Feb 10, 2026',
   },
   {
@@ -722,7 +722,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '11d ago',
     lastActivityMs: Date.now() - 11 * 24 * 60 * 60 * 1000,
     createdAt: '2026-02-05',
-    avatarColor: '#A78BFA',
+    avatarColor: '#1D9BF0',
     contextField: 'Recorded: Feb 5, 2026',
   },
   {
@@ -736,7 +736,7 @@ export const UNIFIED_ENTITIES: UnifiedEntity[] = [
     lastActivityAt: '19d ago',
     lastActivityMs: Date.now() - 19 * 24 * 60 * 60 * 1000,
     createdAt: '2026-01-28',
-    avatarColor: '#A78BFA',
+    avatarColor: '#1D9BF0',
     contextField: 'Recorded: Jan 28, 2026',
   },
 ];

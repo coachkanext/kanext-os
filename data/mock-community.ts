@@ -88,12 +88,12 @@ export type CommunityHubTab =
 
 export const K1_TEAMS: K1Team[] = [
   { id: 't-1', name: 'Apex Racing', abbreviation: 'APX', primaryColor: '#EF4444', owner: 'Marcus Kane', homeTrack: 'Circuit of the Americas', driverCount: 2, wins: 4, points: 312 },
-  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#3B82F6', owner: 'Lisa Grant', homeTrack: 'Laguna Seca', driverCount: 2, wins: 3, points: 287 },
+  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#1D9BF0', owner: 'Lisa Grant', homeTrack: 'Laguna Seca', driverCount: 2, wins: 3, points: 287 },
   { id: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#F59E0B', owner: 'David Okafor', homeTrack: 'Road Atlanta', driverCount: 2, wins: 2, points: 256 },
   { id: 't-4', name: 'Zenith Racing', abbreviation: 'ZEN', primaryColor: '#22C55E', owner: 'Anna Petrov', homeTrack: 'Watkins Glen', driverCount: 2, wins: 2, points: 241 },
-  { id: 't-5', name: 'Shadow GP', abbreviation: 'SHD', primaryColor: '#7C3AED', owner: 'James Wright', homeTrack: 'Barber Motorsports', driverCount: 2, wins: 1, points: 198 },
-  { id: 't-6', name: 'Titan Racing', abbreviation: 'TTN', primaryColor: '#EC4899', owner: 'Lisa Rodriguez', homeTrack: 'Mid-Ohio', driverCount: 2, wins: 0, points: 167 },
-  { id: 't-7', name: 'Nova Speed', abbreviation: 'NVA', primaryColor: '#06B6D4', owner: 'Kai Tanaka', homeTrack: 'Sebring', driverCount: 2, wins: 0, points: 145 },
+  { id: 't-5', name: 'Shadow GP', abbreviation: 'SHD', primaryColor: '#1D9BF0', owner: 'James Wright', homeTrack: 'Barber Motorsports', driverCount: 2, wins: 1, points: 198 },
+  { id: 't-6', name: 'Titan Racing', abbreviation: 'TTN', primaryColor: '#1D9BF0', owner: 'Lisa Rodriguez', homeTrack: 'Mid-Ohio', driverCount: 2, wins: 0, points: 167 },
+  { id: 't-7', name: 'Nova Speed', abbreviation: 'NVA', primaryColor: '#1D9BF0', owner: 'Kai Tanaka', homeTrack: 'Sebring', driverCount: 2, wins: 0, points: 145 },
   { id: 't-8', name: 'Iron Circuit', abbreviation: 'IRC', primaryColor: '#FFFFFF', owner: 'Mike Thompson', homeTrack: 'VIR', driverCount: 2, wins: 0, points: 132 },
 ];
 
@@ -103,19 +103,19 @@ export const K1_TEAMS: K1Team[] = [
 
 export const K1_DRIVERS: K1Driver[] = [
   { id: 'd-1', name: 'Leo Vasquez', initials: 'LV', number: '7', teamId: 't-1', teamName: 'Apex Racing', teamColor: '#EF4444', nationality: 'USA', age: 24, wins: 3, podiums: 7, points: 178, avgFinish: 2.8, fastestLaps: 4 },
-  { id: 'd-2', name: 'Nadia Patel', initials: 'NP', number: '22', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#3B82F6', nationality: 'GBR', age: 26, wins: 2, podiums: 6, points: 156, avgFinish: 3.2, fastestLaps: 3 },
+  { id: 'd-2', name: 'Nadia Patel', initials: 'NP', number: '22', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#1D9BF0', nationality: 'GBR', age: 26, wins: 2, podiums: 6, points: 156, avgFinish: 3.2, fastestLaps: 3 },
   { id: 'd-3', name: 'Jake Morrison', initials: 'JM', number: '11', teamId: 't-1', teamName: 'Apex Racing', teamColor: '#EF4444', nationality: 'AUS', age: 22, wins: 1, podiums: 4, points: 134, avgFinish: 4.1, fastestLaps: 2 },
   { id: 'd-4', name: 'Yuki Tanaka', initials: 'YT', number: '33', teamId: 't-3', teamName: 'Phoenix Motorsport', teamColor: '#F59E0B', nationality: 'JPN', age: 23, wins: 2, podiums: 5, points: 148, avgFinish: 3.5, fastestLaps: 3 },
-  { id: 'd-5', name: 'Marcus Bell', initials: 'MB', number: '5', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#3B82F6', nationality: 'USA', age: 28, wins: 1, podiums: 5, points: 131, avgFinish: 3.8, fastestLaps: 1 },
+  { id: 'd-5', name: 'Marcus Bell', initials: 'MB', number: '5', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#1D9BF0', nationality: 'USA', age: 28, wins: 1, podiums: 5, points: 131, avgFinish: 3.8, fastestLaps: 1 },
   { id: 'd-6', name: 'Sofia Torres', initials: 'ST', number: '44', teamId: 't-4', teamName: 'Zenith Racing', teamColor: '#22C55E', nationality: 'ESP', age: 25, wins: 2, podiums: 4, points: 142, avgFinish: 3.6, fastestLaps: 2 },
   { id: 'd-7', name: 'Andre Williams', initials: 'AW', number: '8', teamId: 't-3', teamName: 'Phoenix Motorsport', teamColor: '#F59E0B', nationality: 'USA', age: 21, wins: 0, podiums: 3, points: 108, avgFinish: 5.2, fastestLaps: 1 },
   { id: 'd-8', name: 'Emma Lindqvist', initials: 'EL', number: '16', teamId: 't-4', teamName: 'Zenith Racing', teamColor: '#22C55E', nationality: 'SWE', age: 27, wins: 0, podiums: 2, points: 99, avgFinish: 5.8, fastestLaps: 0 },
-  { id: 'd-9', name: 'Carlos Mendez', initials: 'CM', number: '99', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#7C3AED', nationality: 'MEX', age: 24, wins: 1, podiums: 3, points: 112, avgFinish: 4.5, fastestLaps: 2 },
-  { id: 'd-10', name: 'Grace Kim', initials: 'GK', number: '18', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#7C3AED', nationality: 'KOR', age: 23, wins: 0, podiums: 1, points: 86, avgFinish: 6.1, fastestLaps: 0 },
-  { id: 'd-11', name: 'Ryan Fletcher', initials: 'RF', number: '3', teamId: 't-6', teamName: 'Titan Racing', teamColor: '#EC4899', nationality: 'CAN', age: 26, wins: 0, podiums: 2, points: 94, avgFinish: 5.4, fastestLaps: 1 },
-  { id: 'd-12', name: 'Mia Santos', initials: 'MS', number: '27', teamId: 't-6', teamName: 'Titan Racing', teamColor: '#EC4899', nationality: 'BRA', age: 22, wins: 0, podiums: 1, points: 73, avgFinish: 6.8, fastestLaps: 0 },
-  { id: 'd-13', name: 'Zach Cooper', initials: 'ZC', number: '41', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#06B6D4', nationality: 'USA', age: 25, wins: 0, podiums: 1, points: 81, avgFinish: 6.3, fastestLaps: 1 },
-  { id: 'd-14', name: 'Priya Sharma', initials: 'PS', number: '14', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#06B6D4', nationality: 'IND', age: 24, wins: 0, podiums: 0, points: 64, avgFinish: 7.2, fastestLaps: 0 },
+  { id: 'd-9', name: 'Carlos Mendez', initials: 'CM', number: '99', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#1D9BF0', nationality: 'MEX', age: 24, wins: 1, podiums: 3, points: 112, avgFinish: 4.5, fastestLaps: 2 },
+  { id: 'd-10', name: 'Grace Kim', initials: 'GK', number: '18', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#1D9BF0', nationality: 'KOR', age: 23, wins: 0, podiums: 1, points: 86, avgFinish: 6.1, fastestLaps: 0 },
+  { id: 'd-11', name: 'Ryan Fletcher', initials: 'RF', number: '3', teamId: 't-6', teamName: 'Titan Racing', teamColor: '#1D9BF0', nationality: 'CAN', age: 26, wins: 0, podiums: 2, points: 94, avgFinish: 5.4, fastestLaps: 1 },
+  { id: 'd-12', name: 'Mia Santos', initials: 'MS', number: '27', teamId: 't-6', teamName: 'Titan Racing', teamColor: '#1D9BF0', nationality: 'BRA', age: 22, wins: 0, podiums: 1, points: 73, avgFinish: 6.8, fastestLaps: 0 },
+  { id: 'd-13', name: 'Zach Cooper', initials: 'ZC', number: '41', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#1D9BF0', nationality: 'USA', age: 25, wins: 0, podiums: 1, points: 81, avgFinish: 6.3, fastestLaps: 1 },
+  { id: 'd-14', name: 'Priya Sharma', initials: 'PS', number: '14', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#1D9BF0', nationality: 'IND', age: 24, wins: 0, podiums: 0, points: 64, avgFinish: 7.2, fastestLaps: 0 },
   { id: 'd-15', name: 'Tyler Brooks', initials: 'TB', number: '21', teamId: 't-8', teamName: 'Iron Circuit', teamColor: '#FFFFFF', nationality: 'USA', age: 29, wins: 0, podiums: 1, points: 72, avgFinish: 6.5, fastestLaps: 0 },
   { id: 'd-16', name: 'Olivia Dunn', initials: 'OD', number: '36', teamId: 't-8', teamName: 'Iron Circuit', teamColor: '#FFFFFF', nationality: 'IRL', age: 23, wins: 0, podiums: 0, points: 60, avgFinish: 7.8, fastestLaps: 0 },
 ];
@@ -333,12 +333,12 @@ export const OPS_CATEGORY_LABELS: Record<OpsCategory, string> = {
 };
 
 export const OPS_CATEGORY_COLORS: Record<OpsCategory, string> = {
-  logistics: '#6366F1',
+  logistics: '#1D9BF0',
   track_prep: '#F59E0B',
   safety: '#EF4444',
-  media: '#3B82F6',
-  hospitality: '#EC4899',
-  tech_inspection: '#8B5CF6',
-  timing: '#06B6D4',
+  media: '#1D9BF0',
+  hospitality: '#1D9BF0',
+  tech_inspection: '#1D9BF0',
+  timing: '#1D9BF0',
   medical: '#22C55E',
 };

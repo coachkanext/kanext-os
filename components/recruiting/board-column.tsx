@@ -9,8 +9,8 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { BOARD_COLUMN_COLORS, type BoardStatus } from '@/data/recruitingBoard';
 
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
 export interface BoardColumnProps {
   status: BoardStatus;
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     width: 340,
     marginRight: 12,
     borderRadius: 12,
-    backgroundColor: '#0F1115',
+    backgroundColor: '#0B0F14',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: DIVIDER,
     overflow: 'hidden',

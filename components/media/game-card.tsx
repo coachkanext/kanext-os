@@ -30,7 +30,7 @@ export function GameCard({ game, onPress }: GameCardProps) {
     <Pressable
       style={({ pressed }) => [
         styles.card,
-        { backgroundColor: pressed ? '#191919' : '#111' },
+        { backgroundColor: pressed ? '#0B0F14' : '#111' },
       ]}
       onPress={handlePress}
     >
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 13,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: 2,
   },
   statsRow: {

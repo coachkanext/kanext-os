@@ -103,15 +103,15 @@ function getAuditActionKey(action: string): string {
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
   created: '#22C55E',
-  status: '#6AA9FF',
-  linked: '#14B8A6',
+  status: '#1D9BF0',
+  linked: '#1D9BF0',
   moved: '#F59E0B',
-  assigned: '#7A5CFF',
-  attached: '#A78BFA',
+  assigned: '#1D9BF0',
+  attached: '#1D9BF0',
   updated: '#F59E0B',
   approved: '#22C55E',
-  revised: '#F472B6',
-  default: '#8F8F8F',
+  revised: '#1D9BF0',
+  default: '#A1A1AA',
 };
 
 // =============================================================================
@@ -452,7 +452,7 @@ function EntityDetailView({
           <View style={[s.detailCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Linked Objects</ThemedText>
             {linkedObjects.map((lo) => {
-              const loColor = TYPE_COLOR_MAP[lo.type as keyof typeof TYPE_COLOR_MAP] ?? '#8F8F8F';
+              const loColor = TYPE_COLOR_MAP[lo.type as keyof typeof TYPE_COLOR_MAP] ?? '#A1A1AA';
               const loStatus = STATUS_COLOR_MAP[lo.status];
               return (
                 <View key={lo.id} style={s.linkedRow}>
@@ -1245,7 +1245,7 @@ const s = StyleSheet.create({
     marginTop: Spacing.sm,
     paddingTop: Spacing.sm,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
   },
   quickAction: {
     width: 20,

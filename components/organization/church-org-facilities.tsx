@@ -232,13 +232,13 @@ function OverviewTab({
         </ThemedText>
         <View style={s.capacityBreakdown}>
           <View style={s.capacityItem}>
-            <View style={[s.capacityDot, { backgroundColor: '#6AA9FF' }]} />
+            <View style={[s.capacityDot, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[s.capacityItemText, { color: colors.textSecondary }]}>
               {inUseCount} In Use
             </ThemedText>
           </View>
           <View style={s.capacityItem}>
-            <View style={[s.capacityDot, { backgroundColor: '#8B5CF6' }]} />
+            <View style={[s.capacityDot, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[s.capacityItemText, { color: colors.textSecondary }]}>
               {reservedCount} Reserved
             </ThemedText>
@@ -1112,7 +1112,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

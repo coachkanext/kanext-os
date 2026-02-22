@@ -240,33 +240,33 @@ export const SPONSORS_SCOPE_CHIPS: SponsorsScopeChip[] = [
 export const SPONSOR_STATUS_COLOR: Record<SponsorStatus, string> = {
   prospect: '#F59E0B',
   active: '#22C55E',
-  paused: '#9CA3AF',
-  completed: '#3B82F6',
-  archived: '#6B7280',
+  paused: '#A1A1AA',
+  completed: '#1D9BF0',
+  archived: '#A1A1AA',
 };
 
 export const CONTRACT_STATUS_COLOR: Record<ContractStatus, string> = {
-  draft: '#9CA3AF',
+  draft: '#A1A1AA',
   sent: '#F59E0B',
-  signed: '#3B82F6',
+  signed: '#1D9BF0',
   active: '#22C55E',
-  completed: '#6366F1',
-  archived: '#6B7280',
+  completed: '#1D9BF0',
+  archived: '#A1A1AA',
 };
 
 export const FULFILLMENT_STATUS_COLOR: Record<FulfillmentStatus, string> = {
   pending: '#F59E0B',
-  delivered: '#3B82F6',
+  delivered: '#1D9BF0',
   verified: '#22C55E',
   missed: '#EF4444',
 };
 
 export const INVOICE_STATUS_COLOR: Record<InvoiceStatus, string> = {
-  draft: '#9CA3AF',
+  draft: '#A1A1AA',
   sent: '#F59E0B',
   paid: '#22C55E',
   overdue: '#EF4444',
-  cancelled: '#6B7280',
+  cancelled: '#A1A1AA',
 };
 
 export const INVENTORY_CATEGORY_LABEL: Record<InventoryCategory, string> = {
@@ -291,11 +291,11 @@ export const PACKAGE_TIER_LABEL: Record<PackageTier, string> = {
 };
 
 export const PACKAGE_TIER_COLOR: Record<PackageTier, string> = {
-  title: '#FFD700',
-  platinum: '#E5E4E2',
-  gold: '#FFD700',
-  silver: '#C0C0C0',
-  bronze: '#CD7F32',
+  title: '#1D9BF0',
+  platinum: '#A1A1AA',
+  gold: '#1D9BF0',
+  silver: '#A1A1AA',
+  bronze: '#1D9BF0',
   'local-partner': '#22C55E',
 };
 
@@ -392,7 +392,7 @@ const sponsors: Sponsor[] = [
     id: 'sponsor-001',
     name: 'MidState Credit Union',
     logoInitials: 'MC',
-    logoColor: '#2563EB',
+    logoColor: '#1D9BF0',
     tier: 'title',
     status: 'active',
     contractWindow: 'Aug 2025 \u2013 May 2026',
@@ -406,7 +406,7 @@ const sponsors: Sponsor[] = [
     id: 'sponsor-002',
     name: 'Palmetto Health Systems',
     logoInitials: 'PH',
-    logoColor: '#059669',
+    logoColor: '#22C55E',
     tier: 'platinum',
     status: 'active',
     contractWindow: 'Aug 2025 \u2013 May 2026',
@@ -419,7 +419,7 @@ const sponsors: Sponsor[] = [
     id: 'sponsor-003',
     name: 'QuickFuel Gas & Convenience',
     logoInitials: 'QF',
-    logoColor: '#DC2626',
+    logoColor: '#EF4444',
     tier: 'gold',
     status: 'active',
     contractWindow: 'Jan 2026 \u2013 Dec 2026',
@@ -433,7 +433,7 @@ const sponsors: Sponsor[] = [
     id: 'sponsor-004',
     name: 'Carolina BBQ Co.',
     logoInitials: 'CB',
-    logoColor: '#D97706',
+    logoColor: '#F59E0B',
     tier: 'silver',
     status: 'active',
     contractWindow: 'Aug 2025 \u2013 May 2026',
@@ -446,7 +446,7 @@ const sponsors: Sponsor[] = [
     id: 'sponsor-005',
     name: 'TechStart Incubator',
     logoInitials: 'TI',
-    logoColor: '#7C3AED',
+    logoColor: '#1D9BF0',
     tier: 'bronze',
     status: 'active',
     contractWindow: 'Aug 2025 \u2013 May 2026',
@@ -459,7 +459,7 @@ const sponsors: Sponsor[] = [
     id: 'sponsor-006',
     name: 'Lowcountry Insurance Group',
     logoInitials: 'LI',
-    logoColor: '#0891B2',
+    logoColor: '#1D9BF0',
     tier: 'local-partner',
     status: 'prospect',
     primaryContact: 'Robert Calhoun',
@@ -979,7 +979,7 @@ const assets: SponsorAsset[] = [
     sponsorId: 'sponsor-002',
     assetType: 'hex-colors',
     title: 'Brand Colors',
-    description: '#059669 primary, #F0FDF4 background',
+    description: '#22C55E primary, #22C55E background',
     version: '1.0',
     approved: true,
     updatedAt: 'Aug 10, 2025',

@@ -43,17 +43,17 @@ const STATUS_COLORS: Record<string, string> = {
   completed: '#22C55E',
   pending: '#F59E0B',
   overdue: '#EF4444',
-  'in-progress': '#6AA9FF',
+  'in-progress': '#1D9BF0',
 };
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  practice: '#6AA9FF',
+  practice: '#1D9BF0',
   game: '#EF4444',
   meeting: '#F59E0B',
-  travel: '#8B5CF6',
+  travel: '#1D9BF0',
   service: '#22C55E',
-  class: '#6AA9FF',
-  event: '#EC4899',
+  class: '#1D9BF0',
+  event: '#1D9BF0',
   deadline: '#EF4444',
 };
 
@@ -73,7 +73,7 @@ const CONDITION_COLORS: Record<string, string> = {
 const TRAVEL_STATUS_COLORS: Record<string, string> = {
   planned: '#F59E0B',
   booked: '#22C55E',
-  completed: '#8F8F8F',
+  completed: '#A1A1AA',
 };
 
 // =============================================================================

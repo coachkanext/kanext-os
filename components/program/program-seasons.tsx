@@ -15,7 +15,7 @@ import type { SeasonStatus } from '@/data/mock-program-v2';
 const STATUS_CONFIG: Record<SeasonStatus, { label: string; color: string; bg: string }> = {
   active: { label: 'ACTIVE', color: '#22C55E', bg: '#22C55E' + '20' },
   completed: { label: 'COMPLETED', color: '#FFFFFF', bg: '#FFFFFF' + '15' },
-  archived: { label: 'ARCHIVED', color: '#8F8F8F', bg: '#8F8F8F' + '15' },
+  archived: { label: 'ARCHIVED', color: '#A1A1AA', bg: '#A1A1AA' + '15' },
 };
 
 export function ProgramSeasons() {
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 4,
     borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     overflow: 'hidden',
   },
   progressFill: {

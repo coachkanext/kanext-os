@@ -75,9 +75,9 @@ const PIPELINE_STAGES: {
   label: string;
   color: string;
 }[] = [
-  { key: 'draft', label: 'Draft', color: '#9CA3AF' },
+  { key: 'draft', label: 'Draft', color: '#A1A1AA' },
   { key: 'review', label: 'Review', color: '#F59E0B' },
-  { key: 'sent', label: 'Sent', color: '#3B82F6' },
+  { key: 'sent', label: 'Sent', color: '#1D9BF0' },
   { key: 'executed', label: 'Executed', color: '#22C55E' },
   { key: 'expiring', label: 'Expiring', color: '#EF4444' },
 ];
@@ -90,15 +90,15 @@ const SAMPLE_KEY_TERMS = [
 ];
 
 const AUTHORITY_TYPES = [
-  { type: 'contract_signing', label: 'Contract Signing', color: '#3B82F6', threshold: '$500K' },
+  { type: 'contract_signing', label: 'Contract Signing', color: '#1D9BF0', threshold: '$500K' },
   { type: 'spend_approval', label: 'Spend Approval', color: '#22C55E', threshold: '$100K' },
-  { type: 'policy_signoff', label: 'Policy Sign-off', color: '#8B5CF6', threshold: 'N/A' },
+  { type: 'policy_signoff', label: 'Policy Sign-off', color: '#1D9BF0', threshold: 'N/A' },
 ];
 
 const OBLIGATION_LINKAGE: Record<string, { label: string; color: string }> = {
   payment: { label: '\u2192 Finance', color: '#22C55E' },
-  compliance: { label: '\u2192 Compliance', color: '#3B82F6' },
-  deliverable: { label: '\u2192 Operations', color: '#8B5CF6' },
+  compliance: { label: '\u2192 Compliance', color: '#1D9BF0' },
+  deliverable: { label: '\u2192 Operations', color: '#1D9BF0' },
   renewal: { label: '\u2192 Legal', color: '#F59E0B' },
 };
 
@@ -170,7 +170,7 @@ function deadlineUrgencyColor(urgency: LegalDeadline['urgency']): string {
     case 'critical':
       return '#F59E0B';
     case 'soon':
-      return '#3B82F6';
+      return '#1D9BF0';
     case 'normal':
       return '#22C55E';
   }
@@ -251,7 +251,7 @@ function OverviewTab({
       label: 'Open Requests',
       value: String(stats.openRequests),
       icon: 'tray.full.fill',
-      color: '#3B82F6',
+      color: '#1D9BF0',
     },
   ];
 

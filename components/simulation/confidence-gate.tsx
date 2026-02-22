@@ -16,7 +16,7 @@ const ACCENT = '#FFFFFF';
 
 const IMPACT_CONFIG = {
   positive: { icon: 'arrow.up', color: Brand.success },
-  neutral: { icon: 'minus', color: '#8F8F8F' },
+  neutral: { icon: 'minus', color: '#A1A1AA' },
   negative: { icon: 'arrow.down', color: Brand.error },
 } as const;
 

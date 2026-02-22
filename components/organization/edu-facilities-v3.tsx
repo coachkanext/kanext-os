@@ -100,19 +100,19 @@ const CONDITION_COLOR: Record<Condition, string> = {
 
 const PRIORITY_COLOR: Record<Priority, string> = {
   Urgent: '#EF4444',
-  Normal: '#6AA9FF',
+  Normal: '#1D9BF0',
   Low: '#22C55E',
 };
 
 const BOOKING_TYPE_COLOR: Record<BookingType, string> = {
-  Recurring: '#6AA9FF',
+  Recurring: '#1D9BF0',
   'One-Time': '#F59E0B',
-  Event: '#A78BFA',
+  Event: '#1D9BF0',
 };
 
 const STATUS_COLOR: Record<string, string> = {
   Open: '#F59E0B',
-  'In Progress': '#6AA9FF',
+  'In Progress': '#1D9BF0',
   Scheduled: '#22C55E',
 };
 
@@ -245,7 +245,7 @@ function MaintenanceView({ colors, accentColor }: { colors: typeof Colors.light;
               <ThemedText style={[s.cpName, { color: colors.text }]}>{cp.name}</ThemedText>
               <ThemedText style={[s.cpBudget, { color: colors.textSecondary }]}>Budget: {cp.budget}</ThemedText>
             </View>
-            <StatusBadge label={cp.status.toUpperCase()} color="#6AA9FF" />
+            <StatusBadge label={cp.status.toUpperCase()} color="#1D9BF0" />
           </View>
           <View style={[s.progressContainer, { marginTop: 10 }]}>
             <View style={[s.progressTrack, { backgroundColor: 'rgba(255,255,255,0.04)' }]}>
@@ -311,7 +311,7 @@ export function EduFacilities({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >

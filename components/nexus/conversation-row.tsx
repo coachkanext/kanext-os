@@ -22,10 +22,10 @@ const TYPE_ICONS: Record<ConversationType, IconSymbolName> = {
 };
 
 const TYPE_COLORS: Record<ConversationType, string> = {
-  chat: '#f5f5f5',
-  eval: '#f5f5f5',
-  sim: '#f5f5f5',
-  'game-ops': '#6e6e6e',
+  chat: '#FFFFFF',
+  eval: '#FFFFFF',
+  sim: '#FFFFFF',
+  'game-ops': '#A1A1AA',
 };
 
 interface ConversationRowProps {

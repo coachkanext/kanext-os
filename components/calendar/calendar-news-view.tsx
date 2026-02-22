@@ -25,7 +25,7 @@ export function CalendarNewsView({ colors, accent }: Props) {
           {/* Thumbnail placeholder (16:9) */}
           <View style={styles.thumbnail}>
             <LinearGradient
-              colors={['#1a1a2e', '#16213e']}
+              colors={['#0B0F14', '#0B0F14']}
               style={styles.thumbnailGradient}
             >
               <IconSymbol name="play.circle.fill" size={40} color="rgba(255,255,255,0.5)" />

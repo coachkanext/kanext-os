@@ -1,0 +1,1695 @@
+{
+  "engine_version": "v1.0-boxscore",
+  "run_timestamp": "2026-02-20T16:28:14.928907",
+  "players": [
+    {
+      "player_id": "9dd0d311-29fc-44dd-a5ca-1b8cd713e02e",
+      "player_name": "Terrence Shannon",
+      "level_id": "njcaa_d2",
+      "season_id": "2025-26",
+      "gp": 26,
+      "minutes_total": 449.0,
+      "mpg": 29.9,
+      "raw_inputs": {
+        "box_stats": {
+          "points": 459,
+          "fga": 264,
+          "fta": 142,
+          "three_pa": 92,
+          "oreb": 26,
+          "dreb": 110,
+          "ast": 124,
+          "tov": 22,
+          "stl": 102,
+          "blk": 9,
+          "pf": 11
+        },
+        "possession_proxies": {
+          "avg_team_poss_per_game": 63.3,
+          "per_100_scalar": 1.4286
+        }
+      },
+      "step_1_season_aggregation": {
+        "player_season_stats": {
+          "pts_pg": 17.7,
+          "reb_pg": 5.2,
+          "ast_pg": 4.8,
+          "stl_pg": 3.9,
+          "blk_pg": 0.3,
+          "to_pg": 0.8,
+          "pf_pg": 0.4,
+          "fg_pct": 0.587,
+          "three_pct": 0.435,
+          "ft_pct": 0.768,
+          "fga_pg": 10.2,
+          "three_pa_pg": 3.5,
+          "fta_pg": 5.5,
+          "oreb_pg": 1.0,
+          "dreb_pg": 4.2,
+          "minutes_pg": 29.9,
+          "games_played": 26
+        },
+        "minutes_sentinel_fix_applied": false,
+        "any_validation_flags": []
+      },
+      "step_2_distribution_context": {
+        "level_population_n": 1466,
+        "for_each_metric": {
+          "three_pct": {
+            "mu_level": 0.289823,
+            "sigma0_level": 0.169037,
+            "sigma_v_final": 0.086356,
+            "sigma_floor": 0.016904,
+            "sigma_formula_components": {
+              "N": 91,
+              "sqrtN": 9.5394,
+              "volume_correction_term": 4.8734,
+              "pre_floor_sigma": 0.086356
+            }
+          },
+          "three_pa_pg": {
+            "mu_level": 2.185812,
+            "sigma0_level": 1.932194,
+            "sigma_v_final": 1.037755,
+            "sigma_floor": 0.193219,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 1.037755
+            }
+          },
+          "two_pt_pct": {
+            "mu_level": 0.49257,
+            "sigma0_level": 0.128453,
+            "sigma_v_final": 0.064961,
+            "sigma_floor": 0.012845,
+            "sigma_formula_components": {
+              "N": 174,
+              "sqrtN": 13.1909,
+              "volume_correction_term": 6.6708,
+              "pre_floor_sigma": 0.064961
+            }
+          },
+          "ft_pct": {
+            "mu_level": 0.655032,
+            "sigma0_level": 0.187553,
+            "sigma_v_final": 0.095079,
+            "sigma_floor": 0.018755,
+            "sigma_formula_components": {
+              "N": 143,
+              "sqrtN": 11.9583,
+              "volume_correction_term": 6.0622,
+              "pre_floor_sigma": 0.095079
+            }
+          },
+          "two_fga_pg": {
+            "mu_level": 4.183356,
+            "sigma0_level": 2.870478,
+            "sigma_v_final": 1.541694,
+            "sigma_floor": 0.287048,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 1.541694
+            }
+          },
+          "foul_draw_rate": {
+            "mu_level": 0.328568,
+            "sigma0_level": 0.225664,
+            "sigma_v_final": 0.11368,
+            "sigma_floor": 0.022566,
+            "sigma_formula_components": {
+              "N": 265,
+              "sqrtN": 16.2788,
+              "volume_correction_term": 8.2006,
+              "pre_floor_sigma": 0.11368
+            }
+          },
+          "ast_pg": {
+            "mu_level": 1.465962,
+            "sigma0_level": 1.260208,
+            "sigma_v_final": 0.67684,
+            "sigma_floor": 0.126021,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.67684
+            }
+          },
+          "tov_pg": {
+            "mu_level": 1.33472,
+            "sigma0_level": 0.815907,
+            "sigma_v_final": 0.438212,
+            "sigma_floor": 0.081591,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.438212
+            }
+          },
+          "ast_to_ratio": {
+            "mu_level": 1.16907,
+            "sigma0_level": 0.944914,
+            "sigma_v_final": 0.5075,
+            "sigma_floor": 0.094491,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.5075
+            }
+          },
+          "stl_per_100": {
+            "mu_level": 1.143442,
+            "sigma0_level": 0.900529,
+            "sigma_v_final": 0.483662,
+            "sigma_floor": 0.090053,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.483662
+            }
+          },
+          "pf_per_100": {
+            "mu_level": 2.264861,
+            "sigma0_level": 1.100327,
+            "sigma_v_final": 0.59097,
+            "sigma_floor": 0.110033,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.59097
+            }
+          },
+          "blk_per_100": {
+            "mu_level": 0.443188,
+            "sigma0_level": 0.61876,
+            "sigma_v_final": 0.332327,
+            "sigma_floor": 0.061876,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.332327
+            }
+          },
+          "dreb_pg": {
+            "mu_level": 2.447408,
+            "sigma0_level": 1.508908,
+            "sigma_v_final": 0.810414,
+            "sigma_floor": 0.150891,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.810414
+            }
+          },
+          "oreb_pg": {
+            "mu_level": 1.039359,
+            "sigma0_level": 0.83313,
+            "sigma_v_final": 0.447463,
+            "sigma_floor": 0.083313,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.447463
+            }
+          },
+          "minutes_pg": {
+            "mu_level": 0,
+            "sigma0_level": 0,
+            "sigma_v_final": 0,
+            "sigma_floor": null,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": null
+            }
+          }
+        }
+      },
+      "step_3_zscores": {
+        "for_each_metric": {
+          "three_pct": {
+            "value": 0.435,
+            "z": 1.4035,
+            "z_capped": 1.368,
+            "cap": "5*tanh(z/5)"
+          },
+          "three_pa_pg": {
+            "value": 3.5,
+            "z": 0.7483,
+            "z_capped": 0.743,
+            "cap": "5*tanh(z/5)"
+          },
+          "two_pt_pct": {
+            "value": 0.6664,
+            "z": 2.4251,
+            "z_capped": 2.251,
+            "cap": "5*tanh(z/5)"
+          },
+          "ft_pct": {
+            "value": 0.768,
+            "z": 1.0553,
+            "z_capped": 1.04,
+            "cap": "5*tanh(z/5)"
+          },
+          "two_fga_pg": {
+            "value": 6.7,
+            "z": 0.9646,
+            "z_capped": 0.953,
+            "cap": "5*tanh(z/5)"
+          },
+          "foul_draw_rate": {
+            "value": 0.5392,
+            "z": 1.7351,
+            "z_capped": 1.669,
+            "cap": "5*tanh(z/5)"
+          },
+          "ast_pg": {
+            "value": 4.8,
+            "z": 2.9108,
+            "z_capped": 2.621,
+            "cap": "5*tanh(z/5)"
+          },
+          "tov_pg": {
+            "value": 0.8,
+            "z": 0.721,
+            "z_capped": 0.716,
+            "cap": "5*tanh(z/5)"
+          },
+          "ast_to_ratio": {
+            "value": 6.0,
+            "z": 5.6249,
+            "z_capped": 4.046,
+            "cap": "5*tanh(z/5)"
+          },
+          "stl_per_100": {
+            "value": 5.5714,
+            "z": 5.4099,
+            "z_capped": 3.97,
+            "cap": "5*tanh(z/5)"
+          },
+          "pf_per_100": {
+            "value": 0.5714,
+            "z": 1.6933,
+            "z_capped": 1.631,
+            "cap": "5*tanh(z/5)"
+          },
+          "blk_per_100": {
+            "value": 0.4286,
+            "z": -0.026,
+            "z_capped": -0.026,
+            "cap": "5*tanh(z/5)"
+          },
+          "dreb_pg": {
+            "value": 4.2,
+            "z": 1.2779,
+            "z_capped": 1.251,
+            "cap": "5*tanh(z/5)"
+          },
+          "oreb_pg": {
+            "value": 1.0,
+            "z": -0.052,
+            "z_capped": -0.052,
+            "cap": "5*tanh(z/5)"
+          },
+          "minutes_pg": {
+            "value": 29.9,
+            "z": 0,
+            "z_capped": 0,
+            "cap": "5*tanh(z/5)"
+          }
+        },
+        "z_summary": {
+          "z_min": -0.052,
+          "z_max": 4.046,
+          "z_p99_level": 2.23
+        }
+      },
+      "step_4_skillkr_by_cluster": {
+        "clusters": {
+          "Shooting": {
+            "submetrics_used": [
+              "three_pct",
+              "three_pa_pg",
+              "two_pt_pct",
+              "ft_pct"
+            ],
+            "metric_weights": {
+              "three_pct": 0.42,
+              "three_pa_pg": 0.18,
+              "two_pt_pct": 0.25,
+              "ft_pct": 0.15
+            },
+            "pre_badge_cluster_kr": 83.0
+          },
+          "Finishing": {
+            "submetrics_used": [
+              "two_pt_pct",
+              "two_fga_pg",
+              "foul_draw_rate"
+            ],
+            "metric_weights": {
+              "two_pt_pct": 0.55,
+              "two_fga_pg": 0.25,
+              "foul_draw_rate": 0.2
+            },
+            "pre_badge_cluster_kr": 88.1
+          },
+          "Playmaking": {
+            "submetrics_used": [
+              "ast_pg",
+              "tov_pg",
+              "ast_to_ratio"
+            ],
+            "metric_weights": {
+              "ast_pg": 0.45,
+              "tov_pg": 0.3,
+              "ast_to_ratio": 0.25
+            },
+            "pre_badge_cluster_kr": 89.0
+          },
+          "OnBallDefense": {
+            "submetrics_used": [
+              "stl_per_100",
+              "pf_per_100"
+            ],
+            "metric_weights": {
+              "stl_per_100": 0.65,
+              "pf_per_100": 0.35
+            },
+            "pre_badge_cluster_kr": 95.1
+          },
+          "TeamDefense": {
+            "submetrics_used": [
+              "blk_per_100",
+              "pf_per_100",
+              "dreb_pg"
+            ],
+            "metric_weights": {
+              "blk_per_100": 0.5,
+              "pf_per_100": 0.2,
+              "dreb_pg": 0.3
+            },
+            "pre_badge_cluster_kr": 66.7
+          },
+          "Rebounding": {
+            "submetrics_used": [
+              "dreb_pg",
+              "oreb_pg"
+            ],
+            "metric_weights": {
+              "dreb_pg": 0.55,
+              "oreb_pg": 0.45
+            },
+            "pre_badge_cluster_kr": 66.8
+          },
+          "Physical": {
+            "submetrics_used": [
+              "minutes_pg"
+            ],
+            "metric_weights": {
+              "minutes_pg": 1.0
+            },
+            "pre_badge_cluster_kr": 50.0
+          }
+        },
+        "skillkr_overall_pre_badges": 84.1
+      },
+      "step_5_off_def_rollup": {
+        "off_clusters": [
+          "Shooting",
+          "Finishing",
+          "Playmaking"
+        ],
+        "def_clusters": [
+          "OnBallDefense",
+          "TeamDefense",
+          "Rebounding",
+          "Physical"
+        ],
+        "off_cluster_weights_alpha": {
+          "Playmaking": 0.5056,
+          "Shooting": 0.3296,
+          "Finishing": 0.1648
+        },
+        "def_cluster_weights_beta": {
+          "Rebounding": 0.221,
+          "OnBallDefense": 0.5579,
+          "TeamDefense": 0.1288,
+          "Physical": 0.0923
+        },
+        "off_kr_100": 86.9,
+        "def_kr_100": 81.0,
+        "off_kr_scaled_53": 46.06,
+        "def_kr_scaled_47": 38.07,
+        "base_overall_kr": 84.1
+      },
+      "step_6_badges": {
+        "all_badges_awarded": [
+          {
+            "badge_id": "Lockdown Perimeter",
+            "badge_tier": "Silver",
+            "cluster": "OnBallDefense",
+            "trigger_metric": "OnBallDefense",
+            "trigger_value": 95.1,
+            "trigger_z": null
+          },
+          {
+            "badge_id": "Pick Dodger",
+            "badge_tier": "Silver",
+            "cluster": "OnBallDefense",
+            "trigger_metric": "OnBallDefense",
+            "trigger_value": 95.1,
+            "trigger_z": null
+          },
+          {
+            "badge_id": "Closeout King",
+            "badge_tier": "Silver",
+            "cluster": "OnBallDefense",
+            "trigger_metric": "OnBallDefense",
+            "trigger_value": 95.1,
+            "trigger_z": null
+          },
+          {
+            "badge_id": "Passing Lane Predator",
+            "badge_tier": "Bronze",
+            "cluster": "OnBallDefense",
+            "trigger_metric": "OnBallDefense",
+            "trigger_value": 95.1,
+            "trigger_z": null
+          },
+          {
+            "badge_id": "Ball Hawk",
+            "badge_tier": "Bronze",
+            "cluster": "OnBallDefense",
+            "trigger_metric": "OnBallDefense",
+            "trigger_value": 95.1,
+            "trigger_z": null
+          },
+          {
+            "badge_id": "Switch Specialist",
+            "badge_tier": "Bronze",
+            "cluster": "OnBallDefense",
+            "trigger_metric": "OnBallDefense",
+            "trigger_value": 95.1,
+            "trigger_z": null
+          }
+        ],
+        "badge_bonus_total": 3.5,
+        "final_overall_kr": 87.6
+      },
+      "sanity_checks": {
+        "alpha_sum": 1.0,
+        "beta_sum": 1.0,
+        "any_nan": false,
+        "any_out_of_range": [],
+        "notes": [
+          "Minutes coverage 58% < 70%: frame endurance disabled"
+        ]
+      }
+    },
+    {
+      "player_id": "bcfc05cd-cba2-482e-9320-abe848e02628",
+      "player_name": "AJ Dybantsa",
+      "level_id": "ncaa_d1",
+      "season_id": "2025-26",
+      "gp": 26,
+      "minutes_total": 871.0,
+      "mpg": 33.5,
+      "raw_inputs": {
+        "box_stats": {
+          "points": 644,
+          "fga": 416,
+          "fta": 221,
+          "three_pa": 98,
+          "oreb": 38,
+          "dreb": 133,
+          "ast": 98,
+          "tov": 75,
+          "stl": 30,
+          "blk": 11,
+          "pf": 34
+        },
+        "possession_proxies": {
+          "avg_team_poss_per_game": null,
+          "per_100_scalar": 1.4286
+        }
+      },
+      "step_1_season_aggregation": {
+        "player_season_stats": {
+          "pts_pg": 24.8,
+          "reb_pg": 6.6,
+          "ast_pg": 3.8,
+          "stl_pg": 1.2,
+          "blk_pg": 0.4,
+          "to_pg": 2.9,
+          "pf_pg": 1.3,
+          "fg_pct": 0.531,
+          "three_pct": 0.357,
+          "ft_pct": 0.756,
+          "fga_pg": 16.0,
+          "three_pa_pg": 3.8,
+          "fta_pg": 8.5,
+          "oreb_pg": 1.5,
+          "dreb_pg": 5.1,
+          "minutes_pg": 33.5,
+          "games_played": 26
+        },
+        "minutes_sentinel_fix_applied": false,
+        "any_validation_flags": []
+      },
+      "step_2_distribution_context": {
+        "level_population_n": 2901,
+        "for_each_metric": {
+          "three_pct": {
+            "mu_level": 0.308505,
+            "sigma0_level": 0.18231,
+            "sigma_v_final": 0.092997,
+            "sigma_floor": 0.018231,
+            "sigma_formula_components": {
+              "N": 98,
+              "sqrtN": 9.8995,
+              "volume_correction_term": 5.0498,
+              "pre_floor_sigma": 0.092997
+            }
+          },
+          "three_pa_pg": {
+            "mu_level": 2.496518,
+            "sigma0_level": 2.184007,
+            "sigma_v_final": 1.173,
+            "sigma_floor": 0.218401,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 1.173
+            }
+          },
+          "two_pt_pct": {
+            "mu_level": 0.515424,
+            "sigma0_level": 0.160141,
+            "sigma_v_final": 0.080574,
+            "sigma_floor": 0.016014,
+            "sigma_formula_components": {
+              "N": 317,
+              "sqrtN": 17.8045,
+              "volume_correction_term": 8.9582,
+              "pre_floor_sigma": 0.080574
+            }
+          },
+          "ft_pct": {
+            "mu_level": 0.696613,
+            "sigma0_level": 0.2176,
+            "sigma_v_final": 0.10978,
+            "sigma_floor": 0.02176,
+            "sigma_formula_components": {
+              "N": 221,
+              "sqrtN": 14.8661,
+              "volume_correction_term": 7.5,
+              "pre_floor_sigma": 0.10978
+            }
+          },
+          "two_fga_pg": {
+            "mu_level": 3.706343,
+            "sigma0_level": 2.696849,
+            "sigma_v_final": 1.44844,
+            "sigma_floor": 0.269685,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 1.44844
+            }
+          },
+          "foul_draw_rate": {
+            "mu_level": 0.38793,
+            "sigma0_level": 0.345413,
+            "sigma_v_final": 0.173535,
+            "sigma_floor": 0.034541,
+            "sigma_formula_components": {
+              "N": 416,
+              "sqrtN": 20.3961,
+              "volume_correction_term": 10.247,
+              "pre_floor_sigma": 0.173535
+            }
+          },
+          "ast_pg": {
+            "mu_level": 1.495932,
+            "sigma0_level": 1.373765,
+            "sigma_v_final": 0.73783,
+            "sigma_floor": 0.137376,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.73783
+            }
+          },
+          "tov_pg": {
+            "mu_level": 1.166322,
+            "sigma0_level": 0.808077,
+            "sigma_v_final": 0.434007,
+            "sigma_floor": 0.080808,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.434007
+            }
+          },
+          "ast_to_ratio": {
+            "mu_level": 1.451755,
+            "sigma0_level": 1.437348,
+            "sigma_v_final": 0.77198,
+            "sigma_floor": 0.143735,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.77198
+            }
+          },
+          "stl_per_100": {
+            "mu_level": 1.018762,
+            "sigma0_level": 0.828212,
+            "sigma_v_final": 0.444821,
+            "sigma_floor": 0.082821,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.444821
+            }
+          },
+          "pf_per_100": {
+            "mu_level": 2.682917,
+            "sigma0_level": 1.180038,
+            "sigma_v_final": 0.633782,
+            "sigma_floor": 0.118004,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.633782
+            }
+          },
+          "blk_per_100": {
+            "mu_level": 0.501403,
+            "sigma0_level": 0.703778,
+            "sigma_v_final": 0.377989,
+            "sigma_floor": 0.070378,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.377989
+            }
+          },
+          "dreb_pg": {
+            "mu_level": 2.404309,
+            "sigma0_level": 1.453702,
+            "sigma_v_final": 0.780763,
+            "sigma_floor": 0.14537,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.780763
+            }
+          },
+          "oreb_pg": {
+            "mu_level": 0.947087,
+            "sigma0_level": 0.843171,
+            "sigma_v_final": 0.452855,
+            "sigma_floor": 0.084317,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 0.452855
+            }
+          },
+          "minutes_pg": {
+            "mu_level": 21.285419,
+            "sigma0_level": 8.518575,
+            "sigma_v_final": 4.575209,
+            "sigma_floor": 0.851858,
+            "sigma_formula_components": {
+              "N": 26,
+              "sqrtN": 5.099,
+              "volume_correction_term": 2.7386,
+              "pre_floor_sigma": 4.575209
+            }
+          }
+        }
+      },
+      "step_3_zscores": {
+        "for_each_metric": {
+          "three_pct": {
+            "value": 0.357,
+            "z": 0.4776,
+            "z_capped": 0.476,
+            "cap": "5*tanh(z/5)"
+          },
+          "three_pa_pg": {
+            "value": 3.8,
+            "z": 0.8255,
+            "z_capped": 0.818,
+            "cap": "5*tanh(z/5)"
+          },
+          "two_pt_pct": {
+            "value": 0.5852,
+            "z": 0.842,
+            "z_capped": 0.834,
+            "cap": "5*tanh(z/5)"
+          },
+          "ft_pct": {
+            "value": 0.756,
+            "z": 0.5198,
+            "z_capped": 0.518,
+            "cap": "5*tanh(z/5)"
+          },
+          "two_fga_pg": {
+            "value": 12.2,
+            "z": 4.3561,
+            "z_capped": 3.51,
+            "cap": "5*tanh(z/5)"
+          },
+          "foul_draw_rate": {
+            "value": 0.5312,
+            "z": 0.8084,
+            "z_capped": 0.801,
+            "cap": "5*tanh(z/5)"
+          },
+          "ast_pg": {
+            "value": 3.8,
+            "z": 2.3198,
+            "z_capped": 2.167,
+            "cap": "5*tanh(z/5)"
+          },
+          "tov_pg": {
+            "value": 2.9,
+            "z": -2.9674,
+            "z_capped": -2.662,
+            "cap": "5*tanh(z/5)"
+          },
+          "ast_to_ratio": {
+            "value": 1.3103,
+            "z": -0.1361,
+            "z_capped": -0.136,
+            "cap": "5*tanh(z/5)"
+          },
+          "stl_per_100": {
+            "value": 1.7143,
+            "z": 1.1615,
+            "z_capped": 1.141,
+            "cap": "5*tanh(z/5)"
+          },
+          "pf_per_100": {
+            "value": 1.8571,
+            "z": 0.9679,
+            "z_capped": 0.956,
+            "cap": "5*tanh(z/5)"
+          },
+          "blk_per_100": {
+            "value": 0.5714,
+            "z": 0.1376,
+            "z_capped": 0.138,
+            "cap": "5*tanh(z/5)"
+          },
+          "dreb_pg": {
+            "value": 5.1,
+            "z": 2.5648,
+            "z_capped": 2.361,
+            "cap": "5*tanh(z/5)"
+          },
+          "oreb_pg": {
+            "value": 1.5,
+            "z": 0.907,
+            "z_capped": 0.897,
+            "cap": "5*tanh(z/5)"
+          },
+          "minutes_pg": {
+            "value": 33.5,
+            "z": 1.9832,
+            "z_capped": 1.885,
+            "cap": "5*tanh(z/5)"
+          }
+        },
+        "z_summary": {
+          "z_min": -2.662,
+          "z_max": 3.51,
+          "z_p99_level": 2.098
+        }
+      },
+      "step_4_skillkr_by_cluster": {
+        "clusters": {
+          "Shooting": {
+            "submetrics_used": [
+              "three_pct",
+              "three_pa_pg",
+              "two_pt_pct",
+              "ft_pct"
+            ],
+            "metric_weights": {
+              "three_pct": 0.42,
+              "three_pa_pg": 0.18,
+              "two_pt_pct": 0.25,
+              "ft_pct": 0.15
+            },
+            "pre_badge_cluster_kr": 68.0
+          },
+          "Finishing": {
+            "submetrics_used": [
+              "two_pt_pct",
+              "two_fga_pg",
+              "foul_draw_rate"
+            ],
+            "metric_weights": {
+              "two_pt_pct": 0.55,
+              "two_fga_pg": 0.25,
+              "foul_draw_rate": 0.2
+            },
+            "pre_badge_cluster_kr": 79.3
+          },
+          "Playmaking": {
+            "submetrics_used": [
+              "ast_pg",
+              "tov_pg",
+              "ast_to_ratio"
+            ],
+            "metric_weights": {
+              "ast_pg": 0.45,
+              "tov_pg": 0.3,
+              "ast_to_ratio": 0.25
+            },
+            "pre_badge_cluster_kr": 54.5
+          },
+          "OnBallDefense": {
+            "submetrics_used": [
+              "stl_per_100",
+              "pf_per_100"
+            ],
+            "metric_weights": {
+              "stl_per_100": 0.65,
+              "pf_per_100": 0.35
+            },
+            "pre_badge_cluster_kr": 78.4
+          },
+          "TeamDefense": {
+            "submetrics_used": [
+              "blk_per_100",
+              "pf_per_100",
+              "dreb_pg"
+            ],
+            "metric_weights": {
+              "blk_per_100": 0.5,
+              "pf_per_100": 0.2,
+              "dreb_pg": 0.3
+            },
+            "pre_badge_cluster_kr": 70.6
+          },
+          "Rebounding": {
+            "submetrics_used": [
+              "dreb_pg",
+              "oreb_pg"
+            ],
+            "metric_weights": {
+              "dreb_pg": 0.55,
+              "oreb_pg": 0.45
+            },
+            "pre_badge_cluster_kr": 85.5
+          },
+          "Physical": {
+            "submetrics_used": [
+              "minutes_pg"
+            ],
+            "metric_weights": {
+              "minutes_pg": 1.0
+            },
+            "pre_badge_cluster_kr": 90.6
+          }
+        },
+        "skillkr_overall_pre_badges": 75.8
+      },
+      "step_5_off_def_rollup": {
+        "off_clusters": [
+          "Shooting",
+          "Finishing",
+          "Playmaking"
+        ],
+        "def_clusters": [
+          "OnBallDefense",
+          "TeamDefense",
+          "Rebounding",
+          "Physical"
+        ],
+        "off_cluster_weights_alpha": {
+          "Playmaking": 0.1675,
+          "Shooting": 0.3892,
+          "Finishing": 0.4433
+        },
+        "def_cluster_weights_beta": {
+          "Rebounding": 0.2941,
+          "OnBallDefense": 0.2353,
+          "TeamDefense": 0.2353,
+          "Physical": 0.2353
+        },
+        "off_kr_100": 70.7,
+        "def_kr_100": 81.5,
+        "off_kr_scaled_53": 37.47,
+        "def_kr_scaled_47": 38.3,
+        "base_overall_kr": 75.8
+      },
+      "step_6_badges": {
+        "all_badges_awarded": [],
+        "badge_bonus_total": 0.0,
+        "final_overall_kr": 75.8
+      },
+      "sanity_checks": {
+        "alpha_sum": 1.0,
+        "beta_sum": 1.0,
+        "any_nan": false,
+        "any_out_of_range": [],
+        "notes": []
+      }
+    }
+  ],
+  "samples": {
+    "ncaa_d1": [
+      {
+        "player_id": "f7213b30-40d7-46e5-9b09-9041abf3de9d",
+        "level_id": "ncaa_d1",
+        "gp": 6,
+        "mpg": 7.5,
+        "base_overall_kr": 40.2,
+        "final_overall_kr": 40.2,
+        "skillkr_overall_pre_badges": 40.2,
+        "z_summary": {
+          "z_min": -0.99,
+          "z_max": 0.382
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "59f88d2c-dd16-48c4-8e55-14f8c01056b7",
+        "level_id": "ncaa_d1",
+        "gp": 4,
+        "mpg": 30.5,
+        "base_overall_kr": 55.3,
+        "final_overall_kr": 55.3,
+        "skillkr_overall_pre_badges": 55.3,
+        "z_summary": {
+          "z_min": -1.352,
+          "z_max": 1.619
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "a63dbf4c-0c93-48ac-b65e-dfd4ed52bd83",
+        "level_id": "ncaa_d1",
+        "gp": 9,
+        "mpg": 17.9,
+        "base_overall_kr": 38.5,
+        "final_overall_kr": 38.5,
+        "skillkr_overall_pre_badges": 38.5,
+        "z_summary": {
+          "z_min": -1.174,
+          "z_max": 0.738
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "587b32c0-b671-4a57-a8e4-d3f100382192",
+        "level_id": "ncaa_d1",
+        "gp": 6,
+        "mpg": 20.3,
+        "base_overall_kr": 51.0,
+        "final_overall_kr": 51.0,
+        "skillkr_overall_pre_badges": 51.0,
+        "z_summary": {
+          "z_min": -0.481,
+          "z_max": 1.005
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "3e5f42ed-d991-4271-b105-f9d50fa7f098",
+        "level_id": "ncaa_d1",
+        "gp": 3,
+        "mpg": 26.7,
+        "base_overall_kr": 55.5,
+        "final_overall_kr": 55.5,
+        "skillkr_overall_pre_badges": 55.5,
+        "z_summary": {
+          "z_min": -0.401,
+          "z_max": 1.385
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "c18c9bc7-d639-4963-b167-8e5afb307f33",
+        "level_id": "ncaa_d1",
+        "gp": 24,
+        "mpg": 31.2,
+        "base_overall_kr": 70.5,
+        "final_overall_kr": 74.0,
+        "skillkr_overall_pre_badges": 70.5,
+        "z_summary": {
+          "z_min": -1.358,
+          "z_max": 3.852
+        },
+        "badge_bonus_total": 3.5
+      },
+      {
+        "player_id": "ca4ab579-87cf-414e-907b-4ff472ed0b26",
+        "level_id": "ncaa_d1",
+        "gp": 27,
+        "mpg": 25.0,
+        "base_overall_kr": 56.4,
+        "final_overall_kr": 56.4,
+        "skillkr_overall_pre_badges": 56.4,
+        "z_summary": {
+          "z_min": -0.943,
+          "z_max": 1.29
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "a00c1dd2-a101-41ca-8a67-51d7fa25552b",
+        "level_id": "ncaa_d1",
+        "gp": 24,
+        "mpg": 17.7,
+        "base_overall_kr": 45.0,
+        "final_overall_kr": 45.0,
+        "skillkr_overall_pre_badges": 45.0,
+        "z_summary": {
+          "z_min": -1.469,
+          "z_max": 1.066
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "95fbfdc3-dd3f-466f-91f9-aa750fce49e2",
+        "level_id": "ncaa_d1",
+        "gp": 10,
+        "mpg": 35.1,
+        "base_overall_kr": 57.0,
+        "final_overall_kr": 57.0,
+        "skillkr_overall_pre_badges": 57.0,
+        "z_summary": {
+          "z_min": -1.916,
+          "z_max": 2.316
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "e58dffa2-1565-4d97-9d7e-536c10420085",
+        "level_id": "ncaa_d1",
+        "gp": 6,
+        "mpg": 32.5,
+        "base_overall_kr": 59.1,
+        "final_overall_kr": 59.1,
+        "skillkr_overall_pre_badges": 59.1,
+        "z_summary": {
+          "z_min": -1.009,
+          "z_max": 1.253
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "95bd06f5-69da-4a7e-8585-4450d7368024",
+        "level_id": "ncaa_d1",
+        "gp": 6,
+        "mpg": 30.0,
+        "base_overall_kr": 53.6,
+        "final_overall_kr": 53.6,
+        "skillkr_overall_pre_badges": 53.6,
+        "z_summary": {
+          "z_min": -0.668,
+          "z_max": 0.752
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "faa3d66d-b656-4887-8fab-0794106364c7",
+        "level_id": "ncaa_d1",
+        "gp": 6,
+        "mpg": 18.5,
+        "base_overall_kr": 50.3,
+        "final_overall_kr": 50.3,
+        "skillkr_overall_pre_badges": 50.3,
+        "z_summary": {
+          "z_min": -0.448,
+          "z_max": 0.887
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "6798332e-8896-4500-a88b-9fd75af5931d",
+        "level_id": "ncaa_d1",
+        "gp": 5,
+        "mpg": 23.0,
+        "base_overall_kr": 50.0,
+        "final_overall_kr": 50.0,
+        "skillkr_overall_pre_badges": 50.0,
+        "z_summary": {
+          "z_min": -1.172,
+          "z_max": 2.657
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "d014ce59-988d-4150-a7a9-0a16d50e2fa3",
+        "level_id": "ncaa_d1",
+        "gp": 27,
+        "mpg": 33.6,
+        "base_overall_kr": 68.5,
+        "final_overall_kr": 68.5,
+        "skillkr_overall_pre_badges": 68.5,
+        "z_summary": {
+          "z_min": -1.973,
+          "z_max": 3.248
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "e8278073-9327-4860-b2f9-b0e3a1fa8a24",
+        "level_id": "ncaa_d1",
+        "gp": 3,
+        "mpg": 20.0,
+        "base_overall_kr": 59.0,
+        "final_overall_kr": 59.0,
+        "skillkr_overall_pre_badges": 59.0,
+        "z_summary": {
+          "z_min": -0.402,
+          "z_max": 1.046
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "b6541c2c-51a3-486c-a5b8-4b55672304f6",
+        "level_id": "ncaa_d1",
+        "gp": 4,
+        "mpg": 25.0,
+        "base_overall_kr": 45.3,
+        "final_overall_kr": 45.3,
+        "skillkr_overall_pre_badges": 45.3,
+        "z_summary": {
+          "z_min": -1.555,
+          "z_max": 0.497
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "769df2cd-3b12-4d07-a244-d5984fe1730e",
+        "level_id": "ncaa_d1",
+        "gp": 3,
+        "mpg": 25.0,
+        "base_overall_kr": 48.3,
+        "final_overall_kr": 48.3,
+        "skillkr_overall_pre_badges": 48.3,
+        "z_summary": {
+          "z_min": -0.766,
+          "z_max": 0.455
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "a65c8239-138e-41ae-91e1-d95c6ad3c2ee",
+        "level_id": "ncaa_d1",
+        "gp": 4,
+        "mpg": 25.2,
+        "base_overall_kr": 60.2,
+        "final_overall_kr": 60.2,
+        "skillkr_overall_pre_badges": 60.2,
+        "z_summary": {
+          "z_min": -1.293,
+          "z_max": 2.606
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "cb5d5bdd-b68a-456a-9095-cba38e45ce55",
+        "level_id": "ncaa_d1",
+        "gp": 4,
+        "mpg": 29.2,
+        "base_overall_kr": 48.6,
+        "final_overall_kr": 48.6,
+        "skillkr_overall_pre_badges": 48.6,
+        "z_summary": {
+          "z_min": -1.163,
+          "z_max": 0.823
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "d5635939-475c-4741-8024-782b10e972bc",
+        "level_id": "ncaa_d1",
+        "gp": 8,
+        "mpg": 10.4,
+        "base_overall_kr": 55.4,
+        "final_overall_kr": 55.4,
+        "skillkr_overall_pre_badges": 55.4,
+        "z_summary": {
+          "z_min": -0.972,
+          "z_max": 1.418
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "8476cb55-1e03-48b9-8472-cf9ce09d4ebf",
+        "level_id": "ncaa_d1",
+        "gp": 4,
+        "mpg": 13.0,
+        "base_overall_kr": 48.5,
+        "final_overall_kr": 48.5,
+        "skillkr_overall_pre_badges": 48.5,
+        "z_summary": {
+          "z_min": -1.684,
+          "z_max": 0.961
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "0487947f-71a5-457d-a53f-53a0af261db7",
+        "level_id": "ncaa_d1",
+        "gp": 7,
+        "mpg": 30.0,
+        "base_overall_kr": 52.5,
+        "final_overall_kr": 52.5,
+        "skillkr_overall_pre_badges": 52.5,
+        "z_summary": {
+          "z_min": -1.053,
+          "z_max": 1.274
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "829f609e-8bcc-40fb-b7f5-9198899dc64b",
+        "level_id": "ncaa_d1",
+        "gp": 4,
+        "mpg": 7.8,
+        "base_overall_kr": 52.4,
+        "final_overall_kr": 52.4,
+        "skillkr_overall_pre_badges": 52.4,
+        "z_summary": {
+          "z_min": -0.687,
+          "z_max": 0.978
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "cadf878a-1561-4033-98fb-2beb8f0a22f4",
+        "level_id": "ncaa_d1",
+        "gp": 6,
+        "mpg": 17.3,
+        "base_overall_kr": 51.3,
+        "final_overall_kr": 51.3,
+        "skillkr_overall_pre_badges": 51.3,
+        "z_summary": {
+          "z_min": -0.891,
+          "z_max": 1.579
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "81e3e4b7-719e-4144-b1b4-d51f3a889592",
+        "level_id": "ncaa_d1",
+        "gp": 9,
+        "mpg": 34.1,
+        "base_overall_kr": 70.5,
+        "final_overall_kr": 70.5,
+        "skillkr_overall_pre_badges": 70.5,
+        "z_summary": {
+          "z_min": -1.286,
+          "z_max": 1.729
+        },
+        "badge_bonus_total": 0.0
+      }
+    ],
+    "njcaa_d2": [
+      {
+        "player_id": "2400a4fb-cc48-40f2-9790-312400c1882f",
+        "level_id": "njcaa_d2",
+        "gp": 13,
+        "mpg": 28.0,
+        "base_overall_kr": 50.1,
+        "final_overall_kr": 50.1,
+        "skillkr_overall_pre_badges": 50.1,
+        "z_summary": {
+          "z_min": -1.821,
+          "z_max": 2.17
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "349be15a-29c9-495a-89d7-0634cab23731",
+        "level_id": "njcaa_d2",
+        "gp": 6,
+        "mpg": 23.2,
+        "base_overall_kr": 43.6,
+        "final_overall_kr": 43.6,
+        "skillkr_overall_pre_badges": 43.6,
+        "z_summary": {
+          "z_min": -0.939,
+          "z_max": 0.824
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "70d6576a-c148-414c-a103-1344c189d75f",
+        "level_id": "njcaa_d2",
+        "gp": 9,
+        "mpg": 8.6,
+        "base_overall_kr": 44.6,
+        "final_overall_kr": 44.6,
+        "skillkr_overall_pre_badges": 44.6,
+        "z_summary": {
+          "z_min": -1.202,
+          "z_max": 0.736
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "a6c9f11d-fb46-430f-b7a3-1c094ed87831",
+        "level_id": "njcaa_d2",
+        "gp": 24,
+        "mpg": 33.0,
+        "base_overall_kr": 64.2,
+        "final_overall_kr": 64.2,
+        "skillkr_overall_pre_badges": 64.2,
+        "z_summary": {
+          "z_min": -1.267,
+          "z_max": 2.095
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "839dd0f8-3938-4ee3-ae5a-0461b5e99374",
+        "level_id": "njcaa_d2",
+        "gp": 16,
+        "mpg": 19.1,
+        "base_overall_kr": 51.7,
+        "final_overall_kr": 51.7,
+        "skillkr_overall_pre_badges": 51.7,
+        "z_summary": {
+          "z_min": -1.268,
+          "z_max": 1.422
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "8389e36c-33a9-44b2-afa7-dfeb9e064a99",
+        "level_id": "njcaa_d2",
+        "gp": 6,
+        "mpg": 23.7,
+        "base_overall_kr": 56.9,
+        "final_overall_kr": 56.9,
+        "skillkr_overall_pre_badges": 56.9,
+        "z_summary": {
+          "z_min": -1.001,
+          "z_max": 1.07
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "1e210e54-1ff7-4692-906c-08ef5464f9bc",
+        "level_id": "njcaa_d2",
+        "gp": 6,
+        "mpg": 35.3,
+        "base_overall_kr": 55.7,
+        "final_overall_kr": 55.7,
+        "skillkr_overall_pre_badges": 55.7,
+        "z_summary": {
+          "z_min": -0.826,
+          "z_max": 1.475
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "2d040d88-22e5-4037-a362-fa1066ccee11",
+        "level_id": "njcaa_d2",
+        "gp": 12,
+        "mpg": 17.1,
+        "base_overall_kr": 48.1,
+        "final_overall_kr": 48.1,
+        "skillkr_overall_pre_badges": 48.1,
+        "z_summary": {
+          "z_min": -0.841,
+          "z_max": 0.819
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "c29ee1e0-75b3-4298-8440-210170262741",
+        "level_id": "njcaa_d2",
+        "gp": 27,
+        "mpg": 34.1,
+        "base_overall_kr": 66.6,
+        "final_overall_kr": 66.6,
+        "skillkr_overall_pre_badges": 66.6,
+        "z_summary": {
+          "z_min": -2.459,
+          "z_max": 3.342
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "52d72b50-003b-4f7a-8192-8666ec1823fe",
+        "level_id": "njcaa_d2",
+        "gp": 22,
+        "mpg": 18.8,
+        "base_overall_kr": 48.5,
+        "final_overall_kr": 48.5,
+        "skillkr_overall_pre_badges": 48.5,
+        "z_summary": {
+          "z_min": -0.697,
+          "z_max": 0.828
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "27d02fd2-0bfd-44ee-a626-90bcb5d66630",
+        "level_id": "njcaa_d2",
+        "gp": 13,
+        "mpg": 16.5,
+        "base_overall_kr": 40.0,
+        "final_overall_kr": 40.0,
+        "skillkr_overall_pre_badges": 40.0,
+        "z_summary": {
+          "z_min": -1.211,
+          "z_max": 0.438
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "2795d4bc-a39f-4682-9d0b-a197bcce579f",
+        "level_id": "njcaa_d2",
+        "gp": 15,
+        "mpg": 21.7,
+        "base_overall_kr": 50.0,
+        "final_overall_kr": 50.0,
+        "skillkr_overall_pre_badges": 50.0,
+        "z_summary": {
+          "z_min": -1.515,
+          "z_max": 1.438
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "9e9ea9b1-a8e2-45f9-bfd4-bd4cef53bb97",
+        "level_id": "njcaa_d2",
+        "gp": 12,
+        "mpg": 23.1,
+        "base_overall_kr": 59.2,
+        "final_overall_kr": 59.2,
+        "skillkr_overall_pre_badges": 59.2,
+        "z_summary": {
+          "z_min": -0.669,
+          "z_max": 1.407
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "1457788b-1599-4429-bde0-d2486069805d",
+        "level_id": "njcaa_d2",
+        "gp": 7,
+        "mpg": 16.0,
+        "base_overall_kr": 50.0,
+        "final_overall_kr": 50.0,
+        "skillkr_overall_pre_badges": 50.0,
+        "z_summary": {
+          "z_min": -0.872,
+          "z_max": 0.727
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "98ea5984-7eca-4e6f-a93c-e34056708290",
+        "level_id": "njcaa_d2",
+        "gp": 4,
+        "mpg": 20.0,
+        "base_overall_kr": 46.3,
+        "final_overall_kr": 46.3,
+        "skillkr_overall_pre_badges": 46.3,
+        "z_summary": {
+          "z_min": -1.051,
+          "z_max": 0.871
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "31e01652-8c91-490e-a5c1-11ed04c847cc",
+        "level_id": "njcaa_d2",
+        "gp": 3,
+        "mpg": 15.0,
+        "base_overall_kr": 49.4,
+        "final_overall_kr": 49.4,
+        "skillkr_overall_pre_badges": 49.4,
+        "z_summary": {
+          "z_min": -0.388,
+          "z_max": 0.753
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "2c0fe986-deed-44b3-bd60-eebc7a0828b9",
+        "level_id": "njcaa_d2",
+        "gp": 27,
+        "mpg": 33.7,
+        "base_overall_kr": 65.6,
+        "final_overall_kr": 65.6,
+        "skillkr_overall_pre_badges": 65.6,
+        "z_summary": {
+          "z_min": -1.524,
+          "z_max": 2.334
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "0d82f99b-dde8-4468-b1b9-00cf6a1468b5",
+        "level_id": "njcaa_d2",
+        "gp": 26,
+        "mpg": 29.3,
+        "base_overall_kr": 63.2,
+        "final_overall_kr": 63.2,
+        "skillkr_overall_pre_badges": 63.2,
+        "z_summary": {
+          "z_min": -2.552,
+          "z_max": 2.532
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "109d4b89-71c5-4dae-98c6-8860f17e3f17",
+        "level_id": "njcaa_d2",
+        "gp": 4,
+        "mpg": 7.0,
+        "base_overall_kr": 45.6,
+        "final_overall_kr": 45.6,
+        "skillkr_overall_pre_badges": 45.6,
+        "z_summary": {
+          "z_min": -0.374,
+          "z_max": 0.348
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "eee2ed08-c563-4f8e-bc7c-4419e6dc5824",
+        "level_id": "njcaa_d2",
+        "gp": 25,
+        "mpg": 11.9,
+        "base_overall_kr": 49.9,
+        "final_overall_kr": 49.9,
+        "skillkr_overall_pre_badges": 49.9,
+        "z_summary": {
+          "z_min": -1.113,
+          "z_max": 1.38
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "ba36bc9d-61da-4efe-83d6-6e58708238bf",
+        "level_id": "njcaa_d2",
+        "gp": 15,
+        "mpg": 28.9,
+        "base_overall_kr": 63.7,
+        "final_overall_kr": 63.7,
+        "skillkr_overall_pre_badges": 63.7,
+        "z_summary": {
+          "z_min": -1.931,
+          "z_max": 1.516
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "2d949264-726a-4bf0-a362-a9873b341010",
+        "level_id": "njcaa_d2",
+        "gp": 15,
+        "mpg": 16.4,
+        "base_overall_kr": 48.0,
+        "final_overall_kr": 48.0,
+        "skillkr_overall_pre_badges": 48.0,
+        "z_summary": {
+          "z_min": -0.784,
+          "z_max": 2.132
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "1ee77422-2449-4f73-be85-08886ac5ff24",
+        "level_id": "njcaa_d2",
+        "gp": 10,
+        "mpg": 15.8,
+        "base_overall_kr": 45.3,
+        "final_overall_kr": 45.3,
+        "skillkr_overall_pre_badges": 45.3,
+        "z_summary": {
+          "z_min": -1.05,
+          "z_max": 1.083
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "aeefdb3a-44f6-4818-ba9e-878571108970",
+        "level_id": "njcaa_d2",
+        "gp": 24,
+        "mpg": 16.8,
+        "base_overall_kr": 50.5,
+        "final_overall_kr": 50.5,
+        "skillkr_overall_pre_badges": 50.5,
+        "z_summary": {
+          "z_min": -1.0,
+          "z_max": 1.648
+        },
+        "badge_bonus_total": 0.0
+      },
+      {
+        "player_id": "243a4877-92b0-4b5a-a137-dd6bc12f2b1a",
+        "level_id": "njcaa_d2",
+        "gp": 7,
+        "mpg": 23.4,
+        "base_overall_kr": 54.1,
+        "final_overall_kr": 54.1,
+        "skillkr_overall_pre_badges": 54.1,
+        "z_summary": {
+          "z_min": -0.732,
+          "z_max": 1.409
+        },
+        "badge_bonus_total": 0.0
+      }
+    ]
+  }
+}

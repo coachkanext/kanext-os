@@ -25,10 +25,10 @@ const VIEWS: { id: ViewId; label: string }[] = [
 type GridCategory = 'OEM Works' | 'Premier Tuner' | 'League-Owned' | 'KaNeXT Works';
 
 const CATEGORY_COLOR: Record<GridCategory, string> = {
-  'OEM Works': '#3B82F6',
+  'OEM Works': '#1D9BF0',
   'Premier Tuner': '#F59E0B',
-  'League-Owned': '#6B7280',
-  'KaNeXT Works': '#FF5555',
+  'League-Owned': '#A1A1AA',
+  'KaNeXT Works': '#1D9BF0',
 };
 
 const OFFICIALS = [
@@ -363,7 +363,7 @@ export function CompPeople({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >
@@ -563,7 +563,7 @@ const s = StyleSheet.create({
     marginTop: 10,
     paddingTop: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
   },
   territoriesLabel: {
     fontSize: 12,

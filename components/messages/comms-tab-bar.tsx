@@ -50,7 +50,7 @@ export function CommsTabBar({ state, navigation }: BottomTabBarProps) {
                 <ThemedText
                   style={[
                     styles.tabText,
-                    { color: isFocused ? '#f5f5f5' : '#555' },
+                    { color: isFocused ? '#FFFFFF' : '#555' },
                   ]}
                 >
                   {label}
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     paddingHorizontal: Spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   tabRow: {
     flexDirection: 'row',
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 2.5,
     borderRadius: 1.25,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     marginTop: 4,
   },
 });

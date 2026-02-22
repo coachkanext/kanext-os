@@ -17,7 +17,7 @@ interface Props {
   colors: Record<string, string>;
 }
 
-const ACCENT = '#14B8A6';
+const ACCENT = '#1D9BF0';
 
 const STATUS_COLORS: Record<string, string> = {
   open: '#22C55E',
@@ -108,7 +108,7 @@ export function EduCatalogSheet({ visible, onClose, colors }: Props) {
                     </Text>
                   </View>
                 </View>
-                <View style={[styles.statusDot, { backgroundColor: STATUS_COLORS[prog.status] ?? '#6B7280' }]} />
+                <View style={[styles.statusDot, { backgroundColor: STATUS_COLORS[prog.status] ?? '#A1A1AA' }]} />
               </View>
 
               {expanded && (
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   programEnrollment: { fontSize: 11, fontWeight: '500', letterSpacing: 0.1 },
   statusDot: { width: 8, height: 8, borderRadius: 4 },
 
-  detailSection: { marginTop: 12, gap: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.06)', paddingTop: 12 },
+  detailSection: { marginTop: 12, gap: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#2F3336', paddingTop: 12 },
   detailRow: { flexDirection: 'row', justifyContent: 'space-between' },
   detailLabel: { fontSize: 12, fontWeight: '500', letterSpacing: 0.1 },
   detailValue: { fontSize: 12, fontWeight: '700', letterSpacing: -0.2 },

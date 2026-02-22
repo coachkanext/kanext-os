@@ -122,7 +122,7 @@ function GameRow({ game, colors }: { game: VideoGame; colors: typeof Colors.ligh
 }
 
 function ClipRow({ clip, colors }: { clip: VideoClip; colors: typeof Colors.light }) {
-  const typeColor = clip.type === 'highlight' ? '#22C55E' : clip.type === 'breakdown' ? '#3B82F6' : clip.type === 'scout' ? '#F59E0B' : '#8B5CF6';
+  const typeColor = clip.type === 'highlight' ? '#22C55E' : clip.type === 'breakdown' ? '#1D9BF0' : clip.type === 'scout' ? '#F59E0B' : '#1D9BF0';
   return (
     <Pressable
       style={({ pressed }) => [
@@ -214,7 +214,7 @@ const cardStyles = StyleSheet.create({
   typeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   metaText: { fontSize: 12 },
-  metaDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#424242' },
+  metaDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#52525B' },
   tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 2 },
   tagChip: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
   tagText: { fontSize: 10, fontWeight: '500' },

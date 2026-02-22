@@ -196,15 +196,15 @@ export const SAVED_SIMULATIONS: SavedSimulation[] = [
 // =============================================================================
 
 export const SIM_TYPE_CARDS: SimTypeCard[] = [
-  { id: 'game', name: 'Game Sim', icon: 'sportscourt.fill', description: 'Full game simulation vs opponent', color: '#6AA9FF' },
-  { id: 'segment', name: 'Segment Sim', icon: 'clock.fill', description: 'Simulate specific game windows', color: '#7A5CFF' },
+  { id: 'game', name: 'Game Sim', icon: 'sportscourt.fill', description: 'Full game simulation vs opponent', color: '#1D9BF0' },
+  { id: 'segment', name: 'Segment Sim', icon: 'clock.fill', description: 'Simulate specific game windows', color: '#1D9BF0' },
   { id: 'end-game', name: 'End-Game', icon: 'timer', description: 'Late-game decision tree', color: '#EF4444' },
   { id: 'system-sweep', name: 'System Sweep', icon: 'gearshape.2.fill', description: 'Test OSIE/DSIE combos', color: '#F59E0B' },
   { id: 'lineup-sandbox', name: 'Lineup Sandbox', icon: 'person.3.fill', description: 'Compare lineup combinations', color: '#22C55E' },
   { id: 'season', name: 'Season Sim', icon: 'calendar', description: 'Project remaining schedule', color: '#FFFFFF' },
-  { id: 'conference-postseason', name: 'Conf / Postseason', icon: 'trophy.fill', description: 'Bracket paths & championship odds', color: '#06B6D4' },
-  { id: 'counterfactual-roster', name: 'Counterfactual', icon: 'person.badge.plus', description: 'What-if roster changes', color: '#C2185B' },
-  { id: 'practice-transfer', name: 'Practice Transfer', icon: 'arrow.triangle.swap', description: 'Execution constraints impact', color: '#8B5CF6' },
+  { id: 'conference-postseason', name: 'Conf / Postseason', icon: 'trophy.fill', description: 'Bracket paths & championship odds', color: '#1D9BF0' },
+  { id: 'counterfactual-roster', name: 'Counterfactual', icon: 'person.badge.plus', description: 'What-if roster changes', color: '#1D9BF0' },
+  { id: 'practice-transfer', name: 'Practice Transfer', icon: 'arrow.triangle.swap', description: 'Execution constraints impact', color: '#1D9BF0' },
 ];
 
 // =============================================================================
@@ -380,27 +380,27 @@ export function getVolatilityLabel(volatility: string): string {
 
 export function getConfidenceColor(confidence: string): string {
   const colors: Record<string, string> = {
-    high: '#f5f5f5',
-    medium: '#6e6e6e',
-    low: '#555555',
+    high: '#FFFFFF',
+    medium: '#A1A1AA',
+    low: '#52525B',
   };
-  return colors[confidence] || '#6e6e6e';
+  return colors[confidence] || '#A1A1AA';
 }
 
 export function getVolatilityColor(volatility: string): string {
   const colors: Record<string, string> = {
-    low: '#f5f5f5',
-    medium: '#6e6e6e',
-    high: '#555555',
+    low: '#FFFFFF',
+    medium: '#A1A1AA',
+    high: '#52525B',
   };
-  return colors[volatility] || '#6e6e6e';
+  return colors[volatility] || '#A1A1AA';
 }
 
 export function getWinProbabilityColor(winProb: number): string {
-  if (winProb >= 65) return '#f5f5f5';
-  if (winProb >= 50) return '#d4d4d4';
-  if (winProb >= 40) return '#6e6e6e';
-  return '#555555';
+  if (winProb >= 65) return '#FFFFFF';
+  if (winProb >= 50) return '#A1A1AA';
+  if (winProb >= 40) return '#A1A1AA';
+  return '#52525B';
 }
 
 export function formatMargin(margin: number): string {

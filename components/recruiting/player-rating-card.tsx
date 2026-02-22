@@ -28,13 +28,13 @@ import { getRecruitComms } from '@/data/mock-comms';
 import type { PoolPlayer } from '@/data/playerPool';
 import type { OffensiveStyle, DefensiveStyle } from '@/types';
 
-const CARD_BG = '#1A1D23';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
-const metricColor = (val: number) => val >= 75 ? '#4CAF50' : val >= 60 ? '#FF9800' : val >= 45 ? '#8A8F98' : '#EF4444';
-const confColor = (val: number) => val >= 75 ? '#4CAF50' : val >= 55 ? '#FF9800' : '#EF4444';
+const metricColor = (val: number) => val >= 75 ? '#22C55E' : val >= 60 ? '#F59E0B' : val >= 45 ? '#A1A1AA' : '#EF4444';
+const confColor = (val: number) => val >= 75 ? '#22C55E' : val >= 55 ? '#F59E0B' : '#EF4444';
 
 export function PlayerRatingCard({
   player,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   ratingLevelBadge: {
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 6,
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   ratingPosBadge: {
-    backgroundColor: '#3A3D45',
+    backgroundColor: '#2F3336',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   metricBar: {
     flexDirection: 'row',
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     borderRadius: 10,
     marginTop: 10,
     overflow: 'hidden',
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   metricDivider: {
     width: StyleSheet.hairlineWidth,
-    backgroundColor: '#4A4D55',
+    backgroundColor: '#52525B',
     marginVertical: 8,
   },
   pipelineMomentumRow: {

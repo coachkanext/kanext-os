@@ -78,7 +78,7 @@ export default function ReelViewerScreen() {
               setSaved(!saved);
             }}
           >
-            <IconSymbol name="bookmark.fill" size={28} color={saved ? '#f5f5f5' : '#fff'} />
+            <IconSymbol name="bookmark.fill" size={28} color={saved ? '#FFFFFF' : '#fff'} />
             <ThemedText style={styles.actionCount}>{saved ? reel.saves + 1 : reel.saves}</ThemedText>
           </Pressable>
 

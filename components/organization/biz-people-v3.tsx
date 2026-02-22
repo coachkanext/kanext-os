@@ -64,22 +64,22 @@ const CONTACTS = [
 const TYPE_COLORS: Record<string, string> = {
   'Full-time': '#22C55E',
   'Contract': '#F59E0B',
-  'Part-time': '#3B82F6',
+  'Part-time': '#1D9BF0',
 };
 
 const SEAT_COLORS: Record<string, string> = {
-  'Founder Seat': '#8B5CF6',
-  'Investor Seat': '#3B82F6',
-  'Advisor Seat': '#14B8A6',
+  'Founder Seat': '#1D9BF0',
+  'Investor Seat': '#1D9BF0',
+  'Advisor Seat': '#1D9BF0',
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  Investors: '#8B5CF6',
-  Partners: '#3B82F6',
+  Investors: '#1D9BF0',
+  Partners: '#1D9BF0',
   Clients: '#22C55E',
-  Press: '#EC4899',
+  Press: '#1D9BF0',
   Vendors: '#F59E0B',
-  Legal: '#6366F1',
+  Legal: '#1D9BF0',
 };
 
 // =============================================================================
@@ -232,7 +232,7 @@ export function BizPeople({ colors, accentColor, role }: Props) {
           return (
             <Pressable
               key={cat}
-              style={[s.filterPill, { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' }]}
+              style={[s.filterPill, { backgroundColor: isActive ? accentColor : '#2F3336' }]}
               onPress={() => handleCategoryPress(cat)}
             >
               <ThemedText style={[s.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
@@ -290,7 +290,7 @@ export function BizPeople({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.viewPill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handleViewPress(v.id)}
             >

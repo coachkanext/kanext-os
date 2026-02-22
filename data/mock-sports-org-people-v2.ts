@@ -133,11 +133,11 @@ export const PERSON_TYPE_LABELS: Record<PersonRecord['type'], string> = {
 };
 
 export const PERSON_TYPE_COLORS: Record<PersonRecord['type'], string> = {
-  staff: '#6AA9FF',
+  staff: '#1D9BF0',
   player: '#22C55E',
-  recruit: '#A78BFA',
+  recruit: '#1D9BF0',
   parent: '#F59E0B',
-  admin: '#8B5CF6',
+  admin: '#1D9BF0',
 };
 
 export const PERSON_STATUS_LABELS: Record<PersonRecord['status'], string> = {
@@ -148,7 +148,7 @@ export const PERSON_STATUS_LABELS: Record<PersonRecord['status'], string> = {
 
 export const PERSON_STATUS_COLORS: Record<PersonRecord['status'], string> = {
   active: '#22C55E',
-  inactive: '#8F8F8F',
+  inactive: '#A1A1AA',
   pending: '#F59E0B',
 };
 
@@ -175,7 +175,7 @@ export const AVAILABILITY_COLORS: Record<PlayerAvailability['availability'], str
   available: '#22C55E',
   limited: '#F59E0B',
   unavailable: '#EF4444',
-  hold: '#A78BFA',
+  hold: '#1D9BF0',
 };
 
 export const RECRUIT_STAGE_LABELS: Record<RecruitRecord['stage'], string> = {
@@ -188,12 +188,12 @@ export const RECRUIT_STAGE_LABELS: Record<RecruitRecord['stage'], string> = {
 };
 
 export const RECRUIT_STAGE_COLORS: Record<RecruitRecord['stage'], string> = {
-  prospect: '#8F8F8F',
-  contacted: '#6AA9FF',
-  'visit-scheduled': '#A78BFA',
+  prospect: '#A1A1AA',
+  contacted: '#1D9BF0',
+  'visit-scheduled': '#1D9BF0',
   offered: '#F59E0B',
   committed: '#22C55E',
-  signed: '#10B981',
+  signed: '#22C55E',
 };
 
 export const MEDICAL_TYPE_LABELS: Record<MedicalEntry['type'], string> = {
@@ -204,10 +204,10 @@ export const MEDICAL_TYPE_LABELS: Record<MedicalEntry['type'], string> = {
 };
 
 export const MEDICAL_TYPE_COLORS: Record<MedicalEntry['type'], string> = {
-  treatment: '#6AA9FF',
+  treatment: '#1D9BF0',
   limitation: '#F59E0B',
   rtp: '#22C55E',
-  watchlist: '#A78BFA',
+  watchlist: '#1D9BF0',
 };
 
 export const MEDICAL_SEVERITY_LABELS: Record<MedicalEntry['severity'], string> = {
@@ -234,7 +234,7 @@ export const MEDICAL_STATUS_COLORS: Record<MedicalEntry['status'], string> = {
 
 export const ONBOARDING_STATUS_COLORS: Record<string, string> = {
   complete: '#22C55E',
-  'in-progress': '#6AA9FF',
+  'in-progress': '#1D9BF0',
   blocked: '#EF4444',
 };
 
@@ -261,35 +261,35 @@ export const PEOPLE_SUB_TABS: PeopleSubTab[] = [
 
 export const DIRECTORY: PersonRecord[] = [
   // Staff — KaNeXT MBB 2025-26 (9 staff + 1 admin)
-  { id: 'p-1', name: 'Alex Morgan', type: 'staff', role: 'Head Coach / GM / AD', email: 'skalejaiye@fmu.edu', phone: '(305) 626-3161', status: 'active', avatarColor: '#003DA5', data_source: 'demo_seed' },
-  { id: 'p-2', name: 'Coach Marcus Davis', type: 'staff', role: 'Assistant Coach — Recruiting Coordinator', email: 'mdavis@fmu.edu', phone: '(305) 626-3162', status: 'active', avatarColor: '#1E40AF', data_source: 'demo_seed' },
-  { id: 'p-3', name: 'Coach Andre Williams', type: 'staff', role: 'Assistant Coach — Player Development', email: 'awilliams@fmu.edu', phone: '(305) 626-3163', status: 'active', avatarColor: '#1D4ED8', data_source: 'demo_seed' },
-  { id: 'p-4', name: 'Tyler Brooks', type: 'staff', role: 'Graduate Assistant', email: 'tbrooks@fmu.edu', phone: '(305) 626-3164', status: 'active', avatarColor: '#2563EB', data_source: 'demo_seed' },
-  { id: 'p-5', name: 'Dr. Nicole Patterson', type: 'staff', role: 'Athletic Trainer', email: 'npatterson@fmu.edu', phone: '(305) 626-3175', status: 'active', avatarColor: '#3B82F6', data_source: 'demo_seed' },
-  { id: 'p-6', name: 'Mike Reeves', type: 'staff', role: 'Strength & Conditioning Coach', email: 'mreeves@fmu.edu', phone: '(305) 626-3180', status: 'active', avatarColor: '#60A5FA', data_source: 'demo_seed' },
-  { id: 'p-7', name: 'Jordan Mitchell', type: 'staff', role: 'Video Coordinator / Analyst', email: 'jmitchell@fmu.edu', phone: '(305) 626-3185', status: 'active', avatarColor: '#93C5FD', data_source: 'demo_seed' },
-  { id: 'p-8', name: 'Lisa Chen', type: 'staff', role: 'Compliance Liaison', email: 'lchen@fmu.edu', phone: '(305) 626-3190', status: 'active', avatarColor: '#818CF8', data_source: 'demo_seed' },
-  { id: 'p-9', name: 'Dr. Robert Hayes', type: 'staff', role: 'Academic Advisor (University-shared)', email: 'rhayes@fmu.edu', phone: '(305) 626-3200', status: 'active', avatarColor: '#A78BFA', data_source: 'demo_seed' },
-  { id: 'p-10', name: 'Alex Morgan', type: 'admin', role: 'Athletic Director', email: 'skalejaiye@fmu.edu', phone: '(305) 626-3100', status: 'active', avatarColor: '#8B5CF6', data_source: 'demo_seed' },
+  { id: 'p-1', name: 'Alex Morgan', type: 'staff', role: 'Head Coach / GM / AD', email: 'skalejaiye@fmu.edu', phone: '(305) 626-3161', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-2', name: 'Coach Marcus Davis', type: 'staff', role: 'Assistant Coach — Recruiting Coordinator', email: 'mdavis@fmu.edu', phone: '(305) 626-3162', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-3', name: 'Coach Andre Williams', type: 'staff', role: 'Assistant Coach — Player Development', email: 'awilliams@fmu.edu', phone: '(305) 626-3163', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-4', name: 'Tyler Brooks', type: 'staff', role: 'Graduate Assistant', email: 'tbrooks@fmu.edu', phone: '(305) 626-3164', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-5', name: 'Dr. Nicole Patterson', type: 'staff', role: 'Athletic Trainer', email: 'npatterson@fmu.edu', phone: '(305) 626-3175', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-6', name: 'Mike Reeves', type: 'staff', role: 'Strength & Conditioning Coach', email: 'mreeves@fmu.edu', phone: '(305) 626-3180', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-7', name: 'Jordan Mitchell', type: 'staff', role: 'Video Coordinator / Analyst', email: 'jmitchell@fmu.edu', phone: '(305) 626-3185', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-8', name: 'Lisa Chen', type: 'staff', role: 'Compliance Liaison', email: 'lchen@fmu.edu', phone: '(305) 626-3190', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-9', name: 'Dr. Robert Hayes', type: 'staff', role: 'Academic Advisor (University-shared)', email: 'rhayes@fmu.edu', phone: '(305) 626-3200', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-10', name: 'Alex Morgan', type: 'admin', role: 'Athletic Director', email: 'skalejaiye@fmu.edu', phone: '(305) 626-3100', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
 
   // Players — KaNeXT MBB 2025-26 Roster (17)
   { id: 'p-11', name: 'Jalen Carter', type: 'player', role: 'Guard — #1', email: 'jcarter@fmu.edu', phone: '(305) 555-0101', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-12', name: 'Kadyn Selden', type: 'player', role: 'Guard — #2', email: 'kselden@fmu.edu', phone: '(305) 555-0102', status: 'active', avatarColor: '#16A34A', data_source: 'demo_seed' },
-  { id: 'p-13', name: 'Jean Mentor', type: 'player', role: 'Guard — #3', email: 'jmentor@fmu.edu', phone: '(305) 555-0103', status: 'active', avatarColor: '#15803D', data_source: 'demo_seed' },
-  { id: 'p-14', name: 'Woody Noel', type: 'player', role: 'Forward — #4', email: 'wnoel@fmu.edu', phone: '(305) 555-0104', status: 'active', avatarColor: '#166534', data_source: 'demo_seed' },
-  { id: 'p-15', name: 'Terrence Brewer', type: 'player', role: 'Guard — #5', email: 'tbrewer@fmu.edu', phone: '(305) 555-0105', status: 'active', avatarColor: '#14532D', data_source: 'demo_seed' },
-  { id: 'p-16', name: 'Kaleb Munir-Jones', type: 'player', role: 'Forward — #10', email: 'kmunirjones@fmu.edu', phone: '(305) 555-0106', status: 'active', avatarColor: '#059669', data_source: 'demo_seed' },
-  { id: 'p-17', name: 'Jaylen Thomas', type: 'player', role: 'Forward — #11', email: 'jthomas@fmu.edu', phone: '(305) 555-0107', status: 'active', avatarColor: '#0D9488', data_source: 'demo_seed' },
-  { id: 'p-18', name: 'Amar Asceric', type: 'player', role: 'Center — #12', email: 'aasceric@fmu.edu', phone: '(305) 555-0108', status: 'active', avatarColor: '#0F766E', data_source: 'demo_seed' },
-  { id: 'p-19', name: 'Brandon Lewis', type: 'player', role: 'Guard — #14', email: 'blewis@fmu.edu', phone: '(305) 555-0109', status: 'pending', avatarColor: '#115E59', data_source: 'demo_seed' },
-  { id: 'p-20', name: 'Jermaine Thompson', type: 'player', role: 'Guard — #15', email: 'jthompson@fmu.edu', phone: '(305) 555-0110', status: 'active', avatarColor: '#134E4A', data_source: 'demo_seed' },
-  { id: 'p-21', name: 'Esteban Moratinos', type: 'player', role: 'Forward — #20', email: 'emoratinos@fmu.edu', phone: '(305) 555-0111', status: 'active', avatarColor: '#047857', data_source: 'demo_seed' },
-  { id: 'p-22', name: 'Darnell Benbo', type: 'player', role: 'Guard — #21', email: 'dbenbo@fmu.edu', phone: '(305) 555-0112', status: 'active', avatarColor: '#065F46', data_source: 'demo_seed' },
-  { id: 'p-23', name: 'Kameron Morris', type: 'player', role: 'Forward — #22', email: 'kmorris@fmu.edu', phone: '(305) 555-0113', status: 'active', avatarColor: '#10B981', data_source: 'demo_seed' },
-  { id: 'p-24', name: 'Devon Turner', type: 'player', role: 'Guard — #24', email: 'dturner@fmu.edu', phone: '(305) 555-0114', status: 'active', avatarColor: '#34D399', data_source: 'demo_seed' },
-  { id: 'p-25', name: 'Trevon Morgan', type: 'player', role: 'Center — #30', email: 'tmorgan@fmu.edu', phone: '(305) 555-0115', status: 'active', avatarColor: '#6EE7B7', data_source: 'demo_seed' },
-  { id: 'p-26', name: 'Marcus Dues', type: 'player', role: 'Forward — #33', email: 'mdues@fmu.edu', phone: '(305) 555-0116', status: 'active', avatarColor: '#A7F3D0', data_source: 'demo_seed' },
-  { id: 'p-27', name: 'Joshua Laird', type: 'player', role: 'Center — #44', email: 'jlaird@fmu.edu', phone: '(305) 555-0117', status: 'active', avatarColor: '#D1FAE5', data_source: 'demo_seed' },
+  { id: 'p-12', name: 'Kadyn Selden', type: 'player', role: 'Guard — #2', email: 'kselden@fmu.edu', phone: '(305) 555-0102', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-13', name: 'Jean Mentor', type: 'player', role: 'Guard — #3', email: 'jmentor@fmu.edu', phone: '(305) 555-0103', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-14', name: 'Woody Noel', type: 'player', role: 'Forward — #4', email: 'wnoel@fmu.edu', phone: '(305) 555-0104', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-15', name: 'Terrence Brewer', type: 'player', role: 'Guard — #5', email: 'tbrewer@fmu.edu', phone: '(305) 555-0105', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-16', name: 'Kaleb Munir-Jones', type: 'player', role: 'Forward — #10', email: 'kmunirjones@fmu.edu', phone: '(305) 555-0106', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-17', name: 'Jaylen Thomas', type: 'player', role: 'Forward — #11', email: 'jthomas@fmu.edu', phone: '(305) 555-0107', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-18', name: 'Amar Asceric', type: 'player', role: 'Center — #12', email: 'aasceric@fmu.edu', phone: '(305) 555-0108', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-19', name: 'Brandon Lewis', type: 'player', role: 'Guard — #14', email: 'blewis@fmu.edu', phone: '(305) 555-0109', status: 'pending', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-20', name: 'Jermaine Thompson', type: 'player', role: 'Guard — #15', email: 'jthompson@fmu.edu', phone: '(305) 555-0110', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-21', name: 'Esteban Moratinos', type: 'player', role: 'Forward — #20', email: 'emoratinos@fmu.edu', phone: '(305) 555-0111', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-22', name: 'Darnell Benbo', type: 'player', role: 'Guard — #21', email: 'dbenbo@fmu.edu', phone: '(305) 555-0112', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-23', name: 'Kameron Morris', type: 'player', role: 'Forward — #22', email: 'kmorris@fmu.edu', phone: '(305) 555-0113', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-24', name: 'Devon Turner', type: 'player', role: 'Guard — #24', email: 'dturner@fmu.edu', phone: '(305) 555-0114', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-25', name: 'Trevon Morgan', type: 'player', role: 'Center — #30', email: 'tmorgan@fmu.edu', phone: '(305) 555-0115', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-26', name: 'Marcus Dues', type: 'player', role: 'Forward — #33', email: 'mdues@fmu.edu', phone: '(305) 555-0116', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-27', name: 'Joshua Laird', type: 'player', role: 'Center — #44', email: 'jlaird@fmu.edu', phone: '(305) 555-0117', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
 ];
 
 export const STAFF_SEATS: StaffSeat[] = [

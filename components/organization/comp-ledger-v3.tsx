@@ -166,7 +166,7 @@ const PENDING_ITEMS: PendingItem[] = [
 ];
 
 const PENDING_STATUS_COLORS: Record<string, string> = {
-  Processing: '#3B82F6',
+  Processing: '#1D9BF0',
   Due: '#F59E0B',
   Awaiting: '#EF4444',
 };
@@ -251,7 +251,7 @@ function TransactionsView({ colors, accentColor }: { colors: typeof Colors.light
               key={fp.id}
               style={[
                 s.filterPill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => {
                 Haptics.selectionAsync();
@@ -331,7 +331,7 @@ function PendingView({ colors, accentColor }: { colors: typeof Colors.light; acc
           <View style={[s.pendingFooter, { borderTopColor: colors.border }]}>
             <StatusBadge
               label={item.status.toUpperCase()}
-              color={PENDING_STATUS_COLORS[item.status] || '#6B7280'}
+              color={PENDING_STATUS_COLORS[item.status] || '#A1A1AA'}
             />
             <ThemedText style={[s.pendingDue, { color: colors.textSecondary }]}>Due: {item.dueDate}</ThemedText>
           </View>
@@ -430,7 +430,7 @@ export function CompLedger({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >

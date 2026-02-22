@@ -30,11 +30,11 @@ const FILTER_MAP: Record<string, string> = {
 
 const TYPE_COLORS: Record<string, string> = {
   call: '#22C55E',
-  email: '#3B82F6',
-  meeting: '#8B5CF6',
+  email: '#1D9BF0',
+  meeting: '#1D9BF0',
   document: '#F59E0B',
   stage_change: '#EF4444',
-  note: '#6B7280',
+  note: '#A1A1AA',
 };
 
 const TYPE_ICONS: Record<string, string> = {
@@ -101,7 +101,7 @@ export function BizDealsActivityView({ colors, accent }: Props) {
       {/* Timeline feed */}
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {filteredActivity.map((entry: ActivityEntry) => {
-          const typeColor = TYPE_COLORS[entry.type] ?? '#6B7280';
+          const typeColor = TYPE_COLORS[entry.type] ?? '#A1A1AA';
           const icon = TYPE_ICONS[entry.type] ?? '\u25CF';
 
           return (
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
   },
   filterPillText: { fontSize: 11, fontWeight: '600' },
   scrollContent: { paddingHorizontal: 16, paddingTop: 4 },

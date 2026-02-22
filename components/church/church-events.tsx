@@ -321,12 +321,12 @@ const FILTER_CHIPS: { id: FilterChip; label: string }[] = [
 ];
 
 const EVENT_TYPE_COLOR: Record<EventType, string> = {
-  worship: '#8B5CF6',
+  worship: '#1D9BF0',
   fellowship: '#22C55E',
-  outreach: '#06B6D4',
+  outreach: '#1D9BF0',
   conference: '#F59E0B',
-  class: '#3B82F6',
-  retreat: '#F97316',
+  class: '#1D9BF0',
+  retreat: '#F59E0B',
 };
 
 const REG_STATUS_COLOR: Record<string, string> = {
@@ -337,7 +337,7 @@ const REG_STATUS_COLOR: Record<string, string> = {
 
 const VISIBILITY_COLOR: Record<EventVisibility, string> = {
   public: '#22C55E',
-  members: '#3B82F6',
+  members: '#1D9BF0',
   leaders: '#F59E0B',
 };
 
@@ -399,9 +399,9 @@ const RSVP_COLOR: Record<string, string> = {
 };
 
 const ROLE_BADGE_COLOR: Record<string, string> = {
-  attendee: '#3B82F6',
-  volunteer: '#8B5CF6',
-  host: '#F97316',
+  attendee: '#1D9BF0',
+  volunteer: '#1D9BF0',
+  host: '#F59E0B',
 };
 
 // =============================================================================
@@ -708,8 +708,8 @@ const RECENT_CHECKINS: RecentCheckIn[] = [
 ];
 
 const CHECKIN_TYPE_COLOR: Record<string, string> = {
-  member: '#3B82F6',
-  child: '#8B5CF6',
+  member: '#1D9BF0',
+  child: '#1D9BF0',
   visitor: '#22C55E',
 };
 
@@ -741,10 +741,10 @@ interface AttendanceBreakdown {
 }
 
 const ATTENDANCE_BREAKDOWN: AttendanceBreakdown[] = [
-  { label: 'Adults', value: 348, color: '#3B82F6' },
-  { label: 'Children', value: 82, color: '#8B5CF6' },
+  { label: 'Adults', value: 348, color: '#1D9BF0' },
+  { label: 'Children', value: 82, color: '#1D9BF0' },
   { label: 'First-Time Visitors', value: 11, color: '#22C55E' },
-  { label: 'Returning Visitors', value: 4, color: '#06B6D4' },
+  { label: 'Returning Visitors', value: 4, color: '#1D9BF0' },
 ];
 
 interface ServiceAttendance {
@@ -791,12 +791,12 @@ const FOLLOWUP_ITEMS: FollowUpItem[] = [
 const FOLLOWUP_TYPE_COLOR: Record<FollowUpType, string> = {
   'first-time': '#22C55E',
   absent: '#F59E0B',
-  returning: '#3B82F6',
+  returning: '#1D9BF0',
 };
 
 const FOLLOWUP_STATUS_COLOR: Record<string, string> = {
   pending: '#F59E0B',
-  'in-progress': '#3B82F6',
+  'in-progress': '#1D9BF0',
   completed: '#22C55E',
 };
 
@@ -892,7 +892,7 @@ function BrowseView({ colors, role }: { colors: typeof Colors.light; role: Churc
               <StatBox label="Total Events" value={String(totalEvents)} colors={colors} />
               <StatBox label="Open Reg." value={String(openEvents)} colors={colors} valueColor="#22C55E" />
               <StatBox label="Full" value={String(fullEvents)} colors={colors} valueColor="#EF4444" />
-              <StatBox label="Registered" value={totalRegistered.toLocaleString()} colors={colors} valueColor="#3B82F6" />
+              <StatBox label="Registered" value={totalRegistered.toLocaleString()} colors={colors} valueColor="#1D9BF0" />
             </View>
           </Card>
         </>
@@ -902,11 +902,11 @@ function BrowseView({ colors, role }: { colors: typeof Colors.light; role: Churc
       <Pressable
         style={({ pressed }) => [
           s.featuredCard,
-          { backgroundColor: '#1e1a3e', opacity: pressed ? 0.9 : 1 },
+          { backgroundColor: '#0B0F14', opacity: pressed ? 0.9 : 1 },
         ]}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
       >
-        <View style={[s.featuredCatBadge, { backgroundColor: '#8B5CF640' }]}>
+        <View style={[s.featuredCatBadge, { backgroundColor: '#1D9BF040' }]}>
           <ThemedText style={s.featuredCatText}>WORSHIP</ThemedText>
         </View>
         <ThemedText style={s.featuredTitle}>Easter Celebration 2026</ThemedText>
@@ -1023,7 +1023,7 @@ function BrowseView({ colors, role }: { colors: typeof Colors.light; role: Churc
                     {event.attendeeCount} / {event.capacity} ({fillPct}%)
                   </ThemedText>
                   <Pressable
-                    style={[s.rsvpButton, { backgroundColor: canRsvp ? '#3B82F6' : colors.backgroundTertiary }]}
+                    style={[s.rsvpButton, { backgroundColor: canRsvp ? '#1D9BF0' : colors.backgroundTertiary }]}
                     onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                   >
                     <ThemedText style={[s.rsvpButtonText, { color: canRsvp ? '#fff' : colors.textTertiary }]}>
@@ -1206,7 +1206,7 @@ function MinistriesView({ colors, role }: { colors: typeof Colors.light; role: C
                         idx < ministry.events.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
                       ]}
                     >
-                      <View style={[s.catDot, { backgroundColor: '#8B5CF6' }]} />
+                      <View style={[s.catDot, { backgroundColor: '#1D9BF0' }]} />
                       <View style={{ flex: 1 }}>
                         <ThemedText style={[s.ministryEventTitle, { color: colors.text }]}>{event.title}</ThemedText>
                         <ThemedText style={[s.ministryEventMeta, { color: colors.textTertiary }]}>
@@ -1277,7 +1277,7 @@ function ServicePlanView({ colors, role }: { colors: typeof Colors.light; role: 
                   style={s.worshipSetLink}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                 >
-                  <IconSymbol name="music.note.list" size={12} color="#8B5CF6" />
+                  <IconSymbol name="music.note.list" size={12} color="#1D9BF0" />
                   <ThemedText style={s.worshipSetLinkText} numberOfLines={1}>
                     Worship Set: {plan.worshipSetLink}
                   </ThemedText>
@@ -1483,7 +1483,7 @@ function CheckInView({ colors, role }: { colors: typeof Colors.light; role: Chur
         </View>
         <ProgressBar percentage={capacityPct} color={capacityColor} colors={colors} />
         <View style={[s.statsRow, { marginTop: Spacing.sm }]}>
-          <StatBox label="Checked In" value={String(totalCheckedIn)} colors={colors} valueColor="#3B82F6" />
+          <StatBox label="Checked In" value={String(totalCheckedIn)} colors={colors} valueColor="#1D9BF0" />
           <StatBox label="Capacity" value={String(currentEvent.capacity)} colors={colors} />
           <StatBox label="Remaining" value={String(Math.max(0, currentEvent.capacity - totalCheckedIn))} colors={colors} valueColor={capacityColor} />
         </View>
@@ -1492,8 +1492,8 @@ function CheckInView({ colors, role }: { colors: typeof Colors.light; role: Chur
       {/* Stats strip */}
       <Card colors={colors}>
         <View style={s.statsRow}>
-          <StatBox label="Total Checked In" value={String(CHECKIN_STATS.totalCheckedIn)} colors={colors} valueColor="#3B82F6" />
-          <StatBox label="Children" value={String(CHECKIN_STATS.childrenCheckedIn)} colors={colors} valueColor="#8B5CF6" />
+          <StatBox label="Total Checked In" value={String(CHECKIN_STATS.totalCheckedIn)} colors={colors} valueColor="#1D9BF0" />
+          <StatBox label="Children" value={String(CHECKIN_STATS.childrenCheckedIn)} colors={colors} valueColor="#1D9BF0" />
           <StatBox label="First-Time" value={String(CHECKIN_STATS.firstTimeVisitors)} colors={colors} valueColor="#22C55E" />
         </View>
       </Card>
@@ -1507,8 +1507,8 @@ function CheckInView({ colors, role }: { colors: typeof Colors.light; role: Chur
               style={s.quickAddButton}
               onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
             >
-              <IconSymbol name="plus.circle.fill" size={18} color="#3B82F6" />
-              <ThemedText style={[s.quickAddText, { color: '#3B82F6' }]}>Add New Attendee</ThemedText>
+              <IconSymbol name="plus.circle.fill" size={18} color="#1D9BF0" />
+              <ThemedText style={[s.quickAddText, { color: '#1D9BF0' }]}>Add New Attendee</ThemedText>
             </Pressable>
             <ThemedText style={[s.quickAddHint, { color: colors.textTertiary }]}>
               For walk-ins or visitors not yet in the system
@@ -1600,7 +1600,7 @@ function AttendanceView({ colors, role }: { colors: typeof Colors.light; role: C
       {/* Attendance summary */}
       <Card colors={colors}>
         <View style={s.statsRow}>
-          <StatBox label="6-Week Avg" value={String(avgAttendance)} colors={colors} valueColor="#3B82F6" />
+          <StatBox label="6-Week Avg" value={String(avgAttendance)} colors={colors} valueColor="#1D9BF0" />
           <StatBox label="Last Sunday" value={String(WEEKLY_ATTENDANCE[WEEKLY_ATTENDANCE.length - 1]?.attendance ?? 0)} colors={colors} />
           <StatBox label="Peak" value={String(maxAttendance)} colors={colors} valueColor="#22C55E" />
           <StatBox label="Pending F/U" value={String(pendingCount)} colors={colors} valueColor="#F59E0B" />
@@ -1616,7 +1616,7 @@ function AttendanceView({ colors, role }: { colors: typeof Colors.light; role: C
             return (
               <View key={idx} style={s.chartBarWrap}>
                 <ThemedText style={[s.chartBarValue, { color: colors.textSecondary }]}>{week.attendance}</ThemedText>
-                <View style={[s.chartBar, { height: barHeight, backgroundColor: '#3B82F6' }]} />
+                <View style={[s.chartBar, { height: barHeight, backgroundColor: '#1D9BF0' }]} />
                 <ThemedText style={[s.chartBarLabel, { color: colors.textTertiary }]}>{week.week}</ThemedText>
               </View>
             );
@@ -1653,7 +1653,7 @@ function AttendanceView({ colors, role }: { colors: typeof Colors.light; role: C
       <Card colors={colors}>
         {SERVICE_ATTENDANCE.map((svc, idx) => {
           const fillPct = Math.round((svc.attendance / svc.capacity) * 100);
-          const fillColor = fillPct >= 80 ? '#F59E0B' : fillPct >= 50 ? '#3B82F6' : '#8F8F8F';
+          const fillColor = fillPct >= 80 ? '#F59E0B' : fillPct >= 50 ? '#1D9BF0' : '#A1A1AA';
           return (
             <View
               key={svc.id}
@@ -1686,7 +1686,7 @@ function AttendanceView({ colors, role }: { colors: typeof Colors.light; role: C
         <View style={s.statsRow}>
           <StatBox label="First-Time" value={String(firstTimeCount)} colors={colors} valueColor="#22C55E" />
           <StatBox label="Absent (3+ wk)" value={String(absentCount)} colors={colors} valueColor="#F59E0B" />
-          <StatBox label="Returning" value={String(returningCount)} colors={colors} valueColor="#3B82F6" />
+          <StatBox label="Returning" value={String(returningCount)} colors={colors} valueColor="#1D9BF0" />
         </View>
       </Card>
 
@@ -1936,7 +1936,7 @@ const s = StyleSheet.create({
 
   // ============= Service Plan View =============
   worshipSetLink: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8, paddingTop: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#ffffff10' },
-  worshipSetLinkText: { flex: 1, fontSize: 12, fontWeight: '500', color: '#8B5CF6' },
+  worshipSetLinkText: { flex: 1, fontSize: 12, fontWeight: '500', color: '#1D9BF0' },
   planHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
   planServiceName: { fontSize: 15, fontWeight: '700', marginBottom: 2 },
   planDate: { fontSize: 12 },

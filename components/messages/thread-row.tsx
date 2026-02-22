@@ -28,7 +28,7 @@ export function ThreadRow({ thread, onPress }: ThreadRowProps) {
     <Pressable
       style={({ pressed }) => [
         styles.row,
-        { backgroundColor: pressed ? '#191919' : 'transparent' },
+        { backgroundColor: pressed ? '#0B0F14' : 'transparent' },
         thread.muted && styles.muted,
       ]}
       onPress={handlePress}
@@ -50,7 +50,7 @@ export function ThreadRow({ thread, onPress }: ThreadRowProps) {
         </View>
       ) : (
         <View style={styles.iconCircle}>
-          <IconSymbol name={thread.icon as any} size={20} color="#f5f5f5" />
+          <IconSymbol name={thread.icon as any} size={20} color="#FFFFFF" />
         </View>
       )}
 
@@ -78,7 +78,7 @@ export function ThreadRow({ thread, onPress }: ThreadRowProps) {
       <View style={styles.rightCol}>
         <View style={styles.rightTopRow}>
           {thread.pinned && (
-            <IconSymbol name="pin.fill" size={10} color="#6e6e6e" />
+            <IconSymbol name="pin.fill" size={10} color="#A1A1AA" />
           )}
           {thread.muted && (
             <IconSymbol name="bell.slash.fill" size={10} color="#555" />
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
   },
   muted: {
     opacity: 0.6,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderWidth: 2,
     borderColor: '#000',
     alignItems: 'center',
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   stackText: {
     fontSize: 9,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 
   // Icon Circle
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: Spacing.sm + 4,
@@ -153,22 +153,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   countChip: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 5,
     paddingVertical: 1,
     borderRadius: 6,
   },
   countText: {
     fontSize: 11,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     fontWeight: '500',
   },
   preview: {
     fontSize: 14,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     lineHeight: 18,
   },
   contextSub: {
@@ -187,12 +187,12 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   unreadDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
   },
 });

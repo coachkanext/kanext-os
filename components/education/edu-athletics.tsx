@@ -148,15 +148,15 @@ const ACTIVE_SPORTS: ActiveSport[] = [
 ];
 
 const SEASON_COLOR: Record<SportSeason, string> = {
-  fall: '#F97316',
-  winter: '#3B82F6',
+  fall: '#F59E0B',
+  winter: '#1D9BF0',
   spring: '#22C55E',
-  'year-round': '#8B5CF6',
+  'year-round': '#1D9BF0',
 };
 
 const STATUS_COLOR: Record<string, string> = {
   'in-season': '#22C55E',
-  'off-season': '#8F8F8F',
+  'off-season': '#A1A1AA',
   postseason: '#F59E0B',
 };
 
@@ -309,10 +309,10 @@ const ACADEMIC_SUPPORT_SERVICES: AcademicSupportService[] = [
 ];
 
 const SUPPORT_TYPE_COLOR: Record<string, string> = {
-  tutoring: '#3B82F6',
-  advising: '#8B5CF6',
-  'study-hall': '#F97316',
-  'mental-health': '#EC4899',
+  tutoring: '#1D9BF0',
+  advising: '#1D9BF0',
+  'study-hall': '#F59E0B',
+  'mental-health': '#1D9BF0',
   career: '#22C55E',
 };
 
@@ -525,7 +525,7 @@ const FACILITY_INVESTMENTS: FacilityInvestment[] = [
 
 const INVEST_STATUS_COLOR: Record<string, string> = {
   completed: '#22C55E',
-  'in-progress': '#3B82F6',
+  'in-progress': '#1D9BF0',
   planned: '#F59E0B',
 };
 
@@ -883,14 +883,14 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Educat
                     {game.location}
                   </ThemedText>
                   {game.conferenceGame && (
-                    <View style={[s.confBadge, { backgroundColor: '#8B5CF620' }]}>
-                      <ThemedText style={[s.confBadgeText, { color: '#8B5CF6' }]}>CONF</ThemedText>
+                    <View style={[s.confBadge, { backgroundColor: '#1D9BF020' }]}>
+                      <ThemedText style={[s.confBadgeText, { color: '#1D9BF0' }]}>CONF</ThemedText>
                     </View>
                   )}
                 </View>
                 <View style={s.gameBadgeRow}>
-                  <View style={[s.homeAwayBadge, { backgroundColor: game.homeAway === 'Home' ? '#22C55E20' : game.homeAway === 'Away' ? '#3B82F620' : '#F59E0B20' }]}>
-                    <ThemedText style={[s.homeAwayText, { color: game.homeAway === 'Home' ? '#22C55E' : game.homeAway === 'Away' ? '#3B82F6' : '#F59E0B' }]}>
+                  <View style={[s.homeAwayBadge, { backgroundColor: game.homeAway === 'Home' ? '#22C55E20' : game.homeAway === 'Away' ? '#1D9BF020' : '#F59E0B20' }]}>
+                    <ThemedText style={[s.homeAwayText, { color: game.homeAway === 'Home' ? '#22C55E' : game.homeAway === 'Away' ? '#1D9BF0' : '#F59E0B' }]}>
                       {game.homeAway.toUpperCase()}
                     </ThemedText>
                   </View>
@@ -966,8 +966,8 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Educat
               <View style={s.facilityContent}>
                 <View style={s.facilityNameRow}>
                   <ThemedText style={[s.facilityName, { color: colors.text }]}>{fac.name}</ThemedText>
-                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#3B82F6') + '20' }]}>
-                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#3B82F6' }]}>
+                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#1D9BF0') + '20' }]}>
+                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#1D9BF0' }]}>
                       {fac.status.toUpperCase()}
                     </ThemedText>
                   </View>
@@ -1005,10 +1005,10 @@ function AthleteSupportView({ colors, role }: { colors: typeof Colors.light; rol
         <SectionHeader title="ACADEMIC OVERVIEW" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Dept GPA" value={deptGPA} colors={colors} accent="#3B82F6" />
+            <KPIBox label="Dept GPA" value={deptGPA} colors={colors} accent="#1D9BF0" />
             <KPIBox label="Below 2.5" value={totalBelow} colors={colors} accent={totalBelow > 0 ? '#EF4444' : '#22C55E'} />
             <KPIBox label="Above 3.5" value={totalAbove} colors={colors} accent="#22C55E" />
-            <KPIBox label="Study Hall %" value={`${totalStudyReq > 0 ? Math.round((totalStudyComp / totalStudyReq) * 100) : 100}%`} colors={colors} accent="#8B5CF6" />
+            <KPIBox label="Study Hall %" value={`${totalStudyReq > 0 ? Math.round((totalStudyComp / totalStudyReq) * 100) : 100}%`} colors={colors} accent="#1D9BF0" />
           </View>
         </Card>
       </View>
@@ -1249,8 +1249,8 @@ function ComplianceView({ colors, role }: { colors: typeof Colors.light; role: E
                   <View style={s.scholarshipNameRow}>
                     <ThemedText style={[s.scholarshipSport, { color: colors.text }]}>{sl.sport}</ThemedText>
                     {sl.equivalencyBased && (
-                      <View style={[s.equivBadge, { backgroundColor: '#8B5CF620' }]}>
-                        <ThemedText style={[s.equivText, { color: '#8B5CF6' }]}>EQUIV</ThemedText>
+                      <View style={[s.equivBadge, { backgroundColor: '#1D9BF020' }]}>
+                        <ThemedText style={[s.equivText, { color: '#1D9BF0' }]}>EQUIV</ThemedText>
                       </View>
                     )}
                   </View>
@@ -1320,9 +1320,9 @@ function RecruitingView({ colors, role }: { colors: typeof Colors.light; role: E
         <Card colors={colors}>
           <View style={s.kpiRow}>
             <KPIBox label="Commits" value={totalCommits} colors={colors} accent="#22C55E" />
-            <KPIBox label="Offers Out" value={totalOffers} colors={colors} accent="#3B82F6" />
-            <KPIBox label="Visits" value={totalVisits} colors={colors} accent="#8B5CF6" />
-            <KPIBox label="NLI Signed" value={totalNLI} colors={colors} accent="#F97316" />
+            <KPIBox label="Offers Out" value={totalOffers} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="Visits" value={totalVisits} colors={colors} accent="#1D9BF0" />
+            <KPIBox label="NLI Signed" value={totalNLI} colors={colors} accent="#F59E0B" />
           </View>
         </Card>
       </View>
@@ -1354,15 +1354,15 @@ function RecruitingView({ colors, role }: { colors: typeof Colors.light; role: E
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>Commits</ThemedText>
                   </View>
                   <View style={s.recruitStatItem}>
-                    <ThemedText style={[s.recruitStatValue, { color: '#3B82F6' }]}>{rec.offersOut}</ThemedText>
+                    <ThemedText style={[s.recruitStatValue, { color: '#1D9BF0' }]}>{rec.offersOut}</ThemedText>
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>Offers</ThemedText>
                   </View>
                   <View style={s.recruitStatItem}>
-                    <ThemedText style={[s.recruitStatValue, { color: '#8B5CF6' }]}>{rec.visits}</ThemedText>
+                    <ThemedText style={[s.recruitStatValue, { color: '#1D9BF0' }]}>{rec.visits}</ThemedText>
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>Visits</ThemedText>
                   </View>
                   <View style={s.recruitStatItem}>
-                    <ThemedText style={[s.recruitStatValue, { color: '#F97316' }]}>{rec.nliSigned || 0}</ThemedText>
+                    <ThemedText style={[s.recruitStatValue, { color: '#F59E0B' }]}>{rec.nliSigned || 0}</ThemedText>
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>NLI</ThemedText>
                   </View>
                 </View>
@@ -1398,7 +1398,7 @@ function BudgetView({ colors, role }: { colors: typeof Colors.light; role: Educa
         <SectionHeader title="ATHLETIC BUDGET" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Total Budget" value={ATHLETIC_DEPT.athleticBudget} colors={colors} accent="#3B82F6" />
+            <KPIBox label="Total Budget" value={ATHLETIC_DEPT.athleticBudget} colors={colors} accent="#1D9BF0" />
             <KPIBox label="Categories" value={BUDGET_CATEGORIES.length} colors={colors} />
             <KPIBox label="Revenue Streams" value={REVENUE_SOURCES.length} colors={colors} />
           </View>
@@ -1456,7 +1456,7 @@ function BudgetView({ colors, role }: { colors: typeof Colors.light; role: Educa
                   <ThemedText style={[s.revenueAmount, { color: colors.textSecondary }]}>
                     {rv.amount} ({rv.percentOfTotal}%)
                   </ThemedText>
-                  <ProgressBar percent={rv.percentOfTotal * 2.5} color="#3B82F6" colors={colors} />
+                  <ProgressBar percent={rv.percentOfTotal * 2.5} color="#1D9BF0" colors={colors} />
                 </View>
                 <TrendIndicator trend={rv.trend} colors={colors} />
               </View>
@@ -1545,8 +1545,8 @@ function BudgetView({ colors, role }: { colors: typeof Colors.light; role: Educa
               <View style={s.facilityContent}>
                 <View style={s.facilityNameRow}>
                   <ThemedText style={[s.facilityName, { color: colors.text }]}>{fac.name}</ThemedText>
-                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#3B82F6') + '20' }]}>
-                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#3B82F6' }]}>
+                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#1D9BF0') + '20' }]}>
+                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : '#1D9BF0' }]}>
                       {fac.status.toUpperCase()}
                     </ThemedText>
                   </View>

@@ -1,7 +1,15 @@
 /**
- * KaNeXT OS Theme System
- * UI PALETTE — Luxury Control Room (Power-First) — LOCKED
- * Gold as primary accent. Dark-first only. Hairlines everywhere.
+ * KaNeXT OS — Global Theme (LOCKED)
+ *
+ * Single dark palette. No light mode. No per-mode colors.
+ * One accent: KaNeXT Blue (#1D9BF0).
+ *
+ * Background:      #000000
+ * Surface / Cards:  #0B0F14
+ * Primary text:     #FFFFFF
+ * Secondary text:   #A1A1AA
+ * Dividers:         #2F3336
+ * Accent:           #1D9BF0
  */
 
 import { Platform } from 'react-native';
@@ -12,100 +20,84 @@ import type { Mode } from '@/types';
 // =============================================================================
 
 export const Brand = {
-  // Primary accent (White — monochrome authority)
-  primary: '#FFFFFF',
-  // Precision accent (Ice Blue)
-  precision: '#6AA9FF',
-  // Nexus accent (alias for precision — used by Nexus UI components)
-  nexus: '#6AA9FF',
-  // Success / positive (Emerald)
+  /** KaNeXT Blue — the ONLY accent color in the entire OS */
+  primary: '#1D9BF0',
+  /** Alias for primary accent */
+  precision: '#1D9BF0',
+  /** Alias for primary accent — used by Nexus UI components */
+  nexus: '#1D9BF0',
+  /** Success / positive */
   success: '#22C55E',
-  // Warning (Amber)
+  /** Warning */
   warning: '#F59E0B',
-  // Error / destructive (Red)
+  /** Error / destructive */
   error: '#EF4444',
 };
 
 // =============================================================================
-// MODE ACCENT COLORS
+// MODE COLORS — Uniform across all modes (no per-mode variation)
 // =============================================================================
 
+const uniformMode = {
+  primary: '#FFFFFF',
+  secondary: '#A1A1AA',
+  nexusGlyph: '#FFFFFF',
+  nexusGlyphDim: '#A1A1AA',
+};
+
 export const ModeColors: Record<Mode, { primary: string; secondary: string; nexusGlyph: string; nexusGlyphDim: string }> = {
-  sports: {
-    primary: '#FFFFFF',
-    secondary: '#8F8F8F',
-    nexusGlyph: '#FFFFFF',
-    nexusGlyphDim: '#8F8F8F',
-  },
-  church: {
-    primary: '#FFFFFF',
-    secondary: '#8F8F8F',
-    nexusGlyph: '#FFFFFF',
-    nexusGlyphDim: '#8F8F8F',
-  },
-  education: {
-    primary: '#FFFFFF',
-    secondary: '#8F8F8F',
-    nexusGlyph: '#FFFFFF',
-    nexusGlyphDim: '#8F8F8F',
-  },
-  business: {
-    primary: '#FFFFFF',
-    secondary: '#8F8F8F',
-    nexusGlyph: '#FFFFFF',
-    nexusGlyphDim: '#8F8F8F',
-  },
-  competition: {
-    primary: '#FFFFFF',
-    secondary: '#8F8F8F',
-    nexusGlyph: '#FFFFFF',
-    nexusGlyphDim: '#8F8F8F',
-  },
+  sports: { ...uniformMode },
+  church: { ...uniformMode },
+  education: { ...uniformMode },
+  business: { ...uniformMode },
+  competition: { ...uniformMode },
 };
 
 // =============================================================================
-// MODE ACCENT — Tab bar accent colors per mode
+// MODE ACCENT — Uniform KaNeXT Blue (no per-mode variation)
 // =============================================================================
 
 export const MODE_ACCENT: Record<Mode, string> = {
-  sports: '#1E40AF',
-  business: '#7C3AED',
-  church: '#FBBF24',
-  education: '#14B8A6',
-  competition: '#FF5555',
+  sports: '#1D9BF0',
+  business: '#1D9BF0',
+  church: '#1D9BF0',
+  education: '#1D9BF0',
+  competition: '#1D9BF0',
 };
 
 // =============================================================================
-// BASE COLORS — Luxury Control Room
+// BASE COLORS — KaNeXT Dark (LOCKED)
 // =============================================================================
 
 const palette = {
-  // Core Surfaces — Monochrome Silver
-  text: '#DDDDDD',               // Heading color
-  textSecondary: '#8F8F8F',      // Body color
-  textTertiary: '#424242',       // Muted / tertiary
-  background: '#000000',         // Page background (jet black)
-  backgroundSecondary: '#0E0C0C', // Panel BG
-  backgroundTertiary: '#181616',  // Elevated surface
+  // Text
+  text: '#FFFFFF',
+  textSecondary: '#A1A1AA',
+  textTertiary: '#52525B',
 
-  // Borders & Dividers — hairlines
-  border: 'rgba(255,255,255,0.06)',
-  borderStrong: 'rgba(255,255,255,0.10)',
-  divider: 'rgba(255,255,255,0.06)',
+  // Backgrounds
+  background: '#000000',
+  backgroundSecondary: '#0B0F14',
+  backgroundTertiary: '#0B0F14',
+
+  // Borders & Dividers
+  border: '#2F3336',
+  borderStrong: '#2F3336',
+  divider: '#2F3336',
 
   // Interactive
-  tint: '#FFFFFF',               // Primary accent (white)
-  icon: '#8F8F8F',               // Icon Default
-  iconActive: '#DDDDDD',
+  tint: '#1D9BF0',
+  icon: '#A1A1AA',
+  iconActive: '#FFFFFF',
 
   // Tab Bar
   tabBar: '#000000',
-  tabIconDefault: '#424242',
-  tabIconSelected: '#FFFFFF',    // White
+  tabIconDefault: '#A1A1AA',
+  tabIconSelected: '#1D9BF0',
 
   // Cards & Surfaces
-  card: '#181616',               // Card BG
-  cardElevated: '#1E1C1C',      // Elevated Card
+  card: '#0B0F14',
+  cardElevated: '#0B0F14',
 
   // Overlays
   overlay: 'rgba(0, 0, 0, 0.7)',
@@ -123,30 +115,23 @@ export const Colors = {
 };
 
 // =============================================================================
-// BUSINESS MODE — Luxury Control Room Palette (Power-First)
-// Confidence, authority, restraint, inevitability.
+// LEGACY ALIAS — BusinessPalette mapped to global theme
+// Used by business components via `const BP = BusinessPalette;`
 // =============================================================================
 
 export const BusinessPalette = {
-  // Core surfaces
-  obsidian: '#000000',        // Primary background (jet black)
-  carbon: '#181616',          // Cards / sheets
-  graphite: 'rgba(255,255,255,0.08)', // Hairline borders
-  smoke: '#DDDDDD',           // Primary text (heading)
-  ash: '#8F8F8F',             // Secondary text (body)
-
-  // Monochrome accents
-  champagneGold: '#FFFFFF',   // Primary accent: highlights, key stats, selected
-  platinum: '#8F8F8F',        // Secondary accent: icons, dividers, badges
-
-  // Signal colors
-  emerald: '#2FE38C',         // Success / green light
-  amber: '#FFB020',           // Warning / watch
-  red: '#FF4D4D',             // Critical
-
-  // Interaction surfaces
-  glass: 'rgba(255,255,255,0.04)',  // Hover / pressed
-  sheetBackdrop: 'rgba(0,0,0,0.55)', // Modal dim
+  obsidian: '#000000',
+  carbon: '#0B0F14',
+  graphite: '#2F3336',
+  smoke: '#FFFFFF',
+  ash: '#A1A1AA',
+  champagneGold: '#1D9BF0',
+  platinum: '#A1A1AA',
+  emerald: '#22C55E',
+  amber: '#F59E0B',
+  red: '#EF4444',
+  glass: 'rgba(255,255,255,0.04)',
+  sheetBackdrop: 'rgba(0,0,0,0.55)',
 };
 
 // =============================================================================
@@ -204,12 +189,8 @@ export const BorderRadius = {
 // =============================================================================
 
 export const Layout = {
-  // Top bar height
   topBarHeight: 56,
-  // Tab bar height
   tabBarHeight: 96,
-  // Avatar size in top bar
   avatarSize: 32,
-  // Max content width (for tablets/web)
   maxContentWidth: 600,
 };

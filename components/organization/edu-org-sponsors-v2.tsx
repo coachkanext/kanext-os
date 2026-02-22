@@ -220,7 +220,7 @@ function OverviewTab({
       case 'high': return '#EF4444';
       case 'medium': return '#F59E0B';
       case 'low': return '#22C55E';
-      default: return '#6B7280';
+      default: return '#A1A1AA';
     }
   };
 
@@ -671,7 +671,7 @@ function DeliverablesTab({
             <StatusBadge label={scopeLabel.toUpperCase()} color={scopeColor} />
             <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
             {item.proofRequired && (
-              <StatusBadge label="PROOF REQ" color="#8B5CF6" />
+              <StatusBadge label="PROOF REQ" color="#1D9BF0" />
             )}
           </View>
           <View style={[s.deliverableMeta, { borderTopColor: colors.border }]}>
@@ -748,7 +748,7 @@ function ProofTab({
         const typeLabel = PROOF_TYPE_LABELS[proof.type];
         const statusColor = PROOF_STATUS_COLORS[proof.status];
         const statusLabel = PROOF_STATUS_LABELS[proof.status];
-        const typeColor = proof.type === 'photo' ? '#3B82F6' : proof.type === 'video' ? '#8B5CF6' : proof.type === 'pdf' ? '#EF4444' : proof.type === 'screenshot' ? '#22C55E' : '#F59E0B';
+        const typeColor = proof.type === 'photo' ? '#1D9BF0' : proof.type === 'video' ? '#1D9BF0' : proof.type === 'pdf' ? '#EF4444' : proof.type === 'screenshot' ? '#22C55E' : '#F59E0B';
         return (
           <View
             key={proof.id}
@@ -1110,7 +1110,7 @@ function ReportsTab({
       </ThemedText>
 
       {reports.map((report) => {
-        const typeColor = report.type === 'financial' ? '#22C55E' : report.type === 'compliance' ? '#F59E0B' : report.type === 'strategic' ? '#EC4899' : report.type === 'operational' ? '#8B5CF6' : '#3B82F6';
+        const typeColor = report.type === 'financial' ? '#22C55E' : report.type === 'compliance' ? '#F59E0B' : report.type === 'strategic' ? '#1D9BF0' : report.type === 'operational' ? '#1D9BF0' : '#1D9BF0';
         return (
           <View
             key={report.id}
@@ -1517,7 +1517,7 @@ function DeliverableDetailSheet({
         <StatusBadge label={scopeLabel.toUpperCase()} color={scopeColor} />
         <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
         {deliverable.proofRequired && (
-          <StatusBadge label="PROOF REQUIRED" color="#8B5CF6" />
+          <StatusBadge label="PROOF REQUIRED" color="#1D9BF0" />
         )}
       </View>
 
@@ -2067,7 +2067,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

@@ -282,9 +282,9 @@ const DILIGENCE_TEMPLATES = [
 ];
 
 const TEMPLATE_TYPE_COLOR: Record<string, string> = {
-  bank: '#6AA9FF',
-  vendor: '#8B5CF6',
-  real_estate: '#EC4899',
+  bank: '#1D9BF0',
+  vendor: '#1D9BF0',
+  real_estate: '#1D9BF0',
 };
 
 // =============================================================================
@@ -623,14 +623,14 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
             label="Active Locations"
             value={String(ov.activeLocations)}
             icon="mappin.and.ellipse"
-            iconColor="#6AA9FF"
+            iconColor="#1D9BF0"
             colors={colors}
           />
           <StatCard
             label="Vendor Count"
             value={String(ov.vendorCount)}
             icon="person.2"
-            iconColor="#8B5CF6"
+            iconColor="#1D9BF0"
             colors={colors}
           />
           <StatCard
@@ -651,7 +651,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
             label="Acquisition Pipeline"
             value={String(ov.acquisitionPipeline)}
             icon="arrow.triangle.merge"
-            iconColor="#EC4899"
+            iconColor="#1D9BF0"
             colors={colors}
           />
         </View>
@@ -1374,7 +1374,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
         {DILIGENCE_TEMPLATES.map((tpl) => {
           const pct = tpl.itemCount > 0 ? Math.round((tpl.completedCount / tpl.itemCount) * 100) : 0;
           const barClr = pct >= 80 ? '#22C55E' : pct >= 40 ? '#F59E0B' : '#EF4444';
-          const typeBg = TEMPLATE_TYPE_COLOR[tpl.type] || '#6AA9FF';
+          const typeBg = TEMPLATE_TYPE_COLOR[tpl.type] || '#1D9BF0';
           return (
             <View key={tpl.id} style={[s.templateCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: Spacing.xs }}>
@@ -1470,14 +1470,14 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
                       {item.item}
                     </ThemedText>
                     <View style={s.diligenceItemMeta}>
-                      <View style={[s.badge, { backgroundColor: '#6AA9FF20' }]}>
-                        <ThemedText style={[s.badgeText, { color: '#6AA9FF' }]}>
+                      <View style={[s.badge, { backgroundColor: '#1D9BF020' }]}>
+                        <ThemedText style={[s.badgeText, { color: '#1D9BF0' }]}>
                           {item.category}
                         </ThemedText>
                       </View>
                       {item.linkedDocumentId && (
-                        <View style={[s.badge, { backgroundColor: '#8B5CF620' }]}>
-                          <ThemedText style={[s.badgeText, { color: '#8B5CF6' }]}>
+                        <View style={[s.badge, { backgroundColor: '#1D9BF020' }]}>
+                          <ThemedText style={[s.badgeText, { color: '#1D9BF0' }]}>
                             Linked Doc
                           </ThemedText>
                         </View>
@@ -1758,11 +1758,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
               <ThemedText style={[s.detailActionText, { color: accentColor }]}>Edit</ThemedText>
             </Pressable>
             <Pressable
-              style={[s.detailActionBtn, { backgroundColor: '#6AA9FF15' }]}
+              style={[s.detailActionBtn, { backgroundColor: '#1D9BF015' }]}
               onPress={() => setLocationDetailVisible(false)}
             >
-              <IconSymbol name="map" size={14} color="#6AA9FF" />
-              <ThemedText style={[s.detailActionText, { color: '#6AA9FF' }]}>View Map</ThemedText>
+              <IconSymbol name="map" size={14} color="#1D9BF0" />
+              <ThemedText style={[s.detailActionText, { color: '#1D9BF0' }]}>View Map</ThemedText>
             </Pressable>
           </View>
         </View>
@@ -1839,11 +1839,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
               <ThemedText style={[s.detailActionText, { color: accentColor }]}>Edit</ThemedText>
             </Pressable>
             <Pressable
-              style={[s.detailActionBtn, { backgroundColor: '#8B5CF615' }]}
+              style={[s.detailActionBtn, { backgroundColor: '#1D9BF015' }]}
               onPress={() => setVendorDetailVisible(false)}
             >
-              <IconSymbol name="doc.text" size={14} color="#8B5CF6" />
-              <ThemedText style={[s.detailActionText, { color: '#8B5CF6' }]}>View Contract</ThemedText>
+              <IconSymbol name="doc.text" size={14} color="#1D9BF0" />
+              <ThemedText style={[s.detailActionText, { color: '#1D9BF0' }]}>View Contract</ThemedText>
             </Pressable>
           </View>
         </View>
@@ -1990,11 +1990,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
               <ThemedText style={[s.detailActionText, { color: '#22C55E' }]}>Renew</ThemedText>
             </Pressable>
             <Pressable
-              style={[s.detailActionBtn, { backgroundColor: '#8B5CF615' }]}
+              style={[s.detailActionBtn, { backgroundColor: '#1D9BF015' }]}
               onPress={() => setInsuranceDetailVisible(false)}
             >
-              <IconSymbol name="doc.text" size={14} color="#8B5CF6" />
-              <ThemedText style={[s.detailActionText, { color: '#8B5CF6' }]}>View Policy</ThemedText>
+              <IconSymbol name="doc.text" size={14} color="#1D9BF0" />
+              <ThemedText style={[s.detailActionText, { color: '#1D9BF0' }]}>View Policy</ThemedText>
             </Pressable>
           </View>
         </View>
@@ -2087,11 +2087,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
               <ThemedText style={[s.detailActionText, { color: accentColor }]}>View Diligence</ThemedText>
             </Pressable>
             <Pressable
-              style={[s.detailActionBtn, { backgroundColor: '#8B5CF615' }]}
+              style={[s.detailActionBtn, { backgroundColor: '#1D9BF015' }]}
               onPress={() => setAcquisitionDetailVisible(false)}
             >
-              <IconSymbol name="doc.text" size={14} color="#8B5CF6" />
-              <ThemedText style={[s.detailActionText, { color: '#8B5CF6' }]}>View Deal Memo</ThemedText>
+              <IconSymbol name="doc.text" size={14} color="#1D9BF0" />
+              <ThemedText style={[s.detailActionText, { color: '#1D9BF0' }]}>View Deal Memo</ThemedText>
             </Pressable>
           </View>
         </View>

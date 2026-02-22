@@ -92,7 +92,7 @@ const SGA_OFFICERS = [
 
 const TENURE_COLOR: Record<TenureStatus, string> = {
   'Tenured': '#22C55E',
-  'Tenure-Track': '#6AA9FF',
+  'Tenure-Track': '#1D9BF0',
   'Adjunct': '#F59E0B',
 };
 
@@ -146,7 +146,7 @@ function FacultyView({ colors, accentColor }: { colors: typeof Colors.light; acc
           return (
             <Pressable
               key={f}
-              style={[s.filterPill, { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' }]}
+              style={[s.filterPill, { backgroundColor: isActive ? accentColor : '#2F3336' }]}
               onPress={() => { Haptics.selectionAsync(); setFilter(f); }}
             >
               <ThemedText style={[s.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
@@ -372,7 +372,7 @@ export function EduPeople({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >
@@ -572,7 +572,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   detailLabel: {
     fontSize: 13,

@@ -187,13 +187,13 @@ export const FUND_TYPE_LABELS: Record<FundType, string> = {
 
 export const FUND_TYPE_COLORS: Record<FundType, string> = {
   general: '#22C55E',
-  missions: '#6AA9FF',
-  benevolence: '#8B5CF6',
+  missions: '#1D9BF0',
+  benevolence: '#1D9BF0',
   building: '#F59E0B',
   youth: '#EF4444',
-  kids: '#EC4899',
-  events: '#10B981',
-  worship: '#F97316',
+  kids: '#1D9BF0',
+  events: '#22C55E',
+  worship: '#F59E0B',
 };
 
 export const FUND_TYPE_ICONS: Record<FundType, string> = {
@@ -220,15 +220,15 @@ export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
 };
 
 export const REQUEST_STATUS_COLORS: Record<RequestStatus, string> = {
-  draft: '#8F8F8F',
-  submitted: '#6AA9FF',
+  draft: '#A1A1AA',
+  submitted: '#1D9BF0',
   pending_approval: '#F59E0B',
   approved: '#22C55E',
-  scheduled: '#10B981',
-  released: '#3B82F6',
+  scheduled: '#22C55E',
+  released: '#1D9BF0',
   paid: '#22C55E',
   held: '#EF4444',
-  rejected: '#DC2626',
+  rejected: '#EF4444',
 };
 
 export const REQUEST_TYPE_LABELS: Record<RequestType, string> = {
@@ -283,7 +283,7 @@ export const AUDIT_STATUS_COLORS: Record<AuditStatus, string> = {
   complete: '#22C55E',
   incomplete: '#F59E0B',
   missing_docs: '#EF4444',
-  flagged: '#DC2626',
+  flagged: '#EF4444',
 };
 
 // =============================================================================
@@ -903,8 +903,8 @@ export function getChurchFinanceData() {
     healthTiles: [
       { label: 'Total Funds', value: '$570,200', subValue: '5 funds', color: '#22C55E', icon: 'banknote.fill' },
       { label: 'Committed', value: '$88,200', subValue: 'approved not paid', color: '#F59E0B', icon: 'clock.fill' },
-      { label: 'Spend MTD', value: '$23,400', subValue: 'vs $28,000 budget', color: '#6AA9FF', icon: 'chart.bar.fill' },
-      { label: 'Benevolence Cases', value: '3', subValue: 'active', color: '#8B5CF6', icon: 'heart.fill' },
+      { label: 'Spend MTD', value: '$23,400', subValue: 'vs $28,000 budget', color: '#1D9BF0', icon: 'chart.bar.fill' },
+      { label: 'Benevolence Cases', value: '3', subValue: 'active', color: '#1D9BF0', icon: 'heart.fill' },
       { label: 'Exceptions', value: '2', subValue: 'held/missing docs', color: '#EF4444', icon: 'exclamationmark.triangle.fill' },
       { label: 'Audit Score', value: '94%', subValue: 'receipts + approvals', color: '#22C55E', icon: 'checkmark.shield.fill' },
     ],

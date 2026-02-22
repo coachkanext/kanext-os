@@ -18,9 +18,9 @@ function nameToHue(name: string): number {
 }
 
 function getKRColor(kr: number): string {
-  if (kr >= 80) return '#4ade80';
-  if (kr >= 65) return '#fbbf24';
-  return '#f87171';
+  if (kr >= 80) return '#22C55E';
+  if (kr >= 65) return '#1D9BF0';
+  return '#EF4444';
 }
 
 interface Props {

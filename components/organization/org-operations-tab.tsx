@@ -24,7 +24,7 @@ function SectionLabel({ title, colors }: { title: string; colors: typeof Colors.
 function StatusBadge({ status, colors }: { status: string; colors: typeof Colors.light }) {
   const map: Record<string, { bg: string; fg: string }> = {
     active: { bg: '#22C55E20', fg: '#22C55E' },
-    completed: { bg: '#6AA9FF20', fg: '#6AA9FF' },
+    completed: { bg: '#1D9BF020', fg: '#1D9BF0' },
     blocked: { bg: '#EF444420', fg: '#EF4444' },
     scheduled: { bg: '#F59E0B20', fg: '#F59E0B' },
     compliant: { bg: '#22C55E20', fg: '#22C55E' },

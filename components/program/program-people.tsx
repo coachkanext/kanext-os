@@ -17,16 +17,16 @@ type PeopleTab = 'staff' | 'athletes';
 
 const TIER_COLORS: Record<PermissionTier, string> = {
   admin: '#FFFFFF',
-  coach: '#6AA9FF',
+  coach: '#1D9BF0',
   staff: '#F59E0B',
-  viewer: '#424242',
+  viewer: '#52525B',
 };
 
 const STATUS_COLORS: Record<AthleteMember['status'], string> = {
   active: '#22C55E',
   injured: '#EF4444',
   redshirt: '#F59E0B',
-  transfer: '#6AA9FF',
+  transfer: '#1D9BF0',
 };
 
 const TEAM_LABELS: Record<TeamLevel, string> = {

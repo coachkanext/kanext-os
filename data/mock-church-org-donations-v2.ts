@@ -156,14 +156,14 @@ export const FUND_TYPE_LABELS: Record<FundType, string> = {
 };
 
 export const FUND_TYPE_COLORS: Record<FundType, string> = {
-  general: '#6AA9FF',
-  benevolence: '#EC4899',
+  general: '#1D9BF0',
+  benevolence: '#1D9BF0',
   building: '#F59E0B',
-  missions: '#8B5CF6',
+  missions: '#1D9BF0',
   youth: '#EF4444',
   kids: '#22C55E',
-  worship: '#10B981',
-  outreach: '#F97316',
+  worship: '#22C55E',
+  outreach: '#F59E0B',
 };
 
 export const FUND_TYPE_ICONS: Record<FundType, string> = {
@@ -198,9 +198,9 @@ export const CAMPAIGN_STATUS_LABELS: Record<CampaignStatus, string> = {
 
 export const CAMPAIGN_STATUS_COLORS: Record<CampaignStatus, string> = {
   active: '#22C55E',
-  completed: '#6AA9FF',
+  completed: '#1D9BF0',
   paused: '#F59E0B',
-  draft: '#8F8F8F',
+  draft: '#A1A1AA',
 };
 
 export const GIFT_FREQUENCY_LABELS: Record<GiftFrequency, string> = {
@@ -235,7 +235,7 @@ export const RECEIPT_STATUS_LABELS: Record<ReceiptStatus, string> = {
 };
 
 export const RECEIPT_STATUS_COLORS: Record<ReceiptStatus, string> = {
-  generated: '#6AA9FF',
+  generated: '#1D9BF0',
   sent: '#22C55E',
   pending: '#F59E0B',
   failed: '#EF4444',
@@ -253,8 +253,8 @@ export const RECONCILIATION_STATUS_COLORS: Record<ReconciliationStatus, string> 
   processed: '#22C55E',
   pending: '#F59E0B',
   failed: '#EF4444',
-  returned: '#8B5CF6',
-  needs_action: '#F97316',
+  returned: '#1D9BF0',
+  needs_action: '#F59E0B',
 };
 
 export const DONOR_STATUS_LABELS: Record<DonorStatus, string> = {
@@ -266,7 +266,7 @@ export const DONOR_STATUS_LABELS: Record<DonorStatus, string> = {
 export const DONOR_STATUS_COLORS: Record<DonorStatus, string> = {
   active: '#22C55E',
   lapsed: '#EF4444',
-  new: '#6AA9FF',
+  new: '#1D9BF0',
 };
 
 // =============================================================================

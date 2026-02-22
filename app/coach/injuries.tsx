@@ -54,8 +54,8 @@ const HEALTHY_PLAYERS = [
 
 const STATUS_COLORS: Record<string, string> = {
   out: '#EF4444',
-  questionable: '#6e6e6e',
-  probable: '#f5f5f5',
+  questionable: '#A1A1AA',
+  probable: '#FFFFFF',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -109,7 +109,7 @@ export default function CoachInjuriesScreen() {
         {/* Summary */}
         <View style={[styles.summaryCard, { backgroundColor: colors.backgroundSecondary }]}>
           <View style={styles.summaryItem}>
-            <Text style={[styles.summaryValue, { color: '#f5f5f5' }]}>
+            <Text style={[styles.summaryValue, { color: '#FFFFFF' }]}>
               {HEALTHY_PLAYERS.length}
             </Text>
             <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Healthy</Text>
@@ -175,7 +175,7 @@ export default function CoachInjuriesScreen() {
               <View style={styles.healthyRow}>
                 <Text style={[styles.healthyName, { color: colors.text }]}>{name}</Text>
                 <View style={styles.healthyBadge}>
-                  <IconSymbol name="checkmark.circle.fill" size={18} color="#f5f5f5" />
+                  <IconSymbol name="checkmark.circle.fill" size={18} color="#FFFFFF" />
                 </View>
               </View>
             </View>

@@ -108,7 +108,7 @@ export function FeedCard({ post }: FeedCardProps) {
           {/* Clip — Rich media preview card */}
           {post.type === 'clip' && (
             <Pressable
-              style={[styles.clipCard, { backgroundColor: '#1B2838' }]}
+              style={[styles.clipCard, { backgroundColor: '#0B0F14' }]}
               onPress={handlePress}
             >
               <LinearGradient
@@ -261,7 +261,7 @@ export function FeedCard({ post }: FeedCardProps) {
           {post.type === 'culture' && (
             <View>
               <View style={styles.cultureHeader}>
-                <IconSymbol name="heart.fill" size={13} color="#E1306C" />
+                <IconSymbol name="heart.fill" size={13} color="#1D9BF0" />
                 <ThemedText style={[styles.cultureTitle, { color: colors.text }]}>
                   {post.cultureTitle}
                 </ThemedText>

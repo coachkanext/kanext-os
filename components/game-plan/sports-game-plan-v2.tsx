@@ -26,10 +26,10 @@ import {
 } from '@/data/mock-game-plan-v2';
 
 const STATUS_COLORS: Record<string, string> = {
-  draft: '#8F8F8F',
+  draft: '#A1A1AA',
   'in-review': '#F59E0B',
   locked: '#22C55E',
-  archived: '#424242',
+  archived: '#52525B',
 };
 
 export function SportsGamePlanV2() {
@@ -236,7 +236,7 @@ function OffenseTab({ plan, colors, accent }: TabProps) {
       </View>
 
       {/* System × System Interaction */}
-      <View style={[styles.card, { backgroundColor: '#1a1a2e', borderColor: accent + '33' }]}>
+      <View style={[styles.card, { backgroundColor: '#0B0F14', borderColor: accent + '33' }]}>
         <Text style={[styles.sectionLabel, { color: accent }]}>SYSTEM × SYSTEM</Text>
         <Text style={[styles.interactionText, { color: '#ccc' }]}>
           {off.primarySystem} vs {oppSys.def}: Ball pressure disrupts entry timing but increases foul risk once the screen is used. KaNeXT pull-up midrange opens at the nail.
@@ -249,8 +249,8 @@ function OffenseTab({ plan, colors, accent }: TabProps) {
         <View key={play.id} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.playHeader}>
             <Text style={[styles.playName, { color: colors.text }]}>{play.name}</Text>
-            <View style={[styles.priorityBadge, { backgroundColor: play.priority === 'primary' ? accent + '22' : play.priority === 'secondary' ? '#F59E0B22' : '#8F8F8F22' }]}>
-              <Text style={[styles.priorityText, { color: play.priority === 'primary' ? accent : play.priority === 'secondary' ? '#F59E0B' : '#8F8F8F' }]}>{play.priority}</Text>
+            <View style={[styles.priorityBadge, { backgroundColor: play.priority === 'primary' ? accent + '22' : play.priority === 'secondary' ? '#F59E0B22' : '#A1A1AA22' }]}>
+              <Text style={[styles.priorityText, { color: play.priority === 'primary' ? accent : play.priority === 'secondary' ? '#F59E0B' : '#A1A1AA' }]}>{play.priority}</Text>
             </View>
           </View>
           <Text style={[styles.playNotes, { color: colors.textSecondary }]}>{play.notes}</Text>
@@ -288,7 +288,7 @@ function DefenseTab({ plan, colors, accent }: TabProps) {
       </View>
 
       {/* System × System */}
-      <View style={[styles.card, { backgroundColor: '#1a1a2e', borderColor: accent + '33' }]}>
+      <View style={[styles.card, { backgroundColor: '#0B0F14', borderColor: accent + '33' }]}>
         <Text style={[styles.sectionLabel, { color: accent }]}>SYSTEM × SYSTEM</Text>
         <Text style={[styles.interactionText, { color: '#ccc' }]}>
           {def.primarySystem} vs {oppSys.off}: Pack line restricts driving lanes but opens mid-range pull-ups. Hedge-and-recover on PnR to limit roll man.
@@ -314,8 +314,8 @@ function DefenseTab({ plan, colors, accent }: TabProps) {
         <View key={rule.id} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.playHeader}>
             <Text style={[styles.playName, { color: colors.text, flex: 1 }]}>{rule.rule}</Text>
-            <View style={[styles.priorityBadge, { backgroundColor: rule.priority === 'must' ? '#EF444422' : rule.priority === 'should' ? '#F59E0B22' : '#8F8F8F22' }]}>
-              <Text style={[styles.priorityText, { color: rule.priority === 'must' ? '#EF4444' : rule.priority === 'should' ? '#F59E0B' : '#8F8F8F' }]}>{rule.priority}</Text>
+            <View style={[styles.priorityBadge, { backgroundColor: rule.priority === 'must' ? '#EF444422' : rule.priority === 'should' ? '#F59E0B22' : '#A1A1AA22' }]}>
+              <Text style={[styles.priorityText, { color: rule.priority === 'must' ? '#EF4444' : rule.priority === 'should' ? '#F59E0B' : '#A1A1AA' }]}>{rule.priority}</Text>
             </View>
           </View>
         </View>
@@ -422,7 +422,7 @@ function RotationTab({ plan, colors, accent }: TabProps) {
       })}
 
       {/* Foul Trouble Contingency */}
-      <View style={[styles.card, { backgroundColor: '#1a1a1a', borderColor: '#F59E0B44' }]}>
+      <View style={[styles.card, { backgroundColor: '#0B0F14', borderColor: '#F59E0B44' }]}>
         <Text style={[styles.sectionLabel, { color: '#F59E0B' }]}>FOUL TROUBLE CONTINGENCY</Text>
         {plan.offense.adjustments.filter(a => a.toLowerCase().includes('foul')).map((a, i) => (
           <Text key={i} style={[styles.contingencyText, { color: '#ccc' }]}>● {a}</Text>
@@ -439,7 +439,7 @@ function RotationTab({ plan, colors, accent }: TabProps) {
 
 // ─── Tab 6: Scout ───
 function ScoutTab({ plan, colors, accent, krVis }: TabProps) {
-  const catColors: Record<string, string> = { tendency: '#F59E0B', weakness: '#EF4444', strength: '#22C55E', 'key-player': accent, situational: '#8B5CF6' };
+  const catColors: Record<string, string> = { tendency: '#F59E0B', weakness: '#EF4444', strength: '#22C55E', 'key-player': accent, situational: '#1D9BF0' };
   const oppKR = getOppKR(plan);
 
   return (
@@ -464,8 +464,8 @@ function ScoutTab({ plan, colors, accent, krVis }: TabProps) {
       {plan.scoutNotes.map((note) => (
         <View key={note.id} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.scoutHeader}>
-            <View style={[styles.catBadge, { backgroundColor: (catColors[note.category] ?? '#8F8F8F') + '22' }]}>
-              <Text style={[styles.catText, { color: catColors[note.category] ?? '#8F8F8F' }]}>{note.category}</Text>
+            <View style={[styles.catBadge, { backgroundColor: (catColors[note.category] ?? '#A1A1AA') + '22' }]}>
+              <Text style={[styles.catText, { color: catColors[note.category] ?? '#A1A1AA' }]}>{note.category}</Text>
             </View>
             <View style={[styles.confBadge, { backgroundColor: note.confidence === 'high' ? '#22C55E22' : note.confidence === 'medium' ? '#F59E0B22' : '#EF444422' }]}>
               <Text style={[styles.confBadgeText, { color: note.confidence === 'high' ? '#22C55E' : note.confidence === 'medium' ? '#F59E0B' : '#EF4444' }]}>{note.confidence}</Text>
@@ -513,7 +513,7 @@ function StaffTab({ plan, colors, accent }: TabProps) {
       ))}
 
       {/* Pre-game Notes (placeholder) */}
-      <View style={[styles.card, { backgroundColor: '#1a1a1a', borderColor: colors.border }]}>
+      <View style={[styles.card, { backgroundColor: '#0B0F14', borderColor: colors.border }]}>
         <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>PRE-GAME STAFF NOTES</Text>
         <Text style={[styles.notesPlaceholder, { color: colors.textTertiary }]}>Tap to add coaching staff notes for this game...</Text>
       </View>
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
 
   // Pills
   pillBar: { paddingHorizontal: 16, paddingVertical: 10, gap: 8 },
-  pill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
+  pill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#2F3336' },
   pillText: { fontSize: 13, fontWeight: '600' },
 
   // Card
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
   venueText: { fontSize: 10, marginTop: 2 },
 
   winProbRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  winProbBarBg: { flex: 1, height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.08)' },
+  winProbBarBg: { flex: 1, height: 8, borderRadius: 4, backgroundColor: '#2F3336' },
   winProbBarFill: { height: 8, borderRadius: 4 },
   winProbPct: { fontSize: 20, fontWeight: '800', width: 50, textAlign: 'right' },
   rangeRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 },
@@ -616,7 +616,7 @@ const styles = StyleSheet.create({
   typeBadge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, marginTop: 4 },
   typeText: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase' },
   matchupNotes: { fontSize: 12, marginTop: 8, lineHeight: 18 },
-  expandedMatchup: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
+  expandedMatchup: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#2F3336' },
   expandedLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5, marginBottom: 6 },
   expandedText: { fontSize: 12, lineHeight: 18, marginBottom: 4 },
 

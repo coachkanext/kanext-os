@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderRadius: 10,
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderWidth: 1,
   },
   tabActive: {
@@ -205,11 +205,11 @@ const styles = StyleSheet.create({
   tabCount: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#8F8F8F',
+    color: '#A1A1AA',
     marginTop: 1,
   },
   tabCountActive: {
-    color: '#424242',
+    color: '#52525B',
   },
 
   // Evidence card

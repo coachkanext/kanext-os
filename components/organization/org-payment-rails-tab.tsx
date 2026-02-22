@@ -128,8 +128,8 @@ const ACCOUNT_STATUS_COLOR: Record<PayRailsAccount['status'], string> = {
 // =============================================================================
 
 const TAX_FORM_STATUS_COLOR: Record<PayRailsTaxForm['status'], string> = {
-  draft: '#9CA3AF',
-  ready: '#3B82F6',
+  draft: '#A1A1AA',
+  ready: '#1D9BF0',
   filed: '#22C55E',
   corrected: '#F59E0B',
 };
@@ -140,7 +140,7 @@ const TAX_FORM_STATUS_COLOR: Record<PayRailsTaxForm['status'], string> = {
 
 const DISPUTE_TYPE_COLOR: Record<PayRailsDispute['type'], string> = {
   chargeback: '#F59E0B',
-  inquiry: '#3B82F6',
+  inquiry: '#1D9BF0',
   'failed-payout': '#EF4444',
 };
 
@@ -149,7 +149,7 @@ const DISPUTE_TYPE_COLOR: Record<PayRailsDispute['type'], string> = {
 // =============================================================================
 
 const EXPORT_FORMAT_COLOR: Record<PayRailsExport['format'], string> = {
-  PDF: '#3B82F6',
+  PDF: '#1D9BF0',
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };
@@ -176,13 +176,13 @@ function auditColor(action: string): string {
   switch (action) {
     case 'charge_received': return '#22C55E';
     case 'payout_initiated': return '#EF4444';
-    case 'settlement_closed': return '#6366F1';
+    case 'settlement_closed': return '#1D9BF0';
     case 'refund_processed': return '#F59E0B';
-    case 'control_updated': return '#8F8F8F';
-    case 'account_created': return '#3B82F6';
-    case 'transfer_completed': return '#6AA9FF';
-    case 'dispute_opened': return '#F97316';
-    default: return '#8F8F8F';
+    case 'control_updated': return '#A1A1AA';
+    case 'account_created': return '#1D9BF0';
+    case 'transfer_completed': return '#1D9BF0';
+    case 'dispute_opened': return '#F59E0B';
+    default: return '#A1A1AA';
   }
 }
 
@@ -339,13 +339,13 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
                 <View
                   style={[
                     s.badge,
-                    { backgroundColor: isPrimary ? '#22C55E20' : '#3B82F620' },
+                    { backgroundColor: isPrimary ? '#22C55E20' : '#1D9BF020' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       s.badgeText,
-                      { color: isPrimary ? '#22C55E' : '#3B82F6' },
+                      { color: isPrimary ? '#22C55E' : '#1D9BF0' },
                     ]}
                   >
                     {item.type}

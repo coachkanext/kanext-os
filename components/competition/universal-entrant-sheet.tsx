@@ -47,7 +47,7 @@ function getStatusColor(status: EntrantObject['status']): string {
     case 'active': return '#22C55E';
     case 'under_review': return '#F59E0B';
     case 'suspended': return '#EF4444';
-    case 'withdrawn': return '#8F8F8F';
+    case 'withdrawn': return '#A1A1AA';
   }
 }
 
@@ -65,7 +65,7 @@ function getPayoutStatusColor(status: EntrantObject['payoutStatus']): string {
     case 'released': return '#22C55E';
     case 'pending': return '#F59E0B';
     case 'hold': return '#EF4444';
-    case 'locked': return '#8F8F8F';
+    case 'locked': return '#A1A1AA';
   }
 }
 

@@ -64,7 +64,7 @@ export function VideoSubFooter({ state, descriptors, navigation }: VideoSubFoote
               <IconSymbol
                 name={tabDef.icon}
                 size={24}
-                color={isFocused ? '#f5f5f5' : '#555'}
+                color={isFocused ? '#FFFFFF' : '#555'}
               />
               {isFocused && <View style={styles.activeIndicator} />}
             </Pressable>
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     height: SUB_FOOTER_HEIGHT,
     backgroundColor: '#000',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
     justifyContent: 'center',
     paddingBottom: Platform.OS === 'ios' ? 2 : 0,
   },
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 2.5,
     borderRadius: 1.25,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     marginTop: 6,
   },
 });

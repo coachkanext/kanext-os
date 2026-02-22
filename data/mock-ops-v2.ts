@@ -248,33 +248,33 @@ export const OPS_SCOPE_CHIPS: Record<Mode, OpsScopeChip[]> = {
 // =============================================================================
 
 export const STATUS_COLOR_MAP: Record<OpsStatus, string> = {
-  draft: '#8F8F8F',
+  draft: '#A1A1AA',
   active: '#22C55E',
   blocked: '#EF4444',
-  complete: '#6AA9FF',
-  archived: '#424242',
+  complete: '#1D9BF0',
+  archived: '#52525B',
 };
 
 export const SEVERITY_COLOR_MAP: Record<IssueSeverity, string> = {
-  low: '#8F8F8F',
+  low: '#A1A1AA',
   medium: '#F59E0B',
-  high: '#FF6B35',
+  high: '#F59E0B',
   critical: '#EF4444',
 };
 
 export const PRIORITY_COLOR_MAP: Record<OpsPriority, string> = {
   P0: '#EF4444',
-  P1: '#FF6B35',
+  P1: '#F59E0B',
   P2: '#F59E0B',
-  P3: '#8F8F8F',
+  P3: '#A1A1AA',
 };
 
 export const CONDITION_COLOR_MAP: Record<AssetCondition, string> = {
   excellent: '#22C55E',
-  good: '#6AA9FF',
+  good: '#1D9BF0',
   fair: '#F59E0B',
   'needs-repair': '#EF4444',
-  retired: '#424242',
+  retired: '#52525B',
 };
 
 // =============================================================================
@@ -356,13 +356,13 @@ const SPORTS_CADENCE: OpsCadenceMeeting[] = [
 
 const SPORTS_DASHBOARD: DashboardBlock[] = [
   { id: 'sp-d-1', label: 'Open Tasks', icon: 'checkmark.circle', value: '6', subValue: '2 overdue', color: '#F59E0B' },
-  { id: 'sp-d-2', label: 'Active Work Orders', icon: 'wrench.and.screwdriver', value: '3', color: '#6AA9FF' },
+  { id: 'sp-d-2', label: 'Active Work Orders', icon: 'wrench.and.screwdriver', value: '3', color: '#1D9BF0' },
   { id: 'sp-d-3', label: 'Open Issues', icon: 'exclamationmark.triangle', value: '3', subValue: '1 critical', color: '#EF4444' },
   { id: 'sp-d-4', label: 'Upcoming Travel', icon: 'airplane', value: '3', subValue: 'Next: Feb 18', color: '#22C55E' },
-  { id: 'sp-d-5', label: 'Assets Tracked', icon: 'cube.box', value: '5', subValue: '1 needs repair', color: '#8F8F8F' },
+  { id: 'sp-d-5', label: 'Assets Tracked', icon: 'cube.box', value: '5', subValue: '1 needs repair', color: '#A1A1AA' },
   { id: 'sp-d-6', label: 'Active Vendors', icon: 'building.2', value: '4', subValue: '1 pending renewal', color: '#F59E0B' },
   { id: 'sp-d-7', label: 'Facilities', icon: 'mappin.and.ellipse', value: '3', subValue: 'All operational', color: '#22C55E' },
-  { id: 'sp-d-8', label: 'SOPs', icon: 'doc.text', value: '5', color: '#6AA9FF' },
+  { id: 'sp-d-8', label: 'SOPs', icon: 'doc.text', value: '5', color: '#1D9BF0' },
 ];
 
 const SPORTS_AUDIT: OpsAuditEntry[] = [
@@ -456,13 +456,13 @@ const EDUCATION_CADENCE: OpsCadenceMeeting[] = [
 
 const EDUCATION_DASHBOARD: DashboardBlock[] = [
   { id: 'ed-d-1', label: 'Open Tasks', icon: 'checkmark.circle', value: '7', subValue: '2 P0', color: '#EF4444' },
-  { id: 'ed-d-2', label: 'Work Orders', icon: 'wrench.and.screwdriver', value: '4', subValue: '2 active', color: '#6AA9FF' },
+  { id: 'ed-d-2', label: 'Work Orders', icon: 'wrench.and.screwdriver', value: '4', subValue: '2 active', color: '#1D9BF0' },
   { id: 'ed-d-3', label: 'Open Issues', icon: 'exclamationmark.triangle', value: '3', subValue: '1 critical', color: '#EF4444' },
   { id: 'ed-d-4', label: 'Enrollment Pipeline', icon: 'person.2', value: '142', subValue: 'Pending review', color: '#22C55E' },
   { id: 'ed-d-5', label: 'Facilities Status', icon: 'building.2', value: '2/3', subValue: 'Fully operational', color: '#F59E0B' },
-  { id: 'ed-d-6', label: 'Upcoming Travel', icon: 'airplane', value: '2', subValue: 'Next: Mar 10', color: '#8F8F8F' },
-  { id: 'ed-d-7', label: 'Accreditation Deadline', icon: 'calendar.badge.clock', value: '14 days', color: '#FF6B35' },
-  { id: 'ed-d-8', label: 'SOPs', icon: 'doc.text', value: '5', color: '#6AA9FF' },
+  { id: 'ed-d-6', label: 'Upcoming Travel', icon: 'airplane', value: '2', subValue: 'Next: Mar 10', color: '#A1A1AA' },
+  { id: 'ed-d-7', label: 'Accreditation Deadline', icon: 'calendar.badge.clock', value: '14 days', color: '#F59E0B' },
+  { id: 'ed-d-8', label: 'SOPs', icon: 'doc.text', value: '5', color: '#1D9BF0' },
 ];
 
 const EDUCATION_AUDIT: OpsAuditEntry[] = [
@@ -553,13 +553,13 @@ const CHURCH_CADENCE: OpsCadenceMeeting[] = [
 
 const CHURCH_DASHBOARD: DashboardBlock[] = [
   { id: 'ch-d-1', label: 'Open Tasks', icon: 'checkmark.circle', value: '5', subValue: '2 due this week', color: '#F59E0B' },
-  { id: 'ch-d-2', label: 'Work Orders', icon: 'wrench.and.screwdriver', value: '3', color: '#6AA9FF' },
+  { id: 'ch-d-2', label: 'Work Orders', icon: 'wrench.and.screwdriver', value: '3', color: '#1D9BF0' },
   { id: 'ch-d-3', label: 'Open Issues', icon: 'exclamationmark.triangle', value: '3', subValue: '1 critical', color: '#EF4444' },
   { id: 'ch-d-4', label: 'Volunteers Scheduled', icon: 'person.3', value: '24', subValue: 'This Sunday', color: '#22C55E' },
   { id: 'ch-d-5', label: 'Upcoming Services', icon: 'music.note', value: '3', subValue: 'Next: Sun 10 AM', color: '#FFFFFF' },
-  { id: 'ch-d-6', label: 'Active Ministries', icon: 'heart', value: '7', color: '#6AA9FF' },
+  { id: 'ch-d-6', label: 'Active Ministries', icon: 'heart', value: '7', color: '#1D9BF0' },
   { id: 'ch-d-7', label: 'Facilities', icon: 'building.2', value: '2/3', subValue: 'Fully operational', color: '#F59E0B' },
-  { id: 'ch-d-8', label: 'Missions Planned', icon: 'globe', value: '2', color: '#8F8F8F' },
+  { id: 'ch-d-8', label: 'Missions Planned', icon: 'globe', value: '2', color: '#A1A1AA' },
 ];
 
 const CHURCH_AUDIT: OpsAuditEntry[] = [
@@ -654,13 +654,13 @@ const BUSINESS_CADENCE: OpsCadenceMeeting[] = [
 
 const BUSINESS_DASHBOARD: DashboardBlock[] = [
   { id: 'en-d-1', label: 'Open Tasks', icon: 'checkmark.circle', value: '7', subValue: '3 P0', color: '#EF4444' },
-  { id: 'en-d-2', label: 'Work Orders', icon: 'wrench.and.screwdriver', value: '4', subValue: '3 active', color: '#6AA9FF' },
+  { id: 'en-d-2', label: 'Work Orders', icon: 'wrench.and.screwdriver', value: '4', subValue: '3 active', color: '#1D9BF0' },
   { id: 'en-d-3', label: 'Open Issues', icon: 'exclamationmark.triangle', value: '3', subValue: '1 critical', color: '#EF4444' },
   { id: 'en-d-4', label: 'Hiring Pipeline', icon: 'person.badge.plus', value: '3', subValue: 'Active roles', color: '#22C55E' },
   { id: 'en-d-5', label: 'Vendor Contracts', icon: 'building.2', value: '4', subValue: '1 pending renewal', color: '#F59E0B' },
-  { id: 'en-d-6', label: 'Upcoming Travel', icon: 'airplane', value: '3', subValue: 'Next: Feb 25', color: '#8F8F8F' },
+  { id: 'en-d-6', label: 'Upcoming Travel', icon: 'airplane', value: '3', subValue: 'Next: Feb 25', color: '#A1A1AA' },
   { id: 'en-d-7', label: 'Burn Rate', icon: 'chart.line.downtrend.xyaxis', value: '$42K', subValue: '/month', color: '#FFFFFF' },
-  { id: 'en-d-8', label: 'SOPs', icon: 'doc.text', value: '5', color: '#6AA9FF' },
+  { id: 'en-d-8', label: 'SOPs', icon: 'doc.text', value: '5', color: '#1D9BF0' },
 ];
 
 const BUSINESS_AUDIT: OpsAuditEntry[] = [
@@ -750,13 +750,13 @@ const COMMUNITY_CADENCE: OpsCadenceMeeting[] = [
 
 const COMMUNITY_DASHBOARD: DashboardBlock[] = [
   { id: 'co-d-1', label: 'Open Tasks', icon: 'checkmark.circle', value: '5', subValue: '2 P0', color: '#EF4444' },
-  { id: 'co-d-2', label: 'Work Orders', icon: 'wrench.and.screwdriver', value: '3', color: '#6AA9FF' },
+  { id: 'co-d-2', label: 'Work Orders', icon: 'wrench.and.screwdriver', value: '3', color: '#1D9BF0' },
   { id: 'co-d-3', label: 'Open Issues', icon: 'exclamationmark.triangle', value: '2', subValue: '1 critical', color: '#EF4444' },
   { id: 'co-d-4', label: 'Next Event', icon: 'flag.checkered', value: '12 days', subValue: 'Round 1 — COTA', color: '#22C55E' },
   { id: 'co-d-5', label: 'Teams Registered', icon: 'person.3', value: '8', subValue: 'All credentialed', color: '#FFFFFF' },
   { id: 'co-d-6', label: 'Assets Tracked', icon: 'cube.box', value: '5', subValue: '1 fair condition', color: '#F59E0B' },
-  { id: 'co-d-7', label: 'Upcoming Travel', icon: 'airplane', value: '3', subValue: 'Next: Feb 26', color: '#8F8F8F' },
-  { id: 'co-d-8', label: 'SOPs', icon: 'doc.text', value: '5', color: '#6AA9FF' },
+  { id: 'co-d-7', label: 'Upcoming Travel', icon: 'airplane', value: '3', subValue: 'Next: Feb 26', color: '#A1A1AA' },
+  { id: 'co-d-8', label: 'SOPs', icon: 'doc.text', value: '5', color: '#1D9BF0' },
 ];
 
 const COMMUNITY_AUDIT: OpsAuditEntry[] = [

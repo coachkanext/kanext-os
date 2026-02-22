@@ -51,7 +51,7 @@ function formDotColor(result: 'W' | 'L' | 'D'): string {
   switch (result) {
     case 'W': return '#22C55E';
     case 'L': return '#EF4444';
-    case 'D': return '#6B7280';
+    case 'D': return '#A1A1AA';
   }
 }
 
@@ -753,7 +753,7 @@ function HistoryTab({
               </View>
             </View>
             <View style={s.historyItem}>
-              <IconSymbol name="star.fill" size={14} color="#9CA3AF" />
+              <IconSymbol name="star.fill" size={14} color="#A1A1AA" />
               <View style={s.historyItemText}>
                 <ThemedText style={[s.historyLabel, { color: colors.textTertiary }]}>
                   Runner-Up
@@ -767,7 +767,7 @@ function HistoryTab({
 
           <View style={s.historyRow}>
             <View style={s.historyItem}>
-              <IconSymbol name="person.fill" size={14} color="#6AA9FF" />
+              <IconSymbol name="person.fill" size={14} color="#1D9BF0" />
               <View style={s.historyItemText}>
                 <ThemedText style={[s.historyLabel, { color: colors.textTertiary }]}>
                   MVP

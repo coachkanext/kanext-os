@@ -24,7 +24,7 @@ export function TrendingBlock({ icon, title, posts }: TrendingBlockProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <IconSymbol name={icon} size={16} color="#6e6e6e" />
+        <IconSymbol name={icon} size={16} color="#A1A1AA" />
         <ThemedText style={styles.title}>{title}</ThemedText>
       </View>
       {posts.slice(0, 3).map((post) => (
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   seeAll: {
     paddingHorizontal: Spacing.md,
@@ -62,6 +62,6 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
 });

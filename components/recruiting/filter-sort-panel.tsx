@@ -17,11 +17,11 @@ import type { HeliocentricPosition, ClusterType } from '@/types';
 import type { PoolLevel } from '@/data/playerPool';
 import type { Archetype } from '@/data/system-demand-profiles';
 
-const BG = '#0F1115';
-const CARD_BG = '#1A1D23';
+const BG = '#0B0F14';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
 // ─── Filter State ───
 
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     color: WHITE,
   },
   summaryPill: {
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,

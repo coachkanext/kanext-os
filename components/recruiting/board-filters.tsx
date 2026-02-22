@@ -38,9 +38,9 @@ import { ROSTER } from '@/components/roster-content';
 import type { ClusterType, HeliocentricPosition } from '@/types';
 
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
-const BG = '#0F1115';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
+const BG = '#0B0F14';
 
 // ── Filter state ──
 // Multi-select fields use string[]; single-select sort fields use string | null.
@@ -98,14 +98,14 @@ export interface KRTier {
 export type DivisionAnchor = 'high_major' | 'mid_major' | 'low_major' | 'naia' | 'juco';
 
 const TIER_RANGES: { short: string; min: number; max: number; color: string }[] = [
-  { short: 'Elite', min: 86, max: 100, color: '#FFD700' },
-  { short: 'Franchise', min: 82, max: 85, color: '#4CAF50' },
-  { short: 'Impact', min: 78, max: 81, color: '#2196F3' },
-  { short: 'Starter', min: 74, max: 77, color: '#29B6F6' },
-  { short: 'Rotation', min: 71, max: 73, color: '#AB47BC' },
-  { short: 'Bench', min: 68, max: 70, color: '#FF9800' },
-  { short: 'Depth', min: 65, max: 67, color: '#8D6E63' },
-  { short: 'Project', min: 0, max: 64, color: '#757575' },
+  { short: 'Elite', min: 86, max: 100, color: '#1D9BF0' },
+  { short: 'Franchise', min: 82, max: 85, color: '#22C55E' },
+  { short: 'Impact', min: 78, max: 81, color: '#1D9BF0' },
+  { short: 'Starter', min: 74, max: 77, color: '#1D9BF0' },
+  { short: 'Rotation', min: 71, max: 73, color: '#1D9BF0' },
+  { short: 'Bench', min: 68, max: 70, color: '#F59E0B' },
+  { short: 'Depth', min: 65, max: 67, color: '#A1A1AA' },
+  { short: 'Project', min: 0, max: 64, color: '#A1A1AA' },
 ];
 
 const TIER_LABELS: Record<DivisionAnchor, string[]> = {
@@ -1421,7 +1421,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 16,
@@ -1431,7 +1431,7 @@ const styles = StyleSheet.create({
   },
   chipExpanded: {
     borderWidth: 1.5,
-    borderColor: '#4A4D55',
+    borderColor: '#52525B',
   },
   chipText: {
     fontSize: 12,
@@ -1448,7 +1448,7 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: '#4A4D55',
+    borderColor: '#52525B',
   },
   subRow: {
     flexDirection: 'row',
@@ -1467,16 +1467,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 14,
-    backgroundColor: '#1A1D23',
+    backgroundColor: '#0B0F14',
     borderWidth: 1,
-    borderColor: '#2A2D35',
+    borderColor: '#0B0F14',
   },
   subPillActive: {
     backgroundColor: WHITE,
     borderColor: WHITE,
   },
   subPillExpanded: {
-    borderColor: '#4A4D55',
+    borderColor: '#52525B',
     borderWidth: 1.5,
   },
   subPillText: {
@@ -1491,15 +1491,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 10,
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     borderWidth: 1,
-    borderColor: '#3A3D45',
+    borderColor: '#2F3336',
     minWidth: 140,
   },
   tierPillLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#e0e0e0',
+    color: '#A1A1AA',
   },
   tierPillRange: {
     fontSize: 10,
@@ -1529,9 +1529,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 14,
-    backgroundColor: '#1A1D23',
+    backgroundColor: '#0B0F14',
     borderWidth: 1,
-    borderColor: '#2A2D35',
+    borderColor: '#0B0F14',
   },
   badgeDotSmall: {
     width: 8,
@@ -1543,7 +1543,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   pipelineRegionBlock: {
-    backgroundColor: '#1A1D23',
+    backgroundColor: '#0B0F14',
     borderRadius: 10,
     padding: 10,
     gap: 4,
@@ -1557,7 +1557,7 @@ const styles = StyleSheet.create({
   },
   pipelineEmpty: {
     fontSize: 11,
-    color: '#4A4D55',
+    color: '#52525B',
     fontStyle: 'italic',
   },
   pipelinePlayerRow: {

@@ -72,7 +72,7 @@ export default function ExploreScreen() {
               key={s.key}
               style={[
                 styles.chip,
-                { backgroundColor: isActive ? '#f5f5f5' : '#111' },
+                { backgroundColor: isActive ? '#FFFFFF' : '#111' },
               ]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -80,7 +80,7 @@ export default function ExploreScreen() {
               }}
             >
               <ThemedText
-                style={[styles.chipText, { color: isActive ? '#000' : '#6e6e6e' }]}
+                style={[styles.chipText, { color: isActive ? '#000' : '#A1A1AA' }]}
               >
                 {s.label}
               </ThemedText>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 15,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   chipScroll: {
     flexGrow: 0,

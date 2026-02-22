@@ -96,12 +96,12 @@ function scheduleTypeLabel(type: string): string {
 
 function scheduleTypeColor(type: string): string {
   switch (type) {
-    case 'match': return '#3B82F6';
-    case 'ceremony': return '#8B5CF6';
+    case 'match': return '#1D9BF0';
+    case 'ceremony': return '#1D9BF0';
     case 'media-day': return '#F59E0B';
     case 'practice': return '#22C55E';
-    case 'setup': return '#6B7280';
-    default: return '#6B7280';
+    case 'setup': return '#A1A1AA';
+    default: return '#A1A1AA';
   }
 }
 
@@ -109,7 +109,7 @@ function reportFormatColor(format: OpsReport['format']): string {
   switch (format) {
     case 'PDF': return '#EF4444';
     case 'CSV': return '#22C55E';
-    case 'XLSX': return '#3B82F6';
+    case 'XLSX': return '#1D9BF0';
   }
 }
 
@@ -179,12 +179,12 @@ function DashboardTab({
       </ThemedText>
       <View style={s.quickActionsGrid}>
         {[
-          { id: 'qa-1', label: 'New Event', icon: 'plus.circle.fill', color: '#3B82F6' },
+          { id: 'qa-1', label: 'New Event', icon: 'plus.circle.fill', color: '#1D9BF0' },
           { id: 'qa-2', label: 'Log Incident', icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
           { id: 'qa-3', label: 'Add Task', icon: 'checkmark.circle.fill', color: '#22C55E' },
-          { id: 'qa-4', label: 'Book Venue', icon: 'building.2.fill', color: '#8B5CF6' },
+          { id: 'qa-4', label: 'Book Venue', icon: 'building.2.fill', color: '#1D9BF0' },
           { id: 'qa-5', label: 'Track Shipment', icon: 'shippingbox.fill', color: '#F59E0B' },
-          { id: 'qa-6', label: 'Run Report', icon: 'chart.bar.fill', color: '#6AA9FF' },
+          { id: 'qa-6', label: 'Run Report', icon: 'chart.bar.fill', color: '#1D9BF0' },
         ].map((action) => (
           <Pressable
             key={action.id}

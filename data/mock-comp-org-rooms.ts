@@ -195,13 +195,13 @@ export const ROOM_STATUS_COLOR: Record<RoomStatus, string> = {
   active: '#22C55E',
   idle: '#F59E0B',
   locked: '#EF4444',
-  archived: '#9CA3AF',
+  archived: '#A1A1AA',
 };
 
 export const ACCESS_LEVEL_COLOR: Record<RoomAccessLevel, string> = {
-  public: '#3B82F6',
+  public: '#1D9BF0',
   staff: '#22C55E',
-  vip: '#8B5CF6',
+  vip: '#1D9BF0',
   restricted: '#EF4444',
 };
 
@@ -218,7 +218,7 @@ export const PRIORITY_COLOR: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
   normal: '#22C55E',
-  low: '#9CA3AF',
+  low: '#A1A1AA',
 };
 
 // =============================================================================
@@ -226,11 +226,11 @@ export const PRIORITY_COLOR: Record<string, string> = {
 // =============================================================================
 
 const DASHBOARD_BLOCKS: RoomsDashboardBlock[] = [
-  { id: 'db-1', label: 'Total Rooms', value: '24', delta: '+3 this week', icon: 'rectangle.stack.fill', color: '#6AA9FF' },
+  { id: 'db-1', label: 'Total Rooms', value: '24', delta: '+3 this week', icon: 'rectangle.stack.fill', color: '#1D9BF0' },
   { id: 'db-2', label: 'Active Now', value: '11', delta: '46% utilization', icon: 'bolt.fill', color: '#22C55E' },
   { id: 'db-3', label: 'Broadcast Live', value: '4', delta: '12.8K viewers', icon: 'antenna.radiowaves.left.and.right', color: '#EF4444' },
   { id: 'db-4', label: 'Occupancy Rate', value: '72%', delta: '+8% vs last event', icon: 'person.3.fill', color: '#F59E0B' },
-  { id: 'db-5', label: 'Pending Rulings', value: '6', delta: '3 urgent', icon: 'exclamationmark.triangle.fill', color: '#8B5CF6' },
+  { id: 'db-5', label: 'Pending Rulings', value: '6', delta: '3 urgent', icon: 'exclamationmark.triangle.fill', color: '#1D9BF0' },
   { id: 'db-6', label: 'Messages Today', value: '847', delta: '+22% vs avg', icon: 'bubble.left.and.bubble.right.fill', color: '#FFFFFF' },
 ];
 
@@ -241,13 +241,13 @@ const DASHBOARD_BLOCKS: RoomsDashboardBlock[] = [
 const ACTIVITY_FEED: RoomActivityItem[] = [
   { id: 'af-1', roomName: 'KaNeXT Church War Room', action: 'Strategy session started', actor: 'Alex Morgan', timestampMs: Date.now() - 180000, color: '#22C55E' },
   { id: 'af-2', roomName: 'K-1 Broadcast Center', action: 'Stream went live — Match 7', actor: 'Jordan Ellis', timestampMs: Date.now() - 420000, color: '#EF4444' },
-  { id: 'af-3', roomName: 'Match Officials Room A', action: 'Ruling submitted — Foul review', actor: 'Ref. Williams', timestampMs: Date.now() - 900000, color: '#8B5CF6' },
+  { id: 'af-3', roomName: 'Match Officials Room A', action: 'Ruling submitted — Foul review', actor: 'Ref. Williams', timestampMs: Date.now() - 900000, color: '#1D9BF0' },
   { id: 'af-4', roomName: 'Press Room — Main Arena', action: 'Post-match presser opened', actor: 'Media Ops', timestampMs: Date.now() - 1500000, color: '#F59E0B' },
-  { id: 'af-5', roomName: 'VIP Lounge — Commissioner', action: 'Guest access granted', actor: 'Security Team', timestampMs: Date.now() - 2100000, color: '#3B82F6' },
+  { id: 'af-5', roomName: 'VIP Lounge — Commissioner', action: 'Guest access granted', actor: 'Security Team', timestampMs: Date.now() - 2100000, color: '#1D9BF0' },
   { id: 'af-6', roomName: 'Ops Command Center', action: 'Task #14 completed — Venue setup', actor: 'Chris Rivera', timestampMs: Date.now() - 3600000, color: '#22C55E' },
-  { id: 'af-7', roomName: 'KaNeXT Church War Room', action: 'Document shared — Scouting Report', actor: 'Mike Torres', timestampMs: Date.now() - 5400000, color: '#6AA9FF' },
+  { id: 'af-7', roomName: 'KaNeXT Church War Room', action: 'Document shared — Scouting Report', actor: 'Mike Torres', timestampMs: Date.now() - 5400000, color: '#1D9BF0' },
   { id: 'af-8', roomName: 'K-1 Broadcast Center', action: 'Camera 3 audio sync fixed', actor: 'Jordan Ellis', timestampMs: Date.now() - 7200000, color: '#F59E0B' },
-  { id: 'af-9', roomName: 'Match Officials Room B', action: 'Pre-match briefing completed', actor: 'Ref. Garcia', timestampMs: Date.now() - 9000000, color: '#9CA3AF' },
+  { id: 'af-9', roomName: 'Match Officials Room B', action: 'Pre-match briefing completed', actor: 'Ref. Garcia', timestampMs: Date.now() - 9000000, color: '#A1A1AA' },
   { id: 'af-10', roomName: 'VIP Lounge — Sponsors', action: 'Catering delivered', actor: 'Event Services', timestampMs: Date.now() - 10800000, color: '#22C55E' },
 ];
 
@@ -381,14 +381,14 @@ const ARCHIVED_ROOMS: ArchivedRoom[] = [
 // =============================================================================
 
 const ANALYTICS_STATS: AnalyticsStatCard[] = [
-  { id: 'as-1', label: 'Avg. Daily Active Rooms', value: '14.2', change: '+2.1', changeDirection: 'up', icon: 'rectangle.stack.fill', color: '#6AA9FF' },
+  { id: 'as-1', label: 'Avg. Daily Active Rooms', value: '14.2', change: '+2.1', changeDirection: 'up', icon: 'rectangle.stack.fill', color: '#1D9BF0' },
   { id: 'as-2', label: 'Peak Concurrent Users', value: '189', change: '+34', changeDirection: 'up', icon: 'person.3.fill', color: '#22C55E' },
   { id: 'as-3', label: 'Avg. Session Duration', value: '2h 14m', change: '+18m', changeDirection: 'up', icon: 'clock.fill', color: '#F59E0B' },
   { id: 'as-4', label: 'Total Broadcast Hours', value: '126.5', change: '+12.3', changeDirection: 'up', icon: 'antenna.radiowaves.left.and.right', color: '#EF4444' },
   { id: 'as-5', label: 'Messages This Week', value: '5,842', change: '+18%', changeDirection: 'up', icon: 'bubble.left.and.bubble.right.fill', color: '#FFFFFF' },
-  { id: 'as-6', label: 'Files Shared', value: '347', change: '-12', changeDirection: 'down', icon: 'doc.fill', color: '#8B5CF6' },
+  { id: 'as-6', label: 'Files Shared', value: '347', change: '-12', changeDirection: 'down', icon: 'doc.fill', color: '#1D9BF0' },
   { id: 'as-7', label: 'Avg. Occupancy Rate', value: '68%', change: '+5%', changeDirection: 'up', icon: 'chart.bar.fill', color: '#22C55E' },
-  { id: 'as-8', label: 'Rooms Archived (30d)', value: '6', change: '-2', changeDirection: 'down', icon: 'archivebox.fill', color: '#9CA3AF' },
+  { id: 'as-8', label: 'Rooms Archived (30d)', value: '6', change: '-2', changeDirection: 'down', icon: 'archivebox.fill', color: '#A1A1AA' },
 ];
 
 const OCCUPANCY_TRENDS: RoomAnalytic[] = [

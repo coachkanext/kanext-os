@@ -91,13 +91,13 @@ interface FeedPrayer {
 
 const CATEGORY_COLORS: Record<PrayerCategory, string> = {
   health: '#EF4444',
-  family: '#8B5CF6',
+  family: '#1D9BF0',
   financial: '#22C55E',
-  guidance: '#3B82F6',
+  guidance: '#1D9BF0',
   gratitude: '#F59E0B',
-  church: '#06B6D4',
-  world: '#EC4899',
-  other: '#8F8F8F',
+  church: '#1D9BF0',
+  world: '#1D9BF0',
+  other: '#A1A1AA',
 };
 
 const CATEGORY_LABELS: Record<PrayerCategory, string> = {
@@ -120,7 +120,7 @@ const PRIVACY_LABELS: Record<PrayerPrivacy, string> = {
 
 const PRIVACY_COLORS: Record<PrayerPrivacy, string> = {
   public: '#22C55E',
-  church: '#3B82F6',
+  church: '#1D9BF0',
   leadership: '#F59E0B',
   private: '#EF4444',
 };
@@ -259,9 +259,9 @@ const MY_REQUESTS: MyPrayerRequest[] = [
 ];
 
 const STATUS_COLORS: Record<RequestStatus, string> = {
-  active: '#3B82F6',
+  active: '#1D9BF0',
   answered: '#22C55E',
-  archived: '#8F8F8F',
+  archived: '#A1A1AA',
 };
 
 const STATUS_LABELS: Record<RequestStatus, string> = {
@@ -339,13 +339,13 @@ const QUEUE_ITEMS: QueueItem[] = [
 const URGENCY_COLORS: Record<QueueUrgency, string> = {
   urgent: '#EF4444',
   normal: '#F59E0B',
-  low: '#8F8F8F',
+  low: '#A1A1AA',
 };
 
 const FOLLOW_UP_COLORS: Record<FollowUpStatus, string> = {
-  new: '#3B82F6',
+  new: '#1D9BF0',
   'in-progress': '#F59E0B',
-  contacted: '#8B5CF6',
+  contacted: '#1D9BF0',
   resolved: '#22C55E',
   escalated: '#EF4444',
 };
@@ -689,7 +689,7 @@ function FeedView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
       {/* Floating CTA */}
       {isMember(role) && (
         <Pressable
-          style={({ pressed }) => [s.floatingCta, { backgroundColor: '#3B82F6', opacity: pressed ? 0.8 : 1 }]}
+          style={({ pressed }) => [s.floatingCta, { backgroundColor: '#1D9BF0', opacity: pressed ? 0.8 : 1 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
         >
           <IconSymbol name="plus" size={16} color="#FFFFFF" />
@@ -804,7 +804,7 @@ function MyRequestsView({ colors, role }: { colors: typeof Colors.light; role: C
 
       {/* New request CTA */}
       <Pressable
-        style={({ pressed }) => [s.floatingCta, { backgroundColor: '#3B82F6', opacity: pressed ? 0.8 : 1 }]}
+        style={({ pressed }) => [s.floatingCta, { backgroundColor: '#1D9BF0', opacity: pressed ? 0.8 : 1 }]}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
       >
         <IconSymbol name="plus" size={16} color="#FFFFFF" />
@@ -863,7 +863,7 @@ function QueueView({ colors, role }: { colors: typeof Colors.light; role: Church
       <Card colors={colors}>
         <View style={s.statsGrid}>
           <View style={s.statBox}>
-            <ThemedText style={[s.statValue, { color: '#3B82F6' }]}>{QUEUE_STATS.newThisWeek}</ThemedText>
+            <ThemedText style={[s.statValue, { color: '#1D9BF0' }]}>{QUEUE_STATS.newThisWeek}</ThemedText>
             <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>New This Week</ThemedText>
           </View>
           <View style={s.statBox}>
@@ -1075,11 +1075,11 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Church
             {/* Join / Leave action */}
             <View style={s.teamActionRow}>
               <Pressable
-                style={[s.teamJoinBtn, { borderColor: '#3B82F640' }]}
+                style={[s.teamJoinBtn, { borderColor: '#1D9BF040' }]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
               >
-                <IconSymbol name="person.badge.plus" size={12} color="#3B82F6" />
-                <ThemedText style={[s.teamJoinText, { color: '#3B82F6' }]}>Join Team</ThemedText>
+                <IconSymbol name="person.badge.plus" size={12} color="#1D9BF0" />
+                <ThemedText style={[s.teamJoinText, { color: '#1D9BF0' }]}>Join Team</ThemedText>
               </Pressable>
               <Pressable
                 style={[s.teamJoinBtn, { borderColor: colors.border }]}
@@ -1184,18 +1184,18 @@ function PraiseView({ colors, role }: { colors: typeof Colors.light; role: Churc
                 <ThemedText style={[s.praiseReactionCount, { color: '#F59E0B' }]}>{report.praiseCount}</ThemedText>
               </Pressable>
               <Pressable
-                style={[s.praiseReactionBtn, { borderColor: '#8B5CF640' }]}
+                style={[s.praiseReactionBtn, { borderColor: '#1D9BF040' }]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
               >
                 <ThemedText style={s.praiseEmoji}>Hallelujah</ThemedText>
-                <ThemedText style={[s.praiseReactionCount, { color: '#8B5CF6' }]}>{report.hallelujahCount}</ThemedText>
+                <ThemedText style={[s.praiseReactionCount, { color: '#1D9BF0' }]}>{report.hallelujahCount}</ThemedText>
               </Pressable>
               <Pressable
-                style={[s.praiseReactionBtn, { borderColor: '#3B82F640' }]}
+                style={[s.praiseReactionBtn, { borderColor: '#1D9BF040' }]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
               >
                 <ThemedText style={s.praiseEmoji}>Amen</ThemedText>
-                <ThemedText style={[s.praiseReactionCount, { color: '#3B82F6' }]}>{report.amenCount}</ThemedText>
+                <ThemedText style={[s.praiseReactionCount, { color: '#1D9BF0' }]}>{report.amenCount}</ThemedText>
               </Pressable>
             </View>
           </Card>

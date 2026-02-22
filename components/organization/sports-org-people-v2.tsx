@@ -263,7 +263,7 @@ function OverviewTab({
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Unavailable</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: '#A78BFA' }]}>
+            <ThemedText style={[s.kpiValue, { color: '#1D9BF0' }]}>
               {overview.playersOnHold}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Hold</ThemedText>
@@ -730,7 +730,7 @@ function RolesAccessTab({
           </View>
           <View style={s.listCardBadgeRow}>
             <StatusBadge label={item.role.toUpperCase()} color={accentColor} />
-            <StatusBadge label={`TIER ${item.accessTier}`} color="#6AA9FF" />
+            <StatusBadge label={`TIER ${item.accessTier}`} color="#1D9BF0" />
           </View>
           <View style={s.listCardMeta}>
             <View style={s.listCardMetaItem}>
@@ -1586,7 +1586,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

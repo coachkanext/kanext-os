@@ -243,7 +243,7 @@ function OverviewTab({
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Flagged</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#6AA9FF' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#1D9BF0' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{formatCurrency(overview.pendingApprovalAmount)}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Pending Amt</ThemedText>
         </View>
@@ -606,13 +606,13 @@ function TravelSpendTab({
           </View>
           <View style={s.costBreakdownRow}>
             {item.lodging > 0 && (
-              <View style={[s.costChip, { backgroundColor: '#A78BFA20' }]}>
-                <ThemedText style={[s.costChipText, { color: '#A78BFA' }]}>Lodging {formatCurrency(item.lodging)}</ThemedText>
+              <View style={[s.costChip, { backgroundColor: '#1D9BF020' }]}>
+                <ThemedText style={[s.costChipText, { color: '#1D9BF0' }]}>Lodging {formatCurrency(item.lodging)}</ThemedText>
               </View>
             )}
             {item.airfare > 0 && (
-              <View style={[s.costChip, { backgroundColor: '#6AA9FF20' }]}>
-                <ThemedText style={[s.costChipText, { color: '#6AA9FF' }]}>Airfare {formatCurrency(item.airfare)}</ThemedText>
+              <View style={[s.costChip, { backgroundColor: '#1D9BF020' }]}>
+                <ThemedText style={[s.costChipText, { color: '#1D9BF0' }]}>Airfare {formatCurrency(item.airfare)}</ThemedText>
               </View>
             )}
             {item.ground > 0 && (
@@ -1475,7 +1475,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

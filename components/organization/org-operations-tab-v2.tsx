@@ -134,10 +134,10 @@ const FACILITY_STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
 // =============================================================================
 
 const TRAVEL_STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
-  planned: { bg: '#8F8F8F20', fg: '#8F8F8F' },
+  planned: { bg: '#A1A1AA20', fg: '#A1A1AA' },
   booked: { bg: '#22C55E20', fg: '#22C55E' },
   'in-transit': { bg: '#F59E0B20', fg: '#F59E0B' },
-  completed: { bg: '#6AA9FF20', fg: '#6AA9FF' },
+  completed: { bg: '#1D9BF020', fg: '#1D9BF0' },
 };
 
 // =============================================================================
@@ -603,8 +603,8 @@ export function OrgOperationsTab({ mode, colors, accentColor }: Props) {
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.listCardRow}>
-              <View style={[s.listIconCircle, { backgroundColor: '#8B5CF615' }]}>
-                <IconSymbol name="airplane" size={16} color="#8B5CF6" />
+              <View style={[s.listIconCircle, { backgroundColor: '#1D9BF015' }]}>
+                <IconSymbol name="airplane" size={16} color="#1D9BF0" />
               </View>
               <View style={s.listCardInfo}>
                 <ThemedText style={s.listCardTitle}>{item.title}</ThemedText>
@@ -704,9 +704,9 @@ export function OrgOperationsTab({ mode, colors, accentColor }: Props) {
         renderItem={({ item }) => {
           const auditColor = item.action.includes('issue') ? '#EF4444'
             : item.action.includes('task') ? '#22C55E'
-            : item.action.includes('sop') || item.action.includes('report') ? '#6AA9FF'
+            : item.action.includes('sop') || item.action.includes('report') ? '#1D9BF0'
             : item.action.includes('vendor') || item.action.includes('asset') ? '#F59E0B'
-            : '#8F8F8F';
+            : '#A1A1AA';
           const auditIcon = item.action.includes('issue') ? 'exclamationmark.triangle.fill'
             : item.action.includes('task') ? 'checkmark.circle.fill'
             : item.action.includes('work-order') ? 'doc.on.clipboard'

@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     alignItems: 'center',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#E9ECEF',
+    borderTopColor: '#A1A1AA',
   },
   viewAllText: {
     fontSize: 14,

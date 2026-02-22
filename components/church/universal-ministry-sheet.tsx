@@ -52,19 +52,19 @@ interface UniversalMinistrySheetProps {
 
 const MINISTRY_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
-  seasonal: '#6AA9FF',
-  paused: '#8F8F8F',
+  seasonal: '#1D9BF0',
+  paused: '#A1A1AA',
 };
 
 const BUDGET_STATUS_COLORS: Record<string, string> = {
   on_track: '#22C55E',
   over_budget: '#EF4444',
-  under_budget: '#6AA9FF',
+  under_budget: '#1D9BF0',
 };
 
 const CONTENT_TYPE_COLORS: Record<string, string> = {
-  lesson_plan: '#A78BFA',
-  announcement: '#6AA9FF',
+  lesson_plan: '#1D9BF0',
+  announcement: '#1D9BF0',
   media_asset: '#F59E0B',
 };
 
@@ -256,27 +256,27 @@ function MinistryHeader({
 
       {/* Pills: campus + status */}
       <View style={styles.pillRow}>
-        <View style={[styles.campusPill, { backgroundColor: '#6AA9FF1A' }]}>
-          <ThemedText style={[styles.campusPillText, { color: '#6AA9FF' }]}>
+        <View style={[styles.campusPill, { backgroundColor: '#1D9BF01A' }]}>
+          <ThemedText style={[styles.campusPillText, { color: '#1D9BF0' }]}>
             {campusLabel}
           </ThemedText>
         </View>
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (MINISTRY_STATUS_COLORS[ministry.status] ?? '#8F8F8F') + '1A' },
+            { backgroundColor: (MINISTRY_STATUS_COLORS[ministry.status] ?? '#A1A1AA') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: MINISTRY_STATUS_COLORS[ministry.status] ?? '#8F8F8F' },
+              { backgroundColor: MINISTRY_STATUS_COLORS[ministry.status] ?? '#A1A1AA' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: MINISTRY_STATUS_COLORS[ministry.status] ?? '#8F8F8F' },
+              { color: MINISTRY_STATUS_COLORS[ministry.status] ?? '#A1A1AA' },
             ]}
           >
             {ministry.status.charAt(0).toUpperCase() + ministry.status.slice(1)}
@@ -357,7 +357,7 @@ function OverviewTab({
             key={idx}
             style={[styles.goalRow, { borderBottomColor: colors.border }]}
           >
-            <View style={[styles.goalBullet, { backgroundColor: '#6AA9FF' }]} />
+            <View style={[styles.goalBullet, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[styles.bodyText, { color: colors.text, flex: 1 }]}>
               {goal}
             </ThemedText>
@@ -705,13 +705,13 @@ function OperationsTab({
               <View
                 style={[
                   styles.opsTaskBadge,
-                  { backgroundColor: task.status === 'open' ? '#F59E0B22' : '#6AA9FF22' },
+                  { backgroundColor: task.status === 'open' ? '#F59E0B22' : '#1D9BF022' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.opsTaskBadgeText,
-                    { color: task.status === 'open' ? '#F59E0B' : '#6AA9FF' },
+                    { color: task.status === 'open' ? '#F59E0B' : '#1D9BF0' },
                   ]}
                 >
                   {task.status.replace('_', ' ').toUpperCase()}
@@ -889,7 +889,7 @@ function BudgetTab({
             label="Allocated"
             value={`$${(totalAllocated / 1000).toFixed(1)}K`}
             subtitle="Annual budget"
-            color="#6AA9FF"
+            color="#1D9BF0"
             colors={colors}
           />
           <FinanceCard
@@ -925,13 +925,13 @@ function BudgetTab({
             <View
               style={[
                 styles.budgetStatusBadge,
-                { backgroundColor: (BUDGET_STATUS_COLORS[item.status] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (BUDGET_STATUS_COLORS[item.status] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.budgetStatusText,
-                  { color: BUDGET_STATUS_COLORS[item.status] ?? '#8F8F8F' },
+                  { color: BUDGET_STATUS_COLORS[item.status] ?? '#A1A1AA' },
                 ]}
               >
                 {item.status.replace('_', ' ').toUpperCase()}
@@ -992,7 +992,7 @@ function ContentMediaTab({
               key={asset.id}
               style={[styles.listRow, { borderBottomColor: colors.border }]}
             >
-              <IconSymbol name="doc.text.fill" size={18} color="#A78BFA" />
+              <IconSymbol name="doc.text.fill" size={18} color="#1D9BF0" />
               <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                 <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                   {asset.title}
@@ -1015,7 +1015,7 @@ function ContentMediaTab({
               key={asset.id}
               style={[styles.listRow, { borderBottomColor: colors.border }]}
             >
-              <IconSymbol name="megaphone.fill" size={18} color="#6AA9FF" />
+              <IconSymbol name="megaphone.fill" size={18} color="#1D9BF0" />
               <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                 <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                   {asset.title}

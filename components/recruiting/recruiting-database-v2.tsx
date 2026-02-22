@@ -247,7 +247,7 @@ export function RecruitingDatabaseV2({ colors }: Props) {
               {player.fullName}
             </ThemedText>
             {topBadge && (
-              <View style={[styles.badgeDot, { backgroundColor: topBadge.level === 'Gold' ? '#FFD700' : '#A8A9AD' }]} />
+              <View style={[styles.badgeDot, { backgroundColor: topBadge.level === 'Gold' ? '#1D9BF0' : '#A1A1AA' }]} />
             )}
           </View>
           <ThemedText style={[styles.school, { color: colors.textSecondary }]} numberOfLines={1}>
@@ -273,7 +273,7 @@ export function RecruitingDatabaseV2({ colors }: Props) {
               <Text style={[styles.krTextScouted, { color: krColor }]}>{Math.round(player.kr!)}</Text>
             </View>
           ) : (
-            <View style={[styles.krBadge, { backgroundColor: '#55555530' }]}>
+            <View style={[styles.krBadge, { backgroundColor: '#52525B30' }]}>
               <Text style={styles.krTextUnscouted}>Unrated</Text>
             </View>
           )}
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
   pillRow: { flexDirection: 'row' as const, flexWrap: 'wrap' as const, paddingHorizontal: Spacing.lg, paddingBottom: 6, gap: 6 },
   filterPill: {
     paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.10)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.20)',
+    backgroundColor: '#2F3336', borderWidth: 1, borderColor: 'rgba(255,255,255,0.20)',
   },
   filterPillText: { fontSize: 13, fontWeight: '600' },
   sortRow: {
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
   listContent: { paddingBottom: 120, paddingHorizontal: Spacing.lg },
   row: {
     flexDirection: 'row', alignItems: 'center', paddingVertical: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.06)', gap: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#2F3336', gap: 10,
   },
   rowInfo: { flex: 1, gap: 3 },
   topLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
   advInputRow: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
   advPill: {
     paddingHorizontal: 14, paddingVertical: 8, borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.05)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: 'rgba(255,255,255,0.05)', borderWidth: 1, borderColor: '#2F3336',
   },
   advPillText: { fontSize: 12, fontWeight: '600' },
   advTextInput: {

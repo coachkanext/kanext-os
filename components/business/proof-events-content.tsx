@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   eventDetail: {
     marginTop: Spacing.md,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
     paddingTop: Spacing.sm,
   },
   tabPills: {

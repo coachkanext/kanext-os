@@ -93,13 +93,13 @@ const APPROVAL_QUEUE = [
 const URGENCY_COLORS: Record<'high' | 'medium' | 'low', string> = {
   high: '#EF4444',
   medium: '#F59E0B',
-  low: '#6B7280',
+  low: '#A1A1AA',
 };
 
 const IMPACT_COLORS: Record<'high' | 'medium' | 'low', string> = {
-  high: '#8B5CF6',
-  medium: '#3B82F6',
-  low: '#6B7280',
+  high: '#1D9BF0',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 type TimeFilter = 'MTD' | 'QTD' | 'YTD' | 'Custom';
@@ -567,8 +567,8 @@ function LedgerDetailSheet({
 
       {/* Entity */}
       <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#3B82F6' + '15' }]}>
-          <IconSymbol name="building.2.fill" size={14} color="#3B82F6" />
+        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#1D9BF0' + '15' }]}>
+          <IconSymbol name="building.2.fill" size={14} color="#1D9BF0" />
         </View>
         <View style={s.sheetProvenanceMid}>
           <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>Entity</ThemedText>
@@ -578,8 +578,8 @@ function LedgerDetailSheet({
 
       {/* Created By */}
       <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#14B8A6' + '15' }]}>
-          <IconSymbol name="person.fill" size={14} color="#14B8A6" />
+        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#1D9BF0' + '15' }]}>
+          <IconSymbol name="person.fill" size={14} color="#1D9BF0" />
         </View>
         <View style={s.sheetProvenanceMid}>
           <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>Created By</ThemedText>
@@ -589,8 +589,8 @@ function LedgerDetailSheet({
 
       {/* Approved By */}
       <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#8B5CF6' + '15' }]}>
-          <IconSymbol name="checkmark.seal.fill" size={14} color="#8B5CF6" />
+        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#1D9BF0' + '15' }]}>
+          <IconSymbol name="checkmark.seal.fill" size={14} color="#1D9BF0" />
         </View>
         <View style={s.sheetProvenanceMid}>
           <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>
@@ -637,8 +637,8 @@ function LedgerDetailSheet({
       {/* Receipt */}
       {entry.receiptId && (
         <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-          <View style={[s.sheetProvenanceIcon, { backgroundColor: '#6366F1' + '15' }]}>
-            <IconSymbol name="doc.fill" size={14} color="#6366F1" />
+          <View style={[s.sheetProvenanceIcon, { backgroundColor: '#1D9BF0' + '15' }]}>
+            <IconSymbol name="doc.fill" size={14} color="#1D9BF0" />
           </View>
           <View style={s.sheetProvenanceMid}>
             <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>
@@ -877,7 +877,7 @@ const SCENARIO_LABELS: Record<ForecastScenario, string> = {
 };
 
 const SCENARIO_COLORS: Record<ForecastScenario, string> = {
-  base: '#3B82F6',
+  base: '#1D9BF0',
   bull: '#22C55E',
   bear: '#EF4444',
 };
@@ -1086,7 +1086,7 @@ function ControlsTab({
                 <View style={s.controlBadgeRow}>
                   <StatusBadge label={isActive ? 'ACTIVE' : 'DISABLED'} color={stColor} />
                   {item.dualControl && (
-                    <StatusBadge label="DUAL CONTROL" color="#8B5CF6" />
+                    <StatusBadge label="DUAL CONTROL" color="#1D9BF0" />
                   )}
                 </View>
               </View>
@@ -1181,7 +1181,7 @@ function AuditTab({
               <View style={s.auditBadgeRow}>
                 <StatusBadge label={item.type.toUpperCase().replace('_', ' ')} color={typeColor} />
                 {item.receiptId && (
-                  <StatusBadge label={'RECEIPT: ' + item.receiptId} color="#6366F1" />
+                  <StatusBadge label={'RECEIPT: ' + item.receiptId} color="#1D9BF0" />
                 )}
               </View>
 

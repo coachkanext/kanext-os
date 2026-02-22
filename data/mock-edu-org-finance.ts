@@ -237,13 +237,13 @@ export const EDU_FUND_TYPE_LABELS: Record<EduFundType, string> = {
 
 export const EDU_FUND_TYPE_COLORS: Record<EduFundType, string> = {
   operating: '#22C55E',
-  tuition_revenue: '#6AA9FF',
-  housing_revenue: '#8B5CF6',
+  tuition_revenue: '#1D9BF0',
+  housing_revenue: '#1D9BF0',
   financial_aid: '#F59E0B',
   athletics: '#EF4444',
-  restricted_grants: '#EC4899',
-  endowment: '#10B981',
-  auxiliary: '#F97316',
+  restricted_grants: '#1D9BF0',
+  endowment: '#22C55E',
+  auxiliary: '#F59E0B',
 };
 
 export const RECEIVABLE_TYPE_LABELS: Record<ReceivableType, string> = {
@@ -258,12 +258,12 @@ export const RECEIVABLE_TYPE_LABELS: Record<ReceivableType, string> = {
 };
 
 export const RECEIVABLE_TYPE_COLORS: Record<ReceivableType, string> = {
-  tuition: '#3B82F6',
-  fees: '#8B5CF6',
-  housing: '#10B981',
-  meal_plan: '#F97316',
-  parking: '#8F8F8F',
-  lab_fees: '#EC4899',
+  tuition: '#1D9BF0',
+  fees: '#1D9BF0',
+  housing: '#22C55E',
+  meal_plan: '#F59E0B',
+  parking: '#A1A1AA',
+  lab_fees: '#1D9BF0',
   deposit: '#22C55E',
   library_fines: '#EF4444',
 };
@@ -280,14 +280,14 @@ export const PAYABLE_TYPE_LABELS: Record<PayableType, string> = {
 };
 
 export const PAYABLE_TYPE_COLORS: Record<PayableType, string> = {
-  vendor: '#6AA9FF',
+  vendor: '#1D9BF0',
   contractor: '#F59E0B',
   payroll: '#22C55E',
-  utilities: '#8B5CF6',
-  insurance: '#EC4899',
-  equipment: '#F97316',
-  services: '#10B981',
-  travel: '#3B82F6',
+  utilities: '#1D9BF0',
+  insurance: '#1D9BF0',
+  equipment: '#F59E0B',
+  services: '#22C55E',
+  travel: '#1D9BF0',
 };
 
 export const AID_TYPE_LABELS: Record<AidType, string> = {
@@ -302,12 +302,12 @@ export const AID_TYPE_LABELS: Record<AidType, string> = {
 
 export const AID_TYPE_COLORS: Record<AidType, string> = {
   merit: '#22C55E',
-  need: '#6AA9FF',
+  need: '#1D9BF0',
   athletic: '#EF4444',
-  pell: '#8B5CF6',
+  pell: '#1D9BF0',
   state: '#F59E0B',
-  external: '#10B981',
-  work_study: '#F97316',
+  external: '#22C55E',
+  work_study: '#F59E0B',
 };
 
 export const POSTING_STATE_LABELS: Record<PostingState, string> = {
@@ -322,8 +322,8 @@ export const POSTING_STATE_COLORS: Record<PostingState, string> = {
   posted: '#22C55E',
   pending: '#F59E0B',
   held: '#EF4444',
-  reversed: '#8F8F8F',
-  adjusting: '#6AA9FF',
+  reversed: '#A1A1AA',
+  adjusting: '#1D9BF0',
 };
 
 export const APPROVAL_STATUS_LABELS: Record<ApprovalStatus, string> = {
@@ -336,8 +336,8 @@ export const APPROVAL_STATUS_LABELS: Record<ApprovalStatus, string> = {
 export const APPROVAL_STATUS_COLORS: Record<ApprovalStatus, string> = {
   pending: '#F59E0B',
   approved: '#22C55E',
-  rejected: '#DC2626',
-  escalated: '#EC4899',
+  rejected: '#EF4444',
+  escalated: '#1D9BF0',
 };
 
 export const AUDIT_EVIDENCE_LABELS: Record<AuditEvidenceStatus, string> = {
@@ -351,7 +351,7 @@ export const AUDIT_EVIDENCE_COLORS: Record<AuditEvidenceStatus, string> = {
   complete: '#22C55E',
   partial: '#F59E0B',
   missing: '#EF4444',
-  flagged: '#DC2626',
+  flagged: '#EF4444',
 };
 
 export const TERM_WINDOW_LABELS: Record<TermWindow, string> = {

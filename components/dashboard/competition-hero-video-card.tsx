@@ -47,7 +47,7 @@ const LIVE_BROADCAST: BroadcastHero = {
   id: 'bcast-live',
   title: 'KaNeXT League — Round 2 LIVE',
   subtitle: 'Portland International Raceway · Main Race',
-  thumbnailColor: '#1a1a2e',
+  thumbnailColor: '#0B0F14',
   status: 'live',
   trackName: 'Portland International Raceway',
 };
@@ -56,7 +56,7 @@ const UPCOMING_BROADCAST: BroadcastHero = {
   id: 'bcast-upcoming',
   title: 'KaNeXT League — Round 2',
   subtitle: 'Portland International Raceway',
-  thumbnailColor: '#1a2a3a',
+  thumbnailColor: '#0B0F14',
   status: 'upcoming',
   nextSessionLabel: 'Qualifying',
   nextSessionTime: '12:30 PM',
@@ -67,7 +67,7 @@ const REPLAY_BROADCAST: BroadcastHero = {
   id: 'bcast-replay',
   title: 'K-1 Round 1 — Austin Replay',
   subtitle: 'Circuit of the Americas · Main Race',
-  thumbnailColor: '#2a1a2a',
+  thumbnailColor: '#0B0F14',
   status: 'replay',
   trackName: 'Circuit of the Americas',
   duration: '1:42:08',
@@ -129,7 +129,7 @@ function getStatusConfig(status: BroadcastStatus): { label: string; color: strin
     case 'upcoming':
       return { label: 'UPCOMING', color: '#fff', bgColor: '#F59E0B' };
     case 'replay':
-      return { label: 'REPLAY', color: '#fff', bgColor: '#3B82F6' };
+      return { label: 'REPLAY', color: '#fff', bgColor: '#1D9BF0' };
   }
 }
 

@@ -253,13 +253,13 @@ export const REQUIREMENT_STATUS_COLOR: Record<RequirementStatus, string> = {
   compliant: '#22C55E',
   'due-soon': '#F59E0B',
   overdue: '#EF4444',
-  waived: '#9CA3AF',
-  'not-applicable': '#6B7280',
+  waived: '#A1A1AA',
+  'not-applicable': '#A1A1AA',
 };
 
 export const EVIDENCE_STATUS_COLOR: Record<EvidenceStatus, string> = {
   pending: '#F59E0B',
-  submitted: '#3B82F6',
+  submitted: '#1D9BF0',
   verified: '#22C55E',
   rejected: '#EF4444',
 };
@@ -268,20 +268,20 @@ export const INCIDENT_STATUS_COLOR: Record<IncidentStatus, string> = {
   open: '#EF4444',
   investigating: '#F59E0B',
   resolved: '#22C55E',
-  closed: '#6B7280',
+  closed: '#A1A1AA',
 };
 
 export const SEVERITY_COLOR: Record<string, string> = {
   critical: '#EF4444',
-  high: '#F97316',
+  high: '#F59E0B',
   medium: '#F59E0B',
-  low: '#6B7280',
+  low: '#A1A1AA',
 };
 
 export const CHECKLIST_STATUS_COLOR: Record<ComplianceChecklist['status'], string> = {
   complete: '#22C55E',
-  'in-progress': '#3B82F6',
-  'not-started': '#9CA3AF',
+  'in-progress': '#1D9BF0',
+  'not-started': '#A1A1AA',
   overdue: '#EF4444',
 };
 

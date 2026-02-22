@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   viewAll: {
     paddingTop: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
     marginTop: 4,
   },
   viewAllText: {

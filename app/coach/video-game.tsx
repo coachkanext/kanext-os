@@ -65,7 +65,7 @@ export default function VideoGameScreen() {
       <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
-            <IconSymbol name="chevron.left" size={20} color="#f5f5f5" />
+            <IconSymbol name="chevron.left" size={20} color="#FFFFFF" />
           </Pressable>
           <ThemedText style={styles.headerTitle}>Game Not Found</ThemedText>
           <View style={styles.backBtn} />
@@ -87,7 +87,7 @@ export default function VideoGameScreen() {
           }}
           style={styles.backBtn}
         >
-          <IconSymbol name="chevron.left" size={20} color="#f5f5f5" />
+          <IconSymbol name="chevron.left" size={20} color="#FFFFFF" />
         </Pressable>
         <View style={styles.headerCenter}>
           <ThemedText style={styles.headerTitle}>vs {game.opponent}</ThemedText>
@@ -113,7 +113,7 @@ export default function VideoGameScreen() {
               key={tab.key}
               style={[
                 styles.tabPill,
-                { backgroundColor: isActive ? '#f5f5f5' : '#111' },
+                { backgroundColor: isActive ? '#FFFFFF' : '#111' },
               ]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -123,7 +123,7 @@ export default function VideoGameScreen() {
               <ThemedText
                 style={[
                   styles.tabPillText,
-                  { color: isActive ? '#000' : '#6e6e6e' },
+                  { color: isActive ? '#000' : '#A1A1AA' },
                 ]}
               >
                 {tab.label}
@@ -195,7 +195,7 @@ function ScoutTab() {
           key={play.id}
           style={({ pressed }) => [
             styles.scoutCard,
-            { backgroundColor: pressed ? '#191919' : '#111' },
+            { backgroundColor: pressed ? '#0B0F14' : '#111' },
           ]}
         >
           <View style={styles.scoutHeader}>
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   scoreRow: {
     flexDirection: 'row',
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 14,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
 
   // Sub-tabs
@@ -400,20 +400,20 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: 4,
   },
   statValue: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 
   // Scout tab
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: Spacing.sm,
   },
   scoutCard: {
@@ -430,12 +430,12 @@ const styles = StyleSheet.create({
   scoutPlayTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     flex: 1,
   },
   scoutTime: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   scoutNote: {
     fontSize: 14,
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 15,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
 
   // Notes tab
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
     padding: Spacing.md,
     fontSize: 15,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     minHeight: 200,
     lineHeight: 22,
   },
@@ -485,11 +485,11 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 14,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   detailValue: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 });

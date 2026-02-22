@@ -101,14 +101,14 @@ function frequencyLabel(freq: ScheduledReport['frequency']): string {
 function utilizationColor(pct: number): string {
   if (pct >= 90) return '#22C55E';
   if (pct >= 70) return '#F59E0B';
-  if (pct >= 50) return '#3B82F6';
+  if (pct >= 50) return '#1D9BF0';
   return '#EF4444';
 }
 
 function changeColor(change: number): string {
   if (change > 0) return '#22C55E';
   if (change < 0) return '#EF4444';
-  return '#6B7280';
+  return '#A1A1AA';
 }
 
 // =============================================================================
@@ -198,10 +198,10 @@ function DashboardTab({
       </ThemedText>
       <View style={[s.breakdownCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         {[
-          { label: 'Operational', count: totalOperational, color: '#6AA9FF', icon: 'gearshape.2' },
+          { label: 'Operational', count: totalOperational, color: '#1D9BF0', icon: 'gearshape.2' },
           { label: 'Financial', count: totalFinancial, color: '#22C55E', icon: 'dollarsign.circle' },
           { label: 'Compliance', count: totalCompliance, color: '#F59E0B', icon: 'checkmark.shield' },
-          { label: 'Performance', count: totalPerformance, color: '#8B5CF6', icon: 'chart.line.uptrend.xyaxis' },
+          { label: 'Performance', count: totalPerformance, color: '#1D9BF0', icon: 'chart.line.uptrend.xyaxis' },
         ].map((cat, idx, arr) => (
           <View
             key={cat.label}
@@ -242,7 +242,7 @@ function DashboardTab({
           </ThemedText>
         </View>
         <View style={[s.quickStatCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.quickStatValue, { color: '#8B5CF6' }]}>
+          <ThemedText style={[s.quickStatValue, { color: '#1D9BF0' }]}>
             {data.custom.length}
           </ThemedText>
           <ThemedText style={[s.quickStatLabel, { color: colors.textTertiary }]}>
@@ -250,7 +250,7 @@ function DashboardTab({
           </ThemedText>
         </View>
         <View style={[s.quickStatCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.quickStatValue, { color: '#6AA9FF' }]}>
+          <ThemedText style={[s.quickStatValue, { color: '#1D9BF0' }]}>
             {data.media.length}
           </ThemedText>
           <ThemedText style={[s.quickStatLabel, { color: colors.textTertiary }]}>
@@ -995,7 +995,7 @@ function ScheduledTab({
                   <StatusBadge label={frequencyLabel(item.frequency)} color={freqColor} />
                   <FormatBadge format={item.format} />
                   {!item.enabled && (
-                    <StatusBadge label="PAUSED" color="#6B7280" />
+                    <StatusBadge label="PAUSED" color="#A1A1AA" />
                   )}
                 </View>
               </View>
@@ -1738,7 +1738,7 @@ function ScheduledDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={frequencyLabel(report.frequency)} color={freqColor} />
         <FormatBadge format={report.format} />
-        {!report.enabled && <StatusBadge label="PAUSED" color="#6B7280" />}
+        {!report.enabled && <StatusBadge label="PAUSED" color="#A1A1AA" />}
       </View>
 
       {/* KPIs */}

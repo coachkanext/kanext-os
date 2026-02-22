@@ -90,8 +90,8 @@ export function LibraryRecordCard({ record }: LibraryRecordCardProps) {
             </View>
           ))}
           {record.workspaceRef && (
-            <View style={[styles.tag, { backgroundColor: '#3B82F6' + '1A' }]}>
-              <ThemedText style={[styles.tagText, { color: '#3B82F6' }]}>{record.workspaceRef}</ThemedText>
+            <View style={[styles.tag, { backgroundColor: '#1D9BF0' + '1A' }]}>
+              <ThemedText style={[styles.tagText, { color: '#1D9BF0' }]}>{record.workspaceRef}</ThemedText>
             </View>
           )}
         </View>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     width: 2,
     height: 2,
     borderRadius: 1,
-    backgroundColor: '#424242',
+    backgroundColor: '#52525B',
   },
   tagRow: {
     flexDirection: 'row',

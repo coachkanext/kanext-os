@@ -1,0 +1,851 @@
+19:40:14 [INFO] 
+============================================================
+19:40:14 [INFO]   STARTING NAIA
+19:40:14 [INFO] ============================================================
+19:40:14 [INFO] Discovering NAIA teams from https://naiastats.prestosports.com/sports/mbkb/2025-26/leaders
+19:40:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/leaders "HTTP/1.1 200 OK"
+19:40:15 [INFO] Found 225 teams in NAIA
+19:40:15 [INFO] 
+[1/225] Northwestern (Iowa)
+19:40:15 [INFO] Scraping team: Northwestern (Iowa) (northwestern)
+19:40:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/northwestern?view=roster "HTTP/1.1 200 OK"
+19:40:27 [INFO]   Roster: 0 players
+19:40:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/northwestern?view=gamelog "HTTP/1.1 200 OK"
+19:40:39 [INFO]   Games: 27 with box scores
+19:40:51 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251025_55kx.xml "HTTP/1.1 200 OK"
+19:41:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251028_wwma.xml "HTTP/1.1 200 OK"
+19:41:14 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_sboq.xml "HTTP/1.1 200 OK"
+19:41:25 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_jjfo.xml "HTTP/1.1 200 OK"
+19:41:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_zvhm.xml "HTTP/1.1 200 OK"
+19:41:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251111_g4p1.xml "HTTP/1.1 200 OK"
+19:42:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_bfoo.xml "HTTP/1.1 200 OK"
+19:42:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_fzlz.xml "HTTP/1.1 200 OK"
+19:42:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_eq84.xml "HTTP/1.1 200 OK"
+19:42:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251128_beiq.xml "HTTP/1.1 200 OK"
+19:42:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_oh26.xml "HTTP/1.1 200 OK"
+19:42:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_bwrl.xml "HTTP/1.1 200 OK"
+19:43:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_qfgk.xml "HTTP/1.1 200 OK"
+19:43:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251210_ja5i.xml "HTTP/1.1 200 OK"
+19:43:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_lp44.xml "HTTP/1.1 200 OK"
+19:43:40 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_1yc0.xml "HTTP/1.1 200 OK"
+19:43:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_9zz5.xml "HTTP/1.1 200 OK"
+19:44:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_pf1y.xml "HTTP/1.1 200 OK"
+19:44:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_qmjs.xml "HTTP/1.1 200 OK"
+19:44:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_180a.xml "HTTP/1.1 200 OK"
+19:44:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_fm00.xml "HTTP/1.1 200 OK"
+19:44:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_e1by.xml "HTTP/1.1 200 OK"
+19:44:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_8y5o.xml "HTTP/1.1 200 OK"
+19:45:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_1u2m.xml "HTTP/1.1 200 OK"
+19:45:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_r45k.xml "HTTP/1.1 200 OK"
+19:45:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_wmq5.xml "HTTP/1.1 200 OK"
+19:45:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_b1si.xml "HTTP/1.1 200 OK"
+19:45:45 [INFO]   Loaded: 27 games, 610 player-game-stat rows
+19:45:45 [INFO] 
+[2/225] Williams Baptist (AR)
+19:45:45 [INFO] Scraping team: Williams Baptist (AR) (williamsbaptistar)
+19:45:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/williamsbaptistar?view=roster "HTTP/1.1 200 OK"
+19:45:57 [INFO]   Roster: 0 players
+19:46:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/williamsbaptistar?view=gamelog "HTTP/1.1 200 OK"
+19:46:08 [INFO]   Games: 26 with box scores
+19:46:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_rbf7.xml "HTTP/1.1 200 OK"
+19:46:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_peww.xml "HTTP/1.1 200 OK"
+19:46:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251114_uyqi.xml "HTTP/1.1 200 OK"
+19:46:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_c5d8.xml "HTTP/1.1 200 OK"
+19:47:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_eu49.xml "HTTP/1.1 200 OK"
+19:47:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_tioo.xml "HTTP/1.1 200 OK"
+19:47:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_90xs.xml "HTTP/1.1 200 OK"
+19:47:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_aanz.xml "HTTP/1.1 200 OK"
+19:47:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_3pcc.xml "HTTP/1.1 200 OK"
+19:48:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_hruw.xml "HTTP/1.1 200 OK"
+19:48:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251215_7579.xml "HTTP/1.1 200 OK"
+19:48:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_quqp.xml "HTTP/1.1 200 OK"
+19:48:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_qk14.xml "HTTP/1.1 200 OK"
+19:48:46 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260106_4is5.xml "HTTP/1.1 200 OK"
+19:48:57 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_ahla.xml "HTTP/1.1 200 OK"
+19:49:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260115_l6q5.xml "HTTP/1.1 200 OK"
+19:49:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_0iqf.xml "HTTP/1.1 200 OK"
+19:49:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_y5w2.xml "HTTP/1.1 200 OK"
+19:49:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260123_li1x.xml "HTTP/1.1 200 OK"
+19:49:52 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_h9f2.xml "HTTP/1.1 200 OK"
+19:50:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260203_i34s.xml "HTTP/1.1 200 OK"
+19:50:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_0wwj.xml "HTTP/1.1 200 OK"
+19:50:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260212_zesc.xml "HTTP/1.1 200 OK"
+19:50:40 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_r2so.xml "HTTP/1.1 200 OK"
+19:50:51 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260219_hjlf.xml "HTTP/1.1 200 OK"
+19:51:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_xq61.xml "HTTP/1.1 200 OK"
+19:51:04 [INFO]   Loaded: 26 games, 596 player-game-stat rows
+19:51:04 [INFO] 
+[3/225] Evergreen (WA)
+19:51:04 [INFO] Scraping team: Evergreen (WA) (evergreenwa)
+19:51:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/evergreenwa?view=roster "HTTP/1.1 200 OK"
+19:51:16 [INFO]   Roster: 0 players
+19:51:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/evergreenwa?view=gamelog "HTTP/1.1 200 OK"
+19:51:27 [INFO]   Games: 28 with box scores
+19:51:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251026_tl5s.xml "HTTP/1.1 200 OK"
+19:51:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_6kxd.xml "HTTP/1.1 200 OK"
+19:52:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_3xkv.xml "HTTP/1.1 200 OK"
+19:52:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_wpoq.xml "HTTP/1.1 200 OK"
+19:52:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_2exd.xml "HTTP/1.1 200 OK"
+19:52:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251202_w1rg.xml "HTTP/1.1 200 OK"
+19:52:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_kojy.xml "HTTP/1.1 200 OK"
+19:52:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_fitd.xml "HTTP/1.1 200 OK"
+19:53:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_b2ez.xml "HTTP/1.1 200 OK"
+19:53:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251214_8tuy.xml "HTTP/1.1 200 OK"
+19:53:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251219_2nvs.xml "HTTP/1.1 200 OK"
+19:53:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_ink3.xml "HTTP/1.1 200 OK"
+19:53:52 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260102_tqd8.xml "HTTP/1.1 200 OK"
+19:54:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_73ij.xml "HTTP/1.1 200 OK"
+19:54:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260106_gutk.xml "HTTP/1.1 200 OK"
+19:54:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_8i63.xml "HTTP/1.1 200 OK"
+19:54:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260116_dqt2.xml "HTTP/1.1 200 OK"
+19:54:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_3zve.xml "HTTP/1.1 200 OK"
+19:55:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260123_wv6e.xml "HTTP/1.1 200 OK"
+19:55:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_ceds.xml "HTTP/1.1 200 OK"
+19:55:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260130_z5e0.xml "HTTP/1.1 200 OK"
+19:55:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_4p58.xml "HTTP/1.1 200 OK"
+19:55:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260206_pwgc.xml "HTTP/1.1 200 OK"
+19:55:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_m1tu.xml "HTTP/1.1 200 OK"
+19:56:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260213_7c8e.xml "HTTP/1.1 200 OK"
+19:56:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260215_ifoz.xml "HTTP/1.1 200 OK"
+19:56:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260217_uxyr.xml "HTTP/1.1 200 OK"
+19:56:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260219_atwq.xml "HTTP/1.1 200 OK"
+19:56:43 [INFO]   Loaded: 28 games, 671 player-game-stat rows
+19:56:43 [INFO] 
+[4/225] Michigan-Dearborn
+19:56:43 [INFO] Scraping team: Michigan-Dearborn (michigandearborn)
+19:56:55 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/michigandearborn?view=roster "HTTP/1.1 200 OK"
+19:56:55 [INFO]   Roster: 0 players
+19:57:06 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/michigandearborn?view=gamelog "HTTP/1.1 200 OK"
+19:57:06 [INFO]   Games: 28 with box scores
+19:57:17 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251029_phrl.xml "HTTP/1.1 200 OK"
+19:57:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_iyky.xml "HTTP/1.1 200 OK"
+19:57:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_kkk3.xml "HTTP/1.1 200 OK"
+19:57:51 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_y9w6.xml "HTTP/1.1 200 OK"
+19:58:02 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251112_3eod.xml "HTTP/1.1 200 OK"
+19:58:13 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_6qef.xml "HTTP/1.1 200 OK"
+19:58:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_l504.xml "HTTP/1.1 200 OK"
+19:58:35 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_woe8.xml "HTTP/1.1 200 OK"
+19:58:46 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_yr80.xml "HTTP/1.1 200 OK"
+19:58:57 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_3dne.xml "HTTP/1.1 200 OK"
+19:59:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_cm10.xml "HTTP/1.1 200 OK"
+19:59:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_qztc.xml "HTTP/1.1 200 OK"
+19:59:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251231_b66w.xml "HTTP/1.1 200 OK"
+19:59:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_6dy5.xml "HTTP/1.1 200 OK"
+19:59:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_vb5r.xml "HTTP/1.1 200 OK"
+20:00:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_emag.xml "HTTP/1.1 200 OK"
+20:00:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_j6tv.xml "HTTP/1.1 200 OK"
+20:00:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_qfwu.xml "HTTP/1.1 200 OK"
+20:00:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_47uo.xml "HTTP/1.1 200 OK"
+20:00:48 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_dqtp.xml "HTTP/1.1 200 OK"
+20:00:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260127_2xgd.xml "HTTP/1.1 200 OK"
+20:01:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_yzao.xml "HTTP/1.1 200 OK"
+20:01:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_tl1f.xml "HTTP/1.1 200 OK"
+20:01:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_jqod.xml "HTTP/1.1 200 OK"
+20:01:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_3ixj.xml "HTTP/1.1 200 OK"
+20:01:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_ie5e.xml "HTTP/1.1 200 OK"
+20:02:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_6hct.xml "HTTP/1.1 200 OK"
+20:02:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_unvl.xml "HTTP/1.1 200 OK"
+20:02:20 [INFO]   Loaded: 28 games, 681 player-game-stat rows
+20:02:20 [INFO] 
+[5/225] Philander Smith (AR)
+20:02:20 [INFO] Scraping team: Philander Smith (AR) (philandersmithar)
+20:02:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/philandersmithar?view=roster "HTTP/1.1 200 OK"
+20:02:32 [INFO]   Roster: 0 players
+20:02:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/philandersmithar?view=gamelog "HTTP/1.1 200 OK"
+20:02:43 [INFO]   Games: 24 with box scores
+20:02:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251023_umb7.xml "HTTP/1.1 200 OK"
+20:03:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251025_oy3e.xml "HTTP/1.1 200 OK"
+20:03:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251029_dhwv.xml "HTTP/1.1 200 OK"
+20:03:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_4nhy.xml "HTTP/1.1 200 OK"
+20:03:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_c2yv.xml "HTTP/1.1 200 OK"
+20:03:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_s75p.xml "HTTP/1.1 200 OK"
+20:04:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251120_vg26.xml "HTTP/1.1 200 OK"
+20:04:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_05rm.xml "HTTP/1.1 200 OK"
+20:04:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_6q4h.xml "HTTP/1.1 200 OK"
+20:04:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_rk1d.xml "HTTP/1.1 200 OK"
+20:04:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_b2gl.xml "HTTP/1.1 200 OK"
+20:04:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251211_jr1c.xml "HTTP/1.1 200 OK"
+20:05:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_9yo3.xml "HTTP/1.1 200 OK"
+20:05:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251230_uqgl.xml "HTTP/1.1 200 OK"
+20:05:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260108_j05o.xml "HTTP/1.1 200 OK"
+20:05:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_pmri.xml "HTTP/1.1 200 OK"
+20:05:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260115_7fhv.xml "HTTP/1.1 200 OK"
+20:06:06 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260129_m8di.xml "HTTP/1.1 200 OK"
+20:06:17 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_6lnd.xml "HTTP/1.1 200 OK"
+20:06:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260205_3ksr.xml "HTTP/1.1 200 OK"
+20:06:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260210_6o2q.xml "HTTP/1.1 200 OK"
+20:06:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260212_iw3n.xml "HTTP/1.1 200 OK"
+20:07:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_ouqe.xml "HTTP/1.1 200 OK"
+20:07:14 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_ew22.xml "HTTP/1.1 200 OK"
+20:07:14 [INFO]   Loaded: 24 games, 518 player-game-stat rows
+20:07:14 [INFO] 
+[6/225] Huntington (IN)
+20:07:14 [INFO] Scraping team: Huntington (IN) (huntingtonin)
+20:07:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/huntingtonin?view=roster "HTTP/1.1 200 OK"
+20:07:26 [INFO]   Roster: 0 players
+20:07:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/huntingtonin?view=gamelog "HTTP/1.1 200 OK"
+20:07:37 [INFO]   Games: 27 with box scores
+20:07:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251029_hw4p.xml "HTTP/1.1 200 OK"
+20:08:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_m4qm.xml "HTTP/1.1 200 OK"
+20:08:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_fix1.xml "HTTP/1.1 200 OK"
+20:08:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_30eg.xml "HTTP/1.1 200 OK"
+20:08:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_harw.xml "HTTP/1.1 200 OK"
+20:08:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_kimk.xml "HTTP/1.1 200 OK"
+20:08:59 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_njw5.xml "HTTP/1.1 200 OK"
+20:09:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_ia2z.xml "HTTP/1.1 200 OK"
+20:09:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_phbe.xml "HTTP/1.1 200 OK"
+20:09:33 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_sd6u.xml "HTTP/1.1 200 OK"
+20:09:44 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251218_2g7b.xml "HTTP/1.1 200 OK"
+20:09:57 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251219_zf32.xml "HTTP/1.1 200 OK"
+20:10:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251231_eo8u.xml "HTTP/1.1 200 OK"
+20:10:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_ro8z.xml "HTTP/1.1 200 OK"
+20:10:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_rn5s.xml "HTTP/1.1 200 OK"
+20:10:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_077h.xml "HTTP/1.1 200 OK"
+20:10:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_grv5.xml "HTTP/1.1 200 OK"
+20:11:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_73ob.xml "HTTP/1.1 200 OK"
+20:11:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_y8dn.xml "HTTP/1.1 200 OK"
+20:11:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_oh2p.xml "HTTP/1.1 200 OK"
+20:11:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_qbev.xml "HTTP/1.1 200 OK"
+20:11:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_10km.xml "HTTP/1.1 200 OK"
+20:12:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_g2p5.xml "HTTP/1.1 200 OK"
+20:12:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_rub1.xml "HTTP/1.1 200 OK"
+20:12:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_i0xp.xml "HTTP/1.1 200 OK"
+20:12:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_3t1l.xml "HTTP/1.1 200 OK"
+20:12:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_aa5f.xml "HTTP/1.1 200 OK"
+20:12:45 [INFO]   Loaded: 27 games, 574 player-game-stat rows
+20:12:45 [INFO] 
+[7/225] Saint Francis (IN)
+20:12:45 [INFO] Scraping team: Saint Francis (IN) (saintfrancisin)
+20:12:57 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/saintfrancisin?view=roster "HTTP/1.1 200 OK"
+20:12:57 [INFO]   Roster: 0 players
+20:13:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/saintfrancisin?view=gamelog "HTTP/1.1 200 OK"
+20:13:08 [INFO]   Games: 27 with box scores
+20:13:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251028_4xe1.xml "HTTP/1.1 200 OK"
+20:13:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_jl1c.xml "HTTP/1.1 200 OK"
+20:13:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_jjfo.xml "HTTP/1.1 200 OK"
+20:13:52 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_h8rf.xml "HTTP/1.1 200 OK"
+20:14:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_kkk3.xml "HTTP/1.1 200 OK"
+20:14:14 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_bc5k.xml "HTTP/1.1 200 OK"
+20:14:25 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_bty5.xml "HTTP/1.1 200 OK"
+20:14:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_iske.xml "HTTP/1.1 200 OK"
+20:14:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_fhz2.xml "HTTP/1.1 200 OK"
+20:14:59 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_f57f.xml "HTTP/1.1 200 OK"
+20:15:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_6v48.xml "HTTP/1.1 200 OK"
+20:15:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_v8cw.xml "HTTP/1.1 200 OK"
+20:15:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251230_v74p.xml "HTTP/1.1 200 OK"
+20:15:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_r8ju.xml "HTTP/1.1 200 OK"
+20:15:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_vuyr.xml "HTTP/1.1 200 OK"
+20:16:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_dgoa.xml "HTTP/1.1 200 OK"
+20:16:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_grv5.xml "HTTP/1.1 200 OK"
+20:16:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_p5hj.xml "HTTP/1.1 200 OK"
+20:16:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_irnp.xml "HTTP/1.1 200 OK"
+20:16:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_9n4k.xml "HTTP/1.1 200 OK"
+20:17:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_2eb1.xml "HTTP/1.1 200 OK"
+20:17:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_6cad.xml "HTTP/1.1 200 OK"
+20:17:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_plg4.xml "HTTP/1.1 200 OK"
+20:17:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_dy6d.xml "HTTP/1.1 200 OK"
+20:17:48 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_prmx.xml "HTTP/1.1 200 OK"
+20:17:59 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_3t1l.xml "HTTP/1.1 200 OK"
+20:18:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_2a2r.xml "HTTP/1.1 200 OK"
+20:18:11 [INFO]   Loaded: 27 games, 614 player-game-stat rows
+20:18:11 [INFO] 
+[8/225] Southeastern (Fla.)
+20:18:11 [INFO] Scraping team: Southeastern (Fla.) (southeastern)
+20:18:22 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/southeastern?view=roster "HTTP/1.1 200 OK"
+20:18:22 [INFO]   Roster: 0 players
+20:18:33 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/southeastern?view=gamelog "HTTP/1.1 200 OK"
+20:18:33 [INFO]   Games: 28 with box scores
+20:18:44 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_ekid.xml "HTTP/1.1 200 OK"
+20:18:55 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251105_iqqk.xml "HTTP/1.1 200 OK"
+20:19:06 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_lxd3.xml "HTTP/1.1 200 OK"
+20:19:17 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_7np8.xml "HTTP/1.1 200 OK"
+20:19:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_sp31.xml "HTTP/1.1 200 OK"
+20:19:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_rf13.xml "HTTP/1.1 200 OK"
+20:19:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_ad7l.xml "HTTP/1.1 200 OK"
+20:20:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_u6ih.xml "HTTP/1.1 200 OK"
+20:20:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_ykcx.xml "HTTP/1.1 200 OK"
+20:20:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_9dwx.xml "HTTP/1.1 200 OK"
+20:20:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251211_c2py.xml "HTTP/1.1 200 OK"
+20:20:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_o059.xml "HTTP/1.1 200 OK"
+20:20:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_errw.xml "HTTP/1.1 200 OK"
+20:21:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260101_4m1t.xml "HTTP/1.1 200 OK"
+20:21:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_jr12.xml "HTTP/1.1 200 OK"
+20:21:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_7bmz.xml "HTTP/1.1 200 OK"
+20:21:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_1myj.xml "HTTP/1.1 200 OK"
+20:21:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_nofd.xml "HTTP/1.1 200 OK"
+20:22:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_x1mc.xml "HTTP/1.1 200 OK"
+20:22:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_mmgl.xml "HTTP/1.1 200 OK"
+20:23:27 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_r06q.xml — The read operation timed out
+20:23:40 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_nk1t.xml "HTTP/1.1 200 OK"
+20:23:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_mt7c.xml "HTTP/1.1 200 OK"
+20:24:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_8dye.xml "HTTP/1.1 200 OK"
+20:24:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_iam2.xml "HTTP/1.1 200 OK"
+20:24:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_37t8.xml "HTTP/1.1 200 OK"
+20:24:55 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_zkk3.xml "HTTP/1.1 200 OK"
+20:25:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_zj68.xml "HTTP/1.1 200 OK"
+20:25:08 [INFO]   Loaded: 27 games, 586 player-game-stat rows
+20:25:08 [INFO] 
+[9/225] Bellevue (NE)
+20:25:08 [INFO] Scraping team: Bellevue (NE) (bellevuene)
+20:25:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/bellevuene?view=roster "HTTP/1.1 200 OK"
+20:25:29 [INFO]   Roster: 0 players
+20:25:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/bellevuene?view=gamelog "HTTP/1.1 200 OK"
+20:25:44 [INFO]   Games: 28 with box scores
+20:26:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251024_d5tu.xml "HTTP/1.1 200 OK"
+20:26:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251025_n627.xml "HTTP/1.1 200 OK"
+20:26:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_jx8e.xml "HTTP/1.1 200 OK"
+20:26:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_pec0.xml "HTTP/1.1 200 OK"
+20:26:59 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_ffxg.xml "HTTP/1.1 200 OK"
+20:27:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_3rxt.xml "HTTP/1.1 200 OK"
+20:27:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_lwne.xml "HTTP/1.1 200 OK"
+20:27:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_fxdw.xml "HTTP/1.1 200 OK"
+20:27:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251130_x7ba.xml "HTTP/1.1 200 OK"
+20:28:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_h4dx.xml "HTTP/1.1 200 OK"
+20:28:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251207_f8y3.xml "HTTP/1.1 200 OK"
+20:28:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_91js.xml "HTTP/1.1 200 OK"
+20:28:55 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_cxcg.xml "HTTP/1.1 200 OK"
+20:29:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251219_e6b8.xml "HTTP/1.1 200 OK"
+20:29:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260102_ltik.xml "HTTP/1.1 200 OK"
+20:29:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_vxz4.xml "HTTP/1.1 200 OK"
+20:29:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260109_zqft.xml "HTTP/1.1 200 OK"
+20:30:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_2htc.xml "HTTP/1.1 200 OK"
+20:30:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260116_s4r7.xml "HTTP/1.1 200 OK"
+20:30:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_vq4y.xml "HTTP/1.1 200 OK"
+20:31:02 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260123_73qt.xml "HTTP/1.1 200 OK"
+20:31:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260130_4tt3.xml "HTTP/1.1 200 OK"
+20:31:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_0kjg.xml "HTTP/1.1 200 OK"
+20:31:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260206_0fjw.xml "HTTP/1.1 200 OK"
+20:31:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_oe1n.xml "HTTP/1.1 200 OK"
+20:32:02 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260213_n6wa.xml "HTTP/1.1 200 OK"
+20:32:13 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_2veh.xml "HTTP/1.1 200 OK"
+20:32:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260220_dxoc.xml "HTTP/1.1 200 OK"
+20:32:24 [INFO]   Loaded: 28 games, 616 player-game-stat rows
+20:32:24 [INFO] 
+[10/225] Morningside (Iowa)
+20:32:24 [INFO] Scraping team: Morningside (Iowa) (morningside)
+20:32:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/morningside?view=roster "HTTP/1.1 200 OK"
+20:32:36 [INFO]   Roster: 0 players
+20:32:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/morningside?view=gamelog "HTTP/1.1 200 OK"
+20:32:47 [INFO]   Games: 27 with box scores
+20:32:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251025_t1y2.xml "HTTP/1.1 200 OK"
+20:33:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_fbjv.xml "HTTP/1.1 200 OK"
+20:33:22 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_fix1.xml "HTTP/1.1 200 OK"
+20:33:33 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_18s4.xml "HTTP/1.1 200 OK"
+20:33:44 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251111_qrbw.xml "HTTP/1.1 200 OK"
+20:33:55 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_3yv7.xml "HTTP/1.1 200 OK"
+20:34:06 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_nye3.xml "HTTP/1.1 200 OK"
+20:34:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_3yko.xml "HTTP/1.1 200 OK"
+20:34:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_ag6k.xml "HTTP/1.1 200 OK"
+20:34:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_bwrl.xml "HTTP/1.1 200 OK"
+20:34:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251210_9jxj.xml "HTTP/1.1 200 OK"
+20:35:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_hwlh.xml "HTTP/1.1 200 OK"
+20:35:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_u0wl.xml "HTTP/1.1 200 OK"
+20:35:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_z9c7.xml "HTTP/1.1 200 OK"
+20:35:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_7acj.xml "HTTP/1.1 200 OK"
+20:35:48 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_jg2r.xml "HTTP/1.1 200 OK"
+20:35:59 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_geik.xml "HTTP/1.1 200 OK"
+20:36:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_cedk.xml "HTTP/1.1 200 OK"
+20:36:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260122_06ya.xml "HTTP/1.1 200 OK"
+20:36:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_cslw.xml "HTTP/1.1 200 OK"
+20:36:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_sr0e.xml "HTTP/1.1 200 OK"
+20:36:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_vrdz.xml "HTTP/1.1 200 OK"
+20:37:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_fsjv.xml "HTTP/1.1 200 OK"
+20:37:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_v4u3.xml "HTTP/1.1 200 OK"
+20:37:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_wmq5.xml "HTTP/1.1 200 OK"
+20:37:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_ibu2.xml "HTTP/1.1 200 OK"
+20:37:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_ku79.xml "HTTP/1.1 200 OK"
+20:37:50 [INFO]   Loaded: 27 games, 615 player-game-stat rows
+20:37:50 [INFO] 
+[11/225] Mayville State
+20:37:50 [INFO] Scraping team: Mayville State (mayvillestate)
+20:38:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/mayvillestate?view=roster "HTTP/1.1 200 OK"
+20:38:01 [INFO]   Roster: 0 players
+20:38:13 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/mayvillestate?view=gamelog "HTTP/1.1 200 OK"
+20:38:13 [INFO]   Games: 26 with box scores
+20:38:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251025_e8gn.xml "HTTP/1.1 200 OK"
+21:10:33 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251026_8udm.xml — The read operation timed out
+21:10:44 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_a7un.xml "HTTP/1.1 200 OK"
+21:10:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251102_9t5a.xml "HTTP/1.1 200 OK"
+21:46:18 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_es8t.xml — [Errno 51] Network is unreachable
+22:18:39 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251118_tzb8.xml — [Errno 8] nodename nor servname provided, or not known
+22:26:59 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_0tv1.xml — [Errno 8] nodename nor servname provided, or not known
+22:27:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_gmjm.xml "HTTP/1.1 200 OK"
+22:27:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_aire.xml "HTTP/1.1 200 OK"
+22:27:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251207_f8y3.xml "HTTP/1.1 200 OK"
+22:27:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_1h88.xml "HTTP/1.1 200 OK"
+22:27:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251214_g2l9.xml "HTTP/1.1 200 OK"
+22:28:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260102_vn84.xml "HTTP/1.1 200 OK"
+22:28:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_k1lr.xml "HTTP/1.1 200 OK"
+22:28:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260109_odx3.xml "HTTP/1.1 200 OK"
+22:28:40 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_5v2m.xml "HTTP/1.1 200 OK"
+22:28:51 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260116_sllo.xml "HTTP/1.1 200 OK"
+22:29:02 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260119_7t2f.xml "HTTP/1.1 200 OK"
+22:29:13 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_ekcl.xml "HTTP/1.1 200 OK"
+22:29:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260130_4tt3.xml "HTTP/1.1 200 OK"
+22:29:35 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_k5d6.xml "HTTP/1.1 200 OK"
+22:29:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260206_uq6l.xml "HTTP/1.1 200 OK"
+22:29:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_6lf2.xml "HTTP/1.1 200 OK"
+22:30:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260213_wese.xml "HTTP/1.1 200 OK"
+22:30:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_uslt.xml "HTTP/1.1 200 OK"
+22:30:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260220_rgz2.xml "HTTP/1.1 200 OK"
+22:30:31 [INFO]   Loaded: 22 games, 516 player-game-stat rows
+22:30:31 [INFO] 
+[12/225] Central Christian (KS)
+22:30:31 [INFO] Scraping team: Central Christian (KS) (centralchristianks)
+22:30:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/centralchristianks?view=roster "HTTP/1.1 200 OK"
+22:30:43 [INFO]   Roster: 0 players
+22:30:55 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/centralchristianks?view=gamelog "HTTP/1.1 200 OK"
+22:30:55 [INFO]   Games: 28 with box scores
+22:31:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_zlfk.xml "HTTP/1.1 200 OK"
+22:31:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_252i.xml "HTTP/1.1 200 OK"
+22:31:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_g2iu.xml "HTTP/1.1 200 OK"
+22:31:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_ue86.xml "HTTP/1.1 200 OK"
+22:31:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251111_28fe.xml "HTTP/1.1 200 OK"
+22:32:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_8v9l.xml "HTTP/1.1 200 OK"
+22:32:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251120_kadb.xml "HTTP/1.1 200 OK"
+22:32:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_3faa.xml "HTTP/1.1 200 OK"
+22:32:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251126_8z6o.xml "HTTP/1.1 200 OK"
+22:32:46 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_cw4m.xml "HTTP/1.1 200 OK"
+22:32:57 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_f8sp.xml "HTTP/1.1 200 OK"
+22:33:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251211_6p04.xml "HTTP/1.1 200 OK"
+22:33:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_4zge.xml "HTTP/1.1 200 OK"
+22:33:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_yoa8.xml "HTTP/1.1 200 OK"
+22:33:40 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260108_xgj5.xml "HTTP/1.1 200 OK"
+22:33:52 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_57fy.xml "HTTP/1.1 200 OK"
+22:34:02 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260115_jnvi.xml "HTTP/1.1 200 OK"
+22:34:13 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_0xze.xml "HTTP/1.1 200 OK"
+22:34:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260122_v4r0.xml "HTTP/1.1 200 OK"
+22:34:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260129_p5sf.xml "HTTP/1.1 200 OK"
+22:34:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_kteo.xml "HTTP/1.1 200 OK"
+22:34:57 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260205_ootv.xml "HTTP/1.1 200 OK"
+22:35:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_af29.xml "HTTP/1.1 200 OK"
+22:35:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260209_k3gr.xml "HTTP/1.1 200 OK"
+22:35:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260212_gjqe.xml "HTTP/1.1 200 OK"
+22:35:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_4o62.xml "HTTP/1.1 200 OK"
+22:35:52 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260219_smck.xml "HTTP/1.1 200 OK"
+22:36:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_syf3.xml "HTTP/1.1 200 OK"
+22:36:03 [INFO]   Loaded: 28 games, 645 player-game-stat rows
+22:36:03 [INFO] 
+[13/225] Virgin Islands
+22:36:03 [INFO] Scraping team: Virgin Islands (virginislands)
+22:36:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/virginislands?view=roster "HTTP/1.1 200 OK"
+22:36:15 [INFO]   Roster: 0 players
+22:36:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/virginislands?view=gamelog "HTTP/1.1 200 OK"
+22:36:27 [INFO]   Games: 18 with box scores
+22:36:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251024_ey63.xml "HTTP/1.1 200 OK"
+22:36:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_7f6s.xml "HTTP/1.1 200 OK"
+22:37:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_s75p.xml "HTTP/1.1 200 OK"
+22:37:13 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251117_31tc.xml "HTTP/1.1 200 OK"
+22:37:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251124_tec9.xml "HTTP/1.1 200 OK"
+22:37:35 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_d7co.xml "HTTP/1.1 200 OK"
+22:37:46 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251209_qeao.xml "HTTP/1.1 200 OK"
+22:37:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251211_blql.xml "HTTP/1.1 200 OK"
+22:38:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_u0jx.xml "HTTP/1.1 200 OK"
+22:38:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_u0wl.xml "HTTP/1.1 200 OK"
+22:38:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_9jdt.xml "HTTP/1.1 200 OK"
+22:38:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260109_9gbm.xml "HTTP/1.1 200 OK"
+22:38:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_xmq2.xml "HTTP/1.1 200 OK"
+22:39:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260112_nkv2.xml "HTTP/1.1 200 OK"
+22:39:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260205_bnr4.xml "HTTP/1.1 200 OK"
+22:39:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260206_j2sc.xml "HTTP/1.1 200 OK"
+22:39:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260208_q3le.xml "HTTP/1.1 200 OK"
+22:39:48 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260209_kvto.xml "HTTP/1.1 200 OK"
+22:39:48 [INFO]   Loaded: 18 games, 393 player-game-stat rows
+22:39:48 [INFO] 
+[14/225] Keiser (Fla.)
+22:39:48 [INFO] Scraping team: Keiser (Fla.) (keiser)
+22:40:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/keiser?view=roster "HTTP/1.1 200 OK"
+22:40:00 [INFO]   Roster: 0 players
+22:40:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/keiser?view=gamelog "HTTP/1.1 200 OK"
+22:40:11 [INFO]   Games: 27 with box scores
+22:40:22 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_g7id.xml "HTTP/1.1 200 OK"
+22:40:33 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_pqdy.xml "HTTP/1.1 200 OK"
+22:40:44 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251110_msbp.xml "HTTP/1.1 200 OK"
+22:40:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_873r.xml "HTTP/1.1 200 OK"
+22:41:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_y5ot.xml "HTTP/1.1 200 OK"
+22:41:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_2rwh.xml "HTTP/1.1 200 OK"
+22:41:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_d7co.xml "HTTP/1.1 200 OK"
+22:41:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_iswh.xml "HTTP/1.1 200 OK"
+22:41:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_xreb.xml "HTTP/1.1 200 OK"
+22:42:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_z9c7.xml "HTTP/1.1 200 OK"
+22:42:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251218_m7wt.xml "HTTP/1.1 200 OK"
+22:42:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251230_w9p1.xml "HTTP/1.1 200 OK"
+22:42:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_iy5a.xml "HTTP/1.1 200 OK"
+22:42:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_7bmz.xml "HTTP/1.1 200 OK"
+22:42:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_tax4.xml "HTTP/1.1 200 OK"
+22:43:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_6ddi.xml "HTTP/1.1 200 OK"
+22:43:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_rmpn.xml "HTTP/1.1 200 OK"
+22:43:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_lakp.xml "HTTP/1.1 200 OK"
+22:43:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_zwyw.xml "HTTP/1.1 200 OK"
+22:43:52 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260127_awbc.xml "HTTP/1.1 200 OK"
+22:44:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_980n.xml "HTTP/1.1 200 OK"
+22:44:14 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_kyqg.xml "HTTP/1.1 200 OK"
+22:44:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_iam2.xml "HTTP/1.1 200 OK"
+22:44:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_dr0v.xml "HTTP/1.1 200 OK"
+22:44:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_w1cm.xml "HTTP/1.1 200 OK"
+22:45:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_1lhi.xml "HTTP/1.1 200 OK"
+22:45:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_u13n.xml "HTTP/1.1 200 OK"
+22:45:11 [INFO]   Loaded: 27 games, 613 player-game-stat rows
+22:45:11 [INFO] 
+[15/225] Benedictine Mesa
+22:45:11 [INFO] Scraping team: Benedictine Mesa (benedictinemesaaz)
+22:45:22 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/benedictinemesaaz?view=roster "HTTP/1.1 200 OK"
+22:45:22 [INFO]   Roster: 0 players
+22:45:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/benedictinemesaaz?view=gamelog "HTTP/1.1 200 OK"
+22:45:35 [INFO]   Games: 29 with box scores
+22:45:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251024_8zhi.xml "HTTP/1.1 200 OK"
+22:45:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251030_pkx6.xml "HTTP/1.1 200 OK"
+23:18:45 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_egfn.xml — [Errno 51] Network is unreachable
+23:48:17 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_crz7.xml — [Errno 8] nodename nor servname provided, or not known
+23:48:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_4w4d.xml "HTTP/1.1 200 OK"
+23:48:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_6kxd.xml "HTTP/1.1 200 OK"
+23:48:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_6alq.xml "HTTP/1.1 200 OK"
+23:49:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_go04.xml "HTTP/1.1 200 OK"
+23:49:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251124_iw7c.xml "HTTP/1.1 200 OK"
+23:49:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_xjx1.xml "HTTP/1.1 200 OK"
+23:49:33 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_fo8v.xml "HTTP/1.1 200 OK"
+23:49:44 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_xykd.xml "HTTP/1.1 200 OK"
+00:23:51 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_7bl3.xml — [Errno 51] Network is unreachable
+00:56:14 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_f26k.xml — [Errno 8] nodename nor servname provided, or not known
+01:11:51 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_m95p.xml — [Errno 8] nodename nor servname provided, or not known
+01:30:40 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_9199.xml — [Errno 8] nodename nor servname provided, or not known
+01:30:51 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_he7o.xml "HTTP/1.1 200 OK"
+01:31:02 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260108_vdf6.xml "HTTP/1.1 200 OK"
+01:31:13 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_sirw.xml "HTTP/1.1 200 OK"
+01:31:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260115_h087.xml "HTTP/1.1 200 OK"
+01:31:35 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_4r81.xml "HTTP/1.1 200 OK"
+01:31:46 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260122_n3jr.xml "HTTP/1.1 200 OK"
+01:48:10 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_eiqp.xml — [Errno 8] nodename nor servname provided, or not known
+02:20:49 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260129_58qt.xml — [Errno 8] nodename nor servname provided, or not known
+02:38:55 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260205_okri.xml — [Errno 8] nodename nor servname provided, or not known
+03:11:53 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_rnfy.xml — [Errno 8] nodename nor servname provided, or not known
+03:27:00 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_1fym.xml — [Errno 8] nodename nor servname provided, or not known
+03:31:47 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260219_d32i.xml — [Errno 8] nodename nor servname provided, or not known
+03:31:57 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_mlum.xml — [Errno 8] nodename nor servname provided, or not known
+03:31:57 [INFO]   Loaded: 16 games, 398 player-game-stat rows
+03:31:57 [INFO] 
+[16/225] Cal Maritime
+03:31:57 [INFO] Scraping team: Cal Maritime (calmaritimeca)
+03:32:07 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/calmaritimeca?view=roster — [Errno 8] nodename nor servname provided, or not known
+03:32:07 [INFO]   Roster: 0 players
+03:32:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/calmaritimeca?view=gamelog "HTTP/1.1 200 OK"
+03:32:19 [INFO]   Games: 21 with box scores
+03:49:32 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251025_6gmc.xml — [Errno 8] nodename nor servname provided, or not known
+04:07:27 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251030_038o.xml — [Errno 8] nodename nor servname provided, or not known
+04:41:26 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251109_84wh.xml — [Errno 8] nodename nor servname provided, or not known
+05:13:41 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251114_ugxg.xml — [Errno 8] nodename nor servname provided, or not known
+05:23:26 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_lsmr.xml — [Errno 8] nodename nor servname provided, or not known
+05:23:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_wkto.xml "HTTP/1.1 200 OK"
+05:23:48 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_6nv4.xml "HTTP/1.1 200 OK"
+05:23:59 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_51of.xml "HTTP/1.1 200 OK"
+05:56:12 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251218_irrn.xml — [Errno 51] Network is unreachable
+06:14:26 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_3sa9.xml — [Errno 8] nodename nor servname provided, or not known
+06:14:37 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260112_j2ev.xml — [Errno 8] nodename nor servname provided, or not known
+06:14:47 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_p49r.xml — [Errno 8] nodename nor servname provided, or not known
+06:14:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_xjol.xml "HTTP/1.1 200 OK"
+06:15:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_oxtj.xml "HTTP/1.1 200 OK"
+06:24:46 [ERROR] Request failed: https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260126_g0r2.xml — [Errno 8] nodename nor servname provided, or not known
+06:24:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260129_91lx.xml "HTTP/1.1 200 OK"
+06:25:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_s501.xml "HTTP/1.1 200 OK"
+06:25:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_f2c5.xml "HTTP/1.1 200 OK"
+06:25:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_4on1.xml "HTTP/1.1 200 OK"
+06:25:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260219_mwqp.xml "HTTP/1.1 200 OK"
+06:25:52 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_btb9.xml "HTTP/1.1 200 OK"
+06:25:53 [INFO]   Loaded: 11 games, 261 player-game-stat rows
+06:25:53 [INFO] 
+[17/225] Abraham Baldwin Agricultural
+06:25:53 [INFO] Scraping team: Abraham Baldwin Agricultural (abrahambaldwinagricultural)
+06:26:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/abrahambaldwinagricultural?view=roster "HTTP/1.1 200 OK"
+06:26:04 [INFO]   Roster: 0 players
+06:26:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/abrahambaldwinagricultural?view=gamelog "HTTP/1.1 200 OK"
+06:26:16 [INFO]   Games: 26 with box scores
+06:26:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251018_2pcf.xml "HTTP/1.1 200 OK"
+06:26:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_74io.xml "HTTP/1.1 200 OK"
+06:26:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_a6jh.xml "HTTP/1.1 200 OK"
+06:27:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_wq1r.xml "HTTP/1.1 200 OK"
+06:27:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251111_z52w.xml "HTTP/1.1 200 OK"
+06:27:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_bc32.xml "HTTP/1.1 200 OK"
+06:27:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_db5l.xml "HTTP/1.1 200 OK"
+06:27:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251117_7b09.xml "HTTP/1.1 200 OK"
+06:27:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251124_kv0v.xml "HTTP/1.1 200 OK"
+06:28:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_48uj.xml "HTTP/1.1 200 OK"
+06:28:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251208_84yx.xml "HTTP/1.1 200 OK"
+06:28:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_mlqr.xml "HTTP/1.1 200 OK"
+06:28:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260108_5dm2.xml "HTTP/1.1 200 OK"
+06:28:48 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_s0pu.xml "HTTP/1.1 200 OK"
+06:28:59 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260115_45mg.xml "HTTP/1.1 200 OK"
+06:29:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_q1ny.xml "HTTP/1.1 200 OK"
+06:29:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260122_gt2u.xml "HTTP/1.1 200 OK"
+06:29:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260129_tdkm.xml "HTTP/1.1 200 OK"
+06:29:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_2g9r.xml "HTTP/1.1 200 OK"
+06:29:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260205_3ynm.xml "HTTP/1.1 200 OK"
+06:30:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_sk7w.xml "HTTP/1.1 200 OK"
+06:30:17 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260212_zuo6.xml "HTTP/1.1 200 OK"
+06:30:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_8gpf.xml "HTTP/1.1 200 OK"
+06:30:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260216_7zwr.xml "HTTP/1.1 200 OK"
+06:30:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260219_3muc.xml "HTTP/1.1 200 OK"
+06:31:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_t565.xml "HTTP/1.1 200 OK"
+06:31:01 [INFO]   Loaded: 26 games, 595 player-game-stat rows
+06:31:01 [INFO] 
+[18/225] Ave Maria
+06:31:01 [INFO] Scraping team: Ave Maria (avemariafl)
+06:31:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/avemariafl?view=roster "HTTP/1.1 200 OK"
+06:31:12 [INFO]   Roster: 0 players
+06:31:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/avemariafl?view=gamelog "HTTP/1.1 200 OK"
+06:31:24 [INFO]   Games: 27 with box scores
+06:31:35 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251024_gnhn.xml "HTTP/1.1 200 OK"
+06:31:46 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251025_ozkf.xml "HTTP/1.1 200 OK"
+06:31:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251030_ic1w.xml "HTTP/1.1 200 OK"
+06:32:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_imri.xml "HTTP/1.1 200 OK"
+06:32:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251102_ho8w.xml "HTTP/1.1 200 OK"
+06:32:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251111_k0kg.xml "HTTP/1.1 200 OK"
+06:32:40 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_j44m.xml "HTTP/1.1 200 OK"
+06:32:51 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_5k09.xml "HTTP/1.1 200 OK"
+06:33:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_6nw8.xml "HTTP/1.1 200 OK"
+06:33:14 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251128_njk2.xml "HTTP/1.1 200 OK"
+06:33:25 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_oh26.xml "HTTP/1.1 200 OK"
+06:33:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_c450.xml "HTTP/1.1 200 OK"
+06:33:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_0ch9.xml "HTTP/1.1 200 OK"
+06:33:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_ucnr.xml "HTTP/1.1 200 OK"
+06:34:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251218_8iiy.xml "HTTP/1.1 200 OK"
+06:34:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_2w09.xml "HTTP/1.1 200 OK"
+06:34:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_cdjg.xml "HTTP/1.1 200 OK"
+06:34:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_6ddi.xml "HTTP/1.1 200 OK"
+06:34:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_fpl1.xml "HTTP/1.1 200 OK"
+06:35:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_mmgl.xml "HTTP/1.1 200 OK"
+06:35:14 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_4y5c.xml "HTTP/1.1 200 OK"
+06:35:25 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_1r5b.xml "HTTP/1.1 200 OK"
+06:35:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_xein.xml "HTTP/1.1 200 OK"
+06:35:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260209_5hni.xml "HTTP/1.1 200 OK"
+06:35:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_w1cm.xml "HTTP/1.1 200 OK"
+06:36:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_w0ng.xml "HTTP/1.1 200 OK"
+06:36:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_zj68.xml "HTTP/1.1 200 OK"
+06:36:20 [INFO]   Loaded: 27 games, 606 player-game-stat rows
+06:36:20 [INFO] 
+[19/225] Indiana Wesleyan
+06:36:20 [INFO] Scraping team: Indiana Wesleyan (indianawesleyanin)
+06:36:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/indianawesleyanin?view=roster "HTTP/1.1 200 OK"
+06:36:32 [INFO]   Roster: 0 players
+06:36:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/indianawesleyanin?view=gamelog "HTTP/1.1 200 OK"
+06:36:43 [INFO]   Games: 27 with box scores
+06:36:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251028_66wf.xml "HTTP/1.1 200 OK"
+06:37:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_69wm.xml "HTTP/1.1 200 OK"
+06:37:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_i835.xml "HTTP/1.1 200 OK"
+06:37:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251105_6n08.xml "HTTP/1.1 200 OK"
+06:37:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_2iqg.xml "HTTP/1.1 200 OK"
+06:37:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251111_m8ux.xml "HTTP/1.1 200 OK"
+06:38:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_2qt6.xml "HTTP/1.1 200 OK"
+06:38:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_y3op.xml "HTTP/1.1 200 OK"
+06:38:22 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_f57f.xml "HTTP/1.1 200 OK"
+06:38:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_sd6u.xml "HTTP/1.1 200 OK"
+06:38:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251215_fqzt.xml "HTTP/1.1 200 OK"
+06:38:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_w4bw.xml "HTTP/1.1 200 OK"
+06:39:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251231_810p.xml "HTTP/1.1 200 OK"
+06:39:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_dd9j.xml "HTTP/1.1 200 OK"
+06:39:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_h4q7.xml "HTTP/1.1 200 OK"
+06:39:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_m2x3.xml "HTTP/1.1 200 OK"
+06:39:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_wfy7.xml "HTTP/1.1 200 OK"
+06:40:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_dgm0.xml "HTTP/1.1 200 OK"
+06:41:48 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_zc4t.xml "HTTP/1.1 200 OK"
+06:41:59 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_gcsr.xml "HTTP/1.1 200 OK"
+06:42:10 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_2eb1.xml "HTTP/1.1 200 OK"
+06:42:21 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_10km.xml "HTTP/1.1 200 OK"
+06:42:32 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_h5fn.xml "HTTP/1.1 200 OK"
+06:42:43 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_an79.xml "HTTP/1.1 200 OK"
+06:42:54 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_utwa.xml "HTTP/1.1 200 OK"
+06:43:05 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_1lod.xml "HTTP/1.1 200 OK"
+06:43:16 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_fslw.xml "HTTP/1.1 200 OK"
+06:43:16 [INFO]   Loaded: 27 games, 629 player-game-stat rows
+06:43:16 [INFO] 
+[20/225] Pikeville (KY)
+06:43:16 [INFO] Scraping team: Pikeville (KY) (pikevilleky)
+06:43:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/pikevilleky?view=roster "HTTP/1.1 200 OK"
+06:43:27 [INFO]   Roster: 0 players
+06:43:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/pikevilleky?view=gamelog "HTTP/1.1 200 OK"
+06:43:39 [INFO]   Games: 28 with box scores
+06:43:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_mvdm.xml "HTTP/1.1 200 OK"
+06:44:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_30eg.xml "HTTP/1.1 200 OK"
+06:44:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_1crd.xml "HTTP/1.1 200 OK"
+06:44:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251112_t1fj.xml "HTTP/1.1 200 OK"
+06:44:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_q09d.xml "HTTP/1.1 200 OK"
+06:44:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_a0mp.xml "HTTP/1.1 200 OK"
+06:44:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_b5zl.xml "HTTP/1.1 200 OK"
+06:45:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_ec70.xml "HTTP/1.1 200 OK"
+06:45:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_t88l.xml "HTTP/1.1 200 OK"
+06:45:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251130_e0aj.xml "HTTP/1.1 200 OK"
+06:45:40 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_31yt.xml "HTTP/1.1 200 OK"
+06:45:51 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251210_6wkg.xml "HTTP/1.1 200 OK"
+06:46:02 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_c3hi.xml "HTTP/1.1 200 OK"
+06:46:13 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_a9d8.xml "HTTP/1.1 200 OK"
+06:46:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_c8ej.xml "HTTP/1.1 200 OK"
+06:46:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_xgwk.xml "HTTP/1.1 200 OK"
+06:46:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_dp7i.xml "HTTP/1.1 200 OK"
+06:46:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_x54e.xml "HTTP/1.1 200 OK"
+06:47:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_urh7.xml "HTTP/1.1 200 OK"
+06:47:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_uq3k.xml "HTTP/1.1 200 OK"
+06:47:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_w5qn.xml "HTTP/1.1 200 OK"
+06:47:40 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_i3l4.xml "HTTP/1.1 200 OK"
+06:47:51 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260209_l8p0.xml "HTTP/1.1 200 OK"
+06:48:02 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_suzs.xml "HTTP/1.1 200 OK"
+06:48:13 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_vr3y.xml "HTTP/1.1 200 OK"
+06:48:24 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260216_ey5j.xml "HTTP/1.1 200 OK"
+06:48:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_uw83.xml "HTTP/1.1 200 OK"
+06:48:46 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_boul.xml "HTTP/1.1 200 OK"
+06:48:46 [INFO]   Loaded: 28 games, 640 player-game-stat rows
+06:48:46 [INFO] 
+[21/225] William Carey (Miss.)
+06:48:46 [INFO] Scraping team: William Carey (Miss.) (williamcareyms)
+06:48:57 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/williamcareyms?view=roster "HTTP/1.1 200 OK"
+06:48:57 [INFO]   Roster: 0 players
+06:49:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/williamcareyms?view=gamelog "HTTP/1.1 200 OK"
+06:49:09 [INFO]   Games: 28 with box scores
+06:49:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251024_p756.xml "HTTP/1.1 200 OK"
+06:49:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251025_7aqt.xml "HTTP/1.1 200 OK"
+06:49:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251028_6nyi.xml "HTTP/1.1 200 OK"
+06:49:52 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_cm59.xml "HTTP/1.1 200 OK"
+06:50:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_xxeh.xml "HTTP/1.1 200 OK"
+06:50:14 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_dq99.xml "HTTP/1.1 200 OK"
+06:50:25 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_j2ix.xml "HTTP/1.1 200 OK"
+06:50:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_i4q5.xml "HTTP/1.1 200 OK"
+06:50:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_erbg.xml "HTTP/1.1 200 OK"
+06:50:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251215_mwsu.xml "HTTP/1.1 200 OK"
+06:51:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251218_25bm.xml "HTTP/1.1 200 OK"
+06:51:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_vb9k.xml "HTTP/1.1 200 OK"
+06:51:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260105_8fzc.xml "HTTP/1.1 200 OK"
+06:51:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260108_uvjr.xml "HTTP/1.1 200 OK"
+06:51:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_6r6g.xml "HTTP/1.1 200 OK"
+06:52:03 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260115_6qr6.xml "HTTP/1.1 200 OK"
+06:52:14 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_q1ny.xml "HTTP/1.1 200 OK"
+06:52:25 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260122_rqcd.xml "HTTP/1.1 200 OK"
+06:52:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_8a9o.xml "HTTP/1.1 200 OK"
+06:52:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260126_ng1d.xml "HTTP/1.1 200 OK"
+06:52:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260129_s3rn.xml "HTTP/1.1 200 OK"
+06:53:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_mq2s.xml "HTTP/1.1 200 OK"
+06:53:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260205_hztl.xml "HTTP/1.1 200 OK"
+06:53:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_sk7w.xml "HTTP/1.1 200 OK"
+06:53:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260212_vc60.xml "HTTP/1.1 200 OK"
+06:53:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_bfdm.xml "HTTP/1.1 200 OK"
+06:54:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260219_t7lp.xml "HTTP/1.1 200 OK"
+06:54:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_s19x.xml "HTTP/1.1 200 OK"
+06:54:15 [INFO]   Loaded: 28 games, 661 player-game-stat rows
+06:54:15 [INFO] 
+[22/225] Dakota Wesleyan (SD)
+06:54:15 [INFO] Scraping team: Dakota Wesleyan (SD) (dakotawesleyansd)
+06:54:27 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/dakotawesleyansd?view=roster "HTTP/1.1 200 OK"
+06:54:27 [INFO]   Roster: 0 players
+06:54:38 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/dakotawesleyansd?view=gamelog "HTTP/1.1 200 OK"
+06:54:39 [INFO]   Games: 29 with box scores
+06:54:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251028_yi7w.xml "HTTP/1.1 200 OK"
+06:55:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_d1rq.xml "HTTP/1.1 200 OK"
+06:55:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_xx0d.xml "HTTP/1.1 200 OK"
+06:55:22 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251109_wtbl.xml "HTTP/1.1 200 OK"
+06:55:33 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251112_ovng.xml "HTTP/1.1 200 OK"
+06:55:44 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_ykan.xml "HTTP/1.1 200 OK"
+06:55:55 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_nye3.xml "HTTP/1.1 200 OK"
+06:56:06 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_j0uc.xml "HTTP/1.1 200 OK"
+06:56:17 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_s61b.xml "HTTP/1.1 200 OK"
+06:56:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251202_3mfy.xml "HTTP/1.1 200 OK"
+06:56:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_eyzx.xml "HTTP/1.1 200 OK"
+06:56:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251210_mtgm.xml "HTTP/1.1 200 OK"
+06:57:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_xf87.xml "HTTP/1.1 200 OK"
+06:57:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_1yc0.xml "HTTP/1.1 200 OK"
+06:57:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_v13m.xml "HTTP/1.1 200 OK"
+06:57:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251229_xiwv.xml "HTTP/1.1 200 OK"
+06:57:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_85fs.xml "HTTP/1.1 200 OK"
+06:57:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_66i1.xml "HTTP/1.1 200 OK"
+06:58:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_fnio.xml "HTTP/1.1 200 OK"
+06:58:18 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_ndsr.xml "HTTP/1.1 200 OK"
+06:58:29 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260118_ytn6.xml "HTTP/1.1 200 OK"
+06:58:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260122_06ya.xml "HTTP/1.1 200 OK"
+06:58:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_3w1b.xml "HTTP/1.1 200 OK"
+06:59:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_ytkb.xml "HTTP/1.1 200 OK"
+06:59:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260208_5pqi.xml "HTTP/1.1 200 OK"
+06:59:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_a7gw.xml "HTTP/1.1 200 OK"
+06:59:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_xxws.xml "HTTP/1.1 200 OK"
+06:59:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_tcg1.xml "HTTP/1.1 200 OK"
+06:59:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_wv5y.xml "HTTP/1.1 200 OK"
+06:59:56 [INFO]   Loaded: 29 games, 636 player-game-stat rows
+06:59:56 [INFO] 
+[23/225] Rochester Christian (Mich.)
+06:59:56 [INFO] Scraping team: Rochester Christian (Mich.) (rochesterchristianmich)
+07:00:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/rochesterchristianmich?view=roster "HTTP/1.1 200 OK"
+07:00:07 [INFO]   Roster: 0 players
+07:00:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/rochesterchristianmich?view=gamelog "HTTP/1.1 200 OK"
+07:00:20 [INFO]   Games: 28 with box scores
+07:00:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251025_0hsa.xml "HTTP/1.1 200 OK"
+07:00:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251029_phrl.xml "HTTP/1.1 200 OK"
+07:00:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_2y6w.xml "HTTP/1.1 200 OK"
+07:01:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_bc5k.xml "HTTP/1.1 200 OK"
+07:01:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251114_ww6t.xml "HTTP/1.1 200 OK"
+07:01:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_f2zn.xml "HTTP/1.1 200 OK"
+07:01:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_dqz2.xml "HTTP/1.1 200 OK"
+07:01:48 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_0k2w.xml "HTTP/1.1 200 OK"
+07:01:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_onzt.xml "HTTP/1.1 200 OK"
+07:02:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_hac1.xml "HTTP/1.1 200 OK"
+07:02:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_azcz.xml "HTTP/1.1 200 OK"
+07:02:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251218_qu92.xml "HTTP/1.1 200 OK"
+07:02:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251230_mj65.xml "HTTP/1.1 200 OK"
+07:02:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_msxc.xml "HTTP/1.1 200 OK"
+07:03:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_ak0w.xml "HTTP/1.1 200 OK"
+07:03:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_me9f.xml "HTTP/1.1 200 OK"
+07:03:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_gcbn.xml "HTTP/1.1 200 OK"
+07:03:36 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_yeix.xml "HTTP/1.1 200 OK"
+07:03:47 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_t1t2.xml "HTTP/1.1 200 OK"
+07:03:58 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_hp3i.xml "HTTP/1.1 200 OK"
+07:04:09 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_s5e7.xml "HTTP/1.1 200 OK"
+07:04:20 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_yzao.xml "HTTP/1.1 200 OK"
+07:04:31 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_dndv.xml "HTTP/1.1 200 OK"
+07:04:42 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_cy7p.xml "HTTP/1.1 200 OK"
+07:04:53 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_rwsj.xml "HTTP/1.1 200 OK"
+07:05:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_su3l.xml "HTTP/1.1 200 OK"
+07:05:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_kigy.xml "HTTP/1.1 200 OK"
+07:05:26 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_ajtx.xml "HTTP/1.1 200 OK"
+07:05:26 [INFO]   Loaded: 28 games, 691 player-game-stat rows
+07:05:26 [INFO] 
+[24/225] Bethel (KS)
+07:05:26 [INFO] Scraping team: Bethel (KS) (bethelks)
+07:05:37 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/bethelks?view=roster "HTTP/1.1 200 OK"
+07:05:38 [INFO]   Roster: 0 players
+07:05:49 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/bethelks?view=gamelog "HTTP/1.1 200 OK"
+07:05:49 [INFO]   Games: 28 with box scores
+07:06:00 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251023_0r43.xml "HTTP/1.1 200 OK"
+07:06:11 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_smv1.xml "HTTP/1.1 200 OK"
+07:06:22 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_yyic.xml "HTTP/1.1 200 OK"
+07:06:33 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_ni3j.xml "HTTP/1.1 200 OK"
+07:06:44 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_ajfa.xml "HTTP/1.1 200 OK"
+07:06:55 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_dzlm.xml "HTTP/1.1 200 OK"
+07:07:06 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_9kac.xml "HTTP/1.1 200 OK"
+07:07:17 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_bxki.xml "HTTP/1.1 200 OK"
+07:07:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_0dfx.xml "HTTP/1.1 200 OK"
+07:07:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_8eby.xml "HTTP/1.1 200 OK"
+07:07:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251210_lavo.xml "HTTP/1.1 200 OK"
+07:08:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_hoe5.xml "HTTP/1.1 200 OK"
+07:08:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251230_44jw.xml "HTTP/1.1 200 OK"
+07:08:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_h2j7.xml "HTTP/1.1 200 OK"
+07:08:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_54uo.xml "HTTP/1.1 200 OK"
+07:08:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_bc09.xml "HTTP/1.1 200 OK"
+07:08:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_g602.xml "HTTP/1.1 200 OK"
+07:09:07 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_pk29.xml "HTTP/1.1 200 OK"
+07:09:17 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_airc.xml "HTTP/1.1 200 OK"
+07:09:28 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260125_2wgl.xml "HTTP/1.1 200 OK"
+07:09:39 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_rcr4.xml "HTTP/1.1 200 OK"
+07:09:50 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_lnm8.xml "HTTP/1.1 200 OK"
+07:10:01 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_pky5.xml "HTTP/1.1 200 OK"
+07:10:12 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_48fz.xml "HTTP/1.1 200 OK"
+07:10:23 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_w4ap.xml "HTTP/1.1 200 OK"
+07:10:34 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_tfre.xml "HTTP/1.1 200 OK"
+07:10:45 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_2qlk.xml "HTTP/1.1 200 OK"
+07:10:56 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20260221_s427.xml "HTTP/1.1 200 OK"
+07:10:56 [INFO]   Loaded: 28 games, 692 player-game-stat rows
+07:10:56 [INFO] 
+[25/225] Nelson (Texas)
+07:10:56 [INFO] Scraping team: Nelson (Texas) (nelsontexas)
+07:11:08 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/nelsontexas?view=roster "HTTP/1.1 200 OK"
+07:11:08 [INFO]   Roster: 0 players
+07:11:19 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/teams/nelsontexas?view=gamelog "HTTP/1.1 200 OK"
+07:11:19 [INFO]   Games: 28 with box scores
+07:11:30 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251023_yj12.xml "HTTP/1.1 200 OK"
+07:11:41 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_tk74.xml "HTTP/1.1 200 OK"
+07:11:52 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_9ucw.xml "HTTP/1.1 200 OK"
+07:12:04 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_5717.xml "HTTP/1.1 200 OK"
+07:12:15 [INFO] HTTP Request: GET https://naiastats.prestosports.com/sports/mbkb/2025-26/boxscores/20251110_gbe5.xml "HTTP/1.1 200 OK"

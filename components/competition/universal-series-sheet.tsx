@@ -57,15 +57,15 @@ interface UniversalSeriesSheetProps {
 // =============================================================================
 
 const FORMAT_COLORS: Record<string, string> = {
-  league: '#6AA9FF',
+  league: '#1D9BF0',
   tournament: '#F59E0B',
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  preseason: '#8F8F8F',
+  preseason: '#A1A1AA',
   live: '#22C55E',
-  completed: '#424242',
-  upcoming: '#6AA9FF',
+  completed: '#52525B',
+  upcoming: '#1D9BF0',
 };
 
 const OPS_READINESS_ITEMS = [
@@ -81,27 +81,27 @@ const DELIVERABLE_STATUS_COLORS: Record<string, string> = {
   on_track: '#22C55E',
   at_risk: '#F59E0B',
   overdue: '#EF4444',
-  delivered: '#6AA9FF',
+  delivered: '#1D9BF0',
 };
 
 const PAYOUT_STATUS_COLORS: Record<string, string> = {
   released: '#22C55E',
   pending: '#F59E0B',
   hold: '#EF4444',
-  locked: '#8F8F8F',
+  locked: '#A1A1AA',
 };
 
 const COMPLIANCE_STATUS_COLORS: Record<string, string> = {
   approved: '#22C55E',
   pending: '#F59E0B',
   flagged: '#EF4444',
-  expired: '#8F8F8F',
+  expired: '#A1A1AA',
 };
 
 const EVENT_STATUS_COLORS: Record<string, string> = {
-  upcoming: '#6AA9FF',
+  upcoming: '#1D9BF0',
   live: '#22C55E',
-  completed: '#8F8F8F',
+  completed: '#A1A1AA',
 };
 
 // =============================================================================
@@ -240,13 +240,13 @@ function SeriesHeader({
         <View
           style={[
             styles.formatPill,
-            { backgroundColor: (FORMAT_COLORS[series.format] ?? '#8F8F8F') + '1A' },
+            { backgroundColor: (FORMAT_COLORS[series.format] ?? '#A1A1AA') + '1A' },
           ]}
         >
           <ThemedText
             style={[
               styles.formatPillText,
-              { color: FORMAT_COLORS[series.format] ?? '#8F8F8F' },
+              { color: FORMAT_COLORS[series.format] ?? '#A1A1AA' },
             ]}
           >
             {series.format === 'league' ? 'League' : 'Tournament'}
@@ -255,19 +255,19 @@ function SeriesHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (STATUS_COLORS[series.status] ?? '#8F8F8F') + '1A' },
+            { backgroundColor: (STATUS_COLORS[series.status] ?? '#A1A1AA') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: STATUS_COLORS[series.status] ?? '#8F8F8F' },
+              { backgroundColor: STATUS_COLORS[series.status] ?? '#A1A1AA' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: STATUS_COLORS[series.status] ?? '#8F8F8F' },
+              { color: STATUS_COLORS[series.status] ?? '#A1A1AA' },
             ]}
           >
             {series.status.charAt(0).toUpperCase() + series.status.slice(1)}
@@ -426,7 +426,7 @@ function DashboardTab({
           <StatBlock
             label="Entrants"
             value={String(series.entrantsCount)}
-            color="#DDDDDD"
+            color="#FFFFFF"
             colors={colors}
           />
         </View>
@@ -447,7 +447,7 @@ function DashboardTab({
               <View
                 style={[
                   styles.deliverableStatusDot,
-                  { backgroundColor: DELIVERABLE_STATUS_COLORS[d.status] ?? '#8F8F8F' },
+                  { backgroundColor: DELIVERABLE_STATUS_COLORS[d.status] ?? '#A1A1AA' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -461,7 +461,7 @@ function DashboardTab({
               <ThemedText
                 style={[
                   styles.statusLabel,
-                  { color: DELIVERABLE_STATUS_COLORS[d.status] ?? '#8F8F8F' },
+                  { color: DELIVERABLE_STATUS_COLORS[d.status] ?? '#A1A1AA' },
                 ]}
               >
                 {d.status.replace('_', ' ').toUpperCase()}
@@ -586,7 +586,7 @@ function CalendarTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.calendarStatusBar,
-                { backgroundColor: EVENT_STATUS_COLORS[evt.status] ?? '#8F8F8F' },
+                { backgroundColor: EVENT_STATUS_COLORS[evt.status] ?? '#A1A1AA' },
               ]}
             />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
@@ -600,7 +600,7 @@ function CalendarTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: EVENT_STATUS_COLORS[evt.status] ?? '#8F8F8F' },
+                { color: EVENT_STATUS_COLORS[evt.status] ?? '#A1A1AA' },
               ]}
             >
               {evt.status.toUpperCase()}
@@ -644,7 +644,7 @@ function EventsTab({
               <View
                 style={[
                   styles.eventStatusDot,
-                  { backgroundColor: EVENT_STATUS_COLORS[evt.status] ?? '#8F8F8F' },
+                  { backgroundColor: EVENT_STATUS_COLORS[evt.status] ?? '#A1A1AA' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -662,7 +662,7 @@ function EventsTab({
                 <ThemedText
                   style={[
                     styles.statusLabel,
-                    { color: EVENT_STATUS_COLORS[evt.status] ?? '#8F8F8F' },
+                    { color: EVENT_STATUS_COLORS[evt.status] ?? '#A1A1AA' },
                   ]}
                 >
                   {evt.status.toUpperCase()}
@@ -844,7 +844,7 @@ function TechComplianceTab({ colors }: { colors: typeof Colors.light }) {
               <View
                 style={[
                   styles.complianceDot,
-                  { backgroundColor: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#8F8F8F' },
+                  { backgroundColor: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#A1A1AA' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -863,7 +863,7 @@ function TechComplianceTab({ colors }: { colors: typeof Colors.light }) {
               <ThemedText
                 style={[
                   styles.statusLabel,
-                  { color: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#8F8F8F' },
+                  { color: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#A1A1AA' },
                 ]}
               >
                 {entity.status.toUpperCase()}
@@ -888,7 +888,7 @@ function TechComplianceTab({ colors }: { colors: typeof Colors.light }) {
               <View
                 style={[
                   styles.complianceDot,
-                  { backgroundColor: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#8F8F8F' },
+                  { backgroundColor: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#A1A1AA' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -961,7 +961,7 @@ function FinanceTab({
             label="Sponsorship"
             value="$1.6M"
             subtitle="3 sponsors active"
-            color="#6AA9FF"
+            color="#1D9BF0"
             colors={colors}
           />
         </View>
@@ -989,7 +989,7 @@ function FinanceTab({
       <SectionCard title="Budget Health" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Net" value="+$600K" color="#22C55E" colors={colors} />
-          <StatBlock label="Runway" value="16 wks" color="#6AA9FF" colors={colors} />
+          <StatBlock label="Runway" value="16 wks" color="#1D9BF0" colors={colors} />
           <StatBlock
             label="Status"
             value={series.financeReady ? 'Ready' : 'Pending'}
@@ -1044,13 +1044,13 @@ function PaymentRailsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.payoutStatusBadge,
-                { backgroundColor: (PAYOUT_STATUS_COLORS[item.status] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (PAYOUT_STATUS_COLORS[item.status] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.payoutStatusText,
-                  { color: PAYOUT_STATUS_COLORS[item.status] ?? '#8F8F8F' },
+                  { color: PAYOUT_STATUS_COLORS[item.status] ?? '#A1A1AA' },
                 ]}
               >
                 {item.status.toUpperCase()}
@@ -1181,7 +1181,7 @@ function SponsorsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.deliverableStatusDot,
-                { backgroundColor: DELIVERABLE_STATUS_COLORS[d.status] ?? '#8F8F8F' },
+                { backgroundColor: DELIVERABLE_STATUS_COLORS[d.status] ?? '#A1A1AA' },
               ]}
             />
             <View style={{ flex: 1 }}>
@@ -1195,7 +1195,7 @@ function SponsorsTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: DELIVERABLE_STATUS_COLORS[d.status] ?? '#8F8F8F' },
+                { color: DELIVERABLE_STATUS_COLORS[d.status] ?? '#A1A1AA' },
               ]}
             >
               {d.status.replace('_', ' ').toUpperCase()}
@@ -1260,7 +1260,7 @@ function MediaTab({ colors }: { colors: typeof Colors.light }) {
                 {item.time}
               </ThemedText>
             </View>
-            <ThemedText style={[styles.statusLabel, { color: '#6AA9FF' }]}>
+            <ThemedText style={[styles.statusLabel, { color: '#1D9BF0' }]}>
               {item.status.toUpperCase()}
             </ThemedText>
           </View>

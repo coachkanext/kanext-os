@@ -125,14 +125,14 @@ export function AlertDetail({ alert, onResolve, onAssign, onSnooze, onEscalate }
             style={({ pressed }) => [styles.deepLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => handleDeepLink('View in Feed')}
           >
-            <IconSymbol name="text.bubble.fill" size={14} color="#64B5F6" />
+            <IconSymbol name="text.bubble.fill" size={14} color="#1D9BF0" />
             <ThemedText style={styles.deepLinkText}>View in Feed</ThemedText>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.deepLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => handleDeepLink('Open Chat')}
           >
-            <IconSymbol name="bubble.left.fill" size={14} color="#64B5F6" />
+            <IconSymbol name="bubble.left.fill" size={14} color="#1D9BF0" />
             <ThemedText style={styles.deepLinkText}>Open Chat</ThemedText>
           </Pressable>
           {(alert.sourceTag === 'Player Dev' || alert.sourceTag === 'Culture') && (
@@ -140,7 +140,7 @@ export function AlertDetail({ alert, onResolve, onAssign, onSnooze, onEscalate }
               style={({ pressed }) => [styles.deepLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
               onPress={() => handleDeepLink('View Player')}
             >
-              <IconSymbol name="person.fill" size={14} color="#64B5F6" />
+              <IconSymbol name="person.fill" size={14} color="#1D9BF0" />
               <ThemedText style={styles.deepLinkText}>View Player</ThemedText>
             </Pressable>
           )}
@@ -149,7 +149,7 @@ export function AlertDetail({ alert, onResolve, onAssign, onSnooze, onEscalate }
               style={({ pressed }) => [styles.deepLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
               onPress={() => handleDeepLink('View Recruit')}
             >
-              <IconSymbol name="person.badge.plus" size={14} color="#64B5F6" />
+              <IconSymbol name="person.badge.plus" size={14} color="#1D9BF0" />
               <ThemedText style={styles.deepLinkText}>View Recruit</ThemedText>
             </Pressable>
           )}
@@ -182,17 +182,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: BorderRadius.sm,
-    backgroundColor: '#FFA50020',
+    backgroundColor: '#F59E0B20',
   },
   escalatedText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#FFA500',
+    color: '#F59E0B',
   },
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: Spacing.sm,
   },
   description: {
@@ -208,19 +208,19 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   sourceTag: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: BorderRadius.sm,
   },
   sourceText: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     fontWeight: '500',
   },
   timestamp: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   assignedRow: {
     flexDirection: 'row',
@@ -230,11 +230,11 @@ const styles = StyleSheet.create({
   },
   assignedLabel: {
     fontSize: 13,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   assignedName: {
     fontSize: 13,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     fontWeight: '500',
   },
   actions: {
@@ -245,13 +245,13 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   actionBtn: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: BorderRadius.full,
   },
   resolveBtn: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
   },
   resolveBtnText: {
     fontSize: 13,
@@ -261,17 +261,17 @@ const styles = StyleSheet.create({
   actionBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   historySection: {
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#1a1a1a',
+    borderTopColor: '#0B0F14',
     paddingTop: Spacing.md,
   },
   historyTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: Spacing.sm,
   },
   historyRow: {
@@ -292,23 +292,23 @@ const styles = StyleSheet.create({
   },
   historyAction: {
     fontSize: 13,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   historyTime: {
     fontSize: 11,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginTop: 2,
   },
   deepLinkSection: {
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#1a1a1a',
+    borderTopColor: '#0B0F14',
     paddingTop: Spacing.md,
     marginTop: Spacing.sm,
   },
   deepLinkTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: Spacing.sm,
   },
   deepLinkRow: {
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: BorderRadius.full,
@@ -328,6 +328,6 @@ const styles = StyleSheet.create({
   deepLinkText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#64B5F6',
+    color: '#1D9BF0',
   },
 });

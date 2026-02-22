@@ -583,7 +583,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '6:30 PM',
     status: 'active',
     category: 'youth',
-    color: '#F97316',
+    color: '#F59E0B',
   },
   {
     id: 'min-002',
@@ -596,7 +596,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '9:30 AM',
     status: 'active',
     category: 'youth',
-    color: '#EC4899',
+    color: '#1D9BF0',
   },
   {
     id: 'min-003',
@@ -635,7 +635,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: 'Various',
     status: 'active',
     category: 'fellowship',
-    color: '#3B82F6',
+    color: '#1D9BF0',
   },
   {
     id: 'min-006',
@@ -648,7 +648,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '7:00 PM',
     status: 'active',
     category: 'worship',
-    color: '#A855F7',
+    color: '#1D9BF0',
   },
   {
     id: 'min-007',
@@ -674,7 +674,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '8:00 AM',
     status: 'active',
     category: 'outreach',
-    color: '#14B8A6',
+    color: '#1D9BF0',
   },
   {
     id: 'min-009',
@@ -687,7 +687,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '6:00 AM',
     status: 'active',
     category: 'service',
-    color: '#6366F1',
+    color: '#1D9BF0',
   },
   {
     id: 'min-010',
@@ -700,7 +700,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '9:00 AM',
     status: 'active',
     category: 'service',
-    color: '#0EA5E9',
+    color: '#1D9BF0',
   },
 ];
 
@@ -836,17 +836,17 @@ export interface ScheduleSlot {
 }
 
 export const MINISTRY_SCHEDULE: ScheduleSlot[] = [
-  { id: 'sch-001', day: 'Sun', time: '9:30 AM', ministry: 'Sunday Worship', location: 'Main Sanctuary', color: '#8B5CF6' },
-  { id: 'sch-002', day: 'Sun', time: '9:30 AM', ministry: 'Sheepfold', location: 'Children\'s Wing', color: '#EC4899' },
+  { id: 'sch-001', day: 'Sun', time: '9:30 AM', ministry: 'Sunday Worship', location: 'Main Sanctuary', color: '#1D9BF0' },
+  { id: 'sch-002', day: 'Sun', time: '9:30 AM', ministry: 'Sheepfold', location: 'Children\'s Wing', color: '#1D9BF0' },
   { id: 'sch-003', day: 'Sun', time: '1:00 PM', ministry: 'Rooted (Bi-weekly)', location: 'Conference Room B', color: '#22C55E' },
-  { id: 'sch-004', day: 'Tue', time: '6:00 AM', ministry: 'Hotline to Heaven', location: 'Prayer Chapel', color: '#6366F1' },
+  { id: 'sch-004', day: 'Tue', time: '6:00 AM', ministry: 'Hotline to Heaven', location: 'Prayer Chapel', color: '#1D9BF0' },
   { id: 'sch-005', day: 'Tue', time: '7:30 PM', ministry: 'Fresh Fire', location: 'Fellowship Hall', color: '#EF4444' },
-  { id: 'sch-006', day: 'Wed', time: '7:00 PM', ministry: 'Midweek Bible Study', location: 'Fellowship Hall', color: '#0EA5E9' },
-  { id: 'sch-007', day: 'Thu', time: '7:00 PM', ministry: 'Vineyard Voices Rehearsal', location: 'Main Sanctuary', color: '#A855F7' },
-  { id: 'sch-008', day: 'Fri', time: '6:00 AM', ministry: 'Hotline to Heaven', location: 'Prayer Chapel', color: '#6366F1' },
-  { id: 'sch-009', day: 'Fri', time: '6:30 PM', ministry: 'T.O.R.C.H. Youth Night', location: 'Youth Center', color: '#F97316' },
-  { id: 'sch-010', day: 'Sat', time: '8:00 AM', ministry: 'The Harvesters (2nd Sat)', location: 'Offsite', color: '#14B8A6' },
-  { id: 'sch-011', day: 'Sat', time: '9:00 AM', ministry: 'Kingdom Builders (1st Sat)', location: 'Conference Room A', color: '#0EA5E9' },
+  { id: 'sch-006', day: 'Wed', time: '7:00 PM', ministry: 'Midweek Bible Study', location: 'Fellowship Hall', color: '#1D9BF0' },
+  { id: 'sch-007', day: 'Thu', time: '7:00 PM', ministry: 'Vineyard Voices Rehearsal', location: 'Main Sanctuary', color: '#1D9BF0' },
+  { id: 'sch-008', day: 'Fri', time: '6:00 AM', ministry: 'Hotline to Heaven', location: 'Prayer Chapel', color: '#1D9BF0' },
+  { id: 'sch-009', day: 'Fri', time: '6:30 PM', ministry: 'T.O.R.C.H. Youth Night', location: 'Youth Center', color: '#F59E0B' },
+  { id: 'sch-010', day: 'Sat', time: '8:00 AM', ministry: 'The Harvesters (2nd Sat)', location: 'Offsite', color: '#1D9BF0' },
+  { id: 'sch-011', day: 'Sat', time: '9:00 AM', ministry: 'Kingdom Builders (1st Sat)', location: 'Conference Room A', color: '#1D9BF0' },
   { id: 'sch-012', day: 'Fri', time: '6:30 PM', ministry: 'Single Saved Serving (1st Fri)', location: 'Fellowship Hall', color: '#F59E0B' },
 ];
 
@@ -867,10 +867,10 @@ export interface PipelinePerson {
 }
 
 export const PIPELINE_STAGES: { key: ChurchPipelineStage; label: string; color: string; count: number }[] = [
-  { key: 'first_time', label: 'First-Time', color: '#6B7280', count: 12 },
+  { key: 'first_time', label: 'First-Time', color: '#A1A1AA', count: 12 },
   { key: 'returning', label: 'Returning', color: '#F59E0B', count: 8 },
-  { key: 'connected', label: 'Connected', color: '#3B82F6', count: 15 },
-  { key: 'serving', label: 'Serving', color: '#8B5CF6', count: 22 },
+  { key: 'connected', label: 'Connected', color: '#1D9BF0', count: 15 },
+  { key: 'serving', label: 'Serving', color: '#1D9BF0', count: 22 },
   { key: 'member', label: 'Member', color: '#22C55E', count: 180 },
   { key: 'leader', label: 'Leader', color: '#EF4444', count: 28 },
 ];
@@ -1253,8 +1253,8 @@ export const CHURCH_HERO: ChurchHeroData = {
 
 export const CHURCH_COMMERCE: ChurchCommerceCard[] = [
   { id: 'give', title: 'Give', icon: 'heart.fill', color: '#EF4444' },
-  { id: 'watch', title: 'Watch Sermons', icon: 'play.rectangle.fill', color: '#3B82F6' },
-  { id: 'prayer', title: 'Prayer Request', icon: 'hands.sparkles.fill', color: '#8B5CF6' },
+  { id: 'watch', title: 'Watch Sermons', icon: 'play.rectangle.fill', color: '#1D9BF0' },
+  { id: 'prayer', title: 'Prayer Request', icon: 'hands.sparkles.fill', color: '#1D9BF0' },
 ];
 
 // =============================================================================
@@ -1262,10 +1262,10 @@ export const CHURCH_COMMERCE: ChurchCommerceCard[] = [
 // =============================================================================
 
 export const PIPELINE_STAGE_COLORS: Record<ChurchPipelineStage, string> = {
-  first_time: '#6B7280',
+  first_time: '#A1A1AA',
   returning: '#F59E0B',
-  connected: '#3B82F6',
-  serving: '#8B5CF6',
+  connected: '#1D9BF0',
+  serving: '#1D9BF0',
   member: '#22C55E',
   leader: '#EF4444',
 };
@@ -1339,7 +1339,7 @@ export const CURRENT_SERIES: SermonSeries = {
   name: 'Faith That Moves Mountains',
   totalParts: 6,
   currentPart: 4,
-  color: '#FBBF24',
+  color: '#1D9BF0',
 };
 
 export interface SermonEntry {
@@ -1377,11 +1377,11 @@ export const PRAYER_CATEGORY_LABELS: Record<PrayerCategory, string> = {
 
 export const PRAYER_CATEGORY_COLORS: Record<PrayerCategory, string> = {
   healing: '#EF4444',
-  provision: '#3B82F6',
-  family: '#EC4899',
-  guidance: '#8B5CF6',
-  praise: '#FBBF24',
-  other: '#6B7280',
+  provision: '#1D9BF0',
+  family: '#1D9BF0',
+  guidance: '#1D9BF0',
+  praise: '#1D9BF0',
+  other: '#A1A1AA',
 };
 
 export interface PrayerRequest {

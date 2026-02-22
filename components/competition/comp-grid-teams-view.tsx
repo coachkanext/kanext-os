@@ -15,9 +15,9 @@ import { openTeamCard } from '@/utils/global-entity-sheets';
 
 const CATEGORY_COLORS: Record<TeamCategory, string> = {
   oem_works: '#22C55E',
-  premier_tuner: '#3B82F6',
+  premier_tuner: '#1D9BF0',
   league_owned: '#F59E0B',
-  kanext_works: '#8B5CF6',
+  kanext_works: '#1D9BF0',
 };
 
 const HOMOLOGATION_COLORS: Record<GridTeam['homologation'], string> = {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
   },
   filterText: { fontSize: 11, fontWeight: '600' },
   sortBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 10, gap: 6 },

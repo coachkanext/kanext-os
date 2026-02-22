@@ -99,12 +99,12 @@ export const ROOM_TYPE_LABELS: Record<OfficialRoom['type'], string> = {
 };
 
 export const ROOM_TYPE_COLORS: Record<OfficialRoom['type'], string> = {
-  coaches: '#6AA9FF',
+  coaches: '#1D9BF0',
   ops: '#22C55E',
   medical: '#EF4444',
-  recruiting: '#A78BFA',
+  recruiting: '#1D9BF0',
   players: '#F59E0B',
-  leadership: '#8B5CF6',
+  leadership: '#1D9BF0',
 };
 
 export const ANNOUNCEMENT_AUDIENCE_LABELS: Record<Announcement['audience'], string> = {
@@ -115,10 +115,10 @@ export const ANNOUNCEMENT_AUDIENCE_LABELS: Record<Announcement['audience'], stri
 };
 
 export const ANNOUNCEMENT_AUDIENCE_COLORS: Record<Announcement['audience'], string> = {
-  staff: '#6AA9FF',
+  staff: '#1D9BF0',
   players: '#22C55E',
-  recruits: '#A78BFA',
-  all: '#8B5CF6',
+  recruits: '#1D9BF0',
+  all: '#1D9BF0',
 };
 
 export const UNIT_LABELS: Record<UnitRoom['unit'], string> = {
@@ -131,12 +131,12 @@ export const UNIT_LABELS: Record<UnitRoom['unit'], string> = {
 };
 
 export const UNIT_COLORS: Record<UnitRoom['unit'], string> = {
-  coaching: '#6AA9FF',
+  coaching: '#1D9BF0',
   ops: '#22C55E',
   medical: '#EF4444',
-  analytics: '#A78BFA',
+  analytics: '#1D9BF0',
   academics: '#F59E0B',
-  compliance: '#8B5CF6',
+  compliance: '#1D9BF0',
 };
 
 export const ESCALATION_TYPE_LABELS: Record<Escalation['type'], string> = {
@@ -148,9 +148,9 @@ export const ESCALATION_TYPE_LABELS: Record<Escalation['type'], string> = {
 
 export const ESCALATION_TYPE_COLORS: Record<Escalation['type'], string> = {
   decision: '#F59E0B',
-  policy: '#8B5CF6',
+  policy: '#1D9BF0',
   injury: '#EF4444',
-  travel: '#A78BFA',
+  travel: '#1D9BF0',
 };
 
 // =============================================================================

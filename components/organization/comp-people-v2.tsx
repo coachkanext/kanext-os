@@ -729,7 +729,7 @@ export function CompPeopleV2({ colors, accentColor }: Props) {
                       item.status === 'expired'
                         ? '#EF4444'
                         : item.status === 'revoked'
-                          ? '#9CA3AF'
+                          ? '#A1A1AA'
                           : colors.textTertiary,
                   },
                 ]}

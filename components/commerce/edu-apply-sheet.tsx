@@ -23,7 +23,7 @@ interface Props {
   colors: Record<string, string>;
 }
 
-const ACCENT = '#14B8A6';
+const ACCENT = '#1D9BF0';
 
 export function EduApplySheet({ visible, onClose, colors }: Props) {
   const [stage, setStage] = useState<Stage>('browse');

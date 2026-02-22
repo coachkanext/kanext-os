@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   summaryLabel: { fontSize: 9, fontWeight: '600', textTransform: 'uppercase', marginTop: 2 },
 
   filterRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
-  filterPill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
+  filterPill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: '#2F3336' },
   filterText: { fontSize: 12, fontWeight: '600' },
 
   alertsSection: { marginBottom: 8 },

@@ -58,7 +58,7 @@ interface OrgResourcesTabProps {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<ResourceReport['format'], string> = {
-  PDF: '#3B82F6',
+  PDF: '#1D9BF0',
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };
@@ -95,21 +95,21 @@ function auditColor(action: string): string {
     case 'resource_created':
       return '#22C55E';
     case 'resource_updated':
-      return '#3B82F6';
+      return '#1D9BF0';
     case 'pack_created':
       return '#F59E0B';
     case 'template_cloned':
-      return '#8B5CF6';
+      return '#1D9BF0';
     case 'form_acknowledged':
-      return '#6366F1';
+      return '#1D9BF0';
     case 'link_added':
-      return '#6AA9FF';
+      return '#1D9BF0';
     case 'snapshot_saved':
       return '#EF4444';
     case 'setting_changed':
-      return '#9CA3AF';
+      return '#A1A1AA';
     default:
-      return '#8F8F8F';
+      return '#A1A1AA';
   }
 }
 

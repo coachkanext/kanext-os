@@ -127,29 +127,29 @@ export const AGREEMENT_TYPE_LABEL: Record<AgreementType, string> = {
 };
 
 export const AGREEMENT_TYPE_COLOR: Record<AgreementType, string> = {
-  nda: '#8B5CF6',
-  msa: '#3B82F6',
-  sow: '#14B8A6',
-  license: '#EC4899',
-  employment: '#6366F1',
+  nda: '#1D9BF0',
+  msa: '#1D9BF0',
+  sow: '#1D9BF0',
+  license: '#1D9BF0',
+  employment: '#1D9BF0',
   lease: '#F59E0B',
   partnership: '#22C55E',
   loan: '#EF4444',
 };
 
 export const AGREEMENT_STATUS_COLOR: Record<AgreementStatus, string> = {
-  draft: '#9CA3AF',
+  draft: '#A1A1AA',
   negotiation: '#F59E0B',
   active: '#22C55E',
   expired: '#EF4444',
-  terminated: '#DC2626',
+  terminated: '#EF4444',
 };
 
 export const OBLIGATION_STATUS_COLOR: Record<LegalObligation['status'], string> = {
   pending: '#F59E0B',
   met: '#22C55E',
   overdue: '#EF4444',
-  waived: '#9CA3AF',
+  waived: '#A1A1AA',
 };
 
 export const REQUEST_TYPE_LABEL: Record<LegalRequest['type'], string> = {
@@ -160,22 +160,22 @@ export const REQUEST_TYPE_LABEL: Record<LegalRequest['type'], string> = {
 };
 
 export const REQUEST_TYPE_COLOR: Record<LegalRequest['type'], string> = {
-  review: '#3B82F6',
-  draft: '#8B5CF6',
+  review: '#1D9BF0',
+  draft: '#1D9BF0',
   negotiate: '#F59E0B',
-  opinion: '#14B8A6',
+  opinion: '#1D9BF0',
 };
 
 export const REQUEST_PRIORITY_COLOR: Record<LegalRequest['priority'], string> = {
   urgent: '#EF4444',
   high: '#F59E0B',
-  normal: '#3B82F6',
-  low: '#9CA3AF',
+  normal: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 export const REQUEST_STATUS_COLOR: Record<LegalRequest['status'], string> = {
   open: '#F59E0B',
-  in_progress: '#3B82F6',
+  in_progress: '#1D9BF0',
   completed: '#22C55E',
 };
 

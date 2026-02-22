@@ -82,12 +82,12 @@ function LibraryTab({
   stats: LibraryStats;
 }) {
   const kpis = [
-    { id: 'volumes', label: 'Total Volumes', value: formatNumber(stats.totalVolumes), icon: 'book.fill', color: '#3B82F6' },
-    { id: 'digital', label: 'Digital Resources', value: formatNumber(stats.digitalResources), icon: 'icloud.fill', color: '#8B5CF6' },
+    { id: 'volumes', label: 'Total Volumes', value: formatNumber(stats.totalVolumes), icon: 'book.fill', color: '#1D9BF0' },
+    { id: 'digital', label: 'Digital Resources', value: formatNumber(stats.digitalResources), icon: 'icloud.fill', color: '#1D9BF0' },
     { id: 'loans', label: 'Active Loans', value: formatNumber(stats.activeLoans), icon: 'arrow.right.circle.fill', color: '#22C55E' },
     { id: 'overdue', label: 'Overdue Items', value: `${stats.overdueItems}`, icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
     { id: 'visitors', label: 'Daily Visitors', value: `${stats.dailyVisitors}`, icon: 'person.3.fill', color: '#F59E0B' },
-    { id: 'study', label: 'Study Rooms', value: `${stats.studyRoomsAvailable}/${stats.studyRooms}`, icon: 'door.left.hand.open', color: '#14B8A6' },
+    { id: 'study', label: 'Study Rooms', value: `${stats.studyRoomsAvailable}/${stats.studyRooms}`, icon: 'door.left.hand.open', color: '#1D9BF0' },
   ];
 
   return (
@@ -112,7 +112,7 @@ function LibraryTab({
       <View style={[s.collectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.collectionRow}>
           <View style={s.collectionItem}>
-            <View style={[s.collectionDot, { backgroundColor: '#3B82F6' }]} />
+            <View style={[s.collectionDot, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[s.collectionLabel, { color: colors.textSecondary }]}>Physical</ThemedText>
           </View>
           <ThemedText style={[s.collectionValue, { color: colors.text }]}>
@@ -121,7 +121,7 @@ function LibraryTab({
         </View>
         <View style={[s.collectionRow, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
           <View style={s.collectionItem}>
-            <View style={[s.collectionDot, { backgroundColor: '#8B5CF6' }]} />
+            <View style={[s.collectionDot, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[s.collectionLabel, { color: colors.textSecondary }]}>Digital</ThemedText>
           </View>
           <ThemedText style={[s.collectionValue, { color: colors.text }]}>
@@ -174,8 +174,8 @@ function TechnologyTab({
   inventory: TechInventory;
 }) {
   const devices = [
-    { label: 'Laptops', ...inventory.laptops, icon: 'laptopcomputer', color: '#3B82F6' },
-    { label: 'Tablets', ...inventory.tablets, icon: 'ipad', color: '#8B5CF6' },
+    { label: 'Laptops', ...inventory.laptops, icon: 'laptopcomputer', color: '#1D9BF0' },
+    { label: 'Tablets', ...inventory.tablets, icon: 'ipad', color: '#1D9BF0' },
     { label: 'Projectors', ...inventory.projectors, icon: 'rectangle.inset.filled', color: '#F59E0B' },
   ];
 
@@ -214,7 +214,7 @@ function TechnologyTab({
                 <ThemedText style={[s.deviceStatLabel, { color: colors.textTertiary }]}>Available</ThemedText>
               </View>
               <View style={s.deviceStatItem}>
-                <ThemedText style={[s.deviceStatValue, { color: '#3B82F6' }]}>{device.loaned}</ThemedText>
+                <ThemedText style={[s.deviceStatValue, { color: '#1D9BF0' }]}>{device.loaned}</ThemedText>
                 <ThemedText style={[s.deviceStatLabel, { color: colors.textTertiary }]}>Loaned</ThemedText>
               </View>
               <View style={s.deviceStatItem}>
@@ -378,7 +378,7 @@ function SoftwareTab({
                 <ThemedText style={[s.licenseStatLabel, { color: colors.textTertiary }]}>Available</ThemedText>
               </View>
               <View style={s.licenseStatItem}>
-                <ThemedText style={[s.licenseStatValue, { color: '#3B82F6' }]}>
+                <ThemedText style={[s.licenseStatValue, { color: '#1D9BF0' }]}>
                   {item.used}
                 </ThemedText>
                 <ThemedText style={[s.licenseStatLabel, { color: colors.textTertiary }]}>In Use</ThemedText>
@@ -1163,7 +1163,7 @@ const s = StyleSheet.create({
   deviceBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#A1A1AA',
     marginBottom: 4,
     overflow: 'hidden',
   },
@@ -1288,7 +1288,7 @@ const s = StyleSheet.create({
   licenseBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#A1A1AA',
     overflow: 'hidden',
   },
   licenseBarFill: {
@@ -1436,7 +1436,7 @@ const s = StyleSheet.create({
   budgetBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#A1A1AA',
     marginBottom: 4,
     overflow: 'hidden',
   },

@@ -24,11 +24,11 @@ import { TRADITIONAL_TO_HELIO } from '@/data/position-mapping';
 import { SORT_CLUSTER_LABELS, CLUSTER_ORDER } from '@/data/trait-library';
 import type { ClusterType } from '@/types';
 
-const BG = '#0F1115';
-const CARD_BG = '#1A1D23';
+const BG = '#0B0F14';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
 
 export default function TeamDetailScreen() {
   const router = useRouter();
@@ -126,7 +126,7 @@ export default function TeamDetailScreen() {
           {CLUSTER_ORDER.map((cluster) => {
             const isExpanded = expandedCluster === cluster;
             const val = teamStats.clusters[cluster];
-            const valColor = val >= 70 ? '#4CAF50' : val >= 55 ? '#FF9800' : '#EF4444';
+            const valColor = val >= 70 ? '#22C55E' : val >= 55 ? '#F59E0B' : '#EF4444';
             // Top 3 contributors for this cluster
             const contributors = isExpanded
               ? roster
@@ -163,7 +163,7 @@ export default function TeamDetailScreen() {
                 {isExpanded && (
                   <View style={styles.contributorList}>
                     {contributors.map((c) => {
-                      const cColor = c.val >= 70 ? '#4CAF50' : c.val >= 55 ? '#FF9800' : '#EF4444';
+                      const cColor = c.val >= 70 ? '#22C55E' : c.val >= 55 ? '#F59E0B' : '#EF4444';
                       return (
                         <View key={c.name} style={styles.contributorRow}>
                           <ThemedText style={styles.contributorName}>

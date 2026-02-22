@@ -62,7 +62,7 @@ const STATUS_COLOR: Record<ComplianceEntity['status'], string> = {
   approved: '#22C55E',
   pending: '#F59E0B',
   flagged: '#EF4444',
-  expired: '#9CA3AF',
+  expired: '#A1A1AA',
 };
 
 const DOMAIN_LABELS: { key: keyof ClearanceBoardEntry['domains']; label: string }[] = [
@@ -86,7 +86,7 @@ function getAuditDotColor(action: string): string {
   if (lower.includes('approved') || lower.includes('pass')) return '#22C55E';
   if (lower.includes('flagged')) return '#EF4444';
   if (lower.includes('pending') || lower.includes('submitted') || lower.includes('started') || lower.includes('initiated')) return '#F59E0B';
-  return '#6B7280';
+  return '#A1A1AA';
 }
 
 // =============================================================================
@@ -185,7 +185,7 @@ function ClearanceCard({
   entry: ClearanceBoardEntry;
   colors: typeof Colors.light;
 }) {
-  const statusColor = CLEARANCE_STATUS_COLOR[entry.clearanceStatus] ?? '#6B7280';
+  const statusColor = CLEARANCE_STATUS_COLOR[entry.clearanceStatus] ?? '#A1A1AA';
   const statusLabel = CLEARANCE_STATUS_LABEL[entry.clearanceStatus] ?? entry.clearanceStatus;
 
   return (
@@ -219,7 +219,7 @@ function ClearanceCard({
       <View style={styles.domainRow}>
         {DOMAIN_LABELS.map(({ key, label }) => {
           const domainStatus = entry.domains[key];
-          const domainColor = DOMAIN_STATUS_COLOR[domainStatus] ?? '#6B7280';
+          const domainColor = DOMAIN_STATUS_COLOR[domainStatus] ?? '#A1A1AA';
           return (
             <View key={key} style={styles.domainIndicator}>
               <View style={[styles.domainCircle, { backgroundColor: domainColor }]} />
@@ -274,7 +274,7 @@ function ScrutineeringCard({
   item: ScrutineeringItem;
   colors: typeof Colors.light;
 }) {
-  const stageColor = SCRUTINEERING_STAGE_COLOR[item.stage] ?? '#6B7280';
+  const stageColor = SCRUTINEERING_STAGE_COLOR[item.stage] ?? '#A1A1AA';
   const stageLabel = SCRUTINEERING_STAGE_LABEL[item.stage] ?? item.stage;
   const isInProgress = item.stage === 'in_progress';
 

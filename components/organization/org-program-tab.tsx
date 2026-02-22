@@ -196,7 +196,7 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
         <View style={[s.leadershipRow, { borderTopColor: colors.divider }]}>
           {leaderStaff.map((staff) => (
             <View key={staff.id} style={s.leaderChip}>
-              <View style={[s.leaderAvatar, { backgroundColor: '#6366F1' }]}>
+              <View style={[s.leaderAvatar, { backgroundColor: '#1D9BF0' }]}>
                 <ThemedText style={s.leaderInitials}>{staff.initials}</ThemedText>
               </View>
               <View style={s.leaderMeta}>
@@ -275,7 +275,7 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
             <ThemedText style={[s.availLabel, { color: colors.textTertiary }]}>Out</ThemedText>
           </View>
           <View style={s.availChip}>
-            <View style={[s.availDot, { backgroundColor: '#8F8F8F' }]} />
+            <View style={[s.availDot, { backgroundColor: '#A1A1AA' }]} />
             <ThemedText style={[s.availText, { color: colors.text }]}>{ROSTER_AVAILABILITY.redshirt}</ThemedText>
             <ThemedText style={[s.availLabel, { color: colors.textTertiary }]}>RS</ThemedText>
           </View>
@@ -347,7 +347,7 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
         {UPCOMING_GAMES.map((game, i) => (
           <View key={game.id}>
             <View style={s.gameRow}>
-              <View style={[s.gameDot, { backgroundColor: game.location === 'Home' ? '#22C55E' : '#6AA9FF' }]} />
+              <View style={[s.gameDot, { backgroundColor: game.location === 'Home' ? '#22C55E' : '#1D9BF0' }]} />
               <View style={s.gameInfo}>
                 <ThemedText style={[s.gameName, { color: colors.text }]}>
                   {game.location === 'Home' ? 'vs' : '@'} {game.opponent}
@@ -639,7 +639,7 @@ const s = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#1B4F8A',
+    backgroundColor: '#1D9BF0',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -898,7 +898,7 @@ const s = StyleSheet.create({
   barTrack: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     overflow: 'hidden',
     marginTop: 4,
     marginBottom: Spacing.sm,

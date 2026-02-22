@@ -155,14 +155,14 @@ export interface ReportSettingToggle {
 export const REPORT_STATUS_COLOR: Record<OperationalReport['status'], string> = {
   published: '#22C55E',
   draft: '#F59E0B',
-  generating: '#3B82F6',
+  generating: '#1D9BF0',
   failed: '#EF4444',
 };
 
 export const FINANCIAL_STATUS_COLOR: Record<FinancialReport['status'], string> = {
   final: '#22C55E',
   draft: '#F59E0B',
-  'pending-review': '#3B82F6',
+  'pending-review': '#1D9BF0',
 };
 
 export const COMPLIANCE_STATUS_COLOR: Record<ComplianceReport['status'], string> = {
@@ -174,23 +174,23 @@ export const COMPLIANCE_STATUS_COLOR: Record<ComplianceReport['status'], string>
 export const FORMAT_COLOR: Record<OperationalReport['format'], string> = {
   PDF: '#EF4444',
   CSV: '#22C55E',
-  XLSX: '#3B82F6',
-  Dashboard: '#8B5CF6',
+  XLSX: '#1D9BF0',
+  Dashboard: '#1D9BF0',
 };
 
 export const FREQUENCY_COLOR: Record<ScheduledReport['frequency'], string> = {
   daily: '#EF4444',
-  weekly: '#3B82F6',
-  'bi-weekly': '#8B5CF6',
+  weekly: '#1D9BF0',
+  'bi-weekly': '#1D9BF0',
   monthly: '#22C55E',
   quarterly: '#F59E0B',
 };
 
 export const MEDIA_TYPE_COLOR: Record<MediaReport['type'], string> = {
-  'broadcast-reach': '#6AA9FF',
+  'broadcast-reach': '#1D9BF0',
   'social-engagement': '#22C55E',
   'press-coverage': '#F59E0B',
-  'content-performance': '#8B5CF6',
+  'content-performance': '#1D9BF0',
 };
 
 // =============================================================================
@@ -229,7 +229,7 @@ const DASHBOARD_BLOCKS: ReportsDashboardBlock[] = [
     value: '148',
     delta: '+12 this month',
     icon: 'doc.text.fill',
-    color: '#6AA9FF',
+    color: '#1D9BF0',
   },
   {
     id: 'rdb-2',
@@ -245,7 +245,7 @@ const DASHBOARD_BLOCKS: ReportsDashboardBlock[] = [
     value: '14',
     delta: '3 running today',
     icon: 'clock.arrow.2.circlepath',
-    color: '#8B5CF6',
+    color: '#1D9BF0',
   },
   {
     id: 'rdb-4',

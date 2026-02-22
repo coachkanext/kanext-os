@@ -25,15 +25,15 @@ type StageFilter = 'all' | string;
 
 const DEAL_TYPE_COLORS: Record<string, string> = {
   investor: '#22C55E',
-  partner: '#3B82F6',
-  client: '#8B5CF6',
+  partner: '#1D9BF0',
+  client: '#1D9BF0',
   licensing: '#F59E0B',
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
   high: '#EF4444',
   medium: '#F59E0B',
-  low: '#6B7280',
+  low: '#A1A1AA',
 };
 
 function formatValue(value?: number): string {
@@ -79,11 +79,11 @@ export function BizDealsPipelineView({ colors, accent }: Props) {
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Active</ThemedText>
           </View>
           <View style={styles.summaryItem}>
-            <ThemedText style={[styles.summaryValue, { color: '#8B5CF6' }]}>{PIPELINE_SUMMARY.proposalStage}</ThemedText>
+            <ThemedText style={[styles.summaryValue, { color: '#1D9BF0' }]}>{PIPELINE_SUMMARY.proposalStage}</ThemedText>
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Proposal</ThemedText>
           </View>
           <View style={styles.summaryItem}>
-            <ThemedText style={[styles.summaryValue, { color: '#F97316' }]}>{PIPELINE_SUMMARY.negotiating}</ThemedText>
+            <ThemedText style={[styles.summaryValue, { color: '#F59E0B' }]}>{PIPELINE_SUMMARY.negotiating}</ThemedText>
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Negotiating</ThemedText>
           </View>
           <View style={styles.summaryItem}>
@@ -131,10 +131,10 @@ export function BizDealsPipelineView({ colors, accent }: Props) {
 
       {/* Deal rows */}
       {filteredDeals.map((deal: Deal) => {
-        const typeColor = DEAL_TYPE_COLORS[deal.dealType] ?? '#6B7280';
-        const sColor = stageColorMap[deal.stage] ?? '#6B7280';
+        const typeColor = DEAL_TYPE_COLORS[deal.dealType] ?? '#A1A1AA';
+        const sColor = stageColorMap[deal.stage] ?? '#A1A1AA';
         const sLabel = stageLabelMap[deal.stage] ?? deal.stage;
-        const priColor = PRIORITY_COLORS[deal.priority] ?? '#6B7280';
+        const priColor = PRIORITY_COLORS[deal.priority] ?? '#A1A1AA';
 
         return (
           <Pressable
@@ -203,7 +203,7 @@ export function BizDealsPipelineView({ colors, accent }: Props) {
                     openPersonCard({ name: deal.assignedTo!, role: 'Owner' });
                   }}
                 >
-                  <ThemedText style={[styles.assignedLink, { color: '#6AA9FF' }]}>{deal.assignedTo}</ThemedText>
+                  <ThemedText style={[styles.assignedLink, { color: '#1D9BF0' }]}>{deal.assignedTo}</ThemedText>
                 </Pressable>
               </View>
             )}
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
   },
   stagePillText: { fontSize: 10, fontWeight: '600' },
   dealRow: { borderRadius: 12, borderWidth: 1, padding: 14, marginBottom: 8 },

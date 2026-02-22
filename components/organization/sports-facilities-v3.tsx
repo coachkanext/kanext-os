@@ -168,7 +168,7 @@ function BookingsView({ colors, accentColor }: { colors: typeof Colors.light; ac
               <ThemedText style={[s.bookingTime, { color: colors.textSecondary }]}>{booking.time}</ThemedText>
             </View>
             {booking.recurring && (
-              <StatusBadge label="RECURRING" color="#6AA9FF" />
+              <StatusBadge label="RECURRING" color="#1D9BF0" />
             )}
           </View>
           <View style={[s.bookingMeta, { borderTopColor: colors.border }]}>
@@ -250,7 +250,7 @@ export function SportsFacilities({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >
@@ -361,7 +361,7 @@ const s = StyleSheet.create({
   bookingDateBadge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     borderRadius: 6,
   },
   bookingDate: {

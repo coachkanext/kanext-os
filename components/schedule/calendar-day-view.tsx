@@ -87,7 +87,7 @@ export function CalendarDayView({ date, events, colors, onEventPress }: Calendar
                 <Text style={[styles.eventLocation, { color: colors.textTertiary }]} numberOfLines={1}>{event.location}</Text>
               )}
               {event.gameScore && (
-                <Text style={[styles.gameScore, { color: event.gameScore.startsWith('W') ? '#4CAF50' : '#EF4444' }]}>
+                <Text style={[styles.gameScore, { color: event.gameScore.startsWith('W') ? '#22C55E' : '#EF4444' }]}>
                   {event.gameScore.replace('-', '–')}
                 </Text>
               )}

@@ -1000,10 +1000,10 @@ function IncidentsTab({
 
               {/* Prevention Notes (if present) */}
               {inc.preventionNotes && (
-                <View style={[s.preventionSection, { backgroundColor: '#3B82F610' }]}>
+                <View style={[s.preventionSection, { backgroundColor: '#1D9BF010' }]}>
                   <View style={s.preventionHeader}>
-                    <IconSymbol name="lightbulb.fill" size={12} color="#3B82F6" />
-                    <ThemedText style={[s.preventionTitle, { color: '#3B82F6' }]}>
+                    <IconSymbol name="lightbulb.fill" size={12} color="#1D9BF0" />
+                    <ThemedText style={[s.preventionTitle, { color: '#1D9BF0' }]}>
                       Prevention Notes
                     </ThemedText>
                   </View>
@@ -1576,7 +1576,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

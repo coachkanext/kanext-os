@@ -733,11 +733,11 @@ function SafeguardsTab({
           {/* Summary Tiles */}
           <View style={s.safeguardTilesRow}>
             <View style={[s.safeguardTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <ThemedText style={[s.safeguardTileValue, { color: '#8B5CF6' }]}>{youthCount}</ThemedText>
+              <ThemedText style={[s.safeguardTileValue, { color: '#1D9BF0' }]}>{youthCount}</ThemedText>
               <ThemedText style={[s.safeguardTileLabel, { color: colors.textSecondary }]}>Youth Access</ThemedText>
             </View>
             <View style={[s.safeguardTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <ThemedText style={[s.safeguardTileValue, { color: '#EC4899' }]}>{careCount}</ThemedText>
+              <ThemedText style={[s.safeguardTileValue, { color: '#1D9BF0' }]}>{careCount}</ThemedText>
               <ThemedText style={[s.safeguardTileLabel, { color: colors.textSecondary }]}>Care Access</ThemedText>
             </View>
             <View style={[s.safeguardTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -1204,7 +1204,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

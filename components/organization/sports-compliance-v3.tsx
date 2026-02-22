@@ -27,7 +27,7 @@ type EligibilityStatus = 'Cleared' | 'Hold' | 'Pending' | 'Ineligible';
 const ELIGIBILITY_STATUS_COLOR: Record<EligibilityStatus, string> = {
   Cleared: '#22C55E',
   Hold: '#F59E0B',
-  Pending: '#6AA9FF',
+  Pending: '#1D9BF0',
   Ineligible: '#EF4444',
 };
 
@@ -398,7 +398,7 @@ export function SportsCompliance({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >

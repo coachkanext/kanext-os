@@ -151,61 +151,61 @@ export const COMP_COMPLIANCE_SCOPE_CHIPS = [
 
 export const RULE_STATUS_COLOR: Record<CompRule['status'], string> = {
   active: '#22C55E',
-  proposed: '#3B82F6',
+  proposed: '#1D9BF0',
   suspended: '#F59E0B',
-  archived: '#9CA3AF',
+  archived: '#A1A1AA',
 };
 
 export const ELIGIBILITY_STATUS_COLOR: Record<EligibilityRecord['status'], string> = {
   eligible: '#22C55E',
   ineligible: '#EF4444',
   'under-review': '#F59E0B',
-  waived: '#8B5CF6',
+  waived: '#1D9BF0',
 };
 
 export const TEST_RESULT_COLOR: Record<DrugTest['result'], string> = {
   negative: '#22C55E',
   positive: '#EF4444',
   pending: '#F59E0B',
-  inconclusive: '#9CA3AF',
+  inconclusive: '#A1A1AA',
 };
 
 export const EQUIPMENT_STATUS_COLOR: Record<EquipmentStandard['status'], string> = {
   compliant: '#22C55E',
   'non-compliant': '#EF4444',
-  'waiver-granted': '#8B5CF6',
+  'waiver-granted': '#1D9BF0',
 };
 
 export const INCIDENT_SEVERITY_COLOR: Record<ComplianceIncident['severity'], string> = {
   minor: '#F59E0B',
   major: '#EF4444',
-  critical: '#DC2626',
+  critical: '#EF4444',
 };
 
 export const INCIDENT_STATUS_COLOR: Record<ComplianceIncident['status'], string> = {
   open: '#EF4444',
   investigating: '#F59E0B',
   resolved: '#22C55E',
-  appealed: '#8B5CF6',
+  appealed: '#1D9BF0',
 };
 
 export const APPEAL_STATUS_COLOR: Record<Appeal['status'], string> = {
   filed: '#F59E0B',
-  'hearing-scheduled': '#3B82F6',
+  'hearing-scheduled': '#1D9BF0',
   upheld: '#22C55E',
-  overturned: '#8B5CF6',
-  dismissed: '#9CA3AF',
+  overturned: '#1D9BF0',
+  dismissed: '#A1A1AA',
 };
 
 export const CERT_STATUS_COLOR: Record<Certification['status'], string> = {
   valid: '#22C55E',
   'expiring-soon': '#F59E0B',
   expired: '#EF4444',
-  revoked: '#9CA3AF',
+  revoked: '#A1A1AA',
 };
 
 export const REPORT_FORMAT_COLOR: Record<ComplianceReport['format'], string> = {
-  PDF: '#3B82F6',
+  PDF: '#1D9BF0',
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };
@@ -220,7 +220,7 @@ const dashboardBlocks: ComplianceDashBlock[] = [
   { id: 'db-3', label: 'Pending Tests', value: '23', delta: '-5 from last week', icon: 'testtube.2', color: '#F59E0B' },
   { id: 'db-4', label: 'Open Incidents', value: '7', delta: '+2 new', icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
   { id: 'db-5', label: 'Equipment Compliance', value: '96.4%', delta: '+1.2% improved', icon: 'wrench.fill', color: '#22C55E' },
-  { id: 'db-6', label: 'Active Appeals', value: '3', delta: '1 hearing this week', icon: 'doc.text.magnifyingglass', color: '#3B82F6' },
+  { id: 'db-6', label: 'Active Appeals', value: '3', delta: '1 hearing this week', icon: 'doc.text.magnifyingglass', color: '#1D9BF0' },
   { id: 'db-7', label: 'Expiring Certs', value: '11', delta: '4 within 30 days', icon: 'checkmark.seal.fill', color: '#F59E0B' },
   { id: 'db-8', label: 'Compliance Score', value: '94.2%', delta: '+0.8% from Q3', icon: 'chart.bar.fill', color: '#22C55E' },
 ];

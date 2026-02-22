@@ -27,10 +27,10 @@ export interface EduEvent {
 }
 
 export const EDU_EVENT_CATEGORY_COLORS: Record<EduEventCategory, string> = {
-  academic: '#3B82F6',
-  campus_life: '#8B5CF6',
+  academic: '#1D9BF0',
+  campus_life: '#1D9BF0',
   athletics: '#EF4444',
-  administrative: '#6B7280',
+  administrative: '#A1A1AA',
   accreditation: '#F59E0B',
 };
 
@@ -195,12 +195,12 @@ export interface EduNewsItem {
 }
 
 export const EDU_NEWS_CATEGORY_COLORS: Record<EduNewsCategoryTag, string> = {
-  campus: '#3B82F6',
-  student: '#8B5CF6',
-  faculty: '#10B981',
+  campus: '#1D9BF0',
+  student: '#1D9BF0',
+  faculty: '#22C55E',
   alumni: '#F59E0B',
   athletics: '#EF4444',
-  institutional: '#6B7280',
+  institutional: '#A1A1AA',
 };
 
 export const EDU_NEWS: EduNewsItem[] = [
@@ -291,9 +291,9 @@ export const ENROLLMENT_DATA: EnrollmentData = {
   target: 1400,
   retentionRate: 0.72,
   byClassYear: [
-    { label: 'Freshman', count: 410, color: '#3B82F6' },
-    { label: 'Sophomore', count: 320, color: '#8B5CF6' },
-    { label: 'Junior', count: 275, color: '#10B981' },
+    { label: 'Freshman', count: 410, color: '#1D9BF0' },
+    { label: 'Sophomore', count: 320, color: '#1D9BF0' },
+    { label: 'Junior', count: 275, color: '#22C55E' },
     { label: 'Senior', count: 215, color: '#F59E0B' },
     { label: 'Graduate', count: 65, color: '#EF4444' },
   ],
@@ -375,9 +375,9 @@ export interface EduCommerceItem {
 }
 
 export const EDU_COMMERCE: EduCommerceItem[] = [
-  { id: 'apply', label: 'Apply Now', icon: 'doc.text.fill', color: '#3B82F6' },
-  { id: 'catalog', label: 'Course Catalog', icon: 'book.fill', color: '#8B5CF6' },
-  { id: 'aid', label: 'Financial Aid', icon: 'dollarsign.circle.fill', color: '#10B981' },
+  { id: 'apply', label: 'Apply Now', icon: 'doc.text.fill', color: '#1D9BF0' },
+  { id: 'catalog', label: 'Course Catalog', icon: 'book.fill', color: '#1D9BF0' },
+  { id: 'aid', label: 'Financial Aid', icon: 'dollarsign.circle.fill', color: '#22C55E' },
 ];
 
 // =============================================================================
@@ -398,10 +398,10 @@ export const EDU_DEPARTMENT_LABELS: Record<DepartmentCategory, string> = {
 };
 
 export const EDU_DEPARTMENT_COLORS: Record<DepartmentCategory, string> = {
-  arts_sciences: '#8B5CF6',
+  arts_sciences: '#1D9BF0',
   business: '#F59E0B',
-  education: '#10B981',
-  professional: '#3B82F6',
+  education: '#22C55E',
+  professional: '#1D9BF0',
 };
 
 export interface FacultyMember {
@@ -494,11 +494,11 @@ export interface OutreachEvent {
 // =============================================================================
 
 export const ADMISSIONS_STAGES: { key: AdmissionsStage; label: string; color: string }[] = [
-  { key: 'Inquiry', label: 'Inquiry', color: '#6B7280' },
-  { key: 'Applied', label: 'Applied', color: '#3B82F6' },
-  { key: 'Accepted', label: 'Accepted', color: '#8B5CF6' },
+  { key: 'Inquiry', label: 'Inquiry', color: '#A1A1AA' },
+  { key: 'Applied', label: 'Applied', color: '#1D9BF0' },
+  { key: 'Accepted', label: 'Accepted', color: '#1D9BF0' },
   { key: 'Deposited', label: 'Deposited', color: '#F59E0B' },
-  { key: 'Enrolled', label: 'Enrolled', color: '#10B981' },
+  { key: 'Enrolled', label: 'Enrolled', color: '#22C55E' },
   { key: 'Registered', label: 'Registered', color: '#22C55E' },
 ];
 
@@ -900,7 +900,7 @@ export function getStageCount(stage: AdmissionsStage): number {
 }
 
 export function getStageColor(stage: AdmissionsStage): string {
-  return ADMISSIONS_STAGES.find((s) => s.key === stage)?.color ?? '#6B7280';
+  return ADMISSIONS_STAGES.find((s) => s.key === stage)?.color ?? '#A1A1AA';
 }
 
 // =============================================================================

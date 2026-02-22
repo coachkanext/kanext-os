@@ -61,7 +61,7 @@ function MediaBadge({ type }: { type: string }) {
   const label = type === 'clip' ? 'Clip' : type === 'game' ? 'Game' : 'Reel';
   return (
     <View style={styles.mediaBadge}>
-      <IconSymbol name="play.fill" size={10} color="#f5f5f5" />
+      <IconSymbol name="play.fill" size={10} color="#FFFFFF" />
       <ThemedText style={styles.mediaBadgeText}>{label}</ThemedText>
     </View>
   );
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     paddingHorizontal: Spacing.lg,
@@ -155,16 +155,16 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: '#2F3336',
   },
   avatarText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   shareName: {
     fontSize: 11,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     color: '#ccc',
   },
   threadTitleUnread: {
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
   threadTime: {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -226,13 +226,13 @@ const styles = StyleSheet.create({
   mediaBadgeText: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   unreadDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#1D9BF0',
   },
   listContent: {
     paddingBottom: 100,

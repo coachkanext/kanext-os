@@ -336,7 +336,7 @@ function computeBestLineup(
 
 function FitBadge({ baseKR, fitKR, hideDelta }: { baseKR: number; fitKR: number; hideDelta?: boolean }) {
   const delta = fitKR - baseKR;
-  const deltaColor = delta > 0 ? '#4CAF50' : delta < 0 ? '#EF4444' : TEAM_COLORS.gray;
+  const deltaColor = delta > 0 ? '#22C55E' : delta < 0 ? '#EF4444' : TEAM_COLORS.gray;
   const deltaText = delta > 0 ? `+${delta}` : delta < 0 ? `${delta}` : '—';
 
   return (
@@ -355,7 +355,7 @@ const badgeStyles = StyleSheet.create({
   fitValue: {
     fontSize: 17,
     fontWeight: '800',
-    color: '#f0f0f0',
+    color: '#FFFFFF',
   },
   delta: {
     fontSize: 10,
@@ -907,7 +907,7 @@ export function UnitsView({
               <Text style={[styles.systemsValue, offExpanded && styles.systemsValueActive]} numberOfLines={1}>
                 {OFFENSIVE_STYLES.find((s) => s.value === offStyle)?.label ?? offStyle}
               </Text>
-              <IconSymbol name={offExpanded ? 'chevron.up' : 'chevron.down'} size={10} color={offExpanded ? '#f5f5f5' : '#666'} />
+              <IconSymbol name={offExpanded ? 'chevron.up' : 'chevron.down'} size={10} color={offExpanded ? '#FFFFFF' : '#666'} />
             </Pressable>
             <View style={styles.systemsDivider} />
             <Pressable
@@ -922,7 +922,7 @@ export function UnitsView({
               <Text style={[styles.systemsValue, defExpanded && styles.systemsValueActive]} numberOfLines={1}>
                 {DEFENSIVE_STYLES.find((s) => s.value === defStyle)?.label ?? defStyle}
               </Text>
-              <IconSymbol name={defExpanded ? 'chevron.up' : 'chevron.down'} size={10} color={defExpanded ? '#f5f5f5' : '#666'} />
+              <IconSymbol name={defExpanded ? 'chevron.up' : 'chevron.down'} size={10} color={defExpanded ? '#FFFFFF' : '#666'} />
             </Pressable>
           </View>
 
@@ -1238,13 +1238,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#1e1e1e',
+    backgroundColor: '#0B0F14',
     borderWidth: 1,
     borderColor: '#ffffff08',
   },
   scrollPillActive: {
-    backgroundColor: '#f5f5f5',
-    borderColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
   },
   scrollPillText: {
     fontSize: 13,
@@ -1272,7 +1272,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     marginTop: 6,
     marginBottom: 2,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
@@ -1302,7 +1302,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   systemsValueActive: {
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
   systemsDivider: {
@@ -1314,7 +1314,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     marginTop: 4,
     marginBottom: 4,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     paddingVertical: 4,
     borderWidth: 1,
@@ -1339,8 +1339,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   accordionRadioActive: {
-    borderColor: '#f5f5f5',
-    backgroundColor: '#f5f5f5',
+    borderColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
   },
   accordionText: {
     fontSize: 13,
@@ -1349,7 +1349,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   accordionTextActive: {
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
 
@@ -1357,7 +1357,7 @@ const styles = StyleSheet.create({
   sectionCard: {
     marginHorizontal: Spacing.lg,
     marginBottom: Spacing.sm,
-    backgroundColor: '#151515',
+    backgroundColor: '#0B0F14',
     borderRadius: 16,
     overflow: 'hidden',
     borderWidth: 1,
@@ -1421,12 +1421,12 @@ const styles = StyleSheet.create({
   jerseyCircleSwapTarget: {
     borderWidth: 1.5,
     borderColor: '#ffffff25',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
   },
   jerseyNumber: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#e0e0e0',
+    color: '#A1A1AA',
   },
 
   // Player info
@@ -1437,7 +1437,7 @@ const styles = StyleSheet.create({
   playerName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#f0f0f0',
+    color: '#FFFFFF',
     letterSpacing: -0.2,
   },
   playerMeta: {
@@ -1465,7 +1465,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     marginTop: 24,
     marginBottom: 12,
-    backgroundColor: '#151515',
+    backgroundColor: '#0B0F14',
     borderRadius: 16,
     paddingVertical: 18,
     paddingHorizontal: Spacing.xl,
@@ -1486,7 +1486,7 @@ const styles = StyleSheet.create({
   krMainValue: {
     fontSize: 36,
     fontWeight: '800',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginTop: 4,
   },
   krBlockDivider: {
@@ -1507,7 +1507,7 @@ const styles = StyleSheet.create({
   krSubValue: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#d0d0d0',
+    color: '#A1A1AA',
     marginTop: 4,
   },
   sectionDivider: {
@@ -1535,7 +1535,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     marginTop: 10,
     marginBottom: 24,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: BorderRadius.lg,
     paddingVertical: 14,
     paddingHorizontal: Spacing.md,
@@ -1555,7 +1555,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
@@ -1573,13 +1573,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   top3NameFirst: {
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
   top3KR: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginTop: 1,
   },
   top3KRFirst: {
@@ -1604,7 +1604,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: BorderRadius.sm,
     paddingVertical: 3,
     paddingHorizontal: 8,
@@ -1622,14 +1622,14 @@ const styles = StyleSheet.create({
   driverValue: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 
   // Keys to the Game
   keysCard: {
     marginHorizontal: Spacing.lg,
     marginBottom: Spacing.md,
-    backgroundColor: '#151515',
+    backgroundColor: '#0B0F14',
     borderRadius: 16,
     padding: Spacing.md,
     borderWidth: 1,
@@ -1662,7 +1662,7 @@ const styles = StyleSheet.create({
   keysNumberText: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#e0e0e0',
+    color: '#A1A1AA',
   },
   keysText: {
     fontSize: 13,
@@ -1690,7 +1690,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#1e1e1e',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
@@ -1729,13 +1729,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   whyTagChip: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 10,
   },
   whyTagChipNeg: {
-    backgroundColor: '#2a1515',
+    backgroundColor: '#0B0F14',
   },
   whyTagText: {
     fontSize: 11,
@@ -1752,7 +1752,7 @@ const styles = StyleSheet.create({
   },
   lensDropdown: {
     position: 'absolute',
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 14,
     paddingVertical: 8,
     minWidth: 200,
@@ -1788,7 +1788,7 @@ const styles = StyleSheet.create({
     color: '#aaa',
   },
   lensItemTextActive: {
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
   lensCheckmark: {

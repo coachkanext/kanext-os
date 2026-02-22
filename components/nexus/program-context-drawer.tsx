@@ -444,7 +444,7 @@ export function ProgramContextDrawer({
                     styles.resourceBarFill,
                     {
                       width: `${(context.nilUsed / context.nilBudget) * 100}%`,
-                      backgroundColor: '#f5f5f5',
+                      backgroundColor: '#FFFFFF',
                     },
                   ]}
                 />

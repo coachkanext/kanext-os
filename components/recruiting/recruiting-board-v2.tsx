@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   filterRow: { flexDirection: 'row', paddingHorizontal: Spacing.lg, paddingVertical: 6, gap: 6, flexWrap: 'wrap' },
   filterPill: {
     paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.05)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: 'rgba(255,255,255,0.05)', borderWidth: 1, borderColor: '#2F3336',
   },
   filterPillText: { fontSize: 12, fontWeight: '600' },
   sortRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.lg, paddingBottom: 4 },
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   dropdownItem: { paddingVertical: 10, paddingHorizontal: 16 },
   dropdownText: { fontSize: 14, fontWeight: '500' },
   listContent: { paddingBottom: 120, paddingHorizontal: Spacing.lg },
-  row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.06)', gap: 10 },
+  row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#2F3336', gap: 10 },
   avatar: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontSize: 12, fontWeight: '700', color: '#fff' },
   rowInfo: { flex: 1, gap: 4 },

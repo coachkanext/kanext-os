@@ -108,17 +108,17 @@ function formatCurrency(amount: number): string {
 
 const CATEGORY_COLORS: Record<TransactionCategory, string> = {
   Tithes: '#22C55E',
-  Offerings: '#6AA9FF',
-  Designated: '#A78BFA',
+  Offerings: '#1D9BF0',
+  Designated: '#1D9BF0',
   Expense: '#F59E0B',
-  Payroll: '#EC4899',
-  Missions: '#14B8A6',
-  Vendor: '#8F8F8F',
+  Payroll: '#1D9BF0',
+  Missions: '#1D9BF0',
+  Vendor: '#A1A1AA',
 };
 
 const PENDING_STATUS_COLORS: Record<string, string> = {
   'Awaiting Approval': '#F59E0B',
-  Processing: '#6AA9FF',
+  Processing: '#1D9BF0',
   'Awaiting Documentation': '#EF4444',
 };
 
@@ -149,7 +149,7 @@ function ViewBar({
             style={[
               s.viewPill,
               {
-                backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)',
+                backgroundColor: isActive ? accentColor : '#2F3336',
               },
             ]}
             onPress={() => {
@@ -202,7 +202,7 @@ function TransactionsView({ colors, accentColor }: { colors: typeof Colors.light
               style={[
                 s.filterPill,
                 {
-                  backgroundColor: isActive ? catColor + '20' : 'rgba(255,255,255,0.06)',
+                  backgroundColor: isActive ? catColor + '20' : '#2F3336',
                   borderColor: isActive ? catColor + '40' : colors.border,
                 },
               ]}

@@ -29,7 +29,7 @@ export function LinkCard({ item }: LinkCardProps) {
     <Pressable
       style={({ pressed }) => [
         styles.row,
-        { backgroundColor: pressed ? '#191919' : 'transparent' },
+        { backgroundColor: pressed ? '#0B0F14' : 'transparent' },
       ]}
       onPress={handlePress}
     >
@@ -63,7 +63,7 @@ export function LinkCard({ item }: LinkCardProps) {
       </View>
 
       {/* External link icon */}
-      <IconSymbol name="arrow.up.right.square" size={16} color="#6e6e6e" />
+      <IconSymbol name="arrow.up.right.square" size={16} color="#A1A1AA" />
     </Pressable>
   );
 }
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm + 2,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
     gap: 10,
   },
   sourceBadge: {
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 3,
   },
   meta: {
@@ -105,21 +105,21 @@ const styles = StyleSheet.create({
   },
   creator: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   tagsRow: {
     flexDirection: 'row',
     gap: 4,
   },
   tagChip: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderRadius: 4,
   },
   tagText: {
     fontSize: 10,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     fontWeight: '500',
   },
   notes: {

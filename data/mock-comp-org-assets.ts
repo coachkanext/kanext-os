@@ -154,15 +154,15 @@ export interface AssetSettingToggle {
 
 export const CONDITION_COLOR: Record<PhysicalAsset['condition'], string> = {
   excellent: '#22C55E',
-  good: '#3B82F6',
+  good: '#1D9BF0',
   fair: '#F59E0B',
   'needs-repair': '#EF4444',
-  retired: '#9CA3AF',
+  retired: '#A1A1AA',
 };
 
 export const MAINTENANCE_STATUS_COLOR: Record<MaintenanceRecord['status'], string> = {
   completed: '#22C55E',
-  scheduled: '#3B82F6',
+  scheduled: '#1D9BF0',
   overdue: '#EF4444',
   'in-progress': '#F59E0B',
 };
@@ -171,45 +171,45 @@ export const INSURANCE_STATUS_COLOR: Record<InsurancePolicy['status'], string> =
   active: '#22C55E',
   'expiring-soon': '#F59E0B',
   expired: '#EF4444',
-  'pending-renewal': '#3B82F6',
+  'pending-renewal': '#1D9BF0',
 };
 
 export const LEASE_COLOR: Record<VenueAsset['ownedOrLeased'], string> = {
   owned: '#22C55E',
-  leased: '#3B82F6',
-  partnership: '#8B5CF6',
+  leased: '#1D9BF0',
+  partnership: '#1D9BF0',
 };
 
 export const DIGITAL_TYPE_COLOR: Record<DigitalAsset['type'], string> = {
-  logo: '#6AA9FF',
+  logo: '#1D9BF0',
   template: '#22C55E',
   video: '#EF4444',
   photo: '#F59E0B',
-  document: '#8B5CF6',
-  'brand-guide': '#8F8F8F',
+  document: '#1D9BF0',
+  'brand-guide': '#A1A1AA',
 };
 
 export const EQUIPMENT_CATEGORY_COLOR: Record<EquipmentAsset['category'], string> = {
-  scoring: '#6AA9FF',
+  scoring: '#1D9BF0',
   timing: '#22C55E',
   broadcast: '#F59E0B',
   safety: '#EF4444',
-  av: '#8B5CF6',
-  medical: '#EC4899',
+  av: '#1D9BF0',
+  medical: '#1D9BF0',
 };
 
 export const INVENTORY_CATEGORY_COLOR: Record<InventoryItem['category'], string> = {
   medals: '#F59E0B',
-  certificates: '#6AA9FF',
+  certificates: '#1D9BF0',
   merchandise: '#22C55E',
-  consumables: '#8F8F8F',
-  uniforms: '#8B5CF6',
+  consumables: '#A1A1AA',
+  uniforms: '#1D9BF0',
 };
 
 export const REPORT_FORMAT_COLOR: Record<AssetReport['format'], string> = {
   PDF: '#EF4444',
   CSV: '#22C55E',
-  XLSX: '#6AA9FF',
+  XLSX: '#1D9BF0',
 };
 
 // =============================================================================
@@ -248,7 +248,7 @@ const DASHBOARD_BLOCKS: AssetsDashboardBlock[] = [
     value: '284',
     delta: '+8 this quarter',
     icon: 'cube',
-    color: '#6AA9FF',
+    color: '#1D9BF0',
   },
   {
     id: 'db-2',
@@ -280,7 +280,7 @@ const DASHBOARD_BLOCKS: AssetsDashboardBlock[] = [
     value: '1,248',
     delta: '+62 this month',
     icon: 'doc.on.doc',
-    color: '#8B5CF6',
+    color: '#1D9BF0',
   },
   {
     id: 'db-6',

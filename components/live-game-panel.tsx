@@ -653,7 +653,7 @@ const s = StyleSheet.create({
   },
   liveTabActive: {
     borderBottomWidth: 2,
-    borderBottomColor: '#c8102e',
+    borderBottomColor: '#EF4444',
   },
   liveTabText: {
     fontSize: 13,

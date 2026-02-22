@@ -39,7 +39,7 @@ export function TabFooter({ activeTab = 'Home' }: TabFooterProps) {
         styles.container,
         {
           backgroundColor: colors.tabBar,
-          borderTopColor: 'rgba(255,255,255,0.08)',
+          borderTopColor: '#2F3336',
           paddingBottom: insets.bottom,
           height: Platform.OS === 'ios' ? Layout.tabBarHeight : 60,
         },

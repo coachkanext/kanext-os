@@ -16,9 +16,9 @@ interface Props {
 }
 
 const TYPE_COLORS: Record<OutreachEventType, string> = {
-  high_school_visit: '#3B82F6',
-  college_fair: '#8B5CF6',
-  open_house: '#10B981',
+  high_school_visit: '#1D9BF0',
+  college_fair: '#1D9BF0',
+  open_house: '#22C55E',
   virtual_info_session: '#F59E0B',
   community_event: '#EF4444',
 };

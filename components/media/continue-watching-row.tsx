@@ -34,7 +34,7 @@ export function ContinueWatchingRow({ items }: ContinueWatchingRowProps) {
             key={item.id}
             style={({ pressed }) => [
               styles.card,
-              { backgroundColor: pressed ? '#191919' : '#111' },
+              { backgroundColor: pressed ? '#0B0F14' : '#111' },
             ]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.sm,
   },
@@ -113,11 +113,11 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 3,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
   },
   progressFill: {
     height: 3,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
   },
   info: {
     padding: 8,
@@ -125,11 +125,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   meta: {
     fontSize: 10,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
 });

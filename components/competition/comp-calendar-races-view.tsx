@@ -28,7 +28,7 @@ function RaceCard({ round, colors, accent, isNext }: { round: RaceRound; colors:
     >
       <View style={styles.cardTop}>
         {/* Round badge */}
-        <View style={[styles.roundBadge, { backgroundColor: isNext ? accent : 'rgba(255,255,255,0.08)' }]}>
+        <View style={[styles.roundBadge, { backgroundColor: isNext ? accent : '#2F3336' }]}>
           <ThemedText style={[styles.roundBadgeText, { color: isNext ? '#000' : colors.textSecondary }]}>
             R{round.round}
           </ThemedText>

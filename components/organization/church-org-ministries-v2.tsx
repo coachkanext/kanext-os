@@ -462,7 +462,7 @@ function CalendarTab({
       {/* Events for selected date */}
       {dayEvents.length > 0 ? (
         dayEvents.map((ev) => {
-          const staffColor = STAFFING_STATUS_COLORS[ev.staffingStatus] || '#6B7280';
+          const staffColor = STAFFING_STATUS_COLORS[ev.staffingStatus] || '#A1A1AA';
           const staffLabel = STAFFING_STATUS_LABELS[ev.staffingStatus] || ev.staffingStatus;
           return (
             <View
@@ -514,7 +514,7 @@ function CalendarTab({
             All ministry events for this week
           </ThemedText>
           {weekEvents.map((ev) => {
-            const staffColor = STAFFING_STATUS_COLORS[ev.staffingStatus] || '#6B7280';
+            const staffColor = STAFFING_STATUS_COLORS[ev.staffingStatus] || '#A1A1AA';
             const staffLabel = STAFFING_STATUS_LABELS[ev.staffingStatus] || ev.staffingStatus;
             return (
               <View
@@ -1154,7 +1154,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,
@@ -1450,7 +1450,7 @@ const s = StyleSheet.create({
   healthProgressTrack: {
     height: 4,
     width: 80,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
   },

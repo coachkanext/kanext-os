@@ -84,7 +84,7 @@ const CALENDAR_MILESTONES = [
 const TASK_STATUS_COLOR: Record<TaskStatus, string> = {
   due_tomorrow: '#F59E0B',
   overdue: '#EF4444',
-  in_progress: '#6AA9FF',
+  in_progress: '#1D9BF0',
   upcoming: '#22C55E',
   completed: '#22C55E',
 };
@@ -120,7 +120,7 @@ function StatusBadge({ label, color }: { label: string; color: string }) {
 }
 
 function AccreditationBadge({ status }: { status: string }) {
-  const color = status === 'Accredited' ? '#22C55E' : status === 'Under Review' ? '#F59E0B' : '#6AA9FF';
+  const color = status === 'Accredited' ? '#22C55E' : status === 'Under Review' ? '#F59E0B' : '#1D9BF0';
   return <StatusBadge label={status.toUpperCase()} color={color} />;
 }
 
@@ -350,7 +350,7 @@ export function EduProgram({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.pill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handlePillPress(v.id)}
             >
@@ -444,7 +444,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   detailLabel: {
     fontSize: 13,

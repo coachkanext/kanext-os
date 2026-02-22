@@ -42,7 +42,7 @@ const PINNED_HERO: HeroVideo = {
   id: 'hero-pinned',
   title: 'Keiser Scout Breakdown — Transition Defense',
   subtitle: 'Staff Film · Uploaded 2h ago',
-  thumbnailColor: '#1a3a5c',
+  thumbnailColor: '#1D9BF0',
   duration: '8:42',
   isPinned: true,
   source: 'pinned',
@@ -52,7 +52,7 @@ const COACH_SHARED_HERO: HeroVideo = {
   id: 'hero-shared',
   title: 'Tuesday Practice — Half-Court Sets',
   subtitle: 'KaNeXT Film · 5h ago',
-  thumbnailColor: '#2d1b3d',
+  thumbnailColor: '#0B0F14',
   duration: '14:20',
   source: 'coach_shared',
 };
@@ -61,7 +61,7 @@ const PLACEHOLDER_HERO: HeroVideo = {
   id: 'hero-placeholder',
   title: 'No Film Pinned Yet',
   subtitle: 'Pin a video to feature it here',
-  thumbnailColor: '#1a1a2e',
+  thumbnailColor: '#0B0F14',
   duration: '',
   source: 'placeholder',
 };

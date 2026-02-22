@@ -79,7 +79,7 @@ const VENDORS = [
 
 const CONDITION_COLORS: Record<string, string> = {
   Excellent: '#22C55E',
-  Good: '#3B82F6',
+  Good: '#1D9BF0',
   Fair: '#F59E0B',
   Poor: '#EF4444',
 };
@@ -277,7 +277,7 @@ export function BizFacilities({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.viewPill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handleViewPress(v.id)}
             >

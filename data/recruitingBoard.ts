@@ -22,16 +22,16 @@ export const BOARD_COLUMNS: BoardStatus[] = [
 ];
 
 export const BOARD_COLUMN_COLORS: Record<BoardStatus, string> = {
-  Watchlist: '#FF9800',
-  Evaluating: '#42A5F5',
-  Contacted: '#29B6F6',
-  Priority: '#4CAF50',
-  'Visit Planned': '#AB47BC',
-  Visited: '#7E57C2',
-  'Offer Out': '#EC407A',
-  Committed: '#9C27B0',
-  Signed: '#00BCD4',
-  Missed: '#757575',
+  Watchlist: '#F59E0B',
+  Evaluating: '#1D9BF0',
+  Contacted: '#1D9BF0',
+  Priority: '#22C55E',
+  'Visit Planned': '#1D9BF0',
+  Visited: '#1D9BF0',
+  'Offer Out': '#1D9BF0',
+  Committed: '#1D9BF0',
+  Signed: '#1D9BF0',
+  Missed: '#A1A1AA',
 };
 
 /** Migration map: old status values → new pipeline stages */
@@ -49,9 +49,9 @@ export type NeedsTier = 'Must Get' | 'Primary' | 'Secondary' | 'Watch';
 export const NEEDS_TIERS: NeedsTier[] = ['Must Get', 'Primary', 'Secondary', 'Watch'];
 export const NEEDS_TIER_COLORS: Record<NeedsTier, string> = {
   'Must Get': '#EF4444',
-  Primary: '#FF9800',
-  Secondary: '#3B82F6',
-  Watch: '#8A8F98',
+  Primary: '#F59E0B',
+  Secondary: '#1D9BF0',
+  Watch: '#A1A1AA',
 };
 
 // ─── Position slots (Helio) ───
@@ -62,9 +62,9 @@ export const POSITION_SLOTS: PositionSlot[] = ['PG', 'CG', 'W', 'F', 'B'];
 export type InterestLevel = 'Low' | 'Med' | 'High';
 export const INTEREST_LEVELS: InterestLevel[] = ['Low', 'Med', 'High'];
 export const INTEREST_COLORS: Record<InterestLevel, string> = {
-  Low: '#8A8F98',
-  Med: '#FF9800',
-  High: '#4CAF50',
+  Low: '#A1A1AA',
+  Med: '#F59E0B',
+  High: '#22C55E',
 };
 
 // ─── Big Board sections ───
@@ -84,17 +84,17 @@ export type BoardTag = typeof BOARD_TAGS[number];
 // ─── Temperature (workflow sentiment) ───
 export type Temperature = 'Ice' | 'Warm' | 'Hot' | 'Close';
 export const TEMPERATURE_COLORS: Record<Temperature, string> = {
-  Ice: '#64B5F6',
-  Warm: '#FF9800',
+  Ice: '#1D9BF0',
+  Warm: '#F59E0B',
   Hot: '#EF4444',
-  Close: '#4CAF50',
+  Close: '#22C55E',
 };
 
 // ─── Risk ───
 export type RiskLevel = 'Low' | 'Medium' | 'High';
 export const RISK_LEVEL_COLORS: Record<RiskLevel, string> = {
-  Low: '#4CAF50',
-  Medium: '#FF9800',
+  Low: '#22C55E',
+  Medium: '#F59E0B',
   High: '#EF4444',
 };
 
@@ -177,15 +177,15 @@ export type LogEntryType =
   | 'NIL' | 'Decision Date' | 'Campus Visit' | 'Status';
 
 export const LOG_TYPE_META: Record<LogEntryType, { icon: string; color: string }> = {
-  Call: { icon: '\u{1F4DE}', color: '#3B82F6' },
+  Call: { icon: '\u{1F4DE}', color: '#1D9BF0' },
   Text: { icon: '\u{1F4AC}', color: '#22C55E' },
-  Visit: { icon: '\u{1F3EB}', color: '#A855F7' },
+  Visit: { icon: '\u{1F3EB}', color: '#1D9BF0' },
   Note: { icon: '\u270F\uFE0F', color: '#F59E0B' },
-  Offer: { icon: '\u{1F4E8}', color: '#4CAF50' },
-  NIL: { icon: '$', color: '#FF9800' },
+  Offer: { icon: '\u{1F4E8}', color: '#22C55E' },
+  NIL: { icon: '$', color: '#F59E0B' },
   'Decision Date': { icon: '\u{1F4C5}', color: '#EF4444' },
-  'Campus Visit': { icon: '\u{1F3D4}\uFE0F', color: '#14B8A6' },
-  Status: { icon: '\u2191', color: '#EC407A' },
+  'Campus Visit': { icon: '\u{1F3D4}\uFE0F', color: '#1D9BF0' },
+  Status: { icon: '\u2191', color: '#1D9BF0' },
 };
 
 export interface RecruitingLogEntry {
@@ -209,14 +209,14 @@ export const PIPELINE_STAGES_V2: PipelineStageV2[] = [
 ];
 
 export const STAGE_COLORS: Record<PipelineStageV2, string> = {
-  Prospect: '#FF9800',
-  'Contact Made': '#42A5F5',
-  'Eval Sent': '#29B6F6',
-  'Visit Scheduled': '#AB47BC',
-  'Offer Out': '#EC407A',
-  Committed: '#4CAF50',
-  Signed: '#00BCD4',
-  Dead: '#757575',
+  Prospect: '#F59E0B',
+  'Contact Made': '#1D9BF0',
+  'Eval Sent': '#1D9BF0',
+  'Visit Scheduled': '#1D9BF0',
+  'Offer Out': '#1D9BF0',
+  Committed: '#22C55E',
+  Signed: '#1D9BF0',
+  Dead: '#A1A1AA',
 };
 
 /** Map old 10-stage → new 8-stage */

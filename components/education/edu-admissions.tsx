@@ -68,7 +68,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'inquiry',
     label: 'Inquiry',
     count: 42850,
-    color: '#3B82F6',
+    color: '#1D9BF0',
     conversionRate: 43.0,
     weekChange: 384,
     recentActivity: [
@@ -81,7 +81,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'applied',
     label: 'Applied',
     count: 18420,
-    color: '#8B5CF6',
+    color: '#1D9BF0',
     conversionRate: 91.2,
     weekChange: 342,
     recentActivity: [
@@ -94,7 +94,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'review',
     label: 'Review',
     count: 6840,
-    color: '#6366F1',
+    color: '#1D9BF0',
     conversionRate: 72.4,
     weekChange: -128,
     recentActivity: [
@@ -133,7 +133,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'enrolled',
     label: 'Enrolled',
     count: 3280,
-    color: '#10B981',
+    color: '#22C55E',
     conversionRate: 100,
     weekChange: 68,
     recentActivity: [
@@ -207,13 +207,13 @@ const INBOX_SUMMARY = {
 const PRIORITY_COLOR: Record<InboxPriority, string> = {
   high: '#EF4444',
   medium: '#F59E0B',
-  low: '#8F8F8F',
+  low: '#A1A1AA',
 };
 
 const STATUS_COLOR: Record<InboxStatus, string> = {
-  pending: '#8F8F8F',
-  assigned: '#3B82F6',
-  'in-review': '#8B5CF6',
+  pending: '#A1A1AA',
+  assigned: '#1D9BF0',
+  'in-review': '#1D9BF0',
   'needs-info': '#F59E0B',
   escalated: '#EF4444',
 };
@@ -274,16 +274,16 @@ const COHORTS: Cohort[] = [
     avgSAT: 1280,
     meltRate: 4.8,
     demographics: [
-      { label: 'In-State', value: 58, color: '#3B82F6' },
-      { label: 'Out-of-State', value: 31, color: '#8B5CF6' },
+      { label: 'In-State', value: 58, color: '#1D9BF0' },
+      { label: 'Out-of-State', value: 31, color: '#1D9BF0' },
       { label: 'International', value: 11, color: '#22C55E' },
     ],
     diversityTargets: [
       { label: 'First-Generation', target: 35, actual: 34, color: '#F59E0B' },
-      { label: 'Underrepresented Minority', target: 30, actual: 28, color: '#EC4899' },
-      { label: 'Pell Eligible', target: 25, actual: 23, color: '#3B82F6' },
+      { label: 'Underrepresented Minority', target: 30, actual: 28, color: '#1D9BF0' },
+      { label: 'Pell Eligible', target: 25, actual: 23, color: '#1D9BF0' },
       { label: 'Rural/Underserved', target: 15, actual: 12, color: '#22C55E' },
-      { label: 'STEM Interest', target: 40, actual: 42, color: '#8B5CF6' },
+      { label: 'STEM Interest', target: 40, actual: 42, color: '#1D9BF0' },
     ],
     topStates: [
       { state: 'Georgia', count: 1240 },
@@ -309,16 +309,16 @@ const COHORTS: Cohort[] = [
     avgSAT: 0,
     meltRate: 6.2,
     demographics: [
-      { label: 'In-State', value: 72, color: '#3B82F6' },
-      { label: 'Out-of-State', value: 24, color: '#8B5CF6' },
+      { label: 'In-State', value: 72, color: '#1D9BF0' },
+      { label: 'Out-of-State', value: 24, color: '#1D9BF0' },
       { label: 'International', value: 4, color: '#22C55E' },
     ],
     diversityTargets: [
       { label: 'First-Generation', target: 40, actual: 38, color: '#F59E0B' },
-      { label: 'Underrepresented Minority', target: 32, actual: 30, color: '#EC4899' },
-      { label: 'Pell Eligible', target: 30, actual: 28, color: '#3B82F6' },
+      { label: 'Underrepresented Minority', target: 32, actual: 30, color: '#1D9BF0' },
+      { label: 'Pell Eligible', target: 30, actual: 28, color: '#1D9BF0' },
       { label: 'Community College', target: 65, actual: 68, color: '#22C55E' },
-      { label: 'STEM Interest', target: 35, actual: 31, color: '#8B5CF6' },
+      { label: 'STEM Interest', target: 35, actual: 31, color: '#1D9BF0' },
     ],
     topStates: [
       { state: 'Georgia', count: 134 },
@@ -351,12 +351,12 @@ const YOY_TRENDS: YoYTrend[] = [
 ];
 
 const GEOGRAPHIC_DISTRIBUTION = [
-  { region: 'Southeast', percentage: 48, count: 8840, color: '#3B82F6' },
-  { region: 'Northeast', percentage: 18, count: 3316, color: '#8B5CF6' },
+  { region: 'Southeast', percentage: 48, count: 8840, color: '#1D9BF0' },
+  { region: 'Northeast', percentage: 18, count: 3316, color: '#1D9BF0' },
   { region: 'Midwest', percentage: 12, count: 2210, color: '#22C55E' },
   { region: 'West', percentage: 10, count: 1842, color: '#F59E0B' },
-  { region: 'Southwest', percentage: 6, count: 1105, color: '#EC4899' },
-  { region: 'International', percentage: 6, count: 1107, color: '#06B6D4' },
+  { region: 'Southwest', percentage: 6, count: 1105, color: '#1D9BF0' },
+  { region: 'International', percentage: 6, count: 1107, color: '#1D9BF0' },
 ];
 
 const TOP_FEEDER_SCHOOLS = [
@@ -479,7 +479,7 @@ function PipelineView({ colors, role }: { colors: typeof Colors.light; role: Edu
         </Card>
 
         <Pressable
-          style={({ pressed }) => [s.ctaButton, { backgroundColor: '#3B82F6', opacity: pressed ? 0.8 : 1 }]}
+          style={({ pressed }) => [s.ctaButton, { backgroundColor: '#1D9BF0', opacity: pressed ? 0.8 : 1 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
         >
           <IconSymbol name="pencil.and.outline" size={16} color="#FFFFFF" />
@@ -696,7 +696,7 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Educat
                 s.progressBarFill,
                 {
                   width: `${Math.min((INBOX_SUMMARY.reviewedToday / INBOX_SUMMARY.targetReviewsPerDay) * 100, 100)}%`,
-                  backgroundColor: INBOX_SUMMARY.reviewedToday >= INBOX_SUMMARY.targetReviewsPerDay ? '#22C55E' : '#3B82F6',
+                  backgroundColor: INBOX_SUMMARY.reviewedToday >= INBOX_SUMMARY.targetReviewsPerDay ? '#22C55E' : '#1D9BF0',
                 },
               ]}
             />
@@ -1060,7 +1060,7 @@ function AnalyticsView({ colors, role }: { colors: typeof Colors.light; role: Ed
                   <ThemedText style={[s.monthLabel, { color: colors.textSecondary }]}>{month.month}</ThemedText>
                   <View style={s.monthBarContainer}>
                     <View style={[s.monthBarBg, { backgroundColor: colors.backgroundTertiary }]}>
-                      <View style={[s.monthBarFill, { width: `${barPct}%`, backgroundColor: '#3B82F6' }]} />
+                      <View style={[s.monthBarFill, { width: `${barPct}%`, backgroundColor: '#1D9BF0' }]} />
                     </View>
                   </View>
                   <ThemedText style={[s.monthCount, { color: colors.text }]}>{month.count.toLocaleString()}</ThemedText>
@@ -1206,7 +1206,7 @@ function StudentPortalCTA({ colors }: { colors: typeof Colors.light }) {
             Check your application status, submit documents, and track your admissions journey.
           </ThemedText>
           <Pressable
-            style={({ pressed }) => [s.ctaButton, { backgroundColor: '#3B82F6', opacity: pressed ? 0.8 : 1 }]}
+            style={({ pressed }) => [s.ctaButton, { backgroundColor: '#1D9BF0', opacity: pressed ? 0.8 : 1 }]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
           >
             <IconSymbol name="arrow.right" size={14} color="#FFFFFF" />
@@ -1481,7 +1481,7 @@ const s = StyleSheet.create({
   feederCount: { fontSize: 13, fontWeight: '600' },
 
   // Analytics trends table
-  trendHeaderRow: { flexDirection: 'row', paddingBottom: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.06)' },
+  trendHeaderRow: { flexDirection: 'row', paddingBottom: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#2F3336' },
   trendHeaderCell: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.3 },
   trendRow: { flexDirection: 'row', paddingVertical: 8, borderRadius: BorderRadius.sm },
   trendCell: { fontSize: 12 },
@@ -1516,7 +1516,7 @@ const s = StyleSheet.create({
   profileLabel: { fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.3, marginTop: 2 },
 
   // Top feeder schools table
-  feederSchoolHeader: { flexDirection: 'row', alignItems: 'center', paddingBottom: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.06)' },
+  feederSchoolHeader: { flexDirection: 'row', alignItems: 'center', paddingBottom: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#2F3336' },
   feederSchoolRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8 },
   feederSchoolRank: { fontSize: 11, width: 22, textAlign: 'center' },
   feederSchoolName: { flex: 1, fontSize: 10, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.3 },

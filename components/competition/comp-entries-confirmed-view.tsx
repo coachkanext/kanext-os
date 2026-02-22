@@ -85,13 +85,13 @@ export function CompEntriesConfirmedView({ colors, accent }: Props) {
           <View
             style={[
               styles.typeBadge,
-              { backgroundColor: entry.type === 'permanent' ? '#3B82F620' : '#F59E0B20' },
+              { backgroundColor: entry.type === 'permanent' ? '#1D9BF020' : '#F59E0B20' },
             ]}
           >
             <ThemedText
               style={[
                 styles.typeText,
-                { color: entry.type === 'permanent' ? '#3B82F6' : '#F59E0B' },
+                { color: entry.type === 'permanent' ? '#1D9BF0' : '#F59E0B' },
               ]}
             >
               {entry.type === 'permanent' ? 'Permanent' : 'Wildcard'}

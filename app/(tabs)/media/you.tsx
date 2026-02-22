@@ -71,14 +71,14 @@ function YouContent() {
           style={({ pressed }) => [styles.actionBtn, pressed && { opacity: 0.8 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
         >
-          <IconSymbol name="plus.app.fill" size={20} color="#f5f5f5" />
+          <IconSymbol name="plus.app.fill" size={20} color="#FFFFFF" />
           <ThemedText style={styles.actionBtnText}>Create</ThemedText>
         </Pressable>
         <Pressable
           style={({ pressed }) => [styles.actionBtn, pressed && { opacity: 0.8 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
         >
-          <IconSymbol name="books.vertical.fill" size={20} color="#f5f5f5" />
+          <IconSymbol name="books.vertical.fill" size={20} color="#FFFFFF" />
           <ThemedText style={styles.actionBtnText}>Library</ThemedText>
         </Pressable>
       </View>
@@ -133,7 +133,7 @@ function YouContent() {
           key={item.id}
           style={({ pressed }) => [
             styles.historyRow,
-            { backgroundColor: pressed ? '#191919' : 'transparent' },
+            { backgroundColor: pressed ? '#0B0F14' : 'transparent' },
           ]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
         >
@@ -305,7 +305,7 @@ function MyTargetsContent() {
         style={styles.addCta}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
       >
-        <IconSymbol name="plus.circle.fill" size={18} color="#f5f5f5" />
+        <IconSymbol name="plus.circle.fill" size={18} color="#FFFFFF" />
         <ThemedText style={styles.addCtaText}>Add Recruit</ThemedText>
       </Pressable>
     </ScrollView>
@@ -367,7 +367,7 @@ function RecruitDiscoveryContent() {
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
             <ThemedText style={styles.filterChipText}>{f}</ThemedText>
-            <IconSymbol name="chevron.down" size={10} color="#6e6e6e" />
+            <IconSymbol name="chevron.down" size={10} color="#A1A1AA" />
           </Pressable>
         ))}
       </ScrollView>
@@ -443,13 +443,13 @@ export default function YouScreen() {
             return (
               <Pressable
                 key={tab.key}
-                style={[styles.toggleTab, { backgroundColor: isActive ? '#2a2a2a' : 'transparent' }]}
+                style={[styles.toggleTab, { backgroundColor: isActive ? '#0B0F14' : 'transparent' }]}
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   setActiveTab(tab.key);
                 }}
               >
-                <ThemedText style={[styles.toggleText, { color: isActive ? '#f5f5f5' : '#6e6e6e' }]}>
+                <ThemedText style={[styles.toggleText, { color: isActive ? '#FFFFFF' : '#A1A1AA' }]}>
                   {tab.label}
                 </ThemedText>
               </Pressable>
@@ -517,12 +517,12 @@ const styles = StyleSheet.create({
     gap: 8,
     height: 44,
     borderRadius: 10,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
   },
   actionBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 
   // You — Sections
@@ -537,12 +537,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   seeAll: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
 
   // Horizontal scrolls
@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
   },
   historyThumb: {
     width: 40,
@@ -581,12 +581,12 @@ const styles = StyleSheet.create({
   historyTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   historyMeta: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     textTransform: 'capitalize',
   },
   historyProgress: {
@@ -594,12 +594,12 @@ const styles = StyleSheet.create({
   },
   historyProgressBar: {
     height: 3,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 2,
   },
   historyProgressFill: {
     height: 3,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     borderRadius: 2,
   },
 
@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
   filmSectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     paddingHorizontal: Spacing.md,
     marginTop: Spacing.md,
     marginBottom: Spacing.sm,
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 15,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   gridContent: {
     paddingHorizontal: Spacing.md - 4,
@@ -681,12 +681,12 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#111',
     borderWidth: 1,
-    borderColor: '#1a1a1a',
+    borderColor: '#0B0F14',
   },
   filterChipText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   addCta: {
     flexDirection: 'row',
@@ -699,12 +699,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#111',
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
-    borderColor: '#1a1a1a',
+    borderColor: '#0B0F14',
     borderStyle: 'dashed',
   },
   addCtaText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 });

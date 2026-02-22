@@ -42,19 +42,19 @@ export const BIZ_TXN_STATE_LABELS: Record<BizTxnState, string> = {
 };
 
 export const BIZ_TXN_STATE_COLORS: Record<BizTxnState, string> = {
-  draft: '#9CA3AF',
+  draft: '#A1A1AA',
   proposed: '#F59E0B',
-  rule_checked: '#3B82F6',
-  authorized: '#8B5CF6',
-  scheduled: '#6366F1',
-  released: '#14B8A6',
-  in_flight: '#0EA5E9',
+  rule_checked: '#1D9BF0',
+  authorized: '#1D9BF0',
+  scheduled: '#1D9BF0',
+  released: '#1D9BF0',
+  in_flight: '#1D9BF0',
   settled: '#22C55E',
   hold: '#F59E0B',
   failed: '#EF4444',
   disputed: '#EF4444',
-  returned: '#F97316',
-  reversed: '#9CA3AF',
+  returned: '#F59E0B',
+  reversed: '#A1A1AA',
 };
 
 // =============================================================================
@@ -117,9 +117,9 @@ export const ENTITY_STATUS_LABELS: Record<EntityStatus, string> = {
 export const ENTITY_STATUS_COLORS: Record<EntityStatus, string> = {
   active: '#22C55E',
   under_evaluation: '#F59E0B',
-  negotiating: '#3B82F6',
-  closed: '#9CA3AF',
-  dormant: '#6B7280',
+  negotiating: '#1D9BF0',
+  closed: '#A1A1AA',
+  dormant: '#A1A1AA',
   flagged: '#EF4444',
 };
 
@@ -162,13 +162,13 @@ export const BIZ_ENTITY_TYPE_LABELS: Record<BizEntityType, string> = {
 };
 
 export const BIZ_ENTITY_TYPE_COLORS: Record<BizEntityType, string> = {
-  internal: '#3B82F6',
-  holdco: '#8B5CF6',
-  partner: '#14B8A6',
+  internal: '#1D9BF0',
+  holdco: '#1D9BF0',
+  partner: '#1D9BF0',
   relationship: '#F59E0B',
-  asset: '#EC4899',
+  asset: '#1D9BF0',
   deal_acquisition: '#EF4444',
-  project: '#6366F1',
+  project: '#1D9BF0',
 };
 
 // =============================================================================

@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },

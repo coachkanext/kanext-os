@@ -91,7 +91,7 @@ export function CompPaddockSheet({ visible, onClose, colors }: Props) {
             >
               <Text style={[styles.tierLabel, { color: colors.text }]}>{tier.label}</Text>
               <Text style={[styles.tierDescription, { color: colors.textSecondary }]}>{tier.description}</Text>
-              <Text style={[styles.tierPrice, { color: '#FF5555' }]}>
+              <Text style={[styles.tierPrice, { color: '#1D9BF0' }]}>
                 ${getPrice(tier).toLocaleString()}
                 {pricingMode === 'per_race' ? ' / race' : ' / season'}
               </Text>
@@ -197,8 +197,8 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   togglePill: { flex: 1, paddingVertical: 8, borderRadius: 20, alignItems: 'center' },
-  togglePillActive: { backgroundColor: '#FF5555' },
-  toggleText: { fontSize: 13, fontWeight: '700', color: '#9CA3AF', letterSpacing: 0.5 },
+  togglePillActive: { backgroundColor: '#1D9BF0' },
+  toggleText: { fontSize: 13, fontWeight: '700', color: '#A1A1AA', letterSpacing: 0.5 },
   toggleTextActive: { color: '#fff' },
 
   tierCard: {

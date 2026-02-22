@@ -57,30 +57,30 @@ interface Props {
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
   INVESTOR: '#22C55E',
-  PARTNER: '#3B82F6',
-  INTERNAL: '#6B7280',
-  DEMO: '#8B5CF6',
+  PARTNER: '#1D9BF0',
+  INTERNAL: '#A1A1AA',
+  DEMO: '#1D9BF0',
 };
 
 const ATTENDEE_ROLE_COLORS: Record<string, string> = {
   founder: '#F59E0B',
   investor: '#22C55E',
-  advisor: '#8B5CF6',
-  board: '#3B82F6',
-  partner: '#EC4899',
-  staff: '#6B7280',
+  advisor: '#1D9BF0',
+  board: '#1D9BF0',
+  partner: '#1D9BF0',
+  staff: '#A1A1AA',
   press: '#EF4444',
-  legal: '#6B7280',
+  legal: '#A1A1AA',
 };
 
 const STAGE_COLORS: Record<string, string> = {
-  lead: '#6B7280',
-  contacted: '#3B82F6',
-  meeting_set: '#8B5CF6',
+  lead: '#A1A1AA',
+  contacted: '#1D9BF0',
+  meeting_set: '#1D9BF0',
   proposal_sent: '#F59E0B',
-  negotiating: '#F97316',
-  due_diligence: '#EC4899',
-  closed_won: '#10B981',
+  negotiating: '#F59E0B',
+  due_diligence: '#1D9BF0',
+  closed_won: '#22C55E',
   closed_lost: '#EF4444',
 };
 
@@ -115,7 +115,7 @@ export function BizDashboardV2({ colors, accent }: Props) {
         {/* ── Block 1: Video Hero ── */}
         {isDashboardBlockVisible('video_hero', viewAsRole) && (
           <View style={styles.heroWrapper}>
-            <LinearGradient colors={['#0a0618', '#1a0a2e', '#0a0618']} style={styles.heroGradient}>
+            <LinearGradient colors={['#0B0F14', '#0B0F14', '#0B0F14']} style={styles.heroGradient}>
               {/* Subtle inner vignette */}
               <LinearGradient
                 colors={['transparent', 'rgba(0,0,0,0.6)']}
@@ -146,9 +146,9 @@ export function BizDashboardV2({ colors, accent }: Props) {
             <View style={[styles.cardAccentStripe, { backgroundColor: accent }]} />
             <View style={styles.eventHeader}>
               <ThemedText style={[styles.sectionLabel, { color: accent }]}>NEXT EVENT</ThemedText>
-              <View style={[styles.eventTypeBadge, { backgroundColor: (EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#6B7280') + '18' }]}>
-                <View style={[styles.microDot, { backgroundColor: EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#6B7280' }]} />
-                <ThemedText style={[styles.eventTypeText, { color: EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#6B7280' }]}>
+              <View style={[styles.eventTypeBadge, { backgroundColor: (EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#A1A1AA') + '18' }]}>
+                <View style={[styles.microDot, { backgroundColor: EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#A1A1AA' }]} />
+                <ThemedText style={[styles.eventTypeText, { color: EVENT_TYPE_COLORS[nextEvent.eventType] ?? '#A1A1AA' }]}>
                   {nextEvent.eventType}
                 </ThemedText>
               </View>
@@ -159,8 +159,8 @@ export function BizDashboardV2({ colors, accent }: Props) {
             </ThemedText>
             <View style={styles.attendeeRow}>
               {nextEvent.attendees.slice(0, 4).map((a) => (
-                <View key={a.name} style={[styles.attendeePill, { backgroundColor: (ATTENDEE_ROLE_COLORS[a.role] ?? '#6B7280') + '12' }]}>
-                  <View style={[styles.attendeeDot, { backgroundColor: ATTENDEE_ROLE_COLORS[a.role] ?? '#6B7280' }]} />
+                <View key={a.name} style={[styles.attendeePill, { backgroundColor: (ATTENDEE_ROLE_COLORS[a.role] ?? '#A1A1AA') + '12' }]}>
+                  <View style={[styles.attendeeDot, { backgroundColor: ATTENDEE_ROLE_COLORS[a.role] ?? '#A1A1AA' }]} />
                   <ThemedText style={styles.attendeeName}>{a.name}</ThemedText>
                 </View>
               ))}
@@ -220,7 +220,7 @@ export function BizDashboardV2({ colors, accent }: Props) {
               <PipelineMetric
                 label="Raised"
                 value={`$${(FUNDRAISE_METRICS.raised / 1_000).toFixed(0)}K`}
-                color="#3B82F6"
+                color="#1D9BF0"
                 metric="raised"
                 role={viewAsRole}
               />
@@ -244,7 +244,7 @@ export function BizDashboardV2({ colors, accent }: Props) {
             <ThemedText style={[styles.sectionLabel, { color: accent }]}>TOP DEALS</ThemedText>
             {DEALS.filter((d) => d.priority === 'high').slice(0, 3).map((deal, i, arr) => {
               const isAnonymized = viewAsRole === 'B2b';
-              const stageColor = STAGE_COLORS[deal.stage] ?? '#6B7280';
+              const stageColor = STAGE_COLORS[deal.stage] ?? '#A1A1AA';
               const stageLabel = DEAL_STAGE_LABELS[deal.stage] ?? deal.stage;
               return (
                 <Pressable
@@ -446,10 +446,10 @@ const styles = StyleSheet.create({
 
   // ─── Dark Card (shared) ───
   darkCard: {
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
     padding: 16,
     marginBottom: 12,
     overflow: 'hidden',
@@ -519,10 +519,10 @@ const styles = StyleSheet.create({
   actionRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   actionCard: {
     flex: 1,
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
     padding: 14,
     alignItems: 'center',
     gap: 8,
@@ -569,10 +569,10 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   statBlock: {
     flex: 1,
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
     paddingVertical: 16,
     paddingHorizontal: 12,
     alignItems: 'center',
@@ -597,7 +597,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   dealName: {
     color: '#fff',
@@ -632,10 +632,10 @@ const styles = StyleSheet.create({
   // ─── Domain Cards ───
   domainSection: { gap: 8, marginBottom: 12 },
   domainCard: {
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
     padding: 16,
     overflow: 'hidden',
   },

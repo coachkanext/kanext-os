@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   userText: {
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   timestamp: {
     fontSize: 11,

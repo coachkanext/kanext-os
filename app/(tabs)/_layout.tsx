@@ -151,7 +151,7 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: colors.tabBar,
-          borderTopColor: 'rgba(255,255,255,0.08)',
+          borderTopColor: '#2F3336',
           height: Platform.OS === 'ios' ? Layout.tabBarHeight : 60,
           justifyContent: 'center',
           alignItems: 'center',

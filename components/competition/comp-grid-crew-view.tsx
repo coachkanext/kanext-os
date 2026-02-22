@@ -36,7 +36,7 @@ function getInitials(name: string): string {
 
 function getPitScoreColor(score: number): string {
   if (score >= 93) return '#22C55E';
-  if (score >= 88) return '#3B82F6';
+  if (score >= 88) return '#1D9BF0';
   return '#F59E0B';
 }
 

@@ -107,12 +107,12 @@ import {
 } from '@/utils/recruiting-board-store';
 
 // ─── Constants ───
-const BG = '#0F1115';
-const CARD_BG = '#1A1D23';
+const BG = '#0B0F14';
+const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#8A8F98';
-const DIVIDER = '#2A2D35';
-const ACCENT = '#3B82F6';
+const GRAY = '#A1A1AA';
+const DIVIDER = '#0B0F14';
+const ACCENT = '#1D9BF0';
 
 const PROGRAM_ANCHOR = getDivisionAnchor(INSTITUTION.division);
 const PROGRAM_TIERS = getKRTiersForDivision(PROGRAM_ANCHOR);
@@ -913,10 +913,10 @@ export function PlayerPoolContent() {
                 {/* ─── B) Quick Action Icons Row ─── */}
                 <View style={styles.qaActionsRow}>
                   {[
-                    { icon: 'doc.text.fill' as const, label: 'Offer', color: '#4CAF50', key: 'offer' as const },
-                    { icon: 'dollarsign.circle.fill' as const, label: 'NIL', color: '#FF9800', key: 'nil' as const },
-                    { icon: 'mappin.and.ellipse' as const, label: 'Visit', color: '#3B82F6', key: 'visit' as const },
-                    { icon: 'note.text' as const, label: 'Log', color: '#A855F7', key: 'log' as const },
+                    { icon: 'doc.text.fill' as const, label: 'Offer', color: '#22C55E', key: 'offer' as const },
+                    { icon: 'dollarsign.circle.fill' as const, label: 'NIL', color: '#F59E0B', key: 'nil' as const },
+                    { icon: 'mappin.and.ellipse' as const, label: 'Visit', color: '#1D9BF0', key: 'visit' as const },
+                    { icon: 'note.text' as const, label: 'Log', color: '#1D9BF0', key: 'log' as const },
                   ].map((action) => (
                     <Pressable
                       key={action.label}
@@ -963,8 +963,8 @@ export function PlayerPoolContent() {
                         <Text style={styles.qaDetailRow}><Text style={styles.qaDetailLabel}>Structure: </Text>{entry.nil.structure}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                           <Text style={styles.qaDetailLabel}>Status: </Text>
-                          <View style={[styles.qaTempPill, { backgroundColor: entry.nil.status === 'Approved' ? '#4CAF5025' : entry.nil.status === 'Pending' ? '#FF980025' : '#75757525' }]}>
-                            <Text style={{ fontSize: 11, fontWeight: '600', color: entry.nil.status === 'Approved' ? '#4CAF50' : entry.nil.status === 'Pending' ? '#FF9800' : GRAY }}>{entry.nil.status}</Text>
+                          <View style={[styles.qaTempPill, { backgroundColor: entry.nil.status === 'Approved' ? '#22C55E25' : entry.nil.status === 'Pending' ? '#F59E0B25' : '#A1A1AA25' }]}>
+                            <Text style={{ fontSize: 11, fontWeight: '600', color: entry.nil.status === 'Approved' ? '#22C55E' : entry.nil.status === 'Pending' ? '#F59E0B' : GRAY }}>{entry.nil.status}</Text>
                           </View>
                         </View>
                         {entry.nil.complianceNotes ? <Text style={styles.qaDetailRow}><Text style={styles.qaDetailLabel}>Compliance: </Text>{entry.nil.complianceNotes}</Text> : null}
@@ -1000,8 +1000,8 @@ export function PlayerPoolContent() {
                     <Text style={styles.qaSection}>RELATIONSHIPS</Text>
                     <View style={{ gap: 6 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <View style={[styles.qaRelBadge, { backgroundColor: '#3B82F625' }]}>
-                          <Text style={{ fontSize: 9, fontWeight: '700', color: '#3B82F6' }}>PRIMARY</Text>
+                        <View style={[styles.qaRelBadge, { backgroundColor: '#1D9BF025' }]}>
+                          <Text style={{ fontSize: 9, fontWeight: '700', color: '#1D9BF0' }}>PRIMARY</Text>
                         </View>
                         <Text style={styles.qaDetailRow}>{entry.relationships.primaryDecisionMaker.name} ({entry.relationships.primaryDecisionMaker.role})</Text>
                       </View>
@@ -1025,7 +1025,7 @@ export function PlayerPoolContent() {
                         <View style={{ marginTop: 6 }}>
                           <Text style={[styles.qaDetailLabel, { marginBottom: 4 }]}>Trust Notes:</Text>
                           {entry.relationships.trustNotes.map((note, i) => (
-                            <Text key={i} style={{ fontSize: 12, color: '#d0d0d0', lineHeight: 17 }}>{'\u2022'} {note}</Text>
+                            <Text key={i} style={{ fontSize: 12, color: '#A1A1AA', lineHeight: 17 }}>{'\u2022'} {note}</Text>
                           ))}
                         </View>
                       )}
@@ -1124,7 +1124,7 @@ export function PlayerPoolContent() {
                     </View>
                     <View style={{ flexDirection: 'row', gap: 10 }}>
                       <Pressable
-                        style={[styles.qaConfirmBtn, { backgroundColor: '#2A2D35' }]}
+                        style={[styles.qaConfirmBtn, { backgroundColor: '#0B0F14' }]}
                         onPress={() => setQaConfirmTarget(null)}
                       >
                         <Text style={{ fontSize: 13, fontWeight: '600', color: WHITE }}>Cancel</Text>
@@ -1229,7 +1229,7 @@ export function PlayerPoolContent() {
                     {pinnedLogs.map((logEntry) => {
                       const meta = LOG_TYPE_META[logEntry.type];
                       return (
-                        <View key={logEntry.id} style={[styles.qaLogRow, { backgroundColor: '#1a1d2380' }]}>
+                        <View key={logEntry.id} style={[styles.qaLogRow, { backgroundColor: '#0B0F1480' }]}>
                           <View style={[styles.qaLogIcon, { backgroundColor: meta.color + '25' }]}>
                             <Text style={[styles.qaLogIconText, { color: meta.color }]}>{meta.icon}</Text>
                           </View>
@@ -1912,7 +1912,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#1A1D23',
+    borderColor: '#0B0F14',
   },
   heroTitle: {
     fontSize: 24,
@@ -1924,7 +1924,7 @@ const styles = StyleSheet.create({
   },
   heroSubtitle: {
     fontSize: 14,
-    color: '#B0B4BC',
+    color: '#A1A1AA',
     textAlign: 'center',
     marginBottom: 20,
     lineHeight: 20,
@@ -1932,14 +1932,14 @@ const styles = StyleSheet.create({
   heroSearchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A1D23',
+    backgroundColor: '#0B0F14',
     borderRadius: 24,
     paddingHorizontal: 16,
     height: 44,
     width: '100%',
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#2A2D35',
+    borderColor: '#0B0F14',
   },
   heroSearchInput: {
     flex: 1,
@@ -1956,7 +1956,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 24,
     borderWidth: 1.5,
-    borderColor: '#4A4D55',
+    borderColor: '#52525B',
   },
   heroFilterPillActive: {
     backgroundColor: WHITE,
@@ -1996,7 +1996,7 @@ const styles = StyleSheet.create({
   ratingListHeader: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#4CAF50',
+    color: '#22C55E',
     letterSpacing: 1,
     marginBottom: 10,
   },
@@ -2017,7 +2017,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -2063,7 +2063,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   ratingLevelBadge: {
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 6,
@@ -2075,7 +2075,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   ratingPosBadge: {
-    backgroundColor: '#3A3D45',
+    backgroundColor: '#2F3336',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -2092,12 +2092,12 @@ const styles = StyleSheet.create({
   ratingBoxOvr: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     borderRadius: 8,
     paddingVertical: 6,
     minWidth: 42,
     borderWidth: 1,
-    borderColor: '#4A4D55',
+    borderColor: '#52525B',
   },
   ratingBox: {
     flex: 1,
@@ -2120,20 +2120,20 @@ const styles = StyleSheet.create({
   ratingBoxValue: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#6B7080',
+    color: '#A1A1AA',
   },
   ratingBoxExpanded: {
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     borderRadius: 6,
   },
   ratingBoxSplit: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     borderRadius: 8,
     minWidth: 72,
     borderWidth: 1,
-    borderColor: '#4A4D55',
+    borderColor: '#52525B',
   },
   ratingBoxSplitHalf: {
     flex: 1,
@@ -2145,7 +2145,7 @@ const styles = StyleSheet.create({
   ratingBoxSplitDivider: {
     width: StyleSheet.hairlineWidth,
     height: '60%',
-    backgroundColor: '#4A4D55',
+    backgroundColor: '#52525B',
   },
   ratingBoxSplitValue: {
     fontSize: 14,
@@ -2154,7 +2154,7 @@ const styles = StyleSheet.create({
   },
   subclusterStrip: {
     marginTop: 10,
-    backgroundColor: '#1A1D23',
+    backgroundColor: '#0B0F14',
     borderRadius: 8,
     padding: 10,
     borderWidth: StyleSheet.hairlineWidth,
@@ -2174,7 +2174,7 @@ const styles = StyleSheet.create({
   },
   subclusterName: {
     fontSize: 12,
-    color: '#B0B4BC',
+    color: '#A1A1AA',
   },
   subclusterVal: {
     fontSize: 12,
@@ -2202,13 +2202,13 @@ const styles = StyleSheet.create({
   // Division group rows
   // Division pill grid
   pillGrid: { flexDirection: 'row' as const, flexWrap: 'wrap' as const, gap: 8, paddingVertical: 10, paddingHorizontal: 4 },
-  divPill: { backgroundColor: '#2A2D35', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16 },
+  divPill: { backgroundColor: '#0B0F14', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16 },
   divPillSelected: { backgroundColor: WHITE },
-  divPillOpen: { backgroundColor: '#3A3D45' },
+  divPillOpen: { backgroundColor: '#2F3336' },
   divPillText: { fontSize: 13, fontWeight: '600' as const, color: GRAY },
   divPillTextSelected: { color: BG },
   pillSubGrid: { flexDirection: 'row' as const, flexWrap: 'wrap' as const, gap: 8, paddingHorizontal: 4, paddingBottom: 10 },
-  divSubPill: { backgroundColor: '#2A2D35', paddingHorizontal: 14, paddingVertical: 7, borderRadius: 14, borderWidth: 1, borderColor: '#3A3D45' },
+  divSubPill: { backgroundColor: '#0B0F14', paddingHorizontal: 14, paddingVertical: 7, borderRadius: 14, borderWidth: 1, borderColor: '#2F3336' },
   divSubPillSelected: { backgroundColor: WHITE, borderColor: WHITE },
   divSubPillText: { fontSize: 12, fontWeight: '600' as const, color: GRAY },
   divSubPillTextSelected: { color: BG },
@@ -2225,7 +2225,7 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: DIVIDER,
   },
-  footerResetBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, borderWidth: 1.5, borderColor: '#4A4D55', alignItems: 'center' as const },
+  footerResetBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, borderWidth: 1.5, borderColor: '#52525B', alignItems: 'center' as const },
   footerResetText: { fontSize: 14, fontWeight: '600' as const, color: GRAY },
   footerApplyBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: WHITE, alignItems: 'center' as const },
   footerApplyText: { fontSize: 14, fontWeight: '600' as const, color: BG },
@@ -2237,18 +2237,18 @@ const styles = StyleSheet.create({
   boardHeader: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 12 },
   boardTitle: { fontSize: 20, fontWeight: '800', color: WHITE, letterSpacing: 1 },
   boardSubtitle: { fontSize: 13, color: GRAY, marginTop: 2 },
-  addBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#2A2D35', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20 },
+  addBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#0B0F14', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20 },
   addBtnText: { fontSize: 13, fontWeight: '700', color: WHITE },
-  boardSearchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1A1D23', borderRadius: 20, paddingHorizontal: 14, height: 38, borderWidth: 1, borderColor: '#2A2D35', gap: 8, marginBottom: 4 },
+  boardSearchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0B0F14', borderRadius: 20, paddingHorizontal: 14, height: 38, borderWidth: 1, borderColor: '#0B0F14', gap: 8, marginBottom: 4 },
   boardSearchInput: { flex: 1, fontSize: 14, color: WHITE, paddingVertical: 0 },
   needsRow: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, flexWrap: 'wrap' },
-  needsDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#FF9800', marginRight: 2 },
+  needsDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#F59E0B', marginRight: 2 },
   needsLabel: { fontSize: 12, fontWeight: '600', color: WHITE },
-  needsSep: { fontSize: 12, color: '#4A4D55', marginHorizontal: 2 },
-  needsPrimaryText: { fontSize: 12, fontWeight: '700', color: '#FF9800' },
+  needsSep: { fontSize: 12, color: '#52525B', marginHorizontal: 2 },
+  needsPrimaryText: { fontSize: 12, fontWeight: '700', color: '#F59E0B' },
   needsTotalText: { fontSize: 12, fontWeight: '600', color: GRAY },
   needsMetric: { fontSize: 11, color: GRAY },
-  needsPanel: { backgroundColor: '#1A1D23', borderRadius: 10, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: DIVIDER },
+  needsPanel: { backgroundColor: '#0B0F14', borderRadius: 10, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: DIVIDER },
   needsTableHeader: { flexDirection: 'row', alignItems: 'center', paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: DIVIDER, marginBottom: 4 },
   needsTableRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 5 },
   needsCell: { fontSize: 9, fontWeight: '700', color: GRAY, textTransform: 'uppercase', letterSpacing: 0.3 },
@@ -2260,12 +2260,12 @@ const styles = StyleSheet.create({
   needsFooter: { borderTopWidth: 1, borderTopColor: DIVIDER, marginTop: 6, paddingTop: 8, gap: 4 },
   needsFooterText: { fontSize: 11, color: GRAY },
   viewToggleRow: { flexDirection: 'row', gap: 6, marginBottom: 12 },
-  viewTogglePill: { paddingHorizontal: 16, paddingVertical: 7, borderRadius: 16, backgroundColor: '#2A2D35' },
+  viewTogglePill: { paddingHorizontal: 16, paddingVertical: 7, borderRadius: 16, backgroundColor: '#0B0F14' },
   viewTogglePillActive: { backgroundColor: WHITE },
   viewToggleText: { fontSize: 12, fontWeight: '700', color: GRAY },
   viewToggleTextActive: { color: BG },
   kanbanScroll: { paddingBottom: 16 },
-  sortPill: { backgroundColor: '#2A2D35', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14 },
+  sortPill: { backgroundColor: '#0B0F14', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14 },
   sortPillActive: { backgroundColor: WHITE },
   sortPillText: { fontSize: 11, fontWeight: '600', color: GRAY },
   sortPillTextActive: { color: BG },
@@ -2274,11 +2274,11 @@ const styles = StyleSheet.create({
   teamLogoText: { fontSize: 13, fontWeight: '800', color: WHITE, letterSpacing: 0.5 },
   teamName: { fontSize: 15, fontWeight: '700', color: WHITE },
   teamMeta: { fontSize: 12, color: GRAY, marginTop: 2 },
-  teamBadge: { backgroundColor: '#2A2D35', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
+  teamBadge: { backgroundColor: '#0B0F14', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
   teamBadgeText: { fontSize: 13, fontWeight: '700', color: WHITE },
   teamSheetLogo: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
   teamSheetLogoText: { fontSize: 18, fontWeight: '800', color: WHITE, letterSpacing: 0.5 },
-  teamSheetStat: { flex: 1, backgroundColor: '#1A1D23', borderRadius: 10, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: DIVIDER },
+  teamSheetStat: { flex: 1, backgroundColor: '#0B0F14', borderRadius: 10, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: DIVIDER },
   teamSheetStatValue: { fontSize: 20, fontWeight: '800', color: WHITE },
   teamSheetStatLabel: { fontSize: 10, fontWeight: '600', color: GRAY, letterSpacing: 0.3, marginTop: 2 },
   teamSheetPlayerRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: DIVIDER },
@@ -2288,62 +2288,62 @@ const styles = StyleSheet.create({
 
   // Quick actions sheet
   qaToggleRow: { flexDirection: 'row', gap: 8, marginBottom: 14 },
-  qaTogglePill: { flex: 1, paddingVertical: 8, borderRadius: 10, backgroundColor: '#2a2a2a', alignItems: 'center' },
-  qaTogglePillActive: { backgroundColor: '#f5f5f5' },
-  qaToggleText: { fontSize: 13, fontWeight: '600', color: '#6e6e6e' },
+  qaTogglePill: { flex: 1, paddingVertical: 8, borderRadius: 10, backgroundColor: '#0B0F14', alignItems: 'center' },
+  qaTogglePillActive: { backgroundColor: '#FFFFFF' },
+  qaToggleText: { fontSize: 13, fontWeight: '600', color: '#A1A1AA' },
   qaToggleTextActive: { color: '#111' },
   qaSection: { fontSize: 10, fontWeight: '700', color: GRAY, letterSpacing: 0.5, marginBottom: 6, marginTop: 4 },
   qaRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: DIVIDER },
   qaRowText: { fontSize: 15, fontWeight: '500', color: WHITE },
   qaDot: { width: 8, height: 8, borderRadius: 4 },
-  qaPipelinePill: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: '#2A2D35', borderWidth: 1, borderColor: 'transparent' },
+  qaPipelinePill: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: '#0B0F14', borderWidth: 1, borderColor: 'transparent' },
   qaPipelinePillText: { fontSize: 12, fontWeight: '600', color: GRAY },
-  qaSnapshotCard: { backgroundColor: '#1a1a1a', borderRadius: 12, padding: 14, marginBottom: 14, gap: 8 },
-  qaNeedsText: { fontSize: 12, color: '#FF9800', fontWeight: '500' },
+  qaSnapshotCard: { backgroundColor: '#0B0F14', borderRadius: 12, padding: 14, marginBottom: 14, gap: 8 },
+  qaNeedsText: { fontSize: 12, color: '#F59E0B', fontWeight: '500' },
   qaLastTouchText: { fontSize: 12, color: GRAY },
   qaActionsRow: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 18 },
   qaActionBtn: { alignItems: 'center', gap: 6 },
   qaActionIconWrap: { width: 48, height: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
-  qaActionLabel: { fontSize: 11, fontWeight: '600', color: '#f5f5f5' },
+  qaActionLabel: { fontSize: 11, fontWeight: '600', color: '#FFFFFF' },
   qaLogRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: DIVIDER, gap: 10 },
   qaLogIcon: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
   qaLogIconText: { fontSize: 13, fontWeight: '700' },
-  qaLogBody: { fontSize: 13, fontWeight: '500', color: '#f5f5f5', lineHeight: 18 },
-  qaLogTime: { fontSize: 11, color: '#6e6e6e', marginTop: 1 },
+  qaLogBody: { fontSize: 13, fontWeight: '500', color: '#FFFFFF', lineHeight: 18 },
+  qaLogTime: { fontSize: 11, color: '#A1A1AA', marginTop: 1 },
   qaLogTag: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
   qaLogTagText: { fontSize: 10, fontWeight: '700' },
-  qaMovePill: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, backgroundColor: '#1a1a1a' },
-  qaMovePillText: { fontSize: 12, fontWeight: '600', color: '#f5f5f5' },
+  qaMovePill: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, backgroundColor: '#0B0F14' },
+  qaMovePillText: { fontSize: 12, fontWeight: '600', color: '#FFFFFF' },
   qaEmptyText: { fontSize: 13, color: GRAY, paddingVertical: 12 },
   qaHeaderMeta: { fontSize: 12, color: GRAY, marginBottom: 8 },
-  qaMetaLine: { fontSize: 12, color: '#c0c0c0', lineHeight: 18 },
+  qaMetaLine: { fontSize: 12, color: '#A1A1AA', lineHeight: 18 },
   qaTempPill: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 8 },
   qaTempText: { fontSize: 11, fontWeight: '700' },
-  qaDetailBlock: { backgroundColor: '#1a1a1a', borderRadius: 12, padding: 14, marginBottom: 10, gap: 6 },
-  qaDetailRow: { fontSize: 12, color: '#e0e0e0', lineHeight: 18 },
+  qaDetailBlock: { backgroundColor: '#0B0F14', borderRadius: 12, padding: 14, marginBottom: 10, gap: 6 },
+  qaDetailRow: { fontSize: 12, color: '#A1A1AA', lineHeight: 18 },
   qaDetailLabel: { fontWeight: '700', color: GRAY, fontSize: 11 },
   qaRelBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
   qaRiskChip: { backgroundColor: '#EF444425', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, borderWidth: 1, borderColor: '#EF444440' },
   qaRiskChipText: { fontSize: 10, fontWeight: '600', color: '#EF4444' },
   qaDdCheck: { width: 18, height: 18, borderRadius: 4, borderWidth: 1.5, borderColor: GRAY, alignItems: 'center' as const, justifyContent: 'center' as const },
-  qaDdCheckDone: { backgroundColor: '#4CAF50', borderColor: '#4CAF50' },
-  qaConfirmBox: { backgroundColor: '#1a1a1a', borderRadius: 12, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: '#FF980060' },
+  qaDdCheckDone: { backgroundColor: '#22C55E', borderColor: '#22C55E' },
+  qaConfirmBox: { backgroundColor: '#0B0F14', borderRadius: 12, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: '#F59E0B60' },
   qaConfirmBtn: { flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' as const },
-  qaLogComposer: { backgroundColor: '#1a1a1a', borderRadius: 12, padding: 12, marginBottom: 10 },
-  qaLogTypeChip: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, borderWidth: 1, borderColor: DIVIDER, backgroundColor: '#2A2D35' },
-  qaLogInput: { flex: 1, backgroundColor: '#2A2D35', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, color: WHITE, fontSize: 13, maxHeight: 80 },
+  qaLogComposer: { backgroundColor: '#0B0F14', borderRadius: 12, padding: 12, marginBottom: 10 },
+  qaLogTypeChip: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, borderWidth: 1, borderColor: DIVIDER, backgroundColor: '#0B0F14' },
+  qaLogInput: { flex: 1, backgroundColor: '#0B0F14', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, color: WHITE, fontSize: 13, maxHeight: 80 },
   qaLogSendBtn: { alignSelf: 'flex-end' as const, paddingBottom: 4 },
 
   // Add selection mode
-  addSelectionBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#1B2A1B', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, marginBottom: 10 },
-  addSelectionText: { fontSize: 13, fontWeight: '600', color: '#4CAF50' },
+  addSelectionBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#0B0F14', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, marginBottom: 10 },
+  addSelectionText: { fontSize: 13, fontWeight: '600', color: '#22C55E' },
   addSelectionDone: { fontSize: 13, fontWeight: '700', color: WHITE },
   addToBoardBtn: { position: 'absolute', top: 14, right: 14, zIndex: 10 },
 
   // Card v2: 3-metric bar
   metricBar: {
     flexDirection: 'row',
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     borderRadius: 10,
     marginTop: 10,
     overflow: 'hidden',
@@ -2366,7 +2366,7 @@ const styles = StyleSheet.create({
   },
   metricDivider: {
     width: StyleSheet.hairlineWidth,
-    backgroundColor: '#4A4D55',
+    backgroundColor: '#52525B',
     marginVertical: 8,
   },
 
@@ -2426,7 +2426,7 @@ const styles = StyleSheet.create({
   boardPriorityText: { fontSize: 11, fontWeight: '800', letterSpacing: 0.3 },
   boardStatusBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 },
   boardStatusText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
-  boardTagChip: { backgroundColor: '#2A2D35', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 4 },
+  boardTagChip: { backgroundColor: '#0B0F14', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 4 },
   boardTagText: { fontSize: 10, fontWeight: '600', color: GRAY },
   boardTagMore: { fontSize: 10, fontWeight: '600', color: GRAY },
 });

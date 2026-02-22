@@ -35,7 +35,7 @@ export function MessagesSegmentedControl({ state, navigation }: BottomTabBarProp
               key={route.key}
               style={[
                 styles.pill,
-                { backgroundColor: isFocused ? '#f5f5f5' : '#111' },
+                { backgroundColor: isFocused ? '#FFFFFF' : '#111' },
               ]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -47,7 +47,7 @@ export function MessagesSegmentedControl({ state, navigation }: BottomTabBarProp
               <ThemedText
                 style={[
                   styles.pillText,
-                  { color: isFocused ? '#000' : '#6e6e6e' },
+                  { color: isFocused ? '#000' : '#A1A1AA' },
                 ]}
               >
                 {label}
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     paddingTop: Spacing.sm,
     paddingBottom: Spacing.sm,
   },

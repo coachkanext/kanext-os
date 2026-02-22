@@ -163,20 +163,20 @@ export const BIZ_REPORTS_V2_TABS: BizReportsV2Tab[] = [
 
 export const REPORT_STATUS_COLOR: Record<ReportItem['status'], string> = {
   generated: '#22C55E',
-  generating: '#3B82F6',
-  scheduled: '#6366F1',
+  generating: '#1D9BF0',
+  scheduled: '#1D9BF0',
   draft: '#F59E0B',
   failed: '#EF4444',
 };
 
 export const REPORT_CATEGORY_COLOR: Record<ReportCategory, string> = {
   finance: '#22C55E',
-  rails: '#3B82F6',
+  rails: '#1D9BF0',
   operations: '#F59E0B',
-  compliance_legal: '#8B5CF6',
-  people: '#EC4899',
-  assets: '#14B8A6',
-  media_proof: '#F97316',
+  compliance_legal: '#1D9BF0',
+  people: '#1D9BF0',
+  assets: '#1D9BF0',
+  media_proof: '#F59E0B',
 };
 
 export const REPORT_CATEGORY_LABEL: Record<ReportCategory, string> = {
@@ -192,14 +192,14 @@ export const REPORT_CATEGORY_LABEL: Record<ReportCategory, string> = {
 export const REPORT_FORMAT_COLOR: Record<ReportItem['format'], string> = {
   pdf: '#EF4444',
   xlsx: '#22C55E',
-  csv: '#3B82F6',
-  dashboard: '#8B5CF6',
+  csv: '#1D9BF0',
+  dashboard: '#1D9BF0',
 };
 
 export const ACCESS_LEVEL_COLOR: Record<DataRoomDocument['accessLevel'], string> = {
   founder_only: '#EF4444',
-  board: '#8B5CF6',
-  retail: '#3B82F6',
+  board: '#1D9BF0',
+  retail: '#1D9BF0',
   public: '#22C55E',
 };
 

@@ -61,22 +61,22 @@ export function ShareSheet({ visible, onClose, title, shareUrl = 'https://kanext
         )}
 
         <Pressable style={styles.row} onPress={handleCopyLink}>
-          <IconSymbol name="link" size={20} color="#f5f5f5" />
+          <IconSymbol name="link" size={20} color="#FFFFFF" />
           <ThemedText style={styles.rowLabel}>Copy Link</ThemedText>
         </Pressable>
 
         <Pressable style={styles.row} onPress={handleShareTo}>
-          <IconSymbol name="square.and.arrow.up" size={20} color="#f5f5f5" />
+          <IconSymbol name="square.and.arrow.up" size={20} color="#FFFFFF" />
           <ThemedText style={styles.rowLabel}>Share to...</ThemedText>
         </Pressable>
 
         <Pressable style={styles.row} onPress={handleShareMessages}>
-          <IconSymbol name="bubble.left.fill" size={20} color="#f5f5f5" />
+          <IconSymbol name="bubble.left.fill" size={20} color="#FFFFFF" />
           <ThemedText style={styles.rowLabel}>Share to Messages</ThemedText>
         </Pressable>
 
         <Pressable style={styles.row} onPress={handlePostToFeed}>
-          <IconSymbol name="doc.badge.arrow.up" size={20} color="#f5f5f5" />
+          <IconSymbol name="doc.badge.arrow.up" size={20} color="#FFFFFF" />
           <ThemedText style={styles.rowLabel}>Post to Feed</ThemedText>
         </Pressable>
       </View>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: Spacing.sm,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -106,11 +106,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     gap: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
   },
   rowLabel: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
 });

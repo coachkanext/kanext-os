@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#0B0F14',
   },
   avatar: {
     width: 40,
@@ -91,12 +91,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   date: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   actions: {
     flexDirection: 'row',
@@ -105,13 +105,13 @@ const styles = StyleSheet.create({
   btn: {
     paddingHorizontal: 10,
     paddingVertical: 6,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     borderRadius: 6,
   },
   btnText: {
     fontSize: 11,
     fontWeight: '500',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   ctaBtn: {
     flexDirection: 'row',
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     borderRadius: 6,
   },
   ctaText: {

@@ -96,10 +96,10 @@ export const EDU_RESOURCES_SCOPE_CHIPS = [
 
 export const RESOURCE_CATEGORY_COLOR: Record<EduResource['category'], string> = {
   library: '#22C55E',
-  technology: '#3B82F6',
-  lab_equipment: '#8B5CF6',
+  technology: '#1D9BF0',
+  lab_equipment: '#1D9BF0',
   media: '#F59E0B',
-  software: '#EC4899',
+  software: '#1D9BF0',
   athletic_equipment: '#EF4444',
 };
 
@@ -114,7 +114,7 @@ export const RESOURCE_CATEGORY_LABEL: Record<EduResource['category'], string> = 
 
 export const CONDITION_COLOR: Record<EduResource['condition'], string> = {
   new: '#22C55E',
-  good: '#3B82F6',
+  good: '#1D9BF0',
   fair: '#F59E0B',
   needs_replacement: '#EF4444',
 };
@@ -127,7 +127,7 @@ export const CONDITION_LABEL: Record<EduResource['condition'], string> = {
 };
 
 export const CHECKOUT_STATUS_COLOR: Record<CheckoutRequest['status'], string> = {
-  checked_out: '#3B82F6',
+  checked_out: '#1D9BF0',
   pending: '#F59E0B',
   returned: '#22C55E',
   overdue: '#EF4444',

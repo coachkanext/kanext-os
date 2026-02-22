@@ -249,7 +249,7 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
                 <View style={[styles.badgePill, { backgroundColor: colors.backgroundTertiary }]}>
                   <Text style={[styles.badgePillText, { color: colors.text }]}>{primaryBadge}</Text>
                 </View>
-                <View style={[styles.demoPill, { backgroundColor: 'rgba(255,255,255,0.08)' }]}>
+                <View style={[styles.demoPill, { backgroundColor: '#2F3336' }]}>
                   <Text style={[styles.demoPillText, { color: colors.textSecondary }]}>Demo</Text>
                 </View>
               </View>

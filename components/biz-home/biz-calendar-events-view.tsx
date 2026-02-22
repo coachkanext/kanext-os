@@ -13,9 +13,9 @@ import { openPersonCard } from '@/utils/global-entity-sheets';
 
 const CATEGORY_COLORS: Record<BizEvent['category'], string> = {
   investor: '#22C55E',
-  board: '#3B82F6',
-  product: '#8B5CF6',
-  legal: '#6B7280',
+  board: '#1D9BF0',
+  product: '#1D9BF0',
+  legal: '#A1A1AA',
   media: '#EF4444',
   conference: '#F59E0B',
 };
@@ -99,7 +99,7 @@ function EventCard({ event, colors }: { event: BizEvent; colors: typeof Colors.l
             key={a.name}
             onPress={() => openPersonCard({ name: a.name, role: a.role, status: 'active' })}
           >
-            <ThemedText style={[styles.attendeeName, { color: '#6AA9FF' }]}>{a.name}</ThemedText>
+            <ThemedText style={[styles.attendeeName, { color: '#1D9BF0' }]}>{a.name}</ThemedText>
           </Pressable>
         ))}
       </View>

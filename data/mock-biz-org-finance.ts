@@ -186,9 +186,9 @@ export const BUDGET_STATUS_LABEL: Record<FinanceBudget['status'], string> = {
 
 export const COMMITMENT_STATUS_COLOR: Record<FinanceCommitment['status'], string> = {
   pending: '#F59E0B',
-  active: '#3B82F6',
+  active: '#1D9BF0',
   fulfilled: '#22C55E',
-  cancelled: '#9CA3AF',
+  cancelled: '#A1A1AA',
 };
 
 export const COMMITMENT_STATUS_LABEL: Record<FinanceCommitment['status'], string> = {
@@ -199,42 +199,42 @@ export const COMMITMENT_STATUS_LABEL: Record<FinanceCommitment['status'], string
 };
 
 export const SOURCE_TAB_COLOR: Record<string, string> = {
-  legal: '#8B5CF6',
-  operations: '#3B82F6',
-  people: '#14B8A6',
+  legal: '#1D9BF0',
+  operations: '#1D9BF0',
+  people: '#1D9BF0',
   compliance: '#F59E0B',
 };
 
 export const CONTROL_STATUS_COLOR: Record<FinanceControl['status'], string> = {
   active: '#22C55E',
-  disabled: '#9CA3AF',
+  disabled: '#A1A1AA',
 };
 
 export const AUDIT_TYPE_COLOR: Record<string, string> = {
-  approval: '#3B82F6',
-  authorization: '#8B5CF6',
-  creation: '#14B8A6',
+  approval: '#1D9BF0',
+  authorization: '#1D9BF0',
+  creation: '#1D9BF0',
   amendment: '#F59E0B',
   release: '#22C55E',
   rejection: '#EF4444',
-  control_change: '#6366F1',
-  budget_alert: '#F97316',
-  reconciliation: '#0EA5E9',
+  control_change: '#1D9BF0',
+  budget_alert: '#F59E0B',
+  reconciliation: '#1D9BF0',
 };
 
 export const LEDGER_CATEGORY_COLOR: Record<string, string> = {
-  payroll: '#8B5CF6',
-  infrastructure: '#6AA9FF',
-  marketing: '#EC4899',
-  legal: '#F97316',
-  operations: '#3B82F6',
-  consulting: '#14B8A6',
+  payroll: '#1D9BF0',
+  infrastructure: '#1D9BF0',
+  marketing: '#1D9BF0',
+  legal: '#F59E0B',
+  operations: '#1D9BF0',
+  consulting: '#1D9BF0',
   licensing: '#22C55E',
-  subscription: '#0EA5E9',
-  'r&d': '#6366F1',
+  subscription: '#1D9BF0',
+  'r&d': '#1D9BF0',
   travel: '#F59E0B',
-  office: '#9CA3AF',
-  partnership: '#8B5CF6',
+  office: '#A1A1AA',
+  partnership: '#1D9BF0',
   acquisition: '#EF4444',
 };
 
@@ -262,7 +262,7 @@ const TRUTH_CHIPS: FinanceTruthChip[] = [
     label: 'Runway',
     value: '13.3 months',
     icon: 'hourglass',
-    color: '#3B82F6',
+    color: '#1D9BF0',
   },
   {
     id: 'tc-revenue',
@@ -283,7 +283,7 @@ const TRUTH_CHIPS: FinanceTruthChip[] = [
     label: 'Pending Approvals',
     value: '3',
     icon: 'clock.fill',
-    color: '#8B5CF6',
+    color: '#1D9BF0',
   },
 ];
 

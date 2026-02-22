@@ -162,7 +162,7 @@ export default function ChatScreen() {
             setNewThreadVisible(true);
           }}
         >
-          <IconSymbol name="square.and.pencil" size={20} color="#f5f5f5" />
+          <IconSymbol name="square.and.pencil" size={20} color="#FFFFFF" />
         </Pressable>
         <ChatToggle activeTab={subTab} onTabChange={setSubTab} />
       </View>
@@ -265,12 +265,12 @@ export default function ChatScreen() {
                           <ThemedText style={styles.msgSender}>{msg.sender}</ThemedText>
                         )}
                         <ThemedText
-                          style={[styles.msgContent, { color: msg.isMe ? '#000' : '#f5f5f5' }]}
+                          style={[styles.msgContent, { color: msg.isMe ? '#000' : '#FFFFFF' }]}
                         >
                           {msg.content}
                         </ThemedText>
                         <ThemedText
-                          style={[styles.msgTime, { color: msg.isMe ? 'rgba(0,0,0,0.5)' : '#6e6e6e' }]}
+                          style={[styles.msgTime, { color: msg.isMe ? 'rgba(0,0,0,0.5)' : '#A1A1AA' }]}
                         >
                           {formatMessageTime(msg.timestamp)}
                         </ThemedText>
@@ -348,13 +348,13 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 15,
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   newBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contextChip: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 999,
@@ -414,12 +414,12 @@ const styles = StyleSheet.create({
   },
   contextText: {
     fontSize: 12,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     fontWeight: '500',
   },
   participants: {
     fontSize: 13,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: Spacing.md,
   },
   messagesContainer: {
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   dateLine: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
   },
   dateText: {
     fontSize: 11,
@@ -450,14 +450,14 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },
   msgAvatarText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   bubble: {
     maxWidth: '75%',
@@ -466,17 +466,17 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   myBubble: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     borderBottomRightRadius: 4,
   },
   otherBubble: {
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     borderBottomLeftRadius: 4,
   },
   msgSender: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     marginBottom: 2,
   },
   msgContent: {

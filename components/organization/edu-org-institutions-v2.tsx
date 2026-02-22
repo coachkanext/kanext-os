@@ -479,7 +479,7 @@ function CoverageTab({
                 {institutions.map((inst) => {
                   const h = inst.healthBars[cat];
                   return (
-                    <View key={inst.id} style={[s.coverageDot, { backgroundColor: h ? HEALTH_LEVEL_COLORS[h.level] : '#8F8F8F' }]} />
+                    <View key={inst.id} style={[s.coverageDot, { backgroundColor: h ? HEALTH_LEVEL_COLORS[h.level] : '#A1A1AA' }]} />
                   );
                 })}
               </View>
@@ -1089,7 +1089,7 @@ const s = StyleSheet.create({
   badgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
 
   // Progress bar
-  progressTrack: { height: 4, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
+  progressTrack: { height: 4, backgroundColor: '#2F3336', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
   progressFill: { height: 4, borderRadius: 2 },
 
   // KPI

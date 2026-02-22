@@ -354,9 +354,9 @@ function PossessionTab({ ctx, colors, accent }: TabProps) {
   // Mock outcome distribution
   const outcomes = [
     { label: 'KaNeXT Win (Comfortable)', pct: 32, color: '#22C55E' },
-    { label: 'KaNeXT Win (Close)', pct: 26, color: '#86EFAC' },
+    { label: 'KaNeXT Win (Close)', pct: 26, color: '#22C55E' },
     { label: 'Toss-Up', pct: 14, color: '#F59E0B' },
-    { label: 'OPP Win (Close)', pct: 18, color: '#FECACA' },
+    { label: 'OPP Win (Close)', pct: 18, color: '#EF4444' },
     { label: 'OPP Win (Comfortable)', pct: 10, color: '#EF4444' },
   ];
 
@@ -586,7 +586,7 @@ function BoxScoreTab({ ctx, colors, accent }: TabProps) {
       <View style={styles.rangeRow}>
         <RangeChip label="PTS" value={`${totals.pts}`} color={accent} colors={colors} />
         <RangeChip label="REB" value={`${totals.reb}`} color="#22C55E" colors={colors} />
-        <RangeChip label="AST" value={`${totals.ast}`} color="#6AA9FF" colors={colors} />
+        <RangeChip label="AST" value={`${totals.ast}`} color="#1D9BF0" colors={colors} />
         <RangeChip label="TO" value={`${totals.to}`} color="#EF4444" colors={colors} />
       </View>
 
@@ -632,7 +632,7 @@ function BoxScoreTab({ ctx, colors, accent }: TabProps) {
       {MOCK_CONSTRAINTS.what_if_toggles.map((t) => (
         <View key={t.id} style={[styles.toggleItemRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <ThemedText style={[styles.toggleItemLabel, { color: colors.text }]}>{t.label}</ThemedText>
-          <View style={[styles.toggleIndicator, { backgroundColor: t.enabled ? '#22C55E' : '#8F8F8F' }]}>
+          <View style={[styles.toggleIndicator, { backgroundColor: t.enabled ? '#22C55E' : '#A1A1AA' }]}>
             <ThemedText style={styles.toggleIndicatorText}>{t.enabled ? 'ON' : 'OFF'}</ThemedText>
           </View>
         </View>
@@ -782,7 +782,7 @@ const styles = StyleSheet.create({
 
   // Pills
   pillBar: { paddingHorizontal: 16, paddingVertical: 10, gap: 8 },
-  pill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
+  pill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#2F3336' },
   pillText: { fontSize: 13, fontWeight: '600' },
 
   // Section
@@ -801,7 +801,7 @@ const styles = StyleSheet.create({
 
   // Table
   tableCard: { borderRadius: 12, borderWidth: 1, overflow: 'hidden' },
-  tableHeader: { flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
+  tableHeader: { flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#2F3336' },
   thText: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase' },
   tableRow: { flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 8 },
   tdText: { fontSize: 13 },
@@ -837,7 +837,7 @@ const styles = StyleSheet.create({
   // Possession Engine
   outcomeRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 8, gap: 8 },
   outcomeLabel: { fontSize: 12, flex: 0.4 },
-  outcomeBarBg: { flex: 0.45, height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.06)' },
+  outcomeBarBg: { flex: 0.45, height: 8, borderRadius: 4, backgroundColor: '#2F3336' },
   outcomeBarFill: { height: 8, borderRadius: 4 },
   outcomePct: { flex: 0.15, fontSize: 12, fontWeight: '700', textAlign: 'right' },
 
@@ -875,14 +875,14 @@ const styles = StyleSheet.create({
 
   // Box Score
   boxTable: { borderRadius: 12, borderWidth: 1, overflow: 'hidden', minWidth: 520 },
-  boxHeader: { flexDirection: 'row', paddingHorizontal: 8, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
+  boxHeader: { flexDirection: 'row', paddingHorizontal: 8, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#2F3336' },
   boxHeaderText: { fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
   boxRow: { flexDirection: 'row', paddingHorizontal: 8, paddingVertical: 6 },
   boxCell: { fontSize: 12 },
 
   // Toggle
   toggleRow: { flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingTop: 8 },
-  toggleBtn: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)' },
+  toggleBtn: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#2F3336' },
   toggleBtnText: { fontSize: 13, fontWeight: '600' },
 
   // Constraints
@@ -922,6 +922,6 @@ const styles = StyleSheet.create({
   savedRunMeta: { flexDirection: 'row', gap: 12, marginTop: 4 },
   savedRunDetail: { fontSize: 12 },
   savedRunDate: { fontSize: 10, marginTop: 4 },
-  savedRunExpanded: { marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
+  savedRunExpanded: { marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: '#2F3336' },
   savedRunExpandedText: { fontSize: 11 },
 });

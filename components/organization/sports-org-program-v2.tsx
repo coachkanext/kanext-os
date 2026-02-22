@@ -254,7 +254,7 @@ function OverviewTab({
       </ThemedText>
       <View style={s.metricsStrip}>
         <View style={[s.metricCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.metricValue, { color: overview.upcomingMilestones > 0 ? '#6AA9FF' : '#22C55E' }]}>
+          <ThemedText style={[s.metricValue, { color: overview.upcomingMilestones > 0 ? '#1D9BF0' : '#22C55E' }]}>
             {overview.upcomingMilestones}
           </ThemedText>
           <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Upcoming</ThemedText>
@@ -1445,7 +1445,7 @@ const s = StyleSheet.create({
   // -- Progress bar --
   progressTrack: {
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: Spacing.sm,

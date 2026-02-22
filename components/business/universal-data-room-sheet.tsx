@@ -71,10 +71,10 @@ const DOC_TYPE_ICONS: Record<string, string> = {
 
 const ACCESS_TAG_COLORS: Record<string, string> = {
   public: '#22C55E',
-  retail: '#6AA9FF',
+  retail: '#1D9BF0',
   board: '#F59E0B',
   founder_only: '#EF4444',
-  workspace_only: '#8F8F8F',
+  workspace_only: '#A1A1AA',
 };
 
 const ACCESS_TAG_LABELS: Record<string, string> = {
@@ -99,7 +99,7 @@ const BOARD_PACK_STATUS_COLORS: Record<string, string> = {
   draft: '#F59E0B',
   final: '#22C55E',
   current: '#22C55E',
-  archived: '#8F8F8F',
+  archived: '#A1A1AA',
 };
 
 const DECISION_OUTCOME_COLORS: Record<string, string> = {
@@ -107,7 +107,7 @@ const DECISION_OUTCOME_COLORS: Record<string, string> = {
   rejected: '#EF4444',
   deferred: '#F59E0B',
   tabled: '#F59E0B',
-  pending: '#6AA9FF',
+  pending: '#1D9BF0',
 };
 
 const KPI_STATUS_COLORS: Record<string, string> = {
@@ -119,8 +119,8 @@ const KPI_STATUS_COLORS: Record<string, string> = {
 const RISK_SEVERITY_COLORS: Record<string, string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#6AA9FF',
-  low: '#8F8F8F',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 // =============================================================================
@@ -240,7 +240,7 @@ function DataRoomHeader({
   onRequestUpgrade?: () => void;
 }) {
   const tierLabel = investorTier === 'board' ? 'Board' : investor ? 'Retail' : founder ? 'Founder' : 'Viewer';
-  const tierColor = investorTier === 'board' ? '#F59E0B' : investor ? '#6AA9FF' : founder ? '#EF4444' : '#8F8F8F';
+  const tierColor = investorTier === 'board' ? '#F59E0B' : investor ? '#1D9BF0' : founder ? '#EF4444' : '#A1A1AA';
 
   return (
     <View style={[styles.header, { borderBottomColor: colors.border }]}>
@@ -280,10 +280,10 @@ function DataRoomHeader({
       <View style={styles.actionRow}>
         {investor && !investorTier && onRequestUpgrade && (
           <Pressable style={styles.actionIconWrap} onPress={onRequestUpgrade}>
-            <View style={[styles.actionIconCircle, { backgroundColor: '#6AA9FF22', borderColor: '#6AA9FF44' }]}>
-              <IconSymbol name="arrow.up.circle.fill" size={16} color="#6AA9FF" />
+            <View style={[styles.actionIconCircle, { backgroundColor: '#1D9BF022', borderColor: '#1D9BF044' }]}>
+              <IconSymbol name="arrow.up.circle.fill" size={16} color="#1D9BF0" />
             </View>
-            <ThemedText style={[styles.actionIconLabel, { color: '#6AA9FF' }]}>
+            <ThemedText style={[styles.actionIconLabel, { color: '#1D9BF0' }]}>
               Upgrade
             </ThemedText>
           </Pressable>
@@ -354,7 +354,7 @@ function StartHereTab({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="How to Evaluate KaNeXT" colors={colors}>
         {evaluationBullets.map((bullet, idx) => (
           <View key={idx} style={styles.numberRow}>
-            <ThemedText style={[styles.numberBadge, { color: '#6AA9FF' }]}>{idx + 1}</ThemedText>
+            <ThemedText style={[styles.numberBadge, { color: '#1D9BF0' }]}>{idx + 1}</ThemedText>
             <ThemedText style={[styles.bulletText, { color: colors.text }]}>{bullet}</ThemedText>
           </View>
         ))}
@@ -363,16 +363,16 @@ function StartHereTab({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Quick Links" colors={colors}>
         {links.map((link) => (
           <Pressable key={link.label} style={[styles.listRow, { borderBottomColor: colors.border }]}>
-            <IconSymbol name={link.icon as any} size={18} color="#6AA9FF" />
+            <IconSymbol name={link.icon as any} size={18} color="#1D9BF0" />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
-              <ThemedText style={[styles.listRowTitle, { color: '#6AA9FF' }]}>
+              <ThemedText style={[styles.listRowTitle, { color: '#1D9BF0' }]}>
                 {link.label}
               </ThemedText>
               <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
                 {link.subtitle}
               </ThemedText>
             </View>
-            <IconSymbol name="arrow.up.right" size={14} color="#6AA9FF" />
+            <IconSymbol name="arrow.up.right" size={14} color="#1D9BF0" />
           </Pressable>
         ))}
       </SectionCard>
@@ -538,8 +538,8 @@ function ProductDemoTab({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Demo Script" colors={colors}>
         {demoScript.map((item) => (
           <View key={item.step} style={styles.demoStepRow}>
-            <View style={[styles.demoStepBadge, { backgroundColor: '#6AA9FF22' }]}>
-              <ThemedText style={[styles.demoStepNumber, { color: '#6AA9FF' }]}>
+            <View style={[styles.demoStepBadge, { backgroundColor: '#1D9BF022' }]}>
+              <ThemedText style={[styles.demoStepNumber, { color: '#1D9BF0' }]}>
                 {item.step}
               </ThemedText>
             </View>
@@ -628,7 +628,7 @@ function FinancialsTab({
             </ThemedText>
             <View style={styles.statRow}>
               <StatBlock label="Monthly Burn" value="$25-$50K" color="#EF4444" colors={colors} />
-              <StatBlock label="Runway" value="12-18 mo" color="#6AA9FF" colors={colors} />
+              <StatBlock label="Runway" value="12-18 mo" color="#1D9BF0" colors={colors} />
               <StatBlock label="Cash" value="$300-$600K" color="#22C55E" colors={colors} />
             </View>
           </SectionCard>
@@ -680,7 +680,7 @@ function FinancialsTab({
           <SectionCard title="Runway" colors={colors}>
             <View style={styles.statRow}>
               <StatBlock label="Monthly Burn" value="$35K" color="#EF4444" colors={colors} />
-              <StatBlock label="Runway" value="14 mo" color="#6AA9FF" colors={colors} />
+              <StatBlock label="Runway" value="14 mo" color="#1D9BF0" colors={colors} />
               <StatBlock label="Cash Position" value="$490K" color="#22C55E" colors={colors} />
             </View>
           </SectionCard>
@@ -691,7 +691,7 @@ function FinancialsTab({
                 <View
                   style={[
                     styles.kpiDot,
-                    { backgroundColor: KPI_STATUS_COLORS[kpi.status] ?? '#8F8F8F' },
+                    { backgroundColor: KPI_STATUS_COLORS[kpi.status] ?? '#A1A1AA' },
                   ]}
                 />
                 <View style={{ flex: 1 }}>
@@ -705,7 +705,7 @@ function FinancialsTab({
                 <ThemedText
                   style={[
                     styles.statusLabel,
-                    { color: KPI_STATUS_COLORS[kpi.status] ?? '#8F8F8F' },
+                    { color: KPI_STATUS_COLORS[kpi.status] ?? '#A1A1AA' },
                   ]}
                 >
                   {kpi.status.replace('_', ' ').toUpperCase()}
@@ -737,7 +737,7 @@ function FinancialsTab({
                 revenue="$5M Y1"
                 burn="$30K/mo"
                 runway="18+ mo"
-                color="#6AA9FF"
+                color="#1D9BF0"
                 colors={colors}
               />
             </View>
@@ -829,7 +829,7 @@ function LegalTab({
             <ThemedText
               style={{
                 fontSize: 14,
-                color: item.status === 'complete' ? '#22C55E' : item.status === 'in_progress' ? '#F59E0B' : '#8F8F8F',
+                color: item.status === 'complete' ? '#22C55E' : item.status === 'in_progress' ? '#F59E0B' : '#A1A1AA',
               }}
             >
               {item.status === 'complete' ? '\u2713' : item.status === 'in_progress' ? '\u25D4' : '\u25CB'}
@@ -874,7 +874,7 @@ function LegalTab({
                 {
                   color:
                     agreement.status === 'Active' || agreement.status === 'Signed' ? '#22C55E' :
-                    agreement.status === 'Board Approved' ? '#6AA9FF' : '#F59E0B',
+                    agreement.status === 'Board Approved' ? '#1D9BF0' : '#F59E0B',
                 },
               ]}
             >
@@ -907,7 +907,7 @@ function BoardPackTab({ colors }: { colors: typeof Colors.light }) {
     <View>
       <SectionCard title="Latest Board Deck" colors={colors}>
         <View style={[styles.listRow, { borderBottomColor: colors.border }]}>
-          <IconSymbol name="doc.richtext.fill" size={20} color="#6AA9FF" />
+          <IconSymbol name="doc.richtext.fill" size={20} color="#1D9BF0" />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Board Deck -- Q1 2026
@@ -928,7 +928,7 @@ function BoardPackTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.kpiDot,
-                { backgroundColor: KPI_STATUS_COLORS[kpi.status] ?? '#8F8F8F' },
+                { backgroundColor: KPI_STATUS_COLORS[kpi.status] ?? '#A1A1AA' },
               ]}
             />
             <View style={{ flex: 1 }}>
@@ -942,7 +942,7 @@ function BoardPackTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: KPI_STATUS_COLORS[kpi.status] ?? '#8F8F8F' },
+                { color: KPI_STATUS_COLORS[kpi.status] ?? '#A1A1AA' },
               ]}
             >
               {kpi.status.replace('_', ' ').toUpperCase()}
@@ -957,13 +957,13 @@ function BoardPackTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.severityBadge,
-                { backgroundColor: (RISK_SEVERITY_COLORS[risk.severity] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (RISK_SEVERITY_COLORS[risk.severity] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.severityText,
-                  { color: RISK_SEVERITY_COLORS[risk.severity] ?? '#8F8F8F' },
+                  { color: RISK_SEVERITY_COLORS[risk.severity] ?? '#A1A1AA' },
                 ]}
               >
                 {risk.severity.toUpperCase()}
@@ -1010,7 +1010,7 @@ function BoardPackTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: BOARD_PACK_STATUS_COLORS[item.status] ?? '#8F8F8F' },
+                { color: BOARD_PACK_STATUS_COLORS[item.status] ?? '#A1A1AA' },
               ]}
             >
               {item.status.toUpperCase()}
@@ -1036,13 +1036,13 @@ function DecisionLogTab({ colors }: { colors: typeof Colors.light }) {
               <View
                 style={[
                   styles.decisionOutcomeBadge,
-                  { backgroundColor: (DECISION_OUTCOME_COLORS[entry.outcome] ?? '#8F8F8F') + '22' },
+                  { backgroundColor: (DECISION_OUTCOME_COLORS[entry.outcome] ?? '#A1A1AA') + '22' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.decisionOutcomeText,
-                    { color: DECISION_OUTCOME_COLORS[entry.outcome] ?? '#8F8F8F' },
+                    { color: DECISION_OUTCOME_COLORS[entry.outcome] ?? '#A1A1AA' },
                   ]}
                 >
                   {entry.outcome.toUpperCase()}
@@ -1141,7 +1141,7 @@ function DocRow({
   colors: typeof Colors.light;
 }) {
   const hasAccess = canAccessDoc(doc.accessTag, roleLens, investorTier);
-  const accessColor = ACCESS_TAG_COLORS[doc.accessTag] ?? '#8F8F8F';
+  const accessColor = ACCESS_TAG_COLORS[doc.accessTag] ?? '#A1A1AA';
 
   return (
     <View style={[styles.listRow, { borderBottomColor: colors.border }]}>

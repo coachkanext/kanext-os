@@ -139,10 +139,10 @@ export const PERSON_STATUS_LABEL: Record<BizPerson['status'], string> = {
 };
 
 export const SIGNATURE_AUTHORITY_COLOR: Record<SignatureAuthority, string> = {
-  approve: '#3B82F6',
-  release: '#8B5CF6',
+  approve: '#1D9BF0',
+  release: '#1D9BF0',
   both: '#22C55E',
-  none: '#9CA3AF',
+  none: '#A1A1AA',
 };
 
 export const SIGNATURE_AUTHORITY_LABEL: Record<SignatureAuthority, string> = {
@@ -154,10 +154,10 @@ export const SIGNATURE_AUTHORITY_LABEL: Record<SignatureAuthority, string> = {
 
 export const RBAC_LEVEL_COLOR: Record<RBACLevel, string> = {
   B1: '#22C55E',
-  B2a: '#3B82F6',
-  B2b: '#6366F1',
+  B2a: '#1D9BF0',
+  B2b: '#1D9BF0',
   B3: '#F59E0B',
-  B4: '#9CA3AF',
+  B4: '#A1A1AA',
   B5: '#EF4444',
 };
 
@@ -174,10 +174,10 @@ export const ORG_LEVEL_ORDER: OrgChartLevel[] = ['C-Suite', 'VP', 'Director', 'M
 
 export const ORG_LEVEL_COLOR: Record<OrgChartLevel, string> = {
   'C-Suite': '#22C55E',
-  'VP': '#3B82F6',
-  'Director': '#8B5CF6',
+  'VP': '#1D9BF0',
+  'Director': '#1D9BF0',
   'Manager': '#F59E0B',
-  'IC': '#9CA3AF',
+  'IC': '#A1A1AA',
 };
 
 // =============================================================================

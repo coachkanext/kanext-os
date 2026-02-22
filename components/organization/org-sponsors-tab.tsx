@@ -60,7 +60,7 @@ interface OrgSponsorsTabProps {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<SponsorReport['format'], string> = {
-  PDF: '#3B82F6',
+  PDF: '#1D9BF0',
   CSV: '#22C55E',
   XLSX: '#F59E0B',
 };
@@ -109,9 +109,9 @@ function auditColor(action: string): string {
     case 'sponsor_created':
       return '#22C55E';
     case 'contract_signed':
-      return '#3B82F6';
+      return '#1D9BF0';
     case 'fulfillment_logged':
-      return '#6366F1';
+      return '#1D9BF0';
     case 'fulfillment_verified':
       return '#22C55E';
     case 'invoice_sent':
@@ -119,9 +119,9 @@ function auditColor(action: string): string {
     case 'invoice_overdue':
       return '#EF4444';
     case 'asset_uploaded':
-      return '#8B5CF6';
+      return '#1D9BF0';
     default:
-      return '#8F8F8F';
+      return '#A1A1AA';
   }
 }
 
@@ -740,8 +740,8 @@ export function OrgSponsorsTab({ colors, accentColor }: OrgSponsorsTabProps) {
                     Due: {item.dueDate}
                   </ThemedText>
                   {item.proofLinks.length > 0 && (
-                    <View style={[s.badge, { backgroundColor: '#3B82F6' + '33', alignSelf: 'flex-start' }]}>
-                      <ThemedText style={[s.badgeText, { color: '#3B82F6' }]}>
+                    <View style={[s.badge, { backgroundColor: '#1D9BF0' + '33', alignSelf: 'flex-start' }]}>
+                      <ThemedText style={[s.badgeText, { color: '#1D9BF0' }]}>
                         {item.proofLinks.length} proof{item.proofLinks.length > 1 ? 's' : ''}
                       </ThemedText>
                     </View>

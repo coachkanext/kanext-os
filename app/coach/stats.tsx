@@ -165,20 +165,20 @@ for (const clusterKey of CLUSTER_KEYS) {
 // ── Helpers ──
 
 function barColor(v: number): string {
-  if (v >= 75) return '#4ade80';
-  if (v >= 60) return '#facc15';
-  return '#f87171';
+  if (v >= 75) return '#22C55E';
+  if (v >= 60) return '#F59E0B';
+  return '#EF4444';
 }
 
 function percentileColor(p: number): string {
-  if (p >= 75) return '#4ade80';
-  if (p >= 50) return '#facc15';
-  return '#f87171';
+  if (p >= 75) return '#22C55E';
+  if (p >= 50) return '#F59E0B';
+  return '#EF4444';
 }
 
 function netColor(v: number): string {
-  if (v > 0) return '#4ade80';
-  if (v < 0) return '#f87171';
+  if (v > 0) return '#22C55E';
+  if (v < 0) return '#EF4444';
   return '#888';
 }
 
@@ -607,7 +607,7 @@ function TeamOverview({
             <Text style={st.emphLegendText}>Emphasis</Text>
           </View>
           <View style={st.emphLegendItem}>
-            <View style={[st.emphLegendDot, { backgroundColor: '#4ade80' }]} />
+            <View style={[st.emphLegendDot, { backgroundColor: '#22C55E' }]} />
             <Text style={st.emphLegendText}>Actual</Text>
           </View>
         </View>
@@ -1460,11 +1460,11 @@ const st = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 4,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
   },
   segmentRow: {
     flexDirection: 'row',
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     padding: 3,
     marginBottom: 10,
@@ -1476,7 +1476,7 @@ const st = StyleSheet.create({
     borderRadius: 8,
   },
   segmentBtnActive: {
-    backgroundColor: '#252525',
+    backgroundColor: '#0B0F14',
   },
   segmentText: {
     fontSize: 14,
@@ -1496,7 +1496,7 @@ const st = StyleSheet.create({
     borderRadius: 8,
   },
   subTabActive: {
-    backgroundColor: '#252525',
+    backgroundColor: '#0B0F14',
   },
   subTabText: {
     fontSize: 13,
@@ -1519,7 +1519,7 @@ const st = StyleSheet.create({
     alignItems: 'center',
   },
   chipGroup: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -1554,7 +1554,7 @@ const st = StyleSheet.create({
   badgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#4ade80',
+    color: '#22C55E',
     letterSpacing: 0.5,
   },
 
@@ -1585,12 +1585,12 @@ const st = StyleSheet.create({
   },
   krBadge: {
     alignItems: 'center',
-    backgroundColor: '#1E1C1C',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: '#2F3336',
   },
   krValue: {
     fontSize: 24,
@@ -1616,10 +1616,10 @@ const st = StyleSheet.create({
 
   // Cards
   card: {
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: '#2F3336',
     padding: 14,
     marginBottom: 16,
     shadowColor: '#000',
@@ -1632,7 +1632,7 @@ const st = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 1.2,
-    color: '#8F8F8F',
+    color: '#A1A1AA',
     marginBottom: 8,
   },
   subLabel: {
@@ -1644,7 +1644,7 @@ const st = StyleSheet.create({
   },
   divider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     marginVertical: 12,
   },
 
@@ -1670,7 +1670,7 @@ const st = StyleSheet.create({
   statCellLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#8F8F8F',
+    color: '#A1A1AA',
     marginTop: 2,
   },
   statCellSub: {
@@ -1690,12 +1690,12 @@ const st = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 1.0,
-    color: '#8F8F8F',
+    color: '#A1A1AA',
     marginBottom: 8,
   },
   ffDivider: {
     width: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     marginHorizontal: 12,
   },
   ffRow: {
@@ -1754,7 +1754,7 @@ const st = StyleSheet.create({
     marginLeft: 18,
     paddingLeft: 10,
     borderLeftWidth: 1,
-    borderLeftColor: 'rgba(255,255,255,0.06)',
+    borderLeftColor: '#2F3336',
     marginBottom: 6,
   },
   subclusterRow: {
@@ -1793,13 +1793,13 @@ const st = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 6,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: '#2F3336',
     marginBottom: 4,
   },
   ptHeaderText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#8F8F8F',
+    color: '#A1A1AA',
     letterSpacing: 0.5,
     width: 54,
     textAlign: 'right',
@@ -1847,7 +1847,7 @@ const st = StyleSheet.create({
   shotBarFill: {
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#4ade80',
+    backgroundColor: '#22C55E',
   },
   shotBarFreq: {
     fontSize: 12,
@@ -1879,7 +1879,7 @@ const st = StyleSheet.create({
   coverageBarBg: {
     flex: 1,
     height: 8,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 4,
     marginHorizontal: 8,
     overflow: 'hidden',
@@ -1887,7 +1887,7 @@ const st = StyleSheet.create({
   coverageBarFill: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#facc15',
+    backgroundColor: '#F59E0B',
   },
   coverageFreq: {
     fontSize: 12,
@@ -1922,7 +1922,7 @@ const st = StyleSheet.create({
   },
   emphBarBg: {
     height: 12,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 6,
     overflow: 'hidden',
     position: 'relative',
@@ -1940,7 +1940,7 @@ const st = StyleSheet.create({
     top: 2,
     left: 0,
     height: 8,
-    backgroundColor: '#4ade80',
+    backgroundColor: '#22C55E',
     borderRadius: 4,
   },
   emphValues: {
@@ -1957,7 +1957,7 @@ const st = StyleSheet.create({
   emphActualVal: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#4ade80',
+    color: '#22C55E',
   },
   emphLegend: {
     flexDirection: 'row',
@@ -2000,10 +2000,10 @@ const st = StyleSheet.create({
 
   // Lineups
   lineupCard: {
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: '#2F3336',
     padding: 12,
     marginBottom: 10,
     shadowColor: '#000',
@@ -2020,7 +2020,7 @@ const st = StyleSheet.create({
   lineupRank: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#4ade80',
+    color: '#22C55E',
     width: 28,
   },
   lineupPlayers: {
@@ -2106,7 +2106,7 @@ const st = StyleSheet.create({
   // Shot toggle
   shotToggleRow: {
     flexDirection: 'row',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 8,
     padding: 2,
     marginBottom: 16,
@@ -2136,7 +2136,7 @@ const st = StyleSheet.create({
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.06)',
+    borderTopColor: '#2F3336',
   },
   projSub: {
     fontSize: 11,
@@ -2148,10 +2148,10 @@ const st = StyleSheet.create({
   playerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: '#2F3336',
     padding: 14,
     marginBottom: 8,
     shadowColor: '#000',
@@ -2176,12 +2176,12 @@ const st = StyleSheet.create({
   playerKRGroup: {
     alignItems: 'center',
     marginRight: 12,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: '#2F3336',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: '#2F3336',
   },
   playerKR: {
     fontSize: 16,
@@ -2228,10 +2228,10 @@ const st = StyleSheet.create({
   playerShotCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#181616',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: '#2F3336',
     padding: 14,
     marginBottom: 8,
     shadowColor: '#000',
@@ -2257,14 +2257,14 @@ const st = StyleSheet.create({
   miniBarBg: {
     width: 16,
     height: 40,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 4,
     overflow: 'hidden',
     justifyContent: 'flex-end',
   },
   miniBarFill: {
     width: 16,
-    backgroundColor: '#4ade80',
+    backgroundColor: '#22C55E',
     borderRadius: 4,
   },
   miniBarVal: {

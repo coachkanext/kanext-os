@@ -39,9 +39,9 @@ const MODE_FILTER_PILLS: Array<{ key: Mode | 'all'; label: string }> = [
 ];
 
 const MODE_DOT_COLORS: Record<Mode, string> = {
-  sports: '#3B82F6',
-  church: '#A855F7',
-  business: '#10B981',
+  sports: '#1D9BF0',
+  church: '#1D9BF0',
+  business: '#22C55E',
   education: '#F59E0B',
   competition: '#EF4444',
 };

@@ -63,7 +63,7 @@ function fileTypeIcon(type: RoomFile['type']): string {
 
 function fileTypeColor(type: RoomFile['type']): string {
   switch (type) {
-    case 'document': return '#3B82F6';
+    case 'document': return '#1D9BF0';
     case 'image': return '#22C55E';
     case 'video': return '#EF4444';
     case 'spreadsheet': return '#F59E0B';
@@ -71,7 +71,7 @@ function fileTypeColor(type: RoomFile['type']): string {
 }
 
 function changeDirectionColor(dir: 'up' | 'down' | 'flat'): string {
-  return dir === 'up' ? '#22C55E' : dir === 'down' ? '#EF4444' : '#9CA3AF';
+  return dir === 'up' ? '#22C55E' : dir === 'down' ? '#EF4444' : '#A1A1AA';
 }
 
 function changeDirectionArrow(dir: 'up' | 'down' | 'flat'): string {
@@ -140,10 +140,10 @@ function DashboardTab({
   const breakdownRows: { label: string; count: number; color: string }[] = [
     { label: 'War Rooms', count: data.warRooms.length, color: '#EF4444' },
     { label: 'Broadcast', count: data.broadcastRooms.length, color: '#F59E0B' },
-    { label: 'Officials', count: data.officialRooms.length, color: '#8B5CF6' },
-    { label: 'Media', count: data.mediaRooms.length, color: '#3B82F6' },
+    { label: 'Officials', count: data.officialRooms.length, color: '#1D9BF0' },
+    { label: 'Media', count: data.mediaRooms.length, color: '#1D9BF0' },
     { label: 'VIP', count: data.vipRooms.length, color: '#22C55E' },
-    { label: 'Operations', count: data.opsRooms.length, color: '#9CA3AF' },
+    { label: 'Operations', count: data.opsRooms.length, color: '#A1A1AA' },
   ];
 
   return (
@@ -449,8 +449,8 @@ function OfficialsTab({
           >
             <View style={s.roomTop}>
               <View style={s.roomInfo}>
-                <View style={[s.roomIcon, { backgroundColor: '#8B5CF620' }]}>
-                  <IconSymbol name="person.badge.shield.checkmark.fill" size={20} color="#8B5CF6" />
+                <View style={[s.roomIcon, { backgroundColor: '#1D9BF020' }]}>
+                  <IconSymbol name="person.badge.shield.checkmark.fill" size={20} color="#1D9BF0" />
                 </View>
                 <View style={s.roomMid}>
                   <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={1}>
@@ -538,8 +538,8 @@ function MediaTab({
           >
             <View style={s.roomTop}>
               <View style={s.roomInfo}>
-                <View style={[s.roomIcon, { backgroundColor: '#3B82F620' }]}>
-                  <IconSymbol name="newspaper.fill" size={20} color="#3B82F6" />
+                <View style={[s.roomIcon, { backgroundColor: '#1D9BF020' }]}>
+                  <IconSymbol name="newspaper.fill" size={20} color="#1D9BF0" />
                 </View>
                 <View style={s.roomMid}>
                   <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={1}>
@@ -547,7 +547,7 @@ function MediaTab({
                   </ThemedText>
                   <View style={s.roomBadges}>
                     <StatusBadge label={item.status.toUpperCase()} color={stColor} />
-                    <StatusBadge label={item.contentType.toUpperCase()} color="#3B82F6" />
+                    <StatusBadge label={item.contentType.toUpperCase()} color="#1D9BF0" />
                   </View>
                 </View>
               </View>
@@ -627,8 +627,8 @@ function VIPTab({
           >
             <View style={s.roomTop}>
               <View style={s.roomInfo}>
-                <View style={[s.roomIcon, { backgroundColor: '#8B5CF620' }]}>
-                  <IconSymbol name="star.fill" size={20} color="#8B5CF6" />
+                <View style={[s.roomIcon, { backgroundColor: '#1D9BF020' }]}>
+                  <IconSymbol name="star.fill" size={20} color="#1D9BF0" />
                 </View>
                 <View style={s.roomMid}>
                   <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={1}>
@@ -656,7 +656,7 @@ function VIPTab({
                       key={idx}
                       style={[s.chip, { backgroundColor: colors.backgroundTertiary }]}
                     >
-                      <IconSymbol name="person.fill" size={10} color="#8B5CF6" />
+                      <IconSymbol name="person.fill" size={10} color="#1D9BF0" />
                       <ThemedText
                         style={[s.chipText, { color: colors.textSecondary }]}
                         numberOfLines={1}
@@ -806,16 +806,16 @@ function ArchiveTab({
           <View style={[s.roomCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.roomTop}>
               <View style={s.roomInfo}>
-                <View style={[s.roomIcon, { backgroundColor: '#9CA3AF20' }]}>
-                  <IconSymbol name="archivebox.fill" size={20} color="#9CA3AF" />
+                <View style={[s.roomIcon, { backgroundColor: '#A1A1AA20' }]}>
+                  <IconSymbol name="archivebox.fill" size={20} color="#A1A1AA" />
                 </View>
                 <View style={s.roomMid}>
                   <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={1}>
                     {item.name}
                   </ThemedText>
                   <View style={s.roomBadges}>
-                    <StatusBadge label="ARCHIVED" color="#9CA3AF" />
-                    <StatusBadge label={typeLabel.toUpperCase()} color="#6B7280" />
+                    <StatusBadge label="ARCHIVED" color="#A1A1AA" />
+                    <StatusBadge label={typeLabel.toUpperCase()} color="#A1A1AA" />
                   </View>
                 </View>
               </View>
@@ -1145,7 +1145,7 @@ function RoomDetailSheet({
           </ThemedText>
           {oRoom.officials.map((official, idx) => (
             <View key={idx} style={s.sheetOffRow}>
-              <View style={[s.sheetOffDot, { backgroundColor: '#8B5CF6' }]} />
+              <View style={[s.sheetOffDot, { backgroundColor: '#1D9BF0' }]} />
               <ThemedText style={[s.sheetOffName, { color: colors.textSecondary }]}>
                 {official}
               </ThemedText>
@@ -1809,7 +1809,7 @@ const s = StyleSheet.create({
   occBarBg: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     overflow: 'hidden',
   },
   occBarFill: {
@@ -1978,7 +1978,7 @@ const s = StyleSheet.create({
   trendBarBg: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     overflow: 'hidden',
   },
   trendBarFill: {

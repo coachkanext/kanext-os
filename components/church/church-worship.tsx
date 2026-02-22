@@ -189,7 +189,7 @@ const SET_STATUS_LABEL: Record<SetStatus, string> = {
 
 const SET_STATUS_COLOR: Record<SetStatus, string> = {
   draft: '#F59E0B',
-  ready: '#3B82F6',
+  ready: '#1D9BF0',
   published: '#22C55E',
 };
 
@@ -360,13 +360,13 @@ const WORSHIP_TEAM_MEMBERS: WorshipTeamMember[] = [
 const TEAM_STATUS_COLOR: Record<TeamStatus, string> = {
   active: '#22C55E',
   'on-break': '#F59E0B',
-  training: '#3B82F6',
+  training: '#1D9BF0',
 };
 
 const SKILL_LEVEL_COLOR: Record<SkillLevel, string> = {
-  beginner: '#8F8F8F',
-  intermediate: '#3B82F6',
-  advanced: '#8B5CF6',
+  beginner: '#A1A1AA',
+  intermediate: '#1D9BF0',
+  advanced: '#1D9BF0',
   expert: '#22C55E',
 };
 
@@ -460,10 +460,10 @@ const SONG_LIBRARY: LibrarySong[] = [
 ];
 
 const CATEGORY_COLOR: Record<SongCategory, string> = {
-  'Praise & Worship': '#8B5CF6',
-  Hymns: '#F97316',
-  Contemporary: '#3B82F6',
-  Gospel: '#EC4899',
+  'Praise & Worship': '#1D9BF0',
+  Hymns: '#F59E0B',
+  Contemporary: '#1D9BF0',
+  Gospel: '#1D9BF0',
   Special: '#22C55E',
 };
 
@@ -544,7 +544,7 @@ function SetsView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
           <SectionHeader title="WORSHIP OVERVIEW" colors={colors} />
           <Card colors={colors}>
             <View style={s.kpiRow}>
-              <KPIBox label="Upcoming Sets" value={WORSHIP_SETS.length} colors={colors} accent="#3B82F6" />
+              <KPIBox label="Upcoming Sets" value={WORSHIP_SETS.length} colors={colors} accent="#1D9BF0" />
               <KPIBox label="Total Songs" value={totalSongs} colors={colors} />
               <KPIBox label="Avg Duration" value={`${avgDurationMin}m`} colors={colors} />
               <KPIBox
@@ -671,7 +671,7 @@ function SetsView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
               <Pressable
                 style={({ pressed }) => [
                   s.approveButton,
-                  { backgroundColor: ws.status === 'draft' ? '#3B82F6' : '#22C55E', opacity: pressed ? 0.8 : 1 },
+                  { backgroundColor: ws.status === 'draft' ? '#1D9BF0' : '#22C55E', opacity: pressed ? 0.8 : 1 },
                 ]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
               >
@@ -722,7 +722,7 @@ function RehearsalsView({ colors, role }: { colors: typeof Colors.light; role: C
         <SectionHeader title="REHEARSAL OVERVIEW" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Upcoming" value={totalRehearsals} colors={colors} accent="#3B82F6" />
+            <KPIBox label="Upcoming" value={totalRehearsals} colors={colors} accent="#1D9BF0" />
             <KPIBox label="Confirmed" value={totalConfirmed} colors={colors} accent="#22C55E" />
             <KPIBox label="Pending" value={totalAttendees - totalConfirmed - REHEARSALS.reduce((sum, r) => sum + r.attendees.filter((a) => a.rsvp === 'declined').length, 0)} colors={colors} accent="#F59E0B" />
             <KPIBox label="Avg Size" value={Math.round(totalAttendees / totalRehearsals)} colors={colors} />
@@ -866,10 +866,10 @@ function TeamView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
         <SectionHeader title="TEAM OVERVIEW" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Total" value={WORSHIP_TEAM_MEMBERS.length} colors={colors} accent="#3B82F6" />
+            <KPIBox label="Total" value={WORSHIP_TEAM_MEMBERS.length} colors={colors} accent="#1D9BF0" />
             <KPIBox label="Active" value={activeCount} colors={colors} accent="#22C55E" />
             <KPIBox label="On Break" value={onBreakCount} colors={colors} accent="#F59E0B" />
-            <KPIBox label="Training" value={trainingCount} colors={colors} accent="#3B82F6" />
+            <KPIBox label="Training" value={trainingCount} colors={colors} accent="#1D9BF0" />
           </View>
         </Card>
       </View>
@@ -1017,9 +1017,9 @@ function LibraryView({ colors, role }: { colors: typeof Colors.light; role: Chur
         <SectionHeader title="LIBRARY OVERVIEW" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Total Songs" value={totalSongs} colors={colors} accent="#3B82F6" />
+            <KPIBox label="Total Songs" value={totalSongs} colors={colors} accent="#1D9BF0" />
             <KPIBox label="Categories" value={CATEGORIES_ORDERED.length} colors={colors} />
-            <KPIBox label="Total Plays" value={totalPlays} colors={colors} accent="#8B5CF6" />
+            <KPIBox label="Total Plays" value={totalPlays} colors={colors} accent="#1D9BF0" />
             <KPIBox label="Avg Rating" value={avgRating} colors={colors} accent="#F59E0B" />
           </View>
         </Card>
@@ -1094,8 +1094,8 @@ function LibraryView({ colors, role }: { colors: typeof Colors.light; role: Chur
                     {(song.hasCharts || song.hasLyrics || song.hasStems) && (
                       <View style={s.libraryAssetRow}>
                         {song.hasCharts && (
-                          <View style={[s.libraryAssetBadge, { backgroundColor: '#3B82F620' }]}>
-                            <ThemedText style={[s.libraryAssetText, { color: '#3B82F6' }]}>Charts</ThemedText>
+                          <View style={[s.libraryAssetBadge, { backgroundColor: '#1D9BF020' }]}>
+                            <ThemedText style={[s.libraryAssetText, { color: '#1D9BF0' }]}>Charts</ThemedText>
                           </View>
                         )}
                         {song.hasLyrics && (
@@ -1104,8 +1104,8 @@ function LibraryView({ colors, role }: { colors: typeof Colors.light; role: Chur
                           </View>
                         )}
                         {song.hasStems && (
-                          <View style={[s.libraryAssetBadge, { backgroundColor: '#8B5CF620' }]}>
-                            <ThemedText style={[s.libraryAssetText, { color: '#8B5CF6' }]}>Stems</ThemedText>
+                          <View style={[s.libraryAssetBadge, { backgroundColor: '#1D9BF020' }]}>
+                            <ThemedText style={[s.libraryAssetText, { color: '#1D9BF0' }]}>Stems</ThemedText>
                           </View>
                         )}
                       </View>

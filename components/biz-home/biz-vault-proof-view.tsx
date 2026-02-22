@@ -15,9 +15,9 @@ interface Props {
 }
 
 const MODE_COLORS: Record<string, string> = {
-  sports: '#3B82F6',
-  church: '#8B5CF6',
-  education: '#10B981',
+  sports: '#1D9BF0',
+  church: '#1D9BF0',
+  education: '#22C55E',
   competition: '#EF4444',
 };
 
@@ -31,8 +31,8 @@ const MODE_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, string> = {
   live: '#22C55E',
   onboarding: '#F59E0B',
-  signed: '#3B82F6',
-  prospect: '#6B7280',
+  signed: '#1D9BF0',
+  prospect: '#A1A1AA',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -47,8 +47,8 @@ export function BizVaultProofView({ colors, accent }: Props) {
     <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       <ThemedText style={[styles.sectionLabel, { color: accent }]}>INSTITUTIONS</ThemedText>
       {PROOF_INSTITUTIONS.map((inst: ProofInstitution) => {
-        const modeColor = MODE_COLORS[inst.mode] ?? '#6B7280';
-        const statusColor = STATUS_COLORS[inst.status] ?? '#6B7280';
+        const modeColor = MODE_COLORS[inst.mode] ?? '#A1A1AA';
+        const statusColor = STATUS_COLORS[inst.status] ?? '#A1A1AA';
         const isLive = inst.status === 'live';
 
         return (

@@ -540,7 +540,7 @@ function RosterControls({
                     }}
                   >
                     <Text style={[styles.subclusterAccordionName, isSubActive && styles.subclusterAccordionNameActive]}>{subName}</Text>
-                    {isSubActive && <IconSymbol name="checkmark" size={12} color="#f5f5f5" />}
+                    {isSubActive && <IconSymbol name="checkmark" size={12} color="#FFFFFF" />}
                   </Pressable>
                 );
               })}
@@ -644,7 +644,7 @@ const CLASS_ABBREV: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<PlayerStatus, { bg: string; text: string }> = {
-  available: { bg: '#33333380', text: '#999' },
+  available: { bg: '#0B0F1480', text: '#999' },
   injured:   { bg: '#EF444430', text: '#EF4444' },
   out:       { bg: '#EF444430', text: '#EF4444' },
   redshirt:  { bg: '#F59E0B30', text: '#F59E0B' },
@@ -911,13 +911,13 @@ const listStyles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: '#1e1e1e',
+    backgroundColor: '#0B0F14',
     borderWidth: 1,
     borderColor: '#ffffff08',
   },
   filterChipActive: {
-    backgroundColor: '#f5f5f5',
-    borderColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
   },
   filterChipText: {
     fontSize: 12,
@@ -941,7 +941,7 @@ const listStyles = StyleSheet.create({
     height: 30,
     paddingHorizontal: 10,
     borderRadius: 8,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
   },
   sortPillLabel: {
     fontSize: 12,
@@ -970,7 +970,7 @@ const listStyles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -991,7 +991,7 @@ const listStyles = StyleSheet.create({
   nilYes: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: '#22C55E',
   },
 });
 
@@ -1178,8 +1178,8 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
             <View style={styles.teamRecordRow}>
               <Text style={styles.teamRecord}>{FMU_TEAM.record}</Text>
               <Text style={styles.teamConfRecord}>({FMU_TEAM.confRecord})</Text>
-              <View style={{ backgroundColor: KaNeXT_TEAM.streak.startsWith('W') ? '#4CAF5020' : '#EF444420', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: KaNeXT_TEAM.streak.startsWith('W') ? '#4CAF50' : '#EF4444' }}>
+              <View style={{ backgroundColor: KaNeXT_TEAM.streak.startsWith('W') ? '#22C55E20' : '#EF444420', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: KaNeXT_TEAM.streak.startsWith('W') ? '#22C55E' : '#EF4444' }}>
                   {FMU_TEAM.streak}
                 </Text>
               </View>
@@ -1392,7 +1392,7 @@ const styles = StyleSheet.create({
     height: 32,
     paddingHorizontal: 10,
     borderRadius: 8,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
   },
   controlPillActive: {
     backgroundColor: TEAM_COLORS.primary,
@@ -1407,7 +1407,7 @@ const styles = StyleSheet.create({
   },
   viewToggle: {
     flexDirection: 'row',
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 8,
     height: 32,
     alignItems: 'center',
@@ -1436,7 +1436,7 @@ const styles = StyleSheet.create({
   clusterPickerLabel: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     letterSpacing: 0.8,
     marginRight: 8,
   },
@@ -1450,13 +1450,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: '#1e1e1e',
+    backgroundColor: '#0B0F14',
     borderWidth: 1,
     borderColor: '#ffffff08',
   },
   clusterSegmentActive: {
-    backgroundColor: '#f5f5f5',
-    borderColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
   },
   clusterSegmentText: {
     fontSize: 11,
@@ -1471,7 +1471,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#2a1515',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 2,
@@ -1480,7 +1480,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     marginTop: 4,
     marginBottom: 4,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0B0F14',
     borderRadius: 12,
     paddingVertical: 8,
     paddingHorizontal: 14,
@@ -1513,7 +1513,7 @@ const styles = StyleSheet.create({
     color: '#aaa',
   },
   subclusterAccordionNameActive: {
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
 
@@ -1524,7 +1524,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     marginTop: 4,
     marginBottom: 4,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 8,
     height: 32,
     paddingHorizontal: 10,
@@ -1543,7 +1543,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: 10,
     paddingVertical: 2,
     minWidth: 100,
@@ -1804,10 +1804,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2a2a2a',
+    borderBottomColor: '#0B0F14',
   },
   tableRowAlt: {
-    backgroundColor: '#1f1f1f',
+    backgroundColor: '#0B0F14',
   },
   tableCell: {
     fontSize: 13,
@@ -1842,13 +1842,13 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   groupedCard: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#0B0F14',
     borderRadius: BorderRadius.lg,
     overflow: 'hidden',
   },
   groupedDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: '#3a3a3a',
+    backgroundColor: '#0B0F14',
     marginLeft: Spacing.md + 32,
   },
   groupedRowInner: {
@@ -1941,7 +1941,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   cardLevelBadge: {
-    backgroundColor: '#2A2D35',
+    backgroundColor: '#0B0F14',
     paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 6,
@@ -1949,11 +1949,11 @@ const styles = StyleSheet.create({
   cardLevelText: {
     fontSize: 9,
     fontWeight: '700',
-    color: '#6e6e6e',
+    color: '#A1A1AA',
     letterSpacing: 0.3,
   },
   cardPosBadge: {
-    backgroundColor: '#3A3D45',
+    backgroundColor: '#2F3336',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -1961,7 +1961,7 @@ const styles = StyleSheet.create({
   cardPosText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
   },
   cardKrText: {
     fontSize: 12,
@@ -1971,7 +1971,7 @@ const styles = StyleSheet.create({
   cardKrOverall: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginLeft: 12,
   },
 });

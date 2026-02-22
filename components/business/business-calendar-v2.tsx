@@ -106,23 +106,23 @@ const VIEW_MODES: { key: ViewMode; label: string }[] = [
 ];
 
 const CATEGORY_CONFIG: Record<CalendarCategory, { label: string; color: string; icon: string }> = {
-  board: { label: 'Board', color: '#8B5CF6', icon: 'person.3.fill' },
-  fundraising: { label: 'Fundraising', color: '#EC4899', icon: 'banknote.fill' },
-  product: { label: 'Product', color: '#14B8A6', icon: 'app.fill' },
-  operations: { label: 'Operations', color: '#6B7280', icon: 'gearshape.fill' },
-  sales: { label: 'Sales', color: '#F97316', icon: 'cart.fill' },
+  board: { label: 'Board', color: '#1D9BF0', icon: 'person.3.fill' },
+  fundraising: { label: 'Fundraising', color: '#1D9BF0', icon: 'banknote.fill' },
+  product: { label: 'Product', color: '#1D9BF0', icon: 'app.fill' },
+  operations: { label: 'Operations', color: '#A1A1AA', icon: 'gearshape.fill' },
+  sales: { label: 'Sales', color: '#F59E0B', icon: 'cart.fill' },
   finance: { label: 'Finance', color: '#22C55E', icon: 'dollarsign.circle.fill' },
-  rails: { label: 'Rails', color: '#3B82F6', icon: 'arrow.left.arrow.right.circle.fill' },
+  rails: { label: 'Rails', color: '#1D9BF0', icon: 'arrow.left.arrow.right.circle.fill' },
   compliance: { label: 'Compliance', color: '#F59E0B', icon: 'checkmark.shield.fill' },
-  people: { label: 'People', color: '#A855F7', icon: 'person.2.fill' },
-  public: { label: 'Public', color: '#06B6D4', icon: 'globe' },
+  people: { label: 'People', color: '#1D9BF0', icon: 'person.2.fill' },
+  public: { label: 'Public', color: '#1D9BF0', icon: 'globe' },
 };
 
 const STATUS_CONFIG: Record<EventStatus, { label: string; color: string }> = {
   on_track: { label: 'On Track', color: '#22C55E' },
   at_risk: { label: 'At Risk', color: '#F59E0B' },
   blocked: { label: 'Blocked', color: '#EF4444' },
-  done: { label: 'Done', color: '#3B82F6' },
+  done: { label: 'Done', color: '#1D9BF0' },
 };
 
 const OBJECT_TYPE_LABELS: Record<CalendarObjectType, string> = {
@@ -502,7 +502,7 @@ function DuePill({ label, dueHours, colors }: { label: string; dueHours: number;
 }
 
 function SeverityBadge({ severity }: { severity: 'critical' | 'high' | 'medium' }) {
-  const color = severity === 'critical' ? '#EF4444' : severity === 'high' ? '#F59E0B' : '#3B82F6';
+  const color = severity === 'critical' ? '#EF4444' : severity === 'high' ? '#F59E0B' : '#1D9BF0';
   return (
     <View style={[st.severityBadge, { backgroundColor: color + '20' }]}>
       <ThemedText style={[st.severityBadgeText, { color }]}>
@@ -534,9 +534,9 @@ function MeetingDetails({ event, colors }: { event: CalendarEvent; colors: typeo
         </View>
       )}
       {event.outcomeRequired && (
-        <View style={[st.outcomeBadge, { backgroundColor: '#8B5CF620' }]}>
-          <IconSymbol name="checkmark.circle.fill" size={10} color="#8B5CF6" />
-          <ThemedText style={[st.outcomeBadgeText, { color: '#8B5CF6' }]}>Outcome Required</ThemedText>
+        <View style={[st.outcomeBadge, { backgroundColor: '#1D9BF020' }]}>
+          <IconSymbol name="checkmark.circle.fill" size={10} color="#1D9BF0" />
+          <ThemedText style={[st.outcomeBadgeText, { color: '#1D9BF0' }]}>Outcome Required</ThemedText>
         </View>
       )}
     </View>
@@ -853,7 +853,7 @@ function WeekDateSelector({
               style={[
                 st.dayChipNumber,
                 { color: isSelected ? colors.background : colors.text },
-                isToday && !isSelected && { color: '#3B82F6' },
+                isToday && !isSelected && { color: '#1D9BF0' },
               ]}
             >
               {d.getDate()}
@@ -912,14 +912,14 @@ function MonthGridSelector({
                 style={[
                   st.monthGridCell,
                   isSelected && { backgroundColor: colors.text, borderRadius: 16 },
-                  isToday && !isSelected && { borderWidth: 1, borderColor: '#3B82F6', borderRadius: 16 },
+                  isToday && !isSelected && { borderWidth: 1, borderColor: '#1D9BF0', borderRadius: 16 },
                 ]}
               >
                 <ThemedText
                   style={[
                     st.monthGridDayText,
                     { color: isSelected ? colors.background : colors.text },
-                    isToday && !isSelected && { color: '#3B82F6', fontWeight: '700' },
+                    isToday && !isSelected && { color: '#1D9BF0', fontWeight: '700' },
                   ]}
                 >
                   {d.getDate()}
@@ -989,10 +989,10 @@ function BoardRequestAgendaCTA({ colors }: { colors: typeof Colors.light }) {
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       }}
-      style={[st.boardAgendaCTA, { backgroundColor: '#8B5CF615', borderColor: '#8B5CF6' }]}
+      style={[st.boardAgendaCTA, { backgroundColor: '#1D9BF015', borderColor: '#1D9BF0' }]}
     >
-      <IconSymbol name={'plus.circle.fill' as any} size={18} color="#8B5CF6" />
-      <ThemedText style={[st.boardAgendaCTAText, { color: '#8B5CF6' }]}>
+      <IconSymbol name={'plus.circle.fill' as any} size={18} color="#1D9BF0" />
+      <ThemedText style={[st.boardAgendaCTAText, { color: '#1D9BF0' }]}>
         Request Agenda Item
       </ThemedText>
     </Pressable>
@@ -1062,9 +1062,9 @@ function AgendaRow({
             </View>
           )}
           {event.decisionRequired && (
-            <View style={[st.decisionBadge, { backgroundColor: '#8B5CF620' }]}>
-              <IconSymbol name="hammer.fill" size={10} color="#8B5CF6" />
-              <ThemedText style={[st.decisionBadgeText, { color: '#8B5CF6' }]}>Decision</ThemedText>
+            <View style={[st.decisionBadge, { backgroundColor: '#1D9BF020' }]}>
+              <IconSymbol name="hammer.fill" size={10} color="#1D9BF0" />
+              <ThemedText style={[st.decisionBadgeText, { color: '#1D9BF0' }]}>Decision</ThemedText>
             </View>
           )}
         </View>
@@ -1203,7 +1203,7 @@ function CalendarStats({ events, colors }: { events: CalendarEvent[]; colors: ty
         <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>At Risk</ThemedText>
       </View>
       <View style={[st.statTile, { backgroundColor: colors.backgroundTertiary }]}>
-        <ThemedText style={[st.statValue, { color: decisions > 0 ? '#8B5CF6' : colors.textTertiary }]}>
+        <ThemedText style={[st.statValue, { color: decisions > 0 ? '#1D9BF0' : colors.textTertiary }]}>
           {decisions}
         </ThemedText>
         <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>Decisions</ThemedText>
@@ -1313,7 +1313,7 @@ function WeekPreview({ events, colors }: { events: CalendarEvent[]; colors: type
                           : hasBlocked
                             ? '#EF4444'
                             : hasDecision
-                              ? '#8B5CF6'
+                              ? '#1D9BF0'
                               : '#22C55E',
                     },
                   ]}

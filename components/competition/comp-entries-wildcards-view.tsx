@@ -165,9 +165,9 @@ export function CompEntriesWildcardsView({ colors, accent }: Props) {
       })}
 
       {/* People's Car section */}
-      <View style={[styles.peoplesCarCard, { backgroundColor: '#8B5CF615', borderColor: '#8B5CF640' }]}>
+      <View style={[styles.peoplesCarCard, { backgroundColor: '#1D9BF015', borderColor: '#1D9BF040' }]}>
         <View style={styles.peoplesCarHeader}>
-          <ThemedText style={[styles.peoplesCarTitle, { color: '#8B5CF6' }]}>
+          <ThemedText style={[styles.peoplesCarTitle, { color: '#1D9BF0' }]}>
             People's Car · Fan Vote
           </ThemedText>
         </View>

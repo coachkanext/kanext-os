@@ -64,10 +64,10 @@ const RECEIPTS = [
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  Investment: '#8B5CF6',
-  Payroll: '#3B82F6',
-  Infrastructure: '#14B8A6',
-  Legal: '#6366F1',
+  Investment: '#1D9BF0',
+  Payroll: '#1D9BF0',
+  Infrastructure: '#1D9BF0',
+  Legal: '#1D9BF0',
   Expense: '#F59E0B',
   Income: '#22C55E',
 };
@@ -133,7 +133,7 @@ export function BizLedger({ colors, accentColor, role }: Props) {
           return (
             <Pressable
               key={filter}
-              style={[s.filterPill, { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' }]}
+              style={[s.filterPill, { backgroundColor: isActive ? accentColor : '#2F3336' }]}
               onPress={() => handleFilterPress(filter)}
             >
               <ThemedText style={[s.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
@@ -302,7 +302,7 @@ export function BizLedger({ colors, accentColor, role }: Props) {
               key={v.id}
               style={[
                 s.viewPill,
-                { backgroundColor: isActive ? accentColor : 'rgba(255,255,255,0.08)' },
+                { backgroundColor: isActive ? accentColor : '#2F3336' },
               ]}
               onPress={() => handleViewPress(v.id)}
             >

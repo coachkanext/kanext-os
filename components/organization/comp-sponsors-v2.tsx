@@ -102,18 +102,18 @@ function revenueTypeLabel(type: SponsorRevenue['type']): string {
 function revenueTypeColor(type: SponsorRevenue['type']): string {
   switch (type) {
     case 'cash': return '#22C55E';
-    case 'in-kind': return '#8B5CF6';
+    case 'in-kind': return '#1D9BF0';
     case 'bonus': return '#F59E0B';
-    case 'renewal': return '#3B82F6';
+    case 'renewal': return '#1D9BF0';
   }
 }
 
 function revenueStatusColor(status: SponsorRevenue['status']): string {
   switch (status) {
     case 'received': return '#22C55E';
-    case 'invoiced': return '#3B82F6';
+    case 'invoiced': return '#1D9BF0';
     case 'overdue': return '#EF4444';
-    case 'projected': return '#9CA3AF';
+    case 'projected': return '#A1A1AA';
   }
 }
 
@@ -377,7 +377,7 @@ function PackagesTab({
           : item.status === 'custom' ? 'CUSTOM'
           : 'AVAILABLE';
         const statusColor = item.status === 'sold-out' ? '#EF4444'
-          : item.status === 'custom' ? '#8B5CF6'
+          : item.status === 'custom' ? '#1D9BF0'
           : '#22C55E';
         return (
           <View style={[s.packageCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -773,7 +773,7 @@ function RevenueTab({
                 </ThemedText>
               </View>
               <View style={s.revenueSummaryItem}>
-                <ThemedText style={[s.revenueSummaryValue, { color: '#3B82F6' }]}>
+                <ThemedText style={[s.revenueSummaryValue, { color: '#1D9BF0' }]}>
                   {formatCurrency(totals.invoiced)}
                 </ThemedText>
                 <ThemedText style={[s.revenueSummaryLabel, { color: colors.textTertiary }]}>
@@ -789,7 +789,7 @@ function RevenueTab({
                 </ThemedText>
               </View>
               <View style={s.revenueSummaryItem}>
-                <ThemedText style={[s.revenueSummaryValue, { color: '#9CA3AF' }]}>
+                <ThemedText style={[s.revenueSummaryValue, { color: '#A1A1AA' }]}>
                   {formatCurrency(totals.projected)}
                 </ThemedText>
                 <ThemedText style={[s.revenueSummaryLabel, { color: colors.textTertiary }]}>
@@ -1967,7 +1967,7 @@ const s = StyleSheet.create({
   packageCapacityBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#A1A1AA',
     marginBottom: 4,
     overflow: 'hidden',
   },

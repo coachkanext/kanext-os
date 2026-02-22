@@ -12,9 +12,9 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { StructuredBlock as StructuredBlockType } from '@/types/nexus-v2';
 
 const VARIANT_COLORS = {
-  info: { border: '#3B82F6', bg: 'rgba(59,130,246,0.08)', icon: 'info.circle.fill' as const },
+  info: { border: '#1D9BF0', bg: 'rgba(59,130,246,0.08)', icon: 'info.circle.fill' as const },
   warning: { border: '#F59E0B', bg: 'rgba(245,158,11,0.08)', icon: 'exclamationmark.triangle.fill' as const },
-  success: { border: '#10B981', bg: 'rgba(16,185,129,0.08)', icon: 'checkmark.circle.fill' as const },
+  success: { border: '#22C55E', bg: 'rgba(16,185,129,0.08)', icon: 'checkmark.circle.fill' as const },
   error: { border: '#EF4444', bg: 'rgba(239,68,68,0.08)', icon: 'xmark.circle.fill' as const },
 };
 

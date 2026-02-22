@@ -196,8 +196,8 @@ function TodayNext({ colors, accent }: { colors: typeof Colors.light; accent: st
           </ThemedText>
           <View style={styles.statusChips}>
             {NEXT_GAME_CARD.statusChips.map((chip) => (
-              <View key={chip.label} style={[styles.statusChip, { backgroundColor: chip.status === 'done' ? '#22c55e22' : chip.status === 'in-progress' ? '#f59e0b22' : '#6b728022' }]}>
-                <ThemedText style={[styles.statusChipText, { color: chip.status === 'done' ? '#22c55e' : chip.status === 'in-progress' ? '#f59e0b' : '#6b7280' }]}>{chip.label}</ThemedText>
+              <View key={chip.label} style={[styles.statusChip, { backgroundColor: chip.status === 'done' ? '#22c55e22' : chip.status === 'in-progress' ? '#f59e0b22' : '#A1A1AA22' }]}>
+                <ThemedText style={[styles.statusChipText, { color: chip.status === 'done' ? '#22c55e' : chip.status === 'in-progress' ? '#f59e0b' : '#A1A1AA' }]}>{chip.label}</ThemedText>
               </View>
             ))}
           </View>
@@ -225,8 +225,8 @@ function CommandCenter({ colors, accent, onTabJump }: { colors: typeof Colors.li
             <IconSymbol name={tile.icon as any} size={22} color={accent} />
             <ThemedText style={[styles.tileLabel, { color: colors.text }]}>{tile.label}</ThemedText>
             <ThemedText style={[styles.tileCount, { color: colors.text }]}>{tile.count}</ThemedText>
-            <View style={[styles.tileChip, { backgroundColor: tile.statusColor === 'green' ? '#22c55e22' : tile.statusColor === 'yellow' ? '#f59e0b22' : tile.statusColor === 'red' ? '#ef444422' : '#6b728022' }]}>
-              <ThemedText style={[styles.tileChipText, { color: tile.statusColor === 'green' ? '#22c55e' : tile.statusColor === 'yellow' ? '#f59e0b' : tile.statusColor === 'red' ? '#ef4444' : '#6b7280' }]}>{tile.statusChip}</ThemedText>
+            <View style={[styles.tileChip, { backgroundColor: tile.statusColor === 'green' ? '#22c55e22' : tile.statusColor === 'yellow' ? '#f59e0b22' : tile.statusColor === 'red' ? '#ef444422' : '#A1A1AA22' }]}>
+              <ThemedText style={[styles.tileChipText, { color: tile.statusColor === 'green' ? '#22c55e' : tile.statusColor === 'yellow' ? '#f59e0b' : tile.statusColor === 'red' ? '#ef4444' : '#A1A1AA' }]}>{tile.statusChip}</ThemedText>
             </View>
           </Pressable>
         ))}
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
 
   // Conference Pulse
   standingsTable: { borderRadius: 12, borderWidth: 1, overflow: 'hidden' },
-  standingsHeader: { flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
+  standingsHeader: { flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#2F3336' },
   standingsHeaderText: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase' },
   standingsRow: { flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 8 },
   standingsCell: { fontSize: 13 },

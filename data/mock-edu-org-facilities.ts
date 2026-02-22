@@ -95,7 +95,7 @@ export const EDU_FACILITIES_SCOPE_CHIPS = [
 
 export const FACILITY_STATUS_COLOR: Record<EduFacility['status'], string> = {
   available: '#22C55E',
-  in_use: '#3B82F6',
+  in_use: '#1D9BF0',
   maintenance: '#EF4444',
   reserved: '#F59E0B',
 };
@@ -108,15 +108,15 @@ export const FACILITY_STATUS_LABEL: Record<EduFacility['status'], string> = {
 };
 
 export const FACILITY_TYPE_COLOR: Record<EduFacility['type'], string> = {
-  classroom: '#3B82F6',
-  lab: '#8B5CF6',
+  classroom: '#1D9BF0',
+  lab: '#1D9BF0',
   library: '#22C55E',
-  admin: '#6B7280',
+  admin: '#A1A1AA',
   athletic: '#EF4444',
   dining: '#F59E0B',
-  residence: '#14B8A6',
-  student_center: '#EC4899',
-  auditorium: '#F97316',
+  residence: '#1D9BF0',
+  student_center: '#1D9BF0',
+  auditorium: '#F59E0B',
 };
 
 export const FACILITY_TYPE_LABEL: Record<EduFacility['type'], string> = {
@@ -140,8 +140,8 @@ export const BOOKING_STATUS_COLOR: Record<RoomBooking['status'], string> = {
 export const MAINTENANCE_PRIORITY_COLOR: Record<MaintenanceRequest['priority'], string> = {
   critical: '#EF4444',
   high: '#F59E0B',
-  medium: '#3B82F6',
-  low: '#9CA3AF',
+  medium: '#1D9BF0',
+  low: '#A1A1AA',
 };
 
 export const MAINTENANCE_STATUS_COLOR: Record<MaintenanceRequest['status'], string> = {

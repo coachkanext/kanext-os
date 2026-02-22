@@ -34,7 +34,7 @@ export function NotificationCategoryTabs({
             key={cat.key}
             style={[
               styles.chip,
-              { backgroundColor: isActive ? '#f5f5f5' : '#111' },
+              { backgroundColor: isActive ? '#FFFFFF' : '#111' },
             ]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -42,7 +42,7 @@ export function NotificationCategoryTabs({
             }}
           >
             <ThemedText
-              style={[styles.chipText, { color: isActive ? '#000' : '#6e6e6e' }]}
+              style={[styles.chipText, { color: isActive ? '#000' : '#A1A1AA' }]}
             >
               {cat.label}
             </ThemedText>

@@ -23,7 +23,7 @@ const TRANSFER_LABEL_COLORS: Record<TransferLabel, string> = {
   emerging: Brand.precision,
 };
 
-const PRACTICE_BAR_COLOR = Brand.precision; // #6AA9FF
+const PRACTICE_BAR_COLOR = Brand.precision; // #1D9BF0
 const GAME_BAR_COLOR = Brand.warning;       // #F59E0B
 
 // =============================================================================

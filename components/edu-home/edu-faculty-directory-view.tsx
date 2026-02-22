@@ -47,9 +47,9 @@ const DEPT_FILTER_PILLS: { key: DeptFilterKey; label: string }[] = [
 
 const TENURE_COLORS: Record<TenureStatus, string> = {
   tenured: '#22C55E',
-  tenure_track: '#3B82F6',
+  tenure_track: '#1D9BF0',
   adjunct: '#F59E0B',
-  staff: '#6B7280',
+  staff: '#A1A1AA',
   on_leave: '#EF4444',
 };
 
@@ -64,7 +64,7 @@ const TENURE_LABELS: Record<TenureStatus, string> = {
 const STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
   sabbatical: '#F59E0B',
-  adjunct: '#3B82F6',
+  adjunct: '#1D9BF0',
   on_leave: '#EF4444',
 };
 
@@ -127,9 +127,9 @@ export function EduFacultyDirectoryView({ colors, accent }: Props) {
     ({ item }: { item: FacultyMember }) => {
       const tenureColor = TENURE_COLORS[item.tenureStatus];
       const initials = getInitials(item.name);
-      const statusColor = STATUS_COLORS[item.status] ?? '#6B7280';
+      const statusColor = STATUS_COLORS[item.status] ?? '#A1A1AA';
       const statusLabel = STATUS_LABELS[item.status] ?? item.status;
-      const deptColor = EDU_DEPARTMENT_COLORS[item.departmentCategory] ?? '#6B7280';
+      const deptColor = EDU_DEPARTMENT_COLORS[item.departmentCategory] ?? '#A1A1AA';
 
       return (
         <Pressable

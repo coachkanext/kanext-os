@@ -25,9 +25,9 @@ export function ConfirmationBubble({ confirmation, onConfirm, onCancel }: Props)
   // Already resolved
   if (confirmation.state === 'confirmed') {
     return (
-      <View style={[styles.container, styles.resolved, { borderLeftColor: '#10B981' }]}>
+      <View style={[styles.container, styles.resolved, { borderLeftColor: '#22C55E' }]}>
         <View style={styles.resolvedRow}>
-          <IconSymbol name="checkmark.circle.fill" size={14} color="#10B981" />
+          <IconSymbol name="checkmark.circle.fill" size={14} color="#22C55E" />
           <ThemedText style={[styles.resolvedText, { color: colors.textTertiary }]}>
             Confirmed: {confirmation.action_summary}
           </ThemedText>
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   confirmBtn: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22C55E',
   },
   confirmBtnText: {
     color: '#FFFFFF',

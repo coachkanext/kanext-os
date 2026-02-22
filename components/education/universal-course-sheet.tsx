@@ -51,40 +51,40 @@ interface UniversalCourseSheetProps {
 
 const COURSE_STATUS_COLORS: Record<string, string> = {
   active: '#22C55E',
-  completed: '#8F8F8F',
+  completed: '#A1A1AA',
   cancelled: '#EF4444',
-  planned: '#6AA9FF',
+  planned: '#1D9BF0',
 };
 
 const SESSION_TYPE_COLORS: Record<string, string> = {
-  lecture: '#6AA9FF',
+  lecture: '#1D9BF0',
   lab: '#22C55E',
   seminar: '#F59E0B',
   exam: '#EF4444',
-  workshop: '#8F8F8F',
+  workshop: '#A1A1AA',
 };
 
 const SESSION_STATUS_COLORS: Record<string, string> = {
-  upcoming: '#6AA9FF',
+  upcoming: '#1D9BF0',
   completed: '#22C55E',
   cancelled: '#EF4444',
   in_progress: '#F59E0B',
 };
 
 const ASSIGNMENT_TYPE_COLORS: Record<string, string> = {
-  homework: '#6AA9FF',
+  homework: '#1D9BF0',
   quiz: '#F59E0B',
   exam: '#EF4444',
   project: '#22C55E',
-  paper: '#8F8F8F',
-  presentation: '#6AA9FF',
+  paper: '#A1A1AA',
+  presentation: '#1D9BF0',
   lab_report: '#22C55E',
 };
 
 const ASSIGNMENT_STATUS_COLORS: Record<string, string> = {
-  upcoming: '#6AA9FF',
+  upcoming: '#1D9BF0',
   open: '#22C55E',
-  closed: '#8F8F8F',
+  closed: '#A1A1AA',
   graded: '#22C55E',
 };
 
@@ -98,7 +98,7 @@ const COMPLIANCE_STATUS_COLORS: Record<string, string> = {
   compliant: '#22C55E',
   pending: '#F59E0B',
   non_compliant: '#EF4444',
-  not_applicable: '#8F8F8F',
+  not_applicable: '#A1A1AA',
 };
 
 // =============================================================================
@@ -259,7 +259,7 @@ const OWN_ATTENDANCE_COLORS: Record<string, string> = {
   present: '#22C55E',
   absent: '#EF4444',
   late: '#F59E0B',
-  excused: '#8F8F8F',
+  excused: '#A1A1AA',
 };
 
 const MOCK_OPERATIONS = {
@@ -423,26 +423,26 @@ function CourseHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (COURSE_STATUS_COLORS[course.status] ?? '#8F8F8F') + '1A' },
+            { backgroundColor: (COURSE_STATUS_COLORS[course.status] ?? '#A1A1AA') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: COURSE_STATUS_COLORS[course.status] ?? '#8F8F8F' },
+              { backgroundColor: COURSE_STATUS_COLORS[course.status] ?? '#A1A1AA' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: COURSE_STATUS_COLORS[course.status] ?? '#8F8F8F' },
+              { color: COURSE_STATUS_COLORS[course.status] ?? '#A1A1AA' },
             ]}
           >
             {course.status.charAt(0).toUpperCase() + course.status.slice(1)}
           </ThemedText>
         </View>
-        <View style={[styles.creditsPill, { backgroundColor: '#6AA9FF1A' }]}>
-          <ThemedText style={[styles.creditsPillText, { color: '#6AA9FF' }]}>
+        <View style={[styles.creditsPill, { backgroundColor: '#1D9BF01A' }]}>
+          <ThemedText style={[styles.creditsPillText, { color: '#1D9BF0' }]}>
             {course.credits} Credits
           </ThemedText>
         </View>
@@ -526,13 +526,13 @@ function OverviewTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.prereqBadge,
-                { backgroundColor: prereq.status === 'required' ? '#EF444422' : '#6AA9FF22' },
+                { backgroundColor: prereq.status === 'required' ? '#EF444422' : '#1D9BF022' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.prereqText,
-                  { color: prereq.status === 'required' ? '#EF4444' : '#6AA9FF' },
+                  { color: prereq.status === 'required' ? '#EF4444' : '#1D9BF0' },
                 ]}
               >
                 {prereq.status.toUpperCase()}
@@ -620,7 +620,7 @@ function SyllabusTab({ colors }: { colors: typeof Colors.light }) {
                 {item.description}
               </ThemedText>
             </View>
-            <ThemedText style={[styles.weightText, { color: '#6AA9FF' }]}>
+            <ThemedText style={[styles.weightText, { color: '#1D9BF0' }]}>
               {item.weight}%
             </ThemedText>
           </View>
@@ -678,13 +678,13 @@ function SessionsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.sessionTypeBadge,
-                { backgroundColor: (SESSION_TYPE_COLORS[session.type] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (SESSION_TYPE_COLORS[session.type] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.sessionTypeText,
-                  { color: SESSION_TYPE_COLORS[session.type] ?? '#8F8F8F' },
+                  { color: SESSION_TYPE_COLORS[session.type] ?? '#A1A1AA' },
                 ]}
               >
                 {session.type.toUpperCase()}
@@ -701,7 +701,7 @@ function SessionsTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: SESSION_STATUS_COLORS[session.status] ?? '#8F8F8F' },
+                { color: SESSION_STATUS_COLORS[session.status] ?? '#A1A1AA' },
               ]}
             >
               {session.status.toUpperCase()}
@@ -720,13 +720,13 @@ function SessionsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.sessionTypeBadge,
-                { backgroundColor: (SESSION_TYPE_COLORS[session.type] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (SESSION_TYPE_COLORS[session.type] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.sessionTypeText,
-                  { color: SESSION_TYPE_COLORS[session.type] ?? '#8F8F8F' },
+                  { color: SESSION_TYPE_COLORS[session.type] ?? '#A1A1AA' },
                 ]}
               >
                 {session.type.toUpperCase()}
@@ -819,7 +819,7 @@ function RosterTab({
                 style={[
                   styles.tableCell,
                   styles.rosterAttCol,
-                  { color: ATTENDANCE_RISK_COLORS[riskLevel] ?? '#8F8F8F', fontWeight: '600' },
+                  { color: ATTENDANCE_RISK_COLORS[riskLevel] ?? '#A1A1AA', fontWeight: '600' },
                 ]}
               >
                 {student.attendanceRate}%
@@ -852,13 +852,13 @@ function AssignmentsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.assignmentTypeBadge,
-                { backgroundColor: (ASSIGNMENT_TYPE_COLORS[assignment.type] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (ASSIGNMENT_TYPE_COLORS[assignment.type] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.assignmentTypeText,
-                  { color: ASSIGNMENT_TYPE_COLORS[assignment.type] ?? '#8F8F8F' },
+                  { color: ASSIGNMENT_TYPE_COLORS[assignment.type] ?? '#A1A1AA' },
                 ]}
               >
                 {assignment.type.replace('_', ' ').toUpperCase()}
@@ -875,7 +875,7 @@ function AssignmentsTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: ASSIGNMENT_STATUS_COLORS[assignment.status] ?? '#8F8F8F' },
+                { color: ASSIGNMENT_STATUS_COLORS[assignment.status] ?? '#A1A1AA' },
               ]}
             >
               {assignment.status.toUpperCase()}
@@ -894,13 +894,13 @@ function AssignmentsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.assignmentTypeBadge,
-                { backgroundColor: (ASSIGNMENT_TYPE_COLORS[assignment.type] ?? '#8F8F8F') + '22' },
+                { backgroundColor: (ASSIGNMENT_TYPE_COLORS[assignment.type] ?? '#A1A1AA') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.assignmentTypeText,
-                  { color: ASSIGNMENT_TYPE_COLORS[assignment.type] ?? '#8F8F8F' },
+                  { color: ASSIGNMENT_TYPE_COLORS[assignment.type] ?? '#A1A1AA' },
                 ]}
               >
                 {assignment.type.replace('_', ' ').toUpperCase()}
@@ -952,7 +952,7 @@ function GradesAggregateView({ colors }: { colors: typeof Colors.light }) {
     <View>
       <SectionCard title="Class Statistics" colors={colors}>
         <View style={styles.statRow}>
-          <StatBlock label="Average" value={MOCK_GRADE_DISTRIBUTION.classAverage.toFixed(1)} color="#6AA9FF" colors={colors} />
+          <StatBlock label="Average" value={MOCK_GRADE_DISTRIBUTION.classAverage.toFixed(1)} color="#1D9BF0" colors={colors} />
           <StatBlock label="Median" value={String(MOCK_GRADE_DISTRIBUTION.median)} color="#22C55E" colors={colors} />
           <StatBlock label="High" value={String(MOCK_GRADE_DISTRIBUTION.high)} color="#22C55E" colors={colors} />
           <StatBlock label="Low" value={String(MOCK_GRADE_DISTRIBUTION.low)} color="#EF4444" colors={colors} />
@@ -970,7 +970,7 @@ function GradesAggregateView({ colors }: { colors: typeof Colors.light }) {
               <View
                 style={[
                   styles.distBar,
-                  { width: `${item.percentage}%`, backgroundColor: '#6AA9FF' },
+                  { width: `${item.percentage}%`, backgroundColor: '#1D9BF0' },
                 ]}
               />
             </View>
@@ -1016,7 +1016,7 @@ function GradesOwnView({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Weighted Average" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Current" value="88%" color="#22C55E" colors={colors} />
-          <StatBlock label="Grade" value="B+" color="#6AA9FF" colors={colors} />
+          <StatBlock label="Grade" value="B+" color="#1D9BF0" colors={colors} />
           <StatBlock label="Rank" value="3/12" color="#F59E0B" colors={colors} />
         </View>
       </SectionCard>
@@ -1047,10 +1047,10 @@ function GradesFullView({ colors }: { colors: typeof Colors.light }) {
               <View
                 style={[
                   styles.gradeBadge,
-                  { backgroundColor: (GRADE_COLORS[entry.currentGrade] ?? '#8F8F8F') + '22' },
+                  { backgroundColor: (GRADE_COLORS[entry.currentGrade] ?? '#A1A1AA') + '22' },
                 ]}
               >
-                <ThemedText style={[styles.gradeText, { color: GRADE_COLORS[entry.currentGrade] ?? '#8F8F8F' }]}>
+                <ThemedText style={[styles.gradeText, { color: GRADE_COLORS[entry.currentGrade] ?? '#A1A1AA' }]}>
                   {entry.currentGrade}
                 </ThemedText>
               </View>
@@ -1119,7 +1119,7 @@ function AttendanceAggregateView({ colors }: { colors: typeof Colors.light }) {
       <SectionCard title="Class Attendance Overview" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Avg Attendance" value={`${MOCK_ATTENDANCE_AGGREGATE.averageAttendance}%`} color="#22C55E" colors={colors} />
-          <StatBlock label="Sessions" value={String(MOCK_ATTENDANCE_AGGREGATE.totalSessions)} color="#6AA9FF" colors={colors} />
+          <StatBlock label="Sessions" value={String(MOCK_ATTENDANCE_AGGREGATE.totalSessions)} color="#1D9BF0" colors={colors} />
           <StatBlock label="At Risk" value={String(MOCK_ATTENDANCE_AGGREGATE.atRiskStudents.length)} color="#EF4444" colors={colors} />
         </View>
       </SectionCard>
@@ -1160,7 +1160,7 @@ function AttendanceOwnView({ colors }: { colors: typeof Colors.light }) {
         <View style={styles.statRow}>
           <StatBlock label="Rate" value={`${rate}%`} color={rate >= 85 ? '#22C55E' : '#F59E0B'} colors={colors} />
           <StatBlock label="Present" value={String(presentCount)} color="#22C55E" colors={colors} />
-          <StatBlock label="Total" value={String(total)} color="#6AA9FF" colors={colors} />
+          <StatBlock label="Total" value={String(total)} color="#1D9BF0" colors={colors} />
         </View>
       </SectionCard>
 
@@ -1173,7 +1173,7 @@ function AttendanceOwnView({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.attendanceDot,
-                { backgroundColor: OWN_ATTENDANCE_COLORS[record.status] ?? '#8F8F8F' },
+                { backgroundColor: OWN_ATTENDANCE_COLORS[record.status] ?? '#A1A1AA' },
               ]}
             />
             <ThemedText style={[styles.bodyText, { color: colors.text, flex: 1 }]}>
@@ -1182,7 +1182,7 @@ function AttendanceOwnView({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: OWN_ATTENDANCE_COLORS[record.status] ?? '#8F8F8F' },
+                { color: OWN_ATTENDANCE_COLORS[record.status] ?? '#A1A1AA' },
               ]}
             >
               {record.status.toUpperCase()}
@@ -1218,7 +1218,7 @@ function AttendanceFullView({ colors }: { colors: typeof Colors.light }) {
               <ThemedText
                 style={[
                   styles.attendanceRate,
-                  { color: ATTENDANCE_RISK_COLORS[riskLevel] ?? '#8F8F8F' },
+                  { color: ATTENDANCE_RISK_COLORS[riskLevel] ?? '#A1A1AA' },
                 ]}
               >
                 {student.attendanceRate}%
@@ -1326,7 +1326,7 @@ function OperationsTab({ colors }: { colors: typeof Colors.light }) {
                 <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
                   {conflict.issue}
                 </ThemedText>
-                <ThemedText style={[styles.captionText, { color: '#6AA9FF' }]}>
+                <ThemedText style={[styles.captionText, { color: '#1D9BF0' }]}>
                   Resolution: {conflict.resolution}
                 </ThemedText>
               </View>
@@ -1348,7 +1348,7 @@ function ComplianceTab({ colors }: { colors: typeof Colors.light }) {
       {/* Accommodations Count */}
       <SectionCard title="Accommodations" colors={colors}>
         <View style={styles.listRow}>
-          <IconSymbol name="person.fill.checkmark" size={16} color="#6AA9FF" />
+          <IconSymbol name="person.fill.checkmark" size={16} color="#1D9BF0" />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Students with Accommodations
@@ -1357,8 +1357,8 @@ function ComplianceTab({ colors }: { colors: typeof Colors.light }) {
               Details restricted to authorized personnel. Contact Disability Services for specifics.
             </ThemedText>
           </View>
-          <View style={[styles.countBadge, { backgroundColor: '#6AA9FF22' }]}>
-            <ThemedText style={[styles.countText, { color: '#6AA9FF' }]}>
+          <View style={[styles.countBadge, { backgroundColor: '#1D9BF022' }]}>
+            <ThemedText style={[styles.countText, { color: '#1D9BF0' }]}>
               {MOCK_COMPLIANCE.accommodationsCount}
             </ThemedText>
           </View>
@@ -1368,7 +1368,7 @@ function ComplianceTab({ colors }: { colors: typeof Colors.light }) {
       {/* Title IX Compliance */}
       <SectionCard title="Title IX Compliance" colors={colors}>
         <View style={styles.listRow}>
-          <IconSymbol name="shield.fill" size={16} color={COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIXStatus] ?? '#8F8F8F'} />
+          <IconSymbol name="shield.fill" size={16} color={COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIXStatus] ?? '#A1A1AA'} />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Title IX Status
@@ -1380,13 +1380,13 @@ function ComplianceTab({ colors }: { colors: typeof Colors.light }) {
           <View
             style={[
               styles.complianceBadge,
-              { backgroundColor: (COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIXStatus] ?? '#8F8F8F') + '22' },
+              { backgroundColor: (COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIXStatus] ?? '#A1A1AA') + '22' },
             ]}
           >
             <ThemedText
               style={[
                 styles.complianceText,
-                { color: COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIXStatus] ?? '#8F8F8F' },
+                { color: COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIXStatus] ?? '#A1A1AA' },
               ]}
             >
               {MOCK_COMPLIANCE.titleIXStatus.toUpperCase()}
@@ -1414,7 +1414,7 @@ function ComplianceTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: '#6AA9FF' },
+                { color: '#1D9BF0' },
               ]}
             >
               {deadline.status.toUpperCase()}
@@ -1508,7 +1508,7 @@ function ActionButton({
 
 const GRADE_COLORS: Record<string, string> = {
   'A': '#22C55E', 'A-': '#22C55E',
-  'B+': '#6AA9FF', 'B': '#6AA9FF', 'B-': '#6AA9FF',
+  'B+': '#1D9BF0', 'B': '#1D9BF0', 'B-': '#1D9BF0',
   'C+': '#F59E0B', 'C': '#F59E0B', 'C-': '#F59E0B',
   'D': '#EF4444', 'F': '#EF4444',
 };

@@ -18,11 +18,11 @@ import { CURRENT_WEEKLY_PLAN, type SessionType } from '@/data/mock-development-v
 // =============================================================================
 
 const SESSION_COLORS: Record<SessionType, string> = {
-  practice: Brand.precision,   // #6AA9FF
+  practice: Brand.precision,   // #1D9BF0
   lift: Brand.warning,         // #F59E0B
-  film: '#7A5CFF',
+  film: '#1D9BF0',
   individual: Brand.success,   // #22C55E
-  rest: '#424242',
+  rest: '#52525B',
 };
 
 // =============================================================================

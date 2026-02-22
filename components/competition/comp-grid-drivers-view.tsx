@@ -129,8 +129,8 @@ export function CompGridDriversView({ colors, accent }: Props) {
                   <ThemedText style={styles.starIcon}>★</ThemedText>
                 )}
                 {driver.status !== 'active' && (
-                  <View style={[styles.statusBadge, { backgroundColor: (STATUS_COLORS[driver.status] ?? '#6B7280') + '20' }]}>
-                    <ThemedText style={[styles.statusText, { color: STATUS_COLORS[driver.status] ?? '#6B7280' }]}>
+                  <View style={[styles.statusBadge, { backgroundColor: (STATUS_COLORS[driver.status] ?? '#A1A1AA') + '20' }]}>
+                    <ThemedText style={[styles.statusText, { color: STATUS_COLORS[driver.status] ?? '#A1A1AA' }]}>
                       {driver.status.charAt(0).toUpperCase() + driver.status.slice(1)}
                     </ThemedText>
                   </View>
@@ -151,13 +151,13 @@ export function CompGridDriversView({ colors, accent }: Props) {
                   </View>
                 )}
                 {driver.podiums > 0 && (
-                  <View style={[styles.statBadge, { backgroundColor: '#3B82F620' }]}>
-                    <ThemedText style={[styles.statBadgeText, { color: '#3B82F6' }]}>{driver.podiums}P</ThemedText>
+                  <View style={[styles.statBadge, { backgroundColor: '#1D9BF020' }]}>
+                    <ThemedText style={[styles.statBadgeText, { color: '#1D9BF0' }]}>{driver.podiums}P</ThemedText>
                   </View>
                 )}
                 {driver.poles > 0 && (
-                  <View style={[styles.statBadge, { backgroundColor: '#8B5CF620' }]}>
-                    <ThemedText style={[styles.statBadgeText, { color: '#8B5CF6' }]}>{driver.poles}PP</ThemedText>
+                  <View style={[styles.statBadge, { backgroundColor: '#1D9BF020' }]}>
+                    <ThemedText style={[styles.statBadgeText, { color: '#1D9BF0' }]}>{driver.poles}PP</ThemedText>
                   </View>
                 )}
               </View>
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
   },
   filterText: { fontSize: 12, fontWeight: '600' },
   sortBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 10, gap: 6 },

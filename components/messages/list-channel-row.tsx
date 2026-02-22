@@ -30,7 +30,7 @@ export function ListChannelRow({
     <Pressable
       style={({ pressed }) => [
         styles.row,
-        { backgroundColor: pressed ? '#191919' : 'transparent' },
+        { backgroundColor: pressed ? '#0B0F14' : 'transparent' },
       ]}
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -38,7 +38,7 @@ export function ListChannelRow({
       }}
     >
       <View style={styles.iconCircle}>
-        <IconSymbol name={icon} size={20} color="#6e6e6e" />
+        <IconSymbol name={icon} size={20} color="#A1A1AA" />
       </View>
       <View style={styles.content}>
         <ThemedText style={styles.title}>{title}</ThemedText>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#191919',
+    backgroundColor: '#0B0F14',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -78,15 +78,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#f5f5f5',
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   description: {
     fontSize: 13,
-    color: '#6e6e6e',
+    color: '#A1A1AA',
   },
   badge: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
     minWidth: 20,
     height: 20,

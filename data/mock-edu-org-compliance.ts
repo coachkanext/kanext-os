@@ -281,11 +281,11 @@ export const POLICY_STATUS_LABELS: Record<PolicyStatus, string> = {
 };
 
 export const POLICY_STATUS_COLORS: Record<PolicyStatus, string> = {
-  draft: '#8F8F8F',
+  draft: '#A1A1AA',
   review: '#F59E0B',
-  approved: '#6AA9FF',
+  approved: '#1D9BF0',
   published: '#22C55E',
-  superseded: '#A78BFA',
+  superseded: '#1D9BF0',
 };
 
 export const CONTROL_FREQUENCY_LABELS: Record<ControlFrequency, string> = {
@@ -324,8 +324,8 @@ export const EVIDENCE_STATUS_LABELS: Record<EvidenceStatus, string> = {
 };
 
 export const EVIDENCE_STATUS_COLORS: Record<EvidenceStatus, string> = {
-  draft: '#8F8F8F',
-  submitted: '#6AA9FF',
+  draft: '#A1A1AA',
+  submitted: '#1D9BF0',
   verified: '#22C55E',
   rejected: '#EF4444',
 };
@@ -348,7 +348,7 @@ export const RISK_SEVERITY_LABELS: Record<RiskSeverity, string> = {
 };
 
 export const RISK_SEVERITY_COLORS: Record<RiskSeverity, string> = {
-  critical: '#DC2626',
+  critical: '#EF4444',
   high: '#EF4444',
   medium: '#F59E0B',
   low: '#22C55E',
@@ -362,9 +362,9 @@ export const AUDIT_STATUS_LABELS: Record<AuditStatus, string> = {
 };
 
 export const AUDIT_STATUS_COLORS: Record<AuditStatus, string> = {
-  planned: '#8F8F8F',
+  planned: '#A1A1AA',
   in_progress: '#F59E0B',
-  reported: '#6AA9FF',
+  reported: '#1D9BF0',
   closed: '#22C55E',
 };
 
@@ -376,7 +376,7 @@ export const FINDING_SEVERITY_LABELS: Record<FindingSeverity, string> = {
 };
 
 export const FINDING_SEVERITY_COLORS: Record<FindingSeverity, string> = {
-  critical: '#DC2626',
+  critical: '#EF4444',
   high: '#EF4444',
   medium: '#F59E0B',
   low: '#22C55E',
@@ -393,8 +393,8 @@ export const FINDING_STATUS_LABELS: Record<FindingStatus, string> = {
 export const FINDING_STATUS_COLORS: Record<FindingStatus, string> = {
   open: '#EF4444',
   assigned: '#F59E0B',
-  remediation: '#6AA9FF',
-  proof_uploaded: '#A78BFA',
+  remediation: '#1D9BF0',
+  proof_uploaded: '#1D9BF0',
   closed: '#22C55E',
 };
 
@@ -417,8 +417,8 @@ export const INCIDENT_STATUS_LABELS: Record<IncidentStatus, string> = {
 export const INCIDENT_STATUS_COLORS: Record<IncidentStatus, string> = {
   open: '#EF4444',
   investigating: '#F59E0B',
-  contained: '#6AA9FF',
-  resolved: '#A78BFA',
+  contained: '#1D9BF0',
+  resolved: '#1D9BF0',
   closed: '#22C55E',
 };
 
@@ -432,12 +432,12 @@ export const EXCEPTION_STATUS_LABELS: Record<ExceptionStatus, string> = {
 };
 
 export const EXCEPTION_STATUS_COLORS: Record<ExceptionStatus, string> = {
-  requested: '#6AA9FF',
+  requested: '#1D9BF0',
   reviewed: '#F59E0B',
   approved: '#22C55E',
   denied: '#EF4444',
-  expired: '#8F8F8F',
-  archived: '#A78BFA',
+  expired: '#A1A1AA',
+  archived: '#1D9BF0',
 };
 
 export const EXPORT_PACKET_TYPE_LABELS: Record<ExportPacketType, string> = {

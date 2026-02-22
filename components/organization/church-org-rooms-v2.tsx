@@ -311,7 +311,7 @@ function DirectoryTab({
             </ThemedText>
           </View>
           <View style={[s.directoryKpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[s.directoryKpiValue, { color: '#3B82F6' }]}>
+            <ThemedText style={[s.directoryKpiValue, { color: '#1D9BF0' }]}>
               {inUseCount}
             </ThemedText>
             <ThemedText style={[s.directoryKpiLabel, { color: colors.textSecondary }]}>
@@ -345,13 +345,13 @@ function DirectoryTab({
             </ThemedText>
           </View>
           <View style={s.directoryLegendItem}>
-            <View style={[s.directoryLegendDot, { backgroundColor: '#3B82F6' }]} />
+            <View style={[s.directoryLegendDot, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[s.directoryLegendText, { color: colors.textTertiary }]}>
               In Use ({inUseCount})
             </ThemedText>
           </View>
           <View style={s.directoryLegendItem}>
-            <View style={[s.directoryLegendDot, { backgroundColor: '#8B5CF6' }]} />
+            <View style={[s.directoryLegendDot, { backgroundColor: '#1D9BF0' }]} />
             <ThemedText style={[s.directoryLegendText, { color: colors.textTertiary }]}>
               Reserved ({reservedCount})
             </ThemedText>
@@ -803,7 +803,7 @@ function AccessTab({
             </View>
             {entry.canApprove.map((name) => (
               <View key={`approve-${entry.roomId}-${name}`} style={s.accessPersonRow}>
-                <View style={[s.accessPersonDot, { backgroundColor: '#3B82F6' }]} />
+                <View style={[s.accessPersonDot, { backgroundColor: '#1D9BF0' }]} />
                 <ThemedText style={[s.accessPersonName, { color: colors.text }]}>
                   {name}
                 </ThemedText>
